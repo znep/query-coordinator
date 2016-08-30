@@ -8,16 +8,13 @@ $(function() {
     var notInDOM = $('.missing-columns-warning').length === 0;
 
     if (notInDOM) {
-      $missingColumns = $('<div>', {
-        'class': 'missing-columns-warning'
-      });
+      $missingColumns = $('<div>', {'class': 'missing-columns-warning'});
       $missingColumns.append(
-        $('<div>', {
-          'class': 'missing-columns-warning-message flash notice'
-        }).append(
-          $('<p>' + $.t('controls.charts.missing_column_html') + '</p>')
-        )
-      );
+        $('<div>', {'class': 'missing-columns-warning-message flash notice'}).
+          append(
+            $('<p>' + $.t('controls.charts.missing_column_html') + '</p>')
+          )
+        );
 
       $('body').append($missingColumns);
     }
@@ -28,15 +25,12 @@ $(function() {
     var notInDOM = $('.missing-dataset-error').length === 0;
 
     if (notInDOM) {
-      $missingDatasetError = $('<div>', {
-        'class': 'missing-dataset-error'
-      });
+      $missingDatasetError = $('<div>', {'class': 'missing-dataset-error'});
       $missingDatasetError.append(
-        $('<div>', {
-          'class': 'missing-dataset-error-message flash error'
-        }).append(
-          $('<p>' + $.t('controls.charts.inaccessible') + '</p>')
-        )
+        $('<div>', {'class': 'missing-dataset-error-message flash error'}).
+          append(
+            $('<p>' + $.t('controls.charts.inaccessible') + '</p>')
+          )
       );
 
       $('body').append($missingDatasetError);
@@ -61,12 +55,12 @@ $(function() {
 
       // Clear out the last instance of RenderTypeManager.
       $innerContainer.
-      empty().
-      data('renderTypeManager', null).
-      renderTypeManager({
-        view: dataset,
-        editEnabled: false
-      });
+        empty().
+        data('renderTypeManager', null).
+        renderTypeManager({
+          view: dataset,
+          editEnabled: false
+        });
     } else {
       renderMissingDatasetMessage();
     }

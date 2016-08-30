@@ -17,7 +17,7 @@ publishNS.cleanData = function(obj) {
   return newObj;
 };
 
-publishNS.applyCustomizationToPreview = function() {
+publishNS.applyCustomizationToPreview = function(hash) {
   // No live updating, just reflect in the embed code
   catalogNS.updateBrowseEmbedCode();
 };
@@ -69,11 +69,10 @@ var catalogNS = {
     return 600;
   },
 
-  handleResizeRequest: function($this) {
-    var val = parseInt($this.val());
-    var attr = $this.attr('data-valbind');
-
-    catalogNS.getMinWidth();
+  handleResizeRequest: function($this, $formElem) {
+    var val = parseInt($this.val()),
+      attr = $this.attr('data-valbind'),
+      minWidth = catalogNS.getMinWidth();
 
     if (_.isNaN(val) || val < catalogNS.minSizes[attr]) {
       $this.closest('.line').addClass('error');
@@ -89,9 +88,10 @@ var catalogNS = {
       height: publishNS.browseWidgetHeight,
       width: publishNS.browseWidgetWidth
     });
-    publishNS.$previewPane.animate({
-      width: publishNS.browseWidgetWidth
-    });
+    publishNS.$previewPane
+      .animate({
+        width: publishNS.browseWidgetWidth
+      });
   },
 
   hasFacets: function() {
@@ -102,9 +102,11 @@ var catalogNS = {
     $target.empty().append('<iframe frameborder="0" height="' +
       publishNS.browseWidgetHeight + 'px" width="' + publishNS.browseWidgetWidth + 'px" id="previewWidget"></iframe>');
 
-    $target.find('iframe#previewWidget').attr('src', src).load(function() {
-      callback(this);
-    });
+    $target.find('iframe#previewWidget')
+      .attr('src', src)
+      .load(function() {
+        callback(this);
+      });
   },
 
   minSizes: {},
@@ -345,8 +347,8 @@ $(function() {
   publishNS.sidebar = $('#gridSidebar').gridSidebar({
     onSidebarShown: function(activePane) {
       var $activeLink = $('#sidebarOptions a[data-paneName=' + activePane + ']');
-      $('#sidebarOptions').css('background-color', $activeLink.css('background-color')).
-        find('li').removeClass('active');
+      $('#sidebarOptions').css('background-color', $activeLink.css('background-color'))
+        .find('li').removeClass('active');
       $activeLink.closest('li').addClass('active');
     },
     resizeNeighbor: '.publisherWorkspace',
@@ -358,7 +360,9 @@ $(function() {
 
   catalogNS.loadIframe(publishNS.$previewPane, catalogNS.generateEmbedSrc(), function() {
     $('.loadingMessage').fadeOut(function() {
-      $('.previewScrollContainer').css('height', '100%').css('width', '100%');
+      $('.previewScrollContainer')
+        .css('height', '100%')
+        .css('width', '100%');
     });
   });
 });

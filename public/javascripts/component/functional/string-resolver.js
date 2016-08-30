@@ -4,7 +4,7 @@
  * the value to be fixed, but allow others as freeform or
  * based on the value of another component.
  */
-(function($) {
+;(function($) {
 
 $.component.FunctionalComponent.extend('StringResolver', 'functional', {
     _init: function() {
@@ -21,9 +21,9 @@ $.component.FunctionalComponent.extend('StringResolver', 'functional', {
 
             var comp = $.component(child.id, cObj._componentSet);
             if (!comp)
-                throw new Error('No component registered with ID ' + child.id);
+                throw new Error("No component registered with ID " + child.id);
 
-            comp.bind('update_properties', function() {
+            comp.bind('update_properties', function(args) {
                 delete cObj._stringCache[child.id];
                 delete cObj._resolved;
                 cObj.trigger('child_updated', [{componentID: child.id}]);
@@ -41,9 +41,10 @@ $.component.FunctionalComponent.extend('StringResolver', 'functional', {
                     val;
                 if (_.isFunction(comp.asString)) {
                     val = comp.asString();
-                } else {
+                }
+                else {
                     // todo: more intelligent fallback
-                    throw new Error('Component ' + component.id + ' doesn\'t support asString');
+                    throw new Error("Component " + component.id + " doesn't support asString");
                 }
                 cObj._stringCache[component.id] = cObj._properties.url ?
                     $.urlSafe(val) : val;
@@ -59,14 +60,14 @@ $.component.FunctionalComponent.extend('StringResolver', 'functional', {
         if (!cObj._resolved || force) {
             cObj._resolved = _.map($.makeArray(cObj._properties.template), function(c) {
                 return cObj._resolve(c);
-            }).join('') || '';
+            }).join("") || '';
         }
         return cObj._resolved;
     }
 });
 
 var resolve = function(component) {
-    switch (component.type) {
+    switch(component.type) {
         case 'date':
             var date = Date.parse(component.date || 'today');
             return date.toString(component.format);

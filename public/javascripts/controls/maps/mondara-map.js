@@ -12,7 +12,7 @@
       var proj = 'EPSG:4326';
       var toProjection = new OpenLayers.Projection(proj);
       var esp9xxLonLat = this._layer._map.baseLayer.
-      getLonLatFromViewPortPx(this._layer._map.events.getMousePosition(evt));
+          getLonLatFromViewPortPx(this._layer._map.events.getMousePosition(evt));
       var coord = esp9xxLonLat.transform(this._layer._map.getProjectionObject(), toProjection);
       this.request(coord);
     },
@@ -43,9 +43,7 @@
           return acc.concat(featureArr);
         }, []).map(function(feature) {
           //wrap each one
-          return {
-            attributes: feature
-          };
+          return {attributes: feature};
         });
 
 
@@ -69,7 +67,7 @@
     handlers: {
       click: function(evtObj) {
         var lonlat = this._layerModel._map.baseLayer.
-        getLonLatFromViewPortPx(this._layerModel._map.events.getMousePosition(evtObj));
+          getLonLatFromViewPortPx(this._layerModel._map.events.getMousePosition(evtObj));
         this._layerModel.flyoutHandler().sayLoading(lonlat);
       }
     },
@@ -92,36 +90,36 @@
     getLayer: function(layerName, layerOpts) {
       var style = encodeURIComponent(
         '#main, #multipoint, #point {' +
-        'line-width: 2.0;' +
-        'line-color: #000;' +
-        'line-opacity:0.85;' +
-        'marker-width: 8.0;' +
-        'marker-fill: #fb5e2e;' +
-        'marker-line-color: #000;' +
-        'marker-line-width: 2.0;' +
-        'marker-allow-overlap: true;' +
+          'line-width: 2.0;' +
+          'line-color: #000;' +
+          'line-opacity:0.85;' +
+          'marker-width: 8.0;' +
+          'marker-fill: #fb5e2e;' +
+          'marker-line-color: #000;' +
+          'marker-line-width: 2.0;' +
+          'marker-allow-overlap: true;' +
         '}' +
         '#multipolygon, #polygon {' +
-        'polygon-fill: #AAAAAA;' +
-        'polygon-opacity: 0.5;' +
-        'line-width: 1;' +
-        'line-opacity: 0.5;' +
-        'line-color: #000000;' +
-        'line-simplify: 2' +
+          'polygon-fill: #AAAAAA;' +
+          'polygon-opacity: 0.5;' +
+          'line-width: 1;' +
+          'line-opacity: 0.5;' +
+          'line-color: #000000;' +
+          'line-simplify: 2' +
         '}' +
         '#multilinestring, #linestring {' +
-        'line-width: 2.0;' +
-        'line-color: #0000ff;' +
-        'line-opacity: 0.75;' +
-        'line-simplify: 2' +
+          'line-width: 2.0;' +
+          'line-color: #0000ff;' +
+          'line-opacity: 0.75;' +
+          'line-simplify: 2' +
         '}'
       );
 
       // The default name for geo columns ingressed normally is 'the_geom', but
       // some datasets may have a different name which we should attempt first.
       var geoColumnFieldName = _(
-        _.get(this, '_layerModel._view.columns', [])
-      ).filter(function(column) {
+          _.get(this, '_layerModel._view.columns', [])
+        ).filter(function(column) {
         return /(polygon|line|point)$/.test(column.dataTypeName);
       }).pluck('fieldName').first();
       var tileUrl = [
@@ -136,7 +134,7 @@
     // feature protocol. the whole feature protocol thing doesn't really
     // map well onto our use cases afaict and adds a bunch of complexity, so
     // instead of figuring it out and using it this will just have to suffice.
-    _dummyProtocol: function() {
+    _dummyProtocol:function() {
       return {
         setFeatureType: _.noop
       };
@@ -171,21 +169,21 @@
       this._provider = new NBEMapProvider(this);
 
       _.each(layerObj._config.layers.split(','), function(layerName) {
-        var opacity = _.isNumber(layerObj._displayFormat.opacity) &&
-          layerObj._displayFormat.opacity;
+        var opacity = _.isNumber(layerObj._displayFormat.opacity)
+            && layerObj._displayFormat.opacity;
 
         var layerOpts = {
-          isBaseLayer: false,
-          transitionEffect: 'resize',
-          tileSize: new OpenLayers.Size(256, 256),
-          opacity: opacity,
-          params: {
-            layers: layerObj._config.namespace + ':' + layerName,
-            format: 'image/png',
-            _soc_pubDate: layerObj._pubDate,
-            tiled: true,
-            transparent: true
-          }
+            isBaseLayer: false,
+            transitionEffect: 'resize',
+            tileSize: new OpenLayers.Size(256, 256),
+            opacity: opacity,
+            params: {
+                layers: layerObj._config.namespace + ':' + layerName,
+                format: 'image/png',
+                _soc_pubDate: layerObj._pubDate,
+                tiled: true,
+                transparent: true
+            }
         };
 
         var layer = this._provider.getLayer(layerName, layerOpts);
@@ -204,25 +202,19 @@
       });
 
       layerObj._map.events.register('changelayer', null, function(evtObj) {
-        if (_.isUndefined(layerObj._getFeature)) {
-          return;
-        }
-        if (!_.include(['visibility', 'opacity'], evtObj.property)) {
-          return;
-        }
-        if (!_.include(layerObj._dataLayers, evtObj.layer)) {
-          return;
-        }
+        if (_.isUndefined(layerObj._getFeature)) { return; }
+        if (!_.include(['visibility', 'opacity'], evtObj.property)) { return; }
+        if (!_.include(layerObj._dataLayers, evtObj.layer)) { return; }
         var featureType = _.chain(layerObj._dataLayers).
-        map(function(layer) {
-          if (layer.visibility && (_.isNull(layer.opacity) || layer.opacity > 0)) {
-            return layer.atlasId;
-          } else {
-            return null;
-          }
-        }).
-        compact().
-        value();
+          map(function(layer) {
+            if (layer.visibility && (_.isNull(layer.opacity) || layer.opacity > 0)) {
+              return layer.atlasId;
+            } else {
+              return null;
+            }
+          }).
+          compact().
+          value();
 
         layerObj._getFeature.protocol.setFeatureType(featureType);
       });
@@ -230,9 +222,7 @@
 
     buildGetFeature: function() {
       var layerObj = this;
-      if (layerObj._displayFormat.disableFlyouts || layerObj._getFeature) {
-        return;
-      }
+      if (layerObj._displayFormat.disableFlyouts || layerObj._getFeature) { return; }
 
       layerObj._getFeature = this._provider.featureGetter();
 
@@ -254,46 +244,35 @@
 
         layerObj._parent.closePopup('loading');
 
-        var $popupText = $.tag({
-          tagName: 'div',
-          contents: _.map(features, function(feature) {
-            return {
-              tagName: 'div',
-              'class': 'row',
+        var $popupText = $.tag({ tagName: 'div',
+        contents: _.map(features, function(feature) {
+          return { tagName: 'div', 'class': 'row',
               contents: _.map(feature.attributes, function(value, key) {
-                if (_.include(['_SocrataID', 'bbox'], key)) {
-                  return;
-                }
+                if (_.include(['_SocrataID', 'bbox'], key)) { return; }
                 return {
-                  tagName: 'p',
-                  contents: [{
-                    tagName: 'span',
-                    'class': 'property',
-                    contents: $.htmlEscape(key) + ':'
-                  }, {
-                    tagName: 'span',
-                    'class': 'value',
-                    contents: $.htmlEscape(value)
-                  }]
+                    tagName: 'p',
+                    contents: [ {
+                        tagName: 'span', 'class': 'property',
+                        contents: $.htmlEscape(key) + ':'
+                    }, {
+                        tagName: 'span', 'class': 'value',
+                        contents: $.htmlEscape(value)
+                    } ]
                 };
               })
             };
-          })
-        });
+        }) });
 
         if (features.length > 1) {
           layerObj.addInfoPagingToFlyout($popupText);
         }
 
         var lonlat = layerObj._getFeature.pixelToBounds(
-          layerObj._getFeature.handlers.click.evt.xy).getCenterLonLat();
+            layerObj._getFeature.handlers.click.evt.xy).getCenterLonLat();
 
-        layerObj.flyoutHandler().add(layerObj, lonlat, $popupText[0].innerHTML, {
-          onlyIf: 'loading',
-          closeBoxCallback: function() {
-            layerObj._getFeature.unselectAll();
-          }
-        });
+        layerObj.flyoutHandler().add(layerObj, lonlat, $popupText[0].innerHTML,
+            { onlyIf: 'loading',
+              closeBoxCallback: function() { layerObj._getFeature.unselectAll(); } });
 
         layerObj._selectionLayer.addFeatures(features);
       });
@@ -304,22 +283,14 @@
       });
 
       layerObj.flyoutHandler().events.register('close', layerObj,
-        function() {
-          layerObj._getFeature.unselectAll();
-        });
+          function() { layerObj._getFeature.unselectAll(); });
     },
 
     destroy: function() {
       this._super();
-      _.each(this._dataLayers, function(layer) {
-        layer.destroy();
-      });
-      if (this._getFeature) {
-        this._getFeature.destroy();
-      }
-      if (this._selectionLayer) {
-        this._selectionLayer.destroy();
-      }
+      _.each(this._dataLayers, function(layer) { layer.destroy(); });
+      if (this._getFeature) { this._getFeature.destroy(); }
+      if (this._selectionLayer) { this._selectionLayer.destroy(); }
       // TODO: Check events to unregister.
     },
 

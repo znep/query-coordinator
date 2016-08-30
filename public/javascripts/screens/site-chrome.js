@@ -5,49 +5,32 @@ var inputTypeValidations = {
 };
 
 var validationRules = {
-  'content[general][google_analytics_token]': {
-    pattern: inputTypeValidations.google_analytics
-  },
-  'content[general][styles][max_width]': {
-    pattern: inputTypeValidations.dimensions
-  },
-  'content[header][styles][logo_height]': {
-    pattern: inputTypeValidations.dimensions
-  },
-  'content[header][styles][logo_width]': {
-    pattern: inputTypeValidations.dimensions
-  },
-  'content[header][styles][bg_color]': {
-    pattern: inputTypeValidations.color
-  },
-  'content[header][styles][bg_color_secondary]': {
-    pattern: inputTypeValidations.color
-  },
-  'content[header][styles][fg_color]': {
-    pattern: inputTypeValidations.color
-  },
-  'content[footer][styles][logo_height]': {
-    pattern: inputTypeValidations.dimensions
-  },
-  'content[footer][styles][logo_width]': {
-    pattern: inputTypeValidations.dimensions
-  },
-  'content[footer][styles][bg_color]': {
-    pattern: inputTypeValidations.color
-  },
-  'content[footer][styles][fg_color]': {
-    pattern: inputTypeValidations.color
-  }
+  'content[general][google_analytics_token]': { pattern: inputTypeValidations.google_analytics },
+  'content[general][styles][max_width]': { pattern: inputTypeValidations.dimensions },
+  'content[header][styles][logo_height]': { pattern: inputTypeValidations.dimensions },
+  'content[header][styles][logo_width]': { pattern: inputTypeValidations.dimensions },
+  'content[header][styles][bg_color]': { pattern: inputTypeValidations.color },
+  'content[header][styles][bg_color_secondary]': { pattern: inputTypeValidations.color },
+  'content[header][styles][fg_color]': { pattern: inputTypeValidations.color },
+  'content[footer][styles][logo_height]': { pattern: inputTypeValidations.dimensions },
+  'content[footer][styles][logo_width]': { pattern: inputTypeValidations.dimensions },
+  'content[footer][styles][bg_color]': { pattern: inputTypeValidations.color },
+  'content[footer][styles][fg_color]': { pattern: inputTypeValidations.color }
 };
 
 // Note: This needs to be a function rather than an object because $.t is not defined on load.
 var validationMessages = function() {
   return {
-    'content[general][google_analytics_token]': $.t('screens.admin.site_chrome.tabs.general.fields.google_analytics_token.error'),
-    'content[header][styles][logo_height]': $.t('screens.admin.site_chrome.tabs.header.fields.header_logo_height.error'),
-    'content[header][styles][logo_width]': $.t('screens.admin.site_chrome.tabs.header.fields.header_logo_width.error'),
-    'content[footer][styles][logo_height]': $.t('screens.admin.site_chrome.tabs.footer.fields.footer_logo_height.error'),
-    'content[footer][styles][logo_width]': $.t('screens.admin.site_chrome.tabs.footer.fields.footer_logo_width.error')
+    'content[general][google_analytics_token]':
+      $.t('screens.admin.site_chrome.tabs.general.fields.google_analytics_token.error'),
+    'content[header][styles][logo_height]':
+      $.t('screens.admin.site_chrome.tabs.header.fields.header_logo_height.error'),
+    'content[header][styles][logo_width]':
+      $.t('screens.admin.site_chrome.tabs.header.fields.header_logo_width.error'),
+    'content[footer][styles][logo_height]':
+      $.t('screens.admin.site_chrome.tabs.footer.fields.footer_logo_height.error'),
+    'content[footer][styles][logo_width]':
+      $.t('screens.admin.site_chrome.tabs.footer.fields.footer_logo_width.error')
   };
 };
 
@@ -68,7 +51,7 @@ $(document).ready(function() {
 
   // EN-8454: On back button click that changes only the url fragment,
   // render the correct tab.
-  window.onpopstate = function() {
+  window.onpopstate = function(event) {
     var curTabOnPopState = getActiveTabId();
     if (curTab !== curTabOnPopState) {
       curTab = curTabOnPopState;
@@ -116,7 +99,7 @@ $(document).ready(function() {
       $knockonEffects.prop('disabled', false);
     } else {
       $knockonEffects.removeAttr('checked').
-      prop('disabled', true);
+        prop('disabled', true);
     }
   };
   onLoadOrClickingSigninSignoutCheckbox();
@@ -140,7 +123,8 @@ function getActiveTabId() {
 function showTab(tabId) {
   $('ul.tabs li, .tab-content').removeClass('current');
   $('.tab-content[data-tab-id="{0}"], .tab-link[data-tab-id="{0}"]'.format(tabId)).addClass('current');
-  $('.tab-content[data-tab-id="{0}"], .tab-link[data-tab-id="{0}"]'.format(tabId)).addClass('current');
+  $('.tab-content[data-tab-id="{0}"], .tab-link[data-tab-id="{0}"]'.
+    format(tabId)).addClass('current');
 
   // Replace the anchor part so that we reload onto the same tab we submit from.
   $siteChromeForm.attr('action', $siteChromeForm.attr('action').replace(/#tab=.*/, '#tab=' + tabId));
@@ -182,7 +166,7 @@ function toggleSaveButton() {
   }
 }
 
-function confirmReload() { //eslint-disable-line no-unused-vars
+function confirmReload() {
   var href = window.location.href; // store href with the hash of the current tab
   var confirmation = confirm('Cancelling will reload the page and erase any current changes.');
   if (confirmation) {
@@ -200,7 +184,7 @@ function confirmReload() { //eslint-disable-line no-unused-vars
   }
 }
 
-function dropdownValueSelected(selectedElement) { //eslint-disable-line no-unused-vars
+function dropdownValueSelected(selectedElement) {
   // Update the hidden dropdown input value
   var selectedValue = $(selectedElement).attr('value');
   $(selectedElement).closest('div.dropdown').siblings('.hidden-dropdown-input').value(selectedValue);
@@ -214,7 +198,7 @@ function currentLocale() {
   return 'en';
 }
 
-function toggleDisabledCopyrightText(checkbox) { //eslint-disable-line no-unused-vars
+function toggleDisabledCopyrightText(checkbox) {
   var $textbox = $('#copyright-notice-text');
   $textbox.prop('disabled', !checkbox.checked);
 }
@@ -267,13 +251,14 @@ function addNewLinkRow(button) {
   }
 }
 
-function removeLinkRow(button) { //eslint-disable-line no-unused-vars
+function removeLinkRow(button) {
   $(button).closest('.link-row').remove();
   $('.add-new-link-row').prop('disabled', false);
   $('.add-new-link-menu').prop('disabled', false);
 }
 
-function addNewLinkMenu(button) { //eslint-disable-line no-unused-vars
+function addNewLinkMenu(button) {
+  var $linkMenus = $(button).siblings('.links-and-menus').find('.link-menu');
   var $defaultLinkMenu = $(button).siblings('.links-and-menus').find('.link-menu.default');
   var $newLinkMenu = $defaultLinkMenu.clone();
 
@@ -281,18 +266,18 @@ function addNewLinkMenu(button) { //eslint-disable-line no-unused-vars
   // Append new link menu after all other top-level links and menus
   $(button).siblings('.links-and-menus').
     // Use `.children` instead of `.find` to make sure we are only getting top-level link-rows
-  children('.link-menu, .link-row').
-  not('.default').
-  last().
-  after($newLinkMenu);
+    children('.link-menu, .link-row').
+    not('.default').
+    last().
+    after($newLinkMenu);
   // Create new link-row inside new menu.
   addNewLinkRow($newLinkMenu.find('.add-new-link-row'));
 }
 
 // Remove menu and move its child links to top-level links.
-function removeLinkMenu(button) { //eslint-disable-line no-unused-vars
+function removeLinkMenu(button) {
   var $childLinks = $(button).siblings('.child-links').find('.link-row');
-  $childLinks.each(function() {
+  $childLinks.each(function(childLink) {
     moveChildLinkToTopLevelLink($childLinks);
   });
 

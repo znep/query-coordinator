@@ -4,7 +4,8 @@
  * without any DOM interaction.
  */
 $.component.Component.extend('PartialText', 'design', {
-    _init: function() {
+    _init: function(properties)
+    {
         var cObj = this;
         cObj._super.apply(this, arguments);
 
@@ -14,14 +15,16 @@ $.component.Component.extend('PartialText', 'design', {
         cObj._resolver = new $.component.StringResolver($.extend({},
             cObj._properties, {id: '__' + cObj.id}), cObj._componentSet);
 
-        cObj._resolver.bind('child_updated', function() {
+        cObj._resolver.bind('child_updated', function(args) {
             cObj._render();
         });
     },
 
-    _initDom: function() {
+    _initDom: function()
+    {
         this._super.apply(this, arguments);
-        if (!this.$p) {
+        if (!this.$p)
+        {
             this.$contents.empty().append($.tag({tagName: 'p'}));
             this.$p = this.$contents.find('p');
         }
@@ -34,9 +37,11 @@ $.component.Component.extend('PartialText', 'design', {
         cObj.$p.text(cObj._resolver.asString());
     },
 
-    _propWrite: function(properties) {
+    _propWrite: function(properties)
+    {
         this._super(properties);
-        if (!_.isEmpty(properties)) {
+        if (!_.isEmpty(properties))
+        {
             this._render();
         }
     },
@@ -45,11 +50,11 @@ $.component.Component.extend('PartialText', 'design', {
         return this._resolver.asString();
     },
 
-    edit: function() {
+    edit: function(editable) {
         var cObj = this;
-        if (!cObj._super.apply(cObj, arguments) || cObj._properties.editable === false) {
-            return false;
-        }
+        if (!cObj._super.apply(cObj, arguments) ||
+             cObj._properties.editable === false)
+        { return false; }
 
         // TODO: Switch back and forth for edit mode
 

@@ -1,368 +1,349 @@
-(function($) {
-  var chartMapping = {
-    'area': 'highcharts',
-    'bar': 'highcharts',
-    'stackedbar': 'highcharts',
-    'bubble': 'highcharts',
-    'column': 'highcharts',
-    'stackedcolumn': 'highcharts',
-    'donut': 'highcharts',
-    'line': 'highcharts',
-    'pie': 'highcharts',
-    'timeline': 'highcharts',
-    'treemap': 'jit'
-  };
+(function($)
+{
+    var chartMapping = {
+        'area': 'highcharts',
+        'bar': 'highcharts',
+        'stackedbar': 'highcharts',
+        'bubble': 'highcharts',
+        'column': 'highcharts',
+        'stackedcolumn': 'highcharts',
+        'donut': 'highcharts',
+        'line': 'highcharts',
+        'pie': 'highcharts',
+        'timeline': 'highcharts',
+        'treemap': 'jit'
+    };
 
-  /*
-    Correct behavior as of 2013-08-05, michael.chui@socrata.com:
+    /*
+        Correct behavior as of 2013-08-05, michael.chui@socrata.com:
 
-    If new_charts, new(X)Chart modules are active, switch these on.
-    If old_charts, ?charts=old are on, override above with old charts.
-    If ?charts=nextgen, df.nextgen is on, override above with new charts.
-  */
-  var nextgenMapper = {
-    'newBarChart': function() {
-      $.extend(chartMapping, {
-        'column': 'd3_impl_bar',
-        'bar': 'd3_impl_bar'
-      });
-    },
-    'newLineChart': function() {
-      $.extend(chartMapping, {
-        'line': 'd3_impl_line',
-        'area': 'd3_impl_line'
-      });
+        If new_charts, new(X)Chart modules are active, switch these on.
+        If old_charts, ?charts=old are on, override above with old charts.
+        If ?charts=nextgen, df.nextgen is on, override above with new charts.
+    */
+    var nextgenMapper = {
+        'newBarChart': function() { $.extend(chartMapping, {
+            'column': 'd3_impl_bar',
+            'bar': 'd3_impl_bar'
+            }); },
+        'newLineChart': function() { $.extend(chartMapping, {
+            'line': 'd3_impl_line',
+            'area': 'd3_impl_line'
+            }); }
+    };
+
+    var forceOldCharts = $.urlParam(window.location.href, 'charts') == 'old' || blist.configuration.oldChartsForced;
+
+    var forceNewCharts = $.urlParam(window.location.href, 'charts') == 'nextgen' || $.deepGet(blist, 'dataset', 'displayFormat', 'nextgen') === true;
+
+    if (blist.configuration.newChartsEnabled && !forceOldCharts || forceNewCharts)
+    {
+        $.extend(chartMapping, {
+            'column': 'd3_impl_bar',
+            'bar': 'd3_impl_bar',
+            'line': 'd3_impl_line',
+            'area': 'd3_impl_line',
+            'stackedbar': 'd3_impl_bar',
+            'stackedcolumn': 'd3_impl_bar',
+            'pie': 'd3_impl_pie',
+            'donut': 'd3_impl_pie'
+        });
     }
-  };
 
-  var forceOldCharts = $.urlParam(window.location.href, 'charts') == 'old' || blist.configuration.oldChartsForced;
+    if ($.urlParam(window.location.href, 'charts') == 'nextgen'
+        || $.urlParam(window.location.href, 'bubble') == 'nextgen'
+        || blist.feature_flags.bubble == 'nextgen')
+    { $.extend(chartMapping, { 'bubble': 'd3_impl_bubble' }); }
 
-  var forceNewCharts = $.urlParam(window.location.href, 'charts') == 'nextgen' || $.deepGet(blist, 'dataset', 'displayFormat', 'nextgen') === true;
+    // Special case so that timeline doesn't upgrade to nextgen unless URL parameter.
+    if (   $.urlParam(window.location.href, 'charts')   == 'nextgen'
+        || $.urlParam(window.location.href, 'timeline') == 'nextgen'
+        || blist.feature_flags.timeline == 'nextgen')
+    { $.extend(chartMapping, { 'timeline': 'd3_impl_timeline' }); }
 
-  if (blist.configuration.newChartsEnabled && !forceOldCharts || forceNewCharts) {
-    $.extend(chartMapping, {
-      'column': 'd3_impl_bar',
-      'bar': 'd3_impl_bar',
-      'line': 'd3_impl_line',
-      'area': 'd3_impl_line',
-      'stackedbar': 'd3_impl_bar',
-      'stackedcolumn': 'd3_impl_bar',
-      'pie': 'd3_impl_pie',
-      'donut': 'd3_impl_pie'
-    });
-  }
+    if (!forceOldCharts)
+    {
+        _.each(blist.configuration.newCharts, function(enabled, chartType)
+        { enabled && nextgenMapper[chartType] && nextgenMapper[chartType](); });
+    }
 
-  if ($.urlParam(window.location.href, 'charts') == 'nextgen' ||
-    $.urlParam(window.location.href, 'bubble') == 'nextgen' ||
-    blist.feature_flags.bubble == 'nextgen') {
-    $.extend(chartMapping, {
-      'bubble': 'd3_impl_bubble'
-    });
-  }
+    $.Control.extend('socrataChart', {
+        _init: function()
+        {
+            this._super.apply(this, arguments);
+            this._chartType = this.settings.chartType || this._displayFormat.chartType;
+            this._numSegments = 10;
+            this._origData = { chartService: chartMapping[this._chartType] };
+        },
 
-  // Special case so that timeline doesn't upgrade to nextgen unless URL parameter.
-  if ($.urlParam(window.location.href, 'charts') == 'nextgen' ||
-    $.urlParam(window.location.href, 'timeline') == 'nextgen' ||
-    blist.feature_flags.timeline == 'nextgen') {
-    $.extend(chartMapping, {
-      'timeline': 'd3_impl_timeline'
-    });
-  }
+        _getMixins: function(options)
+        {
+            return [chartMapping[options.chartType ||
+                (options.displayFormat || options.view.displayFormat).chartType]];
+        },
 
-  if (!forceOldCharts) {
-    _.each(blist.configuration.newCharts, function(enabled, chartType) {
-      enabled && nextgenMapper[chartType] && nextgenMapper[chartType]();
-    });
-  }
+        isValid: function()
+        {
+            return Dataset.chart.isValid(this._primaryView, this._displayFormat, this._chartType);
+        },
 
-  $.Control.extend('socrataChart', {
-    _init: function() {
-      this._super.apply(this, arguments);
-      this._chartType = this.settings.chartType || this._displayFormat.chartType;
-      this._numSegments = 10;
-      this._origData = {
-        chartService: chartMapping[this._chartType]
-      };
-    },
+        initializeVisualization: function ()
+        {
+            var chartObj = this;
+            chartObj.initializeFlyouts(chartObj._displayFormat.descriptionColumns);
+        },
 
-    _getMixins: function(options) {
-      return [chartMapping[options.chartType ||
-        (options.displayFormat || options.view.displayFormat).chartType]];
-    },
+        getColumns: function()
+        {
+            var chartObj = this;
+            var view = chartObj._primaryView,
+                parView = view._parent;
 
-    isValid: function() {
-      return Dataset.chart.isValid(this._primaryView, this._displayFormat, this._chartType);
-    },
+            chartObj._valueColumns = _.map(chartObj._displayFormat.valueColumns,
+                function(vc)
+                {
+                    var col = view.columnForIdentifier(vc.fieldName || vc.tableColumnId);
+                    if ($.isBlank(col)) { return null; }
+                    vc = $.extend({}, vc);
+                    vc.column = col;
+                    vc.supplementalColumns = _.compact(
+                        _.map(vc.supplementalColumns || [],
+                            function(sc) { return view.columnForIdentifier(sc); }));
 
-    initializeVisualization: function() {
-      var chartObj = this;
-      chartObj.initializeFlyouts(chartObj._displayFormat.descriptionColumns);
-    },
+                    // Inherit any format options from the parent column, too.
+                    // Unclear why format options aren't inherited to begin with.
+                    if (parView && $.isEmptyObject(col.format)) {
+                      var parCol = parView.columnForIdentifier(col.fieldName);
+                      if (!$.isEmptyObject(parCol.format)) {
+                        col.format = $.extend({}, parCol.format, col.format);
+                      }
+                    }
 
-    getColumns: function() {
-      var chartObj = this;
-      var view = chartObj._primaryView,
-        parView = view._parent;
+                    return vc;
+                });
+            chartObj._valueColumns = _.compact(chartObj._valueColumns);
+            var customAggs = {};
+            _.each(chartObj._valueColumns, function(col)
+            {
+                if (_.any(col.column.renderType.aggregates,
+                    function(a) { return a.value == 'sum'; }))
+                { customAggs[col.column.id] = ['sum'] }
+            });
 
-      chartObj._valueColumns = _.map(chartObj._displayFormat.valueColumns,
-        function(vc) {
-          var col = view.columnForIdentifier(vc.fieldName || vc.tableColumnId);
-          if ($.isBlank(col)) {
-            return null;
-          }
-          vc = $.extend({}, vc);
-          vc.column = col;
-          vc.supplementalColumns = _.compact(
-            _.map(vc.supplementalColumns || [],
-              function(sc) {
-                return view.columnForIdentifier(sc);
-              }));
+            chartObj._fixedColumns =
+                _.map(chartObj._displayFormat.fixedColumns || [],
+                    function(tcId) { return view.columnForIdentifier(tcId); });
+            chartObj._fixedColumns = _.compact(chartObj._fixedColumns);
 
-          // Inherit any format options from the parent column, too.
-          // Unclear why format options aren't inherited to begin with.
-          if (parView && $.isEmptyObject(col.format)) {
-            var parCol = parView.columnForIdentifier(col.fieldName);
-            if (!$.isEmptyObject(parCol.format)) {
-              col.format = $.extend({}, parCol.format, col.format);
+            chartObj._seriesColumns = _.compact(_.map(chartObj._displayFormat.seriesColumns || [],
+                    function(sc)
+                    {
+                        var r = {};
+                        r.column = view.columnForIdentifier(sc.fieldName || sc.tableColumnId);
+                        if ($.isBlank(r.column)) { return null; }
+                        return r;
+                    }));
+
+            if (chartObj._chartType == 'bubble')
+            { _.each(['pointColor', 'pointSize'], function(colName)
+            {
+                var c = view.columnForIdentifier(chartObj._displayFormat[colName]);
+                if (!$.isBlank(c) && !c.isMeta)
+                {
+                    chartObj['_' + colName] = c;
+                    customAggs[c.id] = $.makeArray(customAggs[c.id])
+                        .concat(['maximum', 'minimum']);
+                }
+            }); }
+
+            if ($.subKeyDefined(chartObj, '_displayFormat.plot'))
+            {
+                chartObj._errorBarConfig = {
+                    low: view.columnForIdentifier(chartObj._displayFormat.plot.errorBarLow),
+                    high: view.columnForIdentifier(chartObj._displayFormat.plot.errorBarHigh)
+                };
+                if (!(chartObj._errorBarConfig.low && chartObj._errorBarConfig.high))
+                { delete chartObj._errorBarConfig; }
             }
-          }
 
-          return vc;
-        });
-      chartObj._valueColumns = _.compact(chartObj._valueColumns);
-      var customAggs = {};
-      _.each(chartObj._valueColumns, function(col) {
-        if (_.any(col.column.renderType.aggregates,
-            function(a) {
-              return a.value == 'sum';
-            })) {
-          customAggs[col.column.id] = ['sum'];
+            // Was getting two reloads in a row that triggered this call twice on a Revert,
+            // which made the chart load blank. So de-dupe request
+            if (!chartObj._gettingAggs)
+            {
+                chartObj._gettingAggs = true;
+                chartObj._primaryView.getAggregates(function()
+                {
+                    calculateSegmentSizes(chartObj, customAggs);
+                    chartObj.columnsLoaded();
+                    chartObj.ready();
+                    delete chartObj._gettingAggs;
+                }, customAggs);
+            }
+
+            return false;
+        },
+
+        cleanVisualization: function()
+        {
+            var chartObj = this;
+            chartObj._super();
+
+            delete chartObj._fixedColumns;
+            delete chartObj._valueColumns;
+            delete chartObj._seriesColumns;
+            delete chartObj._pointSize;
+            delete chartObj._pointColor;
+            delete chartObj._gradient;
+            delete chartObj._flyoutConfig;
+        },
+
+        reloadVisualization: function()
+        {
+            this._chartType = this.settings.chartType || this._displayFormat.chartType;
+            if (!this.isValid()) { return; }
+
+            this.initializeVisualization();
+            this._super();
+        },
+
+        reset: function()
+        {
+            var chartObj = this;
+            $(chartObj.currentDom).removeData('socrataChart');
+            chartObj.$dom().empty();
+            return $(chartObj.currentDom).socrataChart($.extend({}, chartObj.settings,
+                        { view: chartObj._primaryView }));
+        },
+
+        needsFullReset: function()
+        {
+            var chartObj = this;
+            return !$.isBlank(chartObj._origData) &&
+                chartObj._origData.chartService != chartMapping[chartObj.settings.chartType ||
+                chartObj._displayFormat.chartType];
+        },
+
+        initializeFlyouts: function(columns)
+        {
+            var chartObj = this;
+            chartObj._flyoutConfig = {};
+            _.each(chartObj._displayFormat.valueColumns,
+                function(vc, index)
+                {
+                    var col = chartObj._primaryView.columnForIdentifier(vc.fieldName ||vc.tableColumnId);
+                    if ($.isBlank(col)) { return; }
+                    var id = col.tableColumnId;
+                    var config = chartObj._flyoutConfig[id] = {};
+
+                    config.layout = chartObj.generateFlyoutLayout(columns, vc);
+
+                    if ($.isBlank(config.richRenderer))
+                    { chartObj.$flyoutTemplate(id); }
+                    config.richRenderer.setConfig(config.layout);
+
+                    if (chartObj.hasFlyout(id))
+                    { config.richRenderer.renderLayout(); }
+                    else
+                    { var $item = chartObj.$flyoutTemplate(id).empty(); }
+                });
+        },
+
+        $flyoutTemplate: function(id)
+        {
+            var chartObj = this;
+            if (!chartObj._flyoutConfig[id].$template)
+            {
+                var config = chartObj._flyoutConfig[id];
+                config.$template = chartObj.$dom().siblings('.flyout' + id);
+                if (config.$template.length == 0)
+                {
+                    chartObj.$dom().after($.tag({tagName: 'div',
+                        'class': ['template', 'row', 'flyout' + id,
+                            'richRendererContainer', 'flyoutRenderer']}));
+                    config.$template = chartObj.$dom()
+                        .siblings('.flyoutRenderer.template.flyout' + id);
+                }
+                config.richRenderer = config.$template.richRenderer({
+                    columnCount: 1, view: chartObj._primaryView});
+            }
+            return chartObj._flyoutConfig[id].$template;
+        },
+
+        hasFlyout: function(id)
+        {
+            return this._flyoutConfig[id]
+                && $.subKeyDefined(this._flyoutConfig[id], 'layout');
+        },
+
+        generateFlyoutLayout: function(columns, valueColumn)
+        {
+            var fCols = _.isUndefined(this._displayFormat.titleFlyout) ?
+                this._displayFormat.fixedColumns : [this._displayFormat.titleFlyout];
+
+            var titleId = fCols ? fCols[0] : null;
+            columns =_.compact((this._displayFormat.seriesColumns || [])
+                    .concat([valueColumn]).concat(columns));
+
+            // Override if you want a different layout
+            if (_.isEmpty(columns)) { return null; }
+
+            var layout = this._super(columns);
+            var col = layout.columns[0];
+            // Title row
+            if (!$.isBlank(titleId))
+            {
+                col.rows.unshift({fields: [{type: 'columnData',
+                    tableColumnId: titleId, fieldName: titleId}
+                ], styles: {'border-bottom': '1px solid #666666',
+                    'font-size': '1.2em', 'font-weight': 'bold',
+                    'margin-bottom': '0.75em', 'padding-bottom': '0.2em'}});
+            }
+
+            return layout;
+        },
+
+        renderFlyout: function(row, tcolId, view)
+        {
+            var chartObj = this;
+
+            //var isPrimaryView = chartObj._primaryView == view;
+            var $item = chartObj.$flyoutTemplate(tcolId).clone()
+                    .removeClass('template');
+
+            // In composite views, we don't have a displayFormat, so there are no
+            // bits to show. Just point them at the row data in full.
+            //if (!isPrimaryView)
+            //{ $item.empty(); }
+            if (chartObj.hasFlyout(tcolId))
+            { chartObj._flyoutConfig[tcolId].richRenderer.renderRow($item, row, true); }
+            return $item;
         }
-      });
+    }, null, 'socrataVisualization');
 
-      chartObj._fixedColumns =
-        _.map(chartObj._displayFormat.fixedColumns || [],
-          function(tcId) {
-            return view.columnForIdentifier(tcId);
-          });
-      chartObj._fixedColumns = _.compact(chartObj._fixedColumns);
+    var calculateSegmentSizes = function(chartObj, aggs)
+    {
+        chartObj._segments = {};
+        _.each(aggs, function(a, cId)
+        {
+            if (_.intersection(['maximum', 'minimum'], a).length != 2)
+            { return; }
 
-      chartObj._seriesColumns = _.compact(_.map(chartObj._displayFormat.seriesColumns || [],
-        function(sc) {
-          var r = {};
-          r.column = view.columnForIdentifier(sc.fieldName || sc.tableColumnId);
-          if ($.isBlank(r.column)) {
-            return null;
-          }
-          return r;
-        }));
+            var column = chartObj._primaryView.columnForID(cId);
+            var difference = column.aggregates.maximum - column.aggregates.minimum;
+            var granularity = difference / chartObj._numSegments;
 
-      if (chartObj._chartType == 'bubble') {
-        _.each(['pointColor', 'pointSize'], function(colName) {
-          var c = view.columnForIdentifier(chartObj._displayFormat[colName]);
-          if (!$.isBlank(c) && !c.isMeta) {
-            chartObj['_' + colName] = c;
-            customAggs[c.id] = $.makeArray(customAggs[c.id]).
-              concat(['maximum', 'minimum']);
-          }
+            if (granularity > 0)
+            {
+                chartObj._segments[column.lookup] = [];
+                for (i = 0; i < chartObj._numSegments; i++)
+                {
+                    chartObj._segments[column.lookup][i] =
+                        ((i+1)*granularity) + column.aggregates.minimum;
+                }
+            }
+            else
+            { chartObj._segments[column.id] = null; }
         });
-      }
-
-      if ($.subKeyDefined(chartObj, '_displayFormat.plot')) {
-        chartObj._errorBarConfig = {
-          low: view.columnForIdentifier(chartObj._displayFormat.plot.errorBarLow),
-          high: view.columnForIdentifier(chartObj._displayFormat.plot.errorBarHigh)
-        };
-        if (!(chartObj._errorBarConfig.low && chartObj._errorBarConfig.high)) {
-          delete chartObj._errorBarConfig;
-        }
-      }
-
-      // Was getting two reloads in a row that triggered this call twice on a Revert,
-      // which made the chart load blank. So de-dupe request
-      if (!chartObj._gettingAggs) {
-        chartObj._gettingAggs = true;
-        chartObj._primaryView.getAggregates(function() {
-          calculateSegmentSizes(chartObj, customAggs);
-          chartObj.columnsLoaded();
-          chartObj.ready();
-          delete chartObj._gettingAggs;
-        }, customAggs);
-      }
-
-      return false;
-    },
-
-    cleanVisualization: function() {
-      var chartObj = this;
-      chartObj._super();
-
-      delete chartObj._fixedColumns;
-      delete chartObj._valueColumns;
-      delete chartObj._seriesColumns;
-      delete chartObj._pointSize;
-      delete chartObj._pointColor;
-      delete chartObj._gradient;
-      delete chartObj._flyoutConfig;
-    },
-
-    reloadVisualization: function() {
-      this._chartType = this.settings.chartType || this._displayFormat.chartType;
-      if (!this.isValid()) {
-        return;
-      }
-
-      this.initializeVisualization();
-      this._super();
-    },
-
-    reset: function() {
-      var chartObj = this;
-      $(chartObj.currentDom).removeData('socrataChart');
-      chartObj.$dom().empty();
-      return $(chartObj.currentDom).socrataChart($.extend({}, chartObj.settings, {
-        view: chartObj._primaryView
-      }));
-    },
-
-    needsFullReset: function() {
-      var chartObj = this;
-      return !$.isBlank(chartObj._origData) &&
-        chartObj._origData.chartService != chartMapping[chartObj.settings.chartType ||
-          chartObj._displayFormat.chartType];
-    },
-
-    initializeFlyouts: function(columns) {
-      var chartObj = this;
-      chartObj._flyoutConfig = {};
-      _.each(chartObj._displayFormat.valueColumns,
-        function(vc) {
-          var col = chartObj._primaryView.columnForIdentifier(vc.fieldName || vc.tableColumnId);
-          if ($.isBlank(col)) {
-            return;
-          }
-          var id = col.tableColumnId;
-          var config = chartObj._flyoutConfig[id] = {};
-
-          config.layout = chartObj.generateFlyoutLayout(columns, vc);
-
-          if ($.isBlank(config.richRenderer)) {
-            chartObj.$flyoutTemplate(id);
-          }
-          config.richRenderer.setConfig(config.layout);
-
-          if (chartObj.hasFlyout(id)) {
-            config.richRenderer.renderLayout();
-          } else {
-            chartObj.$flyoutTemplate(id).empty();
-          }
-        });
-    },
-
-    $flyoutTemplate: function(id) {
-      var chartObj = this;
-      if (!chartObj._flyoutConfig[id].$template) {
-        var config = chartObj._flyoutConfig[id];
-        config.$template = chartObj.$dom().siblings('.flyout' + id);
-        if (config.$template.length == 0) {
-          chartObj.$dom().after($.tag({
-            tagName: 'div',
-            'class': ['template', 'row', 'flyout' + id,
-              'richRendererContainer', 'flyoutRenderer'
-            ]
-          }));
-          config.$template = chartObj.$dom().
-            siblings('.flyoutRenderer.template.flyout' + id);
-        }
-        config.richRenderer = config.$template.richRenderer({
-          columnCount: 1,
-          view: chartObj._primaryView
-        });
-      }
-      return chartObj._flyoutConfig[id].$template;
-    },
-
-    hasFlyout: function(id) {
-      return this._flyoutConfig[id] &&
-        $.subKeyDefined(this._flyoutConfig[id], 'layout');
-    },
-
-    generateFlyoutLayout: function(columns, valueColumn) {
-      var fCols = _.isUndefined(this._displayFormat.titleFlyout) ?
-        this._displayFormat.fixedColumns : [this._displayFormat.titleFlyout];
-
-      var titleId = fCols ? fCols[0] : null;
-      columns = _.compact((this._displayFormat.seriesColumns || []).
-        concat([valueColumn]).concat(columns));
-
-      // Override if you want a different layout
-      if (_.isEmpty(columns)) {
-        return null;
-      }
-
-      var layout = this._super(columns);
-      var col = layout.columns[0];
-      // Title row
-      if (!$.isBlank(titleId)) {
-        col.rows.unshift({
-          fields: [{
-            type: 'columnData',
-            tableColumnId: titleId,
-            fieldName: titleId
-          }],
-          styles: {
-            'border-bottom': '1px solid #666666',
-            'font-size': '1.2em',
-            'font-weight': 'bold',
-            'margin-bottom': '0.75em',
-            'padding-bottom': '0.2em'
-          }
-        });
-      }
-
-      return layout;
-    },
-
-    renderFlyout: function(row, tcolId) {
-      var chartObj = this;
-
-      //var isPrimaryView = chartObj._primaryView == view;
-      var $item = chartObj.$flyoutTemplate(tcolId).clone().
-        removeClass('template');
-
-      // In composite views, we don't have a displayFormat, so there are no
-      // bits to show. Just point them at the row data in full.
-      //if (!isPrimaryView)
-      //{ $item.empty(); }
-      if (chartObj.hasFlyout(tcolId)) {
-        chartObj._flyoutConfig[tcolId].richRenderer.renderRow($item, row, true);
-      }
-      return $item;
-    }
-  }, null, 'socrataVisualization');
-
-  var calculateSegmentSizes = function(chartObj, aggs) {
-    chartObj._segments = {};
-    _.each(aggs, function(a, cId) {
-      if (_.intersection(['maximum', 'minimum'], a).length != 2) {
-        return;
-      }
-
-      var column = chartObj._primaryView.columnForID(cId);
-      var difference = column.aggregates.maximum - column.aggregates.minimum;
-      var granularity = difference / chartObj._numSegments;
-
-      if (granularity > 0) {
-        chartObj._segments[column.lookup] = [];
-        for (var i = 0; i < chartObj._numSegments; i++) {
-          chartObj._segments[column.lookup][i] =
-            ((i + 1) * granularity) + column.aggregates.minimum;
-        }
-      } else {
-        chartObj._segments[column.id] = null;
-      }
-    });
-  };
+    };
 
 })(jQuery);
-

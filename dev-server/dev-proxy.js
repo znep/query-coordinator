@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/* eslint-env node */
 
 var options = {
   target: 'dataspace-demo.test-socrata.com',
@@ -12,18 +11,19 @@ var options = {
     '/javascripts/',
     '/angular_templates/'
   ],
-  ssl_key: __dirname + '/ssl/host.key',
-  ssl_cert: __dirname + '/ssl/host.crt'
-};
+  ssl_key: __dirname+'/ssl/host.key',
+  ssl_cert: __dirname+'/ssl/host.crt'
+}
 
-var httpProxy = require('http-proxy');
-var fs = require('fs');
-var https = require('https');
-var exec = require('child_process').exec;
-var _ = require('underscore');
+var httpProxy = require('http-proxy'),
+  fs = require('fs'),
+  https = require('https'),
+  exec = require('child_process').exec,
+  _ = require('underscore');
 
 _.str = require('underscore.string');
 _.mixin(_.str.exports());
+
 
 function showHelp() {
   console.log('usage: dev-proxy [target=<domain>] [port=<port>] [launchBrowser=<bool>]');
@@ -37,13 +37,12 @@ function showHelp() {
 process.argv.forEach(function(val) {
   var parts = val.split('=');
   if (parts.length == 2) {
-    var _val;
     try {
-      _val = eval(parts[1]);
+      var val = eval(parts[1]);
     } catch (e) {
-      _val = parts[1];
+      var val = parts[1];
     }
-    options[parts[0]] = _val;
+    options[parts[0]] = val;
   } else {
     if (_.startsWith(val, '-')) {
       showHelp();
@@ -56,7 +55,6 @@ var proxy = httpProxy.createProxyServer({
   secure: false
 });
 
-var target;
 var server = https.createServer({
   key: fs.readFileSync(options.ssl_key),
   cert: fs.readFileSync(options.ssl_cert)
@@ -64,25 +62,25 @@ var server = https.createServer({
   if (_.some(options.paths, function(path) {
       return _.startsWith(req.url, path);
     })) {
-    target = 'https://' + options.local;
+    var target = 'https://'+options.local;
     req.headers.host = options.local;
   } else {
-    target = 'https://' + options.target;
+    var target = 'https://'+options.target;
     req.headers.host = options.target;
   }
   console.log(target, req.url);
   proxy.web(req, res, { target: target });
 });
 
-proxy.on('proxyRes', function(res) {
+proxy.on('proxyRes', function (res) {
   // Modify 3xx responses
   if (res.headers.location) {
     res.headers.location = res.headers.location.
-      replace(options.target, 'localhost:' + options.port);
+      replace(options.target, 'localhost:'+options.port);
   }
 });
 
-proxy.on('error', function(err, req, res) {
+proxy.on('error', function (err, req, res) {
   res.writeHead(500, {
     'Content-Type': 'text/plain'
   });
@@ -90,7 +88,8 @@ proxy.on('error', function(err, req, res) {
   res.end('Something went wrong. ERR: ' + err.code);
 });
 
-console.log('Listening on port:', options.port, 'and proxying to:', options.target);
+console.log('Listening on port:', options.port,
+  'and proxying to:', options.target);
 server.listen(options.port);
 
 if (options.launchBrowser) {

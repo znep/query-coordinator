@@ -306,4 +306,4 @@ const mapDispatchToProps = dispatch => ({
   dismissModal: () => dispatch(Actions.BulkEdit.closeModal())
 });
 
-export default ReactRedux.connect(mapStateToProps, mapDispatchToProps)(Components.ModalQuitEventHandler(BulkEditForm)); // eslint-disable-line new-cap
+export default ReactRedux.connect(mapStateToProps, mapDispatchToProps)(Components.ModalQuitEventHandler(BulkEditForm));//eslint-disable-line new-cap

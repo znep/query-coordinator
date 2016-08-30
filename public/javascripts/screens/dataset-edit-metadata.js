@@ -7,27 +7,26 @@ $(function() {
     rules: {
       'view[name]': 'required',
       'view[attributionLink]': 'customUrl',
-      'view[metadata[customRdfClass]]': {
-        url: true
-      }
+      'view[metadata[customRdfClass]]': { url: true }
     },
     messages: {
       'view[name]': $.t('screens.edit_metadata.dataset_title_error'),
       'view[attributionLink]': $.t('screens.edit_metadata.source_link_error'),
       'view[metadata[customRdfClass]]': $.t('screens.edit_metadata.custom_error')
     },
-    errorPlacement: function(error, element) {
-      switch (element.get(0).id) {
-        case 'view_metadata_customRdfClass':
-          // if rdf combo shows, we do not care about the hidden field
-          if (element.is(':visible')) {
-            error.appendTo(element.parent());
-          }
-          break;
-        default:
-          error.appendTo(element.closest('.line'));
+    errorPlacement:
+      function(error, element) {
+        switch (element.get(0).id) {
+          case 'view_metadata_customRdfClass':
+            // if rdf combo shows, we do not care about the hidden field
+            if (element.is(':visible')) {
+              error.appendTo(element.parent());
+            }
+            break;
+          default:
+            error.appendTo(element.closest('.line'));
+        }
       }
-    }
   });
 
   $form.on('change', 'input, select', function() {
@@ -37,17 +36,14 @@ $(function() {
   $('.toggleFieldsetLink').click(function(event) {
     event.preventDefault();
     $(event.target).
-    toggleClass('expanded collapsed').
-    closest('.customFieldsetWrapper').
-    find('.customFieldset').
-    slideToggle();
+      toggleClass('expanded collapsed').
+      closest('.customFieldsetWrapper').
+      find('.customFieldset').
+      slideToggle();
   });
 
   var $uploadLink = $.tag({
-    tagName: 'a',
-    'href': '#upload',
-    contents: $.t('screens.edit_metadata.upload_new_attachment'),
-    'class': 'button uploadLink'
+    tagName: 'a', 'href': '#upload', contents: $.t('screens.edit_metadata.upload_new_attachment'), 'class': 'button uploadLink'
   });
 
   $('#attachment_new').replaceWith($uploadLink);
@@ -57,9 +53,7 @@ $(function() {
   var initCustomRdf = function() {
     var $rdfClass = $form.find('#view_metadata_rdfClass');
     // non-tabular dataset, no rdf
-    if ($rdfClass.length <= 0) {
-      return;
-    }
+    if ($rdfClass.length <= 0) { return; }
 
     var val = $form.find('#view_metadata_customRdfClass').val();
     var cboVal = $rdfClass.val();
@@ -77,9 +71,7 @@ $(function() {
     var val;
 
     // non-tabular dataset, no rdf
-    if ($rdfClass.length <= 0) {
-      return;
-    }
+    if ($rdfClass.length <= 0) { return; }
 
     if ($customRdfClass.is(':visible')) {
       if (!$validator.element($customRdfClass) && !$.isBlank($customRdfClass.val())) {
@@ -87,16 +79,12 @@ $(function() {
         return;
       }
 
-      if (!$form.valid()) {
-        return;
-      }
+      if (!$form.valid()) { return; }
       val = $customRdfClass.val();
       $rdfClass.append($('<option/>').attr('value', val)).val(val);
     } else {
       $customRdfClass.val('');
-      if (!$form.valid()) {
-        return;
-      }
+      if (!$form.valid()) { return; }
     }
 
     // setting name to empty prevent customRdfClass from persisting to metadata.
@@ -112,17 +100,15 @@ $(function() {
     var rowLabelInput;
 
     // If not a dataset page, return out
-    if ($rowLabel.length === 0) {
-      return;
-    }
+    if ($rowLabel.length === 0) { return; }
 
     rowLabelInput = $rowLabel.val().trim();
 
     // If row label was given an empty value or the placeholder is showing,
     // default it to 'Row' and remove the 'prompt' class.
     if (_.isEmpty(rowLabelInput) || $rowLabel.hasClass('prompt')) {
-      $rowLabel.attr('value', 'Row');
-      $rowLabel.removeClass('prompt');
+    $rowLabel.attr('value', 'Row');
+    $rowLabel.removeClass('prompt');
     }
   };
 
@@ -131,14 +117,11 @@ $(function() {
 
   // Default submit button styling is really inconsistent
   $('.submitButton').
-  hide().
-  after($.tag({
-    tagName: 'a',
-    'class': 'button submitButton',
-    contents: $.t('screens.edit_metadata.save'),
-    title: $.t('screens.edit_metadata.save_changes'),
-    href: '#submit'
-  }));
+    hide().
+    after($.tag({
+      tagName: 'a', 'class': 'button submitButton',
+      contents: $.t('screens.edit_metadata.save'), title: $.t('screens.edit_metadata.save_changes'), href: '#submit'
+    }));
   $('.submitButton').click(function(event) {
     event.preventDefault();
     if ($(this).is('.disabled')) {
@@ -185,21 +168,19 @@ $(function() {
     var sourceCount = $('.externalDatasetBox').find('.externalSource').length;
     if (sourceCount === 1) {
       $externalSources.
-      find('.removeExternalSource').
-      addClass('disabled');
+        find('.removeExternalSource').
+        addClass('disabled');
     } else {
       $externalSources.
-      find('.removeExternalSource').
-      removeClass('disabled');
+        find('.removeExternalSource').
+        removeClass('disabled');
     }
   };
   updateRemoveLinks();
 
   $form.on('click', '.removeExternalSource', function(event) {
     event.preventDefault();
-    if ($(this).hasClass('disabled')) {
-      return;
-    }
+    if ($(this).hasClass('disabled')) { return; }
 
     if (confirm($.t('screens.edit_metadata.external_confirm'))) {
       var $line = $(this).closest('.line');
@@ -212,9 +193,7 @@ $(function() {
 
   $form.on('click', '.removeExternalLink', function(event) {
     event.preventDefault();
-    if ($(this).hasClass('disabled')) {
-      return;
-    }
+    if ($(this).hasClass('disabled')) { return; }
 
     if (confirm($.t('screens.edit_metadata.external_confirm'))) {
       var endpointCount = $(this).parent().siblings('.externalLink').length;

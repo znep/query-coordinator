@@ -26,9 +26,9 @@
     $('.toggleButton').adminButton({
       callback: function(response, $line, $link) {
         $link.
-        val(t('make_' + buttonMap[response.option][response.value ? 'off' : 'on'])).
-        closest('.item').
-        toggleClass(response.option);
+          val(t('make_' + buttonMap[response.option][response.value ? 'off' : 'on'])).
+          closest('.item').
+          toggleClass(response.option);
       }
     });
 
@@ -43,14 +43,14 @@
           $line.fadeIn();
 
           $line.closest('tbody').
-          find('.moveButton').
-          removeClass('disabled').
-          end().
-          find('tr.item:first .upButton').
-          addClass('disabled').
-          end().
-          find('tr.item:last .downButton').
-          addClass('disabled');
+            find('.moveButton').
+            removeClass('disabled').
+            end().
+            find('tr.item:first .upButton').
+            addClass('disabled').
+            end().
+            find('tr.item:last .downButton').
+            addClass('disabled');
         });
       }
     });
@@ -60,12 +60,11 @@
         var $row = $container.closest('tr');
         var error = function(text) {
           $container.removeClass('modified').addClass('error').
-          find('.errorText').text(text);
+            find('.errorText').text(text);
         };
         $.socrataServer.makeRequest({
           url: '/admin/metadata/save_field',
-          type: 'PUT',
-          data: JSON.stringify({
+          type: 'PUT', data: JSON.stringify({
             fieldset: $row.data('fieldset'),
             field: $row.data('fieldname'),
             options: data

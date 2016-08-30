@@ -11,7 +11,7 @@
 // Helper functions
 //
 
-var fileUploader = window.fileUploader = fileUploader || {};
+var fileUploader = fileUploader || {};
 
 /**
  * Adds all missing properties from second obj to first obj

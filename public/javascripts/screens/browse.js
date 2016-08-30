@@ -5,22 +5,21 @@ $(function() {
   var isListingViewType = $browse.is('[data-view-type="listing"]');
 
   var $listingDescriptions = $('.browse-listing-description');
-
   function updateDescriptionControls() {
     $listingDescriptions.
-    each(function() {
-      var $this = $(this);
-      $this.find('.browse-listing-description-controls').
-      toggleClass('hidden', parseFloat($this.css('max-height')) > $this.height());
-    });
+      each(function() {
+        var $this = $(this);
+        $this.find('.browse-listing-description-controls').
+        toggleClass('hidden', parseFloat($this.css('max-height')) > $this.height());
+      });
   }
   updateDescriptionControls();
 
   $listingDescriptions.
-  on('click', '[data-expand-action]', function(event) {
-    event.preventDefault();
-    $(event.delegateTarget).toggleClass('is-expanded');
-  });
+    on('click', '[data-expand-action]', function(event) {
+      event.preventDefault();
+      $(event.delegateTarget).toggleClass('is-expanded');
+    });
 
   $(window).on('resize', _.throttle(updateDescriptionControls, 100));
 
@@ -82,7 +81,7 @@ $(function() {
         }
 
         return k + '=' + v;
-      }).join('&');
+    }).join('&');
   };
 
   $browse.find('select').uniform();
@@ -96,11 +95,12 @@ $(function() {
   var $sortPeriod = $browse.find('select.sortPeriod');
   var showHideSortPeriod = function() {
     _.defer(function() {
-      $sortPeriod.closest('.uniform').toggleClass('hide', !$sortType.find('option:selected').hasClass('timePeriod'));
+      $sortPeriod.closest('.uniform').toggleClass('hide',
+        !$sortType.find('option:selected').hasClass('timePeriod'));
     });
   };
   $sortType.change(showHideSortPeriod).
-  keypress(showHideSortPeriod).click(showHideSortPeriod);
+    keypress(showHideSortPeriod).click(showHideSortPeriod);
 
   var doSort = function() {
     _.defer(function() {
@@ -123,86 +123,84 @@ $(function() {
     }
 
     var ds = getDS($row);
-    $content.append($.renderTemplate('expandedInfo', ds, {
-      '.manageApi.button@href': function(v) {
-        return '/api_foundry/manage/' + v.context.id;
-      },
-      '.manageApi.button@class+': function(v) {
-        return v.context.isAPI() && v.context.hasRight(blist.rights.view.UPDATE_VIEW) &&
-          !v.context.isFederated() ? '' : 'hide';
-      },
-      '.permissions.button': function(v) {
-        return $.t('controls.browse.actions.permissions.change_button.' + (v.context.isPublic() ? 'public' : 'private') + '_html');
-      },
-      '.permissions.button@class+': function(v) {
-        var publicGrant = _.detect(v.context.grants || [], function(grant) {
-          return _.include(grant.flags || [], 'public');
-        });
-        // EN-5496 - Published stories are 404ing
-        //
-        // Our hypothesis for why 'published' stories are 404ing is that
-        // users are actually clicking the 'Make Public' button on catalog
-        // assets expecting it to trigger a Stories publishing cycle. This
-        // is not actually the case, but it does manage to get the view
-        // metadata in Core Server into a state where we think there should
-        // be a published story asset (it is a public view) when there is
-        // no corresponding published story asset (we never created a row
-        // in the `PublishedStories` table, an action that is handled by
-        // Stories' own publishing endpoint (which sets the view to public
-        // as a second step contingent on the 'PublishedStories' row being
-        // created).
-        //
-        // Our proposed solution is to adjust the Core Server API by which
-        // the public/private status of a view is toggled such that it will
-        // fail if a user attempts to trigger a private -> public
-        // transition on a Core Server view and there does not exist a
-        // corresponding row in the `PublishedStories` table; while that
-        // work is in progress we will be disabling the ability for users
-        // to toggle the private/public state of a Core Server view from
-        // 'browse' experiences by hiding the button that does this if
-        // the asset in question is a Story.
-        var viewType = _.get(v, 'context.viewType', false);
-        var displayType = _.get(v, 'context.displayType', false);
-        var isStory = (
-          (viewType === 'story' || viewType === 'href') &&
-          displayType === 'story'
-        );
-
-        if (isStory) {
-          return 'hide';
-        }
-
-        return v.context.hasRight(blist.rights.view.UPDATE_VIEW) && !v.context.isFederated() &&
-          (!publicGrant || !publicGrant.inherited) ? '' : 'hide';
-      },
-      '.delete.button@class+': function(v) {
-        var isStory = v.context.displayType === 'story';
-        var canDeleteStories = blist.currentUser && blist.currentUser.hasRight(blist.rights.user.DELETE_STORY);
-        var ownsAsset = v.context.owner.id === blist.currentUserId;
-
-        if (isStory && canDeleteStories && ownsAsset) {
-          return '';
-        } else if (isStory) {
-          return 'hide';
-        } else {
-          return v.context.hasRight(blist.rights.view.DELETE_VIEW) &&
+    $content.append($.renderTemplate('expandedInfo', ds,
+      {
+        '.manageApi.button@href': function(v) {
+          return '/api_foundry/manage/' + v.context.id;
+        },
+        '.manageApi.button@class+': function(v) {
+          return v.context.isAPI() && v.context.hasRight(blist.rights.view.UPDATE_VIEW) &&
             !v.context.isFederated() ? '' : 'hide';
-        }
-      },
-      '.comments .value': 'numberOfComments'
-    }));
+        },
+        '.permissions.button': function(v) {
+          return $.t('controls.browse.actions.permissions.change_button.' + (v.context.isPublic() ? 'public' : 'private') + '_html');
+        },
+        '.permissions.button@class+': function(v) {
+            var publicGrant = _.detect(v.context.grants || [], function(grant) {
+              return _.include(grant.flags || [], 'public');
+            });
+            // EN-5496 - Published stories are 404ing
+            //
+            // Our hypothesis for why 'published' stories are 404ing is that
+            // users are actually clicking the 'Make Public' button on catalog
+            // assets expecting it to trigger a Stories publishing cycle. This
+            // is not actually the case, but it does manage to get the view
+            // metadata in Core Server into a state where we think there should
+            // be a published story asset (it is a public view) when there is
+            // no corresponding published story asset (we never created a row
+            // in the `PublishedStories` table, an action that is handled by
+            // Stories' own publishing endpoint (which sets the view to public
+            // as a second step contingent on the 'PublishedStories' row being
+            // created).
+            //
+            // Our proposed solution is to adjust the Core Server API by which
+            // the public/private status of a view is toggled such that it will
+            // fail if a user attempts to trigger a private -> public
+            // transition on a Core Server view and there does not exist a
+            // corresponding row in the `PublishedStories` table; while that
+            // work is in progress we will be disabling the ability for users
+            // to toggle the private/public state of a Core Server view from
+            // 'browse' experiences by hiding the button that does this if
+            // the asset in question is a Story.
+            var viewType = _.get(v, 'context.viewType', false);
+            var displayType = _.get(v, 'context.displayType', false);
+            var isStory = (
+              (viewType === 'story' || viewType === 'href') &&
+              displayType === 'story'
+            );
+
+            if (isStory) {
+              return 'hide';
+            }
+
+            return v.context.hasRight(blist.rights.view.UPDATE_VIEW) && !v.context.isFederated() &&
+              (!publicGrant || !publicGrant.inherited) ? '' : 'hide';
+          },
+        '.delete.button@class+': function(v) {
+            var isStory = v.context.displayType === 'story';
+            var canDeleteStories = blist.currentUser && blist.currentUser.hasRight(blist.rights.user.DELETE_STORY);
+            var ownsAsset = v.context.owner.id === blist.currentUserId;
+
+            if (isStory && canDeleteStories && ownsAsset) {
+              return '';
+            } else if (isStory) {
+              return 'hide';
+            } else {
+              return v.context.hasRight(blist.rights.view.DELETE_VIEW) &&
+                !v.context.isFederated() ? '' : 'hide';
+            }
+          },
+        '.comments .value': 'numberOfComments'
+      }));
 
     blist.datasetControls.hookUpShareMenu(
       ds,
-      $content.find('.share.menu'), {
-        menuButtonContents: $.tag([{
-          tagName: 'span',
-          'class': 'shareIcon'
-        }, {
-          tagName: 'span',
-          'class': 'shareText',
-          contents: $.t('controls.browse.actions.share_button')
-        }], true),
+      $content.find('.share.menu'),
+      {
+        menuButtonContents: $.tag([
+          {tagName: 'span', 'class': 'shareIcon'},
+          {tagName: 'span', 'class': 'shareText', contents: $.t('controls.browse.actions.share_button')}
+        ], true),
         onOpen: function() {
           $.analytics && $.analytics.trackEvent('browse ' + window.location.pathname, 'share menu opened', ds.id);
         },
@@ -223,9 +221,7 @@ $(function() {
       true
     );
 
-    $content.find('.datasetAverageRating').stars({
-      value: ds.averageRating
-    });
+    $content.find('.datasetAverageRating').stars({ value: ds.averageRating });
 
     $content.find('.button.permissions:not(.hide)').click(function(e) {
       e.preventDefault();
@@ -242,12 +238,8 @@ $(function() {
     $content.find('.button.delete:not(.hide)').click(function(e) {
       e.preventDefault();
       var $t = $(this);
-      if (confirm($.t('controls.browse.actions.delete.confirm', {
-          dataset: ds.name
-        }))) {
-        ds.remove(function() {
-          $t.closest('tr.item').remove();
-        });
+      if (confirm($.t('controls.browse.actions.delete.confirm', { dataset: ds.name }))) {
+        ds.remove(function() { $t.closest('tr.item').remove(); });
       }
     });
 
@@ -256,18 +248,14 @@ $(function() {
       ds.fullUrl + ((ds.type == 'blob' || ds.type == 'href') ? '' : '/about');
 
     $content.find('.button.about:not(.hide)').
-    attr('href', aboutUrl).
-    attr('rel', ds.isFederated() ? 'external' : '');
+      attr('href', aboutUrl).
+      attr('rel', ds.isFederated() ? 'external' : '');
   };
 
   function controlDeleteButton(e, ds) {
     e.preventDefault();
-    if (confirm($.t('controls.browse.actions.delete.confirm', {
-        dataset: ds.name
-      }))) {
-      ds.remove(function() {
-        $(e.target).closest('.browse-list-item').remove();
-      });
+    if (confirm($.t('controls.browse.actions.delete.confirm', { dataset: ds.name }))) {
+      ds.remove(function() { $(e.target).closest('.browse-list-item').remove(); });
     }
   }
 
@@ -331,8 +319,8 @@ $(function() {
         }
       );
       return context.hasRight(blist.rights.view.UPDATE_VIEW) &&
-        !context.isFederated() &&
-        (!publicGrant || !publicGrant.inherited);
+        !context.isFederated()
+        && (!publicGrant || !publicGrant.inherited);
     })(ds);
 
     var permissionsMenuItem = {
@@ -369,45 +357,47 @@ $(function() {
   var searchRegex = '';
 
   if ($.subKeyDefined(blist, 'browse.searchOptions.q')) {
-    searchRegex = new RegExp(blist.browse.searchOptions.q.trim().replace(/[^\w\s]/gi, '').replace(' ', '|'), 'gi');
+    searchRegex = new RegExp(blist.browse.searchOptions.q.trim().
+      replace(/[^\w\s]/gi, '').
+      replace(' ', '|'), 'gi');
   }
 
   if (!$.isBlank(searchRegex)) {
     $('table tbody tr').
-    find('a.name, span.name, div.description, span.category, span.tags').
-    each(function() {
-      var $this = $(this);
-      // For anchor tags, ensure we only modify the outerHTML.
-      var aLinks = $this.find('a').map(function() {
-        var $aLink = $(this);
-        $aLink.html(
-          $aLink.html().replace(searchRegex, '<span class="highlight">$&</span>')
+      find('a.name, span.name, div.description, span.category, span.tags').
+      each(function() {
+        var $this = $(this);
+        // For anchor tags, ensure we only modify the outerHTML.
+        var aLinks = $this.find('a').map(function() {
+          var $aLink = $(this);
+          $aLink.html(
+            $aLink.html().
+              replace(searchRegex, '<span class="highlight">$&</span>')
+          );
+          return $aLink[0].outerHTML;
+        });
+        // For non-anchor tags, do a general text replace
+        var textBits = _.map(
+          $this.html().split(/<a.*\/a>/), function(text) {
+            return text.replace(searchRegex, '<span class="highlight">$&</span>');
+          }
         );
-        return $aLink[0].outerHTML;
-      });
-      // For non-anchor tags, do a general text replace
-      var textBits = _.map(
-        $this.html().split(/<a.*\/a>/),
-        function(text) {
-          return text.replace(searchRegex, '<span class="highlight">$&</span>');
-        }
-      );
 
-      $this.html(_.flatten(_.zip(textBits, aLinks)).join(''));
-    });
+        $this.html(_.flatten(_.zip(textBits, aLinks)).join(''));
+      });
 
     $('.browse-list-item').
-    find('[data-search="highlight"]').
-    find('*').
-    addBack().
-    contents().
-    filter(function() {
-      return this.nodeType === 3;
-    }).
-    each(function() {
-      var newContent = $(this).text().replace(searchRegex, '<span class="highlight">$&</span>');
-      $(this).replaceWith(newContent);
-    });
+      find('[data-search="highlight"]').
+      find('*').
+      addBack().
+      contents().
+      filter(function() {
+        return this.nodeType === 3;
+      }).
+      each(function() {
+        var newContent = $(this).text().replace(searchRegex,'<span class="highlight">$&</span>');
+        $(this).replaceWith(newContent);
+      });
   }
 
   var replaceBrokenThumbnails = function() {
@@ -438,15 +428,12 @@ $(function() {
       $results.empty(); // Remove span for matching rows.
 
       var ds = getDS($results);
-      $results.rowSearchRenderType({
-        highlight: searchRegex,
-        view: ds,
+      $results.rowSearchRenderType({ highlight: searchRegex, view: ds,
         rows: _.map(ds.rowResults, function(r) {
           return RowSet.translateRow(r, ds, null, null, true); // eslint-disable-line no-undef
         }),
         query: blist.browse.searchOptions.q,
-        totalRowResults: ds.rowResultCount
-      });
+        totalRowResults: ds.rowResultCount });
 
       var $display = $results.find('.rowSearchRenderType');
       $display.removeClass('hide').css('opacity', 0);
@@ -460,31 +447,22 @@ $(function() {
           event.preventDefault();
           var expanding = $results.hasClass('collapsed'),
             newHeight = expanding ? $rows.data('origheight') : 200;
-          $rows.animate({
-              'max-height': newHeight
-            }, 300,
-            function() {
-              $results.toggleClass('collapsed');
-            });
+          $rows.animate({'max-height': newHeight}, 300,
+            function() { $results.toggleClass('collapsed'); });
           $display.find('.expandHint').
-          toggleClass('upArrow downArrow').end().
-          find('.fader')[expanding ? 'fadeOut' : 'fadeIn'](300);
+            toggleClass('upArrow downArrow').end().
+            find('.fader')[expanding ? 'fadeOut' : 'fadeIn'](300);
         });
       }
 
-      $display.animate({
-        opacity: 1
-      }, 300, function() {
+      $display.animate({ opacity: 1 }, 300, function() {
         $display.css('opacity', '');
       });
     });
   };
 
   $.fn.dancingEllipsis = function(options) {
-    var opts2 = $.extend({}, {
-        text: '',
-        interval: 700
-      }, options),
+    var opts2 = $.extend({}, { text: '', interval: 700 }, options),
       ellipsis = '',
       spans = this;
 
@@ -493,9 +471,7 @@ $(function() {
       spans.text(opts2.text + ellipsis);
     }, opts2.interval);
 
-    return function() {
-      clearInterval(interval);
-    };
+    return function() { clearInterval(interval); };
   };
 
   /*
@@ -507,30 +483,22 @@ $(function() {
   */
   $.fn.savePoint = function() {
     var $this = this,
-      rowOffsets = this.map(function() {
-        return $(this).offset().top;
-      }),
+      rowOffsets = this.map(function() { return $(this).offset().top; }),
       scrollDelta = 0, // Distance between hover target and top of screen.
       scrollTarget, $scrollTarget,
-      captureTarget = function() {
-        scrollTarget = this;
-      };
+      captureTarget = function() { scrollTarget = this; };
 
     this.mouseover(captureTarget).mouseenter(captureTarget);
 
     return {
       save: function() {
-        var scrollPos = $(document).scrollTop(),
-          index = 0,
-          minDelta = Infinity;
+        var scrollPos = $(document).scrollTop(), index = 0, minDelta = Infinity;
         if (scrollTarget) {
           scrollDelta = $(scrollTarget).offset().top - scrollPos;
           return; // Have hover target. Shortcircuit now.
         }
 
-        if (scrollPos < rowOffsets[0]) {
-          return;
-        }
+        if (scrollPos < rowOffsets[0]) { return; }
 
         // Minimize delta between scrollPos and offset.top.
         _.any(rowOffsets, function(offset, i) {
@@ -567,15 +535,11 @@ $(function() {
     !$.isBlank(blist.browse.rowCount)
   ) {
     var stopEllipsis = $('.rowSearchResults span').
-    dancingEllipsis({
-      text: $.t('controls.browse.row_results.matching_rows')
-    });
+      dancingEllipsis({ text: $.t('controls.browse.row_results.matching_rows') });
 
     var savePoint = $('table tr').savePoint(); // This order is important.
 
-    Dataset.search($.extend({}, blist.browse.searchOptions, {
-        row_count: blist.browse.rowCount
-      }), // eslint-disable-line camelcase
+    Dataset.search($.extend({}, blist.browse.searchOptions, { row_count: blist.browse.rowCount }), // eslint-disable-line camelcase
       function(results) {
         _.each(results.views, function(ds) {
           if (ds.rowResultCount > 0) {
@@ -608,9 +572,7 @@ $(function() {
     e.preventDefault();
 
     _.defer(function() {
-      var newOpts = $.extend({}, opts, {
-        q: encodeURIComponent(searchTerm)
-      });
+      var newOpts = $.extend({}, opts, { q: encodeURIComponent(searchTerm) });
       var resolveEvent = function() {
         doBrowse(newOpts);
       };
@@ -627,9 +589,8 @@ $(function() {
       } else {
         var mixpanelNS = blist.namespace.fetch('blist.mixpanel');
         mixpanelNS.delegateCatalogSearchEvents(
-          clearSearchClicked ? 'Cleared Search Field' : 'Used Search Field', {
-            'Catalog Version': 'browse1'
-          },
+          clearSearchClicked ? 'Cleared Search Field' : 'Used Search Field',
+          { 'Catalog Version': 'browse1' },
           resolveEvent
         );
       }
@@ -662,17 +623,11 @@ $(function() {
     event.preventDefault();
     var $dialog = $('#browseDialog_' + $(this).attr('rel'));
     $dialog.find('.optionsContent a').tagcloud({
-      size: {
-        start: 1.2,
-        end: 2.8,
-        unit: 'em'
-      }
+      size: { start: 1.2, end: 2.8, unit: 'em' }
     });
     $dialog.jqmShow();
 
-    _.defer(function() {
-      $dialog.find('.optionsContent a:first').focus();
-    });
+    _.defer(function() { $dialog.find('.optionsContent a:first').focus(); });
   });
 
   $.live('a[rel*=externalDomain]', 'click', function(e) {
@@ -691,9 +646,9 @@ $(function() {
     $modal.find('.accept.button').attr('href', href);
     $modal.find('.datasetType').text(ds.displayName);
     $modal.find('.externalDomain').attr('href', ds.domainUrl).
-    text(ds.domainCName);
+      text(ds.domainCName);
     $modal.find('.dsName').text(ds.name).end().
-    find('.dsDesc').html(description);
+        find('.dsDesc').html(description);
     $modal.jqmShow();
   });
 

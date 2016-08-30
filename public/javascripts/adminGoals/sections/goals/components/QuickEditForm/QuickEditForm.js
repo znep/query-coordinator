@@ -211,4 +211,4 @@ const mapDispatchToProps = dispatch => ({
   openFeedbackFlannel: event => dispatch(SharedActions.showFeedbackFlannel(event.target))
 });
 
-export default ReactRedux.connect(mapStateToProps, mapDispatchToProps)(Components.ModalQuitEventHandler(GoalQuickEdit)); // eslint-disable-line new-cap
+export default ReactRedux.connect(mapStateToProps, mapDispatchToProps)(Components.ModalQuitEventHandler(GoalQuickEdit));//eslint-disable-line new-cap

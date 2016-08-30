@@ -18,9 +18,7 @@
         dataType: 'json',
         success: function(domainList) {
           blist.internal.domains = domainList;
-          $.extend(staticOptions, {
-            staticData: blist.internal.domains
-          });
+          $.extend(staticOptions, { staticData: blist.internal.domains });
           $element.removeClass('loading');
           $element.find('input').removeAttr('readonly');
           $element.find('input').awesomecomplete(staticOptions);
@@ -37,17 +35,11 @@
   var navWidth = $navContainer.width();
 
   $youCompleteMe.focus(function() {
-    blist.internal.fetchDomainList($domainCenter, {
-      onComplete: completelyAwesome
-    });
-    $navContainer.animate({
-      width: 250
-    }, 200);
+    blist.internal.fetchDomainList($domainCenter, { onComplete: completelyAwesome });
+    $navContainer.animate({width: 250}, 200);
   });
   var unslideNav = function() {
-    $navContainer.animate({
-      width: navWidth
-    }, 200);
+    $navContainer.animate({width: navWidth}, 200);
   };
   $youCompleteMe.blur(unslideNav);
 
@@ -75,12 +67,12 @@
     });
   });
 
-  $(['input[name="domain[cName]"]',
-    'input[name="new_cname"]',
-    'input[name="new_alias"]'
-  ].join(', ')).keyup(_.debounce(function() {
+  $([ 'input[name="domain[cName]"]',
+      'input[name="new_cname"]',
+      'input[name="new_alias"]'
+    ].join(', ')).keyup(_.debounce(function() {
     var $this = $(this),
-      $cname = $this.val();
+        $cname = $this.val();
     var doesNotEndWithPunctuation = /[a-z]$/.test($cname);
     // Copied from InternalController#valid_cname?
     var cnameRegex = /^[a-zA-Z\d]+(?:[a-zA-Z\d]+|\.(?!(\.|-|_))|-(?!(-|\.|_))|_(?!(_|\.|-)))*[a-zA-Z\d]+$/;

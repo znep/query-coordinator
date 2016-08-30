@@ -368,7 +368,7 @@
           });
           return result;
         });
-        // Sort by position iff there isn't another sort in place. (i.e. natural sort)
+      // Sort by position iff there isn't another sort in place. (i.e. natural sort)
       } else if (!_.any($.deepGet(vizObj._primaryView, 'metadata', 'jsonQuery', 'order'), function(orderBy) {
           return _.include(sg.sortColumns,
             vizObj._primaryView.columnForIdentifier(orderBy.columnFieldName));
@@ -447,7 +447,7 @@
 
     /* eslint-disable no-unused-vars */
     getDataForView: function(view) {
-      /* eslint-enable no-unused-vars */
+    /* eslint-enable no-unused-vars */
       var vizObj = this,
         sg = vizObj._seriesGrouping;
 
@@ -465,7 +465,7 @@
 
     /* eslint-disable no-unused-vars */
     getRenderRange: function(view) {
-      /* eslint-enable no-unused-vars */
+    /* eslint-enable no-unused-vars */
       var vizObj = this;
 
       if (!vizObj.requiresSeriesGrouping()) {
@@ -523,7 +523,7 @@
       // did we not get enough rows to flesh out our viewport? if so
       // go get more
       // if (false) {
-      // TODO: how do we even what
+        // TODO: how do we even what
       // }
 
       vizObj._inRenderSeriesGrouping = false;
@@ -887,7 +887,7 @@
 
     /* eslint-disable no-unused-vars */
     removeRow: function(row, view) {
-      /* eslint-enable no-unused-vars */
+    /* eslint-enable no-unused-vars */
       var vizObj = this;
 
       if (!vizObj.requiresSeriesGrouping()) {
@@ -1061,7 +1061,7 @@
 
     /* eslint-disable no-unused-vars */
     handleDataMouseOver: function(visual, colDef, row, flyoutConfigs, enableProcessing) {
-      /* eslint-enable no-unused-vars */
+    /* eslint-enable no-unused-vars */
 
       // swap out virtual col/row references for hard references
       var vizObj = this;
@@ -1073,7 +1073,7 @@
       }
     },
 
-    handleDataMouseOut: function() {
+    handleDataMouseOut: function(visual) {
       return this._super.apply(this, arguments);
     },
 

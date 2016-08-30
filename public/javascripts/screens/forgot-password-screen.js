@@ -1,10 +1,11 @@
-$(function() {
-  $('#account_login').focus();
+$(function ()
+{
+    $("#account_login").focus();
 
-  // Form validation.
-  $('#forgotPasswordForm').validate({
-    rules: {
-      'account[login]': 'required'
-    }
-  });
+    // Form validation.
+    $("#forgotPasswordForm").validate({
+        rules: {
+            "account[login]": "required"
+        }
+    });
 });

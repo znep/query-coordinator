@@ -1,9 +1,9 @@
-module.exports = function(fileInfo, api) {
+module.exports = function(fileInfo, api, options) {
   const j = api.jscodeshift;
   const root = j(fileInfo.source);
 
   function hasAngularIdentifier(node) {
-    return node.find(j.Identifier, { name: 'angular' }).size() > 0;
+    return node.find(j.Identifier, { name: "angular" }).size() > 0;
   }
 
   function hasAngularRequire(node) {
@@ -15,7 +15,7 @@ module.exports = function(fileInfo, api) {
     let requireStatement = j.variableDeclaration('const', [
       j.variableDeclarator(j.identifier('angular'), j.callExpression(j.identifier('require'), [j.literal('angular')]))
     ]);
-    root.find(j.Program).get('body').get(0).insertBefore(requireStatement);
+    root.find(j.Program).get("body").get(0).insertBefore(requireStatement);
   }
 
   return root.toSource({quote: 'single'});

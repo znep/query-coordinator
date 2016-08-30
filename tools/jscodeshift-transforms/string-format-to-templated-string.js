@@ -1,4 +1,4 @@
-module.exports = function(fileInfo, api) {
+module.exports = function(fileInfo, api, options) {
   const j = api.jscodeshift;
   const root = j(fileInfo.source);
 
@@ -10,8 +10,8 @@ module.exports = function(fileInfo, api) {
         object: {type: 'Literal'},
         property: {name: 'format'}
       }
-    }).
-    forEach(p => {
+    })
+    .forEach(p => {
       var templateLiteral;
       var expressions;
       var quasis;
@@ -29,7 +29,7 @@ module.exports = function(fileInfo, api) {
         j(p).replaceWith(templateLiteral);
       } else if (/\{([^\}]+)\}/.test(stringLiteral)) {
         if (j(p).nodes()[0].arguments[0].type === 'ObjectExpression') {
-          var propertyMap = new Map(); // eslint-disable-line no-undef
+          var propertyMap = new Map();
           j(p).nodes()[0].arguments[0].properties.forEach(prop => {
             propertyMap.set(prop.key.name, prop.value);
           });
@@ -50,7 +50,7 @@ module.exports = function(fileInfo, api) {
               j.identifier(callArgument),
               useDotNotation ? j.identifier(key) : j.literal(key),
               !useDotNotation
-            );
+            )
           });
           quasis = stringLiteral.split(/\{[^\}]+\}/g).map((s, i, a) => j.templateElement({
             cooked: s,

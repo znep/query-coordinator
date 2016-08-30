@@ -4,8 +4,8 @@ blist.datasetControls.hookUpShareMenu = function(view, $menu, overrides, hideEma
   var shareText = view.displayType === 'story' ? 'share_story_text' : 'share_text';
   var tweet = escape(
     $.t('controls.common.share.' + shareText, {
-      name: view.name,
-      site: blist.configuration.strings.company
+    name: view.name,
+    site: blist.configuration.strings.company
     })
   );
   var seoPath = view.fullUrl;
@@ -13,22 +13,14 @@ blist.datasetControls.hookUpShareMenu = function(view, $menu, overrides, hideEma
   var opts = {
     menuButtonContents: $.t('controls.common.share.button_prompt'),
     menuButtonTitle: $.t('controls.common.share.button_tooltip'),
-    contents: [{
-      text: $.t('controls.common.share.networks.facebook'),
-      className: 'facebook',
-      rel: 'external',
-      href: 'http://www.facebook.com/share.php?u=' + seoPath
-    }, {
-      text: $.t('controls.common.share.networks.twitter'),
-      className: 'twitter',
-      rel: 'external',
-      href: 'http://twitter.com/?status=' + tweet + shortPath
-    }, {
-      text: $.t('controls.common.share.networks.email'),
-      className: 'email',
-      href: '#email',
-      onlyIf: !hideEmail
-    }]
+    contents: [
+      { text: $.t('controls.common.share.networks.facebook'), className: 'facebook', rel: 'external',
+        href: 'http://www.facebook.com/share.php?u=' + seoPath },
+      { text: $.t('controls.common.share.networks.twitter'), className: 'twitter', rel: 'external',
+        href: 'http://twitter.com/?status=' + tweet + shortPath },
+      { text: $.t('controls.common.share.networks.email'), className: 'email', href: '#email',
+        onlyIf: !hideEmail}
+    ]
   };
 
   $.extend(opts, overrides);
@@ -38,34 +30,24 @@ blist.datasetControls.hookUpShareMenu = function(view, $menu, overrides, hideEma
 blist.datasetControls.unsavedViewPrompt = function() {
   $('a').on('click', function(e) {
     // We only care about temp views
-    if (!blist.dataset.temporary || blist.dataset.minorChange) {
-      return;
-    }
+    if (!blist.dataset.temporary || blist.dataset.minorChange) { return; }
 
     // Usually browsers (correctly) won't call onClick if the user wants to
     // open in a new tab. However browsers will still call the handler on
     // ctrl/meta-click, so ignore the click in these cases.
-    if (e.ctrlKey || e.metaKey) {
-      return;
-    }
+    if (e.ctrlKey || e.metaKey) { return; }
 
     var a = e.currentTarget;
     // Skip links that open a new window
-    if (a.rel.indexOf('external') > -1) {
-      return;
-    }
+    if (a.rel.indexOf('external') > -1) { return; }
 
     // Skip links we explicitly don't want to save off/prompt on
-    if (a.className.indexOf('noRedirPrompt') > -1) {
-      return;
-    }
+    if (a.className.indexOf('noRedirPrompt') > -1) { return; }
 
     var origHref = a.href;
 
     // If there is no href, nothing could happen anyway
-    if ($.isBlank(origHref)) {
-      return;
-    }
+    if ($.isBlank(origHref)) { return; }
 
     var href = origHref;
     // Need to tweak window.location.href, since it may have a hash
@@ -81,14 +63,10 @@ blist.datasetControls.unsavedViewPrompt = function() {
     }
 
     // Skip local URLs
-    if (href.charAt(0) == '#') {
-      return;
-    }
+    if (href.charAt(0) == '#') { return; }
 
     // if we're not trying to go anywhere, don't do anything.
-    if (window.location.href == origHref) {
-      return;
-    }
+    if (window.location.href == origHref) { return; }
 
     e.preventDefault();
 
@@ -124,10 +102,7 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
     }, 1000);
   };
 
-  $dialog.loadingSpinner({
-    metric: 'save',
-    overlay: true
-  });
+  $dialog.loadingSpinner({metric: 'save', overlay: true});
 
   dialogObj._saveCallback = saveCallback;
   dialogObj._dontSaveCallback = dontSaveCallback;
@@ -149,39 +124,39 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
       var useNBE = blist.dataset.newBackend;
 
       var success = function(view) {
-        $dialog.loadingSpinner().showHide(false);
+      $dialog.loadingSpinner().showHide(false);
 
-        var preventRedirect = false;
+      var preventRedirect = false;
 
-        if (_.isFunction(dialogObj._saveCallback)) {
-          preventRedirect = dialogObj._saveCallback(view);
-        }
+      if (_.isFunction(dialogObj._saveCallback)) {
+        preventRedirect = dialogObj._saveCallback(view);
+      }
 
-        // If we're immediately doing a redirect, don't hide the
-        // dialog; because it is just confusing
-        if (!preventRedirect) {
-          view.redirectTo();
-        } else {
-          cleanDialog();
-          $dialog.jqmHide();
-        }
+      // If we're immediately doing a redirect, don't hide the
+      // dialog; because it is just confusing
+      if (!preventRedirect) {
+        view.redirectTo();
+      } else {
+        cleanDialog();
+        $dialog.jqmHide();
+      }
       };
 
       var error = function(xhr) {
-        $dialog.loadingSpinner().showHide(false);
-        $dialog.find('.mainError').
+      $dialog.loadingSpinner().showHide(false);
+      $dialog.find('.mainError').
         text(JSON.parse(xhr.responseText).message);
       };
 
       if (!$.isBlank(newViewData)) {
-        blist.dataset.update(newViewData);
+      blist.dataset.update(newViewData);
       }
 
       if (isNew) {
-        blist.dataset.name = name;
-        blist.dataset.saveNew(useNBE, success, error);
+      blist.dataset.name = name;
+      blist.dataset.saveNew(useNBE, success, error);
       } else {
-        blist.dataset.save(success, error);
+      blist.dataset.save(success, error);
       }
     };
 
@@ -243,7 +218,8 @@ blist.datasetControls.datasetRating = function($star, $sect, enabled) {
   $star.stars({
     onChange: function(value) {
       blist.util.doAuthedAction($.t('controls.common.rate.auth_action_phrase'), function(successCallback) {
-        blist.dataset.updateRating({
+        blist.dataset.updateRating(
+          {
             type: $star.attr('data-rating-type'),
             rating: (value * 20)
           },
@@ -252,12 +228,11 @@ blist.datasetControls.datasetRating = function($star, $sect, enabled) {
             // Update totals
             if (!_.isUndefined(responseData.type)) {
               $sect.find('.totalTimesRated').text(
-                parseInt($.trim($sect.find('.totalTimesRated').text())) + 1);
+                parseInt($.trim($sect.
+                  find('.totalTimesRated').text())) + 1);
             }
             $star.attr('title', '');
-            if (_.isFunction(successCallback)) {
-              successCallback();
-            }
+            if (_.isFunction(successCallback)) { successCallback(); }
           }
         );
       });
@@ -273,9 +248,7 @@ blist.datasetControls.datasetContact = function($sect) {
     var type = $select.val();
     var subject = '';
 
-    if ($.isBlank(type)) {
-      return;
-    }
+    if ($.isBlank(type)) { return; }
 
     if (type == 'other') {
       subject = $.t('screens.ds.dataset_contact.other_subject', {
@@ -295,10 +268,10 @@ blist.datasetControls.datasetContact = function($sect) {
   // Swap out links for form and back, show 'required' hint
   var toggleContactActions = function() {
     $sect.find('.contactOwnerForm').slideToggle().
-    find('#contactBody').
-    focus().end().end().
-    find('.contactOwnerLinks').
-    slideToggle().end();
+      find('#contactBody').
+        focus().end().end().
+      find('.contactOwnerLinks').
+        slideToggle().end();
   };
 
   $sect.delegate('.contactButton', 'click', function(event) {
@@ -306,8 +279,8 @@ blist.datasetControls.datasetContact = function($sect) {
     var $this = $(this);
 
     $sect.find('.flash').
-    removeClass('notice').
-    text('').fadeOut();
+      removeClass('notice').
+      text('').fadeOut();
 
     // Captcha width: 321.
     // 350 = ceiling(321 / 50) * 50
@@ -329,16 +302,13 @@ blist.datasetControls.datasetContact = function($sect) {
 
       $form.validate({
         rules: {
-          'type': 'required',
+          'type'   : 'required',
           'subject': 'required',
           'message': 'required',
-          'from_address': {
-            'required': true,
-            'email': true
-          }
+          'from_address': {'required': true, 'email': true}
         },
         messages: {
-          'type': $.t('screens.ds.dataset_contact.validation.no_purpose'),
+          'type'   : $.t('screens.ds.dataset_contact.validation.no_purpose'),
           'subject': $.t('screens.ds.dataset_contact.validation.no_subject'),
           'message': $.t('screens.ds.dataset_contact.validation.no_body'),
           'from_address': {
@@ -351,7 +321,7 @@ blist.datasetControls.datasetContact = function($sect) {
       });
 
       var $purpose = $sect.find('#contactPurpose').
-      change(contactPurposeChange);
+        change(contactPurposeChange);
       if (!$purpose.parent().hasClass('uniform')) {
         $purpose.uniform();
       }
@@ -363,28 +333,27 @@ blist.datasetControls.datasetContact = function($sect) {
           $.ajax({
             url: $form.attr('action'),
             data: $form.serialize(),
-            type: 'POST',
-            dataType: 'json',
+            type: 'POST', dataType: 'json',
             error: function() {
               $sect.find('.flash:not(.recaptcha_flash)').
-              removeClass('notice').addClass('error').
-              text($.t('screens.ds.dataset_contact.error_message')).show();
+                removeClass('notice').addClass('error').
+                text($.t('screens.ds.dataset_contact.error_message')).show();
             },
             success: function(response) {
               if (response.success == true) {
                 _.defer(function() {
                   $sect.find('.flash:not(.recaptcha_flash)').
-                  removeClass('error').addClass('notice').
-                  text($.t('screens.ds.dataset_contact.success_message')).show();
+                    removeClass('error').addClass('notice').
+                    text($.t('screens.ds.dataset_contact.success_message')).show();
                   toggleContactActions();
                 });
 
                 $sect.find('.recaptcha_flash').
-                removeClass('error').fadeOut();
+                  removeClass('error').fadeOut();
               } else if (response.success == false) {
                 $sect.find('.recaptcha_flash').
-                removeClass('notice').addClass('error').
-                text($.t('recaptcha.errors.verification_failed')).fadeIn();
+                  removeClass('notice').addClass('error').
+                  text($.t('recaptcha.errors.verification_failed')).fadeIn();
               }
             }
           });
@@ -405,10 +374,10 @@ blist.datasetControls.datasetContact = function($sect) {
 
     // Pre-populate message subject
     if (!_.isUndefined($this.attr('data-select'))) {
-      var $sel = $sect.find('#contactPurpose');
-      $sel.val($this.attr('data-select'));
-      contactPurposeChange();
-      $.uniform.update($sel);
+       var $sel = $sect.find('#contactPurpose');
+       $sel.val($this.attr('data-select'));
+       contactPurposeChange();
+       $.uniform.update($sel);
     }
   });
 };
@@ -424,7 +393,7 @@ blist.datasetControls.getColumnTip = function(col) {
     (!$.isBlank(col.metadata.originalName) ?
       '<p class="originalName"><span class="title">' + $.t('screens.ds.column_tip.original_name') + ':</span> ' +
       '<span class="value">' +
-      $.htmlEscape(col.metadata.originalName).replace(/ /, '&nbsp;') +
+        $.htmlEscape(col.metadata.originalName).replace(/ /, '&nbsp;') +
       '</span>' : '') +
     (col.description !== undefined ?
       '<p class="description">' + $.htmlEscape(col.description) +
@@ -433,12 +402,10 @@ blist.datasetControls.getColumnTip = function(col) {
     '<span class="blist-th-icon"></span>' +
     $.t('core.data_types.' + col.dataTypeName) +
     (col.format.grouping_aggregate !== undefined ?
-      ' ' + $.t('screens.ds.column_tip.aggregate', {
-        aggregate: $.t('core.aggregates.' + col.format.grouping_aggregate),
-        data_type: $.t('core.data_types.' + col.dataTypeName)
-      }) : '') +
+      ' ' + $.t('screens.ds.column_tip.aggregate', { aggregate: $.t('core.aggregates.' + col.format.grouping_aggregate), data_type: $.t('core.data_types.' + col.dataTypeName) }) : '') +
     '</p>' +
-    (col.fieldName !== undefined ? '<br/><p class="api-field">' + $.t('screens.ds.column_tip.field_name') + ': ' + $.htmlEscape(col.fieldName) + '</p>' : '') + '</div>';
+    (col.fieldName !== undefined ? '<br/><p class="api-field">' + $.t('screens.ds.column_tip.field_name') + ': ' + $.htmlEscape(col.fieldName) + '</p>' : '')
+    + '</div>';
 };
 
 blist.datasetControls.raReasonBox = function($reasonBox) {
@@ -446,15 +413,8 @@ blist.datasetControls.raReasonBox = function($reasonBox) {
   var $t = $reasonBox.children('textarea');
   $reasonBox.addClass('hide jsEnabled');
   $reasonBox.append($reasonBox.siblings('.button').clone());
-  $reasonBox.append($.tag({
-    tagName: 'a',
-    href: '#Close',
-    'class': 'remove',
-    contents: {
-      tagName: 'span',
-      'class': 'icon'
-    }
-  }));
+  $reasonBox.append($.tag({tagName: 'a', href: '#Close', 'class': 'remove',
+      contents: {tagName: 'span', 'class': 'icon'}}));
 
   // We don't really care about validation; but when we're in the About
   // sidebar, there is a higher-level form that has validation hooked up;
@@ -520,26 +480,24 @@ blist.datasetControls.editPublishedMessage = function() {
 
     // actually do the message update
     $target.
-    empty().
-    append($.renderTemplate('editAlertTemplate', data, {
-      '.editPublished@class+': function() {
-        return copyPending ? 'hide' : '';
-      },
-      '.editMessage': function() {
-        return datasetEditableMessage(data);
-      },
-      '.editMessage@class+': function() {
-        return copyPending ? 'hide' : '';
-      },
-      '.copyingMessage': function() {
-        return $.t('screens.ds.dataset_status.copy_in_progress', {
-          additional: data.message
-        });
-      },
-      '.copyingMessage@class+': function() {
-        return copyPending ? '' : 'hide';
-      }
-    }));
+      empty().
+      append($.renderTemplate('editAlertTemplate', data, {
+        '.editPublished@class+': function() {
+          return copyPending ? 'hide' : '';
+        },
+        '.editMessage': function() {
+          return datasetEditableMessage(data);
+        },
+        '.editMessage@class+': function() {
+          return copyPending ? 'hide' : '';
+        },
+        '.copyingMessage': function() {
+          return $.t('screens.ds.dataset_status.copy_in_progress', { additional: data.message });
+        },
+        '.copyingMessage@class+': function() {
+          return copyPending ? '' : 'hide';
+        }
+      }));
 
     // bt is kind of a massive pile of shit
     // 1. doesn't figure out dom change and resize tip
@@ -594,16 +552,11 @@ blist.datasetControls.editPublishedMessage = function() {
           data.status = wasEverInProgress ? 'available' : 'can_be_made';
           break;
         case 'queued':
-          data.message = $.t('screens.ds.dataset_status.copy_in_progress_additional.queued', {
-            time: dateify(statuses.copying.queuedAt),
-            totalQueued: statuses.copying.totalQueued
-          });
+          data.message = $.t('screens.ds.dataset_status.copy_in_progress_additional.queued', { time: dateify(statuses.copying.queuedAt), totalQueued: statuses.copying.totalQueued });
           copyInProgress = true;
           break;
         case 'processing':
-          data.message = $.t('screens.ds.dataset_status.copy_in_progress_additional.processing', {
-            time: dateify(statuses.copying.startedAt)
-          });
+          data.message = $.t('screens.ds.dataset_status.copy_in_progress_additional.processing', { time: dateify(statuses.copying.startedAt) });
           copyInProgress = true;
           break;
         case 'failed':
@@ -619,9 +572,7 @@ blist.datasetControls.editPublishedMessage = function() {
     if ($.isBlank(workingCopy)) {
       updateOperationStatus();
     } else {
-      finish({
-        status: 'available'
-      }, false);
+      finish({ status: 'available' }, false);
     }
   });
 
@@ -633,27 +584,18 @@ blist.datasetControls.hookUpPublishing = function($container) {
   $container.find('.snapshotted').socrataTitleTip();
   $container.find('.publish').click(function(e) {
     e.preventDefault();
-    if ($(e.target).hasClass('disabled')) {
-      return;
-    }
-    blist.dataset.publish(function(pubDS) {
-        pubDS.redirectTo();
-      },
+    if ($(e.target).hasClass('disabled')) { return; }
+    blist.dataset.publish(function(pubDS) { pubDS.redirectTo(); },
       function(http) {
         var errorMessage = $.t('screens.ds.dataset_status.error_publishing_html');
         if ((JSON.parse((http || {}).responseText) || {}).message == 'Only unpublished datasets can be published.') {
           errorMessage = $.t('screens.ds.dataset_status.error_publishing_unpublished');
         }
 
-        $container.find('#datasetName').socrataTip({
-          content: $.tag({
-            tagName: 'p',
-            'class': 'errorMessage',
-            contents: errorMessage
-          }),
-          showSpike: false,
-          trigger: 'now'
-        });
+        $container.find('#datasetName').socrataTip({content: $.tag({tagName: 'p',
+          'class': 'errorMessage',
+          contents: errorMessage}),
+          showSpike: false, trigger: 'now'});
       });
   });
 
@@ -671,7 +613,7 @@ blist.datasetControls.hookUpPublishing = function($container) {
     blist.dataset.getPublishedDataset(function(pub) {
       if (!$.isBlank(pub)) {
         $container.find('#publishedLink').
-        attr('href', pub.url).find('.publishedName').text(pub.name);
+          attr('href', pub.url).find('.publishedName').text(pub.name);
       } else {
         $container.find('#publishedLink').hide();
       }

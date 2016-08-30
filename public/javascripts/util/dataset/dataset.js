@@ -230,7 +230,8 @@
     // ['table', 'fatrow', 'page', 'assetinventory']
     shouldShowViewCreationOptions: function() {
       return _.difference(
-        this.metadata.availableDisplayTypes, ['table', 'fatrow', 'page', 'assetinventory']
+        this.metadata.availableDisplayTypes,
+        ['table', 'fatrow', 'page', 'assetinventory']
       ).length == 0;
     },
 
@@ -2929,7 +2930,7 @@
         newDS.flags = newDS.flags || [];
         newDS.flags.push('default');
 
-        if (_.include(ds.flags || [], 'restorable')) {
+        if(_.include(ds.flags || [], 'restorable')) {
           newDS.flags.push('restorable');
         }
       }
@@ -4753,7 +4754,7 @@
       url: '/views.json?method=numberOfDaysRestorable',
       async: false
     }).responseText);
-  };
+  }
 
   if (blist.inBrowser) {
     this.Dataset = Dataset;

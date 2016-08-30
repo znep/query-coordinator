@@ -28,11 +28,15 @@
     :translation => translations[:footer_text_link_color]
   }) %>
 
+<%= section_separator %>
+
 <%= render('list_of_links',
   :link_count => 15,
   :links => footer['links'],
   :content_key => :footer,
   :translations => translations) %>
+
+<%= section_separator %>
 
 <% copyright_notice_fields = [:footer, :copyright_notice] %>
 
@@ -55,6 +59,8 @@
   </div>
   <aside><p><%= translations[:copyright_notice_source][:description] %></p></aside>
 </section>
+
+<%= section_separator %>
 
 <%= render('checkbox',
   :fields => [:footer, :powered_by],

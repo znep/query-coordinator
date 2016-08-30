@@ -1,5 +1,7 @@
 <%= render 'site_chrome/tab_content/general/enable_site_chrome' %>
 
+<%= section_separator %>
+
 <%= site_chrome_dropdown_field(:general, :template, %w(Evergreen Rally), translations[:template].tap do |t|
   t[:description] = t[:description_html].html_safe
 end) %>
@@ -11,6 +13,8 @@ end) %>
 <%= site_chrome_dropdown_field(:general, [:styles, :font_family], valid_webfonts, translations[:font_family]) %>
 <!-- EN-9176: Hide Google Analytics field for now -->
 <!--<%#= site_chrome_form_field(:general, :google_analytics_token, translations[:google_analytics_token]) %>-->
+
+<%= section_separator %>
 
 <section class="settings-group">
   <div class="settings-form full signin-signout">

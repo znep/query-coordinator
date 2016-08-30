@@ -152,7 +152,7 @@ describe ActivityFeedHelper do
       expect(display_restore_button(event)).to eq(false)
     end
 
-    it 'does not show restore button on old deleted events' do
+    it 'disables the restore button for non-restorable delete events' do
       rspec_stub_feature_flags_with('restore_dataset_button', true)
       event = ImportActivity.new(
         { 
@@ -170,7 +170,8 @@ describe ActivityFeedHelper do
         ),
         nil
       )
-      expect(display_restore_button(event)).to eq(false)
+      expect(display_restore_button(event)).to eq(true)
+      expect(restore_button_disabled(event)).to eq(true)
     end
 
     it 'does not show restore button on non-default views' do

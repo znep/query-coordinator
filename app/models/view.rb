@@ -294,6 +294,14 @@ class View < Model
     View.parse(CoreServer::Base.connection.get_request(path))
   end
 
+  def restorable?
+    self.data.fetch('flags', []).include?('restorable')
+  end
+
+  def restorePossibleForType?
+    self.data.fetch('flags', []).include?('restorePossibleForType')
+  end
+
   def self.category_tree
     categories = CurrentDomain.configuration('view_categories').properties
     top_level_cats = @@default_categories.clone
@@ -2119,5 +2127,4 @@ class View < Model
   def parse_json_with_max_nesting(data, max_nesting = 25)
     JSON.parse(data, :max_nesting => max_nesting)
   end
-
 end

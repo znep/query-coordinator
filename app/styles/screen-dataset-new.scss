@@ -651,10 +651,14 @@
     position: relative;
   }
 
+  div.wizard {
+    overflow: visible;
+  }
+
   .tooltip:hover:after {
     background: #fefbef;
     border-radius: 5px;
-    top: 149px;
+    top: 148px;
     color: #000;
     content: attr(title);
     left: -6px;
@@ -673,11 +677,12 @@
     content: "▲";
     color: #fefbef;
     position: absolute;
-    margin-left: -8px;
+    margin-left: -7px;
     top: 135px;
     text-decoration: none;
     z-index: 99;
-    font-size: 1rem;
+    font-size: 16px;
+    font-family: "Lucida Sans Unicode", "Arial Unicode MS";
 
     text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.6);
   }

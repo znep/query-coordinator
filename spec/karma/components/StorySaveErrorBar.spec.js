@@ -16,7 +16,7 @@ describe('storySaveErrorBar jQuery plugin', function() {
   var dispatcher;
 
   function tryAgainButtonAvailable() {
-    return $errorBar.find('.btn-try-again').hasClass('available');
+    return $errorBar.find('.try-again-link').hasClass('available');
   }
 
   beforeEach(function() {
@@ -110,13 +110,13 @@ describe('storySaveErrorBar jQuery plugin', function() {
       describe('try again button', function() {
         it('should call autosave.saveASAP when clicked', function() {
           sinon.assert.notCalled(autosave.saveASAP);
-          $errorBar.find('.btn-try-again').click();
+          $errorBar.find('.try-again-link').click();
           sinon.assert.calledOnce(autosave.saveASAP);
         });
 
-        it('should convert to a btn-busy when clicked', function() {
-          $errorBar.find('.btn-try-again').click();
-          assert.isTrue($errorBar.find('.btn-try-again').hasClass('btn-busy'));
+        it('should be hidden', function() {
+          $errorBar.find('.try-again-link').click();
+          assert.isFalse($errorBar.find('.try-again-link').is(':visible'));
         });
 
         it('should be available', function() {
@@ -136,7 +136,7 @@ describe('storySaveErrorBar jQuery plugin', function() {
           }
 
           assert.isFalse(isTryAgainShown());
-          $errorBar.find('.btn-try-again').click();
+          $errorBar.find('.try-again-link').click();
           assert.isTrue(isTryAgainShown());
           mockStore._emitChange();
           assert.isTrue(isTryAgainShown());
@@ -210,8 +210,8 @@ describe('storySaveErrorBar jQuery plugin', function() {
       });
 
       describe('login button', function() {
-        it('should have a button to log back in', function() {
-          assert.lengthOf($errorBar.find('a[href]'), 1);
+        it('should have a link to log back in', function() {
+          assert.lengthOf($errorBar.find('.login-link'), 1);
         });
 
         it('should emit a LOGIN_BUTTON_CLICK event when clicked', function(done) {
@@ -221,7 +221,7 @@ describe('storySaveErrorBar jQuery plugin', function() {
             }
           });
 
-          $errorBar.find('a[href]').click();
+          $errorBar.find('.login-link').click();
         });
       });
     });

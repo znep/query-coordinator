@@ -1,4 +1,4 @@
-window.DOMPurify = require('DOMPurify'); // eslint-disable-line angular/window-service
+window.DOMPurify = require('dompurify'); // eslint-disable-line angular/window-service
 window._ = require('lodash'); // eslint-disable-line angular/window-service
 window.socrata = window.socrata || {}; // eslint-disable-line angular/window-service
 window.socrata.utils = require('socrata-utils'); // eslint-disable-line angular/window-service

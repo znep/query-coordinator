@@ -2,17 +2,27 @@ import _ from 'lodash';
 import React from 'react';
 import classNames from 'classnames';
 
-export var Picklist = React.createClass({
+export const Picklist = React.createClass({
   propTypes: {
+    // Disables option selection
     disabled: React.PropTypes.bool,
+    // Sets the initial value when provided
     value: React.PropTypes.string,
     options: React.PropTypes.arrayOf(
       React.PropTypes.shape({
+        // Used to render the option title
         title: React.PropTypes.string,
-        value: React.PropTypes.string,
-        group: React.PropTypes.string
+        // Used for value comparisons during selection.
+        value: React.PropTypes.string.isRequired,
+        // Used to visually group similar options.
+        // This value is UI text and should be human-friendly.
+        group: React.PropTypes.string,
+        // Receives the relevant option and
+        // must return a DOM-renderable value.
+        render: React.PropTypes.func
       })
     ),
+    // Calls a function after user selection.
     onSelection: React.PropTypes.func
   },
 
@@ -20,7 +30,7 @@ export var Picklist = React.createClass({
     return {
       disabled: false,
       options: [],
-      onSelection: () => {},
+      onSelection: _.noop,
       value: null
     };
   },
@@ -71,7 +81,7 @@ export var Picklist = React.createClass({
   },
 
   renderOption(option, index) {
-    const hasRenderFunction = typeof option.render === 'function';
+    const hasRenderFunction = _.isFunction(option.render);
     const onClickOptionBound = this.onClickOption.bind(this, option);
     const classes = classNames('picklist-option', {
       'picklist-option-selected': this.state.selectedOption === option
@@ -98,33 +108,31 @@ export var Picklist = React.createClass({
   render() {
     const renderedOptions = [];
     const { disabled, options } = this.props;
-    const classes = classNames('picklist', {
-      'picklist-disabled': disabled
-    });
-
     const attributes = {
       ref: ref => this.picklist = ref,
-      className: classes,
-      onMouseOver: this.onMouseOverOptions
+      className: classNames('picklist', {
+        'picklist-disabled': disabled
+      })
     };
 
-    const header = (groupName, key) => (
-      <div className="picklist-group-header" key={key}>{groupName}</div>
+    const header = (group) => (
+      <div className="picklist-group-header" key={`${group}-separator`}>{group}</div>
     );
 
-    const separator = (key) => (
-      <div className="picklist-separator" key={key} />
+    const separator = (group) => (
+      <div className="picklist-separator" key={`${group}-header`} />
     );
 
     options.forEach((option, index) => {
+      const { group } = option;
       const previousOption = options[index - 1];
-      const differentGroup = previousOption && previousOption.group !== option.group;
+      const differentGroup = previousOption && previousOption.group !== group;
 
       if (differentGroup) {
-        renderedOptions.push(separator(`${option.group}-separator`));
-        renderedOptions.push(header(option.group, `${option.group}-header`));
-      } else if (index === 0 && option.group) {
-        renderedOptions.push(header(option.group, `${option.group}-header`));
+        renderedOptions.push(separator(group));
+        renderedOptions.push(header(group));
+      } else if (index === 0 && group) {
+        renderedOptions.push(header(group));
       }
 
       renderedOptions.push(this.renderOption(option, index));

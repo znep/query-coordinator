@@ -3,10 +3,16 @@
   border: solid 1px $light-grey-3;
   overflow-y: auto;
   color: $dark-grey-1;
+
+  &.picklist-disabled {
+    color: $light-grey-1;
+    background-color: $light-grey-6;
+    pointer-events: none;
+  }
 }
 
 .picklist-group-header {
-  background: $light-grey-5;
+  background-color: $light-grey-5;
   padding: 10px;
   text-transform: uppercase;
   font-size: 12px;
@@ -29,17 +35,16 @@
   white-space: nowrap;
 
   &:hover {
-    background-color: tint($primary, 20%);
-    color: $light-grey-7;
+    background-color: $alternate-3-light;
   }
 
   &.picklist-option-selected {
-    color: $dark-grey-1;
-    background-color: tint($primary, 85%);
+    color: $white;
+    background-color: $alternate-3;
   }
 
   &:active:not(.picklist-option-selected) {
-    color: $light-grey-7;
-    background-color: tint($primary, 5%);
+    color: tint($white, 30%);
+    background-color: tint($alternate-3, 30%);
   }
 }

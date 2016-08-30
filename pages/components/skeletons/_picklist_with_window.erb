@@ -1,16 +1,16 @@
 <div id="picklist-windowed-container"></div>
 
 <style>
-#picklist-windowed-container .picklist {
-  height: 200px;
-}
+  #picklist-windowed-container .picklist {
+    height: 200px;
+  }
 </style>
 
-<script type="text/javascript">
-  document.addEventListener('DOMContentLoaded', function() {
-    var props = {
-      onSelection: function(option) {
-        console.log('option selected:', option.title, option.value);
+<script type="text/babel" data-presets="es2015,react">
+  $(() => {
+    const props = {
+      onSelection: (option) => {
+        console.log(`option selected: ${option.title}, ${option.value}`);
       },
       options: [
         {title: 'Cascadia', value: 'cascadia', group: 'Countries'},
@@ -24,7 +24,7 @@
     };
 
     ReactDOM.render(
-      React.createElement(styleguide.Picklist, props),
+      <styleguide.Picklist {...props} />,
       document.getElementById('picklist-windowed-container')
     );
   });

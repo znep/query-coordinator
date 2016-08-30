@@ -64,7 +64,7 @@ export default React.createClass({
 
       // Calculate Position
 
-      this.options.style.top = `${this.container.clientHeight + containerDimensions.top - 1}px`;
+      this.options.style.top = `${this.container.clientHeight + containerDimensions.top}px`;
       this.options.style.left = `${containerDimensions.left}px`;
 
       // Calculate Height

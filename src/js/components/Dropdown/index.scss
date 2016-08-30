@@ -11,10 +11,6 @@
   }
 }
 
-.dropdown-hidden {
-  display: none;
-}
-
 .dropdown-invisible {
   visibility: hidden;
 }
@@ -45,7 +41,7 @@
   }
 
   .dropdown-focused & {
-    border-color: $primary;
+    border-color: $alternate-3;
   }
 
   .dropdown-disabled & {
@@ -68,7 +64,7 @@
   transition: color 0.15s ease-in-out;
 
   .dropdown-focused & {
-    color: $primary;
+    color: $alternate-3;
   }
 
   &::after {

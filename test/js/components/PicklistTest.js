@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import React from 'react';
 import { Simulate } from 'react-addons-test-utils';
 import Picklist from 'components/Picklist';
 
@@ -14,9 +15,6 @@ describe('Picklist', () => {
       ],
       onSelection: _.noop
     });
-  }
-
-  function getValidOptions() {
   }
 
   beforeEach(() => {
@@ -49,19 +47,52 @@ describe('Picklist', () => {
     });
 
     describe('with grouping', () => {
-      beforeEach(function() {
-        element = renderComponent(Picklist, getProps({
-          options: [
-            {title: 'Chinook', value: 'chinook', group: 'Washington State'},
-            {title: 'Duwamish', value: 'duwamish', group: 'Washington State'},
-            {title: 'Pueblo', value: 'pueblo', group: 'New Mexico'},
-            {title: 'Jicarilla APache', value: 'jicarilla-pueblo', group: 'New Mexico'}
-          ]
-        }));
+      const headerSelector = '.picklist-group-header';
+      const optionSelector = '.picklist-option';
+      const options = [
+        {title: 'Chinook', value: 'chinook', group: 'Washington State'},
+        {title: 'Duwamish', value: 'duwamish', group: 'Washington State'},
+        {title: 'Pueblo', value: 'pueblo', group: 'New Mexico'},
+        {title: 'Jicarilla Apache', value: 'jicarilla-pueblo', group: 'New Mexico'}
+      ];
+
+      beforeEach(() => {
+        element = renderComponent(Picklist, getProps({ options }));
       });
 
       it('renders two groups', () => {
-        expect(element.querySelectorAll('.picklist-group-header')).to.have.lengthOf(2);
+        expect(element.querySelectorAll(headerSelector)).to.have.lengthOf(2);
+      });
+
+      it('renders options under the correct groups', () => {
+        const optionOneSelector = `${headerSelector}:first-child + ${optionSelector}`;
+        const optionTwoSelector = `${headerSelector}:nth-child(5) + ${optionSelector}`;
+        // 5 accounts for one group header, two options, a spacer.
+        const optionOne = element.querySelector(optionOneSelector);
+        const optionTwo = element.querySelector(optionTwoSelector);
+
+        expect(optionOne).to.have.text(options[0].title);
+        expect(optionTwo).to.have.text(options[2].title);
+      });
+    });
+
+    describe('with a render function', () => {
+      let render;
+      let option;
+
+      beforeEach(() => {
+        render = sinon.spy(() => <div className="test-container" />);
+        option = { title: 'I remember', value: 'i-remember', render };
+
+        element = renderComponent(Picklist, getProps({ options: [option] }));
+      });
+
+      it('renders a special div', () => {
+        expect(element.querySelector('.test-container')).to.exist;
+      });
+
+      it('passes an option when rendering', () => {
+        expect(render.calledWith(option)).to.be.true;
       });
     });
   });

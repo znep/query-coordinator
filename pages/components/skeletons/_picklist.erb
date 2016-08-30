@@ -1,9 +1,9 @@
 <div id="picklist-container"></div>
 
-<script type="text/javascript">
-  document.addEventListener('DOMContentLoaded', function() {
-    var props = {
-      onSelection: function(option) {
+<script type="text/babel" data-presets="es2015,react">
+  $(() => {
+    const props = {
+      onSelection: (option) => {
         console.log('option selected:', option.title, option.value);
       },
       options: [
@@ -17,7 +17,7 @@
     };
 
     ReactDOM.render(
-      React.createElement(styleguide.Picklist, props),
+      <styleguide.Picklist {...props} />,
       document.getElementById('picklist-container')
     );
   });

@@ -30,6 +30,7 @@ class SiteChromeController < ApplicationController
         redirect_to browse_path
       else
         flash[:notice] = 'Site theme updated'
+        cookies.delete(:socrata_site_chrome_preview)
         redirect_to edit_site_chrome_path
       end
     elsif @site_chrome.errors.any?

@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import { Simulate } from 'react-addons-test-utils';
 import Picklist from 'components/Picklist';
+import { UP, DOWN, ESCAPE, ENTER } from 'common/keycodes';
 
 describe('Picklist', () => {
   let element;
@@ -111,6 +112,132 @@ describe('Picklist', () => {
 
         Simulate.click(option);
         expect(props.onSelection.calledOnce).to.be.true;
+      });
+    });
+
+    describe('when using keyboard navigation', () => {
+      let options;
+      const highlightedOptionSelector = 'picklist-option-highlighted';
+
+      beforeEach(() => {
+        options = element.querySelectorAll('.picklist-option');
+        Simulate.focus(element);
+      });
+
+      describe('when disabled', () => {
+        beforeEach(() => {
+          props = { disabled: true };
+          element = renderComponent(Picklist, getProps(props));
+
+          Simulate.focus(element);
+        });
+
+        it('does nothing for UP', () => {
+          Simulate.keyUp(element, { keyCode: UP });
+          // Did... did it do something?
+          expect(element.querySelector(highlightedOptionSelector)).to.not.exist;
+        });
+
+        it('does nothing for DOWN', () => {
+          Simulate.keyUp(element, { keyCode: DOWN });
+          expect(element.querySelector(highlightedOptionSelector)).to.not.exist;
+        });
+
+        it('does nothing for ENTER', () => {
+          Simulate.keyUp(element, { keyCode: ENTER });
+          expect(element.querySelector('.picklist-option-selected')).to.not.exist;
+        });
+      });
+
+      describe('when pressing up', () => {
+        const event = { keyCode: UP };
+
+        describe('when nothing is highlighted', () => {
+          it('highlights the first option', () => {
+            const firstOption = _.first(options);
+
+            expect(firstOption).to.not.have.class(highlightedOptionSelector);
+
+            Simulate.keyUp(element, event);
+            expect(firstOption).to.have.class(highlightedOptionSelector);
+          });
+        });
+
+        describe('when at the beginning', () => {
+          it('does nothing', () => {
+            const firstOption = _.first(options);
+
+            expect(firstOption).to.not.have.class(highlightedOptionSelector);
+
+            Simulate.click(firstOption);
+            expect(firstOption).to.have.class(highlightedOptionSelector);
+
+            Simulate.keyUp(element, event);
+            expect(firstOption).to.have.class(highlightedOptionSelector);
+          });
+        });
+
+        describe('when in the middle', () => {
+          it('moves the option highlight up one', () => {
+            Simulate.click(options[1]);
+            Simulate.keyUp(element, event);
+
+            expect(options[0]).to.have.class(highlightedOptionSelector);
+          });
+        });
+      });
+
+      describe('when pressing down', () => {
+        const event = { keyCode: DOWN };
+
+        describe('when nothing is highlighted', () => {
+          it('highlights the first option', () => {
+            const firstOption = _.first(options);
+
+            expect(firstOption).to.not.have.class(highlightedOptionSelector);
+
+            Simulate.keyUp(element, event);
+            expect(firstOption).to.have.class(highlightedOptionSelector);
+          });
+        });
+
+        describe('when at the end', () => {
+          it('does nothing', () => {
+            const lastOption = _.last(options);
+
+            expect(lastOption).to.not.have.class(highlightedOptionSelector);
+
+            Simulate.click(lastOption);
+            expect(lastOption).to.have.class(highlightedOptionSelector);
+
+            Simulate.keyUp(element, event);
+            expect(lastOption).to.have.class(highlightedOptionSelector);
+          });
+        });
+
+        describe('when in the middle', () => {
+          it('moves the option highlight one down', () => {
+            Simulate.click(options[1]);
+            Simulate.keyUp(element, event);
+
+            expect(options[2]).to.have.class(highlightedOptionSelector);
+          });
+        });
+      });
+
+      // xdescribe? React and TestUtils doesn't use a real event system
+      // nor does it respond to one. We use a blur event in our component
+      // to break focus.
+      xdescribe('when pressing escape', () => {
+        const event = { keyCode: ESCAPE };
+
+        it('blurs the picklist', () => {
+          Simulate.focus(element);
+          expect(element).to.have.class('picklist-focused');
+
+          Simulate.keyUp(element, event);
+          expect(element).to.not.have.class('picklist-focused');
+        });
       });
     });
   });

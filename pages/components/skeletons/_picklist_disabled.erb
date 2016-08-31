@@ -1,10 +1,10 @@
-<div id="picklist-container"></div>
+<div id="picklist-disabled-container"></div>
 
 <script type="text/babel" data-presets="es2015,react">
   $(() => {
     const props = {
       onSelection: (option) => {
-        console.log('option selected:', option.title, option.value);
+        console.log(`option selected: ${option.title}, ${option.value}`);
       },
       options: [
         {title: 'Inoculate the Innocuous', value: 'inoculate'},
@@ -12,12 +12,14 @@
         {title: 'Ghost Mountain', value: 'ghost-mountain'},
         {title: 'Jellybones', value: 'jellybones'},
         {title: 'Les Os', value: 'les-os'}
-      ]
+      ],
+      value: 'tuff-luff',
+      disabled: true
     };
 
     ReactDOM.render(
       <styleguide.Picklist {...props} />,
-      document.getElementById('picklist-container')
+      document.getElementById('picklist-disabled-container')
     );
   });
 </script>

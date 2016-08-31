@@ -2,10 +2,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import React from 'react';
 import Picklist from '../Picklist';
-
-const KEYS = {
-  ESCAPE: 27
-};
+import { ESCAPE } from '../../common/keycodes';
 
 export default React.createClass({
   propTypes: {
@@ -105,8 +102,6 @@ export default React.createClass({
   },
 
   onKeyUpPlaceholder(event) {
-    const { ESCAPE } = KEYS;
-
     if (event.keyCode === ESCAPE) {
       this.onBlurPlaceholder();
     }

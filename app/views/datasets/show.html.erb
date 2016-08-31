@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
   <%- end -%>
 
-  <title><%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= h(@view.name) %> | <%= get_site_title %></title>
   <link rel="canonical" href="<%= data_grid_path(@view) %>"/>
 <% end %>
 

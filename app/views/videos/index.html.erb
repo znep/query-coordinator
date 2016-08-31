@@ -1,5 +1,5 @@
 <%- content_for :head do -%>
-  <title>Video Guides | <%= CurrentDomain.strings.site_title %></title>
+  <title>Video Guides | <%= get_site_title %></title>
   <%= rendered_stylesheet_tag 'screen-videos' %>
 
   <%- if @popup -%>

@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <title><%= @view ? @view.name : 'Preview' %> | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= @view ? @view.name : 'Preview' %> | <%= get_site_title %></title>
 
   <style type="text/css">
     #publishPreview

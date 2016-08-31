@@ -4,7 +4,7 @@
     <%= rendered_stylesheet_tag 'strip-chrome' %>
   <%- end -%>
   <%= rendered_stylesheet_tag 'dataset-thumbnail' %>
-  <title><%= t("#{prefix}.title") %> | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t("#{prefix}.title") %> | <%= get_site_title %></title>
 <% end %>
 
 <div class="contentBox fixedWidth" id="datasetThumbnail">

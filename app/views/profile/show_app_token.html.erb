@@ -1,6 +1,6 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'profile-show' %>
-  <title><%= @token.name %> | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= @token.name %> | <%= get_site_title %></title>
 <% end %>
 
 

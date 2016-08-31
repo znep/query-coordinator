@@ -1,5 +1,5 @@
 <%- content_for :head do -%>
-  <title><%= @title %> | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= @title %> | <%= get_site_title %></title>
 
   <%- @style_packages.each do |pkg| -%>
     <%= rendered_stylesheet_tag pkg %>

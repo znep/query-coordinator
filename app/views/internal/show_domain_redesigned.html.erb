@@ -3,7 +3,7 @@
 <title><%=
   [ "Domain #{@domain.try(:name) || ''}",
     'Internal Panel',
-    CurrentDomain.strings.site_title
+    get_site_title
   ].join(' | ') %></title>
 <% end %>
 

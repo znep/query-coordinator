@@ -2,7 +2,7 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-federation' %>
-  <title><%= t("#{socrata_federation}.title") %> | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t("#{socrata_federation}.title") %> | <%= get_site_title %></title>
 <% end %>
 
 <%= render :partial => 'left_nav' %>

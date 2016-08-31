@@ -1,5 +1,5 @@
 <%- content_for :head do -%>
-  <title>An Application is Requesting Access | <%= CurrentDomain.strings.site_title %></title>
+  <title>An Application is Requesting Access | <%= get_site_title %></title>
   <%= rendered_stylesheet_tag 'oauth-authorize' %>
 <%- end -%>
 

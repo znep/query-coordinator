@@ -210,7 +210,7 @@ class DatasetsController < ApplicationController
     end
 
     # If we're displaying a single dataset, set the meta tags as appropriate.
-    @meta[:title] = @meta['og:title'] = "#{@view.name} | #{CurrentDomain.strings.site_title}"
+    @meta[:title] = @meta['og:title'] = "#{@view.name} | #{get_site_title}"
     @meta[:description] = @meta['og:description'] = @view.meta_description
     @meta['og:url'] = request.url.to_s
 

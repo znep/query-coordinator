@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-height, user-scalable=no" />
   <%- end -%>
 
-  <title><%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= @view.name %> | <%= get_site_title %></title>
 
   <%= rendered_stylesheet_tag 'embed-form' %>
   <link type="text/css" rel="stylesheet" href="/styles/widget/<%= @theme_id %>.css" />

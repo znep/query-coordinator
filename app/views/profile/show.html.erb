@@ -8,17 +8,10 @@
     <%= display_standard_flashes %>
   </div>
 
-  <%- if FeatureFlags.derive(@view, request).see_socrata_news -%>
-    <%= render :partial => '/profile/socrata_news/sidebar' %>
-  <%- else -%>
-    <%= render :partial => 'header_bar' %>
-    <%= render :partial => 'sidebar' %>
-  <%- end -%>
+  <%= render :partial => '/profile/socrata_news/sidebar' %>
 
   <div class="profileMainContent">
-    <%- if FeatureFlags.derive(@view, request).see_socrata_news -%>
-      <%= render :partial => '/profile/socrata_news/header' %>
-    <%- end -%>
+    <%= render :partial => '/profile/socrata_news/header' %>
   <%- if @is_user_current || @user.description || @user.interests || @user.userLinks  -%>
       <div class="basicInfo content">
         <div class="innerItem">

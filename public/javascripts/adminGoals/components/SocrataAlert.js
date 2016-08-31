@@ -26,7 +26,7 @@ export default function SocrataAlert(props) {
   } else {
     alertProps.dangerouslySetInnerHTML = {
       __html: props.message
-    }
+    };
   }
 
   return <div { ...alertProps }>{ jsxMessage }</div>;

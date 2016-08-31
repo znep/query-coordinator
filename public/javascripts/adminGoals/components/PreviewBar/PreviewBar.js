@@ -1,6 +1,7 @@
 import * as React  from 'react';
 import * as ReactRedux from 'react-redux';
 import * as Feedback from '../feedback';
+import * as Actions from '../../actions';
 import { SocrataBulkActions } from '../../sections/goals/components';
 import SocrataAlert from '../SocrataAlert';
 

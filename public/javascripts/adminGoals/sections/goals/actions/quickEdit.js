@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import * as React from 'react';
 import * as Api from '../../../api';
 import * as DataActions from './data';
 import * as SharedActions from '../../shared/actions';
@@ -86,7 +85,7 @@ export function save() {
         let failureMessage;
         if (message.validationError) {
           failureMessage = _.map(message.errors,
-            error => Helpers.translator(translations, `admin.quick_edit.validation.${error.field}.${error.rule}`));
+            err => Helpers.translator(translations, `admin.quick_edit.validation.${err.field}.${err.rule}`));
         } else {
           failureMessage = Helpers.translator(translations, 'admin.quick_edit.default_alert_message');
         }

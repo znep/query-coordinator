@@ -429,6 +429,7 @@ javascripts:
     - public/javascripts/controls/wizard.js
     - public/javascripts/screens/import-pane-old.js
     - public/javascripts/screens/dataset-edit.js
+    - public/javascripts/util/interpolator.js
   dataset-metrics:
     - public/javascripts/screens/dataset-metrics.js
   api-metrics:

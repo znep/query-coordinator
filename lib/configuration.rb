@@ -1,4 +1,4 @@
-class Configuration < Model
+class Configuration < SocrataSiteChrome::Model
 
   def self.find_by_type(type, default_only = false, cname = nil, merge = true)
     path = "/#{name.pluralize.downcase}.json?type=#{type}&defaultOnly=#{default_only}&merge=#{merge}"

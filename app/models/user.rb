@@ -197,7 +197,9 @@ class User < Model
   end
 
   def can_use_site_appearance?
-    is_superadmin? || is_administrator? || is_designer?
+    is_superadmin? ||
+      (FeatureFlags.derive[:site_appearance_visible] &&
+        (is_administrator? || is_designer?))
   end
 
   def role_name

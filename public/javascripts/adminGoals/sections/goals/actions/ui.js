@@ -1,10 +1,13 @@
+import * as Analytics from '../../shared/analytics';
+
 export const types = {
   setSelection: 'goals.ui.setSelection',
   toggleSelectionById: 'goals.ui.toggleSelectionById',
   sortBy: 'goals.ui.sortBy',
   showPage: 'goals.ui.showPage',
   setGoalsPerPage: 'goals.ui.setGoalsPerPage',
-  selectUntil: 'goals.ui.selectUntil'
+  selectUntil: 'goals.ui.selectUntil',
+  openGoalManagePage: 'goals.ui.openGoalManagePage'
 };
 
 export const setSelection = goalIds => ({
@@ -15,6 +18,13 @@ export const setSelection = goalIds => ({
 export const toggleSelectionById = goalId => ({
   type: types.toggleSelectionById,
   goalId
+});
+
+export const openGoalManagePage = goalId => ({
+  type: types.openGoalManagePage,
+  ...Analytics.createTrackEventActionData(Analytics.EventNames.manageOnGoalPage, {
+    [Analytics.EventPayloadKeys.goalId]: goalId
+  })
 });
 
 /**

@@ -17,7 +17,8 @@ class GoalTableRow extends React.Component {
     _.bindAll(this, [
       'handleClick',
       'handleEditClick',
-      'handleLinkClick'
+      'handleLinkClick',
+      'handleGoalPageLinkClick'
     ]);
   }
 
@@ -34,6 +35,11 @@ class GoalTableRow extends React.Component {
   handleEditClick(event) {
     event.stopPropagation();
     this.props.quickEditActions.openModal(this.props.goal.get('id'));
+  }
+
+  handleGoalPageLinkClick(event) {
+    event.stopPropagation();
+    this.props.uiActions.openGoalManagePage(this.props.goal.get('id'));
   }
 
   handleLinkClick(event) {
@@ -62,7 +68,7 @@ class GoalTableRow extends React.Component {
                  className="goal-edit-link">{ translations.getIn(['admin', 'listing', 'quick_edit']) }</a>
             </span>
             <span className="goal-page-link">
-              <a target="_blank" href={ goalPageUrl } className="external-link" onClick={ this.handleLinkClick }>
+              <a target="_blank" href={ goalPageUrl } className="external-link" onClick={ this.handleGoalPageLinkClick }>
                 { translations.getIn(['admin', 'listing', 'goal_page']) } <span className="icon-external"/>
               </a>
             </span>

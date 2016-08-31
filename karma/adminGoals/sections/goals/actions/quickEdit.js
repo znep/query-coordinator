@@ -26,7 +26,8 @@ describe('actions/quickEditActions', () => {
   it('openGoalQuickEdit should send goalId to reducer', () => {
     let goalId = 'xxxx-xxxx';
     var returnValue = Actions.openModal(goalId);
-    expect(returnValue).to.deep.eq({ type: Actions.types.openModal, goalId });
+    expect(returnValue.type).to.eq(Actions.types.openModal);
+    expect(returnValue.goalId).to.eq(goalId);
   });
 
   it('closeGoalQuickEdit should send goalId to reducer', () => {

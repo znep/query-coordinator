@@ -3,6 +3,7 @@ import * as api from '../../../api';
 import * as SharedActions from '../../shared/actions';
 import * as DataActions from './data';
 import * as Helpers from '../../../helpers';
+import * as Analytics from '../../shared/analytics';
 
 export const types = {
   openModal: 'goals.bulkEdit.openModal',
@@ -11,7 +12,8 @@ export const types = {
 };
 
 export const openModal = () => ({
-  type: types.openModal
+  type: types.openModal,
+  ...Analytics.createTrackEventActionData(Analytics.EventNames.bulkEditGoal, {})
 });
 
 export const closeModal = () => ({
@@ -49,6 +51,10 @@ function formatGoalDataForWrite(updatedData) {
 export const saveGoals = (goals, updatedData) => (dispatch, getState) => {
   const allConfigured = goals.every(goal => goal.has('prevailing_measure'));
   const translations = getState().get('translations');
+
+  // Send event to mixpanel
+  const analyticsEvent = Analytics.createTrackEventActionData(Analytics.EventNames.clickUpdateOnBulkEdit, {});
+  dispatch(SharedActions.doSideEffect(analyticsEvent));
 
   // Cannot update prevailing measure data for the items
   // which are not configured properly.

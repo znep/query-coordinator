@@ -227,6 +227,7 @@ body .header-main {
   }
 
   .container {
+    display: inline-flex;
     margin: auto;
     pointer-events: all;
 
@@ -239,8 +240,19 @@ body .header-main {
       }
     }
 
-    .btn-busy {
-      vertical-align: middle;
+    .spinner-default {
+      display: none;
+      margin: auto;
+    }
+
+    &.story-save-error-bar-trying-again {
+      .available {
+        display: none;
+      }
+
+      .spinner-default {
+        display: inline-block;
+      }
     }
   }
 }

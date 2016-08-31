@@ -50,7 +50,7 @@ const TRACK_FIELD = 'analyticsTrackEvent';
  *
  * @returns {Function<Object, Object, Object, Object>} Redux middleware
  */
-export const mixpanel = store => next => action => {
+export const mixpanel = () => next => action => {
   const result = next(action);
 
   // Check if the action wants to be tracked

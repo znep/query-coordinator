@@ -772,10 +772,6 @@ describe('Customize card dialog', function() {
         expanded: false
       };
 
-      beforeEach(function() {
-        ServerConfig.override('oduxEnableFeatureMapHover', true);
-      });
-
       it('should appear when card is a feature map', function() {
         var dialog = createDialog({ card: featureMapCard });
         var cardType = dialog.scope.customizedCard.getCurrentValue('cardType');

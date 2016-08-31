@@ -51,7 +51,7 @@ module.exports = function featureMap(
           baseLayerOpacity: Constants.DEFAULT_MAP_BASE_LAYER_OPACITY,
           baseLayerUrl: Constants.MAPBOX_SIMPLE_BLUE_BASE_LAYER_URL,
           debug: ServerConfig.get('debugDataLens'),
-          hover: ServerConfig.get('oduxEnableFeatureMapHover'),
+          hover: true,
           localization: {
             flyout_filter_notice: I18n.flyout.filterPrompt,
             flyout_filter_or_zoom_notice: I18n.flyout.zoomOrFilterPrompt,
@@ -87,19 +87,17 @@ module.exports = function featureMap(
       attachEvents();
 
       // Initialize RowInspector (also from frontend-visualizations)
-      if (ServerConfig.get('oduxEnableFeatureMapHover')) {
-        var rowInspectorConfig = {
-          localization: {
-            previous: I18n.featureMapFlannel.previous,
-            next: I18n.featureMapFlannel.next,
-            defaultLabelUnit: $scope.rowDisplayUnit,
-            showing: I18n.featureMapFlannel.showing,
-            paging: I18n.featureMapFlannel.paging
-          }
-        };
+      var rowInspectorConfig = {
+        localization: {
+          previous: I18n.featureMapFlannel.previous,
+          next: I18n.featureMapFlannel.next,
+          defaultLabelUnit: $scope.rowDisplayUnit,
+          showing: I18n.featureMapFlannel.showing,
+          paging: I18n.featureMapFlannel.paging
+        }
+      };
 
-        RowInspector.setup(rowInspectorConfig);
-      }
+      RowInspector.setup(rowInspectorConfig);
 
       /**
        * Attach event handlers
@@ -120,10 +118,7 @@ module.exports = function featureMap(
         visualizationElement.on('mouseover', registerHoverFlyout);
         visualizationElement.on('mouseout', deregisterHoverFlyout);
 
-
-        if (ServerConfig.get('oduxEnableFeatureMapHover')) {
-          visualizationElement.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
-        }
+        visualizationElement.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
 
         // CORE-4832 - disable pan and zoom on feature map
         if ($scope.disablePanAndZoom === true) {
@@ -148,9 +143,7 @@ module.exports = function featureMap(
         visualizationElement.off('mouseover', registerHoverFlyout);
         visualizationElement.off('mouseout', deregisterHoverFlyout);
 
-        if (ServerConfig.get('oduxEnableFeatureMapHover')) {
-          visualizationElement.off('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
-        }
+        visualizationElement.off('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
       }
 
       /**

@@ -25,7 +25,7 @@ bubble:
   defaultValue: old
   expectedValues: nextgen old
 cetera_profile_search:
-  description: Use the shiny new Cetera backend search service to power the profile page. 
+  description: Use the shiny new Cetera backend search service to power the profile page.
   defaultValue: false
 cetera_search:
   description: Use the shiny new Cetera backend search service. NOTE — this flag's value is being forcibly set to false in the spatial lens admin layer picker; do not remove this flag until this aspect of dataset search has been accounted for in Cetera.
@@ -213,10 +213,6 @@ nbe_bucket_size:
 notify_import_result:
   description: Enable 'notify me' button during data set import. Button will register an email interest for the user and trigger an email to be sent once dataset import is completed.
   defaultValue: false
-odux_enable_feature_map_hover:
-  description: Enable hover functionality in point maps.
-  defaultValue: true
-  category: data lens
 open_performance_enable_goal_management_admin_pane:
   description: Enable the 'Goal Management' link in the admin panel.
   defaultValue: true

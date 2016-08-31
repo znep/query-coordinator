@@ -204,13 +204,11 @@ module.exports = function customizeCardDialog(
       // Set up map customization dropdowns.
       setupBaseLayerSelect($scope.customizedCard, $scope, element);
 
-      if (ServerConfig.get('oduxEnableFeatureMapHover')) {
-        $scope.$bindObservable('showFlannelTitleMenu',
-          $scope.customizedCard.observe('cardType').map(function(cardType) {
-            return cardType === 'feature';
-          }));
-        setupFlannelTitleSelect($scope.customizedCard, $scope);
-      }
+      $scope.$bindObservable('showFlannelTitleMenu',
+        $scope.customizedCard.observe('cardType').map(function(cardType) {
+          return cardType === 'feature';
+        }));
+      setupFlannelTitleSelect($scope.customizedCard, $scope);
 
       // Check to make sure we are customizing histogram before setting up
       // the bucket type option.

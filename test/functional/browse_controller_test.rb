@@ -64,14 +64,6 @@ class BrowseControllerTest < ActionController::TestCase
   clytemnestra_payload = File.read('test/fixtures/catalog_search_results.json')
   cetera_payload = File.read('test/fixtures/cetera_search_results.json')
 
-  test 'it should respond to the data_lens_state feature flag as a query string parameter' do
-    stub_feature_flags_with(:data_lens_transition_state, 'pre_beta')
-    get :show, { 'data_lens_transition_state' => 'post_beta' }
-
-    assert_response(:success)
-    assert_select('.facetSection.limitTo > ul > li > .typeDataLens', 1)
-  end
-
   test 'it should render page meta content over https and not http' do
     @request.env['HTTPS'] = 'on'
     get :show
@@ -86,163 +78,25 @@ class BrowseControllerTest < ActionController::TestCase
     end
   end
 
-  context 'when the data_lens_state feature flag is set to "pre_beta"' do
-    setup do
-      stub_feature_flags_with(:data_lens_transition_state, 'pre_beta')
-    end
-
-    should 'not show any new view facet for users unable to edit the datasets of others' do
-      @user.stubs(
-        :followers => [],
-        :friends => [],
-        :route_params => {
-          :profile_name => @user.screen_name,
-          :id => @user.uid
-        },
-        :rights => []
-      )
-      @controller.stubs(
-        :current_user => @user,
-        :categories_facet => nil
-      )
-      get :show
-
-      assert_response(:success)
-      assert_select('.facetSection.limitTo > ul > li > .typeDataLens', 0)
-    end
-
-    should 'not show any new view facet for users able to edit the datasets of others' do
-      @user.stubs(
-        :followers => [],
-        :friends => [],
-        :route_params => {
-          :profile_name => @user.screen_name,
-          :id => @user.uid
-        },
-        :rights => [UserRights::EDIT_OTHERS_DATASETS]
-      )
-      @controller.stubs(
-        :current_user => @user,
-        :categories_facet => nil
-      )
-      get :show
-
-      assert_response(:success)
-      assert_select('.facetSection.limitTo > ul > li > .typeDataLens', 0)
-    end
-  end
-
-  context 'when the data_lens_state feature flag is set to "beta"' do
-    setup do
-      stub_feature_flags_with(:data_lens_transition_state, 'beta')
-    end
-
-    should 'not show any new view facet for users unable to edit the datasets of others' do
-      @user.stubs(
-        :followers => [],
-        :friends => [],
-        :route_params => {
-          :profile_name => @user.screen_name,
-          :id => @user.uid
-        },
-        :rights => []
-      )
-      @controller.stubs(
-        :current_user => @user,
-        :categories_facet => nil
-      )
-      get :show
-
-      assert_response(:success)
-      assert_select('.facetSection.limitTo > ul > li > .typeDataLens', 0)
-    end
-
-    should 'show new view facets for users able to edit the datasets of others' do
-      @user.stubs(
-        :followers => [],
-        :friends => [],
-        :route_params => {
-          :profile_name => @user.screen_name,
-          :id => @user.uid
-        },
-        :rights => [UserRights::EDIT_OTHERS_DATASETS]
-      )
-      @controller.stubs(
-        :current_user => @user,
-        :categories_facet => nil
-      )
-      get :show
-
-      assert_response(:success)
-      assert_select('.facetSection.limitTo > ul > li > .typeDataLens', 1)
-    end
-  end
-
-  context 'when the data_lens_state feature flag is set to "post_beta"' do
-    setup do
-      stub_feature_flags_with(:data_lens_transition_state, 'post_beta')
-    end
-
-    should 'show new view facets for users unable to edit the datasets of others' do
-      @user.stubs(
-        :followers => [],
-        :friends => [],
-        :route_params => {
-          :profile_name => @user.screen_name,
-          :id => @user.uid
-        },
-        :rights => []
-      )
-      @controller.stubs(
-        :current_user => @user,
-        :categories_facet => nil
-      )
-      get :show
-
-      assert_response(:success)
-      assert_select('.facetSection.limitTo > ul > li > .typeDataLens', 1)
-    end
-
-    should 'show new view facets for users able to edit the datasets of others' do
-      @user.stubs(
-        :followers => [],
-        :friends => [],
-        :route_params => {
-          :profile_name => @user.screen_name,
-          :id => @user.uid
-        },
-        :rights => [UserRights::EDIT_OTHERS_DATASETS]
-      )
-      @controller.stubs(
-        :current_user => @user,
-        :categories_facet => nil
-      )
-      get :show
-
-      assert_response(:success)
-      assert_select('.facetSection.limitTo > ul > li > .typeDataLens', 1)
-    end
-  end
-
   test 'it should not send a limitTo for search when no facet is selected' do
-      Clytemnestra.
-        expects(:search_views).
-        with { |actual| !actual[:limitTo].present? }.
-        returns(Clytemnestra::ViewSearchResult.from_result(File.open('test/fixtures/catalog_search_results.json').read))
-      get :show
-      assert_response(:success)
-      Clytemnestra.unstub(:search_views)
-    end
+    Clytemnestra.
+      expects(:search_views).
+      with { |actual| !actual[:limitTo].present? }.
+      returns(Clytemnestra::ViewSearchResult.from_result(File.open('test/fixtures/catalog_search_results.json').read))
+    get :show
+    assert_response(:success)
+    Clytemnestra.unstub(:search_views)
+  end
 
   test 'it should send an appropriate limitTo for search when new_view type facet is selected' do
-      Clytemnestra.
-        expects(:search_views).
-        with { |actual| actual[:limitTo].eql? 'new_view' }.
-        returns(Clytemnestra::ViewSearchResult.from_result(File.open('test/fixtures/catalog_search_results.json').read))
-      get :show, { 'limitTo' => 'new_view' }
-      assert_response(:success)
-      Clytemnestra.unstub(:search_views)
-    end
+    Clytemnestra.
+      expects(:search_views).
+      with { |actual| actual[:limitTo].eql? 'new_view' }.
+      returns(Clytemnestra::ViewSearchResult.from_result(File.open('test/fixtures/catalog_search_results.json').read))
+    get :show, { 'limitTo' => 'new_view' }
+    assert_response(:success)
+    Clytemnestra.unstub(:search_views)
+  end
 
   context 'embedded browse page' do
     should 'render without errors' do

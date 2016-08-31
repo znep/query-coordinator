@@ -71,8 +71,7 @@
 
     return {
       hasGroupBys: hasGroupBys,
-      dataset: blist.dataset,
-      dataLensState: blist.feature_flags.data_lens_transition_state
+      dataset: blist.dataset
     };
   }
 

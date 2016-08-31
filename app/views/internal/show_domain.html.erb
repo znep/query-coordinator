@@ -1,138 +1,167 @@
 <% content_for :head do %>
 <%= rendered_stylesheet_tag 'internal' %>
-<title>Domain <%= @domain.nil? ? '' : @domain.name %> | Internal Panel |
-  <%= get_site_title %></title>
+<title><%=
+  [ "Domain #{@domain.try(:name) || ''}",
+    'Internal Panel',
+    get_site_title
+  ].join(' | ') %></title>
 <% end %>
 
 <%= render :partial => 'left_nav' %>
 
-
-<div class="contentBox withLeftNavigation">
+<div class="contentBox withLeftNavigation internalPanelRedesign">
   <div class='content'>
 
-    <% if @domain.nil? %>
-      <p>Domain could not be found</p>
+    <!-- Federations for everyone? <%= federations_for_everyone? %> -->
 
-    <% else %>
-      <%= render :partial => 'production_warning' %>
-      <h1><%= @domain.name %> (<%= @domain.cname %>)</h1>
+    <%= render :partial => 'production_warning' %>
+    <h1><%= @domain.name %> (<%= @domain.cname %>)</h1>
+    <%= display_standard_flashes %>
 
-      <p>This is a
-      <a href="/internal/tiers/<%= @domain.accountTier.name %>">
-        <em><%= @domain.accountTier.name %></em>
-      </a>
-      domain.</p>
-      <p>Domain ID: <%= @domain.id %></p>
+    <p>This is a
+    <a href="/internal/tiers/<%= @domain.accountTier.name %>">
+      <em><%= @domain.accountTier.name %></em>
+    </a>
+    domain.</p>
+    <p>Domain ID: <%= @domain.id %></p>
+    <p class="cacheRefreshedAt">
+      Cache Refreshed at:
+      <%= link_to domain_cache_time, show_domain_data_path(format: :json) %>
+    </p>
+    <p>Organized inside: <%= organization_link %></p>
+    <p>Salesforce Information: <%= salesforce_information %></p>
 
-      <h2>Domain/Aliases:</h2>
-      <%= form_tag '/internal/orgs/' + @domain.organizationId.to_s +
-        '/domains/' + @domain.cname + '/aliases' do %>
-        <div class='line'>
-          <label>Primary CName</label>
-          <input type='text' name='new_cname' value="<%= @domain.cname %>" />
+    <h2>Domain/Aliases:</h2>
+    <div class="updateAliases">
+      <div class="line">
+        <%= label_tag 'new_cname', 'Primary CName' %>
+        <%= content_tag :span, @domain.cname %>
+      </div>
+      <%- @aliases.each_with_index do |_alias, index| %>
+        <div class="line" title="<%= _alias %>">
+          <%= label_tag 'aliases', index.zero? ? 'Aliases' : '' %>
+          <%= content_tag :span, _alias, :class => 'alias' %>
+          <%= remove_alias_button(_alias) %>
+          <%= promote_to_primary_cname_button(_alias) %>
         </div>
-        <div class='line'>
-          <label>Aliases</label>
-          <input type='text' name='aliases' value="<%= @domain.aliases %>"
-                 title="separated by comma"
-            />
-        </div>
-        <input type='submit' value='Update' />
-      <% end %>
+      <%- end %>
+    </div>
 
-      <h2>Configurations</h2>
-      <ul>
-        <%- @configs.each do |conf|
-          case conf.type
-          when 'feature_flags'
-        -%>
-        <li><a href="/internal/orgs/<%= @domain.organizationId %>/domains/<%= @domain.cname %>/feature_flags">Feature Flags</a></li>
-        <%-
-          else
-        -%>
-        <li<%== ' class="isDefault"' if conf.default %>>
-        <a href='<%= show_config_path(org_id: @domain.organizationId,
-                                      domain_id: @domain.cname,
-                                      config_id: conf.id) %>'>
-          (<%= conf.type %>) <%= conf.name %>
-        </a>
-        </li>
-          <%- end -%>
-        <%- end -%>
-      </ul>
-
-      <h2>Add Configuration:</h2>
-      <%= form_tag '/internal/orgs/' + @domain.organizationId.to_s +
-        '/domains/' + @domain.cname + '/site_config', :class => 'addConfigForm' do %>
-        <div class='line'>
-          <label>Name</label>
-          <input type='text' name='config[name]' />
-        </div>
-        <div class='line'>
-          <label>Type</label>
-          <input class="add_config_type" type='text' name='config[type]' value='' />
-        </div>
-        <input type='submit' value='Create' />
-      <% end %>
-
-      <h2>Features:</h2>
-      <%= form_tag '/internal/orgs/' + @domain.organizationId.to_s +
-        '/domains/' + @domain.cname + '/feature' do %>
-        <%- @domain.features.each do |feature, enabled| -%>
-        <div class='line'>
-          <label><%= feature %></label>
-          <%= hidden_field_tag 'features[name[' + feature + ']]',
-            feature %>
-          <%= check_box_tag 'features[enabled[' + feature + ']]',
-            'enabled', enabled %>
-        </div>
-        <%- end -%>
-        <input type="submit" value="Update"/>
-      <% end %>
-
-      <h2>Add Feature</h2>
-      <%= form_tag '/internal/orgs/' + @domain.organizationId.to_s +
-        '/domains/' + @domain.cname + '/feature' do %>
-        <div class='line'>
-          <input type="text" name="new-feature_name" />
-          <%= check_box_tag 'new-feature_enabled', 'enabled', true %>
-        </div>
-        <input type="submit" value="Add"/>
-      <% end %>
-
-      <h2>Account Modules:</h2>
-      <% if @domain.accountModules.nil? || @domain.accountModules.size <= 0 %>
-        <p>No account modules configured.</p>
-      <% else %>
-        <ul>
-          <% @domain.accountModules.each do |mod| %>
-            <li><%= mod.name %> (<%= mod.description %>)</li>
-          <% end %>
-        </ul>
-      <% end %>
-
-      <h2>Add an account module</h2>
-      <%= form_tag '/internal/orgs/' + @domain.organizationId.to_s +
-        '/domains/' + @domain.cname + '/account_modules' do %>
-        <div class='line'>
-          <label>Module:</label>
-          <select name="module[name]">
-            <% @modules.each do |mod| %>
-            <option value="<%= mod.name %>"><%= mod.name %></option>
-            <% end %>
-          </select>
-        </div>
-        <input type="submit" value="Add"/>
-      <% end %>
-
-      <%= render :partial => 'bulk_feature_flag_update', :locals => {
-        flags: @bulk_updates[:enable_nbe],
-        enable_text: 'Enable NBE-only',
-        disable_text: 'Reset from NBE-only',
-        feature_description: 'This will bulk-change feature flags to turn on and off NBE-only, effecting imports, redirects, and enabled features. Be careful.'
-      } %>
+    <h2>Add New Alias:</h2>
+    <%= form_tag update_aliases_path, :class => 'updateAliasesForm' do %>
+      <div class="line">
+        <%= text_field_tag 'new_alias', '' %>
+      </div>
+      <%= submit_tag 'Add Alias' %>
     <% end %>
 
+    <h2>Configuration Sets</h2>
+    <ul>
+      <%- @configs.each do |conf|
+        path =
+          case conf.type
+          when 'feature_flags' then feature_flags_config_path
+          else show_config_path(domain_id: @domain.cname,
+                                config_id: conf.id)
+          end -%>
+          <li<%== ' class="isDefault"' if conf.default %>>
+          <%= link_to "(#{conf.type}) #{conf.name}", path %>
+          </li>
+      <%- end -%>
+    </ul>
+
+    <h2>Add Configuration Set:</h2>
+    <%= form_tag create_site_config_path, :class => 'addConfigForm' do %>
+      <div class='line'>
+        <%= text_field_tag 'config[type]', '', :class => 'add_config_type' %>
+        <div class="warning">
+          <%- [ :poorly_understood,
+                :not_intended_for_direct_manipulation,
+                :deprecation ].each do |reason| %>
+            <%= discouragement_explanation(reason) %>
+          <%- end %>
+          <div class="already_exists">
+            This configuration already exists. Maybe you should edit the <a>existing one</a> instead?
+          </div>
+        </div>
+      </div>
+      <%= submit_tag 'Create' %>
+    <% end %>
+
+    <h2>Modules (formerly Modules and Features):</h2>
+    <div>Disabling a module will have it remain visible in this list. There is no functional difference between a disabled and removed module.</div>
+    <%# A module gets created in `domain_modules`. It is never deleted. A property is set in the config `feature_set`. This controls whether or not it is used. The exception is `federations`, which are automatically available in most cases unless it's not in our main datacenter. See CORE-2696 and InternalHelper#federations_for_everyone? %>
+    <div class="featureList">
+      <%- @domain.features.sort.each do |feature, enabled| -%>
+      <div class="line<%= ' featureDisabled' unless enabled %>">
+        <label><%= feature %></label>
+        <%= enable_or_disable_module_feature(feature, enabled) %>
+        <%= remove_module_feature(feature) %>
+      </div>
+      <%- end -%>
+    </div>
+
+    <h2>Add Module</h2>
+    <%= form_tag add_module_feature_path do %>
+      <div class='line'>
+        <%= text_field_tag 'new-feature_name' %>
+        <%= hidden_field_tag 'new-feature_enabled', 'enabled' %>
+      </div>
+      <%= submit_tag 'Add' %>
+    <% end %>
+
+    <div class="actions expandable">
+      <%= expandable_section('Management Actions') do %>
+        <dl class="config_type_description">
+          <dt>Change Organization</dt>
+          <dd>
+            <%= one_button_form(url: update_domain_path, text: 'Update') do %>
+              <%= select_tag :org_id, nil, 'class' => 'organizationList' %>
+            <%- end %>
+            <p>This is entirely organizational and only affects which organization you see this domain listed in.</p>
+          </dd>
+          <dt>Rename Domain</dt>
+          <dd>
+            <%= one_button_form(url: update_domain_path, text: 'Rename') do %>
+              <%= text_field_tag :new_name, @domain.name %>
+            <%- end %>
+            <p>This is entirely cosmetic and only affects how the name of the domain is reflected in the Internal Panel.</p>
+          </dd>
+          <dt>Salesforce ID</dt>
+          <dd>
+            <%= one_button_form(url: update_domain_path, text: 'Set Salesforce ID') do %>
+              <%= text_field_tag :salesforce_id, @domain.salesforceId %>
+            <%- end %>
+          </dd>
+          <dt>Flush Cache</dt>
+          <dd>
+            <%- if CurrentDomain.last_refresh(@domain.cname).nil? %>
+              <p>Dev Mode does not cache domain data.</p>
+            <%- else %>
+              <%= one_button_form(url: flush_cache_path(format: :data), text: 'Flush cache') %>
+            <%- end %>
+            <p>This informs frontend that it should re-fetch domain data (including configurations) from core.</p>
+          </dd>
+        </dl>
+      <%- end %>
+    </div>
+
+    <div class="prebuiltActions expandable">
+      <%= expandable_section('Pre-built Actions') do %>
+        <dl class="config_type_description">
+          <%= bulk_feature_flag_update(
+            @bulk_updates[:enable_nbe],
+            enable_text: 'Enable NBE-only',
+            disable_text: 'Reset from NBE-only',
+            feature_description: 'This will bulk-change feature flags to turn on and off NBE-only, effecting imports, redirects, and enabled features. Be careful.') %>
+          <%= bulk_module_feature_addition(
+            @bulk_updates[:enable_govstat],
+            text: 'Enable GovStat',
+            feature_description: %Q!Add Open Performance to this domain. You will still need to go to #{link_to govstat_my_goals_path, '/stat/my/goals'}, press ~ twice, and type ".bootstrap".!.html_safe
+          ) %>
+        </dl>
+      <%- end %>
+    </div>
   </div>
 </div>
 
@@ -140,21 +169,14 @@
   <script type="text/javascript">
     $(function() {
       var existingConfigTypes = <%== @configs.inject([]) { |memo, conf| memo << conf.type }.uniq.to_json %>;
-      var $form = $('.addConfigForm');
-      $form.submit(function() {
-        var configType = $form.find('input[name="config[type]"]').val();
-        if (_.include(existingConfigTypes, configType)) {
-          return confirm('Hey, a config with type "{0}" already exists. Are you sure you want to add another one?'.format(configType));
-        } else {
-          return true;
-        }
-      });
+      var knownConfigTypes = <%== @known_config_types.to_json %>;
 
-      var configTypeRenderFunction = function(dataItem, topMatch, config) {
+      var showAllFieldsRenderFunction = function(dataItem, topMatch, config) {
         var toRender = [];
+        var excludeFields = (config.excludeFieldsFromRender || []).concat(config.nameField);
         toRender.push(
           $.tag2({ _: 'p', className: 'title', contents: dataItem[config.nameField] }));
-        _.each(_.without(_.keys(dataItem), 'name'), function(key) {
+        _.each(_.difference(_.keys(dataItem), excludeFields), function(key) {
           var value = dataItem[key];
           // Autolink because that seems obvious.
           // There's more refined autolinking theoretically possible, but it's more
@@ -177,15 +199,94 @@
         return _.pluck(toRender, '0.outerHTML').join('');
       };
 
+      $('.addConfigForm input[name="config[type]"]').change(function() {
+        var chosenType = $(this).val();
+        if (_.isEmpty(chosenType)) {
+          displayDiscouragement({});
+          return;
+        }
+
+        var config = _.detect(knownConfigTypes, function(type) {
+          return type.name === chosenType;
+        });
+        var poorly_understood = { discourage_in_creation_ui: { reason: 'poorly_understood' }};
+        displayDiscouragement(config || poorly_understood);
+      });
+
+      var displayDiscouragement = function(dataItem) {
+        var discouragement = dataItem.discourage_in_creation_ui;
+        var $warning = $('.addConfigForm .warning');
+        $warning.removeClass().addClass('warning');
+        $warning.find('span.instead').hide();
+        if (discouragement) {
+          switch(discouragement.reason) {
+            case 'poorly_understood':
+              $warning.addClass('poorly_understood');
+              break;
+            case 'not_intended_for_direct_manipulation':
+              $warning.addClass('not_intended_for_direct_manipulation');
+              break;
+            case 'deprecation':
+              $warning.addClass('deprecation');
+              break;
+            default:
+              console.error('not sure what happened');
+          }
+          if (discouragement.instead) {
+            $warning.find('span.instead').show();
+            $warning.find('span.instead a').attr('href', discouragement.instead);
+          }
+        } else if (_.include(existingConfigTypes, dataItem.name)) {
+          $warning.addClass('already_exists');
+          <%# Using `replace` instead of `format` because the url_helper is insistent on
+            # escaping the value I give it. %>
+          $warning.find('a').attr('href',
+              '<%= show_config_path(config_id: '{0}') %>'.replace('%7B0%7D', dataItem.name));
+        }
+      };
+
       $('.add_config_type').focus(_.once(function() {
         $(this).awesomecomplete({
           highlightMatches: true,
           ignoreCase: true,
-          renderFunction: configTypeRenderFunction,
-          staticData: <%== @known_config_types.to_json %>,
+          excludeFieldsFromRender: ['default_config_name', 'discourage_in_creation_ui'],
+          renderFunction: showAllFieldsRenderFunction,
+          staticData: knownConfigTypes,
+          resultLimit: 100,
+          showAll: true,
+          onComplete: displayDiscouragement,
           suggestionListClass: 'autocomplete config_type_autocomplete'
-        });
+        }).focus();
       }));
+
+      var modules = <%== (@modules + @features).to_json %>;
+      $('input[name=new-feature_name]').focus(_.once(function() {
+        $(this).awesomecomplete({
+          highlightMatches: true,
+          ignoreCase: true,
+          excludeFieldsFromRender: ['flags'],
+          renderFunction: showAllFieldsRenderFunction,
+          staticData: modules,
+          resultLimit: 100,
+          showAll: true,
+          suggestionListClass: 'autocomplete'
+        }).focus();
+      }));
+
+      $('.featureList label').each(function() {
+        var $this = $(this);
+        var module = _.detect(modules, function(mod) { return mod.name === $this.text(); });
+        if (module) {
+          $this.socrataTip({
+            trigger: 'hover',
+            isSolo: true,
+            message: module.description,
+            'parent': 'body'
+          });
+        }
+      });
+
+      $('.cacheRefreshedAt a').formatWithMoment();
     });
   </script>
 <% end %>

@@ -186,9 +186,7 @@ module InternalHelper
   def remove_alias_button(_alias)
     aliases = @aliases - [_alias]
     one_button_form(url: update_aliases_path, text: 'Remove Alias', as_button: true) do
-      html = hidden_field_tag('aliases', aliases.join(','))
-      html << hidden_field_tag('redesigned', 'true')
-      html
+      hidden_field_tag('aliases', aliases.join(','))
     end
   end
 
@@ -197,7 +195,6 @@ module InternalHelper
     one_button_form(url: update_aliases_path, text: 'Promote to Primary CName', as_button: true) do
       html = hidden_field_tag('aliases', aliases.join(','))
       html << hidden_field_tag('new_cname', _alias)
-      html << hidden_field_tag('redesigned', 'true')
       html
     end
   end

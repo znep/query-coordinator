@@ -80,11 +80,7 @@ class InternalController < ApplicationController
 
     respond_to do |format|
       format.json { render :json => @domain.data.to_json }
-      if %w(domain all).include?(FeatureFlags.derive(nil, request).internal_panel_redesign)
-        format.html { render 'show_domain_redesigned' }
-      else
-        format.html { render }
-      end
+      format.html { render }
     end
   end
 
@@ -115,10 +111,6 @@ class InternalController < ApplicationController
     @usage_discouragement = type_data.discouragement_for(@config.type, params)
 
     @properties = @config.data['properties'].try(:sort_by, &proc { |p| p['name'] })
-
-    if %w(config all).include?(FeatureFlags.derive(nil, request).internal_panel_redesign)
-      render 'show_config_redesigned'
-    end
   end
 
   def show_property
@@ -340,32 +332,6 @@ class InternalController < ApplicationController
   end
 
   def update_aliases
-    if params[:redesigned]
-      update_aliases_better
-      return
-    end
-
-    new_cname = params[:new_cname].strip
-
-    begin
-      unless valid_cname?(new_cname)
-        flash.now[:error] = "Invalid Primary CName: #{new_cname}"
-        return render 'shared/error', :status => :internal_server_error
-      end
-
-      Domain.update_aliases(params[:domain_id], new_cname, params[:aliases])
-      notices << 'Updated cname successfully.'
-      notices << "Updated aliases (there are now #{params[:aliases].split(',').size}) successfully."
-    rescue CoreServer::CoreServerError => e
-      flash.now[:error] = e.error_message
-      return render 'shared/error', :status => :internal_server_error
-    end
-    CurrentDomain.flag_out_of_date!(params[:domain_id])
-    prepare_to_render_flashes!
-    redirect_to show_domain_path(domain_id: new_cname)
-  end
-
-  def update_aliases_better
     begin
       if params[:new_alias]
         domain = Domain.find(params[:domain_id])

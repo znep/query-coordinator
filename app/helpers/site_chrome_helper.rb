@@ -189,6 +189,10 @@ module SiteChromeHelper
     link.dig('links').present?
   end
 
+  def section_separator
+    content_tag(:div, nil, :class => 'section-separator')
+  end
+
   def site_chrome_version_is_greater_than_or_equal?(version, site_chrome = @site_chrome)
     Gem::Version.new(site_chrome.current_version) >= Gem::Version.new(version)
   end

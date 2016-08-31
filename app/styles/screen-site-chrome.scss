@@ -27,13 +27,8 @@ $link_color: #2279a6;
   }
 
   .section-separator {
-    border-bottom: 1px solid $faint-border-color;
-    padding-bottom: 1rem;
-    margin-bottom: 1rem;
-
-    .settings-form.full {
-      border-top: none;
-    }
+    border-top: 1px solid $faint-border-color;
+    margin: 1rem 0;
   }
 
   button {
@@ -145,7 +140,11 @@ $link_color: #2279a6;
 
     section.settings-group {
       display: block;
-      padding-top: 1rem;
+      padding-top: 0.5rem;
+
+      &:first-of-type {
+        padding-top: 0;
+      }
 
       h3 {
         color: $dark-grey;
@@ -176,14 +175,6 @@ $link_color: #2279a6;
         }
       }
 
-      &.section-separator {
-        padding-top: 0;
-
-        .settings-form.full {
-          border-top: none;
-        }
-      }
-
       div.settings-form {
         display: inline-block;
         width: 65%;
@@ -198,8 +189,6 @@ $link_color: #2279a6;
         &.full {
           width: 100%;
           float: none;
-          border-top: 1px solid $faint-border-color;
-          padding-top: 20px;
 
           label {
             display: inline-block;
@@ -238,7 +227,7 @@ $link_color: #2279a6;
         label {
           display: block;
           margin-bottom: 0.5em;
-          font-size: 16px;
+          font-size: 15px;
           font-weight: 400;
           color: $grey;
 
@@ -280,6 +269,7 @@ $link_color: #2279a6;
         }
         div.dropdown {
           width: calc(100% - 16px);
+          padding: 8px 11px;
 
           ul.dropdown-options {
             width: 100%;
@@ -327,10 +317,12 @@ $link_color: #2279a6;
 
       &.list-of-links {
 
+        p {
+          margin-bottom: 0.25rem;
+        }
+
         div.link-row-header {
           overflow: hidden;
-          border-bottom: 1px solid $faint-border-color;
-          margin-bottom: 0.25rem;
 
           label {
             margin: 0.5rem;
@@ -338,7 +330,7 @@ $link_color: #2279a6;
             float: left;
             box-sizing: border-box;
             line-height: 1.5rem;
-            font-size: 16px;
+            font-size: 15px;
             color: $grey;
           }
         }
@@ -418,7 +410,6 @@ $link_color: #2279a6;
         div.link-menu {
           margin: 0.5rem 0;
           padding: 0.5rem;
-          border-top: 1px solid $faint-border-color;
           overflow: hidden;
 
           &.default {

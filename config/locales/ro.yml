@@ -187,7 +187,6 @@ ro:
           description:
           header:
       feature_map:
-        feature_map_disabled:
         zoom_disabled: Funcția "Mărire" nu este disponibilă pentru moment. Vă rugăm să încercați mai târziu.
       feature_map_flannel:
         error_message:

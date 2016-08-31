@@ -354,10 +354,6 @@ class NewUxBootstrapController < ActionController::Base
     column[:physicalDatatype] == 'point'
   end
 
-  def feature_map_disabled?
-    !APP_CONFIG.odux_enable_feature_map
-  end
-
   def column_too_large_for_feature_card?(column)
     point_column?(column) && dataset_size > 100_000
   end
@@ -397,7 +393,6 @@ class NewUxBootstrapController < ActionController::Base
       hidden_column?(column) ||
       column_too_large_for_feature_card?(column) ||
       point_column_has_insufficient_cardinality?(column) ||
-      (feature_map_disabled? && point_column?(column)) ||
       column_is_known_uniform?(column) ||
       money_column?(column) ||
       curated_region_is_disabled_for_column?(column) ||

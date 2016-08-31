@@ -616,10 +616,6 @@ describe('FeatureMapController', function() {
   });
 
   describe('tileserver sharding', function() {
-    beforeEach(function() {
-      ServerConfig.override('oduxEnableFeatureMap', true);
-    });
-
     it('should parallelize tileserver requests if dataset is public', function() {
       dataset.defineObservableProperty('permissions', { isPublic: true });
 

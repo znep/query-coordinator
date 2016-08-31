@@ -187,7 +187,6 @@ zh:
           description:
           header:
       feature_map:
-        feature_map_disabled:
         zoom_disabled: "缩放功能暂不可用。请稍后再试。"
       feature_map_flannel:
         error_message:

@@ -80,7 +80,6 @@ default: &default
   feature_map_disable_pan_zoom: false
   feature_map_features_per_tile: 50000
   feature_map_zoom_debounce: 500
-  odux_enable_feature_map: true
   shape_file_region_query_limit: 5000
 
   # other behaviors

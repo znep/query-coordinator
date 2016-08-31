@@ -187,7 +187,6 @@ ru:
           description:
           header:
       feature_map:
-        feature_map_disabled:
         zoom_disabled: "Масштабирование временно недоступно. Пожалуйста, повторите попытку позже."
       feature_map_flannel:
         error_message:

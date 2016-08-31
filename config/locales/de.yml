@@ -187,7 +187,6 @@ de:
           description:
           header:
       feature_map:
-        feature_map_disabled:
         zoom_disabled: Zoom ist momentan nicht verfügbar. BItte versuchen SIe es später erneut.
       feature_map_flannel:
         error_message:

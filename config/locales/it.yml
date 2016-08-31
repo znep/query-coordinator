@@ -187,7 +187,6 @@ it:
           description: Salva un'immagine PNG di una visualizzazione
           header: Visualizzazione come immagine
       feature_map:
-        feature_map_disabled: Le mappe delle funzionalità non sono disponibili.
         zoom_disabled: Lo zoom non è attualmente disponibile. Ti preghiamo di riprovare.
       feature_map_flannel:
         error_message: Si è verificato un errore durante il riporto dei dati di localizzazione

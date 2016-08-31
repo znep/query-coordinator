@@ -187,7 +187,6 @@ ca:
           description: Deseu un arxiu d'imatge PNG d'una visualització
           header: Visualització com a imatge
       feature_map:
-        feature_map_disabled: Els mapes destacats no estan disponibles.
         zoom_disabled: El zoom no és disponible temporalment. Si us plau, proveu-ho més tard.
       feature_map_flannel:
         error_message: S'ha produït un error en obtenir les dades d'ubicació.

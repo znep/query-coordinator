@@ -25,7 +25,7 @@ module.exports = function FeatureMapController(
   var id$ = dataset$.observeOnLatest('id').filter(_.isPresent);
   var flannelTitleColumn$ = model.observeOnLatest('cardOptions.mapFlannelTitleColumn');
 
-  $scope.featureMapEnabled = ServerConfig.get('oduxEnableFeatureMap');
+  $scope.featureMapEnabled = true;
 
   /**
    * Handle queries for the row data for points clicked on current feature map.
@@ -313,18 +313,13 @@ module.exports = function FeatureMapController(
       renderTimeout$.map(_.constant(true)),
       directiveTimeout$.map(_.constant(true)),
       renderError$.map(_.constant(true)),
-      renderComplete$.map(_.constant(false)),
-      Rx.Observable.returnValue(!$scope.featureMapEnabled)
+      renderComplete$.map(_.constant(false))
     ).
     startWith(false).
     distinctUntilChanged().
     map(function(displayRenderError) {
       if (displayRenderError) {
-        if ($scope.featureMapEnabled) {
-          return I18n.t('common.errors.mapRenderError');
-        } else {
-          return I18n.t('featureMap.featureMapDisabled');
-        }
+        return I18n.t('common.errors.mapRenderError');
       }
     });
 

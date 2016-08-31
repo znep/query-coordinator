@@ -188,7 +188,6 @@ sl:
           description:
           header:
       feature_map:
-        feature_map_disabled:
         zoom_disabled: Približevanje trenutno ni na voljo. Prosimo, poskusite znova kasneje.
       feature_map_flannel:
         error_message:

@@ -4,13 +4,8 @@ module.exports = function($log, ServerConfig, CardOptions, Model, Schemas, Filte
   var schemas = Schemas.regarding('card_metadata');
 
   // Determine additional customization and export parameters based on enabled features
-  var CUSTOMIZABLE_MAP_TYPES = ['choropleth'];
-  var EXPORTABLE_CARD_TYPES = ['choropleth', 'column', 'timeline', 'histogram'];
-
-  if (ServerConfig.get('oduxEnableFeatureMap')) {
-    CUSTOMIZABLE_MAP_TYPES.push('feature');
-    EXPORTABLE_CARD_TYPES.push('feature');
-  }
+  var CUSTOMIZABLE_MAP_TYPES = ['choropleth', 'feature'];
+  var EXPORTABLE_CARD_TYPES = ['choropleth', 'feature', 'column', 'timeline', 'histogram'];
 
   var Card = Model.extend({
     init: function(parentPageModel, fieldName, initialValues) {

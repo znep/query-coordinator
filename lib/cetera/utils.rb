@@ -137,8 +137,13 @@ module Cetera
         domains: translate_domains(opts[:domains]),
         offset: translate_offset(opts[:offset], opts[:page], opts[:limit]),
         only: translate_display_type(opts[:limitTo], opts[:datasetView]),
-        order: translate_sort_by(opts[:sortBy] || opts[:default_sort])
+        order: translate_sort_by(opts[:sortBy] || opts[:default_sort]),
+        show_hidden: translate_show_hidden(opts[:options])
       }.compact
+    end
+
+    def self.translate_show_hidden(options)
+      options.present? && options.include?('show_hidden')
     end
 
     def self.translate_domains(domains)
@@ -205,7 +210,7 @@ module Cetera
       Set.new(%i(boostCalendars boostCharts boostDatalenses boostDatasets boostDomains boostFiles
                  boostFilters boostForms boostHrefs boostMaps boostPulses boostStories categories
                  derived_from domains for_user limit locale offset only order q search_context tags
-                 shared_to))
+                 shared_to show_hidden))
     end
   end
 end

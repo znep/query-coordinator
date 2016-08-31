@@ -281,7 +281,8 @@ class BrowseControllerTest < ActionController::TestCase
       'q' => 'pale%20moonlight', # q space can be %20 or + depending on when it was entered
       'sortBy' => 'relevance',
       'tags' => 'crime',
-      'utf8' => '%E2%9C%93'
+      'utf8' => '%E2%9C%93',
+      'show_hidden' => 'true'
     }
 
     # The FE params should be translated like so when being sent to Core/Cly
@@ -295,7 +296,8 @@ class BrowseControllerTest < ActionController::TestCase
       'page' => 1,
       'q' => 'pale%20moonlight', # q space can be %20 or + depending on when it was entered
       'sortBy' => 'relevance',
-      'tags' => 'crime'
+      'tags' => 'crime',
+      'options' => ['show_hidden']
     }.symbolize_keys
 
     default_core_cly_params = {
@@ -315,7 +317,8 @@ class BrowseControllerTest < ActionController::TestCase
       :order => 'relevance',
       :q => 'pale%20moonlight', # q space can be %20 or + depending on when it was entered
       :search_context => 'data.seattle.gov',
-      :tags => 'crime'
+      :tags => 'crime',
+      :show_hidden => 'true'
     }
 
     default_cetera_params = {

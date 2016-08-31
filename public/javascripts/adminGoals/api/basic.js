@@ -5,12 +5,13 @@ import { fetchOptions } from '../constants';
 
 function checkXhrStatus(response) {
   if (response.status >= 200 && response.status < 300) {
-    return response;
+    return response.json();
   }
 
-  let error = new Error(response.statusText);
-  error.response = response;
-  throw error;
+  return response.json().
+    then(error => {
+      throw new Error(JSON.stringify(error));
+    });
 }
 
 function request(apiVersion, method, path, otherOptions) {
@@ -25,7 +26,6 @@ function request(apiVersion, method, path, otherOptions) {
 
   return fetch(url, options).
     then(checkXhrStatus).
-    then(response => response.json()).
     then(json => {
       if (json.error) {
         throw json.error.toString();

@@ -1850,6 +1850,35 @@ en:
           below: Below
           above: Above
         feedback: Feedback
+        validation:
+          action:
+            enum: Action should be one of Increase, Decrease, Maintain, Measure.
+          name:
+            blank: Name shouldn't be blank.
+          subject:
+            blank: Subject should't be blank.
+          unit:
+            blank: Unit shouldn't be blank.
+          target:
+            blank: Target Value shouldn't be blank.
+            numeric: Target Value should be numeric.
+          target_type:
+            enum: Kind should be of Absoulte, Relative.
+          baseline:
+            blank: Baseline shouldn't be blank.
+            numeric: Baseline should be numeric.
+          target_delta:
+            blank: Range Value shouldn't be blank.
+            numeric: Range Value should be numeric.
+          target_delta_is_percent:
+            bool: Unit type should be selected
+          maintain_type:
+            enum: Maintain Type should be one of Around, >, <
+          start:
+            invalid: Invalid start date.
+          end:
+            invalid: Invalid end date.
+            conflict: Conflict between start and end dates.
       modal:
         close_without_save_message: Are you sure you want to close? Your changes will be lost.
       preview_bar:

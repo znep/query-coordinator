@@ -1140,19 +1140,6 @@ feedback-panel {
   }
 }
 
-// related-views
-.related-views-list-item {
-  > a {
-    &:hover {
-      background-color: $related-views-list-item-hover-background-color;
-    }
-  }
-}
-
-.related-view-name {
-  color: $related-view-name-text-color;
-}
-
 // skip-links
 .skip-links {
   a {

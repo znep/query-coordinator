@@ -306,9 +306,6 @@ nl:
         old_filter_title: <span class="light">De {0}</span> worden getoond
         old_filtered_title: <span class="light">De {0}</span> worden getoond
         unfiltered_title: <span class="light">Alle {0}</span> worden getoond
-      related_views:
-        button: Andere visies op deze gegevens
-        title: Andere visies op deze gegevens
       related_visualization_selector:
         based_on_column: Gebaseerd op {0}
         visualization_not_supported: Neem het ons niet kwalijk! We zijn nog steeds de functionaliteit aan het ontwikkelen die u zal toelaten om dit grafiektype in te voegen in een verhaal.

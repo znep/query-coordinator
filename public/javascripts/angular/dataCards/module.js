@@ -67,7 +67,6 @@ angular.module('dataCards').
   directive('newShareDialog', require('./directives/newShareDialog.js')).
   directive('pageHeader', require('../common/directives/pageHeader.js')).
   directive('quickFilterBar', require('./directives/quickFilterBar.js')).
-  directive('relatedViews', require('./directives/relatedViews.js')).
   directive('removeAllCards', require('./directives/removeAllCards.js')).
   directive('revertButton', require('./directives/revertButton.js')).
   directive('richTextEditor', require('../common/directives/richTextEditor.js')).

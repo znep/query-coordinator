@@ -306,9 +306,6 @@ ru:
         old_filter_title:
         old_filtered_title:
         unfiltered_title:
-      related_views:
-        button: "Другие виды этих данных"
-        title: "Другие виды этих данных"
       related_visualization_selector:
         based_on_column:
         visualization_not_supported:

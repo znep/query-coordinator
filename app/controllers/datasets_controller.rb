@@ -287,17 +287,6 @@ class DatasetsController < ApplicationController
         return render 'shared/error', :status => :not_found
       end
     end
-
-    if FeatureFlags.derive(@view, request).swap_in_nbe_view === true && !@view.newBackend?
-      begin
-        @view.nbe_view_id = @view.nbe_view.id
-        @view.default_ds_id = @view.parent_view.id
-        needs_view_js @view.nbe_view.id, @view.nbe_view
-        needs_view_js @view.parent_view.id, @view.parent_view
-      rescue CoreServer::ResourceNotFound
-        # Migration is missing; therefore there is no nbe view and this code block is irrelevant.
-      end
-    end
   end
 
   def blob

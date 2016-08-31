@@ -473,7 +473,8 @@ module.exports = _.defaultsDeep({
       './plugins/jquery.awesomereorder.js',
       './controls/wizard.js',
       './screens/import-pane-old.js',
-      './screens/dataset-edit.js'
+      './screens/dataset-edit.js',
+      './util/interpolator.js'
     ],
     'dataset-metrics': [
       './screens/dataset-metrics.js'

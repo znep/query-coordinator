@@ -30,8 +30,8 @@ class DataConnector
 
   def self.all_layers(id, offset, limit)
     query = {
-      :filters => {
-        :sync_type => 'catalog'
+      :rejects => {
+        :fourfour => 'null'
       },
       :offset => offset,
       :limit => limit

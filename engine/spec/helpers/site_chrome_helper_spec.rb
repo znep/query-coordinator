@@ -88,7 +88,7 @@ describe SocrataSiteChrome::ApplicationHelper do
 
   describe 'current_user_can_modify_site_chrome' do
     context 'with an instance of a User object' do
-      let(:user) { User.new }
+      let(:user) { SocrataSiteChrome::User.new }
 
       before do
         allow(helper).to receive(:request_current_user).and_return(user)

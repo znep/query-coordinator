@@ -42,7 +42,7 @@ module SocrataSiteChrome
       if request_current_user.is_a?(User)
         request_current_user
       else
-        User.new(request_current_user)
+        SocrataSiteChrome::User.new(request_current_user)
       end.can_use_site_appearance?
     end
 

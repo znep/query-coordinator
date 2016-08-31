@@ -469,38 +469,86 @@ describe AdministrationController do
   describe 'site appearance panel', :verify_stubs => false do
 
     context 'show_site_chrome_admin_panel helper method' do
-      context 'as an anonymous user' do
-        it 'should return false' do
-          allow(subject).to receive(:current_user).and_return(nil)
-          expect(subject.show_site_chrome_admin_panel?).to eq(false)
+
+      context 'with site_appearance_visible set to true' do
+        before(:each) do
+          set_site_appearance_visible(true)
+        end
+
+        context 'as an anonymous user' do
+          it 'should return false' do
+            allow(subject).to receive(:current_user).and_return(nil)
+            expect(subject.show_site_chrome_admin_panel?).to eq(false)
+          end
+        end
+
+        context 'as a viewer' do
+          it 'should return false' do
+            stub_viewer_user
+            expect(subject.show_site_chrome_admin_panel?).to eq(false)
+          end
+        end
+
+        context 'as a superadmin' do
+          it 'should return true' do
+            stub_superadmin_user
+            expect(subject.show_site_chrome_admin_panel?).to eq(true)
+          end
+        end
+
+        context 'as an administrator' do
+          it 'should return true' do
+            stub_administrator_user
+            expect(subject.show_site_chrome_admin_panel?).to eq(true)
+          end
+        end
+
+        context 'as a designer' do
+          it 'should return true' do
+            stub_designer_user
+            expect(subject.show_site_chrome_admin_panel?).to eq(true)
+          end
         end
       end
 
-      context 'as a viewer' do
-        it 'should return false' do
-          stub_viewer_user
-          expect(subject.show_site_chrome_admin_panel?).to eq(false)
+      context 'with site_appearance_visible set to false' do
+        before(:each) do
+          set_site_appearance_visible(false)
         end
-      end
 
-      context 'as a superadmin' do
-        it 'should return true' do
-          stub_superadmin_user
-          expect(subject.show_site_chrome_admin_panel?).to eq(true)
+        context 'as an anonymous user' do
+          it 'should return false' do
+            allow(subject).to receive(:current_user).and_return(nil)
+            expect(subject.show_site_chrome_admin_panel?).to eq(false)
+          end
         end
-      end
 
-      context 'as an administrator' do
-        it 'should return true' do
-          stub_administrator_user
-          expect(subject.show_site_chrome_admin_panel?).to eq(true)
+        context 'as a viewer' do
+          it 'should return false' do
+            stub_viewer_user
+            expect(subject.show_site_chrome_admin_panel?).to eq(false)
+          end
         end
-      end
 
-      context 'as a designer' do
-        it 'should return true' do
-          stub_designer_user
-          expect(subject.show_site_chrome_admin_panel?).to eq(true)
+        context 'as a superadmin' do
+          it 'should return true' do
+            stub_superadmin_user
+            expect(subject.show_site_chrome_admin_panel?).to eq(true)
+          end
+        end
+
+        context 'as an administrator' do
+          it 'should return false' do
+            stub_administrator_user
+            expect(subject.show_site_chrome_admin_panel?).to eq(false)
+          end
+        end
+
+        context 'as a designer' do
+          it 'should return false' do
+            stub_designer_user
+            expect(subject.show_site_chrome_admin_panel?).to eq(false)
+          end
         end
       end
 
@@ -537,6 +585,12 @@ describe AdministrationController do
     allow(user).to receive(:is_superadmin?).and_return(false)
     allow(user).to receive(:roleName).and_return('viewer')
     allow(subject).to receive(:current_user).and_return(user)
+  end
+
+  def set_site_appearance_visible(state)
+    allow(CurrentDomain).to receive(:feature_flags).and_return(
+      Hashie::Mash.new.tap { |mash| mash.site_appearance_visible = state }
+    )
   end
 
 end

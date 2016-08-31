@@ -46,6 +46,7 @@ describe SiteChromeController do
     it 'loads if superadmin' do
       init_current_user(@controller)
       stub_superadmin_user
+      enable_site_appearance
       VCR.use_cassette('site_chrome/controller/edit') do
         get :edit
         expect(response).to be_success
@@ -55,6 +56,7 @@ describe SiteChromeController do
     it 'loads if administrator' do
       init_current_user(@controller)
       stub_administrator_user
+      enable_site_appearance
       VCR.use_cassette('site_chrome/controller/edit') do
         get :edit
         expect(response).to be_success
@@ -64,6 +66,7 @@ describe SiteChromeController do
     it 'loads if designer' do
       init_current_user(@controller)
       stub_administrator_user
+      enable_site_appearance
       VCR.use_cassette('site_chrome/controller/edit') do
         get :edit
         expect(response).to be_success
@@ -181,5 +184,11 @@ describe SiteChromeController do
 
   def empty_site_chrome
     SiteChrome.new
+  end
+
+  def enable_site_appearance
+    allow(CurrentDomain).to receive(:feature_flags).and_return(
+      Hashie::Mash.new.tap { |mash| mash.site_appearance_visible = true }
+    )
   end
 end

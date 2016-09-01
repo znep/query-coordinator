@@ -12,7 +12,6 @@ class DataLensController < ActionController::Base
 
   before_filter :hook_auth_controller
   before_filter :set_locale
-  before_filter :redirect_to_mobile, :only => :data_lens
   before_filter :preload_metadata, :only => :show_mobile
   before_filter :allow_frame_embedding, :only => :data_lens
 
@@ -139,12 +138,6 @@ class DataLensController < ActionController::Base
 
   def region_coder
     @region_coder ||= Services::DataLens::RegionCoder.new
-  end
-
-  def redirect_to_mobile
-    if is_data_lens_mobile_redirect_enabled? && is_mobile?
-      redirect_to "#{request.path}/mobile"
-    end
   end
 
   def preload_metadata
@@ -399,9 +392,5 @@ class DataLensController < ActionController::Base
   # EN-1111: Force Data Lens to always use English
   def set_locale
     I18n.locale = 'en'
-  end
-
-  def is_data_lens_mobile_redirect_enabled?
-    FeatureFlags.derive(nil, request).enable_data_lens_mobile_redirect
   end
 end

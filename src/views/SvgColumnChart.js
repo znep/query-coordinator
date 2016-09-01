@@ -879,9 +879,9 @@ function SvgColumnChart($element, vif) {
               ).
               attr(
                 'data-series-index',
-                /* eslint-disable no-unused-consts */
+                /* eslint-disable no-unused-vars */
                 function(datum, seriesIndex, rowIndex) {
-                /* eslint-enable no-unused-consts */
+                /* eslint-enable no-unused-vars */
                   return seriesIndex;
                 }
               ).
@@ -910,9 +910,9 @@ function SvgColumnChart($element, vif) {
               ).
               attr(
                 'data-series-index',
-                /* eslint-disable no-unused-consts */
+                /* eslint-disable no-unused-vars */
                 function(datum, seriesIndex, rowIndex) {
-                /* eslint-enable no-unused-consts */
+                /* eslint-enable no-unused-vars */
                   return seriesIndex;
                 }
               ).

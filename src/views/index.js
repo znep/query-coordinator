@@ -13,6 +13,7 @@ const SvgHistogram = require('./SvgHistogram');
 const SvgTimelineChart = require('./SvgTimelineChart');
 const Table = require('./Table');
 const TimelineChart = require('./TimelineChart');
+const SampleChart = require('./SampleChart');
 
 module.exports = {
   ChoroplethMap: ChoroplethMap,
@@ -29,5 +30,6 @@ module.exports = {
   SvgHistogram: SvgHistogram,
   SvgTimelineChart: SvgTimelineChart,
   Table: Table,
-  TimelineChart: TimelineChart
+  TimelineChart: TimelineChart,
+  SampleChart: SampleChart
 };

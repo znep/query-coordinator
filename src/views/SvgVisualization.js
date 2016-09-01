@@ -228,37 +228,44 @@ function SvgVisualization($element, vif) {
   };
 
   this.showViewSourceDataLink = function() {
-    const domain = _.get(self.getVif(), 'series[0].dataSource.domain');
-    const datasetUid = _.get(self.getVif(), 'series[0].dataSource.datasetUid');
-    const metadataProvider = new MetadataProvider({domain, datasetUid});
-    const renderLink = (linkableDatasetUid) => {
 
-      self.
-        $container.
-        addClass('socrata-visualization-view-source-data').
-        find('.socrata-visualization-view-source-data a').
-        attr('href', `https://${domain}/d/${linkableDatasetUid}`);
-    };
+    if (_.get(self.getVif(), 'series[0].dataSource.type') === 'socrata.soql') {
 
-    metadataProvider.getDatasetMigrationMetadata().
-      then((migrationMetadata) => {
-        renderLink(_.get(migrationMetadata, 'nbe_id', datasetUid));
-      }).
-      catch(() => {
-        renderLink(datasetUid);
-      });
+      const domain = _.get(self.getVif(), 'series[0].dataSource.domain');
+      const datasetUid = _.get(self.getVif(), 'series[0].dataSource.datasetUid');
+      const metadataProvider = new MetadataProvider({domain, datasetUid});
+      const renderLink = (linkableDatasetUid) => {
 
-    // Add the info class immediately so that visualizations can accurately
-    // measure how much space they have to fill, but only add the
-    // view-source-data class to show the link once the optional metadata
-    // request has returned, if it is made.
-    self.showInfo();
+        self.
+          $container.
+          addClass('socrata-visualization-view-source-data').
+          find('.socrata-visualization-view-source-data a').
+          attr('href', `https://${domain}/d/${linkableDatasetUid}`);
+      };
+
+      metadataProvider.getDatasetMigrationMetadata().
+        then((migrationMetadata) => {
+          renderLink(_.get(migrationMetadata, 'nbe_id', datasetUid));
+        }).
+        catch(() => {
+          renderLink(datasetUid);
+        });
+
+      // Add the info class immediately so that visualizations can accurately
+      // measure how much space they have to fill, but only add the
+      // view-source-data class to show the link once the optional metadata
+      // request has returned, if it is made.
+      self.showInfo();
+    }
   };
 
   this.hideViewSourceDataLink = function() {
 
-    self.$container.removeClass('socrata-visualization-view-source-data');
-    self.hideInfo();
+    if (_.get(self.getVif(), 'series[0].dataSource.type') === 'socrata.soql') {
+
+      self.$container.removeClass('socrata-visualization-view-source-data');
+      self.hideInfo();
+    }
   };
 
   this.showPanningNotice = function() {

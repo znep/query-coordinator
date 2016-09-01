@@ -157,7 +157,7 @@ module CoreServer
 
     def generic_request(request, json = nil, custom_headers = {}, is_anon = false, timeout = 60)
 
-      requestor = User.current_user
+      requestor = SocrataSiteChrome::User.current_user
       if requestor && requestor.session_token
         request['Cookie'] = "#{@@cookie_name}=#{requestor.session_token}"
       end

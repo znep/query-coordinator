@@ -109,8 +109,10 @@ class UserSession
   # and look up the user associated with that token.
   def find_token
     if core_session.valid?(true) # true to force load
-      user = User.find(core_session.user_id,
-                       {'Cookie' => "#{::CoreServer::Connection.cookie_name}=#{core_session.to_s}"})
+      user = SocrataSiteChrome::User.find(
+        core_session.user_id,
+        'Cookie' => "#{::CoreServer::Connection.cookie_name}=#{core_session.to_s}"
+      )
       UserSession.update_current_user(user, core_session)
       if !(controller.request.headers["x-socrata-auth"] == "unauthenticated")
         new_core_cookie = controller.request.env["socrata.new-core-session-cookie"]
@@ -121,7 +123,7 @@ class UserSession
       response = post_cookie_authentication
       if response.is_a?(Net::HTTPSuccess)
         expiration = UserSession.expiration_from_core_response(response)
-        user = User.parse(response.body)
+        user = SocrataSiteChrome::User.parse(response.body)
         create_core_session_credentials(user, expiration) if expiration > 0
         self.new_session = false
         cookies[:logged_in] = { value: true, secure: true }
@@ -155,12 +157,12 @@ class UserSession
   end
 
   def self.find_seconds_until_timeout
-    path = "/sessionExpiration/" + User.current_user.id + ".json"
+    path = "/sessionExpiration/#{SocrataSiteChrome::User.current_user.id}.json"
     return CoreServer::Base.connection.get_request(path, {}, false, true)
   end
 
   def extend
-    path = "/sessionExpiration/" + User.current_user.id + ".json"
+    path = "/sessionExpiration/#{SocrataSiteChrome::User.current_user.id}.json"
     coreResponse = CoreServer::Base.connection.get_request(path)
     new_core_cookie = controller.request.env["socrata.new-core-session-cookie"]
     expiration = UserSession.expiration_from_core_cookie(new_core_cookie)
@@ -213,7 +215,7 @@ class UserSession
     response = post_core_authentication
     if response.is_a?(Net::HTTPSuccess)
       expiration = UserSession.expiration_from_core_response(response)
-      user = User.parse(response.body)
+      user = SocrataSiteChrome::User.parse(response.body)
       create_core_session_credentials(user, expiration) if expiration > 0
 
       # Plumb the cookie from the core server back to the user's browser
@@ -243,7 +245,7 @@ class UserSession
   end
 
   def user
-    User.current_user
+    SocrataSiteChrome::User.current_user
   end
 
 private
@@ -315,7 +317,7 @@ private
     controller.session[:user] = user.nil? ? nil : user.oid
 
     user.session_token = session_token if user
-    User.current_user = user
+    SocrataSiteChrome::User.current_user = user
   end
 
   # Accessor helper to access the controller's private cookie store.

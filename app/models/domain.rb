@@ -1,4 +1,4 @@
-class Domain < Model
+class Domain < SocrataSiteChrome::Model
 
   @@domains = Hash.new
 

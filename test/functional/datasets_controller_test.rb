@@ -177,19 +177,9 @@ class DatasetsControllerTest < ActionController::TestCase
   #   assert_redirected_to '/view/page-xist'
   # end
 
-  test 'redirects to OBE view page for NBE datasets without default page for non-admin users when feature flag set' do
-    setup_nbe_dataset_test(false, true)
-    Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '200', body: {} })
-    FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |feature_flags| feature_flags.stubs(force_redirect_to_data_lens: true ) })
-    View.any_instance.stubs(:migrations => { 'obeId' => 'olde-four' })
-    get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
-    assert_redirected_to '/view/page-xist'
-  end
-
   test 'redirects to OBE view page for NBE datasets without default page for non-admin users' do
     setup_nbe_dataset_test(false, true)
     Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '200', body: {} })
-    FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |feature_flags| feature_flags.stubs(force_redirect_to_data_lens: false ) })
     View.any_instance.stubs(:migrations => { 'obeId' => 'olde-four' })
     get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
     assert_redirected_to '/d/olde-four'
@@ -202,27 +192,9 @@ class DatasetsControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test 'redirects to Lens page for NBE datasets for non-admin users when feature flag set' do
-    setup_nbe_dataset_test(false, true)
-    FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |feature_flags| feature_flags.stubs(force_redirect_to_data_lens: true ) })
-    get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
-    assert_redirected_to '/view/page-xist'
-  end
-
-  test 'redirects to home page for NBE datasets without default page for non-admin users when feature flag set' do
-    setup_nbe_dataset_test(false, false)
-    Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '404', body: {} })
-    FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |feature_flags| feature_flags.stubs(force_redirect_to_data_lens: true ) })
-    get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
-    assert_redirected_to '/'
-    assert_match(@controller.flash[:notice], I18n.t('screens.ds.unable_to_find_dataset_page'))
-    assert_match(/Data Lens/, I18n.t('screens.ds.unable_to_find_dataset_page'))
-  end
-
   test 'redirects to home page for NBE datasets without default page for non-admin users' do
     setup_nbe_dataset_test(false, false)
     Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '404', body: {} })
-    FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |feature_flags| feature_flags.stubs(force_redirect_to_data_lens: false ) })
     get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
     assert_redirected_to '/'
     assert_match(@controller.flash[:notice], I18n.t('screens.ds.unable_to_find_dataset_page'))

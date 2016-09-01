@@ -147,9 +147,6 @@ enable_new_account_verification_email:
 feature_map_default_extent:
   description: "The site-wide default extent for feature/point maps. Should be a single-quoted JSON object. Ex: '{\"southwest\":[41.681944,-87.827778],\"northeast\":[42.081944,-87.427778]}'"
   defaultValue: ''
-force_redirect_to_data_lens:
-  description: Automatically redirect to the default Data Lens page for a given NBE dataset.
-  defaultValue: false
 govstat_progress_settings:
   description: Allows overriding of goal progress.
   defaultValue: true

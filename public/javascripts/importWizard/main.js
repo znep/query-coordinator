@@ -14,6 +14,7 @@ import * as ImportColumns from './components/importColumns';
 import * as Server from './server';
 import * as SaveState from './saveState';
 import * as ImportShapefile from './components/importShapefile';
+import * as ConnectToEsri from './components/connectToEsri';
 
 import view from 'view';
 import importSource from 'importSource';
@@ -40,6 +41,7 @@ const rootReducer = combineReducers({
   navigation: Wizard.updateNavigation,
   upload: Upload.update,
   download: Download.update,
+  connectToEsri: ConnectToEsri.update,
   transform: ImportColumns.update, // null except in the UPLOAD_DATA operation
   importStatus: Server.update,
   layers: ImportShapefile.update,

@@ -93,7 +93,7 @@ describe('updateNavigation', function() {
   it('sets currentPage to Metadata when you choose CONNECT_TO_ESRI', (done) => {
     testChooseOperation(done, 'CONNECT_TO_ESRI', {
       operation: 'CONNECT_TO_ESRI',
-      page: 'Metadata',
+      page: 'ConnectToEsri',
       path: [ ...initialState.path, initialState.page ]
     });
   });
@@ -179,6 +179,7 @@ describe('initialNewDatasetModel', () => {
   const initialState = {
     datasetId: 'abcd-efgh',
     lastSavedVersion: null,
+    connectToEsri: {},
     navigation: {
       page: 'SelectType',
       path: [],
@@ -490,6 +491,7 @@ describe('initialNewDatasetModel', () => {
           numHeaders: 1
         }
       };
+
       expect(JSON.parse(JSON.stringify(expected))).to.deep.equal(JSON.parse(JSON.stringify(actual)));
       // ;_; no idea why this doesn't work without the parse/stringify pairs
     });

@@ -4,11 +4,12 @@ helpers for testing Redux flows which include IO and multiple actions, e.g.
   1. user clicks a button, dispatching thunk
   2. thunk dispatches an action to show a "loading" state in the UI
   3. thunk calls `fetch` s.t. it will dispatch another action when it completes
-  4. action completes, showing a "success" or "failure" state in the UI
+  4. action completes, showing a "successful" or "failure" state in the UI
 
 tested in meta/asyncUtils.js
 */
 
+import Promise from 'bluebird';
 
 // something like this probably already exists in NPM
 export function testThunk(done, actionThunk, wholeState, expectationThunks) {
@@ -23,7 +24,7 @@ export function testThunk(done, actionThunk, wholeState, expectationThunks) {
       );
       const expectationThunk = expectationThunks[curExpectationThunkIdx++];
       curState = expectationThunk(curState, dispatchedAction);
-      if (curExpectationThunkIdx === expectationThunks.length) {
+      if(curExpectationThunkIdx === expectationThunks.length) {
         done();
       }
     },
@@ -31,13 +32,13 @@ export function testThunk(done, actionThunk, wholeState, expectationThunks) {
   )
 }
 
-// expectationThunk: (url, options, resolve: () => (), reject: () => ()) => ()
+// expectationThunk: (args, resolve: () => (), reject: () => ()) => ()
 // make your assertions against the args, then call resolve or reject
 export function withMockFetch(expectationThunk, otherThunk) {
   const realFetch = window.fetch;
-  window.fetch = (url, options) => {
+  window.fetch = (url, optionz) => {
     return new Promise((resolve, reject) => {
-      expectationThunk(url, options, resolve, reject);
+      expectationThunk(url, optionz, resolve, reject);
     });
   };
   otherThunk();

@@ -4,6 +4,7 @@ import * as SelectType from './components/selectType';
 import * as Metadata from './components/metadata';
 import * as UploadFile from './components/uploadFile';
 import * as DownloadFile from './components/downloadFile';
+import * as ConnectToEsri from './components/connectToEsri';
 import * as ImportColumns from './components/importColumns';
 import * as Importing from './components/importing';
 import * as Working from './components/working';
@@ -46,6 +47,7 @@ type NewDatasetModel = {
   navigation: Navigation,
   upload: UploadFile.FileUpload,
   download: DownloadFile.FileDownload,
+  connectToEsri: ConnectToEsri.EsriState,
   transform: ImportColumns.Transform,               // only used in UPLOAD_DATA operation
   layers: Array<Layer>,               // only used in UploadGeo operation
   metadata: Metadata.DatasetMetadata,
@@ -66,6 +68,7 @@ export function initialNewDatasetModel(initialView, importSource: SaveState.Impo
     navigation: initialNavigation,
     upload: {},
     download: {},
+    connectToEsri: {},
     transform: null,
     layers: null,
     metadata: initialMetadata(initialView),
@@ -84,12 +87,54 @@ export function initialNewDatasetModel(initialView, importSource: SaveState.Impo
           page: 'Metadata'
         }
       };
+    case 'UPLOAD_GEO':
+      if (importSource.scanResults) {
+        return {
+          ...initial,
+          navigation: {
+            operation,
+            path: ['SelectType', 'SelectUploadType', 'UploadFile'],
+            page: 'ImportShapefile'
+          },
+          upload: {
+            fileName: importSource.fileName,
+            progress: {
+              type: 'Complete',
+              fileId: importSource.fileId,
+              summary: importSource.scanResults
+            }
+          },
+          layers: importSource.scanResults.layers,
+          transform: null
+        };
+      } else {
+        return initial;
+      }
+
+    case 'CONNECT_TO_ESRI':
+      return {
+        ...initial,
+        navigation: {
+          operation,
+          path: ['SelectType', 'SelectUploadType', 'ConnectToEsri'],
+          page: 'ConnectToEsri'
+        },
+        connectToEsri: {
+          type: 'NotStarted',
+          esriSource: {
+            url: '',
+            contactEmail: '',
+            privacy: 'public'
+          }
+        }
+      };
 
     case 'UPLOAD_DATA':
       if (importSource.scanResults) {
         const sourceColumnsWithIndices = addColumnIndicesToSummary(importSource.scanResults);
         const defaultTranslation = ImportColumns.initialTranslation(sourceColumnsWithIndices);
         const resultColumns = _.get(importSource, 'translation.content.columns', defaultTranslation);
+
         const resultColumnsWithTranslations = resultColumns.map((resultColumn) => ({
           ...resultColumn,
           transforms: _.defaultTo(resultColumn.transforms, [])
@@ -131,7 +176,7 @@ export function initialNewDatasetModel(initialView, importSource: SaveState.Impo
       return initial;
 
     default:
-      console.log('trying to reenter to', operation);
+      console.warn('trying to reenter to', operation);
       return initial;
   }
 }
@@ -193,6 +238,8 @@ export function updateNavigation(navigation: Navigation = initialNavigation, act
           nextPage = 'UploadFile'; // TODO: select upload type
           break;
         case 'CONNECT_TO_ESRI': // TODO what is this actually supposed to go to?
+          nextPage = 'ConnectToEsri';
+          break;
         case 'LINK_EXTERNAL':
         case 'CREATE_FROM_SCRATCH':
           nextPage = 'Metadata';
@@ -298,6 +345,14 @@ export function view({ state, dispatch }) {
                   fileDownload={state.download}
                   operation={state.navigation.operation}
                   goToPrevious={() => dispatch(goToPrevious())} />
+              );
+            case 'ConnectToEsri':
+              return (
+                <ConnectToEsri.view
+                  goToPrevious={() => dispatch(goToPrevious())}
+                  connectToEsri={state.connectToEsri}
+                  goToPage={(page) => dispatch(goToPage(page))}
+                  dispatch={dispatch} />
               );
 
             case 'ImportColumns':

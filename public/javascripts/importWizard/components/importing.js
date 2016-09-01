@@ -20,7 +20,6 @@ function renderProgressText(importStatus, operation) {
           break;
       }
       break;
-
     default:
       console.error('Invalid operation', operation);
   }

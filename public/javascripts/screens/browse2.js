@@ -423,6 +423,8 @@ $(function() {
     $('html, body').css('overflow', 'hidden');
     var chosenFacet = $(event.currentTarget).data('modalFacet');
     $('.browse2-facet-section-modal[data-modal-facet="{0}"]'.format(chosenFacet)).removeClass('hidden');
+    $('.browse2-facet-section-modal-container h1').focus();
+    $('.siteOuterWrapper').attr('aria-hidden', true);
     hideBrowse2FacetModalOnEscape();
   }
 
@@ -457,6 +459,7 @@ $(function() {
     $('.browse2-facet-section-modal').addClass('hidden');
     restoreOverflowProperty('html');
     restoreOverflowProperty('body');
+    $('.siteOuterWrapper').attr('aria-hidden', false);
   }
 
   function truncateDescription(element) {
@@ -768,7 +771,7 @@ $(function() {
   $('.browse2-mobile-facets-filter-button').on('click', filterBrowse2MobileFacets);
   $('.browse2-facets-pane-mobile-clear-all-button').on('click', browse2MobileFacetClearAll);
   $('.browse2-facet-section-modal-button').on('click', showBrowse2FacetModal);
-  $('.browse2-facet-section-modal-background, .browse2-facet-section-modal-close').click(hideBrowse2FacetModal);
+  $('.browse2-facet-section-modal-background, .browse2-facet-section-modal-close, .modal-close-button, .modal-close-button > a').click(hideBrowse2FacetModal);
   $('.browse2-result-description-truncation-toggle-control').on('click', toggleBrowse2DescriptionTruncation);
   $('.browse2-result-make-public-button').on('click', makeResultPublic);
   $('.browse2-result-make-private-button').on('click', makeResultPrivate);

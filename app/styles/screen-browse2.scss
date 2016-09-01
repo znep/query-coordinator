@@ -749,6 +749,43 @@ html {
           }
         }
 
+        .browse2-facet-section-modal-button {
+          margin: 0;
+          padding: 0.7em 0;
+          font-family: 'Open Sans', sans-serif;
+          color: #5e5e5e;
+          background-color: #f1f1f1;
+          border: none;
+          border-left: 5px solid #d6d6d6;
+          cursor: pointer;
+          text-align: center;
+          text-decoration: none;
+          display: none;
+
+          &:hover,
+          &:active,
+          &:focus {
+            background-color: #efefef;
+            border-left: 5px solid #ccc;
+            text-decoration: underline;
+          }
+        }
+
+        &[data-facet-display="hide"] > .browse2-facet-section-modal-button {
+          display: none !important;
+        }
+
+        &[data-facet-display="show"] {
+          &[data-facet-has-modal="true"] > .browse2-facet-section-modal-button {
+            @include desktop {
+              display: block;
+            }
+          }
+          > .browse2-facet-section-title {
+            border-left: 5px solid $link-color;
+          }
+        }
+
         .browse2-facet-section-title {
           position: relative;
           display: block;
@@ -905,140 +942,12 @@ html {
           }
         }
 
-        .browse2-facet-section-modal-button {
-          margin: 0;
-          padding: 0.7em 0;
-          font-family: 'Open Sans', sans-serif;
-          color: #5e5e5e;
-          background-color: #f1f1f1;
-          border: none;
-          border-left: 5px solid #d6d6d6;
-          cursor: pointer;
-          text-align: center;
-          text-decoration: none;
-          display: none;
-
-          &:hover,
-          &:active,
-          &:focus {
-            background-color: #efefef;
-            border-left: 5px solid #ccc;
-            text-decoration: underline;
-          }
-        }
-
         > .browse2-facet-section-options {
           height: auto;
         }
 
-        &[data-facet-display="hide"] > .browse2-facet-section-modal-button {
-          display: none !important;
-        }
-
-        &[data-facet-display="show"] {
-          &[data-facet-has-modal="true"] > .browse2-facet-section-modal-button {
-            @include desktop {
-              display: block;
-            }
-          }
-          > .browse2-facet-section-title {
-            border-left: 5px solid $link-color;
-          }
-        }
-
         &:first-child {
           border-top: none;
-        }
-      }
-
-      .browse2-facet-section-modal {
-        z-index: 10;
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        &.hidden {
-          display: none;
-        }
-
-        .browse2-facet-section-modal-background {
-          position: absolute;
-          background: #222;
-          opacity: 0.7;
-          width: 100%;
-          height: 100%;
-        }
-
-        .browse2-facet-section-modal-container {
-          position: relative;
-          background: #fff;
-          border: 1px solid #ccc;
-          width: 80%;
-          max-width: 800px;
-          padding: 1rem;
-          overflow: hidden;
-
-          .modal-close-x {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            padding: 0.5rem;
-            font-size: 9pt;
-            color: #aaa;
-            cursor: pointer;
-            &:hover {
-              color: #999;
-            }
-          }
-
-          .browse2-facet-section-modal-content {
-            overflow: auto;
-            padding-right: 1rem;
-
-            .browse2-facet-section-modal-content-top {
-              padding-bottom: 1rem;
-              margin-bottom: 1rem;
-              border-bottom: 1px solid #eee;
-            }
-            .browse2-facet-section-modal-content-top, .browse2-facet-section-modal-content-all {
-              h2 {
-                text-transform: uppercase;
-              }
-
-              .browse2-facet-section-option {
-                color: $link-color;
-                &:hover {
-                  color: $link-hover-color;
-                }
-
-                .modal-content-name, .modal-content-count {
-                  font-size: 10pt;
-                  line-height: 1.5em;
-                }
-                &.active {
-                  color: #999;
-                  cursor: default;
-                  pointer-events: none;
-                }
-              }
-            }
-          }
-          .modal-close-button {
-            float: right;
-            clear: both;
-            margin-top: 0.5rem;
-            padding: 0.5rem 0.75rem;
-            font-size: 9pt;
-            border: 1px solid #ccc;
-            color: #888;
-            cursor: pointer;
-            @include border-radius(1px);
-            @include transition(0.2s, background-color);
-            &:hover, &:focus {
-              background-color: #f8f8f8;
-            }
-          }
         }
       }
     }
@@ -1825,5 +1734,102 @@ html {
     @include spinner($loading-spinner-size, 4px, $loading-spinner-color-1, $loading-spinner-color-2);
     position: relative;
     top: calc(50% - #{$loading-spinner-size / 2});
+  }
+}
+
+#modals {
+  .browse2-facet-section-modal {
+    z-index: 10;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    &.hidden {
+      display: none;
+    }
+
+    .browse2-facet-section-modal-background {
+      position: absolute;
+      background: #222;
+      opacity: 0.7;
+      width: 100%;
+      height: 100%;
+    }
+
+    .browse2-facet-section-modal-container {
+      position: relative;
+      background: #fff;
+      border: 1px solid #ccc;
+      width: 80%;
+      max-width: 800px;
+      padding: 1rem;
+      overflow: hidden;
+
+      .modal-close-x {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        padding: 0.5rem;
+        font-size: 9pt;
+        color: #aaa;
+        cursor: pointer;
+        &:hover {
+          color: #999;
+        }
+      }
+
+      .browse2-facet-section-modal-content {
+        overflow: auto;
+        padding-right: 1rem;
+
+        .browse2-facet-section-modal-content-top {
+          padding-bottom: 1rem;
+          margin-bottom: 1rem;
+          border-bottom: 1px solid #eee;
+        }
+        .browse2-facet-section-modal-content-top, .browse2-facet-section-modal-content-all {
+          h2 {
+            text-transform: uppercase;
+          }
+
+          .browse2-facet-section-option {
+            color: $link-color;
+            &:hover {
+              color: $link-hover-color;
+            }
+
+            .modal-content-name, .modal-content-count {
+              font-size: 10pt;
+              line-height: 1.5em;
+            }
+            &.active {
+              color: #999;
+              cursor: default;
+              pointer-events: none;
+            }
+          }
+        }
+      }
+      .modal-close-button {
+        float: right;
+        clear: both;
+        margin-top: 0.5rem;
+        font-size: 9pt;
+        border: 1px solid #ccc;
+        color: #888;
+        cursor: pointer;
+        @include border-radius(1px);
+        @include transition(0.2s, background-color);
+
+        & > a {
+          display: block;
+          padding: 0.5rem 0.75rem;
+          &:hover, &:focus {
+            background-color: #f8f8f8;
+          }
+        }
+      }
+    }
   }
 }

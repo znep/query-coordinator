@@ -326,7 +326,40 @@ describe('initialNewDatasetModel', () => {
     expect(initialState).to.deep.equal(actual);
   });
 
-  describe('when `importSource` says UPLOAD_DATA', () => {
+  describe('when the `importSource` has an `operation` of `CREATE_FROM_SCRATCH`', () => {
+
+    it('returns the initial state, with navigation set correctly', () => {
+      // this test is almost exactly the same as the implementation...?
+      const expected = initialNewDatasetModel(theView, { version: 2, importMode: 'CREATE_FROM_SCRATCH' });
+      const actual = {
+        ...initialState,
+        lastSavedVersion: 2,
+        navigation: {
+          operation: 'CREATE_FROM_SCRATCH',
+          page: 'Metadata',
+          path: ['SelectType']
+        }
+      };
+      expect(expected).to.deep.equal(actual);
+    });
+
+  });
+
+  describe('when the `importSource` has an `operation` of `LINK_EXTERNAL`', () => {
+    const expected = initialNewDatasetModel(theView, { version: 2, importMode: 'LINK_EXTERNAL' });
+    const actual = {
+      ...initialState,
+      lastSavedVersion: 2,
+      navigation: {
+        operation: 'LINK_EXTERNAL',
+        page: 'Metadata',
+        path: ['SelectType']
+      }
+    };
+    expect(expected).to.deep.equal(actual);
+  });
+
+  describe('when the `importSource` has an `operation` of `UPLOAD_DATA`', () => {
 
     it('initializes lastSavedVersion and navigation', () => {
       const actual = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_DATA' });

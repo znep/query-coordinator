@@ -75,6 +75,7 @@ export function initialNewDatasetModel(initialView, importSource: SaveState.Impo
   const operation = rawOperation ? rawOperation.toUpperCase() : null;
   switch (operation) {
     case 'CREATE_FROM_SCRATCH':
+    case 'LINK_EXTERNAL':
       return {
         ...initial,
         navigation: {

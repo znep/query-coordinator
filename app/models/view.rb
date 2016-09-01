@@ -41,17 +41,23 @@ class View < Model
     params = { 'method' => 'getDeletedViewById', 'id' => id }.to_param
     path = "/#{name.pluralize.downcase}.json?#{params}"
     begin
-      parse(CoreServer::Base.connection.get_request(
-              path,
-              'X-Socrata-Federation' => 'Honey Badger'
-      ))
-    rescue CoreServer::ResourceNotFound => error
+      parse(
+        CoreServer::Base.connection.get_request(
+          path,
+          'X-Socrata-Federation' => 'Honey Badger'
+        )
+      )
+    # enough things can go wrong in this get to core that
+    # many different exception types can be thrown...
+    # we can try to catch em all, but like the hydra every
+    # exception you catch reveals three more hiding behind it
+    rescue StandardError => error
       Airbrake.notify(
         error,
-        :error_class => 'DeletedViewNotFound',
-        :error_message => "Could not find deleted view #{id}"
+        error_class:  'DeletedViewNotFound',
+        error_message: "Could not find deleted view #{id}"
       )
-      nil # This means the view is completely gone
+      nil # This means the view is completely gone or something went wrong
     end
   end
 

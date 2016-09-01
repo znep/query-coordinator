@@ -536,7 +536,8 @@ function importGeospatial(onError) {
       body: formurlencoded({
         name: state.upload.fileName,
         blueprint: JSON.stringify({layers: _.map(state.layers, (layer) => ({name: layer.name}))}),
-        fileId: state.upload.progress.fileId
+        fileId: state.upload.progress.fileId,
+        draftViewUid: state.datasetId
       })
     }).then((response) => {
       switch (response.status) {

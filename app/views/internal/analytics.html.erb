@@ -2,7 +2,7 @@
   <%= rendered_stylesheet_tag 'analytics-shared' %>
   <%= rendered_stylesheet_tag 'internal' %>
   <%= rendered_stylesheet_tag 'internal-metrics' %>
-  <title>Internal Panel | <%= CurrentDomain.strings.site_title %></title>
+  <title>Internal Panel | <%= get_site_title %></title>
 <% end %>
 
 <%= render :partial => 'left_nav' %>

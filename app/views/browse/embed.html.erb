@@ -1,7 +1,7 @@
 <%- prerendered_cache @cache_key, @cached_fragment, :expires_in => 15.minutes do -%>
 
     <% content_for :head do %>
-        <title>Search &amp; Browse | <%= CurrentDomain.strings.site_title %></title>
+        <title>Search &amp; Browse | <%= get_site_title %></title>
     <% end %>
 
     <%= render_browse(@processed_browse) %>

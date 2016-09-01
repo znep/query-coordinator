@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <title><%= CurrentDomain.strings.site_title %></title>
+  <title><%= get_site_title %></title>
   <%= rendered_stylesheet_tag 'error-pages' %>
 <% end %>
 

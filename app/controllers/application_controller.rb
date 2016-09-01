@@ -2,6 +2,7 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+  include ApplicationHelper
   include ActionControllerExtensions
   include UserAuthMethods
   include ActionController::Caching::Pages
@@ -203,8 +204,8 @@ class ApplicationController < ActionController::Base
   def set_meta
     # Set site meta tags as appropriate
     @meta = {
-      :title => CurrentDomain.strings.site_title,
-      'og:title' => CurrentDomain.strings.site_title,
+      :title => get_site_title,
+      'og:title' => get_site_title,
       'og:site_name' => CurrentDomain.strings.company,
       :description => CurrentDomain.strings.meta_description,
       'og:description' => CurrentDomain.strings.meta_description,

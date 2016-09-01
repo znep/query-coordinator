@@ -3,7 +3,7 @@
   <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
   <%- end -%>
   <%= rendered_stylesheet_tag 'dataset-alt' %>
-  <title><%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= h(@view.name) %> | <%= get_site_title %></title>
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
   <link rel="canonical" href="<%= view_path(@view) %>"/>
 <% end %>

@@ -1,13 +1,13 @@
 <% content_for :head do %>
   <%- if !module_enabled?(:govStat) -%>
   <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-standard.css"/>
-  <title><%= t('dataslate.create.title') %> | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t('dataslate.create.title') %> | <%= get_site_title %></title>
   <%- end -%>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-canvas-pages' %>
   <%- if module_enabled?(:govStat) -%>
   <%= rendered_stylesheet_tag 'administration-govstat' %>
-  <title><%= t('govstat.reports.create.title') %> | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t('govstat.reports.create.title') %> | <%= get_site_title %></title>
   <%- end -%>
 <% end %>
 

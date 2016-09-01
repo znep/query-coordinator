@@ -160,7 +160,7 @@ class AdministrationController < ApplicationController
       CuratedRegion.all,
       incomplete_curated_region_jobs || [],
       failed_curated_region_jobs || [],
-      CurrentDomain.strings.site_title
+      get_site_title
     )
   end
 
@@ -333,7 +333,7 @@ class AdministrationController < ApplicationController
     curated_region = CuratedRegion.find(params[:id])
     @view_model = ::ViewModels::Administration::ConfigureBoundary.new(
       curated_region,
-      CurrentDomain.strings.site_title,
+      get_site_title,
       !!flash[:is_name_missing]
     )
   end

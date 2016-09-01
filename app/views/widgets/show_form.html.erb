@@ -4,7 +4,7 @@
     <link rel="canonical" href="<%= view_path(@view) %>"/>
   <%- end -%>
 
-  <title><%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= @view.name %> | <%= get_site_title %></title>
 
   <%# This is always a form, so hard-code the stylesheet %>
   <%= rendered_stylesheet_tag 'display-form' %>

@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <title>About <%= h(@view.name) + " | " + CurrentDomain.strings.site_title %></title>
+  <title>About <%= h(@view.name) + " | " + get_site_title %></title>
   <%= rendered_stylesheet_tag 'dataset-about-full' %>
 <% end %>
 

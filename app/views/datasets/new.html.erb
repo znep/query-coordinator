@@ -1,7 +1,7 @@
 <%- page = 'screens.dataset_new' -%>
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'dataset-new' %>
-  <title><%= t("#{page}.title") %> | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t("#{page}.title") %> | <%= get_site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>

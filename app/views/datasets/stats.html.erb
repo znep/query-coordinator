@@ -2,7 +2,7 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'dataset-analytics' %>
   <%= rendered_stylesheet_tag 'analytics-shared' %>
-  <title><%= t("#{prefix}.title") %> - <%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>
+  <title><%= t("#{prefix}.title") %> - <%= @view.name %> | <%= get_site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>

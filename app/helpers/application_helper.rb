@@ -123,7 +123,7 @@ module ApplicationHelper
   end
 
   def get_site_title
-    if enable_site_chrome? && site_chrome_window_title
+    if enable_site_chrome? && site_chrome_window_title.present?
       site_chrome_window_title
     else
       CurrentDomain.strings.site_title

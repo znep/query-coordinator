@@ -167,9 +167,6 @@ feature_map_default_extent:
 force_redirect_to_data_lens:
   description: Automatically redirect to the default Data Lens page for a given NBE dataset.
   defaultValue: false
-govstat_missing_locale_crash:
-  description: Crash (500) when a translation is missing.
-  defaultValue: false
 govstat_progress_settings:
   description: Allows overriding of goal progress.
   defaultValue: true

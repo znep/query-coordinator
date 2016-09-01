@@ -37,14 +37,11 @@ describe('pageHeader', function() {
     sinon.stub(ServerConfig, 'getTheme').returns(returnValue);
   }
 
-  it('should display if the feature flag is set to true', function() {
+  it('should display', function() {
     stubServerConfigGetTheme();
-    sinon.stub(ServerConfig, 'get').withArgs('showNewuxPageHeader').returns(true);
 
     var element = createPageHeader();
     expect(element.find('.page-header')).to.not.have.class('ng-hide');
-
-    ServerConfig.get.restore();
   });
 
   it('should display if there is no configuration data', function() {

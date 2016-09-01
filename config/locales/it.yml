@@ -306,9 +306,6 @@ it:
         old_filter_title: Mostrando <span class="light">the {0}</span>
         old_filtered_title: Mostrando <span class="light">{0}</span>
         unfiltered_title: Mostrando <span class="light">all {0}</span>
-      related_views:
-        button: Altre visualizzazioni di questi dati
-        title: Altre visualizzazioni di questi dati
       related_visualization_selector:
         based_on_column: Sulla base di {0}
         visualization_not_supported: Ci scusiamo per il disagio! Stiamo ancora sviluppando la funzionalità che ti consentirà di includere questo grafico in un articolo.

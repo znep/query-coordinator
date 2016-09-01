@@ -60,10 +60,6 @@ describe('infoPane', function() {
       expect(self.element.find('.source-dataset-name a')).to.exist;
     });
 
-    it('should have a relatedViews child', function() {
-      expect(self.element.find('related-views')).to.exist;
-    });
-
     it('should have an exportMenu child', function() {
       expect(self.element.find('export-menu')).to.exist;
     });
@@ -78,47 +74,6 @@ describe('infoPane', function() {
       self.$scope.$apply(function() { self.$scope.shouldShowManageLens = true; });
 
       expect(self.element.find('.manage-section .action-btn')).to.exist;
-    });
-  });
-
-  describe('showOtherViewsButton', function() {
-    it('should reflect the state of the enableDataLensOtherViews feature flag', function() {
-      self.ServerConfig.override('enableDataLensOtherViews', true);
-      createInfoPane();
-      expect(self.element.scope().showOtherViewsButton).to.equal(true);
-
-      self.ServerConfig.override('enableDataLensOtherViews', false);
-      createInfoPane();
-      expect(self.element.scope().showOtherViewsButton).to.equal(false);
-    });
-  });
-
-  describe('related views', function() {
-    it('should be visible if the feature flag is enabled and the user has save rights', function() {
-      self.ServerConfig.override('enableDataLensOtherViews', true);
-      createInfoPane();
-      self.$scope.$apply(function() {
-        self.$scope.currentUserHasSaveRight = true;
-      });
-      expect(self.element.find('related-views')).to.not.have.class('ng-hide');
-    });
-
-    it('should not be visible if the feature flag is disabled', function() {
-      self.ServerConfig.override('enableDataLensOtherViews', false);
-      createInfoPane();
-      self.$scope.$apply(function() {
-        self.$scope.currentUserHasSaveRight = true;
-      });
-      expect(self.element.find('related-views')).to.have.class('ng-hide');
-    });
-
-    it('does not show related views area if currentUserHasSaveRight is false', function() {
-      self.ServerConfig.override('enableDataLensOtherViews', true);
-      createInfoPane();
-      self.$scope.$apply(function() {
-        self.$scope.currentUserHasSaveRight = false;
-      });
-      expect(self.element.find('related-views')).to.have.class('ng-hide');
     });
   });
 

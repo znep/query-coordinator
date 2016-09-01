@@ -306,9 +306,6 @@ es:
         old_filter_title: Mostrando <span class="light">the {0}</span>
         old_filtered_title: Mostrando <span class="light">the {0}</span>
         unfiltered_title: Mostrando <span class="light">all {0}</span>
-      related_views:
-        button: Otras vistas de estos datos
-        title: Otras vistas de estos datos
       related_visualization_selector:
         based_on_column: Basado en {0}
         visualization_not_supported: "¡Perdona las molestias! Estamos desarrollando la funcionalidad que te permitirá integrar este tipo de tabla en una historia."

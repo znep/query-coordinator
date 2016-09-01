@@ -97,9 +97,6 @@ enable_airbrake_js:
 enable_api_foundry_pane:
   description: Will allow the api_foundry pane to be displayed. If there is another reason for the api_foundry pane to be hidden, it will still be hidden.
   defaultValue: false
-enable_data_lens_other_views:
-  description: Show the "other views of this data" button in the upper left of Data Lens pages.
-  defaultValue: false
 enable_data_lens_page_metadata_migrations:
   description: Lazily migrate data lens page metadata schemas on each request.
   defaultValue: true

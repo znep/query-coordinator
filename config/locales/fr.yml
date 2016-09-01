@@ -306,9 +306,6 @@ fr:
         old_filter_title:
         old_filtered_title:
         unfiltered_title:
-      related_views:
-        button: Autres vues de ces données
-        title: Autres vues de ces données
       related_visualization_selector:
         based_on_column:
         visualization_not_supported:

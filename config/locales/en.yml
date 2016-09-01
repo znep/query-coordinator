@@ -306,9 +306,6 @@ en:
         old_filter_title: Showing <span class="light">the {0}</span>
         old_filtered_title: Showing <span class="light">the {0}</span>
         unfiltered_title: Showing <span class="light">all {0}</span>
-      related_views:
-        button: Other views of this data
-        title: Other views of this data
       related_visualization_selector:
         based_on_column: Based on {0}
         visualization_not_supported: Pardon our dust! We're still developing the functionality that will let you embed this chart type in a story.

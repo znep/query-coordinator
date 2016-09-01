@@ -306,9 +306,6 @@ ca:
         old_filter_title: Mostrant <span class="light">{0}</span>
         old_filtered_title: Mostrant <span class="light">{0}</span>
         unfiltered_title: Mostrant <span class="light">{0} (tot)</span>
-      related_views:
-        button: Altres vistes d'aquesta dada
-        title: Aaltres vistes d'aquesta dada
       related_visualization_selector:
         based_on_column: Basat en {0}
         visualization_not_supported: Disculpeu les molèsties! Encara estem desenvolupant la funcionalitat que us permetrà incrustar aquest tipus de gràfica dins una història.

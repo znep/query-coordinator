@@ -145,17 +145,6 @@ class PageMetadataControllerTest < ActionController::TestCase
     assert_response(200)
   end
 
-  test 'create fails when a logged-in user tries to create a derived lens without the save-as flag enabled' do
-    user_stub = stub(is_owner?: false, is_superadmin?: false)
-    @controller.stubs(can_create_metadata?: false, save_as_enabled?: false, current_user: user_stub)
-
-    json = { datasetId: 'four-four', parentLensId: 'page-lens' }.to_json
-    set_up_json_request(json)
-
-    post :create, format: :json
-    assert_response(401)
-  end
-
   test 'create fails when a user without a domain role tries to create a (non-derived) data lens from a dataset' do
     user_stub = stub(is_owner?: false, is_superadmin?: false)
     @controller.stubs(can_create_metadata?: false, save_as_enabled?: true, current_user: user_stub)

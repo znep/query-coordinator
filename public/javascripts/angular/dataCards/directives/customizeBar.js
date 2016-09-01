@@ -78,8 +78,6 @@ module.exports = function customizeBar(FlyoutService, ServerConfig, I18n, rx) {
         }
       };
 
-      $scope.showSaveAsButton = ServerConfig.get('enableDataLensSaveAs');
-
       var canCustomize$ = Rx.Observable.combineLatest(
         expandedCard$,
         exportingVisualization$,

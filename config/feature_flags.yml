@@ -25,7 +25,7 @@ bubble:
   defaultValue: old
   expectedValues: nextgen old
 cetera_profile_search:
-  description: Use the shiny new Cetera backend search service to power the profile page. 
+  description: Use the shiny new Cetera backend search service to power the profile page.
   defaultValue: false
 cetera_search:
   description: Use the shiny new Cetera backend search service. NOTE — this flag's value is being forcibly set to false in the spatial lens admin layer picker; do not remove this flag until this aspect of dataset search has been accounted for in Cetera.
@@ -63,9 +63,6 @@ display_dataset_landing_page_notice:
   defaultValue: false
 display_dataset_landing_page_preview_images:
   description: Display view preview images in view widgets on Dataset Landing Page
-  defaultValue: false
-enable_data_lens_mobile_redirect:
-  description: Enables the mobile version of Data Lens
   defaultValue: false
   category: data lens
 enable_dataset_landing_page:

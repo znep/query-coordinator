@@ -376,9 +376,6 @@ class DataLensControllerTest < ActionController::TestCase
         :set_default_and_available_card_types_to_columns! => {}
       )
       DataLensManager.any_instance.stubs(:fetch).returns({})
-      @controller.stubs(
-        :is_data_lens_mobile_redirect_enabled? => false
-      )
     end
 
     should 'not render google analytics JS if feature flag is not set' do
@@ -429,15 +426,9 @@ class DataLensControllerTest < ActionController::TestCase
   end
 
   # Note you can always reach the mobile page by appending /mobile
-  test 'should redirect to mobile when appending /mobile to the URL and the feature flag is disabled' do
+  test 'should redirect to mobile when appending /mobile to the URL' do
     View.any_instance.stubs(
       :data_lens? => true
-    )
-
-    FeatureFlags.stubs(
-      :derive => {
-        :enable_data_lens_mobile_redirect => false
-      }
     )
 
     params = {
@@ -453,39 +444,9 @@ class DataLensControllerTest < ActionController::TestCase
     assert_recognizes(params, 'view/1234-five/mobile')
   end
 
-  test 'should redirect to mobile when appending /mobile to the URL and the feature flag is enabled' do
+  test 'should redirect to mobile when appending /mobile to the SEO friendly URL' do
     View.any_instance.stubs(
       :data_lens? => true
-    )
-
-    FeatureFlags.stubs(
-      :derive => {
-        :enable_data_lens_mobile_redirect => true
-      }
-    )
-
-    params = {
-      :controller => 'data_lens',
-      :action => 'show_mobile',
-      :id => '1234-five'
-    }
-
-    ActionDispatch::Request.any_instance.stubs(
-      :path_parameters => params.with_indifferent_access
-    )
-
-    assert_recognizes(params, 'view/1234-five/mobile')
-  end
-
-  test 'should redirect to mobile when appending /mobile to the SEO friendly URL and the feature flag is disabled' do
-    View.any_instance.stubs(
-      :data_lens? => true
-    )
-
-    FeatureFlags.stubs(
-      :derive => {
-        :enable_data_lens_mobile_redirect => false
-      }
     )
 
     params = {
@@ -501,39 +462,9 @@ class DataLensControllerTest < ActionController::TestCase
     assert_recognizes(params, '/incredibly/friendly/view/1234-five')
   end
 
-  test 'should redirect to mobile when appending /mobile to the SEO friendly URL and the feature flag is enabled' do
+  test 'should not show the mobile page when is_mobile is true' do
     View.any_instance.stubs(
       :data_lens? => true
-    )
-
-    FeatureFlags.stubs(
-      :derive => {
-        :enable_data_lens_mobile_redirect => true
-      }
-    )
-
-    params = {
-      :controller => 'data_lens',
-      :action => 'show',
-      :id => '1234-five'
-    }
-
-    ActionDispatch::Request.any_instance.stubs(
-      :path_parameters => params.with_indifferent_access
-    )
-
-    assert_recognizes(params, '/incredibly/friendly/view/1234-five')
-  end
-
-  test 'should not show the mobile page when is_mobile is true and the feature flag is disabled' do
-    View.any_instance.stubs(
-      :data_lens? => true
-    )
-
-    FeatureFlags.stubs(
-      :derive => {
-        :enable_data_lens_mobile_redirect => false
-      }
     )
 
     ApplicationHelper.stubs(
@@ -543,34 +474,6 @@ class DataLensControllerTest < ActionController::TestCase
     params = {
       :controller => 'data_lens',
       :action => 'show',
-      :id => '1234-five'
-    }
-
-    ActionDispatch::Request.any_instance.stubs(
-      :path_parameters => params.with_indifferent_access
-    )
-
-    assert_recognizes(params, '/incredibly/friendly/view/1234-five')
-  end
-
-  test 'should show the mobile page when is_mobile is true and the feature flag is enabled' do
-    View.any_instance.stubs(
-      :data_lens? => true
-    )
-
-    FeatureFlags.stubs(
-      :derive => {
-        :enable_data_lens_mobile_redirect => true
-      }
-    )
-
-    ApplicationHelper.stubs(
-      :is_mobile? => true
-    )
-
-    params = {
-      :controller => 'data_lens',
-      :action => 'show_mobile',
       :id => '1234-five'
     }
 

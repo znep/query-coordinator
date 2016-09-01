@@ -1141,7 +1141,7 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :only => [:goals] {|c| c.check_auth_level(UserRights::EDIT_GOALS)}
+  before_filter :check_admin_or_superadmin, :only => [:goals]
   def goals
 
     render :layout => 'plain'
@@ -1188,6 +1188,9 @@ public
   end
   def check_feature_flag(feature_flag)
     run_access_check { feature_flag?(feature_flag, request) }
+  end
+  def check_admin_or_superadmin
+    run_access_check{current_user.is_administrator? || current_user.is_superadmin?}
   end
 
 private

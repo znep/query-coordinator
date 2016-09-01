@@ -1162,9 +1162,7 @@
       var idealTickCount = cc[cc.dataDim.pluckY('chartWidth', 'chartHeight')] / 80;
       var ticks = newYScale.ticks(idealTickCount);
 
-      if (blist.feature_flags.hide_decimal_tick_lines === true &&
-        $.isPresent(formatter) &&
-        (formatter.noDecimals || formatter.decimalPlaces === 0)) {
+      if ($.isPresent(formatter) && (formatter.noDecimals || formatter.decimalPlaces === 0)) {
         ticks = _.uniq(_.map(ticks, function(tick) {
           return Math.floor(tick);
         }));

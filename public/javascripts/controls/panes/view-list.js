@@ -129,8 +129,7 @@
           },
           '.deleteViewLink@class+': function(a) {
             var hasDeleteRight = _.include(a.context.view.rights, blist.rights.view.DELETE_VIEW);
-            var shouldShowDeleteButton = blist.feature_flags.display_catalog_lens_delete_button;
-            return (hasDeleteRight && shouldShowDeleteButton) ? '' : 'hide';
+            return hasDeleteRight ? '' : 'hide';
           },
           '.viewItem@class+': 'typeClass'
         });

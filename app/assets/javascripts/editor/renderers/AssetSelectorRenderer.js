@@ -1419,12 +1419,12 @@ export default function AssetSelectorRenderer(options) {
     var loadingMessage = '';
 
     if (file && file.status === STATUS.UPLOADING && file.progress < 1) {
-      loadingMessage = 'editor.asset_selector.image_preview.loading.step_one';
+      loadingMessage = 'editor.asset_selector.image_preview.loading.uploading_image';
     } else if (isCropping || file && file.status === STATUS.PROCESSING) {
       if (isCropping) {
-        loadingMessage = 'editor.asset_selector.image_preview.loading.step_two_with_cropping';
+        loadingMessage = 'editor.asset_selector.image_preview.loading.optimizing_mobile_with_cropping';
       } else {
-        loadingMessage = 'editor.asset_selector.image_preview.loading.step_two';
+        loadingMessage = 'editor.asset_selector.image_preview.loading.optimizing_mobile';
       }
     }
 

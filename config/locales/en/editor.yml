@@ -219,9 +219,9 @@ en:
         crop: 'Crop'
         reset_image: 'Reset Image'
         loading:
-          step_one: '<em>Step 1</em>: Uploading image.'
-          step_two: '<em>Step 2</em>: Optimizing image size for mobile.'
-          step_two_with_cropping: '<em>Step 2</em>: Cropping and optimizing image for mobile.'
+          uploading_image: 'Uploading image.'
+          optimizing_mobile: 'Optimizing image size for mobile.'
+          optimizing_mobile_with_cropping: 'Cropping and optimizing image for mobile.'
         errors:
           cropping: 'Sorry! It looks like cropping failed. Please try again later.'
           cannot_render_image: 'Sorry! There was a problem showing your image. Try uploading it again.'

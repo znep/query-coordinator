@@ -431,7 +431,7 @@ class ApplicationHelperTest < ActionView::TestCase
     refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
   end
 
-  def test_user_has_domain_role_or_unauthenticated_share_by_email_enabled_when_view_does_not_have_grant_right_and_user_is_not_present_and_feature_flag_is_true_and_view_is_public
+  def test_user_has_domain_role_or_unauthenticated_share_by_email_enabled_when_view_does_not_have_grant_right_and_user_is_not_present_and_view_is_public
     setup_user_has_domain_role_or_unauthenticated_share_by_email_enabled_test
 
     # Mock a view without the 'grant' right (by responding false to any rights query)
@@ -440,14 +440,12 @@ class ApplicationHelperTest < ActionView::TestCase
     @object.stubs(:current_user => nil)
     # Mock CurrentDomain to report that no users are a member
     CurrentDomain.stubs(:member? => false)
-    # Stub feature flag to always return true
-    FeatureFlags.stubs(:derive => OpenStruct.new(show_share_dataset_by_email_button_for_general_users: true))
     # Mock view to always report it is public
     @view.stubs(:is_public? => true)
     assert @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
   end
 
-  def test_user_has_domain_role_or_unauthenticated_share_by_email_enabled_when_view_does_not_have_grant_right_and_user_is_not_present_and_feature_flag_is_true_and_view_is_not_public
+  def test_user_has_domain_role_or_unauthenticated_share_by_email_enabled_when_view_does_not_have_grant_right_and_user_is_not_present_and_view_is_not_public
     setup_user_has_domain_role_or_unauthenticated_share_by_email_enabled_test
 
     # Mock a view without the 'grant' right (by responding false to any rights query)
@@ -456,41 +454,7 @@ class ApplicationHelperTest < ActionView::TestCase
     @object.stubs(:current_user => nil)
     # Mock CurrentDomain to report that no users are a member
     CurrentDomain.stubs(:member? => false)
-    # Stub feature flag to always return true
-    FeatureFlags.stubs(:derive => OpenStruct.new(show_share_dataset_by_email_button_for_general_users: true))
     # Mock view to always report it is public
-    @view.stubs(:is_public? => false)
-    refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
-  end
-
-  def test_user_has_domain_role_or_unauthenticated_share_by_email_enabled_when_view_does_not_have_grant_right_and_user_is_not_present_and_feature_flag_is_false_and_view_is_public
-    setup_user_has_domain_role_or_unauthenticated_share_by_email_enabled_test
-
-    # Mock a view without the 'grant' right (by responding false to any rights query)
-    @view.stubs(:has_right? => false)
-    # Mock no current user
-    @object.stubs(:current_user => nil)
-    # Mock CurrentDomain to report that no users are a member
-    CurrentDomain.stubs(:member? => false)
-    # Stub feature flag to always return false
-    FeatureFlags.stubs(:derive => OpenStruct.new(show_share_dataset_by_email_button_for_general_users: false))
-    # Mock view to always report it is public
-    @view.stubs(:is_public? => true)
-    refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
-  end
-
-  def test_user_has_domain_role_or_unauthenticated_share_by_email_enabled_when_view_does_not_have_grant_right_and_user_is_not_present_and_feature_flag_is_false_and_view_is_not_public
-    setup_user_has_domain_role_or_unauthenticated_share_by_email_enabled_test
-
-    # Mock a view without the 'grant' right (by responding false to any rights query)
-    @view.stubs(:has_right? => false)
-    # Mock no current user
-    @object.stubs(:current_user => nil)
-    # Mock CurrentDomain to report that no users are a member
-    CurrentDomain.stubs(:member? => false)
-    # Stub feature flag to always return false
-    FeatureFlags.stubs(:derive => OpenStruct.new(show_share_dataset_by_email_button_for_general_users: false))
-    # Mock view to always report it is not public
     @view.stubs(:is_public? => false)
     refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
   end

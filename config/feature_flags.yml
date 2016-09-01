@@ -225,9 +225,6 @@ show_federated_site_name_instead_of_cname:
 show_provenance_badge_in_catalog:
   description: Show the provenance "Official" badge for official views in the catalog.
   defaultValue: false
-show_share_dataset_by_email_button_for_general_users:
-  description: Toggle the visibility of the "share by email" button on dataset pages for unauthenticated or non-domain-role-holding users (see ONCALL-3032).
-  defaultValue: true
 site_appearance_visible:
   description: Display "Site Appearance" link in the /admin panel. Note that it will always be displayed for superadmins. This only toggles it for regular admins and designers.
   defaultValue: false

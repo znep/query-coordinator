@@ -13,7 +13,6 @@ function t(str, props) {
 
 const ConfigureBoundaryForm = React.createClass({
   propTypes: {
-    allowPrimaryKeySelection: PropTypes.bool,
     cancelLabel: PropTypes.string,
     fetchInitialState: PropTypes.func.isRequired,
     id: PropTypes.oneOfType([
@@ -30,7 +29,6 @@ const ConfigureBoundaryForm = React.createClass({
   },
   getDefaultProps() {
     return {
-      allowPrimaryKeySelection: false,
       requiredFields: [],
       shouldConfirm: false
     };
@@ -139,35 +137,6 @@ const ConfigureBoundaryForm = React.createClass({
 
   validateForm() {
     return this.validateRequiredFields() && this.validateUniqueName();
-  },
-
-  // TODO: Remove renderKeySelector and allowPrimaryKeySelection option once
-  // we're using synthetic spatial lens shape ids exclusively
-  renderKeySelector() {
-    const { allowPrimaryKeySelection } = this.props;
-    const {
-      primaryKey,
-      primaryKeyColumns
-    } = this.state;
-
-    const handleChange = (key) => {
-      this.setState({primaryKey: key});
-    };
-
-    if (allowPrimaryKeySelection) {
-      return (
-        <FormSelectInput
-          description={t('configure_boundary.primary_key_column_description')}
-          id="shape_label"
-          initialValue={primaryKey}
-          initialOption={"Choose a column..."}
-          label={t('configure_boundary.primary_key_column')}
-          onChange={handleChange}
-          options={this.makeFormSelectInputOptions(primaryKeyColumns)}
-          required
-          validationError={t('configure_boundary.primary_key_column_missing_field_error')} />
-      );
-    }
   },
 
   renderBoundaryNameField() {
@@ -282,7 +251,6 @@ const ConfigureBoundaryForm = React.createClass({
           <form className="commonForm" onSubmit={this.handleSubmit}>
             {this.renderBoundaryNameField()}
             {this.renderShapeLabelField()}
-            {this.renderKeySelector()}
             {this.renderFormControls()}
           </form>
         </div>

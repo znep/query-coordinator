@@ -37,7 +37,6 @@ module.exports = function infoPane(ServerConfig, I18n, WindowOperations) {
         WindowOperations.setTitle(`${pageName} | Socrata`);
       });
 
-      $scope.shouldShowExportMenu = ServerConfig.get('enableDataLensExportMenu');
       $scope.showOtherViewsButton = ServerConfig.get('enableDataLensOtherViews');
       $scope.$bindObservable('datasetPages', dataset$.observeOnLatest('pages'));
       $scope.$bindObservable('sourceDatasetName', dataset$.observeOnLatest('name'));

@@ -16,13 +16,27 @@ const MetadataProvider = require('./MetadataProvider');
 // If this promise is rejected, dataset metadata
 // failed to fetch.
 export function getSoqlVifValidator(vif) {
-  return Promise.all((vif.series || []).map((series) =>
-    new MetadataProvider({
-      domain: _.get(series, 'dataSource.domain'),
-      datasetUid: _.get(series, 'dataSource.datasetUid')
-    }).getDatasetMetadata(false)
-  )).
-  then((metadatas) => soqlVifValidator(vif, metadatas));
+  const metadataRequests = (vif.series || []).
+    map((series) => {
+      let metadataPromise;
+
+      if (_.get(series, 'dataSource.type') === 'socrata.soql') {
+        const metadataProviderConfig = {
+          domain: _.get(series, 'dataSource.domain'),
+          datasetUid: _.get(series, 'dataSource.datasetUid')
+        };
+
+        metadataPromise = new MetadataProvider(metadataProviderConfig).
+          getDatasetMetadata(false);
+      } else {
+        metadataPromise = Promise.resolve({});
+      }
+
+      return metadataPromise;
+    });
+
+  return Promise.all(metadataRequests).
+    then((metadataPerSeries) => soqlVifValidator(vif, metadataPerSeries));
 }
 
 // Checks a VIF data source for compatibility with a set of
@@ -76,7 +90,6 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
   const errorMessages = [];
   const addError = (errorMessage) => errorMessages.push(errorMessage);
   const allSeries = _.get(vif, 'series', []);
-
   const getColumn = (columnName, seriesIndex) => _.find(
     datasetMetadataPerSeries[seriesIndex].columns,
     { fieldName: columnName }
@@ -88,8 +101,15 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
 
   allSeries.forEach((series) => {
     const dataSourceType = _.get(series, 'dataSource.type');
-    if (dataSourceType !== 'socrata.soql') {
-      throw new Error(`Cannot validate unknown dataSource type: ${dataSourceType}`);
+
+    switch (dataSourceType) {
+
+      case 'socrata.soql':
+      case 'socrata.sample':
+        break;
+
+      default:
+        throw new Error(`Cannot validate unknown dataSource type: ${dataSourceType}`);
     }
   });
 

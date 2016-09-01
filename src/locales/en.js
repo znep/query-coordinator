@@ -268,6 +268,9 @@ export default {
       previous: 'Previous',
       showing: 'Showing {0}'
     },
+    sample_chart: {
+      error_exceeded_max_item_count: 'This chart only supports two items. Use filters to render a more specific chart.'
+    },
     table: {
       all_rows: 'Showing all rows',
       error_unable_to_render: 'We\'re having trouble displaying this table. Check to make sure the underlying dataset hasn\'t been deleted or unpublished.',

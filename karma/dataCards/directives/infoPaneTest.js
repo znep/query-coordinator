@@ -65,12 +65,6 @@ describe('infoPane', function() {
     });
 
     it('should have an exportMenu child', function() {
-
-      // Set shouldShowExportMenu to true on infoPane's scope to make visible.
-      self.element.scope().$apply(function() {
-        self.element.scope().shouldShowExportMenu = true;
-      });
-
       expect(self.element.find('export-menu')).to.exist;
     });
 
@@ -84,18 +78,6 @@ describe('infoPane', function() {
       self.$scope.$apply(function() { self.$scope.shouldShowManageLens = true; });
 
       expect(self.element.find('.manage-section .action-btn')).to.exist;
-    });
-  });
-
-  describe('shouldShowExportMenu', function() {
-    it('should reflect the state of the enableDataLensExportMenu feature flag', function() {
-      self.ServerConfig.override('enableDataLensExportMenu', true);
-      createInfoPane();
-      expect(self.element.scope().shouldShowExportMenu).to.equal(true);
-
-      self.ServerConfig.override('enableDataLensExportMenu', false);
-      createInfoPane();
-      expect(self.element.scope().shouldShowExportMenu).to.equal(false);
     });
   });
 

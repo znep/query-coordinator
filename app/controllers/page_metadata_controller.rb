@@ -62,7 +62,7 @@ class PageMetadataController < ApplicationController
     # permission checks
     parent_lens_id = page_metadata['parentLensId']
     can_create_from_dataset = can_create_metadata? && ephemeral_bootstrap_enabled?
-    can_derive_from_existing_lens = current_user && save_as_enabled? && parent_lens_id.present?
+    can_derive_from_existing_lens = current_user && parent_lens_id.present?
     unless can_create_from_dataset || can_derive_from_existing_lens
       return render :nothing => true, :status => '401'
     end
@@ -172,10 +172,6 @@ class PageMetadataController < ApplicationController
 
   def dataset(id = nil)
     View.find(id || json_parameter(:pageMetadata)['datasetId'])
-  end
-
-  def save_as_enabled?
-    FeatureFlags.derive(nil, request)[:enable_data_lens_save_as]
   end
 
   def ephemeral_bootstrap_enabled?

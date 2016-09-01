@@ -44,9 +44,6 @@ data_lens_transition_state:
   defaultValue: post_beta
   disableTrueFalse: true
   expectedValues: pre_beta beta post_beta
-dataset_count_v2:
-  description: Display the new metric was created that computes dataset count based more closely on our contractual definition of dataset.
-  defaultValue: true
 debug_assets:
   description: Switch over to using unpackaged Javascript files.
   defaultValue: false

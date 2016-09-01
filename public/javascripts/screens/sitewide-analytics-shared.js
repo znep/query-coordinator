@@ -1,24 +1,12 @@
 blist.namespace.fetch('blist.metrics');
 
 $(function() {
-  var datasetsMetricName,
-    datasetsListHeader,
-    pageViewsName;
-
   var storiesEnabled = !!blist.feature_flags.stories_enabled;
   var storiesMetricName = 'lense-story-published-v1';
-  if (blist.feature_flags.dataset_count_v2) {
-    datasetsMetricName = 'datasets-published-v2';
-  } else {
-    datasetsMetricName = 'datasets';
-  }
-  if (blist.feature_flags.embetter_analytics_browser_views_only) {
-    datasetsListHeader = 'Browser Page Views';
-    pageViewsName = 'Browser Page Views';
-  } else {
-    datasetsListHeader = '';
-    pageViewsName = 'Browser Page Views';
-  }
+  var datasetsMetricName = 'datasets-published-v2';
+  var pageViewsName = 'Browser Page Views';
+  var datasetsListHeader = blist.feature_flags.embetter_analytics_browser_views_only ?
+    'Browser Page Views' : '';
 
   blist.metrics.sitewideShared = {
     urlBase: '/api/site_metrics.json',

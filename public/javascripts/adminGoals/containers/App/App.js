@@ -7,7 +7,7 @@ import * as Components from '../../components';
 import './App.scss';
 
 function App(props) {
-  const { onDismissNotification, feedbackFlannelVisible, translations } = props;
+  const { feedbackFlannelVisible, translations } = props;
 
   let feedbackFlannel = null;
   if (feedbackFlannelVisible) {

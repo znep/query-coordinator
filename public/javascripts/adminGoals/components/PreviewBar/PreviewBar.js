@@ -1,6 +1,7 @@
 import * as React  from 'react';
 import * as ReactRedux from 'react-redux';
 import * as Feedback from '../feedback';
+import * as Actions from '../../actions';
 import { SocrataBulkActions } from '../../sections/goals/components';
 import SocrataAlert from '../SocrataAlert';
 
@@ -13,8 +14,8 @@ class PreviewBar extends React.Component {
     let alert = null;
     if (notification.get('visible')) {
       alert = <SocrataAlert type={ notification.get('type') }
-                                        message={ notification.get('message') }
-                                        onDismiss={ onDismissNotification }/>;
+                            message={ notification.get('message') }
+                            onDismiss={ onDismissNotification } />;
     }
 
     return (

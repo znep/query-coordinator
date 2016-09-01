@@ -5,7 +5,7 @@ class Administration::ActivityFeedController < AdministrationController
   #
 
   before_filter :only => [:index, :show] do |c|
-    c.check_feature_flag(:show_admin_processes) && c.check_auth_level(UserRights::VIEW_ALL_DATASET_STATUS_LOGS)
+    c.check_auth_level(UserRights::VIEW_ALL_DATASET_STATUS_LOGS)
   end
 
   def index

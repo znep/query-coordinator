@@ -235,9 +235,6 @@ restore_dataset_button:
 restore_dataset_filter:
   description: Whether or not to show the 'Restore' event filter on the data jobs page
   defaultValue: false
-robots_txt_disallow_analytics_add:
-  description: Adds "/analytics/add" to the Disallow list for robots.txt
-  defaultValue: false
 route_dataslate_without_caching:
   description: Use DataslateRouting to handle a per-page fetch of dataslate pages, rather than scraping the Pages Service/Dataset for updates without caching the contents in Memcached.
   defaultValue: false

@@ -108,16 +108,6 @@ class ApplicationHelperTest < ActionView::TestCase
     assert(generated_no_user =~ /"dimension5":"none"/)
   end
 
-  def test_render_airbrake_shim_does_not_render
-    FeatureFlags.stubs(:derive => { enable_airbrake_js: false })
-    refute application_helper.render_airbrake_shim
-  end
-
-  def test_render_airbrake_shim_does_render
-    FeatureFlags.stubs(:derive => { enable_airbrake_js: true })
-    assert(application_helper.render_airbrake_shim.to_s =~ /airbrake-shim/)
-  end
-
   def test_stylesheet_assets_has_assets
     result = application_helper.stylesheet_assets
     assert(result.is_a?(Hash))

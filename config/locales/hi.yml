@@ -187,7 +187,6 @@ hi:
           description:
           header:
       feature_map:
-        feature_map_disabled:
         zoom_disabled: "ज़ूम फ़ंक्शन अस्थायी रूप से अनुपलब्ध है। कृपया बाद में फिर से प्रयास करें।"
       feature_map_flannel:
         error_message:

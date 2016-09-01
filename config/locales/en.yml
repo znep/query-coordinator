@@ -187,7 +187,6 @@ en:
           description: Save a PNG-image file of a visualization
           header: Visualization as Image
       feature_map:
-        feature_map_disabled: Feature maps are unavailable.
         zoom_disabled: Zoom is temporarily unavailable. Please try again later.
       feature_map_flannel:
         error_message: An error occurred while fetching location data.

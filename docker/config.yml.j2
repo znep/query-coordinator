@@ -145,12 +145,6 @@ default: &default
   feature_map_zoom_debounce: 500
   {%- endif %}
 
-  {% if ODUX_ENABLE_FEATURE_MAP is defined -%}
-  odux_enable_feature_map: {{ ODUX_ENABLE_FEATURE_MAP }}
-  {% else -%}
-  odux_enable_feature_map: true
-  {% endif -%}
-
   {% if SHAPE_FILE_REGION_QUERY_LIMIT is defined -%}
   shape_file_region_query_limit: {{ SHAPE_FILE_REGION_QUERY_LIMIT }}
   {% else %}

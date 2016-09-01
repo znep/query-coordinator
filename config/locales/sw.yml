@@ -189,7 +189,6 @@ sw:
           description:
           header:
       feature_map:
-        feature_map_disabled:
         zoom_disabled:
       feature_map_flannel:
         error_message:

@@ -187,7 +187,6 @@ pt:
           description:
           header:
       feature_map:
-        feature_map_disabled:
         zoom_disabled: A ampliação está temporariamente indisponível. Queira tentar novamente mais tarde.
       feature_map_flannel:
         error_message:

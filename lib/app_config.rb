@@ -81,7 +81,6 @@ class AppConfig < Hashie::Dash
   property :feature_map_disable_pan_zoom
   property :feature_map_zoom_debounce
   property :feature_map_features_per_tile
-  property :odux_enable_feature_map
   property :shape_file_region_query_limit
   property :enable_png_download_ui
   property :enable_search_suggestions

@@ -187,7 +187,6 @@ es:
           description: Guardar una imagen PNG de una visualización
           header: Visualización como Imagen
       feature_map:
-        feature_map_disabled: Los mapas de características no están disponibles.
         zoom_disabled: El zoom no está disponible temporalmente. Por favor, inténtelo de nuevo más tarde.
       feature_map_flannel:
         error_message: Se ha producido un error al obtener los datos de ubicación.

@@ -187,7 +187,6 @@ fr:
           description:
           header:
       feature_map:
-        feature_map_disabled:
         zoom_disabled: Le Zomm est temporairement non disponible.
       feature_map_flannel:
         error_message:

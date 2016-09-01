@@ -187,7 +187,6 @@ nl:
           description: Sla een bestand met een PNG-afbeelding van een visualisatie op
           header: Visualisatie als afbeelding
       feature_map:
-        feature_map_disabled: Bijhorende kaarten niet beschikbaar.
         zoom_disabled: Zoom is tijdelijk niet beschikbaar. Probeer het later opnieuw.
       feature_map_flannel:
         error_message: Er deed zich een fout voor tijdens het ophalen van locatiedata.

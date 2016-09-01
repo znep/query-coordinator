@@ -37,7 +37,8 @@ export function view(props) {
       <li key="esriIntegration">
         <a
           className="mapLayer tooltip"
-          title={I18nPrefixed.mapLayer_explain}>
+          title={I18nPrefixed.mapLayer_explain}
+          onClick={onChooseOperation('CONNECT_TO_ESRI')}>
           <span title="">
             <span className="icon"></span>
             <p>{I18nPrefixed.mapLayer}</p>

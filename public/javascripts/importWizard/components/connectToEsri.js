@@ -70,7 +70,7 @@ function createLayer(goToPrevious, onComplete) {
 function setViewMetadata(goToPrevious, onUnknownError, onComplete) {
   return (dispatch, getState) => {
     const {connectToEsri: {dataset, esriSource: {contactEmail, privacy}}} = getState();
-    const payload = _.deepCopy(dataset);
+    const payload = _.cloneDeep(dataset);
 
     payload.privateMetadata = payload.privateMetadata || {};
     payload.privateMetadata.contactEmail = contactEmail;

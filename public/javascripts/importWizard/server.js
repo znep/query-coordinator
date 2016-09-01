@@ -619,34 +619,41 @@ function locationSourceColumnExpr(sourceColumn: string | SharedTypes.SourceColum
 
 function getHumanAddress(components) {
   function getLocationComponent(component) {
-    return component.isColumn
-                  ? locationSourceColumnExpr(component.column.sourceColumn)
-                  : component.text;
+    if (component.isColumn) {
+      return locationSourceColumnExpr(component.column.sourceColumn);
+    } else if (component.text) {
+      return `"${component.text}"`;
+    } else {
+      return null;
+    }
   }
 
-  const humanAddress = {};
+  // Localized mutation for the win!
+  var humanAddress = '{';
 
   const street = locationSourceColumnExpr(components.street.sourceColumn);
   if (street) {
-    humanAddress.street = street;
+    humanAddress += `"street":${street},`;
   }
 
   const city = getLocationComponent(components.city);
   if (city) {
-    humanAddress.city = city;
+    humanAddress += `"city":${city},`;
   }
 
   const state = getLocationComponent(components.state);
   if (state) {
-    humanAddress.state = state;
+    humanAddress += `"state":${state},`;
   }
 
   const zip = getLocationComponent(components.zip);
   if (zip) {
-    humanAddress.zip = zip;
+    humanAddress += `"zip":${zip},`;
   }
 
-  return humanAddress;
+  humanAddress += '}';
+
+  return humanAddress.replace(/,}$/, '}'); // Solve fencepost problem.
 }
 
 export function getLocationColumnSource(resultColumn) {
@@ -655,15 +662,11 @@ export function getLocationColumnSource(resultColumn) {
     const lat = sourceColumnExpr(components.lat.sourceColumn);
     const lon = sourceColumnExpr(components.lon.sourceColumn);
 
-    return JSON.stringify({
-      latitude: lat,
-      longitude: lon,
-      human_address: getHumanAddress(components)
-    });
+    // Can't use JSON.stringify because lat and lon need to be unquoted.
+    return `{"latitude":${lat},"longitude":${lon},"human_address":${getHumanAddress(components)}}`;
   } else {
     return locationSourceColumnExpr(components.singleSource.sourceColumn);
   }
-
 }
 
 function getColumnSource(resultColumn) {

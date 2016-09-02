@@ -217,4 +217,29 @@ describe SiteChrome do
     end
   end
 
+  describe 'set_activation_state' do
+    let(:cname) { CurrentDomain.cname }
+
+    it 'should set the feature flags correctly when state == entire_site' do
+      expect(FeatureFlags).to receive(:set_value).with(:site_chrome_header_and_footer, true, domain: cname)
+      expect(FeatureFlags).to receive(:set_value).with(:site_chrome_header_and_footer_for_homepage, true, domain: cname)
+      expect(FeatureFlags).to receive(:set_value).with(:site_chrome_header_and_footer_for_data_lens, true, domain: cname)
+      subject.set_activation_state('entire_site' => true)
+    end
+
+    it 'should set the feature flags correctly when state == all_pages_except_home' do
+      expect(FeatureFlags).to receive(:set_value).with(:site_chrome_header_and_footer, true, domain: cname)
+      expect(FeatureFlags).to receive(:set_value).with(:site_chrome_header_and_footer_for_homepage, false, domain: cname)
+      expect(FeatureFlags).to receive(:set_value).with(:site_chrome_header_and_footer_for_data_lens, true, domain: cname)
+      subject.set_activation_state('all_pages_except_home' => true)
+    end
+
+    it 'should set the feature flags correctly when state == revert_site_chrome' do
+      expect(FeatureFlags).to receive(:set_value).with(:site_chrome_header_and_footer, false, domain: cname)
+      expect(FeatureFlags).to receive(:set_value).with(:site_chrome_header_and_footer_for_homepage, false, domain: cname)
+      expect(FeatureFlags).to receive(:set_value).with(:site_chrome_header_and_footer_for_data_lens, false, domain: cname)
+      subject.set_activation_state('revert_site_chrome' => true)
+    end
+  end
+
 end

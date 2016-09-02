@@ -1728,7 +1728,7 @@
                 'LESS_THAN';
               condition.children = [{
                 type: 'column',
-                value: (axis == 'x') ? 'LONGITUDE' : 'LATITUDE',
+                value: (axis == 'x') ? 'longitude' : 'latitude',
                 columnFieldName: filterColumnFieldName
               }, {
                 type: 'literal',

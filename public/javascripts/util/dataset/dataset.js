@@ -810,7 +810,7 @@
         return;
       }
 
-      if (ds._useSODA2) {
+      if (ds.newBackend) {
         ds._getClustersViaSODA2.apply(ds, arguments);
         return;
       }

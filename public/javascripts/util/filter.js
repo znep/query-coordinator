@@ -375,6 +375,9 @@ blist.namespace.fetch('blist.filter');
     if (_.isEmpty(fc)) {
       return '';
     }
+    if (_.isString(fc.soql)) {
+      return fc.soql;
+    }
     var op = fc.operator.toUpperCase();
     if (op == 'AND' || op == 'OR') {
       var childKeys = _.map(fc.children, function(child) {

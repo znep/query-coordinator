@@ -4,11 +4,12 @@ import Styleguide from 'socrata-components';
 import { connect } from 'react-redux';
 
 import { translate } from '../../../I18n';
-import { INPUT_DEBOUNCE_MILLISECONDS, CHART_SORTING } from '../../constants';
-import { setLabelBottom, setLabelLeft, setXAxisDataLabels, setOrderBy } from '../../actions';
+import { INPUT_DEBOUNCE_MILLISECONDS, CHART_SORTING, TIMELINE_PRECISION } from '../../constants';
+import { setLabelBottom, setLabelLeft, setXAxisDataLabels, setOrderBy, setPrecision } from '../../actions';
 import {
   getAxisLabels,
   getOrderBy,
+  getPrecision,
   getXAxisDataLabels,
   isColumnChart,
   isHistogram,
@@ -20,12 +21,14 @@ import EmptyPane from './EmptyPane';
 
 export var AxisAndScalePane = React.createClass({
   propTypes: {
-    chartSorting: React.PropTypes.arrayOf(React.PropTypes.object)
+    chartSorting: React.PropTypes.arrayOf(React.PropTypes.object),
+    timelinePrecision: React.PropTypes.arrayOf(React.PropTypes.object)
   },
 
   getDefaultProps() {
     return {
-      chartSorting: _.cloneDeep(CHART_SORTING)
+      chartSorting: _.cloneDeep(CHART_SORTING),
+      timelinePrecision: _.cloneDeep(TIMELINE_PRECISION)
     };
   },
 
@@ -132,6 +135,41 @@ export var AxisAndScalePane = React.createClass({
     );
   },
 
+  renderTimelinePrecisionOption(option) {
+    return (
+      <div className="dataset-column-dropdown-option">
+        {option.title}
+      </div>
+    );
+  },
+
+  renderTimelinePrecision() {
+    const { onSelectTimelinePrecision, timelinePrecision, vifAuthoring } = this.props;
+    const defaultPrecision = getPrecision(vifAuthoring) || null;
+    const options = _.map(timelinePrecision, (option) => {
+
+      option.render = this.renderTimelinePrecisionOption;
+
+      return option;
+    });
+
+    const attributes = {
+      options,
+      onSelection: onSelectTimelinePrecision,
+      id: 'timeline-precision-selection',
+      value: defaultPrecision
+    };
+
+    return (
+      <div className="authoring-field-group">
+        <h5>{translate('panes.axis_and_scale.subheaders.timeline_precision')}</h5>
+        <div className="authoring-field">
+          <Styleguide.Dropdown {...attributes} />
+        </div>
+      </div>
+    );
+  },
+
   renderColumnChartControls() {
     const visualizationLabels = this.renderVisualizationLabels();
     const xAxisDataLabels = this.renderXAxisDataLabels();
@@ -151,7 +189,15 @@ export var AxisAndScalePane = React.createClass({
   },
 
   renderTimelineChartControls() {
-    return this.renderVisualizationLabels();
+    const visualizationLabels = this.renderVisualizationLabels();
+    const timelinePrecision = this.renderTimelinePrecision();
+
+    return (
+      <div>
+        {visualizationLabels}
+        {timelinePrecision}
+      </div>
+    );
   },
 
   renderEmptyPane() {
@@ -212,6 +258,10 @@ function mapDispatchToProps(dispatch) {
 
     onSelectChartSorting: (chartSorting) => {
       dispatch(setOrderBy(chartSorting.orderBy));
+    },
+
+    onSelectTimelinePrecision: (timelinePrecision) => {
+      dispatch(setPrecision(timelinePrecision.value));
     }
   };
 }

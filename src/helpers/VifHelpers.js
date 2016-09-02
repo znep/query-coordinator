@@ -154,6 +154,7 @@ function migrateVif1ToVif2(vifToMigrate) {
       other: unit.other
     }
   };
+
   // 2b. Assign a type and ascending value to the series
   switch (vifToMigrate.type) {
 
@@ -165,6 +166,19 @@ function migrateVif1ToVif2(vifToMigrate) {
       break;
 
     case 'timelineChart':
+
+      if (!_.isUndefined(_.get(vifToMigrate, 'configuration.precision'))) {
+
+        _.set(
+          series,
+          'dataSource.precision',
+          _.get(
+            vifToMigrate,
+            'configuration.precision'
+          )
+        );
+      }
+
       series.type = 'timelineChart';
       break;
 
@@ -193,6 +207,7 @@ function migrateVif1ToVif2(vifToMigrate) {
       series.type = 'table';
       break;
   }
+
   // 2c. Add it to the series array on the VIF
   migratedVif.series.push(series);
 

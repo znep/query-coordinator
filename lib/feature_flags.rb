@@ -99,6 +99,8 @@ class FeatureFlags
     end
 
     def set_value(flag_name, flag_value, options = {})
+      return unless using_signaller?
+
       uri = endpoint(for_flag: flag_name, for_domain: options[:domain])
       body = flag_value.is_a?(String) ? flag_value : flag_value.to_json
       auth_header = { 'Cookie' => "_core_session_id=#{User.current_user.session_token}" }

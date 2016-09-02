@@ -284,4 +284,12 @@ describe 'FeatureFlags' do
       expect(FeatureFlags.value_for(:test_method)).to eq('foo mutated')
     end
   end
+
+  describe '#set_value' do
+    context 'FFS is not enabled' do
+      it 'should not raise' do
+        FeatureFlags.set_value(:site_chrome_header_and_footer, false, CurrentDomain.cname)
+      end
+    end
+  end
 end

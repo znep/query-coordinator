@@ -70,7 +70,7 @@ export function updateText(field, newText) {
 const UPDATE_IS_COLUMN = 'UPDATE_IS_COLUMN';
 export function updateIsColumn(field, newIsColumn) {
   return {
-    type: UPDATE_TEXT,
+    type: UPDATE_IS_COLUMN,
     field: field,
     newIsColumn: newIsColumn
   };
@@ -130,7 +130,6 @@ export function updateColumnOrTextReducer(item = defaultColumnOrText(), action) 
     case UPDATE_IS_COLUMN:
       return {
         ...item,
-        column: action.sourceColumns[action.newColumn],
         isColumn: action.newIsColumn
       };
     case UPDATE_SOURCE_COLUMN:

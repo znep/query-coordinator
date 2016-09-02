@@ -281,9 +281,11 @@
         });
       } else {
         layerObj._view.getParentView(function(parentView) {
-          layer.setMetadata({
-            initialExtent: OpenLayers.Bounds.fromDatasetMetadata(parentView)
-          });
+          if (!_.isEmpty(parentView)) {
+            layer.setMetadata({
+              initialExtent: OpenLayers.Bounds.fromDatasetMetadata(parentView)
+            });
+          }
         });
       }
 

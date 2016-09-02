@@ -63,6 +63,7 @@ class FeatureFlags
 
     def flag_set_by_user?(flag)
       return false unless using_signaller?
+
       FeatureFlags.get_value(flag)['source'] == 'domain'
     end
 
@@ -94,6 +95,7 @@ class FeatureFlags
 
     def get_value(flag_name, options = {})
       return unless using_signaller?
+
       uri = endpoint(for_flag: flag_name, for_domain: options[:domain] || CurrentDomain.cname)
       connect_to_signaller { JSON.parse(HTTParty.get(uri))[flag_name] }
     end

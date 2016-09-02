@@ -1,23 +1,21 @@
 import _ from 'lodash';
 import classNames from 'classnames';
 import React from 'react';
-
-const KEYS = {
-  UP: 38,
-  DOWN: 40,
-  ENTER: 13,
-  TAB: 9,
-  ESCAPE: 27
-};
+import Picklist from '../Picklist';
+import { ESCAPE } from '../../common/keycodes';
 
 export default React.createClass({
   propTypes: {
     disabled: React.PropTypes.bool,
-    value: React.PropTypes.string,
-    options: React.PropTypes.arrayOf(React.PropTypes.object),
+    displayTrueWidthOptions: React.PropTypes.bool,
+    id: React.PropTypes.string,
     onSelection: React.PropTypes.func,
-    placeholder: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.func]),
-    displayTrueWidthOptions: React.PropTypes.bool
+    options: React.PropTypes.arrayOf(React.PropTypes.object),
+    placeholder: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.func
+    ]),
+    value: React.PropTypes.string
   },
 
   getDefaultProps() {
@@ -31,7 +29,6 @@ export default React.createClass({
 
   getInitialState() {
     return {
-      highlightedOption: null,
       selectedOption: this.getSelectedOption(this.props),
       focused: false,
       opened: false
@@ -64,7 +61,7 @@ export default React.createClass({
 
       // Calculate Position
 
-      this.options.style.top = `${this.container.clientHeight + containerDimensions.top - 1}px`;
+      this.options.style.top = `${this.container.clientHeight + containerDimensions.top}px`;
       this.options.style.left = `${containerDimensions.left}px`;
 
       // Calculate Height
@@ -72,7 +69,7 @@ export default React.createClass({
       const dimensions = this.options.getBoundingClientRect();
       const scrollHeight = this.options.scrollHeight;
       const exceedsBrowserWindowHeight = browserWindowHeight < dimensions.top + scrollHeight;
-      const optionHeight = this.options.childNodes[0].clientHeight;
+      const optionHeight = this.options.querySelector('.picklist-option').clientHeight;
       const determinedHeight = browserWindowHeight - dimensions.top;
 
       if (exceedsBrowserWindowHeight) {
@@ -100,173 +97,26 @@ export default React.createClass({
     this.options.scrollTop = 0;
     this.setState({
       focused: false,
-      opened: false,
-      highlightedOption: null
+      opened: false
     });
   },
 
   onKeyUpPlaceholder(event) {
-    const { UP, DOWN, ENTER, ESCAPE } = KEYS;
-
-    switch (event.keyCode) {
-      case UP:
-        this.moveToPreviousOption();
-        break;
-
-      case DOWN:
-        this.moveToNextOption();
-        break;
-
-      case ENTER:
-        this.selectOption();
-        break;
-
-      case ESCAPE:
-        this.onBlurPlaceholder();
-        break;
-
-      default:
-        break;
+    if (event.keyCode === ESCAPE) {
+      this.onBlurPlaceholder();
     }
 
     event.preventDefault();
   },
 
-  onKeyDownPlaceholder(event) {
-    const { UP, DOWN, ENTER } = KEYS;
-
-    if ([UP, DOWN, ENTER].indexOf(event.keyCode) > -1) {
-      event.preventDefault();
-    }
-  },
-
-  onMouseOverOptions() {
-    this.setState({ highlightedOption: null });
-  },
-
-  onClickOption(selectedOption, event) {
-    event.stopPropagation();
-
+  onClickOption(selectedOption) {
     this.props.onSelection(selectedOption);
     this.setState({ selectedOption, opened: false });
-  },
-
-  onMouseDownOption(event) {
-    event.preventDefault();
   },
 
   getSelectedOption(props) {
     const { value, options } = props;
     return _.find(options, { value }) || null;
-  },
-
-  moveToNextOption() {
-    const { options } = this.props;
-    const { highlightedOption } = this.state;
-    const hasHighlightedOption = highlightedOption === null;
-    const previousOption = hasHighlightedOption ?
-      0 :
-      Math.min(highlightedOption + 1, options.length - 1);
-
-    this.setState({ opened: true, highlightedOption: previousOption });
-  },
-
-  moveToPreviousOption() {
-    const { highlightedOption } = this.state;
-    const hasHighlightedOption = highlightedOption === null;
-    const nextOption = hasHighlightedOption ? 0 : Math.max(highlightedOption - 1, 0);
-
-    this.setState({ opened: true, highlightedOption: nextOption });
-  },
-
-  selectOption() {
-    const { opened, highlightedOption } = this.state;
-
-    if (opened && highlightedOption !== null) {
-      const { options } = this.props;
-      const selectedOption = options[highlightedOption];
-
-      this.setState({
-        opened: false,
-        selectedOption,
-        highlightedOption: null
-      });
-
-      this.props.onSelection(selectedOption);
-    }
-  },
-
-  renderOptions() {
-    const renderedOptions = [];
-
-    const { opened } = this.state;
-    const { options, displayTrueWidthOptions } = this.props;
-
-    const classes = classNames('dropdown-options-list', {
-      'dropdown-options-true-width': displayTrueWidthOptions,
-      'dropdown-invisible': !opened
-    });
-
-    const attributes = {
-      className: classes,
-      onMouseOver: this.onMouseOverOptions,
-      ref: ref => this.options = ref
-    };
-
-    const header = (groupName, key) => (
-      <div className="dropdown-options-group-header" key={key}>{groupName}</div>
-    );
-
-    const separator = (key) => (
-      <div className="dropdown-options-separator" key={key} />
-    );
-
-    options.forEach((option, index) => {
-      const previousOption = options[index - 1];
-      const differentGroup = previousOption && previousOption.group !== option.group;
-
-      if (differentGroup) {
-        renderedOptions.push(separator(`${option.group}-separator`));
-        renderedOptions.push(header(option.group, `${option.group}-header`));
-      } else if (index === 0 && option.group) {
-        renderedOptions.push(header(option.group, `${option.group}-header`));
-      }
-
-      renderedOptions.push(this.renderOption(option, index));
-    });
-
-    return (
-      <div {...attributes}>
-        {renderedOptions}
-      </div>
-    );
-  },
-
-  renderOption(option, index) {
-    const { selectedOption, highlightedOption } = this.state;
-    const hasRenderFunction = typeof option.render === 'function';
-    const onClickOptionBound = this.onClickOption.bind(this, option);
-    const classes = classNames('dropdown-option', {
-      'dropdown-option-selected': selectedOption === option,
-      'dropdown-option-highlighted': highlightedOption === index
-    });
-
-    const attributes = {
-      className: classes,
-      onClick: onClickOptionBound,
-      onMouseDown: this.onMouseDownOption,
-      key: index
-    };
-
-    const content = hasRenderFunction ?
-      option.render(option) :
-      <span className="dropdown-option-title" key={index}>{option.title}</span>;
-
-    return (
-      <div {...attributes}>
-        {content}
-      </div>
-    );
   },
 
   renderPlaceholder() {
@@ -305,22 +155,41 @@ export default React.createClass({
   },
 
   render() {
-    const { disabled } = this.props;
-    const { focused, opened } = this.state;
-    const reference = ref => this.container = ref;
-    const classes = classNames('dropdown-container', {
-      'dropdown-focused': focused,
-      'dropdown-opened': opened,
-      'dropdown-disabled': disabled
-    });
+    const { disabled, options, id } = this.props;
+    const { focused, opened, selectedOption } = this.state;
 
-    const options = this.renderOptions();
+    const dropdownAttributes = {
+      id,
+      ref: ref => this.container = ref,
+      className: classNames('dropdown-container', {
+        'dropdown-focused': focused,
+        'dropdown-opened': opened,
+        'dropdown-disabled': disabled
+      })
+    };
+
+    const dropdownOptionsAttributes = {
+      ref: ref => this.options = ref,
+      className: classNames('dropdown-options-list', {
+        'dropdown-invisible': !opened
+      })
+    };
+
+    const picklistAttributes = {
+      options,
+      disabled,
+      value: _.get(selectedOption, 'value', null),
+      onSelection: this.onClickOption
+    };
+
     const placeholder = this.renderPlaceholder();
 
     return (
-      <div className={classes} ref={reference} {...this.props}>
+      <div {...dropdownAttributes}>
         {placeholder}
-        {options}
+        <div {...dropdownOptionsAttributes}>
+          <Picklist {...picklistAttributes} />
+        </div>
       </div>
     );
   }

@@ -1,7 +1,7 @@
 .color-picker {
   position: relative;
   align-self: flex-end;
-  z-index: 2000;
+  z-index: 999;
 
   .hidden {
     display: none;

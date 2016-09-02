@@ -1878,7 +1878,7 @@ en:
             invalid: Invalid start date.
           end:
             invalid: Invalid end date.
-            conflict: Conflict between start and end dates.
+            end_not_after_start: Conflict between start and end dates.
       modal:
         close_without_save_message: Are you sure you want to close? Your changes will be lost.
       preview_bar:

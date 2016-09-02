@@ -3,17 +3,16 @@ import { combineReducers } from 'redux';
 
 import * as SharedTypes from '../../sharedTypes';
 
-export type LocationSource
-  = {
-      isMultiple: Boolean,
-      street: String,
-      singleSource: String,
-      city: ColumnOrText,
-      state: ColumnOrText,
-      zip: ColumnOrText,
-      lat: SharedTypes.SourceColumn,
-      lon: SharedTypes.SourceColumn
-    }
+export type LocationSource = {
+  isMultiple: Boolean,
+  street: String,
+  singleSource: String,
+  city: ColumnOrText,
+  state: ColumnOrText,
+  zip: ColumnOrText,
+  lat: SharedTypes.SourceColumn,
+  lon: SharedTypes.SourceColumn
+}
 
 export const update =
   combineReducers({
@@ -180,9 +179,11 @@ export function updateColumnOrTextForField(fieldName: string) {
 }
 
 function getSpanClassName(isColumn) {
-  return isColumn
-          ? 'checked'
-          : '';
+  if (isColumn) {
+    return 'checked';
+  } else {
+    return '';
+  }
 }
 
 export function view({ dispatch, locationColumn, sourceColumns }) {
@@ -207,8 +208,10 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
           <legend>{I18n.screens.import_common.existing_cols}</legend>
 
           <div className="line locationAddressLine clearfix">
-            <label className="locationAddressLabel" htmlFor="locationAddressColumn">{I18n.screens.import_common.street}</label>
-            <div className="selector uniform">
+            <label className="locationAddressLabel">
+              {I18n.screens.import_common.street}
+            </label>
+            <div className="optionGroup">
               <span>
                 <select
                   onChange={(evt) => dispatch(updateSourceColumnSingle('street', evt.target.value, sourceColumns))}>
@@ -220,35 +223,29 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
           </div>
 
           <div className="line locationCityLine clearfix">
-            <label className="locationCityLabel" htmlFor="locationCityColumn">{I18n.screens.import_common.city}</label>
+            <label className="locationCityLabel">{I18n.screens.import_common.city}</label>
             <div className="optionGroup">
-              <div className="radio uniform">
-                <span className={getSpanClassName(locationColumn.city.isColumn)}>
-                  <input
-                    type="radio"
-                    name="locationCityToggle1"
-                    className="locationSourceToggle"
-                    checked={locationColumn.city.isColumn}
-                    onChange={() => dispatch(updateIsColumn('city', true))} />
-                </span>
-              </div>
-              <div className="selector uniform active">
-                <select
-                  onChange={(evt) => dispatch(updateSourceColumn('city', evt.target.value, sourceColumns))}>
-                  <option value="">{I18n.screens.import_pane.no_source_column}</option>
-                  {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
-                </select>
-              </div>
-              <div className="radio uniform">
-                <span className={getSpanClassName(!locationColumn.city.isColumn)}>
-                  <input
-                    type="radio"
-                    name="locationCityToggle1"
-                    className="locationSourceToggle"
-                    checked={!locationColumn.city.isColumn}
-                    onChange={() => dispatch(updateIsColumn('city', false))} />
-                </span>
-              </div>
+              <span className={getSpanClassName(locationColumn.city.isColumn)}>
+                <input
+                  type="radio"
+                  name="locationCityToggle1"
+                  className="locationSourceToggle"
+                  checked={locationColumn.city.isColumn}
+                  onChange={() => dispatch(updateIsColumn('city', true))} />
+              </span>
+              <select
+                onChange={(evt) => dispatch(updateSourceColumn('city', evt.target.value, sourceColumns))}>
+                <option value="">{I18n.screens.import_pane.no_source_column}</option>
+                {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
+              </select>
+              <span className={getSpanClassName(!locationColumn.city.isColumn)}>
+                <input
+                  type="radio"
+                  name="locationCityToggle1"
+                  className="locationSourceToggle"
+                  checked={!locationColumn.city.isColumn}
+                  onChange={() => dispatch(updateIsColumn('city', false))} />
+              </span>
               <input
                 type="text"
                 className="locationCityStatic textPrompt prompt"
@@ -258,35 +255,29 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
           </div>
 
           <div className="line locationStateLine clearfix">
-            <label className="locationStateLabel" htmlFor="locationStateColumn">{I18n.screens.import_common.state}</label>
+            <label className="locationStateLabel">{I18n.screens.import_common.state}</label>
             <div className="optionGroup">
-              <div className="radio uniform">
-                <span className={getSpanClassName(locationColumn.state.isColumn)}>
-                  <input
-                    type="radio"
-                    name="locationStateToggle1"
-                    className="locationSourceToggle"
-                    checked={locationColumn.state.isColumn}
-                    onChange={() => dispatch(updateIsColumn('state', true))} />
-                </span>
-              </div>
-              <div className="selector uniform active">
-                <select
-                  onChange={(evt) => dispatch(updateSourceColumn('state', evt.target.value, sourceColumns))}>
-                  <option value="">{I18n.screens.import_pane.no_source_column}</option>
-                  {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
-                </select>
-              </div>
-              <div className="radio uniform">
-                <span className={getSpanClassName(!locationColumn.state.isColumn)}>
-                  <input
-                    type="radio"
-                    name="locationStateToggle1"
-                    className="locationSourceToggle"
-                    checked={!locationColumn.state.isColumn}
-                    onChange={() => dispatch(updateIsColumn('state', false))} />
-                </span>
-              </div>
+              <span className={getSpanClassName(locationColumn.state.isColumn)}>
+                <input
+                  type="radio"
+                  name="locationStateToggle1"
+                  className="locationSourceToggle"
+                  checked={locationColumn.state.isColumn}
+                  onChange={() => dispatch(updateIsColumn('state', true))} />
+              </span>
+              <select
+                onChange={(evt) => dispatch(updateSourceColumn('state', evt.target.value, sourceColumns))}>
+                <option value="">{I18n.screens.import_pane.no_source_column}</option>
+                {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
+              </select>
+              <span className={getSpanClassName(!locationColumn.state.isColumn)}>
+                <input
+                  type="radio"
+                  name="locationStateToggle1"
+                  className="locationSourceToggle"
+                  checked={!locationColumn.state.isColumn}
+                  onChange={() => dispatch(updateIsColumn('state', false))} />
+              </span>
               <input
                 type="text"
                 className="locationStateStatic textPrompt prompt"
@@ -296,35 +287,29 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
           </div>
 
           <div className="line locationZipLine clearfix">
-            <label className="locationZipLabel" htmlFor="locationZipColumn">{I18n.screens.import_common.zip}</label>
+            <label className="locationZipLabel">{I18n.screens.import_common.zip}</label>
             <div className="optionGroup">
-              <div className="radio uniform">
-                <span className={getSpanClassName(locationColumn.zip.isColumn)}>
-                  <input
-                    type="radio"
-                    name="locationZipToggle1"
-                    className="locationSourceToggle"
-                    checked={locationColumn.zip.isColumn}
-                    onChange={() => dispatch(updateIsColumn('zip', true))} />
-                </span>
-              </div>
-              <div className="selector uniform active">
-                <select
-                  onChange={(evt) => dispatch(updateSourceColumn('zip', evt.target.value, sourceColumns))}>
-                  <option value="">{I18n.screens.import_pane.no_source_column}</option>
-                  {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
-                </select>
-              </div>
-              <div className="radio uniform">
-                <span className={getSpanClassName(!locationColumn.zip.isColumn)}>
-                  <input
-                    type="radio"
-                    name="locationZipToggle1"
-                    className="locationSourceToggle"
-                    checked={!locationColumn.zip.isColumn}
-                    onChange={() => dispatch(updateIsColumn('zip', false))} />
-                </span>
-              </div>
+              <span className={getSpanClassName(locationColumn.zip.isColumn)}>
+                <input
+                  type="radio"
+                  name="locationZipToggle1"
+                  className="locationSourceToggle"
+                  checked={locationColumn.zip.isColumn}
+                  onChange={() => dispatch(updateIsColumn('zip', true))} />
+              </span>
+              <select
+                onChange={(evt) => dispatch(updateSourceColumn('zip', evt.target.value, sourceColumns))}>
+                <option value="">{I18n.screens.import_pane.no_source_column}</option>
+                {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
+              </select>
+              <span className={getSpanClassName(!locationColumn.zip.isColumn)}>
+                <input
+                  type="radio"
+                  name="locationZipToggle1"
+                  className="locationSourceToggle"
+                  checked={!locationColumn.zip.isColumn}
+                  onChange={() => dispatch(updateIsColumn('zip', false))} />
+              </span>
               <input
                 type="text"
                 className="locationZipStatic textPrompt prompt"
@@ -337,8 +322,8 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
         <fieldset className="right">
           <legend>{I18n.screens.import_common.existing_latlng_cols}</legend>
           <div className="line locationLatitudeLine clearfix">
-            <label className="locationLatitudeLabel">{I18n.screens.import_common.latitude}</label>
-            <div className="selector uniform">
+            <div className="optionGroup">
+              <label className="locationLatLonLabel">{I18n.screens.import_common.latitude}</label>
               <select
                 onChange={(evt) => dispatch(updateSourceColumnSingle('lat', evt.target.value, sourceColumns))}>
                 <option value="">{I18n.screens.import_pane.no_source_column}</option>
@@ -346,15 +331,15 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
                   <option
                     value={idx}
                     selected={obj.sourceColumn.name === 'Latitude'
-                                ? 'selected'
-                                : ''}>
-                  {obj.sourceColumn.name}</option>)}
+                            ? 'selected'
+                            : ''}>
+                    {obj.sourceColumn.name}</option>)}
               </select>
             </div>
           </div>
           <div className="line locationLongitudeLine clearfix">
-            <label className="locationLongitudeLabel">{I18n.screens.import_common.longitude}</label>
-            <div className="selector uniform">
+            <div className="optionGroup">
+              <label className="locationLatLonLabel">{I18n.screens.import_common.longitude}</label>
               <select
                 onChange={(evt) => dispatch(updateSourceColumnSingle('lon', evt.target.value, sourceColumns))}>
                 <option value="">{I18n.screens.import_pane.no_source_column}</option>
@@ -362,9 +347,9 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
                   <option
                     value={idx}
                     selected={obj.sourceColumn.name === 'Longitude'
-                                ? 'selected'
-                                : ''}>
-                  {obj.sourceColumn.name}</option>)}
+                            ? 'selected'
+                            : ''}>
+                    {obj.sourceColumn.name}</option>)}
               </select>
             </div>
           </div>
@@ -381,19 +366,17 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
               checked={!locationColumn.isMultiple}
               onChange={() => dispatch(updateMultiple(false))} />
           </span>
-          <label className="locationTypeToggleLabel uniform">Import from <strong>single column</strong></label>
+          <label className="locationTypeToggleLabel">Import from <strong>single column</strong></label>
         </div>
       </div>
 
       <div className="importSingleColumnSection">
         <label className="locationSingleColumnLabel">Column</label>
-        <div className="selector uniform">
-          <select
-            onChange={(evt) => dispatch(updateSourceColumnSingle('singleSource', evt.target.value, sourceColumns))}>
-            <option value="">(No Source Column)</option>
-            {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
-          </select>
-        </div>
+        <select
+          onChange={(evt) => dispatch(updateSourceColumnSingle('singleSource', evt.target.value, sourceColumns))}>
+          <option value="">(No Source Column)</option>
+          {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
+        </select>
         <p>Column must be <a href="http://dev.socrata.com/docs/datatypes/" rel="external">properly formatted</a> prior to import.</p>
       </div>
     </div>

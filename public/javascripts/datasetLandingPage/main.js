@@ -46,7 +46,7 @@ _.defer(function() {
       document.querySelector('#app')
     );
   } catch (e) {
-    console.error(e);
+    console.error(`Fatal error when rendering: ${e.stack}`);
 
     ReactDOM.render(
       <div className="alert error alert-full-width-top">{I18n.render_error}</div>,

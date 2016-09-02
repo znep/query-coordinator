@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import FeaturedItemWidget from '../FeaturedItemWidget';
+import FeaturedViewCard from '../FeaturedViewCard';
 import FeaturedContentModalHeader from './FeaturedContentModalHeader';
 import { getEditTypeFromFeaturedItem } from '../../lib/featuredContent';
 
@@ -193,9 +193,9 @@ export var FeaturedItemSelector = React.createClass({
       } else {
         return (
           <div className={className} key={i}>
-            <FeaturedItemWidget {...featuredItem}>
+            <FeaturedViewCard featuredItem={featuredItem}>
               {actionButtons}
-            </FeaturedItemWidget>
+            </FeaturedViewCard>
           </div>
         );
       }

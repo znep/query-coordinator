@@ -49,23 +49,23 @@ describe('components/FeaturedContentModal/StoryForm', function() {
       expect(element.querySelector('.back-button')).to.exist;
     });
 
-    describe('preview widget', function() {
+    describe('preview card', function() {
       it('renders', function() {
-        expect(element.querySelector('.view-widget')).to.exist;
+        expect(element.querySelector('.view-card')).to.exist;
       });
 
       it('renders the title', function() {
-        var title = element.querySelector('.view-widget .entry-title');
+        var title = element.querySelector('.view-card .entry-title');
         expect(title.innerText).to.match(/Sweet Sue/);
       });
 
       it('renders the date', function() {
-        var date = element.querySelector('.view-widget .date');
+        var date = element.querySelector('.view-card .date');
         expect(date.innerText).to.eq('June 8, 2016');
       });
 
       it('renders the description', function() {
-        var description = element.querySelector('.view-widget .entry-description');
+        var description = element.querySelector('.view-card .entry-description');
         expect(description.innerText).to.match(/Daphne/);
       });
     });

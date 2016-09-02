@@ -52,13 +52,13 @@ describe('components/FeaturedContent', function() {
     });
   });
 
-  describe('widgets', function() {
-    it('renders one widget for each featured item', function() {
+  describe('cards', function() {
+    it('renders one card for each featured item', function() {
       var element = renderComponent(FeaturedContent, {
         contentList: [mockFeaturedItem, null, mockFeaturedItem]
       });
 
-      expect(element.querySelectorAll('.view-widget')).to.have.length(2);
+      expect(element.querySelectorAll('.view-card')).to.have.length(2);
     });
   });
 });

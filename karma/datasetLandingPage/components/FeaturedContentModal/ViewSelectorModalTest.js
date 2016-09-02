@@ -1,6 +1,6 @@
 import { ViewSelectorModal } from 'components/FeaturedContentModal/ViewSelectorModal';
 import { Simulate } from 'react-addons-test-utils';
-import mockViewWidget from 'data/mockViewWidget';
+import mockRelatedView from 'data/mockRelatedView';
 
 describe('components/FeaturedContentModal/ViewSelectorModal', function() {
   function getProps(props) {
@@ -15,7 +15,7 @@ describe('components/FeaturedContentModal/ViewSelectorModal', function() {
       onClickChoose: _.noop,
       fetchViews: _.noop,
       resetFocus: _.noop,
-      viewList: _.fill(Array(2), mockViewWidget)
+      viewList: _.fill(Array(2), mockRelatedView)
     });
   }
 
@@ -73,9 +73,9 @@ describe('components/FeaturedContentModal/ViewSelectorModal', function() {
   describe('when given views', function() {
     it('renders the ViewSelector with views', function() {
       var element = renderComponent(ViewSelectorModal, getProps({
-        viewList: _.fill(Array(2), mockViewWidget)
+        viewList: _.fill(Array(2), mockRelatedView)
       }));
-      expect(element.querySelectorAll('.view-widget')).to.have.length(2);
+      expect(element.querySelectorAll('.view-card')).to.have.length(2);
     });
   });
 });

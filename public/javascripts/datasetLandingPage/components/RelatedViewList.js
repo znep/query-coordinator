@@ -3,7 +3,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { VelocityComponent } from 'velocity-react';
 import BootstrapAlert from './BootstrapAlert';
-import ViewWidget from './ViewWidget';
+import { ViewCard } from 'socrata-components';
+import { getViewCardPropsForView } from '../lib/viewCardHelpers';
 import { RELATED_VIEWS_CHUNK_SIZE } from '../lib/constants';
 import { handleKeyPress } from '../lib/a11yHelpers';
 import { isUserAdminOrPublisher } from '../lib/user';
@@ -51,7 +52,7 @@ export var RelatedViewList = React.createClass({
       return;
     }
 
-    var relatedViewHeight = 284;
+    var relatedViewHeight = 297;
     var relatedViewMargin = 18;
 
     if (!isDesktop) {
@@ -106,7 +107,7 @@ export var RelatedViewList = React.createClass({
 
       return (
         <VelocityComponent key={i} animation={animation} runOnMount={i > 2} duration={400}>
-          <ViewWidget {...relatedView} onClick={onClickWidget} />
+          <ViewCard {...getViewCardPropsForView(relatedView)} onClick={onClickWidget} />
         </VelocityComponent>
       );
     });

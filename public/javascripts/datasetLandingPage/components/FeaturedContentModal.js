@@ -48,10 +48,11 @@ export var FeaturedContentModal = React.createClass({
   },
 
   render: function() {
-    var modalClassNames = 'modal modal-overlay modal-full modal-hidden';
-
     return (
-      <div id="featured-content-modal" className={modalClassNames} data-modal-dismiss>
+      <div
+        id="featured-content-modal"
+        className="modal modal-overlay modal-full modal-hidden"
+        data-modal-dismiss>
         {this.renderContent()}
       </div>
     );

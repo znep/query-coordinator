@@ -1,7 +1,7 @@
 import App from 'App';
 import mockView from 'data/mockView';
 import mockFeaturedItem from 'data/mockFeaturedItem';
-import mockViewWidget from 'data/mockViewWidget';
+import mockRelatedView from 'data/mockRelatedView';
 import { getDefaultStore } from 'testStore';
 import datasetLandingPage from 'reducers';
 import { createStore } from 'redux';
@@ -16,7 +16,7 @@ describe('App', function() {
   function getStore(state) {
     window.initialState = _.defaultsDeep({}, state, {
       view: mockView,
-      relatedViews: [mockViewWidget],
+      relatedViews: [mockRelatedView],
       featuredContent: [mockFeaturedItem]
     });
 

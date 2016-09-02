@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import classNames from 'classnames';
 import React, { PropTypes } from 'react';
-import ViewWidget from '../ViewWidget';
+import { ViewCard } from 'socrata-components';
+import { getViewCardPropsForView } from '../../lib/viewCardHelpers';
 
 export var ViewSelector = React.createClass({
   propTypes: {
@@ -64,9 +65,9 @@ export var ViewSelector = React.createClass({
     } else {
       viewContent = _.map(viewList, function(relatedView, i) {
         return (
-          <ViewWidget {...relatedView} key={i}>
+          <ViewCard {...getViewCardPropsForView(relatedView)} key={i}>
             {renderChooseButton(relatedView.id)}
-          </ViewWidget>
+          </ViewCard>
         );
       });
     }

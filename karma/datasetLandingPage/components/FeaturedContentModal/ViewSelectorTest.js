@@ -1,6 +1,6 @@
 import { ViewSelector } from 'components/FeaturedContentModal/ViewSelector';
 import { Simulate } from 'react-addons-test-utils';
-import mockViewWidget from 'data/mockViewWidget';
+import mockRelatedView from 'data/mockRelatedView';
 
 describe('components/FeaturedContentModal/ViewSelector', function() {
   function getProps(props) {
@@ -11,7 +11,7 @@ describe('components/FeaturedContentModal/ViewSelector', function() {
       isSavingViewUid: '',
       renderNoViews: _.noop,
       onClickChoose: _.noop,
-      viewList: _.fill(Array(3), mockViewWidget)
+      viewList: _.fill(Array(3), mockRelatedView)
     });
   }
 
@@ -22,9 +22,9 @@ describe('components/FeaturedContentModal/ViewSelector', function() {
 
   describe('viewList', function() {
     describe('when there are views', function() {
-      it('renders one ViewWidget per view', function () {
+      it('renders one ViewCard per view', function () {
         var element = renderComponent(ViewSelector, getProps());
-        expect(element.querySelectorAll('.view-widget')).to.have.length(3);
+        expect(element.querySelectorAll('.view-card')).to.have.length(3);
       });
 
       it('renders a choose button for each view', function () {
@@ -34,12 +34,12 @@ describe('components/FeaturedContentModal/ViewSelector', function() {
     });
 
     describe('when there are no views', function() {
-      it('renders no view widgets', function () {
+      it('renders no view cards', function () {
         var noViewsProps = {
           viewList: []
         };
         var element = renderComponent(ViewSelector, getProps(noViewsProps));
-        expect(element.querySelector('.view-widget')).to.not.exist;
+        expect(element.querySelector('.view-card')).to.not.exist;
       });
 
       it('calls renderNoViews if function is passed in', function() {

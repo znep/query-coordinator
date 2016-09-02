@@ -1,5 +1,5 @@
 import { getDefaultStore } from 'testStore';
-import mockViewWidget from 'data/mockViewWidget';
+import mockRelatedView from 'data/mockRelatedView';
 import reducer from 'reducers/relatedViews';
 import {
   requestRelatedViews,
@@ -27,30 +27,30 @@ describe('reducers/relatedViews', function() {
   describe('RECEIVE_RELATED_VIEWS', function() {
     beforeEach(function() {
       state.isLoading = true;
-      state.viewList = _.fill(Array(3), mockViewWidget);
+      state.viewList = _.fill(Array(3), mockRelatedView);
     });
 
     it('appends up to 3 elements to the viewList', function() {
-      var payload = _.fill(Array(4), mockViewWidget);
+      var payload = _.fill(Array(4), mockRelatedView);
       state = reducer(state, receiveRelatedViews(payload));
       expect(state.viewList).to.have.length(6);
     });
 
     it('sets hasMore to true if there are more than 3 elements in the payload', function() {
-      var payload = _.fill(Array(4), mockViewWidget);
+      var payload = _.fill(Array(4), mockRelatedView);
       state = reducer(state, receiveRelatedViews(payload));
       expect(state.hasMore).to.equal(true);
     });
 
     it('sets hasMore to false if there are less than 3 elements in the payload', function() {
-      var payload = _.fill(Array(2), mockViewWidget);
+      var payload = _.fill(Array(2), mockRelatedView);
       state = reducer(state, receiveRelatedViews(payload));
       expect(state.hasMore).to.equal(false);
     });
 
     it('sets hasError to false', function() {
       state.hasError = true;
-      var payload = _.fill(Array(2), mockViewWidget);
+      var payload = _.fill(Array(2), mockRelatedView);
       state = reducer(state, receiveRelatedViews(payload));
       expect(state.hasError).to.equal(false);
     });

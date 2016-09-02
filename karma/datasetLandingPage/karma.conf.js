@@ -33,7 +33,11 @@ module.exports = function ( karma ) {
         loaders: [
           {
             test: /\.jsx?$/,
-            exclude: /node_modules/,
+            include: [
+              path.resolve(root, 'public/javascripts'),
+              path.resolve(root, 'node_modules/socrata-components/common'),
+              path.resolve(root, 'karma/datasetLandingPage')
+            ],
             loader: 'babel'
           }
         ]

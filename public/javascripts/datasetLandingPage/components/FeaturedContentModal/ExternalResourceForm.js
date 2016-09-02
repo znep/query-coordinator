@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { VALID_URL_REGEX } from '../../lib/constants';
-import FeaturedItemWidget from '../FeaturedItemWidget';
+import { ExternalViewCard } from 'socrata-components';
 import FeaturedContentModalHeader from './FeaturedContentModalHeader';
 import FormFooter from './FormFooter';
 import {
@@ -126,14 +126,13 @@ export var ExternalResourceForm = React.createClass({
   renderPreview: function() {
     var { description, previewImage, title } = this.props;
 
-    var widgetProps = {
+    var cardProps = {
       description: _.isEmpty(description) ? this.I18n.description : description,
-      previewImage: _.isEmpty(previewImage) ? null : previewImage,
-      contentType: 'external',
-      title: _.isEmpty(title) ? this.I18n.title : title
+      imageUrl: _.isEmpty(previewImage) ? null : previewImage,
+      name: _.isEmpty(title) ? this.I18n.title : title
     };
 
-    return <FeaturedItemWidget {...widgetProps} />;
+    return <ExternalViewCard {...cardProps} />;
   },
 
   renderContent: function() {

@@ -1,6 +1,6 @@
 import { RelatedViewList } from 'components/RelatedViewList';
 import mockServerConfig from 'data/mockServerConfig';
-import mockViewWidget from 'data/mockViewWidget';
+import mockRelatedView from 'data/mockRelatedView';
 
 describe('components/RelatedViewList', function() {
   function resetServerConfig() {
@@ -11,7 +11,7 @@ describe('components/RelatedViewList', function() {
   beforeEach(function() {
     defaultProps = {
       bootstrapUrl: 'bootstrapUrl',
-      viewList: _.fill(Array(3), mockViewWidget),
+      viewList: _.fill(Array(3), mockRelatedView),
       hasMore: false,
       hasError: false,
       isLoading: false,
@@ -161,7 +161,7 @@ describe('components/RelatedViewList', function() {
     it('does not render the button if there are at most 3 views', function() {
       var element = renderComponent(RelatedViewList, _.assign(defaultProps, {
         hasMore: false,
-        viewList: _.fill(Array(3), mockViewWidget)
+        viewList: _.fill(Array(3), mockRelatedView)
       }));
 
       expect(element.querySelector('.collapse-button')).to.not.exist;
@@ -170,7 +170,7 @@ describe('components/RelatedViewList', function() {
     it('renders the button if all views are loaded and there are at least 4 views', function() {
       var element = renderComponent(RelatedViewList, _.assign(defaultProps, {
         hasMore: false,
-        viewList: _.fill(Array(4), mockViewWidget)
+        viewList: _.fill(Array(4), mockRelatedView)
       }));
 
       expect(element.querySelector('.collapse-button')).to.exist;
@@ -179,7 +179,7 @@ describe('components/RelatedViewList', function() {
     it('does not render the button on a mobile device', function() {
       var element = renderComponent(RelatedViewList, _.assign(defaultProps, {
         hasMore: false,
-        viewList: _.fill(Array(4), mockViewWidget),
+        viewList: _.fill(Array(4), mockRelatedView),
         isDesktop: false
       }));
 
@@ -191,7 +191,7 @@ describe('components/RelatedViewList', function() {
 
       var element = renderComponent(RelatedViewList, _.assign(defaultProps, {
         hasMore: false,
-        viewList: _.fill(Array(4), mockViewWidget),
+        viewList: _.fill(Array(4), mockRelatedView),
         toggleList: spy
       }));
 

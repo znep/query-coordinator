@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import FeaturedItemWidget from './FeaturedItemWidget';
+import FeaturedViewCard from './FeaturedViewCard';
 import { isUserAdminOrPublisher } from '../lib/user';
 
 export var FeaturedContent = React.createClass({
@@ -40,11 +40,11 @@ export var FeaturedContent = React.createClass({
       return null;
     }
 
-    var widgets = _.map(_.compact(contentList), (featuredItem, i) =>
-      <FeaturedItemWidget key={i} {...featuredItem} />
+    var cards = _.map(_.compact(contentList), (featuredItem, i) =>
+      <FeaturedViewCard key={i} featuredItem={featuredItem} />
     );
 
-    return <div className="media-results">{widgets}</div>;
+    return <div className="media-results">{cards}</div>;
   },
 
   render: function() {

@@ -2,9 +2,10 @@ import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import ViewWidget from '../ViewWidget';
 import FeaturedContentModalHeader from './FeaturedContentModalHeader';
 import FormFooter from './FormFooter';
+import { ViewCard } from 'socrata-components';
+import { getDateLabel, getViewCountLabel } from '../../lib/viewCardHelpers';
 import {
   cancelFeaturedItemEdit,
   loadStory,
@@ -118,17 +119,17 @@ export var StoryForm = React.createClass({
     } = this.props;
 
     if (canSave) {
-      var widgetProps = {
+      var cardProps = {
         name: title,
         description: description,
-        displayType: 'story',
+        icon: 'icon-story',
         imageUrl: imageUrl,
         isPrivate: isPrivate,
-        viewCount: viewCount,
-        updatedAt: createdAt
+        metadataLeft: getDateLabel(createdAt),
+        metadataRight: getViewCountLabel(viewCount)
       };
 
-      contents = <ViewWidget {...widgetProps} />;
+      contents = <ViewCard {...cardProps} />;
     } else if (isLoadingStory) {
       contents = (
         <div className="spinner-wrapper">

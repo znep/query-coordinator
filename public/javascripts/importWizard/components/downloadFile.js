@@ -14,7 +14,7 @@ type FileDownload
   = { type: 'NothingSelected' }
   | { type: 'NotStarted', url: FileUrl }
   | { type: 'Started', url: FileUrl, fileName: string }
-  | { type: 'InProgress', message: string }
+  | { type: 'InProgress', url: FileUrl, message: string }
   | { type: 'Cancelled' }
   | { type: 'Failed', error: string }
   | { type: 'Complete', url: FileUrl, fileId: string, summary: SharedTypes.Summary };
@@ -107,15 +107,13 @@ function pollURL(resp) {
   };
 }
 
-function scanURL(url, onFileDownloadAction) {
+export function scanURL(url) {
   return (dispatch, getState) => {
     dispatch(fileDownloadStart());
-    socrataFetch('/api/imports2.json?method=scanUrl', {
+    socrataFetch(`/api/imports2.json?method=scanUrl&saveUnderViewUid=${getState().datasetId}`, {
       method: 'POST',
       credentials: 'same-origin',
       headers: {
-        'X-CSRF-Token': authenticityToken,
-        'X-App-Token': appToken,
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: formurlencoded({
@@ -126,10 +124,11 @@ function scanURL(url, onFileDownloadAction) {
         return;
       }
 
+
       switch (result.status) {
         case 202:
           return result.json().then((resp) => {
-            onFileDownloadAction(pollURL(resp));
+            dispatch(pollURL(resp));
           });
         case 200:
           return result.json().then((resp) => {
@@ -181,8 +180,8 @@ export function update(download: FileDownload = {}, action): FileDownload {
       };
     case FILE_DOWNLOAD_COMPLETE:
       return {
-        ...download,
         type: 'Complete',
+        url: download.url,
         fileId: action.fileId,
         summary: action.summary
       };
@@ -230,7 +229,7 @@ export function view({ onFileDownloadAction, fileDownload, goToPrevious }) {
   }
 
   function onImportClicked() {
-    onFileDownloadAction(scanURL(fileDownload.url, onFileDownloadAction));
+    onFileDownloadAction(scanURL(fileDownload.url));
   }
 
   function onPreviousClicked() {

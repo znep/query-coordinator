@@ -14,32 +14,49 @@ tested in meta/asyncUtils.js
 export function testThunk(done, actionThunk, wholeState, expectationThunks) {
   let curExpectationThunkIdx = 0;
   let curState = wholeState;
-  actionThunk(
-    (dispatchedAction) => {
-      assert(
-        curExpectationThunkIdx < expectationThunks.length,
-        `more actions dispatched than expectation thunks (${expectationThunks.length} thunks supplied); ` +
-        `extra action: ${JSON.stringify(dispatchedAction)}`
-      );
+  function mockDispatch(dispatchedAction) {
+    assert(
+      curExpectationThunkIdx < expectationThunks.length,
+      `more actions dispatched than expectation thunks (${expectationThunks.length} thunks supplied); ` +
+      `extra action: ${JSON.stringify(dispatchedAction)}`
+    );
+    if (typeof dispatchedAction === 'function') {
+      dispatchedAction(mockDispatch, () => curState);
+    } else {
       const expectationThunk = expectationThunks[curExpectationThunkIdx++];
       curState = expectationThunk(curState, dispatchedAction);
-      if (curExpectationThunkIdx === expectationThunks.length) {
-        done();
-      }
-    },
+    }
+    if (curExpectationThunkIdx === expectationThunks.length) {
+      done();
+    }
+  }
+  actionThunk(
+    mockDispatch,
     () => wholeState
   )
 }
 
 // expectationThunk: (url, options, resolve: () => (), reject: () => ()) => ()
 // make your assertions against the args, then call resolve or reject
-export function withMockFetch(expectationThunk, otherThunk) {
+export function withMockFetch(mockFetches, otherThunk) {
   const realFetch = window.fetch;
+  const realMockFetches = _.isArray(mockFetches) ? mockFetches : [mockFetches];
+  let mockFetchIdx = 0;
   window.fetch = (url, options) => {
     return new Promise((resolve, reject) => {
-      expectationThunk(url, options, resolve, reject);
+      assert(
+        mockFetchIdx < mockFetches.length,
+        `more fetch()s called than mock fetches (${mockFetches.length} supplied); ` +
+        `extra args: ${url}, ${JSON.stringify(options)}`
+      );
+      function realResolve(foo) {
+        resolve(foo);
+      }
+      realMockFetches[mockFetchIdx++](url, options, realResolve, reject);
+      if (mockFetchIdx == realMockFetches.length) {
+        window.fetch = realFetch;
+      }
     });
   };
   otherThunk();
-  window.fetch = realFetch;
 }

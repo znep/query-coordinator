@@ -214,6 +214,7 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
             <div className="optionGroup">
               <span>
                 <select
+                  value={locationColumn.street.sourceColumn.index}
                   onChange={(evt) => dispatch(updateSourceColumnSingle('street', evt.target.value, sourceColumns))}>
                   <option value="">{I18n.screens.import_pane.no_source_column}</option>
                   {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
@@ -234,6 +235,7 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
                   onChange={() => dispatch(updateIsColumn('city', true))} />
               </span>
               <select
+                value={locationColumn.city.column.sourceColumn.index}
                 onChange={(evt) => dispatch(updateSourceColumn('city', evt.target.value, sourceColumns))}>
                 <option value="">{I18n.screens.import_pane.no_source_column}</option>
                 {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
@@ -249,8 +251,10 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
               <input
                 type="text"
                 className="locationCityStatic textPrompt prompt"
-                title="Enter a custom value"
-                onChange={(evt) => dispatch(updateText('city', evt.target.value))} />
+                title={I18n.screens.import_common.enter_custom}
+                placeholder={I18n.screens.import_common.enter_custom}
+                defaultValue={locationColumn.city.text}
+                onBlur={(evt) => dispatch(updateText('city', evt.target.value))} />
             </div>
           </div>
 
@@ -266,6 +270,7 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
                   onChange={() => dispatch(updateIsColumn('state', true))} />
               </span>
               <select
+                value={locationColumn.state.column.sourceColumn.index}
                 onChange={(evt) => dispatch(updateSourceColumn('state', evt.target.value, sourceColumns))}>
                 <option value="">{I18n.screens.import_pane.no_source_column}</option>
                 {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
@@ -281,8 +286,10 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
               <input
                 type="text"
                 className="locationStateStatic textPrompt prompt"
-                title="Enter a custom value"
-                onChange={(evt) => dispatch(updateText('state', evt.target.value))} />
+                title={I18n.screens.import_common.enter_custom}
+                placeholder={I18n.screens.import_common.enter_custom}
+                defaultValue={locationColumn.state.text}
+                onBlur={(evt) => dispatch(updateText('state', evt.target.value))} />
             </div>
           </div>
 
@@ -298,6 +305,7 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
                   onChange={() => dispatch(updateIsColumn('zip', true))} />
               </span>
               <select
+                value={locationColumn.zip.column.sourceColumn.index}
                 onChange={(evt) => dispatch(updateSourceColumn('zip', evt.target.value, sourceColumns))}>
                 <option value="">{I18n.screens.import_pane.no_source_column}</option>
                 {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
@@ -313,8 +321,10 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
               <input
                 type="text"
                 className="locationZipStatic textPrompt prompt"
-                title="Enter a custom value"
-                onChange={(evt) => dispatch(updateText('zip', evt.target.value))} />
+                title={I18n.screens.import_common.enter_custom}
+                placeholder={I18n.screens.import_common.enter_custom}
+                defaultValue={locationColumn.zip.text}
+                onBlur={(evt) => dispatch(updateText('zip', evt.target.value))} />
             </div>
           </div>
         </fieldset>
@@ -325,15 +335,10 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
             <div className="optionGroup">
               <label className="locationLatLonLabel">{I18n.screens.import_common.latitude}</label>
               <select
+                value={locationColumn.lat.sourceColumn.index}
                 onChange={(evt) => dispatch(updateSourceColumnSingle('lat', evt.target.value, sourceColumns))}>
                 <option value="">{I18n.screens.import_pane.no_source_column}</option>
-                {sourceColumns.map((obj, idx) =>
-                  <option
-                    value={idx}
-                    selected={obj.sourceColumn.name === 'Latitude'
-                            ? 'selected'
-                            : ''}>
-                    {obj.sourceColumn.name}</option>)}
+                {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
               </select>
             </div>
           </div>
@@ -341,15 +346,10 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
             <div className="optionGroup">
               <label className="locationLatLonLabel">{I18n.screens.import_common.longitude}</label>
               <select
+                value={locationColumn.lon.sourceColumn.index}
                 onChange={(evt) => dispatch(updateSourceColumnSingle('lon', evt.target.value, sourceColumns))}>
                 <option value="">{I18n.screens.import_pane.no_source_column}</option>
-                {sourceColumns.map((obj, idx) =>
-                  <option
-                    value={idx}
-                    selected={obj.sourceColumn.name === 'Longitude'
-                            ? 'selected'
-                            : ''}>
-                    {obj.sourceColumn.name}</option>)}
+                {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
               </select>
             </div>
           </div>
@@ -373,8 +373,9 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
       <div className="importSingleColumnSection">
         <label className="locationSingleColumnLabel">Column</label>
         <select
+          value={locationColumn.singleSource.sourceColumn.index}
           onChange={(evt) => dispatch(updateSourceColumnSingle('singleSource', evt.target.value, sourceColumns))}>
-          <option value="">(No Source Column)</option>
+          <option value="">{I18n.screens.import_pane.no_source_column}</option>
           {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
         </select>
         <p>Column must be <a href="http://dev.socrata.com/docs/datatypes/" rel="external">properly formatted</a> prior to import.</p>

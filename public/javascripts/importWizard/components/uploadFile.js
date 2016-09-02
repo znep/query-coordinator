@@ -258,6 +258,10 @@ function renderErrorMessage(fileUpload) {
 export function view({ onFileUploadAction, fileUpload, operation, goToPrevious }) {
   const I18nPrefixed = I18n.screens.dataset_new.upload_file;
 
+  function isInProgress() {
+    return _.get(fileUpload, 'progress.type', 'nope') === 'InProgress';
+  }
+
   function onSelectFile(event) {
     // TODO: can users deselect a file? may need an action for that
     if ( event.target.files.length > 0 ) {
@@ -274,6 +278,11 @@ export function view({ onFileUploadAction, fileUpload, operation, goToPrevious }
     _.isUndefined(fileUpload.fileName)
       ? I18nPrefixed.no_file_selected
       : fileUpload.fileName;
+
+  const uploadButtonState = ['fileUploader-upload-button'];
+  if (isInProgress()) {
+    uploadButtonState.push('disabled');
+  }
 
   return (
     <div>
@@ -292,9 +301,10 @@ export function view({ onFileUploadAction, fileUpload, operation, goToPrevious }
           <div
             className="buttonWrapper uploadFileButtonWrapper">
             <div className="fileUploader-uploader" >
-              <div className="fileUploader-upload-button">
+              <div className={uploadButtonState.join(' ')}>
                 {I18n.plugins.fileuploader.upload_a_file}
                 <input
+                  disabled={isInProgress()}
                   type="file"
                   name="file"
                   onChange={onSelectFile} />

@@ -45,7 +45,6 @@ export const Picklist = React.createClass({
   getInitialState() {
     return {
       selectedOption: null,
-      highlightedOption: null,
       focused: false
     };
   },
@@ -55,21 +54,14 @@ export const Picklist = React.createClass({
   },
 
   componentDidMount() {
-    this.setScrollPositionToSelectedOption();
+    if (this.state.selectedOption) {
+      const option = this.picklist.querySelector('.picklist-option-selected');
+      this.setScrollPositionToOption(option);
+    }
   },
 
   componentWillReceiveProps(nextProps) {
     this.setSelectedOptionBasedOnValue(nextProps);
-  },
-
-  componentDidUpdate(prevProps, prevState) {
-    const { selectedOption, highlightedOption } = this.state;
-    const changedHighlightedOption = prevState.highlightedOption !== highlightedOption;
-    const unchangedSelectedOption = prevState.selectedOption === selectedOption;
-
-    if (changedHighlightedOption && unchangedSelectedOption) {
-      this.setScrollPositionToHighlightedOption();
-    }
   },
 
   onClickOption(selectedOption, event) {
@@ -81,7 +73,6 @@ export const Picklist = React.createClass({
 
   onKeyUpSelection(event) {
     const { disabled } = this.props;
-    const option = this.props.options[this.state.highlightedOption];
 
     if (disabled) {
       return;
@@ -91,13 +82,10 @@ export const Picklist = React.createClass({
 
     switch (event.keyCode) {
       case UP:
-        this.moveToPreviousOption();
+        this.move('up');
         break;
       case DOWN:
-        this.moveToNextOption();
-        break;
-      case ENTER:
-        this.setSelectedOption(option);
+        this.move('down');
         break;
       default:
         break;
@@ -112,6 +100,8 @@ export const Picklist = React.createClass({
   },
 
   onKeyUp(event) {
+    event.stopPropagation();
+
     this.onKeyUpSelection(event);
     this.onKeyUpBlur(event);
   },
@@ -120,6 +110,7 @@ export const Picklist = React.createClass({
     const keys = [UP, DOWN, ENTER, ESCAPE];
 
     if (_.includes(keys, event.keyCode)) {
+      event.stopPropagation();
       event.preventDefault();
     }
   },
@@ -139,7 +130,6 @@ export const Picklist = React.createClass({
   },
 
   onBlur() {
-    this.clearHighlightedOption();
     this.setState({ focused: false });
   },
 
@@ -151,67 +141,59 @@ export const Picklist = React.createClass({
   },
 
   setSelectedOption(selectedOption) {
-    const { options, onSelection } = this.props;
-    const index = _.findIndex(options, selectedOption);
-
-    this.setState({ selectedOption, highlightedOption: index });
-    onSelection(selectedOption);
+    this.setState({ selectedOption });
+    this.props.onSelection(selectedOption);
   },
 
-  setScrollPosition(stateKey, selector) {
-    const option = this.state[stateKey];
+  setScrollPositionToOption(picklistOption) {
     const picklist = this.picklist;
+    const picklistTop = picklist.getBoundingClientRect().top - picklist.scrollTop;
+    const picklistCenter = picklist.clientHeight / 2;
+    const picklistOptionTop = picklistOption.getBoundingClientRect().top;
 
-    if (_.isObject(option) || _.isNumber(option)) {
-      const picklistTop = picklist.getBoundingClientRect().top - picklist.scrollTop;
-      const picklistCenter = picklist.clientHeight / 2;
-      const picklistOption = picklist.querySelector(selector);
-      const picklistOptionTop = picklistOption.getBoundingClientRect().top;
-
-      this.picklist.scrollTop = (picklistOptionTop - picklistTop) - picklistCenter;
-    }
-  },
-
-  setScrollPositionToSelectedOption() {
-    this.setScrollPosition('selectedOption', '.picklist-option-selected');
-  },
-
-  setScrollPositionToHighlightedOption() {
-    this.setScrollPosition('highlightedOption', '.picklist-option-highlighted');
-  },
-
-  clearHighlightedOption() {
-    this.setState({ highlightedOption: null });
+    this.picklist.scrollTop = (picklistOptionTop - picklistTop) - picklistCenter;
   },
 
   blur() {
     this.picklist.blur();
   },
 
-  moveToPreviousOption() {
-    const { highlightedOption } = this.state;
-    const hasHighlightedOption = _.isNumber(highlightedOption);
-    const previousOption = hasHighlightedOption ? Math.max(highlightedOption - 1, 0) : 0;
+  move(upOrDown) {
+    let optionElement;
+    let newSelectedOption;
 
-    this.setState({ highlightedOption: previousOption });
-  },
-
-  moveToNextOption() {
+    const { selectedOption } = this.state;
     const { options } = this.props;
-    const { highlightedOption } = this.state;
-    const hasHighlightedOption = _.isNumber(highlightedOption);
-    const nextOption = hasHighlightedOption ?
-      Math.min(highlightedOption + 1, options.length - 1) : 0;
+    const index = _.indexOf(options, selectedOption);
 
-    this.setState({ highlightedOption: nextOption });
+    const movingUp = upOrDown === 'up';
+
+    const indexOffset = movingUp ? -1 : 1;
+    const candidateOption = options[index + indexOffset];
+    const sibling = movingUp ? 'previousSibling' : 'nextSibling';
+    const unselectedStartPosition = movingUp ? 'last' : 'first';
+    const picklistOptions = this.picklist.querySelectorAll('.picklist-option');
+
+    if (index !== -1 && _.isPlainObject(candidateOption)) {
+      optionElement = this.picklist.querySelector('.picklist-option-selected')[sibling];
+      newSelectedOption = candidateOption;
+    } else if (index === -1) {
+      optionElement = _[unselectedStartPosition](picklistOptions);
+      newSelectedOption = _[unselectedStartPosition](options);
+    } else {
+      optionElement = this.picklist.querySelector('.picklist-option-selected');
+      newSelectedOption = selectedOption;
+    }
+
+    this.setState({ selectedOption: newSelectedOption });
+    this.setScrollPositionToOption(optionElement);
   },
 
   renderOption(option, index) {
     const hasRenderFunction = _.isFunction(option.render);
     const onClickOptionBound = this.onClickOption.bind(this, option);
     const classes = classNames('picklist-option', {
-      'picklist-option-selected': this.state.selectedOption === option,
-      'picklist-option-highlighted': this.state.highlightedOption === index
+      'picklist-option-selected': this.state.selectedOption === option
     });
 
     const attributes = {

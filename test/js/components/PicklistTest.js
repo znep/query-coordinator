@@ -117,7 +117,7 @@ describe('Picklist', () => {
 
     describe('when using keyboard navigation', () => {
       let options;
-      const highlightedOptionSelector = 'picklist-option-highlighted';
+      const selectedOptionSelector = 'picklist-option-selected';
 
       beforeEach(() => {
         options = element.querySelectorAll('.picklist-option');
@@ -135,12 +135,12 @@ describe('Picklist', () => {
         it('does nothing for UP', () => {
           Simulate.keyUp(element, { keyCode: UP });
           // Did... did it do something?
-          expect(element.querySelector(highlightedOptionSelector)).to.not.exist;
+          expect(element.querySelector(selectedOptionSelector)).to.not.exist;
         });
 
         it('does nothing for DOWN', () => {
           Simulate.keyUp(element, { keyCode: DOWN });
-          expect(element.querySelector(highlightedOptionSelector)).to.not.exist;
+          expect(element.querySelector(selectedOptionSelector)).to.not.exist;
         });
 
         it('does nothing for ENTER', () => {
@@ -152,14 +152,14 @@ describe('Picklist', () => {
       describe('when pressing up', () => {
         const event = { keyCode: UP };
 
-        describe('when nothing is highlighted', () => {
-          it('highlights the first option', () => {
-            const firstOption = _.first(options);
+        describe('when nothing is selected', () => {
+          it('selects the first option', () => {
+            const lastOption = _.last(options);
 
-            expect(firstOption).to.not.have.class(highlightedOptionSelector);
+            expect(lastOption).to.not.have.class(selectedOptionSelector);
 
             Simulate.keyUp(element, event);
-            expect(firstOption).to.have.class(highlightedOptionSelector);
+            expect(lastOption).to.have.class(selectedOptionSelector);
           });
         });
 
@@ -167,22 +167,22 @@ describe('Picklist', () => {
           it('does nothing', () => {
             const firstOption = _.first(options);
 
-            expect(firstOption).to.not.have.class(highlightedOptionSelector);
+            expect(firstOption).to.not.have.class(selectedOptionSelector);
 
             Simulate.click(firstOption);
-            expect(firstOption).to.have.class(highlightedOptionSelector);
+            expect(firstOption).to.have.class(selectedOptionSelector);
 
             Simulate.keyUp(element, event);
-            expect(firstOption).to.have.class(highlightedOptionSelector);
+            expect(firstOption).to.have.class(selectedOptionSelector);
           });
         });
 
         describe('when in the middle', () => {
-          it('moves the option highlight up one', () => {
+          it('moves the option selected up one', () => {
             Simulate.click(options[1]);
             Simulate.keyUp(element, event);
 
-            expect(options[0]).to.have.class(highlightedOptionSelector);
+            expect(options[0]).to.have.class(selectedOptionSelector);
           });
         });
       });
@@ -190,14 +190,14 @@ describe('Picklist', () => {
       describe('when pressing down', () => {
         const event = { keyCode: DOWN };
 
-        describe('when nothing is highlighted', () => {
-          it('highlights the first option', () => {
+        describe('when nothing is selected', () => {
+          it('selects the first option', () => {
             const firstOption = _.first(options);
 
-            expect(firstOption).to.not.have.class(highlightedOptionSelector);
+            expect(firstOption).to.not.have.class(selectedOptionSelector);
 
             Simulate.keyUp(element, event);
-            expect(firstOption).to.have.class(highlightedOptionSelector);
+            expect(firstOption).to.have.class(selectedOptionSelector);
           });
         });
 
@@ -205,22 +205,22 @@ describe('Picklist', () => {
           it('does nothing', () => {
             const lastOption = _.last(options);
 
-            expect(lastOption).to.not.have.class(highlightedOptionSelector);
+            expect(lastOption).to.not.have.class(selectedOptionSelector);
 
             Simulate.click(lastOption);
-            expect(lastOption).to.have.class(highlightedOptionSelector);
+            expect(lastOption).to.have.class(selectedOptionSelector);
 
             Simulate.keyUp(element, event);
-            expect(lastOption).to.have.class(highlightedOptionSelector);
+            expect(lastOption).to.have.class(selectedOptionSelector);
           });
         });
 
         describe('when in the middle', () => {
-          it('moves the option highlight one down', () => {
+          it('moves the option selected one down', () => {
             Simulate.click(options[1]);
             Simulate.keyUp(element, event);
 
-            expect(options[2]).to.have.class(highlightedOptionSelector);
+            expect(options[2]).to.have.class(selectedOptionSelector);
           });
         });
       });

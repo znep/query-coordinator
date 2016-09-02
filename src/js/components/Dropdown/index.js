@@ -69,7 +69,7 @@ export default React.createClass({
       const dimensions = this.options.getBoundingClientRect();
       const scrollHeight = this.options.scrollHeight;
       const exceedsBrowserWindowHeight = browserWindowHeight < dimensions.top + scrollHeight;
-      const optionHeight = this.options.childNodes[0].clientHeight;
+      const optionHeight = this.options.querySelector('.picklist-option').clientHeight;
       const determinedHeight = browserWindowHeight - dimensions.top;
 
       if (exceedsBrowserWindowHeight) {

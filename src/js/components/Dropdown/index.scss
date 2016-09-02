@@ -78,4 +78,10 @@
 .dropdown-options-list {
   position: fixed;
   z-index: 999;
+  overflow: auto;
+  border: solid 1px $light-grey-3;
+
+  .picklist {
+    border: none;
+  }
 }

@@ -2086,7 +2086,8 @@
         if (!$.isBlank(ds._queryBase) && ds._queryBase.id == ds.id) {
           ds._queryBase.reload(true);
         }
-      }, 1000);
+      }, 500, { leading:false });
+      // trailing throttle above to make sure reloads from 'columns_changed' events don't get dropped
       ds.bind('saved', updateSelf, ds);
       ds.bind('columns_changed', function(changeType) {
         if (changeType == 'added' || changeType == 'fullSet' || changeType == 'removed') {

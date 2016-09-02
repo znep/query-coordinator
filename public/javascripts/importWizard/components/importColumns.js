@@ -247,6 +247,10 @@ export function view({ transform, fileName, sourceColumns, dispatch, goToPage, g
   return (
     <div>
       <div className="importColumnsPane columnsPane">
+
+        <div className="flash-alert success">
+          {I18nPrefixed.upload_success}
+        </div>
         <div className="importErrorHelpText">
           <p dangerouslySetInnerHTML={{__html: format(I18n.screens.dataset_new.import_help, commonErrorsSupportLink)}}>
           </p>

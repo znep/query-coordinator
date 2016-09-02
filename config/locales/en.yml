@@ -2944,6 +2944,7 @@ en:
         web_explain: Choose this if you have a file that is already on the Internet and have the URL for it.
       import_columns:
         add_new_column: Add New Column
+        upload_success: Great! You have successfully uploaded a data file. We've stored that file safely; if you have to leave and come back you won’t have to resend it.
         clear_all: Clear All
         data_type: Data Type
         errors_warnings: Errors and Warnings

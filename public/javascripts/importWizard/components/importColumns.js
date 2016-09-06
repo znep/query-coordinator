@@ -294,8 +294,13 @@ const ViewColumns = React.createClass({
     sourceColumns: PropTypes.arrayOf(PropTypes.object).isRequired,
     dispatch: PropTypes.func.isRequired
   },
-
   componentDidMount: function() {
+    this.installAwesomeReorder();
+  },
+  componentDidUpdate: function() {
+    this.installAwesomeReorder();
+  },
+  installAwesomeReorder: function() {
     const listElSelector = 'ul.columnsList.importList';
     $(listElSelector).awesomereorder({
       stop: (evt) => {
@@ -311,7 +316,6 @@ const ViewColumns = React.createClass({
       }
     });
   },
-
   render: function() {
     const {columns, dispatch, sourceColumns} = this.props;
 

@@ -252,7 +252,7 @@ export default function CollaboratorsRenderer() {
   }
 
   function getUserOrNull(email) {
-    var userUrl = StorytellerUtils.format('/api/search/users.json?q={0}', email);
+    var userUrl = StorytellerUtils.format('/stories/search/users.json?email={0}', email);
 
     return httpRequest('GET', userUrl).
       then(

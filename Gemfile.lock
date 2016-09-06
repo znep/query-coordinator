@@ -21,7 +21,7 @@ PATH
       httparty (~> 0.13)
 
 GEM
-  remote: https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-remote/
+  remote: https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/
   specs:
     actionmailer (4.2.7.1)
       actionpack (= 4.2.7.1)
@@ -88,6 +88,9 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
+    cetera-ruby (0.1.1)
+      addressable (~> 2.3)
+      httparty (~> 0.13)
     childprocess (0.5.9)
       ffi (~> 1.0, >= 1.0.11)
     climate_control (0.0.3)
@@ -354,6 +357,7 @@ DEPENDENCIES
   breakpoint
   byebug
   capybara
+  cetera-ruby (~> 0.1.1)
   clipboard
   daemons
   dalli

@@ -103,13 +103,21 @@ export default React.createClass({
     this.ellipsify();
   },
 
-  componentWillUpdate() {
-    this.$name.trigger('destroy.dot');
-    this.$description.trigger('destroy.dot');
+  componentWillUpdate(newProps) {
+    if (this.shouldEllipsify(this.props, newProps)) {
+      this.$name.trigger('destroy.dot');
+      this.$description.trigger('destroy.dot');
+    }
   },
 
-  componentDidUpdate() {
-    this.ellipsify();
+  componentDidUpdate(oldProps) {
+    if (this.shouldEllipsify(oldProps, this.props)) {
+      this.ellipsify();
+    }
+  },
+
+  shouldEllipsify(oldProps, newProps) {
+    return oldProps.name !== newProps.name || oldProps.description !== newProps.description;
   },
 
   ellipsify() {

@@ -18,7 +18,7 @@ export function getViewCardPropsForView(view) {
   return {
     ...view,
     metadataLeft: formatDate(view.updatedAt),
-    metadataRight: getViewCountLabel(view.viewCount),
+    metadataRight: getViewCountLabel(_.get(view, 'viewCount', 0)),
     icon: getIconClassForDisplayType(view.displayType),
     linkProps: {
       'aria-label': getAriaLabel(view)

@@ -1,6 +1,6 @@
 <section class="settings-group section-separator">
   <div class="settings-form full">
-    <h6>Select where these changes will appear when Site Appearance is updated:</h6>
+    <h6>Select where these Site Appearance settings will appear <%= @site_chrome.activated? ? 'when updated' : 'when activated'%>:</h6>
     <%= site_chrome_radio_button(
       'site_appearance',
       'entire_site',
@@ -20,6 +20,10 @@
       disabled: !@site_chrome.activated?,
       selected: @site_chrome.reverted?
     ) %>
+    <%- unless @site_chrome.activated? -%>
+      <%# This hidden input is enabled when the user clicks the Activate button %>
+      <input id="enable_activation" type="hidden" name="activation" value="true" disabled="disabled" />
+    <%- end -%>
   </div>
   <aside class="full">
     <p>Dataset Landing Page is also included in this update.</p>

@@ -687,6 +687,24 @@
     text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.6);
   }
 
+  .locationTypeToggle {
+    vertical-align: top;
+  }
+
+  label.locationSingleColumnLabel {
+    width: 5em;
+  }
+
+  .toggleSection label {
+    line-height: 1.5rem;
+    padding-left: 0.2rem;
+  }
+
+  .locationLatLonLabel {
+    display: inline-block;
+    margin-right: 1em;
+  }
+
   .uploadThrobber {
     display: block;
   }

@@ -52,7 +52,10 @@ class GoalTableRow extends React.Component {
     const goalPageUrl = `/stat/goals/${goal.get('base_dashboard')}/${goal.getIn(['category', 'id'])}/${goal.get('id')}/edit`;
     const dashboardUrl = `/stat/goals/${goal.get('base_dashboard')}`;
     const rowClass = classNames({ selected });
-    const goalStatus = translations.getIn(['measure', 'progress', goal.get('status')]);
+    const endDate = goal.getIn(['prevailing_measure', 'end']);
+    const isGoalEnded = endDate && moment(endDate).isBefore();
+    const goalStatusTranslationKey = isGoalEnded ? 'end_progress' : 'progress';
+    const goalStatus = translations.getIn(['measure', goalStatusTranslationKey, goal.get('status')]);
     const goalVisibility = goal.get('is_public') ? 'status_public' : 'status_private';
 
     return (

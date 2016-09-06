@@ -5,7 +5,7 @@ describe('components/BlobPreview', function() {
     return _.defaultsDeep({}, props, {
       view: {
         isBlobby: true,
-        blobId: 'globally-unique-identifier',
+        blobId: 'guid',
         blobType: 'image'
       }
     });
@@ -41,7 +41,7 @@ describe('components/BlobPreview', function() {
       var element = renderComponent(BlobPreview, getProps());
       var image = element.querySelector('img');
       expect(image).to.exist;
-      expect(image.getAttribute('src')).to.contain('globally-unique-identifier');
+      expect(image.getAttribute('src')).to.contain('guid');
     });
 
     it('renders an iframe if the blob is a document', function() {
@@ -54,7 +54,7 @@ describe('components/BlobPreview', function() {
       var iframe = element.querySelector('iframe');
       expect(iframe).to.exist;
       expect(iframe.getAttribute('src')).to.contain('docs.google.com');
-      expect(iframe.getAttribute('src')).to.contain('globally-unique-identifier');
+      expect(iframe.getAttribute('src')).to.contain('guid');
     });
   });
 });

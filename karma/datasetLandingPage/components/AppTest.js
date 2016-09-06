@@ -1,4 +1,5 @@
 import App from 'App';
+import $ from 'jquery';
 import mockView from 'data/mockView';
 import mockFeaturedItem from 'data/mockFeaturedItem';
 import mockRelatedView from 'data/mockRelatedView';
@@ -24,6 +25,17 @@ describe('App', function() {
   }
 
   describe('when rendering a dataset', function() {
+    var originalSocrataTable;
+
+    beforeEach(function() {
+      originalSocrataTable = $.fn.socrataTable;
+      $.fn.socrataTable = sinon.stub();
+    });
+
+    afterEach(function() {
+      $.fn.socrataTable = originalSocrataTable;
+    });
+
     var element;
 
     beforeEach(function() {
@@ -54,7 +66,9 @@ describe('App', function() {
       var storeState = {
         view: {
           isBlobby: true,
-          blobType: 'image'
+          blobType: 'image',
+          blobId: 'guid',
+          blobFilename: 'kitten.tiff'
         }
       };
 

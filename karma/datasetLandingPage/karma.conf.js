@@ -15,7 +15,8 @@ module.exports = function ( karma ) {
     ],
 
     proxies: {
-      '/image.png': 'http://localhost:7019/base/karma/datasetLandingPage/data/mockImage.png'
+      '/image.png': 'http://localhost:7019/base/karma/datasetLandingPage/data/mockImage.png',
+      '/api/file_data/guid': 'http://localhost:7019/base/karma/datasetLandingPage/data/mockImage.png'
     },
 
     preprocessors: {
@@ -46,8 +47,8 @@ module.exports = function ( karma ) {
       resolve: {
         alias: {
           'dotdotdot': 'dotdotdot/src/js/jquery.dotdotdot.min.js',
-          'socrata-utils': 'socrata-utils/dist/socrata.utils.js',
-          'socrata.utils': 'socrata-utils/dist/socrata.utils.js',
+          'socrata-utils': path.resolve(root, 'node_modules/socrata-utils/dist/socrata.utils.js'),
+          'socrata.utils': path.resolve(root, 'node_modules/socrata-utils/dist/socrata.utils.js'),
           '_': path.resolve(root, 'node_modules/lodash'),
           'jQuery': path.resolve(root, 'node_modules/jquery/dist/jquery.js'),
           'jquery': path.resolve(root, 'node_modules/jquery/dist/jquery.js'),

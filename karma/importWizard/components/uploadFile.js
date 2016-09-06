@@ -108,6 +108,36 @@ describe("uploadFile's reducer", () => {
         }
       });
     });
+
+    it('select file error, tabular', () => {
+      var stateAfter = {};
+      selectFile({
+        name: 'foo.bar'
+      }, 'UPLOAD_DATA')((event) => {
+        stateAfter = update({}, event)
+      }, "unused");
+      expect(stateAfter).to.deep.equal({
+        progress: {
+          type: 'Failed',
+          error: I18n.screens.import_pane.filetype_error_blist
+        }
+      });
+    });
+
+    it('select file error, geo', () => {
+      var stateAfter = {};
+      selectFile({
+        name: 'foo.bar'
+      }, 'UPLOAD_GEO')((event) => {
+        stateAfter = update({}, event)
+      }, "unused");
+      expect(stateAfter).to.deep.equal({
+        progress: {
+          type: 'Failed',
+          error: I18n.screens.import_pane.filetype_error_shapefile
+        }
+      });
+    });
   });
 
   describe('view', () => {

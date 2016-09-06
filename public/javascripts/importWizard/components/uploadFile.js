@@ -55,9 +55,33 @@ function scanUrlForOperation(datasetId: string, operation: SharedTypes.Operation
   return url.format(urlAttrs);
 }
 
+function fileExtensionError(file: File, operation) {
+  const t = I18n.screens.import_pane;
+  const ext = _.last(file.name.split('.'));
+
+  switch (operation) {
+    case 'UPLOAD_DATA':
+      if (!ext || !/^(tsv|csv|xls|xlsx)$/i.test(ext)) {
+        return t.filetype_error_blist;
+      }
+      return false;
+    case 'UPLOAD_GEO':
+      if (!ext || !/^(zip|json|geojson|kml|kmz)$/i.test(ext)) {
+        return t.filetype_error_shapefile;
+      }
+      return false;
+    default:
+      console.error('Unexpected operation', operation);
+      return false;
+  }
+}
 
 export function selectFile(file: File, operation: SharedTypes.OperationName) {
   return (dispatch, getState) => {
+    const typeError = fileExtensionError(file, operation);
+    if (typeError) {
+      return dispatch(fileUploadError(typeError));
+    }
     const upload = new Upload(file);
     upload.to(scanUrlForOperation(getState().datasetId, operation));
     upload.on('progress', (evt) => {

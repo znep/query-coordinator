@@ -35,6 +35,11 @@
         <%= link_to('#') do %>
           <%= button_tag(t('screens.admin.site_chrome.activate'), activate_button_options) %>
         <% end %>
+        <% if current_user.is_superadmin? %>
+          <%= link_to('#') do %>
+            <%= button_tag('Save Without Activation', :id => 'save_without_activation', :title => 'Only visible to superadmins') %>
+          <% end %>
+        <% end %>
       <% end %>
 
       <%= render 'activation_flannel' unless @site_chrome.reverted? %>

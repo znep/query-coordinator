@@ -78,36 +78,39 @@ $(document).ready(function() {
 
   // Submit the form from the active tab when save button is clicked
   $('button#site_chrome_save').click(function() {
-    if ($siteChromeForm.length) {
-      if ($siteChromeForm.valid()) {
-        preSubmitLinkCleansing();
-        $siteChromeForm.removeAttr('target');
-        $siteChromeForm.find('input#stage').remove();
-        $siteChromeForm.submit();
-      }
-    } else {
-      alert('Could not find form to submit! Try submitting by pressing return in an input field instead.');
+    if ($siteChromeForm.length && $siteChromeForm.valid()) {
+      preSubmitLinkCleansing();
+      $siteChromeForm.removeAttr('target');
+      $siteChromeForm.find('input#stage').remove();
+      $siteChromeForm.submit();
+    }
+  });
+
+  // Secret button only visible to superadmins that allows saving the configuration without activation.
+  $('button#save_without_activation').click(function() {
+    if ($siteChromeForm.length && $siteChromeForm.valid()) {
+      preSubmitLinkCleansing();
+      $('#enable_activation').attr('disabled', true);
+      $siteChromeForm.removeAttr('target');
+      $siteChromeForm.find('input#stage').remove();
+      $siteChromeForm.submit();
     }
   });
 
   // Submit the form from the active tab when save button is clicked
   $('button#site_chrome_preview').click(function(e) {
     e.preventDefault();
-    if ($siteChromeForm.length) {
-      if ($siteChromeForm.valid()) {
-        preSubmitLinkCleansing();
-        $siteChromeForm.attr('target', '_blank');
-        var $stage = $siteChromeForm.find('input#stage');
-        if (!$stage.exists()) {
-          $stage = $('<input type="hidden" id="stage" name="stage" />');
-          $siteChromeForm.append($stage);
-        }
-        $stage.val('draft');
-        $siteChromeForm.submit();
-        setTimeout(function() { window.location.reload(); }, 500);
+    if ($siteChromeForm.length && $siteChromeForm.valid()) {
+      preSubmitLinkCleansing();
+      $siteChromeForm.attr('target', '_blank');
+      var $stage = $siteChromeForm.find('input#stage');
+      if (!$stage.exists()) {
+        $stage = $('<input type="hidden" id="stage" name="stage" />');
+        $siteChromeForm.append($stage);
       }
-    } else {
-      alert('Could not find form to submit! Try submitting by pressing return in an input field instead.');
+      $stage.val('draft');
+      $siteChromeForm.submit();
+      setTimeout(function() { window.location.reload(); }, 500);
     }
   });
 
@@ -126,6 +129,16 @@ $(document).ready(function() {
 
   sortableListOfLinks();
 });
+
+function activateSiteChrome() { //eslint-disable-line no-unused-vars
+  if ($siteChromeForm.length && $siteChromeForm.valid()) {
+    preSubmitLinkCleansing();
+    $('#enable_activation').attr('disabled', false);
+    $siteChromeForm.removeAttr('target');
+    $siteChromeForm.find('input#stage').remove();
+    $siteChromeForm.submit();
+  }
+}
 
 // Figure out which tab is active (current) and get its id
 function getActiveTabId() {

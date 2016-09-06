@@ -815,6 +815,10 @@ module ApplicationHelper
     end
   end
 
+  def mixpanel_tracking_enabled?
+    CurrentDomain.feature?(:mixpanelTracking) || CurrentDomain.feature?(:fullMixpanelTracking)
+  end
+
   def render_airbrake_shim
     return nil unless FeatureFlags.derive(nil, request)[:enable_airbrake_js]
 

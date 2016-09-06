@@ -723,6 +723,10 @@ export function view({ metadata, onMetadataAction, operation, importError, goToP
 
   return (
     <div className="metadataPane">
+      <div className="flash-alert success">
+        {I18nPrefixed.settings_saved}
+      </div>
+
       {renderFlashMessageApiError(metadata.apiCall)}
       {renderFlashMessageImportError(importError)}
       <p className="headline">{I18n.screens.dataset_new.metadata.prompt}</p>

@@ -11,25 +11,29 @@ import utils from 'socrata-utils';
 import reducer from './reducers';
 import vifs from './vifs';
 import { setLocale } from '../I18n';
-import { setDataSource } from './actions';
+import { setVifCheckpoint } from './actions';
 import { load } from './vifs/loader';
 import { defaultState as defaultMetadata } from './reducers/metadata';
-import { getDatasetUid, getDomain } from './selectors/vifAuthoring';
 import { migrateVif } from '../helpers/VifHelpers';
+import { getVifs } from './selectors/vifAuthoring';
 
 import AuthoringWorkflow from './components/AuthoringWorkflow';
 
 module.exports = function(element, configuration) {
-  var logger = createLogger();
+  const logger = createLogger();
 
-  utils.assertHasProperty(configuration, 'vif.format.version');
-  utils.assert(_.get(configuration, 'vif.format.type') === 'visualization_interchange_format');
+  let vif = _.get(configuration, 'vif');
+  const formatVersion = _.get(vif, 'format.version');
+  const formatType = _.get(vif, 'format.type');
+  const locale = _.get(configuration, 'locale', 'en');
 
-  var vif = _.get(configuration, 'vif');
+  utils.assertIsOneOfTypes(formatVersion, 'number');
+  utils.assert(formatType === 'visualization_interchange_format');
+
   vif = vif ? migrateVif(vif) : {};
 
-  var vifType = _.get(vif, 'series[0].type', null);
-  var initialState = {
+  const vifType = _.get(vif, 'series[0].type', null);
+  const initialState = {
     metadata: defaultMetadata,
     vifAuthoring: {
       vifs: vifs(),
@@ -45,7 +49,7 @@ module.exports = function(element, configuration) {
   this.store = createStore(reducer, initialState, applyMiddleware(thunk, logger));
 
   load(this.store.dispatch, vif);
-  setLocale(_.get(this.configuration, 'locale', 'en'));
+  setLocale(locale);
 
   this.render = () => {
     ReactDOM.render(

@@ -1,7 +1,9 @@
 import _ from 'lodash';
 import { createSelector } from 'reselect';
+import defaultVifs from '../vifs';
 
 export const getVifs = state => _.get(state, 'vifs', {})
+export const getCheckpointVifs = state => _.get(state, 'authoring.checkpointVifs', {});
 
 export const getSelectedVisualizationType = state => _.get(state, 'authoring.selectedVisualizationType', null)
 export const getShowCenteringAndZoomingSaveMessage = state => _.get(state, 'authoring.showCenteringAndZoomingSaveMessage', null);
@@ -314,5 +316,22 @@ export const isRenderableMap = createSelector(
   isValidFeatureMapVif,
   (isRegionMap, isValidRegionMapVif, isFeatureMap, isValidFeatureMapVif) => {
     return (isFeatureMap && isValidFeatureMapVif) || (isRegionMap && isValidRegionMapVif);
+  }
+);
+
+export const hasMadeChangesToVifs = createSelector(
+  getVifs,
+  getCheckpointVifs,
+  (modifiedVifs, checkpointVifs) => {
+    const clonedModifiedVifs = _.cloneDeep(modifiedVifs);
+    const clonedCheckpointVifs = _.cloneDeep(checkpointVifs);
+
+    // Tables aren't a configurable visualization
+    // and have their own thing going on, so
+    // don't compare them.
+    _.unset(clonedModifiedVifs, 'table');
+    _.unset(clonedCheckpointVifs, 'table');
+
+    return !_.isEqual(clonedModifiedVifs, clonedCheckpointVifs);
   }
 );

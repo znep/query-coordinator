@@ -24,7 +24,10 @@ import {
   SET_NEGATIVE_COLOR,
   SET_ZERO_COLOR,
   SET_POSITIVE_COLOR,
-  SET_VIEW_SOURCE_DATA_LINK
+  SET_VIEW_SOURCE_DATA_LINK,
+  SET_SHAPEFILE_UID,
+  SET_SHAPEFILE_PRIMARY_KEY,
+  SET_SHAPEFILE_GEOMETRY_LABEL
 } from '../../actions';
 
 export default function regionMap(state, action) {
@@ -100,6 +103,18 @@ export default function regionMap(state, action) {
     case SET_SHAPEFILE:
       _.set(state, 'configuration.shapefile.uid', action.shapefileUid);
       _.set(state, 'configuration.shapefile.primaryKey', action.shapefilePrimaryKey);
+      _.set(state, 'configuration.shapefile.geometryLabel', action.shapefileGeometryLabel);
+      break;
+
+    case SET_SHAPEFILE_UID:
+      _.set(state, 'configuration.shapefile.uid', action.shapefileUid);
+      break;
+
+    case SET_SHAPEFILE_PRIMARY_KEY:
+      _.set(state, 'configuration.shapefile.primaryKey', action.shapefilePrimaryKey);
+      break;
+
+    case SET_SHAPEFILE_GEOMETRY_LABEL:
       _.set(state, 'configuration.shapefile.geometryLabel', action.shapefileGeometryLabel);
       break;
 

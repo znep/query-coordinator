@@ -1,14 +1,15 @@
 import _ from 'lodash';
 
 import {
-  SET_VISUALIZATION_TYPE,
-  REQUEST_REGION_CODING,
+  AWAIT_REGION_CODING,
+  FINISH_REGION_CODING,
   HANDLE_REGION_CODING_ERROR,
   REQUEST_CENTER_AND_ZOOM,
+  REQUEST_REGION_CODING,
   SET_CENTER_AND_ZOOM,
   SET_COMPUTED_COLUMN,
-  AWAIT_REGION_CODING,
-  FINISH_REGION_CODING
+  SET_VIF_CHECKPOINT,
+  SET_VISUALIZATION_TYPE
 } from '../actions';
 
 export var defaultState = {
@@ -28,6 +29,10 @@ export default function authoring(state, action) {
   state = _.cloneDeep(state);
 
   switch (action.type) {
+    case SET_VIF_CHECKPOINT:
+      state.checkpointVifs = _.cloneDeep(action.vifs);
+      break;
+
     case SET_VISUALIZATION_TYPE:
       state.selectedVisualizationType = action.visualizationType;
       state.hasPannedOrZoomed = false;

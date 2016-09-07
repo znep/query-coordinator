@@ -30,7 +30,7 @@ export const VisualizationTypeSelector = React.createClass({
 
   componentDidUpdate() {
     if (this.selector) {
-      Styleguide.attachTo(this.selector);
+      new Styleguide.factories.FlyoutFactory(this.selector);
     }
   },
 

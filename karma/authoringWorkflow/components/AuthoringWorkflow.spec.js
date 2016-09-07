@@ -111,10 +111,45 @@ describe('AuthoringWorkflow', function() {
 
     });
 
-    it('calls the onCancel callback when the cancel button is clicked', function() {
-      sinon.assert.notCalled(props.onCancel);
-      TestUtils.Simulate.click(component.querySelector('button.cancel'));
-      sinon.assert.calledOnce(props.onCancel);
+    describe('when the cancel button is clicked', () => {
+      beforeEach(() => {
+        // Watch confirm to ensure that it is called to prompt user.
+        sinon.stub(window, 'confirm', _.constant(true));
+      });
+
+      afterEach(() => {
+        window.confirm.restore();
+      });
+
+      describe('when no changes have been made', () => {
+        beforeEach(() => {
+          _.set(props, 'vifAuthoring.vifs', {});
+          _.set(props, 'vifAuthoring.authoring.checkpointVifs', {});
+          component = renderComponent(AuthoringWorkflow, props);
+        });
+
+        it('immediately calls onCancel', () => {
+          expect(props.onCancel.called).to.be.false;
+          TestUtils.Simulate.click(component.querySelector('button.cancel'));
+          expect(props.onCancel.calledOnce).to.be.true;
+          expect(window.confirm.called).to.be.false;
+        });
+      });
+
+      describe('when changes have been made', () => {
+        beforeEach(() => {
+          _.set(props, 'vifAuthoring.vifs', {notI: 'saidHe'});
+          _.set(props, 'vifAuthoring.authoring.checkpointVifs', {notI: 'saidThey'});
+          component = renderComponent(AuthoringWorkflow, props);
+        });
+
+        it('asks the user for confirmation before closing', () => {
+          expect(props.onCancel.called).to.be.false;
+          TestUtils.Simulate.click(component.querySelector('button.cancel'));
+          expect(props.onCancel.calledOnce).to.be.true;
+          expect(window.confirm.calledOnce).to.be.true;
+        });
+      });
     });
 
     describe('when configured with backButtonText', function() {

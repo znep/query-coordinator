@@ -1,6 +1,7 @@
-import React from 'react';
 import _ from 'lodash';
 import $ from 'jquery';
+import React from 'react';
+import classNames from 'classnames';
 import { connect } from 'react-redux';
 
 import { translate } from '../../I18n';
@@ -9,7 +10,8 @@ import { setXAxisScalingMode } from '../actions';
 import {
   getCurrentVif,
   getXAxisScalingMode,
-  isInsertableVisualization
+  isInsertableVisualization,
+  hasMadeChangesToVifs
 } from '../selectors/vifAuthoring';
 
 import CustomizationTabs from './CustomizationTabs';
@@ -26,7 +28,7 @@ import LegendsAndFlyoutsPane from './panes/LegendsAndFlyoutsPane';
 import FlyoutRenderer from '../../views/FlyoutRenderer';
 import RowInspector from '../../views/RowInspector';
 
-export var AuthoringWorkflow = React.createClass({
+export const AuthoringWorkflow = React.createClass({
   propTypes: {
     vif: React.PropTypes.object,
     onComplete: React.PropTypes.func,
@@ -95,7 +97,7 @@ export var AuthoringWorkflow = React.createClass({
   },
 
   onFlyout(event) {
-    var payload = event.originalEvent.detail;
+    const payload = event.originalEvent.detail;
 
     // Render/hide a flyout
     if (payload !== null) {
@@ -112,11 +114,22 @@ export var AuthoringWorkflow = React.createClass({
   },
 
   onCancel() {
-    this.props.onCancel();
+    const { vifAuthoring, onCancel } = this.props;
+    const message = translate('modal.changes_made_confirmation');
+    const changesMade = hasMadeChangesToVifs(vifAuthoring);
+    const changesMadeAndConfirmedCancel = changesMade && window.confirm(message);
+
+    if (!changesMade) {
+      onCancel();
+    } else if (changesMadeAndConfirmedCancel) {
+      onCancel();
+    } else {
+      // Don't cancel. Simple as that.
+    }
   },
 
   onTabNavigation(event) {
-    var href = event.target.getAttribute('href');
+    const href = event.target.getAttribute('href');
 
     if (href) {
       event.preventDefault();
@@ -125,7 +138,7 @@ export var AuthoringWorkflow = React.createClass({
   },
 
   scalingMode() {
-    var checkboxAttributes = {
+    const checkboxAttributes = {
       type: 'checkbox',
       onChange: this.props.onChangeXAxisScalingMode,
       checked: getXAxisScalingMode(this.props.vifAuthoring) === 'fit',
@@ -148,7 +161,7 @@ export var AuthoringWorkflow = React.createClass({
   },
 
   renderBackButton() {
-    var { backButtonText, onBack } = this.props;
+    const { backButtonText, onBack } = this.props;
 
       return _.isString(backButtonText) ? (
         <button className="authoring-back-button" onClick={onBack}>
@@ -159,9 +172,12 @@ export var AuthoringWorkflow = React.createClass({
   },
 
   render() {
-    var { metadata, vifAuthoring } = this.props;
-    var isNotInsertable = !isInsertableVisualization(vifAuthoring);
-    var scalingMode = null; // This feature is hidden for now.
+    const { metadata, vifAuthoring, backButtonText } = this.props;
+    const isNotInsertable = !isInsertableVisualization(vifAuthoring);
+    const scalingMode = null; // This feature is hidden for now.
+    const modalFooterActionsClassNames = classNames('modal-footer-actions', {
+      'with-back-button': _.isString(backButtonText)
+    });
 
     return (
       <div className="authoring-modal modal modal-full modal-overlay" onKeyUp={this.onKeyUp} ref={(ref) => this.modal = ref}>
@@ -189,7 +205,7 @@ export var AuthoringWorkflow = React.createClass({
           </section>
 
           <footer className="modal-footer authoring-modal-footer">
-            <div className="modal-footer-actions">
+            <div className={modalFooterActionsClassNames}>
               {this.renderBackButton()}
               <div className="authoring-actions">
                 <button className="btn btn-sm btn-default cancel" onClick={this.onCancel}>{translate('modal.close')}</button>
@@ -214,7 +230,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onChangeXAxisScalingMode(event) {
-      var xAxisScalingMode = event.target.checked;
+      const xAxisScalingMode = event.target.checked;
       dispatch(setXAxisScalingMode(xAxisScalingMode));
     }
   };

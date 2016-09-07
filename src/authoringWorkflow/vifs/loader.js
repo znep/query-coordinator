@@ -28,6 +28,7 @@ const paths = {
   unitOther: 'series[0].unit.other',
   viewSourceDataLink: 'configuration.viewSourceDataLink',
   visualizationType: 'series[0].type',
+  xAxisDataLabels: 'configuration.xAxisDataLabels',
   zeroColor: 'configuration.legend.zeroColor'
 };
 
@@ -87,7 +88,7 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setMeasure(get(paths.measureColumnName)));
   }
 
-  if(has(paths.negativeColor)) {
+  if (has(paths.negativeColor)) {
     dispatch(actions.setNegativeColor(get(paths.negativeColor)));
   }
 
@@ -131,17 +132,25 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setVisualizationType(get(paths.visualizationType)));
   }
 
-  if(has(paths.zeroColor)) {
+  if (has(paths.xAxisDataLabels)) {
+    dispatch(actions.setXAxisDataLabels(get(paths.xAxisDataLabels)));
+  }
+
+  if (has(paths.zeroColor)) {
     dispatch(actions.setZeroColor(get(paths.zeroColor)));
   }
 
-  dispatch(
-    actions.setShapefile(
-      get(paths.shapefileUid),
-      get(paths.shapefilePrimaryKey),
-      get(paths.shapefileGeometryLabel)
-    )
-  );
+  if (has(paths.shapefileUid)) {
+    dispatch(actions.setShapefileUid(get(paths.shapefileUid)));
+  }
+
+  if (has(paths.shapefilePrimaryKey)) {
+    dispatch(actions.setShapefilePrimaryKey(get(paths.shapefilePrimaryKey)));
+  }
+
+  if (has(paths.shapefileGeometryLabel)) {
+    dispatch(actions.setShapefileGeometryLabel(get(paths.shapefileGeometryLabel)));
+  }
 
   dispatch(actions.setDatasetUid(get(paths.datasetUid)));
   dispatch(actions.setDomain(get(paths.domain)));

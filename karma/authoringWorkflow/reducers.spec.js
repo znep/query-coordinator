@@ -97,6 +97,10 @@ describe('AuthoringWorkflow reducer', function() {
       shouldSetVif('setColorScale', ['one', 'two', 'three'], 'configuration.legend.zeroColor', ['regionMap']);
       shouldSetVif('setColorScale', ['one', 'two', 'three'], 'configuration.legend.positiveColor', ['regionMap']);
 
+      shouldSetVif('setShapefileUid', 'four-four', 'configuration.shapefile.uid', ['regionMap']);
+      shouldSetVif('setShapefilePrimaryKey', 'imaprimarykey', 'configuration.shapefile.primaryKey', ['regionMap']);
+      shouldSetVif('setShapefileGeometryLabel', 'elaborawhat?', 'configuration.shapefile.geometryLabel', ['regionMap']);
+
       shouldSetVif('setBaseLayer', 'https://yes.com', 'configuration.baseLayerUrl', ['regionMap', 'featureMap']);
 
       shouldSetVif('setLabelTop', 'labelTop', 'configuration.axisLabels.top', ['columnChart', 'timelineChart', 'histogram']);
@@ -291,3 +295,4 @@ describe('AuthoringWorkflow reducer', function() {
     });
   });
 });
+

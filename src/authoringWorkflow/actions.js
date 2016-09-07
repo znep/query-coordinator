@@ -1,15 +1,25 @@
 import _ from 'lodash';
 import moment from 'moment';
+
 import MetadataProvider from '../dataProviders/MetadataProvider';
 import RegionCodingProvider from '../dataProviders/RegionCodingProvider';
+import { getVifs } from './selectors/vifAuthoring';
+
+export const SET_VIF_CHECKPOINT = 'SET_VIF_CHECKPOINT';
+export function setVifCheckpoint(vifs) {
+  return {
+    type: SET_VIF_CHECKPOINT,
+    vifs
+  };
+}
 
 export function setDataSource(domain, datasetUid) {
-  return dispatch => {
+  return (dispatch, getState) => {
     if (!/\w{4}\-\w{4}/.test(datasetUid)) {
       return;
     }
 
-    var datasetMetadataProvider = new MetadataProvider({ domain, datasetUid });
+    const datasetMetadataProvider = new MetadataProvider({ domain, datasetUid });
 
     dispatch(requestMetadata(domain, datasetUid));
 
@@ -19,6 +29,7 @@ export function setDataSource(domain, datasetUid) {
       datasetMetadataProvider.getCuratedRegions()
     ]).then(resolutions => {
       dispatch(receiveMetadata(resolutions));
+      dispatch(setVifCheckpoint(getVifs(getState().vifAuthoring)));
     }).catch(error => {
       console.error(error);
       dispatch(handleMetadataError());
@@ -26,7 +37,7 @@ export function setDataSource(domain, datasetUid) {
   };
 }
 
-export var REQUEST_METADATA = 'REQUEST_METADATA';
+export const REQUEST_METADATA = 'REQUEST_METADATA';
 export function requestMetadata(domain, datasetUid) {
   return {
     type: REQUEST_METADATA,
@@ -35,7 +46,7 @@ export function requestMetadata(domain, datasetUid) {
   };
 }
 
-export var RECEIVE_METADATA = 'RECEIVE_METADATA';
+export const RECEIVE_METADATA = 'RECEIVE_METADATA';
 export function receiveMetadata(resolutions) {
   return {
     type: RECEIVE_METADATA,
@@ -45,7 +56,7 @@ export function receiveMetadata(resolutions) {
   };
 }
 
-export var HANDLE_METADATA_ERROR = 'HANDLE_METADATA_ERROR';
+export const HANDLE_METADATA_ERROR = 'HANDLE_METADATA_ERROR';
 export function handleMetadataError(error) {
   return {
     type: HANDLE_METADATA_ERROR,
@@ -53,7 +64,7 @@ export function handleMetadataError(error) {
   };
 }
 
-export var SET_PHIDIPPIDES_METADATA = 'SET_PHIDIPPIDES_METADATA';
+export const SET_PHIDIPPIDES_METADATA = 'SET_PHIDIPPIDES_METADATA';
 export function setPhidippidesMetadata(phidippidesMetadata) {
   return {
     type: SET_PHIDIPPIDES_METADATA,
@@ -61,7 +72,7 @@ export function setPhidippidesMetadata(phidippidesMetadata) {
   };
 }
 
-export var SET_DATASET_UID = 'SET_DATASET_UID';
+export const SET_DATASET_UID = 'SET_DATASET_UID';
 export function setDatasetUid(datasetUid) {
   return {
     type: SET_DATASET_UID,
@@ -69,7 +80,7 @@ export function setDatasetUid(datasetUid) {
   };
 }
 
-export var SET_DOMAIN = 'SET_DOMAIN';
+export const SET_DOMAIN = 'SET_DOMAIN';
 export function setDomain(domain) {
   return {
     type: SET_DOMAIN,
@@ -77,7 +88,7 @@ export function setDomain(domain) {
   };
 }
 
-export var SET_DIMENSION = 'SET_DIMENSION';
+export const SET_DIMENSION = 'SET_DIMENSION';
 export function setDimension(dimension) {
   return {
     type: SET_DIMENSION,
@@ -85,7 +96,7 @@ export function setDimension(dimension) {
   };
 }
 
-export var SET_MEASURE = 'SET_MEASURE';
+export const SET_MEASURE = 'SET_MEASURE';
 export function setMeasure(measure) {
   return {
     type: SET_MEASURE,
@@ -93,7 +104,7 @@ export function setMeasure(measure) {
   };
 }
 
-export var SET_MEASURE_AGGREGATION = 'SET_MEASURE_AGGREGATION';
+export const SET_MEASURE_AGGREGATION = 'SET_MEASURE_AGGREGATION';
 export function setMeasureAggregation(measureAggregation) {
   return {
     type: SET_MEASURE_AGGREGATION,
@@ -101,7 +112,7 @@ export function setMeasureAggregation(measureAggregation) {
   };
 }
 
-export var SET_VISUALIZATION_TYPE = 'SET_VISUALIZATION_TYPE';
+export const SET_VISUALIZATION_TYPE = 'SET_VISUALIZATION_TYPE';
 export function setVisualizationType(visualizationType) {
   return {
     type: SET_VISUALIZATION_TYPE,
@@ -109,25 +120,25 @@ export function setVisualizationType(visualizationType) {
   };
 }
 
-export var INITIATE_REGION_CODING = 'INITIATE_REGION_CODING';
+export const INITIATE_REGION_CODING = 'INITIATE_REGION_CODING';
 export function initiateRegionCoding(domain, datasetUid, sourceColumn, curatedRegion) {
   return dispatch => {
-    var providerOptions = { domain, datasetUid };
-    var datasetMetadataProvider = new MetadataProvider(providerOptions);
-    var regionCodingProvider = new RegionCodingProvider(providerOptions);
-    var handleError = error => {
+    const providerOptions = { domain, datasetUid };
+    const datasetMetadataProvider = new MetadataProvider(providerOptions);
+    const regionCodingProvider = new RegionCodingProvider(providerOptions);
+    const handleError = error => {
       dispatch(handleRegionCodingError(error));
     };
-    var handleCompletion = () => {
+    const handleCompletion = () => {
       datasetMetadataProvider.
         getPhidippidesMetadata().
         then(metadata => {
-          var columns = _.map(metadata.columns, (column, key) => {
+          const columns = _.map(metadata.columns, (column, key) => {
             column.fieldName = key;
             return column;
           });
 
-          var computedColumn = _.find(columns, column => {
+          const computedColumn = _.find(columns, column => {
             return _.get(column, 'computationStrategy.parameters.region', '').slice(1) === curatedRegion.uid;
           });
 
@@ -138,7 +149,7 @@ export function initiateRegionCoding(domain, datasetUid, sourceColumn, curatedRe
         catch(handleError);
     };
 
-    var handleInitiation = response => {
+    const handleInitiation = response => {
       if (response.success) {
         dispatch(setComputedColumn(null));
         dispatch(setShapefile(curatedRegion.uid, curatedRegion.featurePk, curatedRegion.geometryLabel));
@@ -152,7 +163,7 @@ export function initiateRegionCoding(domain, datasetUid, sourceColumn, curatedRe
       }
     };
 
-    var handleStatus = response => {
+    const handleStatus = response => {
       switch (response.status) {
         case 'unknown':
           regionCodingProvider.
@@ -184,14 +195,14 @@ export function initiateRegionCoding(domain, datasetUid, sourceColumn, curatedRe
   };
 }
 
-export var REQUEST_REGION_CODING = 'REQUEST_REGION_CODING';
+export const REQUEST_REGION_CODING = 'REQUEST_REGION_CODING';
 export function requestRegionCoding() {
   return {
     type: REQUEST_REGION_CODING
   };
 }
 
-export var AWAIT_REGION_CODING = 'AWAIT_REGION_CODING';
+export const AWAIT_REGION_CODING = 'AWAIT_REGION_CODING';
 export function awaitRegionCoding() {
   return {
     type: AWAIT_REGION_CODING,
@@ -199,14 +210,14 @@ export function awaitRegionCoding() {
   };
 }
 
-export var FINISH_REGION_CODING = 'FINISH_REGION_CODING';
+export const FINISH_REGION_CODING = 'FINISH_REGION_CODING';
 export function finishRegionCoding() {
   return {
     type: FINISH_REGION_CODING
   };
 }
 
-export var HANDLE_REGION_CODING_ERROR = 'HANDLE_REGION_CODING_ERROR';
+export const HANDLE_REGION_CODING_ERROR = 'HANDLE_REGION_CODING_ERROR';
 export function handleRegionCodingError(error) {
   return {
     type: HANDLE_REGION_CODING_ERROR,
@@ -214,7 +225,7 @@ export function handleRegionCodingError(error) {
   };
 }
 
-export var SET_COMPUTED_COLUMN = 'SET_COMPUTED_COLUMN';
+export const SET_COMPUTED_COLUMN = 'SET_COMPUTED_COLUMN';
 export function setComputedColumn(computedColumn) {
   return {
     type: SET_COMPUTED_COLUMN,
@@ -222,12 +233,12 @@ export function setComputedColumn(computedColumn) {
   };
 }
 
-export var REQUEST_SHAPEFILE_METADATA = 'REQUEST_SHAPEFILE_METADATA';
+export const REQUEST_SHAPEFILE_METADATA = 'REQUEST_SHAPEFILE_METADATA';
 export function requestShapefileMetadata(domain, shapefileUid) {
   return dispatch => {
-    var shapefileMetadataProvider = new MetadataProvider({domain, datasetUid: shapefileUid});
-    var handleShapefileMetadataError = (error) => dispatch(handleShapefileMetadataError(error));
-    var handleShapefileMetadata = ({ featurePk, geometryLabel }) => {
+    const shapefileMetadataProvider = new MetadataProvider({domain, datasetUid: shapefileUid});
+    const handleShapefileMetadataError = (error) => dispatch(handleShapefileMetadataError(error));
+    const handleShapefileMetadata = ({ featurePk, geometryLabel }) => {
       dispatch(setShapefile(shapefileUid, featurePk, geometryLabel));
     };
 
@@ -240,14 +251,14 @@ export function requestShapefileMetadata(domain, shapefileUid) {
   };
 }
 
-export var REQUEST_SHAPEFILE = 'REQUEST_SHAPEFILE';
+export const REQUEST_SHAPEFILE = 'REQUEST_SHAPEFILE';
 export function requestShapefile() {
   return {
     type: REQUEST_SHAPEFILE
   };
 }
 
-export var SET_SHAPEFILE = 'SET_SHAPEFILE';
+export const SET_SHAPEFILE = 'SET_SHAPEFILE';
 export function setShapefile(shapefileUid, shapefilePrimaryKey, shapefileGeometryLabel) {
   return {
     type: SET_SHAPEFILE,
@@ -257,7 +268,31 @@ export function setShapefile(shapefileUid, shapefilePrimaryKey, shapefileGeometr
   };
 }
 
-export var SET_TITLE = 'SET_TITLE';
+export const SET_SHAPEFILE_UID = 'SET_SHAPEFILE_UID';
+export function setShapefileUid(shapefileUid) {
+  return {
+    type: SET_SHAPEFILE_UID,
+    shapefileUid
+  };
+}
+
+export const SET_SHAPEFILE_PRIMARY_KEY = 'SET_SHAPEFILE_PRIMARY_KEY';
+export function setShapefilePrimaryKey(shapefilePrimaryKey) {
+  return {
+    type: SET_SHAPEFILE_PRIMARY_KEY,
+    shapefilePrimaryKey
+  };
+}
+
+export const SET_SHAPEFILE_GEOMETRY_LABEL = 'SET_SHAPEFILE_GEOMETRY_LABEL';
+export function setShapefileGeometryLabel(shapefileGeometryLabel) {
+  return {
+    type: SET_SHAPEFILE_GEOMETRY_LABEL,
+    shapefileGeometryLabel
+  };
+}
+
+export const SET_TITLE = 'SET_TITLE';
 export function setTitle(title) {
   return {
     type: SET_TITLE,
@@ -265,7 +300,7 @@ export function setTitle(title) {
   };
 }
 
-export var SET_DESCRIPTION = 'SET_DESCRIPTION';
+export const SET_DESCRIPTION = 'SET_DESCRIPTION';
 export function setDescription(description) {
   return {
     type: SET_DESCRIPTION,
@@ -273,7 +308,7 @@ export function setDescription(description) {
   };
 }
 
-export var SET_VIEW_SOURCE_DATA_LINK = 'SET_VIEW_SOURCE_DATA_LINK';
+export const SET_VIEW_SOURCE_DATA_LINK = 'SET_VIEW_SOURCE_DATA_LINK';
 export function setViewSourceDataLink(viewSourceDataLink) {
   return {
     type: SET_VIEW_SOURCE_DATA_LINK,
@@ -281,7 +316,7 @@ export function setViewSourceDataLink(viewSourceDataLink) {
   };
 }
 
-export var SET_PRIMARY_COLOR = 'SET_PRIMARY_COLOR';
+export const SET_PRIMARY_COLOR = 'SET_PRIMARY_COLOR';
 export function setPrimaryColor(primaryColor) {
   return {
     type: SET_PRIMARY_COLOR,
@@ -289,7 +324,7 @@ export function setPrimaryColor(primaryColor) {
   };
 }
 
-export var SET_SECONDARY_COLOR = 'SET_SECONDARY_COLOR';
+export const SET_SECONDARY_COLOR = 'SET_SECONDARY_COLOR';
 export function setSecondaryColor(secondaryColor) {
   return {
     type: SET_SECONDARY_COLOR,
@@ -297,7 +332,7 @@ export function setSecondaryColor(secondaryColor) {
   };
 }
 
-export var SET_POINT_OPACITY = 'SET_POINT_OPACITY';
+export const SET_POINT_OPACITY = 'SET_POINT_OPACITY';
 export function setPointOpacity(pointOpacity) {
   return {
     type: SET_POINT_OPACITY,
@@ -305,7 +340,7 @@ export function setPointOpacity(pointOpacity) {
   };
 }
 
-export var SET_COLOR_SCALE = 'SET_COLOR_SCALE';
+export const SET_COLOR_SCALE = 'SET_COLOR_SCALE';
 export function setColorScale(negativeColor, zeroColor, positiveColor) {
   return {
     type: SET_COLOR_SCALE,
@@ -315,7 +350,7 @@ export function setColorScale(negativeColor, zeroColor, positiveColor) {
   };
 }
 
-export var SET_NEGATIVE_COLOR = 'SET_NEGATIVE_COLOR';
+export const SET_NEGATIVE_COLOR = 'SET_NEGATIVE_COLOR';
 export function setNegativeColor(negativeColor) {
   return {
     type: SET_NEGATIVE_COLOR,
@@ -323,14 +358,14 @@ export function setNegativeColor(negativeColor) {
   };
 }
 
-export var SET_ZERO_COLOR = 'SET_ZERO_COLOR';
+export const SET_ZERO_COLOR = 'SET_ZERO_COLOR';
 export function setZeroColor(zeroColor) {
   return {
     type: SET_ZERO_COLOR,
     zeroColor
   };
 }
-export var SET_POSITIVE_COLOR = 'SET_POSITIVE_COLOR';
+export const SET_POSITIVE_COLOR = 'SET_POSITIVE_COLOR';
 export function setPositiveColor(positiveColor) {
   return {
     type: SET_POSITIVE_COLOR,
@@ -338,7 +373,7 @@ export function setPositiveColor(positiveColor) {
   };
 }
 
-export var SET_BASE_LAYER = 'SET_BASE_LAYER';
+export const SET_BASE_LAYER = 'SET_BASE_LAYER';
 export function setBaseLayer(baseLayer) {
   return {
     type: SET_BASE_LAYER,
@@ -346,7 +381,7 @@ export function setBaseLayer(baseLayer) {
   };
 }
 
-export var SET_BASE_LAYER_OPACITY = 'SET_BASE_LAYER_OPACITY';
+export const SET_BASE_LAYER_OPACITY = 'SET_BASE_LAYER_OPACITY';
 export function setBaseLayerOpacity(baseLayerOpacity) {
   return {
     type: SET_BASE_LAYER_OPACITY,
@@ -354,7 +389,7 @@ export function setBaseLayerOpacity(baseLayerOpacity) {
   };
 }
 
-export var SET_LABEL_TOP = 'SET_LABEL_TOP';
+export const SET_LABEL_TOP = 'SET_LABEL_TOP';
 export function setLabelTop(labelTop) {
   return {
     type: SET_LABEL_TOP,
@@ -362,7 +397,7 @@ export function setLabelTop(labelTop) {
   };
 }
 
-export var SET_LABEL_LEFT = 'SET_LABEL_LEFT';
+export const SET_LABEL_LEFT = 'SET_LABEL_LEFT';
 export function setLabelLeft(labelLeft) {
   return {
     type: SET_LABEL_LEFT,
@@ -370,7 +405,7 @@ export function setLabelLeft(labelLeft) {
   };
 }
 
-export var SET_LABEL_BOTTOM = 'SET_LABEL_BOTTOM';
+export const SET_LABEL_BOTTOM = 'SET_LABEL_BOTTOM';
 export function setLabelBottom(labelBottom) {
   return {
     type: SET_LABEL_BOTTOM,
@@ -378,7 +413,7 @@ export function setLabelBottom(labelBottom) {
   };
 }
 
-export var SET_LABEL_RIGHT = 'SET_LABEL_RIGHT';
+export const SET_LABEL_RIGHT = 'SET_LABEL_RIGHT';
 export function setLabelRight(labelRight) {
   return {
     type: SET_LABEL_RIGHT,
@@ -386,7 +421,7 @@ export function setLabelRight(labelRight) {
   };
 }
 
-export var SET_X_AXIS_DATA_LABELS = 'SET_X_AXIS_DATA_LABELS';
+export const SET_X_AXIS_DATA_LABELS = 'SET_X_AXIS_DATA_LABELS';
 export function setXAxisDataLabels(xAxisDataLabels) {
   return {
     type: SET_X_AXIS_DATA_LABELS,
@@ -394,7 +429,7 @@ export function setXAxisDataLabels(xAxisDataLabels) {
   };
 }
 
-export var SET_X_AXIS_SCALING_MODE = 'SET_X_AXIS_SCALING_MODE';
+export const SET_X_AXIS_SCALING_MODE = 'SET_X_AXIS_SCALING_MODE';
 export function setXAxisScalingMode(shouldFit) {
   return {
     type: SET_X_AXIS_SCALING_MODE,
@@ -402,7 +437,7 @@ export function setXAxisScalingMode(shouldFit) {
   };
 }
 
-export var SET_UNIT_ONE = 'SET_UNIT_ONE';
+export const SET_UNIT_ONE = 'SET_UNIT_ONE';
 export function setUnitsOne(one) {
   return {
     type: SET_UNIT_ONE,
@@ -410,7 +445,7 @@ export function setUnitsOne(one) {
   };
 }
 
-export var SET_UNIT_OTHER = 'SET_UNIT_OTHER';
+export const SET_UNIT_OTHER = 'SET_UNIT_OTHER';
 export function setUnitsOther(other) {
   return {
     type: SET_UNIT_OTHER,
@@ -419,7 +454,7 @@ export function setUnitsOther(other) {
 }
 
 
-export var SET_ROW_INSPECTOR_TITLE_COLUMN_NAME = 'SET_ROW_INSPECTOR_TITLE_COLUMN_NAME';
+export const SET_ROW_INSPECTOR_TITLE_COLUMN_NAME = 'SET_ROW_INSPECTOR_TITLE_COLUMN_NAME';
 export function setRowInspectorTitleColumnName(rowInspectorTitleColumnName) {
   return {
     type: SET_ROW_INSPECTOR_TITLE_COLUMN_NAME,
@@ -427,7 +462,7 @@ export function setRowInspectorTitleColumnName(rowInspectorTitleColumnName) {
   };
 }
 
-export var SET_CENTER_AND_ZOOM = 'SET_CENTER_AND_ZOOM';
+export const SET_CENTER_AND_ZOOM = 'SET_CENTER_AND_ZOOM';
 export function setCenterAndZoom(centerAndZoom) {
   return {
     type: SET_CENTER_AND_ZOOM,
@@ -435,7 +470,7 @@ export function setCenterAndZoom(centerAndZoom) {
   };
 }
 
-export var REQUEST_CENTER_AND_ZOOM = 'REQUEST_CENTER_AND_ZOOM';
+export const REQUEST_CENTER_AND_ZOOM = 'REQUEST_CENTER_AND_ZOOM';
 export function requestCenterAndZoom(centerAndZoom) {
   return (dispatch) => {
     dispatch({ type: REQUEST_CENTER_AND_ZOOM });
@@ -446,7 +481,7 @@ export function requestCenterAndZoom(centerAndZoom) {
   };
 }
 
-export var SET_ORDER_BY = 'SET_ORDER_BY';
+export const SET_ORDER_BY = 'SET_ORDER_BY';
 export function setOrderBy(orderBy) {
   return {
     type: SET_ORDER_BY,

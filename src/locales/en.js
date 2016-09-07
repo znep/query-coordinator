@@ -19,7 +19,8 @@ export default {
     title: 'Create A Visualization',
     based_on: 'Based on ',
     close: 'Close',
-    insert: 'Insert'
+    insert: 'Insert',
+    changes_made_confirmation: 'You have made changes! Are you sure you want to cancel?'
   },
   panes: {
     nothing_here: 'There\'s nothing to configure in this pane yet!',

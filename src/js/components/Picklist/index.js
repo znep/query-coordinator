@@ -11,13 +11,15 @@ import {
 
 export const Picklist = React.createClass({
   propTypes: {
-    // Disables option selection
+    // A top-level HTML id attribute for easier selection.
+    id: React.PropTypes.string,
+    // Disables option selection.
     disabled: React.PropTypes.bool,
-    // Sets the initial value when provided
+    // Sets the initial value when provided.
     value: React.PropTypes.string,
     options: React.PropTypes.arrayOf(
       React.PropTypes.shape({
-        // Used to render the option title
+        // Used to render the option title.
         title: React.PropTypes.string,
         // Used for value comparisons during selection.
         value: React.PropTypes.string.isRequired,
@@ -120,12 +122,6 @@ export const Picklist = React.createClass({
   },
 
   onFocus() {
-    const { selectedOption } = this.state;
-
-    if (selectedOption) {
-      this.setSelectedOption(selectedOption);
-    }
-
     this.setState({ focused: true });
   },
 
@@ -185,7 +181,7 @@ export const Picklist = React.createClass({
       newSelectedOption = selectedOption;
     }
 
-    this.setState({ selectedOption: newSelectedOption });
+    this.setSelectedOption(newSelectedOption);
     this.setScrollPositionToOption(optionElement);
   },
 
@@ -216,9 +212,10 @@ export const Picklist = React.createClass({
 
   render() {
     const renderedOptions = [];
-    const { disabled, options } = this.props;
+    const { disabled, options, id } = this.props;
     const { focused } = this.state;
     const attributes = {
+      id,
       tabIndex: 0,
       ref: ref => this.picklist = ref,
       className: classNames('picklist', {

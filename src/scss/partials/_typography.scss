@@ -1,67 +1,21 @@
-body {
+$default-line-height: 1.618;
+$default-line-spacing: 15px * $default-line-height;
+
+@mixin base {
   font-family: $default-font-stack;
   font-size: ms(0);
-  line-height: 1.618;
+  line-height: $default-line-height;
   color: $dark-grey-1;
 }
 
-input,
-textarea,
-keygen,
-select,
-button {
+@mixin default-font {
   font-family: $default-font-stack;
   line-height: 1.25;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin: 0;
-  padding: 0;
-  font: inherit;
-  font-size: 100%;
-  letter-spacing: -0.3px;
-}
-
-p,
-ol,
-ul {
-  /*
-   * Space above and below paragraphs should be related
-   * to the line height. So, 15px * 1.618 = 24.27px.
-   */
-  margin-bottom: 24.27px;
-  margin-top: 24.27px;
-}
-
-i {
-  font-style: italic;
-}
-
-b {
-  font-weight: bold;
-}
-
-ul {
-  list-style-type: disc;
-  padding-left: ms(2);
-}
-
-ol {
-  list-style: decimal;
-  padding-left: ms(2);
-}
-
-a {
-  color: $primary-text;
-
-  &:hover {
-    text-decoration: none;
-  }
+@mixin default-spacing {
+  margin-top: $default-line-spacing;
+  margin-bottom: $default-line-spacing;
 }
 
 a.unstyled-link {
@@ -77,41 +31,70 @@ a.unstyled-link {
  * All of the headings. Additional "heaing classes" are used to style
  * type in contexts where the heading style and semantics don't align.
  */
-
-h1,
-.h1 {
-  font-size: ms(5);
+@mixin header {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  font-size: 100%;
+  letter-spacing: -0.3px;
   font-weight: 600;
 }
 
-h2,
-.h2 {
-  font-size: ms(4);
-  font-weight: 600;
-}
-
-h3,
-.h3 {
-  font-size: ms(3);
-  font-weight: 600;
-}
-
-h4,
-.h4 {
-  font-size: ms(2);
-  font-weight: 600;
-}
-
-h5,
-.h5 {
-  font-size: ms(1);
-  font-weight: 600;
-}
-
-h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
 .h6 {
+  @include header;
+}
+
+@mixin h1 {
+  font-size: ms(5);
+}
+
+.h1 {
+  @include h1;
+}
+
+@mixin h2 {
+  font-size: ms(4);
+}
+
+.h2 {
+  @include h2;
+}
+
+@mixin h3 {
+  font-size: ms(3);
+}
+
+.h3 {
+  @include h3;
+}
+
+@mixin h4 {
+  font-size: ms(2);
+}
+
+.h4 {
+  @include h4;
+}
+
+@mixin h5 {
+  font-size: ms(1);
+}
+
+.h5 {
+  @include h5;
+}
+
+@mixin h6 {
   font-size: ms(0);
-  font-weight: 600;
+}
+
+.h6 {
+  @include h6;
 }
 
 .intro {

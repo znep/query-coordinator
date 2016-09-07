@@ -4,6 +4,12 @@ With [artifactory](https://docs.google.com/document/d/1KihQV3-UBfZEOKIInsQlloESR
 npm install --save socrata-components
 ```
 
+If you run into npm build errors that you cannot resolve, it is sometimes necessary to run the following. However you should do this as a last resort as it takes quite a while.
+
+```
+rm -rf node_modules && npm i
+```
+
 ### JavaScript
 
 #### Inclusion through HTML

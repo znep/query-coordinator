@@ -88,11 +88,13 @@ export function proceedFromMetadataPane() {
           dispatch(goToPage('Finish'));
           break;
         case 'LINK_EXTERNAL':
-          dispatch(saveMetadataToViewsApi());
+          dispatch(goToPage('Finish'));
+          break;
+        case 'UPLOAD_BLOB':
           dispatch(goToPage('Finish'));
           break;
         default:
-          console.error('Unkown operation!', navigation.operation);
+          console.error('Unknown operation!', navigation.operation);
       }
     }
   };
@@ -146,7 +148,18 @@ function hrefMetadata(href, meta) {
   });
 }
 
-function viewMetadata({href, rowLabel, mapLayer, customMetadata}) {
+function blobMetadata(meta) {
+  return _.extend({}, meta, {
+    availableDisplayTypes: ['blob'],
+    renderTypeConfig: {
+      visibile: {
+        blob: true
+      }
+    }
+  });
+}
+
+function viewMetadata({href, rowLabel, mapLayer, customMetadata, displayType}) {
   var meta = {
     rowLabel: rowLabel,
     attributionLink: mapLayer,
@@ -154,6 +167,8 @@ function viewMetadata({href, rowLabel, mapLayer, customMetadata}) {
   };
   if (href) {
     return hrefMetadata(href, meta);
+  } else if (displayType === 'blob') {
+    return blobMetadata(meta);
   } else {
     return meta;
   }
@@ -679,7 +694,6 @@ function getColumnSource(resultColumn) {
       return getLocationColumnSource(resultColumn);
   }
 }
-
 
 export function transformToImports2Translation(importTransform: ImportColumns.Transform): string {
   function resultColumnToJs(resultColumn: ImportColumns.ResultColumn): string {

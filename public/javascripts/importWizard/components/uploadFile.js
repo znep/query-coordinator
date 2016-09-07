@@ -6,7 +6,7 @@ import FlashMessage from './flashMessage';
 import NavigationControl from './navigationControl';
 import { authenticityToken, appToken } from '../server';
 import airbrake from '../airbrake';
-import {addColumnIndicesToSummary} from '../importUtils';
+import { addColumnIndicesToSummary } from '../importUtils';
 import format from 'stringformat';
 
 
@@ -23,14 +23,14 @@ type FileUpload
   = { type: 'NothingSelected' }
   | { type: 'UploadInProgress', fileName: FileName, progress: UploadProgress }
 
-function scanUrlForOperation(datasetId: string, operation: SharedTypes.OperationName) {
+function urlForOperation(datasetId: string, operation: SharedTypes.OperationName) {
   const urlAttrs = {
     pathname: '/imports2.txt',
     query: {
       saveUnderViewUid: datasetId
     }
   };
-  // TODO: NBE? Blobby?
+  // TODO: NBE?
   // TODO: error handling (extension checking)
   switch (operation) {
     case 'UPLOAD_DATA':
@@ -45,6 +45,14 @@ function scanUrlForOperation(datasetId: string, operation: SharedTypes.Operation
       urlAttrs.query = {
         ...urlAttrs.query,
         method: 'scanShape',
+        authenticity_token: authenticityToken,
+        app_token: appToken
+      };
+      break;
+    case 'UPLOAD_BLOB':
+      urlAttrs.query = {
+        ...urlAttrs.query,
+        method: 'setBlobForDraft',
         authenticity_token: authenticityToken,
         app_token: appToken
       };
@@ -70,6 +78,8 @@ function fileExtensionError(file: File, operation) {
         return t.filetype_error_shapefile;
       }
       return false;
+    case 'UPLOAD_BLOB':
+      return false;
     default:
       console.error('Unexpected operation', operation);
       return false;
@@ -83,7 +93,7 @@ export function selectFile(file: File, operation: SharedTypes.OperationName) {
       return dispatch(fileUploadError(typeError));
     }
     const upload = new Upload(file);
-    upload.to(scanUrlForOperation(getState().datasetId, operation));
+    upload.to(urlForOperation(getState().datasetId, operation));
     upload.on('progress', (evt) => {
       if (evt.percent === 100) {
         dispatch(fileUploadAnalyzing(upload));
@@ -96,11 +106,19 @@ export function selectFile(file: File, operation: SharedTypes.OperationName) {
       switch (xhr.status) {
         case 200:
           response = JSON.parse(xhr.responseText);
-          dispatch(fileUploadComplete(
-            response.fileId,
-            addColumnIndicesToSummary(response.summary),
-            response.newImportSourceVersion
-          ));
+          if (operation === 'UPLOAD_BLOB') {
+            dispatch(fileUploadComplete(
+              response.fileId,
+              {},
+              response.newImportSourceVersion
+            ));
+          } else {
+            dispatch(fileUploadComplete(
+             response.fileId,
+             addColumnIndicesToSummary(response.summary),
+             response.newImportSourceVersion
+           ));
+          }
           break;
         case 400:
           airbrake.notify({
@@ -172,7 +190,10 @@ export function fileUploadAnalyzing(uploader) {
 }
 
 export const FILE_UPLOAD_COMPLETE = 'FILE_UPLOAD_COMPLETE';
-export function fileUploadComplete(fileId: SharedTypes.FileId, summary: SharedTypes.Summary, newImportSourceVersion: number) {
+export function fileUploadComplete(
+   fileId: SharedTypes.FileId,
+   summary: SharedTypes.Summary,
+   newImportSourceVersion: number) {
   return {
     type: FILE_UPLOAD_COMPLETE,
     fileId,
@@ -351,6 +372,8 @@ export function view({ onFileUploadAction, fileUpload, operation, goToPrevious }
                     return I18nPrefixed.supported_blist;
                   case 'UPLOAD_GEO':
                     return I18nPrefixed.supported_shapefile;
+                  case 'UPLOAD_BLOB':
+                    return '';
                   default:
                     console.error('unknown operation', operation);
                     return null;

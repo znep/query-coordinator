@@ -33,6 +33,7 @@ type DisplayType
   = 'table'
   | 'draft'
   | 'href'
+  | 'blob'
 
 
 type MetadataContents = {
@@ -366,6 +367,8 @@ function displayTypeFor(operation) {
       return 'href';
     case 'CREATE_FROM_SCRATCH':
       return 'tabular';
+    case 'UPLOAD_BLOB':
+      return 'blob';
     default:
       return 'draft';
   }

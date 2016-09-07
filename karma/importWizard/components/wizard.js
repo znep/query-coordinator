@@ -114,6 +114,27 @@ describe('updateNavigation', function() {
     });
   });
 
+  it('goes to Metadata when a blob upload completes', () => {
+    const stateBefore = {
+      operation: 'UPLOAD_BLOB',
+      page: 'UploadFile',
+      path: [ 'SelectType' ]
+    };
+    const stateAfter = updateNavigation(
+      stateBefore,
+      fileUploadComplete(
+        'random-file-id',
+        {},
+        1222345
+      )
+    );
+    expect(stateAfter).to.deep.equal({
+      ...stateBefore,
+      page: 'Metadata',
+      path: [ ...stateBefore.path, stateBefore.page ]
+    });
+  });
+
   it('goes to ImportShapefile when a shapefile upload completes', () => {
     const stateBefore = {
       operation: 'UPLOAD_GEO',

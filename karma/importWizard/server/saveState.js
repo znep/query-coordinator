@@ -2,6 +2,8 @@ import { withMockFetch } from '../asyncUtils';
 
 import * as SaveState from 'saveState';
 
+import { fileUploadComplete  } from 'components/uploadFile';
+
 
 describe('saveOperation', () => {
 
@@ -34,3 +36,14 @@ describe('saveOperation', () => {
   });
 
 });
+
+describe ("saveState's reducer", () => {
+  it('it handles fileUploadComplete', () => {
+    const result = SaveState.update(33, fileUploadComplete(
+      'fake fileID',
+      {},
+      444
+    ));
+    expect(result).to.deep.equal(444)
+  })
+})

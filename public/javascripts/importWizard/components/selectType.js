@@ -69,8 +69,9 @@ export function view(props) {
     <li key="blobby">
       <a
         className="blobby tooltip"
-        title={I18nPrefixed.blobby_explain}>
-        <span title="">
+        title={I18nPrefixed.blobby_explain}
+        onClick={onChooseOperation('UPLOAD_BLOB')}>
+        <span title={I18nPrefixed.blobby_explain}>
           <span className="icon"></span>
           <p>{I18nPrefixed.blobby}</p>
         </span>

@@ -161,11 +161,13 @@ describe("testing for API responses", () => {
       expect(coreView.attributionLink).to.equal('google.com');
       expect(coreView.licenseId).to.equal('PDDL');
       expect(coreView.displayType).to.equal('draft');
+      expect(viewMetadata.accessPoints).to.equal(undefined);
     });
 
     it('test round trip with href', () => {
-      metadata.contents.href = 'yahoo.com';
-      const coreView = modelToViewParam(metadata, navigation);
+      const metadataCopy = _.cloneDeep(metadata);
+      metadataCopy.contents.href = 'yahoo.com';
+      const coreView = modelToViewParam(metadataCopy, navigation);
       const viewMetadata = coreView.metadata;
 
       expect(coreView.name).to.equal('name');
@@ -181,6 +183,28 @@ describe("testing for API responses", () => {
       expect(coreView.displayType).to.equal('draft');
       expect(viewMetadata.accessPoints.com).to.equal('yahoo.com');
     });
+
+    it('adds special blob metadata when displayType is blob', () => {
+      const metadataCopy = _.cloneDeep(metadata);
+      metadataCopy.contents.displayType = 'blob';
+      const coreView = modelToViewParam(metadataCopy, navigation);
+      const viewMetadata = coreView.metadata;
+
+      expect(coreView.name).to.equal('name');
+      expect(coreView.description).to.equal('desc');
+      expect(coreView.category).to.equal('cat');
+      expect(coreView.tags).to.deep.equal(['one', 'two']);
+      expect(viewMetadata.rowLabel).to.equal('Row');
+      expect(viewMetadata.attributionLink).to.equal('link');
+      expect(coreView.privateMetadata.contactEmail).to.equal('email@email.com');
+      expect(coreView.attribution).to.equal('Me');
+      expect(coreView.attributionLink).to.equal('google.com');
+      expect(coreView.licenseId).to.equal('PDDL');
+      expect(coreView.displayType).to.equal('blob');
+      expect(viewMetadata.accessPoints).to.equal(undefined);
+      expect(coreView.metadata.renderTypeConfig.visibile).to.deep.equal({blob: true});
+      expect(coreView.metadata.availableDisplayTypes).to.deep.equal(['blob']);
+    })
   });
 
   describe('coreViewToModel', () => {

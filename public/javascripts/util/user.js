@@ -1,6 +1,4 @@
 (function() {
-
-
   this.User = ServerModel.extend({
     _init: function(v) {
       this._super();
@@ -13,7 +11,9 @@
     },
 
     isMember: function() {
-      return (this.rights || []).length > 0;
+      var superAdmin = _.include(this.flags, 'admin');
+      var roledUser = 'roleName' in this;
+      return superAdmin || roledUser;
     },
 
     // Recently renamed from isAdmin to avoid confusion. Renamed in the Ruby code as well.
@@ -39,24 +39,6 @@
     hasRight: function(right) {
       return _.include(this.rights, right);
     },
-
-    /* TODO: Not used yet
-    addFriend: function(user, successCallback, errorCallback)
-    {
-        this.makeRequest({url: '/contacts.json', type: 'GET',
-            data: JSON.stringify({id: user.id}),
-            error: errorCallback,
-            success: successCallback
-        });
-    },
-
-    removeFriend: function(user)
-    {
-        this.makeRequest({url: '/contacts/' + user.id,
-            type: 'DELETE'
-        });
-    },
-    */
 
     getDatasets: function(callback) {
       var user = this;

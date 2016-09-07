@@ -10,6 +10,21 @@ module Cetera
       APP_CONFIG.cetera_host # cetera_host is misnamed; it is actually a uri.
     end
 
+    def self.client
+      return @cetera_client if @cetera_client
+
+      cetera_uri = URI.parse(APP_CONFIG.cetera_host)
+      @cetera_client = Cetera::Client.new(cetera_uri.host, cetera_uri.port)
+    end
+
+    def self.user_search_client(cookie_string)
+      Cetera::UserSearch.new(
+        client,
+        CurrentDomain.cname,
+        cookie_string
+      )
+    end
+
     def self.get(path, options)
       uri = File.join(base_uri, path)
       Rails.logger.info("Cetera request to #{path} with query: #{options[:query].inspect}")
@@ -30,19 +45,6 @@ module Cetera
       response.success? ?
         ::Cetera::Results::TagCountResult.new(response) :
         ::Cetera::Results::TagCountResult.new('results' => [])
-    end
-
-    # Admins only! For now, do not call this without a search query.
-    def self.search_users(search_query, cookie_string, request_id = nil)
-      path = '/whitepages/v1'
-      options = request_options({ q: search_query }.compact, cookie_string, request_id)
-
-      response = get(path, options)
-
-      # app/controllers/administration_controller.rb does not handle user search failures
-      response.success? ?
-        ::Cetera::Results::UserSearchResult.new(response) :
-        ::Cetera::Results::UserSearchResult.new('results' => [])
     end
 
     def self.search_owned_by_user(search_query, cookie_string, request_id = nil)

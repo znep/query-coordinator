@@ -350,7 +350,6 @@
     });
 
     $manage.find('form').validate();
-
     var hookUpUserPicker = function($li) {
       $li.find('input').userPicker({
         chooseCallback: function(user) {
@@ -371,7 +370,8 @@
         filterCallback: function(user) {
           return user.isMember();
         },
-        limit: 50
+        limit: 50,
+        fetchDomainUsers: true
       });
     };
 

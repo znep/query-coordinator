@@ -206,6 +206,10 @@ class User < Model
     @data['roleName']
   end
 
+  def sort_key
+    (displayName || email).to_s.downcase
+  end
+
   @@states = {
     '--' => '------',
     'AK' => 'Alaska',

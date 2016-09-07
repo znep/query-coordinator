@@ -30,44 +30,16 @@ module.exports = function UserSearchService($http, $q, rx) {
 
     var url = $.baseUrl('/cetera/users');
     url.searchParams.set('limit', options.limit);
-    url.searchParams.set('q', query + '*');
+    url.searchParams.set('q', query);
 
-    return $http.get(url.href, config).then(function(fuzzySearchResponse) {
+    return $http.get(url.href, config).then(function(searchResponse) {
       // If we got a flawed success response,
       // something in the backend service is likely to have generated an error.
-      if (_.isEmpty(fuzzySearchResponse.data) && !_.isArray(fuzzySearchResponse.data)) {
+      if (_.isEmpty(searchResponse.data) && !_.isArray(searchResponse.data)) {
         return reject();
       }
-
-      // Otherwise, store the fuzzy search results and fire an exact search.
-      var fuzzyResults = fuzzySearchResponse.data.results || [];
-      url.searchParams.set('q', query);
-
-      return $http.get(url.href, config).then(function(exactSearchResponse) {
-        // If we got a flawed success response,
-        // something in the backend service is likely to have generated an error.
-        if (_.isEmpty(exactSearchResponse.data) && !_.isArray(exactSearchResponse.data)) {
-          return reject();
-        }
-
-        // Otherwise, combine these results with the fuzzy search results
-        // and resolve the promise chain.
-        var exactResults = exactSearchResponse.data.results || [];
-
-        var combinedResults = _.uniqBy([].concat(fuzzyResults, exactResults), 'id');
-        return combinedResults.map(injectDisplayName);
-      }, reject);
+      return searchResponse.data || [];
     }, reject);
-  }
-
-  // Note that this is mimicking the displayName that would have been returned by Cly.
-  // Cetera currently returns screen_name rather than displayName from its users endpoint.
-  function injectDisplayName(result) {
-    var screenName = _.get(result, 'screen_name', null);
-
-    return _.merge(result, {
-      displayName: _.isEmpty(screenName) ? '-' : screenName
-    });
   }
 
   function results$(query, options) {

@@ -327,7 +327,7 @@ Rails.application.routes.draw do
       match '/view/:id', :action => 'data_lens', :app => 'dataCards', :as => :opendata_cards_view, :via => [:get, :post, :put, :delete]
     end
 
-    get 'cetera/users', :controller => 'cetera', :action => 'users'
+    get 'cetera/users', :controller => 'cetera', :action => 'fuzzy_user_search'
 
     scope do
       # Data Lens endpoint for a standalone add card page that uses dataset metadata

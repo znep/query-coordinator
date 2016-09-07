@@ -367,20 +367,16 @@ class AdministrationController < ApplicationController
                           :delete_future_user, :re_enable_user] {|c| c.check_auth_level(UserRights::MANAGE_USERS)}
 
   def users
+    user_search_client = Cetera::Utils.user_search_client(forwardable_session_cookies)
     if !params[:username].blank?
       @search = params[:username]
-
-      # NOTE: Remote calls may fail.
-      @user_search_results = Cetera::Utils.search_users(
-        params[:username],
-        forwardable_session_cookies,
-        request_id
-      ).results
-
+      users = user_search_client.find_all_by_query(@search)
+      @user_search_results = Cetera::Results::UserSearchResult.new(users).results
       @futures = FutureAccount.find.select { |f| f.email.downcase.include? params[:username].downcase }
     else
-      @admins = find_privileged_users.sort{|x,y| (x.displayName || x.email).downcase <=>
-        (y.displayName || y.email).downcase}
+      roled_users = user_search_client.find_all_by_domain(CurrentDomain.cname)
+      user_results = Cetera::Results::UserSearchResult.new(roled_users).results
+      @admins = user_results.sort_by(&:sort_key)
       @futures = FutureAccount.find
     end
 

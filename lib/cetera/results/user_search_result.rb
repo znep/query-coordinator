@@ -6,9 +6,10 @@ module Cetera
 
       def initialize(data = {})
         super
-        data['results'].each do |result|
-          result['displayName'] = result['screen_name'] if result['screen_name']
-          result['roleName'] = result['role_name'] if result['role_name']
+        data['results'].map! do |result|
+          screen_name = result['screen_name']
+          result['display_name'] = screen_name.blank? ? '-' : screen_name
+          Hash[result.map { |k, v| [k.camelize(:lower), v] }]
         end
       end
     end

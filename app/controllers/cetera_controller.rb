@@ -5,9 +5,17 @@ class CeteraController < ApplicationController
 
   skip_before_filter :require_user
 
-  def users
+  def fuzzy_user_search
+    params[:limit] = (params[:limit] || 25).to_i
+    cetera_params = params.slice(:limit, :flags, :domain).symbolize_keys
     if params[:q]
-      get_users_by_all_query(params[:q])
+      begin
+        cetera_response = user_search_client.find_all_by_query(params[:q], cetera_params)
+        users = Cetera::Results::UserSearchResult.new(cetera_response).results
+        render :json => users.map(&:data)
+      rescue RuntimeError
+        return render :nothing => true, :status => :internal_server_error
+      end
     else
       render :nothing => true, :status => :bad_request
     end
@@ -15,28 +23,7 @@ class CeteraController < ApplicationController
 
   private
 
-  def get_users_by_all_query(query)
-    begin
-      cetera_response = user_search_client.find_all_by_query(query, :limit => 25)
-    rescue RuntimeError
-      return render :nothing => true, :status => :internal_server_error
-    end
-
-    render :json => cetera_response
-  end
-
-  def client
-    return @client if @client
-
-    cetera_uri = URI.parse(APP_CONFIG.cetera_host)
-    @client = Cetera::Client.new(cetera_uri.host, cetera_uri.port)
-  end
-
   def user_search_client
-    @user_search_client ||= Cetera::UserSearch.new(
-      client,
-      CurrentDomain.cname,
-      forwardable_session_cookies
-    )
+    @user_search_client ||= Cetera::Utils.user_search_client(forwardable_session_cookies)
   end
 end

@@ -14,13 +14,6 @@ describe('UserSearchService', function() {
     generateUser('user-0005', 'I Don\'t Know')
   ];
 
-  function generateMockResponse(users) {
-    return {
-      resultSetSize: users.length,
-      results: users
-    };
-  }
-
   function generateUser(id, name) {
     // A subset of properties.
     return {
@@ -44,8 +37,7 @@ describe('UserSearchService', function() {
   describe('when a search string is not provided', function() {
     it('returns an empty array', function(done) {
       var matchedUsers = [];
-      $httpBackend.expectGET(USER_SEARCH_URL_MATCHER).respond(200, generateMockResponse(matchedUsers));
-      $httpBackend.expectGET(USER_SEARCH_URL_MATCHER).respond(200, generateMockResponse(matchedUsers));
+      $httpBackend.expectGET(USER_SEARCH_URL_MATCHER).respond(200, matchedUsers);
       expect(UserSearch.find()).to.eventually.eql(matchedUsers).and.notify(done);
       $httpBackend.flush();
     });
@@ -57,8 +49,7 @@ describe('UserSearchService', function() {
         var matchedUsers = [USERS[1], USERS[3], USERS[4]].map(function(user) {
           return _.merge(user, { displayName: user.screen_name });
         });
-        $httpBackend.expectGET(USER_SEARCH_URL_MATCHER).respond(200, generateMockResponse(matchedUsers));
-        $httpBackend.expectGET(USER_SEARCH_URL_MATCHER).respond(200, generateMockResponse(matchedUsers));
+        $httpBackend.expectGET(USER_SEARCH_URL_MATCHER).respond(200, matchedUsers);
         expect(UserSearch.find('Match')).to.eventually.eql(matchedUsers).and.notify(done);
         $httpBackend.flush();
       });
@@ -67,8 +58,7 @@ describe('UserSearchService', function() {
     describe('and no matches are found', function() {
       it('returns an empty array', function(done) {
         var matchedUsers = [];
-        $httpBackend.expectGET(USER_SEARCH_URL_MATCHER).respond(200, generateMockResponse(matchedUsers));
-        $httpBackend.expectGET(USER_SEARCH_URL_MATCHER).respond(200, generateMockResponse(matchedUsers));
+        $httpBackend.expectGET(USER_SEARCH_URL_MATCHER).respond(200, matchedUsers);
         expect(UserSearch.find('Miss')).to.eventually.eql(matchedUsers).and.notify(done);
         $httpBackend.flush();
       });

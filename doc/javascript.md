@@ -310,6 +310,14 @@ and jammit to generate a production build.
 
 Troubleshooting
 ---
+### Node modules
+
+If you're having trouble getting a clean run of `npm install` or `npm i` (same thing), then it may be
+necessary to use the nuclear option below. This usually works, but it take a long time to run.
+
+```
+rm -rf node_modules && npm i
+```
 
 ### General
 

@@ -34,7 +34,7 @@ class GoalDetails extends React.Component {
         <div>{ goal.getIn(['category', 'name']) }</div>
 
         <h6>{ translations.getIn(['admin', 'quick_edit', 'dataset_updated']) }</h6>
-        <div>{ datasetUpdatedAt ? moment.unix(datasetUpdatedAt).format('ll') : '—' }</div>
+        <div>{ datasetUpdatedAt ? moment(datasetUpdatedAt).format('ll') : '—' }</div>
 
         <h6>{ translations.getIn(['admin', 'quick_edit', 'dataset_owner']) }</h6>
         <div>{ datasetOwner || '—' }</div>

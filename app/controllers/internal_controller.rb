@@ -454,8 +454,7 @@ class InternalController < ApplicationController
 
   def feature_flag_report
     if FeatureFlags.has?(params[:for])
-      uri = FeatureFlags.endpoint(with_path: "/flag_report/#{params[:for]}")
-      report = JSON.parse(HTTParty.get(uri).body)[params[:for]]
+      report = FeatureFlags.report(params[:for])
       @description = FeatureFlags.description_for(params[:for])
       @default = report['default']
       @environment = FeatureFlags.process_value(report['environment'])

@@ -22,14 +22,12 @@ class FeatureFlagConfig < ExternalConfig
   def update!
     Rails.logger.info("Config Update [#{uniqId}] from #{filename}")
 
-    if FeatureFlags.using_signaller?
-      @feature_flags = FeatureFlags.connect_to_signaller do
-        uri = FeatureFlags.endpoint(with_path: '/describe.json')
-        JSON.parse(HTTParty.get(uri).body)
+    @feature_flags =
+      if FeatureFlags.using_signaller?
+        FeatureFlags.descriptions
+      else
+        YAML.load_file(filename) || {}
       end.with_indifferent_access
-    else
-      @feature_flags = (YAML.load_file(filename) || {}).with_indifferent_access
-    end
 
     category_list = @feature_flags.collect { |_, fc| fc['category'] }.compact.uniq
     @categories = category_list.inject({}) do |memo, category|

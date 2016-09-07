@@ -128,18 +128,7 @@ class Domain < Model
   end
 
   def feature_flags
-    if FeatureFlags.using_signaller?
-      (RequestStore[:feature_flags] ||= {})[cname] ||=
-        FeatureFlags.connect_to_signaller do
-          uri = FeatureFlags.endpoint(with_path: "/domain/#{cname}.json")
-          JSON.parse(HTTParty.get(uri).body).each_with_object({}) do |(key, info), memo|
-            memo[key] = info['value']
-          end
-        end
-    else
-      conf = default_configuration('feature_flags')
-      FeatureFlags.merge({}, conf.try(:properties) || {})
-    end
+    FeatureFlags.on_domain(self)
   end
 
   # For definition, see "ID Field Type" section here:

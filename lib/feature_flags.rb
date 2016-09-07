@@ -1,4 +1,5 @@
 require 'feature_flags/getters'
+require 'feature_flags/signaller'
 
 class FeatureFlags
 
@@ -53,66 +54,64 @@ class FeatureFlags
       end
     end
 
-    def feature_flag_signaller_uri
-      APP_CONFIG.feature_flag_signaller_uri || ENV['FEATURE_FLAG_SIGNALLER_URI']
-    end
-
     def using_signaller?
-      feature_flag_signaller_uri.present?
+      Signaller.available?
     end
 
-    def flag_set_by_user?(flag)
-      return false unless using_signaller?
-
-      FeatureFlags.get_value(flag)['source'] == 'domain'
-    end
-
-    def endpoint(options = {})
-      @signaller_uri ||= URI.parse(feature_flag_signaller_uri)
-      uri = @signaller_uri.dup
-      uri.path =
-        if options.key?(:with_path)
-          options.fetch(:with_path)
-        else options.key?(:for_flag)
-          if options[:for_domain]
-            "/flag/#{options.fetch(:for_flag)}/#{options.fetch(:for_domain)}.json"
-          else
-            "/flag/#{options.fetch(:for_flag)}.json"
+    def on_domain(domain_or_cname)
+      if using_signaller?
+        cname = domain_or_cname.respond_to?(:cname) ? domain_or_cname.cname : domain_or_cname
+        Signaller.read(cname, endpoint: { with_path: "/domain/#{cname}.json" }).
+          each_with_object({}) do |(key, info), memo|
+            memo[key] = info['value']
           end
-        end
-      uri
-    end
-
-    def connect_to_signaller
-      return unless using_signaller?
-
-      begin
-        yield
-      rescue Errno::ECONNREFUSED
-        raise RuntimeError.new('Error connecting to Feature Flag Signaller. Is it running?')
+      else
+        domain = domain_or_cname
+        conf = domain.default_configuration('feature_flags')
+        merge({}, conf.try(:properties) || {})
       end
     end
 
     def get_value(flag_name, options = {})
       return unless using_signaller?
 
-      uri = endpoint(for_flag: flag_name, for_domain: options[:domain] || CurrentDomain.cname)
-      connect_to_signaller { JSON.parse(HTTParty.get(uri))[flag_name] }
+      domain = options[:domain] || CurrentDomain.cname
+      Signaller.read(
+        "#{flag_name}:#{domain}",
+        endpoint: { for_flag: flag_name, for_domain: domain}
+      )[flag_name]
+    end
+
+    def flag_set_by_user?(flag)
+      return false unless using_signaller?
+
+      get_value(flag)['source'] == 'domain'
     end
 
     def set_value(flag_name, flag_value, options = {})
       return unless using_signaller?
 
-      uri = endpoint(for_flag: flag_name, for_domain: options[:domain])
+      uri = Signaller.endpoint(for_flag: flag_name, for_domain: options[:domain])
       body = flag_value.is_a?(String) ? flag_value : flag_value.to_json
       auth_header = { 'Cookie' => "_core_session_id=#{User.current_user.session_token}" }
-      connect_to_signaller { HTTParty.put(uri, body: body, headers: auth_header) }
+      Signaller.write { HTTParty.put(uri, body: body, headers: auth_header) }
     end
 
     def reset_value(flag_name, options = {})
-      uri = endpoint(for_flag: flag_name, for_domain: options[:domain])
+      uri = Signaller.endpoint(for_flag: flag_name, for_domain: options[:domain])
       auth_header = { 'Cookie' => "_core_session_id=#{User.current_user.session_token}" }
-      connect_to_signaller { HTTParty.delete(uri, headers: auth_header) }
+      Signaller.write { HTTParty.delete(uri, headers: auth_header) }
+    end
+
+    def descriptions
+      Signaller.read('descriptions', endpoint: { with_path: '/describe.json' })
+    end
+
+    def report(for_flag)
+      Signaller.read(
+        "flag_report:#{for_flag}",
+        endpoint: { with_path: "/flag_report/#{for_flag}.json" }
+      )[for_flag]
     end
 
     def list
@@ -149,7 +148,5 @@ class FeatureFlags
 
       flag_set.compact.inject({}) { |memo, other| merge(memo, other) }
     end
-
   end
-
 end

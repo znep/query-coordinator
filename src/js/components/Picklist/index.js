@@ -22,7 +22,7 @@ export const Picklist = React.createClass({
         // Used to render the option title.
         title: React.PropTypes.string,
         // Used for value comparisons during selection.
-        value: React.PropTypes.string.isRequired,
+        value: React.PropTypes.string,
         // Used to visually group similar options.
         // This value is UI text and should be human-friendly.
         group: React.PropTypes.string,

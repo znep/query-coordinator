@@ -1,4 +1,6 @@
 module DatasetLandingPageHelper
+  include Socrata::UrlHelpers
+
   def meta_description
     if @view.description.present?
       "#{@view.name} - #{@view.description}"
@@ -187,6 +189,8 @@ module DatasetLandingPageHelper
       column.flag?('hidden')
     end
 
+    row_count = @view.row_count rescue 0
+
     {
       :id => @view.id,
       :name => @view.name,
@@ -211,7 +215,7 @@ module DatasetLandingPageHelper
       :dataLastUpdatedAt => @view.time_data_last_updated_at,
       :metadataLastUpdatedAt => @view.time_metadata_last_updated_at,
       :createdAt => @view.time_created_at,
-      :rowCount => @view.row_count,
+      :rowCount => row_count,
       :apiFoundryUrl => @view.api_foundry_url,
       :resourceUrl => @view.resource_url,
       :odataUrl => @view.odata_url,

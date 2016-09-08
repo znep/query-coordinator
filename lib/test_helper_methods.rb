@@ -11,7 +11,7 @@ module TestHelperMethods
 
   def init_current_user(controller, name = 'test-test', session_token = '123456')
     user = User.new('id' => name)
-    UserSession.controller=controller
+    UserSession.controller = controller
     UserSession.update_current_user(user, session_token)
     user_session = UserSession.new
     controller.current_user_session = user_session

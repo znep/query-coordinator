@@ -43,7 +43,7 @@ class SiteChrome
   end
 
   def self.latest_version
-    '0.3'
+    SocrataSiteChrome::SiteChrome::LATEST_VERSION
   end
 
   def attributes
@@ -76,7 +76,9 @@ class SiteChrome
   end
 
   def config
-    property(SiteChrome.core_configuration_property_name) || {}
+    config_content = property(SiteChrome.core_configuration_property_name)
+    config_content.try(:dig, 'value').present? ?
+      config_content : SiteChrome.default_site_chrome_config
   end
 
   def current_version
@@ -148,6 +150,16 @@ class SiteChrome
       'Content-Type' => 'application/json', # this is necessary despite format :json above
       'X-Socrata-Host' => CurrentDomain.cname
     }
+  end
+
+  # Get default config from Site Chrome engine method `default_site_chrome_config`
+  # and select only the latest version of the default data.
+  def self.default_site_chrome_config
+    SocrataSiteChrome::SiteChrome.default_site_chrome_config.tap do |config|
+      config.dig('value', 'versions').select! do |version_number, content|
+        version_number == SiteChrome.latest_version
+      end
+    end
   end
 
   #######################

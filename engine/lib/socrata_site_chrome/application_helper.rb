@@ -14,7 +14,9 @@ module SocrataSiteChrome
     def logo(img)
       img_src = img.dig('logo', 'src')
       if img_src.present?
-        image_tag(url_with_prefix(img_src), :alt => img.dig('logo', 'alt') || header_title || 'Header Logo',
+        image_tag(
+          url_with_prefix(img_src),
+          :alt => img.dig('logo', 'alt').presence || header_title.presence || 'Header Logo',
           :onerror => 'this.style.display="none"')
       end
     end

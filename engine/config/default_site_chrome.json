@@ -45,7 +45,6 @@
                 "general": {
                   "default_locale": "en",
                   "window_icon": "/socrata_site_chrome/images/default_favicon.ico",
-                  "link_text_color": "blue",
                   "window_title_display": null,
                   "social_shares": [
                     {
@@ -172,7 +171,6 @@
                   "template": null,
                   "default_locale": "en",
                   "window_icon": "/socrata_site_chrome/images/default_favicon.ico",
-                  "link_text_color": "blue",
                   "window_title_display": null,
                   "show_signin_signout": "true",
                   "show_profile": "true",
@@ -271,23 +269,23 @@
                   "powered_by": "true",
                   "links": [
                     {
-                      "key": "home",
+                      "key": "link_0",
                       "url": "/"
                     },
                     {
-                      "key": "terms_of_service",
+                      "key": "link_1",
                       "url": "http://www.socrata.com/terms-of-service"
                     },
                     {
-                      "key": "privacy",
+                      "key": "link_2",
                       "url": "http://www.socrata.com/privacy"
                     },
                     {
-                      "key": "accessibility",
+                      "key": "link_3",
                       "url": "http://www.socrata.com/accessibility"
                     },
                     {
-                      "key": "contact_us",
+                      "key": "link_4",
                       "url": "http://www.socrata.com/contact-us"
                     }
                   ],
@@ -297,47 +295,37 @@
                   },
                   "styles": {
                     "bg_color": "#3b3a3c",
-                    "fg_color": "#eee",
-                    "logo_height": "",
+                    "fg_color": "#fff",
+                    "logo_height": "44px",
                     "logo_width": ""
                   }
                 },
                 "general": {
-                  "template": null,
+                  "template": "Evergreen",
                   "default_locale": "en",
                   "window_icon": "/socrata_site_chrome/images/default_favicon.ico",
-                  "link_text_color": "blue",
-                  "window_title_display": null,
-                  "social_shares": {
-                    "facebook": {
-                      "url": null
-                    },
-                    "twitter": {
-                      "url": null
-                    }
-                  },
+                  "window_title_display": "",
+                  "social_shares": {},
                   "styles": {
-                    "bg_color": "#2c97de",
-                    "fg_color": "#eee",
                     "font_family": "Open Sans"
                   }
                 },
                 "header": {
                   "links": [
                     {
-                      "key": "home",
+                      "key": "link_0",
                       "url": "/"
                     },
                     {
-                      "key": "catalog",
+                      "key": "link_1",
                       "url": "/browse"
                     },
                     {
-                      "key": "developers",
+                      "key": "link_2",
                       "url": "http://dev.socrata.com"
                     },
                     {
-                      "key": "support",
+                      "key": "link_3",
                       "url": "http://support.socrata.com"
                     }
                   ],
@@ -348,8 +336,8 @@
                   "styles": {
                     "bg_color": "#22b479",
                     "bg_color_secondary": "",
-                    "fg_color": "#eee",
-                    "logo_height": "",
+                    "fg_color": "#fff",
+                    "logo_height": "36px",
                     "logo_width": ""
                   }
                 },
@@ -357,39 +345,24 @@
                   "en": {
                     "footer": {
                       "links": {
-                        "accessibility": "Accessibility",
-                        "contact_us": "Contact Us",
-                        "home": "Home Page",
-                        "privacy": "Privacy Policy",
-                        "terms_of_service": "Terms of Service"
+                        "link_0": "Home Page",
+                        "link_1": "Terms of Service",
+                        "link_2": "Privacy Policy",
+                        "link_3": "Accessibility",
+                        "link_4": "Contact Us"
                       },
                       "logo_alt": "",
-                      "site_name": null
-                    },
-                    "general": {
-                      "social_shares": {
-                        "facebook": "Like us on Facebook",
-                        "twitter": "Follow us on Twitter",
-                        "youtube": "Follow us on Youtube",
-                        "pinterest": "Follow us on Pinterest",
-                        "linked_in": "Follow us on LinkedIn",
-                        "flickr": "Follow us on Flickr",
-                        "instagram": "Follow us on Instagram",
-                        "tumblr": "Follow us on Tumblr",
-                        "yammer": "Follow us on Yammer",
-                        "google_plus": "Follow us on Google Plus",
-                        "vimeo": "Follow us on Vimeo"
-                      }
+                      "site_name": ""
                     },
                     "header": {
                       "links": {
-                        "catalog": "Browse",
-                        "developers": "Developers",
-                        "home": "Home Page",
-                        "support": "Support"
+                        "link_0": "Home Page",
+                        "link_1": "Browse",
+                        "link_2": "Developers",
+                        "link_3": "Support"
                       },
                       "logo_alt": "",
-                      "site_name": null
+                      "site_name": ""
                     }
                   }
                 }

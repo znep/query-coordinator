@@ -21,9 +21,7 @@ export var SchemaPreview = React.createClass({
     var el = ReactDOM.findDOMNode(this).querySelector('.section-content');
     var tableWrapper = el.querySelector('.table-wrapper');
     var wasCollapsed = el.classList.contains('collapsed');
-    var originalScrollPosition = document.documentElement ?
-      document.documentElement.scrollTop : // IE11
-      document.body.scrollTop;
+    var originalScrollPosition = window.pageYOffset;
 
     // Calculate current height and the height we are going to animate to.
     var originalHeight = tableWrapper.getBoundingClientRect().height;

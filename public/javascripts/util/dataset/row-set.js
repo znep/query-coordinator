@@ -36,8 +36,13 @@
 
       var rs = this;
       this._dataset.bind('columns_changed', function(changeType, lookupMap) {
-        if (changeType == 'lookupChange') {
-          rs.lookupsChanged(lookupMap);
+        switch (changeType) {
+          case 'lookupChange':
+            rs.lookupsChanged(lookupMap);
+            break;
+          case 'visibility':
+            delete rs._rowBuckets; // make nbe request rows to refresh
+            break;
         }
       });
     },

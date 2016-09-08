@@ -22,18 +22,6 @@ class DataLensHelperTest < ActionView::TestCase
     end
   end
 
-  def test_render_airbrake_notifier_does_not_render
-    FeatureFlags.stubs(:derive => { :enable_airbrake_js => false })
-    data_lens_helper.expects(:include_javascripts_unminified).with('exception_notifier').never
-    data_lens_helper.render_airbrake_notifier
-  end
-
-  def test_render_airbrake_notifier_does_render
-    FeatureFlags.stubs(:derive => { :enable_airbrake_js => true })
-    data_lens_helper.expects(:include_javascripts_unminified).with('exception_notifier').once
-    data_lens_helper.render_airbrake_notifier
-  end
-
   def test_data_lens_config_contains_asset_revision_key
     result = data_lens_helper.angular_config
     assert(result.has_key?('assetRevisionKey'), 'angular_config has cache buster key')

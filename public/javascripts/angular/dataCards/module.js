@@ -8,10 +8,6 @@ var dependencies = [
   'socrataCommon.values'
 ];
 
-if (_.get(window, 'socrataConfig.enableAirbrakeJs')) { // eslint-disable-line angular/window-service
-  dependencies.push('exceptionNotifier');
-}
-
 // Create the dataCards module
 angular.module('dataCards', dependencies);
 

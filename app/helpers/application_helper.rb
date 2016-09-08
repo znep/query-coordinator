@@ -819,17 +819,6 @@ module ApplicationHelper
     CurrentDomain.feature?(:mixpanelTracking) || CurrentDomain.feature?(:fullMixpanelTracking)
   end
 
-  def render_airbrake_shim
-    return nil unless FeatureFlags.derive(nil, request)[:enable_airbrake_js]
-
-    include_javascripts(
-      'airbrake-shim',
-      'data-airbrake-project-id' => 'Dataspace',
-      'data-airbrake-project-key' => Airbrake::configuration.api_key,
-      'data-airbrake-environment-name' => Rails.env
-    )
-  end
-
   def font_tags
     out = ''
 

@@ -49,8 +49,6 @@
     <% end %>
 
     <%= include_webpack_bundle 'open-data/bower-all.js' %>
-    <%= render_airbrake_shim %>
-    <%= render_airbrake_notifier %>
     <%= angular_javascript_tag %>
     <%= include_webpack_bundle 'data-cards/main.js' %>
 

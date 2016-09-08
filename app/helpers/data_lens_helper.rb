@@ -114,12 +114,6 @@ module DataLensHelper
     end
   end
 
-  def render_airbrake_notifier
-    return nil unless FeatureFlags.derive(nil, request)[:enable_airbrake_js]
-
-    include_javascripts_unminified('exception_notifier')
-  end
-
   def site_chrome_enabled?
     FeatureFlags.derive(nil, request).site_chrome_header_and_footer_for_data_lens
   end

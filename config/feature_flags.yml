@@ -88,9 +88,6 @@ embetter_analytics_page:
 embetter_analytics_browser_views_only:
   description: Just the embettered browser page views rather than "views"
   defaultValue: false
-enable_airbrake_js:
-  description: Enable Airbrake error tracking of Javascript errors (see CORE-3365 for more information)
-  defaultValue: false
 enable_api_foundry_pane:
   description: Will allow the api_foundry pane to be displayed. If there is another reason for the api_foundry pane to be hidden, it will still be hidden.
   defaultValue: false

@@ -159,7 +159,9 @@ describe('Picklist', () => {
             expect(lastOption).to.not.have.class(selectedOptionSelector);
 
             Simulate.keyUp(element, event);
+
             expect(lastOption).to.have.class(selectedOptionSelector);
+            expect(props.onSelection.calledOnce).to.be.true;
           });
         });
 
@@ -183,6 +185,7 @@ describe('Picklist', () => {
             Simulate.keyUp(element, event);
 
             expect(options[0]).to.have.class(selectedOptionSelector);
+            expect(props.onSelection.calledTwice).to.be.true;
           });
         });
       });
@@ -197,7 +200,9 @@ describe('Picklist', () => {
             expect(firstOption).to.not.have.class(selectedOptionSelector);
 
             Simulate.keyUp(element, event);
+
             expect(firstOption).to.have.class(selectedOptionSelector);
+            expect(props.onSelection.calledOnce).to.be.true;
           });
         });
 
@@ -221,6 +226,7 @@ describe('Picklist', () => {
             Simulate.keyUp(element, event);
 
             expect(options[2]).to.have.class(selectedOptionSelector);
+            expect(props.onSelection.calledTwice).to.be.true;
           });
         });
       });

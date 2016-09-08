@@ -9,7 +9,7 @@ class FeatureFlagConfig < ExternalConfig
   def filename
     @filename ||=
       if FeatureFlags.using_signaller?
-        FeatureFlags.feature_flag_signaller_uri
+        FeatureFlags::Signaller.base_uri
       else
         "#{Rails.root}/config/feature_flags.yml"
       end

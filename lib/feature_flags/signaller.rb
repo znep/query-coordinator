@@ -36,19 +36,19 @@ class FeatureFlags
 
         Rails.cache.fetch(thr_key, expires_in: throttle_expiry) do
           begin
-            result =
-              if options.key?(:endpoint)
-                JSON.parse(HTTParty.get(endpoint(options.fetch(:endpoint))).body)
-              else
-                yield
+            if options.key?(:endpoint)
+              JSON.parse(HTTParty.get(endpoint(options.fetch(:endpoint))).body)
+            else
+              yield
+            end.tap { | result| Rails.cache.write(lkg_key, result) }
+          rescue => e
+            Rails.cache.read(lkg_key).tap do |result|
+              Rails.logger.error("Something nasty was returned from upstream: #{e.inspect}")
+              if result.nil?
+                Rails.logger.error("Nothing found in last-known-good cache: #{lkg_key}")
+                raise
               end
-            Rails.cache.write(lkg_key, result)
-            result
-          rescue
-            result = Rails.cache.read(lkg_key)
-            Rails.logger.error('Something nasty was returned from Signaller')
-            raise 'Nothing in cache.' if result.nil? # TODO: Raise a real error?
-            result
+            end
           end
         end
       end
@@ -68,7 +68,6 @@ class FeatureFlags
         )
       end
 
-      private
       def base_uri
         APP_CONFIG.feature_flag_signaller_uri || ENV['FEATURE_FLAG_SIGNALLER_URI']
       end

@@ -54,7 +54,10 @@ export default React.createClass({
   },
 
   onWheel() {
-    if (this.options && this.options.childNodes.length) {
+    const hasOptions = this.options &&
+      this.options.querySelectorAll('.picklist-option').length > 0;
+
+    if (hasOptions) {
       const { displayTrueWidthOptions } = this.props;
       const containerDimensions = this.container.getBoundingClientRect();
       const browserWindowHeight = window.document.documentElement.clientHeight - 10;

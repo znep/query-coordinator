@@ -36,6 +36,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # Search proxy routes
+  get '/search/users' => 'cetera#users', defaults: { format: 'json' }
+
   namespace :admin do
     resources :themes
     resource :site_chrome, only: [:edit, :update]

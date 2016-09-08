@@ -1,4 +1,4 @@
-source 'https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-remote/'
+source 'https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/'
 
 ruby File.read('.ruby-version').strip
 
@@ -8,6 +8,9 @@ gem 'rails', '4.2.7.1'
 
 # Use postgres as the database for Active Record
 gem 'pg'
+
+# Cetera access wrapper
+gem 'cetera-ruby', '~> 0.1.1', :require => 'cetera'
 
 gem 'jquery-rails'
 

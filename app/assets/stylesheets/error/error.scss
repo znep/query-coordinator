@@ -64,5 +64,18 @@ html {
         color: #888;
       }
     }
+
+    .application-error-login-notice {
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.6rem;
+      color: #696969;
+      background-color: #f3f3f3;
+      -webkit-font-smoothing: antialiased;
+
+      a, a:visited {
+        color: #2279a6;
+      }
+    }
   }
 }

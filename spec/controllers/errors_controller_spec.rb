@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe ErrorsController, type: :controller do
 
   before do
+    stub_logged_in_user
     Rails.application.routes.draw { get 'test_action' => 'errors#show' }
   end
 

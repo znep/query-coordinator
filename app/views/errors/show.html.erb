@@ -3,4 +3,9 @@
   <h1 class="application-error-title"><%= @title %></h1>
   <img src="<%= image_path('error.png') %>" class="application-error-image" />
   <p class="application-error-description"><%= @description %></p>
+  <%- if @status == 404 && current_user.nil? %>
+    <p class="application-error-login-notice">
+      <%= t('error_pages.stories_404.login_notice_html', return_to: request.fullpath) %>
+    </p>
+  <%- end %>
 </div>

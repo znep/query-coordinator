@@ -278,7 +278,9 @@ $(document).ready(function() {
     validateEventName(eventName);
     validateProperties(properties);
 
-    mixpanel.track(eventName, properties, callback);
+    if (blist.mixpanelLoaded) {
+      mixpanel.track(eventName, properties, callback);
+    }
   };
 
   // Initialize event watcher to emit Mixpanel payloads for generic link events

@@ -2935,6 +2935,12 @@
         }
       }
 
+      // Don't decide this view is unsaved because of the shared flag
+      if (_.include(ds.flags || [], 'shared')) {
+        newDS.flags = newDS.flags || [];
+        newDS.flags.push('shared');
+      }
+
       var oldQuery = ds._getQueryGrouping();
       var oldDispFmt = $.extend(true, {}, ds.displayFormat);
       var oldDispType = ds.displayType;

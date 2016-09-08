@@ -199,7 +199,7 @@ function sendPayload(eventName, properties) {
 
 // Initialize Mixpanel
 // Default is no tracking, no cookies and no events saved
-if (!config.disable) {
+if (!config.disable && !_.isUndefined(mixpanel)) {
   mixpanel.init(config.token, config.options);
 }
 

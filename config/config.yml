@@ -156,9 +156,9 @@ rc:
   <<: *default
   # service hosts/ports/names et simil
   cetera_host: http://cetera.app.marathon.aws-us-west-2-rc.socrata.net
-  coreservice_uri: http://10.92.1.7:8081
+  coreservice_uri: lb-vip.aws-us-west-2-rc.socrata.net
   sitemap_s3_url: https://s3-us-west-2.amazonaws.com/sa-socrata-sitemaps-us-west-2-rc/sitemaps
-  zk_hosts: '10.92.2.4:2181,10.92.2.5:2181,10.92.2.6:2181'
+  zk_hosts: '10.112.35.120:2181,10.112.36.163:2181,10.112.41.205:2181'
   # third-party app tokens
   mixpanel_token: ce548d5c95f7671fadd0174cc067dc69
 

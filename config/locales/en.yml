@@ -1112,26 +1112,19 @@ en:
       allow_comments: Commenting
       cell_comments: Cell Commenting
     filters:
-      formal:
-        between: between
-        contains: contains
-        equals: equals
-        greater_than: greater than
-        greater_than_or_equals: greater than or equal to
-        is_blank: is blank
-        is_not_blank: is not blank
-        less_than: less than
-        less_than_or_equals: less than or equal to
-        not_contains: does not contain
-        not_equals: does not equal
-        starts_with: starts with
       informal:
         between: is between
         contains: contains
         equals: is
+        exists: exists
         greater_than: is greater than
         greater_than_or_equals: is at least
+        is_after: is after
+        is_before: is before
         is_blank: is blank
+        is_checked: is checked
+        is_empty: is empty
+        is_not_checked: is not checked
         is_not_blank: is not blank
         less_than: is less than
         less_than_or_equals: is at most

@@ -70,13 +70,13 @@ ca:
           search_card: Visualitza aquesta columna com a cerca de targetes
           timeline_chart: Visualitza aquesta columna com a gràfica de línia del temps
       api_explorer:
-        additional_resources: 'Recursos addicionals per aquest l''API:'
+        additional_resources: 'Recursos addicionals per aquest la API:'
         api_button: API
-        api_button_title: 'Accediu a aquesta taula de dades a traves de l''API'
+        api_button_title: Accediu a aquesta taula de dades a traves de la API
         code_libraries: Codi de biblioteques
-        code_libraries_title: 'Descarregueu-vos del codi de biblioteques els clients de l''API'
+        code_libraries_title: Descarregueu-vos del codi de biblioteques els clients de la API
         documentation: Documentació
-        documentation_title: 'Vegeu la documentació de l''API'
+        documentation_title: Vegeu la documentació de la API
         formats: 'Aquesta dada es troba disponible en diferents formats:'
         geojson: GeoJSON
         json: JSON
@@ -187,6 +187,7 @@ ca:
           description: Deseu un arxiu d'imatge PNG d'una visualització
           header: Visualització com a imatge
       feature_map:
+        feature_map_disabled: Els mapes destacats no estan disponibles.
         zoom_disabled: El zoom no és disponible temporalment. Si us plau, proveu-ho més tard.
       feature_map_flannel:
         error_message: S'ha produït un error en obtenir les dades d'ubicació.
@@ -306,6 +307,9 @@ ca:
         old_filter_title: Mostrant <span class="light">{0}</span>
         old_filtered_title: Mostrant <span class="light">{0}</span>
         unfiltered_title: Mostrant <span class="light">{0} (tot)</span>
+      related_views:
+        button: Altres vistes d'aquesta dada
+        title: Aaltres vistes d'aquesta dada
       related_visualization_selector:
         based_on_column: Basat en {0}
         visualization_not_supported: Disculpeu les molèsties! Encara estem desenvolupant la funcionalitat que us permetrà incrustar aquest tipus de gràfica dins una història.
@@ -1132,10 +1136,16 @@ ca:
         between: està entre
         contains: conté
         equals: "és"
+        exists: existeix
         greater_than: "és major que "
         greater_than_or_equals: "és com a mínim"
+        is_after: es troba després
+        is_before: es troba abans
         is_blank: "és blanc"
+        is_checked: s'ha comprovat
+        is_empty: es troba buit
         is_not_blank: no és blanc
+        is_not_checked: no s'ha comprovat
         less_than: "és menor que"
         less_than_or_equals: "és com a molt"
         not_contains: no conté
@@ -1253,6 +1263,8 @@ ca:
     visibility:
       private: privat
       public: públic
+  data_lens:
+    render_error: Hi va haver un problema en l'execució d'aquesta pàgina.
   dataset_landing_page:
     action_buttons:
       api: API
@@ -1271,6 +1283,13 @@ ca:
       multiple_geo_layers: Aquest conjunt de dades conté diverses capes geoespacials. Cada capa disposa de la seva pròpia documentació i punt final de l'API a continuació.
       title: Accediu a aquest conjunt de dades a través de l'API SODA
     back: Enrere
+    blob_download:
+      download: Descarregar
+      edit_prompt_button: Editar la font
+      edit_prompt_message: Editar l'arxiu font per aquest conjunt de dades
+      title: Descarregar aques Recurs
+    blob_preview:
+      title: Previsualitzar
     bootstrap_button: Crear visualització
     bootstrap_disabled_notice: En aquests moments les vostres dades s'estan processant. Refresqueu la pàgina d'aquí a uns minuts i podreu crear una nova lent de dades.
     bootstrap_message: Aquest conjunt de dades no té cap visualització relacionada. Us agradaria crear-ne una, ara?
@@ -1331,6 +1350,7 @@ ca:
       manage_prompt:
         button: Gestionar continguts destacats
         message: Escolliu la promoció de fins a 3 recursos de Socrata que facin servir aquestes dades, o escolliu destacar qualsevol recurs extern rellevant. Si es deixa en blanc, aquesta secció serà invisible.
+        message_blob: Tria per a promoure fins a 3 recursos externs que siguin rellevants per a aquest arxiu o document. Si es deixa en blanc aquesta secció serà invisible.
       title: Continguts destacats amb aquestes dades
     featured_content_modal:
       external: Recurs extern
@@ -1345,6 +1365,7 @@ ca:
         url: Enllaç a recurs
       header: Gestionar continguts destacats
       introduction: Què us agradaria que les persones veiessin en mirar per primer cop aquest conjunt de dades? Promogueu fins a 3 recursos de Socrata que facin servir aquestes dades, o escolliu destacar qualsevol recurs extern rellevant. Penseu en aquesta secció com en la cara de les vostres dades.
+      introduction_blobby: Què voldries que la gent veiés la primera vegada que visualitzen aquest recurs? Promou fins a 3 recursos externs que siguin rellevants per a aquest arxiu o document.
       preview: Vista prèvia dels continguts destacats
       remove_error: Oh, no! Quelcom ha anat malament. Si us plau, proveu-ho de nou.
       remove_prompt: Segur que voleu eliminar això?
@@ -1372,6 +1393,7 @@ ca:
       screenshot_yes: Sí, incloure una captura de pantalla
       title: Comentaris
     less: Mostrar menys
+    manage_dataset: Gestió del conjunt de dades
     manage_prompt: Feu clic aquí per a gestionar els permisos
     metadata:
       attachments: Adjunts
@@ -1628,13 +1650,37 @@ ca:
       bulk_edit:
         button_title: Editar diversos elements...
         cancel: Cancel·lar
+        date_range_from: Des de
+        date_range_label: Rang de dades
+        date_range_to: Fins a
         failure_message: "<strong>Error.</strong> S'ha produït un problema en realitzar aquesta acció. Torna-ho a provar o cancel·la."
         items_selected: Elements seleccionats
+        not_configured_message: "<strong>Ui.</strong> Sembla que hi ha un o més objectius sense configurar. La majoria d'edicions només es poden realitzar amb els objectius que ja s'han configurat."
+        override_label: Ignorar
+        override_types:
+          bad: Calen millores
+          good: En el blanc
+          no_judgement: Mesurar
+          none: Cap
+          within_tolerance: Objectiu proper
         revert_changes: Revertir els canvis
         success_message: "Èxit! {0} les fites han estat actualitzades."
         title: Editar diversos elements
         update: Actualitzar
         visibility: Visibilitat
+      export:
+        Csv:
+          button_label: Exportar
+          info_description: S'està generant un CSV. La descàrrega s'iniciarà automàticament quan estigui preparat.
+          info_title: S'està generant la descàrrega
+        info_box:
+          cancel: Cancel·lar
+          ok: D'acord
+      feedback_flannel:
+        message: Amb una captura de pantalla ens pots mostrar exactament sobre quin fet has opinat. Fem servir <a href="https://usersnap.com" target="_blank">Usersnap</a> per les captures de pantalla. Llegeix la seva <a href="https://usersnap.com/privacy-policy"  target="_blank">política de privacitat</a>.
+        no_thanks: No gràcies
+        title: Voles incloure una captura de pantalla anotada de la pàgina actual?
+        yes_include_screenshot: Sí, inclou una captura de pantalla
       goal_values:
         status_private: Privat
         status_public: Públic
@@ -1643,14 +1689,25 @@ ca:
         default_alert_message: "<span><b>Oh no!</b> Alguna cosa ha fallat i s'ha notificat al nostre equip. Mentrestant, torneu-ho a probar o torneu a carregar la pàgina.</span>"
         goal_page: Pàgina de metes
         goal_status: Estat de la meta
+        load_error: Hi ha un problema per carregar el contingut.
         manage_on_goal_page: Gestionar en pàgina de meta
         of: de
         owner: Propietari
+        quick_edit: Surt de l'edició
         rows_per_page: Files per pàgina
         title: Títol
         updated_at: Actualitzat
         view_dashboard: Veure tauler
         visibility: Visibilitat
+      manage_performance_goals: Geastiona l'actuació dels objectius
+      modal:
+        close_without_save_message: N'estàs segur que vols tancar? Els teus canvis es perdran.
+      page_title: Gestió de l'objectiu
+      preview_bar:
+        back_to_configuration: Tornar a la configuració
+        feedback:
+        learn_more:
+        performance_goal_management_preview:
       quick_edit:
         action_type: Acció
         action_types:
@@ -1665,6 +1722,7 @@ ca:
         dataset_updated: Conjunt de dades acutalitzat
         date_range: Rang de dades
         default_alert_message: "<span><b>Oh no!</b> Alguna cosa ha fallat i s'ha comunicat al nostre equip. Mentrestant, torna-ho a provar o carrega aquesta pàgina de nou.</span>"
+        feedback:
         goal_name: Títol meta
         goal_owner: Propietari meta
         goal_updated: Fita actualitzada
@@ -1680,6 +1738,9 @@ ca:
         measure_target_type_types:
           absolute: Cap a
           relative: Des de
+        not_configured_goal_message:
+          link:
+          text:
         override: Anul·lar
         override_types:
           bad: Calen millores
@@ -1726,6 +1787,7 @@ ca:
       data_management: Administració de Dades
       datasets: Conjunts de Dades
       federations: Federacions
+      goal_management_preview:
       homepage: Pagina d'Inici
       jobs: Tasques
       metadata: Metadades
@@ -2523,11 +2585,22 @@ ca:
         'true': true
         up: Dalt
       site_chrome:
+        activate: Activar
+        add_new_link_menu: Afegir al menú
+        add_new_link_row: Afegeix el link %{section}
         cancel: Cancel·lar
+        congratulations: Enhorabona!
         description: Configureu l'aparença del vostre lloc de Socrata.
+        link_menu_label_html: "<b>Menú</b> - <i>YPots arrossegar enllaços per reordenar-los</i>"
+        move_link_row: Arrossega per reordenar
+        ok: D'acord
+        preview: Previsualitzar
         preview_changes: Vista prèvia de canvis
+        remove_link_menu: Eliminar l'enllaç al menú
+        remove_link_row: Eliminar l'enllaç
         save: Desar
         save_changes: Desar canvis
+        see_both_features: Veure les dues característiques en acció visitant una de les teves bases de dades.
         site_appearance: Aparença del lloc
         tabs:
           footer:
@@ -2536,6 +2609,9 @@ ca:
                 description: Canvieu l'aspecte de l'avís de drets d'autor del vostre lloc. Actualitzem automàticament l'avís per a mostrar l'any natural actual.
                 label: Mostrar avís de drets d'autor
                 title: Avís de drets d'autor
+              copyright_notice_source:
+                description: El nom de la teva organització, ciutat, comtat o estat que apareix amb els drets d'autor i l'any en curs.
+                placeholder: Font dels drets d'autor
               footer_background_color:
                 description: Color de fons per al peu de pàgina i color del text i dels enllaços que apareixen dins el peu de pàgina.
                 placeholder: "#123456"
@@ -2566,16 +2642,29 @@ ca:
               menu_links:
                 description: Mostra fins a 15 enllaços en el peu de pàgina. Els col·loquem automàticament en columnes.
                 title: Enllaços de menú de peu de pàgina
+              menu_title_placeholder: Text del menú
+              powered_by:
+                description: Mostra la marca "Desenvolupat per Socrata" a peu de pàgina, i també proporciona un enllaç a socrata.com
+                label: Mostra la marca Socrata a peu de pàgina
+                title: Desenvolupat per Socrata
               url_label: URL
               url_placeholder: http://data.evergreen.gov
             title: Peu de pàgina
           general:
             fields:
+              font_family:
+                description: Tria el tipus de lletra que s'utilitzarà tant a la capçalera com a peu de pàgina per a tot el text.
+                placeholder: Tipus de lletra
+                title: Tipus de lletra
               google_analytics_token:
                 description: Introduïu el token (no tot el guió) del vostre codi de seguiment de Google Analytics per recopilar-ne les dades analítiques per al vostre lloc web.
                 error: 'Token ha de ser compatible amb el format: UA-XXXXX-XXXX'
                 placeholder: UA-12345678-1
                 title: Google Analytics Token
+              max_width:
+                description: Introdueix l'amplada màxima (en píxels) del contingut de la teva capçalera i del peu. Si és buit, s'estendrà que són les dimensions de la finestra del navegador del visitant.
+                placeholder: 1200px
+                title: Màxima amplada
               show_signin_signout:
                 description: Mostrar aquestes opcions si la teva web requereix un perfil d'usuari / Inicia la sessió.
                 show_profile: Mostrar un enllaç al perfil després d'iniciar la sessió
@@ -2584,6 +2673,7 @@ ca:
                 title: Inciar sessció / Tancar sessió
               template:
                 description: Ajusteu l'aspecte de la capçadelar i el peu canviant-ne la plantilla. Les plantilles compatibles són "default" i "rally".
+                description_html: Adjustar l'aspecte de la capçalera i del peu de pàgina canviant la plantilla . Les plantilles que es poden fer servir són <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">"Evergreen" i "Rally"</a>.
                 placeholder: Ralli
                 title: Mostra
               window_icon:
@@ -2632,6 +2722,7 @@ ca:
               menu_links:
                 description: Mostra fins a 15 enllaços en la barra d'encapçalament. Si les etiquetes d'enllaços són massa llargues o un visitant està mirant el vostre lloc en un dispositiu petit, els enllaços es recullen automàticament dins un menú.
                 title: Enllaços de menú
+              menu_title_placeholder: Text del menú
               url_label: URL
               url_placeholder: http://data.evergreen.gov
             title: Barra d'encapçalament
@@ -2685,6 +2776,25 @@ ca:
                 placeholder: http://www.youtube.com/
                 title: Enllaç de perfil de YouTube
             title: Compartició social
+          whats_new:
+            fields:
+              a_bundle_of_goodness:
+                description_html: "<p>S'ha acabat l'espera: El conjunt de dades de la pàgina de destinació i la teva capçalera/ peu de pàgina configurables nous es troben a punt! Segueix llegint per aprendre sobre aquestes millores i com els pots activar, avui.</p>"
+                title: 'Un munt de bones intencions: Dues noves característiques disponibles ara'
+              a_new_configurable_header_footer:
+                description_html: <p>Com a part d'aquesta nova versió, també hem introduït una capçalera i peu de pàgina nous unificats, amb resposta mòbil, adminstració configurable per al teu lloc web. Aquesta nova capçalera/peu et permet configurar els logos, colors drets d'autor enllaços de navegació, icones  del teu lloc web i més detalls en el teu propi estil. Et dóna control sobre l'aspecte del teu lloc web per actualitzar fàcilment aquests components essencials sense haver de contactar amb el centre de suport de Socrata.</p> <p>Per cert, l disseny actual del teu lloc web i dels gestors de clients satisfets com a guies, ja t'hem preparat la capçalera i el peu per previsualitzar-los.Clica sobre el botó de "Previsualitzar" per fer una ullada i ajusta-ho al teu gust, és cosa teva.</p>
+                title: Una capçalera/peu de pàgina configurables nous
+              active_both_today:
+                description_html: '<p>El conjunt de dades de la pàgina de destinació i la teva capçalera/ peu de pàgina configurables nous es troben disponibles ara. configurar i previsualitzar l''aparença del seu lloc - i quan estigui llest, activar-los junts!</p> <p><b>Note:</b> I Si no tens configurada la capçalera o el peu de pàgina per al teu lloc web en 30 dies, Socrata t''ho configurarà per tu i te l''activarà automàticament juntament amb el conjunt de dades de la pàgina de destinació. Utilitzarem l''estil del teu lloc web existent i el teu gestor de clients satisfets com a guia d''estil.</p> <p>Per a consell per com configurar la teva capçalera i peru de pàgina i activar el conjunt de dades de la pàgina de destinació, visita <a href="https://event.on24.com/eventRegistration/EventLobbyServlet?target=reg20.jsp&referrer=&eventid=1223356&sessionid=1&key=9ED33D00A47ABC3419890552EBA81D93®Tag=&sourcepage=register" target="_blank">"Aprofitar les darreres característiques" Webinar</a> o visita la nostra pàgina de suport: <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">https://support.socrata.com/hc/en-us/articles/223723227</a>.</p>'
+                title: Activar ambdós avui!
+              dataset_landing_page:
+                description_html: <p>Emociona't! Amb aquesta actualització, el conjunt de dades de la pàgina de destinació es converteix en l'experiència principal de la primera pàgina per a conjunts de dades actualitzats; això remarca els aspectes més comunment visitats de cada cojunt de dades d'una manera intuïtiva i garanteix que les dades dels teus usuaris veuen kes metadates abans d'entrar en acció. Els editors i els administradors tenen llibertat per "caracteritzar" vistes i visualitzacions relacionades, els usuaris sofisticats poden explorar les metadades i avançar la mètrica, i tots els usuaris poden accedir a les dades en la manera que ho desitgin, tant si és via visualització de dades, descàrrega directa d'arxius, or l'API. I per descomptat, la clàssica vista tabular de les dades segueix sent accessible des de la barra de navegació superior d'aquesta vista per als usuaris que si sentin còmodes.</p>
+                title: Conjunt de dades de la pàgina de destinació
+            title: Novetats
+        these_features_help: Aquestes característiques ajudaran als usuaris a explorar les teves dades i et faciltaran la gestió de l'aparença del teu lloc web.
+        update: Actualitzar
+        you_have_activated: Has activat la teva nova capçalera/peu de pàgina i la pàgina de destinació del conjunt de dades.
+      update: Actualitzar
       users:
         actions: Accions
         all: Tot
@@ -2769,9 +2879,20 @@ ca:
         supported: Les extensions amb suport són CSV, TSV i Excel. Els protocols amb suport són HTTP i HTTPS.
         url_prompt: Quina és l'URL de la pàgina web on es troba el fitxer que desitja importar?
       errors:
+        archive_error:
+        corrupt_shapefile_error:
+        create_column_error:
+        create_dataset_error:
+        create_working_copy_error:
+        decode_filetype_error:
+        delete_column_error:
+        get_column_error:
+        incomplete_shapefile_error:
         insecure_esri_url: 'S''ha afegit una URL d''un mapa d''estrats ESRI no-segur. Algunes característiques no funcionaran en aquesta taula de dades com a resultat.  '
+        invalid_arity_error:
         invalid_crossload_url: Si us plau, introdueixi una URL vàlida que comenci amb HTTP o HTTPS.
         invalid_url: Aquesta no sembla una URL vàlida.
+        jsonparse_error:
         missing_data_provider: Deurà especificar el proveïdor de les dades (atribució) a les llicències Creative Commons.
         missing_esri_url: Es requereix una capa de mapes ESRI vàlida.
         missing_name: Es requereix un nom per al conjunt de dades.
@@ -2779,6 +2900,14 @@ ca:
         point:
           missing_latlong: configurat per a importar un <strong>%{coordinateType} però no una <strong>columna %{missingCoordinateType}. Si us plau, especifiqueu per complet la parella de latitud i longitud.
           suboptimal_column: conjunt per importar la seva <strong>%{field}</strong> a la columna de la font <strong>%{originalColumnName}</strong>, però el nostre anàlisi mostra que la columna d'origen és una columna %{suggestion}, mentre que el %{field} espera una columna de tipus %{type}. Si decidiu procedir amb aquests paràmetres d'importació, és probable que es produeixin  errors d'importació o de geocodificació.
+        publication_error:
+        shapefile_header_error:
+        shapefile_row_error:
+        update_metadata_error:
+        upsert_error:
+        vertex_too_complex_error:
+        xmlparse_error:
+        zkerror:
       finish:
         headline: El seu Conjunt de Dades ha estat creat.
         subheadline: Cliqui en Finalitzar per veure-ho!
@@ -2821,9 +2950,11 @@ ca:
               one_html: La columna {sourceColumns} es troba a l'arxiu de dades d'origen, però en l'actualitat no està configurat per importar-se en el conjunt de dades.
           single_column:
             empty_composite_col: La columna <strong>{resultColumnName}</strong> és una columna composta que es crea a partir de múltuples columnes d'origen, però que actuament no té la configuració per poder-se ocupar. Si us plau, afegiu columnes d'origen o de text.
+            missing_lat_long:
             non_text_composite_col: La columna <strong>{resultColumnName}</strong> és una columna composta que es crearà a partir de múltiples columnes origen, però actuament està configurada per importar-se com a <strong>{chosenType}</strong>. Si us plau, assegureu-vos que la combinació de columnes que heu especificat implicarà un {chosenType} vàlid.
             type_too_generic: La columna <strong>{resultColumnName}</strong> es troba configurada per importar-se com a <strong>{chosenType}</strong>,però l'analisi indica que probablement la columna és <strong>{suggestedType}</strong>. La podeu importar com a {chosenType}, però si ho feu en perdreu algunes característiques. Us recomanem que la importeu com a <strong>{suggestedType}</strong>.
             wrong_type: La columna <strong>{resultColumnName}</strong> és una <strong>{chosenType}</strong>, però l'anàlisi indica que aquesta columna origen que proveu d'importar és del tipus  <strong>{suggestedType}</strong>. Si escolliu importar aquesta columna, aproximadament <strong>{invalidPercent}%</strong> de les vostres dades és probable que s'importi de forma incorrecta.
+            wrong_type_location:
             wrong_type_unknown_count: La columna <strong>{resultColumnName}</strong> està configurada per importar com a <strong>{chosenType}</strong> però l'anàlisi mostra que <strong>{suggestedType}</strong> podria tenir un ajust millor. Llevat que les dades de la columna s'hagin formatejat correctament com a {chosenType} les dades es podrien importar incorrectament.
         errors_warnings: Errors i Advertències
         fewer_rows: Menys Files
@@ -2845,6 +2976,7 @@ ca:
         suggested_columns: Columnes recomanades
         suggested_flat: Columnes recomanades (no compostes)
         suggested_plus_discrete: Columnes recomanades (compostes i discretes)
+        upload_success:
         why_choose_now: Perquè és important elegir el tipus de les columnes ara?
       import_help: <strong>Necessita ajuda?</strong> Mantenim una <a href="%{common_errors}" rel="external">llista d'advertències i errors comuns</a> que li pot ajudar.
       import_shapefile:
@@ -3044,7 +3176,7 @@ ca:
           validation:
             view_column: No pot afegir una columna a la vista
         api:
-          api_docs: 'Documents de l''API'
+          api_docs: Documents de la API
           column_ids_title: IDs de les Columnes
           developer_portal: Portal desenvolupador
           endpoint_title: 'Punt Final de l''Acces de l''API:'
@@ -3385,6 +3517,7 @@ ca:
             base_url_prompt: Introdueixi el prefix comú de l'URL
             title: Opcions d'URL
           validation:
+            notallowed:
             published: Si us plau, faci una còpia de treball o vista d'aquesta conjunt de dades per a canviar les propietats de la columna
             snapshot: No podeu editar propietats de columnes per a una imatge de vista
             unsaved: No pot editar les propietats de la columna per a vistes no desades
@@ -3418,6 +3551,8 @@ ca:
           title: Lent de dades
         delete:
           confirm: Açò eliminarà el %{view_type} permanentment. No hi ha volta de fulla! Segur que desitja continuar?
+          confirm_permanent:
+          confirm_restorable:
           delete_button: Eliminar aquest %{view_type}
           subtitle: Eliminar aquest %{view_type}
           title: Eliminar
@@ -3879,6 +4014,7 @@ ca:
       headline_upload: Si us plau, seleccioni un fitxer per a carregar
       layer: Capa
       many_headers: "%{num} de les seves files són capçaleres."
+      new_column:
       no_file_selected: Cap fitxer seleccionat.
       no_headers: Cap de les seves files és capçalera.
       no_source_column: "(Cap Columna Font)"

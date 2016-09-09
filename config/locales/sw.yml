@@ -189,6 +189,7 @@ sw:
           description:
           header:
       feature_map:
+        feature_map_disabled:
         zoom_disabled:
       feature_map_flannel:
         error_message:
@@ -308,6 +309,9 @@ sw:
         old_filter_title:
         old_filtered_title:
         unfiltered_title:
+      related_views:
+        button:
+        title:
       related_visualization_selector:
         based_on_column:
         visualization_not_supported:
@@ -1157,10 +1161,16 @@ sw:
         between: iko kati ya
         contains: inakusanya
         equals: ni
+        exists:
         greater_than: ni kubwa kuliko
         greater_than_or_equals: angalau
+        is_after:
+        is_before:
         is_blank: tupu
+        is_checked:
+        is_empty:
         is_not_blank: si tupu
+        is_not_checked:
         less_than: ni ndogo kuliko
         less_than_or_equals: si zaidi ya
         not_contains: haukusanyi
@@ -1279,6 +1289,8 @@ sw:
     visibility:
       private: binafsi
       public: umma
+  data_lens:
+    render_error:
   dataset_landing_page:
     action_buttons:
       api:
@@ -1297,6 +1309,13 @@ sw:
       multiple_geo_layers:
       title:
     back:
+    blob_download:
+      download:
+      edit_prompt_button:
+      edit_prompt_message:
+      title:
+    blob_preview:
+      title:
     bootstrap_button:
     bootstrap_disabled_notice:
     bootstrap_message:
@@ -1357,6 +1376,7 @@ sw:
       manage_prompt:
         button:
         message:
+        message_blob:
       title:
     featured_content_modal:
       external:
@@ -1371,6 +1391,7 @@ sw:
         url:
       header:
       introduction:
+      introduction_blobby:
       preview:
       remove_error:
       remove_prompt:
@@ -1398,6 +1419,7 @@ sw:
       screenshot_yes:
       title:
     less:
+    manage_dataset:
     manage_prompt:
     metadata:
       attachments:
@@ -1655,13 +1677,37 @@ sw:
       bulk_edit:
         button_title:
         cancel:
+        date_range_from:
+        date_range_label:
+        date_range_to:
         failure_message:
         items_selected:
+        not_configured_message:
+        override_label:
+        override_types:
+          bad:
+          good:
+          no_judgement:
+          none:
+          within_tolerance:
         revert_changes:
         success_message:
         title:
         update:
         visibility:
+      export:
+        Csv:
+          button_label:
+          info_description:
+          info_title:
+        info_box:
+          cancel:
+          ok:
+      feedback_flannel:
+        message:
+        no_thanks:
+        title:
+        yes_include_screenshot:
       goal_values:
         status_private:
         status_public:
@@ -1670,14 +1716,25 @@ sw:
         default_alert_message:
         goal_page:
         goal_status:
+        load_error:
         manage_on_goal_page:
         of:
         owner:
+        quick_edit:
         rows_per_page:
         title:
         updated_at:
         view_dashboard:
         visibility:
+      manage_performance_goals:
+      modal:
+        close_without_save_message:
+      page_title:
+      preview_bar:
+        back_to_configuration:
+        feedback:
+        learn_more:
+        performance_goal_management_preview:
       quick_edit:
         action_type:
         action_types:
@@ -1692,6 +1749,7 @@ sw:
         dataset_updated:
         date_range:
         default_alert_message:
+        feedback:
         goal_name:
         goal_owner:
         goal_updated:
@@ -1707,6 +1765,9 @@ sw:
         measure_target_type_types:
           absolute:
           relative:
+        not_configured_goal_message:
+          link:
+          text:
         override:
         override_types:
           bad:
@@ -1753,6 +1814,7 @@ sw:
       data_management: Usimamizi wa Data
       datasets: Setidata
       federations: Miungano
+      goal_management_preview:
       homepage: Ukurasa wa Nyumbani
       jobs:
       metadata: Metadata
@@ -2554,11 +2616,22 @@ sw:
         'true':
         up: Juu
       site_chrome:
+        activate:
+        add_new_link_menu:
+        add_new_link_row:
         cancel:
+        congratulations:
         description:
+        link_menu_label_html:
+        move_link_row:
+        ok:
+        preview:
         preview_changes:
+        remove_link_menu:
+        remove_link_row:
         save:
         save_changes:
+        see_both_features:
         site_appearance:
         tabs:
           footer:
@@ -2567,6 +2640,9 @@ sw:
                 description:
                 label:
                 title:
+              copyright_notice_source:
+                description:
+                placeholder:
               footer_background_color:
                 description:
                 placeholder:
@@ -2597,14 +2673,27 @@ sw:
               menu_links:
                 description:
                 title:
+              menu_title_placeholder:
+              powered_by:
+                description:
+                label:
+                title:
               url_label:
               url_placeholder:
             title:
           general:
             fields:
+              font_family:
+                description:
+                placeholder:
+                title:
               google_analytics_token:
                 description:
                 error:
+                placeholder:
+                title:
+              max_width:
+                description:
                 placeholder:
                 title:
               show_signin_signout:
@@ -2615,6 +2704,7 @@ sw:
                 title:
               template:
                 description:
+                description_html:
                 placeholder:
                 title:
               window_icon:
@@ -2663,6 +2753,7 @@ sw:
               menu_links:
                 description:
                 title:
+              menu_title_placeholder:
               url_label:
               url_placeholder:
             title:
@@ -2716,6 +2807,25 @@ sw:
                 placeholder:
                 title:
             title:
+          whats_new:
+            fields:
+              a_bundle_of_goodness:
+                description_html:
+                title:
+              a_new_configurable_header_footer:
+                description_html:
+                title:
+              active_both_today:
+                description_html:
+                title:
+              dataset_landing_page:
+                description_html:
+                title:
+            title:
+        these_features_help:
+        update:
+        you_have_activated:
+      update:
       users:
         actions: Hatua
         all: Yote
@@ -2801,9 +2911,20 @@ sw:
         supported: Aina ya mafaili yanayoainiwa ni CSV, TSV, na Excel. Protokoli zinazoainiwa ni HTTP na HTTPS.
         url_prompt: Ni ipi URL ya tovuti ya faili ambalo ungependa kulileta?
       errors:
+        archive_error:
+        corrupt_shapefile_error:
+        create_column_error:
+        create_dataset_error:
+        create_working_copy_error:
+        decode_filetype_error:
+        delete_column_error:
+        get_column_error:
+        incomplete_shapefile_error:
         insecure_esri_url:
+        invalid_arity_error:
         invalid_crossload_url: Tafadhali andika URL halali ianzayo ama na HTTP au HTTPS.
         invalid_url: Hiyo haionekani kuwa ni URL halali.
+        jsonparse_error:
         missing_data_provider: Sharti umuelezee mtoaji wa data (mchangiaji) kwenye leseni ya Ubunifu ya Ushirika
         missing_esri_url: URL halali ya tabaka la ramani ESRI inahitajika.
         missing_name: Jina la Setidata linahitajika.
@@ -2811,6 +2932,14 @@ sw:
         point:
           missing_latlong:
           suboptimal_column:
+        publication_error:
+        shapefile_header_error:
+        shapefile_row_error:
+        update_metadata_error:
+        upsert_error:
+        vertex_too_complex_error:
+        xmlparse_error:
+        zkerror:
       finish:
         headline: Setidata Yako imeundwa.
         subheadline: Kuiona bofya kwenye Maliza!
@@ -2856,9 +2985,11 @@ sw:
               one_html:
           single_column:
             empty_composite_col:
+            missing_lat_long:
             non_text_composite_col:
             type_too_generic:
             wrong_type:
+            wrong_type_location:
             wrong_type_unknown_count:
         errors_warnings: Makosa na Tahadhari
         fewer_rows: Mistari Michache
@@ -2882,6 +3013,7 @@ sw:
         suggested_columns: Safu zilizopendekezwa
         suggested_flat: Safu zilizopendekezwa (hakuna zenye nafasi nyinig)
         suggested_plus_discrete: Safu zilizopendekezwa (zenye nafasi nyingi na zisizoungana)
+        upload_success:
         why_choose_now: Kwa nini ni muhimu kuchagua aina za safu sasahivi?
       import_help: <strong>Unahitaji msaada?</strong> tunafanyia matengenezo <a href="%{common_errors}" rel="external"> orodha ya tahadhari za kawaida na makosa </a> ambayo inaweza kukusaidia.
       import_shapefile:
@@ -3447,6 +3579,7 @@ sw:
             base_url_prompt: Andika Kiambishi Awali cha Kawaida cha URL
             title: Chaguzi za URL
           validation:
+            notallowed:
             published: Tafadhali fanya nakala ya kazi au mwonekano wa Setidata hii ubadili vyombo vya safu
             snapshot:
             unsaved: Huwezi kuhariri vyombo vya safu kwenye mwonekano usiohifadhiwa
@@ -3481,6 +3614,8 @@ sw:
           title:
         delete:
           confirm: Hii itafuta %{view_type} kwa kudumu. Hakuna ubatilishaji! Je, una uhakika unataka kuendelea?
+          confirm_permanent:
+          confirm_restorable:
           delete_button: |
             Futa hii %{view_type}
           subtitle: Futa hii %{view_type}
@@ -3961,6 +4096,7 @@ sw:
       headline_upload: Tafadhali chagua faili la kupakia
       layer: Tabaka
       many_headers: "%{num} ya mistari yako ni vichwa."
+      new_column:
       no_file_selected: Bado faili halijachaguliwa.
       no_headers: Hakuna mistari yako yoyote ambayo ni vichwa
       no_source_column: "(Hakuna Safu ya Chanzo)"

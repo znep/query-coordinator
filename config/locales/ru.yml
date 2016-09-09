@@ -187,6 +187,7 @@ ru:
           description:
           header:
       feature_map:
+        feature_map_disabled:
         zoom_disabled: "Масштабирование временно недоступно. Пожалуйста, повторите попытку позже."
       feature_map_flannel:
         error_message:
@@ -306,6 +307,9 @@ ru:
         old_filter_title:
         old_filtered_title:
         unfiltered_title:
+      related_views:
+        button: "Другие виды этих данных"
+        title: "Другие виды этих данных"
       related_visualization_selector:
         based_on_column:
         visualization_not_supported:
@@ -1130,10 +1134,16 @@ ru:
         between: "находится между"
         contains: "содержит"
         equals: "является"
+        exists:
         greater_than: "больше, чем"
         greater_than_or_equals: "не менее, чем"
+        is_after:
+        is_before:
         is_blank: "пустой"
+        is_checked:
+        is_empty:
         is_not_blank: "не пустой"
+        is_not_checked:
         less_than: "меньше, чем"
         less_than_or_equals: "не более, чем"
         not_contains: "не содержит"
@@ -1251,6 +1261,8 @@ ru:
     visibility:
       private: "ограниченного доступа"
       public: "общедоступный"
+  data_lens:
+    render_error:
   dataset_landing_page:
     action_buttons:
       api:
@@ -1269,6 +1281,13 @@ ru:
       multiple_geo_layers:
       title:
     back:
+    blob_download:
+      download:
+      edit_prompt_button:
+      edit_prompt_message:
+      title:
+    blob_preview:
+      title:
     bootstrap_button:
     bootstrap_disabled_notice:
     bootstrap_message:
@@ -1329,6 +1348,7 @@ ru:
       manage_prompt:
         button:
         message:
+        message_blob:
       title:
     featured_content_modal:
       external:
@@ -1343,6 +1363,7 @@ ru:
         url:
       header:
       introduction:
+      introduction_blobby:
       preview:
       remove_error:
       remove_prompt:
@@ -1370,6 +1391,7 @@ ru:
       screenshot_yes:
       title:
     less:
+    manage_dataset:
     manage_prompt:
     metadata:
       attachments:
@@ -1626,13 +1648,37 @@ ru:
       bulk_edit:
         button_title:
         cancel:
+        date_range_from:
+        date_range_label:
+        date_range_to:
         failure_message:
         items_selected:
+        not_configured_message:
+        override_label:
+        override_types:
+          bad:
+          good:
+          no_judgement:
+          none:
+          within_tolerance:
         revert_changes:
         success_message:
         title:
         update:
         visibility:
+      export:
+        Csv:
+          button_label:
+          info_description:
+          info_title:
+        info_box:
+          cancel:
+          ok:
+      feedback_flannel:
+        message:
+        no_thanks:
+        title:
+        yes_include_screenshot:
       goal_values:
         status_private:
         status_public:
@@ -1641,14 +1687,25 @@ ru:
         default_alert_message:
         goal_page:
         goal_status:
+        load_error:
         manage_on_goal_page:
         of:
         owner:
+        quick_edit:
         rows_per_page:
         title:
         updated_at:
         view_dashboard:
         visibility:
+      manage_performance_goals:
+      modal:
+        close_without_save_message:
+      page_title:
+      preview_bar:
+        back_to_configuration:
+        feedback:
+        learn_more:
+        performance_goal_management_preview:
       quick_edit:
         action_type:
         action_types:
@@ -1663,6 +1720,7 @@ ru:
         dataset_updated:
         date_range:
         default_alert_message:
+        feedback:
         goal_name:
         goal_owner:
         goal_updated:
@@ -1678,6 +1736,9 @@ ru:
         measure_target_type_types:
           absolute:
           relative:
+        not_configured_goal_message:
+          link:
+          text:
         override:
         override_types:
           bad:
@@ -1724,6 +1785,7 @@ ru:
       data_management: "Управление данными"
       datasets: "Наборы данных"
       federations: "Федерации"
+      goal_management_preview:
       homepage: "Домашняя страница"
       jobs:
       metadata: "Метаданные"
@@ -2519,11 +2581,22 @@ ru:
         'true': true
         up: "Вверх"
       site_chrome:
+        activate:
+        add_new_link_menu:
+        add_new_link_row:
         cancel:
+        congratulations:
         description:
+        link_menu_label_html:
+        move_link_row:
+        ok:
+        preview:
         preview_changes:
+        remove_link_menu:
+        remove_link_row:
         save:
         save_changes:
+        see_both_features:
         site_appearance:
         tabs:
           footer:
@@ -2532,6 +2605,9 @@ ru:
                 description:
                 label:
                 title:
+              copyright_notice_source:
+                description:
+                placeholder:
               footer_background_color:
                 description:
                 placeholder:
@@ -2562,14 +2638,27 @@ ru:
               menu_links:
                 description:
                 title:
+              menu_title_placeholder:
+              powered_by:
+                description:
+                label:
+                title:
               url_label:
               url_placeholder:
             title:
           general:
             fields:
+              font_family:
+                description:
+                placeholder:
+                title:
               google_analytics_token:
                 description:
                 error:
+                placeholder:
+                title:
+              max_width:
+                description:
                 placeholder:
                 title:
               show_signin_signout:
@@ -2580,6 +2669,7 @@ ru:
                 title:
               template:
                 description:
+                description_html:
                 placeholder:
                 title:
               window_icon:
@@ -2628,6 +2718,7 @@ ru:
               menu_links:
                 description:
                 title:
+              menu_title_placeholder:
               url_label:
               url_placeholder:
             title:
@@ -2681,6 +2772,25 @@ ru:
                 placeholder:
                 title:
             title:
+          whats_new:
+            fields:
+              a_bundle_of_goodness:
+                description_html:
+                title:
+              a_new_configurable_header_footer:
+                description_html:
+                title:
+              active_both_today:
+                description_html:
+                title:
+              dataset_landing_page:
+                description_html:
+                title:
+            title:
+        these_features_help:
+        update:
+        you_have_activated:
+      update:
       users:
         actions: "Действия"
         all: "Все"
@@ -2767,9 +2877,20 @@ ru:
         supported: "Поддерживаемые типы файлов - CSV, TSV, и Excel. Поддерживаемые протоколы -  HTTP и HTTPS."
         url_prompt: "Какой URL-адрес у файла, который вы хотите импортировать?"
       errors:
+        archive_error:
+        corrupt_shapefile_error:
+        create_column_error:
+        create_dataset_error:
+        create_working_copy_error:
+        decode_filetype_error:
+        delete_column_error:
+        get_column_error:
+        incomplete_shapefile_error:
         insecure_esri_url: "Был добавлен небезопасный URL-адрес слоя карты ESRI. В результате некоторые функции не будут работать в этом наборе данных."
+        invalid_arity_error:
         invalid_crossload_url: "Введите правильный URL-адрес, который начинается с HTTP или HTTPS."
         invalid_url: "Это неверный That does not appear to be a valid URL."
+        jsonparse_error:
         missing_data_provider: "Необходимо указать поставщика данных (определение) в лицензии Creative Commons."
         missing_esri_url: "Требуется действительный URL слоя карты ESRI."
         missing_name: "Требуется имя набора данных."
@@ -2777,6 +2898,14 @@ ru:
         point:
           missing_latlong:
           suboptimal_column:
+        publication_error:
+        shapefile_header_error:
+        shapefile_row_error:
+        update_metadata_error:
+        upsert_error:
+        vertex_too_complex_error:
+        xmlparse_error:
+        zkerror:
       finish:
         headline: "Ваш набор данных был создан."
         subheadline: "Чтобы его увидеть, нажмите на Завершить!"
@@ -2819,9 +2948,11 @@ ru:
               one_html:
           single_column:
             empty_composite_col:
+            missing_lat_long:
             non_text_composite_col:
             type_too_generic:
             wrong_type:
+            wrong_type_location:
             wrong_type_unknown_count:
         errors_warnings: "Ошибки и предупреждения"
         fewer_rows: "Меньше строк"
@@ -2843,6 +2974,7 @@ ru:
         suggested_columns: "Предлагаемые столбцы"
         suggested_flat: "Предлагаемые столбцы (не составные)"
         suggested_plus_discrete: "Предлагаемые столбцы (составные и дискретные)"
+        upload_success:
         why_choose_now: "Почему сейчас важно выбрать типы столбцов?"
       import_help: <strong>Нужна помощью?</strong> Мы поддерживаем <a href="%{common_errors}" rel="external">список общих ошибок и предупреждений,</a> который может вам помочь.
       import_shapefile:
@@ -3392,6 +3524,7 @@ ru:
             base_url_prompt: "Введите общий префикс URL"
             title: "Варианты URL"
           validation:
+            notallowed:
             published: "Чтобы изменить свойства столбцов, сделайте рабочую копию или сохраните изображение этого массива данных"
             snapshot:
             unsaved: "Невозможно редактировать свойства столбцов в несохраненном изображении"
@@ -3425,6 +3558,8 @@ ru:
           title:
         delete:
           confirm: "Данный %{view_type} будет удален навсегда. Отменить удаление невозможно! Уверены, что намерены продолжить?"
+          confirm_permanent:
+          confirm_restorable:
           delete_button: "Удалить данный  %{view_type}"
           subtitle: "Удалить этот %{view_type}"
           title: "Удалить"
@@ -3886,6 +4021,7 @@ ru:
       headline_upload: "Выберите файл для загрузки"
       layer: "Слой"
       many_headers: "%{num} ваших строк являются заголовками."
+      new_column:
       no_file_selected: "Файл не выбран."
       no_headers: "Ваши строки не являются заголовками."
       no_source_column: "(Нет исходного столбца)"

@@ -187,6 +187,7 @@ es:
           description: Guardar una imagen PNG de una visualización
           header: Visualización como Imagen
       feature_map:
+        feature_map_disabled: Los mapas de características no están disponibles.
         zoom_disabled: El zoom no está disponible temporalmente. Por favor, inténtelo de nuevo más tarde.
       feature_map_flannel:
         error_message: Se ha producido un error al obtener los datos de ubicación.
@@ -306,6 +307,9 @@ es:
         old_filter_title: Mostrando <span class="light">the {0}</span>
         old_filtered_title: Mostrando <span class="light">the {0}</span>
         unfiltered_title: Mostrando <span class="light">all {0}</span>
+      related_views:
+        button: Otras vistas de estos datos
+        title: Otras vistas de estos datos
       related_visualization_selector:
         based_on_column: Basado en {0}
         visualization_not_supported: "¡Perdona las molestias! Estamos desarrollando la funcionalidad que te permitirá integrar este tipo de tabla en una historia."
@@ -1134,10 +1138,16 @@ es:
         between: es entre
         contains: contiene
         equals: es
+        exists: existe
         greater_than: es mayor que
         greater_than_or_equals: es al menos
+        is_after: está después de
+        is_before: está antes de
         is_blank: está vacío
+        is_checked: está marcado
+        is_empty: está vacío
         is_not_blank: no está vacío
+        is_not_checked: no está marcado
         less_than: es menor que
         less_than_or_equals: es como máximo
         not_contains: no contiene
@@ -1255,6 +1265,8 @@ es:
     visibility:
       private: privado
       public: público
+  data_lens:
+    render_error: Se ha producido un problema al renderizar esta página.
   dataset_landing_page:
     action_buttons:
       api: API
@@ -1273,6 +1285,13 @@ es:
       multiple_geo_layers: Este conjunto de datos contiene varias capas geoespaciales. Cada capa tiene su propia documentación y extremo de la API en la parte inferior.
       title: Acceso a este conjunto de datos a través de la API SODA
     back: Anterior
+    blob_download:
+      download: Descargar
+      edit_prompt_button: Editar fuente
+      edit_prompt_message: Editar el archivo fuente para este conjunto de datos.
+      title: Descargar este recurso
+    blob_preview:
+      title: Previsualizar
     bootstrap_button: Crear una visualización
     bootstrap_disabled_notice: Actualmente, se están procesando tus datos. Actualiza la página dentro de algunos minutos y podrás crear una nueva Lente de Datos.
     bootstrap_message: Este conjunto de datos no tiene ninguna visualización relacionada. ¿Deseas crear una ahora?
@@ -1333,6 +1352,7 @@ es:
       manage_prompt:
         button: Administrar contenido destacado
         message: Elige promocionar hasta 3 activos de Socrata que usen estos datos, o bien destacar cualquier recurso externo relevante. Si dejas en blanco esta sección, será invisible.
+        message_blob: Elige promocionar hasta 3 recursos externos que sean pertinentes para este archivo o documento. Si esta sección se deja en blanco, será invisible.
       title: Contenido destacado que usa estos datos
     featured_content_modal:
       external: Recursos externos
@@ -1347,6 +1367,7 @@ es:
         url: Enlace con Recurso
       header: Administrar el contenido destacado
       introduction: "¿Qué te gustaría que viese la gente la primera vez que observa este conjunto de datos? Promociona hasta 3 activos de Socrata que utilicen estos datos o elige destacar cualquier recurso externo relevante. Considera esta sección como el rostro de tus datos."
+      introduction_blobby: "¿Qué te gustaría que viese la gente la primera vez que observa este activo? Promociona hasta 3 recursos externos que sean pertinentes para este archivo o documento."
       preview: Previsualización del contenido destacado
       remove_error: "¡Oh, no! Se ha producido un error. Por favor, inténtalo de nuevo."
       remove_prompt: "¿Seguro que deseas borrar esto?"
@@ -1374,6 +1395,7 @@ es:
       screenshot_yes: Sí, deseo incluir una captura de pantalla
       title: Comentarios
     less: Mostrar menos
+    manage_dataset: Gestionar conjunto de datos
     manage_prompt: Haz clic aquí para administrar los permisos
     metadata:
       attachments: Adjuntos
@@ -1630,13 +1652,37 @@ es:
       bulk_edit:
         button_title: Editar articulos múltiples...
         cancel: Cancelar
+        date_range_from: Desde
+        date_range_label: Intervalo de fechas
+        date_range_to: Hasta
         failure_message: "<strong>Error.</strong> Ha surgido un problema al llevar a cabo esta acción. Vuelva a intentar o cancelar."
         items_selected: Artículos seleccionados
+        not_configured_message: "<strong>¡Vaya!</strong> Al parecer al menos una de tus metas no está configurada. Las ediciones múltiples solo pueden hacerse a las metas que ya se han configurado."
+        override_label: Anular
+        override_types:
+          bad: Necesita mejoras
+          good: Objetivo alcanzado
+          no_judgement: Midiendo
+          none: Ninguno
+          within_tolerance: Cerca del objetivo
         revert_changes: Revertir los cambios
         success_message: "¡Mucha suerte! Se han actualizado {0} objetivos."
         title: Editar artículos múltiples
         update: Actualizar
         visibility: Visibilidad
+      export:
+        Csv:
+          button_label: Exportar
+          info_description: Generando un CSV. La descarga comenzará automáticamente cuando esté lista
+          info_title: Generando descarga
+        info_box:
+          cancel: Cancelar
+          ok: Aceptar
+      feedback_flannel:
+        message: Con una captura de pantalla, puedes mostrarnos exactamente sobre qué tienes comentarios. Utilizamos <a href="https://usersnap.com" target="_blank">Usersnap</a> para las capturas de pantalla. Lee su <a href="https://usersnap.com/privacy-policy"  target="_blank">política de privacidad</a>.
+        no_thanks: No, gracias
+        title: "¿Deseas incluir una captura de pantalla comentada de la página actual?"
+        yes_include_screenshot: Sí, deseo incluir una captura de pantalla
       goal_values:
         status_private: Privado
         status_public: Público
@@ -1645,14 +1691,25 @@ es:
         default_alert_message: "<span><b>¡Oh, no!</b> Algo ha ido mal y se ha notificado a nuestro equipo. Mientras tanto, vuelva a intentar la acción o actualice esta página.</span>"
         goal_page: Página del objetivo
         goal_status: Estado del objetivo
+        load_error: Ha habido un problema al cargar el contenido.
         manage_on_goal_page: Administrar en la página del objetivo
         of: de
         owner: Propietario
+        quick_edit: Edición rápida
         rows_per_page: Filas por página
         title: Título
         updated_at: Actualizado
         view_dashboard: Ver panel de control
         visibility: Visibilidad
+      manage_performance_goals: Administrar metas de rendimiento
+      modal:
+        close_without_save_message: "¿Seguro que quieres cerrar? Se perderán tus cambios."
+      page_title: Administración de metas
+      preview_bar:
+        back_to_configuration: Volver a Configuración
+        feedback: Comentarios
+        learn_more: Más información
+        performance_goal_management_preview: Gestión de metas de rendimiento
       quick_edit:
         action_type: Acción
         action_types:
@@ -1667,6 +1724,7 @@ es:
         dataset_updated: Conjunto de datos actualizado
         date_range: Rango de fecha
         default_alert_message: "<span><b>¡Oh no!</b> Ha surgido un problema y nuestro equipo ha sido notificado de ello. Mientras tanto, intente de nuevo realizar su acción o actualice esta página.</span>"
+        feedback: Comentarios
         goal_name: Título del objetivo
         goal_owner: Propietario del objetivo
         goal_updated: Objetivo actualizado
@@ -1682,6 +1740,9 @@ es:
         measure_target_type_types:
           absolute: A
           relative: De
+        not_configured_goal_message:
+          link: ir a la página de metas
+          text: Esta meta no está configurada. Para hacer cambios en esta sección,
         override: Invalidar
         override_types:
           bad: Necesita mejoras
@@ -1728,6 +1789,7 @@ es:
       data_management: Gestión de datos
       datasets: Conjuntos de datos
       federations: Federaciones
+      goal_management_preview: Gestión de metas
       homepage: Página de inicio
       jobs: Trabajos
       metadata: Metadatos
@@ -2525,11 +2587,22 @@ es:
         'true': true
         up: Arriba
       site_chrome:
+        activate: Activar
+        add_new_link_menu: Añadir menú
+        add_new_link_row: Añadir enlace a %{section}
         cancel: Cancelar
+        congratulations: "¡Enhorabuena!"
         description: Configurar el aspecto de tu página web de Socrata.
+        link_menu_label_html: "<b>Menú</b> - <i>Puedes arrastrar enlaces para reordenarlos</i>"
+        move_link_row: Arrastrar para reordenar
+        ok: Aceptar
+        preview: Previsualizar
         preview_changes: Previsualizar los cambios
+        remove_link_menu: Eliminar menú de enlaces
+        remove_link_row: Eliminar enlace
         save: Guardar
         save_changes: Guardar los cambios
+        see_both_features: 'Observa ambas características en acción visitando uno de tus conjuntos de datos. '
         site_appearance: Aspecto de la página web
         tabs:
           footer:
@@ -2538,6 +2611,9 @@ es:
                 description: Conmutar la visualización del aviso de copyright de tu página web. Actualizamos automáticamente el aviso para mostrar el año natural actual.
                 label: Mostrar aviso de copyright
                 title: Aviso de copyright
+              copyright_notice_source:
+                description: El nombre de tu organización, ciudad, condado o estado que aparece con el copyright y el año actual
+                placeholder: Fuente del copyright
               footer_background_color:
                 description: El color de fondo del pie de página y el color del texto y los enlaces mostrados dentro del pie de página.
                 placeholder: "#123456"
@@ -2568,16 +2644,29 @@ es:
               menu_links:
                 description: Mostrar hasta 15 enlaces en el pie de página. Colocamos automáticamente estos enlaces en la columnas.
                 title: Enlaces del menú del pie de página
+              menu_title_placeholder: Texto del menú
+              powered_by:
+                description: Muestra la denominación de marca "Ofrecido por Socrata" en el pie de página y también proporciona un enlace a socrata.com
+                label: Mostrar la denominación de marca de Socrata en el pie de página
+                title: Ofrecido por Socrata
               url_label: URL
               url_placeholder: http://data.evergreen.gov
             title: Pie de página
           general:
             fields:
+              font_family:
+                description: Elige la fuente que se utilizará en el encabezado y el pie de foto para todo el texto.
+                placeholder: Fuente
+                title: Fuente
               google_analytics_token:
                 description: Introduce el identificador (no el script entero) de tu código de seguimiento de Google Analytics para recopilar datos analíticos para tu sitio web.
                 error: 'El identificador debe tener este formato: UA-XXXXX-XXXX'
                 placeholder: UA-12345678-1
                 title: Identificador de Google Analytics
+              max_width:
+                description: Introduce la anchura máxima (en píxeles) del contenido de tu encabezado y pie de página. Si se deja en blanco, se ensanchará hasta el tamaño de la ventana del navegador del visitante.
+                placeholder: 1200 px
+                title: Anchura máxima
               show_signin_signout:
                 description: Muestre estas opciones si tu sitio requiere de un perfil de usuario / inicio de sesión.
                 show_profile: Muestre un enlace al perfil una vez inciada la sesión
@@ -2586,6 +2675,7 @@ es:
                 title: Inicio de sesión /cierre de sesión
               template:
                 description: Ajusta la apariencia del encabezado o pie de página cambiando la plantilla. Las plantillas compatibles son «default» y «rally».
+                description_html: Ajusta el aspecto del encabezado cambiando la plantilla. Las plantillas compatibles son <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">"Evergreen" y "Rally"</a>.
                 placeholder: Rally
                 title: Plantilla
               window_icon:
@@ -2634,6 +2724,7 @@ es:
               menu_links:
                 description: Mostrar hasta 15 enlaces en la barra del encabezado. Si las etiquetas del enlace son demasiado largas o un visitante ve la página web en un dispositivo pequeño, los enlaces se contraen automáticamente en un menú.
                 title: Enlaces del menú
+              menu_title_placeholder: Texto del menú
               url_label: URL
               url_placeholder: http://data.evergreen.gov
             title: Barra del encabezado
@@ -2663,9 +2754,9 @@ es:
                 placeholder: http://www.linkedin.com/
                 title: Enlace de perfil de LinkedIn
               pinterest_profile_link:
-                description:
-                placeholder:
-                title:
+                description: Añade la URL aquí para mostrar un enlace al perfil de Pinterest de tu organización en el encabezado y el pie de foto.
+                placeholder: http://www.pinterest.com/
+                title: Enlace con el perfil de Pinterest
               tumblr_profile_link:
                 description: Muestra el enlace del perfil de Tumblr en el encabezado y el pie de página cuando está presente.
                 placeholder: http://www.tumblr.com/
@@ -2687,6 +2778,25 @@ es:
                 placeholder: http://www.youtube.com/
                 title: Enlace de perfil de YouTube
             title: Compartición social
+          whats_new:
+            fields:
+              a_bundle_of_goodness:
+                description_html: "<p>La espera se ha terminado: ¡la página de aterrizaje del conjunto de datos y tu nuevo encabezado/pie de página configurable ya están listo! Sigue leyendo para informarte más acerca de estas mejoras y cómo puedes activarlas hoy.</p>"
+                title: 'La mar de bueno: dos nuevas características disponibles ahora'
+              a_new_configurable_header_footer:
+                description_html:
+                title: Un nuevo encabezado/pie de página configurable
+              active_both_today:
+                description_html: '<p>La página de aterrizaje del conjunto de datos y tu nuevo encabezado/pie de página configurable ya están disponibles. Revisa las pestañas de arriba para configurar y previsualizar el aspecto de tu sitio web. Cuando estés listo, ¡actívalos juntos!</p> <p><b>Nota:</b> Si no has configurado el encabezado/pie de página para tu sitio web en el plazo de 30 días, Socrata lo hará por ti y lo activará junto con la página de aterrizaje del conjunto de datos automáticamente. Utilizaremos el estilo existente de tu sitio web y tu administrador de éxito del cliente como guía de estilo.</p> <p>Para obtener consejos sobre cómo configurar tu encabezado/pie de página y activar la página de aterrizaje del conjunto de datos, por favor asiste al <a href="https://event.on24.com/eventRegistration/EventLobbyServlet?target=reg20.jsp&referrer=&eventid=1223356&sessionid=1&key=9ED33D00A47ABC3419890552EBA81D93®Tag=&sourcepage=register" target="_blank">seminario web "Making the Most of the Latest Features" ("Aprovechar al máximo las últimas características")</a> o visita nuestro sitio web de Asistencia: <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">https://support.socrata.com/hc/en-us/articles/223723227</a>.</p>'
+                title: "¡Actívalos hoy!"
+              dataset_landing_page:
+                description_html: <p>¡Emociónate! Con esta mejora, la página de aterrizaje del conjunto de datos se convierte en la principal experiencia de primera página para los conjuntos de datos subidos. Resalta los aspectos de cada conjunto de datos a los que se ha accedido con más frecuencia de forma intuitiva y asegura que los usuarios de tus datos ven los metadatos antes de actuar. Los editores y administradores tienen la libertad de "destacar" vistas y visualizaciones relacionadas, los usuarios sofisticados pueden explorar los metadatos y las medidas anticipadamente, y todos los usuarios pueden acceder a los datos tal como deseen, independientemente de si es a través de visualizaciones de los datos, descargas directas de archivos o la API. Además, por supuesto, la vista tabular clásica de los datos sigue siendo accesible desde la navegación superior de esta vista para los usuarios que se sienten cómodos con esta.</p>
+                title: Página de aterrizaje del conjunto de datos
+            title: Novedades
+        these_features_help: Estas características ayudarán a los usuarios a explorar tus datos y te facilitarán la administración del aspecto de tu sitio web.
+        update: Actualizar
+        you_have_activated: Has activado tu nuevo encabezado/pie de página y la página de aterrizaje del conjunto de datos.
+      update: Actualizar
       users:
         actions: Acciones
         all: Todo
@@ -2771,9 +2881,20 @@ es:
         supported: Los tipos de archivo compatibles son CSV, TSV y Excel. Los protocolos compatibles son HTTP y HTTPS.
         url_prompt: "¿Cuál es la URL web del archivo que desea importar?"
       errors:
+        archive_error: 'No se ha podido abrir el archivo zip: {reason}'
+        corrupt_shapefile_error: 'No se ha podido abrir el archivo de forma (shapefile): {reason}'
+        create_column_error: No se ha podido crear un conjunto de datos
+        create_dataset_error: No se ha podido crear un conjunto de datos
+        create_working_copy_error: No se ha podido crear una copia de seguridad
+        decode_filetype_error: No se ha encontrado un decodificador para {kind}
+        delete_column_error: No se ha podido borrar una columna de ese conjunto de datos
+        get_column_error: No se han podido obtener las columnas de ese conjunto de datos
+        incomplete_shapefile_error: 'Tu archivo de forma (shapefile) está incompleto. Debe contener un archivo .dbf, .shp y .prj para cada capa. Se esperaba que contuviese los archivos siguientes, que en realidad faltaban: {missing}.'
         insecure_esri_url: Se ha añadido una URL no segura de ESRI map layer. Algunas características no funcionarán en este conjunto de datos.
+        invalid_arity_error: Uno de los puntos de la fila siguiente no tenía 2 coordenadas {geom}
         invalid_crossload_url: Por favor, introduzca una URL válida que comience con HTTP o HTTPS.
         invalid_url: Eso no parece ser una URL válida.
+        jsonparse_error: No se ha podido analizar el JSON de la línea {line} columna {column} identificador {token} porque {reason}
         missing_data_provider: Debe especificar el proveedor de datos (atribucion) en una licencia Creative Commons.
         missing_esri_url: Es necesaria una URL válida de capa de mapa ESRI.
         missing_name: Es necesario un nombre de conjunto de datos.
@@ -2781,6 +2902,14 @@ es:
         point:
           missing_latlong: ajustado a importar una columna <strong>%{coordinateType} pero no una <strong>%{missingCoordinateType}. Especifica el par lat./long. correcto.
           suboptimal_column: ajustado a importar su <strong>%{field}</strong> desde la columna fuente <strong>%{originalColumnName}</strong>, pero nuestro análisis muestra que la columna fuente es una columna %{suggestion}, mientras que %{field} debería ser una columna de tipo %{type}. Si optas por continuar con estos ajustes de importación, es probable que se produzcan errores de importación o geocodificación.
+        publication_error: No se ha podido publicar ese conjunto de datos
+        shapefile_header_error: 'No se ha podido leer el encabezado del archivo de forma (shapefile): {reason}'
+        shapefile_row_error: 'No se ha podido leer una fila del archivo de forma (shapefile): {reason}'
+        update_metadata_error: No se han podido actualizar los metadatos en el conjunto de datos padre
+        upsert_error: No se ha podido hacer un "upsert" (inserción/actualización) en el conjunto de datos
+        vertex_too_complex_error: Había {counted} vértices en la fila {rowNum}; el máximo es {maxVerticesPerRow}
+        xmlparse_error: No se ha podido analizar el nodo XML debido a {reason} cerca de {path}
+        zkerror: 'Ha habido un error de flujo ascendente (upstream): {reason}'
       finish:
         headline: Se ha creado su conjunto de datos.
         subheadline: "¡Haga clic en Finalizar para verlo!"
@@ -2823,9 +2952,11 @@ es:
               one_html: La columna {sourceColumns} se encuentra en su archivo de fuente de datos, pero en estos momentos no se ha determinado su importación a su conjunto de datos.
           single_column:
             empty_composite_col: La columna <strong>{resultColumnName}</strong> es una columna compuesta que se creará con múltiples columnas origen, pero en estos momentos no ha determinado que sea ocupado por nada. Por favor, añada algunas columnas o texto.
+            missing_lat_long: La columna “<strong>{resultColumnName}</strong>” está configurada para importar una columna <strong>{coordinateType}</strong>, pero no una <strong>{missingCoordinateType}</strong>. Por, especifica el par long./lat. completo.
             non_text_composite_col: La columna <strong>{resultColumnName}</strong> es una columna compuesta que que se creará con múltiples columnas origen, pero en estos momentos se ha determinado que importe como <strong>{chosenType}</strong>. Por favor, asegúrese de que la combinación de las columnas que ha especificado producirá un {chosenType} válido.
             type_too_generic: La columna <strong>{resultColumnName}</strong> ha sido determinada para importar como un <strong>{chosenType}</strong>, pero nuestro análisis indica que la columna parece ser una columna <strong>{suggestedType}</strong>. Puede importarla como un {chosenType}, pero si lo hace, perderá algunas funciones. Le recomendamos encarecidamente que lo importe con un <strong>{suggestedType}</strong>.
             wrong_type: La columna <strong>{resultColumnName}</strong> es una <strong>{chosenType}</strong>, pero nuestro análisis indica que la columna origen que está intentando importar en su interior es del tipo <strong>{suggestedType}</strong>. En el caso de que escoja importar esta columna, aproximadamente un <strong>{invalidPercent}%</strong> de sus datos presumiblemente se importará de forma errónea.
+            wrong_type_location: La columna “<strong>{resultColumnName}</strong>” está configurada para importar su <strong>{field}</strong> desde la columna fuente <strong>{chosenColumn}</strong>, pero nuestro análisis muestra que la columna fuente es de tipo {chosenType}, mientras que {field} espera una columna de tipo {suggestedType}. Si deseases continuar con estos ajustes de importación, podrían producirse probablemente errores de importación o geocodificación.
             wrong_type_unknown_count: La columna <strong>{resultColumnName}</strong> ha sido determinada para importar como un <strong>{chosenType}</strong> pero nuestro análisis muestra que <strong>{suggestedType}</strong> sería más adecuado. A menos que los datos de la columna hayan sido formateados correctamente como un {chosenType} puede ser que datos se importen de forma incorrecta.
         errors_warnings: Errores y advertencias
         fewer_rows: Menos filas
@@ -2847,6 +2978,7 @@ es:
         suggested_columns: Columnas sugeridas
         suggested_flat: Columnas sugerias (no compuestas)
         suggested_plus_discrete: Columnas sugeridas (compuestas y discretas)
+        upload_success: "¡Genial! Has subido un archivo de datos correctamente. Lo hemos guardado de forma segura. Si tienes que marcharte y vuelves más tarde, no tendrás que enviarlo de nuevo."
         why_choose_now: "¿Por qué es importante elegir los tipos de columna ahora?"
       import_help: <strong>¿Necesita ayuda?</strong> Mantenemos una <a href="%{common_errors}" rel="external">lista de advertencias y errores comunes</a> que quizá le ayuden.
       import_shapefile:
@@ -3387,6 +3519,7 @@ es:
             base_url_prompt: Ingresar prefijo del URL común
             title: Opciones de URL
           validation:
+            notallowed: No tienes permiso para editar las propiedades de las columnas
             published: Por favor, haga una copia de trabajo o una vista de su conjunto de datos para cambiar las propiedades de la columna
             snapshot: No puedes editar las propiedades de la columna para una captura de pantalla de una vista
             unsaved: No puede editar las propiedades de la columna para una vista que no está guardada
@@ -3420,6 +3553,8 @@ es:
           title: Lente de Datos
         delete:
           confirm: Esto borrará est(e)a %{view_type} de modo permanente. ¡No se pueden recuperar los datos! ¿Está seguro(a) que desea continuar?
+          confirm_permanent: Esto borrará el %{view_type} permanentemente. ¡No se puede deshacer! ¿Seguro que deseas continuar?
+          confirm_restorable: Este borrado es reversible durante un máximo de %{number_of_days_restorable} días por parte de un administrador de tu dominio. ¿Seguro que deseas continuar?
           delete_button: Borrar este(a) %{view_type}
           subtitle: Borrar este(a) %{view_type}
           title: Borrar
@@ -3881,6 +4016,7 @@ es:
       headline_upload: Por favor, elija un archivo para subir
       layer: Capa
       many_headers: "%{num} de sus filas son encabezamientos."
+      new_column: Nueva columna {num}
       no_file_selected: No hay todavía un archivo seleccionado
       no_headers: Ninguna de sus filas son encabezamientos.
       no_source_column: "(No hay columna fuente)"
@@ -4165,21 +4301,21 @@ es:
         prompt: Por favor, ponle un nombre a tu nuevo conjunto de datos.
         title: Crear un nuevo conjunto de datos
       menu:
-        about:
-        api:
-        api_subtext:
-        discuss:
-        discuss_subtext:
-        download:
-        download_subtext:
-        embed:
-        embed_subtext:
-        more_views:
-        more_views_subtext:
-        odata:
-        odata_subtext:
-        print:
-        print_subtext:
+        about: Acerca de la Plataforma de Datos Abiertos Socrata
+        api: API
+        api_subtext: Accede a este conjunto de datos a través de SODA
+        discuss: Debatir
+        discuss_subtext: Debatir acerca de este conjunto de datos
+        download: Descargar
+        download_subtext: Descargar en diversos formatos
+        embed: Incorporar
+        embed_subtext: Incorpora este reproductor a tu sitio web
+        more_views: Más vistas
+        more_views_subtext: Filtros, tablas y mapas
+        odata: Datos abiertos (OData)
+        odata_subtext: Accede a este conjunto de datos mediante datos abiertos (OData)
+        print: Imprimir
+        print_subtext: Imprimir este conjunto de datos
     wizard:
       cancel: Cancelar
       finish: Finalizar

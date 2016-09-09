@@ -188,6 +188,7 @@ sl:
           description:
           header:
       feature_map:
+        feature_map_disabled:
         zoom_disabled: Približevanje trenutno ni na voljo. Prosimo, poskusite znova kasneje.
       feature_map_flannel:
         error_message:
@@ -307,6 +308,9 @@ sl:
         old_filter_title:
         old_filtered_title:
         unfiltered_title:
+      related_views:
+        button: Drugi pogledi na te podatke
+        title: Drugi pogledi na te podatke
       related_visualization_selector:
         based_on_column:
         visualization_not_supported:
@@ -1139,10 +1143,16 @@ sl:
         between: je med
         contains: vsebuje
         equals: je
+        exists:
         greater_than: je več kot
         greater_than_or_equals: je najmanj
+        is_after:
+        is_before:
         is_blank: je prazno
+        is_checked:
+        is_empty:
         is_not_blank: ni prazno
+        is_not_checked:
         less_than: je manj kot
         less_than_or_equals: je največ
         not_contains: ne vsebuje
@@ -1260,6 +1270,8 @@ sl:
     visibility:
       private: zasebno
       public: javno
+  data_lens:
+    render_error:
   dataset_landing_page:
     action_buttons:
       api:
@@ -1278,6 +1290,13 @@ sl:
       multiple_geo_layers:
       title:
     back:
+    blob_download:
+      download:
+      edit_prompt_button:
+      edit_prompt_message:
+      title:
+    blob_preview:
+      title:
     bootstrap_button:
     bootstrap_disabled_notice:
     bootstrap_message:
@@ -1338,6 +1357,7 @@ sl:
       manage_prompt:
         button:
         message:
+        message_blob:
       title:
     featured_content_modal:
       external:
@@ -1352,6 +1372,7 @@ sl:
         url:
       header:
       introduction:
+      introduction_blobby:
       preview:
       remove_error:
       remove_prompt:
@@ -1379,6 +1400,7 @@ sl:
       screenshot_yes:
       title:
     less:
+    manage_dataset:
     manage_prompt:
     metadata:
       attachments:
@@ -1635,13 +1657,37 @@ sl:
       bulk_edit:
         button_title:
         cancel:
+        date_range_from:
+        date_range_label:
+        date_range_to:
         failure_message:
         items_selected:
+        not_configured_message:
+        override_label:
+        override_types:
+          bad:
+          good:
+          no_judgement:
+          none:
+          within_tolerance:
         revert_changes:
         success_message:
         title:
         update:
         visibility:
+      export:
+        Csv:
+          button_label:
+          info_description:
+          info_title:
+        info_box:
+          cancel:
+          ok:
+      feedback_flannel:
+        message:
+        no_thanks:
+        title:
+        yes_include_screenshot:
       goal_values:
         status_private:
         status_public:
@@ -1650,14 +1696,25 @@ sl:
         default_alert_message:
         goal_page:
         goal_status:
+        load_error:
         manage_on_goal_page:
         of:
         owner:
+        quick_edit:
         rows_per_page:
         title:
         updated_at:
         view_dashboard:
         visibility:
+      manage_performance_goals:
+      modal:
+        close_without_save_message:
+      page_title:
+      preview_bar:
+        back_to_configuration:
+        feedback:
+        learn_more:
+        performance_goal_management_preview:
       quick_edit:
         action_type:
         action_types:
@@ -1672,6 +1729,7 @@ sl:
         dataset_updated:
         date_range:
         default_alert_message:
+        feedback:
         goal_name:
         goal_owner:
         goal_updated:
@@ -1687,6 +1745,9 @@ sl:
         measure_target_type_types:
           absolute:
           relative:
+        not_configured_goal_message:
+          link:
+          text:
         override:
         override_types:
           bad:
@@ -1733,6 +1794,7 @@ sl:
       data_management: Upravljanje podatkov
       datasets: Podatkovni nizi
       federations: Združevanja
+      goal_management_preview:
       homepage: Domača stran
       jobs:
       metadata: Meta podatki
@@ -2526,11 +2588,22 @@ sl:
         'true': true
         up: Gor
       site_chrome:
+        activate:
+        add_new_link_menu:
+        add_new_link_row:
         cancel:
+        congratulations:
         description:
+        link_menu_label_html:
+        move_link_row:
+        ok:
+        preview:
         preview_changes:
+        remove_link_menu:
+        remove_link_row:
         save:
         save_changes:
+        see_both_features:
         site_appearance:
         tabs:
           footer:
@@ -2539,6 +2612,9 @@ sl:
                 description:
                 label:
                 title:
+              copyright_notice_source:
+                description:
+                placeholder:
               footer_background_color:
                 description:
                 placeholder:
@@ -2569,14 +2645,27 @@ sl:
               menu_links:
                 description:
                 title:
+              menu_title_placeholder:
+              powered_by:
+                description:
+                label:
+                title:
               url_label:
               url_placeholder:
             title:
           general:
             fields:
+              font_family:
+                description:
+                placeholder:
+                title:
               google_analytics_token:
                 description:
                 error:
+                placeholder:
+                title:
+              max_width:
+                description:
                 placeholder:
                 title:
               show_signin_signout:
@@ -2587,6 +2676,7 @@ sl:
                 title:
               template:
                 description:
+                description_html:
                 placeholder:
                 title:
               window_icon:
@@ -2635,6 +2725,7 @@ sl:
               menu_links:
                 description:
                 title:
+              menu_title_placeholder:
               url_label:
               url_placeholder:
             title:
@@ -2688,6 +2779,25 @@ sl:
                 placeholder:
                 title:
             title:
+          whats_new:
+            fields:
+              a_bundle_of_goodness:
+                description_html:
+                title:
+              a_new_configurable_header_footer:
+                description_html:
+                title:
+              active_both_today:
+                description_html:
+                title:
+              dataset_landing_page:
+                description_html:
+                title:
+            title:
+        these_features_help:
+        update:
+        you_have_activated:
+      update:
       users:
         actions: Dejanja
         all: Vsi
@@ -2774,9 +2884,20 @@ sl:
         supported: Podprte vrste datotek so CSV, TSV in Excel. Podprta protokola sta HTTP in HTTPS.
         url_prompt: Kakšen je spletni naslov datoteke, ki jo želite uvoziti?
       errors:
+        archive_error:
+        corrupt_shapefile_error:
+        create_column_error:
+        create_dataset_error:
+        create_working_copy_error:
+        decode_filetype_error:
+        delete_column_error:
+        get_column_error:
+        incomplete_shapefile_error:
         insecure_esri_url: Dodan je bil nezanesljiv URL za ESRI plast zemljevida. Posledično pri tej zbirki podatkov določene funkcije ne bodo delovale.
+        invalid_arity_error:
         invalid_crossload_url: Prosimo, vnesite veljaven spletni naslov z uporabo HTTP ali HTTPS.
         invalid_url: Videti je, da to ni veljaven spletni naslov.
+        jsonparse_error:
         missing_data_provider: Določiti morate ponudnika podatkov (dodelitev) v licenci organizacije Creative Commons.
         missing_esri_url: Za spletni naslov je zahtevana veljavna plast preslikave ESRI.
         missing_name: Ime podatkovnega niza je obvezno.
@@ -2784,6 +2905,14 @@ sl:
         point:
           missing_latlong:
           suboptimal_column:
+        publication_error:
+        shapefile_header_error:
+        shapefile_row_error:
+        update_metadata_error:
+        upsert_error:
+        vertex_too_complex_error:
+        xmlparse_error:
+        zkerror:
       finish:
         headline: Vaš podatkovni niz je bil ustvarjen.
         subheadline: Za ogled kliknite Končaj!
@@ -2826,9 +2955,11 @@ sl:
               one_html:
           single_column:
             empty_composite_col:
+            missing_lat_long:
             non_text_composite_col:
             type_too_generic:
             wrong_type:
+            wrong_type_location:
             wrong_type_unknown_count:
         errors_warnings: Napake in opozorila
         fewer_rows: Manj vrstic
@@ -2850,6 +2981,7 @@ sl:
         suggested_columns: Predlagani stolpci
         suggested_flat: Predlagani stolpci (brez sestavljenih)
         suggested_plus_discrete: Predlagani stolpci (sestavljeni in nepovezani)
+        upload_success:
         why_choose_now: Zakaj je pomembno, da zdaj izberem vrsto stolpcev?
       import_help: <strong>Potrebujete pomoč?</strong> Vzdržujemo <a href="%{common_errors}" rel="external">seznam običajnih opozoril in napak</a>, ki vam lahko pomagajo.
       import_shapefile:
@@ -3398,6 +3530,7 @@ sl:
             base_url_prompt: Vnesi običajno predpono spletnega naslova
             title: Možnosti spletnega naslova
           validation:
+            notallowed:
             published: Prosimo, naredite delovno kopijo ali poglejte ta podatkovni niz za spremembo lastnosti stolpca
             snapshot:
             unsaved: Ne morete urejati lastnosti stolpca, če pogled ni shranjen
@@ -3431,6 +3564,8 @@ sl:
           title:
         delete:
           confirm: S tem boste trajno izbrisali %{view_type}. Ni mogoče razveljaviti! Ali ste prepričani, da želite nadaljevati?
+          confirm_permanent:
+          confirm_restorable:
           delete_button: Izbriši ta %{view_type}
           subtitle: Izbriši ta %{view_type}
           title: Izbriši
@@ -3896,6 +4031,7 @@ sl:
       headline_upload: Prosimo, izberite datoteko za nalaganje
       layer: Plast
       many_headers: "%{num} vaših vrstic je naslovov."
+      new_column:
       no_file_selected: Nobena datoteka še ni bila izbrana.
       no_headers: Nobena izmed vaših vrstic ni naslov.
       no_source_column: "(Ni izvornega stolpca)"

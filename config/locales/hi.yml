@@ -187,6 +187,7 @@ hi:
           description:
           header:
       feature_map:
+        feature_map_disabled:
         zoom_disabled: "ज़ूम फ़ंक्शन अस्थायी रूप से अनुपलब्ध है। कृपया बाद में फिर से प्रयास करें।"
       feature_map_flannel:
         error_message:
@@ -306,6 +307,9 @@ hi:
         old_filter_title:
         old_filtered_title:
         unfiltered_title:
+      related_views:
+        button: "इस डेटा के अन्य व्यूज"
+        title: "इस डेटा के अन्य व्यूज"
       related_visualization_selector:
         based_on_column:
         visualization_not_supported:
@@ -1130,10 +1134,16 @@ hi:
         between: "यह इनके बीच है"
         contains: "इसमें मौजूद है"
         equals: "है"
+        exists:
         greater_than: "यह इससे अधिक है"
         greater_than_or_equals: "यह सबसे कम है"
+        is_after:
+        is_before:
         is_blank: "यह खाली है"
+        is_checked:
+        is_empty:
         is_not_blank: "यह खाली नहीं है"
+        is_not_checked:
         less_than: "यह इससे कम है"
         less_than_or_equals: "यह सर्वाधिक है"
         not_contains: "इसमें मौजूद नहीं है"
@@ -1251,6 +1261,8 @@ hi:
     visibility:
       private: "निजी"
       public: "सार्वजनिक"
+  data_lens:
+    render_error:
   dataset_landing_page:
     action_buttons:
       api:
@@ -1269,6 +1281,13 @@ hi:
       multiple_geo_layers:
       title:
     back:
+    blob_download:
+      download:
+      edit_prompt_button:
+      edit_prompt_message:
+      title:
+    blob_preview:
+      title:
     bootstrap_button:
     bootstrap_disabled_notice:
     bootstrap_message:
@@ -1329,6 +1348,7 @@ hi:
       manage_prompt:
         button:
         message:
+        message_blob:
       title:
     featured_content_modal:
       external:
@@ -1343,6 +1363,7 @@ hi:
         url:
       header:
       introduction:
+      introduction_blobby:
       preview:
       remove_error:
       remove_prompt:
@@ -1370,6 +1391,7 @@ hi:
       screenshot_yes:
       title:
     less:
+    manage_dataset:
     manage_prompt:
     metadata:
       attachments:
@@ -1626,13 +1648,37 @@ hi:
       bulk_edit:
         button_title:
         cancel:
+        date_range_from:
+        date_range_label:
+        date_range_to:
         failure_message:
         items_selected:
+        not_configured_message:
+        override_label:
+        override_types:
+          bad:
+          good:
+          no_judgement:
+          none:
+          within_tolerance:
         revert_changes:
         success_message:
         title:
         update:
         visibility:
+      export:
+        Csv:
+          button_label:
+          info_description:
+          info_title:
+        info_box:
+          cancel:
+          ok:
+      feedback_flannel:
+        message:
+        no_thanks:
+        title:
+        yes_include_screenshot:
       goal_values:
         status_private:
         status_public:
@@ -1641,14 +1687,25 @@ hi:
         default_alert_message:
         goal_page:
         goal_status:
+        load_error:
         manage_on_goal_page:
         of:
         owner:
+        quick_edit:
         rows_per_page:
         title:
         updated_at:
         view_dashboard:
         visibility:
+      manage_performance_goals:
+      modal:
+        close_without_save_message:
+      page_title:
+      preview_bar:
+        back_to_configuration:
+        feedback:
+        learn_more:
+        performance_goal_management_preview:
       quick_edit:
         action_type:
         action_types:
@@ -1663,6 +1720,7 @@ hi:
         dataset_updated:
         date_range:
         default_alert_message:
+        feedback:
         goal_name:
         goal_owner:
         goal_updated:
@@ -1678,6 +1736,9 @@ hi:
         measure_target_type_types:
           absolute:
           relative:
+        not_configured_goal_message:
+          link:
+          text:
         override:
         override_types:
           bad:
@@ -1724,6 +1785,7 @@ hi:
       data_management: "डेटा प्रबंधन"
       datasets: "डेटासेट"
       federations: "संघ"
+      goal_management_preview:
       homepage: "मुख्य पृष्ठ"
       jobs:
       metadata: "मेटाडेटा"
@@ -2517,11 +2579,22 @@ hi:
         'true': true
         up: "ऊपर"
       site_chrome:
+        activate:
+        add_new_link_menu:
+        add_new_link_row:
         cancel:
+        congratulations:
         description:
+        link_menu_label_html:
+        move_link_row:
+        ok:
+        preview:
         preview_changes:
+        remove_link_menu:
+        remove_link_row:
         save:
         save_changes:
+        see_both_features:
         site_appearance:
         tabs:
           footer:
@@ -2530,6 +2603,9 @@ hi:
                 description:
                 label:
                 title:
+              copyright_notice_source:
+                description:
+                placeholder:
               footer_background_color:
                 description:
                 placeholder:
@@ -2560,14 +2636,27 @@ hi:
               menu_links:
                 description:
                 title:
+              menu_title_placeholder:
+              powered_by:
+                description:
+                label:
+                title:
               url_label:
               url_placeholder:
             title:
           general:
             fields:
+              font_family:
+                description:
+                placeholder:
+                title:
               google_analytics_token:
                 description:
                 error:
+                placeholder:
+                title:
+              max_width:
+                description:
                 placeholder:
                 title:
               show_signin_signout:
@@ -2578,6 +2667,7 @@ hi:
                 title:
               template:
                 description:
+                description_html:
                 placeholder:
                 title:
               window_icon:
@@ -2626,6 +2716,7 @@ hi:
               menu_links:
                 description:
                 title:
+              menu_title_placeholder:
               url_label:
               url_placeholder:
             title:
@@ -2679,6 +2770,25 @@ hi:
                 placeholder:
                 title:
             title:
+          whats_new:
+            fields:
+              a_bundle_of_goodness:
+                description_html:
+                title:
+              a_new_configurable_header_footer:
+                description_html:
+                title:
+              active_both_today:
+                description_html:
+                title:
+              dataset_landing_page:
+                description_html:
+                title:
+            title:
+        these_features_help:
+        update:
+        you_have_activated:
+      update:
       users:
         actions: "एक्शन (क्रिया)"
         all: "सभी"
@@ -2763,9 +2873,20 @@ hi:
         supported: "समर्थित फ़ाइल प्रकार हैं सीएसवी (CSV), टीसीवी (TSV), और एक्सेल। समर्थित प्रोटोकॉल हैं एचटीटीपी (HTTP) और एचटीटीपीएस (HTTPS)।"
         url_prompt: "आपके द्वारा आयात की जाने वाली फ़ाइल का वेब यूआरएल क्या है?"
       errors:
+        archive_error:
+        corrupt_shapefile_error:
+        create_column_error:
+        create_dataset_error:
+        create_working_copy_error:
+        decode_filetype_error:
+        delete_column_error:
+        get_column_error:
+        incomplete_shapefile_error:
         insecure_esri_url: "एक असुरक्षित ईएसआरआई मैप लेयर यूआरएल जोड़ दिया गया है। परिणामतः इस डेटासेट पर कुछ फ़ीचर काम नहीं करेंगे। "
+        invalid_arity_error:
         invalid_crossload_url: "कृपया एचटीटीपी (HTTP) या एचटीटीपीएस (HTTPS) से आरंभ होने वाले एक वैध यूआरएल को दर्ज करें।"
         invalid_url: "वह एक वैध यूआरएल दिखाई नहीं देता है।"
+        jsonparse_error:
         missing_data_provider: "आपको क्रिएटिव कॉमंस लाइसेंस में डेटा प्रदाता (संबंध) निर्दिष्ट करना चाहिए।"
         missing_esri_url: "एक वैध ईएसआरआई मानचित्र लेयर यूआरएल की आवश्यकता है।"
         missing_name: "डेटासेट नाम आवश्यक है।"
@@ -2773,6 +2894,14 @@ hi:
         point:
           missing_latlong:
           suboptimal_column:
+        publication_error:
+        shapefile_header_error:
+        shapefile_row_error:
+        update_metadata_error:
+        upsert_error:
+        vertex_too_complex_error:
+        xmlparse_error:
+        zkerror:
       finish:
         headline: "आपका डेटासेट बना दिया गया है।"
         subheadline: "उसे देखने के लिए समाप्त पर क्लिक करें!"
@@ -2815,9 +2944,11 @@ hi:
               one_html:
           single_column:
             empty_composite_col:
+            missing_lat_long:
             non_text_composite_col:
             type_too_generic:
             wrong_type:
+            wrong_type_location:
             wrong_type_unknown_count:
         errors_warnings: "त्रुटियां और चेतावनियां"
         fewer_rows: "कम पंक्तियाँ"
@@ -2839,6 +2970,7 @@ hi:
         suggested_columns: "सुझाये गये कॉलम"
         suggested_flat: "सुझाये गये कॉलम (कोई संयोजन नहीं)"
         suggested_plus_discrete: "सुझाये गये कॉलम (संयुक्त और भिन्न)"
+        upload_success:
         why_choose_now: "अभी कॉलम के प्रकार का चयन करना महत्वपूर्ण क्यों है?"
       import_help: <strong>सहायता की आवश्यकता है?</strong> हम <a href="%{common_errors}" rel="external">सामान्य चेतावनियों और त्रुटियों की सूची</a> कायम रखते हैं जो आपके लिए सहायक हो सकती है।
       import_shapefile:
@@ -3383,6 +3515,7 @@ hi:
             base_url_prompt: "सामान्‍य यूआरएल प्रेफिक्‍स डालें"
             title: "यूआरएल विकल्‍प"
           validation:
+            notallowed:
             published: "कृपया कॉलम प्रॉपर्टी बदलने के लिए इस डेटासेट की कामकाजी प्रति या व्‍यू बनाएँ।"
             snapshot:
             unsaved: "आप असुरक्षित व्‍यू के लिए कॉलम प्रॉपर्टी संपादित नहीं कर सकते हैं"
@@ -3416,6 +3549,8 @@ hi:
           title:
         delete:
           confirm: "इससे %{view_type} स्‍‍थायी रूप से मिटा जाएगा। इसमें कोई अनडू नहीं है। क्‍या आप वाकई आगे बढ़ना चाहते हैं?"
+          confirm_permanent:
+          confirm_restorable:
           delete_button: "इसे %{view_type} मिटाएँ"
           subtitle: "इसे %{view_type} मिटाएँ"
           title: "मिटाएँ"
@@ -3877,6 +4012,7 @@ hi:
       headline_upload: "कृपया अपलोड करने के लिए एक फ़ाइल का चयन करें"
       layer: "परत"
       many_headers: "आपकी %{num} पंक्तियां हेडर हैं।"
+      new_column:
       no_file_selected: "अभी तक कोई फाइल नहीं चुनी गई।"
       no_headers: "आपकी कोई भी पंक्ति हेडर नहीं है।"
       no_source_column: "(कोई स्रोत कॉलम नहीं)"

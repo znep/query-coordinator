@@ -184,10 +184,10 @@ blist.namespace.fetch('blist.filter');
     date: {
       details: {
         'LESS_THAN': {
-          text: 'is before'
+          text: $.t('core.filters.informal.is_after')
         },
         'GREATER_THAN': {
-          text: 'is after'
+          text: $.t('core.filters.informal.is_before')
         }
       },
       orderedList: ['EQUALS', 'NOT_EQUALS', 'LESS_THAN', 'GREATER_THAN', 'BETWEEN',
@@ -200,13 +200,13 @@ blist.namespace.fetch('blist.filter');
     check: {
       details: {
         'IS_BLANK': {
-          text: 'is not checked',
+          text: $.t('core.filters.informal.is_not_checked'),
           soql: function(c) {
             return 'not ' + c;
           }
         },
         'IS_NOT_BLANK': {
-          text: 'is checked',
+          text: $.t('core.filters.informal.is_checked'),
           soql: function(c) {
             return c;
           }
@@ -217,10 +217,10 @@ blist.namespace.fetch('blist.filter');
     blob: {
       details: {
         'IS_BLANK': {
-          text: 'is empty'
+          text: $.t('core.filters.informal.is_empty')
         },
         'IS_NOT_BLANK': {
-          text: 'exists'
+          text: $.t('core.filters.informal.exists')
         }
       },
       orderedList: ['IS_BLANK', 'IS_NOT_BLANK']

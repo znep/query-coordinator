@@ -187,6 +187,7 @@ de:
           description:
           header:
       feature_map:
+        feature_map_disabled:
         zoom_disabled: Zoom ist momentan nicht verfügbar. BItte versuchen SIe es später erneut.
       feature_map_flannel:
         error_message:
@@ -306,6 +307,9 @@ de:
         old_filter_title:
         old_filtered_title:
         unfiltered_title:
+      related_views:
+        button: Andere Ansichten dieser Informationen
+        title: Andere Ansichten dieser Informationen
       related_visualization_selector:
         based_on_column:
         visualization_not_supported:
@@ -1130,10 +1134,16 @@ de:
         between: liegt zwischen
         contains: beinhaltet
         equals: ist
+        exists:
         greater_than: ist größer als
         greater_than_or_equals: ist mindestens
+        is_after:
+        is_before:
         is_blank: ist leer
+        is_checked:
+        is_empty:
         is_not_blank: ist nicht leer
+        is_not_checked:
         less_than: ist weniger als
         less_than_or_equals: ist höchstens
         not_contains: enthält nicht
@@ -1251,6 +1261,8 @@ de:
     visibility:
       private: privat
       public: "öffentlich"
+  data_lens:
+    render_error:
   dataset_landing_page:
     action_buttons:
       api:
@@ -1269,6 +1281,13 @@ de:
       multiple_geo_layers:
       title:
     back:
+    blob_download:
+      download:
+      edit_prompt_button:
+      edit_prompt_message:
+      title:
+    blob_preview:
+      title:
     bootstrap_button:
     bootstrap_disabled_notice:
     bootstrap_message:
@@ -1329,6 +1348,7 @@ de:
       manage_prompt:
         button:
         message:
+        message_blob:
       title:
     featured_content_modal:
       external:
@@ -1343,6 +1363,7 @@ de:
         url:
       header:
       introduction:
+      introduction_blobby:
       preview:
       remove_error:
       remove_prompt:
@@ -1370,6 +1391,7 @@ de:
       screenshot_yes:
       title:
     less:
+    manage_dataset:
     manage_prompt:
     metadata:
       attachments:
@@ -1626,13 +1648,37 @@ de:
       bulk_edit:
         button_title:
         cancel:
+        date_range_from:
+        date_range_label:
+        date_range_to:
         failure_message:
         items_selected:
+        not_configured_message:
+        override_label:
+        override_types:
+          bad:
+          good:
+          no_judgement:
+          none:
+          within_tolerance:
         revert_changes:
         success_message:
         title:
         update:
         visibility:
+      export:
+        Csv:
+          button_label:
+          info_description:
+          info_title:
+        info_box:
+          cancel:
+          ok:
+      feedback_flannel:
+        message:
+        no_thanks:
+        title:
+        yes_include_screenshot:
       goal_values:
         status_private:
         status_public:
@@ -1641,14 +1687,25 @@ de:
         default_alert_message:
         goal_page:
         goal_status:
+        load_error:
         manage_on_goal_page:
         of:
         owner:
+        quick_edit:
         rows_per_page:
         title:
         updated_at:
         view_dashboard:
         visibility:
+      manage_performance_goals:
+      modal:
+        close_without_save_message:
+      page_title:
+      preview_bar:
+        back_to_configuration:
+        feedback:
+        learn_more:
+        performance_goal_management_preview:
       quick_edit:
         action_type:
         action_types:
@@ -1663,6 +1720,7 @@ de:
         dataset_updated:
         date_range:
         default_alert_message:
+        feedback:
         goal_name:
         goal_owner:
         goal_updated:
@@ -1678,6 +1736,9 @@ de:
         measure_target_type_types:
           absolute:
           relative:
+        not_configured_goal_message:
+          link:
+          text:
         override:
         override_types:
           bad:
@@ -1724,6 +1785,7 @@ de:
       data_management: Daten-Management
       datasets: Datensätze
       federations: Verbünde
+      goal_management_preview:
       homepage: Homepage
       jobs:
       metadata: Metadaten
@@ -2517,11 +2579,22 @@ de:
         'true': true
         up: Nach oben
       site_chrome:
+        activate:
+        add_new_link_menu:
+        add_new_link_row:
         cancel:
+        congratulations:
         description:
+        link_menu_label_html:
+        move_link_row:
+        ok:
+        preview:
         preview_changes:
+        remove_link_menu:
+        remove_link_row:
         save:
         save_changes:
+        see_both_features:
         site_appearance:
         tabs:
           footer:
@@ -2530,6 +2603,9 @@ de:
                 description:
                 label:
                 title:
+              copyright_notice_source:
+                description:
+                placeholder:
               footer_background_color:
                 description:
                 placeholder:
@@ -2560,14 +2636,27 @@ de:
               menu_links:
                 description:
                 title:
+              menu_title_placeholder:
+              powered_by:
+                description:
+                label:
+                title:
               url_label:
               url_placeholder:
             title:
           general:
             fields:
+              font_family:
+                description:
+                placeholder:
+                title:
               google_analytics_token:
                 description:
                 error:
+                placeholder:
+                title:
+              max_width:
+                description:
                 placeholder:
                 title:
               show_signin_signout:
@@ -2578,6 +2667,7 @@ de:
                 title:
               template:
                 description:
+                description_html:
                 placeholder:
                 title:
               window_icon:
@@ -2626,6 +2716,7 @@ de:
               menu_links:
                 description:
                 title:
+              menu_title_placeholder:
               url_label:
               url_placeholder:
             title:
@@ -2679,6 +2770,25 @@ de:
                 placeholder:
                 title:
             title:
+          whats_new:
+            fields:
+              a_bundle_of_goodness:
+                description_html:
+                title:
+              a_new_configurable_header_footer:
+                description_html:
+                title:
+              active_both_today:
+                description_html:
+                title:
+              dataset_landing_page:
+                description_html:
+                title:
+            title:
+        these_features_help:
+        update:
+        you_have_activated:
+      update:
       users:
         actions: Aktionen
         all: Alle
@@ -2763,9 +2873,20 @@ de:
         supported: Unterstützte Datei-Typen sind CSV, TSV und Excel. Unterstützte Protokolle sind HTTP und HTTPS.
         url_prompt: Wie lautet die Web-URL der Datei, die Sie importieren möchten?
       errors:
+        archive_error:
+        corrupt_shapefile_error:
+        create_column_error:
+        create_dataset_error:
+        create_working_copy_error:
+        decode_filetype_error:
+        delete_column_error:
+        get_column_error:
+        incomplete_shapefile_error:
         insecure_esri_url: Eine unsichere ESRI Kartenschicht-URL wurde hinzugefügt. Einige Features werden aus diesem Grunde auf diesem Dataset nicht funktionieren.
+        invalid_arity_error:
         invalid_crossload_url: Bitte geben Sie eine gültige URL ein, die entweder mit HTTP oder HTTPS beginnt.
         invalid_url: Dies scheint keine gültige URL zu sein.
+        jsonparse_error:
         missing_data_provider: Sie müssen den Daten-Anbieter (Zuordnung) in einer Creative-Common-Lizenz spezifizieren
         missing_esri_url: Eine gültige URL für die ESRI-Kartenebene wird benötigt.
         missing_name: Name für den Datensatz wird benötigt.
@@ -2773,6 +2894,14 @@ de:
         point:
           missing_latlong:
           suboptimal_column:
+        publication_error:
+        shapefile_header_error:
+        shapefile_row_error:
+        update_metadata_error:
+        upsert_error:
+        vertex_too_complex_error:
+        xmlparse_error:
+        zkerror:
       finish:
         headline: Ihr Datensatz wurde erstellt.
         subheadline: Klicken Sie auf Beenden, um ihn zu sehen!
@@ -2815,9 +2944,11 @@ de:
               one_html:
           single_column:
             empty_composite_col:
+            missing_lat_long:
             non_text_composite_col:
             type_too_generic:
             wrong_type:
+            wrong_type_location:
             wrong_type_unknown_count:
         errors_warnings: Fehler und Warnungen
         fewer_rows: Weniger Zeilen
@@ -2839,6 +2970,7 @@ de:
         suggested_columns: Vorgeschlagene Spalten
         suggested_flat: Vorgeschlagene Spalten (keine Komposite)
         suggested_plus_discrete: 'Vorgeschlagene Spalten (Komposite und Diskrete) '
+        upload_success:
         why_choose_now: Warum ist es wichtig, den Spaltentyp jetzt auszuwählen?
       import_help: <strong>Brauchen Sie Hilfe?</strong> Wir führen eine <a href="%{common_errors}" rel="external">Liste mit häufigen Warnungen und Fehlern</a>, die Ihnen vielleicht helfen kann.
       import_shapefile:
@@ -3379,6 +3511,7 @@ de:
             base_url_prompt: Geben das übiche URL-Präfix ein
             title: URL-Optionen
           validation:
+            notallowed:
             published: Bitte erstellen Sie eine Arbeitskopie oder Ansicht dieses Datensatzes, um die Spalten-Eigenschaften zu ändern
             snapshot:
             unsaved: Sie können Spalten-Eigenschaften für eine ungespeicherte Ansicht nicht bearbeiten
@@ -3412,6 +3545,8 @@ de:
           title:
         delete:
           confirm: Dies wird %{view_type} dauerhaft löschen. Es kann nicht rückgängig gemacht werden! Sind Sie sicher, dass Sie fortfahren möchten?
+          confirm_permanent:
+          confirm_restorable:
           delete_button: "%{view_type} löschen"
           subtitle: "%{view_type} löschen"
           title: Löschen
@@ -3873,6 +4008,7 @@ de:
       headline_upload: Bitte wählen Sie eine Datei zum Hochladen aus
       layer: Ebene
       many_headers: "%{num} Ihrer Zeilen sind Kopfzeilen"
+      new_column:
       no_file_selected: Noch keine Datei ausgewählt.
       no_headers: Keine Ihrer Zeilen sind Kopfzeilen.
       no_source_column: "(Keine Quell-Spalte)"

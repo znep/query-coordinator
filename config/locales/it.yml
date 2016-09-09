@@ -187,6 +187,7 @@ it:
           description: Salva un'immagine PNG di una visualizzazione
           header: Visualizzazione come immagine
       feature_map:
+        feature_map_disabled: Le mappe delle funzionalità non sono disponibili.
         zoom_disabled: Lo zoom non è attualmente disponibile. Ti preghiamo di riprovare.
       feature_map_flannel:
         error_message: Si è verificato un errore durante il riporto dei dati di localizzazione
@@ -306,6 +307,9 @@ it:
         old_filter_title: Mostrando <span class="light">the {0}</span>
         old_filtered_title: Mostrando <span class="light">{0}</span>
         unfiltered_title: Mostrando <span class="light">all {0}</span>
+      related_views:
+        button: Altre visualizzazioni di questi dati
+        title: Altre visualizzazioni di questi dati
       related_visualization_selector:
         based_on_column: Sulla base di {0}
         visualization_not_supported: Ci scusiamo per il disagio! Stiamo ancora sviluppando la funzionalità che ti consentirà di includere questo grafico in un articolo.
@@ -1130,10 +1134,16 @@ it:
         between: tra
         contains: contiene
         equals: uguale a
+        exists: esiste
         greater_than: maggiore di
         greater_than_or_equals: almeno
+        is_after: "è dopo"
+        is_before: "è prima"
         is_blank: vuoto
+        is_checked: "è controllato"
+        is_empty: "è vuoto"
         is_not_blank: non vuoto
+        is_not_checked: non è controllato
         less_than: minore di
         less_than_or_equals: al massimo
         not_contains: non contiene
@@ -1251,6 +1261,8 @@ it:
     visibility:
       private: privato
       public: pubblico
+  data_lens:
+    render_error: C'è stato un problema nel rendering di questa pagina.
   dataset_landing_page:
     action_buttons:
       api: API
@@ -1269,6 +1281,13 @@ it:
       multiple_geo_layers: Questa sequenza di dati contiene molteplici strati geospaziali. Ciascuno strato ha la propria documentazione e la sua estremità API di seguito.
       title: Accedi a questa sequenza di dati attraverso SODA API
     back: Indietro
+    blob_download:
+      download: Scarica
+      edit_prompt_button: Modifica la sorgente
+      edit_prompt_message: Modifica il file sorgente di questo set di dati.
+      title: Scarica questa risorsa
+    blob_preview:
+      title: Anteprima
     bootstrap_button: Crea una visualizzazione
     bootstrap_disabled_notice: I tuoi dati sono attualmente in fase di elaborazione. Aggiorna la pagina tra qualche minuto e potrai creare una nuova Data Lens.
     bootstrap_message: Questa sequenza di dati non ha alcuna visualizzazione correlata. Desideri crearne una nuova adesso?
@@ -1329,6 +1348,7 @@ it:
       manage_prompt:
         button: Gestisci un contenuto menzionato
         message: Scegli di promuovere fino a 3 risorse Socrata che utilizzano questi dati oppure scegli di presentare qualsiasi risorsa esterna rilevante. Se lasci questa sezione in bianco, essa non sarà visibile.
+        message_blob: Scegli di promuovere fino a 3 risorse esterne relative a questo file o documento. Se lasciata vuota, questa sezione non sarà visibile.
       title: Contenuto menzionato che utilizza questi dati
     featured_content_modal:
       external: Risorsa esterna
@@ -1343,6 +1363,7 @@ it:
         url: Link alla risorsa
       header: Gestisci il contenuto presentato
       introduction: Cose vorresti che le persone vedessero quando visualizzano per la prima volta questa sequenza di dati? Promuovi fino a 3 risorse Socrata che usano questi dati oppure scegli di presentare qualsiasi risorsa esterna rilevante. Pensa a questa sezione come al volto dei tuoi dati.
+      introduction_blobby: Cosa ti piacerebbe che la gente vedesse la prima volta che vede questo oggetto? Promuovi fino a 3 risorse esterne relative a questo file o documento.
       preview: Anteprima del contenuto presentato
       remove_error: Oh, no! Si è verificato un errore, ti preghiamo di riprovare.
       remove_prompt: Sei sicuro di voler rimuovere questo come parte del contenuto presentato?
@@ -1370,6 +1391,7 @@ it:
       screenshot_yes: Sì, includi uno screenshot
       title: Feedback
     less: Mostra meno
+    manage_dataset: Gestisci il set di dati
     manage_prompt: Clicca qui per gestire le autorizzazioni
     metadata:
       attachments: Allegati
@@ -1626,13 +1648,37 @@ it:
       bulk_edit:
         button_title: Modifica oggetti moltipli...
         cancel: Annulla
+        date_range_from: Da
+        date_range_label: Periodo riferimento
+        date_range_to: A
         failure_message: "<strong>Errore.</strong> Problemi nell'eseguire l'azione. Ritenta o annulla."
         items_selected: Oggetti selezionati.
+        not_configured_message: "<strong>Oops.</strong> Sembra che uno o più dei tuoi obiettivi non sia stato configurato. Le modifiche collettive possono essere effettuate solo per obiettivi già configurati."
+        override_label: Override
+        override_types:
+          bad: Necessita miglioramenti
+          good: Obiettivo raggiunto
+          no_judgement: Misurazione
+          none: Nessuno
+          within_tolerance: Vicino all'obiettivo
         revert_changes: Annulla modifiche
         success_message: Perfetto! {0} gli obiettivi sono stati aggiornati.
         title: Modifica oggetti multipli
         update: Aggiorna
         visibility: Visibilità
+      export:
+        Csv:
+          button_label: Esporta
+          info_description: Creazione CSV. Il download inizierà automaticamente quando è pronto
+          info_title: Creazione download
+        info_box:
+          cancel: Annulla
+          ok: OK
+      feedback_flannel:
+        message: Con una schermata puoi mostrarci esattamente l'oggetto del feedback. Stiamo utilizzando <a href="https://usersnap.com" target="_blank">Usersnap</a> per le schermate. Leggi le loro <a href="https://usersnap.com/privacy-policy" target="_blank">norme sulla privacy</a>.
+        no_thanks: No, grazie
+        title: Vuoi includere una schermata con commenti della pagina corrente?
+        yes_include_screenshot: Sì, includi una schermata
       goal_values:
         status_private: Privato
         status_public: Pubblico
@@ -1641,14 +1687,25 @@ it:
         default_alert_message: "<span><b>Oh, no!</b> Si è verificato un errore ed è stato notificato al nostro team. Nel frattempo, prova di nuovo questa azione oppure aggiorna la pagina.</span>"
         goal_page: Pagina dell'obiettivo
         goal_status: Stato dell'obiettivo
+        load_error: Si è verificato un problema nel caricare il contenuto
         manage_on_goal_page: Gestisci sulla Pagina dell'Obiettivo
         of: di
         owner: Proprietario
+        quick_edit: Modifica veloce
         rows_per_page: Righe per pagina
         title: Titolo
         updated_at: Agggiornato
         view_dashboard: Visualizza Cruscotto
         visibility: Visibilità
+      manage_performance_goals: Gestisci il raggiungimento degli obiettivi
+      modal:
+        close_without_save_message: Sei sicuro di voler chiudere? Le tue modifiche andranno perse.
+      page_title: Gestione obiettivi
+      preview_bar:
+        back_to_configuration: Torna alla configurazione
+        feedback: Feedback
+        learn_more: Per saperne di più
+        performance_goal_management_preview: Gestione del ragigungimento degli obiettivi
       quick_edit:
         action_type: Azione
         action_types:
@@ -1663,6 +1720,7 @@ it:
         dataset_updated: Set di dati aggiornato
         date_range: Variazione dei dati
         default_alert_message: "<span><b>Oh, no!</b> Qualcosa è andato storto. La nostra squadra ne è stata informata. Nel frattempo, riprova o aggiorna la pagina."
+        feedback: Feedback
         goal_name: Titolo dell'obiettivo
         goal_owner: Proprietario dell'obiettivo
         goal_updated: Obiettivo aggiornato
@@ -1678,6 +1736,9 @@ it:
         measure_target_type_types:
           absolute: A
           relative: Da
+        not_configured_goal_message:
+          link: vai alla pagina dell'obiettivo
+          text: L'obiettivo non è configurato. Per apportare delle modifiche, vai a questa sezione
         override: Forza
         override_types:
           bad: Richiede miglioramenti
@@ -1724,6 +1785,7 @@ it:
       data_management: Gestione Dati
       datasets: Sequenze di dati
       federations: Federazioni
+      goal_management_preview: Gestione degli obiettivi
       homepage: Pagina iniziale
       jobs: Lavori
       metadata: Metadati
@@ -2521,11 +2583,22 @@ it:
         'true': vero
         up: Su
       site_chrome:
+        activate: Attiva
+        add_new_link_menu: Aggiungi menù
+        add_new_link_row: 'Aggiungi link %{section} '
         cancel: Annulla
+        congratulations: Congratulazioni!
         description: Configura l'aspetto del tuo sito Socrata.
+        link_menu_label_html: "<b>Menu</b> - <i>Puoi trascinare i link per riordinarli</i>"
+        move_link_row: Trascina per riordinare
+        ok: OK
+        preview: Anteprima
         preview_changes: Anteprima delle modifiche
+        remove_link_menu: Elimina il menù dei link
+        remove_link_row: Elimina il link
         save: Salva
         save_changes: Salva modifiche
+        see_both_features: Guarda entrambe le funzionalità in azione visitando uno dei tuoi set di dati.
         site_appearance: Aspetto del sito
         tabs:
           footer:
@@ -2534,6 +2607,9 @@ it:
                 description: Aziona la visualizzazione dell'avviso di copyright del tuo sito. Aggiorniamo automaticamente l'avviso per mostrare l'anno solare in corso.
                 label: Mostra avviso di copyright
                 title: Avviso di copyright
+              copyright_notice_source:
+                description: Il nome della tua organizzazione, città, contea o stato che appare con il copyright e l'anno in corso.
+                placeholder: Sorgente copyright
               footer_background_color:
                 description: Colore dello sfondo, colore del testo e dei link mostrati all'interno del piè di pagina.
                 placeholder: "#123456"
@@ -2564,16 +2640,29 @@ it:
               menu_links:
                 description: Mostra fino a 15 link nel piè di pagina. Disponiamo automaticamente questi link in colonne.
                 title: Link del menu del piè di pagina
+              menu_title_placeholder: Testo del menù
+              powered_by:
+                description: Mostra il marchio "Servizio fornito da Socrata" nel piè di pagina, e fornisce anche un link per socrata.com
+                label: Mostra il marchio Socrata nel nel piè di pagina
+                title: Servizio fornito da Socrata
               url_label: URL
               url_placeholder: http://data.evergreen.gov
             title: Piè di pagina
           general:
             fields:
+              font_family:
+                description: Scegli il carattere da utilizzare per tutto il testo, sia nell'intestazione che nel piè di pagina.
+                placeholder: Carattere
+                title: Carattere
               google_analytics_token:
                 description: Inserisci il token (non lo script intero) del tuo codice di tracciamento Google Analytics per raccogliere dati analitici per il tuo sito.
                 error: Il token dovrebbe corrispondere al formato UA-XXXXX-XXXX
                 placeholder: UA-12345678-1
                 title: Token di Google Analytics
+              max_width:
+                description: Inserisci la larghezza massima (in pixel) del contenuto dell'intestazione e del piè di pagina. Se lasciato vuoto, si adeguerà alle dimensioni della finestra del browser del visitatore.
+                placeholder: 1200px
+                title: Larghezza massima
               show_signin_signout:
                 description: Visualizza queste opzioni se il sito richiede la creazione di un profilo utente o un login.
                 show_profile: Visualizza un link al profilo utente dopo il login
@@ -2582,6 +2671,7 @@ it:
                 title: Login / Logout
               template:
                 description: Regola l'aspetto dell'intestazione/piè di pagina modificando il modello. I modelli supportati sono "Predefinito" e "Rally".
+                description_html: Regola l'aspetto dell'intestazione cambiando il modello. I modelli supportati sono <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">"Evergreen" e "Rally"</a>.
                 placeholder: Rally
                 title: Modello
               window_icon:
@@ -2630,6 +2720,7 @@ it:
               menu_links:
                 description: Mostra fino a 15 link all'interno della barra d'intestazione. Se le etichette dei link diventano troppo lunghe o un visitatore sta visualizzando il tuo sito su un dispositivo piccolo, allora i link si contrarranno automaticamente in un menu.
                 title: Link del menu
+              menu_title_placeholder: Testo del menù
               url_label: URL
               url_placeholder: http://data.evergreen.gov
             title: Barra d'intestazione
@@ -2659,9 +2750,9 @@ it:
                 placeholder: http://www.linkedin.com/
                 title: Link al profilo LinkedIn
               pinterest_profile_link:
-                description:
-                placeholder:
-                title:
+                description: Aggiungi qui l'URL per mostrare un link al tuo profilo Pinterest dell'organizzazione, sia nell'intestazione che nel piè di pagina.
+                placeholder: http://www.pinterest.com/
+                title: Link del profilo Pinterest
               tumblr_profile_link:
                 description: Mostra il link al profilo Tumblr e il link nell'intestazione e nel piè di pagina, ove presenti.
                 placeholder: http://www.tumblr.com/
@@ -2683,6 +2774,25 @@ it:
                 placeholder: http://www.youtube.com/
                 title: Link al Profilo YouTube
             title: Condivisione sui social
+          whats_new:
+            fields:
+              a_bundle_of_goodness:
+                description_html: "<P>L'attesa è finita: il set di dati della landing page e la nuova funzione configurabile di intestazione/piè di pagina sono entrambi pronti a partire! Continua a leggere per conoscere questi miglioramenti e come attivarli, oggi.</P>"
+                title: 'Un pacco di bontà: due nuove funzionalità disponibili subito'
+              a_new_configurable_header_footer:
+                description_html: '<P>Come parte di questa release, abbiamo anche introdotto un nuova funzione di intestazione/piè di pagina per il sito, unificata, mobile-responsive e configurabile dall''utente. Questa nuova funzione di intestazione/piè di pagina ti permette di configurare loghi, colori, copyright, link di navigazione, icone aziendali, ecc. nel tuo stile e in modo autonomo. Ti consente di controllare l''aspetto del tuo sito in modo semplice e di aggiornare questi componenti essenziali senza dover contattare il supporto Socrata.</p> <p>In ogni caso, usando il design attuale del tuo sito e Customer Success Managers come guida, abbiamo già preparato l''intestazione e il piè di pagina per l''anteprima. Clicca sul pulsante "Anteprima" in alto per dare un''occhiata e poi regolalo come vuoi: è tutto tuo.</p>'
+                title: Una nuova funzione intestazione e il piè di pagina configurabile
+              active_both_today:
+                description_html: "<P>il set di dati della landing page e la nuova funzione configurabile di intestazione/piè di pagina sono entrambi già disponibili. Controlla i tab in alto per configurare e visualizzare in anteprima come si presenta il tuo sito - e quando sei pronto, attivali insieme!</p> <p><b>Nota:</ b> Se non hai configurato l'intestazione/piè di pagina per il sito entro 30 giorni, Socrata lo configurerà per te e lo attiverà automaticamente con il set di dati della landing page. Utilizzeremo il design attuale del sito e il tuo Customer Success Manager per una guida dello stile.</p> <p>Per suggerimenti su come configurare l'intestazione/piè di pagina e attivare il set di dati della landing page, ti invitiamo a partecipare al <a \nhref=\"https://event.on24.com/eventRegistration/EventLobbyServlet?target=reg20.jsp&referrer=&eventid=1223356&sessionid=1&key=9ED33D00A47ABC3419890552EBA81D93®Tag=&sourcepage=register\" target=\"_blank\">webinar \"Utilizzare al meglio le nuove funzionalità\"</a> oppure a visitare il nostro sito di supporto: <a href=\"https://support.socrata.com/hc/en-us/articles/223723227\" target=\"_blank\">https://support.socrata.com/hc/en-us/articles/223723227</a>.</p>"
+                title: Attivali entrambi oggi!
+              dataset_landing_page:
+                description_html: <P>Emozionati! Con questo aggiornamento, il set di dati della landing page diventa la principale esperienza in prima pagina per i set di dati caricati, mettendo in luce gli aspetti più comunemente accessibili di ogni set di dati in modo intuitivo e rendendo visibili i metadati agli utenti di dati prima di agire. Gli editori e gli amministratori possono liberamente "mostrare" le relative panoramiche e visualizzazioni, gli utenti più sofisticati possono esplorare direttamente i metadati e le valutazioni e tutti gli utenti possono accedere ai dati nel modo che desiderano, sia che questo avvenga tramite visualizzazioni di dati, download di file diretti o tramite API. E, naturalmente, la vista tabulare classica dei dati è ancora accessibile dalla parte superiore di navigazione di questa vista, per gli utenti che la preferiscono.</p>
+                title: Set di dati della landing page
+            title: Cosa c'è di nuovo
+        these_features_help: Queste funzionalità aiuteranno gli utenti a esplorare i dati e ti sarà più facile gestire l'aspetto del tuo sito.
+        update: Aggiornamento
+        you_have_activated: Hai attivato la tua nuova funzione di intestazione/piè di pagina e il set di dati della landing page.
+      update: Aggiornamento
       users:
         actions: Azioni
         all: Tutto
@@ -2767,9 +2877,20 @@ it:
         supported: I tipi di file supportati sono CSV, TSV e Excel. I protocolli supportati sono HTTP e HTTPS.
         url_prompt: Qual è l'URL web che vorresti importare?
       errors:
+        archive_error: 'Apertura dell''archivio zip non riuscita: {reason}'
+        corrupt_shapefile_error: 'Lettura dello shapefile non riuscita: {reason}'
+        create_column_error: Creazione del set di dati non riuscita
+        create_dataset_error: Creazione del set di dati non riuscita
+        create_working_copy_error: Creazione del set di dati non riuscita
+        decode_filetype_error: Nessun decodificatore trovato per {kind}
+        delete_column_error: Eliminazione di una colonna di quel set di dati non riuscita
+        get_column_error: Ottenimento delle colonne di quel set di dati non riuscito
+        incomplete_shapefile_error: 'Il tuo archivio shapefile è incompleto. Deve contenere un file .dbf, .shp, e .prj per ogni livello. Deve contenere i seguenti file che risultano mancanti: {missing}.'
         insecure_esri_url: "È stato aggiunto un livello di mappa URL Esri. Di conseguenza, alcune caratteristiche non funzioneranno su questo set di dati."
+        invalid_arity_error: Uno dei punti nella riga seguente non aveva 2 coordinate {geom}
         invalid_crossload_url: Inserisci un valido URL digitando HTTP o HTTPS
         invalid_url: Sembra non essere un URL valido.
+        jsonparse_error: Impossibile analizzare JSON alla linea {line} colonna {column} gettone {token} perché {reason}
         missing_data_provider: Devi specificare il data provider (attribuzione) in una licenza Creative Commons.
         missing_esri_url: "È necessario inserire un URL di un valido ESRI map layer."
         missing_name: "È obbligatorio inserire il nome del Dataset."
@@ -2777,6 +2898,14 @@ it:
         point:
           missing_latlong: imposta per importare una colonna <strong>%{coordinateType} ma non una colonna <strong>%{missingCoordinateType}. Specifica la coppia completa lat/long.
           suboptimal_column: imposta per importare il suo <strong>%{field}</strong> dalla colonna di origine <strong>%{originalColumnName}</strong>, ma la nostra analisi mostra che la colonna di origine è una colonna %{suggestion}, mentre %{field} si aspetta una colonna di tipo %{type}. Qualora dovessi scegliere di procedere con queste impostazioni di importazione, è probabile che si verifichino errori di importazione o di geo-codifica.
+        publication_error: Pubblicazione di quel set di dati non riuscita
+        shapefile_header_error: 'Lettura dell''intestazione nello shapefile non riuscita: {reason} '
+        shapefile_row_error: 'Lettura di una riga nello shapefile non riuscita: {reason} '
+        update_metadata_error: Aggiornamento dei metadati sul set di dati genitore non riuscito
+        upsert_error: Merge del set di dati non riuscito
+        vertex_too_complex_error: C'erano {counted} vertici nella riga {rowNum}, il massimo è {maxVerticesPerRow}
+        xmlparse_error: Analisi del nodo XML non riuscita a causa di {reason} vicino a {path}
+        zkerror: 'Si è verificato un errore a monte: {reason}'
       finish:
         headline: Il Tuo set di dati è stato creato.
         subheadline: Clicca su Termina per vederlo!
@@ -2819,9 +2948,11 @@ it:
               one_html: La colonna {sourceColumns} si trova nel file di dati sorgente, ma attualmente non è impostata per l'importazione nel set di dati.
           single_column:
             empty_composite_col: La colonna <strong>{resultColumnName}</strong> è una colonna composita, che verrà creata partendo da diverse colonne sorgente, ma attualmente non è impostata per ricevere alcun dato. Si prega di aggiungere colonne fonte o testo.
+            missing_lat_long: La colonna "<strong>{resultColumnName}</strong>" è impostata per importare una colonna <strong>{coordinateType}</strong>, ma non una colonna <strong>{missingCoordinateType}</strong>. Specifica la combinazione lat/long in dettaglio.
             non_text_composite_col: La colonna <strong>{resultColumnName}</strong> è una colonna composita, che verrà creata partendo da diverse colonne sorgente, ma attualmente è impostata per l'importazione come <strong>{chosenType}</strong>. Si prega di verificare che la combinazione delle colonne selezionate dia un {chosenType} valido.
             type_too_generic: La colonna <strong>{resultColumnName}</strong> è impostata per l'importazione come <strong>{chosenType}</strong>, ma, secondo la nostra analisi, è probabile che la colonna sia <strong>{suggestedType}</strong>. È possibile importare la colonna come {chosenType}, ma, così facendo, si perderanno alcune caratteristiche. Si raccomanda caldamente di importare la colonna come <strong>{suggestedType}</strong>.
             wrong_type: La colonna <strong>{resultColumnName}</strong> è una <strong>{chosenType}</strong>, ma, secondo la nostra analisi, la colonna sorgente che si sta tentando di importare è del tipo <strong>{suggestedType}</strong>. Se si sceglie di importare tale colonna, approssimativamente il <strong>{invalidPercent}%</strong> dei dati è a rischio di essere importato in modo errato.
+            wrong_type_location: La colonna “<strong>{resultColumnName}</strong>” è impostata per importare il suo <strong>{field}</strong> dalla colonna sorgente <strong>{chosenColumn}</strong>, ma la nostra analisi mostra che la colonna sorgente è una colonna {chosenType}, mentre {field} si aspetta una colonna di tipo {suggestedType}. Se scegli di procedere con queste impostazioni di importazione, è probabile che si verifichino errori di importazione o di geocoding.
             wrong_type_unknown_count: La colonna <strong>{resultColumnName}</strong> è impostata per l'importazione come <strong>{chosenType}</strong>, ma, secondo la nostra analisi, <strong>{suggestedType}</strong> potrebbe essere un'opzione migliore. Se i dati della colonna non sono formattati correttamente come {chosenType}, tali dati potrebbero essere importati in modo errato.
         errors_warnings: Errori ed Avvisi
         fewer_rows: Numero inferiore di Righe
@@ -2843,6 +2974,7 @@ it:
         suggested_columns: Colonne Suggerite
         suggested_flat: Colonne suggerite (nessuna composizione)
         suggested_plus_discrete: Colonne suggerite (composizioni e discreti)
+        upload_success: Bene! Hai caricato un file di dati con successo. Abbiamo archiviato il file in modo sicuro; se esci e rientri non sarà necessario inviarlo di nuovo.
         why_choose_now: Perchè è importante scegliere i tipi di colonne adesso?
       import_help: <strong>Hai bisogno di aiuto?</strong> Noi manteniamo una <a href="%{common_errors}" rel="external">lista di avvertimenti ed errori comuni</a> che possono aiutarti.
       import_shapefile:
@@ -3383,6 +3515,7 @@ it:
             base_url_prompt: Inserisci il prefisso URL comune
             title: Opzioni URL
           validation:
+            notallowed: Non sei autorizzato a modificare le proprietà delle colonne
             published: Si prega di creare una copia di lavoro o una vista del dataset per modificare le proprietà delle colonne
             snapshot: Non è possibile modificare le proprietà di una colonna per un'immagine di visualizzazione
             unsaved: Non puoi modificare le proprietà di una colonna per una vista non salvata
@@ -3416,6 +3549,8 @@ it:
           title: Data Lens
         delete:
           confirm: Questo eliminerà %{view_type} in modo permanente. Non è possibile annullare l'eliminazione! Sei sicuro di voler procedere?
+          confirm_permanent: Questo eliminerà in modo permanente il %{view_type}. Questa è un'azione irreversibile! Sei sicuro di voler procedere?
+          confirm_restorable: Questa eliminazione è reversibile per un massimo di %{number_of_days_restorable} giorni da un amministratore del dominio. Sei sicuro di voler procedere?
           delete_button: Elimina vista %{view_type}
           subtitle: Elimina questo %{view_type}
           title: Elimina
@@ -3877,6 +4012,7 @@ it:
       headline_upload: Cortesemente scegli un file da caricare
       layer: Layer
       many_headers: "%{num} delle tue colonne sono titolate."
+      new_column: Nuova colonna {num}
       no_file_selected: Nessun file è ancora selezionato.
       no_headers: Nessuna delle tue colonne sono titolate.
       no_source_column: "(Non ci sono Fonti per le Colonne)"
@@ -4161,21 +4297,21 @@ it:
         prompt: Dai un nome alla tua nuova sequenza di dati.
         title: Crea una nuova sequenza di dati
       menu:
-        about:
-        api:
-        api_subtext:
-        discuss:
-        discuss_subtext:
-        download:
-        download_subtext:
-        embed:
-        embed_subtext:
-        more_views:
-        more_views_subtext:
-        odata:
-        odata_subtext:
-        print:
-        print_subtext:
+        about: Relativamente alla piattaforma Socrata Open Data
+        api: API
+        api_subtext: Accedi a questo set di dati via SODA
+        discuss: Tratta
+        discuss_subtext: Tratta questo set di dati
+        download: Scarica
+        download_subtext: Scarica in vari formati
+        embed: Integra
+        embed_subtext: Integra questo lettore nel suo sito
+        more_views: Più panoramiche
+        more_views_subtext: Filtri, grafici e mappe
+        odata: OData
+        odata_subtext: Accedi a questo set di dati via OData
+        print: Stampa
+        print_subtext: Stampa questo set di dati
     wizard:
       cancel: Cancella
       finish: Termina

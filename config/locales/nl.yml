@@ -187,6 +187,7 @@ nl:
           description: Sla een bestand met een PNG-afbeelding van een visualisatie op
           header: Visualisatie als afbeelding
       feature_map:
+        feature_map_disabled: Bijhorende kaarten niet beschikbaar.
         zoom_disabled: Zoom is tijdelijk niet beschikbaar. Probeer het later opnieuw.
       feature_map_flannel:
         error_message: Er deed zich een fout voor tijdens het ophalen van locatiedata.
@@ -306,6 +307,9 @@ nl:
         old_filter_title: <span class="light">De {0}</span> worden getoond
         old_filtered_title: <span class="light">De {0}</span> worden getoond
         unfiltered_title: <span class="light">Alle {0}</span> worden getoond
+      related_views:
+        button: Andere visies op deze gegevens
+        title: Andere visies op deze gegevens
       related_visualization_selector:
         based_on_column: Gebaseerd op {0}
         visualization_not_supported: Neem het ons niet kwalijk! We zijn nog steeds de functionaliteit aan het ontwikkelen die u zal toelaten om dit grafiektype in te voegen in een verhaal.
@@ -1147,10 +1151,16 @@ nl:
         between: is tussen
         contains: bevat
         equals: is
+        exists: bestaat
         greater_than: is groter dan
         greater_than_or_equals: is tenminste
+        is_after: is na
+        is_before: is voor
         is_blank: is leeg
+        is_checked: is gecontroleerd
+        is_empty: is leeg
         is_not_blank: is niet leeg
+        is_not_checked: is niet gecontroleerd
         less_than: is minder dan
         less_than_or_equals: hoogstens
         not_contains: bevat niet
@@ -1274,6 +1284,8 @@ nl:
     visibility:
       private: privé
       public: openbaar
+  data_lens:
+    render_error: Er ging iets mis bij het weergeven van deze pagina.
   dataset_landing_page:
     action_buttons:
       api: API
@@ -1292,6 +1304,13 @@ nl:
       multiple_geo_layers: Deze dataset bevat meerdere geospatiale lagen. Elke laag heeft onderaan zijn eigen documentatie en API-eindpunt.
       title: Krijg toegang tot deze Dataset via SODA API
     back: Terug
+    blob_download:
+      download: Downloaden
+      edit_prompt_button: Bron bewerken
+      edit_prompt_message: Bewerk het bronbestand voor deze dataset.
+      title: Download dit Element
+    blob_preview:
+      title: Voorbeeld
     bootstrap_button: Maak een Visualisatie aan
     bootstrap_disabled_notice: Uw gegevens worden momenteel verwerkt. Hernieuw de pagina binnen enkele minuten en u zal een nieuwe Datalens kunnen aanmaken.
     bootstrap_message: Deze dataset heeft geen enkele gerelateerde visualisaties. Wilt u er nu één aanmaken?
@@ -1352,6 +1371,7 @@ nl:
       manage_prompt:
         button: Beheer uitgelichte inhoud
         message: Kies ervoor om tot 3 activa van Socrata te promoten die deze gegevens gebruiken, of kies ervoor om externe hulpmiddelen uit te lichten. Dit gedeelte zal onzichtbaar worden indien de velden leeg worden gelaten.
+        message_blob: Kies om maximaal 3 externe elementen te promoten die relevant zijn aan dit bestand of document. Dit gedeelte wordt onzichtbaar indien het wordt leeg gelaten.
       title: Uitgelichte inhoud die gebruik maakt van deze gegevens
     featured_content_modal:
       external: Extern hulpmiddel
@@ -1366,6 +1386,7 @@ nl:
         url: Link naar hulpmiddel
       header: Beheer uitgelichte inhoud
       introduction: Wat wilt u dat de mensen te zien krijgen als zij voor het eerst de dataset bekijken? Promoot tot 3 activa van Socrata die gebruik maken van deze gegevens, of kies ervoor om relevante externe hulpmiddelen uit te lichten. Beschouw dit gedeelte als het gezicht van uw gegevens.
+      introduction_blobby: Wat wilt u dat mensen eerst te zien krijgen als ze dit activum bekijken? Promoot maximaal 3 externe elementen die relevant zijn aan dit bestand of document.
       preview: Voorbeeld van de uitgelichte inhoud
       remove_error: Oh nee!  Er ging iets mis, probeer a.u.b. opnieuw.
       remove_prompt: Bent u zeker dat u dit wilt verwijderen?
@@ -1393,6 +1414,7 @@ nl:
       screenshot_yes: Ja, voeg een screenshot toe
       title: Feedback
     less: Minder tonen
+    manage_dataset: Dataset beheren
     manage_prompt: Klik hier om toestemmingen te beheren
     metadata:
       attachments: Bijlagen
@@ -1651,13 +1673,37 @@ nl:
       bulk_edit:
         button_title: Meerdere items bewerken...
         cancel: Annuleren
+        date_range_from: Van
+        date_range_label: Datumbereik
+        date_range_to: Naar
         failure_message: "<strong>Foutmelding.</strong> Er ging iets mis bij het uitvoeren van deze actie. Probeer opnieuw of annuleer."
         items_selected: Geselecteerde items
+        not_configured_message: "<strong>Oeps.</strong> Het lijkt erop dat één of meer van uw doelen niet geconfigureerd zijn. Omvangrijke bewerkingen kunnen enkel bij doelen gemaakt worden die reeds geconfigureerd werden."
+        override_label: Overschrijven
+        override_types:
+          bad: Heeft verbetering nodig
+          good: Op schema
+          no_judgement: Aan het meten
+          none: Geen
+          within_tolerance: In de buurt van doel
         revert_changes: Veranderingen ongedaan maken
         success_message: Gelukt! Er werden {0} doelen bijgewerkt.
         title: Meerdere items bewerken
         update: Bijwerken
         visibility: Zichtbaarheid
+      export:
+        Csv:
+          button_label: Exporteren
+          info_description: Er wordt een CSV gegenereerd. Het downloaden wordt automatisch gestart zodra het mogelijk is
+          info_title: Download wordt gegenereerd
+        info_box:
+          cancel: Annuleren
+          ok: OK
+      feedback_flannel:
+        message: Aan de hand van een screenshot kan u ons exact vertellen waarover uw feedback gaat. We gebruiken <a href="https://usersnap.com" target="_blank">Usersnap</a> voor screenshots. Lees hun <a href="https://usersnap.com/privacy-policy"  target="_blank">privacybeleid</a>.
+        no_thanks: Nee dank u
+        title: Wilt u een geannoteerd screenshot van de huidige pagina bijvoegen?
+        yes_include_screenshot: Ja, voeg een screenshot bij
       goal_values:
         status_private: Persoonlijk
         status_public: Openbaar
@@ -1666,14 +1712,25 @@ nl:
         default_alert_message: "<span><b>Oh nee!</b> Er ging iets mis en ons team werd geïnformeerd. Probeer ondertussen de opdracht opnieuw uit te voeren of hernieuw deze pagina.</span>"
         goal_page: Doelpagina
         goal_status: Doelstatus
+        load_error: Er ging iets mis bij het laden van de inhoud.
         manage_on_goal_page: Doelpagina beheren
         of: van
         owner: Eigenaar
+        quick_edit: Snel bewerken
         rows_per_page: Rijen per pagina
         title: Titel
         updated_at: Bijgewerkt
         view_dashboard: Dashboard bekijken
         visibility: Zichtbaarheid
+      manage_performance_goals: Prestatiedoelen beheren
+      modal:
+        close_without_save_message: Bent u zeker dat u wilt afsluiten? Uw veranderingen zullen verloren gaan.
+      page_title: Doelbeheer
+      preview_bar:
+        back_to_configuration: Terug naar configuratie
+        feedback: Feedback
+        learn_more: Meer informatie
+        performance_goal_management_preview: Beheer prestatiedoelen
       quick_edit:
         action_type: Actie
         action_types:
@@ -1688,6 +1745,7 @@ nl:
         dataset_updated: Dataset bijgewerkt
         date_range: Datumbereik
         default_alert_message: "<span><b>Oh nee!</b> Er ging iets mis en ons team werd op de hoogte gebracht. Probeer ondertussen nog een keer of hernieuw deze pagina. </span>"
+        feedback: Feedback
         goal_name: Titel doelstelling
         goal_owner: Eigenaar doelstelling
         goal_updated: Doelstelling bijgewerkt
@@ -1703,6 +1761,9 @@ nl:
         measure_target_type_types:
           absolute: Naar
           relative: Van
+        not_configured_goal_message:
+          link: ga naar de doelenpagina
+          text: Dit doel werd niet geconfigureerd. Om veranderingen te maken aan dit gedeelte,
         override: Overschrijven
         override_types:
           bad: Heeft verbeteringen nodig
@@ -1749,6 +1810,7 @@ nl:
       data_management: Databeheer
       datasets: Datasets
       federations: Federaties
+      goal_management_preview: Doelbeheer
       homepage: Homepage
       jobs: Jobs
       metadata: Metadata
@@ -2548,11 +2610,22 @@ nl:
         'true': true
         up: Omhoog
       site_chrome:
+        activate: Activeren
+        add_new_link_menu: Menu toevoegen
+        add_new_link_row: "%{section} link toevoegen"
         cancel: Annuleren
+        congratulations: Proficiat!
         description: Configureer het uiterlijk van uw Socrata-website
+        link_menu_label_html: "<b>Menu</b> - <i>U kan links verslepen om ze te herschikken</i>"
+        move_link_row: Versleep om te herschikken
+        ok: OK
+        preview: Voorbeeld
         preview_changes: Voorbeeld van aanpassingen
+        remove_link_menu: Menu met links verwijderen
+        remove_link_row: Link verwijderen
         save: Opslaan
         save_changes: Aanpassingen opslaan
+        see_both_features: Bekijk beide functies in actie door een van uw datasets te bezoeken.
         site_appearance: Uiterlijk van website
         tabs:
           footer:
@@ -2561,6 +2634,9 @@ nl:
                 description: Wissel het uitzicht van de kennisgeving van het auteursrecht. We updaten automatisch de kennisgeving zodat deze het huidige kalenderjaar weergeeft.
                 label: Toon kennisgeving auteursrecht
                 title: Kennisgeving auteursrecht
+              copyright_notice_source:
+                description: De naam van uw organisatie, stad, provincie of staat die verschijnt met het auteursrecht en het huidige jaar.
+                placeholder: Bron auteursrecht
               footer_background_color:
                 description: Achtergrondkleur van de voettekst en de kleur van de tekst en links van de voettekst.
                 placeholder: "#123456"
@@ -2591,16 +2667,29 @@ nl:
               menu_links:
                 description: Toon tot 15 links in de voettekst. Wij plaatsen deze links automatisch in kolommen.
                 title: Menulinks voettekst
+              menu_title_placeholder: Tekst in menu
+              powered_by:
+                description: Toont "Aangeboden door Socrata" vermelding in de voettekst, en voorziet ook een link naar socrata.com
+                label: Toon Socrata vermelding in voettekst
+                title: Aangeboden door Socrata
               url_label: URL
               url_placeholder: http://data.evergreen.gov
             title: Voettekst
           general:
             fields:
+              font_family:
+                description: Kies het lettertype dat zowel voor de hoofding als de voettekst zal gebruikt worden.
+                placeholder: Lettertype
+                title: Lettertype
               google_analytics_token:
                 description: Voer het token (niet het volledige script) van uw Google Analytics traceercode om analytische gegevens voor uw website te verzamelen.
                 error: 'Coupon moet overeenkomen met het formaat: UA-XXXXX-XXXX'
                 placeholder: UA-12345678-1
                 title: Google Analytics Token
+              max_width:
+                description: Voer de maximale breedte (in pixels) in voor uw hoofding en voettekst. Indien u dit leeg laat, zullen beide de afmetingen van het browservenster van de bezoeker aannemen.
+                placeholder: 1200px
+                title: Max breedte
               show_signin_signout:
                 description: Toon deze opties indien uw website een gebruikersprofiel / aanmelding vereist.
                 show_profile: Toon link naar profiel na aanmelding
@@ -2609,6 +2698,7 @@ nl:
                 title: Aanmelden / afmelden
               template:
                 description: Pas het uiterlijk van de hoofding/onderregel aan door het sjabloon te veranderen. Ondersteunde sjablonen zijn "standaard" en "rally".
+                description_html: Pas het uiterlijk van de hoofding aan door het sjabloon te veranderen. Ondersteunde sjablonen zijn <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">"Evergreen" en "Rally"</a>.
                 placeholder: Rally
                 title: Sjabloon
               window_icon:
@@ -2657,6 +2747,7 @@ nl:
               menu_links:
                 description: Toon tot 15 links in de balk van de hoofding. Als de linklabels te lang worden of als een bezoeker uw website aan het bekijken is op een klein toestel, dan worden de links automatisch opengevouwen in een menu.
                 title: Menulinks
+              menu_title_placeholder: Tekst in menu
               url_label: URL
               url_placeholder: http://data.evergreen.gov
             title: Balk van hoofding
@@ -2686,9 +2777,9 @@ nl:
                 placeholder: http://www.linkedin.com/
                 title: Link naar LinkedIn-profiel
               pinterest_profile_link:
-                description:
-                placeholder:
-                title:
+                description: Voeg de URL aan deze plek toe om een link naar het Pinterest-profiel van uw organisatie weer te geven in zowel hoofding als voettekst.
+                placeholder: http://www.pinterest.com/
+                title: Link naar profiel op Pinterest
               tumblr_profile_link:
                 description: Weergeeft link naar Tumblr-profiel in hoofding en voettekst indien aanwezig.
                 placeholder: http://www.tumblr.com/
@@ -2710,6 +2801,25 @@ nl:
                 placeholder: http://www.youtube.com/
                 title: Link naar Youtube-profiel
             title: Delen op sociale netwerken
+          whats_new:
+            fields:
+              a_bundle_of_goodness:
+                description_html: "<p>Het wachten is voorbij: landingspagina voor uw dataset en uw nieuwe, configureerbare hoofding/voettekst zijn beide gereed! Lees verder om meer te leren over deze verbeteringen en hoe u ze vandaag nog kunt activeren.</p>"
+                title: 'Een pakket vol goeds: twee nieuwe functies nu beschikbaar'
+              a_new_configurable_header_footer:
+                description_html: <p>Deel uitmakend van deze uitgave, hebben we ook een nieuwe samengevoegde hoofding/voettekst uitgebracht voor uw website die configureerbaar is door de beheerder en toegankelijk is met een mobiel. Deze nieuwe hoofding/voettekst laat u toe de logo's, kleuren, auteursrecht, links voor navigatie, sociale icoontjes en meer op uw website zelf te configureren. Het geeft u controle over het uiterlijk van uw website en laat u toe essentiële elementen op een eenvoudige manier bij te werken zonder contact te moeten opnemen met de helpdesk van Socrata.</p> <p>Trouwens - aan de hand van het huidige uiterlijk van uw website en de beheerders van uw klantensucces hebben we reeds een voorbeeld gemaakt van uw hoofding en voettekst. Klik op de "Voorbeeld" knop hierboven om een kijkje te nemen, en pas aan zoals u wenst - u heeft de touwtjes in handen.</p>
+                title: Een nieuwe configureerbare hoofding/voettekst
+              active_both_today:
+                description_html: '<p>De landingspagina voor uw dataset en uw nieuwe, configureerbare hoofding/voettekst zijn beide nu beschikbaar. Controleer de tabulaties bovenaan om het uiterlijk van uw website te configureren en om een voorbeeld aan te maken - en wanneer u gereed bent, kan u beide tegelijk activeren!</p> <p><b>Opgelet:</b> Als u binnen 30 dagen de hoofding/voettekst van uw website niet heeft geconfigureerd, zal Socrata dit voor u doen en deze tegelijk met de landingspagina van de dataset automatisch activeren. We zullen de huidige stijl van de website en uw beheerder voor klantensucces gebruiken als leidraad voor de styling.</p> <p>Voor tips over het configureren van uw hoofding/voettekst en het activeren van de landingspagina voor uw dataset kunt u de <a href="https://event.on24.com/eventRegistration/EventLobbyServlet?target=reg20.jsp&referrer=&eventid=1223356&sessionid=1&key=9ED33D00A47ABC3419890552EBA81D93&regTag=&sourcepage=register" target="_blank">"Haal het meeste uit de nieuwste functies" webinar</a> of bezoek onze ondersteunende website: <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">https://support.socrata.com/hc/en-us/articles/223723227</a>.</p>'
+                title: Activeer beide vandaag!
+              dataset_landing_page:
+                description_html: <p>Hou u vast! Met deze upgrade wordt de landingspagina van de dataset de belangrijkste voorpagina voor geüploade datasets - de meest bezochte onderdelen van elke dataset worden uitgelicht op een intuïtieve manier en de gebruikers van uw gegevens krijgen metagegevens te zien alvorens ze actie ondernemen. Publishers en Administrators zijn vrij om gerelateerde uitzichten en visualisaties "uit te lichten", gesofisticeerde gebruikers kunnen metagegevens en metrische data meteen bekijken en alle gebruikers kunnen toegang krijgen tot gegevens op hun eigen manier. Dit kan via visualisaties van de gegevens, directe bestanddownloads of de API gebeuren. En natuurlijk is het klassieke tabulaire uitzicht van gegevens nog steeds beschikbaar vanaf het bovenste navigatiegedeelte van dit uitzicht.</p>
+                title: Landingspagina voor dataset
+            title: Wat is er nieuw
+        these_features_help: Deze functies zullen de gebruikers helpen bij het bekijken van uw gegevens en het maakt het beheren van het uiterlijk van uw website eenvoudiger.
+        update: Updaten
+        you_have_activated: U heeft uw nieuwe hoofding/voettekst en landingspagina voor uw dataset geactiveerd.
+      update: Updaten
       users:
         actions: Acties
         all: Alles
@@ -2794,9 +2904,20 @@ nl:
         supported: Ondersteunde bestandstypes zijn CSV, TSV en Excel. Ondersteunde protocollen zijn HTTP en HTTPS.
         url_prompt: Wat is de internet URL van het bestand dat u wilt importeren?
       errors:
+        archive_error: 'Openen van zip-archief mislukt: {reason}'
+        corrupt_shapefile_error: 'Lezen van shapefile mislukt: {reason}'
+        create_column_error: Aanmaken van dataset mislukt
+        create_dataset_error: Aanmaken van dataset mislukt
+        create_working_copy_error: Aanmaken van werkkopie mislukt
+        decode_filetype_error: Er werd geen decoder gevonden voor {kind}
+        delete_column_error: Verwijderen van kolom in deze dataset mislukt
+        get_column_error: Ontvangen van kolommen van deze dataset mislukt
+        incomplete_shapefile_error: 'Uw shapefile-archief is onvolledig. Het moet beschikken over een .dbf, .shp, en .prj bestand voor elke laag. Er werd verwacht dat het de volgende bestanden zou bevatten, maar ze ontbraken: {missing}.'
         insecure_esri_url: Een onveilige ESRI kaartlaag URL is toegevoegd. Hierdoor werken sommige functies niet op dit gegevensbestand.
+        invalid_arity_error: Eén van de punten in de volgende rij bestond niet uit 2 coördinaten {geom}
         invalid_crossload_url: Voer een geldige URL in dat begint met HTTP of HTTPS
         invalid_url: Dit lijkt geen geldige URL te zijn.
+        jsonparse_error: Analyseren van JSON op lijn {line} kolom {column} token {token} mislukt wegens {reason}
         missing_data_provider: U moet de leverancier van de data (met naamsvermelding) opgeven voor een creatieve normale licentie.
         missing_esri_url: Een URL van een ESRI kaartlaag is verplicht.
         missing_name: Naam van dataset is verplicht.
@@ -2804,6 +2925,14 @@ nl:
         point:
           missing_latlong: ingesteld om een <strong>%{coordinateType} kolom te importeren maar geen <strong>%{missingCoordinateType} kolom. Specificeer de volledige breedtegraad/lengtegraad.
           suboptimal_column: ingesteld om zijn <strong>%{field}</strong> vanuit de bronkolom <strong>%{originalColumnName}</strong> te importeren, maar onze analyse toont aan dat de bronkolom een %{suggestion} kolom is, terwijl %{field} een kolom van het type %{type} verwacht. Als u beslist om met deze instellingen voor importeren verder te gaan, zal u waarschijnlijk te maken krijgen met foutmeldingen op vlak van importeren en geocoderen.
+        publication_error: Publiceren van deze dataset mislukt
+        shapefile_header_error: 'Lezen van hoofding in shapefile mislukt: {reason}'
+        shapefile_row_error: 'Lezen van rij in shapefile mislukt: {reason}'
+        update_metadata_error: Updaten van metagegevens in de hoofddataset mislukt
+        upsert_error: Invoegen van rijen in dataset mislukt
+        vertex_too_complex_error: Er waren {counted} hoekpunten op rij {rowNum}, het maximale aantal is {maxVerticesPerRow}
+        xmlparse_error: Analyseren van XML-knooppunt mislukt wegens {reason} bij {path}
+        zkerror: 'Er trad een upstream-fout op: {reason}'
       finish:
         headline: Uw dataset is aangemaakt.
         subheadline: Klik op Afsluiten om het te zien!
@@ -2846,9 +2975,11 @@ nl:
               one_html: Kolom {sourceColumns} bevindt zich in uw gegevensbestand (bron), maar is momenteel niet afgesteld om naar uw dataset geïmporteerd te worden.
           single_column:
             empty_composite_col: Kolom <strong>{resultColumnName}</strong> is een samengestelde kolom die zal gemaakt worden uit meerdere bronkolommen, maar momenteel hebt u hem niet ingesteld om informatie te bevatten. Voeg a.u.b. enkele bronkolommen of tekst toe.
+            missing_lat_long: Kolom "<strong>{resultColumnName}</strong>" werd ingesteld om een <strong>{coordinateType}</strong> te importeren en geen <strong>{missingCoordinateType}</strong> kolom. Specificeer a.u.b. de breedte- en lengtegraad.
             non_text_composite_col: Kolom <strong>{resultColumnName}</strong> is een samengestelde kolom die zal gemaakt worden uit meerdere bronkolommen, maar hij is momenteel afgesteld om als <strong>{chosenType}</strong> geïmporteerd te worden. Wees er a.u.b. zeker van dat het combineren van de kolommen die u gespecificeerd hebt, een geldig {chosenType) zal opleveren.
             type_too_generic: Kolom <strong>{resultColumnName}</strong> is afgesteld om als <strong>{chosenType}</strong> geïmporteerd te worden, maar onze analyse toont aan dat de kolom waarschijnlijk een <strong>{suggestedType}</strong> kolom is. U kan hem importeren als {chosenType}, maar enkele functies zullen verloren raken als u dit doet. Wij raden u ten zeerste aan dat u hem als <strong>{suggestedType}</strong> importeerd.
             wrong_type: Kolom <strong>{resultColumnName}</strong> is een <strong>{chosenType}</strong>, maar onze analyse toont aan dat de bronkolom waarnaar u probeert te importeren van het type <strong>{suggestedType}</strong> is. Ongeveer <strong>{invalidPercent}%</strong> van uw gegevens zal foutief geïmporteerd worden als u kiest om deze kolom te importeren.
+            wrong_type_location: Kolom " <strong>{resultColumnName}</strong>" werd ingesteld om <strong>{field}</strong> te importeren vanuit de bronkolom <strong>{chosenColumn}</strong>, maar onze analyse toont aan dat de bronkolom een {chosenType} kolom is, terwijl {field} een kolom verwacht van het type {suggestedType}. Indien u kiest om verder te gaan met deze instellingen voor importeren, is het mogelijk dat er fouten zullen optreden bij het importeren of geocoderen.
             wrong_type_unknown_count: Kolom <strong>{resultColumnName}</strong> is afgesteld om als <strong>{chosenType}</strong> geïmporteerd te worden, maar onze analyse toont aan dat <strong>{suggestedType}</strong> mogelijk beter geschikt is. Het is mogelijk dat {chosenType) gegevens foutief zullen geïmporteerd worden.
         errors_warnings: Fouten en waarschuwingen
         fewer_rows: Minder rijen
@@ -2870,6 +3001,7 @@ nl:
         suggested_columns: Voorgestelde kolommen
         suggested_flat: Voorgestelde kolommen (geen samengestelden)
         suggested_plus_discrete: Voorgestelde kolommen (samengestelden en discreet)
+        upload_success: Super! U heeft met succes een gegevensbestand geüpload. We hebben dit bestand veilig opgeslagen; u hoeft het niet opnieuw te verzenden als u weggaat en terugkomt.
         why_choose_now: Waarom is het belangrijk dat ik nu kolomtypes kies?
       import_help: <strong>Hulp nodig?</strong> We houden een <a href="%{common_errors}" rel="external">lijst bij van veelvoorkomende waarschuwingen en fouten</a> die van nut kunnen zijn voor u.
       import_shapefile:
@@ -3418,6 +3550,7 @@ nl:
             base_url_prompt: Voer het gemeenschappelijke URL-voorvoegsel in
             title: URL-opties
           validation:
+            notallowed: U heeft geen toelating om kolomeigenschappen te bewerken
             published: Maak dan een werkende kopie of view van deze dataset om kolomeigenschappen te wijzigen
             snapshot: U kan de eigenschappen van een kolom niet bewerken voor een momentopname
             unsaved: U kunt geen kolomeigenschappen bewerken voor een niet opgeslagen view
@@ -3451,6 +3584,8 @@ nl:
           title: Datalens
         delete:
           confirm: Dit zal de %{view_type} definitief verwijderen. En dit kan niet ongedaan worden gemaakt! Weet u zeker dat u wilt doorgaan?
+          confirm_permanent: Dit zal het %{view_type} permanent verwijderen. Er is geen weg terug! Bent u zeker dat u wilt doorgaan?
+          confirm_restorable: Deze verwijdering kan voor %{number_of_days_restorable} ongedaan gemaakt worden door een administrator van uw domein. Bent u zeker dat u wilt doorgaan?
           delete_button: Verwijder deze %{view_type}
           subtitle: Verwijder deze %{view_type}
           title: Verwijderen
@@ -3914,6 +4049,7 @@ nl:
       headline_upload: Kies een bestand om te uploaden
       layer: Laag
       many_headers: "%{num} van uw rijen zijn kopteksten."
+      new_column: Nieuwe kolom {num}
       no_file_selected: Nog geen bestand gekozen.
       no_headers: Geen een van uw rijen zijn kopteksten.
       no_source_column: "(Geen bron kolom)"
@@ -4200,21 +4336,21 @@ nl:
         prompt: Geef uw nieuwe dataset een naam.
         title: Een nieuwe dataset aanmaken
       menu:
-        about:
-        api:
-        api_subtext:
-        discuss:
-        discuss_subtext:
-        download:
-        download_subtext:
-        embed:
-        embed_subtext:
-        more_views:
-        more_views_subtext:
-        odata:
-        odata_subtext:
-        print:
-        print_subtext:
+        about: Over het open platform voor gegevens van Socrata
+        api: API
+        api_subtext: Krijg toegang tot deze dataset via SODA
+        discuss: Bespreken
+        discuss_subtext: Bespreek deze dataset
+        download: Downloaden
+        download_subtext: Verschillende formaten te downloaden
+        embed: Ingesloten
+        embed_subtext: Sluit deze speler in op uw website
+        more_views: Hoger aantal keer bekeken
+        more_views_subtext: Filters, grafieken en kaarten
+        odata: OData
+        odata_subtext: Krijg toegang tot deze dataset via OData
+        print: Afdrukken
+        print_subtext: Deze dataset afdrukken
     wizard:
       cancel: Annuleren
       finish: Voltooien

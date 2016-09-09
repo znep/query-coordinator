@@ -187,6 +187,7 @@ ro:
           description:
           header:
       feature_map:
+        feature_map_disabled:
         zoom_disabled: Funcția "Mărire" nu este disponibilă pentru moment. Vă rugăm să încercați mai târziu.
       feature_map_flannel:
         error_message:
@@ -306,6 +307,9 @@ ro:
         old_filter_title:
         old_filtered_title:
         unfiltered_title:
+      related_views:
+        button: Alte vizualizări ale acestei informații
+        title: Alte vizualizări ale acestei informații
       related_visualization_selector:
         based_on_column:
         visualization_not_supported:
@@ -1131,10 +1135,16 @@ ro:
         between: este între
         contains: conţine
         equals: este
+        exists:
         greater_than: este mai mare decât
         greater_than_or_equals: este cel puţin
+        is_after:
+        is_before:
         is_blank: este goală
+        is_checked:
+        is_empty:
         is_not_blank: nu este goală
+        is_not_checked:
         less_than: este mai puţin decât
         less_than_or_equals: este cel mult
         not_contains: nu conţine
@@ -1252,6 +1262,8 @@ ro:
     visibility:
       private: confidenţial
       public: public
+  data_lens:
+    render_error:
   dataset_landing_page:
     action_buttons:
       api:
@@ -1270,6 +1282,13 @@ ro:
       multiple_geo_layers:
       title:
     back:
+    blob_download:
+      download:
+      edit_prompt_button:
+      edit_prompt_message:
+      title:
+    blob_preview:
+      title:
     bootstrap_button:
     bootstrap_disabled_notice:
     bootstrap_message:
@@ -1330,6 +1349,7 @@ ro:
       manage_prompt:
         button:
         message:
+        message_blob:
       title:
     featured_content_modal:
       external:
@@ -1344,6 +1364,7 @@ ro:
         url:
       header:
       introduction:
+      introduction_blobby:
       preview:
       remove_error:
       remove_prompt:
@@ -1371,6 +1392,7 @@ ro:
       screenshot_yes:
       title:
     less:
+    manage_dataset:
     manage_prompt:
     metadata:
       attachments:
@@ -1627,13 +1649,37 @@ ro:
       bulk_edit:
         button_title:
         cancel:
+        date_range_from:
+        date_range_label:
+        date_range_to:
         failure_message:
         items_selected:
+        not_configured_message:
+        override_label:
+        override_types:
+          bad:
+          good:
+          no_judgement:
+          none:
+          within_tolerance:
         revert_changes:
         success_message:
         title:
         update:
         visibility:
+      export:
+        Csv:
+          button_label:
+          info_description:
+          info_title:
+        info_box:
+          cancel:
+          ok:
+      feedback_flannel:
+        message:
+        no_thanks:
+        title:
+        yes_include_screenshot:
       goal_values:
         status_private:
         status_public:
@@ -1642,14 +1688,25 @@ ro:
         default_alert_message:
         goal_page:
         goal_status:
+        load_error:
         manage_on_goal_page:
         of:
         owner:
+        quick_edit:
         rows_per_page:
         title:
         updated_at:
         view_dashboard:
         visibility:
+      manage_performance_goals:
+      modal:
+        close_without_save_message:
+      page_title:
+      preview_bar:
+        back_to_configuration:
+        feedback:
+        learn_more:
+        performance_goal_management_preview:
       quick_edit:
         action_type:
         action_types:
@@ -1664,6 +1721,7 @@ ro:
         dataset_updated:
         date_range:
         default_alert_message:
+        feedback:
         goal_name:
         goal_owner:
         goal_updated:
@@ -1679,6 +1737,9 @@ ro:
         measure_target_type_types:
           absolute:
           relative:
+        not_configured_goal_message:
+          link:
+          text:
         override:
         override_types:
           bad:
@@ -1725,6 +1786,7 @@ ro:
       data_management: Administrare date
       datasets: Seturi de date
       federations: Externalizări
+      goal_management_preview:
       homepage: Pagina de pornire
       jobs:
       metadata: Metadate
@@ -2518,11 +2580,22 @@ ro:
         'true': adevărat
         up: Sus
       site_chrome:
+        activate:
+        add_new_link_menu:
+        add_new_link_row:
         cancel:
+        congratulations:
         description:
+        link_menu_label_html:
+        move_link_row:
+        ok:
+        preview:
         preview_changes:
+        remove_link_menu:
+        remove_link_row:
         save:
         save_changes:
+        see_both_features:
         site_appearance:
         tabs:
           footer:
@@ -2531,6 +2604,9 @@ ro:
                 description:
                 label:
                 title:
+              copyright_notice_source:
+                description:
+                placeholder:
               footer_background_color:
                 description:
                 placeholder:
@@ -2561,14 +2637,27 @@ ro:
               menu_links:
                 description:
                 title:
+              menu_title_placeholder:
+              powered_by:
+                description:
+                label:
+                title:
               url_label:
               url_placeholder:
             title:
           general:
             fields:
+              font_family:
+                description:
+                placeholder:
+                title:
               google_analytics_token:
                 description:
                 error:
+                placeholder:
+                title:
+              max_width:
+                description:
                 placeholder:
                 title:
               show_signin_signout:
@@ -2579,6 +2668,7 @@ ro:
                 title:
               template:
                 description:
+                description_html:
                 placeholder:
                 title:
               window_icon:
@@ -2627,6 +2717,7 @@ ro:
               menu_links:
                 description:
                 title:
+              menu_title_placeholder:
               url_label:
               url_placeholder:
             title:
@@ -2680,6 +2771,25 @@ ro:
                 placeholder:
                 title:
             title:
+          whats_new:
+            fields:
+              a_bundle_of_goodness:
+                description_html:
+                title:
+              a_new_configurable_header_footer:
+                description_html:
+                title:
+              active_both_today:
+                description_html:
+                title:
+              dataset_landing_page:
+                description_html:
+                title:
+            title:
+        these_features_help:
+        update:
+        you_have_activated:
+      update:
       users:
         actions: Acțiuni
         all: Toate
@@ -2764,9 +2874,20 @@ ro:
         supported: Tipurile de fişiere suportate sunt CSV, TSV şi Excel. Protocoalele suportate sunt HTTP şi HTTPS.
         url_prompt: Care este URL-ul web al fişierului pe care doriţi să îl importaţi?
       errors:
+        archive_error:
+        corrupt_shapefile_error:
+        create_column_error:
+        create_dataset_error:
+        create_working_copy_error:
+        decode_filetype_error:
+        delete_column_error:
+        get_column_error:
+        incomplete_shapefile_error:
         insecure_esri_url: A fost adăugat un URL nesigur al suportului de hartă de tip ESRI. Drept urmare, unele caracteristici ale acestui set de date nu vor funcționa.
+        invalid_arity_error:
         invalid_crossload_url: Vă rugăm să introduceți un URL valabil, care începe fie cu HTTP sau HTTPS.
         invalid_url: Acesta nu pare a fi un URL valabil.
+        jsonparse_error:
         missing_data_provider: Trebuie să specificați furnizorul de date (atribuire) în cadrul unei licențe Creative Commons.
         missing_esri_url: Este necesar un strat de hartă ESRI valabil.
         missing_name: Este necesar numele setului de date.
@@ -2774,6 +2895,14 @@ ro:
         point:
           missing_latlong:
           suboptimal_column:
+        publication_error:
+        shapefile_header_error:
+        shapefile_row_error:
+        update_metadata_error:
+        upsert_error:
+        vertex_too_complex_error:
+        xmlparse_error:
+        zkerror:
       finish:
         headline: Setul dvs. de date a fost creat.
         subheadline: Click pe "Încheiere" pentru a-l vizualiza!
@@ -2816,9 +2945,11 @@ ro:
               one_html:
           single_column:
             empty_composite_col:
+            missing_lat_long:
             non_text_composite_col:
             type_too_generic:
             wrong_type:
+            wrong_type_location:
             wrong_type_unknown_count:
         errors_warnings: Erori şi avertismente
         fewer_rows: Mai puţine rânduri
@@ -2840,6 +2971,7 @@ ro:
         suggested_columns: Coloane sugerate
         suggested_flat: Coloane sugerate (fără compuşi)
         suggested_plus_discrete: Coloane sugerate (compuşi şi discretizate)
+        upload_success:
         why_choose_now: De ce este important să alegeţi acum tipurile de coloane?
       import_help: <strong>Aveţi nevoie de ajutor?</strong> Noi păstrăm o <a href="%{common_errors}" rel="external">listă a avertismentelor şi erorilor obişnuite</a>, care v-ar putea ajuta.
       import_shapefile:
@@ -3380,6 +3512,7 @@ ro:
             base_url_prompt: Introduceţi prefixul URL obişnuit
             title: Opţiuni URL
           validation:
+            notallowed:
             published: Vă rugăm să realizaţi o copie funcţională a acestui set de date pentru a modifica proprietăţile coloanelor
             snapshot:
             unsaved: Nu puteţi edita proprietăţile coloanelor pentru o vizualizare nesalvată
@@ -3413,6 +3546,8 @@ ro:
           title:
         delete:
           confirm: Aceasta va şterge %{view_type} pentru totdeauna. Această acţiune nu se poate anula! Sunteţi sigur că doriţi să faceţi aceasta?
+          confirm_permanent:
+          confirm_restorable:
           delete_button: "Ştergeţi această %{view_type}"
           subtitle: "Ştergeţi această %{view_type}"
           title: "Ştergere"
@@ -3874,6 +4009,7 @@ ro:
       headline_upload: Vă rugăm să alegeţi un fişier de încărcat
       layer: Strat
       many_headers: "%{num} din rândurile dvs. sunt antete."
+      new_column:
       no_file_selected: Niciun fişier selectat încă.
       no_headers: Niciunul dintre rândurile dvs. nu este antet.
       no_source_column: "(Nicio coloană sursă)"

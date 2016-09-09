@@ -187,6 +187,7 @@ pt:
           description:
           header:
       feature_map:
+        feature_map_disabled:
         zoom_disabled: A ampliação está temporariamente indisponível. Queira tentar novamente mais tarde.
       feature_map_flannel:
         error_message:
@@ -306,6 +307,9 @@ pt:
         old_filter_title:
         old_filtered_title:
         unfiltered_title:
+      related_views:
+        button: Outras vistas destes dados
+        title: Outras vistas destes dados
       related_visualization_selector:
         based_on_column:
         visualization_not_supported:
@@ -1131,10 +1135,16 @@ pt:
         between: está entre
         contains: contém
         equals: "é"
+        exists:
         greater_than: "é maior que"
         greater_than_or_equals: "é pelo menos"
+        is_after:
+        is_before:
         is_blank: está em branco
+        is_checked:
+        is_empty:
         is_not_blank: não está em branco
+        is_not_checked:
         less_than: "é menor que"
         less_than_or_equals: "é no máximo"
         not_contains: não contém
@@ -1252,6 +1262,8 @@ pt:
     visibility:
       private: privado
       public: público
+  data_lens:
+    render_error:
   dataset_landing_page:
     action_buttons:
       api:
@@ -1270,6 +1282,13 @@ pt:
       multiple_geo_layers:
       title:
     back:
+    blob_download:
+      download:
+      edit_prompt_button:
+      edit_prompt_message:
+      title:
+    blob_preview:
+      title:
     bootstrap_button:
     bootstrap_disabled_notice:
     bootstrap_message:
@@ -1330,6 +1349,7 @@ pt:
       manage_prompt:
         button:
         message:
+        message_blob:
       title:
     featured_content_modal:
       external:
@@ -1344,6 +1364,7 @@ pt:
         url:
       header:
       introduction:
+      introduction_blobby:
       preview:
       remove_error:
       remove_prompt:
@@ -1371,6 +1392,7 @@ pt:
       screenshot_yes:
       title:
     less:
+    manage_dataset:
     manage_prompt:
     metadata:
       attachments:
@@ -1627,13 +1649,37 @@ pt:
       bulk_edit:
         button_title:
         cancel:
+        date_range_from:
+        date_range_label:
+        date_range_to:
         failure_message:
         items_selected:
+        not_configured_message:
+        override_label:
+        override_types:
+          bad:
+          good:
+          no_judgement:
+          none:
+          within_tolerance:
         revert_changes:
         success_message:
         title:
         update:
         visibility:
+      export:
+        Csv:
+          button_label:
+          info_description:
+          info_title:
+        info_box:
+          cancel:
+          ok:
+      feedback_flannel:
+        message:
+        no_thanks:
+        title:
+        yes_include_screenshot:
       goal_values:
         status_private:
         status_public:
@@ -1642,14 +1688,25 @@ pt:
         default_alert_message:
         goal_page:
         goal_status:
+        load_error:
         manage_on_goal_page:
         of:
         owner:
+        quick_edit:
         rows_per_page:
         title:
         updated_at:
         view_dashboard:
         visibility:
+      manage_performance_goals:
+      modal:
+        close_without_save_message:
+      page_title:
+      preview_bar:
+        back_to_configuration:
+        feedback:
+        learn_more:
+        performance_goal_management_preview:
       quick_edit:
         action_type:
         action_types:
@@ -1664,6 +1721,7 @@ pt:
         dataset_updated:
         date_range:
         default_alert_message:
+        feedback:
         goal_name:
         goal_owner:
         goal_updated:
@@ -1679,6 +1737,9 @@ pt:
         measure_target_type_types:
           absolute:
           relative:
+        not_configured_goal_message:
+          link:
+          text:
         override:
         override_types:
           bad:
@@ -1725,6 +1786,7 @@ pt:
       data_management: Gestão de Dados
       datasets: Tabelas
       federations: Federações
+      goal_management_preview:
       homepage: Página Principal
       jobs:
       metadata: Metadados
@@ -2518,11 +2580,22 @@ pt:
         'true': true
         up: Para cima
       site_chrome:
+        activate:
+        add_new_link_menu:
+        add_new_link_row:
         cancel:
+        congratulations:
         description:
+        link_menu_label_html:
+        move_link_row:
+        ok:
+        preview:
         preview_changes:
+        remove_link_menu:
+        remove_link_row:
         save:
         save_changes:
+        see_both_features:
         site_appearance:
         tabs:
           footer:
@@ -2531,6 +2604,9 @@ pt:
                 description:
                 label:
                 title:
+              copyright_notice_source:
+                description:
+                placeholder:
               footer_background_color:
                 description:
                 placeholder:
@@ -2561,14 +2637,27 @@ pt:
               menu_links:
                 description:
                 title:
+              menu_title_placeholder:
+              powered_by:
+                description:
+                label:
+                title:
               url_label:
               url_placeholder:
             title:
           general:
             fields:
+              font_family:
+                description:
+                placeholder:
+                title:
               google_analytics_token:
                 description:
                 error:
+                placeholder:
+                title:
+              max_width:
+                description:
                 placeholder:
                 title:
               show_signin_signout:
@@ -2579,6 +2668,7 @@ pt:
                 title:
               template:
                 description:
+                description_html:
                 placeholder:
                 title:
               window_icon:
@@ -2627,6 +2717,7 @@ pt:
               menu_links:
                 description:
                 title:
+              menu_title_placeholder:
               url_label:
               url_placeholder:
             title:
@@ -2680,6 +2771,25 @@ pt:
                 placeholder:
                 title:
             title:
+          whats_new:
+            fields:
+              a_bundle_of_goodness:
+                description_html:
+                title:
+              a_new_configurable_header_footer:
+                description_html:
+                title:
+              active_both_today:
+                description_html:
+                title:
+              dataset_landing_page:
+                description_html:
+                title:
+            title:
+        these_features_help:
+        update:
+        you_have_activated:
+      update:
       users:
         actions: Ações
         all: Todos
@@ -2764,9 +2874,20 @@ pt:
         supported: Os tipos de arquivo permitidos são CSV, TSV e Excel. Os protocolos aceitos são HTTP e HTTPS.
         url_prompt: Qual é o URL de web do arquivo que gostaria de importar?
       errors:
+        archive_error:
+        corrupt_shapefile_error:
+        create_column_error:
+        create_dataset_error:
+        create_working_copy_error:
+        decode_filetype_error:
+        delete_column_error:
+        get_column_error:
+        incomplete_shapefile_error:
         insecure_esri_url: Uma URL de camada de mapa ESRI foi acrescentada. Certas ferramentas não funcionarão nessa tabela.
+        invalid_arity_error:
         invalid_crossload_url: Por favor, introduza um URL válido com HTTP ou HTTPS.
         invalid_url: Esse não parece ser um URL válido.
+        jsonparse_error:
         missing_data_provider: Especifique o fornecedor de dados (atribuição) numa licença Creative Commons.
         missing_esri_url: Uma camada de mapa ESRI válida é necessária.
         missing_name: O nome da tabela de dados é obrigatório.
@@ -2774,6 +2895,14 @@ pt:
         point:
           missing_latlong:
           suboptimal_column:
+        publication_error:
+        shapefile_header_error:
+        shapefile_row_error:
+        update_metadata_error:
+        upsert_error:
+        vertex_too_complex_error:
+        xmlparse_error:
+        zkerror:
       finish:
         headline: A sua Tabela de Dados foi criada.
         subheadline: Clique em Terminar para vê-la!
@@ -2816,9 +2945,11 @@ pt:
               one_html:
           single_column:
             empty_composite_col:
+            missing_lat_long:
             non_text_composite_col:
             type_too_generic:
             wrong_type:
+            wrong_type_location:
             wrong_type_unknown_count:
         errors_warnings: Erros e Avisos
         fewer_rows: Menos Linhas
@@ -2840,6 +2971,7 @@ pt:
         suggested_columns: Colunas sugeridas
         suggested_flat: Colunas sugeridas (sem compostos)
         suggested_plus_discrete: Colunas sugeridas (compostos e discretas)
+        upload_success:
         why_choose_now: Porque é importante escolher os tipos de coluna agora?
       import_help: <strong>Precisa de ajuda?</strong> Mantemos uma <a href="%{common_errors}" rel="external">lista dos erros e alertas comuns</a> que podem ajudá-lo.
       import_shapefile:
@@ -3380,6 +3512,7 @@ pt:
             base_url_prompt: Introduza o prefixo URL comum
             title: Opções da URL
           validation:
+            notallowed:
             published: Por favor faça uma cópia de trabalho ou visualização desta tabela para alterar as propriedades da coluna
             snapshot:
             unsaved: Você não pode editar as propriedades da coluna para uma visualização não-salva
@@ -3413,6 +3546,8 @@ pt:
           title:
         delete:
           confirm: Isto irá deletar %{view_type} permanentemente. Não haverá como desfazer isso! Tem a certeza de que quer continuar?
+          confirm_permanent:
+          confirm_restorable:
           delete_button: Deletar esta %{view_type}
           subtitle: Deletar esta %{view_type}
           title: deletar
@@ -3874,6 +4009,7 @@ pt:
       headline_upload: Por favor, escolha um arquivo para fazer upload
       layer: Camada
       many_headers: "%{num} das suas linhas são cabeçalhos."
+      new_column:
       no_file_selected: Nenhum arquivo selecionado ainda.
       no_headers: Nenhuma das suas linhas é um cabeçalho.
       no_source_column: "(Nenhuma Coluna de Origem)"

@@ -248,14 +248,14 @@ export function view({ idx, resultColumn, sourceOptions, dispatchUpdate, dispatc
             type="text"
             className="columnName"
             title={I18nPrefixed.name_this_col}
-            defaultValue={resultColumn.name}
-            onBlur={(event) => dispatchUpdate(updateColumnName(event.target.value))} />
+            value={resultColumn.name}
+            onChange={(event) => dispatchUpdate(updateColumnName(event.target.value))} />
         </div>
         <div className="columnTypeCell">
           <select
             className="columnTypeSelect"
-            defaultValue={resultColumn.chosenType}
-            onBlur={(event) => dispatchUpdate(updateColumnType(event.target.value))}>
+            value={resultColumn.chosenType}
+            onChange={(event) => dispatchUpdate(updateColumnType(event.target.value))}>
             {
               importableTypes.map(([typeName, humanReadableName]) => (
                 <option value={typeName} key={typeName}>{humanReadableName}</option>
@@ -268,8 +268,8 @@ export function view({ idx, resultColumn, sourceOptions, dispatchUpdate, dispatc
           <div className="columnSourceCell">
             <select
               className="columnTypeSelect"
-              defaultValue={nameAndValueForColumnSource(resultColumn.columnSource).value}
-              onBlur={(event) => dispatchUpdate(columnSourceAction(event.target.value))}>
+              value={nameAndValueForColumnSource(resultColumn.columnSource).value}
+              onChange={(event) => dispatchUpdate(columnSourceAction(event.target.value))}>
               {
                 sourceOptions.map((sourceOption, optionIdx) => {
                   const {name, value} = nameAndValueForColumnSource(sourceOption);

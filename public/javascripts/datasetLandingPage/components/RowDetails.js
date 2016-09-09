@@ -2,7 +2,7 @@ import utils from 'socrata-utils';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-export var RowDetails = function(props) {
+export var RowDetails = (props) => {
   var { view } = props;
 
   var rowCountInfo;

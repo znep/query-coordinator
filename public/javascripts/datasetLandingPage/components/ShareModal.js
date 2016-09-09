@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 
-export var ShareModal = function(props) {
+export var ShareModal = (props) => {
   var { view, onClickOption } = props;
 
   var privateNotice = null;
@@ -97,7 +97,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onClickOption: function(event) {
+    onClickOption(event) {
       var payload = {
         name: 'Shared Dataset',
         properties: {

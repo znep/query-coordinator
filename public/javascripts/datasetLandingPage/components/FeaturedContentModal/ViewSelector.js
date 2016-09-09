@@ -17,7 +17,7 @@ export var ViewSelector = React.createClass({
 
   I18n: I18n.featured_content_modal.internal_resource_selector,
 
-  renderChooseButton: function(viewUid) {
+  renderChooseButton(viewUid) {
     var { onClickChoose, isSaving, isSaved, isSavingViewUid, hasSaveError } = this.props;
     var isSavingSelf = (isSavingViewUid === viewUid);
     var renderSavingButton = (isSaving && isSavingSelf);
@@ -55,7 +55,7 @@ export var ViewSelector = React.createClass({
     );
   },
 
-  render: function() {
+  render() {
     var { viewList, renderNoViews } = this.props;
     var renderChooseButton = this.renderChooseButton;
     var viewContent;
@@ -63,13 +63,11 @@ export var ViewSelector = React.createClass({
     if (viewList.length === 0) {
       viewContent = renderNoViews();
     } else {
-      viewContent = _.map(viewList, function(relatedView, i) {
-        return (
-          <ViewCard {...getViewCardPropsForView(relatedView)} key={i}>
-            {renderChooseButton(relatedView.id)}
-          </ViewCard>
-        );
-      });
+      viewContent = _.map(viewList, (relatedView, i) => (
+        <ViewCard {...getViewCardPropsForView(relatedView)} key={i}>
+          {renderChooseButton(relatedView.id)}
+        </ViewCard>
+      ));
     }
 
     return (

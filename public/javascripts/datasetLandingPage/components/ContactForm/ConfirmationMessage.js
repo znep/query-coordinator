@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
-var ConfirmationMessage = function(props) {
+var ConfirmationMessage = (props) => {
   var { success, text } = props;
 
   var alertClasses = classNames('alert', {

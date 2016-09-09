@@ -6,19 +6,19 @@ var Responsive = React.createClass({
     children: PropTypes.object.isRequired
   },
 
-  getInitialState: function() {
+  getInitialState() {
     return this.getState();
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     window.addEventListener('resize', this.updateState);
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     window.removeEventListener('resize', this.updateState);
   },
 
-  getState: function() {
+  getState() {
     if (window.matchMedia(`(max-width: ${breakpoints.mobile}px)`).matches) {
       return {
         isDesktop: false,
@@ -42,19 +42,17 @@ var Responsive = React.createClass({
     };
   },
 
-  updateState: function() {
+  updateState() {
     var newState = this.getState();
     if (!_.isEqual(newState, this.state)) {
       this.setState(newState);
     }
   },
 
-  render: function() {
+  render() {
     var state = this.state;
 
-    var children = Children.map(this.props.children, function(child) {
-      return React.cloneElement(child, state);
-    });
+    var children = Children.map(this.props.children, (child) => React.cloneElement(child, state));
 
     return <div>{children}</div>;
   }

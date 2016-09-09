@@ -37,7 +37,7 @@ export function publishView() {
 
     fetch(`/api/views/${viewId}/publication.json`, fetchOptions).
       then(checkStatus).
-      then(response => response.json()).
+      then((response) => response.json()).
       then((publishedView) => {
         function redirect() {
           window.location.href = window.location.href.replace(viewId, publishedView.id);
@@ -46,8 +46,6 @@ export function publishView() {
         dispatch(handleViewPublishSuccess());
         _.delay(redirect, 1000);
       }).
-      catch(() => {
-        dispatch(handleViewPublishError());
-      });
+      catch(() => dispatch(handleViewPublishError()));
   };
 }

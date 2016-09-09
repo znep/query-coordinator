@@ -7,13 +7,13 @@ export var PrivateNotice = React.createClass({
     view: PropTypes.object.isRequired
   },
 
-  getInitialState: function() {
+  getInitialState() {
     return {
       isHidden: true
     };
   },
 
-  componentWillMount: function() {
+  componentWillMount() {
     var hasDismissedPrivateNotice = true;
 
     try {
@@ -30,7 +30,7 @@ export var PrivateNotice = React.createClass({
     });
   },
 
-  onClickDismiss: function() {
+  onClickDismiss() {
     try {
       var privateNoticesClosed = JSON.parse(
         window.sessionStorage.getItem('dismissedPrivateNotices')
@@ -48,7 +48,7 @@ export var PrivateNotice = React.createClass({
     }
   },
 
-  render: function() {
+  render() {
     var { view } = this.props;
 
     if (this.state.isHidden || !view.isPrivate) {

@@ -65,7 +65,7 @@ export function handleContactFormRecaptchaReset() {
 }
 
 export function submitContactForm() {
-  return function(dispatch, getState) {
+  return (dispatch, getState) => {
     var state = getState();
     var viewId = state.view.id;
     var { fields } = state.contactForm;
@@ -92,21 +92,21 @@ export function submitContactForm() {
       })
     }).
       then(checkStatus).
-      then(response => response.json()).
-      then(function() {
+      then((response) => response.json()).
+      then(() => {
         dispatch(handleContactFormSuccess());
         dispatch(emitMixpanelEvent({ name: 'Contacted Dataset Owner' }));
       }).
-      catch(function(error) {
-        return error.response.json().
-          then(function(response) {
+      catch((error) =>
+        error.response.json().
+          then((response) => {
             if (response.message === 'Invalid Recaptcha') {
               dispatch(handleContactFormRecaptchaError());
             } else {
               dispatch(handleContactFormFailure());
             }
-          });
-      });
+          })
+      );
   };
 }
 

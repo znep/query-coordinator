@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { ViewCard, ExternalViewCard } from 'socrata-components';
 import { getViewCardPropsForFeaturedItem } from '../lib/viewCardHelpers';
 
-var FeaturedViewCard = function(props) {
+var FeaturedViewCard = (props) => {
   var { children, featuredItem } = props;
 
   var cardProps = getViewCardPropsForFeaturedItem(featuredItem);

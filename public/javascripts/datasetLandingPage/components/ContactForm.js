@@ -34,17 +34,17 @@ export var ContactForm = React.createClass({
     status: PropTypes.string.isRequired
   },
 
-  getInitialState: function() {
+  getInitialState() {
     return {
       errors: []
     };
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     this.initializeRecaptcha();
   },
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     var { onRecaptchaReset, resetRecaptcha, status } = this.props;
 
     if (resetRecaptcha) {
@@ -57,7 +57,7 @@ export var ContactForm = React.createClass({
     }
   },
 
-  onClickSend: function(event) {
+  onClickSend(event) {
     event.preventDefault();
 
     var { onClickSend } = this.props;
@@ -74,7 +74,7 @@ export var ContactForm = React.createClass({
     }
   },
 
-  onFieldChange: function(event) {
+  onFieldChange(event) {
     var { id, value } = event.target;
     var isInvalid = _.isEmpty(value) || (_.isEqual(id, 'email') && !VALID_EMAIL_REGEX.test(value));
 
@@ -84,7 +84,7 @@ export var ContactForm = React.createClass({
     });
   },
 
-  initializeRecaptcha: function() {
+  initializeRecaptcha() {
     var { onRecaptchaLoaded } = this.props;
 
     recaptcha.init(this.recaptchaContainer, function(id) {
@@ -93,12 +93,11 @@ export var ContactForm = React.createClass({
     }.bind(this));
   },
 
-  validateForm: function() {
-    var self = this;
+  validateForm() {
     var { fields } = this.props;
 
-    return _.reduce(fields, function(result, field, id) {
-      if (_.isEqual(id, 'recaptchaResponseToken') && self.isRecaptchaIncomplete()) {
+    return _.reduce(fields, (result, field, id) => {
+      if (_.isEqual(id, 'recaptchaResponseToken') && this.isRecaptchaIncomplete()) {
         result.push(I18n.contact_dataset_owner_modal.error_empty_recaptcha);
       } else if (field.invalid) {
         if (!_.isEqual(id, 'email') || _.isEmpty(field.value)) {
@@ -115,7 +114,7 @@ export var ContactForm = React.createClass({
   // We can't store the Recaptcha response token until we fetch it explicitly, so
   // our state might not accurately reflect whether the user has completed the
   // Recaptcha challenge yet. Instead, verify it right now and store its response
-  isRecaptchaIncomplete: function() {
+  isRecaptchaIncomplete() {
     var { fields, onChangeFormField } = this.props;
     var { recaptchaResponseToken } = fields;
 
@@ -129,7 +128,7 @@ export var ContactForm = React.createClass({
     return _.isEmpty(responseToken);
   },
 
-  cleanUpAfterClose: function() {
+  cleanUpAfterClose() {
     var { resetForm } = this.props;
     var element = ReactDOM.findDOMNode(this);
 
@@ -148,31 +147,30 @@ export var ContactForm = React.createClass({
     this.initializeRecaptcha();
   },
 
-  closeModal: function() {
-    var self = this;
+  closeModal() {
     var element = ReactDOM.findDOMNode(this).querySelector('.modal-container');
     var windowWidth = document.body.offsetWidth;
     var isMobile = windowWidth <= breakpoints.mobile;
 
-    _.delay(function() {
+    _.delay(() => {
       if (isMobile) {
         velocity(element, {
           left: windowWidth
         }, {
           duration: animationDuration,
           easing: animationEasing,
-          complete: self.cleanUpAfterClose
+          complete: this.cleanUpAfterClose
         });
       } else {
         velocity(element, 'fadeOut', {
           duration: 500,
-          complete: self.cleanUpAfterClose
+          complete: this.cleanUpAfterClose
         });
       }
     }, 1000);
   },
 
-  renderContactForm: function() {
+  renderContactForm() {
     var { fields, status, recaptchaLoaded } = this.props;
 
     var recaptchaPlaceholderSpinner = recaptchaLoaded ?
@@ -253,7 +251,7 @@ export var ContactForm = React.createClass({
     );
   },
 
-  renderConfirmationMessage: function() {
+  renderConfirmationMessage() {
     var success = this.props.status === 'success';
 
     var text = success ?
@@ -263,7 +261,7 @@ export var ContactForm = React.createClass({
     return <ConfirmationMessage success={success} text={text} />;
   },
 
-  renderErrorMessages: function() {
+  renderErrorMessages() {
     var { errors } = this.state;
 
     if (_.some(errors)) {
@@ -279,7 +277,7 @@ export var ContactForm = React.createClass({
     }
   },
 
-  render: function() {
+  render() {
     var { status } = this.props;
     var content;
 
@@ -305,23 +303,23 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onChangeFormField: function(field, value) {
+    onChangeFormField(field, value) {
       dispatch(setContactFormField(field, value));
     },
 
-    onRecaptchaLoaded: function(value) {
+    onRecaptchaLoaded(value) {
       dispatch(setContactFormRecaptchaLoaded(value));
     },
 
-    onClickSend: function() {
+    onClickSend() {
       dispatch(submitContactForm());
     },
 
-    resetForm: function() {
+    resetForm() {
       dispatch(resetContactForm());
     },
 
-    onRecaptchaReset: function() {
+    onRecaptchaReset() {
       dispatch(handleContactFormRecaptchaReset());
     }
   };

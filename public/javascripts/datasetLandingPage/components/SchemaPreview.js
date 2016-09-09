@@ -16,7 +16,7 @@ export var SchemaPreview = React.createClass({
     onExpandSchemaTable: PropTypes.func.isRequired
   },
 
-  toggleTable: function() {
+  toggleTable() {
     var { onExpandSchemaTable } = this.props;
     var el = ReactDOM.findDOMNode(this).querySelector('.section-content');
     var tableWrapper = el.querySelector('.table-wrapper');
@@ -45,7 +45,7 @@ export var SchemaPreview = React.createClass({
     tableWrapper.style.height = `${originalHeight}px`;
     velocity(tableWrapper, {
       height: newHeight
-    }, function() {
+    }, () => {
       // Let the wrapper set its own height after the animation is finished.  This allows the
       // wrapper height to naturally adjust as the nested collapsibles are animating.
       tableWrapper.style.height = '';
@@ -57,7 +57,7 @@ export var SchemaPreview = React.createClass({
     });
   },
 
-  toggleColumn: function(event) {
+  toggleColumn(event) {
     var { onExpandColumn } = this.props;
     var el = ReactDOM.findDOMNode(this);
     var row = event.currentTarget;
@@ -102,7 +102,7 @@ export var SchemaPreview = React.createClass({
           height: 0,
           paddingTop: 0,
           paddingBottom: 0
-        }, function() {
+        }, () => {
           detailRow.style.display = 'none';
           row.setAttribute('aria-expanded', false);
         });
@@ -128,7 +128,7 @@ export var SchemaPreview = React.createClass({
         description.style.height = `${originalDescriptionHeight}px`;
         velocity(description, {
           height: targetDescriptionHeight
-        }, function() {
+        }, () => {
           description.style.height = 'auto';
         });
         row.setAttribute('aria-expanded', true);
@@ -136,7 +136,7 @@ export var SchemaPreview = React.createClass({
         // Animate to collapsed height, ellipsify when done
         velocity(description, {
           height: description.dataset.originalHeight
-        }, function() {
+        }, () => {
           description.classList.add('clamped');
           row.setAttribute('aria-expanded', false);
         });
@@ -144,7 +144,7 @@ export var SchemaPreview = React.createClass({
     }
   },
 
-  render: function() {
+  render() {
     var { view } = this.props;
     var toggleColumn = this.toggleColumn;
 
@@ -179,7 +179,7 @@ export var SchemaPreview = React.createClass({
       );
     }
 
-    tableRows = _.map(view.columns, function(column) {
+    tableRows = _.map(view.columns, (column) => {
       var typeCell;
 
       if (column.dataTypeName) {
@@ -304,7 +304,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onExpandColumn: function(event) {
+    onExpandColumn(event) {
       var row = $(event.target).closest('.column-summary');
 
       var payload = {
@@ -318,7 +318,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(emitMixpanelEvent(payload));
     },
 
-    onExpandSchemaTable: function() {
+    onExpandSchemaTable() {
       var payload = {
         name: 'Expanded Details',
         properties: {

@@ -15,7 +15,7 @@ function loadAsyncScript() {
 
 // Export the locked-down loader.
 module.exports = {
-  activate: function() {
+  activate() {
     if (!loaded) {
       console.error('Attempted to open Zendesk without initialization!');
     } else {
@@ -25,7 +25,7 @@ module.exports = {
       });
     }
   },
-  init: function(options) {
+  init(options) {
     if (!loaded) {
       options = options || {};
       locale = options.locale;

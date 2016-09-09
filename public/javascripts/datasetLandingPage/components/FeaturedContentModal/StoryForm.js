@@ -36,21 +36,21 @@ export var StoryForm = React.createClass({
     viewCount: PropTypes.number
   },
 
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
       loadRequestedStory: _.noop,
       onChangeUrl: _.noop
     };
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     ReactDOM.findDOMNode(this).querySelector('h2').focus();
 
     this.loadRequestedStory = _.debounce(this.loadRequestedStory, 500, { leading: true });
     this.loadStoryIfNeeded();
   },
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     this.loadStoryIfNeeded();
 
     if (this.props.hasSaveError) {
@@ -61,15 +61,15 @@ export var StoryForm = React.createClass({
     }
   },
 
-  onChangeUrl: function(event) {
+  onChangeUrl(event) {
     this.props.onChangeUrl(event.target.value);
   },
 
-  loadRequestedStory: function() {
+  loadRequestedStory() {
     this.props.loadRequestedStory();
   },
 
-  loadStoryIfNeeded: function() {
+  loadStoryIfNeeded() {
     if (this.props.shouldLoadStory) {
       this.loadRequestedStory();
     }
@@ -77,7 +77,7 @@ export var StoryForm = React.createClass({
 
   I18n: I18n.featured_content_modal.story_form,
 
-  renderForm: function() {
+  renderForm() {
     var { url, hasSaveError, hasValidationError } = this.props;
 
     var validationWarning = hasValidationError ?
@@ -105,7 +105,7 @@ export var StoryForm = React.createClass({
     );
   },
 
-  renderPreview: function() {
+  renderPreview() {
     var contents;
     var {
       description,
@@ -147,7 +147,7 @@ export var StoryForm = React.createClass({
     );
   },
 
-  renderContent: function() {
+  renderContent() {
     var { hasSaveError, onClickCancel } = this.props;
 
     var backButton = (
@@ -181,7 +181,7 @@ export var StoryForm = React.createClass({
     );
   },
 
-  renderFooter: function() {
+  renderFooter() {
     var { canSave, isSaved, isSaving, onClickCancel, onClickSave } = this.props;
 
     var footerProps = {
@@ -199,7 +199,7 @@ export var StoryForm = React.createClass({
     return <FormFooter {...footerProps} />;
   },
 
-  render: function() {
+  render() {
     var { onClickClose } = this.props;
 
     return (
@@ -221,23 +221,23 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    loadRequestedStory: function() {
+    loadRequestedStory() {
       dispatch(loadStory());
     },
 
-    onClickCancel: function() {
+    onClickCancel() {
       dispatch(cancelFeaturedItemEdit());
     },
 
-    onClickClose: function() {
+    onClickClose() {
       dispatch(cancelFeaturedItemEdit());
     },
 
-    onClickSave: function() {
+    onClickSave() {
       dispatch(saveFeaturedItem());
     },
 
-    onChangeUrl: function(url) {
+    onChangeUrl(url) {
       dispatch(setStoryUrlField(url));
     }
   };

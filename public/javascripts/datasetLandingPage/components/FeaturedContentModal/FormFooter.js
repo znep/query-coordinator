@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { PropTypes } from 'react';
 
-var FormFooter = function(props) {
+var FormFooter = (props) => {
   var {
     cancelText,
     canSave,
@@ -14,7 +14,7 @@ var FormFooter = function(props) {
     savedText
   } = props;
 
-  var renderSaveButton = function() {
+  var renderSaveButton = () => {
     if (!displaySaveButton) { return null; }
 
     var saveButtonClassName = classNames({

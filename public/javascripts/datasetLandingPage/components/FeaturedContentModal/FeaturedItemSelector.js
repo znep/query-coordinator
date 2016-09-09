@@ -30,7 +30,7 @@ export var FeaturedItemSelector = React.createClass({
     renderHeader: PropTypes.func
   },
 
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
       onClickAdd: _.noop,
       onClickDone: _.noop,
@@ -39,18 +39,18 @@ export var FeaturedItemSelector = React.createClass({
     };
   },
 
-  getInitialState: function() {
+  getInitialState() {
     return {
       showPlaceholderDetails: [false, false, false]
     };
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     ReactDOM.findDOMNode(this).querySelector('h2').focus();
   },
 
   // When we click the add button that shows more add buttons.
-  onClickPreAdd: function(position) {
+  onClickPreAdd(position) {
     var { isBlobby } = this.props;
     var { showPlaceholderDetails } = this.state;
 
@@ -63,7 +63,7 @@ export var FeaturedItemSelector = React.createClass({
     this.setState({ showPlaceholderDetails });
   },
 
-  renderAddButton: function(index, type, text) {
+  renderAddButton(index, type, text) {
     var { onClickAdd } = this.props;
 
     return (
@@ -76,7 +76,7 @@ export var FeaturedItemSelector = React.createClass({
     );
   },
 
-  renderEditButton: function(index) {
+  renderEditButton(index) {
     var { contentList, onClickEdit } = this.props;
 
     return (
@@ -90,7 +90,7 @@ export var FeaturedItemSelector = React.createClass({
     );
   },
 
-  renderRemoveButton: function(index) {
+  renderRemoveButton(index) {
     var { contentList, isRemoving, removePosition, onClickRemove } = this.props;
 
     var contents;
@@ -118,7 +118,7 @@ export var FeaturedItemSelector = React.createClass({
     );
   },
 
-  renderActionButtons: function(index) {
+  renderActionButtons(index) {
     var { contentList } = this.props;
     var { showPlaceholderDetails } = this.state;
 
@@ -150,7 +150,7 @@ export var FeaturedItemSelector = React.createClass({
     }
   },
 
-  renderFooter: function() {
+  renderFooter() {
     var { onClickDone } = this.props;
 
     return (
@@ -168,7 +168,7 @@ export var FeaturedItemSelector = React.createClass({
     );
   },
 
-  renderContent: function() {
+  renderContent() {
     var { contentList, isRemoving, removePosition, isBlobby } = this.props;
 
     var introduction = isBlobby ?
@@ -218,7 +218,7 @@ export var FeaturedItemSelector = React.createClass({
     );
   },
 
-  renderRemoveError: function() {
+  renderRemoveError() {
     var { hasRemoveError } = this.props;
 
     if (!hasRemoveError) {
@@ -232,7 +232,7 @@ export var FeaturedItemSelector = React.createClass({
     );
   },
 
-  render: function() {
+  render() {
     var { onClickClose } = this.props;
 
     return (
@@ -270,7 +270,7 @@ function mapDispatchToProps(dispatch) {
   }
 
   return {
-    onClickAdd: function(type, position) {
+    onClickAdd(type, position) {
       var mixpanelPayload = {
         name: 'Clicked to Add a Featured Item',
         properties: {
@@ -283,15 +283,15 @@ function mapDispatchToProps(dispatch) {
       dispatch(addFeaturedItem(type, position));
     },
 
-    onClickClose: function() {
+    onClickClose() {
       dispatch(cancelFeaturedItemEdit());
     },
 
-    onClickDone: function() {
+    onClickDone() {
       dispatch(cancelFeaturedItemEdit());
     },
 
-    onClickEdit: function(position, featuredItem) {
+    onClickEdit(position, featuredItem) {
       var mixpanelPayload = {
         name: 'Clicked to Edit a Featured Item',
         properties: {
@@ -304,7 +304,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(editFeaturedItem(featuredItem));
     },
 
-    onClickRemove: function(position, featuredItem) {
+    onClickRemove(position, featuredItem) {
       var mixpanelPayload = {
         name: 'Clicked to Remove a Featured Item',
         properties: {

@@ -7,7 +7,7 @@ export var BlobDownload = React.createClass({
     view: PropTypes.object.isRequired
   },
 
-  renderManagePrompt: function() {
+  renderManagePrompt() {
     var { view } = this.props;
 
     if (!isUserAdminOrPublisher()) {
@@ -27,7 +27,7 @@ export var BlobDownload = React.createClass({
     );
   },
 
-  render: function() {
+  render() {
     var { view } = this.props;
     var { blobFilename, blobMimeType, isBlobby } = view;
 

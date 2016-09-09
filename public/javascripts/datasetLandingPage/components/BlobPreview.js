@@ -6,7 +6,7 @@ export var BlobPreview = React.createClass({
     view: PropTypes.object.isRequired
   },
 
-  renderPreview: function() {
+  renderPreview() {
     var { view } = this.props;
 
     var href = `/api/file_data/${view.blobId}`;
@@ -26,7 +26,7 @@ export var BlobPreview = React.createClass({
     }
   },
 
-  render: function() {
+  render() {
     var { isBlobby, blobType } = this.props.view;
 
     if (!isBlobby || (blobType !== 'image' && blobType !== 'google_viewer')) {

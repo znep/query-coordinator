@@ -14,7 +14,7 @@ export var PublishNotice = React.createClass({
     view: PropTypes.object.isRequired
   },
 
-  renderPublishErrorAlert: function() {
+  renderPublishErrorAlert() {
     var { view, onDismissError } = this.props;
 
     if (!view.hasPublishingError) {
@@ -37,7 +37,7 @@ export var PublishNotice = React.createClass({
     );
   },
 
-  renderPublishAlert: function() {
+  renderPublishAlert() {
     var { view, onClickPublish } = this.props;
 
     var message = I18n.publish_notice.format({ url: view.gridUrl });
@@ -70,7 +70,7 @@ export var PublishNotice = React.createClass({
     );
   },
 
-  render: function() {
+  render() {
     var { view } = this.props;
 
     if (!view.isUnpublished) {

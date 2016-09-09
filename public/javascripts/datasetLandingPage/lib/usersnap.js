@@ -20,9 +20,9 @@ function generateConfig() {
     commentRequired: true,
     tools: ['note', 'pen', 'arrow'],
     lang: getLocalizationKey(),
-    loadHandler: function() {
+    loadHandler: () => {
       // Fill in some additional info which we can't expose via the widget.
-      UserSnap.on('beforeSend', function(message) {
+      UserSnap.on('beforeSend', (message) => {
         message.addInfo = user;
       });
 
@@ -56,14 +56,14 @@ function loadAsyncScript() {
 
 // Export the locked-down loader.
 module.exports = {
-  activate: function() {
+  activate() {
     if (!loaded) {
       console.error('Attempted to open UserSnap without initialization!');
     } else {
       UserSnap.openReportWindow();
     }
   },
-  init: function(options) {
+  init(options) {
     if (!loaded) {
       options = options || {};
       locale = options.locale;

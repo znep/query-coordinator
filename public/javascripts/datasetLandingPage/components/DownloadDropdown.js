@@ -6,7 +6,7 @@ var DownloadDropdown = React.createClass({
     view: PropTypes.object.isRequired
   },
 
-  renderDownloadLink: function(format, callback) {
+  renderDownloadLink(format, callback) {
     var { view } = this.props;
     var extension = format;
     var type = format.toUpperCase();
@@ -33,7 +33,7 @@ var DownloadDropdown = React.createClass({
     );
   },
 
-  render: function() {
+  render() {
     var { onDownloadData, view } = this.props;
 
     if (view.downloadOverride) {

@@ -7,18 +7,16 @@ import ODataModal from './components/ODataModal';
 import ShareModal from './components/ShareModal';
 import Tour from './components/Tour';
 
-var DynamicContent = function() {
-  return (
-    <div>
-      <ApiFlannel />
-      <ContactForm />
-      <FeaturedContentModal />
-      <FeedbackPanel />
-      <ODataModal />
-      <ShareModal />
-      <Tour />
-    </div>
-  );
-};
+var DynamicContent = () => (
+  <div>
+    <ApiFlannel />
+    <ContactForm />
+    <FeaturedContentModal />
+    <FeedbackPanel />
+    <ODataModal />
+    <ShareModal />
+    <Tour />
+  </div>
+);
 
 export default DynamicContent;

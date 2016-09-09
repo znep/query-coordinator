@@ -32,7 +32,7 @@ export var ExternalResourceForm = React.createClass({
   },
 
   // These are defaulted to reduce ceremony in onChange* functions.
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
       onChangeDescription: _.noop,
       onChangePreviewImage: _.noop,
@@ -41,21 +41,21 @@ export var ExternalResourceForm = React.createClass({
     };
   },
 
-  getInitialState: function() {
+  getInitialState() {
     return {
       isImageInvalid: false
     };
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     ReactDOM.findDOMNode(this).querySelector('h2').focus();
   },
 
-  onChangeDescription: function(event) {
+  onChangeDescription(event) {
     this.props.onChangeDescription(event.target.value);
   },
 
-  onChangePreviewImage: function(event) {
+  onChangePreviewImage(event) {
     var { onChangePreviewImage } = this.props;
 
     var file = event.target.files[0];
@@ -71,7 +71,7 @@ export var ExternalResourceForm = React.createClass({
 
     var fileReader = new FileReader();
 
-    fileReader.addEventListener('load', function() {
+    fileReader.addEventListener('load', () => {
       var dataUrl = fileReader.result;
       onChangePreviewImage(dataUrl);
     }, false);
@@ -81,17 +81,17 @@ export var ExternalResourceForm = React.createClass({
     }
   },
 
-  onChangeTitle: function(event) {
+  onChangeTitle(event) {
     this.props.onChangeTitle(event.target.value);
   },
 
-  onChangeUrl: function(event) {
+  onChangeUrl(event) {
     this.props.onChangeUrl(event.target.value);
   },
 
   I18n: I18n.featured_content_modal.external_resource_form,
 
-  renderInputField: function(key, inputProps) {
+  renderInputField(key, inputProps) {
     var prefix = 'external-resource';
     var value = this.props[key];
     var onChange = this[`onChange${_.upperFirst(key)}`];
@@ -123,7 +123,7 @@ export var ExternalResourceForm = React.createClass({
     );
   },
 
-  renderPreview: function() {
+  renderPreview() {
     var { description, previewImage, title } = this.props;
 
     var cardProps = {
@@ -135,7 +135,7 @@ export var ExternalResourceForm = React.createClass({
     return <ExternalViewCard {...cardProps} />;
   },
 
-  renderContent: function() {
+  renderContent() {
     var { url, hasSaveError, onClickCancel } = this.props;
     var { isImageInvalid } = this.state;
 
@@ -201,7 +201,7 @@ export var ExternalResourceForm = React.createClass({
     );
   },
 
-  renderFooter: function() {
+  renderFooter() {
     var { canSave, isSaved, isSaving, onClickCancel, onClickSave } = this.props;
     var { isImageInvalid } = this.state;
 
@@ -220,7 +220,7 @@ export var ExternalResourceForm = React.createClass({
     return <FormFooter {...footerProps} />;
   },
 
-  render: function() {
+  render() {
     var { onClickClose } = this.props;
 
     return (
@@ -243,31 +243,31 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onChangeDescription: function(description) {
+    onChangeDescription(description) {
       dispatch(setExternalResourceField('description', description));
     },
 
-    onChangeTitle: function(title) {
+    onChangeTitle(title) {
       dispatch(setExternalResourceField('title', title));
     },
 
-    onChangeUrl: function(url) {
+    onChangeUrl(url) {
       dispatch(setExternalResourceField('url', url));
     },
 
-    onChangePreviewImage: function(previewImage) {
+    onChangePreviewImage(previewImage) {
       dispatch(setExternalResourceField('previewImage', previewImage));
     },
 
-    onClickCancel: function() {
+    onClickCancel() {
       dispatch(cancelFeaturedItemEdit());
     },
 
-    onClickClose: function() {
+    onClickClose() {
       dispatch(cancelFeaturedItemEdit());
     },
 
-    onClickSave: function() {
+    onClickSave() {
       dispatch(saveFeaturedItem());
     }
   };

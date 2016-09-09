@@ -16,15 +16,15 @@ export var FeaturedContentModal = React.createClass({
     onPressEscape: PropTypes.func
   },
 
-  componentWillMount: function() {
+  componentWillMount() {
     document.addEventListener('keyup', this.onKeyUp);
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     document.removeEventListener('keyup', this.onKeyUp);
   },
 
-  onKeyUp: function(event) {
+  onKeyUp(event) {
     var isModalHidden = ReactDOM.findDOMNode(this).classList.contains('modal-hidden');
     var isKeyEscape = event.keyCode === ESCAPE_KEY_CODE;
 
@@ -33,7 +33,7 @@ export var FeaturedContentModal = React.createClass({
     }
   },
 
-  renderContent: function() {
+  renderContent() {
     var { isEditing, editType } = this.props;
 
     if (!isEditing) {
@@ -47,7 +47,7 @@ export var FeaturedContentModal = React.createClass({
     }
   },
 
-  render: function() {
+  render() {
     return (
       <div
         id="featured-content-modal"

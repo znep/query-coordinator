@@ -9,7 +9,7 @@ export var FeaturedContent = React.createClass({
     isBlobby: PropTypes.bool
   },
 
-  renderManagePrompt: function() {
+  renderManagePrompt() {
     var { isBlobby } = this.props;
 
     if (!isUserAdminOrPublisher()) {
@@ -33,7 +33,7 @@ export var FeaturedContent = React.createClass({
     );
   },
 
-  renderFeaturedContent: function() {
+  renderFeaturedContent() {
     var { contentList } = this.props;
 
     if (_.every(contentList, _.isNull)) {
@@ -47,7 +47,7 @@ export var FeaturedContent = React.createClass({
     return <div className="media-results">{cards}</div>;
   },
 
-  render: function() {
+  render() {
     var { contentList } = this.props;
 
     if (!_.some(contentList) && !isUserAdminOrPublisher()) {

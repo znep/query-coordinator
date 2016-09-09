@@ -11,22 +11,22 @@ export var ApiFlannel = React.createClass({
     view: PropTypes.object.isRequired
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     if (isCopyingSupported) {
       var el = ReactDOM.findDOMNode(this);
       initClipboardControl(el.querySelectorAll('.btn.copy'));
     }
   },
 
-  onFocusInput: function(event) {
+  onFocusInput(event) {
     event.target.select();
   },
 
-  onMouseUpInput: function(event) {
+  onMouseUpInput(event) {
     event.preventDefault();
   },
 
-  renderEndpoint: function() {
+  renderEndpoint() {
     var { view, onClickCopy } = this.props;
 
     var copyButton = isCopyingSupported ?
@@ -82,7 +82,7 @@ export var ApiFlannel = React.createClass({
     );
   },
 
-  render: function() {
+  render() {
     return (
       <div
         role="dialog"
@@ -115,7 +115,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onClickCopy: function() {
+    onClickCopy() {
       var payload = {
         name: 'Copied API Link'
       };

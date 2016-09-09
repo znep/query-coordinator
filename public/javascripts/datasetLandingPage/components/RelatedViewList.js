@@ -30,7 +30,7 @@ export var RelatedViewList = React.createClass({
     viewList: PropTypes.arrayOf(PropTypes.object).isRequired
   },
 
-  onScrollList: function(event) {
+  onScrollList(event) {
     var { isDesktop, hasMore, isLoading, loadMore } = this.props;
 
     if (isDesktop || !hasMore || isLoading) {
@@ -45,7 +45,7 @@ export var RelatedViewList = React.createClass({
     }
   },
 
-  getAnimation: function() {
+  getAnimation() {
     var { viewList, isCollapsed, isDesktop, isLoading } = this.props;
 
     if (_.isEmpty(viewList)) {
@@ -74,13 +74,13 @@ export var RelatedViewList = React.createClass({
     };
   },
 
-  renderEmptyListAlert: function() {
+  renderEmptyListAlert() {
     var { bootstrapUrl } = this.props;
 
     return <BootstrapAlert bootstrapUrl={bootstrapUrl} />;
   },
 
-  renderContents: function() {
+  renderContents() {
     var {
       viewList,
       hasMore,
@@ -94,7 +94,7 @@ export var RelatedViewList = React.createClass({
       return this.renderEmptyListAlert();
     }
 
-    var relatedViews = _.map(viewList, function(relatedView, i) {
+    var relatedViews = _.map(viewList, (relatedView, i) => {
       var opacity;
 
       if (isDesktop) {
@@ -135,7 +135,7 @@ export var RelatedViewList = React.createClass({
     );
   },
 
-  renderLoadMoreLink: function() {
+  renderLoadMoreLink() {
     var { hasMore, isLoading, loadMore, isDesktop } = this.props;
 
     if (!hasMore || !isDesktop) {
@@ -156,7 +156,7 @@ export var RelatedViewList = React.createClass({
     );
   },
 
-  renderError: function() {
+  renderError() {
     var { hasError, dismissError } = this.props;
 
     if (!hasError) {
@@ -171,7 +171,7 @@ export var RelatedViewList = React.createClass({
     );
   },
 
-  renderCollapseLink: function() {
+  renderCollapseLink() {
     var { viewList, hasMore, isCollapsed, toggleList, isDesktop } = this.props;
 
     if (hasMore || viewList.length <= RELATED_VIEWS_CHUNK_SIZE || !isDesktop) {
@@ -190,7 +190,7 @@ export var RelatedViewList = React.createClass({
     );
   },
 
-  render: function() {
+  render() {
     var { viewList } = this.props;
 
     if (_.isEmpty(viewList) && !isUserAdminOrPublisher()) {
@@ -224,7 +224,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    loadMore: function() {
+    loadMore() {
       dispatch(loadMoreRelatedViews());
 
       var mixpanelPayload = {
@@ -234,15 +234,15 @@ function mapDispatchToProps(dispatch) {
       dispatch(emitMixpanelEvent(mixpanelPayload));
     },
 
-    toggleList: function() {
+    toggleList() {
       dispatch(toggleRelatedViews());
     },
 
-    dismissError: function() {
+    dismissError() {
       dispatch(dismissRelatedViewsError());
     },
 
-    onClickWidget: function(event) {
+    onClickWidget(event) {
       var resultCard = event.target.closest('.result-card');
       var payload = {
         name: 'Clicked a Related View',

@@ -9,17 +9,17 @@ var TextArea = React.createClass({
     onChange: PropTypes.func
   },
 
-  getInitialState: function() {
+  getInitialState() {
     return {
       dirty: false
     };
   },
 
-  onBlur: function() {
+  onBlur() {
     this.setState({ dirty: true });
   },
 
-  render: function() {
+  render() {
     var { field, label, name, onChange } = this.props;
 
     var classes = classNames('text-input text-area', name);

@@ -132,7 +132,7 @@ function validateEventName(eventName) {
 function validateProperties(properties) {
   var valid = true;
 
-  _.forEach(properties, function(value, key) {
+  _.forEach(properties, (value, key) => {
     if (_.isObject(value)) {
       validateProperties(value);
     } else {

@@ -27,17 +27,17 @@ export var ViewSelectorModal = React.createClass({
     viewList: PropTypes.array.isRequired
   },
 
-  componentWillMount: function() {
+  componentWillMount() {
     this.props.fetchViews();
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     ReactDOM.findDOMNode(this).querySelector('h2').focus();
   },
 
   I18n: I18n.featured_content_modal.view_selector_modal,
 
-  renderBackButton: function() {
+  renderBackButton() {
     var { onClickCancel } = this.props;
     return (
       <button className="btn btn-default btn-simple btn-xs back-button" onClick={onClickCancel}>
@@ -47,7 +47,7 @@ export var ViewSelectorModal = React.createClass({
     );
   },
 
-  renderContent: function() {
+  renderContent() {
     var {
       hasSaveError,
       hasViewFetchError,
@@ -86,13 +86,13 @@ export var ViewSelectorModal = React.createClass({
     }
   },
 
-  renderNoViews: function() {
+  renderNoViews() {
     var { bootstrapUrl } = this.props;
 
     return <BootstrapAlert bootstrapUrl={bootstrapUrl} />;
   },
 
-  renderFooter: function() {
+  renderFooter() {
     var { onClickCancel } = this.props;
     var footerProps = {
       cancelText: I18n.cancel,
@@ -102,7 +102,7 @@ export var ViewSelectorModal = React.createClass({
     return <FormFooter {...footerProps} />;
   },
 
-  renderSaveError: function() {
+  renderSaveError() {
     var { hasSaveError } = this.props;
     if (hasSaveError) {
       return (
@@ -111,7 +111,7 @@ export var ViewSelectorModal = React.createClass({
     }
   },
 
-  render: function() {
+  render() {
     var { onClickClose } = this.props;
 
     return (
@@ -145,21 +145,21 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onClickCancel: function() {
+    onClickCancel() {
       dispatch(cancelFeaturedItemEdit());
     },
 
-    onClickChoose: function(uid) {
+    onClickChoose(uid) {
       dispatch(saveFeaturedItem({
         featuredLensUid: uid
       }));
     },
 
-    onClickClose: function() {
+    onClickClose() {
       dispatch(cancelFeaturedItemEdit());
     },
 
-    fetchViews: function() {
+    fetchViews() {
       dispatch(requestDerivedViews());
     }
   };

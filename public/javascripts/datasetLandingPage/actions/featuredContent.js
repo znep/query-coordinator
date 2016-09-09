@@ -79,7 +79,7 @@ export function handleFeaturedItemSaveError() {
 }
 
 export function saveFeaturedItem(options) {
-  return function(dispatch, getState) {
+  return (dispatch, getState) => {
     var state = getState();
     var viewId = state.view.id;
     var featuredContent = state.featuredContent;
@@ -158,8 +158,8 @@ export function saveFeaturedItem(options) {
     // Save featured item
     fetch(`/dataset_landing_page/${viewId}/featured_content`, fetchOptions).
       then(checkStatus).
-      then(response => response.json()).
-      then(function(response) {
+      then((response) => response.json()).
+      then((response) => {
         dispatch(handleFeaturedItemSaveSuccess(response, editPosition));
         dispatch(emitMixpanelEvent(mixpanelPayload));
         _.delay(dispatch, 1500, cancelFeaturedItemEdit());
@@ -190,7 +190,7 @@ export function handleFeaturedItemRemovalError() {
 }
 
 export function removeFeaturedItem(position) {
-  return function(dispatch, getState) {
+  return (dispatch, getState) => {
     var state = getState();
     var viewId = state.view.id;
 
@@ -207,10 +207,8 @@ export function removeFeaturedItem(position) {
     // Save featured item
     fetch(`/dataset_landing_page/${viewId}/featured_content/${position}`, fetchOptions).
       then(checkStatus).
-      then(response => response.json()).
-      then(function() {
-        dispatch(handleFeaturedItemRemovalSuccess(position));
-      }).
+      then((response) => response.json()).
+      then(() => dispatch(handleFeaturedItemRemovalSuccess(position))).
       catch(() => dispatch(handleFeaturedItemRemovalError()));
   };
 }
@@ -252,7 +250,7 @@ export function handleLoadingStorySuccess(story) {
 }
 
 export function loadStory() {
-  return function(dispatch, getState) {
+  return (dispatch, getState) => {
     var state = getState();
     var uid = parseUid(state.featuredContent.story.url);
 
@@ -268,10 +266,8 @@ export function loadStory() {
 
     fetch(`/dataset_landing_page/formatted_view/${uid}`, fetchOptions).
       then(checkStatus).
-      then(response => response.json()).
-      then(function(response) {
-        dispatch(handleLoadingStorySuccess(response));
-      }).
+      then((response) => response.json()).
+      then((response) => dispatch(handleLoadingStorySuccess(response))).
       catch(() => dispatch(handleLoadingStoryError()));
   };
 }
@@ -298,10 +294,8 @@ export function requestDerivedViews() {
 
     fetch(fetchUrl, fetchOptions).
       then(checkStatus).
-      then(response => response.json()).
-      then(function(response) {
-        dispatch(receiveDerivedViews(response));
-      }).
+      then((response) => response.json()).
+      then((response) => dispatch(receiveDerivedViews(response))).
       catch(() => dispatch(handleDerivedViewsError()));
   };
 }

@@ -19,7 +19,7 @@ export var App = React.createClass({
     view: PropTypes.object
   },
 
-  renderDataset: function() {
+  renderDataset() {
     return (
       <div>
         <PublishNotice />
@@ -41,7 +41,7 @@ export var App = React.createClass({
     );
   },
 
-  renderBlob: function() {
+  renderBlob() {
     return (
       <div>
         <PublishNotice />
@@ -58,7 +58,7 @@ export var App = React.createClass({
     );
   },
 
-  render: function() {
+  render() {
     var { view } = this.props;
     var content;
 

@@ -14,7 +14,7 @@ export var InfoPane = React.createClass({
     view: PropTypes.object.isRequired
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     var metadataHeight = this.metadataPane.getBoundingClientRect().height;
     var descriptionHeight = this.description.getBoundingClientRect().height;
     var descriptionLineHeight = 24;
@@ -30,7 +30,7 @@ export var InfoPane = React.createClass({
     });
   },
 
-  renderMoreActions: function() {
+  renderMoreActions() {
     var { view } = this.props;
 
     var contactFormLink = (
@@ -69,7 +69,7 @@ export var InfoPane = React.createClass({
     );
   },
 
-  render: function() {
+  render() {
     var { view, onClickGrid, onDownloadData } = this.props;
 
     var privateIcon;
@@ -199,7 +199,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onClickGrid: function() {
+    onClickGrid() {
       var payload = {
         name: 'Navigated to Gridpage'
       };
@@ -207,7 +207,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(emitMixpanelEvent(payload));
     },
 
-    onDownloadData: function(event) {
+    onDownloadData(event) {
       var payload = {
         name: 'Downloaded Data',
         properties: {
@@ -218,7 +218,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(emitMixpanelEvent(payload));
     },
 
-    onExpandDescription: function() {
+    onExpandDescription() {
       var payload = {
         name: 'Expanded Details',
         properties: {

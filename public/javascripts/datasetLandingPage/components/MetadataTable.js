@@ -20,23 +20,23 @@ export var MetadataTable = React.createClass({
     view: PropTypes.object.isRequired
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     this.collapseTags();
     this.collapseTable();
     this.applyFirefoxHack();
   },
 
   // Legendary firefox hack, see https://bugzilla.mozilla.org/show_bug.cgi?id=1266901
-  applyFirefoxHack: function() {
+  applyFirefoxHack() {
     var el = ReactDOM.findDOMNode(this);
-    _.toArray(el.querySelectorAll('td.attachment a')).forEach(function(link) {
+    _.toArray(el.querySelectorAll('td.attachment a')).forEach((link) => {
       link.style.display = 'none';
       link.offsetHeight; // eslint-disable-line no-unused-expressions
       link.style.display = '';
     });
   },
 
-  collapseTags: function() {
+  collapseTags() {
     if (_.isEmpty(this.props.view.tags)) {
       return;
     }
@@ -53,7 +53,7 @@ export var MetadataTable = React.createClass({
     });
   },
 
-  collapseTable: function() {
+  collapseTable() {
     var el = ReactDOM.findDOMNode(this);
     var leftColumnHeight = el.querySelector('.metadata-column.fancy').offsetHeight;
     var tableColumn = el.querySelector('.metadata-column.tables');
@@ -62,7 +62,7 @@ export var MetadataTable = React.createClass({
 
     // Add a 'hidden' class to tables whose top is below the bottom of the left column.
     // These will be shown and hidden as the tableColumn is expanded and collapsed.
-    tables.forEach(function(table) {
+    tables.forEach((table) => {
       if (table.offsetTop > leftColumnHeight) {
         table.classList.add('hidden');
         shouldHideToggles = false;
@@ -73,9 +73,7 @@ export var MetadataTable = React.createClass({
     // binding event handlers, as no collapsing is necessary.
     if (shouldHideToggles) {
       var toggleGroups = _.toArray(el.querySelectorAll('.metadata-table-toggle-group'));
-      toggleGroups.forEach(function(group) {
-        group.style.display = 'none';
-      });
+      toggleGroups.forEach((group) => group.style.display = 'none');
 
       tableColumn.classList.remove('collapsed');
       tableColumn.style.paddingBottom = 0;
@@ -84,7 +82,7 @@ export var MetadataTable = React.createClass({
     }
   },
 
-  toggleTable: function(event) {
+  toggleTable(event) {
     event.preventDefault();
 
     var { onExpandMetadataTable } = this.props;
@@ -100,9 +98,9 @@ export var MetadataTable = React.createClass({
     if (wasCollapsed) {
       velocity(tableColumn, {
         height: targetHeight
-      }, function() {
-        tableColumn.style.height = '';
-      });
+      }, () =>
+        tableColumn.style.height = ''
+      );
 
       onExpandMetadataTable();
     } else {
@@ -111,14 +109,14 @@ export var MetadataTable = React.createClass({
       tableColumn.style.height = `${originalHeight}px`;
       velocity(tableColumn, {
         height: targetHeight
-      }, function() {
+      }, () => {
         tableColumn.style.height = '';
         tableColumn.classList.add('collapsed');
       });
     }
   },
 
-  render: function() {
+  render() {
     var { view, onClickEditMetadata, onClickStats } = this.props;
 
     var attachments;
@@ -146,8 +144,8 @@ export var MetadataTable = React.createClass({
     }
 
     if (!_.isEmpty(view.customMetadataFieldsets)) {
-      customMetadataFieldsets = _.map(view.customMetadataFieldsets, function(fieldset, i) {
-        var fields = _.map(fieldset.fields, function(field, j) {
+      customMetadataFieldsets = _.map(view.customMetadataFieldsets, (fieldset, i) => {
+        var fields = _.map(fieldset.fields, (field, j) => {
           if (fieldset.existing_fields[field.name]) {
             return (
               <tr key={j}>
@@ -181,16 +179,14 @@ export var MetadataTable = React.createClass({
     }
 
     if (!_.isEmpty(view.attachments)) {
-      var attachmentRows = _.map(view.attachments, function(attachment, i) {
-        return (
-          <tr key={i}>
-            <td className="attachment">
-              <span className="icon-copy-document"></span>
-              <span dangerouslySetInnerHTML={{ __html: attachment.link }}></span>
-            </td>
-          </tr>
-        );
-      });
+      var attachmentRows = _.map(view.attachments, (attachment, i) => (
+        <tr key={i}>
+          <td className="attachment">
+            <span className="icon-copy-document"></span>
+            <span dangerouslySetInnerHTML={{ __html: attachment.link }}></span>
+          </td>
+        </tr>
+      ));
 
       attachments = (
         <div>
@@ -213,14 +209,12 @@ export var MetadataTable = React.createClass({
     }
 
     if (!_.isEmpty(view.tags)) {
-      var tagLinks = _.map(view.tags, function(tag, i) {
-        return (
-          <span key={i}>
-            <a href={localizeLink(`/browse?tags=${tag}`)}>{tag}</a>
-            {i === view.tags.length - 1 ? '' : ', '}
-          </span>
-        );
-      });
+      var tagLinks = _.map(view.tags, (tag, i) => (
+        <span key={i}>
+          <a href={localizeLink(`/browse?tags=${tag}`)}>{tag}</a>
+          {i === view.tags.length - 1 ? '' : ', '}
+        </span>
+      ));
 
       tags = (
         <td>
@@ -489,7 +483,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onClickEditMetadata: function() {
+    onClickEditMetadata() {
       var payload = {
         name: 'Edited Metadata',
         properties: {
@@ -500,7 +494,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(emitMixpanelEvent(payload));
     },
 
-    onClickStats: function() {
+    onClickStats() {
       var payload = {
         name: 'Viewed Dataset Statistics',
         properties: {
@@ -511,7 +505,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(emitMixpanelEvent(payload));
     },
 
-    onExpandTags: function() {
+    onExpandTags() {
       var payload = {
         name: 'Expanded Details',
         properties: {
@@ -522,7 +516,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(emitMixpanelEvent(payload));
     },
 
-    onExpandMetadataTable: function() {
+    onExpandMetadataTable() {
       var payload = {
         name: 'Expanded Details',
         properties: {

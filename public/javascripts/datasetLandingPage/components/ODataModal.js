@@ -11,18 +11,18 @@ export var ODataModal = React.createClass({
     view: PropTypes.object.isRequired
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     if (isCopyingSupported) {
       var el = ReactDOM.findDOMNode(this);
       initClipboardControl(el.querySelectorAll('.btn.copy'));
     }
   },
 
-  onFocusInput: function(event) {
+  onFocusInput(event) {
     event.target.select();
   },
 
-  renderEndpoint: function() {
+  renderEndpoint() {
     var { view, onClickCopy } = this.props;
 
     var copyButton = isCopyingSupported ?
@@ -61,7 +61,7 @@ export var ODataModal = React.createClass({
     );
   },
 
-  render: function() {
+  render() {
     return (
       <div id="odata-modal" className="modal modal-overlay modal-hidden" data-modal-dismiss>
         <div className="modal-container">
@@ -108,7 +108,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onClickCopy: function() {
+    onClickCopy() {
       var payload = {
         name: 'Copied OData Link'
       };

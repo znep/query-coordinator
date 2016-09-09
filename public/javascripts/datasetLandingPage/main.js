@@ -35,7 +35,7 @@ if (window.serverConfig.environment === 'development') {
 var store = createStore(datasetLandingPage, applyMiddleware(...middleware));
 
 // Defer rendering so the spinner in the erb can render.
-_.defer(function() {
+_.defer(() => {
 
   // Render the App, falling back to rendering an error if it fails.
   try {
@@ -63,7 +63,7 @@ _.defer(function() {
   }
 
   // Flush the app to the browser and render the modals, flannels, etc.
-  _.defer(function() {
+  _.defer(() => {
     ReactDOM.render(
       <Provider store={store}>
         <DynamicContent />

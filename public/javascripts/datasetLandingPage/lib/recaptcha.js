@@ -19,7 +19,7 @@ function init(element, callback) {
   element.innerHTML = '';
   element.appendChild(recaptcha);
 
-  var _init = setInterval(function() {
+  var _init = setInterval(() => {
     if (_.isUndefined(window.grecaptcha)) { return; }
 
     // See here for more options: https://developers.google.com/recaptcha/docs/display#render_param

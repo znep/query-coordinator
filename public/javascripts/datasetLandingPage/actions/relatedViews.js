@@ -42,7 +42,7 @@ export function dismissRelatedViewsError() {
 }
 
 export function loadMoreRelatedViews() {
-  return function(dispatch, getState) {
+  return (dispatch, getState) => {
     var state = getState();
 
     if (_.get(state, 'relatedViews.isLoading', false)) {
@@ -62,10 +62,8 @@ export function loadMoreRelatedViews() {
 
     fetch(fetchUrl, fetchOptions).
       then(checkStatus).
-      then(response => response.json()).
-      then(
-        relatedViews => dispatch(receiveRelatedViews(relatedViews))
-      ).
+      then((response) => response.json()).
+      then((relatedViews) => dispatch(receiveRelatedViews(relatedViews))).
       catch(() => dispatch(handleRelatedViewsError()));
   };
 }

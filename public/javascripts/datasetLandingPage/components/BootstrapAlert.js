@@ -12,17 +12,17 @@ export var BootstrapAlert = React.createClass({
     onClickBootstrap: PropTypes.func
   },
 
-  componentWillMount: function() {
+  componentWillMount() {
     this.uniqueId = _.uniqueId();
   },
 
   // Using components.attachTo here isn't possible.  Until socrata-components is able to handle
   // multiple attachTo's and scope them properly, we must use the factory manually.
-  componentDidMount: function() {
+  componentDidMount() {
     components.factories.FlyoutFactory(ReactDOM.findDOMNode(this)); // eslint-disable-line
   },
 
-  render: function() {
+  render() {
     var { bootstrapUrl, onClickBootstrap } = this.props;
     var isDisabled = !_.isString(bootstrapUrl);
     var className = 'btn btn-sm btn-alternate-2';
@@ -61,7 +61,7 @@ export var BootstrapAlert = React.createClass({
 
 function mapDispatchToProps(dispatch) {
   return {
-    onClickBootstrap: function() {
+    onClickBootstrap() {
       var payload = {
         name: 'Created a Data Lens',
         properties: {

@@ -3,20 +3,18 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 
-export var Tour = function(props) {
+export var Tour = (props) => {
   var { onClickDone, onCloseTour } = props;
 
   var { enableDatasetLandingPageTour } = window.serverConfig.featureFlags;
   var hasCookie = utils.getCookie('dslpTourClosed');
 
   if (enableDatasetLandingPageTour && !hasCookie) {
-    var setCookie = function() {
-      window.document.cookie = 'dslpTourClosed=1';
-    };
+    var setCookie = () => window.document.cookie = 'dslpTourClosed=1';
 
     window.document.addEventListener(
       'SOCRATA_STYLEGUIDE_TOUR_COMPLETE',
-      function() {
+      () => {
         onClickDone();
         setCookie();
       }
@@ -24,7 +22,7 @@ export var Tour = function(props) {
 
     window.document.addEventListener(
       'SOCRATA_STYLEGUIDE_TOUR_CLOSED',
-      function() { onCloseTour(); }
+      () => onCloseTour()
     );
 
     return (
@@ -59,7 +57,7 @@ function mapDispatchToProps(dispatch) {
   }
 
   return {
-    onClickDone: function() {
+    onClickDone() {
       var payload = {
         name: 'Clicked Next in Tour',
         properties: tourPayload()
@@ -68,7 +66,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(emitMixpanelEvent(payload));
     },
 
-    onCloseTour: function() {
+    onCloseTour() {
       var payload = {
         name: 'Closed Tour',
         properties: tourPayload()

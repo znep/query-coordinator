@@ -11,25 +11,25 @@ export var DatasetPreview = React.createClass({
     view: PropTypes.object.isRequired
   },
 
-  getInitialState: function() {
+  getInitialState() {
     return {
       isLoading: true
     };
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     if (this.shouldRenderTable()) {
       this.initializeTable();
     }
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     if (this.shouldRenderTable()) {
       this.removeTable();
     }
   },
 
-  getVif: function() {
+  getVif() {
     var { view } = this.props;
 
     return {
@@ -65,7 +65,7 @@ export var DatasetPreview = React.createClass({
     };
   },
 
-  shouldRenderTable: function() {
+  shouldRenderTable() {
     var { view } = this.props;
 
     return view.isTabular &&
@@ -73,8 +73,7 @@ export var DatasetPreview = React.createClass({
       view.rowCount > 0;
   },
 
-  initializeTable: function() {
-    var self = this;
+  initializeTable() {
     var $table = $(this.table);
     var flyoutRenderer = new SocrataVisualizations.views.FlyoutRenderer();
 
@@ -82,13 +81,10 @@ export var DatasetPreview = React.createClass({
     $table.socrataTable(this.getVif());
 
     // Set up the relevant event listeners
-    $table.on(
-      'SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE',
-      function() {
-        self.setState({ isLoading: false });
-      }
-    );
-    $table.on('SOCRATA_VISUALIZATION_TABLE_FLYOUT', function(event) {
+    $table.on('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE', () => {
+      this.setState({ isLoading: false });
+    });
+    $table.on('SOCRATA_VISUALIZATION_TABLE_FLYOUT', (event) => {
       if (event.originalEvent.detail) {
         flyoutRenderer.render(event.originalEvent.detail);
       } else {
@@ -101,7 +97,7 @@ export var DatasetPreview = React.createClass({
     this.$table = $table;
   },
 
-  removeTable: function() {
+  removeTable() {
     var { $table } = this;
 
     // Tell the table to self-destruct
@@ -113,11 +109,11 @@ export var DatasetPreview = React.createClass({
     $(window).off('resize', this.triggerInvalidateSize);
   },
 
-  triggerInvalidateSize: function() {
+  triggerInvalidateSize() {
     this.$table.trigger('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');
   },
 
-  renderLoadingSpinner: function() {
+  renderLoadingSpinner() {
     if (this.state.isLoading) {
       return (
         <div className="table-spinner">
@@ -127,7 +123,7 @@ export var DatasetPreview = React.createClass({
     }
   },
 
-  render: function() {
+  render() {
     var { view, onClickGrid } = this.props;
 
     if (this.shouldRenderTable()) {
@@ -166,7 +162,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onClickGrid: function() {
+    onClickGrid() {
       var payload = {
         name: 'Navigated to Gridpage'
       };

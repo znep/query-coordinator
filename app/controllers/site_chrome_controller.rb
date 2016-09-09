@@ -25,7 +25,7 @@ class SiteChromeController < ApplicationController
     # We only want to apply these if the activation param is also present. By default this param is not
     # present unless the Activate button is pressed. This allows for updating the site chrome configuration
     # for either preview, or for pre-launch configuration by Socrata, without inadvertent activation.
-    if params[:site_appearance] && params[:activation]
+    if params[:site_appearance] && (@site_chrome.activated? || params[:activation])
       @site_chrome.set_activation_state(params[:site_appearance])
     end
 

@@ -808,7 +808,7 @@ module.exports = _.defaultsDeep({
       },
       {
         test: /(plugins|bower)\//,
-        loader: 'imports?define=>false,require=>false,module=>undefined,exports=>undefined,this=>window'
+        loader: 'imports?define=>undefined,require=>undefined,module=>undefined,exports=>undefined,this=>window'
       }
     ],
 

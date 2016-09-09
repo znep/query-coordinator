@@ -33,7 +33,6 @@ class GoalsPage extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  translations: state.get('translations'),
   isInitialLoadInProgress: Selectors.getLoading(state),
   isBulkEditFormVisible: State.getBulkEdit(state).get('visible'),
   isQuickEditFormVisible: State.getQuickEdit(state).get('visible')

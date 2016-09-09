@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import * as Api from '../../../api';
 import * as DataActions from './data';
 import * as SharedActions from '../../shared/actions';
@@ -74,13 +75,23 @@ export function save() {
     return Api.goals.update(goalId, version, values).then(updatedGoal => {
       const successMessage = Helpers.translator(translations, 'admin.quick_edit.success_message', updatedGoal.name);
 
-      dispatch(DataActions.updateById(goalId, updatedGoal));
-      dispatch(SharedActions.showGlobalMessage('goals', successMessage, 'success'));
-      dispatch(closeModal());
-    }).catch(() => {// eslint-disable-line dot-notation
-      const failureMessage = Helpers.translator(translations, 'admin.quick_edit.default_alert_message');
-      dispatch(SharedActions.showModalMessage('goals', 'quickEdit', failureMessage));
-      dispatch(SharedActions.setModalInProgress('goals', 'quickEdit', false));
-    });
+        dispatch(DataActions.updateById(goalId, updatedGoal));
+        dispatch(SharedActions.showGlobalMessage('goals', successMessage, 'success'));
+        dispatch(closeModal());
+      }).
+      catch(error => {// eslint-disable-line dot-notation
+        const message = JSON.parse(error.message);
+
+        let failureMessage;
+        if (message.validationError) {
+          failureMessage = _.map(message.errors,
+            err => Helpers.translator(translations, `admin.quick_edit.validation.${err.field}.${err.rule}`));
+        } else {
+          failureMessage = Helpers.translator(translations, 'admin.quick_edit.default_alert_message');
+        }
+
+        dispatch(SharedActions.showModalMessage('goals', 'quickEdit', failureMessage));
+        dispatch(SharedActions.setModalInProgress('goals', 'quickEdit', false));
+      });
   };
 }

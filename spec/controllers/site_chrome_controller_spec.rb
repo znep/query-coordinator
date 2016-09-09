@@ -109,6 +109,46 @@ describe SiteChromeController do
         expect(after_update.content).to include(new_content)
       end
     end
+
+    describe 'activation_state' do
+      before(:each) do
+        init_current_user(@controller)
+        stub_superadmin_user
+        auth_cookies_for_vcr_tapes.each { |key, value| @request.cookies[key] = value }
+      end
+
+      it 'gets called if params[:site_appearance] and params[:activation] is present and site chrome is not yet activated' do
+        site_appearance_param = { 'entire_site' => true }
+        activation_param = { 'activation' => true }
+
+        VCR.use_cassette('site_chrome/controller/update_with_activation_state') do
+          allow_any_instance_of(SiteChrome).to receive(:activated?).and_return(false)
+          expect_any_instance_of(SiteChrome).to receive(:set_activation_state)
+
+          put :update, content: new_content, site_appearance: site_appearance_param, activation: activation_param
+        end
+      end
+
+      it 'gets called if params[:site_appearance] is present and site chrome is already activated' do
+        site_appearance_param = { 'entire_site' => true }
+
+        VCR.use_cassette('site_chrome/controller/update_with_activation_state') do
+          allow_any_instance_of(SiteChrome).to receive(:activated?).and_return(true)
+          expect_any_instance_of(SiteChrome).to receive(:set_activation_state)
+
+          put :update, content: new_content, site_appearance: site_appearance_param
+        end
+      end
+
+      it 'does not get called if params[:site_appearance] is not present' do
+        VCR.use_cassette('site_chrome/controller/update_with_activation_state') do
+          allow_any_instance_of(SiteChrome).to receive(:activated?).and_return(true)
+          expect_any_instance_of(SiteChrome).not_to receive(:set_activation_state)
+
+          put :update, content: new_content
+        end
+      end
+    end
   end
 
   describe '#find_or_create_default_site_chrome' do

@@ -44,10 +44,10 @@ class Jenkins
   #
   # upstream_build_number: Build number to search for.
   # upstream_project: Upstream project to search within.
-  def self.find_downstream_storyteller_build(upstream_build_number, upstream_project = 'storyteller-release')
-    build_numbers = api.job.get_builds('storyteller').map {|rel| rel['number']}.sort.reverse
+  def self.find_downstream_build(upstream_build_number, upstream_project = 'frontend-release')
+    build_numbers = api.job.get_builds('frontend').map {|rel| rel['number']}.sort.reverse
     build_numbers.find do |build_number|
-      details = api.job.get_build_details('storyteller', build_number)
+      details = api.job.get_build_details('frontend', build_number)
       # 'actions' and 'causes' are both arrays, and 'actions' may have multiple
       # object members with a 'causes' key... hence this weird search structure.
       details['result'] == 'SUCCESS' && details['actions'].find do |action|

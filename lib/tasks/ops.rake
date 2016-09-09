@@ -3,39 +3,17 @@ require_relative 'ops/aws_credentials'
 require_relative 'ops/vpn'
 require_relative 'ops/jenkins'
 require_relative 'ops/ops_ui'
-# require_relative 'ops/storyteller_releases_ui'
 require_relative 'ops/new_release_ui'
-
-def neuter_airbrake
-  # Neuter airbrake for rake tasks, otherwise it
-  # wraps all exceptions with AirbrakeError and spews
-  # complaints about uninitialized notifiers. This is an issue
-  # for programmatically-invoked rake tasks and general developer
-  # sanity.
-  # begin
-  #   Airbrake.configure do |config|
-  #     config.project_id = 1
-  #     config.project_key = 'dummy config value, these need to be provided otherwise airbrake crashes'
-  #     config.ignore_environments = %w(development test)
-  #   end
-  #   Airbrake.add_filter { |notice| notice.ignore! }
-  # rescue Airbrake::Error
-  #   # No way to check if we've already been initialized here or in other code.
-  # end
-end
-
 
 namespace :ops do
   desc 'Check if the datacenter VPN is active'
   task :check_vpn do
-    neuter_airbrake
 
     raise 'VPN not connected' unless Vpn.active?
   end
 
   desc 'Check if the user has proper AWS credentials'
   task :check_aws_creds do
-    neuter_airbrake
 
     dialog = MRDialog.new
     missing_creds = []
@@ -59,7 +37,6 @@ namespace :ops do
   namespace :jenkins do
     desc 'Check if the user has proper Jenkins credentials'
     task :check_creds do
-      neuter_airbrake
 
       Jenkins.assert_auth_configured
     end
@@ -86,11 +63,6 @@ namespace :ops do
     desc 'Create a new release and build it'
     task :new_release do
       NewReleaseUi.new.open
-    end
-
-    desc 'Manage deployed versions (activate/rollback)'
-    task :releases do
-      StorytellerReleasesUi.new.open
     end
   end
 end

@@ -1,6 +1,4 @@
 require 'mrdialog'
-
-# require_relative 'storyteller_releases_ui'
 require_relative 'new_release_ui'
 
 class OpsUi

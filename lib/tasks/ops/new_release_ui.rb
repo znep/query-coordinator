@@ -12,8 +12,11 @@ class NewReleaseUi
   MANIFEST_FILE = 'manifest.txt'
   RELEASE_BRANCH_NAME = 'release'
   ACTUALLY_PUSH_TAG = true # Set this to false if you're debugging
+  JENKINS_POLL_INTERVAL = 15 # how long to wait between checks, in seconds
 
-  attr_reader :dialog, :git, :new_release_commit, :new_semver, :jenkins_build_number, :last_released_commit_sha, :current_master_commit, :merge_instead_of_reset
+  attr_reader :dialog, :git, :new_release_commit, :new_tag, :jenkins_build_number,
+    :last_released_commit_sha, :current_master_commit, :merge_instead_of_reset,
+    :last_release_tag
 
   def initialize
     @dialog = MRDialog.new
@@ -45,9 +48,10 @@ class NewReleaseUi
 
     return unless @new_release_commit && user_approves_manifest?
 
-    @new_semver = input_semver
+    @last_release_tag = `git tag -l #{RELEASE_BRANCH_NAME}/*`.split.sort.reverse.first
+    @new_tag = Rake.application['tag'].invoke
 
-    return unless @new_semver && user_approves_task_summary?
+    return unless @new_tag && user_approves_task_summary?
 
     make_the_release!
 
@@ -82,30 +86,19 @@ Aborted.'
       git.reset_hard(new_release_commit)
     end
 
-    # 2- Commit semver
-    dialog.infobox('Committing semver...')
-    new_semver.save(SemVer.find_file)
-    git.add(SemVer.find_file)
-    git.commit("Bump version #{new_semver}")
-
-
-    # 3- Apply tag.
-    dialog.infobox('Tagging release...')
-    git.add_tag(new_semver.to_s.tr('v', ''))
-
-    # 4- Push origin
+    # 2- Push origin
     dialog.infobox('Pushing to origin/release...')
     git.push('origin', RELEASE_BRANCH_NAME, tags: ACTUALLY_PUSH_TAG, force: true)
   end
 
   def wait_for_jenkins_build
     build_number = nil
-    dialog.infobox('Waiting for Jenkins build to complete successfully...', 4, 50)
+    dialog.infobox('Waiting for Jenkins build to complete successfully. Polling every #{JENKINS_POLL_INTERVAL} seconds...', 4, 50)
     loop do
       begin
-        build_number = Jenkins.find_storyteller_release_build(git.object('release').sha)
+        build_number = Jenkins.find_release_build(git.object('release').sha)
         break if build_number
-        sleep 15
+        sleep JENKINS_POLL_INTERVAL
       rescue
         retry
       end
@@ -117,7 +110,7 @@ Aborted.'
   end
 
   def find_docker_tag(release_build_number)
-    main_build_number = Jenkins.find_downstream_storyteller_build(release_build_number)
+    main_build_number = Jenkins.find_downstream_build(release_build_number)
     Jenkins.get_docker_tag_from_build(main_build_number)
   end
 
@@ -169,33 +162,6 @@ Aborted.'
     is_ok
   end
 
-  def input_semver
-    with_major_bump = current_release_semver.clone.tap { |v| v.major += 1; v.minor = 0; v.patch = 0 }
-    with_minor_bump = current_release_semver.clone.tap { |v| v.minor += 1; v.patch = 0 }
-    with_patch_bump = current_release_semver.clone.tap { |v| v.patch += 1 }
-
-
-    menu_items = [
-      [ 'minor', "Minor release (#{with_minor_bump})" ],
-      [ 'patch', "Patch release (#{with_patch_bump})" ],
-      [ 'major', "Major release (#{with_major_bump})" ]
-    ]
-
-    version_bump_type = dialog.menu(
-      "What kind of release is this?\nCurrent version: #{current_release_semver}",
-      menu_items
-    )
-
-    case version_bump_type
-      when 'major'
-        with_major_bump
-      when 'minor'
-        with_minor_bump
-      when 'patch'
-        with_patch_bump
-    end
-  end
-
   def user_approves_manifest?
     # Note that we're removing backticks and double quotes herehere.
     # If there are backticks in the commit messages, sh will try to run the text inside the backticks.
@@ -206,7 +172,7 @@ Here is the manifest. Does this look good? Scroll with j/k/pgup/pgdown.
 You'll have an opportunity to copy this to the clipboard momentarily.
 ----------
 
-#{manifest_text.tr('`', "'").tr('"', "'")}")
+#{manifest_text.gsub(/`|"/, "'")}")
   end
 
   def user_approves_task_summary?
@@ -216,8 +182,9 @@ You'll have an opportunity to copy this to the clipboard momentarily.
       "Reset release to: #{new_release_commit.sha}\n#{new_release_commit.message}"
     end
 
+    # TODO: update this dialog
     dialog.yesno("Here's what will be done:
-* Version bump from #{current_release_semver} to #{new_semver}
+* Push the new release tag #{@new_tag}
 * #{merge_or_reset}
 
 Proceed?
@@ -225,9 +192,9 @@ Proceed?
   end
 
   # Generate a manifest between last_released_commit_sha and new_release_commit.
-  # If new_semver is set, a header will be generated mentioning the new
+  # If new_tag is set, a header will be generated mentioning the new
   # version. Example header:
-  #   Storyteller v1.0.1 Manifest (old version: v1.0.0).
+  #   Frontend v1.0.1 Manifest (old version: v1.0.0).
   def manifest_text
     commits = git.log(MAX_MANIFEST_COMMITS).between(last_released_commit_sha, new_release_commit).select do |commit|
       commit.parents.length == 1 # Ignore merge commits.
@@ -242,20 +209,20 @@ Proceed?
     end.join("\n")
 
     commits_summary = "JIRA tickets:\n#{jira_tickets_text}\n\n"
-    commits_summary << "Diff: https://github.com/socrata/storyteller/compare/#{last_released_commit_sha}...#{new_release_commit.sha}\n\n"
+    commits_summary << "Diff: https://github.com/socrata/frontend/compare/#{last_released_commit_sha}...#{new_release_commit.sha}\n\n"
     commits_summary << commits.map do |commit|
       "#{commit.author.name} #{commit.date.strftime('%m-%d-%y')} #{commit.sha}:\n#{commit.message.strip}"
     end.join("\n\n")
 
-    if new_semver
-      "Storyteller #{new_semver} manifest (old version: #{current_release_semver})\n\n#{commits_summary}"
+    if new_tag
+      "Frontend #{new_tag} manifest (old version: #{last_release_tag}) \n\n#{commits_summary}"
     else
       commits_summary
     end
   end
 
   def provide_manifest_and_instructions_to_user
-    File.open(MANIFEST_FILE, 'w') { |f| f.write(manifest_text) }
+    File.open(MANIFEST_FILE, 'w') { |file| file.write(manifest_text) }
 
     copy_manifest_to_clipboard if dialog.yesno("Manifest written to #{MANIFEST_FILE}.
 Please send the manifest to:
@@ -306,18 +273,12 @@ Reset origin/#{RELEASE_BRANCH_NAME} to #{last_released_commit_sha} and try again
     Clipboard.copy(manifest_text)
   end
 
-  def current_release_semver
-    semver_yaml = git.gblob("#{last_released_commit_sha}:.semver").contents
-    semver = YAML.load(semver_yaml)
-    SemVer.new(semver[:major], semver[:minor], semver[:patch], semver[:special])
-  end
-
   def git_clean?
-    dialog.infobox('Checking git status...', 3, 30)
-    status = git.status
     dialog.infobox('Checking working copy state...', 3, 30)
-    clean = status.changed.empty? && status.added.empty?
-    dialog.msgbox('Git working copy not clean. Cannot proceed.', 6, 35) unless clean
+    changed_files = `git ls-files -m`
+    added_but_not_committed_files = `git diff --cached`
+    clean = changed_files.empty? && added_but_not_committed_files.empty?
+    dialog.msgbox('Git working copy not clean. Cannot proceed because I can\'t switch branches.', 7, 45) unless clean
 
     clean
   end

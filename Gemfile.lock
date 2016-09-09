@@ -82,7 +82,8 @@ GEM
       sassy-maps (< 1.0.0)
     builder (3.2.2)
     byebug (9.0.5)
-    capybara (2.4.4)
+    capybara (2.8.1)
+      addressable
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
       rack (>= 1.0.0)
@@ -133,7 +134,7 @@ GEM
     fast_stack (0.1.0)
       rake
       rake-compiler
-    ffi (1.9.10)
+    ffi (1.9.14)
     flamegraph (0.1.0)
       fast_stack
     foreman (0.78.0)
@@ -142,7 +143,7 @@ GEM
     git (1.3.0)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
-    headless (2.1.0)
+    headless (2.3.1)
     httparty (0.13.5)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
@@ -183,7 +184,7 @@ GEM
     minitest (5.9.0)
     mixlib-shellout (2.2.6)
     mrdialog (1.0.1)
-    multi_json (1.11.2)
+    multi_json (1.12.1)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
     neat (1.7.2)
@@ -292,9 +293,8 @@ GEM
     sdoc (0.4.1)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
-    selenium-webdriver (2.52.0)
+    selenium-webdriver (2.53.4)
       childprocess (~> 0.5)
-      multi_json (~> 1.0)
       rubyzip (~> 1.0)
       websocket (~> 1.0)
     semver2 (3.4.2)
@@ -341,7 +341,7 @@ GEM
     webmock (1.21.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
-    websocket (1.2.2)
+    websocket (1.2.3)
     xpath (2.0.0)
       nokogiri (~> 1.3)
 

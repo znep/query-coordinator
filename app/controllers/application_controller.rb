@@ -8,6 +8,8 @@ class ApplicationController < ActionController::Base
   include ActionController::Caching::Pages
   include FrameEmbedding
 
+  class BadParametersError < StandardError; end
+
   self.page_cache_directory = "#{Rails.root}/public/page_cache"
 
   def current_domain
@@ -29,6 +31,7 @@ class ApplicationController < ActionController::Base
 
   rescue_from CoreServer::ResourceNotFound, :with => :render_404
   rescue_from ActionView::MissingTemplate, :with => :render_406 unless Rails.env.development?
+  rescue_from ApplicationController::BadParametersError, :with => :render_400
 
   # Prevent CSRF attacks by raising an exception.
   protect_from_forgery with: :exception

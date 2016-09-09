@@ -11,6 +11,10 @@ class BrowseController < ApplicationController
   def show
     @meta[:page_name] = 'Public Catalog'
     @processed_browse = process_browse(request, suppress_dataset_creation: true, row_count: 3)
+    unless validate_parameters(@processed_browse)
+      raise ApplicationController::BadParametersError
+    end
+    @processed_browse
   end
 
   def embed

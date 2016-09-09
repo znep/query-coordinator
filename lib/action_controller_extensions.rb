@@ -1,6 +1,10 @@
 module ActionControllerExtensions
   protected
 
+  def render_400
+    render_error(400)
+  end
+
   def render_403
     render_error(403)
   end

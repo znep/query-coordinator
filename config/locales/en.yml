@@ -1619,6 +1619,9 @@ en:
       description_html: If you believe this to be an error, try logging out and back in as a different user <a href="/login">here</a>.
       no_permission: Error
       were_sorry: The current user doesn't have access to this resource.
+    error_400:
+      description: The given parameters for the request are invalid, please try again with different parameters.
+      were_sorry: We're sorry, but we can't process your request.
     to_whence_you_came: to where you came from.
   govstat:
     chrome:

@@ -7,7 +7,6 @@ import vifs from 'src/authoringWorkflow/vifs';
 import { defaultState as defaultMetadata } from 'src/authoringWorkflow/reducers/metadata';
 
 export default function(stateOverrides) {
-  var logger = createLogger();
   var initialState = _.merge(
     {
       vifAuthoring: {
@@ -21,5 +20,5 @@ export default function(stateOverrides) {
     stateOverrides
   );
 
-  return createStore(reducer, initialState, applyMiddleware(thunk, logger));
+  return createStore(reducer, initialState, applyMiddleware(thunk));
 }

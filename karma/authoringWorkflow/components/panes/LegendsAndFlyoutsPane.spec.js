@@ -136,7 +136,7 @@ describe('LegendsAndFlyoutsPane', function() {
 
     describe('events', function() {
       emitsEventsForUnits();
-      emitsEvent('#flyout-title-column .dropdown-option', 'onSelectRowInspectorTitle', 'click');
+      emitsEvent('#flyout-title-column .picklist-option', 'onSelectRowInspectorTitle', 'click');
     });
   });
 

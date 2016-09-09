@@ -102,7 +102,7 @@ describe('RegionSelector', function() {
     var component;
     var overrides;
 
-    var emitsDropdownEvent = function(selector, eventName) {
+    var emitsPicklistEvent = function(selector, eventName) {
       it(`should emit an ${eventName} event.`, function() {
         var option = component.querySelector(`${selector}`);
         TestUtils.Simulate.click(option);
@@ -139,12 +139,12 @@ describe('RegionSelector', function() {
     });
 
     describe('when selecting a computed column', function() {
-      emitsDropdownEvent('#region-selection .dropdown-option:nth-child(2)', 'onSelectComputedColumn');
-      emitsDropdownEvent('#region-selection .dropdown-option:nth-child(2)', 'onSelectComputedColumnShapefile');
+      emitsPicklistEvent('#region-selection .picklist-option:nth-child(2)', 'onSelectComputedColumn');
+      emitsPicklistEvent('#region-selection .picklist-option:nth-child(2)', 'onSelectComputedColumnShapefile');
     });
 
     describe('when selecting a curated region', function() {
-      emitsDropdownEvent('#region-selection .dropdown-option:nth-child(5)', 'onSelectCuratedRegion');
+      emitsPicklistEvent('#region-selection .picklist-option:nth-child(5)', 'onSelectCuratedRegion');
     });
   });
 });

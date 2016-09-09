@@ -86,7 +86,7 @@ describe('AxisAndScalePane', function() {
 
     describe('events', function() {
       describe('when changing the chart sorting order', function() {
-        emitsEvent('#chart-sorting-selection .dropdown-option', 'onSelectChartSorting', 'click');
+        emitsEvent('#chart-sorting-selection .picklist-option', 'onSelectChartSorting', 'click');
       });
     });
   }

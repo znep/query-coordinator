@@ -142,7 +142,7 @@ export var RegionSelector = React.createClass({
     };
 
     return (
-      <div className="region-dropdown-container" ref={reference}>
+      <div className="region-selector-container" ref={reference}>
         <label className="block-label" htmlFor="region-selection">
           {translate('panes.data.fields.region.title')}
           <span className="icon-question" data-flyout="region-info-flyout"></span>

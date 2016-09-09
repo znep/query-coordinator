@@ -16,7 +16,7 @@ describe('DimensionSelector', function() {
         }));
       });
 
-      it('does not render a dropdown', function() {
+      it('does not render a picklist', function() {
         expect(component).to.be.null;
       });
     });
@@ -39,9 +39,9 @@ describe('DimensionSelector', function() {
       onSelectDimension: sinon.stub()
     };
 
-    var emitsDropdownEvent = function(selector, eventName) {
+    var emitsPicklistEvent = function(selector, eventName) {
       it(`should emit an ${eventName} event.`, function() {
-        var option = component.querySelector(`${selector} .dropdown-option`);
+        var option = component.querySelector(`${selector} .picklist-option`);
         TestUtils.Simulate.click(option);
         sinon.assert.calledOnce(props[eventName]);
       });
@@ -53,7 +53,7 @@ describe('DimensionSelector', function() {
     });
 
     describe('when changing the dimension dropdown', function() {
-      emitsDropdownEvent('#dimension-selection', 'onSelectDimension');
+      emitsPicklistEvent('#dimension-selection', 'onSelectDimension');
     });
   });
 });

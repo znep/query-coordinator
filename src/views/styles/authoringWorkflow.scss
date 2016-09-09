@@ -171,8 +171,14 @@
       width: 100%;
     }
 
-    .dataset-column-dropdown-option [class^="icon"] {
+    .dataset-column-selector-option [class^="icon"] {
       margin-right: 5px;
+      background: white;
+      color: #00be9b;
+      border-radius: 50%;
+      display: inline-block;
+      width: 24px;
+      text-align: center;
     }
 
     .region-general-info {
@@ -225,7 +231,7 @@
       }
     }
 
-    .region-dropdown-container {
+    .region-selector-container {
       .alert {
         *:last-child {
           margin-bottom: 0;
@@ -249,17 +255,23 @@
       }
     }
 
-    .region-dropdown-container {
+    .region-selector-container {
       .icon-question {
         margin-left: 2px;
         cursor: pointer;
       }
     }
 
-    .measure-dropdown-container {
+    .dimension-selector-container {
+      .picklist {
+        height: 250px;
+      }
+    }
+
+    .measure-selector-container {
       display: flex;
 
-      &.measure-dropdown-container-count-rows {
+      &.measure-selector-container-count-rows {
         .dropdown-container {
           width: 100%;
         }

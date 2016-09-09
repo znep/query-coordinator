@@ -30,7 +30,7 @@ export const MeasureSelector = React.createClass({
     }
   },
 
-  renderMeasureAggregationDropdown() {
+  renderMeasureAggregationSelector() {
     const {
       aggregationTypes,
       onSelectMeasureAggregation,
@@ -78,7 +78,7 @@ export const MeasureSelector = React.createClass({
     const icon = columnType ? columnType.icon : '';
 
     return (
-      <div className="dataset-column-dropdown-option">
+      <div className="dataset-column-selector-option">
         <span className={icon}></span> {option.title}
       </div>
     );
@@ -109,8 +109,8 @@ export const MeasureSelector = React.createClass({
     const hasOnlyDefaultValue = options.length <= 1;
 
     const measureContainerAttributes = {
-      className: classNames('measure-dropdown-container', {
-        'measure-dropdown-container-count-rows': isCountingRows
+      className: classNames('measure-selector-container', {
+        'measure-selector-container-count-rows': isCountingRows
       })
     };
 
@@ -133,7 +133,7 @@ export const MeasureSelector = React.createClass({
         <label className="block-label" htmlFor="measure-selection">{translate('panes.data.fields.measure.title')}</label>
         <div {...measureContainerAttributes}>
           <Styleguide.Dropdown {...measureAttributes} />
-          {this.renderMeasureAggregationDropdown()}
+          {this.renderMeasureAggregationSelector()}
         </div>
         <p className="authoring-field-description">
           <small>{translate('panes.data.fields.measure.description')}</small>

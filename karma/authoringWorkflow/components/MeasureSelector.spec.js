@@ -108,7 +108,7 @@ describe('MeasureSelector', function() {
 
     var emitsDropdownEvent = function(selector, eventName) {
       it(`should emit an ${eventName} event.`, function() {
-        var option = component.querySelector(`${selector} .dropdown-option`);
+        var option = component.querySelector(`${selector} .picklist-option`);
         TestUtils.Simulate.click(option);
         sinon.assert.calledOnce(props[eventName]);
       });

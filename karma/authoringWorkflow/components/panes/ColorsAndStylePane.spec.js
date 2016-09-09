@@ -72,11 +72,11 @@ describe('ColorsAndStylePane', function() {
 
     describe('events', function() {
       describe('when changing the color scale', function() {
-        emitsEvent('#color-scale .dropdown-option', 'onSelectColorScale', 'click');
+        emitsEvent('#color-scale .picklist-option', 'onSelectColorScale', 'click');
       });
 
       describe('when changing the map type', function() {
-        emitsEvent('#base-layer .dropdown-option', 'onSelectBaseLayer', 'click');
+        emitsEvent('#base-layer .picklist-option', 'onSelectBaseLayer', 'click');
       });
 
       describe('when changing map opacity', function() {
@@ -140,7 +140,7 @@ describe('ColorsAndStylePane', function() {
 
     describe('events', function() {
       emitsEvent('#point-opacity', 'onChangePointOpacity');
-      emitsEvent('#base-layer .dropdown-option', 'onSelectBaseLayer', 'click');
+      emitsEvent('#base-layer .picklist-option', 'onSelectBaseLayer', 'click');
       emitsEvent('#base-layer-opacity', 'onChangeBaseLayerOpacity');
     });
   });

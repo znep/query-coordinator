@@ -5,7 +5,7 @@ import Styleguide from 'socrata-components';
 
 import { translate } from '../../I18n';
 import { setDimension } from '../actions';
-import { COLUMN_TYPES } from '../constants';
+import { COLUMN_TYPES, INPUT_DEBOUNCE_MILLISECONDS } from '../constants';
 import {
   getAnyDimension,
   getVisualizationType,
@@ -30,7 +30,7 @@ export const DimensionSelector = React.createClass({
     const columnType = _.find(COLUMN_TYPES, {type: option.type});
 
     return (
-      <div className="dataset-column-dropdown-option">
+      <div className="dataset-column-selector-option">
         <span className={columnType.icon}></span> {option.title}
       </div>
     );
@@ -62,16 +62,15 @@ export const DimensionSelector = React.createClass({
 
     const dimensionAttributes = {
       id: 'dimension-selection',
-      placeholder: translate('panes.data.fields.dimension.placeholder'),
       options: dimensions,
       onSelection: onSelectDimension,
       value
     };
 
     return (
-      <div className="dimension-dropdown-container">
+      <div className="dimension-selector-container">
         <label className="block-label" htmlFor="dimension-selection">{translate('panes.data.fields.dimension.title')}</label>
-        <Styleguide.Dropdown {...dimensionAttributes} />
+        <Styleguide.Picklist {...dimensionAttributes} />
         <p className="authoring-field-description">
           <small>{translate('panes.data.fields.dimension.description')}</small>
         </p>
@@ -95,9 +94,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onSelectDimension(dimension) {
+    onSelectDimension: _.debounce((dimension) => {
       dispatch(setDimension(dimension.value));
-    }
+    }, INPUT_DEBOUNCE_MILLISECONDS)
   };
 }
 

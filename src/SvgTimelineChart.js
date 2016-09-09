@@ -2,7 +2,6 @@ const _ = require('lodash');
 const $ = require('jquery');
 const utils = require('socrata-utils');
 const moment = require('moment');
-const TimelineChart = require('./views/TimelineChart');
 const SvgTimelineChart = require('./views/SvgTimelineChart');
 const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 const SoqlHelpers = require('./dataProviders/SoqlHelpers');
@@ -10,10 +9,10 @@ const VifHelpers = require('./helpers/VifHelpers');
 const I18n = require('./I18n');
 const getSoqlVifValidator = require('./dataProviders/SoqlVifValidator.js').getSoqlVifValidator;
 
+const VALID_PRECISION_VALUES = ['YEAR', 'MONTH', 'DAY'];
 const MAX_POINT_COUNT = 1000;
 const MAX_LEGAL_JAVASCRIPT_DATE_STRING = '9999-01-01';
-const SOQL_DATA_PROVIDER_DIMENSION_ALIAS = SoqlHelpers.dimensionAlias();
-const SOQL_DATA_PROVIDER_MEASURE_ALIAS = SoqlHelpers.measureAlias();
+
 const PRECISION_BASE_QUERY = 'SELECT min({0}) AS {1}, max({0}) AS {2} WHERE {0} < \'{3}\'';
 const UNAGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} LIMIT {5}';
 const AGGREGATED_BASE_QUERY = 'SELECT {0}({1}) AS {2}, {3} AS {4} {5} GROUP BY {2} LIMIT {6}';
@@ -29,18 +28,16 @@ const WINDOW_RESIZE_RERENDER_DELAY = 200;
 $.fn.socrataSvgTimelineChart = function(originalVif) {
   originalVif = _.cloneDeep(VifHelpers.migrateVif(originalVif));
 
-  var $element = $(this);
-  var visualization = new SvgTimelineChart(
-    $element,
-    originalVif
-  );
-  var rerenderOnResizeTimeout;
+  const $element = $(this);
+  const visualization = new SvgTimelineChart($element, originalVif);
+
+  let rerenderOnResizeTimeout;
 
   /**
    * Event handling
    */
 
-  function attachEvents() {
+  function attachApiEvents() {
 
     // Destroy on (only the first) 'SOCRATA_VISUALIZATION_DESTROY' event.
     $element.one(
@@ -49,7 +46,8 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
 
         clearTimeout(rerenderOnResizeTimeout);
         visualization.destroy();
-        detachEvents();
+        detachInteractionEvents();
+        detachApiEvents();
       }
     );
 
@@ -59,7 +57,12 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
     $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', handleRenderVif);
   }
 
-  function detachEvents() {
+  function attachInteractionEvents() {
+
+    $element.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+  }
+
+  function detachApiEvents() {
 
     $(window).off('resize', handleWindowResize);
 
@@ -67,13 +70,17 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
     $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', handleRenderVif);
   }
 
+  function detachInteractionEvents() {
+
+    $element.off('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+  }
 
   function handleWindowResize() {
 
     clearTimeout(rerenderOnResizeTimeout);
 
     rerenderOnResizeTimeout = setTimeout(
-      visualization.render(),
+      visualization.invalidateSize,
       // Add some jitter in order to make sure multiple visualizations are
       // unlikely to all attempt to rerender themselves at the exact same
       // moment.
@@ -82,15 +89,13 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
   }
 
   function handleRenderVif(event) {
-    var newVif = event.originalEvent.detail;
+    const newVif = event.originalEvent.detail;
 
-    updateData(
-      VifHelpers.migrateVif(newVif)
-    );
+    updateData(VifHelpers.migrateVif(newVif));
   }
 
   function handleError(error) {
-    var messages;
+    let messages;
 
     if (window.console && console.error) {
       console.error(error);
@@ -105,182 +110,200 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
     visualization.renderError(messages);
   }
 
+  function handleFlyout(event) {
+    const payload = event.originalEvent.detail;
+
+    $element[0].dispatchEvent(
+      new window.CustomEvent(
+        'SOCRATA_VISUALIZATION_FLYOUT',
+        {
+          detail: payload,
+          bubbles: true
+        }
+      )
+    );
+  }
+
   function updateData(newVif) {
-    $.fn.socrataSvgTimelineChart.validateVif(newVif).then(() => {
 
-      newVif = _.cloneDeep(newVif);
+    $.fn.socrataSvgTimelineChart.
+      validateVif(newVif).
+      then(() => {
 
-      $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
-      visualization.showBusyIndicator();
+        newVif = _.cloneDeep(newVif);
 
-      const dataRequests = newVif.
-        series.
-        map(
-          function(series, seriesIndex) {
+        $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
+        detachInteractionEvents();
+        visualization.showBusyIndicator();
 
-            switch (series.dataSource.type) {
+        const dataRequests = newVif.series.
+          map((series, seriesIndex) => {
+            const type = series.dataSource.type;
+
+            switch (type) {
 
               case 'socrata.soql':
                 return makeSocrataDataRequest(newVif, seriesIndex);
 
               default:
                 return Promise.reject(
-                  'Invalid/unsupported series dataSource.type: "{0}".'.
-                    format(series.dataSource.type)
+                  `Invalid/unsupported series dataSource.type: "${type}".`
                 );
             }
-          }
-        );
+          });
 
-      Promise.
-        all(dataRequests).
-        then(
-          function(dataResponses) {
-            const overMaxRowCount = dataResponses.
-              some(
-                function(dataResponse) {
+        Promise.all(dataRequests).
+          then(
+            function(dataResponses) {
+              const underTwoRows = dataResponses.
+                some((dataResponse) => {
+                  return dataResponse.rows.length < 2;
+                });
+              const overMaxRowCount = dataResponses.
+                some((dataResponse) => {
                   return dataResponse.rows.length > MAX_POINT_COUNT;
-                }
-              );
+                });
+              const allSeriesMeasureValues = dataResponses.map((dataResponse) => {
+                const measureIndex = dataResponse.columns.indexOf('measure');
 
-            const allSeriesMeasureValues = dataResponses.map((dataResponse) => {
-              const measureIndex = dataResponse.columns.indexOf('measure');
-              return dataResponse.rows.map((row) => row[measureIndex]);
-            });
+                return dataResponse.rows.map((row) => row[measureIndex]);
+              });
+              const onlyNullOrZeroValues = _(allSeriesMeasureValues).
+                flatten().
+                compact().
+                isEmpty();
 
-            const onlyNullOrZeroValues = _(allSeriesMeasureValues).
-              flatten().
-              compact().
-              isEmpty();
+              $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
+              attachInteractionEvents();
+              visualization.hideBusyIndicator();
 
-            $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
-            visualization.hideBusyIndicator();
+              if (underTwoRows) {
 
-            if (overMaxRowCount) {
-              visualization.renderError(
-                I18n.translate(
-                  'visualizations.timeline_chart.error_exceeded_max_point_count'
-                ).format(MAX_POINT_COUNT)
-              );
-            } else if (onlyNullOrZeroValues) {
-              visualization.renderError(
-                I18n.translate('visualizations.common.error_no_data')
-              );
-            } else {
-              visualization.render(newVif, dataResponses);
+                visualization.renderError(
+                  I18n.translate(
+                    'visualizations.timeline_chart.error_two_or_more_rows_required'
+                  )
+                );
+              } else if (overMaxRowCount) {
+
+                visualization.renderError(
+                  I18n.translate(
+                    'visualizations.timeline_chart.error_exceeded_max_point_count'
+                  ).format(MAX_POINT_COUNT)
+                );
+              } else if (onlyNullOrZeroValues) {
+
+                visualization.renderError(
+                  I18n.translate('visualizations.common.error_no_data')
+                );
+              } else {
+                visualization.render(newVif, dataResponses);
+              }
             }
-          }
-        )
-    })['catch'](handleError);
+          )
+      }).
+      catch(handleError);
   }
 
-  function decorateVifWithPrecision(vifToRender, seriesIndex) {
-    var series = _.get(vifToRender, 'series[{0}]'.format(seriesIndex));
-    var dimension = SoqlHelpers.dimension(vifToRender, seriesIndex);
+  function decorateVifWithComputedPrecision(vifToRender, seriesIndex) {
+    const series = _.get(vifToRender, `series[${seriesIndex}]`);
+    const dimension = SoqlHelpers.dimension(vifToRender, seriesIndex);
     // 'SELECT min({0}) AS {1}, max({0}) AS {2} WHERE {0} < \'{3}\''
-    var queryString = PRECISION_BASE_QUERY.
+    const queryString = PRECISION_BASE_QUERY.
       format(
         dimension,
-        SOQL_DATA_PROVIDER_DIMENSION_ALIAS,
-        SOQL_DATA_PROVIDER_MEASURE_ALIAS,
+        SoqlHelpers.dimensionAlias(),
+        SoqlHelpers.measureAlias(),
         MAX_LEGAL_JAVASCRIPT_DATE_STRING
       );
-    var domain = _.get(series, 'dataSource.domain');
-    var datasetUid = _.get(series, 'dataSource.datasetUid');
 
     return new Promise(
       function(resolve, reject) {
+        const soqlDataProviderConfig = {
+          domain: _.get(series, 'dataSource.domain'),
+          datasetUid: _.get(series, 'dataSource.datasetUid')
+        };
 
-        new SoqlDataProvider({
-          domain: domain,
-          datasetUid: datasetUid
-        }).
+        new SoqlDataProvider(soqlDataProviderConfig).
           getRows(
             [
-              SOQL_DATA_PROVIDER_DIMENSION_ALIAS,
-              SOQL_DATA_PROVIDER_MEASURE_ALIAS
+              SoqlHelpers.dimensionAlias(),
+              SoqlHelpers.measureAlias()
             ],
-            '$query=' + queryString
+            `$query=${queryString}`
           ).
-          then(
-            function(response) {
-              var columns = response.columns;
-              var rows = response.rows;
-              var startDateIndex = _.indexOf(
-                columns,
-                SOQL_DATA_PROVIDER_DIMENSION_ALIAS
-              );
-              var endDateIndex = _.indexOf(
-                columns,
-                SOQL_DATA_PROVIDER_MEASURE_ALIAS
-              );
-              var domainStartDate = moment(
-                rows[0][startDateIndex],
-                moment.ISO_8601
-              );
-              var domainEndDate = moment(
-                rows[0][endDateIndex],
-                moment.ISO_8601
-              );
-              var precision;
-              var dateTruncFunction;
+          then((response) => {
+            const { columns, rows } = response;
+            const startDateIndex = _.indexOf(
+              columns,
+              SoqlHelpers.dimensionAlias()
+            );
+            const endDateIndex = _.indexOf(
+              columns,
+              SoqlHelpers.measureAlias()
+            );
 
-              // Reject the response if the domain is somehow invalid, since
-              // that means that we won't be able to render this series in
-              // any case.
-              if (!domainStartDate.isValid() || !domainEndDate.isValid()) {
+            let domainStartDate = moment(
+              rows[0][startDateIndex],
+              moment.ISO_8601
+            );
+            let domainEndDate = moment(
+              rows[0][endDateIndex],
+              moment.ISO_8601
+            );
 
-                reject(
-                  new Error(
-                    'Timeline domain is invalid: [{0}, {1}]'.
-                      format(domainStartDate, domainEndDate)
-                  )
-                );
-              }
+            // Reject the response if the domain is somehow invalid, since
+            // that means that we won't be able to render this series in
+            // any case.
+            if (!domainStartDate.isValid() || !domainEndDate.isValid()) {
 
-              // Otherwise, return the precision as a string. Moment objects
-              // are inherently mutable. Therefore, the .add() call in the
-              // first condition will need to be accounted for in the second
-              // condition. We're doing this instead of just cloning the
-              // objects because moment.clone() is surprisingly slow
-              // (something like 40ms).
-              if (
-                domainStartDate.add(1, 'years').isAfter(domainEndDate)
-              ) {
-                precision = 'DAY';
-              // We're actually checking for 20 years but have already added
-              // one to the original domain start date in the if block above.
-              } else if (
-                domainStartDate.add(19, 'years').isAfter(domainEndDate)
-              ) {
-                precision = 'MONTH';
-              } else {
-                precision = 'YEAR';
-              }
+              const domain = `[${domainStartDate}, ${domainEndDate}]`;
 
-              vifToRender.
-                series[seriesIndex].
-                  dataSource.
-                    precision = precision;
-
-              visualization.updateVif(vifToRender);
-
-              resolve(precision);
+              reject(new Error(`Timeline domain is invalid: ${domain}`));
             }
-          )
-          ['catch'](function(error) {
-            reject(error);
-          });
+
+            // Otherwise, return the precision as a string. Moment objects
+            // are inherently mutable. Therefore, the .add() call in the
+            // first condition will need to be accounted for in the second
+            // condition. We're doing this instead of just cloning the
+            // objects because moment.clone() is surprisingly slow
+            // (something like 40ms).
+            let precision;
+
+            if (domainStartDate.add(1, 'years').isAfter(domainEndDate)) {
+              precision = 'DAY';
+            // We're actually checking for 20 years but have already added
+            // one to the original domain start date in the if block above.
+            } else if (
+              domainStartDate.add(19, 'years').isAfter(domainEndDate)
+            ) {
+              precision = 'MONTH';
+            } else {
+              precision = 'YEAR';
+            }
+
+            _.set(
+              vifToRender,
+              `series[${seriesIndex}].dataSource.precision`,
+              precision
+            );
+
+            visualization.updateVif(vifToRender);
+
+            resolve(precision);
+          }).
+          catch(reject);
       }
     );
   }
 
   function computeDateTruncFunction(vifToRender, seriesIndex) {
-    var precision = _.get(
+    const precision = _.get(
       vifToRender,
-      'series[{0}].dataSource.precision'.format(seriesIndex)
+      `series[${seriesIndex}].dataSource.precision`
     );
-    var dateTruncFunction;
+
+    let dateTruncFunction;
 
     switch (precision) {
 
@@ -298,12 +321,8 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
 
       default:
         throw new Error(
-          'Encountered invalid precision "{0}" when computing ' +
-          'date trunc function for vif: "{1}".'.
-            format(
-              precision,
-              JSON.stringify(vifToRender)
-            )
+          `Encountered invalid precision "${precision}" when computing ` +
+          `date_trunc function for vif: "${JSON.stringify(vifToRender)}".`
         );
         break;
     }
@@ -312,18 +331,18 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
   }
 
   function incrementDateByPrecision(startDate, precision) {
-    var incrementedDate;
-    var year;
-    var month;
+    let year;
+    let month;
+    let restOfDatetime;
+    let incrementedDate;
 
     switch (precision) {
 
       case 'YEAR':
-        incrementedDate = '{0}{1}'.
-          format(
-            (parseInt(startDate.substring(0, 4), 10) + 1),
-            startDate.substring(4, 23)
-          );
+        year = (parseInt(startDate.substring(0, 4), 10) + 1);
+        restOfDatetime = startDate.substring(4, 23);
+
+        incrementedDate = `${year}${restOfDatetime}`;
         break;
 
       case 'MONTH':
@@ -335,14 +354,10 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
           year++;
         }
 
-        incrementedDate = '{0}-{1}{2}'.
-          format(
-            year,
-            '00'.substring(
-              0, 2 - month.toString().length
-            ) + month.toString(),
-            startDate.substring(7, 23)
-          );
+        month = _.padStart(month.toString(), 2, '0');
+        restOfDatetime = startDate.substring(7, 23);
+
+        incrementedDate = `${year}-${month}${restOfDatetime}`;
         break;
 
       case 'DAY':
@@ -369,8 +384,7 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
 
       default:
         throw new Error(
-          'Cannot increment date by invalid precision "{0}".'.
-            format(precision)
+          `Cannot increment date by invalid precision "${precision}".`
         );
         break;
     }
@@ -378,29 +392,34 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
     return incrementedDate;
   }
 
+  // This is necessary to get area variant series to correctly show
+  // discontinuities in the data; otherwise intervals with no value (which are
+  // not returned by the SoQL API and must be inferred) will not be rendered,
+  // but rather interpolated over, which misrepresents the data.
   function forceDimensionMonotonicity(vifToRender, seriesIndex, queryResponse) {
-    var precision = _.get(
+    const precision = _.get(
       vifToRender,
-      'series[{0}].dataSource.precision'.format(seriesIndex)
+      `series[${seriesIndex}].dataSource.precision`
     );
-    var rows = queryResponse.rows;
-    var dimensionIndex = queryResponse.columns.indexOf('dimension');
-    var startDate = rows[0][dimensionIndex];
-    var endDate = rows[rows.length - 1][dimensionIndex];
-    var duration = moment.duration(
+    const rows = queryResponse.rows;
+    const dimensionIndex = queryResponse.columns.indexOf('dimension');
+    const startDate = rows[0][dimensionIndex];
+    const endDate = rows[rows.length - 1][dimensionIndex];
+    const duration = moment.duration(
       moment(endDate, moment.ISO_8601).
         diff(
           moment(startDate, moment.ISO_8601)
         )
       );
-    var monotonicRowCount;
-    var monotonicRows = [
+    const monotonicRows = [
       [startDate, null]
     ];
-    var i = 1;
-    var lastRowStartDate;
-    var nextRowStartDate;
-    var lastRowVisited = 0;
+
+    let monotonicRowCount;
+    let i = 1;
+    let lastRowStartDate;
+    let nextRowStartDate;
+    let lastRowVisited = 0;
 
     switch (precision) {
       case 'YEAR':
@@ -439,177 +458,217 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
       i++;
     }
 
-    rows.
-      forEach(
-        function(row) {
+    rows.forEach((row) => {
 
-          for (var i = lastRowVisited; i < monotonicRows.length; i++) {
+      for (let i = lastRowVisited; i < monotonicRows.length; i++) {
 
-            if (monotonicRows[i][0] === row[0]) {
-              monotonicRows[i][1] = row[1];
-              lastRowVisited = 1;
-              break;
-            }
-          }
+        if (monotonicRows[i][0] === row[0]) {
+          monotonicRows[i][1] = row[1];
+          lastRowVisited = 1;
+          break;
         }
-      );
+      }
+    });
 
     return monotonicRows;
   }
 
-  function makeSocrataDataRequest(vifToRender, seriesIndex) {
-    var series = vifToRender.series[seriesIndex];
-    var seriesVariant = visualization.getTypeVariantBySeriesIndex(seriesIndex);
-    var soqlDataProvider = new SoqlDataProvider({
-      datasetUid: series.dataSource.datasetUid,
-      domain: series.dataSource.domain
-    });
-    var dimension = SoqlHelpers.dimension(vifToRender, seriesIndex);
-    var measure = SoqlHelpers.measure(vifToRender, seriesIndex);
-    var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(
-      vifToRender,
-      seriesIndex
+  // This is necessary to get line variant series to render the last point in
+  // the series with enough space on its right to be a target for the highlight
+  // and flyout. It should only be used for line variant series.
+  function addBlankRowAfterLastRow(dimensionIndex, rows) {
+    const secondToLastRowDatetime = new Date(
+      rows[rows.length - 2][dimensionIndex]
     );
-    var whereClause = (whereClauseComponents.length > 0) ?
-      'WHERE {0} AND {1}'.format(
-        whereClauseComponents,
-        // '{0} IS NOT NULL AND {0} < \'{1}\' AND (1=1)'
-        SOQL_DATE_GUARDS.format(
-          dimension,
-          MAX_LEGAL_JAVASCRIPT_DATE_STRING
-        )
-      ) :
-      'WHERE {0}'.format(
-        // '{0} IS NOT NULL AND {0} < \'{1}\' AND (1=1)'
-        SOQL_DATE_GUARDS.format(
-          dimension,
-          MAX_LEGAL_JAVASCRIPT_DATE_STRING
-        )
+    const lastRowDatetime = new Date(rows[rows.length - 1][dimensionIndex]);
+    const lastRowIntervalInMilliseconds = (
+      lastRowDatetime.getTime() - secondToLastRowDatetime.getTime()
+    );
+    const blankRow = [null, null];
+    const dimensionValue = new Date(
+      lastRowDatetime.getTime() +
+      lastRowIntervalInMilliseconds
+    ).
+      toISOString().
+      substring(0, 23);
+    const measureValue = null;
+
+    if (dimensionIndex === 0) {
+      blankRow[0] = dimensionValue;
+      blankRow[1] = measureValue;
+    } else {
+      blankRow[0] = measureValue;
+      blankRow[1] = dimensionValue;
+    }
+
+    return rows.concat(
+      [
+        blankRow
+      ]
+    );
+  }
+
+  function makeSocrataDataRequest(vifToRender, seriesIndex) {
+    const series = _.get(vifToRender, `series[${seriesIndex}]`);
+    const seriesPrecision = _.get(series, 'dataSource.precision');
+
+    let vifWithPrecisionPromise;
+
+    if (_.includes(VALID_PRECISION_VALUES, seriesPrecision)) {
+      vifWithPrecisionPromise = Promise.resolve(vifToRender);
+    } else {
+
+      vifWithPrecisionPromise = decorateVifWithComputedPrecision(
+        vifToRender,
+        seriesIndex
       );
-    var queryString;
+    }
 
-    return decorateVifWithPrecision(vifToRender, seriesIndex).
-      then(
-        function() {
-          return computeDateTruncFunction(vifToRender, seriesIndex);
+    return vifWithPrecisionPromise.
+      then(() => computeDateTruncFunction(vifToRender, seriesIndex)).
+      then((dateTruncFunction) => {
+        const seriesVariant = visualization.
+          getTypeVariantBySeriesIndex(seriesIndex);
+        const dimension = SoqlHelpers.dimension(vifToRender, seriesIndex);
+        const measure = SoqlHelpers.measure(vifToRender, seriesIndex);
+        const whereClauseComponents = SoqlHelpers.
+          whereClauseFilteringOwnColumn(vifToRender, seriesIndex);
+        // '{0} IS NOT NULL AND {0} < \'{1}\' AND (1=1)'
+        const dateGuardClauseComponent = SOQL_DATE_GUARDS.format(
+          dimension,
+          MAX_LEGAL_JAVASCRIPT_DATE_STRING
+        );
+        const whereClause = (whereClauseComponents.length > 0) ?
+          `WHERE ${whereClauseComponents} AND ${dateGuardClauseComponent}` :
+          `WHERE ${dateGuardClauseComponent}`;
+        const soqlDataProvider = new SoqlDataProvider({
+          datasetUid: _.get(series, 'dataSource.datasetUid'),
+          domain: _.get(series, 'dataSource.domain')
+        });
+
+        let queryString;
+
+        // If there is no aggregation, we do not select the dimension
+        // with a `date_trunc` function, but rather just ask for the
+        // actual values.
+        if (
+          series.dataSource.dimension.aggregationFunction === null &&
+          series.dataSource.measure.aggregationFunction === null
+        ) {
+
+          // 'SELECT {0} AS {1}, {2} AS {3} {4} LIMIT {5}'
+          queryString = UNAGGREGATED_BASE_QUERY.format(
+            dimension,
+            SoqlHelpers.dimensionAlias(),
+            measure,
+            SoqlHelpers.measureAlias(),
+            whereClause,
+            MAX_POINT_COUNT + 1
+          );
+        } else {
+
+          // 'SELECT {0}({1}) AS {2}, {3} AS {4} {5} GROUP BY {2} LIMIT {6}'
+          queryString = AGGREGATED_BASE_QUERY.format(
+            dateTruncFunction,
+            dimension,
+            SoqlHelpers.dimensionAlias(),
+            measure,
+            SoqlHelpers.measureAlias(),
+            whereClause,
+            MAX_POINT_COUNT + 1
+          );
         }
-      ).
-      then(
-        function(dateTruncFunction) {
 
-          // If there is no aggregation, we do not select the dimension
-          // with a `date_trunc` function, but rather just ask for the
-          // actual values.
-          if (
-            series.dataSource.dimension.aggregationFunction === null &&
-            series.dataSource.measure.aggregationFunction === null
-          ) {
+        return soqlDataProvider.
+          query(
+            queryString.replace(/\s+/, ' '),
+            SoqlHelpers.dimensionAlias(),
+            SoqlHelpers.measureAlias()
+          ).
+          then((queryResponse) => {
+            const dimensionIndex = queryResponse.
+              columns.
+              indexOf(SoqlHelpers.dimensionAlias());
+            const measureIndex = queryResponse.
+              columns.
+              indexOf(SoqlHelpers.measureAlias());
 
-            // 'SELECT {0} AS {1}, {2} AS {3} {4} LIMIT {5}'
-            queryString = UNAGGREGATED_BASE_QUERY.format(
-              dimension,
-              SOQL_DATA_PROVIDER_DIMENSION_ALIAS,
-              measure,
-              SOQL_DATA_PROVIDER_MEASURE_ALIAS,
-              whereClause,
-              MAX_POINT_COUNT + 1
-            );
-          } else {
+            queryResponse.columns[dimensionIndex] = 'dimension';
+            queryResponse.columns[measureIndex] = 'measure';
 
-            // 'SELECT {0}({1}) AS {2}, {3} AS {4} {5} GROUP BY {2} LIMIT {6}'
-            queryString = AGGREGATED_BASE_QUERY.format(
-              dateTruncFunction,
-              dimension,
-              SOQL_DATA_PROVIDER_DIMENSION_ALIAS,
-              measure,
-              SOQL_DATA_PROVIDER_MEASURE_ALIAS,
-              whereClause,
-              MAX_POINT_COUNT + 1
-            );
-          }
+            let valueAsNumber;
 
-          return soqlDataProvider.
-            query(
-              queryString.replace(/\s+/, ' '),
-              SOQL_DATA_PROVIDER_DIMENSION_ALIAS,
-              SOQL_DATA_PROVIDER_MEASURE_ALIAS
-            ).
-            then(
-              function(queryResponse) {
-                var dimensionIndex = queryResponse.
-                  columns.
-                  indexOf(SOQL_DATA_PROVIDER_DIMENSION_ALIAS);
-                var measureIndex = queryResponse.
-                  columns.
-                  indexOf(SOQL_DATA_PROVIDER_MEASURE_ALIAS);
-                var valueAsNumber;
+            queryResponse.rows.
+              sort((a, b) => (a[0] <= b[0]) ? -1 : 1).
+              forEach((row) => {
+                const value = row[measureIndex];
 
-                queryResponse.columns[dimensionIndex] = 'dimension';
-                queryResponse.columns[measureIndex] = 'measure';
+                try {
 
-                queryResponse.
-                  rows.
-                    sort(function(a, b) { return (a[0] <= b[0]) ? -1 : 1; }).
-                    forEach(
-                      function(row) {
+                  if (_.isUndefined(value)) {
+                    valueAsNumber = null;
+                  } else {
+                    valueAsNumber = Number(value);
+                  }
+                } catch (error) {
 
-                        try {
+                  console.error(
+                    `Could not convert measure value to number: ${value}`
+                  );
 
-                          if (typeof row[measureIndex] === 'undefined') {
-                            valueAsNumber = null;
-                          } else {
-                            valueAsNumber = Number(row[measureIndex]);
-                          }
-                        } catch (error) {
-
-                          console.error(
-                            'Could not convert measure value to number: {0}'.
-                              format(row[measureIndex])
-                          );
-
-                          valueAsNumber = null;
-                        }
-
-                        row[measureIndex] = valueAsNumber;
-                      }
-                    );
-
-                // If there are no values in a specific interval (according to
-                // the date_trunc_* function) then we will not get a response
-                // row for that interval.
-                //
-                // This complicates our ability to render gaps in the timeline
-                // for these intervals, since d3 will just interpolate over
-                // them. The solution is to explicitly provide null values for
-                // intervals with no values, which means that we need to expand
-                // the result rows into an equivalent set in which the domain
-                // is monotonically increasing.
-                //
-                // This is only necessary for (or relevant to) area charts,
-                // however, since the normal interpolation behavior is actually
-                // what we want for the 'line' variant (a simple line chart,
-                // not an area chart).
-                return {
-                  columns: queryResponse.columns,
-                  rows: (seriesVariant === 'area') ?
-                    forceDimensionMonotonicity(
-                      vifToRender,
-                      seriesIndex,
-                      queryResponse
-                    ) :
-                    queryResponse.rows
+                  valueAsNumber = null;
                 }
-              }
-            );
-        }
-      );
+
+                row[measureIndex] = valueAsNumber;
+              });
+
+            let rows;
+
+            if (seriesVariant === 'area') {
+
+              // If there are no values in a specific interval (according to
+              // the date_trunc_* function) then we will not get a response row
+              // for that interval.
+              //
+              // This complicates our ability to render gaps in the timeline
+              // for these intervals, since d3 will just interpolate over them.
+              //
+              // The solution is to explicitly provide null values for
+              // intervals with no values, which means that we need to expand
+              // the result rows into an equivalent set in which the domain is
+              // monotonically increasing.
+              //
+              // This is only necessary for (or relevant to) area charts,
+              // however, since the normal interpolation behavior is actually
+              // what we want for the 'line' variant (a simple line chart, not
+              // an area chart).
+              rows = forceDimensionMonotonicity(
+                vifToRender,
+                seriesIndex,
+                queryResponse
+              );
+            } else {
+
+              rows = addBlankRowAfterLastRow(
+                dimensionIndex,
+                queryResponse.rows
+              );
+            }
+
+            return {
+              columns: queryResponse.columns,
+              rows: rows
+            };
+          });
+      });
   }
 
   /**
    * Actual execution starts here
    */
 
-  attachEvents();
+  attachApiEvents();
+  attachInteractionEvents();
   updateData(originalVif);
 
   return this;

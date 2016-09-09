@@ -149,24 +149,47 @@ export const CHART_SORTING = [
     title: translate('panes.axis_and_scale.fields.chart_sorting.large_to_small'),
     orderBy: { parameter: 'measure', sort: 'desc' },
     icon: 'icon-sort-desc',
-    group: 'value'
+    group: translate('panes.axis_and_scale.fields.chart_sorting.sort_by_value')
   },
   {
     title: translate('panes.axis_and_scale.fields.chart_sorting.small_to_large'),
     orderBy: { parameter: 'measure', sort: 'asc' },
     icon: 'icon-sort-asc',
-    group: 'value'
+    group: translate('panes.axis_and_scale.fields.chart_sorting.sort_by_value')
   },
   {
     title: translate('panes.axis_and_scale.fields.chart_sorting.ascending'),
     orderBy: { parameter: 'dimension', sort: 'asc' },
     icon: 'icon-sort-az',
-    group: 'label'
+    group: translate('panes.axis_and_scale.fields.chart_sorting.sort_by_label')
   },
   {
     title: translate('panes.axis_and_scale.fields.chart_sorting.descending'),
     orderBy: { parameter: 'dimension', sort: 'desc' },
     icon: 'icon-sort-za',
-    group: 'label'
+    group: translate('panes.axis_and_scale.fields.chart_sorting.sort_by_label')
+  }
+];
+
+export const TIMELINE_PRECISION = [
+  {
+    title: translate('panes.axis_and_scale.fields.timeline_precision.compute'),
+    value: null,
+    group: translate('panes.axis_and_scale.fields.timeline_precision.compute_from_data')
+  },
+  {
+    title: translate('panes.axis_and_scale.fields.timeline_precision.year'),
+    value: 'YEAR',
+    group: translate('panes.axis_and_scale.fields.timeline_precision.override')
+  },
+  {
+    title: translate('panes.axis_and_scale.fields.timeline_precision.month'),
+    value: 'MONTH',
+    group: translate('panes.axis_and_scale.fields.timeline_precision.override')
+  },
+  {
+    title: translate('panes.axis_and_scale.fields.timeline_precision.day'),
+    value: 'DAY',
+    group: translate('panes.axis_and_scale.fields.timeline_precision.override')
   }
 ];

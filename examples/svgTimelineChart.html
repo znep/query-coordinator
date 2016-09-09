@@ -16,7 +16,10 @@
 
       #timeline-chart-1,
       #timeline-chart-2,
-      #timeline-chart-3 {
+      #timeline-chart-3,
+      #timeline-chart-4,
+      #timeline-chart-5,
+      #timeline-chart-6 {
         display: block;
         position: relative;
         width: 640px;
@@ -26,9 +29,18 @@
     </style>
   </head>
   <body>
+    <p>With 'precision' set to 'DAY'</p>
     <div id="timeline-chart-1"></div>
+    <p>Identical to the above except with 'precision' set to 'MONTH'</p>
     <div id="timeline-chart-2"></div>
+    <p>Identical to the above except with 'precision' set to 'YEAR'</p>
     <div id="timeline-chart-3"></div>
+    <p>Chart with null values</p>
+    <div id="timeline-chart-4"></div>
+    <p>Line variant with multiple series.
+    <div id="timeline-chart-5"></div>
+    <p>Version 1 vif, migrated at runtime to version 2. The data should be identical to the first chart on this page.
+    <div id="timeline-chart-6"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -50,46 +62,168 @@
       var DOMAIN = 'dataspace.demo.socrata.com';
 
       var timelineChart1Vif = {
-        'aggregation': {
-          'field': null,
-          'function': 'count'
+        configuration: {
+          axisLabels: {
+            top: null,
+            right: null,
+            bottom: 'Date',
+            left: 'Amount'
+          }
         },
-        'columnName': COLUMN_NAME,
-        'configuration': {
-          'viewSourceDataLink': true,
-          'axisLabels': {
-            'top': null,
-            'right': null,
-            'bottom': 'Date',
-            'left': 'Amount'
-          },
-          'precision': 'MONTH'
+        description: 'Sample Description',
+        series: [
+          {
+            dataSource: {
+              datasetUid: DATASET_UID,
+              dimension: {
+                columnName: COLUMN_NAME,
+                aggregationFunction: null
+              },
+              domain: DOMAIN,
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              type: 'socrata.soql',
+              filters: [
+                {
+                  arguments: {
+                    start: '2001-01-01T00:00:00.000',
+                    end: '2003-06-01T00:00:00.000'
+                  },
+                  columnName: COLUMN_NAME,
+                  function: 'timeRange'
+                }
+              ],
+              precision: 'DAY'
+            },
+            label: 'Incidents',
+            type: 'timelineChart',
+            unit: {
+              one: 'incident',
+              other: 'incidents'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
         },
-        'createdAt': '2014-01-01T00:00:00',
-        'datasetUid': DATASET_UID,
-        'domain': DOMAIN,
-        'filters': [],
-        'format': {
-          'type': 'visualization_interchange_format',
-          'version': 1
-        },
-        'origin': {
-          'type': 'test_data',
-          'url': 'localhost'
-        },
-        'title': COLUMN_NAME,
-        'type': 'timelineChart',
-        'unit': {
-          'one': 'case',
-          'other': 'cases'
-        }
+        title: 'Sample Title'
       };
 
-      var timelineChart2Vif = _.cloneDeep(timelineChart1Vif);
-      timelineChart2Vif.datasetUid = 'r6t9-rak2';
-      timelineChart2Vif.columnName = 'opened';
+      var timelineChart2Vif = {
+        configuration: {
+          axisLabels: {
+            top: null,
+            right: null,
+            bottom: 'Date',
+            left: 'Amount'
+          }
+        },
+        description: 'Sample Description',
+        series: [
+          {
+            dataSource: {
+              datasetUid: DATASET_UID,
+              dimension: {
+                columnName: COLUMN_NAME,
+                aggregationFunction: null
+              },
+              domain: DOMAIN,
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              type: 'socrata.soql',
+              filters: [
+                {
+                  arguments: {
+                    start: '2001-01-01T00:00:00.000',
+                    end: '2003-06-01T00:00:00.000'
+                  },
+                  columnName: COLUMN_NAME,
+                  function: 'timeRange'
+                }
+              ],
+              precision: 'MONTH'
+            },
+            label: 'Incidents',
+            type: 'timelineChart',
+            unit: {
+              one: 'incident',
+              other: 'incidents'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        title: 'Sample Title'
+      };
 
       var timelineChart3Vif = {
+        configuration: {
+          axisLabels: {
+            top: null,
+            right: null,
+            bottom: 'Date',
+            left: 'Amount'
+          }
+        },
+        description: 'Sample Description',
+        series: [
+          {
+            dataSource: {
+              datasetUid: DATASET_UID,
+              dimension: {
+                columnName: COLUMN_NAME,
+                aggregationFunction: null
+              },
+              domain: DOMAIN,
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              type: 'socrata.soql',
+              filters: [
+                {
+                  arguments: {
+                    start: '2001-01-01T00:00:00.000',
+                    end: '2003-06-01T00:00:00.000'
+                  },
+                  columnName: COLUMN_NAME,
+                  function: 'timeRange'
+                }
+              ],
+              precision: 'YEAR'
+            },
+            label: 'Incidents',
+            type: 'timelineChart',
+            unit: {
+              one: 'incident',
+              other: 'incidents'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        title: 'Sample Title'
+      };
+
+      var timelineChart4Vif = _.cloneDeep(timelineChart1Vif);
+      _.set(timelineChart4Vif, 'series[0].dataSource.datasetUid', 'r6t9-rak2');
+      _.set(timelineChart4Vif, 'series[0].dataSource.dimension.columnName', 'opened');
+      _.set(timelineChart4Vif, 'series[0].dataSource.filters', []);
+      _.unset(timelineChart4Vif, 'series[0].dataSource.precision');
+
+      var timelineChart5Vif = {
         configuration: {
           axisLabels: {
             top: null,
@@ -101,6 +235,9 @@
         description: 'Math proficiency by school district for 3rd graders in 2014',
         series: [
           {
+            color: {
+              primary: 'green'
+            },
             dataSource: {
               datasetUid: 'qu5r-r47b',
               dimension: {
@@ -113,7 +250,16 @@
                 aggregationFunction: null
               },
               type: 'socrata.soql',
-              filters: []
+              filters: [
+                {
+                  arguments: {
+                    start: '2003-01-01T00:00:00.000',
+                    end: '2004-01-01T00:00:00.000'
+                  },
+                  columnName: 'reportweekending',
+                  function: 'timeRange'
+                }
+              ]
             },
             label: 'Initial claims',
             type: 'timelineChart.line',
@@ -123,6 +269,9 @@
             }
           },
           {
+            color: {
+              primary: 'yellow'
+            },
             dataSource: {
               datasetUid: 'qu5r-r47b',
               dimension: {
@@ -135,7 +284,16 @@
                 aggregationFunction: null
               },
               type: 'socrata.soql',
-              filters: []
+              filters: [
+                {
+                  arguments: {
+                    start: '2003-01-01T00:00:00.000',
+                    end: '2004-01-01T00:00:00.000'
+                  },
+                  columnName: 'reportweekending',
+                  function: 'timeRange'
+                }
+              ]
             },
             label: 'Continued weeks',
             type: 'timelineChart.line',
@@ -150,23 +308,52 @@
           type: 'visualization_interchange_format',
           version: 2
         },
+        title: 'Claims'
+      };
+
+      var timelineChart6Vif = {
+        aggregation: {
+          field: null,
+          function: 'count'
+        },
+        columnName: COLUMN_NAME,
+        configuration: {
+          viewSourceDataLink: true,
+          axisLabels: {
+            top: null,
+            right: null,
+            bottom: 'Date',
+            left: 'Amount'
+          },
+          precision: 'DAY'
+        },
+        createdAt: '2014-01-01T00:00:00',
+        datasetUid: DATASET_UID,
+        domain: DOMAIN,
+        filters: [
+          {
+            arguments: {
+              start: '2001-01-01T00:00:00.000',
+              end: '2002-06-01T00:00:00.000'
+            },
+            columnName: COLUMN_NAME,
+            function: 'timeRange'
+          }
+        ],
+        format: {
+          type: 'visualization_interchange_format',
+          version: 1
+        },
         origin: {
           type: 'test_data',
           url: 'localhost'
         },
-        scale: {
-          x: {
-            type: 'time',
-            unit: {
-              one: null,
-              other: null
-            }
-          },
-          y: {
-            type: 'quantitative'
-          }
-        },
-        title: 'Claims'
+        title: COLUMN_NAME,
+        type: 'timelineChart',
+        unit: {
+          one: 'case',
+          other: 'cases'
+        }
       };
 
       /**
@@ -189,6 +376,22 @@
       $timelineChart3Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
       $timelineChart3Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       $timelineChart3Element.socrataSvgTimelineChart(timelineChart3Vif);
+
+      var $timelineChart4Element = $('#timeline-chart-4');
+      $timelineChart4Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $timelineChart4Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $timelineChart4Element.socrataSvgTimelineChart(timelineChart4Vif);
+
+      var $timelineChart5Element = $('#timeline-chart-5');
+      $timelineChart5Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $timelineChart5Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $timelineChart5Element.socrataSvgTimelineChart(timelineChart5Vif);
+
+      var $timelineChart6Element = $('#timeline-chart-6');
+      $timelineChart6Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $timelineChart6Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $timelineChart6Element.socrataSvgTimelineChart(timelineChart6Vif);
+
 
       /**
        * Handle plugin events
@@ -234,6 +437,18 @@
       // $timelineChart3Element.off('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
       // $timelineChart3Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       // $timelineChart3Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
+
+      // $timelineChart4Element.off('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+      // $timelineChart4Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $timelineChart4Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
+
+      // $timelineChart5Element.off('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+      // $timelineChart5Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $timelineChart5Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
+
+      // $timelineChart6Element.off('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+      // $timelineChart6Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $timelineChart6Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
     });
   </script>
 </html>

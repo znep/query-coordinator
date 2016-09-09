@@ -31,7 +31,8 @@ export default () => ({
           "aggregationFunction": "count"
         },
         "type": "socrata.soql",
-        "filters": []
+        "filters": [],
+        "precision": null
       },
       "label": null,
       "type": "timelineChart",

@@ -153,6 +153,11 @@ export const getOrderBy = createSelector(
   vif => _.get(vif, 'series[0].dataSource.orderBy')
 );
 
+export const getPrecision = createSelector(
+  getCurrentVif,
+  vif => _.get(vif, 'series[0].dataSource.precision')
+);
+
 export const getVisualizationType = createSelector(
   getCurrentVif,
   vif =>  _.get(vif, 'series[0].type', null)

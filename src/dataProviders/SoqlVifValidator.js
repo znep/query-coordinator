@@ -27,7 +27,7 @@ export function getSoqlVifValidator(vif) {
         };
 
         metadataPromise = new MetadataProvider(metadataProviderConfig).
-          getDatasetMetadata(false);
+          getDatasetMetadata();
       } else {
         metadataPromise = Promise.resolve({});
       }
@@ -90,10 +90,22 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
   const errorMessages = [];
   const addError = (errorMessage) => errorMessages.push(errorMessage);
   const allSeries = _.get(vif, 'series', []);
-  const getColumn = (columnName, seriesIndex) => _.find(
-    datasetMetadataPerSeries[seriesIndex].columns,
-    { fieldName: columnName }
-  );
+  const getColumn = (columnName, seriesIndex) => {
+
+    const column = _.find(
+      datasetMetadataPerSeries[seriesIndex].columns,
+      { fieldName: columnName }
+    );
+
+    if (_.isUndefined(column)) {
+
+      throw new Error(
+        `[soqlVifValidator] column "${columnName}" does not exist in dataset.`
+      );
+    }
+
+    return column;
+  };
 
   if (allSeries.length !== datasetMetadataPerSeries.length) {
     throw new Error('vif.series.length does not match datasetMetadataPerSeries.length');
@@ -114,18 +126,21 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
   });
 
   const validator = {
+
     requireAtLeastOneSeries() {
       if (allSeries.length === 0) {
         addError(I18n.translate('visualizations.common.validation.errors.need_at_least_one_series'));
       }
       return validator;
     },
+
     requireExactlyOneSeries() {
       if (allSeries.length !== 1) {
         addError(I18n.translate('visualizations.common.validation.errors.need_single_series'));
       }
       return validator;
     },
+
     requireAllSeriesFromSameDomain() {
       const allDomains = allSeries.map((series) => _.get(series, 'dataSource.domain'));
       const uniqDomains = _.uniq(allDomains);
@@ -134,6 +149,7 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
       }
       return validator;
     },
+
     requireNoMeasureAggregation() {
       allSeries.forEach((series) => {
         if (_.get(series, 'dataSource.measure.aggregationFunction')) {
@@ -142,6 +158,7 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
       });
       return validator;
     },
+
     requireMeasureAggregation() {
       allSeries.forEach((series) => {
         if (!_.get(series, 'dataSource.measure.aggregationFunction')) {
@@ -150,6 +167,7 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
       });
       return validator;
     },
+
     requirePointDimension() {
       allSeries.forEach((series, seriesIndex) => {
         const columnName = _.get(series, 'dataSource.dimension.columnName');
@@ -160,6 +178,7 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
       });
       return validator;
     },
+
     requireCalendarDateDimension() {
       allSeries.forEach((series, seriesIndex) => {
         const columnName = _.get(series, 'dataSource.dimension.columnName');
@@ -170,6 +189,7 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
       });
       return validator;
     },
+
     requireNumericDimension() {
       allSeries.forEach((series, seriesIndex) => {
         const columnName = _.get(series, 'dataSource.dimension.columnName');
@@ -180,6 +200,7 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
       });
       return validator;
     },
+
     validate() {
       if (errorMessages.length > 0) {
         return { ok: false, errorMessages };

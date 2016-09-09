@@ -10,6 +10,7 @@ import { setXAxisScalingMode } from '../actions';
 import {
   getCurrentVif,
   getXAxisScalingMode,
+  isTimelineChart,
   isInsertableVisualization,
   hasMadeChangesToVifs
 } from '../selectors/vifAuthoring';
@@ -23,7 +24,6 @@ import TitleAndDescriptionPane from './panes/TitleAndDescriptionPane';
 import ColorsAndStylePane from './panes/ColorsAndStylePane';
 import AxisAndScalePane from './panes/AxisAndScalePane';
 import LegendsAndFlyoutsPane from './panes/LegendsAndFlyoutsPane';
-
 
 import FlyoutRenderer from '../../views/FlyoutRenderer';
 import RowInspector from '../../views/RowInspector';
@@ -96,6 +96,14 @@ export const AuthoringWorkflow = React.createClass({
     $(this.modal).off('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout);
   },
 
+  createRollups(vif) {
+    // TODO: Figure out how we can create rollups without direct access to soda
+    // fountain.
+    const rollupRequests = [ Promise.resolve(true) ];
+
+    return Promise.all(rollupRequests);
+  },
+
   onFlyout(event) {
     const payload = event.originalEvent.detail;
 
@@ -108,9 +116,26 @@ export const AuthoringWorkflow = React.createClass({
   },
 
   onComplete() {
-    this.props.onComplete({
-      vif: this.props.vif
-    });
+    const { vifAuthoring, vif } = this.props;
+
+    if (isTimelineChart(vifAuthoring)) {
+
+      this.createRollups(vif).
+        then(() => {
+
+            this.props.onComplete({
+              vif
+            });
+          }
+        );
+        // TODO: Add error handling when we actually make external requests
+        // to create rollups.
+    } else {
+
+      this.props.onComplete({
+        vif
+      });
+    }
   },
 
   onCancel() {

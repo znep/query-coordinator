@@ -28,7 +28,8 @@ import {
   SET_UNIT_OTHER,
   SET_DOMAIN,
   SET_DATASET_UID,
-  SET_VIEW_SOURCE_DATA_LINK
+  SET_VIEW_SOURCE_DATA_LINK,
+  SET_PRECISION
 } from '../../actions';
 
 export default function timelineChart(state, action) {
@@ -136,6 +137,12 @@ export default function timelineChart(state, action) {
     case SET_UNIT_OTHER:
       forEachSeries(state, series => {
         setStringValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.unit.other'));
+      });
+      break;
+
+    case SET_PRECISION:
+      forEachSeries(state, series => {
+        _.set(series, 'dataSource.precision', action.precision);
       });
       break;
   }

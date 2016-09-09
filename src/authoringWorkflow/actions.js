@@ -488,3 +488,11 @@ export function setOrderBy(orderBy) {
     orderBy
   };
 }
+
+export var SET_PRECISION = 'SET_PRECISION';
+export function setPrecision(precision) {
+  return {
+    type: SET_PRECISION,
+    precision
+  };
+}

@@ -463,7 +463,6 @@ javascripts:
     - public/javascripts/controls/panes/append-replace.js
     - public/javascripts/controls/panes/backups.js
     - public/javascripts/controls/panes/calendar-create.js
-    - public/javascripts/controls/panes/cell-feed.js
     - public/javascripts/controls/panes/chart-config.js
     - public/javascripts/controls/panes/chart-create.js
     - public/javascripts/controls/panes/column-order.js

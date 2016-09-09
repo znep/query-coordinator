@@ -129,17 +129,6 @@ blist.widget.paneHandlers = {
     });
   },
 
-  cellFeed: function(rowId, tcId) {
-    blist.dataset.getComments(function(comments) {
-      var $pane = $('.widgetContent_cellFeed');
-      $pane.empty().append($.renderTemplate('feedList'));
-      $pane.find('.feed').feedList({
-        bindCommentEvents: false,
-        comments: comments
-      });
-    }, rowId, tcId);
-  },
-
   views: function() {
     if (widgetNS.viewsLoaded) {
       return;
@@ -592,13 +581,7 @@ $(function() {
       columnHideEnabled: false,
       showRowNumbers: widgetNS.theme.grid.row_numbers,
       showRowHandle: widgetNS.theme.grid.row_numbers,
-      manualResize: true,
-      cellCommentsCallback: !blist.widget.enabledModules.cell_comments ? null : function(rowId, tcId) {
-        widgetNS.showPane('cellFeed', 'Comments for row ' +
-          (blist.dataset.rowForID(rowId).index + 1) + ', column ' +
-          $.htmlEscape(blist.dataset.columnForTCID(tcId).name),
-          '#bed62b', [rowId, tcId]);
-      }
+      manualResize: true
     }
   });
   var $dataGrid = blist.$container.renderTypeManager().$domForType('table');

@@ -240,12 +240,6 @@ $(function() {
         datasetPageNS.sidebar.show('edit.addColumn', {
           parentId: parId
         });
-      },
-      cellCommentsCallback: blist.sidebarHidden.feed.cellFeed ? null : function(rowId, tcId) {
-        datasetPageNS.sidebar.show('cellFeed', {
-          rowId: rowId,
-          tableColumnId: tcId
-        }, true);
       }
     },
     page: {

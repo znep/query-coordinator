@@ -1794,30 +1794,23 @@
         _.compact([comment.rowId, comment.tableColumnId]).join('_');
     },
 
-    getComments: function(callback, rowId, tcId) {
+    getComments: function(callback) {
       var ds = this;
-      var cacheId = ds._getCommentCacheKey({
-        rowId: rowId,
-        tableColumnId: tcId
-      });
+      var cacheId = ds.id;
       if ($.isBlank(ds._commentCache[cacheId])) {
         // Keep getComments cachable by the browser; even though it has no full
         // etag/cache-control handling internally. Comments just don't need to be
         // hitting the backend
         ds.makeRequest({
           url: '/views/' + ds.id + '/comments.json',
-          params: !$.isBlank(rowId) ? {
-            r: rowId
-          } : null,
+          params: null,
           type: 'GET',
           pageCache: true,
           success: function(comms) {
             ds._commentCache[cacheId] = ds._commentCache[cacheId] || [];
             _.each(comms, function(c) {
               ds._commentByID[c.id] = c;
-              var ccId = ds._getCommentCacheKey(c);
-              ds._commentCache[ccId] = ds._commentCache[ccId] || [];
-              ds._commentCache[ccId].push(c);
+              ds._commentCache[cacheId].push(c);
             });
             callback(ds._commentCache[cacheId]);
           }
@@ -1827,77 +1820,16 @@
       }
     },
 
-    getCommentLocations: function(callback) {
-      var ds = this;
-      if ($.isBlank(ds._commentLocations)) {
-        // Keep this cachable
-        ds.makeRequest({
-          url: '/views/' + ds.id + '/comments.json',
-          params: {
-            method: 'getCellsWithComments'
-          },
-          type: 'GET',
-          pageCache: true,
-          success: function(ci) {
-            ds._commentLocations = {};
-            var rowChanges = {};
-            _.each(ci, function(item) {
-              var c = ds.columnForTCID(item.tablecolumnid);
-              if ($.isBlank(c)) {
-                return;
-              }
-
-              ds._commentLocations[item.rowid] = ds._commentLocations[item.rowid] || {};
-              ds._commentLocations[item.rowid][item.tablecolumnid] = true;
-              var r = ds.rowForID(item.rowid);
-              if (!$.isBlank(r)) {
-                r.annotations = r.annotations || {};
-                r.annotations[c.lookup] = 'comments';
-                ds._updateRow(r);
-                rowChanges[item.rowid] = r;
-              }
-            });
-            ds.trigger('row_change', [_.values(rowChanges)]);
-            if (_.isFunction(callback)) {
-              callback(ds._commentLocations);
-            }
-          }
-        });
-      } else {
-        if (_.isFunction(callback)) {
-          callback(ds._commentLocations);
-        }
-      }
-    },
-
     addComment: function(comment, successCallback, errorCallback) {
       var ds = this;
 
-      var cacheId = ds._getCommentCacheKey(comment);
+      var cacheId = ds.id;
       var addedComment = function(newCom) {
-        if ($.isBlank(newCom.rowId)) {
-          ds.numberOfComments++;
-        }
+        ds.numberOfComments++;
         if (!$.isBlank(ds._commentCache[cacheId])) {
           ds._commentCache[cacheId].unshift(newCom);
         }
         ds._commentByID[newCom.id] = newCom;
-
-        if (!$.isBlank(ds._commentLocations) && !$.isBlank(newCom.rowId)) {
-          ds._commentLocations[newCom.rowId] = ds._commentLocations[newCom.rowId] || {};
-          ds._commentLocations[newCom.rowId][newCom.tableColumnId] = true;
-          var r = ds.rowForID(newCom.rowId);
-          var c = ds.columnForTCID(newCom.tableColumnId);
-          if (!$.isBlank(r) && !$.isBlank(c)) {
-            r.annotations = r.annotations || {};
-            r.annotations[c.lookup] = 'comments';
-            ds._updateRow(r);
-            ds.trigger('row_change', [
-              [r]
-            ]);
-          }
-        }
-
         ds.trigger('new_comment', [newCom, comment.parent]);
         if (_.isFunction(successCallback)) {
           successCallback(newCom);

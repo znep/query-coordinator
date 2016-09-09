@@ -65,9 +65,6 @@
           bind('cellclick', function(e, r, c, o) {
             cellClick(datasetObj, e, r, c, o);
           }).
-          bind('comment_click', function(e, rId, cId) {
-            commentClick(datasetObj, rId, cId);
-          }).
           blistTable({
             cellNav: true,
             selectionEnabled: false,
@@ -82,7 +79,6 @@
             },
             manualResize: datasetObj.settings.manualResize,
             showGhostColumn: true,
-            cellComments: _.isFunction(datasetObj.settings.cellCommentsCallback),
             showRowHandle: datasetObj.settings.showRowHandle,
             rowHandleWidth: 15,
             showAddColumns: datasetObj.settings.showAddColumns,
@@ -506,12 +502,6 @@
       event.preventDefault();
       // Display the add column dialog.
       datasetObj.settings.addColumnCallback(column.id);
-    }
-  };
-
-  var commentClick = function(datasetObj, rowId, tcId) {
-    if (_.isFunction(datasetObj.settings.cellCommentsCallback)) {
-      datasetObj.settings.cellCommentsCallback(rowId, tcId);
     }
   };
 

@@ -385,19 +385,6 @@ class DatasetsHelperTest < Minitest::Test
     assert @object.send(:hide_data_lens_create?), 'hide_data_lens_create expected to be true'
   end
 
-  def test_hide_cell_feed
-    @view.stubs(:module_enabled? => true, :is_published? => true, :is_api? => false, :geoParent => nil)
-    refute @object.send(:hide_cell_feed?), 'should not be hidden'
-    @view.stubs(:module_enabled? => false, :is_published? => true, :is_api? => false, :geoParent => nil)
-    assert @object.send(:hide_cell_feed?), 'should be hidden'
-    @view.stubs(:module_enabled? => true, :is_published? => false, :is_api? => false, :geoParent => nil)
-    assert @object.send(:hide_cell_feed?), 'should be hidden'
-    @view.stubs(:module_enabled? => true, :is_published? => true, :is_api? => true, :geoParent => nil)
-    assert @object.send(:hide_cell_feed?), 'should be hidden'
-    @view.stubs(:module_enabled? => true, :is_published? => true, :is_api? => false, :geoParent => Model.new)
-    assert @object.send(:hide_cell_feed?), 'should be hidden'
-  end
-
   def test_hide_discuss
     @view.stubs(:is_published? => true, :is_api? => false, :geoParent => nil)
     refute @object.send(:hide_discuss?), 'should not be hidden'

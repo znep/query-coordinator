@@ -401,7 +401,6 @@
     };
 
     var $activeContainer;
-    var $commentLink;
 
     var hideActiveCell = function(activeOnly) {
       if ($activeContainer) {
@@ -498,23 +497,10 @@
         $curRenderActiveCells = $activeCells;
       }
 
-      // Don't show comment link for bnb cols
-      if (options.cellComments && !!column && !!row && $.isBlank(column.parentColumn) &&
-        !model.view.isGrouped()) {
-        if (!$commentLink) {
-          $commentLink = $('<a href="#Comments" class="commentLink feed" ' +
-            'title="' + $.t('controls.grid.view_cell_comments') + '"><span class="icon"></span></a>');
-        }
-        $commentLink.data('rowId', row.id);
-        $commentLink.data('tableColumnId', column.tableColumnId);
-        $activeContainer.append($commentLink);
-      } else {
-        $commentLink = null;
-      }
       $activeContainer.toggleClass('comments-active', $activeCells.hasClass('comments-active'));
 
       // Size the expander
-      sizeCellOverlay($activeContainer, $activeExpand, $activeCells, $commentLink);
+      sizeCellOverlay($activeContainer, $activeExpand, $activeCells, null);
       // Position the expander
       positionCellOverlay($activeContainer, $activeCells);
 
@@ -1814,15 +1800,6 @@
       }
     };
 
-    var onClick = function(event) {
-      var $t = $(event.target);
-      if ($t.hasClass('commentLink') || $t.parent().hasClass('commentLink')) {
-        event.preventDefault();
-        var $a = $t.closest('.commentLink');
-        $a.trigger('comment_click', [$a.data('rowId'), $a.data('tableColumnId')]);
-      }
-    };
-
     var onDoubleClick = function(event) {
       if (isDisabled) {
         return;
@@ -2113,7 +2090,6 @@
       addClass('blist-table').
       mousedown(onMouseDown).
       mousemove(onMouseMove).
-      click(onClick).
       dblclick(onDoubleClick).
       html(headerStr);
 
@@ -4250,12 +4226,6 @@
         }
         curView = model.view;
 
-        // Request comment indicators
-        // This will only be false if the cell comment module is enabled.
-        if ($.deepGet(blist, 'sidebarHidden', 'feed', 'cellFeed') === false) {
-          model.view.getCommentLocations();
-        }
-
         model.view.bind('row_change', function(rows) {
             updateRows(rows);
           }, table).
@@ -4346,7 +4316,6 @@
   };
 
   var blistTableDefaults = {
-    cellComments: false,
     cellExpandEnabled: true,
     cellNav: false,
     columnDrag: false,

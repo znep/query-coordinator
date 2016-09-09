@@ -757,7 +757,6 @@ en:
         post_button: Post
       header:
         add_comment: Add Comment
-        cell_comment_header_html: Comments for row <span class="rowName"></span>, column <span class="columnName"></span>
         feed_filter_label: Show
         pending_moderation: Your comment is submitted and is pending moderation
       listing:

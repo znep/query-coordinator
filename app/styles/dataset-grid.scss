@@ -732,25 +732,6 @@ div.blist-table .blist-tr.blist-tr-noMatch {
 }
 
 div.blist-table-active-container {
-  .commentLink {
-    @include dataset-sidebar-icons;
-    background-color: #91abcc;
-    display: inline-block;
-    height: 100%;
-    width: 19px;
-    .icon {
-      margin: {
-        left: 3px;
-        top: 4px;
-      };
-    }
-  }
-  &.comments-active {
-    border-color: adjust-color($cell_feed_color, $lightness: +20%);
-    .commentLink {
-      background-color: adjust-color($cell_feed_color, $lightness: +20%);
-    }
-  }
   .blist-td {
     border-bottom: none;
     padding: 3px;

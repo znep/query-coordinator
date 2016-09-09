@@ -424,7 +424,6 @@ module DatasetsHelper
     hash.exportSection!.subscribe = hide_export_section?(:subscribe)
 
     hash.feed!.discuss = hide_discuss?
-    hash.feed!.cellFeed = hide_cell_feed?
 
     hash.about = hide_about?
 
@@ -659,15 +658,6 @@ module DatasetsHelper
       view.is_unpublished?,
       !view.dataset?,
       view.is_api_geospatial?,
-      view.geoParent.present?
-    ].any?
-  end
-
-  def hide_cell_feed?
-    [
-      !view.module_enabled?('cell_comments'),
-      !view.is_published?,
-      view.is_api?,
       view.geoParent.present?
     ].any?
   end

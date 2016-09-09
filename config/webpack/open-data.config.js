@@ -511,7 +511,6 @@ module.exports = _.defaultsDeep({
       './controls/panes/append-replace.js',
       './controls/panes/backups.js',
       './controls/panes/calendar-create.js',
-      './controls/panes/cell-feed.js',
       './controls/panes/chart-config.js',
       './controls/panes/chart-create.js',
       './controls/panes/column-order.js',

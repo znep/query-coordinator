@@ -157,10 +157,6 @@
     &#gridSidebar_outer_other {
       @include sidebar-colors($sidebar_other_tab_color_top);
     }
-    // special sidebars
-    &#gridSidebar_outer_cellFeed {
-      @include sidebar-colors($cell_feed_color);
-    }
     // Canvas Designer
     &#gridSidebar_outer_components {
       @include sidebar-colors($sidebar_designer_components_tab_color_tab);

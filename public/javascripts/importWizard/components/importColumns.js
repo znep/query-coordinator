@@ -1,3 +1,4 @@
+/* global importSource */
 import React, { PropTypes } from 'react';
 import format from 'stringformat';
 
@@ -46,7 +47,8 @@ export type Transform = {
   columns: Translation,
   defaultColumns: Translation, // so we can reset back to this
   numHeaders: number,
-  sample: Array<Array<string>>
+  sample: Array<Array<string>>,
+  stateSave: string
 }
 
 
@@ -133,6 +135,7 @@ export function saveImportColumns() {
   return (dispatch, getState) => {
     const lastSavedVersion = getState().lastSavedVersion;
     const datasetId = getState().datasetId;
+    dispatch(SaveState.stateSaveStarted());
     SaveState.saveTransform(datasetId, lastSavedVersion, getState().transform).then((importSource) => {
       dispatch(SaveState.stateSaved(importSource));
     });
@@ -179,6 +182,16 @@ export function update(transform: Transform = null, action): Transform {
       } else {
         return transform;
       }
+    case SaveState.STATE_SAVE_STARTED:
+      return {
+        ...transform,
+        saveState: 'InProgress'
+      };
+    case SaveState.STATE_SAVED:
+      return {
+        ...transform,
+        saveState: 'Done'
+      };
     case CHANGE_HEADER_COUNT:
       return {
         ...transform,
@@ -244,6 +257,12 @@ export function view({ transform, fileName, sourceColumns, dispatch, goToPage, g
     Validation.emptyOrAllWarnings(problems)
       ? (() => goToPage('Metadata'))
       : null;
+
+  var onSave = () => dispatch(saveImportColumns());
+  if (transform.saveState === 'InProgress') {
+    onSave = undefined;
+  }
+
   return (
     <div>
       <div className="importColumnsPane columnsPane">
@@ -270,7 +289,7 @@ export function view({ transform, fileName, sourceColumns, dispatch, goToPage, g
       <NavigationControl
         onNext={nextAction}
         onPrev={goToPrevious}
-        onSave={() => dispatch(saveImportColumns())}
+        onSave={onSave}
         cancelLink="/profile" />
     </div>
   );

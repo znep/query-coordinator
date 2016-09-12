@@ -29,6 +29,12 @@ export type ImportSource = {
   updatedAt: number
 };
 
+export const STATE_SAVE_STARTED = 'STATE_SAVE_STARTED';
+export function stateSaveStarted() {
+  return {
+    type: STATE_SAVE_STARTED
+  };
+}
 
 export const STATE_SAVED = 'STATE_SAVED';
 export function stateSaved(importSource: ImportSource) {
@@ -37,7 +43,6 @@ export function stateSaved(importSource: ImportSource) {
     importSource
   };
 }
-
 
 export function update(lastSavedVersion: number = null, action) {
   switch (action.type) {

@@ -262,7 +262,7 @@ describe('ImportColumns component', () => {
 
   describe('thunks', () => {
 
-    it(`makes a call to core's importSources endpoint when the saveImportColumns thunk is dispatched`, (done) => {
+    it(`makes a call to cores importSources endpoint when the saveImportColumns thunk is dispatched`, (done) => {
       const resultColumns = [
         {
           name: 'col 1',
@@ -340,6 +340,9 @@ describe('ImportColumns component', () => {
               }
             },
             [
+              (state, action) => {
+                return state;
+              },
               (state, action) => {
                 expect(SaveState.update(state.lastSavedVersion, action)).to.equal(1470979299528);
               }

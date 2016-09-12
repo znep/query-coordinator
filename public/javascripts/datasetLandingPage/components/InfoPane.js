@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import DownloadDropdown from './DownloadDropdown';
 import collapsible from '../collapsible';
 import formatDate from '../lib/formatDate';
+import purify from '../lib/purify';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 
 export var InfoPane = React.createClass({
@@ -169,7 +170,7 @@ export var InfoPane = React.createClass({
             <div className="entry-main">
               <div className="entry-description-container collapsible">
                 <div className="entry-description" ref={(ref) => this.description = ref}>
-                  {view.description}
+                  <div dangerouslySetInnerHTML={{ __html: purify(view.description) }} />
 
                   <button className="collapse-toggle more">{I18n.more}</button>
                   <button className="collapse-toggle less">{I18n.less}</button>

@@ -190,11 +190,12 @@ module DatasetLandingPageHelper
     end
 
     row_count = @view.row_count rescue 0
+    description = @view.description.gsub(/\r?\n/, '<br />') if @view.description
 
     {
       :id => @view.id,
       :name => @view.name,
-      :description => @view.description,
+      :description => description,
       :category => @view.category,
       :attribution => @view.attribution,
       :rowLabel => row_label,

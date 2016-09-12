@@ -2,6 +2,7 @@
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-index-screen' %>
   <%= rendered_stylesheet_tag 'administration-site-chrome' %>
+  <%= render_translations LocalePart.screens.admin.site_chrome %>
   <title>Editing Site Chrome | <%= get_site_title %></title>
 <% end %>
 
@@ -70,7 +71,6 @@
 </div>
 
 <% content_for :js_footer do %>
-  <%= render_translations LocalePart.screens.admin.site_chrome %>
   <%= include_webpack_bundle 'open-data/admin-site-chrome.js' %>
   <%= include_webpack_bundle 'site-chrome/main.js' %>
 <% end %>

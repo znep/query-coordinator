@@ -539,7 +539,7 @@ function renderSingleField(metadata, field, onMetadataAction, setName, fieldIdx)
 }
 
 function renderFieldSet(metadata: DatasetMetadata, fieldSet, setName, onMetadataAction) {
-  const fields = fieldSet.fields;
+  const fields = fieldSet.fields || [];
   return (
     <div> {fields.map((field, fieldIdx) =>
       <div className="line clearfix">

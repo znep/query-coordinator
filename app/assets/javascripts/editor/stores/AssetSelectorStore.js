@@ -99,6 +99,10 @@ export default function AssetSelectorStore() {
         _updateImageAltAttribute(payload);
         break;
 
+      case Actions.ASSET_SELECTOR_UPDATE_IMAGE_URL_WRAPPER:
+        _updateImageUrlWrapper(payload);
+        break;
+
       case Actions.ASSET_SELECTOR_UPDATE_TITLE_ATTRIBUTE:
         _updateFrameTitleAttribute(payload);
         break;
@@ -537,11 +541,9 @@ export default function AssetSelectorStore() {
       _state.selectedImageId = payload.id;
 
       if (type === 'author') {
-        _state.componentProperties.image = image;
-      } else if (type === 'hero') {
-        _state.componentProperties = _.merge(_state.componentProperties, image);
+        _state.componentProperties.image = _.merge(_state.componentProperties.image, image);
       } else {
-        _state.componentProperties = image;
+        _state.componentProperties = _.merge(_state.componentProperties, image);
       }
     } else {
       _state.selectedImageId = null;
@@ -664,11 +666,9 @@ export default function AssetSelectorStore() {
       _state.step = WIZARD_STEP.IMAGE_UPLOAD_ERROR;
       _.set(_state.componentProperties, 'reason', t(message));
     } else {
-      if (!_state.componentProperties) {
-        _state.componentProperties = {};
-      }
+      _state.componentProperties = _state.componentProperties || { urlValidity: true };
 
-      if (_state.componentProperties && _state.componentProperties.reason) {
+      if (_state.componentProperties.reason) {
         delete _state.componentProperties.reason;
       }
 
@@ -800,6 +800,8 @@ export default function AssetSelectorStore() {
       if (!_.isEmpty(value.crop)) {
         _state.croppingUiEnabled = true;
       }
+
+      value.urlValidity = true;
     }
 
     const dataset = self.getDatasetUserSelectedFromList() || self.getDatasetInVif();
@@ -864,6 +866,10 @@ export default function AssetSelectorStore() {
   }
 
   function _chooseImageUpload() {
+    if (_state.componentType === 'image') {
+      _state.componentProperties = _.merge(_state.componentProperties || {}, { urlValidity: true });
+    }
+
     _state.step = WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD;
     self._emitChange();
   }
@@ -1337,7 +1343,9 @@ export default function AssetSelectorStore() {
     var image = {
       documentId: file.resource.id,
       url: file.resource.url,
-      crop: _state.componentProperties.crop
+      crop: _state.componentProperties.crop,
+      alt: _state.componentProperties.alt,
+      link: _state.componentProperties.link
     };
 
     switch (type) {
@@ -1396,6 +1404,23 @@ export default function AssetSelectorStore() {
           'Component type is {0}. Cannot update alt attribute.',
           _state.componentType
         )
+      );
+    }
+
+    self._emitChange();
+  }
+
+  function _updateImageUrlWrapper(payload) {
+    var value = self.getComponentValue();
+    var url = payload.url;
+    var urlValidity = _.isString(url) && url.length === 0 || /^https?:\/\/.+/.test(url);
+
+    if (_state.componentType === 'image') {
+      value.link = url;
+      value.urlValidity = urlValidity;
+    } else {
+      throw new Error(
+        `Component type is ${_state.componentType}. Cannot update URL wrapper.`
       );
     }
 

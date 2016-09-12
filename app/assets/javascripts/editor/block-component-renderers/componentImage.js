@@ -64,9 +64,17 @@ function _renderImage($element, componentData) {
     }
   );
 
+  var $link = $(
+    '<a>',
+    {
+      'href': null,
+      'target': '_blank'
+    }
+  );
+
   $element.
     addClass(StorytellerUtils.typeToClassNameForComponentType(componentData.type)).
-    append($imgElement);
+    append($link.append($imgElement));
 }
 
 function _updateImageAttributes($element, componentData) {
@@ -76,6 +84,8 @@ function _updateImageAttributes($element, componentData) {
   var crop;
   var documentIdAsStringOrNull;
   var altAttribute;
+  var link;
+  var $link = $element.find('a');
   var $imgElement = $element.find('img');
 
   StorytellerUtils.assertHasProperty(componentData, 'value');
@@ -87,6 +97,7 @@ function _updateImageAttributes($element, componentData) {
   documentId = componentData.value.documentId; // May be null or undefined.
   documentIdAsStringOrNull = _.isNull(documentId) || _.isUndefined(documentId) ? null : String(documentId);
   altAttribute = componentData.value.alt;
+  link = componentData.value.link;
 
   if (
     $imgElement[0].getAttribute('data-src') !== imgSrc ||
@@ -103,6 +114,7 @@ function _updateImageAttributes($element, componentData) {
       attr('data-crop', JSON.stringify(crop));
   }
 
+  $link.attr('href', _.isEmpty(link) ? null : link);
   $imgElement.attr('alt', _.isEmpty(altAttribute) ? null : altAttribute);
 }
 

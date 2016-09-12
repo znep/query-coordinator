@@ -85,6 +85,17 @@ export default function AssetSelectorRenderer(options) {
 
     _container.on(
       'input',
+      '.asset-selector-url-wrapper-input',
+      function(event) {
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_UPDATE_IMAGE_URL_WRAPPER,
+          url: event.target.value
+        });
+      }
+    );
+
+    _container.on(
+      'input',
       '.asset-selector-title-input',
       function(event) {
         dispatcher.dispatch({
@@ -98,6 +109,7 @@ export default function AssetSelectorRenderer(options) {
       'mouseout',
       [
         '.asset-selector-image-alt-hint',
+        '.asset-selector-image-url-wrapper-hint',
         '.asset-selector-youtube-title-hint',
         '.asset-selector-embed-code-title-hint',
         '.asset-selector-goal-url-hint'
@@ -113,6 +125,21 @@ export default function AssetSelectorRenderer(options) {
           element: this,
           content: '<span class="tooltip-text">' +
             I18n.t('editor.asset_selector.image_preview.alt_attribute_tooltip') +
+            '</span>',
+          rightSideHint: false,
+          belowTarget: false
+        });
+      }
+    );
+
+    _container.on(
+      'mouseenter',
+      '.asset-selector-image-url-wrapper-hint',
+      function() {
+        flyoutRenderer.render({
+          element: this,
+          content: '<span class="tooltip-text">' +
+            I18n.t('editor.asset_selector.image_preview.url_wrapper_tooltip') +
             '</span>',
           rightSideHint: false,
           belowTarget: false
@@ -1262,8 +1289,7 @@ export default function AssetSelectorRenderer(options) {
       questionIcon
     );
 
-
-    var inputField = $('<form>').append($(
+    var altInputField = $('<form>').append($(
       '<input>',
       {
         'class': 'asset-selector-alt-text-input text-input',
@@ -1271,7 +1297,7 @@ export default function AssetSelectorRenderer(options) {
       }
     ));
 
-    inputField.on('keyup', function(event) {
+    altInputField.on('keyup', function(event) {
       if (event.keyCode === 13) {
         $('.modal-dialog .image-crop-upload-btn').click();
       }
@@ -1281,8 +1307,39 @@ export default function AssetSelectorRenderer(options) {
       '<div>',
       { 'class': 'asset-selector-image-description-container' }
     ).append([
-      inputField
+      altInputField
     ]);
+
+    var urlWrapperQuestionMark = $('<span>', {
+      class: 'icon-question-inverse asset-selector-image-url-wrapper-hint'
+    });
+
+    var urlWrapperLabel = $(
+      '<h2>',
+      { 'class': 'asset-selector-image-url-wrapper-label' }
+    ).append(
+      I18n.t('editor.asset_selector.image_preview.url_wrapper_label'),
+      urlWrapperQuestionMark
+    );
+
+    var urlWrapperField = $('<form>').append(
+      $('<input>', { class: 'asset-selector-url-wrapper-input text-input', type: 'text' })
+    );
+
+    var warningIcon = $('<span>', {
+      class: 'icon-warning'
+    });
+
+    var urlValidityMessage = $('<p>', {
+      class: 'asset-selector-url-wrapper-validity'
+    }).append(
+      warningIcon,
+      I18n.t('editor.invalid_link_message')
+    );
+
+    var urlWrapperContainer = $('<div>', {
+      class: 'asset-selector-image-url-wrapper-container'
+    }).append([urlWrapperField, urlValidityMessage]);
 
     var backButton = $('<button>', {
       'class': 'btn btn-default image-crop-back-btn'
@@ -1351,7 +1408,9 @@ export default function AssetSelectorRenderer(options) {
       previewContainer,
       gettyImageInfo,
       isImage ? descriptionLabel : null,
-      isImage ? descriptionContainer : null
+      isImage ? descriptionContainer : null,
+      isImage ? urlWrapperLabel : null,
+      isImage ? urlWrapperContainer : null
     ]);
 
     return [ content, buttonGroup ];
@@ -1362,6 +1421,22 @@ export default function AssetSelectorRenderer(options) {
       componentProperties,
       'alt',
       _.get(componentProperties, 'image.alt', null) // Try again, this time under image.alt. Overall default is null.
+    );
+  }
+
+  function extractImageUrlWrapper(componentProperties) {
+    return _.get(
+      componentProperties,
+      'link',
+      _.get(componentProperties, 'image.link', null)
+    );
+  }
+
+  function extractImageUrlValidity(componentProperties) {
+    return _.get(
+      componentProperties,
+      'urlValidity',
+      _.get(componentProperties, 'image.urlValidity', false)
     );
   }
 
@@ -1408,10 +1483,13 @@ export default function AssetSelectorRenderer(options) {
     var imageUrl = grabOriginalImage(assetSelectorStore.getPreviewImageUrl());
     var existingImageUrl = _container.find('img').attr('src');
     var altAttribute = extractImageAlt(componentProperties);
+    var url = extractImageUrlWrapper(componentProperties);
+    var urlValidity = extractImageUrlValidity(componentProperties);
 
     var isUploadingFile = assetSelectorStore.isUploadingFile();
     var isCropping = assetSelectorStore.isCropping();
     var isCroppingUiEnabled = assetSelectorStore.isCroppingUiEnabled();
+    var isImage = assetSelectorStore.getComponentType() === 'image';
     var isNotGettyImage = !Constants.VALID_STORYTELLER_GETTY_IMAGE_URL_API_PATTERN.test(imageUrl);
 
     var hasCompletedUpload = isUploadingFile && file.status === STATUS.COMPLETED;
@@ -1433,6 +1511,14 @@ export default function AssetSelectorRenderer(options) {
       attr('value', _.isEmpty(altAttribute) ? null : altAttribute);
 
     _container.
+      find('.asset-selector-url-wrapper-input').
+      attr('value', _.isEmpty(url) ? null : url);
+
+    _container.
+      find('.asset-selector-url-wrapper-validity').
+      toggleClass('hidden', urlValidity);
+
+    _container.
       find('.getty-image-info').
       toggleClass('hidden', isNotGettyImage);
 
@@ -1451,7 +1537,7 @@ export default function AssetSelectorRenderer(options) {
 
     _container.
       find('.image-crop-upload-btn').
-      prop('disabled', isUploadingFile || isCropping).
+      prop('disabled', isUploadingFile || isCropping || (isImage && !urlValidity)).
       toggleClass('btn-busy', isUploadingFile || isCropping);
 
     _container.

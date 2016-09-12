@@ -35,8 +35,8 @@ module.exports = function FlyoutFactory(element) {
     window.addEventListener('wheel', reposition);
 
     hoverable.addEventListener('mouseover', function() {
-      reposition();
       show();
+      reposition();
     });
 
     hoverable.addEventListener('mouseout', function() {

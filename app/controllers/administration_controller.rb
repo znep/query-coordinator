@@ -45,8 +45,6 @@ class AdministrationController < ApplicationController
       :text => t('screens.admin.datasets.unpublished_datasets'), :value => 'unpublished',
       :class => 'typeUnpublished'})
 
-    add_draft_display_type_if_enabled!(vtf[:options])
-
     facets = [
       vtf,
       categories_facet(params),

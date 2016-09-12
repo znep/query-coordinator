@@ -339,7 +339,11 @@ module BrowseActions
     if browse_options[:limitTo].present?
       case browse_options[:limitTo]
         when 'unpublished'
-          search_options[:limitTo] = 'tables'
+          if draft_dataset_entries_enabled?
+            search_options[:limitTo] = ['draft', 'tables']
+          else
+            search_options[:limitTo] = 'tables'
+          end
           search_options[:datasetView] = 'dataset'
           search_options[:publication_stage] = 'unpublished'
         when 'datasets'
@@ -556,21 +560,6 @@ module BrowseActions
       browse_options[:limit].to_i > 0
     ]
     assertions.all?
-  end
-
-  def add_draft_display_type_if_enabled!(view_type_list)
-    if draft_dataset_entries_enabled?
-      draft_display_type = {
-        :text => ::I18n.t('controls.browse.facets.view_types.draft'),
-        :value => 'draft',
-        :class => 'typeDraft',
-        :icon_font_class => 'icon-table'
-      }
-
-      # Position the draft dataset above the datasets entry
-      datasets_index = view_type_list.pluck(:value).index('datasets') || 0
-      view_type_list.insert(datasets_index, draft_display_type)
-    end
   end
 
   def draft_dataset_entries_enabled?

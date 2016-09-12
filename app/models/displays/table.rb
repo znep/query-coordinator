@@ -4,21 +4,19 @@ class Displays::Table < Displays::Base
   end
 
   def name
-    if @view.is_blist?
+    if @view.is_unpublished?
+      I18n.t('core.view_types.working_copy')
+    elsif @view.is_blist?
       I18n.t('core.view_types.table')
     elsif @view.is_grouped?
       I18n.t('core.view_types.group')
-    elsif @view.draft?
-      I18n.t('core.view_types.draft')
     else
       I18n.t('core.view_types.filter')
     end
   end
 
   def type
-    if @view.draft?
-      'draft'
-    elsif @view.is_unpublished?
+    if @view.is_unpublished?
       'unpublished'
     elsif @view.is_api_geospatial?
       'map'
@@ -33,11 +31,4 @@ class Displays::Table < Displays::Base
     end
   end
 
-  def icon_class
-    if @view.draft?
-      'icon-table'
-    else
-      super
-    end
-  end
 end

@@ -76,7 +76,6 @@ class ProfileController < ApplicationController
       else
         if @is_user_current
           browse_options[:publication_stage] = [ 'published', 'unpublished' ]
-
           vtf = view_types_facet
 
           datasets_index = vtf[:options].index { |option|
@@ -93,8 +92,6 @@ class ProfileController < ApplicationController
             :value => 'unpublished',
             :class => 'typeUnpublished'
           })
-
-          add_draft_display_type_if_enabled!(vtf[:options])
 
           browse_options[:facets] = [vtf, categories_facet(params)]
         else

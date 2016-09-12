@@ -483,7 +483,6 @@ en:
           chart: Chart
           data_lens: Data Lens
           dataset: Dataset
-          draft: Draft Dataset
           filter: Filtered View
           form: Form
           href: External Link

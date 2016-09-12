@@ -11,11 +11,19 @@ class Displays::Blob < Displays::Base
     end
 
     def type
-      'blob'
+      if @view.is_unpublished?
+        'unpublished'
+      else
+        'blob'
+      end
     end
 
     def name
-      I18n.t('core.view_types.blob')
+      if @view.is_unpublished?
+        I18n.t('core.view_types.working_copy')
+      else
+        I18n.t('core.view_types.blob')
+      end
     end
 
     def display_type

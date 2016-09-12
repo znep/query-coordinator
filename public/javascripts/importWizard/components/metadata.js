@@ -60,6 +60,7 @@ type LicenseType = {
 
 export function defaultCustomData() {
   return _.fromPairs(customMetadataSchema.map(({fields, name}) => {
+    fields = fields || [];
     return [
       name,
       fields.map(field => ({

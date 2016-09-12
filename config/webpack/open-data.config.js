@@ -574,14 +574,6 @@ module.exports = _.defaultsDeep({
       './controls/render-type-manager.js',
       './screens/classic-visualization.js'
     ],
-    'screen-bare-dataset': [
-      './controls/full-screen.js',
-      './controls/dataset-controls.js',
-      './plugins/lab.js',
-      './util/asset-loading.js',
-      './controls/render-type-manager.js',
-      './screens/dataset-bare.js'
-    ],
     'render-view-minimum': [
       './controls/dataset-controls.js',
       './plugins/lab.js',

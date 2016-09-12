@@ -5,6 +5,9 @@
 .outerContainer {
   height: 100%;
   border: none;
+  #vizError {
+    display: none !important;
+  }
 }
 
 #renderTypeContainer {

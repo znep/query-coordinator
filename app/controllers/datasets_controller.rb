@@ -298,31 +298,6 @@ class DatasetsController < ApplicationController
     end
   end
 
-# bare version of the page, w/o chrome, for screenshotting
-  def bare
-    @view = get_view(params[:id])
-    return if @view.nil?
-
-    # if the core server requests a specific timeout, rather than
-    # letting the js decide when it's rendered
-    if params[:timeout].present?
-      if params[:timeout].to_i < 60
-        @snapshot_timeout = params[:timeout]
-      else
-        Rails.logger.info("Ignoring snapshot request, over 60 second limit (#{params[:timeout]})")
-      end
-    end
-
-    @snapshot_name = params[:name]
-
-    if !current_user
-      @user_session = UserSession.new
-    end
-
-    needs_view_js @view.id, @view
-    render :layout => false
-  end
-
 # alt actions
   def alt
     @view = get_view(params[:id])

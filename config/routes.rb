@@ -400,7 +400,6 @@ Rails.application.routes.draw do
     end
 
     scope :controller => 'datasets', :constraints => {:id => Frontend::UID_REGEXP} do
-      get 'r/:id/:name', :action => 'bare'
       get ':category/:view_name/:id/stats', :action => 'stats',
         :constraints => {:view_name => /(\w|-)+/, :category => /(\w|-)+/}
       get ':category/:view_name/:id/about', :action => 'about',

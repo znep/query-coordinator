@@ -104,11 +104,6 @@ function updateGeoregion(id, newValue) {
   renderPage();
 }
 
-function addGeoregion(newValue) {
-  georegionsNS.georegions.push(newValue);
-  renderPage();
-}
-
 function addGeoregionJob(jobStatus, boundary) {
   // The response for a single job's status doesn't have the same shape as
   // the batch data we get back from the queue response, so... more massaging.
@@ -278,19 +273,11 @@ function showInitialConfigureModal(uid, name) {
     });
   };
 
-  // TODO: Remove enableSyntheticSpatialLensId once we're using
-  // synthetic spatial lens shape ids exclusively
-  const enableSyntheticSpatialLensId = blist.feature_flags.enable_synthetic_spatial_lens_id;
 
   const onSave = (boundary, completeCallback, errorCallback) => {
     const onSuccess = ({ error, message, success }) => {
       if (success) {
-        if (enableSyntheticSpatialLensId) {
-          addGeoregionJob(message, boundary);
-        } else {
-          addGeoregion(message);
-        }
-
+        addGeoregionJob(message, boundary);
         setFlashMessage(t('configure_boundary.save_success'), 'notice');
         closeConfigureModal();
       } else if (error) {
@@ -298,16 +285,9 @@ function showInitialConfigureModal(uid, name) {
       }
     };
 
-    // TODO: Remove query parameter in url once we're using synthetic
-    // spatial lens shape ids exclusively. We're passing it along here
-    // to make it respect query parameter feature flags in the ajax request.
-    const url = enableSyntheticSpatialLensId ?
-      '/admin/geo?enable_synthetic_spatial_lens_id=true' :
-      '/admin/geo';
-
     $.ajax({
       contentType: 'application/json',
-      url: url,
+      url: '/admin/geo',
       type: 'post',
       data: JSON.stringify(_.extend({ id: uid }, boundary)),
       dataType: 'json',
@@ -322,18 +302,10 @@ function showInitialConfigureModal(uid, name) {
     $('#selectDataset').jqmShow();
   };
 
-  // TODO: Remove allowPrimaryKeySelection option once we're using
-  // synthetic spatial lens shape ids exclusively
-  const enablePrimaryKeySelection = !enableSyntheticSpatialLensId;
   const requiredFields = ['name', 'geometryLabel'];
-
-  if (enablePrimaryKeySelection) {
-    requiredFields.push('primaryKey');
-  }
 
   ReactDOM.render(
     <ConfigureBoundaryForm
-      allowPrimaryKeySelection={enablePrimaryKeySelection}
       fetchInitialState={fetchInitialState}
       id={uid}
       onCancel={onBack}

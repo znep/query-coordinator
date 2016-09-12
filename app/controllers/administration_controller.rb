@@ -181,9 +181,6 @@ class AdministrationController < ApplicationController
     error_message = t('error.error_500.were_sorry')
     success_message = nil
 
-    # TODO: Remove feature flag check once we're using synthetic spatial lens shape ids exclusively
-    enable_synthetic_spatial_lens_id = FeatureFlags.derive(nil, request)[:enable_synthetic_spatial_lens_id]
-
     begin
       success_message = georegion_adder.add(
         params[:id],
@@ -191,7 +188,6 @@ class AdministrationController < ApplicationController
         params[:geometryLabel],
         params[:name],
         { :enabledFlag => true },
-        enable_synthetic_spatial_lens_id,
         forwardable_session_cookies
       )
       is_success = success_message.present?

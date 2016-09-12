@@ -1195,6 +1195,7 @@ export default function AssetSelectorStore() {
     var visualization = payload.visualization.data;
 
     if (_.isEmpty(visualization)) {
+
       _state.componentType = null;
       _state.componentProperties = {
         dataset: _state.componentProperties.dataset
@@ -1202,6 +1203,7 @@ export default function AssetSelectorStore() {
 
       self._emitChange();
     } else if (payload.visualization.format === 'classic') {
+
       _state.componentType = 'socrata.visualization.classic';
       _state.componentProperties = {
         visualization: visualization,
@@ -1211,6 +1213,7 @@ export default function AssetSelectorStore() {
 
       self._emitChange();
     } else if (payload.visualization.format === 'vif') {
+
       StorytellerUtils.assertHasProperty(
         _state,
         'componentProperties.dataset'
@@ -1225,12 +1228,26 @@ export default function AssetSelectorStore() {
 
       self._emitChange();
     } else if (payload.visualization.format === 'vif2') {
+
+      // If we are updating a visualization, we need to check if its layout
+      // height has been previously set and remember it so that it can be added
+      // back into the new component properties after they have been reset.
+      const layoutHeight = _.get(_state, 'componentProperties.layout.height');
+
       _state.componentType = StorytellerUtils.format('socrata.visualization.{0}', visualization.series[0].type);
       _state.componentProperties = {
         vif: visualization,
         dataset: _state.componentProperties.dataset,
         originalUid: payload.visualization.originalUid
       };
+
+      // If layout height was previously set, set the same layout height in the
+      // new component properties.
+      if (layoutHeight) {
+        _.set(_state, 'componentProperties.layout.height', layoutHeight);
+      }
+
+      self._emitChange();
     }
   }
 

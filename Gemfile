@@ -42,6 +42,15 @@ gem 'zk', '~> 1.9.2'
 gem 'zookeeper', '~> 1.4.9'
 gem 'zendesk2', '~> 1.8.1'
 
+# For Ops rake tasks
+gem 'net-ping'
+gem 'mrdialog'
+gem 'inifile'
+gem 'diplomat'
+gem 'git'
+gem 'clipboard'
+gem 'jenkins_api_client'
+
 # These are for jammit. Possibly the worst behavior for a gem I have ever laid eyes upon. If any of the
 # following gems are not installed, jammit will silently ignore both this fact, and the fact that you have
 # configured the gem to use one of them.

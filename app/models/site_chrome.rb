@@ -273,51 +273,45 @@ class SiteChrome
     handle_configuration_response(res)
   end
 
+  def activation_state
+    config.dig('value', 'activation_state').to_h
+  end
+
+  # Returns an object representing the pages that have site chrome activated based on the state param.
+  # In this context "open_data" is a better name for "old pages". Things like /browse, /admin, /profile.
   def set_activation_state(state)
-    if state['entire_site']
-      FeatureFlags.set_value(:site_chrome_header_and_footer, true, domain: CurrentDomain.cname)
-      FeatureFlags.set_value(:site_chrome_header_and_footer_for_homepage, true, domain: CurrentDomain.cname)
-      FeatureFlags.set_value(:site_chrome_header_and_footer_for_data_lens, true, domain: CurrentDomain.cname)
+    new_activation_state = if state['entire_site']
+      { 'open_data' => true, 'homepage' => true, 'data_lens' => true }
+    elsif state['all_pages_except_home']
+      { 'open_data' => true, 'homepage' => false, 'data_lens' => true }
+    elsif state['revert_site_chrome']
+      { 'open_data' => false, 'homepage' => false, 'data_lens' => false }
     end
-    if state['all_pages_except_home']
-      FeatureFlags.set_value(:site_chrome_header_and_footer, true, domain: CurrentDomain.cname)
-      FeatureFlags.set_value(:site_chrome_header_and_footer_for_homepage, false, domain: CurrentDomain.cname)
-      FeatureFlags.set_value(:site_chrome_header_and_footer_for_data_lens, true, domain: CurrentDomain.cname)
-    end
-    if state['revert_site_chrome']
-      FeatureFlags.set_value(:site_chrome_header_and_footer, false, domain: CurrentDomain.cname)
-      FeatureFlags.set_value(:site_chrome_header_and_footer_for_homepage, false, domain: CurrentDomain.cname)
-      FeatureFlags.set_value(:site_chrome_header_and_footer_for_data_lens, false, domain: CurrentDomain.cname)
-    end
+
+    all_versions_content = config.dig('value') || { 'versions' => {} }
+    all_versions_content['activation_state'] = new_activation_state
+    create_or_update_property(SiteChrome.core_configuration_property_name, all_versions_content)
   end
 
+  # If activation_state exists in the config, we know that it has been set by a user.
+  # This means it could have been activated and reverted, but it is still considered "activated".
   def activated?
-    [
-      FeatureFlags.flag_set_by_user?('site_chrome_header_and_footer'),
-      FeatureFlags.flag_set_by_user?('site_chrome_header_and_footer_for_homepage'),
-      FeatureFlags.flag_set_by_user?('site_chrome_header_and_footer_for_data_lens')
-    ].any?
+    activation_state.present?
   end
 
-  def on_entire_site?(request = nil)
-    [
-      FeatureFlags.derive(nil, request).site_chrome_header_and_footer?,
-      FeatureFlags.derive(nil, request).site_chrome_header_and_footer_for_homepage?,
-      FeatureFlags.derive(nil, request).site_chrome_header_and_footer_for_data_lens?
-    ].all?
+  def on_entire_site?
+    activation_state.values.all?
   end
 
-  def on_all_pages_except_home_page?(request = nil)
-    FeatureFlags.derive(nil, request).site_chrome_header_and_footer_for_homepage? == false &&
-      [
-        FeatureFlags.derive(nil, request).site_chrome_header_and_footer?,
-        FeatureFlags.derive(nil, request).site_chrome_header_and_footer_for_data_lens?
-      ].all?
+  def on_all_pages_except_home_page?
+    activation_state['open_data'] &&
+      activation_state['data_lens'] &&
+      !activation_state['homepage']
   end
 
+  # True only if it has been activated and then reverted
   def reverted?
-    flag = FeatureFlags.get_value('site_chrome_header_and_footer')
-    flag && flag['source'] == 'domain' && flag['value'] == false
+    activation_state.present? && activation_state.values.none?
   end
 
   private

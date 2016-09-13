@@ -17,6 +17,7 @@ describe DatasetLandingPageController do
   let(:error) { CoreServer::CoreServerError.new(1, 2, 3) }
 
   before(:each) do
+    allow(subject).to receive(:enable_site_chrome?).and_return(false)
     init_core_session
     init_current_domain
     init_current_user(controller)

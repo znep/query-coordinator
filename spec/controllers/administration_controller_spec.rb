@@ -17,6 +17,7 @@ describe AdministrationController do
       allow(subject).to receive(:feature_flag?).and_return(true)
       allow(subject).to receive(:incomplete_curated_region_jobs).and_return([])
       allow(subject).to receive(:failed_curated_region_jobs).and_return([])
+      allow(subject).to receive(:enable_site_chrome?).and_return(false)
       allow_any_instance_of(CuratedRegion).to receive(:view).and_return(view)
       allow(CurrentDomain).to receive(:strings).and_return(Hashie::Mash.new(:site_title => 'My Site'))
     end

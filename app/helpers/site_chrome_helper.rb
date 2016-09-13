@@ -277,9 +277,7 @@ module SiteChromeHelper
 
   # Should return true if the site chrome has never been activated, or if enabled for entire site
   def site_chrome_on_entire_site_or_default_state(site_chrome = @site_chrome)
-    return false unless FeatureFlags.using_signaller?
-
-    !site_chrome.activated? || site_chrome.on_entire_site?(request)
+    !site_chrome.activated? || site_chrome.on_entire_site?
   end
 
   def site_chrome_radio_button(name, value, title, selected: false, disabled: false)

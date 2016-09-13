@@ -11,6 +11,7 @@ class Auth0ControllerTest < ActionController::TestCase
     OmniAuth.config.test_mode = true
     @request.env['HTTPS'] = 'on'
     @user = login
+    stub_site_chrome
   end
 
   def teardown

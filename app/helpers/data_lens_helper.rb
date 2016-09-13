@@ -115,7 +115,7 @@ module DataLensHelper
   end
 
   def site_chrome_enabled?
-    FeatureFlags.derive(nil, request).site_chrome_header_and_footer_for_data_lens
+    SiteChrome.find_or_create_default(cookies).activation_state['data_lens']
   end
 
   def render_data_lens_translations

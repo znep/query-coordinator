@@ -215,30 +215,46 @@ describe SiteChrome do
         expect(site_chrome.current_version).to eq('1.2')
       end
     end
-  end
 
-  describe 'set_activation_state' do
-    let(:cname) { CurrentDomain.cname }
+    describe '#set_activation_state' do
+      it 'should update the Site Chrome property when state == entire_site' do
+        site_chrome = default_site_chrome
+        expected_config = SiteChrome.default_site_chrome_config['value'].tap do |config|
+          config['activation_state'] = { 'open_data' => true, 'homepage' => true, 'data_lens' => true }
+        end
 
-    it 'should set the feature flags correctly when state == entire_site' do
-      expect(FeatureFlags).to receive(:set_value).with(:site_chrome_header_and_footer, true, domain: cname)
-      expect(FeatureFlags).to receive(:set_value).with(:site_chrome_header_and_footer_for_homepage, true, domain: cname)
-      expect(FeatureFlags).to receive(:set_value).with(:site_chrome_header_and_footer_for_data_lens, true, domain: cname)
-      subject.set_activation_state('entire_site' => true)
-    end
+        expect(site_chrome).to receive(:create_or_update_property).with(
+          SiteChrome.core_configuration_property_name,
+          expected_config
+        )
+        site_chrome.set_activation_state('entire_site' => true)
+      end
 
-    it 'should set the feature flags correctly when state == all_pages_except_home' do
-      expect(FeatureFlags).to receive(:set_value).with(:site_chrome_header_and_footer, true, domain: cname)
-      expect(FeatureFlags).to receive(:set_value).with(:site_chrome_header_and_footer_for_homepage, false, domain: cname)
-      expect(FeatureFlags).to receive(:set_value).with(:site_chrome_header_and_footer_for_data_lens, true, domain: cname)
-      subject.set_activation_state('all_pages_except_home' => true)
-    end
+      it 'should update the Site Chrome property when state == all_pages_except_home' do
+        site_chrome = default_site_chrome
+        expected_config = SiteChrome.default_site_chrome_config['value'].tap do |config|
+          config['activation_state'] = { 'open_data' => true, 'homepage' => false, 'data_lens' => true }
+        end
 
-    it 'should set the feature flags correctly when state == revert_site_chrome' do
-      expect(FeatureFlags).to receive(:set_value).with(:site_chrome_header_and_footer, false, domain: cname)
-      expect(FeatureFlags).to receive(:set_value).with(:site_chrome_header_and_footer_for_homepage, false, domain: cname)
-      expect(FeatureFlags).to receive(:set_value).with(:site_chrome_header_and_footer_for_data_lens, false, domain: cname)
-      subject.set_activation_state('revert_site_chrome' => true)
+        expect(site_chrome).to receive(:create_or_update_property).with(
+          SiteChrome.core_configuration_property_name,
+          expected_config
+        )
+        site_chrome.set_activation_state('all_pages_except_home' => true)
+      end
+
+      it 'should update the Site Chrome property when state == revert_site_chrome' do
+        site_chrome = default_site_chrome
+        expected_config = SiteChrome.default_site_chrome_config['value'].tap do |config|
+          config['activation_state'] = { 'open_data' => false, 'homepage' => false, 'data_lens' => false }
+        end
+
+        expect(site_chrome).to receive(:create_or_update_property).with(
+          SiteChrome.core_configuration_property_name,
+          expected_config
+        )
+        site_chrome.set_activation_state('revert_site_chrome' => true)
+      end
     end
   end
 

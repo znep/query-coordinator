@@ -6,6 +6,7 @@ class WidgetsControllerTest < ActionController::TestCase
     init_core_session
     init_current_domain
     load_sample_data('test/fixtures/sample-data.json')
+    stub_site_chrome
   end
 
   def teardown

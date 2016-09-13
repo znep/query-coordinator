@@ -6,6 +6,7 @@ class BrowseControllerTest < ActionController::TestCase
     init_current_domain
     @user = login
     init_stubs
+    stub_site_chrome
   end
 
   def teardown

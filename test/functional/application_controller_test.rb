@@ -120,13 +120,6 @@ class ApplicationControllerTest < ActionController::TestCase
 
     end
 
-    context 'when multiple requests for CSRF auth token are made' do
-      should 'return the same value' do
-        token = @controller.send(:masked_authenticity_token, @controller.session)
-        assert_equal token, @controller.send(:masked_authenticity_token, @controller.session)
-      end
-    end
-
   end
 
 end

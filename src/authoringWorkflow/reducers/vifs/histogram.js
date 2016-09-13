@@ -5,7 +5,7 @@ import { translate } from '../../../I18n';
 import vifs from '../../vifs';
 import {
   forEachSeries,
-  setValueOrDeleteProperty,
+  setStringValueOrDeleteProperty,
   setStringValueOrDefaultValue,
   setUnits,
   isNonEmptyString
@@ -98,34 +98,34 @@ export default function histogram(state, action) {
 
     case SET_PRIMARY_COLOR:
       forEachSeries(state, series => {
-        setValueOrDeleteProperty(series, 'color.primary', action.primaryColor);
+        setStringValueOrDeleteProperty(series, 'color.primary', action.primaryColor);
       });
       break;
 
     case SET_SECONDARY_COLOR:
       forEachSeries(state, series => {
-        setValueOrDeleteProperty(series, 'color.secondary', action.secondaryColor);
+        setStringValueOrDeleteProperty(series, 'color.secondary', action.secondaryColor);
       });
       break;
 
     case SET_LABEL_TOP:
-      setValueOrDeleteProperty(state, 'configuration.axisLabels.top', action.labelTop);
+      setStringValueOrDeleteProperty(state, 'configuration.axisLabels.top', action.labelTop);
       break;
 
     case SET_LABEL_BOTTOM:
-      setValueOrDeleteProperty(state, 'configuration.axisLabels.bottom', action.labelBottom);
+      setStringValueOrDeleteProperty(state, 'configuration.axisLabels.bottom', action.labelBottom);
       break;
 
     case SET_LABEL_LEFT:
-      setValueOrDeleteProperty(state, 'configuration.axisLabels.left', action.labelLeft);
+      setStringValueOrDeleteProperty(state, 'configuration.axisLabels.left', action.labelLeft);
       break;
 
     case SET_LABEL_RIGHT:
-      setValueOrDeleteProperty(state, 'configuration.axisLabels.right', action.labelRight);
+      setStringValueOrDeleteProperty(state, 'configuration.axisLabels.right', action.labelRight);
       break;
 
     case SET_X_AXIS_SCALING_MODE:
-      setValueOrDeleteProperty(state, 'configuration.xAxisScalingMode', action.xAxisScalingMode);
+      setStringValueOrDeleteProperty(state, 'configuration.xAxisScalingMode', action.xAxisScalingMode);
       break;
 
     case SET_UNIT_ONE:

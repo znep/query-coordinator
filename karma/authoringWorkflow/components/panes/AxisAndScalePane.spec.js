@@ -12,7 +12,9 @@ function render(type) {
     onChangeLabelBottom: sinon.spy(),
     onChangeLabelLeft: sinon.spy(),
     onChangeXAxisDataLabels: sinon.spy(),
-    onSelectChartSorting: sinon.spy()
+    onSelectChartSorting: sinon.spy(),
+    onSelectTimelinePrecision: sinon.spy(),
+    onChangeTreatNullValuesAsZero: sinon.spy()
   });
 
   return {
@@ -91,6 +93,34 @@ describe('AxisAndScalePane', function() {
     });
   }
 
+  function rendersTimelinePrecision() {
+    describe('rendering', function() {
+      it('renders a dropdown with timeline precision options', function() {
+        expect(component.querySelector('#timeline-precision-selection')).to.exist;
+      });
+    });
+
+    describe('events', function() {
+      describe('when changing the timeline precision order', function() {
+        emitsEvent('#timeline-precision-selection .picklist-option', 'onSelectTimelinePrecision', 'click');
+      });
+    });
+  }
+
+  function rendersTreatNullValuesAsZeroAndEmitsEvents() {
+    describe('rendering', function() {
+      it('renders a treat null values as zero checkbox', function() {
+        expect(component.querySelector('#treat-null-values-as-zero')).to.exist;
+      });
+    });
+
+    describe('events', function() {
+      describe('when changing the treat null values as zero checkbox', function() {
+        emitsEvent('#treat-null-values-as-zero', 'onChangeTreatNullValuesAsZero');
+      });
+    });
+  }
+
   describe('without a visualization type', function() {
     beforeEach(function() {
       var renderedParts = render(null);
@@ -121,5 +151,7 @@ describe('AxisAndScalePane', function() {
   describe('timelineChart', function() {
     beforeEach(setUpVisualization('timelineChart'));
     rendersLabelsAndEmitsEvents();
+    rendersTimelinePrecision();
+    rendersTreatNullValuesAsZeroAndEmitsEvents();
   });
 });

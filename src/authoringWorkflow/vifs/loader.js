@@ -30,7 +30,8 @@ const paths = {
   visualizationType: 'series[0].type',
   xAxisDataLabels: 'configuration.xAxisDataLabels',
   zeroColor: 'configuration.legend.zeroColor',
-  precision: 'series[0].dataSource.precision'
+  precision: 'series[0].dataSource.precision',
+  treatNullValuesAsZero: 'configuration.treatNullValuesAsZero'
 };
 
 const hasVifPath = (vif) => (path) => _.has(vif, path);
@@ -143,6 +144,10 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.precision)) {
     dispatch(actions.setPrecision(get(paths.precision)));
+  }
+
+  if (has(paths.treatNullValuesAsZero)) {
+    dispatch(actions.setTreatNullValuesAsZero(get(paths.treatNullValuesAsZero)));
   }
 
   if (has(paths.shapefileUid)) {

@@ -256,6 +256,26 @@ Required |Optional
 :-------:|:-------:
     -    |Table
 
+##### `treatNullValuesAsZero`
+`treatNullValuesAsZero` controls the rendering behavior of null values. Its type is `<boolean>`.
+
+If a value is absent or would otherwise ordinarily be treated as null, setting this property to true will cause it to be rendered as if the value were zero instead.
+
+If this property is absent it will be considered false.
+
+```
+{
+  configuration: {
+    ...
+    treatNullValuesAsZero: true
+  }
+}
+```
+
+Required |Optional
+:-------:|:-------------:
+    -    |Timeline Chart
+
 ##### `viewSourceDataLink`
 `viewSourceLink` controls whether or not to display the "View source data" link in the info bar of the visualization. Its type is `<boolean>`. If omitted or set to `true`, the "View source data" link will be rendered. If set to `false` the "View source data" link will not be rendered.
 

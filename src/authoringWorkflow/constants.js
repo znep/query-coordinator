@@ -173,23 +173,19 @@ export const CHART_SORTING = [
 
 export const TIMELINE_PRECISION = [
   {
-    title: translate('panes.axis_and_scale.fields.timeline_precision.compute'),
-    value: null,
-    group: translate('panes.axis_and_scale.fields.timeline_precision.compute_from_data')
+    title: translate('panes.axis_and_scale.fields.timeline_precision.automatic'),
+    value: null
   },
   {
     title: translate('panes.axis_and_scale.fields.timeline_precision.year'),
-    value: 'YEAR',
-    group: translate('panes.axis_and_scale.fields.timeline_precision.override')
+    value: 'YEAR'
   },
   {
     title: translate('panes.axis_and_scale.fields.timeline_precision.month'),
-    value: 'MONTH',
-    group: translate('panes.axis_and_scale.fields.timeline_precision.override')
+    value: 'MONTH'
   },
   {
     title: translate('panes.axis_and_scale.fields.timeline_precision.day'),
-    value: 'DAY',
-    group: translate('panes.axis_and_scale.fields.timeline_precision.override')
+    value: 'DAY'
   }
 ];

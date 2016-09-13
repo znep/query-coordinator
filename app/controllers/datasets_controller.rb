@@ -270,7 +270,8 @@ class DatasetsController < ApplicationController
     end
 
     # add geo parent information if this view is a child layer
-    if @view.is_geospatial? && @view.metadata.geo['parentUid'].present?
+    if @view.is_geospatial? && !@view.metadata.nil? && @view.metadata['geo'].present? &&
+       @view.metadata.geo['parentUid'].present?
       @view.geoParent = get_view(@view.metadata.geo['parentUid'])
       if @view.geoParent.nil?
         Rails.logger.error("Unable to fetch parent geo dataset #{@view.metadata.geo['parentUid']} from child layer #{@view.id}")

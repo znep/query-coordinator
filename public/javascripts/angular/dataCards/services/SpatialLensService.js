@@ -5,9 +5,8 @@ var httpConfig = {
   cache: true
 };
 
-module.exports = function SpatialLensService($q, http, rx, ServerConfig, CardVisualizationChoroplethHelpers) {
+module.exports = function SpatialLensService($q, http, rx, CardVisualizationChoroplethHelpers) {
   var spatialLensService = {
-    isSpatialLensEnabled: isSpatialLensEnabled,
     getAvailableGeoregions$: getAvailableGeoregions$,
     findComputedColumnForRegion: findComputedColumnForRegion,
     cardNeedsRegionCoding: cardNeedsRegionCoding,
@@ -18,10 +17,6 @@ module.exports = function SpatialLensService($q, http, rx, ServerConfig, CardVis
     getRegionCodingStatusFromJob: getRegionCodingStatusFromJob,
     pollRegionCodingStatus: pollRegionCodingStatus
   };
-
-  function isSpatialLensEnabled() {
-    return ServerConfig.get('enableSpatialLensRegionCoding');
-  }
 
   function getAvailableGeoregions$(dataset) {
     var columns = dataset.getCurrentValue('columns');
@@ -42,17 +37,11 @@ module.exports = function SpatialLensService($q, http, rx, ServerConfig, CardVis
       }).
       value();
 
-    // If spatial lens is not enabled then we do not expose non-region coded curated regions as
-    // valid georegions for the dataset. Otherwise, merge the existing regions with the curated
-    // regions and remove duplicates.
-    if (!spatialLensService.isSpatialLensEnabled()) {
-      return rx.Observable.returnValue(existingRegions);
-    } else {
-      return rx.Observable.fromPromise(spatialLensService.getCuratedRegions()).
-        map(function(curatedRegions) {
-          return _.uniqBy(curatedRegions.concat(existingRegions), 'view.id');
-        });
-    }
+    // Merge the existing regions with the curated regions and remove duplicates.
+    return rx.Observable.fromPromise(spatialLensService.getCuratedRegions()).
+      map(function(curatedRegions) {
+        return _.uniqBy(curatedRegions.concat(existingRegions), 'view.id');
+      });
   }
 
   function findComputedColumnForRegion(columns, region) {
@@ -76,7 +65,7 @@ module.exports = function SpatialLensService($q, http, rx, ServerConfig, CardVis
   }
 
   function initiateRegionCodingIfNecessaryForCard(cardModel) {
-    if (!isSpatialLensEnabled() || !cardNeedsRegionCoding(cardModel)) {
+    if (!cardNeedsRegionCoding(cardModel)) {
       return $q.when(null);
     }
 

@@ -8,7 +8,6 @@ describe('Customize card dialog', function() {
   var Page;
   var ViewRights;
   var Mockumentary;
-  var ServerConfig;
   var $httpBackend;
   var $rootScope;
   var $templateCache;
@@ -35,7 +34,6 @@ describe('Customize card dialog', function() {
     Page = $injector.get('Page');
     ViewRights = $injector.get('ViewRights');
     Mockumentary = $injector.get('Mockumentary');
-    ServerConfig = $injector.get('ServerConfig');
     $httpBackend = $injector.get('$httpBackend');
     $rootScope = $injector.get('$rootScope');
     $templateCache = $injector.get('$templateCache');
@@ -957,8 +955,6 @@ describe('Customize card dialog', function() {
       });
 
       it('should display the correct number of curated regions in the dropdown', function() {
-        ServerConfig.override('enableSpatialLensRegionCoding', true);
-
         var curatedRegions = [
           { name: 'the most curated region ever', view: { id: 'rook-king' }},
           { name: 'the 2nd most curated region ever', view: { id: 'king-pawn' }}
@@ -980,29 +976,7 @@ describe('Customize card dialog', function() {
         expect(options.filter(':not(:disabled)')).to.have.length(3);
       });
 
-      it('should display the correct number of curated regions in the dropdown when the flag is disabled', function() {
-        ServerConfig.override('enableSpatialLensRegionCoding', false);
-
-        var curatedRegions = [
-          { name: 'the most curated region ever', view: { id: 'rook-king' }},
-          { name: 'the 2nd most curated region ever', view: { id: 'king-pawn' }}
-        ];
-
-        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
-          return $q.when(curatedRegions);
-        });
-
-        var dialog = createDialog({ card: choroplethCard });
-        var options = dialog.element.find('.curated-region-selector option');
-
-        // 1) mash-apes, as specified by 'choropleth' column
-        // 2) rook-king, as specified by ':@computedColumn' column
-        expect(options).to.have.length(2);
-      });
-
       it('should display the correct number of curated regions in the dropdown when the user lacks write permissions', function() {
-        ServerConfig.override('enableSpatialLensRegionCoding', true);
-
         var curatedRegions = [
           { name: 'the most curated region ever', view: { id: 'rook-king' }},
           { name: 'the 2nd most curated region ever', view: { id: 'king-pawn' }}
@@ -1024,8 +998,6 @@ describe('Customize card dialog', function() {
       });
 
       it('should set the computedColumn property on the card when an option is selected', function() {
-        ServerConfig.override('enableSpatialLensRegionCoding', true);
-
         var curatedRegions = [
           { name: 'the most curated region ever', uid: 'mash-apes', view: { id: 'mash-apes' }},
           { name: 'the 2nd most curated region ever', uid: 'mash-apes', view: { id: 'rook-king' }}
@@ -1045,8 +1017,6 @@ describe('Customize card dialog', function() {
       });
 
       it('should set the computedColumn property on the card when a nonComputed option is selected', function() {
-        ServerConfig.override('enableSpatialLensRegionCoding', true);
-
         var curatedRegions = [
           { name: 'the most curated region ever', uid: 'mash-apes', view: { id: 'mash-apes' }},
           { name: 'the 2nd most curated region ever', uid: 'king-pawn', view: { id: 'king-pawn' }}
@@ -1066,10 +1036,7 @@ describe('Customize card dialog', function() {
       });
 
       it('should display "No available boundaries" when there are no curated regions or computed columns for a choropleth', function() {
-        ServerConfig.override('enableSpatialLensRegionCoding', true);
-
         // verify that it displays when expected
-
         sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
           return $q.when([]);
         });

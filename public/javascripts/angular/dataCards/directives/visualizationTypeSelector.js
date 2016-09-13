@@ -7,7 +7,6 @@ module.exports = function visualizationTypeSelector(
   $window,
   I18n,
   CardDataService,
-  ServerConfig,
   SpatialLensService,
   UserSessionService,
   ViewRights,
@@ -23,29 +22,14 @@ module.exports = function visualizationTypeSelector(
     var destroy$ = $scope.$destroyAsObservable();
 
     var regionCodingDetails$ = dataset$.map(function(dataset) {
-      if (!SpatialLensService.isSpatialLensEnabled()) {
-        return {
-          showInfoMessage: false,
-          showNonComputedSection: false,
-          enableNonComputedSection: false,
-          nonComputedSectionTitle: null
-        };
-      }
-
-      if (!_.includes(dataset.getCurrentValue('permissions').rights, ViewRights.WRITE)) {
-        return {
-          showInfoMessage: false,
-          showNonComputedSection: false,
-          enableNonComputedSection: false,
-          nonComputedSectionTitle: null
-        };
-      }
+      var hasPermission = _.includes(dataset.getCurrentValue('permissions').rights, ViewRights.WRITE);
 
       return {
-        showInfoMessage: true,
-        showNonComputedSection: true,
-        enableNonComputedSection: true,
-        nonComputedSectionTitle: I18n.addCardDialog.curatedRegionMessages.notYetComputed
+        showInfoMessage: hasPermission,
+        showNonComputedSection: hasPermission,
+        enableNonComputedSection: hasPermission,
+        nonComputedSectionTitle: hasPermission ?
+          I18n.addCardDialog.curatedRegionMessages.notYetComputed : null
       };
     }).share();
     $scope.$bindObservable('showNonComputedSection', regionCodingDetails$.pluck('showNonComputedSection'));
@@ -81,20 +65,11 @@ module.exports = function visualizationTypeSelector(
           return SpatialLensService.findComputedColumnForRegion(columns, curatedRegion.view.id);
         }
 
-        var isAsyncEnabled = SpatialLensService.isSpatialLensEnabled();
+        var partitionedCuratedRegions = _.partition(curatedRegions, shouldEnableCuratedRegion);
+        var computedCuratedRegions = partitionedCuratedRegions[0];
+        var nonComputedCuratedRegions = partitionedCuratedRegions[1];
+
         var canWrite = _.includes(dataset.getCurrentValue('permissions').rights, ViewRights.WRITE);
-        var computedCuratedRegions;
-        var nonComputedCuratedRegions;
-
-        if (isAsyncEnabled) {
-          var partitionedCuratedRegions = _.partition(curatedRegions, shouldEnableCuratedRegion);
-          computedCuratedRegions = partitionedCuratedRegions[0];
-          nonComputedCuratedRegions = partitionedCuratedRegions[1];
-        } else {
-          computedCuratedRegions = curatedRegions;
-          nonComputedCuratedRegions = [];
-        }
-
         var accessibleCuratedRegions = computedCuratedRegions;
         if (canWrite) {
           accessibleCuratedRegions = accessibleCuratedRegions.concat(nonComputedCuratedRegions);

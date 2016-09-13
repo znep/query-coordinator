@@ -113,10 +113,6 @@ enable_pulse:
   description: Enable the Pulse application, including catalog link.
   category: pulse
   defaultValue: false
-enable_spatial_lens_region_coding:
-  description: Lets an admin kick off region coding for curated regions in the Data Lens interface.
-  category: data lens
-  defaultValue: true
 enable_standard_ga_tracking:
   description: If enabled, uses a standard Socrata GA code (same across all domains) defined in the config for tracking. It will also cause any custom GA tokens defined in "enable_opendata_ga_tracking" to be ignored.
   defaultValue: false

@@ -233,7 +233,17 @@ export var MetadataTable = React.createClass({
     }
 
     if (view.licenseName) {
-      license = <td>{view.licenseName}</td>;
+      if (view.licenseLogo) {
+        license = <img src={`/${view.licenseLogo}`} alt={view.licenseName} className="license" />;
+      } else {
+        license = view.licenseName;
+      }
+
+      if (view.licenseLink) {
+        license = <a href={view.licenseLink} target="_blank">{license}</a>;
+      }
+
+      license = <td>{license}</td>;
     } else {
       license = <td className="empty">{I18n.metadata.no_license_value}</td>;
     }

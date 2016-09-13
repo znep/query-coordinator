@@ -230,6 +230,8 @@ module DatasetLandingPageHelper
       :attachments => attachments,
       :tags => @view.tags,
       :licenseName => @view.license.try(:name),
+      :licenseLink => @view.license.try(:termsLink),
+      :licenseLogo => @view.license.try(:logoUrl),
       :attributionLink => @view.attributionLink,
       :statsUrl => stats_url,
       :editMetadataUrl => edit_metadata_url,

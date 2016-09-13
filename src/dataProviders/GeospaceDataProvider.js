@@ -1,6 +1,6 @@
-var utils = require('socrata-utils');
-var DataProvider = require('./DataProvider');
-var _ = require('lodash');
+const utils = require('socrata-utils');
+const DataProvider = require('./DataProvider');
+const _ = require('lodash');
 
 function GeospaceDataProvider(config) {
 
@@ -17,21 +17,21 @@ function GeospaceDataProvider(config) {
    */
 
   this.getFeatureExtent = function(columnName) {
-    var url = 'https://{0}/resource/{1}.json?$select=extent({2})'.format(
+    const url = 'https://{0}/resource/{1}.json?$select=extent({2})'.format(
       this.getConfigurationProperty('domain'),
       this.getConfigurationProperty('datasetUid'),
       columnName
     );
-    var headers = {
+    const headers = {
       Accept: 'application/json'
     };
 
     return (
       new Promise(function(resolve, reject) {
-        var xhr = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
 
         function onFail() {
-          var error;
+          let error;
 
           try {
             error = JSON.parse(xhr.responseText);
@@ -48,15 +48,15 @@ function GeospaceDataProvider(config) {
         }
 
         xhr.onload = function() {
-          var status = parseInt(xhr.status, 10);
+          const status = parseInt(xhr.status, 10);
 
           if (status === 200) {
 
             try {
-              var responseTextWithoutNewlines = xhr.
+              const responseTextWithoutNewlines = xhr.
                 responseText.
                 replace(/\n/g, '');
-              var coordinates = _.get(
+              const coordinates = _.get(
                 JSON.parse(responseTextWithoutNewlines),
                 '[0].extent_{0}.coordinates[0][0]'.format(columnName)
               );
@@ -92,15 +92,17 @@ function GeospaceDataProvider(config) {
   };
 
   this.getShapefile = function(extent) {
-    var url = 'https://{0}/resource/{1}.geojson'.format(
+    let url = 'https://{0}/resource/{1}.geojson'.format(
       this.getConfigurationProperty('domain'),
       this.getConfigurationProperty('datasetUid')
     );
-    var headers = {
+    const headers = {
       Accept: 'application/json'
     };
-    var extentQuery = "?$select=*&$where=intersects(the_geom, 'MULTIPOLYGON((({0})))')&$limit=5000";
-    var extentValidationErrorMessage = 'Argument `extent` must be an object ' +
+    const extentQuery = extent ?
+      "?$select=*&$where=intersects(the_geom, 'MULTIPOLYGON((({0})))')&$limit=5000" :
+      '?$select=*&$limit=5000';
+    const extentValidationErrorMessage = 'Argument `extent` must be an object ' +
       'with two keys: `southwest` and `northeast`; the value assigned to ' +
       'each key must be an array of two numbers in the following format: `[' +
       'latitude, longitude]`.';
@@ -130,10 +132,10 @@ function GeospaceDataProvider(config) {
 
     return (
       new Promise(function(resolve, reject) {
-        var xhr = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
 
         function onFail() {
-          var error;
+          let error;
 
           try {
             error = JSON.parse(xhr.responseText);
@@ -150,12 +152,12 @@ function GeospaceDataProvider(config) {
         }
 
         xhr.onload = function() {
-          var status = parseInt(xhr.status, 10);
+          const status = parseInt(xhr.status, 10);
 
           if (status === 200) {
 
             try {
-              var responseTextWithoutNewlines = xhr.
+              const responseTextWithoutNewlines = xhr.
                 responseText.
                 replace(/\n/g, '');
 

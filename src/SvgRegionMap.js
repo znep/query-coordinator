@@ -387,66 +387,6 @@ $.fn.socrataSvgRegionMap = function(originalVif) {
   }
 
   function updateData(vifToRender) {
-    var columnName = _.get(
-      vifToRender,
-      'series[0].dataSource.dimension.columnName'
-    );
-    var domain = _.get(
-      vifToRender,
-      'series[0].dataSource.domain'
-    );
-    var datasetUid = _.get(
-      vifToRender,
-      'series[0].dataSource.datasetUid'
-    );
-    var shapefileMetadataProviderConfig = {
-      domain: domain,
-      datasetUid: vifToRender.configuration.shapefile.uid
-    };
-    var shapefileMetadataProvider = new MetadataProvider(
-      shapefileMetadataProviderConfig
-    );
-    var datasetGeospaceDataProviderConfig = {
-      domain: domain,
-      datasetUid: datasetUid
-    };
-    var datasetGeospaceDataProvider = new GeospaceDataProvider(
-      datasetGeospaceDataProviderConfig
-    );
-    var shapefileGeospaceDataProviderConfig = {
-      domain: domain,
-      datasetUid: _.get(vifToRender, 'configuration.shapefile.uid')
-    };
-    var shapefileGeospaceDataProvider = new GeospaceDataProvider(
-      shapefileGeospaceDataProviderConfig
-    );
-    var soqlDataProviderConfig = {
-      domain: domain,
-      datasetUid: datasetUid
-    };
-    var soqlDataProvider = new SoqlDataProvider(soqlDataProviderConfig);
-    var datasetColumnExtentDataProvider = new SoqlDataProvider(
-      soqlDataProviderConfig
-    );
-    var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(
-      vifToRender,
-      0
-    );
-    var queryString = BASE_QUERY.format(
-      _.get(vifToRender, 'configuration.computedColumnName'),
-      NAME_ALIAS,
-      SoqlHelpers.aggregationClause(vifToRender, 0, 'measure'),
-      VALUE_ALIAS,
-      (whereClauseComponents) ?
-        `WHERE ${whereClauseComponents}` :
-        ''
-    );
-    var shapefileMetadataRequest;
-    var featureExtentRequest;
-    var soqlQueryRequest;
-
-    visualization.showBusyIndicator();
-
     utils.assertHasProperties(
       vifToRender,
       'configuration.computedColumnName',
@@ -458,170 +398,167 @@ $.fn.socrataSvgRegionMap = function(originalVif) {
       'series[0].unit.one',
       'series[0].unit.other'
     );
+
     utils.assertIsOneOfTypes(
       _.get(vifToRender, 'configuration.computedColumnName'),
       'string'
     );
+
     utils.assertIsOneOfTypes(
       _.get(vifToRender, 'configuration.shapefile.primaryKey'),
       'string'
     );
+
     utils.assertIsOneOfTypes(
       _.get(vifToRender, 'configuration.shapefile.uid'),
       'string'
     );
+
     utils.assertIsOneOfTypes(
       _.get(vifToRender, 'series[0].dataSource.dimension.columnName'),
       'string'
     );
+
     utils.assertIsOneOfTypes(
       _.get(vifToRender, 'series[0].dataSource.domain'),
       'string'
     );
+
     utils.assertIsOneOfTypes(
       _.get(vifToRender, 'series[0].dataSource.datasetUid'),
       'string'
     );
+
     utils.assertIsOneOfTypes(
       _.get(vifToRender, 'series[0].unit.one'),
       'string'
     );
+
     utils.assertIsOneOfTypes(
       _.get(vifToRender, 'series[0].unit.other'),
       'string'
     );
 
+    visualization.showBusyIndicator();
+
     $.fn.socrataSvgRegionMap.validateVif(vifToRender).then(() => {
+      const columnName = _.get(vifToRender, 'series[0].dataSource.dimension.columnName');
+      const domain = _.get(vifToRender, 'series[0].dataSource.domain');
+      const datasetUid = _.get(vifToRender, 'series[0].dataSource.datasetUid');
+      const shapefileUid = _.get(vifToRender, 'configuration.shapefile.uid');
+      const computedColumnName = _.get(vifToRender, 'configuration.computedColumnName');
+      const geometryLabel = _.get(vifToRender, 'configuration.shapefile.geometryLabel');
+      const primaryKey = _.get(vifToRender, 'configuration.shapefile.primaryKey');
+      const filters = _.get(vifToRender, 'series[0].dataSource.filters', []);
 
-      var geometryLabel = _.get(vifToRender, 'configuration.shapefile.geometryLabel');
-      var primaryKey = _.get(vifToRender, 'configuration.shapefile.primaryKey');
+      const dataSource = { domain, datasetUid };
+      const datasetGeospaceDataProvider = new GeospaceDataProvider(dataSource);
+      const soqlDataProvider = new SoqlDataProvider(dataSource);
+      const datasetColumnExtentDataProvider = new SoqlDataProvider(dataSource);
 
-      var hasGeometryLabel = _.isString(geometryLabel);
-      var hasPrimaryKey = _.isString(primaryKey);
+      const shapefileDataSource = { domain, datasetUid: shapefileUid };
+      const shapefileMetadataProvider = new MetadataProvider(shapefileDataSource);
+      const shapefileGeospaceDataProvider = new GeospaceDataProvider(shapefileDataSource);
 
-      if (hasGeometryLabel && hasPrimaryKey) {
+      const aggregationClause = SoqlHelpers.aggregationClause(vifToRender, 0, 'measure');
 
+      const whereClauseComponents = SoqlHelpers.
+        whereClauseFilteringOwnColumn(vifToRender, 0);
+      const whereClause = (whereClauseComponents) ?
+        `WHERE ${whereClauseComponents}` :
+        '';
+
+      const queryString = BASE_QUERY.format(
+        computedColumnName,
+        NAME_ALIAS,
+        aggregationClause,
+        VALUE_ALIAS,
+        whereClause
+      );
+
+      const hasGeometryLabel = _.isString(geometryLabel);
+      const hasPrimaryKey = _.isString(primaryKey);
+
+      const shapefileMetadataRequest = (hasGeometryLabel && hasPrimaryKey) ?
         // This fake shapefile dataset metadata response is used so that we can
         // conform to the promise chain all the way down to visualization render,
         // rather than conditionally requiring one or two requests to complete
         // before proceeding.
-        shapefileMetadataRequest = Promise.resolve({
-          geometryLabel: vifToRender.configuration.shapefile.geometryLabel,
-          featurePk: vifToRender.configuration.shapefile.primaryKey
+        Promise.resolve({ geometryLabel, featurePk: primaryKey }) :
+        // If the shapefile metadata request fails, we can still proceed,
+        // albeit with degraded flyout behavior. This is because the only
+        // thing we're trying to get from the shapefile metadata is the
+        // geometryLabel (the column in the shapefile that corresponds to a
+        // human-readable name for each region) and, if it is not present,
+        // the visualization will simply not show the human-readable name in
+        // the flyout at all (it will still show values).
+        //
+        // Accordingly, we still want to resolve this promise in its error
+        // state.
+        shapefileMetadataProvider.getShapefileMetadata().catch((error) => {
+          logError(error);
+          return { geometryLabel: null };
         });
-      } else {
 
-        shapefileMetadataRequest = shapefileMetadataProvider.
-          getShapefileMetadata().
-          catch(
-            function(error) {
-              logError(error);
+      const featureExtentRequest = datasetGeospaceDataProvider.getFeatureExtent(columnName);
+      const soqlQueryRequest = soqlDataProvider.query(queryString, NAME_ALIAS, VALUE_ALIAS);
+      const requests = [ shapefileMetadataRequest, featureExtentRequest, soqlQueryRequest ];
 
-              // If the shapefile metadata request fails, we can still proceed,
-              // albeit with degraded flyout behavior. This is because the only
-              // thing we're trying to get from the shapefile metadata is the
-              // geometryLabel (the column in the shapefile that corresponds to a
-              // human-readable name for each region) and, if it is not present,
-              // the visualization will simply not show the human-readable name in
-              // the flyout at all (it will still show values).
-              //
-              // Accordingly, we still want to resolve this promise in its error
-              // state.
-              return {
-                geometryLabel: null
-              };
-            }
+      return Promise.all(requests).then((values) => {
+        const shapefileMetadata = values[0];
+        const featureExtent = values[1];
+        const soqlQueryResponse = values[2];
+
+        const data = soqlQueryResponse.rows.map((row) => {
+          return { name: row[0], value: parseInt(row[1], 10) }
+        });
+
+        const processShapefile = (shapefile) => {
+          const dataAsHash = _.mapValues(_.keyBy(data, 'name'), 'value');
+          const ownFilterOperands = filters.filter((filter) => {
+            const filterFunction = _.get(filter, 'function');
+            const filteredComputedColumnName = _.get(filter, 'arguments.computedColumnName');
+
+            const isFilteredColumn = filter.columnName === columnName;
+            const isBinaryComputedGeoregionOperator = (
+              filterFunction === 'binaryComputedGeoregionOperator'
+            );
+            const isFilteredComputedColumn = (
+              filteredComputedColumnName === computedColumnName
+            );
+
+            return (
+              isFilteredColumn &&
+              isBinaryComputedGeoregionOperator &&
+              isFilteredComputedColumn
+            );
+          }).
+          map((filter) => filter.arguments.operand);
+
+          return mergeRegionAndData(
+            shapefileMetadata.geometryLabel,
+            shapefileMetadata.featurePk,
+            shapefile,
+            dataAsHash,
+            ownFilterOperands,
+            vifToRender
           );
-      }
+        };
 
-      featureExtentRequest = datasetGeospaceDataProvider.
-        getFeatureExtent(columnName);
-
-      soqlQueryRequest = soqlDataProvider.
-        query(queryString, NAME_ALIAS, VALUE_ALIAS);
-
-      return Promise.
-        all([
-          shapefileMetadataRequest,
-          featureExtentRequest,
-          soqlQueryRequest
-        ]).
-        then(function(values) {
-          var shapefileMetadata = values[0];
-          var featureExtent = values[1];
-          var soqlQueryResponse = values[2];
-          var data = soqlQueryResponse.
-            rows.
-              map(function(row) {
-                var value = parseInt(row[1], 10);
-
-                return {
-                  name: row[0],
-                  value: value
-                };
-              });
-
-          shapefileGeospaceDataProvider.
-            getShapefile(featureExtent).
-            then(function(shapefile) {
-              var dataAsHash = _.mapValues(_.keyBy(data, 'name'), 'value');
-              var filters = _.get(
-                vifToRender,
-                'series[0].dataSource.filters',
-                []
-              );
-              var computedColumnName = _.get(
-                vifToRender,
-                'configuration.computedColumnName'
-              );
-              var ownFilterOperands = filters.
-                filter(
-                  function(filter) {
-                    var columnName = _.get(
-                      vifToRender,
-                      'series[0].dataSource.dimension.columnName'
-                    );
-                    var isFilteredColumn = filter.columnName === columnName;
-                    var isBinaryComputedGeoregionOperator = (
-                      _.get(filter, 'function') ===
-                      'binaryComputedGeoregionOperator'
-                    );
-                    var isFilteredComputedColumn = (
-                      _.get(filter, 'arguments.computedColumnName') ===
-                      computedColumnName
-                    );
-
-                    return (
-                      isFilteredColumn &&
-                      isBinaryComputedGeoregionOperator &&
-                      isFilteredComputedColumn
-                    );
-                  }
-                ).
-                map(
-                  function(filter) {
-                    return filter.arguments.operand;
-                  }
-                );
-
-              return mergeRegionAndData(
-                shapefileMetadata.geometryLabel,
-                shapefileMetadata.featurePk,
-                shapefile,
-                dataAsHash,
-                ownFilterOperands,
-                vifToRender
-              );
-            }).
-            then(function(data) {
-
-              visualization.hideBusyIndicator();
-              visualization.render(vifToRender, data);
-              lastRenderedVif = vifToRender;
-            }).
-            catch(handleError);
-          }
-        )
+        shapefileGeospaceDataProvider.
+          getShapefile(featureExtent).
+          then((shapefile) => {
+            return shapefile.features.length === 0 ?
+              shapefileGeospaceDataProvider.getShapefile().then(processShapefile) :
+              processShapefile(shapefile);
+          }).
+          then((data) => {
+            visualization.hideBusyIndicator();
+            visualization.render(vifToRender, data);
+            lastRenderedVif = vifToRender;
+          }).
+          catch(handleError);
+      })
     }).
     catch(handleError);
   }

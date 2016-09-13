@@ -16,6 +16,7 @@ module.exports = function Pager(element) {
    */
 
   this.render = function(options) {
+
     if (_.isEqual(options, lastRenderOptions)) {
       return;
     }
@@ -87,18 +88,15 @@ module.exports = function Pager(element) {
   }
 
   function render(options) {
-    var template = templatePager(options).format({
+    const template = templatePager(options).format({
       'classes': hasOnlyOnePage(options) ? ' socrata-pager-single-page' : ''
     });
-    var $template = $(template);
+    const $template = $(template);
 
-    self.
-      $element.
-        find('.socrata-pager').
-          remove(); // Enhancement: Incremental updates (vs. rerender every time).
-    self.
-      $element.
-          append($template);
+    // Enhancement: Incremental updates (vs. rerender every time).
+    self.$element.find('.socrata-pager').remove();
+
+    self.$element.append($template);
   }
 
   function attachEvents() {

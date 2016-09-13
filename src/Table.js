@@ -449,7 +449,13 @@ $.fn.socrataTable = function(originalVif) {
 
     // If we have fetched data, augment the default state with the appropriate
     // details.
-    if (renderState.fetchedData && renderState.datasetRowCount) {
+    //
+    // Note that we can't just check for the truthiness of renderState.datasetRowCount
+    // because it is occasionally NaN, which is a state we can actually handle. In this
+    // case we still want to re-render the pager even though we will say 'Row count
+    // unavailable', because otherwise the lack of a pager re-render causes the pager
+    // to be rendered above, not below, the table rows.
+    if (renderState.fetchedData && !_.isNull(renderState.datasetRowCount)) {
 
       pagerOptions.startIndex = renderState.fetchedData.startIndex;
       pagerOptions.endIndex = Math.min(
@@ -589,7 +595,8 @@ $.fn.socrataTable = function(originalVif) {
           newState.fetchedData.rows = soqlData.rows;
 
           updateState(newState);
-        })['catch'](handleSetDataQueryError);
+        }).
+        catch(handleSetDataQueryError);
     }
 
     visualization.showBusyIndicator();
@@ -641,8 +648,7 @@ $.fn.socrataTable = function(originalVif) {
       !_.isEqual(renderState, newState)
     ) {
 
-      let becameIdle = !newState.busy && renderState.busy;
-
+      const becameIdle = !newState.busy && renderState.busy;
       const changedOrder = (
         // We don't want to emit the ...VIF_UPDATED event on first render.
         // The way that the state here works is that it is initialized with
@@ -673,6 +679,7 @@ $.fn.socrataTable = function(originalVif) {
       }
 
       if (becameIdle) {
+
         // Re-attach interaction events if the visualization has become idle
         // again and is ready to respond to user input.
         attachInteractionEvents();

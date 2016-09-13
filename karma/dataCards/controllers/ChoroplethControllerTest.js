@@ -3,7 +3,6 @@ describe('ChoroplethController', function() {
 
   var provide;
   var testHelpers;
-  var serverConfig;
   var rootScope;
   var templateCache;
   var compile;
@@ -43,7 +42,6 @@ describe('ChoroplethController', function() {
 
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
-    serverConfig = $injector.get('ServerConfig');
     rootScope = $injector.get('$rootScope');
     templateCache = $injector.get('$templateCache');
     compile = $injector.get('$compile');
@@ -64,12 +62,16 @@ describe('ChoroplethController', function() {
     normalTimeoutScheduler = Rx.Scheduler.timeout;
     Rx.Scheduler.timeout = testTimeoutScheduler;
     testHelpers.mockDirective(provide, 'choropleth');
+
+    sinon.stub(SpatialLensService, 'getCuratedRegions', _.constant(Promise.resolve([])));
   }));
 
   afterEach(function() {
     Rx.Scheduler.timeout = normalTimeoutScheduler;
     testHelpers.cleanUp();
     testHelpers.TestDom.clear();
+
+    SpatialLensService.getCuratedRegions.restore();
   });
 
   function setMockCardDataServiceToDefault() {
@@ -188,7 +190,6 @@ describe('ChoroplethController', function() {
       };
 
       datasetModel = createDatasetModelWithColumns(columnsData, version);
-
     }
 
     var pageModel = new Model();

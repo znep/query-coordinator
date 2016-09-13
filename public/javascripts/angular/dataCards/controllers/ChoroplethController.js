@@ -366,9 +366,8 @@ module.exports = function ChoroplethController(
         return SpatialLensService.findComputedColumnForRegion(columns, curatedRegion.view.id);
       }
 
-      var isAsyncEnabled = SpatialLensService.isSpatialLensEnabled();
       var canWrite = _.includes(permissions.rights, ViewRights.WRITE);
-      var accessibleBoundaries = canWrite || !isAsyncEnabled ?
+      var accessibleBoundaries = canWrite ?
         allRegions : _.filter(allRegions, shouldEnableCuratedRegion);
       $scope.noAvailableBoundaries = _.isEmpty(accessibleBoundaries);
     });

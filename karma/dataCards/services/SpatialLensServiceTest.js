@@ -6,7 +6,6 @@ describe('SpatialLensService', function() {
   var dependencies = [
     '$httpBackend',
     'SpatialLensService',
-    'ServerConfig',
     'Mockumentary'
   ];
 
@@ -22,53 +21,13 @@ describe('SpatialLensService', function() {
     self.testCuratedRegions = testHelpers.getTestJson('karma/dataCards/test-data/spatialLensServiceTest/curated-regions.json');
   }));
 
-  describe('isSpatialLensEnabled', function() {
-    it('is false if enableSpatialLensRegionCoding is false', function() {
-      sinon.stub(self.ServerConfig, 'get').withArgs('enableSpatialLensRegionCoding').returns(false);
-      expect(self.SpatialLensService.isSpatialLensEnabled()).to.equal(false);
-      self.ServerConfig.get.restore();
-    });
-
-    it('is true if enableSpatialLensRegionCoding is true', function() {
-      sinon.stub(self.ServerConfig, 'get').withArgs('enableSpatialLensRegionCoding').returns(true);
-      expect(self.SpatialLensService.isSpatialLensEnabled()).to.equal(true);
-      self.ServerConfig.get.restore();
-    });
-  });
-
   describe('getAvailableGeoregions$', function() {
     afterEach(function() {
       self.$httpBackend.verifyNoOutstandingExpectation();
       self.$httpBackend.verifyNoOutstandingRequest();
     });
 
-    it('returns the existing computed columns on the dataset when enableSpatialLensRegionCoding is false', function(done) {
-      sinon.stub(self.ServerConfig, 'get').withArgs('enableSpatialLensRegionCoding').returns(false);
-      var dataset = self.Mockumentary.createDataset({ columns: self.testColumns });
-      var georegions$ = self.SpatialLensService.getAvailableGeoregions$(dataset);
-      georegions$.subscribe(function(georegions) {
-        expect(georegions).to.deep.equal([
-          {
-            name: self.testColumns.computed_region_1.name,
-            view: {
-              id: self.testColumns.computed_region_1.computationStrategy.parameters.region.substring(1)
-            }
-          },
-          {
-            name: self.testColumns.computed_region_2.name,
-            view: {
-              id: self.testColumns.computed_region_2.computationStrategy.parameters.region.substring(1)
-            }
-          }
-        ]);
-
-        self.ServerConfig.get.restore();
-        done();
-      });
-    });
-
-    it('returns the existing computed columns on the dataset unioned with the enabled curated regions when enableSpatialLensRegionCoding is true', function() {
-      sinon.stub(self.ServerConfig, 'get').withArgs('enableSpatialLensRegionCoding').returns(true);
+    it('returns the existing computed columns on the dataset unioned with the enabled curated regions', function() {
       self.$httpBackend.expectGET(/\/api\/curated_regions$/).respond(self.testCuratedRegions);
       var dataset = self.Mockumentary.createDataset({ columns: self.testColumns });
       var georegions$ = self.SpatialLensService.getAvailableGeoregions$(dataset);
@@ -83,8 +42,6 @@ describe('SpatialLensService', function() {
             }
           }
         ]);
-
-        self.ServerConfig.get.restore();
       });
 
       // Note that this makes the test synchronous by immediately resolving all promises within a
@@ -151,21 +108,7 @@ describe('SpatialLensService', function() {
       card.set('cardType', 'choropleth');
     });
 
-    it('does not call the status or initiate endpoints if enable_spatial_lens_region_coding is disabled', function(done) {
-      self.ServerConfig.override('enableSpatialLensRegionCoding', false);
-      card.set('computedColumn', 'i_need_region_coding');
-
-      self.SpatialLensService.initiateRegionCodingIfNecessaryForCard(card).then(function(response) {
-        expect(response).to.equal(null);
-        done();
-      });
-
-      self.$httpBackend.verifyNoOutstandingExpectation();
-      self.$httpBackend.verifyNoOutstandingRequest();
-    });
-
     it('does not call the status or initiate endpoints if the card does not need region coding', function() {
-      self.ServerConfig.override('enableSpatialLensRegionCoding', true);
       card.set('computedColumn', 'computed_region_1');
 
       self.SpatialLensService.initiateRegionCodingIfNecessaryForCard(card).then(function(response) {
@@ -177,7 +120,6 @@ describe('SpatialLensService', function() {
     });
 
     it('retrieves region coding status and takes no action if the status is completed', function() {
-      self.ServerConfig.override('enableSpatialLensRegionCoding', true);
       card.set('computedColumn', 'i_need_region_coding');
 
       self.$httpBackend.expectGET(/\/geo\/status/).respond({
@@ -195,7 +137,6 @@ describe('SpatialLensService', function() {
     });
 
     it('retrieves region coding status and takes no action if the status is processing', function() {
-      self.ServerConfig.override('enableSpatialLensRegionCoding', true);
       card.set('computedColumn', 'i_need_region_coding');
 
       self.$httpBackend.expectGET(/\/geo\/status/).respond({
@@ -214,7 +155,6 @@ describe('SpatialLensService', function() {
 
     it('retrieves region coding status and initiates a new job if the status is unknown', function() {
       sinon.stub(socrata.utils, 'getCookie').returns('CSRF-TOKEN');
-      self.ServerConfig.override('enableSpatialLensRegionCoding', true);
       card.set('computedColumn', 'i_need_region_coding');
 
       self.$httpBackend.expectGET(/\/geo\/status/).respond({
@@ -236,7 +176,6 @@ describe('SpatialLensService', function() {
 
     it('retrieves region coding status and initiates a new job if the status is failed', function() {
       sinon.stub(socrata.utils, 'getCookie').returns('CSRF-TOKEN');
-      self.ServerConfig.override('enableSpatialLensRegionCoding', true);
       card.set('computedColumn', 'i_need_region_coding');
 
       self.$httpBackend.expectGET(/\/geo\/status/).respond({

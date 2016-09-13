@@ -72,7 +72,7 @@ export function view({ layers, fileName, dispatch, goToPage, goToPrevious }) {
 
   return (
     <div>
-      <div className="importShapefilePane" style={{width: '1000px', display: 'list-item'}}>
+      <div className="importShapefilePane">
         {shapefilePane()}
       </div>
       <NavigationControl

@@ -21,6 +21,7 @@ $highlighted-row-background-color: #f6f6f6;
   $header-cell-height: 39px;
   $data-row-height: 25px;
   $data-cell-height: 24px;
+  $null-row-height: 45px;
 
   width: 100%;
   overflow-x: scroll;
@@ -56,8 +57,19 @@ $highlighted-row-background-color: #f6f6f6;
           }
         }
 
-        &.null-row td {
-          border-color: transparent;
+        &.null-row {
+          height: $null-row-height;
+
+          td {
+            border-color: transparent;
+          }
+        }
+
+        &:hover.null-row {
+
+          td {
+            background-color: transparent;
+          }
         }
       }
     }
@@ -194,13 +206,15 @@ $highlighted-row-background-color: #f6f6f6;
 
 .socrata-pager {
   display: flex;
-  background: #f8f8f8;
+  height: 42px;
   padding: 4px;
+  background: #f8f8f8;
   border: solid 1px #e4e4e4;
   transition: opacity 0.25s;
   opacity: 0;
   flex-wrap: wrap;
   justify-content: space-between;
+  overflow-y: hidden;
 
   .pager-buttons,
   .pager-label {
@@ -220,6 +234,7 @@ $highlighted-row-background-color: #f6f6f6;
   }
 
   .pager-buttons {
+    height: 100%;
 
     button {
       -webkit-appearance: none;

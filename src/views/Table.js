@@ -59,10 +59,9 @@ module.exports = function Table(element, originalVif) {
 
   this.renderError = function() {
 
-    self.
-      $element.
-        find('.socrata-visualization-container').
-          removeClass('loaded');
+    self.$element.
+      find('.socrata-visualization-container').
+      removeClass('loaded');
 
     superRenderError(
       I18n.translate('visualizations.table.error_unable_to_render')

@@ -633,11 +633,6 @@ describe('AssetSelectorStore', function() {
 
       describe('when in the Authoring Workflow', function() {
         beforeEach(function() {
-          AssetSelectorStoreAPI.__Rewire__('Environment', {
-            ENABLE_VISUALIZATION_AUTHORING_WORKFLOW: true,
-            ENABLE_SVG_VISUALIZATIONS: true
-          });
-
           bootstrap();
         });
 
@@ -1040,58 +1035,24 @@ describe('AssetSelectorStore', function() {
         });
 
         describe('socrata.visualization.columnChart', function() {
-          describe('when ENABLE_VISUALIZATION_AUTHORING_WORKFLOW is true', function() {
-            describe('with a v1 vif', function() {
-              beforeEach(function() {
-                AssetSelectorStoreAPI.__Rewire__('Environment', {
-                  ENABLE_VISUALIZATION_AUTHORING_WORKFLOW: true
-                });
-
-                bootstrap();
-                editComponent(StandardMocks.vifBlockId, 'socrata.visualization.columnChart', {vif: {format: {version: 1}}});
-              });
-
-              verifyStepIs('AUTHOR_VISUALIZATION');
-              verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
-            });
-
-            describe('with a v2 vif', function() {
-              beforeEach(function() {
-                AssetSelectorStoreAPI.__Rewire__('Environment', {
-                  ENABLE_VISUALIZATION_AUTHORING_WORKFLOW: true
-                });
-
-                bootstrap();
-                editComponent(StandardMocks.vifBlockId, 'socrata.visualization.columnChart', {vif: {format: {version: 2}}});
-              });
-
-              verifyStepIs('AUTHOR_VISUALIZATION');
-              verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
-            });
-          });
-
-          describe('when ENABLE_VISUALIZATION_AUTHORING_WORKFLOW is false', function() {
+          describe('with a v1 vif', function() {
             beforeEach(function() {
-              AssetSelectorStoreAPI.__Rewire__('Environment', {
-                ENABLE_VISUALIZATION_AUTHORING_WORKFLOW: false
-              });
+              bootstrap();
               editComponent(StandardMocks.vifBlockId, 'socrata.visualization.columnChart', {vif: {format: {version: 1}}});
             });
 
-            verifyStepIs('CONFIGURE_VISUALIZATION');
+            verifyStepIs('AUTHOR_VISUALIZATION');
             verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+          });
 
-            describe('then jump to SELECT_VISUALIZATION_OPTION', function() {
-              jumpToStep('SELECT_VISUALIZATION_OPTION');
-              verifyStepIs('SELECT_VISUALIZATION_OPTION');
-              verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
+          describe('with a v2 vif', function() {
+            beforeEach(function() {
+              bootstrap();
+              editComponent(StandardMocks.vifBlockId, 'socrata.visualization.columnChart', {vif: {format: {version: 2}}});
             });
 
-            describe('then jump to SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG', function() {
-              jumpToStep('SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG');
-              verifyStepIs('SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG');
-              verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
-            });
+            verifyStepIs('AUTHOR_VISUALIZATION');
+            verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
           });
         });
 

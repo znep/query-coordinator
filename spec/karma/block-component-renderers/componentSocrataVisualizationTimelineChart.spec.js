@@ -2,10 +2,7 @@ import $ from 'jQuery';
 import _ from 'lodash';
 
 import { $transient } from '../TransientElement';
-/* eslint-disable no-unused-vars */
-import componentSocrataVisualizationTimelineChart, {__RewireAPI__ as componentSocrataVisualizationTimelineChartAPI}
-  from 'editor/block-component-renderers/componentSocrataVisualizationTimelineChart';
-/* eslint-enable no-unused-vars */
+import 'editor/block-component-renderers/componentSocrataVisualizationTimelineChart';
 
 describe('componentSocrataVisualizationTimelineChart jQuery plugin', function() {
   var $component;
@@ -25,10 +22,6 @@ describe('componentSocrataVisualizationTimelineChart jQuery plugin', function() 
       }
     }
   };
-
-  function useSvgVisualizations(useSvg) {
-    componentSocrataVisualizationTimelineChartAPI.__Rewire__('Environment', {ENABLE_SVG_VISUALIZATIONS: useSvg});
-  }
 
   beforeEach(function() {
     $transient.append('<div>');
@@ -57,52 +50,24 @@ describe('componentSocrataVisualizationTimelineChart jQuery plugin', function() 
   describe('given a valid component type and value', function() {
     var socrataTimelineChartStub;
 
-    describe('when using the old (Data Lens) timeline chart', function() {
-
-      beforeEach(function() {
-        useSvgVisualizations(false);
-        socrataTimelineChartStub = sinon.stub($.fn, 'socrataTimelineChart', function() { return this; });
-        $component = $component.componentSocrataVisualizationTimelineChart(validComponentData);
-      });
-
-      afterEach(function() {
-        socrataTimelineChartStub.restore();
-      });
-
-      it('should return a jQuery object for chaining', function() {
-        assert.instanceOf($component, $);
-      });
-
-      it('should call into socrataTimelineChart with the correct arguments', function() {
-        sinon.assert.calledWithExactly(
-          socrataTimelineChartStub,
-          validComponentData.value.vif
-        );
-      });
+    beforeEach(function() {
+      socrataTimelineChartStub = sinon.stub($.fn, 'socrataSvgTimelineChart', function() { return this; });
+      $component = $component.componentSocrataVisualizationTimelineChart(validComponentData);
     });
 
-    describe('when using the new (05/2016) timeline chart', function() {
+    afterEach(function() {
+      socrataTimelineChartStub.restore();
+    });
 
-      beforeEach(function() {
-        useSvgVisualizations(true);
-        socrataTimelineChartStub = sinon.stub($.fn, 'socrataSvgTimelineChart', function() { return this; });
-        $component = $component.componentSocrataVisualizationTimelineChart(validComponentData);
-      });
+    it('should return a jQuery object for chaining', function() {
+      assert.instanceOf($component, $);
+    });
 
-      afterEach(function() {
-        socrataTimelineChartStub.restore();
-      });
-
-      it('should return a jQuery object for chaining', function() {
-        assert.instanceOf($component, $);
-      });
-
-      it('should call into socrataTimelineChart with the correct arguments', function() {
-        sinon.assert.calledWithExactly(
-          socrataTimelineChartStub,
-          validComponentData.value.vif
-        );
-      });
+    it('should call into socrataTimelineChart with the correct arguments', function() {
+      sinon.assert.calledWithExactly(
+        socrataTimelineChartStub,
+        validComponentData.value.vif
+      );
     });
   });
 });

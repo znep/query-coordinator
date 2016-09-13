@@ -436,12 +436,6 @@ export default function AssetSelectorRenderer(options) {
           selectorContent = _renderAuthorVisualizationTemplate();
           break;
 
-        case WIZARD_STEP.CONFIGURE_VISUALIZATION:
-          selectorTitle = I18n.t('editor.asset_selector.visualization.configure_vizualization_heading');
-          selectorContent = _renderConfigureVisualizationTemplate();
-          selectorWideDisplay = true;
-          break;
-
         case WIZARD_STEP.TABLE_PREVIEW:
           selectorTitle = I18n.t('editor.asset_selector.visualization.preview_table_heading');
           selectorContent = _renderTablePreviewTemplate();
@@ -512,10 +506,6 @@ export default function AssetSelectorRenderer(options) {
 
       case WIZARD_STEP.ENTER_YOUTUBE_URL:
         _renderChooseYoutubeData(componentValue);
-        break;
-
-      case WIZARD_STEP.CONFIGURE_VISUALIZATION:
-        _renderConfigureVisualizationData(componentType, componentValue);
         break;
 
       case WIZARD_STEP.TABLE_PREVIEW:
@@ -604,7 +594,7 @@ export default function AssetSelectorRenderer(options) {
 
   function _renderChooseVisualizationOptions() {
     var insertVisualizationHeader = $('<h3>').
-      text(I18n.t('editor.asset_selector.visualization.choose_insert_visualziation_heading'));
+      text(I18n.t('editor.asset_selector.visualization.choose_insert_visualization_heading'));
     var insertVisualizationDescription = $('<p>').
       text(I18n.t('editor.asset_selector.visualization.choose_insert_visualization_description'));
 
@@ -613,13 +603,8 @@ export default function AssetSelectorRenderer(options) {
     var insertTableDescription = $('<p>').
       text(I18n.t('editor.asset_selector.visualization.choose_insert_table_description'));
 
-    var createVisualizationHeader = $('<h3>').
-      text(I18n.t('editor.asset_selector.visualization.choose_create_visualization_heading'));
-    var createVisualizationDescription = $('<p>').
-      text(I18n.t('editor.asset_selector.visualization.choose_create_visualization_description'));
-
     var authorVisualizationHeader = $('<h3>').
-      text(I18n.t('editor.asset_selector.visualization.choose_author_visualization_heading'));
+      text(I18n.t('editor.asset_selector.visualization.choose_create_visualization_heading'));
     var authorVisualizationDescription = $('<p>').
       text(I18n.t('editor.asset_selector.visualization.choose_create_visualization_description'));
 
@@ -641,21 +626,12 @@ export default function AssetSelectorRenderer(options) {
             append(insertTableHeader, insertTableDescription)
         ]);
 
-    if (Environment.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW && Environment.ENABLE_SVG_VISUALIZATIONS) {
-      visualizationOptions.append(
-        $(
-          '<li>',
-          {'data-visualization-option': 'AUTHOR_VISUALIZATION'}
-        ).append(authorVisualizationHeader, authorVisualizationDescription)
-      );
-    } else {
-      visualizationOptions.append(
-        $(
-          '<li>',
-          {'data-visualization-option': 'CREATE_VISUALIZATION'}
-        ).append(createVisualizationHeader, createVisualizationDescription)
-      );
-    }
+    visualizationOptions.append(
+      $(
+        '<li>',
+        {'data-visualization-option': 'AUTHOR_VISUALIZATION'}
+      ).append(authorVisualizationHeader, authorVisualizationDescription)
+    );
 
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
 
@@ -2349,58 +2325,6 @@ export default function AssetSelectorRenderer(options) {
     return $('<div>');
   }
 
-  function _renderConfigureVisualizationTemplate() {
-    var configureVisualizationIframe = $(
-      '<iframe>',
-      {
-        'class': 'asset-selector-configure-visualization-iframe asset-selector-full-width-iframe',
-        'src': ''
-      }
-    );
-
-    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_DATASET_FOR_VISUALIZATION);
-
-    // TODO: Map insert button to APPLY instead of CLOSE, and share insert button
-    // into shared function
-    var loadingButton = $('<button>', {
-      'class': 'btn btn-transparent btn-busy visualization-busy',
-      'disabled': true
-    }).append($('<span>'));
-
-    var buttonGroup = $('<div>', {
-      'class': 'modal-button-group r-to-l'
-    }).append([ backButton, _renderModalInsertButton({ disabled: true }) ]);
-
-    configureVisualizationIframe[0].onVisualizationSelectedV2 = function(datasetObjJson, format, originalUid) {
-      // This function is called by the visualization chooser when:
-      //   - The user makes or clears a selection (argument is either null or a visualization).
-      //   - The page finishes loading (argument is null).
-      // In either case, we should consider the iframe loaded.
-      // originalUid may be null (say if the user created the visualization inline).
-      configureVisualizationIframe.
-        trigger('visualizationSelected', {
-          data: JSON.parse(datasetObjJson),
-
-          // format can either be 'classic' or 'vif'.
-          format: format,
-          originalUid: originalUid
-        });
-    };
-
-    return [ loadingButton, configureVisualizationIframe, buttonGroup ];
-  }
-
-  function _renderConfigureVisualizationData(componentType, componentProperties) {
-    var insertButton = _container.find('.btn-apply');
-
-    if (componentProperties.dataset) {
-      var iframeElement = _container.find('.asset-selector-configure-visualization-iframe');
-      _updateVisualizationChooserUrl(iframeElement, componentProperties);
-    }
-
-    insertButton.prop('disabled', !componentType);
-  }
-
   function _renderTablePreviewTemplate() {
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_TABLE_FROM_CATALOG);
 
@@ -2576,42 +2500,6 @@ export default function AssetSelectorRenderer(options) {
       StorytellerUtils.format(
         '{0}/browse/select_dataset?filtered_types[]=maps&filtered_types[]=charts&limitTo[]=charts&limitTo[]=maps&limitTo[]=blob&cetera_search=false',
         window.location.protocol + '//' + window.location.hostname
-      )
-    );
-  }
-
-  function _updateVisualizationChooserUrl(iframeElement, componentProperties) {
-    var currentIframeSrc = iframeElement.attr('src');
-    var currentIframeDatasetUidParam =
-      (currentIframeSrc.match(/datasetId=\w\w\w\w-\w\w\w\w/) || [])[0];
-
-    // Update src if the dataset uid search param is different
-    // (we don't care about defaultColumn or defaultRelatedVisualizationUid changing -
-    // these shouldn't cause iframe reloads).
-    if (
-      (currentIframeDatasetUidParam || '').indexOf(componentProperties.dataset.datasetUid) === -1) {
-      var newIframeSrc = _visualizationChooserUrl(componentProperties);
-      iframeElement.
-        attr('src', newIframeSrc).
-        one('load', function() {
-          $('#asset-selector-container .btn-transparent.btn-busy').addClass('hidden');
-        });
-    }
-  }
-
-  function _visualizationChooserUrl(componentProperties) {
-    var defaultColumn = _.get(componentProperties, 'vif.columnName', null);
-    var defaultVifType = _.get(componentProperties, 'vif.type', null);
-    var defaultRelatedVisualizationUid = _.get(componentProperties, 'originalUid', null);
-
-    return encodeURI(
-      StorytellerUtils.format(
-        '{0}/component/visualization/add?datasetId={1}&defaultColumn={2}&defaultVifType={3}&defaultRelatedVisualizationUid={4}',
-        window.location.protocol + '//' + window.location.hostname,
-        componentProperties.dataset.datasetUid,
-        defaultColumn,
-        defaultVifType,
-        defaultRelatedVisualizationUid
       )
     );
   }

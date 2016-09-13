@@ -489,10 +489,18 @@ export function setOrderBy(orderBy) {
   };
 }
 
-export var SET_PRECISION = 'SET_PRECISION';
+export const SET_PRECISION = 'SET_PRECISION';
 export function setPrecision(precision) {
   return {
     type: SET_PRECISION,
     precision
+  };
+}
+
+export const SET_TREAT_NULL_VALUES_AS_ZERO = 'SET_TREAT_NULL_VALUES_AS_ZERO';
+export function setTreatNullValuesAsZero(treatNullValuesAsZero) {
+  return {
+    type: SET_TREAT_NULL_VALUES_AS_ZERO,
+    treatNullValuesAsZero
   };
 }

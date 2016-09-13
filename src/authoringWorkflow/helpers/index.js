@@ -22,10 +22,20 @@ export const setBooleanValueOrDefaultValue = (object, path, value, defaultValue)
   }
 }
 
-export const setValueOrDeleteProperty = (object, path, value) => {
+export const setStringValueOrDeleteProperty = (object, path, value) => {
   const hasPath = _.has(object, path);
 
   if (isNonEmptyString(value)) {
+    _.set(object, path, value);
+  } else if (hasPath) {
+    _.unset(object, path);
+  }
+}
+
+export const setBooleanValueOrDeleteProperty = (object, path, value) => {
+  const hasPath = _.has(object, path);
+
+  if (_.isBoolean(value) && value === true) {
     _.set(object, path, value);
   } else if (hasPath) {
     _.unset(object, path);

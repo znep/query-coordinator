@@ -411,8 +411,16 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
           moment(startDate, moment.ISO_8601)
         )
       );
+    const treatNullValuesAsZero = _.get(
+      vifToRender,
+      'configuration.treatNullValuesAsZero',
+      false
+    );
     const monotonicRows = [
-      [startDate, null]
+      [
+        startDate,
+        (treatNullValuesAsZero) ? 0 : null
+      ]
     ];
 
     let monotonicRowCount;
@@ -443,15 +451,12 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
 
     while (i <= monotonicRowCount) {
       lastRowStartDate = monotonicRows[i - 1][0];
-      nextRowStartDate = incrementDateByPrecision(
-        lastRowStartDate,
-        precision
-      );
+      nextRowStartDate = incrementDateByPrecision(lastRowStartDate, precision);
 
       monotonicRows.push(
         [
           nextRowStartDate,
-          null
+          (treatNullValuesAsZero) ? 0 : null
         ]
       );
 
@@ -470,19 +475,37 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
       }
     });
 
+    // If we are treating null values as zero and the last datum also happens
+    // to be zero, d3 will not draw enough space on the right side of the chart
+    // for the user to be able to highlight the last datum. In this case, we
+    // need to force the last value to actually be null in order for the last
+    // non-null, non-zero value to be highlightable.
+    if (
+      treatNullValuesAsZero &&
+      monotonicRows[monotonicRows.length - 1][1] === 0
+    ) {
+
+      monotonicRows[monotonicRows.length - 1][1] = null;
+    }
+
     return monotonicRows;
   }
 
   // This is necessary to get line variant series to render the last point in
   // the series with enough space on its right to be a target for the highlight
   // and flyout. It should only be used for line variant series.
-  function addBlankRowAfterLastRow(dimensionIndex, rows) {
+  function addBlankRowAfterLastRow(vifToRender, dimensionIndex, rows) {
     const secondToLastRowDatetime = new Date(
       rows[rows.length - 2][dimensionIndex]
     );
     const lastRowDatetime = new Date(rows[rows.length - 1][dimensionIndex]);
     const lastRowIntervalInMilliseconds = (
       lastRowDatetime.getTime() - secondToLastRowDatetime.getTime()
+    );
+    const treatNullValuesAsZero = _.get(
+      vifToRender,
+      'configuration.treatNullValuesAsZero',
+      false
     );
     const blankRow = [null, null];
     const dimensionValue = new Date(
@@ -491,7 +514,7 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
     ).
       toISOString().
       substring(0, 23);
-    const measureValue = null;
+    const measureValue = (treatNullValuesAsZero) ? 0 : null;
 
     if (dimensionIndex === 0) {
       blankRow[0] = dimensionValue;
@@ -592,6 +615,11 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
             const measureIndex = queryResponse.
               columns.
               indexOf(SoqlHelpers.measureAlias());
+            const treatNullValuesAsZero = _.get(
+              vifToRender,
+              'configuration.treatNullValuesAsZero',
+              false
+            );
 
             queryResponse.columns[dimensionIndex] = 'dimension';
             queryResponse.columns[measureIndex] = 'measure';
@@ -606,7 +634,7 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
                 try {
 
                   if (_.isUndefined(value)) {
-                    valueAsNumber = null;
+                    valueAsNumber = (treatNullValuesAsZero) ? 0 : null;
                   } else {
                     valueAsNumber = Number(value);
                   }
@@ -650,6 +678,7 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
             } else {
 
               rows = addBlankRowAfterLastRow(
+                vifToRender,
                 dimensionIndex,
                 queryResponse.rows
               );

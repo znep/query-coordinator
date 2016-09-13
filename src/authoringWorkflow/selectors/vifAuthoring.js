@@ -158,6 +158,11 @@ export const getPrecision = createSelector(
   vif => _.get(vif, 'series[0].dataSource.precision')
 );
 
+export const getTreatNullValuesAsZero = createSelector(
+  getCurrentVif,
+  vif => _.get(vif, 'configuration.treatNullValuesAsZero')
+);
+
 export const getVisualizationType = createSelector(
   getCurrentVif,
   vif =>  _.get(vif, 'series[0].type', null)

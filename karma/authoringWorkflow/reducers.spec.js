@@ -115,6 +115,9 @@ describe('AuthoringWorkflow reducer', function() {
 
       shouldSetVif('setCenterAndZoom', {zoom: 12, center: {longitude: 90, latitude: 48}}, 'configuration.mapCenterAndZoom', ['featureMap', 'regionMap']);
 
+      shouldSetVif('setPrecision', 'DAY', 'series[0].dataSource.precision', ['timelineChart']);
+      shouldSetVif('setTreatNullValuesAsZero', true, 'configuration.treatNullValuesAsZero', ['timelineChart']);
+
       describe('when configuring a Feature map', function() {
         resetsCenterAndZoomWhenChangingDimensions();
 

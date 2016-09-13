@@ -34,10 +34,32 @@ describe('vifAuthoring', function() {
     });
   });
 
+  describe('getPrecision', function() {
+    it('returns the current VIF\'s precision', function() {
+      const state = getDefaultState();
+      state.authoring.selectedVisualizationType = 'timelineChart';
+
+      expect(
+        selector.getPrecision(state)
+      ).to.be.equal(_.get(vifs(), 'timelineChart.series[0].dataSource.precision'));
+    });
+  });
+
+  describe('getTreatNullValuesAsZero', function() {
+    it('returns the current VIF\'s treatNullValuesAsZero property', function() {
+      const state = getDefaultState();
+      state.authoring.selectedVisualizationType = 'timelineChart';
+
+      expect(
+        selector.getTreatNullValuesAsZero(state)
+      ).to.be.equal(_.get(vifs(), 'timelineChart.configuration.treatNullValuesAsZero'));
+    });
+  });
+
   describe('isRegionMap', function() {
     describe('when it is a region map', function() {
       it('returns true', function() {
-        var state = getDefaultState();
+        const state = getDefaultState();
         state.authoring.selectedVisualizationType = 'regionMap';
 
         expect(
@@ -48,7 +70,7 @@ describe('vifAuthoring', function() {
 
     describe('when it is not a region map', function() {
       it('returns false', function() {
-        var state = getDefaultState();
+        const state = getDefaultState();
         state.authoring.selectedVisualizationType = 'featureMap';
 
         expect(
@@ -61,7 +83,7 @@ describe('vifAuthoring', function() {
   describe('isValidRegionMapVif', function() {
     describe('when it is valid', function() {
       it('returns true', function() {
-        var state = getDefaultState();
+        const state = getDefaultState();
         state.authoring.selectedVisualizationType = 'regionMap';
 
         _.set(state, 'vifs.regionMap.configuration.computedColumnName', '@computed_column');
@@ -79,7 +101,7 @@ describe('vifAuthoring', function() {
 
     describe('when it is invalid', function() {
       it('returns false', function() {
-        var state = getDefaultState();
+        const state = getDefaultState();
         state.authoring.selectedVisualizationType = 'featureMap';
 
         expect(
@@ -92,7 +114,7 @@ describe('vifAuthoring', function() {
   describe('isValidColumnChartVif', function() {
     describe('when it is valid', function() {
       it('returns true', function() {
-        var state = getDefaultState();
+        const state = getDefaultState();
         state.authoring.selectedVisualizationType = 'columnChart';
 
         _.set(state, 'vifs.columnChart.series[0].dataSource.dimension.columnName', 'example_dimension');
@@ -108,7 +130,7 @@ describe('vifAuthoring', function() {
 
     describe('when it is invalid', function() {
       it('returns false', function() {
-        var state = getDefaultState();
+        const state = getDefaultState();
         state.authoring.selectedVisualizationType = 'featureMap';
 
         expect(
@@ -121,7 +143,7 @@ describe('vifAuthoring', function() {
   describe('isValidFeatureMapVif', function() {
     describe('when it is valid', function() {
       it('returns true', function() {
-        var state = getDefaultState();
+        const state = getDefaultState();
         state.authoring.selectedVisualizationType = 'featureMap';
 
         _.set(state, 'vifs.featureMap.series[0].dataSource.dimension.columnName', 'example_dimension');
@@ -136,7 +158,7 @@ describe('vifAuthoring', function() {
 
     describe('when it is invalid', function() {
       it('returns false', function() {
-        var state = getDefaultState();
+        const state = getDefaultState();
         state.authoring.selectedVisualizationType = 'columnChart';
 
         expect(
@@ -149,7 +171,7 @@ describe('vifAuthoring', function() {
   describe('isValidTimelineChartVif', function() {
     describe('when it is valid', function() {
       it('returns true', function() {
-        var state = getDefaultState();
+        const state = getDefaultState();
         state.authoring.selectedVisualizationType = 'timelineChart';
 
         _.set(state, 'vifs.timelineChart.series[0].dataSource.dimension.columnName', 'example_dimension');
@@ -164,7 +186,7 @@ describe('vifAuthoring', function() {
 
     describe('when it is invalid', function() {
       it('returns false', function() {
-        var state = getDefaultState();
+        const state = getDefaultState();
         state.authoring.selectedVisualizationType = 'columnChart';
 
         expect(

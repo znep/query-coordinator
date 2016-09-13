@@ -19,7 +19,8 @@
       #timeline-chart-3,
       #timeline-chart-4,
       #timeline-chart-5,
-      #timeline-chart-6 {
+      #timeline-chart-6,
+      #timeline-chart-7 {
         display: block;
         position: relative;
         width: 640px;
@@ -37,10 +38,12 @@
     <div id="timeline-chart-3"></div>
     <p>Chart with null values</p>
     <div id="timeline-chart-4"></div>
-    <p>Line variant with multiple series.
+    <p>Chart with null values and 'treatNullValuesAsZero' set to true</p>
     <div id="timeline-chart-5"></div>
-    <p>Version 1 vif, migrated at runtime to version 2. The data should be identical to the first chart on this page.
+    <p>Line variant with multiple series.
     <div id="timeline-chart-6"></div>
+    <p>Version 1 vif, migrated at runtime to version 2. The data should be identical to the first chart on this page.
+    <div id="timeline-chart-7"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -223,7 +226,14 @@
       _.set(timelineChart4Vif, 'series[0].dataSource.filters', []);
       _.unset(timelineChart4Vif, 'series[0].dataSource.precision');
 
-      var timelineChart5Vif = {
+      var timelineChart5Vif = _.cloneDeep(timelineChart1Vif);
+      _.set(timelineChart5Vif, 'series[0].dataSource.datasetUid', 'r6t9-rak2');
+      _.set(timelineChart5Vif, 'series[0].dataSource.dimension.columnName', 'opened');
+      _.set(timelineChart5Vif, 'series[0].dataSource.filters', []);
+      _.set(timelineChart5Vif, 'configuration.treatNullValuesAsZero', true);
+      _.unset(timelineChart5Vif, 'series[0].dataSource.precision');
+
+      var timelineChart6Vif = {
         configuration: {
           axisLabels: {
             top: null,
@@ -311,7 +321,7 @@
         title: 'Claims'
       };
 
-      var timelineChart6Vif = {
+      var timelineChart7Vif = {
         aggregation: {
           field: null,
           function: 'count'
@@ -392,6 +402,10 @@
       $timelineChart6Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       $timelineChart6Element.socrataSvgTimelineChart(timelineChart6Vif);
 
+      var $timelineChart7Element = $('#timeline-chart-7');
+      $timelineChart7Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $timelineChart7Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $timelineChart7Element.socrataSvgTimelineChart(timelineChart7Vif);
 
       /**
        * Handle plugin events

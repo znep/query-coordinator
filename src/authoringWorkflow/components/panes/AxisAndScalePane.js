@@ -5,11 +5,19 @@ import { connect } from 'react-redux';
 
 import { translate } from '../../../I18n';
 import { INPUT_DEBOUNCE_MILLISECONDS, CHART_SORTING, TIMELINE_PRECISION } from '../../constants';
-import { setLabelBottom, setLabelLeft, setXAxisDataLabels, setOrderBy, setPrecision } from '../../actions';
+import {
+  setLabelBottom,
+  setLabelLeft,
+  setXAxisDataLabels,
+  setOrderBy,
+  setPrecision,
+  setTreatNullValuesAsZero
+} from '../../actions';
 import {
   getAxisLabels,
   getOrderBy,
   getPrecision,
+  getTreatNullValuesAsZero,
   getXAxisDataLabels,
   isColumnChart,
   isHistogram,
@@ -161,11 +169,48 @@ export var AxisAndScalePane = React.createClass({
     };
 
     return (
-      <div className="authoring-field-group">
-        <h5>{translate('panes.axis_and_scale.subheaders.timeline_precision')}</h5>
-        <div className="authoring-field">
+      <div className="authoring-field">
+        <label className="block-label" htmlFor="timeline-precision">
+          {translate('panes.axis_and_scale.fields.timeline_precision.title')}
+        </label>
+        <div id="timeline-precision" className="authoring-field">
           <Styleguide.Dropdown {...attributes} />
         </div>
+      </div>
+    );
+  },
+
+  renderTreatNullValuesAsZero() {
+    const { vifAuthoring } = this.props;
+    const inputAttributes = {
+      id: 'treat-null-values-as-zero',
+      type: 'checkbox',
+      onChange: this.props.onChangeTreatNullValuesAsZero,
+      defaultChecked: getTreatNullValuesAsZero(vifAuthoring)
+    };
+
+    return (
+      <div className="authoring-field checkbox">
+        <input {...inputAttributes} />
+        <label className="inline-label" htmlFor="treat-null-values-as-zero">
+          <span className="fake-checkbox">
+            <span className="icon-checkmark3"></span>
+          </span>
+          {translate('panes.axis_and_scale.fields.treat_null_values_as_zero.title')}
+        </label>
+      </div>
+    );
+  },
+
+  renderGroupingAndDisplay() {
+    const timelinePrecision = this.renderTimelinePrecision();
+    const treatNullValuesAsZero = this.renderTreatNullValuesAsZero();
+
+    return (
+      <div className="authoring-field-group">
+        <h5>{translate('panes.axis_and_scale.subheaders.grouping_and_display')}</h5>
+        {timelinePrecision}
+        {treatNullValuesAsZero}
       </div>
     );
   },
@@ -190,12 +235,12 @@ export var AxisAndScalePane = React.createClass({
 
   renderTimelineChartControls() {
     const visualizationLabels = this.renderVisualizationLabels();
-    const timelinePrecision = this.renderTimelinePrecision();
+    const groupingAndDisplay = this.renderGroupingAndDisplay();
 
     return (
       <div>
         {visualizationLabels}
-        {timelinePrecision}
+        {groupingAndDisplay}
       </div>
     );
   },
@@ -262,6 +307,12 @@ function mapDispatchToProps(dispatch) {
 
     onSelectTimelinePrecision: (timelinePrecision) => {
       dispatch(setPrecision(timelinePrecision.value));
+    },
+
+    onChangeTreatNullValuesAsZero: (event) => {
+      const treatNullValuesAsZero = event.target.checked;
+
+      dispatch(setTreatNullValuesAsZero(treatNullValuesAsZero));
     }
   };
 }

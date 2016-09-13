@@ -129,7 +129,7 @@ export default {
         axis_titles: 'Axis Titles',
         x_axis_data_labels: 'Data labels',
         chart_sorting: 'Chart Sorting',
-        timeline_precision: 'Timeline Granularity'
+        grouping_and_display: 'Grouping and Display'
       },
       fields: {
         top_axis_title: {
@@ -159,12 +159,14 @@ export default {
           sort_by_label: 'Label'
         },
         timeline_precision: {
-          compute_from_data: 'Compute Precision Based On Data (Best Performance)',
-          compute: 'Default',
-          override: 'Override Precision',
+          automatic: 'Automatic',
           year: 'Group by Year',
           month: 'Group by Month',
-          day: 'Group by Day'
+          day: 'Group by Day',
+          title: 'Grouping'
+        },
+        treat_null_values_as_zero: {
+          title: 'Display Missing or Null Values as Zero'
         }
       }
     },

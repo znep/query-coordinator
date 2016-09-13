@@ -5,6 +5,7 @@ class ProfileControllerTest < ActionController::TestCase
     init_core_session
     init_current_domain
     @user = login
+    stub_site_chrome
 
     # so the the news widget finds a cached (empty) article list
     # otherwise, it will try to connect to Zendesk which WebMock

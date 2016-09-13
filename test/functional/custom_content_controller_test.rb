@@ -12,6 +12,7 @@ class CustomContentControllerTest < ActionController::TestCase
   def setup
     init_core_session
     init_current_domain
+    stub_site_chrome
 
     @basic_cache_params = {
       'domain' => CurrentDomain.cname,

@@ -7,6 +7,7 @@ class AccountsControllerTest < ActionController::TestCase
     User.stubs(create: User.new(some_user))
     init_current_domain
     stub_feature_flags_with(:enable_new_account_verification_email, true)
+    stub_site_chrome
   end
 
   def teardown

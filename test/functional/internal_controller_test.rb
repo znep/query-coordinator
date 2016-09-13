@@ -1,6 +1,11 @@
 require 'test_helper'
 
 class InternalControllerTest < ActionController::TestCase
+
+  def setup
+    stub_site_chrome
+  end
+
   test 'routes to feature flags with or without organization' do
     route_params = {
       org_id: '123',

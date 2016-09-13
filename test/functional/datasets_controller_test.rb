@@ -27,6 +27,7 @@ class DatasetsControllerTest < ActionController::TestCase
     @params = { :foo => 'foo', :bar => 'bar' }
     CurrentDomain.stubs(user_can?: false, default_widget_customization_id: nil)
     default_url_options[:host] = @request.host
+    stub_site_chrome
   end
 
   def teardown

@@ -10,6 +10,8 @@ class UserSessionsControllerTest < ActionController::TestCase
     User.stubs(current_user: User.new(some_user))
     stub_request(:get, "http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=auth0").
       with(:headers => request_headers).to_return(:status => 200, :body => "[]", :headers => {})
+
+    stub_site_chrome
   end
 
   def test_login

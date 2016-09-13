@@ -338,13 +338,7 @@ describe SiteChromeHelper do
   end
 
   describe 'site_chrome_on_entire_site_or_default_state' do
-    it 'should be false when FFS is not available' do
-      expect(FeatureFlags).to receive(:using_signaller?).and_return(false)
-      expect(subject.site_chrome_on_entire_site_or_default_state).to eq(false)
-    end
-
     it 'should be false when activated but not on for the entire site' do
-      expect(FeatureFlags).to receive(:using_signaller?).and_return(true)
       site_chrome_double = double(SiteChrome)
       expect(site_chrome_double).to receive(:activated?).and_return(true)
       expect(site_chrome_double).to receive(:on_entire_site?).and_return(false)
@@ -352,14 +346,12 @@ describe SiteChromeHelper do
     end
 
     it 'should be true when site chrome has not been activated' do
-      expect(FeatureFlags).to receive(:using_signaller?).and_return(true)
       site_chrome_double = double(SiteChrome)
       expect(site_chrome_double).to receive(:activated?).and_return(false)
       expect(subject.site_chrome_on_entire_site_or_default_state(site_chrome_double)).to eq(true)
     end
 
     it 'should be true when site chrome has on for the entire site' do
-      expect(FeatureFlags).to receive(:using_signaller?).and_return(true)
       site_chrome_double = double(SiteChrome)
       expect(site_chrome_double).to receive(:activated?).and_return(true)
       expect(site_chrome_double).to receive(:on_entire_site?).and_return(true)

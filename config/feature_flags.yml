@@ -200,18 +200,6 @@ show_provenance_badge_in_catalog:
 site_appearance_visible:
   description: Display "Site Appearance" link in the /admin panel. Note that it will always be displayed for superadmins. This only toggles it for regular admins and designers.
   defaultValue: false
-site_chrome_header_and_footer:
-  description: WARNING! If turned on, this will prevent the old custom header/footer from displaying on customer pages. Instead, users will see the new configurable Site Chrome header and footer, which are editable (currently only for superadmins) under Admin > Site Appearance. Note that there are additional feature flags to enable site chrome for the homepage and dataslate pages.
-  defaultValue: false
-  category: site chrome
-site_chrome_header_and_footer_for_homepage:
-  description: Turns on site chrome header/footer for Homepage.
-  defaultValue: false
-  category: site chrome
-site_chrome_header_and_footer_for_data_lens:
-  description: Turns on site chrome header/footer for (non-homepage) Data Lens pages.
-  defaultValue: false
-  category: site chrome
 site_chrome_header_and_footer_for_dataslate:
   description: Turns on site chrome header/footer for (non-homepage) dataslate pages.
   defaultValue: false

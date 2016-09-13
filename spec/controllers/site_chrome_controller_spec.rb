@@ -31,6 +31,10 @@ describe SiteChromeController do
 
   # The main page admins will typically access
   describe 'edit' do
+    before(:each) do
+      allow(subject).to receive(:enable_site_chrome?).and_return(true)
+    end
+
     it 'redirects if not logged in' do
       get :edit
       expect(response).to redirect_to(login_url)
@@ -75,6 +79,10 @@ describe SiteChromeController do
   end
 
   describe 'update' do
+    before(:each) do
+      allow(subject).to receive(:enable_site_chrome?).and_return(true)
+    end
+
     new_content = { 'new_batch_of_properties' => { 'some_key' => 'some_fine_value' } }
 
     it 'redirects if not logged in' do
@@ -152,6 +160,10 @@ describe SiteChromeController do
   end
 
   describe '#find_or_create_default_site_chrome' do
+    before(:each) do
+      allow(subject).to receive(:enable_site_chrome?).and_return(true)
+    end
+
     it 'creates content with necessary keys to render views' do
       allow(SiteChrome).to receive(:find_or_create_default).and_return(empty_site_chrome)
       result = @controller.instance_eval { find_or_create_default_site_chrome }

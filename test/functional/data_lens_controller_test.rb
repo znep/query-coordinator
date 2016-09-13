@@ -20,6 +20,7 @@ class DataLensControllerTest < ActionController::TestCase
         :obeId => 'obev-rson'
       }
     )
+    stub_site_chrome
   end
 
   test 'should successfully get data_lens' do

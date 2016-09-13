@@ -21,6 +21,7 @@ class PageMetadataControllerTest < ActionController::TestCase
       create: { body: '', status: '200' },
       update: { body: '', status: '200' }
     )
+    stub_site_chrome
   end
 
   def json_post(body = nil)

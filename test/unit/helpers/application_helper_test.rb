@@ -468,31 +468,36 @@ class ApplicationHelperTest < ActionView::TestCase
     assert application_helper.enable_site_chrome_admin_panel?
   end
 
-  def test_enable_site_chrome_is_false_if_no_site_chrome_feature_flags_are_true
-    FeatureFlags.stubs(:derive => Hashie::Mash.new(
-      :site_chrome_header_and_footer => false,
-      :site_chrome_header_and_footer_for_homepage => false,
-      :site_chrome_header_and_footer_for_dataslate => false
+  def test_enable_site_chrome_is_false_if_no_site_chrome_activation_states_are_true
+    SiteChrome.stubs(:find_or_create_default => Hashie::Mash.new(
+      :activation_state => {
+        :open_data => false,
+        :homepage => false,
+        :data_lens => false
+      }
     ))
+
     refute application_helper.enable_site_chrome?
   end
 
-  def test_enable_site_chrome_is_false_on_homepage_and_dataset_if_the_flags_are_true_but_the_other_conditions_are_not_met
-    # "Other conditions" meaning we are not on the homepage and not using dataslate
-    # (these are the two args passed to enable_site_chrome?, which default to false)
-    FeatureFlags.stubs(:derive => Hashie::Mash.new(
-      :site_chrome_header_and_footer => false,
-      :site_chrome_header_and_footer_for_homepage => true,
-      :site_chrome_header_and_footer_for_dataslate => true
+  def test_enable_site_chrome_is_false_on_homepage_and_dataset_if_the_states_are_true_but_the_other_conditions_are_not_met
+    SiteChrome.stubs(:find_or_create_default => Hashie::Mash.new(
+      :activation_state => {
+        :open_data => false,
+        :homepage => true,
+        :data_lens => true
+      }
     ))
     refute application_helper.enable_site_chrome?
   end
 
   def test_enable_site_chrome_is_true_for_homepage
-    FeatureFlags.stubs(:derive => Hashie::Mash.new(
-      :site_chrome_header_and_footer => false,
-      :site_chrome_header_and_footer_for_homepage => true,
-      :site_chrome_header_and_footer_for_dataslate => false
+    SiteChrome.stubs(:find_or_create_default => Hashie::Mash.new(
+      :activation_state => {
+        :open_data => false,
+        :homepage => true,
+        :data_lens => false
+      }
     ))
     application_helper.stubs(:on_homepage => false)
     application_helper.stubs(:using_dataslate => false)
@@ -504,9 +509,14 @@ class ApplicationHelperTest < ActionView::TestCase
 
   def test_enable_site_chrome_is_true_for_dataslate
     FeatureFlags.stubs(:derive => Hashie::Mash.new(
-      :site_chrome_header_and_footer => false,
-      :site_chrome_header_and_footer_for_homepage => false,
       :site_chrome_header_and_footer_for_dataslate => true
+    ))
+    SiteChrome.stubs(:find_or_create_default => Hashie::Mash.new(
+      :activation_state => {
+        :open_data => false,
+        :homepage => false,
+        :data_lens => false
+      }
     ))
     application_helper.stubs(:on_homepage => false)
     application_helper.stubs(:using_dataslate => false)

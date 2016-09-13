@@ -19,6 +19,7 @@ class DatasetMetadataControllerTest < ActionController::TestCase
       :data_lens_manager => @data_lens_manager
     )
     stub_feature_flags_with(:create_v2_data_lens, false)
+    stub_site_chrome
   end
 
   def set_up_json_request(body = nil)

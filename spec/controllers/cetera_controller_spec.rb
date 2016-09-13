@@ -12,6 +12,7 @@ describe CeteraController do
       init_core_session
       init_current_domain
       allow(CurrentDomain).to receive(:cname).and_return('localhost')
+      allow(subject).to receive(:enable_site_chrome?).and_return(false)
     end
 
     context 'when query is provided' do

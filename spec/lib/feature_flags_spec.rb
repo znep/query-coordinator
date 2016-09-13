@@ -288,7 +288,7 @@ describe 'FeatureFlags' do
   describe '#set_value' do
     context 'FFS is not enabled' do
       it 'should not raise' do
-        FeatureFlags.set_value(:site_chrome_header_and_footer, false, CurrentDomain.cname)
+        FeatureFlags.set_value(:site_chrome_header_and_footer_for_dataslate, false, CurrentDomain.cname)
       end
     end
   end

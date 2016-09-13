@@ -5,6 +5,7 @@ class VersionControllerTest < ActionController::TestCase
   def setup
     init_core_session
     init_current_domain
+    stub_site_chrome
   end
 
   test 'html result should include version' do

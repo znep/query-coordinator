@@ -73,6 +73,10 @@ function SvgColumnChart($element, vif) {
     this.clearError();
 
     if (newVif) {
+      if (!_.isEqual(this.getVif().series, newVif.series)) {
+        lastRenderedZoomTranslate = 0;
+      }
+
       this.updateVif(newVif);
     }
 
@@ -201,7 +205,7 @@ function SvgColumnChart($element, vif) {
 
     /**
      * Functions defined inside the scope of renderData() are stateful enough
-     * to benefit from sharing constiables within a single render cycle.
+     * to benefit from sharing variables within a single render cycle.
      */
 
     // See comment in renderXAxis() for an explanation as to why this is

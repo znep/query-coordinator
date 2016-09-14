@@ -338,7 +338,7 @@ function renderUrlCellHTML(cellContent) {
   if (!_.isEmpty(cellContent)) {
     return '<a href="{url}" target="_blank" rel="external">{text}</a>'.format({
       url: cellContent.url,
-      text:cellContent.description
+      text: cellContent.description || cellContent.url
     });
   }
 

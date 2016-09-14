@@ -92,9 +92,11 @@ module ApplicationHelper
   # Note that the order of these checks is important. For example, if the user is on the homepage,
   # we enable site chrome only if the homepage flag is true (regardless of the other flags).
   def enable_site_chrome?
-    activation_state = SiteChrome.find_or_create_default(forwardable_session_cookies).activation_state
+    site_chrome = SiteChrome.find_or_create_default(forwardable_session_cookies)
+    return false unless site_chrome
     return true if in_preview_mode?
 
+    activation_state = site_chrome.activation_state
     if on_homepage
       activation_state['homepage']
     elsif using_dataslate

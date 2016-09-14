@@ -10,6 +10,7 @@ module.exports = () => {
     'src/js/components/**/*.scss': `${packagePath}/components`,
     'src/js/common/**/*.js': `${packagePath}/common`,
     'src/scss/**/*.scss': `${packagePath}/styles`,
+    'src/fonts/svg/*': `${packagePath}/dist/fonts/svg`,
     'dist/fonts/*': `${packagePath}/dist/fonts`,
     'dist/js/**/*.{js,map}': `${packagePath}/dist/js`,
     'dist/css/*': `${packagePath}/dist/css`

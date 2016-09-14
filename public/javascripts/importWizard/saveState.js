@@ -82,6 +82,11 @@ export function saveTransform(datasetId: string, lastSavedVersion: number, trans
   });
 }
 
+export function saveWizardSection(datasetId: string, lastSavedVersion: number, wizardSection: string): Promise<ImportSource> {
+  return saveImportSource(datasetId, lastSavedVersion, {
+    uiSection: wizardSection
+  });
+}
 
 function saveImportSource(datasetId: string, lastSavedVersion: number, body: Object): Promise<ImportSource> {
   if (lastSavedVersion) {

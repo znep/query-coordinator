@@ -367,6 +367,110 @@ describe('initialNewDatasetModel', () => {
 
   });
 
+  describe('when the `importSource` has an `operation` of `UPLOAD_BLOB`', () => {
+
+    it('sets the current page to UploadFile when there is no file', () => {
+      const expected = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_BLOB' });
+      const actual = {
+        ...initialState,
+        lastSavedVersion: 2,
+        navigation: {
+          operation: 'UPLOAD_BLOB',
+          page: 'UploadFile',
+          path: ['SelectType']
+        }
+      };
+      expect(expected).to.deep.equal(actual);
+    });
+
+    it('sets the current page to Metadata when there is file information', () => {
+      const expected = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_BLOB', fileId: 4490, fileName: 'name'});
+      const actual = {
+        ...initialState,
+        lastSavedVersion: 2,
+        navigation: {
+          operation: 'UPLOAD_BLOB',
+          page: 'Metadata',
+          path: ['SelectType', 'UploadFile']
+        },
+        upload: {
+          fileName: 'name',
+          progress: {
+            type: 'Complete',
+            fileId: 4490
+          }
+        }
+      };
+      expect(expected).to.deep.equal(actual);
+    });
+
+  });
+
+  describe('when the `importSource` has an `operation` of `UPLOAD_GEO`', () => {
+
+    it('sets the current page to UploadFile when there is no file', () => {
+      const expected = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_GEO' });
+      const actual = {
+        ...initialState,
+        lastSavedVersion: 2,
+        navigation: {
+          operation: 'UPLOAD_GEO',
+          page: 'UploadFile',
+          path: ['SelectType']
+        }
+      };
+      expect(expected).to.deep.equal(actual);
+    });
+
+    it('sets the current page to ImportShapefile when there is file information, and handles missing layers field', () => {
+      const expected = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_GEO', scanResults: {}, fileId: 4490, fileName: 'name'});
+      const actual = {
+        ...initialState,
+        lastSavedVersion: 2,
+        navigation: {
+          operation: 'UPLOAD_GEO',
+          page: 'ImportShapefile',
+          path: ['SelectType', 'UploadFile']
+        },
+        upload: {
+          fileName: 'name',
+          progress: {
+            type: 'Complete',
+            fileId: 4490,
+            summary: {}
+          }
+        },
+        layers: [],
+        transform: null
+      };
+      expect(expected).to.deep.equal(actual);
+    });
+
+    it('sets the current page to ImportShapefile when there is file information, and handles layer info', () => {
+      const expected = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_GEO', scanResults: {layers: ['layer_1']}, fileId: 4490, fileName: 'name'});
+      const actual = {
+        ...initialState,
+        lastSavedVersion: 2,
+        navigation: {
+          operation: 'UPLOAD_GEO',
+          page: 'ImportShapefile',
+          path: ['SelectType', 'UploadFile']
+        },
+        upload: {
+          fileName: 'name',
+          progress: {
+            type: 'Complete',
+            fileId: 4490,
+            summary: {layers: ['layer_1']}
+          }
+        },
+        layers: ['layer_1'],
+        transform: null
+      };
+      expect(expected).to.deep.equal(actual);
+    });
+  });
+
   describe('when the `importSource` has an `operation` of `LINK_EXTERNAL`', () => {
     const expected = initialNewDatasetModel(theView, { version: 2, importMode: 'LINK_EXTERNAL' });
     const actual = {

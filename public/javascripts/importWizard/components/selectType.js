@@ -71,7 +71,7 @@ export function view(props) {
         className="blobby tooltip"
         title={I18nPrefixed.blobby_explain}
         onClick={onChooseOperation('UPLOAD_BLOB')}>
-        <span title={I18nPrefixed.blobby_explain}>
+        <span title="">
           <span className="icon"></span>
           <p>{I18nPrefixed.blobby}</p>
         </span>

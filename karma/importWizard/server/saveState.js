@@ -37,6 +37,39 @@ describe('saveOperation', () => {
 
 });
 
+describe ('saveWizardSection', () => {
+  it('saves the ui_section, returning an ImportSource object with the new version timestamp', (done) => {
+    withMockFetch(
+      (url, options, resolve, reject) => {
+        expect(url).to.equal('/views/asdf-jklo/import_sources');
+        expect(JSON.parse(options.body)).to.deep.equal({
+          version: 123,
+          uiSection: 'UploadFile'
+        });
+        resolve({
+          status: 200,
+          json: () => Promise.resolve({
+            importMode: 'UPLOAD_DATA',
+            version: 124,
+            uiSection: 'UploadFile'
+          })
+        })
+      },
+      () => {
+        SaveState.saveWizardSection('asdf-jklo', 123, 'UploadFile').then((result) => {
+          expect(result).to.deep.equal({
+            importMode: 'UPLOAD_DATA',
+            version: 124,
+            uiSection: 'UploadFile'
+          });
+          done();
+        });
+      }
+    );
+  });
+});
+
+
 describe ("saveState's reducer", () => {
   it('it handles fileUploadComplete', () => {
     const result = SaveState.update(33, fileUploadComplete(

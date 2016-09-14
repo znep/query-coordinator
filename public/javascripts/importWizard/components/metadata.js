@@ -720,6 +720,15 @@ export function showMapLayer(operation) {
   return operation === 'ConnectToEsri';
 }
 
+function metadataSuccessMessage(operation) {
+  switch (operation) {
+    case 'UPLOAD_BLOB':
+      return I18n.screens.edit_metadata.blob_uploaded;
+    default:
+      return I18n.screens.edit_metadata.settings_saved;
+  }
+}
+
 export function view({ metadata, onMetadataAction, operation, importError, goToPrevious }) {
   const I18nPrefixed = I18n.screens.edit_metadata;
   const validationErrors = validate(metadata, operation);
@@ -728,7 +737,7 @@ export function view({ metadata, onMetadataAction, operation, importError, goToP
   return (
     <div className="metadataPane">
       <div className="flash-alert success">
-        {I18nPrefixed.settings_saved}
+        {metadataSuccessMessage(operation)}
       </div>
 
       {renderFlashMessageApiError(metadata.apiCall)}

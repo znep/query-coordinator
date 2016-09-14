@@ -60,7 +60,6 @@ const initialNavigation: Navigation = {
   operation: null // will be filled in when we click something on the first screen
 };
 
-
 export function initialNewDatasetModel(initialView, importSource: SaveState.ImportSource): NewDatasetModel {
   const initial = {
     datasetId: initialView.id,
@@ -87,13 +86,40 @@ export function initialNewDatasetModel(initialView, importSource: SaveState.Impo
           page: 'Metadata'
         }
       };
+    case 'UPLOAD_BLOB':
+      if (importSource.fileId) {
+        return {
+          ...initial,
+          navigation: {
+            operation: operation,
+            path: ['SelectType', 'UploadFile'],
+            page: 'Metadata'
+          },
+          upload: {
+            fileName: importSource.fileName,
+            progress: {
+              type: 'Complete',
+              fileId: importSource.fileId
+            }
+          }
+        };
+      } else {
+        return {
+          ...initial,
+          navigation: {
+            operation: operation,
+            path: ['SelectType'],
+            page: 'UploadFile'
+          }
+        };
+      }
     case 'UPLOAD_GEO':
       if (importSource.scanResults) {
         return {
           ...initial,
           navigation: {
             operation,
-            path: ['SelectType', 'SelectUploadType', 'UploadFile'],
+            path: ['SelectType', 'UploadFile'],
             page: 'ImportShapefile'
           },
           upload: {
@@ -104,11 +130,18 @@ export function initialNewDatasetModel(initialView, importSource: SaveState.Impo
               summary: importSource.scanResults
             }
           },
-          layers: importSource.scanResults.layers,
+          layers: importSource.scanResults.layers ? importSource.scanResults.layers : [],
           transform: null
         };
       } else {
-        return initial;
+        return {
+          ...initial,
+          navigation: {
+            operation,
+            path: ['SelectType'],
+            page: 'UploadFile'
+          }
+        };
       }
 
     case 'CONNECT_TO_ESRI':
@@ -116,7 +149,7 @@ export function initialNewDatasetModel(initialView, importSource: SaveState.Impo
         ...initial,
         navigation: {
           operation,
-          path: ['SelectType', 'SelectUploadType', 'ConnectToEsri'],
+          path: ['SelectType', 'ConnectToEsri'],
           page: 'ConnectToEsri'
         },
         connectToEsri: {
@@ -162,6 +195,16 @@ export function initialNewDatasetModel(initialView, importSource: SaveState.Impo
           }
         };
       } else {
+        if (importSource.uiSection === 'UploadFile' || importSource.uiSection === 'DownloadFile') {
+          return {
+            ...initial,
+            navigation: {
+              operation: operation,
+              path: ['SelectType', 'SelectUploadType'],
+              page: importSource.uiSection
+            }
+          };
+        }
         return {
           ...initial,
           navigation: {
@@ -190,7 +233,6 @@ function initialMetadata(initialView) {
 }
 
 // actions
-
 const CHOOSE_OPERATION = 'CHOOSE_OPERATION';
 export function chooseOperation(name: SharedTypes.OperationName) {
   return (dispatch, getState) => {
@@ -223,7 +265,6 @@ export function goToPrevious() {
     type: GO_TO_PREVIOUS
   };
 }
-
 
 export function updateNavigation(navigation: Navigation = initialNavigation, action): Navigation {
   let nextPage = navigation.page;
@@ -297,6 +338,20 @@ export function updateNavigation(navigation: Navigation = initialNavigation, act
   }
 }
 
+export function chooseDataSource(name: PageName) {
+  return (dispatch, getState) => {
+    const version = getState().lastSavedVersion;
+    const datasetId = getState().datasetId;
+    dispatch(goToPage(name));
+    SaveState.saveWizardSection(datasetId, version, name).then((newImportSource) => {
+      dispatch(SaveState.stateSaved(newImportSource));
+    }).catch(() => {
+      // this is already logged to airbrake in stateSaved
+      console.error('There was a problem saving your progress in the wizard.');
+    });
+  };
+}
+
 // view
 
 export function view({ state, dispatch }) {
@@ -325,14 +380,14 @@ export function view({ state, dispatch }) {
             case 'SelectUploadType':
               return (
                 <SelectUploadType.view
-                  goToPage={(page) => dispatch(goToPage(page))}
+                  dispatch={dispatch}
                   goToPrevious={() => dispatch(goToPrevious())} />
               );
 
             case 'UploadFile':
               return (
                 <UploadFile.view
-                  onFileUploadAction={dispatch}
+                  dispatch={dispatch}
                   fileUpload={state.upload}
                   operation={state.navigation.operation}
                   goToPrevious={() => dispatch(goToPrevious())} />

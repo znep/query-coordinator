@@ -143,7 +143,7 @@ describe("uploadFile's reducer", () => {
   describe('view', () => {
 
     it('renders an upload box with help text initially', () => {
-      const element = renderComponent(view({onFileUploadAction: _.noop, fileUpload: {}, operation: 'UPLOAD_DATA'}));
+      const element = renderComponent(view({dispatch: _.noop, fileUpload: {}, operation: 'UPLOAD_DATA'}));
       expect(element.querySelector('input.uploadFileName.valid').value)
         .to.equal(I18n.screens.dataset_new.upload_file.no_file_selected);
     });
@@ -151,7 +151,7 @@ describe("uploadFile's reducer", () => {
     it('renders an upload box with filename once selected', () => {
       const element = renderComponent(
         view({
-          onFileUploadAction: _.noop,
+          dispatch: _.noop,
           fileUpload: {
             fileName: 'my_file.txt',
             progress: {
@@ -171,7 +171,7 @@ describe("uploadFile's reducer", () => {
     it('renders an error message on error', () => {
       const element = renderComponent(
         view({
-          onFileUploadAction: _.noop,
+          dispatch: _.noop,
           fileUpload: {
             fileName: 'my_file.txt',
             progress: {
@@ -189,7 +189,7 @@ describe("uploadFile's reducer", () => {
     it('renders an error message on localizable error', () => {
       const element = renderComponent(
         view({
-          onFileUploadAction: _.noop,
+          dispatch: _.noop,
           fileUpload: {
             fileName: 'my_file.txt',
             progress: {
@@ -206,7 +206,7 @@ describe("uploadFile's reducer", () => {
 
     it('dispatches the function for loading a file when the input of the fileUpload changes', () => {
       const spy = sinon.spy();
-      const element = renderComponent(view({onFileUploadAction: spy, fileUpload: {}, operation: 'UPLOAD_DATA'}));
+      const element = renderComponent(view({dispatch: spy, fileUpload: {}, operation: 'UPLOAD_DATA'}));
       const fileInput = element.querySelector('input[type="file"]');
       TestUtils.Simulate.change(fileInput, {target: {files: ['afile'] }});
       expect(spy.callCount).to.equal(1);
@@ -214,10 +214,24 @@ describe("uploadFile's reducer", () => {
 
     it('does not dispatch the function for loading a file when the input of the fileUpload changes to no file', () => {
       const spy = sinon.spy();
-      const element = renderComponent(view({onFileUploadAction: spy, fileUpload: {}, operation: 'UPLOAD_DATA'}));
+      const element = renderComponent(view({dispatch: spy, fileUpload: {}, operation: 'UPLOAD_DATA'}));
       const fileInput = element.querySelector('input[type="file"]');
       TestUtils.Simulate.change(fileInput, {target: {files: [] }});
       expect(spy.callCount).to.equal(0);
+    })
+
+    it('disables the next button if the upload of the file is not complete', () => {
+      const spy = sinon.spy();
+      const element = renderComponent(view({dispatch: spy, fileUpload: {}, operation: 'UPLOAD_DATA'}));
+      const nextButton = element.querySelector('a.nextButton');
+      expect(nextButton.className).to.include('disabled');
+    })
+
+    it('enables the next button if the upload of the file is complete', () => {
+      const spy = sinon.spy();
+      const element = renderComponent(view({dispatch: spy, fileUpload: {'progress': {'type': 'Complete'}}, operation: 'UPLOAD_DATA'}));
+      const nextButton = element.querySelector('a.nextButton');
+      expect(nextButton.className).to.not.include('disabled');
     })
   });
 });

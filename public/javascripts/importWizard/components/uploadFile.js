@@ -8,6 +8,7 @@ import { authenticityToken, appToken } from '../server';
 import airbrake from '../airbrake';
 import { addColumnIndicesToSummary } from '../importUtils';
 import format from 'stringformat';
+import { goToPage } from '../wizard';
 
 
 type FileName = string
@@ -61,6 +62,14 @@ function urlForOperation(datasetId: string, operation: SharedTypes.OperationName
       console.error('Unexpected / not implemented operation', operation);
   }
   return url.format(urlAttrs);
+}
+
+function getNextPage(operation: SharedTypes.OperationName) {
+  switch (operation) {
+    case 'UPLOAD_DATA': return 'ImportColumns';
+    case 'UPLOAD_GEO': return 'ImportShapefile';
+    case 'UPLOAD_BLOB': return 'Metadata';
+  }
 }
 
 function fileExtensionError(file: File, operation) {
@@ -300,22 +309,26 @@ function renderErrorMessage(fileUpload) {
   return <FlashMessage flashType="error" message={display} />;
 }
 
-export function view({ onFileUploadAction, fileUpload, operation, goToPrevious }) {
+export function view({ dispatch, fileUpload, operation, goToPrevious }) {
   const I18nPrefixed = I18n.screens.dataset_new.upload_file;
 
   function isInProgress() {
-    return _.get(fileUpload, 'progress.type', 'nope') === 'InProgress';
+    return _.get(fileUpload, 'progress.type') === 'InProgress';
+  }
+
+  function isUploadComplete() {
+    return _.get(fileUpload, 'progress.type') === 'Complete';
   }
 
   function onSelectFile(event) {
     // TODO: can users deselect a file? may need an action for that
     if ( event.target.files.length > 0 ) {
-      onFileUploadAction(selectFile(event.target.files[0], operation));
+      dispatch(selectFile(event.target.files[0], operation));
     }
   }
 
   function onClickPrevious() {
-    onFileUploadAction(cancelUpload(fileUpload));
+    dispatch(cancelUpload(fileUpload));
     goToPrevious();
   }
 
@@ -385,13 +398,18 @@ export function view({ onFileUploadAction, fileUpload, operation, goToPrevious }
       </div>
       <NavigationControl
         onPrev={onClickPrevious}
+        onNext={isUploadComplete() ?
+          function() {
+            dispatch(goToPage(getNextPage(operation)));
+          } : null}
+        isDisabled={!isUploadComplete}
         cancelLink="/profile" />
     </div>
   );
 }
 
 view.propTypes = {
-  onFileUploadAction: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
   fileUpload: PropTypes.object.isRequired,
   operation: PropTypes.string.isRequired,
   goToPrevious: PropTypes.func.isRequired

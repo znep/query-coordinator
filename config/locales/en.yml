@@ -3965,6 +3965,7 @@ en:
       save_changes: Save changes
       semantics_rdf: Semantics & RDF
       settings_saved: "Excellent: you’ve told us how to import your file. We’ve saved those settings. All that’s left is to describe your dataset’s metadata."
+      blob_uploaded: "Excellent: we've saved your file. All that’s left is to describe your file's metadata."
       source_link: Source Link
       source_link_error: That does not appear to be a valid url.
       source_link_prompt: Enter Web Address

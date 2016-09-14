@@ -203,11 +203,15 @@ class SiteChrome
 
   # Step 1: create a site theme configuration
   def create
-    res = SiteChrome.post(
-      SiteChrome.core_configurations_path,
-      headers: authorized_request_headers,
-      body: attributes.to_json
-    )
+    res = begin
+      SiteChrome.post(
+        SiteChrome.core_configurations_path,
+        headers: authorized_request_headers,
+        body: attributes.to_json
+      )
+    rescue
+      return false
+    end
 
     handle_configuration_response(res)
   end

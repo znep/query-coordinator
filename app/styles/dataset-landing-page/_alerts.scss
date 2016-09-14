@@ -26,8 +26,19 @@
     justify-content: space-between;
     align-items: center;
 
+    .message {
+      margin-right: 22px;
+    }
+
     .btn {
+      margin-left: auto;
       min-width: 70px;
     }
+  }
+
+  .flyout {
+    z-index: 1000;
+    width: 350px;
+    max-width: 350px;
   }
 }

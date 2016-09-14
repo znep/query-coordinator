@@ -192,6 +192,9 @@ module DatasetLandingPageHelper
     row_count = @view.row_count rescue 0
     description = @view.description.gsub(/\r?\n/, '<br />') if @view.description
 
+    # This makes an HTTP request, so we want to avoid it if possible
+    can_publish = @view.can_publish? if @view.is_unpublished?
+
     {
       :id => @view.id,
       :name => @view.name,
@@ -203,6 +206,7 @@ module DatasetLandingPageHelper
       :columns => columns,
       :isPrivate => !@view.is_public?,
       :isUnpublished => @view.is_unpublished?,
+      :canPublish => can_publish,
       :isTabular => @view.is_tabular?,
       :isBlobby => @view.is_blobby?,
       :blobId => @view.blobId,

@@ -6,7 +6,8 @@ describe('components/PublishNotice', function() {
   function getProps(props) {
     return _.defaultsDeep({}, props, {
       view: _.merge(mockView, {
-        isUnpublished: true
+        isUnpublished: true,
+        canPublish: true
       }),
       onClickPublish: _.noop
     });
@@ -106,5 +107,23 @@ describe('components/PublishNotice', function() {
     expect(spy.callCount).to.equal(0);
     Simulate.click(element.querySelector('.alert-dismiss'));
     expect(spy.callCount).to.equal(1);
+  });
+
+  it('disables the button and includes a flyout if the dataset is not able to be published', function() {
+    var spy = sinon.spy();
+    var element = renderComponent(PublishNotice, getProps({
+      onClickPublish: spy,
+      view: {
+        canPublish: false
+      }
+    }));
+
+    expect(spy.callCount).to.equal(0);
+    Simulate.click(element.querySelector('button'));
+    expect(spy.callCount).to.equal(0);
+
+    var flyoutId = element.querySelector('button[data-flyout]').dataset.flyout;
+    expect(flyoutId).to.exist;
+    expect(element.querySelector(`#${flyoutId}.flyout`)).to.exist;
   });
 });

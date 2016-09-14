@@ -39,32 +39,47 @@ export var PublishNotice = React.createClass({
 
   renderPublishAlert() {
     var { view, onClickPublish } = this.props;
-
     var message = I18n.publish_notice.format({ url: view.gridUrl });
+    var flyout = null;
+    var buttonContents = I18n.publish;
+    var buttonProps = {
+      className: classNames('btn btn-primary btn-sm'),
+      onClick: onClickPublish,
+      'data-flyout': null
+    };
 
-    var buttonClassName = classNames('btn btn-primary btn-sm');
-    var buttonOnClick = null;
-    var buttonContents;
+    if (!view.canPublish) {
+      buttonProps.className = classNames(buttonProps.className, 'btn-disabled');
+      buttonProps.onClick = null;
+      buttonProps['data-flyout'] = 'publish-flyout';
 
-    if (view.hasPublishingSuccess) {
-      buttonClassName = classNames(buttonClassName, 'btn-success');
+      flyout = (
+        <div id="publish-flyout" className="flyout flyout-hidden">
+          <section className="flyout-content">
+            <p>{I18n.publish_geocoding_message}</p>
+          </section>
+          <footer className="flyout-footer" />
+        </div>
+      );
+    } else if (view.hasPublishingSuccess) {
+      buttonProps.className = classNames(buttonProps.className, 'btn-success');
       buttonContents = `${I18n.published}!`;
     } else if (view.isPublishing) {
-      buttonClassName = classNames(buttonClassName, 'btn-busy');
+      buttonProps.className = classNames(buttonProps.className, 'btn-busy');
+      buttonProps.onClick = null;
       buttonContents = <div className="spinner-default spinner-btn-primary" />;
-    } else {
-      buttonOnClick = onClickPublish;
-      buttonContents = I18n.publish;
     }
 
     return (
       <div className="alert warning alert-full-width-top publish-notice">
         <div className="alert-container">
-          <span dangerouslySetInnerHTML={{ __html: message }} />
+          <span className="message" dangerouslySetInnerHTML={{ __html: message }} />
 
-          <button className={buttonClassName} onClick={buttonOnClick}>
+          <button {...buttonProps}>
             {buttonContents}
           </button>
+
+          {flyout}
         </div>
       </div>
     );

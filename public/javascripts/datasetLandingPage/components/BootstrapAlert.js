@@ -44,7 +44,10 @@ export var BootstrapAlert = React.createClass({
 
     return (
       <div className="alert default bootstrap-alert">
-        {I18n.bootstrap_message}
+        <div className="message">
+          {I18n.bootstrap_message}
+        </div>
+
         <a
           href={bootstrapUrl}
           className={className}

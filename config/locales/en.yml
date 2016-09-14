@@ -1405,6 +1405,7 @@ en:
     publish: Publish
     publish_error: There was a problem publishing this dataset.  Make sure you are logged in and have appropriate permissions.  If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
     publish_notice: This dataset is <strong>Unpublished</strong>. Publishing this page will also publish the <a href="{url}" target="_blank">tabular view</a> of this dataset.
+    publish_geocoding_message: Rows in the location column are still geocoding. Please wait until they are finished to publish this dataset.
     published: Published
     published_by: Data Provided by
     remove: Remove

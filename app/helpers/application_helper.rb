@@ -4,6 +4,7 @@ module ApplicationHelper
 
   include Browse2Helper
   include BrowseHelper
+  include CommonSocrataMethods
   include UserAuthMethods
   include Socrata::UrlHelpers
   # Note: SiteChromeHelper is included automatically due to the naming coinciding with
@@ -91,7 +92,7 @@ module ApplicationHelper
   # Note that the order of these checks is important. For example, if the user is on the homepage,
   # we enable site chrome only if the homepage flag is true (regardless of the other flags).
   def enable_site_chrome?
-    activation_state = SiteChrome.find_or_create_default(cookies).activation_state
+    activation_state = SiteChrome.find_or_create_default(forwardable_session_cookies).activation_state
     return true if in_preview_mode?
 
     if on_homepage

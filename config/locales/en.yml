@@ -3607,7 +3607,6 @@ en:
             non_tabular: Only tabular data may be printed
         download:
           download_as: Download As
-          download_dataset: Please download the dataset from which this view is derived.
           geo_header: Download Geospatial Data
           monolayer_header: Download without geospatial data
           multilayer_header: Download a specific layer's data

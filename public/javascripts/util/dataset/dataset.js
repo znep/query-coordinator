@@ -298,18 +298,6 @@
       return (this.viewType == 'tabular');
     },
 
-
-    isExportable: function() {
-      if (this.newBackend) {
-        return this.displayName === 'dataset' ||
-          this.displayName === 'working copy' ||
-          this.viewType === 'geo' ||
-          this.isApiGeospatial();
-      } else {
-        return true;
-      }
-    },
-
     isAPI: function() {
       return (this.type == 'api');
     },

@@ -12,6 +12,7 @@ var plugins = _.compact([
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
   }),
   isProduction && new webpack.optimize.OccurenceOrderPlugin(),
+  !isProduction && new webpack.EvalSourceMapDevToolPlugin(),
   isProduction && new webpack.optimize.DedupePlugin(),
   isProduction && new webpack.optimize.UglifyJsPlugin({
     mangle: false,

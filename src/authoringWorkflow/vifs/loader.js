@@ -31,7 +31,8 @@ const paths = {
   xAxisDataLabels: 'configuration.xAxisDataLabels',
   zeroColor: 'configuration.legend.zeroColor',
   precision: 'series[0].dataSource.precision',
-  treatNullValuesAsZero: 'configuration.treatNullValuesAsZero'
+  treatNullValuesAsZero: 'configuration.treatNullValuesAsZero',
+  orderBy: 'series[0].dataSource.orderBy'
 };
 
 const hasVifPath = (vif) => (path) => _.has(vif, path);
@@ -92,6 +93,10 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.negativeColor)) {
     dispatch(actions.setNegativeColor(get(paths.negativeColor)));
+  }
+
+  if (has(paths.orderBy)) {
+    dispatch(actions.setOrderBy(get(paths.orderBy)));
   }
 
   if (has(paths.pointOpacity)) {

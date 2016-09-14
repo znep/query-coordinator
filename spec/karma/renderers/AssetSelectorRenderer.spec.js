@@ -32,8 +32,6 @@ describe('AssetSelectorRenderer', function() {
   beforeEach(function() {
     server = sinon.fakeServer.create();
     environment = {
-      ENABLE_VISUALIZATION_AUTHORING_WORKFLOW: true,
-      ENABLE_SVG_VISUALIZATIONS: true,
       ENABLE_FILTERED_TABLE_CREATION: true
     };
 
@@ -361,42 +359,6 @@ describe('AssetSelectorRenderer', function() {
       });
     });
 
-    it('dispatches `ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION` on a visualizationSelected event', function(done) {
-      dispatcher.register(function(payload) {
-        if (payload.action === Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION) {
-          // the values will be empty, but assert that the event adds the correct keys
-          assert.property(payload, 'visualization');
-          assert.property(payload.visualization, 'format');
-          done();
-        }
-      });
-
-      assetSelectorStoreMock.addChangeListener(_.once(function() {
-        container.find('.modal-dialog').trigger('visualizationSelected', {format: 'vif', data: {}});
-      }));
-
-      // add dataset so the proper component values are there for updating
-      dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
-        datasetUid: StandardMocks.validStoryUid,
-        domain: 'example.com',
-        isNewBackend: true
-      });
-
-      server.respond([
-        200,
-        { 'Content-Type': 'application/json' },
-        JSON.stringify({
-          id: 'fooo-baar',
-          newBackend: true,
-          domain: 'foo',
-          columns: [{
-            'fieldName': 'foo'
-          }]
-        })
-      ]);
-    });
-
     xdescribe('select file in image upload', function() {
       var cancelSpy;
       var uploadSpy;
@@ -618,7 +580,6 @@ describe('AssetSelectorRenderer', function() {
       it('renders visualization options', function() {
         assert.lengthOf(container.find('.visualization-options'), 1);
         assert.lengthOf(container.find('[data-visualization-option="INSERT_VISUALIZATION"]'), 1);
-        assert.lengthOf(container.find('[data-visualization-option="CREATE_VISUALIZATION"]'), 0);
         assert.lengthOf(container.find('[data-visualization-option="AUTHOR_VISUALIZATION"]'), 1);
       });
 
@@ -843,149 +804,6 @@ describe('AssetSelectorRenderer', function() {
           assert.isFalse(
             container.find('.btn-apply').prop('disabled')
           );
-        });
-      });
-    });
-
-    describe('an `ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN` action with visualizationOption = CREATE_VISUALIZATION is fired', function() {
-      beforeEach(function() {
-        dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN,
-          visualizationOption: 'CREATE_VISUALIZATION'
-        });
-      });
-
-      it('renders an iframe', function() {
-        assert.equal(container.find('.asset-selector-dataset-chooser-iframe').length, 1);
-      });
-
-      describe('the iframe', function() {
-        it('has the correct source', function() {
-          var iframeSrc = decodeURI(container.find('iframe').attr('src'));
-          assert.include(iframeSrc, 'browse/select_dataset');
-          assert.include(iframeSrc, 'suppressed_facets[]=type');
-          assert.include(iframeSrc, 'limitTo=datasets');
-        });
-      });
-
-      describe('the modal', function() {
-        it('has the wide class to display the iframe', function() {
-          assert.include(container.find('.modal-dialog').attr('class'), 'modal-dialog-wide');
-        });
-
-        it('has a modal title loading spinner', function() {
-          assert.lengthOf(container.find('.btn-busy:not(.hidden)'), 1);
-        });
-
-        it('has a close button', function() {
-          assert.equal(container.find('.modal-close-btn').length, 1);
-        });
-
-        it('has a button that goes back to the provider list', function() {
-          assert.lengthOf(
-            container.find('[data-resume-from-step="SELECT_VISUALIZATION_OPTION"]'),
-            1
-          );
-        });
-      });
-
-      describe('an `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action is fired', function() {
-        beforeEach(function(done) {
-          dispatcher.dispatch({
-            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
-            datasetUid: StandardMocks.validStoryUid,
-            domain: 'example.com',
-            isNewBackend: true
-          });
-
-          server.respond([
-            200,
-            { 'Content-Type': 'application/json' },
-            JSON.stringify({
-              id: 'fooo-baar',
-              newBackend: true,
-              domain: 'foo',
-              columns: [{
-                'fieldName': 'foo'
-              }]
-            })
-          ]);
-
-          //Wait for promises in AssetSelectorStore
-          setTimeout(function() { done(); }, 10);
-        });
-
-        describe('then `ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP` is fired', function() {
-          beforeEach(function() {
-            dispatcher.dispatch({
-              action: Actions.ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP
-            });
-          });
-
-          it('renders an iframe', function() {
-            assert.equal(container.find('.asset-selector-configure-visualization-iframe').length, 1);
-          });
-
-          it('disables the insert button on render', function() {
-            assert.equal(
-              container.find('.btn-primary').attr('disabled'),
-              'disabled'
-            );
-          });
-
-          describe('the iframe', function() {
-            it('has the correct src', function() {
-              var iframeSrc = container.find('iframe').attr('src');
-              assert.include(iframeSrc, 'component/visualization/add?datasetId');
-            });
-
-            it('has a modal title loading spinner', function() {
-              assert.lengthOf(container.find('.btn-busy:not(.hidden)'), 1);
-            });
-
-            describe('onVisualizationSelectedV2 on the iframe', function() {
-              var iframe;
-              var selectedVisualizationJson = JSON.stringify({ visualization: 'blob' });
-
-              beforeEach(function() {
-                iframe = container.find('iframe')[0];
-              });
-
-              it('has a onVisualizationSelectedV2 function on it', function() {
-                assert.isFunction(iframe.onVisualizationSelectedV2);
-              });
-
-              it('dispatches ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION', function(done) {
-                dispatcher.register(function(payload) {
-                  if (payload.action === Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION) {
-                    assert.deepEqual(payload.visualization.data, JSON.parse(selectedVisualizationJson));
-                    assert.deepPropertyVal(payload, 'visualization.format', 'classic');
-                    assert.deepPropertyVal(payload, 'visualization.originalUid', 'orig-inal');
-                    done();
-                  }
-                });
-
-                iframe.onVisualizationSelectedV2(selectedVisualizationJson, 'classic', 'orig-inal');
-              });
-            });
-          });
-
-          describe('the modal', function() {
-            it('has a close button', function() {
-              assert.equal(container.find('.modal-close-btn').length, 1);
-            });
-
-            it('has the wide class to display the iframe', function() {
-              assert.include(container.find('.modal-dialog').attr('class'), 'modal-dialog-wide');
-            });
-
-            it('has a button that goes back to the dataset picker', function() {
-              assert.equal(
-                container.find('[data-resume-from-step]').attr('data-resume-from-step'),
-                'SELECT_DATASET_FOR_VISUALIZATION'
-              );
-            });
-          });
         });
       });
     });

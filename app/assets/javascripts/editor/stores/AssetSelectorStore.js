@@ -5,7 +5,6 @@ import I18n from '../I18n';
 import Store from './Store';
 import Actions from '../Actions';
 import Constants from '../Constants';
-import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
 import { storyStore } from './StoryStore';
 import { fileUploaderStore, STATUS } from './FileUploaderStore';
@@ -39,8 +38,6 @@ export var WIZARD_STEP = {
   SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG: 'SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG',
   // You walk through the new authorship workflow.
   AUTHOR_VISUALIZATION: 'AUTHOR_VISUALIZATION',
-  // You chose some other visualization. Use Data Lens embed to configure it.
-  CONFIGURE_VISUALIZATION: 'CONFIGURE_VISUALIZATION',
   // You chose a map or chart. Please edit it to your liking.
   CONFIGURE_MAP_OR_CHART: 'CONFIGURE_MAP_OR_CHART',
   TABLE_PREVIEW: 'TABLE_PREVIEW',
@@ -136,12 +133,7 @@ export default function AssetSelectorStore() {
           case 'INSERT_TABLE':
             _visualizeAsTable();
             break;
-          case 'CREATE_VISUALIZATION':
-            _state.isAuthoringVisualization = false;
-            _chooseCreateVisualization();
-            break;
           case 'AUTHOR_VISUALIZATION':
-            _state.isAuthoringVisualization = true;
             _chooseCreateVisualization();
             break;
         }
@@ -153,10 +145,6 @@ export default function AssetSelectorStore() {
 
       case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART:
         _chooseVisualizationMapOrChart(payload);
-        break;
-
-      case Actions.ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP:
-        _visualizeAsChart(payload);
         break;
 
       case Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION:
@@ -745,11 +733,7 @@ export default function AssetSelectorStore() {
     }
 
     if (type.indexOf('socrata.visualization.') === 0) {
-      if (Environment.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW) {
-        return WIZARD_STEP.AUTHOR_VISUALIZATION;
-      } else {
-        return WIZARD_STEP.CONFIGURE_VISUALIZATION;
-      }
+      return WIZARD_STEP.AUTHOR_VISUALIZATION;
     }
 
     // Something went wrong and we don't know where to pick up from (new embed type?),
@@ -789,8 +773,7 @@ export default function AssetSelectorStore() {
       componentProperties: component.value,
       originalComponentType: _.clone(component.type),
       originalComponentProperties: _.cloneDeep(component.value),
-      isEditingExisting: true,
-      isAuthoringVisualization: Environment.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW && Environment.ENABLE_SVG_VISUALIZATIONS
+      isEditingExisting: true
     };
 
     if (component.type === 'image' || component.type === 'hero' || component.type === 'author') {
@@ -931,22 +914,16 @@ export default function AssetSelectorStore() {
           var isCreatingTable = (
             _state.componentType === 'socrata.visualization.table'
           );
-          var authoringWorkflowAndSvgVisualizationsEnabled = (
-            _state.isAuthoringVisualization &&
-            Environment.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW &&
-            Environment.ENABLE_SVG_VISUALIZATIONS
-          );
 
           _setComponentPropertiesFromViewData(viewData);
 
           if (isCreatingTable) {
             _setUpTableFromSelectedDataset();
             _state.step = WIZARD_STEP.TABLE_PREVIEW;
-          } else if (authoringWorkflowAndSvgVisualizationsEnabled ) {
-            _state.step = WIZARD_STEP.AUTHOR_VISUALIZATION;
           } else {
-            _state.step = WIZARD_STEP.CONFIGURE_VISUALIZATION;
+            _state.step = WIZARD_STEP.AUTHOR_VISUALIZATION;
           }
+
           self._emitChange();
         }
       ).
@@ -1081,11 +1058,6 @@ export default function AssetSelectorStore() {
     };
   }
 
-  function _visualizeAsChart() {
-    _state.step = WIZARD_STEP.CONFIGURE_VISUALIZATION;
-    self._emitChange();
-  }
-
   // Given a dataset domain, uid, and view metadata, sets:
   // * _state.componentProperties.dataset.domain,
   // * _state.componentProperties.dataset.datasetUid,
@@ -1173,8 +1145,6 @@ export default function AssetSelectorStore() {
 
           if (self.getStep() === WIZARD_STEP.CONFIGURE_MAP_OR_CHART) {
             _state.step = WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG;
-          } else if (self.getStep() === WIZARD_STEP.CONFIGURE_VISUALIZATION) {
-            _state.step = WIZARD_STEP.SELECT_DATASET_FOR_VISUALIZATION;
           } else if (self.getStep() === WIZARD_STEP.TABLE_PREVIEW) {
             _state.step = WIZARD_STEP.SELECT_TABLE_FROM_CATALOG;
           } else {

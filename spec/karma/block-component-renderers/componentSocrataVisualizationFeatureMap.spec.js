@@ -14,7 +14,12 @@ describe('componentSocrataVisualizationFeatureMap jQuery plugin', function() {
         height: 300
       },
       vif: {
-        configuration: {}
+        columnName: 'test',
+        configuration: {},
+        datasetUid: 'test-test',
+        domain: 'example.com',
+        filters: [],
+        type: 'timelineChart'
       }
     }
   };
@@ -44,24 +49,24 @@ describe('componentSocrataVisualizationFeatureMap jQuery plugin', function() {
   });
 
   describe('given a valid component type and value', function() {
-    var socrataFeatureMapStub;
+    var socrataSvgFeatureMapStub;
 
     beforeEach(function() {
-      socrataFeatureMapStub = sinon.stub($.fn, 'socrataFeatureMap');
+      socrataSvgFeatureMapStub = sinon.stub($.fn, 'socrataSvgFeatureMap');
       $component = $component.componentSocrataVisualizationFeatureMap(validComponentData);
     });
 
     afterEach(function() {
-      socrataFeatureMapStub.restore();
+      socrataSvgFeatureMapStub.restore();
     });
 
     it('should return a jQuery object for chaining', function() {
       assert.instanceOf($component, $);
     });
 
-    it('should call into socrataFeatureMap with the correct arguments', function() {
+    it('should call into socrataSvgFeatureMap with the correct arguments', function() {
       sinon.assert.calledWithExactly(
-        socrataFeatureMapStub,
+        socrataSvgFeatureMapStub,
         validComponentData.value.vif
       );
     });

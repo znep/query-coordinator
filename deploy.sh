@@ -1,11 +1,12 @@
 #!/bin/bash
 
 if [[ -z $(git status -s) ]]; then
-  npm i
-  bundle exec middleman build
   git checkout .
   git checkout master
   git pull --rebase origin master
+
+  npm i
+  bundle exec middleman build
 
   mkdir -p docs
   rm -rf docs/*

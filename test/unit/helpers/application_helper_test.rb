@@ -526,6 +526,16 @@ class ApplicationHelperTest < ActionView::TestCase
     assert application_helper.enable_site_chrome?
   end
 
+  def test_enable_site_chrome_doesnt_error_if_site_chrome_is_nil
+    SiteChrome.stubs(:find_or_create_default => nil)
+    refute application_helper.enable_site_chrome?
+  end
+
+  def test_enable_site_chrome_doesnt_error_if_site_chrome_is_false
+    SiteChrome.stubs(:find_or_create_default => false)
+    refute application_helper.enable_site_chrome?
+  end
+
   def test_on_view_page_is_false_if_view_is_nil
     refute application_helper.on_view_page?(nil)
   end

@@ -1,5 +1,8 @@
 require('shelljs/global');
 
+// We don't any unexpected output to muddy up our console.
+config.silent = true;
+
 if (!which('git')) {
   echo('Sorry, this script requires git');
   exit(1);
@@ -12,20 +15,20 @@ var packagePath = path.join(__dirname, '..', 'package.json');
 var baseDirectory = path.join(__dirname, '..');
 var currentBranchPackageJSON = require(packagePath);
 
-pushd(baseDirectory, {silent: true});
+pushd(baseDirectory);
 
-var isNotMaster = exec('git rev-parse --abbrev-ref HEAD', {silent: true}).stdout !== 'master';
-var stash = exec('git stash -u', {silent: true});
+var isNotMaster = exec('git rev-parse --abbrev-ref HEAD').stdout !== 'master';
+var stash = exec('git stash -u');
 var stashed = stash.stdout.indexOf('No local changes to save') === -1;
 
 if (stash.code !== 0) {
   exit(1);
 }
 
-var fetch = exec('git fetch --all', {silent: true});
+var fetch = exec('git fetch --all');
 
 if (fetch.code === 0) {
-  var checkout = exec('git checkout origin/master', {silent: true});
+  var checkout = exec('git checkout origin/master');
 
   if (checkout.code === 0) {
 
@@ -47,11 +50,11 @@ if (fetch.code === 0) {
       exitCode = 0;
     }
 
-    exec('git checkout -', {silent: true});
+    exec('git checkout -');
   }
 }
 
-if (stashed) { exec('git stash pop', {silent: true}); }
+if (stashed) { exec('git stash pop'); }
 
 popd();
 exit(exitCode);

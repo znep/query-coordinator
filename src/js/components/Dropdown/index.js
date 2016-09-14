@@ -1,6 +1,8 @@
 import _ from 'lodash';
+import $ from 'jquery';
 import classNames from 'classnames';
 import React from 'react';
+import SocrataUtils from 'socrata-utils';
 import Picklist from '../Picklist';
 import { ESCAPE } from '../../common/keycodes';
 
@@ -31,14 +33,15 @@ export default React.createClass({
     return {
       selectedOption: this.getSelectedOption(this.props),
       focused: false,
-      opened: false
+      opened: false,
+      mousedDownOnOptions: false
     };
   },
 
   componentDidMount() {
-    window.addEventListener('scroll', this.onWheel);
-    window.addEventListener('wheel', this.onWheel);
-    window.addEventListener('resize', this.onWheel);
+    this.toggleScrollEvents(true);
+    this.toggleIsolateScrolling(true);
+    this.toggleDocumentMouseDown(true);
   },
 
   componentWillReceiveProps(nextProps) {
@@ -47,48 +50,50 @@ export default React.createClass({
     });
   },
 
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.onWheel);
-    window.removeEventListener('wheel', this.onWheel);
-    window.removeEventListener('resize', this.onWheel);
+  componentWillUpdate() {
+    this.positionPicklist();
   },
 
-  onWheel() {
-    const hasOptions = this.options &&
-      this.options.querySelectorAll('.picklist-option').length > 0;
+  componentWillUnmount() {
+    this.toggleScrollEvents(false);
+    this.toggleIsolateScrolling(false);
+    this.toggleDocumentMouseDown(false);
+  },
 
-    if (hasOptions) {
-      const { displayTrueWidthOptions } = this.props;
-      const containerDimensions = this.container.getBoundingClientRect();
-      const browserWindowHeight = window.document.documentElement.clientHeight - 10;
+  /**
+   * Safari and IE blur when the scrollbar is clicked to initiate
+   * a scrolling action. This event handler prevents any clicks within the
+   * dropdown from kicking off a blur.
+   */
+  onMouseDown(event) {
+    const mousedDownOnOptions = event.target === this.optionsRef;
 
-      // Calculate Position
+    if (mousedDownOnOptions) {
+      event.preventDefault();
+    }
 
-      this.options.style.top = `${this.container.clientHeight + containerDimensions.top}px`;
-      this.options.style.left = `${containerDimensions.left}px`;
+    this.setState({ mousedDownOnOptions });
+  },
 
-      // Calculate Height
+  /**
+   * Looks up the DOM tree from the target and determine if the
+   * options container is an ancestor. If not, close up the options
+   * container because the user is scrolling outside of component.
+   */
+  onAnyScroll(event) {
+    if (event) {
+      const list = $(event.target).closest('.dropdown-options-list');
+      const nonrelated = list.length === 0;
 
-      const dimensions = this.options.getBoundingClientRect();
-      const scrollHeight = this.options.scrollHeight;
-      const exceedsBrowserWindowHeight = browserWindowHeight < dimensions.top + scrollHeight;
-      const optionHeight = this.options.querySelector('.picklist-option').clientHeight;
-      const determinedHeight = browserWindowHeight - dimensions.top;
-
-      if (exceedsBrowserWindowHeight) {
-        this.options.style.height = `${Math.max(determinedHeight, optionHeight)}px`;
-      } else if (this.options.style.height !== 'auto') {
-        this.options.style.height = 'auto';
-      }
-
-      if (!displayTrueWidthOptions) {
-        this.options.style.width = `${containerDimensions.width}px`;
+      if (nonrelated) {
+        this.setState({ opened: false });
       }
     }
   },
 
   onClickPlaceholder() {
-    this.onWheel();
+    this.onAnyScroll();
+    this.placeholderRef.focus();
     this.setState({ opened: !this.state.opened });
   },
 
@@ -96,12 +101,21 @@ export default React.createClass({
     this.setState({ focused: true });
   },
 
+  /**
+   * The state variable mousedDownOnOptions determines
+   * whether or not the blur we received should be
+   * responded to. Mousedown is set to off regardless of
+   * how we respond to ready for the next blur.
+   */
   onBlurPlaceholder() {
-    this.options.scrollTop = 0;
-    this.setState({
-      focused: false,
-      opened: false
-    });
+    if (!this.state.mousedDownOnOptions) {
+      this.optionsRef.scrollTop = 0;
+      this.setState({ focused: false, opened: false });
+    } else {
+      this.placeholderRef.focus();
+    }
+
+    this.setState({ mousedDownOnOptions: false });
   },
 
   onKeyUpPlaceholder(event) {
@@ -120,6 +134,89 @@ export default React.createClass({
   getSelectedOption(props) {
     const { value, options } = props;
     return _.find(options, { value }) || null;
+  },
+
+  positionPicklist() {
+    const hasOptions = this.optionsRef &&
+      this.optionsRef.querySelectorAll('.picklist-option').length > 0;
+
+    if (hasOptions) {
+      const { displayTrueWidthOptions } = this.props;
+      const containerDimensions = this.dropdownRef.getBoundingClientRect();
+      const browserWindowHeight = window.document.documentElement.clientHeight - 10;
+
+      // Calculate Position
+
+      this.optionsRef.style.top = `${this.dropdownRef.clientHeight + containerDimensions.top}px`;
+      this.optionsRef.style.left = `${containerDimensions.left}px`;
+
+      // Calculate Height
+
+      const dimensions = this.optionsRef.getBoundingClientRect();
+      const scrollHeight = this.optionsRef.scrollHeight;
+      const exceedsBrowserWindowHeight = browserWindowHeight < dimensions.top + scrollHeight;
+      const optionHeight = this.optionsRef.querySelector('.picklist-option').clientHeight;
+      const determinedHeight = browserWindowHeight - dimensions.top;
+
+      if (exceedsBrowserWindowHeight) {
+        this.optionsRef.style.height = `${Math.max(determinedHeight, optionHeight)}px`;
+      } else if (this.optionsRef.style.height !== 'auto') {
+        this.optionsRef.style.height = 'auto';
+      }
+
+      if (!displayTrueWidthOptions) {
+        this.optionsRef.style.width = `${containerDimensions.width}px`;
+      }
+    }
+  },
+
+  toggleDocumentMouseDown(onOrOff) {
+    document[onOrOff ? 'addEventListener' : 'removeEventListener']('mousedown', this.onMouseDown);
+  },
+
+  /**
+   * When scrolling the options, we don't want the outer containers
+   * to accidentally scroll once the start or end of the options is
+   * reached.
+   */
+  toggleIsolateScrolling(onOrOff) {
+    SocrataUtils.isolateScrolling($(this.optionsRef), onOrOff);
+  },
+
+  /**
+   * Places scrolling event listeners on all ancestors that are scrollable.
+   *
+   * This is done to properly hide the dropdown when the user
+   * scrolls an inner container.
+   *
+   * This functions as a toggle that will add or remove the event listeners
+   * depending on a boolean value passed as the first parameter.
+   */
+  toggleScrollEvents(onOrOff) {
+    const action = onOrOff ? 'addEventListener' : 'removeEventListener';
+    const toggleEvents = (element) => {
+      element[action]('scroll', this.onAnyScroll);
+      element[action]('wheel', this.onAnyScroll);
+    };
+
+    const setEventsOnEveryParent = (node) => {
+      let parent = node.parentNode;
+
+      while (parent !== null) {
+        if (parent.scrollHeight > parent.clientHeight) {
+          toggleEvents(parent);
+        }
+
+        parent = parent.parentNode;
+      }
+    };
+
+    // Rummage through all the ancestors
+    // and apply/remove the event handlers.
+    setEventsOnEveryParent(this.dropdownRef);
+
+    // Apply/remove scrolling events on the window as well.
+    toggleEvents(window);
   },
 
   renderPlaceholder() {
@@ -141,7 +238,7 @@ export default React.createClass({
       onKeyUp: this.onKeyUpPlaceholder,
       onKeyDown: this.onKeyDownPlaceholder,
       tabIndex: '0',
-      ref: ref => this.placeholder = ref
+      ref: ref => this.placeholderRef = ref
     };
 
     if (placeholderIsFunction) {
@@ -163,7 +260,7 @@ export default React.createClass({
 
     const dropdownAttributes = {
       id,
-      ref: ref => this.container = ref,
+      ref: ref => this.dropdownRef = ref,
       className: classNames('dropdown-container', {
         'dropdown-focused': focused,
         'dropdown-opened': opened,
@@ -172,7 +269,7 @@ export default React.createClass({
     };
 
     const dropdownOptionsAttributes = {
-      ref: ref => this.options = ref,
+      ref: ref => this.optionsRef = ref,
       className: classNames('dropdown-options-list', {
         'dropdown-invisible': !opened
       })

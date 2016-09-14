@@ -459,7 +459,7 @@ export function isStandardMetadataValid(contents, operation) {
 }
 
 function isMapLayerValid(metadata, operation) {
-  return metadata.contents.mapLayer.length !== 0 || !showMapLayer(operation);
+  return _.get(metadata, 'contents.mapLayer.length') !== 0 || !showMapLayer(operation);
 }
 
 function isHrefValid({contents: contents}) {
@@ -517,8 +517,8 @@ function renderSingleField(metadata, field, onMetadataAction, setName, fieldIdx)
         className={field.name}
         defaultValue={metadata.contents.customMetadata[setName][fieldIdx].value}
         onChange={(evt) => onMetadataAction(updateCustomData(evt.target.value, setName, fieldIdx))} >
-          {options.map((value) =>
-            <option value={value}>{value}</option>
+          {options.map((value, i) =>
+            <option key={i} value={value}>{value}</option>
             )
           }
       </select>
@@ -538,7 +538,7 @@ function renderFieldSet(metadata: DatasetMetadata, fieldSet, setName, onMetadata
   const fields = fieldSet.fields;
   return (
     <div> {fields.map((field, fieldIdx) =>
-      <div className="line clearfix">
+      <div key={fieldIdx} className="line clearfix">
         <label
           className={field.required ? 'required' : 'optional'}>
           {field.name}
@@ -561,8 +561,8 @@ function renderFieldSet(metadata: DatasetMetadata, fieldSet, setName, onMetadata
 function renderCustomMetadata(metadata, onMetadataAction) {
   return (
     <div className="customMetadataSchema">
-      {customMetadataSchema.map((set) =>
-        <div>
+      {customMetadataSchema.map((set, i) =>
+        <div key={i}>
           <h2 htmlFor="view_customMetadataName">{set.name}</h2>
           {renderFieldSet(metadata, set, set.name, onMetadataAction)}
         </div>
@@ -630,7 +630,7 @@ function renderLicenses(metadata, onMetadataAction) {
           name="view[licenses]"
           defaultValue={metadata.license.licenseName}
           onChange={(evt) => onMetadataAction(updateLicenseName(evt.target.value))}>
-          {blistLicenses.map((obj) => <option value={obj.name}>{obj.name}</option> )}
+          {blistLicenses.map((obj, i) => <option key={i} value={obj.name}>{obj.name}</option> )}
         </select>
       </div>
 
@@ -642,7 +642,7 @@ function renderLicenses(metadata, onMetadataAction) {
             name="view[licensing]"
             defaultValue={metadata.license.licensing}
             onChange={(evt) => onMetadataAction(updateLicensing(evt.target.value))}>
-            {licensesByName.licenses.map((obj) => <option value={obj.name}>{obj.name}</option>)}
+            {licensesByName.licenses.map((obj, i) => <option key={i} value={obj.name}>{obj.name}</option>)}
           </select>
         </div>
       : null}
@@ -718,7 +718,7 @@ export function showMapLayer(operation) {
 
 export function view({ metadata, onMetadataAction, operation, importError, goToPrevious }) {
   const I18nPrefixed = I18n.screens.edit_metadata;
-  const validationErrors = validate(metadata);
+  const validationErrors = validate(metadata, operation);
 
 
   return (
@@ -761,7 +761,7 @@ export function view({ metadata, onMetadataAction, operation, importError, goToP
               name="view[category]"
               defaultValue={metadata.contents.category}
               onChange={(evt) => onMetadataAction(updateCategory(evt.target.value))}>
-              {datasetCategories.map(([name, value]) => <option value={value}>{name}</option> )}
+              {datasetCategories.map(([name, value], i) => <option key={i} value={value}>{name}</option> )}
             </select>
           </div>
 

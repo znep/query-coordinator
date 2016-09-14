@@ -33,6 +33,7 @@ module UserRights
     manage_users
     moderate_comments
     short_session
+    use_data_connectors
     view_all_dataset_status_logs
     view_dashboards
     view_domain

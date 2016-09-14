@@ -92,7 +92,7 @@
         <%= admin_nav_link_to t("#{prefix}.stories"), '/stories/admin/themes' %>
       </li>
     <%- end -%>
-    <%- if feature_flag?('enable_catalog_connector', request) && CurrentDomain.user_can?(current_user, UserRights::VIEW_ALL_DATASET_STATUS_LOGS) %>
+    <%- if feature_flag?('enable_catalog_connector', request) && CurrentDomain.user_can?(current_user, UserRights::USE_DATA_CONNECTORS) %>
       <li class="connectors">
         <%= admin_nav_link_to t("#{prefix}.connectors"), :controller => '/administration/connector', :action => 'connectors' %>
       </li>

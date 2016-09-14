@@ -78,7 +78,7 @@ export function emptyContents(name: string): MetadataContents {
     description: '',
     category: '',
     tags: [],
-    rowLabel: '',
+    rowLabel: 'Row',
     mapLayer: '',
     customMetadata: defaultCustomData(customMetadataSchema),
     contactEmail: '',

@@ -2085,12 +2085,19 @@
       return _.uniq(blist.util.recursivePluck(this.query, 'columnFieldName'));
     },
 
-    redirectTo: function(urlparams) {
-      var qs = '';
-      if (!$.isBlank(urlparams)) {
-        qs = '?' + $.toParam(urlparams);
+    redirectTo: function(urlParams) {
+      var url = this.url;
+      var queryString = '';
+
+      if (blist.feature_flags.enable_dataset_landing_page) {
+        url = url + '/data';
       }
-      window.location = this.url + qs;
+
+      if (!$.isBlank(urlParams)) {
+        queryString = '?' + $.toParam(urlParams);
+      }
+
+      window.location = url + queryString;
     },
 
     _cachedLinkedColumnOptions: {},

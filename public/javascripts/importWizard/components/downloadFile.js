@@ -183,7 +183,8 @@ export function update(download: FileDownload = {}, action): FileDownload {
         type: 'Complete',
         url: download.url,
         fileId: action.fileId,
-        summary: action.summary
+        summary: action.summary,
+        fileName: download.fileName
       };
     case FILE_DOWNLOAD_ERROR:
       return {
@@ -281,4 +282,3 @@ view.propTypes = {
   fileDownload: PropTypes.object.isRequired,
   goToPrevious: PropTypes.func.isRequired
 };
-

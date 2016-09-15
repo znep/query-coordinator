@@ -415,7 +415,15 @@ export function view({ state, dispatch }) {
               return (
                 <ImportColumns.view
                   transform={state.transform}
-                  fileName={state.upload.fileName}
+                  fileName={(() => {
+                    if (!_.isUndefined(state.upload.fileName)) {
+                      return state.upload.fileName;
+                    } else if (!_.isUndefined(state.download.fileName)) {
+                      return state.download.fileName;
+                    } else {
+                      console.error('Error: no fileName found', state);
+                    }
+                  })()}
                   sourceColumns={state.upload.progress.summary.columns}
                   dispatch={dispatch}
                   goToPage={(page) => dispatch(goToPage(page))}

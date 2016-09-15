@@ -156,7 +156,7 @@ describe("downloadFile's", () => {
           testThunk(
             done,
             scanURL(url),
-            { datasetId: 'abcd-efgh', download: { type: 'NotStart', url: url } },
+            { datasetId: 'abcd-efgh', download: { type: 'NotStart', url: url, fileName: 'data.csv' } },
             [
               (state, action) => {
                 expect(action).to.deep.equal({
@@ -165,6 +165,7 @@ describe("downloadFile's", () => {
                 const newState = update(state.download, action);
                 expect(newState).to.deep.equal({
                   type: 'Started',
+                  fileName: 'data.csv',
                   url: url,
                   error: null
                 });
@@ -178,6 +179,7 @@ describe("downloadFile's", () => {
                 const newState = update(state.download, action);
                 expect(newState).to.deep.equal({
                   type: 'InProgress',
+                  fileName: 'data.csv',
                   message: 'Scanning file...',
                   url: url,
                   error: null
@@ -207,6 +209,7 @@ describe("downloadFile's", () => {
                 const newState = update(state.download, action);
                 const expected = {
                   type: 'Complete',
+                  fileName: 'data.csv',
                   url: url,
                   fileId: ticket,
                   summary: scanWithIndices

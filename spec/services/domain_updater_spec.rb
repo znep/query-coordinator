@@ -5,81 +5,211 @@ RSpec.describe DomainUpdater do
     # aliases may be stored with excessive commas in Core
     let(:old_domain) { {'cname' => 'old', 'aliases' => ',alias,aliaz,' } }
     let(:new_domain) { {'cname' => 'alias', 'aliases' => ',aliaz,old,' } }
-    let(:other_domain) { {'cname' => 'other', 'aliases' => ',whatever,' } }
-    let(:block) { instance_double('Block') } # use FactoryGirl and replace private component methods?
+    let(:block) { instance_double('Block') }
 
     context 'when no blocks are affected' do
       it 'does nothing' do
         allow(Block).to receive(:where).and_return([])
+
         expect_any_instance_of(Block).not_to receive(:update_columns)
 
         DomainUpdater.migrate(old_domain, new_domain)
       end
     end
 
-    context 'when blocks are affected' do
+    context 'when any block is affected' do
       before do
         allow(Block).to receive(:where).and_return([block])
         allow(block).to receive(:id).and_return('1')
       end
 
-      it 'modifies only components that were using the old domain' do
+      it 'updates only components that refer to a source domain' do
         original_components = [
-          # many components have no domain reference
-          non_migrating_component,
-          # story tiles are affected only if they use the old domain
-          story_tile_component(other_domain),
-          story_tile_component(old_domain),
-          # goal tiles are affected only if they use the old domain
-          goal_tile_component(other_domain),
-          goal_tile_component(old_domain)
+          story_tile_component('foo.example.com'),
+          story_tile_component('bar.example.com')
         ]
+        migrated_components = [
+          story_tile_component('foo.example.com'),
+          story_tile_component('baz.example.com')
+        ]
+
+        allow(DomainUpdater).to receive(:has_domain_reference).
+          with(original_components[0], anything).
+          and_return(false)
+        allow(DomainUpdater).to receive(:has_domain_reference).
+          with(original_components[1], anything).
+          and_return(true)
+        allow(DomainUpdater).to receive(:migrate_story_tile).
+          and_return(story_tile_component('baz.example.com'))
+
         allow(block).to receive(:components).and_return(original_components)
 
-        migrated_components = original_components.dup
-        # story tile changes
-        migrated_components[2]['value']['domain'] = 'alias'
-        # goal tile changes
-        migrated_components[4]['value']['domain'] = 'alias'
-        migrated_components[4]['value']['domain'].sub!('//old', '//alias')
-
+        expect(DomainUpdater).to receive(:migrate_story_tile).once
         expect(block).to receive(:update_columns).with(hash_including(components: migrated_components))
+
         DomainUpdater.migrate(old_domain, new_domain)
+      end
+    end
+  end
+
+  context 'migrating specific components' do
+    let(:component_domain) { 'source.example.com' }
+    let(:destination_domain) { 'destination.example.com' }
+
+    describe '#migrate_goal_tile' do
+      it 'returns a migrated component' do
+        old_component = goal_tile_component(component_domain)
+        new_component = goal_tile_component(destination_domain)
+
+        migrated_component = DomainUpdater.send(:migrate_goal_tile, old_component, destination_domain)
+        expect(migrated_component).to eq(new_component)
+      end
+    end
+
+    describe '#migrate_story_tile' do
+      it 'returns a migrated component' do
+        old_component = story_tile_component(component_domain)
+        new_component = story_tile_component(destination_domain)
+
+        migrated_component = DomainUpdater.send(:migrate_story_tile, old_component, destination_domain)
+        expect(migrated_component).to eq(new_component)
+      end
+    end
+
+    describe '#migrate_classic_visualization' do
+      it 'returns a migrated component' do
+        old_component = classic_visualization_component(component_domain)
+        new_component = classic_visualization_component(destination_domain)
+
+        migrated_component = DomainUpdater.send(:migrate_classic_visualization, old_component, destination_domain)
+        expect(migrated_component).to eq(new_component)
+      end
+    end
+
+    describe '#migrate_v1_vif' do
+      it 'returns a migrated component' do
+        old_component = v1_vif_component(component_domain)
+        new_component = v1_vif_component(destination_domain)
+
+        migrated_component = DomainUpdater.send(:migrate_v1_vif, old_component, destination_domain)
+        expect(migrated_component).to eq(new_component)
+      end
+    end
+
+    describe '#migrate_v2_vif' do
+      it 'returns a migrated component' do
+        old_component = v2_vif_component(component_domain)
+        new_component = v2_vif_component(destination_domain)
+
+        migrated_component = DomainUpdater.send(:migrate_v2_vif, old_component, destination_domain)
+        expect(migrated_component).to eq(new_component)
       end
     end
   end
 
   private
 
-  def goal_tile_component(domain)
+  # Some of these components have more properties than are shown here.
+  # All of the crucial properties should be present.
+
+  def goal_tile_component(cname)
     {
       'type' => 'goal.tile',
       'value' => {
-        'domain' => domain['cname'],
+        'domain' => cname,
         'goalUid' => 'test-test',
-        'goalFullUrl' => "https://#{domain['cname']}/stat/goals/single/test-test"
+        'goalFullUrl' => "https://#{cname}/stat/goals/single/test-test"
       }
     }
   end
 
-  def story_tile_component(domain)
+  def story_tile_component(cname)
     {
       'type' => 'story.tile',
       'value' => {
-        'domain' => domain['cname'],
+        'domain' => cname,
         'storyUid' => 'test-test',
         'openInNewWindow' => false
       }
     }
   end
 
-  def non_migrating_component
+  def classic_visualization_component(cname)
     {
-      'type' => 'author',
+      'type' => 'socrata.visualization.classic',
       'value' => {
-        'image' => {
-          'documentId' => 1,
-          'url' => 'http://example.com/hero-image.jpg'
+        'dataset' => {
+          'domain' => cname,
+          'datasetUid' => 'test-test'
+        },
+        'originalUid' => 'test-test',
+        'visualization' => {
+          'id' => 'test-test',
+          'name' => 'Classic Visualization',
+          'domainCName' => cname
+        }
+      }
+    }
+  end
+
+  def v1_vif_component(cname)
+    {
+      'type' => 'socrata.visualization.table',
+      'value' => {
+        'vif' => {
+          'type' => 'table',
+          'unit' => {
+            'one' => 'record',
+            'other' => 'records'
+          },
+          'title' => 'V1 VIF',
+          'domain' => cname,
+          'format' => {
+            'type' => 'visualization_interchange_format',
+            'version' => 1
+          },
+          'origin' => {
+            'url' => "https://#{cname}/stories/s/V1-VIF/test-test",
+            'type' => 'storyteller_asset_selector'
+          },
+          'datasetUid' => 'test-test'
+        },
+        'dataset' => {
+          'domain' => cname,
+          'datasetUid' => 'test-test'
+        }
+      }
+    }
+  end
+
+  def v2_vif_component(cname)
+    {
+      'type' => 'socrata.visualization.columnChart',
+      'value' => {
+        'vif' => {
+          'title' => 'V2 VIF',
+          'format' => {
+            'type' => 'visualization_interchange_format',
+            'version' => 2
+          },
+          'series' => [
+            {
+              'type' => 'columnChart',
+              'unit' => {
+                'one' => 'record',
+                'other' => 'records'
+              },
+              'dataSource' => {
+                'type' => 'socrata.soql',
+                'domain' => cname,
+                'datasetUid' => 'test-test'
+              }
+            }
+          ]
+        },
+        'dataset' => {
+          'domain' => cname,
+          'datasetUid' => 'test-test'
         }
       }
     }

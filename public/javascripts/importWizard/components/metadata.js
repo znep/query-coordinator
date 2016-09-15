@@ -78,7 +78,7 @@ export function emptyContents(name: string): MetadataContents {
     description: '',
     category: '',
     tags: [],
-    rowLabel: 'Row',
+    rowLabel: I18n.screens.edit_metadata.default_row_label,
     mapLayer: '',
     customMetadata: defaultCustomData(customMetadataSchema),
     contactEmail: '',

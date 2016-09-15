@@ -700,8 +700,12 @@ describe('AssetSelectorRenderer', function() {
 
         describe('when canceling', function() {
           it('should close the modal and asset selection', function() {
+            var confirmStub = sinon.stub(window, 'confirm').returns(true);
+
             $('#authoring-workflow .cancel').click();
             assert.equal($('#authoring-workflow *').length, 0);
+
+            window.confirm.restore();
           });
         });
 

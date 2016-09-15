@@ -5,6 +5,10 @@ describe SiteChrome do
   include TestHelperMethods
 
   describe 'site chrome model' do
+    before(:all) do
+      init_current_domain
+    end
+
     # NOTE: To re-record the VCR cassettes:
     # * Log in to FE locally against local core
     # * Copy your local auth cookies to auth_cookies_for_vcr_tapes
@@ -29,7 +33,7 @@ describe SiteChrome do
       VCR.use_cassette('site_chrome/model/create') do
         site_chrome = SiteChrome.new(
           name: 'Site Chrome',
-          default: false, # so that find_default won't find this
+          default: false, # so that find won't find this
           domainCName: 'localhost',
           type: 'site_chrome'
         )
@@ -38,15 +42,16 @@ describe SiteChrome do
         res = site_chrome.create
         expect(res).to be_instance_of(SiteChrome)
         expect(site_chrome.id).not_to be_nil
-        expect(site_chrome.default).to be false # find_default should not find us
+        expect(site_chrome.default).to be false # find should not find us
         expect(site_chrome.properties).to be_empty
         expect(site_chrome.updatedAt).not_to be_nil
       end
     end
 
-    it 'can find or create default' do
-      VCR.use_cassette('site_chrome/model/find_or_create') do
-        site_chrome = SiteChrome.find_or_create_default(auth_cookies_for_vcr_tapes)
+    it 'can create a site chrome config' do
+      VCR.use_cassette('site_chrome/model/create_site_chrome_config') do
+        site_chrome = SiteChrome.create_site_chrome_config(auth_cookies_for_vcr_tapes)
+
         expect(site_chrome).to be_instance_of(SiteChrome)
         expect(site_chrome.id).not_to be_nil
         expect(site_chrome.default).to be true # should be default
@@ -54,11 +59,9 @@ describe SiteChrome do
       end
     end
 
-    it 'can find or create default for CurrentDomain', :verify_stubs => false do
-      VCR.use_cassette('site_chrome/model/find_or_create_mydomain') do
-        init_current_domain
-        allow(CurrentDomain).to receive(:cname).and_return('mydomain.com')
-        site_chrome = SiteChrome.find_or_create_default({})
+    it 'can find a site chrome for CurrentDomain' do
+      VCR.use_cassette('site_chrome/model/find_mydomain') do
+        site_chrome = SiteChrome.find
         expect(site_chrome).to be_instance_of(SiteChrome)
         expect(site_chrome.id).not_to be_nil
         expect(site_chrome.default).to be true # should be default
@@ -66,16 +69,14 @@ describe SiteChrome do
       end
     end
 
-    it 'can find_default and find_one' do
-      VCR.use_cassette('site_chrome/model/find_default_and_find_one') do
-        # SiteChrome#find_default
-        default_site_chrome = SiteChrome.find_default
+    it 'can find and find_one' do
+      VCR.use_cassette('site_chrome/model/find_one') do
+        default_site_chrome = SiteChrome.find
         expect(default_site_chrome).to be_instance_of(SiteChrome)
         expect(default_site_chrome.default).to be true
         expect(default_site_chrome.id).not_to be_nil
         expect(default_site_chrome.updatedAt).not_to be_nil
 
-        # SiteChrome#find_one
         site_chrome = SiteChrome.find_one(default_site_chrome.id)
         expect(site_chrome).to be_instance_of(SiteChrome)
         expect(site_chrome.attributes).to eq(default_site_chrome.attributes)
@@ -83,8 +84,8 @@ describe SiteChrome do
     end
 
     it 'can load and reload' do
-      VCR.use_cassette('site_chrome/model/find_default_and_reload') do
-        site_chrome = SiteChrome.find_default
+      VCR.use_cassette('site_chrome/model/find_and_reload') do
+        site_chrome = SiteChrome.find
         before_reload = site_chrome.attributes
         after_reload = site_chrome.reload.attributes
         expect(after_reload).to eq(before_reload)
@@ -106,8 +107,8 @@ describe SiteChrome do
     end
 
     it 'can create a property' do
-      VCR.use_cassette('site_chrome/model/find_default_and_create_property') do
-        site_chrome = SiteChrome.find_default
+      VCR.use_cassette('site_chrome/model/find_and_create_property') do
+        site_chrome = SiteChrome.find
         site_chrome.cookies = auth_cookies_for_vcr_tapes
 
         expect(site_chrome.property(new_property_name)).to be_nil
@@ -121,8 +122,8 @@ describe SiteChrome do
     end
 
     it 'can reload properties' do
-      VCR.use_cassette('site_chrome/model/find_default_and_reload_properties') do
-        site_chrome = SiteChrome.find_default
+      VCR.use_cassette('site_chrome/model/find_and_reload_properties') do
+        site_chrome = SiteChrome.find
         before = site_chrome.attributes
         after = site_chrome.reload_properties.attributes
         expect(after).to eq(before)
@@ -131,8 +132,8 @@ describe SiteChrome do
 
     # update_attribute is an all-or-nothing overwrite
     it 'can update property attributes' do
-      VCR.use_cassette('site_chrome/model/find_default_and_update_property') do
-        site_chrome = SiteChrome.find_default
+      VCR.use_cassette('site_chrome/model/find_and_update_property') do
+        site_chrome = SiteChrome.find
         site_chrome.cookies = auth_cookies_for_vcr_tapes
 
         expect(site_chrome.property(new_property_name)).
@@ -161,7 +162,7 @@ describe SiteChrome do
 
     # Update published content (via deep merge) also works when published content does not yet exist
     it 'can update published content when siteChromeConfigVars does not exist' do
-      VCR.use_cassette('site_chrome/model/find_or_create_default_and_update_published_content') do
+      VCR.use_cassette('site_chrome/model/find_and_update_published_content') do
         site_chrome = SiteChrome.new(default: false)
         site_chrome.cookies = auth_cookies_for_vcr_tapes
         res = site_chrome.create
@@ -182,7 +183,7 @@ describe SiteChrome do
     def default_site_chrome
       SiteChrome.new(
         name: 'Site Chrome',
-        default: false, # so that find_default won't find this
+        default: false, # so that find won't find this
         domainCName: 'localhost',
         type: 'site_chrome'
       )

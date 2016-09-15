@@ -102,7 +102,7 @@ module TestHelperMethods
   end
 
   def stub_site_chrome
-    SiteChrome.stubs(:find_or_create_default => Hashie::Mash.new(
+    SiteChrome.stubs(:find => Hashie::Mash.new(
       :activation_state => {
         :open_data => false,
         :homepage => false,

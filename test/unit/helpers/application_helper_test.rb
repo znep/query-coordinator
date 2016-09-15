@@ -449,56 +449,27 @@ class ApplicationHelperTest < ActionView::TestCase
     refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
   end
 
-  def test_enable_site_chrome_admin_panel_is_false_if_nil_user
-    application_helper.stubs(:current_user => nil)
-    refute application_helper.enable_site_chrome_admin_panel?
-  end
-
-  def test_enable_site_chrome_admin_panel_is_false_if_user_is_not_a_superadmin
-    user = stub
-    user.stubs(:is_superadmin? => false)
-    application_helper.stubs(:current_user => user)
-    refute application_helper.enable_site_chrome_admin_panel?
-  end
-
-  def test_enable_site_chrome_admin_panel_is_true_if_user_is_a_superadmin
-    user = stub
-    user.stubs(:is_superadmin? => true)
-    application_helper.stubs(:current_user => user)
-    assert application_helper.enable_site_chrome_admin_panel?
-  end
-
   def test_enable_site_chrome_is_false_if_no_site_chrome_activation_states_are_true
-    SiteChrome.stubs(:find_or_create_default => Hashie::Mash.new(
-      :activation_state => {
-        :open_data => false,
-        :homepage => false,
-        :data_lens => false
-      }
-    ))
-
+    SiteChrome.stubs(:find => SiteChrome.new)
+    SiteChrome.any_instance.stubs(:is_activated_on?).with('open_data').returns(false)
+    SiteChrome.any_instance.stubs(:is_activated_on?).with('homepage').returns(false)
+    SiteChrome.any_instance.stubs(:is_activated_on?).with('data_lens').returns(false)
     refute application_helper.enable_site_chrome?
   end
 
   def test_enable_site_chrome_is_false_on_homepage_and_dataset_if_the_states_are_true_but_the_other_conditions_are_not_met
-    SiteChrome.stubs(:find_or_create_default => Hashie::Mash.new(
-      :activation_state => {
-        :open_data => false,
-        :homepage => true,
-        :data_lens => true
-      }
-    ))
+    SiteChrome.stubs(:find => SiteChrome.new)
+    SiteChrome.any_instance.stubs(:is_activated_on?).with('open_data').returns(false)
+    SiteChrome.any_instance.stubs(:is_activated_on?).with('homepage').returns(true)
+    SiteChrome.any_instance.stubs(:is_activated_on?).with('data_lens').returns(true)
     refute application_helper.enable_site_chrome?
   end
 
   def test_enable_site_chrome_is_true_for_homepage
-    SiteChrome.stubs(:find_or_create_default => Hashie::Mash.new(
-      :activation_state => {
-        :open_data => false,
-        :homepage => true,
-        :data_lens => false
-      }
-    ))
+    SiteChrome.stubs(:find => SiteChrome.new)
+    SiteChrome.any_instance.stubs(:is_activated_on?).with('open_data').returns(false)
+    SiteChrome.any_instance.stubs(:is_activated_on?).with('homepage').returns(true)
+    SiteChrome.any_instance.stubs(:is_activated_on?).with('data_lens').returns(false)
     application_helper.stubs(:on_homepage => false)
     application_helper.stubs(:using_dataslate => false)
     refute application_helper.enable_site_chrome?
@@ -511,13 +482,10 @@ class ApplicationHelperTest < ActionView::TestCase
     FeatureFlags.stubs(:derive => Hashie::Mash.new(
       :site_chrome_header_and_footer_for_dataslate => true
     ))
-    SiteChrome.stubs(:find_or_create_default => Hashie::Mash.new(
-      :activation_state => {
-        :open_data => false,
-        :homepage => false,
-        :data_lens => false
-      }
-    ))
+    SiteChrome.stubs(:find => SiteChrome.new)
+    SiteChrome.any_instance.stubs(:is_activated_on?).with('open_data').returns(false)
+    SiteChrome.any_instance.stubs(:is_activated_on?).with('homepage').returns(false)
+    SiteChrome.any_instance.stubs(:is_activated_on?).with('data_lens').returns(false)
     application_helper.stubs(:on_homepage => false)
     application_helper.stubs(:using_dataslate => false)
     refute application_helper.enable_site_chrome?
@@ -527,12 +495,12 @@ class ApplicationHelperTest < ActionView::TestCase
   end
 
   def test_enable_site_chrome_doesnt_error_if_site_chrome_is_nil
-    SiteChrome.stubs(:find_or_create_default => nil)
+    SiteChrome.stubs(:find => nil)
     refute application_helper.enable_site_chrome?
   end
 
   def test_enable_site_chrome_doesnt_error_if_site_chrome_is_false
-    SiteChrome.stubs(:find_or_create_default => false)
+    SiteChrome.stubs(:find => false)
     refute application_helper.enable_site_chrome?
   end
 

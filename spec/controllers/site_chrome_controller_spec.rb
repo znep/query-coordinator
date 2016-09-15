@@ -23,9 +23,9 @@ describe SiteChromeController do
   def auth_cookies_for_vcr_tapes
     {
       'logged_in' => 'true',
-      '_socrata_session_id' => 'BAh7B0kiD3Nlc3Npb25faWQGOgZFRiIlNzU5ZDUzMzM4MjUxMTBjMDk5ZDdmYzZhMzI5MmZkOTFJIhBfY3NyZl90b2tlbgY7AEZJIjFaK0JsRE9YN1lGWFc0WDMrMmRtZXlXcnJZU1d6b2hTdGYzQVBDUnJnWlhFPQY7AEY=--61804bb14954b9cb66c8e28658089e1abaf88894',
-      'socrata-csrf-token' => 'Z+BlDOX7YFXW4X3+2dmeyWrrYSWzohStf3APCRrgZXE=',
-      '_core_session_id' => 'ODNueS13OXplIDE0NjQxMzUxODEgNGFhZjZjYjhkYzhiIDdhMTM3NWE4ZTZhZDU0MmYzNzA1NWI2ZmMyNTU2ZGJhNmI1ODQ5M2Q'
+      '_socrata_session_id' => 'BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJTFmN2E4ZmQ5ODlkNTExMzM0MmRhNGE0YjljMGUwZWYzBjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjE4WGE4V0tITjJBQTQxTW9LbTN6dmVkU0hGd3lxUUN6aU5OMGt2Rm1DOTJZPQY7AEZJIg5yZXR1cm5fdG8GOwBGMEkiCWluaXQGOwBUVA',
+      'socrata-csrf-token' => '4c51qr%2Bqf6ZyxCb0eNKyYyoe0EIajfTrQgBbhcluAD8QuMnyHmenpkoQ7P7jrl0a%2FpnHTrDN2Al23X85kOz3WQ%3D%3D',
+      '_core_session_id' => 'dHVnZy1pa2NlIDE0NzQwMTAwMjAgNzJmOTljMzRlYjE4IGU3Mzk0YTg1M2YyYThkMWJkOWJlNjMwZGZkOTNmYWFkOGQ0NzllNTc%3D'
     }
   end
 
@@ -107,7 +107,7 @@ describe SiteChromeController do
       auth_cookies_for_vcr_tapes.each { |key, value| @request.cookies[key] = value }
 
       VCR.use_cassette('site_chrome/controller/update') do
-        site_chrome = SiteChrome.find_default
+        site_chrome = SiteChrome.find
         expect(site_chrome.content).not_to include(new_content)
 
         put :update, content: new_content
@@ -159,14 +159,14 @@ describe SiteChromeController do
     end
   end
 
-  describe '#find_or_create_default_site_chrome' do
+  describe '#fetch_site_chrome_content' do
     before(:each) do
       allow(subject).to receive(:enable_site_chrome?).and_return(true)
     end
 
     it 'creates content with necessary keys to render views' do
-      allow(SiteChrome).to receive(:find_or_create_default).and_return(empty_site_chrome)
-      result = @controller.instance_eval { find_or_create_default_site_chrome }
+      allow(SiteChrome).to receive(:find).and_return(empty_site_chrome)
+      result = @controller.instance_eval { fetch_site_chrome_content }
       expect(result).to match_array(%w(header footer general locales))
     end
   end

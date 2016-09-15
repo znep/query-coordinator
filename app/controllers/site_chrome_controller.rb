@@ -6,7 +6,7 @@ class SiteChromeController < ApplicationController
 
   # TODO: rename to before_action with Rails upgrade
   before_filter :ensure_access
-  before_filter :find_or_create_default_site_chrome
+  before_filter :fetch_site_chrome_content
 
   def tab_sections
     # EN-6943: removing "homepage" because it is not implemented yet
@@ -18,6 +18,11 @@ class SiteChromeController < ApplicationController
   end
 
   def update
+    unless SiteChrome.find
+      SiteChrome.create_site_chrome_config(forwardable_session_cookies)
+      @site_chrome = SiteChrome.find
+    end
+
     @site_chrome.request_id = request_id
     @site_chrome.cookies = forwardable_session_cookies
 
@@ -57,9 +62,9 @@ class SiteChromeController < ApplicationController
     end
   end
 
-  # If site chrome doesn't yet exist, create a new one
-  def find_or_create_default_site_chrome
-    @site_chrome = SiteChrome.find_or_create_default(forwardable_session_cookies)
+  # Use existing Site Chrome config or instantiate a new one with the default content
+  def fetch_site_chrome_content
+    @site_chrome = SiteChrome.find || SiteChrome.new
 
     # Ensure site_chrome has content necessary for rendering plain views
     @content = @site_chrome.send(in_preview_mode? ? :draft_content : :published_content) || {}

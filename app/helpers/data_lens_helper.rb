@@ -115,7 +115,7 @@ module DataLensHelper
   end
 
   def site_chrome_enabled?
-    SiteChrome.find_or_create_default(cookies).activation_state['data_lens']
+    SiteChrome.find.try(:is_activated_on?, 'data_lens')
   end
 
   def render_data_lens_translations

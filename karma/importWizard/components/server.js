@@ -1,6 +1,4 @@
-import React, { PropTypes } from 'react';
 import _ from 'lodash';
-import TestUtils from 'react-addons-test-utils';
 
 import * as ExampleData from './exampleData';
 import {
@@ -35,14 +33,14 @@ describe('ImportStatus reducer', () => {
 
 });
 
-describe("testing for API responses", () => {
+describe('testing for API responses', () => {
   const metadata = {
     license: {
-      licenseId: "PDDL",
-      licenseName: "Open Data Commons",
-      licensing: "Public Domain Dedication and License",
-      attribution: "Me",
-      sourceLink: "google.com"
+      licenseId: 'PDDL',
+      licenseName: 'Open Data Commons',
+      licensing: 'Public Domain Dedication and License',
+      attribution: 'Me',
+      sourceLink: 'google.com'
     },
     contents: {
       name: 'name',
@@ -139,7 +137,7 @@ describe("testing for API responses", () => {
 
       expect(license).to.deep.equal({
         name: 'Open Data Commons Public Domain Dedication and License',
-        termsLink: "http://opendatacommons.org/licenses/pddl/1.0/",
+        termsLink: 'http://opendatacommons.org/licenses/pddl/1.0/',
         logoUrl: ''
       });
     });
@@ -204,7 +202,7 @@ describe("testing for API responses", () => {
       expect(viewMetadata.accessPoints).to.equal(undefined);
       expect(coreView.metadata.renderTypeConfig.visibile).to.deep.equal({blob: true});
       expect(coreView.metadata.availableDisplayTypes).to.deep.equal(['blob']);
-    })
+    });
   });
 
   describe('coreViewToModel', () => {
@@ -227,7 +225,7 @@ describe("testing for API responses", () => {
           field: obj.field,
           value: '',
           privateField: obj.privateField
-        }
+        };
       });
 
       const second = metadata.contents.customMetadata.second.map((obj) => {
@@ -235,13 +233,25 @@ describe("testing for API responses", () => {
           field: obj.field,
           value: '',
           privateField: obj.privateField
-        }
+        };
       });
 
       metadata.contents.customMetadata = {
         first: first,
         second: second
       };
+
+      expect(metadata.contents.name).to.deep.equal(meta.contents.name);
+      expect(metadata.contents.description).to.deep.equal(meta.contents.description);
+      expect(metadata.contents.category).to.deep.equal(meta.contents.category);
+      expect(metadata.contents.tags).to.deep.equal(meta.contents.tags);
+      expect(metadata.contents.rowLabel).to.deep.equal(meta.contents.rowLabel);
+      expect(metadata.contents.mapLayer).to.deep.equal(meta.contents.mapLayer);
+      expect(metadata.contents.href).to.deep.equal(meta.contents.href);
+      expect(metadata.contents.contactEmail).to.deep.equal(meta.contents.contactEmail);
+      expect(metadata.contents.privacySettings).to.deep.equal(meta.contents.privacySettings);
+      expect(metadata.contents.displayType).to.deep.equal(meta.contents.displayType);
+      expect(metadata.contents.customMetadata).to.deep.equal(meta.contents.customMetadata);
 
       expect(metadata.contents).to.deep.equal(meta.contents);
     });
@@ -265,12 +275,12 @@ describe('transformToImports2Translation', () => {
 
   it('generates the correct translation when there are composite columns', () => {
     const result = transformToImports2Translation(ExampleData.translationWithCompositeCol);
-    expect(result).to.equal('[col1,col2 + "some constant text" + col4]')
+    expect(result).to.equal('[col1,col2 + "some constant text" + col4]');
   });
 
   it('generates the correct translation when there are composite columns and translations', () => {
     const result = transformToImports2Translation(ExampleData.translationWithCompositeColAndTransform);
-    expect(result).to.equal('[col1,upper(col2 + "some constant text" + col4)]')
+    expect(result).to.equal('[col1,upper(col2 + "some constant text" + col4)]');
   });
 });
 

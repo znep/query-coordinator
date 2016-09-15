@@ -9,6 +9,10 @@ import { fileUploadComplete } from 'components/uploadFile';
 import * as SaveState from 'saveState';
 import { withMockFetch, testThunk } from '../asyncUtils';
 
+// Strips out some hidden properties?
+function normalize(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
 
 describe('updateNavigation', function() {
   this.timeout(100);
@@ -21,7 +25,7 @@ describe('updateNavigation', function() {
 
   function testChooseOperation(done, operation, navigationStateAfter) {
     withMockFetch(
-      (url, options, resolve, reject) => {
+      (url, options, resolve) => {
         resolve({
           status: 200,
           json: () => Promise.resolve({
@@ -222,7 +226,7 @@ describe('initialNewDatasetModel', () => {
         description: '',
         category: '',
         tags: [],
-        rowLabel: '',
+        rowLabel: 'Row',
         mapLayer: '',
         customMetadata: {
           first: [
@@ -283,7 +287,7 @@ describe('initialNewDatasetModel', () => {
           description: '',
           category: '',
           tags: [],
-          rowLabel: '',
+          rowLabel: 'Row',
           mapLayer: '',
           customMetadata: {
             first: [
@@ -499,7 +503,7 @@ describe('initialNewDatasetModel', () => {
           page: 'SelectUploadType',
           path: ['SelectType']
         }
-      })
+      });
     });
 
     const summary = {
@@ -582,7 +586,7 @@ describe('initialNewDatasetModel', () => {
         scanResults: summary
       };
       const actual = initialNewDatasetModel(theView, importSource);
-      expect(JSON.parse(JSON.stringify(initialStateWithTransform))).to.deep.equal(JSON.parse(JSON.stringify(actual)));
+      expect(normalize(initialStateWithTransform)).to.deep.equal(normalize(actual));
       // ;_; no idea why this doesn't work without the parse/stringify pairs
     });
 
@@ -619,10 +623,9 @@ describe('initialNewDatasetModel', () => {
         }
       };
 
-      expect(JSON.parse(JSON.stringify(expected))).to.deep.equal(JSON.parse(JSON.stringify(actual)));
+      expect(normalize(expected)).to.deep.equal(normalize(actual));
       // ;_; no idea why this doesn't work without the parse/stringify pairs
     });
 
   });
-
 });

@@ -259,6 +259,14 @@ export function goToPage(page) {
   };
 }
 
+const GO_TO_PREVIOUS_PAGE = 'GO_TO_PREVIOUS_PAGE';
+export function goToPreviousPage(page) {
+  return {
+    type: GO_TO_PREVIOUS_PAGE,
+    page
+  };
+}
+
 const GO_TO_PREVIOUS = 'GO_TO_PREVIOUS';
 export function goToPrevious() {
   return {
@@ -325,7 +333,19 @@ export function updateNavigation(navigation: Navigation = initialNavigation, act
         page: action.page,
         path: [...navigation.path, navigation.page]
       };
-
+    case GO_TO_PREVIOUS_PAGE: {
+      const idx = navigation.path.indexOf(action.page);
+      if (idx !== -1) {
+        return {
+          ...navigation,
+          page: action.page,
+          path: navigation.path.slice(0, idx)
+        };
+      } else {
+        console.error('GO_TO_PREVIOUS_PAGE called with invalid page', action.page);
+        return navigation;
+      }
+    }
     case GO_TO_PREVIOUS:
       return {
         ...navigation,

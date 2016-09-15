@@ -9,7 +9,7 @@ import * as SharedTypes from './sharedTypes';
 import * as ImportColumns from './components/importColumns';
 import * as Metadata from './components/metadata';
 import * as Utils from './utils';
-import { goToPage } from './wizard';
+import { goToPage, goToPreviousPage } from './wizard';
 import licenses from 'licenses';
 const invertedLicenses = _.invert(licenses);
 import airbrake from './airbrake';
@@ -71,11 +71,11 @@ export function proceedFromMetadataPane() {
   return (dispatch, getState) => {
     const { navigation, metadata } = getState();
     if (metadata.apiCall.type === 'Error') {
-      dispatch(goToPage('Metadata'));
+      dispatch(goToPreviousPage('Metadata'));
     } else {
       const onImportError = () => {
         dispatch(importError());
-        dispatch(goToPage('Metadata'));
+        dispatch(goToPreviousPage('Metadata'));
       };
       switch (navigation.operation) {
         case 'UPLOAD_DATA':

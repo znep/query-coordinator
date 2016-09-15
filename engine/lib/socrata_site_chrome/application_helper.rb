@@ -41,7 +41,7 @@ module SocrataSiteChrome
 
     def current_user_can_modify_site_chrome?
       return false unless request_current_user.present?
-      if request_current_user.is_a?(User)
+      if request_current_user.respond_to?(:session_token)
         request_current_user
       else
         SocrataSiteChrome::User.new(request_current_user)

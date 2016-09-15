@@ -367,7 +367,7 @@ function displayTypeFor(operation) {
     case 'LINK_EXTERNAL':
       return 'href';
     case 'CREATE_FROM_SCRATCH':
-      return 'tabular';
+      return 'table';
     case 'UPLOAD_BLOB':
       return 'blob';
     default:

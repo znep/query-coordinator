@@ -79,7 +79,7 @@ export function emptyContents(name: string): MetadataContents {
     category: '',
     tags: [],
     rowLabel: I18n.screens.edit_metadata.default_row_label,
-    mapLayer: '',
+    mapLayer: null,
     customMetadata: defaultCustomData(customMetadataSchema),
     contactEmail: '',
     privacySettings: 'private',
@@ -94,7 +94,7 @@ export function emptyLicense(): LicenseType {
     licensing: '',
     licenseId: '',
     attribution: '',
-    sourceLink: ''
+    sourceLink: null
   };
 }
 

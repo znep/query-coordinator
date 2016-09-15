@@ -9,11 +9,6 @@ import { fileUploadComplete } from 'components/uploadFile';
 import * as SaveState from 'saveState';
 import { withMockFetch, testThunk } from '../asyncUtils';
 
-// Strips out some hidden properties?
-function normalize(obj) {
-  return JSON.parse(JSON.stringify(obj));
-}
-
 describe('updateNavigation', function() {
   this.timeout(100);
 
@@ -227,7 +222,7 @@ describe('initialNewDatasetModel', () => {
         category: '',
         tags: [],
         rowLabel: 'Row',
-        mapLayer: '',
+        mapLayer: null,
         customMetadata: {
           first: [
             {
@@ -277,7 +272,7 @@ describe('initialNewDatasetModel', () => {
         licensing: '',
         licenseId: '',
         attribution: '',
-        sourceLink: ''
+        sourceLink: null
       },
       lastSaved: {
         lastSavedContents: {
@@ -288,7 +283,7 @@ describe('initialNewDatasetModel', () => {
           category: '',
           tags: [],
           rowLabel: 'Row',
-          mapLayer: '',
+          mapLayer: null,
           customMetadata: {
             first: [
               {
@@ -338,7 +333,7 @@ describe('initialNewDatasetModel', () => {
           licensing: '',
           licenseId: '',
           attribution: '',
-          sourceLink: ''
+          sourceLink: null
         }
       }
     },
@@ -537,7 +532,8 @@ describe('initialNewDatasetModel', () => {
           }
         },
         transforms: [],
-        id: 0
+        id: 0,
+        chosenType: undefined
       },
       {
         name: 'col 2',
@@ -549,7 +545,8 @@ describe('initialNewDatasetModel', () => {
           }
         },
         transforms: [],
-        id: 1
+        id: 1,
+        chosenType: undefined
       }
     ];
 
@@ -586,8 +583,8 @@ describe('initialNewDatasetModel', () => {
         scanResults: summary
       };
       const actual = initialNewDatasetModel(theView, importSource);
-      expect(normalize(initialStateWithTransform)).to.deep.equal(normalize(actual));
-      // ;_; no idea why this doesn't work without the parse/stringify pairs
+
+      expect(initialStateWithTransform).to.deep.equal(actual);
     });
 
     it('initializes the transform based on the ImportSource', () => {
@@ -623,8 +620,11 @@ describe('initialNewDatasetModel', () => {
         }
       };
 
-      expect(normalize(expected)).to.deep.equal(normalize(actual));
-      // ;_; no idea why this doesn't work without the parse/stringify pairs
+      expect(expected.metadata.contents).to.deep.equal(actual.metadata.contents);
+      expect(expected.metadata.license).to.deep.equal(actual.metadata.license);
+      expect(expected.metadata.lastSaved).to.deep.equal(actual.metadata.lastSaved);
+      expect(expected.metadata).to.deep.equal(actual.metadata);
+      expect(expected).to.deep.equal(actual);
     });
 
   });

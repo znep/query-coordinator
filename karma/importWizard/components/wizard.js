@@ -472,17 +472,19 @@ describe('initialNewDatasetModel', () => {
   });
 
   describe('when the `importSource` has an `operation` of `LINK_EXTERNAL`', () => {
-    const expected = initialNewDatasetModel(theView, { version: 2, importMode: 'LINK_EXTERNAL' });
-    const actual = {
-      ...initialState,
-      lastSavedVersion: 2,
-      navigation: {
-        operation: 'LINK_EXTERNAL',
-        page: 'Metadata',
-        path: ['SelectType']
-      }
-    };
-    expect(expected).to.deep.equal(actual);
+    it('rehydrates properly', () => {
+      const expected = initialNewDatasetModel(theView, { version: 2, importMode: 'LINK_EXTERNAL' });
+      const actual = {
+        ...initialState,
+        lastSavedVersion: 2,
+        navigation: {
+          operation: 'LINK_EXTERNAL',
+          page: 'Metadata',
+          path: ['SelectType']
+        }
+      };
+      expect(expected).to.deep.equal(actual);
+    });
   });
 
   describe('when the `importSource` has an `operation` of `UPLOAD_DATA`', () => {

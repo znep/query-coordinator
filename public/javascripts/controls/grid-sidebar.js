@@ -249,6 +249,11 @@
 
       var nameParts = getConfigNames(paneName);
       var outerConfig = paneConfigs[nameParts.primary];
+
+      if ($.isBlank(outerConfig)) {
+        return;
+      }
+
       var config = (outerConfig.subPanes || {})[nameParts.secondary] ||
         paneConfigs[nameParts.secondary];
 

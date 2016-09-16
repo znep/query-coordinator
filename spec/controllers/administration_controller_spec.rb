@@ -20,6 +20,7 @@ describe AdministrationController do
       allow(subject).to receive(:enable_site_chrome?).and_return(false)
       allow_any_instance_of(CuratedRegion).to receive(:view).and_return(view)
       allow(CurrentDomain).to receive(:strings).and_return(Hashie::Mash.new(:site_title => 'My Site'))
+      stub_site_chrome
     end
 
     describe 'GET /admin/geo' do

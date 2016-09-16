@@ -2077,7 +2077,7 @@
       var url = this.url;
       var queryString = '';
 
-      if (blist.feature_flags.enable_dataset_landing_page) { // fuck
+      if (blist.configuration.dataset_landing_page_enabled) {
         url = url + '/data';
       }
 

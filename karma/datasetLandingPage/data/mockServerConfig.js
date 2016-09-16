@@ -4,8 +4,6 @@ export default {
   domain: 'localhost',
   featureFlags: {
     csrfToken: 'supersecuretoken',
-    defaultToDatasetLandingPage: true,
-    enableDatasetLandingPage: true,
     storiesEnabled: true,
     recaptchaKey: 'superdupersecurekey'
   },

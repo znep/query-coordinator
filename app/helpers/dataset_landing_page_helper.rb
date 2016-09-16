@@ -123,7 +123,7 @@ module DatasetLandingPageHelper
   end
 
   def edit_metadata_url
-    if @view.has_rights?(ViewRights::UPDATE_VIEW) && dataset_landing_page_enabled?
+    if @view.has_rights?(ViewRights::UPDATE_VIEW)
       edit_view_metadata_path(@view)
     end
   end

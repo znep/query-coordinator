@@ -212,7 +212,7 @@ class DatasetsControllerTest < ActionController::TestCase
 
   context 'with DSLP fully enabled' do
     setup do
-      @test_view.stubs(:dataset_landing_page_enabled? => true) # this might work?
+      @controller.stubs(:dataset_landing_page_enabled? => true)
       @test_view.stubs(migrations: {'nbeId' => 'test-nbe1'})
 
       # Site chrome

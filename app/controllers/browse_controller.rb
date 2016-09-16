@@ -54,6 +54,9 @@ class BrowseController < ApplicationController
       ].compact.flatten.reject { |f| f[:hidden] }
 
       @processed_browse = process_browse(request, browse_options)
+      unless validate_parameters(@processed_browse)
+        raise ApplicationController::BadParametersError
+      end
     end
 
     render :layout => 'embedded_browse'

@@ -63,6 +63,49 @@ describe BrowseController do
       end
     end
 
+    context 'when passed invalid limit param' do
+      render_views  # Cause RSpec actually render the view templates
+
+      before do
+        bypass_rescue # Prevent the rescue_from behavior of ApplicationController
+      end
+
+      context 'when a non-numeric value' do
+        it 'raises an invalid request error on show' do
+          VCR.use_cassette('browse_controller/catalog') do
+            expect do
+              get :show, :limit => 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+            end.to raise_error(ApplicationController::BadParametersError)
+          end
+        end
+
+        it 'raises an invalid reqeust error on embed' do
+          VCR.use_cassette('browse_controller/catalog') do
+            expect do
+              get :embed, :limit => 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+            end.to raise_error(ApplicationController::BadParametersError)
+          end
+        end
+      end
+
+      context 'when an invalid numeric value' do
+        it 'raises an invalid request error on show' do
+          VCR.use_cassette('browse_controller/catalog') do
+            expect do
+              get :show, :limit => '0'
+            end.to raise_error(ApplicationController::BadParametersError)
+          end
+        end
+
+        it 'raises an invalid reqeust error on embed' do
+          VCR.use_cassette('browse_controller/catalog') do
+            expect do
+              get :embed, :limit => '0'
+            end.to raise_error(ApplicationController::BadParametersError)
+          end
+        end
+      end
+    end
   end
 
   def stub_user

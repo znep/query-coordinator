@@ -44,8 +44,7 @@ module BrowseActions
     # EN-879: Hide API facet when using Cetera search because Cetera does not index API objects
     # because API foundry v1 is deprecated
     if module_enabled?(:api_foundry) && !using_cetera?
-      view_types <<
-        { text: t('controls.browse.facets.view_types.apis'), value: 'apis', class: 'typeApi' }
+      view_types << { text: t('controls.browse.facets.view_types.apis'), value: 'apis', class: 'typeApi' }
     end
 
     whitelisted_view_types = CurrentDomain.property(:view_types_facet, :catalog)

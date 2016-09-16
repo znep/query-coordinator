@@ -312,21 +312,22 @@ Troubleshooting
 ---
 ### Node modules
 
-If you're having trouble getting a clean run of `npm install` or `npm i` (same thing), then it may be
-necessary to use the nuclear option below. This usually works, but it take a long time to run.
+If you are stuck on a perplexing issue and it seems to be related to a missing reference to a
+library, try running `npm install` or the equivalent command `npm i`. If that doesn't fix the
+issue and you haven't touched `frontend` in a while, you can reinstall _all_ Node dependencies 
+by running the command below. 
 
 ```
 rm -rf node_modules && npm i
 ```
+> Note that this approach is the nuclear option and while it usually works, it takes a long time to run.
 
 ### General
 
-- Try restarting foreman (Quit foreman in the "rails" tab spawned by the start script and run
-  `bundle exec foreman start`).
-- If you are stuck on a perplexing issue and it seems to be related to a missing reference to a
-  library, try running `npm install`. If that doesn't fix it and you haven't touched `frontend` in a
-  few days or weeks, you can reinstall all dependencies by running `rm -rf node_modules && npm install`.
-- If you haven't touched frontend in a few months or years you may need to upgrade your version of node:
+- Try restarting foreman. Quit foreman in the tab spawned by the start script and run
+  `bundle exec foreman start`.
+- If you haven't touched `frontend` in a really long time you may need to upgrade your version 
+  of Node by running the command below:
 
 ```
 brew install n
@@ -334,6 +335,7 @@ n 4.4.3
 npm rebuild node-sass
 npm install
 ```
+> Note that `n` is a version manager akin to `rbenv` for Ruby.
 
 - Another thing to try is to rerun `bin/setup_environment.sh`, which will reconfigure a few key
   components.

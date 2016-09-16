@@ -6,6 +6,7 @@ import PublishNotice from './components/PublishNotice';
 import InfoPane from './components/InfoPane';
 import BlobPreview from './components/BlobPreview';
 import BlobDownload from './components/BlobDownload';
+import HrefDownload from './components/HrefDownload';
 import FeaturedContent from './components/FeaturedContent';
 import MetadataTable from './components/MetadataTable';
 import RowDetails from './components/RowDetails';
@@ -19,7 +20,7 @@ export var App = React.createClass({
     view: PropTypes.object
   },
 
-  renderDataset() {
+  renderDatasetContainer() {
     return (
       <div>
         <PublishNotice />
@@ -41,7 +42,7 @@ export var App = React.createClass({
     );
   },
 
-  renderBlob() {
+  renderBlobContainer() {
     return (
       <div>
         <PublishNotice />
@@ -58,14 +59,32 @@ export var App = React.createClass({
     );
   },
 
+  renderHrefContainer() {
+    return (
+      <div>
+        <PublishNotice />
+        <PrivateNotice />
+        <InfoPane />
+
+        <main className="container landing-page-container">
+          <FeaturedContent />
+          <HrefDownload />
+          <MetadataTable />
+        </main>
+      </div>
+    );
+  },
+
   render() {
     var { view } = this.props;
     var content;
 
     if (view.isBlobby) {
-      content = this.renderBlob();
+      content = this.renderBlobContainer();
+    } else if (view.isHref) {
+      content = this.renderHrefContainer();
     } else {
-      content = this.renderDataset();
+      content = this.renderDatasetContainer();
     }
 
     return (

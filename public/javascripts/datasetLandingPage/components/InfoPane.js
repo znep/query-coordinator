@@ -50,7 +50,7 @@ export var InfoPane = React.createClass({
       </li>
     );
 
-    var odataLink = view.isBlobby ? null : (
+    var odataLink = (view.isBlobby || view.isHref) ? null : (
       <li>
         <a tabIndex="0" role="button" className="option" data-modal="odata-modal">
           {I18n.action_buttons.odata}
@@ -91,7 +91,7 @@ export var InfoPane = React.createClass({
     categoryBadge = view.category ?
       <span className="tag-category">{_.upperFirst(view.category)}</span> : null;
 
-    viewDataButton = view.isBlobby ? null : (
+    viewDataButton = (view.isBlobby || view.isHref) ? null : (
       <a
         href={view.gridUrl}
         id="tour-anchor"
@@ -103,7 +103,7 @@ export var InfoPane = React.createClass({
       </a>
     );
 
-    manageButton = view.isBlobby ?
+    manageButton = (view.isBlobby || view.isHref) ?
       <a
         href={`${view.gridUrl}?pane=manage`}
         className="btn btn-simple btn-sm unstyled-link manage"
@@ -112,9 +112,11 @@ export var InfoPane = React.createClass({
       </a> :
       null;
 
-    downloadDropdown = <DownloadDropdown view={view} onDownloadData={onDownloadData} />;
+    downloadDropdown = view.isHref ?
+      null :
+      <DownloadDropdown view={view} onDownloadData={onDownloadData} />;
 
-    apiButton = view.isBlobby ? null : (
+    apiButton = (view.isBlobby || view.isHref) ? null : (
       <button className="btn btn-simple btn-sm api" data-flannel="api-flannel" data-toggle>
         {I18n.action_buttons.api}
       </button>

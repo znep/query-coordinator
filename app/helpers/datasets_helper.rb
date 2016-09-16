@@ -681,7 +681,8 @@ module DatasetsHelper
     [
       !view.is_published?,
       view.non_tabular? && !view.is_geo?,
-      view.geoParent.present?
+      view.geoParent.present?,
+      view.is_href?
     ].any?
   end
 
@@ -692,7 +693,8 @@ module DatasetsHelper
       !view.flag?('default'),
       view.is_arcgis?,
       view.is_geo?,
-      view.is_api_geospatial?
+      view.is_api_geospatial?,
+      view.is_href?
     ].any?
   end
 
@@ -703,7 +705,8 @@ module DatasetsHelper
       !view.flag?('default'),
       view.is_arcgis?,
       view.is_geo?,
-      view.is_api_geospatial?
+      view.is_api_geospatial?,
+      view.is_href?
     ].any?
   end
 end

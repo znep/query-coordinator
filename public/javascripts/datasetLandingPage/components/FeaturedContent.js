@@ -6,17 +6,19 @@ import { isUserAdminOrPublisher } from '../lib/user';
 export var FeaturedContent = React.createClass({
   propTypes: {
     contentList: PropTypes.array.isRequired,
-    isBlobby: PropTypes.bool
+    isBlobby: PropTypes.bool,
+    isHref: PropTypes.bool
   },
 
   renderManagePrompt() {
-    var { isBlobby } = this.props;
+    var { isBlobby, isHref } = this.props;
 
     if (!isUserAdminOrPublisher()) {
       return null;
     }
 
-    var message = I18n.featured_content.manage_prompt[isBlobby ? 'message_blob' : 'message'];
+    var translationKey = (isBlobby || isHref) ? 'message_external' : 'message';
+    var message = I18n.featured_content.manage_prompt[translationKey];
 
     return (
       <div className="alert default manage-prompt">
@@ -70,6 +72,7 @@ export var FeaturedContent = React.createClass({
 function mapStateToProps(state) {
   return {
     isBlobby: state.view.isBlobby,
+    isHref: state.view.isHref,
     contentList: state.featuredContent.contentList
   };
 }

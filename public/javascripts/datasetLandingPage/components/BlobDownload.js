@@ -38,7 +38,7 @@ export var BlobDownload = React.createClass({
     var href = `/download/${view.id}/${encodeURIComponent(_.replace(blobMimeType, /;.*/, ''))}`;
 
     return (
-      <section className="landing-page-section blob-download">
+      <section className="landing-page-section blob-download download-section">
         <h2 className="landing-page-section-header">
           {I18n.blob_download.title}
         </h2>
@@ -46,14 +46,18 @@ export var BlobDownload = React.createClass({
         {this.renderManagePrompt()}
 
         <div className="section-content">
-          <div className="file-info">
-            {blobFilename}
-          </div>
+          <div className="download-object">
+            <div className="download-title">
+              {blobFilename}
+            </div>
 
-          <a className="btn btn-primary download" href={href} target="_blank">
-            <span className="icon-download" />
-            {I18n.blob_download.download}
-          </a>
+            <div className="download-buttons">
+              <a className="btn btn-primary download" href={href} target="_blank">
+                <span className="icon-download" />
+                {I18n.blob_download.download}
+              </a>
+            </div>
+          </div>
         </div>
       </section>
     );

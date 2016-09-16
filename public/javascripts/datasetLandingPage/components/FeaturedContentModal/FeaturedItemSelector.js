@@ -20,6 +20,7 @@ export var FeaturedItemSelector = React.createClass({
     contentList: PropTypes.array.isRequired,
     hasRemoveError: PropTypes.bool,
     isBlobby: PropTypes.bool,
+    isHref: PropTypes.bool,
     isRemoving: PropTypes.bool,
     onClickAdd: PropTypes.func,
     onClickClose: PropTypes.func,
@@ -51,12 +52,12 @@ export var FeaturedItemSelector = React.createClass({
 
   // When we click the add button that shows more add buttons.
   onClickPreAdd(position) {
-    var { isBlobby } = this.props;
+    var { isBlobby, isHref } = this.props;
     var { showPlaceholderDetails } = this.state;
 
     showPlaceholderDetails[position] = true;
 
-    if (isBlobby) {
+    if (isBlobby || isHref) {
       return this.props.onClickAdd('externalResource', position);
     }
 
@@ -169,10 +170,10 @@ export var FeaturedItemSelector = React.createClass({
   },
 
   renderContent() {
-    var { contentList, isRemoving, removePosition, isBlobby } = this.props;
+    var { contentList, isRemoving, removePosition, isBlobby, isHref } = this.props;
 
-    var introduction = isBlobby ?
-      I18n.featured_content_modal.introduction_blobby :
+    var introduction = (isBlobby || isHref) ?
+      I18n.featured_content_modal.introduction_external :
       I18n.featured_content_modal.introduction;
 
     var items = _.map(contentList, (featuredItem, i) => {
@@ -248,7 +249,8 @@ export var FeaturedItemSelector = React.createClass({
 function mapStateToProps(state) {
   return {
     ...state.featuredContent,
-    isBlobby: state.view.isBlobby
+    isBlobby: state.view.isBlobby,
+    isHref: state.view.isHref
   };
 }
 

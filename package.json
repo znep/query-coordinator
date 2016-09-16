@@ -127,6 +127,7 @@
     "react-linkify": "0.1.1",
     "react-radio-group": "2.2.0",
     "react-redux": "4.4.5",
+    "recursive-diff": "0.1.2",
     "redux": "3.5.2",
     "redux-logger": "2.6.1",
     "redux-thunk": "2.1.0",
@@ -140,7 +141,6 @@
     "validator": "5.4.0",
     "velocity-animate": "1.2.3",
     "velocity-react": "1.1.5",
-    "whatwg-fetch": "1.0.0",
-    "recursive-diff": "0.1.2"
+    "whatwg-fetch": "1.0.0"
   }
 }

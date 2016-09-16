@@ -1389,7 +1389,7 @@ class View < Model
   end
 
   def has_landing_page?
-    dataset? || is_blobby?
+    dataset? || is_blobby? || is_href?
   end
 
   def visualization?

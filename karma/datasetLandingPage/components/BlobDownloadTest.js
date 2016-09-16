@@ -61,9 +61,9 @@ describe('components/BlobDownload', function() {
   describe('main content', function() {
     it('contains information about the file', function() {
       var element = renderComponent(BlobDownload, getProps());
-      var fileInfo = element.querySelector('.section-content .file-info');
-      expect(fileInfo).to.exist;
-      expect(fileInfo.textContent).to.equal('purple.png');
+      var downloadTitle = element.querySelector('.section-content .download-object .download-title');
+      expect(downloadTitle).to.exist;
+      expect(downloadTitle.textContent).to.equal('purple.png');
     });
 
     it('contains a link to download the file', function() {

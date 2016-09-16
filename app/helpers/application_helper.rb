@@ -111,6 +111,11 @@ module ApplicationHelper
     module_enabled?(:govStat) && !suppress_govstat?
   end
 
+# DATASET LANDING PAGE
+  def dataset_landing_page_enabled?
+    SiteChrome.find.try(:dslp_enabled?)
+  end
+
 # PAGE-HEADER
 
   def get_favicon_tag

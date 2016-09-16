@@ -87,7 +87,7 @@ class DatasetsController < ApplicationController
     end
 
     # Dataset landing page case
-    if dataset_landing_page_is_default? && view.has_landing_page? && !request[:bypass_dslp]
+    if dataset_landing_page_enabled? && view.has_landing_page? && !request[:bypass_dslp]
       # See if the user is accessing the canonical URL; if not, redirect
       unless request.path == canonical_path_proc.call(locale: nil)
         return redirect_to canonical_path
@@ -1156,15 +1156,6 @@ class DatasetsController < ApplicationController
       path << "?#{request.query_string}" unless request.query_string.empty?
     end
     path
-  end
-
-  def dataset_landing_page_enabled?
-    FeatureFlags.derive(nil, request).enable_dataset_landing_page == true
-  end
-
-  def dataset_landing_page_is_default?
-    dataset_landing_page_enabled? &&
-      FeatureFlags.derive(nil, request).default_to_dataset_landing_page == true
   end
 
   def fetch_layer_info(layer_url)

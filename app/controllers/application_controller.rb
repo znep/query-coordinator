@@ -361,8 +361,7 @@ class ApplicationController < ActionController::Base
     feature_flags = FeatureFlags.derive(nil, request)
 
     should_display_notice = current_user.try(:roleName) == 'administrator' &&
-      feature_flags.enable_dataset_landing_page == false &&
-      feature_flags.default_to_dataset_landing_page == false &&
+      !dataset_landing_page_enabled? &&
       feature_flags.display_dataset_landing_page_notice == true
 
     if should_display_notice

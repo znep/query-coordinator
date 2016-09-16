@@ -212,13 +212,8 @@ class DatasetsControllerTest < ActionController::TestCase
 
   context 'with DSLP fully enabled' do
     setup do
-      FeatureFlags.stubs(derive: Hashie::Mash.new.tap do |feature_flags|
-        feature_flags.stubs(
-          enable_dataset_landing_page: true,
-          default_to_dataset_landing_page: true
-        )
-        @test_view.stubs(migrations: {'nbeId' => 'test-nbe1'})
-      end)
+      @test_view.stubs(:dataset_landing_page_enabled? => true) # this might work?
+      @test_view.stubs(migrations: {'nbeId' => 'test-nbe1'})
 
       # Site chrome
       stub_request(:get, "https://test.host/api/configurations.json?defaultOnly=true&type=site_chrome").

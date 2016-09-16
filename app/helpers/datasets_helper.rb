@@ -368,9 +368,7 @@ module DatasetsHelper
   end
 
   def display_dataset_landing_page_link
-    view.has_landing_page? &&
-      FeatureFlags.derive(view, request).enable_dataset_landing_page &&
-      FeatureFlags.derive(view, request).default_to_dataset_landing_page
+    view.has_landing_page? && dataset_landing_page_enabled?
   end
 
   def configuration

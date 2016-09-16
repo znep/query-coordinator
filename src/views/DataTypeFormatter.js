@@ -24,7 +24,7 @@ module.exports = {
 };
 
 function renderCell(cellContent, column, domain, datasetUid) {
-  var cellText;
+  let cellText;
 
   utils.assertIsOneOfTypes(column, 'object');
   utils.assertHasProperty(column, 'renderTypeName');
@@ -121,8 +121,8 @@ function renderBooleanCell(cellContent) {
 * This has lots of possible options, so we delegate to helpers.
 */
 function renderNumberCell(input, column) {
-  var amount = parseFloat(input);
-  var format = _.extend({
+  const amount = parseFloat(input);
+  const format = _.extend({
     precisionStyle: 'standard',
     precision: undefined,
     noCommas: false,
@@ -199,9 +199,9 @@ function renderObeLocation(cellContent) {
 * Renders a Point in plain text as a lat/lng pair.
 */
 function renderGeoCell(cellContent) {
-  var latitudeIndex = 1;
-  var longitudeIndex = 0;
-  var coordinates = _cellCoordinates(cellContent);
+  const latitudeIndex = 1;
+  const longitudeIndex = 0;
+  const coordinates = _cellCoordinates(cellContent);
   if (coordinates) {
     return `(${coordinates[latitudeIndex]}°, ${coordinates[longitudeIndex]}°)`;
   } else {
@@ -216,16 +216,16 @@ function renderGeoCell(cellContent) {
 * - cellContent: data for the cell (from soda fountain).
 */
 function renderGeoCellHTML(cellContent) {
-  var latitudeIndex = 1;
-  var longitudeIndex = 0;
-  var coordinates = _cellCoordinates(cellContent);
+  const latitudeIndex = 1;
+  const longitudeIndex = 0;
+  const coordinates = _cellCoordinates(cellContent);
 
   if (coordinates) {
-    var latitudeTitle = I18n.translate('visualizations.common.latitude');
-    var longitudeTitle = I18n.translate('visualizations.common.longitude');
+    const latitudeTitle = I18n.translate('visualizations.common.latitude');
+    const longitudeTitle = I18n.translate('visualizations.common.longitude');
 
-    var latitude = `<span title="${latitudeTitle}">${coordinates[latitudeIndex]}°</span>`;
-    var longitude = `<span title="${longitudeTitle}">${coordinates[longitudeIndex]}°</span>`;
+    const latitude = `<span title="${latitudeTitle}">${coordinates[latitudeIndex]}°</span>`;
+    const longitude = `<span title="${longitudeTitle}">${coordinates[longitudeIndex]}°</span>`;
 
     return `(${latitude}, ${longitude})`;
   } else {
@@ -244,14 +244,14 @@ function renderWKTCell(cellContent) {
 * Render a numeric value as currency
 */
 function renderMoneyCell(cellContent, column) {
-  var format = _.extend({
+  const format = _.extend({
     currency: '$',
     decimalSeparator: '.',
     groupSeparator: ',',
     humane: false,
     precision: 2
   }, column.format || {});
-  var amount = parseFloat(cellContent);
+  const amount = parseFloat(cellContent);
 
   if (_.isFinite(amount)) {
     if (format.humane) {
@@ -263,7 +263,7 @@ function renderMoneyCell(cellContent, column) {
       // because humane currency will always be expressed with the K
       // scale suffix, whereas our normal humane numbers allow four-
       // digit thousands output.
-      var absVal = Math.abs(amount);
+      const absVal = Math.abs(amount);
       if (absVal < 1000) {
         cellContent = absVal.toFixed(format.precision).
           replace('.', format.decimalSeparator);
@@ -277,11 +277,11 @@ function renderMoneyCell(cellContent, column) {
         // For instance, "12,345,678" will become an array of three
         // substrings, and the first two will combine into "12.345"
         // so that our toFixed call can work its magic.
-        var scaleGroupedVal = utils.commaify(Math.floor(absVal)).split(',');
-        var symbols = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
-        var symbolIndex = scaleGroupedVal.length - 2;
+        const scaleGroupedVal = utils.commaify(Math.floor(absVal)).split(',');
+        const symbols = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
+        let symbolIndex = scaleGroupedVal.length - 2;
 
-        var value = parseFloat(scaleGroupedVal[0] + '.' + scaleGroupedVal[1]);
+        let value = parseFloat(scaleGroupedVal[0] + '.' + scaleGroupedVal[1]);
         value = value.toFixed(format.precision);
         if (parseFloat(value) === 1000) {
           // The only edge case is when rounding takes us into the
@@ -297,7 +297,7 @@ function renderMoneyCell(cellContent, column) {
       }
     } else {
       // Normal formatting without abbreviation.
-      var commaifyOptions = {
+      const commaifyOptions = {
         groupCharacter: format.groupSeparator,
         decimalCharacter: format.decimalSeparator
       };
@@ -309,6 +309,7 @@ function renderMoneyCell(cellContent, column) {
     }
     cellContent = `${amount < 0 ? '-' : ''}${format.currency}${cellContent}`;
   }
+
   return cellContent;
 }
 
@@ -317,7 +318,7 @@ function renderMoneyCell(cellContent, column) {
 */
 function renderUrlCellHTML(cellContent) {
   if (!_.isEmpty(cellContent)) {
-    var { url, description } = cellContent;
+    const { url, description } = cellContent;
     return `<a href="${url}" target="_blank" rel="external">${description || url}</a>`;
   }
 
@@ -340,8 +341,8 @@ function renderEmailCellHTML(cellContent) {
 */
 function renderPhoneCellHTML(cellContent) {
   if (!_.isEmpty(cellContent)) {
-    var phoneNumber = _.get(cellContent, 'phone_number', '');
-    var phoneHref = phoneNumber.replace(/[a-zA-Z]+: /, '');
+    const phoneNumber = _.get(cellContent, 'phone_number', '');
+    const phoneHref = phoneNumber.replace(/[a-zA-Z]+: /, '');
 
     return `<a href="tel:${phoneHref}" target="_blank" rel="external">${phoneNumber}</a>`;
   }
@@ -356,7 +357,7 @@ function renderPhoneCellHTML(cellContent) {
 */
 function renderPhotoCellHTML(cellContent, domain, datasetUid) {
   if (!_.isEmpty(cellContent)) {
-    var href = `https://${domain}/views/${datasetUid}/files/${cellContent}`;
+    const href = `https://${domain}/views/${datasetUid}/files/${cellContent}`;
     return `<a href="${href}" target="_blank" rel="external">${cellContent}</a>`;
   }
 
@@ -370,7 +371,7 @@ function renderPhotoCellHTML(cellContent, domain, datasetUid) {
 */
 function renderDocumentCellHTML(cellContent, domain, datasetUid) {
   if (!_.isEmpty(cellContent)) {
-    var href = `https://${domain}/views/${datasetUid}/files/${cellContent.file_id}`;
+    const href = `https://${domain}/views/${datasetUid}/files/${cellContent.file_id}`;
     return `<a href="${href}" target="_blank" rel="external">${cellContent.filename}</a>`;
   }
 
@@ -384,7 +385,7 @@ function renderDocumentCellHTML(cellContent, domain, datasetUid) {
 */
 function renderMultipleChoiceCell(cellContent, column) {
   if (!_.isEmpty(cellContent)) {
-    var selectedOption = _.find(_.get(column, 'dropDown.values', []), function(option) {
+    const selectedOption = _.find(_.get(column, 'dropDown.values', []), function(option) {
       return _.isEqual(option.id, cellContent);
     });
 
@@ -403,7 +404,7 @@ function renderTimestampCell(cellContent, column) {
       cellContent = (cellContent * 1000);
     }
 
-    var time = moment(new Date(cellContent));
+    const time = moment(new Date(cellContent));
     if (time.isValid()) {
       if (column.format && column.format.formatString) {
         // Option A: format using user-specified format string
@@ -434,9 +435,9 @@ function _isNbePercentColumn(column) {
 }
 
 function _renderCurrencyNumber(amount, format) {
-  var isNegative = amount < 0;
+  const isNegative = amount < 0;
 
-  var value = Math.abs(amount);
+  let value = Math.abs(amount);
   if (format.precision >= 0) {
     value = value.toFixed(format.precision);
   }
@@ -446,15 +447,15 @@ function _renderCurrencyNumber(amount, format) {
     value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
   }
 
-  var sign = isNegative ? '-' : '';
+  const sign = isNegative ? '-' : '';
 
   return `${sign}${format.currency}${value}`;
 }
 
 function _renderFinancialNumber(amount, format) {
-  var isNegative = amount < 0;
+  const isNegative = amount < 0;
 
-  var value = Math.abs(amount);
+  let value = Math.abs(amount);
   if (format.precision >= 0) {
     value = value.toFixed(format.precision);
   }
@@ -472,14 +473,14 @@ function _renderFinancialNumber(amount, format) {
 }
 
 function _renderScientificNumber(amount, format) {
-  var value =  amount.toExponential(format.precision);
+  const value =  amount.toExponential(format.precision);
 
   // no groups, so we can skip groupSeparator and commaify and noCommas
   return value.replace('.', format.decimalSeparator);
 }
 
 function _renderPercentageNumber(amount, format) {
-  var value = amount;
+  let value = amount;
 
   if (format.precision >= 0) {
     value = value.toFixed(format.precision);
@@ -495,7 +496,7 @@ function _renderPercentageNumber(amount, format) {
 }
 
 function _renderStandardNumber(amount, format) {
-  var value = amount;
+  let value = amount;
   if (format.precision >= 0) {
     value = value.toFixed(format.precision);
   }
@@ -516,9 +517,9 @@ function _renderStandardNumber(amount, format) {
 // NOTE: In the dataset view, a mask can lead to some really strange output.
 // We're going to start with a simple approach and refine as we go on.
 function _renderMaskedNumber(amount, format) {
-  var maskChar = '#';
-  var amountChars = String(amount).split('');
-  var output = format.mask.slice(0, amountChars.length);
+  const maskChar = '#';
+  let amountChars = String(amount).split('');
+  let output = format.mask.slice(0, amountChars.length);
 
   while (output.indexOf(maskChar) > -1) {
     output = output.replace(maskChar, amountChars.shift());
@@ -529,6 +530,6 @@ function _renderMaskedNumber(amount, format) {
 }
 
 function _cellCoordinates(cellContent) {
-  var coordinates = _.get(cellContent, 'value.coordinates', cellContent.coordinates);
+  const coordinates = _.get(cellContent, 'value.coordinates', cellContent.coordinates);
   return _.isArray(coordinates) ? coordinates : null;
 }

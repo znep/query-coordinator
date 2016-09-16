@@ -21,6 +21,7 @@ import {
   getColorScale,
   getBaseLayer,
   getBaseLayerOpacity,
+  isBarChart,
   isRegionMap,
   isColumnChart,
   isFeatureMap,
@@ -70,6 +71,10 @@ export var ColorsAndStylePane = React.createClass({
         <Styleguide.ColorPicker handleColorChange={this.props.onChangeSecondaryColor} value={secondaryColor} palette={COLORS}/>
       </div>
     );
+  },
+
+  renderBarChartControls() {
+    return this.renderPrimaryColor(translate('panes.colors_and_style.fields.bar_color.title'));
   },
 
   renderColumnChartControls() {
@@ -205,7 +210,9 @@ export var ColorsAndStylePane = React.createClass({
     var configuration;
     var vifAuthoring = this.props.vifAuthoring;
 
-    if (isColumnChart(vifAuthoring)) {
+    if (isBarChart(vifAuthoring)) {
+      configuration = this.renderBarChartControls();
+    } else if (isColumnChart(vifAuthoring)) {
       configuration = this.renderColumnChartControls();
     } else if (isHistogram(vifAuthoring)) {
       configuration = this.renderHistogramControls();

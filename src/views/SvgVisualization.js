@@ -389,7 +389,7 @@ function SvgVisualization($element, vif) {
   };
 
   /**
-   * Valid options: 'fit', 'pan'
+   * Valid options: 'fit', 'pan', 'showZero'
    */
   this.getXAxisScalingModeBySeriesIndex = function(seriesIndex) {
     const chartType = _.get(
@@ -408,7 +408,7 @@ function SvgVisualization($element, vif) {
   };
 
   /**
-   * Valid options: 'fit', 'showZero'
+   * Valid options: 'fit', 'pan', 'showZero'
    */
   this.getYAxisScalingMode = function() {
 
@@ -416,6 +416,24 @@ function SvgVisualization($element, vif) {
       self.getVif(),
       'configuration.yAxisScalingMode',
       'showZero'
+    );
+  };
+
+  this.getShowDimensionLabels = function() {
+
+    return _.get(
+      self.getVif(),
+      'configuration.showDimensionLabels',
+      true
+    );
+  };
+
+  this.getShowValueLabels = function() {
+
+    return _.get(
+      self.getVif(),
+      'configuration.showValueLabels',
+      true
     );
   };
 

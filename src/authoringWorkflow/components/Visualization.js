@@ -20,6 +20,8 @@ import {
   isValidTimelineChartVif,
   isFeatureMap,
   isValidFeatureMapVif,
+  isBarChart,
+  isValidBarChartVif,
   isColumnChart,
   isValidColumnChartVif,
   isHistogram,
@@ -85,6 +87,21 @@ export var Visualization = React.createClass({
     $(this.visualizationPreview()).
       trigger('SOCRATA_VISUALIZATION_DESTROY').
       off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
+  },
+
+  barChart() {
+    var { vif } = this.props;
+    var $visualizationPreview = $(this.visualizationPreview());
+    var alreadyRendered = $visualizationPreview.has('.bar-chart').length === 1;
+
+    if (alreadyRendered) {
+      this.updateVisualization();
+    } else {
+      this.destroyVisualizationPreview();
+
+      $visualizationPreview.
+        socrataSvgBarChart(vif);
+    }
   },
 
   columnChart() {
@@ -172,7 +189,9 @@ export var Visualization = React.createClass({
     if (hasVisualizationType(vifAuthoring)) {
       this.setState({hasRenderedVisualization: true});
 
-      if (isColumnChart(vifAuthoring) && isValidColumnChartVif(vifAuthoring)) {
+      if (isBarChart(vifAuthoring) && isValidBarChartVif(vifAuthoring)) {
+        this.barChart();
+      } else if (isColumnChart(vifAuthoring) && isValidColumnChartVif(vifAuthoring)) {
         this.columnChart();
       } else if (isTimelineChart(vifAuthoring) && isValidTimelineChartVif(vifAuthoring)) {
         this.timelineChart();

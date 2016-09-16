@@ -8,6 +8,7 @@ export default {
   configuration: {
     viewSourceDataLink: true,
     showDimensionLabels: true,
+    showValueLabels: true,
     xAxisScalingMode: 'pan'
   },
   description: '',
@@ -37,7 +38,7 @@ export default {
         filters: []
       },
       label: null,
-      type: 'columnChart'
+      type: 'barChart'
     }
   ],
   title: ''

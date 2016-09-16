@@ -9,9 +9,11 @@ import { AxisAndScalePane } from 'src/authoringWorkflow/components/panes/AxisAnd
 function render(type) {
   var props = defaultProps({
     vifAuthoring: { authoring: { selectedVisualizationType: type } },
+    onChangeLabelTop: sinon.spy(),
     onChangeLabelBottom: sinon.spy(),
     onChangeLabelLeft: sinon.spy(),
-    onChangeXAxisDataLabels: sinon.spy(),
+    onChangeShowDimensionLabels: sinon.spy(),
+    onChangeShowValueLabels: sinon.spy(),
     onSelectChartSorting: sinon.spy(),
     onSelectTimelinePrecision: sinon.spy(),
     onChangeTreatNullValuesAsZero: sinon.spy()
@@ -43,7 +45,29 @@ describe('AxisAndScalePane', function() {
     });
   }
 
-  function rendersLabelsAndEmitsEvents() {
+  function rendersTopAndLeftLabelsAndEmitsEvents() {
+    describe('rendering', function() {
+      it('renders a top label input', function() {
+        expect(component.querySelector('#label-top')).to.exist;
+      });
+
+      it('renders a left label input', function() {
+        expect(component.querySelector('#label-left')).to.exist;
+      });
+    });
+
+    describe('events', function() {
+      describe('when changing the top label', function() {
+        emitsEvent('#label-top', 'onChangeLabelTop');
+      });
+
+      describe('when changing the left label', function() {
+        emitsEvent('#label-left', 'onChangeLabelLeft');
+      });
+    });
+  }
+
+  function rendersBottomAndLeftLabelsAndEmitsEvents() {
     describe('rendering', function() {
       it('renders a bottom label input', function() {
         expect(component.querySelector('#label-bottom')).to.exist;
@@ -65,16 +89,30 @@ describe('AxisAndScalePane', function() {
     });
   }
 
-  function rendersXAxisDataLabelsAndEmitsEvents() {
+  function rendersShowDimensionLabelsAndEmitsEvents() {
     describe('rendering', function() {
-      it('renders a show x-axis data labels checkbox', function() {
-        expect(component.querySelector('#x-axis-data-labels')).to.exist;
+      it('renders a show dimension labels checkbox', function() {
+        expect(component.querySelector('#show-dimension-labels')).to.exist;
       });
     });
 
     describe('events', function() {
-      describe('when changing the x-axis data labels checkbox', function() {
-        emitsEvent('#x-axis-data-labels', 'onChangeXAxisDataLabels');
+      describe('when changing the show dimension labels checkbox', function() {
+        emitsEvent('#show-dimension-labels', 'onChangeShowDimensionLabels');
+      });
+    });
+  }
+
+  function rendersShowValueLabelsAndEmitsEvents() {
+    describe('rendering', function() {
+      it('renders a show value labels checkbox', function() {
+        expect(component.querySelector('#show-value-labels')).to.exist;
+      });
+    });
+
+    describe('events', function() {
+      describe('when changing the show value labels checkbox', function() {
+        emitsEvent('#show-value-labels', 'onChangeShowValueLabels');
       });
     });
   }
@@ -136,21 +174,37 @@ describe('AxisAndScalePane', function() {
     });
   });
 
+  describe('barChart', function() {
+
+    beforeEach(setUpVisualization('barChart'));
+
+    rendersTopAndLeftLabelsAndEmitsEvents();
+    rendersShowDimensionLabelsAndEmitsEvents();
+    rendersShowValueLabelsAndEmitsEvents();
+    rendersChartSortingAndEmitsEvents();
+  });
+
   describe('columnChart', function() {
+
     beforeEach(setUpVisualization('columnChart'));
-    rendersLabelsAndEmitsEvents();
-    rendersXAxisDataLabelsAndEmitsEvents();
+
+    rendersBottomAndLeftLabelsAndEmitsEvents();
+    rendersShowDimensionLabelsAndEmitsEvents();
     rendersChartSortingAndEmitsEvents();
   });
 
   describe('histogram', function() {
+
     beforeEach(setUpVisualization('histogram'));
-    rendersLabelsAndEmitsEvents();
+
+    rendersBottomAndLeftLabelsAndEmitsEvents();
   });
 
   describe('timelineChart', function() {
+
     beforeEach(setUpVisualization('timelineChart'));
-    rendersLabelsAndEmitsEvents();
+
+    rendersBottomAndLeftLabelsAndEmitsEvents();
     rendersTimelinePrecision();
     rendersTreatNullValuesAsZeroAndEmitsEvents();
   });

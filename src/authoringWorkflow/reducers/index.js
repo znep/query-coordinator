@@ -3,6 +3,7 @@ import { combineReducers } from 'redux';
 import metadata from './metadata';
 import authoring from './authoring';
 
+import barChart from './vifs/barChart';
 import regionMap from './vifs/regionMap';
 import columnChart from './vifs/columnChart';
 import featureMap from './vifs/featureMap';
@@ -15,6 +16,7 @@ module.exports = combineReducers({
   vifAuthoring: combineReducers({
     authoring,
     vifs: combineReducers({
+      barChart,
       regionMap,
       columnChart,
       featureMap,

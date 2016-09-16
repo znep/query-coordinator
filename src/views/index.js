@@ -1,3 +1,4 @@
+const SvgBarChart = require('./SvgBarChart');
 const ChoroplethMap = require('./ChoroplethMap');
 const SvgRegionMap = require('./SvgRegionMap');
 const ChoroplethMapUtils = require('./ChoroplethMapUtils');
@@ -16,6 +17,7 @@ const TimelineChart = require('./TimelineChart');
 const SampleChart = require('./SampleChart');
 
 module.exports = {
+  SvgBarChart: SvgBarChart,
   ChoroplethMap: ChoroplethMap,
   SvgRegionMap: SvgRegionMap,
   ChoroplethMapUtils: ChoroplethMapUtils,

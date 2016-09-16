@@ -138,9 +138,14 @@ export const getViewSourceDataLink = createSelector(
   vif => _.get(vif, 'configuration.viewSourceDataLink', true)
 );
 
-export const getXAxisDataLabels = createSelector(
+export const getShowDimensionLabels = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'configuration.xAxisDataLabels', false)
+  vif => _.get(vif, 'configuration.showDimensionLabels', false)
+);
+
+export const getShowValueLabels = createSelector(
+  getCurrentVif,
+  vif => _.get(vif, 'configuration.showValueLabels', false)
 );
 
 export const getXAxisScalingMode = createSelector(
@@ -161,6 +166,22 @@ export const getPrecision = createSelector(
 export const getTreatNullValuesAsZero = createSelector(
   getCurrentVif,
   vif => _.get(vif, 'configuration.treatNullValuesAsZero')
+);
+
+export const getLimitCount = createSelector(
+  getCurrentVif,
+  vif => _.get(vif, 'series[0].dataSource.limit', null)
+);
+
+export const getShowOtherCategory = createSelector(
+  getCurrentVif,
+  vif => {
+
+    return (
+      !_.isNull(_.get(vif, 'series[0].dataSource.limit')) &&
+      _.get(vif, 'configuration.showOtherCategory')
+    );
+  }
 );
 
 export const getVisualizationType = createSelector(
@@ -200,6 +221,25 @@ export const isValidRegionMapVif = createSelector(
       hasDatasetUid &&
       hasDomain &&
       hasMeasureAggregation;
+  }
+);
+
+export const isBarChart = createSelector(
+  getVisualizationType,
+  type => type === 'barChart'
+);
+
+export const isValidBarChartVif = createSelector(
+  getDimension,
+  getMeasure,
+  getDatasetUid,
+  getDomain,
+  (dimension, measure, datasetUid, domain) => {
+    var hasDimension = _.isString(_.get(dimension, 'columnName'));
+    var hasDatasetUid = _.isString(datasetUid);
+    var hasDomain = _.isString(domain);
+
+    return hasDimension && hasDatasetUid && hasDomain;
   }
 );
 
@@ -279,6 +319,8 @@ export const isValidTimelineChartVif = createSelector(
 );
 
 export const isInsertableVisualization = createSelector(
+  isBarChart,
+  isValidBarChartVif,
   isRegionMap,
   isValidRegionMapVif,
   isColumnChart,
@@ -291,6 +333,8 @@ export const isInsertableVisualization = createSelector(
   isValidHistogramVif,
   getShowCenteringAndZoomingSaveMessage,
   (
+    isBarChart,
+    validBarChart,
     isRegionMap,
     validRegionMap,
     isColumnChart,
@@ -304,6 +348,7 @@ export const isInsertableVisualization = createSelector(
     showCenteringAndZoomingSaveMessage
   ) => {
     return !showCenteringAndZoomingSaveMessage && (
+      isBarChart && validBarChart ||
       isRegionMap && validRegionMap ||
       isColumnChart && validColumnChart ||
       isFeatureMap && validFeatureMap ||

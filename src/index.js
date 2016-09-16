@@ -16,6 +16,7 @@ const TimelineChart = require('./TimelineChart');
 const SvgTimelineChart = require('./SvgTimelineChart');
 const SvgHistogram = require('./SvgHistogram');
 const SampleChart = require('./SampleChart');
+const SvgBarChart = require('./SvgBarChart');
 
 // TODO: add exported function here called `init` which takes a VIF and instantiates the
 // appropriate visualization based on the VIF's `type` field
@@ -36,5 +37,6 @@ module.exports = {
   TimelineChart: TimelineChart,
   SvgTimelineChart: SvgTimelineChart,
   SvgHistogram: SvgHistogram,
-  SampleChart: SampleChart
+  SampleChart: SampleChart,
+  SvgBarChart: SvgBarChart
 };

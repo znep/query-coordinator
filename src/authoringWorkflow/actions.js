@@ -421,11 +421,19 @@ export function setLabelRight(labelRight) {
   };
 }
 
-export const SET_X_AXIS_DATA_LABELS = 'SET_X_AXIS_DATA_LABELS';
-export function setXAxisDataLabels(xAxisDataLabels) {
+export const SET_SHOW_DIMENSION_LABELS = 'SET_SHOW_DIMENSION_LABELS';
+export function setShowDimensionLabels(showDimensionLabels) {
   return {
-    type: SET_X_AXIS_DATA_LABELS,
-    xAxisDataLabels
+    type: SET_SHOW_DIMENSION_LABELS,
+    showDimensionLabels
+  };
+}
+
+export const SET_SHOW_VALUE_LABELS = 'SET_SHOW_VALUE_LABELS';
+export function setShowValueLabels(showValueLabels) {
+  return {
+    type: SET_SHOW_VALUE_LABELS,
+    showValueLabels
   };
 }
 
@@ -502,5 +510,31 @@ export function setTreatNullValuesAsZero(treatNullValuesAsZero) {
   return {
     type: SET_TREAT_NULL_VALUES_AS_ZERO,
     treatNullValuesAsZero
+  };
+}
+
+export const SET_LIMIT_NONE_AND_SHOW_OTHER_CATEGORY = 'SET_LIMIT_NONE_AND_SHOW_OTHER_CATEGORY';
+export function setLimitNoneAndShowOtherCategory() {
+  return {
+    type: SET_LIMIT_NONE_AND_SHOW_OTHER_CATEGORY,
+    limitNone: true,
+    showOtherCategory: false
+  };
+}
+
+export const SET_LIMIT_COUNT_AND_SHOW_OTHER_CATEGORY = 'SET_LIMIT_COUNT_AND_SHOW_OTHER_CATEGORY';
+export function setLimitCountAndShowOtherCategory(limitCount, showOtherCategory) {
+  return {
+    type: SET_LIMIT_COUNT_AND_SHOW_OTHER_CATEGORY,
+    limitCount,
+    showOtherCategory
+  };
+}
+
+export const SET_SHOW_OTHER_CATEGORY = 'SET_SHOW_OTHER_CATEGORY';
+export function setShowOtherCategory(showOtherCategory) {
+  return {
+    type: SET_SHOW_OTHER_CATEGORY,
+    showOtherCategory
   };
 }

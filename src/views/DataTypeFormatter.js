@@ -188,13 +188,8 @@ function renderNumberCell(input, column) {
  * properties).
  */
 function renderObeLocation(cellContent) {
-
   if (cellContent.hasOwnProperty('latitude') && cellContent.hasOwnProperty('longitude')) {
-
-    return '({0}°, {1}°)'.format(
-      cellContent.latitude,
-      cellContent.longitude
-    );
+    return `(${cellContent.latitude}°, ${cellContent.longitude}°)`;
   }
 
   return '';
@@ -208,10 +203,7 @@ function renderGeoCell(cellContent) {
   var longitudeIndex = 0;
   var coordinates = _cellCoordinates(cellContent);
   if (coordinates) {
-    return '({0}°, {1}°)'.format(
-      coordinates[latitudeIndex],
-      coordinates[longitudeIndex]
-    );
+    return `(${coordinates[latitudeIndex]}°, ${coordinates[longitudeIndex]}°)`;
   } else {
     return '';
   }
@@ -229,20 +221,13 @@ function renderGeoCellHTML(cellContent) {
   var coordinates = _cellCoordinates(cellContent);
 
   if (coordinates) {
-    var template = '<span title="{0}">{1}°</span>';
-    var latitude = template.format(
-      I18n.translate('visualizations.common.latitude'),
-      coordinates[latitudeIndex]
-    );
-    var longitude = template.format(
-      I18n.translate('visualizations.common.longitude'),
-      coordinates[longitudeIndex]
-    );
+    var latitudeTitle = I18n.translate('visualizations.common.latitude');
+    var longitudeTitle = I18n.translate('visualizations.common.longitude');
 
-    return '({latitude}, {longitude})'.format({
-      latitude: latitude,
-      longitude: longitude
-    });
+    var latitude = `<span title="${latitudeTitle}">${coordinates[latitudeIndex]}°</span>`;
+    var longitude = `<span title="${longitudeTitle}">${coordinates[longitudeIndex]}°</span>`;
+
+    return `(${latitude}, ${longitude})`;
   } else {
     return '';
   }
@@ -322,11 +307,7 @@ function renderMoneyCell(cellContent, column) {
         commaifyOptions
       );
     }
-    cellContent = '{sign}{currency}{cellContent}'.format({
-      sign: amount < 0 ? '-' : '',
-      currency: format.currency,
-      cellContent: cellContent
-    });
+    cellContent = `${amount < 0 ? '-' : ''}${format.currency}${cellContent}`;
   }
   return cellContent;
 }
@@ -336,10 +317,8 @@ function renderMoneyCell(cellContent, column) {
 */
 function renderUrlCellHTML(cellContent) {
   if (!_.isEmpty(cellContent)) {
-    return '<a href="{url}" target="_blank" rel="external">{text}</a>'.format({
-      url: cellContent.url,
-      text: cellContent.description || cellContent.url
-    });
+    var { url, description } = cellContent;
+    return `<a href="${url}" target="_blank" rel="external">${description || url}</a>`;
   }
 
   return '';
@@ -350,9 +329,7 @@ function renderUrlCellHTML(cellContent) {
 */
 function renderEmailCellHTML(cellContent) {
   if (!_.isEmpty(cellContent)) {
-    return '<a href="mailto:{email}" target="_blank" rel="external">{email}</a>'.format({
-      email: cellContent
-    });
+    return `<a href="mailto:${cellContent}" target="_blank" rel="external">${cellContent}</a>`;
   }
 
   return '';
@@ -364,11 +341,9 @@ function renderEmailCellHTML(cellContent) {
 function renderPhoneCellHTML(cellContent) {
   if (!_.isEmpty(cellContent)) {
     var phoneNumber = _.get(cellContent, 'phone_number', '');
+    var phoneHref = phoneNumber.replace(/[a-zA-Z]+: /, '');
 
-    return '<a href="tel:{phoneHref}" target="_blank" rel="external">{phone}</a>'.format({
-      phoneHref: phoneNumber.replace(/[a-zA-Z]+: /, ''),
-      phone: phoneNumber
-    });
+    return `<a href="tel:${phoneHref}" target="_blank" rel="external">${phoneNumber}</a>`;
   }
 
   return '';
@@ -381,11 +356,8 @@ function renderPhoneCellHTML(cellContent) {
 */
 function renderPhotoCellHTML(cellContent, domain, datasetUid) {
   if (!_.isEmpty(cellContent)) {
-    return '<a href="https://{0}/views/{1}/files/{2}" target="_blank" rel="external">{2}</a>'.format(
-      domain,
-      datasetUid,
-      cellContent
-    );
+    var href = `https://${domain}/views/${datasetUid}/files/${cellContent}`;
+    return `<a href="${href}" target="_blank" rel="external">${cellContent}</a>`;
   }
 
   return '';
@@ -398,12 +370,8 @@ function renderPhotoCellHTML(cellContent, domain, datasetUid) {
 */
 function renderDocumentCellHTML(cellContent, domain, datasetUid) {
   if (!_.isEmpty(cellContent)) {
-    return '<a href="https://{0}/views/{1}/files/{2}" target="_blank" rel="external">{3}</a>'.format(
-      domain,
-      datasetUid,
-      cellContent.file_id,
-      cellContent.filename
-    );
+    var href = `https://${domain}/views/${datasetUid}/files/${cellContent.file_id}`;
+    return `<a href="${href}" target="_blank" rel="external">${cellContent.filename}</a>`;
   }
 
   return '';
@@ -478,11 +446,9 @@ function _renderCurrencyNumber(amount, format) {
     value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
   }
 
-  return '{sign}{currency}{value}'.format({
-    sign: isNegative ? '-' : '',
-    currency: format.currency,
-    value: value
-  });
+  var sign = isNegative ? '-' : '';
+
+  return `${sign}${format.currency}${value}`;
 }
 
 function _renderFinancialNumber(amount, format) {
@@ -499,7 +465,7 @@ function _renderFinancialNumber(amount, format) {
   }
 
   if (isNegative) {
-    return '({0})'.format(value);
+    return `(${value})`;
   } else {
     return String(value);
   }

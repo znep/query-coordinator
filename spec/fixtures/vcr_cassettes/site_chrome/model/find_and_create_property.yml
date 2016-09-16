@@ -1,0 +1,91 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:8080/configurations?defaultOnly=true&type=site_chrome
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Socrata-Requestid:
+      - 8kovmu62hierea2yc2wrmy3s4
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(7.5.1.v20110908)
+    body:
+      encoding: UTF-8
+      string: |
+        [ {
+          "id" : 119,
+          "name" : "Site Chrome",
+          "default" : true,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1473994583
+        } ]
+    http_version: 
+  recorded_at: Fri, 16 Sep 2016 02:56:23 GMT
+- request:
+    method: post
+    uri: http://localhost:8080/configurations/119/properties
+    body:
+      encoding: UTF-8
+      string: '{"name":"youMightNeedToChangeThisIfItAlreadyExists","value":{"some
+        key":"some value","some other key":"some other value"}}'
+    headers:
+      Content-Type:
+      - application/json
+      X-Socrata-Host:
+      - localhost
+      Cookie:
+      - logged_in=true; _gat_socrata=1; socrata-csrf-token=BD2Z6zElSATqn0ZxHv9L/w97DiKXcZnY3Q6cyeMyETVAp6qNN/H4uT6uTlDOYpM3heHqXmKeOTf3nWo0wby9dA==;
+        _socrata_session_id=BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJTMzODYxMjc1MWVlYWYyYjE4M2I2OWUxMjVhZTViYmYxBjsARkkiCXVzZXIGOwBGaQdJIg5yZXR1cm5fdG8GOwBGMEkiEF9jc3JmX3Rva2VuBjsARkkiMVJKb3paZ2JVc0wzVU1RZ2gwSjNZeUlxYTVIejE3NkR2S3BQMi9TS09yRUU9BjsARkkiCWluaXQGOwBUVA==--b5dbe02cdfe5adc6305376efaab946e54af002f1;
+        _core_session_id=dHVnZy1pa2NlIDE0NzQwMTU3MDkgNWE0NWYxMjMxYzI4IDUxYTY3MzkzYmNkMTc4Yjg1NzI2YjAyNGQ2YmMwM2VjNTY1YjM0YmU=;
+        _ga=GA1.1.1839270600.1473992700
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Socrata-Requestid:
+      - 3qlgqarz7vhmdizbzwol0j7l8
+      Access-Control-Allow-Origin:
+      - "*"
+      Set-Cookie:
+      - _core_session_id=dHVnZy1pa2NlIDE0NzQwMTYxODMgNWE0NWYxMjMxYzI4IDNiNGJiYmUwZmE2YjQ4MjllYmQ0MDE4NmMxZjQ3MTRmNmZiOTQyZjc;Path=/
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(7.5.1.v20110908)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "name" : "youMightNeedToChangeThisIfItAlreadyExists",
+          "createdAt" : 1473994583,
+          "value" : {
+            "some key" : "some value",
+            "some other key" : "some other value"
+          }
+        }
+    http_version: 
+  recorded_at: Fri, 16 Sep 2016 02:56:23 GMT
+recorded_with: VCR 3.0.3

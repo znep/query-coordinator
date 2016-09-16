@@ -1,234 +1,191 @@
---- 
-http_interactions: 
-- request: 
+---
+http_interactions:
+- request:
     method: get
     uri: http://localhost:8080/configurations?defaultOnly=true&type=site_chrome
-    body: 
+    body:
       encoding: US-ASCII
-      string: ""
-    headers: 
-      Accept: 
-      - "*/*"
-      User-Agent: 
-      - Ruby
-  response: 
-    status: 
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
       code: 200
       message: OK
-    headers: 
-      X-Socrata-Requestid: 
-      - 2cxtogswqugyxua7b154m6ern
-      Access-Control-Allow-Origin: 
+    headers:
+      X-Socrata-Requestid:
+      - dgrx09f20hbxtfgnj9u4ejeh3
+      Access-Control-Allow-Origin:
       - "*"
-      Content-Type: 
+      Content-Type:
       - application/json; charset=utf-8
-      Transfer-Encoding: 
+      Transfer-Encoding:
       - chunked
-      Server: 
+      Server:
       - Jetty(7.5.1.v20110908)
-    body: 
-      encoding: US-ASCII
+    body:
+      encoding: UTF-8
       string: |
         [ {
-          "id" : 102,
+          "id" : 109,
           "name" : "Site Chrome",
           "default" : true,
           "domainCName" : "localhost",
           "type" : "site_chrome",
-          "updatedAt" : 1464117870,
+          "updatedAt" : 1473989683,
           "properties" : [ {
-            "name" : "propertyName",
-            "value" : {
-              "some key" : "another value",
-              "new key" : "new value"
-            }
-          }, {
-            "name" : "new_property",
-            "value" : {
-              "a" : 1
-            }
-          }, {
-            "name" : "newPropertyName",
-            "value" : {
-              "some key" : "another value",
-              "new key" : "new value"
-            }
-          }, {
-            "name" : "youMightHaveToChangeThis",
-            "value" : {
-              "some key" : "some value",
-              "some other key" : "some other value"
-            }
-          }, {
-            "name" : "youMightNeedToChangeThisIfItAlreadyExists",
-            "value" : {
-              "some key" : "some value",
-              "some other key" : "some other value"
-            }
-          }, {
             "name" : "siteChromeConfigVars",
             "value" : {
               "versions" : {
-                "0.1" : {
+                "0.3" : {
                   "published" : {
                     "content" : {
-                      "footer" : {
-                        "logo" : {
-                          "src" : "http://i.imgur.com/rF2EJ4P.gif",
-                          "href" : "#"
+                      "general" : {
+                        "template" : "Evergreen",
+                        "social_shares" : {
+                          "youtube" : {
+                            "url" : ""
+                          },
+                          "yammer" : {
+                            "url" : ""
+                          },
+                          "twitter" : {
+                            "url" : ""
+                          },
+                          "vimeo" : {
+                            "url" : ""
+                          },
+                          "flickr" : {
+                            "url" : ""
+                          },
+                          "facebook" : {
+                            "url" : ""
+                          },
+                          "linked_in" : {
+                            "url" : ""
+                          },
+                          "tumblr" : {
+                            "url" : ""
+                          },
+                          "pinterest" : {
+                            "url" : ""
+                          },
+                          "google_plus" : {
+                            "url" : ""
+                          },
+                          "instagram" : {
+                            "url" : ""
+                          }
                         },
+                        "window_title_display" : "",
+                        "window_icon" : "/socrata_site_chrome/images/default_favicon.ico",
+                        "show_signup" : "true",
+                        "default_locale" : "en",
                         "styles" : {
-                          "fg_color" : "yellow",
-                          "bg_color" : "blue"
+                          "max_width" : "",
+                          "font_family" : "Open Sans"
                         },
-                        "links" : [ {
-                          "key" : "home",
-                          "url" : "/"
-                        }, {
-                          "key" : "terms_of_service",
-                          "url" : "http://www.socrata.com/terms-of-service"
-                        }, {
-                          "key" : "privacy",
-                          "url" : "http://www.socrata.com/privacy"
-                        }, {
-                          "key" : "accessibility",
-                          "url" : "http://www.socrata.com/accessibility"
-                        }, {
-                          "key" : "contact_us",
-                          "url" : "http://www.socrata.com/contact-us"
-                        }, {
-                          "key" : "a",
-                          "url" : "#a"
-                        }, {
-                          "key" : "b",
-                          "url" : "#b"
-                        }, {
-                          "key" : "c",
-                          "url" : "#c"
-                        }, {
-                          "key" : "d",
-                          "url" : "#d"
-                        }, {
-                          "key" : "e",
-                          "url" : "#e"
-                        }, {
-                          "key" : "f",
-                          "url" : "#f"
-                        }, {
-                          "key" : "g",
-                          "url" : "#g"
-                        }, {
-                          "key" : "h",
-                          "url" : "#happy content"
-                        }, {
-                          "key" : "link text",
-                          "url" : ""
-                        }, {
-                          "key" : "jj",
-                          "url" : "#jj"
-                        } ],
-                        "copyright_notice" : "1",
-                        "show_copyright_notice" : "1"
+                        "show_signin_signout" : "true",
+                        "show_profile" : "true"
                       },
                       "locales" : {
                         "en" : {
                           "footer" : {
-                            "logo_alt" : "Evergreen!",
+                            "site_name" : "",
+                            "copyright_notice_source" : "",
                             "links" : {
-                              "f" : "Link F",
-                              "home" : "Home Page",
-                              "g" : "Link G with a super long title because I want to see if shit breaks or looks good!!!!11111",
-                              "d" : "Link D",
-                              "e" : "Link E",
-                              "b" : "Link B",
-                              "c" : "Link C",
-                              "a" : "Link A",
-                              "privacy" : "Privacy Policy",
-                              "terms_of_service" : "Terms of Service",
-                              "link text" : "",
-                              "j" : "Link J",
-                              "h" : "Link H had its name changed",
-                              "jj" : "",
-                              "contact_us" : "Contact Us",
-                              "i" : "Link I",
-                              "accessibility" : "Accessibility"
-                            }
+                              "link_3" : "Accessibility",
+                              "link_4" : "Contact Us",
+                              "link_1" : "Terms of Service",
+                              "link_2" : "Privacy Policy",
+                              "link_0" : "Home Page"
+                            },
+                            "logo_alt" : ""
                           },
                           "header" : {
-                            "logo_alt" : "Evergreen!",
+                            "site_name" : "",
                             "links" : {
-                              "home" : "Homey Page",
-                              "support" : "Support",
-                              "catalog" : "Browse",
-                              "developers" : "Developers",
-                              "evergreen" : "City of Evergreenie"
-                            }
-                          },
-                          "general" : {
-                            "social_shares" : {
-                              "twitter" : "Follow us on Twitter",
-                              "facebook" : "Like us on Facebook"
+                              "link_3" : "Support",
+                              "link_1" : "Browse",
+                              "link_2" : "Developers",
+                              "link_0" : "Home Page"
                             },
-                            "site_name" : "City of Evergreenieweeniepolkadotsand stripe"
+                            "logo_alt" : ""
                           }
                         }
                       },
-                      "evenNewerPropertyName" : {
-                        "first key" : "first value"
-                      },
-                      "general" : {
-                        "window_icon" : "test favicon",
-                        "social_shares" : [ {
-                          "type" : "facebook",
-                          "url" : "http://facebook.com/potatoesForQuayle"
-                        }, {
-                          "type" : "twitter",
-                          "url" : "http://twitter.com/pant"
-                        } ],
-                        "link_text_color" : "blue",
-                        "locales" : [ "en", "es", "fr" ],
-                        "default_locale" : "en",
-                        "styles" : {
-                          "fg_color" : "#fff",
-                          "bg_color" : "#2c97de",
-                          "font_family" : "Open Sans"
+                      "footer" : {
+                        "copyright_notice" : "true",
+                        "powered_by" : "true",
+                        "logo" : {
+                          "src" : "/socrata_site_chrome/images/socrata-logo-2c-dark.png",
+                          "href" : "#"
                         },
-                        "window_title_display" : "test title again"
+                        "links" : [ {
+                          "key" : "link_0",
+                          "url" : "/"
+                        }, {
+                          "key" : "link_1",
+                          "url" : "http://www.socrata.com/terms-of-service"
+                        }, {
+                          "key" : "link_2",
+                          "url" : "http://www.socrata.com/privacy"
+                        }, {
+                          "key" : "link_3",
+                          "url" : "http://www.socrata.com/accessibility"
+                        }, {
+                          "key" : "link_4",
+                          "url" : "http://www.socrata.com/contact-us"
+                        } ],
+                        "styles" : {
+                          "bg_color" : "#3b3a3c",
+                          "fg_color" : "#fff",
+                          "logo_height" : "44px",
+                          "logo_width" : ""
+                        }
                       },
                       "header" : {
                         "logo" : {
-                          "src" : "http://i.imgur.com/rF2EJ4P.gif",
+                          "src" : "/socrata_site_chrome/images/socrata-logo-2c-dark.png",
                           "href" : "#"
                         },
-                        "styles" : {
-                          "fg_color" : "pinky",
-                          "bg_color" : "bluey"
-                        },
                         "links" : [ {
-                          "key" : "home",
+                          "key" : "link_0",
                           "url" : "/"
                         }, {
-                          "key" : "catalog",
+                          "key" : "link_1",
                           "url" : "/browse"
                         }, {
-                          "key" : "developers",
+                          "key" : "link_2",
                           "url" : "http://dev.socrata.com"
                         }, {
-                          "key" : "support",
+                          "key" : "link_3",
                           "url" : "http://support.socrata.com"
-                        }, {
-                          "key" : "evergreen",
-                          "url" : "http://data.evergreen.gov"
-                        } ]
+                        } ],
+                        "styles" : {
+                          "bg_color" : "#22b479",
+                          "fg_color" : "#fff",
+                          "logo_height" : "36px",
+                          "logo_width" : "",
+                          "bg_color_secondary" : ""
+                        }
                       }
                     }
                   }
                 }
+              },
+              "current_version" : "0.3",
+              "activation_state" : {
+                "data_lens" : true,
+                "open_data" : true,
+                "homepage" : true
               }
             }
           } ]
         } ]
-
     http_version: 
-  recorded_at: Tue, 24 May 2016 20:11:42 GMT
-recorded_with: VCR 3.0.1
+  recorded_at: Fri, 16 Sep 2016 01:35:13 GMT
+recorded_with: VCR 3.0.3

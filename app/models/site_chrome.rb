@@ -42,6 +42,18 @@ class SiteChrome
     }
   end
 
+  def self.create_site_chrome_config(cookies)
+    begin
+      SiteChrome.new(default_values).tap do |sc|
+        sc.cookies = cookies
+        sc.create
+      end
+    rescue
+      @errors << 'Error creating Site Chrome configuration'
+      # airbrake on rescue?
+    end
+  end
+
   def self.latest_version
     SocrataSiteChrome::SiteChrome::LATEST_VERSION
   end
@@ -180,17 +192,9 @@ class SiteChrome
     new(res) if res.success? && res['type'] == core_configuration_type
   end
 
-  def self.find_default
+  def self.find
     opts = { query: { defaultOnly: true } }
     all(opts).find(&:default)
-  end
-
-  def self.find_or_create_default(cookies)
-    find_default || begin
-      sc = SiteChrome.new(default_values)
-      sc.cookies = cookies
-      sc.create
-    end
   end
 
   def create_or_update_property(property_name, property_value)
@@ -279,6 +283,10 @@ class SiteChrome
 
   def activation_state
     config.dig('value', 'activation_state').to_h
+  end
+
+  def is_activated_on?(section)
+    !!activation_state[section]
   end
 
   # Returns an object representing the pages that have site chrome activated based on the state param.

@@ -5,7 +5,7 @@ http_interactions:
     uri: http://localhost:8080/configurations
     body:
       encoding: UTF-8
-      string: '{"id":null,"name":"Site Chrome","default":false,"domainCName":"localhost","type":"site_chrome","updatedAt":null,"properties":[]}'
+      string: '{"id":null,"name":"Site Chrome","default":true,"domainCName":"localhost","type":"site_chrome","updatedAt":null,"properties":[]}'
     headers:
       Content-Type:
       - application/json
@@ -21,11 +21,11 @@ http_interactions:
       message: OK
     headers:
       X-Socrata-Requestid:
-      - 58wr0zgltwyhuhxnpj6j14nq5
+      - 10bjxksago0r0kj2zna6dfjpo
       Access-Control-Allow-Origin:
       - "*"
       Set-Cookie:
-      - _core_session_id=dHVnZy1pa2NlIDE0NzQwNzI0NDEgMTViZTg2YjkwYThiIDUyNTMzNGNlMmMwMDQxYmM1NzA0ZTM3NDM4MDA5NjZiNzViNTlkYzk;Path=/
+      - _core_session_id=dHVnZy1pa2NlIDE0NzQwNzI0NjIgMTViZTg2YjkwYThiIDNiODZjODIzNWFhOTJjMTY3ZWNkNjFkMGFkMjc2NjU5ZjcwMGE4NDc;Path=/
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Content-Type:
@@ -38,13 +38,13 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "id" : 124,
+          "id" : 125,
           "name" : "Site Chrome",
-          "default" : false,
+          "default" : true,
           "domainCName" : "localhost",
           "type" : "site_chrome",
-          "updatedAt" : 1474050841
+          "updatedAt" : 1474050862
         }
     http_version: 
-  recorded_at: Fri, 16 Sep 2016 18:34:01 GMT
+  recorded_at: Fri, 16 Sep 2016 18:34:22 GMT
 recorded_with: VCR 3.0.3

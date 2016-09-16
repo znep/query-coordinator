@@ -82,27 +82,20 @@ module ApplicationHelper
 
 # SITE CHROME (header and footer)
 
-  def enable_site_chrome_admin_panel?
-    # We will want to create a separate feature flag for this once we open the feature up to admins.
-    # Currently we always show it, but only to superadmins.
-    !!current_user.try(:is_superadmin?)
-  end
-
   # dataslate_page and homepage are passed to the view that calls this from custom_content_controller.
   # Note that the order of these checks is important. For example, if the user is on the homepage,
   # we enable site chrome only if the homepage flag is true (regardless of the other flags).
   def enable_site_chrome?
-    site_chrome = SiteChrome.find_or_create_default(forwardable_session_cookies)
+    site_chrome = SiteChrome.find
     return false unless site_chrome
     return true if in_preview_mode?
 
-    activation_state = site_chrome.activation_state
     if on_homepage
-      activation_state['homepage']
+      site_chrome.is_activated_on?('homepage')
     elsif using_dataslate
       FeatureFlags.derive(nil, request).site_chrome_header_and_footer_for_dataslate
     else
-      activation_state['open_data']
+      site_chrome.is_activated_on?('open_data')
     end
   end
 

@@ -9,7 +9,6 @@ import { fileUploadComplete } from 'components/uploadFile';
 import * as SaveState from 'saveState';
 import { withMockFetch, testThunk } from '../asyncUtils';
 
-
 describe('updateNavigation', function() {
   this.timeout(100);
 
@@ -21,7 +20,7 @@ describe('updateNavigation', function() {
 
   function testChooseOperation(done, operation, navigationStateAfter) {
     withMockFetch(
-      (url, options, resolve, reject) => {
+      (url, options, resolve) => {
         resolve({
           status: 200,
           json: () => Promise.resolve({
@@ -222,8 +221,8 @@ describe('initialNewDatasetModel', () => {
         description: '',
         category: '',
         tags: [],
-        rowLabel: '',
-        mapLayer: '',
+        rowLabel: 'Row',
+        mapLayer: null,
         customMetadata: {
           first: [
             {
@@ -273,7 +272,7 @@ describe('initialNewDatasetModel', () => {
         licensing: '',
         licenseId: '',
         attribution: '',
-        sourceLink: ''
+        sourceLink: null
       },
       lastSaved: {
         lastSavedContents: {
@@ -283,8 +282,8 @@ describe('initialNewDatasetModel', () => {
           description: '',
           category: '',
           tags: [],
-          rowLabel: '',
-          mapLayer: '',
+          rowLabel: 'Row',
+          mapLayer: null,
           customMetadata: {
             first: [
               {
@@ -334,7 +333,7 @@ describe('initialNewDatasetModel', () => {
           licensing: '',
           licenseId: '',
           attribution: '',
-          sourceLink: ''
+          sourceLink: null
         }
       }
     },
@@ -472,17 +471,19 @@ describe('initialNewDatasetModel', () => {
   });
 
   describe('when the `importSource` has an `operation` of `LINK_EXTERNAL`', () => {
-    const expected = initialNewDatasetModel(theView, { version: 2, importMode: 'LINK_EXTERNAL' });
-    const actual = {
-      ...initialState,
-      lastSavedVersion: 2,
-      navigation: {
-        operation: 'LINK_EXTERNAL',
-        page: 'Metadata',
-        path: ['SelectType']
-      }
-    };
-    expect(expected).to.deep.equal(actual);
+    it('rehydrates properly', () => {
+      const expected = initialNewDatasetModel(theView, { version: 2, importMode: 'LINK_EXTERNAL' });
+      const actual = {
+        ...initialState,
+        lastSavedVersion: 2,
+        navigation: {
+          operation: 'LINK_EXTERNAL',
+          page: 'Metadata',
+          path: ['SelectType']
+        }
+      };
+      expect(expected).to.deep.equal(actual);
+    });
   });
 
   describe('when the `importSource` has an `operation` of `UPLOAD_DATA`', () => {
@@ -497,7 +498,7 @@ describe('initialNewDatasetModel', () => {
           page: 'SelectUploadType',
           path: ['SelectType']
         }
-      })
+      });
     });
 
     const summary = {
@@ -531,7 +532,8 @@ describe('initialNewDatasetModel', () => {
           }
         },
         transforms: [],
-        id: 0
+        id: 0,
+        chosenType: undefined
       },
       {
         name: 'col 2',
@@ -543,7 +545,8 @@ describe('initialNewDatasetModel', () => {
           }
         },
         transforms: [],
-        id: 1
+        id: 1,
+        chosenType: undefined
       }
     ];
 
@@ -580,8 +583,8 @@ describe('initialNewDatasetModel', () => {
         scanResults: summary
       };
       const actual = initialNewDatasetModel(theView, importSource);
-      expect(JSON.parse(JSON.stringify(initialStateWithTransform))).to.deep.equal(JSON.parse(JSON.stringify(actual)));
-      // ;_; no idea why this doesn't work without the parse/stringify pairs
+
+      expect(initialStateWithTransform).to.deep.equal(actual);
     });
 
     it('initializes the transform based on the ImportSource', () => {
@@ -617,10 +620,12 @@ describe('initialNewDatasetModel', () => {
         }
       };
 
-      expect(JSON.parse(JSON.stringify(expected))).to.deep.equal(JSON.parse(JSON.stringify(actual)));
-      // ;_; no idea why this doesn't work without the parse/stringify pairs
+      expect(expected.metadata.contents).to.deep.equal(actual.metadata.contents);
+      expect(expected.metadata.license).to.deep.equal(actual.metadata.license);
+      expect(expected.metadata.lastSaved).to.deep.equal(actual.metadata.lastSaved);
+      expect(expected.metadata).to.deep.equal(actual.metadata);
+      expect(expected).to.deep.equal(actual);
     });
 
   });
-
 });

@@ -160,11 +160,14 @@ function blobMetadata(meta) {
 }
 
 function viewMetadata({href, rowLabel, mapLayer, customMetadata, displayType}) {
-  var meta = {
+  const attributionLink = _.isNull(mapLayer) ? {} : { attributionLink: mapLayer };
+
+  const meta = {
+    ...attributionLink,
     rowLabel: rowLabel,
-    attributionLink: mapLayer,
     custom_fields: customMetadataModelToCoreView(customMetadata, false)
   };
+
   if (href) {
     return hrefMetadata(href, meta);
   } else if (displayType === 'blob') {

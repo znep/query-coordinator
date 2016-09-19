@@ -102,13 +102,26 @@ module TestHelperMethods
   end
 
   def stub_site_chrome
-    SiteChrome.stubs(:find => Hashie::Mash.new(
-      :activation_state => {
-        :open_data => false,
-        :homepage => false,
-        :data_lens => false
-      }
-    ))
+    if Object.respond_to?(:stubs)
+      # Minitest
+      SiteChrome.stubs(:find => Hashie::Mash.new(
+        :activation_state => {
+          :open_data => false,
+          :homepage => false,
+          :data_lens => false
+        }
+      ))
+    else
+      # RSpec
+      allow(SiteChrome).to receive(:find).and_return(
+        Hashie::Mash.new(
+          :activation_state => {
+            :open_data => false,
+            :homepage => false,
+            :data_lens => false
+          }
+        )
+      )
+    end
   end
-
 end

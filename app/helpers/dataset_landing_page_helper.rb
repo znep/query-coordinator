@@ -55,9 +55,7 @@ module DatasetLandingPageHelper
 
     feature_flags = Hash[
       FeatureFlags.derive(nil, request).slice(*[
-        :enable_dataset_landing_page,
         :enable_dataset_landing_page_tour,
-        :default_to_dataset_landing_page,
         :display_dataset_landing_page_preview_images,
         :stories_enabled
       ]).map { |k, v| [ k.camelize(:lower), v ] }
@@ -125,7 +123,7 @@ module DatasetLandingPageHelper
   end
 
   def edit_metadata_url
-    if @view.has_rights?(ViewRights::UPDATE_VIEW) && FeatureFlags.derive(@view, request).default_to_dataset_landing_page
+    if @view.has_rights?(ViewRights::UPDATE_VIEW)
       edit_view_metadata_path(@view)
     end
   end

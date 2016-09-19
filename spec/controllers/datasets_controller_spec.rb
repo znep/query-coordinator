@@ -21,6 +21,7 @@ describe DatasetsController do
     before(:each) do
       init_current_domain
       init_core_session
+      stub_site_chrome
       allow(subject).to receive(:enable_site_chrome?).and_return(false)
     end
 
@@ -79,6 +80,7 @@ describe DatasetsController do
       subject.instance_variable_set('@meta', {})
       allow(FeatureFlags).to receive(:derive).and_return(OpenStruct.new(:dataset_landing_page_enabled? => true))
       allow(subject).to receive(:enable_site_chrome?).and_return(false)
+      stub_site_chrome
     end
 
     context 'with DSLP fully enabled' do

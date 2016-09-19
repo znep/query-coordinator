@@ -214,6 +214,7 @@ http://www.socrata.com
     var blist = blist || {};
     blist.configuration = blist.configuration || {};
     blist.configuration.normalDownloadTypes = <%= raw json_escape(normal_download_types.to_json) %>;
+    blist.configuration.dataset_landing_page_enabled = <%= dataset_landing_page_enabled? %>
   </script>
 
   <%= include_webpack_bundle 'open-data/base.js' %>

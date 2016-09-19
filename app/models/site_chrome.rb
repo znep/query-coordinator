@@ -321,6 +321,11 @@ class SiteChrome
       !activation_state['homepage']
   end
 
+  # If the site chrome header/footer is enabled on ANY page, then we activate the Dataset Landing Page
+  def dslp_enabled?
+    activation_state.values.any?
+  end
+
   # True only if it has been activated and then reverted
   def reverted?
     activation_state.present? && activation_state.values.none?

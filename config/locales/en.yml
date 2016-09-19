@@ -2618,20 +2618,20 @@ en:
         activate: Activate
         add_new_link_menu: Add Menu
         add_new_link_row: Add %{section} Link
+        after_clicking_ok: After clicking 'OK' below, see both features in action by visiting one of your datasets.
         cancel: Cancel
-        congratulations: Congratulations!
         description: Configure the appearance of your Socrata site.
+        get_excited: Get Excited!
         link_menu_label_html: <b>Menu</b> - <i>You can drag links to reorder them</i>
         move_link_row: Drag to reorder
         ok: OK
         preview: Preview
         remove_link_menu: Remove Link Menu
         remove_link_row: Remove Link
-        see_both_features: See both features in action by visiting one of your datasets.
         site_appearance: Site Appearance
-        these_features_help: These features will help users explore your data and will make it easier for you to manage the appearance of your site.
+        these_features: These features will empower you to better control the appearance of your site and will help data consumers explore your data even better than before. Your users are going to love them!
         update: Update
-        you_have_activated: You have activated your new header/footer and Dataset Landing Page.
+        you_are_about: You are about to activate your header, footer and Dataset Landing Pages for your datasets.
         tabs:
           footer:
             fields:

@@ -4035,6 +4035,7 @@
       if (start != stop) {
         model.loadRows(start, stop, function(r) {
           rowsLoaded(r);
+          updateLayout();
         });
         showNoResults(false);
       } else {

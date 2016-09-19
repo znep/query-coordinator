@@ -690,8 +690,12 @@ function renderLicenses(metadata, onMetadataAction) {
   );
 }
 
+function hasApiError(apiCall) {
+  return apiCall.type === 'Error';
+}
+
 function renderFlashMessageApiError(apiCall) {
-  if (apiCall.type !== 'Error') {
+  if (!hasApiError(apiCall)) {
     return;
   } else {
     switch (apiCall.error.message) {
@@ -709,8 +713,12 @@ function renderFlashMessageApiError(apiCall) {
   }
 }
 
+function hasImportError(importError) {
+  return !_.isUndefined(importError);
+}
+
 function renderFlashMessageImportError(importError) {
-  if (_.isUndefined(importError)) {
+  if (!hasImportError(importError)) {
     return;
   }
   return <FlashMessage flashType="error" message={importError} />;
@@ -729,6 +737,13 @@ function metadataSuccessMessage(operation) {
   }
 }
 
+function renderMetadataSuccessMessage(operation, importError, apiCall) {
+  if (hasImportError(importError) || hasApiError(apiCall)) {
+    return;
+  }
+  return <FlashMessage flashType="success" message={metadataSuccessMessage(operation)} />;
+}
+
 export function view({ metadata, onMetadataAction, operation, importError, goToPrevious }) {
   const I18nPrefixed = I18n.screens.edit_metadata;
   const validationErrors = validate(metadata, operation);
@@ -736,10 +751,7 @@ export function view({ metadata, onMetadataAction, operation, importError, goToP
 
   return (
     <div className="metadataPane">
-      <div className="flash-alert success">
-        {metadataSuccessMessage(operation)}
-      </div>
-
+      {renderMetadataSuccessMessage(operation, importError, metadata.apiCall)}
       {renderFlashMessageApiError(metadata.apiCall)}
       {renderFlashMessageImportError(importError)}
       <p className="headline">{I18n.screens.dataset_new.metadata.prompt}</p>

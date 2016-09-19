@@ -259,33 +259,42 @@ var listOfLinksInputNames = function(contentKey, id) {
   };
 };
 
-function addNewLinkRow(button) {
-  var linkRowLimit = 15;
-  var $allLinkRows = $(button).closest('.list-of-links').find('.link-row');
-  var linkRowCount = $allLinkRows.not('.default').length;
-  var isChildLink = $(button).parent().hasClass('link-menu');
-
-  if (linkRowCount < linkRowLimit) {
-    var defaultLinkRowSelector = isChildLink ? '.default.child' : '.default:not(.child)';
-    var $defaultLinkRow = $allLinkRows.filter(defaultLinkRowSelector);
-    var $newLinkRow = $defaultLinkRow.clone();
-
-    $newLinkRow.removeClass('default');
-    // Append newLinkMenu to end (of either top level or inside a menu).
-    $(button).siblings('.links-and-menus, .child-links').append($newLinkRow);
-
-    // If we're at the linkRowLimit after adding the newLinkRow, disable the "add" buttons.
-    if (linkRowCount + 1 >= linkRowLimit) {
-      $('.add-new-link-row').prop('disabled', true);
-      $('.add-new-link-menu').prop('disabled', true);
-    }
+// Called after a link/menu is added or removed. If the count of top-level links/menus is >=
+// the limit, then we disable the buttons to add new top-level links/menus.
+function checkTopLevelLinkCount($listOfLinks) {
+  const topLevelLinkLimit = 15; // Max number of top level links and menus
+  var topLevelLinkCount = $listOfLinks.
+    find('.links-and-menus').
+    // `children` to make sure we aren't including nested links inside `.link-menu`s
+    children('.link-row, .link-menu').
+    not('.default').
+    length;
+  if (topLevelLinkCount < topLevelLinkLimit) {
+    $listOfLinks.children('.add-new-link-row, .add-new-link-menu').prop('disabled', false);
+  } else {
+    $listOfLinks.children('.add-new-link-row, .add-new-link-menu').prop('disabled', true);
   }
 }
 
+function addNewLinkRow(button) {
+  var isChildLink = $(button).parent().hasClass('link-menu');
+  var $listOfLinks = $(button).closest('.list-of-links');
+
+  var defaultLinkRowSelector = isChildLink ? '.link-row.default.child' : '.link-row.default:not(.child)';
+  var $defaultLinkRow = $listOfLinks.find(defaultLinkRowSelector);
+  var $newLinkRow = $defaultLinkRow.clone();
+
+  $newLinkRow.removeClass('default');
+  // Append newLinkMenu to end (of either top level or inside a menu).
+  $(button).siblings('.links-and-menus, .child-links').append($newLinkRow);
+
+  checkTopLevelLinkCount($listOfLinks);
+}
+
 function removeLinkRow(button) { //eslint-disable-line no-unused-vars
+  var $listOfLinks = $(button).closest('.list-of-links');
   $(button).closest('.link-row').remove();
-  $('.add-new-link-row').prop('disabled', false);
-  $('.add-new-link-menu').prop('disabled', false);
+  checkTopLevelLinkCount($listOfLinks);
 }
 
 function addNewLinkMenu(button) { //eslint-disable-line no-unused-vars
@@ -296,22 +305,24 @@ function addNewLinkMenu(button) { //eslint-disable-line no-unused-vars
   // Append new link menu after all other top-level links and menus
   $(button).siblings('.links-and-menus').
     // Use `.children` instead of `.find` to make sure we are only getting top-level link-rows
-  children('.link-menu, .link-row').
-  not('.default').
-  last().
-  after($newLinkMenu);
+    children('.link-menu, .link-row').
+    not('.default').
+    last().
+    after($newLinkMenu);
   // Create new link-row inside new menu.
   addNewLinkRow($newLinkMenu.find('.add-new-link-row'));
 }
 
 // Remove menu and move its child links to top-level links.
 function removeLinkMenu(button) { //eslint-disable-line no-unused-vars
+  var $listOfLinks = $(button).closest('.list-of-links');
   var $childLinks = $(button).siblings('.child-links').find('.link-row');
   $childLinks.each(function() {
     moveChildLinkToTopLevelLink($childLinks);
   });
 
   $(button).closest('.link-menu').replaceWith($childLinks);
+  checkTopLevelLinkCount($listOfLinks);
 }
 
 // Before submit, reorder the indices of the present links and menus to reflect the current

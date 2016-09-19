@@ -123,6 +123,8 @@ body {
       .entry-description {
         display: inline-block;
         line-height: 24px;
+        max-width: 100%;
+        word-wrap: break-word;
       }
     }
   }

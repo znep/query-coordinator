@@ -522,6 +522,10 @@ $link_color: #2279a6;
       text-align: right;
       padding-right: 1rem;
     }
+
+    footer.flannel-actions {
+      background: transparent; // To remedy CS instances where any `footer` has a bg color.
+    }
   }
 }
 

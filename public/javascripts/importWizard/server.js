@@ -487,6 +487,7 @@ function importData(onError) {
   return (dispatch, getState) => {
     const state = getState();
     dispatch(importStart());
+    dispatch(goToPage('Importing'));
     socrataFetch('/api/imports2.json', {
       method: 'POST',
       headers: {
@@ -545,6 +546,7 @@ function importGeospatial(onError) {
   return (dispatch, getState) => {
     const state = getState();
     dispatch(importStart());
+    dispatch(goToPage('Importing'));
     socrataFetch('/api/imports2.json?method=shapefile', {
       method: 'POST',
       headers: {

@@ -6,11 +6,11 @@
   :locale_string => "#{locale_string}.header_bar_logo") %>
 
 <%= render('site_chrome/tab_content/form_field_pair',
-  left: {
+  :left => {
     :fields => [:header, :styles, :logo_height],
     :locale_string => "#{locale_string}.header_logo_height"
   },
-  right: {
+  :right => {
     :fields => [:header, :styles, :logo_width],
     :locale_string => "#{locale_string}.header_logo_width"
   }) %>
@@ -20,11 +20,11 @@
   :locale_string => "#{locale_string}.header_display_name") %>
 
 <%= render('site_chrome/tab_content/form_field_pair',
-  left: {
+  :left => {
     :fields => [:header, :styles, :bg_color],
     :locale_string => "#{locale_string}.bar_background_color"
   },
-  right: {
+  :right => {
     :fields => [:header, :styles, :bg_color_secondary],
     :locale_string => "#{locale_string}.bar_secondary_background_color"
   }) %>

@@ -1,4 +1,4 @@
-$banner_height: $header_logo_height + 20;
+$banner_height: calc($header_logo_height + 20);
 $searchbox-height: 36px;
 
 header#site-chrome-header[template="default"] {

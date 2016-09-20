@@ -528,3 +528,8 @@ $link_color: #2279a6;
 #siteHeader .siteUserNav li a {
   font-size: 12px;
 }
+
+// This hack is to override a hack purpetrated elsewhere in custom css on certain domains
+html, body {
+  height: 100% !important;
+}

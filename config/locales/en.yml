@@ -2656,12 +2656,12 @@ en:
                 title: Footer Logo
               footer_logo_height:
                 description: You can optionally set a height and width for your logo displayed in the Footer.
-                error: 'Please enter a value to represent your desired logo height in pixels. Ex: 100px'
+                error: 'Please enter a value to represent your desired logo height in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
                 placeholder: 80px
                 title: Footer Logo Height
               footer_logo_width:
                 description: You can optionally set a height and width for your logo displayed in the Footer.
-                error: 'Please enter a value to represent your desired logo width in pixels. Ex: 100px'
+                error: 'Please enter a value to represent your desired logo width in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
                 placeholder: 80px
                 title: Footer Logo Width
               footer_text_link_color:
@@ -2738,12 +2738,12 @@ en:
                 title: Header Display Name
               header_logo_height:
                 description: You can optionally set the height and width for your logo displayed in the Header Bar.
-                error: 'Please enter a value to represent your desired logo height in pixels. Ex: 100px'
+                error: 'Please enter a value to represent your desired logo height in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
                 placeholder: 80px
                 title: Header Logo Height
               header_logo_width:
                 description: You can optionally set the height and width for your logo displayed in the Header Bar.
-                error: 'Please enter a value to represent your desired logo width in pixels. Ex: 100px'
+                error: 'Please enter a value to represent your desired logo width in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
                 placeholder: 80px
                 title: Header Logo Width
               link_title_label: Link Label

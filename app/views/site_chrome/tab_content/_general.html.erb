@@ -2,30 +2,28 @@
 
 <%= section_separator %>
 
-<%= site_chrome_dropdown_field(:general, :template, %w(Evergreen Rally), translations[:template].tap do |t|
-  t[:description] = t[:description_html].html_safe
-end) %>
+<%= site_chrome_dropdown_field(:general, :template, %w(Evergreen Rally), "#{locale_string}.template") %>
 
-<%= site_chrome_form_field(:general, [:styles, :max_width], translations[:max_width]) %>
-<%= site_chrome_form_field(:general, :window_title_display, translations[:window_title_display]) %>
-<%= site_chrome_form_field(:general, :window_icon, translations[:window_icon]) %>
+<%= site_chrome_form_field(:general, [:styles, :max_width], "#{locale_string}.max_width") %>
+<%= site_chrome_form_field(:general, :window_title_display, "#{locale_string}.window_title_display") %>
+<%= site_chrome_form_field(:general, :window_icon, "#{locale_string}.window_icon") %>
 
-<%= site_chrome_dropdown_field(:general, [:styles, :font_family], valid_webfonts, translations[:font_family]) %>
+<%= site_chrome_dropdown_field(:general, [:styles, :font_family], valid_webfonts, "#{locale_string}.font_family") %>
 <!-- EN-9176: Hide Google Analytics field for now -->
-<!--<%#= site_chrome_form_field(:general, :google_analytics_token, translations[:google_analytics_token]) %>-->
+<!--<%#= site_chrome_form_field(:general, :google_analytics_token, t("#{locale_string}.google_analytics_token")) %>-->
 
 <%= section_separator %>
 
 <section class="settings-group">
   <div class="settings-form full signin-signout">
     <%- fields = [:general] %>
-    <%- translation = translations[:show_signin_signout] %>
-    <h3><%= translation[:title] %></h3>
+    <%- singin_signout_locale_key = "#{locale_string}.show_signin_signout" %>
+    <h3><%= t("#{singin_signout_locale_key}.title") %></h3>
     <aside>
-      <p><%= translation[:description] %></p>
+      <p><%= t("#{singin_signout_locale_key}.description") %></p>
     </aside>
-    <%= signin_signout_checkbox(:show_signin_signout, translation) %>
-    <%= signin_signout_checkbox(:show_signup, translation, indent: true) %>
-    <%= signin_signout_checkbox(:show_profile, translation, indent: true) %>
+    <%= signin_signout_checkbox(:show_signin_signout, singin_signout_locale_key) %>
+    <%= signin_signout_checkbox(:show_signup, singin_signout_locale_key, indent: true) %>
+    <%= signin_signout_checkbox(:show_profile, singin_signout_locale_key, indent: true) %>
   </div>
 </section>

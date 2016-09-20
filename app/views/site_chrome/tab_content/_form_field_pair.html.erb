@@ -3,13 +3,15 @@
   <% [left, right].each do |field| %>
     <div class="settings-form half">
       <% fields = field[:fields] %>
-      <% translation = field[:translation] %>
 
-      <%= label_tag(form_field(fields), translation[:title]) %>
-      <%= text_field_tag(form_field(fields), fetch_content(fields), placeholder: translation[:placeholder]) %>
+      <%= label_tag(form_field(fields), t("#{field[:locale_string]}.title")) %>
+      <%= text_field_tag(
+        form_field(fields),
+        fetch_content(fields),
+        :placeholder => t("#{field[:locale_string]}.placeholder")) %>
     </div>
   <% end %>
 
   <% #NOTE: translation is getting pulled from the left-most field %>
-  <aside><p><%= left[:translation][:description] %></p></aside>
+  <aside><p><%= t("#{left[:locale_string]}.description") %></p></aside>
 </section>

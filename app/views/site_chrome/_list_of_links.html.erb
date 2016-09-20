@@ -1,13 +1,13 @@
 <section class="settings-group list-of-links" data-content-key="<%= content_key %>">
   <%
-    title = translations[:menu_links][:title]
-    description = translations[:menu_links][:description]
-    label_title = translations[:link_title_label]
-    url_title = translations[:url_label]
+    title = t("#{locale_string}.menu_links.title")
+    description = t("#{locale_string}.menu_links.description")
+    label_title = t("#{locale_string}.link_title_label")
+    url_title = t("#{locale_string}.url_label")
     placeholder = {
-      :link_title => translations[:link_title_placeholder],
-      :menu_title => translations[:menu_title_placeholder],
-      :url => translations[:url_placeholder]
+      :link_title => t("#{locale_string}.link_title_placeholder"),
+      :menu_title => t("#{locale_string}.menu_title_placeholder"),
+      :url => t("#{locale_string}.url_placeholder")
     }
   %>
 

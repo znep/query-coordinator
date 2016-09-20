@@ -197,7 +197,7 @@ module SiteChromeHelper
     Gem::Version.new(site_chrome.current_version) >= Gem::Version.new(version)
   end
 
-  def signin_signout_checkbox(field, translation, options = {})
+  def signin_signout_checkbox(field, locale_string, options = {})
     fields = [:general, field]
     content_tag(:div, nil, :class => 'signin-signout-checkbox') do
       label_tag form_field(fields), :class => ('indented' if options[:indent]) do
@@ -208,7 +208,7 @@ module SiteChromeHelper
           'true',
           'false'
         )
-        html << translation[fields.last]
+        html << t("#{locale_string}.#{fields.last}")
       end
     end
   end
@@ -240,20 +240,20 @@ module SiteChromeHelper
     end
   end
 
-  def site_chrome_form_field(section, fields, translations)
+  def site_chrome_form_field(section, fields, locale_string)
     render(
       'site_chrome/tab_content/form_field',
       :fields => Array[*fields].unshift(section),
-      :translation => translations
+      :locale_string => locale_string
     )
   end
 
-  def site_chrome_dropdown_field(section, fields, dropdown_options, translations)
+  def site_chrome_dropdown_field(section, fields, dropdown_options, locale_string)
     render(
       'site_chrome/tab_content/dropdown_field',
       :fields => Array[*fields].unshift(section),
       :options => dropdown_option_tags(dropdown_options),
-      :translation => translations
+      :locale_string => locale_string
     )
   end
 

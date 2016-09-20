@@ -4,13 +4,18 @@
 <% social_media_sections.each do |social_media_section| %>
 
   <% form_field_url = "content[general][social_shares][#{social_media_section}][url]" %>
-
+  <% social_media_section_locale_key = "#{locale_string}.#{social_media_section}_profile_link" %>
   <section class="settings-group">
-    <% translation = translations["#{social_media_section}_profile_link".to_sym] %>
     <div class="settings-form">
-      <%= label_tag(form_field_url, translation[:title], id: "#{form_field_url}_label") %>
-      <%= text_field_tag(form_field_url, social_share_link(social_media_section), placeholder: translation[:placeholder]) %>
+      <%= label_tag(
+        form_field_url,
+        t("#{social_media_section_locale_key}.title"),
+        :id => "#{form_field_url}_label") %>
+      <%= text_field_tag(
+        form_field_url,
+        social_share_link(social_media_section),
+        :placeholder => t("#{social_media_section_locale_key}.placeholder")) %>
     </div>
-    <aside><p><%= translation[:description] %></p></aside>
+    <aside><p><%= t("#{social_media_section_locale_key}.description") %></p></aside>
   </section>
 <% end %>

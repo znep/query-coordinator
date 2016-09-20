@@ -1,9 +1,9 @@
 <section class="settings-group">
   <div class="settings-form">
-    <%= label_tag(form_field(fields), translation[:title]) %>
+    <%= label_tag(form_field(fields), t("#{locale_string}.title")) %>
 
     <div class="dropdown btn btn-default" data-orientation="bottom" data-selectable data-dropdown>
-      <%= dropdown_title_tag(fetch_content(fields), translation[:placeholder]) %>
+      <%= dropdown_title_tag(fetch_content(fields), t("#{locale_string}.placeholder")) %>
       <span class="icon-arrow-down"></span>
       <ul class="dropdown-options">
         <%= options %>
@@ -15,5 +15,5 @@
     <%= hidden_field_tag(form_field(fields), fetch_content(fields), :class => 'hidden-dropdown-input') %>
 
   </div>
-  <aside><p><%= translation[:description] %></p></aside>
+  <aside><p><%= t("#{locale_string}.description_html", :default => t("#{locale_string}.description")) %></p></aside>
 </section>

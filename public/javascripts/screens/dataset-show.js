@@ -810,7 +810,8 @@ $(function() {
         // NOTE: Once Data Lens pages can accept filtering parameters,
         // we should be able to remove this groupBys check.
         hasGroupBys: hasQuery && !_.isUndefined(blist.dataset.query.groupBys),
-        dataset: blist.dataset
+        dataset: blist.dataset,
+        dataLensState: blist.feature_flags.data_lens_transition_state
       };
       // Restore the state
       if ($.cookies.get('newUxCollapsed')) {
@@ -836,8 +837,10 @@ $(function() {
             var lensViewId = nbeMetadata.defaultPage;
             $.get('/metadata/v1/page/{0}.json'.format(lensViewId), function(lensMetadata) {
               // For OBE dataset pages, only show link to the lens view if the user
-              // is logged in and canUpdateMetadata, or if the corresponding lens page is set to public.
-              if (linkParams.canUpdateMetadata || lensMetadata.permissions.isPublic) {
+              // is logged in and canUpdateMetadata, or if the domain is post_beta
+              // and the corresponding lens page is set to public.
+              if (linkParams.canUpdateMetadata ||
+                (linkParams.dataLensState === 'post_beta' && lensMetadata.permissions.isPublic)) {
                 linkHref = localePart + '/view/{0}'.format(lensViewId);
                 datasetShowHelpers.createNewUXLink(linkParams, linkHref);
               }
@@ -931,8 +934,7 @@ $(function() {
 
   // setTimeout needed for extra frame to run for blist properties =(
   blist.configuration.onCurrentUserComplete(function() {
-    var useEphemeralBootstrap = _.get(blist, 'feature_flags.use_ephemeral_bootstrap', true);
-    if (!useEphemeralBootstrap) {
+    if (blist && blist.feature_flags && blist.feature_flags.data_lens_transition_state !== 'pre_beta' && !blist.feature_flags.use_ephemeral_bootstrap) {
       var linkParams = datasetShowHelpers.getNewUXLinkParams();
       datasetShowHelpers.getNewUXLinkHref(linkParams);
     }

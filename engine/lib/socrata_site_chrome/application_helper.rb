@@ -91,7 +91,8 @@ module SocrataSiteChrome
         'tumblr' => 'tumblr',
         'yammer' => 'y', # Doesn't exist for yammer. Just show a "y" because y not
         'google_plus' => 'googleplus',
-        'vimeo' => 'vimeo'
+        'vimeo' => 'vimeo',
+        'github' => 'githubalt'
       }[type.to_s.downcase]
     end
 

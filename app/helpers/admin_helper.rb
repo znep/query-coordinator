@@ -1,5 +1,5 @@
 module AdminHelper
-  include Userzoom
+  include ThirdPartySurvey
 
   def select_for_role(id, options = {})
     name = options.fetch('name', 'role')
@@ -119,6 +119,10 @@ module AdminHelper
       :rows => users.map(&:email),
       :a11y_table_description => t('screens.admin.users.pending_users_table_description')
     )
+  end
+
+  def render_admin_qualtrics
+    render_qualtrics_survey('admin')
   end
 
   def render_admin_userzoom

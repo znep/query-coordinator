@@ -10,7 +10,7 @@
 module ProfileHelper
   include UserAuthMethods
   include Socrata::UrlHelpers
-  include Userzoom
+  include ThirdPartySurvey
 
   # Override view_url helper used by render_browse.
   def view_url(view)
@@ -59,6 +59,10 @@ module ProfileHelper
     end
   end
 
+  def render_profile_qualtrics
+    render_qualtrics_survey('profile')
+  end
+
   def render_profile_userzoom
     render_userzoom_survey('profile')
   end
@@ -68,5 +72,4 @@ module ProfileHelper
   def viewing_others_profile?
     @user.id != current_user.id
   end
-
-  end
+end

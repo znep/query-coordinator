@@ -85,7 +85,8 @@ class AppConfig < Hashie::Dash
   property :enable_png_download_ui
   property :enable_search_suggestions
 
-  # Userzoom configuration
+  # Third-party survey configuration
+  property :qualtrics, default: {}
   property :userzoom, default: {}
 
   # What's New configuration

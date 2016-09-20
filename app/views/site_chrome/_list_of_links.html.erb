@@ -36,12 +36,11 @@
     <%= empty_link_row_divs(
       :content_key => content_key,
       :placeholder => placeholder,
-      :count => present_links_and_menus(links).length
-    ) %>
+      :count => present_links_and_menus(links).length) %>
 
     <!-- Create a hidden default row and menu that we can clone with JS for the "add" functionality -->
-    <% default_options = { content_key: content_key, placeholder: placeholder, default: true } %>
-    <% child_link_default_options = default_options.merge(child_link: true) %>
+    <% default_options = { :content_key => content_key, :placeholder => placeholder, :default => true } %>
+    <% child_link_default_options = default_options.merge(:child_link => true) %>
     <%= link_row_div(nil, default_options) %>
     <% if local_assigns[:allow_child_links] %>
       <%= link_row_div(nil, child_link_default_options) %>
@@ -57,6 +56,6 @@
   <% end %>
   <button class="add-new-link-row" type="button" onclick="addNewLinkRow(this);">
     <span class="icon-add"></span>
-    <%= t('screens.admin.site_chrome.add_new_link_row', section: content_key.capitalize) %>
+    <%= t('screens.admin.site_chrome.add_new_link_row', :section => content_key.capitalize) %>
   </button>
 </section>

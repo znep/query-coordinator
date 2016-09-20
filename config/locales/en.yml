@@ -2768,6 +2768,10 @@ en:
                 description: Add the URL here to display a link to your organization's Flickr profile in both the Header and Footer.
                 placeholder: http://www.flickr.com/
                 title: Flickr Profile Link
+              github_profile_link:
+                description: Add the URL here to display a link to your organization's GitHub profile in both the Header and Footer.
+                placeholder: http://www.github.com/
+                title: Github Profile Link
               google_plus_profile_link:
                 description: Add the URL here to display a link to your organization's Google Plus profile in both the Header and Footer.
                 placeholder: http://www.plus.google.com/

@@ -371,6 +371,9 @@ under the `eslintConfig` key. Currently we use no configuration options for
 
 ## Features and feature_flags
 
+To enable logging of cache hits for feature flag requests to signaller, set the environment
+variable `LOG_FEATURE_FLAG_CACHING` to `true`.
+
 #### Those necessary for geospatial import
 
 ##### These feature_flags must be turned on:

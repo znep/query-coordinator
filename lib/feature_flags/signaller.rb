@@ -34,22 +34,32 @@ class FeatureFlags
         lkg_key = "#{namespace}:last_known_good:#{cache_key}"
         thr_key = "#{namespace}:throttler:#{cache_key}"
 
-        Rails.cache.fetch(thr_key, expires_in: throttle_expiry) do
-          begin
-            if options.key?(:endpoint)
-              JSON.parse(HTTParty.get(endpoint(options.fetch(:endpoint))).body)
-            else
-              yield
-            end.tap { | result| Rails.cache.write(lkg_key, result) }
-          rescue => e
-            Rails.cache.read(lkg_key).tap do |result|
-              Rails.logger.error("Something nasty was returned from upstream: #{e.inspect}")
-              if result.nil?
-                Rails.logger.error("Nothing found in last-known-good cache: #{lkg_key}")
-                raise
+        conditionally_mute do
+          Rails.cache.fetch(thr_key, expires_in: throttle_expiry) do
+            begin
+              if options.key?(:endpoint)
+                JSON.parse(HTTParty.get(endpoint(options.fetch(:endpoint))).body)
+              else
+                yield
+              end.tap { | result| Rails.cache.write(lkg_key, result) }
+            rescue => e
+              Rails.cache.read(lkg_key).tap do |result|
+                Rails.logger.error("Something nasty was returned from upstream: #{e.inspect}")
+                if result.nil?
+                  Rails.logger.error("Nothing found in last-known-good cache: #{lkg_key}")
+                  raise
+                end
               end
             end
           end
+        end
+      end
+
+      def conditionally_mute(&block)
+        if ENV['LOG_FEATURE_FLAG_CACHING'].to_s.downcase == 'true'
+          yield
+        else
+          Rails.cache.mute(&block)
         end
       end
 

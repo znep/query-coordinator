@@ -44,10 +44,12 @@ const RowStatusWidget = React.createClass({
     };
     const disabledFormButtonProps = _.merge({}, defaultButtonProps, {
       action: `${action}/enable`,
+      'aria-label': t('enable_label'),
       value: t('enable')
     });
     const enabledFormButtonProps = _.merge({}, defaultButtonProps, {
       action: `${action}/disable`,
+      'aria-label': t('disable_label'),
       disabled: false,
       title: null,
       value: t('disable')
@@ -60,7 +62,10 @@ const RowStatusWidget = React.createClass({
       case Status.DISABLED:
         return (
           <div>
-            <span className="icon-failed status-icon-disabled" />
+            <span
+              className="icon-failed status-icon-disabled"
+              aria-hidden="true"
+              role="presentation" />
             {' '}
             <span className={className}>{t('status_disabled')}</span>
             <FormButton {...disabledFormButtonProps} />
@@ -70,7 +75,10 @@ const RowStatusWidget = React.createClass({
       case Status.ENABLED:
         return (
           <div>
-            <span className="icon-check status-icon-enabled" />
+            <span
+              className="icon-check status-icon-enabled"
+              aria-hidden="true"
+              role="presentation" />
             {' '}
             <span className={className}>{t('status_enabled')}</span>
             <FormButton {...enabledFormButtonProps} />
@@ -80,7 +88,10 @@ const RowStatusWidget = React.createClass({
       case Status.PROGRESS:
         return (
           <div>
-            <span className="status-icon-progress" />
+            <span
+              className="status-icon-progress"
+              aria-hidden="true"
+              role="presentation" />
             {' '}
             <span className={className}>
               {t('status_progress')}
@@ -93,7 +104,10 @@ const RowStatusWidget = React.createClass({
       case Status.FAILED:
         return (
           <div>
-            <span className="icon-failed status-icon-failed" />
+            <span
+              className="icon-failed status-icon-failed"
+              aria-hidden="true"
+              role="presentation" />
             {' '}
             <span className={className}>
               {t('status_failed')}

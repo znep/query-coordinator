@@ -61,22 +61,36 @@ $form-checkbox-hover-check-color: #999;
     opacity: 0.5;
     cursor: not-allowed;
   }
+}
 
-  .icon-check {
-    display: inline-block;
-    vertical-align: text-top;
-    padding-left: 3px;
-    padding-top: 2px;
+.icon-check {
+  display: inline-block;
+  vertical-align: text-top;
+  padding-left: 3px;
+  padding-top: 2px;
 
-    &.unchecked {
-      color: $form-checkbox-background-color;
+  &.unchecked {
+    color: $form-checkbox-background-color;
 
-      &:hover,
-      &:focus,
-      &:active {
-        color: $form-checkbox-hover-check-color;
-      }
+    &:hover,
+    &:focus,
+    &:active {
+      color: $form-checkbox-hover-check-color;
     }
+  }
+}
+
+// the non-js version of the fake checkbox
+.a11y-version {
+  input.form-checkbox {
+    width: 19px;
+    height: 19px;
+  }
+
+  label .icon-check {
+    margin-top: -3px;
+    margin-left: -18px;
+    cursor: pointer;
   }
 }
 

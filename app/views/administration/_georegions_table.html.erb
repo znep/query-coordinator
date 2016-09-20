@@ -1,4 +1,4 @@
-<div class="gridListWrapper">
+<div class="gridListWrapper a11y-version">
   <table class="gridList georegions-table" cellspacing="0">
     <colgroup>
       <col class="name" />
@@ -30,7 +30,7 @@
       <tr class="item">
         <td class="name"><%= job['jobParameters']['name'] %></td>
         <td class="status" colspan="<%= render_actions ? 4 : 1  %>">
-          <span class="status-icon-progress"></span>
+          <span class="status-icon-progress" aria-hidden="true" role="presentation"></span>
           <span class="row-status-widget-label is-progress">
             <%=  t("#{prefix}.status_progress") %>
             <br>
@@ -43,7 +43,10 @@
       <tr class="item">
         <td class="name"><%= georegion.name %></td>
         <td class="status">
-          <span class="<%= georegion.enabled? ? 'status-icon-enabled icon-check' : 'status-icon-disabled icon-failed' %>"></span>
+          <span
+            class="<%= georegion.enabled? ? 'status-icon-enabled icon-check' : 'status-icon-disabled icon-failed' %>"
+            aria-hidden="true"
+            role="presentation"></span>
           <span class="row-status-widget-label <%= georegion.enabled? ? 'is-enabled' : 'is-disabled'%>">
             <%=  t(georegion.enabled? ? "#{prefix}.status_enabled" : "#{prefix}.status_disabled") %>
           </span>
@@ -52,13 +55,21 @@
                   { :action => :disable_georegion, :id => georegion.id }.merge(request.query_parameters),
                   t("#{prefix}.disable"),
                   { :method => :put },
-                  { :class => 'button', 'data-action' => 'disable' }) %>
+                  {
+                    'class' => 'button',
+                    'data-action' => 'disable',
+                    'aria-label' => t("#{prefix}.disable_label")
+                  }) %>
           <%- else -%>
             <%= form_button(
                   { :action => :enable_georegion, :id => georegion.id }.merge(request.query_parameters),
                   t("#{prefix}.enable"),
                   { :method => :put },
-                  { :class => 'button', 'data-action' => 'enable' }) %>
+                  {
+                    'class' => 'button',
+                    'data-action' => 'enable',
+                    'aria-label' => t("#{prefix}.enable_label")
+                  }) %>
           <%- end -%>
         </td>
         <td class="default">
@@ -96,7 +107,11 @@
                 { :action => :configure_boundary, :id => georegion.id },
                 t("#{prefix}.edit"),
                 { :method => :get },
-                { :class => 'button', 'data-action' => 'edit' }) %>
+                {
+                  'class' => 'button',
+                  'data-action' => 'edit',
+                  'aria-label' => t("#{prefix}.edit_label")
+                }) %>
         </td>
       </tr>
     <%- end -%>
@@ -104,7 +119,7 @@
       <tr class="item">
         <td class="name"><%= job['latest_event']['info']['jobParameters']['name'] %></td>
         <td class="status" colspan="<%= render_actions ? 4 : 1  %>">
-          <span class="status-icon-failed icon-failed"></span>
+          <span class="status-icon-failed icon-failed" aria-hidden="true" role="presentation"></span>
           <span class="row-status-widget-label is-failed">
             <%=  t("#{prefix}.status_failed") %>
             <br>

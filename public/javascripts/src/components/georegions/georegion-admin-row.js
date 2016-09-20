@@ -91,7 +91,9 @@ const GeoregionAdminRow = React.createClass({
       case Status.DISABLED:
         return (
           <td className="edit-action">
-            <button className="button" type="button" onClick={onEdit}>{t('edit')}</button>
+            <button className="button" type="button" aria-label={t('edit_label')} onClick={onEdit}>
+              {t('edit')}
+            </button>
           </td>
         );
       case Status.PROGRESS:

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 const FormCheckbox = React.createClass({
   propTypes: {
-    action: PropTypes.string.isRequired,
+    action: PropTypes.string,
     authenticityToken: PropTypes.string.isRequired,
     checked: PropTypes.bool.isRequired,
     disabled: PropTypes.bool,
@@ -12,10 +12,19 @@ const FormCheckbox = React.createClass({
   },
   getDefaultProps() {
     return {
+      action: '',
       disabled: false,
       onSuccess: _.noop,
       title: null
     };
+  },
+  handleKeyPressSelect(event) {
+    const keyCode = event.nativeEvent.keyCode;
+
+    // Enter or Space key code
+    if (keyCode === 13 || keyCode === 32) {
+      this.handleSelect();
+    }
   },
   handleSelect() {
     const {
@@ -52,6 +61,12 @@ const FormCheckbox = React.createClass({
         <span
           className={`form-checkbox ${disabledClass}`}
           onClick={this.handleSelect}
+          onKeyPress={this.handleKeyPressSelect}
+          role="checkbox"
+          tabIndex="0"
+          aria-checked={checked}
+          aria-disabled={disabled}
+          aria-label={title}
           title={title}>
           {!disabled ? <span className={`icon-check ${checkedClass}`}></span> : null}
         </span>

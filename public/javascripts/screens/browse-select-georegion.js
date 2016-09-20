@@ -9,11 +9,18 @@
     $('.expander').replaceWith($.tag({
       tagName: 'a',
       'class': ['button', 'chooseDatasetButton'],
-      contents: [$.t('controls.common.dataset_picker.button')]
+      contents: [$.t('controls.common.dataset_picker.button')],
+      tabindex: 0
     }, true));
 
-    $('.chooseDatasetButton').on('click', function(event) {
+    $('.chooseDatasetButton').on('click keydown', function(event) {
       event.preventDefault();
+
+      // if keypress other than enter or space
+      if (event.keyCode && (event.keyCode !== 13 && event.keyCode !== 32)) {
+        return;
+      }
+
       var selectedDataset = blist.browse.getDS($(this));
       var commonNS = window.parent.blist.namespace.fetch('blist.common');
 

@@ -2162,7 +2162,7 @@ en:
           save_success: Changes saved successfully.
           shape_label: Shape Label
           shape_label_description: 'The column that should be used as the label for each shape (ex: a column containing "WA" and "NY").'
-        create_new: Create New
+        create_new: Create New Boundary
         custom_georegions: Custom Boundaries
         date_added: Date Added
         default: Set Quick-add for boundary
@@ -2173,9 +2173,13 @@ en:
         delete: Delete
         description: Configure custom boundaries that can be used to create Spatial Lens maps
         disable: Disable
+        disable_default_label: This boundary must be enabled before you can enable quick-add.
+        disable_label: Disable boundary
         disable_success: "%{name} has been disabled and will no longer be available for creating choropleth maps in Data Lens using this Spatial Lens boundary."
         edit: Edit
+        edit_label: Edit boundary
         enable: Enable
+        enable_label: Enable boundary
         enable_success: '%{name} has been enabled. You can now create choropleth maps in Data Lens using this Spatial Lens boundary. <a href="https://support.socrata.com/hc/en-us/articles/212862177">Learn more</a> about using Spatial Lens to create maps.'
         enabled?: Enabled?
         flashes:

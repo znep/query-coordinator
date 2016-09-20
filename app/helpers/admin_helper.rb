@@ -46,16 +46,32 @@ module AdminHelper
 
     form_tag(url_opts, :method => :put) do
       if disabled
-        raw(%Q{<span class="form-checkbox disabled" title="#{title}"></span>})
+        checkbox_label = t('screens.admin.georegions.disable_default_label')
+        raw(%Q{
+          <span
+            class="form-checkbox disabled"
+            role="checkbox"
+            tabindex="0"
+            aria-disabled="true"
+            aria-checked="false"
+            aria-label="#{checkbox_label}"
+            title="#{checkbox_label}">
+          </span>
+        })
       else
-        submit_tag('', {:class => 'button', :id => id, :style => 'display:none;'}.merge(button_opts)) +
-          label_tag(id, nil) do
-          if checked
-            raw(%Q{<span class="form-checkbox" title="#{title}"><span class="icon-check"></span></span>})
-          else
-            raw(%Q{<span class="form-checkbox" title="#{title}"><span class="icon-check unchecked"></span></span>})
+        button_options = {
+          'class' => 'form-checkbox',
+          'id' => id,
+          'aria-checked' => checked,
+          'aria-label' => title,
+          'role' => 'checkbox',
+          'title' => title
+        }.merge(button_opts)
+
+        submit_tag('', button_options) +
+          label_tag(id, nil, 'aria-hidden' => true, 'role' => 'presentation') do
+            raw(%Q{<span class="icon-check #{'unchecked' unless checked}"></span>})
           end
-        end
       end
     end
   end

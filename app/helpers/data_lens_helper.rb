@@ -57,7 +57,8 @@ module DataLensHelper
       'locales' => {currentLocale: I18n.locale.to_s, defaultLocale: CurrentDomain.default_locale},
       'featureSet' => features,
       'themeV3' => theme,
-      'tileserverHosts' => tileserver_hosts
+      'tileserverHosts' => tileserver_hosts,
+      'siteChromeEnabled' => site_chrome_enabled?
     }.tap do |config|
       app_config_whitelist.each do |config_key|
         js_config_key = config_key.camelize(:lower)
@@ -115,7 +116,7 @@ module DataLensHelper
   end
 
   def site_chrome_enabled?
-    SiteChrome.find.try(:is_activated_on?, 'data_lens')
+    SiteChrome.find.try(:is_activated_on?, 'data_lens') && !@suppress_site_chrome
   end
 
   def render_data_lens_translations

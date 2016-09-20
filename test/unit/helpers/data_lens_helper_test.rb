@@ -7,6 +7,7 @@ class DataLensHelperTest < ActionView::TestCase
     init_current_domain
     Configuration.stubs(:find_by_type => [])
     data_lens_helper.stubs(:asset_revision_key => 'asset_revision_key_value')
+    data_lens_helper.stubs(:site_chrome_enabled? => false)
   end
 
   def teardown

@@ -245,7 +245,7 @@ body.state-view-cards {
     #card-container {
       position: relative;
       margin: 0 0 ($customize-bar-height + 10px);
-      &.site-chrome-footer {
+      &.with-site-chrome {
         margin-bottom: 5px;
       }
     }

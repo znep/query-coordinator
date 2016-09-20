@@ -274,6 +274,8 @@ class DataLensController < ActionController::Base
     # First fetch the current user's profile.
     current_user
 
+    @suppress_site_chrome = true
+
     @page_metadata = page_metadata_manager.page_metadata_from_vif(
         parsed_vif, nil, nil)
 

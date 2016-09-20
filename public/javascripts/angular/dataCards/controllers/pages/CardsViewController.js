@@ -143,7 +143,7 @@ module.exports = function CardsViewController(
   *************************/
 
   $scope.page = page;
-  $scope.siteChromeEnabled = ServerConfig.get('siteChromeHeaderAndFooterForDataLens');
+  $scope.siteChromeEnabled = ServerConfig.get('siteChromeEnabled');
   $scope.pageHeaderEnabled = !$scope.siteChromeEnabled;
   $scope.$bindObservable('moderationStatusIsPublic', page.observe('moderationStatus'));
   $scope.$bindObservable('isEphemeral', page.observe('id').map(_.negate(_.isPresent)));

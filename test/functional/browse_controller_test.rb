@@ -81,7 +81,7 @@ class BrowseControllerTest < ActionController::TestCase
 
   context 'when the data_lens_state feature flag is set to "pre_beta"' do
     setup do
-      stub_feature_flags_with(:data_lens_transition_state => 'pre_beta')
+      stub_feature_flags_with(:data_lens_transition_state, 'pre_beta')
     end
 
     should 'not show any new view facet for users unable to edit the datasets of others' do
@@ -127,7 +127,7 @@ class BrowseControllerTest < ActionController::TestCase
 
   context 'when the data_lens_state feature flag is set to "beta"' do
     setup do
-      stub_feature_flags_with(:data_lens_transition_state => 'beta')
+      stub_feature_flags_with(:data_lens_transition_state, 'beta')
     end
 
     should 'not show any new view facet for users unable to edit the datasets of others' do
@@ -173,7 +173,7 @@ class BrowseControllerTest < ActionController::TestCase
 
   context 'when the data_lens_state feature flag is set to "post_beta"' do
     setup do
-      stub_feature_flags_with(:data_lens_transition_state => 'post_beta')
+      stub_feature_flags_with(:data_lens_transition_state, 'post_beta')
     end
 
     should 'show the new view facet for users unable to edit the datasets of others' do

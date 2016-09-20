@@ -129,10 +129,8 @@
     // Return a cleaned copy that has no functions, private keys, or anything
     // not valid outside the Model
     cleanCopy: function(allowedKeys) {
-      var obj;
       var that = this;
       var cleanObj = function(val, key) {
-        var cleanPlainObject;
         if (val instanceof Model) {
           return val.cleanCopy();
         } else if (_.isArray(val)) {
@@ -146,11 +144,11 @@
             });
           }
         } else if ($.isPlainObject(val)) {
-          cleanPlainObject = {};
+          var cleanedObject = {};
           _.each(val, function(v, k) {
-            cleanPlainObject[k] = cleanObj(v, k);
+            cleanedObject[k] = cleanObj(v, k);
           });
-          return cleanPlainObject;
+          return cleanedObject;
         } else {
           return val;
         }
@@ -164,7 +162,7 @@
         allowedKeys = ak;
       }
 
-      obj = {};
+      var obj = {};
       _.each(this, function(v, k) {
         if (!_.isFunction(v) && !k.startsWith('_') && that._validKeys[k] &&
           ($.isBlank(allowedKeys) || allowedKeys[k])) {
@@ -176,7 +174,6 @@
 
     // Return a fully-instantiated copy
     clone: function(modelParents) {
-      var obj;
       var that = this;
 
       var cloneObj = function(val, key, objParents) {
@@ -195,13 +192,13 @@
             });
           }
         } else if ($.isPlainObject(val)) {
-          obj = {};
+          var clonedObject = {};
           _.each(val, function(v, k) {
             if (!_.include(objParents, v)) {
-              obj[k] = cloneObj(v, k, objParents);
+              clonedObject[k] = cloneObj(v, k, objParents);
             }
           });
-          return obj;
+          return clonedObject;
         } else {
           return val;
         }
@@ -210,7 +207,7 @@
       modelParents = $.makeArray(modelParents);
       modelParents.push(that);
 
-      obj = {};
+      var obj = {};
       _.each(this, function(v, k) {
         if (!_.isFunction(v) && !that._cloneExclude[k] && !_.include(modelParents, v)) {
           obj[k] = cloneObj(v, k);
@@ -219,9 +216,9 @@
       return new that.Class(obj);
     },
 
-    _generateBaseUrl: function(domain, isShort) {
+    _generateBaseUrl: function(aDomain, isShort) {
       var loc = document.location;
-      domain = $.isBlank(domain) ? loc.hostname : domain;
+      var domain = $.isBlank(domain) ? loc.hostname : aDomain;
       if (isShort) {
         domain = domain.replace(/www\./, '');
       }

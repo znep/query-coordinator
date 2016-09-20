@@ -1,4 +1,5 @@
-$banner_height: calc($header_logo_height + 20);
+$banner_padding: 20px;
+$banner_height: calc(#{$header_logo_height} + #{$banner_padding});
 $searchbox-height: 36px;
 
 header#site-chrome-header[template="default"] {
@@ -19,7 +20,7 @@ header#site-chrome-header[template="default"] {
 
       > a.logo {
         float: left;
-        padding: 0 16px;
+        padding: 0 $banner_padding / 2;
         text-decoration: none;
         color: $header_fg_color;
         background-color: $header_bg_color;
@@ -29,8 +30,9 @@ header#site-chrome-header[template="default"] {
         > img {
           height: $header_logo_height;
           width: $header_logo_width;
-          vertical-align: middle;
-          margin-right: 0.5rem;
+          vertical-align: top;
+          margin-top: $banner_padding / 2;
+          margin-right: $banner_padding / 2;
         }
 
         > span.site-name {
@@ -67,7 +69,7 @@ header#site-chrome-header[template="default"] {
           .site-chrome-nav-menu {
             div.dropdown {
               ul.dropdown-options {
-                top: $banner_height - 1px;
+                top: calc(#{$banner_height} - 1px);
               }
             }
           }
@@ -134,7 +136,7 @@ header#site-chrome-header[template="default"] {
               }
 
               position: absolute;
-              top: ($banner_height - $searchbox-height) / 2;
+              top: calc((#{$banner_height} - #{$searchbox-height}) / 2);
               right: 0;
 
               form {
@@ -173,7 +175,7 @@ header#site-chrome-header[template="default"] {
 
           span.divider {
             float: right;
-            margin: (($banner_height - ($divider_height * 2)) / 2) $text_padding;
+            margin: calc(calc(#{$banner_height} - (#{$divider_height} * 2)) / 2) $text_padding;
           }
         }
 

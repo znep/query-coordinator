@@ -7,6 +7,7 @@ import {
 } from 'wizard';
 import { fileUploadComplete } from 'components/uploadFile';
 import * as SaveState from 'saveState';
+import * as LocationColumn from 'components/importColumns/locationColumn';
 import { withMockFetch, testThunk } from '../asyncUtils';
 
 describe('updateNavigation', function() {
@@ -529,7 +530,9 @@ describe('initialNewDatasetModel', () => {
           sourceColumn: {
             index: 0,
             name: 'col 1'
-          }
+          },
+          components: [],
+          locationComponents: LocationColumn.emptyLocationSource()
         },
         transforms: [],
         id: 0,
@@ -542,7 +545,9 @@ describe('initialNewDatasetModel', () => {
           sourceColumn: {
             index: 1,
             name: 'col 2'
-          }
+          },
+          components: [],
+          locationComponents: LocationColumn.emptyLocationSource()
         },
         transforms: [],
         id: 1,
@@ -569,6 +574,7 @@ describe('initialNewDatasetModel', () => {
       transform: {
         defaultColumns: resultColumns,
         columns: resultColumns,
+        nextId: resultColumns.length,
         numHeaders: 0,
         sample: summary.sample
       }
@@ -583,7 +589,8 @@ describe('initialNewDatasetModel', () => {
         scanResults: summary
       };
       const actual = initialNewDatasetModel(theView, importSource);
-
+      //expect(JSON.parse(JSON.stringify(initialStateWithTransform))).to.deep.equal(JSON.parse(JSON.stringify(actual)));
+      // ;_; no idea why this doesn't work without the parse/stringify pairs
       expect(initialStateWithTransform).to.deep.equal(actual);
     });
 

@@ -9,12 +9,13 @@ import * as SharedTypes from './sharedTypes';
 import * as ImportColumns from './components/importColumns';
 import * as Metadata from './components/metadata';
 import * as Utils from './utils';
+import * as LocationColumns from './components/importColumns/locationColumn';
 import { goToPage, goToPreviousPage } from './wizard';
 import licenses from 'licenses';
 const invertedLicenses = _.invert(licenses);
+
 import airbrake from './airbrake';
 import 'whatwg-fetch';
-
 import formurlencoded from 'form-urlencoded';
 import _ from 'lodash';
 
@@ -629,63 +630,42 @@ function compositeColumnComponent(component: string | SharedTypes.SourceColumn) 
     : '"' + component.replace(/"/g, '\\"') + '"';
 }
 
-function locationSourceColumnExpr(sourceColumn: string | SharedTypes.SourceColumn) {
-  if (!sourceColumn) {
-    return '';
-  } else {
-    return sourceColumnExpr(sourceColumn);
-  }
-}
-
-function getHumanAddress(components) {
-  function getLocationComponent(component) {
-    if (component.isColumn) {
-      return locationSourceColumnExpr(component.column.sourceColumn);
-    } else if (component.text) {
-      return `"${component.text}"`;
+function getHumanAddress(components: LocationColumns.LocationSource) {
+  function columnOrTextExpr(fieldName: string): ?string {
+    const columnOrText = components[fieldName];
+    if (columnOrText.isColumn) {
+      if (columnOrText.column === null) {
+        return null;
+      } else {
+        return `"${fieldName}":${sourceColumnExpr(columnOrText.column)}`;
+      }
     } else {
-      return null;
+      return `"${fieldName}":"${columnOrText.text.replace(/"/g, '\\"')}"`;
     }
   }
 
-  // Localized mutation for the win!
-  var humanAddress = '{';
+  const componentStrings = _.compact([
+    components.street ? `"street":${sourceColumnExpr(components.street)}` : null,
+    columnOrTextExpr('city'),
+    columnOrTextExpr('state'),
+    columnOrTextExpr('zip')
+  ]);
 
-  const street = locationSourceColumnExpr(components.street.sourceColumn);
-  if (street) {
-    humanAddress += `"street":${street},`;
-  }
-
-  const city = getLocationComponent(components.city);
-  if (city) {
-    humanAddress += `"city":${city},`;
-  }
-
-  const state = getLocationComponent(components.state);
-  if (state) {
-    humanAddress += `"state":${state},`;
-  }
-
-  const zip = getLocationComponent(components.zip);
-  if (zip) {
-    humanAddress += `"zip":${zip},`;
-  }
-
-  humanAddress += '}';
-
-  return humanAddress.replace(/,}$/, '}'); // Solve fencepost problem.
+  return '{' + componentStrings.join(',') + '}';
 }
 
 export function getLocationColumnSource(resultColumn) {
   const components = resultColumn.columnSource.components;
-  if (resultColumn.columnSource.components.isMultiple) {
-    const lat = sourceColumnExpr(components.lat.sourceColumn);
-    const lon = sourceColumnExpr(components.lon.sourceColumn);
+  if (components.isMultiple) {
+    const lat = sourceColumnExpr(components.latitude);
+    const lon = sourceColumnExpr(components.longitude);
 
     // Can't use JSON.stringify because lat and lon need to be unquoted.
     return `{"latitude":${lat},"longitude":${lon},"human_address":${getHumanAddress(components)}}`;
+  } else if (components.singleSource !== null) {
+    return sourceColumnExpr(components.singleSource);
   } else {
-    return locationSourceColumnExpr(components.singleSource.sourceColumn);
+    return '""';
   }
 }
 

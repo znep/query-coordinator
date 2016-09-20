@@ -1,29 +1,43 @@
 import React, { PropTypes } from 'react';
 import { combineReducers } from 'redux';
+import format from 'stringformat';
 
 import * as SharedTypes from '../../sharedTypes';
 
 export type LocationSource = {
   isMultiple: Boolean,
-  street: String,
-  singleSource: String,
+  singleSource: ?SharedTypes.SourceColumn,
+  street: ?SharedTypes.SourceColumn,
   city: ColumnOrText,
   state: ColumnOrText,
   zip: ColumnOrText,
-  lat: SharedTypes.SourceColumn,
-  lon: SharedTypes.SourceColumn
+  latitude: ?SharedTypes.SourceColumn,
+  longitude: ?SharedTypes.SourceColumn
 }
 
-export const update =
+export function emptyLocationSource() {
+  return {
+    isMultiple: true,
+    singleSource: null,
+    street: null,
+    city: defaultColumnOrText(),
+    state: defaultColumnOrText(),
+    zip: defaultColumnOrText(),
+    latitude: null,
+    longitude: null
+  };
+}
+
+export const update: (locationSource: LocationSource, action: Object) => LocationSource =
   combineReducers({
-    isMultiple: updateIsMultipleReducer,
-    street: updateColumnForField('street'),
+    isMultiple: updateIsMultiple,
     singleSource: updateColumnForField('singleSource'),
+    street: updateColumnForField('street'),
     city: updateColumnOrTextForField('city'),
     state: updateColumnOrTextForField('state'),
     zip: updateColumnOrTextForField('zip'),
-    lat: updateColumnForField('lat'),
-    lon: updateColumnForField('lon')
+    latitude: updateColumnForField('latitude'),
+    longitude: updateColumnForField('longitude')
   });
 
 // action creators
@@ -52,7 +66,6 @@ export function updateSourceColumn(field, newColumn, sourceColumns) {
     type: UPDATE_SOURCE_COLUMN,
     field: field,
     newColumn: newColumn,
-    newIsColumn: true,
     sourceColumns: sourceColumns
   };
 }
@@ -62,7 +75,6 @@ export function updateText(field, newText) {
   return {
     type: UPDATE_TEXT,
     field: field,
-    newIsColumn: false,
     newText: newText
   };
 }
@@ -76,34 +88,21 @@ export function updateIsColumn(field, newIsColumn) {
   };
 }
 
-export function defaultLocationColumn() {
-  return {
-    isMultiple: true,
-    singleSource: '',
-    street: '',
-    city: defaultColumnOrText(),
-    state: defaultColumnOrText(),
-    zip: defaultColumnOrText(),
-    lat: '',
-    lon: ''
-  };
+export type ColumnOrText = {
+  isColumn: boolean,
+  column: ?SharedTypes.SourceColumn,
+  text: String
 }
 
 export function defaultColumnOrText() {
   return {
-    column: '',
+    column: null,
     text: '',
     isColumn: true
   };
 }
 
-type ColumnOrText = {
-  column: String | SharedTypes.SourceColumn,
-  text: String,
-  isColumn: boolean
-}
-
-export function updateIsMultipleReducer(multiple = true, action) {
+export function updateIsMultiple(multiple = true, action) {
   switch (action.type) {
     case UPDATE_MULTIPLE:
       return action.newMultiple;
@@ -112,10 +111,10 @@ export function updateIsMultipleReducer(multiple = true, action) {
   }
 }
 
-export function updateColumnReducer(column = '', action) {
+export function updateColumn(column = null, action) {
   switch (action.type) {
     case UPDATE_SOURCE_COLUMN_SINGLE:
-      if (action.newColumn !== '') {
+      if (action.newColumn !== null) {
         return action.sourceColumns[action.newColumn];
       } else {
         return action.newColumn;
@@ -125,7 +124,7 @@ export function updateColumnReducer(column = '', action) {
   }
 }
 
-export function updateColumnOrTextReducer(item = defaultColumnOrText(), action) {
+export function updateColumnOrText(item = defaultColumnOrText(), action) {
   switch (action.type) {
     case UPDATE_IS_COLUMN:
       return {
@@ -133,24 +132,24 @@ export function updateColumnOrTextReducer(item = defaultColumnOrText(), action) 
         isColumn: action.newIsColumn
       };
     case UPDATE_SOURCE_COLUMN:
-      if (action.newColumn !== '') {
+      if (action.newColumn !== null) {
         return {
           ...item,
           column: action.sourceColumns[action.newColumn],
-          isColumn: action.newIsColumn
+          isColumn: true
         };
       } else {
         return {
           ...item,
           column: action.newColumn,
-          isColumn: action.newIsColumn
+          isColumn: true
         };
       }
     case UPDATE_TEXT:
       return {
         ...item,
         text: action.newText,
-        isColumn: action.newIsColumn
+        isColumn: false
       };
     default:
       return item;
@@ -158,9 +157,9 @@ export function updateColumnOrTextReducer(item = defaultColumnOrText(), action) 
 }
 
 export function updateColumnForField(fieldName: string) {
-  return (item = '', action) => {
+  return (item = null, action) => {
     if (action.field === fieldName) {
-      return updateColumnReducer(item, action);
+      return updateColumn(item, action);
     } else {
       return item;
     }
@@ -170,7 +169,7 @@ export function updateColumnForField(fieldName: string) {
 export function updateColumnOrTextForField(fieldName: string) {
   return (item = defaultColumnOrText(), action) => {
     if (action.field === fieldName) {
-      return updateColumnOrTextReducer(item, action);
+      return updateColumnOrText(item, action);
     } else {
       return item;
     }
@@ -185,9 +184,15 @@ function getSpanClassName(isColumn) {
   }
 }
 
-export function view({ dispatch, locationColumn, sourceColumns }) {
-  sourceColumns = sourceColumns.slice(0, -1);
+function emptyToNull(selection: string) {
+  if (selection.length === 0) {
+    return null;
+  } else {
+    return _.parseInt(selection);
+  }
+}
 
+export function view({ dispatch, resultColumnId, locationColumn, sourceColumns }) {
   return (
     <div className="locationDetails">
       <h3>{I18n.screens.import_common.location_source_col}</h3>
@@ -195,11 +200,13 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
       <div className="toggleSection">
         <input
           type="radio"
-          name="locationTypeToggle"
+          name={'locationTypeToggle' + resultColumnId}
           checked={locationColumn.isMultiple}
           onChange={() => dispatch(updateMultiple(true))}
           className="locationTypeToggle multipleColumns" />
-        <label className="locationTypeToggleLabel">Import from <strong>multiple columns</strong></label>
+        <label
+          className="locationTypeToggleLabel"
+          dangerouslySetInnerHTML={{__html: I18n.screens.import_common.import_from_multiple}} />
       </div>
 
       <div className="clearfix">
@@ -213,10 +220,10 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
             <div className="optionGroup">
               <span>
                 <select
-                  value={locationColumn.street.sourceColumn.index}
-                  onChange={(evt) => dispatch(updateSourceColumnSingle('street', evt.target.value, sourceColumns))}>
+                  value={_.get(locationColumn, 'street.index', '')}
+                  onChange={(evt) => dispatch(updateSourceColumnSingle('street', emptyToNull(evt.target.value), sourceColumns))}>
                   <option value="">{I18n.screens.import_pane.no_source_column}</option>
-                  {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
+                  {sourceColumns.map((obj, idx) => <option value={idx}>{obj.name}</option>)}
                 </select>
               </span>
             </div>
@@ -228,31 +235,32 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
               <span className={getSpanClassName(locationColumn.city.isColumn)}>
                 <input
                   type="radio"
-                  name="locationCityToggle1"
+                  name={'locationCityToggle' + resultColumnId}
                   className="locationSourceToggle"
                   checked={locationColumn.city.isColumn}
                   onChange={() => dispatch(updateIsColumn('city', true))} />
               </span>
               <select
-                value={locationColumn.city.column.sourceColumn.index}
-                onChange={(evt) => dispatch(updateSourceColumn('city', evt.target.value, sourceColumns))}>
+                value={_.get(locationColumn, 'city.column.index', '')}
+                onChange={(evt) => dispatch(updateSourceColumn('city', emptyToNull(evt.target.value), sourceColumns))}>
                 <option value="">{I18n.screens.import_pane.no_source_column}</option>
-                {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
+                {sourceColumns.map((obj, idx) => <option value={idx}>{obj.name}</option>)}
               </select>
               <span className={getSpanClassName(!locationColumn.city.isColumn)}>
                 <input
                   type="radio"
-                  name="locationCityToggle1"
+                  name={'locationCityToggle' + resultColumnId}
                   className="locationSourceToggle"
                   checked={!locationColumn.city.isColumn}
                   onChange={() => dispatch(updateIsColumn('city', false))} />
               </span>
               <input
                 type="text"
-                className="locationCityStatic textPrompt prompt"
+                className="locationCityStatic textPrompt"
                 title={I18n.screens.import_common.enter_custom}
                 placeholder={I18n.screens.import_common.enter_custom}
                 defaultValue={locationColumn.city.text}
+                onFocus={() => dispatch(updateIsColumn('city', false))}
                 onBlur={(evt) => dispatch(updateText('city', evt.target.value))} />
             </div>
           </div>
@@ -263,31 +271,32 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
               <span className={getSpanClassName(locationColumn.state.isColumn)}>
                 <input
                   type="radio"
-                  name="locationStateToggle1"
+                  name={'locationStateToggle' + resultColumnId}
                   className="locationSourceToggle"
                   checked={locationColumn.state.isColumn}
                   onChange={() => dispatch(updateIsColumn('state', true))} />
               </span>
               <select
-                value={locationColumn.state.column.sourceColumn.index}
-                onChange={(evt) => dispatch(updateSourceColumn('state', evt.target.value, sourceColumns))}>
+                value={_.get(locationColumn, 'state.column.index', '')}
+                onChange={(evt) => dispatch(updateSourceColumn('state', emptyToNull(evt.target.value), sourceColumns))}>
                 <option value="">{I18n.screens.import_pane.no_source_column}</option>
-                {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
+                {sourceColumns.map((obj, idx) => <option value={idx}>{obj.name}</option>)}
               </select>
               <span className={getSpanClassName(!locationColumn.state.isColumn)}>
                 <input
                   type="radio"
-                  name="locationStateToggle1"
+                  name={'locationStateToggle' + resultColumnId}
                   className="locationSourceToggle"
                   checked={!locationColumn.state.isColumn}
                   onChange={() => dispatch(updateIsColumn('state', false))} />
               </span>
               <input
                 type="text"
-                className="locationStateStatic textPrompt prompt"
+                className="locationStateStatic textPrompt"
                 title={I18n.screens.import_common.enter_custom}
                 placeholder={I18n.screens.import_common.enter_custom}
                 defaultValue={locationColumn.state.text}
+                onFocus={() => dispatch(updateIsColumn('state', false))}
                 onBlur={(evt) => dispatch(updateText('state', evt.target.value))} />
             </div>
           </div>
@@ -298,31 +307,32 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
               <span className={getSpanClassName(locationColumn.zip.isColumn)}>
                 <input
                   type="radio"
-                  name="locationZipToggle1"
+                  name={'locationZipToggle' + resultColumnId}
                   className="locationSourceToggle"
                   checked={locationColumn.zip.isColumn}
                   onChange={() => dispatch(updateIsColumn('zip', true))} />
               </span>
               <select
-                value={locationColumn.zip.column.sourceColumn.index}
-                onChange={(evt) => dispatch(updateSourceColumn('zip', evt.target.value, sourceColumns))}>
+                value={_.get(locationColumn, 'zip.column.index', '')}
+                onChange={(evt) => dispatch(updateSourceColumn('zip', emptyToNull(evt.target.value), sourceColumns))}>
                 <option value="">{I18n.screens.import_pane.no_source_column}</option>
-                {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
+                {sourceColumns.map((obj, idx) => <option value={idx}>{obj.name}</option>)}
               </select>
               <span className={getSpanClassName(!locationColumn.zip.isColumn)}>
                 <input
                   type="radio"
-                  name="locationZipToggle1"
+                  name={'locationZipToggle' + resultColumnId}
                   className="locationSourceToggle"
                   checked={!locationColumn.zip.isColumn}
                   onChange={() => dispatch(updateIsColumn('zip', false))} />
               </span>
               <input
                 type="text"
-                className="locationZipStatic textPrompt prompt"
+                className="locationZipStatic textPrompt"
                 title={I18n.screens.import_common.enter_custom}
                 placeholder={I18n.screens.import_common.enter_custom}
                 defaultValue={locationColumn.zip.text}
+                onFocus={() => dispatch(updateIsColumn('zip', false))}
                 onBlur={(evt) => dispatch(updateText('zip', evt.target.value))} />
             </div>
           </div>
@@ -334,10 +344,10 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
             <div className="optionGroup">
               <label className="locationLatLonLabel">{I18n.screens.import_common.latitude}</label>
               <select
-                value={locationColumn.lat.sourceColumn.index}
-                onChange={(evt) => dispatch(updateSourceColumnSingle('lat', evt.target.value, sourceColumns))}>
+                value={_.get(locationColumn, 'latitude.index', '')}
+                onChange={(evt) => dispatch(updateSourceColumnSingle('latitude', emptyToNull(evt.target.value), sourceColumns))}>
                 <option value="">{I18n.screens.import_pane.no_source_column}</option>
-                {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
+                {sourceColumns.map((obj, idx) => <option value={idx}>{obj.name}</option>)}
               </select>
             </div>
           </div>
@@ -345,10 +355,10 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
             <div className="optionGroup">
               <label className="locationLatLonLabel">{I18n.screens.import_common.longitude}</label>
               <select
-                value={locationColumn.lon.sourceColumn.index}
-                onChange={(evt) => dispatch(updateSourceColumnSingle('lon', evt.target.value, sourceColumns))}>
+                value={_.get(locationColumn, 'longitude.index', '')}
+                onChange={(evt) => dispatch(updateSourceColumnSingle('longitude', emptyToNull(evt.target.value), sourceColumns))}>
                 <option value="">{I18n.screens.import_pane.no_source_column}</option>
-                {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
+                {sourceColumns.map((obj, idx) => <option value={idx}>{obj.name}</option>)}
               </select>
             </div>
           </div>
@@ -360,30 +370,34 @@ export function view({ dispatch, locationColumn, sourceColumns }) {
           <span>
             <input
               type="radio"
-              name="locationTypeToggle1"
+              name={'locationTypeToggle' + resultColumnId}
               className="locationTypeToggle singleColumn"
               checked={!locationColumn.isMultiple}
               onChange={() => dispatch(updateMultiple(false))} />
           </span>
-          <label className="locationTypeToggleLabel">Import from <strong>single column</strong></label>
+          <label
+            className="locationTypeToggleLabel"
+            dangerouslySetInnerHTML={{__html: I18n.screens.import_common.import_from_single}} />
         </div>
       </div>
 
       <div className="importSingleColumnSection">
         <label className="locationSingleColumnLabel">Column</label>
         <select
-          value={locationColumn.singleSource.sourceColumn.index}
-          onChange={(evt) => dispatch(updateSourceColumnSingle('singleSource', evt.target.value, sourceColumns))}>
+          value={_.get(locationColumn, 'singleSource.index', '')}
+          onChange={(evt) => dispatch(updateSourceColumnSingle('singleSource', emptyToNull(evt.target.value), sourceColumns))}>
           <option value="">{I18n.screens.import_pane.no_source_column}</option>
-          {sourceColumns.map((obj, idx) => <option value={idx}>{obj.sourceColumn.name}</option>)}
+          {sourceColumns.map((obj, idx) => <option value={idx}>{obj.name}</option>)}
         </select>
-        <p>Column must be <a href="http://dev.socrata.com/docs/datatypes/" rel="external">properly formatted</a> prior to import.</p>
+        <p
+          dangerouslySetInnerHTML={{__html: format(I18n.screens.import_common.properly_formatted, 'http://dev.socrata.com/docs/datatypes/')}} />
       </div>
     </div>
   );
 }
 
 view.propTypes = {
+  resultColumnId: PropTypes.number.isRequired,
   locationColumn: PropTypes.object.isRequired,
   sourceColumns: PropTypes.arrayOf(PropTypes.object).isRequired,
   dispatch: PropTypes.func.isRequired

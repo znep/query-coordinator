@@ -1,7 +1,6 @@
 import * as LocationColumn from 'components/importColumns/locationColumn';
 
 describe('LocationColumns', () => {
-  let locationColumn;
   const sourceColumns = [
     {
       "type": "SingleColumn",
@@ -341,126 +340,159 @@ describe('LocationColumns', () => {
     }
   ];
 
-  beforeEach(() => {
-    locationColumn = LocationColumn.defaultLocationColumn();
-  });
-
   describe('reducer', () => {
-    it(`Check initial configuration of locationColumns`, () => {
-      const expected = {
-        isMultiple: true,
-        singleSource: '',
-        street: '',
-        city: LocationColumn.defaultColumnOrText(),
-        state: LocationColumn.defaultColumnOrText(),
-        zip: LocationColumn.defaultColumnOrText(),
-        lat: '',
-        lon: ''
-      };
 
-      expect(locationColumn).to.deep.equal(expected);
-    });
-
-    it(`update isMultiple`, () => {
-      const result = LocationColumn.update(locationColumn, LocationColumn.updateMultiple(false));
+    it('update isMultiple', () => {
+      const result = LocationColumn.update(LocationColumn.emptyLocationSource(), LocationColumn.updateMultiple(false));
       expect(result.isMultiple).to.deep.equal(false);
     });
 
-    it(`update street`, () => {
+    it('update street', () => {
       const street = sourceColumns[7];
 
-      const result = LocationColumn.update(locationColumn, LocationColumn.updateSourceColumnSingle('street', 7, sourceColumns));
+      const result = LocationColumn.update(
+        LocationColumn.emptyLocationSource(),
+        LocationColumn.updateSourceColumnSingle('street', 7, sourceColumns)
+      );
       expect(result.street).to.deep.equal(street);
     });
 
-    it(`update single source`, () => {
+    it('update single source', () => {
       const single = sourceColumns[16];
 
-      const result = LocationColumn.update(locationColumn, LocationColumn.updateSourceColumnSingle('singleSource', 16, sourceColumns));
+      const result = LocationColumn.update(
+        LocationColumn.emptyLocationSource(),
+        LocationColumn.updateSourceColumnSingle('singleSource', 16, sourceColumns)
+      );
       expect(result.singleSource).to.deep.equal(single);
     });
 
-    it(`update city`, () => {
-      const cityColumn = {
-        column: sourceColumns[1],
-        text: '',
-        isColumn: true
-      };
+    describe('city sub-reducer', () => {
 
-      const columnResult = LocationColumn.update(locationColumn, LocationColumn.updateSourceColumn('city', 1, sourceColumns));
-      expect(columnResult.city).to.deep.equal(cityColumn);
+      it('updates to be from a column', () => {
+        const columnResult = LocationColumn.update(
+          LocationColumn.emptyLocationSource(),
+          LocationColumn.updateSourceColumn('city', 1, sourceColumns)
+        );
+        expect(columnResult.city).to.deep.equal({
+          column: sourceColumns[1],
+          text: '',
+          isColumn: true
+        });
+      });
 
-      const cityText = {
-        column: '',
-        text: 'city',
-        isColumn: false
-      };
+      it('updates to be text', () => {
+        const textResult = LocationColumn.update(
+          LocationColumn.emptyLocationSource(),
+          LocationColumn.updateText('city', 'city', sourceColumns)
+        );
+        expect(textResult.city).to.deep.equal({
+          column: null,
+          text: 'city',
+          isColumn: false
+        });
+      });
 
-      const textResult = LocationColumn.update(locationColumn, LocationColumn.updateText('city', 'city', sourceColumns));
-      expect(textResult.city).to.deep.equal(cityText);
+      it('updates to be text instead of a column', () => {
+        const isColumnResult = LocationColumn.update(
+          LocationColumn.emptyLocationSource(),
+          LocationColumn.updateIsColumn('city', false, sourceColumns)
+        );
+        expect(isColumnResult.city.isColumn).to.equal(false);
+      });
 
-      const isColumnResult = LocationColumn.update(locationColumn, LocationColumn.updateIsColumn('city', false, sourceColumns));
-      expect(isColumnResult.city.isColumn).to.equal(false);
     });
 
-    it(`update state`, () => {
-      const stateColumn = {
-        column: sourceColumns[1],
-        text: '',
-        isColumn: true
-      };
+    describe('state sub-reducer', () => {
 
-      const columnResult = LocationColumn.update(locationColumn, LocationColumn.updateSourceColumn('state', 1, sourceColumns));
-      expect(columnResult.state).to.deep.equal(stateColumn);
+      it('updates to be from a column', () => {
+        const columnResult = LocationColumn.update(
+          LocationColumn.emptyLocationSource(),
+          LocationColumn.updateSourceColumn('state', 1, sourceColumns)
+        );
+        expect(columnResult.state).to.deep.equal({
+          column: sourceColumns[1],
+          text: '',
+          isColumn: true
+        });
+      });
 
-      const stateText = {
-        column: '',
-        text: 'state',
-        isColumn: false
-      };
+      it('updates to be text', () => {
+        const textResult = LocationColumn.update(
+          LocationColumn.emptyLocationSource(),
+          LocationColumn.updateText('state', 'PA', sourceColumns)
+        );
+        expect(textResult.state).to.deep.equal({
+          column: null,
+          text: 'PA',
+          isColumn: false
+        });
+      });
 
-      const textResult = LocationColumn.update(locationColumn, LocationColumn.updateText('state', 'state', sourceColumns));
-      expect(textResult.state).to.deep.equal(stateText);
+      it('updates to be text instead of a column', () => {
+        const isColumnResult = LocationColumn.update(
+          LocationColumn.emptyLocationSource(),
+          LocationColumn.updateIsColumn('state', false, sourceColumns)
+        );
+        expect(isColumnResult.state.isColumn).to.equal(false);
+      });
 
-      const isColumnResult = LocationColumn.update(locationColumn, LocationColumn.updateIsColumn('state', false, sourceColumns));
-      expect(isColumnResult.state.isColumn).to.equal(false);
     });
 
-    it(`update zip`, () => {
-      const zipColumn = {
-        column: sourceColumns[1],
-        text: '',
-        isColumn: true
-      };
+    describe('zip sub-reducer', () => {
 
-      const columnResult = LocationColumn.update(locationColumn, LocationColumn.updateSourceColumn('zip', 1, sourceColumns));
-      expect(columnResult.zip).to.deep.equal(zipColumn);
+      it('updates be from a column', () => {
+        const columnResult = LocationColumn.update(
+          LocationColumn.emptyLocationSource(),
+          LocationColumn.updateSourceColumn('zip', 1, sourceColumns)
+        );
+        expect(columnResult.zip).to.deep.equal({
+          column: sourceColumns[1],
+          text: '',
+          isColumn: true
+        });
+      });
 
-      const zipText = {
-        column: '',
-        text: 'zip',
-        isColumn: false
-      };
+      it('updates to be text', () => {
+        const textResult = LocationColumn.update(
+          LocationColumn.emptyLocationSource(),
+          LocationColumn.updateText('zip', '19301', sourceColumns)
+        );
+        expect(textResult.zip).to.deep.equal({
+          column: null,
+          text: '19301',
+          isColumn: false
+        });
+      });
 
-      const textResult = LocationColumn.update(locationColumn, LocationColumn.updateText('zip', 'zip', sourceColumns));
-      expect(textResult.zip).to.deep.equal(zipText);
+      it('updates to be set to text, not column', () => {
+        const isColumnResult = LocationColumn.update(
+          LocationColumn.emptyLocationSource(),
+          LocationColumn.updateIsColumn('zip', false, sourceColumns)
+        );
+        expect(isColumnResult.zip.isColumn).to.equal(false);
+      });
 
-      const isColumnResult = LocationColumn.update(locationColumn, LocationColumn.updateIsColumn('zip', false, sourceColumns));
-      expect(isColumnResult.zip.isColumn).to.equal(false);
     });
 
-    it(`update lat`, () => {
+    it('update latitude', () => {
       const lat = sourceColumns[4];
 
-      const result = LocationColumn.update(locationColumn, LocationColumn.updateSourceColumnSingle('lat', 4, sourceColumns));
-      expect(result.lat).to.deep.equal(lat);
+      const result = LocationColumn.update(
+        LocationColumn.emptyLocationSource(),
+        LocationColumn.updateSourceColumnSingle('latitude', 4, sourceColumns)
+      );
+      expect(result.latitude).to.deep.equal(lat);
     });
 
-    it(`update lon`, () => {
+    it('update longitude', () => {
       const lon = sourceColumns[4];
 
-      const result = LocationColumn.update(locationColumn, LocationColumn.updateSourceColumnSingle('lon', 4, sourceColumns));
-      expect(result.lon).to.deep.equal(lon);
+      const result = LocationColumn.update(
+        LocationColumn.emptyLocationSource(),
+        LocationColumn.updateSourceColumnSingle('longitude', 4, sourceColumns)
+      );
+      expect(result.longitude).to.deep.equal(lon);
     });
 
   });

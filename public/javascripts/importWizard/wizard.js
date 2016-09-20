@@ -6,6 +6,7 @@ import * as UploadFile from './components/uploadFile';
 import * as DownloadFile from './components/downloadFile';
 import * as ConnectToEsri from './components/connectToEsri';
 import * as ImportColumns from './components/importColumns';
+import * as LocationColumn from './components/importColumns/locationColumn';
 import * as Importing from './components/importing';
 import * as Working from './components/working';
 import * as Finish from './components/finish';
@@ -168,8 +169,15 @@ export function initialNewDatasetModel(initialView, importSource: SaveState.Impo
         const defaultTranslation = ImportColumns.initialTranslation(sourceColumnsWithIndices);
         const resultColumns = _.get(importSource, 'translation.content.columns', defaultTranslation);
 
+        const columnSourceDefaults = {
+          locationComponents: LocationColumn.emptyLocationSource(),
+          components: [],
+          sourceColumn: sourceColumnsWithIndices[0]
+        };
+
         const resultColumnsWithTranslations = resultColumns.map((resultColumn) => ({
           ...resultColumn,
+          columnSource: _.defaultsDeep(resultColumn.columnSource, columnSourceDefaults), // because core strips falsey values
           transforms: _.defaultTo(resultColumn.transforms, [])
         }));
         return {
@@ -190,6 +198,7 @@ export function initialNewDatasetModel(initialView, importSource: SaveState.Impo
           transform: {
             defaultColumns: defaultTranslation,
             columns: resultColumnsWithTranslations,
+            nextId: _.maxBy(resultColumnsWithTranslations, (resultColumn) => resultColumn.id).id + 1,
             numHeaders: _.get(importSource, 'translation.content.numHeaders', importSource.scanResults.headers),
             sample: importSource.scanResults.sample
           }

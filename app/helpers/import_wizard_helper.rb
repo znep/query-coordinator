@@ -68,7 +68,7 @@ module ImportWizardHelper
       import_source = CoreServer::Base.connection.get_request("/views/#{view.id}/import_sources")
       javascript_tag("var importSource = #{json_escape(JSON::parse(import_source).to_json)};")
     rescue CoreServer::ResourceNotFound
-      javascript_tag("var importSource = null;")
+      javascript_tag('var importSource = {};')
     end
   end
 

@@ -36,15 +36,19 @@ export type ResultColumn = {
   transforms: Array<ColumnTransform>
 }
 
-export type ColumnSource
-  = { type: 'SingleColumn', sourceColumn: ST.SourceColumn }
-  | { type: 'CompositeColumn', components: Array<string | ST.SourceColumn> }
-  | { type: 'LocationColumn', components: LC.LocationSource }
+
+export type ColumnSource = {
+  type: 'SingleColumn' | 'CompositeColumn' | 'LocationColumn',
+  sourceColumn: ST.SourceColumn,
+  components: Array<string | ST.SourceColumn>,
+  locationComponents: LC.LocationSource
+}
 
 
 // TODO: rename to 'Model' or something. Ugh.
 export type Transform = {
   columns: Translation,
+  nextId: number,
   defaultColumns: Translation, // so we can reset back to this
   numHeaders: number,
   sample: Array<Array<string>>,
@@ -58,7 +62,12 @@ export type Translation = Array<ResultColumn>
 export function initialTranslation(summary: ST.Summary): Translation {
   const columns = summary.columns.map((column, idx) => (
     {
-      columnSource: { type: 'SingleColumn', sourceColumn: column },
+      columnSource: {
+        type: 'SingleColumn',
+        sourceColumn: column,
+        components: [],
+        locationComponents: LC.emptyLocationSource()
+      },
       name: column.name,
       chosenType: column.suggestion,
       transforms: [],
@@ -66,27 +75,24 @@ export function initialTranslation(summary: ST.Summary): Translation {
     }
   ));
 
-  const defaultColumnOrText = {
-    column: '',
-    text: '',
-    isColumn: true
-  };
-
   const locations = (summary.locations || []).map((column, idx) => (
     {
       columnSource: {
         type: 'LocationColumn',
-        components: {
+        locationComponents: {
           isMultiple: true,
-          singleSource: '',
-          street: '',
-          city: defaultColumnOrText,
-          state: defaultColumnOrText,
-          zip: defaultColumnOrText,
-          lat: { sourceColumn: summary.columns[column.latitude] },
-          lon: { sourceColumn: summary.columns[column.longitude] }
-        }
+          singleSource: null,
+          street: null,
+          city: LC.defaultColumnOrText(),
+          state: LC.defaultColumnOrText(),
+          zip: LC.defaultColumnOrText(),
+          latitude: summary.columns[column.latitude],
+          longitude: summary.columns[column.longitude]
+        },
+        sourceColumn: summary.columns[0],
+        components: []
       },
+      id: summary.columns.length + idx,
       name: 'Location ' + (idx + 1),
       chosenType: 'location',
       transforms: []
@@ -108,9 +114,10 @@ function changeHeaderCount(change) {
 }
 
 export const ADD_COLUMN = 'ADD_COLUMN';
-function addColumn() {
+function addColumn(sourceColumns) {
   return {
-    type: ADD_COLUMN
+    type: ADD_COLUMN,
+    sourceColumns // unfortunately we have to pipe this through here because we can't get at it in `update`
   };
 }
 
@@ -175,6 +182,7 @@ export function update(transform: Transform = null, action): Transform {
         const columns = initialTranslation(action.summary);
         return {
           columns: columns,
+          nextId: columns.length,
           defaultColumns: columns,
           numHeaders: action.summary.headers,
           sample: action.summary.sample
@@ -200,10 +208,16 @@ export function update(transform: Transform = null, action): Transform {
     case ADD_COLUMN:
       return {
         ...transform,
+        nextId: transform.nextId + 1,
         columns: transform.columns.concat([
           {
-            id: transform.columns.length,
-            columnSource: {type: 'CompositeColumn', components: []},
+            id: transform.nextId,
+            columnSource: {
+              type: 'CompositeColumn',
+              components: [],
+              sourceColumn: action.sourceColumns[0],
+              locationComponents: LC.emptyLocationSource()
+            },
             name: format(I18n.screens.import_pane.new_column, {num: transform.columns.length}),
             chosenType: 'text',
             transforms: []
@@ -277,7 +291,7 @@ export function view({ transform, fileName, sourceColumns, dispatch, goToPage, g
         <p className="headline">{format(I18nPrefixed.headline_interpolate, fileName)}</p>
         <h2>{I18nPrefixed.subheadline}</h2>
         <ViewColumns columns={transform.columns} dispatch={dispatch} sourceColumns={sourceColumns} />
-        <ViewToolbar dispatch={dispatch} />
+        <ViewToolbar dispatch={dispatch} sourceColumns={sourceColumns} />
 
         <hr />
 
@@ -305,7 +319,12 @@ view.propTypes = {
 };
 
 
-export const EMPTY_COMPOSITE_COLUMN = { type: 'CompositeColumn', components: [] };
+export const EMPTY_COMPOSITE_COLUMN = {
+  type: 'CompositeColumn',
+  components: [],
+  sourceColumn: null,
+  locationComponents: LC.emptyLocationSource()
+};
 
 const ViewColumns = React.createClass({
   propTypes: {
@@ -376,6 +395,7 @@ const ViewColumns = React.createClass({
                   key={resultColumn.id}
                   idx={idx}
                   resultColumn={resultColumn}
+                  sourceColumns={sourceColumns} // so we can pass this through directly to LocationColumn.view
                   sourceOptions={sourceOptions}
                   dispatchUpdate={dispatchUpdateColumn}
                   dispatchRemove={dispatchRemoveColumn} />
@@ -389,7 +409,7 @@ const ViewColumns = React.createClass({
 });
 
 
-function ViewToolbar({dispatch}) {
+function ViewToolbar({dispatch, sourceColumns}) {
   return (
     <div className="columnsToolbar clearfix">
       <div className="presets">
@@ -410,7 +430,7 @@ function ViewToolbar({dispatch}) {
         <a
           className="addColumnButton add button"
           href="#add"
-          onClick={() => dispatch(addColumn())}>
+          onClick={() => dispatch(addColumn(sourceColumns))}>
           <span className="icon"></span>
           {I18nPrefixed.add_new_column}
         </a>
@@ -420,7 +440,8 @@ function ViewToolbar({dispatch}) {
 }
 
 ViewToolbar.propTypes = {
-  dispatch: PropTypes.func.isRequired
+  dispatch: PropTypes.func.isRequired,
+  sourceColumns: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 

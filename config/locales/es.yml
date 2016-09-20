@@ -2965,7 +2965,7 @@ es:
         headline: Especifique cómo se debería importar &ldquo;<span class="fileName"></span>&rdquo;
         headline_interpolate: Especifica cómo debería importarse "{0}".
         help_message: Para ayuda, eche un vistazo a una <a href="%{common_errors}" rel="external">lista de errores y advertencias comunes</a>.
-        help_message_js: Para más ayuda, eche un vistazo a una<a href="{common_errors}" rel="external">lista de avisos y errores comunes</a>.
+        help_message_js: Para más ayuda, eche un vistazo a una <a href="{common_errors}" rel="external">lista de avisos y errores comunes</a>.
         more_rows: Más filas
         name: Nombre
         pending_columns: Por favor, espere mientras cargamos sus columnas...

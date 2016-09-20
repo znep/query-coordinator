@@ -1,3 +1,5 @@
+import * as LocationColumn from 'components/importColumns/locationColumn';
+
 export const translationWithoutTransforms = [
   {
     "columnSource": {
@@ -14,7 +16,9 @@ export const translationWithoutTransforms = [
           "money": 3,
           "percent": 3
         }
-      }
+      },
+      locationComponents: LocationColumn.emptyLocationSource(),
+      components: []
     },
     "name": "user_id",
     "chosenType": "number",
@@ -36,7 +40,9 @@ export const translationWithoutTransforms = [
           "money": 3,
           "percent": 3
         }
-      }
+      },
+      locationComponents: LocationColumn.emptyLocationSource(),
+      components: []
     },
     "name": "first",
     "chosenType": "number",
@@ -57,7 +63,9 @@ export const translationWithoutTransforms = [
           "money": 0,
           "percent": 0
         }
-      }
+      },
+      locationComponents: LocationColumn.emptyLocationSource(),
+      components: []
     },
     "name": "second",
     "chosenType": "text",

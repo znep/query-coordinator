@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import * as ExampleData from './exampleData';
+import * as LocationColumn from 'components/importColumns/locationColumn';
 import {
   modelToViewParam,
   customMetadataModelToCoreView,
@@ -286,27 +287,14 @@ describe('transformToImports2Translation', () => {
 
 
 describe('locationColumn transforms', () => {
-  let blankLocation;
-
-  beforeEach(() => {
-    blankLocation = {
-      isMultiple: true,
-      lat: { sourceColumn: { index: 1 } },
-      lon: { sourceColumn: { index: 2 } },
-      street: { sourceColumn: '' },
-      city: { isColumn: false, text: '' },
-      state: { isColumn: false, text: '' },
-      zip: { isColumn: false, text: '' },
-      singleSource: {}
-    };
-  });
-
   it('correctly generates for a single column', () => {
-    blankLocation.isMultiple = false;
-    blankLocation.singleSource = { sourceColumn: { index: 1 } };
     const resultColumn = {
       columnSource: {
-        components: blankLocation
+        components: {
+          ...LocationColumn.emptyLocationSource(),
+          isMultiple: false,
+          singleSource: { index: 1 }
+        }
       }
     };
 
@@ -316,14 +304,18 @@ describe('locationColumn transforms', () => {
 
   it('correctly generates latitude and longitude and does not generate anything for blank human_addresses', () => {
     // Test for a selector that has not selected a column yet.
-    blankLocation.state = {
-      isColumn: true,
-      column: { sourceColumn: '' }
-    };
-
     const resultColumn = {
       columnSource: {
-        components: blankLocation
+        components: {
+          ...LocationColumn.emptyLocationSource(),
+          state: {
+            isColumn: true,
+            column: null,
+            text: ''
+          },
+          latitude: { index: 1 },
+          longitude: { index: 2 }
+        }
       }
     };
 
@@ -332,25 +324,27 @@ describe('locationColumn transforms', () => {
   });
 
   it('correctly generates latitude and longitude and human_addresses for both column and text types', () => {
-    blankLocation.street = {
-      sourceColumn: { index: 1 }
-    };
-    blankLocation.city = {
-      isColumn: true,
-      column: { sourceColumn: { index: 2 } }
-    };
-    blankLocation.state = {
-      isColumn: true,
-      column: { sourceColumn: { index: 3 } }
-    };
-    blankLocation.zip = {
-      isColumn: false,
-      text: 'zip'
-    };
-
     const resultColumn = {
       columnSource: {
-        components: blankLocation
+        type: 'LocationColumn',
+        components: {
+          ...LocationColumn.emptyLocationSource(),
+          street: { index: 1 },
+          city: {
+            isColumn: true,
+            column: { index: 2 }
+          },
+          state: {
+            isColumn: true,
+            column: { index: 3 }
+          },
+          zip: {
+            isColumn: false,
+            text: 'zip'
+          },
+          latitude: { index: 1 },
+          longitude: { index: 2 }
+        }
       }
     };
 

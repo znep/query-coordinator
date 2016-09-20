@@ -2,6 +2,7 @@ import * as IC from 'components/importColumns';
 import * as ED from 'components/exampleData';
 import * as UF from 'components/uploadFile';
 import * as CD from 'components/importColumns/columnDetail';
+import * as LC from 'components/importColumns/locationColumn';
 import * as SaveState from 'saveState';
 
 import { withMockFetch, testThunk } from '../asyncUtils';
@@ -209,12 +210,14 @@ describe('ImportColumns component', () => {
         freeAdvice: 'talk less; smile more.',
         columns: columns,
         defaultColumns: defaultColumns,
+        nextId: columns.length,
         numHeaders: 1776,
         sample: 'new york city'
       };
 
       const result  = IC.update(original, {
-        type: IC.ADD_COLUMN
+        type: IC.ADD_COLUMN,
+        sourceColumns: ED.imports2ScanResponse.summary.columns
       });
 
       expect(result.columns.length).to.deep.equal(4);
@@ -222,7 +225,9 @@ describe('ImportColumns component', () => {
         id: 3,
         columnSource: {
           type: 'CompositeColumn',
-          components: []
+          components: [],
+          locationComponents: LC.emptyLocationSource(),
+          sourceColumn: ED.imports2ScanResponse.summary.columns[0]
         },
         name: 'New Column 3',
         chosenType: 'text',

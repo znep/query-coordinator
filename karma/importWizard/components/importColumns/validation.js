@@ -4,6 +4,7 @@ import TestUtils from 'react-addons-test-utils';
 
 import * as V from 'components/importColumns/validation';
 import * as LocationColumn from 'components/importColumns/locationColumn';
+import { ResultColumn } from 'components/importColumns';
 
 const sourceColumns: Array<SourceColumn> = [
   {
@@ -345,7 +346,7 @@ describe('validate', () => {
             invalidPercent: 25
           }
         };
-        expect(V.problemText(problem)).to.equal('Column <strong>myResultCol</strong> is a <strong>Number</strong>, but our analysis indicates that the source column you are trying to import into it is of type <strong>Text</strong>. Should you choose to import that column, roughly <strong>25%</strong> of your data will likely import incorrectly.');
+        expect(V.problemText(problem)).to.equal('Column <strong>myResultCol</strong> is a <strong>Number</strong>, but our analysis indicates that the source column you are trying to import into it is of type <strong>Plain Text</strong>. Should you choose to import that column, roughly <strong>25%</strong> of your data will likely import incorrectly.');
       });
 
       it('including wrong_type_unknown_count messages', () => {
@@ -371,7 +372,7 @@ describe('validate', () => {
             chosenType: 'text'
           }
         };
-        expect(V.problemText(problem)).to.equal('Column <strong>myResultCol</strong> is set to import as <strong>Text</strong>, but our analysis indicates that the column is likely a <strong>Number</strong> column. You can import it as Text, but you will lose some features if you do so. We strongly recommend that you import it as <strong>Number</strong>.');
+        expect(V.problemText(problem)).to.equal('Column <strong>myResultCol</strong> is set to import as <strong>Plain Text</strong>, but our analysis indicates that the column is likely a <strong>Number</strong> column. You can import it as Plain Text, but you will lose some features if you do so. We strongly recommend that you import it as <strong>Number</strong>.');
       });
 
       it('including empty_composite_col messages', () => {
@@ -401,8 +402,7 @@ describe('validate', () => {
 
   });
 
-  describe('location columns', () => {
-    let locationColumn;
+  describe('location columns checking', () => {
     const sourceColumns = [
       {
         "name": "ID",
@@ -536,119 +536,124 @@ describe('validate', () => {
       }
     ];
 
-    beforeEach(() => {
-      let components = LocationColumn.defaultLocationColumn();
-      locationColumn = { columnSource: { components: components } };
-    });
+    const locationSource = LocationColumn.emptyLocationSource();
 
-    it(`check for no initial errors`, () => {
-      const initialErrors = V.validateSingleColumnLocationColumn(locationColumn, sourceColumns);
+    it('returns no errors on an empty location column source', () => {
+      const initialErrors = V.validateResultColumnLocationSource(locationSource);
       expect(initialErrors.length).to.equal(0);
     });
 
-    it(`coordinateError missing lon`, () => {
-      let components = locationColumn.columnSource.components;
-      components.lat = { sourceColumn: sourceColumns[8] };
-
-      const coordinateError = V.coordinateError(components);
-      expect(coordinateError).to.deep.equal({ type: 'missing_lat_long', coordinateType: 'latitude', missingCoordinateType: 'longitude' });
+    it('returns a coordinateError when there is a missing lon', () => {
+      const coordinateError = V.coordinateError({
+        ...locationSource,
+        latitude: sourceColumns[8]
+      });
+      expect(coordinateError).to.deep.equal({
+        type: 'missing_lat_long',
+        coordinateType: 'latitude',
+        missingCoordinateType: 'longitude'
+      });
     });
 
-    it(`coordinateError missing lat`, () => {
-      let components = locationColumn.columnSource.components;
-      components.lon = { sourceColumn: sourceColumns[9] };
-
-      const coordinateError = V.coordinateError(components);
-      expect(coordinateError).to.deep.equal({ type: 'missing_lat_long', coordinateType: 'longitude', missingCoordinateType: 'latitude' });
+    it('returns a coordinateError when there is a missing lat', () => {
+      const coordinateError = V.coordinateError({
+        ...locationSource,
+        longitude: sourceColumns[9]
+      });
+      expect(coordinateError).to.deep.equal({
+        type: 'missing_lat_long',
+        coordinateType: 'longitude',
+        missingCoordinateType: 'latitude'
+      });
     });
 
-    it(`fieldValidationWarning street`, () => {
+    it('checkLocationColComponentType street', () => {
       // Description
-      const valid = { sourceColumn: sourceColumns[6] };
-      const noError = V.fieldValidationWarning('street', valid, ['text'], sourceColumns);
+      const valid = sourceColumns[6];
+      const noError = V.checkLocationColComponentType('street', valid);
       expect(noError).to.equal(null);
 
       // Date
-      const invalid = { sourceColumn: sourceColumns[2] };
-      const error = V.fieldValidationWarning('street', invalid, ['text'], sourceColumns);
+      const invalid = sourceColumns[2];
+      const error = V.checkLocationColComponentType('street', invalid);
       expect(error.type).to.equal('wrong_type_location');
     });
 
-    it(`fieldOrTextValidationWarning city`, () => {
+    it('checkLocationColColumnOrTextType city', () => {
       // Description
       const valid = {
-        column: { sourceColumn: sourceColumns[6] },
+        column: sourceColumns[6],
         isColumn: true
       };
-      const noError = V.fieldOrTextValidationWarning('city', valid, ['text'], sourceColumns);
+      const noError = V.checkLocationColColumnOrTextType('city', valid);
       expect(noError).to.equal(null);
 
       // Date
       const invalid = {
-        column: { sourceColumn: sourceColumns[2] },
+        column: sourceColumns[2],
         isColumn: true
       };
-      const error = V.fieldOrTextValidationWarning('city', invalid, ['text'], sourceColumns);
+      const error = V.checkLocationColColumnOrTextType('city', invalid);
       expect(error.type).to.equal('wrong_type_location');
     });
 
-    it(`fieldOrTextValidationWarning state`, () => {
+    it('checkLocationColColumnOrTextType state', () => {
       // Description
       const valid = {
-        column: { sourceColumn: sourceColumns[6] },
+        column: sourceColumns[6],
         isColumn: true
       };
-      const noError = V.fieldOrTextValidationWarning('state', valid, ['text'], sourceColumns);
+      const noError = V.checkLocationColColumnOrTextType('state', valid);
       expect(noError).to.equal(null);
 
       // Date
       const invalid = {
-        column: { sourceColumn: sourceColumns[2] },
+        column: sourceColumns[2],
         isColumn: true
       };
-      const error = V.fieldOrTextValidationWarning('state', invalid, ['text'], sourceColumns);
+      const error = V.checkLocationColColumnOrTextType('state', invalid);
       expect(error.type).to.equal('wrong_type_location');
     });
 
-    it(`fieldOrTextValidationWarning zip`, () => {
+    it('checkLocationColColumnOrTextType zip', () => {
       // Description
       const valid = {
-        column: { sourceColumn: sourceColumns[6] },
+        column: sourceColumns[6],
         isColumn: true
       };
-      const noError = V.fieldOrTextValidationWarning('zip', valid, ['text', 'number'], sourceColumns);
+      const noError = V.checkLocationColColumnOrTextType('zip', valid, ['text', 'number']);
       expect(noError).to.equal(null);
 
       // Date
       const invalid = {
-        column: { sourceColumn: sourceColumns[2] },
+        column: sourceColumns[2],
         isColumn: true
       };
-      const error = V.fieldOrTextValidationWarning('zip', invalid, ['text', 'number'], sourceColumns);
+      const error = V.checkLocationColColumnOrTextType('zip', invalid, ['text', 'number']);
       expect(error.type).to.equal('wrong_type_location');
     });
 
-    it(`fieldValidationWarning lat`, () => {
+    it('checkLocationColComponentType lat', () => {
       // latitude
-      const latValid = { sourceColumn: sourceColumns[8] };
-      const noError = V.fieldValidationWarning('latitude', latValid, ['number'], sourceColumns);
+      const latValid = sourceColumns[8];
+      const noError = V.checkLocationColComponentType('latitude', latValid, ['number']);
       expect(noError).to.equal(null);
 
       // Date
-      const latInvalid = { sourceColumn: sourceColumns[2] };
-      const error = V.fieldValidationWarning('latitude', latInvalid, ['number'], sourceColumns);
+      const latInvalid = sourceColumns[2];
+      const error = V.checkLocationColComponentType('latitude', latInvalid, ['number']);
       expect(error.type).to.equal('wrong_type_location');
     });
 
-    it(`fieldValidationWarning lon`, () => {
+    it('checkLocationColComponentType lon', () => {
       // latitude
-      const lonValid = { sourceColumn: sourceColumns[9] };
-      const noError = V.fieldValidationWarning('longitude', lonValid, ['number'], sourceColumns);
+      const lonValid = sourceColumns[9];
+      const noError = V.checkLocationColComponentType('longitude', lonValid, ['number']);
       expect(noError).to.equal(null);
 
       // Date
-      const lonInvalid = { sourceColumn: sourceColumns[2] };
-      const error = V.fieldValidationWarning('longitude', lonInvalid, ['number'], sourceColumns);
+      const lonInvalid = sourceColumns[2];
+      const error = V.checkLocationColComponentType('longitude', lonInvalid, ['number']);
       expect(error.type).to.equal('wrong_type_location');
     });
 

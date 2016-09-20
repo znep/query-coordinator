@@ -1,6 +1,7 @@
 import TestUtils from 'react-addons-test-utils';
 
 import * as CD from 'components/importColumns/columnDetail';
+import * as LocationColumn from 'components/importColumns/locationColumn';
 import * as ExampleData from '../exampleData';
 
 describe('columnDetail component', () => {
@@ -93,7 +94,9 @@ describe('columnDetail component', () => {
           ...A_RESULT_COLUMN,
           columnSource: {
             type: 'SingleColumn',
-            sourceColumn: A_SOURCE_COLUMN
+            sourceColumn: A_SOURCE_COLUMN,
+            components: [],
+            locationComponents: LocationColumn.emptyLocationSource()
           }
         });
       });
@@ -178,7 +181,9 @@ describe('columnDetail component', () => {
 
       const EMPTY_COMPOSITE_COLUMN_SOURCE = {
         type: 'CompositeColumn',
-        components: []
+        components: [],
+        sourceColumn: A_SOURCE_COLUMN,
+        locationComponents: LocationColumn.emptyLocationSource()
       };
 
       const RESULT_COLUMN_COMPOSITE_SOURCE = {
@@ -198,7 +203,9 @@ describe('columnDetail component', () => {
           type: 'CompositeColumn',
           components: [
             A_SOURCE_COLUMN
-          ]
+          ],
+          locationComponents: LocationColumn.emptyLocationSource(),
+          sourceColumn: A_SOURCE_COLUMN
         });
       });
 

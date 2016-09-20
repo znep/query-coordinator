@@ -8,6 +8,7 @@ export type TypeName
   | 'date' // date_time
   | 'checkbox'
   | 'stars' // star
+  | 'location'
 
 export type SourceColumn = {
   name: string,

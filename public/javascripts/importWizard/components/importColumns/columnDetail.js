@@ -7,7 +7,7 @@ import * as ImportColumns from '../importColumns'; // TODO: something other than
 import importableTypes from 'importableTypes';
 import * as LocationColumn from './locationColumn';
 
-type CompositeComponent = SharedTypes.SourceColumn | string;
+export type CompositeComponent = SharedTypes.SourceColumn | string;
 
 // action creators
 
@@ -128,18 +128,44 @@ export function update(resultColumn: ImportColumns.ResultColumn, action): Import
       return { ...resultColumn, name: action.newName };
 
     case UPDATE_COLUMN_TYPE:
-      return { ...resultColumn, chosenType: action.newType };
+      switch (action.newType) {
+        case 'location':
+          return {
+            ...resultColumn,
+            chosenType: action.newType,
+            columnSource: {
+              ...resultColumn.columnSource,
+              type: 'LocationColumn'
+            }
+          };
+        default:
+          return {
+            ...resultColumn,
+            chosenType: action.newType,
+            columnSource: {
+              ...resultColumn.columnSource,
+              type: 'SingleColumn'
+            }
+          };
+      }
 
     case SET_COLUMN_SOURCE_SINGLE_COLUMN:
       return {
         ...resultColumn,
-        columnSource: { type: 'SingleColumn', sourceColumn: action.sourceColumn }
+        columnSource: {
+          ...resultColumn.columnSource,
+          type: 'SingleColumn',
+          sourceColumn: action.sourceColumn
+        }
       };
 
     case SET_COLUMN_SOURCE_TO_COMPOSITE:
       return {
         ...resultColumn,
-        columnSource: { type: 'CompositeColumn', components: [] }
+        columnSource: {
+          ...resultColumn.columnSource,
+          type: 'CompositeColumn'
+        }
       };
 
     case UPDATE_COLUMN_SOURCE_COMPOSITE: {
@@ -153,20 +179,27 @@ export function update(resultColumn: ImportColumns.ResultColumn, action): Import
             }
           };
 
+        default:
+          console.error(`expected a composite column; got: ${resultColumn.columnSource.type}`);
+          return resultColumn;
+      }
+    }
+
+    case UPDATE_COLUMN_SOURCE_LOCATION:
+      switch (resultColumn.columnSource.type) {
         case 'LocationColumn':
           return {
             ...resultColumn,
             columnSource: {
               ...resultColumn.columnSource,
-              components: LocationColumn.update(resultColumn.columnSource.components, action.action)
+              locationComponents: LocationColumn.update(resultColumn.columnSource.locationComponents, action.action)
             }
           };
 
         default:
-          console.error(`unexpected column source type: ${resultColumn.columnSource.type}`);
+          console.error(`expected a location column; got: ${resultColumn.columnSource.type}`);
           return resultColumn;
       }
-    }
 
     // transforms
     case UPDATE_SHOW_TRANSFORMS:
@@ -226,7 +259,7 @@ function nameAndValueForCompositeComponent(source: ImportColumns.ColumnSource): 
 const I18nPrefixed = I18n.screens.dataset_new.column_template;
 const I18nTransform = I18n.screens.import_common;
 
-export function view({ idx, resultColumn, sourceOptions, dispatchUpdate, dispatchRemove }) {
+export function view({ idx, resultColumn, sourceColumns, sourceOptions, dispatchUpdate, dispatchRemove }) {
   const isLocationColumn = resultColumn.columnSource.type === 'LocationColumn';
 
   const isTransformEditorVisible = !_.isUndefined(resultColumn.showColumnTransforms)
@@ -312,9 +345,10 @@ export function view({ idx, resultColumn, sourceOptions, dispatchUpdate, dispatc
             case 'LocationColumn': {
               return (
                 <LocationColumn.view
-                  dispatch={(action) => dispatchUpdate(updateColumnSourceComposite(action))}
-                  locationColumn={resultColumn.columnSource.components}
-                  sourceColumns={sourceOptions} />
+                  dispatch={(action) => dispatchUpdate(updateColumnSourceLocation(action))}
+                  resultColumnId={resultColumn.id}
+                  locationColumn={resultColumn.columnSource.locationComponents}
+                  sourceColumns={sourceColumns} />
               );
             }
             default:
@@ -347,6 +381,7 @@ export function view({ idx, resultColumn, sourceOptions, dispatchUpdate, dispatc
 view.propTypes = {
   idx: PropTypes.number.isRequired,
   resultColumn: PropTypes.object.isRequired,
+  sourceColumns: PropTypes.arrayOf(PropTypes.object).isRequired,
   sourceOptions: PropTypes.arrayOf(PropTypes.object).isRequired,
   dispatchUpdate: PropTypes.func.isRequired,
   dispatchRemove: PropTypes.func.isRequired

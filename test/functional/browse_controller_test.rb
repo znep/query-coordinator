@@ -78,12 +78,12 @@ class BrowseControllerTest < ActionController::TestCase
     end
   end
 
-  context 'when the data_lens_state feature flag is set to "post_beta"' do
+  context 'when the data_lens_state feature flag is set to "pre_beta"' do
     setup do
-      stub_feature_flags_with(:data_lens_transition_state => 'post_beta', :cetera_search => false)
+      stub_feature_flags_with(:data_lens_transition_state => 'pre_beta')
     end
 
-    should 'show new view facets for users unable to edit the datasets of others' do
+    should 'not show any new view facet for users unable to edit the datasets of others' do
       @user.stubs(
         :followers => [],
         :friends => [],
@@ -91,8 +91,7 @@ class BrowseControllerTest < ActionController::TestCase
           :profile_name => @user.screen_name,
           :id => @user.uid
         },
-        :rights => [],
-        :special => true
+        :rights => []
       )
       @controller.stubs(
         :current_user => @user,
@@ -101,11 +100,102 @@ class BrowseControllerTest < ActionController::TestCase
       get :show
 
       assert_response(:success)
-      File.open('/tmp/response.html', 'w') { |f| f.write(@response.body) }
+      assert_select('.facetSection.limitTo > ul > li > .typeDataLens', 0)
+    end
+
+    should 'not show any new view facet for users able to edit the datasets of others' do
+      @user.stubs(
+        :followers => [],
+        :friends => [],
+        :route_params => {
+          :profile_name => @user.screen_name,
+          :id => @user.uid
+        },
+        :rights => [UserRights::EDIT_OTHERS_DATASETS]
+      )
+      @controller.stubs(
+        :current_user => @user,
+        :categories_facet => nil
+      )
+      get :show
+
+      assert_response(:success)
+      assert_select('.facetSection.limitTo > ul > li > .typeDataLens', 0)
+    end
+  end
+
+  context 'when the data_lens_state feature flag is set to "beta"' do
+    setup do
+      stub_feature_flags_with(:data_lens_transition_state => 'beta')
+    end
+
+    should 'not show any new view facet for users unable to edit the datasets of others' do
+      @user.stubs(
+        :followers => [],
+        :friends => [],
+        :route_params => {
+          :profile_name => @user.screen_name,
+          :id => @user.uid
+        },
+        :rights => []
+      )
+      @controller.stubs(
+        :current_user => @user,
+        :categories_facet => nil
+      )
+      get :show
+
+      assert_response(:success)
+      assert_select('.facetSection.limitTo > ul > li > .typeDataLens', 0)
+    end
+
+    should 'show the new view facet for users able to edit the datasets of others' do
+      @user.stubs(
+        :followers => [],
+        :friends => [],
+        :route_params => {
+          :profile_name => @user.screen_name,
+          :id => @user.uid
+        },
+        :rights => [UserRights::EDIT_OTHERS_DATASETS]
+      )
+      @controller.stubs(
+        :current_user => @user,
+        :categories_facet => nil
+      )
+      get :show
+
+      assert_response(:success)
+      assert_select('.facetSection.limitTo > ul > li > .typeDataLens', 1)
+    end
+  end
+
+  context 'when the data_lens_state feature flag is set to "post_beta"' do
+    setup do
+      stub_feature_flags_with(:data_lens_transition_state => 'post_beta')
+    end
+
+    should 'show the new view facet for users unable to edit the datasets of others' do
+      @user.stubs(
+        :followers => [],
+        :friends => [],
+        :route_params => {
+          :profile_name => @user.screen_name,
+          :id => @user.uid
+        },
+        :rights => []
+      )
+      @controller.stubs(
+        :current_user => @user,
+        :categories_facet => nil
+      )
+      get :show
+
+      assert_response(:success)
       assert_select('.facetSection.limitTo > ul > li > .typeDataLens', 1)
     end
 
-    should 'show new view facets for users able to edit the datasets of others' do
+    should 'show the new view facet for users able to edit the datasets of others' do
       @user.stubs(
         :followers => [],
         :friends => [],

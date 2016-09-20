@@ -1,7 +1,7 @@
 var inputTypeValidations = {
   google_analytics: /^ua-\d+-\d+$/i,
   color: /^(#(?=[a-z\d]*$)(?:.{3}|.{6})|transparent)$/i,
-  dimensions: /^\d{1,4}px$/
+  dimensions: /^\d{1,4}(px|em|rem|%)$/
 };
 
 var validationRules = {

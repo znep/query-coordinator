@@ -1,8 +1,8 @@
-$banner_height: $header_logo_height + 20;
+$banner_height: calc($header_logo_height + 20);
 $searchbox-height: 36px;
 
 header#site-chrome-header[template="default"] {
-  font-family: $font_family, 'Open Sans', Helvetica, Arial, 'sans-serif';
+  font-family: $font_family, "Open Sans", Helvetica, Arial, "sans-serif";
 
   .banner {
     color: $header_fg_color;

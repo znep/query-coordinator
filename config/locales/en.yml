@@ -804,7 +804,7 @@ en:
         or: or
         simplified_message: You are in simplified mode.
         simplified_toggle: Go advanced now?
-        tutorial_html: Never created a filter before? Watch a short tutorial video <a href="/videos/popup#basic-filtering" rel="video" class="noRedirPrompt">here</a>.
+        tutorial_html: Never created a filter before? <a href="/videos/popup#basic-filtering" rel="video" class="noRedirPrompt">Watch a short tutorial video</a>.
         view_has_no_columns: This view has no columns to filter
         view_must_be_valid: This view must be valid
       menu:
@@ -1614,7 +1614,7 @@ en:
       page_not_found: Page not found.
       were_sorry: We're really sorry, but the page you requested cannot be found.
     permission_denied_403:
-      description_html: If you believe this to be an error, try logging out and back in as a different user <a href="/login">here</a>.
+      description_html: If you believe this to be an error, try <a href="/login">logging out and back in</a> as a different user.
       no_permission: Error
       were_sorry: The current user doesn't have access to this resource.
     error_400:
@@ -3370,10 +3370,10 @@ en:
             y_axis_title_prompt: Enter a title for the y-axis
           base_color: Base Color
           categories: Categories
-          cdlfmtg_color_override_html: Colors are being overridden by <a href="#Conditional Formatting" class="showConditionalFormatting">Conditional Formatting</a>. Click <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">here</a> to clear any current conditional formatting rules.
+          cdlfmtg_color_override_html: Colors are being overridden by <a href="#Conditional Formatting" class="showConditionalFormatting">Conditional Formatting</a>. <a href="#Clear Conditional Formatting" class="clearConditionalFormatting"> Clear current conditional formatting rules</a>.
           color_options:
             column_colors: Column colors
-          color_override_html: Colors may be overridden using <a href="#Conditional Formatting" class="showConditionalFormatting">Conditional Formatting</a>. Click <a href="#Clear Conditional Formatting" class="clearConditionalFormatting">here</a> to clear any current conditional formatting rules.
+          color_override_html: Colors may be overridden using <a href="#Conditional Formatting" class="showConditionalFormatting">Conditional Formatting</a>. <a href="#Clear Conditional Formatting" class="clearConditionalFormatting"> Clear current conditional formatting rules</a>.
           colors: Colors
           configuration: Configuration
           data_columns:
@@ -4252,7 +4252,7 @@ en:
         following: Following
         hide_contacts_link: Hide
       whats_new:
-        caught_up: You're all caught up! Check out our most recent updates <a target="_blank" href="%{href}">here</a>.
+        caught_up: You're all caught up! <a target="_blank" href="%{href}">Check out our most recent updates</a>.
         older_news: See older news
         read_more: Read more
         title: The latest from Socrata

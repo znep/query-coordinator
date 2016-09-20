@@ -2,53 +2,6 @@
 http_interactions:
 - request:
     method: get
-    uri: http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=catalog
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-      X-Socrata-Host:
-      - localhost
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      X-Socrata-Requestid:
-      - 8adpz184dyl8w0yxyis6ov6ww
-      Access-Control-Allow-Origin:
-      - "*"
-      Content-Type:
-      - application/json; charset=utf-8
-      Transfer-Encoding:
-      - chunked
-      Server:
-      - Jetty(7.5.1.v20110908)
-    body:
-      encoding: UTF-8
-      string: |
-        [ {
-          "id" : 11,
-          "name" : "Catalog Configuration",
-          "default" : true,
-          "domainCName" : "localhost",
-          "type" : "catalog",
-          "updatedAt" : 1472508739,
-          "properties" : [ {
-            "name" : "view_type",
-            "value" : "browse2"
-          } ]
-        } ]
-    http_version: 
-  recorded_at: Wed, 14 Sep 2016 17:55:57 GMT
-- request:
-    method: get
     uri: http://localhost:8080/tags?method=viewsTags
     body:
       encoding: US-ASCII
@@ -108,41 +61,6 @@ http_interactions:
           "frequency" : 1,
           "name" : "tag"
         } ]
-    http_version: 
-  recorded_at: Wed, 14 Sep 2016 17:55:58 GMT
-- request:
-    method: get
-    uri: http://localhost:8080/federations.json
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-      X-Socrata-Host:
-      - localhost
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      X-Socrata-Requestid:
-      - 61clc3jg8lq61ild09jbwqpo4
-      Access-Control-Allow-Origin:
-      - "*"
-      Content-Type:
-      - application/json; charset=utf-8
-      Transfer-Encoding:
-      - chunked
-      Server:
-      - Jetty(7.5.1.v20110908)
-    body:
-      encoding: UTF-8
-      string: "[ ]\n"
     http_version: 
   recorded_at: Wed, 14 Sep 2016 17:55:58 GMT
 - request:
@@ -5862,4 +5780,214 @@ http_interactions:
         } ]
     http_version: 
   recorded_at: Wed, 14 Sep 2016 17:55:59 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=catalog
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Socrata-Requestid:
+      - e62weikamzzllhf4vanaboq2p
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(7.5.1.v20110908)
+    body:
+      encoding: UTF-8
+      string: |
+        [ {
+          "id" : 11,
+          "name" : "Catalog Configuration",
+          "default" : true,
+          "domainCName" : "localhost",
+          "type" : "catalog",
+          "updatedAt" : 1472508739,
+          "properties" : [ {
+            "name" : "view_type",
+            "value" : "browse2"
+          } ]
+        } ]
+    http_version: 
+  recorded_at: Tue, 20 Sep 2016 00:46:56 GMT
+- request:
+    method: get
+    uri: http://localhost:5704/catalog/v1/domain_tags?domains=localhost&offset=0&order=relevance
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Date:
+      - Tue, 20 Sep 2016 00:46:56 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: '{"error":"not found"}'
+    http_version: 
+  recorded_at: Tue, 20 Sep 2016 00:46:56 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/federations.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Socrata-Requestid:
+      - bvc8kzvul38kiigabitqshr1d
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(7.5.1.v20110908)
+    body:
+      encoding: UTF-8
+      string: "[ ]\n"
+    http_version: 
+  recorded_at: Tue, 20 Sep 2016 00:46:56 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/federations.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Socrata-Requestid:
+      - cfyn7cojwbk64sdf8aqd3s5xk
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(7.5.1.v20110908)
+    body:
+      encoding: UTF-8
+      string: "[ ]\n"
+    http_version: 
+  recorded_at: Tue, 20 Sep 2016 00:46:56 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/federations.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Socrata-Requestid:
+      - 1ghnjmgdtoia8w6ielegguuq
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(7.5.1.v20110908)
+    body:
+      encoding: UTF-8
+      string: "[ ]\n"
+    http_version: 
+  recorded_at: Tue, 20 Sep 2016 00:46:56 GMT
+- request:
+    method: get
+    uri: http://localhost:5704/catalog/v1?domains=localhost&limit=0&offset=0&order=relevance&search_context=localhost
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Date:
+      - Tue, 20 Sep 2016 00:46:56 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: '{"error":"not found"}'
+    http_version: 
+  recorded_at: Tue, 20 Sep 2016 00:46:56 GMT
 recorded_with: VCR 3.0.3

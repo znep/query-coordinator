@@ -2034,6 +2034,9 @@ en:
       visits: Visits
       your: Your Rating
     admin:
+      canvas:
+        title_cannot_be_blank: Please enter a title.
+        path_must_be_unique: Path already exists; please choose a different one.
       connector:
         actions: Actions
         add_connector: Add Connector
@@ -2584,7 +2587,15 @@ en:
         'false': false
         field_name: Field Name
         flashes:
-          cannot_move_field: 'Cannot move field named''%{name}'': not found'
+          deleted_category: Category successfully removed
+          could_not_delete_category: Could not remove category named '%{category_name}'
+          must_select_category_to_delete: Please select a category to delete from the list
+          could_not_update_category: Could not update category named '%{category_name}'
+          updated_category: Category successfully updated.
+          created_category: Category successfully created.
+          category_must_be_unique: Cannot create duplicate category named '%{new_category}'
+          category_cannot_be_blank: Please enter a name to create a new category.
+          cannot_move_field: "Cannot move field named '%{name}': not found"
           field_duplicated: You cannot create a duplicate field named '%{name}'
           field_name_required: Cannot create field without a name
           field_successful_create: Field Successfully Created
@@ -2614,6 +2625,16 @@ en:
         title: Manage Metadata
         'true': true
         up: Up
+      sdp:
+        template_name_cannot_be_blank: Template name is required.
+        too_many_templates: You have created your allotted number of templates. Please delete one or contact support to purchase more.
+        error_on_creation: "An error occurred during your request: '%{error_message}'"
+        preview_could_not_be_found: A dataset with which to preview could not be found.
+        requires_published_dataset: Please create a dataset you can publish first.
+        could_not_find_template_customization: This template customization cannot be found.
+        could_not_set_default_template: "Cannot set template as default: template not found."
+        could_not_delete_template: "Cannot set template as default: template not found."
+        cannot_delete_default_template: Cannot delete the default template. Please choose a new default first.
       site_chrome:
         activate: Activate
         add_new_link_menu: Add Menu
@@ -2829,7 +2850,9 @@ en:
                   <p>Dataset Landing Page and your new Configurable Header/Footer are both available now. Review the tabs above to configure and preview your site's appearance - and when you're ready, activate them together!</p>
                   <p><b>Note:</b> If you haven't configured the header/footer for your site within 30 days, Socrata will configure it for you and activate it along with the Dataset Landing Page automatically. We'll use your existing site styling and your Customer Success Manager for style guidance.</p>
                   <p>For tips on configuring your header/footer and activating Dataset Landing Page, please attend the <a href="https://event.on24.com/eventRegistration/EventLobbyServlet?target=reg20.jsp&referrer=&eventid=1223356&sessionid=1&key=9ED33D00A47ABC3419890552EBA81D93&regTag=&sourcepage=register" target="_blank">"Making the Most of the Latest Features" Webinar</a> or visit our Support site: <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">https://support.socrata.com/hc/en-us/articles/223723227</a>.</p>
-      update: Update
+      tos:
+        accepted: Thank you for accepting the terms of service.
+        must_agree: You must agree to the provided terms to continue.
       users:
         actions: Actions
         all: All
@@ -2882,6 +2905,8 @@ en:
         users_table_description: Users
       view_moderation:
         table_description: Moderated Datasets
+        could_not_find_view: Could not find view to modify moderation status
+        set_moderation_status: The view '%{view_name}' has been %{moderation_status}. Please allow a few minutes for the changes to be reflected on your home page
     dataset_edit:
       append: Append
       append_and_replace: Append and Replace data

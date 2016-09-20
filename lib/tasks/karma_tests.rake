@@ -87,6 +87,7 @@ namespace :test do
   end
 
   task :js, [:watch, :browser, :reporter] => ['js:dataCards', 'js:datasetLandingPage', 'js:importWizard', 'js:oldUx', 'js:adminGoals']
+
 end
 
 Rake::Task[:test].enhance { Rake::Task['test:js:parallel'].invoke }

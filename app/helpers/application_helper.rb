@@ -918,7 +918,7 @@ module ApplicationHelper
     # all dataslate pages are free to use cetera, by consideration after the blacklist is applied
     req ||= Canvas2::Util.request if Canvas2::Util.class_variable_defined?(:@@request)
 
-    FeatureFlags.derive(nil, req, nil)[:cetera_search]
+    FeatureFlags.derive(nil, req, nil).cetera_search?
   end
 
   def using_cetera_profile_search?

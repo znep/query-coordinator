@@ -43,9 +43,6 @@ module Browse2Helper
 
   def facet_option_url(opts, facet_param, facet_option, params)
     current_params = opts[:user_params].dup
-    if params[:view_type] == 'browse2'
-      current_params[:view_type] = 'browse2'
-    end
 
     if opts[:strip_params] && opts[:strip_params][facet_param.to_sym]
       current_params.delete_if do |key, value|

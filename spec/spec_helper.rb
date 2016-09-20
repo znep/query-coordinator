@@ -106,11 +106,12 @@ RSpec.configure do |config|
 =end
 end
 
-def rspec_stub_feature_flags_with(key, value) # todo rename
-  feature_flags = Hashie::Mash.new
-  feature_flags[key.to_s] = value
-  allow(CurrentDomain).to receive(:feature_flags).and_return(feature_flags)
-  allow(FeatureFlags).to receive(:derive).and_return(feature_flags)
+# Similar method also defined in TestHelperMethods#stub_feature_flags_with
+def rspec_stub_feature_flags_with(options)
+  @feature_flags ||= Hashie::Mash.new(options)
+  @feature_flags.merge!(options)
+  allow(CurrentDomain).to receive(:feature_flags).and_return(@feature_flags)
+  allow(FeatureFlags).to receive(:derive).and_return(@feature_flags)
 end
 
 def stub_logged_in

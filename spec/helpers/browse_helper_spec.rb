@@ -152,13 +152,9 @@ describe BrowseHelper do
     end
 
     it 'creates a link to the base_url with url parameters' do
-      @params = {
-        :foo => 'bar',
-        :page => 6,
-        :view_type => 'browse2'
-      }
+      @params = { :foo => 'bar', :page => 6 }
       link = helper.link_for_facet(@facet, @facet_option, @options, @params)
-      regex = /<a href=\"\/browse\?foo=bar&amp;page=6&amp;view_type=browse2\">.*<\/a>/
+      regex = /<a href=\"\/browse\?foo=bar&amp;page=6\">.*<\/a>/
       expect(link).to match(regex)
     end
 

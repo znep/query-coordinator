@@ -2,6 +2,10 @@ require 'test_helper'
 
 class ViewTest < Minitest::Test
 
+  def setup
+    init_current_domain
+  end
+
   def test_find_has_valid_custom_headers
     load_sample_data('test/fixtures/sample-data.json')
     invalid_cookies_1 = {
@@ -21,7 +25,6 @@ class ViewTest < Minitest::Test
   end
 
   def test_prefetch
-    init_current_domain
     load_sample_data("test/fixtures/sample-data.json")
     view = View.find("does-not-matter")
     view.prefetch(300)
@@ -33,7 +36,6 @@ class ViewTest < Minitest::Test
   end
 
   def test_multiple_queries_same_prefetched_data
-    init_current_domain
     load_sample_data("test/fixtures/sample-data.json")
     view = View.find("does-not-matter")
     view.prefetch(300)
@@ -397,15 +399,13 @@ class ViewTest < Minitest::Test
   end
 
   def test_is_official_returns_true_by_default_if_provenance_is_disabled
-    init_current_domain
-    stub_feature_flags_with(:enable_data_lens_provenance, false)
+    stub_feature_flags_with(:enable_data_lens_provenance => false)
     view = View.new
     refute_nil(view.is_official?)
   end
 
   def test_is_official_returns_false_by_default_if_provenance_is_enabled
-    init_current_domain
-    stub_feature_flags_with(:enable_data_lens_provenance, true)
+    stub_feature_flags_with(:enable_data_lens_provenance => true)
     view = View.new
     assert_nil(view.is_official?)
   end

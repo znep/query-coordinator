@@ -1,6 +1,7 @@
 require 'test_helper'
 
 class BrowseControllerTest < ActionController::TestCase
+
   def setup
     init_core_session
     init_current_domain
@@ -62,10 +63,8 @@ class BrowseControllerTest < ActionController::TestCase
       to_return(:status => 200, :body => return_body, :headers => {})
   end
 
-  clytemnestra_payload = File.read('test/fixtures/catalog_search_results.json')
-  cetera_payload = File.read('test/fixtures/cetera_search_results.json')
-
   test 'it should render page meta content over https and not http' do
+    stub_feature_flags_with(:cetera_search => false)
     @request.env['HTTPS'] = 'on'
     get :show
     assert_select('meta') do |elements|
@@ -79,27 +78,88 @@ class BrowseControllerTest < ActionController::TestCase
     end
   end
 
-  test 'it should not send a limitTo for search when no facet is selected' do
-    Clytemnestra.
-      expects(:search_views).
-      with { |actual| !actual[:limitTo].present? }.
-      returns(Clytemnestra::ViewSearchResult.from_result(File.open('test/fixtures/catalog_search_results.json').read))
-    get :show
-    assert_response(:success)
-    Clytemnestra.unstub(:search_views)
+  context 'when the data_lens_state feature flag is set to "post_beta"' do
+    setup do
+      stub_feature_flags_with(:data_lens_transition_state => 'post_beta', :cetera_search => false)
+    end
+
+    should 'show new view facets for users unable to edit the datasets of others' do
+      @user.stubs(
+        :followers => [],
+        :friends => [],
+        :route_params => {
+          :profile_name => @user.screen_name,
+          :id => @user.uid
+        },
+        :rights => [],
+        :special => true
+      )
+      @controller.stubs(
+        :current_user => @user,
+        :categories_facet => nil
+      )
+      get :show
+
+      assert_response(:success)
+      File.open('/tmp/response.html', 'w') { |f| f.write(@response.body) }
+      assert_select('.facetSection.limitTo > ul > li > .typeDataLens', 1)
+    end
+
+    should 'show new view facets for users able to edit the datasets of others' do
+      @user.stubs(
+        :followers => [],
+        :friends => [],
+        :route_params => {
+          :profile_name => @user.screen_name,
+          :id => @user.uid
+        },
+        :rights => [UserRights::EDIT_OTHERS_DATASETS]
+      )
+      @controller.stubs(
+        :current_user => @user,
+        :categories_facet => nil
+      )
+      get :show
+
+      assert_response(:success)
+      assert_select('.facetSection.limitTo > ul > li > .typeDataLens', 1)
+    end
   end
 
-  test 'it should send an appropriate limitTo for search when new_view type facet is selected' do
-    Clytemnestra.
-      expects(:search_views).
-      with { |actual| actual[:limitTo].eql? 'new_view' }.
-      returns(Clytemnestra::ViewSearchResult.from_result(File.open('test/fixtures/catalog_search_results.json').read))
-    get :show, { 'limitTo' => 'new_view' }
-    assert_response(:success)
-    Clytemnestra.unstub(:search_views)
+  context 'limitTo' do
+
+    setup do
+      stub_feature_flags_with(:cetera_search => false)
+    end
+
+    should 'not send a limitTo for search when no facet is selected' do
+      Clytemnestra.
+        expects(:search_views).
+        with { |actual| !actual[:limitTo].present? }.
+        returns(Clytemnestra::ViewSearchResult.from_result(File.open('test/fixtures/catalog_search_results.json').read))
+      get :show
+      assert_response(:success)
+      Clytemnestra.unstub(:search_views)
+    end
+
+    should 'send an appropriate limitTo for search when new_view type facet is selected' do
+      Clytemnestra.
+        expects(:search_views).
+        with { |actual| actual[:limitTo].eql? 'new_view' }.
+        returns(Clytemnestra::ViewSearchResult.from_result(File.open('test/fixtures/catalog_search_results.json').read))
+      get :show, { 'limitTo' => 'new_view' }
+      assert_response(:success)
+      Clytemnestra.unstub(:search_views)
+    end
+
   end
 
   context 'embedded browse page' do
+
+    setup do
+      stub_feature_flags_with(:cetera_search => false)
+    end
+
     should 'render without errors' do
       get :embed
       assert_response(:success)
@@ -240,17 +300,11 @@ class BrowseControllerTest < ActionController::TestCase
       @controller.unstub(:categories_facet)
       View.expects(:category_tree).returns(view_category_tree)
 
-      CurrentDomain.expects(:property).with(:custom_facets, :catalog).
-        returns(custom_facets).at_most(2)
-
+      CurrentDomain.expects(:property).with(:custom_facets, :catalog).returns(custom_facets).at_most(2)
       CurrentDomain.expects(:property).with(:facet_cutoffs, :catalog).
         returns('custom' => stubbed_custom_cutoff).at_least(1)
-
-      CurrentDomain.expects(:property).with(:view_types_facet, :catalog).
-        returns(nil)
-#      CurrentDomain.expects(:property).with(:custom_facets, :catalog).returns(custom_facets).twice
-#      CurrentDomain.expects(:property).with(:facet_cutoffs, :catalog).returns('custom' => stubbed_custom_cutoff)
-#      CurrentDomain.expects(:property).with(:view_types_facet, :catalog).returns(nil)
+      CurrentDomain.expects(:property).with(:view_types_facet, :catalog).returns(nil)
+      stub_feature_flags_with(:cetera_search => false)
     end
 
     teardown do
@@ -291,7 +345,7 @@ class BrowseControllerTest < ActionController::TestCase
       Federation.expects(:federations).returns(federations_stub).twice # We should cache this
       CurrentDomain.stubs(:cname).returns('data.seattle.gov') # for Cetera
 
-      stub_feature_flags_with(:cetera_search, true)
+      stub_feature_flags_with(:cetera_search => true)
       stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1'). # TODO: update when moving to v2
         with(query: cetera_params).
         to_return(status: 200, body: cetera_payload, headers: {})
@@ -309,8 +363,8 @@ class BrowseControllerTest < ActionController::TestCase
       Federation.expects(:federations).returns(federations_stub).twice # We should cache this
       CurrentDomain.stubs(:cname).returns('data.seattle.gov') # for Cetera
 
-      stub_feature_flags_with(:cetera_search, true)
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+      stub_feature_flags_with(:cetera_search => true)
+      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
         with(query: cetera_params).
         to_return(status: 200, body: cetera_payload, headers: {})
 
@@ -348,12 +402,12 @@ class BrowseControllerTest < ActionController::TestCase
     should 'send default params to Cetera with embed' do
       @request.cookies['this_is_not_a_known_cookie'] = 'so it disappears'
       @request.cookies['_core_session_id'] = 'this cookie is valid so it goes through'
-      stub_feature_flags_with(:cetera_search, true)
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+      stub_feature_flags_with(:cetera_search => true)
+      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
         with(query: default_cetera_params, headers: cetera_headers).
         to_return(status: 200, body: cetera_payload, headers: {})
 
-      get(:embed, view_type: 'browse2')
+      get(:embed)
       assert_response(:success)
       assert_match(/Sold Fleet Equipment/, @response.body)
       assert_match(/Recently Added/, @response.body) # 'Newest' is now 'Recently Added'
@@ -363,8 +417,8 @@ class BrowseControllerTest < ActionController::TestCase
     should 'send default params to Cetera with browse' do
       @request.cookies['this_is_not_a_known_cookie'] = 'so it disappears'
       @request.cookies['_core_session_id'] = 'this cookie is valid so it goes through'
-      stub_feature_flags_with(:cetera_search, true)
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+      stub_feature_flags_with(:cetera_search => true)
+      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
         with(query: default_cetera_params, headers: cetera_headers).
         to_return(status: 200, body: cetera_payload, headers: {})
 
@@ -379,8 +433,8 @@ class BrowseControllerTest < ActionController::TestCase
     should 'truncate custom cutoffs as configured' do
       @request.cookies['this_is_not_a_known_cookie'] = 'so it disappears'
       @request.cookies['_core_session_id'] = 'this cookie is valid so it goes through'
-      stub_feature_flags_with(:cetera_search, true)
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+      stub_feature_flags_with(:cetera_search => false)
+      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
         with(query: default_cetera_params, headers: cetera_headers).
         to_return(status: 200, body: cetera_payload, headers: {})
 
@@ -438,7 +492,7 @@ class BrowseControllerTest < ActionController::TestCase
       %q(We're sorry. Results could not be retrieved at this time. Please try again later.)
 
     should 'fail gracefully on Cetera timeout' do
-      stub_feature_flags_with(:cetera_search, true)
+      stub_feature_flags_with(:cetera_search => true)
 
       cetera_params = Cetera::Utils.cetera_soql_params(
         :domains => ['example.com'],
@@ -448,19 +502,19 @@ class BrowseControllerTest < ActionController::TestCase
         :order => 'relevance'
       )
 
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
         with(query: cetera_params).
         to_timeout
 
-      # Cetera should be paired with browse2
-      get(:show, view_type: 'browse2')
+      # Cetera should be paired with new catalog
+      get(:show)
       assert_response(:success)
 
       assert_select(cetera_selector, search_failure_message)
     end
 
     should 'fail gracefully on Cetera 500' do
-      stub_feature_flags_with(:cetera_search, true)
+      stub_feature_flags_with(:cetera_search => true)
 
       cetera_params = Cetera::Utils.cetera_soql_params(
         :domains => ['example.com'],
@@ -470,18 +524,18 @@ class BrowseControllerTest < ActionController::TestCase
         :order => 'relevance'
       )
 
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
         with(query: cetera_params).
         to_return(status: 500)
 
-      get(:show, view_type: 'browse2')
+      get(:show)
       assert_response(:success)
 
       assert_select(cetera_selector, search_failure_message)
     end
 
     should 'fail gracefully on Cetera unexpected payload' do
-      stub_feature_flags_with(:cetera_search, true)
+      stub_feature_flags_with(:cetera_search => true)
 
       cetera_params = Cetera::Utils.cetera_soql_params(
         :domains => ['example.com'],
@@ -491,11 +545,11 @@ class BrowseControllerTest < ActionController::TestCase
         :order => 'relevance'
       )
 
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
         with(query: cetera_params).
         to_return(status: 200, body: 'oh no they were ready for that!')
 
-      get(:show, view_type: 'browse2')
+      get(:show)
       assert_response(:success)
 
       assert_select(cetera_selector, search_failure_message)
@@ -507,7 +561,7 @@ class BrowseControllerTest < ActionController::TestCase
     core_cly_selector = 'div.browseList > div.results > div > span'
 
     should 'fail gracefully on Core/Cly timeout' do
-      stub_feature_flags_with(:cetera_search, false)
+      stub_feature_flags_with(:cetera_search => false)
       CoreServer::Base.unstub(:connection) # we stubbed all the things
 
       stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json').
@@ -521,7 +575,7 @@ class BrowseControllerTest < ActionController::TestCase
     end
 
     should 'fail gracefully on Core/Cly 500' do
-      stub_feature_flags_with(:cetera_search, false)
+      stub_feature_flags_with(:cetera_search => false)
       CoreServer::Base.unstub(:connection) # we stubbed all the things
 
       stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json').
@@ -535,7 +589,7 @@ class BrowseControllerTest < ActionController::TestCase
     end
 
     should 'fail gracefully on Core/Cly unexpected payload' do
-      stub_feature_flags_with(:cetera_search, false)
+      stub_feature_flags_with(:cetera_search => false)
       CoreServer::Base.unstub(:connection) # we stubbed all the things
 
       stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json').
@@ -550,9 +604,9 @@ class BrowseControllerTest < ActionController::TestCase
   end
 
   # Testing /browse/embed because that path is relatively less tested
-  context 'embedded browse2 results with Cetera' do
+  context 'embedded new catalog results with Cetera' do
     setup do
-      stub_feature_flags_with(:cetera_search, true)
+      stub_feature_flags_with(:cetera_search => true)
       Federation.expects(:federations).returns([]).times(3)
       CurrentDomain.stubs(:cname).returns('data.seattle.gov')
     end
@@ -567,11 +621,11 @@ class BrowseControllerTest < ActionController::TestCase
     selector = 'div.browse2-result-timestamp > div.browse2-result-timestamp-label'
 
     should 'show created at timestamp when sorting by newest' do
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
         with(query: query_params.merge(order: 'createdAt')).
         to_return(status: 200, body: cetera_payload)
 
-      get(:embed, view_type: 'browse2', sortBy: 'newest')
+      get(:embed, sortBy: 'newest')
       assert_response(:success)
 
       assert_select(selector, 'Created')
@@ -579,11 +633,11 @@ class BrowseControllerTest < ActionController::TestCase
     end
 
     should 'show updated at timestamp when sorting by default' do
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
         with(query: query_params.merge(order: 'relevance')).
         to_return(status: 200, body: cetera_payload)
 
-      get(:embed, view_type: 'browse2') # default sort should be relevance
+      get(:embed) # default sort should be relevance
       assert_response(:success)
 
       assert_select(selector, 'Updated')
@@ -591,11 +645,11 @@ class BrowseControllerTest < ActionController::TestCase
     end
 
     should 'show updated at timestamp when sorting by last updated' do
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
         with(query: query_params.merge(order: 'updatedAt')).
         to_return(status: 200, body: cetera_payload)
 
-      get(:embed, view_type: 'browse2', sortBy: 'last_modified')
+      get(:embed, sortBy: 'last_modified')
       assert_response(:success)
 
       assert_select(selector, 'Updated')
@@ -613,4 +667,15 @@ class BrowseControllerTest < ActionController::TestCase
       assert_equal 'ALLOWALL', @response.headers['X-Frame-Options']
     end
   end
+
+  private
+
+  def clytemnestra_payload
+    @clytemnestra_payload ||= File.read('test/fixtures/catalog_search_results.json')
   end
+
+  def cetera_payload
+    @cetera_payload ||= File.read('test/fixtures/cetera_search_results.json')
+  end
+
+end

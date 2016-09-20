@@ -28,10 +28,7 @@ module.exports = _.defaultsDeep({
         loaders: (common.isProduction ? ['babel'] : ['react-hot', 'babel'])
       },
       { test: /\.css$/, loader: 'style-loader!css-loader' },
-      {
-        test: /\.(eot|svg|ttf|woff|woff2)$/,
-        loader: 'url-loader?limit=10000'
-      }
+      { test: /\.(eot|svg|ttf|woff|woff2)$/, loader: 'url-loader?limit=10000' }
     ]
   },
   resolve: {

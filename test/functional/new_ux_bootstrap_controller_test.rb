@@ -21,9 +21,9 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       test_view = View.find('test-data')
       View.any_instance.stubs(:find => test_view)
       # TODO determine why 23 tests fail or break when :use_ephemeral_bootstrap is set to true
-      stub_feature_flags_with(:use_ephemeral_bootstrap, false)
-      stub_feature_flags_with(:create_v2_data_lens, false)
-      stub_feature_flags_with(:enable_data_lens_page_metadata_migrations, false)
+      stub_feature_flags_with(:use_ephemeral_bootstrap => false)
+      stub_feature_flags_with(:create_v2_data_lens => false)
+      stub_feature_flags_with(:enable_data_lens_page_metadata_migrations => false)
     end
 
     should 'have no route if no id' do
@@ -38,7 +38,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     end
 
     should 'return 403 if anonymous - even for V2 Data Lenses' do
-      stub_feature_flags_with(:create_v2_data_lens, true)
+      stub_feature_flags_with(:create_v2_data_lens => true)
       get :bootstrap, id: 'four-four', app: 'dataCards'
       assert_response(403)
     end
@@ -59,7 +59,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       end
 
       should 'return 403 if role is not set, and not admin - even for V2 Data Lenses' do
-        stub_feature_flags_with(:create_v2_data_lens, true)
+        stub_feature_flags_with(:create_v2_data_lens => true)
         stub_user = stub(is_owner?: false, is_superadmin?: false, roleName: nil)
         @controller.stubs(is_owner?: false, is_superadmin?: false, current_user: stub_user)
 
@@ -112,7 +112,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         stub_user = stub(roleName: 'viewer', is_superadmin?: false, is_owner?: false)
         @controller.stubs(current_user: stub_user)
 
-        stub_feature_flags_with(:use_ephemeral_bootstrap, true)
+        stub_feature_flags_with(:use_ephemeral_bootstrap => true)
 
         get :bootstrap, id: 'four-four', app: 'dataCards'
         assert_not_equal(@response.response_code, 403)

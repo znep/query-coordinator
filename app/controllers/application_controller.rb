@@ -128,12 +128,12 @@ class ApplicationController < ActionController::Base
   # v4 chrome style error messages
   def render_forbidden(message = I18n.t('core.auth.need_permission'))
     flash.now[:error] = message
-    return render('shared/error', :status => :forbidden)
+    render 'shared/error', :status => :forbidden
   end
 
   def render_invalid
     flash.now[:error] = 'Invalid request'
-    render('shared/bad_request', :status => 400, :layout => 'error')
+    render 'shared/bad_request', :status => 400, :layout => 'error'
   end
 
   # We use a custom page_cache_directory based on the theme of the site.
@@ -141,13 +141,13 @@ class ApplicationController < ActionController::Base
   # implementation...
   def self.page_cache_file(path)
     if path == CurrentDomain.cname || path == CurrentDomain.cname + '/'
-      name = path += "/index"
+      name = path += '/index'
     else
       name = URI.unescape(path.chomp('/'))
     end
 
     name << page_cache_extension unless (name.split('/').last || name).include? '.'
-    return name
+    name
   end
 
   def meter(name)

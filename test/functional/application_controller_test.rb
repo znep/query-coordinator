@@ -43,13 +43,13 @@ class ApplicationControllerTest < ActionController::TestCase
 
     context 'when disable_nbe_redirection_warning_message is true' do
       setup do
-        stub_feature_flags_with(:disable_nbe_redirection_warning_message, true)
+        stub_feature_flags_with(:disable_nbe_redirection_warning_message => true)
       end
 
       context "when the user isn't an admin, and disable_obe_redirection is true" do
         should 'return boolean false confirming that the message should not be shown' do
           @controller.current_user.stubs(:is_superadmin? => false)
-          stub_feature_flags_with(:disable_obe_redirection, true)
+          stub_feature_flags_with(:disable_obe_redirection => true)
           assert_equal(@controller.show_nbe_redirection_warning?, false)
         end
       end
@@ -57,7 +57,7 @@ class ApplicationControllerTest < ActionController::TestCase
       context 'when the user is an admin and disable_obe_redirection is true' do
         should 'return boolean false confirming that the message should not be shown' do
           @controller.current_user.stubs(:is_superadmin? => true)
-          stub_feature_flags_with(:disable_obe_redirection, true)
+          stub_feature_flags_with(:disable_obe_redirection => true)
           assert_equal(@controller.show_nbe_redirection_warning?, false)
         end
       end
@@ -65,7 +65,7 @@ class ApplicationControllerTest < ActionController::TestCase
       context 'when the user is an admin and disable_obe_redirection is false' do
         should 'return boolean false confirming that the message should not be shown' do
           @controller.current_user.stubs(:is_superadmin? => true)
-          stub_feature_flags_with(:disable_obe_redirection, false)
+          stub_feature_flags_with(:disable_obe_redirection => false)
           assert_equal(@controller.show_nbe_redirection_warning?, false)
         end
       end
@@ -73,7 +73,7 @@ class ApplicationControllerTest < ActionController::TestCase
       context "when the user isn't an admin and disable_obe_redirection is false" do
         should 'return boolean true confirming that the message should not be shown' do
           @controller.current_user.stubs(:is_superadmin? => false)
-          stub_feature_flags_with(:disable_obe_redirection, false)
+          stub_feature_flags_with(:disable_obe_redirection => false)
           assert_equal(@controller.show_nbe_redirection_warning?, false)
         end
       end
@@ -83,13 +83,13 @@ class ApplicationControllerTest < ActionController::TestCase
     context 'when disable_nbe_redirection_warning_message is false' do
 
       setup do
-        stub_feature_flags_with(:disable_nbe_redirection_warning_message, false)
+        stub_feature_flags_with(:disable_nbe_redirection_warning_message => false)
       end
 
       context "when the user isn't an admin, and disable_obe_redirection is true" do
         should 'return boolean true confirming that the message should be shown' do
           @controller.current_user.stubs(:is_superadmin? => false)
-          stub_feature_flags_with(:disable_obe_redirection, true)
+          stub_feature_flags_with(:disable_obe_redirection => true)
           assert_equal(@controller.show_nbe_redirection_warning?, true)
         end
       end
@@ -97,7 +97,7 @@ class ApplicationControllerTest < ActionController::TestCase
       context 'when the user is an admin and disable_obe_redirection is true' do
         should 'return boolean true confirming that the message should be shown' do
           @controller.current_user.stubs(:is_superadmin? => true)
-          stub_feature_flags_with(:disable_obe_redirection, true)
+          stub_feature_flags_with(:disable_obe_redirection => true)
           assert_equal(@controller.show_nbe_redirection_warning?, true)
         end
       end
@@ -105,7 +105,7 @@ class ApplicationControllerTest < ActionController::TestCase
       context 'when the user is an admin and disable_obe_redirection is false' do
         should 'return boolean true confirming that the message should be shown' do
           @controller.current_user.stubs(:is_superadmin? => true)
-          stub_feature_flags_with(:disable_obe_redirection, false)
+          stub_feature_flags_with(:disable_obe_redirection => false)
           assert_equal(@controller.show_nbe_redirection_warning?, true)
         end
       end
@@ -113,7 +113,7 @@ class ApplicationControllerTest < ActionController::TestCase
       context "when the user isn't an admin and disable_obe_redirection is false" do
         should 'return boolean false confirming that the message should not be shown' do
           @controller.current_user.stubs(:is_superadmin? => false)
-          stub_feature_flags_with(:disable_obe_redirection, false)
+          stub_feature_flags_with(:disable_obe_redirection => false)
           assert_equal(@controller.show_nbe_redirection_warning?, false)
         end
       end

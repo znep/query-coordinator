@@ -27,7 +27,7 @@ class PageMetadataManagerTest < Minitest::Test
         :migrations => stub_migrations
       )
     )
-    stub_feature_flags_with(:enable_data_lens_page_metadata_migrations, false)
+    stub_feature_flags_with(:enable_data_lens_page_metadata_migrations => false)
     @dataset_copy_stub = stub_dataset_copy_request(NBE_DATASET_ID)
   end
 
@@ -92,7 +92,7 @@ class PageMetadataManagerTest < Minitest::Test
   end
 
   def test_show_succeeds_when_migration_happens_without_update_rights
-    stub_feature_flags_with(:enable_data_lens_page_metadata_migrations, true)
+    stub_feature_flags_with(:enable_data_lens_page_metadata_migrations => true)
     core_stub = mock
     core_stub.expects(:get_request).times(2).with do |url|
       assert_equal('/views/four-four.json', url)
@@ -102,7 +102,7 @@ class PageMetadataManagerTest < Minitest::Test
 
     manager.show('four-four')
 
-    stub_feature_flags_with(:enable_data_lens_page_metadata_migrations, false)
+    stub_feature_flags_with(:enable_data_lens_page_metadata_migrations => false)
   end
 
   def test_fetch_dataset_columns_does_not_raise_on_success
@@ -184,7 +184,7 @@ class PageMetadataManagerTest < Minitest::Test
   end
 
   def test_create_ignores_provided_pageId_with_v2_page_metadata
-    stub_feature_flags_with(:create_v2_data_lens, true)
+    stub_feature_flags_with(:create_v2_data_lens => true)
     PageMetadataManager.any_instance.expects(:fetch_min_max_in_column).returns(
       'min' => '1987-08-15T00:00:00.000',
       'max' => '1987-08-15T00:00:00.000'

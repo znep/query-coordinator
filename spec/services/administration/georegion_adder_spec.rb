@@ -8,10 +8,7 @@ describe ::Services::Administration::GeoregionAdder do
   let(:geometry_label) { 'name' }
   let(:name) { 'US States' }
   let(:subject) { ::Services::Administration::GeoregionAdder.new }
-  let(:fixture_data) do
-    file = File.open('test/fixtures/sample-data.json')
-    JSON::parse(file.read)
-  end
+  let(:fixture_data) { JSON::parse(File.read('test/fixtures/sample-data.json')) }
 
   describe '#add' do
     before(:each) do

@@ -369,7 +369,7 @@ module BrowseActions
     end
 
     # Categories should be at the top in browse2, otherwise in the 3rd slot
-    categories_index = browse_options[:view_type] == 'browse2' ? 0 : 2
+    categories_index = FeatureFlags.derive(nil, request).cetera_search? ? 0 : 2
     browse_options[:facets] ||= [
       view_types_facet,
       cfs,
@@ -432,7 +432,7 @@ module BrowseActions
 
             browse_options[:search_options][:domain_boosts] = Federation.federated_search_boosts
             browse_options[:search_options][:categories] = selected_category_and_any_children(browse_options)
-            browse_options[:search_options][:search_context] = CurrentDomain.cname
+            browse_options[:search_options][:search_context] = ENV['CETERA_SPOOF_HOST'] || CurrentDomain.cname
 
             # localize catalog links if locale is present
             browse_options[:search_options][:locale] = locale unless locale.nil?

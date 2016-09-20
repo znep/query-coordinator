@@ -1,6 +1,15 @@
 require 'csv'
 
+class AppHelper
+
+  include Singleton
+  include ApplicationHelper
+  include ActionView::Helpers::TextHelper
+
+end
+
 class AdministrationController < ApplicationController
+
   include BrowseActions
   include CommonSocrataMethods
   include GeoregionsHelper
@@ -15,42 +24,54 @@ class AdministrationController < ApplicationController
   before_filter :display_dataset_landing_page_notice
 
   before_filter :check_member, :only => :index
+  skip_before_filter :require_user, :only => [:configuration, :flag_out_of_date]
+
+  before_filter :check_member, :only => [:index, :analytics]
+  before_filter :allow_georegions_access?, :only => [:georegions, :add_georegion, :enable_georegion, :disable_georegion, :set_georegion_default_status, :edit_georegion, :remove_georegion]
+
+  before_filter :only => [:datasets] { |request| request.check_auth_levels_any([UserRights::EDIT_OTHERS_DATASETS, UserRights::EDIT_SITE_THEME]) }
+  before_filter :only => [:canvas_pages] { |request| request.check_auth_level(UserRights::EDIT_PAGES) }
+  before_filter :only => [:create_canvas_page, :post_canvas_page] { |request| request.check_auth_level(UserRights::CREATE_PAGES) }
+  before_filter :only => [:users, :set_user_role, :reset_user_password, :bulk_create_users, :delete_future_user, :re_enable_user, :tos ] { |request| request.check_auth_level(UserRights::MANAGE_USERS) }
+  before_filter :only => [:comment_moderation] { |request| request.check_auth_level(UserRights::MODERATE_COMMENTS) && request.check_module('publisher_comment_moderation') }
+  before_filter :only => [:views] { |request| request.check_auth_level(UserRights::APPROVE_NOMINATIONS) && request.check_feature(:view_moderation) }
+  before_filter :only => [:set_view_moderation_status] { |request| request.check_auth_level(UserRights::APPROVE_NOMINATIONS) }
+  before_filter :only => [:sdp_templates, :sdp_template_create, :sdp_template, :sdp_set_default_template, :sdp_delete_template] { |request| request.check_auth_level(UserRights::EDIT_SDP) }
+  before_filter :only => [:federations, :delete_federation, :accept_federation, :reject_federation, :create_federation] { |request| request.check_auth_level(UserRights::FEDERATIONS) && request.check_module_available('federations') }
+  before_filter :only => [:metadata, :create_metadata_fieldset, :delete_metadata_fieldset, :create_metadata_field, :save_metadata_field, :delete_metadata_field, :toggle_metadata_option, :move_metadata_field, :create_category, :delete_category, :modify_catalog_config, :modify_sidebar_config] { |request| request.check_auth_level(UserRights::EDIT_SITE_THEME) }
+  before_filter :only => [:jobs, :show_job] { |request| request.check_feature_flag(:show_admin_processes) && request.check_auth_level(UserRights::VIEW_ALL_DATASET_STATUS_LOGS) }
+  before_filter :only => [:home, :save_featured_views] { |request| request.check_auth_levels_any([UserRights::MANAGE_STORIES, UserRights::FEATURE_ITEMS, UserRights::EDIT_SITE_THEME]) }
+  before_filter :only => [:delete_story, :new_story, :create_story, :move_story, :edit_story, :stories_appearance, :update_stories_appearance] { |request| request.check_auth_level(UserRights::MANAGE_STORIES) }
+
   def index
     redirect_to '/manage/site_config' if CurrentDomain.module_enabled?(:govStat)
   end
 
-  before_filter :only => [:datasets] {|c| c.check_auth_levels_any([UserRights::EDIT_OTHERS_DATASETS, UserRights::EDIT_SITE_THEME]) }
   def datasets
     @meta[:page_name] = 'Admin Catalog'
     unless AssetInventory.find.present?
       Airbrake.notify(:error_class => 'Asset Inventory missing for domain',
         :error_message => 'Asset Inventory feature flag is enabled but no dataset of display type assetinventory is found.',
-        :session => {:domain => CurrentDomain.cname},
-        :request => { :params => params })
-       Rails.logger.error("Asset Inventory feature flag is enabled for #{CurrentDomain.cname} but no dataset of display type assetinventory is found.")
+        :session => { :domain => CurrentDomain.cname },
+        :request => { :params => params }
+      )
+     Rails.logger.error("Asset Inventory feature flag is enabled for #{CurrentDomain.cname} but no dataset of display type assetinventory is found.")
     end
 
     vtf = view_types_facet
-
-    datasets_index = vtf[:options].index { |option|
-      option[:value] == 'datasets'
-    }
-
-    unless datasets_index.present?
-      datasets_index = 0
-    end
+    datasets_index = vtf[:options].index { |option| option[:value] == 'datasets' }
+    datasets_index = 0 unless datasets_index.present?
 
     # always show "unpublished datasets" after "datasets", or at least after "data lens"
-    vtf[:options].insert(datasets_index + 1, {
-      :text => t('screens.admin.datasets.unpublished_datasets'), :value => 'unpublished',
-      :class => 'typeUnpublished'})
+    vtf[:options].insert(
+      datasets_index + 1,
+      :text => t('screens.admin.datasets.unpublished_datasets'),
+      :value => 'unpublished',
+      :class => 'typeUnpublished'
+    )
 
-    facets = [
-      vtf,
-      categories_facet(params),
-      topics_facet(params)
-    ]
-    @processed_browse = process_browse(request, {
+    facets = [vtf, categories_facet(params), topics_facet(params)]
+    @processed_browse = process_browse(request, moderation_flag_if_needed.merge(
       admin: true,
       browse_in_container: true,
       facets: facets,
@@ -58,7 +79,7 @@ class AdministrationController < ApplicationController
       nofederate: true,
       view_type: 'table',
       a11y_table_description: t('screens.admin.datasets.table_description')
-    }.merge(moderation_flag_if_needed))
+    ))
   end
 
   #In the /admin/datasets endpoint ...
@@ -70,13 +91,12 @@ class AdministrationController < ApplicationController
     if CurrentDomain.feature?(:view_moderation)
       {}
     else
-      {moderation: 'any'}
+      { moderation: 'any' }
     end
   end
 
-  before_filter :only => [:modify_sidebar_config] {|c| c.check_auth_level(UserRights::EDIT_SITE_THEME)}
   def modify_sidebar_config
-    config = ::Configuration.get_or_create('sidebar', {'name' => 'Sidebar configuration'})
+    config = ::Configuration.get_or_create('sidebar', 'name' => 'Sidebar configuration')
 
     params[:sidebar].each do |k, v|
       update_or_create_property(config, k.to_s, v)
@@ -89,16 +109,13 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :check_member, :only => :analytics
   def analytics
   end
 
-  before_filter :only => [:canvas_pages] {|c| c.check_auth_level(UserRights::EDIT_PAGES)}
   def canvas_pages
     @pages = Page.find('$order' => 'name', 'status' => 'all')
   end
 
-  before_filter :only => [:create_canvas_page, :post_canvas_page] {|c| c.check_auth_level(UserRights::CREATE_PAGES)}
   def create_canvas_page
     @cur_path = params[:path]
     @cur_title = params[:title]
@@ -108,7 +125,7 @@ class AdministrationController < ApplicationController
     title = params[:pageTitle]
     url = params[:pageUrl]
     if title.blank?
-      flash[:error] = "Please enter a title"
+      flash[:error] = t('screens.admin.canvas.title_cannot_be_blank')
       return redirect_to :action => 'create_canvas_page', :path => url, :title => title
     end
     if url.blank?
@@ -118,20 +135,20 @@ class AdministrationController < ApplicationController
       i = 1
       check_url = url
       while Page.path_exists?(check_url) do
-        check_url = url + '-' + i.to_s
+        check_url = "#{url}-#{i}"
         i += 1
       end
       url = check_url
     end
-    url = '/' + url unless url.starts_with?('/')
+    url = "/#{url}" unless url.starts_with?('/')
     if Page.path_exists?(url)
-      flash[:error] = "Path already exists; please choose a different one"
+      flash[:error] = t('screens.admin.canvas.path_must_be_unique')
       return redirect_to :action => 'create_canvas_page', :path => url, :title => title
     end
     args = { :path => url, :name => title }
     args[:grouping] = 'report' if CurrentDomain.module_enabled?(:govStat)
     res = Page.create(args)
-    redirect_to res.path + '?_edit_mode=true'
+    redirect_to "#{res.path}?_edit_mode=true"
   end
 
   #
@@ -143,10 +160,6 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :allow_georegions_access?, :only => [
-      :georegions, :add_georegion, :enable_georegion, :disable_georegion,
-      :set_georegion_default_status, :edit_georegion, :remove_georegion
-    ]
   def georegions
     jobs = incomplete_curated_region_jobs
     failed_jobs = failed_curated_region_jobs
@@ -165,12 +178,8 @@ class AdministrationController < ApplicationController
   def georegion
     curated_region = CuratedRegion.find(params[:id])
     respond_to do |format|
-      format.data { render :json => {
-          :success => true,
-          :message => curated_region
-        }.to_json }
+      format.data { render :json => { :success => true, :message => curated_region  } }
     end
-
   end
 
   def add_georegion
@@ -213,13 +222,11 @@ class AdministrationController < ApplicationController
     begin
       georegion_enabler.enable(curated_region)
       is_success = true
-      success_message = t(
-        'screens.admin.georegions.enable_success',
-        :name => curated_region.name
-      )
+      success_message = t('screens.admin.georegions.enable_success', :name => curated_region.name)
     rescue CoreServer::CoreServerError
       error_message = t('error.error_500.were_sorry')
     end
+
     handle_button_response(is_success, error_message, success_message, :georegions)
   end
 
@@ -231,13 +238,11 @@ class AdministrationController < ApplicationController
     begin
       georegion_enabler.disable(curated_region)
       is_success = true
-      success_message = t(
-        'screens.admin.georegions.disable_success',
-        :name => curated_region.name
-      )
+      success_message = t('screens.admin.georegions.disable_success', :name => curated_region.name)
     rescue CoreServer::CoreServerError
       error_message = t('error.error_500.were_sorry')
     end
+
     handle_button_response(is_success, error_message, success_message, :georegions)
   end
 
@@ -251,25 +256,23 @@ class AdministrationController < ApplicationController
       if default_flag == 'default'
         georegion_defaulter.default(curated_region)
         is_success = true
-        success_message = t(
-          'screens.admin.georegions.default_success',
-          :name => curated_region.name
-        )
+        success_message = t('screens.admin.georegions.default_success', :name => curated_region.name)
       elsif default_flag == 'undefault'
         georegion_defaulter.undefault(curated_region)
         is_success = true
-        success_message = t(
-          'screens.admin.georegions.undefault_success',
-          :name => curated_region.name
-        )
+        success_message = t('screens.admin.georegions.undefault_success', :name => curated_region.name)
       else
         error_message = t('error.error_500.were_sorry')
       end
     rescue CoreServer::CoreServerError
       error_message = t('error.error_500.were_sorry')
     rescue ::Services::Administration::DefaultGeoregionsLimitMetError
-      error_message = t('screens.admin.georegions.default_georegions_limit', :limit => georegion_defaulter.maximum_default_count)
+      error_message = t(
+        'screens.admin.georegions.default_georegions_limit',
+        :limit => georegion_defaulter.maximum_default_count
+      )
     end
+
     handle_button_response(is_success, error_message, success_message, :georegions)
   end
 
@@ -290,7 +293,7 @@ class AdministrationController < ApplicationController
         success_message = t('screens.admin.georegions.configure_boundary.save_success')
       end
     rescue ::Services::Administration::MissingBoundaryNameError
-      flash[:is_name_missing] = true
+      flash[:is_name_missing] = true # TODO Refactor to remove abuse of flash hash.
       error_message = t('screens.admin.georegions.configure_boundary.boundary_name_required_page_error')
       redirect_action = :configure_boundary
     rescue ::Services::Administration::MissingGeometryLabelError
@@ -346,19 +349,12 @@ class AdministrationController < ApplicationController
       }
       success = false
     end
-    render :json => {
-      :message => message,
-      :success => success
-    }.to_json, :status => (success ? 200 : 500)
+    render :json => { :message => message, :success => success  }, :status => success ? 200 : 500
   end
-
 
   #
   # Manage Users and User Roles
   #
-
-  before_filter :only => [:users, :set_user_role, :reset_user_password, :bulk_create_users,
-                          :delete_future_user, :re_enable_user] {|c| c.check_auth_level(UserRights::MANAGE_USERS)}
 
   def users
     user_search_client = Cetera::Utils.user_search_client(forwardable_session_cookies)
@@ -388,10 +384,10 @@ class AdministrationController < ApplicationController
     respond_to do |format|
       format.html { render :action => 'users' }
       format.csv do
-        render :text => CSV.generate { |csv|
+        render :text => CSV.generate do |csv|
           csv << User.csv_columns.values
           @users_list.each { |user| csv << user.to_csv_row }
-        }
+        end
       end
     end
   end
@@ -403,6 +399,7 @@ class AdministrationController < ApplicationController
     rescue CoreServer::CoreServerError => ex
       error_message = ex.error_message
     end
+
     handle_button_response(updated_user, error_message, t('screens.admin.users.flashes.successful_update'), :users)
   end
 
@@ -412,6 +409,7 @@ class AdministrationController < ApplicationController
     else
       error_message = t('screens.admin.users.flashes.reset_email_failed')
     end
+
     handle_button_response(success, error_message, t('screens.admin.users.flashes.reset_email_sent'), :users)
   end
 
@@ -421,29 +419,30 @@ class AdministrationController < ApplicationController
     else
       error_message = t('screens.admin.users.flashes.reenable_failed')
     end
+
     handle_button_response(success, error_message, t('screens.admin.users.flashes.reenable_success'), :users)
   end
 
   def bulk_create_users
     role = params[:role]
-    if !User.roles_list.include?(role.downcase)
+    unless User.roles_list.include?(role.downcase)
       flash[:error] = t('screens.admin.users.flashes.invalid_role', :role => role)
-      return (redirect_to :action => :users)
+      return redirect_to :action => :users
     end
 
     begin
       result = FutureAccount.create_multiple(params[:users], role)
-      errors = result["errors"]
-      created = result["created"]
+      errors = result['errors']
+      created = result['created']
     rescue CoreServer::CoreServerError => ex
       errors = [ex.error_message]
     end
 
-    if !errors.blank?
+    if errors.present?
       flash[:error] = errors.join(', ')
     elsif(created.blank?)
       flash[:error] = t('screens.admin.users.flashes.no_email_addresses')
-      return (redirect_to :action => :users)
+      return redirect_to :action => :users
     else
       flash[:notice] = t('screens.admin.users.flashes.accounts_created', :count => created.size)
     end
@@ -457,21 +456,18 @@ class AdministrationController < ApplicationController
     rescue CoreServer::CoreServerError => ex
       error_message = ex.error_message
     end
+
     handle_button_response(success, error_message, t('screens.admin.users.flashes.pending_permissions_removed'), :users)
   end
 
-  before_filter :only => [:comment_moderation] {|c| c.check_auth_level(UserRights::MODERATE_COMMENTS)}
-  before_filter :only => [:comment_moderation] {|c| c.check_module('publisher_comment_moderation')}
   def comment_moderation
   end
 
-  before_filter :only => [:views] {|c| c.check_auth_level(UserRights::APPROVE_NOMINATIONS)}
-  before_filter :only => [:views] {|c| c.check_feature(:view_moderation)}
   def views
     view_facet = view_types_facet()
-    view_facet[:options].select! { |item| @@moderatable_types.include? item[:value] }
+    view_facet[:options].select! { |item| @@moderatable_types.include?(item[:value]) }
 
-    @processed_browse = process_browse(request, {
+    @processed_browse = process_browse(request,
       datasetView: 'view',
       default_params: { moderation: 'pending' },
       browse_in_container: true,
@@ -488,36 +484,36 @@ class AdministrationController < ApplicationController
       view_type: 'table',
       a11y_skip_to_content: true,
       a11y_table_description: t('screens.admin.view_moderation.table_description')
-    })
+    )
   end
 
-
-  before_filter :only => [:set_view_moderation_status] {|c| c.check_auth_level(UserRights::APPROVE_NOMINATIONS)}
   def set_view_moderation_status
     begin
-      v = View.find(params[:id])
+      view = View.find(params[:id])
     rescue CoreServer::ResourceNotFound
-      flash[:error] = "Could not find view to modify moderation status"
-      return(redirect_to :action => 'views')
+      flash[:error] = t('screens.admin.view_moderation.could_not_find_view')
+      return redirect_to :action => 'views'
     end
 
-    v.moderationStatus = (params[:approved] == 'yes')
-    v.save!
+    view.moderationStatus = params[:approved] == 'yes'
+    view.save!
 
     unless request.format.json?
       # EN-7318: ajax calls to this endpoint (currently from data lens pages) should not persist flash messages
-      flash[:notice] = "The view '#{v.name}' has been #{v.moderation_status.downcase}. " +
-        'Please allow a few minutes for the changes to be reflected on your home page'
+      flash[:notice] = t(
+        'screens.admin.view_moderation.set_moderation_status',
+        :view_name => v.name,
+        :moderation_status => v.moderation_status.downcase
+      )
     end
 
-    return(redirect_to (request.referer || {:action => 'views'}))
+    redirect_to request.referer || { :action => 'views' }
   end
 
   #
   # Social Data Player - theme customization
   #
 
-  before_filter :only => [:sdp_templates, :sdp_template_create, :sdp_template, :sdp_set_default_template, :sdp_delete_template] {|c| c.check_auth_level(UserRights::EDIT_SDP)}
   def sdp_templates
     @templates = WidgetCustomization.find.reject{ |t| t.hidden }
     @default_template_id = CurrentDomain.default_widget_customization_id
@@ -525,24 +521,26 @@ class AdministrationController < ApplicationController
 
   def sdp_template_create
     unless params[:new_template_name].present?
-      flash.now[:error] = 'Template name is required'
-      return (render 'shared/error', :status => :bad_request)
+      flash.now[:error] = t('screens.admin.sdp.template_name_cannot_be_blank')
+      return render 'shared/error', :status => :bad_request
     end
 
     begin
-      widget_customization = WidgetCustomization.create({ :name => params[:new_template_name],
-                                                          :customization => WidgetCustomization.default_theme(1).to_json })
+      widget_customization = WidgetCustomization.create(
+        :name => params[:new_template_name],
+        :customization => WidgetCustomization.default_theme(1).to_json
+      )
     rescue CoreServer::CoreServerError => e
       if e.error_message == 'This domain has reached its template limit'
-        flash.now[:error] = "You have created your allotted number of templates. Please delete one or contact support to purchase more."
+        flash.now[:error] = t('screens.admin.sdp.too_many_templates')
         return render 'shared/error', :status => :bad_request
       else
-        flash.now[:error] = "An error occurred during your request: #{e.error_message}"
+        flash.now[:error] = t('screens.admin.sdp.error_on_creation', :error_message => e.error_message)
         return render 'shared/error'
       end
     end
 
-    redirect_options = {:action => :sdp_template, :id => widget_customization.uid}
+    redirect_options = { :action => :sdp_template, :id => widget_customization.uid }
     redirect_options[:view_id] = params[:view_id] if params[:view_id].present?
     redirect_to redirect_options
   end
@@ -552,27 +550,30 @@ class AdministrationController < ApplicationController
       begin
         @view = View.find(params[:view_id])
       rescue CoreServer::ResourceNotFound
-          flash.now[:error] = 'A dataset with which to preview could not be found.'
-          return (render 'shared/error', :status => :not_found)
-        return
+        flash.now[:error] = t('screens.admin.sdp.preview_could_not_be_found')
+        return render 'shared/error', :status => :not_found
       end
     else
       views = Clytemnestra.search_views(
-        { :limit => 1, :nofederate => true, :limitTo => 'tables', :datasetView => 'dataset' }).results
+        :limit => 1,
+        :nofederate => true,
+        :limitTo => 'tables',
+        :datasetView => 'dataset'
+      ).results
       @view = views.first unless views.nil?
     end
 
     if @view.nil?
-      flash.now[:error] = 'Please create a dataset you can publish first'
-      return (render 'shared/error', :status => :invalid_request)
+      flash.now[:error] = t('screens.admin.sdp.requires_published_dataset')
+      return render 'shared/error', :status => :invalid_request
     end
 
     begin
       @widget_customization = WidgetCustomization.find(params[:id])
       @customization = WidgetCustomization.merge_theme_with_default(@widget_customization.customization)
     rescue CoreServer::ResourceNotFound
-      flash.now[:error] = 'This template customization cannot be found'
-      return (render 'shared/error', :status => :not_found)
+      flash.now[:error] = t('screens.admin.sdp.could_not_find_template_customization')
+      render 'shared/error', :status => :not_found
     end
   end
 
@@ -581,11 +582,11 @@ class AdministrationController < ApplicationController
     begin
       customization = WidgetCustomization.find(params[:id])
     rescue CoreServer::ResourceNotFound
-      flash.now[:error] = 'Can not set template as default: template not found'
-      return (render 'shared/error', :status => :not_found)
+      flash.now[:error] = t('screens.admin.sdp.could_not_set_default_template')
+      return render 'shared/error', :status => :not_found
     end
 
-    update_or_create_property(configuration, "sdp_template", params[:id])
+    update_or_create_property(configuration, 'sdp_template', params[:id])
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
     respond_to do |format|
@@ -598,13 +599,13 @@ class AdministrationController < ApplicationController
     begin
       customization = WidgetCustomization.find(params[:id])
     rescue CoreServer::ResourceNotFound
-      flash.now[:error] = 'Can not set template as default: template not found'
-      return (render 'shared/error', :status => :not_found)
+      flash.now[:error] = t('screens.admin.sdp.could_not_delete_template')
+      return render 'shared/error', :status => :not_found
     end
 
     if customization.uid == CurrentDomain.default_widget_customization_id
-      flash.now[:error] = 'Can not delete the default template. Please choose a new default first.'
-      return (render 'shared/error', :status => :invalid_request)
+      flash.now[:error] = t('screens.admin.sdp.cannot_delete_default_template')
+      return render 'shared/error', :status => :invalid_request
     end
 
     # Don't actually delete it, just don't show it in the UI
@@ -620,9 +621,6 @@ class AdministrationController < ApplicationController
   #
   # Open Data Federation
   #
-
-  before_filter :only => [:federations, :delete_federation, :accept_federation, :reject_federation, :create_federation] {|c| c.check_auth_level(UserRights::FEDERATIONS)}
-  before_filter :only => [:federations, :delete_federation, :accept_federation, :reject_federation, :create_federation] {|c| c.check_module_available('federations')}
 
   def federations
     if params[:dataset].nil?
@@ -671,24 +669,24 @@ class AdministrationController < ApplicationController
       Federation.create(data)
     rescue CoreServer::ResourceNotFound => e
       flash[:error] = t('screens.admin.federation.flashes.invalid_domain')
-      return(redirect_to :action => :federations)
+      return redirect_to :action => :federations
     rescue CoreServer::CoreServerError => e
       flash[:error] = e.error_message
-      return(redirect_to :action => :federations)
+      return redirect_to :action => :federations
     end
 
     respond_to do |format|
       flash[:notice] = t('screens.admin.federation.flashes.created')
-      return(redirect_to :action => :federations)
+      return redirect_to :action => :federations
     end
   end
 
   #
   # Dataset-level metadata (custom fields, categories)
   #
-  before_filter :only => [:metadata, :create_metadata_fieldset, :delete_metadata_fieldset, :create_metadata_field, :save_metadata_field, :delete_metadata_field, :toggle_metadata_option, :move_metadata_field, :create_category, :delete_category] {|c| c.check_auth_level(UserRights::EDIT_SITE_THEME)}
+
   def metadata
-    config = ::Configuration.get_or_create('metadata', {'name' => 'Metadata configuration'})
+    config = ::Configuration.get_or_create('metadata', 'name' => 'Metadata configuration')
     @metadata = config.properties.fieldsets || []
     @categories = get_configuration('view_categories', true).properties.sort { |a, b| a[0].downcase <=> b[0].downcase }
     @locales = CurrentDomain.available_locales
@@ -742,8 +740,7 @@ class AdministrationController < ApplicationController
       return redirect_to :action => 'metadata'
     end
 
-    fieldset['fields'] << Hashie::Mash.new({ 'name' => field_name,
-      'required' => false })
+    fieldset['fields'] << Hashie::Mash.new('name' => field_name, 'required' => false)
 
     save_metadata(config, metadata, t('screens.admin.metadata.flashes.field_successful_create'))
   end
@@ -754,12 +751,12 @@ class AdministrationController < ApplicationController
     fieldset = metadata[params[:fieldset].to_i]
 
     if fieldset.blank?
-      return (render json: {error: true, message: t('screens.admin.metadata.flashes.no_such_fieldset')})
+      return render json: { error: true, message: t('screens.admin.metadata.flashes.no_such_fieldset') }
     end
 
     field = fieldset.fields.detect{ |f| f['name'].downcase == params[:field].to_s.downcase }
     if field.nil?
-      return (render json: {error: true, message: t('screens.admin.metadata.flashes.no_such_field') })
+      return render json: { error: true, message: t('screens.admin.metadata.flashes.no_such_field') }
     end
 
     options = params[:options]
@@ -795,7 +792,7 @@ class AdministrationController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to :action => 'metadata' }
-      format.data { render :json => {:success => true, :option => option, :value => field[option]} }
+      format.data { render :json => { :success => true, :option => option, :value => field[option]} }
     end
   end
 
@@ -810,7 +807,7 @@ class AdministrationController < ApplicationController
       flash[:error] = t('screens.admin.metadata.flashes.cannot_move_field', :name => params[:field])
       respond_to do |format|
         format.html { return redirect_to :action => 'metadata' }
-        format.data { return render :json => {:error => true, :error_message => flash[:error]} }
+        format.data { return render :json => { :error => true, :error_message => flash[:error]} }
       end
     end
 
@@ -825,7 +822,7 @@ class AdministrationController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to :action => 'metadata' }
-      format.data { render :json => {:success => true, :direction => params[:direction]} }
+      format.data { render :json => { :success => true, :direction => params[:direction]} }
     end
   end
 
@@ -835,18 +832,16 @@ class AdministrationController < ApplicationController
     new_category_displayed = params[:new_category_displayed] == "1"
 
     if new_category.blank?
-      flash[:error] = "Please enter a name to create a new category"
+      flash[:error] = t('screens.admin.metadata.flashes.category_cannot_be_blank')
       return redirect_to metadata_administration_path
     end
 
     config = get_configuration('view_categories')
     # Copy over default config
-    if config.nil?
-      config = create_config_copy('View categories', 'view_categories')
-    end
+    config ||= create_config_copy('View categories', 'view_categories')
 
-    if config.raw_properties.any? {|k,v| k.downcase == new_category.downcase }
-      flash[:error] = "Cannot create duplicate category named '#{new_category}'"
+    if config.raw_properties.any? { |k, v| k.downcase == new_category.downcase }
+      flash[:error] = t('screens.admin.metadata.flashes.category_must_be_unique', :new_category => new_category)
       return redirect_to metadata_administration_path
     end
 
@@ -854,31 +849,28 @@ class AdministrationController < ApplicationController
     # name: category, value: { parent: parent_category, enabled: true }
     # where parent is optional
     prop_val = { :enabled => new_category_displayed }
-    if !new_category_parent.blank?
-      prop_val[:parent] = new_category_parent.titleize_if_necessary
-    end
+    new_category_parent.present?
+    prop_val[:parent] = new_category_parent.titleize_if_necessary
 
     locales = params[:new_locales] || []
-    prop_val[:locale_strings] = locales if !locales.empty?
+    prop_val[:locale_strings] = locales if locales.present?
 
     config.create_property(new_category.titleize_if_necessary, prop_val)
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
-    flash[:notice] = "Category successfully created"
+    flash[:notice] = t('screens.admin.metadata.flashes.created_category')
     redirect_to metadata_administration_path
   end
 
   def update_category
     category = params[:category]
     config = get_configuration('view_categories')
-    if config.nil?
-      config = create_config_copy('View categories', 'view_categories')
-    end
+    config ||= create_config_copy('View categories', 'view_categories')
 
     cat_config = config.raw_properties[category[:name]]
     if cat_config.nil?
-      flash[:error] = "Could not update category named '#{category[:name]}'"
+      flash[:error] = t('screens.admin.metadata.flashes.could_not_update_category', :category_name => category[:name])
       return redirect_to metadata_administration_path
     end
 
@@ -888,7 +880,7 @@ class AdministrationController < ApplicationController
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
-    flash[:notice] = "Category successfully updated"
+    flash[:notice] = t('screens.admin.metadata.flashes.updated_category')
     redirect_to metadata_administration_path
   end
 
@@ -896,17 +888,15 @@ class AdministrationController < ApplicationController
     category = params[:category]
 
     if category.blank?
-      flash[:error] = "Please select a category to delete from the list"
+      flash[:error] = t('screens.admin.metadata.flashes.must_select_category_to_delete')
       return redirect_to metadata_administration_path
     end
 
     config = get_configuration('view_categories')
-    if config.nil?
-      config = create_config_copy('View categories', 'view_categories')
-    end
+    config ||= create_config_copy('View categories', 'view_categories')
 
-    if !config.raw_properties.any? { |k,v| k == category }
-      flash[:error] = "Could not remove category named '#{category}'"
+    unless config.raw_properties.any? { |k, v| k == category }
+      flash[:error] = t('screens.admin.metadata.flashes.could_not_delete_category', :category_name => category)
       return redirect_to metadata_administration_path
     end
 
@@ -921,16 +911,14 @@ class AdministrationController < ApplicationController
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
-    flash[:notice] = "Category successfully removed"
+    flash[:notice] = t('screens.admin.metadata.flashes.deleted_category')
     redirect_to metadata_administration_path
   end
-
 
   #
   # Homepage Customization
   #
 
-  before_filter :only => [:home, :save_featured_views] {|c| c.check_auth_levels_any([UserRights::MANAGE_STORIES, UserRights::FEATURE_ITEMS, UserRights::EDIT_SITE_THEME])}
   def home
     @stories = Story.find.sort
     @features = get_configuration().properties.featured_views
@@ -953,7 +941,6 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :only => [:delete_story, :new_story, :create_story, :move_story, :edit_story, :stories_appearance, :update_stories_appearance] {|c| c.check_auth_level(UserRights::MANAGE_STORIES)}
   def delete_story
     begin
       Story.delete(params[:id])
@@ -965,7 +952,7 @@ class AdministrationController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to home_administration_path }
-      format.data { render :json => {:success => true} }
+      format.data { render :json => { :success => true } }
     end
   end
 
@@ -1003,6 +990,7 @@ class AdministrationController < ApplicationController
     story_hi.save!
     flash.now[:notice] = t('screens.admin.home.flashes.move_success')
     clear_homepage_cache
+
     redirect_to :home_administration
   end
 
@@ -1039,7 +1027,7 @@ class AdministrationController < ApplicationController
 
     theme = config.properties.theme_v2b || {}
 
-    update_or_create_property(config, 'theme_v2b', theme.merge({ 'stories' => params[:stories] }))
+    update_or_create_property(config, 'theme_v2b', theme.merge('stories' => params[:stories]))
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
@@ -1049,13 +1037,15 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :only => [:modify_catalog_config] {|c| c.check_auth_level(UserRights::EDIT_SITE_THEME)}
   def modify_catalog_config
     config = get_configuration('catalog')
     if config.nil?
-      opts = { 'name' => 'Catalog Configuration', 'default' => true,
-        'type' => 'catalog', 'domainCName' => CurrentDomain.cname }
-      config = ::Configuration.create(opts)
+      config = ::Configuration.create(
+        'name' => 'Catalog Configuration',
+        'default' => true,
+        'type' => 'catalog',
+        'domainCName' => CurrentDomain.cname
+      )
     end
 
     params[:catalog].each do |k, v|
@@ -1069,32 +1059,31 @@ class AdministrationController < ApplicationController
     end
   end
 
-  before_filter :only => [:tos] {|c| c.check_auth_level(UserRights::MANAGE_USERS)}
   def tos
     @tos = CurrentDomain.strings.terms_of_service
     return render_404 if @tos.blank?
 
     if request.post?
       if params[:terms_accepted].present?
-        actions = ::Configuration.get_or_create('actions', {:name => 'Actions'})
-        update_or_create_property(actions, 'tos_accepted', {
+        actions = ::Configuration.get_or_create('actions', :name => 'Actions')
+        update_or_create_property(actions, 'tos_accepted',
           :user => current_user,
           :text => @tos,
           :timestamp => Time.now
-        })
-        flash[:notice] = "Thank you for accepting the terms of service"
-        return(redirect_to :action => :index)
+        )
+        flash[:notice] = t('screens.admin.tos.accepted')
+        redirect_to :action => :index
       else
-        flash.now[:error] = "You must agree to the provided terms to continue."
+        flash.now[:error] = t('screens.admin.tos.must_agree')
       end
     end
   end
 
   # General accessors for admins
 
-  skip_before_filter :require_user, :only => [:configuration]
   def configuration
     # Proxy configurations, with access checks
+    # TODO Unwind this mixed &&, || without parentheses hairball
     return false unless params[:type] == 'metadata' &&
       check_auth_levels_any([UserRights::EDIT_SITE_THEME, UserRights::EDIT_PAGES]) ||
       params[:type] == 'catalog' || params[:type] == 'view_categories'
@@ -1105,12 +1094,15 @@ class AdministrationController < ApplicationController
     end
   end
 
-  skip_before_filter :require_user, :only => [:flag_out_of_date]
   def flag_out_of_date
-    if authenticate_with_http_basic do |u, p|
-        user_session = UserSession.new('login' => u, 'password' => p)
-        user_session.save && check_auth_levels_any([UserRights::EDIT_SITE_THEME, UserRights::EDIT_PAGES, UserRights::CREATE_PAGES])
-    end
+    if authenticate_with_http_basic do |login, password|
+        user_session = UserSession.new('login' => login, 'password' => password)
+        user_session.save && check_auth_levels_any([
+          UserRights::EDIT_SITE_THEME,
+          UserRights::EDIT_PAGES,
+          UserRights::CREATE_PAGES
+        ])
+      end
       CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
       respond_to do |format|
         format.html { render :text => 'Done' }
@@ -1133,7 +1125,6 @@ class AdministrationController < ApplicationController
 
   before_filter :check_admin_or_superadmin, :only => [:goals]
   def goals
-
     render :layout => 'plain'
   end
 
@@ -1150,32 +1141,41 @@ class AdministrationController < ApplicationController
   # and public functions in order to be used in a before_filter; The other
   # checks are easier to define as class methods and can remain private.
   #
-public
+
+  public
 
   def check_auth_level(level)
-    return run_access_check{CurrentDomain.user_can?(current_user, level)}
+    run_access_check{CurrentDomain.user_can?(current_user, level)}
   end
+
   def check_auth_levels_any(levels)
-    return run_access_check{levels.any?{|l| CurrentDomain.user_can?(current_user, l)}}
+    run_access_check{levels.any?{|l| CurrentDomain.user_can?(current_user, l)}}
   end
+
   def check_auth_levels_all(levels)
-    return run_access_check{levels.all?{|l| CurrentDomain.user_can?(current_user, l)}}
+    run_access_check{levels.all?{|l| CurrentDomain.user_can?(current_user, l)}}
   end
+
   def check_member
-    return run_access_check{CurrentDomain.member?(current_user)}
+    run_access_check{CurrentDomain.member?(current_user)}
   end
+
   def check_module(mod)
-    return run_access_check{CurrentDomain.module_enabled?(mod)}
+    run_access_check{CurrentDomain.module_enabled?(mod)}
   end
+
   def check_module_available(mod)
-    return run_access_check{CurrentDomain.module_available?(mod)}
+    run_access_check{CurrentDomain.module_available?(mod)}
   end
+
   def check_feature(feature)
-    return run_access_check{CurrentDomain.feature?(feature)}
+    run_access_check{CurrentDomain.feature?(feature)}
   end
+
   def check_approval_rights
-    return run_access_check{current_user.can_approve?}
+    run_access_check{current_user.can_approve?}
   end
+
   def check_feature_flag(feature_flag)
     run_access_check { feature_flag?(feature_flag, request) }
   end
@@ -1183,14 +1183,14 @@ public
     run_access_check{current_user.is_administrator? || current_user.is_superadmin?}
   end
 
-private
+  private
 
   def run_access_check(&block)
     if yield
-      return true
+      true
     else
       render_forbidden
-      return false
+      false
     end
   end
 
@@ -1202,7 +1202,7 @@ private
 
     customization = story.customization || {}
     [:backgroundColor, :link].each do |key|
-      unless story_params[key].nil?
+      if story_params[key].present?
         customization[key.to_s] = story_params[key]
         story_params.delete(key)
       end
@@ -1223,20 +1223,20 @@ private
   def create_config_copy(name, type, parentId = nil)
     original_config = get_configuration(type, true).raw_properties
 
-    opts = { 'name' => name, 'default' => true, 'type' => type,
-      'domainCName' => CurrentDomain.cname }
-
-    unless parentId.nil?
-      opts['parentId'] = parentId
-    end
-
-    config = ::Configuration.create(opts)
+    config = ::Configuration.create({
+      'name' => name,
+      'default' => true,
+      'type' => type,
+      'domainCName' => CurrentDomain.cname,
+      'parentId' => parentId # May be nil
+    }.compact)
 
     # Copy over the original, merged values
     CoreServer::Base.connection.batch_request do |batch_id|
-      original_config.each {|k,v| config.create_property(k, v, batch_id) }
+      original_config.each { |k, v| config.create_property(k, v, batch_id) }
     end
-    return config
+
+    config
   end
 
   def update_or_create_property(configuration, name, value)
@@ -1245,11 +1245,11 @@ private
 
   def clear_homepage_cache
     # clear the homepage cache since assumedly something about them updated
-    cache_key = app_helper.cache_key('canvas-homepage', { 'domain' => CurrentDomain.cname })
+    cache_key = app_helper.cache_key('canvas-homepage', 'domain' => CurrentDomain.cname)
     clear_success = expire_fragment(cache_key)
   end
 
-  def get_configuration(type='site_theme', merge=false)
+  def get_configuration(type = 'site_theme', merge = false)
     ::Configuration.find_by_type(type, true, CurrentDomain.cname, merge).first
   end
 
@@ -1267,7 +1267,7 @@ private
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
     if json
-      render json: {message: successMessage, success: true}
+      render json: { message: successMessage, success: true }
     else
       flash[:notice] = successMessage
       redirect_to :action => 'metadata'
@@ -1282,13 +1282,13 @@ private
         else
           flash[:notice] = success_message.html_safe
         end
-        redirect_to({ :action => redirect_action }.merge(request.query_parameters))
+        redirect_to request.query_parameters.reverse_merge(:action => redirect_action)
       end
       format.any(:js, :json, :data) do
         if success
-          render :json => {:success => true, :message => success_message}.to_json
+          render :json => { :success => true, :message => success_message }
         else
-          render :json => {:error => true, :message => error_message}.to_json
+          render :json => { :error => true, :message => error_message }
         end
       end
     end
@@ -1309,10 +1309,4 @@ private
     :defaults => { },
     :limit => 10
   }
-end
-
-class AppHelper
-  include Singleton
-  include ApplicationHelper
-  include ActionView::Helpers::TextHelper
 end

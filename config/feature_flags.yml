@@ -28,8 +28,8 @@ cetera_profile_search:
   description: Use the shiny new Cetera backend search service to power the profile page.
   defaultValue: false
 cetera_search:
-  description: Use the shiny new Cetera backend search service. NOTE — this flag's value is being forcibly set to false in the spatial lens admin layer picker; do not remove this flag until this aspect of dataset search has been accounted for in Cetera.
-  defaultValue: false
+  description: Use the shiny new Cetera backend search service AND the new catalog (aka browse2). NOTE — this flag's value is being forcibly set to false in the spatial lens admin layer picker; do not remove this flag until this aspect of dataset search has been accounted for in Cetera.
+  defaultValue: true
 create_v2_data_lens:
   description: Newly created data lenses are stored as v2 metadata in metadb.
   defaultValue: true

@@ -18,7 +18,7 @@ class DatasetMetadataControllerTest < ActionController::TestCase
       :phidippides => @phidippides,
       :data_lens_manager => @data_lens_manager
     )
-    stub_feature_flags_with(:create_v2_data_lens, false)
+    stub_feature_flags_with(:create_v2_data_lens => false)
     stub_site_chrome
   end
 

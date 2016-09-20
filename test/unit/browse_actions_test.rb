@@ -18,38 +18,39 @@ class BrowseActionsTest < Minitest::Test
     @browse_actions_container = BrowseActionsContainer.new
     init_current_domain
     CurrentDomain.stubs(property: nil)
+    @browse_actions_container.stubs(:current_user => nil)
   end
 
   def test_does_not_add_pulse_if_feature_flag_false
-    stub_feature_flags_with(:enable_pulse, false)
+    stub_feature_flags_with(:enable_pulse => false)
     view_types_list = @browse_actions_container.send(:view_types_facet)
     refute(view_types_list[:options].any? { |link_item| link_item[:value] == 'pulse'},
         'enable pulse feature flag is false, but we have a pulse link in the catalog')
   end
 
   def test_does_add_pulse_if_feature_flag_true
-    stub_feature_flags_with(:enable_pulse, true)
+    stub_feature_flags_with(:enable_pulse => true)
     view_types_list = @browse_actions_container.send(:view_types_facet)
     assert(view_types_list[:options].any? { |link_item| link_item[:value] == 'pulse'},
       'enable pulse feature flag is true, but we do not have a pulse link in the catalog')
   end
 
   def test_does_not_add_drafts_by_default_if_feature_flag_false
-    stub_feature_flags_with(:ingress_reenter, false)
+    stub_feature_flags_with(:ingress_reenter => false)
     view_types_list = @browse_actions_container.send(:view_types_facet)
     refute(view_types_list[:options].any? { |link_item| link_item[:value] == 'draft'},
            'The draft dataset is showing up by default on the public catalog')
   end
 
   def test_does_not_add_stories_if_feature_flag_false
-    stub_feature_flags_with(:stories_show_facet_in_catalog, false)
+    stub_feature_flags_with(:stories_show_facet_in_catalog => false)
     view_types_list = @browse_actions_container.send(:view_types_facet)
     refute(view_types_list[:options].any? { |link_item| link_item[:value] == 'story'},
         'enable stories feature flag is false, but we have a stories link in the catalog')
   end
 
   def test_does_add_stories_if_feature_flag_true
-    stub_feature_flags_with(:stories_show_facet_in_catalog, true)
+    stub_feature_flags_with(:stories_show_facet_in_catalog => true)
     view_types_list = @browse_actions_container.send(:view_types_facet)
     assert(view_types_list[:options].any? { |link_item| link_item[:value] == 'story'},
       'enable stories feature flag is true, but we do not have a stories link in the catalog')
@@ -62,7 +63,7 @@ class BrowseActionsTest < Minitest::Test
   end
 
   def test_does_not_add_api_if_using_cetera_search
-    stub_feature_flags_with(:cetera_search, true)
+    stub_feature_flags_with(:cetera_search => true)
     view_types_list = @browse_actions_container.send(:view_types_facet)
     refute(view_types_list[:options].any? { |link_item| link_item[:value] == 'api'},
       'cetera search feature flag is true, but we have an api link in the catalog')
@@ -113,7 +114,7 @@ class BrowseActionsTest2 < Minitest::Test
   def setup
     @browse_actions_container = BrowseActionsContainer.new
     init_current_domain
-    stub_feature_flags_with(:cetera_search, true)
+    stub_feature_flags_with(:cetera_search => true)
     APP_CONFIG.stubs(cetera_host: 'http://api.us.socrata.com/api')
   end
 
@@ -129,11 +130,6 @@ class BrowseActionsTest2 < Minitest::Test
   def test_use_cetera_if_user_is_logged_in
     User.stubs(current_user: true)
     assert @browse_actions_container.send(:using_cetera?)
-  end
-
-  def test_do_not_use_cetera_if_feature_flag_not_enabled
-    stub_feature_flags_with(:cetera_search, nil)
-    assert !@browse_actions_container.send(:using_cetera?)
   end
 
   def test_do_not_use_cetera_if_cetera_host_not_present
@@ -163,7 +159,7 @@ class BrowseActionsTest2 < Minitest::Test
 
   # This is an emergency fix and appropriately heinous
   def test_browse_options_for_metadata_facets
-    stub_feature_flags_with(:cetera_search, nil)
+    stub_feature_flags_with(:cetera_search => false)
 
     # Unsound mess, verify the symbolize_keys move
     custom_facets = [
@@ -183,6 +179,7 @@ class BrowseActionsTest2 < Minitest::Test
     @browse_actions_container.stubs(custom_facets: custom_facets)
     @browse_actions_container.stubs(categories_facet: nil)
     @browse_actions_container.stubs(topics_facet: nil)
+    @browse_actions_container.stubs(:using_cetera? => false)
     Federation.stubs(federations: [])
 
     CurrentDomain.stubs(configuration: nil)
@@ -191,12 +188,9 @@ class BrowseActionsTest2 < Minitest::Test
 
     Clytemnestra.stubs(search_views: [])
 
-    field = :"Dataset-Information_Superhero"
+    field = 'Dataset-Information_Superhero'.to_sym
     value = 'Superman'
-
-    request = OpenStruct.new
-    request.params = { field => value }
-
+    request = OpenStruct.new(:params => { field => value })
     expected = [[field, value].join(':')]
 
     assert_equal expected, @browse_actions_container.send(:process_browse, request)[:metadata_tag]
@@ -240,7 +234,7 @@ class BrowseActionsTest3 < Minitest::Test
     }
 
     init_current_domain
-    stub_feature_flags_with(:cetera_search, true)
+    stub_feature_flags_with(:cetera_search => true)
     APP_CONFIG.stubs(cetera_host: 'http://api.us.socrata.com/api')
     CurrentDomain.stubs(configuration: nil)
     CurrentDomain.stubs(default_locale: 'en')
@@ -295,7 +289,7 @@ class BrowseActionsTest3 < Minitest::Test
   end
 
   def test_process_browse_unpublished_includes_drafts_if_feature_flag_enabled
-    stub_feature_flags_with(:ingress_reenter, true)
+    stub_feature_flags_with(:ingress_reenter => true)
     request = OpenStruct.new
     request.params = { category: 'Test Category 4' }
     options = {limitTo: 'unpublished'}
@@ -304,7 +298,7 @@ class BrowseActionsTest3 < Minitest::Test
   end
 
   def test_process_browse_unpublished_excludes_drafts_if_feature_flag_false
-    stub_feature_flags_with(:ingress_reenter, false)
+    stub_feature_flags_with(:ingress_reenter => false)
     request = OpenStruct.new
     request.params = { category: 'Test Category 4' }
     options = {limitTo: 'unpublished'}
@@ -313,7 +307,7 @@ class BrowseActionsTest3 < Minitest::Test
   end
 
   def test_no_effect_if_cetera_is_not_enabled_and_category_is_present
-    stub_feature_flags_with(:cetera_search, false)
+    stub_feature_flags_with(:cetera_search => false)
     cly_unaffected_category = 'Test Category 4'
 
     expected_category = 'Test Category 4'
@@ -323,7 +317,7 @@ class BrowseActionsTest3 < Minitest::Test
   end
 
   def test_no_effect_if_cetera_is_not_enabled_and_category_is_absent
-    stub_feature_flags_with(:cetera_search, false)
+    stub_feature_flags_with(:cetera_search => false)
 
     stub_core_for_category(nil)
 
@@ -477,7 +471,7 @@ class BrowseActionsTest4 < Minitest::Test
   end
 
   def test_cetera_topics_facet_without_param
-    stub_feature_flags_with(:cetera_search, true)
+    stub_feature_flags_with(:cetera_search => true)
     @browse_actions_container.unstub(:topics_facet)
     facets = @browse_actions_container.send(:topics_facet).with_indifferent_access
     expected_facets = JSON.parse('{"type":"topic","title":"Topics","singular_description":"topic","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
@@ -487,7 +481,7 @@ class BrowseActionsTest4 < Minitest::Test
   end
 
   def test_cetera_topics_facet_with_matching_param
-    stub_feature_flags_with(:cetera_search, true)
+    stub_feature_flags_with(:cetera_search => true)
     @browse_actions_container.unstub(:topics_facet)
     facets = @browse_actions_container.send(:topics_facet, :tags => 'neato').with_indifferent_access
     expected_facets = JSON.parse('{"type":"topic","title":"Topics","singular_description":"topic","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
@@ -497,7 +491,7 @@ class BrowseActionsTest4 < Minitest::Test
   end
 
   def test_cetera_topics_facet_with_non_matching_param
-    stub_feature_flags_with(:cetera_search, true)
+    stub_feature_flags_with(:cetera_search => true)
     @browse_actions_container.unstub(:topics_facet)
     facets = @browse_actions_container.send(:topics_facet, :tags => 'unknown').with_indifferent_access
     expected_facets = JSON.parse('{"type":"topic","title":"Topics","singular_description":"topic","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
@@ -507,9 +501,8 @@ class BrowseActionsTest4 < Minitest::Test
     assert_equal(expected_facets, facets)
   end
 
-  def test_categories_come_first_in_browse2
-    request = OpenStruct.new(params: { view_type: 'browse2' }.with_indifferent_access)
-    request.params = { view_type: 'browse2' }
+  def test_categories_come_first_in_new_catalog
+    request = OpenStruct.new(params: { cetera_search: 'true' }.with_indifferent_access)
     browse_options = @browse_actions_container.send(:process_browse, request)
     facet_titles = browse_options[:facets].map { |f| f[:title] }
     expected_titles = [
@@ -530,9 +523,10 @@ class BrowseActionsTest4 < Minitest::Test
 
   def test_categories_come_third_in_old_view_types
     # By third we mean [view_types, custom_facets, categories]
+    stub_feature_flags_with(:cetera_search => false)
     request = OpenStruct.new(params: {}.with_indifferent_access)
     browse_options = @browse_actions_container.send(:process_browse, request)
-    facet_titles = browse_options[:facets].map { |f| f[:title] }
+    facet_titles = browse_options[:facets].pluck(:title)
     expected_titles = [
       'View Types',
       'Custom Superheroes',

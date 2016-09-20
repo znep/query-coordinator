@@ -70,18 +70,11 @@ module TestHelperMethods
     CurrentDomain.domain.stubs(features: Hashie::Mash.new.tap { |h| h.send(:"#{module_name}=", true) })
   end
 
-  def stub_feature_flags_with(key, value)
-    stub_multiple_feature_flags_with(key => value)
-  end
-
-  def stub_multiple_feature_flags_with(options)
-    if @feature_flags != CurrentDomain.feature_flags
-      @feature_flags = Hashie::Mash.new
-      CurrentDomain.stubs(feature_flags: @feature_flags)
-    end
-    options.each do |key, value|
-      @feature_flags[key] = value
-    end
+  def stub_feature_flags_with(options)
+    @feature_flags ||= Hashie::Mash.new(options)
+    @feature_flags.merge!(options)
+    CurrentDomain.stubs(:feature_flags => @feature_flags)
+    FeatureFlags.stubs(:derive => @feature_flags)
   end
 
   def request_headers

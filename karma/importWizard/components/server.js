@@ -290,7 +290,9 @@ describe('locationColumn transforms', () => {
   it('correctly generates for a single column', () => {
     const resultColumn = {
       columnSource: {
-        components: {
+        components: [],
+        sourceColumn: null,
+        locationComponents: {
           ...LocationColumn.emptyLocationSource(),
           isMultiple: false,
           singleSource: { index: 1 }
@@ -306,7 +308,9 @@ describe('locationColumn transforms', () => {
     // Test for a selector that has not selected a column yet.
     const resultColumn = {
       columnSource: {
-        components: {
+        components: [],
+        sourceColumn: null,
+        locationComponents: {
           ...LocationColumn.emptyLocationSource(),
           state: {
             isColumn: true,
@@ -327,7 +331,9 @@ describe('locationColumn transforms', () => {
     const resultColumn = {
       columnSource: {
         type: 'LocationColumn',
-        components: {
+        components: [],
+        sourceColumn: null,
+        locationComponents: {
           ...LocationColumn.emptyLocationSource(),
           street: { index: 1 },
           city: {

@@ -655,7 +655,7 @@ function getHumanAddress(components: LocationColumns.LocationSource) {
 }
 
 export function getLocationColumnSource(resultColumn) {
-  const components = resultColumn.columnSource.components;
+  const components = resultColumn.columnSource.locationComponents;
   if (components.isMultiple) {
     const lat = sourceColumnExpr(components.latitude);
     const lon = sourceColumnExpr(components.longitude);

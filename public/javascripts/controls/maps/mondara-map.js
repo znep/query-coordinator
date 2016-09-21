@@ -9,11 +9,12 @@
     },
 
     selectClick: function(evt) {
-      var proj = 'EPSG:4326';
-      var toProjection = new OpenLayers.Projection(proj);
       var esp9xxLonLat = this._layer._map.baseLayer.
-      getLonLatFromViewPortPx(this._layer._map.events.getMousePosition(evt));
-      var coord = esp9xxLonLat.transform(this._layer._map.getProjectionObject(), toProjection);
+        getLonLatFromViewPortPx(this._layer._map.events.getMousePosition(evt));
+      var coord = esp9xxLonLat.transform(
+        this._layer._map.getProjectionObject(),
+        blist.openLayers.geographicProjection
+      );
       this.request(coord);
     },
 

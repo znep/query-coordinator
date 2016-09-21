@@ -153,6 +153,9 @@ internal_panel_redesign:
 kill_esri_reprojection_and_pass_different_webm:
   description: 'Special magic for Iowa, whose ArcGIS server appears to hate EPSG:900913 and projected maps'
   defaultValue: false
+kill_snowflake_map_projections:
+  description: Use the modern web mercator projection code instead of three different, deprecated projection codes.
+  defaultValue: false
 nbe_bucket_size:
   description: Bucket-ize the fetching of rows when hitting NBE. Defaults to 1000 unless explicitly set to another value. This is also the page size on Old UX grid view.
   defaultValue: true

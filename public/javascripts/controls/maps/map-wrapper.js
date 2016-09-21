@@ -56,6 +56,11 @@
         numZoomLevels: 21
       }
 
+      // TODO: Move this into the above mapOptions once we're confident with these changes
+      if (blist.feature_flags.kill_snowflake_map_projections) {
+        mapOptions.projection = 'EPSG:3857';
+      }
+
       if (mapObj._displayFormat.disableNavigation) {
         mapOptions.disableNavigation = true;
       }
@@ -685,6 +690,13 @@
               20037508.34, 19971868.8804086),
             transitionEffect: 'resize'
           });
+
+          // TODO: Remove this property from the above options once we're confident with
+          // these projection changes
+          if (blist.feature_flags.kill_snowflake_map_projections) {
+            delete options.projection;
+          }
+
           layer = new OpenLayers.Layer.ArcGISCache(name || config.key, url, options);
           break;
       }

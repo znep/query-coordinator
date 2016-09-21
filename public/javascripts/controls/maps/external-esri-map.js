@@ -19,8 +19,9 @@
         delete params[property];
       });
       this.layerId = params.layers.split(':')[1];
+
+      // Hopefully, this can be taken out one day.
       if (url.match(/nycopendata.esri.com/)) {
-        // Hopefully, this can be taken out one day.
         this.projection = this.internalMapProjection;
       }
 
@@ -159,7 +160,12 @@
 
     getURL: function(bounds) {
       bounds = this.adjustBounds(bounds);
-      if (blist.feature_flags.kill_esri_reprojection_and_pass_different_webm !== true) {
+
+      // TODO: Remove this transformation and kill_esri_reprojection_and_pass_different_webm
+      // feature flag when we remove kill_snowflake_map_projections
+      var allowEsriReprojection = blist.feature_flags.kill_esri_reprojection_and_pass_different_webm !== true &&
+        blist.feature_flags.kill_snowflake_map_projections !== true;
+      if (allowEsriReprojection) {
         bounds = bounds.transform(this.projection, this.externalMapProjection);
       }
 
@@ -173,12 +179,18 @@
         'F': 'image'
       };
 
-      if (blist.feature_flags.include_sr_in_esri) {
+      // TODO: Add BBOXSR and IMAGESR to the newParams above and remove include_sr_in_esri
+      // feature flag when we remove kill_snowflake_map_projections.
+      var includeSpatialReference = blist.feature_flags.include_sr_in_esri ||
+        blist.feature_flags.kill_snowflake_map_projections;
+      if (includeSpatialReference) {
         $.extend(newParams, {
           'BBOXSR': srid,
           'IMAGESR': srid
         });
       }
+
+      // TODO: Remove this when we remove kill_snowflake_map_projections
       if (blist.feature_flags.kill_esri_reprojection_and_pass_different_webm === true) {
         $.extend(newParams, {
           'BBOXSR': 3857,

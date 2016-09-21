@@ -4,6 +4,15 @@
   Proj4js.defs['EPSG:102100'] = '+proj=merc +lon_0=0 +x_0=0 +y_0=0 +a=6378137 +b=6378137  +units=m +nadgrids=@null';
   Proj4js.defs['EPSG:102698'] = '+proj=tmerc +lat_0=36.16666666666666 +lon_0=-94.5 +k=0.9999411764705882 +x_0=850000 +y_0=0 +ellps=GRS80 +datum=NAD83 +to_meter=0.3048006096012192 +no_defs'; // For KCMO.
 
+  // We are doing this mapping because the version of Proj4js we're using looks like it
+  // was created in the time gap between EPSG granting Google 3785 and Google requesting
+  // they change it to 3857, which is now the standard web mercator projection. Adding
+  // this mapping avoids having to make an http request for every map we render.
+  //
+  // TODO: If we ever upgrade Proj4js, we can probably get rid of this, since
+  // then (presumably) we'll have all the modern projections already defined.
+  Proj4js.defs['EPSG:3857'] = Proj4js.defs['EPSG:3785'];
+
   blist.openLayers.geographicProjection = new OpenLayers.Projection('EPSG:4326');
   blist.openLayers.backgroundLayerTypes = [
     OpenLayers.Layer.Bing, OpenLayers.Layer.ArcGISCache, OpenLayers.Layer.Google,
@@ -252,7 +261,7 @@
 
       viewport = viewport || bounds;
       if (viewport) {
-        this.map.zoomToExtent(viewport.transform(new OpenLayers.Projection('EPSG:4326'),
+        this.map.zoomToExtent(viewport.transform(blist.openLayers.geographicProjection,
           this.map.getProjectionObject()));
       } else {
         this.map.zoomTo(17);

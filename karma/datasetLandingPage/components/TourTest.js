@@ -7,16 +7,20 @@ describe('components/Tour', function() {
     utils.getCookie.restore();
   });
 
-  function renderTour(enabled, cookieSet) {
+  function renderTour(enabled, cookieSet, props) {
     window.serverConfig = _.cloneDeep(mockServerConfig);
 
     window.serverConfig.featureFlags.enableDatasetLandingPageTour = enabled;
     sinon.stub(utils, 'getCookie').returns(cookieSet);
 
-    var element = renderPureComponent(Tour({
+    var element = renderPureComponent(Tour(_.defaultsDeep(props, {
       onClickDone: _.noop,
-      onCloseTour: _.noop
-    }));
+      onCloseTour: _.noop,
+      view: {
+        isBlobby: false,
+        isHref: false
+      }
+    })));
 
     return element.querySelector('[data-tour-step]');
   }
@@ -38,6 +42,20 @@ describe('components/Tour', function() {
 
     it('should not display a tour if the feature flag is enabled', function() {
       expect(renderTour(true, true)).to.not.exist;
+    });
+  });
+
+  describe('when the dataset is a blob', function() {
+    it('should not display a tour if the feature flag is enabled and the cookie is not set', function() {
+      var props = { view: { isBlobby: true } };
+      expect(renderTour(true, false, props)).to.not.exist;
+    });
+  });
+
+  describe('when the dataset is an href', function() {
+    it('should not display a tour if the feature flag is enabled and the cookie is not set', function() {
+      var props = { view: { isHref: true } };
+      expect(renderTour(true, false, props)).to.not.exist;
     });
   });
 });

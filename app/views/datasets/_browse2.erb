@@ -329,7 +329,7 @@
 
             # Certain values must be derived differently based on whether this
             # is a result from Cetera or Clytemnestra/Core Server
-            if using_cetera?
+            if using_cetera_profile_search?
               result_link = result.link
               result_categories = (result.categories || []).map(&View.method(:category_display)).compact
               result_topics = (result.tags || []).reject(&:empty?)

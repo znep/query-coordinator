@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('tableCard', function() {
   'use strict';
 
@@ -106,9 +108,9 @@ describe('tableCard', function() {
   var reversedFixtureData;
   var reversedFixtureNullData;
   var fixtureMetadata;
-  var testJson = 'karma/dataCards/test-data/tableTest/test-rows.json';
-  var testNullJson = 'karma/dataCards/test-data/tableTest/test-null-rows.json';
-  var testMetaJson = 'karma/dataCards/test-data/tableTest/test-meta.json';
+  var testJson = require('karma/dataCards/test-data/tableTest/test-rows.json');
+  var testNullJson = require('karma/dataCards/test-data/tableTest/test-null-rows.json');
+  var testMetaJson = require('karma/dataCards/test-data/tableTest/test-meta.json');
   var blockSize = 150; // The table loads chunks of this size. The tests shouldn't really know, but they do for now.
   var columnCount;
   var rowCount = 5;
@@ -120,7 +122,6 @@ describe('tableCard', function() {
 
   beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards.templates'));
   require('app/styles/dataCards/card.scss');
   require('app/styles/dataCards/cards.scss');
   require('app/styles/dataCards/table.scss');
@@ -137,11 +138,11 @@ describe('tableCard', function() {
       $rootScope = $injector.get('$rootScope');
       outerScope = $rootScope.$new();
       $q = $injector.get('$q');
-      fixtureData = testHelpers.getTestJson(testJson);
+      fixtureData = testJson;
       reversedFixtureData = [].concat(fixtureData).reverse();
-      fixtureNullData = testHelpers.getTestJson(testNullJson);
+      fixtureNullData = testNullJson;
       reversedFixtureNullData = [].concat(fixtureData).reverse();
-      fixtureMetadata = testHelpers.getTestJson(testMetaJson);
+      fixtureMetadata = testMetaJson;
 
       var columnNames = _.map(fixtureMetadata['testColumnDetailsAsTableWantsThem'], 'fieldName');
       beatColumnIndex = columnNames.indexOf('beat');

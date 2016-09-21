@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('TableCardController', function() {
   'use strict';
 

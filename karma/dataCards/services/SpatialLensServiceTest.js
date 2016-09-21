@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('SpatialLensService', function() {
   'use strict';
 
@@ -11,14 +13,13 @@ describe('SpatialLensService', function() {
 
   beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards.templates'));
 
   beforeEach(inject(function($injector) {
     var testHelpers = $injector.get('testHelpers');
     self = this;
     testHelpers.injectDependencies(self, dependencies);
-    self.testColumns = testHelpers.getTestJson('karma/dataCards/test-data/spatialLensServiceTest/columns.json');
-    self.testCuratedRegions = testHelpers.getTestJson('karma/dataCards/test-data/spatialLensServiceTest/curated-regions.json');
+    self.testColumns = require('karma/dataCards/test-data/spatialLensServiceTest/columns.json');
+    self.testCuratedRegions = require('karma/dataCards/test-data/spatialLensServiceTest/curated-regions.json');
   }));
 
   describe('getAvailableGeoregions$', function() {

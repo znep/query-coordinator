@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('Socrata config service', function() {
   'use strict';
 

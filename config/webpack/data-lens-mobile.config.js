@@ -31,16 +31,22 @@ module.exports = _.defaultsDeep({
       {
         test: /\.png$/,
         loader: 'url-loader?limit=100000'
+      },
+      {
+        test: require.resolve('jquery'),
+        loader: 'expose?$!expose?jQuery'
       }
     ]
   },
   resolve: {
+    root: [
+      path.resolve(common.root, 'node_modules')
+    ],
     alias: {
       'socrata-utils': 'socrata-utils/dist/socrata.utils.js',
       'socrata.utils': 'socrata-utils/dist/socrata.utils.js',
-      '_': 'lodash'
+      'jQuery': path.resolve(common.root, 'node_modules/jquery/dist/jquery.js')
     }
   },
-  externals: common.packageJson.config.dataCardsWebpackExternals,
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))
 }, require('./base'));

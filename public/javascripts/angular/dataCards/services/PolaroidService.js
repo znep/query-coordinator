@@ -1,3 +1,5 @@
+var saveAs = require('file-saver').saveAs;
+
 var TRACKING_ID_PARAM = 'renderTrackingId';
 var POLL_INTERVAL = 1000;
 var TIMEOUT = 30000;
@@ -111,7 +113,7 @@ module.exports = function($q, $window, http, rx) {
           filename = _.isPresent(matches[1]) ? matches[1] : filename;
         }
 
-        $window.saveAs(response.data, filename);
+        saveAs(response.data, filename);
         deferred.resolve();
       }, function(error) {
         deferred.reject({ error: error });

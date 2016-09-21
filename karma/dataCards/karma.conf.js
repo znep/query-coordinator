@@ -4,9 +4,6 @@ var WebpackFailurePlugin = require('../helpers/WebpackFailurePlugin.js');
 var projectRootDir = path.resolve(__dirname, '../..');
 var templateDir = path.resolve(projectRootDir, 'public/angular_templates');
 
-var packageJson = require(path.resolve(projectRootDir, 'package.json'));
-var dataCardsWebpackExternals = packageJson.config.dataCardsWebpackExternals;
-
 module.exports = function ( karma ) {
   karma.set({
     basePath: '../../',
@@ -14,35 +11,13 @@ module.exports = function ( karma ) {
     singleRun: true,
 
     files: [
-
-      // Phantom polyfills
-      'public/javascripts/bower/url.js',
-      'public/javascripts/bower/requestAnimationFrame.js',
+      'node_modules/jquery/dist/jquery.js',
+      'node_modules/js-polyfills/timing.js',
+      'node_modules/js-polyfills/url.js',
       'public/javascripts/util/polyfills.js',
-
-      // Dependencies
-      // TODO move to npm, remove from webpack externals, and require them where needed.
-      'public/javascripts/bower/jquery.js',
-      'public/javascripts/bower/jquery.dotdotdot.js',
-      'public/javascripts/bower/jquery.resize.js',
-      'public/javascripts/bower/angular.min.js',
-      'public/javascripts/bower/angular-sanitize.js',
-      'public/javascripts/bower/angular-ui-router.js',
-      'public/javascripts/bower/elastic.js',
-      'public/javascripts/bower/rx.js',
-      'public/javascripts/bower/rx.async.js',
-      'public/javascripts/bower/rx.aggregates.js',
-      'public/javascripts/bower/rx.time.js',
-      'public/javascripts/bower/rx.binding.js',
-      'public/javascripts/bower/rx.angular.js',
-      'public/javascripts/bower/jjv.js',
-      'public/javascripts/bower/d3.js',
-      'public/javascripts/bower/leaflet.js',
-      'public/javascripts/bower/moment.js',
       'public/javascripts/plugins/modernizr.js',
       'public/javascripts/plugins/squire.js',
 
-      'karma/dataCards/test-data/**/*.json',
       // https://github.com/karma-runner/karma/issues/1532
       { pattern: 'public/images/dataCards/**/*.???', watched: false, included: false, served: true },
       { pattern: 'public/stylesheets/images/common/*', watched: false, included: false, served: true },
@@ -58,8 +33,7 @@ module.exports = function ( karma ) {
     },
 
     preprocessors: {
-      'karma/dataCards/index.js': ['webpack', 'sourcemap'],
-      'karma/dataCards/test-data/**/*.json': ['ng-html2js']
+      'karma/dataCards/index.js': ['webpack', 'sourcemap']
     },
 
     frameworks: ['mocha', 'chai', 'chai-as-promised', 'chai-jquery', 'sinon-chai'],
@@ -69,7 +43,9 @@ module.exports = function ( karma ) {
     webpack: {
       cache: true,
       devtool: 'inline-source-map',
-      externals: dataCardsWebpackExternals,
+      externals: {
+        jquery: 'jQuery'
+      },
       module: {
         loaders: [
           {
@@ -80,7 +56,7 @@ module.exports = function ( karma ) {
           {
             test: /\.html$/,
             loaders: [
-              'ngtemplate?relativeTo=' + templateDir,
+              'ngtemplate?requireAngular&module=dataCards&relativeTo=' + templateDir,
               'html'
             ]
           },
@@ -91,6 +67,15 @@ module.exports = function ( karma ) {
           {
             test: /\.png$/,
             loader: 'url-loader?limit=100000'
+          },
+          {
+            test: /\.json$/,
+            loader: 'json-loader'
+          },
+          {
+            test: /angular\-mocks/,
+            loader: 'imports-loader',
+            query: { angular: 'angular' }
           }
         ]
       },
@@ -100,7 +85,8 @@ module.exports = function ( karma ) {
           angular_templates: templateDir,
           'socrata-utils': 'socrata-utils/dist/socrata.utils.js',
           'socrata.utils': 'socrata-utils/dist/socrata.utils.js',
-          '_': 'lodash'
+          'lodash': path.resolve(projectRootDir, 'node_modules/lodash'),
+          'leaflet': path.resolve(projectRootDir, 'node_modules/leaflet')
         },
         root: [ path.resolve('.') ],
         modulesDirectories: [ 'node_modules' ]
@@ -112,11 +98,6 @@ module.exports = function ( karma ) {
 
     webpackMiddleware: {
       noInfo: true
-    },
-
-    ngHtml2JsPreprocessor: {
-      stripPrefix: 'public',
-      moduleName: 'dataCards.templates'
     },
 
     port: 7019,

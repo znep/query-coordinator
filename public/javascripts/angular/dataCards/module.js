@@ -1,9 +1,12 @@
+const angular = require('angular');
+require('rx-angular'); // Has side effect of registering the 'rx' angular module
+
 require('../common/values.js');
 
 var dependencies = [
-  'ui.router',
-  'monospaced.elastic',
-  'ngSanitize',
+  require('angular-ui-router'),
+  require('angular-elastic'),
+  require('angular-sanitize'),
   'rx',
   'socrataCommon.values'
 ];

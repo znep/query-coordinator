@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('I18n', function() {
   'use strict';
 

@@ -164,19 +164,9 @@ We have a couple of different ways of installing these libraries:
 
 #### Filesystem
 
-Some libraries are copied into various places on the filesystem. See `public/javascripts/plugins`
-and `public/javascripts/bower`. This is generally discouraged, as it means we add large, minified
+Some libraries are copied into various places on the filesystem, mostly in
+`public/javascripts/plugins`. This is generally discouraged, as it means we add large, minified
 files to source control and makes updates difficult.
-
-#### Bower
-
-The Angular version of Data Lens used [Bower](https://bower.io) to manage some dependencies. Bower
-provides a command line tool, `bower`, that fetches dependencies and installs them to disk. Our
-bower dependencies were installed to `bower_components`, and subsequently copied into
-`public/javascripts/bower` using another command line tool
-[bower-installer](https://github.com/blittle/bower-installer). We've since removed bower_components
-and bower.json from source control, but keep the `public/javascripts/bower` files around so they
-can be included in Data Lens. Continued use of bower is discouraged in favor of `npm`.
 
 #### npm
 

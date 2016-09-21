@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('infoPane', function() {
   'use strict';
 

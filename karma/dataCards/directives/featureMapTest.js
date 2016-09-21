@@ -1,3 +1,6 @@
+const angular = require('angular');
+const Rx = require('rx');
+
 describe('featureMap', function() {
   'use strict';
 
@@ -9,8 +12,8 @@ describe('featureMap', function() {
   var timeout;
   var featureExtent;
   var protocolBuffers;
-  var testJson = 'karma/dataCards/test-data/featureMapTest/featureMapTestData.json';
-  var protocolBufferEndpointResponses = 'karma/dataCards/test-data/featureMapTest/protocolBufferEndpointResponses.json';
+  var testJson = require('../test-data/featureMapTest/featureMapTestData.json');
+  var protocolBufferEndpointResponses = require('../test-data/featureMapTest/protocolBufferEndpointResponses.json');
   var VectorTileDataService;
   var FeatureMapService;
   var testTimeoutScheduler;
@@ -18,7 +21,6 @@ describe('featureMap', function() {
 
   beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards.templates'));
   require('app/styles/dataCards/feature-map.scss');
 
   beforeEach(function() {
@@ -46,8 +48,8 @@ describe('featureMap', function() {
     rootScope = $injector.get('$rootScope');
     scope = rootScope.$new();
     timeout = $injector.get('$timeout');
-    featureExtent = testHelpers.getTestJson(testJson);
-    protocolBuffers = deserializeBytes(testHelpers.getTestJson(protocolBufferEndpointResponses));
+    featureExtent = _.clone(testJson);
+    protocolBuffers = deserializeBytes(_.clone(protocolBufferEndpointResponses));
     VectorTileDataService = $injector.get('VectorTileDataService');
     FeatureMapService = $injector.get('FeatureMapService');
   }));

@@ -1,3 +1,6 @@
+const angular = require('angular');
+const Rx = require('rx');
+
 describe('ChoroplethController', function() {
   'use strict';
 
@@ -22,13 +25,12 @@ describe('ChoroplethController', function() {
   var SpatialLensService;
   var $window;
 
-  var testWards = 'karma/dataCards/test-data/cardVisualizationChoroplethTest/ward_geojson.json';
-  var testAggregates = 'karma/dataCards/test-data/cardVisualizationChoroplethTest/geo_values.json';
-  var testAggregatesWhere = 'karma/dataCards/test-data/cardVisualizationChoroplethTest/geo_values_where.json';
+  var testWards = require('../test-data/cardVisualizationChoroplethTest/ward_geojson.json');
+  var testAggregates = require('../test-data/cardVisualizationChoroplethTest/geo_values.json');
+  var testAggregatesWhere = require('../test-data/cardVisualizationChoroplethTest/geo_values_where.json');
 
   beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards.templates'));
 
   beforeEach(function() {
     angular.mock.module(function($provide) {
@@ -79,7 +81,7 @@ describe('ChoroplethController', function() {
       getDefaultFeatureExtent: sinon.stub(),
       getChoroplethRegions: function() {
         var deferred = q.defer();
-        var json = testHelpers.getTestJson(testWards);
+        var json = JSON.parse(JSON.stringify(testWards));
         json.features = _.map(json.features, function(feature) {
           feature.properties._feature_id = feature.properties[':feature_id'].split(' ')[1];
           return feature;
@@ -90,7 +92,7 @@ describe('ChoroplethController', function() {
       },
       getChoroplethRegionsUsingSourceColumn: function() {
         var deferred = q.defer();
-        var json = testHelpers.getTestJson(testWards);
+        var json = JSON.parse(JSON.stringify(testWards));
         json.features = _.map(json.features, function(feature) {
           feature.properties._feature_id = feature.properties[':feature_id'].split(' ')[1];
           return feature;
@@ -110,9 +112,9 @@ describe('ChoroplethController', function() {
       getData: function(fieldName, datasetId, whereClause) {
         var deferred = q.defer();
         if (whereClause) {
-          deferred.resolve(testHelpers.getTestJson(testAggregatesWhere));
+          deferred.resolve(_.clone(testAggregatesWhere));
         } else {
-          deferred.resolve(testHelpers.getTestJson(testAggregates));
+          deferred.resolve(_.clone(testAggregates));
         }
         return deferred.promise;
       }

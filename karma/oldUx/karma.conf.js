@@ -25,7 +25,7 @@ module.exports = function ( karma ) {
       // Libraries
       'public/javascripts/jquery-1.7.1.js',
       'public/javascripts/plugins/lodash.js',
-      'public/javascripts/bower/moment.js',
+      'public/javascripts/plugins/moment.min.js',
 
       /* END OF EXTERNAL DEPENDENCIES
        * OUR CODE BELOW */

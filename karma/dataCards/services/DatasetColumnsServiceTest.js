@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('DatasetColumnsService', function() {
   'use strict';
 

@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('API Explorer', function() {
   'use strict';
 

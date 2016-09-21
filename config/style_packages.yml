@@ -22,7 +22,6 @@ angular-app-dataCards:
 - dataCards/visualization-type-selector
 - dataCards/classic-visualization-previewer
 - dataCards/export-menu
-- dataCards/_leaflet
 
 data-lens:
 - data-lens/data-lens

@@ -1,4 +1,5 @@
 const templateUrl = require('angular_templates/dataCards/quickFilterBar.html');
+const moment = require('moment');
 
 module.exports = function quickFilterBar(
   $log,

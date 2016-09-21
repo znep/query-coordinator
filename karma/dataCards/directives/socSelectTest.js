@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('socSelect', function() {
   'use strict';
 

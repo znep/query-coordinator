@@ -1,3 +1,5 @@
+const d3 = require('d3');
+
 // Returns an object mapping magnitudes to buckets. Also merges the
 // bucket with magnitude zero into the bucket with magnitude one.
 function getDataByMagnitude(data) {

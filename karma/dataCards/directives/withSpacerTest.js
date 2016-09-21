@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('withSpacer directive', function() {
   'use strict';
 

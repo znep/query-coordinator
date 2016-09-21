@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('HistogramService', function() {
   'use strict';
 

@@ -729,10 +729,10 @@ module.exports = _.defaultsDeep({
       './plugins/vis/r2d3.v3.js'
     ],
     'dotdotdot': [
-      './bower/jquery.dotdotdot.js'
+      './plugins/jquery.dotdotdot.js'
     ],
     'dompurify': [
-      './bower/purify.min.js',
+      './plugins/purify.min.js',
       './util/dompurify-extensions.js'
     ],
     'excanvas': [
@@ -799,7 +799,7 @@ module.exports = _.defaultsDeep({
         loader: 'script'
       },
       {
-        test: /(plugins|bower)\//,
+        test: /plugins\//,
         loader: 'imports?define=>undefined,require=>undefined,module=>undefined,exports=>undefined,this=>window'
       }
     ],
@@ -809,8 +809,7 @@ module.exports = _.defaultsDeep({
     // files.  If a 3rd party library is erroring with something like "Could not find module X",
     // then try adding its regex to this list.
     noParse: [
-      /plugins\//,
-      /bower\//
+      /plugins\//
     ]
   },
   output: common.getOutput(identifier),

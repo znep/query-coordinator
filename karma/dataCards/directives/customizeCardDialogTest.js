@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('Customize card dialog', function() {
   'use strict';
 

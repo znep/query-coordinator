@@ -48,8 +48,6 @@
       <%= render_noscript(@migration_metadata[:obeId]) %>
     <% end %>
 
-    <%= include_webpack_bundle 'open-data/bower-all.js' %>
-    <%= angular_javascript_tag %>
     <%= include_webpack_bundle 'data-cards/main.js' %>
 
     <%= site_chrome_javascript_tag if site_chrome_enabled? %>

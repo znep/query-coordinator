@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('PageDataService', function() {
   'use strict';
 

@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('columnChart', function() {
   'use strict';
 

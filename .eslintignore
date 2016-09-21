@@ -1,6 +1,5 @@
 karma
 public/javascripts/plugins
-public/javascripts/bower
 public/javascripts/tiny_mce
 public/javascripts/mobile/app-bundle.js
 public/javascripts/jquery*

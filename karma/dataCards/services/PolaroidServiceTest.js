@@ -1,3 +1,6 @@
+const angular = require('angular');
+const Rx = require('rx');
+
 describe('Polaroid Service', function() {
   'use strict';
 
@@ -17,8 +20,9 @@ describe('Polaroid Service', function() {
     $window = $injector.get('$window');
   }));
 
+  // "Polyfill" URL.createObjectURL because our polyfill doesn't include it
   beforeEach(function() {
-    $window.saveAs = _.noop;
+    $window.URL.createObjectURL = _.constant('');
   });
 
   afterEach(function() {

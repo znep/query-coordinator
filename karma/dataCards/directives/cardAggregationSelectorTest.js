@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('cardAggregationSelector', function() {
   'use strict';
 

@@ -1,3 +1,5 @@
+const L = require('leaflet');
+
 module.exports = function FeatureMapController(
   $scope,
   $q,

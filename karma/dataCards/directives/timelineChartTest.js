@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('timelineChart', function() {
   'use strict';
 
@@ -7,14 +9,13 @@ describe('timelineChart', function() {
   var timeout;
   var TimelineChartService;
 
-  var testJson = 'karma/dataCards/test-data/timelineChartTest/timelineChartTestData.json';
+  var testJson = require('../test-data/timelineChartTest/timelineChartTestData.json');
 
   var unfilteredTestData;
   var filteredTestData;
 
   beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards.templates'));
 
   beforeEach(function() {
     angular.mock.module(function($provide, $controllerProvider) {
@@ -28,8 +29,8 @@ describe('timelineChart', function() {
     scope = rootScope.$new();
     timeout = $injector.get('$timeout');
     TimelineChartService = $injector.get('TimelineChartService');
-    unfilteredTestData = unpickleTestData(testHelpers.getTestJson(testJson), false);
-    filteredTestData = unpickleTestData(testHelpers.getTestJson(testJson), true);
+    unfilteredTestData = unpickleTestData(_.clone(testJson), false);
+    filteredTestData = unpickleTestData(_.clone(testJson), true);
   }));
 
   afterEach(function() {

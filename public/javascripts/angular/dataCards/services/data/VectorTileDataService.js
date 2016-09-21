@@ -1,3 +1,4 @@
+const angular = require('angular');
 var lowercase = angular.lowercase;
 var forEach = angular.forEach;
 var MAX_FEATURES_PER_TILE = 256 * 256;

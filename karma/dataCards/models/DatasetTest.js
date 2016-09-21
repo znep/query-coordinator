@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('Dataset model', function() {
   'uset strict';
 

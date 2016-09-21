@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('UserSessionService', function() {
   'use strict';
 

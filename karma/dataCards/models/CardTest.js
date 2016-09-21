@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('Card model', function() {
   'use strict';
 

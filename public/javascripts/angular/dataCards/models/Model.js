@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 // The Model class provides an implementation of an object having a well-defined set of observable fields,
 // primarily exposed as an RX Sequence of values. This allows our reactive UI to be fully decoupled from
 // the sources of new property values.

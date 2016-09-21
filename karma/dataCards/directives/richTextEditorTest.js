@@ -1,3 +1,6 @@
+const angular = require('angular');
+const Rx = require('rx');
+
 xdescribe('Rich text editor', function() {
   'use strict';
 

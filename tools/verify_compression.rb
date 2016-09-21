@@ -12,7 +12,7 @@ if ARGV.first == '--help'
   `tools/verify_compression.rb` - Run as a pre-commit hook to spot errors in changed files.
   `tools/verify_compression.rb SHA` - Inspect the specific commit to find errors in changed files.
   `tools/verify_compression.rb --all` - Run against all packages.
-  `tools/verify_compression.rb bower-all` - Run against a specific package.
+  `tools/verify_compression.rb dataset-show` - Run against a specific package.
   USAGE_HELP
   exit
 end

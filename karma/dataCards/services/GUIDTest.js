@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('Request ID service', function() {
   'use strict';
 

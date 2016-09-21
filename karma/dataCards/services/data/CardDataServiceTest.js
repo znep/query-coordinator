@@ -1,3 +1,6 @@
+const angular = require('angular');
+const moment = require('moment');
+
 describe('CardDataService', function() {
   'use strict';
 
@@ -37,7 +40,6 @@ describe('CardDataService', function() {
   }
 
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards.templates'));
   beforeEach(angular.mock.module('test'));
 
   function normalizeUrl(url) {
@@ -1046,7 +1048,7 @@ describe('CardDataService', function() {
     });
 
     it('should resolve for a correctly formatted extent', function(done) {
-      var TEST_RESPONSE = testHelpers.getTestJson('karma/dataCards/test-data/cardDataServiceTest/extentData.json');
+      var TEST_RESPONSE = require('karma/dataCards/test-data/cardDataServiceTest/extentData.json');
       getExpectation.respond(TEST_RESPONSE);
       featureExtentPromise.
         then(function(value) {
@@ -1087,7 +1089,7 @@ describe('CardDataService', function() {
 
   describe('getChoroplethRegionsUsingSourceColumn', function() {
     it('uses the extent to fetch regions by default', function() {
-      var TEST_RESPONSE = testHelpers.getTestJson('karma/dataCards/test-data/cardDataServiceTest/extentData.json');
+      var TEST_RESPONSE = require('karma/dataCards/test-data/cardDataServiceTest/extentData.json');
       var TEST_FIELD_NAME = 'location';
       var fake4x4 = 'four-four';
       var urlMatcher = new RegExp(
@@ -1129,7 +1131,7 @@ describe('CardDataService', function() {
     });
 
     it('should get the sample data', function(done) {
-      var TEST_RESPONSE = testHelpers.getTestJson('karma/dataCards/test-data/cardDataServiceTest/sampleData.json');
+      var TEST_RESPONSE = require('karma/dataCards/test-data/cardDataServiceTest/sampleData.json');
 
       $httpBackend.whenGET(/.*/).respond(TEST_RESPONSE);
 

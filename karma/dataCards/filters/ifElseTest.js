@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('ifElse filter', function() {
   'use strict';
 

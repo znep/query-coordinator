@@ -1,3 +1,6 @@
+const angular = require('angular');
+const d3 = require('d3');
+
 describe('HistogramVisualizationService', function() {
   'use strict';
 

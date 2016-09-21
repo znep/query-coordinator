@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 // Some of these tests already exist in frontend-visualizations and should be removed. The rest
 // should be moved to columnChartTest. None of these are really testing the functionality of the
 // data layer.

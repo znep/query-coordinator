@@ -1,3 +1,6 @@
+const angular = require('angular');
+const moment = require('moment');
+
 describe('TimelineChartController', function() {
   'use strict';
 

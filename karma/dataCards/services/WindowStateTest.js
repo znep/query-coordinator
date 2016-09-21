@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('WindowState service', function() {
   'use strict';
 

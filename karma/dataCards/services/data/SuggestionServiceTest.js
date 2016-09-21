@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('SuggestionService', function() {
   'use strict';
 
@@ -9,18 +11,15 @@ describe('SuggestionService', function() {
   var fakeFieldName = 'fieldName';
   var fakeQuery = 'NAR';
   var suggestUrl = '/views/{0}/columns/{1}/suggest\\?text={2}'.format(fake4x4, fakeFieldName, fakeQuery);
-  var testJsonPath = 'karma/dataCards/test-data/suggestionServiceTest/suggestions.json';
-  var TEST_RESPONSE;
+  var testResponse = require('karma/dataCards/test-data/suggestionServiceTest/suggestions.json');
 
   beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards.templates'));
 
   beforeEach(inject(function($injector) {
     SuggestionService = $injector.get('SuggestionService');
     testHelpers = $injector.get('testHelpers');
     $httpBackend = $injector.get('$httpBackend');
-    TEST_RESPONSE = testHelpers.getTestJson(testJsonPath);
     fakeRequestHandler = $httpBackend.whenGET(new RegExp(suggestUrl, 'i'));
     fakeRequestHandler.respond('');
   }));
@@ -53,7 +52,7 @@ describe('SuggestionService', function() {
 
     it('should return some suggestions', function(done) {
       var response = SuggestionService.suggest(fake4x4, fakeFieldName, fakeQuery);
-      fakeRequestHandler.respond(TEST_RESPONSE);
+      fakeRequestHandler.respond(testResponse);
       response.then(function(data) {
         expect(data).to.have.length(10);
         expect(_.first(data)).to.equal('six hundred and fifty-nine');

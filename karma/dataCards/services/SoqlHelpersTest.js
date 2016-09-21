@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('SoqlHelpers service', function() {
   'use strict';
 

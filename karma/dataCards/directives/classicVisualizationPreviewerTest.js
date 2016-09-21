@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('classicVisualizationPreviewer', function() {
   'use strict';
 

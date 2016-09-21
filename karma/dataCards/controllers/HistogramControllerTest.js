@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('HistogramController', function() {
   'use strict';
 

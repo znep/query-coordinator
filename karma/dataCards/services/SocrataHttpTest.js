@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('Socrata-flavored $http service', function() {
   'use strict';
 

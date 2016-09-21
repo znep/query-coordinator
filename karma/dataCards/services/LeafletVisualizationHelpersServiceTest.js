@@ -1,3 +1,6 @@
+const angular = require('angular');
+const L = require('leaflet');
+
 describe('LeafletVisualizationHelpersService', function() {
   'use strict';
 

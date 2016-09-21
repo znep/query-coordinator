@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('pageHeader', function() {
   'use strict';
 

@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('selectionLabel', function() {
   'use strict';
 

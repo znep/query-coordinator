@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('Routes service', function() {
   'use strict';
 

@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('addCardDialog', function() {
   'use strict';
 

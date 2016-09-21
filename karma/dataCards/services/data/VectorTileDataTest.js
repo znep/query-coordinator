@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('VectorTileDataService', function() {
   'use strict';
 
@@ -11,7 +13,6 @@ describe('VectorTileDataService', function() {
 
   beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards.templates'));
 
   beforeEach(function() {
     sinon.stub($, 'baseUrl', function(pathname) {

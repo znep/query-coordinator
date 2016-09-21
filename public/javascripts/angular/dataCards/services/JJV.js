@@ -1,3 +1,3 @@
-module.exports = function($window) {
-  return $window.jjv();
+module.exports = function() {
+  return require('jjv')();
 };

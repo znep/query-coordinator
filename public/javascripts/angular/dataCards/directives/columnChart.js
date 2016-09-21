@@ -1,5 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/columnChart.html');
 const ColumnChart = require('socrata-visualizations').views.ColumnChart;
+const d3 = require('d3');
 
 module.exports = function columnChart(
   $parse,

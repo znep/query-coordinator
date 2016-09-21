@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('card directive', function() {
   'use strict';
 

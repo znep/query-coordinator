@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('test DataTypeFormatService output', function() {
   'use strict';
 

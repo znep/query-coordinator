@@ -1,12 +1,13 @@
 // Miscellaneous dependencies that require global scope
-window.DOMPurify = require('dompurify');
 window._ = require('lodash');
 window.socrata = window.socrata || {};
 window.socrata.utils = require('socrata-utils');
 require('angular-mocks');
-require('script!rx-core-testing');
-require('public/javascripts/util/jquery-extensions.js');
-require('public/javascripts/util/dompurify-extensions.js');
+require('imports?Rx=rx!script!rx-core-testing');
+require('script!dotdotdot');
+require('script!javascript-detect-element-resize/jquery.resize.js');
+require('script!public/javascripts/util/jquery-extensions.js');
+require('imports?DOMPurify=dompurify!public/javascripts/util/dompurify-extensions');
 require('public/javascripts/lib/RxExtensions.js');
 
 // Initialize dataCards module

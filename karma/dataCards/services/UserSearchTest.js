@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('UserSearchService', function() {
   'use strict';
 

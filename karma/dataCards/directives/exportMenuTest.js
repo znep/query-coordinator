@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('Export Menu', function() {
   'use strict';
 

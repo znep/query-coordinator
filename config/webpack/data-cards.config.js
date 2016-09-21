@@ -24,7 +24,7 @@ module.exports = _.defaultsDeep({
         test: /\.html$/,
         exclude: /node_modules/,
         loaders: [
-          'ngtemplate?relativeTo=' + path.resolve(common.root, 'public/angular_templates'),
+          'ngtemplate?requireAngular&relativeTo=' + path.resolve(common.root, 'public/angular_templates'),
           'html?minimize=false'
         ]
       },
@@ -39,18 +39,24 @@ module.exports = _.defaultsDeep({
       {
         test: /\.png$/,
         loader: 'url-loader?limit=100000'
+      },
+      {
+        test: require.resolve('jquery'),
+        loader: 'expose?$!expose?jQuery'
       }
     ]
   },
   resolve: {
+    root: [
+      path.resolve(common.root, 'node_modules')
+    ],
     alias: {
       'angular_templates': path.resolve(common.root, 'public/angular_templates'),
       plugins: path.resolve(common.root, 'public/javascripts/plugins'),
+      'jQuery': path.resolve(common.root, 'node_modules/jquery/dist/jquery.js'),
       'socrata-utils': 'socrata-utils/dist/socrata.utils.js',
-      'socrata.utils': 'socrata-utils/dist/socrata.utils.js',
-      'lodash': path.resolve(common.root, 'node_modules/lodash')
+      'socrata.utils': 'socrata-utils/dist/socrata.utils.js'
     }
   },
-  externals: common.packageJson.config.dataCardsWebpackExternals,
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))
 }, require('./base'));

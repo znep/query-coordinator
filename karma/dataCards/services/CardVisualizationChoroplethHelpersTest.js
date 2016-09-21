@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('CardVisualizationChoroplethHelpers service', function() {
   'use strict';
 

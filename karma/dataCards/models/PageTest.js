@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('Page model', function() {
   'use strict';
 
@@ -10,12 +12,11 @@ describe('Page model', function() {
   var ServerConfig;
   var testHelpers;
 
-  var sampleVifJson = 'karma/dataCards/test-data/pageTest/sampleVif.json';
+  var sampleVifJson = require('karma/dataCards/test-data/pageTest/sampleVif.json');
   var sampleVif;
 
   beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
-  beforeEach(angular.mock.module('dataCards.templates'));
 
   beforeEach(inject(function($injector) {
     injector = $injector;
@@ -28,7 +29,7 @@ describe('Page model', function() {
     // Set the current page metadata verison to 1
     ServerConfig.override('currentPageMetadataVersion', CURRENT_PAGE_METADATA_VERSION);
 
-    sampleVif = testHelpers.getTestJson(sampleVifJson);
+    sampleVif = _.clone(sampleVifJson);
   }));
 
 

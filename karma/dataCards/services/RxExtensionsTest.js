@@ -1,3 +1,6 @@
+const angular = require('angular');
+const Rx = require('rx');
+
 describe('RX Extensions', function() {
   'use strict';
 

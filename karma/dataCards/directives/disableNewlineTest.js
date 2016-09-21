@@ -1,3 +1,5 @@
+const angular = require('angular');
+
 describe('disableNewline directive', function() {
   'use strict';
 

@@ -35,7 +35,7 @@ describe('actions/quickEditActions', () => {
     expect(returnValue).to.deep.eq({ type: Actions.types.closeModal });
   });
 
-  it('saveGoalQuickEdit update goal', done => {
+  it('saveGoalQuickEdit update goal', () => {
       server.respondWith(xhr => {
         xhr.respond(200, null, JSON.stringify({ version: 'YYYY-MM-DDTHH:MM:SS.SSS+00:00' }));
       });
@@ -68,8 +68,6 @@ describe('actions/quickEditActions', () => {
       var updateGoalAction = _.find(executedActions, { type: DataActions.types.updateById });
       expect(updateGoalAction).to.not.eq(undefined);
       expect(updateGoalAction.goalId).to.eq(goalId);
-
-      done();
-    }).catch(done.fail);
+    });
   });
 });

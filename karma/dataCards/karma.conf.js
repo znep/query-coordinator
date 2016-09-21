@@ -38,7 +38,7 @@ module.exports = function ( karma ) {
 
     frameworks: ['mocha', 'chai', 'chai-as-promised', 'chai-jquery', 'sinon-chai'],
 
-    reporters: ['dots'],
+    reporters: ['dots', 'mocha'],
 
     webpack: {
       cache: true,
@@ -98,6 +98,10 @@ module.exports = function ( karma ) {
 
     webpackMiddleware: {
       noInfo: true
+    },
+
+    mochaReporter: {
+      showDiff: true
     },
 
     port: 7019,

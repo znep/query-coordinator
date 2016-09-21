@@ -94,7 +94,7 @@ module.exports = function ( karma ) {
     /**
      * How to report, by default.
      */
-    reporters: ['dots'],
+    reporters: ['dots', 'mocha'],
 
     /**
      * On which port should the browser connect, on which port is the test runner
@@ -155,6 +155,9 @@ module.exports = function ( karma ) {
     },
     webpackMiddleware: {
       noInfo: true
-    }
+    },
+    mochaReporter: {
+      showDiff: true
+    },
   });
 };

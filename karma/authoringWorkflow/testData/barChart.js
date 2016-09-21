@@ -5,10 +5,11 @@ export default () => ({
   },
   "configuration": {
     "showDimensionLabels": true,
+    "showValueLabels": true,
     "xAxisScalingMode": "pan",
     "viewSourceDataLink": true,
     "axisLabels": {
-      "bottom": "All The Time",
+      "top": "All The Time",
       "left": "Love You"
     }
   },
@@ -39,7 +40,7 @@ export default () => ({
         }
       },
       "label": null,
-      "type": "columnChart",
+      "type": "barChart",
       "unit": {
         "one": "Fool",
         "other": "Fools"

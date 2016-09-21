@@ -73,6 +73,15 @@ export default {
           stay_or_return_later: 'You can keep this window open or return and pick the region later after processing is complete.',
           last_checked: 'Last checked:',
           never: 'Never'
+        },
+        bar_chart_limit: {
+          title: 'Limit Displayed Bars',
+          subtitle: 'Number of bars to display',
+          none: 'Show all',
+          count: 'Show'
+        },
+        show_other_category: {
+          title: 'Group remaining as "Other"'
         }
       }
     },
@@ -127,7 +136,8 @@ export default {
       title: 'Axis & Scale',
       subheaders: {
         axis_titles: 'Axis Titles',
-        x_axis_data_labels: 'Data labels',
+        axis_labels: 'Axis labels',
+        data_labels: 'Data Labels',
         chart_sorting: 'Chart Sorting',
         grouping_and_display: 'Grouping and Display'
       },
@@ -147,8 +157,11 @@ export default {
         x_axis_scaling_mode: {
           title: 'Auto-fit X-Axis'
         },
-        x_axis_data_labels: {
-          title: 'Show X-Axis Data Labels'
+        show_dimension_labels: {
+          title: 'Show Dimension Labels'
+        },
+        show_value_labels: {
+          title: 'Show Value Labels'
         },
         chart_sorting: {
           large_to_small: 'Largest to smallest by value',
@@ -205,6 +218,11 @@ export default {
     title: 'Table Preview'
   },
   visualizations: {
+    bar_chart: {
+      error_exceeded_max_bar_count: 'For optimal performance and legibility bar charts are limited to {0} bars. Use filters to render a more specific chart.',
+      error_exceeded_max_bar_count_without_pan: 'For optimal performance and legibility bar charts are limited to {0} bars. Use filters to render a more specific chart.',
+      title: 'Bar Chart'
+    },
     common: {
       view_source_data: 'View Source Data',
       panning_notice: 'Click and drag to pan the chart',
@@ -224,6 +242,7 @@ export default {
       map_locate_user_error_notice: 'Click to try again',
       map_pan_zoom_disabled_warning_title: 'Panning and zooming has been disabled',
       no_value: '(No value)',
+      other_category: '(Other)',
       unit: {
         one: 'Record',
         other: 'Records'

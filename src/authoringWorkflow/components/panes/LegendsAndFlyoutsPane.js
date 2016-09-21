@@ -10,6 +10,7 @@ import {
   getRowInspectorTitleColumnName,
   getUnitOne,
   getUnitOther,
+  isBarChart,
   isRegionMap,
   isColumnChart,
   isFeatureMap,
@@ -73,6 +74,10 @@ export var LegendsAndFlyoutsPane = React.createClass({
   },
 
   renderRegionMapControls() {
+    return this.renderUnits();
+  },
+
+  renderBarChartControls() {
     return this.renderUnits();
   },
 
@@ -140,7 +145,9 @@ export var LegendsAndFlyoutsPane = React.createClass({
     var configuration;
 
     if (hasData(metadata)) {
-      if (isRegionMap(vifAuthoring)) {
+      if (isBarChart(vifAuthoring)) {
+        configuration = this.renderBarChartControls();
+      } else if (isRegionMap(vifAuthoring)) {
         configuration = this.renderRegionMapControls();
       } else if (isColumnChart(vifAuthoring)) {
         configuration = this.renderColumnChartControls();

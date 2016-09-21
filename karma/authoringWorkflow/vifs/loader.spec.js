@@ -18,6 +18,10 @@ describe('loader', function() {
       dispatch = store.dispatch;
     });
 
+    describe('barChart', function() {
+      propagatesChangesStore('barChart');
+    });
+
     describe('columnChart', function() {
       propagatesChangesStore('columnChart');
     });

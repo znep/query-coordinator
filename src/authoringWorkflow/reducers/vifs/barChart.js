@@ -8,6 +8,7 @@ import {
   setStringValueOrDefaultValue,
   setBooleanValueOrDefaultValue,
   setStringValueOrDeleteProperty,
+  setBooleanValueOrDeleteProperty,
   setUnits,
   isNonEmptyString
 } from '../../helpers';
@@ -32,12 +33,16 @@ import {
   SET_UNIT_OTHER,
   SET_VIEW_SOURCE_DATA_LINK,
   SET_SHOW_DIMENSION_LABELS,
-  SET_X_AXIS_SCALING_MODE
+  SET_SHOW_VALUE_LABELS,
+  SET_X_AXIS_SCALING_MODE,
+  SET_LIMIT_NONE_AND_SHOW_OTHER_CATEGORY,
+  SET_LIMIT_COUNT_AND_SHOW_OTHER_CATEGORY,
+  SET_SHOW_OTHER_CATEGORY
 } from '../../actions';
 
-export default function columnChart(state, action) {
+export default function barChart(state, action) {
   if (_.isUndefined(state)) {
-    return vifs().columnChart;
+    return vifs().barChart;
   }
 
   state = _.cloneDeep(state);
@@ -131,6 +136,10 @@ export default function columnChart(state, action) {
       setBooleanValueOrDefaultValue(state, 'configuration.showDimensionLabels', action.showDimensionLabels, true);
       break;
 
+    case SET_SHOW_VALUE_LABELS:
+      setBooleanValueOrDefaultValue(state, 'configuration.showValueLabels', action.showValueLabels, true);
+      break;
+
     case SET_X_AXIS_SCALING_MODE:
       setStringValueOrDeleteProperty(state, 'configuration.xAxisScalingMode', action.xAxisScalingMode);
       break;
@@ -151,6 +160,26 @@ export default function columnChart(state, action) {
       forEachSeries(state, series => {
         _.set(series, 'dataSource.orderBy', _.cloneDeep(action.orderBy));
       });
+      break;
+
+    case SET_LIMIT_NONE_AND_SHOW_OTHER_CATEGORY:
+      setBooleanValueOrDeleteProperty(state, 'configuration.showOtherCategory', action.showOtherCategory);
+
+      forEachSeries(state, series => {
+        _.unset(series, 'dataSource.limit');
+      });
+      break;
+
+    case SET_LIMIT_COUNT_AND_SHOW_OTHER_CATEGORY:
+      setBooleanValueOrDeleteProperty(state, 'configuration.showOtherCategory', action.showOtherCategory);
+
+      forEachSeries(state, series => {
+        _.set(series, 'dataSource.limit', parseInt(action.limitCount, 10));
+      });
+      break;
+
+    case SET_SHOW_OTHER_CATEGORY:
+      setBooleanValueOrDeleteProperty(state, 'configuration.showOtherCategory', action.showOtherCategory);
       break;
   }
 

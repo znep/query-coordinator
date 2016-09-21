@@ -197,11 +197,6 @@ function SvgColumnChart($element, vif) {
     let xAxisPanningEnabled;
     let xAxisBound = false;
     let yAxisBound = false;
-    const xAxisDataLabels = _.get(
-      self.getVif(),
-      'configuration.xAxisDataLabels',
-      true
-    );
 
     /**
      * Functions defined inside the scope of renderData() are stateful enough
@@ -216,7 +211,7 @@ function SvgColumnChart($element, vif) {
 
         let xAxisFormatter;
 
-        if (xAxisDataLabels) {
+        if (self.getShowDimensionLabels()) {
           xAxisFormatter = d3XAxis;
         } else {
 
@@ -712,7 +707,7 @@ function SvgColumnChart($element, vif) {
     }
 
     // Compute height based on the presence or absence of x-axis data labels.
-    if (xAxisDataLabels) {
+    if (self.getShowDimensionLabels()) {
       height = viewportHeight - DIMENSION_LABELS_FIXED_HEIGHT;
     } else {
       // In this case we want to mirror the top margin on the bottom so
@@ -973,7 +968,7 @@ function SvgColumnChart($element, vif) {
           MARGINS.BOTTOM
         );
 
-        if (xAxisDataLabels) {
+        if (self.getShowDimensionLabels()) {
           // Note that we need to recompute height here since
           // $chartElement.height() may have changed when we showed the panning
           // notice.

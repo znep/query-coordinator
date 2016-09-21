@@ -9,6 +9,7 @@ const paths = {
   description: 'description',
   dimensionColumnName: 'series[0].dataSource.dimension.columnName',
   domain: 'series[0].dataSource.domain',
+  labelTop: 'configuration.axisLabels.top',
   labelBottom: 'configuration.axisLabels.bottom',
   labelLeft: 'configuration.axisLabels.left',
   mapCenterAndZoom: 'configuration.mapCenterAndZoom',
@@ -28,11 +29,13 @@ const paths = {
   unitOther: 'series[0].unit.other',
   viewSourceDataLink: 'configuration.viewSourceDataLink',
   visualizationType: 'series[0].type',
-  xAxisDataLabels: 'configuration.xAxisDataLabels',
+  showDimensionLabels: 'configuration.showDimensionLabels',
   zeroColor: 'configuration.legend.zeroColor',
   precision: 'series[0].dataSource.precision',
   treatNullValuesAsZero: 'configuration.treatNullValuesAsZero',
-  orderBy: 'series[0].dataSource.orderBy'
+  orderBy: 'series[0].dataSource.orderBy',
+  limit: 'series[0].dataSource.limit',
+  showOtherCategory: 'configuration.showOtherCategory'
 };
 
 const hasVifPath = (vif) => (path) => _.has(vif, path);
@@ -69,6 +72,10 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.dimensionColumnName)) {
     dispatch(actions.setDimension(get(paths.dimensionColumnName)));
+  }
+
+  if (has(paths.labelTop)) {
+    dispatch(actions.setLabelTop(get(paths.labelTop)));
   }
 
   if (has(paths.labelBottom)) {
@@ -139,8 +146,8 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setVisualizationType(get(paths.visualizationType)));
   }
 
-  if (has(paths.xAxisDataLabels)) {
-    dispatch(actions.setXAxisDataLabels(get(paths.xAxisDataLabels)));
+  if (has(paths.showDimensionLabels)) {
+    dispatch(actions.setShowDimensionLabels(get(paths.showDimensionLabels)));
   }
 
   if (has(paths.zeroColor)) {
@@ -153,6 +160,16 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.treatNullValuesAsZero)) {
     dispatch(actions.setTreatNullValuesAsZero(get(paths.treatNullValuesAsZero)));
+  }
+
+  if (has(paths.limit)) {
+    if (has(paths.showOtherCategory)) {
+      dispatch(actions.setLimitCountAndShowOtherCategory(get(paths.limit), get(paths.showOtherCategory)));
+    } else {
+      dispatch(actions.setLimitCountAndShowOtherCategory(get(paths.limit), false));
+    }
+  } else if (has(paths.showOtherCategory)) {
+    dispatch(actions.setShowOtherCategory(get(paths.showOtherCategory)));
   }
 
   if (has(paths.shapefileUid)) {

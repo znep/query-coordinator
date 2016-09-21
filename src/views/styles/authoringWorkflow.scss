@@ -293,6 +293,39 @@
         }
       }
     }
+
+    #limit-subtitle {
+      display: block;
+      margin-top: 9px;
+    }
+
+    #limit-count-container {
+      margin-top: 0.5rem;
+    }
+
+    #limit-count-value-container {
+      display: inline-block;
+      margin: 0;
+
+      &.disabled {
+        opacity: 0.25;
+      }
+    }
+
+    #limit-count-value,
+    #show-other-category-container {
+      display: inline-block;
+    }
+
+    #limit-count-value {
+      width: 64px;
+      margin-left: 9px;
+      padding: 5px;
+    }
+
+    #show-other-category-container {
+      margin-left: 27px;
+    }
   }
 
   .measure-empty-flyout {

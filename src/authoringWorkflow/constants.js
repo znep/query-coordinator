@@ -34,12 +34,12 @@ export const COLUMN_TYPES = [
   },
   {
     type: 'money',
-    preferredVisualizationTypes: ['columnChart'],
+    preferredVisualizationTypes: ['barChart', 'columnChart'],
     icon: 'icon-number'
   },
   {
     type: 'number',
-    preferredVisualizationTypes: ['columnChart', 'histogram'],
+    preferredVisualizationTypes: ['barChart', 'columnChart', 'histogram'],
     icon: 'icon-number'
   },
   {
@@ -53,12 +53,18 @@ export const COLUMN_TYPES = [
   },
   {
     type: 'text',
-    preferredVisualizationTypes: ['columnChart'],
+    preferredVisualizationTypes: ['barChart', 'columnChart'],
     icon: 'icon-text'
   }
 ];
 
 export const VISUALIZATION_TYPES = [
+  {
+    type: 'barChart',
+    title: translate('visualizations.bar_chart.title'),
+    icon: 'icon-bar-chart-horz',
+    preferredDimensionTypes: ['money', 'number', 'text']
+  },
   {
     type: 'columnChart',
     title: translate('visualizations.column_chart.title'),

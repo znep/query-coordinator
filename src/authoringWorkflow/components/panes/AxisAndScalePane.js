@@ -6,9 +6,11 @@ import { connect } from 'react-redux';
 import { translate } from '../../../I18n';
 import { INPUT_DEBOUNCE_MILLISECONDS, CHART_SORTING, TIMELINE_PRECISION } from '../../constants';
 import {
+  setLabelTop,
   setLabelBottom,
   setLabelLeft,
-  setXAxisDataLabels,
+  setShowDimensionLabels,
+  setShowValueLabels,
   setOrderBy,
   setPrecision,
   setTreatNullValuesAsZero
@@ -18,7 +20,9 @@ import {
   getOrderBy,
   getPrecision,
   getTreatNullValuesAsZero,
-  getXAxisDataLabels,
+  getShowDimensionLabels,
+  getShowValueLabels,
+  isBarChart,
   isColumnChart,
   isHistogram,
   isTimelineChart
@@ -38,6 +42,47 @@ export var AxisAndScalePane = React.createClass({
       chartSorting: _.cloneDeep(CHART_SORTING),
       timelinePrecision: _.cloneDeep(TIMELINE_PRECISION)
     };
+  },
+
+  renderBarChartVisualizationLabels() {
+    const vifAuthoring = this.props.vifAuthoring;
+    const axisLabels = getAxisLabels(vifAuthoring);
+    const topAxisLabel = _.get(axisLabels, 'top', null);
+    const leftAxisLabel = _.get(axisLabels, 'left', null);
+
+    const labelTopInputAttributes = {
+      className: 'text-input',
+      id: 'label-top',
+      type: 'text',
+      onChange: this.props.onChangeLabelTop,
+      defaultValue: topAxisLabel
+    };
+
+    const labelLeftInputAttributes = {
+      className: 'text-input',
+      id: 'label-left',
+      type: 'text',
+      onChange: this.props.onChangeLabelLeft,
+      defaultValue: leftAxisLabel
+    };
+
+    return (
+      <div className="authoring-field-group">
+        <h5>{translate('panes.axis_and_scale.subheaders.axis_titles')}</h5>
+        <div className="authoring-field">
+          <label className="block-label" htmlFor="label-top">
+            {translate('panes.axis_and_scale.fields.top_axis_title.title')}
+          </label>
+          <input {...labelTopInputAttributes} />
+        </div>
+        <div className="authoring-field">
+          <label className="block-label" htmlFor="label-left">
+            {translate('panes.axis_and_scale.fields.left_axis_title.title')}
+          </label>
+          <input {...labelLeftInputAttributes}/>
+        </div>
+      </div>
+    );
   },
 
   renderVisualizationLabels() {
@@ -81,26 +126,53 @@ export var AxisAndScalePane = React.createClass({
     );
   },
 
-  renderXAxisDataLabels() {
+  renderShowDimensionLabels() {
     const vifAuthoring = this.props.vifAuthoring;
     const inputAttributes = {
-      id: 'x-axis-data-labels',
+      id: 'show-dimension-labels',
       type: 'checkbox',
-      onChange: this.props.onChangeXAxisDataLabels,
-      defaultChecked: getXAxisDataLabels(vifAuthoring)
+      onChange: this.props.onChangeShowDimensionLabels,
+      defaultChecked: getShowDimensionLabels(vifAuthoring)
     };
 
     return (
       <div className="authoring-field-group">
-        <h5>{translate('panes.axis_and_scale.subheaders.x_axis_data_labels')}</h5>
+        <h5>{translate('panes.axis_and_scale.subheaders.axis_labels')}</h5>
         <div className="authoring-field">
           <div className="checkbox">
             <input {...inputAttributes}/>
-            <label className="inline-label" htmlFor="x-axis-data-labels">
+            <label className="inline-label" htmlFor="show-dimension-labels">
               <span className="fake-checkbox">
                 <span className="icon-checkmark3"></span>
               </span>
-              {translate('panes.axis_and_scale.fields.x_axis_data_labels.title')}
+              {translate('panes.axis_and_scale.fields.show_dimension_labels.title')}
+            </label>
+          </div>
+        </div>
+      </div>
+    );
+  },
+
+  renderShowValueLabels() {
+    const vifAuthoring = this.props.vifAuthoring;
+    const inputAttributes = {
+      id: 'show-value-labels',
+      type: 'checkbox',
+      onChange: this.props.onChangeShowValueLabels,
+      defaultChecked: getShowValueLabels(vifAuthoring)
+    };
+
+    return (
+      <div className="authoring-field-group">
+        <h5>{translate('panes.axis_and_scale.subheaders.data_labels')}</h5>
+        <div className="authoring-field">
+          <div className="checkbox">
+            <input {...inputAttributes}/>
+            <label className="inline-label" htmlFor="show-value-labels">
+              <span className="fake-checkbox">
+                <span className="icon-checkmark3"></span>
+              </span>
+              {translate('panes.axis_and_scale.fields.show_value_labels.title')}
             </label>
           </div>
         </div>
@@ -215,15 +287,31 @@ export var AxisAndScalePane = React.createClass({
     );
   },
 
-  renderColumnChartControls() {
-    const visualizationLabels = this.renderVisualizationLabels();
-    const xAxisDataLabels = this.renderXAxisDataLabels();
+  renderBarChartControls() {
+    const visualizationLabels = this.renderBarChartVisualizationLabels();
+    const showDimensionLabels = this.renderShowDimensionLabels();
+    const showValueLabels = this.renderShowValueLabels();
     const chartSorting = this.renderChartSorting();
 
     return (
       <div>
         {visualizationLabels}
-        {xAxisDataLabels}
+        {showDimensionLabels}
+        {showValueLabels}
+        {chartSorting}
+      </div>
+    );
+  },
+
+  renderColumnChartControls() {
+    const visualizationLabels = this.renderVisualizationLabels();
+    const showDimensionLabels = this.renderShowDimensionLabels();
+    const chartSorting = this.renderChartSorting();
+
+    return (
+      <div>
+        {visualizationLabels}
+        {showDimensionLabels}
         {chartSorting}
       </div>
     );
@@ -254,7 +342,9 @@ export var AxisAndScalePane = React.createClass({
 
     let configuration;
 
-    if (isColumnChart(vifAuthoring)) {
+    if (isBarChart(vifAuthoring)) {
+      configuration = this.renderBarChartControls();
+    } else if (isColumnChart(vifAuthoring)) {
       configuration = this.renderColumnChartControls();
     } else if (isHistogram(vifAuthoring)) {
       configuration = this.renderHistogramControls();
@@ -283,6 +373,12 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 
   return {
+    onChangeLabelTop: _.debounce(event => {
+      const labelTop = event.target.value;
+
+      dispatch(setLabelTop(labelTop));
+    }, INPUT_DEBOUNCE_MILLISECONDS),
+
     onChangeLabelBottom: _.debounce(event => {
       const labelBottom = event.target.value;
 
@@ -295,10 +391,16 @@ function mapDispatchToProps(dispatch) {
       dispatch(setLabelLeft(labelLeft));
     }, INPUT_DEBOUNCE_MILLISECONDS),
 
-    onChangeXAxisDataLabels: (event) => {
-      const xAxisDataLabels = event.target.checked;
+    onChangeShowDimensionLabels: (event) => {
+      const showDimensionLabels = event.target.checked;
 
-      dispatch(setXAxisDataLabels(xAxisDataLabels));
+      dispatch(setShowDimensionLabels(showDimensionLabels));
+    },
+
+    onChangeShowValueLabels: (event) => {
+      const showValueLabels = event.target.checked;
+
+      dispatch(setShowValueLabels(showValueLabels));
     },
 
     onSelectChartSorting: (chartSorting) => {

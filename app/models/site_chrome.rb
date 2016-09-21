@@ -248,10 +248,10 @@ class SiteChrome
   publication_stages.each do |stage|
     # For grepping: update_published_content, update_draft_content
     define_method "update_#{stage}_content" do |new_content_hash|
-      all_versions_content = config.dig('value') || { 'versions' => {} }
-      new_content = (send(:"#{stage}_content") || {}).deep_merge(new_content_hash)
-      all_versions_content['current_version'] = current_version
-      all_versions_content.bury('versions', current_version, stage, 'content', new_content)
+      all_versions_content = config.dig('value') || { 'versions' => {} }.tap do |content|
+        content['current_version'] = current_version
+      end
+      all_versions_content.bury('versions', current_version, stage, 'content', new_content_hash)
       create_or_update_property(SiteChrome.core_configuration_property_name, all_versions_content)
     end
   end

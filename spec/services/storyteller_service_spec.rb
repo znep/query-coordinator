@@ -39,6 +39,9 @@ RSpec.describe StorytellerService do
       let(:current_version) { nil }
 
       before do
+        allow(ENV).to receive(:[]).and_return('anything')
+        allow(ENV).to receive(:[]).with('SERVICE_CHECK_HTTP').and_return('/stub')
+
         allow_any_instance_of(Diplomat::Kv).to receive(:get).and_return(active_version)
         allow(Rails.application.config).to receive(:version).and_return(current_version)
       end

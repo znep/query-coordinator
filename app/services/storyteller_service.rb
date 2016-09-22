@@ -25,6 +25,11 @@ class StorytellerService
   def self.consul_reported_version
     active_version = nil
 
+    # We only use Consul for tracking blue/green deploys in RC and production.
+    # If we check Consul in other environments, the statements below will
+    # generate a lot of log spam.
+    return active_version unless ENV['SERVICE_CHECK_HTTP'].present?
+
     begin
       active_version = Diplomat::Kv.get(CONSUL_KEYS[:version])
       Rails.cache.write("consul:#{CONSUL_KEYS[:version]}", active_version, expires_in: 12.hours)

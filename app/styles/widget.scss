@@ -148,6 +148,7 @@ html, body {
 }
 
 .subHeaderBar {
+  clear: both;
   background-color: $color_toolbar_color;
   margin: 0 $frame_padding;
   padding: 0.2em;

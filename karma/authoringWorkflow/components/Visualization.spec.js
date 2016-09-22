@@ -54,10 +54,10 @@ describe('Visualization', function() {
     $('#socrata-row-inspector').remove();
   });
 
-  it('with an invalid vif renders an empty <div>', function() {
+  it('with an invalid vif renders the get started message <div>', function() {
     var element = renderComponent(Visualization, _.set(defaultProps(), 'vif', {}));
 
-    expect(element.querySelector('.visualization-preview')).to.be.empty;
+    expect(element.querySelector('.get-started-container')).to.exist;
     expect(element).to.have.class('visualization-preview-container');
   });
 

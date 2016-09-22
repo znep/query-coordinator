@@ -186,12 +186,12 @@ export const getShowOtherCategory = createSelector(
 
 export const getVisualizationType = createSelector(
   getCurrentVif,
-  vif =>  _.get(vif, 'series[0].type', null)
+  vif => _.get(vif, 'series[0].type', null)
 );
 
 export const hasVisualizationType = createSelector(
   getVisualizationType,
-  type => _.isString
+  type => _.isString(type)
 );
 
 export const isRegionMap = createSelector(

@@ -346,6 +346,23 @@
       width: 100%;
       height: 490px;
 
+      .get-started-container {
+        position: absolute;
+        display: block;
+        width: 50%;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+
+        .get-started-title {
+          font-size: 26px;
+        }
+
+        .get-started-description {
+          padding: 0 36px;
+        }
+      }
+
       &.visualization-preview-rendered {
         background-color: transparent;
       }

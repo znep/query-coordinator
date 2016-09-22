@@ -15,6 +15,8 @@ import { translate } from '../../I18n';
 import { requestCenterAndZoom } from '../actions';
 import {
   hasVisualizationType,
+  getDimension,
+  getMeasure,
   isInsertableVisualization,
   isTimelineChart,
   isValidTimelineChartVif,
@@ -53,17 +55,16 @@ export var Visualization = React.createClass({
   },
 
   shouldComponentUpdate(nextProps) {
-    var { vif, vifAuthoring } = this.props;
-    var { showCenteringAndZoomingSaveMessage } = nextProps.vifAuthoring.authoring;
-    var vifChanged = !_.isEqual(vif, nextProps.vif);
+    const { vif, vifAuthoring } = this.props;
+    const { showCenteringAndZoomingSaveMessage } = nextProps.vifAuthoring.authoring;
+    const vifChanged = !_.isEqual(vif, nextProps.vif);
 
     return vifChanged || vifAuthoring.authoring.showCenteringAndZoomingSaveMessage !== showCenteringAndZoomingSaveMessage;
   },
 
-
-
   onCenterAndZoomChanged(event) {
-    var centerAndZoom = _.get(event, 'originalEvent.detail');
+    const centerAndZoom = _.get(event, 'originalEvent.detail');
+
     this.props.onCenterAndZoomChanged(centerAndZoom);
   },
 
@@ -72,6 +73,7 @@ export var Visualization = React.createClass({
   },
 
   updateVisualization() {
+
     this.visualizationPreview().dispatchEvent(
       new CustomEvent(
         'SOCRATA_VISUALIZATION_RENDER_VIF',
@@ -90,9 +92,9 @@ export var Visualization = React.createClass({
   },
 
   barChart() {
-    var { vif } = this.props;
-    var $visualizationPreview = $(this.visualizationPreview());
-    var alreadyRendered = $visualizationPreview.has('.bar-chart').length === 1;
+    const { vif } = this.props;
+    const $visualizationPreview = $(this.visualizationPreview());
+    const alreadyRendered = $visualizationPreview.has('.bar-chart').length === 1;
 
     if (alreadyRendered) {
       this.updateVisualization();
@@ -105,9 +107,9 @@ export var Visualization = React.createClass({
   },
 
   columnChart() {
-    var { vif } = this.props;
-    var $visualizationPreview = $(this.visualizationPreview());
-    var alreadyRendered = $visualizationPreview.has('.column-chart').length === 1;
+    const { vif } = this.props;
+    const $visualizationPreview = $(this.visualizationPreview());
+    const alreadyRendered = $visualizationPreview.has('.column-chart').length === 1;
 
     if (alreadyRendered) {
       this.updateVisualization();
@@ -120,9 +122,9 @@ export var Visualization = React.createClass({
   },
 
   histogram() {
-    var { vif } = this.props;
-    var $visualizationPreview = $(this.visualizationPreview());
-    var alreadyRendered = $visualizationPreview.has('.histogram').length === 1;
+    const { vif } = this.props;
+    const $visualizationPreview = $(this.visualizationPreview());
+    const alreadyRendered = $visualizationPreview.has('.histogram').length === 1;
 
     if (alreadyRendered) {
       this.updateVisualization();
@@ -135,9 +137,9 @@ export var Visualization = React.createClass({
   },
 
   regionMap() {
-    var { vif } = this.props;
-    var $visualizationPreview = $(this.visualizationPreview());
-    var alreadyRendered = $visualizationPreview.has('.region-map').length === 1;
+    const { vif } = this.props;
+    const $visualizationPreview = $(this.visualizationPreview());
+    const alreadyRendered = $visualizationPreview.has('.region-map').length === 1;
 
     if (alreadyRendered) {
       this.updateVisualization();
@@ -152,9 +154,9 @@ export var Visualization = React.createClass({
   },
 
   featureMap() {
-    var { vif } = this.props;
-    var $visualizationPreview = $(this.visualizationPreview());
-    var alreadyRendered = $visualizationPreview.find('.feature-map').children().length > 0;
+    const { vif } = this.props;
+    const $visualizationPreview = $(this.visualizationPreview());
+    const alreadyRendered = $visualizationPreview.find('.feature-map').children().length > 0;
 
     if (alreadyRendered) {
       this.updateVisualization();
@@ -169,9 +171,9 @@ export var Visualization = React.createClass({
   },
 
   timelineChart() {
-    var { vif } = this.props;
-    var $visualizationPreview = $(this.visualizationPreview());
-    var alreadyRendered = $visualizationPreview.has('.timeline-chart').length === 1;
+    const { vif } = this.props;
+    const $visualizationPreview = $(this.visualizationPreview());
+    const alreadyRendered = $visualizationPreview.has('.timeline-chart').length === 1;
 
     if (alreadyRendered) {
       this.updateVisualization();
@@ -184,9 +186,17 @@ export var Visualization = React.createClass({
   },
 
   renderVisualization() {
-    var { vifAuthoring } = this.props;
+    const { vifAuthoring } = this.props;
+    const hasType = hasVisualizationType(vifAuthoring);
+    const hasDimension = !_.isNull(
+      _.get(
+        getDimension(vifAuthoring),
+        'columnName',
+        null
+      )
+    );
 
-    if (hasVisualizationType(vifAuthoring)) {
+    if (hasType && hasDimension) {
       this.setState({hasRenderedVisualization: true});
 
       if (isBarChart(vifAuthoring) && isValidBarChartVif(vifAuthoring)) {
@@ -210,8 +220,8 @@ export var Visualization = React.createClass({
   },
 
   renderMapInfo() {
-    var { vifAuthoring } = this.props;
-    var { hasPannedOrZoomed } = vifAuthoring.authoring;
+    const { vifAuthoring } = this.props;
+    const { hasPannedOrZoomed } = vifAuthoring.authoring;
 
     if (!hasPannedOrZoomed && isRenderableMap(vifAuthoring)) {
       return (
@@ -224,8 +234,8 @@ export var Visualization = React.createClass({
   },
 
   renderMapSaving() {
-    var { vifAuthoring } = this.props;
-    var { showCenteringAndZoomingSaveMessage } = vifAuthoring.authoring;
+    const { vifAuthoring } = this.props;
+    const { showCenteringAndZoomingSaveMessage } = vifAuthoring.authoring;
 
     if (showCenteringAndZoomingSaveMessage && isRenderableMap(vifAuthoring)) {
       return (
@@ -237,15 +247,44 @@ export var Visualization = React.createClass({
     }
   },
 
+  renderGetStartedMessage() {
+    const { vifAuthoring } = this.props;
+    const hasType = hasVisualizationType(vifAuthoring);
+    const hasDimension = !_.isNull(
+      _.get(
+        getDimension(vifAuthoring),
+        'columnName',
+        null
+      )
+    );
+
+    if (hasType && hasDimension) {
+      return null;
+    } else {
+
+      return (
+        <div className="get-started-container">
+          <h5 className="get-started-title">{translate('preview.get_started.title')}</h5>
+          <p className="get-started-description">{translate('preview.get_started.description')}</p>
+        </div>
+      );
+    }
+  },
+
   render() {
-    var { vifAuthoring } = this.props;
-    var previewClasses = classNames('visualization-preview', {
-      'visualization-preview-rendered': isInsertableVisualization(vifAuthoring)
-    });
+    const { vifAuthoring } = this.props;
+    const previewClasses = classNames(
+      'visualization-preview',
+      {
+        'visualization-preview-rendered': isInsertableVisualization(vifAuthoring)
+      }
+    );
 
     return (
       <div className="visualization-preview-container">
-        <div className={previewClasses} ref={(ref) => this.preview = ref}/>
+        <div className={previewClasses} ref={(ref) => this.preview = ref}>
+          {this.renderGetStartedMessage()}
+        </div>
         <div className="visualization-preview-map-info-container">
           {this.renderMapSaving()}
           {this.renderMapInfo()}
@@ -257,6 +296,7 @@ export var Visualization = React.createClass({
 
 function mapStateToProps(state) {
   return {
+    hasRenderedVisualization: state.hasRenderedVisualization,
     vifAuthoring: state.vifAuthoring,
     vif: getCurrentVif(state.vifAuthoring)
   };

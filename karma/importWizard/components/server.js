@@ -357,4 +357,33 @@ describe('locationColumn transforms', () => {
     const result = getLocationColumnSource(resultColumn);
     expect(result).to.equal('{"latitude":col2,"longitude":col3,"human_address":{"street":col2,"city":col3,"state":col4,"zip":"zip"}}');
   });
+
+  it('correctly generates human_addresses without latitude or longitude', () => {
+    const resultColumn = {
+      columnSource: {
+        type: 'LocationColumn',
+        components: [],
+        sourceColumn: null,
+        locationComponents: {
+          ...LocationColumn.emptyLocationSource(),
+          street: { index: 1 },
+          city: {
+            isColumn: true,
+            column: { index: 2 }
+          },
+          state: {
+            isColumn: true,
+            column: { index: 3 }
+          },
+          zip: {
+            isColumn: false,
+            text: 'zip'
+          }
+        }
+      }
+    };
+
+    const result = getLocationColumnSource(resultColumn);
+    expect(result).to.equal('{"human_address":{"street":col2,"city":col3,"state":col4,"zip":"zip"}}');
+  });
 });

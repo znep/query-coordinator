@@ -140,12 +140,6 @@ Test suites:
 
 Ensure that you are using Ruby version 2.3.0 or greater.
 
-Make sure you've installed karma-cli and phantomjs globally:
-
-```sh
-npm install -g karma-cli karma-phantomjs-launcher phantomjs
-```
-
 #### Karma Test Rake Tasks
 
 ```sh

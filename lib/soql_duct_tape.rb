@@ -1,9 +1,11 @@
-module SoqlFromConditions
+# Utility to parse "conditions" style dataset queries (i.e., built from filter pane and present
+# in view metadata). Used to output SOQL.
+module ConditionsQueryParser
 
-  def self.process(dataset, merged_conditions = nil)
+  def self.parse(dataset, merged_conditions = nil)
     json_query = JsonQueryFromDataset.new(dataset, merged_conditions || dataset.query)
     base_query = JsonQueryFromDataset.new(dataset.parent_view)
-    SoqlFromJsonQuery.new(json_query, base_query).to_soql
+    Query.new(json_query, base_query)
   end
 
   module Helpers
@@ -200,7 +202,7 @@ module SoqlFromConditions
     end
   end
 
-  class SoqlFromJsonQuery
+  class Query
     attr_reader :ds, :base
 
     include Helpers

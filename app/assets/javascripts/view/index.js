@@ -6,6 +6,7 @@ import '../editor/block-component-renderers/componentGoalEmbed';
 import '../editor/block-component-renderers/componentGoalTile';
 import '../editor/block-component-renderers/componentHero';
 import '../editor/block-component-renderers/componentSocrataVisualizationClassic';
+import '../editor/block-component-renderers/componentSocrataVisualizationBarChart';
 import '../editor/block-component-renderers/componentSocrataVisualizationColumnChart';
 import '../editor/block-component-renderers/componentSocrataVisualizationFeatureMap';
 import '../editor/block-component-renderers/componentSocrataVisualizationHistogram';
@@ -121,6 +122,11 @@ $(document).on('ready', function() {
         case 'socrata.visualization.choroplethMap': // legacy
           $element.
             componentSocrataVisualizationRegionMap(componentData);
+          break;
+
+        case 'socrata.visualization.barChart':
+          $element.
+            componentSocrataVisualizationBarChart(componentData);
           break;
 
         case 'socrata.visualization.columnChart':

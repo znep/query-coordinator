@@ -8,6 +8,7 @@ import './componentHero';
 import './componentHorizontalRule';
 import './componentImage';
 import './componentSocrataVisualizationClassic';
+import './componentSocrataVisualizationBarChart';
 import './componentSocrataVisualizationColumnChart';
 import './componentSocrataVisualizationFeatureMap';
 import './componentSocrataVisualizationHistogram';

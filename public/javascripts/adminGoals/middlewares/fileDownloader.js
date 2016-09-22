@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { fetchOptions } from '../constants';
+import * as SharedActions from '../sections/shared/actions';
 import downloadBlob from '../helpers/downloadBlob';
 
 /**
@@ -32,6 +33,7 @@ const getExtraActionFields = action => _.omit(action, 'genericDownload.create', 
 
 export default store => next => action => {
   const result = next(action);
+  const state = store.getState();
 
   if (checkIfCreate(action)) {
     const { fileName, fileUrl, successActionType, failureActionType } = action['genericDownload.create'];
@@ -62,6 +64,10 @@ export default store => next => action => {
           }).
           catch(reason => {// eslint-disable-line dot-notation
             store.dispatch({ type: failureActionType, reason, ...getExtraActionFields(action) });
+
+            const message = state.getIn(['translations', 'admin', 'default_error_message']);
+            store.dispatch(SharedActions.showGlobalMessage('goals', message));
+
             clear();
           });
     } else if (canceledDownloads[fileUrl]) {

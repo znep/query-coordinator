@@ -75,6 +75,7 @@
 
   .asset-selector-preview-label,
   .asset-selector-image-description-label,
+  .asset-selector-image-url-wrapper-label,
   .asset-selector-youtube-title-label,
   .asset-selector-embed-code-title-label {
     color: $asset-selector-preview-container-label;
@@ -99,11 +100,13 @@
   }
 
   .asset-selector-image-description-label,
+  .asset-selector-image-url-wrapper-label,
   .asset-selector-youtube-title-label,
   .asset-selector-embed-code-title-label {
     padding-top: 3rem;
 
     .asset-selector-image-alt-hint,
+    .asset-selector-image-url-wrapper-hint,
     .asset-selector-youtube-title-hint,
     .asset-selector-embed-code-title-hint {
       color: $asset-selector-alt-attribute-info-icon;
@@ -112,14 +115,23 @@
   }
 
   .asset-selector-image-description-container,
+  .asset-selector-image-url-wrapper-container,
   .asset-selector-youtube-title-container,
   .asset-selector-embed-code-title-container {
-    border: 1px solid $asset-selector-input-group-border-color;
-    padding: 2rem 1.5rem;
-
     .text-input {
       width: 100%;
       margin-bottom: 0;
+    }
+  }
+
+  .asset-selector-image-url-wrapper-container {
+    .icon-warning {
+      margin-right: 0.5rem;
+    }
+
+    .asset-selector-url-wrapper-validity {
+      padding: 0.65rem 0;
+      color: $warning-bar-color;
     }
   }
 
@@ -425,7 +437,7 @@
 }
 
 .modal-button-group {
-  padding: 1.5rem 0 0 0;
+  padding: 2rem 0 0 0;
 
   .btn-busy {
     vertical-align: top;
@@ -437,7 +449,6 @@
 #asset-selector-container .component-socrata-visualization-classic {
   width: 100%;
   height: 560px;
-  margin-bottom: 1rem;
 }
 
 #asset-selector-container .component-socrata-visualization-classic {

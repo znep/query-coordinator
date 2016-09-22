@@ -1,4 +1,4 @@
-source 'https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-remote/'
+source 'https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/'
 
 ruby File.read('.ruby-version').strip
 
@@ -8,6 +8,9 @@ gem 'rails', '4.2.7.1'
 
 # Use postgres as the database for Active Record
 gem 'pg'
+
+# Cetera access wrapper
+gem 'cetera-ruby', '~> 0.1.1', :require => 'cetera'
 
 gem 'jquery-rails'
 
@@ -83,6 +86,9 @@ gem 'diplomat'
 gem 'git'
 gem 'clipboard'
 gem 'jenkins_api_client'
+
+# ActiveMQ message processing
+gem 'stomp', '1.4.3'
 
 group :production do
   # Reaps unicorn worker processes under predefined conditions

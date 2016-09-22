@@ -25,6 +25,9 @@ COPY runit/work_documents_queue ${SERVICE_DIR_BASE}/storyteller-documents-queue-
 RUN mkdir ${SERVICE_DIR_BASE}/storyteller-metrics-queue-worker
 COPY runit/work_metrics_queue ${SERVICE_DIR_BASE}/storyteller-metrics-queue-worker/run
 
+RUN mkdir ${SERVICE_DIR_BASE}/storyteller-core-events-listener
+COPY runit/core_events_listener ${SERVICE_DIR_BASE}/storyteller-core-events-listener/run
+
 # Run this early since we don't expect it to change very often
 RUN npm install -g n
 RUN n lts

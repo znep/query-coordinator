@@ -7,16 +7,16 @@ import Constants from '../Constants';
 import StorytellerUtils from '../../StorytellerUtils';
 import { flyoutRenderer } from '../FlyoutRenderer';
 
-$.fn.componentSocrataVisualizationTimelineChart = componentSocrataVisualizationTimelineChart;
+$.fn.componentSocrataVisualizationBarChart = componentSocrataVisualizationBarChart;
 
-export default function componentSocrataVisualizationTimelineChart(componentData, theme, options) {
+export default function componentSocrataVisualizationBarChart(componentData, theme, options) {
   var $this = $(this);
 
   StorytellerUtils.assertHasProperty(componentData, 'type');
   StorytellerUtils.assert(
-    componentData.type === 'socrata.visualization.timelineChart',
+    componentData.type === 'socrata.visualization.barChart',
     StorytellerUtils.format(
-      'componentSocrataVisualizationTimelineChart: Tried to render type: {0}',
+      'componentSocrataVisualizationBarChart: Tried to render type: {0}',
       componentData.type
     )
   );
@@ -73,18 +73,6 @@ function _updateVisualization($element, componentData) {
   if (areNotEquivalent) {
     $element.attr('data-rendered-vif', JSON.stringify(vif));
 
-    vif.configuration.localization = {
-      'no_value': I18n.t('editor.visualizations.no_value_placeholder'),
-      'flyout_unfiltered_amount_label': I18n.t('editor.visualizations.flyout.unfiltered_amount_label'),
-      'flyout_filtered_amount_label': I18n.t('editor.visualizations.flyout.filtered_amount_label'),
-      'flyout_selected_notice': I18n.t('editor.visualizations.flyout.datum_selected_label')
-    };
-
-    vif.unit = {
-      one: 'record',
-      other: 'records'
-    };
-
     // EN-7517 - Title and description of VisualizationAddController V1 vifs are not useful.
     //
     // The new viz implementations actually read from title and description and
@@ -97,6 +85,6 @@ function _updateVisualization($element, componentData) {
 
     // Use triggerHandler since we don't want this to bubble
     $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
-    $componentContent.socrataSvgTimelineChart(vif);
+    $componentContent.socrataSvgBarChart(vif);
   }
 }

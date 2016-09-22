@@ -42,6 +42,7 @@ en:
     stories_404:
       description: 'This story does not exist or has not yet been published.'
       title: 'Not Found'
+      login_notice_html: 'Do you need to <a href="/login?return_to=%{return_to}">log in</a>?'
   login_successful: 'Login Successful'
   preview_mode:
     presentation_mode:

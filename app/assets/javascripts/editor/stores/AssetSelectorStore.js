@@ -5,7 +5,6 @@ import I18n from '../I18n';
 import Store from './Store';
 import Actions from '../Actions';
 import Constants from '../Constants';
-import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
 import { storyStore } from './StoryStore';
 import { fileUploaderStore, STATUS } from './FileUploaderStore';
@@ -39,8 +38,6 @@ export var WIZARD_STEP = {
   SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG: 'SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG',
   // You walk through the new authorship workflow.
   AUTHOR_VISUALIZATION: 'AUTHOR_VISUALIZATION',
-  // You chose some other visualization. Use Data Lens embed to configure it.
-  CONFIGURE_VISUALIZATION: 'CONFIGURE_VISUALIZATION',
   // You chose a map or chart. Please edit it to your liking.
   CONFIGURE_MAP_OR_CHART: 'CONFIGURE_MAP_OR_CHART',
   TABLE_PREVIEW: 'TABLE_PREVIEW',
@@ -99,6 +96,10 @@ export default function AssetSelectorStore() {
         _updateImageAltAttribute(payload);
         break;
 
+      case Actions.ASSET_SELECTOR_UPDATE_IMAGE_URL_WRAPPER:
+        _updateImageUrlWrapper(payload);
+        break;
+
       case Actions.ASSET_SELECTOR_UPDATE_TITLE_ATTRIBUTE:
         _updateFrameTitleAttribute(payload);
         break;
@@ -132,12 +133,7 @@ export default function AssetSelectorStore() {
           case 'INSERT_TABLE':
             _visualizeAsTable();
             break;
-          case 'CREATE_VISUALIZATION':
-            _state.isAuthoringVisualization = false;
-            _chooseCreateVisualization();
-            break;
           case 'AUTHOR_VISUALIZATION':
-            _state.isAuthoringVisualization = true;
             _chooseCreateVisualization();
             break;
         }
@@ -149,10 +145,6 @@ export default function AssetSelectorStore() {
 
       case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART:
         _chooseVisualizationMapOrChart(payload);
-        break;
-
-      case Actions.ASSET_SELECTOR_VISUALIZE_AS_CHART_OR_MAP:
-        _visualizeAsChart(payload);
         break;
 
       case Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION:
@@ -537,11 +529,9 @@ export default function AssetSelectorStore() {
       _state.selectedImageId = payload.id;
 
       if (type === 'author') {
-        _state.componentProperties.image = image;
-      } else if (type === 'hero') {
-        _state.componentProperties = _.merge(_state.componentProperties, image);
+        _state.componentProperties.image = _.merge(_state.componentProperties.image, image);
       } else {
-        _state.componentProperties = image;
+        _state.componentProperties = _.merge(_state.componentProperties, image);
       }
     } else {
       _state.selectedImageId = null;
@@ -664,11 +654,9 @@ export default function AssetSelectorStore() {
       _state.step = WIZARD_STEP.IMAGE_UPLOAD_ERROR;
       _.set(_state.componentProperties, 'reason', t(message));
     } else {
-      if (!_state.componentProperties) {
-        _state.componentProperties = {};
-      }
+      _state.componentProperties = _state.componentProperties || { urlValidity: true };
 
-      if (_state.componentProperties && _state.componentProperties.reason) {
+      if (_state.componentProperties.reason) {
         delete _state.componentProperties.reason;
       }
 
@@ -745,11 +733,7 @@ export default function AssetSelectorStore() {
     }
 
     if (type.indexOf('socrata.visualization.') === 0) {
-      if (Environment.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW) {
-        return WIZARD_STEP.AUTHOR_VISUALIZATION;
-      } else {
-        return WIZARD_STEP.CONFIGURE_VISUALIZATION;
-      }
+      return WIZARD_STEP.AUTHOR_VISUALIZATION;
     }
 
     // Something went wrong and we don't know where to pick up from (new embed type?),
@@ -789,8 +773,7 @@ export default function AssetSelectorStore() {
       componentProperties: component.value,
       originalComponentType: _.clone(component.type),
       originalComponentProperties: _.cloneDeep(component.value),
-      isEditingExisting: true,
-      isAuthoringVisualization: Environment.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW && Environment.ENABLE_SVG_VISUALIZATIONS
+      isEditingExisting: true
     };
 
     if (component.type === 'image' || component.type === 'hero' || component.type === 'author') {
@@ -800,6 +783,8 @@ export default function AssetSelectorStore() {
       if (!_.isEmpty(value.crop)) {
         _state.croppingUiEnabled = true;
       }
+
+      value.urlValidity = true;
     }
 
     const dataset = self.getDatasetUserSelectedFromList() || self.getDatasetInVif();
@@ -864,6 +849,10 @@ export default function AssetSelectorStore() {
   }
 
   function _chooseImageUpload() {
+    if (_state.componentType === 'image') {
+      _state.componentProperties = _.merge(_state.componentProperties || {}, { urlValidity: true });
+    }
+
     _state.step = WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD;
     self._emitChange();
   }
@@ -925,22 +914,16 @@ export default function AssetSelectorStore() {
           var isCreatingTable = (
             _state.componentType === 'socrata.visualization.table'
           );
-          var authoringWorkflowAndSvgVisualizationsEnabled = (
-            _state.isAuthoringVisualization &&
-            Environment.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW &&
-            Environment.ENABLE_SVG_VISUALIZATIONS
-          );
 
           _setComponentPropertiesFromViewData(viewData);
 
           if (isCreatingTable) {
             _setUpTableFromSelectedDataset();
             _state.step = WIZARD_STEP.TABLE_PREVIEW;
-          } else if (authoringWorkflowAndSvgVisualizationsEnabled ) {
-            _state.step = WIZARD_STEP.AUTHOR_VISUALIZATION;
           } else {
-            _state.step = WIZARD_STEP.CONFIGURE_VISUALIZATION;
+            _state.step = WIZARD_STEP.AUTHOR_VISUALIZATION;
           }
+
           self._emitChange();
         }
       ).
@@ -1075,11 +1058,6 @@ export default function AssetSelectorStore() {
     };
   }
 
-  function _visualizeAsChart() {
-    _state.step = WIZARD_STEP.CONFIGURE_VISUALIZATION;
-    self._emitChange();
-  }
-
   // Given a dataset domain, uid, and view metadata, sets:
   // * _state.componentProperties.dataset.domain,
   // * _state.componentProperties.dataset.datasetUid,
@@ -1167,8 +1145,6 @@ export default function AssetSelectorStore() {
 
           if (self.getStep() === WIZARD_STEP.CONFIGURE_MAP_OR_CHART) {
             _state.step = WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG;
-          } else if (self.getStep() === WIZARD_STEP.CONFIGURE_VISUALIZATION) {
-            _state.step = WIZARD_STEP.SELECT_DATASET_FOR_VISUALIZATION;
           } else if (self.getStep() === WIZARD_STEP.TABLE_PREVIEW) {
             _state.step = WIZARD_STEP.SELECT_TABLE_FROM_CATALOG;
           } else {
@@ -1189,6 +1165,7 @@ export default function AssetSelectorStore() {
     var visualization = payload.visualization.data;
 
     if (_.isEmpty(visualization)) {
+
       _state.componentType = null;
       _state.componentProperties = {
         dataset: _state.componentProperties.dataset
@@ -1196,6 +1173,7 @@ export default function AssetSelectorStore() {
 
       self._emitChange();
     } else if (payload.visualization.format === 'classic') {
+
       _state.componentType = 'socrata.visualization.classic';
       _state.componentProperties = {
         visualization: visualization,
@@ -1205,6 +1183,7 @@ export default function AssetSelectorStore() {
 
       self._emitChange();
     } else if (payload.visualization.format === 'vif') {
+
       StorytellerUtils.assertHasProperty(
         _state,
         'componentProperties.dataset'
@@ -1219,12 +1198,26 @@ export default function AssetSelectorStore() {
 
       self._emitChange();
     } else if (payload.visualization.format === 'vif2') {
+
+      // If we are updating a visualization, we need to check if its layout
+      // height has been previously set and remember it so that it can be added
+      // back into the new component properties after they have been reset.
+      const layoutHeight = _.get(_state, 'componentProperties.layout.height');
+
       _state.componentType = StorytellerUtils.format('socrata.visualization.{0}', visualization.series[0].type);
       _state.componentProperties = {
         vif: visualization,
         dataset: _state.componentProperties.dataset,
         originalUid: payload.visualization.originalUid
       };
+
+      // If layout height was previously set, set the same layout height in the
+      // new component properties.
+      if (layoutHeight) {
+        _.set(_state, 'componentProperties.layout.height', layoutHeight);
+      }
+
+      self._emitChange();
     }
   }
 
@@ -1337,7 +1330,9 @@ export default function AssetSelectorStore() {
     var image = {
       documentId: file.resource.id,
       url: file.resource.url,
-      crop: _state.componentProperties.crop
+      crop: _state.componentProperties.crop,
+      alt: _state.componentProperties.alt,
+      link: _state.componentProperties.link
     };
 
     switch (type) {
@@ -1396,6 +1391,23 @@ export default function AssetSelectorStore() {
           'Component type is {0}. Cannot update alt attribute.',
           _state.componentType
         )
+      );
+    }
+
+    self._emitChange();
+  }
+
+  function _updateImageUrlWrapper(payload) {
+    var value = self.getComponentValue();
+    var url = payload.url;
+    var urlValidity = _.isString(url) && url.length === 0 || /^https?:\/\/.+/.test(url);
+
+    if (_state.componentType === 'image') {
+      value.link = url;
+      value.urlValidity = urlValidity;
+    } else {
+      throw new Error(
+        `Component type is ${_state.componentType}. Cannot update URL wrapper.`
       );
     }
 

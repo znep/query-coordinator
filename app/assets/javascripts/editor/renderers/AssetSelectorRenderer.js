@@ -85,6 +85,17 @@ export default function AssetSelectorRenderer(options) {
 
     _container.on(
       'input',
+      '.asset-selector-url-wrapper-input',
+      function(event) {
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_UPDATE_IMAGE_URL_WRAPPER,
+          url: event.target.value
+        });
+      }
+    );
+
+    _container.on(
+      'input',
       '.asset-selector-title-input',
       function(event) {
         dispatcher.dispatch({
@@ -98,6 +109,7 @@ export default function AssetSelectorRenderer(options) {
       'mouseout',
       [
         '.asset-selector-image-alt-hint',
+        '.asset-selector-image-url-wrapper-hint',
         '.asset-selector-youtube-title-hint',
         '.asset-selector-embed-code-title-hint',
         '.asset-selector-goal-url-hint'
@@ -113,6 +125,21 @@ export default function AssetSelectorRenderer(options) {
           element: this,
           content: '<span class="tooltip-text">' +
             I18n.t('editor.asset_selector.image_preview.alt_attribute_tooltip') +
+            '</span>',
+          rightSideHint: false,
+          belowTarget: false
+        });
+      }
+    );
+
+    _container.on(
+      'mouseenter',
+      '.asset-selector-image-url-wrapper-hint',
+      function() {
+        flyoutRenderer.render({
+          element: this,
+          content: '<span class="tooltip-text">' +
+            I18n.t('editor.asset_selector.image_preview.url_wrapper_tooltip') +
             '</span>',
           rightSideHint: false,
           belowTarget: false
@@ -409,12 +436,6 @@ export default function AssetSelectorRenderer(options) {
           selectorContent = _renderAuthorVisualizationTemplate();
           break;
 
-        case WIZARD_STEP.CONFIGURE_VISUALIZATION:
-          selectorTitle = I18n.t('editor.asset_selector.visualization.configure_vizualization_heading');
-          selectorContent = _renderConfigureVisualizationTemplate();
-          selectorWideDisplay = true;
-          break;
-
         case WIZARD_STEP.TABLE_PREVIEW:
           selectorTitle = I18n.t('editor.asset_selector.visualization.preview_table_heading');
           selectorContent = _renderTablePreviewTemplate();
@@ -485,10 +506,6 @@ export default function AssetSelectorRenderer(options) {
 
       case WIZARD_STEP.ENTER_YOUTUBE_URL:
         _renderChooseYoutubeData(componentValue);
-        break;
-
-      case WIZARD_STEP.CONFIGURE_VISUALIZATION:
-        _renderConfigureVisualizationData(componentType, componentValue);
         break;
 
       case WIZARD_STEP.TABLE_PREVIEW:
@@ -577,7 +594,7 @@ export default function AssetSelectorRenderer(options) {
 
   function _renderChooseVisualizationOptions() {
     var insertVisualizationHeader = $('<h3>').
-      text(I18n.t('editor.asset_selector.visualization.choose_insert_visualziation_heading'));
+      text(I18n.t('editor.asset_selector.visualization.choose_insert_visualization_heading'));
     var insertVisualizationDescription = $('<p>').
       text(I18n.t('editor.asset_selector.visualization.choose_insert_visualization_description'));
 
@@ -586,13 +603,8 @@ export default function AssetSelectorRenderer(options) {
     var insertTableDescription = $('<p>').
       text(I18n.t('editor.asset_selector.visualization.choose_insert_table_description'));
 
-    var createVisualizationHeader = $('<h3>').
-      text(I18n.t('editor.asset_selector.visualization.choose_create_visualization_heading'));
-    var createVisualizationDescription = $('<p>').
-      text(I18n.t('editor.asset_selector.visualization.choose_create_visualization_description'));
-
     var authorVisualizationHeader = $('<h3>').
-      text(I18n.t('editor.asset_selector.visualization.choose_author_visualization_heading'));
+      text(I18n.t('editor.asset_selector.visualization.choose_create_visualization_heading'));
     var authorVisualizationDescription = $('<p>').
       text(I18n.t('editor.asset_selector.visualization.choose_create_visualization_description'));
 
@@ -614,21 +626,12 @@ export default function AssetSelectorRenderer(options) {
             append(insertTableHeader, insertTableDescription)
         ]);
 
-    if (Environment.ENABLE_VISUALIZATION_AUTHORING_WORKFLOW && Environment.ENABLE_SVG_VISUALIZATIONS) {
-      visualizationOptions.append(
-        $(
-          '<li>',
-          {'data-visualization-option': 'AUTHOR_VISUALIZATION'}
-        ).append(authorVisualizationHeader, authorVisualizationDescription)
-      );
-    } else {
-      visualizationOptions.append(
-        $(
-          '<li>',
-          {'data-visualization-option': 'CREATE_VISUALIZATION'}
-        ).append(createVisualizationHeader, createVisualizationDescription)
-      );
-    }
+    visualizationOptions.append(
+      $(
+        '<li>',
+        {'data-visualization-option': 'AUTHOR_VISUALIZATION'}
+      ).append(authorVisualizationHeader, authorVisualizationDescription)
+    );
 
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
 
@@ -1262,8 +1265,7 @@ export default function AssetSelectorRenderer(options) {
       questionIcon
     );
 
-
-    var inputField = $('<form>').append($(
+    var altInputField = $('<form>').append($(
       '<input>',
       {
         'class': 'asset-selector-alt-text-input text-input',
@@ -1271,7 +1273,7 @@ export default function AssetSelectorRenderer(options) {
       }
     ));
 
-    inputField.on('keyup', function(event) {
+    altInputField.on('keyup', function(event) {
       if (event.keyCode === 13) {
         $('.modal-dialog .image-crop-upload-btn').click();
       }
@@ -1281,8 +1283,39 @@ export default function AssetSelectorRenderer(options) {
       '<div>',
       { 'class': 'asset-selector-image-description-container' }
     ).append([
-      inputField
+      altInputField
     ]);
+
+    var urlWrapperQuestionMark = $('<span>', {
+      class: 'icon-question-inverse asset-selector-image-url-wrapper-hint'
+    });
+
+    var urlWrapperLabel = $(
+      '<h2>',
+      { 'class': 'asset-selector-image-url-wrapper-label' }
+    ).append(
+      I18n.t('editor.asset_selector.image_preview.url_wrapper_label'),
+      urlWrapperQuestionMark
+    );
+
+    var urlWrapperField = $('<form>').append(
+      $('<input>', { class: 'asset-selector-url-wrapper-input text-input', type: 'text' })
+    );
+
+    var warningIcon = $('<span>', {
+      class: 'icon-warning'
+    });
+
+    var urlValidityMessage = $('<p>', {
+      class: 'asset-selector-url-wrapper-validity'
+    }).append(
+      warningIcon,
+      I18n.t('editor.invalid_link_message')
+    );
+
+    var urlWrapperContainer = $('<div>', {
+      class: 'asset-selector-image-url-wrapper-container'
+    }).append([urlWrapperField, urlValidityMessage]);
 
     var backButton = $('<button>', {
       'class': 'btn btn-default image-crop-back-btn'
@@ -1351,7 +1384,9 @@ export default function AssetSelectorRenderer(options) {
       previewContainer,
       gettyImageInfo,
       isImage ? descriptionLabel : null,
-      isImage ? descriptionContainer : null
+      isImage ? descriptionContainer : null,
+      isImage ? urlWrapperLabel : null,
+      isImage ? urlWrapperContainer : null
     ]);
 
     return [ content, buttonGroup ];
@@ -1362,6 +1397,22 @@ export default function AssetSelectorRenderer(options) {
       componentProperties,
       'alt',
       _.get(componentProperties, 'image.alt', null) // Try again, this time under image.alt. Overall default is null.
+    );
+  }
+
+  function extractImageUrlWrapper(componentProperties) {
+    return _.get(
+      componentProperties,
+      'link',
+      _.get(componentProperties, 'image.link', null)
+    );
+  }
+
+  function extractImageUrlValidity(componentProperties) {
+    return _.get(
+      componentProperties,
+      'urlValidity',
+      _.get(componentProperties, 'image.urlValidity', false)
     );
   }
 
@@ -1408,10 +1459,13 @@ export default function AssetSelectorRenderer(options) {
     var imageUrl = grabOriginalImage(assetSelectorStore.getPreviewImageUrl());
     var existingImageUrl = _container.find('img').attr('src');
     var altAttribute = extractImageAlt(componentProperties);
+    var url = extractImageUrlWrapper(componentProperties);
+    var urlValidity = extractImageUrlValidity(componentProperties);
 
     var isUploadingFile = assetSelectorStore.isUploadingFile();
     var isCropping = assetSelectorStore.isCropping();
     var isCroppingUiEnabled = assetSelectorStore.isCroppingUiEnabled();
+    var isImage = assetSelectorStore.getComponentType() === 'image';
     var isNotGettyImage = !Constants.VALID_STORYTELLER_GETTY_IMAGE_URL_API_PATTERN.test(imageUrl);
 
     var hasCompletedUpload = isUploadingFile && file.status === STATUS.COMPLETED;
@@ -1433,6 +1487,14 @@ export default function AssetSelectorRenderer(options) {
       attr('value', _.isEmpty(altAttribute) ? null : altAttribute);
 
     _container.
+      find('.asset-selector-url-wrapper-input').
+      attr('value', _.isEmpty(url) ? null : url);
+
+    _container.
+      find('.asset-selector-url-wrapper-validity').
+      toggleClass('hidden', urlValidity);
+
+    _container.
       find('.getty-image-info').
       toggleClass('hidden', isNotGettyImage);
 
@@ -1451,7 +1513,7 @@ export default function AssetSelectorRenderer(options) {
 
     _container.
       find('.image-crop-upload-btn').
-      prop('disabled', isUploadingFile || isCropping).
+      prop('disabled', isUploadingFile || isCropping || (isImage && !urlValidity)).
       toggleClass('btn-busy', isUploadingFile || isCropping);
 
     _container.
@@ -2263,58 +2325,6 @@ export default function AssetSelectorRenderer(options) {
     return $('<div>');
   }
 
-  function _renderConfigureVisualizationTemplate() {
-    var configureVisualizationIframe = $(
-      '<iframe>',
-      {
-        'class': 'asset-selector-configure-visualization-iframe asset-selector-full-width-iframe',
-        'src': ''
-      }
-    );
-
-    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_DATASET_FOR_VISUALIZATION);
-
-    // TODO: Map insert button to APPLY instead of CLOSE, and share insert button
-    // into shared function
-    var loadingButton = $('<button>', {
-      'class': 'btn btn-transparent btn-busy visualization-busy',
-      'disabled': true
-    }).append($('<span>'));
-
-    var buttonGroup = $('<div>', {
-      'class': 'modal-button-group r-to-l'
-    }).append([ backButton, _renderModalInsertButton({ disabled: true }) ]);
-
-    configureVisualizationIframe[0].onVisualizationSelectedV2 = function(datasetObjJson, format, originalUid) {
-      // This function is called by the visualization chooser when:
-      //   - The user makes or clears a selection (argument is either null or a visualization).
-      //   - The page finishes loading (argument is null).
-      // In either case, we should consider the iframe loaded.
-      // originalUid may be null (say if the user created the visualization inline).
-      configureVisualizationIframe.
-        trigger('visualizationSelected', {
-          data: JSON.parse(datasetObjJson),
-
-          // format can either be 'classic' or 'vif'.
-          format: format,
-          originalUid: originalUid
-        });
-    };
-
-    return [ loadingButton, configureVisualizationIframe, buttonGroup ];
-  }
-
-  function _renderConfigureVisualizationData(componentType, componentProperties) {
-    var insertButton = _container.find('.btn-apply');
-
-    if (componentProperties.dataset) {
-      var iframeElement = _container.find('.asset-selector-configure-visualization-iframe');
-      _updateVisualizationChooserUrl(iframeElement, componentProperties);
-    }
-
-    insertButton.prop('disabled', !componentType);
-  }
-
   function _renderTablePreviewTemplate() {
     var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_TABLE_FROM_CATALOG);
 
@@ -2490,42 +2500,6 @@ export default function AssetSelectorRenderer(options) {
       StorytellerUtils.format(
         '{0}/browse/select_dataset?filtered_types[]=maps&filtered_types[]=charts&limitTo[]=charts&limitTo[]=maps&limitTo[]=blob&cetera_search=false',
         window.location.protocol + '//' + window.location.hostname
-      )
-    );
-  }
-
-  function _updateVisualizationChooserUrl(iframeElement, componentProperties) {
-    var currentIframeSrc = iframeElement.attr('src');
-    var currentIframeDatasetUidParam =
-      (currentIframeSrc.match(/datasetId=\w\w\w\w-\w\w\w\w/) || [])[0];
-
-    // Update src if the dataset uid search param is different
-    // (we don't care about defaultColumn or defaultRelatedVisualizationUid changing -
-    // these shouldn't cause iframe reloads).
-    if (
-      (currentIframeDatasetUidParam || '').indexOf(componentProperties.dataset.datasetUid) === -1) {
-      var newIframeSrc = _visualizationChooserUrl(componentProperties);
-      iframeElement.
-        attr('src', newIframeSrc).
-        one('load', function() {
-          $('#asset-selector-container .btn-transparent.btn-busy').addClass('hidden');
-        });
-    }
-  }
-
-  function _visualizationChooserUrl(componentProperties) {
-    var defaultColumn = _.get(componentProperties, 'vif.columnName', null);
-    var defaultVifType = _.get(componentProperties, 'vif.type', null);
-    var defaultRelatedVisualizationUid = _.get(componentProperties, 'originalUid', null);
-
-    return encodeURI(
-      StorytellerUtils.format(
-        '{0}/component/visualization/add?datasetId={1}&defaultColumn={2}&defaultVifType={3}&defaultRelatedVisualizationUid={4}',
-        window.location.protocol + '//' + window.location.hostname,
-        componentProperties.dataset.datasetUid,
-        defaultColumn,
-        defaultVifType,
-        defaultRelatedVisualizationUid
       )
     );
   }

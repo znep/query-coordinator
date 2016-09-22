@@ -4,7 +4,6 @@ import _ from 'lodash';
 import '../componentBase';
 import I18n from '../I18n';
 import Constants from '../Constants';
-import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
 import { flyoutRenderer } from '../FlyoutRenderer';
 
@@ -44,9 +43,7 @@ function _renderTemplate($element, componentData) {
 
   var className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
   var $componentContent = $('<div>', { class: 'component-content' });
-  var flyoutEvent = (Environment.ENABLE_SVG_VISUALIZATIONS) ?
-    'SOCRATA_VISUALIZATION_FLYOUT' :
-    'SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT';
+  var flyoutEvent = 'SOCRATA_VISUALIZATION_FLYOUT';
 
   $element.
     addClass(className).
@@ -71,9 +68,6 @@ function _updateVisualization($element, componentData) {
   var $componentContent = $element.find('.component-content');
   var vif = componentData.value.vif;
   var areNotEquivalent = !StorytellerUtils.vifsAreEquivalent(JSON.parse(renderedVif), vif);
-  var visualizationImplementation = (Environment.ENABLE_SVG_VISUALIZATIONS) ?
-    'socrataSvgFeatureMap' :
-    'socrataFeatureMap';
 
   if (areNotEquivalent) {
     $element.attr('data-rendered-vif', JSON.stringify(vif));
@@ -126,6 +120,6 @@ function _updateVisualization($element, componentData) {
 
     // Use triggerHandler since we don't want this to bubble
     $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
-    $componentContent[visualizationImplementation](vif);
+    $componentContent.socrataSvgFeatureMap(vif);
   }
 }

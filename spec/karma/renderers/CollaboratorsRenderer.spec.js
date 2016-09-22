@@ -251,9 +251,9 @@ describe('CollaboratorsRenderer', function() {
         verifyAddButtonBehaviorWithRole('administrator');
 
         it('should enable owner selection for an administrator', function(done) {
-          $email.val('valid@valid.com').trigger('input');
-
           respondWithUserRole('administrator');
+
+          $email.val('valid@valid.com').trigger('input');
 
           setTimeout(
             function() {
@@ -269,9 +269,9 @@ describe('CollaboratorsRenderer', function() {
         });
 
         it('should enable owner selection for a stories role', function(done) {
-          $email.val('valid@valid.com').trigger('input');
-
           respondWithUserRole('publisher_stories');
+
+          $email.val('valid@valid.com').trigger('input');
 
           setTimeout(
             function() {
@@ -290,9 +290,9 @@ describe('CollaboratorsRenderer', function() {
         verifyAddButtonBehaviorWithRole('nope');
 
         it('should disable owner selection for users without a stories/administrator role', function(done) {
-          $email.val('valid@valid.com').trigger('input');
-
           respondWithUserRole('nope');
+
+          $email.val('valid@valid.com').trigger('input');
 
           setTimeout(
             function() {
@@ -316,11 +316,9 @@ describe('CollaboratorsRenderer', function() {
           }
 
           beforeEach(function(done) {
-            $email.
-              val('valid@valid.com').
-              trigger('input');
-
             respondWithUserRole(role);
+
+            $email.val('valid@valid.com').trigger('input');
 
             setTimeout(
               function() {

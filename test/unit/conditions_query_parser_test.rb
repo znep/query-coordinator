@@ -3,7 +3,7 @@ require 'soql_duct_tape'
 require 'pry'
 
 class JsonQueryFromDatasetTest < Minitest::Test
-  include SoqlFromConditions
+  include ConditionsQueryParser
 
   def setup
     init_current_domain
@@ -419,8 +419,8 @@ class JsonQueryFromDatasetTest < Minitest::Test
   end
 end
 
-class SoqlFromJsonQueryTest < Minitest::Test
-  include SoqlFromConditions
+class ConditionsQueryParserTest < Minitest::Test
+  include ConditionsQueryParser
 
   def setup
     init_current_domain
@@ -438,7 +438,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       hashie.search = search_string
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql
+    soql = Query.new(json_query).to_soql
     correct_soql = "$search=#{search_string}"
     assert soql == correct_soql, failure_message(correct_soql, soql)
 
@@ -447,7 +447,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       hashie.search = ''
     end
 
-    soql = SoqlFromJsonQuery.new(json_query, base_query).to_soql
+    soql = Query.new(json_query, base_query).to_soql
     # I don't understand why this is correct.
     correct_soql = "$search=#{search_string}"
     assert soql == correct_soql, failure_message(correct_soql, soql)
@@ -463,7 +463,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       ]
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$order']
+    soql = Query.new(json_query).to_soql_parts['$order']
     correct_soql = 'thingies desc'
     assert soql == correct_soql, failure_message(correct_soql, soql)
 
@@ -476,7 +476,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       ]
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$order']
+    soql = Query.new(json_query).to_soql_parts['$order']
     correct_soql = 'thingies'
     assert soql == correct_soql, failure_message(correct_soql, soql)
 
@@ -495,7 +495,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       ]
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$order']
+    soql = Query.new(json_query).to_soql_parts['$order']
     correct_soql = 'sum(thingies) desc'
     assert soql == correct_soql, failure_message(correct_soql, soql)
   end
@@ -510,7 +510,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       }
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$where']
+    soql = Query.new(json_query).to_soql_parts['$where']
     correct_soql = %{(UPPER(color)=UPPER('Green'))}
     assert soql == correct_soql, failure_message(correct_soql, soql)
 
@@ -523,7 +523,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       }
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$where']
+    soql = Query.new(json_query).to_soql_parts['$where']
     correct_soql = %{(things=5)}
     assert soql == correct_soql, failure_message(correct_soql, soql)
 
@@ -536,7 +536,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       }
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$where']
+    soql = Query.new(json_query).to_soql_parts['$where']
     correct_soql = %{(things>5)}
     assert soql == correct_soql, failure_message(correct_soql, soql)
 
@@ -548,7 +548,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       }
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$where']
+    soql = Query.new(json_query).to_soql_parts['$where']
     correct_soql = %{(color is not null)}
     assert soql == correct_soql, failure_message(correct_soql, soql)
 
@@ -567,7 +567,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       }
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$where']
+    soql = Query.new(json_query).to_soql_parts['$where']
     correct_soql = %{((UPPER(color)=UPPER('Green')) AND (things=5))}
     assert soql == correct_soql, failure_message(correct_soql, soql)
 
@@ -580,7 +580,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       }
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$where']
+    soql = Query.new(json_query).to_soql_parts['$where']
     correct_soql = %{(things>=1 AND things<=5)}
     assert soql == correct_soql, failure_message(correct_soql, soql)
 
@@ -593,7 +593,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       }
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$where']
+    soql = Query.new(json_query).to_soql_parts['$where']
     correct_soql = %{(starts_with(things,2))}
     assert soql == correct_soql, failure_message(correct_soql, soql)
 
@@ -606,7 +606,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       }
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$where']
+    soql = Query.new(json_query).to_soql_parts['$where']
     correct_soql = %{(not contains(things,2))}
     assert soql == correct_soql, failure_message(correct_soql, soql)
 
@@ -618,7 +618,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       }
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$where']
+    soql = Query.new(json_query).to_soql_parts['$where']
     correct_soql = %{(not chechechecheckbox)}
     assert soql == correct_soql, failure_message(correct_soql, soql)
 
@@ -630,7 +630,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       }
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$where']
+    soql = Query.new(json_query).to_soql_parts['$where']
     correct_soql = %{(chechechecheckbox)}
     assert soql == correct_soql, failure_message(correct_soql, soql)
 
@@ -642,7 +642,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       }
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$where']
+    soql = Query.new(json_query).to_soql_parts['$where']
     correct_soql = %{(you_are_a_star is not null)}
     assert soql == correct_soql, failure_message(correct_soql, soql)
 
@@ -655,7 +655,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       }
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$where']
+    soql = Query.new(json_query).to_soql_parts['$where']
     correct_soql = %{(to_number(you_are_a_star)>2)}
     assert soql == correct_soql, failure_message(correct_soql, soql)
 
@@ -668,7 +668,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       }
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$where']
+    soql = Query.new(json_query).to_soql_parts['$where']
     correct_soql = %{(all_the_monies>to_usd(2))}
     assert soql == correct_soql, failure_message(correct_soql, soql)
 
@@ -681,7 +681,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       }
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$where']
+    soql = Query.new(json_query).to_soql_parts['$where']
     correct_soql = %{(someday_sometime>='2015-11-09T00:00:00Z' AND someday_sometime<='2015-12-31T00:00:00Z')}
     assert soql == correct_soql, failure_message(correct_soql, soql)
   end
@@ -699,7 +699,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       }
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$having']
+    soql = Query.new(json_query).to_soql_parts['$having']
     correct_soql = %{(thingies=5)}
     assert soql == correct_soql, failure_message(correct_soql, soql)
 
@@ -713,7 +713,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
     #  }
     #end
 
-    #soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$having']
+    #soql = Query.new(json_query).to_soql_parts['$having']
     #correct_soql = %{(max_thingies=5)}
     #assert soql == correct_soql, failure_message(correct_soql, soql)
   end
@@ -726,7 +726,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       ]
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$group']
+    soql = Query.new(json_query).to_soql_parts['$group']
     correct_soql = %{thingies}
     assert soql == correct_soql, failure_message(correct_soql, soql)
 
@@ -738,7 +738,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       ]
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$group']
+    soql = Query.new(json_query).to_soql_parts['$group']
     correct_soql = %{moar_things,thingies}
     assert soql == correct_soql, failure_message(correct_soql, soql)
 
@@ -751,7 +751,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
       ]
     end
 
-    soql = SoqlFromJsonQuery.new(json_query).to_soql_parts['$group']
+    soql = Query.new(json_query).to_soql_parts['$group']
     correct_soql = %{moar_things,thingies__sum}
     assert soql == correct_soql, failure_message(correct_soql, soql)
   end
@@ -765,7 +765,7 @@ class SoqlFromJsonQueryTest < Minitest::Test
   end
 end
 
-class SoqlFromConditionsTest < Minitest::Test
+class ConditionsQueryParserTest < Minitest::Test
   def setup
     init_current_domain
     load_sample_data('test/fixtures/sample-data.json')
@@ -797,7 +797,7 @@ class SoqlFromConditionsTest < Minitest::Test
     end
 
     @view.stubs(query: merged_conditions)
-    soql = SoqlFromConditions.process(@view)
+    soql = ConditionsQueryParser.parse(@view).to_soql
     correct_soql = %{$group=old_age,thingies&$order=thingies desc&$where=(starts_with(things,2))}
     assert soql == correct_soql, failure_message(correct_soql, soql)
 
@@ -806,7 +806,7 @@ class SoqlFromConditionsTest < Minitest::Test
       format: Hashie::Mash.new.tap { |hsh| hsh.group_function = 'date_ym' },
       renderTypeName: 'date'
     })
-    soql = SoqlFromConditions.process(@view)
+    soql = ConditionsQueryParser.parse(@view).to_soql
     correct_soql = %{$group=old_age,thingies__datez_trunc_ym&$order=thingies desc&$select=datez_trunc_ym(thingies) as thingies__datez_trunc_ym&$where=(starts_with(things,2))}
     assert soql == correct_soql, failure_message(correct_soql, soql)
   end
@@ -840,7 +840,7 @@ class SoqlFromConditionsTest < Minitest::Test
     end
 
     @view.stubs(query: merged_conditions)
-    soql = SoqlFromConditions.process(@view)
+    soql = ConditionsQueryParser.parse(@view).to_soql
     correct_soql = %{$group=old_age,thingies&$order=thingies desc&$where=(starts_with(things,2))}
     assert soql == correct_soql, failure_message(correct_soql, soql)
 
@@ -850,7 +850,7 @@ class SoqlFromConditionsTest < Minitest::Test
       ]
     end)
 
-    soql = SoqlFromConditions.process(@view)
+    soql = ConditionsQueryParser.parse(@view).to_soql
     correct_soql = %{$order=thingies desc}
     assert soql == correct_soql, failure_message(correct_soql, soql)
   end

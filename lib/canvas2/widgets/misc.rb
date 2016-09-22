@@ -318,7 +318,17 @@ module Canvas2
       path = Util.page_path
       params = Util.page_params.clone
       path += '?' + params.merge('data_component' => id).to_query
-      t += Util.app_helper.create_pagination(row_results[:meta]['totalRows'], page_size, current_page, path, '', 'data_page')
+
+      if row_results[:meta]
+        row_count = row_results[:meta]['totalRows']
+      else
+        # This is a SODA2 request (does not support providing meta in response).
+        # Query for row count.
+        row_count = ds.row_count
+      end
+
+      t += Util.app_helper.create_pagination(row_count, page_size, current_page, path, '', 'data_page')
+
       t += %Q{<a href="#{alt_view_path(ds)}" class="altViewLink">Accessibly explore the data</a>}
       t += '</div></noscript>'
       [t, false]

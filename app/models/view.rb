@@ -1,3 +1,4 @@
+require 'soql_duct_tape'
 class View < Model
   include Rails.application.routes.url_helpers
   include Socrata::UrlHelpers
@@ -481,7 +482,7 @@ class View < Model
       merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).
         deep_merge(conditions)
       if use_soda2?
-        soql_obj = SoqlFromConditions.process(self, Hashie::Mash.new(merged_conditions))
+        soql_obj = ConditionsQueryParser.parse(self, Hashie::Mash.new(merged_conditions))
         params['$$version'] = '2.0' if FeatureFlags.derive(self).send_soql_version
         params['$$row_count'] = 'approximate'
         params.merge! soql_obj.to_soql_parts
@@ -586,13 +587,13 @@ class View < Model
     params['$offset'] = (page - 1) * per_page_or_ids
     params['$limit'] = per_page_or_ids
 
-    soql_obj = SoqlFromConditions.process(self, Hashie::Mash.new(merged_conditions))
+    soql_obj = ConditionsQueryParser.parse(self, Hashie::Mash.new(merged_conditions))
 
     params['$$version'] = '2.0' if FeatureFlags.derive(self).send_soql_version
     params['$$row_count'] = 'approximate'
     params.merge! soql_obj.to_soql_parts
 
-    params['$select'] = [ params['$select'] || '*', ':*' ].compact.join(',') if include_meta
+    params['$select'] = [ ':*', params['$select'] || '*' ].compact.join(',') if include_meta
 
     { url: "/id/#{self.id}.json?#{params.to_param}", request: {} }
   end

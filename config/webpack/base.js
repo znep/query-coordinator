@@ -9,7 +9,7 @@ module.exports = {
     port: common.devServerPort,
     quiet: false,
     noInfo: true,
-    publicPath: '/javascripts/webpack',
+    publicPath: '/javascripts/webpack/',
     stats: 'minimal',
     hot: true
   },

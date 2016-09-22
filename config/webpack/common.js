@@ -39,7 +39,7 @@ function getOutput(identifier) {
   return {
     path: isProduction ? path.resolve(build, identifier) : build,
     filename: isProduction ? '[name]-[hash].js' : identifier + '/[name].js',
-    publicPath: isProduction ? '/javascripts/build' : '/javascripts/webpack'
+    publicPath: isProduction ? '/javascripts/build/' + identifier + '/' : '/javascripts/webpack/'
   };
 }
 

@@ -2,7 +2,6 @@ import _ from 'lodash';
 import $ from 'jquery';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import SocrataVisualizations from 'socrata-visualizations';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 
 export var DatasetPreview = React.createClass({
@@ -75,26 +74,30 @@ export var DatasetPreview = React.createClass({
 
   initializeTable() {
     var $table = $(this.table);
-    var flyoutRenderer = new SocrataVisualizations.views.FlyoutRenderer();
 
-    // Initialize the table
-    $table.socrataTable(this.getVif());
+    require.ensure(['socrata-visualizations'], (require) => {
+      var SocrataVisualizations = require('socrata-visualizations');
+      var flyoutRenderer = new SocrataVisualizations.views.FlyoutRenderer();
 
-    // Set up the relevant event listeners
-    $table.on('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE', () => {
-      this.setState({ isLoading: false });
-    });
-    $table.on('SOCRATA_VISUALIZATION_TABLE_FLYOUT', (event) => {
-      if (event.originalEvent.detail) {
-        flyoutRenderer.render(event.originalEvent.detail);
-      } else {
-        flyoutRenderer.clear();
-      }
-    });
-    $(window).resize(this.triggerInvalidateSize);
+      // Initialize the table
+      $table.socrataTable(this.getVif());
 
-    // Store the table so we can clean up when unmounting
-    this.$table = $table;
+      // Set up the relevant event listeners
+      $table.on('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE', () => {
+        this.setState({ isLoading: false });
+      });
+      $table.on('SOCRATA_VISUALIZATION_TABLE_FLYOUT', (event) => {
+        if (event.originalEvent.detail) {
+          flyoutRenderer.render(event.originalEvent.detail);
+        } else {
+          flyoutRenderer.clear();
+        }
+      });
+      $(window).resize(this.triggerInvalidateSize);
+
+      // Store the table so we can clean up when unmounting
+      this.$table = $table;
+    }, 'socrata-visualizations');
   },
 
   removeTable() {

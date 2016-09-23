@@ -4,26 +4,49 @@ namespace :manifest do
     task environment.to_sym, [:output_file] do |task, args|
       tags = `git tag -l #{environment}/*`.split.sort.reverse.first((ENV['RELEASE_TAGS'] || 10).to_i)
 
+      # Find your tags to compare
       to_tag = ENV['TO_TAG'] || tags[0]
       from_tag = ENV['FROM_TAG'] || tags[1]
       puts "Default comparison is #{from_tag} .. #{to_tag}"
-      puts "Press <Enter> to continue, or 'N'<Enter> to choose a previous tag"
-      answer = STDIN.gets.upcase.chomp
+      puts "Press <Enter> to continue, or 'n' to choose a previous tag"
+      answer = STDIN.gets.downcase.chomp
 
-      if answer == 'N'
+      # Override the default compare if requested
+      if answer == 'n'
         puts "Select a recent tag to compare:"
         tags.each_with_index{ |tag, index| puts " #{index + 1}) #{tag}" }
         from_tag_index = STDIN.gets.chomp.to_i
         from_tag = tags[from_tag_index - 1]
       end
 
-      puts("= FRONTEND = (from #{from_tag} to #{to_tag})")
-      manifest_output = `git log --no-color --right-only --cherry-pick --no-merges --reverse #{from_tag}...#{to_tag}`
+      # Generate the manifest info
+      manifest_output = ("= FRONTEND = (from #{from_tag} to #{to_tag})")
+      manifest_output << "\n\nGit diff: https://github.com/socrata/frontend/compare/#{from_tag}...#{to_tag}"
 
+      git_log_output = `git log --no-color --right-only --cherry-pick --no-merges --reverse #{from_tag}...#{to_tag}`
+
+      manifest_output << "\n\nCommits with JIRA tickets:\n"
+      manifest_output << get_commits_with_jira(git_log_output).map(&:values).join("\n")
+
+      commits_without_jira_tickets = get_commits_without_jira(git_log_output).join("\n")
+      if commits_without_jira_tickets.present?
+        manifest_output << "\n\nCommits without JIRA tickets:\n"
+        manifest_output << commits_without_jira_tickets
+      end
+
+      puts manifest_output
+      puts
+
+      puts 'Link to Jira query for current issues...'
+      Rake::Task['manifest:commits:jira_query'].invoke(git_log_output)
+
+      # Write the manifest to a file
       if args.output_file.present?
-        puts "Writing manifest file to... #{File.expand_path(args.output_file)}"
+        puts "\nWriting manifest file to... #{File.expand_path(args.output_file)}"
         File.open(args.output_file, 'w') do |f|
           f << manifest_output
+          f << "\n\n"
+          f << git_log_output
         end
       else
         puts manifest_output
@@ -53,23 +76,13 @@ namespace :manifest do
     end
 
     desc 'Output a link to jira with all the issues in the manifest'
-    task :jira_query, [:manifest_file] do |task, args|
-      commit_list = get_commits_with_jira(args.manifest_file)
+    task :jira_query, [:git_log_output] do |task, args|
+      commit_list = get_commits_with_jira(args.git_log_output)
       jira_ticket_numbers = commit_list.map{|commit| commit.keys.first.strip.match(jira_ticket_regex) }.uniq
       jira_query = "id in (#{jira_ticket_numbers.join(', ')})"
 
       puts URI("https://socrata.atlassian.net/issues/?jql=#{URI.encode(jira_query)}").to_s
     end
-  end
-
-  desc 'Outputs a distinct list of commit messages that mention a jira ticket'
-  task :commits, :manifest_file do |task, args|
-    Rake::Task['manifest:commits:distinct_with_jira'].invoke(args.manifest_file)
-  end
-
-  desc 'Outputs a distinct list of commit messages that lack an Jira ticket mention'
-  task :commits, :manifest_file do |task, args|
-    Rake::Task['manifest:commits:distinct_without_jira'].invoke(args.manifest_file)
   end
 
 
@@ -86,19 +99,6 @@ namespace :manifest do
     puts "\t#{copy_cmd}"
 
     system(copy_cmd)
-
-    puts
-    puts 'Commits with JIRA tickets:'
-    Rake::Task['manifest:commits:distinct_with_jira'].invoke(manifest_file_path)
-
-    puts
-    puts 'Commits without JIRA tickets:'
-    Rake::Task['manifest:commits:distinct_without_jira'].invoke(manifest_file_path)
-
-
-    puts 'Link to Jira query for current issues...'
-    puts
-    Rake::Task['manifest:commits:jira_query'].invoke(manifest_file_path)
   end
 end
 
@@ -135,19 +135,19 @@ def gitlab_tag_url(from, to)
   gitlab_url("/commits/compare?from=#{escape(from)}&to=#{escape(to)}")
 end
 
-def get_commits_with_jira(manifest_file)
-  File.open(manifest_file).grep(ticket_regex).inject([]) do |list, line|
-    id = line.match(ticket_regex).to_s
+def get_commits_with_jira(git_log_output)
+  git_log_output.lines.grep(ticket_regex).inject([]) do |list, line|
+    id = line.match(ticket_regex).to_s.strip
     commit = line.strip
 
-    list << { id => commit }
+    list << { id => commit.gsub(id, "https://socrata.atlassian.net/browse/#{id}") }
     list.uniq.sort_by(&:keys)
   end
 end
 
-def get_commits_without_jira(manifest_file)
+def get_commits_without_jira(git_log_output)
   commits_without_jira = []
-  commits = File.open(manifest_file).read.split(/^commit /)
+  commits = git_log_output.split(/^commit /)
   commits.each do |commit|
     unless commit.match(ticket_regex) || commit == ""
       sha = commit[0..6] || ''

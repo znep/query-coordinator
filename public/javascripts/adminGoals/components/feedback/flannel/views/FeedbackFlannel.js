@@ -19,9 +19,6 @@ class FeedbackFlannel extends React.Component {
     Providers.Usersnap.init({
       // Inject locale to localize the popup
       locale: _.get(window.serverConfig, 'locale', 'en'),
-      // Restore the feedback button after the user quits UserSnap.
-      // UserSnap politely exposes event listeners.
-      onClose: _.wrap(this.props.hoverable, this.props.openFeedbackFlannel),
       // Inject the user so we can auto-fill some information.
       user: window.serverConfig.currentUser
     });

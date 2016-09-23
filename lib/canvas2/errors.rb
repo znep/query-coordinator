@@ -28,7 +28,7 @@ module Canvas2
     end
 
     def to_s
-      "Data context '#{@config[:id]}' failed to load: #{@error_message}"
+      "Data context '#{@config[:id]}' failed to load: #{@error_message} Details: #{@details} Code: #{@code}"
     end
   end
 
@@ -52,7 +52,7 @@ module Canvas2
           c = c.parent
         end
       end
-      "Component '#{id}' failed to render: #{@error_message}"
+      "Component '#{id}' failed to render: #{@error_message} Details: #{@details} Code: #{@code}"
     end
   end
 end

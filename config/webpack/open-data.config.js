@@ -742,14 +742,11 @@ module.exports = _.defaultsDeep({
       './screens/oldie.js'
     ],
     'ace': [
-      './plugins/ace/ace-uncompressed.js',
+      './plugins/ace/ace.js',
       './plugins/ace/theme-idle_fingers.js',
       './plugins/ace/mode-json.js',
       './plugins/ace/mode-css.js',
       './plugins/ace/mode-html.js'
-    ],
-    'worker-json': [
-      './plugins/ace/worker-json.js'
     ],
     'waypoints': [
       './plugins/waypoints-2.0.5.js'

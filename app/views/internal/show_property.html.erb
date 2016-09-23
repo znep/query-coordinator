@@ -40,13 +40,13 @@
   var isCss  = <%= (@property_key =~ /.*css.*/) != nil %>;
   $(function()
   {
-      var editor = window.ace.edit('ace-editor');
+      var editor = ace.edit('ace-editor');
       editor.setTheme('ace/theme/idle_fingers');
       editor.setShowPrintMargin(false);
 
-      var JavascriptMode = require('ace/mode/json').Mode;
-      var HtmlMode       = require('ace/mode/html').Mode;
-      var CssMode        = require('ace/mode/css').Mode;
+      var JavascriptMode = ace.require('ace/mode/json').Mode;
+      var HtmlMode       = ace.require('ace/mode/html').Mode;
+      var CssMode        = ace.require('ace/mode/css').Mode;
       var currentMode = isCss ? CssMode : (isJson ? JavascriptMode : HtmlMode);
       editor.getSession().setMode(new currentMode());
 
@@ -65,7 +65,6 @@
             $('#saveButton').toggleClass('disabled', !$.isEmptyObject(notes));
           }, 1000);
       });
-      window.editor = editor;
 
       var $form = $('form#propertyForm');
       var updateJsonVal = function()

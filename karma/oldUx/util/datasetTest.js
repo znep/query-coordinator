@@ -176,17 +176,17 @@ describe('blist.dataset', function () {
 
     describe('if the dataset is in the old backend and not geospatial', function() {
 
-      it('should have a download type of obe_normal', function() {
+      it('should have a download type of normal', function() {
         dataset.newBackend = false;
-        expect(dataset.getDownloadType()).to.equal('obe_normal');
+        expect(dataset.getDownloadType()).to.equal('normal');
       });
     });
 
     describe('if the dataset is in the new backend and not geospatial', function() {
 
-      it('should have a download type of nbe_normal', function() {
+      it('should have a download type of normal', function() {
         dataset.newBackend = true;
-        expect(dataset.getDownloadType()).to.equal('nbe_normal');
+        expect(dataset.getDownloadType()).to.equal('normal');
       });
     });
 

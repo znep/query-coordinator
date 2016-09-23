@@ -65,7 +65,6 @@
       font-size: 1.3em;
       line-height: inherit;
       position: absolute;
-      width: 15em;
     }
     .iconLink {
       line-height: 1em;
@@ -267,12 +266,12 @@
       @include flex(1);
       margin-top: 0.5em;
   }
-  
+
   &--primary-user-info {
       @include flexbox;
       @include justify-content(space-between);
   }
-  
+
   &--secondary-user-info {
       margin-bottom: 1em;
       width: 50%;
@@ -281,11 +280,11 @@
       @include flexbox;
       @include justify-content(space-between);
   }
-  
+
   &--user-name {
       margin-bottom: 0;
   }
-  
+
   &--user-actions {
       margin-top: -0.9em;
   }

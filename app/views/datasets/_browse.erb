@@ -1,5 +1,5 @@
 <%-
-  if FeatureFlags.derive(nil, request).cetera_search?
+  if using_cetera? || using_cetera_profile_search?
     return render 'datasets/browse2', :opts => opts
   end
 -%>

@@ -120,20 +120,6 @@ class BrowseActionsTest2 < Minitest::Test
     APP_CONFIG.stubs(cetera_host: 'http://api.us.socrata.com/api')
   end
 
-  def test_use_cetera_if_feature_flag_enabled_and_host_present
-    assert @browse_actions_container.send(:using_cetera?)
-  end
-
-  def test_use_cetera_if_user_is_not_logged_in
-    User.stubs(current_user: nil)
-    assert @browse_actions_container.send(:using_cetera?)
-  end
-
-  def test_use_cetera_if_user_is_logged_in
-    User.stubs(current_user: true)
-    assert @browse_actions_container.send(:using_cetera?)
-  end
-
   def test_do_not_use_cetera_if_cetera_host_not_present
     APP_CONFIG.stubs(cetera_host: nil)
     assert !@browse_actions_container.send(:using_cetera?)
@@ -150,11 +136,13 @@ class BrowseActionsTest2 < Minitest::Test
   end
 
   def test_use_cetera_on_browse
+    @browse_actions_container.stubs(:using_cetera? => true)
     BrowseActionsContainer.any_instance.stubs(:request => OpenStruct.new(path: '/browse') )
     assert @browse_actions_container.send(:using_cetera?), 'expected using_cetera? = true when path /browse'
   end
 
   def test_use_cetera_on_dataslated_home_browse
+    @browse_actions_container.stubs(:using_cetera? => true)
     BrowseActionsContainer.any_instance.stubs(:request => OpenStruct.new(path: '/') )
     assert @browse_actions_container.send(:using_cetera?), 'expected using_cetera? = true when path /'
   end
@@ -277,33 +265,32 @@ class BrowseActionsTest3 < Minitest::Test
 
   # backward compatibility with core/clytemnestra
   def search_and_return_category_param(category)
-    request = OpenStruct.new
-    request.params = { category: category }.reject { |_, v| v.blank? }
+    request = OpenStruct.new(:params => { category: category }.reject { |_, v| v.blank? })
     browse_options = @browse_actions_container.send(:process_browse, request)
     browse_options[:search_options][:category].to_s.split(',') # NOT REAL CSV FORMAT!
   end
 
   # cetera catalog api
   def search_and_return_cetera_categories_param(category)
-    request = OpenStruct.new
-    request.params = { category: category }
+    @browse_actions_container.stubs(:using_cetera? => true)
+    request = OpenStruct.new(:params => { category: category })
     browse_options = @browse_actions_container.send(:process_browse, request)
     browse_options[:search_options][:categories]
   end
 
   def test_process_browse_unpublished_includes_drafts_if_feature_flag_enabled
     stub_feature_flags_with(:ingress_reenter => true)
-    request = OpenStruct.new
-    request.params = { category: 'Test Category 4' }
+    @browse_actions_container.stubs(:using_cetera? => true)
+    request = OpenStruct.new(:params => { category: 'Test Category 4' })
     options = {limitTo: 'unpublished'}
     browse_options = @browse_actions_container.send(:process_browse, request, options)
     assert_equal ['draft', 'tables'], browse_options[:search_options][:limitTo]
   end
 
   def test_process_browse_unpublished_excludes_drafts_if_feature_flag_false
+    @browse_actions_container.stubs(:using_cetera? => true)
     stub_feature_flags_with(:ingress_reenter => false)
-    request = OpenStruct.new
-    request.params = { category: 'Test Category 4' }
+    request = OpenStruct.new(:params => { category: 'Test Category 4' })
     options = {limitTo: 'unpublished'}
     browse_options = @browse_actions_container.send(:process_browse, request, options)
     assert_equal 'tables', browse_options[:search_options][:limitTo]
@@ -333,6 +320,7 @@ class BrowseActionsTest3 < Minitest::Test
 
     expected_categories = [parent_category] | child_categories
     stub_cetera_for_categories(expected_categories)
+    @browse_actions_container.stubs(:using_cetera? => true)
 
     assert_equal expected_categories, search_and_return_cetera_categories_param(parent_category)
   end
@@ -342,6 +330,7 @@ class BrowseActionsTest3 < Minitest::Test
 
     expected_categories = [child_category]
     stub_cetera_for_categories(expected_categories)
+    @browse_actions_container.stubs(:using_cetera? => true)
 
     assert_equal expected_categories, search_and_return_cetera_categories_param(child_category)
   end
@@ -377,6 +366,7 @@ class BrowseActionsTest3 < Minitest::Test
     # And it will show up in the FE's list of displayed categories
     expected_categories = [imaginary_category]
     stub_cetera_for_categories(expected_categories)
+    @browse_actions_container.stubs(:using_cetera? => true)
 
     assert_equal expected_categories, search_and_return_cetera_categories_param(imaginary_category)
   end

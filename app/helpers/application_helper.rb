@@ -913,6 +913,13 @@ module ApplicationHelper
   def using_cetera?
     return false unless APP_CONFIG.cetera_host.present?
 
+    # Hack to deal with lack of support for cetera_profile_search == true and not yet having a design
+    # for the profile embedded catalog that isn't browse2.
+    return false if defined?(controller_name) && controller_name == 'profile'
+
+    # Hack to deal with consumers of the asset picker (i.e. StoryTeller) needing the old browse view.
+    return false if defined?(controller_name) && controller_name == 'browse' && action_name == 'select_dataset'
+
     uri = URI(APP_CONFIG.cetera_host)
     unless uri.host.present? && uri.scheme.present?
       Rails.logger.error('APP_CONFIG.cetera_host is incorrectly defined. Missing host and/or scheme')

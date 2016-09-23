@@ -6,8 +6,7 @@ class CustomContentControllerTest < ActionController::TestCase
   ANONYMOUS_USER = 'anon'.freeze
 
   PAGE_PATH = 'hello'.freeze
-  PAGE_KEY = ("/#{PAGE_PATH}").freeze
-  BASIC_PARAMS = [[:path,  PAGE_PATH], [:action, 'page'], [:controller, 'custom_content'] ].sort.freeze
+  BASIC_PARAMS = [[:path,  PAGE_PATH], [:action, 'page'], [:controller, 'custom_content']].sort.freeze
 
   def setup
     init_core_session
@@ -111,12 +110,12 @@ class CustomContentControllerTest < ActionController::TestCase
 
   test '304 for User Manifest Cache' do
     stub_rails_cache
-    user = prepare_page(fixture='test/fixtures/dataslate-private-hello.json', anonymous=false)
+    prepare_page(fixture='test/fixtures/dataslate-private-hello.json', anonymous=false)
     get :page, :path => PAGE_PATH
     assert_response :success
     assert_etag_request(@response.headers['ETag'], PAGE_PATH)
 
-    user = prepare_page(fixture='test/fixtures/dataslate-private-hello.json', anonymous=false)
+    prepare_page(fixture='test/fixtures/dataslate-private-hello.json', anonymous=false)
     get :page, :path => PAGE_PATH
     assert_response :success
     assert_etag_request(@response.headers['ETag'], PAGE_PATH)
@@ -126,6 +125,17 @@ class CustomContentControllerTest < ActionController::TestCase
     load_sample_data('test/fixtures/sample-data.json')
     prepare_page(fixture = 'test/fixtures/pie-charts-and-repeaters.json', anonymous = true)
     get :page, :path => 'pie-repeat'
+    assert_response :success
+  end
+
+  test 'Render home page with embedded catalog' do
+    stub_rails_cache
+    Page.stubs(:[] => nil)
+    @controller.stubs(:get_config => Hashie::Mash.new(
+      JSON.parse(File.read('test/fixtures/dataslate-default-homepage.json'))
+    ))
+    @controller.stubs(:prepare_config)
+    get :page
     assert_response :success
   end
 

@@ -200,32 +200,10 @@
 
         <a name="browse2-results" tabindex="-1"></a>
 
-      <%-
-        if opts[:view_request_timed_out]
-      -%>
-
-        <%=
-          render(
-            :partial => 'datasets/browse2_results_request_timed_out',
-            :locals => {
-              :opts => opts
-            }
-          )
-        %>
-
-      <%-
-        elsif opts[:view_count] == 0 || opts[:view_count].nil?
-      -%>
-
-        <%=
-          render(
-            :partial => 'datasets/browse2_results_no_results',
-            :locals => {
-              :opts => opts
-            }
-          )
-        %>
-
+      <%- if opts[:view_request_timed_out] -%>
+        <%= render 'datasets/browse2_results_request_timed_out', :opts => opts %>
+      <%- elsif opts[:view_count].to_i == 0 -%>
+        <%= render 'datasets/browse2_results_no_results', :opts => opts %>
       <%-
         else
           opts[:view_results].each do |result|
@@ -329,7 +307,7 @@
 
             # Certain values must be derived differently based on whether this
             # is a result from Cetera or Clytemnestra/Core Server
-            if using_cetera_profile_search? || (using_cetera? && controller_name != 'profile')
+            if using_cetera? || using_cetera_profile_search?
               result_link = result.link
               result_categories = (result.categories || []).map(&View.method(:category_display)).compact
               result_topics = (result.tags || []).reject(&:empty?)

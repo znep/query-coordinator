@@ -18,23 +18,26 @@ module TestHelperMethods
     user
   end
 
-  def login(user = nil)
-    unless user
-      user = User.new(
-        'login' => 'user',
-        'email' => 'user@socrata.com',
-        'first_name' => 'first',
-        'last_name' => 'last',
-        'password' => 'password',
-        'uid' => 'four-four',
-        'screen_name' => 'first-last',
-        'id' => '123'
-      )
-    end
-    UserSession.controller = @controller
-    @controller.current_user_session = UserSession.new(
-      :login => user.login, :password => user.password
+  def default_user
+    User.new(
+      'login' => 'user',
+      'email' => 'user@socrata.com',
+      'first_name' => 'Randy',
+      'last_name' => 'Antler',
+      'displayName' => 'Randy Antler',
+      # This isn't a real password. If you need to re-record VCR cassettes, you'll need to use a real
+      # password here to auth with Core.
+      'password' => 'OpenData!',
+      'uid' => 'four-four',
+      'screen_name' => 'first-last',
+      'id' => '3hpa-tfzy'
     )
+  end
+
+  def login(user = nil)
+    user ||= default_user
+    UserSession.controller = @controller
+    @controller.current_user_session = UserSession.new(:login => user.login, :password => user.password)
     user
   end
 

@@ -369,7 +369,7 @@ module BrowseActions
     end
 
     # Categories should be at the top in browse2, otherwise in the 3rd slot
-    categories_index = FeatureFlags.derive(nil, request).cetera_search? ? 0 : 2
+    categories_index = using_cetera? ? 0 : 2
     browse_options[:facets] ||= [
       view_types_facet,
       cfs,

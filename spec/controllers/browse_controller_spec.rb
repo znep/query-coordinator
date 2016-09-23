@@ -106,6 +106,23 @@ describe BrowseController do
         end
       end
     end
+
+    context 'when cetera_search is true and cetera_profile_search is false' do
+      render_views
+
+      before do
+        rspec_stub_feature_flags_with(:cetera_search => true, :cetera_profile_search => false)
+      end
+
+      it 'should not use browse2 when rendering the asset picker' do
+        VCR.use_cassette('browse_controller/select_dataset') do
+          get :select_dataset
+          expect(response).to be_success
+          assert_select('table.gridList')
+        end
+      end
+    end
+
   end
 
   def stub_user

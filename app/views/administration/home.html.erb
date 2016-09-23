@@ -107,7 +107,7 @@
 <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
   <%- view_type = @catalog_config.try(:properties).try(:view_type) || 'table' -%>
   <%- # Disable these options for browse2 / new catalog, because they overwrite the view_type -%>
-  <%- unless FeatureFlags.derive(nil, request).cetera_search? -%>
+  <%- unless using_cetera? -%>
     <div class="contentBox withLeftNavigation layoutConfig">
       <h2><%= t("#{prefix}.catalog_layout_configuration") %></h2>
       <%= form_tag({:action => 'modify_catalog_config'}, {:method => 'post', :class => 'commonForm'}) %>

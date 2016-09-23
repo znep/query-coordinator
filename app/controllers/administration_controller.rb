@@ -384,10 +384,12 @@ class AdministrationController < ApplicationController
     respond_to do |format|
       format.html { render :action => 'users' }
       format.csv do
-        render :text => CSV.generate do |csv|
-          csv << User.csv_columns.values
-          @users_list.each { |user| csv << user.to_csv_row }
-        end
+        render :text =>
+          # braces used here rather than do-end to avoid localJumpError
+          CSV.generate { |csv|
+            csv << User.csv_columns.values
+            @users_list.each { |user| csv << user.to_csv_row }
+          }
       end
     end
   end

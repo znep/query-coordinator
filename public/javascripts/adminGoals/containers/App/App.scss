@@ -9,8 +9,6 @@
 }
 
 .alert {
-  margin: 30px;
-
   &.hidden {
     display: none;
   }
@@ -143,7 +141,7 @@
 }
 
 .bulk-actions {
-  margin: 16px 3px 0 0;
+  margin: 0 3px 0 0;
   overflow: auto;
 
   .btn-group {
@@ -196,5 +194,4 @@ a.btn {
 .goals-page {
   width: 98%;
   margin: 0 auto;
-  margin-top: calc(154px + 1%);
 }

@@ -16,6 +16,7 @@ function App(props) {
   return (
     <div className="app-container">
       <Components.PreviewBar />
+      <Components.HeaderBar />
       <Goals.Page />
       { feedbackFlannel }
     </div>

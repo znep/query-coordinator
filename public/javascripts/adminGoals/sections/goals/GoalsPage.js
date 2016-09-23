@@ -20,11 +20,15 @@ class GoalsPage extends React.Component {
   }
 
   render() {
-    const { isBulkEditFormVisible, isQuickEditFormVisible, isInitialLoadInProgress } = this.props;
+    const {
+      isBulkEditFormVisible,
+      isQuickEditFormVisible,
+      isInitialLoadInProgress
+    } = this.props;
 
     return (
       <div className="goals-page">
-        <Components.GoalTable loadInProgress={isInitialLoadInProgress} />
+        <Components.GoalTable loadInProgress={ isInitialLoadInProgress } />
         { isQuickEditFormVisible && <Components.QuickEditForm /> }
         { isBulkEditFormVisible && <Components.BulkEditForm /> }
       </div>
@@ -33,6 +37,7 @@ class GoalsPage extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  translations: state.get('translations'),
   isInitialLoadInProgress: Selectors.getLoading(state),
   isBulkEditFormVisible: State.getBulkEdit(state).get('visible'),
   isQuickEditFormVisible: State.getQuickEdit(state).get('visible')

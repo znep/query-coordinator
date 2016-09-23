@@ -603,27 +603,39 @@ $data-lens-color: #80acca;
     height: 16px;
     width: 16px;
   }
-  &.facebook #{$subselector} {
-    background-position: 0 0;
-    &:hover {
+  &.facebook {
+    #{$subselector} {
+      background-position: 0 0;
+    }
+    &:hover #{$subselector},
+    &:focus #{$subselector} {
       background-position: (-16px) 0;
     }
   }
-  &.twitter #{$subselector} {
-    background-position: 0 -16px;
-    &:hover {
+  &.twitter {
+    #{$subselector} {
+      background-position: 0 -16px;
+    }
+    &:hover #{$subselector},
+    &:focus #{$subselector} {
       background-position: (-16px) -16px;
     }
   }
-  &.email #{$subselector} {
-    background-position: 0 -32px;
-    &:hover {
+  &.email {
+    #{$subselector} {
+      background-position: 0 -32px;
+    }
+    &:hover #{$subselector},
+    &:focus #{$subselector} {
       background-position: (-16px) -32px;
     }
   }
-  &.subscribe #{$subselector} {
-    background-position: 0 -48px;
-    &:hover {
+  &.subscribe {
+    #{$subselector} {
+      background-position: 0 -48px;
+    }
+    &:hover #{$subselector},
+    &:focus #{$subselector} {
       background-position: (-16px) -48px;
     }
   }

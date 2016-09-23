@@ -342,6 +342,9 @@ ul.wizardButtons {
         @include box-shadow(0, 0, 0.3em, rgba(0, 0, 0, 0.3), true);
         color: $color_buttons_default_text;
       }
+      &:focus {
+        @include box-shadow(0, 0, 0.3em, rgba(0, 0, 0, 0.3), true);
+      }
     }
     &:first-child a, &.first a {
       @include border-radius-corner(top, left, 0.2em);

@@ -124,7 +124,6 @@ RSpec.describe 'presentation mode', type: :feature, js: true do
     stub_logged_in_user
     stub_sufficient_rights
     stub_core_view('pres-ents')
-    allow(SiteChrome).to receive(:for_current_domain).and_return(double('site_chrome').as_null_object)
     allow(CoreServer).to receive(:current_user_story_authorization).and_return(user_story_authorization)
     visit story
   end

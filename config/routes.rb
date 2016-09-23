@@ -41,11 +41,13 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :themes
-    resource :site_chrome, only: [:edit, :update]
   end
 
   # We expose certain health checks for consul
   get 'consul_checks/active' => 'consul_checks#active'
+
+  # Mounts the site-chrome engine
+  mount SocrataSiteChrome::Engine => '/socrata_site_chrome'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

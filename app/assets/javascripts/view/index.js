@@ -34,12 +34,8 @@ $(document).on('ready', function() {
 
   var $userStoryContainer = $('.user-story-container');
   var $userStory = $('.user-story');
-  var $header = $('.user-story-header');
-  var $headerMenuButton = $('.user-story-header-menu-button');
-  var $headerResponsiveMenuContainer = $('.user-story-responsive-menu-container');
-
-  var headerHeight = parseInt($header.height(), 10);
-  var lastScrollY = 0;
+  var $header = $('#site-chrome-header');
+  var $footer = $('#site-chrome-footer');
 
   function _applyWindowSizeClass() {
     var windowSizeClass = windowSizeBreakpointStore.getWindowSizeClass();
@@ -54,27 +50,17 @@ $(document).on('ready', function() {
       addClass(windowSizeClass);
   }
 
-  function _showOrHideHeaderAndResponsiveMenu() {
-    var scrollingDown = window.scrollY > lastScrollY;
-    var scrolledPastHeader = window.scrollY > headerHeight;
+  function _moveFooterToBottomOfWindowOrContent() {
+    const viewportHeight = $window.height();
+    const headerHeight = $header.outerHeight();
+    const contentHeight = $userStory.outerHeight();
+    const footerHeight = $footer.outerHeight();
 
-    if (scrollingDown && scrolledPastHeader) {
-      $header.addClass('withdrawn');
-      $headerResponsiveMenuContainer.addClass('withdrawn');
+    if (viewportHeight > contentHeight + headerHeight + footerHeight) {
+      $footer.css({ position: 'absolute', bottom: 0 });
     } else {
-      $header.removeClass('withdrawn');
-
-      if ($headerMenuButton.hasClass('active')) {
-        $headerResponsiveMenuContainer.removeClass('withdrawn');
-      }
+      $footer.css({ position: '', bottom: '' });
     }
-
-    lastScrollY = window.scrollY;
-  }
-
-  function _showOrHideResponsiveMenu() {
-    $headerMenuButton.toggleClass('active');
-    $headerResponsiveMenuContainer.toggleClass('withdrawn');
   }
 
   // Init visualizations
@@ -162,12 +148,11 @@ $(document).on('ready', function() {
     }
   });
 
-  // Handle showing/hiding the header on page scroll
-  $window.on('scroll', _showOrHideHeaderAndResponsiveMenu);
-  // Handle menu toggle when at small size
-  $headerMenuButton.on('click', _showOrHideResponsiveMenu);
   // Init window size
   _applyWindowSizeClass();
+
+  _moveFooterToBottomOfWindowOrContent();
+  $window.on('resize', _moveFooterToBottomOfWindowOrContent);
 
   if (Environment.IS_STORY_PUBLISHED) {
     analytics.sendMetric('domain', 'js-page-view', 1);

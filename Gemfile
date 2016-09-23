@@ -72,6 +72,9 @@ gem 'ConnectSDK', path: 'vendor/gems/ConnectSDK'
 # We use aws-sdk v2 for RDS database migrations
 gem 'aws-sdk'
 
+# Provides common header and footer
+gem 'socrata_site_chrome', '1.1.0'
+
 # AWS DB migration tasks
 gem 'httparty'
 gem 'decima-ruby', '0.1.0', path: 'vendor/gems/decima-ruby-0.1.0'

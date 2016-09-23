@@ -2,14 +2,15 @@
 <html lang="<%= I18n.locale %>">
 <head>
   <%= default_meta_tags() %>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><%= core_attributes['name'] || t('default_page_title') %></title>
-  <%= favicon_link_tag %>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  <title><%= page_title %></title>
+  <%= site_chrome_favicon_tag %>
   <%= stylesheet_link_tag 'application', media: 'all' %>
   <%= stylesheet_link_tag 'themes/themes.css', media: 'all' %>
   <%= stylesheet_link_tag '/themes/custom.css', media: 'all' %>
   <%= stylesheet_link_tag 'story-view', media: 'all' %>
   <%= stylesheet_link_tag 'print', media: 'print' %>
+  <%= site_chrome_stylesheet_tag %>
 
   <%= render partial: 'stories/partials/storyteller_environment' %>
 
@@ -28,7 +29,6 @@
   <% block_images.each do |image| %>
     <meta property="og:image" content="<%= image %>">
   <% end %>
-  <%= render 'shared/google_analytics_script' %>
 </head>
 <body id="story-view">
 
@@ -39,5 +39,8 @@
   <%= storyteller_javascript_include_tag 'test' %>
 <% end -%>
 <%= storyteller_javascript_include_tag 'view' %>
+<%= render 'shared/google_analytics_script' %>
+<%= site_chrome_google_analytics_tag %>
+<%= site_chrome_javascript_tag %>
 </body>
 </html>

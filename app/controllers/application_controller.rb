@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
   #   current_user  # with invalid cookies
   #   => nil
   def current_user
-    @current_user = env[SocrataSession::SOCRATA_SESSION_ENV_KEY].authenticate(env)
+    @current_user = ::RequestStore.store[:current_user] = env[SocrataSession::SOCRATA_SESSION_ENV_KEY].authenticate(env)
   end
 
   def current_user_story_authorization
@@ -62,8 +62,6 @@ class ApplicationController < ActionController::Base
     controller = params[:controller]
 
     case controller
-      when 'admin/site_chromes'
-        require_sufficient_rights_for_admin_site_chromes
       when 'admin/themes'
         require_sufficient_rights_for_admin_themes
       when 'api/v1/documents'
@@ -151,19 +149,6 @@ class ApplicationController < ActionController::Base
     raise StandardError.new(
       "Undefined authorization handler for controller `#{controller}` and action `#{action}`."
     )
-  end
-
-  def require_sufficient_rights_for_admin_site_chromes
-    action = params[:action]
-
-    case action
-      when 'edit'
-        require_super_admin_user
-      when 'update'
-        require_super_admin_user
-      else
-        raise_undefined_authorization_handler_error
-    end
   end
 
   def require_sufficient_rights_for_admin_themes

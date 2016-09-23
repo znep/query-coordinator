@@ -1,3 +1,5 @@
+import $ from 'jQuery';
+
 /**
  * @class PresentationMode
  * @description
@@ -13,6 +15,8 @@ export default function PresentationMode() {
   var userStory = document.querySelector('.user-story');
   var presentationMode = document.querySelector('.btn-presentation-mode');
   var editButton = document.querySelector('.btn-edit');
+  var header = document.querySelector('#site-chrome-header');
+  var footer = document.querySelector('#site-chrome-footer');
   var presentationButtons = {
     next: document.querySelector('.btn-presentation-next'),
     previous: document.querySelector('.btn-presentation-previous')
@@ -47,6 +51,18 @@ export default function PresentationMode() {
     window.location = window.location.href + slash + 'edit';
   }
 
+  function setUserStoryHeight() {
+    const $userStory = $(userStory);
+    const windowHeight = $(window).height();
+    const headerHeight = $(header).outerHeight();
+
+    if ($userStory.hasClass('presentation-mode')) {
+      $userStory.css('min-height', `${windowHeight - headerHeight}px`);
+    } else {
+      $userStory.css('min-height', '');
+    }
+  }
+
   function enablePresentationMode() {
     if (userStory.classList.contains('presentation-mode')) {
       enableLinearMode();
@@ -55,6 +71,7 @@ export default function PresentationMode() {
       if (editButton) { editButton.classList.add('hidden'); }
 
       userStory.classList.add('presentation-mode');
+      footer.classList.add('presentation-mode');
       presentationMode.classList.remove('icon-presentation');
       presentationMode.classList.add('icon-close-2');
       presentationButtons.previous.classList.remove('hidden');
@@ -68,6 +85,7 @@ export default function PresentationMode() {
           block.classList.remove('hidden');
         }
       });
+      setUserStoryHeight();
     }
   }
 
@@ -75,6 +93,7 @@ export default function PresentationMode() {
     if (editButton) { editButton.classList.remove('hidden'); }
 
     userStory.classList.remove('presentation-mode');
+    footer.classList.remove('presentation-mode');
     presentationMode.classList.remove('icon-close-2');
     presentationMode.classList.add('icon-presentation');
     presentationButtons.previous.classList.add('hidden');
@@ -84,6 +103,7 @@ export default function PresentationMode() {
       block.classList.remove('hidden');
     });
 
+    setUserStoryHeight();
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
   }

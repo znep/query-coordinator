@@ -88,10 +88,6 @@ class CoreServer
     configurations_request(verb: :get, type: 'story_theme', default_only: false, merge: false)
   end
 
-  def self.site_chrome
-    configurations_request(verb: :get, type: 'site_chrome', default_only: true, merge: false)
-  end
-
   def self.current_user_story_authorization
     authorization = nil
     stored_authorization = ::RequestStore.store[:current_user_story_authorization]

@@ -2,14 +2,6 @@ require 'rails_helper'
 
 shared_examples 'a secure application' do
 
-  before do
-    if site_chrome.present?
-      allow(SiteChrome).to receive(:for_current_domain).and_return(site_chrome)
-    else
-      allow(SiteChrome).to receive(:for_current_domain).and_return(double('site_chrome').as_null_object)
-    end
-  end
-
   self.use_transactional_fixtures = false
 
   describe 'View mode' do
@@ -65,24 +57,6 @@ end
 # Tread lightly. This was TDDd and was verified to fail before
 # the fixes were put in place.
 RSpec.describe 'XSS protection', type: :feature, js: true do
-  let(:site_chrome) do
-
-    site_chrome = double('site_chrome')
-    allow(site_chrome).to receive(:styles).and_return(
-      {
-        '$bg-color' => '#000',
-        '$font-color' => '#000'
-      }
-    )
-    allow(site_chrome).to receive(:content).and_return(
-      {
-        'friendlySiteName' => '',
-        'footerText' => '<script>window.xssFailure="site chrome footer injection"</script>'
-      }
-    )
-
-    site_chrome
-  end
   let(:view_metadata) {
     evil_title = '"><script>window.xssFailure="title injection"</script>'
     evil_description = '"><script>window.xssFailure="description injection"</script>'

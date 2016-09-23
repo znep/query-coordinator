@@ -1,4 +1,5 @@
 module ApplicationHelper
+  include SiteChromeHelper
 
   # Build translations to pass into javascript
   # Loads only from the lang/editor
@@ -32,6 +33,13 @@ module ApplicationHelper
     end
 
     content_tag('script', '', :type => 'text/javascript', :src => uri)
+  end
+
+  def page_title
+    [
+      core_attributes['name'] || t('default_page_title'),
+      site_chrome_window_title
+    ].join(' | ')
   end
 
   private

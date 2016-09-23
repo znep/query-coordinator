@@ -1,6 +1,6 @@
-<div class="user-story-container">
+<%= render 'site_chrome/header' %>
 
-  <%= render(partial: 'stories/partials/header') %>
+<div class="user-story-container">
 
   <div class="user-story large theme-<%= @story.theme %>" role="main">
     <% @story.blocks.each do |block| -%>
@@ -48,7 +48,7 @@
 
   </div>
 
-  <%= render(partial: 'stories/partials/footer') %>
 </div>
+<%= render 'site_chrome/footer', size: 'small' %>
 
 <%= render(partial: 'stories/partials/presentation_mode') %>

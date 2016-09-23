@@ -29,18 +29,14 @@
   );
   $.templates.downloadsTable = {
     downloadTypes: {
-      'obe_normal': normalDownloadTypes,
-      'nbe_normal': normalDownloadTypes,
+      'normal': normalDownloadTypes,
       'layer_attributes': ['CSV', 'JSON'], // for obe and nbe monolayer datasets
       'layer_geojson_attributes': ['CSV', 'JSON', 'GeoJSON'],
       'obe_geo': ['KML', 'KMZ', 'Shapefile', 'Original'],
       'nbe_geo': ['KML', 'KMZ', 'Shapefile', 'Original', 'GeoJSON']
     },
     directive: {
-      'obe_normal': {
-        '.downloadsTable .downloadsList tbody .item': downloadTypesDirective('downloadTypes')
-      },
-      'nbe_normal': {
+      'normal': {
         '.downloadsTable .downloadsList tbody .item': downloadTypesDirective('downloadTypes')
       },
       'obe_geo': {

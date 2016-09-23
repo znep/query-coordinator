@@ -250,9 +250,12 @@
     },
 
     getDownloadType: function() {
-      var backendPrefix = this.newBackend ? 'nbe_' : 'obe_';
-      var downloadType = this.isGeoDataset() ? 'geo' : 'normal';
-      return backendPrefix + downloadType;
+      if (!this.isGeoDataset()) {
+        return 'normal';
+      } else {
+        var backendPrefix = this.newBackend ? 'nbe_' : 'obe_';
+        return backendPrefix + 'geo';
+      }
     },
 
     isLayered: function() {

@@ -96,7 +96,7 @@ default: &default
 development: &development
   <<: *default
   # service hosts/ports/names et simil
-  cetera_host: http://api.us.socrata.com/api
+  cetera_host: http://localhost:5704
   curated_region_job_queue_hostname: localhost
   curated_region_job_queue_port: 2030
   http_port: 9292

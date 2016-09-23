@@ -56,6 +56,13 @@ html {
   #siteHeader {
     overflow: hidden; // prevent content leaking out of header on small screens
   }
+
+  .profile-sidebar {
+    display: none;
+  }
+  .profileContent .profileMainContent {
+    padding-right: 0;
+  }
 }
 
 .browse2 {
@@ -408,8 +415,6 @@ html {
   }
 
   .browse2-facet-and-results-header {
-    float: right;
-
     .browse2-results-header {
       @include desktop {
         margin-left: 23em;

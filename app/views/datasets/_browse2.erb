@@ -62,16 +62,7 @@
 
   <!-- Create Asset Dropdown -->
 
-  <%=
-    if create_asset_enabled
-      render(
-        :partial => 'datasets/browse2_create_asset_controls',
-        :locals => {
-          :opts => opts
-        }
-      )
-    end
-  %>
+  <%= render 'datasets/browse2_create_asset_controls', :opts => opts if create_asset_enabled %>
 
   <!-- Search -->
 
@@ -88,13 +79,7 @@
     # controls whether it should be displayed is in the :sidebar_config options hash and
     # is called 'search'.
     if opts[:sidebar_config].nil? || opts[:sidebar_config].search
-      render({
-        :partial => 'datasets/browse2_search',
-        :locals => {
-          :opts => opts,
-          :clear_search_url => clear_search_url
-        }
-      })
+      render 'datasets/browse2_search', :opts => opts, :clear_search_url => clear_search_url
     end
   -%>
 
@@ -126,44 +111,36 @@
 
       <!-- Results Header -->
 
-      <div class="browse2-results-header clearfix<%= opts[:browse_in_container] ? ' browse2-results-header-no-title' : '' %>">
+      <%=
+        browse_container_classes = %w(browse2-results-header)
+        browse_container_classes << 'clearfix' unless opts[:browse_in_container]
+        browse_container_classes << 'browse2-results-header-no-title' if opts[:browse_in_container]
 
-        <!-- Results Title -->
+        content_tag(:div, nil, :class => browse_container_classes) do
 
-        <%=
+          # Results Title
           if !opts[:browse_in_container]
-
-            clear_facet_options = get_clear_facet_options(opts)
-
-            render(
-              :partial => 'datasets/browse2_results_title',
-              :locals => {
-                :opts => opts,
-                :clear_facet_options => clear_facet_options
-              }
-            )
+            concat render 'datasets/browse2_results_title', :opts => opts,
+              :clear_facet_options => get_clear_facet_options(opts)
           end
-        %>
 
-        <!-- Results Sort Controls -->
+          # Results Sort Controls
+          if opts[:show_catalog_sort_dropdown]
+            sort_control_options = {
+              :opts => opts,
+              :sort_opts => sort_opts,
+              :time_options => [
+                { :value => 'week', :name => t('controls.browse.browse2.sort.periods.week') },
+                { :value => 'month', :name => t('controls.browse.browse2.sort.periods.month') },
+                { :value => 'year', :name => t('controls.browse.browse2.sort.periods.year') }
+              ]
+            }
+            sort_control_options.except!(:time_options) if using_cetera?
+            concat render 'datasets/browse2_results_sort_controls', sort_control_options
+          end
+        end
+      -%>
 
-        <%- if opts[:show_catalog_sort_dropdown] -%>
-            <%=
-              render(
-                :partial => 'datasets/browse2_results_sort_controls',
-                :locals => {
-                  :opts => opts,
-                  :sort_opts => sort_opts,
-                  :time_options => [
-                    { :value => 'week', :name => t('controls.browse.browse2.sort.periods.week') },
-                    { :value => 'month', :name => t('controls.browse.browse2.sort.periods.month') },
-                    { :value => 'year', :name => t('controls.browse.browse2.sort.periods.year') }
-                  ]
-                }.reject { |k, v| k == :time_options && using_cetera? }
-              )
-            %>
-        <%- end -%>
-      </div>
     </div>
 
     <div class="skip-links">
@@ -172,21 +149,15 @@
 
     <%=
       if opts[:facets].length > 0
-        render(
-          :partial => 'datasets/browse2_facets',
-          :locals => {
-            :opts => opts,
-            :sort_opts => sort_opts,
-            :facets_pane_classes => opts[:show_time_period] ? 'hasTimePeriod' : ''
-          }
-        )
+        render 'datasets/browse2_facets', :opts => opts, :sort_opts => sort_opts,
+          :facets_pane_classes => opts[:show_time_period] ? 'hasTimePeriod' : ''
       end
     %>
 
     <!-- Results Header -->
     <%=
       if opts[:header_config]
-        render :partial => 'datasets/browse2_header', :locals => { :opts => opts }
+        render 'datasets/browse2_header', :opts => opts
       end
     %>
 
@@ -200,32 +171,10 @@
 
         <a name="browse2-results" tabindex="-1"></a>
 
-      <%-
-        if opts[:view_request_timed_out]
-      -%>
-
-        <%=
-          render(
-            :partial => 'datasets/browse2_results_request_timed_out',
-            :locals => {
-              :opts => opts
-            }
-          )
-        %>
-
-      <%-
-        elsif opts[:view_count] == 0 || opts[:view_count].nil?
-      -%>
-
-        <%=
-          render(
-            :partial => 'datasets/browse2_results_no_results',
-            :locals => {
-              :opts => opts
-            }
-          )
-        %>
-
+      <%- if opts[:view_request_timed_out] -%>
+        <%= render 'datasets/browse2_results_request_timed_out', :opts => opts %>
+      <%- elsif opts[:view_count] == 0 || opts[:view_count].nil? -%>
+        <%= render 'datasets/browse2_results_no_results', :opts => opts %>
       <%-
         else
           opts[:view_results].each do |result|
@@ -390,43 +339,39 @@
               end
             end
           -%>
-          <%=
-            render(
-              :partial => 'datasets/browse2_result',
-              :locals => {
-                :base_url => opts[:base_url],
-                :user_params => opts[:user_params].dup,
-                :current_sort => opts[:current_sort],
-                :result_id => result.id,
-                :result_name => result.name,
-                :result_classes => result_classes,
-                :result_display_type => result.display.type,
-                :result_display_type_icon_class => result_display_type_icon_class,
-                :result_display_title => result_display_title,
-                :result_link => result_link,
-                :result_link_rel_type => view_rel_type(result, CurrentDomain, opts),
-                :result_description => view_formatted_description(result),
-                :result_categories => result_categories,
-                :result_last_updated => result_last_updated,
-                :result_created_at => result_created_at,
-                :result_view_count => result_view_count,
-                :result_topics => result_topics,
-                 # Pending a way to determine the result's data types, they will be set to nil and ignored
-                :result_data_types => nil,
-                :result_is_federated => result.federated?,
-                :show_official_badge =>
-                  result.respond_to?(:show_official_badge_in_catalog?) &&
-                  result.show_official_badge_in_catalog?, # not implemented for Cetera results
-                :federated_site_title => federated_site_title(result.domainCName),
-                :result_federated_origin_url => result_federated_origin_url,
-                :result_domain_icon_href => result.domain_icon_href,
-                :result_odn_link => result_odn_link,
-                :result_api_link => result_api_link,
-                :result_edit_controls => result_edit_controls,
-                :result_is_public => result_is_public,
-                :result_can_be_deleted => result_can_be_deleted
-              }
-            )
+
+          <%= render 'datasets/browse2_result',
+              :base_url => opts[:base_url],
+              :user_params => opts[:user_params].dup,
+              :current_sort => opts[:current_sort],
+              :result_id => result.id,
+              :result_name => result.name,
+              :result_classes => result_classes,
+              :result_display_type => result.display.type,
+              :result_display_type_icon_class => result_display_type_icon_class,
+              :result_display_title => result_display_title,
+              :result_link => result_link,
+              :result_link_rel_type => view_rel_type(result, CurrentDomain, opts),
+              :result_description => view_formatted_description(result),
+              :result_categories => result_categories,
+              :result_last_updated => result_last_updated,
+              :result_created_at => result_created_at,
+              :result_view_count => result_view_count,
+              :result_topics => result_topics,
+               # Pending a way to determine the result's data types, they will be set to nil and ignored
+              :result_data_types => nil,
+              :result_is_federated => result.federated?,
+              :show_official_badge =>
+                result.respond_to?(:show_official_badge_in_catalog?) &&
+                result.show_official_badge_in_catalog?, # not implemented for Cetera results
+              :federated_site_title => federated_site_title(result.domainCName),
+              :result_federated_origin_url => result_federated_origin_url,
+              :result_domain_icon_href => result.domain_icon_href,
+              :result_odn_link => result_odn_link,
+              :result_api_link => result_api_link,
+              :result_edit_controls => result_edit_controls,
+              :result_is_public => result_is_public,
+              :result_can_be_deleted => result_can_be_deleted
           %>
         <%-
           end
@@ -460,7 +405,7 @@
             if (opts[:footer_config].nil? || opts[:footer_config].counter) &&
               !opts[:disable][:counter]
           -%>
-            <%= render :partial => 'datasets/browse2_counter', :locals => { :opts => opts } %>
+            <%= render 'datasets/browse2_counter', :opts => opts %>
           <%-
             end
           end
@@ -471,7 +416,7 @@
     <!-- Suggest Dataset Call-to-action -->
 
     <%- if !opts[:browse_in_container] && CurrentDomain.module_enabled?(:dataset_nomination) -%>
-      <%= render :partial => 'datasets/browse2_suggest_dataset', :locals => { :opts => opts } %>
+      <%= render 'datasets/browse2_suggest_dataset', :opts => opts %>
     <%- end -%>
   </div>
 </div>
@@ -540,7 +485,7 @@
   </div>
   <%= stars_control('datasetAverageRating') %>
 </div>
-<%= render :partial => 'browse/row_search_templates' %>
+<%= render 'browse/row_search_templates' %>
 <% end %>
 
 <!-- Localization -->

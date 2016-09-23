@@ -11,7 +11,7 @@ const initialState = Immutable.fromJS({
     content: '',
     type: 'error'
   },
-  saveInProgress: false
+  updateInProgress: false
 });
 
 const section = 'goals';
@@ -22,7 +22,7 @@ const closeModal = () => initialState;
 
 const setFormData = (state, { data }) => state.mergeIn(['goal'], data);
 
-const setModalInProgress = (state, { inProgress }) => state.set('saveInProgress', inProgress);
+const setModalInProgress = (state, { inProgress }) => state.set('updateInProgress', inProgress);
 
 const showModalMessage = (state, { message, messageType }) => state.set('message', new Immutable.Map({
   visible: true,

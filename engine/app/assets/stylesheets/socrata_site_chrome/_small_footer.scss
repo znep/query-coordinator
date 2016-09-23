@@ -1,5 +1,6 @@
 $content_padding: 8px;
-$link_line_height: 40px;
+$links_height: 20px;
+$addendum_height: 20px;
 
 footer#site-chrome-footer.small {
   min-height: 0;
@@ -10,21 +11,23 @@ footer#site-chrome-footer.small {
 
     > div.logo {
       img {
-        max-height: 40px;
+        display: none; // hide logos on small footer
       }
       span.site-name {
         line-height: normal;
+        font-size: 18px;
       }
     }
 
     > div.links {
-      margin: 5px 0 0;
+      float: left;
+      height: $links_height;
 
       ul.links-col {
-        > li {
+        li {
           margin-right: 16px;
-
-          > a {
+          a.footer-link {
+            line-height: $links_height;
             font-size: 13px;
             line-height: 18px;
           }
@@ -32,19 +35,28 @@ footer#site-chrome-footer.small {
       }
     }
 
-    div.addendum {
-      .powered-by-socrata {
-        font-size: 12px;
+    > div.addendum {
+      float: right;
+      height: $addendum_height;
 
-        img.logo {
-          height: 16px;
-        }
+      * {
+        line-height: $addendum_height;
+        max-height: $addendum_height;
+      }
+
+      .site-chrome-copyright {
+        margin-right: 16px;
       }
 
       .site-chrome-social-links {
-        span.monosocial {
-          font-size: 30px;
-        }
+        display: none;
+      }
+    }
+
+    &.title-absent {
+      > div.logo {
+        float: left;
+        margin-bottom: 0;
       }
     }
   }

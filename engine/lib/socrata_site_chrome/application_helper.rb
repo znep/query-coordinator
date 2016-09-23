@@ -131,9 +131,13 @@ module SocrataSiteChrome
       end.sort_by { |x| social_link_order.find_index(x[:type]).to_i }
     end
 
+    def navbar_links
+      get_site_chrome.header[:links].to_a
+    end
+
     def navbar_links_div(use_dropdown: true)
       content_tag(:div, :class => 'site-chrome-nav-links') do
-        get_site_chrome.header[:links].to_a.each do |link|
+        navbar_links.each do |link|
           concat(
             if valid_navbar_menu_item?(link)
               if use_dropdown

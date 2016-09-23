@@ -1,5 +1,7 @@
-$content_padding: 20px;
+$content_padding: 16px;
 $addendum_content_margin: 80px;
+$links_height: 40px;
+$addendum_height: 40px;
 
 footer#site-chrome-footer {
   display: block;
@@ -14,12 +16,14 @@ footer#site-chrome-footer {
     overflow: hidden;
 
     > div.logo {
+      margin-bottom: $content_padding / 2;
       > a {
         text-decoration: none;
         > img {
           height: $footer_logo_height;
           width: $footer_logo_width;
           vertical-align: middle;
+          margin-right: $text_padding;
         }
 
         > span.site-name {
@@ -27,14 +31,13 @@ footer#site-chrome-footer {
           font-size: 22px;
           color: $footer_fg_color;
           line-height: $footer_logo_height;
-          margin-left: $text_padding;
           vertical-align: middle;
         }
       }
     }
 
     > div.links {
-      margin: 20px 0 10px;
+      height: $links_height;
 
       ul.links-col {
         margin: 0;
@@ -54,27 +57,66 @@ footer#site-chrome-footer {
             text-decoration: none;
             font-weight: 300;
             font-size: 14px;
-            line-height: 24px;
+            line-height: $links_height;
 
             &:hover, &:focus, &:active {
               text-decoration: underline;
             }
           }
         }
-
-        @include mobile-sm {
-          text-align: left;
-        }
       }
     }
 
     > div.addendum {
+      height: $addendum_height;
+
+      * {
+        line-height: $addendum_height;
+        max-height: $addendum_height;
+      }
+
+      .site-chrome-copyright {
+        display: inline-block;
+        font-size: 14px;
+        font-weight: 300;
+        color: $footer_fg_color;
+        margin: 0 $addendum_content_margin 0 auto;
+        vertical-align: bottom;
+      }
+
+      $social_link_margin: 14px;
+
+      .site-chrome-social-links {
+        margin-right: $addendum_content_margin - $social_link_margin;
+        display: inline-block;
+        vertical-align: middle;
+
+        a.site-chrome-social-link {
+          display: inline-block;
+          color: $footer_fg_color;
+          text-decoration: none;
+          font-size: 16px;
+          font-weight: 300;
+          margin-right: $social_link_margin;
+
+          span.monosocial {
+            line-height: 40px;
+          }
+
+          &:hover, &:focus, &:active {
+            span.monosocial {
+              text-decoration: none;
+            }
+          }
+        }
+      }
+
       .powered-by-socrata {
-        margin-right: $addendum_content_margin;
         display: inline-block;
         font-weight: 300;
         vertical-align: bottom;
         font-size: 14px;
+        float: right;
 
         .powered-by {
           margin-right: 3px;
@@ -86,61 +128,45 @@ footer#site-chrome-footer {
           margin-top: -3px;
         }
       }
+    }
 
-      $social_link_margin: 14px;
+    // When no footer title is present, center the content
+    &.title-absent {
+      text-align: center;
 
-      .site-chrome-social-links {
-        margin-right: $addendum_content_margin - $social_link_margin;
-        display: inline-block;
-        vertical-align: middle;
-
-        a.site-chrome-social-link {
-          display: block;
-          float: left;
-          color: $footer_fg_color;
-          opacity: 0.7;
-          text-decoration: none;
-          font-size: 16px;
-          font-weight: 300;
-          margin-right: $social_link_margin;
-
-          span.monosocial {
-            position: relative;
-            top: 7px;
-          }
-
-          &:hover, &:focus, &:active {
-            span.monosocial {
-              text-decoration: none;
-            }
-          }
-        }
-      }
-
-      .site-chrome-copyright {
-        display: inline-block;
-        font-size: 14px;
-        font-weight: 300;
-        color: $footer_fg_color;
-        margin: 0 auto;
-        vertical-align: bottom;
-      }
-
-      @include mobile-sm {
-        .powered-by-socrata, .site-chrome-social-links, .site-chrome-copyright {
-          display: block;
-          float: left;
-          clear: both;
-          margin: 6px 0;
-        }
-
-        &.title-present {
-          text-align: left;
+      div.addendum  {
+        .powered-by-socrata {
+          float: none; // don't float right when we're centering the content
         }
       }
     }
-    &.title-present {
-      text-align: center;
+
+    // < 670px screen width
+    @include mobile-sm {
+      > div.logo {
+      }
+
+      > div.links {
+        height: auto;
+      }
+
+      > div.addendum {
+        height: auto;
+
+        .site-chrome-copyright {
+          float: left;
+          margin: 0;
+        }
+        .site-chrome-social-links {
+          float: right;
+          margin: 0;
+        }
+        .powered-by-socrata {
+          clear: both;
+          text-align: center;
+          margin: 0 auto;
+        }
+      }
     }
   }
 }

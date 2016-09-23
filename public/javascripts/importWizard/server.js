@@ -654,14 +654,24 @@ function getHumanAddress(components: LocationColumns.LocationSource) {
   return '{' + componentStrings.join(',') + '}';
 }
 
+function getLatLon(latitude, longitude) {
+  if (latitude && longitude) {
+    const lat = sourceColumnExpr(latitude);
+    const lon = sourceColumnExpr(longitude);
+
+    return `"latitude":${lat},"longitude":${lon},`;
+  } else {
+    return '';
+  }
+}
+
 export function getLocationColumnSource(resultColumn) {
   const components = resultColumn.columnSource.locationComponents;
   if (components.isMultiple) {
-    const lat = sourceColumnExpr(components.latitude);
-    const lon = sourceColumnExpr(components.longitude);
+    const latLon = getLatLon(components.latitude, components.longitude);
 
     // Can't use JSON.stringify because lat and lon need to be unquoted.
-    return `{"latitude":${lat},"longitude":${lon},"human_address":${getHumanAddress(components)}}`;
+    return `{${latLon}"human_address":${getHumanAddress(components)}}`;
   } else if (components.singleSource !== null) {
     return sourceColumnExpr(components.singleSource);
   } else {

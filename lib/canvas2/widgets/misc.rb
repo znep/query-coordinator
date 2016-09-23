@@ -305,7 +305,7 @@ module Canvas2
 
     def render_contents
       ds = context.present? ? context[:dataset] : nil
-      return ['', false] if ds.blank?
+      return ['', false] if ds.blank? || ds.non_tabular? || ds.data_lens?
 
       page_size = 20
       current_page = Util.component_data_page(self.id)

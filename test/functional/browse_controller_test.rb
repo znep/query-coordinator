@@ -395,6 +395,7 @@ class BrowseControllerTest < ActionController::TestCase
         returns('custom' => stubbed_custom_cutoff).at_least(1)
       CurrentDomain.expects(:property).with(:view_types_facet, :catalog).returns(nil)
       stub_feature_flags_with(:cetera_search => false)
+      CurrentDomain.expects(:property).with(:sortBy, :catalog).returns('relevance')
     end
 
     teardown do

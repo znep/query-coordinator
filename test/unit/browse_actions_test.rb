@@ -17,7 +17,7 @@ class BrowseActionsTest < Minitest::Test
   def setup
     @browse_actions_container = BrowseActionsContainer.new
     init_current_domain
-    CurrentDomain.stubs(property: nil)
+    CurrentDomain.stubs(:property => nil)
     @browse_actions_container.stubs(:current_user => nil)
   end
 
@@ -115,6 +115,7 @@ class BrowseActionsTest2 < Minitest::Test
   def setup
     @browse_actions_container = BrowseActionsContainer.new
     init_current_domain
+    CurrentDomain.stubs(:property => {:catalog => {:sortBy => 'relevance'}})
     stub_feature_flags_with(:cetera_search => true)
     APP_CONFIG.stubs(cetera_host: 'http://api.us.socrata.com/api')
   end
@@ -235,6 +236,7 @@ class BrowseActionsTest3 < Minitest::Test
     }
 
     init_current_domain
+    CurrentDomain.stubs(:property => {:catalog => {:sortBy => 'relevance'}})
     stub_feature_flags_with(:cetera_search => true)
     APP_CONFIG.stubs(cetera_host: 'http://api.us.socrata.com/api')
     CurrentDomain.stubs(configuration: nil)
@@ -406,6 +408,7 @@ class BrowseActionsTest4 < Minitest::Test
     @browse_actions_container = BrowseActionsContainer.new
     init_current_domain
 
+    CurrentDomain.stubs(:property => {:catalog => {:sortBy => 'relevance'}})
     CurrentDomain.stubs(configuration: nil)
     CurrentDomain.stubs(default_locale: 'en')
     I18n.stubs(locale: CurrentDomain.default_locale.to_s)

@@ -137,7 +137,7 @@ module Cetera
         domains: translate_domains(opts[:domains]),
         offset: translate_offset(opts[:offset], opts[:page], opts[:limit]),
         only: translate_display_type(opts[:limitTo], opts[:datasetView]),
-        order: translate_sort_by(opts[:sortBy])
+        order: translate_sort_by(opts[:sortBy] || opts[:default_sort])
       }.compact
     end
 

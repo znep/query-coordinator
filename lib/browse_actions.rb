@@ -433,6 +433,7 @@ module BrowseActions
             browse_options[:search_options][:domain_boosts] = Federation.federated_search_boosts
             browse_options[:search_options][:categories] = selected_category_and_any_children(browse_options)
             browse_options[:search_options][:search_context] = ENV['CETERA_SPOOF_HOST'] || CurrentDomain.cname
+            browse_options[:search_options][:default_sort] = CurrentDomain.property(:sortBy, :catalog)
 
             # localize catalog links if locale is present
             browse_options[:search_options][:locale] = locale unless locale.nil?

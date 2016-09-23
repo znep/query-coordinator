@@ -4,12 +4,20 @@ describe Cetera::Utils do
   include TestHelperMethods
 
   it 'should handle cetera soql params as query' do
-    params = Cetera::Utils.cetera_soql_params(sample_search_options)
+    actual_params = Cetera::Utils.cetera_soql_params(sample_search_options)
+    compare_params(actual_params)
+  end
 
-    expected_cetera_params.each do |key, expected|
-      actual = params[key]
-      expect(actual).to eq(expected)
-    end
+  it 'should handle sort order correctly' do
+    url_params = sample_search_options.merge(:default_sort => nil, :sortBy => 'alpha')
+    actual_params = Cetera::Utils.cetera_soql_params(url_params)
+    expected_params = expected_cetera_params.merge(:order => 'name')
+    compare_params(actual_params, expected_params)
+
+    url_params = sample_search_options.merge(:default_sort => 'newest', :sortBy => nil)
+    actual_params = Cetera::Utils.cetera_soql_params(url_params)
+    expected_params = expected_cetera_params.merge(:order => 'createdAt')
+    compare_params(actual_params, expected_params)
   end
 
   context 'translating offsets' do
@@ -308,7 +316,7 @@ describe Cetera::Utils do
       limit: 10,
       page: 4,
       categories: ['Traffic, Parking, and Transportation', 'And another thing'],
-      metadata_tag: { 'Dataset-Information_Superhero' => 'Superman' }
+      metadata_tag: { 'Dataset-Information_Superhero' => 'Superman' },
     }
   end
 
@@ -324,7 +332,14 @@ describe Cetera::Utils do
       limit: 10,
       offset: 30,
       categories: ['Traffic, Parking, and Transportation', 'And another thing'],
-      'Dataset-Information_Superhero' => 'Superman'
+      'Dataset-Information_Superhero' => 'Superman',
     }
+  end
+
+  def compare_params(actual_params, expected_params=expected_cetera_params)
+    expected_params.each do |key, expected|
+      actual = actual_params[key]
+      expect(actual).to eq(expected)
+    end
   end
 end

@@ -86,23 +86,23 @@ describe("metadata's reducer testing", () => {
 
   describe('CHECK_PRIVACY_INITIALIZATION_PRIVATE', () => {
     it('checks initial privacy of the dataset', () => {
-      expect(state.contents.privacySettings).to.equal('private');
+      expect(state.privacySettings).to.equal('private');
     });
   });
 
   describe('SET_PRIVACY_PUBLIC', () => {
     it('sets the privacy of the dataset to public', () => {
       const result = update(state, updatePrivacySettings('public'));
-      expect(result.contents.privacySettings).to.equal('public');
+      expect(result.privacySettings).to.equal('public');
     });
   });
 
   describe('SET_PRIVACY_PRIVATE', () => {
     it('sets the privacy of the dataset to private', () => {
-      state.contents.privacySettings = 'public';
+      state.privacySettings = 'public';
 
       const result = update(state, updatePrivacySettings('private'));
-      expect(result.contents.privacySettings).to.equal('private');
+      expect(result.privacySettings).to.equal('private');
     });
   });
 
@@ -348,9 +348,10 @@ describe('validators', () => {
 
   describe('isMetadataUnsaved', () => {
     it('returns false if metadata has not been updated', () => {
-      metadata.lastSaved = metadata.contents;
+      metadata.lastSaved = {}
+      metadata.lastSaved.lastSavedContents = metadata.contents;
+      metadata.lastSaved.lastSavedLicense = metadata.license
       const unsaved = isMetadataUnsaved(metadata);
-
       expect(unsaved).to.equal(false);
     });
 
@@ -483,44 +484,48 @@ describe('view testing', () => {
 
 });
 
-describe('testing for lastSaved', () => {
+describe('lastSaved', () => {
   let metadata, contents, lastSavedMetadata;
 
-  describe('last saved testing', () => {
-    it('returns that wizard intializes metadata and lastSaved equally', () => {
-      metadata = initialNewDatasetModel({}).metadata;
-      lastSavedMetadata = metadata.lastSaved;
+  it('intializes with the same contents as metadata', () => {
+    metadata = initialNewDatasetModel({}).metadata;
+    lastSavedMetadata = metadata.lastSaved;
 
-      expect(lastSavedMetadata).to.deep.equal({
-        lastSavedContents: metadata.contents,
-        lastSavedLicense: metadata.license
-      });
-    });
-
-    it('returns that an unsaved wizard does not update lastSaved to equal metadata', () => {
-      const state = initialNewDatasetModel({});
-      metadata = state.metadata;
-      lastSavedMetadata = state.metadata.lastSaved;
-      metadata = update(metadata, updateContactEmail('wombats@australia.au'));
-
-      expect(lastSavedMetadata).to.not.deep.equal({
-        lastSavedContents: metadata.contents,
-        lastSavedLicense: metadata.license
-      });
-    });
-
-    it('returns that the saved wizard updates lastSaved to equal metadata', () => {
-      const state = initialNewDatasetModel({});
-      metadata = state.metadata;
-      const tempLastSaved = state.metadata.lastSaved.lastSavedContents;
-      metadata = update(metadata, updateContactEmail('wombats@australia.au'));
-      lastSavedMetadata = updateForLastSaved(tempLastSaved, updateLastSaved(metadata));
-
-      expect(lastSavedMetadata).to.deep.equal({
-        lastSavedContents: metadata.contents,
-        lastSavedLicense: metadata.license
-      });
+    expect(lastSavedMetadata).to.deep.equal({
+      lastSavedContents: metadata.contents,
+      lastSavedLicense: metadata.license,
+      lastSavedPrivacySettings: metadata.privacySettings
     });
   });
 
+  it('does not update to match metadata when no one has saved', () => {
+    const state = initialNewDatasetModel({});
+    metadata = state.metadata;
+    lastSavedMetadata = state.metadata.lastSaved;
+    metadata = update(metadata, updateContactEmail('wombats@australia.au'));
+
+    // not sure this test makes sense... how would this possibly update?
+
+    expect(lastSavedMetadata).to.not.deep.equal({
+      lastSavedContents: metadata.contents,
+      lastSavedLicense: metadata.license,
+      lastSavedPrivacySettings: metadata.privacySettings
+    });
+  });
+
+  it('updates to match metadata when a user successfully saves', () => {
+    const state = initialNewDatasetModel({});
+    metadata = state.metadata;
+    const tempLastSaved = state.metadata.lastSaved.lastSavedContents;
+    metadata = update(metadata, updateContactEmail('wombats@australia.au'));
+    lastSavedMetadata = updateForLastSaved(tempLastSaved, updateLastSaved(metadata));
+
+    // can we test this by releasing actions and checking the state anew instead?
+
+    expect(lastSavedMetadata).to.deep.equal({
+      lastSavedContents: metadata.contents,
+      lastSavedLicense: metadata.license,
+      lastSavedPrivacySettings: metadata.privacySettings
+    });
+  });
 });

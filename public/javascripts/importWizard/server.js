@@ -39,7 +39,6 @@ export function saveMetadataThenProceed() {
       dispatch(proceedFromMetadataPane());
     };
     dispatch(saveMetadataToViewsApi()).then(proceed);
-
   };
 }
 
@@ -56,10 +55,13 @@ export function saveMetadataToViewsApi() {
         if (response.status >= 200 && response.status < 300) {
           dispatch(Metadata.metadataSaveComplete(metadata.contents));
           dispatch(Metadata.updateLastSaved(metadata));
-          dispatch(updatePrivacy(datasetId, metadata, metadata.contents.privacySettings));
         } else {
           dispatch(Metadata.metadataSaveError(body));
         }
+      }).catch(() => {
+        // if there's a 502, it's returned as html which causes a json parse error
+        // use the statusText instead
+        dispatch(Metadata.metadataSaveError(response.statusText));
       });
     }).catch((err) => {
       dispatch(Metadata.metadataSaveError(err));
@@ -67,6 +69,27 @@ export function saveMetadataToViewsApi() {
   };
 }
 
+export function savePrivacySettings() {
+  return (dispatch, getState) => {
+    const { datasetId, metadata } = getState();
+    dispatch(Metadata.metadataPrivacySaveStart());
+    const apiPrivacy = metadata.privacySettings === 'public' ? 'public.read' : 'private';
+
+    return socrataFetch(`/api/views/${datasetId}?accessType=WEBSITE&method=setPermission&value=${apiPrivacy}`, {
+      method: 'PUT',
+      credentials: 'same-origin'
+    }).then((response) => {
+      if (response.status >= 200 && response.status < 300) {
+        dispatch(Metadata.metadataPrivacySaveComplete(metadata.contents));
+        dispatch(Metadata.updatePrivacyLastSaved(metadata.privacySettings));
+      } else {
+        dispatch(Metadata.metadataPrivacySaveError(response.statusText));
+      }
+    }).catch((err) => {
+      dispatch(Metadata.metadataPrivacySaveError(err));
+    });
+  };
+}
 
 export function proceedFromMetadataPane() {
   return (dispatch, getState) => {
@@ -98,24 +121,6 @@ export function proceedFromMetadataPane() {
           console.error('Unknown operation!', navigation.operation);
       }
     }
-  };
-}
-
-export function updatePrivacy(datasetId, metadata, currentPrivacy) {
-  return (dispatch) => {
-    const apiPrivacy = currentPrivacy === 'public' ? 'public.read' : 'private';
-
-    return socrataFetch(`/api/views/${datasetId}?accessType=WEBSITE&method=setPermission&value=${apiPrivacy}`, {
-      method: 'PUT',
-      credentials: 'same-origin',
-      headers: {
-        'X-CSRF-Token': authenticityToken,
-        'X-App-Token': appToken
-      }
-    }).then(() => {
-      dispatch(Metadata.metadataSaveComplete(metadata.contents));
-      dispatch(Metadata.updateLastSaved(metadata));
-    });
   };
 }
 
@@ -235,15 +240,19 @@ export function coreViewToModel(view) {
   const license = view.licenseId
                   ? coreViewLicense(view)
                   : Metadata.emptyLicense();
+  const privacySettings = _.has(view, 'grants') ? 'public' : 'private';
   return {
     nextClicked: false,
     contents: contents,
     lastSaved: {
       lastSavedContents: _.cloneDeep(contents),
-      lastSavedLicense: _.cloneDeep(license)
+      lastSavedLicense: _.cloneDeep(license),
+      lastSavedPrivacySettings: privacySettings
     },
-    apiCall: { type: 'In Progress' },
-    license: license
+    apiCall: { type: 'NotStarted' },
+    license: license,
+    privacySettings: privacySettings,
+    privacyApiCall: { type: 'NotStarted' }
   };
 }
 
@@ -298,10 +307,7 @@ export function coreViewContents(view) {
     displayType: view.displayType,
     href: _.has(view.metadata, 'accessPoints')
             ? view.metadata.accessPoints.com
-            : '',
-    privacySettings: _.has(view, 'grants')
-                        ? 'public'
-                        : 'private'
+            : ''
   };
 }
 

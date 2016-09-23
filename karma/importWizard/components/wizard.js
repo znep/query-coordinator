@@ -212,8 +212,12 @@ describe('initialNewDatasetModel', () => {
     layers: null,
     metadata: {
       nextClicked: false,
+      privacySettings: 'private',
       apiCall: {
-        type: 'Not Started'
+        type: 'NotStarted'
+      },
+      privacyApiCall: {
+        type: 'NotStarted'
       },
       contents: {
         name: 'foo',
@@ -266,7 +270,6 @@ describe('initialNewDatasetModel', () => {
           ]
         },
         contactEmail: '',
-        privacySettings: 'private'
       },
       license: {
         licenseName: '',
@@ -326,8 +329,7 @@ describe('initialNewDatasetModel', () => {
               }
             ]
           },
-          contactEmail: '',
-          privacySettings: 'private'
+          contactEmail: ''
         },
         lastSavedLicense: {
           licenseName: '',
@@ -335,7 +337,8 @@ describe('initialNewDatasetModel', () => {
           licenseId: '',
           attribution: '',
           sourceLink: null
-        }
+        },
+        lastSavedPrivacySettings: 'private'
       }
     },
     importStatus: {
@@ -352,8 +355,8 @@ describe('initialNewDatasetModel', () => {
 
     it('returns the initial state, with navigation set correctly', () => {
       // this test is almost exactly the same as the implementation...?
-      const expected = initialNewDatasetModel(theView, { version: 2, importMode: 'CREATE_FROM_SCRATCH' });
-      const actual = {
+      const actual = initialNewDatasetModel(theView, { version: 2, importMode: 'CREATE_FROM_SCRATCH' });
+      const expected = {
         ...initialState,
         lastSavedVersion: 2,
         navigation: {
@@ -370,8 +373,8 @@ describe('initialNewDatasetModel', () => {
   describe('when the `importSource` has an `operation` of `UPLOAD_BLOB`', () => {
 
     it('sets the current page to UploadFile when there is no file', () => {
-      const expected = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_BLOB' });
-      const actual = {
+      const actual = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_BLOB' });
+      const expected = {
         ...initialState,
         lastSavedVersion: 2,
         navigation: {
@@ -380,12 +383,13 @@ describe('initialNewDatasetModel', () => {
           path: ['SelectType']
         }
       };
+
       expect(expected).to.deep.equal(actual);
     });
 
     it('sets the current page to Metadata when there is file information', () => {
-      const expected = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_BLOB', fileId: 4490, fileName: 'name'});
-      const actual = {
+      const actual = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_BLOB', fileId: 4490, fileName: 'name'});
+      const expected = {
         ...initialState,
         lastSavedVersion: 2,
         navigation: {
@@ -409,8 +413,8 @@ describe('initialNewDatasetModel', () => {
   describe('when the `importSource` has an `operation` of `UPLOAD_GEO`', () => {
 
     it('sets the current page to UploadFile when there is no file', () => {
-      const expected = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_GEO' });
-      const actual = {
+      const actual = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_GEO' });
+      const expected = {
         ...initialState,
         lastSavedVersion: 2,
         navigation: {
@@ -423,8 +427,8 @@ describe('initialNewDatasetModel', () => {
     });
 
     it('sets the current page to ImportShapefile when there is file information, and handles missing layers field', () => {
-      const expected = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_GEO', scanResults: {}, fileId: 4490, fileName: 'name'});
-      const actual = {
+      const actual = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_GEO', scanResults: {}, fileId: 4490, fileName: 'name'});
+      const expected = {
         ...initialState,
         lastSavedVersion: 2,
         navigation: {
@@ -447,8 +451,8 @@ describe('initialNewDatasetModel', () => {
     });
 
     it('sets the current page to ImportShapefile when there is file information, and handles layer info', () => {
-      const expected = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_GEO', scanResults: {layers: ['layer_1']}, fileId: 4490, fileName: 'name'});
-      const actual = {
+      const actual = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_GEO', scanResults: {layers: ['layer_1']}, fileId: 4490, fileName: 'name'});
+      const expected = {
         ...initialState,
         lastSavedVersion: 2,
         navigation: {
@@ -473,8 +477,8 @@ describe('initialNewDatasetModel', () => {
 
   describe('when the `importSource` has an `operation` of `LINK_EXTERNAL`', () => {
     it('rehydrates properly', () => {
-      const expected = initialNewDatasetModel(theView, { version: 2, importMode: 'LINK_EXTERNAL' });
-      const actual = {
+      const actual = initialNewDatasetModel(theView, { version: 2, importMode: 'LINK_EXTERNAL' });
+      const expected = {
         ...initialState,
         lastSavedVersion: 2,
         navigation: {

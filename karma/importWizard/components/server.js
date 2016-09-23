@@ -34,8 +34,9 @@ describe('ImportStatus reducer', () => {
 
 });
 
-describe('testing for API responses', () => {
+describe('API response for', () => {
   const metadata = {
+    privacySettings: 'private',
     license: {
       licenseId: 'PDDL',
       licenseName: 'Open Data Commons',
@@ -52,7 +53,6 @@ describe('testing for API responses', () => {
       mapLayer: 'link',
       href: '',
       contactEmail: 'email@email.com',
-      privacySettings: 'private',
       displayType: 'draft',
       customMetadata: {
         'first':
@@ -145,7 +145,7 @@ describe('testing for API responses', () => {
   });
 
   describe('modelToViewParam', () => {
-    it('test round trip without href', () => {
+    it('round trips normally', () => {
       const coreView = modelToViewParam(metadata, navigation);
       const viewMetadata = coreView.metadata;
 
@@ -163,7 +163,7 @@ describe('testing for API responses', () => {
       expect(viewMetadata.accessPoints).to.equal(undefined);
     });
 
-    it('test round trip with href', () => {
+    it('round trips contents.href', () => {
       const metadataCopy = _.cloneDeep(metadata);
       metadataCopy.contents.href = 'yahoo.com';
       const coreView = modelToViewParam(metadataCopy, navigation);
@@ -207,7 +207,7 @@ describe('testing for API responses', () => {
   });
 
   describe('coreViewToModel', () => {
-    it('test round trip', () => {
+    it('round trips successfully', () => {
       const view = modelToViewParam(metadata, navigation);
       const meta = coreViewToModel(view);
       expect(metadata.contents).to.deep.equal(meta.contents);
@@ -215,7 +215,7 @@ describe('testing for API responses', () => {
   });
 
   describe('coreViewToModel', () => {
-    it('test round trip when core strips null values', () => {
+    it('round trips when core strips null values', () => {
       const view = modelToViewParam(metadata, navigation);
       delete view.metadata.custom_fields;
       delete view.privateMetadata.custom_fields;
@@ -250,7 +250,7 @@ describe('testing for API responses', () => {
       expect(metadata.contents.mapLayer).to.deep.equal(meta.contents.mapLayer);
       expect(metadata.contents.href).to.deep.equal(meta.contents.href);
       expect(metadata.contents.contactEmail).to.deep.equal(meta.contents.contactEmail);
-      expect(metadata.contents.privacySettings).to.deep.equal(meta.contents.privacySettings);
+      expect(metadata.privacySettings).to.deep.equal(meta.privacySettings);
       expect(metadata.contents.displayType).to.deep.equal(meta.contents.displayType);
       expect(metadata.contents.customMetadata).to.deep.equal(meta.contents.customMetadata);
 

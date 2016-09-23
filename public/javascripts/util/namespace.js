@@ -1,7 +1,7 @@
 // Create blist namespace if DNE
 /*global blist: true */
-if (!blist) {
-  var blist = {};
+if (!window.blist) {
+  window.blist = {};
 }
 // Create file namespace if DNE
 if (!blist.namespace) {

@@ -73,7 +73,23 @@
       assetNS.loadPartials(translateUrls('/modals/', assets.newModals, 'newModals'), 'newModals', finished);
     }
     if (loadJS) {
-      assetNS.loadLibraries(translateUrls('/javascripts/', assets.javascripts, 'libraries'), finished);
+      if (blist.feature_flags.prefer_webpack) {
+        var sources;
+
+        if (blist.configuration.development) {
+          sources = _.map(assets.javascripts, function(item) {
+            return '/javascripts/webpack/open-data/' + item.assets + '.js';
+          });
+        } else {
+          sources = _.map(assets.javascripts, function(item) {
+            return '/javascripts/build/' + blist.configuration.webpackManifest['open-data/' + item.assets + '.js'];
+          });
+        }
+
+        assetNS.loadLibraries(sources, finished);
+      } else {
+        assetNS.loadLibraries(translateUrls('/javascripts/', assets.javascripts, 'libraries'), finished);
+      }
     }
     if (loadTranslations) {
       assetNS.loadTranslations(assets.translations, finished);

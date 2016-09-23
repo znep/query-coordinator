@@ -786,15 +786,7 @@ module.exports = _.defaultsDeep({
     ]
   },
   module: {
-
-    // Disables linting during compilation, for now.
-    preLoaders: null,
-
     loaders: [
-      {
-        test: /(component|controls|screens|util)\//,
-        loader: 'script'
-      },
       {
         test: /plugins\//,
         loader: 'imports?define=>undefined,require=>undefined,module=>undefined,exports=>undefined,this=>window'

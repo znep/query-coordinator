@@ -34,18 +34,31 @@ module SocrataSiteChrome
     end
 
     def username
-      request_current_user.try(:displayName).presence ||
-        request_current_user.to_h['displayName'].presence ||
+      if current_user.nil? || current_user.displayName.blank?
         'Profile'
+      else
+        current_user.displayName
+      end
     end
 
-    def current_user_can_modify_site_chrome?
-      return false unless request_current_user.present?
+    def request_current_user
+      RequestStore.store[:current_user]
+    end
+
+    def current_user
+      return nil unless request_current_user.present?
       if request_current_user.respond_to?(:session_token)
         request_current_user
       else
         SocrataSiteChrome::User.new(request_current_user)
-      end.can_use_site_appearance?
+      end
+    end
+
+    def current_user_can_see_admin_link?
+      return false unless current_user
+      current_user.is_superadmin? ||
+        %w(administrator publisher designer editor viewer).
+          include?(current_user.role_name.to_s.downcase)
     end
 
     def copyright_source
@@ -225,10 +238,6 @@ module SocrataSiteChrome
           SocrataSiteChrome::DomainConfig.new(request.host).site_chrome_config(pub_stage)
         end
       )
-    end
-
-    def request_current_user
-      RequestStore.store[:current_user]
     end
 
     # Returns template name - either 'default' or 'rally'

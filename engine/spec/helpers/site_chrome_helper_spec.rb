@@ -86,50 +86,72 @@ describe SocrataSiteChrome::ApplicationHelper do
     end
   end
 
-  describe 'current_user_can_modify_site_chrome' do
+  describe '#current_user_can_see_admin_link?' do
     before do
       allow(helper).to receive(:request_current_user).and_return(user)
     end
 
-    context 'with an instance of a User object' do
-      let(:user) { SocrataSiteChrome::User.new }
-
-      it 'returns true when can_use_site_appearance? is true' do
-        allow(user).to receive(:can_use_site_appearance?).and_return(true)
-        expect(helper.current_user_can_modify_site_chrome?).to eq(true)
-      end
-
-      it 'returns false when can_use_site_appearance? is false' do
-        allow(user).to receive(:can_use_site_appearance?).and_return(false)
-        expect(helper.current_user_can_modify_site_chrome?).to eq(false)
-      end
-    end
-
-    context 'with Hash representation of a User object' do
-      let(:user) { {'roleName' => roleName } }
-
-      context 'as a designer' do
-        let(:roleName) { 'designer' }
-
-        it 'returns true when the user has correct privileges' do
-          expect(helper.current_user_can_modify_site_chrome?).to eq(true)
-        end
-      end
-
-      context 'as a viewer' do
-        let(:roleName) { 'viewer' }
-
-        it 'returns false' do
-          expect(helper.current_user_can_modify_site_chrome?).to eq(false)
-        end
-      end
-    end
-
-    context 'with some other type that responds to :session_token and :can_use_site_appearance?' do
-      let(:user) { OpenStruct.new(:session_token => 'token', :can_use_site_appearance? => true) }
+    context 'for superadmins' do
+      let(:user) { SocrataSiteChrome::User.new('flags' => 'admin') }
 
       it 'returns true' do
-        expect(helper.current_user_can_modify_site_chrome?).to eq(true)
+        expect(helper.current_user_can_see_admin_link?).to eq(true)
+      end
+    end
+
+    context 'for regular admins' do
+      let(:user) { SocrataSiteChrome::User.new('roleName' => 'administrator') }
+
+      it 'returns true' do
+        expect(helper.current_user_can_see_admin_link?).to eq(true)
+      end
+    end
+
+    context 'for publishers' do
+      let(:user) { SocrataSiteChrome::User.new('roleName' => 'publisher') }
+
+      it 'returns true' do
+        expect(helper.current_user_can_see_admin_link?).to eq(true)
+      end
+    end
+
+    context 'for designers' do
+      let(:user) { SocrataSiteChrome::User.new('roleName' => 'designer') }
+
+      it 'returns true' do
+        expect(helper.current_user_can_see_admin_link?).to eq(true)
+      end
+    end
+
+    context 'for editors' do
+      let(:user) { SocrataSiteChrome::User.new('roleName' => 'editor') }
+
+      it 'returns true' do
+        expect(helper.current_user_can_see_admin_link?).to eq(true)
+      end
+    end
+
+    context 'for viewers' do
+      let(:user) { SocrataSiteChrome::User.new('roleName' => 'viewer') }
+
+      it 'returns true' do
+        expect(helper.current_user_can_see_admin_link?).to eq(true)
+      end
+    end
+
+    context 'for none of the above' do
+      let(:user) { SocrataSiteChrome::User.new('roleName' => 'asdfasdf') }
+
+      it 'returns false' do
+        expect(helper.current_user_can_see_admin_link?).to eq(false)
+      end
+    end
+
+    context 'for an empty role' do
+      let(:user) { SocrataSiteChrome::User.new() }
+
+      it 'returns false' do
+        expect(helper.current_user_can_see_admin_link?).to eq(false)
       end
     end
   end

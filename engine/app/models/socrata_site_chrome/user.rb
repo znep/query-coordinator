@@ -201,10 +201,6 @@ module SocrataSiteChrome
       @data['roleName']
     end
 
-    def can_use_site_appearance?
-      is_superadmin? || is_administrator? || is_designer?
-    end
-
     def has_right?(right)
       self.rights && self.rights.include?(right)
     end

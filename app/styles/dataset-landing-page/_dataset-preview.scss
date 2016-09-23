@@ -35,6 +35,11 @@
       }
     }
 
+    // Hide the default socrata-visualizations spinner because we have a better one
+    .socrata-visualization-busy-indicator-container {
+      display: none !important;
+    }
+
     #table-container {
       height: 100%;
     }

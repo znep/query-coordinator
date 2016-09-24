@@ -81,7 +81,10 @@ module SocrataSiteChrome
       # Chroma brightness returns a number between 0 and 255 representing how bright the color is.
       # 180 seemed to be a good cutoff point to use the darker logo. If the background brightness is
       # greater than the cutoff, use the light bg socrata logo. Otherwise use the dark bg logo.
-      Chroma.paint(footer_bg_color).try(:brightness) > 180 ?
+
+      # EN-10151: By default Chroma returns 0 for "transparent" but it should be a light background.
+      # Special case that to use the dark logo as well.
+      footer_bg_color == 'transparent' || Chroma.paint(footer_bg_color).try(:brightness) > 180 ?
         '/socrata_site_chrome/images/socrata-logo-pb.png' :
         '/socrata_site_chrome/images/socrata-logo-2c-dark.png'
     end

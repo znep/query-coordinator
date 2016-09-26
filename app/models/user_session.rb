@@ -101,7 +101,7 @@ class UserSession
   end
 
   def remember_me=(value)
-    @remember_me = (value == '1')
+    @remember_me = (value == '1' || value.to_s.downcase == 'on')
   end
 
   # Look up the authentication token based on the user's cookie information.

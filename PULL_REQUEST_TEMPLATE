@@ -1,4 +1,5 @@
-- [ ] Bumped the gem version in `version.rb`
+- [ ] Bumped the gem version in [version.rb](https://github.com/socrata/socrata_site_chrome/blob/master/engine/lib/socrata_site_chrome/version.rb)
+- [ ] Bumped the `socrata_site_chrome` gem version in `Gemfile`
 - [ ] Ran `bundle install` and updated the `Gemfile.lock`
 - [ ] Made sure the JIRA ticket ID is in the commit message(s)
-- [ ] Made sure the tests passed for realzies (check Jenkins pull-request-test job)
+- [ ] Made sure the tests passed for realzies (check Jenkins [frontend-pull-request-test](https://jenkins-build.socrata.com/job/frontend-pull-request-test/) job)

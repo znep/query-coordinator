@@ -1,0 +1,4 @@
+- [ ] Bumped the gem version in `version.rb`
+- [ ] Ran `bundle install` and updated the `Gemfile.lock`
+- [ ] Made sure the JIRA ticket ID is in the commit message(s)
+- [ ] Made sure the tests passed for realzies (check Jenkins pull-request-test job)

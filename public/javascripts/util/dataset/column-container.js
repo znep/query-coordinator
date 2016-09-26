@@ -239,11 +239,13 @@
       });
 
       update(cont, vizCols, false, needsReorder);
-      if (!needsReorder && didHideShow) {
-        _.defer(function() {
-          (cont.view || cont).trigger('columns_changed', ['visibility']);
-        });
-      }
+      var columnsChanged = function() {
+        if (!needsReorder && didHideShow) {
+          _.defer(function() {
+            (cont.view || cont).trigger('columns_changed', ['visibility']);
+          });
+        }
+      };
 
       if ((cont.view || cont).canUpdate() && !skipRequest) {
         if (needsReorder) {
@@ -261,6 +263,7 @@
           if (_.isFunction(callback)) {
             callback();
           }
+          columnsChanged();
         });
       } else {
         (cont.view || cont)._markTemporary((cont.view || cont).isUnpublished() ||
@@ -268,6 +271,7 @@
         if (_.isFunction(callback)) {
           callback();
         }
+        columnsChanged();
       }
     };
 

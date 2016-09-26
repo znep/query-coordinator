@@ -7,7 +7,7 @@ var componentNameKebabCase = _.kebabCase(componentName);
 var componentNameSnakeCase = _.snakeCase(componentName);
 var componentPath = `${__dirname}/../src/js/components/${componentName}`;
 var relativePath = path.relative(`${__dirname}/..`, componentPath);
-var guideMenuPath = 'pages/_guide_menu.erb';
+var guideMenuPath = 'pages/_guide_menu.html.erb';
 var componentsPath = 'pages/components.html.erb';
 
 var mustaches = /{{([\s\S]+?)}}/g;

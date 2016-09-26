@@ -36,10 +36,11 @@ module ApplicationHelper
   end
 
   def page_title
-    [
-      core_attributes['name'] || t('default_page_title'),
-      site_chrome_window_title
-    ].join(' | ')
+    page_title_parts = []
+    page_title_parts << core_attributes['name'] || t('default_page_title')
+    page_title_parts << site_chrome_window_title unless site_chrome_window_title.blank?
+
+    page_title_parts.join(' | ')
   end
 
   private

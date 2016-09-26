@@ -16,14 +16,14 @@
     </div>
 
     <div class="browse2-facets-mobile-active-filters">
-      <%=
+      <%-
         facets = opts[:facets].reject { |facet| facet[:options].blank? && facet[:custom_content].blank? }
         facets.each do |facet|
           active_option = opts[facet[:param]]
           active_filter = active_facet_option(active_option, facet)
 
           if active_filter.present?
-            render(
+            concat render(
               'datasets/browse2_mobile_facet_active_filters',
               :title => facet[:title],
               :facet_param => facet[:param],

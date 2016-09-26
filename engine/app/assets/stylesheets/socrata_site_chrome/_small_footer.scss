@@ -10,12 +10,17 @@ footer#site-chrome-footer.small {
     padding: $content_padding;
 
     > div.logo {
+      float: left;
+      margin-right: 16px;
+      margin-bottom: 0;
+
       img {
         display: none; // hide logos on small footer
       }
+
       span.site-name {
-        line-height: normal;
         font-size: 18px;
+        line-height: 16px;
       }
     }
 
@@ -30,6 +35,9 @@ footer#site-chrome-footer.small {
             line-height: $links_height;
             font-size: 13px;
             line-height: 18px;
+          }
+          &:nth-child(n+6) { // only show first 5 links on small footer
+            display: none;
           }
         }
       }
@@ -50,13 +58,6 @@ footer#site-chrome-footer.small {
 
       .site-chrome-social-links {
         display: none;
-      }
-    }
-
-    &.title-absent {
-      > div.logo {
-        float: left;
-        margin-bottom: 0;
       }
     }
   }

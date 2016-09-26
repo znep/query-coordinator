@@ -33,5 +33,21 @@ RSpec.describe ApplicationHelper, type: :helper do
         expect(page_title).to match(/^Socrata Perspectives |/)
       end
     end
+
+    context 'when site chrome window title is nil' do
+      let(:site_chrome_window_title) { nil }
+
+      it 'does not include a pipe' do
+        expect(page_title).to eq(view_name)
+      end
+    end
+
+    context 'when site chrome window title is blank' do
+      let(:site_chrome_window_title) { '' }
+
+      it 'does not include a pipe' do
+        expect(page_title).to eq(view_name)
+      end
+    end
   end
 end

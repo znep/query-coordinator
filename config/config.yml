@@ -64,8 +64,12 @@ default: &default
   # third-party app tokens
   opendata_ga_tracking_code: UA-52982454-21
   standard_ga_tracking_code: UA-51039907-4
-  userzoom:
-    cuid: C95E515772DAE311BEDA0022196C4538
+
+  qualtrics:
+    admin:
+      survey_id: SI_0pQUgPVvv4upART
+    profile:
+      survey_id: SI_0PAYWZDLfzLgNTf
 
   # auth alternatives
   rpx_facebook_url: https://socrata-test.rpxnow.com/facebook/start

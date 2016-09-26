@@ -125,10 +125,6 @@ module AdminHelper
     render_qualtrics_survey('admin')
   end
 
-  def render_admin_userzoom
-    render_userzoom_survey('admin')
-  end
-
   private
 
   def a11y_summary(opts)

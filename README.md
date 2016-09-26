@@ -486,7 +486,8 @@ Variable Name | Type | Source | Description
 `unicorn_listen_port` | Integer | Configuration | Port that Unicorn will listen on to service incoming requests.
 `unicorn_timeout` | Integer | Configuration | Number of milliseconds a Unicorn worker will wait for a request to be serviced by Rails before giving up.
 `unicorn_worker_processes` | Integer | Configuration | Number of Unicorn worker processes to run at startup.
-`userzoom` | String | Configuration | Userzoom survey configuration identifiers i.e. CUID.
+`qualtrics_admin_survey_id` | String | Configuration | Qualtrics survey identifier
+`qualtrics_profile_survey_id` | String | Configuration | Qualtrics survey identifier
 `whats_new` | String | Configuration | ZenDesk configuration information for collecting what's new news articles from the API.
 `x_socrata_auth` | String | Rails | Used to tell Core that the request is from an anonymous user.
 `zk_hosts` | URI | Configuration | _Comma-separated_ list of URIs identifying ZooKeeper hosts to use.

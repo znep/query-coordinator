@@ -87,7 +87,6 @@ class AppConfig < Hashie::Dash
 
   # Third-party survey configuration
   property :qualtrics, default: {}
-  property :userzoom, default: {}
 
   # What's New configuration
   property :whats_new, default: {}

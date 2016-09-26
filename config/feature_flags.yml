@@ -117,10 +117,6 @@ enable_third_party_survey_qualtrics:
   category: third-party survey
   defaultValue: false
   description: Enable/Disable third-party survey provided by Qualtrics on admin and/or profile page(s). Additional configuration required.
-enable_third_party_survey_userzoom:
-  category: third-party survey
-  defaultValue: false
-  description: Enable/Disable third-party survey provided by Userzoom on admin and/or profile page(s). Additional configuration required.
 stories_enabled:
   description: Enable the Storyteller application.
   category: storyteller

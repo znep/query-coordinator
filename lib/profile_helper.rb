@@ -63,10 +63,6 @@ module ProfileHelper
     render_qualtrics_survey('profile')
   end
 
-  def render_profile_userzoom
-    render_userzoom_survey('profile')
-  end
-
   private
 
   def viewing_others_profile?

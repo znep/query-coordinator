@@ -6,21 +6,6 @@ module ThirdPartySurvey
     end
   end
 
-  def render_userzoom_survey(config_key)
-    config = APP_CONFIG.userzoom.fetch(config_key, {})
-    cuid = APP_CONFIG.userzoom.fetch('cuid', nil)
-    id = config.fetch('id', nil)
-    sid = config.fetch('sid', nil)
-    return if [cuid, id, sid].any?(&:blank?)
-    if survey_feature_flag_enabled?('userzoom') && current_domain.member?(current_user)
-      render :partial => partial_path('userzoom'), :locals => {
-        :userzoom_cuid => cuid,
-        :userzoom_id => id,
-        :userzoom_sid => sid
-      }
-    end
-  end
-
   private
 
   def survey_feature_flag_enabled?(service_name)

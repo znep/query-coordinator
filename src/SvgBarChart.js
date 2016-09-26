@@ -211,7 +211,7 @@ $.fn.socrataSvgBarChart = function(originalVif) {
       _.isNull(series.dataSource.dimension.aggregationFunction) &&
       _.isNull(series.dataSource.measure.aggregationFunction)
     );
-    const aggregationClause = SoqlHelpers.aggregationClause(
+    const groupByClause = SoqlHelpers.aggregationClause(
       vifToRender,
       seriesIndex,
       'dimension'
@@ -300,7 +300,7 @@ $.fn.socrataSvgBarChart = function(originalVif) {
           ${dimension} AS ${SoqlHelpers.dimensionAlias()},
           ${measure} AS ${SoqlHelpers.measureAlias()}
         ${whereClause}
-        GROUP BY ${aggregationClause}
+        GROUP BY ${groupByClause}
         ORDER BY ${orderClause}
         NULL LAST
         LIMIT ${limit}`;
@@ -313,6 +313,22 @@ $.fn.socrataSvgBarChart = function(originalVif) {
         SoqlHelpers.measureAlias()
       ).
       then((queryResponse) => {
+        const queryResponseRowCount = queryResponse.rows.length;
+        const queryResponseUniqueDimensionCount = _.uniq(
+          queryResponse.rows.map((row) => row[0])
+        ).length;
+
+        if (queryResponseRowCount !== queryResponseUniqueDimensionCount) {
+          const error = new Error();
+
+          error.errorMessages = [
+            I18n.translate(
+              'visualizations.bar_chart.error_duplicated_dimension_value'
+            )
+          ];
+
+          throw error;
+        }
 
         if (showOtherCategory) {
 
@@ -382,6 +398,11 @@ $.fn.socrataSvgBarChart = function(originalVif) {
               otherCategoryVifToRender,
               seriesIndex
             );
+          const otherCategoryAggregationClause = SoqlHelpers.aggregationClause(
+            otherCategoryVifToRender,
+            seriesIndex,
+            'measure'
+          );
 
           let otherCategoryQueryString;
 
@@ -390,20 +411,15 @@ $.fn.socrataSvgBarChart = function(originalVif) {
             otherCategoryQueryString = `
               SELECT
                 '${otherCategoryName}' AS ${SoqlHelpers.dimensionAlias()},
-                SUM(${measure}) AS ${SoqlHelpers.measureAlias()}
-              WHERE ${otherCategoryWhereClauseComponents}
-              ORDER BY ${orderClause}
-              NULL LAST`;
+                COUNT(*) AS ${SoqlHelpers.measureAlias()}
+              WHERE ${otherCategoryWhereClauseComponents}`;
           } else {
 
             otherCategoryQueryString = `
               SELECT
                 '${otherCategoryName}' AS ${SoqlHelpers.dimensionAlias()},
-                ${measure} AS ${SoqlHelpers.measureAlias()}
-              WHERE ${otherCategoryWhereClauseComponents}
-              GROUP BY ${aggregationClause}
-              ORDER BY ${orderClause}
-              NULL LAST`;
+                ${otherCategoryAggregationClause} AS ${SoqlHelpers.measureAlias()}
+              WHERE ${otherCategoryWhereClauseComponents}`;
           }
 
           return soqlDataProvider.
@@ -418,35 +434,28 @@ $.fn.socrataSvgBarChart = function(originalVif) {
               // otherCategoryQueryResponse will come back with no rows; in this
               // case there is no need to modify the original queryResponse.
               if (otherCategoryQueryResponse.rows.length > 0) {
-
-                if (isUnaggregatedQuery) {
-
-                  queryResponse.rows.push(
-                    otherCategoryQueryResponse.rows[0]
-                  );
-                } else {
-
-                  queryResponse.rows.push(
-                    [
-                      otherCategoryQueryResponse.rows[0][0],
-                      otherCategoryQueryResponse.rows.reduce(
-                        (sum, row) => (_.isUndefined(row[1])) ?
-                          sum :
-                          parseFloat(row[1]) + sum,
-                        0
-                      )
-                    ]
-                  );
-                }
+                queryResponse.rows.push(otherCategoryQueryResponse.rows[0]);
               }
 
               return queryResponse;
+            }).
+            catch(() => {
+              const error = new Error();
+
+              error.errorMessages = [
+                I18n.translate(
+                  'visualizations.bar_chart.error_other_category_query_failed'
+                )
+              ];
+
+              throw error;
             });
         } else {
           return Promise.resolve(queryResponse);
         }
       }).
-      then(processQueryResponse);
+      then(processQueryResponse).
+      catch(handleError);
   }
 
   /**

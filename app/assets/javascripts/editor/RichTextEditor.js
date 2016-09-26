@@ -275,8 +275,10 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
       // fire a pathChange event in reaction to that HTML setting, and the
       // selection range is initialized to (0,0)... which means that the tooltip
       // will in fact appear if the HTML content starts with a link.
-      _editor.addEventListener('mouseup', _linkActionTip);
-      _editor.addEventListener('pathChange', _linkActionTip);
+      _.defer(function() {
+        _editor.addEventListener('mouseup', _linkActionTip);
+        _editor.addEventListener('pathChange', _linkActionTip);
+      });
 
       _setupMouseMoveEventBroadcast();
 

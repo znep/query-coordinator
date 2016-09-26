@@ -402,7 +402,9 @@ describe('RichTextEditor', function() {
                 return returnValue;
               });
 
-            squire.__invokeEvent__('pathChange');
+            setTimeout(function() {
+              squire.__invokeEvent__('pathChange');
+            }, 1);
           });
         });
         describe('to anything other than a link', function() {
@@ -413,7 +415,9 @@ describe('RichTextEditor', function() {
                 done();
               }
             });
-            editor.getSquireInstance().__invokeEvent__('pathChange');
+            setTimeout(function() {
+              editor.getSquireInstance().__invokeEvent__('pathChange');
+            });
           });
         });
       });

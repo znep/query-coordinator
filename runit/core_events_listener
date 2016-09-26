@@ -3,4 +3,4 @@
 source /dev/shm/storyteller_secrets.sh
 
 cd $APP_DIR
-exec su socrata -c 'DELAYED_JOB_MAX_ATTEMPTS=1 DELAYED_JOB_DESTROY_FAILED_JOBS=false bin/rake activemq:listen'
+exec su socrata -c 'bin/rake activemq:listen'

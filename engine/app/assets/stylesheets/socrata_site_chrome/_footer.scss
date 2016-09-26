@@ -30,7 +30,6 @@ footer#site-chrome-footer {
           font-weight: 300;
           font-size: 22px;
           color: $footer_fg_color;
-          line-height: $footer_logo_height;
           vertical-align: middle;
         }
       }
@@ -70,18 +69,13 @@ footer#site-chrome-footer {
     > div.addendum {
       height: $addendum_height;
 
-      * {
-        line-height: $addendum_height;
-        max-height: $addendum_height;
-      }
-
       .site-chrome-copyright {
         display: inline-block;
         font-size: 14px;
         font-weight: 300;
         color: $footer_fg_color;
         margin: 0 $addendum_content_margin 0 auto;
-        vertical-align: bottom;
+        vertical-align: middle;
       }
 
       $social_link_margin: 14px;
@@ -100,7 +94,7 @@ footer#site-chrome-footer {
           margin-right: $social_link_margin;
 
           span.monosocial {
-            line-height: 40px;
+            line-height: $addendum_height;
           }
 
           &:hover, &:focus, &:active {
@@ -114,9 +108,9 @@ footer#site-chrome-footer {
       .powered-by-socrata {
         display: inline-block;
         font-weight: 300;
-        vertical-align: bottom;
         font-size: 14px;
         float: right;
+        line-height: $addendum_height;
 
         .powered-by {
           margin-right: 3px;
@@ -139,13 +133,14 @@ footer#site-chrome-footer {
           float: none; // don't float right when we're centering the content
         }
       }
+
+      .powered-by-socrata {
+        vertical-align: middle;
+      }
     }
 
     // < 670px screen width
     @include mobile-sm {
-      > div.logo {
-      }
-
       > div.links {
         height: auto;
       }
@@ -154,17 +149,21 @@ footer#site-chrome-footer {
         height: auto;
 
         .site-chrome-copyright {
-          float: left;
           margin: 0;
+          float: none;
+          display: block;
         }
         .site-chrome-social-links {
-          float: right;
           margin: 0;
+          float: none;
+          display: block;
         }
         .powered-by-socrata {
           clear: both;
           text-align: center;
           margin: 0 auto;
+          float: none;
+          display: block;
         }
       }
     }

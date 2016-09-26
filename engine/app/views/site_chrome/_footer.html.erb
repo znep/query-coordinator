@@ -21,11 +21,7 @@
       </ul>
     </div>
     <div class="addendum">
-      <%- if show_copyright? -%>
-        <div class="site-chrome-copyright">
-          <%= copyright %>
-        </div>
-      <%- end -%>
+      <%= content_tag(:div, copyright, :class => 'site-chrome-copyright') if show_copyright? %>
 
       <%- if valid_social_links(get_site_chrome.general[:social_shares]).present? -%>
         <div class="site-chrome-social-links">

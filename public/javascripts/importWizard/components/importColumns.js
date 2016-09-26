@@ -333,12 +333,13 @@ const ViewColumns = React.createClass({
     dispatch: PropTypes.func.isRequired
   },
   componentDidMount: function() {
-    this.installAwesomeReorder();
+    this.installJQueryStuff();
   },
   componentDidUpdate: function() {
-    this.installAwesomeReorder();
+    this.installJQueryStuff();
   },
-  installAwesomeReorder: function() {
+  installJQueryStuff: function() {
+    // awesome reorder (makes ResultColumns drag/droppable)
     const listElSelector = 'ul.columnsList.importList';
     $(listElSelector).awesomereorder({
       stop: (evt) => {
@@ -352,6 +353,14 @@ const ViewColumns = React.createClass({
       uiDraggableDefaults: {
         handle: '.importHandleCell'
       }
+    });
+    // modal
+    const messageModal = $('#importTypesMessage');
+    messageModal.jqm();
+    $('.importTypesMessageLink').click(function(event) {
+      event.preventDefault();
+      messageModal.jqmShow();
+      messageModal.find('.jqmClose').focus();
     });
   },
   render: function() {
@@ -367,6 +376,7 @@ const ViewColumns = React.createClass({
 
     return (
       <div>
+        {blurbModal}
         <div className="columnsListHeader importListHeader clearfix">
           <div className="columnHandleCell importHandleCell"></div>
           <div className="columnNameCell">{I18nPrefixed.name}</div>
@@ -482,3 +492,17 @@ ViewPreview.propTypes = {
   numHeaderRows: PropTypes.number.isRequired,
   dispatch: PropTypes.func.isRequired
 };
+
+const I18nDatasetsNew = I18n.screens.dataset_new;
+
+const blurbModal = (
+  <div className="modalDialog" id="importTypesMessage">
+    <a href="#close" className="jqmClose modalDialogClose">{I18nDatasetsNew.why_choose_now.close}</a>
+    <h2>{I18nDatasetsNew.import_columns.why_choose_now}</h2>
+    <p>{I18nDatasetsNew.why_choose_now.line_1}</p>
+    <p>{I18nDatasetsNew.why_choose_now.line_2}</p>
+    <div className="finishButtons">
+      <a className="button jqmClose">{I18nDatasetsNew.why_choose_now.close}</a>
+    </div>
+  </div>
+);

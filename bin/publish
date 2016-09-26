@@ -27,4 +27,8 @@ echo "SERVICE_VERSION=${SERVICE_VERSION}" >> dockerize.properties
 # Write REVISION file
 echo ${SERVICE_SHA} > "$WORKSPACE/REVISION"
 
-ops-tools/jenkins/dockerize/dockerize-marathon dockerize.properties
+if $AUTO_DEPLOY; then
+  ops-tools/jenkins/dockerize/dockerize-marathon dockerize.properties
+else
+  ops-tools/jenkins/dockerize/dockerize dockerize.properties
+fi

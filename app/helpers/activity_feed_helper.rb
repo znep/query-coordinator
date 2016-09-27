@@ -82,6 +82,17 @@ module ActivityFeedHelper
     !event.dataset.restorable?
   end
 
+  def restore_button_class_name(event)
+    'button restore-dataset not-restorable-'.tap do |class_name|
+      class_name <<
+        if event.dataset.flags.any? { |flag| flag.data == 'restorePossibleForType' }
+          'time'
+        elsif !event.dataset.restorable
+          'type'
+        end
+    end
+  end
+
   def restore_button(activity)
     # If activity is a delete, show button to restore dataset.
     # If the activity is for a non-restorable dataset (wrong type or too long deleted),
@@ -89,7 +100,7 @@ module ActivityFeedHelper
     if display_restore_button(activity)
       button_tag(
         t("#{activity_feed_prefix}.index_page.restore_deleted_dataset.button"),
-        class: 'button restore-dataset',
+        class: restore_button_class_name(activity),
         disabled: restore_button_disabled(activity),
         data: {
           dataset_id: activity.dataset.id,

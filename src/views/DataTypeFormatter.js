@@ -431,7 +431,9 @@ function _isObePercentColumn(column) {
 }
 
 function _isNbePercentColumn(column) {
-  return _.get(column, 'format.view') === 'percent_bar_and_text';
+
+  return _.get(column, 'format.view') === 'percent_bar_and_text' &&
+    _.get(column, 'renderTypeName') != 'percent';
 }
 
 function _renderCurrencyNumber(amount, format) {

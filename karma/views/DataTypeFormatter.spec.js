@@ -106,6 +106,17 @@ describe('socrata.visualizations.views.DataTypeFormatter', function() {
         });
       });
 
+      it('should render number cells as percent values with format.view set', function() {
+        columnMetadata = {
+          renderTypeName: 'percent',
+          format: {
+            view: 'percent_bar_and_text'
+          }
+        };
+
+        expect(DataTypeFormatter.renderNumberCell(100, columnMetadata)).to.equal('100%');
+      });
+
       it('should respect fixed precision', function() {
         columnMetadata = {
           renderTypeName: 'percent',

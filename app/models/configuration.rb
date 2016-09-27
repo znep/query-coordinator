@@ -39,6 +39,21 @@ class Configuration < Model
     props
   end
 
+  def properties_with_dots
+    props = Hashie::Mash.new
+    return props if data['properties'].nil?
+
+    data['properties'].each do |property|
+      property_hash = props
+      name = property['name']
+      property_hash[name] = Hashie::Mash.new if property_hash[name].nil?
+      property_hash = property_hash[name]
+      property_hash[name] = property['value']
+    end
+
+    props
+  end
+
   # Copied from CurrentDomain.strings.
   def strings(locale = nil)
     # i don't like this, but i don't see another option: always try to use the

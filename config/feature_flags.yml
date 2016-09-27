@@ -101,9 +101,6 @@ enable_embed_widget_for_nbe:
   description: Enable embed widget for NBE datasets.
   defaultValue: false
   category: obe deprecation
-enable_feedback:
-  description: Include third-party feedback widgets.
-  defaultValue: true
 enable_opendata_ga_tracking:
   description: Controls behavior of Socrata internal Google Analytics. If true or left blank, GA is enabled with a default Socrata-wide token. If a custom value is provided, GA is enabled with the custom GA token. If false, Socrata GA is disabled. NOTE - if enable_standard_ga_tracking is true, it will override any value that this is set to with a default standard ga tracking code specified in the config.
 enable_pulse:

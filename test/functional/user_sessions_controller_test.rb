@@ -65,6 +65,17 @@ class UserSessionsControllerTest < ActionController::TestCase
     assert(@response.redirect_url.include?(govstat_root_path), 'should redirect to govstat root')
   end
 
+  def test_login_with_socrata_email_not_bypassing_auth0
+    post(:create, {:user_session => { :login => 'test@socrata.com' }})
+    assert(@response.redirect_url.include?(login_path), 'should redirect to login if user is @socrata.com and not going through auth0')
+  end
+
+  def test_login_with_socrata_email_bypassing_auth0
+    stub_module_enabled_on_current_domain(:socrata_emails_bypass_auth0)
+    post(:create, {:user_session => { :login => 'test@socrata.com' }})
+    assert(@response.redirect_url.include?(profile_index_path), 'should allow @socrata.com email if socrata_emails_bypass_auth0 is enabled')
+  end
+
   context 'auth0 workflow' do
     setup do
       UserSessionsController.any_instance.stubs(:use_auth0? => true, :should_auth0_redirect? => false)

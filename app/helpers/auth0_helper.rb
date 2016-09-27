@@ -148,6 +148,7 @@ module Auth0Helper
       authenticityToken: form_authenticity_token,
       rememberMe: feature?('remember_me'),
       showSocial: feature?('openid_login'),
+      socrataEmailsBypassAuth0: feature?('socrata_emails_bypass_auth0'),
       connections: @auth0_connections,
       message: @auth0_message || t('screens.sign_in.auth0_intro'),
       flashes: formatted_flashes

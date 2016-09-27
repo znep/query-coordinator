@@ -21,6 +21,10 @@ export default
     // Whether to show social login
     showSocial: PropTypes.bool,
 
+    // Whether to bypass logging in through auth0 with @socrata.com emails
+    // (note that this is still enforced in frontend)
+    socrataEmailsBypassAuth0: PropTypes.bool,
+
     // These connections are shown as buttons to login through specific auth0 federated connections
     connections: PropTypes.array({
       name: PropTypes.string.isRequired,

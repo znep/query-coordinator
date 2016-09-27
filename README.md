@@ -71,6 +71,9 @@ this value is `'10.92.2.4:2181,10.92.2.5:2181,10.92.2.6:2181'`
 Under the `development` section of `config.yml`, set the `cetera_host` to the appropriate URI for the environment you're connecting to.
 In the RC environment, this URI is `http://cetera.app.marathon.aws-us-west-2-rc.socrata.net`.
 
+For a guide on how to set up Cetera search from Elasticsearch to Frontend, see
+[this Google Doc](https://docs.google.com/document/d/1wsslEGnp15STX8UnUFZ_kLzxDHkpLWstvAa-9OS31Gk/edit#)
+
 ##### Host Spoofing
 
 > Note: This approach is _only_ necessary if you wish to connect to Cetera in a different environment but you are _already running_ the

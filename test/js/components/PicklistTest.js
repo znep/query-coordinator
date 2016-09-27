@@ -45,6 +45,19 @@ describe('Picklist', () => {
       it('renders one selected option', () => {
         expect(element.querySelector('.picklist-option-selected')).to.exist;
       });
+
+      describe('with multiple options that have the same value', () => {
+        beforeEach(() => {
+          let props = getProps({ value: 'steel' });
+          props.options.push({ title: 'Steel', value: 'steel' });
+
+          element = renderComponent(Picklist, props);
+        });
+
+        it('renders two selected options', () => {
+          expect(element.querySelectorAll('.picklist-option-selected')).to.have.lengthOf(2);
+        });
+      });
     });
 
     describe('with grouping', () => {

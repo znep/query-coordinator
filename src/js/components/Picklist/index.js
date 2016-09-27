@@ -46,6 +46,7 @@ export const Picklist = React.createClass({
 
   getInitialState() {
     return {
+      selectedIndex: -1,
       selectedOption: null,
       focused: false
     };
@@ -57,19 +58,23 @@ export const Picklist = React.createClass({
 
   componentDidMount() {
     if (this.state.selectedOption) {
+      const options = this.picklist.querySelectorAll('.picklist-option');
       const option = this.picklist.querySelector('.picklist-option-selected');
-      this.setScrollPositionToOption(option);
+      const index = _.indexOf(options, option);
+
+      this.setScrollPositionToOption(index);
+      this.setNavigationPointer(index);
     }
   },
 
-  componentWillReceiveProps(nextProps) {
-    this.setSelectedOptionBasedOnValue(nextProps);
-  },
-
   onClickOption(selectedOption, event) {
+    const optionElements = this.picklist.querySelectorAll('.picklist-option');
+    const index = _.indexOf(optionElements, event.target);
+
     event.stopPropagation();
 
     this.picklist.focus();
+    this.setNavigationPointer(index);
     this.setSelectedOption(selectedOption);
   },
 
@@ -129,6 +134,10 @@ export const Picklist = React.createClass({
     this.setState({ focused: false });
   },
 
+  setNavigationPointer(selectedIndex) {
+    this.setState({ selectedIndex });
+  },
+
   setSelectedOptionBasedOnValue(props) {
     const { options, value } = props;
     const selectedOption = _.find(options, { value });
@@ -141,8 +150,10 @@ export const Picklist = React.createClass({
     this.props.onSelection(selectedOption);
   },
 
-  setScrollPositionToOption(picklistOption) {
+  setScrollPositionToOption(picklistOptionIndex) {
     const picklist = this.picklist;
+    const picklistOptions = this.picklist.querySelectorAll('.picklist-option');
+    const picklistOption = picklistOptions[picklistOptionIndex];
     const picklistTop = picklist.getBoundingClientRect().top - picklist.scrollTop;
     const picklistCenter = picklist.clientHeight / 2;
     const picklistOptionTop = picklistOption.getBoundingClientRect().top;
@@ -155,41 +166,40 @@ export const Picklist = React.createClass({
   },
 
   move(upOrDown) {
-    let optionElement;
+    let newIndex;
     let newSelectedOption;
 
-    const { selectedOption } = this.state;
+    const { selectedOption, selectedIndex } = this.state;
     const { options } = this.props;
-    const index = _.indexOf(options, selectedOption);
 
     const movingUp = upOrDown === 'up';
 
     const indexOffset = movingUp ? -1 : 1;
-    const candidateOption = options[index + indexOffset];
-    const sibling = movingUp ? 'previousSibling' : 'nextSibling';
+    const candidateOption = options[selectedIndex + indexOffset];
     const unselectedStartPosition = movingUp ? 'last' : 'first';
-    const picklistOptions = this.picklist.querySelectorAll('.picklist-option');
 
-    if (index !== -1 && _.isPlainObject(candidateOption)) {
-      optionElement = this.picklist.querySelector('.picklist-option-selected')[sibling];
+    if (selectedIndex !== -1 && _.isPlainObject(candidateOption)) {
+      newIndex = selectedIndex + indexOffset;
       newSelectedOption = candidateOption;
-    } else if (index === -1) {
-      optionElement = _[unselectedStartPosition](picklistOptions);
+    } else if (selectedIndex === -1) {
+      newIndex = 0;
       newSelectedOption = _[unselectedStartPosition](options);
     } else {
-      optionElement = this.picklist.querySelector('.picklist-option-selected');
+      newIndex = selectedIndex;
       newSelectedOption = selectedOption;
     }
 
+    this.setNavigationPointer(newIndex);
     this.setSelectedOption(newSelectedOption);
-    this.setScrollPositionToOption(optionElement);
+    this.setScrollPositionToOption(newIndex);
   },
 
   renderOption(option, index) {
+    const { selectedOption } = this.state;
     const hasRenderFunction = _.isFunction(option.render);
     const onClickOptionBound = this.onClickOption.bind(this, option);
     const classes = classNames('picklist-option', {
-      'picklist-option-selected': this.state.selectedOption === option
+      'picklist-option-selected': _.isEqual(selectedOption, option)
     });
 
     const attributes = {

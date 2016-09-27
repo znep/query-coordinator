@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 
 function flashMessage({ flashType, message }) {
-
-  var messageDisplay;
+  let messageDisplay;
   if (_.isArray(message)) {
     messageDisplay =
     (<ul>
@@ -22,7 +21,7 @@ function flashMessage({ flashType, message }) {
 }
 
 flashMessage.propTypes = {
-  flashType: PropTypes.string.isRequired,
+  flashType: PropTypes.oneOf(['info', 'success', 'warning', 'error']).isRequired,
   message: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.string),
     PropTypes.string

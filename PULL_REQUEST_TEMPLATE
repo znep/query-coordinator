@@ -1,4 +1,5 @@
-- [ ] Bumped the `socrata_site_chrome` gem version in `Gemfile` if appropriate
-- [ ] Ran `bundle install` and updated the `Gemfile.lock`
+- [ ] Bumped the `socrata_site_chrome` gem version in `Gemfile` if this PR relies on a new version
+- [ ] Updated `package.json` if this PR includes any changed Node package dependencies
+- [ ] Ran `bundle install` and updated the `Gemfile.lock` if any `Gemfile` changes were made
 - [ ] Made sure the JIRA ticket ID is in the commit message(s)
 - [ ] Made sure the tests passed for realzies (check Jenkins [frontend-pull-request-test](https://jenkins-build.socrata.com/job/frontend-pull-request-test/) job)

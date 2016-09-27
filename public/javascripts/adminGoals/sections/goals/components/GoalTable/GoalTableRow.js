@@ -49,7 +49,7 @@ class GoalTableRow extends React.Component {
   render() {
     const { goal, selected, translations } = this.props;
 
-    const goalPageUrl = `/stat/goals/${goal.get('base_dashboard')}/${goal.getIn(['category', 'id'])}/${goal.get('id')}/edit`;
+    const goalPageUrl = `/stat/goals/${goal.get('base_dashboard')}/${goal.getIn(['category', 'id']) || 'uncategorized'}/${goal.get('id')}/edit`;
     const dashboardUrl = `/stat/goals/${goal.get('base_dashboard')}`;
     const rowClass = classNames({ selected });
     const endDate = goal.getIn(['prevailing_measure', 'end']);

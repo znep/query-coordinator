@@ -112,7 +112,7 @@ class GoalQuickEdit extends React.Component {
     const { translations, goal, message, isGoalNotConfigured } = this.props;
 
     const baseDashboardId = goal.get('base_dashboard');
-    const categoryId = goal.getIn(['category', 'id']);
+    const categoryId = goal.getIn(['category', 'id']) || 'uncategorized';
     const goalId = goal.get('id');
     const goalPageUrl = `/stat/goals/${baseDashboardId}/${categoryId}/${goalId}/edit`;
 

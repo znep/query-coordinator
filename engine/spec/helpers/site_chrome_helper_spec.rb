@@ -223,6 +223,27 @@ describe SocrataSiteChrome::ApplicationHelper do
     end
   end
 
+  describe '#powered_by_logo_src' do
+    # Note that 'logo-2c-dark' means the logo for a dark background, which is the light logo.
+    let(:light_powered_by_logo) { '/socrata_site_chrome/images/socrata-logo-2c-dark.png' }
+    let(:dark_powered_by_logo) { '/socrata_site_chrome/images/socrata-logo-pb.png' }
+
+    it 'returns the light logo when the footer background is a dark color' do
+      allow(helper).to receive(:footer_bg_color).and_return('#222')
+      expect(helper.powered_by_logo_src).to eq(light_powered_by_logo)
+    end
+
+    it 'returns the dark logo when the footer background is a light color' do
+      allow(helper).to receive(:footer_bg_color).and_return('#DDD')
+      expect(helper.powered_by_logo_src).to eq(dark_powered_by_logo)
+    end
+
+    it 'returns the dark logo when the footer background is transparent' do
+      allow(helper).to receive(:footer_bg_color).and_return('transparent')
+      expect(helper.powered_by_logo_src).to eq(dark_powered_by_logo)
+    end
+  end
+
   describe '#social_link_icon' do
     it 'returns the icon name regardless of symbol vs string and capitalization' do
       result = helper.social_link_icon('FacEboOk')

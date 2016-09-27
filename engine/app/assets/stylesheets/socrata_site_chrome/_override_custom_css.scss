@@ -1,0 +1,23 @@
+// This exists to override the custom_css in the CS templates.
+// See EN-10069 for more details
+
+header#site-chrome-header {
+  padding-top: 0;
+}
+
+footer#site-chrome-footer {
+  padding: 0;
+  text-align: inherit;
+  font-size: inherit;
+  border: none;
+
+  .footer-content {
+    .links {
+      .links-col {
+        li {
+          margin-left: 0;
+        }
+      }
+    }
+  }
+}

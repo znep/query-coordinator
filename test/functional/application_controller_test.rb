@@ -2,13 +2,14 @@ require 'test_helper'
 
 class ApplicationControllerTest < ActionController::TestCase
 
-  context '#is_superadmin?' do
+  setup do
+    init_core_session
+    init_current_domain
+    @controller ||= test_case.controller_class.new
+    init_current_user(@controller)
+  end
 
-    setup do
-      init_core_session
-      init_current_domain
-      init_current_user(@controller)
-    end
+  context '#is_superadmin?' do
 
     context "when the current user isn't an admin" do
       should 'return boolean false confirming that user is not an admin' do
@@ -34,12 +35,6 @@ class ApplicationControllerTest < ActionController::TestCase
   end
 
   context '#show_nbe_redirection_warning?' do
-
-    setup do
-      init_core_session
-      init_current_domain
-      init_current_user(@controller)
-    end
 
     context 'when disable_nbe_redirection_warning_message is true' do
       setup do

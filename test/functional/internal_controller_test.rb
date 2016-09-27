@@ -4,6 +4,8 @@ class InternalControllerTest < ActionController::TestCase
 
   def setup
     stub_site_chrome
+    @controller ||= test_case.controller_class.new
+    init_current_user(@controller)
   end
 
   test 'routes to feature flags with or without organization' do
@@ -126,7 +128,7 @@ class InternalControllerTest < ActionController::TestCase
 
   def init_for_feature_flags
     init_current_domain
-    Domain.stubs(:find => @domain)
+    Domain.stubs(:find => CurrentDomain.domain)
     pretend_to_be_superadmin
 
     stub_request(:post, 'http://localhost:8080/batches').

@@ -665,7 +665,7 @@ en:
         resume_rendering: Resume
       zero_only_data: No values greater than zero
     common:
-      auth_required: You must be logged in to %{action_phrase}
+      auth_required: You must be logged in to %{action_phrase}.
       dataset_picker:
         button: Choose
         title: Choose a Dataset to use
@@ -4269,14 +4269,14 @@ en:
       back_to_sign_in_selection: <a class="login-back">Back to sign in options</a>
       dont_have_account: Don't have an account yet?
       error: Error logging in
-      failed: Unable to login with that email and password; please try again
+      failed: Unable to login with that email and password. Please try again.
       forgot_password: Forgot Password?
       form:
         sign_in_button: Sign In
         email_placeholder: Email
         password_placeholder: Password
       headline: Sign In to %{site}
-      mismatch: Passwords do not match; please try again
+      mismatch: Passwords do not match. Please try again.
       prompt_html: Sign in with your <strong>Socrata ID</strong>.
       sign_in_using: Sign in using
       sign_in_with: "<strong>Sign in</strong> with %{provider}"

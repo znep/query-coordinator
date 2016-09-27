@@ -3417,7 +3417,7 @@
       if (xhr && _.isFunction(xhr.getResponseHeader)) {
         var dataOutOfDate = xhr.getResponseHeader('X-SODA2-Data-Out-Of-Date');
         var truthLastModified = xhr.getResponseHeader('X-SODA2-Truth-Last-Modified');
-        var lastModified = xhr.getResponseHeader('Last-Modified');
+        var lastModified = xhr.getResponseHeader('X-SODA2-Secondary-Last-Modified') || xhr.getResponseHeader('Last-Modified');
         if (this.newBackend) {
           if (dataOutOfDate === 'true' && truthLastModified && lastModified) {
             this._dataOutOfDate = dataOutOfDate;

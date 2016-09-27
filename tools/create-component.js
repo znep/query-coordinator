@@ -52,8 +52,8 @@ function buildDocFiles() {
     kebabCase: componentNameKebabCase
   });
 
-  componentBase.to(`pages/components/_${componentNameSnakeCase}.erb`);
-  componentSkeleton.to(`pages/components/skeletons/_${componentNameSnakeCase}.erb`);
+  componentBase.to(`pages/components/_${componentNameSnakeCase}.html.erb`);
+  componentSkeleton.to(`pages/components/skeletons/_${componentNameSnakeCase}.html.erb`);
 }
 
 function addToGuideMenu() {

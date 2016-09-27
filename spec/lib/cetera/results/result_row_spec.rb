@@ -75,27 +75,16 @@ describe Cetera::Results do
         expect(sample_result_row.get_preview_image_url('cookies', 'request_id')).to eq('neat-picture')
       end
 
-      it 'returns the url when previewImageId is present on the view' do
-        view_data = { 'previewImageId' => 'awesome-image-id' }
-        expected_url = "/api/views/#{sample_result_row.id}/files/awesome-image-id"
-        expect(View).to receive(:find).and_return(View.new(view_data))
-
-        expect(sample_result_row.get_preview_image_url('cookies', 'request_id')).to eq(expected_url)
+      it 'returns the url when previewImageUrl is present in the result' do
+        blob_regex = /views\/.+\/files\/.+/
+        expect(sample_result_row.get_preview_image_url('cookies', 'request_id')).to match(blob_regex)
       end
 
-      it 'returns nil if the previewImageId is not present' do
-        expect(View).to receive(:find).and_return(View.new)
+      it 'returns nil if the previewImageUrl is not present in the result' do
+        result = JSON.parse(File.read("#{Rails.root}/test/fixtures/cetera_row_results.json"))
+        result.delete("preview_image_url")
+        sample_result_row = Cetera::Results::ResultRow.new(result)
 
-        expect(sample_result_row.get_preview_image_url('cookies', 'request_id')).to be_nil
-      end
-
-      it 'returns nil if the Core query throws ResourceNotFound' do
-        expect(View).to receive(:find).and_raise(CoreServer::ResourceNotFound.new(nil))
-        expect(sample_result_row.get_preview_image_url('cookies', 'request_id')).to be_nil
-      end
-
-      it 'returns nil if the Core query throws CoreServerError' do
-        expect(View).to receive(:find).and_raise(CoreServer::CoreServerError.new(nil, nil, nil))
         expect(sample_result_row.get_preview_image_url('cookies', 'request_id')).to be_nil
       end
     end

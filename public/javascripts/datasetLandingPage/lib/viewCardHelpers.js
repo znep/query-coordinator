@@ -7,7 +7,9 @@ export function getDateLabel(updatedAt) {
 }
 
 export function getViewCountLabel(viewCount) {
-  return `${utils.formatNumber(viewCount)} ${I18n.view_widget.views}`;
+  return _.isNumber(viewCount) ?
+    `${utils.formatNumber(viewCount)} ${I18n.view_widget.views}` :
+    '';
 }
 
 export function getAriaLabel(view) {

@@ -131,7 +131,7 @@ class DatasetLandingPage
       :displayType => view.display.try(:type),
       :createdAt => view.try(:time_created_at) || view.createdAt,
       :updatedAt => view.try(:time_last_updated_at) || view.updatedAt,
-      :viewCount => view.viewCount,
+      :viewCount => view.viewCount || 0,
       :isPrivate => !view.is_public?,
       :imageUrl => image_url
     }

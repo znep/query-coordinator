@@ -157,9 +157,13 @@ bundle exec rake test:js:adminGoals
 Each rake task accepts three arguments:
 
 - `watch`: Whether or not to watch files for changes. If a change to any of the
-  tested files is detected, the tests will re-run. NOTE: THIS IS TEMPORARILY
-  DISABLED due to webpack integration issues, see EN-2662. Using the option will
-  cause an explanatory error on the console.
+  tested files is detected, the tests will re-run. IMPORTANT: If you're using
+  vim, you need to add this to your .vimrc:
+  ```
+  set backupcopy=yes
+  ```
+  Otherwise, vim's rename-on-save behavior will confuse webpack. See
+  [this issue](https://github.com/webpack/webpack/issues/781#issuecomment-95523711).
 - `browser`: Which browser to run the tests in. Can be `phantom`, `chrome`, or
   `firefox`.
 - `reporter`: Which reporter to use. The default is `dots`. You can also specify
@@ -230,7 +234,13 @@ WEBPACK_USE_MANIFEST=true WEBPACK_USE_DEV_SERVER=false rails s
 
 Running the Rails stack with [foreman](https://github.com/ddollar/foreman) will
 spawn a sidecar process running the webpack dev server, which allows for re-bundling
-and automatic reloading on code change.
+and automatic reloading on code change. IMPORTANT: If you're using vim, you need to
+add this to your .vimrc:
+```
+set backupcopy=yes
+```
+Otherwise, vim's rename-on-save behavior will confuse webpack. See
+[this issue](https://github.com/webpack/webpack/issues/781#issuecomment-95523711).
 
 To enable the workflow:
 

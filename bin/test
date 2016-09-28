@@ -28,7 +28,10 @@ JSON_FILES=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*\.json$' | cut -c3-)
 RUBY_FILES=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*\.e\?rb$' | cut -c3-)
 YAML_FILES=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*\.ya\?ml$' | cut -c3-)
 
-if [[ -z $JAVASCRIPT_FILES ]] && [[ -z $RUBY_FILES ]] && [[ -z $JSON_FILES ]] && [[ -z $YAML_FILES ]]; then
+# Find if the Gemfile has changed on this PR
+GEMFILE=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*Gemfile\(\.lock\)\?$' | cut -c3-)
+
+if [[ -z $JAVASCRIPT_FILES ]] && [[ -z $RUBY_FILES ]] && [[ -z $JSON_FILES ]] && [[ -z $YAML_FILES ]] && [[ -z $GEMFILE ]]; then
   echo "Nothing to do!"
   exit 0
 fi
@@ -66,7 +69,7 @@ else
 fi
 
 # Ruby tests
-if ! [[ -z $RUBY_FILES ]] || ! [[ -z $JSON_FILES ]] || ! [[ -z $YAML_FILES ]]; then
+if ! [[ -z $RUBY_FILES ]] || ! [[ -z $JSON_FILES ]] || ! [[ -z $YAML_FILES ]] || ! [[ -z $GEMFILE ]]; then
   bundle exec rake test:units
   bundle exec rake test:functionals
   bundle exec rspec

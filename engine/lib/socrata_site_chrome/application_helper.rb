@@ -34,10 +34,10 @@ module SocrataSiteChrome
     end
 
     def username
-      if current_user.nil? || current_user.displayName.blank?
+      if site_chrome_current_user.nil? || site_chrome_current_user.displayName.blank?
         'Profile'
       else
-        current_user.displayName
+        site_chrome_current_user.displayName
       end
     end
 
@@ -45,7 +45,7 @@ module SocrataSiteChrome
       RequestStore.store[:current_user]
     end
 
-    def current_user
+    def site_chrome_current_user
       return nil unless request_current_user.present?
       if request_current_user.respond_to?(:session_token)
         request_current_user
@@ -55,10 +55,10 @@ module SocrataSiteChrome
     end
 
     def current_user_can_see_admin_link?
-      return false unless current_user
-      current_user.is_superadmin? ||
+      return false unless site_chrome_current_user
+      site_chrome_current_user.is_superadmin? ||
         %w(administrator publisher designer editor viewer).
-          include?(current_user.role_name.to_s.downcase)
+          include?(site_chrome_current_user.role_name.to_s.downcase)
     end
 
     def copyright_source

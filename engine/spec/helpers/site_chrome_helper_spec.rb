@@ -74,6 +74,28 @@ describe SocrataSiteChrome::ApplicationHelper do
     end
   end
 
+  describe '#site_chrome_current_user' do
+    it 'returns nil if request_current_user is nil' do
+      allow(helper).to receive(:request_current_user).and_return(nil)
+      expect(helper.site_chrome_current_user).to be(nil)
+    end
+
+    it 'returns a new SocrataSiteChrome::User object' do
+      fake_user = {
+        'displayName' => 'bob ross',
+        'roleName' => 'designer',
+        'id' => '999'
+      }
+      allow(helper).to receive(:request_current_user).and_return(fake_user)
+      result = helper.site_chrome_current_user
+
+      expect(result.class).to eq(SocrataSiteChrome::User)
+      expect(result.displayName).to eq('bob ross')
+      expect(result.is_designer?).to be(true)
+      expect(result.id).to eq('999')
+    end
+  end
+
   describe '#logged_in' do
     it 'returns true if request_current_user is present' do
       allow(helper).to receive(:request_current_user).and_return('id' => 'fooo-baar')

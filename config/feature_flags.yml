@@ -110,6 +110,10 @@ enable_pulse:
 enable_standard_ga_tracking:
   description: If enabled, uses a standard Socrata GA code (same across all domains) defined in the config for tracking. It will also cause any custom GA tokens defined in "enable_opendata_ga_tracking" to be ignored.
   defaultValue: false
+enable_third_party_survey_qualtrics:
+  category: third-party survey
+  defaultValue: false
+  description: Enable/Disable third-party survey provided by Qualtrics on admin and/or profile page(s). Additional configuration required.
 stories_enabled:
   description: Enable the Storyteller application.
   category: storyteller

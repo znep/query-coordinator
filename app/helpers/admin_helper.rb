@@ -1,5 +1,5 @@
 module AdminHelper
-  include Userzoom
+  include ThirdPartySurvey
 
   def select_for_role(id, options = {})
     name = options.fetch('name', 'role')
@@ -121,8 +121,8 @@ module AdminHelper
     )
   end
 
-  def render_admin_userzoom
-    render_userzoom_survey('admin')
+  def render_admin_qualtrics
+    render_qualtrics_survey('admin')
   end
 
   private

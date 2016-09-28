@@ -91,9 +91,16 @@ default: &default
   standard_ga_tracking_code: {{ STANDARD_GA_TRACKING_CODE }}
   {%- endif %}
 
-  {% if USERZOOM_CUID is defined -%}
-  userzoom:
-    cuid: {{USERZOOM_CUID}}
+  {% if QUALTRICS_ADMIN_SURVEY_ID is defined or QUALTRICS_PROFILE_SURVEY_ID is defined  -%}
+  qualtrics:
+    {% if QUALTRICS_ADMIN_SURVEY_ID is defined -%}
+    admin:
+      survey_id: {{QUALTRICS_ADMIN_SURVEY_ID}}
+    {%- endif %}
+    {% if QUALTRICS_PROFILE_SURVEY_ID is defined -%}
+    profile:
+      survey_id: {{QUALTRICS_PROFILE_SURVEY_ID}}
+    {%- endif %}
   {%- endif %}
 
   {#

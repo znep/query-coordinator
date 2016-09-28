@@ -11,7 +11,9 @@ describe DataslateRouting do
     { 'path' => path }
   end
 
-  let(:service_response) { %w( / /svc1 /svc/:slug /svc/:slug/end ).map(&method(:pathify)) }
+  let(:service_response) do
+    %w( / /svc1 /svc /svc/other /svc/:slug /svc/:slug/end ).map(&method(:pathify))
+  end
   let(:dataset_response) { %w( /ds1 /ds/:slug /ds/:slug/end ).map(&method(:pathify)).to_json }
   let(:page_result) { { page: Page.new, from: page_source, vars: page_vars } }
   let(:page_vars) { [ ] }
@@ -25,6 +27,8 @@ describe DataslateRouting do
 
       it 'should return a page' do
         expect(DataslateRouting.for('/svc1')).to eq(page_result)
+        expect(DataslateRouting.for('/svc')).to eq(page_result)
+        expect(DataslateRouting.for('/svc/other')).to eq(page_result)
       end
 
       it 'should return nil if page does not exist' do

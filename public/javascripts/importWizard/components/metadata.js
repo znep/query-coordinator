@@ -832,6 +832,9 @@ function renderMetadataSuccessMessage(operation, importError, apiCall) {
   if (hasImportError(importError) || hasApiError(apiCall)) {
     return;
   }
+  if (operation === 'CREATE_FROM_SCRATCH' || operation === 'LINK_EXTERNAL') {
+    return;
+  }
   return <FlashMessage flashType="success" message={metadataSuccessMessage(operation)} />;
 }
 

@@ -90,6 +90,8 @@ class ApplicationController < ActionController::Base
         require_sufficient_rights_for_themes
       when 'version'
         require_sufficient_rights_for_version
+      when 'health'
+        require_sufficient_rights_for_health
       else
         raise_undefined_authorization_handler_error
     end
@@ -343,6 +345,17 @@ class ApplicationController < ActionController::Base
   end
 
   def require_sufficient_rights_for_version
+    action = params[:action]
+
+    case action
+      when 'show'
+        # pass
+      else
+        raise_undefined_authorization_handler_error
+    end
+  end
+
+  def require_sufficient_rights_for_health
     action = params[:action]
 
     case action

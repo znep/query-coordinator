@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  get 'health' => 'health#show'
   get 'version' => 'version#show'
   get 'post_login' => 'post_login#show'
 

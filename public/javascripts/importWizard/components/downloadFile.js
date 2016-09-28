@@ -190,7 +190,7 @@ export function update(download: FileDownload = {}, action): FileDownload {
       return {
         ...download,
         type: 'Failed',
-        error: _.isUndefined(action.error)
+        error: _.isUndefined(action.error) || action.error === 'Internal error'
           ? I18n.screens.import_pane.problem_importing
           : action.error
       };

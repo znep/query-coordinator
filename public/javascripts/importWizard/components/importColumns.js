@@ -14,6 +14,7 @@ import * as Validation from './importColumns/validation';
 import NavigationControl from './navigationControl';
 import * as SaveState from '../saveState';
 import 'jquery.awesomereorder';
+import FlashMessage from './flashMessage';
 
 /*
 - Blueprint: schema (names & types)
@@ -281,9 +282,7 @@ export function view({ transform, fileName, sourceColumns, dispatch, goToPage, g
     <div>
       <div className="importColumnsPane columnsPane">
 
-        <div className="flash-alert success">
-          {I18nPrefixed.upload_success}
-        </div>
+        <FlashMessage flashType="success" message={I18nPrefixed.upload_success} />
         <div className="importErrorHelpText">
           <p dangerouslySetInnerHTML={{__html: format(I18n.screens.dataset_new.import_help, commonErrorsSupportLink)}}>
           </p>

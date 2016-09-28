@@ -261,8 +261,8 @@ export function update(upload: FileUpload = {}, action): FileUpload {
         ...upload,
         progress: {
           type: 'Failed',
-          error: _.isUndefined(action.error)
-            ? I18n.screens.import_pane.problem_importing
+          error: _.isUndefined(action.error) || action.error === 'Internal Error'
+            ? I18n.screens.import_pane.problem_uploading
             : action.error
         }
       };

@@ -14,7 +14,6 @@ import customMetadataSchema from 'customMetadataSchema';
 import datasetCategories from 'datasetCategories';
 import licenses from 'licenses';
 
-// == Metadata
 type DatasetMetadata = {
   nextClicked: boolean,
   apiCall: MetadataApiCall,

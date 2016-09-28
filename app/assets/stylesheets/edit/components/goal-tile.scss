@@ -245,3 +245,36 @@
     }
   }
 }
+
+@media print {
+  .component-goal-tile {
+    height: 37rem;
+
+    .goal-tile-container {
+      .goal-tile {
+        .goal-tile-title-container {
+          .goal-tile-title {
+            font-size: 18.5px;
+            line-height: 28px;
+          }
+        }
+
+        .goal-tile-metric-container {
+          .goal-tile-metric-subtitle {
+          font-size: 11.8px;
+          line-height: 18.172px;
+          }
+        }
+
+        .goal-tile-metadata-container {
+          font-size: 11.8px;
+          line-height: 18.172px;
+        }
+
+        .goal-tile-view-goal {
+          display: none;
+        }
+      }
+    }
+  }
+}

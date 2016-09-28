@@ -38,6 +38,17 @@ module StoriesHelper
     raw(Theme.find_by_class_name(@story.theme).try(:google_font_code))
   end
 
+  def settings_panel_print_story_link
+    content_tag('a',
+      href: "/stories/s/#{@story.uid}/preview?print=true",
+      class: 'menu-list-item-header',
+      role: 'button',
+      target: '_blank') do
+
+      yield if block_given?
+    end
+  end
+
   def settings_panel_story_stats_link
     content_tag('a',
       href: can_see_story_stats? ? "/d/#{@story.uid}/stats" : nil,
@@ -156,6 +167,10 @@ module StoriesHelper
     classes << 'hero-no-image' if hero_component.url(:xlarge).blank?
     classes << 'hero-default-height' if hero_component.layout.blank?
     classes.join(' ')
+  end
+
+  def should_launch_print_dialog_on_page_load?
+    request.query_parameters['print'] == 'true'
   end
 
   private

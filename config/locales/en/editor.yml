@@ -141,6 +141,8 @@ en:
           not_published_not_updated: 'Your story has not been published and cannot be updated.'
       story_tile_embed_section:
         section_title: 'Share and Embed...'
+      print_story_section:
+        section_title: 'Print Story'
       story_stats_section:
         section_title: 'View Story Stats'
     make_a_copy:

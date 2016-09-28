@@ -133,14 +133,30 @@ describe('API response for', () => {
   });
 
   describe('licenseToView', () => {
-    it('test that license values are correctly returned', () => {
-      const license = licenseToView(metadata.license);
-
-      expect(license).to.deep.equal({
+    it('returns a license object as core expects it, when the user has selected a license', () => {
+      const actual = modelToViewParam(metadata);
+      expect(actual.license).to.deep.equal({
         name: 'Open Data Commons Public Domain Dedication and License',
         termsLink: 'http://opendatacommons.org/licenses/pddl/1.0/',
         logoUrl: ''
       });
+      expect(actual.licenseId).to.equal('PDDL');
+    });
+
+    it('returns a license object as core expects it, when the user has selected "no license"', () => {
+      const metadataWithNoLicenseSelected = {
+        ...metadata,
+        license: {
+          attribution: '',
+          licenseId: '',
+          licenseName: '-- No License --',
+          licensing: '',
+          sourceLink: undefined
+        }
+      };
+      const actual = modelToViewParam(metadataWithNoLicenseSelected);
+      expect(actual.license).to.equal(null);
+      expect(actual.licenseId).to.equal(null);
     });
   });
 

@@ -580,8 +580,6 @@ export function isMetadataUnsaved(metadata) {
 }
 
 export function isPrivacyChanged(metadata) {
-  console.log('metadata privacySettings: ' + metadata.privacySettings);
-  console.log('metadata lastSavedLicensePrivacySettings ' + metadata.lastSaved.lastSavedPrivacySettings);
   return !(_.isEqual(metadata.privacySettings, metadata.lastSaved.lastSavedPrivacySettings));
 }
 

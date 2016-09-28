@@ -200,15 +200,19 @@ export function modelToViewParam(metadata) {
   };
 
   const license = metadata.license;
-  if (license.licenseId !== '') {
+  if (license.licenseId === '') {
+    return {
+      ...model,
+      licenseId: null,
+      license: null
+    };
+  } else {
     return {
       ...model,
       licenseId: license.licenseId,
       license: licenseToView(license)
     };
   }
-
-  return model;
 }
 
 export function licenseToView(license) {
@@ -219,11 +223,11 @@ export function licenseToView(license) {
     if (_.has(mapLicense, 'licenses')) {
       return mapLicense.licenses;
     } else {
-      return mapLicense;
+      return [mapLicense];
     }
   });
 
-  const flattenedLicenses = [].concat.apply([], licenseList);
+  const flattenedLicenses = _.flatten(licenseList);
   const match = _.find(flattenedLicenses, (l) => {
     return l.id === licenseId;
   });
@@ -237,9 +241,7 @@ export function licenseToView(license) {
 
 export function coreViewToModel(view) {
   const contents = coreViewContents(view);
-  const license = view.licenseId
-                  ? coreViewLicense(view)
-                  : Metadata.emptyLicense();
+  const license = coreViewLicense(view);
   const privacySettings = _.has(view, 'grants') ? 'public' : 'private';
   return {
     nextClicked: false,
@@ -266,30 +268,40 @@ export function customMetadataModelToCoreView(customMetadata, isPrivate: boolean
 }
 
 function coreViewLicense(view) {
-  const id = view.licenseId;
-  const name = view.license.name;
-  const titles = blistLicenses.map(obj => (obj.name));
-  if (titles.indexOf(name) >= 0) {
-    return {
-      licenseId: id,
-      licenseName: name,
-      licensing: '',
-      sourceLink: view.attributionLink,
-      attribution: view.attribution
-    };
+  if (view.licenseId && view.license) {
+    const id = view.licenseId;
+    const name = view.license.name;
+    const titles = blistLicenses.map(obj => (obj.name));
+    if (titles.indexOf(name) >= 0) {
+      // sub-license, e.g. 'Creative Commons Attribution | Noncommercial 3.0 Unported'
+      return {
+        licenseId: id,
+        licenseName: name,
+        licensing: '',
+        sourceLink: view.attributionLink,
+        attribution: view.attribution
+      };
+    } else {
+      // top-level license, e.g. 'UK Open Government Licence v3'
+      const title = _.find(titles, (t) => {
+        return name.indexOf(t) === 0;
+      });
+
+      const licensing = name.slice(title.length).trim();
+
+      return {
+        licenseId: id,
+        licenseName: title,
+        licensing: licensing,
+        sourceLink: view.attributionLink,
+        attribution: view.attribution
+      };
+    }
   } else {
-    const title = _.find(titles, (t) => {
-      return name.indexOf(t) === 0;
-    });
-
-    const licensing = name.slice(title.length).trim();
-
     return {
-      licenseId: id,
-      licenseName: title,
-      licensing: licensing,
-      sourceLink: view.attributionLink,
-      attribution: view.attribution
+      ...Metadata.emptyLicense(),
+      attribution: view.attribution,
+      sourceLink: view.attributionLink
     };
   }
 }

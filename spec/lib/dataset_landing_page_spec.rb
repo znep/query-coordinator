@@ -14,11 +14,15 @@ describe DatasetLandingPage do
 
   let(:featured_item) do
     {
-      :position => 2,
-      :contentType => 'internal',
-      :name => 'featured',
-      :featuredView => {}
+      'position' => 2,
+      'contentType' => 'internal',
+      'name' => 'featured',
+      'featuredView' => {}
     }
+  end
+
+  let(:invalid_featured_item) do
+    { 'contentType' => 'internal' }
   end
 
   let(:formatted_view) do
@@ -36,9 +40,9 @@ describe DatasetLandingPage do
 
   let(:formatted_featured_item) do
     {
-      :contentType => 'internal',
-      :name => 'name',
-      :featuredView => formatted_view
+      'contentType' => 'internal',
+      'name' => 'name',
+      'featuredView' => formatted_view
     }
   end
 
@@ -155,7 +159,7 @@ describe DatasetLandingPage do
   describe '#get_featured_content' do
     it 'uses View.featured_content to retrieve featured content' do
       expect(View).to receive(:find).and_return(view)
-      expect_any_instance_of(View).to receive(:featured_content).and_return(
+      expect(view).to receive(:featured_content).and_return(
         Array.new(3, featured_item)
       )
 
@@ -170,6 +174,27 @@ describe DatasetLandingPage do
       )
 
       expect(result.length).to eq(3)
+    end
+
+    it 'does not return view widget data for invalid featured content' do
+      expect(View).to receive(:find).and_return(view)
+      expect(view).to receive(:featured_content).and_return([
+        featured_item,
+        featured_item,
+        invalid_featured_item
+      ])
+
+      expect(dataset_landing_page).to receive(:format_featured_item).
+        and_return(formatted_featured_item).
+        exactly(2).times
+
+      result = dataset_landing_page.get_featured_content(
+        'view-wooo',
+        'cookies',
+        'request_id'
+      )
+
+      expect(result.length).to eq(2)
     end
   end
 

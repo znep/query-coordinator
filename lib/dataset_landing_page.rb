@@ -49,7 +49,11 @@ class DatasetLandingPage
 
   def get_featured_content(uid, cookie_string, request_id)
     view = View.find(uid)
-    featured_content = view.featured_content
+    featured_content = view.featured_content.reject do |featured_item|
+      # featuredView isn't always guaranteed to exist on internal featured content. If it
+      # doesn't exist, though, we don't have any information to render for the view widget.
+      featured_item['contentType'] == 'internal' && !featured_item['featuredView']
+    end
 
     # We are using threads here because stories need to issue a separate request for its
     # preview image and (until Cetera returns the previewImageId) we also need to issue

@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider, connect } from 'react-redux'; // eslint-disable-line no-unused-vars
 import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
@@ -19,17 +19,18 @@ import * as ConnectToEsri from './components/connectToEsri';
 import view from 'view';
 import importSource from 'importSource';
 
+const middleware = [thunk];
+
+if (serverConfig.reduxLogging) {
+  middleware.push(createLogger({
+    duration: true,
+    timestamp: false
+  }));
+}
 
 if (serverConfig.environment !== 'development') {
   airbrake.init();
 }
-
-const enhancer = compose(
-  applyMiddleware(
-    createLogger({ duration: true, timestamp: false }),
-    thunk
-  )
-);
 
 function identityReducer(model = null, action) { // eslint-disable-line no-unused-vars
   return model;
@@ -48,7 +49,7 @@ const rootReducer = combineReducers({
   metadata: Metadata.update
 });
 
-const store = createStore(rootReducer, Wizard.initialNewDatasetModel(view, importSource), enhancer);
+const store = createStore(rootReducer, Wizard.initialNewDatasetModel(view, importSource), applyMiddleware(...middleware));
 const ConnectedWizard = connect((state) => ({state: state}))(Wizard.view); // eslint-disable-line no-unused-vars
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -45,7 +45,10 @@ module ImportWizardHelper
   def render_import_wizard_server_config
     server_config = {
       airbrakeKey: ENV['PUBLISHING_AIRBRAKE_API_KEY'] || APP_CONFIG.publishing_airbrake_api_key,
-      environment: Rails.env
+      environment: Rails.env,
+      reduxLogging: params['redux_logging'].nil? ?
+        Rails.env == 'development' :              # We want to log when running in development mode
+        params['redux_logging'] == 'true'         # or if we have the `redux_logging` query param
     }
 
     javascript_tag("var serverConfig = #{json_escape(server_config.to_json)};")

@@ -79,7 +79,7 @@
     "modularscale-sass": "2.1.1",
     "ng-annotate-loader": "0.0.10",
     "ngtemplate-loader": "WearyMonkey/ngtemplate-loader#63e3461",
-    "node-sass": "3.4.2",
+    "node-sass": "3.7.0",
     "normalize.css": "4.1.1",
     "phantomjs-prebuilt": "2.1.12",
     "phantomjs": "1.9.18",

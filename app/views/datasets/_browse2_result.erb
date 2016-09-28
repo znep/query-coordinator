@@ -88,7 +88,10 @@
                       result_topic,
                       result_federated_origin_url
                     ),
-                    { class: 'browse2-result-topic' }.merge(result_is_federated ? { target: '_blank' } : {})
+                    {
+                      'class' => 'browse2-result-topic',
+                      'aria-label' => "#{t('controls.browse.browse2.topics.label')}: #{result_topic}"
+                    }.merge(result_is_federated ? { target: '_blank' } : {})
                   ) %>
 
             <%- end -%>

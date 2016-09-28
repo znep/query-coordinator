@@ -2,7 +2,9 @@
   <p class="browse2-suggest-dataset-prompt">
     <%= t('controls.browse.actions.suggest_dataset') %>
   </p>
-  <a class="browse2-suggest-dataset-button" href="<%= nominate_index_path %>">
+  <a class="browse2-suggest-dataset-button"
+    href="<%= nominate_index_path %>"
+    aria-label="<%= t('controls.browse.actions.suggest_dataset') %>">
     <%= t('controls.browse.actions.suggest_dataset_verb') %>
     <span class="browse2-suggest-dataset-icon icon-arrow-right"></span>
   </a>

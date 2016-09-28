@@ -9,6 +9,7 @@ import * as Actions from '../../actions';
 import * as State from '../../state';
 import * as Selectors from '../../selectors';
 import * as Components from '../../../../components';
+import goalStatusTranslation from '../../../../helpers/goalStatus';
 
 class GoalTableRow extends React.Component {
   constructor(props) {
@@ -55,7 +56,7 @@ class GoalTableRow extends React.Component {
     const endDate = goal.getIn(['prevailing_measure', 'end']);
     const isGoalEnded = endDate && moment(endDate).isBefore();
     const goalStatusTranslationKey = isGoalEnded ? 'end_progress' : 'progress';
-    const goalStatus = translations.getIn(['measure', goalStatusTranslationKey, goal.get('status')]);
+    const goalStatus = goalStatusTranslation(translations, ['measure', goalStatusTranslationKey, goal.get('status')]);
     const goalVisibility = goal.get('is_public') ? 'status_public' : 'status_private';
 
     return (

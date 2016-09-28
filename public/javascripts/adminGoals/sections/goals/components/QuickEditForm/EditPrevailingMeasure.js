@@ -3,6 +3,7 @@ import * as React from 'react';
 import * as ReactRedux from 'react-redux';
 import * as State from '../../state';
 import * as Components from '../../../../components';
+import goalStatusTranslation from '../../../../helpers/goalStatus';
 
 import moment from 'moment';
 
@@ -33,23 +34,23 @@ class EditPrevailingMeasure extends React.Component {
 
     this.overrideOptions = [
       {
-        label: translations.getIn(['admin', 'quick_edit', 'override_types', 'none']),
+        label: goalStatusTranslation(translations, ['measure', 'progress', 'none']),
         value: 'none'
       },
       {
-        label: translations.getIn(['admin', 'quick_edit', 'override_types', 'bad']),
+        label: goalStatusTranslation(translations, ['measure', 'progress', 'bad']),
         value: 'bad'
       },
       {
-        label: translations.getIn(['admin', 'quick_edit', 'override_types', 'within_tolerance']),
+        label: goalStatusTranslation(translations, ['measure', 'progress', 'within_tolerance']),
         value: 'within_tolerance'
       },
       {
-        label: translations.getIn(['admin', 'quick_edit', 'override_types', 'good']),
+        label: goalStatusTranslation(translations, ['measure', 'progress', 'good']),
         value: 'good'
       },
       {
-        label: translations.getIn(['admin', 'quick_edit', 'override_types', 'no_judgement']),
+        label: goalStatusTranslation(translations, ['measure', 'progress', 'no_judgement']),
         value: 'no_judgement'
       }
     ];

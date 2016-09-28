@@ -1,6 +1,7 @@
 <% content_for :head do %>
   <%= render_dataset_landing_page_server_config %>
   <script type="text/javascript">
+    window.strings = <%== CurrentDomain.strings.to_json %>;
     window.translations = <%== LocaleCache.render_translations([LocalePart.from_array(['govstat'])])['govstat'].to_json %>
   </script>
   <link rel="stylesheet" href="/stylesheets/socrata-components/css/styleguide.min.css" />

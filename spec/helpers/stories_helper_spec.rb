@@ -87,6 +87,18 @@ RSpec.describe StoriesHelper, type: :helper do
     end
   end
 
+  describe '#settings_panel_print_story_link', verify_stubs: false do
+    before :each do
+      @story = FactoryGirl.create(:draft_story)
+    end
+
+    it 'returns the anchor element for the story stats page with an href' do
+      allow(self).to receive(:should_launch_print_dialog_on_page_load?).and_return(true)
+
+      expect(settings_panel_print_story_link).to eq('<a href="/stories/s/test-test/preview?print=true" class="menu-list-item-header" role="button" target="_blank"></a>')
+    end
+  end
+
   describe '#settings_panel_story_stats_link', verify_stubs: false do
     before :each do
       @story = FactoryGirl.create(:draft_story)

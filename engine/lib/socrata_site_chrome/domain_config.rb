@@ -34,6 +34,10 @@ module SocrataSiteChrome
       JSON.parse(File.read("#{SocrataSiteChrome::Engine.root}/config/default_site_chrome.json"))
     end
 
+    def self.cache_key
+      'site_chrome_config'
+    end
+
     private
 
     # Config contains various versions, each having a "published" and "draft" set of
@@ -72,14 +76,16 @@ module SocrataSiteChrome
     end
 
     def get_domain_config
-      RequestStore[:domain_config] ||=
+      body = Rails.cache.fetch(DomainConfig.cache_key) do
         begin
-          response = HTTParty.get(domain_config_uri, :verify => false) # todo remove :verify false
-          body = response.code == 200 ? response.body : nil
-          ActiveSupport::HashWithIndifferentAccess.new(configuration_or_default(body))
+          response = HTTParty.get(domain_config_uri, :verify => Rails.env.production?)
+          response.code == 200 ? response.body : nil
         rescue HTTParty::ResponseError => e
           raise "Failed to get domain configuration for #{domain}: #{e}"
         end
+      end
+
+      ActiveSupport::HashWithIndifferentAccess.new(configuration_or_default(body))
     end
 
     def domain_config_uri

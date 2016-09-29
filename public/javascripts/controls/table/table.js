@@ -3910,16 +3910,11 @@
       begin('renderRows.destroy');
       // Destroy the rows that are no longer visible
       var bucketStart = start + model.currentBucketStart();
-      var bucketStop = stop + model.currentBucketStart();
       for (var rowID in renderedRows) {
-        if (rowIndices[rowID] < bucketStart || rowIndices[rowID] >= bucketStop) {
-          cleanRow(rowID, renderedRows);
-        }
+        cleanRow(rowID, renderedRows);
       }
       for (rowID in dirtyRows) {
-        if (rowIndices[rowID] < bucketStart || rowIndices[rowID] >= bucketStop) {
-          cleanRow(rowID, dirtyRows);
-        }
+        cleanRow(rowID, dirtyRows);
       }
 
       // Now check for dirty rows that don't exist anymore

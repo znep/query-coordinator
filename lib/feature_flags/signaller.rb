@@ -6,7 +6,7 @@ class FeatureFlags
       end
 
       def version
-        read('version', endpoint: { with_path: '/version.json' }).
+        read(endpoint: { with_path: '/version.json' }).
           each_with_object({}) do |(key, value), memo|
             memo[key.to_sym] =
               case key
@@ -17,49 +17,42 @@ class FeatureFlags
           end
       end
 
-      def write
+      def write(endpoint_hash)
         return unless available?
 
         begin
-          yield
+          yield(endpoint(endpoint_hash))
+          clear_throttler(cache_key_from_endpoint(endpoint_hash))
         rescue Errno::ECONNREFUSED
           raise RuntimeError.new('Error connecting to Feature Flag Signaller. Is it running?')
         end
       end
 
-      def read(cache_key, options = {})
-        namespace = options.fetch(:namespace, 'feature_flags')
+      def read(options = {})
         throttle_expiry = options.fetch(:expires_in, 5.seconds)
 
-        lkg_key = "#{namespace}:last_known_good:#{cache_key}"
-        thr_key = "#{namespace}:throttler:#{cache_key}"
+        cache_key = cache_key_from_endpoint(options.fetch(:endpoint))
+        throttler_key = key_for_throttler(cache_key)
+        last_known_good_key = key_for_last_known_good(cache_key)
 
         conditionally_mute do
-          Rails.cache.fetch(thr_key, expires_in: throttle_expiry) do
+          Rails.cache.fetch(throttler_key, expires_in: throttle_expiry) do
             begin
-              if options.key?(:endpoint)
-                JSON.parse(HTTParty.get(endpoint(options.fetch(:endpoint))).body)
-              else
-                yield
-              end.tap { | result| Rails.cache.write(lkg_key, result) }
+              HTTParty.get(endpoint(options.fetch(:endpoint)), format: :json).
+                parsed_response.
+                tap { | result| Rails.cache.write(last_known_good_key, result) }
             rescue => e
-              Rails.cache.read(lkg_key).tap do |result|
+              Rails.cache.read(last_known_good_key).tap do |result|
                 Rails.logger.error("Something nasty was returned from upstream: #{e.inspect}")
                 if result.nil?
-                  Rails.logger.error("Nothing found in last-known-good cache: #{lkg_key}")
+                  Rails.logger.error(
+                    "Nothing found in last-known-good cache: #{last_known_good_key}"
+                  )
                   raise
                 end
               end
             end
           end
-        end
-      end
-
-      def conditionally_mute(&block)
-        if ENV['LOG_FEATURE_FLAG_CACHING'].to_s.downcase == 'true'
-          yield
-        else
-          Rails.cache.mute(&block)
         end
       end
 
@@ -78,8 +71,41 @@ class FeatureFlags
         )
       end
 
+      def conditionally_mute(&block)
+        if ENV['LOG_FEATURE_FLAG_CACHING'].to_s.downcase == 'true'
+          yield
+        else
+          Rails.cache.mute(&block)
+        end
+      end
+
       def base_uri
         APP_CONFIG.feature_flag_signaller_uri || ENV['FEATURE_FLAG_SIGNALLER_URI']
+      end
+
+      private
+      def cache_key_from_endpoint(endpoint_hash)
+        cache_key = endpoint_hash.fetch(:with_path, nil)
+        if cache_key.present?
+          cache_key.
+            sub('.json', ''). # remove extension
+            gsub(/\//, '_'). # convert slashes to underscorees
+            sub(/^_/, '') # remove leading underscore
+        else
+          [ endpoint_hash[:for_flag], endpoint_hash[:for_domain] || 'environment' ].join(':')
+        end
+      end
+
+      def key_for_throttler(cache_key)
+        "feature_flags:throttler:#{cache_key}"
+      end
+
+      def key_for_last_known_good(cache_key)
+        "feature_flags:last_known_good:#{cache_key}"
+      end
+
+      def clear_throttler(cache_key)
+        Rails.cache.delete(key_for_throttler(cache_key))
       end
     end
   end

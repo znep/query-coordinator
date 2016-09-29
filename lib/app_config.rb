@@ -6,6 +6,7 @@ class AppConfig < Hashie::Dash
   include Hashie::Extensions::IndifferentAccess
 
   as_int = lambda(&:to_i)
+  as_float = lambda(&:to_f)
 
   # Services and service coordination
   property :coreservice_uri
@@ -14,6 +15,8 @@ class AppConfig < Hashie::Dash
   property :odysseus_app_name
   property :consul_host
   property :zk_hosts
+
+  property :signaller_traffic_throttler, default: 0, transform_with: as_float
 
   # App tokens
   property :app_token

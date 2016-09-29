@@ -115,6 +115,7 @@ describe BrowseController do
       end
 
       it 'should not use browse2 when rendering the asset picker' do
+        stub_site_chrome
         VCR.use_cassette('browse_controller/select_dataset') do
           get :select_dataset
           expect(response).to be_success

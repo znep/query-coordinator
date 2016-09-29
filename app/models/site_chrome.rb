@@ -58,6 +58,14 @@ class SiteChrome
     SocrataSiteChrome::SiteChrome::LATEST_VERSION
   end
 
+  def self.cache_key
+    SocrataSiteChrome::DomainConfig.cache_key
+  end
+
+  def self.flush_cache
+    Rails.cache.delete(cache_key) unless Rails.env.test?
+  end
+
   def attributes
     SiteChrome.attribute_names.each_with_object({}) do |field, hash|
       hash[field] = instance_variable_get("@#{field}")
@@ -177,27 +185,14 @@ class SiteChrome
   #######################
   # The Calls to Cthorehu
 
-  def self.all(opts = {})
-    options = opts.deep_merge(
-      query: { type: core_configuration_type },
-      headers: default_request_headers
-    )
-    res = get(core_configurations_path, options)
-    res.map { |site_chrome| new(site_chrome) }
-  end
-
-  def self.find_one(id)
-    path = "#{core_configurations_path}/#{id}"
-    res = get(path, default_request_headers)
-    new(res) if res.success? && res['type'] == core_configuration_type
-  end
-
+  # Find existing site_chrome DomainConfig from the Site Chrome gem, and instantiate a new
+  # SiteChrome instance from it.
   def self.find
-    opts = { query: { defaultOnly: true } }
-    all(opts).find(&:default)
+    new SocrataSiteChrome::DomainConfig.new(CurrentDomain.cname).config
   end
 
   def create_or_update_property(property_name, property_value)
+    SiteChrome.flush_cache
     if property(property_name)
       update_property(property_name, property_value)
     else

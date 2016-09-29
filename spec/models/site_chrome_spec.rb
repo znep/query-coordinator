@@ -19,9 +19,9 @@ describe SiteChrome do
     def auth_cookies_for_vcr_tapes
       {
         'logged_in' => 'true',
-        '_socrata_session_id' => 'BAh7B0kiD3Nlc3Npb25faWQGOgZFRiIlNzU5ZDUzMzM4MjUxMTBjMDk5ZDdmYzZhMzI5MmZkOTFJIhBfY3NyZl90b2tlbgY7AEZJIjFaK0JsRE9YN1lGWFc0WDMrMmRtZXlXcnJZU1d6b2hTdGYzQVBDUnJnWlhFPQY7AEY=--61804bb14954b9cb66c8e28658089e1abaf88894',
-        'socrata-csrf-token' => 'Z+BlDOX7YFXW4X3+2dmeyWrrYSWzohStf3APCRrgZXE=',
-        '_core_session_id' => 'ODNueS13OXplIDE0NjQxMzUxODEgNGFhZjZjYjhkYzhiIDdhMTM3NWE4ZTZhZDU0MmYzNzA1NWI2ZmMyNTU2ZGJhNmI1ODQ5M2Q'
+        '_socrata_session_id' => 'BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJWJkY2M1NDRmYWQ3ZGVhMmZjOTMzYjUzOWQxM2U5NzY5BjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjFjMC9KeHVKQVNTZTMxK1FGcGFoYkkvS1NNZVluNk1WNEFMS3oyRzZmQWZ3PQY7AEZJIglpbml0BjsAVFRJIg5yZXR1cm5fdG8GOwBGMA%3D%3D--03ede085a952536e6866b1c67ffe12c227f988ea',
+        'socrata-csrf-token' => 'wSzSpHB5gEEc6BE8UvBJsLBFg8ZAdr0r0fs32hg%2B3B6yYxtikjnJZqs%2F9Tn3WBKTQteyIGeeeFPRSYQCdqHd4g%3D%3D',
+        '_core_session_id' => 'dHVnZy1pa2NlIDE0NzUxMzM1MTIgYjg3NzJhYWRjZDMxIDc5YTMzM2E5MWQ0NzBmNTcwZDA5YWMwZmRhN2EyOTM0YzE5NzNjNGE%3D'
       }.map { |key, value| "#{key}=#{value}" }.join(';')
     end
 
@@ -66,20 +66,6 @@ describe SiteChrome do
         expect(site_chrome.id).not_to be_nil
         expect(site_chrome.default).to be true # should be default
         expect(site_chrome.updatedAt).not_to be_nil
-      end
-    end
-
-    it 'can find and find_one' do
-      VCR.use_cassette('site_chrome/model/find_one') do
-        default_site_chrome = SiteChrome.find
-        expect(default_site_chrome).to be_instance_of(SiteChrome)
-        expect(default_site_chrome.default).to be true
-        expect(default_site_chrome.id).not_to be_nil
-        expect(default_site_chrome.updatedAt).not_to be_nil
-
-        site_chrome = SiteChrome.find_one(default_site_chrome.id)
-        expect(site_chrome).to be_instance_of(SiteChrome)
-        expect(site_chrome.attributes).to eq(default_site_chrome.attributes)
       end
     end
 

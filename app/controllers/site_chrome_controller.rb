@@ -52,6 +52,14 @@ class SiteChromeController < ApplicationController
     end
   end
 
+  # DEBUG!
+  # This is a hack to flush the cache if you manually edit the Site Chrome configuration.
+  # You can trigger this from the browser with `$.post('/admin/site_chrome/flush_cache')`
+  def flush_cache
+    SiteChrome.flush_cache
+    render :json => { :success => true }
+  end
+
   private
 
   def ensure_access

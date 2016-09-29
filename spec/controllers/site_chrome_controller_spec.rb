@@ -23,15 +23,16 @@ describe SiteChromeController do
   def auth_cookies_for_vcr_tapes
     {
       'logged_in' => 'true',
-      '_socrata_session_id' => 'BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJTFmN2E4ZmQ5ODlkNTExMzM0MmRhNGE0YjljMGUwZWYzBjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjE4WGE4V0tITjJBQTQxTW9LbTN6dmVkU0hGd3lxUUN6aU5OMGt2Rm1DOTJZPQY7AEZJIg5yZXR1cm5fdG8GOwBGMEkiCWluaXQGOwBUVA',
-      'socrata-csrf-token' => '4c51qr%2Bqf6ZyxCb0eNKyYyoe0EIajfTrQgBbhcluAD8QuMnyHmenpkoQ7P7jrl0a%2FpnHTrDN2Al23X85kOz3WQ%3D%3D',
-      '_core_session_id' => 'dHVnZy1pa2NlIDE0NzQwMTAwMjAgNzJmOTljMzRlYjE4IGU3Mzk0YTg1M2YyYThkMWJkOWJlNjMwZGZkOTNmYWFkOGQ0NzllNTc%3D'
+      '_socrata_session_id' => 'BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJWJkY2M1NDRmYWQ3ZGVhMmZjOTMzYjUzOWQxM2U5NzY5BjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjFjMC9KeHVKQVNTZTMxK1FGcGFoYkkvS1NNZVluNk1WNEFMS3oyRzZmQWZ3PQY7AEZJIglpbml0BjsAVFRJIg5yZXR1cm5fdG8GOwBGMA%3D%3D--03ede085a952536e6866b1c67ffe12c227f988ea',
+      'socrata-csrf-token' => 'wSzSpHB5gEEc6BE8UvBJsLBFg8ZAdr0r0fs32hg%2B3B6yYxtikjnJZqs%2F9Tn3WBKTQteyIGeeeFPRSYQCdqHd4g%3D%3D',
+      '_core_session_id' => 'dHVnZy1pa2NlIDE0NzUxMzM1MTIgYjg3NzJhYWRjZDMxIDc5YTMzM2E5MWQ0NzBmNTcwZDA5YWMwZmRhN2EyOTM0YzE5NzNjNGE%3D'
     }
   end
 
   # The main page admins will typically access
   describe 'edit' do
     before(:each) do
+      stub_site_chrome
       allow(subject).to receive(:enable_site_chrome?).and_return(true)
     end
 

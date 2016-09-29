@@ -263,50 +263,5 @@ describe('SvgRegionMap jQuery component', function() {
       // Remove visualizaton
       destroyVisualization($container);
     });
-
-    it('emits a flyout render event when the mouse is moved over the legend', function(done) {
-      var vif = _.cloneDeep(regionMapVif);
-
-      $container.socrataSvgRegionMap(vif);
-      $container.on('SOCRATA_VISUALIZATION_FLYOUT', function(event) {
-        if (event.originalEvent.detail !== null) {
-
-          assert.isTrue(true, 'Flyout was rendered.');
-          done();
-        }
-      });
-
-      setTimeout(function() {
-        $container.find('.region-map-legend-color').trigger('mousemove');
-      }, 0);
-    });
-
-    it('emits a ...VIF_UPDATED event with a new filter when a region is clicked (simulated with a ...SELECT_REGION event)', function(done) {
-      var vif = _.cloneDeep(regionMapVif);
-
-      vif.configuration.interactive = true;
-
-      assert.equal(vif.filters.length, 0);
-
-      $container.socrataSvgRegionMap(vif);
-      $container.on('SOCRATA_VISUALIZATION_VIF_UPDATED', function(event) {
-
-        assert.isTrue(true, 'SOCRATA_VISUALIZATION_VIF_UPDATED event was received.');
-        assert.equal(event.originalEvent.detail.series[0].dataSource.filters.length, 1);
-        done();
-      });
-
-      setTimeout(function() {
-        $container.find('.socrata-visualization-container')[0].dispatchEvent(
-          new window.CustomEvent(
-            'SOCRATA_VISUALIZATION_REGION_MAP_REGION_SELECTED',
-            {
-              detail: {shapefileFeatureId: 'test'},
-              bubbles: true
-            }
-          )
-        );
-      }, 0);
-    });
   });
 });

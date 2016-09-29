@@ -6,6 +6,7 @@
     height: 100%;
     background-color: #fff;
     box-sizing: border-box;
+    z-index: 4;
 
     .leaflet-container {
       background-color: #fff !important;
@@ -19,61 +20,14 @@
   .region-map-legend {
     position: absolute;
     margin: 0;
-    padding: 0;
+    padding: 10px;
     bottom: 15px;
     right: 15px;
+    background-color: rgba(255, 255, 255, 0.87);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);
+    border-radius: 4px;
     cursor: default;
-    z-index: 100;
-
-    svg {
-      display: block;
-      overflow: initial !important;
-
-      rect.region-map-legend-color {
-        stroke-width: 1px;
-      }
-    }
-
-    &.continuous {
-      max-height: 15rem;
-      height: 100%;
-      right: 15px;
-      bottom: 0;
-      width: 1rem;
-      box-sizing: content-box;
-      padding: 30px 0;
-      position: absolute;
-
-      svg {
-        width: 100%;
-        max-height: inherit;
-        height: 100%;
-        box-sizing: inherit;
-        position: absolute;
-        top: 30px;
-        left: 0;
-
-        &.legend-ticks {
-          max-height: none;
-        }
-
-        rect {
-          width: 100%;
-        }
-
-        .tick {
-          font-size: 0.8rem;
-
-          &.small {
-            font-size: 0.6rem;
-            opacity: 0.8;
-          }
-        }
-
-        path.domain {
-          display: none;
-        }
-      }
-    }
+    visibility: hidden;
+    z-index: 1;
   }
 }

@@ -298,7 +298,8 @@ export default {
     },
     region_map: {
       flyout_selected_notice: 'The visualization is currently filtered by this value',
-      title: 'Region Map'
+      title: 'Region Map',
+      error_logarithm_unavailable: 'Because the configured data includes a zero and/or negative value, a logarithmic scale cannot be defined.'
     },
     row_inspector: {
       default_label_unit: 'Row',

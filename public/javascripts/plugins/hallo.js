@@ -2596,6 +2596,52 @@
         var options, plugin, _ref,
           _this = this;
         this.id = this._generateUUID();
+
+        /*** SOCRATA PATCH ***
+         * This is a workaround for a V8 (Chrome) optimizing compiler bug.
+         * The object referred to in this context by `this` ultimately ends
+         * up being cloned by jquery-ui via $.extend(true, ...).
+         * 'this' is a self-referential object and thus cannot normally be cloned
+         * via $.extend(true, ...), as doing so would result in an infinite recursion.
+         * However, $.extend skips objects which are not plain (like `this`), thus
+         * breaking the infinite recursion (probably by sheer luck).
+         *
+         * This is all OK, but a plainness check in $.isPlainObject (which $.extend uses)
+         * is written thusly (obj is the object being cloned):
+         *
+         * var key;
+         * for (key in obj) {}
+         * return key === undefined || hasOwn.call( obj, key );
+         *
+         * This picks the last key in the object (whatever that means) and checks it
+         * for ownership. It's not relevant _why_ jQuery does this (though the source
+         * is commented to explain it), but in recent versions of V8, `key` is sometimes
+         * undefined by the time the `return` statement is executed, even though the object
+         * does have at least one key. The value is accidentally dropped by the compiler.
+         * I've checked. The loop runs, I can log out `key`, in the loop, but it reverts
+         * to undefined once the loop terminates.
+         *
+         * This makes $.isPlainObject return true, which is incorrect. We get an infinite
+         * recursion as a result.
+         *
+         * I'm convinced this is a compiler/optimizer issue, as if the jQuery check is
+         * rewritten thusly, it works:
+         *
+         * var key, realKey;
+         * for (key in obj) { realKey = key; }
+         * return realKey === undefined || hasOwn.call( obj, realKey );
+         *
+         * Additionally, just placing a breakpoint in $.hasOwnProperty fixes the issue
+         * (presumably because adding the breakpoint de-optimizes the function).
+         *
+         * Given all that, why does adding `nodeType` onto `this` fix it? Well, because
+         * there is a short-circuit at the top of $.isPlainObject that checks for it.
+         * It was judged that this dirty hack is preferable to patching jQuery, Chrome,
+         * or V8.
+         */
+        this.nodeType = 'Socrata EN-6670'; // value is arbitrary, just needs to be truthy.
+        /*** END SOCRATA PATCH ***/
+
         if (this.options.checkTouch && this.options.touchScreen === null) {
           this.checkTouch();
         }

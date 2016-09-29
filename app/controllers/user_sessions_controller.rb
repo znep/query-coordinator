@@ -64,7 +64,8 @@ class UserSessionsController < ApplicationController
 
     # we allow @socrata.com superadmins to bypass auth0 if a certain module is turned on
     # this is enforced in the javascript but we have to enforce it here as well
-    if !feature?('socrata_emails_bypass_auth0') &&
+    if use_auth0? &&
+       !feature?('socrata_emails_bypass_auth0') &&
        params.key?(:user_session) &&
        params[:user_session].key?(:login) &&
        params[:user_session][:login].include?('@socrata.com')

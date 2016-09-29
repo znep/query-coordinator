@@ -429,28 +429,72 @@ describe SocrataSiteChrome::ApplicationHelper do
     end
   end
 
-  describe '#url_with_prefix' do
+  describe '#massage_url' do
     it 'does not modify a url that starts with http://' do
       url = 'http://google.com'
-      expect(helper.url_with_prefix(url)).to eq('http://google.com')
+      expect(helper.massage_url(url)).to eq('http://google.com')
     end
 
     it 'does not modify a url that starts with https://' do
       url = 'https://google.com'
-      expect(helper.url_with_prefix(url)).to eq('https://google.com')
+      expect(helper.massage_url(url)).to eq('https://google.com')
     end
 
     it 'does not modify a url that starts with /' do
       url = '/browse'
-      expect(helper.url_with_prefix(url)).to eq('/browse')
+      expect(helper.massage_url(url)).to eq('/browse')
     end
 
     it 'prepends http:// to a url that does not have a scheme or leading slash' do
       url = 'facebook.com/bananas'
-      expect(helper.url_with_prefix(url)).to eq('http://facebook.com/bananas')
+      expect(helper.massage_url(url)).to eq('http://facebook.com/bananas')
 
       url2 = 'www.test.com/asdf'
-      expect(helper.url_with_prefix(url2)).to eq('http://www.test.com/asdf')
+      expect(helper.massage_url(url2)).to eq('http://www.test.com/asdf')
+    end
+
+    it 'turns a url with the same host as the current domain into a relative url' do
+      allow(CurrentDomain).to receive(:cname).and_return('data.seattle.gov')
+      url = 'https://data.seattle.gov/browse'
+      expect(helper.massage_url(url)).to eq('/browse')
+    end
+
+    it 'doesn\'t drop url params and fragments' do
+      allow(CurrentDomain).to receive(:cname).and_return('data.seattle.gov')
+      url = 'https://data.seattle.gov/browse?some_stuff=true#show'
+      expect(helper.massage_url(url)).to eq('/browse?some_stuff=true#show')
+    end
+
+    context 'localization' do
+      before(:each) do
+        allow(I18n).to receive(:default_locale).and_return(:en)
+      end
+
+      it 'prepends the current locale to a relative path' do
+        allow(I18n).to receive(:locale).and_return(:zz)
+        url = '/browse'
+        expect(helper.massage_url(url)).to eq('/zz/browse')
+      end
+
+      it 'does not prepend the current locale to a relative path if the current locale is the default_locale' do
+        allow(I18n).to receive(:locale).and_return(:en)
+        url = '/browse'
+        expect(helper.massage_url(url)).to eq('/browse')
+      end
+
+      it 'turns a url with the same host as the current domain into a localized relative url' do
+        allow(CurrentDomain).to receive(:cname).and_return('data.seattle.gov')
+        allow(I18n).to receive(:locale).and_return(:kr)
+        url = 'https://data.seattle.gov/browse'
+        expect(helper.massage_url(url)).to eq('/kr/browse')
+      end
+    end
+
+    context 'mailto links' do
+      it 'does not prepend "http" do a mailto link' do
+        url = 'mailto:bob@test.com'
+        expect(helper.massage_url(url)).to eq('mailto:bob@test.com')
+      end
     end
   end
 

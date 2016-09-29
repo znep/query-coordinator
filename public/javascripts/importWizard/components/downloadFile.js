@@ -180,6 +180,7 @@ export function update(download: FileDownload = {}, action): FileDownload {
       };
     case FILE_DOWNLOAD_COMPLETE:
       return {
+        ...download,
         type: 'Complete',
         url: download.url,
         fileId: action.fileId,

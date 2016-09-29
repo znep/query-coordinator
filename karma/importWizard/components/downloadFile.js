@@ -211,8 +211,10 @@ describe("downloadFile's", () => {
                   type: 'Complete',
                   fileName: 'data.csv',
                   url: url,
+                  error: null,
+                  message: 'Scanning file...',
                   fileId: ticket,
-                  summary: scanWithIndices
+                  summary: scanWithIndices,
                 };
                 expect(newState).to.deep.equal(expected);
               }

@@ -539,12 +539,14 @@ function isHrefValid({contents: contents}) {
 }
 
 function isRequiredCustomFieldMissing(metadata: DatasetMetadata, field, setName, fieldIdx) {
-  return (metadata.contents.customMetadata[setName][fieldIdx].value.length === 0 && field.required);
+  return (!_.isUndefined(metadata.contents.customMetadata[setName][fieldIdx].value) &&
+      field.required &&
+      (metadata.contents.customMetadata[setName][fieldIdx].value.length === 0));
 }
 
 export function isCustomMetadataValid(metadata: DatasetMetadata) {
   return customMetadataSchema.every((fieldSet) => {
-    return fieldSet.fields.every((field, fieldIndex) => {
+    return (fieldSet.fields || []).every((field, fieldIndex) => {
       if (field.required) {
         const value = metadata.contents.customMetadata[fieldSet.name][fieldIndex].value;
         return value.length > 0;

@@ -4,15 +4,17 @@ class DataslateRouting
       page_for(path, options)
   end
 
-  def self.debug
+  def self.debug(options = {})
     (RequestStore[:dataslate_routing] ||= new(options.only(:custom_headers))).
       routes
   end
 
   attr_reader :routes, :custom_headers
+  alias :table :routes
+
   def initialize(options = {})
     @custom_headers = options.fetch(:custom_headers, {})
-    @routes = {}
+    @routes = Table.new
 
     scrape_pages_dataset_for_paths!
     scrape_pages_service_for_paths!
@@ -51,7 +53,7 @@ class DataslateRouting
   end
 
   def map_resolved_path_to_lookup_data(path)
-    return @routes[nil].try(:merge, vars: []) if path == '/' # This is a homepage.
+    return routes[nil].try(:resolution).try(:merge, vars: []) if path == '/' # This is a homepage.
 
     # On the server-side, it does not appear that we actually *use* the vars at all.
     # But I'm determining them now for (1) debugging and (2) thoroughness.
@@ -59,13 +61,13 @@ class DataslateRouting
     path.split('/').inject(routes) do |lookup_cursor, part|
       break unless lookup_cursor.has_key?(part) || lookup_cursor.has_key?(':')
       lookup_cursor[part] || (vars << part && lookup_cursor[':'])
-    end.try(:merge, vars: vars)
+    end.try(:resolution).try(:merge, vars: vars)
   end
 
   def scrape_pages_service_for_paths!
-    Page.routing_table(custom_headers).each_with_object(routes) do |entry, memo|
+    Page.routing_table(custom_headers).each do |entry|
       unique_path = uniqify(entry['path'])
-      memo.bury(*unique_path.split('/'), { from: :service, path: unique_path })
+      table.route_to(unique_path.split('/'), from: :service, path: unique_path)
     end
   end
 
@@ -74,9 +76,9 @@ class DataslateRouting
       url = '/id/pages.json?$select=path'
       ds_paths = JSON.parse(CoreServer::Base.connection.get_request(url)).
         collect { |row| row['path'] }
-      ds_paths.each_with_object(routes) do |path, memo|
+      ds_paths.each do |path|
         unique_path = uniqify(path)
-        memo.bury(*unique_path.split('/'), { from: :dataset, path: unique_path })
+        table.route_to(unique_path.split('/'), from: :dataset, path: unique_path)
       end
     rescue CoreServer::ResourceNotFound
       # Pages Dataset does not exist for this domain. Hooray!
@@ -86,5 +88,41 @@ class DataslateRouting
   def fetch_from_pages_dataset(unique_path)
     url = "/id/pages.json?$where=path=%27#{unique_path}%27"
     Page.parse(CoreServer::Base.connection.get_request(url)).first
+  end
+
+  # The routing table is a nested hash that can be loosely represented as a tree.
+  # A nested hash isn't fully able to represent this structure because every node could
+  # have a valid value. DataslateRouting::Table is an extension of Hash that allows us
+  # to set an extra value on each node beyond the key-value pairing.
+  #
+  # This allows us to handle cases when valid routes exist as subsets of other valid
+  # routes: /foo must be able to map to a page even when /foo/bar also exists.
+  #
+  # If /foo is a Table, then it can resolve to page:foo even as /foo/bar instead
+  # resolves to page:foo/bar.
+  class Table < Hash
+    def self.routed_to(route_definition)
+      new.tap do |table|
+        table.resolution = route_definition
+      end
+    end
+
+    attr_accessor :resolution
+    alias :resolves_to :resolution=
+
+    def inspect
+      super.tap do |inspection|
+        inspection.prepend("(#{@resolution})") if @resolution
+      end
+    end
+
+    def route_to(path, route_def)
+      bottom = path[0...-1].reduce(self) { |memo, layer| memo[layer] ||= self.class.new }
+      if bottom[path.last]
+        bottom[path.last].resolves_to route_def
+      else
+        bottom[path.last] = Table.routed_to(route_def)
+      end
+    end
   end
 end

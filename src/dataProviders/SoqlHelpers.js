@@ -275,10 +275,7 @@ function orderByClauseFromSeries(vif, seriesIndex) {
   const dimensionAggregation = _.get(series, 'dataSource.dimension.aggregationFunction');
   const measureAggregation = _.get(series, 'dataSource.measure.aggregationFunction');
   const isUnaggregated = _.isNull(dimensionAggregation) && _.isNull(measureAggregation);
-  const orderBy = _.get(series, 'dataSource.orderBy', {
-    parameter: isUnaggregated ? 'measure' : 'dimension',
-    sort: isUnaggregated ? 'desc' : 'asc'
-  });
+  const orderBy = _.get(series, 'dataSource.orderBy', { parameter: 'measure', sort: 'desc' });
 
   utils.assertIsOneOfTypes(orderBy.parameter, 'string');
   utils.assertIsOneOfTypes(orderBy.sort, 'string');

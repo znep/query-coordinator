@@ -14,7 +14,7 @@
           <% if valid_link_item?(link) %>
             <li>
               <%= link_to(localized("footer.links.#{link[:key]}", get_site_chrome.locales),
-                cleanse_url(link[:url]), :class => 'footer-link') %>
+                massage_url(link[:url]), :class => 'footer-link') %>
             </li>
           <% end %>
         <% end %>

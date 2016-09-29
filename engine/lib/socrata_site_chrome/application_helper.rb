@@ -15,14 +15,14 @@ module SocrataSiteChrome
       img_src = img.dig('logo', 'src')
       if img_src.present?
         image_tag(
-          cleanse_url(img_src),
+          massage_url(img_src),
           :alt => img.dig('logo', 'alt').presence || header_title.presence || 'Header Logo',
           :onerror => 'this.style.display="none"')
       end
     end
 
     def header_logo
-      link_to('/', class: 'logo') do
+      link_to(massage_url('/'), class: 'logo') do
         img = logo(get_site_chrome.header)
         span = content_tag(:span, header_title, :class => 'site-name')
         img.present? ? img << span : span
@@ -162,7 +162,7 @@ module SocrataSiteChrome
             elsif valid_link_item?(link)
               # Top level link
               link_to(localized("header.links.#{link[:key]}", get_site_chrome.locales),
-                cleanse_url(link[:url]), :class => 'site-chrome-nav-link noselect')
+                massage_url(link[:url]), :class => 'site-chrome-nav-link noselect')
             end
           )
         end
@@ -173,7 +173,7 @@ module SocrataSiteChrome
       child_links.to_a.map do |link|
         if valid_link_item?(link)
           link_to(localized("header.links.#{link[:key]}", get_site_chrome.locales),
-            cleanse_url(link[:url]), :class => 'site-chrome-nav-child-link noselect')
+            massage_url(link[:url]), :class => 'site-chrome-nav-child-link noselect')
         end
       end
     end
@@ -194,13 +194,13 @@ module SocrataSiteChrome
 
     # EN-9586: prepend "http://" onto links that do not start with it, and are not relative paths.
     # EN-7151: prepend locales onto relative links, and turn URLs into relative links if applicable
-    def cleanse_url(url)
+    def massage_url(url)
       return unless url.present?
 
       # If relative path, prerepend current locale if necessary and return
       return relative_url_with_locale(url) if url.start_with?('/')
 
-      supported_scheme_matchers = Regexp.union([/^https?:\/\//, /^mailto:/])
+      supported_scheme_matchers = Regexp.union(%r{^https?://}, %r{^mailto:})
 
       # Prepend with 'http://' if they don't provide a scheme
       url = "http://#{url}" unless url.match(supported_scheme_matchers)

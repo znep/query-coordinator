@@ -13,7 +13,7 @@ $whats_new_star_color: #d5c03e;
         padding-left: 0.5em;
         padding-right: 0.75em;
         padding-top: 0.3em;
-        font-size: 1rem;
+        font-size: 15px;
         margin-top: 0.43em;
         @include flexbox;
         @include justify-content(space-between);
@@ -29,7 +29,7 @@ $whats_new_star_color: #d5c03e;
     }
     
     &--post-list {
-        font-size: 0.8rem;
+        font-size: 12px;
         @include flexbox;
         @include flex-direction(column);
         

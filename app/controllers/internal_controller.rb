@@ -11,6 +11,7 @@ class InternalController < ApplicationController
     { name: 'staging_api_lockdown', description: 'API lockdown; prevents non-superadmin users without a domain role from using the API, including the Frontend.' },
     { name: 'fullMixpanelTracking', description: 'UX metrics gathering using persistent cookies; prefer over mixpanelTracking unless customer explicitly asks for session cookies.' },
     { name: 'mixpanelTracking', description: 'UX metrics gathering using session cookies; prefer using fullMixpanelTracking when possible.' },
+    { name: 'socrata_emails_bypass_auth0', description: "Don't automatically login users with @socrata.com email addresses through auth0" }
   ]
 
   def index

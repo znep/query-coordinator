@@ -62,6 +62,16 @@ class UserSessionsController < ApplicationController
   def create
     @body_id = 'login'
 
+    # we allow @socrata.com superadmins to bypass auth0 if a certain module is turned on
+    # this is enforced in the javascript but we have to enforce it here as well
+    if !feature?('socrata_emails_bypass_auth0') &&
+       params.key?(:user_session) &&
+       params[:user_session].key?(:login) &&
+       params[:user_session][:login].include?('@socrata.com')
+      flash[:error] = 'Attempted to login with an @socrata.com email but "socrata_emails_bypass_auth0" module is not on'
+      redirect_to login_url and return
+    end
+
     if current_user_session
       current_user_session.destroy
       @current_user = nil

@@ -79,6 +79,12 @@ class SignInForm extends React.Component {
 
     const emailDomain = emailSplit[1];
 
+    // this option allows users with @socrata.com emails to login directly to rails and
+    // bypass auth0; note that this is also enforced in the user_sessions controller
+    if (this.props.options.socrataEmailsBypassAuth0 && emailDomain === 'socrata.com') {
+      return undefined;
+    }
+
     return _.find(connections, (connection) => {
       const { status, domain_aliases } = connection;
       return status === true && _.includes(domain_aliases, emailDomain);

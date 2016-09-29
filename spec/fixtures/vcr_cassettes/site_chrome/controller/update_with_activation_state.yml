@@ -2,46 +2,52 @@
 http_interactions:
 - request:
     method: get
-    uri: http://localhost:8080/configurations?defaultOnly=true&type=site_chrome
+    uri: https://localhost/api/configurations.json?defaultOnly=true&type=site_chrome
     body:
       encoding: US-ASCII
       string: ''
     headers:
-      Content-Type:
-      - application/json
-      X-Socrata-Host:
-      - localhost
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
   response:
     status:
       code: 200
       message: OK
     headers:
-      X-Socrata-Requestid:
-      - 1sy6wvq6h909ilhfwmsww9eh
-      Access-Control-Allow-Origin:
-      - "*"
+      Server:
+      - nginx/1.8.1
+      Date:
+      - Thu, 29 Sep 2016 01:37:34 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
       - chunked
-      Server:
-      - Jetty(7.5.1.v20110908)
+      Connection:
+      - keep-alive
+      X-Socrata-Requestid:
+      - 7q4acjbz4fsxaicla27tvghf2
+      Access-Control-Allow-Origin:
+      - "*"
     body:
       encoding: UTF-8
       string: |
         [ {
-          "id" : 109,
+          "id" : 133,
           "name" : "Site Chrome",
           "default" : true,
           "domainCName" : "localhost",
           "type" : "site_chrome",
-          "updatedAt" : 1473989714,
+          "updatedAt" : 1475112975,
           "properties" : [ {
             "name" : "siteChromeConfigVars",
             "value" : {
               "versions" : {
                 "0.3" : {
-                  "published" : {
+                  "draft" : {
                     "content" : {
                       "general" : {
                         "template" : "Evergreen",
@@ -53,6 +59,9 @@ http_interactions:
                             "url" : ""
                           },
                           "twitter" : {
+                            "url" : ""
+                          },
+                          "github" : {
                             "url" : ""
                           },
                           "vimeo" : {
@@ -83,7 +92,6 @@ http_interactions:
                         "window_title_display" : "",
                         "window_icon" : "/socrata_site_chrome/images/default_favicon.ico",
                         "show_signup" : "true",
-                        "default_locale" : "en",
                         "styles" : {
                           "max_width" : "",
                           "font_family" : "Open Sans"
@@ -95,25 +103,17 @@ http_interactions:
                         "en" : {
                           "footer" : {
                             "site_name" : "",
-                            "copyright_notice_source" : "",
+                            "copyright_notice_source" : "Socrata!",
                             "links" : {
                               "link_3" : "Accessibility",
                               "link_4" : "Contact Us",
                               "link_1" : "Terms of Service",
                               "link_2" : "Privacy Policy",
                               "link_0" : "Home Page"
-                            },
-                            "logo_alt" : ""
+                            }
                           },
                           "header" : {
-                            "site_name" : "",
-                            "links" : {
-                              "link_3" : "Support",
-                              "link_1" : "Browse",
-                              "link_2" : "Developers",
-                              "link_0" : "Home Page"
-                            },
-                            "logo_alt" : ""
+                            "site_name" : "Socrata"
                           }
                         }
                       },
@@ -121,8 +121,13 @@ http_interactions:
                         "copyright_notice" : "true",
                         "powered_by" : "true",
                         "logo" : {
-                          "src" : "/socrata_site_chrome/images/socrata-logo-2c-dark.png",
-                          "href" : "#"
+                          "src" : "/socrata_site_chrome/images/socrata-logo-2c-dark.png"
+                        },
+                        "styles" : {
+                          "bg_color" : "#3b3a3c",
+                          "fg_color" : "#ee8888",
+                          "logo_height" : "44px",
+                          "logo_width" : ""
                         },
                         "links" : [ {
                           "key" : "link_0",
@@ -139,42 +144,26 @@ http_interactions:
                         }, {
                           "key" : "link_4",
                           "url" : "http://www.socrata.com/contact-us"
-                        } ],
-                        "styles" : {
-                          "bg_color" : "#3b3a3c",
-                          "fg_color" : "#fff",
-                          "logo_height" : "44px",
-                          "logo_width" : ""
-                        }
-                      },
-                      "new_batch_of_properties" : {
-                        "some_key" : "some_fine_value"
+                        } ]
                       },
                       "header" : {
                         "logo" : {
-                          "src" : "/socrata_site_chrome/images/socrata-logo-2c-dark.png",
-                          "href" : "#"
+                          "src" : "http://i.imgur.com/fK7NYeN.gif"
                         },
-                        "links" : [ {
-                          "key" : "link_0",
-                          "url" : "/"
-                        }, {
-                          "key" : "link_1",
-                          "url" : "/browse"
-                        }, {
-                          "key" : "link_2",
-                          "url" : "http://dev.socrata.com"
-                        }, {
-                          "key" : "link_3",
-                          "url" : "http://support.socrata.com"
-                        } ],
                         "styles" : {
-                          "bg_color" : "#22b479",
+                          "bg_color" : "#444",
                           "fg_color" : "#fff",
-                          "logo_height" : "36px",
+                          "logo_height" : "",
                           "logo_width" : "",
-                          "bg_color_secondary" : ""
+                          "bg_color_secondary" : "#222"
                         }
+                      }
+                    }
+                  },
+                  "published" : {
+                    "content" : {
+                      "new_batch_of_properties" : {
+                        "some_key" : "some_fine_value"
                       }
                     }
                   }
@@ -190,49 +179,55 @@ http_interactions:
           } ]
         } ]
     http_version: 
-  recorded_at: Fri, 16 Sep 2016 01:35:14 GMT
+  recorded_at: Thu, 29 Sep 2016 01:37:34 GMT
 - request:
     method: get
-    uri: http://localhost:8080/configurations?defaultOnly=true&type=site_chrome
+    uri: https://localhost/api/configurations.json?defaultOnly=true&type=site_chrome
     body:
       encoding: US-ASCII
       string: ''
     headers:
-      Content-Type:
-      - application/json
-      X-Socrata-Host:
-      - localhost
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
   response:
     status:
       code: 200
       message: OK
     headers:
-      X-Socrata-Requestid:
-      - 1q4zar49lm6mbs29q5i85rbkd
-      Access-Control-Allow-Origin:
-      - "*"
+      Server:
+      - nginx/1.8.1
+      Date:
+      - Thu, 29 Sep 2016 01:37:34 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
       - chunked
-      Server:
-      - Jetty(7.5.1.v20110908)
+      Connection:
+      - keep-alive
+      X-Socrata-Requestid:
+      - 78oprc643i2ck0xvgqztthqip
+      Access-Control-Allow-Origin:
+      - "*"
     body:
       encoding: UTF-8
       string: |
         [ {
-          "id" : 109,
+          "id" : 133,
           "name" : "Site Chrome",
           "default" : true,
           "domainCName" : "localhost",
           "type" : "site_chrome",
-          "updatedAt" : 1473989714,
+          "updatedAt" : 1475112975,
           "properties" : [ {
             "name" : "siteChromeConfigVars",
             "value" : {
               "versions" : {
                 "0.3" : {
-                  "published" : {
+                  "draft" : {
                     "content" : {
                       "general" : {
                         "template" : "Evergreen",
@@ -244,6 +239,9 @@ http_interactions:
                             "url" : ""
                           },
                           "twitter" : {
+                            "url" : ""
+                          },
+                          "github" : {
                             "url" : ""
                           },
                           "vimeo" : {
@@ -274,7 +272,6 @@ http_interactions:
                         "window_title_display" : "",
                         "window_icon" : "/socrata_site_chrome/images/default_favicon.ico",
                         "show_signup" : "true",
-                        "default_locale" : "en",
                         "styles" : {
                           "max_width" : "",
                           "font_family" : "Open Sans"
@@ -286,25 +283,17 @@ http_interactions:
                         "en" : {
                           "footer" : {
                             "site_name" : "",
-                            "copyright_notice_source" : "",
+                            "copyright_notice_source" : "Socrata!",
                             "links" : {
                               "link_3" : "Accessibility",
                               "link_4" : "Contact Us",
                               "link_1" : "Terms of Service",
                               "link_2" : "Privacy Policy",
                               "link_0" : "Home Page"
-                            },
-                            "logo_alt" : ""
+                            }
                           },
                           "header" : {
-                            "site_name" : "",
-                            "links" : {
-                              "link_3" : "Support",
-                              "link_1" : "Browse",
-                              "link_2" : "Developers",
-                              "link_0" : "Home Page"
-                            },
-                            "logo_alt" : ""
+                            "site_name" : "Socrata"
                           }
                         }
                       },
@@ -312,8 +301,13 @@ http_interactions:
                         "copyright_notice" : "true",
                         "powered_by" : "true",
                         "logo" : {
-                          "src" : "/socrata_site_chrome/images/socrata-logo-2c-dark.png",
-                          "href" : "#"
+                          "src" : "/socrata_site_chrome/images/socrata-logo-2c-dark.png"
+                        },
+                        "styles" : {
+                          "bg_color" : "#3b3a3c",
+                          "fg_color" : "#ee8888",
+                          "logo_height" : "44px",
+                          "logo_width" : ""
                         },
                         "links" : [ {
                           "key" : "link_0",
@@ -330,42 +324,26 @@ http_interactions:
                         }, {
                           "key" : "link_4",
                           "url" : "http://www.socrata.com/contact-us"
-                        } ],
-                        "styles" : {
-                          "bg_color" : "#3b3a3c",
-                          "fg_color" : "#fff",
-                          "logo_height" : "44px",
-                          "logo_width" : ""
-                        }
-                      },
-                      "new_batch_of_properties" : {
-                        "some_key" : "some_fine_value"
+                        } ]
                       },
                       "header" : {
                         "logo" : {
-                          "src" : "/socrata_site_chrome/images/socrata-logo-2c-dark.png",
-                          "href" : "#"
+                          "src" : "http://i.imgur.com/fK7NYeN.gif"
                         },
-                        "links" : [ {
-                          "key" : "link_0",
-                          "url" : "/"
-                        }, {
-                          "key" : "link_1",
-                          "url" : "/browse"
-                        }, {
-                          "key" : "link_2",
-                          "url" : "http://dev.socrata.com"
-                        }, {
-                          "key" : "link_3",
-                          "url" : "http://support.socrata.com"
-                        } ],
                         "styles" : {
-                          "bg_color" : "#22b479",
+                          "bg_color" : "#444",
                           "fg_color" : "#fff",
-                          "logo_height" : "36px",
+                          "logo_height" : "",
                           "logo_width" : "",
-                          "bg_color_secondary" : ""
+                          "bg_color_secondary" : "#222"
                         }
+                      }
+                    }
+                  },
+                  "published" : {
+                    "content" : {
+                      "new_batch_of_properties" : {
+                        "some_key" : "some_fine_value"
                       }
                     }
                   }
@@ -381,36 +359,35 @@ http_interactions:
           } ]
         } ]
     http_version: 
-  recorded_at: Fri, 16 Sep 2016 01:35:14 GMT
+  recorded_at: Thu, 29 Sep 2016 01:37:34 GMT
 - request:
     method: put
-    uri: http://localhost:8080/configurations/109/properties?method=update
+    uri: http://localhost:8080/configurations/133/properties?method=update
     body:
       encoding: UTF-8
-      string: '{"name":"siteChromeConfigVars","value":{"versions":{"0.3":{"published":{"content":{"general":{"template":"Evergreen","social_shares":{"youtube":{"url":""},"yammer":{"url":""},"twitter":{"url":""},"vimeo":{"url":""},"flickr":{"url":""},"facebook":{"url":""},"linked_in":{"url":""},"tumblr":{"url":""},"pinterest":{"url":""},"google_plus":{"url":""},"instagram":{"url":""}},"window_title_display":"","window_icon":"/socrata_site_chrome/images/default_favicon.ico","show_signup":"true","default_locale":"en","styles":{"max_width":"","font_family":"Open
-        Sans"},"show_signin_signout":"true","show_profile":"true"},"locales":{"en":{"footer":{"site_name":"","copyright_notice_source":"","links":{"link_3":"Accessibility","link_4":"Contact
-        Us","link_1":"Terms of Service","link_2":"Privacy Policy","link_0":"Home Page"},"logo_alt":""},"header":{"site_name":"","links":{"link_3":"Support","link_1":"Browse","link_2":"Developers","link_0":"Home
-        Page"},"logo_alt":""}}},"footer":{"copyright_notice":"true","powered_by":"true","logo":{"src":"/socrata_site_chrome/images/socrata-logo-2c-dark.png","href":"#"},"links":[{"key":"link_0","url":"/"},{"key":"link_1","url":"http://www.socrata.com/terms-of-service"},{"key":"link_2","url":"http://www.socrata.com/privacy"},{"key":"link_3","url":"http://www.socrata.com/accessibility"},{"key":"link_4","url":"http://www.socrata.com/contact-us"}],"styles":{"bg_color":"#3b3a3c","fg_color":"#fff","logo_height":"44px","logo_width":""}},"new_batch_of_properties":{"some_key":"some_fine_value"},"header":{"logo":{"src":"/socrata_site_chrome/images/socrata-logo-2c-dark.png","href":"#"},"links":[{"key":"link_0","url":"/"},{"key":"link_1","url":"/browse"},{"key":"link_2","url":"http://dev.socrata.com"},{"key":"link_3","url":"http://support.socrata.com"}],"styles":{"bg_color":"#22b479","fg_color":"#fff","logo_height":"36px","logo_width":"","bg_color_secondary":""}}}}}},"current_version":"0.3","activation_state":{"data_lens":true,"open_data":true,"homepage":true}}}'
+      string: '{"name":"siteChromeConfigVars","value":{"versions":{"0.3":{"draft":{"content":{"general":{"template":"Evergreen","social_shares":{"youtube":{"url":""},"yammer":{"url":""},"twitter":{"url":""},"github":{"url":""},"vimeo":{"url":""},"flickr":{"url":""},"facebook":{"url":""},"linked_in":{"url":""},"tumblr":{"url":""},"pinterest":{"url":""},"google_plus":{"url":""},"instagram":{"url":""}},"window_title_display":"","window_icon":"/socrata_site_chrome/images/default_favicon.ico","show_signup":"true","styles":{"max_width":"","font_family":"Open
+        Sans"},"show_signin_signout":"true","show_profile":"true"},"locales":{"en":{"footer":{"site_name":"","copyright_notice_source":"Socrata!","links":{"link_3":"Accessibility","link_4":"Contact
+        Us","link_1":"Terms of Service","link_2":"Privacy Policy","link_0":"Home Page"}},"header":{"site_name":"Socrata"}}},"footer":{"copyright_notice":"true","powered_by":"true","logo":{"src":"/socrata_site_chrome/images/socrata-logo-2c-dark.png"},"styles":{"bg_color":"#3b3a3c","fg_color":"#ee8888","logo_height":"44px","logo_width":""},"links":[{"key":"link_0","url":"/"},{"key":"link_1","url":"http://www.socrata.com/terms-of-service"},{"key":"link_2","url":"http://www.socrata.com/privacy"},{"key":"link_3","url":"http://www.socrata.com/accessibility"},{"key":"link_4","url":"http://www.socrata.com/contact-us"}]},"header":{"logo":{"src":"http://i.imgur.com/fK7NYeN.gif"},"styles":{"bg_color":"#444","fg_color":"#fff","logo_height":"","logo_width":"","bg_color_secondary":"#222"}}}},"published":{"content":{"new_batch_of_properties":{"some_key":"some_fine_value"}}}}},"current_version":"0.3","activation_state":{"data_lens":true,"open_data":true,"homepage":true}}}'
     headers:
       Content-Type:
       - application/json
       X-Socrata-Host:
       - localhost
       Cookie:
-      - logged_in=true; _socrata_session_id=BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJTFmN2E4ZmQ5ODlkNTExMzM0MmRhNGE0YjljMGUwZWYzBjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjE4WGE4V0tITjJBQTQxTW9LbTN6dmVkU0hGd3lxUUN6aU5OMGt2Rm1DOTJZPQY7AEZJIg5yZXR1cm5fdG8GOwBGMEkiCWluaXQGOwBUVA;
-        _core_session_id=dHVnZy1pa2NlIDE0NzQwMTAwMjAgNzJmOTljMzRlYjE4IGU3Mzk0YTg1M2YyYThkMWJkOWJlNjMwZGZkOTNmYWFkOGQ0NzllNTc%3D;
-        socrata-csrf-token=4c51qr%2Bqf6ZyxCb0eNKyYyoe0EIajfTrQgBbhcluAD8QuMnyHmenpkoQ7P7jrl0a%2FpnHTrDN2Al23X85kOz3WQ%3D%3D
+      - logged_in=true; _socrata_session_id=BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJWJkY2M1NDRmYWQ3ZGVhMmZjOTMzYjUzOWQxM2U5NzY5BjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjFjMC9KeHVKQVNTZTMxK1FGcGFoYkkvS1NNZVluNk1WNEFMS3oyRzZmQWZ3PQY7AEZJIglpbml0BjsAVFRJIg5yZXR1cm5fdG8GOwBGMA==--03ede085a952536e6866b1c67ffe12c227f988ea;
+        _core_session_id=dHVnZy1pa2NlIDE0NzUxMzQyMDkgZTQzYWVjYTdhYTUwIDM5OTg3NWFkOWM0M2QzNmU2Y2E5ZWZmODQ4ZmViZjIyZGUwMzk0NmY=;
+        socrata-csrf-token=m397DevJD3+/7ZzYY2j/9EghGjQZ/qhqHtRgPTE5e63oMLLLCYlGWAg6eN3GwKTXurMr0j4WbRIeZtPlX6Z6UQ==
   response:
     status:
       code: 200
       message: OK
     headers:
       X-Socrata-Requestid:
-      - dq64b3vrvm8rgh2in1kjll7yz
+      - 3vfszr6710nsguliopr2jl47f
       Access-Control-Allow-Origin:
       - "*"
       Set-Cookie:
-      - _core_session_id=dHVnZy1pa2NlIDE0NzQwMTEzMTQgNzJmOTljMzRlYjE4IGNhZGEzNTYwMTRlYjg1NmU0ZTVjNzdhMGY5NTk2ZDU0YzBmNGZlODY;Path=/
+      - _core_session_id=dHVnZy1pa2NlIDE0NzUxMzQ2NTQgZTQzYWVjYTdhYTUwIGIwYjQwYTYxN2U4NmIyMTViNzI4Mzg4MTQzNzhjN2U2ZDMzNDA4ZDc;Path=/
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Content-Type:
@@ -427,7 +404,7 @@ http_interactions:
           "value" : {
             "versions" : {
               "0.3" : {
-                "published" : {
+                "draft" : {
                   "content" : {
                     "general" : {
                       "template" : "Evergreen",
@@ -439,6 +416,9 @@ http_interactions:
                           "url" : ""
                         },
                         "twitter" : {
+                          "url" : ""
+                        },
+                        "github" : {
                           "url" : ""
                         },
                         "vimeo" : {
@@ -469,7 +449,6 @@ http_interactions:
                       "window_title_display" : "",
                       "window_icon" : "/socrata_site_chrome/images/default_favicon.ico",
                       "show_signup" : "true",
-                      "default_locale" : "en",
                       "styles" : {
                         "max_width" : "",
                         "font_family" : "Open Sans"
@@ -481,25 +460,17 @@ http_interactions:
                       "en" : {
                         "footer" : {
                           "site_name" : "",
-                          "copyright_notice_source" : "",
+                          "copyright_notice_source" : "Socrata!",
                           "links" : {
                             "link_3" : "Accessibility",
                             "link_4" : "Contact Us",
                             "link_1" : "Terms of Service",
                             "link_2" : "Privacy Policy",
                             "link_0" : "Home Page"
-                          },
-                          "logo_alt" : ""
+                          }
                         },
                         "header" : {
-                          "site_name" : "",
-                          "links" : {
-                            "link_3" : "Support",
-                            "link_1" : "Browse",
-                            "link_2" : "Developers",
-                            "link_0" : "Home Page"
-                          },
-                          "logo_alt" : ""
+                          "site_name" : "Socrata"
                         }
                       }
                     },
@@ -507,8 +478,13 @@ http_interactions:
                       "copyright_notice" : "true",
                       "powered_by" : "true",
                       "logo" : {
-                        "src" : "/socrata_site_chrome/images/socrata-logo-2c-dark.png",
-                        "href" : "#"
+                        "src" : "/socrata_site_chrome/images/socrata-logo-2c-dark.png"
+                      },
+                      "styles" : {
+                        "bg_color" : "#3b3a3c",
+                        "fg_color" : "#ee8888",
+                        "logo_height" : "44px",
+                        "logo_width" : ""
                       },
                       "links" : [ {
                         "key" : "link_0",
@@ -525,42 +501,26 @@ http_interactions:
                       }, {
                         "key" : "link_4",
                         "url" : "http://www.socrata.com/contact-us"
-                      } ],
-                      "styles" : {
-                        "bg_color" : "#3b3a3c",
-                        "fg_color" : "#fff",
-                        "logo_height" : "44px",
-                        "logo_width" : ""
-                      }
-                    },
-                    "new_batch_of_properties" : {
-                      "some_key" : "some_fine_value"
+                      } ]
                     },
                     "header" : {
                       "logo" : {
-                        "src" : "/socrata_site_chrome/images/socrata-logo-2c-dark.png",
-                        "href" : "#"
+                        "src" : "http://i.imgur.com/fK7NYeN.gif"
                       },
-                      "links" : [ {
-                        "key" : "link_0",
-                        "url" : "/"
-                      }, {
-                        "key" : "link_1",
-                        "url" : "/browse"
-                      }, {
-                        "key" : "link_2",
-                        "url" : "http://dev.socrata.com"
-                      }, {
-                        "key" : "link_3",
-                        "url" : "http://support.socrata.com"
-                      } ],
                       "styles" : {
-                        "bg_color" : "#22b479",
+                        "bg_color" : "#444",
                         "fg_color" : "#fff",
-                        "logo_height" : "36px",
+                        "logo_height" : "",
                         "logo_width" : "",
-                        "bg_color_secondary" : ""
+                        "bg_color_secondary" : "#222"
                       }
+                    }
+                  }
+                },
+                "published" : {
+                  "content" : {
+                    "new_batch_of_properties" : {
+                      "some_key" : "some_fine_value"
                     }
                   }
                 }
@@ -575,5 +535,5 @@ http_interactions:
           }
         }
     http_version: 
-  recorded_at: Fri, 16 Sep 2016 01:35:14 GMT
+  recorded_at: Thu, 29 Sep 2016 01:37:34 GMT
 recorded_with: VCR 3.0.3

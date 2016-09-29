@@ -5,6 +5,7 @@ $red-text: #d06463;
 $red-btn: #ce6565;
 $red-btn-hover: #a55151;
 $faint-border-color: #ebebeb;
+$dark-border-color: #d6d6d6;
 $font_family: "Open Sans", "Helvetica", Arial, sans-serif;
 $link_color: #2279a6;
 
@@ -100,7 +101,7 @@ $link_color: #2279a6;
   }
 
   ul.tabs {
-    border-bottom: 1px solid #d6d6d6;
+    border-bottom: 1px solid $dark-border-color;
     padding-bottom: 8px;
     padding-left: 0;
     clear: both;
@@ -116,7 +117,7 @@ $link_color: #2279a6;
         font-size: 15px;
 
         &:hover {
-          border-bottom: 4px solid #d6d6d6;
+          border-bottom: 4px solid $dark-border-color;
           color: #3d3d3d;
         }
       }
@@ -526,6 +527,20 @@ $link_color: #2279a6;
     footer.flannel-actions {
       background: transparent; // To remedy CS instances where any `footer` has a bg color.
     }
+  }
+}
+
+.site-chrome-bust-cache-div {
+  margin-top: 2rem;
+  border-top: 1px solid $dark-border-color;
+  padding: 1rem;
+
+  button#site-chrome-bust-cache {
+    margin-right: 1rem;
+  }
+
+  span {
+    font-size: 11px;
   }
 }
 

@@ -20,6 +20,7 @@ describe ProfileController do
     context 'when cetera_search is true and cetera_profile_search is false' do
       before do
         rspec_stub_feature_flags_with(:cetera_search => true, :cetera_profile_search => false)
+        stub_site_chrome
       end
 
       it 'should not use browse2 to render the embedded catalog' do

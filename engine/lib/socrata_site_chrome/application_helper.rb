@@ -15,7 +15,7 @@ module SocrataSiteChrome
       img_src = img.dig('logo', 'src')
       if img_src.present?
         image_tag(
-          url_with_prefix(img_src),
+          cleanse_url(img_src),
           :alt => img.dig('logo', 'alt').presence || header_title.presence || 'Header Logo',
           :onerror => 'this.style.display="none"')
       end
@@ -162,7 +162,7 @@ module SocrataSiteChrome
             elsif valid_link_item?(link)
               # Top level link
               link_to(localized("header.links.#{link[:key]}", get_site_chrome.locales),
-                url_with_prefix(link[:url]), :class => 'site-chrome-nav-link noselect')
+                cleanse_url(link[:url]), :class => 'site-chrome-nav-link noselect')
             end
           )
         end
@@ -173,7 +173,7 @@ module SocrataSiteChrome
       child_links.to_a.map do |link|
         if valid_link_item?(link)
           link_to(localized("header.links.#{link[:key]}", get_site_chrome.locales),
-            url_with_prefix(link[:url]), :class => 'site-chrome-nav-child-link noselect')
+            cleanse_url(link[:url]), :class => 'site-chrome-nav-child-link noselect')
         end
       end
     end
@@ -188,13 +188,33 @@ module SocrataSiteChrome
       !!(link.try(:dig, :key).present? && link[:url].present?)
     end
 
-    # EN-9586: prepend "http://" onto links that do not start with it, and are not relative paths.
-    def url_with_prefix(url)
-      return unless url.present?
-      return url if url.start_with?('/') # relative path
+    def relative_url_with_locale(url)
+      I18n.locale == I18n.default_locale ? url : "/#{I18n.locale}#{url}"
+    end
 
+    # EN-9586: prepend "http://" onto links that do not start with it, and are not relative paths.
+    # EN-7151: prepend locales onto relative links, and turn URLs into relative links if applicable
+    def cleanse_url(url)
+      return unless url.present?
+
+      # If relative path, prerepend current locale if necessary and return
+      return relative_url_with_locale(url) if url.start_with?('/')
+
+      supported_scheme_matchers = Regexp.union([/^https?:\/\//, /^mailto:/])
+
+      # Prepend with 'http://' if they don't provide a scheme
+      url = "http://#{url}" unless url.match(supported_scheme_matchers)
       uri = URI.parse(url)
-      uri.scheme.present? ? uri.to_s : "http://#{uri}"
+
+      # Turn full URL into a relative link if the url host matches the current domain host
+      if uri.host == CurrentDomain.cname
+        uri.scheme = nil
+        uri.host = nil
+        return relative_url_with_locale(uri.to_s)
+      end
+
+      # Outoing link
+      uri.to_s
     end
 
     def dropdown(prompt, dropdown_options = [], orientation = 'bottom')

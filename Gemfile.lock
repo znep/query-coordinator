@@ -1,7 +1,7 @@
 PATH
   remote: engine
   specs:
-    socrata_site_chrome (1.1.3)
+    socrata_site_chrome (1.1.4)
       airbrake (>= 4.3.0)
       chroma
       dalli

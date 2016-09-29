@@ -55,20 +55,35 @@ class FeatureFlags
     end
 
     def using_signaller?
-      Signaller.available?
+      Signaller.available? && APP_CONFIG.signaller_traffic_throttler == 1
     end
 
     def on_domain(domain_or_cname)
-      if using_signaller?
+      via_signaller = lambda do
         cname = domain_or_cname.respond_to?(:cname) ? domain_or_cname.cname : domain_or_cname
-        Signaller.read(cname, endpoint: { with_path: "/domain/#{cname}.json" }).
+        Signaller.read(endpoint: { with_path: "/domain/#{cname}.json" }).
           each_with_object({}) do |(key, info), memo|
             memo[key] = info['value']
           end
-      else
+      end
+
+      via_core = lambda do
         domain = domain_or_cname
         conf = domain.default_configuration('feature_flags')
         merge({}, conf.try(:properties) || {})
+      end
+
+      if using_signaller?
+        via_signaller.call
+      else
+        if Signaller.available? && APP_CONFIG.signaller_traffic_throttler > rand
+          begin
+            via_signaller.call
+          rescue => e
+            Rails.logger.error("FFSignaller error; suppressing: #{e.inspect}")
+          end
+        end
+        via_core.call
       end
     end
 
@@ -76,10 +91,7 @@ class FeatureFlags
       return unless using_signaller?
 
       domain = options[:domain] || CurrentDomain.cname
-      Signaller.read(
-        "#{flag_name}:#{domain}",
-        endpoint: { for_flag: flag_name, for_domain: domain}
-      )[flag_name]
+      Signaller.read(endpoint: { for_flag: flag_name, for_domain: domain})[flag_name]
     end
 
     def flag_set_by_user?(flag)
@@ -91,27 +103,26 @@ class FeatureFlags
     def set_value(flag_name, flag_value, options = {})
       return unless using_signaller?
 
-      uri = Signaller.endpoint(for_flag: flag_name, for_domain: options[:domain])
       body = flag_value.is_a?(String) ? flag_value : flag_value.to_json
       auth_header = { 'Cookie' => "_core_session_id=#{User.current_user.session_token}" }
-      Signaller.write { HTTParty.put(uri, body: body, headers: auth_header) }
+      Signaller.write(for_flag: flag_name, for_domain: options[:domain]) do |uri|
+        HTTParty.put(uri, body: body, headers: auth_header)
+      end
     end
 
     def reset_value(flag_name, options = {})
-      uri = Signaller.endpoint(for_flag: flag_name, for_domain: options[:domain])
       auth_header = { 'Cookie' => "_core_session_id=#{User.current_user.session_token}" }
-      Signaller.write { HTTParty.delete(uri, headers: auth_header) }
+      Signaller.write(for_flag: flag_name, for_domain: options[:domain]) do |uri|
+        HTTParty.delete(uri, headers: auth_header)
+      end
     end
 
     def descriptions
-      Signaller.read('descriptions', endpoint: { with_path: '/describe.json' })
+      Signaller.read(endpoint: { with_path: '/describe.json' })
     end
 
     def report(for_flag)
-      Signaller.read(
-        "flag_report:#{for_flag}",
-        endpoint: { with_path: "/flag_report/#{for_flag}.json" }
-      )[for_flag]
+      Signaller.read(endpoint: { with_path: "/flag_report/#{for_flag}.json" })[for_flag]
     end
 
     def list

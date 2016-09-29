@@ -70,7 +70,6 @@ module ActivityFeedHelper
     if event.dataset.nil?
       false
     else
-      FeatureFlags.derive(nil, request).restore_dataset_button &&
         event.first_deleted_in_list &&
         event.dataset.deleted && event.activity_type == 'delete'
     end

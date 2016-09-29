@@ -114,7 +114,6 @@ describe ActivityFeedHelper do
   describe '#show_restore_button' do
 
     it "doesn't show restore button on non-deleted events" do
-      rspec_stub_feature_flags_with('restore_dataset_button' => true)
       event = ImportActivity.new(
         { :activity_type => 'delete', :created_at => Date.today, :first_deleted_in_list => true },
         nil,
@@ -125,7 +124,6 @@ describe ActivityFeedHelper do
     end
 
     it 'shows restore button on recent deleted events that are published default views' do
-      rspec_stub_feature_flags_with('restore_dataset_button' => true)
       event = ImportActivity.new(
         { :activity_type => 'delete', :created_at => Date.today.to_s, :first_deleted_in_list => true },
         nil,
@@ -142,7 +140,6 @@ describe ActivityFeedHelper do
     end
 
     it 'does not show restore button when not first_deleted_in_list' do
-      rspec_stub_feature_flags_with('restore_dataset_button' => true)
       event = ImportActivity.new(
         { :activity_type => 'delete', :created_at => Date.today.to_s, :first_deleted_in_list => false },
         nil,
@@ -153,7 +150,6 @@ describe ActivityFeedHelper do
     end
 
     it 'disables the restore button for non-restorable delete events' do
-      rspec_stub_feature_flags_with('restore_dataset_button' => true)
       event = ImportActivity.new(
         {
           :activity_type => 'delete',
@@ -175,7 +171,6 @@ describe ActivityFeedHelper do
     end
 
     it 'does not show restore button on non-default views' do
-      rspec_stub_feature_flags_with('restore_dataset_button' => true)
       event = ImportActivity.new(
         {
           :activity_type => 'delete',
@@ -195,7 +190,6 @@ describe ActivityFeedHelper do
     end
 
     it 'does not show restore button on unpublished views' do
-      rspec_stub_feature_flags_with('restore_dataset_button' => true)
       event = ImportActivity.new(
         {
           :activity_type => 'delete',

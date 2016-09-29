@@ -3417,20 +3417,20 @@
       if (xhr && _.isFunction(xhr.getResponseHeader)) {
         var dataOutOfDate = xhr.getResponseHeader('X-SODA2-Data-Out-Of-Date');
         var truthLastModified = xhr.getResponseHeader('X-SODA2-Truth-Last-Modified');
-        var lastModified = xhr.getResponseHeader('Last-Modified');
+        var secondaryLastModified = xhr.getResponseHeader('X-SODA2-Secondary-Last-Modified') || xhr.getResponseHeader('Last-Modified');
         if (this.newBackend) {
-          if (dataOutOfDate === 'true' && truthLastModified && lastModified) {
+          if (dataOutOfDate === 'true' && truthLastModified && secondaryLastModified) {
             this._dataOutOfDate = dataOutOfDate;
             this._truthLastModified = truthLastModified;
-            this._lastModified = lastModified;
+            this._secondaryLastModified = secondaryLastModified;
             this.trigger('dataset_last_modified', [{
-              age: moment(this._lastModified).
+              age: moment(this._secondaryLastModified).
               from(this._truthLastModified, true) // True elides suffix
             }]);
-          } else if (dataOutOfDate === 'false' && truthLastModified && lastModified) {
-            this._lastModified = lastModified;
+          } else if (dataOutOfDate === 'false' && truthLastModified && secondaryLastModified) {
+            this._secondaryLastModified = secondaryLastModified;
             this.trigger('dataset_last_modified', [{
-              lastModified: moment(this._lastModified).
+              lastModified: moment(this._secondaryLastModified).
               format(blist.configuration.shortDateFormat)
             }]);
           }

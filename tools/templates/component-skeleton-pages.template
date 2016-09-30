@@ -1,11 +1,11 @@
 <div id="{{ kebabCase }}-container"></div>
 
-<script type="text/javascript">
-  document.addEventListener('DOMContentLoaded', function() {
-    var props = {};
+<script type="text/babel" data-presets="es2015,react">
+  $(() => {
+    const props = {};
 
     ReactDOM.render(
-      React.createElement(styleguide.{{ name }}, props),
+      <styleguide.{{ name }} {...props} />,
       document.getElementById('{{ kebabCase }}-container')
     );
   });

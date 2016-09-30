@@ -16,7 +16,7 @@ module SocrataSiteChrome
       if img_src.present?
         image_tag(
           massage_url(img_src),
-          :alt => img.dig('logo', 'alt').presence || header_title.presence || 'Header Logo',
+          :alt => img.dig('logo', 'alt').presence || header_title.presence || t('header.header_logo'),
           :onerror => 'this.style.display="none"')
       end
     end
@@ -35,7 +35,7 @@ module SocrataSiteChrome
 
     def username
       if site_chrome_current_user.nil? || site_chrome_current_user.displayName.blank?
-        'Profile'
+        t('header.profile')
       else
         site_chrome_current_user.displayName
       end

@@ -184,10 +184,10 @@ blist.namespace.fetch('blist.filter');
     date: {
       details: {
         'LESS_THAN': {
-          text: $.t('core.filters.informal.is_after')
+          text: $.t('core.filters.informal.is_before')
         },
         'GREATER_THAN': {
-          text: $.t('core.filters.informal.is_before')
+          text: $.t('core.filters.informal.is_after')
         }
       },
       orderedList: ['EQUALS', 'NOT_EQUALS', 'LESS_THAN', 'GREATER_THAN', 'BETWEEN',

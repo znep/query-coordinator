@@ -11,7 +11,7 @@
     <li><a href='/internal/orgs'>Organizations</a></li>
     <li><a href='/internal/analytics'>Analytics</a></li>
     <li><a href='/internal/config_info'>Configuration Info</a></li>
-    <%- if FeatureFlags.using_signaller? %>
+    <%- if FeatureFlags::Signaller.available? %>
       <li><a href='/internal/feature_flag_report'>Feature Flag Report</a></li>
     <%- end %>
   </ul>

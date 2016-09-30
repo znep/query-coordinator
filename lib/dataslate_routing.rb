@@ -4,9 +4,34 @@ class DataslateRouting
       page_for(path, options)
   end
 
+  # This method is entirely for debugging. Here's how you use it:
+  # 1. Change config/config.yml corservice_uri to point at an appropriate core.
+  # 2. Start `rails c` in the console.
+  # 3. Execute `CurrentDomain.set('the.production.domain')`.
+  # 4. Execute `DataslateRouting.debug` or `DataslateRouting.debug(report: true)`.
   def self.debug(options = {})
     (RequestStore[:dataslate_routing] ||= new(options.only(:custom_headers))).
-      routes
+      routes.tap do |route_data|
+        # The :report option, in addition to returning the routing table, also
+        # prints out every Dataslate path known to the system and the definition
+        # it has for that path.
+        next unless options.fetch(:report, false)
+
+        recursor = lambda do |table_layer, cursor, path_collection = {}|
+          table_layer.each do |route_part, new_table_layer|
+            path_parts = cursor + [route_part]
+            if new_table_layer.resolution.present?
+              path = route_part == :homepage ? '/' : path_parts.join('/')
+              path_collection[path] = new_table_layer.resolution
+            end
+            recursor.call(new_table_layer, path_parts, path_collection)
+          end
+          path_collection
+        end
+        recursor.call(route_data, ['']).each do |path, definition|
+          puts "#{path} => #{definition}"
+        end
+      end
   end
 
   attr_reader :routes, :custom_headers
@@ -53,21 +78,22 @@ class DataslateRouting
   end
 
   def map_resolved_path_to_lookup_data(path)
-    return routes[nil].try(:resolution).try(:merge, vars: []) if path == '/' # This is a homepage.
-
-    # On the server-side, it does not appear that we actually *use* the vars at all.
-    # But I'm determining them now for (1) debugging and (2) thoroughness.
     vars = []
-    path.split('/').inject(routes) do |lookup_cursor, part|
-      break unless lookup_cursor.has_key?(part) || lookup_cursor.has_key?(':')
-      lookup_cursor[part] || (vars << part && lookup_cursor[':'])
+
+    if path == '/'
+      routes[:homepage]
+    else
+      path.split('/')[1..-1].inject(routes) do |lookup_cursor, part|
+        break unless lookup_cursor.has_key?(part) || lookup_cursor.has_key?(':')
+        lookup_cursor[part] || (vars << part && lookup_cursor[':'])
+      end
     end.try(:resolution).try(:merge, vars: vars)
   end
 
   def scrape_pages_service_for_paths!
     Page.routing_table(custom_headers).each do |entry|
       unique_path = uniqify(entry['path'])
-      table.route_to(unique_path.split('/'), from: :service, path: unique_path)
+      table.route_to(unique_path, from: :service, path: unique_path)
     end
   end
 
@@ -78,7 +104,7 @@ class DataslateRouting
         collect { |row| row['path'] }
       ds_paths.each do |path|
         unique_path = uniqify(path)
-        table.route_to(unique_path.split('/'), from: :dataset, path: unique_path)
+        table.route_to(unique_path, from: :dataset, path: unique_path)
       end
     rescue CoreServer::ResourceNotFound
       # Pages Dataset does not exist for this domain. Hooray!
@@ -117,12 +143,23 @@ class DataslateRouting
     end
 
     def route_to(path, route_def)
-      bottom = path[0...-1].reduce(self) { |memo, layer| memo[layer] ||= self.class.new }
-      if bottom[path.last]
-        bottom[path.last].resolves_to route_def
+      route_def[:invalid] = true if path_invalid?(path)
+
+      # Valid paths always start with / so we don't care about the first token.
+      path_parts = path.split('/')[1..-1]
+      path_parts = [:homepage] if path_parts.nil?
+
+      bottom = path_parts[0...-1].reduce(self) { |memo, layer| memo[layer] ||= self.class.new }
+      if bottom[path_parts.last]
+        bottom[path_parts.last].resolves_to route_def
       else
-        bottom[path.last] = Table.routed_to(route_def)
+        bottom[path_parts.last] = Table.routed_to(route_def)
       end
+    end
+
+    private
+    def path_invalid?(path)
+      /^[^\/]/.match(path)
     end
   end
 end

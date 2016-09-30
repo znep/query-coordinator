@@ -622,11 +622,8 @@ function SvgBarChart($element, vif) {
           `translate(0,${lastRenderedZoomTranslate})`
         );
 
-      if (self.isMobile()) {
-
-        hideHighlight();
-        hideFlyout();
-      }
+      hideHighlight();
+      hideFlyout();
     }
 
     function restoreLastRenderedZoom() {
@@ -1037,9 +1034,8 @@ function SvgBarChart($element, vif) {
         // NOTE: The below function depends on this being set by d3, so it is
         // not possible to use the () => {} syntax here.
         function() {
-          const isCurrentlyPanning = d3.event.buttons !== 0;
 
-          if (!isCurrentlyPanning) {
+          if (!isCurrentlyPanning()) {
             const seriesIndex = this.getAttribute('data-series-index');
             const dimensionGroup = this.parentNode;
             const siblingBar = d3.select(dimensionGroup).select(
@@ -1055,9 +1051,8 @@ function SvgBarChart($element, vif) {
       on(
         'mouseleave',
         () => {
-          const isCurrentlyPanning = d3.event.buttons !== 0;
 
-          if (!isCurrentlyPanning) {
+          if (!isCurrentlyPanning()) {
 
             hideHighlight();
             hideFlyout();
@@ -1071,9 +1066,8 @@ function SvgBarChart($element, vif) {
         // NOTE: The below function depends on this being set by d3, so it is
         // not possible to use the () => {} syntax here.
         function() {
-          const isCurrentlyPanning = d3.event.buttons !== 0;
 
-          if (!isCurrentlyPanning) {
+          if (!isCurrentlyPanning()) {
             const seriesIndex = this.getAttribute('data-series-index');
             const datum = d3.select(this.parentNode).datum()[1][seriesIndex];
 
@@ -1085,9 +1079,8 @@ function SvgBarChart($element, vif) {
       on(
         'mouseleave',
         () => {
-          const isCurrentlyPanning = d3.event.buttons !== 0;
 
-          if (!isCurrentlyPanning) {
+          if (!isCurrentlyPanning()) {
 
             hideHighlight();
             hideFlyout();
@@ -1101,9 +1094,8 @@ function SvgBarChart($element, vif) {
         // NOTE: The below function depends on this being set by d3, so it is
         // not possible to use the () => {} syntax here.
         function() {
-          const isCurrentlyPanning = d3.event.buttons !== 0;
 
-          if (!isCurrentlyPanning) {
+          if (!isCurrentlyPanning()) {
             const seriesIndex = this.getAttribute('data-series-index');
             const dimensionGroup = this.parentNode;
             const siblingBar = d3.select(dimensionGroup).select(
@@ -1119,9 +1111,8 @@ function SvgBarChart($element, vif) {
       on(
         'mouseleave',
         () => {
-          const isCurrentlyPanning = d3.event.buttons !== 0;
 
-          if (!isCurrentlyPanning) {
+          if (!isCurrentlyPanning()) {
 
             hideHighlight();
             hideFlyout();
@@ -1134,9 +1125,8 @@ function SvgBarChart($element, vif) {
         on(
           'mousemove',
           (d) => {
-            const isCurrentlyPanning = d3.event.buttons !== 0;
 
-            if (!isCurrentlyPanning) {
+            if (!isCurrentlyPanning()) {
               const groupCategory = (_.isNull(d[0]) || _.isUndefined(d[0])) ?
                 NO_VALUE_SENTINEL :
                 d[0];
@@ -1152,9 +1142,8 @@ function SvgBarChart($element, vif) {
         on(
           'mouseleave',
           () => {
-            const isCurrentlyPanning = d3.event.buttons !== 0;
 
-            if (!isCurrentlyPanning) {
+            if (!isCurrentlyPanning()) {
               hideHighlight();
               hideFlyout();
             }
@@ -1299,6 +1288,26 @@ function SvgBarChart($element, vif) {
       scale(xScale).
       orient('top').
       tickFormat(function(d) { return utils.formatNumber(d); });
+  }
+
+  function isCurrentlyPanning() {
+
+    // EN-10810 - Bar Chart flyouts do not appear in Safari
+    //
+    // Internet Explorer will apparently always return a non-zero value for
+    // d3.event.which and even d3.event.button, so we need to check
+    // d3.event.buttons for a non-zero value (which indicates that a button is
+    // being pressed).
+    //
+    // Safari apparently does not support d3.event.buttons, however, so if it
+    // is not a number then we will fall back to d3.event.which to check for a
+    // non-zero value there instead.
+    //
+    // Chrome appears to support both cases, and in the conditional below
+    // Chrome will check d3.event.buttons for a non-zero value.
+    return (_.isNumber(d3.event.buttons)) ?
+      d3.event.buttons !== 0 :
+      d3.event.which !== 0;
   }
 
   function showGroupHighlight(groupElement) {

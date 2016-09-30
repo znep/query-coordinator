@@ -20,7 +20,8 @@
       #region-map-3,
       #region-map-4,
       #region-map-5,
-      #region-map-6 {
+      #region-map-6,
+      #region-map-7 {
         display: block;
         position: relative;
         width: 640px;
@@ -40,6 +41,11 @@
       This Region Map tests for Vif 1 -> Vif 2 migration errors (specifically, the shapefile columns defined are "name", "filtered", "unfiltered" and "selected" and should be mapped to "name", "value" and "selected" in order for the scale and region shading to work correctly). The symptom of this problem is regions with correct-looking flyouts showing non-null values but a missing legend and (uniform grey) shading indicating that all regions have no value.
     </p>
     <div id="region-map-6"></div>
+    <p>
+      <em>EN-10812</em><br />
+      This region map tests the behavior of the legend when there are no renderable values. The legend should not be shown.
+    </p>
+    <div id="region-map-7"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -191,6 +197,64 @@
         }
       };
 
+      var regionMap7Vif = {
+        "title": "Map of Dallas",
+        "format": {
+          "type": "visualization_interchange_format",
+          "version": 2
+        },
+        "series": [
+          {
+            "type": "regionMap",
+            "unit": {
+              "one": "record",
+              "other": "records"
+            },
+            "color": {},
+            "label": null,
+            "dataSource": {
+              "type": "socrata.soql",
+              "domain": "vertex-stories.rc-socrata.com",
+              "filters": [],
+              "measure": {
+                "columnName": null,
+                "aggregationFunction": "count"
+              },
+              "dimension": {
+                "columnName": "location",
+                "aggregationFunction": null
+              },
+              "datasetUid": "vrud-t6pp"
+            }
+          }
+        ],
+        "description": "Description",
+        "configuration": {
+          "legend": {
+            "type": "continuous",
+            "zeroColor": "#ffffff",
+            "negativeColor": "#c6663d",
+            "positiveColor": "#003747"
+          },
+          "shapefile": {
+            "uid": "dx4u-54vn",
+            "primaryKey": "_feature_id",
+            "geometryLabel": "councilper"
+          },
+          "baseLayerUrl": "https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png",
+          "baseLayerOpacity": 0.8,
+          "mapCenterAndZoom": {
+            "zoom": 9,
+            "center": {
+              "lat": 32.82305706600969,
+              "lng": -96.79916381835938
+            }
+          },
+          "computedColumnName": ":@computed_region_dx4u_54vn",
+          "viewSourceDataLink": true
+        }
+      };
+
       /**
        * Instantiate the plugins
        */
@@ -232,6 +296,12 @@
       $regionMapElement6.on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
       $regionMapElement6.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       $regionMapElement6.socrataSvgRegionMap(regionMap6Vif);
+
+      var $regionMapElement7 = $('#region-map-7');
+      $regionMapElement7.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $regionMapElement7.on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', handleCenterAndZoomChanged);
+      $regionMapElement7.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $regionMapElement7.socrataSvgRegionMap(regionMap7Vif);
 
       /**
        * Handle plugin events

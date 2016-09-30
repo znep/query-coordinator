@@ -684,6 +684,23 @@ function SvgRegionMap(element, vif) {
       false
     );
 
+    // EN-10812 - Do not display legend if region map has no values
+    //
+    // If either the min or the max value is not finite (e.g. if the data
+    // consists of nothing but null values) then we can't derive a scale. Note
+    // that we need to set colorScale to null explicitly, in case it was
+    // previously possible to render a legend but it no longer is, as
+    // colorScale would be a valid color scale, but it would not reflect the
+    // data we are currently attempting to render. Also note that the behavior
+    // specified in this ticket will be a consequence of colorScale being
+    // falsey, as the renderLegend function will clear the previous legend and
+    // then return early if this is the case.
+    if (!_.isFinite(minValue) || !_.isFinite(maxValue)) {
+
+      colorScale = null;
+      return;
+    }
+
     let domain;
     let range;
     let scale = d3.scale.linear();
@@ -735,6 +752,12 @@ function SvgRegionMap(element, vif) {
 
   function renderLegend() {
 
+    // Do this before returning early because there are cases where we want to
+    // clear the previous legend and not render a new one (e.g. if the vif
+    // changes and the previously-rendered legend is no longer valid but a new
+    // legend cannot be drawn because all the new values are null.
+    self.$element.find('.region-map-legend').empty();
+
     // If the color scale hasn't been defined, we cannot render the legend. This
     // can happen when the dimensions of a region map change before the data/
     // shapefile queries return, in which case the visualization has been
@@ -743,8 +766,6 @@ function SvgRegionMap(element, vif) {
     if (!colorScale) {
       return;
     }
-
-    self.$element.find('.region-map-legend').empty();
 
     const legendHeight = Math.min(
       self.$element.height() - LEGEND_TOP_MARGIN,

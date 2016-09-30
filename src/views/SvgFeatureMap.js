@@ -1088,12 +1088,23 @@ function SvgFeatureMap(element, vif) {
    * @return {Number}
    */
   function scalePointFeatureRadiusByZoomLevel(zoomLevel) {
+    var pointSizeMultiplier = _.get(lastRenderedVif, 'configuration.pointSize', 1);
+    if (!_.isFinite(pointSizeMultiplier)) {
+      throw new Error('configuration.pointSize is not a number.');
+    }
+    if (pointSizeMultiplier < 0) {
+      throw new Error('configuration.pointSize must be positive.');
+    }
+    if (pointSizeMultiplier < 1 || pointSizeMultiplier > 1.6) {
+      throw new Error('configuration.pointSize must be between 1 - 1.6.');
+    }
+
     // This was created somewhat arbitrarily by Chris to
     // result in point features which get slightly larger
     // as the map is zoomed in. It can be replaced with
     // any function which computes a number that makes
     // sense as the radius of a point feature in pixels.
-    return Math.pow(zoomLevel * 0.0695, 5) + 2;
+    return (Math.pow(zoomLevel * 0.0695, 5) + 2) * pointSizeMultiplier;
   }
 
   /**

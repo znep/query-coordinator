@@ -35,7 +35,7 @@
     <div id="svg-feature-map-2"></div>
     Instantiated with a version 2 vif
     <div id="svg-feature-map-3"></div>
-    Instantiated with a version 2 vif and filtered
+    Instantiated with a version 2 vif and filtered and point size defined
     <div id="svg-feature-map-4"></div>
     Instantiated with a version 2 vif and a center and zoom defined
     <div id="svg-feature-map-5"></div>
@@ -178,6 +178,7 @@
       // getting CORS into the frontend routes for metadata.
       var featureMap4Vif = _.cloneDeep(featureMap3Vif);
       featureMap4Vif.configuration.panAndZoom = false;
+      featureMap4Vif.configuration.pointSize = 1.6;
       featureMap4Vif.series[0].dataSource.filters = [
         {
           function: 'binaryOperator',

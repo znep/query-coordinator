@@ -62,24 +62,6 @@
   }
 }
 
-#story-edit {
-  .hero:not(.hero-unconfigured) {
-    $linear-gradient-gray: $hero-checkered-background-color;
-    $linear-gradient: (
-      45deg,
-      $linear-gradient-gray 25%,
-      transparent 25%,
-      transparent 75%,
-      $linear-gradient-gray 75%,
-      $linear-gradient-gray
-    );
-
-    @include background-image(linear-gradient($linear-gradient), linear-gradient($linear-gradient));
-		background-size: cover, 21px 21px, 21px 21px;
-		background-position: 0, 0 0, 10px 10px;
-  }
-}
-
 #story-view {
   .hero {
     background-size: cover;

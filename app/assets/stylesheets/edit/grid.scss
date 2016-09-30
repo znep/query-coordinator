@@ -4,12 +4,6 @@
 
 .block {
   @include row();
-
-  > div[class*="col"] {
-    @media (max-width : $stack-to-single-column-width) {
-      @include span-columns(12);
-    }
-  }
 }
 .col12 {
   @include span-columns(12);
@@ -49,4 +43,13 @@
 }
 .last {
   @include omega();
+}
+
+@media screen and (max-width : $stack-to-single-column-width) {
+
+  .block {
+    > div[class*="col"] {
+      @include span-columns(12);
+    }
+  }
 }

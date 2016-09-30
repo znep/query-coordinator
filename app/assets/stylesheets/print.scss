@@ -4,6 +4,13 @@
     -webkit-print-color-adjust: exact;
   }
 
+  #site-chrome-header {
+
+    nav {
+      display: none;
+    }
+  }
+
   .user-story-container {
     padding: 0 !important;
 
@@ -11,6 +18,7 @@
 
       .block {
         page-break-inside: avoid;
+        margin-bottom: 12px !important;
 
         .component {
           margin-top: 0 !important;
@@ -34,6 +42,21 @@
           }
           h6 {
             font-size: 1.5em;
+          }
+
+          .socrata-visualization {
+
+            .socrata-table {
+              .column-header-content {
+                .icon-arrow-down {
+                  box-shadow: none;
+                }
+              }
+            }
+
+            .socrata-visualization-info {
+              font-size: 12px;
+            }
           }
         }
       }

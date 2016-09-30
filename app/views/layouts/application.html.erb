@@ -42,5 +42,12 @@
 <%= render 'shared/google_analytics_script' %>
 <%= site_chrome_google_analytics_tag %>
 <%= site_chrome_javascript_tag %>
+<% if should_launch_print_dialog_on_page_load? %>
+<script>
+  $(document).ready(function() {
+    window.print();
+  });
+</script>
+<% end %>
 </body>
 </html>

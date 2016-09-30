@@ -1,19 +1,10 @@
 class VersionController < ApplicationController
-
-  # We use this endpoint as a health check and for monitoring.
   def show
     render json: {
       version: Rails.application.config.version,
       revision: Storyteller::REVISION_NUMBER,
       buildTimestamp: Storyteller::BUILD_TIMESTAMP,
-      bootedTimestamp: Storyteller::BOOTED_TIMESTAMP,
-      delayedJobAge30sCount: delayed_job_count(30)
+      bootedTimestamp: Storyteller::BOOTED_TIMESTAMP
     }
-  end
-
-  private
-
-  def delayed_job_count(seconds)
-    Delayed::Job.where('attempts = ? AND created_at < ?', 0, seconds.seconds.ago).size
   end
 end

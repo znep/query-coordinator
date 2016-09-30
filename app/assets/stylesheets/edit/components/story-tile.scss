@@ -117,3 +117,29 @@
     }
   }
 }
+
+@media print {
+  .component-story-tile {
+    height: 37rem;
+
+    .story-tile-container {
+      .story-tile {
+        .story-tile-title-container {
+          .story-tile-title {
+            font-size: 18.5px;
+            line-height: 28px;
+          }
+        }
+
+        .story-tile-description {
+          font-size: 11.8px;
+          line-height: 18.172px;
+        }
+
+        .story-tile-view-story {
+          display: none;
+        }
+      }
+    }
+  }
+}

@@ -3647,6 +3647,7 @@
       // Specific use case: number of rows rendered < bucketSize.
       updateLayout();
       $scrolls.scrollTop($scrolls[0].scrollHeight);
+      updateLayout();
     };
 
     var handlePageChange = function(pageChangeOptions) {

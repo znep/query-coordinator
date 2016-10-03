@@ -1,6 +1,9 @@
 .modal-header-with-link {
-  .modal-header-title {
-    margin-right: 100px;
+  .h5.modal-header-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 120px;
   }
 
   a.feedback {

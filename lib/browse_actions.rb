@@ -330,9 +330,14 @@ module BrowseActions
       end
     end
 
+    search_options[:options] ||= []
+
     if browse_options[:curated_parent_region_candidates]
-      search_options[:options] ||= []
       search_options[:options] << 'curated_parent_region_candidates'
+    end
+
+    if %w(true t).include?(browse_options[:show_hidden].to_s.downcase)
+      search_options[:options] << 'show_hidden'
     end
 
     if browse_options[:limitTo].present?

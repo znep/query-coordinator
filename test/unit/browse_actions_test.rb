@@ -263,6 +263,14 @@ class BrowseActionsTest3 < Minitest::Test
     stub_request(:get, url).to_return(status: 200, body: '', headers: {})
   end
 
+  def test_process_browse_show_hidden_cetera_false
+    request = OpenStruct.new
+    request.params = { 'show_hidden' => 'true', 'cetera_search' => 'false' }
+    result = @browse_actions_container.send(:process_browse, request)
+
+    assert_equal result[:search_options][:options], ['show_hidden']
+  end
+
   # backward compatibility with core/clytemnestra
   def search_and_return_category_param(category)
     request = OpenStruct.new(:params => { category: category }.reject { |_, v| v.blank? })

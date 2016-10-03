@@ -57,6 +57,14 @@ describe Cetera::Utils do
     expect(Cetera::Utils.translate_display_type('tables', 'view')).to eq('filters')
   end
 
+  it 'should test_cetera_show_hidden_translator with show_hidden string' do
+    expect(Cetera::Utils.translate_show_hidden(['show_hidden', 'monkeys'])).to eq(true)
+  end
+
+  it 'should test_cetera_show_hidden_translator without show_hidden string' do
+    expect(Cetera::Utils.translate_show_hidden(['monkeys'])).to eq(false)
+  end
+
   it 'should test_cetera_sort_order_translator' do
     frontend_to_cetera = {
       nil => 'relevance',

@@ -1,0 +1,495 @@
+const utils = require('socrata-utils');
+const d3 = require('d3');
+const _ = require('lodash');
+const $ = require('jquery');
+const SvgVisualization = require('./SvgVisualization');
+const I18n = require('../I18n');
+
+const MAX_HORIZONTAL_LEGEND_SIZE = 250;
+const MAX_VERTICAL_LEGEND_SIZE = 250;
+const MARGINS = {
+  verticalLayoutPieMargin: 0.7,
+  flyoutArcMultiplier: 1.6, // arch multiplier for determining flyout position
+  pieToLegendMargin: 0.1 // space between pie and legend, multiplied by container width
+};
+const LEGEND_RECT_SIZE = 18;
+const LEGEND_SPACING = 4;
+const LEGEND_CONTAINER_PADDING = 20;
+const LEGEND_WRAP_PADDING = 5;
+const VERTICAL_LEGEND_SPACING = 20;
+
+function SvgPieChart($element, vif) {
+  const self = this;
+  let $chartElement; // chart container element
+  let dataToRender; // chart data
+  let width; // container element width
+  let height; // container element height
+  let outerWidth; // width of pie
+  let svg; // main svg element
+  let color; // renderData and renderLegend uses this
+  let flyoutArc; // this will change with resize
+  let centerDot; // hidden circle at the center of pie
+
+  _.extend(this, new SvgVisualization($element, vif));
+
+  renderTemplate();
+
+  /**
+   * Public methods
+   */
+
+  this.render = (newVif, newData) => {
+    if (!newData && !dataToRender) {
+      return;
+    }
+
+    this.clearError();
+
+    if (newVif) {
+      this.updateVif(newVif);
+    }
+
+    if (newData) {
+      dataToRender = newData;
+    }
+
+    self.$element.find('.pie-chart').empty();
+    renderPie();
+  };
+
+  this.invalidateSize = () => {
+    if ($chartElement && dataToRender) {
+      // Not re-rendering whole chart just resizing and repositioning
+      resizePie();
+      resizeLegend();
+    }
+  };
+
+  this.destroy = () => {
+    d3.select(self.$element[0]).select('svg').remove();
+
+    self.$element.find('.socrata-visualization-container').remove();
+  };
+
+  /**
+   * Private methods
+   */
+
+  function renderTemplate() {
+    $chartElement = $(
+      '<div>',
+      {
+        'class': 'pie-chart'
+      }
+    );
+
+    self.$element.find('.socrata-visualization-container').append($chartElement);
+  }
+
+  /**
+   * Render Pie
+   */
+  function renderPie() {
+    determineSize();
+
+    // creating pie
+    let pie = d3.layout.pie().value(d => d[1]).sort(null);
+
+    // not compatible with multiple series
+    const dimensionIndex = dataToRender[0].columns.indexOf('dimension');
+    const measureIndex = dataToRender[0].columns.indexOf('measure');
+
+    // create main svg element
+    // append a "g" to group slices
+    svg = d3.select($chartElement.get(0)).append('svg');
+    let g = svg.
+      attr('width', width).
+      attr('height', height).
+      append('g').
+      attr('class', 'slices');
+
+    // pie slices
+    color = d3.scale.category20();
+    g.datum(dataToRender[0].rows).selectAll('path').
+      data(pie).
+      enter().
+      append('path').
+      attr('class', 'slice').
+      attr('data-index', (d, i) => i).
+      attr('data-label', (d, i) => d.data[dimensionIndex]).//eslint-disable-line no-unused-vars
+      attr('data-value', (d, i) => d.data[measureIndex]).//eslint-disable-line no-unused-vars
+      attr('fill', (d, i) => color(i));
+
+    // invisible dot at the center of pie
+    // hack solution to find "true" center of pie chart.
+    centerDot = g.
+      append('svg:circle').
+      attr('r', 0.1).
+      attr('fill-opacity', 0);
+
+    attachPieEvents();
+    resizePie();
+    renderLegend(svg, color);
+  }
+
+  /**
+   * Render legend
+   */
+  function renderLegend() {
+    // create legend rows with current color domain and decorate rows
+    let legend = svg.selectAll('.legend').
+      data(color.domain()).
+      enter().
+      append('g').
+      attr('class', 'legend-row');
+
+    // create colored squares
+    legend.append('rect').
+      attr('width', LEGEND_RECT_SIZE).
+      attr('height', LEGEND_RECT_SIZE).
+      style('fill', color).
+      style('stroke', color);
+
+    const getText = index => _.get(dataToRender, `0.rows.${index}.0`, I18n.translate('visualizations.common.no_value'));
+
+    // create legend texts
+    legend.append('text').
+      attr('x', LEGEND_RECT_SIZE + LEGEND_SPACING).
+      attr('y', LEGEND_RECT_SIZE - LEGEND_SPACING).
+      attr('data-text', getText).
+      text(getText);
+
+    attachLegendEvents();
+    resizeLegend();
+  }
+
+  /**
+   * Resize and reposition pie
+   */
+  function resizePie() {
+    determineSize();
+
+    svg.
+      attr('width', width).
+      attr('height', height);
+
+    // pie radius
+    const radius = outerWidth / 2;
+
+    if (isHorizontalLayout()) {
+      svg.select('g.slices').
+        attr('transform', `translate(${horizontalLayoutOffsets().pieLeft}, ${horizontalLayoutOffsets().pieTop})`);
+
+    } else {
+      svg.select('g.slices').
+        attr('transform', `translate(${verticalLayoutOffsets().pieLeft}, ${verticalLayoutOffsets().pieTop})`);
+    }
+
+    // pie arc
+    let arc = getArc(radius);
+
+    // flyout's bigger arc
+    flyoutArc = getArc(radius * MARGINS.flyoutArcMultiplier);
+
+    // apply arcs
+    svg.selectAll('path').
+      attr('d', arc);
+  }
+
+  /**
+   * Resize and reposition legend
+   */
+  function resizeLegend() {
+    if (isHorizontalLayout()) {
+      svg.selectAll('.legend-row').
+        attr('transform', index =>
+          `translate(${horizontalLayoutOffsets().legendLeft}, ${horizontalLayoutOffsets().legendTop(index)})`);
+
+      const textMaxLength = width - horizontalLayoutOffsets().legendLeft - LEGEND_CONTAINER_PADDING;
+
+      // go over all texts to wrap
+      svg.selectAll('.legend-row')[0].forEach(el => {
+        let thisNode = d3.select(el.childNodes[1]);
+        let text = thisNode.node().getAttribute('data-text');
+        thisNode.text(text);
+
+        let textLength = thisNode.node().getComputedTextLength();
+        let computedTextMaxLength = textMaxLength - 2 * LEGEND_WRAP_PADDING;
+
+        while (textLength > computedTextMaxLength && text.length > 0) {
+          text = text.slice(0, -1);
+          thisNode.text(`${text}...`);
+          textLength = thisNode.node().getComputedTextLength();
+        }
+      });
+    } else {
+      // Max height available to legend
+      const legendMaxHeight = (height - verticalLayoutOffsets().legendTop);
+
+      // Row height
+      const rowHeight = LEGEND_RECT_SIZE + LEGEND_SPACING;
+
+      // Max row count can fit in available space
+      const maxRowCount = Math.floor(legendMaxHeight / rowHeight);
+
+      // Distributing items to rows
+      const itemsPerRow = Math.ceil(svg.selectAll('.legend-row')[0].length / maxRowCount);
+
+      // Max possible item width
+      const maxLegendItemWidth = width * 0.8 / itemsPerRow;
+
+      let rowLengths = [];
+
+      svg.selectAll('.legend-row')[0].forEach((el, index) => {
+        // Restore legend text to original
+        let thisNode = d3.select(el.childNodes[1]);
+        let text = thisNode.node().getAttribute('data-text');
+        thisNode.text(text);
+
+        // Current Row
+        let currentRow = index == 0 ? 0 : Math.floor(index / itemsPerRow);
+
+        // Get legend text length
+        let textLength = thisNode.node().getComputedTextLength();
+
+        // Ellipsis wrap legend text
+        while (textLength > maxLegendItemWidth - VERTICAL_LEGEND_SPACING - LEGEND_WRAP_PADDING && text.length > 0) {
+          text = text.slice(0, -1);
+          thisNode.text(`${text}...`);
+          textLength = thisNode.node().getComputedTextLength();
+        }
+
+        // Complete length of item
+        // colored rect + spacing + text
+        let itemLength = textLength + LEGEND_RECT_SIZE + LEGEND_SPACING + VERTICAL_LEGEND_SPACING;
+
+        // add item length to total current row length
+        rowLengths[currentRow] = rowLengths[currentRow] === undefined ?
+          itemLength : rowLengths[currentRow] + itemLength;
+      });
+
+      let rowPaddings = rowLengths.map(val => (width - val) / 2);
+      let lastEndPosition = 0;
+
+      svg.selectAll('.legend-row')[0].forEach((el, index) => {
+        let textLength = d3.select(el.childNodes[1]).node().getComputedTextLength();
+
+        // Current Row
+        let currentRow = Math.floor(index / itemsPerRow);
+
+        // Offset from top for current row
+        let offsetTop = verticalLayoutOffsets().legendTop + currentRow * rowHeight;
+
+        // Complete length of item
+        // colored rect + spacing + text
+        let itemLength = textLength + LEGEND_RECT_SIZE + LEGEND_SPACING;
+
+        // item's left offset, reset to 0 every VERTICAL_LEGEND_ITEMS_PER_ROW
+        let offsetLeft = index % itemsPerRow === 0 ? rowPaddings[currentRow] :
+          lastEndPosition + VERTICAL_LEGEND_SPACING;
+
+        // set left offset
+        el.setAttribute('transform', `translate(${offsetLeft}, ${offsetTop})`);
+
+        // set last end point for next item
+        lastEndPosition = offsetLeft + itemLength;
+      });
+
+    }
+  }
+
+  /**
+   * Get size of container, determine outer width of pie
+   * Sets width, height, outerWidth in upper scope
+   */
+  function determineSize() {
+    // getting container width / height
+    width = $chartElement.width();
+    height = $chartElement.height();
+
+    // Deciding pie width by our available space
+    if (width > height) { // horizontal layout
+      outerWidth = height - (MAX_HORIZONTAL_LEGEND_SIZE / 2);
+    } else { // vertical layout
+      outerWidth = height - MAX_VERTICAL_LEGEND_SIZE > outerWidth ?
+        height * MARGINS.verticalLayoutPieMargin - MAX_VERTICAL_LEGEND_SIZE : width * MARGINS.verticalLayoutPieMargin;
+    }
+  }
+
+  /**
+   * Determines if layout is horizontal
+   *
+   * @returns {boolean}
+   */
+  function isHorizontalLayout() {
+    const padding = width * MARGINS.pieToLegendMargin;
+    const contentWidth = outerWidth + padding + MAX_HORIZONTAL_LEGEND_SIZE;
+
+    return contentWidth < width;
+  }
+
+  /**
+   * Calculates pie center left offset and layout left offset in horizontal layout
+   *
+   * @returns {{pieLeft: number, pieTop: number, legendLeft: number, legendTop: function}}
+   */
+  function horizontalLayoutOffsets() {
+    const padding = width * MARGINS.pieToLegendMargin;
+    const contentWidth = outerWidth + padding + MAX_HORIZONTAL_LEGEND_SIZE;
+    const radius = outerWidth / 2;
+    const pieTop = height / 2;
+    const leftPadding = (width - contentWidth) / 2;
+    const pieLeft = leftPadding + radius;
+
+    const legendRowHeight = LEGEND_RECT_SIZE + LEGEND_SPACING; // single legend row height
+    const legendHeight = legendRowHeight * color.domain().length; // total legend height
+    const legendLeft = pieLeft + radius + padding;
+    const legendTopOffset = (height - legendHeight) / 2; // legend offset from top
+    const legendTop = index => legendTopOffset + index * legendRowHeight;
+
+    return { pieLeft, pieTop, legendLeft, legendTop};
+  }
+
+  /**
+   * Calculates pie center left offset and layout left offset in vertical layout
+   *
+   * @returns {{pieLeft: number, pieTop: number, legendLeft: number, legendTop: number}}
+   */
+  function verticalLayoutOffsets() {
+    const radius = outerWidth / 2;
+    const pieMargin = outerWidth * 0.05;
+    const pieTop = radius + pieMargin;
+    const pieLeft = width / 2;
+
+    const legendLeft = pieLeft;
+    const legendTop = outerWidth + pieMargin * 2;
+
+    return { pieLeft, pieTop, legendLeft, legendTop };
+  }
+
+  /**
+   * Generate arc with given radius
+   *
+   * @param radius
+   * @returns D3 Arc
+   */
+  function getArc(radius) {
+    return d3.svg.arc().
+      innerRadius(0).
+      outerRadius(radius);
+  }
+
+  /**
+   * Attach pie events
+   */
+  function attachPieEvents() {
+    // bind flyout to slices
+    svg.selectAll('.slice').
+      on('mouseover', (d, index) => {
+        const pathElement = svg.select(`.slice[data-index="${index}"]`)[0][0];
+
+        // Mid point of larger arc
+        const midPoint = flyoutArc.centroid(d);
+
+        // Getting pie center from the dot at the center
+        const pieCenter = centerDot[0][0].getBoundingClientRect();
+
+        // Arc mid point is relative, so we're adding pie center offset to it
+        const flyoutPositionX = pieCenter.left + midPoint[0];
+        const flyoutPositionY = pieCenter.top + midPoint[1];
+
+        const data = {
+          label: pathElement.getAttribute('data-label'),
+          value: Number(pathElement.getAttribute('data-value')),
+          flyoutPositionX,
+          flyoutPositionY
+        };
+        showFlyout(pathElement, data);
+
+      }).
+      on('mouseleave', hideFlyout);
+  }
+
+  /**
+   * Attach legend events
+   */
+  function attachLegendEvents() {
+    // bind flyout to legend rows
+    svg.selectAll('.legend-row').
+      on('mouseover', (d, index) => {
+        const pathElement = svg.select(`.slice[data-index="${index}"]`);
+        // delegate event to svg path
+        pathElement.on('mouseover').call(pathElement.node(), pathElement.datum(), index);
+      });
+  }
+
+  /**
+   * Show Flyout
+   *
+   * @param element
+   * @param data
+   */
+  function showFlyout(element, data) {
+    const title = data.label || I18n.translate('visualizations.common.no_value');
+    // not compatible with multiple series
+    const label = self.getVif().series.map(series => series.label)[0];
+    const seriesIndex = self.getSeriesIndexByLabel(label);
+
+    // Constructing html table for flyout content
+    const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
+      append($('<td>', {'colspan': 2}).text(title || ''));
+
+    const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).text(label);
+    const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
+    const $valueRow = $('<tr>', {'class': 'socrata-flyout-row'});
+    const $table = $('<table>', {'class': 'socrata-flyout-table'}).append($title);
+
+    const value = data.value;
+    let valueString;
+
+    if (value === null) {
+      valueString = I18n.translate('visualizations.common.no_value');
+    } else {
+      valueString = '{0} {1}'.format(
+        utils.formatNumber(value),
+        (value === 1) ?
+          self.getUnitOneBySeriesIndex(seriesIndex) :
+          self.getUnitOtherBySeriesIndex(seriesIndex)
+      );
+    }
+
+    $valueCell.text(valueString);
+
+    $valueRow.
+      append([$labelCell, $valueCell]).
+      appendTo($table);
+
+    const payload = {
+      element,
+      content: $table,
+      // Not sure about making these values hardcoded
+      rightSideHint: false,
+      belowTarget: false,
+      dark: true,
+      // Flyout offset comes from event data
+      flyoutOffset: {
+        left: data.flyoutPositionX,
+        top: data.flyoutPositionY
+      }
+    };
+
+    self.emitEvent('SOCRATA_VISUALIZATION_FLYOUT', payload);
+  }
+
+  /**
+   * Hide Flyout
+   */
+  function hideFlyout() {
+    self.emitEvent(
+      'SOCRATA_VISUALIZATION_FLYOUT',
+      null
+    );
+  }
+}
+
+module.exports = SvgPieChart;

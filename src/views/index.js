@@ -12,6 +12,7 @@ const RowInspector = require('./RowInspector');
 const SvgColumnChart = require('./SvgColumnChart');
 const SvgHistogram = require('./SvgHistogram');
 const SvgTimelineChart = require('./SvgTimelineChart');
+const SvgPieChart = require('./SvgPieChart');
 const Table = require('./Table');
 const TimelineChart = require('./TimelineChart');
 const SampleChart = require('./SampleChart');
@@ -31,6 +32,7 @@ module.exports = {
   SvgColumnChart: SvgColumnChart,
   SvgHistogram: SvgHistogram,
   SvgTimelineChart: SvgTimelineChart,
+  SvgPieChart: SvgPieChart,
   Table: Table,
   TimelineChart: TimelineChart,
   SampleChart: SampleChart

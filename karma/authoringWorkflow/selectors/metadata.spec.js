@@ -13,7 +13,8 @@ function getDefaultState() {
         {renderTypeName: 'point', fieldName: 'point'},
         {renderTypeName: 'location', fieldName: 'location'},
         {renderTypeName: 'calendar_date', fieldName: 'calendar_date'},
-        {renderTypeName: 'money', fieldName: 'money' }
+        {renderTypeName: 'money', fieldName: 'money' },
+        {renderTypeName: 'percent', fieldName: 'percent' }
       ]
     },
     phidippidesMetadata: {
@@ -23,7 +24,8 @@ function getDefaultState() {
         'point': {renderTypeName: 'point', name: 'Point'},
         'location': {renderTypeName: 'location', name: 'Location'},
         'calendar_date': {renderTypeName: 'calendar_date', name: 'Calendar Date', fieldName: 'calendar_date'},
-        'money': {renderTypeName: 'money', name: 'Money', fieldName: 'money'}
+        'money': {renderTypeName: 'money', name: 'Money', fieldName: 'money'},
+        'percent': {renderTypeName: 'percent', name: 'Percent', fieldName: 'percent'}
       }
     }
   };
@@ -99,6 +101,10 @@ describe('metadata', function() {
 
     describe('money', function() {
       returnsRecommendedVisualizationType('money');
+    });
+
+    describe('percent', function() {
+      returnsRecommendedVisualizationType('percent');
     });
   });
 });

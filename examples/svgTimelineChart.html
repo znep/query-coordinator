@@ -20,13 +20,15 @@
       #timeline-chart-4,
       #timeline-chart-5,
       #timeline-chart-6,
-      #timeline-chart-7 {
+      #timeline-chart-7,
+      #timeline-chart-8 {
         display: block;
         position: relative;
         width: 640px;
         height: 480px;
         margin: 100px auto 0 auto;
       }
+
     </style>
   </head>
   <body>
@@ -42,8 +44,10 @@
     <div id="timeline-chart-5"></div>
     <p>Line variant with multiple series.
     <div id="timeline-chart-6"></div>
-    <p>Version 1 vif, migrated at runtime to version 2. The data should be identical to the first chart on this page.
+    <p>Version 1 vif, migrated at runtime to version 2. The data should be identical to the first chart on this page.</p>
     <div id="timeline-chart-7"></div>
+    <p>Chart with OBE percent column as measure</p>
+    <div id="timeline-chart-8"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -366,6 +370,27 @@
         }
       };
 
+      var timelineChart8Vif = _.cloneDeep(timelineChart1Vif);
+      _.set(timelineChart8Vif, 'series[0].dataSource.datasetUid', 'mkvz-3tmj');
+      _.set(timelineChart8Vif, 'series[0].dataSource.dimension.columnName', 'year');
+      _.set(timelineChart8Vif, 'series[0].dataSource.domain', 'ori-performance.demo.socrata.com');
+      _.set(timelineChart8Vif, 'series[0].dataSource.measure.columnName', 'breakfast_enrollment');
+      _.set(timelineChart8Vif, 'series[0].dataSource.measure.aggregationFunction', null);
+      _.set(timelineChart8Vif, 'configuration.treatNullValuesAsZero', false);
+      _.set(timelineChart8Vif, 'series[0].dataSource.filters', [
+      {
+        arguments: {
+          start: '2007-01-01T00:00:00.000',
+          end: '2012-06-01T00:00:00.000'
+        },
+        columnName: 'year',
+        function: 'timeRange'
+      }
+      ]);
+      _.set(timelineChart8Vif, 'series[0].dataSource.precision', "YEAR");
+
+
+
       /**
        * Instantiate the plugins
        */
@@ -407,6 +432,10 @@
       $timelineChart7Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       $timelineChart7Element.socrataSvgTimelineChart(timelineChart7Vif);
 
+      var $timelineChart8Element = $('#timeline-chart-8');
+      $timelineChart8Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $timelineChart8Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $timelineChart8Element.socrataSvgTimelineChart(timelineChart8Vif);
       /**
        * Handle plugin events
        */
@@ -463,6 +492,14 @@
       // $timelineChart6Element.off('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
       // $timelineChart6Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       // $timelineChart6Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
+
+      // $timelineChart7Element.off('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+      // $timelineChart7Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $timelineChart7Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
+
+      // $timelineChart8Element.off('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+      // $timelineChart8Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $timelineChart8Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
     });
   </script>
 </html>

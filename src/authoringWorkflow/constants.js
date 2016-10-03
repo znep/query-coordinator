@@ -43,6 +43,11 @@ export const COLUMN_TYPES = [
     icon: 'icon-number'
   },
   {
+    type: 'percent',
+    preferredVisualizationTypes: ['barChart', 'columnChart'],
+    icon: 'icon-number'
+  },
+  {
     type: 'point',
     preferredVisualizationTypes: ['featureMap', 'regionMap'],
     icon: 'icon-map'
@@ -63,13 +68,13 @@ export const VISUALIZATION_TYPES = [
     type: 'barChart',
     title: translate('visualizations.bar_chart.title'),
     icon: 'icon-bar-chart-horz',
-    preferredDimensionTypes: ['money', 'number', 'text']
+    preferredDimensionTypes: ['money', 'number', 'percent', 'text']
   },
   {
     type: 'columnChart',
     title: translate('visualizations.column_chart.title'),
     icon: 'icon-bar-chart',
-    preferredDimensionTypes: ['money', 'number', 'text']
+    preferredDimensionTypes: ['money', 'number', 'percent', 'text']
   },
   {
     type: 'histogram',

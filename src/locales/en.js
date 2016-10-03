@@ -225,8 +225,6 @@ export default {
     bar_chart: {
       error_exceeded_max_bar_count: 'For optimal performance and legibility bar charts are limited to {0} bars. Use filters to render a more specific chart.',
       error_exceeded_max_bar_count_without_pan: 'For optimal performance and legibility bar charts are limited to {0} bars. Use filters to render a more specific chart.',
-      error_duplicated_dimension_value: 'The data settings for this chart have resulted in duplicate values. Try selecting a dimension with unique values or apply an aggregation function to the measure.',
-      error_other_category_query_failed: 'An error was encountered when preparing the "Other" grouping. This data configuration may not support the \'Group remaining as "Other"\' option.',
       title: 'Bar Chart'
     },
     common: {
@@ -266,7 +264,9 @@ export default {
           need_all_series_from_same_domain: 'This visualization requires all series to be from the same domain.',
           need_single_series: 'This visualization requires a single series.'
         }
-      }
+      },
+      error_other_category_query_failed: 'An error was encountered when preparing the "Other" grouping. This data configuration may not support the \'Group remaining as "Other"\' option.',
+      error_duplicated_dimension_value: 'The data settings for this chart have resulted in duplicate values. Try selecting a dimension with unique values or apply an aggregation function to the measure.'
     },
     choropleth_map: {
       title: 'Choropleth Map',

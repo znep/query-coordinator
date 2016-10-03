@@ -8,6 +8,7 @@ const ChoroplethMap = require('./ChoroplethMap');
 const SvgRegionMap = require('./SvgRegionMap');
 const ColumnChart = require('./ColumnChart');
 const SvgColumnChart = require('./SvgColumnChart');
+const SvgPieChart = require('./SvgPieChart');
 const DistributionChart = require('./DistributionChart');
 const FeatureMap = require('./FeatureMap');
 const SvgFeatureMap = require('./SvgFeatureMap');
@@ -29,7 +30,7 @@ module.exports = {
   ChoroplethMap: ChoroplethMap,
   ColumnChart: ColumnChart,
   svgRegionMap: SvgRegionMap,
-  SvgColumnChart: SvgColumnChart,
+  SvgColumnChart: SvgPieChart,
   DistributionChart: DistributionChart,
   FeatureMap: FeatureMap,
   SvgFeatureMap: SvgFeatureMap,

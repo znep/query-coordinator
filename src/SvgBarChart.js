@@ -323,7 +323,7 @@ $.fn.socrataSvgBarChart = function(originalVif) {
 
           error.errorMessages = [
             I18n.translate(
-              'visualizations.bar_chart.error_duplicated_dimension_value'
+              'visualizations.common.error_duplicated_dimension_value'
             )
           ];
 
@@ -444,7 +444,7 @@ $.fn.socrataSvgBarChart = function(originalVif) {
 
               error.errorMessages = [
                 I18n.translate(
-                  'visualizations.bar_chart.error_other_category_query_failed'
+                  'visualizations.common.error_other_category_query_failed'
                 )
               ];
 

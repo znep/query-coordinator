@@ -34,8 +34,8 @@ module SocrataSiteChrome
       JSON.parse(File.read("#{SocrataSiteChrome::Engine.root}/config/default_site_chrome.json"))
     end
 
-    def self.cache_key
-      'site_chrome_config'
+    def cache_key
+      "#{@domain}_site_chrome_config"
     end
 
     private
@@ -76,7 +76,7 @@ module SocrataSiteChrome
     end
 
     def get_domain_config
-      body = Rails.cache.fetch(DomainConfig.cache_key) do
+      body = Rails.cache.fetch(cache_key) do
         begin
           response = HTTParty.get(domain_config_uri, :verify => Rails.env.production?)
           response.code == 200 ? response.body : nil

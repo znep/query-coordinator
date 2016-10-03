@@ -36,7 +36,10 @@
         select {
           width: 16em;
         }
-        label {
+        .label {
+          color: #666;
+          font-size: 1.2em;
+          padding-left: 12px;
           font-weight: bold;
           padding-right: 0.5em;
           text-align: right;
@@ -53,6 +56,13 @@
             padding-left: 0;
             width: auto;
           }
+        }
+        label {
+          @extend .label;
+        }
+        .spacer {
+          width: 9em;
+          height: 1px;
         }
         .fieldHint {
           padding-left: 1em;

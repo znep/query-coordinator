@@ -146,6 +146,11 @@ class User < Model
     OpenIdIdentifier.parse(CoreServer::Base.connection.get_request(path))
   end
 
+  def auth0_identifiers
+    path = '/auth0_identifiers.json'
+    Auth0Identifier.parse(CoreServer::Base.connection.get_request(path))
+  end
+
   def app_tokens
     AppToken.find_by_user_id(id)
   end

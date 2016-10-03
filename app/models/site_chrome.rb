@@ -59,7 +59,7 @@ class SiteChrome
   end
 
   def self.cache_key
-    SocrataSiteChrome::DomainConfig.cache_key
+    SocrataSiteChrome::DomainConfig.new(CurrentDomain.cname).cache_key
   end
 
   def self.flush_cache

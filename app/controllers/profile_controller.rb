@@ -235,7 +235,9 @@ class ProfileController < ApplicationController
   end
 
   def update_account
-    if params[:user].present? || params[:openid_delete].present?
+    if params[:user].present? ||
+       params[:openid_delete].present? || 
+       params[:auth0id_delete_list].present?
       error_msg = nil
       begin
         if params[:user][:password_new].present?
@@ -247,6 +249,7 @@ class ProfileController < ApplicationController
                :password => params[:user][:password_old]})
           end
         end
+
         if params[:openid_delete].present?
           if current_user.flag?('nopassword') &&
             params[:openid_delete].size >= current_user.openid_identifiers.size
@@ -256,7 +259,25 @@ class ProfileController < ApplicationController
               params[:openid_delete].each do |k, v|
                 delete_path = params[:openid_delete_paths][k]
                 if delete_path.nil?
-                  Rails.logger.warn("Got request to delete OpenID identifier for user #{current_user.id}, identifier: #{k}")
+                  Rails.logger.warn("Received request to delete OpenID identifier for user #{current_user.id}, identifier: #{k}")
+                else
+                  CoreServer::Base.connection.delete_request(delete_path, '', {}, batch_id)
+                end
+              end
+            end
+          end
+        end
+
+        if params[:auth0id_delete_list].present?
+          if current_user.flag?('nopassword') &&
+            params[:auth0id_delete_list].size >= current_user.auth0id_identifiers.size
+            error_msg = t('screens.profile.edit.validation.no_password_no_auth0id')
+          else
+            CoreServer::Base.connection.batch_request do |batch_id|
+              params[:auth0id_delete_list].each do |k, v|
+                delete_path = params[:auth0id_delete_paths][k]
+                if delete_path.nil?
+                  Rails.logger.warn("Received request to delete auth0id identifier for user #{current_user.id}, identifier: #{k}")
                 else
                   CoreServer::Base.connection.delete_request(delete_path, '', {}, batch_id)
                 end

@@ -3,6 +3,7 @@
 
   <%= display_standard_flashes %>
   <%- openid_identifiers = current_user.openid_identifiers -%>
+  <%- auth0_identifiers = current_user.auth0_identifiers -%>
   <%= form_tag(update_account_profile_url, :method => 'put',
        :class => 'commonForm' + (openid_identifiers.empty? ? '' : ' hasOpenId'),
        :id => 'editAccountForm') do %>
@@ -10,7 +11,7 @@
       <%- unless current_user.flag?('nopassword') -%>
         <div class="editSection clearfix">
           <div class="line clearfix">
-            <label><%= t('screens.profile.edit.account.current_email') %></label>
+            <div class="label"><%= t('screens.profile.edit.account.current_email') %></div>
             <span class="field textItem"><%= current_user.email %></span>
           </div>
           <div class="line clearfix">
@@ -51,43 +52,70 @@
 
       <%- openid_login = CurrentDomain.module_enabled?(:openid_login) -%>
       <%- if openid_login -%>
-      <div class="editSection clearfix">
-        <div class="line clearfix">
-          <label>&nbsp;</label>
-          <span class="field textItem">
-            <%= t('screens.profile.edit.account.connect_openid') %>
-            <%= link_to t('screens.profile.edit.account.learn_openid'), openid_explained_url(profile_account_url) %>
-          </span>
-        </div>
-
-        <%- if openid_identifiers.empty? -%>
-        <div class="line clearfix">
-          <label>&nbsp;</label>
-          <span class="field emptyItem"><%= t('screens.profile.edit.account.no_openid') %></span>
-        </div>
-        <%- else -%>
-          <%- openid_identifiers.each do |ident| -%>
+        <%- if FeatureFlags.derive(@view, request).show_auth0_identifiers -%>
+          <div class="editSection clearfix">
             <div class="line clearfix">
-              <label>Delete</label>
               <span class="field textItem">
-                <%= check_box_tag "openid_delete[#{ident.id}]" %>
-                <%= hidden_field_tag "openid_delete_paths[#{ident.id}]", ident.delete_path %>
-                <%= link_to ident.identifier %>
+                <%= t('screens.profile.edit.account.sso_identifiers') %>
               </span>
             </div>
-          <%- end -%>
+
+            <%- if auth0_identifiers.empty? -%>
+              <div class="line clearfix">
+                <span class="field emptyItem"><%= t('screens.profile.edit.account.no_auth0id') %></span>
+              </div>
+            <%- else -%>
+              <%- auth0_identifiers.each do |ident| -%>
+                <div class="line clearfix">
+                  <%= label_tag "auth0id_delete_list[#{ident.identifier}]", 'Delete' %>
+                  <span class="field textItem">
+                    <%= check_box_tag "auth0id_delete_list[#{ident.identifier}]" %>
+                    <%= hidden_field_tag "auth0id_delete_paths[#{ident.identifier}]", ident.delete_path %>
+                    <%= ident.identifier %>
+                  </span>
+                </div>
+              <%- end -%>
+            <%- end -%>
+          </div>
+        <%- else -%>
+          <div class="editSection clearfix">
+            <div class="line clearfix">
+              <div class="spacer"></div>
+              <span class="field textItem">
+                <%= t('screens.profile.edit.account.connect_openid') %>
+                <%= link_to t('screens.profile.edit.account.learn_openid'), openid_explained_url(profile_account_url) %>
+              </span>
+            </div>
+
+            <%- if openid_identifiers.empty? -%>
+            <div class="line clearfix">
+              <div class="spacer"></div>
+              <span class="field emptyItem"><%= t('screens.profile.edit.account.no_openid') %></span>
+            </div>
+            <%- else -%>
+              <%- openid_identifiers.each do |ident| -%>
+                <div class="line clearfix">
+                  <%= label_tag "openid_delete[#{ident.id}]", 'Delete' %>
+                  <span class="field textItem">
+                    <%= check_box_tag "openid_delete[#{ident.id}]" %>
+                    <%= hidden_field_tag "openid_delete_paths[#{ident.id}]", ident.delete_path %>
+                    <%= link_to ident.identifier %>
+                  </span>
+                </div>
+              <%- end -%>
+            <%- end -%>
+            <div class="line clearfix fullLine">
+              <div class="spacer"></div>
+              <%= link_to_rpx raw('<span class="icon"></span>' + t('screens.profile.edit.account.add_openid_button')),
+                    add_rpx_token_url(:section => 'openid'), :class => 'rpxnow button add addOpenIdButton' %>
+            </div>
+          </div>
         <%- end -%>
-        <div class="line clearfix fullLine">
-          <label>&nbsp;</label>
-          <%= link_to_rpx raw('<span class="icon"></span>' + t('screens.profile.edit.account.add_openid_button')),
-                add_rpx_token_url(:section => 'openid'), :class => 'rpxnow button add addOpenIdButton' %>
-        </div>
-      </div>
       <%- end -%>
 
       <div class="editSection clearfix">
         <div class="line clearfix">
-          <label><%= t('screens.profile.edit.account.email.title') %></label>
+          <div class="label"><%= t('screens.profile.edit.account.email.title') %></div>
           <span class="textItem">
             <%= t('screens.profile.edit.account.email.subtitle') %>
           </span>
@@ -95,13 +123,13 @@
         <%- EmailInterest.specification.sort {|a, b| a.last[:description] <=> b.last[:description]}.each do |interest| -%>
           <%- next if interest.last[:right] && !current_user.has_right?(interest.last[:right]) -%>
           <div class="line emailInterestLine clearfix">
-            <label>&nbsp;</label>
+            <div class="spacer"></div>
             <%= check_box_tag("email_interests[#{interest.first}]", true, @email_interests.any? { |i| i.eventTag == interest.first }) %>
             <label class="description" for="email_interests_<%= interest.first %>"><%= t('screens.profile.edit.account.email.interests.' + interest.last[:description]) %></label>
           </div>
         <%- end -%>
         <div class="line emailSubscribeLine clearfix">
-          <label>&nbsp;</label>
+          <div class="spacer"></div>
           <%= check_box_tag('user[email_subscribe]', true, !current_user.emailUnsubscribed) %>
           <label for="user_email_subscribe" class="description">
             <%= t('screens.profile.edit.account.email.interests.user_affected') %>

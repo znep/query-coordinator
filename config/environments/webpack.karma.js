@@ -10,7 +10,7 @@ module.exports = {
       path.resolve(__dirname, '../../app/assets/javascripts')
     ]
   },
-  devtool: 'eval',
+  devtool: 'inline-source-map',
   watch: true,
   module: {
     loaders: [
@@ -20,7 +20,7 @@ module.exports = {
         exclude: /node_modules/,
         query: {
           plugins: ['babel-plugin-rewire'],
-          presets: ['es2015']
+          presets: ['es2015', 'react']
         }
       }
     ]

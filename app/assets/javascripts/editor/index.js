@@ -1,5 +1,7 @@
 import $ from 'jQuery';
 import _ from 'lodash';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import SocrataVisualizations from 'socrata-visualizations';
 
 import I18n from './I18n';
@@ -16,6 +18,7 @@ import { storySaveStatusStore } from './stores/StorySaveStatusStore';
 import { richTextEditorManager } from './RichTextEditorManager';
 import { exceptionNotifier } from '../services/ExceptionNotifier';
 import CollaboratorsDataProvider from './CollaboratorsDataProvider';
+import StoryPublicationStatus from './components/StoryPublicationStatus';
 
 dispatcher.register(function(payload) {
   if (Environment.ENVIRONMENT === 'development' && window.console) {
@@ -228,7 +231,16 @@ $(document).on('ready', function() {
   $('title, .story-title').storyTitle(Environment.STORY_UID);
 
   // Draft or Published status
-  $('#story-publication-status').storyPublicationStatus(Environment.STORY_UID);
+  function renderStoryPublicationStatus() {
+    ReactDOM.render(
+      <StoryPublicationStatus />,
+      document.getElementById('story-publication-status')
+    );
+  }
+
+  storySaveStatusStore.addChangeListener(renderStoryPublicationStatus);
+  storyStore.addChangeListener(renderStoryPublicationStatus);
+  renderStoryPublicationStatus();
 
   // Downtime notice
   $('#downtime-notice-bar').downtimeNoticeBar();

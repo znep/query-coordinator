@@ -37,6 +37,10 @@ export default function StoryStore() {
         _importStory(payload.data);
         break;
 
+      case Actions.STORY_UPDATED:
+        _setStoryUpdatedAt(payload);
+        break;
+
       case Actions.STORY_SAVED:
         _setStoryDigest(payload);
         break;
@@ -146,6 +150,11 @@ export default function StoryStore() {
     var story = _getStory(storyUid);
 
     return story.digest;
+  };
+
+  this.getStoryUpdatedAt = (storyUid) => {
+    const story = _getStory(storyUid);
+    return story.updatedAt;
   };
 
   this.getStoryPermissions = function(storyUid) {
@@ -547,6 +556,15 @@ export default function StoryStore() {
     _setStory(storyData);
   }
 
+  function _setStoryUpdatedAt(payload) {
+    StorytellerUtils.assertHasProperties(payload, 'storyUid', 'updatedAt');
+
+    const story = _getStory(payload.storyUid);
+
+    story.updatedAt = payload.updatedAt;
+    self._emitChange();
+  }
+
   /**
    * Deserializes a story represented as a JSON blob into this store.
    * Consider using _importStory, as it verifies
@@ -572,7 +590,8 @@ export default function StoryStore() {
       blockIds: blockIds,
       digest: storyData.digest,
       permissions: storyData.permissions,
-      createdBy: storyData.createdBy
+      createdBy: storyData.createdBy,
+      updatedAt: storyData.updatedAt
     };
 
     self._emitChange();

@@ -30,7 +30,8 @@ RSpec.describe Api::V1::DraftsController, type: :controller do
       }
     end
 
-    let(:new_draft_story) { double('new_draft_story').as_null_object }
+    let(:new_draft_story_json) { '{"rowdy": "roly poly"}' }
+    let(:new_draft_story) { double('new_draft_story', :as_json => new_draft_story_json) }
     let(:new_story_digest) { 'new_digest' }
 
     context 'when not authenticated' do
@@ -76,7 +77,7 @@ RSpec.describe Api::V1::DraftsController, type: :controller do
       it 'returns json' do
         post :create, params
         expect(response.content_type).to eq('application/json')
-        # Nothing interesting in the body today.
+        expect(response.body).to eq(new_draft_story_json)
       end
 
       it 'responds with 200 status' do

@@ -2,6 +2,10 @@ export default {
   // {Object} data: Story data Object.
   STORY_CREATE: 'STORY_CREATE',
 
+  // {String} updatedAt: the updatedAt field from a draft story
+  // {String} storyUid
+  STORY_UPDATED: 'STORY_UPDATED',
+
   // {String} storyUid
   // {String} description
   STORY_SET_DESCRIPTION: 'STORY_SET_DESCRIPTION',

@@ -3,102 +3,101 @@ import _ from 'lodash';
 import Actions from '../../app/assets/javascripts/editor/Actions';
 import StoryStore from '../../app/assets/javascripts/editor/stores/StoryStore';
 import Dispatcher from '../../app/assets/javascripts/editor/Dispatcher';
-import StorytellerUtils from '../../app/assets/javascripts/StorytellerUtils';
-import StoryPermissionsManager, {__RewireAPI__ as StoryPermissionsManagerAPI} from '../../app/assets/javascripts/editor/StoryPermissionsManager';
+import StoryPermissionsManager, { __RewireAPI__ as StoryPermissionsManagerAPI } from '../../app/assets/javascripts/editor/StoryPermissionsManager';
 
 import EnvironmentMocker from './StorytellerEnvironmentMocker';
 
-describe('StoryPermissionsManager', function() {
+describe('StoryPermissionsManager', () => {
 
-  var manager;
-  var dispatcher;
+  let manager;
+  let dispatcher;
+  let httpRequestStub;
+  let httpRequestPromiseResolve;
+  let httpRequestPromiseReject;
 
-  beforeEach(function() {
-    manager = new StoryPermissionsManager();
-  });
-
-  var storytellerApiRequestStub;
-  var storytellerApiRequestPromiseResolve;
-  var storytellerApiRequestPromiseReject;
-
-  beforeEach(function() {
-    var storyStoreStub = sinon.createStubInstance(StoryStore);
+  beforeEach(() => {
+    const storyStoreStub = sinon.createStubInstance(StoryStore);
     storyStoreStub.getStoryDigest = _.constant('test-digest');
 
-    var StorytellerUtilsMocker = _.cloneDeep(StorytellerUtils);
-    var storytellerApiRequestPromise = new Promise(function(resolve, reject) {
-      storytellerApiRequestPromiseResolve = resolve;
-      storytellerApiRequestPromiseReject = reject;
+    const httpRequestPromise = new Promise((resolve, reject) => {
+      httpRequestPromiseResolve = resolve;
+      httpRequestPromiseReject = reject;
     });
 
     dispatcher = new Dispatcher();
-    storytellerApiRequestStub = sinon.stub(StorytellerUtilsMocker, 'storytellerApiRequest', _.constant(storytellerApiRequestPromise));
+    httpRequestStub = sinon.stub();
+    httpRequestStub.returns(httpRequestPromise);
 
-    StoryPermissionsManagerAPI.__Rewire__('StorytellerUtils', StorytellerUtilsMocker);
+    StoryPermissionsManagerAPI.__Rewire__('httpRequest', httpRequestStub);
     StoryPermissionsManagerAPI.__Rewire__('Environment', EnvironmentMocker);
     StoryPermissionsManagerAPI.__Rewire__('storyStore', storyStoreStub);
     StoryPermissionsManagerAPI.__Rewire__('dispatcher', dispatcher);
+
+    manager = new StoryPermissionsManager();
   });
 
-  afterEach(function() {
-    storytellerApiRequestStub.restore();
-    StoryPermissionsManagerAPI.__ResetDependency__('StorytellerUtils');
+  afterEach(() => {
+    StoryPermissionsManagerAPI.__ResetDependency__('httpRequest');
     StoryPermissionsManagerAPI.__ResetDependency__('Environment');
     StoryPermissionsManagerAPI.__ResetDependency__('storyStore');
     StoryPermissionsManagerAPI.__ResetDependency__('dispatcher');
   });
 
   function testVariant(apiName, expectedUrl, expectedHttpMethod, expectedData, expectedActions, expectedPayload) {
-    describe('.' + apiName, function() {
-      it('should throw on non-function arguments', function() {
-        assert.throws(function() { manager[apiName](2); });
-        assert.throws(function() { manager[apiName]({}); });
-        assert.throws(function() { manager[apiName](''); });
-        assert.throws(function() { manager[apiName](null); });
+    describe('.' + apiName, () => {
+      it('should throw on non- arguments', () => {
+        assert.throws(() => { manager[apiName](2); });
+        assert.throws(() => { manager[apiName]({}); });
+        assert.throws(() => { manager[apiName](''); });
+        assert.throws(() => { manager[apiName](null); });
       });
 
-      describe('given an error callback', function() {
-        var errorSpy;
+      describe('given an error callback', () => {
+        let errorSpy;
 
-        beforeEach(function() {
+        beforeEach(() => {
           errorSpy = sinon.spy();
           manager[apiName](errorSpy);
         });
 
-        it('should make one {0} to {1}'.format(expectedHttpMethod, expectedUrl), function() {
-          sinon.assert.calledOnce(storytellerApiRequestStub);
-          sinon.assert.calledWithExactly(
-            storytellerApiRequestStub,
-            expectedUrl,
+        it('should make one {0} to {1}'.format(expectedHttpMethod, expectedUrl), () => {
+          sinon.assert.calledOnce(httpRequestStub);
+          sinon.assert.calledWithMatch(
+            httpRequestStub,
             expectedHttpMethod,
-            expectedPayload
+            expectedUrl
           );
         });
 
-        describe('that succeeds', function() {
-          var data;
-          var actions;
-          beforeEach(function() {
+        describe('that succeeds', () => {
+          let data;
+          let actions;
+
+          beforeEach(() => {
             data = expectedData;
-            _.each(expectedActions, function(expectedAction) {
+
+            _.each(expectedActions, (expectedAction) => {
               expectedAction.storyUid = EnvironmentMocker.STORY_UID;
             });
+
             actions = [];
-            dispatcher.register(function(payload) {
+
+            dispatcher.register((payload) => {
               actions.push(payload);
             });
-            storytellerApiRequestPromiseResolve(data);
+
+            httpRequestPromiseResolve(data);
           });
 
-          it('should not call the error callback', function(done) {
-            _.defer(function() {
+          it('should not call the error callback', (done) => {
+            _.defer(() => {
               sinon.assert.notCalled(errorSpy);
               done();
             });
           });
 
-          it('should emit expected actions only', function(done) {
-            _.defer(function() {
+          it('should emit expected actions only', (done) => {
+            _.defer(() => {
               assert.deepEqual(
                 actions,
                 expectedActions
@@ -108,25 +107,25 @@ describe('StoryPermissionsManager', function() {
           });
         });
 
-        describe('that fails', function() {
-          beforeEach(function() {
+        describe('that fails', () => {
+          beforeEach(() => {
             sinon.stub(window.console, 'error');
-            storytellerApiRequestPromiseReject('expected');
+            httpRequestPromiseReject('expected');
           });
 
-          afterEach(function() {
+          afterEach(() => {
             window.console.error.restore();
           });
 
-          it('should call the error callback', function(done) {
-            _.defer(function() {
+          it('should call the error callback', (done) => {
+            _.defer(() => {
               sinon.assert.calledOnce(errorSpy);
               done();
             });
           });
 
-          it('should log an error to the console', function(done) {
-            _.defer(function() {
+          it('should log an error to the console', (done) => {
+            _.defer(() => {
               sinon.assert.called(console.error);
               done();
             });
@@ -136,7 +135,7 @@ describe('StoryPermissionsManager', function() {
     });
   }
 
-  var publicActions = [{
+  const publicActions = [{
     action: Actions.STORY_SET_PUBLISHED_STORY,
     storyUid: 'not defined yet',
     publishedStory: { isPublic: true }
@@ -146,13 +145,12 @@ describe('StoryPermissionsManager', function() {
     isPublic: true
   }];
 
-  var privateActions = [{
+  const privateActions = [{
     action: Actions.STORY_SET_PERMISSIONS,
     storyUid: 'not defined yet',
     isPublic: false
   }];
 
-  testVariant('makePublic', 'stories/four-four/published', 'POST', { isPublic: true }, publicActions, JSON.stringify({ digest: 'test-digest' }));
-  testVariant('makePrivate', 'stories/four-four/permissions', 'PUT', { isPublic: false }, privateActions, JSON.stringify({ isPublic: false }));
-
+  testVariant('makePublic', '/stories/api/v1/stories/four-four/published', 'POST', { isPublic: true }, publicActions, JSON.stringify({ digest: 'test-digest' }));
+  testVariant('makePrivate', '/stories/api/v1/stories/four-four/permissions', 'PUT', { isPublic: false }, privateActions, JSON.stringify({ isPublic: false }));
 });

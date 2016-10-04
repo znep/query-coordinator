@@ -133,6 +133,7 @@ body .header-main {
 
     span {
       margin-left: 3px;
+      position: static;
     }
   }
 
@@ -171,10 +172,6 @@ body .header-main {
     &.active {
       color: $header-text-color;
       background-color: $header-link-hover-bg-color;
-    }
-
-    span {
-      font-size: 1.1rem;
     }
 
     &:disabled {

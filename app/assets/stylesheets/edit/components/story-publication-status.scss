@@ -1,0 +1,108 @@
+@import 'styles/variables/colors';
+
+#story-publication-status {
+  padding: 0;
+}
+
+.story-publication-status {
+  height: 6rem;
+  color: $grey;
+  box-sizing: border-box;
+
+  h5 {
+    display: inline-flex;
+    width: 100%;
+    border-bottom: solid 1px #efefef;
+    padding-bottom: 8px;
+
+    > strong {
+      font-weight: 600;
+      margin: auto 5px auto 0;
+    }
+
+    > span {
+      margin: auto auto auto 0;
+      font-weight: 200;
+    }
+
+    > button {
+      margin-left: auto;
+      margin-right: 0;
+      padding: 0;
+      font-size: 1.3rem;
+      text-align: center;
+      color: $grey;
+      background-color: transparent;
+      border: none;
+
+      &:hover {
+        color: #000;
+      }
+    }
+  }
+
+  .btn-publish,
+  .alert {
+    margin-top: 8px;
+  }
+
+  .flannel {
+    width: 450px;
+    margin-left: 32px;
+  }
+
+  .flannel-content {
+    margin-top: 0;
+  }
+
+  .flannel-actions {
+    border-top: solid 1px #efefef;
+
+    .btn {
+      color: $primary;
+      padding: 0;
+      padding-top: 8px;
+
+      &:hover {
+        color: $primary;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .flannel-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+
+    &.flannel-overlay-hidden {
+      display: none;
+    }
+  }
+}
+
+.story-publication-status-icon {
+  display: inline-block;
+  font-weight: bold;
+  font-size: 16px;
+  margin-left: 6px;
+  line-height: 0.4;
+  border-radius: 50%;
+  padding: 2.3px;
+
+  &::before {
+    color: white;
+  }
+
+  &.unpublished {
+    background-color: #E4A700;
+  }
+
+  &.published {
+    background-color: $success;
+  }
+
+}

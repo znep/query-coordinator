@@ -1,121 +1,285 @@
-import $ from 'jQuery';
 import _ from 'lodash';
+import moment from 'moment';
+import { Simulate } from 'react-addons-test-utils';
 
+import renderComponent from '../renderComponent';
 import I18nMocker from '../I18nMocker';
-import Store from 'editor/stores/Store';
-import StorytellerUtils from 'StorytellerUtils';
-import {__RewireAPI__ as StoryPublicationStatusAPI} from 'editor/components/StoryPublicationStatus';
+import StoryPublicationStatus, {__RewireAPI__ as StoryPublicationStatusAPI} from 'editor/components/StoryPublicationStatus';
 
-describe('storyPublicationStatus jQuery plugin', function() {
+describe('StoryPublicationStatus', () => {
+  let component;
+  let storyPermissionsManagerMocker;
 
-  var $button;
-  var mockStore;
+  let makePublicStub;
+  let makePublicStubPromise;
+  let makePublicStubPromiseResolve;
+  let makePublicStubPromiseReject;
 
-  beforeEach(function() {
-    $button = $('<button>');
+  let makePrivateStub;
+  let makePrivateStubPromise;
+  let makePrivateStubPromiseResolve;
+  let makePrivateStubPromiseReject;
 
-    function MockStore() {
-      var self = this;
-      var _isDirty = false;
-      var _isPublic = false;
-      var _currentDigest = 'unpublished';
+  const storyUpdatedAt = '2010-03-10';
 
-      _.extend(this, new Store());
+  function createStoryPermissionsManagerMocker(isPublic, havePublishedAndDraftDiverged) {
+    beforeEach(() => {
+      makePublicStubPromise = new Promise((resolve, reject) => {
+        makePublicStubPromiseResolve = resolve;
+        makePublicStubPromiseReject = reject;
+      });
+      makePublicStub = sinon.stub();
+      makePublicStub.returns(makePublicStubPromise);
 
-      this.mockIsStoryDirty = function(isDirty) {
-        _isDirty = isDirty;
-        self._emitChange();
-      };
+      makePrivateStubPromise = new Promise((resolve, reject) => {
+        makePrivateStubPromiseResolve = resolve;
+        makePrivateStubPromiseReject = reject;
+      });
+      makePrivateStub = sinon.stub();
+      makePrivateStub.returns(makePrivateStubPromise);
 
-      this.mockIsStoryPublic = function(isPublic) {
-        _isPublic = isPublic;
-        self._emitChange();
-      };
-
-      this.mockIsDraftDiverged = function(isDiverged) {
-        _currentDigest = isDiverged ? 'unpublished' : 'published';
-        self._emitChange();
-      };
-
-      this.isStoryDirty = function() { return _isDirty; };
-      this.getStoryPermissions = function() { return { isPublic: _isPublic }; };
-      this.getStoryPublishedStory = _.constant({ digest: 'published' });
-      this.getStoryDigest = function() { return _currentDigest; };
-    }
-
-    mockStore = new MockStore();
-    StoryPublicationStatusAPI.__Rewire__('storySaveStatusStore', mockStore);
-    StoryPublicationStatusAPI.__Rewire__('storyStore', mockStore);
-    StoryPublicationStatusAPI.__Rewire__('I18n', I18nMocker);
-  });
-
-  afterEach(function() {
-    StoryPublicationStatusAPI.__ResetDependency__('storySaveStatusStore');
-    StoryPublicationStatusAPI.__ResetDependency__('storyStore');
-    StoryPublicationStatusAPI.__ResetDependency__('I18n');
-  });
-
-  it('should return a jQuery object for chaining', function() {
-    var returnValue = $button.storyPublicationStatus();
-    assert.instanceOf(returnValue, $);
-  });
-
-  describe('instance', function() {
-    beforeEach(function() {
-      $button.storyPublicationStatus({ savedMessageTimeout: 10 });
+      StoryPublicationStatusAPI.__Rewire__('storyPermissionsManager', {
+        isPublic: _.constant(isPublic),
+        havePublishedAndDraftDiverged: _.constant(havePublishedAndDraftDiverged),
+        makePublic: makePublicStub,
+        makePrivate: makePrivateStub
+      });
     });
 
-    describe('button text', function() {
-      function textFor(status) {
-        return StorytellerUtils.format(
-          'Translation for: editor.settings_panel.publishing_section.status.{0}',
-          status
-        );
-      }
+    afterEach(() => {
+      StoryPublicationStatusAPI.__ResetDependency__('storyPermissionsManager', storyPermissionsManagerMocker);
+    });
+  }
 
-      it('should mirror the story save state', function() {
+  function createStoryPublicationStatus() {
+    beforeEach(() => {
+      component = renderComponent(StoryPublicationStatus);
+    });
+  }
 
-        // If story is unpublished, then text is ALWAYS draft.
-        mockStore.mockIsStoryPublic(false);
-        mockStore.mockIsStoryDirty(false);
-        mockStore.mockIsDraftDiverged(false);
-        assert.equal($button.text(), textFor('draft'), 'clean unpublished story');
+  beforeEach(() => {
+    StoryPublicationStatusAPI.__Rewire__('I18n', I18nMocker);
+    StoryPublicationStatusAPI.__Rewire__('storyStore', { getStoryUpdatedAt: _.constant(storyUpdatedAt) });
+  });
 
-        mockStore.mockIsStoryPublic(false);
-        mockStore.mockIsStoryDirty(true);
-        mockStore.mockIsDraftDiverged(false);
-        assert.equal($button.text(), textFor('draft'), 'dirty unpublished story');
+  afterEach(() => {
+    StoryPublicationStatusAPI.__ResetDependency__('I18n');
+    StoryPublicationStatusAPI.__ResetDependency__('storyStore');
+  });
 
-        mockStore.mockIsStoryPublic(false);
-        mockStore.mockIsStoryDirty(false);
-        mockStore.mockIsDraftDiverged(true);
-        assert.equal($button.text(), textFor('draft'), 'diverged unpublished story');
+  describe('render', () => {
+    function rendersMakePrivateButton() {
+      it('renders a "Make Private" button', () => {
+        const text = component.querySelector('.flannel-actions button').textContent;
+        expect(text).to.contain('make_story_private');
+      });
+    }
 
-        mockStore.mockIsStoryPublic(false);
-        mockStore.mockIsStoryDirty(true);
-        mockStore.mockIsDraftDiverged(true);
-        assert.equal($button.text(), textFor('draft'), 'dirty diverged unpublished story');
+    function rendersDraftAndUnpublished() {
+      it('renders a draft status', () => {
+        const text = component.querySelector('.panel-btn').textContent;
+        expect(text).to.contain('draft');
+      });
 
-        // Only if published, not dirty, not diverged, should it say published.
-        mockStore.mockIsStoryPublic(true);
-        mockStore.mockIsStoryDirty(false);
-        mockStore.mockIsDraftDiverged(false);
-        assert.equal($button.text(), textFor('published'), 'clean published story');
+      it('renders an unpublished icon', () => {
+        const iconElement = component.querySelector('.story-publication-status-icon.unpublished');
+        expect(iconElement).to.exist;
+      });
+    }
 
-        mockStore.mockIsStoryPublic(true);
-        mockStore.mockIsStoryDirty(true);
-        mockStore.mockIsDraftDiverged(false);
-        assert.equal($button.text(), textFor('draft'), 'dirty published story');
+    describe('regardless of story state', () => {
+      createStoryPermissionsManagerMocker(true, true);
+      createStoryPublicationStatus();
 
-        mockStore.mockIsStoryPublic(true);
-        mockStore.mockIsStoryDirty(false);
-        mockStore.mockIsDraftDiverged(true);
-        assert.equal($button.text(), textFor('draft'), 'diverged published story');
+      it('renders last saved header text', () => {
+        const text = component.querySelector('h5 strong').textContent;
+        expect(text).to.contain('saved');
+      });
 
-        mockStore.mockIsStoryPublic(true);
-        mockStore.mockIsStoryDirty(true);
-        mockStore.mockIsDraftDiverged(true);
-        assert.equal($button.text(), textFor('draft'), 'dirty diverged published story');
+      it('renders last saved time', () => {
+        const text = component.querySelector('h5 span').textContent;
+        expect(text).to.equal(moment(storyUpdatedAt).calendar().toString());
+      });
+    });
+
+    describe('when the story is private and unpublished', () => {
+      createStoryPermissionsManagerMocker(false, false);
+      createStoryPublicationStatus();
+
+      rendersDraftAndUnpublished();
+
+      it('renders a "Make Story Public" button', () => {
+        const text = component.querySelector('.btn-publish').textContent;
+        expect(text).to.contain('make_story_public');
+      });
+
+      it('renders a "Can be shared publicly" message', () => {
+        const text = component.querySelector('.alert').textContent;
+        expect(text).to.contain('can_be_shared_publicly');
+      });
+
+      it('does not render a "Make Private" button', () => {
+        expect(component.querySelector('.flannel-actions')).to.not.exist;
+      });
+    });
+
+    describe('when the story is public and unpublished', () => {
+      createStoryPermissionsManagerMocker(true, true);
+      createStoryPublicationStatus();
+
+      rendersDraftAndUnpublished();
+      rendersMakePrivateButton();
+
+      it('renders an "Update Public Version" button', () => {
+        const text = component.querySelector('.btn-publish').textContent;
+        expect(text).to.contain('update_public_version');
+      });
+
+      it('renders a "Previously published..." message', () => {
+        const text = component.querySelector('.alert').textContent;
+        expect(text).to.contain('previously_published');
+      });
+    });
+
+    describe('when the story is public and published', () => {
+      createStoryPermissionsManagerMocker(true, false);
+      createStoryPublicationStatus();
+
+      rendersMakePrivateButton();
+
+      it('renders a "Published" status', () => {
+        const text = component.querySelector('.panel-btn').textContent;
+        expect(text).to.contain('published');
+      });
+
+      it('renders a published icon', () => {
+        const iconElement = component.querySelector('.story-publication-status-icon.published');
+        expect(iconElement).to.exist;
+      });
+
+      it('renders a disabled "Update Public Version" button', () => {
+        const buttonElement = component.querySelector('.btn-publish');
+        expect(buttonElement.textContent).to.contain('update_public_version');
+        expect(buttonElement.disabled).to.be.true;
+      });
+
+      it('renders a "Story has been published..." message', () => {
+        const text = component.querySelector('.alert').textContent;
+        expect(text).to.contain('has_been_published');
+      });
+    });
+  });
+
+  describe('events', () => {
+    describe('when clicking the status button', () => {
+      createStoryPermissionsManagerMocker(true, true);
+      createStoryPublicationStatus();
+
+      it('toggles the flannel visibility', () => {
+        Simulate.click(component.querySelector('.panel-btn'));
+        expect(component.querySelector('.flannel.flannel-hidden')).to.not.exist;
+
+        Simulate.click(component.querySelector('.panel-btn'));
+        expect(component.querySelector('.flannel.flannel-hidden')).to.exist;
+      });
+    });
+
+    function behavesLikePublishingStory() {
+      beforeEach(() => {
+        Simulate.click(component.querySelector('.btn-publish'));
+      });
+
+      it('calls storyPermissionsManager.makePublic', () => {
+        expect(makePublicStub.called).to.be.true;
+        expect(makePublicStub.returned(makePublicStubPromise)).to.be.true;
+      });
+
+      it('enables loading spinner', () => {
+        expect(component.querySelector('.btn-publish.btn-busy')).to.exist;
+      });
+
+      describe('when the request succeeds', () => {
+        it('stops loading', (done) => {
+          makePublicStubPromiseResolve();
+
+          _.defer(() => {
+            expect(component.querySelector('.btn-publish.btn-busy')).to.not.exist;
+            done();
+          });
+        });
+      });
+
+      describe('when the request fails', () => {
+        it('stops loading and shows an error', (done) => {
+          makePublicStubPromiseReject();
+
+          _.defer(() => {
+            expect(component.querySelector('.btn-publish.btn-busy')).to.not.exist;
+            expect(component.querySelector('.alert.error')).to.exist;
+            done();
+          });
+        });
+      });
+    }
+
+    describe('when the story is private and unpublished', () => {
+      createStoryPermissionsManagerMocker(false, true);
+      createStoryPublicationStatus();
+
+      describe('when clicking the "Make Story Public" button', () => {
+        behavesLikePublishingStory();
+      });
+    });
+
+    describe('when the story is public and unpublished', () => {
+      createStoryPermissionsManagerMocker(true, true);
+      createStoryPublicationStatus();
+
+      describe('when clicking the "Update Public Version" button', () => {
+        behavesLikePublishingStory();
+      });
+    });
+
+    describe('when the story is public', () => {
+      createStoryPermissionsManagerMocker(true, true);
+      createStoryPublicationStatus();
+
+      describe('when clicking the "Make Private" button', () => {
+        beforeEach(() => {
+          Simulate.click(component.querySelector('.flannel-actions button'));
+        });
+
+        it('calls storyPermissionsManager.makePrivate', () => {
+          expect(makePrivateStub.called).to.be.true;
+          expect(makePrivateStub.returned(makePrivateStubPromise)).to.be.true;
+        });
+
+        it('enables loading spinner', () => {
+          expect(component.querySelector('.btn-publish.btn-busy')).to.exist;
+        });
+
+        describe('when the request succeeds', () => {
+          it('stops loading', (done) => {
+            makePrivateStubPromiseResolve();
+
+            _.defer(() => {
+              expect(component.querySelector('.btn-publish.btn-busy')).to.not.exist;
+              done();
+            });
+          });
+        });
+
+        describe('when the request fails', () => {
+          it('stops loading and shows and error', (done) => {
+            makePrivateStubPromiseReject();
+
+            _.defer(() => {
+              expect(component.querySelector('.btn-publish.btn-busy')).to.not.exist;
+              expect(component.querySelector('.alert.error')).to.exist;
+              done();
+            });
+          });
+        });
       });
     });
   });

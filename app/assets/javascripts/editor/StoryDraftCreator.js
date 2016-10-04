@@ -56,6 +56,12 @@ function _saveDraft(storyUid) {
     }
   }).
   then(function(data, status, response) {
+    dispatcher.dispatch({
+      action: Actions.STORY_UPDATED,
+      updatedAt: data.updatedAt,
+      storyUid: storyUid
+    });
+
     // Get the new draft digest from the response X-Story-Digest header.
     var newDigest = response.getResponseHeader('X-Story-Digest');
     if (_.isString(newDigest) && newDigest.length > 0) {

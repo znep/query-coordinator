@@ -12,8 +12,7 @@ describe('StoryPermissionsRenderer', function() {
   var dispatcher;
   var storyPermissionsManager;
   var isPublic;
-  var storyDigest;
-  var publishedStoryDigest;
+  var havePublishedAndDraftDiverged;
   var $settingsPanelPublishing;
   var $visibilityLabel;
   var $visibilityButton;
@@ -76,7 +75,9 @@ describe('StoryPermissionsRenderer', function() {
     beforeEach(function() {
       storyPermissionsManager = {
         makePublic: sinon.stub(),
-        makePrivate: sinon.stub()
+        makePrivate: sinon.stub(),
+        havePublishedAndDraftDiverged: _.constant(havePublishedAndDraftDiverged),
+        isPublic: _.constant(isPublic)
       };
 
       StoryPermissionsRendererAPI.__Rewire__(
@@ -99,18 +100,6 @@ describe('StoryPermissionsRenderer', function() {
 
     var StoryStoreMock = function() {
       _.extend(this, new Store());
-
-      this.getStoryPermissions = function() {
-        return {isPublic: isPublic};
-      };
-
-      this.getStoryPublishedStory = function() {
-        return {digest: publishedStoryDigest};
-      };
-
-      this.getStoryDigest = function() {
-        return storyDigest;
-      };
     };
 
     StoryPermissionsRendererAPI.__Rewire__('storyStore', new StoryStoreMock());
@@ -122,6 +111,8 @@ describe('StoryPermissionsRenderer', function() {
         viewRole: 'owner'
       }
     });
+
+    stubStoryPermissionsManager();
   });
 
   afterEach(function() {
@@ -132,6 +123,8 @@ describe('StoryPermissionsRenderer', function() {
   });
 
   describe('constructor', function() {
+    stubStoryPermissionsManager();
+
     describe('when instantiated', function() {
       describe('with no arguments and a missing publishing DOM element', function() {
         it('raises an exception', function() {
@@ -149,6 +142,8 @@ describe('StoryPermissionsRenderer', function() {
             isPublic = true;
           });
 
+          stubStoryPermissionsManager();
+
           it('renders', function() {
             new StoryPermissionsRenderer(); //eslint-disable-line no-new
 
@@ -161,11 +156,12 @@ describe('StoryPermissionsRenderer', function() {
             assert.equal($publishingHelpText.text(), I18nMocker.t('editor.settings_panel.publishing_section.messages.has_been_published'));
           });
 
-          describe('and has a difference in digest', function() {
+          describe('has diverged from the published story', function() {
             beforeEach(function() {
-              storyDigest = 'digest';
-              publishedStoryDigest = 'new-digest';
+              havePublishedAndDraftDiverged = true;
             });
+
+            stubStoryPermissionsManager();
 
             it('renders', function() {
               new StoryPermissionsRenderer(); //eslint-disable-line no-new
@@ -181,6 +177,8 @@ describe('StoryPermissionsRenderer', function() {
           beforeEach(function() {
             isPublic = false;
           });
+
+          stubStoryPermissionsManager();
 
           it('renders', function() {
             new StoryPermissionsRenderer(); //eslint-disable-line no-new
@@ -198,13 +196,14 @@ describe('StoryPermissionsRenderer', function() {
 
   describe('visibilityButton', function() {
     buildAndCleanTemplate();
-    stubStoryPermissionsManager();
 
     describe('when the story is public', function() {
       beforeEach(function() {
         isPublic = false;
         new StoryPermissionsRenderer(); //eslint-disable-line no-new
       });
+
+      stubStoryPermissionsManager();
 
       it('attempts to make a call to StoryPermissionsManager to make the story public', function() {
         $visibilityButton.click();
@@ -221,6 +220,8 @@ describe('StoryPermissionsRenderer', function() {
         new StoryPermissionsRenderer(); //eslint-disable-line no-new
       });
 
+      stubStoryPermissionsManager();
+
       it('attempts to make a call to StoryPermissionsManager to make the story private', function() {
         $visibilityButton.click();
 
@@ -233,15 +234,16 @@ describe('StoryPermissionsRenderer', function() {
 
   describe('updatePublicButton', function() {
     buildAndCleanTemplate();
-    stubStoryPermissionsManager();
 
     describe('when the story is public', function() {
       beforeEach(function() {
         isPublic = true;
-        publishedStoryDigest = 'new-digest';
+        havePublishedAndDraftDiverged = true;
 
         new StoryPermissionsRenderer(); //eslint-disable-line no-new
       });
+
+      stubStoryPermissionsManager();
 
       it('attempts to update the published story', function() {
         assert.isFalse($updatePublicButton.prop('disabled'));
@@ -257,10 +259,12 @@ describe('StoryPermissionsRenderer', function() {
     describe('when the story is private', function() {
       beforeEach(function() {
         isPublic = false;
-        new StoryPermissionsRenderer(); //eslint-disable-line no-new
       });
 
+      stubStoryPermissionsManager();
+
       it('renders the update button in a disabled state', function() {
+        new StoryPermissionsRenderer(); //eslint-disable-line no-new
         assert($updatePublicButton.prop('disabled'), 'updatePublic button should be disabled');
 
         $updatePublicButton.click();

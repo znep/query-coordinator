@@ -41,7 +41,7 @@ class Api::V1::DraftsController < ApplicationController
 
     headers['X-Story-Digest'] = @new_draft_story.digest
 
-    response_obj = {}
+    response_obj = @new_draft_story.as_json
 
     render json: response_obj
   end

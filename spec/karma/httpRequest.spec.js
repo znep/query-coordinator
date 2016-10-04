@@ -44,8 +44,12 @@ describe('httpRequest', function() {
       assert.isTrue(request instanceof Promise);
     });
 
-    it('makes no AJAX request', function() {
-      assert.isFalse(jQueryAjaxStub.called);
+    it('makes the AJAX request with the correct options', function() {
+      assert.isTrue(jQueryAjaxStub.called);
+
+      var jQueryAjaxStubOptions = jQueryAjaxStub.getCall(0).args[0];
+      assert.equal(testMethod, jQueryAjaxStubOptions.method);
+      assert.equal(testUrl, jQueryAjaxStubOptions.url);
     });
   });
 

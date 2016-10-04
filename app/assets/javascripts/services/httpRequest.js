@@ -3,7 +3,7 @@ import $ from 'jQuery';
 import Environment from '../StorytellerEnvironment';
 import StorytellerUtils from '../StorytellerUtils';
 
-var SUPPORTED_REQUEST_METHODS = ['GET', 'PUT'];
+var SUPPORTED_REQUEST_METHODS = ['GET', 'PUT', 'POST'];
 
 export var storytellerAPIRequestHeaders = function() {
   return {

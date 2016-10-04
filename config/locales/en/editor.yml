@@ -121,6 +121,7 @@ en:
         section_title: 'Make a Copy...'
       publishing_section:
         section_title: 'Manage Publishing and Visibility'
+        saved: 'Saved'
         visibility:
           title: 'Visibility'
           private: 'Private'

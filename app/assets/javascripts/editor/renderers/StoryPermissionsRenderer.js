@@ -44,10 +44,9 @@ export default function StoryPermissionsRenderer() {
     storySaveStatusStore.addChangeListener(_render);
 
     _$visibilityButton.click(function() {
-      var permissions = storyStore.getStoryPermissions(Environment.STORY_UID);
-      StorytellerUtils.assert(permissions, 'Permissions object must be available');
+      var isPublic = storyPermissionsManager.isPublic();
 
-      if (permissions.isPublic) {
+      if (isPublic) {
         storyPermissionsManager.makePrivate(_renderError);
       } else {
         storyPermissionsManager.makePublic(_renderError);
@@ -58,10 +57,9 @@ export default function StoryPermissionsRenderer() {
     });
 
     _$updatePublicButton.click(function() {
-      var permissions = storyStore.getStoryPermissions(Environment.STORY_UID);
-      StorytellerUtils.assert(permissions, 'Permissions object must be available');
+      var isPublic = storyPermissionsManager.isPublic();
 
-      if (permissions.isPublic) {
+      if (isPublic) {
         storyPermissionsManager.makePublic(_renderError);
       } else {
         _renderError(I18n.t('editor.settings_panel.publishing_section.errors.not_published_not_updated'));
@@ -70,26 +68,6 @@ export default function StoryPermissionsRenderer() {
       _$errorContainer.addClass('hidden');
       _$updatePublicButton.addClass('btn-busy');
     });
-  }
-
-  function _havePublishedAndDraftDiverged() {
-    var publishedStory = storyStore.getStoryPublishedStory(Environment.STORY_UID) || Environment.PUBLISHED_STORY_DATA;
-    var digest = storyStore.getStoryDigest(Environment.STORY_UID);
-    var publishedAndDraftDiverged = false;
-
-    // Only stories that have been published can have their published and
-    // draft versions diverge. If a story has never been published, storyStore
-    // will return undefined for .getStoryPublishedStory() and the
-    // publishedStory object embedded in the page by the Rails app will be set
-    // to null. Because of the '|| root.publishedStory;' conditional
-    // assignment to publishedStory above, we can be reasonably confident that
-    // we will only ever encounter a JSON representation of the published
-    // story or null.
-    if (publishedStory !== null && publishedStory.hasOwnProperty('digest')) {
-      publishedAndDraftDiverged = publishedStory.digest !== digest;
-    }
-
-    return publishedAndDraftDiverged;
   }
 
   function _renderError() {
@@ -102,15 +80,15 @@ export default function StoryPermissionsRenderer() {
     var havePublishedAndDraftDiverged;
     var canManagePublicVersion = _.includes(Environment.CURRENT_USER_STORY_AUTHORIZATION.domainRights, 'manage_story_public_version');
     var isNotContributor = Environment.CURRENT_USER_STORY_AUTHORIZATION.viewRole !== 'contributor';
-    var permissions = storyStore.getStoryPermissions(Environment.STORY_UID);
+    var isPublic = storyPermissionsManager.isPublic();
     var i18n = function(key) {
       return I18n.t(
         StorytellerUtils.format('editor.settings_panel.publishing_section.{0}', key)
       );
     };
 
-    if (permissions && permissions.isPublic) {
-      havePublishedAndDraftDiverged = _havePublishedAndDraftDiverged();
+    if (isPublic) {
+      havePublishedAndDraftDiverged = storyPermissionsManager.havePublishedAndDraftDiverged();
 
       _$visibilityLabel.text(i18n('visibility.public'));
       _$visibilityButtonText.text(i18n('visibility.make_story_private'));
@@ -132,7 +110,7 @@ export default function StoryPermissionsRenderer() {
       _$publishingHelpText.text(i18n('messages.can_be_shared_publicly'));
     }
 
-    _$settingsPanelStoryStatus.toggleClass('hidden', !permissions || !permissions.isPublic);
+    _$settingsPanelStoryStatus.toggleClass('hidden', !isPublic);
     _$errorContainer.addClass('hidden');
     _$visibilityButton.removeClass('btn-busy');
     _$updatePublicButton.removeClass('btn-busy');

@@ -189,22 +189,17 @@
     <a name="comments" tabindex="-1"></a>
     <h2>Post a Comment</h2>
     <%= form_tag(post_comment_dataset_path(@view)) do -%>
-    <%= hidden_field_tag('redirect_to', '/alt#comments') %>
-      <% field_set_tag do %>
-        <%= label_tag('comment[viewRating]', 'My Rating') %>
-        <%= select_tag('comment[viewRating]',
+      <%= hidden_field_tag('redirect_to', '/alt#comments') %>
+
+      <%= label_tag('comment[viewRating]', 'My Rating') %>
+      <%= select_tag('comment[viewRating]',
         options_for_select([['No Rating', 0], ['5', 5], ['4', 4], ['3', 3], ['2', 2], ['1', 1]])) %>
-      <% end %>
 
-      <% field_set_tag do %>
-        <%= label_tag('comment[title]', 'Title') %>
-        <%= text_field_tag('comment[title]') %>
-      <% end %>
+      <%= label_tag('comment[title]', 'Title') %>
+      <%= text_field_tag('comment[title]') %>
 
-      <% field_set_tag do %>
-        <%= label_tag('comment[body]', 'Body') %>
-        <%= text_area_tag('comment[body]') %>
-      <% end %>
+      <%= label_tag('comment[body]', 'Body') %>
+      <%= text_area_tag('comment[body]') %>
 
       <%= submit_tag('Submit this comment') %>
     <%- end -%>

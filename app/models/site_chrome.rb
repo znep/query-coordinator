@@ -64,6 +64,7 @@ class SiteChrome
 
   def self.flush_cache
     Rails.cache.delete(cache_key) unless Rails.env.test?
+    RequestStore[:frontend_site_chrome] = nil
   end
 
   def attributes
@@ -185,15 +186,38 @@ class SiteChrome
   #######################
   # The Calls to Cthorehu
 
+  def self.core_query_options
+    {
+      :query => { :type => core_configuration_type, :defaultOnly => true },
+      :headers => default_request_headers
+    }
+  end
+
+  # Site Chrome config as it currently exists in Core
+  def self.site_chrome_config
+    res = get(core_configurations_path, core_query_options) rescue OpenStruct.new(:body => '[]')
+    JSON.parse(res.body.to_s).to_a.detect { |obj| obj['default'] }
+  end
+
+  def self.site_chrome_config_exists?
+    site_chrome_config.present?
+  end
+
+  def self.site_chrome_property_exists?(property_name)
+    return false unless site_chrome_config_exists?
+    site_chrome_config['properties'].to_a.
+      detect { |config| config['name'] == property_name }.present?
+  end
+
   # Find existing site_chrome DomainConfig from the Site Chrome gem, and instantiate a new
   # SiteChrome instance from it.
   def self.find
-    new SocrataSiteChrome::DomainConfig.new(CurrentDomain.cname).config
+    RequestStore[:frontend_site_chrome] ||= new SocrataSiteChrome::DomainConfig.new(CurrentDomain.cname).config
   end
 
   def create_or_update_property(property_name, property_value)
     SiteChrome.flush_cache
-    if property(property_name)
+    if SiteChrome.site_chrome_property_exists?(property_name)
       update_property(property_name, property_value)
     else
       create_property(property_name, property_value)

@@ -18,10 +18,9 @@ class SiteChromeController < ApplicationController
   end
 
   def update
-    unless SiteChrome.find
+    @site_chrome = SiteChrome.site_chrome_config_exists? ?
+      SiteChrome.find :
       SiteChrome.create_site_chrome_config(forwardable_session_cookies)
-      @site_chrome = SiteChrome.find
-    end
 
     @site_chrome.request_id = request_id
     @site_chrome.cookies = forwardable_session_cookies

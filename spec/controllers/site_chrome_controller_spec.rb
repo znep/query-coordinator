@@ -24,8 +24,8 @@ describe SiteChromeController do
     {
       'logged_in' => 'true',
       '_socrata_session_id' => 'BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJWJkY2M1NDRmYWQ3ZGVhMmZjOTMzYjUzOWQxM2U5NzY5BjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjFjMC9KeHVKQVNTZTMxK1FGcGFoYkkvS1NNZVluNk1WNEFMS3oyRzZmQWZ3PQY7AEZJIglpbml0BjsAVFRJIg5yZXR1cm5fdG8GOwBGMA%3D%3D--03ede085a952536e6866b1c67ffe12c227f988ea',
-      'socrata-csrf-token' => 'wSzSpHB5gEEc6BE8UvBJsLBFg8ZAdr0r0fs32hg%2B3B6yYxtikjnJZqs%2F9Tn3WBKTQteyIGeeeFPRSYQCdqHd4g%3D%3D',
-      '_core_session_id' => 'dHVnZy1pa2NlIDE0NzUxMzM1MTIgYjg3NzJhYWRjZDMxIDc5YTMzM2E5MWQ0NzBmNTcwZDA5YWMwZmRhN2EyOTM0YzE5NzNjNGE%3D'
+      'socrata-csrf-token' => '5AP5NG4m2QgzdXAQekB39%2BPemfrvFqydvV6PmtUHhoOXTDDyjGaQL4SilBXf6CzUEUyoHMj%2BaeW97DxCu5iHfw%3D%3D',
+      '_core_session_id' => 'dHVnZy1pa2NlIDE0NzU3MTE5NjIgMmRhODQxZDYyYzE3IGIwMDBiYjcxMGY3NTYwZmFlZDEyMmRlNjdiZTNhOGM3MzE1NDU4Nzk%3D'
     }
   end
 

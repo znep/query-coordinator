@@ -1,82 +1,78 @@
 ---
 http_interactions:
 - request:
-    method: get
-    uri: https://localhost/api/configurations.json?defaultOnly=true&type=site_chrome
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Server:
-      - nginx/1.8.1
-      Date:
-      - Thu, 29 Sep 2016 01:45:18 GMT
-      Content-Type:
-      - application/json; charset=utf-8
-      Transfer-Encoding:
-      - chunked
-      Connection:
-      - keep-alive
-      X-Socrata-Requestid:
-      - evqb0c4mq9sn8wfk1mragc1fr
-      Access-Control-Allow-Origin:
-      - "*"
+    method: post
+    uri: http://localhost:8080/configurations/160/properties
     body:
       encoding: UTF-8
-      string: |
-        [ {
-          "id" : 135,
-          "name" : "Site Chrome",
-          "default" : true,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1475113518,
-          "properties" : [ {
-            "name" : "youMightNeedToChangeThisIfItAlreadyExists",
-            "value" : {
-              "some key" : "some value",
-              "some other key" : "some other value"
-            }
-          } ]
-        } ]
-    http_version: 
-  recorded_at: Thu, 29 Sep 2016 01:45:18 GMT
-- request:
-    method: put
-    uri: http://localhost:8080/configurations/135/properties?method=update
-    body:
-      encoding: UTF-8
-      string: '{"name":"youMightNeedToChangeThisIfItAlreadyExists","value":{"some
-        other key":"a new value here","a new key":"a new value"}}'
+      string: '{"name":"newProperty2016-10-04 16:19:54 -0700","value":{"some key":"some
+        value","some other key":"some other value"}}'
     headers:
       Content-Type:
       - application/json
       X-Socrata-Host:
       - localhost
       Cookie:
-      - logged_in=true;_socrata_session_id=BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJWJkY2M1NDRmYWQ3ZGVhMmZjOTMzYjUzOWQxM2U5NzY5BjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjFjMC9KeHVKQVNTZTMxK1FGcGFoYkkvS1NNZVluNk1WNEFMS3oyRzZmQWZ3PQY7AEZJIglpbml0BjsAVFRJIg5yZXR1cm5fdG8GOwBGMA%3D%3D--03ede085a952536e6866b1c67ffe12c227f988ea;socrata-csrf-token=wSzSpHB5gEEc6BE8UvBJsLBFg8ZAdr0r0fs32hg%2B3B6yYxtikjnJZqs%2F9Tn3WBKTQteyIGeeeFPRSYQCdqHd4g%3D%3D;_core_session_id=dHVnZy1pa2NlIDE0NzUxMzM1MTIgYjg3NzJhYWRjZDMxIDc5YTMzM2E5MWQ0NzBmNTcwZDA5YWMwZmRhN2EyOTM0YzE5NzNjNGE%3D
+      - logged_in=true;_socrata_session_id=BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJWYyNWQxZjg4OTE1NDMzYjQ5OWQwOThlMzU0MGY0NGM4BjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjFQK0s4VUwyQ0pLWGwxTGJ4N1pjWnJQa1JDU05LZk1aVXNwcm9ZdkZaYXR3PQY7AEZJIg5yZXR1cm5fdG8GOwBGMEkiCWluaXQGOwBUVA%3D%3D--699b5f9b224d3e5048e3fc67f21bbe5360c64bad;socrata-csrf-token=54gROK00FX2R282cbnkZH%2FnxXDNOx885dPhHlZbf%2FT7Yaq1oELYx2HQPe22D7gCzAOBVEAS7CW3GYq%2F3Z4aX4g%3D%3D;_core_session_id=dHVnZy1pa2NlIDE0NzU2NDE1NzMgZDQzOGJkNjNhZTc2IDc3NWVmMDc4MGM0NmE2NjZmZDU4ZWUzNzIyMTVjODA4MmYzYTM1Mzk%3D
+  response:
+    status:
+      code: 400
+      message: Bad Request
+    headers:
+      X-Socrata-Requestid:
+      - 7hgkm97lgo88rbiwnvbxtqjur
+      Access-Control-Allow-Origin:
+      - "*"
+      Set-Cookie:
+      - _core_session_id=dHVnZy1pa2NlIDE0NzU2NDQ3OTQgZDQzOGJkNjNhZTc2IGU1MjFkZmRhZjdmZDQwZDc4OTFjZGJjMGM2ZWVlYTZmMzA1MzlkYmQ;Path=/
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      X-Error-Code:
+      - invalid_request
+      X-Error-Message:
+      - 'Validation failed for property newProperty2016-10-04 16:19:54 -0700: Attempting
+        to create a property with a duplicate name'
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(7.5.1.v20110908)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "code" : "invalid_request",
+          "error" : true,
+          "message" : "Validation failed for property newProperty2016-10-04 16:19:54 -0700: Attempting to create a property with a duplicate name"
+        }
+    http_version: 
+  recorded_at: Tue, 04 Oct 2016 23:19:54 GMT
+- request:
+    method: put
+    uri: http://localhost:8080/configurations/160/properties?method=update
+    body:
+      encoding: UTF-8
+      string: '{"name":"newProperty2016-10-04 16:19:54 -0700","value":{"some other
+        key":"a new value here","a new key":"a new value"}}'
+    headers:
+      Content-Type:
+      - application/json
+      X-Socrata-Host:
+      - localhost
+      Cookie:
+      - logged_in=true;_socrata_session_id=BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJWYyNWQxZjg4OTE1NDMzYjQ5OWQwOThlMzU0MGY0NGM4BjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjFQK0s4VUwyQ0pLWGwxTGJ4N1pjWnJQa1JDU05LZk1aVXNwcm9ZdkZaYXR3PQY7AEZJIg5yZXR1cm5fdG8GOwBGMEkiCWluaXQGOwBUVA%3D%3D--699b5f9b224d3e5048e3fc67f21bbe5360c64bad;socrata-csrf-token=54gROK00FX2R282cbnkZH%2FnxXDNOx885dPhHlZbf%2FT7Yaq1oELYx2HQPe22D7gCzAOBVEAS7CW3GYq%2F3Z4aX4g%3D%3D;_core_session_id=dHVnZy1pa2NlIDE0NzU2NDE1NzMgZDQzOGJkNjNhZTc2IDc3NWVmMDc4MGM0NmE2NjZmZDU4ZWUzNzIyMTVjODA4MmYzYTM1Mzk%3D
   response:
     status:
       code: 200
       message: OK
     headers:
       X-Socrata-Requestid:
-      - 5ibivvjrbm9flkh3y4t0e9yu8
+      - 4mnk58ichtpzg6rdjytw52928
       Access-Control-Allow-Origin:
       - "*"
       Set-Cookie:
-      - _core_session_id=dHVnZy1pa2NlIDE0NzUxMzUxMTggYjg3NzJhYWRjZDMxIDZlMTE0ZWFiMjBkN2RmM2VhNmRmOTgyNjIxYmE3Njc2YmI4ZGY4NjM;Path=/
+      - _core_session_id=dHVnZy1pa2NlIDE0NzU2NDQ3OTQgZDQzOGJkNjNhZTc2IGU1MjFkZmRhZjdmZDQwZDc4OTFjZGJjMGM2ZWVlYTZmMzA1MzlkYmQ;Path=/
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Content-Type:
@@ -89,17 +85,17 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "name" : "youMightNeedToChangeThisIfItAlreadyExists",
+          "name" : "newProperty2016-10-04 16:19:54 -0700",
           "value" : {
             "a new key" : "a new value",
             "some other key" : "a new value here"
           }
         }
     http_version: 
-  recorded_at: Thu, 29 Sep 2016 01:45:18 GMT
+  recorded_at: Tue, 04 Oct 2016 23:19:54 GMT
 - request:
     method: get
-    uri: http://localhost:8080/configurations/135/properties
+    uri: http://localhost:8080/configurations/160/properties
     body:
       encoding: US-ASCII
       string: ''
@@ -110,7 +106,7 @@ http_interactions:
       message: OK
     headers:
       X-Socrata-Requestid:
-      - 6krpdyatnnqweowvqqdhxzc0j
+      - 6ev9szuihf3r2nju7wsuaw9r9
       Access-Control-Allow-Origin:
       - "*"
       Content-Type:
@@ -123,39 +119,39 @@ http_interactions:
       encoding: UTF-8
       string: |
         [ {
-          "name" : "youMightNeedToChangeThisIfItAlreadyExists",
+          "name" : "newProperty2016-10-04 16:19:54 -0700",
           "value" : {
             "a new key" : "a new value",
             "some other key" : "a new value here"
           }
         } ]
     http_version: 
-  recorded_at: Thu, 29 Sep 2016 01:45:18 GMT
+  recorded_at: Tue, 04 Oct 2016 23:19:54 GMT
 - request:
     method: put
-    uri: http://localhost:8080/configurations/135/properties?method=update
+    uri: http://localhost:8080/configurations/160/properties?method=update
     body:
       encoding: UTF-8
-      string: '{"name":"youMightNeedToChangeThisIfItAlreadyExists","value":{"some
-        key":"some value","some other key":"some other value"}}'
+      string: '{"name":"newProperty2016-10-04 16:19:54 -0700","value":{"some key":"some
+        value","some other key":"some other value"}}'
     headers:
       Content-Type:
       - application/json
       X-Socrata-Host:
       - localhost
       Cookie:
-      - logged_in=true;_socrata_session_id=BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJWJkY2M1NDRmYWQ3ZGVhMmZjOTMzYjUzOWQxM2U5NzY5BjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjFjMC9KeHVKQVNTZTMxK1FGcGFoYkkvS1NNZVluNk1WNEFMS3oyRzZmQWZ3PQY7AEZJIglpbml0BjsAVFRJIg5yZXR1cm5fdG8GOwBGMA%3D%3D--03ede085a952536e6866b1c67ffe12c227f988ea;socrata-csrf-token=wSzSpHB5gEEc6BE8UvBJsLBFg8ZAdr0r0fs32hg%2B3B6yYxtikjnJZqs%2F9Tn3WBKTQteyIGeeeFPRSYQCdqHd4g%3D%3D;_core_session_id=dHVnZy1pa2NlIDE0NzUxMzM1MTIgYjg3NzJhYWRjZDMxIDc5YTMzM2E5MWQ0NzBmNTcwZDA5YWMwZmRhN2EyOTM0YzE5NzNjNGE%3D
+      - logged_in=true;_socrata_session_id=BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJWYyNWQxZjg4OTE1NDMzYjQ5OWQwOThlMzU0MGY0NGM4BjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjFQK0s4VUwyQ0pLWGwxTGJ4N1pjWnJQa1JDU05LZk1aVXNwcm9ZdkZaYXR3PQY7AEZJIg5yZXR1cm5fdG8GOwBGMEkiCWluaXQGOwBUVA%3D%3D--699b5f9b224d3e5048e3fc67f21bbe5360c64bad;socrata-csrf-token=54gROK00FX2R282cbnkZH%2FnxXDNOx885dPhHlZbf%2FT7Yaq1oELYx2HQPe22D7gCzAOBVEAS7CW3GYq%2F3Z4aX4g%3D%3D;_core_session_id=dHVnZy1pa2NlIDE0NzU2NDE1NzMgZDQzOGJkNjNhZTc2IDc3NWVmMDc4MGM0NmE2NjZmZDU4ZWUzNzIyMTVjODA4MmYzYTM1Mzk%3D
   response:
     status:
       code: 200
       message: OK
     headers:
       X-Socrata-Requestid:
-      - 4uqvi8ayzlawyxm88khwyci7s
+      - 1qnpy7422k70m42udpzv72cpn
       Access-Control-Allow-Origin:
       - "*"
       Set-Cookie:
-      - _core_session_id=dHVnZy1pa2NlIDE0NzUxMzUxMTggYjg3NzJhYWRjZDMxIDZlMTE0ZWFiMjBkN2RmM2VhNmRmOTgyNjIxYmE3Njc2YmI4ZGY4NjM;Path=/
+      - _core_session_id=dHVnZy1pa2NlIDE0NzU2NDQ3OTQgZDQzOGJkNjNhZTc2IGU1MjFkZmRhZjdmZDQwZDc4OTFjZGJjMGM2ZWVlYTZmMzA1MzlkYmQ;Path=/
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Content-Type:
@@ -168,17 +164,17 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "name" : "youMightNeedToChangeThisIfItAlreadyExists",
+          "name" : "newProperty2016-10-04 16:19:54 -0700",
           "value" : {
             "some key" : "some value",
             "some other key" : "some other value"
           }
         }
     http_version: 
-  recorded_at: Thu, 29 Sep 2016 01:45:18 GMT
+  recorded_at: Tue, 04 Oct 2016 23:19:54 GMT
 - request:
     method: get
-    uri: http://localhost:8080/configurations/135/properties
+    uri: http://localhost:8080/configurations/160/properties
     body:
       encoding: US-ASCII
       string: ''
@@ -189,7 +185,7 @@ http_interactions:
       message: OK
     headers:
       X-Socrata-Requestid:
-      - 4fyttzbuujf2et7amig8owurg
+      - eh80ye5fh7rph3t8boj5fd9wu
       Access-Control-Allow-Origin:
       - "*"
       Content-Type:
@@ -202,12 +198,59 @@ http_interactions:
       encoding: UTF-8
       string: |
         [ {
-          "name" : "youMightNeedToChangeThisIfItAlreadyExists",
+          "name" : "newProperty2016-10-04 16:19:54 -0700",
           "value" : {
             "some key" : "some value",
             "some other key" : "some other value"
           }
         } ]
     http_version: 
-  recorded_at: Thu, 29 Sep 2016 01:45:18 GMT
+  recorded_at: Tue, 04 Oct 2016 23:19:55 GMT
+- request:
+    method: post
+    uri: http://localhost:8080/configurations/135/properties
+    body:
+      encoding: UTF-8
+      string: '{"name":"newProperty2016-10-04 16:20:53 -0700","value":{"some key":"some
+        value","some other key":"some other value"}}'
+    headers:
+      Content-Type:
+      - application/json
+      X-Socrata-Host:
+      - localhost
+      Cookie:
+      - logged_in=true;_socrata_session_id=BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJWYyNWQxZjg4OTE1NDMzYjQ5OWQwOThlMzU0MGY0NGM4BjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjFQK0s4VUwyQ0pLWGwxTGJ4N1pjWnJQa1JDU05LZk1aVXNwcm9ZdkZaYXR3PQY7AEZJIg5yZXR1cm5fdG8GOwBGMEkiCWluaXQGOwBUVA%3D%3D--699b5f9b224d3e5048e3fc67f21bbe5360c64bad;socrata-csrf-token=54gROK00FX2R282cbnkZH%2FnxXDNOx885dPhHlZbf%2FT7Yaq1oELYx2HQPe22D7gCzAOBVEAS7CW3GYq%2F3Z4aX4g%3D%3D;_core_session_id=dHVnZy1pa2NlIDE0NzU2NDE1NzMgZDQzOGJkNjNhZTc2IDc3NWVmMDc4MGM0NmE2NjZmZDU4ZWUzNzIyMTVjODA4MmYzYTM1Mzk%3D
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Socrata-Requestid:
+      - 2ys6w0nx18xq19kwo58qe1nct
+      Access-Control-Allow-Origin:
+      - "*"
+      Set-Cookie:
+      - _core_session_id=dHVnZy1pa2NlIDE0NzU2NDQ4NTMgZDQzOGJkNjNhZTc2IGUyNzYzYjllODAyMjc3MzhkNDlmMWRhZWZiYmNkMjZlMzEzOWNhOGM;Path=/
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      X-Error-Code:
+      - not_found
+      X-Error-Message:
+      - No such configuration
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(7.5.1.v20110908)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "code" : "not_found",
+          "error" : true,
+          "message" : "No such configuration"
+        }
+    http_version: 
+  recorded_at: Tue, 04 Oct 2016 23:20:53 GMT
 recorded_with: VCR 3.0.3

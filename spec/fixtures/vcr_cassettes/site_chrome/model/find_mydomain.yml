@@ -21,7 +21,7 @@ http_interactions:
       Server:
       - nginx/1.8.1
       Date:
-      - Thu, 29 Sep 2016 01:45:18 GMT
+      - Tue, 04 Oct 2016 23:19:54 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -29,20 +29,20 @@ http_interactions:
       Connection:
       - keep-alive
       X-Socrata-Requestid:
-      - a5cydcod4os3m3zk2su44v4le
+      - 5eqe65higlxgqfjcb7u84vrfb
       Access-Control-Allow-Origin:
       - "*"
     body:
       encoding: UTF-8
       string: |
         [ {
-          "id" : 135,
+          "id" : 160,
           "name" : "Site Chrome",
           "default" : true,
           "domainCName" : "localhost",
           "type" : "site_chrome",
-          "updatedAt" : 1475113518
+          "updatedAt" : 1475623194
         } ]
     http_version: 
-  recorded_at: Thu, 29 Sep 2016 01:45:18 GMT
+  recorded_at: Tue, 04 Oct 2016 23:19:54 GMT
 recorded_with: VCR 3.0.3

@@ -2,59 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://localhost/api/configurations.json?defaultOnly=true&type=site_chrome
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Server:
-      - nginx/1.8.1
-      Date:
-      - Thu, 29 Sep 2016 01:45:18 GMT
-      Content-Type:
-      - application/json; charset=utf-8
-      Transfer-Encoding:
-      - chunked
-      Connection:
-      - keep-alive
-      X-Socrata-Requestid:
-      - 6nmqwgubpy05g1yue97b9yuk8
-      Access-Control-Allow-Origin:
-      - "*"
-    body:
-      encoding: UTF-8
-      string: |
-        [ {
-          "id" : 135,
-          "name" : "Site Chrome",
-          "default" : true,
-          "domainCName" : "localhost",
-          "type" : "site_chrome",
-          "updatedAt" : 1475113518,
-          "properties" : [ {
-            "name" : "youMightNeedToChangeThisIfItAlreadyExists",
-            "value" : {
-              "some key" : "some value",
-              "some other key" : "some other value"
-            }
-          } ]
-        } ]
-    http_version: 
-  recorded_at: Thu, 29 Sep 2016 01:45:18 GMT
-- request:
-    method: get
-    uri: http://localhost:8080/configurations/135/properties
+    uri: http://localhost:8080/configurations/160/properties
     body:
       encoding: US-ASCII
       string: ''
@@ -65,7 +13,7 @@ http_interactions:
       message: OK
     headers:
       X-Socrata-Requestid:
-      - 955ar9ugt4ty0mgrlrcvwe0rl
+      - 46s59q3ui2aynst1q8kzn3vsq
       Access-Control-Allow-Origin:
       - "*"
       Content-Type:
@@ -78,12 +26,48 @@ http_interactions:
       encoding: UTF-8
       string: |
         [ {
-          "name" : "youMightNeedToChangeThisIfItAlreadyExists",
+          "name" : "newProperty2016-10-04 16:19:54 -0700",
           "value" : {
             "some key" : "some value",
             "some other key" : "some other value"
           }
         } ]
     http_version: 
-  recorded_at: Thu, 29 Sep 2016 01:45:18 GMT
+  recorded_at: Tue, 04 Oct 2016 23:19:54 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/configurations/135/properties
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Socrata-Requestid:
+      - 2hrff8sir7uuir6jow9vbr5ri
+      Access-Control-Allow-Origin:
+      - "*"
+      X-Error-Code:
+      - not_found
+      X-Error-Message:
+      - No such configuration
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(7.5.1.v20110908)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "code" : "not_found",
+          "error" : true,
+          "message" : "No such configuration"
+        }
+    http_version: 
+  recorded_at: Tue, 04 Oct 2016 23:20:53 GMT
 recorded_with: VCR 3.0.3

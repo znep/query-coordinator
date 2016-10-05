@@ -663,7 +663,7 @@ function getHumanAddress(components: LocationColumns.LocationSource) {
   }
 
   const componentStrings = _.compact([
-    components.street ? `"street":${sourceColumnExpr(components.street)}` : null,
+    components.street ? `"address":${sourceColumnExpr(components.street)}` : null,
     columnOrTextExpr('city'),
     columnOrTextExpr('state'),
     columnOrTextExpr('zip')

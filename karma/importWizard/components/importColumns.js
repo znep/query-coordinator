@@ -263,6 +263,179 @@ describe('ImportColumns component', () => {
       expect(result.columns).to.deep.equal([]);
     });
 
+    it('generates the correct initial translation, given location columns', () => {
+      const sourceColumns = ED.imports2ScanResponse.summary.columns.slice(0, 6);
+
+      const summary = {
+        ...ED.imports2ScanResponse.summary,
+        columns: sourceColumns
+      };
+
+      const emptyLocationComponents = {
+        "isMultiple": true,
+        "singleSource": null,
+        "street": null,
+        "city": {
+          "column": null,
+          "text": "",
+          "isColumn": true
+        },
+        "state": {
+          "column": null,
+          "text": "",
+          "isColumn": true
+        },
+        "zip": {
+          "column": null,
+          "text": "",
+          "isColumn": true
+        },
+        "latitude": null,
+        "longitude": null
+      };
+
+      expect(IC.initialTranslation(summary)).to.deep.equal([
+        {
+          "columnSource": {
+            "type": "SingleColumn",
+            "sourceColumn": sourceColumns[0],
+            "components": [],
+            "locationComponents": emptyLocationComponents
+          },
+          "name": "ID",
+          "chosenType": "number",
+          "transforms": [],
+          "id": 0
+        },
+        {
+          "columnSource": {
+            "type": "SingleColumn",
+            "sourceColumn": sourceColumns[1],
+            "components": [],
+            "locationComponents": emptyLocationComponents
+          },
+          "name": "Case Number",
+          "chosenType": "text",
+          "transforms": [],
+          "id": 1
+        },
+        {
+          "columnSource": {
+            "type": "SingleColumn",
+            "sourceColumn": sourceColumns[2],
+            "components": [],
+            "locationComponents": emptyLocationComponents
+          },
+          "name": "Date",
+          "chosenType": "calendar_date",
+          "transforms": [],
+          "id": 2
+        },
+        {
+          "columnSource": {
+            "type": "SingleColumn",
+            "sourceColumn": sourceColumns[3],
+            "components": [],
+            "locationComponents": emptyLocationComponents
+          },
+          "name": "Block",
+          "chosenType": "text",
+          "transforms": [],
+          "id": 3
+        },
+        {
+          "columnSource": {
+            "type": "SingleColumn",
+            "sourceColumn": sourceColumns[4],
+            "components": [],
+            "locationComponents": emptyLocationComponents
+          },
+          "name": "IUCR",
+          "chosenType": "text",
+          "transforms": [],
+          "id": 4
+        },
+        {
+          "chosenType": "text",
+          "columnSource": {
+            "components": [],
+            "locationComponents": emptyLocationComponents,
+            "sourceColumn": sourceColumns[5],
+            "type": "SingleColumn"
+          },
+          "id": 5,
+          "name": "Primary Type",
+          "transforms": []
+        },
+        {
+          "columnSource": {
+            "type": "LocationColumn",
+            "locationComponents": {
+              "isMultiple": true,
+              "singleSource": null,
+              "street": null,
+              "city": {
+                "column": null,
+                "text": "",
+                "isColumn": true
+              },
+              "state": {
+                "column": null,
+                "text": "",
+                "isColumn": true
+              },
+              "zip": {
+                "column": null,
+                "text": "",
+                "isColumn": true
+              },
+              "latitude": sourceColumns[0],
+              "longitude": sourceColumns[1]
+            },
+            "sourceColumn": sourceColumns[0],
+            "components": []
+          },
+          "id": 6,
+          "name": "Location 1",
+          "chosenType": "location",
+          "transforms": []
+        },
+        {
+          "columnSource": {
+            "type": "LocationColumn",
+            "locationComponents": {
+              "isMultiple": true,
+              "singleSource": null,
+              "street": sourceColumns[2],
+              "city": {
+                "column": sourceColumns[3],
+                "text": "",
+                "isColumn": true
+              },
+              "state": {
+                "column": sourceColumns[4],
+                "text": "",
+                "isColumn": true
+              },
+              "zip": {
+                "column": sourceColumns[5],
+                "text": "",
+                "isColumn": true
+              },
+              "latitude": sourceColumns[0],
+              "longitude": sourceColumns[1]
+            },
+            "sourceColumn": sourceColumns[0],
+            "components": []
+          },
+          "id": 7,
+          "name": "Location 2",
+          "chosenType": "location",
+          "transforms": []
+        }
+      ]);
+    });
+
   });
 
   describe('thunks', () => {

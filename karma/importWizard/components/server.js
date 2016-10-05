@@ -371,7 +371,7 @@ describe('locationColumn transforms', () => {
     };
 
     const result = getLocationColumnSource(resultColumn);
-    expect(result).to.equal('{"latitude":col2,"longitude":col3,"human_address":{"street":col2,"city":col3,"state":col4,"zip":"zip"}}');
+    expect(result).to.equal('{"latitude":col2,"longitude":col3,"human_address":{"address":col2,"city":col3,"state":col4,"zip":"zip"}}');
   });
 
   it('correctly generates human_addresses without latitude or longitude', () => {
@@ -400,6 +400,6 @@ describe('locationColumn transforms', () => {
     };
 
     const result = getLocationColumnSource(resultColumn);
-    expect(result).to.equal('{"human_address":{"street":col2,"city":col3,"state":col4,"zip":"zip"}}');
+    expect(result).to.equal('{"human_address":{"address":col2,"city":col3,"state":col4,"zip":"zip"}}');
   });
 });

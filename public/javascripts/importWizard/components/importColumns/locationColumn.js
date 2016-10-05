@@ -94,9 +94,9 @@ export type ColumnOrText = {
   text: String
 }
 
-export function defaultColumnOrText() {
+export function defaultColumnOrText(column: ?SharedTypes.SourceColumn = null) {
   return {
-    column: null,
+    column: column,
     text: '',
     isColumn: true
   };

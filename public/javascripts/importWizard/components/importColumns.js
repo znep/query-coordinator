@@ -83,12 +83,12 @@ export function initialTranslation(summary: ST.Summary): Translation {
         locationComponents: {
           isMultiple: true,
           singleSource: null,
-          street: null,
-          city: LC.defaultColumnOrText(),
-          state: LC.defaultColumnOrText(),
-          zip: LC.defaultColumnOrText(),
-          latitude: summary.columns[column.latitude],
-          longitude: summary.columns[column.longitude]
+          street: _.defaultTo(summary.columns[column.address], null),
+          city: LC.defaultColumnOrText(summary.columns[column.city]),
+          state: LC.defaultColumnOrText(summary.columns[column.state]),
+          zip: LC.defaultColumnOrText(summary.columns[column.zip]),
+          latitude: _.defaultTo(summary.columns[column.latitude], null),
+          longitude: _.defaultTo(summary.columns[column.longitude], null)
         },
         sourceColumn: summary.columns[0],
         components: []
@@ -100,8 +100,7 @@ export function initialTranslation(summary: ST.Summary): Translation {
     }
   ));
 
-  columns.push.apply(columns, locations);
-  return columns;
+  return _.concat(columns, locations);
 }
 
 // actions

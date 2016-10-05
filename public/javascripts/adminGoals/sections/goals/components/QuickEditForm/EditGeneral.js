@@ -3,6 +3,7 @@ import * as React from 'react';
 import * as ReactRedux from 'react-redux';
 import * as State from '../../state';
 import * as Components from '../../../../components';
+import goalStatusTranslation from '../../../../helpers/goalStatus';
 
 class EditGeneral extends React.Component {
   constructor(props) {
@@ -42,7 +43,7 @@ class EditGeneral extends React.Component {
           <label className="inline-label">
             { translations.getIn(['admin', 'quick_edit', 'status'])}
           </label>
-          { translations.getIn(['measure', 'progress', goal.get('status')]) || ' — '}
+          { goalStatusTranslation(translations, ['measure', 'progress', goal.get('status')]) || ' — '}
         </div>
 
         <div className="form-line">

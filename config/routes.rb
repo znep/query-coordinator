@@ -27,6 +27,7 @@ Rails.application.routes.draw do
 
       get 'stories/:uid/drafts/latest' => 'drafts#latest'
       post 'stories/:uid/drafts' => 'drafts#create'
+      get 'stories/:uid/published/latest' => 'published#latest'
       post 'stories/:uid/published' => 'published#create'
       put 'stories/:uid/permissions' => 'permissions#update'
 
@@ -34,6 +35,14 @@ Rails.application.routes.draw do
 
       get 'getty-images/search' => 'getty_images#search'
       get 'getty-images/:id' => 'getty_images#show', as: 'getty_image'
+    end
+
+    namespace :stat do
+      namespace :v1, defaults: { format: 'json' } do
+        namespace :goals do
+          get ':uid/narrative/published/latest' => 'published#latest'
+        end
+      end
     end
   end
 

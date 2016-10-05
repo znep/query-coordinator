@@ -1,7 +1,7 @@
 require 'retries'
 require 'addressable/uri'
 require 'request_store'
-require 'core_server_response'
+require 'http_response'
 
 class CoreServer
 
@@ -347,7 +347,7 @@ class CoreServer
   end
 
   def self.core_server_request_with_retries(request_options)
-    core_server_response = CoreServerResponse.new
+    core_server_response = HttpResponse.new
 
     begin
       with_retries(retry_options) do
@@ -412,7 +412,7 @@ class CoreServer
       )
     end
 
-    response = CoreServerResponse.new(response)
+    response = HttpResponse.new(response)
     if options[:verb] == :get && response.ok?
       # We cache GET requests to the same core resources per storyteller request
       ::RequestStore.store[request_uid(core_server_headers, options)] = response

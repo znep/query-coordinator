@@ -11,10 +11,10 @@
     <div class="links">
       <ul class="links-col">
         <% get_site_chrome.footer[:links].to_a.each do |link| %>
-          <% if valid_link_item?(link) %>
+          <% link_text = localized("footer.links.#{link[:key]}", get_site_chrome.locales) %>
+          <% if valid_link_item?(link, link_text) %>
             <li>
-              <%= link_to(localized("footer.links.#{link[:key]}", get_site_chrome.locales),
-                massage_url(link[:url]), :class => 'footer-link') %>
+              <%= link_to(link_text, massage_url(link[:url]), :class => 'footer-link') %>
             </li>
           <% end %>
         <% end %>
@@ -37,6 +37,10 @@
           </a>
         </span>
       <%- end -%>
+
+      <% if show_language_switcher? %>
+        <%= render 'site_chrome/language_switcher', :orientation => 'top' %>
+      <% end %>
     </div>
   </div>
 </footer>

@@ -323,7 +323,7 @@ describe SocrataSiteChrome::ApplicationHelper do
     it 'returns a div with the classname "site-chrome-nav-links"' do
       site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
       ::RequestStore.store[:site_chrome] = { :published => site_chrome }
-      result = Nokogiri::HTML.parse(helper.navbar_links_div)
+      result = Nokogiri::HTML.parse(helper.navbar_links_div({}))
       expect(result.search('div.site-chrome-nav-links').length).to eq(1)
     end
 
@@ -332,8 +332,9 @@ describe SocrataSiteChrome::ApplicationHelper do
       site_chrome.content['header']['links'].push(
         { :key => 'menu_0', :links => [{ :key => 'menu_0_link_0', :url => 'http://opendata.gov' }] }
       )
+      site_chrome.content['locales']['en']['header']['links']['menu_0_link_0'] = 'blah'
       ::RequestStore.store[:site_chrome] = { :published => site_chrome }
-      result = Nokogiri::HTML.parse(helper.navbar_links_div)
+      result = Nokogiri::HTML.parse(helper.navbar_links_div(:use_dropdown => true))
       expect(result.search('div.site-chrome-nav-menu').length).to eq(1)
       expect(result.search('div.site-chrome-nav-menu div.dropdown').length).to eq(1)
       expect(result.search('a.site-chrome-nav-child-link').length).to eq(1)
@@ -348,7 +349,7 @@ describe SocrataSiteChrome::ApplicationHelper do
         { :key => 'link_2', :url => 'http://c.gov' }
       ]
       ::RequestStore.store[:site_chrome] = { :published => site_chrome }
-      result = Nokogiri::HTML.parse(helper.navbar_links_div)
+      result = Nokogiri::HTML.parse(helper.navbar_links_div({}))
       expect(result.search('.site-chrome-nav-link').length).to eq(3)
     end
 
@@ -357,8 +358,9 @@ describe SocrataSiteChrome::ApplicationHelper do
       site_chrome.content['header']['links'].push(
         { :key => 'menu_0', :links => [{ :key => 'menu_0_link_0', :url => 'http://opendata.gov' }] }
       )
+      site_chrome.content['locales']['en']['header']['links']['menu_0_link_0'] = 'blah'
       ::RequestStore.store[:site_chrome] = { :published => site_chrome }
-      result = Nokogiri::HTML.parse(helper.navbar_links_div(use_dropdown: false))
+      result = Nokogiri::HTML.parse(helper.navbar_links_div(:use_dropdown => false))
       expect(result.search('div.site-chrome-nav-menu div.dropdown').length).to eq(0)
       expect(result.search('.site-chrome-nav-menu').length).to eq(1)
       expect(result.search('.nav-menu-title').length).to eq(1)
@@ -373,7 +375,7 @@ describe SocrataSiteChrome::ApplicationHelper do
         { :key => 'link_1', :url => '/b' },
         { :key => 'link_2', :url => '/c' }
       ]
-      result = Nokogiri::HTML.parse(helper.navbar_child_links_array(links).join(''))
+      result = Nokogiri::HTML.parse(helper.navbar_child_links_array(links, false).join(''))
       nav_links = result.search('a.site-chrome-nav-child-link')
       expect(nav_links.length).to eq(3)
       expect(nav_links.first.get_attribute('href')).to eq('/a')
@@ -416,17 +418,22 @@ describe SocrataSiteChrome::ApplicationHelper do
   describe '#valid_link_item?' do
     it 'is false for links without a key present' do
       link = { 'key': '', 'url': 'http://facebook.com' }
-      expect(helper.valid_link_item?(link)).to eq(false)
+      expect(helper.valid_link_item?(link, 'example link')).to eq(false)
     end
 
     it 'is false for links without a url present' do
       link = { 'key': 'test', 'url': '' }
-      expect(helper.valid_link_item?(link)).to eq(false)
+      expect(helper.valid_link_item?(link, 'example link')).to eq(false)
+    end
+
+    it 'is false for links without link_text present' do
+      link = { 'key': 'link_0', 'url': 'http://google.com' }
+      expect(helper.valid_link_item?(link, nil)).to eq(false)
     end
 
     it 'is true for links with both a key and url present' do
       link = { 'key': 'link_0', 'url': 'http://google.com' }
-      expect(helper.valid_link_item?(link)).to eq(true)
+      expect(helper.valid_link_item?(link, 'example link')).to eq(true)
     end
   end
 
@@ -529,7 +536,34 @@ describe SocrataSiteChrome::ApplicationHelper do
       expect(result).to eq('pretty neat')
     end
 
-    # TODO - tests for different locales
+    it 'returns the spanish strings when the current locale is :es' do
+      locales = {
+        'en' => {
+          'bruce' => {
+            'lee' => {
+              'is' => 'pretty neat'
+            }
+          }
+        },
+        'es' => {
+          'bruce' => {
+            'lee' => {
+              'is' => 'con buena pinta'
+            }
+          }
+        }
+      }
+
+      locale_key = 'bruce.lee.is'
+
+      I18n.locale = :en
+      result_english = helper.localized(locale_key, locales)
+      expect(result_english).to eq('pretty neat')
+
+      I18n.locale = :es
+      result_spanish = helper.localized(locale_key, locales)
+      expect(result_spanish).to eq('con buena pinta')
+    end
   end
 
   describe '#current_template' do

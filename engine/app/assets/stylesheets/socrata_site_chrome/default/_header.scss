@@ -157,13 +157,17 @@ header#site-chrome-header[template="default"] {
             }
           }
 
+          .language-switcher-container {
+            float: right;
+          }
+
           a.sign-in-toggle {
             font-size: 12px;
             margin-left: $text_padding;
           }
           a.profile-link, a.admin-link, a.logout-link {
             padding: 0 $text_padding;
-            line-height: 3rem;
+            line-height: 48px;
             text-decoration: none;
             &.in-header {
               color: $header_fg_color;
@@ -173,9 +177,8 @@ header#site-chrome-header[template="default"] {
             }
           }
 
-          span.divider {
+          div.divider {
             float: right;
-            margin: calc(calc(#{$banner_height} - (#{$divider_height} * 2)) / 2) $text_padding;
           }
         }
 

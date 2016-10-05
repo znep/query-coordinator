@@ -9,17 +9,21 @@
 
           <%= render 'site_chrome/user_actions' %>
 
-          <%= content_tag(:span, nil, :class => 'divider') %>
+          <% if show_language_switcher? %>
+            <%= render 'site_chrome/language_switcher', :orientation => 'bottom' %>
+          <% else %>
+            <%= divider %>
+          <% end %>
 
           <div class="collapsible-search">
             <span class="icon-search collapsible-search-toggle"
               title="<%= t('header.search') %>" onclick="toggleCollapsibleSearch(this)">
             </span>
-            <%= render 'site_chrome/searchbox', path: '/browse', vanishing_search_button: true %>
+            <%= render 'site_chrome/searchbox', path: massage_url('/browse'), vanishing_search_button: true %>
           </div>
 
           <% if valid_social_links(get_site_chrome.general[:social_shares]).present? %>
-            <%= content_tag(:span, nil, :class => 'divider') %>
+            <%= divider %>
           <% end %>
 
           <div class="site-chrome-social-links">
@@ -30,7 +34,7 @@
 
         </div>
 
-        <%= navbar_links_div %>
+        <%= navbar_links_div(:use_dropdown => true) %>
       </nav>
 
       <nav class="mobile">

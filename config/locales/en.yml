@@ -432,7 +432,7 @@ en:
         dataset_subscribe: Subscribe to changes on this view
         delete:
           button: Delete
-          confirm: Are you sure you want to delete %{dataset}?
+          confirm: Are you sure you want to delete %{dataset}? Any views or visualizations built using this dataset will also be deleted permanently.
           title: Delete this item
         expand_section: Click to expand
         less_options: View Less
@@ -493,7 +493,7 @@ en:
           unknown: Unknown
         edit:
           delete:
-            confirm: Are you sure you want to delete "%{dataset}"?
+            confirm: Are you sure you want to delete "%{dataset}"? Any views or visualizations built using this dataset will also be deleted permanently.
             error: There was an error deleting "%{dataset}". Please try again.
             label: Delete
             title: Delete "%{name}"
@@ -2319,6 +2319,8 @@ en:
             button: Restore
             confirm: Are you sure you want to restore the dataset %{dataset}?
             disabled_restore_explanation: Restore is only available for certain types of datasets for a limited amount of time. For more information, please contact support.
+            disabled_restore_type: Restore is only available for datasets, not for views or visualizations.
+            disabled_restore_time: Datasets can only be restored within 5 days of deletion.
           showing_all_so_far: Showing all jobs which have been recorded so far
           showing_most_recent: Showing the most recent %{limit} jobs
           started: Started
@@ -3624,7 +3626,7 @@ en:
           title: Data Lens
         delete:
           confirm_permanent: This will delete the %{view_type} permanently. There is no undo! Are you sure you wish to proceed?
-          confirm_restorable: This deletion is reversible for up to %{number_of_days_restorable} days by an administrator of your domain. Are you sure you wish to proceed?
+          confirm_restorable: This deletion is reversible for up to %{number_of_days_restorable} days by an administrator of your domain. Any views or visualizations built using this dataset will be deleted permanently. Are you sure you wish to proceed?
           delete_button: Delete this %{view_type}
           subtitle: Delete this %{view_type}
           title: Delete

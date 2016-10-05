@@ -113,5 +113,6 @@ $(() => {
   }
 
   $('.restore-dataset').click((event) => confirmDatasetRestore(event.srcElement));
-  $('.button.restore-dataset:disabled').parent().socrataTip({message: $.t('screens.admin.jobs.index_page.restore_deleted_dataset.disabled_restore_explanation')});
+  $('.button.restore-dataset.not-restorable-type:disabled').parent().socrataTip({message: $.t('screens.admin.jobs.index_page.restore_deleted_dataset.disabled_restore_type')});
+  $('.button.restore-dataset.not-restorable-time:disabled').parent().socrataTip({message: $.t('screens.admin.jobs.index_page.restore_deleted_dataset.disabled_restore_time')});
 });

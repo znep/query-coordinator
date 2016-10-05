@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 40.1 (33804) - http://www.bohemiancoding.com/sketch -->
+    <title>checkmark-alt</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="checkmark-alt" fill="#2C2C2C">
+            <path d="M510.5,949.5 C736.936747,949.5 920.5,765.936747 920.5,539.5 C920.5,313.063253 736.936747,129.5 510.5,129.5 C284.063253,129.5 100.5,313.063253 100.5,539.5 C100.5,765.936747 284.063253,949.5 510.5,949.5 Z M718.346339,318.730769 L408.762177,629.575161 L281.286345,501.580411 L226.653846,556.435304 L408.762177,739.284946 L772.978838,373.585662 L718.346339,318.730769 Z" id="Combined-Shape"></path>
+        </g>
+    </g>
+</svg>

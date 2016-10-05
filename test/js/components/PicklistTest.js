@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
-import { Simulate } from 'react-addons-test-utils';
+import ReactDOM from 'react-dom';
+import TestUtils, { Simulate } from 'react-addons-test-utils';
 import Picklist from 'components/Picklist';
 import { UP, DOWN, ESCAPE, ENTER } from 'common/keycodes';
 
@@ -56,6 +57,46 @@ describe('Picklist', () => {
 
         it('renders two selected options', () => {
           expect(element.querySelectorAll('.picklist-option-selected')).to.have.lengthOf(2);
+        });
+      });
+
+      describe('when updating the value after a render', () => {
+        let component;
+        let setSelectionSpy;
+
+        beforeEach(() => {
+          const props = getProps({ value: 'steel' });
+
+          component = TestUtils.renderIntoDocument(React.createElement(Picklist, props));
+          setSelectionSpy = sinon.spy(component, 'setSelectedOptionBasedOnValue');
+        });
+
+        afterEach(() => {
+          setSelectionSpy.restore();
+        });
+
+        it('sets the selected option and an index pointer', () => {
+          const props = getProps();
+          const selectedIndex = 1;
+          const selectedOption = props.options[selectedIndex];
+
+          props.value = selectedOption.value;
+          component.componentWillReceiveProps(props);
+
+          expect(setSelectionSpy.called).to.be.true;
+          expect(component.state.selectedIndex).to.equal(selectedIndex);
+          expect(component.state.selectedOption).to.equal(selectedOption);
+        });
+
+        describe('when the value is null', () => {
+          it('sets selectedOption to null and the pointer to -1', () => {
+            const props = getProps({ value: null });
+            component.componentWillReceiveProps(props);
+
+            expect(setSelectionSpy.called).to.be.true;
+            expect(component.state.selectedIndex).to.equal(-1);
+            expect(component.state.selectedOption).to.not.exist;
+          });
         });
       });
     });

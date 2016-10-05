@@ -67,6 +67,12 @@ export const Picklist = React.createClass({
     }
   },
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.value !== this.props.value) {
+      this.setSelectedOptionBasedOnValue(nextProps);
+    }
+  },
+
   onClickOption(selectedOption, event) {
     const optionElements = this.picklist.querySelectorAll('.picklist-option');
     const index = _.indexOf(optionElements, event.target);
@@ -140,9 +146,12 @@ export const Picklist = React.createClass({
 
   setSelectedOptionBasedOnValue(props) {
     const { options, value } = props;
-    const selectedOption = _.find(options, { value });
+    const selectedOptionIndex = _.findIndex(options, { value });
 
-    this.setState({ selectedOption });
+    this.setState({
+      selectedOption: props.options[selectedOptionIndex],
+      selectedIndex: selectedOptionIndex
+    });
   },
 
   setSelectedOption(selectedOption) {

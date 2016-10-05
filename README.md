@@ -4,20 +4,17 @@
 
 The command to run the HTTP server is:
 
-```sh
-sudo nginx -c ${PWD}/dev-server/nginx.conf
-```
+    sudo nginx -c ${PWD}/dev-server/nginx.conf
 
 The command to run the Rails application server is:
 
-```sh
-bundle exec foreman start
-```
+    bundle exec foreman start
 
 Running the Rails stack in development should be done with [foreman](https://github.com/ddollar/foreman).
-It will spawn a sidecar process running the [webpack dev server](#webpack),
-which allows for re-bundling and automatic reloading on code change. Examine the [`Procfile`](https://github.com/socrata/frontend/blob/master/Procfile)
-to see what processes will be started by foreman.
+It will spawn a sidecar process running the [webpack dev server](#webpack), which allows for re-bundling 
+and automatic reloading on code change. Examine the 
+[`Procfile`](https://github.com/socrata/frontend/blob/master/Procfile) to see what processes will be 
+started by foreman.
 
 ### Development Stack Setup
 
@@ -46,92 +43,120 @@ builds, see the [webpack](#webpack) section.
 
 To build a subset of the webpack bundles, use the `FRONTEND_WEBPACK_BUNDLES` environment variable:
 
-```
-FRONTEND_WEBPACK_BUNDLES=admin,dataset-landing-page bundle exec foreman start
-```
+    FRONTEND_WEBPACK_BUNDLES=admin,dataset-landing-page bundle exec foreman start
 
 ## Running the app _without_ the local stack
 
-For detailed documentation see: [connect\_local\_frontend\_to\_staging\_services.md](https://github.com/socrata/docs/blob/master/connect_local_frontend_to_staging_services.md). _Out of date as of AWS migration on 8/19/2016._
+Important services are discovered through the 
+[`config/config.yml`](https://github.com/socrata/frontend/blob/master/config/config.yml) file.
+Below is a brief outline of the minimum required changes to run the frontend locally.
 
-Most, but not all, services are discovered through the [`config/config.yml`](https://github.com/socrata/frontend/blob/master/config/config.yml) file. Below is a brief outline of the minimum required changes.
+> Note! There is a corresponding file `docker/config.yml.j2` that is a template used to derive 
+> the contents of `config/config.yml` within docker containers.
 
 ### Core
 
-Under the `development` section of `config.yml`, set the `coreservice_uri` to the appropriate URI for the environment you're connecting to.
-For example, if you want to use the services in the RC environment, the URI would be `http://lb-vip.aws-us-west-2-staging.socrata.net:8081`.
+Under the `development` section of `config.yml`, set the `coreservice_uri` to the appropriate URI for 
+the environment you're connecting to. For example, if you want to use the services in the RC environment, 
+the URI would be `http://lb-vip.aws-us-west-2-rc.socrata.net:8081`.
 
 ### Zookeeper
 
-Under the `development` section of `config.yml`, set the `zk_hosts` to the list of hosts providing Zookeeper services. In the RC environment
-this value is `'10.92.2.4:2181,10.92.2.5:2181,10.92.2.6:2181'`
+Under the `development` section of `config.yml`, set the `zk_hosts` to the list of hosts providing 
+Zookeeper services. In the RC environment this value is `'10.112.35.120:2181,10.112.36.163:2181,10.112.41.205:2181'`
 
 ### Cetera
 
-Under the `development` section of `config.yml`, set the `cetera_host` to the appropriate URI for the environment you're connecting to.
-In the RC environment, this URI is `http://cetera.app.marathon.aws-us-west-2-rc.socrata.net`.
+Under the `development` section of `config.yml`, set the `cetera_host` to the appropriate URI for the 
+environment you're connecting to. In the RC environment, this URI is 
+`http://cetera.app.marathon.aws-us-west-2-rc.socrata.net`.
 
 For a guide on how to set up Cetera search from Elasticsearch to Frontend, see
 [this Google Doc](https://docs.google.com/document/d/1wsslEGnp15STX8UnUFZ_kLzxDHkpLWstvAa-9OS31Gk/edit#)
 
 ##### Host Spoofing
 
-> Note: This approach is _only_ necessary if you wish to connect to Cetera in a different environment but you are _already running_ the
-> other required services locally and _not_ masquerading as a different domain (see Domain below). If you _are_ masquerading as a different
-> domain, then Cetera will perform catalog searches against that domain, and setting `CETERA_SPOOF_HOST` is redundant.
+> Note: This approach is _only_ necessary if you wish to connect to Cetera in a different environment
+> but you are _already running_ the other required services locally and _not_ masquerading as a 
+> different domain (see Domain below). If you _are_ masquerading as a different domain (i.e. adding an 
+> entry to your `/etc/hosts` file), then Cetera will perform catalog searches against that domain, and 
+> setting `CETERA_SPOOF_HOST` is redundant.
 
-In order for Cetera to function properly, you must also "spoof" the domain that Cetera will search when interacting with the catalog. You
-must set this domain using the `CETERA_SPOOF_HOST` environment variable before starting the frontend. The domain you spoof much be a valid
-domain in the environment you are connecting to. In the RC environment one might use `opendata-demo.rc-socrata.com` for example. One way
-to do this is shown below:
+In order for Cetera to function properly when connecting to other environments such as RC or staging, 
+you must also "spoof" the domain that Cetera will search when interacting with the catalog. You must 
+set this domain using the `CETERA_SPOOF_HOST` environment variable before starting the frontend. The 
+domain you spoof must be a valid domain in the environment you are connecting to. In the RC environment 
+one might use `opendata-demo.rc-socrata.com` for example. One way to do this is shown below:
 
     CETERA_SPOOF_HOST=opendata-demo.rc-socrata.com bundle exec rails s
 
-Or with foreman:
+Or when using `foreman`:
 
     CETERA_SPOOF_HOST=opendata-demo.rc-socrata.com bundle exec foreman start
 
 ### Domain
 
-In order to statisfy Core security checks, you must masquerade as a domain that exists in the environment you are connecting to. For example,
-in RC one might use `opendata-demo.rc-socrata.com`. In order to masquerade as this domain, one must set your host name to match. One of doing
-this is to add an alias to `/etc/hosts` for your loopback IP address entry. In this example, one would change the entry to match:
+In order to statisfy Core security checks, you must masquerade as a domain that exists in the 
+environment you are connecting to. For example, in RC one might use `opendata-demo.rc-socrata.com`.
+In order to masquerade as this domain, one must set your host name to match. One way of doing
+this is to add an alias to `/etc/hosts` for your loopback IP address entry. In this example, 
+one would change the entry to match:
 
     127.0.0.1	localhost opendata-demo.rc-socrata.com
 
 ### Google Chrome
 
-Finally, in order to satisfy certain security requirements in Google Chrome, you must launch the application with extra arguments:
+Finally, in order to satisfy certain security requirements in Google Chrome, you must launch the 
+application with an extra argument. This is necessary to resolve Chrome refusing to load "insecure" 
+resources. This manifests as failures when loading CSS or Javascript which breaks page rendering.
 
     open -a Google\ Chrome --args --disable-web-security
 
 ## Dependencies
 
-Dependencies are stored in artifactoryonline.com. A shared username and
-password can be found in LastPass under the user "Socrata-frontend."
-Instructions on how to use these credentials can be found in the
-"Getting Artifacts" section of the [Artifactory Ops Doc](https://docs.google.com/document/d/1KihQV3-UBfZEOKIInsQlloESR6NLck8RuP4BUKzX_Y8)
+Dependencies are stored in artifactoryonline.com. A shared username and password can be found in 
+LastPass under the user "Socrata-frontend." Instructions on how to use these credentials can be 
+found in the "Getting Artifacts" section of the 
+[Artifactory Ops Doc](https://docs.google.com/document/d/1KihQV3-UBfZEOKIInsQlloESR6NLck8RuP4BUKzX_Y8).
 
 To install dependencies, run:
 
-`bin/setup_environment.sh`
+    bin/setup_environment.sh
 
-This will set up NPM properly and will create a user for
-`frontend@socrata.com` with password `OpenData!`.
+This will set up NPM properly and will create a user for `frontend@socrata.com` with password `OpenData!`.
 
 ## Tests
 
-tl;dr: Run the Setup steps below, then
+tl;dr: First run the Setup steps below, then run:
 
-```sh
-bundle exec rake test
-```
-This will run all Ruby and Javascript tests.
+    bundle exec rake test
+
+This will run all Ruby (MiniTest _and_ RSpec) and Javascript (Karma) tests.
+
+#### To run a specific Ruby test
+
+###### For MiniTest tests
+
+    ruby -I test test/.../file.rb -n /regex_matcher_for_your_test_name/
+
+> Note: The regex match technique does not work for MiniTest tests written using the 
+> [MiniTest](https://github.com/seattlerb/minitest) "spec" style.
+
+###### For RSpec tests
+
+    bundle exec rspec spec/.../file.rb:line_number
+
+> Note: The `line_number` is optional can point to a single test, a context, or a describe
+> block and all tests within the enclosing scope will be run. If you're updating RSpec tests 
+> or writing new ones and you see error messages from VCR complaining about unregistered 
+> HTTP requests, you can tell VCR to record the HTTP request(s) in your test by setting the 
+> [record mode](https://relishapp.com/vcr/vcr/v/3-0-3/docs/record-modes) to either 
+> `:record_mode => :new_episodes` or `:record_mode => :all`.
 
 ### Karma tests
 
-We use karma to test our Javascript code. These tests live under `karma`.
-There are multiple test suites defined by files named karma.conf.js.
+We use Karma to test our Javascript code. These tests live under `karma`.
+There are multiple test suites defined by files named `karma.conf.js`.
 
 Test suites:
 
@@ -156,49 +181,27 @@ bundle exec rake test:js:adminGoals
 
 Each rake task accepts three arguments:
 
-- `watch`: Whether or not to watch files for changes. If a change to any of the
-  tested files is detected, the tests will re-run. IMPORTANT: If you're using
-  vim, you need to add this to your .vimrc:
-  ```
-  set backupcopy=yes
-  ```
+- `watch`: Whether or not to watch files for changes. If a change to any of the tested files is 
+detected, the tests will re-run.
+> IMPORTANT: If you're using vim, you need to add this to your .vimrc:
+
+  `set backupcopy=yes`
+
   Otherwise, vim's rename-on-save behavior will confuse webpack. See
   [this issue](https://github.com/webpack/webpack/issues/781#issuecomment-95523711).
-- `browser`: Which browser to run the tests in. Can be `phantom`, `chrome`, or
-  `firefox`.
+- `browser`: Which browser to run the tests in. Can be `phantom`, `chrome`, or `firefox`.
 - `reporter`: Which reporter to use. The default is `dots`. You can also specify
   `mocha`, `progress`, `growl`, and `junit`, or install your own.
 
 Example invocation that watches file changes, runs the dataCards tests in chrome,
 and uses the mocha reporter:
 
-```sh
-bundle exec rake test:js:dataCards[true,chrome,mocha]
-```
+    bundle exec rake test:js:dataCards[true,chrome,mocha]
 
 For the simple case where a single test run under PhantomJS is needed for a
 general pass/fail check, a faster parallelized test run is also available:
 
-```sh
-bundle exec rake test:js:parallel
-```
-
-#### To run a specific Ruby unit test
-    ruby -I test path/to/file.rb -n /regex_matcher_for_your_test_name/
-
-    or for rspec
-    bundle exec rspec path/to/file.rb:line_number
-
-## Javascript/other asset package management
-
-The frontend has classically used [Jammit](http://documentcloud.github.io/jammit/)
-for asset management instead of the standard Rails asset pipeline. All assets
-must be added manually to assets.yml, and the appropriate include_javascripts
-calls must be included in .erb. If the assets must be loaded on-demand from JS,
-make sure the new jammit package is added to the "dump" section of assets.yml
-(the JS asset loader reads this section). Please note that though Jammit allows
-globs in its package definitions, the JS loader doesn't support globs. This is
-only an issue for on-demand loading.
+    bundle exec rake test:js:parallel
 
 ### Webpack
 
@@ -219,35 +222,29 @@ for seamless inclusion of webpack bundles during development and in production.
 
 One-time webpack bundle generation can be done with:
 
-```
-bundle exec rake assets:webpack
-```
+    bundle exec rake assets:webpack
 
 The rake command above runs `npm run build:prod` which generates the production assets
 that will be used by the frontend when running in production. You can test the assets
 generated by this process by starting the frontend with the following environment
 variables set, which simulates running webpack in production:
 
-```
-WEBPACK_USE_MANIFEST=true WEBPACK_USE_DEV_SERVER=false rails s
-```
+    WEBPACK_USE_MANIFEST=true WEBPACK_USE_DEV_SERVER=false rails s
 
 Running the Rails stack with [foreman](https://github.com/ddollar/foreman) will
 spawn a sidecar process running the webpack dev server, which allows for re-bundling
 and automatic reloading on code change. IMPORTANT: If you're using vim, you need to
 add this to your .vimrc:
-```
-set backupcopy=yes
-```
+
+    set backupcopy=yes
+
 Otherwise, vim's rename-on-save behavior will confuse webpack. See
 [this issue](https://github.com/webpack/webpack/issues/781#issuecomment-95523711).
 
 To enable the workflow:
 
-```sh
-bundle install
-bundle exec foreman start
-```
+    bundle install
+    bundle exec foreman start
 
 #### Webpack Loaders
 
@@ -262,57 +259,34 @@ bundle exec foreman start
 
 ### JSCodeShift
 
-[jscodeshift](https://github.com/facebook/jscodeshift) is a tool for doing AST-to-AST
-transformations of JS code. It is helpful for making changes across a codebase
-that are more complicated than just a search and replace.
+[jscodeshift](https://github.com/facebook/jscodeshift) is a tool for doing AST-to-AST transformations of JS code. 
+It is helpful for making changes across a codebase that are more complicated than just a search and replace.
 
-Under the `tools/jscodeshift-transforms` are a few
-transformations for modifying our code in an AST-to-AST manner.
+Under the `tools/jscodeshift-transforms` are a few transformations for modifying our code in an AST-to-AST manner.
 
-To run a transform, follow the instructions on the jscodeshift project page, but
-setting and environment variable of `BABEL_ENV="jscodeshift"` - this ensures
-that a clean babel configuration is used for the transforms, alleviating an issue
-with babel versions.
-
-### YUI Compressor errors
-
-There is a tool to help us troubleshoot YUI / Jammit compressor errors. It is in the `tools` directory and can be invoked with the command below. It currently expects a working directory to exist which is `../../tmp` which you must create beforehand.
-
-> Note: The Jammit gem will silently fail to use configured compressors if the gem(s) are not installed or fail to load. For example it reverts to using `jsmin` by default (the documentation lies). `jsmin` is known to generate invalid Javascript code.
-
-```sh
-tools/verify_compression.rb --all
-```
-## Dev Proxy (DEPRECATED)
-
-The dev proxy allows NewUX frontend developers to load data from staging or production while still using a local copy of the NewUX. To use just run:
-
-```sh
-dev-server/dev-proxy.js
-```
+To run a transform, follow the instructions on the jscodeshift project page, but setting and environment variable 
+of `BABEL_ENV="jscodeshift"` - this ensures that a clean babel configuration is used for the transforms, alleviating 
+an issue with babel versions.
 
 ## Tools in `bin` directory
 
-These tools can be used to run commands like `rails`, `rake`, `bundler` and so on, when on the application is deployed in a development environment.
+These tools can be used to run commands like `rails`, `rake`, `bundler` and so on, when on the application is 
+deployed in a development environment.
 
 An example of starting up the `rails` console on a production host is:
 
-```sh
-sudo -u blist RAILS_ENV=production bundle exec bin/rails c
-```
+    sudo -u blist RAILS_ENV=production bundle exec bin/rails c
 
 An example of running `bundler` on a prouction host:
 
-```sh
-sudo -u blist RAILS_ENV=production bundle install --without=development --deployment
-```
+    sudo -u blist RAILS_ENV=production bundle install --without=development --deployment
+
 An example of running `rake` on a production host:
 
-```sh
-sudo -u blist RAILS_ENV=productionbundle exec bin/rake routes
-```
+    sudo -u blist RAILS_ENV=productionbundle exec bin/rake routes
 
-You can add `-h` for more options. By default it routes requests to `dataspace-demo.test-socrata.com`. That may change in the future.
+You can add `-h` for more options. By default it routes requests to `dataspace-demo.test-socrata.com`. 
+That may change in the future.
 
 ## Linting
 
@@ -340,9 +314,7 @@ The default for the `js` flavors is 'stylish' and the default for the `ruby` fla
 'text'. See the [eslint documentation](http://eslint.org/docs/user-guide/command-line-interface#f-format) and the
 [reek documentation](https://github.com/troessner/reek#output-formats) for more formats. Example:
 
-```sh
-rake "lint:js:all[junit]"
-```
+    rake lint:js:all[junit]
 
 If you're too cool for rake tasks, you can also run `npm run eslint -- [args]`
 or `bundle exec reek [args]` on the command line and supply your own arguments.
@@ -375,6 +347,7 @@ under the `eslintConfig` key. Currently we use no configuration options for
 * [Rails (official)](http://api.rubyonrails.org/)
 * [RSpec](http://rspec.info/documentation/)
 * [Webmock](https://github.com/bblimke/webmock)
+* [VCR](https://relishapp.com/vcr/vcr/docs)
 
 ## Features and feature_flags
 
@@ -396,9 +369,12 @@ variable `LOG_FEATURE_FLAG_CACHING` to `true`.
 
 Below is the list of known environment variables that are used by the frontend. In most cases these are used to define values used by the Rails application itself, but in some other cases, they are used to provide information to third party services and APIs.
 
-_Note:_ Most, but not all, of the variables defined below can be specified or overridden via ENV variables, but in some cases, the values come solely from hard-coded values in `config/config.yml`. In other cases the values are specified either within `metachef` in the appropriate environment JSON file (e.g.`environments/production.json`) in the case of the dockerized app running in SEA1, or in `apps-marathon` in the case of the dockerized app running in AWS.
+Most, but not all, of the variables defined below are specified as, or can optionally be overridden by ENV variables, but in a
+small number of cases, the values are hard-coded in `config/config.yml`. In the remainder, the values are specified in `apps-marathon/resources/frontend.json` with selected overrides for different environments specified in `params/*/frontend.toml` where `*` may be one of `eu-west-1-prod`, `fedramp-prod`, `infrastucture`, `local`, `rc`, or `staging`. The values specified in the `apps-marathon` configuration files are injected into `config/config.yml` by way of the `docker/config.yml.j2` template file. Other values are simply set as ENV variables.
 
-In the case where the configuration variable is being provided as an ENV variable, the variable name is referenced in ALL CAPS, so `airbrake_environnment_name` would be written as `AIRBRAKE_ENVIRONNMENT_NAME`, but when referenced within the code itself, it is most often converted to a variable that is all lowercase. In certain special cases, headers such as `x-socrata-auth` are written in lowercase in the header itself, so be thorough when seaching for usages of any of these variables.
+> Note! Any changes made to `config/config.yml` to add new configuration directives must also be matched by requisite changes to `docker/config.yml.j2` accordingly.
+
+In the case where the configuration variable is being provided as an ENV variable, the variable name is referenced in ALL CAPS, so `airbrake_environnment_name` would be written as `AIRBRAKE_ENVIRONNMENT_NAME`, but when referenced at runtime within the code, it is most often converted to a variable that is all lowercase. In certain special cases, headers such as `x-socrata-auth` are written in lowercase in the header itself, so be thorough when seaching for usages of any of these variables.
 
 Variable Name | Type | Source | Description
 --- | :---: | :---: | ---

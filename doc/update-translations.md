@@ -1,18 +1,18 @@
 # How to update translations
 
 LocaleApp manages all the localized translations, so:
-"_please please please do not edit locale .yml files directly in the repo apart from en.yml!_"
--- Clint Tseng
+> _"Please please please do not edit locale .yml files directly in the repo apart from en.yml!"_ — Clint Tseng
 
 ## LocaleApp
 
 If you need to update translations, they must be kept in sync with LocaleApp.
 
-Sign in to https://www.localeapp.com/projects/5484
+Sign in to [https://www.localeapp.com/projects/5484](https://www.localeapp.com/projects/5484)
 
-If you don't yet have access, get an invite from Client Tseng (project owner).
+Use the `localizations-l@socrata.com` account found in [LastPass](https://lastpass.com/?&ac=1&lpnorefresh=1&fromwebsite=1&newvault=1&nk=1).
 
-The Locale app includes the following important sections in the main menu:
+The LocaleApp includes the following important sections in the main menu:
+
 * Dashboard — an overview of translation status
 * Translations — a visual navigator for viewing translations
 * Imports — a file uploader for translations
@@ -29,7 +29,7 @@ For small changes, it's also possible to use the Translations section to add ind
 
 If English localization has changed, import it from this repo into LocaleApp.
 
-* main menu > Import > Import a file ...
+    main menu > Import > Import a file ...
 
 ### Remove
 
@@ -49,16 +49,16 @@ Pay attention to the results from importing a translation file — entries that
 should usually be fixed and re-uploaded. Common warnings:
 
 * _can't have the 'other' pluralization added to it because it is not a pluralized namespace_ — don't use `other` as a
-key, because this triggers special translation functionality
+key, because this triggers special translation functionality.
 
 * _can't be a descendant of an existing translation_ — if you're converting an existing translation key so that it is
-a namespace (contains subkeys), you need to delete the existing translation key in Locale first
+a namespace (contains subkeys), you need to delete the existing translation key in Locale first.
 
 * _can't create a key that is being used as a namespace_ — the inverse of the previous warning, delete the subkeys if
-you want to convert a namespace to a single key
+you want to convert a namespace to a single key.
 
 * _must use the same variables as the default locale_ — this seems to stem from translators not preserving HTML
-snippets embedded in translations
+snippets embedded in translations.
 
 Other gotchas for translations:
 
@@ -86,5 +86,5 @@ Export files from LocaleApp to get other language changes.
 Then follow the prescribed frontend change and release processes.
 
 ## See also
-config/locales
-https://docs.google.com/a/socrata.com/document/d/1PhGf6SwZMs1KeeKrgsnDQeK9pyiY0wVzGbbEYodFAMQ
+* `config/locales`
+* [Socrata Localization Guide](https://docs.google.com/a/socrata.com/document/d/1PhGf6SwZMs1KeeKrgsnDQeK9pyiY0wVzGbbEYodFAMQ)

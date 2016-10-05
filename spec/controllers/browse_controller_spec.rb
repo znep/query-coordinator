@@ -46,7 +46,7 @@ describe BrowseController do
           VCR.use_cassette('browse_controller/locked_down') do
             get :show
             expect(response).to redirect_to(:login)
-            expect(flash[:notice]).to eq('You must be logged in to access this page')
+            expect(flash[:notice]).to match(/You must be logged in to access this page/i)
           end
         end
       end

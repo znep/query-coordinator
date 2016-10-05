@@ -975,10 +975,10 @@ en:
       visits: views
     and: and
     auth:
-      invalid_userpass: Invalid username or password
+      invalid_userpass: Invalid username or password.
       need_email_verification: Before you can complete your registration and login, you need to verify the email address for this account. If you don't have access to the verification email we sent you, simply create a new account with the same email address and you will receive another email.
-      need_login: You must be logged in to access this page
-      need_permission: You do not have permission to view this page
+      need_login: You must be logged in to access this page.
+      need_permission: You do not have permission to view this page.
       too_many_tries: Too many login attempts for that login. Account temporarily disabled.
     browser_support:
       chrome: Chrome

@@ -168,5 +168,5 @@ const injectFieldName = (column, key) => {
 const isNumericColumn = (column) => {
   var renderTypeName = _.get(column, 'renderTypeName');
 
-  return (renderTypeName === 'number' || renderTypeName === 'money');
+  return (renderTypeName === 'number' || renderTypeName === 'money' || renderTypeName === 'percent');
 };

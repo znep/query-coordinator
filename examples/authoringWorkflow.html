@@ -290,6 +290,21 @@
         ]
       };
 
+      var percentColumnNBEExample = {
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        series: [
+          {
+            dataSource: {
+              domain: 'ori-performance.demo.socrata.com',
+              datasetUid: 'mkvz-3tmj'
+            }
+          }
+        ]
+      };
+
       var columnChartV1Vif = {
         'aggregation': {
           'columnName': null,
@@ -327,6 +342,7 @@
         // vif: citizenSatisfaction,
         // vif: whiteHouseStaff,
         // vif: v1FeatureMapVif,
+        // vif: percentColumnNBEExample,
         backButtonText: 'Back to Dataset Selection',
         onComplete: onComplete,
         onCancel: onCancel,

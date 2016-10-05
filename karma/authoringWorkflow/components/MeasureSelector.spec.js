@@ -8,12 +8,16 @@ import { MeasureSelector } from 'src/authoringWorkflow/components/MeasureSelecto
 var validMetadata = {
   data: {
     columns: [
-      {name: 'Number', fieldName: 'number', renderTypeName: 'number'}
+      {name: 'Money', fieldName: 'money', renderTypeName: 'money'},
+      {name: 'Number', fieldName: 'number', renderTypeName: 'number'},
+      {name: 'Percent', fieldName: 'percent', renderTypeName: 'percent'}
     ]
   },
   phidippidesMetadata: {
     columns: {
-      number: {name: 'Number', renderTypeName: 'number'}
+      money: {name: 'Money', renderTypeName: 'money'},
+      number: {name: 'Number', renderTypeName: 'number'},
+      percent: {name: 'Percent', renderTypeName: 'percent'}
     }
   }
 };
@@ -62,6 +66,7 @@ describe('MeasureSelector', function() {
 
       it('renders measure selection', function() {
         expect(component.querySelector('#measure-selection')).to.exist;
+        expect(component.querySelectorAll('#measure-selection .picklist-option').length).to.equal(4);
       });
 
       describe('with a measure selected', function() {

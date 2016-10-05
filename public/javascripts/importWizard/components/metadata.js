@@ -539,9 +539,11 @@ function isHrefValid({contents: contents}) {
 }
 
 function isRequiredCustomFieldMissing(metadata: DatasetMetadata, field, setName, fieldIdx) {
-  return (!_.isUndefined(metadata.contents.customMetadata[setName][fieldIdx].value) &&
-      field.required &&
-      (metadata.contents.customMetadata[setName][fieldIdx].value.length === 0));
+  const values = metadata.contents.customMetadata[setName][fieldIdx].value;
+  return !_.isNull(values) &&
+    !_.isUndefined(values) &&
+    values.length === 0 &&
+    field.required;
 }
 
 export function isCustomMetadataValid(metadata: DatasetMetadata) {

@@ -9,6 +9,7 @@ import airbrake from '../airbrake';
 import { addColumnIndicesToSummary } from '../importUtils';
 import format from 'stringformat';
 import { goToPage } from '../wizard';
+import * as SaveState from '../saveState';
 
 
 type FileName = string
@@ -121,12 +122,14 @@ export function selectFile(file: File, operation: SharedTypes.OperationName) {
               {},
               response.newImportSourceVersion
             ));
+            dispatch(SaveState.save());
           } else {
             dispatch(fileUploadComplete(
-             response.fileId,
-             addColumnIndicesToSummary(response.summary),
-             response.newImportSourceVersion
-           ));
+              response.fileId,
+              addColumnIndicesToSummary(response.summary),
+              response.newImportSourceVersion
+            ));
+            dispatch(SaveState.save());
           }
           break;
         case 400:
@@ -246,6 +249,11 @@ export function update(upload: FileUpload = {}, action): FileUpload {
         }
       };
 
+    // This is a string because of circular dependencies.
+    // When a file download completes, we want to wipe out the upload
+    // state, because we're not doing an upload anymore
+    case 'FILE_DOWNLOAD_COMPLETE':
+      return {};
     case FILE_UPLOAD_COMPLETE:
       return {
         ...upload,

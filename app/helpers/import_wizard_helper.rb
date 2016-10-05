@@ -8,7 +8,8 @@ module ImportWizardHelper
       LocalePart.screens.dataset_new,
       LocalePart.screens.edit_metadata,
       LocalePart.core,
-      LocalePart.plugins.fileuploader
+      LocalePart.plugins.fileuploader,
+      LocalePart.screens.admin.jobs.show_page.event_messages
     ]
     LocaleCache.render_translations(parts)
   end
@@ -56,6 +57,11 @@ module ImportWizardHelper
 
   def render_import_wizard_view(view)
     javascript_tag("var view = #{json_escape(view)};")
+  end
+
+  def render_import_status(view)
+    activities = ImportActivity.activities_of(view.id)
+    javascript_tag("var issActivities = #{json_escape(JSON::dump(activities))};")
   end
 
   def render_import_wizard_license_options(selected_license = '')

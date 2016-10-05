@@ -6,7 +6,6 @@ import * as UploadFile from './components/uploadFile';
 import * as DownloadFile from './components/downloadFile';
 import * as ConnectToEsri from './components/connectToEsri';
 import * as ImportColumns from './components/importColumns';
-import * as LocationColumn from './components/importColumns/locationColumn';
 import * as Importing from './components/importing';
 import * as Working from './components/working';
 import * as Finish from './components/finish';
@@ -15,8 +14,7 @@ import * as ImportShapefile from './components/importShapefile';
 import * as SharedTypes from './sharedTypes';
 import * as SelectUploadType from './components/selectUploadType';
 import * as SaveState from './saveState';
-import {addColumnIndicesToSummary} from './importUtils';
-
+import * as ImportStatus from './importStatus';
 import enabledModules from 'enabledModules';
 
 type Layer = {
@@ -36,11 +34,13 @@ type PageName
   | 'Importing'
   | 'Finish'
 
+
 type Navigation = {
   operation: SharedTypes.OperationName,
   page: PageName,
   path: Array<PageName>
 }
+
 
 type NewDatasetModel = {
   datasetId: string,                  // this should never change
@@ -55,182 +55,63 @@ type NewDatasetModel = {
   importStatus: Server.ImportStatus
 }
 
-const initialNavigation: Navigation = {
-  page: 'SelectType',
-  path: [],
-  operation: null // will be filled in when we click something on the first screen
-};
 
-export function initialNewDatasetModel(initialView, importSource: SaveState.ImportSource): NewDatasetModel {
+function initialNavigation() {
+  return {
+    page: 'SelectType',
+    path: [],
+    operation: null
+  };
+}
+
+function navigationGivenISS(navigation, importStatus) {
+  var page = ImportStatus.isInProgress(importStatus) ? 'Importing' : navigation.page;
+  page = ImportStatus.isComplete(importStatus) ? 'Finish' : page;
+  page = ImportStatus.hasFailed(importStatus) ? 'Metadata' : page;
+  return {
+    ...navigation,
+    page
+  };
+}
+
+export function initialNewDatasetModel(initialView, importSource: SaveState.ImportSource, issActivities): NewDatasetModel {
+  // ImportStatus is special; it's stored in ISS and the
+  // importStatus in the redux state gets populated from that
+  const importStatus = ImportStatus.initialImportStatus(issActivities);
+  if (importSource && importSource.state) {
+    try {
+      var state = JSON.parse(importSource.state);
+
+      // Metadata is special; it's stored on the view and the
+      // metadata in the view takes precedence over whatever is in the
+      // redux state
+      state.metadata = initialMetadata(initialView);
+      state.importStatus = importStatus;
+      state.lastSavedVersion = importSource.version;
+
+      // To determine the actual page to be at, we need the current navigation state
+      // in addition to the current import's status. If the ISS event says the import
+      // is running or is complete
+      state.navigation = navigationGivenISS(state.navigation, state.importStatus);
+      return state;
+    } catch (e) {
+      console.error('Failed to parse saved state!', e);
+    }
+  }
+
   const initial = {
     datasetId: initialView.id,
-    lastSavedVersion: _.get(importSource, 'version', null),
-    navigation: initialNavigation,
+    lastSavedVersion: 0,
+    navigation: initialNavigation(),
     upload: {},
     download: {},
     connectToEsri: {},
     transform: null,
     layers: null,
     metadata: initialMetadata(initialView),
-    importStatus: Server.initialImportStatus()
+    importStatus: importStatus
   };
-  const rawOperation = _.get(importSource, 'importMode', null);
-  const operation = rawOperation ? rawOperation.toUpperCase() : null;
-  switch (operation) {
-    case 'CREATE_FROM_SCRATCH':
-    case 'LINK_EXTERNAL':
-      return {
-        ...initial,
-        navigation: {
-          operation: operation,
-          path: ['SelectType'],
-          page: 'Metadata'
-        }
-      };
-    case 'UPLOAD_BLOB':
-      if (importSource.fileId) {
-        return {
-          ...initial,
-          navigation: {
-            operation: operation,
-            path: ['SelectType', 'UploadFile'],
-            page: 'Metadata'
-          },
-          upload: {
-            fileName: importSource.fileName,
-            progress: {
-              type: 'Complete',
-              fileId: importSource.fileId
-            }
-          }
-        };
-      } else {
-        return {
-          ...initial,
-          navigation: {
-            operation: operation,
-            path: ['SelectType'],
-            page: 'UploadFile'
-          }
-        };
-      }
-    case 'UPLOAD_GEO':
-      if (importSource.scanResults) {
-        return {
-          ...initial,
-          navigation: {
-            operation,
-            path: ['SelectType', 'UploadFile'],
-            page: 'ImportShapefile'
-          },
-          upload: {
-            fileName: importSource.fileName,
-            progress: {
-              type: 'Complete',
-              fileId: importSource.fileId,
-              summary: importSource.scanResults
-            }
-          },
-          layers: importSource.scanResults.layers ? importSource.scanResults.layers : [],
-          transform: null
-        };
-      } else {
-        return {
-          ...initial,
-          navigation: {
-            operation,
-            path: ['SelectType'],
-            page: 'UploadFile'
-          }
-        };
-      }
-
-    case 'CONNECT_TO_ESRI':
-      return {
-        ...initial,
-        navigation: {
-          operation,
-          path: ['SelectType', 'ConnectToEsri'],
-          page: 'ConnectToEsri'
-        },
-        connectToEsri: {
-          type: 'NotStarted',
-          esriSource: {
-            url: '',
-            contactEmail: '',
-            privacy: 'public'
-          }
-        }
-      };
-
-    case 'UPLOAD_DATA':
-      if (importSource.scanResults) {
-        const sourceColumnsWithIndices = addColumnIndicesToSummary(importSource.scanResults);
-        const defaultTranslation = ImportColumns.initialTranslation(sourceColumnsWithIndices);
-        const resultColumns = _.get(importSource, 'translation.content.columns', defaultTranslation);
-
-        const columnSourceDefaults = {
-          locationComponents: LocationColumn.emptyLocationSource(),
-          components: [],
-          sourceColumn: sourceColumnsWithIndices[0]
-        };
-
-        const resultColumnsWithTranslations = resultColumns.map((resultColumn) => ({
-          ...resultColumn,
-          columnSource: _.defaultsDeep(resultColumn.columnSource, columnSourceDefaults), // because core strips falsey values
-          transforms: _.defaultTo(resultColumn.transforms, [])
-        }));
-        return {
-          ...initial,
-          navigation: {
-            operation: operation,
-            path: ['SelectType', 'SelectUploadType', 'UploadFile'],
-            page: 'ImportColumns'
-          },
-          upload: {
-            fileName: importSource.fileName,
-            progress: {
-              type: 'Complete',
-              fileId: importSource.fileId,
-              summary: sourceColumnsWithIndices
-            }
-          },
-          transform: {
-            defaultColumns: defaultTranslation,
-            columns: resultColumnsWithTranslations,
-            nextId: _.maxBy(resultColumnsWithTranslations, (resultColumn) => resultColumn.id).id + 1,
-            numHeaders: _.get(importSource, 'translation.content.numHeaders', importSource.scanResults.headers),
-            sample: importSource.scanResults.sample
-          }
-        };
-      } else {
-        if (importSource.uiSection === 'UploadFile' || importSource.uiSection === 'DownloadFile') {
-          return {
-            ...initial,
-            navigation: {
-              operation: operation,
-              path: ['SelectType', 'SelectUploadType'],
-              page: importSource.uiSection
-            }
-          };
-        }
-        return {
-          ...initial,
-          navigation: {
-            operation: operation,
-            path: ['SelectType'],
-            page: 'SelectUploadType'
-          }
-        };
-      }
-
-    case null:
-      return initial;
-
-    default:
-      console.warn('trying to reenter to', operation);
-      return initial;
-  }
+  return initial;
 }
 
 function initialMetadata(initialView) {
@@ -244,21 +125,11 @@ function initialMetadata(initialView) {
 // actions
 const CHOOSE_OPERATION = 'CHOOSE_OPERATION';
 export function chooseOperation(name: SharedTypes.OperationName) {
-  return (dispatch, getState) => {
-    const version = getState().lastSavedVersion;
-    const datasetId = getState().datasetId;
-    dispatch({
-      type: CHOOSE_OPERATION,
-      name: name
-    });
-    SaveState.saveOperation(datasetId, version, name).then((newImportSource) => {
-      dispatch(SaveState.stateSaved(newImportSource));
-    }).catch(() => {
-      console.error('already airbraked');
-    });
+  return {
+    type: CHOOSE_OPERATION,
+    name: name
   };
 }
-
 
 const GO_TO_PAGE = 'GO_TO_PAGE';
 export function goToPage(page) {
@@ -367,35 +238,32 @@ export function updateNavigation(navigation: Navigation = initialNavigation, act
   }
 }
 
-export function chooseDataSource(name: PageName) {
-  return (dispatch, getState) => {
-    const version = getState().lastSavedVersion;
-    const datasetId = getState().datasetId;
-    dispatch(goToPage(name));
-    SaveState.saveWizardSection(datasetId, version, name).then((newImportSource) => {
-      dispatch(SaveState.stateSaved(newImportSource));
-    }).catch(() => {
-      // this is already logged to airbrake in stateSaved
-      console.error('There was a problem saving your progress in the wizard.');
-    });
-  };
-}
 
 // view
 
 export function view({ state, dispatch }) {
-
   return (
     <div className="contentBox fixedWidth" id="reactWizard">
       <h1>{I18n.screens.dataset_new.first_page.header}</h1>
       <div className="newDatasetWizard wizard" aria-live="polite">
         {(() => {
           // only used by SelectType case, but ESLint won't let me put it there
-          const onChooseOperation = (operationName) => (
-            () => {
+          const onChooseOperation = (operationName) => {
+            return () => {
               dispatch(chooseOperation(operationName));
-            }
-          );
+              dispatch(SaveState.save());
+            };
+          };
+
+          const onPage = (page) => {
+            dispatch(goToPage(page));
+            dispatch(SaveState.save());
+          };
+
+          const onPrevious = () => {
+            dispatch(goToPrevious());
+            dispatch(SaveState.save());
+          };
 
           switch (state.navigation.page) {
             case 'SelectType':
@@ -409,8 +277,8 @@ export function view({ state, dispatch }) {
             case 'SelectUploadType':
               return (
                 <SelectUploadType.view
-                  dispatch={dispatch}
-                  goToPrevious={() => dispatch(goToPrevious())} />
+                  chooseDataSource={onPage}
+                  goToPrevious={onPrevious} />
               );
 
             case 'UploadFile':
@@ -419,7 +287,7 @@ export function view({ state, dispatch }) {
                   dispatch={dispatch}
                   fileUpload={state.upload}
                   operation={state.navigation.operation}
-                  goToPrevious={() => dispatch(goToPrevious())} />
+                  goToPrevious={onPrevious} />
               );
 
             case 'DownloadFile':
@@ -428,14 +296,14 @@ export function view({ state, dispatch }) {
                   onFileDownloadAction={dispatch}
                   fileDownload={state.download}
                   operation={state.navigation.operation}
-                  goToPrevious={() => dispatch(goToPrevious())} />
+                  goToPrevious={onPrevious} />
               );
             case 'ConnectToEsri':
               return (
                 <ConnectToEsri.view
-                  goToPrevious={() => dispatch(goToPrevious())}
+                  goToPrevious={onPrevious}
                   connectToEsri={state.connectToEsri}
-                  goToPage={(page) => dispatch(goToPage(page))}
+                  goToPage={onPage}
                   dispatch={dispatch} />
               );
 
@@ -455,8 +323,8 @@ export function view({ state, dispatch }) {
                   })()}
                   sourceColumns={state.upload.progress.summary.columns}
                   dispatch={dispatch}
-                  goToPage={(page) => dispatch(goToPage(page))}
-                  goToPrevious={() => dispatch(goToPrevious())} />
+                  goToPage={onPage}
+                  goToPrevious={onPrevious} />
               );
             case 'ImportDownloaded':
               return (
@@ -465,8 +333,8 @@ export function view({ state, dispatch }) {
                   fileName={state.download.fileName}
                   sourceColumns={state.download.summary.columns}
                   dispatch={dispatch}
-                  goToPage={(page) => dispatch(goToPage(page))}
-                  goToPrevious={() => dispatch(goToPrevious())} />
+                  goToPage={onPage}
+                  goToPrevious={onPrevious} />
               );
             case 'ImportShapefile':
               return (
@@ -474,8 +342,8 @@ export function view({ state, dispatch }) {
                   layers={state.layers}
                   fileName={state.upload.fileName}
                   dispatch={dispatch}
-                  goToPage={(page) => dispatch(goToPage(page))}
-                  goToPrevious={() => dispatch(goToPrevious())} />
+                  goToPage={onPage}
+                  goToPrevious={onPrevious} />
               );
 
             case 'Metadata':
@@ -485,7 +353,7 @@ export function view({ state, dispatch }) {
                   onMetadataAction={dispatch}
                   operation={state.navigation.operation}
                   importError={state.importStatus.error}
-                  goToPrevious={() => dispatch(goToPrevious())} />
+                  goToPrevious={onPrevious} />
               );
 
             case 'Working':

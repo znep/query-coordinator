@@ -18,6 +18,8 @@ import * as ConnectToEsri from './components/connectToEsri';
 
 import view from 'view';
 import importSource from 'importSource';
+import issActivities from 'issActivities';
+import * as ImportStatus from './importStatus';
 
 const middleware = [thunk];
 
@@ -49,8 +51,13 @@ const rootReducer = combineReducers({
   metadata: Metadata.update
 });
 
-const store = createStore(rootReducer, Wizard.initialNewDatasetModel(view, importSource), applyMiddleware(...middleware));
+const store = createStore(rootReducer, Wizard.initialNewDatasetModel(view, importSource, issActivities), applyMiddleware(...middleware));
 const ConnectedWizard = connect((state) => ({state: state}))(Wizard.view); // eslint-disable-line no-unused-vars
+
+if (ImportStatus.isInProgress(store.getState().importStatus)) {
+  const ticket = store.getState().importStatus.ticket;
+  store.dispatch(Server.resumePolling(ticket));
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   // ^^ this is here because sometimes we use things like blist.licenses, which are included in <script> tags below this

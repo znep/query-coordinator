@@ -6,7 +6,7 @@ import formurlencoded from 'form-urlencoded';
 import {socrataFetch, authenticityToken, appToken} from '../server';
 // import airbrake from '../airbrake';
 import {addColumnIndicesToSummary} from '../importUtils';
-
+import * as SaveState from '../saveState';
 
 type FileUrl = string;
 
@@ -93,6 +93,7 @@ function pollURL(resp) {
             return result.json().then((response) => {
               const summary = addColumnIndicesToSummary(response.summary);
               dispatch(fileDownloadComplete(response.fileId, summary));
+              dispatch(SaveState.save());
             });
           default:
             result.json().then((response) => {
@@ -134,6 +135,7 @@ export function scanURL(url) {
           return result.json().then((resp) => {
             const summary = addColumnIndicesToSummary(resp.summary);
             dispatch(fileDownloadComplete(resp.fileId, summary));
+            dispatch(SaveState.save());
           });
         default:
           return result.json().then((resp) => {
@@ -178,6 +180,12 @@ export function update(download: FileDownload = {}, action): FileDownload {
         type: 'InProgress',
         message: action.message
       };
+
+    // This is a string because of circular dependencies.
+    // When a file upload completes, we want to wipe out the download
+    // state, because we're not doing a download anymore
+    case 'FILE_UPLOAD_COMPLETE':
+      return {};
     case FILE_DOWNLOAD_COMPLETE:
       return {
         ...download,

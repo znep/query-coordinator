@@ -11,7 +11,8 @@ describe('importing screen view', () => {
         notification: 'Available'
       },
       operation: 'UPLOAD_DATA',
-      onNotifyMe: _.noop
+      onNotifyMe: _.noop,
+      dispatch: _.noop
     }));
     expect(element.querySelector('a.button.setNotifyComplete'))
       .to.be.defined;
@@ -24,7 +25,8 @@ describe('importing screen view', () => {
         progress: { stage: 'processing', ticket: 'asdf-1234-asdf-1234' }
       },
       operation: 'UPLOAD_GEO',
-      onNotifyMe: _.noop
+      onNotifyMe: _.noop,
+      dispatch: _.noop
     }));
     expect(element.querySelector('a.button.setNotifyComplete'))
       .to.be.null;

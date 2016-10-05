@@ -48,6 +48,7 @@ module.exports = function(karma) {
       externals: {
         'datasetCategories': 'datasetCategories',
         'importableTypes': 'importableTypes',
+        'issActivities': 'issActivities',
         'enabledModules': 'enabledModules',
         'customMetadataSchema': 'customMetadataSchema',
         'licenses': 'licenses',

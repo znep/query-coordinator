@@ -470,34 +470,32 @@ describe('ImportColumns component', () => {
       withMockFetch(
         (url, options, resolve, reject) => {
           expect(url).to.equal('/views/abcd-efgh/import_sources');
-          expect(JSON.parse(options.body)).to.deep.equal({
-            translation: {
-              version: 1,
-              content: {
-                columns: [
-                  {
-                    name: 'col 1',
-                    columnSource: {
-                      type: 'SingleColumn',
-                      sourceColumn: {index: 0, name: 'col 1'}
-                    },
-                    transforms: [],
-                    id: 0
+          const requestBody = JSON.parse(options.body);
+
+          const state = JSON.parse(requestBody.state);
+          expect(state.transform).to.deep.equal({
+              columns: [
+                {
+                  name: 'col 1',
+                  columnSource: {
+                    type: 'SingleColumn',
+                    sourceColumn: {index: 0, name: 'col 1'}
                   },
-                  {
-                    name: 'col 2',
-                    columnSource: {
-                      type: 'SingleColumn',
-                      sourceColumn: {index: 1, name: 'col 2'}
-                    },
-                    transforms: [],
-                    id: 1
-                  }
-                ]
-              }
-            },
-            version: 1470000000000
+                  transforms: [],
+                  id: 0
+                },
+                {
+                  name: 'col 2',
+                  columnSource: {
+                    type: 'SingleColumn',
+                    sourceColumn: {index: 1, name: 'col 2'}
+                  },
+                  transforms: [],
+                  id: 1
+                }
+              ]
           });
+          expect(requestBody.version).to.eql(1470000000000);
           resolve({
             status: 200,
             json: () => Promise.resolve({
@@ -509,7 +507,7 @@ describe('ImportColumns component', () => {
         () => {
           testThunk(
             done,
-            IC.saveImportColumns(),
+            SaveState.save(),
             {
               datasetId: 'abcd-efgh',
               lastSavedVersion: 1470000000000,
@@ -522,7 +520,7 @@ describe('ImportColumns component', () => {
                 return state;
               },
               (state, action) => {
-                expect(SaveState.update(state.lastSavedVersion, action)).to.equal(1470979299528);
+                expect(action.version).to.equal(1470979299528);
               }
             ]
           );

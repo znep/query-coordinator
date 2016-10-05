@@ -51,6 +51,23 @@ class ImportActivity
     }
   end
 
+  def self.activities_of(fourfour)
+    begin
+      ImportStatusService.get("/activity?entityId=#{fourfour}")
+    rescue ImportStatusService::ResourceNotFound
+      # This is ok - import hasn't happened yet
+      nil
+    rescue ImportStatusService::ServerError,
+        RuntimeError => e
+      # This is less ok
+      Airbrake.notify(
+        e,
+        :error_class => 'Failed to get ImportActivity'
+      )
+      nil
+    end
+  end
+
   # throws ISS errors and Core errors
   def self.find(id)
     activity = ImportStatusService::get("/activity/#{id}").with_indifferent_access

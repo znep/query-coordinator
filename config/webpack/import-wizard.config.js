@@ -29,6 +29,7 @@ module.exports = _.defaultsDeep({
   externals: {
     // TODO: compress these down to one...
     'importableTypes': 'importableTypes',
+    'issActivities': 'issActivities',
     'datasetCategories': 'datasetCategories',
     'customMetadataSchema': 'customMetadataSchema',
     'enabledModules': 'enabledModules',

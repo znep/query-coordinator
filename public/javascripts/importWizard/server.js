@@ -10,6 +10,7 @@ import * as ImportColumns from './components/importColumns';
 import * as Metadata from './components/metadata';
 import * as Utils from './utils';
 import * as LocationColumns from './components/importColumns/locationColumn';
+import * as ImportStatus from './importStatus';
 import { goToPage, goToPreviousPage } from './wizard';
 import licenses from 'licenses';
 const invertedLicenses = _.invert(licenses);
@@ -18,6 +19,7 @@ import airbrake from './airbrake';
 import 'whatwg-fetch';
 import formurlencoded from 'form-urlencoded';
 import _ from 'lodash';
+
 
 const authenticityMetaTag = document.querySelector('meta[name=csrf-token]');
 export const authenticityToken: string = authenticityMetaTag === null
@@ -348,32 +350,6 @@ function coreViewToCustomMetadataModel(view) {
   ));
 }
 
-
-type ImportProgress
-  = { rowsImported: number }
-  | { stage: string }
-
-type NotificationStatus
-  = 'Available'
-  | 'InProgress'
-  | 'NotificationSuccessful'
-  | 'NotificationError'
-
-type ImportStatus
-  = { type: 'NotStarted' }
-  | { type: 'Started' }
-  | { type: 'InProgress', progress: ImportProgress }
-  | { type: 'InProgress', progress: ImportProgress, notification: NotificationStatus }
-  | { type: 'Error', error: string }
-  | { type: 'Complete' }
-
-
-export function initialImportStatus(): ImportStatus {
-  return {
-    type: 'NotStarted'
-  };
-}
-
 const IMPORT_START = 'IMPORT_START';
 function importStart() {
   return {
@@ -382,7 +358,7 @@ function importStart() {
 }
 
 const IMPORT_PROGRESS = 'IMPORT_PROGRESS';
-export function importProgress(progress: ImportProgress, notificationsEnabled: boolean = false) {
+export function importProgress(progress: ImportStatus.ImportProgress, notificationsEnabled: boolean = false) {
   return {
     type: IMPORT_PROGRESS,
     progress,
@@ -406,29 +382,45 @@ function importComplete() {
 }
 
 export const NOTIFICATION_STATUS = 'NOTIFICATION_STATUS';
-export function notificationStatus(status: NotificationStatus) {
+export function notificationStatus(status: ImportStatus.NotificationStatus) {
   return {
     type: NOTIFICATION_STATUS,
     status
   };
 }
 
-export function update(status: ImportStatus = initialImportStatus(), action): ImportStatus {
+const POLL_SCHEDULED = 'POLL_SCHEDULED';
+function pollScheduled(interval) {
+  return {
+    type: POLL_SCHEDULED,
+    interval
+  };
+}
+
+export function update(status, action): ImportStatus.ImportStatus {
+  status = status || ImportStatus.initialImportStatus();
   switch (action.type) {
     case IMPORT_START:
       return {
         type: 'Started'
       };
 
+    case POLL_SCHEDULED:
+      return {
+        ...status,
+        interval: action.interval
+      };
     case IMPORT_PROGRESS:
       if (action.notificationsEnabled) {
         return {
+          ...status,
           type: 'InProgress',
           progress: action.progress,
           notification: status.notification || 'Available'
         };
       } else {
         return {
+          ...status,
           type: 'InProgress',
           progress: action.progress
         };
@@ -530,16 +522,7 @@ function importData(onError) {
         case 202: {
           response.json().then((resp) => {
             const ticket = resp.ticket;
-            setTimeout(() => {
-              pollUntilDone(ticket, dispatch, (progressResponse) => {
-                if (progressResponse.details && !_.isUndefined(progressResponse.details.progress)) {
-                  dispatch(importProgress({
-                    rowsImported: progressResponse.details.progress,
-                    ticket: ticket
-                  }, true));
-                }
-              }, onError);
-            }, POLL_INTERVAL_MS);
+            dispatch(pollTicket(ticket, onError));
           });
           break;
         }
@@ -587,13 +570,7 @@ function importGeospatial(onError) {
         case 202: {
           response.json().then((resp) => {
             const ticket = resp.ticket;
-            setTimeout(() => {
-              pollUntilDone(ticket, dispatch, (progressResponse) => {
-                if (progressResponse.details && !_.isUndefined(progressResponse.details.stage)) {
-                  dispatch(importProgress({stage: progressResponse.details.stage}));
-                }
-              }, onError);
-            }, POLL_INTERVAL_MS);
+            dispatch(pollTicket(ticket, onError));
           });
           break;
         }
@@ -609,29 +586,59 @@ function importGeospatial(onError) {
 
 const POLL_INTERVAL_MS = 5000;
 
+export function resumePolling(ticket) {
+  return (dispatch, getState) => {
+    const onImportError = () => {
+      dispatch(importError());
+      dispatch(goToPreviousPage('Metadata'));
+    };
+    return pollTicket(ticket, onImportError)(dispatch, getState);
+  };
+}
 
-function pollUntilDone(ticket, dispatch, onProgress, onError) {
+export function pollTicket(ticket, onError) {
+  return (dispatch) => {
+    const interval = setTimeout(() => {
+      pollUntilDone(ticket, dispatch, (progressResponse) => {
+        if (progressResponse.details && !_.isUndefined(progressResponse.details.progress)) {
+          dispatch(importProgress({
+            rowsImported: progressResponse.details.progress,
+            stage: progressResponse.details.stage,
+            ticket: ticket
+          }, true));
+        }
+      }, onError);
+    }, POLL_INTERVAL_MS);
+    dispatch(pollScheduled(interval));
+  };
+}
+
+
+function isAccepted(response) {
+  return response.status === 202;
+}
+function isOk(response) {
+  return response.status === 200;
+}
+
+export function pollUntilDone(ticket, dispatch, onProgress, onError) {
   socrataFetch(`/api/imports2.json?ticket=${ticket}`, {
     credentials: 'same-origin'
   }).then((response) => {
-    switch (response.status) {
-      case 202:
-        response.json().then((resp) => {
-          onProgress(resp);
-        });
-        setTimeout(() => {
-          pollUntilDone(ticket, dispatch, onProgress, onError);
-        }, POLL_INTERVAL_MS);
-        break;
-
-      case 200:
-        dispatch(importComplete());
-        dispatch(goToPage('Finish'));
-        break;
-
-      default:
-        console.error('response error: ', response);
-        onError();
+    if (isAccepted(response)) {
+      response.json().then((resp) => {
+        onProgress(resp);
+      });
+      const interval = setTimeout(() => {
+        pollUntilDone(ticket, dispatch, onProgress, onError);
+      }, POLL_INTERVAL_MS);
+      dispatch(pollScheduled(interval));
+    } else if (isOk(response)) {
+      dispatch(importComplete());
+      dispatch(goToPage('Finish'));
+    } else {
+      console.error('response error: ', response);
+      onError();
     }
   });
 }

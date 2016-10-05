@@ -19,95 +19,60 @@ describe('updateNavigation', function() {
     path: []
   };
 
-  function testChooseOperation(done, operation, navigationStateAfter) {
-    withMockFetch(
-      (url, options, resolve) => {
-        resolve({
-          status: 200,
-          json: () => Promise.resolve({
-            importMode: operation,
-            version: 1470979299528
-          })
-        });
-      },
-      () => {
-        testThunk(
-          done,
-          chooseOperation(operation),
-          {
-            lastSavedVersion: 1470000000000,
-            navigation: initialState
-          },
-          [
-            (state, action) => {
-              expect(action).to.deep.equal({
-                type: 'CHOOSE_OPERATION',
-                name: operation
-              });
-              const newState = {
-                navigation: updateNavigation(state.navigation, action)
-              };
-              expect(newState.navigation).to.deep.equal(navigationStateAfter);
-              return newState;
-            },
-            (state, action) => {
-              expect(action).to.deep.equal({
-                type: SaveState.STATE_SAVED,
-                importSource: {
-                  importMode: operation,
-                  version: 1470979299528
-                }
-              });
-              expect(SaveState.update(state.lastSavedVersion, action)).to.equal(1470979299528);
-            }
-          ]
-        );
-      }
-    );
-  }
+  it('sets currentPage to SelectUploadType when you choose UPLOAD_DATA', () => {
+    const actualState = updateNavigation(initialState, chooseOperation('UPLOAD_DATA'));
 
-  it('sets currentPage to SelectUploadType when you choose UPLOAD_DATA', (done) => {
-    testChooseOperation(done, 'UPLOAD_DATA', {
+    expect(actualState).to.eql({
       operation: 'UPLOAD_DATA',
       page: 'SelectUploadType',
       path: [ ...initialState.path, initialState.page ]
-    });
+    })
   });
 
-  it('sets currentPage to UploadFile when you choose UPLOAD_BLOB', (done) => {
-    testChooseOperation(done, 'UPLOAD_BLOB', {
+  it('sets currentPage to UploadFile when you choose UPLOAD_BLOB', () => {
+    const actualState = updateNavigation(initialState, chooseOperation('UPLOAD_BLOB'));
+
+    expect(actualState).to.eql({
       operation: 'UPLOAD_BLOB',
       page: 'UploadFile',
       path: [ ...initialState.path, initialState.page ]
     });
   });
 
-  it('sets currentPage to UploadFile when you choose UPLOAD_GEO', (done) => {
-    testChooseOperation(done, 'UPLOAD_GEO', {
+  it('sets currentPage to UploadFile when you choose UPLOAD_GEO', () => {
+    const actualState = updateNavigation(initialState, chooseOperation('UPLOAD_GEO'));
+
+    expect(actualState).to.eql({
       operation: 'UPLOAD_GEO',
       page: 'UploadFile',
       path: [ ...initialState.path, initialState.page ]
     });
   });
 
-  it('sets currentPage to Metadata when you choose CONNECT_TO_ESRI', (done) => {
-    testChooseOperation(done, 'CONNECT_TO_ESRI', {
+  it('sets currentPage to Metadata when you choose CONNECT_TO_ESRI', () => {
+    const actualState = updateNavigation(initialState, chooseOperation('CONNECT_TO_ESRI'));
+
+    expect(actualState).to.eql({
       operation: 'CONNECT_TO_ESRI',
       page: 'ConnectToEsri',
       path: [ ...initialState.path, initialState.page ]
     });
   });
 
-  it('sets currentPage to Metadata when you choose LINK_EXTERNAL', (done) => {
-    testChooseOperation(done, 'LINK_EXTERNAL', {
+  it('sets currentPage to Metadata when you choose LINK_EXTERNAL', () => {
+    const actualState = updateNavigation(initialState, chooseOperation('LINK_EXTERNAL'));
+
+    expect(actualState).to.eql({
       operation: 'LINK_EXTERNAL',
       page: 'Metadata',
       path: [ ...initialState.path, initialState.page ]
     });
   });
 
-  it('sets currentPage to Metadata when you choose CREATE_FROM_SCRATCH', (done) => {
-    testChooseOperation(done, 'CREATE_FROM_SCRATCH', {
+  it('sets currentPage to Metadata when you choose CREATE_FROM_SCRATCH', () => {
+    const actualState = updateNavigation(initialState, chooseOperation('CREATE_FROM_SCRATCH'));
+
+    expect(actualState).to.eql({
       operation: 'CREATE_FROM_SCRATCH',
       page: 'Metadata',
       path: [ ...initialState.path, initialState.page ]
@@ -199,7 +164,7 @@ describe('initialNewDatasetModel', () => {
 
   const initialState = {
     datasetId: 'abcd-efgh',
-    lastSavedVersion: null,
+    lastSavedVersion: 0,
     connectToEsri: {},
     navigation: {
       page: 'SelectType',
@@ -346,297 +311,147 @@ describe('initialNewDatasetModel', () => {
     }
   };
 
+  const serverState = {
+    version: 2,
+    state: JSON.stringify(initialState)
+  }
+
   it('returns an initial state when `importSource` is null', () => {
     const actual = initialNewDatasetModel(theView, null);
     expect(initialState).to.deep.equal(actual);
   });
 
-  describe('when the `importSource` has an `operation` of `CREATE_FROM_SCRATCH`', () => {
+  it('returns the importSource state when it is present', () => {
+    const actual = initialNewDatasetModel(theView, serverState);
 
-    it('returns the initial state, with navigation set correctly', () => {
-      // this test is almost exactly the same as the implementation...?
-      const actual = initialNewDatasetModel(theView, { version: 2, importMode: 'CREATE_FROM_SCRATCH' });
-      const expected = {
-        ...initialState,
-        lastSavedVersion: 2,
-        navigation: {
-          operation: 'CREATE_FROM_SCRATCH',
-          page: 'Metadata',
-          path: ['SelectType']
-        }
-      };
-      expect(expected).to.deep.equal(actual);
-    });
-
+    expect({...initialState, lastSavedVersion: 2}).to.deep.equal(actual);
   });
 
-  describe('when the `importSource` has an `operation` of `UPLOAD_BLOB`', () => {
-
-    it('sets the current page to UploadFile when there is no file', () => {
-      const actual = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_BLOB' });
-      const expected = {
-        ...initialState,
-        lastSavedVersion: 2,
-        navigation: {
-          operation: 'UPLOAD_BLOB',
-          page: 'UploadFile',
-          path: ['SelectType']
-        }
-      };
-
-      expect(expected).to.deep.equal(actual);
-    });
-
-    it('sets the current page to Metadata when there is file information', () => {
-      const actual = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_BLOB', fileId: 4490, fileName: 'name'});
-      const expected = {
-        ...initialState,
-        lastSavedVersion: 2,
-        navigation: {
-          operation: 'UPLOAD_BLOB',
-          page: 'Metadata',
-          path: ['SelectType', 'UploadFile']
-        },
-        upload: {
-          fileName: 'name',
-          progress: {
-            type: 'Complete',
-            fileId: 4490
-          }
-        }
-      };
-      expect(expected).to.deep.equal(actual);
-    });
-
-  });
-
-  describe('when the `importSource` has an `operation` of `UPLOAD_GEO`', () => {
-
-    it('sets the current page to UploadFile when there is no file', () => {
-      const actual = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_GEO' });
-      const expected = {
-        ...initialState,
-        lastSavedVersion: 2,
-        navigation: {
-          operation: 'UPLOAD_GEO',
-          page: 'UploadFile',
-          path: ['SelectType']
-        }
-      };
-      expect(expected).to.deep.equal(actual);
-    });
-
-    it('sets the current page to ImportShapefile when there is file information, and handles missing layers field', () => {
-      const actual = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_GEO', scanResults: {}, fileId: 4490, fileName: 'name'});
-      const expected = {
-        ...initialState,
-        lastSavedVersion: 2,
-        navigation: {
-          operation: 'UPLOAD_GEO',
-          page: 'ImportShapefile',
-          path: ['SelectType', 'UploadFile']
-        },
-        upload: {
-          fileName: 'name',
-          progress: {
-            type: 'Complete',
-            fileId: 4490,
-            summary: {}
-          }
-        },
-        layers: [],
-        transform: null
-      };
-      expect(expected).to.deep.equal(actual);
-    });
-
-    it('sets the current page to ImportShapefile when there is file information, and handles layer info', () => {
-      const actual = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_GEO', scanResults: {layers: ['layer_1']}, fileId: 4490, fileName: 'name'});
-      const expected = {
-        ...initialState,
-        lastSavedVersion: 2,
-        navigation: {
-          operation: 'UPLOAD_GEO',
-          page: 'ImportShapefile',
-          path: ['SelectType', 'UploadFile']
-        },
-        upload: {
-          fileName: 'name',
-          progress: {
-            type: 'Complete',
-            fileId: 4490,
-            summary: {layers: ['layer_1']}
-          }
-        },
-        layers: ['layer_1'],
-        transform: null
-      };
-      expect(expected).to.deep.equal(actual);
-    });
-  });
-
-  describe('when the `importSource` has an `operation` of `LINK_EXTERNAL`', () => {
-    it('rehydrates properly', () => {
-      const actual = initialNewDatasetModel(theView, { version: 2, importMode: 'LINK_EXTERNAL' });
-      const expected = {
-        ...initialState,
-        lastSavedVersion: 2,
-        navigation: {
-          operation: 'LINK_EXTERNAL',
-          page: 'Metadata',
-          path: ['SelectType']
-        }
-      };
-      expect(expected).to.deep.equal(actual);
-    });
-  });
-
-  describe('when the `importSource` has an `operation` of `UPLOAD_DATA`', () => {
-
-    it('initializes lastSavedVersion and navigation', () => {
-      const actual = initialNewDatasetModel(theView, { version: 2, importMode: 'UPLOAD_DATA' });
-      expect(actual).to.deep.equal({
-        ...initialState,
-        lastSavedVersion: 2,
-        navigation: {
-          operation: 'UPLOAD_DATA',
-          page: 'SelectUploadType',
-          path: ['SelectType']
-        }
-      });
-    });
-
-    const summary = {
-      headers: 0,
-      columns: [
-        {
-          name: 'col 1',
-          index: 0
-        },
-        {
-          name: 'col 2',
-          index: 1
-        }
-      ],
-      locations: [],
-      sample: [
-        ['col 1', 'col 2'],
-        ['foo', 'bar'],
-        ['baz', 'bin']
-      ]
-    };
-
-    const resultColumns = [
+  it('an InProgress issEvent makes the navigation page `Importing` and the importStatus populated', () => {
+    const issActivities = [
       {
-        name: 'col 1',
-        columnSource: {
-          type: 'SingleColumn',
-          sourceColumn: {
-            index: 0,
-            name: 'col 1'
+        "activity_name": "Readmissions_and_Deaths_-_Hospital.csv",
+        "activity_type": "Import",
+        "created_at": "2016-09-28T18:28:42.809Z",
+        "domain": "localhost",
+        "entity_id": "m25r-6t74",
+        "entity_type": "Dataset",
+        "id": "07469d55-6158-4051-8ba0-a84bb165da94",
+        "latest_event": {
+          "activity_id": "07469d55-6158-4051-8ba0-a84bb165da94",
+          "event_id": "da9b4e4e-efd1-47ab-9a82-fcb91058026f",
+          "event_time": "2016-09-28T18:28:54.305Z",
+          "event_type": "row-progress",
+          "id": 34107,
+          "info": {
+            "rowsComplete": 9500,
+            "totalRows": 0
           },
-          components: [],
-          locationComponents: LocationColumn.emptyLocationSource()
+          "status": "InProgress"
         },
-        transforms: [],
-        id: 0,
-        chosenType: undefined
-      },
-      {
-        name: 'col 2',
-        columnSource: {
-          type: 'SingleColumn',
-          sourceColumn: {
-            index: 1,
-            name: 'col 2'
-          },
-          components: [],
-          locationComponents: LocationColumn.emptyLocationSource()
-        },
-        transforms: [],
-        id: 1,
-        chosenType: undefined
+        "service": "Imports2",
+        "status": "InProgress",
+        "user_id": "kacw-u8uj"
       }
-    ];
-
-    const initialStateWithTransform = {
+    ]
+    const actual = initialNewDatasetModel(theView, serverState, issActivities);
+    expect(actual).to.deep.equal({
       ...initialState,
       lastSavedVersion: 2,
       navigation: {
-        operation: 'UPLOAD_DATA',
-        page: 'ImportColumns',
-        path: ['SelectType', 'SelectUploadType', 'UploadFile']
+        ...initialState.navigation,
+        page: 'Importing'
       },
-      upload: {
-        fileName: 'myfile.csv',
+      importStatus: {
+        ticket: "07469d55-6158-4051-8ba0-a84bb165da94",
+        type: 'InProgress',
         progress: {
-          type: 'Complete',
-          fileId: '123-abc',
-          summary: summary
+          rowsImported: 9500,
+          stage: 'row-progress'
         }
-      },
-      transform: {
-        defaultColumns: resultColumns,
-        columns: resultColumns,
-        nextId: resultColumns.length,
-        numHeaders: 0,
-        sample: summary.sample
       }
-    };
-
-    it('initializes lastSavedVersion, navigation, upload, and transform when `importSource` has scan results, and goes to ImportColumns page', () => {
-      const importSource = {
-        version: 2,
-        importMode: 'UPLOAD_DATA',
-        fileName: 'myfile.csv',
-        fileId: '123-abc',
-        scanResults: summary
-      };
-      const actual = initialNewDatasetModel(theView, importSource);
-      //expect(JSON.parse(JSON.stringify(initialStateWithTransform))).to.deep.equal(JSON.parse(JSON.stringify(actual)));
-      // ;_; no idea why this doesn't work without the parse/stringify pairs
-      expect(initialStateWithTransform).to.deep.equal(actual);
     });
+  });
 
-    it('initializes the transform based on the ImportSource', () => {
-      const modifiedResultColumns = [
-        {
-          ...resultColumns[0],
-          name: 'changed the name'
+  it('a Complete issEvent makes the navigation page `Finish` and the importStatus populated', () => {
+    const issActivities = [
+      {
+        "activity_name": "Readmissions_and_Deaths_-_Hospital.csv",
+        "activity_type": "Import",
+        "created_at": "2016-09-28T18:28:42.809Z",
+        "domain": "localhost",
+        "entity_id": "m25r-6t74",
+        "entity_type": "Dataset",
+        "id": "07469d55-6158-4051-8ba0-a84bb165da94",
+        "latest_event": {
+          "activity_id": "07469d55-6158-4051-8ba0-a84bb165da94",
+          "event_id": "da9b4e4e-efd1-47ab-9a82-fcb91058026f",
+          "event_time": "2016-09-28T18:28:54.305Z",
+          "event_type": "row-progress",
+          "id": 34107,
+          "info": {
+            "rowsComplete": 9500,
+            "totalRows": 0
+          },
+          "status": "Success"
         },
-        resultColumns[1]
-      ];
-      const importSource = {
-        version: 2,
-        importMode: 'UPLOAD_DATA',
-        fileName: 'myfile.csv',
-        fileId: '123-abc',
-        scanResults: summary,
-        translation: {
-          version: 1,
-          content: {
-            numHeaders: 1,
-            columns: modifiedResultColumns
-          }
-        }
-      };
-      const actual = initialNewDatasetModel(theView, importSource);
-      const expected = {
-        ...initialStateWithTransform,
-        transform: {
-          ...initialStateWithTransform.transform,
-          defaultColumns: resultColumns,
-          columns: modifiedResultColumns,
-          numHeaders: 1
-        }
-      };
-
-      expect(expected.metadata.contents).to.deep.equal(actual.metadata.contents);
-      expect(expected.metadata.license).to.deep.equal(actual.metadata.license);
-      expect(expected.metadata.lastSaved).to.deep.equal(actual.metadata.lastSaved);
-      expect(expected.metadata).to.deep.equal(actual.metadata);
-      expect(expected).to.deep.equal(actual);
+        "service": "Imports2",
+        "status": "Success",
+        "user_id": "kacw-u8uj"
+      }
+    ]
+    const actual = initialNewDatasetModel(theView, serverState, issActivities);
+    expect(actual).to.deep.equal({
+      ...initialState,
+      lastSavedVersion: 2,
+      navigation: {
+        ...initialState.navigation,
+        page: 'Finish'
+      },
+      importStatus: {
+        type: 'Complete'
+      }
     });
+  });
 
+  it('a Failed issEvent makes the navigation page `Metadata` and the importStatus populated', () => {
+    const issActivities = [
+      {
+        "activity_name": "Readmissions_and_Deaths_-_Hospital.csv",
+        "activity_type": "Import",
+        "created_at": "2016-09-28T18:28:42.809Z",
+        "domain": "localhost",
+        "entity_id": "m25r-6t74",
+        "entity_type": "Dataset",
+        "id": "07469d55-6158-4051-8ba0-a84bb165da94",
+        "latest_event": {
+          "id": 34349,
+          "event_time": "2016-09-29T19:43:05.254Z",
+          "event_type": "invalid-row-length",
+          "status": "Failure",
+          "info": {
+            "record": 64766,
+            "actual": 1,
+            "expected": 19,
+            "type": "invalid-row-length"
+          },
+          "activity_id": "a48e6129-00e4-47b3-addf-6925d1171d00",
+          "event_id": "2533d096-8266-4aed-a207-f2b854563965"
+        }
+      }
+    ]
+    const actual = initialNewDatasetModel(theView, serverState, issActivities);
+    expect(actual).to.deep.equal({
+      ...initialState,
+      lastSavedVersion: 2,
+      navigation: {
+        ...initialState.navigation,
+        page: 'Metadata'
+      },
+      importStatus: {
+        error: "Row #64766 in your CSV file contained 1 fields, whereas your other rows contained 19 fields. Please ensure that your file has a consistent number of fields per row.",
+        type: "Error"
+      }
+    });
   });
 });

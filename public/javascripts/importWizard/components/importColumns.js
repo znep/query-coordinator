@@ -138,17 +138,6 @@ function removeColumn(index) {
   };
 }
 
-export function saveImportColumns() {
-  return (dispatch, getState) => {
-    const lastSavedVersion = getState().lastSavedVersion;
-    const datasetId = getState().datasetId;
-    dispatch(SaveState.stateSaveStarted());
-    SaveState.saveTransform(datasetId, lastSavedVersion, getState().transform).then((importSource) => {
-      dispatch(SaveState.stateSaved(importSource));
-    });
-  };
-}
-
 export const RESTORE_SUGGESTED_SETTINGS = 'RESTORE_SUGGESTED_SETTINGS';
 export function restoreSuggestedSettings() {
   return {
@@ -190,16 +179,6 @@ export function update(transform: Transform = null, action): Transform {
       } else {
         return transform;
       }
-    case SaveState.STATE_SAVE_STARTED:
-      return {
-        ...transform,
-        saveState: 'InProgress'
-      };
-    case SaveState.STATE_SAVED:
-      return {
-        ...transform,
-        saveState: 'Done'
-      };
     case CHANGE_HEADER_COUNT:
       return {
         ...transform,
@@ -272,7 +251,7 @@ export function view({ transform, fileName, sourceColumns, dispatch, goToPage, g
       ? (() => goToPage('Metadata'))
       : null;
 
-  var onSave = () => dispatch(saveImportColumns());
+  var onSave = () => dispatch(SaveState.save());
   if (transform.saveState === 'InProgress') {
     onSave = undefined;
   }

@@ -1468,7 +1468,7 @@ en:
       twitter: Share via Twitter
       visibility_alert_html: "<b>Heads up!</b> This dataset is private and might not be accessible to the people you share it with."
     tour:
-      description: We call it the Dataset Landing Page. But in case you ever want to look at the tabular view of the data, you can access it from here.
+      description: We call it Primer. But in case you ever want to explore the tabular view of the data, you can access it from here.
       done: OK
       title: Datasets have a new look!
     updated: Updated
@@ -1997,8 +1997,8 @@ en:
       data_provided_by: Data Provided By
       dataset_landing_page:
         button: Take me there!
-        description: All the information that is in this pane, and more, is now on the Dataset Landing Page, in a more consumable and user friendly format.
-        title: This information is now on the Dataset Landing Page
+        description: All the information that is in this pane, and more, is now on Primer, in a more consumable and user friendly format.
+        title: This information is now on Primer
       datasync_status: Datasync Status
       description: Description
       downloads: Downloads
@@ -2657,7 +2657,9 @@ en:
         site_appearance: Site Appearance
         these_features: These features will empower you to better control the appearance of your site and will help data consumers explore your data even better than before. Your users are going to love them!
         update: Update
-        you_are_about: You are about to activate your header, footer and Dataset Landing Pages for your datasets.
+        you_are_about_html: >
+          <p>You are about to activate your header, footer, and Primer for your datasets. Your users are going to love the new look!</p>
+          <p>To see Primer and your header/footer in action, click 'Ok' below and then navigate to one of your datasets.</p>
         tabs:
           footer:
             fields:
@@ -2840,21 +2842,21 @@ en:
             fields:
               a_bundle_of_goodness:
                 title: 'A Bundle of Goodness: Two New Features Available Now'
-                description_html: '<p>The wait is over: Dataset Landing Page and your new, configurable Header/Footer are both ready to go! Read on to learn about these enhancements and how you can activate them, today.</p>'
+                description_html: '<p>Get excited! Socrata Primer, formerly known as the Dataset Landing Page, and your new, configurable Header/Footer are both ready to go! Read on to learn about these enhancements and how you can activate them, today.</p>'
               dataset_landing_page:
-                title: Dataset Landing Page
-                description_html: '<p>Get excited! With this upgrade, Dataset Landing Page becomes the principal front-page experience for uploaded datasets - it highlights the most commonly accessed aspects of each dataset in an intuitive way and ensures your data users see metadata before taking action. Publishers and Administrators have the freedom to "feature" related views and visualizations, sophisticated users can explore metadata and metrics up-front, and all users can access data in the way they desire, whether this is via data visualizations, direct file downloads, or the API. And of course - the classic tabular view of data is still accessible from the top navigation of this view for users who are comfortable there.</p>'
+                title: Primer
+                description_html: "<p>With this upgrade, your datasets have a new front-page experience known as 'Primer'. This experience highlights commonly accessed aspects of a dataset and ensures your data users see metadata before taking action. Publishers and Administrators have the freedom to \"feature\" related views and visualizations, sophisticated users can explore metadata and metrics up-front, and all users can access data in the way they desire, whether this is via data visualizations, direct file downloads, or the API. And of course - the classic tabular data view is still accessible from the top navigation of this view for users who are comfortable there.</p>"
               a_new_configurable_header_footer:
                 title: A New Configurable Header/Footer
                 description_html: >
-                  <p>As part of this release, we've also introduced a new unified, mobile-responsive, admin-configurable header/footer for your site. This new header/footer empowers you to configure your site's logos, colors, copyright, navigational links, social icons, and more on your own - self-service-style. It gives you control of your site's appearance to easily and update these essential components without your having to contact Socrata Support.</p>
-                  <p>By the way - using your current site design and Customer Success Managers as our guides, we've already prepared your header and footer for preview. Click the "Preview" button above to take a look, and then adjust it however you'd like - it's all yours.</p>
+                  <p>We've also introduced a new unified, mobile-responsive, configurable header/footer for your site. This new header/footer empowers you to control your site's logos, colors, copyright, navigational links, social icons, and more on your own, without having to contact Socrata Support.</p>
+                  <p>By the way, we've already prepared your header and footer for preview. Click the "Preview" button above to take a look, and then change it however you'd like - it's all yours.</p>
               active_both_today:
                 title: Activate Both Today!
                 description_html: >
-                  <p>Dataset Landing Page and your new Configurable Header/Footer are both available now. Review the tabs above to configure and preview your site's appearance - and when you're ready, activate them together!</p>
-                  <p><b>Note:</b> If you haven't configured the header/footer for your site within 30 days, Socrata will configure it for you and activate it along with the Dataset Landing Page automatically. We'll use your existing site styling and your Customer Success Manager for style guidance.</p>
-                  <p>For tips on configuring your header/footer and activating Dataset Landing Page, please attend the <a href="https://event.on24.com/eventRegistration/EventLobbyServlet?target=reg20.jsp&referrer=&eventid=1223356&sessionid=1&key=9ED33D00A47ABC3419890552EBA81D93&regTag=&sourcepage=register" target="_blank">"Making the Most of the Latest Features" Webinar</a> or visit our Support site: <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">https://support.socrata.com/hc/en-us/articles/223723227</a>.</p>
+                  <p>Primer and your new Configurable Header/Footer are both available now. Review the tabs above, update what you'd like, and when you're ready, activate them together!</p>
+                  <p><b>Note:</b> If you haven't configured the header/footer for your site within one month, Socrata will use our suggested configuration to activate it and Primer automatically. We'll do this to ensure your data users are getting the most up-to-date experience available.</p>
+                  <p>For tips on configuring your header/footer, please visit our Support site here: <a href=" https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">https://support.socrata.com/hc/en-us/articles/223723227</a>.</p>
       tos:
         accepted: Thank you for accepting the terms of service.
         must_agree: You must agree to the provided terms to continue.
@@ -3122,7 +3124,7 @@ en:
         out_of_date: This dataset is out of date by %{age}
         publish_button: Publish Dataset
         publish_prompt: This dataset is a working copy and is not publicly available.  Once you have made the desired changes, this dataset should be published to make it publicly available.
-        publish_prompt_with_dataset_landing_page: This dataset is a working copy and is not publicly available.  Once you have made the desired changes, this dataset should be published to make it publicly available.  Publishing this page will also publish Dataset Landing Page.
+        publish_prompt_with_dataset_landing_page: This dataset is a working copy and is not publicly available.  Once you have made the desired changes, this dataset should be published to make it publicly available.  Publishing this page will also publish a Primer.
         publish_rights: Only an owner or publisher can publish this dataset
         revert_button: Revert
         revert_prompt: Revert to saved view

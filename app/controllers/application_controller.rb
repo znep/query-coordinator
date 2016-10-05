@@ -76,6 +76,8 @@ class ApplicationController < ActionController::Base
         require_sufficient_rights_for_api_published
       when 'api/v1/uploads'
         require_sufficient_rights_for_api_uploads
+      when 'api/stat/v1/goals/published'
+        require_sufficient_rights_for_api_stat_goals_published
       when 'cetera'
         require_sufficient_rights_for_search_proxy
       when 'consul_checks'
@@ -245,6 +247,8 @@ class ApplicationController < ActionController::Base
     action = params[:action]
 
     case action
+      when 'latest'
+        return render_story_404 if CoreServer.view_inaccessible?(params[:uid])
       when 'create'
         if current_user.present?
           return render nothing: true, status: 403 unless admin? || owner?
@@ -262,6 +266,17 @@ class ApplicationController < ActionController::Base
     case action
       when 'create'
         require_logged_in_user
+      else
+        raise_undefined_authorization_handler_error
+    end
+  end
+
+  def require_sufficient_rights_for_api_stat_goals_published
+    action = params[:action]
+
+    case action
+      when 'latest'
+        render_story_404 unless can_view_goal?(params[:uid])
       else
         raise_undefined_authorization_handler_error
     end

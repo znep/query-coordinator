@@ -1,6 +1,17 @@
 class Api::V1::PublishedController < ApplicationController
   force_ssl
 
+  # Gets the latest published version of a story.
+  def latest
+    @story = PublishedStory.find_by_uid(params[:uid])
+
+    if @story
+      render json: @story
+    else
+      render_story_404
+    end
+  end
+
   # Takes a draft story and creates a published version of it, then sets the published story
   # as publicly visible in core.
   def create

@@ -1,4 +1,5 @@
-class CoreServerResponse
+# Utility wrapper around Net::HTTP* responses.
+class HttpResponse
   attr_reader :raw, :json
 
   def initialize(http_response = nil)
@@ -16,6 +17,18 @@ class CoreServerResponse
 
   def not_found?
     raw && raw.instance_of?(Net::HTTPNotFound)
+  end
+
+  def server_error?
+    raw && raw.is_a?(Net::HTTPServerError)
+  end
+
+  def bad_request?
+    raw && raw.is_a?(Net::HTTPBadRequest)
+  end
+
+  def to_s
+    "URI: #{raw.uri} Code: #{raw.code} Body: #{raw.body}"
   end
 
   private

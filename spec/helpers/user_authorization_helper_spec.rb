@@ -354,5 +354,33 @@ RSpec.describe UserAuthorizationHelper, type: :helper do
       end
     end
   end
+
+  describe '#can_view_goal?' do
+    let(:goal_uid) { 'asdf-fdsa' }
+    let(:isAccessible) { false }
+
+    before do
+      allow_any_instance_of(OpenPerformance::Goal).to(
+        receive(:accessible?).and_return(isAccessible)
+      )
+    end
+
+    it 'passes argument to Goal.new' do
+      expect(OpenPerformance::Goal).to receive(:new).with(goal_uid).and_call_original
+      can_view_goal?('asdf-fdsa')
+    end
+    describe 'goal is not accessible' do
+      let(:isAccessible) { false }
+      it 'returns false' do
+        expect(can_view_goal?('asdf-fdsa')).to be(isAccessible)
+      end
+    end
+    describe 'goal is accessible' do
+      let(:isAccessible) { true }
+      it 'returns true' do
+        expect(can_view_goal?('asdf-fdsa')).to be(isAccessible)
+      end
+    end
+  end
 end
 

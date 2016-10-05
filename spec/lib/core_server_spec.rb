@@ -236,14 +236,14 @@ describe CoreServer do
     let(:published_copy_ok?) { true }
     let(:published_copy_json) { { 'id' => published_4x4 } }
     let(:published_copy_response) {
-      double('CoreServerResponse', ok?: published_copy_ok?, json: published_copy_json)
+      double('HttpResponse', ok?: published_copy_ok?, json: published_copy_json)
     }
 
     let(:working_copy_4x4) { 'test-test' }
     let(:working_copy_ok?) { true }
     let(:working_copy_json) { { 'id' => working_copy_4x4 } }
     let(:working_copy_response) {
-      double('CoreServerResponse', ok?: working_copy_ok?, json: working_copy_json)
+      double('HttpResponse', ok?: working_copy_ok?, json: working_copy_json)
     }
 
     let(:view_request) {
@@ -389,7 +389,7 @@ describe CoreServer do
       it 'follows 302 redirection' do
         response = CoreServer.send(:core_server_http_request, options)
 
-        expect(response).to be_a(CoreServerResponse)
+        expect(response).to be_a(HttpResponse)
       end
     end
   end
@@ -456,7 +456,7 @@ describe CoreServer do
     let(:query_params) {
       { :defaultOnly => default_only, :merge => merge, :type => type }
     }
-    let(:core_server_response) { double('CoreServerResponse').as_null_object }
+    let(:core_server_response) { double('HttpResponse').as_null_object }
 
     before do
       stub_request(:get, /#{coreservice_uri}\/configurations.json.*/).

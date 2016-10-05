@@ -58,6 +58,10 @@ module UserAuthorizationHelper
     admin? || (owner? && storyteller_role?)
   end
 
+  def can_view_goal?(goal_uid)
+    OpenPerformance::Goal.new(goal_uid).accessible?
+  end
+
   private
 
   def authorization

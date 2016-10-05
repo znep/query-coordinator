@@ -2,6 +2,42 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::PublishedController, type: :controller do
 
+  before do
+    request.env['HTTPS'] = 'on' # otherwise we get redirected to HTTPS for all requests.
+  end
+
+  describe '#latest' do
+    let(:params) do
+      {
+        uid: 'four-four'
+      }
+    end
+
+    before do
+      stub_sufficient_rights
+      allow(PublishedStory).to receive(:find_by_uid).and_return(story)
+    end
+
+    describe 'no published version present' do
+      let(:story) { nil }
+
+      it '404s' do
+        get :latest, params
+        expect(response.status).to be(404)
+      end
+    end
+
+    describe 'published version present' do
+      let(:story) { { mock: 'story' } }
+
+      it '200s' do
+        get :latest, params
+        expect(response.status).to be(200)
+        expect(response.body).to eq(story.to_json)
+      end
+    end
+  end
+
   describe '#create' do
 
     let(:params) do
@@ -9,10 +45,6 @@ RSpec.describe Api::V1::PublishedController, type: :controller do
         uid: 'four-four',
         digest: 'something'
       }
-    end
-
-    before do
-      request.env['HTTPS'] = 'on'
     end
 
     context 'when not authenticated' do
@@ -81,6 +113,37 @@ RSpec.describe Api::V1::PublishedController, type: :controller do
     before do
       stub_core_view('test-test')
       stub_valid_session
+    end
+
+    describe '#latest' do
+      let(:action) { :latest }
+      let(:is_inaccessible) { true }
+
+      before do
+        allow(CoreServer).to(
+          receive(:view_inaccessible?).
+            with('test-test').
+            and_return(is_inaccessible)
+        )
+      end
+
+      describe 'story not accessible' do
+        let(:is_inaccessible) { true }
+
+        it '404s' do
+          get_request
+          expect(response.status).to be(404)
+        end
+      end
+
+      describe 'story accessible' do
+        let(:is_inaccessible) { false }
+
+        it 'does not 403' do
+          get_request
+          expect(response.status).to_not be(403)
+        end
+      end
     end
 
     describe 'when creating a published story' do

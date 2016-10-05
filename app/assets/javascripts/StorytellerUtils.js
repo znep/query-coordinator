@@ -290,32 +290,6 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
   },
 
   /**
-   * @function storytellerApiRequest
-   * @description
-   * Makes a call to the API_PREFIX_PATH for Storyteller, and returns a Promise.
-   *
-   * @param {String} path - a valid Storyteller API URI.
-   * @param {String} requestType - any HTTP verb.
-   * @param {Any} requestData - any JSON-formatted data.
-   *
-   * @return {Promise}
-   */
-  storytellerApiRequest: function(path, requestType, requestData) {
-    return Promise.resolve(
-      $.ajax({
-        url: Constants.API_PREFIX_PATH + path,
-        type: requestType,
-        dataType: 'json',
-        contentType: 'application/json',
-        headers: {
-          'X-CSRF-Token': Environment.CSRF_TOKEN
-        },
-        data: requestData
-      })
-    );
-  },
-
-  /**
    * @function ellipsifyText
    * @description
    * Truncates a string and appends an ellipsis such that when rendered in its

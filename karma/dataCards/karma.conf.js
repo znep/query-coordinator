@@ -13,10 +13,10 @@ module.exports = function ( karma ) {
     files: [
       'node_modules/jquery/dist/jquery.js',
       'node_modules/js-polyfills/timing.js',
-      'node_modules/js-polyfills/url.js',
       'public/javascripts/util/polyfills.js',
       'public/javascripts/plugins/modernizr.js',
       'public/javascripts/plugins/squire.js',
+      'public/javascripts/plugins/url.js',
 
       // https://github.com/karma-runner/karma/issues/1532
       { pattern: 'public/images/dataCards/**/*.???', watched: false, included: false, served: true },

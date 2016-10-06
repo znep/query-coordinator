@@ -147,6 +147,7 @@ export const VisualizationTypeSelector = React.createClass({
         <div className="btn-group">
           {this.renderVisualizationTypeButton('barChart')}
           {this.renderVisualizationTypeButton('columnChart')}
+          {this.renderVisualizationTypeButton('pieChart')}
           {this.renderVisualizationTypeButton('timelineChart')}
           {this.renderVisualizationTypeButton('histogram')}
           {this.renderVisualizationTypeButton('featureMap')}

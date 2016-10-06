@@ -34,12 +34,12 @@ export const COLUMN_TYPES = [
   },
   {
     type: 'money',
-    preferredVisualizationTypes: ['barChart', 'columnChart'],
+    preferredVisualizationTypes: ['barChart', 'columnChart', 'pieChart'],
     icon: 'icon-number'
   },
   {
     type: 'number',
-    preferredVisualizationTypes: ['barChart', 'columnChart', 'histogram'],
+    preferredVisualizationTypes: ['barChart', 'columnChart', 'histogram', 'pieChart'],
     icon: 'icon-number'
   },
   {
@@ -58,7 +58,7 @@ export const COLUMN_TYPES = [
   },
   {
     type: 'text',
-    preferredVisualizationTypes: ['barChart', 'columnChart'],
+    preferredVisualizationTypes: ['barChart', 'columnChart', 'pieChart'],
     icon: 'icon-text'
   }
 ];
@@ -74,6 +74,12 @@ export const VISUALIZATION_TYPES = [
     type: 'columnChart',
     title: translate('visualizations.column_chart.title'),
     icon: 'icon-bar-chart',
+    preferredDimensionTypes: ['money', 'number', 'percent', 'text']
+  },
+  {
+    type: 'pieChart',
+    title: translate('visualizations.pie_chart.title'),
+    icon: 'icon-pie-chart',
     preferredDimensionTypes: ['money', 'number', 'percent', 'text']
   },
   {

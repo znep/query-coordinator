@@ -11,6 +11,7 @@ import {
   getUnitOne,
   getUnitOther,
   isBarChart,
+  isPieChart,
   isRegionMap,
   isColumnChart,
   isFeatureMap,
@@ -85,6 +86,10 @@ export var LegendsAndFlyoutsPane = React.createClass({
     return this.renderUnits();
   },
 
+  renderPieChartControls() {
+    return this.renderUnits();
+  },
+
   renderHistogramControls() {
     return this.renderUnits();
   },
@@ -147,6 +152,8 @@ export var LegendsAndFlyoutsPane = React.createClass({
     if (hasData(metadata)) {
       if (isBarChart(vifAuthoring)) {
         configuration = this.renderBarChartControls();
+      } else if (isPieChart(vifAuthoring)) {
+        configuration = this.renderPieChartControls();
       } else if (isRegionMap(vifAuthoring)) {
         configuration = this.renderRegionMapControls();
       } else if (isColumnChart(vifAuthoring)) {

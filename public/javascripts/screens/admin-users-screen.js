@@ -31,6 +31,20 @@ $(function() {
     });
   });
 
+  $('#adminContent .adminUsersTable .removeButton').click(function(e) {
+    e.preventDefault();
+    var id = $(this).closest('form')[0].getAttribute('user_id');
+    var $select = $(this);
+
+    $.socrataServer.makeRequest({
+      url: '/api/users?method=promote&name=' + id + '&role=0',
+      type: 'PUT',
+      success: function() {
+        $select.closest('tr').remove();
+      }
+    });
+  });
+
   var $userTable = $('#adminContent .adminUsersTable'),
     $futuresTable = $('#adminContent .futureUsersTable'),
     $bothTables = $('#adminContent .gridList'),

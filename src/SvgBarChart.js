@@ -52,7 +52,6 @@ $.fn.socrataSvgBarChart = function(originalVif) {
   }
 
   function attachInteractionEvents() {
-
     $element.on('SOCRATA_VISUALIZATION_BAR_CHART_FLYOUT', handleFlyout);
   }
 
@@ -125,71 +124,68 @@ $.fn.socrataSvgBarChart = function(originalVif) {
   function updateData(newVif) {
 
     $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
-
     visualization.showBusyIndicator();
-
     detachInteractionEvents();
 
-    $.fn.socrataSvgColumnChart.validateVif(newVif).then(() => {
-      const dataRequests = newVif.
-        series.
-        map(
-          function(series, seriesIndex) {
+    $.fn.socrataSvgBarChart.validateVif(newVif).then(() => {
+      const processSeries = (series, seriesIndex) => {
+        const type = _.get(series, 'dataSource.type');
 
-            switch (series.dataSource.type) {
+        switch (type) {
 
-              case 'socrata.soql':
-                return makeSocrataDataRequest(newVif, seriesIndex);
+          case 'socrata.soql':
+            return makeSocrataDataRequest(newVif, seriesIndex);
 
-              default:
-                return Promise.reject(
-                  'Invalid/unsupported series dataSource.type: ' +
-                  `"{series.dataSource.type}".`
-                );
-            }
-          }
+          default:
+            return Promise.reject(
+              'Invalid/unsupported series dataSource.type: ' +
+              `"${series.dataSource.type}".`
+            );
+        }
+      };
+      const processData = (dataResponses) => {
+        const overMaxRowCount = dataResponses.some(
+          (dataResponse) => dataResponse.rows.length > MAX_BAR_COUNT
         );
+        const allSeriesMeasureValues = dataResponses.map((dataResponse) => {
+          const measureIndex = dataResponse.columns.indexOf('measure');
+
+          return dataResponse.rows.map((row) => row[measureIndex]);
+        });
+        const onlyNullOrZeroValues = _(allSeriesMeasureValues).
+          flatten().
+          compact().
+          isEmpty();
+
+        $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
+
+        visualization.hideBusyIndicator();
+
+        if (overMaxRowCount) {
+
+          visualization.renderError(
+            I18n.translate(
+              'visualizations.bar_chart.error_exceeded_max_bar_count'
+            ).format(MAX_BAR_COUNT)
+          );
+        } else if (onlyNullOrZeroValues) {
+
+          visualization.renderError(
+            I18n.translate('visualizations.common.error_no_data')
+          );
+        } else {
+
+          attachInteractionEvents();
+          visualization.render(newVif, dataResponses);
+        }
+      };
+      const dataRequests = newVif.series.map(processSeries);
 
       Promise.
         all(dataRequests).
-        then((dataResponses) => {
-          const overMaxRowCount = dataResponses.some(
-            (dataResponse) => dataResponse.rows.length > MAX_BAR_COUNT
-          );
-          const allSeriesMeasureValues = dataResponses.map((dataResponse) => {
-            const measureIndex = dataResponse.columns.indexOf('measure');
-
-            return dataResponse.rows.map((row) => row[measureIndex]);
-          });
-          const onlyNullOrZeroValues = _(allSeriesMeasureValues).
-            flatten().
-            compact().
-            isEmpty();
-
-          $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
-
-          visualization.hideBusyIndicator();
-
-          if (overMaxRowCount) {
-
-            visualization.renderError(
-              I18n.translate(
-                'visualizations.bar_chart.error_exceeded_max_bar_count'
-              ).format(MAX_BAR_COUNT)
-            );
-          } else if (onlyNullOrZeroValues) {
-
-            visualization.renderError(
-              I18n.translate('visualizations.common.error_no_data')
-            );
-          } else {
-
-            attachInteractionEvents();
-
-            visualization.render(newVif, dataResponses);
-          }
-        })
-    })['catch'](handleError);
+        then(processData);
+    }).
+    catch(handleError);
   }
 
   function makeSocrataDataRequest(vifToRender, seriesIndex) {
@@ -199,7 +195,9 @@ $.fn.socrataSvgBarChart = function(originalVif) {
       domain: series.dataSource.domain
     });
     const dimension = SoqlHelpers.dimension(vifToRender, seriesIndex);
+    const dimensionAlias = SoqlHelpers.dimensionAlias();
     const measure = SoqlHelpers.measure(vifToRender, seriesIndex);
+    const measureAlias = SoqlHelpers.measureAlias();
     const whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(
       vifToRender,
       seriesIndex
@@ -207,10 +205,6 @@ $.fn.socrataSvgBarChart = function(originalVif) {
     const whereClause = (whereClauseComponents.length > 0) ?
       'WHERE {0}'.format(whereClauseComponents) :
       '';
-    const isUnaggregatedQuery = (
-      _.isNull(series.dataSource.dimension.aggregationFunction) &&
-      _.isNull(series.dataSource.measure.aggregationFunction)
-    );
     const groupByClause = SoqlHelpers.aggregationClause(
       vifToRender,
       seriesIndex,
@@ -225,31 +219,21 @@ $.fn.socrataSvgBarChart = function(originalVif) {
       `series[${seriesIndex}].dataSource.limit`,
       MAX_BAR_COUNT + 1
     );
+    const isUnaggregatedQuery = (
+      _.isNull(series.dataSource.dimension.aggregationFunction) &&
+      _.isNull(series.dataSource.measure.aggregationFunction)
+    );
     // We only want to follow the showOtherCategory code path if that property
     // is set to true AND there is a defined limit.
     const showOtherCategory = (
-      _.get(
-        vifToRender,
-        `configuration.showOtherCategory`,
-        false
-      ) &&
+      _.get(vifToRender, 'configuration.showOtherCategory', false) &&
       _.isNumber(
-        _.get(
-          vifToRender,
-          `series[${seriesIndex}].dataSource.limit`,
-          null
-        )
+        _.get(vifToRender, `series[${seriesIndex}].dataSource.limit`, null)
       )
     );
-
-    let ascending;
-    let queryString;
-
-    function processQueryResponse(queryResponse) {
-      const dimensionIndex = queryResponse.columns.
-        indexOf(SoqlHelpers.dimensionAlias());
-      const measureIndex = queryResponse.columns.
-        indexOf(SoqlHelpers.measureAlias());
+    const processQueryResponse = (queryResponse) => {
+      const dimensionIndex = queryResponse.columns.indexOf(dimensionAlias);
+      const measureIndex = queryResponse.columns.indexOf(measureAlias);
 
       let valueAsNumber;
 
@@ -281,14 +265,16 @@ $.fn.socrataSvgBarChart = function(originalVif) {
       });
 
       return queryResponse;
-    }
+    };
+
+    let queryString;
 
     if (isUnaggregatedQuery) {
 
       queryString = `
         SELECT
-          ${dimension} AS ${SoqlHelpers.dimensionAlias()},
-          ${measure} AS ${SoqlHelpers.measureAlias()}
+          ${dimension} AS ${dimensionAlias},
+          ${measure} AS ${measureAlias}
         ${whereClause}
         ORDER BY ${orderClause}
         NULL LAST
@@ -297,8 +283,8 @@ $.fn.socrataSvgBarChart = function(originalVif) {
 
       queryString = `
         SELECT
-          ${dimension} AS ${SoqlHelpers.dimensionAlias()},
-          ${measure} AS ${SoqlHelpers.measureAlias()}
+          ${dimension} AS ${dimensionAlias},
+          ${measure} AS ${measureAlias}
         ${whereClause}
         GROUP BY ${groupByClause}
         ORDER BY ${orderClause}
@@ -309,8 +295,8 @@ $.fn.socrataSvgBarChart = function(originalVif) {
     return soqlDataProvider.
       query(
         queryString.replace(/[\n\s]+/g, ' '),
-        SoqlHelpers.dimensionAlias(),
-        SoqlHelpers.measureAlias()
+        dimensionAlias,
+        measureAlias
       ).
       then((queryResponse) => {
         const queryResponseRowCount = queryResponse.rows.length;
@@ -410,23 +396,23 @@ $.fn.socrataSvgBarChart = function(originalVif) {
 
             otherCategoryQueryString = `
               SELECT
-                '${otherCategoryName}' AS ${SoqlHelpers.dimensionAlias()},
-                COUNT(*) AS ${SoqlHelpers.measureAlias()}
+                '${otherCategoryName}' AS ${dimensionAlias},
+                COUNT(*) AS ${measureAlias}
               WHERE ${otherCategoryWhereClauseComponents}`;
           } else {
 
             otherCategoryQueryString = `
               SELECT
-                '${otherCategoryName}' AS ${SoqlHelpers.dimensionAlias()},
-                ${otherCategoryAggregationClause} AS ${SoqlHelpers.measureAlias()}
+                '${otherCategoryName}' AS ${dimensionAlias},
+                ${otherCategoryAggregationClause} AS ${measureAlias}
               WHERE ${otherCategoryWhereClauseComponents}`;
           }
 
           return soqlDataProvider.
             query(
               otherCategoryQueryString.replace(/[\n\s]+/g, ' '),
-              SoqlHelpers.dimensionAlias(),
-              SoqlHelpers.measureAlias()
+              dimensionAlias,
+              measureAlias
             ).
             then((otherCategoryQueryResponse) => {
 
@@ -481,7 +467,7 @@ $.fn.socrataSvgBarChart = function(originalVif) {
 //   ok: false,
 //   errorMessages: Array<String>
 // }
-$.fn.socrataSvgColumnChart.validateVif = (vif) =>
+$.fn.socrataSvgBarChart.validateVif = (vif) =>
   getSoqlVifValidator(vif).then(validator =>
     validator.
       requireAtLeastOneSeries().

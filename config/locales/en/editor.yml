@@ -221,9 +221,10 @@ en:
         crop: 'Crop'
         reset_image: 'Reset Image'
         loading:
-          uploading_image: 'Uploading image.'
           optimizing_mobile: 'Optimizing image size for mobile.'
           optimizing_mobile_with_cropping: 'Cropping and optimizing image for mobile.'
+          retrieving_image: 'Retrieving image.'
+          uploading_image: 'Uploading image.'
         errors:
           cropping: 'Sorry! It looks like cropping failed. Please try again later.'
           cannot_render_image: 'Sorry! There was a problem showing your image. Try uploading it again.'

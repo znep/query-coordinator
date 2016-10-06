@@ -1466,7 +1466,7 @@ export default function AssetSelectorRenderer(options) {
     var isCropping = assetSelectorStore.isCropping();
     var isCroppingUiEnabled = assetSelectorStore.isCroppingUiEnabled();
     var isImage = assetSelectorStore.getComponentType() === 'image';
-    var isNotGettyImage = !Constants.VALID_STORYTELLER_GETTY_IMAGE_URL_API_PATTERN.test(imageUrl);
+    var isGettyImage = Constants.VALID_STORYTELLER_GETTY_IMAGE_URL_API_PATTERN.test(imageUrl);
 
     var hasCompletedUpload = isUploadingFile && file.status === STATUS.COMPLETED;
     var doesNotHaveError = !_.has(componentProperties, 'reason');
@@ -1474,6 +1474,8 @@ export default function AssetSelectorRenderer(options) {
 
     if (file && file.status === STATUS.UPLOADING && file.progress < 1) {
       loadingMessage = 'editor.asset_selector.image_preview.loading.uploading_image';
+    } else if (file && file.status === STATUS.ACKNOWLEDGED && isGettyImage) {
+      loadingMessage = 'editor.asset_selector.image_preview.loading.retrieving_image';
     } else if (isCropping || file && file.status === STATUS.PROCESSING) {
       if (isCropping) {
         loadingMessage = 'editor.asset_selector.image_preview.loading.optimizing_mobile_with_cropping';
@@ -1496,7 +1498,7 @@ export default function AssetSelectorRenderer(options) {
 
     _container.
       find('.getty-image-info').
-      toggleClass('hidden', isNotGettyImage);
+      toggleClass('hidden', !isGettyImage);
 
     _container.
       find('.image-crop-btn').

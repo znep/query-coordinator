@@ -242,8 +242,6 @@ export function update(transform: Transform = null, action): Transform {
 const NUM_PREVIEW_ROWS = 5;
 const I18nPrefixed = I18n.screens.dataset_new.import_columns;
 
-const commonErrorsSupportLink = 'http://support.socrata.com/entries/23786838-Import-Warning-and-Errors';
-
 
 export function view({ transform, fileName, sourceColumns, dispatch, goToPage, goToPrevious }) {
   const problems = Validation.validate(transform.columns, sourceColumns);

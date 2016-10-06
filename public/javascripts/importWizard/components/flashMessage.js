@@ -16,8 +16,9 @@ function flashMessage({ flashType, children }) {
 
 flashMessage.propTypes = {
   flashType: PropTypes.oneOf(['info', 'success', 'warning', 'error']).isRequired,
-  children: PropTypes.oneOf([
+  children: PropTypes.oneOfType([
     PropTypes.element,
+    PropTypes.string,
     PropTypes.arrayOf(PropTypes.element)
   ]).isRequired
 };

@@ -51,8 +51,14 @@ class OdysseusController < ApplicationController
 
     begin
       res = Net::HTTP.start(uri.host, uri.port){ |http| http.request(req) }
-    rescue
-      return render_error(502)
+    rescue => e
+      if e.is_a?(Errno::ECONNREFUSED)
+        Rails.logger.error("Got ECONNREFUSED when attempting to reach Odysseus on #{odysseus_addr}")
+        return render_error(502)
+      else
+        Rails.logger.error("Got an unexpected error when attempting to reach Odysseus on #{odysseus_addr} - in edge cases, this may occur when a user has created too many goals")
+        raise e
+      end
     end
 
     if res.code == '400'

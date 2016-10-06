@@ -2,6 +2,7 @@ window._ = require('lodash'); // eslint-disable-line angular/window-service
 window.socrata = window.socrata || {}; // eslint-disable-line angular/window-service
 window.socrata.utils = require('socrata-utils'); // eslint-disable-line angular/window-service
 
+require('script!plugins/url');
 require('script!dotdotdot');
 require('script!javascript-detect-element-resize/jquery.resize.js');
 require('script!../../util/jquery-extensions');
@@ -10,7 +11,6 @@ require('script!../../util/jquery-extensions');
 require('../../util/lodash-mixins');
 require('imports?DOMPurify=dompurify!../../util/dompurify-extensions');
 
-require('script!plugins/url');
 require('script!plugins/modernizr');
 require('../../lib/RxExtensions');
 

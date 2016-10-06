@@ -2,7 +2,7 @@
 # The client would then PUT a file to this URL which will then be passed into
 # the Document model to attach the file.
 class Api::V1::UploadsController < ApplicationController
-  force_ssl
+  force_ssl_for_internet_requests
 
   def create
     begin

@@ -438,10 +438,12 @@
           }
         }
 
+        var name = _.get(rtmObj, 'settings.view.name', '');
         var $newNode = $.tag2({
           _: 'div',
           className: ['fullHeight', 'renderTypeNode', 'hide', typeInfo.domId],
-          'data-renderType': type
+          'data-renderType': type,
+          'aria-label': name + ' (' + type + ')'
         });
         if ($.isBlank($beforeItem) || $beforeItem.length < 1) {
           rtmObj.$dom().append($newNode);

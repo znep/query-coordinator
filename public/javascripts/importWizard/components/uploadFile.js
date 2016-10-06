@@ -314,7 +314,11 @@ function renderErrorMessage(fileUpload) {
     // we have a million services that don't return errors like this
   }
 
-  return <FlashMessage flashType="error" message={display} />;
+  return (
+    <FlashMessage flashType="error">
+      {display}
+    </FlashMessage>
+  );
 }
 
 export function view({ dispatch, fileUpload, operation, goToPrevious }) {

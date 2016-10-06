@@ -22,7 +22,11 @@ type FileDownload
 
 export function renderErrorMessage(fileDownload) {
   if (!fileDownload.error) return;
-  return <FlashMessage flashType="error" message={fileDownload.error} />;
+  return (
+    <FlashMessage flashType="error">
+      {fileDownload.error}
+    </FlashMessage>
+  );
 }
 
 

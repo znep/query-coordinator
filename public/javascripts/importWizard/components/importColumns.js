@@ -1,6 +1,8 @@
 /* global importSource */
 import React, { PropTypes } from 'react';
 import format from 'stringformat';
+import 'jquery.awesomereorder';
+import _ from 'lodash';
 
 import * as ST from '../sharedTypes';
 import * as UploadFile from './uploadFile';
@@ -13,7 +15,6 @@ import * as Utils from '../utils';
 import * as Validation from './importColumns/validation';
 import NavigationControl from './navigationControl';
 import * as SaveState from '../saveState';
-import 'jquery.awesomereorder';
 import FlashMessage from './flashMessage';
 
 /*
@@ -241,8 +242,6 @@ export function update(transform: Transform = null, action): Transform {
 const NUM_PREVIEW_ROWS = 5;
 const I18nPrefixed = I18n.screens.dataset_new.import_columns;
 
-const commonErrorsSupportLink = 'http://support.socrata.com/entries/23786838-Import-Warning-and-Errors';
-
 
 export function view({ transform, fileName, sourceColumns, dispatch, goToPage, goToPrevious }) {
   const problems = Validation.validate(transform.columns, sourceColumns);
@@ -260,11 +259,9 @@ export function view({ transform, fileName, sourceColumns, dispatch, goToPage, g
     <div>
       <div className="importColumnsPane columnsPane">
 
-        <FlashMessage flashType="success" message={I18nPrefixed.upload_success} />
-        <div className="importErrorHelpText">
-          <p dangerouslySetInnerHTML={{__html: format(I18n.screens.dataset_new.import_help, commonErrorsSupportLink)}}>
-          </p>
-        </div>
+        <FlashMessage flashType="success">
+          {I18nPrefixed.upload_success}
+        </FlashMessage>
         <p className="headline">{format(I18nPrefixed.headline_interpolate, fileName)}</p>
         <h2>{I18nPrefixed.subheadline}</h2>
         <ViewColumns columns={transform.columns} dispatch={dispatch} sourceColumns={sourceColumns} />

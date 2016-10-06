@@ -18,7 +18,11 @@ type EsriState
 
 function renderErrorMessage(connectToEsri) {
   if (!connectToEsri.error) return;
-  return <FlashMessage flashType="error" message={connectToEsri.error} />;
+  return (
+    <FlashMessage flashType="error">
+      {connectToEsri.error}
+    </FlashMessage>
+  );
 }
 
 function createLayer(goToPrevious, onComplete) {

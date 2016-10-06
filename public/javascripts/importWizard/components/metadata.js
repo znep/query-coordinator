@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { combineReducers } from 'redux';
 import isEmail from 'validator/lib/isEmail';
 import RadioGroup from 'react-radio-group';
+import format from 'stringformat';
 
 import * as Server from '../server';
 import FlashMessage from './flashMessage';
@@ -777,7 +778,13 @@ function renderFlashMessageApiError(apiCall, privacyApiCall) {
         return getErrorMessage(call.error);
       }
     });
-    return <FlashMessage flashType="error" message={messages} />;
+    return (
+      <FlashMessage flashType="error">
+        {messages.length > 1
+          ? <ul>{messages.map((message) => <li>{message}</li>)}</ul>
+          : messages[0]}
+      </FlashMessage>
+    );
   }
 }
 
@@ -813,7 +820,16 @@ function renderFlashMessageImportError(importError) {
   if (!hasImportError(importError)) {
     return;
   }
-  return <FlashMessage flashType="error" message={importError} />;
+  return (
+    <FlashMessage flashType="error">
+      <p>{importError}</p>
+      <p
+        dangerouslySetInnerHTML={{__html: format(
+        I18n.screens.dataset_new.import_help,
+        {common_errors: 'https://support.socrata.com/hc/en-us/articles/202950008-Import-Warning-and-Errors'}
+      )}} />
+    </FlashMessage>
+  );
 }
 
 export function showMapLayer(operation) {
@@ -836,7 +852,11 @@ function renderMetadataSuccessMessage(operation, importError, apiCall) {
   if (operation === 'CREATE_FROM_SCRATCH' || operation === 'LINK_EXTERNAL') {
     return;
   }
-  return <FlashMessage flashType="success" message={metadataSuccessMessage(operation)} />;
+  return (
+    <FlashMessage flashType="success">
+      {metadataSuccessMessage(operation)}
+    </FlashMessage>
+  );
 }
 
 function apiCallInProgress(metadata) {

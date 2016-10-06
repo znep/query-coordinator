@@ -272,10 +272,14 @@ function whereClauseFromSeries(vif, seriesIndex, filterOwnColumn) {
 
 function orderByClauseFromSeries(vif, seriesIndex) {
   const series = _.get(vif, `series[${seriesIndex}]`);
-  const dimensionAggregation = _.get(series, 'dataSource.dimension.aggregationFunction');
-  const measureAggregation = _.get(series, 'dataSource.measure.aggregationFunction');
-  const isUnaggregated = _.isNull(dimensionAggregation) && _.isNull(measureAggregation);
-  const orderBy = _.get(series, 'dataSource.orderBy', { parameter: 'measure', sort: 'desc' });
+  const orderBy = _.get(
+    series,
+    'dataSource.orderBy',
+    {
+      parameter: 'measure',
+      sort: 'desc'
+    }
+  );
 
   utils.assertIsOneOfTypes(orderBy.parameter, 'string');
   utils.assertIsOneOfTypes(orderBy.sort, 'string');

@@ -139,7 +139,7 @@ describe('SvgPieChart', () => {
 
       var slice = pieChart.$element.find('.slice')[0];
 
-      pieChart.$element.on('SOCRATA_VISUALIZATION_FLYOUT', event => {
+      pieChart.$element.on('SOCRATA_VISUALIZATION_PIE_CHART_FLYOUT', event => {
         let payload = event.originalEvent.detail;
         let $content = $(payload.content);
 
@@ -157,7 +157,7 @@ describe('SvgPieChart', () => {
       var slice = pieChart.$element.find('.slice')[0];
       var legendRow = pieChart.$element.find('.legend-row')[0];
 
-      pieChart.$element.on('SOCRATA_VISUALIZATION_FLYOUT', event => {
+      pieChart.$element.on('SOCRATA_VISUALIZATION_PIE_CHART_FLYOUT', event => {
         let payload = event.originalEvent.detail;
         let $content = $(payload.content);
 

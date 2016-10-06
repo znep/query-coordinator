@@ -1834,6 +1834,8 @@
       if (to) {
         cellNavToXY(to, event, false, wrap);
       }
+
+      return !_.isNull(to);
     };
 
     // Move the active cell an arbitrary number of rows.  Supports an value
@@ -1896,6 +1898,12 @@
     };
 
     var doKeyNav = function(event) {
+      var resetFocusToActiveCell = function() {
+        hideActiveCell();
+        focus();
+        setTimeout(expandActiveCell, 0);
+      };
+
       if (!cellNav) {
         return;
       }
@@ -1962,7 +1970,13 @@
           // Tab
           var direction = event.shiftKey ? -1 : 1;
           event.shiftKey = false;
-          navigateX(direction, event, true);
+          var navigated = navigateX(direction, event, true);
+
+          if (!navigated) {
+            resetFocusToActiveCell();
+            return;
+          }
+
           break;
 
         case 13:
@@ -1998,9 +2012,7 @@
           return;
       }
 
-      hideActiveCell();
-      focus();
-      setTimeout(expandActiveCell, 0);
+      resetFocusToActiveCell();
 
       // We may be handling an event from the rich text editor iframe,
       //  which in IE we cannot access.  If it throws an error, just ignore

@@ -11,6 +11,19 @@ class ApplicationController < ActionController::Base
   prepend_before_filter :set_story_uid
   before_filter :handle_authorization
 
+  # If the request is coming from the Internet at large,
+  # force SSL. Otherwise, allow plain HTTP (so inter-service
+  # connections can still use HTTP).
+  def self.force_ssl_for_internet_requests
+    force_ssl if: :is_plain_http_from_public_internet?
+  end
+
+  # Returns true if the request appears to be a PLAIN HTTP
+  # request originating from the public Internet.
+  def is_plain_http_from_public_internet?
+    request.headers['HTTP_X_FORWARDED_PROTO'] == 'http'
+  end
+
   # Returns the current user, or nil
   #
   # ==== Examples

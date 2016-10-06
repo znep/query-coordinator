@@ -1,5 +1,5 @@
 class Api::V1::PublishedController < ApplicationController
-  force_ssl
+  force_ssl_for_internet_requests
 
   # Gets the latest published version of a story.
   def latest

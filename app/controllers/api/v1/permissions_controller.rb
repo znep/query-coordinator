@@ -1,5 +1,5 @@
 class Api::V1::PermissionsController < ApplicationController
-  force_ssl
+  force_ssl_for_internet_requests
 
   def update
     permissions = PermissionsUpdater.new(current_user, current_user_story_authorization, params[:uid])

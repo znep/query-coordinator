@@ -26,6 +26,8 @@ import {
   isValidBarChartVif,
   isColumnChart,
   isValidColumnChartVif,
+  isPieChart,
+  isValidPieChartVif,
   isHistogram,
   isValidHistogramVif,
   isRegionMap,
@@ -121,6 +123,21 @@ export var Visualization = React.createClass({
     }
   },
 
+  pieChart() {
+    var { vif } = this.props;
+    var $visualizationPreview = $(this.visualizationPreview());
+    var alreadyRendered = $visualizationPreview.has('.pie-chart').length === 1;
+
+    if (alreadyRendered) {
+      this.updateVisualization();
+    } else {
+      this.destroyVisualizationPreview();
+
+      $visualizationPreview.
+      socrataSvgPieChart(vif);
+    }
+  },
+
   histogram() {
     const { vif } = this.props;
     const $visualizationPreview = $(this.visualizationPreview());
@@ -205,6 +222,8 @@ export var Visualization = React.createClass({
         this.columnChart();
       } else if (isTimelineChart(vifAuthoring) && isValidTimelineChartVif(vifAuthoring)) {
         this.timelineChart();
+      } else if (isPieChart(vifAuthoring) && isValidPieChartVif(vifAuthoring)) {
+        this.pieChart();
       } else if (isFeatureMap(vifAuthoring) && isValidFeatureMapVif(vifAuthoring)) {
         this.featureMap();
       } else if (isRegionMap(vifAuthoring) && isValidRegionMapVif(vifAuthoring)) {

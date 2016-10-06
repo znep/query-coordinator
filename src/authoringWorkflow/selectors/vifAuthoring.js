@@ -318,6 +318,25 @@ export const isValidTimelineChartVif = createSelector(
   }
 );
 
+export const isPieChart = createSelector(
+  getVisualizationType,
+  type => type === 'pieChart'
+);
+
+export const isValidPieChartVif = createSelector(
+  getDimension,
+  getMeasure,
+  getDatasetUid,
+  getDomain,
+  (dimension, measure, datasetUid, domain) => {
+    var hasDimension = _.isString(_.get(dimension, 'columnName'));
+    var hasDatasetUid = _.isString(datasetUid);
+    var hasDomain = _.isString(domain);
+
+    return hasDimension && hasDatasetUid && hasDomain;
+  }
+);
+
 export const isInsertableVisualization = createSelector(
   isBarChart,
   isValidBarChartVif,
@@ -325,6 +344,8 @@ export const isInsertableVisualization = createSelector(
   isValidRegionMapVif,
   isColumnChart,
   isValidColumnChartVif,
+  isPieChart,
+  isValidPieChartVif,
   isFeatureMap,
   isValidFeatureMapVif,
   isTimelineChart,
@@ -339,6 +360,8 @@ export const isInsertableVisualization = createSelector(
     validRegionMap,
     isColumnChart,
     validColumnChart,
+    isPieChart,
+    validPieChart,
     isFeatureMap,
     validFeatureMap,
     isTimelineChart,
@@ -351,6 +374,7 @@ export const isInsertableVisualization = createSelector(
       isBarChart && validBarChart ||
       isRegionMap && validRegionMap ||
       isColumnChart && validColumnChart ||
+      isPieChart && validPieChart ||
       isFeatureMap && validFeatureMap ||
       isTimelineChart && validTimelineChart ||
       isHistogram && validHistogramVif

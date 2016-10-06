@@ -83,7 +83,7 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
     if (error.errorMessages) {
       messages = error.errorMessages;
     } else {
-      messages = I18n.translate('visualizations.common.error_generic')
+      messages = I18n.translate('visualizations.common.error_generic');
     }
 
     visualization.renderError(messages);

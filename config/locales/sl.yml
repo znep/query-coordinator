@@ -617,7 +617,7 @@ sl:
           popularity: Priljubljenost
           rss: RSS
           type: Vrsta
-        timeout: Oprostite. Rezultatov trenutno ni bilo mogoče pridobiti. Prosimo, poskusite znova kasneje.
+        error: Oprostite. Rezultatov trenutno ni bilo mogoče pridobiti. Prosimo, poskusite znova kasneje.
       ordered_topics:
       row_results:
         less_link: Manj

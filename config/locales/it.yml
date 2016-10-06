@@ -616,7 +616,7 @@ it:
           popularity: Popolarità
           rss: RSS
           type: Tipologia
-        timeout: Siamo spiacenti. I risultati non possono essere recuperati in questo momento. Ti preghiamo di riprovare più tardi.
+        error: Siamo error spiacenti. I risultati non possono essere recuperati in questo momento. Ti preghiamo di riprovare più tardi.
       ordered_topics: Tags ordinati
       row_results:
         less_link: Meno
@@ -862,7 +862,7 @@ it:
       row_count: Numero totale di righe %{count}
       sort_ascending: Ordinamento Ascendente
       sort_descending: Ordinamento Discendente
-      start_page: 
+      start_page:
       totals: Totali
       view_cell_comments: Visualizza i commenti per questa cella
       view_first_row: Visualizza prima riga
@@ -1601,7 +1601,7 @@ it:
       title: Impostazioni della Pagina
   date:
     abbr_month_names:
-    - 
+    -
     - Gen
     - Feb
     - Mar
@@ -1615,7 +1615,7 @@ it:
     - Nov
     - Dic
     month_names:
-    - 
+    -
     - Gennaio
     - Febbraio
     - Marzo
@@ -2796,7 +2796,7 @@ it:
               url_placeholder: http://data.evergreen.gov
             title: Barra d'intestazione
           homepage:
-            fields: 
+            fields:
             title: Pagina iniziale
           social:
             fields:

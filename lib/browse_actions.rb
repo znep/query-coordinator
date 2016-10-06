@@ -270,7 +270,7 @@ module BrowseActions
       port: request.port,
       disable: {},
       no_results_text: t('controls.browse.listing.no_results'),
-      timeout_text: t('controls.browse.listing.timeout'),
+      timeout_text: t('controls.browse.listing.error'),
       base_url: base_url,
       view_type: 'table'
     }

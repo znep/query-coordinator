@@ -616,7 +616,7 @@ pt:
           popularity: Popularidade
           rss: RSS
           type: Tipo
-        timeout: Desculpe-nos. Atualmente os resultados não podem ser apresentados. Por favor tente novamente mais tarde.
+        error: Desculpe-nos. Atualmente os resultados não podem ser apresentados. Por favor tente novamente mais tarde.
       ordered_topics:
       row_results:
         less_link: Menos

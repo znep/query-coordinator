@@ -616,7 +616,7 @@ ro:
           popularity: Popularitate
           rss: RSS
           type: Tip
-        timeout: Ne pare rău. Rezultatele nu au putut fi recuperate în acest moment. Vă rugăm să încercaţi mai târziu.
+        error: Ne pare rău. Rezultatele nu au putut fi recuperate în acest moment. Vă rugăm să încercaţi mai târziu.
       ordered_topics:
       row_results:
         less_link: Mai puţin

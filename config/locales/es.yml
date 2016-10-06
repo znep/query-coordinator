@@ -616,7 +616,7 @@ es:
           popularity: Popularidad
           rss: 'RSS '
           type: Tipo
-        timeout: Lo sentimos. Los resultados no se pueden  recuperar en este momento. Por favor, trate de nuevo más tarde.
+        error: Lo sentimos. Los resultados no se pueden  recuperar en este momento. Por favor, trate de nuevo más tarde.
       ordered_topics: Temas ordenados
       row_results:
         less_link: Menos

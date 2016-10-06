@@ -616,7 +616,7 @@ zh:
           popularity: "关注度"
           rss: RSS
           type: "类型"
-        timeout: "抱歉，本次未能搜索到结果，请稍后再试。"
+        error: "抱歉，本次未能搜索到结果，请稍后再试。"
       ordered_topics:
       row_results:
         less_link: "更少"

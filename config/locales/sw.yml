@@ -618,7 +618,7 @@ sw:
           popularity: Umaarufu
           rss: RSS
           type: Aina
-        timeout: Tunasikitika. Matokeo hayakuweza kupatikana kwa sasa. Tafadhali jaribu tena baadaye.
+        error: Tunasikitika. Matokeo hayakuweza kupatikana kwa sasa. Tafadhali jaribu tena baadaye.
       ordered_topics:
       row_results:
         less_link: Kidogo

@@ -357,32 +357,38 @@ class AdministrationController < ApplicationController
   #
 
   def users
-    user_search_client = Cetera::Utils.user_search_client(forwardable_session_cookies)
-    if !params[:username].blank?
-      @search = params[:username]
-      users = user_search_client.find_all_by_query(@search)
-      @user_search_results = Cetera::Results::UserSearchResult.new(users).results
-      @futures = FutureAccount.find.select { |f| f.email.downcase.include? params[:username].downcase }
-    else
-      roled_users = user_search_client.find_all_by_domain(CurrentDomain.cname)
-      user_results = Cetera::Results::UserSearchResult.new(roled_users).results
-      @admins = user_results.sort_by(&:sort_key)
-      @futures = FutureAccount.find
-    end
+    begin
+      user_search_client = Cetera::Utils.user_search_client(forwardable_session_cookies)
+      if params[:username].present?
+        @search = params[:username]
+        users = user_search_client.find_all_by_query(@search)
+        @user_search_results = Cetera::Results::UserSearchResult.new(users).results
+        @futures = FutureAccount.find.select { |f| f.email.downcase.include? params[:username].downcase }
+      else
+        roled_users = user_search_client.find_all_by_domain(CurrentDomain.cname)
+        user_results = Cetera::Results::UserSearchResult.new(roled_users).results
+        @admins = user_results.sort_by(&:sort_key)
+        @futures = FutureAccount.find
+      end
 
-    if @user_search_results.nil?
-      @users_list = @admins
-      @existing_user_actions = true
-    elsif @user_search_results.empty?
-      @table_title = t('screens.admin.users.no_users_found')
-    else
-      @table_title = t('screens.admin.users.search_results', :term => @search)
-      @users_list = @user_search_results
-      @existing_user_actions = false
+      if @user_search_results.blank?
+        @users_list = @admins
+        @existing_user_actions = true
+      elsif @user_search_results.empty?
+        @table_title = t('screens.admin.users.no_users_found')
+      else
+        @table_title = t('screens.admin.users.search_results', :term => @search)
+        @users_list = @user_search_results
+        @existing_user_actions = false
+      end
+    rescue => e
+      Rails.logger.warn("Error reaching Cetera: #{e.inspect}")
+      @users_list = nil
+      flash.now[:notice] = t('controls.browse.listing.error')
     end
 
     respond_to do |format|
-      format.html { render :action => 'users' }
+      format.html { render :template => '/administration/users' }
       format.csv do
         render :text =>
           # braces used here rather than do-end to avoid localJumpError

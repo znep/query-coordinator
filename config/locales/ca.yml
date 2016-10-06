@@ -616,7 +616,7 @@ ca:
           popularity: Popularitat
           rss: RSS
           type: Tipus
-        timeout: Ho lamentem. No podem mostrar resultats ara mateix. Provi més tard.
+        error: Ho lamentem. No podem mostrar resultats ara mateix. Provi més tard.
       ordered_topics: Temes endreçats
       row_results:
         less_link: Menys

@@ -619,7 +619,7 @@ nl:
           popularity: Populariteit
           rss: RSS
           type: Type
-        timeout: Het spijt ons. Resultaten kunnen op dit moment niet worden teruggevonden. Probeer het later opnieuw.
+        error: Het spijt ons. Resultaten kunnen op dit moment niet worden teruggevonden. Probeer het later opnieuw.
       ordered_topics: Bestelde onderwerpen
       row_results:
         less_link: Minder

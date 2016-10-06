@@ -616,7 +616,7 @@ fr:
           popularity: Popularité
           rss: RSS
           type: Type
-        timeout: Désolé. L’accès aux résultats est momentanément impossible. Veuillez réessayer ultérieurement.
+        error: Désolé. L’accès aux résultats est momentanément impossible. Veuillez réessayer ultérieurement.
       ordered_topics:
       row_results:
         less_link: Moins

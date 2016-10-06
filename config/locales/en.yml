@@ -611,7 +611,7 @@ en:
           popularity: Popularity
           rss: RSS
           type: Type
-        timeout: We're sorry. Results could not be retrieved at this time. Please try again later.
+        error: We're sorry. Results could not be retrieved at this time. Please try again later.
       ordered_topics: Ordered Topics
       row_results:
         less_link: Less

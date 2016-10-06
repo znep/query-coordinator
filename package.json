@@ -110,7 +110,7 @@
     "react-image-crop": "1.0.0-rc3",
     "socrata-components": "7.3.3",
     "socrata-utils": "2.0.0",
-    "socrata-visualizations": "17.15.3",
+    "socrata-visualizations": "18.1.4",
     "squire-rte": "git+https://github.com/socrata-platform/Squire.git#1.4.2-fixes",
     "unidragger": "2.1.0",
     "unipointer": "2.1.0"

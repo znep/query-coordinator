@@ -72,7 +72,7 @@ it:
       api_explorer:
         additional_resources: 'Risorse aggiuntive per questa API:'
         api_button: API
-        api_button_title: Accedi a questa sequenza di dati tramite API
+        api_button_title: Accedi a questa dataset tramite API
         code_libraries: Raccolte di codici.
         code_libraries_title: Scarica i client API dalla Libreria di codice
         documentation: Documentazione
@@ -104,11 +104,11 @@ it:
         number_of: numero di {0}
         sum_of: somma di {0}
       choropleth:
-        computation_in_progress: "<p>Inizializzazione dei limiti in corso per questa sequenza di dati. L'operazione potrebbe richiedere qualche minuto (o di più, per sequenze di dati più ampie). </p><p>La mappa verrà visualizzata quando l'inizializzazione sarà stata completata.</p>"
+        computation_in_progress: "<p>Inizializzazione dei limiti in corso per questa dataset. L'operazione potrebbe richiedere qualche minuto (o di più, per datasets più ampie). </p><p>La mappa verrà visualizzata quando l'inizializzazione sarà stata completata.</p>"
         has_cardinality_error: Questa mappa non può essere rappresentata, poiché tutti i punti cadono nello stesso luogo.
         has_no_polygons: Nessun dato presente all'interno dei limiti.
         no_preview_available: Nessuna anteprima disponibile
-        pending_computation: "<p>Questa è la prima volta che il presente limite viene utilizzato per questa sequenza di dati.</p><p>Potrebbero volerci alcuni minuti (o anche di più, per sequenze di dati più ampie) per rappresentare la mappa una volta che viene aggiunta alla pagina.</p>"
+        pending_computation: "<p>Questa è la prima volta che il presente limite viene utilizzato per questa dataset.</p><p>Potrebbero volerci alcuni minuti (o anche di più, per datasets più ampie) per rappresentare la mappa una volta che viene aggiunta alla pagina.</p>"
       common:
         by: entro
         cancel: Annulla
@@ -182,7 +182,7 @@ it:
           current_filter: Filtro attuale
           header: Righe come CSV (Excel)
           not_available: Non applicabile
-          not_available_specific: Non disponibile per questa sequenza di dati
+          not_available_specific: Non disponibile per questa dataset
         image:
           description: Salva un'immagine PNG di una visualizzazione
           header: Visualizzazione come immagine
@@ -233,10 +233,10 @@ it:
         official_view_explanation: Selezionando questa opzione, si darà alla visualizzazione una designazione speciale, che indicherà che si tratta di una Visualizzazione Ufficiale
         official_view_label: Visualizzazione Ufficiale
       manage_lens_dialog:
-        dataset_private_page_private: Poiché la sequenza di dati originale relativa a questa pagina è impostata su <b>Privata</b>, essa non può essere resa pubblica. Soltanto gli utenti con accesso privilegiato possono vederla ed essa non apparirà all'interno del catalogo pubblico.
-        dataset_private_page_public: <span class="icon-avviso"></span> La sequenza di dati originale relativa a questa pagina è impostata su <b>Privata</b>, quindi, anche se la pagina viene impostata su "Pubblica", chiunque sia privo dell'accesso alla sequenza di dati originale non sarà in grado di visualizzarla. Essa continuerà ad apparire all'interno del catalogo pubblico. Dovresti considerare di impostare la sequenza di dati su "Pubblica", oppure impostare questa pagina su "Privata".
+        dataset_private_page_private: Poiché la dataset originale relativa a questa pagina è impostata su <b>Privata</b>, essa non può essere resa pubblica. Soltanto gli utenti con accesso privilegiato possono vederla ed essa non apparirà all'interno del catalogo pubblico.
+        dataset_private_page_public: <span class="icon-avviso"></span> La dataset originale relativa a questa pagina è impostata su <b>Privata</b>, quindi, anche se la pagina viene impostata su "Pubblica", chiunque sia privo dell'accesso alla dataset originale non sarà in grado di visualizzarla. Essa continuerà ad apparire all'interno del catalogo pubblico. Dovresti considerare di impostare la dataset su "Pubblica", oppure impostare questa pagina su "Privata".
         dataset_public_page_private: Questa pagina è impostata su <b>Privata</b>. Pertanto, solamente gli utenti con accesso privilegiato possono vederla ed essa non apparirà all'interno del catalogo pubblico.
-        dataset_public_page_public: Questa pagina e la relativa sequenza di dati originale sono entrambe <b>Pubbliche</b>, quindi chiunque potrà vedere questa pagina ed essa apparirà all'interno del catalogo pubblico.
+        dataset_public_page_public: Questa pagina e la relativa dataset originale sono entrambe <b>Pubbliche</b>, quindi chiunque potrà vedere questa pagina ed essa apparirà all'interno del catalogo pubblico.
         error:
           ownership: Il proprietario non può essere modificato.
           preamble: 'Alcune delle tue modifiche non sono state salvate:'
@@ -254,7 +254,7 @@ it:
         sharing:
           add_new: Aggiungi nuovo
           contributor: Contribuente
-          inherited_description: 'Ereditato dalla sequenza di dati originale:'
+          inherited_description: 'Ereditato dalla dataset originale:'
           keep: Mantieni
           new_share_dialog:
             add_more: Aggiungi altri
@@ -270,7 +270,7 @@ it:
         title: Gestisci
         unsaved_changes_message: Hai delle modifiche non salvate
         visibility:
-          dataset_is_private: Questa Data Lens si basa sulla sequenza di dati privata {0}. La Data Lens può essere soltanto mostrata nel catalogo se la fonte della sequenza di dati è resa pubblica
+          dataset_is_private: Questa Data Lens si basa sulla dataset privata {0}. La Data Lens può essere soltanto mostrata nel catalogo se la fonte della dataset è resa pubblica
           hidden: Nascosta dal catalogo
           shown: Mostrata nel catalogo
           title: Visibilità
@@ -283,7 +283,7 @@ it:
         data_as_csv: Dati originali completi in formato CSV (Excel)
         edit_description_prompt: Dai alla tua pagina una buona descrizione che aiuti le persone a capire la storia che i tuoi dati cercano di raccontare. (Facoltativo)
         page_name_placeholder: Senza titolo
-        source_dataset: sequenza di dati originale
+        source_dataset: dataset originale
         validation_error_max_length: Il tuo titolo è troppo lungo
         validation_error_min_length: Inserisci un titolo
         validation_error_required: Inserisci un titolo
@@ -420,14 +420,14 @@ it:
       actions:
         about:
           button: Informazioni
-          title: Informazioni sulla sequenza di dati
+          title: Informazioni sulla dataset
         all_options: Visualizza tutti
         clear_all: Elimina tutte le opzioni
         clear_facet: "(Tutti)"
         compact_list: Visualizza come lista compatta
-        create_dataset: Crea o carica la tua sequenza di dati
-        create_dataset_short: Crea una nuova sequenza di dati
-        create_dataset_shorter: Sequenza di dati
+        create_dataset: Crea o carica la tua dataset
+        create_dataset_short: Crea una nuova dataset
+        create_dataset_shorter: Dataset
         create_dataset_verb: Crea
         create_resource: Crea una nuova risorsa Socrata
         create_resource_short: Crea nuovo...
@@ -454,20 +454,20 @@ it:
         rich_list: Visualizza come lista espansa
         share_button: Condividi
         subscribe: Sottoscrivi
-        suggest_dataset: Non trovi quello che stavi cercando? Suggerisci una sequenza di dati.
-        suggest_dataset_short: Suggerisci una sequenza di dati
+        suggest_dataset: Non trovi quello che stavi cercando? Suggerisci una dataset.
+        suggest_dataset_short: Suggerisci una dataset
         suggest_dataset_verb: Suggerisci
-      back_to_dataset: Torna alla sequenza di dati
+      back_to_dataset: Torna alla dataset
       browse2:
         api:
           link:
             label: Documentazione API
-            title: Leggi Documentazione API per questa sequenza di dati
+            title: Leggi Documentazione API per questa dataset
         comment_count: Numero di commenti
         create:
           dataset:
-            label: Crea/Carica una sequenza di dati
-            title: Crea o carica una sequenza di dati sulla piattaforma Socrata
+            label: Crea/Carica una dataset
+            title: Crea o carica una dataset sulla piattaforma Socrata
           label: Aggiungere nuova
           story:
             label: Crea una Storia Socrata
@@ -486,8 +486,8 @@ it:
           calendar: Calendario
           chart: Grafico
           data_lens: Data Lens
-          dataset: Sequenza di dati
-          draft: Bozza della sequenza di dati
+          dataset: Dataset
+          draft: Bozza della dataset
           filter: Visualizzazione filtrata
           form: Modulo
           href: Link Esterno
@@ -563,7 +563,7 @@ it:
           relevance: Più rilevanti
         topics:
           empty: Nessun tema assegnato
-          label: Temi
+          label: Tags
           more: e altri %{count}
         view_count:
           label: Visualizzazioni
@@ -584,24 +584,24 @@ it:
         moderation_status_singular_title: moderazione
         moderation_status_title: Stato
         topics_singular_title: tema
-        topics_title: Temi
+        topics_title: Tags
         view_types:
           apis: API
           blob: File e documenti
           calendars: Calendari
           charts: Grafici
           data_lens: Pagine Data Lens
-          datasets: Sequenze di dati
-          draft: Crea una bozza delle sequenze di dati
+          datasets: Datasets
+          draft: Crea una bozza delle datasets
           filters: Viste filtrate
           forms: Moduli
-          href: Sequenze di dati esterne
+          href: Dati esterne
           maps: Mappe
           pulse: Pulse
           pulse_help: Che cos'è Pulse
           story: Storie
           story_help: Nuovo
-          unpublished: Copie di lavorazione
+          unpublished: Copie di lavoro
         view_types_singular_title: tipologia
         view_types_title: Tipologie di visualizzazione
       listing:
@@ -617,10 +617,10 @@ it:
           rss: RSS
           type: Tipologia
         timeout: Siamo spiacenti. I risultati non possono essere recuperati in questo momento. Ti preghiamo di riprovare più tardi.
-      ordered_topics: Temi ordinati
+      ordered_topics: Tags ordinati
       row_results:
         less_link: Meno
-        matching_rows: Ricerca in corso per sequenze di dati per le righe corrispondenti
+        matching_rows: Ricerca in corso per datasets per le righe corrispondenti
         more_link: Ancora
         no_matching_rows: Nessuna riga corrispondente trovata.
         title_html: 'Mostrate <span class="rowResultCountText"></span> su <span class="totalResultCountText"></span> righe corrispondenti <a href="#" class="rowSearchLink">(vedi risultati)</a>:'
@@ -649,7 +649,7 @@ it:
           term: per "%{term}"
     charts:
       inaccessible: La visualizzazione non è accessibile o è mancante.
-      missing_column_html: Ops...sembra che sia stata effettuata una modifica alla sequenza di dati che alimenta questo grafico. Se sei il proprietario di questa pagina, consulta <a href="https://support.socrata.com/hc/en-us/articles/216102847">questo articolo di supporto</a> oppure contatta <a href="mailto:support@socrata.com">support@socrata.com</a> per avere assistenza.
+      missing_column_html: Ops...sembra che sia stata effettuata una modifica alla dataset che alimenta questo grafico. Se sei il proprietario di questa pagina, consulta <a href="https://support.socrata.com/hc/en-us/articles/216102847">questo articolo di supporto</a> oppure contatta <a href="mailto:support@socrata.com">support@socrata.com</a> per avere assistenza.
       negatives_in_data: 'Grafico non valido: presenti valori negativi'
       no_data: Nessun dato
       other_slice_label: Altro
@@ -673,7 +673,7 @@ it:
       auth_required: Devi effettuare l'accesso per %{action_phrase}
       dataset_picker:
         button: Scegli
-        title: Scegli una sequenza di dati da utilizzare
+        title: Scegli una dataset da utilizzare
       expander:
         collapse: Clicca per ridurre
         expand: Clicca per espandere
@@ -681,16 +681,16 @@ it:
         button: Carica immagine
       no_results: Nessun risultato
       rate:
-        auth_action_phrase: dai una valutazione a questa sequenza di dati
+        auth_action_phrase: dai una valutazione a questa dataset
       share:
         button_prompt: Socializza
-        button_tooltip: Condividi questa sequenza di dati
+        button_tooltip: Condividi questa dataset
         networks:
           email: E-mail
           facebook: Facebook
           twitter: Twitter
         share_story_text: 'Verifica %{name} su%{site}:'
-        share_text: 'Condividi %{name}, sequenza di dati con %{site}:'
+        share_text: 'Condividi %{name}, dataset con %{site}:'
       sidebar:
         tabs:
           about: Informazioni
@@ -804,14 +804,14 @@ it:
         base_explanation: Con i seguenti filtri di base
         base_info: Questi filtri vengono applicati sempre, assieme ai filtri extra inseriti in precedenza. Questi filtri non possono essere modificati, perché non disponi delle autorizzazioni necessarie per modificare l'attuale visualizzazione oppure perché vengono da una visualizzazione o da una sequenza dati generatrice.
         filter: Filtra
-        filter_based_on_contents: Filtra questa sequenza di dati in base al contenuto.
+        filter_based_on_contents: Filtra questa dataset in base al contenuto.
         no_conditions: Nessuna condizione ancora definita.
         no_suggestions: Nessun valore suggerito per questa colonna e per questo criterio.
         or: o
         simplified_message: Modalità semplificata.
         simplified_toggle: Vuoi accedere alla modalità avanzata?
         tutorial_html: Mai creato un filtro prima? Guarda una breve video guida <a href="/videos/popup#basic-filtering" rel="video" class="noRedirPrompt">qui</a>.
-        view_has_no_columns: Questa sequenza di dati non ha colonne da filtrare
+        view_has_no_columns: Questa dataset non ha colonne da filtrare
         view_must_be_valid: Questa visualizzazione deve essere valida
       menu:
         match_all: Soddisfa tutte le condizioni.
@@ -840,19 +840,19 @@ it:
       end_page: Ultima pagina
       errors:
         cannot_edit_at_this_time: In questo momento, la colonna non può essere modificata. Ti preghiamo di riprovare più tardi.
-        data_lens_is_incompatible_with_group_bys: Le sequenze di dati caratterizzate da raggruppamenti non possono essere utilizzate con pagina Data Lens. Ci scusiamo per l'inconveniente.
+        data_lens_is_incompatible_with_group_bys: Le datasets caratterizzate da raggruppamenti non possono essere utilizzate con pagina Data Lens. Ci scusiamo per l'inconveniente.
         primary_key_collision: Questo valore è già presente come chiave primaria. Non è possibile sovrascriverlo.
         row_locked_for_edit: Attualmente, non possiamo modificare una riga appena creata. Stiamo lavorando per renderlo possibile. Per il momento, aggiorna la pagina prima di modificare questa riga.
         something_went_wrong: Si è verificato un errore. Ricarica la pagina.
         timeout_on_bootstrap: Si è verificato un errore di timeout di connessione, ma stiamo ancora generando la tua Data Lens in background. Riprova tra qualche minuto.
       filter_this_column: Filtra questa colonna
-      geocodes_pending: Le righe nella colonna località non sono ancora state geo-codificate. Attendere fino a quando la pubblicazione di questa sequenza di dati non sarà completata.
+      geocodes_pending: Le righe nella colonna località non sono ancora state geo-codificate. Attendere fino a quando la pubblicazione di questa dataset non sarà completata.
       hide_column: Nascondi colonna
       menu: Menu
       must_enter_name: Devi inserire un nome per questa colonna
       new_row: Nuovo
       next_page: Pagina successiva
-      no_columns: La sequenza di dati %{uid} non ha colonne
+      no_columns: La dataset %{uid} non ha colonne
       no_rows: Nessuna riga da visualizzare
       page_size: Mostra %{pageSize} righe per pagina
       permission_denied: Non hai accesso a questa visualizzazione.
@@ -907,12 +907,12 @@ it:
       approved: Approvati
       attachment: Allegato
       attachments: Allegati
-      back_to_suggestions: Torna ai suggerimenti della sequenza di dati
+      back_to_suggestions: Torna ai suggerimenti della dataset
       browse: Sfoglia
       cancel: Annulla
       comments: Commenti
       contact_author: Contatta l'autore dei suggerimenti
-      dataset_suggestions: Suggerimenti della sequenza di dati
+      dataset_suggestions: Suggerimenti della dataset
       delete_attachment: allegato
       delete_confirm: Sei sicuro di voler cancellare questo %{type}?
       delete_error: Errore in fase di eliminazione di %{type}
@@ -1019,7 +1019,7 @@ it:
       blob: Bolla
       calendar_date: Data e ora
       checkbox: Casella di spunta
-      dataset_link: Collegamento alla sequenza di dati
+      dataset_link: Collegamento alla dataset
       date: Data e ora (con fuso orario)
       document: Documento
       drop_down_list: Scelta multipla
@@ -1266,20 +1266,20 @@ it:
   dataset_landing_page:
     action_buttons:
       api: API
-      comment: Commento su questa sequenza di dati
-      contact_owner: Contatta il proprietario della sequenza di dati
+      comment: Commento su questa dataset
+      contact_owner: Contatta il proprietario della dataset
       data: Visualizza dati
       download: Scarica
       odata: Accedi ai dati tramite OData
       share: Condividi
     add: Aggiungi
     api_flannel:
-      description: La Socrata Open Data API (SODA) fornisce un accesso programmatico a questa sequenza di dati che include la possibilità di impostare filtri, domande e aggregazioni di dati.
+      description: La Socrata Open Data API (SODA) fornisce un accesso programmatico a questa dataset che include la possibilità di impostare filtri, domande e aggregazioni di dati.
       developer_portal_button: Portale dello sviluppatore
       endpoint_title: Estremità API
       foundry_button: Documenti API
-      multiple_geo_layers: Questa sequenza di dati contiene molteplici strati geospaziali. Ciascuno strato ha la propria documentazione e la sua estremità API di seguito.
-      title: Accedi a questa sequenza di dati attraverso SODA API
+      multiple_geo_layers: Questa dataset contiene molteplici strati geospaziali. Ciascuno strato ha la propria documentazione e la sua estremità API di seguito.
+      title: Accedi a questa dataset attraverso SODA API
     back: Indietro
     blob_download:
       download: Scarica
@@ -1290,16 +1290,16 @@ it:
       title: Anteprima
     bootstrap_button: Crea una visualizzazione
     bootstrap_disabled_notice: I tuoi dati sono attualmente in fase di elaborazione. Aggiorna la pagina tra qualche minuto e potrai creare una nuova Data Lens.
-    bootstrap_message: Questa sequenza di dati non ha alcuna visualizzazione correlata. Desideri crearne una nuova adesso?
+    bootstrap_message: Questa dataset non ha alcuna visualizzazione correlata. Desideri crearne una nuova adesso?
     cancel: Annulla
     change: Modifica
     choose: Scegli
     close: Chiudi
-    contact_dataset_owner: Contatta il proprietario della sequenza di dati
+    contact_dataset_owner: Contatta il proprietario della dataset
     contact_dataset_owner_modal:
-      description: Invia un breve messaggio al proprietario della sequenza di dati per fare una domanda o un commento o per segnalare qualcosa di relativo ai dati.
+      description: Invia un breve messaggio al proprietario della dataset per fare una domanda o un commento o per segnalare qualcosa di relativo ai dati.
       email: Il tuo indirizzo e-mail
-      email_description: "(Il tuo indirizzo e-mail verrà condiviso con il proprietario della sequenza di dati, in modo che egli possa riferirsi a te)"
+      email_description: "(Il tuo indirizzo e-mail verrà condiviso con il proprietario della dataset, in modo che egli possa riferirsi a te)"
       error_empty_email: Inserisci il tuo indirizzo e-mail, in modo tale che il proprietario dei dati possa riferirsi a te.
       error_empty_message: Completa il modulo per inviare un messaggio.
       error_empty_recaptcha: Conferma che non sei un robot dando un'occhiata al riquadro sovrastante.
@@ -1313,14 +1313,14 @@ it:
       sending: Invio del modulo in corso
       subject: Oggetto
       success_html: "<b>Grazie!</b> Il tuo messaggio è stato inviato."
-      title: Invia un messaggio al proprietario di questa sequenza di dati
+      title: Invia un messaggio al proprietario di questa dataset
     copy: Copia
     copy_success: Copiato!
     dataset_contents:
       columns: Colonne
       row_display_unit: Ogni riga è
       rows: Righe
-      title: Cosa è contenuto in questa sequenza di dati?
+      title: Cosa è contenuto in questa dataset?
     dataset_preview:
       all_rows: Tutte le righe visibili
       grid_view_link: Esplora i dati
@@ -1363,7 +1363,7 @@ it:
         title: Titolo
         url: Link alla risorsa
       header: Gestisci il contenuto presentato
-      introduction: Cose vorresti che le persone vedessero quando visualizzano per la prima volta questa sequenza di dati? Promuovi fino a 3 risorse Socrata che usano questi dati oppure scegli di presentare qualsiasi risorsa esterna rilevante. Pensa a questa sezione come al volto dei tuoi dati.
+      introduction: Cose vorresti che le persone vedessero quando visualizzano per la prima volta questa dataset? Promuovi fino a 3 risorse Socrata che usano questi dati oppure scegli di presentare qualsiasi risorsa esterna rilevante. Pensa a questa sezione come al volto dei tuoi dati.
       introduction_blobby: Cosa ti piacerebbe che la gente vedesse la prima volta che vede questo oggetto? Promuovi fino a 3 risorse esterne relative a questo file o documento.
       introduction_external: Cosa ti piacerebbe che le persone vedessero la prima volta che guardano questo set di dati? Promuovi fino a 3 risorse esterne relative a questi dati
       preview: Anteprima del contenuto presentato
@@ -1379,7 +1379,7 @@ it:
       title: Contenuto presentato
       view_selector_modal:
         header: Presenta una visualizzazione Socrata
-        message: Scegli una visualizzazione o prospettiva filtrata che tu pensi possa davvero rappresentare la tua sequenza di dati. Questa sarà una delle prime cose che i tuoi utenti vedranno quando visualizzeranno questa sequenza di dati.
+        message: Scegli una visualizzazione o prospettiva filtrata che tu pensi possa davvero rappresentare la tua dataset. Questa sarà una delle prime cose che i tuoi utenti vedranno quando visualizzeranno questa dataset.
         view_fetch_error: Oh, no! Si è verificato un errore mentre stavamo tentando di riportare le visualizzazioni per questi dati. Riprova più tardi.
       visualization: Visualizzazione
     featured_views:
@@ -1406,40 +1406,40 @@ it:
       creation_date: Data di creazione
       data_last_updated: Data ultimo aggiornamento
       data_provided_by: Dati forniti da
-      dataset_owner: Proprietario della sequenza di dati
+      dataset_owner: Proprietario della dataset
       downloads: Download
       edit_metadata: Modifica i metadati
       license: Licenza
       licensing: Licenze e attibuzioni
       metadata_last_updated: Ultimo aggiornamento dei metadati
-      no_category_value: Questa sequenza di dati non è stata categorizzata
-      no_license_value: La licenza per questa sequenza di dati non è specificata
-      no_tags_value: Questa sequenza di dati non dispone di alcuna etichetta
+      no_category_value: Questa dataset non è stata categorizzata
+      no_license_value: La licenza per questa dataset non è specificata
+      no_tags_value: Questa dataset non dispone di alcuna etichetta
       no_value: "(nessuno)"
       source_link: Link fonte
-      tags: Etichette
-      title: Informazioni su questa sequenza di dati
-      topics: Temi
-      view_statistics: Visualizza tutte le statistiche relative a questa sequenza di dati
+      tags: Tags
+      title: Informazioni su questa dataset
+      topics: Tags
+      view_statistics: Visualizza tutte le statistiche relative a questa dataset
       views: Visualizzazioni
     more: Mostra altro
-    multiple_geo_layers: Questa sequenza di dati contiene molteplici strati geo-spaziali dettagliati di seguito
+    multiple_geo_layers: Questa dataset contiene molteplici strati geo-spaziali dettagliati di seguito
     odata_modal:
-      description: 'Crea un foglio di calcolo in Microsoft Excel per analizzare o visualizzare questa sequenza di dati. Utilizzando un collegamento OData: i dati saranno aggiornabili.'
+      description: 'Crea un foglio di calcolo in Microsoft Excel per analizzare o visualizzare questa dataset. Utilizzando un collegamento OData: i dati saranno aggiornabili.'
       developer_portal_button: Documentazione OData di Socrata
       endpoint_title: Margine OData
-      multiple_geo_layers: Questa sequenza di dati contiene molteplici strati geospaziali. Ciascuno strato contiene il proprio Margine OData di seguito.
-      title: Accedi a questa sequenza di dati attraverso OData
+      multiple_geo_layers: Questa dataset contiene molteplici strati geospaziali. Ciascuno strato contiene il proprio Margine OData di seguito.
+      title: Accedi a questa dataset attraverso OData
     official: Ufficiale
     popular_views:
       load_more_error: Si è verificato un problema durante il caricamento del contenuto aggiuntivo.
       title: Contenuto popolare utilizzando questi dati
       view: Visualizza
-    private_notice: Stai consultando una sequenza di dati privata
+    private_notice: Stai consultando una dataset privata
     publish: Pubblica
-    publish_error: Si è verificato un problema durante la pubblicazione di questa sequenza di dati. Assicurati di aver effettuato l'accesso e di essere in possesso delle autorizzazioni appropriate. Se il problema persiste, contatta <a href="https://support.socrata.com">l'assistenza Socrata</a>.
+    publish_error: Si è verificato un problema durante la pubblicazione di questa dataset. Assicurati di aver effettuato l'accesso e di essere in possesso delle autorizzazioni appropriate. Se il problema persiste, contatta <a href="https://support.socrata.com">l'assistenza Socrata</a>.
     publish_geocoding_message: Le righe nella colonna posizione sono ancora nella fase di geocoding. Attendi fino al suo termine per pubblicare questo set di dati.
-    publish_notice: Questa sequenza di dati non è <strong>pubblicata</strong>. Pubblicando questa pagina verrà pubblicata anche la <a href="{url}" target="_blank">visualizzazione tabellare</a> di questa sequenza di dati.
+    publish_notice: Questa dataset non è <strong>pubblicata</strong>. Pubblicando questa pagina verrà pubblicata anche la <a href="{url}" target="_blank">visualizzazione tabellare</a> di questa dataset.
     published: Pubblicato
     published_by: Dati forniti da
     related_views:
@@ -1459,7 +1459,7 @@ it:
         blob: Bolla
         calendar_date: Marcatura oraria fluttuante
         checkbox: Casella di spunta
-        dataset_link: Link della sequenza di dati
+        dataset_link: Link della dataset
         date: Marcatura oraria fissa
         document: Documento
         drop_down_list: Testo
@@ -1490,20 +1490,20 @@ it:
       geospatial_layer_title: Colonne presenti in questo strato
       show_all: Mostra tutto
       show_less: Mostra meno
-      title: Colonne presenti in questa sequenza di dati
+      title: Colonne presenti in questa dataset
       type: Tipologia
     share:
       cancel: Annulla
       email: Condividi via E-mail
-      email_body: 'Ecco una sequenza di dati proveniente da %{provider} che vorrei condividere con te: %{url}'
+      email_body: 'Ecco una dataset proveniente da %{provider} che vorrei condividere con te: %{url}'
       facebook: Condividi via Facebook
-      title: Condividi questa sequenza di dati
+      title: Condividi questa dataset
       twitter: Condividi via Twitter
-      visibility_alert_html: b>Attenzione!</b> Questa sequenza di dati è privata e potrebbe non essere accessibile alle persone con cui la condividi.
+      visibility_alert_html: b>Attenzione!</b> Questa dataset è privata e potrebbe non essere accessibile alle persone con cui la condividi.
     tour:
-      description: Noi la definiamo la Landing Page della sequenza di dati. Ma, in caso tu desiderassi dare uno sguardo alla visualizzazione tabellare dei dati, potrai accedervi da qui.
+      description: Noi la definiamo la Landing Page della dataset. Ma, in caso tu desiderassi dare uno sguardo alla visualizzazione tabellare dei dati, potrai accedervi da qui.
       done: OK
-      title: Le sequenze di dati hanno un nuovo aspetto!
+      title: Le datasets hanno un nuovo aspetto!
     updated: Aggiornato
     view_widget:
       external_content: Contenuto esterno
@@ -1554,7 +1554,7 @@ it:
       report_components: Effettua un resoconto dei componenti
       undo_title: Non c'è niente da annullare
     context_picker:
-      select_dataset: Seleziona la sequenza di dati
+      select_dataset: Seleziona la dataset
       view_data: Visualizza i Dati
     create:
       cancel: Annulla
@@ -1824,7 +1824,7 @@ it:
       config: Configurazione
       content_moderation: Moderazione dei Contenuti
       data_management: Gestione Dati
-      datasets: Sequenze di dati
+      datasets: Datasets
       federations: Federazioni
       goal_management_preview: Gestione degli obiettivi
       homepage: Pagina iniziale
@@ -2001,19 +2001,19 @@ it:
       category: Categoria
       comments: Commenti
       community: Valutazione della comunità
-      contact_dataset_owner: Contatta il proprietario della sequenza di dati
+      contact_dataset_owner: Contatta il proprietario della dataset
       contributors: Collaboratori
       created: creato
       data_provided_by: Dati forniti da
       dataset_landing_page:
         button: Portami qui!
-        description: Tutte le informazioni che si trovano in questo pannello, e altre, adesso si trovano sulla Landing Page della sequenza di dati, in un formato più fruibile e più facile da consultare da parte dell'utente.
-        title: Adesso, queste informazioni si trovano sulla Landing Page della sequenza di dati
+        description: Tutte le informazioni che si trovano in questo pannello, e altre, adesso si trovano sulla Landing Page della dataset, in un formato più fruibile e più facile da consultare da parte dell'utente.
+        title: Adesso, queste informazioni si trovano sulla Landing Page della dataset
       datasync_status: Stato di sincronizzazione dei dati
       description: Descrizione
       downloads: Download
       edit_metadata: Modifica i metadati
-      flag_dataset: Contrassegna la sequenza di dati
+      flag_dataset: Contrassegna la dataset
       license: Licenza
       licensing: Licenza e attribuzione
       links: Link
@@ -2037,7 +2037,7 @@ it:
       source_link: Link della fonte
       spatial_extent: Estensione spaziale
       subject_column: Colonna dell'oggetto
-      tags: Etichette
+      tags: Tags
       terms_of_use: Termini di utilizzo
       updated: aggiornato
       view_full_page: Visualizza la Pagina Completa
@@ -2106,24 +2106,24 @@ it:
       datasets:
         asset_inventory:
           tooltip: Questa opzione non è disponibile a causa di un errore. Se il problema persiste dopo 24 ore, ti preghiamo di contattare l'assistenza.
-        description: Elenca le risorse su questo dominio e configura la disposizione della pagina della sequenza di dati
+        description: Elenca le risorse su questo dominio e configura la disposizione della pagina della dataset
         layout_config: Configurazione della disposizione
         left: Sinistra
         right: Destra
         saved: Salvato
         saving: Salvataggio in corso
         sidebar_position: Posizione barra laterale
-        skip_to_dataset_listing: Salta all'elenco delle sequenze di dati
-        table_description: Sequenze di dati
+        skip_to_dataset_listing: Salta all'elenco delle datasets
+        table_description: Datasets
         title: Inventario delle risorse
-        unpublished_datasets: Copie funzionanti
-        view_as_a_dataset: Visualizza come sequenza di dati
+        unpublished_datasets: Copie di lavoro
+        view_as_a_dataset: Visualizza come dataset
       federation:
         accept: Accetta
         accepted: Accettato
         accepted_by: Accettato da
         all: "(tutto)"
-        dataset: Sequenza di dati
+        dataset: Dataset
         flashes:
           accepted: Federazione accettata con successo
           created: Federazione creata con successo
@@ -2133,15 +2133,15 @@ it:
         list_domains: Il seguente è un elenco di domini con i quali puoi iniziare una federazione dati. Una volta cliccato su "pubblica", un amministratore del dominio di destinazione dovrà accettare la tua richiesta.
         no_domains: Nessun dominio disponibile coincide a %{name}.
         no_federations: Per questo dominio non esiste ancora alcuna federazione.
-        no_pub_datasets: Nessuna sequenza di dati coincide con i tuoi criteri di ricerca.
+        no_pub_datasets: Nessuna dataset coincide con i tuoi criteri di ricerca.
         pending: In sospeso
         publish: Pubblica
         reject: Rifiuta
         search: Cerca
         search_boost: Acceleratore di ricerca
-        search_boost_explain: Intervallo da 1 a 0. Valori superiori danno più probabilità alle sequenze di dati di essere mostrate per prime.
+        search_boost_explain: Intervallo da 1 a 0. Valori superiori danno più probabilità alle datasets di essere mostrate per prime.
         search_prompt: Cerca i Domini da pubblicare su
-        search_pub_datasets: Cerca le sequenze di dati pubblicate
+        search_pub_datasets: Cerca le datasets pubblicate
         source_domain: Dominio sorgente
         status: Stato
         target_domain: Dominio di destinazione
@@ -2160,7 +2160,7 @@ it:
           boundary_name_unique_error: Il nome del limite deve essere univoco.
           choose_a_column: Scegli una colonna...
           configure_boundary: Configura un limite
-          confirm_html: <p>Clicca su "Crea" per aggiungere un nuovo limite alla Lente Spaziale sulla base della sequenza di dati geo-spaziali "%{boundary_name}".</p><p>Questo nuovo limite di Lenti Spaziali è un'istantanea e non cambierà nemmeno se aggiornerai la sequenza di dati geo-spaziale "%{boundary_name}".</p>
+          confirm_html: <p>Clicca su "Crea" per aggiungere un nuovo limite alla Lente Spaziale sulla base della dataset geo-spaziali "%{boundary_name}".</p><p>Questo nuovo limite di Lenti Spaziali è un'istantanea e non cambierà nemmeno se aggiornerai la dataset geo-spaziale "%{boundary_name}".</p>
           confirm_title: Crea la tua Lente Spaziale
           description: Configura i limiti personalizzati che possono essere utilizzati per creare mappe di Lenti Spaziali
           next: Successivo
@@ -2177,10 +2177,10 @@ it:
         custom_georegions: Personalizza limiti
         date_added: Data aggiunta
         default: Imposta un'aggiunta rapida per il limite
-        default_georegions: Abilita l'aggiunta rapida per le Nuove Sequenze di Dati (%{count} di %{limit})
-        default_georegions_flyout: Se disponi di un limite che desideri utilizzare sulla maggior parte delle pagine Lens di Dati, questa opzione lo renderà più veloce da visualizzare per qualsiasi sequenza di dati caricata dopo aver abilitato l'aggiunta rapida. Potrai abilitare fino a 5 limiti con aggiunta rapida.
+        default_georegions: Abilita l'aggiunta rapida per le Nuove Datasets (%{count} di %{limit})
+        default_georegions_flyout: Se disponi di un limite che desideri utilizzare sulla maggior parte delle pagine Lens di Dati, questa opzione lo renderà più veloce da visualizzare per qualsiasi dataset caricata dopo aver abilitato l'aggiunta rapida. Potrai abilitare fino a 5 limiti con aggiunta rapida.
         default_georegions_limit: Puoi avere al massimo %{limit} limiti con aggiunta rapida.
-        default_success: "%{name} è stato impostato per l'aggiunta rapida. Tutte le nuove sequenze di dati saranno codificate automaticamente a seconda della regione utilizzando il limite della Lente Spaziale."
+        default_success: "%{name} è stato impostato per l'aggiunta rapida. Tutte le nuove datasets saranno codificate automaticamente a seconda della regione utilizzando il limite della Lente Spaziale."
         delete: Elimina
         description: Configura limiti personalizzati che possono essere utilizzati per creare mappe di Lenti Spaziali
         disable: Disabilita
@@ -2201,7 +2201,7 @@ it:
         page_title: Gestisci la Lente Spaziale
         picker_explanation: Scegli uno strato geo-spaziale che desideri utilizzare come base per la tua Lente Spaziale. Puoi cliccare sul nome per visualizzare l'anteprima dello strato in una nuova scheda del browser.
         picker_explanation_html: "<p>Scegli uno strato geo-spaziale che desideri utilizzare come base per la tua Lente Spaziale.</p><p>Puoi cliccare sul nome per visualizzare l'anteprima dello strato in una nuova scheda del browser.</p>"
-        picker_support_html: Non riesci a trovare quello che cerchi? Visualizza l'articolo <a href="https://support.socrata.com/hc/en-us/articles/217039278">Trova una sequenza di dati per la tua Lente Spaziale</a> per saperne di più.
+        picker_support_html: Non riesci a trovare quello che cerchi? Visualizza l'articolo <a href="https://support.socrata.com/hc/en-us/articles/217039278">Trova una dataset per la tua Lente Spaziale</a> per saperne di più.
         region_name: Nome del limite
         remove: Rimuovi
         status_disabled: Non abilitato
@@ -2212,19 +2212,19 @@ it:
         substatus_progress: Disponibile a breve
         title: Lente Spaziale
         undefault: Disimposta l'aggiunta rapida per il limite
-        undefault_success: L'aggiunta rapida è stata disimpostata per %{name}. Le nuove sequenze di dati non saranno più automaticamente codificate in base alla regione utilizzando i limiti della Lente Spaziale.
+        undefault_success: L'aggiunta rapida è stata disimpostata per %{name}. Le nuove datasets non saranno più automaticamente codificate in base alla regione utilizzando i limiti della Lente Spaziale.
       home:
-        add_featured_dataset: Aggiungi una nuova sequenza di dati presentata
+        add_featured_dataset: Aggiungi una nuova dataset presentata
         are_you_sure: Sei sicuro? Questa azione non può essere annullata.
         catalog_layout_configuration: Configurazione della disposizione del catalogo
-        choose_a_dataset: Scegli una sequenza di dati da mettere in risalto
+        choose_a_dataset: Scegli una dataset da mettere in risalto
         compact_list: Elenco compatto
         contents: Indice
         create_new_story: Crea un nuovo racconto
         custom_image: Personalizza immagine
         customize_now: Personalizza subito
         customize_story_appearance: Personalizza l'aspetto del racconto
-        dataset_display_limit: Solo quattro sequenze di dati per volta possono essere messe in risalto.
+        dataset_display_limit: Solo quattro datasets per volta possono essere messe in risalto.
         date_published: Data di pubblicazione
         default_catalog_layout: Disposizione predefinita del catalogo
         delete: Elimina
@@ -2241,7 +2241,7 @@ it:
           move_success: Il tuo racconto è stato salvato
         image: Immagine
         left: Sinistra
-        manage_featured_dataset: Gestisci la sequenza di dati messa in risalto
+        manage_featured_dataset: Gestisci la dataset messa in risalto
         manage_story_content: Gestisci il contenuto del racconto
         move_left: Sposta a sinistra
         move_right: Sposta a destra
@@ -2260,13 +2260,13 @@ it:
         up: Su
       index:
         comment_moderation: Moderazione dei commenti
-        comment_moderation_description: Verifica e modera i commenti per le sequenze di dati presenti sul tuo sito
+        comment_moderation_description: Verifica e modera i commenti per le datasets presenti sul tuo sito
         connectors: Connettori
-        connectors_description: Registra un connettore per creare e gestire la maggior parte delle sequenze di dati connesse.
-        dataset_routing_and_approval: Instradamento e approvazione delle sequenze di dati
-        dataset_routing_and_approval_description: Verifica le sequenze di dati che sono in fase di approvazione e gestisci le fasi del relativo processo
+        connectors_description: Registra un connettore per creare e gestire la maggior parte delle datasets connesse.
+        dataset_routing_and_approval: Instradamento e approvazione delle datasets
+        dataset_routing_and_approval_description: Verifica le datasets che sono in fase di approvazione e gestisci le fasi del relativo processo
         datasets: Inventario delle risorse
-        datasets_description: Elenca le risorse su questo dominio e configura la disposizione della pagina della sequenza di dati
+        datasets_description: Elenca le risorse su questo dominio e configura la disposizione della pagina della dataset
         dataslate_pages: Pagine DataSlate
         dataslate_pages_description: Elenca e gestisci le pagine DataSlate su questo dominio
         federation: Federazione
@@ -2284,7 +2284,7 @@ it:
         sdp_templates: Modelli SDP
         sdp_templates_description: Gestisci e personalizza i modelli utilizzati per la pubblicazione dei tuoi dati attraverso i lettori di dati Socrata
         site_analytics: Dati analitici del sito
-        site_analytics_description: Visualizza le statistiche di tutto il sito per sequenza di dati, visualizzazioni, visitatori e altro
+        site_analytics_description: Visualizza le statistiche di tutto il sito per dataset, visualizzazioni, visitatori e altro
         site_chrome: Aspetto del sito
         site_chrome_description: Configura l'aspetto del tuo sito Socrata
         stories: Racconti
@@ -2299,7 +2299,7 @@ it:
           import: Importa
           replace: Sostituisci
           upsert: Inserisci dati aggiornati
-          working_copy: Copia funzionante
+          working_copy: Copia di lavoro
         filters:
           all: Tutto
           append: Allega
@@ -2314,12 +2314,12 @@ it:
           restore: Ripristina
           type: Tipologia
           upsert: Inserisci dati aggiornati
-          working_copy: Copia funzionante
+          working_copy: Copia di lavoro
         index_page:
           action: Azione
-          dataset: Sequenza di dati
+          dataset: Dataset
           deleted: Eliminata
-          deleted_dataset: Sequenza di dati eliminata
+          deleted_dataset: Dataset eliminata
           deleted_user: L'utente è stato eliminato
           export_as_csv: Esporta come CSV
           initiated_by: Iniziato da
@@ -2329,7 +2329,7 @@ it:
             button: Ripristina
             confirm: Sei sicuro di voler ripristinare il set di dati %{dataset}?
             disabled_restore_explanation: Il ripristino è solamente disponibile per alcuni tipi di set di dati e per un periodo di tempo limitato. Per ulteriori informazioni, contatta il supporto.
-          restore_deleted_dataset_confirm: Sei sicuro di voler ripristinare la sequenza di dati %{dataset}?
+          restore_deleted_dataset_confirm: Sei sicuro di voler ripristinare la dataset %{dataset}?
           showing_all_so_far: Mostra tutte le lavorazioni che sono state registrate finora
           showing_most_recent: 'Mostra tutte le %{limit} lavorazioni più recenti '
           started: Iniziato
@@ -2352,7 +2352,7 @@ it:
                 description: Non riusciamo a comprendere il fuso orario "%{name}". Ti preghiamo di controllare nuovamente che tutte le date importate siano conformi agli <a href="https://en.wikipedia.org/wiki/ISO_8601">standard ISO-8601</a>.
                 title: Fuso orario non riconosciuto
               completed_with_warnings:
-                description: 'I tuoi dati sono stati importati con degli avvisi, ma si è verificato un errore in fase di salvataggio degli avvisi nella sequenza di dati. Tuttavia, potrai trovare un elenco completo di avvisi qui: %{warnings}'
+                description: 'I tuoi dati sono stati importati con degli avvisi, ma si è verificato un errore in fase di salvataggio degli avvisi nella dataset. Tuttavia, potrai trovare un elenco completo di avvisi qui: %{warnings}'
                 title: Errore durante il salvataggio degli avvisi
               control_file_invalid_json:
                 description: 'Il tuo file di controllo non è stato analizzabile in formato JSON. Messaggio di errore: "%{message}". Ti preghiamo di verificare che si tratti di un valido JSON.'
@@ -2379,14 +2379,14 @@ it:
                 description: Non è possibile elaborare con successo le operazioni di eliminazione, a meno che non venga dichiarato il campo identificatore della riga.
                 title: Non è possibile procedere con l'eliminazione senza l'identificatore della riga
               di2_counts:
-                description: Il tuo file è stato importato ma, a fronte di %{rowCount} righe totale, siamo riusciti a caricare soltanto %{failCount} righe nella sequenza di dati. Se si tratta di un risultato inatteso, ti preghiamo di scaricare le righe non andate a buon fine sulla destra e di verificare che i valori corrispondano <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">ai formati attesi da Socrata</a>. Successivamente, potrai riprovare a importare le righe in questione.
+                description: Il tuo file è stato importato ma, a fronte di %{rowCount} righe totale, siamo riusciti a caricare soltanto %{failCount} righe nella dataset. Se si tratta di un risultato inatteso, ti preghiamo di scaricare le righe non andate a buon fine sulla destra e di verificare che i valori corrispondano <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">ai formati attesi da Socrata</a>. Successivamente, potrai riprovare a importare le righe in questione.
                 title: Completato
               duplicated_fields_in_input:
                 description: Il/i nome/i del/i campo/i %{fieldNames} viene/vengono utilizzato/i molte volte nel tuo file dei dati. Assicurati che i nomi dei campi siano univoci.
                 title: Duplica i nomi relativi ai campi specificati
               field_not_in_dataset:
-                description: Non è stato possibile trovare il/i nome/i del/i campo/i %{fieldNames} nella sequenza di dati in cui stai cercando di importati. Se intendi importare questa colonna, ti preghiamo di controllare la sillabazione e di riprovare.
-                title: Non è stato possibile trovare un campo nella sequenza di dati
+                description: Non è stato possibile trovare il/i nome/i del/i campo/i %{fieldNames} nella dataset in cui stai cercando di importati. Se intendi importare questa colonna, ti preghiamo di controllare la sillabazione e di riprovare.
+                title: Non è stato possibile trovare un campo nella dataset
               field_not_in_input:
                 description: Non siamo riusciti a trovare, all'interno del file dati da te fornito, una colonna attesa (%{fieldNames}) e non hai specificato una colonna che identifichi le righe. Ti preghiamo di verificare le colonne fornite e di riprovare.
                 title: Non è stato possibile trovare il campo all'interno del file
@@ -2427,7 +2427,7 @@ it:
                 description: Di solito, questa situazione si verifica perché il file CSV che abbiamo fornito è completamente vuoto. Assicurati che il tuo file contenga dei dati e riprova.
                 title: Non è stato possibile trovare un'intestazione CSV
               no_identity_column:
-                description: Questa sequenza di dati è dotata di una colonna per l'identificazione delle righe ("%{fieldName}"), ma non riusciamo a trovare quella colonna nel file dati da te fornito. Assicurati che esista e riprova.
+                description: Questa dataset è dotata di una colonna per l'identificazione delle righe ("%{fieldName}"), ma non riusciamo a trovare quella colonna nel file dati da te fornito. Assicurati che esista e riprova.
                 title: Colonna che identifica le righe non trovata
               parse_error:
                 description: L'analisi del file da te caricato non è andata a buon fine in corrispondenza della riga %{lineNumber} con il messaggio "%{reason}".
@@ -2442,7 +2442,7 @@ it:
                 description: 'La riga numero %{nearRecord} del tuo file conteneva troppi caratteri: il limite è %{limit}.'
                 title: Riga troppo lunga
               synthetic_location_in_input:
-                description: "È stata trovata una colonna (%{fieldNames}) nel tuo file dati corrispondente ad una colonna sintetica di questa sequenza di dati. Le colonne sintetiche vengono elaborate automaticamente e non vi si possono effettuare importazioni manualmente."
+                description: "È stata trovata una colonna (%{fieldNames}) nel tuo file dati corrispondente ad una colonna sintetica di questa dataset. Le colonne sintetiche vengono elaborate automaticamente e non vi si possono effettuare importazioni manualmente."
                 title: Non è possibile effettuare importazioni all'interno di una colonna sintetica
               too_many_errors_in_input:
                 description: La lavorazione è stata interrotta a causa dei molti errori trovati nei dati inseriti.
@@ -2463,17 +2463,17 @@ it:
                 description: Il metodo d'importazione "%{importType}" non è supportato. Ti preghiamo di utilizzare "sostituire", "allegare" o "importare"
                 title: Metodo d'importazione non supportato
               upsert_already_in_progress_by_someone_else:
-                description: Due inserimenti di dati aggiornati non possono essere effettuati simultaneamente su una sequenza di dati e qualcun altro è già nel mezzo di un'operazione di inserimento.
+                description: Due inserimenti di dati aggiornati non possono essere effettuati simultaneamente su una dataset e qualcun altro è già nel mezzo di un'operazione di inserimento.
                 title: Inserimento di dati aggiornati già in corso
               upsert_counts:
-                description: Il tuo file è stato importato, ma da un totale di %{rowCount} righe, non siamo riusciti a caricare %{failCount} righe nella tua sequenza di dati. Ti preghiamo di verificare che i tuoi valori corrispondano <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">ai formati attesi da Socrata</a>.
+                description: Il tuo file è stato importato, ma da un totale di %{rowCount} righe, non siamo riusciti a caricare %{failCount} righe nella tua dataset. Ti preghiamo di verificare che i tuoi valori corrispondano <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">ai formati attesi da Socrata</a>.
                 title: Completato
             success_with_data_errors:
               di2_counts:
-                description: Il tuo file è stato importato, ma da un totale di %{rowCount} righe, non siamo riusciti a caricare %{failCount} righe all'interno della tua sequenza di dati. Se si tratta di uno scenario inaspettato, ti prego di scaricare le righe non caricate a destra e di verificare che i tuoi valori corrispondano <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">ai formati attesi da Socrata</a>. Potrai, poi, provare nuovamente ad importare solo quelle righe.
+                description: Il tuo file è stato importato, ma da un totale di %{rowCount} righe, non siamo riusciti a caricare %{failCount} righe all'interno della tua dataset. Se si tratta di uno scenario inaspettato, ti prego di scaricare le righe non caricate a destra e di verificare che i tuoi valori corrispondano <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">ai formati attesi da Socrata</a>. Potrai, poi, provare nuovamente ad importare solo quelle righe.
                 title: Completato
               upsert_counts:
-                description: Il tuo file è stato importato, ma da un totale di %{rowCount} righe, non siamo riusciti a caricare %{failCount} righe all'interno della tua sequenza di dati. Verifica che i tuoi valori corrispondano <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">ai formati attesi da Socrata</a>.
+                description: Il tuo file è stato importato, ma da un totale di %{rowCount} righe, non siamo riusciti a caricare %{failCount} righe all'interno della tua dataset. Verifica che i tuoi valori corrispondano <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">ai formati attesi da Socrata</a>.
                 title: Completato
           failed_rows: Righe non importate
           fallback_event_title: Errore %{error_code}
@@ -2508,8 +2508,8 @@ it:
               description: Il/i nome/i del/i campo/i %{fieldNames} viene/vengono utilizzato/i molteplici volte nel tuo file dati. Assicurati che i nomi dei campi siano univoci.
               title: Specificato un duplicato del nome di un campo
             field_not_in_dataset:
-              description: Il/i nome/i del/i campo/i %{fieldNames} non può/possono essere trovato/i nella sequenza di dati in cui stai cercando di effettuare l'importazione. Se intendi importare questa colonna, ti preghiamo di controllare l'ortografia e di riprovare.
-              title: Non è stato possibile trovare il campo nella sequenza di dati
+              description: Il/i nome/i del/i campo/i %{fieldNames} non può/possono essere trovato/i nella dataset in cui stai cercando di effettuare l'importazione. Se intendi importare questa colonna, ti preghiamo di controllare l'ortografia e di riprovare.
+              title: Non è stato possibile trovare il campo nella dataset
             field_not_in_input:
               description: 'Non è stato possibile trovare una colonna attesa (%{fieldNames}) nel file dati da te fornito e non disponi di una colonna specifica per identificare le righe. Ti preghiamo di verificare le colonne fornite e di riprovare. '
               title: Non è stato possibile reperire il campo nel file
@@ -2541,7 +2541,7 @@ it:
               description: Di solito, ciò accade perché il file CSV che abbiamo fornito è completamente vuoto. Assicurati che il file contenga dei dati e riprova.
               title: Non è stato possibile trovare l'intestazione CSV
             no_identity_column:
-              description: Questa sequenza di dati fornisce una colonna che identifica le righe ("%{fieldName}"), ma non è stato possibile trovare quella colonna nel file dati da te fornito. Assicurati che esista e riprova.
+              description: Questa dataset fornisce una colonna che identifica le righe ("%{fieldName}"), ma non è stato possibile trovare quella colonna nel file dati da te fornito. Assicurati che esista e riprova.
               title: Colonna di identificazione delle righe non trovata
             permission_denied:
               description: L'utente che ha avviato questa operazione (%{user}) pare non abbia i diritti necessari per metterla in atto. Assicurati che le tue autorizzazioni siano state impostate correttamente e riprova.
@@ -2550,7 +2550,7 @@ it:
               description: Abbiamo interrotto la lettura del tuo file, in quanto abbiamo trovato una singola voce troppo lunga sulla riga %{record} (superava il limite di %{limit}). Ciò è dovuto, di solito, a una non corretta evasione che conduce alla lettura dei valori di molte righe come se appartenessero a una singola cella. Controlla che il tuo file sia valido.
               title: Una singola voce troppo lunga
             synthetic_location_in_input:
-              description: Abbiamo trovato una colonna (%{fieldNames}), all'interno del tuo file dati, che corrisponde ad una colonna sintetica in questa sequenza di dati. Le colonne sintetiche vengono calcolate automaticamente e non è possibile effettuarvi delle importazioni.
+              description: Abbiamo trovato una colonna (%{fieldNames}), all'interno del tuo file dati, che corrisponde ad una colonna sintetica in questa dataset. Le colonne sintetiche vengono calcolate automaticamente e non è possibile effettuarvi delle importazioni.
               title: Non è possibile effettuare delle importazioni all'interno di una colonna sintetica
             too_many_errors_in_input:
               description: La lavorazione è stata interrotta a causa dei troppi errori riscontrati nell'inserimento dei dati.
@@ -2568,7 +2568,7 @@ it:
               description: 'Non riconosciamo la tipologia del file che ci hai fornito (estensione: %{extension}). Assicurati di stare utilizzando una tipologia di file supportata e che sia valida.'
               title: Tipologia di file sconosciuta
             upsert_already_in_progress_by_someone_else:
-              description: Due inserimenti di dati aggiornati non possono essere effettuati simultaneamente sulla stessa sequenza di dati e qualcun altro è già nel mezzo di un'operazione di inserimento.
+              description: Due inserimenti di dati aggiornati non possono essere effettuati simultaneamente sulla stessa dataset e qualcun altro è già nel mezzo di un'operazione di inserimento.
               title: Inserimento di dati aggiornati già in corso
           import_method: Metodo d'importazione
           initiated_at: Avviato a
@@ -2926,7 +2926,7 @@ it:
       view_moderation:
         could_not_find_view: Impossibile trovare la vista per modificare lo stato di moderazione
         set_moderation_status: La vista '%{view_name}' è stata %{moderation_status}. Attendi qualche minuto affinché le modifiche si appaiano sulla tua Home Page
-        table_description: Sequenze di dati moderate
+        table_description: Datasets moderate
     dataset_edit:
       append: Allega
       append_and_replace: Aggiungi e sostituisci i dati
@@ -3060,7 +3060,7 @@ it:
         why_choose_now: Perchè è importante scegliere i tipi di colonne adesso?
       import_help: <strong>Hai bisogno di aiuto?</strong> Noi manteniamo una <a href="%{common_errors}" rel="external">lista di avvertimenti ed errori comuni</a> che possono aiutarti.
       import_shapefile:
-        abbreviatedSubheadline: La sintetizzazione di questa sequenza di dati potrebbe impiegare del tempo. Clicca su "avanti" per importarla.
+        abbreviatedSubheadline: La sintetizzazione di questa dataset potrebbe impiegare del tempo. Clicca su "avanti" per importarla.
         abbreviatedSummary: Gli strati della mappa in &ldquo;<span class="fileName"></span>&rdquo; verranno creati dopo l'importazione.
         abbreviatedSummary_js: Gli strati di mappa in "{fileName}" saranno creati in seguito all'importazione.
         crs: Sistema di Riferimento delle Coordinate
@@ -3089,8 +3089,8 @@ it:
       notify_me_error_html: Si è verificato un errore durante la programmazione dell'e-mail di notifica. Ti preghiamo di riprovare più tardi o di contattare a href="mailto:support@socrata.com">l'assistenza Socrata</a> qualora il problema persista.
       notify_me_messaging: via e-mail quando è completa.
       notify_me_success_addl: Nel frattempo, chiudi il browser per questioni di sicurezza.
-      notify_me_success_html: "<strong>Fantastico!</strong> Ti invieremo un'e-mail all'indirizzo <strong>%{email}</strong> quando la tua sequenza di dati sarà pronta."
-      notify_me_success_html_js: "<strong>Fantastico!</strong> Ti invieremo un'e-mail all'indirizzo <strong>{0}</strong> quando la tua sequenza di dati sarà pronta."
+      notify_me_success_html: "<strong>Fantastico!</strong> Ti invieremo un'e-mail all'indirizzo <strong>%{email}</strong> quando la tua dataset sarà pronta."
+      notify_me_success_html_js: "<strong>Fantastico!</strong> Ti invieremo un'e-mail all'indirizzo <strong>{0}</strong> quando la tua dataset sarà pronta."
       processing: Sto elaborando
       title: Nuovo Set di Dati
       upload_accessible: Carica un set di dati accessibile
@@ -3108,7 +3108,7 @@ it:
       bar:
         api_unsavable: Le viste API non possono essere modificate
         based_on_html: Basato su <a class="revertLink currentViewName" href="#revert">%{name}</a>
-        based_on_layer_html: Uno strato proveniente dalla sequenza di dati geo-spaziale <a href="%{href}" class="parentName">%{name}</a>
+        based_on_layer_html: Uno strato proveniente dalla dataset geo-spaziale <a href="%{href}" class="parentName">%{name}</a>
         based_on_parent_html: Basato su <a class="parentName"></a>
         based_on_private_view: una vista privata.
         based_on_working_copy_html: Basato sulla copia di lavoro di <a class="revertLink currentViewName" href="#revert">%{name}</a>
@@ -3129,7 +3129,7 @@ it:
         out_of_date: Questo set di dati non è aggiornato da %{age}
         publish_button: Pubblica Dataset
         publish_prompt: Questo dataset è una copia di lavoro e non è pubblico. Una volta terminate le modifiche, è necessario pubblicare il dataset per renderlo pubblico.
-        publish_prompt_with_dataset_landing_page: Questa sequenza di dati è una copia di lavoro e non è disponibile pubblicamente. Una volta effettuate le modifiche desiderate, questa sequenza di dati dovrebbe essere pubblicata per renderla disponibile pubblicamente. La pubblicazione di questa pagina avrà effetti anche sulla pubblicazione della landing page della sequenza di dati.
+        publish_prompt_with_dataset_landing_page: Questa dataset è una copia di lavoro e non è disponibile pubblicamente. Una volta effettuate le modifiche desiderate, questa dataset dovrebbe essere pubblicata per renderla disponibile pubblicamente. La pubblicazione di questa pagina avrà effetti anche sulla pubblicazione della landing page della dataset.
         publish_rights: Solo un proprietario o editore può pubblicare questo dataset
         revert_button: Ripristina
         revert_prompt: Ripristina vista salvata
@@ -3261,7 +3261,7 @@ it:
           developer_portal: Portale dello sviluppatore
           endpoint_title: 'Accesso Endpoint API:'
           intro_html: Le <strong>API Open Data Socrata</strong> (SODA) permettono agli sviluppatori software di accedere in programmazione ai dati ospitati nei siti Socrata. Gli sviluppatori software possono creare applicazioni che utilizzano le API SODA per visualizzare e rimaneggiare dataset Socrata in un modo nuovo e creativo. Creare un'applicazione iPhone che visualizza la spesa del governo nel tuo paese, un'applicazione web che permette ai cittadini di conoscere potenziali benefici di governo che avevano trascurato, o un servizio che ti invia automaticamente una email quando viene pubblicato un nuovo dato che vuoi tracciare.
-          multiple_endpoints_intro_html: L' <a href="http://dev.socrata.com/" target="external">Open Data API di Socrata(SODA)</a> fornisce un accesso programmatico a questa sequenza di dati, che include la possibilità di <a href="http://dev.socrata.com/docs/filtering.html" target="external">filtrare</a>, <a href="http://dev.socrata.com/docs/queries.html" target="external">interrogare</a> e <a href="http://dev.socrata.com/docs/aggregation.html" target="external">aggregare</a> i dati. Per maggiori informazioni, consulta i documenti API per questa sequenza di dati, disponibili di seguito, oppure visita il nostro <a href="http://dev.socrata.com" target="external">portale per gli sviluppatori</a>
+          multiple_endpoints_intro_html: L' <a href="http://dev.socrata.com/" target="external">Open Data API di Socrata(SODA)</a> fornisce un accesso programmatico a questa dataset, che include la possibilità di <a href="http://dev.socrata.com/docs/filtering.html" target="external">filtrare</a>, <a href="http://dev.socrata.com/docs/queries.html" target="external">interrogare</a> e <a href="http://dev.socrata.com/docs/aggregation.html" target="external">aggregare</a> i dati. Per maggiori informazioni, consulta i documenti API per questa dataset, disponibili di seguito, oppure visita il nostro <a href="http://dev.socrata.com" target="external">portale per gli sviluppatori</a>
           no_endpoints_available: Nessun endpoint disponibile.
           reference_html: Per accedere a questo dataset in programmazione, utilizzare l'endpoint API fornito sotto. Per maggiori informazioni ed esempi su come utilizzare API OpenData di Socrata, fare riferimento alla nostra <a href="http://dev.socrata.com" rel="external">Documentazione per Sviluppatori</a>.
           subtitle: Accedi questo %{view_type} tramite SODA
@@ -3286,7 +3286,7 @@ it:
             immutable: Avvia la procedura guidata per la Sostituzione
             mutable: Avvia la procedura guidata per l'Aggiunta e la Sostituzione
         backup:
-          button: Esegui il backup di questa sequenza di dati
+          button: Esegui il backup di questa dataset
           item_html: Backup eseguito alle <span class="backupTime"></span>
         base:
           buttons:
@@ -3751,7 +3751,7 @@ it:
           validation:
             hidden_location_html: E' possibile <a href=
             location_column: E' richiesta una colonna di tipo location per creare una mappa.
-            location_column_invalid_dataset: La sequenza di dati richiesta non esiste.
+            location_column_invalid_dataset: La dataset richiesta non esiste.
             viz_limit: Una vista può avere solo una visualizzazione su di essa
         odata:
           endpoint_action: 'Copia questo link:'
@@ -3990,7 +3990,7 @@ it:
       licensing_attr: Proprietà e licenza
       list: Elenco
       metadata_help: Questo campo è stato contrassegnato come privato dalla tua organizzazione e non è visibile al pubblico
-      missing_external_dataset: Ti preghiamo di fornire almeno una sequenza di dati esterna.
+      missing_external_dataset: Ti preghiamo di fornire almeno una dataset esterna.
       multiple_extensions: Non è consentito avere più di una estensione dello stesso tipo per lo stesso endpoint.
       new_attachment: Nuovo allegato
       none: "(nessuno)"
@@ -4008,7 +4008,7 @@ it:
       row_identifier: Identificatore del record
       row_identifier_help_text: Una volta che una vista è stata pubblicata, l'identificatore di riga non può essere modificato.
       row_label: Etichetta della riga
-      row_label_help: Descrivi cosa rappresenta ciascuna riga all'interno della sequenza di dati (se pertinente).
+      row_label_help: Descrivi cosa rappresenta ciascuna riga all'interno della dataset (se pertinente).
       row_label_prompt: 'ad es: crimine, persona, ospedale'
       save: Salva
       save_changes: Salva le modifiche
@@ -4103,7 +4103,7 @@ it:
       one_header: Una delle tue colonne è una titolata.
       problem_importing: C'è stato un problema di importazione di tale file. Cortesemente assicurati che sia valido.
       problem_uploading: C'è stato un problema di caricamento di tale file. Cortesemente assicurati che sia valido.
-      replicating: Riproduzione della sequenza di dati in corso.
+      replicating: Riproduzione della dataset in corso.
       rows_imported: "%{num} righe importati finora."
       rows_imported_js: "{0} righe importate finora."
       try_again: Cortesemente riprova fra un pò.
@@ -4388,9 +4388,9 @@ it:
         name: Nuovo Nome Template
         title: Crea un nuovo Template
       create_new_dataset:
-        explanation_html: Quando premerai su <strong>Salva</strong>, la tua nuova <strong>Sequenza di Dati in Bozza</strong> sarà visibile nel tuo catalogo personale. Nessun altro potrà vederla finché non completerai la creazione guidata di una nuova sequenza di dati.
-        prompt: Dai un nome alla tua nuova sequenza di dati.
-        title: Crea una nuova sequenza di dati
+        explanation_html: Quando premerai su <strong>Salva</strong>, la tua nuova <strong>Datasets in Bozza</strong> sarà visibile nel tuo catalogo personale. Nessun altro potrà vederla finché non completerai la creazione guidata di una nuova dataset.
+        prompt: Dai un nome alla tua nuova dataset.
+        title: Crea una nuova dataset
       menu:
         about: Relativamente alla piattaforma Socrata Open Data
         api: API

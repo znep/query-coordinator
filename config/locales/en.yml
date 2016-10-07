@@ -2646,7 +2646,6 @@ en:
         activate: Activate
         add_new_link_menu: Add Menu
         add_new_link_row: Add %{section} Link
-        after_clicking_ok: After clicking 'OK' below, see both features in action by visiting one of your datasets.
         cancel: Cancel
         description: Configure the appearance of your Socrata site.
         get_excited: Get Excited!
@@ -2657,7 +2656,6 @@ en:
         remove_link_menu: Remove Link Menu
         remove_link_row: Remove Link
         site_appearance: Site Appearance
-        these_features: These features will empower you to better control the appearance of your site and will help data consumers explore your data even better than before. Your users are going to love them!
         update: Update
         you_are_about_html: >
           <p>You are about to activate your header, footer, and Primer for your datasets. Your users are going to love the new look!</p>

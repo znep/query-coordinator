@@ -41,6 +41,8 @@ module ActiveMQ
             client.acknowledge(message)
           end
         end
+
+        client
       end
 
       begin

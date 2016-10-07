@@ -30,11 +30,11 @@ module SocrataSiteChrome
     end
 
     def logged_in?
-      request_current_user.present?
+      site_chrome_current_user.present?
     end
 
     def username
-      if site_chrome_current_user.nil? || site_chrome_current_user.displayName.blank?
+      if site_chrome_current_user.try(:displayName).blank?
         t('header.profile')
       else
         site_chrome_current_user.displayName
@@ -46,12 +46,8 @@ module SocrataSiteChrome
     end
 
     def site_chrome_current_user
-      return nil unless request_current_user.present?
-      if request_current_user.respond_to?(:session_token)
-        request_current_user
-      else
-        SocrataSiteChrome::User.new(request_current_user)
-      end
+      Rails.logger.error("DEBUG EN-10582 (chrome gem): Domain = #{CurrentDomain.cname}; request_current_user = #{request_current_user.inspect}")
+      SocrataSiteChrome::User.new(request_current_user) if request_current_user.present?
     end
 
     def current_user_can_see_admin_link?

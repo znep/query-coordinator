@@ -110,7 +110,7 @@ describe SocrataSiteChrome::ApplicationHelper do
 
   describe '#current_user_can_see_admin_link?' do
     before do
-      allow(helper).to receive(:request_current_user).and_return(user)
+      allow(helper).to receive(:site_chrome_current_user).and_return(user)
     end
 
     context 'for superadmins' do

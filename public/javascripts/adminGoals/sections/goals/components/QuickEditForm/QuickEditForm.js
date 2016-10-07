@@ -45,25 +45,31 @@ class GoalQuickEdit extends React.Component {
   }
 
   updateInitialFormData(goal) {
+    const maintainTypes = {
+      'above': '>',
+      'below': '<',
+      'within': 'within'
+    };
+
+    const measure = goal.get('prevailing_measure', Immutable.Map.of());
+    const measureMetadata = measure.get('metadata', Immutable.Map.of());
+
     const initialFormData = new Immutable.Map({
       visibility: goal.get('is_public') ? 'public' : 'private',
       name: goal.get('name'),
-      actionType: goal.getIn(['prevailing_measure', 'metadata', 'edit', 'action_type']),
-      prevailingMeasureName: goal.getIn(['prevailing_measure', 'metadata', 'name']),
-      prevailingMeasureProgressOverride: goal.getIn(['prevailing_measure', 'metadata', 'use_progress_override']) ?
-        goal.getIn(['prevailing_measure', 'metadata', 'progress_override']) : 'none',
-      unit: goal.getIn(['prevailing_measure', 'unit']),
-      percentUnit: goal.getIn(['prevailing_measure', 'target_delta_is_percent']) ?
-        '%' : goal.getIn(['prevailing_measure', 'unit']),
-      startDate: goal.getIn(['prevailing_measure', 'start']) ?
-        goal.getIn(['prevailing_measure', 'start']) : null,
-      endDate: goal.getIn(['prevailing_measure', 'end']) ?
-        goal.getIn(['prevailing_measure', 'end']) : null,
-      measureTarget: goal.getIn(['prevailing_measure', 'target']),
-      measureTargetType: goal.getIn(['prevailing_measure', 'target_type']),
-      measureBaseline: goal.getIn(['prevailing_measure', 'baseline']),
-      measureTargetDelta: goal.getIn(['prevailing_measure', 'target_delta']),
-      measureMaintainType: goal.getIn(['prevailing_measure', 'metadata', 'edit', 'maintain_type']) || 'within'
+      actionType: measureMetadata.getIn(['edit', 'action_type']),
+      prevailingMeasureName: measureMetadata.get('name'),
+      prevailingMeasureProgressOverride: measureMetadata.get('use_progress_override') ?
+        measureMetadata.get('progress_override') : 'none',
+      unit: measure.get('unit'),
+      percentUnit: measure.get('target_delta_is_percent') ? '%' : measure.get('unit'),
+      startDate: measure.get('start', null),
+      endDate: measure.get('end', null),
+      measureTarget: measure.get('target'),
+      measureTargetType: measure.get('target_type'),
+      measureBaseline: measure.get('baseline'),
+      measureTargetDelta: measure.get('target_delta'),
+      measureMaintainType: maintainTypes[measureMetadata.getIn(['edit', 'maintain_type'], 'within')]
     });
 
     this.props.updateFormData(initialFormData);

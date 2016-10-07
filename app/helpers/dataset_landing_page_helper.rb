@@ -53,13 +53,11 @@ module DatasetLandingPageHelper
     # Figure out if we need a locale prefix on links
     locale_prefix = (I18n.locale.to_sym == CurrentDomain.default_locale.to_sym) ? '' : "/#{I18n.locale}"
 
-    feature_flags = Hash[
-      FeatureFlags.derive(nil, request).slice(*[
-        :enable_dataset_landing_page_tour,
-        :display_dataset_landing_page_preview_images,
-        :stories_enabled
-      ]).map { |k, v| [ k.camelize(:lower), v ] }
-    ]
+    feature_flags = FeatureFlags.derive(nil, request).slice(
+      :enable_dataset_landing_page_tour,
+      :display_dataset_landing_page_preview_images,
+      :stories_enabled
+    ).map { |k, v| [ k.camelize(:lower), v ] }.to_h
 
     server_config = {
       :airbrakeKey => ENV['DATASET_LANDING_PAGE_AIRBRAKE_API_KEY'] || APP_CONFIG.dataset_landing_page_airbrake_api_key,

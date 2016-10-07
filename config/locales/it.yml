@@ -862,7 +862,7 @@ it:
       row_count: Numero totale di righe %{count}
       sort_ascending: Ordinamento Ascendente
       sort_descending: Ordinamento Discendente
-      start_page:
+      start_page: 
       totals: Totali
       view_cell_comments: Visualizza i commenti per questa cella
       view_first_row: Visualizza prima riga
@@ -1349,6 +1349,7 @@ it:
         button: Gestisci un contenuto menzionato
         message: Scegli di promuovere fino a 3 risorse Socrata che utilizzano questi dati oppure scegli di presentare qualsiasi risorsa esterna rilevante. Se lasci questa sezione in bianco, essa non sarà visibile.
         message_blob: Scegli di promuovere fino a 3 risorse esterne relative a questo file o documento. Se lasciata vuota, questa sezione non sarà visibile.
+        message_external: Scegli di promuovere fino a 3 risorse esterne relative a questi dati. Se lasciata vuota, questa sezione sarà invisibile.
       title: Contenuto menzionato che utilizza questi dati
     featured_content_modal:
       external: Risorsa esterna
@@ -1364,6 +1365,7 @@ it:
       header: Gestisci il contenuto presentato
       introduction: Cose vorresti che le persone vedessero quando visualizzano per la prima volta questa sequenza di dati? Promuovi fino a 3 risorse Socrata che usano questi dati oppure scegli di presentare qualsiasi risorsa esterna rilevante. Pensa a questa sezione come al volto dei tuoi dati.
       introduction_blobby: Cosa ti piacerebbe che la gente vedesse la prima volta che vede questo oggetto? Promuovi fino a 3 risorse esterne relative a questo file o documento.
+      introduction_external: Cosa ti piacerebbe che le persone vedessero la prima volta che guardano questo set di dati? Promuovi fino a 3 risorse esterne relative a questi dati
       preview: Anteprima del contenuto presentato
       remove_error: Oh, no! Si è verificato un errore, ti preghiamo di riprovare.
       remove_prompt: Sei sicuro di voler rimuovere questo come parte del contenuto presentato?
@@ -1390,6 +1392,11 @@ it:
       screenshot_no: No, grazie
       screenshot_yes: Sì, includi uno screenshot
       title: Feedback
+    href_download:
+      data_dictionary: Dizionario dei dati
+      edit_prompt_button: Modifica i link
+      edit_prompt_message: Modifica il/i link di fonte esterna per questo set di dati
+      title: Accedi a questo dato
     less: Mostra meno
     manage_dataset: Gestisci il set di dati
     manage_prompt: Clicca qui per gestire le autorizzazioni
@@ -1431,6 +1438,7 @@ it:
     private_notice: Stai consultando una sequenza di dati privata
     publish: Pubblica
     publish_error: Si è verificato un problema durante la pubblicazione di questa sequenza di dati. Assicurati di aver effettuato l'accesso e di essere in possesso delle autorizzazioni appropriate. Se il problema persiste, contatta <a href="https://support.socrata.com">l'assistenza Socrata</a>.
+    publish_geocoding_message: Le righe nella colonna posizione sono ancora nella fase di geocoding. Attendi fino al suo termine per pubblicare questo set di dati.
     publish_notice: Questa sequenza di dati non è <strong>pubblicata</strong>. Pubblicando questa pagina verrà pubblicata anche la <a href="{url}" target="_blank">visualizzazione tabellare</a> di questa sequenza di dati.
     published: Pubblicato
     published_by: Dati forniti da
@@ -1593,7 +1601,7 @@ it:
       title: Impostazioni della Pagina
   date:
     abbr_month_names:
-    -
+    - 
     - Gen
     - Feb
     - Mar
@@ -1607,7 +1615,7 @@ it:
     - Nov
     - Dic
     month_names:
-    -
+    - 
     - Gennaio
     - Febbraio
     - Marzo
@@ -1622,6 +1630,9 @@ it:
     - Dicembre
   error:
     back: Indietro
+    error_400:
+      description: I parametri della richiesta forniti non sono validi, prova di nuovo con parametri diversi.
+      were_sorry: Siamo spiacenti, ma non possiamo processare la tua richiesta.
     error_500:
       description_html: Ti preghiamo di riprovare tra qualche minuto, oppure di <a href="http://support.socrata.com">segnalare questo errore</a> con i dettagli dell'operazione che stavi tentando di fare.
       somethings_wrong: Si è verificato un errore!
@@ -1666,6 +1677,7 @@ it:
         title: Modifica oggetti multipli
         update: Aggiorna
         visibility: Visibilità
+      default_error_message: "<span><b>Oh no!</b> Qualcosa è andato storto e il nostro team ne è stato informato. Nel frattempo, riprova o aggiorna questa pagina.</span>"
       export:
         Csv:
           button_label: Esporta
@@ -1758,6 +1770,35 @@ it:
         status: Status
         success_message: Perfetto! {0} aggiornato.
         unit: Unità
+        validation:
+          action:
+            enum: 'Le azioni ammesse sono: aumentare, diminuire, mantenere, misurare.'
+          baseline:
+            blank: La baseline non può essere vuota.
+            numeric: La baseline deve essere numerica.
+          end:
+            end_not_after_start: Conflitto tra date di inizio e fine.
+            invalid: Data fine non valida.
+          maintain_type:
+            enum: Il tipo mantenimento deve essere uno intorno, >, <
+          name:
+            blank: Il nome non può essere vuoto.
+          start:
+            invalid: Data di inizio non valida.
+          subject:
+            blank: L'oggetto non può essere vuoto.
+          target:
+            blank: Il valore del target non può essere vuoto.
+            numeric: Il valore del target deve essere numerico.
+          target_delta:
+            blank: Il valore del range non può essere vuoto.
+            numeric: Il valore del range deve essere numerico.
+          target_delta_is_percent:
+            bool: Il tipo unità deve essere selezionato
+          target_type:
+            enum: Il tipo deve essere Assoluto, Relativo.
+          unit:
+            blank: L'unità non può essere vuota.
         visibility: Visibilità
     chrome:
       header:
@@ -2004,6 +2045,9 @@ it:
       visits: Visite
       your: La tua valutazione
     admin:
+      canvas:
+        path_must_be_unique: Il percorso esiste già; scegline uno diverso.
+        title_cannot_be_blank: Inserisci un titolo.
       connector:
         actions: Azioni
         add_connector: Aggiungi connettore
@@ -2140,9 +2184,13 @@ it:
         delete: Elimina
         description: Configura limiti personalizzati che possono essere utilizzati per creare mappe di Lenti Spaziali
         disable: Disabilita
+        disable_default_label: Questo limite deve essere attivato prima di poter attivare aggiunta rapida.
+        disable_label: Disabilita i limiti.
         disable_success: "%{name} è stato disabilitato e non sarà più disponibile per la creazione di mappe coropletiche in Data Lens utilizzando questo limite di Lente Spaziale."
         edit: Modifica
+        edit_label: Modifica i limiti.
         enable: Abilita
+        enable_label: Abilita i limiti
         enable_success: '%{name} è stato abilitato. Adesso, potrai creare mappe coropletiche in Data Lens utilizzando il limite di Lente Spaziale. <a href="https://support.socrata.com/hc/en-us/articles/212862177">Consulta maggiori informazioni</a> sull''utilizzo della Lente Spaziale per creare mappe.'
         enabled?: Abilitato?
         flashes:
@@ -2277,7 +2325,10 @@ it:
           initiated_by: Iniziato da
           no_jobs: Nessun lavoro da mostrare
           page_title: Lavorazione di dati
-          restore_deleted_dataset: Ripristina
+          restore_deleted_dataset:
+            button: Ripristina
+            confirm: Sei sicuro di voler ripristinare il set di dati %{dataset}?
+            disabled_restore_explanation: Il ripristino è solamente disponibile per alcuni tipi di set di dati e per un periodo di tempo limitato. Per ulteriori informazioni, contatta il supporto.
           restore_deleted_dataset_confirm: Sei sicuro di voler ripristinare la sequenza di dati %{dataset}?
           showing_all_so_far: Mostra tutte le lavorazioni che sono state registrate finora
           showing_most_recent: 'Mostra tutte le %{limit} lavorazioni più recenti '
@@ -2553,6 +2604,12 @@ it:
         field_name: Nome campo
         flashes:
           cannot_move_field: 'Impossibile spostare il campo nominato ''%{name}'': non trovato'
+          category_cannot_be_blank: Inserisci un nome per creare una nuova categoria.
+          category_must_be_unique: Impossibile creare categorie duplicate denominate '%{new_category}'
+          could_not_delete_category: Impossibile rimuovere categoria denominata '%{category_name}'
+          could_not_update_category: Impossibile aggiornare categoria denominata '%{category_name}'
+          created_category: Categoria creata con successo.
+          deleted_category: Categoria eliminata con successo
           field_duplicated: Non puoi creare un doppio campo nominato '%{name}'
           field_name_required: Non è possibile creare un campo senza nome
           field_successful_create: Creazione campo riuscita
@@ -2560,10 +2617,12 @@ it:
           field_successful_save: Salvataggio campo riuscita
           fieldset_duplicated: Non è possibile creare un doppio campo nominato '%{name}'
           fieldset_name_required: Non è possibile creare una impostazione campo senza nome
+          must_select_category_to_delete: Seleziona una categoria da eliminare dalla lista
           no_such_field: Non esiste nessun campo come questo
           no_such_fieldset: Non esiste nessuna impostazione campo come questa
           successful_create: Creazione impostazione campo riuscita
           successful_remove: Rimozione impostazione campo riuscita
+          updated_category: Categoria aggiornata con successo.
         locales: Locali
         make_optional: Rendi facoltativo
         make_private: Rendi Privato
@@ -2582,13 +2641,25 @@ it:
         title: Gestisci i Metadata
         'true': vero
         up: Su
+      sdp:
+        cannot_delete_default_template: Impossibile eliminare il modello di default. Scegli prima un nuovo default.
+        could_not_delete_template: 'Impossibile impostare il modello di default: modello non trovato.'
+        could_not_find_template_customization: Questa personalizzazione per modello non è stata trovata.
+        could_not_set_default_template: 'Impossibile impostare il modello di default: modello non trovato.'
+        error_on_creation: 'Si è verificato un errore durante la tua richiesta: ''%{error_message}'''
+        preview_could_not_be_found: Un set di dati che mostra cosa vedere in anteprima non è stato trovato.
+        requires_published_dataset: Crea un set di dati che puoi pubblicare prima.
+        template_name_cannot_be_blank: Nome del modello obbligatorio.
+        too_many_templates: Hai raggiunto il numero massimo assegnato di modelli. Eliminane uno o contatta l'assistenza per acquistarne altri.
       site_chrome:
         activate: Attiva
         add_new_link_menu: Aggiungi menù
         add_new_link_row: 'Aggiungi link %{section} '
+        after_clicking_ok: Dopo aver cliccato su 'OK' in basso, guarda entrambe le funzioni in azione visitando uno dei tuoi set di dati.
         cancel: Annulla
         congratulations: Congratulazioni!
         description: Configura l'aspetto del tuo sito Socrata.
+        get_excited: Emozionati!
         link_menu_label_html: "<b>Menu</b> - <i>Puoi trascinare i link per riordinarli</i>"
         move_link_row: Trascina per riordinare
         ok: OK
@@ -2725,7 +2796,7 @@ it:
               url_placeholder: http://data.evergreen.gov
             title: Barra d'intestazione
           homepage:
-            fields:
+            fields: 
             title: Pagina iniziale
           social:
             fields:
@@ -2737,6 +2808,10 @@ it:
                 description: Mostra il link al profilo Flickr e il link nell'intestazione e nel piè di pagina, ove presenti.
                 placeholder: http://www.flickr.com/
                 title: Link al Profilo Flickr
+              github_profile_link:
+                description: Aggiungi qui l'URL per visualizzare un link al profilo GitHub della tua organizzazione, sia nell'intestazione che nel piè di pagina.
+                placeholder: http://www.github.com/
+                title: Link al profilo Github
               google_plus_profile_link:
                 description: Mostra il link al profilo Google Plus e il link nell'intestazione e nel piè di pagina, ove presenti.
                 placeholder: http://www.plus.google.com/
@@ -2789,9 +2864,14 @@ it:
                 description_html: <P>Emozionati! Con questo aggiornamento, il set di dati della landing page diventa la principale esperienza in prima pagina per i set di dati caricati, mettendo in luce gli aspetti più comunemente accessibili di ogni set di dati in modo intuitivo e rendendo visibili i metadati agli utenti di dati prima di agire. Gli editori e gli amministratori possono liberamente "mostrare" le relative panoramiche e visualizzazioni, gli utenti più sofisticati possono esplorare direttamente i metadati e le valutazioni e tutti gli utenti possono accedere ai dati nel modo che desiderano, sia che questo avvenga tramite visualizzazioni di dati, download di file diretti o tramite API. E, naturalmente, la vista tabulare classica dei dati è ancora accessibile dalla parte superiore di navigazione di questa vista, per gli utenti che la preferiscono.</p>
                 title: Set di dati della landing page
             title: Cosa c'è di nuovo
+        these_features: Queste funzionalità ti consentiranno di gestire meglio l'aspetto del tuo sito e aiuteranno gli utenti dei dati a esplorare i tuoi dati anche meglio di prima. I tuoi utenti le ameranno!
         these_features_help: Queste funzionalità aiuteranno gli utenti a esplorare i dati e ti sarà più facile gestire l'aspetto del tuo sito.
         update: Aggiornamento
+        you_are_about: Stai per attivare intestazione, piè di pagina e landing page dei set di dati per i tuoi set di dati.
         you_have_activated: Hai attivato la tua nuova funzione di intestazione/piè di pagina e il set di dati della landing page.
+      tos:
+        accepted: Grazie per aver accettato i termini del servizio.
+        must_agree: Devi accettare i termini per continuare.
       update: Aggiornamento
       users:
         actions: Azioni
@@ -2844,6 +2924,8 @@ it:
         user_saved: Utente salvato
         users_table_description: Utenti
       view_moderation:
+        could_not_find_view: Impossibile trovare la vista per modificare lo stato di moderazione
+        set_moderation_status: La vista '%{view_name}' è stata %{moderation_status}. Attendi qualche minuto affinché le modifiche si appaiano sulla tua Home Page
         table_description: Sequenze di dati moderate
     dataset_edit:
       append: Allega
@@ -3869,6 +3951,7 @@ it:
       attachments: Allegati
       attachmentsDisabledMessagePart1: Per caricare gli allegati, prima devi finire la pubblicazione di questo dataset. Poi, clicca
       attachmentsDisabledMessagePart2: nella barra degli strumenti e quindi clicca Modifica Metadata. A questo punto potrai caricare gli allegati.
+      blob_uploaded: 'Eccellente: abbiamo salvato il file. Tutto quello che resta da fare è descrivere i metadati del tuo file.'
       brief_description: Breve descrizione
       brief_description_prompt: Inserisci una descrizione
       cancel: Annulla
@@ -3930,6 +4013,7 @@ it:
       save: Salva
       save_changes: Salva le modifiche
       semantics_rdf: Semantica e RDF
+      settings_saved: I tuoi progressi sono stati salvati. Continua a creare il tuo set di dati compilando i metadati di seguito.
       source_link: Link della sorgente
       source_link_error: Non sembra essere un URL valido.
       source_link_prompt: Inserisci l'indirizzo web
@@ -4087,11 +4171,13 @@ it:
           learn_openid: Informati su OpenID
           new_email: Nuova e-mail
           new_password: Nuova password
+          no_auth0id: Non ci sono identificatori Single Sign-on associati a questo account.
           no_openid: Non hai ancora OpenID associati a questo account.
           old_password: Vecchia password
           password: Password
           password_prompt: "(Per la tua sicurezza)"
           password_restrictions_html: (Restrizioni <span class="icon">&nbsp;</span>)
+          sso_identifiers: Identificatori Single Sign-on
           title: Impostazioni Account
         app_tokens:
           application_name: Nome Applicazione
@@ -4150,6 +4236,7 @@ it:
           image_format: Selezionare un formato di immagine valido (PNG, JPG, or GIF)
           invalid_links: Si è verificato un problema durante l'aggiornamento del tuo link. %{message}
           no_display_name: 'Errore: ''Nome Visualizzato'' è obbligatorio'
+          no_password_no_auth0id: Non puoi rimuovere tutti i tuoi identificativi Auth0 prima di impostare una password
           no_password_no_openid: Non è possibile rimuovere tutti i tuoi OpenID prima di impostare la password
           password_mismatch: La password confermata non corrisponde
           user_missing: Questo utente non può essere trovato, o è stato eliminato.
@@ -4189,13 +4276,21 @@ it:
     sign_in:
       auth0_intro: Esistono diversi modi per effettuare l'accesso. Se non hai ancora registrato un account, scegli l'opzione a te più conveniente. Se ne hai una, usa la setssa opzione adesso.
       back_to_sign_in_selection: <a class="login-back">Torna alle opzioni di accesso</a>
+      dont_have_account: Non hai ancora un account?
+      error: Errore nel login
       failed: Impossibile accedere con e-mail e password inserite; si prega di riprovare
+      forgot_password: Password dimenticata?
       form:
+        email_placeholder: Email
+        password_placeholder: Password
         sign_in_button: Accedi
       headline: Accedi a %{site}
       mismatch: Le password non corrispondono; si prega di riprovare
       prompt_html: Accedi con il tuo <strong>Socrata ID</strong>
+      sign_in_using: Entra usando
       sign_in_with: "<strong>Accedi</strong> with %{provider}"
+      sign_up: Esci
+      sso_enabled: SSO abilitato
       sso_required: L'amministratore di questo sito richiede che gli utenti privilegiati accedano con un profilo diverso dall'ID Socrata. Ti preghiamo di effettuare l'accesso utilizzando un metodo differente.
       tips_html: Utilizza e-mail e password per accedere a tutti i siti <strong>Powered by <a href="http://www.socrata.com" rel="external">Socrata</a></strong>.
     sign_up:

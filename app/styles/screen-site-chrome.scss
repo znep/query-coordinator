@@ -381,6 +381,13 @@ $link_color: #2279a6;
               font-style: italic;
             }
             /* ie */
+            &.site-chrome-input-error {
+              border-color: $red-text;
+            }
+          }
+
+          label.site-chrome-input-error {
+            color: $red-text;
           }
 
           .move-link-row {

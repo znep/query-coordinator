@@ -1,15 +1,25 @@
 var inputTypeValidations = {
   google_analytics: /^ua-\d+-\d+$/i,
   color: /^(#(?=[a-z\d]*$)(?:.{3}|.{6})|transparent)$/i,
-  dimensions: /^\d{1,4}(px|em|rem|%)$/
+  dimensions: /^\d{1,4}(px|em|rem|%)$/,
+  url: /^(https?|www|\/)/
 };
 
 var validationRules = {
   'content[general][google_analytics_token]': {
     pattern: inputTypeValidations.google_analytics
   },
+  'content[general][window_icon]': {
+    pattern: inputTypeValidations.url
+  },
   'content[general][styles][max_width]': {
     pattern: inputTypeValidations.dimensions
+  },
+  'content[header]links[][url]': {
+    pattern: inputTypeValidations.url
+  },
+  'content[header][logo][src]': {
+    pattern: inputTypeValidations.url
   },
   'content[header][styles][logo_height]': {
     pattern: inputTypeValidations.dimensions
@@ -26,6 +36,15 @@ var validationRules = {
   'content[header][styles][fg_color]': {
     pattern: inputTypeValidations.color
   },
+  'content[footer]links[][url]': {
+    pattern: inputTypeValidations.url
+  },
+  'content[header]links[]links[][url]': {
+    pattern: inputTypeValidations.url
+  },
+  'content[footer][logo][src]': {
+    pattern: inputTypeValidations.url
+  },
   'content[footer][styles][logo_height]': {
     pattern: inputTypeValidations.dimensions
   },
@@ -37,6 +56,42 @@ var validationRules = {
   },
   'content[footer][styles][fg_color]': {
     pattern: inputTypeValidations.color
+  },
+  'content[general][social_shares][facebook][url]': {
+    pattern: inputTypeValidations.url
+  },
+  'content[general][social_shares][twitter][url]': {
+    pattern: inputTypeValidations.url
+  },
+  'content[general][social_shares][youtube][url]': {
+    pattern: inputTypeValidations.url
+  },
+  'content[general][social_shares][linked_in][url]': {
+    pattern: inputTypeValidations.url
+  },
+  'content[general][social_shares][flickr][url]': {
+    pattern: inputTypeValidations.url
+  },
+  'content[general][social_shares][instagram][url]': {
+    pattern: inputTypeValidations.url
+  },
+  'content[general][social_shares][tumblr][url]': {
+    pattern: inputTypeValidations.url
+  },
+  'content[general][social_shares][pinterest][url]': {
+    pattern: inputTypeValidations.url
+  },
+  'content[general][social_shares][yammer][url]': {
+    pattern: inputTypeValidations.url
+  },
+  'content[general][social_shares][google_plus][url]': {
+    pattern: inputTypeValidations.url
+  },
+  'content[general][social_shares][vimeo][url]': {
+    pattern: inputTypeValidations.url
+  },
+  'content[general][social_shares][github][url]': {
+    pattern: inputTypeValidations.url
   }
 };
 

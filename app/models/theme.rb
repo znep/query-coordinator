@@ -4,7 +4,19 @@ class Theme
   extend ActiveModel::Naming
 
   CLASS_NAME_PREFIX = 'custom-'
-  VALID_GOOGLE_FONT_CODE_REGEX = /\A(<link href='https:\/\/fonts.googleapis.com\/css\?family=)[a-z0-9\|\+\:\,]{1,}*(' rel='stylesheet' type='text\/css'>)\z/i
+
+  # <link href="https://fonts.googleapis.com/css?family=Cormorant+Garamond:400,400i|Slabo+27px" rel="stylesheet">
+  FONT_FAMILY_SUBSTRING = %q{[\w+]+(:\d+i?(,\d+i?)*)?}
+  VALID_GOOGLE_FONT_CODE_REGEX = %r{
+    \A<link\ href=['"]?           # required href attribute first,
+                                  # with one or more font families defined
+      https://fonts\.googleapis\.com/css
+      \?family=#{FONT_FAMILY_SUBSTRING}(\|#{FONT_FAMILY_SUBSTRING})*
+    ['"]?
+    (\ rel=['"]?stylesheet['"]?)  # required rel attribute next
+    (\ type=['"]?text/css['"]?)?  # optional type attribute last
+    >\z
+  }xi
 
   attr_reader :id, :title, :description, :css_variables, :google_font_code, :updated_at, :domain_cname
 

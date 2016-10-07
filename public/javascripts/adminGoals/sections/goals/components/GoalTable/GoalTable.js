@@ -26,7 +26,7 @@ class GoalTable extends React.Component {
 
   renderTable() {
     return (
-      <table className="table table-borderless table-discrete table-condensed op-admin-table">
+      <table aria-label="Goals" className="table table-borderless table-discrete table-condensed op-admin-table">
         <GoalTableHead />
         <GoalTableBody />
       </table>

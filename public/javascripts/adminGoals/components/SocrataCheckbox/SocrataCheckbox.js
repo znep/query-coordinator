@@ -6,6 +6,8 @@ export default class SocrataCheckbox extends React.Component {
   constructor(props) {
     super(props);
 
+    this.onClick = this.onClick.bind(this);
+
     this.state = {
       checked: this.props.checked || false
     };
@@ -31,8 +33,9 @@ export default class SocrataCheckbox extends React.Component {
     let currentClass = classNames({ 'icon-checkmark3': this.state.checked });
 
     return (
-      <div className="socrata-checkbox" onClick={ this.onClick.bind(this) }>
+      <div className="socrata-checkbox" role="checkbox" aria-checked={ this.state.checked ? 'true' : 'false'} onClick={ this.onClick }>
         <label>
+          <span className="hidden">{this.props.label}</span>
           <span className="fake-checkbox">
             <span className={ currentClass } />
           </span>

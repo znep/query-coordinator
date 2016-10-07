@@ -52,7 +52,7 @@ class GoalTableHead extends React.Component {
 
     return (
       <th key={ index } className={ `table-heading-${fieldName}` }>
-        <span className="th-text" onClick={ _.wrap({ fieldName, direction, fieldType }, this.props.actions.sortBy) }>
+        <span className="th-text" role="button" onClick={ _.wrap({ fieldName, direction, fieldType }, this.props.actions.sortBy) }>
           { this.props.translations.getIn(['admin', 'listing', fieldName]) }
           <span className={ sortIconClass } />
         </span>
@@ -67,7 +67,7 @@ class GoalTableHead extends React.Component {
     return (
       <thead>
       <tr>
-        <th><Components.Socrata.Checkbox checked={ isAllSelected } onClick={ this.handleToggleAllSelection }/></th>
+        <th><Components.Socrata.Checkbox label="Select all goals" checked={ isAllSelected } onClick={ this.handleToggleAllSelection }/></th>
         <th>&nbsp;</th>
         { titles }
       </tr>

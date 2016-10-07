@@ -9,7 +9,7 @@ class PreviewBar extends React.Component {
     const { translations } = this.props;
 
     return (
-      <div className="preview-bar">
+      <div className="preview-bar" role="banner">
         <div className="preview-bar-header clearfix">
           <div className="back-link icon-arrow-prev">
             <a href={ `${serverConfig.localePrefix}/manage/site_config` }>{ translations.getIn(['admin', 'preview_bar', 'back_to_configuration']) }</a>

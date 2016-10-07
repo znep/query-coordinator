@@ -49,9 +49,10 @@ class GoalTableRow extends React.Component {
 
   render() {
     const { goal, selected, translations } = this.props;
+    const dashboard = goal.get('base_dashboard', 'default');
 
-    const goalPageUrl = `/stat/goals/${goal.get('base_dashboard')}/${goal.getIn(['category', 'id']) || 'uncategorized'}/${goal.get('id')}/edit`;
-    const dashboardUrl = `/stat/goals/${goal.get('base_dashboard')}`;
+    const goalPageUrl = `/stat/goals/${dashboard}/${goal.getIn(['category', 'id']) || 'uncategorized'}/${goal.get('id')}/edit`;
+    const dashboardUrl = `/stat/goals/${dashboard}`;
     const rowClass = classNames({ selected });
     const endDate = goal.getIn(['prevailing_measure', 'end']);
     const isGoalEnded = endDate && moment(endDate).isBefore();
@@ -61,7 +62,7 @@ class GoalTableRow extends React.Component {
 
     return (
       <tr ref='tr' onClick={ this.handleClick } className={ rowClass } onDoubleClick={ this.handleEditClick }>
-        <td><Components.Socrata.Checkbox checked={ selected }/></td>
+        <td><Components.Socrata.Checkbox label={ `Select ${goal.get('name')}` } checked={ selected }/></td>
         <td><span className="icon-goal"/></td>
         <td className="title-cell">
           <span className="title">{ goal.get('name') }</span>
@@ -84,7 +85,7 @@ class GoalTableRow extends React.Component {
         <td className="single-line">{ goalStatus }</td>
         <td className="dashboard-link">
           <a target="_blank" href={ dashboardUrl } className="external-link" onClick={ this.handleLinkClick }>
-            { goal.getIn(['dashboard', 'name']) } <span className="icon-external"/></a>
+            { goal.getIn(['dashboard', 'name'], 'default') } <span className="icon-external"/></a>
         </td>
       </tr>
     );

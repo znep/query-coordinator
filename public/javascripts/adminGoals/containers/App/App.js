@@ -16,8 +16,10 @@ function App(props) {
   return (
     <div className="app-container">
       <Components.PreviewBar />
-      <Components.HeaderBar />
-      <Goals.Page />
+      <div className="main-section" role="main">
+        <Components.HeaderBar />
+        <Goals.Page />
+      </div>
       { feedbackFlannel }
     </div>
   );

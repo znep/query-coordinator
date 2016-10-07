@@ -8,15 +8,15 @@ import classNames from 'classnames/bind';
  */
 export function Header(props) {
   return (
-    <header className={ `modal-header ${props.className || ''}` }>
+    <div className={ `modal-header ${props.className || ''}` }>
       <h1 className="h5 modal-header-title">
         { props.title }
       </h1>
       { props.children }
-      <button type="button" className="btn btn-transparent modal-header-dismiss" onClick={ props.onClose }>
+      <button type="button" className="btn btn-transparent modal-header-dismiss" onClick={ props.onClose } aria-label="Close quick edit form">
         <span className="icon-close-2" />
       </button>
-    </header>
+    </div>
   );
 }
 
@@ -30,11 +30,11 @@ export function Content(props) {
 
 export function Footer(props) {
   return (
-    <footer className={ `modal-footer ${props.className || ''}` }>
+    <div className={ `modal-footer ${props.className || ''}` }>
       <div className="modal-footer-actions">
         { props.children }
       </div>
-    </footer>
+    </div>
   );
 }
 
@@ -54,7 +54,7 @@ export function Modal(props) {
   });
 
   return (
-    <div className={ modalClasses }>
+    <div className={ modalClasses } role="dialog">
       <div className="modal-container">
         { props.children }
       </div>

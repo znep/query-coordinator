@@ -18,6 +18,7 @@ import {
   getPrimaryColor,
   getSecondaryColor,
   getPointOpacity,
+  getPointSize,
   getColorScale,
   getBaseLayer,
   getBaseLayerOpacity,
@@ -33,6 +34,7 @@ import {
   setPrimaryColor,
   setSecondaryColor,
   setPointOpacity,
+  setPointSize,
   setColorScale,
   setBaseLayer,
   setBaseLayerOpacity
@@ -95,9 +97,10 @@ export var ColorsAndStylePane = React.createClass({
   },
 
   renderFeatureMapControls() {
-    var { vifAuthoring, onChangePrimaryColor, onChangePointOpacity } = this.props;
+    var { vifAuthoring, onChangePrimaryColor, onChangePointOpacity, onChangePointSize } = this.props;
     var pointColor = getPrimaryColor(vifAuthoring);
     var pointOpacity = getPointOpacity(vifAuthoring);
+    var pointSize = getPointSize(vifAuthoring);
 
     var pointColorAttributes = {
       handleColorChange: onChangePrimaryColor,
@@ -115,6 +118,16 @@ export var ColorsAndStylePane = React.createClass({
       onChange: onChangePointOpacity
     };
 
+    const pointSizeAttributes = {
+      id: 'point-size',
+      type: 'range',
+      min: '1',
+      max: '3.2',
+      step: '0.1',
+      defaultValue: pointSize,
+      onChange: onChangePointSize
+    };
+
     return (
       <div>
         <div className="authoring-field-group">
@@ -126,6 +139,10 @@ export var ColorsAndStylePane = React.createClass({
           <div className="authoring-field">
             <label className="block-label" htmlFor="point-opacity">{translate('panes.colors_and_style.fields.point_opacity.title')}</label>
             <input {...pointOpacityAttributes} />
+          </div>
+          <div className="authoring-field">
+            <label className="block-label" htmlFor="point-size">{translate('panes.colors_and_style.fields.point_size.title')}</label>
+            <input {...pointSizeAttributes} />
           </div>
           {this.renderMapLayerControls()}
         </div>
@@ -262,6 +279,11 @@ function mapDispatchToProps(dispatch) {
     onChangePointOpacity: _.debounce(event => {
       var pointOpacity = event.target.value;
       dispatch(setPointOpacity(pointOpacity));
+    }, INPUT_DEBOUNCE_MILLISECONDS),
+
+    onChangePointSize: _.debounce(event => {
+      const pointSize = event.target.value;
+      dispatch(setPointSize(pointSize));
     }, INPUT_DEBOUNCE_MILLISECONDS),
 
     onSelectColorScale: colorScale => {

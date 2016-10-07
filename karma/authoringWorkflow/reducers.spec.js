@@ -93,6 +93,8 @@ describe('AuthoringWorkflow reducer', function() {
       shouldSetVif('setPrimaryColor', '#00F', 'series[0].color.primary', ['columnChart', 'timelineChart', 'histogram', 'featureMap']);
       shouldSetVif('setSecondaryColor', '#00F', 'series[0].color.secondary', ['columnChart', 'timelineChart', 'histogram']);
 
+      shouldSetVif('setPointSize', 1.3, 'configuration.pointSize', ['featureMap']);
+
       shouldSetVif('setColorScale', ['one', 'two', 'three'], 'configuration.legend.negativeColor', ['regionMap']);
       shouldSetVif('setColorScale', ['one', 'two', 'three'], 'configuration.legend.zeroColor', ['regionMap']);
       shouldSetVif('setColorScale', ['one', 'two', 'three'], 'configuration.legend.positiveColor', ['regionMap']);

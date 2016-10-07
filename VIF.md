@@ -142,6 +142,13 @@ Required |Optional
 Required |Optional
 :-------:|:----------:
     -    |Feature Map
+    
+##### `pointSize`
+`pointSize` controls the size of individual points rendered by the Feature Map by multiplying minimum size. Its type is `<number>` and it must be in the range [1, 3.2]. Defaults to 1.
+
+Required |Optional
+:-------:|:----------:
+    -    |Feature Map
 
 ##### `precision`
 `precision` overrides the automatic bucketing of dates for Timeline Charts. Its type is `<string>`.

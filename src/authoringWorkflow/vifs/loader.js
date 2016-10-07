@@ -18,6 +18,7 @@ const paths = {
   negativeColor: 'configuration.legend.negativeColor',
   positiveColor: 'configuration.legend.positiveColor',
   pointOpacity: 'configuration.pointOpacity',
+  pointSize: 'configuration.pointSize',
   primaryColor: 'series[0].color.primary',
   rowInspectorTitleColumnName: 'configuration.rowInspectorTitleColumnName',
   secondaryColor: 'series[0].color.secondary',
@@ -108,6 +109,10 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.pointOpacity)) {
     dispatch(actions.setPointOpacity(get(paths.pointOpacity)));
+  }
+
+  if (has(paths.pointSize)) {
+    dispatch(actions.setPointSize(get(paths.pointSize)));
   }
 
   if (has(paths.positiveColor)) {

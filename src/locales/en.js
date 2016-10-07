@@ -121,6 +121,9 @@ export default {
         point_opacity: {
           title: 'Opacity'
         },
+        point_size: {
+          title: 'Size'
+        },
         color_scale: {
           title: 'Color Scale'
         },

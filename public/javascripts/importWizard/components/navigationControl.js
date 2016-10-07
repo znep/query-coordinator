@@ -1,17 +1,15 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
+import _ from 'lodash';
 
-function nextButton(finishLink, onNext) {
-  if (_.isUndefined(finishLink)) {
-    const nextButtonStatus =
-      onNext
-        ? ''
-        : ' disabled';
-
+function nextButton(finishLink, onNext, nextText, nextIsDefault) {
+  if (!finishLink) {
     return (
       <a
-        className={'button nextButton' + nextButtonStatus}
+        className={classNames(
+          'button', 'nextButton', { 'disabled': !onNext, 'default': nextIsDefault })}
         onClick={onNext}>
-        {I18n.screens.wizard.next}
+        {_.defaultTo(nextText, I18n.screens.wizard.next)}
       </a>
     );
   } else {
@@ -19,21 +17,16 @@ function nextButton(finishLink, onNext) {
       <a
         className="button nextButton default"
         href={finishLink}>
-        {I18n.screens.wizard.finish}
+        {I18n.core.dialogs.done}
       </a>
     );
   }
 }
 
 function prevButton(onPrev) {
-  const prevButtonStatus =
-    _.isUndefined(onPrev)
-      ? ' disabled'
-      : '';
-
   return (
     <a
-      className={'button prevButton' + prevButtonStatus}
+      className={classNames('button', 'prevButton', { 'disabled': !onPrev })}
       onClick={onPrev}>
       {I18n.screens.wizard.previous}
     </a>
@@ -41,14 +34,9 @@ function prevButton(onPrev) {
 }
 
 function saveButton(onSave) {
-  const saveButtonStatus =
-    _.isUndefined(onSave)
-      ? ' disabled'
-      : '';
-
   return (
     <a
-      className={'button saveButton' + saveButtonStatus}
+      className={classNames('button', 'saveButton', { 'disabled': !onSave })}
       onClick={onSave}>
       {I18n.screens.wizard.save}
     </a>
@@ -56,14 +44,9 @@ function saveButton(onSave) {
 }
 
 function cancelButton(cancelLink) {
-  const cancelButtonStatus =
-    _.isUndefined(cancelLink)
-      ? ' disabled'
-      : '';
-
   return (
     <a
-      className={'button cancelButton' + cancelButtonStatus}
+      className={classNames('button', 'cancelButton', { 'disabled': !cancelLink })}
       href={cancelLink}>
       {I18n.screens.wizard.cancel}
     </a>
@@ -71,14 +54,14 @@ function cancelButton(cancelLink) {
 }
 
 
-function view({finishLink, onNext, onPrev, onSave, cancelLink}) {
+function view({finishLink, onNext, nextText, nextIsDefault, onPrev, onSave, cancelLink}) {
   return (
     <div className="wizardButtons clearfix">
       {cancelButton(cancelLink)}
       {saveButton(onSave)}
       <div className="button navButtons">
         {prevButton(onPrev)}
-        {nextButton(finishLink, onNext)}
+        {nextButton(finishLink, onNext, nextText, nextIsDefault)}
       </div>
     </div>
   );
@@ -87,6 +70,8 @@ function view({finishLink, onNext, onPrev, onSave, cancelLink}) {
 view.propTypes = {
   finishLink: PropTypes.string,
   onNext: PropTypes.func,
+  nextText: PropTypes.string,
+  nextIsDefault: PropTypes.bool,
   onSave: PropTypes.func,
   onPrev: PropTypes.func,
   cancelLink: PropTypes.string

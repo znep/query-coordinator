@@ -20,7 +20,7 @@ describe('NavigationControl', () => {
     expect(element.querySelector('a.button.nextButton.default'))
       .to.be.defined;
     expect(element.querySelector('a.button.nextButton.default').innerText)
-      .to.equal('Finish');
+      .to.equal('Done');
   });
 
   it('renders all enabled when functions are passed to each attribute', () => {

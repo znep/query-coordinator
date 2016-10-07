@@ -1036,9 +1036,7 @@ export function view({ metadata, onMetadataAction, operation, importError, goToP
       </div>
       <NavigationControl
         onPrev={goToPrevious}
-
         onSave={onSave}
-
         onNext={(() => {
           onMetadataAction(updateNextClicked());
           onMetadataAction(updateDisplayType(operation));
@@ -1046,7 +1044,8 @@ export function view({ metadata, onMetadataAction, operation, importError, goToP
             onMetadataAction(Server.saveMetadataThenProceed());
           }
         })}
-
+        nextText={I18n.screens.wizard.finish}
+        nextIsDefault
         cancelLink="/profile" />
 
     </div>

@@ -16,6 +16,7 @@ import {
   SET_DIMENSION,
   SET_PRIMARY_COLOR,
   SET_POINT_OPACITY,
+  SET_POINT_SIZE,
   SET_BASE_LAYER,
   SET_BASE_LAYER_OPACITY,
   SET_UNIT_ONE,
@@ -80,6 +81,11 @@ export default function featureMap(state, action) {
     case SET_POINT_OPACITY:
       var opacity = parseFloat(action.pointOpacity);
       _.set(state, 'configuration.pointOpacity', _.isFinite(opacity) ? opacity : null);
+      break;
+
+    case SET_POINT_SIZE:
+      const size = parseFloat(action.pointSize);
+      _.set(state, 'configuration.pointSize', _.isFinite(size) ? _.clamp(size, 1, 3.2) : null);
       break;
 
     case SET_BASE_LAYER:

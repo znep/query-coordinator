@@ -18,6 +18,7 @@ export default () => ({
       "zoom": 6
     },
     "pointOpacity": 0.3,
+    "pointSize": 1,
     "viewSourceDataLink": true
   },
   "description": "Stars shining bright above you.",

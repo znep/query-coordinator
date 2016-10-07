@@ -77,6 +77,11 @@ export const getPointOpacity = createSelector(
   vif => _.get(vif, 'configuration.pointOpacity', 1) * 100
 );
 
+export const getPointSize = createSelector(
+  getCurrentVif,
+  vif => _.get(vif, 'configuration.pointSize', 1)
+);
+
 export const getColorScale = createSelector(
   getCurrentVif,
   vif => {

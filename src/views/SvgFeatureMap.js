@@ -18,6 +18,8 @@ const FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY = 100;
 const FEATURE_MAP_DEFAULT_INTERACTIVE = true;
 const FEATURE_MAP_DEFAULT_PAN_AND_ZOOM = true;
 const FEATURE_MAP_DEFAULT_LOCATE_USER = false;
+const FEATURE_MAP_MIN_POINT_SIZE_MULTIPLIER = 1;
+const FEATURE_MAP_MAX_POINT_SIZE_MULTIPLIER = 3.2;
 
 function SvgFeatureMap(element, vif) {
   _.extend(this, new SvgVisualization(element, vif));
@@ -960,7 +962,13 @@ function SvgFeatureMap(element, vif) {
       _.get(lastRenderedVif, pointOpacityPath)
     );
 
-    if (datasetUidChanged || whereClauseChanged || pointColorChanged || pointOpacityChanged) {
+    const pointSizePath = 'configuration.pointSize';
+    const pointSizeChanged = !_.isEqual(
+      _.get(newVif, pointSizePath),
+      _.get(lastRenderedVif, pointSizePath)
+    );
+
+    if (datasetUidChanged || whereClauseChanged || pointColorChanged || pointOpacityChanged || pointSizeChanged) {
       var layer;
       var layerId = _.uniqueId();
       var featureLayerOptions = {
@@ -1088,15 +1096,24 @@ function SvgFeatureMap(element, vif) {
    * @return {Number}
    */
   function scalePointFeatureRadiusByZoomLevel(zoomLevel) {
-    var pointSizeMultiplier = _.get(lastRenderedVif, 'configuration.pointSize', 1);
+    const pointSizeMultiplier = _.get(lastRenderedVif, 'configuration.pointSize', 1);
+
     if (!_.isFinite(pointSizeMultiplier)) {
       throw new Error('configuration.pointSize is not a number.');
     }
+
     if (pointSizeMultiplier < 0) {
       throw new Error('configuration.pointSize must be positive.');
     }
-    if (pointSizeMultiplier < 1 || pointSizeMultiplier > 1.6) {
-      throw new Error('configuration.pointSize must be between 1 - 1.6.');
+
+    if (
+      pointSizeMultiplier < FEATURE_MAP_MIN_POINT_SIZE_MULTIPLIER ||
+      pointSizeMultiplier > FEATURE_MAP_MAX_POINT_SIZE_MULTIPLIER
+    ) {
+      throw new Error(
+        'configuration.pointSize must be between' +
+        `${FEATURE_MAP_MIN_POINT_SIZE_MULTIPLIER} - ${FEATURE_MAP_MAX_POINT_SIZE_MULTIPLIER}.`
+      );
     }
 
     // This was created somewhat arbitrarily by Chris to

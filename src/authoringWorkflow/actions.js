@@ -340,6 +340,14 @@ export function setPointOpacity(pointOpacity) {
   };
 }
 
+export const SET_POINT_SIZE = 'SET_POINT_SIZE';
+export function setPointSize(pointSize) {
+  return {
+    type: SET_POINT_SIZE,
+    pointSize
+  };
+}
+
 export const SET_COLOR_SCALE = 'SET_COLOR_SCALE';
 export function setColorScale(negativeColor, zeroColor, positiveColor) {
   return {

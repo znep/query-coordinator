@@ -210,41 +210,6 @@ describe('socrata.visualizations.views.FeatureMap', function() {
     });
   });
 
-  describe('when rendering the feature map', function() {
-
-    var featureMap;
-
-    beforeEach(function() {
-      featureMap = createFeatureMap();
-    });
-
-    afterEach(function() {
-      removeFeatureMap(featureMap);
-    });
-
-    it('renders points with color', function(done) {
-
-      _.defer(function() {
-
-        var canvases = $('canvas');
-
-        assert.isAbove(canvases.length, 0);
-
-        var canvasWithPointsRendered = canvases[27];
-
-        var point1HasColor = pointHasColor(getCanvasColorAt(canvasWithPointsRendered, { x: 151, y: 64 }));
-        var point2HasColor = pointHasColor(getCanvasColorAt(canvasWithPointsRendered, { x: 155, y: 183 }));
-        var point3HasColor = pointHasColor(getCanvasColorAt(canvasWithPointsRendered, { x: 159, y: 41 }));
-
-        assert.isTrue(point1HasColor);
-        assert.isTrue(point2HasColor);
-        assert.isTrue(point3HasColor);
-
-        done();
-      });
-    });
-  });
-
   describe('`panAndZoom`', function() {
 
     describe('when disabled', function() {

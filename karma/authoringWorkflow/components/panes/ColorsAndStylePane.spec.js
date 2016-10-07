@@ -14,6 +14,7 @@ function render(type) {
     onChangeBaseLayerOpacity: sinon.spy(),
     onChangePointColor: sinon.spy(),
     onChangePointOpacity: sinon.spy(),
+    onChangePointSize: sinon.spy(),
     onSelectColorScale: sinon.spy()
   });
 
@@ -129,6 +130,10 @@ describe('ColorsAndStylePane', function() {
         expect(component.querySelector('#point-opacity')).to.exist;
       });
 
+      it('renders point size', function() {
+        expect(component.querySelector('#point-size')).to.exist;
+      });
+
       it('renders map type', function() {
         expect(component.querySelector('#base-layer')).to.exist;
       });
@@ -140,6 +145,7 @@ describe('ColorsAndStylePane', function() {
 
     describe('events', function() {
       emitsEvent('#point-opacity', 'onChangePointOpacity');
+      emitsEvent('#point-size', 'onChangePointSize');
       emitsEvent('#base-layer .picklist-option', 'onSelectBaseLayer', 'click');
       emitsEvent('#base-layer-opacity', 'onChangeBaseLayerOpacity');
     });

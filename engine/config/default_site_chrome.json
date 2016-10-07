@@ -99,8 +99,7 @@
                         "home": "Home Page",
                         "privacy": "Privacy Policy",
                         "terms_of_service": "Terms of Service"
-                      },
-                      "logo_alt": ""
+                      }
                     },
                     "general": {
                       "site_name": null,
@@ -124,8 +123,7 @@
                         "developers": "Developers",
                         "home": "Home Page",
                         "support": "Support"
-                      },
-                      "logo_alt": ""
+                      }
                     }
                   }
                 }
@@ -228,7 +226,6 @@
                         "privacy": "Privacy Policy",
                         "terms_of_service": "Terms of Service"
                       },
-                      "logo_alt": "",
                       "site_name": null
                     },
                     "general": {
@@ -253,7 +250,6 @@
                         "home": "Home Page",
                         "support": "Support"
                       },
-                      "logo_alt": "",
                       "site_name": null
                     }
                   }
@@ -351,7 +347,6 @@
                         "link_3": "Accessibility",
                         "link_4": "Contact Us"
                       },
-                      "logo_alt": "",
                       "site_name": ""
                     },
                     "header": {
@@ -361,7 +356,6 @@
                         "link_2": "Developers",
                         "link_3": "Support"
                       },
-                      "logo_alt": "",
                       "site_name": ""
                     }
                   }

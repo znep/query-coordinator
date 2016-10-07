@@ -6,3 +6,6 @@ npm-debug.log
 .sass-cache
 .DS_Store
 engine/spec/dummy/log/*.log
+node_modules/
+engine/node_modules/
+.bundle

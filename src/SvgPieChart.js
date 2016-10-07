@@ -32,7 +32,8 @@ $.fn.socrataSvgPieChart = function(originalVif) {
     $element.one('SOCRATA_VISUALIZATION_DESTROY', function() {
       clearTimeout(rerenderOnResizeTimeout);
       visualization.destroy();
-      detachEvents();
+      detachInteractionEvents();
+      detachApiEvents();
     });
 
     $(window).on('resize', handleWindowResize);

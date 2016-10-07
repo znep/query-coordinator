@@ -1,0 +1,101 @@
+@import "variables/colors";
+@import "partials/alerts";
+@import "partials/input-groups";
+@import "./add-filter.scss";
+@import "./filter-footer.scss";
+@import "./searchable-picklist.scss";
+@import "./text-filter.scss";
+@import "./number-filter.scss";
+@import "./slider.scss";
+
+.filter-bar-container {
+  height: 83px;
+  background: $light-grey-7;
+  padding: 8px 20px;
+  display: flex;
+
+  // from http://webaim.org/techniques/css/invisiblecontent
+  .hidden {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .filter-bar-filter {
+    margin-right: 8px;
+    color: $dark-grey-2;
+
+    .filter-title {
+      font-size: 12px;
+    }
+
+    .filter-control-container {
+      position: relative;
+
+      .filter-control-toggle {
+        padding: 8px;
+        padding-right: 32px;
+        background: $white;
+        border: 1px solid $light-grey-3;
+        position: relative;
+        cursor: pointer;
+        min-width: 100px;
+        border-radius: 1px;
+        user-select: none;
+
+        .icon-chevron-down {
+          color: $light-grey-0;
+          position: absolute;
+          right: 8px;
+        }
+      }
+
+      .filter-controls {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        width: 300px;
+        margin-top: -1px;
+        background: $white;
+        border-radius: 1px;
+        border: 1px solid $light-grey-3;
+
+        .filter-control-title {
+          margin: 8px;
+        }
+
+        .range-filter-container {
+          padding: 8px;
+
+          .filter-control-title {
+            margin: 0;
+            margin-bottom: 8px;
+          }
+
+          .range-text-inputs-container {
+            justify-content: space-between;
+
+            .range-input {
+              max-width: 150px;
+              padding-left: 10px;
+              padding-right: 10px;
+            }
+
+            .range-separator {
+              margin: 8px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .filter-bar-column-option {
+    [class^="icon"] {
+      margin-right: 8px;
+    }
+  }
+}

@@ -1,0 +1,29 @@
+.add-filter {
+  align-self: center;
+  margin-right: 20px;
+
+  .add-filter-button {
+    color: $primary;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+
+    .icon-add {
+      margin-left: 4px;
+    }
+  }
+
+  .column-container {
+    border: 1px solid $light-grey-3;
+    position: absolute;
+    background: $white;
+    padding: 8px;
+    margin-top: 5px;
+    min-width: 350px;
+    z-index: 10;
+
+    .alert.info {
+      margin-top: 8px;
+    }
+  }
+}

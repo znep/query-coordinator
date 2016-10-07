@@ -1,0 +1,16 @@
+@import "variables/colors.scss";
+
+.filter-bar-filter {
+  .text-filter {
+    .searchable-picklist {
+      .searchable-picklist-input-container {
+        margin: 8px;
+      }
+
+      .picklist {
+        border-left: none;
+        border-right: none;
+      }
+    }
+  }
+}

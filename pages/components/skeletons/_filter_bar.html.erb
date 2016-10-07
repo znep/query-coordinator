@@ -1,0 +1,63 @@
+<div id="filter-bar-container"></div>
+<h3>Output</h3>
+<pre id="output" style="white-space: pre-wrap;"></pre>
+<script type="text/javascript">
+  var output = document.querySelector('#output');
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var filters = [
+      {
+        parameters: {
+          function: 'valueRange',
+          columnName: 'some_number',
+          arguments: {
+            start: 10,
+            end: 20
+          }
+        },
+        isLocked: false,
+        isHidden: false,
+        isRequired: false,
+        allowMultiple: false
+      }
+    ];
+
+    var props = {
+      columns: [
+        {
+          name: 'Some Number',
+          fieldName: 'some_number',
+          dataTypeName: 'number',
+          rangeMin: 0,
+          rangeMax: 100
+        },
+        {
+          name: 'Some Word',
+          fieldName: 'some_word',
+          dataTypeName: 'text'
+        }
+      ],
+      filters: filters,
+      fetchSuggestions: (column, searchTerm) => {
+        return Promise.resolve([ 'purple', 'pesto', 'russian' ]);
+      },
+      onUpdate: onUpdate
+    };
+
+    function render() {
+      output.innerHTML = JSON.stringify(filters, null, 2);
+
+      ReactDOM.render(
+        React.createElement(styleguide.FilterBar, props),
+        document.getElementById('filter-bar-container')
+      );
+    }
+
+    function onUpdate(newFilters) {
+      filters = newFilters;
+      render();
+    }
+
+    render();
+  });
+</script>

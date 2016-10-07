@@ -12,6 +12,7 @@ import Dropdown from './components/Dropdown';
 import Picklist from './components/Picklist';
 import ViewCard from './components/ViewCard';
 import ExternalViewCard from './components/ViewCard/ExternalViewCard';
+import FilterBar from './components/FilterBar';
 
 module.exports = {
   attachTo: function(element) {
@@ -35,5 +36,6 @@ module.exports = {
   Dropdown,
   Picklist,
   ViewCard,
-  ExternalViewCard
+  ExternalViewCard,
+  FilterBar
 };

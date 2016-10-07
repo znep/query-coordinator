@@ -195,7 +195,7 @@ export const StoryPublicationStatus = React.createClass({
     const statusIconAttributes = {
       className: classNames('story-publication-status-icon', {
         'unpublished icon-warning-alt2': !isPublic || publishedAndDraftDiverged,
-        'published icon-check': isPublic && !publishedAndDraftDiverged
+        'published icon-checkmark3': isPublic && !publishedAndDraftDiverged
       })
     };
 

@@ -78,7 +78,11 @@ module SocrataSiteChrome
     def get_domain_config
       body = Rails.cache.fetch(cache_key) do
         begin
-          response = HTTParty.get(domain_config_uri, :verify => Rails.env.production?)
+          response = HTTParty.get(
+            domain_config_uri,
+            :verify => Rails.env.production?,
+            :headers => { 'X-Socrata-Host' => CurrentDomain.cname }
+          )
           response.code == 200 ? response.body : nil
         rescue HTTParty::ResponseError => e
           raise "Failed to get domain configuration for #{domain}: #{e}"
@@ -89,12 +93,11 @@ module SocrataSiteChrome
     end
 
     def domain_config_uri
-      "#{domain_with_scheme}/api/configurations.json?type=site_chrome&defaultOnly=true"
+      "#{coreservice_uri}/configurations.json?type=site_chrome&defaultOnly=true"
     end
 
-    def domain_with_scheme
-      uri = URI.parse(domain) rescue domain
-      uri.scheme ? uri.to_s : "https://#{uri}"
+    def coreservice_uri
+      Rails.application.config.coreservice_uri
     end
 
     def configuration_or_default(configuration_response)

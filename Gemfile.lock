@@ -1,7 +1,7 @@
 PATH
   remote: engine
   specs:
-    socrata_site_chrome (1.1.5)
+    socrata_site_chrome (1.1.8)
       airbrake (>= 4.3.0)
       chroma
       dalli
@@ -189,9 +189,6 @@ DEPENDENCIES
   sqlite3
   web-console (~> 2.0)
   webmock
-
-RUBY VERSION
-   ruby 2.3.0p0
 
 BUNDLED WITH
    1.12.5

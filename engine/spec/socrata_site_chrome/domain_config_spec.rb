@@ -4,11 +4,14 @@ require 'webmock/rspec'
 describe SocrataSiteChrome::DomainConfig do
 
   let(:domain) { 'data.seattle.gov' }
-  let(:site_chrome_config) { JSON.parse(File.read('spec/fixtures/site_chrome_config.json')).with_indifferent_access }
+  let(:site_chrome_config) do
+    JSON.parse(File.read('spec/fixtures/site_chrome_config.json')).with_indifferent_access
+  end
   let(:helper) { SocrataSiteChrome::DomainConfig }
+  let(:coreservice_uri) { Rails.application.config_for(:config)['coreservice_uri'] }
+  let(:uri) { "#{coreservice_uri}/configurations.json?type=site_chrome&defaultOnly=true" }
 
   def stub_configurations(response = { status: 200, body: '[{ "stuff": true }]' })
-    uri = "https://#{domain}/api/configurations.json?type=site_chrome&defaultOnly=true"
     stub_request(:get, uri).to_return(status: response[:status], body: response[:body])
   end
 
@@ -42,28 +45,20 @@ describe SocrataSiteChrome::DomainConfig do
   describe '#domain_config_uri' do
     it 'returns the uri for a domain name' do
       stub_configurations
-      uri = 'https://data.seattle.gov/api/configurations.json?type=site_chrome&defaultOnly=true'
       expect(helper.new(domain).send(:domain_config_uri)).to eq(uri)
     end
 
     it 'returns a the uri for localhost' do
-      localhost_uri = 'https://localhost/api/configurations.json?type=site_chrome&defaultOnly=true'
-      stub_request(:get, localhost_uri).to_return(status: 200, body: '[{ "stuff": true }]')
-      expect(helper.new('localhost').send(:domain_config_uri)).to eq(localhost_uri)
+      stub_request(:get, uri).to_return(status: 200, body: '[{ "stuff": true }]')
+      expect(helper.new('localhost').send(:domain_config_uri)).to eq(uri)
     end
   end
 
-  describe '#domain_with_scheme' do
-    it 'adds "https://" to a uri without a scheme' do
+  describe '#coreservice_uri' do
+    it 'is not blank' do
       stub_configurations
-      result = helper.new(domain).send(:domain_with_scheme)
-      expect(result).to eq('https://data.seattle.gov')
-    end
-
-    it 'does not add anything to a uri that already has a scheme' do
-      stub_configurations
-      result = helper.new("https://#{domain}").send(:domain_with_scheme)
-      expect(result).to eq('https://data.seattle.gov')
+      result = helper.new(domain).send(:coreservice_uri)
+      expect(result).to be_present
     end
   end
 

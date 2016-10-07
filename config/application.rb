@@ -28,6 +28,7 @@ module SocrataSiteChrome
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     # config.active_record.raise_in_transactional_callbacks = true
+    config.coreservice_uri = Rails.application.config_for(:config)['coreservice_uri']
 
     config.assets.prefix = '/asset_pipeline'
   end

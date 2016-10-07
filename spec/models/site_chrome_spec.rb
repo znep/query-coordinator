@@ -19,9 +19,9 @@ describe SiteChrome do
     def auth_cookies_for_vcr_tapes
       {
         'logged_in' => 'true',
-        '_socrata_session_id' => 'BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJWYyNWQxZjg4OTE1NDMzYjQ5OWQwOThlMzU0MGY0NGM4BjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjFQK0s4VUwyQ0pLWGwxTGJ4N1pjWnJQa1JDU05LZk1aVXNwcm9ZdkZaYXR3PQY7AEZJIg5yZXR1cm5fdG8GOwBGMEkiCWluaXQGOwBUVA%3D%3D--699b5f9b224d3e5048e3fc67f21bbe5360c64bad',
-        'socrata-csrf-token' => '54gROK00FX2R282cbnkZH%2FnxXDNOx885dPhHlZbf%2FT7Yaq1oELYx2HQPe22D7gCzAOBVEAS7CW3GYq%2F3Z4aX4g%3D%3D',
-        '_core_session_id' => 'dHVnZy1pa2NlIDE0NzU2NDE1NzMgZDQzOGJkNjNhZTc2IDc3NWVmMDc4MGM0NmE2NjZmZDU4ZWUzNzIyMTVjODA4MmYzYTM1Mzk%3D'
+        '_socrata_session_id' => 'BAh7C0kiD3Nlc3Npb25faWQGOgZFRkkiJTE0ODEzNzdkODA0OWM1ZTQzNDFhN2RhYjdmNGYzODlhBjsARkkiCXVzZXIGOwBGMEkiEF9jc3JmX3Rva2VuBjsARkkiMWNSenU3VjNaMi9WVkVoQ1o0NURTeUdWTEtQaktXS2w2MnZxVHd0aDZ1QUE9BjsARkkiCWluaXQGOwBUVEkiDnJldHVybl90bwY7AEYwSSIKZmxhc2gGOwBUewdJIgxkaXNjYXJkBjsAVFsGSSILbm90aWNlBjsARkkiDGZsYXNoZXMGOwBUewZJIgtub3RpY2UGOwBGSSIXU2l0ZSB0aGVtZSB1cGRhdGVkBjsAVA',
+        'socrata-csrf-token' => 'dbIpjcrCMkifCCB47xe4gwioH1JW3j9nrLjJ9Uko2PIErsdglxvpvcoaMOEMh2pLbeM3qpyGlh12Qlo3kVJg8g',
+        '_core_session_id' => 'M2hwYS10Znp5IDE0NzU4OTgyNjAgYzMyZTA4NmVhMjVjIDVhZTU4NTJiZTJmN2VkMmRmMDcyOWEzYTc2MWJkYTBkZTk0YjA2MTU'
       }.map { |key, value| "#{key}=#{value}" }.join(';')
     end
 

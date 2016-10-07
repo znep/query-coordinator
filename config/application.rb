@@ -122,6 +122,8 @@ module Frontend
 
     config.version = SemVer.find.format '%M.%m.%p'
 
+    config.coreservice_uri = Rails.application.config_for(:config)['coreservice_uri']
+
     # Set up logging
     config.lograge.enabled = true
     config.lograge.formatter = Lograge::Formatters::KeyValue.new

@@ -338,13 +338,11 @@ http_interactions:
   recorded_at: Tue, 04 Oct 2016 23:55:21 GMT
 - request:
     method: get
-    uri: http://localhost:8080/configurations?defaultOnly=true&type=site_chrome
+    uri: http://localhost:8080/configurations.json?defaultOnly=true&type=site_chrome
     body:
       encoding: US-ASCII
       string: ''
     headers:
-      Content-Type:
-      - application/json
       X-Socrata-Host:
       - localhost
   response:
@@ -353,7 +351,7 @@ http_interactions:
       message: OK
     headers:
       X-Socrata-Requestid:
-      - 2ougm9fkf29a8skojq7ibygrk
+      - 3caz46znlq3f9n6rlc7rmnpke
       Access-Control-Allow-Origin:
       - "*"
       Content-Type:
@@ -366,12 +364,12 @@ http_interactions:
       encoding: UTF-8
       string: |
         [ {
-          "id" : 163,
+          "id" : 39,
           "name" : "Site Chrome",
           "default" : true,
           "domainCName" : "localhost",
           "type" : "site_chrome",
-          "updatedAt" : 1475623823,
+          "updatedAt" : 1475878728,
           "properties" : [ {
             "name" : "siteChromeConfigVars",
             "value" : {
@@ -432,6 +430,8 @@ http_interactions:
                       "locales" : {
                         "en" : {
                           "footer" : {
+                            "site_name" : "",
+                            "copyright_notice_source" : "",
                             "links" : {
                               "link_3" : "Accessibility",
                               "link_4" : "Contact Us",
@@ -441,21 +441,13 @@ http_interactions:
                             }
                           },
                           "header" : {
+                            "site_name" : "Local Toast",
                             "links" : {
                               "link_3" : "Support",
                               "link_1" : "Browse",
                               "link_2" : "Developers",
                               "link_0" : "Home Page"
                             }
-                          }
-                        },
-                        "es" : {
-                          "footer" : {
-                            "site_name" : "",
-                            "copyright_notice_source" : ""
-                          },
-                          "header" : {
-                            "site_name" : "wat"
                           }
                         }
                       },
@@ -517,139 +509,8 @@ http_interactions:
                   },
                   "published" : {
                     "content" : {
-                      "general" : {
-                        "template" : "Evergreen",
-                        "social_shares" : {
-                          "youtube" : {
-                            "url" : ""
-                          },
-                          "yammer" : {
-                            "url" : ""
-                          },
-                          "twitter" : {
-                            "url" : ""
-                          },
-                          "github" : {
-                            "url" : ""
-                          },
-                          "vimeo" : {
-                            "url" : ""
-                          },
-                          "flickr" : {
-                            "url" : ""
-                          },
-                          "facebook" : {
-                            "url" : "face"
-                          },
-                          "linked_in" : {
-                            "url" : ""
-                          },
-                          "tumblr" : {
-                            "url" : ""
-                          },
-                          "pinterest" : {
-                            "url" : ""
-                          },
-                          "google_plus" : {
-                            "url" : ""
-                          },
-                          "instagram" : {
-                            "url" : ""
-                          }
-                        },
-                        "window_title_display" : "",
-                        "window_icon" : "/socrata_site_chrome/images/default_favicon.ico",
-                        "show_signup" : "true",
-                        "styles" : {
-                          "max_width" : "",
-                          "font_family" : "Open Sans"
-                        },
-                        "show_signin_signout" : "true",
-                        "show_profile" : "true"
-                      },
-                      "locales" : {
-                        "en" : {
-                          "footer" : {
-                            "links" : {
-                              "link_3" : "Accessibility",
-                              "link_4" : "Contact Us",
-                              "link_1" : "Terms of Service",
-                              "link_2" : "Privacy Policy",
-                              "link_0" : "Home Page"
-                            }
-                          },
-                          "header" : {
-                            "links" : {
-                              "link_3" : "Support",
-                              "link_1" : "Browse",
-                              "link_2" : "Developers",
-                              "link_0" : "Home Page !"
-                            }
-                          }
-                        },
-                        "es" : {
-                          "footer" : {
-                            "site_name" : "aksdf",
-                            "copyright_notice_source" : ""
-                          },
-                          "header" : {
-                            "site_name" : "watlasf"
-                          }
-                        }
-                      },
-                      "footer" : {
-                        "copyright_notice" : "true",
-                        "powered_by" : "true",
-                        "logo" : {
-                          "src" : "/socrata_site_chrome/images/socrata-logo-2c-dark.png"
-                        },
-                        "styles" : {
-                          "bg_color" : "#3b3a3c",
-                          "fg_color" : "#fff",
-                          "logo_height" : "44px",
-                          "logo_width" : ""
-                        },
-                        "links" : [ {
-                          "key" : "link_0",
-                          "url" : "/"
-                        }, {
-                          "key" : "link_1",
-                          "url" : "http://www.socrata.com/terms-of-service"
-                        }, {
-                          "key" : "link_2",
-                          "url" : "http://www.socrata.com/privacy"
-                        }, {
-                          "key" : "link_3",
-                          "url" : "http://www.socrata.com/accessibility"
-                        }, {
-                          "key" : "link_4",
-                          "url" : "http://www.socrata.com/contact-us"
-                        } ]
-                      },
-                      "header" : {
-                        "logo" : {
-                          "src" : "/socrata_site_chrome/images/socrata-logo-2c-dark.png"
-                        },
-                        "styles" : {
-                          "bg_color" : "#22b479",
-                          "fg_color" : "#ccc",
-                          "logo_height" : "36px",
-                          "logo_width" : "",
-                          "bg_color_secondary" : ""
-                        },
-                        "links" : [ {
-                          "key" : "link_0",
-                          "url" : "/"
-                        }, {
-                          "key" : "link_1",
-                          "url" : "/browse"
-                        }, {
-                          "key" : "link_2",
-                          "url" : "http://dev.socrata.com"
-                        }, {
-                          "key" : "link_3",
-                          "url" : "http://support.socrata.com"
-                        } ]
+                      "new_properties" : {
+                        "some_key" : "some_fine_value"
                       }
                     }
                   }
@@ -665,7 +526,7 @@ http_interactions:
           } ]
         } ]
     http_version: 
-  recorded_at: Tue, 04 Oct 2016 23:55:21 GMT
+  recorded_at: Fri, 07 Oct 2016 22:19:15 GMT
 - request:
     method: get
     uri: http://localhost:8080/configurations?defaultOnly=true&type=site_chrome
@@ -683,7 +544,7 @@ http_interactions:
       message: OK
     headers:
       X-Socrata-Requestid:
-      - bfa4m26cnqzg5xg35ro1xhctz
+      - d7oipk00f2aq44cm9qpaw8r4x
       Access-Control-Allow-Origin:
       - "*"
       Content-Type:
@@ -696,12 +557,12 @@ http_interactions:
       encoding: UTF-8
       string: |
         [ {
-          "id" : 163,
+          "id" : 39,
           "name" : "Site Chrome",
           "default" : true,
           "domainCName" : "localhost",
           "type" : "site_chrome",
-          "updatedAt" : 1475623823,
+          "updatedAt" : 1475878728,
           "properties" : [ {
             "name" : "siteChromeConfigVars",
             "value" : {
@@ -762,6 +623,8 @@ http_interactions:
                       "locales" : {
                         "en" : {
                           "footer" : {
+                            "site_name" : "",
+                            "copyright_notice_source" : "",
                             "links" : {
                               "link_3" : "Accessibility",
                               "link_4" : "Contact Us",
@@ -771,21 +634,13 @@ http_interactions:
                             }
                           },
                           "header" : {
+                            "site_name" : "Local Toast",
                             "links" : {
                               "link_3" : "Support",
                               "link_1" : "Browse",
                               "link_2" : "Developers",
                               "link_0" : "Home Page"
                             }
-                          }
-                        },
-                        "es" : {
-                          "footer" : {
-                            "site_name" : "",
-                            "copyright_notice_source" : ""
-                          },
-                          "header" : {
-                            "site_name" : "wat"
                           }
                         }
                       },
@@ -847,6 +702,67 @@ http_interactions:
                   },
                   "published" : {
                     "content" : {
+                      "new_properties" : {
+                        "some_key" : "some_fine_value"
+                      }
+                    }
+                  }
+                }
+              },
+              "current_version" : "0.3",
+              "activation_state" : {
+                "data_lens" : true,
+                "open_data" : true,
+                "homepage" : true
+              }
+            }
+          } ]
+        } ]
+    http_version: 
+  recorded_at: Fri, 07 Oct 2016 22:19:15 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/configurations?defaultOnly=true&type=site_chrome
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Socrata-Requestid:
+      - 1euhlb3js8ajqzein6ym9p2je
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(7.5.1.v20110908)
+    body:
+      encoding: UTF-8
+      string: |
+        [ {
+          "id" : 39,
+          "name" : "Site Chrome",
+          "default" : true,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1475878728,
+          "properties" : [ {
+            "name" : "siteChromeConfigVars",
+            "value" : {
+              "versions" : {
+                "0.3" : {
+                  "draft" : {
+                    "content" : {
                       "general" : {
                         "template" : "Evergreen",
                         "social_shares" : {
@@ -869,7 +785,7 @@ http_interactions:
                             "url" : ""
                           },
                           "facebook" : {
-                            "url" : "face"
+                            "url" : ""
                           },
                           "linked_in" : {
                             "url" : ""
@@ -900,6 +816,8 @@ http_interactions:
                       "locales" : {
                         "en" : {
                           "footer" : {
+                            "site_name" : "",
+                            "copyright_notice_source" : "",
                             "links" : {
                               "link_3" : "Accessibility",
                               "link_4" : "Contact Us",
@@ -909,21 +827,13 @@ http_interactions:
                             }
                           },
                           "header" : {
+                            "site_name" : "Local Toast",
                             "links" : {
                               "link_3" : "Support",
                               "link_1" : "Browse",
                               "link_2" : "Developers",
-                              "link_0" : "Home Page !"
+                              "link_0" : "Home Page"
                             }
-                          }
-                        },
-                        "es" : {
-                          "footer" : {
-                            "site_name" : "aksdf",
-                            "copyright_notice_source" : ""
-                          },
-                          "header" : {
-                            "site_name" : "watlasf"
                           }
                         }
                       },
@@ -962,7 +872,7 @@ http_interactions:
                         },
                         "styles" : {
                           "bg_color" : "#22b479",
-                          "fg_color" : "#ccc",
+                          "fg_color" : "#fff",
                           "logo_height" : "36px",
                           "logo_width" : "",
                           "bg_color_secondary" : ""
@@ -982,6 +892,13 @@ http_interactions:
                         } ]
                       }
                     }
+                  },
+                  "published" : {
+                    "content" : {
+                      "new_properties" : {
+                        "some_key" : "some_fine_value"
+                      }
+                    }
                   }
                 }
               },
@@ -995,5 +912,5 @@ http_interactions:
           } ]
         } ]
     http_version: 
-  recorded_at: Tue, 04 Oct 2016 23:55:21 GMT
+  recorded_at: Fri, 07 Oct 2016 22:19:15 GMT
 recorded_with: VCR 3.0.3

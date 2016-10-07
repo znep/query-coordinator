@@ -23,9 +23,9 @@ describe SiteChromeController do
   def auth_cookies_for_vcr_tapes
     {
       'logged_in' => 'true',
-      '_socrata_session_id' => 'BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJWJkY2M1NDRmYWQ3ZGVhMmZjOTMzYjUzOWQxM2U5NzY5BjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjFjMC9KeHVKQVNTZTMxK1FGcGFoYkkvS1NNZVluNk1WNEFMS3oyRzZmQWZ3PQY7AEZJIglpbml0BjsAVFRJIg5yZXR1cm5fdG8GOwBGMA%3D%3D--03ede085a952536e6866b1c67ffe12c227f988ea',
-      'socrata-csrf-token' => '5AP5NG4m2QgzdXAQekB39%2BPemfrvFqydvV6PmtUHhoOXTDDyjGaQL4SilBXf6CzUEUyoHMj%2BaeW97DxCu5iHfw%3D%3D',
-      '_core_session_id' => 'dHVnZy1pa2NlIDE0NzU3MTE5NjIgMmRhODQxZDYyYzE3IGIwMDBiYjcxMGY3NTYwZmFlZDEyMmRlNjdiZTNhOGM3MzE1NDU4Nzk%3D'
+      '_socrata_session_id' => 'BAh7C0kiD3Nlc3Npb25faWQGOgZFRkkiJTE0ODEzNzdkODA0OWM1ZTQzNDFhN2RhYjdmNGYzODlhBjsARkkiCXVzZXIGOwBGMEkiEF9jc3JmX3Rva2VuBjsARkkiMWNSenU3VjNaMi9WVkVoQ1o0NURTeUdWTEtQaktXS2w2MnZxVHd0aDZ1QUE9BjsARkkiCWluaXQGOwBUVEkiDnJldHVybl90bwY7AEYwSSIKZmxhc2gGOwBUewdJIgxkaXNjYXJkBjsAVFsGSSILbm90aWNlBjsARkkiDGZsYXNoZXMGOwBUewZJIgtub3RpY2UGOwBGSSIXU2l0ZSB0aGVtZSB1cGRhdGVkBjsAVA',
+      'socrata-csrf-token' => 'dbIpjcrCMkifCCB47xe4gwioH1JW3j9nrLjJ9Uko2PIErsdglxvpvcoaMOEMh2pLbeM3qpyGlh12Qlo3kVJg8g',
+      '_core_session_id' => 'M2hwYS10Znp5IDE0NzU4OTgyNjAgYzMyZTA4NmVhMjVjIDVhZTU4NTJiZTJmN2VkMmRmMDcyOWEzYTc2MWJkYTBkZTk0YjA2MTU'
     }
   end
 
@@ -84,7 +84,7 @@ describe SiteChromeController do
       allow(subject).to receive(:enable_site_chrome?).and_return(true)
     end
 
-    new_content = { 'new_batch_of_properties' => { 'some_key' => 'some_fine_value' } }
+    new_content = { 'new_properties' => { 'some_key' => 'some_fine_value' } }
 
     it 'redirects if not logged in' do
       VCR.use_cassette('site_chrome/controller/update_redirect_to_login') do

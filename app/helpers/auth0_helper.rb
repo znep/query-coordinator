@@ -91,7 +91,7 @@ module Auth0Helper
       'Authorization' => "Bearer #{AUTH0_JWT}"
     })
 
-    if response.is_a? Array
+    if JSON.parse(response.body).is_a? Array
       response.any? { |connection| connection['name'] == name }
     end
   end

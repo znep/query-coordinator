@@ -6,12 +6,14 @@ set -ex
 echo "Change committed by: $(git log HEAD -1 --pretty=format:"%an (%ae)")"
 
 # Testing, duh.
-if $RUN_TESTS; then
+echo "RUN_TESTS=${RUN_TESTS}"
+if [ "${RUN_TESTS}" = "true" ]; then
   bin/test_on_jenkins
 else
   echo "Skipping tests because RUN_TESTS is false"
 fi
 
+rm -f marathon.properties
 rm -f dockerize.properties
 touch dockerize.properties
 
@@ -28,7 +30,8 @@ echo "DOCKER_BUILD_ARGS=\"--build-arg ARTIFACTORYONLINE_USER=\${ARTIFACTORYONLIN
 # Write REVISION file
 echo ${SERVICE_SHA} > "$WORKSPACE/REVISION"
 
-if $AUTO_DEPLOY; then
+echo "AUTO_DEPLOY=${AUTO_DEPLOY}"
+if [ "${AUTO_DEPLOY}" = "true" ]; then
   ops-tools/jenkins/dockerize/dockerize-marathon dockerize.properties
 else
   ops-tools/jenkins/dockerize/dockerize dockerize.properties

@@ -117,7 +117,7 @@ class DatasetsController < ApplicationController
         @featured_content = []
       end
 
-      RequestStore[:current_user] = current_user
+      RequestStore[:current_user] = current_user.try(:data)
 
       render 'dataset_landing_page', :layout => 'dataset_landing_page'
 
@@ -744,7 +744,7 @@ class DatasetsController < ApplicationController
         @featured_content = []
       end
 
-      RequestStore[:current_user] = current_user
+      RequestStore[:current_user] = current_user.try(:data)
 
       render 'dataset_landing_page', :layout => 'dataset_landing_page'
 

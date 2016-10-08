@@ -45,7 +45,7 @@ class Auth0HelperTest < ActionView::TestCase
     end
   end
 
-  test 'UID correctly extracted' do 
+  test 'UID correctly extracted' do
     uid = 'abcd-efgh'
     socrata_user_id = 'auth0|abcd-efgh|socrata.com'
     extracted_uid = extract_uid(socrata_user_id).to_s

@@ -1,11 +1,11 @@
 <div id="filter-bar-container"></div>
 <h3>Output</h3>
 <pre id="output" style="white-space: pre-wrap;"></pre>
-<script type="text/javascript">
-  var output = document.querySelector('#output');
+<script type="text/babel" data-presets="es2015,react">
+  const output = document.querySelector('#output');
 
-  document.addEventListener('DOMContentLoaded', function() {
-    var filters = [
+  $(() => {
+    const filters = [
       {
         parameters: {
           function: 'valueRange',
@@ -22,7 +22,7 @@
       }
     ];
 
-    var props = {
+    let props = {
       columns: [
         {
           name: 'Some Number',
@@ -37,24 +37,22 @@
           dataTypeName: 'text'
         }
       ],
-      filters: filters,
-      fetchSuggestions: (column, searchTerm) => {
-        return Promise.resolve([ 'purple', 'pesto', 'russian' ]);
-      },
-      onUpdate: onUpdate
+      filters,
+      onUpdate,
+      fetchSuggestions: (column, searchTerm) => Promise.resolve([ 'purple', 'pesto', 'russian' ])
     };
 
     function render() {
-      output.innerHTML = JSON.stringify(filters, null, 2);
+      output.innerHTML = JSON.stringify(props.filters, null, 2);
 
       ReactDOM.render(
-        React.createElement(styleguide.FilterBar, props),
+        <styleguide.FilterBar {...props} />,
         document.getElementById('filter-bar-container')
       );
     }
 
     function onUpdate(newFilters) {
-      filters = newFilters;
+      props.filters = newFilters;
       render();
     }
 

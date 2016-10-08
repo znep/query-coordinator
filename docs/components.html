@@ -8,8 +8,8 @@
     <title>Socrata Styleguide</title>
 
     <link rel="stylesheet" href="stylesheets/vendor/prism-2ae3b88e.css">
-    <link rel="stylesheet" href="css/styleguide-df906484.css">
-    <link rel="stylesheet" href="stylesheets/pages-9f6a5756.css">
+    <link rel="stylesheet" href="css/styleguide-4d1f67d1.css">
+    <link rel="stylesheet" href="stylesheets/pages-c06bab17.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic' rel='stylesheet' type='text/css'>
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
@@ -68,6 +68,7 @@
         <li><a href="components.html#dropdowns">Dropdowns</a></li>
         <li><a href="components.html#color-picker">Color Picker</a></li>
         <li><a href="components.html#view-card">View Card</a></li>
+        <li><a href="components.html#filter-bar">Filter Bar</a></li>
         <!-- TEMPLATE_TOKEN (Don't remove this. Like seriously.) -->
       </ul>
     </li>
@@ -113,6 +114,7 @@
         {title: 'Tuff Luff', value: 'tuff-luff'},
         {title: 'Ghost Mountain', value: 'ghost-mountain'},
         {title: 'Jellybones', value: 'jellybones'},
+        {title: 'Inoculate the Innocuous', value: 'inoculate'},
         {title: 'Les Os', value: 'les-os'}
       ]
     };
@@ -140,6 +142,7 @@
         {title: &#x27;Tuff Luff&#x27;, value: &#x27;tuff-luff&#x27;},
         {title: &#x27;Ghost Mountain&#x27;, value: &#x27;ghost-mountain&#x27;},
         {title: &#x27;Jellybones&#x27;, value: &#x27;jellybones&#x27;},
+        {title: &#x27;Inoculate the Innocuous&#x27;, value: &#x27;inoculate&#x27;},
         {title: &#x27;Les Os&#x27;, value: &#x27;les-os&#x27;}
       ]
     };
@@ -236,6 +239,7 @@
         {title: 'Cascadia', value: 'cascadia', group: 'Countries'},
         {title: 'United States of America', value: 'usa', group: 'Countries'},
         {title: 'Republic of Texas', value: 'texas', group: 'Countries'},
+        {title: 'Cascadia', value: 'cascadia', group: 'Countries'},
         {title: 'Seattle', value: 'seattle', group: 'Capitals'},
         {title: 'Washington, D.C.', value: 'dc', group: 'Capitals'},
         {title: 'Austin', value: 'austin', group: 'Capitals'},
@@ -271,6 +275,7 @@
         {title: &#x27;Cascadia&#x27;, value: &#x27;cascadia&#x27;, group: &#x27;Countries&#x27;},
         {title: &#x27;United States of America&#x27;, value: &#x27;usa&#x27;, group: &#x27;Countries&#x27;},
         {title: &#x27;Republic of Texas&#x27;, value: &#x27;texas&#x27;, group: &#x27;Countries&#x27;},
+        {title: &#x27;Cascadia&#x27;, value: &#x27;cascadia&#x27;, group: &#x27;Countries&#x27;},
         {title: &#x27;Seattle&#x27;, value: &#x27;seattle&#x27;, group: &#x27;Capitals&#x27;},
         {title: &#x27;Washington, D.C.&#x27;, value: &#x27;dc&#x27;, group: &#x27;Capitals&#x27;},
         {title: &#x27;Austin&#x27;, value: &#x27;austin&#x27;, group: &#x27;Capitals&#x27;},
@@ -354,133 +359,6 @@
 
 
         
-<div id="custom-dropdown-container"></div>
-
-<script type="text/javascript">
-  document.addEventListener('DOMContentLoaded', function() {
-    var withIcon = function(icon) {
-      return function(option) {
-        return React.createElement('div', {className: 'special-dropdown-option'}, [
-          React.createElement('span', {className: icon, key: icon}),
-          option.title
-        ]);
-      }
-    };
-
-    var customRenderProps = {
-      displayTrueWidthOptions: true,
-      onSelection: function(option) {
-        console.log('option selected:', option.title, option.value);
-      },
-      placeholder: function() {
-        return React.createElement('button', {className: 'btn btn-alternate-3'}, ['Hello, World!']);
-      },
-      options: [
-        {title: 'Emotional technicality', value: 'emotecho', render: withIcon('icon-facebook')},
-        {title: 'Pontificate harder', value: 'ponfer', render: withIcon('icon-twitter')},
-        {title: 'No one misses these', value: 'noone', render: withIcon('icon-dataset')}
-      ]
-    };
-
-    ReactDOM.render(
-      React.createElement(styleguide.Dropdown, customRenderProps),
-      document.getElementById('custom-dropdown-container')
-    );
-
-    // Alternative stateless React-y way:
-
-    /*
-    var DropdownWithIcon = (props) => {
-      return (
-        <div className="special-dropdown-option">
-          <span className={props.icon} key={props.icon}></div>
-          {props.title}
-        </div>
-      );
-    };
-
-    var customRenderProps = {
-      placeholder: 'HAR HAR HAR',
-      options: [
-        {title: 'Just One, kid', value: 'kiddo', render: DropdownWithIcon, icon: 'icon-facebook'}
-      ]
-    };
-
-    ReactDOM.render(
-      React.createElement(styleguide.Dropdown, customRenderProps),
-      document.getElementById('custom-dropdown-container')
-    );
-    */
-  });
-</script>
-
-
-<pre class="usage">
-<code class="language-markup">
-&lt;div id=&quot;custom-dropdown-container&quot;&gt;&lt;&#x2F;div&gt;
-
-&lt;script type=&quot;text&#x2F;javascript&quot;&gt;
-  document.addEventListener(&#x27;DOMContentLoaded&#x27;, function() {
-    var withIcon = function(icon) {
-      return function(option) {
-        return React.createElement(&#x27;div&#x27;, {className: &#x27;special-dropdown-option&#x27;}, [
-          React.createElement(&#x27;span&#x27;, {className: icon, key: icon}),
-          option.title
-        ]);
-      }
-    };
-
-    var customRenderProps = {
-      displayTrueWidthOptions: true,
-      onSelection: function(option) {
-        console.log(&#x27;option selected:&#x27;, option.title, option.value);
-      },
-      placeholder: function() {
-        return React.createElement(&#x27;button&#x27;, {className: &#x27;btn btn-alternate-3&#x27;}, [&#x27;Hello, World!&#x27;]);
-      },
-      options: [
-        {title: &#x27;Emotional technicality&#x27;, value: &#x27;emotecho&#x27;, render: withIcon(&#x27;icon-facebook&#x27;)},
-        {title: &#x27;Pontificate harder&#x27;, value: &#x27;ponfer&#x27;, render: withIcon(&#x27;icon-twitter&#x27;)},
-        {title: &#x27;No one misses these&#x27;, value: &#x27;noone&#x27;, render: withIcon(&#x27;icon-dataset&#x27;)}
-      ]
-    };
-
-    ReactDOM.render(
-      React.createElement(styleguide.Dropdown, customRenderProps),
-      document.getElementById(&#x27;custom-dropdown-container&#x27;)
-    );
-
-    &#x2F;&#x2F; Alternative stateless React-y way:
-
-    &#x2F;*
-    var DropdownWithIcon = (props) =&gt; {
-      return (
-        &lt;div className=&quot;special-dropdown-option&quot;&gt;
-          &lt;span className={props.icon} key={props.icon}&gt;&lt;&#x2F;div&gt;
-          {props.title}
-        &lt;&#x2F;div&gt;
-      );
-    };
-
-    var customRenderProps = {
-      placeholder: &#x27;HAR HAR HAR&#x27;,
-      options: [
-        {title: &#x27;Just One, kid&#x27;, value: &#x27;kiddo&#x27;, render: DropdownWithIcon, icon: &#x27;icon-facebook&#x27;}
-      ]
-    };
-
-    ReactDOM.render(
-      React.createElement(styleguide.Dropdown, customRenderProps),
-      document.getElementById(&#x27;custom-dropdown-container&#x27;)
-    );
-    *&#x2F;
-  });
-&lt;&#x2F;script&gt;
-
-</code>
-</pre>
-
-
       </div>
     </section>
 
@@ -754,6 +632,146 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
       </div>
     </section>
 
+    <section class="styleguide-section" id="filter-bar">
+      <div class="meta">
+        <h2 class="styleguide-header">FilterBar</h2>
+      </div>
+      <div class="example">
+        
+<div id="filter-bar-container"></div>
+<h3>Output</h3>
+<pre id="output" style="white-space: pre-wrap;"></pre>
+<script type="text/babel" data-presets="es2015,react">
+  const output = document.querySelector('#output');
+
+  $(() => {
+    const filters = [
+      {
+        parameters: {
+          function: 'valueRange',
+          columnName: 'some_number',
+          arguments: {
+            start: 10,
+            end: 20
+          }
+        },
+        isLocked: false,
+        isHidden: false,
+        isRequired: false,
+        allowMultiple: false
+      }
+    ];
+
+    let props = {
+      columns: [
+        {
+          name: 'Some Number',
+          fieldName: 'some_number',
+          dataTypeName: 'number',
+          rangeMin: 0,
+          rangeMax: 100
+        },
+        {
+          name: 'Some Word',
+          fieldName: 'some_word',
+          dataTypeName: 'text'
+        }
+      ],
+      filters,
+      onUpdate,
+      fetchSuggestions: (column, searchTerm) => Promise.resolve([ 'purple', 'pesto', 'russian' ])
+    };
+
+    function render() {
+      output.innerHTML = JSON.stringify(props.filters, null, 2);
+
+      ReactDOM.render(
+        <styleguide.FilterBar {...props} />,
+        document.getElementById('filter-bar-container')
+      );
+    }
+
+    function onUpdate(newFilters) {
+      props.filters = newFilters;
+      render();
+    }
+
+    render();
+  });
+</script>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;filter-bar-container&quot;&gt;&lt;&#x2F;div&gt;
+&lt;h3&gt;Output&lt;&#x2F;h3&gt;
+&lt;pre id=&quot;output&quot; style=&quot;white-space: pre-wrap;&quot;&gt;&lt;&#x2F;pre&gt;
+&lt;script type=&quot;text&#x2F;babel&quot; data-presets=&quot;es2015,react&quot;&gt;
+  const output = document.querySelector(&#x27;#output&#x27;);
+
+  $(() =&gt; {
+    const filters = [
+      {
+        parameters: {
+          function: &#x27;valueRange&#x27;,
+          columnName: &#x27;some_number&#x27;,
+          arguments: {
+            start: 10,
+            end: 20
+          }
+        },
+        isLocked: false,
+        isHidden: false,
+        isRequired: false,
+        allowMultiple: false
+      }
+    ];
+
+    let props = {
+      columns: [
+        {
+          name: &#x27;Some Number&#x27;,
+          fieldName: &#x27;some_number&#x27;,
+          dataTypeName: &#x27;number&#x27;,
+          rangeMin: 0,
+          rangeMax: 100
+        },
+        {
+          name: &#x27;Some Word&#x27;,
+          fieldName: &#x27;some_word&#x27;,
+          dataTypeName: &#x27;text&#x27;
+        }
+      ],
+      filters,
+      onUpdate,
+      fetchSuggestions: (column, searchTerm) =&gt; Promise.resolve([ &#x27;purple&#x27;, &#x27;pesto&#x27;, &#x27;russian&#x27; ])
+    };
+
+    function render() {
+      output.innerHTML = JSON.stringify(props.filters, null, 2);
+
+      ReactDOM.render(
+        &lt;styleguide.FilterBar {...props} &#x2F;&gt;,
+        document.getElementById(&#x27;filter-bar-container&#x27;)
+      );
+    }
+
+    function onUpdate(newFilters) {
+      props.filters = newFilters;
+      render();
+    }
+
+    render();
+  });
+&lt;&#x2F;script&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
     <!-- TEMPLATE_TOKEN (Don't remove this. Like seriously.) -->
   </div>
 </div>
@@ -762,11 +780,12 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
     <script src="https://fb.me/react-15.1.0.js"></script>
     <script src="https://fb.me/react-dom-15.1.0.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.14.0/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.16.0/polyfill.js"></script>
     <script type="text/javascript" src="javascripts/vendor/prism-383ea744.js"></script>
     <script type="text/javascript" src="javascripts/vendor/tether-a78651e0.js"></script>
     <script type="text/javascript" src="javascripts/vendor/shepherd-b8acca87.js"></script>
 
-    <script type="text/javascript" src="js/socrata-components-3e4902dc.js"></script>
+    <script type="text/javascript" src="js/socrata-components-29b6d73a.js"></script>
     <script type="text/javascript" src="javascripts/all-df92dbb1.js"></script>
   </body>
 </html>

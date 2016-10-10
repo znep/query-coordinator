@@ -512,24 +512,29 @@ function SvgTimelineChart($element, vif) {
       })
     );
 
-    const limitMin = self.getMeasureAxisMinValue();
+    try {
+      const limitMin = self.getMeasureAxisMinValue();
 
-    if (self.getYAxisScalingMode() === 'showZero' && !_.isFinite(limitMin)) {
-      minYValue = _.min([dataMinYValue, 0]);
-    } else if (_.isFinite(limitMin)) {
-      minYValue = limitMin;
-    } else {
-      minYValue = dataMinYValue;
-    }
+      if (self.getYAxisScalingMode() === 'showZero' && !limitMin) {
+        minYValue = _.min([dataMinYValue, 0]);
+      } else if (limitMin) {
+        minYValue = limitMin;
+      } else {
+        minYValue = dataMinYValue;
+      }
 
-    const limitMax = self.getMeasureAxisMaxValue();
+      const limitMax = self.getMeasureAxisMaxValue();
 
-    if (self.getYAxisScalingMode() === 'showZero' && !_.isFinite(limitMax)) {
-      maxYValue = _.max([dataMaxYValue, 0]);
-    } else if (_.isFinite(limitMax)) {
-      maxYValue = limitMax;
-    } else {
-      maxYValue = dataMaxYValue;
+      if (self.getYAxisScalingMode() === 'showZero' && !limitMax) {
+        maxYValue = _.max([dataMaxYValue, 0]);
+      } else if (limitMax) {
+        maxYValue = limitMax;
+      } else {
+        maxYValue = dataMaxYValue;
+      }
+    } catch (error) {
+      self.renderError(error.message);
+      return;
     }
 
     d3XScale = d3.time.scale.

@@ -719,26 +719,31 @@ function SvgColumnChart($element, vif) {
      * 3. Set up the y-scale and -axis.
      */
 
-    const dataMinYValue = getMinYValue(groupedDataToRender);
-    const limitMin = self.getMeasureAxisMinValue();
+    try {
+      const dataMinYValue = getMinYValue(groupedDataToRender);
+      const limitMin = self.getMeasureAxisMinValue();
 
-    if (self.getYAxisScalingMode() === 'showZero' && !_.isFinite(limitMin)) {
-      minYValue = _.min([dataMinYValue, 0]);
-    } else if (_.isFinite(limitMin)) {
-      minYValue = limitMin;
-    } else {
-      minYValue = dataMinYValue;
-    }
+      if (self.getYAxisScalingMode() === 'showZero' && !limitMin) {
+        minYValue = _.min([dataMinYValue, 0]);
+      } else if (limitMin) {
+        minYValue = limitMin;
+      } else {
+        minYValue = dataMinYValue;
+      }
 
-    const dataMaxYValue = getMaxYValue(groupedDataToRender);
-    const limitMax = self.getMeasureAxisMaxValue();
+      const dataMaxYValue = getMaxYValue(groupedDataToRender);
+      const limitMax = self.getMeasureAxisMaxValue();
 
-    if (self.getYAxisScalingMode() === 'showZero' && !_.isFinite(limitMax)) {
-      maxYValue = _.max([dataMaxYValue, 0]);
-    } else if (_.isFinite(limitMax)) {
-      maxYValue = limitMax;
-    } else {
-      maxYValue = dataMaxYValue;
+      if (self.getYAxisScalingMode() === 'showZero' && !limitMax) {
+        maxYValue = _.max([dataMaxYValue, 0]);
+      } else if (limitMax) {
+        maxYValue = limitMax;
+      } else {
+        maxYValue = dataMaxYValue;
+      }
+    } catch (error) {
+      self.renderError(error.message);
+      return;
     }
 
     d3YScale = generateYScale(minYValue, maxYValue, height);

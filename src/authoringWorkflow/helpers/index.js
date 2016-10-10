@@ -10,7 +10,7 @@ export const setStringValueOrDefaultValue = (object, path, value, defaultValue) 
   } else if (hasPath && !_.isUndefined(defaultValue)) {
     _.set(object, path, defaultValue);
   }
-}
+};
 
 export const setBooleanValueOrDefaultValue = (object, path, value, defaultValue) => {
   const hasPath = _.has(object, path);
@@ -20,7 +20,7 @@ export const setBooleanValueOrDefaultValue = (object, path, value, defaultValue)
   } else if (hasPath && !_.isUndefined(defaultValue)) {
     _.set(object, path, defaultValue);
   }
-}
+};
 
 export const setStringValueOrDeleteProperty = (object, path, value) => {
   const hasPath = _.has(object, path);
@@ -30,7 +30,17 @@ export const setStringValueOrDeleteProperty = (object, path, value) => {
   } else if (hasPath) {
     _.unset(object, path);
   }
-}
+};
+
+export const setNumericValueOrDeleteProperty = (object, path, value) => {
+  const hasPath = _.has(object, path);
+
+  if (value) {
+    _.set(object, path, parseFloat(value));
+  } else if (hasPath) {
+    _.unset(object, path);
+  }
+};
 
 export const setBooleanValueOrDeleteProperty = (object, path, value) => {
   const hasPath = _.has(object, path);
@@ -40,7 +50,7 @@ export const setBooleanValueOrDeleteProperty = (object, path, value) => {
   } else if (hasPath) {
     _.unset(object, path);
   }
-}
+};
 
 export const forEachSeries = (state, callback) => {
   _.each(state.series, callback);

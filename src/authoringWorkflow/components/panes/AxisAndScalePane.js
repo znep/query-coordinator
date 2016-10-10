@@ -14,7 +14,9 @@ import {
   setShowValueLabelsAsPercent,
   setOrderBy,
   setPrecision,
-  setTreatNullValuesAsZero
+  setTreatNullValuesAsZero,
+  setMeasureAxisMinValue,
+  setMeasureAxisMaxValue,
 } from '../../actions';
 import {
   getAxisLabels,
@@ -24,6 +26,8 @@ import {
   getShowDimensionLabels,
   getShowValueLabels,
   getShowValueLabelsAsPercent,
+  getMeasureAxisMinValue,
+  getMeasureAxisMaxValue,
   isBarChart,
   isColumnChart,
   isHistogram,
@@ -38,6 +42,14 @@ export var AxisAndScalePane = React.createClass({
   propTypes: {
     chartSorting: React.PropTypes.arrayOf(React.PropTypes.object),
     timelinePrecision: React.PropTypes.arrayOf(React.PropTypes.object)
+  },
+
+  getInitialState() {
+    const initialState = {
+      measureAxisScaleControl: this.props.measureAxisScaleControl || 'automatic'
+    };
+
+    return initialState;
   },
 
   getDefaultProps() {
@@ -258,6 +270,81 @@ export var AxisAndScalePane = React.createClass({
     );
   },
 
+  onMeasureAxisScaleControlChange(event) {
+    this.setState({
+      measureAxisScaleControl: event.target.value
+    });
+  },
+
+  renderMeasureAxisScaleControl() {
+    const vifAuthoring = this.props.vifAuthoring;
+
+    const limitMax = getMeasureAxisMaxValue(vifAuthoring);
+    const limitMin = getMeasureAxisMinValue(vifAuthoring);
+
+    const isAuto = this.state.measureAxisScaleControl == 'automatic';
+
+    const boundariesPart = (
+      <div className="double-column-input-group">
+        <div>
+          <label className="block-label" htmlFor="measure-axis-scale-custom-min">
+            {translate('panes.axis_and_scale.fields.scale.minimum')}
+          </label>
+          <input className="text-input"
+                 id="measure-axis-scale-custom-min"
+                 defaultValue={ limitMin }
+                 onChange={this.props.onMeasureAxisMinValueChange} />
+        </div>
+        <div>
+          <label className="block-label" htmlFor="measure-axis-scale-custom-max">
+            {translate('panes.axis_and_scale.fields.scale.maximum')}
+          </label>
+          <input className="text-input"
+                 id="measure-axis-scale-custom-max"
+                 defaultValue={ limitMax }
+                 onChange={this.props.onMeasureAxisMaxValueChange} />
+        </div>
+      </div>
+    );
+
+    return (
+      <div className="authoring-field-group">
+        <h5>{translate('panes.axis_and_scale.subheaders.scale')}</h5>
+        {translate('panes.axis_and_scale.fields.scale.title')}
+
+        <div className="authoring-field radiobutton">
+          <div>
+            <input type="radio"
+                   name="measure-axis-scale"
+                   id="measure-axis-scale-automatic"
+                   value="automatic"
+                   onChange={this.onMeasureAxisScaleControlChange}
+                   checked={isAuto} />
+            <label htmlFor="measure-axis-scale-automatic">
+              <span />
+              <div className="translation-within-label">{translate('panes.axis_and_scale.fields.scale.automatic')}</div>
+            </label>
+          </div>
+          <div>
+            <input type="radio"
+                   name="measure-axis-scale"
+                   id="measure-axis-scale-custom"
+                   value="custom"
+                   onChange={this.onMeasureAxisScaleControlChange}
+                   checked={!isAuto} />
+            <label htmlFor="measure-axis-scale-custom">
+              <span />
+              <div className="translation-within-label">{translate('panes.axis_and_scale.fields.scale.custom')}</div>
+            </label>
+          </div>
+        </div>
+
+        {this.state.measureAxisScaleControl == 'custom' ? boundariesPart : null}
+      </div>
+    );
+
+  },
+
   renderTimelinePrecisionOption(option) {
     return (
       <div className="dataset-column-dropdown-option">
@@ -335,12 +422,14 @@ export var AxisAndScalePane = React.createClass({
     const showDimensionLabels = this.renderShowDimensionLabels();
     const dataLabelField = this.renderDataLabelField();
     const chartSorting = this.renderChartSorting();
+    const measureAxisScaleControl = this.renderMeasureAxisScaleControl();
 
     return (
       <div>
         {visualizationLabels}
         {showDimensionLabels}
         {dataLabelField}
+        {measureAxisScaleControl}
         {chartSorting}
       </div>
     );
@@ -350,28 +439,40 @@ export var AxisAndScalePane = React.createClass({
     const visualizationLabels = this.renderVisualizationLabels();
     const showDimensionLabels = this.renderShowDimensionLabels();
     const chartSorting = this.renderChartSorting();
+    const measureAxisScaleControl = this.renderMeasureAxisScaleControl();
 
     return (
       <div>
         {visualizationLabels}
         {showDimensionLabels}
+        {measureAxisScaleControl}
         {chartSorting}
       </div>
     );
   },
 
   renderHistogramControls() {
-    return this.renderVisualizationLabels();
+    const visualizationLabels = this.renderVisualizationLabels();
+    const measureAxisScaleControl = this.renderMeasureAxisScaleControl();
+
+    return (
+      <div>
+        {visualizationLabels}
+        {measureAxisScaleControl}
+      </div>
+    );
   },
 
   renderTimelineChartControls() {
     const visualizationLabels = this.renderVisualizationLabels();
     const groupingAndDisplay = this.renderGroupingAndDisplay();
+    const measureAxisScaleControl = this.renderMeasureAxisScaleControl();
 
     return (
       <div>
         {visualizationLabels}
         {groupingAndDisplay}
+        {measureAxisScaleControl}
       </div>
     );
   },
@@ -479,7 +580,17 @@ function mapDispatchToProps(dispatch) {
       const treatNullValuesAsZero = event.target.checked;
 
       dispatch(setTreatNullValuesAsZero(treatNullValuesAsZero));
-    }
+    },
+
+    onMeasureAxisMinValueChange: _.debounce(
+      event => dispatch(setMeasureAxisMinValue(event.target.value)),
+      INPUT_DEBOUNCE_MILLISECONDS
+    ),
+
+    onMeasureAxisMaxValueChange: _.debounce(
+      event => dispatch(setMeasureAxisMaxValue(event.target.value)),
+      INPUT_DEBOUNCE_MILLISECONDS
+    )
   };
 }
 

@@ -470,6 +470,22 @@ export function setXAxisScalingMode(shouldFit) {
   };
 }
 
+export const SET_MEASURE_AXIS_MIN_VALUE = 'SET_MEASURE_AXIS_MIN_VALUE';
+export function setMeasureAxisMinValue(measureAxisMinValue) {
+  return {
+    type: SET_MEASURE_AXIS_MIN_VALUE,
+    measureAxisMinValue
+  };
+}
+
+export const SET_MEASURE_AXIS_MAX_VALUE = 'SET_MEASURE_AXIS_MAX_VALUE';
+export function setMeasureAxisMaxValue(measureAxisMaxValue) {
+  return {
+    type: SET_MEASURE_AXIS_MAX_VALUE,
+    measureAxisMaxValue
+  };
+}
+
 export const SET_UNIT_ONE = 'SET_UNIT_ONE';
 export function setUnitsOne(one) {
   return {

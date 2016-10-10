@@ -752,15 +752,19 @@ function SvgBarChart($element, vif) {
     /**
      * 2. Set up the x-scale and -axis.
      */
-
     const dataMinXValue = getMinXValue(groupedDataToRender);
     const dataMaxXValue = getMaxXValue(groupedDataToRender);
 
-    const limitMin = self.getMeasureAxisMinValue();
-    minXValue = _.isFinite(limitMin) ? limitMin : _.min([dataMinXValue, 0]);
+    try {
+      const limitMin = self.getMeasureAxisMinValue();
+      const limitMax = self.getMeasureAxisMaxValue();
 
-    const limitMax = self.getMeasureAxisMaxValue();
-    maxXValue = _.isFinite(limitMax) ? limitMax : _.max([dataMaxXValue, 0]);
+      minXValue = limitMin || _.min([dataMinXValue, 0]);
+      maxXValue = limitMax || _.max([dataMaxXValue, 0]);
+    } catch (error) {
+      self.renderError(error.message);
+      return;
+    }
 
     // TODO: Figure out how we want to handle scaling modes.
     // if (self.getXAxisScalingModeBySeriesIndex(0) === 'showZero') {

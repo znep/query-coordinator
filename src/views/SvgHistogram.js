@@ -217,6 +217,8 @@ function SvgHistogram($element, vif) {
     var bucketGroupSvgs;
     var columnUnderlaySvgs;
     var columnSvgs;
+    let minYValue;
+    let maxYValue;
 
     /**
      * Functions defined inside the scope of renderData() are stateful enough
@@ -581,11 +583,16 @@ function SvgHistogram($element, vif) {
     }
     const measureExtent = d3.extent(measureRowExtents);
 
-    const limitMin = self.getMeasureAxisMinValue();
-    const minYValue = _.isFinite(limitMin) ? limitMin : _.min([measureExtent[0], 0]);
+    try {
+      const limitMin = self.getMeasureAxisMinValue();
+      minYValue = limitMin || _.min([measureExtent[0], 0]);
 
-    const limitMax = self.getMeasureAxisMaxValue();
-    const maxYValue = _.isFinite(limitMax) ? limitMax : _.max([measureExtent[1], 0]);
+      const limitMax = self.getMeasureAxisMaxValue();
+      maxYValue = limitMax || _.max([measureExtent[1], 0]);
+    } catch (error) {
+      self.renderError(error.message);
+      return;
+    }
 
     d3YScale = d3.scale.linear().
       domain([minYValue, maxYValue]).

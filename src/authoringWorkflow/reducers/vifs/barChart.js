@@ -8,6 +8,7 @@ import {
   setStringValueOrDefaultValue,
   setBooleanValueOrDefaultValue,
   setStringValueOrDeleteProperty,
+  setNumericValueOrDeleteProperty,
   setBooleanValueOrDeleteProperty,
   setUnits,
   isNonEmptyString
@@ -36,6 +37,8 @@ import {
   SET_SHOW_DIMENSION_LABELS,
   SET_SHOW_VALUE_LABELS,
   SET_X_AXIS_SCALING_MODE,
+  SET_MEASURE_AXIS_MIN_VALUE,
+  SET_MEASURE_AXIS_MAX_VALUE,
   SET_LIMIT_NONE_AND_SHOW_OTHER_CATEGORY,
   SET_LIMIT_COUNT_AND_SHOW_OTHER_CATEGORY,
   SET_SHOW_OTHER_CATEGORY
@@ -147,6 +150,14 @@ export default function barChart(state, action) {
 
     case SET_X_AXIS_SCALING_MODE:
       setStringValueOrDeleteProperty(state, 'configuration.xAxisScalingMode', action.xAxisScalingMode);
+      break;
+
+    case SET_MEASURE_AXIS_MIN_VALUE:
+      setNumericValueOrDeleteProperty(state, 'configuration.measureAxisMinValue', action.measureAxisMinValue);
+      break;
+
+    case SET_MEASURE_AXIS_MAX_VALUE:
+      setNumericValueOrDeleteProperty(state, 'configuration.measureAxisMaxValue', action.measureAxisMaxValue);
       break;
 
     case SET_UNIT_ONE:

@@ -7,6 +7,7 @@ import {
   forEachSeries,
   setStringValueOrDeleteProperty,
   setStringValueOrDefaultValue,
+  setNumericValueOrDeleteProperty,
   setUnits,
   isNonEmptyString
 } from '../../helpers';
@@ -26,6 +27,8 @@ import {
   SET_LABEL_LEFT,
   SET_LABEL_RIGHT,
   SET_X_AXIS_SCALING_MODE,
+  SET_MEASURE_AXIS_MIN_VALUE,
+  SET_MEASURE_AXIS_MAX_VALUE,
   SET_UNIT_ONE,
   SET_UNIT_OTHER,
   SET_DOMAIN,
@@ -131,6 +134,14 @@ export default function histogram(state, action) {
 
     case SET_X_AXIS_SCALING_MODE:
       setStringValueOrDeleteProperty(state, 'configuration.xAxisScalingMode', action.xAxisScalingMode);
+      break;
+
+    case SET_MEASURE_AXIS_MIN_VALUE:
+      setNumericValueOrDeleteProperty(state, 'configuration.measureAxisMinValue', action.measureAxisMinValue);
+      break;
+
+    case SET_MEASURE_AXIS_MAX_VALUE:
+      setNumericValueOrDeleteProperty(state, 'configuration.measureAxisMaxValue', action.measureAxisMaxValue);
       break;
 
     case SET_UNIT_ONE:

@@ -195,4 +195,35 @@ describe('vifAuthoring', function() {
       });
     });
   });
+
+  describe('getMeasureAxisMinValue', () => {
+    it('should return correct value', () => {
+      const state = getDefaultState();
+      _.set(state, 'vifs.columnChart.configuration.measureAxisMinValue', 10);
+
+      expect(selector.getMeasureAxisMinValue(state)).to.eq(10);
+    });
+
+    it('should return null if it isn\'t defined', () => {
+      const state = getDefaultState();
+
+      expect(selector.getMeasureAxisMinValue(state)).to.eq(null);
+    });
+  });
+
+  describe('getMeasureAxisMaxValue', () => {
+    it('should return correct value', () => {
+      const state = getDefaultState();
+      _.set(state, 'vifs.columnChart.configuration.measureAxisMaxValue', 10);
+
+      expect(selector.getMeasureAxisMaxValue(state)).to.eq(10);
+    });
+
+    it('should return null if it isn\'t defined', () => {
+      const state = getDefaultState();
+
+      expect(selector.getMeasureAxisMaxValue(state)).to.eq(null);
+    });
+  });
+
 });

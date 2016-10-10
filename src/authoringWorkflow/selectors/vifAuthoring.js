@@ -169,6 +169,16 @@ export const getXAxisScalingMode = createSelector(
   vif => _.get(vif, 'configuration.xAxisScalingMode')
 );
 
+export const getMeasureAxisMinValue = createSelector(
+  getCurrentVif,
+  vif => _.get(vif, 'configuration.measureAxisMinValue', null)
+);
+
+export const getMeasureAxisMaxValue = createSelector(
+  getCurrentVif,
+  vif => _.get(vif, 'configuration.measureAxisMaxValue', null)
+);
+
 export const getOrderBy = createSelector(
   getCurrentVif,
   vif => _.get(vif, 'series[0].dataSource.orderBy')

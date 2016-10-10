@@ -70,7 +70,7 @@ $(function() {
           event.preventDefault();
           var $form = $(this);
           $.ajax({
-            url: '/login.json',
+            url: '/login.json?inline=true',
             type: 'POST',
             data: $form.find('input[name=authenticity_token], input#user_session_login, input#user_session_password, input#user_session_remember_me:checked'),
             dataType: 'json',
@@ -125,7 +125,7 @@ $(function() {
               }
             });
             $.ajax({
-              url: '/signup.json',
+              url: '/signup.json?inline=true',
               type: 'POST',
               data: data,
               dataType: 'json',

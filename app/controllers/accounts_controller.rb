@@ -49,6 +49,7 @@ class AccountsController < ApplicationController
         format.data { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }
         format.json { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }
       elsif @signup.create
+        Rails.logger.info('Somebody used inline login to create an account!') if params[:inline]
         if FeatureFlags.derive[:enable_new_account_verification_email]
           flash[:notice] = t('screens.sign_up.email_verification.sent',
             :email => params.fetch(:signup, {}).fetch(:email, ''))

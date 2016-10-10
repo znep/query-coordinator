@@ -36,8 +36,8 @@ describe SocrataSiteChrome::ApplicationHelper do
       expect(result).to eq('<img alt="Goldfinger" onerror="this.style.display=&quot;none&quot;" src="http://myimage.png" />')
     end
 
-    it 'falls back to CurrentDomain.cname if there is no source logo alt or display name provided' do
-      allow(CurrentDomain).to receive(:cname).and_return('data.seattle.gov')
+    it 'falls back to current_domain if there is no source logo alt or display name provided' do
+      stub_current_domain_with('data.seattle.gov')
       allow(helper).to receive(:header_title).and_return(nil)
       source = {
         'logo' => {
@@ -52,16 +52,16 @@ describe SocrataSiteChrome::ApplicationHelper do
   describe '#header_logo' do
     it 'returns only the site title if the header image is not present' do
       site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
-      ::RequestStore.store[:site_chrome] = { published: site_chrome }
+      allow(::RequestStore.store).to receive(:[]).with(:site_chrome).and_return(:published => site_chrome)
       allow(helper).to receive(:logo).and_return(nil)
       result = helper.header_logo
       expect(result).to eq('<a class="logo" href="/"><span class="site-name"></span></a>')
     end
 
     it 'returns both the site title and the header image' do
-      allow(CurrentDomain).to receive(:cname).and_return('data.seattle.gov')
+      stub_current_domain_with('data.seattle.gov')
       site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
-      ::RequestStore.store[:site_chrome] = { published: site_chrome }
+      allow(::RequestStore.store).to receive(:[]).with(:site_chrome).and_return(:published => site_chrome)
       result = helper.header_logo
       expect(result).to eq('<a class="logo" href="/"><img alt="data.seattle.gov" onerror="this.style.display=&quot;none&quot;" src="http://i.imgur.com/E8wtc6d.png" /><span class="site-name"></span></a>')
     end
@@ -229,19 +229,19 @@ describe SocrataSiteChrome::ApplicationHelper do
 
     it 'defaults to true if powered_by does not exist' do
       site_chrome.footer.delete(:powered_by)
-      ::RequestStore.store[:site_chrome] = { published: site_chrome }
+      allow(::RequestStore.store).to receive(:[]).with(:site_chrome).and_return(:published => site_chrome)
       expect(helper.show_powered_by?).to eq(true)
     end
 
     it 'can be set to true' do
       site_chrome.footer[:powered_by] = 'true'
-      ::RequestStore.store[:site_chrome] = { published: site_chrome }
+      allow(::RequestStore.store).to receive(:[]).with(:site_chrome).and_return(:published => site_chrome)
       expect(helper.show_powered_by?).to eq(true)
     end
 
     it 'can be set to false' do
       site_chrome.footer[:powered_by] = 'false'
-      ::RequestStore.store[:site_chrome] = { published: site_chrome }
+      allow(::RequestStore.store).to receive(:[]).with(:site_chrome).and_return(:published => site_chrome)
       expect(helper.show_powered_by?).to eq(false)
     end
   end

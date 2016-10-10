@@ -16,7 +16,7 @@ module SocrataSiteChrome
       if img_src.present?
         image_tag(
           massage_url(img_src),
-          :alt => img.dig('logo', 'alt').presence || display_name.presence || CurrentDomain.cname,
+          :alt => img.dig('logo', 'alt').presence || display_name.presence || ::RequestStore.store[:current_domain],
           :onerror => 'this.style.display="none"')
       end
     end
@@ -46,7 +46,7 @@ module SocrataSiteChrome
     end
 
     def site_chrome_current_user
-      Rails.logger.error("DEBUG EN-10582 (chrome gem): Domain = #{::RequestStore.store[:current_user]}; request_current_user = #{request_current_user.inspect}")
+      Rails.logger.error("DEBUG EN-10582 (chrome gem): Domain = #{::RequestStore.store[:current_domain]}; request_current_user = #{request_current_user.inspect}")
       SocrataSiteChrome::User.new(request_current_user) if request_current_user.present?
     end
 

@@ -16,7 +16,7 @@ class DemoController < ApplicationController
   }
 
   def index
-    RequestStore.store[:current_user] =
+    ::RequestStore.store[:current_user] =
       case params[:logged_in]
         when 'true' then DEMO_USER
         when 'admin' then ADMIN_USER

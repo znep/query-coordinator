@@ -71,7 +71,7 @@ module FeatureFlags
   end
 
   def self.derive(view = nil, request = nil, is_iframe = false)
-    flag_set = [ CurrentDomain.feature_flags ]
+    flag_set = [ SocrataSiteChrome::CurrentDomain.feature_flags ]
     flag_set << view.metadata.feature_flags if view.try(:metadata).present?
     if request.present?
       flag_set << request.query_parameters

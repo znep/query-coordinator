@@ -52,7 +52,7 @@ describe SocrataSiteChrome::ApplicationHelper do
   describe '#header_logo' do
     it 'returns only the site title if the header image is not present' do
       site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
-      RequestStore.store[:site_chrome] = { published: site_chrome }
+      ::RequestStore.store[:site_chrome] = { published: site_chrome }
       allow(helper).to receive(:logo).and_return(nil)
       result = helper.header_logo
       expect(result).to eq('<a class="logo" href="/"><span class="site-name"></span></a>')
@@ -61,16 +61,16 @@ describe SocrataSiteChrome::ApplicationHelper do
     it 'returns both the site title and the header image' do
       allow(CurrentDomain).to receive(:cname).and_return('data.seattle.gov')
       site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
-      RequestStore.store[:site_chrome] = { published: site_chrome }
+      ::RequestStore.store[:site_chrome] = { published: site_chrome }
       result = helper.header_logo
       expect(result).to eq('<a class="logo" href="/"><img alt="data.seattle.gov" onerror="this.style.display=&quot;none&quot;" src="http://i.imgur.com/E8wtc6d.png" /><span class="site-name"></span></a>')
     end
   end
 
   describe '#request_current_user' do
-    it 'returns the contents of RequestStore.store[:current_user]' do
-      allow(RequestStore.store).to receive(:has_key?).with(:current_user).and_return(true)
-      allow(RequestStore.store).to receive(:[]).with(:current_user).and_return('id' => 'fooo-baar')
+    it 'returns the contents of ::RequestStore.store[:current_user]' do
+      allow(::RequestStore.store).to receive(:has_key?).with(:current_user).and_return(true)
+      allow(::RequestStore.store).to receive(:[]).with(:current_user).and_return('id' => 'fooo-baar')
       expect(helper.request_current_user).to eq('id' => 'fooo-baar')
     end
   end
@@ -181,20 +181,20 @@ describe SocrataSiteChrome::ApplicationHelper do
 
   describe '#username' do
     it 'returns "Profile" if there is no request_current_user' do
-      allow(RequestStore.store).to receive(:[]).and_return(nil)
-      allow(RequestStore.store).to receive(:has_key?).with(:current_user).and_return(true)
+      allow(::RequestStore.store).to receive(:[]).and_return(nil)
+      allow(::RequestStore.store).to receive(:has_key?).with(:current_user).and_return(true)
       expect(helper.username).to eq('Profile')
     end
 
     it 'returns "Profile" if there is a request_current_user with no displayName' do
-      allow(RequestStore.store).to receive(:[]).and_return('id' => 'fooo-baar')
-      allow(RequestStore.store).to receive(:has_key?).with(:current_user).and_return(true)
+      allow(::RequestStore.store).to receive(:[]).and_return('id' => 'fooo-baar')
+      allow(::RequestStore.store).to receive(:has_key?).with(:current_user).and_return(true)
       expect(helper.username).to eq('Profile')
     end
 
     it 'returns the request_current_user displayName if there is a request_current_user' do
-      allow(RequestStore.store).to receive(:[]).and_return('displayName' => 'derek zoolander')
-      allow(RequestStore.store).to receive(:has_key?).with(:current_user).and_return(true)
+      allow(::RequestStore.store).to receive(:[]).and_return('displayName' => 'derek zoolander')
+      allow(::RequestStore.store).to receive(:has_key?).with(:current_user).and_return(true)
       expect(helper.username).to eq('derek zoolander')
     end
   end
@@ -229,19 +229,19 @@ describe SocrataSiteChrome::ApplicationHelper do
 
     it 'defaults to true if powered_by does not exist' do
       site_chrome.footer.delete(:powered_by)
-      RequestStore.store[:site_chrome] = { published: site_chrome }
+      ::RequestStore.store[:site_chrome] = { published: site_chrome }
       expect(helper.show_powered_by?).to eq(true)
     end
 
     it 'can be set to true' do
       site_chrome.footer[:powered_by] = 'true'
-      RequestStore.store[:site_chrome] = { published: site_chrome }
+      ::RequestStore.store[:site_chrome] = { published: site_chrome }
       expect(helper.show_powered_by?).to eq(true)
     end
 
     it 'can be set to false' do
       site_chrome.footer[:powered_by] = 'false'
-      RequestStore.store[:site_chrome] = { published: site_chrome }
+      ::RequestStore.store[:site_chrome] = { published: site_chrome }
       expect(helper.show_powered_by?).to eq(false)
     end
   end
@@ -322,7 +322,7 @@ describe SocrataSiteChrome::ApplicationHelper do
   describe '#navbar_links_div' do
     it 'returns a div with the classname "site-chrome-nav-links"' do
       site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
-      RequestStore.store[:site_chrome] = { :published => site_chrome }
+      ::RequestStore.store[:site_chrome] = { :published => site_chrome }
       result = Nokogiri::HTML.parse(helper.navbar_links_div)
       expect(result.search('div.site-chrome-nav-links').length).to eq(1)
     end
@@ -332,7 +332,7 @@ describe SocrataSiteChrome::ApplicationHelper do
       site_chrome.content['header']['links'].push(
         { :key => 'menu_0', :links => [{ :key => 'menu_0_link_0', :url => 'http://opendata.gov' }] }
       )
-      RequestStore.store[:site_chrome] = { :published => site_chrome }
+      ::RequestStore.store[:site_chrome] = { :published => site_chrome }
       result = Nokogiri::HTML.parse(helper.navbar_links_div)
       expect(result.search('div.site-chrome-nav-menu').length).to eq(1)
       expect(result.search('div.site-chrome-nav-menu div.dropdown').length).to eq(1)
@@ -347,7 +347,7 @@ describe SocrataSiteChrome::ApplicationHelper do
         { :key => 'link_1', :url => 'http://b.gov' },
         { :key => 'link_2', :url => 'http://c.gov' }
       ]
-      RequestStore.store[:site_chrome] = { :published => site_chrome }
+      ::RequestStore.store[:site_chrome] = { :published => site_chrome }
       result = Nokogiri::HTML.parse(helper.navbar_links_div)
       expect(result.search('.site-chrome-nav-link').length).to eq(3)
     end
@@ -357,7 +357,7 @@ describe SocrataSiteChrome::ApplicationHelper do
       site_chrome.content['header']['links'].push(
         { :key => 'menu_0', :links => [{ :key => 'menu_0_link_0', :url => 'http://opendata.gov' }] }
       )
-      RequestStore.store[:site_chrome] = { :published => site_chrome }
+      ::RequestStore.store[:site_chrome] = { :published => site_chrome }
       result = Nokogiri::HTML.parse(helper.navbar_links_div(use_dropdown: false))
       expect(result.search('div.site-chrome-nav-menu div.dropdown').length).to eq(0)
       expect(result.search('.site-chrome-nav-menu').length).to eq(1)
@@ -455,13 +455,13 @@ describe SocrataSiteChrome::ApplicationHelper do
     end
 
     it 'turns a url with the same host as the current domain into a relative url' do
-      allow(CurrentDomain).to receive(:cname).and_return('data.seattle.gov')
+      allow(SocrataSiteChrome::CurrentDomain).to receive(:cname).and_return('data.seattle.gov')
       url = 'https://data.seattle.gov/browse'
       expect(helper.massage_url(url)).to eq('/browse')
     end
 
     it 'doesn\'t drop url params and fragments' do
-      allow(CurrentDomain).to receive(:cname).and_return('data.seattle.gov')
+      allow(SocrataSiteChrome::CurrentDomain).to receive(:cname).and_return('data.seattle.gov')
       url = 'https://data.seattle.gov/browse?some_stuff=true#show'
       expect(helper.massage_url(url)).to eq('/browse?some_stuff=true#show')
     end
@@ -484,7 +484,7 @@ describe SocrataSiteChrome::ApplicationHelper do
       end
 
       it 'turns a url with the same host as the current domain into a localized relative url' do
-        allow(CurrentDomain).to receive(:cname).and_return('data.seattle.gov')
+        allow(SocrataSiteChrome::CurrentDomain).to receive(:cname).and_return('data.seattle.gov')
         allow(I18n).to receive(:locale).and_return(:kr)
         url = 'https://data.seattle.gov/browse'
         expect(helper.massage_url(url)).to eq('/kr/browse')

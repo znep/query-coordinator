@@ -42,7 +42,7 @@ module SocrataSiteChrome
       req.set_form_data({'method' => 'forgotPassword', 'login' => login})
 
       # pass/spoof in the current domain cname
-      req['X-Socrata-Host'] = CurrentDomain.cname
+      req['X-Socrata-Host'] = SocrataSiteChrome::CurrentDomain.cname
 
       result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
         http.request(req)
@@ -52,7 +52,7 @@ module SocrataSiteChrome
     end
 
     def self.roles_list
-      Configuration.find_by_type('user_rights', false, CurrentDomain.cname, true).
+      Configuration.find_by_type('user_rights', false, SocrataSiteChrome::CurrentDomain.cname, true).
         inject([]) do |memo, config|
           memo.concat(config.properties.keys)
         end.uniq

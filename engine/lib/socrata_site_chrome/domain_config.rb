@@ -81,7 +81,7 @@ module SocrataSiteChrome
           response = HTTParty.get(
             domain_config_uri,
             :verify => Rails.env.production?,
-            :headers => { 'X-Socrata-Host' => CurrentDomain.cname }
+            :headers => { 'X-Socrata-Host' => SocrataSiteChrome::CurrentDomain.cname }
           )
           response.code == 200 ? response.body : nil
         rescue HTTParty::ResponseError => e

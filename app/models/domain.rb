@@ -21,7 +21,7 @@ class Domain < SocrataSiteChrome::Model
 
   def self.findById(id)
     # We don't know our cname yet, so we need to pass it in to connection.rb manually
-    headers = { 'X-Socrata-Host' => CurrentDomain.cname }
+    headers = { 'X-Socrata-Host' => SocrataSiteChrome::CurrentDomain.cname }
     path = "/domains/#{id}.json"
     parse(CoreServer::Base.connection.get_request(path, headers))
   end

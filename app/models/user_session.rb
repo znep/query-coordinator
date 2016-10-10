@@ -268,7 +268,7 @@ private
 
   def post_core_authentication
     post = Net::HTTP::Post.new(auth_uri.request_uri)
-    post['X-Socrata-Host'] = CurrentDomain.cname
+    post['X-Socrata-Host'] = SocrataSiteChrome::CurrentDomain.cname
     post['X-User-Agent'] = controller.request.env['HTTP_USER_AGENT']
 
     post.set_form_data credentials_for_post
@@ -284,7 +284,7 @@ private
     post = Net::HTTP::Post.new(uri.request_uri, {'Cookie' => "remember_token=#{cookies['remember_token']}"})
 
     # pass/spoof in the current domain cname
-    post['X-Socrata-Host'] = CurrentDomain.cname
+    post['X-Socrata-Host'] = SocrataSiteChrome::CurrentDomain.cname
 
     Net::HTTP.start(uri.host, uri.port) do |http|
       http.request post
@@ -297,7 +297,7 @@ private
     post = Net::HTTP::Post.new(uri.request_uri, {'Cookie' => "remember_token=#{cookies['remember_token']}"})
 
     # pass/spoof in the current domain cname
-    post['X-Socrata-Host'] = CurrentDomain.cname
+    post['X-Socrata-Host'] = SocrataSiteChrome::CurrentDomain.cname
 
     Net::HTTP.start(uri.host, uri.port) do |http|
       http.request post

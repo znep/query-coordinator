@@ -157,7 +157,7 @@ TODO: Once this is done in Frontend, document the steps here.
 
 ### Runtime Dependencies
 
-The host app must provide a value for `:current_user` in `RequestStore.store`. If there is a signed
+The host app must provide a value for `:current_user` in `::RequestStore.store`. If there is a signed
 in user, the value must be a hash containing all properties from the current user object (typically
 obtained via a call to `/api/users/current.json`). The keys are expected to be strings. If there is
 no signed in user, the value must be set to nil in the request store. If `:current_user` is not set,

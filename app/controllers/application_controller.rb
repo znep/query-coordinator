@@ -3,5 +3,5 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  layout FeatureFlags.derive[:enable_unified_header_footer] ? 'unified' : 'plain'
+  layout 'unified'
 end

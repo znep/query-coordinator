@@ -24,7 +24,7 @@ class DemoController < ApplicationController
         else nil
       end
 
-    render 'fake_content', :layout => FeatureFlags.derive(nil, request)[:enable_unified_header_footer] ? 'unified' : 'plain'
+    render 'fake_content', :layout => 'unified'
   end
 
 end

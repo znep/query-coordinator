@@ -56,7 +56,7 @@ module SocrataSiteChrome
             latest_existing_version(site_chrome_config)
           site_chrome_config_for_stage = site_chrome_config.dig(:value, :versions, current_version, stage)
         else
-          message = "Invalid site_chrome configuration in domain: #{domain}"
+          message = "Invalid site_chrome configuration in domain: #{@domain}"
           ::Airbrake.notify(
             :error_class => 'InvalidSiteChromeConfiguration',
             :error_message => message
@@ -81,11 +81,11 @@ module SocrataSiteChrome
           response = HTTParty.get(
             domain_config_uri,
             :verify => Rails.env.production?,
-            :headers => { 'X-Socrata-Host' => SocrataSiteChrome::CurrentDomain.cname }
+            :headers => { 'X-Socrata-Host' => @domain }
           )
           response.code == 200 ? response.body : nil
         rescue HTTParty::ResponseError => e
-          raise "Failed to get domain configuration for #{domain}: #{e}"
+          raise "Failed to get domain configuration for #{@domain}: #{e}"
         end
       end
 

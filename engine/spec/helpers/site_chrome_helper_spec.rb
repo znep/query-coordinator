@@ -455,13 +455,13 @@ describe SocrataSiteChrome::ApplicationHelper do
     end
 
     it 'turns a url with the same host as the current domain into a relative url' do
-      allow(SocrataSiteChrome::CurrentDomain).to receive(:cname).and_return('data.seattle.gov')
+      stub_current_domain_with('data.seattle.gov')
       url = 'https://data.seattle.gov/browse'
       expect(helper.massage_url(url)).to eq('/browse')
     end
 
     it 'doesn\'t drop url params and fragments' do
-      allow(SocrataSiteChrome::CurrentDomain).to receive(:cname).and_return('data.seattle.gov')
+      stub_current_domain_with('data.seattle.gov')
       url = 'https://data.seattle.gov/browse?some_stuff=true#show'
       expect(helper.massage_url(url)).to eq('/browse?some_stuff=true#show')
     end
@@ -484,7 +484,7 @@ describe SocrataSiteChrome::ApplicationHelper do
       end
 
       it 'turns a url with the same host as the current domain into a localized relative url' do
-        allow(SocrataSiteChrome::CurrentDomain).to receive(:cname).and_return('data.seattle.gov')
+        stub_current_domain_with('data.seattle.gov')
         allow(I18n).to receive(:locale).and_return(:kr)
         url = 'https://data.seattle.gov/browse'
         expect(helper.massage_url(url)).to eq('/kr/browse')
@@ -492,7 +492,8 @@ describe SocrataSiteChrome::ApplicationHelper do
     end
 
     context 'mailto links' do
-      it 'does not prepend "http" do a mailto link' do
+      it 'does not prepend "http" to a mailto link' do
+        stub_current_domain_with('data.seattle.gov')
         url = 'mailto:bob@test.com'
         expect(helper.massage_url(url)).to eq('mailto:bob@test.com')
       end

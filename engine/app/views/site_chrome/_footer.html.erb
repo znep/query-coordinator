@@ -2,7 +2,7 @@
   <div class="footer-content <%= footer_title.present? ? 'title-present' : 'title-absent' %>">
     <div class="logo">
       <a href="/">
-        <%= logo(get_site_chrome.footer) %>
+        <%= logo(get_site_chrome.footer, footer_title) %>
         <% if footer_title.present? %>
           <span class="site-name"><%= footer_title %></span>
         <% end %>

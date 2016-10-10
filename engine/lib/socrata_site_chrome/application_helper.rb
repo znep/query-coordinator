@@ -11,19 +11,19 @@ module SocrataSiteChrome
       localized('footer.site_name', get_site_chrome.locales)
     end
 
-    def logo(img)
+    def logo(img, display_name = nil)
       img_src = img.dig('logo', 'src')
       if img_src.present?
         image_tag(
           massage_url(img_src),
-          :alt => img.dig('logo', 'alt').presence || header_title.presence || t('header.header_logo'),
+          :alt => img.dig('logo', 'alt').presence || display_name.presence || CurrentDomain.cname,
           :onerror => 'this.style.display="none"')
       end
     end
 
     def header_logo
       link_to(massage_url('/'), class: 'logo') do
-        img = logo(get_site_chrome.header)
+        img = logo(get_site_chrome.header, header_title)
         span = content_tag(:span, header_title, :class => 'site-name')
         img.present? ? img << span : span
       end

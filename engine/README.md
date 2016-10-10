@@ -224,7 +224,8 @@ Site Chrome has a requirement that the hosting app provide the Socrata Styleguid
             ],
             "logo": {
               "href": "#",
-              "src": "https://evergreen.gov/logo.png"
+              "src": "https://evergreen.gov/logo.png",
+              "alt": "Evergreen Logo"
             },
             "styles": {
               "bg_color": "#3b3a3c",
@@ -271,7 +272,8 @@ Site Chrome has a requirement that the hosting app provide the Socrata Styleguid
             ],
             "logo": {
               "href": "#",
-              "src": "http://evergreen.gov/logo.png"
+              "src": "http://evergreen.gov/logo.png",
+              "alt": "Evergreen Logo"
             },
             "styles": {
               "bg_color": "#22b479",
@@ -288,7 +290,6 @@ Site Chrome has a requirement that the hosting app provide the Socrata Styleguid
                   "privacy": "Privacy Policy",
                   "terms_of_service": "Terms of Service"
                 },
-                "logo_alt": "Welcome to Evergreen",
                 "site_name": "City of Evergreen"
               },
               "header": {
@@ -298,7 +299,6 @@ Site Chrome has a requirement that the hosting app provide the Socrata Styleguid
                   "home": "Home Page",
                   "support": "Support"
                 },
-                "logo_alt": "Evergreen",
                 "site_name": "Evergreen"
               }
             }

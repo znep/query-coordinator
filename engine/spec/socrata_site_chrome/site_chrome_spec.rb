@@ -48,10 +48,10 @@ describe SocrataSiteChrome::SiteChrome do
 
     it 'deep merges the user locales onto the default locales' do
       config_vars_with_custom_locales = site_chrome_config_vars['content'].dup
-      config_vars_with_custom_locales[:locales][:en][:header][:logo_alt] = 'Batman'
+      config_vars_with_custom_locales[:locales][:en][:header][:site_name] = 'Batman'
       chrome = SocrataSiteChrome::SiteChrome.new(id: id, content: config_vars_with_custom_locales, updated_at: updated_at)
       expect(chrome.locales).not_to eq(default_locales)
-      expect(chrome.locales.dig(:en, :header, :logo_alt)).to eq('Batman')
+      expect(chrome.locales.dig(:en, :header, :site_name)).to eq('Batman')
     end
   end
 

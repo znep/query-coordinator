@@ -26,18 +26,18 @@ describe SocrataSiteChrome::ApplicationHelper do
       expect(result).to eq('<img alt="Goats" onerror="this.style.display=&quot;none&quot;" src="http://myimage.png" />')
     end
 
-    it 'falls back to the header_title if there is no source logo alt' do
-      allow(helper).to receive(:header_title).and_return('Goldfinger')
+    it 'falls back to the provided display name if there is no source logo alt' do
       source = {
         'logo' => {
           'src' => 'http://myimage.png'
         }
       }
-      result = helper.logo(source)
+      result = helper.logo(source, 'Goldfinger')
       expect(result).to eq('<img alt="Goldfinger" onerror="this.style.display=&quot;none&quot;" src="http://myimage.png" />')
     end
 
-    it 'falls back to "Header Logo" if there is no source logo alt or header_title' do
+    it 'falls back to CurrentDomain.cname if there is no source logo alt or display name provided' do
+      allow(CurrentDomain).to receive(:cname).and_return('data.seattle.gov')
       allow(helper).to receive(:header_title).and_return(nil)
       source = {
         'logo' => {
@@ -45,7 +45,7 @@ describe SocrataSiteChrome::ApplicationHelper do
         }
       }
       result = helper.logo(source)
-      expect(result).to eq('<img alt="Header Logo" onerror="this.style.display=&quot;none&quot;" src="http://myimage.png" />')
+      expect(result).to eq('<img alt="data.seattle.gov" onerror="this.style.display=&quot;none&quot;" src="http://myimage.png" />')
     end
   end
 
@@ -59,10 +59,11 @@ describe SocrataSiteChrome::ApplicationHelper do
     end
 
     it 'returns both the site title and the header image' do
+      allow(CurrentDomain).to receive(:cname).and_return('data.seattle.gov')
       site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
       RequestStore.store[:site_chrome] = { published: site_chrome }
       result = helper.header_logo
-      expect(result).to eq('<a class="logo" href="/"><img alt="Header Logo" onerror="this.style.display=&quot;none&quot;" src="http://i.imgur.com/E8wtc6d.png" /><span class="site-name"></span></a>')
+      expect(result).to eq('<a class="logo" href="/"><img alt="data.seattle.gov" onerror="this.style.display=&quot;none&quot;" src="http://i.imgur.com/E8wtc6d.png" /><span class="site-name"></span></a>')
     end
   end
 

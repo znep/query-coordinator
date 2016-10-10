@@ -831,7 +831,7 @@ class View < Model
     self.class.create_favorite(self.id)
   end
 
-  def self.create(attributes)
+  def self.create(attributes, nbe = false)
     if attributes['query'].blank? || attributes['query'] == '""' ||
       attributes['query'] == "''" || attributes['query'] == "null"
       attributes['query'] = nil
@@ -844,7 +844,8 @@ class View < Model
     else
       attributes['searchString'] = attributes['searchString']
     end
-    super(attributes)
+
+    super(attributes, {}, {"nbe" => nbe})
   end
 
   def self.delete(id)

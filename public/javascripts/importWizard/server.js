@@ -3,6 +3,7 @@
 /* everything having to do with making API calls, incl. turning parts of the Redux
 model into the JSON needed for those calls */
 
+/* global blist */
 /* global blistLicenses */
 
 import * as SharedTypes from './sharedTypes';
@@ -510,7 +511,8 @@ function importData(onError) {
         translation: transformToImports2Translation(state.transform.columns),
         blueprint: JSON.stringify(transformToBlueprint(state.transform.columns)),
         fileId: getFileId(state),
-        draftViewUid: state.datasetId
+        draftViewUid: state.datasetId,
+        nbe: blist.feature_flags.ingress_strategy === 'nbe'
       })
     }).then((response) => {
       switch (response.status) {

@@ -330,11 +330,14 @@ class Model
     update_attributes!(updates)
   end
 
-  def self.create(attributes, custom_headers = {})
+  def self.create(attributes, custom_headers = {}, query_params = {})
     if !attributes['tags'].nil?
       attributes['tags'] = parse_tags(attributes['tags'])
     end
     path = "/#{self.service_name}.json"
+    if query_params.length > 0
+      path = path + "?#{query_params.to_query}"
+    end
     return parse(CoreServer::Base.connection.
                  create_request(path, attributes.to_json, custom_headers))
   end

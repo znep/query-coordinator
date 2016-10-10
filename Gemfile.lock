@@ -172,7 +172,7 @@ GEM
       ruby-progressbar
     mixlib-shellout (2.2.7)
     mixpanel-ruby (1.6.0)
-    mocha (1.1.0)
+    mocha (1.2.0)
       metaclass (~> 0.0.1)
     money (3.7.1)
       i18n (~> 0.4)
@@ -276,7 +276,7 @@ GEM
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
     ruby-progressbar (1.8.1)
-    ruby_dep (1.4.0)
+    ruby_dep (1.5.0)
     rubyzip (1.2.0)
     safe_yaml (1.0.4)
     sanitize (4.4.0)
@@ -296,7 +296,7 @@ GEM
     slop (3.6.0)
     snappy (0.0.15)
     socksify (1.7.0)
-    socrata_site_chrome (1.1.10)
+    socrata_site_chrome (1.2.0)
       airbrake (>= 4.3.0)
       chroma
       dalli
@@ -421,7 +421,7 @@ DEPENDENCIES
   semver2
   shoulda-context
   snappy
-  socrata_site_chrome (~> 1.1.10)
+  socrata_site_chrome (~> 1.2.0)
   statsd-ruby!
   test-unit
   therubyracer

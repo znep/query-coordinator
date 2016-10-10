@@ -77,6 +77,8 @@ class ApplicationController < ActionController::Base
     case controller
       when 'admin/themes'
         require_sufficient_rights_for_admin_themes
+      when 'api/stat/v1/goals/published'
+        require_sufficient_rights_for_api_stat_goals_published
       when 'api/v1/documents'
         require_sufficient_rights_for_api_documents
       when 'api/v1/drafts'
@@ -89,8 +91,6 @@ class ApplicationController < ActionController::Base
         require_sufficient_rights_for_api_published
       when 'api/v1/uploads'
         require_sufficient_rights_for_api_uploads
-      when 'api/stat/v1/goals/published'
-        require_sufficient_rights_for_api_stat_goals_published
       when 'cetera'
         require_sufficient_rights_for_search_proxy
       when 'consul_checks'
@@ -99,6 +99,8 @@ class ApplicationController < ActionController::Base
         true
       when 'post_login'
         require_sufficient_rights_for_post_login
+      when 'stat/goals'
+        require_sufficient_rights_for_goals
       when 'stories'
         require_sufficient_rights_for_stories
       when 'themes'
@@ -357,6 +359,29 @@ class ApplicationController < ActionController::Base
         elsif CoreServer.view_inaccessible?(story_uid)
           render_story_404
         end
+      end
+    end
+  end
+
+  def require_sufficient_rights_for_goals
+    action = params[:action]
+    goal_uid = params[:uid]
+
+    # TODO:
+    # * flesh out all actions
+    # * define appropriate error responses
+    if current_user.present?
+      case action
+        when 'show'
+          # pass
+        else
+          # pass
+      end
+    else
+      if action != 'show'
+        handle_unauthorized_request
+      elsif !can_view_goal(goal_uid)
+        render_story_404
       end
     end
   end

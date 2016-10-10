@@ -1,9 +1,14 @@
 Rails.application.routes.draw do
 
+  # Health and version routes
   get 'health' => 'health#show'
   get 'version' => 'version#show'
+  get 'consul_checks/active' => 'consul_checks#active'
+
+  # Login success handler
   get 'post_login' => 'post_login#show'
 
+  # Routes for interacting with Perspectives
   scope '/s', constraints: { uid: UNANCHORED_FOUR_BY_FOUR_PATTERN } do
     get '(:vanity_text)/:uid' => 'stories#show', as: 'story'
     get ':uid/create' => 'stories#new'
@@ -17,9 +22,15 @@ Rails.application.routes.draw do
     get '(:vanity_text)/:uid/widget' => 'stories#tile'
   end
 
-  get 'themes/custom' => 'themes#custom', defaults: { format: 'css' }
+  # Routes for interacting with Goals
+  scope '/stat/goals', module: 'stat', as: 'stat' do
+    get ':dashboard/:category/:uid' => 'goals#show', as: 'goal'
+    get 'single/:uid' => 'goals#show', as: 'single_goal'
+  end
 
+  # API routes
   namespace :api do
+    # for Perspectives
     namespace :v1, defaults: { format: 'json' } do
       resources :documents, only: [:create, :show]
       resources :uploads, only: [:create]
@@ -37,6 +48,7 @@ Rails.application.routes.draw do
       get 'getty-images/:id' => 'getty_images#show', as: 'getty_image'
     end
 
+    # for Goals
     namespace :stat do
       namespace :v1, defaults: { format: 'json' } do
         namespace :goals do
@@ -49,12 +61,13 @@ Rails.application.routes.draw do
   # Search proxy routes
   get '/search/users' => 'cetera#users', defaults: { format: 'json' }
 
+  # Story theme configuration routes
   namespace :admin do
     resources :themes
   end
 
-  # We expose certain health checks for consul
-  get 'consul_checks/active' => 'consul_checks#active'
+  # Story theme CSS generator
+  get 'themes/custom' => 'themes#custom', defaults: { format: 'css' }
 
   # Mounts the site-chrome engine
   mount SocrataSiteChrome::Engine => '/socrata_site_chrome'

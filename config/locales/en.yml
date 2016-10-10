@@ -2682,6 +2682,10 @@ en:
                 description: URL reference to the Footer logo. Recommended minimum size is 80 x 80 pixels.
                 placeholder: https://yoursite.gov/logos/footer_logo.png
                 title: Footer Logo
+              footer_logo_alt:
+                description: This is the text that is displayed to screen readers for accessibility for your logo.
+                placeholder: Footer Logo
+                title: Footer Logo Alt Text for Screen Readers
               footer_logo_height:
                 description: You can optionally set a height and width for your logo displayed in the Footer.
                 error: 'Please enter a value to represent your desired logo height in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
@@ -2760,6 +2764,10 @@ en:
                 description: URL reference to the site Header logo. Recommended minimum size is 80 x 80 pixels. This logo will be displayed at a small size.
                 placeholder: https://yoursite.gov/logos/header_logo.png
                 title: Header Bar Logo
+              header_bar_logo_alt:
+                description: This is the text that is displayed to screen readers for accessibility for your logo.
+                placeholder: Header Logo
+                title: Header Logo Alt Text for Screen Readers
               header_display_name:
                 description: Name displayed in the Header Bar. Usually set to your organization's name.
                 placeholder: Header Display Name

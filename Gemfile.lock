@@ -296,7 +296,7 @@ GEM
     slop (3.6.0)
     snappy (0.0.15)
     socksify (1.7.0)
-    socrata_site_chrome (1.1.9)
+    socrata_site_chrome (1.1.10)
       airbrake (>= 4.3.0)
       chroma
       dalli
@@ -421,7 +421,7 @@ DEPENDENCIES
   semver2
   shoulda-context
   snappy
-  socrata_site_chrome (~> 1.1.9)
+  socrata_site_chrome (~> 1.1.10)
   statsd-ruby!
   test-unit
   therubyracer

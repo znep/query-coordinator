@@ -15,6 +15,10 @@
   }) %>
 
 <%= render('site_chrome/tab_content/form_field',
+  :fields => [:footer, :logo, :alt],
+  :locale_string => "#{locale_string}.footer_logo_alt") %>
+
+<%= render('site_chrome/tab_content/form_field',
   :fields => [:locales, current_locale(suppress_locale = false), :footer, :site_name],
   :locale_string => "#{locale_string}.footer_display_name") %>
 

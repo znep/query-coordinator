@@ -54,7 +54,7 @@ describe('componentGoalTile jQuery plugin', function() {
       server.respondWith(
         'GET',
         StorytellerUtils.format(
-          'https://example.com/stat/api/v1/goals/{0}.json',
+          'https://example.com/api/stat/v1/goals/{0}.json',
           componentData.value.goalUid
         ),
         [

@@ -229,7 +229,7 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
       '`goalUid` does not match anchored four-by-four pattern'
     );
 
-    return 'https://' + goalDomain + '/stat/api/v1/goals/' + goalUid + '.json';
+    return 'https://' + goalDomain + '/api/stat/v1/goals/' + goalUid + '.json';
   },
 
   generateGoalEditSrc: function(domain, dashboard, category, uid) {

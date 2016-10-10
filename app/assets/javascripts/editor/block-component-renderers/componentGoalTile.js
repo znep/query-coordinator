@@ -167,7 +167,7 @@ function _expandSubtitle(goalTileData) {
   var customSubtitle = _.get(goalTileData, 'prevailing_measure.summary');
   var defaultSubtitle = StorytellerUtils.format(
     I18n.t('editor.open_performance.measure.subheadline') || '',
-    _.get(goalTileData, 'name'),
+    _.get(goalTileData, 'prevailing_measure.name'),
     _.get(goalTileData, 'prevailing_measure.unit')
   );
 

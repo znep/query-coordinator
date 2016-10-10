@@ -44,16 +44,29 @@ Rails.application.routes.draw do
       scope :action => 'chromeless' do
         get '/stat/goals/:dashboard_id/:category_id/:goal_id/embed'
       end
+
+      # Goal narratives are in the process of being migrated to the Storyteller infrastructure.
+      # These two routes are for a goal's "classic" view using the old narrative renderer.
+      # We will redirect the user to Storyteller if the "classic" view is nonsensical
+      # for this goal.
+      get '/stat/goals/single/:goal_id/view', :action => 'classic_single_goal'
+      get '/stat/goals/:dashboard_id/:category_id/:goal_id/view', :action => 'classic_goal'
+
       scope :action => 'index' do
         get '/stat', :as => 'govstat_root'
         get '/stat/goals', :as => 'govstat_goals'
         get '/stat/my/goals', :as => 'govstat_my_goals'
-        get '/stat/goals/single/:goal_id', :as => 'govstat_single_goal'
         get '/stat/goals/single/:goal_id/edit', :as => 'govstat_single_goal_edit'
         get '/stat/goals/:dashboard_id', :as => 'govstat_dashboard'
         get '/stat/goals/:dashboard_id/edit', :as => 'govstat_dashboard_edit'
-        get '/stat/goals/:dashboard_id/:category_id/:goal_id', :as => 'govstat_goal'
         match '/stat/goals/:dashboard_id/:category_id/:goal_id/edit', :as => 'govstat_goal_edit', :via => [:get, :post]
+
+        # These two routes will shortly be repointed to Storyteller.
+        # They represent the counterpart to the "classic" views above.
+        # We should still be able to serve these while we work to get Storyteller ready.
+        get '/stat/goals/single/:goal_id', :as => 'govstat_single_goal'
+        get '/stat/goals/:dashboard_id/:category_id/:goal_id', :as => 'govstat_goal'
+
         get '/stat/data', :as => 'govstat_data'
       end
     end

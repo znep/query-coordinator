@@ -104,4 +104,58 @@ RSpec.describe 'routes for Data Lens' do
       )
     end
   end
+
+  describe 'OpenPerformance goal routes' do
+    describe 'goal embed' do
+      it('routes /stat/goals/dash-dash/cate-cate/goal-goal/embed to odysseus#chromeless') do
+        expect(get: '/stat/goals/dash-dash/cate-cate/goal-goal/embed').to route_to(
+          controller: 'odysseus',
+          action: 'chromeless',
+          goal_id: 'goal-goal',
+          dashboard_id: 'dash-dash',
+          category_id: 'cate-cate'
+        )
+      end
+    end
+
+    describe 'soon-to-be-deprecated' do
+      it('routes /stat/goals/dash-dash/cate-cate/goal-goal to odysseus#index') do
+        expect(get: '/stat/goals/dash-dash/cate-cate/goal-goal').to route_to(
+          controller: 'odysseus',
+          action: 'index',
+          goal_id: 'goal-goal',
+          dashboard_id: 'dash-dash',
+          category_id: 'cate-cate'
+        )
+      end
+
+      it('routes /stat/goals/single/four-four to odysseus#index') do
+        expect(get: '/stat/goals/single/four-four').to route_to(
+          controller: 'odysseus',
+          action: 'index',
+          goal_id: 'four-four'
+        )
+      end
+    end
+
+    describe 'classic goal view' do
+      it('routes /stat/goals/dash-dash/cate-cate/goal-goal/view to odysseus#classic_goal') do
+        expect(get: '/stat/goals/dash-dash/cate-cate/goal-goal/view').to route_to(
+          controller: 'odysseus',
+          action: 'classic_goal',
+          goal_id: 'goal-goal',
+          dashboard_id: 'dash-dash',
+          category_id: 'cate-cate'
+        )
+      end
+
+      it('routes /stat/goals/single/four-four/view to odysseus#classic_single_goal') do
+        expect(get: '/stat/goals/single/four-four/view').to route_to(
+          controller: 'odysseus',
+          action: 'classic_single_goal',
+          goal_id: 'four-four'
+        )
+      end
+    end
+  end
 end

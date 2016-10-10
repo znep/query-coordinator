@@ -40,6 +40,11 @@ default: &default
   esri_crawler_port: {{ ESRI_CRAWLER_PORT }}
   {%- endif %}
 
+  {% if STORYTELLER_URI is defined -%}
+  storyteller_uri: {{ STORYTELLER_URI }}
+  {%- endif %}
+
+
   {% if METRICS_DIR is defined -%}
   metrics_dir: {{ METRICS_DIR }}
   {% else %}

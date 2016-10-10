@@ -51,6 +51,9 @@ class AppConfig < Hashie::Dash
   property :esri_crawler_hostname
   property :esri_crawler_port
 
+  # Storyteller service
+  property :storyteller_uri
+
   # Metrics
   property :metrics_dir
   property :statsd_enabled

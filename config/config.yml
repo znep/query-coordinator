@@ -55,6 +55,7 @@ default: &default
   sitemap_s3_url: https://localhost.amazonaws.com/bucket_dne/sitemaps
   statsd_enabled: false
   zk_hosts: localhost:2181
+  storyteller_uri: http://localhost:3010
 
   # internal app tokens
   app_token: U29jcmF0YS0td2VraWNrYXNz0

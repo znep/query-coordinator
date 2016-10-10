@@ -1,8 +1,29 @@
+require 'httparty'
 class OdysseusController < ApplicationController
   skip_before_filter :require_user
 
   def index
     render_odysseus_path(request.path)
+  end
+
+  def classic_goal
+    # redirect to the normal goal page if the goal
+    # has been migrated away from classic narratives.
+    if goal_has_published_narrative?(params[:goal_id])
+      redirect_to(govstat_goal_path)
+    else
+      render_odysseus_path(request.path)
+    end
+  end
+
+  def classic_single_goal
+    # redirect to the normal single goal page if the goal
+    # has been migrated away from classic narratives.
+    if goal_has_published_narrative?(params[:goal_id])
+      redirect_to(govstat_single_goal_path)
+    else
+      render_odysseus_path(request.path)
+    end
   end
 
   def chromeless
@@ -18,6 +39,44 @@ class OdysseusController < ApplicationController
   end
 
   private
+
+  def goal_has_published_narrative?(goal_uid)
+    raise 'Unconfigured storyteller_hostname' if APP_CONFIG.storyteller_hostname.nil?
+    raise 'goal_uid is blank' if goal_uid.blank?
+
+    uri = URI.join(
+      APP_CONFIG.storyteller_uri,
+      "/stories/api/stat/v1/goals/#{goal_uid}/narrative/published/latest.json"
+    )
+
+    request_options = {
+      format: :json,
+      headers: {
+        'Content-Type' => 'application/json',
+        'Cookie' => request.headers['Cookie'],
+        'X-Socrata-Host' => CurrentDomain.cname,
+        'X-Socrata-RequestId' => request_id
+      }.compact
+    }
+
+    begin
+      response = HTTParty.get(uri, request_options)
+    rescue Errno::ECONNREFUSED => e
+      raise "Storyteller refused connection checking for published narrative: #{e}"
+    end
+
+    case response.code
+      when 200
+        true
+      when 404
+        false
+      else
+        # If storyteller or ody is down, the 5XX will have a giant HTML body that is useless
+        # to us. Truncate body to a more reasonable length.
+        response_message = response.body.to_s.truncate(2048)
+        raise "Storyteller returned #{response.code} while checking for published narrative: #{response_message}"
+    end
+  end
 
   def render_odysseus_path(path, options = {})
     odysseus_request(path) do |res|

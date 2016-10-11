@@ -9,6 +9,8 @@ RSpec.describe StoriesController, type: :controller do
     allow(StoryAccessLogger).to receive(:log_story_view_access)
     allow(StorytellerService).to receive(:downtimes).and_return([])
 
+    stub_current_domain
+
     request.env['HTTPS'] = 'on'
   end
 
@@ -96,6 +98,7 @@ RSpec.describe StoriesController, type: :controller do
     context 'with sufficient rights' do
 
       before do
+        stub_valid_session
         stub_sufficient_rights
         stub_core_view('unpu-blsh')
       end
@@ -135,6 +138,13 @@ RSpec.describe StoriesController, type: :controller do
           stub_invalid_session
           get :show, uid: story_revision.uid
           expect(response).to render_template(:show)
+        end
+
+        it 'assigns current_user and current_domain to RequestStore for SocrataSiteChrome gem' do
+          get :show, uid: story_revision.uid
+
+          expect(::RequestStore.store[:current_user]).to eq(mock_valid_user)
+          expect(::RequestStore.store[:current_domain]).to eq(mock_domain['cname'])
         end
 
         describe 'google analytics' do
@@ -629,6 +639,12 @@ RSpec.describe StoriesController, type: :controller do
           expect(response.body).to eq(story_revision.to_json)
         end
 
+        it 'assigns current_user and current_domain to RequestStore for SocrataSiteChrome gem' do
+          get :preview, uid: story_revision.uid
+
+          expect(::RequestStore.store[:current_user]).to eq(mock_valid_user)
+          expect(::RequestStore.store[:current_domain]).to eq(mock_domain['cname'])
+        end
       end
 
       context 'when there is no story with the given four by four' do
@@ -713,6 +729,13 @@ RSpec.describe StoriesController, type: :controller do
 
           expect(assigns(:story_title)).to eq(mock_valid_lenses_view_title)
           expect(response).to render_template(:new)
+        end
+
+        it 'assigns current_user and current_domain to RequestStore for SocrataSiteChrome gem' do
+          get :new, uid: story_uid
+
+          expect(::RequestStore.store[:current_user]).to eq(mock_valid_user)
+          expect(::RequestStore.store[:current_domain]).to eq(mock_domain['cname'])
         end
 
         describe 'google analytics' do
@@ -930,6 +953,13 @@ RSpec.describe StoriesController, type: :controller do
         it 'renders the edit layout' do
           get :edit, uid: draft_story.uid
           expect(response).to render_template('editor')
+        end
+
+        it 'assigns current_user and current_domain to RequestStore for SocrataSiteChrome gem' do
+          get :edit, uid: draft_story.uid
+
+          expect(::RequestStore.store[:current_user]).to eq(mock_valid_user)
+          expect(::RequestStore.store[:current_domain]).to eq(mock_domain['cname'])
         end
 
         context 'when rendering a view' do

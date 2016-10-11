@@ -16,7 +16,10 @@ RSpec.describe 'rich text editor selection', type: :feature, js: true do
     stub_logged_in_user
     stub_sufficient_rights
     stub_core_view(uid)
+    stub_current_domain
+
     visit "/s/magic-thing/#{uid}/edit"
+
     @blocks = page.all('.user-story .block-edit')
     @rte_toolbar = page.find('#rich-text-editor-toolbar')
   end

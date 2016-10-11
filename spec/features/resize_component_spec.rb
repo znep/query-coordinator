@@ -9,6 +9,8 @@ RSpec.describe 'resize component', type: :feature, js: true do
     stub_logged_in_user
     stub_sufficient_rights
     stub_core_view('embd-html')
+    stub_current_domain
+
     visit '/s/magic-thing/embd-html/edit?autosave=false'
   end
 

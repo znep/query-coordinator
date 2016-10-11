@@ -9,6 +9,7 @@ RSpec.describe 'asset selector', type: :feature, js: true do
     stub_logged_in_user
     stub_sufficient_rights
     stub_core_view('hero-that')
+    stub_current_domain
 
     visit '/s/magic-thing/hero-that/edit'
   end

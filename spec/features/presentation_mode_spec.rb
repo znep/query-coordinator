@@ -124,7 +124,9 @@ RSpec.describe 'presentation mode', type: :feature, js: true do
     stub_logged_in_user
     stub_sufficient_rights
     stub_core_view('pres-ents')
+    stub_current_domain
     allow(CoreServer).to receive(:current_user_story_authorization).and_return(user_story_authorization)
+
     visit story
   end
 

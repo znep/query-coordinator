@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   # Expose helper_methods for use in all views
-  helper_method :current_user, :current_user_story_authorization, :downtimes
+  helper_method :current_user, :current_domain, :current_user_story_authorization, :downtimes
 
   prepend_before_filter :set_story_uid
   before_filter :handle_authorization
@@ -32,11 +32,16 @@ class ApplicationController < ActionController::Base
   #   current_user  # with invalid cookies
   #   => nil
   def current_user
-    @current_user = ::RequestStore.store[:current_user] = env[SocrataSession::SOCRATA_SESSION_ENV_KEY].authenticate(env)
+    @current_user ||= env[SocrataSession::SOCRATA_SESSION_ENV_KEY].authenticate(env)
+  end
+
+  # Returns the current domain, or nil
+  def current_domain
+    @current_domain ||= CoreServer.current_domain
   end
 
   def current_user_story_authorization
-    @current_user_story_authorization = CoreServer.current_user_story_authorization
+    @current_user_story_authorization ||= CoreServer.current_user_story_authorization
   end
 
   def downtimes

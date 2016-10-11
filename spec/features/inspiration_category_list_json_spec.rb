@@ -6,6 +6,8 @@ RSpec.describe 'inspiration block list json', type: :feature, js: true do
     stub_logged_in_user
     stub_sufficient_rights
     stub_valid_initialized_lenses_view
+    stub_current_domain
+
     visit '/s/magic-thing/hasb-lock/edit'
   end
 

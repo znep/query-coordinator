@@ -47,6 +47,7 @@ function urlForOperation(datasetId: string, operation: SharedTypes.OperationName
       urlAttrs.query = {
         ...urlAttrs.query,
         method: 'scanShape',
+        nbe: blist.feature_flags.ingress_strategy === 'nbe',
         authenticity_token: authenticityToken,
         app_token: appToken
       };
@@ -55,6 +56,7 @@ function urlForOperation(datasetId: string, operation: SharedTypes.OperationName
       urlAttrs.query = {
         ...urlAttrs.query,
         method: 'setBlobForDraft',
+        nbe: blist.feature_flags.ingress_strategy === 'nbe',
         authenticity_token: authenticityToken,
         app_token: appToken
       };

@@ -832,6 +832,8 @@ class View < Model
   end
 
   def self.create(attributes)
+    nbe = attributes.fetch(:nbe, false)
+    attributes.delete(:nbe)
     if attributes['query'].blank? || attributes['query'] == '""' ||
       attributes['query'] == "''" || attributes['query'] == "null"
       attributes['query'] = nil
@@ -844,7 +846,8 @@ class View < Model
     else
       attributes['searchString'] = attributes['searchString']
     end
-    super(attributes)
+
+    super(attributes, {}, {"nbe" => nbe})
   end
 
   def self.delete(id)

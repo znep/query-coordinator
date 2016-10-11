@@ -157,11 +157,11 @@ TODO: Once this is done in Frontend, document the steps here.
 
 ### Runtime Dependencies
 
-The host app must provide a value for `:current_user` in `RequestStore.store`. If there is a signed
-in user, the value must be a hash containing all properties from the current user object (typically
-obtained via a call to `/api/users/current.json`). The keys are expected to be strings. If there is
-no signed in user, the value must be set to nil in the request store. If `:current_user` is not set,
-an error will be thrown.
+The host app must provide values for `:current_user` and `:current_domain` in `::RequestStore.store`.
+If there is a signed in user, the value must be a hash containing all properties from the current
+user object (typically obtained via a call to `/api/users/current.json`). The keys are expected to be
+strings. If there is no signed in user, the value must be set to nil in the request store.
+If `:current_user` is not set, an error will be thrown.
 
 The host app must also provide the configuration directive that specifies the `coreservice_uri`. This
 value is used by the gem to make requests to core to fetch and update the site chrome configuration.

@@ -16,7 +16,7 @@ module SocrataSiteChrome
       if img_src.present?
         image_tag(
           massage_url(img_src),
-          :alt => img.dig('logo', 'alt').presence || display_name.presence || CurrentDomain.cname,
+          :alt => img.dig('logo', 'alt').presence || display_name.presence || ::RequestStore.store[:current_domain],
           :onerror => 'this.style.display="none"')
       end
     end
@@ -42,11 +42,11 @@ module SocrataSiteChrome
     end
 
     def request_current_user
-      RequestStore.store[:current_user]
+      ::RequestStore.store[:current_user]
     end
 
     def site_chrome_current_user
-      Rails.logger.error("DEBUG EN-10582 (chrome gem): Domain = #{CurrentDomain.cname}; request_current_user = #{request_current_user.inspect}")
+      Rails.logger.error("DEBUG EN-10582 (chrome gem): Domain = #{::RequestStore.store[:current_domain]}; request_current_user = #{request_current_user.inspect}")
       SocrataSiteChrome::User.new(request_current_user) if request_current_user.present?
     end
 
@@ -203,7 +203,7 @@ module SocrataSiteChrome
       uri = URI.parse(url)
 
       # Turn full URL into a relative link if the url host matches the current domain host
-      if uri.host == CurrentDomain.cname
+      if uri.host == ::RequestStore.store[:current_domain]
         uri.scheme = nil
         uri.host = nil
         return relative_url_with_locale(uri.to_s)
@@ -254,7 +254,7 @@ module SocrataSiteChrome
     end
 
     def get_site_chrome
-      (RequestStore.store[:site_chrome] ||= {})[pub_stage] ||= SocrataSiteChrome::SiteChrome.new(
+      (::RequestStore.store[:site_chrome] ||= {})[pub_stage] ||= SocrataSiteChrome::SiteChrome.new(
         if Rails.env.test?
           site_chrome_test_config
         else

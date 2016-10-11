@@ -97,4 +97,9 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+
+  def stub_current_domain_with(domain)
+    allow(::RequestStore.store).to receive(:[]).with(:current_domain).and_return(domain)
+  end
+
 end

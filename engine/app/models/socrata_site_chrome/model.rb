@@ -468,7 +468,7 @@ module SocrataSiteChrome
     end
 
     def self.cache
-      @@cache ||= Rails.cache
+      Rails.cache
     end
 
   end

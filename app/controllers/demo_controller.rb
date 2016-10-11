@@ -16,7 +16,7 @@ class DemoController < ApplicationController
   }
 
   def index
-    RequestStore.store[:current_user] =
+    ::RequestStore.store[:current_user] =
       case params[:logged_in]
         when 'true' then DEMO_USER
         when 'admin' then ADMIN_USER
@@ -24,7 +24,7 @@ class DemoController < ApplicationController
         else nil
       end
 
-    render 'fake_content', :layout => FeatureFlags.derive(nil, request)[:enable_unified_header_footer] ? 'unified' : 'plain'
+    render 'fake_content', :layout => 'unified'
   end
 
 end

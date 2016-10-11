@@ -62,10 +62,9 @@ module SiteChromeHelper
     key_path = "content[#{options[:content_key]}]links[]#{path_suffix}[key]"
     url_path = "content[#{options[:content_key]}]links[]#{path_suffix}[url]"
 
-    # TODO - actually support other locales and remove "en" hardcoding.
-    translated_label_path = "content[locales][en][#{options[:content_key]}]links[#{link['key']}]"
+    translated_label_path = "content[locales][#{I18n.locale}][#{options[:content_key]}]links[#{link['key']}]"
     translated_label = options[:default] ? nil : fetch_content(
-      [:locales, :en, options[:content_key], :links, link['key']]
+      [:locales, I18n.locale, options[:content_key], :links, link['key']]
     )
 
     content_tag(:div, :class => link_row_div_classnames(options[:default], options[:child_link])) do
@@ -118,10 +117,10 @@ module SiteChromeHelper
   def link_menu_div(menu_links, options)
     menu_links ||= { 'key' => 'menu_PLACEHOLDER_INDEX', 'links' => [] }
     key_path = "content[#{options[:content_key]}]links[][key]"
-    # TODO - actually support other locales and remove "en" hardcoding.
-    translated_label_path = "content[locales][en][#{options[:content_key]}]links[#{menu_links['key']}]"
+
+    translated_label_path = "content[locales][#{I18n.locale}][#{options[:content_key]}]links[#{menu_links['key']}]"
     translated_label = options[:default] ? nil : fetch_content(
-      [:locales, :en, options[:content_key], :links, menu_links['key']]
+      [:locales, I18n.locale, options[:content_key], :links, menu_links['key']]
     )
 
     content_tag(:div, :class => "link-menu#{' default' if options[:default]}") do

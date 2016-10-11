@@ -280,8 +280,7 @@ function dropdownValueSelected(selectedElement) { //eslint-disable-line no-unuse
 }
 
 function currentLocale() {
-  // TODO - actually support different locales
-  return 'en';
+  return blist.locale || 'en';
 }
 
 function toggleDisabledCopyrightText(checkbox) { //eslint-disable-line no-unused-vars

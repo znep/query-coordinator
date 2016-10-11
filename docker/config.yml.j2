@@ -167,6 +167,10 @@ default: &default
   signaller_traffic_throttler: {{ SIGNALLER_TRAFFIC_THROTTLER }}
   {%- endif %}
 
+  {% if CACHE_DATASLATE_ROUTING is defined -%}
+  cache_dataslate_routing: {{ CACHE_DATASLATE_ROUTING }}
+  {%- endif %}
+
   {#
    # other behaviors
    #}

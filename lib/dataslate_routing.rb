@@ -1,6 +1,7 @@
 class DataslateRouting
   def self.for(path, options = {})
-    (RequestStore[:dataslate_routing] ||= new(options.only(:custom_headers))).
+    ((RequestStore[:dataslate_routing] ||= {})[CurrentDomain.cname] ||=
+      new(options.only(:custom_headers))).
       page_for(path, options)
   end
 
@@ -10,28 +11,18 @@ class DataslateRouting
   # 3. Execute `CurrentDomain.set('the.production.domain')`.
   # 4. Execute `DataslateRouting.debug` or `DataslateRouting.debug(report: true)`.
   def self.debug(options = {})
-    (RequestStore[:dataslate_routing] ||= new(options.only(:custom_headers))).
-      routes.tap do |route_data|
+    ((RequestStore[:dataslate_routing] ||= {})[CurrentDomain.cname] ||=
+      new(options.only(:custom_headers))).
+      tap do |routing_object|
         # The :report option, in addition to returning the routing table, also
         # prints out every Dataslate path known to the system and the definition
         # it has for that path.
         next unless options.fetch(:report, false)
 
-        recursor = lambda do |table_layer, cursor, path_collection = {}|
-          table_layer.each do |route_part, new_table_layer|
-            path_parts = cursor + [route_part]
-            if new_table_layer.resolution.present?
-              path = route_part == :homepage ? '/' : path_parts.join('/')
-              path_collection[path] = new_table_layer.resolution
-            end
-            recursor.call(new_table_layer, path_parts, path_collection)
-          end
-          path_collection
-        end
-        recursor.call(route_data, ['']).each do |path, definition|
+        routing_object.to_h.each do |path, definition|
           puts "#{path} => #{definition}"
         end
-      end
+      end.routes
   end
 
   attr_reader :routes, :custom_headers
@@ -41,8 +32,24 @@ class DataslateRouting
     @custom_headers = options.fetch(:custom_headers, {})
     @routes = Table.new
 
-    scrape_pages_dataset_for_paths!
-    scrape_pages_service_for_paths!
+    construct_table_from_external_data!
+  end
+
+  def construct_table_from_external_data!
+    cache_key = "dataslate_routing:#{CurrentDomain.cname}"
+    serialized_hash = Rails.cache.read(cache_key)
+
+    if serialized_hash.nil?
+      Rails.logger.info("No cache for #{cache_key}. Fetching from core.")
+      scrape_pages_dataset_for_paths!
+      scrape_pages_service_for_paths!
+      Rails.cache.write(cache_key, to_h, expires_in: APP_CONFIG.cache_dataslate_routing)
+    else # deserialize the hash
+      serialized_hash.each do |path, definition|
+        unique_path = if path == :homepage then '/' else uniqify(path) end
+        table.route_to(unique_path, definition)
+      end
+    end
   end
 
   def page_for(path, options = {})
@@ -64,6 +71,22 @@ class DataslateRouting
       }
     end
   end
+
+  def flatten_routing_table_into_hash
+    recursor = lambda do |table_layer, cursor, path_collection = {}|
+      table_layer.each do |route_part, new_table_layer|
+        path_parts = cursor + [route_part]
+        if new_table_layer.resolution.present?
+          path = route_part == :homepage ? '/' : path_parts.join('/')
+          path_collection[path] = new_table_layer.resolution
+        end
+        recursor.call(new_table_layer, path_parts, path_collection)
+      end
+      path_collection
+    end
+    recursor.call(routes, [''])
+  end
+  alias :to_h :flatten_routing_table_into_hash
 
   private
   def uniqify(path, var_as = ':')

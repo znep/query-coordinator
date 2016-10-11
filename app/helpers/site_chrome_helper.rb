@@ -117,7 +117,6 @@ module SiteChromeHelper
   def link_menu_div(menu_links, options)
     menu_links ||= { 'key' => 'menu_PLACEHOLDER_INDEX', 'links' => [] }
     key_path = "content[#{options[:content_key]}]links[][key]"
-
     translated_label_path = "content[locales][#{I18n.locale}][#{options[:content_key]}]links[#{menu_links['key']}]"
     translated_label = options[:default] ? nil : fetch_content(
       [:locales, I18n.locale, options[:content_key], :links, menu_links['key']]

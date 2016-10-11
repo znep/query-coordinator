@@ -1982,7 +1982,7 @@ blist.namespace.fetch('blist.datatypes');
       aggregates: nonNumericAggs,
       alignment: alignment,
       convertableTypes: ['text'],
-      createable: true,
+      createable: false,
       deleteable: true,
       deprecatedInNbe: true,
       filterConditions: $.extend(true, {

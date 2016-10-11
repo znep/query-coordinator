@@ -831,8 +831,9 @@ class View < Model
     self.class.create_favorite(self.id)
   end
 
-  def self.create(attributes)
-    nbe = attributes.fetch(:nbe, false)
+  def self.create(arguments)
+    nbe = arguments.fetch(:nbe, false)
+    attributes = arguments.except(:nbe)
     if attributes['query'].blank? || attributes['query'] == '""' ||
       attributes['query'] == "''" || attributes['query'] == "null"
       attributes['query'] = nil

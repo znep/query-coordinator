@@ -28,6 +28,8 @@ set -ev
 /bin/env_parse "${APP_DIR}/docker/environments-config.rb.j2" "${APP_DIR}/config/environments/${RAILS_ENV}.rb"
 
 # Start nginx in order to serve static assets instead of hitting unicorn
+/bin/env_parse "${APP_DIR}/config/nginx.conf.j2"
+
 if [ -x /usr/sbin/nginx ]; then
   /usr/sbin/nginx -c "${APP_DIR}/config/nginx.conf"
 else

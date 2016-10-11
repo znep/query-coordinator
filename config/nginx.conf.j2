@@ -1,14 +1,21 @@
 daemon on;
 
-error_log /var/log/nginx/error.log warn;
+error_log /mnt/mesos/sandbox/nginx-error.log warn;
 
+# Should be 2 x CPUs
+worker_processes {{NGINX_WORKER_PROCESSES | default(14)}};
+
+# Should be somewhat more (how much?) than the number of Unicorn workers
 events {
-  worker_connections 100;
+  worker_connections {{NGINX_WORKER_CONNECTIONS | default(512)}};
 }
+
+# Should be similar to the number of worker connections but should be no more than 0.5 * ulimit -n
+worker_rlimit_nofile {{NGINX_WORKER_RLIMIT_NOFILE | default(512)}};
 
 http {
   client_body_temp_path /tmp/;
-  access_log /var/log/nginx/access.log;
+  access_log /mnt/mesos/sandbox/nginx-access.log;
   sendfile on;
   sendfile_max_chunk 1m;
   tcp_nopush on;

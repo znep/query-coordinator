@@ -29,11 +29,12 @@ class DatasetsController < ApplicationController
   end
 
   def create
-    view = View.create({
+    view = View.create(
       :name => params[:new_dataset_name],
       :owner => current_user,
-      :displayType => 'draft'
-    }, FeatureFlags.derive(nil, request).ingress_strategy == 'nbe')
+      :displayType => 'draft',
+      :nbe => FeatureFlags.derive(nil, request).ingress_strategy == 'nbe'
+    )
 
     respond_to do |format|
       format.html { redirect_to(view_path(view)) }

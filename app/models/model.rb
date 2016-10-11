@@ -336,10 +336,13 @@ class Model
     end
     path = "/#{self.service_name}.json"
     if query_params.length > 0
-      path = path + "?#{query_params.to_query}"
+      path = "#{path}?#{query_params.to_query}"
     end
-    return parse(CoreServer::Base.connection.
-                 create_request(path, attributes.to_json, custom_headers))
+    parse(CoreServer::Base.connection.create_request(
+      path,
+      attributes.to_json,
+      custom_headers
+    ))
   end
 
   def self.parse(data)

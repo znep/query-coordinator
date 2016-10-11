@@ -3,6 +3,7 @@ require_relative '../../lib/dataslate_routing'
 
 describe DataslateRouting do
   before(:each) do
+    RequestStore.clear!
     allow(Page).to receive(:routing_table).and_return(service_response)
     allow_any_instance_of(CoreServer::Connection).to receive(:get_request).
       and_return(dataset_response)
@@ -76,6 +77,21 @@ describe DataslateRouting do
 
       it 'should return a real page' do
         expect(DataslateRouting.for('/')).to eq(page_result)
+      end
+    end
+
+    context 'when cached' do
+      before(:each) do
+        allow(Rails.cache).to receive(:read).and_return(routing_table)
+        allow(Page).to receive(:find_by_unique_path).and_return(Page.new)
+      end
+      let(:page_source) { :service }
+      let(:routing_table) do
+        { '/some/path' => { from: :service, path: '/some/path' } }
+      end
+
+      it 'should return a real page' do
+        expect(DataslateRouting.for('/some/path')).to eq(page_result)
       end
     end
   end

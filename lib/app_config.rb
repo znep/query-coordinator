@@ -107,6 +107,9 @@ class AppConfig < Hashie::Dash
   property :recaptcha_public_key
   property :recaptcha_private_key
 
+  # Caching
+  property :cache_dataslate_routing, default: 1.minute
+
   # Misc
   property :threadpool_count, default: 0, transform_with: as_int
   property :secondary_group_identifier

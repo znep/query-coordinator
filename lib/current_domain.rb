@@ -9,6 +9,7 @@ class CurrentDomain
 
     if !@@property_store.has_key?(cname)
       begin
+        RequestStore[:current_domain] = cname
         @@property_store[cname] = { :data => Domain.find(cname) }
       rescue CoreServer::ResourceNotFound
         return false

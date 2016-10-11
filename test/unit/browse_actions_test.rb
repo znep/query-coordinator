@@ -567,7 +567,7 @@ class BrowseActionsTest4 < Minitest::Test
     # NOTE: Setting facet_cutoff to 0 has inconsistent behavior across facets
     (1..10).each do |cutoff|
       @browse_actions_container.stubs(get_facet_cutoff: cutoff)
-      assert_equal cutoff, @browse_actions_container.get_facet_cutoff(:custom)
+      assert_equal cutoff, @browse_actions_container.send(:get_facet_cutoff, :custom)
 
       browse_options = @browse_actions_container.send(:process_browse, request)
       facet = browse_options[:facets].find { |o| o[:param] == :'custom superheroes' }

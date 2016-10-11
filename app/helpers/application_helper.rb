@@ -113,7 +113,7 @@ module ApplicationHelper
 
 # DATASET LANDING PAGE
   def dataset_landing_page_enabled?
-    !!SiteChrome.find.try(:dslp_enabled?)
+    !!SiteChrome.find.try(:dslp_enabled?) || !!cookies[:socrata_site_chrome_preview]
   end
 
 # PAGE-HEADER

@@ -44,4 +44,37 @@ describe ApplicationHelper do
       end
     end
   end
+
+  describe '#dataset_landing_page_enabled?' do
+    let(:site_chrome_find_double) do
+      double.tap { |site_chrome| allow(site_chrome).to receive(:dslp_enabled?).and_return(dslp_enabled) }
+    end
+
+    before do
+      allow(SiteChrome).to receive(:find).and_return(site_chrome_find_double)
+    end
+
+    context 'site chrome is activated' do
+      let(:dslp_enabled) { true }
+
+      it 'returns true' do
+        helper.request.cookies[:socrata_site_chrome_preview] = false
+        expect(dataset_landing_page_enabled?).to eq(true)
+      end
+    end
+
+    context 'site chrome is not activated' do
+      let(:dslp_enabled) { false }
+
+      it 'is true if in site chrome preview mode' do
+        helper.request.cookies[:socrata_site_chrome_preview] = true
+        expect(dataset_landing_page_enabled?).to eq(true)
+      end
+
+      it 'is false not in site chrome preview mode' do
+        helper.request.cookies[:socrata_site_chrome_preview] = false
+        expect(dataset_landing_page_enabled?).to eq(false)
+      end
+    end
+  end
 end

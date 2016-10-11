@@ -201,15 +201,7 @@ function SvgTimelineChart($element, vif) {
         attr('fill', DIMENSION_LABEL_FONT_COLOR).
         attr('stroke', 'none');
 
-      let baselineValue;
-
-      if (minYValue > 0) {
-        baselineValue = minYValue;
-      } else if (maxYValue < 0) {
-        baselineValue = maxYValue;
-      } else {
-        baselineValue = 0;
-      }
+      const baselineValue = _.clamp(0, minYValue, maxYValue);
 
       let d3XBaselineAxis = d3XAxis.
         tickFormat('').
@@ -500,7 +492,7 @@ function SvgTimelineChart($element, vif) {
       }
     }
 
-    minYValue = d3.min(
+    const dataMinYValue = d3.min(
       dataToRender.map((series, seriesIndex) => {
 
         return d3.min(
@@ -509,7 +501,8 @@ function SvgTimelineChart($element, vif) {
         );
       })
     );
-    maxYValue = d3.max(
+
+    const dataMaxYValue = d3.max(
       dataToRender.map((series, seriesIndex) => {
 
         return d3.max(
@@ -519,12 +512,24 @@ function SvgTimelineChart($element, vif) {
       })
     );
 
-    if (self.getYAxisScalingMode() === 'showZero') {
+    const limitMin = self.getMeasureAxisMinValue();
 
-      // Normalize min and max values so that we always show 0 if the user has
-      // specified that behavior in the Vif.
-      minYValue = Math.min(minYValue, 0);
-      maxYValue = Math.max(0, maxYValue);
+    if (self.getYAxisScalingMode() === 'showZero' && !_.isFinite(limitMin)) {
+      minYValue = _.min([dataMinYValue, 0]);
+    } else if (_.isFinite(limitMin)) {
+      minYValue = limitMin;
+    } else {
+      minYValue = dataMinYValue;
+    }
+
+    const limitMax = self.getMeasureAxisMaxValue();
+
+    if (self.getYAxisScalingMode() === 'showZero' && !_.isFinite(limitMax)) {
+      maxYValue = _.max([dataMaxYValue, 0]);
+    } else if (_.isFinite(limitMax)) {
+      maxYValue = limitMax;
+    } else {
+      maxYValue = dataMaxYValue;
     }
 
     d3XScale = d3.time.scale.
@@ -633,7 +638,10 @@ function SvgTimelineChart($element, vif) {
             );
           }
         }).
-        y((d) => d3YScale(d[measureIndex]));
+        y((d) => {
+          const value = maxYValue ? _.min([maxYValue, d[measureIndex]]) : d[measureIndex];
+          return d3YScale(value);
+        });
     });
 
     // Remove any existing root svg element.

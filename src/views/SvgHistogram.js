@@ -414,7 +414,7 @@ function SvgHistogram($element, vif) {
           'y',
           function(d) {
             var yAttr;
-            var value = d.value;
+            const value = maxYValue ? _.min([maxYValue, d.value]) : d.value;
 
             // If the value is zero or null we want it to be present at the
             // baseline for the rest of the bars (at the bottom of the chart
@@ -448,14 +448,10 @@ function SvgHistogram($element, vif) {
 
             } else if (value < 0) {
 
-
-              if (maxYValue <= 0) {
-
-                yAttr = Math.max(
-                  d3YScale(maxYValue),
-                  1
-                );
-
+              if (value < minYValue) {
+                yAttr = d3YScale(minYValue) + 1;
+              } else if (maxYValue <= 0) {
+                yAttr = _.max([d3YScale(maxYValue), 1]);
               } else {
                 yAttr = d3YScale(0);
               }
@@ -470,54 +466,42 @@ function SvgHistogram($element, vif) {
           'width',
           (d) => Math.max(1, d3DimensionXScale(d.x1) - d3DimensionXScale(d.x0) - COLUMN_MARGIN)
         ).
-        attr(
-          'height',
-          function(d) {
-            var baselineValue;
-            var value = d.value;
+        attr('height', (d) => {
+          if (d.value === 0 || !_.isFinite(d.value)) {
+            // We want the flyout for null or zero values to appear along
+            // the x axis, rather than at the top of the chart.
+            //
+            // This means that we need to push the container element for
+            // null values down to the x axis, rather than the default
+            // behavior which places it at the top of the visualization
+            // container. This is accomplished by the 'y' attribute, but
+            // that does not have the expected behavior if the element is
+            // not visible (or in this case, has a height of zero).
+            //
+            // Ultimately the way we force the column's container to
+            // actually do the intended layout is to give the element a very
+            // small height which should be more or less indiscernible,
+            // which causes the layout to do the right thing.
+            return 0.0001;
+          } else {
+            // Value of column clamped between min and max possible values.
+            const value = _.clamp(d.value, minYValue, maxYValue);
 
-            if (value === 0 || !_.isFinite(value)) {
-              // We want the flyout for null or zero values to appear
-              // along the x axis, rather than at the top of the chart.
-              // This means that we need to push the container element
-              // for null values down to the x axis, rather than the
-              // default behavior which places it at the top of the
-              // visualization container. This is accomplished by the 'y'
-              // attribute, but that does not have the expected behavior
-              // if the element is not visible (or in this case, has a
-              // height of zero).
-              //
-              // Ultimately the way we force the column's container to
-              // actually do the intended layout is to give the element
-              // a very small height which should be more or less
-              // indiscernable, which causes the layout to do the right
-              // thing.
-              return 0.0001;
-            } else if (value > 0) {
+            // Calculating baseline depending on column value
+            // Value;
+            //   > 0 : Baseline should be 0 or minYValue depending on which is lower.
+            //   < 0 : Baseline should be 0 or maxYValue depending on which is higher.
+            const baselineValue = value > 0 ? _.max([minYValue, 0]) : _.min([maxYValue, 0]);
 
-              if (minYValue > 0) {
-                baselineValue = minYValue;
-              } else {
-                baselineValue = 0;
-              }
-            } else if (value < 0) {
-
-              if (maxYValue < 0) {
-                baselineValue = maxYValue;
-              } else {
-                baselineValue = 0;
-              }
-            }
+            // Height / width calculated based on the difference between value and baseline
+            const length = Math.abs(d3YScale(value) - d3YScale(baselineValue));
 
             // See comment about setting the y attribute above for the
             // rationale behind ensuring a minimum height of one pixel for
             // non-null and non-zero values.
-            return Math.max(
-              1,
-              Math.abs(d3YScale(value) - d3YScale(baselineValue))
-            );
+            return _.max([1, length]);
           }
-        ).
+        }).
         attr('stroke', 'none').
         attr('fill', getPrimaryColorOrNone).
         attr('data-default-fill', getPrimaryColorOrNone);
@@ -595,13 +579,16 @@ function SvgHistogram($element, vif) {
     if (self.getYAxisScalingMode() === 'showZero') {
       measureRowExtents.push(0);
     }
-
     const measureExtent = d3.extent(measureRowExtents);
-    const minYValue = measureExtent[0];
-    const maxYValue = measureExtent[1];
+
+    const limitMin = self.getMeasureAxisMinValue();
+    const minYValue = _.isFinite(limitMin) ? limitMin : _.min([measureExtent[0], 0]);
+
+    const limitMax = self.getMeasureAxisMaxValue();
+    const maxYValue = _.isFinite(limitMax) ? limitMax : _.max([measureExtent[1], 0]);
 
     d3YScale = d3.scale.linear().
-      domain(measureExtent).
+      domain([minYValue, maxYValue]).
       nice().
       range([chartHeight, 0]);
 

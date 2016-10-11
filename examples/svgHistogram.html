@@ -359,6 +359,58 @@
         }
       });
 
+      vifs.push({
+        title: 'Fuel Pressure Leakdown Test',
+        description: '25ms sample period',
+        configuration: {
+          bucketType: 'linear',
+          axisLabels: {
+            bottom: 'PSI',
+            left: '# of samples'
+          },
+          measureAxisMinValue: 2000,
+          measureAxisMaxValue: 6000,
+        },
+        series: [
+          {
+            color: {
+              primary: '#f55',
+              highlight: 'red'
+            },
+            dataSource: {
+              datasetUid: '6w34-4c67',
+              domain: 'vertex-stories.rc-socrata.com',
+              dimension: {
+                columnName: 'fuel_pressure_psi',
+                aggregationFunction: null
+              },
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              type: 'socrata.soql',
+              filters: []
+            },
+            type: 'histogram',
+            label: 'Sample count',
+            unit: {
+              one: 'sample',
+              other: 'samples'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        scale: { x: { type: 'quantitative', unit: { one: 'PSI', other: 'PSI' } }, y: { type: 'quantitative' } }
+      });
+
       var chicagoCrimesTime = _.cloneDeep(chicagoCrimesLongitudeVif);
       chicagoCrimesTime.title = 'Invalid, column type mismatch';
       _.set(chicagoCrimesTime, 'series[0].dataSource.dimension.columnName', 'block');

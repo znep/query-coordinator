@@ -19,7 +19,8 @@
       #bar-chart-3,
       #bar-chart-4,
       #bar-chart-5,
-      #bar-chart-6 {
+      #bar-chart-6,
+      #bar-chart-7 {
         display: block;
         position: relative;
         width: 640px;
@@ -41,6 +42,8 @@
     <div id="bar-chart-5"></div>
     <p>Unaggregated data with measure sorted descending by value</p>
     <div id="bar-chart-6"></div>
+    <p>Multi-series unaggregated data with measure axis min and max values</p>
+    <div id="bar-chart-7"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -311,6 +314,10 @@
         }]
       });
 
+      var barChart7Vif = _.cloneDeep(barChart5Vif);
+      barChart7Vif.configuration.measureAxisMinValue = 250;
+      barChart7Vif.configuration.measureAxisMaxValue = 500;
+
       /**
        * Instantiate the plugins
        */
@@ -364,6 +371,14 @@
         handleVifUpdated
       );
       $barChart6Element.socrataSvgBarChart(barChart6Vif);
+
+      var $barChart7Element = $('#bar-chart-7');
+      $barChart7Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $barChart7Element.on(
+        'SOCRATA_VISUALIZATION_VIF_UPDATED',
+        handleVifUpdated
+      );
+      $barChart7Element.socrataSvgBarChart(barChart7Vif);
 
       /**
        * Handle plugin events

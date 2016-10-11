@@ -433,11 +433,13 @@ function SvgColumnChart($element, vif) {
             function(d) {
               let yAttr;
 
+              const value = maxYValue ? _.min([maxYValue, d[1]]) : d[1];
+
               // If the value is zero or null we want it to be present at the
               // baseline for the rest of the bars (at the bottom of the chart
               // if the minimum value is 0 or more, at the top of the chart if
               // the maximum value is less than zero.
-              if (d[1] === null || d[1] === 0) {
+              if (value === null || value === 0) {
 
                 if (minYValue > 0) {
                   yAttr = d3YScale(minYValue) - 0.0001;
@@ -447,32 +449,28 @@ function SvgColumnChart($element, vif) {
                   yAttr = d3YScale(0) - 0.0001;
                 }
 
-              } else if (d[1] > 0) {
+              } else if (value > 0) {
 
                 if (minYValue > 0) {
 
                   yAttr = Math.min(
-                    d3YScale(d[1]),
+                    d3YScale(value),
                     d3YScale(minYValue) - 1
                   );
                 } else {
 
                   yAttr = Math.min(
-                    d3YScale(d[1]),
+                    d3YScale(value),
                     d3YScale(0) - 1
                   );
                 }
 
-              } else if (d[1] < 0) {
+              } else if (value < 0) {
 
-
-                if (maxYValue <= 0) {
-
-                  yAttr = Math.max(
-                    d3YScale(maxYValue),
-                    1
-                  );
-
+                if (value < minYValue) {
+                  yAttr = d3YScale(minYValue) + 1;
+                } else if (maxYValue <= 0) {
+                  yAttr = _.max([d3YScale(maxYValue), 1]);
                 } else {
                   yAttr = d3YScale(0);
                 }
@@ -486,52 +484,42 @@ function SvgColumnChart($element, vif) {
             'width',
             d3GroupingXScale.rangeBand() - 1
           ).
-          attr(
-            'height',
-            function(d) {
-              let baselineValue;
+          attr('height', (d) => {
+            if (d[1] === 0 || !_.isFinite(d[1])) {
+              // We want the flyout for null or zero values to appear along
+              // the x axis, rather than at the top of the chart.
+              //
+              // This means that we need to push the container element for
+              // null values down to the x axis, rather than the default
+              // behavior which places it at the top of the visualization
+              // container. This is accomplished by the 'y' attribute, but
+              // that does not have the expected behavior if the element is
+              // not visible (or in this case, has a height of zero).
+              //
+              // Ultimately the way we force the column's container to
+              // actually do the intended layout is to give the element a very
+              // small height which should be more or less indiscernible,
+              // which causes the layout to do the right thing.
+              return 0.0001;
+            } else {
+              // Value of column clamped between min and max possible values.
+              const value = _.clamp(d[1], minYValue, maxYValue);
 
-              if (d[1] === null || d[1] === 0) {
-                // We want the flyout for null or zero values to appear along
-                // the x axis, rather than at the top of the chart.
-                //
-                // This means that we need to push the container element for
-                // null values down to the x axis, rather than the default
-                // behavior which places it at the top of the visualization
-                // container. This is accomplished by the 'y' attribute, but
-                // that does not have the expected behavior if the element is
-                // not visible (or in this case, has a height of zero).
-                //
-                // Ultimately the way we force the column's container to
-                // actually do the intended layout is to give the element a very
-                // small height which should be more or less indiscernable,
-                // which causes the layout to do the right thing.
-                return 0.0001;
-              } else if (d[1] > 0) {
+              // Calculating baseline depending on column value
+              // Value;
+              //   > 0 : Baseline should be 0 or minYValue depending on which is lower.
+              //   < 0 : Baseline should be 0 or maxYValue depending on which is higher.
+              const baselineValue = value > 0 ? _.max([minYValue, 0]) : _.min([maxYValue, 0]);
 
-                if (minYValue > 0) {
-                  baselineValue = minYValue;
-                } else {
-                  baselineValue = 0;
-                }
-              } else if (d[1] < 0) {
-
-                if (maxYValue < 0) {
-                  baselineValue = maxYValue;
-                } else {
-                  baselineValue = 0;
-                }
-              }
+              // Height / width calculated based on the difference between value and baseline
+              const length = Math.abs(d3YScale(value) - d3YScale(baselineValue));
 
               // See comment about setting the y attribute above for the
               // rationale behind ensuring a minimum height of one pixel for
               // non-null and non-zero values.
-              return Math.max(
-                1,
-                Math.abs(d3YScale(d[1]) - d3YScale(baselineValue))
-              );
+              return _.max([1, length]);
             }
-          ).
+          }).
           attr('stroke', 'none').
           attr('fill', getPrimaryColorOrNone).
           attr('data-default-fill', getPrimaryColorOrNone);
@@ -634,17 +622,17 @@ function SvgColumnChart($element, vif) {
                   }
                 );
 
-              return (matchingRows.length > 0) ?
-                [
-                  measureLabels[seriesIndex],
-                  matchingRows[0][measureIndices[seriesIndex]]
-                ] :
-                [
-                  measureLabels[seriesIndex],
-                  null
-                ];
-            })
-        ]);
+          return (matchingRows.length > 0) ?
+            [
+              measureLabels[seriesIndex],
+              matchingRows[0][measureIndices[seriesIndex]]
+            ] :
+            [
+              measureLabels[seriesIndex],
+              null
+            ];
+        })
+      ]);
     });
 
     // Compute width based on the x-axis scaling mode.
@@ -731,15 +719,26 @@ function SvgColumnChart($element, vif) {
      * 3. Set up the y-scale and -axis.
      */
 
-    minYValue = getMinYValue(groupedDataToRender);
-    maxYValue = getMaxYValue(groupedDataToRender);
+    const dataMinYValue = getMinYValue(groupedDataToRender);
+    const limitMin = self.getMeasureAxisMinValue();
 
-    if (self.getYAxisScalingMode() === 'showZero') {
+    if (self.getYAxisScalingMode() === 'showZero' && !_.isFinite(limitMin)) {
+      minYValue = _.min([dataMinYValue, 0]);
+    } else if (_.isFinite(limitMin)) {
+      minYValue = limitMin;
+    } else {
+      minYValue = dataMinYValue;
+    }
 
-      // Normalize min and max values so that we always show 0 if the user has
-      // specified that behavior in the Vif.
-      minYValue = Math.min(minYValue, 0);
-      maxYValue = Math.max(0, maxYValue);
+    const dataMaxYValue = getMaxYValue(groupedDataToRender);
+    const limitMax = self.getMeasureAxisMaxValue();
+
+    if (self.getYAxisScalingMode() === 'showZero' && !_.isFinite(limitMax)) {
+      maxYValue = _.max([dataMaxYValue, 0]);
+    } else if (_.isFinite(limitMax)) {
+      maxYValue = limitMax;
+    } else {
+      maxYValue = dataMaxYValue;
     }
 
     d3YScale = generateYScale(minYValue, maxYValue, height);

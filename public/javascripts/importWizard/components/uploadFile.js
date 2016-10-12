@@ -32,13 +32,13 @@ function urlForOperation(datasetId: string, operation: SharedTypes.OperationName
       saveUnderViewUid: datasetId
     }
   };
-  // TODO: NBE?
   // TODO: error handling (extension checking)
   switch (operation) {
     case 'UPLOAD_DATA':
       urlAttrs.query = {
         ...urlAttrs.query,
         method: 'scan',
+        nbe: blist.feature_flags.ingress_strategy === 'nbe',
         authenticity_token: authenticityToken,
         app_token: appToken
       };

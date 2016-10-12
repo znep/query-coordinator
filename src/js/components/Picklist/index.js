@@ -5,8 +5,8 @@ import classNames from 'classnames';
 import {
   UP,
   DOWN,
-  ENTER,
-  ESCAPE
+  ESCAPE,
+  isolateEventByKeys
 } from '../../common/keycodes';
 
 export const Picklist = React.createClass({
@@ -32,7 +32,9 @@ export const Picklist = React.createClass({
       })
     ),
     // Calls a function after user selection.
-    onSelection: React.PropTypes.func
+    onSelection: React.PropTypes.func,
+    onFocus: React.PropTypes.func,
+    onBlur: React.PropTypes.func
   },
 
   getDefaultProps() {
@@ -40,6 +42,8 @@ export const Picklist = React.createClass({
       disabled: false,
       options: [],
       onSelection: _.noop,
+      onFocus: _.noop,
+      onBlur: _.noop,
       value: null
     };
   },
@@ -91,8 +95,6 @@ export const Picklist = React.createClass({
       return;
     }
 
-    event.preventDefault();
-
     switch (event.keyCode) {
       case UP:
         this.move('up');
@@ -107,25 +109,19 @@ export const Picklist = React.createClass({
 
   onKeyUpBlur(event) {
     if (event.keyCode === ESCAPE) {
-      event.preventDefault();
       this.picklist.blur();
     }
   },
 
   onKeyUp(event) {
-    event.stopPropagation();
+    isolateEventByKeys(event, [UP, DOWN, ESCAPE]);
 
     this.onKeyUpSelection(event);
     this.onKeyUpBlur(event);
   },
 
   onKeyDown(event) {
-    const keys = [UP, DOWN, ENTER, ESCAPE];
-
-    if (_.includes(keys, event.keyCode)) {
-      event.stopPropagation();
-      event.preventDefault();
-    }
+    isolateEventByKeys(event, [UP, DOWN, ESCAPE]);
   },
 
   onMouseDownOption(event) {
@@ -133,10 +129,12 @@ export const Picklist = React.createClass({
   },
 
   onFocus() {
+    this.props.onFocus();
     this.setState({ focused: true });
   },
 
   onBlur() {
+    this.props.onBlur();
     this.setState({ focused: false });
   },
 
@@ -207,15 +205,19 @@ export const Picklist = React.createClass({
     const { selectedOption } = this.state;
     const hasRenderFunction = _.isFunction(option.render);
     const onClickOptionBound = this.onClickOption.bind(this, option);
+    const isSelected = _.isEqual(selectedOption, option);
     const classes = classNames('picklist-option', {
-      'picklist-option-selected': _.isEqual(selectedOption, option)
+      'picklist-option-selected': isSelected
     });
 
     const attributes = {
       className: classes,
       onClick: onClickOptionBound,
       onMouseDown: this.onMouseDownOption,
-      key: index
+      key: index,
+      role: 'option',
+      id: `${option.value}-${index}`,
+      'aria-selected': isSelected
     };
 
     const content = hasRenderFunction ?
@@ -232,7 +234,8 @@ export const Picklist = React.createClass({
   render() {
     const renderedOptions = [];
     const { disabled, options, id } = this.props;
-    const { focused } = this.state;
+    const { focused, selectedOption, selectedIndex } = this.state;
+    const activeDescendant = selectedOption ? `${selectedOption.value}-${selectedIndex}` : '';
     const attributes = {
       id,
       tabIndex: 0,
@@ -241,7 +244,10 @@ export const Picklist = React.createClass({
         'picklist-disabled': disabled,
         'picklist-focused': focused
       }),
-      onKeyUp: this.onKeyUp
+      onKeyUp: this.onKeyUp,
+      role: 'listbox',
+      'aria-activedescendant': activeDescendant,
+      'aria-disabled': disabled
     };
 
     if (!disabled) {

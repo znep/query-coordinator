@@ -1,7 +1,11 @@
+import _ from 'lodash';
 import classNames from 'classnames';
 import React from 'react';
 
-export default React.createClass({
+import { translate } from '../../common/i18n';
+import { DOWN, ENTER, ESCAPE, SPACE, isolateEventByKeys } from '../../common/keycodes';
+
+export const ColorPicker = React.createClass({
   propTypes: {
     id: React.PropTypes.string,
     value: React.PropTypes.oneOfType([
@@ -22,7 +26,8 @@ export default React.createClass({
         '#204490', '#9A2600', '#B26B00', '#006A01', '#6B176C', '#006A8B', '#9B2D52', '#457800',
         '#2F62CF', '#DE3700', '#FF9A00', '#009802', '#9A229B', '#0098C8', '#DF4176', '#64AC00',
         '#6D91DD', '#E7734D', '#FFB84D', '#4DB74E', '#B864B9', '#4DB7D8', '#E87A9F', '#92C54D'
-      ]
+      ],
+      handleColorChange: _.noop
     };
   },
 
@@ -33,88 +38,196 @@ export default React.createClass({
     };
   },
 
-  onClickColorFrame() {
-    this.setState({ showingBuckets: !this.state.showingBuckets });
+  componentDidUpdate(prevProps, prevState) {
+    if (!prevState.showingBuckets && this.state.showingBuckets) {
+      this.colorBucketsRef.focus();
+    }
   },
 
-  onClickBucket(color) {
+  onClickColorFrame() {
+    this.setState({
+      showingBuckets: !this.state.showingBuckets
+    });
+  },
+
+  onClickBucket(selectedColor) {
     this.setState({
       showingBuckets: false,
-      selectedColor: color
+      selectedColor
     });
 
-    if (this.props.handleColorChange) {
-      this.props.handleColorChange(color);
-    }
+    this.props.handleColorChange(selectedColor);
+    this.colorPickerRef.focus();
   },
 
   onClose() {
-    this.setState({ showingBuckets: false });
+    this.setState({
+      showingBuckets: false
+    });
   },
 
   onChangeInputColor(e) {
-    this.setState({ selectedColor: e.target.value });
+    const selectedColor = e.target.value;
+    const isValidColor = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(selectedColor);
 
-    var isValidColor = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(e.target.value);
+    if (isValidColor) {
+      this.props.handleColorChange(selectedColor);
+    }
 
-    if (isValidColor && this.props.handleColorChange) {
-      this.props.handleColorChange(e.target.value);
+    this.setState({ selectedColor });
+  },
+
+  onKeyDownColorPicker(event) {
+    isolateEventByKeys(event, [DOWN]);
+  },
+
+  onKeyUpColorPicker(event) {
+    const { keyCode } = event;
+    isolateEventByKeys(event, [DOWN, ESCAPE]);
+
+    if (keyCode === DOWN) {
+      this.setState({ showingBuckets: true });
+    } else if (keyCode === ESCAPE) {
+      this.onClose();
     }
   },
 
-  render() {
-    var { palette, bucketRevealDirection, id } = this.props;
-    var { showingBuckets, selectedColor } = this.state;
+  onKeyUpColorBucket(color, event) {
+    const { keyCode } = event;
+    isolateEventByKeys(event, [ENTER, SPACE, ESCAPE]);
 
-    var colorFrameStyle = {
-      backgroundColor: selectedColor
+    if (keyCode === ENTER || keyCode === SPACE) {
+      this.onClickBucket(color);
+    } else if (keyCode === ESCAPE) {
+      this.onClose();
+    }
+  },
+
+  onKeyDownColorBucket(event) {
+    isolateEventByKeys(event, [ENTER, SPACE]);
+  },
+
+  onKeyUpHexInput(event) {
+    const { keyCode } = event;
+    isolateEventByKeys(event, [ENTER, ESCAPE]);
+
+    if (keyCode === ENTER) {
+      this.onChangeInputColor(event);
+      this.setState({ showingBuckets: false });
+      this.colorPickerRef.focus();
+    } else if (keyCode === ESCAPE) {
+      this.onClose();
+    }
+  },
+
+  renderColorBucket(color, key) {
+    const isSelectedColor = color === this.state.selectedColor;
+    const attributes = {
+      key,
+      id: color,
+      tabIndex: 0,
+      role: 'option',
+      onClick: this.onClickBucket.bind(this, color),
+      onKeyUp: this.onKeyUpColorBucket.bind(this, color),
+      onKeyDown: this.onKeyDownColorBucket,
+      style: { backgroundColor: color },
+      'aria-selected': isSelectedColor,
+      'aria-label': `${translate('color_picker.pickable_color')} ${color}`,
+      className: classNames('color-bucket', {
+        'selected-color': isSelectedColor
+      })
     };
 
-    var colorOverlayClassName = classNames('color-picker-overlay', {
-      'hidden': !showingBuckets
-    });
+    return <div {...attributes}></div>;
+  },
 
-    var bucketsClassName = `color-buckets color-${palette.length}`;
-    var bucketContainerClassName = classNames('color-buckets-container', {
+  renderColorBuckets() {
+    const { palette, bucketRevealDirection } = this.props;
+    const { selectedColor, showingBuckets } = this.state;
+    const colorBuckets = _.map(palette, this.renderColorBucket);
+    const bucketContainerClassName = classNames('color-buckets-container', {
       'hidden': !showingBuckets,
       'reveal-from-top': bucketRevealDirection === 'top'
     });
 
-    var colorBuckets = palette.map((color, key) => {
-      var isSelectedColor = color === selectedColor;
-      var style = { backgroundColor: color };
-      var attributes = {
-        key,
-        className: classNames('color-bucket', { 'selected-color': isSelectedColor }),
-        style,
-        onClick: this.onClickBucket.bind(this, color)
-      };
-
-      return <div {...attributes}></div>;
-    });
-
-    var hexInputAttributes = {
+    const colorBucketsAttributes = {
+      className: `color-buckets color-${palette.length}`,
+      ref: ref => this.colorBucketsRef = ref,
+      role: 'listbox',
+      tabIndex: 0,
+      'aria-activedescendant': selectedColor
+    };
+    const hexInputAttributes = {
       type: 'text',
       value: selectedColor,
-      onChange: this.onChangeInputColor
+      onChange: this.onChangeInputColor,
+      onKeyUp: this.onKeyUpHexInput
     };
 
     return (
-      <div className="color-picker" id={id}>
-        <div className={colorOverlayClassName} onClick={this.onClose} />
-        <div className="color-frame" onClick={this.onClickColorFrame}>
-          <div className="selected-color-frame" style={colorFrameStyle} />
-          <div className="caret">
-            <span className="icon-arrow-down" />
-          </div>
+      <div className={bucketContainerClassName}>
+        <div {...colorBucketsAttributes}>
+          {colorBuckets}
         </div>
-        <div className={bucketContainerClassName}>
-          <div className={bucketsClassName}>
-            {colorBuckets}
-          </div>
-          <input {...hexInputAttributes} />
+        <input {...hexInputAttributes} />
+      </div>
+    );
+  },
+
+  renderColorFrame() {
+    const { selectedColor } = this.state;
+    const openColorPicker = translate('color_picker.open_color_picker');
+    const withCurrentSelection = translate('color_picker.with_currently_selected_color');
+    const label = selectedColor ?
+      `${openColorPicker} ${withCurrentSelection} ${selectedColor}` : openColorPicker;
+    const colorFrameAttributes = {
+      className: 'color-frame',
+      onClick: this.onClickColorFrame,
+      role: 'button',
+      tabIndex: 0,
+      onKeyUp: this.onKeyUpColorPicker,
+      onKeyDown: this.onKeyDownColorPicker,
+      ref: (ref) => this.colorPickerRef = ref,
+      'aria-label': label
+    };
+
+    const selectedColorFrameAttributes = {
+      className: 'selected-color-frame',
+      style: { backgroundColor: selectedColor }
+    };
+
+    return (
+      <div {...colorFrameAttributes}>
+        <div {...selectedColorFrameAttributes} />
+        <div className="caret" role="presentation">
+          <span className="icon-arrow-down" />
         </div>
+      </div>
+    );
+  },
+
+  renderColorPickerOverlay() {
+    const colorOverlayClassName = classNames('color-picker-overlay', {
+      'hidden': !this.state.showingBuckets
+    });
+
+    return <div className={colorOverlayClassName} onClick={this.onClose} role="button" />;
+  },
+
+  render() {
+    const colorPickerAttributes = {
+      className: 'color-picker',
+      id: this.props.id
+    };
+
+    return (
+      <div {...colorPickerAttributes}>
+        {this.renderColorPickerOverlay()}
+        {this.renderColorFrame()}
+        {this.renderColorBuckets()}
       </div>
     );
   }
 });
+
+export default ColorPicker;

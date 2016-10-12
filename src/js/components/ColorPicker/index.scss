@@ -4,7 +4,7 @@
   z-index: 999;
 
   .hidden {
-    display: none;
+    visibility: hidden;
   }
 }
 
@@ -27,6 +27,11 @@
 
   &:hover {
     border-color: $primary;
+  }
+
+  &:focus {
+    border-color: $alternate-3-light;
+    outline: solid 2px $alternate-3;
   }
 
   .caret {
@@ -63,6 +68,10 @@
 
   input {
     width: 100%;
+
+    &:focus {
+      outline: solid 2px $alternate-3;
+    }
   }
 }
 
@@ -78,6 +87,7 @@
   height: 20px;
   margin-right: 5px;
   margin-bottom: 5px;
+  border: solid 1px $white;
 }
 
 .color-24 .color-bucket:nth-child(8n) {
@@ -85,7 +95,8 @@
 }
 
 .selected-color,
-.color-bucket:hover {
-  outline: 2px solid #71a8e7;
+.color-bucket:hover,
+.color-bucket:focus {
+  outline: 2px solid $alternate-3;
 }
 

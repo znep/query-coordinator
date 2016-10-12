@@ -19,5 +19,10 @@ export default {
     },
     range: 'Range',
     search: 'Search options'
+  },
+  color_picker: {
+    pickable_color: 'Pickable color',
+    open_color_picker: 'Open Color Picker',
+    with_currently_selected_color: 'with currently selected color'
   }
 };

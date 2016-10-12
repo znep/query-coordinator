@@ -4,11 +4,6 @@
   display: inline-block;
   box-sizing: border-box;
   position: relative;
-  overflow: hidden;
-
-  &.dropdown-opened {
-    overflow: visible;
-  }
 }
 
 .dropdown-invisible {
@@ -41,7 +36,8 @@
   }
 
   .dropdown-focused & {
-    border-color: $alternate-3;
+    border-color: $alternate-3-light;
+    outline: solid 2px $alternate-3;
   }
 
   .dropdown-disabled & {
@@ -79,7 +75,6 @@
 .dropdown-options-list {
   position: fixed;
   z-index: 999;
-  overflow: auto;
   border: solid 1px $light-grey-3;
 
   .picklist {

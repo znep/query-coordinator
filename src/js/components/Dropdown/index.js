@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import React from 'react';
 import SocrataUtils from 'socrata-utils';
 import Picklist from '../Picklist';
-import { ESCAPE } from '../../common/keycodes';
+import { ESCAPE, DOWN, ENTER, SPACE, isolateEventByKeys } from '../../common/keycodes';
 
 export default React.createClass({
   propTypes: {
@@ -34,7 +34,8 @@ export default React.createClass({
       selectedOption: this.getSelectedOption(this.props),
       focused: false,
       opened: false,
-      mousedDownOnOptions: false
+      mousedDownOnOptions: false,
+      keyupOnOptions: false
     };
   },
 
@@ -52,6 +53,12 @@ export default React.createClass({
 
   componentWillUpdate() {
     this.positionPicklist();
+  },
+
+  componentDidUpdate() {
+    if (this.state.opened) {
+      this.picklistRef.picklist.focus();
+    }
   },
 
   componentWillUnmount() {
@@ -91,9 +98,22 @@ export default React.createClass({
     }
   },
 
+  onKeyUpDropdown(event) {
+    const { keyCode } = event;
+
+    isolateEventByKeys(event, [ENTER, DOWN, SPACE]);
+
+    if (keyCode === ENTER || keyCode === SPACE) {
+      this.setState({ focused: true, opened: false });
+    }
+  },
+
+  onMouseUpDropdown() {
+    this.setState({ focused: true, opened: false });
+  },
+
   onClickPlaceholder() {
     this.onAnyScroll();
-    this.placeholderRef.focus();
     this.setState({ opened: !this.state.opened });
   },
 
@@ -110,30 +130,57 @@ export default React.createClass({
   onBlurPlaceholder() {
     if (!this.state.mousedDownOnOptions) {
       this.optionsRef.scrollTop = 0;
-      this.setState({ focused: false, opened: false });
-    } else {
+      this.setState({ focused: false });
+    } else if (!this.state.opened) {
       this.placeholderRef.focus();
     }
 
     this.setState({ mousedDownOnOptions: false });
   },
 
-  onKeyUpPlaceholder(event) {
-    if (event.keyCode === ESCAPE) {
-      this.onBlurPlaceholder();
-    }
+  onKeyDownPlaceholder(event) {
+    isolateEventByKeys(event, [ESCAPE, DOWN, SPACE]);
+  },
 
-    event.preventDefault();
+  onKeyUpPlaceholder(event) {
+    const { keyCode } = event;
+
+    isolateEventByKeys(event, [ESCAPE, DOWN, SPACE]);
+
+    if (keyCode === ESCAPE) {
+      this.onBlurPlaceholder();
+    } else if (keyCode === DOWN || keyCode === SPACE) {
+      this.openPicklist();
+    }
+  },
+
+  onFocusPicklist() {
+    this.setState({ focused: false });
+  },
+
+  onBlurPicklist() {
+    this.setState({ focused: true, opened: false });
+    this.placeholderRef.focus();
   },
 
   onClickOption(selectedOption) {
     this.props.onSelection(selectedOption);
-    this.setState({ selectedOption, opened: false });
+    this.setState({ selectedOption });
   },
 
   getSelectedOption(props) {
     const { value, options } = props;
     return _.find(options, { value }) || null;
+  },
+
+  openPicklist() {
+    const { options } = this.props;
+    const selectedOption = this.state.selectedOption || _.first(options);
+
+    this.setState({
+      opened: true,
+      selectedOption
+    });
   },
 
   positionPicklist() {
@@ -147,7 +194,9 @@ export default React.createClass({
 
       // Calculate Position
 
-      this.optionsRef.style.top = `${this.dropdownRef.clientHeight + containerDimensions.top}px`;
+      const optionsTop = this.dropdownRef.clientHeight + containerDimensions.top - containerDimensions.height;
+
+      this.optionsRef.style.top = `${optionsTop}px`;
       this.optionsRef.style.left = `${containerDimensions.left}px`;
 
       // Calculate Height
@@ -160,8 +209,10 @@ export default React.createClass({
 
       if (exceedsBrowserWindowHeight) {
         this.optionsRef.style.height = `${Math.max(determinedHeight, optionHeight)}px`;
+        this.picklistRef.picklist.style.height = `${Math.max(determinedHeight, optionHeight)}px`;
       } else if (this.optionsRef.style.height !== 'auto') {
         this.optionsRef.style.height = 'auto';
+        this.picklistRef.picklist.style.height = 'auto';
       }
 
       if (!displayTrueWidthOptions) {
@@ -226,19 +277,19 @@ export default React.createClass({
     const placeholderText = text => <span key="placeholder">{text}</span>;
     const placeholderIsFunction = typeof placeholder === 'function';
     const placeholderIsString = typeof placeholder === 'string';
-    const classes = classNames({
-      'dropdown-placeholder': !placeholderIsFunction,
-      'dropdown-selected': !!selectedOption
-    });
+
     const attributes = {
-      className: classes,
       onFocus: this.onFocusPlaceholder,
       onBlur: this.onBlurPlaceholder,
       onClick: this.onClickPlaceholder,
       onKeyUp: this.onKeyUpPlaceholder,
       onKeyDown: this.onKeyDownPlaceholder,
       tabIndex: '0',
-      ref: ref => this.placeholderRef = ref
+      ref: ref => this.placeholderRef = ref,
+      className: classNames({
+        'dropdown-placeholder': !placeholderIsFunction,
+        'dropdown-selected': !!selectedOption
+      })
     };
 
     if (placeholderIsFunction) {
@@ -257,10 +308,13 @@ export default React.createClass({
   render() {
     const { disabled, options, id } = this.props;
     const { focused, opened, selectedOption } = this.state;
+    const value = _.get(selectedOption, 'value', null);
 
     const dropdownAttributes = {
       id,
       ref: ref => this.dropdownRef = ref,
+      onKeyUp: this.onKeyUpDropdown,
+      onMouseUp: this.onMouseUpDropdown,
       className: classNames('dropdown-container', {
         'dropdown-focused': focused,
         'dropdown-opened': opened,
@@ -278,8 +332,11 @@ export default React.createClass({
     const picklistAttributes = {
       options,
       disabled,
-      value: _.get(selectedOption, 'value', null),
-      onSelection: this.onClickOption
+      value,
+      ref: ref => this.picklistRef = ref,
+      onSelection: this.onClickOption,
+      onFocus: this.onFocusPicklist,
+      onBlur: this.onBlurPicklist
     };
 
     const placeholder = this.renderPlaceholder();

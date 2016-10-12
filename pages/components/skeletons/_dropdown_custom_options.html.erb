@@ -1,59 +1,37 @@
 <div id="custom-dropdown-container"></div>
 
-<script type="text/javascript">
-  document.addEventListener('DOMContentLoaded', function() {
-    var withIcon = function(icon) {
-      return function(option) {
-        return React.createElement('div', {className: 'special-dropdown-option'}, [
-          React.createElement('span', {className: icon, key: icon}),
-          option.title
-        ]);
-      }
-    };
+<script type="text/babel" data-presets="es2015,react">
+  $(() => {
+    const DropdownWithIcon = (props) => {
+      const { icon, title } = props;
 
-    var customRenderProps = {
-      displayTrueWidthOptions: true,
-      onSelection: function(option) {
-        console.log('option selected:', option.title, option.value);
-      },
-      placeholder: function() {
-        return React.createElement('button', {className: 'btn btn-alternate-3'}, ['Hello, World!']);
-      },
-      options: [
-        {title: 'Emotional technicality', value: 'emotecho', render: withIcon('icon-facebook')},
-        {title: 'Pontificate harder', value: 'ponfer', render: withIcon('icon-twitter')},
-        {title: 'No one misses these', value: 'noone', render: withIcon('icon-dataset')}
-      ]
-    };
-
-    ReactDOM.render(
-      React.createElement(styleguide.Dropdown, customRenderProps),
-      document.getElementById('custom-dropdown-container')
-    );
-
-    // Alternative stateless React-y way:
-
-    /*
-    var DropdownWithIcon = (props) => {
       return (
         <div className="special-dropdown-option">
-          <span className={props.icon} key={props.icon}></div>
-          {props.title}
+          <span className={icon} key={icon} />
+          {title}
         </div>
       );
     };
 
-    var customRenderProps = {
-      placeholder: 'HAR HAR HAR',
+    const renderOption = (option) => <DropdownWithIcon {...option} />;
+
+    const customRenderProps = {
+      displayTrueWidthOptions: true,
+      onSelection: (option) => {
+        const { title, value } = option;
+        console.log(`option selected: ${title}, ${value}`);
+      },
+      placeholder: () => <button className="btn btn-alternate-3">Hello, World!</button>,
       options: [
-        {title: 'Just One, kid', value: 'kiddo', render: DropdownWithIcon, icon: 'icon-facebook'}
+        { title: 'Emotional technicality', value: 'emotecho', icon: 'icon-facebook', render: renderOption },
+        { title: 'Pontificate harder', value: 'ponfer', icon: 'icon-twitter', render: renderOption },
+        { title: 'No one misses these', value: 'noone', icon: 'icon-dataset', render: renderOption }
       ]
     };
 
     ReactDOM.render(
-      React.createElement(styleguide.Dropdown, customRenderProps),
+      <styleguide.Dropdown {...customRenderProps} />,
       document.getElementById('custom-dropdown-container')
     );
-    */
   });
 </script>

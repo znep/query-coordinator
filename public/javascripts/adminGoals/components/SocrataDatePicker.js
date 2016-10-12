@@ -12,6 +12,7 @@ export default class SocrataDatePicker extends React.Component {
           className="text-input datepicker-input"
           placeholderText={ this.props.placeholderText }
           selected={ this.props.selected }
+          fixedHeight
           onChange={ this.props.onChange }/>
       </div>
     );

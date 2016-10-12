@@ -115,9 +115,13 @@ function SvgPieChart($element, vif) {
 
     // pie slices
     color = d3.scale.category20();
-    g.datum(dataToRender[0].rows).selectAll('path').
+    let arcs = g.datum(dataToRender[0].rows).selectAll('g.slice-group').
       data(pie).
       enter().
+      append('svg:g').
+      attr('class', 'slice-group');
+
+    arcs.
       append('path').
       attr('class', 'slice').
       attr('data-index', (d, i) => i).
@@ -135,8 +139,12 @@ function SvgPieChart($element, vif) {
       attr('fill-opacity', 0);
 
     attachPieEvents();
+    renderLegend();
     resizePie();
-    renderLegend(svg, color);
+
+    if (self.getShowValueLabels()) {
+      renderArcLabels();
+    }
   }
 
   /**
@@ -172,6 +180,20 @@ function SvgPieChart($element, vif) {
 
     attachLegendEvents();
     resizeLegend();
+  }
+
+  /**
+   * Render Arc Labels
+   */
+  function renderArcLabels() {
+    svg.selectAll('g.slice-group').
+      // Don't show label if arc angle is below a certain point
+      filter((d) => (d.endAngle - d.startAngle) > 0.2).
+      append('svg:text').
+        // Positioning text on bigger arc's center point
+        attr('transform', (d) => `translate(${flyoutArc.centroid(d)})`).
+        attr('text-anchor', 'middle').
+        text((d) => utils.formatNumber(d.data[1]));
   }
 
   /**

@@ -24,7 +24,8 @@ import {
   SET_TITLE,
   SET_UNIT_ONE,
   SET_UNIT_OTHER,
-  SET_VIEW_SOURCE_DATA_LINK
+  SET_VIEW_SOURCE_DATA_LINK,
+  SET_SHOW_VALUE_LABELS
 } from '../../actions';
 
 export default function pieChart(state, action) {
@@ -89,6 +90,10 @@ export default function pieChart(state, action) {
       forEachSeries(state, series => {
         series.dataSource.measure.aggregationFunction = action.measureAggregation;
       });
+      break;
+
+    case SET_SHOW_VALUE_LABELS:
+      setBooleanValueOrDefaultValue(state, 'configuration.showValueLabels', action.showValueLabels, true);
       break;
 
     case SET_UNIT_ONE:

@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var utils = require('socrata-utils');
 var $ = require('jquery');
 var SvgPieChart = require('../../src/views/SvgPieChart');
 
@@ -134,6 +135,25 @@ describe('SvgPieChart', () => {
       expect(renderedRows).to.equal(expectedRows);
     });
 
+    it('should show correct values with correct styling in arc labels if rendered', () => {
+      pieChart.chart.render(null, testData);
+
+      pieChart.$element.find('.slice-group').each((i, el) => {
+
+        const $textEl = $(el).find('text');
+        const text = $textEl.find('text').text();
+
+        if (text) {
+          const actualValue = Number($(el).find('path').attr('data-value'));
+          const formattedValue = utils.formatNumber(actualValue);
+          expect(formattedValue).to.equal(text);
+          expect($textEl.css('font-size')).to.equal('10px');
+          expect($textEl.css('fill')).to.equal('#FFFFFF');
+        }
+
+      });
+    });
+
     it('should show correct values in flyout on slices', done => {
       pieChart.chart.render(null, testData);
 
@@ -170,4 +190,18 @@ describe('SvgPieChart', () => {
     });
 
   });
+
+  describe('when called with a specific configuration', () => {
+    afterEach(() => {
+      removeChart(pieChart);
+    });
+
+    it('shouldn\'t show arc labels if specially defined', () => {
+      let pieChart = createPieChart({ configuration: { 'showValueLabels': false } });
+      pieChart.chart.render(null, testData);
+
+      const renderedArcLabelCount = pieChart.$element.find('.slice-group text').length;
+      expect(renderedArcLabelCount).to.equal(0);
+    });
+  })
 });

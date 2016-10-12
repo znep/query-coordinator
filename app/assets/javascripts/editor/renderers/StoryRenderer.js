@@ -876,6 +876,8 @@ export default function StoryRenderer(options) {
         return 'componentSocrataVisualizationColumnChart';
       case 'socrata.visualization.barChart':
         return 'componentSocrataVisualizationBarChart';
+      case 'socrata.visualization.pieChart':
+        return 'componentSocrataVisualizationPieChart';
       case 'socrata.visualization.timelineChart':
         return 'componentSocrataVisualizationTimelineChart';
       case 'socrata.visualization.histogram':

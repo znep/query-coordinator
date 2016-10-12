@@ -17,6 +17,7 @@ class DomainUpdater
         socrata.visualization.regionMap
         socrata.visualization.columnChart
         socrata.visualization.histogram
+        socrata.visualization.pieChart
         socrata.visualization.table
         socrata.visualization.timelineChart
         socrata.visualization.featureMap

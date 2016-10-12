@@ -12,6 +12,7 @@ import './componentSocrataVisualizationBarChart';
 import './componentSocrataVisualizationColumnChart';
 import './componentSocrataVisualizationFeatureMap';
 import './componentSocrataVisualizationHistogram';
+import './componentSocrataVisualizationPieChart';
 import './componentSocrataVisualizationRegionMap';
 import './componentSocrataVisualizationTable';
 import './componentSocrataVisualizationTimelineChart';

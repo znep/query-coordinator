@@ -23,7 +23,6 @@ header#site-chrome-header[template="default"] {
         padding: 0 $banner_padding / 2;
         text-decoration: none;
         color: $header_fg_color;
-        background-color: $header_bg_color;
         position: relative;
         z-index: 2;
 
@@ -49,6 +48,7 @@ header#site-chrome-header[template="default"] {
         position: absolute;
         top: 0;
         right: 16px;
+        z-index: 3;
 
         &.desktop {
           max-height: $banner_height;

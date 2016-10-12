@@ -3,7 +3,6 @@
 
   <%= display_standard_flashes %>
   <%- openid_identifiers = current_user.openid_identifiers -%>
-  <%- auth0_identifiers = current_user.auth0_identifiers -%>
   <%= form_tag(update_account_profile_url, :method => 'put',
        :class => 'commonForm' + (openid_identifiers.empty? ? '' : ' hasOpenId'),
        :id => 'editAccountForm') do %>
@@ -53,6 +52,7 @@
       <%- openid_login = CurrentDomain.module_enabled?(:openid_login) -%>
       <%- if openid_login -%>
         <%- if FeatureFlags.derive(@view, request).show_auth0_identifiers -%>
+          <%- auth0_identifiers = current_user.auth0_identifiers -%>
           <div class="editSection clearfix">
             <div class="line clearfix">
               <span class="field textItem">

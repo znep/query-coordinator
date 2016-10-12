@@ -41,14 +41,13 @@ export default function componentSocrataVisualizationPieChart(componentData, the
 
 function _renderTemplate($element, componentData) {
   var className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
-  var $componentContent = $('<div>', { class: 'component-content' });
   var flyoutEvent = 'SOCRATA_VISUALIZATION_FLYOUT';
 
   StorytellerUtils.assertHasProperty(componentData, 'type');
 
   $element.
     addClass(className).
-    on('destroy', function() { $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY'); }).
+    on('destroy', function() { $element.triggerHandler('SOCRATA_VISUALIZATION_DESTROY'); }).
     on(flyoutEvent, function(event) {
       var payload = event.originalEvent.detail;
 
@@ -58,45 +57,32 @@ function _renderTemplate($element, componentData) {
         flyoutRenderer.clear();
       }
     });
-
-  $element.append($componentContent);
 }
 
 function _updateVisualization($element, componentData) {
   StorytellerUtils.assertHasProperty(componentData, 'value.vif');
 
-  var $componentContent = $element.find('.component-content');
-  var renderedVif = $element.attr('data-rendered-vif') || '{}';
   var vif = componentData.value.vif;
-  var areNotEquivalent = !StorytellerUtils.vifsAreEquivalent(JSON.parse(renderedVif), vif);
 
-  if (areNotEquivalent) {
-    $element.attr('data-rendered-vif', JSON.stringify(vif));
+  $element.attr('data-rendered-vif', JSON.stringify(vif));
 
-    vif.configuration.localization = {
-      'no_value': I18n.t('editor.visualizations.no_value_placeholder'),
-      'flyout_unfiltered_amount_label': I18n.t('editor.visualizations.flyout.unfiltered_amount_label'),
-      'flyout_filtered_amount_label': I18n.t('editor.visualizations.flyout.filtered_amount_label'),
-      'flyout_selected_notice': I18n.t('editor.visualizations.flyout.datum_selected_label')
-    };
+  vif.unit = {
+    one: 'record',
+    other: 'records'
+  };
 
-    vif.unit = {
-      one: 'record',
-      other: 'records'
-    };
-
-    // EN-7517 - Title and description of VisualizationAddController V1 vifs are not useful.
-    //
-    // The new viz implementations actually read from title and description and
-    // will display them, but the VisualizationAdd controller will set the
-    // title to the name of the column or something.
-    if (_.get(vif, 'format.version') === 1) {
-      vif.title = null;
-      vif.description = null;
-    }
-
+  if ($element.find('.pie-chart').length) {
+    $element[0].dispatchEvent(
+      new CustomEvent(
+        'SOCRATA_VISUALIZATION_RENDER_VIF',
+        {
+          detail: vif
+        }
+      )
+    );
+  } else {
     // Use triggerHandler since we don't want this to bubble
-    $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
-    $componentContent.socrataSvgPieChart(vif);
+    $element.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
+    $element.socrataSvgPieChart(vif);
   }
 }

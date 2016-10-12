@@ -606,6 +606,7 @@ it:
         view_types_title: Tipologie di visualizzazione
       listing:
         comment_count: Numero di commenti
+        error: Siamo spiacenti. I risultati non possono essere recuperati in questo momento. Ti preghiamo di riprovare più tardi.
         federation_source: Federato da %{source}
         federation_source_html: Fornito da %{source_link}
         no_results: Nessun risultato
@@ -616,7 +617,6 @@ it:
           popularity: Popolarità
           rss: RSS
           type: Tipologia
-        error: Siamo error spiacenti. I risultati non possono essere recuperati in questo momento. Ti preghiamo di riprovare più tardi.
       ordered_topics: Tags ordinati
       row_results:
         less_link: Meno
@@ -862,7 +862,7 @@ it:
       row_count: Numero totale di righe %{count}
       sort_ascending: Ordinamento Ascendente
       sort_descending: Ordinamento Discendente
-      start_page:
+      start_page: 
       totals: Totali
       view_cell_comments: Visualizza i commenti per questa cella
       view_first_row: Visualizza prima riga
@@ -1601,7 +1601,7 @@ it:
       title: Impostazioni della Pagina
   date:
     abbr_month_names:
-    -
+    - 
     - Gen
     - Feb
     - Mar
@@ -1615,7 +1615,7 @@ it:
     - Nov
     - Dic
     month_names:
-    -
+    - 
     - Gennaio
     - Febbraio
     - Marzo
@@ -2329,6 +2329,8 @@ it:
             button: Ripristina
             confirm: Sei sicuro di voler ripristinare il set di dati %{dataset}?
             disabled_restore_explanation: Il ripristino è solamente disponibile per alcuni tipi di set di dati e per un periodo di tempo limitato. Per ulteriori informazioni, contatta il supporto.
+            disabled_restore_time: 
+            disabled_restore_type: 
           restore_deleted_dataset_confirm: Sei sicuro di voler ripristinare la dataset %{dataset}?
           showing_all_so_far: Mostra tutte le lavorazioni che sono state registrate finora
           showing_most_recent: 'Mostra tutte le %{limit} lavorazioni più recenti '
@@ -2693,6 +2695,10 @@ it:
                 description: Riferimento URL del logo del piè di pagina. La grandezza minima consigliata è 300px x 200px.
                 placeholder: URL
                 title: Logo del piè di pagina
+              footer_logo_alt:
+                description: 
+                placeholder: 
+                title: 
               footer_logo_height:
                 description: "È possibile selezionare l'altezza e la larghezza del logo a piè di pagina."
                 error: 'Si prega di inserire un valore da 1 a 999 che corrisponda all''altezza desiderata del logo in pixel. Es.: 100px'
@@ -2772,6 +2778,10 @@ it:
                 description: Riferimento URL al logo della barra d'intestazione. La grandezza minima consigliata è 100 x 40px. Questo logo verrà mostrato a grandezza ridotta.
                 placeholder: URL
                 title: Logo della barra d'intestazione
+              header_bar_logo_alt:
+                description: 
+                placeholder: 
+                title: 
               header_display_name:
                 description: Nome mostrato all'interno della barra d'intestazione. Generalmente impostato con il nome della tua organizzazione.
                 placeholder: Evergreen Open Data
@@ -2796,7 +2806,7 @@ it:
               url_placeholder: http://data.evergreen.gov
             title: Barra d'intestazione
           homepage:
-            fields:
+            fields: 
             title: Pagina iniziale
           social:
             fields:
@@ -2868,6 +2878,7 @@ it:
         these_features_help: Queste funzionalità aiuteranno gli utenti a esplorare i dati e ti sarà più facile gestire l'aspetto del tuo sito.
         update: Aggiornamento
         you_are_about: Stai per attivare intestazione, piè di pagina e landing page dei set di dati per i tuoi set di dati.
+        you_are_about_html: 
         you_have_activated: Hai attivato la tua nuova funzione di intestazione/piè di pagina e il set di dati della landing page.
       tos:
         accepted: Grazie per aver accettato i termini del servizio.

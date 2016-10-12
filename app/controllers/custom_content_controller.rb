@@ -117,12 +117,16 @@ class CustomContentController < ApplicationController
     @debug = params['debug'] == 'true'
     @edit_mode = params['_edit_mode'] == 'true'
 
-    @page = DataslateRouting.for(params[:path], { ext: params[:ext].try(:downcase) })
-    @vars = @page.try(:[], :vars)
-    @page = @page.try(:[], :page)
-
+    # Rails routing breaks the :ext param out if it thinks it's a file extension.
+    # Old Dataslate Routing checked if it was an xlsx or csv, but since New Dataslate Routing
+    # does not support those features anymore (they are evil), I'm ignoring them.
+    # See: EN-11175
     full_path = "/#{params[:path]}"
     full_path << ".#{params[:ext].downcase}" if params[:ext].present?
+
+    @page = DataslateRouting.for(full_path, { ext: params[:ext].try(:downcase) })
+    @vars = @page.try(:[], :vars)
+    @page = @page.try(:[], :page)
 
     # Pass to the view if we are on a dataslate page and/or the homepage in order to determine
     # whether to render the site chrome header/footer based on the corresponding feature flags.

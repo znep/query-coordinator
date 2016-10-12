@@ -208,14 +208,7 @@ $.fn.socrataSvgPieChart = function(originalVif) {
       _.isNull(series.dataSource.dimension.aggregationFunction) &&
       _.isNull(series.dataSource.measure.aggregationFunction)
     );
-    // We only want to follow the showOtherCategory code path if that property
-    // is set to true AND there is a defined limit.
-    const showOtherCategory = (
-      _.get(vifToRender, 'configuration.showOtherCategory', false) &&
-      _.isNumber(
-        _.get(vifToRender, `series[${seriesIndex}].dataSource.limit`, null)
-      )
-    );
+
     const processQueryResponse = (queryResponse) => {
       const dimensionIndex = queryResponse.columns.indexOf(dimensionAlias);
       const measureIndex = queryResponse.columns.indexOf(measureAlias);
@@ -308,6 +301,10 @@ $.fn.socrataSvgPieChart = function(originalVif) {
           const otherCategoryName = I18n.translate(
             'visualizations.common.other_category'
           );
+
+          // Removing last element of queryResponse.rows array. It will be included in others category.
+          queryResponse.rows = queryResponse.rows.slice(0, queryResponse.rows.length - 1);
+
           // Note that we can't just use the multiple argument version of the
           // binaryOperator filter since it joins arguments with OR, and we need
           // to join all of the terms with AND.
@@ -365,7 +362,6 @@ $.fn.socrataSvgPieChart = function(originalVif) {
                 function: 'isNull'
               });
           }
-
 
           const otherCategoryWhereClauseComponents = SoqlHelpers.
             whereClauseFilteringOwnColumn(

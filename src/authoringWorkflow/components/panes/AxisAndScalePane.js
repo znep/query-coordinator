@@ -25,7 +25,8 @@ import {
   isBarChart,
   isColumnChart,
   isHistogram,
-  isTimelineChart
+  isTimelineChart,
+  isPieChart
 } from '../../selectors/vifAuthoring';
 
 import CustomizationTabPane from '../CustomizationTabPane';
@@ -333,6 +334,16 @@ export var AxisAndScalePane = React.createClass({
     );
   },
 
+  renderPieChartControls() {
+    const chartSorting = this.renderChartSorting();
+
+    return (
+      <div>
+        {chartSorting}
+      </div>
+    );
+  },
+
   renderEmptyPane() {
     return <EmptyPane />;
   },
@@ -350,6 +361,8 @@ export var AxisAndScalePane = React.createClass({
       configuration = this.renderHistogramControls();
     } else if (isTimelineChart(vifAuthoring)) {
       configuration = this.renderTimelineChartControls();
+    } else if (isPieChart(vifAuthoring)) {
+      configuration = this.renderPieChartControls();
     } else {
       configuration = this.renderEmptyPane();
     }

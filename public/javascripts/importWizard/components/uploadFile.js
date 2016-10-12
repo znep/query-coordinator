@@ -327,7 +327,8 @@ export function view({ dispatch, fileUpload, operation, goToPrevious }) {
   const I18nPrefixed = I18n.screens.dataset_new.upload_file;
 
   function isInProgress() {
-    return _.get(fileUpload, 'progress.type') === 'InProgress';
+    const state = _.get(fileUpload, 'progress.type', false);
+    return (state === 'InProgress') || (state === 'Analyzing');
   }
 
   function isUploadComplete() {

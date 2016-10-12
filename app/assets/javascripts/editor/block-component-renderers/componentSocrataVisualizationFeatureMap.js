@@ -72,23 +72,6 @@ function _updateVisualization($element, componentData) {
   if (areNotEquivalent) {
     $element.attr('data-rendered-vif', JSON.stringify(vif));
 
-    vif.configuration.localization = {
-      'flyout_filter_notice': I18n.t('editor.visualizations.feature_map.flyout_filter_notice'),
-      'flyout_filter_or_zoom_notice': I18n.t('editor.visualizations.feature_map.flyout_filter_or_zoom_notice'),
-      'flyout_dense_data_notice': I18n.t('editor.visualizations.feature_map.flyout_dense_data_notice'),
-      'flyout_click_to_inspect_notice': I18n.t('editor.visualizations.feature_map.flyout_click_to_inspect_notice'),
-      'flyout_click_to_locate_user_title': I18n.t('editor.visualizations.feature_map.flyout_click_to_locate_user_title'),
-      'flyout_click_to_locate_user_notice': I18n.t('editor.visualizations.feature_map.flyout_click_to_locate_user_notice'),
-      'flyout_locating_user_title': I18n.t('editor.visualizations.feature_map.flyout_locating_user_title'),
-      'flyout_locate_user_error_title': I18n.t('editor.visualizations.feature_map.flyout_locate_user_error_title'),
-      'flyout_locate_user_error_notice': I18n.t('editor.visualizations.feature_map.flyout_locate_user_error_notice'),
-      'flyout_pan_zoom_disabled_warning_title': I18n.t('editor.visualizations.feature_map.flyout_pan_zoom_disabled_warning_title'),
-      'row_inspector_row_data_query_failed': I18n.t('editor.visualizations.feature_map.row_inspector_row_data_query_failed'),
-      'user_current_position': I18n.t('editor.visualizations.feature_map.user_current_position'),
-      'column_incompatibility_error': I18n.t('editor.visualizations.feature_map.column_incompatibility_error'),
-      'feature_extent_query_error': I18n.t('editor.visualizations.feature_map.feature_extent_query_error')
-    };
-
     vif.unit = {
       one: 'record',
       other: 'records'

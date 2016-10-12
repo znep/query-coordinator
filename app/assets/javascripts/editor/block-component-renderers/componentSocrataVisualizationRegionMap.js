@@ -75,13 +75,6 @@ function _updateVisualization($element, componentData) {
   if (areNotEquivalent) {
     $element.attr('data-rendered-vif', JSON.stringify(vif));
 
-    vif.configuration.localization = {
-      'no_value': I18n.t('editor.visualizations.no_value_placeholder'),
-      'flyout_unfiltered_amount_label': I18n.t('editor.visualizations.flyout.unfiltered_amount_label'),
-      'flyout_filtered_amount_label': I18n.t('editor.visualizations.flyout.filtered_amount_label'),
-      'flyout_selected_notice': I18n.t('editor.visualizations.flyout.datum_selected_label')
-    };
-
     vif.unit = {
       one: 'record',
       other: 'records'

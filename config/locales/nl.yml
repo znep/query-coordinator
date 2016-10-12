@@ -609,6 +609,7 @@ nl:
         view_types_title: Types bekijken
       listing:
         comment_count: Aantal reacties
+        error: Het spijt ons. Resultaten kunnen op dit moment niet worden teruggevonden. Probeer het later opnieuw.
         federation_source: Gefedereerd van %{source}
         federation_source_html: Geleverd door %{source_link}
         no_results: Geen resultaten
@@ -619,7 +620,6 @@ nl:
           popularity: Populariteit
           rss: RSS
           type: Type
-        error: Het spijt ons. Resultaten kunnen op dit moment niet worden teruggevonden. Probeer het later opnieuw.
       ordered_topics: Bestelde onderwerpen
       row_results:
         less_link: Minder
@@ -1372,6 +1372,7 @@ nl:
         button: Beheer uitgelichte inhoud
         message: Kies ervoor om tot 3 activa van Socrata te promoten die deze gegevens gebruiken, of kies ervoor om externe hulpmiddelen uit te lichten. Dit gedeelte zal onzichtbaar worden indien de velden leeg worden gelaten.
         message_blob: Kies om maximaal 3 externe elementen te promoten die relevant zijn aan dit bestand of document. Dit gedeelte wordt onzichtbaar indien het wordt leeg gelaten.
+        message_external: Kies om tot 3 externe hulpmiddelen te promoten die relevant zijn aan deze gegevens. Dit gedeelte zal onzichtbaar worden indien het wordt leeg gelaten.
       title: Uitgelichte inhoud die gebruik maakt van deze gegevens
     featured_content_modal:
       external: Extern hulpmiddel
@@ -1387,6 +1388,7 @@ nl:
       header: Beheer uitgelichte inhoud
       introduction: Wat wilt u dat de mensen te zien krijgen als zij voor het eerst de dataset bekijken? Promoot tot 3 activa van Socrata die gebruik maken van deze gegevens, of kies ervoor om relevante externe hulpmiddelen uit te lichten. Beschouw dit gedeelte als het gezicht van uw gegevens.
       introduction_blobby: Wat wilt u dat mensen eerst te zien krijgen als ze dit activum bekijken? Promoot maximaal 3 externe elementen die relevant zijn aan dit bestand of document.
+      introduction_external: Wat wilt u dat mensen te zien krijgen als ze voor het eerst deze dataset bekijken? Promoot tot 3 externe hulpmiddelen die relevant zijn aan deze gegevens.
       preview: Voorbeeld van de uitgelichte inhoud
       remove_error: Oh nee!  Er ging iets mis, probeer a.u.b. opnieuw.
       remove_prompt: Bent u zeker dat u dit wilt verwijderen?
@@ -1413,6 +1415,11 @@ nl:
       screenshot_no: Nee dank u
       screenshot_yes: Ja, voeg een screenshot toe
       title: Feedback
+    href_download:
+      data_dictionary: Gegevenswoordenboek
+      edit_prompt_button: Bewerk links
+      edit_prompt_message: Bewerk de externe bronlink(s) voor deze dataset.
+      title: Krijg toegang tot deze gegevens
     less: Minder tonen
     manage_dataset: Dataset beheren
     manage_prompt: Klik hier om toestemmingen te beheren
@@ -1454,6 +1461,7 @@ nl:
     private_notice: U bent een persoonlijke dataset aan het bezichtigen.
     publish: Publiceren
     publish_error: Er ging iets mis bij het publiceren van deze dataset. Zorg ervoor dat u ingelogd bent en over de nodige toestemmingen beschikt. Contacteer <a href="https://support.socrata.com">de helpdesk van Socrata</a> als het probleem zich blijft voordoen.
+    publish_geocoding_message: Rijen in de locatiekolom zijn nog steeds onderhevig aan geocodering. Wacht a.u.b. tot dit is afgelopen voor u deze dataset publiceert.
     publish_notice: Deze dataset is <strong>Ongepubliceerd</strong>. Door deze pagina te publiceren, wordt ook de <a href="{url}" target="_blank">tabelweergave</a> gepubliceerd.
     published: Gepubliceerd
     published_by: Gegevens voorzien door
@@ -1616,7 +1624,7 @@ nl:
       title: Paginainstellingen
   date:
     abbr_month_names:
-    -
+    - 
     - Jan
     - Feb
     - Maa
@@ -1630,7 +1638,7 @@ nl:
     - Nov
     - Dec
     month_names:
-    -
+    - 
     - Januari
     - Februari
     - Maart
@@ -1645,6 +1653,9 @@ nl:
     - December
   error:
     back: Terug
+    error_400:
+      description: De gegeven parameters voor het verzoek zijn ongeldig, probeer a.u.b. opnieuw met andere parameters.
+      were_sorry: Het spijt ons, maar we kunnen uw verzoek niet verwerken.
     error_500:
       description_html: Probeer het over een paar ogenblikken nogmaals, of <a href="http://support.socrata.com"> rapporteer deze fout </ a> met de details van wat u probeerde te doen.
       somethings_wrong: Er is iets mis!
@@ -1691,6 +1702,7 @@ nl:
         title: Meerdere items bewerken
         update: Bijwerken
         visibility: Zichtbaarheid
+      default_error_message: "<span><b>Oh nee!</b> Er ging iets mis en ons team werd op de hoogte gebracht. Probeer ondertussen opnieuw of ververs deze pagina.</span>"
       export:
         Csv:
           button_label: Exporteren
@@ -1783,6 +1795,35 @@ nl:
         status: Status
         success_message: Gelukt! {0} bijgewerkt.
         unit: Eenheid
+        validation:
+          action:
+            enum: Actie moet verhogen, verlagen, behouden of meten zijn.
+          baseline:
+            blank: Basislijn mag niet leeg zijn.
+            numeric: Basislijn moet numeriek zijn.
+          end:
+            end_not_after_start: De start- en einddata komen niet overeen.
+            invalid: Ongeldige einddatum.
+          maintain_type:
+            enum: Behoudtype moet ongeveer dit zijn, >, <
+          name:
+            blank: Naam mag niet leeg gelaten worden.
+          start:
+            invalid: Ongeldige startdatum.
+          subject:
+            blank: Onderwerp mag niet leeg gelaten worden.
+          target:
+            blank: Doelwaarde mag niet leeg gelaten worden.
+            numeric: Doelwaarde moet numeriek zijn.
+          target_delta:
+            blank: Bereikwaarde mag niet leeg gelaten worden.
+            numeric: Bereikwaarde moet numeriek zijn.
+          target_delta_is_percent:
+            bool: Eenheidstype moet geselecteerd worden
+          target_type:
+            enum: Type moet absoluut of relatief zijn.
+          unit:
+            blank: Eenheid mag niet leeg gelaten worden.
         visibility: Zichtbaarheid
     chrome:
       header:
@@ -2031,6 +2072,9 @@ nl:
       visits: Bezoeken
       your: Uw beoordeling
     admin:
+      canvas:
+        path_must_be_unique: Pad bestaat reeds; kies a.u.b. een andere.
+        title_cannot_be_blank: Voer a.u.b. een titel in.
       connector:
         actions: Acties
         add_connector: Connector toevoegen
@@ -2167,9 +2211,13 @@ nl:
         delete: Verwijderen
         description: Configureer aangepaste grenzen die gebruikt kunnen worden om spatiale lenskaarten aan te maken
         disable: Deactiveren
+        disable_default_label: Deze begrenzing moet ingeschakeld worden voordat u snel toevoegen kan gebruiken.
+        disable_label: Schakel begrenzing uit
         disable_success: "%{name} werd gedeactiveerd en zal niet langer beschikbaar zijn voor de aanmaking van choropletenkaarten in datalens aan de hand van deze spatiale lensgrens."
         edit: Bewerken
+        edit_label: Bewerk begrenzing
         enable: Activeren
+        enable_label: Schakel begrenzing in
         enable_success: '%{name} werd geactiveerd. U kan nu choropletenkaarten aanmaken in datalens aan de hand van deze spatiale lensgrens. <a href="https://support.socrata.com/hc/en-us/articles/212862177">Kom meer te weten</a> over het gebruik van spatiale lens om kaarten aan te maken.'
         enabled?: Geactiveerd?
         flashes:
@@ -2304,7 +2352,12 @@ nl:
           initiated_by: Gestart door
           no_jobs: Geen jobs te weergeven
           page_title: Datajobs
-          restore_deleted_dataset: Herstellen
+          restore_deleted_dataset:
+            button: Herstellen
+            confirm: Bent u zeker dat u de dataset %{dataset} wilt herstellen?
+            disabled_restore_explanation: Herstellen is enkel mogelijk bij bepaalde types van datasets voor een beperkte duur. Neem a.u.b. contact op met de helpdesk voor meer informatie.
+            disabled_restore_time: 
+            disabled_restore_type: 
           restore_deleted_dataset_confirm: Bent u zeker dat u de dataset %{dataset} wilt herstellen?
           showing_all_so_far: Alle jobs die werden opgeslagen worden weergegeven
           showing_most_recent: De %{limit} meest recente jobs worden weergegeven
@@ -2580,6 +2633,12 @@ nl:
         field_name: Naam van het veld
         flashes:
           cannot_move_field: 'Kan veld genaamd ''%{name}'' niet verplaatsen: niet gevonden'
+          category_cannot_be_blank: Voer a.u.b. een naam in om een nieuwe categorie aan te maken.
+          category_must_be_unique: Kan geen duplicaat categorie aanmaken met de naam '%{new_category}'
+          could_not_delete_category: Kon de categorie met de naam '%{category_name}' niet verwijderen
+          could_not_update_category: Kon de categorie met de naam '%{category_name}' niet updaten
+          created_category: Categorie met succes aangemaakt.
+          deleted_category: Categorie met succes verwijderd
           field_duplicated: U kunt geen dubbel veld genaamd '%{name}' aanmaken
           field_name_required: Kan geen veld zonder naam aanmaken
           field_successful_create: Veld met succes aangemaakt
@@ -2587,10 +2646,12 @@ nl:
           field_successful_save: Veld met succes opgeslagen
           fieldset_duplicated: U kunt geen dubbel set velden genaamd '%{name}' aanmaken
           fieldset_name_required: Kan geen set velden zonder naam aanmaken
+          must_select_category_to_delete: Selecteer a.u.b. een categorie om uit de lijst te verwijderen
           no_such_field: Dit veld bestaat niet
           no_such_fieldset: Deze set velden bestaat niet
           successful_create: Set velden met succes aangemaakt
           successful_remove: Set velden met succes verwijderd
+          updated_category: Categorie met succes geüpdatet.
         locales: Locaties
         make_optional: Maak optioneel
         make_private: Maak privé
@@ -2609,13 +2670,25 @@ nl:
         title: Beheer metadata
         'true': true
         up: Omhoog
+      sdp:
+        cannot_delete_default_template: Kan het standaard sjabloon niet verwijderen. Kies a.u.b. eerst een nieuwe standaard.
+        could_not_delete_template: 'Kan sjabloon niet als standaard instellen: sjabloon werd niet gevonden.'
+        could_not_find_template_customization: Deze aanpassing van de sjabloon kan niet gevonden worden.
+        could_not_set_default_template: 'Kan sjabloon niet als standaard instellen: sjabloon werd niet gevonden.'
+        error_on_creation: 'Er ging iets mis tijdens uw verzoek: ''%{error_message}'''
+        preview_could_not_be_found: Een dataset als voorbeeld werd niet gevonden.
+        requires_published_dataset: Maak a.u.b. eerst een dataset aan die u kan publiceren.
+        template_name_cannot_be_blank: Sjabloonnaam is vereist.
+        too_many_templates: U heeft het totale aantal sjablonen dat aan u werd toegewezen aangemaakt. Verwijder a.u.b. één of neem contact op met de helpdesk om er meer aan te kopen.
       site_chrome:
         activate: Activeren
         add_new_link_menu: Menu toevoegen
         add_new_link_row: "%{section} link toevoegen"
+        after_clicking_ok: Na het aanklikken van 'OK' hieronder, kan u beide functies in actie zien door één van uw datasets te bezoeken.
         cancel: Annuleren
         congratulations: Proficiat!
         description: Configureer het uiterlijk van uw Socrata-website
+        get_excited: Kijk er naar uit!
         link_menu_label_html: "<b>Menu</b> - <i>U kan links verslepen om ze te herschikken</i>"
         move_link_row: Versleep om te herschikken
         ok: OK
@@ -2649,6 +2722,10 @@ nl:
                 description: URL-referentie naar het logo van de voettekst. Aanbevolen minimum grootte is 300px x 200px.
                 placeholder: URL
                 title: Logo voettekst
+              footer_logo_alt:
+                description: 
+                placeholder: 
+                title: 
               footer_logo_height:
                 description: U kan optioneel een hoogte en breedte instellen voor uw logo in de voettekst.
                 error: 'Voer a.u.b. een waarde in (1-999) die de hoogte van uw logo in pixels bepaald. Bv: 100px'
@@ -2728,6 +2805,10 @@ nl:
                 description: URL-referentie naar het logo van de balk van de hoofding. Aanbevolen minimum grootte is 100 x 40px. Dit logo zal in een klein formaat getoond worden.
                 placeholder: URL
                 title: Logo in balk van hoofding
+              header_bar_logo_alt:
+                description: 
+                placeholder: 
+                title: 
               header_display_name:
                 description: Naam die wordt weergegeven in de balk van de hoofding. Meestal is dit de naam van uw bedrijf.
                 placeholder: Evergreen Open Data
@@ -2752,7 +2833,7 @@ nl:
               url_placeholder: http://data.evergreen.gov
             title: Balk van hoofding
           homepage:
-            fields:
+            fields: 
             title: Startpagina
           social:
             fields:
@@ -2764,6 +2845,10 @@ nl:
                 description: Weergeeft link naar Flickr-profiel in hoofding en voettekst indien aanwezig.
                 placeholder: http://www.flickr.com/
                 title: Link naar Flickr-profiel
+              github_profile_link:
+                description: Voeg de URL hier toe om een link naar het GitHub-profiel van uw organisatie weer te geven in zowel hoofding als voettekst.
+                placeholder: http://www.github.com/
+                title: Link naar Github-profiel
               google_plus_profile_link:
                 description: Weergeeft link naar Google Plus-profiel in hoofding en voettekst indien aanwezig.
                 placeholder: http://www.plus.google.com/
@@ -2816,9 +2901,15 @@ nl:
                 description_html: <p>Hou u vast! Met deze upgrade wordt de landingspagina van de dataset de belangrijkste voorpagina voor geüploade datasets - de meest bezochte onderdelen van elke dataset worden uitgelicht op een intuïtieve manier en de gebruikers van uw gegevens krijgen metagegevens te zien alvorens ze actie ondernemen. Publishers en Administrators zijn vrij om gerelateerde uitzichten en visualisaties "uit te lichten", gesofisticeerde gebruikers kunnen metagegevens en metrische data meteen bekijken en alle gebruikers kunnen toegang krijgen tot gegevens op hun eigen manier. Dit kan via visualisaties van de gegevens, directe bestanddownloads of de API gebeuren. En natuurlijk is het klassieke tabulaire uitzicht van gegevens nog steeds beschikbaar vanaf het bovenste navigatiegedeelte van dit uitzicht.</p>
                 title: Landingspagina voor dataset
             title: Wat is er nieuw
+        these_features: Deze functies geven u de kracht om het uiterlijk van uw website beter te controleren en helpen gegevensgebruikers door uw data beter dan voordien te bladeren. Uw gebruikers zullen er gek op zijn!
         these_features_help: Deze functies zullen de gebruikers helpen bij het bekijken van uw gegevens en het maakt het beheren van het uiterlijk van uw website eenvoudiger.
         update: Updaten
+        you_are_about: U staat op het punt de landingspagina's van uw hoofding, voettekst en dataset te activeren voor uw datasets.
+        you_are_about_html: 
         you_have_activated: U heeft uw nieuwe hoofding/voettekst en landingspagina voor uw dataset geactiveerd.
+      tos:
+        accepted: Dank u voor het accepteren van de gebruiksvoorwaarden.
+        must_agree: U moet akkoord gaan met de voorwaarden om verder te kunnen gaan.
       update: Updaten
       users:
         actions: Acties
@@ -2871,6 +2962,8 @@ nl:
         user_saved: Gebruiker opgeslagen
         users_table_description: Gebruikers
       view_moderation:
+        could_not_find_view: Kon het beeld voor het aanpassen van de moderatiestatus niet vinden
+        set_moderation_status: Het beeld '%{view_name}' werd %{moderation_status}. Wacht a.u.b. enkele minuten voordat de veranderingen worden weergegeven op uw startpagina
         table_description: Beheerde datasets
     dataset_edit:
       append: Toevoegen
@@ -3906,6 +3999,7 @@ nl:
       attachments: Bijlagen
       attachmentsDisabledMessagePart1: Om bijlagen te uploaden moet u de publicatie van deze dataset eerst voltooien. Daarna klikt u
       attachmentsDisabledMessagePart2: in de taakbalk en klik op Metadata aanpassen. U kunt nu bijlagen uploaden.
+      blob_uploaded: 'Schitterend: we hebben uw bestand opgeslagen. U hoeft nu alleen nog maar de metagegevens van uw bestand te beschrijven.'
       brief_description: Korte omschrijving
       brief_description_prompt: Voer een omschrijving in
       cancel: Annuleren
@@ -3967,6 +4061,7 @@ nl:
       save: Opslaan
       save_changes: Wijzigingen opslaan
       semantics_rdf: Semantiek & RDF
+      settings_saved: Uw vooruitgang werd opgeslagen. Ga verder met de aanmaak van uw dataset door de metagegevens hieronder in te vullen.
       source_link: Link naar de bron
       source_link_error: dit lijkt geen geldige url te zijn.
       source_link_prompt: Voer internetadres in
@@ -4124,11 +4219,13 @@ nl:
           learn_openid: Meer informatie over Open-ID
           new_email: Nieuwe e-mail
           new_password: Nieuw wachtwoord
+          no_auth0id: U heeft nog geen enkelvoudige identifiers voor het inloggen die geassocieerd kunnen worden met dit account.
           no_openid: U hebt geen OpenID-identificeerders gekoppeld aan dit account.
           old_password: Oud wachtwacht
           password: Wachtwoord
           password_prompt: "(Voor uw veiligheid)"
           password_restrictions_html: (Er gelden beperkingen <span class="icon">&nbsp;</span>)
+          sso_identifiers: Enkelvoudige identifiers voor het inloggen
           title: Accountinstellingen
         app_tokens:
           application_name: Naam van de applicatie
@@ -4187,6 +4284,7 @@ nl:
           image_format: Selecteer een geldig afbeeldingstype (PNG, JPG of GIF)
           invalid_links: Er is een probleem opgetreden bij het bijwerken van uw links. %{message}
           no_display_name: 'Fout: ''Displaynaam'' is vereist'
+          no_password_no_auth0id: U kan niet al uw Auth0 identifiers verwijderen voordat u een wachtwoord instelt
           no_password_no_openid: U kunt niet al uw OpenID-identificeerders verwijderen voordat u een wachtwoord instelt
           password_mismatch: Nieuwe wachtwoorden komen niet overeen
           user_missing: Deze gebruiker kan niet worden gevonden of is verwijderd.
@@ -4226,13 +4324,21 @@ nl:
     sign_in:
       auth0_intro: Er zijn verschillende manieren waarop u in kunt loggen. Als u zich nog niet heeft aangemeld voor een account, kies dan de optie die u het prettigst vindt. Als u dat wel al heeft, gebruik hieronder dan dezelfde optie.
       back_to_sign_in_selection: <a class="login-back">Terug naar inlogmogelijkheden</a>
+      dont_have_account: U heeft nog geen account?
+      error: Er ging iets mis bij het inloggen
       failed: Kan niet inloggen met dat e-mailadres en wachtwoord, gelieve opnieuw te proberen
+      forgot_password: Wachtwoord vergeten?
       form:
+        email_placeholder: E-mail
+        password_placeholder: Wachtwoord
         sign_in_button: Aanmelden
       headline: Meld u aan op %{site}
       mismatch: Wachtwoorden komen niet overeen; Probeer het opnieuw
       prompt_html: Meld u aan met uw <strong> Socrata-ID </strong>
+      sign_in_using: Inloggen met
       sign_in_with: "<strong>Inloggen</strong> met %{provider}"
+      sign_up: Registreren
+      sso_enabled: SSO ingeschakeld
       sso_required: De beheerder van deze website verzoekt bevoorrechte gebruikers om in te loggen met een account dat niet hun Socrata-id is. Log a.u.b. in op een andere manier.
       tips_html: Gebruik uw e-mailadres en wachtwoord om u aan te melden bij alle <strong><a href="http://www.socrata.com" rel="external">Socrata</a> powered</strong> sites.
     sign_up:

@@ -187,6 +187,7 @@ en:
           description: Save a PNG-image file of a visualization
           header: Visualization as Image
       feature_map:
+        feature_map_disabled: Feature maps are unavailable.
         zoom_disabled: Zoom is temporarily unavailable. Please try again later.
       feature_map_flannel:
         error_message: An error occurred while fetching location data.
@@ -306,6 +307,9 @@ en:
         old_filter_title: Showing <span class="light">the {0}</span>
         old_filtered_title: Showing <span class="light">the {0}</span>
         unfiltered_title: Showing <span class="light">all {0}</span>
+      related_views:
+        button: Other views of this data
+        title: Other views of this data
       related_visualization_selector:
         based_on_column: Based on {0}
         visualization_not_supported: Pardon our dust! We're still developing the functionality that will let you embed this chart type in a story.
@@ -483,6 +487,7 @@ en:
           chart: Chart
           data_lens: Data Lens
           dataset: Dataset
+          draft: Draft Dataset
           filter: Filtered View
           form: Form
           href: External Link
@@ -601,6 +606,7 @@ en:
         view_types_title: View Types
       listing:
         comment_count: Number of comments
+        error: We're sorry. Results could not be retrieved at this time. Please try again later.
         federation_source: Federated from %{source}
         federation_source_html: Provided by %{source_link}
         no_results: No Results
@@ -611,7 +617,6 @@ en:
           popularity: Popularity
           rss: RSS
           type: Type
-        error: We're sorry. Results could not be retrieved at this time. Please try again later.
       ordered_topics: Ordered Topics
       row_results:
         less_link: Less
@@ -756,6 +761,7 @@ en:
         post_button: Post
       header:
         add_comment: Add Comment
+        cell_comment_header_html: Comments for row <span class="rowName"></span>, column <span class="columnName"></span>
         feed_filter_label: Show
         pending_moderation: Your comment is submitted and is pending moderation
       listing:
@@ -1111,6 +1117,19 @@ en:
       allow_comments: Commenting
       cell_comments: Cell Commenting
     filters:
+      formal:
+        between: between
+        contains: contains
+        equals: equals
+        greater_than: greater than
+        greater_than_or_equals: greater than or equal to
+        is_blank: is blank
+        is_not_blank: is not blank
+        less_than: less than
+        less_than_or_equals: less than or equal to
+        not_contains: does not contain
+        not_equals: does not equal
+        starts_with: starts with
       informal:
         between: is between
         contains: contains
@@ -1123,8 +1142,8 @@ en:
         is_blank: is blank
         is_checked: is checked
         is_empty: is empty
-        is_not_checked: is not checked
         is_not_blank: is not blank
+        is_not_checked: is not checked
         less_than: is less than
         less_than_or_equals: is at most
         not_contains: does not contain
@@ -1202,6 +1221,7 @@ en:
       dateISO: Please enter a valid date (ISO).
       digits: Please enter only digits.
       email: Please enter a valid email address.
+      email_recipient: Please enter a valid email address or choose a group.
       equalTo: Please enter the same value again.
       max: Please enter a value less than or equal to {0}.
       maxlength: Please enter no more than {0} characters.
@@ -1258,13 +1278,14 @@ en:
       developer_portal_button: Developer Portal
       endpoint_title: API Endpoint
       foundry_button: API Docs
+      multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own documentation and API Endpoint below.
       title: Access this Dataset via SODA API
     back: Back
     blob_download:
+      download: Download
       edit_prompt_button: Edit Source
       edit_prompt_message: Edit the source file for this dataset.
       title: Download this Resource
-      download: Download
     blob_preview:
       title: Preview
     bootstrap_button: Create a Visualization
@@ -1306,9 +1327,9 @@ en:
       latitude: Latitude
       longitude: Longitude
       many_rows: Showing {unitOther} {firstRowOrdinal}-{lastRowOrdinal} out of {datasetRowCount}
-      no_row_count: Row count unavailable
       next: Next
       no_column_description: No description provided.
+      no_row_count: Row count unavailable
       no_rows: No {unitOther}
       only_rows: Showing {unitOne} {firstRowOrdinal} of {datasetRowCount}
       previous: Previous
@@ -1327,6 +1348,7 @@ en:
       manage_prompt:
         button: Manage Featured Content
         message: Choose to promote up to 3 Socrata assets that use this data, or choose to feature any relevant external resources. If left blank this section will be invisible.
+        message_blob: Choose to promote up to 3 external resources that are relevant to this file or document. If left blank this section will be invisible.
         message_external: Choose to promote up to 3 external resources that are relevant to this data. If left blank this section will be invisible.
       title: Featured Content Using this Data
     featured_content_modal:
@@ -1342,6 +1364,7 @@ en:
         url: Link to Resource
       header: Manage Featured Content
       introduction: What would you like people to see when they first view this dataset? Promote up to 3 Socrata assets that use this data, or choose to feature any relevant external resources. Think of this section as the face of your data.
+      introduction_blobby: What would you like people to see when they first view this asset? Promote up to 3 external resources that are relevant to this file or document.
       introduction_external: What would you like people to see when they first view this dataset? Promote up to 3 external resources that are relevant to this data.
       preview: Preview of featured content
       remove_error: Oh no!  Something went wrong, please try again.
@@ -1359,6 +1382,10 @@ en:
         message: Choose a visualization or filtered view that you think really represents your dataset. This will be one of the first things your users see when they view this dataset.
         view_fetch_error: Oh no! Something went wrong while we were trying to fetch the visualizations for this data. Try again later.
       visualization: Visualization
+    featured_views:
+      no_content_alert_html: "<b>Hmm...</b> Looks like there is no public content using this data."
+      title: Popular Content Using this Data
+      view: View
     feedback:
       panel_details_html: With a screenshot you can show us exactly what you have feedback on. We’re using <a href="https://usersnap.com">Usersnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy">privacy policy</a>.
       panel_title: Do you want to include an annotated screenshot of the current page?
@@ -1366,9 +1393,9 @@ en:
       screenshot_yes: Yes, include a screenshot
       title: Feedback
     href_download:
+      data_dictionary: Data Dictionary
       edit_prompt_button: Edit Links
       edit_prompt_message: Edit the external source link(s) for this dataset.
-      data_dictionary: Data Dictionary
       title: Access this Data
     less: Show Less
     manage_dataset: Manage Dataset
@@ -1396,23 +1423,29 @@ en:
       view_statistics: View all statistics for this Dataset
       views: Views
     more: Show More
+    multiple_geo_layers: This dataset contains multiple geospatial layers, detailed below.
     odata_modal:
       description: Create a spreadsheet in Microsoft Excel to analyze or visualize this dataset. By using an OData link, the data will be refreshable.
       developer_portal_button: Socrata OData Documentation
       endpoint_title: OData Endpoint
+      multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own OData Endpoint below.
       title: Access this Dataset via OData
     official: Official
-    related_views:
+    popular_views:
       load_more_error: There was a problem loading additional content.
-      title: Related Content Using this Data
+      title: Popular Content Using this Data
       view: View
     private_notice: You are looking at a private dataset.
     publish: Publish
     publish_error: There was a problem publishing this dataset.  Make sure you are logged in and have appropriate permissions.  If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
-    publish_notice: This dataset is <strong>Unpublished</strong>. Publishing this page will also publish the <a href="{url}" target="_blank">tabular view</a> of this dataset.
     publish_geocoding_message: Rows in the location column are still geocoding. Please wait until they are finished to publish this dataset.
+    publish_notice: This dataset is <strong>Unpublished</strong>. Publishing this page will also publish the <a href="{url}" target="_blank">tabular view</a> of this dataset.
     published: Published
     published_by: Data Provided by
+    related_views:
+      load_more_error: There was a problem loading additional content.
+      title: Related Content Using this Data
+      view: View
     remove: Remove
     render_error: There was a problem rendering this page.
     save: Save
@@ -1568,7 +1601,7 @@ en:
       title: Page Settings
   date:
     abbr_month_names:
-    -
+    - 
     - Jan
     - Feb
     - Mar
@@ -1582,7 +1615,7 @@ en:
     - Nov
     - Dec
     month_names:
-    -
+    - 
     - January
     - February
     - March
@@ -1597,6 +1630,9 @@ en:
     - December
   error:
     back: Back
+    error_400:
+      description: The given parameters for the request are invalid, please try again with different parameters.
+      were_sorry: We're sorry, but we can't process your request.
     error_500:
       description_html: Please try again in a few moments, or <a href="http://support.socrata.com">report this error</a> with the details of what you were trying to do.
       somethings_wrong: Something's wrong!
@@ -1617,11 +1653,153 @@ en:
       description_html: If you believe this to be an error, try <a href="/login">logging out and back in</a> as a different user.
       no_permission: Error
       were_sorry: The current user doesn't have access to this resource.
-    error_400:
-      description: The given parameters for the request are invalid, please try again with different parameters.
-      were_sorry: We're sorry, but we can't process your request.
     to_whence_you_came: to where you came from.
   govstat:
+    admin:
+      bulk_edit:
+        button_title: Edit Multiple Items...
+        cancel: Cancel
+        date_range_from: From
+        date_range_label: Date Range
+        date_range_to: To
+        failure_message: "<strong>Error.</strong> There was a problem performing this action. Try again, or cancel."
+        items_selected: "{0} Items Selected"
+        not_configured_message: "<strong>Oops.</strong> It looks like one or more of your goals is unconfigured. Bulk edits can only be made to goals that have already been configured."
+        override_label: Override
+        override_types:
+          bad: Needs Improvements
+          good: On Target
+          no_judgement: Measuring
+          none: None
+          within_tolerance: Near Target
+        revert_changes: Revert changes
+        success_message: Success! {0} goals were updated.
+        title: Edit Multiple Items
+        update: Update
+        visibility: Visibility
+      default_error_message: "<span><b>Oh no!</b> Something went wrong and our team has been notified. In the meantime, try your action again or refresh this page.</span>"
+      export:
+        Csv:
+          button_label: Export
+          info_description: Generating a CSV. The download will automatically start when ready
+          info_title: Generating Download
+        info_box:
+          cancel: Cancel
+          ok: OK
+      feedback_flannel:
+        message: With a screenshot you can show us exactly what you have feedback on. We’re using <a href="https://usersnap.com" target="_blank">Usersnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy"  target="_blank">privacy policy</a>.
+        no_thanks: No thanks
+        title: Do you want to include an annotated screenshot of the current page?
+        yes_include_screenshot: Yes, include a screenshot
+      goal_values:
+        status_private: Private
+        status_public: Public
+      listing:
+        dashboard: Dashboard
+        default_alert_message: "<span><b>Oh no!</b> Something went wrong and our team has been notified. In the meantime, try your action again or refresh this page.</span>"
+        goal_page: Manage On Goal Page
+        goal_status: Goal Status
+        load_error: There was a problem loading content.
+        manage_on_goal_page: Manage on Goal Page
+        of: of
+        owner: Last updated by
+        quick_edit: Quick Edit
+        rows_per_page: Rows per page
+        title: Title
+        updated_at: Updated
+        view_dashboard: View Dashboard
+        visibility: Visibility
+      manage_performance_goals: Manage Performance Goals
+      modal:
+        close_without_save_message: Are you sure you want to close? Your changes will be lost.
+      page_title: Goal Management
+      preview_bar:
+        back_to_configuration: Back to Configuration
+        feedback: Feedback
+        learn_more: Learn More
+        performance_goal_management_preview: Performance Goal Management
+      quick_edit:
+        action_type: Action
+        action_types:
+          increase: Increase
+          maintain: Maintain
+          measure: Measure
+          reduce: Reduce
+        cancel: Cancel
+        category: Category
+        dashboard: Dashboard
+        dataset_owner: Dataset Owner
+        dataset_updated: Dataset Updated
+        date_range: Date Range
+        default_alert_message: "<span><b>Oh no!</b> Something went wrong and our team has been notified. In the meantime, try your action again or refresh this page.</span>"
+        feedback: Feedback
+        goal_name: Goal Title
+        goal_owner: Last updated by
+        goal_updated: Goal Updated
+        manage_on_goal_page: Manage on Goal Page
+        measure_baseline: Baseline
+        measure_delta: Range Value
+        measure_maintain_types:
+          above: Above
+          below: Below
+          within: Around
+        measure_target: Target Value
+        measure_target_type: Kind
+        measure_target_type_types:
+          absolute: To
+          relative: From
+        not_configured_goal_message:
+          link: go to the goal page
+          text: This goal is not configured. To make changes to this section,
+        override: Override
+        override_types:
+          bad: Needs Improvements
+          good: On Target
+          no_judgement: Measuring
+          none: None
+          within_tolerance: Near Target
+        prevailing_measure: Prevailing Measure
+        prevailing_measure_name: Subject
+        quick_edit_measure: Quick Edit Measure
+        range: Range
+        range_types:
+          above: Above
+          around: Around
+          below: Below
+        save: Save
+        status: Status
+        success_message: Success! {0} updated.
+        unit: Unit
+        validation:
+          action:
+            enum: Action should be one of Increase, Decrease, Maintain, Measure.
+          baseline:
+            blank: Baseline shouldn't be blank.
+            numeric: Baseline should be numeric.
+          end:
+            end_not_after_start: Conflict between start and end dates.
+            invalid: Invalid end date.
+          maintain_type:
+            enum: Maintain Type should be one of Around, >, <
+          name:
+            blank: Name shouldn't be blank.
+          start:
+            invalid: Invalid start date.
+          subject:
+            blank: Subject should't be blank.
+          target:
+            blank: Target Value shouldn't be blank.
+            numeric: Target Value should be numeric.
+          target_delta:
+            blank: Range Value shouldn't be blank.
+            numeric: Range Value should be numeric.
+          target_delta_is_percent:
+            bool: Unit type should be selected
+          target_type:
+            enum: Kind should be of Absoulte, Relative.
+          unit:
+            blank: Unit shouldn't be blank.
+        visibility: Visibility
     chrome:
       header:
         links:
@@ -1648,6 +1826,7 @@ en:
       data_management: Data Management
       datasets: Datasets
       federations: Federations
+      goal_management_preview: Goal Management
       homepage: Homepage
       jobs: Jobs
       metadata: Metadata
@@ -1657,7 +1836,6 @@ en:
       sdp_templates: Data Player Templates
       title: Manage Site Configuration
       users: Users
-      goal_management_preview: Goal Management
     measure:
       end_progress:
         bad: Did not meet target
@@ -1721,174 +1899,6 @@ en:
       layouts: Layouts
       list_layout: List Layout
       title: Select Layout
-    #measure shoud be kept in sync with janus-govstat
-    measure:
-      unit_percent: percent
-      progress:
-        no_judgement: Measuring
-        none: Needs More Data
-        needs_more_data: Needs More Data
-        within_tolerance: Near Target
-        good: On Track
-        progressing: In Progress
-        poor: Needs Improvement
-        bad: Needs Improvement
-        no_status: No Status
-      end_progress:
-        no_judgement: Measured
-        none: Needed More Data
-        needs_more_data: Needed More Data
-        within_tolerance: Almost met target
-        good: Achieved Goal
-        progressing: Almost met target
-        poor: Did not meet target
-        bad: Did not meet target
-      subheadline: This goal is measured by tracking {0} in {1}.
-    admin:
-      page_title: Goal Management
-      default_error_message: <span><b>Oh no!</b> Something went wrong and our team has been notified. In the meantime, try your action again or refresh this page.</span>
-      export:
-        info_box:
-          ok: OK
-          cancel: Cancel
-        Csv:
-          button_label: Export
-          info_title: Generating Download
-          info_description: Generating a CSV. The download will automatically start when ready
-      listing:
-        load_error: There was a problem loading content.
-        title: Title
-        owner: Last updated by
-        updated_at: Updated
-        visibility: Visibility
-        goal_status: Goal Status
-        dashboard: Dashboard
-        manage_on_goal_page: Manage on Goal Page
-        quick_edit: Quick Edit
-        goal_page: Manage On Goal Page
-        default_alert_message: <span><b>Oh no!</b> Something went wrong and our team has been notified. In the meantime, try your action again or refresh this page.</span>
-        rows_per_page: Rows per page
-        of: of
-      goal_values:
-        status_public: Public
-        status_private: Private
-      bulk_edit:
-        revert_changes: Revert changes
-        success_message: Success! {0} goals were updated.
-        failure_message: <strong>Error.</strong> There was a problem performing this action. Try again, or cancel.
-        not_configured_message: <strong>Oops.</strong> It looks like one or more of your goals is unconfigured. Bulk edits can only be made to goals that have already been configured.
-        button_title: Edit Multiple Items...
-        title: Edit Multiple Items
-        items_selected: '{0} Items Selected'
-        visibility: Visibility
-        update: Update
-        cancel: Cancel
-        revert_changes: Revert changes
-        date_range_label: Date Range
-        date_range_to: To
-        date_range_from: From
-        override_label: Override
-        override_types:
-          none: None
-          bad: Needs Improvements
-          within_tolerance: Near Target
-          good: On Target
-          no_judgement: Measuring
-      quick_edit:
-        quick_edit_measure: Quick Edit Measure
-        manage_on_goal_page: Manage on Goal Page
-        default_alert_message: <span><b>Oh no!</b> Something went wrong and our team has been notified. In the meantime, try your action again or refresh this page.</span>
-        not_configured_goal_message:
-          text: This goal is not configured. To make changes to this section,
-          link: go to the goal page
-        success_message: Success! {0} updated.
-        goal_name: Goal Title
-        status: Status
-        visibility: Visibility
-        prevailing_measure: Prevailing Measure
-        goal_updated: Goal Updated
-        dashboard: Dashboard
-        goal_owner: Last updated by
-        category: Category
-        dataset_updated: Dataset Updated
-        dataset_owner: Dataset Owner
-        cancel: Cancel
-        save: Save
-        action_type: Action
-        action_types:
-          increase: Increase
-          reduce: Reduce
-          maintain: Maintain
-          measure: Measure
-        prevailing_measure_name: Subject
-        unit: Unit
-        override: Override
-        override_types:
-          none: None
-          bad: Needs Improvements
-          within_tolerance: Near Target
-          good: On Target
-          no_judgement: Measuring
-        date_range: Date Range
-        range: Range
-        range_types:
-          around: Around
-          below: Below
-          above: Above
-        measure_target: Target Value
-        measure_target_type: Kind
-        measure_target_type_types:
-          absolute: To
-          relative: From
-        measure_baseline: Baseline
-        measure_delta: Range Value
-        measure_maintain_types:
-          within: Around
-          below: Below
-          above: Above
-        feedback: Feedback
-        validation:
-          action:
-            enum: Action should be one of Increase, Decrease, Maintain, Measure.
-          name:
-            blank: Name shouldn't be blank.
-          subject:
-            blank: Subject should't be blank.
-          unit:
-            blank: Unit shouldn't be blank.
-          target:
-            blank: Target Value shouldn't be blank.
-            numeric: Target Value should be numeric.
-          target_type:
-            enum: Kind should be of Absoulte, Relative.
-          baseline:
-            blank: Baseline shouldn't be blank.
-            numeric: Baseline should be numeric.
-          target_delta:
-            blank: Range Value shouldn't be blank.
-            numeric: Range Value should be numeric.
-          target_delta_is_percent:
-            bool: Unit type should be selected
-          maintain_type:
-            enum: Maintain Type should be one of Around, >, <
-          start:
-            invalid: Invalid start date.
-          end:
-            invalid: Invalid end date.
-            end_not_after_start: Conflict between start and end dates.
-      modal:
-        close_without_save_message: Are you sure you want to close? Your changes will be lost.
-      preview_bar:
-        back_to_configuration: Back to Configuration
-        performance_goal_management_preview: Performance Goal Management
-        learn_more: Learn More
-        feedback: Feedback
-      feedback_flannel:
-        yes_include_screenshot: Yes, include a screenshot
-        no_thanks: No thanks
-        message: With a screenshot you can show us exactly what you have feedback on. We’re using <a href="https://usersnap.com" target="_blank">Usersnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy"  target="_blank">privacy policy</a>.
-        title: Do you want to include an annotated screenshot of the current page?
-      manage_performance_goals: Manage Performance Goals
   plugins:
     daterangepicker:
       clear: Clear
@@ -2036,13 +2046,14 @@ en:
       your: Your Rating
     admin:
       canvas:
-        title_cannot_be_blank: Please enter a title.
         path_must_be_unique: Path already exists; please choose a different one.
+        title_cannot_be_blank: Please enter a title.
       connector:
         actions: Actions
         add_connector: Add Connector
         add_new: Add new
         all_assets: Connect all assets
+        arcgis_layer: ArcGIS Layer
         arcgis_server_address: ArcGIS Server Address
         assets_connected:
           one: 1 asset connected
@@ -2055,6 +2066,7 @@ en:
         connected_assets: Connected assets
         current_status: Current Status
         data: Data
+        dataset: Dataset
         discovered_assets: Discovered assets
         edit: Edit
         edit_connector: 'Edit Connector: %{url}'
@@ -2085,14 +2097,12 @@ en:
         search: Search the domain
         selective_connection: Selective Connection
         service_unavailable: Connector services are currently unavailable.
+        show_title: ArcGIS Server Federation
         some_assets: Connect only these assets
         source: Connector source
         success: Success
         terminate: Terminate
         title: Manage Connectors
-        show_title: ArcGIS Server Federation
-        arcgis_layer: ArcGIS Layer
-        dataset: Dataset
       datasets:
         asset_inventory:
           tooltip: This option is not available due to a processing delay. If the problem persists after 24 hours, please contact support.
@@ -2319,8 +2329,9 @@ en:
             button: Restore
             confirm: Are you sure you want to restore the dataset %{dataset}?
             disabled_restore_explanation: Restore is only available for certain types of datasets for a limited amount of time. For more information, please contact support.
-            disabled_restore_type: Restore is only available for datasets, not for views or visualizations.
             disabled_restore_time: Datasets can only be restored within 5 days of deletion.
+            disabled_restore_type: Restore is only available for datasets, not for views or visualizations.
+          restore_deleted_dataset_confirm: Are you sure you want to restore the dataset %{dataset}?
           showing_all_so_far: Showing all jobs which have been recorded so far
           showing_most_recent: Showing the most recent %{limit} jobs
           started: Started
@@ -2594,15 +2605,13 @@ en:
         'false': false
         field_name: Field Name
         flashes:
-          deleted_category: Category successfully removed
-          could_not_delete_category: Could not remove category named '%{category_name}'
-          must_select_category_to_delete: Please select a category to delete from the list
-          could_not_update_category: Could not update category named '%{category_name}'
-          updated_category: Category successfully updated.
-          created_category: Category successfully created.
-          category_must_be_unique: Cannot create duplicate category named '%{new_category}'
+          cannot_move_field: 'Cannot move field named ''%{name}'': not found'
           category_cannot_be_blank: Please enter a name to create a new category.
-          cannot_move_field: "Cannot move field named '%{name}': not found"
+          category_must_be_unique: Cannot create duplicate category named '%{new_category}'
+          could_not_delete_category: Could not remove category named '%{category_name}'
+          could_not_update_category: Could not update category named '%{category_name}'
+          created_category: Category successfully created.
+          deleted_category: Category successfully removed
           field_duplicated: You cannot create a duplicate field named '%{name}'
           field_name_required: Cannot create field without a name
           field_successful_create: Field Successfully Created
@@ -2610,10 +2619,12 @@ en:
           field_successful_save: Successfully saved field
           fieldset_duplicated: Cannot create duplicate field set named '%{name}'
           fieldset_name_required: Cannot create field set without a name
+          must_select_category_to_delete: Please select a category to delete from the list
           no_such_field: No such field exists
           no_such_fieldset: No such fieldset exists
           successful_create: Field Set Successfully Created
           successful_remove: Field Set Successfully Removed
+          updated_category: Category successfully updated.
         locales: Locales
         make_optional: Make Optional
         make_private: Make Private
@@ -2633,33 +2644,35 @@ en:
         'true': true
         up: Up
       sdp:
-        template_name_cannot_be_blank: Template name is required.
-        too_many_templates: You have created your allotted number of templates. Please delete one or contact support to purchase more.
-        error_on_creation: "An error occurred during your request: '%{error_message}'"
+        cannot_delete_default_template: Cannot delete the default template. Please choose a new default first.
+        could_not_delete_template: 'Cannot set template as default: template not found.'
+        could_not_find_template_customization: This template customization cannot be found.
+        could_not_set_default_template: 'Cannot set template as default: template not found.'
+        error_on_creation: 'An error occurred during your request: ''%{error_message}'''
         preview_could_not_be_found: A dataset with which to preview could not be found.
         requires_published_dataset: Please create a dataset you can publish first.
-        could_not_find_template_customization: This template customization cannot be found.
-        could_not_set_default_template: "Cannot set template as default: template not found."
-        could_not_delete_template: "Cannot set template as default: template not found."
-        cannot_delete_default_template: Cannot delete the default template. Please choose a new default first.
+        template_name_cannot_be_blank: Template name is required.
+        too_many_templates: You have created your allotted number of templates. Please delete one or contact support to purchase more.
       site_chrome:
         activate: Activate
         add_new_link_menu: Add Menu
         add_new_link_row: Add %{section} Link
+        after_clicking_ok: After clicking 'OK' below, see both features in action by visiting one of your datasets.
         cancel: Cancel
+        congratulations: Congratulations!
         description: Configure the appearance of your Socrata site.
         get_excited: Get Excited!
-        link_menu_label_html: <b>Menu</b> - <i>You can drag links to reorder them</i>
+        link_menu_label_html: "<b>Menu</b> - <i>You can drag links to reorder them</i>"
         move_link_row: Drag to reorder
         ok: OK
         preview: Preview
+        preview_changes: Preview Changes
         remove_link_menu: Remove Link Menu
         remove_link_row: Remove Link
+        save: Save
+        save_changes: Save Changes
+        see_both_features: See both features in action by visiting one of your datasets.
         site_appearance: Site Appearance
-        update: Update
-        you_are_about_html: >
-          <p>You are about to activate your header, footer, and Primer for your datasets. Your users are going to love the new look!</p>
-          <p>To see Primer and your header/footer in action, click 'Ok' below and then navigate to one of your datasets.</p>
         tabs:
           footer:
             fields:
@@ -2734,9 +2747,10 @@ en:
                 show_signup: Show ability to create an account via Sign Up
                 title: Sign In / Sign Out
               template:
+                description: Adjust the appearance of the header by changing the template. Supported templates are "Evergreen" (default) and "Rally".
                 description_html: Adjust the appearance of the Header by changing the template. Supported templates are <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">"Evergreen" and "Rally"</a>.
-                title: Template
                 placeholder: Select a template
+                title: Template
               window_icon:
                 description: URL reference to the icon displayed in the browser window, tab and URL field.
                 placeholder: https://yoursite.gov/logos/favicon.png
@@ -2792,7 +2806,7 @@ en:
               url_placeholder: http://data.evergreen.gov
             title: Header Bar
           homepage:
-            fields:
+            fields: 
             title: Homepage
           social:
             fields:
@@ -2846,28 +2860,33 @@ en:
                 title: YouTube Profile Link
             title: Social Sharing
           whats_new:
-            title: What's New
             fields:
               a_bundle_of_goodness:
+                description_html: "<p>Get excited! Socrata Primer, formerly known as the Dataset Landing Page, and your new, configurable Header/Footer are both ready to go! Read on to learn about these enhancements and how you can activate them, today.</p>"
                 title: 'A Bundle of Goodness: Two New Features Available Now'
-                description_html: '<p>Get excited! Socrata Primer, formerly known as the Dataset Landing Page, and your new, configurable Header/Footer are both ready to go! Read on to learn about these enhancements and how you can activate them, today.</p>'
-              dataset_landing_page:
-                title: Primer
-                description_html: "<p>With this upgrade, your datasets have a new front-page experience known as 'Primer'. This experience highlights commonly accessed aspects of a dataset and ensures your data users see metadata before taking action. Publishers and Administrators have the freedom to \"feature\" related views and visualizations, sophisticated users can explore metadata and metrics up-front, and all users can access data in the way they desire, whether this is via data visualizations, direct file downloads, or the API. And of course - the classic tabular data view is still accessible from the top navigation of this view for users who are comfortable there.</p>"
               a_new_configurable_header_footer:
+                description_html: |
+                  <p>We've also introduced a new unified, mobile-responsive, configurable header/footer for your site. This new header/footer empowers you to control your site's logos, colors, copyright, navigational links, social icons, and more on your own, without having to contact Socrata Support.</p> <p>By the way, we've already prepared your header and footer for preview. Click the "Preview" button above to take a look, and then change it however you'd like - it's all yours.</p>
                 title: A New Configurable Header/Footer
-                description_html: >
-                  <p>We've also introduced a new unified, mobile-responsive, configurable header/footer for your site. This new header/footer empowers you to control your site's logos, colors, copyright, navigational links, social icons, and more on your own, without having to contact Socrata Support.</p>
-                  <p>By the way, we've already prepared your header and footer for preview. Click the "Preview" button above to take a look, and then change it however you'd like - it's all yours.</p>
               active_both_today:
+                description_html: |
+                  <p>Primer and your new Configurable Header/Footer are both available now. Review the tabs above, update what you'd like, and when you're ready, activate them together!</p> <p><b>Note:</b> If you haven't configured the header/footer for your site within one month, Socrata will use our suggested configuration to activate it and Primer automatically. We'll do this to ensure your data users are getting the most up-to-date experience available.</p> <p>For tips on configuring your header/footer, please visit our Support site here: <a href=" https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">https://support.socrata.com/hc/en-us/articles/223723227</a>.</p>
                 title: Activate Both Today!
-                description_html: >
-                  <p>Primer and your new Configurable Header/Footer are both available now. Review the tabs above, update what you'd like, and when you're ready, activate them together!</p>
-                  <p><b>Note:</b> If you haven't configured the header/footer for your site within one month, Socrata will use our suggested configuration to activate it and Primer automatically. We'll do this to ensure your data users are getting the most up-to-date experience available.</p>
-                  <p>For tips on configuring your header/footer, please visit our Support site here: <a href=" https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">https://support.socrata.com/hc/en-us/articles/223723227</a>.</p>
+              dataset_landing_page:
+                description_html: <p>With this upgrade, your datasets have a new front-page experience known as 'Primer'. This experience highlights commonly accessed aspects of a dataset and ensures your data users see metadata before taking action. Publishers and Administrators have the freedom to "feature" related views and visualizations, sophisticated users can explore metadata and metrics up-front, and all users can access data in the way they desire, whether this is via data visualizations, direct file downloads, or the API. And of course - the classic tabular data view is still accessible from the top navigation of this view for users who are comfortable there.</p>
+                title: Primer
+            title: What's New
+        these_features: These features will empower you to better control the appearance of your site and will help data consumers explore your data even better than before. Your users are going to love them!
+        these_features_help: These features will help users explore your data and will make it easier for you to manage the appearance of your site.
+        update: Update
+        you_are_about: You are about to activate your header, footer and Dataset Landing Pages for your datasets.
+        you_are_about_html: |
+          <p>You are about to activate your header, footer, and Primer for your datasets. Your users are going to love the new look!</p> <p>To see Primer and your header/footer in action, click 'Ok' below and then navigate to one of your datasets.</p>
+        you_have_activated: You have activated your new header/footer and Dataset Landing Page.
       tos:
         accepted: Thank you for accepting the terms of service.
         must_agree: You must agree to the provided terms to continue.
+      update: Update
       users:
         actions: Actions
         all: All
@@ -2919,9 +2938,9 @@ en:
         user_saved: User saved
         users_table_description: Users
       view_moderation:
-        table_description: Moderated Datasets
         could_not_find_view: Could not find view to modify moderation status
         set_moderation_status: The view '%{view_name}' has been %{moderation_status}. Please allow a few minutes for the changes to be reflected on your home page
+        table_description: Moderated Datasets
     dataset_edit:
       append: Append
       append_and_replace: Append and Replace data
@@ -2954,9 +2973,20 @@ en:
         supported: Supported file types are CSV, TSV, and Excel. Supported protocols are HTTP and HTTPS.
         url_prompt: What's the web URL of the file you'd like to import?
       errors:
+        archive_error: 'Failed to open the zip archive: {reason}'
+        corrupt_shapefile_error: 'Failed to read the shapefile: {reason}'
+        create_column_error: Failed to create a dataset
+        create_dataset_error: Failed to create a dataset
+        create_working_copy_error: Failed to create a working copy
+        decode_filetype_error: No decoder found for {kind}
+        delete_column_error: Failed to delete a column of that dataset
+        get_column_error: Failed to get the columns of that dataset
+        incomplete_shapefile_error: 'Your shapefile archive is incomplete. It must contain a .dbf, .shp, and .prj file for every layer. Expected it to contain the following files, which were actually missing: {missing}.'
         insecure_esri_url: An insecure ESRI map layer URL has been added. Certain features will not work on this dataset as a result.
+        invalid_arity_error: One of the points in the following row did not have 2 coordinates {geom}
         invalid_crossload_url: Please enter a valid URL beginning with either HTTP or HTTPS.
         invalid_url: That does not appear to be a valid URL.
+        jsonparse_error: Failed to parse JSON at line {line} column {column} token {token} because {reason}
         missing_data_provider: You must specify the data provider (attribution) in a Creative Commons license.
         missing_esri_url: A valid ESRI map layer URL is required.
         missing_name: Dataset name is required.
@@ -2964,33 +2994,14 @@ en:
         point:
           missing_latlong: set to import a <strong>%{coordinateType} but not a <strong>%{missingCoordinateType} column. Please specify the full lat/long pair.
           suboptimal_column: set to import its <strong>%{field}</strong> from the source column <strong>%{originalColumnName}</strong>, but our analysis shows that the source column is a %{suggestion} column, while %{field} expects a column of type %{type}. Should you choose to proceed with these import settings, import or geocoding errors are likely to occur.
-        # geo-import errors
-        zkerror: 'There was an upstream error: {reason}'
-        create_dataset_error: Failed to create a dataset
-        create_working_copy_error: Failed to create a working copy
-        create_column_error: Failed to create a dataset
         publication_error: Failed to publish that dataset
-        get_column_error: Failed to get the columns of that dataset
-        delete_column_error: Failed to delete a column of that dataset
-        update_metadata_error: Failed to update the metadata on the partent dataset
-        upsert_error: Failed to upsert the dataset
-        vertex_too_complex_error: >-
-          There were {counted} vertices in row {rowNum}, the max is
-          {maxVerticesPerRow}
         shapefile_header_error: 'Failed to read the header in the shapefile: {reason}'
         shapefile_row_error: 'Failed to read a row in the shapefile: {reason}'
-        archive_error: 'Failed to open the zip archive: {reason}'
-        xmlparse_error: 'Failed to parse XML node due to {reason} near {path}'
-        jsonparse_error: >-
-          Failed to parse JSON at line {line} column {column} token {token} because
-          {reason}
-        invalid_arity_error: 'One of the points in the following row did not have 2 coordinates {geom}'
-        corrupt_shapefile_error: 'Failed to read the shapefile: {reason}'
-        incomplete_shapefile_error: >-
-          Your shapefile archive is incomplete. It must contain a .dbf, .shp, and .prj
-          file for every layer. Expected it to contain the following files, which were
-          actually missing: {missing}.
-        decode_filetype_error: 'No decoder found for {kind}'
+        update_metadata_error: Failed to update the metadata on the partent dataset
+        upsert_error: Failed to upsert the dataset
+        vertex_too_complex_error: There were {counted} vertices in row {rowNum}, the max is {maxVerticesPerRow}
+        xmlparse_error: Failed to parse XML node due to {reason} near {path}
+        zkerror: 'There was an upstream error: {reason}'
       finish:
         headline: Your Dataset has been created.
         subheadline: Click on Finish to see it!
@@ -3017,9 +3028,28 @@ en:
         web_explain: Choose this if you have a file that is already on the Internet and have the URL for it.
       import_columns:
         add_new_column: Add New Column
-        upload_success: Your file was successfully uploaded and saved to our system. Continue creating your dataset now, or come back and finish later.
         clear_all: Clear All
         data_type: Data Type
+        errors:
+          multiple_columns:
+            blank_names:
+              many_html: "<strong>{instances}</strong> of your columns do not have names. Please give them names."
+              one_html: "<strong>One</strong> of your columns does not have a name. Please give it a name."
+            columns_named_tags:
+              many_html: <strong>{instances}</strong> of your columns are named "tags". Columns may not be named "tags".
+              one_html: <strong>One</strong> of your columns is named "tags". Columns may not be named "tags".
+            duplicate_names: "<strong>{instances}</strong> of your columns are named <strong>“{name}”</strong>. Columns in a dataset cannot share the same name."
+            source_columns_dropped:
+              many_html: Columns {sourceColumns} are in your source data file, but are not currently set to be imported into your dataset.
+              one_html: Column {sourceColumns} is in your source data file, but is not currently set to be imported into your dataset.
+          single_column:
+            empty_composite_col: Column <strong>{resultColumnName}</strong> is a composite column that will be created out of multiple source columns, but you currently don't have it set to be populated by anything. Please add some source columns or text.
+            missing_lat_long: Column “<strong>{resultColumnName}</strong>” is set to import a <strong>{coordinateType}</strong> but not a <strong>{missingCoordinateType}</strong> column. Please specify the full lat/long pair.
+            non_text_composite_col: Column <strong>{resultColumnName}</strong> is a composite column that will be created out of multiple source columns, but it is currently set to import as <strong>{chosenType}</strong>. Please be certain that combining the columns you have specified will yield a valid {chosenType}.
+            type_too_generic: Column <strong>{resultColumnName}</strong> is set to import as <strong>{chosenType}</strong>, but our analysis indicates that the column is likely a <strong>{suggestedType}</strong> column. You can import it as {chosenType}, but you will lose some features if you do so. We strongly recommend that you import it as <strong>{suggestedType}</strong>.
+            wrong_type: Column <strong>{resultColumnName}</strong> is a <strong>{chosenType}</strong>, but our analysis indicates that the source column you are trying to import into it is of type <strong>{suggestedType}</strong>. Should you choose to import that column, roughly <strong>{invalidPercent}%</strong> of your data will likely import incorrectly.
+            wrong_type_location: Column “<strong>{resultColumnName}</strong>” is set to import its <strong>{field}</strong> from the source column <strong>{chosenColumn}</strong>, but our analysis shows that the source column is a {chosenType} column, while {field} expects a column of type {suggestedType}. Should you choose to proceed with these import settings, import or geocoding errors are likely to occur.
+            wrong_type_unknown_count: Column <strong>{resultColumnName}</strong> is set to import as <strong>{chosenType}</strong> but our analysis shows that <strong>{suggestedType}</strong> might be a better fit. Unless the column’s data is formatted correctly as {chosenType} data may import incorrectly.
         errors_warnings: Errors and Warnings
         fewer_rows: Fewer Rows
         headers: Headers
@@ -3040,27 +3070,8 @@ en:
         suggested_columns: Suggested columns
         suggested_flat: Suggested columns (no composites)
         suggested_plus_discrete: Suggested columns (composites and discrete)
+        upload_success: Your file was successfully uploaded and saved to our system. Continue creating your dataset now, or come back and finish later.
         why_choose_now: Why is it important to choose column types now?
-        errors:
-          multiple_columns:
-            blank_names:
-              one_html: <strong>One</strong> of your columns does not have a name. Please give it a name.
-              many_html: <strong>{instances}</strong> of your columns do not have names. Please give them names.
-            duplicate_names: <strong>{instances}</strong> of your columns are named <strong>“{name}”</strong>. Columns in a dataset cannot share the same name.
-            columns_named_tags:
-              one_html: <strong>One</strong> of your columns is named "tags". Columns may not be named "tags".
-              many_html: <strong>{instances}</strong> of your columns are named "tags". Columns may not be named "tags".
-            source_columns_dropped:
-              one_html: Column {sourceColumns} is in your source data file, but is not currently set to be imported into your dataset.
-              many_html: Columns {sourceColumns} are in your source data file, but are not currently set to be imported into your dataset.
-          single_column:
-            wrong_type: Column <strong>{resultColumnName}</strong> is a <strong>{chosenType}</strong>, but our analysis indicates that the source column you are trying to import into it is of type <strong>{suggestedType}</strong>. Should you choose to import that column, roughly <strong>{invalidPercent}%</strong> of your data will likely import incorrectly.
-            wrong_type_unknown_count: Column <strong>{resultColumnName}</strong> is set to import as <strong>{chosenType}</strong> but our analysis shows that <strong>{suggestedType}</strong> might be a better fit. Unless the column’s data is formatted correctly as {chosenType} data may import incorrectly.
-            type_too_generic: Column <strong>{resultColumnName}</strong> is set to import as <strong>{chosenType}</strong>, but our analysis indicates that the column is likely a <strong>{suggestedType}</strong> column. You can import it as {chosenType}, but you will lose some features if you do so. We strongly recommend that you import it as <strong>{suggestedType}</strong>.
-            empty_composite_col: Column <strong>{resultColumnName}</strong> is a composite column that will be created out of multiple source columns, but you currently don't have it set to be populated by anything. Please add some source columns or text.
-            non_text_composite_col: Column <strong>{resultColumnName}</strong> is a composite column that will be created out of multiple source columns, but it is currently set to import as <strong>{chosenType}</strong>. Please be certain that combining the columns you have specified will yield a valid {chosenType}.
-            wrong_type_location: Column “<strong>{resultColumnName}</strong>” is set to import its <strong>{field}</strong> from the source column <strong>{chosenColumn}</strong>, but our analysis shows that the source column is a {chosenType} column, while {field} expects a column of type {suggestedType}. Should you choose to proceed with these import settings, import or geocoding errors are likely to occur.
-            missing_lat_long: Column “<strong>{resultColumnName}</strong>” is set to import a <strong>{coordinateType}</strong> but not a <strong>{missingCoordinateType}</strong> column. Please specify the full lat/long pair.
       import_help: <strong>Need help?</strong> We maintain a <a href="%{common_errors}" rel="external">list of common warnings and errors</a> that may help you.
       import_shapefile:
         abbreviatedSubheadline: Summarizing this dataset may take a long time. Click next to import it.
@@ -3145,7 +3156,7 @@ en:
         share_facebook: Share on Facebook
         share_twitter: Share on Twitter
         snapshot_notice: This is a previously published version of the dataset. It is archived and cannot be modified.
-        snapshot_title:
+        snapshot_title: 
         snapshot_title_html: Snapshotted %{date}
         snapshot_unsavable: Snapshotted datasets and views cannot be created or modified
         subscribe: Subscribe to Changes
@@ -3556,7 +3567,7 @@ en:
           money:
             abbreviated: Abbreviated
             currency: Currency
-            format_mask_warning:
+            format_mask_warning: 
             groups:
               all: All
               common: Common
@@ -3600,10 +3611,10 @@ en:
             base_url_prompt: Enter the common URL prefix
             title: URL Options
           validation:
+            notallowed: You aren't allowed to edit column properties
             published: Please make a working copy or view of this dataset to change column properties
             snapshot: You cannot edit column properties for a view snapshot
             unsaved: You cannot edit column properties for an unsaved view
-            notallowed: You aren't allowed to edit column properties
         conditional_formatting:
           change_icon: change
           conditions:
@@ -3633,6 +3644,7 @@ en:
           subtitle: Data Lens is a visually engaging and interactive experience that includes improved data exploration and better data curation.  Click on <strong>New Data Lens</strong> to create a new one.  From there, you can visually explore the data, customize how it is shown, and manage how it will be presented in the catalog.
           title: Data Lens
         delete:
+          confirm: This will delete the %{view_type} permanently. There is no undo! Are you sure you wish to proceed?
           confirm_permanent: This will delete the %{view_type} permanently. There is no undo! Are you sure you wish to proceed?
           confirm_restorable: This deletion is reversible for up to %{number_of_days_restorable} days by an administrator of your domain. Any views or visualizations built using this dataset will be deleted permanently. Are you sure you wish to proceed?
           delete_button: Delete this %{view_type}
@@ -3656,6 +3668,7 @@ en:
             non_tabular: Only tabular data may be printed
         download:
           download_as: Download As
+          download_dataset: Please download the dataset from which this view is derived.
           geo_header: Download Geospatial Data
           monolayer_header: Download without geospatial data
           multilayer_header: Download a specific layer's data
@@ -3888,7 +3901,7 @@ en:
             delete: Delete this view
             expand: Click to expand
           no_results: There are no results
-          no_results_html:
+          no_results_html: 
           pagination:
             last: See last view
             next: See next %{count} views
@@ -3951,7 +3964,8 @@ en:
       api_endpoint: API Endpoint
       attachments: Attachments
       attachmentsDisabledMessagePart1: To upload attachments, first finish publishing this dataset. Then, click
-      attachmentsDisabledMessagePart2:  in the toolbar, and click Edit Metadata. You will then be able to upload attachments.
+      attachmentsDisabledMessagePart2: in the toolbar, and click Edit Metadata. You will then be able to upload attachments.
+      blob_uploaded: 'Excellent: we''ve saved your file. All that’s left is to describe your file''s metadata.'
       brief_description: Brief Description
       brief_description_prompt: Enter a description
       cancel: Cancel
@@ -4014,7 +4028,6 @@ en:
       save_changes: Save changes
       semantics_rdf: Semantics & RDF
       settings_saved: Your progress has been saved. Continue creating your dataset by filling out the metadata below.
-      blob_uploaded: "Excellent: we've saved your file. All that’s left is to describe your file's metadata."
       source_link: Source Link
       source_link_error: That does not appear to be a valid url.
       source_link_prompt: Enter Web Address
@@ -4097,7 +4110,7 @@ en:
       headline_upload: Please choose a file to upload
       layer: Layer
       many_headers: "%{num} of your rows are headers."
-      new_column: "New Column {num}"
+      new_column: New Column {num}
       no_file_selected: No file selected yet.
       no_headers: None of your rows are headers.
       no_source_column: "(No Source Column)"
@@ -4110,9 +4123,6 @@ en:
       try_again: Please try again in a bit.
       unknown_error: An unknown error has occurred
       uploading: Uploading your file
-      errors:
-        network_error: We were unable to save your metadata due to a network error.
-        http_error: "We were unable to save your metadata due to an error: {0}"
     link_account:
       success: Your external account has been linked.
     profile:
@@ -4240,8 +4250,8 @@ en:
           image_format: Please select a valid image type (PNG, JPG, or GIF)
           invalid_links: There was a problem updating your links. %{message}
           no_display_name: 'Error: ''Display Name'' is required'
-          no_password_no_openid: You cannot remove all your OpenID identifiers before you set a password
           no_password_no_auth0id: You cannot remove all your Auth0 identifiers before you set a password
+          no_password_no_openid: You cannot remove all your OpenID identifiers before you set a password
           password_mismatch: New passwords do not match
           user_missing: This user cannot be found, or has been deleted.
       info:
@@ -4285,9 +4295,9 @@ en:
       failed: Unable to login with that email and password. Please try again.
       forgot_password: Forgot Password?
       form:
-        sign_in_button: Sign In
         email_placeholder: Email
         password_placeholder: Password
+        sign_in_button: Sign In
       headline: Sign In to %{site}
       mismatch: Passwords do not match. Please try again.
       prompt_html: Sign in with your <strong>Socrata ID</strong>.

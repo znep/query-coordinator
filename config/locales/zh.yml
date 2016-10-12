@@ -42,33 +42,33 @@ zh:
     dataCards:
       add_card_dialog:
         add_card: "添加卡片"
-        add_card_title:
+        add_card_title: "添加一张卡片"
         add_this_card: "添加该卡片"
         card_on_page: "卡片已在页面上"
         card_on_page_long: "该卡片已在页面上"
         choose_column: "选择一列"
-        choropleth_admin_message:
-        choropleth_message:
+        choropleth_admin_message: 添加自定义边界：请求您的网站管理员通过管理面板的<a href="/admin/geo">Spatial Lens部分</a>配置可用的设计，或通过 <a href="mailto:support@socrata.com">联系Socrata的帮助</a>。
+        choropleth_message: 添加自定义边界：请求您的网站管理员通过管理面板的<a href="/admin/geo">Spatial Lens部分</a>配置可用的设计，或通过 <a href="mailto:support@socrata.com">联系Socrata的帮助</a>。
         column_chart_warning: "注意：这将产生一个超过一百条的柱状图，可能比其它图表慢"
-        column_label:
+        column_label: "列"
         curated_region_messages:
-          not_yet_computed:
-        custom:
+          not_yet_computed: "需要初始化的边界"
+        custom: "(自定义……)"
         customize_prompt: "自定义此卡片"
-        generic_prompt:
-        histogram_column_chart_warning:
-        no_available_boundaries:
+        generic_prompt: "从上方的下拉栏中选择一个列来添加一个新的可视化"
+        histogram_column_chart_warning: "注意：由于该列的值分布，将以柱状条形图的形式呈现而不是分布曲线"
+        no_available_boundaries: "无可用的边界"
         not_supported: "目前暂不支持"
         not_supported_long: "目前暂不支持此卡片类型"
         prompt: "从上面的下拉列表中选择一列添加新卡"
         settings: "设置"
         visualize_flyout:
-          choropleth:
-          column_chart:
-          distribution_chart:
-          feature_map:
-          search_card:
-          timeline_chart:
+          choropleth: "使用Spatial Lens将该数据可视化为分级统计图"
+          column_chart: "将该列可视化为柱形图"
+          distribution_chart: "将该列可视化为分布图"
+          feature_map: "将该列可视化为特征图"
+          search_card: "将该列可视化为检索卡片"
+          timeline_chart: "将该列可视化为时间表"
       api_explorer:
         additional_resources: "此API的其他资源："
         api_button: API
@@ -83,11 +83,11 @@ zh:
         title: API
         url: "你可以通过此URL的Socrata开放数据API访问此数据："
       card_aggregation_selector:
-        add_this_aggregation:
-        choose_count:
-        choose_sum:
-        function_label:
-        value_label:
+        add_this_aggregation: "添加该汇总"
+        choose_count: "统计"
+        choose_sum: "选择一列"
+        function_label: "功能"
+        value_label: "值"
       card_controls:
         collapse_card: "收起该开片"
         customize_disabled: "此卡片还没有自定义选项"
@@ -96,21 +96,21 @@ zh:
         remove_card: "删除此卡片"
       card_layout:
         add_card_here: "在此添加卡片"
-        card_group_customize_hint_flyout_text:
-        card_group_customize_hint_text:
-        card_group_placeholder_text:
+        card_group_customize_hint_flyout_text: "在分区之间拖曳卡片以调整每行的最大列数。卡片会自动调整大小以填补任何空隙"
+        card_group_customize_hint_text: "该区每行最多 {0} 张卡片"
+        card_group_placeholder_text: "拖曳并在此拖放卡片"
       card_titles:
-        average:
-        number_of:
-        sum_of:
+        average: "平均数{0}"
+        number_of: "{0}的数量"
+        sum_of: "{0}总和"
       choropleth:
-        computation_in_progress:
-        has_cardinality_error:
-        has_no_polygons:
-        no_preview_available:
-        pending_computation:
+        computation_in_progress: "<p>为这个数据组初始化边界。这一操作可能要花数分钟（较大的数据组时间更长）</p><p>初始化完成时将会显示地图。</p>"
+        has_cardinality_error: "由于所有点都在同一位置，无法生成该图。"
+        has_no_polygons: "边界内无显示的数据。"
+        no_preview_available: "无可用的预览"
+        pending_computation: "<p>这是该边界首次被用于这个数据组。</p><p>您一旦将图添加到该页面，这可能要花数分钟（大数据组耗时更长）来生成图。</p>"
       common:
-        by:
+        by: "由"
         cancel: "取消"
         cards:
           choropleth: "等值线"
@@ -137,7 +137,7 @@ zh:
           permissions: "许可"
           private: "隐私"
           public: "公开"
-        row:
+        row: "行"
         save: "保存"
       customize_bar:
         changes_warning: "你已更改此页面。"
@@ -148,25 +148,25 @@ zh:
         customizing_flyout: "你正在自定义此页面"
         customizing_flyout_instructions: "你可以随时点击此按钮预览你的修改并保存"
         exit_visualization_export: "要进入自定义模式：点击点击信息窗格中的取消按钮退出“下载图形可视化”模式"
-        unsaved_warning:
+        unsaved_warning: "该视图还未被保存。"
       customize_card_dialog:
         feature_map_flannel:
-          default_option:
-          select_column:
-          title:
+          default_option: "(默认)"
+          select_column: "选择一列"
+          title: "弹出标题"
         histogram_bucket_type:
-          linear:
-          linear_desc:
-          logarithmic:
-          logarithmic_desc:
-          title:
-          warning:
+          linear: "线性"
+          linear_desc: "这个选项将坐标轴上的标识定义为线性刻度(10,20,...)，对于较小的数字范围更实用。"
+          logarithmic: "对数"
+          logarithmic_desc: "这个选项将坐标轴上的标识定义为对数刻度(10,100,...)，对于较宽的数字范围更实用。"
+          title: X轴存储桶量
+          warning: "改变存储桶量会清除您在该卡片上的当前筛选"
         map_layer:
           custom: "自定义地图"
-          simple_blue:
-          simple_grey:
+          simple_blue: "简约蓝"
+          simple_grey: "简约灰"
           title: "地图基底层"
-        title:
+        title: "设置"
         visualization_options:
           title: "卡片类型"
       distribution_chart:
@@ -176,25 +176,25 @@ zh:
           error: "尝试解析此卡片时遇到错误。"
           no_data: "没有可显示的数据。"
       export_menu:
-        choose_card:
+        choose_card: "选择卡片"
         csv:
-          all_rows:
-          current_filter:
-          header:
-          not_available:
-          not_available_specific:
+          all_rows: "所有行"
+          current_filter: "当前筛选"
+          header: "行作为CSV(Excel)"
+          not_available: "不适用"
+          not_available_specific: "对该数据组不可用"
         image:
-          description:
-          header:
+          description: "将视图保存为PNG图像文件"
+          header: "可视化图像"
       feature_map:
-        feature_map_disabled:
+        feature_map_disabled: "特征图不可用。"
         zoom_disabled: "缩放功能暂不可用。请稍后再试。"
       feature_map_flannel:
-        error_message:
-        next:
-        paging:
-        previous:
-        showing:
+        error_message: "获取位置数据时发生了一个错误。"
+        next: "下一个"
+        paging: "{1} 的 {0}"
+        previous: "前"
+        showing: "显示{0}"
       feedback_panel:
         broken: "似乎出了故障"
         feedback: "反馈"
@@ -218,67 +218,67 @@ zh:
         clear_filter_long: "此页面当前由该值过滤，点击清除"
         clear_range_filter_long: "此页面当前由该选项过滤，点击清除"
         current_filter: "当前过滤器"
-        dense_data:
+        dense_data: "众多"
         details: "点击查看详情"
         expand: "点击展开"
-        filter_prompt:
+        filter_prompt: "应用筛选以查看细节"
         filtered_amount: "过滤量"
         total: "总计"
-        zoom_or_filter_prompt:
+        zoom_or_filter_prompt: "放大或应用筛选以查看细节"
       last_updated:
         label: "最近更新"
       lens_type:
         community: "社区数据透镜"
         official: "办公数据透镜"
-        official_view_explanation:
-        official_view_label:
+        official_view_explanation: "选择这个选项会给这个视图一个特别的方案设计，来表明这是一个官方视图。"
+        official_view_label: "官方视图"
       manage_lens_dialog:
         dataset_private_page_private: "鉴于此页面的源数据集被设为<b>隐私</b>，此页面不能公开。只有拥有访问特权的人可以看到此页面，并且不会出现在公共目录中。"
         dataset_private_page_public: <span class="icon-warning"></span>此页面的源数据集被设为<b>隐私</b>，因此尽管此页面被设为公开，没有源数据集访问权限的任何人都无法看到该页面。它仍然会出现在公共目录中。你应该考虑将数据集设置为公开，或将本页面设置为隐私。
         dataset_public_page_private: "此页面被设为<b>隐私</b>，因此只有拥有访问特权的人可以看到。它不会出现在公共目录中。"
         dataset_public_page_public: "此页面及其源数据集均为<b>公开</b>，因此任何人都可以看到此页面并且它将出现在公共目录中。"
         error:
-          ownership:
-          preamble:
-          sharing:
-          unknown:
-          visibility:
+          ownership: "所有者无法被修改。"
+          preamble: "您的一些修改未被保存："
+          sharing: "无法更新角色和分享设置。"
+          unknown: "发生了一个未知错误。请联系Socrata寻求帮助。"
+          visibility: "无法更新可见权限。"
         ownership:
-          owner_unavailable:
-          title:
-          warning:
+          owner_unavailable: "所有者信息暂时不可用。"
+          title: "所有者"
+          warning: "为了继续，您必须为这个Data Lens选择一位所有者。"
         provenance:
-          description:
-          label:
-          title:
+          description: "选择这个选项会给这个视图一个特别的分界来表明这是一个官方视图"
+          label: "官方视图"
+          title: "查看状态"
         sharing:
-          add_new:
-          contributor:
-          inherited_description:
-          keep:
+          add_new: "新添"
+          contributor: "贡献者"
+          inherited_description: "通过来源数据组获得："
+          keep: "保留"
           new_share_dialog:
-            add_more:
-            description:
-            email:
-            message:
-            remove:
-            title:
-          owner:
-          remove:
-          title:
-          viewer:
+            add_more: "添加更多"
+            description: "列举您希望给予这个Data Lens的许可权的额外人员。如果有人还没有账户，我们会发送给他们一份注册邀请，在注册后他们将被给予许可权。"
+            email: "电子邮箱地址"
+            message: "可选消息"
+            remove: "移除"
+            title: "分享这个Data Lens"
+          owner: "共同所有者"
+          remove: "移除"
+          title: "分享给"
+          viewer: "阅览者"
         title: "管理"
-        unsaved_changes_message:
+        unsaved_changes_message: "您有未保存的修改"
         visibility:
-          dataset_is_private:
-          hidden:
-          shown:
-          title:
-          user_is_unprivileged:
-          view_moderation_approved:
-          view_moderation_pending:
-          view_moderation_rejected:
-          view_moderation_title:
+          dataset_is_private: Data Lens是基于隐私数据组{0}。Data Lens只能在来源数据组被公开时在目录中显示。
+          hidden: "从目录中隐藏"
+          shown: "在目录中显示"
+          title: "可见设置"
+          user_is_unprivileged: "您必须是一位管理员或一位发表者才能调整Data Lens的可见权限。请联系网站管理员来修改这一设置。"
+          view_moderation_approved: "批准"
+          view_moderation_pending: "待决定"
+          view_moderation_rejected: "拒绝"
+          view_moderation_title: "视图调整"
       metadata:
         data_as_csv: "完整的源数据为CSV（Excel）"
         edit_description_prompt: "给你的页面写一段好的介绍，帮助别人理解你的数据所讲述的故事。（可选）"
@@ -292,8 +292,8 @@ zh:
         acknowledgement: "好，明白了！"
         description: "我们正在努力改善此网站的移动体验。"
       multiline_ellipsis:
-        show_less:
-        show_more:
+        show_less: "显示更少"
+        show_more: "显示更多"
       page_header:
         logo: "标志"
         sign_in: "登录"
@@ -303,23 +303,23 @@ zh:
         clear_all: "清除所有"
         clear_all_flyout: "点击重设所有过滤器"
         filter_title: 显示<span class="light">{0}</span>
-        filtered_title:
-        old_filter_title:
-        old_filtered_title:
-        unfiltered_title:
+        filtered_title: 显示<span class="light">{0}</span>
+        old_filter_title: 显示<span class="light">{0}</span>
+        old_filtered_title: 显示<span class="light">{0}</span>
+        unfiltered_title: 显示<span class="light">全部{0}</span>
       related_views:
         button: "此数据的其他视图"
         title: "此数据的其他视图"
       related_visualization_selector:
-        based_on_column:
-        visualization_not_supported:
+        based_on_column: "基于{0}"
+        visualization_not_supported: "请原谅我们的不足！我们仍在开发能让您在故事中嵌入这种图表种类的功能。"
       remove_all_cards:
-        button:
-        flyout:
-        flyout_no_cards:
-        flyout_not_edit_mode:
-        prompt:
-        prompt_confirm:
+        button: "移除所有卡片"
+        flyout: "点击移除该页面上的所有卡片"
+        flyout_no_cards: "该页面上没有卡片可移除"
+        flyout_not_edit_mode: "进入自定义模式来移除这个Lens页面上的所有卡片"
+        prompt: "您确定您想要将所有卡片从本页面移除吗？"
+        prompt_confirm: "是的，移除所有"
       revert_button:
         flyoutHasChanges: "点击撤销上次保存后所做的所有修改"
         flyoutNoChanges: "没有要还原的修改"
@@ -332,7 +332,7 @@ zh:
         link_placeholder: "在此输入一个URL"
         underline: "下划线"
       save_as:
-        flyoutEphemeral:
+        flyoutEphemeral: "点击保存这个Data Lens"
         flyoutFailedBody: "请联系Socrata支持团队"
         flyoutFailedTitle: "发生了一个错误"
         flyoutIdle: "点击保存你的修改为新页面"
@@ -341,21 +341,21 @@ zh:
         description: "为你的页面输入一段说明（可选）"
         new_name: "以新名称保存当前页面"
         title: "保存为"
-        visibility:
-        visibility_disabled:
-        visibility_with_view_moderation:
+        visibility: "设置您的新页面的可见权限"
+        visibility_disabled: "您没有可升级Data Lens可见权限的许可。请联系网站管理员来修改这一设置。"
+        visibility_with_view_moderation: "设置您的新页面的视图调整状态"
       save_button:
         failed: "失败"
         flyoutFailedBody: "请联系Socrata支持团队"
         flyoutFailedTitle: "发生了一个错误"
         flyoutIdle: "点击保存你的修改"
         flyoutNoChanges: "没有要保存的修改"
-        flyoutNoEditPermission:
+        flyoutNoEditPermission: "您没有可将这些修改保存到这个Lens的许可"
         save: "保存"
         saved: "已保存！"
         saving: "正在保存……"
       search_card:
-        error_explanation:
+        error_explanation: "<p>在获取搜索建议时遇到了一个错误。</p><p>您依然可以在任何时候按下回车来根据您输入的文字精确搜索，或者您可以稍后再试来查看建议的值。 </p>"
         invalid_search: "尝试搜索不含字母的数字。"
         loading: "加载建议……"
         no_results: "没有搜到任何记录。请检查你的拼写，或尝试不同的词语。"
@@ -365,13 +365,13 @@ zh:
         search_info: "显示{0}搜索结果，共{1}条"
         two_examples: "例如：'{0}'或'{1}'"
       suggestion_tool_panel:
-        all_suggestions:
-        loading_suggestions_hint:
-        max_suggestions:
-        no_suggestions:
-        no_suggestions_hint:
-        only_suggestion:
-        some_suggestions_hint:
+        all_suggestions: "显示所有 {0} 的搜索建议："
+        loading_suggestions_hint: "输入一些文本，按下回车键搜索，或等待搜索建议。"
+        max_suggestions: "显示第一个 {0} 的搜索建议:"
+        no_suggestions: "没有找到和您的搜索条目匹配的数据。"
+        no_suggestions_hint: "放宽您的搜索范围获得更多结果。"
+        only_suggestion: "显示唯一的搜索建议："
+        some_suggestions_hint: "在上方选择一个搜索建议，或继续输入获得更多搜索建议。"
       table:
         a_to_z: A-Z
         ascending: "升序"
@@ -380,8 +380,8 @@ zh:
         loading: "加载中……"
         newest_first: "最新者优先"
         no_rows: "没有可显示的行"
-        no_sort:
-        non_range_label:
+        no_sort: "没有可用的分类"
+        non_range_label: "{0} <strong>{1} 来自 {2}</strong>"
         oldest_first: "最旧者优先"
         range_label: "{0} <strong>{1}-{2}之{3}</strong>"
         range_label_all: "显示所有{0} {1}"
@@ -400,21 +400,21 @@ zh:
       tour:
         aggregation:
           step_1:
-            text:
-            title:
+            text: "我们听到了您的反馈。我们移动了一项设置来改善自定义模式！"
+            title: "注意到有什么不同了吗？"
           step_2:
-            text:
-            title:
+            text: "每张卡片都可以由不同的一列总结。我们也去除了15个数列的限制。"
+            title: "使用设置来改变汇总功能"
           step_3:
-            text:
-            title:
+            text: "选中您想要合计总数的数列，或选择统计行。"
+            title: "用SUM或COUNT进行总结"
           step_4:
-            text:
-            title:
+            text: "您可以为相同的列添加多个卡片，然后由不同的列值总结。这允许了有用的对照比较。"
+            title: "现在它更灵活了！"
           step_5:
-            text_one:
-            text_two:
-            title:
+            text_one: "使用这个灵活的总结数据的方法来创建您的页面。"
+            text_two: 通过访问Socrata知识库上的<a href="https://support.socrata.com/hc/en-us/articles/216510338">使用汇总功能</a>文章来了解更多。我们一如既往地希望收到您的反馈。
+            title: "自己试试！"
   controls:
     browse:
       actions:
@@ -427,12 +427,12 @@ zh:
         compact_list: "简洁列表"
         create_dataset: "创建或上传数据集"
         create_dataset_short: "创建新数据集"
-        create_dataset_shorter:
+        create_dataset_shorter: "数据组"
         create_dataset_verb: "创建"
-        create_resource:
-        create_resource_short:
-        create_resource_verb:
-        create_story_short:
+        create_resource: "创建一个新的Socrata资源"
+        create_resource_short: "新建…"
+        create_resource_verb: "创建"
+        create_story_short: "故事"
         dataset_subscribe: "订阅本视图的改动"
         delete:
           button: "删除"
@@ -461,117 +461,117 @@ zh:
       browse2:
         api:
           link:
-            label:
-            title:
-        comment_count:
+            label: API文档
+            title: "查看这个数据组的API文档记录"
+        comment_count: "评论数量"
         create:
           dataset:
-            label:
-            title:
-          label:
+            label: "创建/上传一个数据组"
+            title: "创建一个数据组或将一个数据组上传至Socrata平台"
+          label: "新添"
           story:
-            label:
-            title:
-          title:
+            label: "创建一个Socrata故事"
+            title: "创建一个新的Socrata故事"
+          title: "创建一个新的Socrata资源"
         created_at:
-          label:
+          label: "已创建"
         data_types:
-          label:
+          label: "数据类型"
         description:
-          show_less_label:
-          show_more_label:
+          show_less_label: "更少"
+          show_more_label: "更多"
         display_types:
-          api:
-          blob:
-          calendar:
-          chart:
-          data_lens:
-          dataset:
-          draft:
-          filter:
-          form:
-          href:
-          map:
-          predeply_api:
-          pulse:
-          story:
-          unknown:
+          api: API
+          blob: "文件或文档"
+          calendar: "日历"
+          chart: "图表"
+          data_lens: Data Lens
+          dataset: "数据组"
+          draft: "起草数据组"
+          filter: "筛选后视图"
+          form: "表格"
+          href: "外部链接"
+          map: "地图"
+          predeply_api: "预部署API"
+          pulse: "脉冲"
+          story: "故事"
+          unknown: "位置"
         edit:
           delete:
-            confirm:
-            error:
-            label:
-            title:
+            confirm: 您确定您想要删除"%{dataset}"吗?
+            error: 删除"%{dataset}"时发生了错误。请再试一次。
+            label: "删除"
+            title: 删除"%{name}"
           make_private:
-            error:
-            label:
-            title:
+            error: 将"%{dataset}"设为隐私时发生了错误。请再试一次。
+            label: "设为隐私"
+            title: 将"%{name}"设为隐私
           make_public:
-            error:
-            label:
-            title:
+            error: 将"%{dataset}"设为公开时发生了错误。请再试一次。
+            label: "设为公开"
+            title: 将"%{name}"设为公开
         facets:
           clear_all:
-            label:
+            label: "清除所有"
           expand:
-            label:
-            title:
+            label: "显示所有…"
+            title: "显示所有选项"
           header:
-            filter:
-            filtered_by:
-            result:
-          hint:
+            filter: "筛选"
+            filtered_by: "筛选由"
+            result: "结果"
+          hint: "筛选或浏览结果"
           mobile:
-            back:
-            clear_all:
-            filter:
-            sort:
-            sort_by:
+            back: "返回"
+            clear_all: "清除所有"
+            filter: "筛选"
+            sort: "分类"
+            sort_by: "分类按"
           modal:
-            alphaAscending:
-            close:
-            top:
+            alphaAscending: A-Z
+            close: "关闭"
+            top: "最高"
         federation:
-          label:
-          label_with_source:
+          label: "数据提供来自"
+          label_with_source: "数据提供来自%{source}"
         last_updated:
-          label:
+          label: "已更新"
         odn:
           link:
-            label:
-            title:
-          prompt:
+            label: "在开放数据网络上"
+            title: "在开放数据网络上找到更多类似的数据"
+          prompt: "找到类似的数据"
         results:
-          cetera_count:
-          count:
+          cetera_count: "显出 %{total}的%{start}-%{end}结果"
+          count: "显示全部%{total}个结果的第%{this}个"
         search:
           clear:
-            title:
-          placeholder:
-          title:
+            title: "清除搜索"
+          placeholder: "搜索"
+          title: "搜索"
         settings:
-          label:
-          title:
+          label: she zhi
+          title: "设置"
         skiplinks:
-          results:
+          results: "跳过看结果"
         sort:
-          label:
+          label: "分类按照"
         sorts:
           last_modified: "最近更新"
           most_accessed: "浏览量最多"
           newest: "最新者优先"
           relevance: "相关度最高"
         topics:
-          empty:
-          label:
-          more:
+          empty: "没有指定的主题"
+          label: "主题"
+          more: "还有%{count}个"
         view_count:
-          label:
+          label: "查看"
         visibility:
           private:
-            label:
+            label: "可见权限：隐私"
           public:
-            label:
+            label: "可见权限：公开"
       facets:
         categories_singular_title: "类别"
         categories_title: "类别"
@@ -590,15 +590,15 @@ zh:
           blob: "文件及文档"
           calendars: "日历"
           charts: "图表"
-          data_lens:
+          data_lens: Data Lens页面
           datasets: "数据集"
-          draft:
+          draft: "起草数据集"
           filters: "筛选视图"
           forms: "表格"
           href: "外部数据集"
           maps: "地图"
-          pulse:
-          pulse_help:
+          pulse: Pulse
+          pulse_help: "了解关于Pulse"
           story: "故事"
           story_help: "了解故事"
           unpublished: "未发布的数据集"
@@ -606,18 +606,18 @@ zh:
         view_types_title: "视图类型"
       listing:
         comment_count: "评论数量"
+        error: "抱歉，本次未能搜索到结果，请稍后再试。"
         federation_source: "来自联合域：%{source}"
         federation_source_html: "来源：%{source_link}"
         no_results: "没有结果"
         result_count: "共%{total}个结果，显示 %{this} "
-        result_count_cetera:
+        result_count_cetera: "显示%{total}的%{start}-%{end}"
         table_header:
           name: "名称"
           popularity: "关注度"
           rss: RSS
           type: "类型"
-        error: "抱歉，本次未能搜索到结果，请稍后再试。"
-      ordered_topics:
+      ordered_topics: "有序的主题"
       row_results:
         less_link: "更少"
         matching_rows: "匹配的行"
@@ -648,8 +648,8 @@ zh:
           main: "结果 %{body}"
           term: '"%{term}" 的'
     charts:
-      inaccessible:
-      missing_column_html:
+      inaccessible: "视图无法获得或丢失。"
+      missing_column_html: 啊……似乎支持这张图表的数据组的配置被进行了改动。若您不是该页面的所有者，请查看<a href="https://support.socrata.com/hc/en-us/articles/216102847" title="Classic Visualization Chart Configuration Changes" target="_blank">这篇帮助文章</a> 或联系<a href="mailto:support@socrata.com" title="support@socrata.com">support@socrata.com</a>请求援助。
       negatives_in_data: "无效图表：现负值"
       no_data: "无数据"
       other_slice_label: "其他"
@@ -689,7 +689,7 @@ zh:
           email: "电子邮件"
           facebook: Facebook
           twitter: Twitter
-        share_story_text:
+        share_story_text: "在%{site}上查看%{name}:"
         share_text: "到%{site}查看%{name}数据集："
       sidebar:
         tabs:
@@ -837,32 +837,32 @@ zh:
       delete_warning_multi_column: "您想删除选中的列吗？列中的数据将全部删除！"
       delete_warning_single_column: "您想删除选中的列吗？列中的数据将全部删除！"
       edit_column_properties: "编辑列属性"
-      end_page:
+      end_page: "最后一页"
       errors:
         cannot_edit_at_this_time: "目前无法编辑该列。请稍后再试。"
-        data_lens_is_incompatible_with_group_bys:
+        data_lens_is_incompatible_with_group_bys: "带有分组的数据组不可以被使用在Data Lens页面。我们为给您带来的不便而抱歉。"
         primary_key_collision: "此值是主键。你不能覆盖它。"
         row_locked_for_edit: "现阶段，我们无法编辑刚刚创建的行。我们正努力实现该功能。目前，请在编辑该行前刷新页面。"
-        something_went_wrong:
-        timeout_on_bootstrap:
+        something_went_wrong: "似乎有什么出错了。请刷新本页面。"
+        timeout_on_bootstrap: "发生超时，但是我们依然在后台生成您的Data Lens。请在几分钟后重试。"
       filter_this_column: "对本列进行筛选"
       geocodes_pending: "在位置栏中的行仍在地理编码。请等待，直到完成以发布这一数据集"
       hide_column: "隐藏列"
       menu: "菜单"
       must_enter_name: "您必须输入此列的名称"
       new_row: "新增"
-      next_page:
+      next_page: "下一页"
       no_columns: "数据集%{uid}没有任何列。"
       no_rows: "无行显示"
-      page_size:
+      page_size: "每页显示%{pageSize}行"
       permission_denied: "您没有访问该视图的权限。"
       previous: "上一步"
-      previous_page:
+      previous_page: "前一页"
       required_cols_missing: "缺少该视图所需的列"
-      row_count:
+      row_count: "总行数%{count}"
       sort_ascending: "按升序排列"
       sort_descending: "按降序排列"
-      start_page:
+      start_page: "第一页"
       totals: "目标"
       view_cell_comments: "查看该单元格注释"
       view_first_row: "查看第一列"
@@ -871,7 +871,7 @@ zh:
       view_previous_row: "查看前一列"
       view_row: "查看行"
       view_single_row: "查看单行的数据"
-      viewing_current_page:
+      viewing_current_page: "查看总%{total}页的第%{current}页"
       viewing_row_html: 查看第 <span class="curPage"></span> 行，共 <span class="totalPages"></span> 行
     map:
       address_prompt: "在此输入地址"
@@ -898,8 +898,8 @@ zh:
       previous: "下一"
       previous_row: "上一行"
       request_timed_out: "该数据请求超时。"
-      unable_to_display_features_html:
-      unable_to_load_map_html:
+      unable_to_display_features_html: "<h3>在当前缩放比例无可用的特征。</h3>"
+      unable_to_load_map_html: "<h3>我们无法连接到支持该地图的Esri地图服务。</h3><p>如果问题依然存在，请联系网站管理员报告错误信息。</p>"
     nominate:
       all: "所有"
       approve: "（批准）"
@@ -982,7 +982,7 @@ zh:
     and: "和"
     auth:
       invalid_userpass: "无效的用户名或密码"
-      need_email_verification:
+      need_email_verification: "在您完成您的注册和登录之前，您需要为这个账户验证电子邮箱地址。如果您没有收到我们发送给您的验证邮件，只需用同样的电子邮箱地址创建一个新的账户，您就会收到另一封邮件。"
       need_login: "你必须先登录才能访问此页"
       need_permission: "你没有权限查看此页"
       too_many_tries: "该登录尝试的登录次数过多。账户暂时停用。"
@@ -1016,7 +1016,7 @@ zh:
       timeline: "时间轴"
       treemap: "树形图"
     data_types:
-      blob:
+      blob: Blob
       calendar_date: "日期和时间"
       checkbox: "复选框"
       dataset_link: "数据集链接"
@@ -1027,14 +1027,14 @@ zh:
       flag: "旗标"
       geospatial: "地理空间"
       html: "格式化文本"
-      line:
+      line: "带点线段"
       link: "链接列"
       list: "列表"
       location: "地点"
       money: "金额"
-      multiline:
-      multipoint:
-      multipolygon:
+      multiline: "多个带点线段"
+      multipoint: "多点"
+      multipolygon: "多个多边形"
       nested_table: "嵌套表"
       number: "数字"
       object: "对象"
@@ -1042,7 +1042,7 @@ zh:
       phone: "电话"
       photo: "照片（图像）"
       point: "点"
-      polygon:
+      polygon: "多边形"
       stars: "星号"
       text: "纯文本"
       url: "网址"
@@ -1092,7 +1092,7 @@ zh:
       years_past: "%{time} 年前"
     dialogs:
       apply: "应用"
-      back:
+      back: "返回"
       cancel: "取消"
       close: "关闭"
       continue: "继续"
@@ -1134,16 +1134,16 @@ zh:
         between: "介于"
         contains: "包含"
         equals: "是"
-        exists:
+        exists: "存在"
         greater_than: "大于"
         greater_than_or_equals: "最少为"
-        is_after:
-        is_before:
+        is_after: "在后面"
+        is_before: "在前面"
         is_blank: "为空"
-        is_checked:
-        is_empty:
+        is_checked: "已检查"
+        is_empty: "为空"
         is_not_blank: "不为空"
-        is_not_checked:
+        is_not_checked: "未检查"
         less_than: "小于"
         less_than_or_equals: "最多为"
         not_contains: "不含"
@@ -1221,7 +1221,7 @@ zh:
       dateISO: "请填入有效的日期(ISO)。"
       digits: "请只填数字。"
       email: "请填入有效的电子邮件地址。"
-      email_recipient:
+      email_recipient: "请输入一个有效的电子邮箱地址或选择一个分组。"
       equalTo: "请再次输入相同的值。"
       max: "请输入小于或等于{0}的值。"
       maxlength: "请不要超过{0} 个字符。"
@@ -1238,7 +1238,7 @@ zh:
       blob: "非表格文件或文档"
       calendar: "日历"
       chart: "图表"
-      data_lens:
+      data_lens: Data Lens页面
       dataset: "数据集"
       filter: "筛选视图"
       form: "表格"
@@ -1246,7 +1246,7 @@ zh:
       grouped: "分组视图"
       href: "外部数据集"
       map: "地图"
-      story:
+      story: "故事"
       table: "表"
       working_copy: "工作副本"
     view_types_plural:
@@ -1262,244 +1262,252 @@ zh:
       private: "私有"
       public: "公共"
   data_lens:
-    render_error:
+    render_error: "生成该页面时遇到了一个问题。"
   dataset_landing_page:
     action_buttons:
-      api:
-      comment:
-      contact_owner:
-      data:
-      download:
-      odata:
-      share:
-    add:
+      api: API
+      comment: "对此数据组评论"
+      contact_owner: "联系数据组所有者"
+      data: "查看数据"
+      download: "下载"
+      odata: "通过OData获取数据"
+      share: "分享"
+    add: "添加"
     api_flannel:
-      description:
-      developer_portal_button:
-      endpoint_title:
-      foundry_button:
-      multiple_geo_layers:
-      title:
-    back:
+      description: Socrata Open Data API(SODA)提供对该数据组的程序性访问，包括筛选、查询、和汇总数据的能力。
+      developer_portal_button: "开发者入口"
+      endpoint_title: API端点
+      foundry_button: API文档
+      multiple_geo_layers: "这个数据组含有多重地理空间层。每一层面下都有它自己的文档记录和API端点。"
+      title: "通过SODA API访问该数据组"
+    back: "返回"
     blob_download:
-      download:
-      edit_prompt_button:
-      edit_prompt_message:
-      title:
+      download: "下载"
+      edit_prompt_button: "编辑来源"
+      edit_prompt_message: "编辑这个数据组的来源文件。"
+      title: "下载这个资源"
     blob_preview:
-      title:
-    bootstrap_button:
-    bootstrap_disabled_notice:
-    bootstrap_message:
-    cancel:
-    change:
-    choose:
-    close:
-    contact_dataset_owner:
+      title: "预览"
+    bootstrap_button: "创建一个可视化视图"
+    bootstrap_disabled_notice: "您的数据现在正被处理中。几分钟后刷新页面，您将能创建一个新的视图。"
+    bootstrap_message: "这个数据组没有任何相关的视图。您想要现在创建一个新的吗？"
+    cancel: "取消"
+    change: "修改"
+    choose: "选择"
+    close: "关闭"
+    contact_dataset_owner: "联系数据组所有者"
     contact_dataset_owner_modal:
-      description:
-      email:
-      email_description:
-      error_empty_email:
-      error_empty_message:
-      error_empty_recaptcha:
-      error_empty_subject:
-      error_invalid_email:
-      failure_html:
-      message:
-      recaptcha:
-      recaptcha_loading:
-      send:
-      sending:
-      subject:
-      success_html:
-      title:
-    copy:
-    copy_success:
+      description: "向数据组所有者发送一个短消息来提问问题、作出评论、或指出关于数据一些情况。"
+      email: "您的电子邮件"
+      email_description: "(您的电子邮件地址将会被分享给数据组所有者好让他们能给您回复)"
+      error_empty_email: "请填写您的电子邮件好让数据所有者给您答复。"
+      error_empty_message: "请填写消息表单。"
+      error_empty_recaptcha: "请通过勾选上方的方框来证明您不是机器人。"
+      error_empty_subject: "请填写您的消息主题。"
+      error_invalid_email: "请输入一个有效的电子邮件地址。"
+      failure_html: "<b>哦不！</b> 出错了。请稍后再试。"
+      message: "消息"
+      recaptcha: Recaptcha验证码挑战
+      recaptcha_loading: Recaptcha验证码加载中
+      send: "发送"
+      sending: "表单正在发送"
+      subject: "主题"
+      success_html: "<b>谢谢您!</b>您的消息已被发送。"
+      title: "向这个数据组的所有者发送消息"
+    copy: "复制"
+    copy_success: "已复制！"
     dataset_contents:
-      columns:
-      row_display_unit:
-      rows:
-      title:
+      columns: "列"
+      row_display_unit: "每行都是"
+      rows: "行"
+      title: "这个数据组里有什么？"
     dataset_preview:
-      all_rows:
-      grid_view_link:
-      latitude:
-      longitude:
-      many_rows:
-      next:
-      no_column_description:
-      no_row_count:
-      no_rows:
-      only_rows:
-      previous:
-      title:
-      unable_to_render:
-    default_row_label:
-    done:
+      all_rows: "显示所有行"
+      grid_view_link: "探索数据"
+      latitude: "纬度"
+      longitude: "经度"
+      many_rows: "显示总{datasetRowCount}行的{unitOther} {firstRowOrdinal}-{lastRowOrdinal}行"
+      next: "下一个"
+      no_column_description: "没有提供描述。"
+      no_row_count: "行数统计不可用"
+      no_rows: "无{unitOther}"
+      only_rows: "显示{datasetRowCount}行的第{unitOne} {firstRowOrdinal}行"
+      previous: "前"
+      title: "表格预览"
+      unable_to_render: "我们无法显示该表格。"
+    default_row_label: "行"
+    done: "完成"
     download:
-      csv_for_excel:
-      csv_without_geo:
-      json_without_geo:
-      original:
-      shapefile:
-    error:
+      csv_for_excel: "用于Excel的CSV文件"
+      csv_without_geo: CSV文件(无地理空间数据)
+      json_without_geo: JSON文件(无地理空间数据)
+      original: "原始文件"
+      shapefile: Shapefile文件
+    error: "错误"
     featured_content:
       manage_prompt:
-        button:
-        message:
-        message_blob:
-      title:
+        button: "管理推荐内容"
+        message: "选择"
+        message_blob: "选择推广最多3个与该文件或文档有关的外部资源。若留空，该模块将隐藏。"
+        message_external: "选择推广最多3个与该数据有关的外部资源。若留空，该模块将隐藏。"
+      title: "使用这个数据的推荐内容"
     featured_content_modal:
-      external:
+      external: "外部资源"
       external_resource_form:
-        description:
-        header:
-        invalid_image_message:
-        invalid_url_message:
-        message:
-        preview_image:
-        title:
-        url:
-      header:
-      introduction:
-      introduction_blobby:
-      preview:
-      remove_error:
-      remove_prompt:
-      save_error_message:
-      story:
+        description: "描述"
+        header: "添加一个外部资源"
+        invalid_image_message: "这似乎并不是图像。试着上传一个gif、png、或jpg。"
+        invalid_url_message: "这似乎是一个无效链接。试试将http://添加到您的链接的开头。"
+        message: "创建一个导向和本数据相关的外部配件的链接。它可以是网站上酷炫的可视化效果、一个关于这个数据是如何发布的博客日志、或指向您的网站的另一部分的链接。"
+        preview_image: "预览图像"
+        title: "标题"
+        url: "资源链接"
+      header: "管理推荐内容"
+      introduction: "您想让人们在第一次查看这个数据组时看到什么？推广最多3个使用该数据的Socrata配件，或者选择添加任何相关的外部资源。将这个模块想成您的数据的脸。"
+      introduction_blobby: "您想让人们在第一次查看这个配件时看到什么？推广最到3个和这个文件或文档相关的外部资源。"
+      introduction_external: "您想让人们在第一次查看这个数据组时看到什么？推广最多3个和本数据相关的外部资源。"
+      preview: "推荐内容预览"
+      remove_error: "哦不！有什么出错了，请重试。"
+      remove_prompt: "您确定您想要移除推荐内容的这一块吗？"
+      save_error_message: "哦不！有什么出错了，请重试。"
+      story: "故事"
       story_form:
-        header:
-        invalid_url_message:
-        message_html:
-        url:
-      title:
+        header: "添加一个Socrata故事"
+        invalid_url_message: "呃……有什么出错了。试试使用一个有效的Socrata Story链接。"
+        message_html: 使用Socrata Perspectives,指导您的用户找到基于该数据的相关叙述。要获得这一领域的公开故事的完整列表<span class="no-wrap"><a href="/browse?limitTo=story" target="_blank">点击这里 <span class="icon-external"></span></a></span>
+        url: "链接到故事"
+      title: "推荐内容"
       view_selector_modal:
-        header:
-        message:
-        view_fetch_error:
-      visualization:
+        header: "添加一个Socrata Visualization"
+        message: "选择一个您认为代表了您的数据组的可视化或筛选视图。这将成为您的用户们查看这个数据组时首先看到的东西之一。"
+        view_fetch_error: "哦不！我们视图获取这个数据的可视化视图时有什么出错了。稍后再试。"
+      visualization: "可视化"
     featured_views:
-      no_content_alert_html:
-      title:
-      view:
+      no_content_alert_html: "<b>呃...</b> 似乎没有使用这个数据的公开内容。"
+      title: "使用这个数据的流行内容"
+      view: "查看"
     feedback:
-      panel_details_html:
-      panel_title:
-      screenshot_no:
-      screenshot_yes:
-      title:
-    less:
-    manage_dataset:
-    manage_prompt:
+      panel_details_html: With a screenshot you can show us exactly what you have feedback on. We’re using <a href="https://usersnap.com">Usersnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy">privacy policy</a>.
+      panel_title: "您想要放入一个当前页面的有注解的屏幕截图吗？"
+      screenshot_no: "不谢谢"
+      screenshot_yes: "是的，放入截图"
+      title: "反馈"
+    href_download:
+      data_dictionary: "数据字典"
+      edit_prompt_button: "编辑链接"
+      edit_prompt_message: "编辑这个数据组的外部链接。"
+      title: "访问这个数据"
+    less: "显示更少"
+    manage_dataset: "管理数据组"
+    manage_prompt: "点击这里管理许可权"
     metadata:
-      attachments:
-      category:
-      creation_date:
-      data_last_updated:
-      data_provided_by:
-      dataset_owner:
-      downloads:
-      edit_metadata:
-      license:
-      licensing:
-      metadata_last_updated:
-      no_category_value:
-      no_license_value:
-      no_tags_value:
-      no_value:
-      source_link:
-      tags:
-      title:
-      topics:
-      view_statistics:
-      views:
-    more:
-    multiple_geo_layers:
+      attachments: "附件"
+      category: "类别"
+      creation_date: "创建日期"
+      data_last_updated: "最后更新的数据"
+      data_provided_by: "数据提供来自"
+      dataset_owner: "数据组所有者"
+      downloads: "下载"
+      edit_metadata: "编辑元数据"
+      license: "许可证"
+      licensing: "许可和归属啊"
+      metadata_last_updated: "最后更新的元数据"
+      no_category_value: "这个数据组还未被分类"
+      no_license_value: "这个数据组的许可证没有具体说明"
+      no_tags_value: "这个数据组没有任何标签"
+      no_value: "(无)"
+      source_link: "来源链接"
+      tags: "标签"
+      title: "关于这个数据组"
+      topics: "主题"
+      view_statistics: "查看这个数据组的所有统计数据"
+      views: "视图"
+    more: "显示更多"
+    multiple_geo_layers: "这个数据组包含多个地理空间层，细节如下。"
     odata_modal:
-      description:
-      developer_portal_button:
-      endpoint_title:
-      multiple_geo_layers:
-      title:
-    official:
+      description: "在Microsoft Excel中创建一个电子表格来分析或视图化该数据组。通过使用一个OData链接，数据将被刷新。"
+      developer_portal_button: Socrata Odata文档记录
+      endpoint_title: ODataduan dian
+      multiple_geo_layers: "这个数据组包含多个地理空间层。每层下都有它自己的OData端点。"
+      title: "通过OData访问这个数据组"
+    official: "官方"
     popular_views:
-      load_more_error:
-      title:
-      view:
-    private_notice:
-    publish:
-    publish_error:
-    publish_notice:
-    published:
-    published_by:
+      load_more_error: "加载额外内容时遇到了问题。"
+      title: "使用这个数据的流行内容"
+      view: "查看"
+    private_notice: "您正在看一个隐私数据组。"
+    publish: "发布"
+    publish_error: 发布该数据组时遇到了问题。确保您已登录且有恰当的许可权。如若问题依然存在，请联系<a href="https://support.socrata.com">Socrata寻求帮助</a>。
+    publish_geocoding_message: "该位置栏中的行仍在地理编码。请等待直到它们完成来发布数据组。"
+    publish_notice: 这个数据组<strong>未发布</strong>。发布这个页面同时会发布这个数据组的<a href="{url}" target="_blank">表格视图</a>。
+    published: "已发布"
+    published_by: "数据提供来自"
     related_views:
-      load_more_error:
-      title:
-      view:
-    remove:
-    render_error:
-    save:
-    saved:
-    saving:
+      load_more_error: "加载额外内容时遇到了问题。"
+      title: "使用这个数据的相关内容"
+      view: "查看"
+    remove: "移除"
+    render_error: "生成该页面时出现了问题。"
+    save: "保存"
+    saved: "已保存"
+    saving: "保存中"
     schema_preview:
-      api_field_name:
-      column_name:
-      data_type:
+      api_field_name: API
+      column_name: "列名称"
+      data_type: "数据类型"
       data_types:
-        blob:
-        calendar_date:
-        checkbox:
-        dataset_link:
-        date:
-        document:
-        drop_down_list:
-        email:
-        flag:
-        geospatial:
-        html:
-        line:
-        link:
-        list:
-        location:
-        money:
-        multiline:
-        multipoint:
-        multipolygon:
-        nested_table:
-        number:
-        object:
-        percent:
-        phone:
-        photo:
-        point:
-        polygon:
-        stars:
-        text:
-        url:
-      description:
-      geospatial_layer_title:
-      show_all:
-      show_less:
-      title:
-      type:
+        blob: Blob
+        calendar_date: "浮动时间戳"
+        checkbox: "复选框"
+        dataset_link: "数据组链接"
+        date: "固定时间戳"
+        document: "文档"
+        drop_down_list: "文本"
+        email: "文本"
+        flag: "文本"
+        geospatial: "地理空间"
+        html: "文本"
+        line: "线"
+        link: "文本"
+        list: "列表"
+        location: "位置"
+        money: "钱"
+        multiline: "线"
+        multipoint: "点"
+        multipolygon: "多边形"
+        nested_table: "嵌套表格"
+        number: "数字"
+        object: "对象"
+        percent: "数字"
+        phone: "文本"
+        photo: "照片"
+        point: "点"
+        polygon: "多边形"
+        stars: "数字"
+        text: "文本"
+        url: "文本"
+      description: "描述"
+      geospatial_layer_title: "这个层面的列"
+      show_all: "显示所有"
+      show_less: "显示更少"
+      title: "这个数据组中的列"
+      type: "输入"
     share:
-      cancel:
-      email:
-      email_body:
-      facebook:
-      title:
-      twitter:
-      visibility_alert_html:
+      cancel: "取消"
+      email: "通过电子邮件分享"
+      email_body: "这是一个来自%{provider}的数据组，我想和您分享：%{url}"
+      facebook: "通过Facebook分享"
+      title: "分享"
+      twitter: "通过Twitter分享"
+      visibility_alert_html: "<b>注意了！</b> 这个数据组是隐私的，也许不能被您分享的人访问。"
     tour:
-      description:
-      done:
-      title:
-    updated:
+      description: "我们把这叫做数据组着陆页。但是万一您想看数据的表格视图，您可以从这里获取。"
+      done: OK
+      title: "数据组焕然一新了！"
+    updated: "已更新"
     view_widget:
-      external_content:
-      views:
+      external_content: "外部内容"
+      views: "视图"
   dataslate:
     component:
       edit: "编辑该组件"
@@ -1593,7 +1601,7 @@ zh:
       title: "页面设置"
   date:
     abbr_month_names:
-    -
+    - 
     - "一月"
     - "二月"
     - "三月"
@@ -1607,7 +1615,7 @@ zh:
     - "十一月"
     - "十二月"
     month_names:
-    -
+    - 
     - "一月"
     - "二月"
     - "三月"
@@ -1622,6 +1630,9 @@ zh:
     - "十二月"
   error:
     back: "返回"
+    error_400:
+      description: "这个请求给出的参数是无效的，请用不同的参数再试一次。"
+      were_sorry: "我们很抱歉，但是我们无法处理您的请求。"
     error_500:
       description_html: '请稍后再试，或者 <a href="http://support.socrata.com">报告这一错误</a> ，同时详细说明您进行的操作。 '
       somethings_wrong: "出错啦！"
@@ -1646,119 +1657,149 @@ zh:
   govstat:
     admin:
       bulk_edit:
-        button_title:
-        cancel:
-        date_range_from:
-        date_range_label:
-        date_range_to:
-        failure_message:
-        items_selected:
-        not_configured_message:
-        override_label:
+        button_title: "编辑多个项目…"
+        cancel: "取消"
+        date_range_from: "从"
+        date_range_label: "日期范围"
+        date_range_to: "到"
+        failure_message: "<strong>错误。</strong> 执行该操作时出现了问题。再试一次，或取消。"
+        items_selected: "选中了{0}个项目"
+        not_configured_message: "<strong>啊。</strong>似乎您的一个或多个目标都未配置。只能对已配置好的目标进行批量编辑。"
+        override_label: "覆写"
         override_types:
-          bad:
-          good:
-          no_judgement:
-          none:
-          within_tolerance:
-        revert_changes:
-        success_message:
-        title:
-        update:
-        visibility:
+          bad: "需要改进"
+          good: "正中目标"
+          no_judgement: "测量"
+          none: "无"
+          within_tolerance: "接近目标"
+        revert_changes: "恢复修改"
+        success_message: "成功! {0}个目标已更新。"
+        title: "编辑多个项目"
+        update: "更新"
+        visibility: "可见权限"
+      default_error_message: "<span><b>哦不！</b> 有什么出错了，我们的团队已被通知。与此同时，再试一次您的操作或者刷新页面。</span>"
       export:
         Csv:
-          button_label:
-          info_description:
-          info_title:
+          button_label: "导出"
+          info_description: "生成一个CSV。下载会在准备就绪时自动开始"
+          info_title: "生成下载"
         info_box:
-          cancel:
-          ok:
+          cancel: "取消"
+          ok: OK
       feedback_flannel:
-        message:
-        no_thanks:
-        title:
-        yes_include_screenshot:
+        message: 通过一张截图您可以准确展示给我们您所反馈的问题。我们使用<a href="https://usersnap.com" target="_blank">Usersnap</a>来截图。阅读他们的<a href="https://usersnap.com/privacy-policy"  target="_blank">隐私政策</a>。
+        no_thanks: "不谢谢"
+        title: "您想要插入一张当前页面的带有注解的截图吗？"
+        yes_include_screenshot: "是的，插入一张截图"
       goal_values:
-        status_private:
-        status_public:
+        status_private: "隐私"
+        status_public: "公开"
       listing:
-        dashboard:
-        default_alert_message:
-        goal_page:
-        goal_status:
-        load_error:
-        manage_on_goal_page:
-        of:
-        owner:
-        quick_edit:
-        rows_per_page:
-        title:
-        updated_at:
-        view_dashboard:
-        visibility:
-      manage_performance_goals:
+        dashboard: "主控面板"
+        default_alert_message: "<span><b>哦不！</b>有什么出错了，我们的团队已被通知。与此同时，再试一次您的操作或刷新该页面。</span>"
+        goal_page: "管理目标页面"
+        goal_status: "目标状态"
+        load_error: "加载内容时出现了问题"
+        manage_on_goal_page: "管理目标页面"
+        of: "的"
+        owner: "最后更新由"
+        quick_edit: "快速编辑"
+        rows_per_page: "每页行数"
+        title: "标题"
+        updated_at: "已更新"
+        view_dashboard: "查看控制面板"
+        visibility: "可见权限"
+      manage_performance_goals: "管理表现目标"
       modal:
-        close_without_save_message:
-      page_title:
+        close_without_save_message: "您确定您想要关闭吗？您的修改会被丢失。"
+      page_title: "目标管理"
       preview_bar:
-        back_to_configuration:
-        feedback:
-        learn_more:
-        performance_goal_management_preview:
+        back_to_configuration: "返回配置"
+        feedback: "反馈"
+        learn_more: "了解更多"
+        performance_goal_management_preview: "表现目标管理"
       quick_edit:
-        action_type:
+        action_type: "运行"
         action_types:
-          increase:
-          maintain:
-          measure:
-          reduce:
-        cancel:
-        category:
-        dashboard:
-        dataset_owner:
-        dataset_updated:
-        date_range:
-        default_alert_message:
-        feedback:
-        goal_name:
-        goal_owner:
-        goal_updated:
-        manage_on_goal_page:
-        measure_baseline:
-        measure_delta:
+          increase: "增加"
+          maintain: wei chi
+          measure: "测量"
+          reduce: "减少"
+        cancel: "取消"
+        category: "类别"
+        dashboard: "主控面板"
+        dataset_owner: "数据组所有者"
+        dataset_updated: "数据组已更新"
+        date_range: "日期范围"
+        default_alert_message: "<span><b>哦不!</b> 有什么出错了，我们的团队已被通知。与此同时，再试一次您的操作或刷新该页面。</span>"
+        feedback: "反馈"
+        goal_name: "目标标题"
+        goal_owner: "最后更新由"
+        goal_updated: "目标已更新"
+        manage_on_goal_page: "在目标页面上guan li"
+        measure_baseline: "基线"
+        measure_delta: "范围值"
         measure_maintain_types:
-          above:
-          below:
-          within:
-        measure_target:
-        measure_target_type:
+          above: "之上"
+          below: "之下"
+          within: "环绕"
+        measure_target: "目标值"
+        measure_target_type: "种类"
         measure_target_type_types:
-          absolute:
-          relative:
+          absolute: "到"
+          relative: "从"
         not_configured_goal_message:
-          link:
-          text:
-        override:
+          link: "访问目标页面"
+          text: "该目标未被配置。要给该模块做出修改，"
+        override: "覆写"
         override_types:
-          bad:
-          good:
-          no_judgement:
-          none:
-          within_tolerance:
-        prevailing_measure:
-        prevailing_measure_name:
-        quick_edit_measure:
-        range:
+          bad: "需要改进"
+          good: "正中目标"
+          no_judgement: "测量中"
+          none: "无"
+          within_tolerance: "接近目标"
+        prevailing_measure: "主要措施"
+        prevailing_measure_name: "主题"
+        quick_edit_measure: "快速编辑措施"
+        range: "范围"
         range_types:
-          above:
-          around:
-          below:
-        save:
-        status:
-        success_message:
-        unit:
-        visibility:
+          above: "在上方"
+          around: "环绕"
+          below: "在下方"
+        save: "保存"
+        status: "状态"
+        success_message: "成功!已更新{0}个。"
+        unit: "单位"
+        validation:
+          action:
+            enum: "行动应该是增加、减少、维持、测量中的一种。"
+          baseline:
+            blank: "基线不应当为空。"
+            numeric: "基线不应当为数字。"
+          end:
+            end_not_after_start: "开始日期和结束日期有冲突。"
+            invalid: "无效的结束日期。"
+          maintain_type:
+            enum: "维持类型应当为环绕的一种，>, <"
+          name:
+            blank: "姓名不应当为空。"
+          start:
+            invalid: "无效的开始日期。"
+          subject:
+            blank: "主题不应当为空。"
+          target:
+            blank: "目标值不应当为空。"
+            numeric: "目标值应当为数字。"
+          target_delta:
+            blank: "范围值不应当为空。"
+            numeric: "范围值应当为数字。"
+          target_delta_is_percent:
+            bool: "应当选择单位类型"
+          target_type:
+            enum: "种类应当为绝对、相对。"
+          unit:
+            blank: "单位不应当为空。"
+        visibility: "可见权限"
     chrome:
       header:
         links:
@@ -1785,9 +1826,9 @@ zh:
       data_management: "数据管理"
       datasets: "数据集"
       federations: "联盟"
-      goal_management_preview:
+      goal_management_preview: "目标管理"
       homepage: "首页"
-      jobs:
+      jobs: "工作"
       metadata: "元数据"
       moderation: "注解调整"
       nomination: "提名调整"
@@ -1797,26 +1838,26 @@ zh:
       users: "用户"
     measure:
       end_progress:
-        bad:
-        good:
-        needs_more_data:
-        no_judgement:
-        none:
-        poor:
-        progressing:
-        within_tolerance:
+        bad: "没有达成目标"
+        good: "达成的目标"
+        needs_more_data: "需要更多数据"
+        no_judgement: "已测量"
+        none: "需要更多数据"
+        poor: "没有达成目标"
+        progressing: "几乎达成目标"
+        within_tolerance: "几乎达成目标"
       progress:
-        bad:
-        good:
-        needs_more_data:
-        no_judgement:
-        no_status:
-        none:
-        poor:
-        progressing:
-        within_tolerance:
-      subheadline:
-      unit_percent:
+        bad: "需要改进"
+        good: "跟踪中"
+        needs_more_data: "需要更多数据"
+        no_judgement: "测量中"
+        no_status: "无状态"
+        none: "需要更多数据"
+        poor: "需要改进"
+        progressing: "进行中"
+        within_tolerance: "接近目标"
+      subheadline: "该目标是通过跟踪{1}中的{0}来测量。"
+      unit_percent: "百分之"
     reports:
       component:
         base_map: "基础地图"
@@ -1860,31 +1901,31 @@ zh:
       title: "选择布局"
   plugins:
     daterangepicker:
-      clear:
+      clear: "清除"
       date_range: "数据范围"
       done: "完成"
       end_date: "结束日期"
-      last_30_days:
-      last_3_days:
+      last_30_days: "上一个30天"
+      last_3_days: "上一个3天"
       last_month: "上月"
-      last_week:
-      last_year:
+      last_week: "上周"
+      last_year: "上一年"
       month_to_date: "月至今"
       next: "下一"
-      preceding_30_days:
-      preceding_month:
-      preceding_week:
+      preceding_30_days: "前30天"
+      preceding_month: "上一个月"
+      preceding_week: "上一个星期"
       prev: "上一"
       specific_date: "具体日期"
       start_date: "开始日期"
-      the_day_of:
+      the_day_of: "日期"
       the_month_of: "第...月"
       the_week_of: "第...周"
       the_year_of: "...年"
       today: "今天"
       week_to_date: "周至今"
       year_to_date: "年至今"
-      yesterday:
+      yesterday: "昨天"
     fileuploader:
       drop_files: "文件拖放此处上传"
       failed: "失败"
@@ -1955,7 +1996,7 @@ zh:
     about:
       actions: "操作"
       activity: "活动"
-      admin_debugging:
+      admin_debugging: "超级管理员tiao shi"
       attachments: "附件"
       category: "类别"
       comments: "评论"
@@ -1965,10 +2006,10 @@ zh:
       created: "创建日期："
       data_provided_by: "数据提供方："
       dataset_landing_page:
-        button:
-        description:
-        title:
-      datasync_status:
+        button: "带我去那！"
+        description: "这个嵌板内的所有信息，以及更多，现在都在数据组着陆页上，格式更易使用，对用户更友好。"
+        title: "这个信息现在在数据组着陆页上"
+      datasync_status: "数据同步状态"
       description: "说明"
       downloads: "下载次数"
       edit_metadata: "编辑元数据"
@@ -2004,72 +2045,75 @@ zh:
       visits: "访问次数"
       your: "你的评分"
     admin:
+      canvas:
+        path_must_be_unique: "路径已经存在；请选择另一个。"
+        title_cannot_be_blank: "请输入一个标题"
       connector:
-        actions:
-        add_connector:
-        add_new:
-        all_assets:
-        arcgis_layer:
-        arcgis_server_address:
-        assets_connected:
-        assets_discovered:
-        back_to_connector_list:
-        catalog:
-        connected_assets:
-        current_status:
-        data:
-        dataset:
-        discovered_assets:
-        edit:
-        edit_connector:
+        actions: "操作"
+        add_connector: "添加连接器"
+        add_new: "新添"
+        all_assets: "连接所有配件"
+        arcgis_layer: ArcGIS层
+        arcgis_server_address: ArcGIS服务器地址
+        assets_connected: "%{count}个配件已连接"
+        assets_discovered: "发现%{count}个配件"
+        back_to_connector_list: "返回连接器列表"
+        catalog: "目录"
+        connected_assets: "已连接的配件"
+        current_status: "当前状态"
+        data: "数据"
+        dataset: "数据组"
+        discovered_assets: "发现的配件"
+        edit: "编辑"
+        edit_connector: "编辑连接器: %{url}"
         errors:
-          duplicate_server_error:
-          invalid_attributes_error:
-          json_format_error:
-          missing_attributes_error:
-          not_found_error:
-          problem_with_errors:
-          server_ping_error:
-          unknown_error:
-        esri_arcgis:
-        esri_arcgis_url:
-        failing:
+          duplicate_server_error: "那个Esri服务器已经被连接到这个域。"
+          invalid_attributes_error: "这些参数是无效的：%{invalid}。"
+          json_format_error: "您的JSON文件发生错误。"
+          missing_attributes_error: "这些参数丢失了：%{missing}。"
+          not_found_error: "找不到那个资源。"
+          problem_with_errors: "我们无法处理您的请求。"
+          server_ping_error: "无法连接服务器。%{url}"
+          unknown_error: "您的请求由于以下原因失败了：%{reason}"
+        esri_arcgis: Esri ArcGIS
+        esri_arcgis_url: ArcGIS服务器地址
+        failing: "失败"
         flashes:
-          created:
-          deleted:
-          server_not_found:
-          updated:
-        ignore:
-        last_synced:
-        never:
-        no_connectors:
-        not_synced_yet_edit:
-        not_yet:
-        save:
-        search:
-        selective_connection:
-        service_unavailable:
-        show_title:
-        some_assets:
-        source:
-        success:
-        terminate:
-        title:
+          created: "成功！我们连接到了您的服务器。同步ArcGIS目录要花一些时间，在这之后您可以编辑连接器的设定并继续设置。"
+          deleted: "您的连接器被标记删除。"
+          server_not_found: "我们不能找到那个服务器——它可能刚刚被删除了。"
+          updated: "您的连接器设定已被保存。"
+        ignore: "已忽略"
+        last_synced: "最后同步"
+        never: "从不"
+        no_connectors: "当前没有连接器。如果您想要将一个外部资源连接到您的目录，点击上方的新添。"
+        not_synced_yet_edit: "一旦我们同步了ArcGIS目录，您就可以编辑连接器的设定了。"
+        not_yet: "同步进行中"
+        save: "保存"
+        search: "搜索该领域"
+        selective_connection: "选择性连接"
+        service_unavailable: "连接器服务目前不可用。"
+        show_title: ArcGIS服务器联盟
+        some_assets: "只连接这些配件"
+        source: "连接器来源"
+        success: "成功"
+        terminate: "终结"
+        title: "管理连接器"
       datasets:
         asset_inventory:
-          tooltip:
-        description:
+          tooltip: "由于处理延迟，这个选项不可用。如果24小时后问题依然存在，请联系帮助。"
+        description: "列出这个领域的配件并配置数据组页面的布局。"
         layout_config: "布局配置"
         left: "左"
         right: "右"
         saved: "已保存"
         saving: "保存中"
         sidebar_position: "边栏位置"
-        skip_to_dataset_listing:
-        table_description:
+        skip_to_dataset_listing: "调至数据组列表"
+        table_description: "数据组"
         title: "数据集"
         unpublished_datasets: "未发布的数据集"
-        view_as_a_dataset:
+        view_as_a_dataset: "作为数据组查看"
       federation:
         accept: "接受"
         accepted: "已接受"
@@ -2100,67 +2144,71 @@ zh:
         terminate: "终止"
         title: "打开数据联盟"
       georegions:
-        actions:
-        choose_a_dataset:
+        actions: "操作"
+        choose_a_dataset: "选择一个层"
         configure_boundary:
-          boundary_geometry_label_field_error:
-          boundary_geometry_label_page_error:
-          boundary_name:
-          boundary_name_description:
-          boundary_name_required_field_error:
-          boundary_name_required_page_error:
-          boundary_name_unique_error:
-          choose_a_column:
-          configure_boundary:
-          confirm_html:
-          confirm_title:
-          description:
-          next:
-          page_title:
-          primary_key_column:
-          primary_key_column_description:
-          primary_key_column_missing_field_error:
-          save_core_error:
-          save_error:
-          save_success:
-          shape_label:
-          shape_label_description:
-        create_new:
-        custom_georegions:
-        date_added:
-        default:
-        default_georegions:
-        default_georegions_flyout:
-        default_georegions_limit:
-        default_success:
-        delete:
-        description:
-        disable:
-        disable_success:
-        edit:
-        enable:
-        enable_success:
-        enabled?:
+          boundary_geometry_label_field_error: "边界必须有形状标签。"
+          boundary_geometry_label_page_error: "无法保存：边界必须有形状标签。"
+          boundary_name: "边界明晨"
+          boundary_name_description: '边界的名称 (例如: "States" 或 "Neighborhoods")将被显示在Spatial Lens地图上。'
+          boundary_name_required_field_error: "边界必须有个名称。"
+          boundary_name_required_page_error: "无法保存：边界必须有名称。"
+          boundary_name_unique_error: "边界名称必须是独一无二的。"
+          choose_a_column: "选择一列…"
+          configure_boundary: "配置边界"
+          confirm_html: <p>点击 "创建" 来基于地理空间数据组"%{boundary_name}"添加一个新的Spatial Lens Boundary。</p><p>这个新的Spatial Lens Boundary是一个快照，即使您更新了地理空间数据组"%{boundary_name}"也不会改变。</p>
+          confirm_title: "创建您的Spatial Lens"
+          description: "配置可以用于创建Spatial Lens地图的自定义边界"
+          next: "下一个"
+          page_title: "管理边界"
+          primary_key_column: "形状ID"
+          primary_key_column_description: "包含代表边界中每种形状的独特ID的列。如果没有这样的一列，选择一个独一无二的列。"
+          primary_key_column_missing_field_error: "您必须规定一列用作形状ID。"
+          save_core_error: "不能创建边界：%{error_message}"
+          save_error: "当试着保存您的修改时有什么出错了。请稍后再试，或者联系Socrata帮助，如果问题依然存在的话。"
+          save_success: "成功保存修改。"
+          shape_label: "形状标签"
+          shape_label_description: "应当被用作每个形状的标签的列（例如：包含“WA”或“NY”的列）。"
+        create_new: "创建新的bian jie"
+        custom_georegions: "自定义边界"
+        date_added: "已添加日期"
+        default: "为边界设置快速添加"
+        default_georegions: "为新数据组(%{limit}的%{count})启用快速添加"
+        default_georegions_flyout: "如果您有一个您想在大多数Data Lens页面上使用的边界，这个选项会使它更快捷地可视化任何在启用快速添加后更新的数据组。您可以启用最多5个快速添加边界。"
+        default_georegions_limit: "您可以最多有%{limit}个快速添加边界。"
+        default_success: "%{name}已被设定到快速添加。通过使用这个Spatial Lens边界，所有新的数据组都会自动被区域编码。"
+        delete: "删除"
+        description: "配置可以用于创建Spatial Lens地图的自定义边界"
+        disable: "禁用"
+        disable_default_label: "在您可以启用快速添加之前必须启用该边界。"
+        disable_label: "禁用边界"
+        disable_success: "%{name}已被禁用，将不可被用于通过使用这个Spatial Lens边界在Data Lens中创建分级统计图。"
+        edit: "编辑"
+        edit_label: "编辑边界"
+        enable: "启用"
+        enable_label: "启用边界"
+        enable_success: '%{name}已被启用。您可以使用这个Spatial Lens边界在Data Lens中创建分级统计图。<a href="https://support.socrata.com/hc/en-us/articles/212862177">了解更多</a> 关于使用Spatial Lens来创建地图。'
+        enabled?: "已启用？"
         flashes:
-          add_georegion_error:
-          service_unavailable_html:
-        learn_more:
-        page_subtitle:
-        page_title:
-        picker_explanation:
-        picker_explanation_html:
-        picker_support_html:
-        region_name:
-        remove:
-        status_disabled:
-        status_enabled:
-        status_failed:
-        status_progress:
-        substatus_failed_html:
-        substatus_progress:
-        title:
-        undefault:
-        undefault_success:
+          add_georegion_error: <div>%{error_message}</div><div><a href="https://support.socrata.com/hc/en-us/articles/212862177">了解更多</a></div>
+          service_unavailable_html: <p>我们在与Spatial Lens相关的服务中正在经历一些技术问题。</p><p>请联系<a href="https://support.socrata.com">Socrata帮助</a>如果问题依然存在</p>
+        learn_more: 了解更多关于如何<a href="https://support.socrata.com/hc/en-us/articles/212862177">在您的领域上管理Spatial Lens</a>
+        page_subtitle: "您已经设置了%{available_count}的%{default_count}个可用的边界作为自动加密的边界。"
+        page_title: "管理Spatial Lens"
+        picker_explanation: "选择一个您想要用作您的Spatial Lens基础的地理空间层。您可以点击名称来在一个新的浏览器窗口中预览该层。"
+        picker_explanation_html: "<p>选择一个您想要用做您的Spatial Lens基础的地理空间层。</p><p>您可以点击名称来在一个新的浏览器窗口中预览该层。</p>"
+        picker_support_html: 找不到您在寻找的？查看文章<a href="https://support.socrata.com/hc/en-us/articles/217039278">为您的Spatial Lens找到一个数据组</a>来了解更多。
+        region_name: "边界名称"
+        remove: "移除"
+        status_disabled: "未启用"
+        status_enabled: "准备就绪"
+        status_failed: "有什么出错了……"
+        status_progress: "处理中"
+        substatus_failed_html: 请联系<a href="https://support.socrata.com">Socrata帮助</a>并包含代码<strong>%{code}</strong>。
+        substatus_progress: "不久可用"
+        title: Spatial Lens
+        undefault: "为边界取消设置快速添加"
+        undefault_success: "已取消设置%{name}的快速添加。使用这个Spatial Lens边界时不会再自动区域加密新的数据组。"
       home:
         add_featured_dataset: "添加新精选数据集"
         are_you_sure: "你确定吗？此操作不可撤消。"
@@ -2207,338 +2255,343 @@ zh:
         title: "管理首页"
         up: "向上"
       index:
-        comment_moderation:
-        comment_moderation_description:
-        connectors:
-        connectors_description:
-        dataset_routing_and_approval:
-        dataset_routing_and_approval_description:
-        datasets:
-        datasets_description:
-        dataslate_pages:
-        dataslate_pages_description:
-        federation:
-        federation_description:
-        georegions:
-        georegions_description:
-        home_page:
-        home_page_description:
-        internal:
-        internal_description:
-        jobs:
-        jobs_description:
-        metadata:
-        metadata_description:
-        sdp_templates:
-        sdp_templates_description:
-        site_analytics:
-        site_analytics_description:
-        site_chrome:
-        site_chrome_description:
-        stories:
-        stories_description:
-        users:
-        users_description:
-        view_moderation:
-        view_moderation_description:
+        comment_moderation: "评论调整"
+        comment_moderation_description: "检阅并调整给您网站上的数据组的评论"
+        connectors: "连接器"
+        connectors_description: "注册一个连接器来批量创建和管理连接的数据组。"
+        dataset_routing_and_approval: "数据组路由&批准"
+        dataset_routing_and_approval_description: "检阅正在批准过程中的数据组，管理批准过程的步骤"
+        datasets: "资产目录"
+        datasets_description: "列出这个领域的资产，配置数据组页面的布局"
+        dataslate_pages: DataSlate页面
+        dataslate_pages_description: "在这个域上列出并管理DataSlate页面"
+        federation: "同盟"
+        federation_description: "管理通过开放数据联盟服务和其他站点分享的连接和数据"
+        georegions: Spatial Lens
+        georegions_description: "配置可以被用于创建Spatial Lens地图的自定义边界"
+        home_page: "主页"
+        home_page_description: "配置主页上推荐的内容"
+        internal: "内部"
+        internal_description: "修改并添加模块列表、站点、和更多"
+        jobs: "工作"
+        jobs_description: "查看所有在您的平台上发生的当前的和最近长期运行的数据处理工作"
+        metadata: "元数据"
+        metadata_description: "管理数据组元数据的区块，包括类别和自定义区块"
+        sdp_templates: SDP模版
+        sdp_templates_description: "管理并自定义用于通过Socrata Data Players发布您的数据的模版"
+        site_analytics: "站点分析"
+        site_analytics_description: "查看全站的数据组、视图、访客和更多的数据"
+        site_chrome: "站点外观"
+        site_chrome_description: "配置您的Socrata站点的外观"
+        stories: "故事"
+        stories_description: "编辑自定义故事主题"
+        users: "用户"
+        users_description: "管理您的站点上的用户以及他们拥有的权限和能力"
+        view_moderation: "查看调整"
+        view_moderation_description: "查看并管理用户创建的视图，包括筛选器、图表、和地图。批准一个视图来让它在您的数据目录中显示。"
       jobs:
         actions:
-          geocoding:
-          import:
-          replace:
-          upsert:
-          working_copy:
+          geocoding: "地理编码"
+          import: "导入"
+          replace: "代替"
+          upsert: "更新插入"
+          working_copy: "工作中的拷贝"
         filters:
-          all:
-          append:
-          apply_filters:
-          data_workflow:
-          delete:
-          filter_by:
-          import:
-          import_activity:
-          publish:
-          replace:
-          restore:
-          type:
-          upsert:
-          working_copy:
+          all: "所有"
+          append: "附加"
+          apply_filters: "去往"
+          data_workflow: "数据工作流程"
+          delete: "删除"
+          filter_by: "筛选由"
+          import: "导入"
+          import_activity: "导入活动"
+          publish: "发布"
+          replace: "代替"
+          restore: "存储"
+          type: "类型"
+          upsert: "更新插入"
+          working_copy: "工作中的拷贝"
         index_page:
-          action:
-          dataset:
-          deleted:
-          deleted_dataset:
-          deleted_user:
-          export_as_csv:
-          initiated_by:
-          no_jobs:
-          page_title:
+          action: "类型"
+          dataset: "数据组"
+          deleted: "已删除"
+          deleted_dataset: "已删除的数据组"
+          deleted_user: "用户已被删除"
+          export_as_csv: "导出为CSV文件"
+          initiated_by: "初始由"
+          no_jobs: "没有可显示的工作"
+          page_title: "数据工作"
           restore_deleted_dataset:
-          restore_deleted_dataset_confirm:
-          showing_all_so_far:
-          showing_most_recent:
-          started:
-          status:
-          title:
-          to_working_copy:
-          with_problems:
+            button: "恢复"
+            confirm: "您确定您想要恢复数据组%{dataset}吗？"
+            disabled_restore_explanation: "恢复只对特定类型的数据组在有限时间内可用。要获得更多信息，请联系帮助。"
+            disabled_restore_time: 
+            disabled_restore_type: 
+          restore_deleted_dataset_confirm: "您确定您想要恢复数据组%{dataset}吗？"
+          showing_all_so_far: "显示所有到目前被记录的工作"
+          showing_most_recent: "显示最近的%{limit}个工作"
+          started: "已开始"
+          status: "状态"
+          title: "数据工作"
+          to_working_copy: "到工作中的拷贝"
+          with_problems: "由问题"
         show_page:
-          back:
-          error_details_heading:
+          back: "返回工作列表"
+          error_details_heading: "错误细节"
           event_messages:
             failure:
               bad_response_from_server:
-                description:
-                title:
+                description: "由于一个未预料到的错误我们无法导出您的数据。请稍后再试。"
+                title: "有什么出错了"
               bad_timestamp_format:
-                description:
-                title:
+                description: 我们无法理解日期值"%{pattern}"的编制格式。请再次检查您导入的所有日期都符合<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601标准</a>。
+                title: "坏的日期/时间值"
               bad_timezone:
-                description:
-                title:
+                description: 我们不明白时区"%{name}"。请再次检查您导入的所有日期符合<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601标准</a>。
+                title: "坏的时区"
               completed_with_warnings:
-                description:
-                title:
+                description: "您的数据导入时伴有警告，但是保存这些警告到数据组时发生了错误。然而，您可以在这里找到完整的警告列表：%{warnings}"
+                title: "错误保存警告"
               control_file_invalid_json:
-                description:
-                title:
+                description: 您的控制文件不能作为JSON文件被解析。错误信息："%{message}"。请核实这是有效的JSON文件。
+                title: "格式错误的控制文件"
               control_file_malformed:
-                description:
-                title:
+                description: 您的控制文件是有效的JSON文件，但是不匹配我们预期的格式。请确保您的控制文件符合<a href="https://socrata.github.io/datasync/resources/control-config.html">这个规格</a>。
+                title: "格式错误的控制文件"
               control_file_too_large:
-                description:
-                title:
+                description: "您的控制文件过大。请将它的大小减少到%{limit}个字符或更少，并再次尝试。"
+                title: "控制文件过大"
               corrupt_archive:
-                description:
-                title:
+                description: "我们不能处理您上传的档案文件。错误信息： %{reason}"
+                title: "损坏的档案文件"
               corrupt_gzip:
-                description:
-                title:
+                description: 不能成功提取您提供的GZip压缩文件。错误信息："%{message}"。请核实这是有效的GZip文件。
+                title: "无法提取压缩文件"
               corrupt_shapefile:
-                description:
-                title:
+                description: shapefile文件的标题无法被读取。
+                title: "损坏的shapefile文件"
               corrupt_xz:
-                description:
-                title:
+                description: 不能成功提取您提供的XZ压缩文件。错误信息："%{message}"。请核实这是有效的XZ文件。
+                title: "无法提取压缩文件"
               delete_without_user_pk:
-                description:
-                title:
+                description: "我们不能成功地处理删除操作，除非有一个明确的行标识符区块。"
+                title: "没有行标识符无法删除"
               di2_counts:
-                description:
-                title:
+                description: 您的导入文件已被导入，但是在总共%{rowCount}行中，我们无法加载%{failCount}行到您的数据组中。如果这未被意料到，请从右侧下载导入失败的行，并确认您的值匹配<a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata预期格式</a>。您到时可以重新导入这些行。
+                title: "完成"
               duplicated_fields_in_input:
-                description:
-                title:
+                description: "区域名称%{fieldNames}在您的数据文件中被使用多次。请保证区域名称是独特的。"
+                title: "复制精确的区域名称"
               field_not_in_dataset:
-                description:
-                title:
+                description: "无法在您试图将其导入的数据组中找到区域名称%{fieldNames}。若您想要导入该列，请再次检查您的拼写，并再次尝试。"
+                title: "在数据组中找不到区域"
               field_not_in_input:
-                description:
-                title:
+                description: "在您提供的数据文件中找不到我们预期的(%{fieldNames})，您没有提供明确的行标识符栏。请再次检查提供的栏，并再次尝试。"
+                title: "在文件中找不到该区域"
               field_wrong_format:
-                description:
-                title:
+                description: 您的数据文件中提供的区域名称"%{fieldName}"不是合法的。有效的区域名称必须仅包括ASCII字符并以下划线或字母开头。
+                title: "给出的区域名非法"
               generic:
-                description:
-                title:
+                description: "抱歉，由于一个未知的错误我们无法处理您的导入请求。"
+                title: "有什么出错了"
               geocoding_failure:
-                description:
-                title:
+                description: 由于一个未知的原因我们无法将给到的来源数据进行地理编码。请稍后再试，并联系 <a href="https://support.socrata.com">Socrata帮助</a>如问题依然存在。
+                title: "未知的地理编码失败"
               geocoding_source_ignored:
-                description:
-                title:
+                description: 因为%{fieldNames.join(", ")}列是将来源地理编码到一个点列的一部分，我们无法像请求的那样忽视它们。
+                title: "不能忽视规定的列"
               geocoding_source_invalid_type:
-                description:
-                title:
+                description: "我们不能使用%{fieldNames}栏作为将位置信息进行地理编码的来源。请再次检查它们是否是有效的文本或数字栏。"
+                title: "不能从给出的栏中地理编码"
               ignored_synthetic_location_column_inputs_in_nbe_dataset:
-                description:
-                title:
+                description: "由于列是将来源地理编码到位置列的一部分，我们无法像请求的一样忽略它们。"
+                title: "无法忽略规定列"
               incomplete_archive:
-                description:
-                title:
+                description: 您上传的shapefile档案文件缺失一个有扩展名%{missing}"的文件。请确保您的档案文件有这个文件，并再次尝试。
+                title: "不完整的shapefile档案文件"
               invalid_encoding:
-                description:
-                title:
+                description: "我们不能读取您的文件，因为它是用%{encoding}编码的，而我们只支持UTF-8。为获得最佳效果，请确保您的文件是有效的UTF-8文件。"
+                title: "无效的文件编码"
               invalid_row_length:
-                description:
-                title:
+                description: "您的CSV文件中的第#%{record}行包含%{actual}区域，但是您的其他行中包含%{expected}区域。请确保您的文件每行有数目一致的区域"
+                title: "未预料到的行中区域数"
               malformed_blueprint:
-                description:
-                title:
+                description: '不能使用您提供的设计图。错误消息: "%{message}".'
+                title: "格式错误的设计图"
               malformed_upsert:
-                description:
-                title:
+                description: "您的更新插入有效载荷无法作为JSON文件被解析，靠近记录%{record}。请核实这是有效的JSON文件。"
+                title: "格式错误的更新插入"
               no_field_names_in_input:
-                description:
-                title:
+                description: "通常这是因为我们收到的CSV文件完全是空的。请确保您的文件包含数据，并再次尝试。"
+                title: "找不到CSV页眉"
               no_identity_column:
-                description:
-                title:
+                description: 这个数据组有一个行标识符列提供了("%{fieldName}")，但是我们不能在您提供的数据文件中找到那一列。请确保它存在，并再次尝试。
+                title: "找不到行标识符列"
               parse_error:
-                description:
-                title:
+                description: 解析您上传的文件时在第%{lineNumber}行失败，错误消息为"%{reason}"。
+                title: "解析错误"
               permission_denied:
-                description:
-                title:
+                description: "发起这项操作的用户(%{user})似乎没有所需的执行权力。请确保您的权限被正确地设置，并再次尝试。"
+                title: "许可被拒绝"
               record_too_large:
-                description:
-                title:
+                description: "我们停止了读取您的文件，因为我们发现在%{record}行有一个记录过大（它超出了%{limit}的限制）。这通常是由于不正确的CSV文件遗漏导致许多行的数据被读取到一个单元格中。请检查您的文件是否有效。"
+                title: "单个记录过大"
               row_too_large:
-                description:
-                title:
+                description: "您的文件的%{nearRecord}行数拥有的字符过多；限制是%{limit}个。"
+                title: "行过大"
               synthetic_location_in_input:
-                description:
-                title:
+                description: "在您的数据文件中有一列(%{fieldNames})被发现和一个这个数据组上的合成列匹配。合成列是自动计算的，不能被手动导入。"
+                title: "不能导入合成列"
               too_many_errors_in_input:
-                description:
-                title:
+                description: "工作终止，因为在您输入的数据中发现了过多的错误。"
+                title: "发现错误过多"
               too_many_records_in_input:
-                description:
-                title:
+                description: "您的数据文件超出了我们可以一次导入的记录的最大数量(您有%{recordCount}; 最大数量是%{maxRecordCount})。请减少每个文件的记录总数并再次尝试。"
+                title: "记录过多"
               uninterpretable_value:
-                description:
-                title:
+                description: '%{record}行、"%{column}"列的"%{value}"值无法被读取成%{expectedType}类型。请确保所有值都被正确地编制格式到他们的目标栏中。'
+                title: "无法解析的记录值"
               unknown_domain:
-                description:
-                title:
+                description: "我们不能识别提供的您的工作的目标域(%{domain})。请确保这是一个有效的Socrata目标域，并在此尝试。"
+                title: "不能识别域"
               unknown_file_type:
-                description:
-                title:
+                description: "我们不能识别您提供给我们的文件类型 (扩展: %{extension})。请确保您正在使用一个我们支持的文件类型，且是有效的。"
+                title: "未知的文件类型"
               unsupported_import_type:
-                description:
-                title:
+                description: '"%{importType}"的导入方式不被支持。请使用"替代"、"附加"、或 "导入"。'
+                title: "不支持的导入fang shi"
               upsert_already_in_progress_by_someone_else:
-                description:
-                title:
+                description: "不能在一个数据组上同时进行两个更新插入，而且有其他人已经正在进行一项更新插入操作了。"
+                title: "更新插入已经在进行中"
               upsert_counts:
-                description:
-                title:
+                description: 您的导入文件已被导入，但是在总共%{rowCount}行中，我们无法将第%{failCount}行载入您的数据组。请核实您的值符合<a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata的预期格式</a>。
+                title: wan cheng
             success_with_data_errors:
               di2_counts:
-                description:
-                title:
+                description: 您的导入文件已被导入，但是在总共%{rowCount}行中，我们无法将第%{failCount}行载入您的数据组。请核实您的值符合<a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata的预期格式</a>。然后您可以重新导入这些行。
+                title: "完成"
               upsert_counts:
-                description:
-                title:
-          failed_rows:
-          fallback_event_title:
-          file_name_unknown:
-          import:
+                description: 您的导入文件已被导入，但是在总共%{rowCount}行中，我们无法将第%{failCount}行载入您的数据组。请核实您的值符合<a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata的预期格式</a>。
+                title: "完成"
+          failed_rows: "失败的行"
+          fallback_event_title: "错误：%{error_code}"
+          file_name_unknown: "未知的文件名称"
+          import: "导入"
           import_failures:
             bad_timestamp_format:
-              description:
-              title:
+              description: 我们无法理解日期值"%{pattern}"的编制格式。请再次检查您导入的所有日期符合<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601标准</a>。
+              title: "错误的日期/时间值"
             bad_timezone:
-              description:
-              title:
+              description: 我们无法理解时区"%{name}"。请再次检查您导入的所有日期符合<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601标准</a>。
+              title: "错误的时区"
             control_file_invalid_json:
-              description:
-              title:
+              description: 您的控制文件不能作为JSON文件被解析。错误消息："%{message}"。请核实这是有效的JSON文件。
+              title: "格式错误的控制文件"
             control_file_malformed:
-              description:
-              title:
+              description: 您的控制文件是有效的JSON,但是它并不匹配我们预期的格式。请确保您的控制文件符合<a href="https://socrata.github.io/datasync/resources/control-config.html">这个规格标准</a>。
+              title: "格式错误的控制文件"
             control_file_too_large:
-              description:
-              title:
+              description: "您的控制文件过大。请将它的大小减少至%{limit}个字符或更少，并再次尝试。"
+              title: "控制文件过大"
             corrupt_gzip:
-              description:
-              title:
+              description: 您提供的GZip压缩文件不能被成功提取。错误信息："%{message}"。请核实这是一个有效的GZip文件。
+              title: "无法提取压缩文件"
             corrupt_xz:
-              description:
-              title:
+              description: 您提供的XZ压缩文件不能被成功提取。错误信息："%{message}"。请核实这是一个有效的XZ文件。
+              title: "无法提取压缩文件"
             delete_without_user_pk:
-              description:
-              title:
+              description: "我们不能成功地处理删除信息，除非您提供明确的行标识符区域。"
+              title: "没有行标识符无法删除"
             duplicated_fields_in_input:
-              description:
-              title:
+              description: "区域名%{fieldNames}在您的数据文件中被多次使用。请确保区域名是独一无二的。"
+              title: "复制规定的区域名"
             field_not_in_dataset:
-              description:
-              title:
+              description: "在您试图将其导入的数据组中无法找到区域名%{fieldNames}。如果您想导入该列，请再次检查拼写，并再次尝试。"
+              title: "在数据组中找不到区域"
             field_not_in_input:
-              description:
-              title:
+              description: "在您提供的数据文件中找不到我们预期的一栏(%{fieldNames})，您没有给出明确的行标识符。请再次检查提供的栏，并再次尝试。"
+              title: "在文件中找不到区域"
             field_wrong_format:
-              description:
-              title:
+              description: 您的数据文件中提供的区域名%{fieldName}"不是合法的。有效的区域名必须只包含ascii字符并以下划线或字母开头。
+              title: "给出的区域名非法"
             geocoding_failure:
-              description:
-              title:
+              description: 由于一个未知的原因我们不能对给出的来源数据进行地理编码。请稍后再试，并联系 <a href="https://support.socrata.com">Socrata帮助</a>如果问题依然存在。
+              title: "未知的地理编码失败"
             geocoding_source_ignored:
-              description:
-              title:
+              description: 由于%{fieldNames.join(", ")}列是将来源地理编码到点列的一部分，我们无法像请求的一样忽视它们。
+              title: "不能忽视规定的列"
             geocoding_source_invalid_type:
-              description:
-              title:
+              description: "我们不能使用%{fieldNames}栏作为将位置信息进行地理编码的来源。请再次检查它们是合法的文本或数字列。"
+              title: "无法从给到的列中进行地理编码"
             ignored_synthetic_location_column_inputs_in_nbe_dataset:
-              description:
-              title:
+              description: "由于列是将来源地理编码到位置列的一部分，我们不能像请求的那样忽略它们。"
+              title: "不能忽略规定行"
             invalid_encoding:
-              description:
-              title:
+              description: "我们无法读取您的文件，因为它是用%{encoding}编码的，而我们只支持UTF-8。为了获得最佳效果，请确保您的文件是有效的UTF-8文件。"
+              title: "无效的文件编码"
             invalid_row_length:
-              description:
-              title:
+              description: "您的CSV文件中的#%{record}行含有%{actual}个区域，但是您的其他行中含有%{expected}个区域。请确保您的文件每行的区域数目一致。"
+              title: "未预料到的行中区域数"
             malformed_upsert:
-              description:
-              title:
+              description: "您的更新插入有效荷载不能作为JSON文件被解析，靠近记录%{record}。请核实这是有效的JSON文件"
+              title: "格式错误的更新插入"
             no_field_names_in_input:
-              description:
-              title:
+              description: "通常这是由于我们收到的CSV文件完全是空的。请确保您的文件含有数据，并再次尝试"
+              title: "无法找到CSV页眉"
             no_identity_column:
-              description:
-              title:
+              description: 这个数据组有一个行标识符列提供了("%{fieldName}")，但是我们在您提供的数据文件中找不到那一列。请确保它存在，并再次尝试。
+              title: "找不到行标识符列"
             permission_denied:
-              description:
-              title:
+              description: "发起这项操作的用户(%{user})似乎没有所需的执行权力。请确保您的许可权限已被正确设置，并再次尝试。"
+              title: "许可被拒绝"
             record_too_large:
-              description:
-              title:
+              description: "我们终止了读取您的文件，因为我们发现第%{record}行上的一个记录过大（它超出了%{limit}个的限制）。这通常是由于不正确的CSV逃脱了导致许多行的数据被读取到单个单元格中。请检查您的文件是非有效。"
+              title: "单个单元格过大"
             synthetic_location_in_input:
-              description:
-              title:
+              description: "您的数据文件中有一列%{fieldNames})被发现匹配这个数据组上的一个合成列。合成列是自动计算的，不能被手动导入。"
+              title: "无法导入到合成列中"
             too_many_errors_in_input:
-              description:
-              title:
+              description: "这个工作正被终止，因为在您输入的数据中找到了太多错误。"
+              title: "发现输入错误过多"
             too_many_records_in_input:
-              description:
-              title:
+              description: "您的数据文件超出了我们一次可以导入的记录的最大数量(您有%{recordCount}; 最大是%{maxRecordCount})。请减少每页的记录总数，并在此尝试。"
+              title: "记录过多"
             uninterpretable_value:
-              description:
-              title:
+              description: '%{record}行、"%{column}"列的"%{value}"值无法被读取为%{expectedType}类型。请确保所有的值都被正确地编制格式到它们的目标列中。'
+              title: "无法解析的记录值"
             unknown_domain:
-              description:
-              title:
+              description: "我们不能识别提供的您的工作的目标域(%{domain})。请确保这是一个有效的Socrata目标域，并再次尝试。"
+              title: "不能识别的域"
             unknown_file_type:
-              description:
-              title:
+              description: "我们不能识别您提供给我们的文件类型(扩展: %{extension})。请确保您在使用一个我们支持的文件类型，并且是有效的。"
+              title: "未知的文件类型"
             upsert_already_in_progress_by_someone_else:
-              description:
-              title:
-          import_method:
-          initiated_at:
-          no_events:
-          page_title:
+              description: "不能在一个数据组上同时进行两个更新插入，而且有其他人已经在进行一项更新插入操作了。"
+              title: "更新插入已在进行中"
+          import_method: "导入方式"
+          initiated_at: "初始"
+          no_events: "还没有记录这个工作的进程事件。"
+          page_title: "数据工作细节"
           services:
-            DeltaImporter2:
-            Imports2:
-            ResourcesAPI:
-          started_by:
-          title:
-          to:
+            DeltaImporter2: "数据同步"
+            Imports2: "网络界面"
+            ResourcesAPI: <a href="https://dev.socrata.com/publishers/upsert.html">资源API</a>
+          started_by: "开始由"
+          title: "数据工作细节"
+          to: "到"
         statuses:
-          failure:
-          in_progress:
-          not_started:
-          success:
-          success_with_data_errors:
+          failure: "失败"
+          in_progress: "进行中"
+          not_started: "还未开始"
+          success: "完成"
+          success_with_data_errors: "完成，但存在问题"
       metadata:
         add_new_category: "添加新类别"
         add_new_field: "添加新字段"
         allowed_values: "允许的值"
         are_you_sure: "您是否确定要删除该字段集以及所有相关的字段？"
         category_name: "类别名称"
-        category_table_description:
+        category_table_description: "元数据分类"
         create: "创建"
         create_new_fieldset: "创建一个新的字段集"
         define_categories: "定义数据集分类"
@@ -2549,6 +2602,12 @@ zh:
         field_name: "字段名"
         flashes:
           cannot_move_field: "无法移动名为'%{name}'的字段: 未找到"
+          category_cannot_be_blank: "请输入一个名称以创建一个新的分类"
+          category_must_be_unique: "无法创建复制叫做'%{new_category}'的分类"
+          could_not_delete_category: "无法移除叫做'%{category_name}'的分类"
+          could_not_update_category: "无法更新叫做'%{category_name}'的分类"
+          created_category: "成功创建分类。"
+          deleted_category: "成功移除分类"
           field_duplicated: "你无法创建一个名为'%{name}'重复的字段"
           field_name_required: "无名称无法创建字段"
           field_successful_create: "字段成功创建"
@@ -2556,10 +2615,12 @@ zh:
           field_successful_save: "成功保存字段"
           fieldset_duplicated: "无法创建一个名为'%{name}'重复的字段集"
           fieldset_name_required: "无名称无法创建字段集"
+          must_select_category_to_delete: "请选择要从列表中删除的分类"
           no_such_field: "不存在该字段"
           no_such_fieldset: "不存在该字段集"
           successful_create: "字段集成功创建"
           successful_remove: "字段集成功删除"
+          updated_category: "成功上传分类。"
         locales: "区域设置"
         make_optional: "使可选"
         make_private: "使私人"
@@ -2568,7 +2629,7 @@ zh:
         metadata_explain1: 自定义元数据被分成<span class="code">字段集</ span>和<span class="code">字段</ SPAN>。一个<span class="code">字段集</ SPAN>是一种在逻辑和视觉上将一个或多个自定义<span class="code">字段</span>分成一组的方式。
         metadata_explain2: 字段可以以多种方式进行配置。可以为<span class="code">必须</span>，当发行者创建新的数据集并更新现有的元数据时将被强制执行<。它们也可以是<span class="code">私人</span>，这意味着输入的值将对公众不可见。
         metadata_explain3: 最后，如果你希望从列表中选择，而不是输入为自由格式的文本，你可以选择预先定义您的<span class="code">字段</span>。
-        metadata_field_table_description:
+        metadata_field_table_description: "'%{name}'的元数据区域"
         no_data: "你的域名尚未定义自定义数据集字段。请在下面输入一个名称，然后单击“创建”开始。"
         no_fields_defined: "该字段设置尚未定义任何字段"
         page_title: "管理数据集元数据"
@@ -2578,217 +2639,247 @@ zh:
         title: "管理元数据"
         'true': true
         up: "向上"
+      sdp:
+        cannot_delete_default_template: "无法删除默认模版。请先选择一个新的默认模版。"
+        could_not_delete_template: "无法将模版设定为默认：找不到模版。"
+        could_not_find_template_customization: "找不到该自定义模版。"
+        could_not_set_default_template: "无法将模版设置为默认：找不到模版。"
+        error_on_creation: "在您的请求期间发生了错误：'%{error_message}'"
+        preview_could_not_be_found: "无法找到要预览的数据组。"
+        requires_published_dataset: "首先请创建一个您可以发布的数据组"
+        template_name_cannot_be_blank: "要求模版名称。"
+        too_many_templates: "您已经创建了额定数量的模版。请删除一个或联系帮助来购买更多。"
       site_chrome:
-        activate:
-        add_new_link_menu:
-        add_new_link_row:
-        cancel:
-        congratulations:
-        description:
-        link_menu_label_html:
-        move_link_row:
-        ok:
-        preview:
-        preview_changes:
-        remove_link_menu:
-        remove_link_row:
-        save:
-        save_changes:
-        see_both_features:
-        site_appearance:
+        activate: "激活"
+        add_new_link_menu: "添加菜单"
+        add_new_link_row: "添加%{section}链接"
+        after_clicking_ok: "在点击下方的'OK'后，通过访问您的数据组之一来查看特征"
+        cancel: "取消"
+        congratulations: "恭喜！"
+        description: "配置您的Socrata站点的外观。"
+        get_excited: "兴奋起来！"
+        link_menu_label_html: "<b>菜单</b> - <i>您可以拖动链接来重新排列它们</i>"
+        move_link_row: "拖动以重新排列"
+        ok: OK
+        preview: "预览"
+        preview_changes: "预览修改"
+        remove_link_menu: "移除链接菜单"
+        remove_link_row: "移除链接"
+        save: "保存"
+        save_changes: "保存修改"
+        see_both_features: "通过访问您的数据组之一查看二者的特征。"
+        site_appearance: "站点外观"
         tabs:
           footer:
             fields:
               copyright_notice:
-                description:
-                label:
-                title:
+                description: "选择是否在页脚显示版权通知。这项通知会自动更新到当前的日历年。"
+                label: "显示版权通知"
+                title: "版权通知"
               copyright_notice_source:
-                description:
-                placeholder:
+                description: "您的组织、城市、或州的名称将和版权和当前年份一同出现。"
+                placeholder: "版权来源"
               footer_background_color:
-                description:
-                placeholder:
-                title:
+                description: "页脚的背景颜色和在页脚区域里显示的文本&链接的颜色。"
+                placeholder: "#123456"
+                title: "页脚背景颜色"
               footer_display_name:
-                description:
-                placeholder:
-                title:
+                description: "这是显示在页脚区域中的名称。通常设定为您的组织的名称。"
+                placeholder: "页脚显示名称"
+                title: "页脚显示名称"
               footer_logo:
-                description:
-                placeholder:
-                title:
+                description: "页脚徽标的URL参考。推荐的最小尺寸为80 x 80 像素。"
+                placeholder: https://yoursite.gov/logos/footer_logo.png
+                title: "页脚徽标"
+              footer_logo_alt:
+                description: 
+                placeholder: 
+                title: 
               footer_logo_height:
-                description:
-                error:
-                placeholder:
-                title:
+                description: "您可以选择性地为您显示在页脚中的徽标设定一个高度和宽度。"
+                error: "请输入一个有效的CSS单位数值代表您想要的徽标高度。支持像素、相对长度、和百分比。例如：100px"
+                placeholder: 80px
+                title: "页脚徽标高度"
               footer_logo_width:
-                description:
-                error:
-                placeholder:
-                title:
+                description: "您可以选择性地为您显示在页脚的徽标设定一个高度和宽度。"
+                error: "请输入一个有效的CSS单位值来代表您想要的徽标宽度。支持像素、相对长度、和百分数。例如：100px"
+                placeholder: 80px
+                title: "页脚徽标宽度"
               footer_text_link_color:
-                placeholder:
-                title:
-              link_title_label:
-              link_title_placeholder:
+                placeholder: "#ffffff"
+                title: "页脚文本&链接颜色"
+              link_title_label: "链接标签"
+              link_title_placeholder: "链接文本"
               menu_links:
-                description:
-                title:
-              menu_title_placeholder:
+                description: "您可以在页脚中展示最多15个链接。链接将会在一个单行中显示，并会分多行以适应手机和更小的屏幕。"
+                title: "页脚链接"
+              menu_title_placeholder: "菜单文本"
               powered_by:
-                description:
-                label:
-                title:
-              url_label:
-              url_placeholder:
-            title:
+                description: "在页脚中显示“由Socrata提供技术支持”的商标，也可以提供一个指向socrata.com的链接"
+                label: "在页脚显示Socrata商标"
+                title: "由Socrata提供技术支持"
+              url_label: URL
+              url_placeholder: http://data.evergreen.gov
+            title: "页脚"
           general:
             fields:
               font_family:
-                description:
-                placeholder:
-                title:
+                description: "选择在页眉和页脚的所有文本中使用的字体样式。"
+                placeholder: "字体"
+                title: "字体"
               google_analytics_token:
-                description:
-                error:
-                placeholder:
-                title:
+                description: "输入您的Google Analytics跟踪码的代码（不是全部文稿）来为您的站点收集分析情况。"
+                error: "代码应符合该格式：UA-XXXXX-XXXX"
+                placeholder: UA-12345678-1
+                title: Google Analytics代码
               max_width:
-                description:
-                placeholder:
-                title:
+                description: "输入您的页眉和页脚内容的最大宽度（以像素为单位）。若留空，它会拉伸到访问者浏览器窗口的维度。"
+                placeholder: 1200px
+                title: "最大宽度"
               show_signin_signout:
-                description:
-                show_profile:
-                show_signin_signout:
-                show_signup:
-                title:
+                description: "若您的站点要求一个用户资料/登录，显示这些选项。"
+                show_profile: "在登录后显示资料的链接"
+                show_signin_signout: "显示登录/登出"
+                show_signup: "显示通过登录创建一个账户的能力"
+                title: "登入 / 登出"
               template:
-                description:
-                description_html:
-                placeholder:
-                title:
+                description: 通过改变模版来调整页眉的外观。支持"Evergreen" (默认) 模版和"Rally"模版。
+                description_html: 通过改变模版来调整页眉的外观。支持的模版有 <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">"Evergreen" 和 "Rally"</a>。
+                placeholder: "选择一个模版"
+                title: "模版"
               window_icon:
-                description:
-                placeholder:
-                title:
+                description: "在浏览器窗口、标签和URL区域中显示的图标的URL参考。"
+                placeholder: https://yoursite.gov/logos/favicon.png
+                title: "浏览器窗口或标签图表(偏爱图标)"
               window_title_display:
-                description:
-                placeholder:
-                title:
-            title:
+                description: "这是显示在浏览器窗口或者标签标题中的名称。"
+                placeholder: "浏览器窗口或标签标题显示"
+                title: "浏览器窗口或标签标题显示"
+            title: "通用设置"
           header:
             fields:
               bar_background_color:
-                description:
-                placeholder:
-                title:
+                description: "页眉栏的主要和次要背景色。次要颜色仅在Rally模版中被用于菜单区域。使用HEX色值或“透明”。"
+                placeholder: "#123456"
+                title: "条栏背景色（主要）"
               bar_secondary_background_color:
-                description:
-                placeholder:
-                title:
+                description: "页眉栏的主要和次要背景色。次要颜色仅在Rally模版中被用于菜单区域。使用HEX色值或“透明”。"
+                placeholder: "#123456"
+                title: "条栏背景色（次要）"
               bar_text_link_color:
-                description:
-                placeholder:
-                title:
+                description: "位于页眉栏上方的文本和链接的前景色。"
+                placeholder: "#ffffff"
+                title: "条栏文本&链接颜色"
               header_bar_logo:
-                description:
-                placeholder:
-                title:
+                description: "站点页眉徽标的URL参考。推荐的最小尺寸为80 x 80像素。这个徽标将显示为小尺寸。"
+                placeholder: https://yoursite.gov/logos/header_logo.png
+                title: "页眉栏徽标"
+              header_bar_logo_alt:
+                description: 
+                placeholder: 
+                title: 
               header_display_name:
-                description:
-                placeholder:
-                title:
+                description: "在页眉栏显示的名称。通常设定为您的组织的名称。"
+                placeholder: "页眉显示ming cheng"
+                title: "页眉显示名称"
               header_logo_height:
-                description:
-                error:
-                placeholder:
-                title:
+                description: "您可以选择性地为您在页眉栏显示的徽标设定高度和宽度。"
+                error: "请输入一个有效的CSS单位值来代表您想要的徽标高度。支持像素、相对长度、和百分比。例如：100px"
+                placeholder: 80px
+                title: "页眉徽标高度"
               header_logo_width:
-                description:
-                error:
-                placeholder:
-                title:
-              link_title_label:
-              link_title_placeholder:
+                description: "您可以选择性地为您在页眉栏显示的徽标设定高度和宽度。"
+                error: "请输入一个有效的CSS单位值来代表您想要的徽标宽度。支持像素、相对长度、和百分比。例如：100px"
+                placeholder: 80px
+                title: "页眉徽标宽度"
+              link_title_label: "链接标签"
+              link_title_placeholder: "链接文本"
               menu_links:
-                description:
-                title:
-              menu_title_placeholder:
-              url_label:
-              url_placeholder:
-            title:
+                description: "在页眉栏中显示最多15个链接或带有链接的菜单。要创建一个下拉菜单，首先添加一个菜单，然后添加链接标签，并关联URL。菜单和其他链接将会被放在页眉的一个单行中。如果标签太长或者访问者正在小型设备上浏览您的站点，菜单和链接会自动坍缩成一个菜单。"
+                title: "页眉链接"
+              menu_title_placeholder: "菜单文本"
+              url_label: URL
+              url_placeholder: http://data.evergreen.gov
+            title: "页眉lan"
           homepage:
-            fields:
-            title:
+            fields: 
+            title: "主页"
           social:
             fields:
               facebook_profile_link:
-                description:
-                placeholder:
-                title:
+                description: "在这里添加一个URL,以在页眉和页脚中显示您的组织的Facebook资料的链接。"
+                placeholder: http://www.facebook.com/
+                title: Facebook资料链接
               flickr_profile_link:
-                description:
-                placeholder:
-                title:
+                description: "在这里添加一个URL,以在页眉和页脚中显示您的组织的Flickr资料的链接。"
+                placeholder: http://www.flickr.com/
+                title: Flicker资料链接
+              github_profile_link:
+                description: "在这里添加URL，以在页眉和页脚中显示您的组织的GitHub资料。"
+                placeholder: http://www.github.com/
+                title: Github资料链接
               google_plus_profile_link:
-                description:
-                placeholder:
-                title:
+                description: "在这里添加URL，以在页眉和页脚中显示您的组织的Google Plus资料。"
+                placeholder: http://www.plus.google.com/
+                title: Google Plus资料链接
               instagram_profile_link:
-                description:
-                placeholder:
-                title:
+                description: "在这里添加URL，以在页眉和页脚中显示您的组织的Instagram资料。"
+                placeholder: http://www.instagram.com/
+                title: Instagram资料链接
               linked_in_profile_link:
-                description:
-                placeholder:
-                title:
+                description: "在这里添加URL，以在页眉和页脚中显示您的组织的Linkedin资料。"
+                placeholder: http://www.linkedin.com/
+                title: Linkedin资料链接
               pinterest_profile_link:
-                description:
-                placeholder:
-                title:
+                description: "在这里添加URL，以在页眉和页脚中显示您的组织的Pinterest资料。"
+                placeholder: http://www.pinterest.com/
+                title: Pinterest资料链接
               tumblr_profile_link:
-                description:
-                placeholder:
-                title:
+                description: "在这里添加URL，以在页眉和页脚中显示您的组织的Tumblr资料。"
+                placeholder: http://www.tumblr.com/
+                title: Tumblr资料链接
               twitter_profile_link:
-                description:
-                placeholder:
-                title:
+                description: "在这里添加URL，以在页眉和页脚中显示您的组织的Twitter资料链接。"
+                placeholder: http://www.twitter.com/
+                title: Twiter资料链接
               vimeo_profile_link:
-                description:
-                placeholder:
-                title:
+                description: "在这里添加URL，以在页眉和页脚中显示您的组织的Vimeo资料链接。"
+                placeholder: http://www.vimeo.com/
+                title: Vimeo资料链接
               yammer_profile_link:
-                description:
-                placeholder:
-                title:
+                description: "在这里添加URL，以在页眉和页脚中显示您的组织的Yammer资料链接。"
+                placeholder: http://www.yammer.com/
+                title: Yammer资料链接
               youtube_profile_link:
-                description:
-                placeholder:
-                title:
-            title:
+                description: "在这里添加URL，以在页眉和页脚中显示您的组织的YouTube资料链接。"
+                placeholder: http://www.youtube.com/
+                title: YouTube资料链接
+            title: "社交分享"
           whats_new:
             fields:
               a_bundle_of_goodness:
-                description_html:
-                title:
+                description_html: "<p>等待已结束：数据着陆页和您最新的、可配置的页眉/页脚也都准备就绪了！继续阅读，了解这些改进之处以及您可以如何在今天就激活它们。</p>"
+                title: "一大堆好处：两个新的特征现在可用"
               a_new_configurable_header_footer:
-                description_html:
-                title:
+                description_html: "<p>作为发布内容的一部分，我们也为您的站点介绍了一个新统一标准、可适用移动设备、可由管理员配置的页眉/页脚。这个新的页眉/页脚让您自己能够配置您网站的徽标、颜色、版权、导航链接、社交图表、和更多—全都是自助风格。它让您能偶轻松控制您的站点外观，并且无须联系Socrata帮助就能更新这些重要部件。</p> <p>顺便说一句—使用您当前的站点设计和顾客成功主管作为我们的向导，我们已经为您准备好了您的页眉和页脚预览。点击上方的“预览”按钮来查看，然后将它调整到任何您想要的样子——都由您作主。</p>"
+                title: "一个新的可配置页眉/页脚"
               active_both_today:
-                description_html:
-                title:
+                description_html: '<p>数据组着陆页和您最新的可配置的页眉/页脚现在都可用了。查阅上方的标签来配置并预览您的站点的外观—当您准备就绪时，一起激活它们吧！</p> <p><b>注意:</b> 如果你未在30天内为您的站点配置页眉/页脚，Socrata将会为您配置病和数据组着陆页一同自动激活。 我们会使用现有的站点风格，并向您的顾客成功主管获取风格指导。</p> <p>要获取配置您的页眉/页脚及激活数据组登录页的技巧，请参加<a href="https://event.on24.com/eventRegistration/EventLobbyServlet?target=reg20.jsp&referrer=&eventid=1223356&sessionid=1&key=9ED33D00A47ABC3419890552EBA81D93®Tag=&sourcepage=register" target="_blank">"将最新的特征的用处发挥到最大"在线研讨会</a> 或访问我们的帮助网站: <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">https://support.socrata.com/hc/en-us/articles/223723227</a>。</p>'
+                title: "今天就全都激活！"
               dataset_landing_page:
-                description_html:
-                title:
-            title:
-        these_features_help:
-        update:
-        you_have_activated:
-      update:
+                description_html: "<p>兴奋起来! 有了这一更新，数据组着陆页变成了上传数据组的主要头版体验——它凭直觉集锦了每个数据组中最经常被访问的方面，并确保您的数据用户在作出操作前就看到元数据。发布者和管理员有“添加”相关的视图和可视化效果的自由，经验丰富的用户可以提前探索元数据和度量指标，而且所有用户都可以用他们想要的方式访问数据，无论是通过数据可视化、直接下载文件、还是API。当然了——最经典的数据表格化视图依然可以从视图顶端的导航处获取，提供给那些觉得这样更舒适的用户。</p>"
+                title: "数据组着陆页"
+            title: "最新资讯"
+        these_features: "这些特征能让您更好地控制您的站点的外观，并帮助数据消费者比以前更好地探索您的数据。您的用户们会爱上它们的！"
+        these_features_help: "这些数据将会帮助用户们探索您的数据，并让您更易于管理您的站点的外观。"
+        update: "更新"
+        you_are_about: "您即将为您的数据组激活您的页眉，页脚和数据组着陆页。"
+        you_are_about_html: 
+        you_have_activated: "您已激活了您的新页眉/页脚和数据组着陆页。"
+      tos:
+        accepted: "感谢您接受服务条款。"
+        must_agree: "您必须同意提供的条款才能继续。"
+      update: "更新"
       users:
         actions: "操作"
         all: "全部"
@@ -2798,7 +2889,7 @@ zh:
         email_prompt: "输入你希望创建帐户的电子邮件地址"
         emails: "电子邮件"
         error_permission_request: "处理你的权限请求时出现错误"
-        export_as_csv:
+        export_as_csv: "导出为CSV"
         filter_by: "过滤标准"
         flashes:
           accounts_created: "已成功创建%{count} 个账户"
@@ -2816,7 +2907,7 @@ zh:
         no_users_found: "未找到已有用户"
         no_users_match: "无用户匹配你当前的过滤器。"
         pending_users: "以下用户都有待定账户，但尚未激活"
-        pending_users_table_description:
+        pending_users_table_description: "待定用户"
         reenable_privileges: "重新启用特权"
         remove: "删除"
         reset_password: "重设密码"
@@ -2826,19 +2917,21 @@ zh:
           administrator: "管理员"
           designer: "设计师"
           editor: "编辑"
-          editor_stories:
+          editor_stories: "编辑＋观点"
           none: "无"
           publisher: "发布者"
-          publisher_stories:
+          publisher_stories: "发布者＋观点"
           viewer: "审查"
         search: "搜索"
         search_for_users: "搜索要添加的用户"
         search_results: "搜索'%{term}'的结果"
         title: "管理用户"
         user_saved: "用户已保存"
-        users_table_description:
+        users_table_description: "用户"
       view_moderation:
-        table_description:
+        could_not_find_view: "找不到修改调整状态的视图"
+        set_moderation_status: "视图'%{view_name}'已被%{moderation_status}。请等待几分钟来让这些修改反映到您的主页上。"
+        table_description: "调整过的数据组"
     dataset_edit:
       append: "追加"
       append_and_replace: "追加和替换数据"
@@ -2871,35 +2964,35 @@ zh:
         supported: "支持的文件类型是CSV、TSV和Excel。支持的协议包括HTTP和HTTPS。"
         url_prompt: "你想导入的文件的站点URL是？"
       errors:
-        archive_error:
-        corrupt_shapefile_error:
-        create_column_error:
-        create_dataset_error:
-        create_working_copy_error:
-        decode_filetype_error:
-        delete_column_error:
-        get_column_error:
-        incomplete_shapefile_error:
+        archive_error: "打开zip archive文件失败：{reason}"
+        corrupt_shapefile_error: "读取shapefile文件失败：{reason}"
+        create_column_error: "创建数据组失败"
+        create_dataset_error: "创建数据组失败"
+        create_working_copy_error: "创建一个工作拷贝失败"
+        decode_filetype_error: "找不到{kind}种类的解码器"
+        delete_column_error: "删除数据组中的列失败"
+        get_column_error: "获取数据组中的列失败"
+        incomplete_shapefile_error: "您的shapefile档案文件不完整。它必须每层都包含一个.dbf、.shp、和 .prj文件。想到要含有以下文件，实际缺失的是：{missing}。"
         insecure_esri_url: "已添加一个不安全的ESRI地图图层URL。因此，某些功能对该数据集将不起作用。"
-        invalid_arity_error:
+        invalid_arity_error: "下行中的点之一没有2个坐标{geom}"
         invalid_crossload_url: "请输入一个HTTP或HTTPS开头的有效的URL。"
         invalid_url: "这似乎不是一个有效的URL。"
-        jsonparse_error:
+        jsonparse_error: "解析JSON文件失败，在第{line}行 第{column}列 代号{token} 因为 {reason}"
         missing_data_provider: "您必须指定Creative Commons许可中的数据提供者（归属）。"
         missing_esri_url: "必需有一个有效的ESRI地图图层的URL。"
         missing_name: "数据集名称为必需。"
         need_description: "请说明&ldquo;%{name}&rdquo;"
         point:
-          missing_latlong:
-          suboptimal_column:
-        publication_error:
-        shapefile_header_error:
-        shapefile_row_error:
-        update_metadata_error:
-        upsert_error:
-        vertex_too_complex_error:
-        xmlparse_error:
-        zkerror:
+          missing_latlong: "设定导入一个 <strong>%{coordinateType} 而不是<strong>%{missingCoordinateType}列。请详细说明完整的经纬度坐标。"
+          suboptimal_column: "设定从来源列<strong>%{originalColumnName}</strong>导入它的<strong>%{field}</strong> ，但是我们的分析表明来源列是一个%{suggestion}列，而%{field} 要的是%{type}类别的列。若您选择保持这些导入设置继续进行，很可能会发生导入或地理编码错误。"
+        publication_error: "发布数据组失败"
+        shapefile_header_error: "读取shapefile中的页眉失败：{reason}"
+        shapefile_row_error: "读取shapefile中的行失败：{reason}"
+        update_metadata_error: "更新数据组上的元数据失败"
+        upsert_error: "更新插入数据组失败"
+        vertex_too_complex_error: "在第{rowNum}行有{counted}个顶点，最大是{maxVerticesPerRow}个"
+        xmlparse_error: "解析XML节点失败，由于{path}附近的{reason} "
+        zkerror: "发生了一个上游错误：{reason}"
       finish:
         headline: "你的数据集已创建。"
         subheadline: "单击Finish（完成）查看！"
@@ -2931,36 +3024,36 @@ zh:
         errors:
           multiple_columns:
             blank_names:
-              many_html:
-              one_html:
+              many_html: "您的列的第<strong>{instances}</strong>列没有名称。请给它们名称。"
+              one_html: "您的列的<strong>之一</strong>没有名称。请给它一个名称。"
             columns_named_tags:
-              many_html:
-              one_html:
-            duplicate_names:
+              many_html: "您的列的<strong>{instances}</strong>被称作“标签”。列不可以被命名为“标签”。"
+              one_html: "您的列的<strong>之一</strong>被命名为“标签”。列不可以被命名为“标签”。"
+            duplicate_names: "您的列的<strong>{instances}</strong>被命名为<strong>“{name}”</strong>。一个数据组中的列不可以分享同一个名字。"
             source_columns_dropped:
-              many_html:
-              one_html:
+              many_html: "{sourceColumns}列在您的来源数据文件中，但目前被设定导入到您的数据组中。"
+              one_html: "{sourceColumns}列在您的来源数据文件中，但目前被设定导入到您的数据组中。"
           single_column:
-            empty_composite_col:
-            missing_lat_long:
-            non_text_composite_col:
-            type_too_generic:
-            wrong_type:
-            wrong_type_location:
-            wrong_type_unknown_count:
+            empty_composite_col: "<strong>{resultColumnName}</strong>列是一个由多个来源列创造出的混合列，但您目前没有设定它来让任何内容进入。请添加一些来源列或文本。"
+            missing_lat_long: "“<strong>{resultColumnName}</strong>” 列被设定为导入一个<strong>{coordinateType}</strong>列而不是<strong>{missingCoordinateType}</strong>列。请详细说明完整的经纬度坐标。"
+            non_text_composite_col: "<strong>{resultColumnName}</strong>列是一个由多个来源列创造出的混合列，但它目前被设定成作为<strong>{chosenType}</strong>被导入。请确保混合您规定的这些列将会生成一个有效的{chosenType}。"
+            type_too_generic: "<strong>{resultColumnName}</strong>列被设定为作为<strong>{chosenType}</strong>导入，但我们的分析表明该列可能是一个<strong>{suggestedType}</strong> 列。您可以将它作为{chosenType}导入，但是您如果这么做的话会丢失一些特征。我们强烈推荐您将它作为<strong>{suggestedType}</strong>导入。"
+            wrong_type: "<strong>{resultColumnName}</strong>列是一个 <strong>{chosenType}</strong>，但是我们的分析表明您正在试着导入其中的来源列是<strong>{suggestedType}</strong>类型的。若您选择导入那一列，大概您的数据的<strong>{invalidPercent}%</strong>会被不正确地导入。"
+            wrong_type_location: "<strong>{resultColumnName}</strong>列被设定为从来源列<strong>{chosenColumn}</strong>导入，但是我们的分析表明该来源列是一个{chosenType}列，而{field} 要的是一个{suggestedType}种类的列。若您选择保持这些导入设置继续进行，很可能会发生导入或地理编码错误。"
+            wrong_type_unknown_count: "<strong>{resultColumnName}</strong>列被设定为作为<strong>{chosenType}</strong>导入，但我们的分析显示<strong>{suggestedType}</strong>可能会更适合。除非列的数据正确地编制为{chosenType}格式，数据可能会不正确地导入。"
         errors_warnings: "错误和警告"
         fewer_rows: "更少的行"
         headers: "页眉"
         headers_instructions: "页眉应该被忽略并不会作为数据导入。请注明你的源文件有多少行属于页眉"
         headline: 请指定如何导入&ldquo;<span class="fileName"></span>&rdquo; 。
-        headline_interpolate:
+        headline_interpolate: 详细说明"{0}"应当如何被导入。
         help_message: 如需帮助，请查看<a href="%{common_errors}" rel="external">的常见警告与错误列表</a>。
-        help_message_js:
+        help_message_js: 要获得帮助，查看<a href="{common_errors}" rel="external">常见警告和错误列表</a>。
         more_rows: "更多行"
         name: "名称"
         pending_columns: "我们上传列时请稍候..."
         reset_to_preset: "重置为预设"
-        restore_suggested_settings:
+        restore_suggested_settings: "恢复建议设置"
         set: "设置"
         source_column: "源列"
         subheadline: "要导入的列"
@@ -2968,21 +3061,21 @@ zh:
         suggested_columns: "建议列"
         suggested_flat: "建议列（无复合）"
         suggested_plus_discrete: "建议列（复合与分立）"
-        upload_success:
+        upload_success: "您的文件已成功上传并保存到我们的系统中。现在继续创建您的数据组，或稍后回来完成。"
         why_choose_now: "为什么选择列类型很重要？"
       import_help: <strong>需要帮助吗？</ strong>我们维持一个对你可能有帮助的<a href="%{common_errors}" rel="external">常见的警告和错误</a>。
       import_shapefile:
-        abbreviatedSubheadline:
-        abbreviatedSummary:
-        abbreviatedSummary_js:
+        abbreviatedSubheadline: "总结这个数据组可能会要很长时间。点击下一步来导入它。"
+        abbreviatedSummary: '&ldquo;<span class="fileName"></span>&rdquo; 中的地图层会在导入时被创建。'
+        abbreviatedSummary_js: '"{fileName}"中的地图层会在导入时被创建。'
         crs: "坐标参考系统"
         headline: 指定&ldquo;<span class="fileName"></span>&rdquo; 应如何导入。
-        headline_interpolate:
+        headline_interpolate: 详细说明"{0}"应当如何被导入。
         layers_list: "要导入的层"
         name: "名称"
         pending: "请稍候，我们正在上传你的图层..."
         subheadline: 该shapefile在<span class="layerCount"></span>层包含<span class="layerCount"></span>功能。
-        subheadline_interpolate:
+        subheadline_interpolate: shapefile含有{0}层。
       import_warnings:
         headline: "导入过程中的警告"
         see_docs: <strong>困惑？<strong>请查看我们的<a href="%{publisher_link}" rel="external">发布者文件</a>了解导入工具如何处理数据的详细说明。你也可以参考我们的<a href="%{common_errors}" rel="external">常见的警告和错误列表</ a>。
@@ -2997,12 +3090,12 @@ zh:
         private_explain: "我的数据<strong>private</strong>"
         prompt: "请描述你的数据。"
         public_explain: "我的数据<strong>public</strong>：它只能由我来修改，但每个人都可以查看。"
-      notify_me:
-      notify_me_error_html:
-      notify_me_messaging:
-      notify_me_success_addl:
-      notify_me_success_html:
-      notify_me_success_html_js:
+      notify_me: "通知我"
+      notify_me_error_html: 我们试着安排通知邮件时有什么出错了。请稍后再试，或联系<a href="mailto:support@socrata.com">Socrata帮助</a>，如果问题依然存在的话。
+      notify_me_messaging: "当这个完成时通过电子邮件。"
+      notify_me_success_addl: "同时关闭浏览器是安全的。"
+      notify_me_success_html: "<strong>太棒了！</strong> 我们会在您的数据组准备就绪时发送一封电子邮件到<strong>%{email}</strong>。"
+      notify_me_success_html_js: "<strong>太棒了!</strong> 我们会在您的数据组准备就绪时发送一封电子邮件到<strong>{0}</strong>。"
       processing: "处理中..."
       title: "新数据集"
       upload_accessible: "上传可访问的新的数据集"
@@ -3020,7 +3113,7 @@ zh:
       bar:
         api_unsavable: "不能修改API视图"
         based_on_html: 基于<a class="revertLink currentViewName" href="#revert">%{name}</a>
-        based_on_layer_html:
+        based_on_layer_html: 来自地理空间数据组<a href="%{href}" class="parentName">%{name}</a>的一个层
         based_on_parent_html: 基于 <a class="parentName"></a>
         based_on_private_view: "私有视图"
         based_on_working_copy_html: 基于<a class="revertLink currentViewName" href="#revert">%{name}</a> 的工作副本
@@ -3037,11 +3130,11 @@ zh:
           underline: "下划线"
           undo: "撤销"
         full_screen: "全屏显示开关"
-        no_description:
+        no_description: "(没有提供描述)"
         out_of_date: "此数据集已过期%{age}"
         publish_button: "发布数据集"
         publish_prompt: "本数据集是工作副本，因此不对外公开。您完成所需的改动后，需要先发布数据集，其他人才能访问。"
-        publish_prompt_with_dataset_landing_page:
+        publish_prompt_with_dataset_landing_page: "这个数据组是一个工作拷贝，并不是公开可用的。一旦您做出了想要的修改，这个数据组将会被发布来使它成为公开可用的。发布这个页面也会发布数据组着陆页。"
         publish_rights: "只有所有者或发布者才能发布此数据集"
         revert_button: "恢复"
         revert_prompt: "恢复到已保存的视图"
@@ -3140,7 +3233,7 @@ zh:
         success: "您的邮件发送成功。"
         title_html: 分享 “<span class="datasetName">%{name}</span>”
       fatrow:
-        edit_layout:
+        edit_layout: "编辑布局"
       grid_sidebar:
         add_column:
           convert_address:
@@ -3173,8 +3266,8 @@ zh:
           developer_portal: "开发者门户"
           endpoint_title: API访问端点：
           intro_html: "借助<strong>Socrata 开放数据 API</strong> (SODA)，软件开发人员可以访问Socrata 数据网站上托管的数据，并对其进行编程操作。开发人员可创建使用SODA API的应用程序，用新鲜有趣的方式可视化、“混搭” Socrata数据集。您可以编制一个iPhone应用，可视化您所在地区的政府支出；开发一个网络应用程序，协助公民查看他们可能忽视了的政府福利；或者创建一项服务，一旦您想跟踪的支出项目又有新花销，就会收到自动的电子邮件通知。"
-          multiple_endpoints_intro_html:
-          no_endpoints_available:
+          multiple_endpoints_intro_html: The <a href="http://dev.socrata.com/" target="external">Socrata Open Data API (SODA)</a>提供对这个数据组的程序性访问，包括<a href="http://dev.socrata.com/docs/filtering.html" target="external">筛选</a>、<a href="http://dev.socrata.com/docs/queries.html" target="external">查询</a>、和and <a href="http://dev.socrata.com/docs/aggregation.html" target="external">附加</a>数据的功能。要获取更多信息，查看下方为这个数据组提供的API文档或访问我们的<a href="http://dev.socrata.com" target="external">开发者入口</a>
+          no_endpoints_available: "没有可用的端点。"
           reference_html: 使用下面提供的API端点，开始访问数据库，进行编程。更多有关如何使用Socrata 开放数据 API的信息及示例，请参考<a href="http://dev.socrata.com" rel="external">开发人员文档</a>。
           subtitle: "通过SODA访问%{view_type}"
           title: SODA API
@@ -3198,8 +3291,8 @@ zh:
             immutable: "启动“替换”向导"
             mutable: "启动“添加和替换”向导"
         backup:
-          button:
-          item_html:
+          button: "备份这个数据组"
+          item_html: 在<span class="backupTime"></span>备份
         base:
           buttons:
             apply: "应用"
@@ -3230,8 +3323,8 @@ zh:
             formatted_text: "带格式的文本"
             geospatial: "地理空间"
             groups:
-              geometry:
-              standard:
+              geometry: "几何"
+              standard: "标准"
             list: "列表"
             location: "位置"
             money: "资金"
@@ -3426,7 +3519,7 @@ zh:
             title: "列的类型"
             type: "数据类型"
             type_prompt: "选择数据类型"
-            working_copy_html:
+            working_copy_html: '请<a href="#" class="createWorkingCopy">创建一个工作拷贝</a>来编辑这个列的数据类型 '
         column_order:
           columns:
             title: "列"
@@ -3465,10 +3558,10 @@ zh:
           money:
             abbreviated: "缩写"
             currency: "币种"
-            format_mask_warning:
+            format_mask_warning: 
             groups:
-              all:
-              common:
+              all: "所有"
+              common: "常见"
             no_precision: "无"
             precision: "精确度"
             title: "货币格式"
@@ -3501,17 +3594,17 @@ zh:
           subtitle: "更新列的各项属性"
           success: "列已经更新"
           text_formatting:
-            display_style:
-            title:
+            display_style: "显示风格"
+            title: "文本格式"
           title: "列属性"
           url:
             base_url: "基准URL"
             base_url_prompt: "输入通用的URL前缀"
             title: URL选项
           validation:
-            notallowed:
+            notallowed: "您不被允许编辑列的内容"
             published: "要改变列属性，请复制此数据库的工作副本或视图。"
-            snapshot:
+            snapshot: "您不能编辑列的内容获取视图快照"
             unsaved: "您不能编辑未保存视图中的列属性"
         conditional_formatting:
           change_icon: "变更"
@@ -3537,14 +3630,14 @@ zh:
             no_columns: "此视图无列可筛选"
             no_icons: "图标只与地图视图相关"
         data_lens:
-          button:
-          button_flyout:
-          subtitle:
-          title:
+          button: "新的Data Lens"
+          button_flyout: "您的数据正在处理中。在几分钟后刷新页面，您就能创建新的Data Lens了。"
+          subtitle: Data Lens是包括了改进的数据探索和更好的数据展示的视觉交互式体验。点击<strong>新的Data Lens</strong>来创建一个新的。从那里起，您可以从视觉上探索数据、自定义它的显示方式、以及管理它是如何在目录中被呈现出来的。
+          title: Data Lens
         delete:
           confirm: "此操作将永久删除 %{view_type} 。再没有办法恢复！您确信要继续吗？ "
-          confirm_permanent:
-          confirm_restorable:
+          confirm_permanent: "这会永久删除%{view_type}。无法撤回！您确定您希望继续吗？"
+          confirm_restorable: "您的域的管理员可在最多%{number_of_days_restorable}内撤回删除。您确定您希望继续吗？"
           delete_button: "删除 %{view_type}"
           subtitle: "删除 %{view_type}"
           title: "删除"
@@ -3568,8 +3661,8 @@ zh:
           download_as: "下载格式"
           download_dataset: "请从生成此视图的地方下载数据集。"
           geo_header: "下载地理空间数据"
-          monolayer_header:
-          multilayer_header:
+          monolayer_header: "下载同时不下载地理空间数据"
+          multilayer_header: "下载一个特定层的数据"
           subtitle: "以静态格式下载此数据集"
           title: "下载"
         feed:
@@ -3663,13 +3756,13 @@ zh:
           validation:
             hidden_location_html: 您可 <a href="#showLoc" title="Show a location column">显示隐藏的地点列</a>。
             location_column: "必须有地点列才能创建地图。"
-            location_column_invalid_dataset:
+            location_column_invalid_dataset: "请求的数据组不存在。"
             viz_limit: "一个视图只能加载一种可视化操作"
         odata:
           endpoint_action: "复制此链接："
           intro_html1: "在Excel中创建一个电子表格来分析和可视化数据集。使用OData链接将刷新这些数据。"
           intro_html2: 使用Microsoft Excel 2010、Microsoft Excel 2013或Microsoft Power Query。使用<a href="%{doc_link}">Socrata's OData文档</a>，遵循用户指南。
-          no_endpoints_available:
+          no_endpoints_available: "没有可用的端点。"
           subtitle: "通过OData访问该数据集"
           title: OData
         ownership:
@@ -3751,7 +3844,7 @@ zh:
           subtitle: "调整在此视图中显示的列"
           title: "显示/隐藏列"
           warnings:
-            active_filter:
+            active_filter: "您不能隐藏该列，因为它有一个活跃的筛选器。"
         sort_rollup:
           rollup:
             add_group_button: "添加分组列"
@@ -3826,7 +3919,7 @@ zh:
       new_ux_text: "以新的数据透镜体验查看该数据"
       new_ux_title: "准备好进行可视化探索了吗？"
       page_render_type:
-        edit_layout:
+        edit_layout: "编辑布局"
       save_dialog:
         descriptions:
           leaving: "如果离开此页面，您未保存的数据将丢失。在离开前选择是否保存视图；或者选择“取消”返回页面。"
@@ -3855,14 +3948,15 @@ zh:
       unable_to_find_dataset_page: "我们无法为该数据集找到一个数据透镜页面。"
     edit_metadata:
       about: "关于"
-      add_link:
-      add_source:
+      add_link: "添加链接"
+      add_source: "添加来源"
       additional_source: "其他资源"
       alternative_access_prompt: "输入该数据集的其他访问点"
       api_endpoint: API 端点
       attachments: "附件"
       attachmentsDisabledMessagePart1: "要上传的附件，先完成发布此数据集。然后，单击"
       attachmentsDisabledMessagePart2: "在工具栏上，然后单击编辑元数据。然后，便可上传附件。"
+      blob_uploaded: "很棒：我们已保存了您的文件。剩下要做的就是描述您的文件的元数据。"
       brief_description: "简单描述"
       brief_description_prompt: "输入描述"
       cancel: "取消"
@@ -3879,10 +3973,10 @@ zh:
       dataset_title_prompt: "输入标题"
       dataset_url: "数据集的URL"
       dataset_url_prompt: "输入外部数据集的位置"
-      default_row_label:
+      default_row_label: "行"
       delete: "删除"
-      described_by:
-      described_by_prompt:
+      described_by: "数据字典"
+      described_by_prompt: "输入一个数据字典链接"
       email_address: "电子邮件地址"
       email_help: "此地址不会公开显示。 如果留空，将默认为您的地址。"
       existing_attachments: "现有附件"
@@ -3901,8 +3995,8 @@ zh:
       licensing_attr: "许可和归属"
       list: "列表"
       metadata_help: "该字段已被您的组织标为私有，不可公开查看。"
-      missing_external_dataset:
-      multiple_extensions:
+      missing_external_dataset: "请提供至少一个外部数据组。"
+      multiple_extensions: "不允许给相同的端点多于一个的相同扩展名。"
       new_attachment: "新附件"
       none: "（无）"
       northwest_latitude: "西北纬度"
@@ -3910,7 +4004,7 @@ zh:
       optional: "可选"
       private_help: "该字段已被您的组织标记为私有，不可公开查看"
       remove_image: "移除图像"
-      remove_link:
+      remove_link: "移除链接"
       required_field: "必填字段"
       resource_name: "资源名称"
       resource_name_prompt: "输入资源名称"
@@ -3918,12 +4012,13 @@ zh:
       row_class: "行类别"
       row_identifier: "行标识符"
       row_identifier_help_text: "一旦视图发布，不可再修改行标识符。"
-      row_label:
-      row_label_help:
-      row_label_prompt:
+      row_label: "行标签"
+      row_label_help: "描述数据组中的每一行代表着什么（如适合）。"
+      row_label_prompt: "例如，犯罪、人物、医院"
       save: "保存"
       save_changes: "保存更改"
       semantics_rdf: "语义和资源描述框架"
+      settings_saved: "您的进程已被保存。通过填写下方的元数据继续创建您的数据组。"
       source_link: "资源链接"
       source_link_error: "好像不是有效url。"
       source_link_prompt: "输入网址"
@@ -3939,7 +4034,7 @@ zh:
       upload_help: "该图像将剪裁为正方形"
       upload_image: "上传图像"
       upload_new_attachment: "上传新附件"
-      url:
+      url: URL
     forgot_password:
       already_authenticated: "无法重置密码：您已经登录。"
       failed: "提交密码重置请求时出现问题。 请重试。"
@@ -3965,10 +4060,10 @@ zh:
       existing_latlng_cols: "现有的纬度和经度列"
       find: "查找"
       find_and_replace: "查找和替换值..."
-      import_from_latlong:
+      import_from_latlong: "从<strong>纬度</strong>和<strong>经度</strong>列导入"
       import_from_multiple: "从<strong>多列</strong>导入"
       import_from_single: "从<strong>单列</strong>导入"
-      insert_static_text:
+      insert_static_text: "(插入静态文本…)"
       latitude: "纬度"
       location_source_col: "位置源列"
       longitude: "经度"
@@ -3980,7 +4075,7 @@ zh:
       new_source_col: "添加新源列"
       new_transform: "添加新的转换"
       options: "选项"
-      point_source_col:
+      point_source_col: "点来源列"
       properly_formatted: 导入前，列必须<a href="%{formatting_link}" rel="external">正确格式化</ a>。
       regular_expression: "正则表达式"
       remove: "删除"
@@ -3998,24 +4093,24 @@ zh:
       combine_multiple_cols: "（合并多个列...）"
       downloading: "正在下载你的文件..."
       errors:
-        http_error:
-        network_error:
+        http_error: "由于一个错误，我们无法保存您的元数据：{0}"
+        network_error: "由于一个网络错误我们无法保存您的元数据。"
       filetype_error_blist: "请选择一个CSV、 TSV、XLS或 XLSX文件。"
       filetype_error_shapefile: "请选择一个KML、KMZ或 ZIP文件。"
       headline_import: "请选择要导入的文件"
       headline_upload: "请选择要上传的文件"
       layer: "层"
       many_headers: "你其中的%{num} 行为页眉。"
-      new_column:
+      new_column: "新的列{num}"
       no_file_selected: "暂时还没有选中文件。"
       no_headers: "你的行中无页眉。"
       no_source_column: "（无源列）"
       one_header: "其中一行为页眉。"
       problem_importing: "导入该文件时出现问题。请确保它是有效的。"
       problem_uploading: "上传该文件时出现问题。请确保它是有效的。"
-      replicating:
+      replicating: "复制数据组。"
       rows_imported: "目前已导入%{num} 行。"
-      rows_imported_js:
+      rows_imported_js: "到目前为止导入了{0}行。"
       try_again: "请稍后再试。"
       unknown_error: "出现未知错误"
       uploading: "正在上传文件"
@@ -4037,7 +4132,7 @@ zh:
         no_applications: "您还未创建应用程序。点击右边的“管理”开始创建。"
         title: "%{user}的应用程序"
       bar:
-        edit_info_link:
+        edit_info_link: "编辑基本信息"
         edit_settings_link: "编辑账户设置"
         follow_link: "关注"
         join_date: "注册于"
@@ -4068,7 +4163,7 @@ zh:
               comment_to_moderate: "有人提交了评论，需要审核"
               nomination_created: "有人创建了新提名"
               nomination_moderated: "审核所有提名"
-              other_label:
+              other_label: "其他"
               privileged_account_created: "用户创建了特权账户"
               user_affected: "直接对您产生影响的操作，如评论回复和状态更新"
               view_deleted: "任何视图都删除"
@@ -4081,11 +4176,13 @@ zh:
           learn_openid: "了解OpenID"
           new_email: "新电子邮件"
           new_password: "新密码"
+          no_auth0id: "您还没有和该账号关联的单点登录标识符。"
           no_openid: "此账户没有关联的OpenID标识符。"
           old_password: "旧密码"
           password: "密码"
           password_prompt: "（安全起见）"
           password_restrictions_html: （密码设定要求<span class="icon"> </span>）
+          sso_identifiers: "单点登录标识符"
           title: "账户设置"
         app_tokens:
           application_name: "应用程序名称"
@@ -4144,6 +4241,7 @@ zh:
           image_format: "请选择有效的图片类型(PNG, JPG或 GIF)"
           invalid_links: "更新链接时出现问题。 %{message}"
           no_display_name: "错误：“显示名称”不能空白"
+          no_password_no_auth0id: "您不能再您设置密码前移除您所有的Auth0标识符"
           no_password_no_openid: "必须先设置密码，才能删除所有OpenID标识符"
           password_mismatch: "新密码不匹配"
           user_missing: "用户找不到，或已被删除。"
@@ -4157,7 +4255,7 @@ zh:
           my_blog: "我的博客"
           my_company: "我的单位"
           my_site: "我的网址"
-          other_label:
+          other_label: "其他"
           twitter: Twitter
         no_description: "没有提供内容"
         other_ext_link: "其他"
@@ -4169,10 +4267,10 @@ zh:
         following: "我关注的人"
         hide_contacts_link: "隐藏"
       whats_new:
-        caught_up:
-        older_news:
-        read_more:
-        title:
+        caught_up: 您完全就绪了！<a target="_blank" href="%{href}">来看看我们最新的更新</a>。
+        older_news: "查看早前消息"
+        read_more: "阅读更多"
+        title: "来自Socrata的最新资讯"
     reset_password:
       failed: "重置密码时出现问题。请重试。"
       form:
@@ -4183,20 +4281,28 @@ zh:
     sign_in:
       auth0_intro: "你可以使用几种方式登录。如果你还没有注册账户，请选择你最方便的选项。如果你已经注册，现在请使用相同的选项。"
       back_to_sign_in_selection: <a class="login-back">返回登录选项</a>
+      dont_have_account: "还没有一个账户？"
+      error: "登录时错误"
       failed: "无法通过该电子邮件和密码登录；请重试"
+      forgot_password: "忘记密码？"
       form:
+        email_placeholder: "电子邮件"
+        password_placeholder: "密码"
         sign_in_button: "登录"
       headline: "登录%{site}"
       mismatch: "密码不匹配；请重试"
       prompt_html: "使用 <strong>Socrata 用户名</strong>登录"
+      sign_in_using: "登录使用"
       sign_in_with: "以%{provider}<strong>登录</strong>"
-      sso_required:
+      sign_up: "注册"
+      sso_enabled: SSO已启用
+      sso_required: "这个网站的管理员要求特权用户使用一个账户而不是一个Socrata ID登录。请使用另一种方式登录。"
       tips_html: 使用您的电子邮件和密码登录所有使用<strong><a href="http://www.socrata.com" rel="external">Socrata</a> 技术</strong> 的网站。
     sign_up:
       email_verification:
-        expired:
-        sent:
-        success:
+        expired: "这个电子邮件验证链接已过期。请用同一个电子邮件地址创建一个新的账户，您将会收到另一封确认邮件来完成注册。"
+        sent: "我们给%{email}发送了一封验证邮件，请按照邮件里的步骤完成注册流程。"
+        success: "您的电子邮箱地址已验证通过，请登录。"
       form:
         create_account_button: "创建我的账户"
         have_account_link: "我已经有账户了"
@@ -4210,7 +4316,7 @@ zh:
     stats:
       api: API
       apply: "应用"
-      browser_page_views:
+      browser_page_views: "浏览器页面视图"
       bytes_out: "输出字节"
       chart_created: "已创建图表"
       charts: "图表"
@@ -4219,12 +4325,12 @@ zh:
       comments: "注释"
       comments_created: "已创建注释"
       daily: "每日"
-      date_range:
+      date_range: "日期范围"
       deleted_application: "已删除的应用"
-      delta_decrease:
-      delta_decrease_compared:
-      delta_increase:
-      delta_increase_compared:
+      delta_decrease: "在{2}期间{0}的数量减少了{1}"
+      delta_decrease_compared: "在{2}期间{0}的数量和{3}相比减少了{1}"
+      delta_increase: "在{2}期间{0}的数量增加了{1}"
+      delta_increase_compared: "{0}的数量在{2}期间和{3}相比增加了{1}"
       dependent_metrics: "相关指标"
       download: "下载"
       downloads: "下载"
@@ -4249,7 +4355,7 @@ zh:
       no_data_time_period: "该时间段无数据"
       page_viewed: "查看的页面"
       pages_viewed: "查看的数据"
-      preceding_period:
+      preceding_period: "之前的时期"
       referrals: "推荐"
       rows_loaded: "加载的行"
       sdp: SDP
@@ -4287,31 +4393,31 @@ zh:
         name: "新的模板名称"
         title: "创建一个新的模板"
       create_new_dataset:
-        explanation_html:
-        prompt:
-        title:
+        explanation_html: "当您按下<strong>保存</strong>，您的新<strong>起草数据组</strong>将会在您的私人目录里可见。没有其他人能够看到它，直至您完成了New Dataset Wizard。"
+        prompt: "请给您的新数据组一个名称。"
+        title: "创建一个新的数据组"
       menu:
-        about:
-        api:
-        api_subtext:
-        discuss:
-        discuss_subtext:
-        download:
-        download_subtext:
-        embed:
-        embed_subtext:
-        more_views:
-        more_views_subtext:
-        odata:
-        odata_subtext:
-        print:
-        print_subtext:
+        about: "关于Socrata开放数据平台"
+        api: API
+        api_subtext: "通过SODA访问这个数据组"
+        discuss: "讨论"
+        discuss_subtext: "讨论这个数据组"
+        download: "下载"
+        download_subtext: "用不同的格式下载"
+        embed: "嵌入"
+        embed_subtext: "在您的网站上嵌入这个播放器"
+        more_views: "更多视图"
+        more_views_subtext: "筛选、图表、和地图"
+        odata: OData
+        odata_subtext: "通过OData访问这个数据组"
+        print: "打印"
+        print_subtext: "打印这个数据组"
     wizard:
       cancel: "取消"
       finish: "完成"
       next: "下一"
       previous: "上一"
-      save:
+      save: "保存"
   support:
     array:
       last_word_connector: "与"
@@ -4320,5 +4426,5 @@ zh:
       last_word_connector: "或"
       two_words_connector: "或"
   table:
-    no_summary_available:
-    summary:
+    no_summary_available: "无可用的总结"
+    summary: "这个%{data_description}的表格的%{row_heading_count}个描述行标题%{row_headings}中的每一行都有%{column_heading_count}个列标题%{column_headings}"

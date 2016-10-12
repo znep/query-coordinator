@@ -42,22 +42,22 @@ fr:
     dataCards:
       add_card_dialog:
         add_card: Ajouter carte
-        add_card_title:
+        add_card_title: Ajouter une carte
         add_this_card: Ajouter cette carte
         card_on_page: Carte déjà sur la page
         card_on_page_long: Cette carte est déjà sur la page
         choose_column: Choisir une colonne
-        choropleth_admin_message:
-        choropleth_message:
+        choropleth_admin_message: 'Pour ajouter des limites personnalisées : demandez à votre administrateur de site de configurer l''ensemble disponible dans la  <a href="/admin/geo">section Spatial Lens</a> du panneau d''administration ou <a href = "mailto: support @ Socrata .com ">contactez l''assistance de Socrata</a>.'
+        choropleth_message: 'Pour ajouter des limites personnalisées : demandez à votre administrateur de site de configurer l''ensemble disponible dans la  section Spatial Lens du panneau d''administration ou <a href = "mailto: support @ Socrata .com ">contactez l''assistance de Socrata</a>.'
         column_chart_warning: 'Remarque : cela aura pour résultat un diagramme à barres avec plus d''une centaine de barres, ça pourrait être plus lent que d''autres diagrammes'
-        column_label:
+        column_label: Colonne
         curated_region_messages:
-          not_yet_computed:
-        custom:
+          not_yet_computed: Les limites nécessitant une initialisation
+        custom: "(Personnalisation en cours...)"
         customize_prompt: Personnaliser cette carte
-        generic_prompt:
-        histogram_column_chart_warning:
-        no_available_boundaries:
+        generic_prompt: Choisissez une colonne dans la liste déroulante ci-dessus pour ajouter une nouvelle visualisation
+        histogram_column_chart_warning: 'Remarque : en raison de la répartition des valeurs de cette colonne, elle sera présentée sous forme d''un histogramme à barres au lieu d''une courbe de distribution'
+        no_available_boundaries: Aucune limite disponible
         not_supported: Pas actuellement prise en charge
         not_supported_long: Ce type de carte n'est pas pris en charge pour le moment
         prompt: Choisir une colonne dans la liste déroulante ci-dessus pour ajouter une nouvelle carte
@@ -83,11 +83,11 @@ fr:
         title: API
         url: 'Vous pouvez accéder à ces données via la Socrata Open Data API à cette URL :'
       card_aggregation_selector:
-        add_this_aggregation:
-        choose_count:
-        choose_sum:
-        function_label:
-        value_label:
+        add_this_aggregation: Ajouter cette agrégation
+        choose_count: Compter
+        choose_sum: Choisir une colonne
+        function_label: Fonction
+        value_label: Valeur
       card_controls:
         collapse_card: Faire tomber cette carte
         customize_disabled: Il n'existe pas encore d'option de personnalisation pour cette carte
@@ -96,21 +96,23 @@ fr:
         remove_card: Enlever cette carte
       card_layout:
         add_card_here: Ajouter carte ici
-        card_group_customize_hint_flyout_text:
-        card_group_customize_hint_text:
-        card_group_placeholder_text:
+        card_group_customize_hint_flyout_text: Faites glisser les cartes entre les sections pour ajuster le nombre maximum de colonnes par ligne. Les cartes seront automatiquement redimensionnées pour combler les lacunes
+        card_group_customize_hint_text: Jusqu'à {0} cartes par rangée dans cette section
+        card_group_placeholder_text: Faites glisser et déposez des cartes ici
       card_titles:
         average: moyenne de {0}
         number_of: nombre de {0}
         sum_of: somme de {0}
       choropleth:
-        computation_in_progress:
-        has_cardinality_error:
-        has_no_polygons:
-        no_preview_available:
-        pending_computation:
+        computation_in_progress: |
+          <p>Initialisation en cours des limites pour cet ensemble de données. Cette opération peut prendre quelques minutes (plus pour les grands ensembles de données).</p><p>La carte sera affichée une fois l'initialisation terminée.</p>
+        has_cardinality_error: Cette carte ne peut pas être représentée puisque tous les points sont situés au même endroit.
+        has_no_polygons: Aucune donnée n'est présente dans les limites.
+        no_preview_available: Aucun aperçu disponible
+        pending_computation: |
+          <p>C'est la première fois que cette limite est utilisée pour cet ensemble de données.</p><p>Cela pourrait  prendre quelques minutes (plus pour les grands ensembles de données) pour representer la carte une fois ajoutée à la page.</p>
       common:
-        by:
+        by: par
         cancel: Annuler
         cards:
           choropleth: Choroplèthe
@@ -137,7 +139,7 @@ fr:
           permissions: Autorisation
           private: Privé
           public: Public
-        row:
+        row: rangée
         save: Enregistrer
       customize_bar:
         changes_warning: Vous avez apporté des modifications à cette page.
@@ -148,25 +150,27 @@ fr:
         customizing_flyout: Vous êtes actuellement en train de personnaliser cette page
         customizing_flyout_instructions: Vous pouvez cliquer sur ce bouton en tout temps pour un aperçu des modifications, et les sauvegarder en tout temps
         exit_visualization_export: 'Pour entre dans le mode personnalisation : Sortez du mode « Download Visualization en tant que mode », en cliquant le bouton d''annulation dans le panneau de configuration'
-        unsaved_warning:
+        unsaved_warning: |-
+          Cette vue n'a pas encore été sauvegardée
+          .
       customize_card_dialog:
         feature_map_flannel:
-          default_option:
-          select_column:
-          title:
+          default_option: "(Défaut)"
+          select_column: Sélectionnez une colonne
+          title: Titre Flyout
         histogram_bucket_type:
-          linear:
-          linear_desc:
-          logarithmic:
-          logarithmic_desc:
-          title:
-          warning:
+          linear: Linéaire
+          linear_desc: Cette option qui définit les  barres de l'histogramme  sur l'axe à une échelle linéaire (10, 20, ...) est la plus utile pour les petites plages numériques.
+          logarithmic: Logarithmique
+          logarithmic_desc: Cette option qui définit les  barres de l'histogramme  sur l'axe à une échelle linéaire (10, 100, ...) est la plus utile pour les plages numériques les plus larges.
+          title: Dimensionnement des valeurs de l'axe des abscisses
+          warning: La modification du dimensionnement des valeurs va effacer votre filtre en cours sur cette carte
         map_layer:
           custom: Carte personnalisée
-          simple_blue:
-          simple_grey:
+          simple_blue: Bleu simple
+          simple_grey: Gris simple
           title: Couche de carte de base
-        title:
+        title: Paramètres
         visualization_options:
           title: Type de carte
       distribution_chart:
@@ -176,25 +180,26 @@ fr:
           error: Une erreur s'est produite en essayant d'afficher cette carde.
           no_data: Il n'y a aucune donnée de dîsponible.
       export_menu:
-        choose_card:
+        choose_card: Choisir une carte
         csv:
-          all_rows:
-          current_filter:
-          header:
-          not_available:
-          not_available_specific:
+          all_rows: Toutes les rangées
+          current_filter: Filtre en cours
+          header: Rangées en tant que CSV (Excel)
+          not_available: S/O
+          not_available_specific: Non disponible pour ce jeu de données.
         image:
-          description:
-          header:
+          description: Sauvegardez un fichier image PNG d'une visualisation
+          header: Visualisation en image
       feature_map:
-        feature_map_disabled:
+        feature_map_disabled: |
+          Les cartes de représentation ne sont pas disponibles
         zoom_disabled: Le Zomm est temporairement non disponible.
       feature_map_flannel:
-        error_message:
-        next:
-        paging:
-        previous:
-        showing:
+        error_message: Une erreur est survenue lors de la récupération des données de localisation.
+        next: Suivant
+        paging: "{0} de {1}"
+        previous: Précédent
+        showing: Affichage {0}
       feedback_panel:
         broken: Quelque chose semble cassé
         feedback: Commentaire
@@ -218,67 +223,68 @@ fr:
         clear_filter_long: La page est actuellement filtrée par cette valeur, cliquer pour la supprimer
         clear_range_filter_long: La page est actuellement filtrée par cette valeur, cliquer pour la supprimer
         current_filter: Filtre actuel
-        dense_data:
+        dense_data: Nombreux
         details: Cliquer pour afficher les détails
         expand: Cliquer pour étendre
-        filter_prompt:
+        filter_prompt: Appliquer un filtre pour voir les détails
         filtered_amount: Montant filtré
         total: Total
-        zoom_or_filter_prompt:
+        zoom_or_filter_prompt: Zoom ou appliquer un filtre pour voir les détails
       last_updated:
         label: dernière mise à jour
       lens_type:
         community: lentille de données communautaire
         official: lentille de données officielle
-        official_view_explanation:
-        official_view_label:
+        official_view_explanation: Sélectionner cette option attribuera à la vue une désignation spéciale indiquant qu'elle est une Vue officielle.
+        official_view_label: Vue officielle
       manage_lens_dialog:
         dataset_private_page_private: Parce ce que l'ensemble de données source de cette page est défini sur <b>Privée</b>, cette page ne peut être rendue publique. Seuls ceux avec des accès privilégiés seront capables de la voir et elle n'apparaîtra pas dans le catalogue public.
         dataset_private_page_public: '<span class="icon-warning"></span> L''ensemble de données source de cette page est défini sur <b>Privé</b>, alors même si cette page est définie sur Public, quiconque n''a pas accès à l''ensemble de données ne sera pas capable de la voir. Elle apparaîtra dans le catalogue public. Vous devriez considérer le paramétrage de l''ensemble de données sur Public, ou le paramétrage de cette page sur Privé. '
         dataset_public_page_private: Cette page est définie sur <b>Private</b>, ainsi uniquement ceux avec un accès privilégié seront capables de la voir. Elle n'apparaîtra pas dans le catalogue.
         dataset_public_page_public: Cette page et son ensemble de données sources sont à la fois <b>Publics</b>, ainsi n'importe qui sera capable de voir cette page et elle apparaîtra dans le catalogue public.
         error:
-          ownership:
-          preamble:
-          sharing:
-          unknown:
-          visibility:
+          ownership: Le propriétaire n'a pas pu être changé.
+          preamble: 'Certaines de vos modifications n''ont pas été sauvegardées :'
+          sharing: Les paramètres de rôle et de partage n'ont pas pu être mis à jour.
+          unknown: Une erreur inconnue est survenue. Veuillez contacter l'assistance client de Socrata.
+          visibility: La visibilité n'a pu être mise à jour.
         ownership:
-          owner_unavailable:
-          title:
-          warning:
+          owner_unavailable: L'informations concerant le propriétaire est temporairement indisponible.
+          title: " Propriétaire"
+          warning: Vous devez sélectionner un propriétaire pour cette Data Lens afin de procéder
         provenance:
-          description:
-          label:
-          title:
+          description: 'Sélectionner cette option attribuera à cette vue une délimitation spéciale la désignant comme une Vue officielle '
+          label: Vue officielle
+          title: Afficher le statut
         sharing:
-          add_new:
-          contributor:
-          inherited_description:
-          keep:
+          add_new: Ajouter un nouveau
+          contributor: Contributeur
+          inherited_description: 'Hérité de l''ensemble de données source :'
+          keep: |
+            Conserver
           new_share_dialog:
-            add_more:
-            description:
-            email:
-            message:
-            remove:
-            title:
-          owner:
-          remove:
-          title:
-          viewer:
+            add_more: Ajouter plus
+            description: Précisez les personnes supplémentaires auxquelles  vous souhaitez accorder des autorisations au sujet de cette Data Lens. Toute personne n'ayant pas encore un compte recevra une invitation pour s'inscrire. Les autorisations lui seront accordées après son inscription.
+            email: Adresse e-mail
+            message: Message facultatif
+            remove: Retirer
+            title: Partager cette Data Lens
+          owner: Co-propriétaire
+          remove: Retirer
+          title: Partagé avec
+          viewer: Visionneuse
         title: Gérer
-        unsaved_changes_message:
+        unsaved_changes_message: Vous avez des modifications non sauvegardées
         visibility:
-          dataset_is_private:
-          hidden:
-          shown:
-          title:
-          user_is_unprivileged:
-          view_moderation_approved:
-          view_moderation_pending:
-          view_moderation_rejected:
-          view_moderation_title:
+          dataset_is_private: Cette Data Lens est basée sur l'ensemble de données privé {0}. La Data Lens ne peut pas être affichée dans le catalogue si l'ensemble de données source est rendu public.
+          hidden: Invisible du catalogue
+          shown: Affiché dans le catalogue
+          title: Visibilité
+          user_is_unprivileged: Vous devez être un administrateur ou un éditeur pour modifier la visibilité de la Data Lens. Veuillez contacter l'administrateur du site pour modifier ce paramètre.
+          view_moderation_approved: Approuvé
+          view_moderation_pending: En attente
+          view_moderation_rejected: Rejeté
+          view_moderation_title: visualisation de la modération
       metadata:
         data_as_csv: Données sources complètes sous forme CSV (Excel)
         edit_description_prompt: Offrez à votre page une bonne description qui aide les gens à comprendre l'histoire que vos données tentent de dire. (en option)
@@ -292,8 +298,8 @@ fr:
         acknowledgement: D'accord, compris !
         description: Nous travaillons sur l'amélioration de l'expérience mobile sur ce site.
       multiline_ellipsis:
-        show_less:
-        show_more:
+        show_less: Montrer moins
+        show_more: Montrer plus
       page_header:
         logo: Log
         sign_in: Connexion
@@ -303,23 +309,25 @@ fr:
         clear_all: Tout Effacer
         clear_all_flyout: Cliquer pour réinitialiser tous les filtres
         filter_title: Affichage <span class="light">du {0}</span>
-        filtered_title:
-        old_filter_title:
-        old_filtered_title:
-        unfiltered_title:
+        filtered_title: Affichage <span class="light">{0}</span>
+        old_filter_title: Affichage <span class="light">the {0}</span>
+        old_filtered_title: Affichage <span class="light">the {0}</span>
+        unfiltered_title: Affichage <span class="light">all {0}</span>
       related_views:
         button: Autres vues de ces données
         title: Autres vues de ces données
       related_visualization_selector:
-        based_on_column:
-        visualization_not_supported:
+        based_on_column: |
+          Sur la base de {0}
+        visualization_not_supported: |
+          Merci pour votre patience ! Nous continuons le développement de la fonctionnalité qui vous permettra d'intégrer ce type de graphique dans une histoire.
       remove_all_cards:
-        button:
-        flyout:
-        flyout_no_cards:
-        flyout_not_edit_mode:
-        prompt:
-        prompt_confirm:
+        button: Retirer toutes les cartes
+        flyout: Cliquez pour retirer toutes les cartes de cette page
+        flyout_no_cards: 'Aucune carte à retirer sur cette page '
+        flyout_not_edit_mode: Entrez en mode personnaliser pour retirer toutes les cartes de cette page Lens
+        prompt: Souhaitez-vous vraiment supprimer toutes les cartes de cette page ?
+        prompt_confirm: Oui, supprimez-les toutes
       revert_button:
         flyoutHasChanges: Cliquer pour annuler les modifications depuis la dernière sauvegarde
         flyoutNoChanges: Aucune modification n'a été inversée
@@ -332,7 +340,7 @@ fr:
         link_placeholder: Entrer une URL ici
         underline: Souligner
       save_as:
-        flyoutEphemeral:
+        flyoutEphemeral: Cliquez pour sauvegarder cette Data Lens
         flyoutFailedBody: Veuillez contacter le support Socrata
         flyoutFailedTitle: Une erreur s'est produite
         flyoutIdle: Cliquer pour sauvegarder vos modifications en tant que nouvelle page
@@ -341,21 +349,21 @@ fr:
         description: Entrer une description pour la page nouvel âge (en option)
         new_name: Sauvegarder les pages actuelles avec un nouveau nom
         title: Enregistrer en tant que
-        visibility:
-        visibility_disabled:
-        visibility_with_view_moderation:
+        visibility: Définissez la visibilité de votre nouvelle page
+        visibility_disabled: Vous ne disposez pas des autorisations nécessaires pour mettre à jour la visibilité des Data Lens. Veuillez contacter l'administrateur du site pour modifier ce paramètre.
+        visibility_with_view_moderation: Définissez le statut de la visualisation de la modération de votre nouvelle page
       save_button:
         failed: "Échec"
         flyoutFailedBody: Veuillez contacter le support de Socrates
         flyoutFailedTitle: Une erreur s'est produite
         flyoutIdle: Cliquer pour sauvegarder vos modifications
         flyoutNoChanges: Aucun changement à sauvegarder
-        flyoutNoEditPermission:
+        flyoutNoEditPermission: Vous n'êtes pas autorisé à sauvegarder les modifications de cette Data Lens
         save: Enregistrer
         saved: Enregistré!
         saving: Sauvegarde...
       search_card:
-        error_explanation:
+        error_explanation: "<p>Une erreur est survenue lors de l'extraction des suggestions de recherche.</p><p>Vous pouvez appuyer sur Entrée à tout moment pour lancer votre recherche exactement selon le texte saisi, ou  essayer à nouveau plus tard pour voir les valeurs proposées.</p>"
         invalid_search: Essayer de chercher un nombre qui n'a pas de lettres.
         loading: Chargement des suggestions..
         no_results: Votre recherche a retourné aucun résultat. Vérifier votre orthographe ou essayer une différente forme.
@@ -365,13 +373,13 @@ fr:
         search_info: Affichage de {0} de {1} résultats correspondants
         two_examples: 'Exemples : ''{0}'' ou ''{1}'''
       suggestion_tool_panel:
-        all_suggestions:
-        loading_suggestions_hint:
-        max_suggestions:
-        no_suggestions:
-        no_suggestions_hint:
-        only_suggestion:
-        some_suggestions_hint:
+        all_suggestions: 'Affichage de toutes les {0} suggestions :'
+        loading_suggestions_hint: Saisissez un texte et appuyez sur Entrée pour lancer la recherche ou attendez des suggestions
+        max_suggestions: 'Affichage des {0} premières suggestions :'
+        no_suggestions: Aucune donnée trouvée correspondant à votre critère de recherche.
+        no_suggestions_hint: Essayez des critères moins spécifiques pour plus de résultats.
+        only_suggestion: 'Affichage de la seule suggestion :'
+        some_suggestions_hint: Choisissez une suggestion ci-dessus ou continuez la saisie pour plus de suggestions.
       table:
         a_to_z: A-Z
         ascending: croissant
@@ -380,8 +388,8 @@ fr:
         loading: Chargement...
         newest_first: le plus récent en premier
         no_rows: Aucune rangée à afficher
-        no_sort:
-        non_range_label:
+        no_sort: Aucun tri disponible
+        non_range_label: "{0} <strong>{1} sur {2}</strong>"
         oldest_first: le plus vieux en premier
         range_label: "{0} <strong>{1}-{2} sur {3}</strong>"
         range_label_all: Tout afficher {0} {1}
@@ -400,21 +408,22 @@ fr:
       tour:
         aggregation:
           step_1:
-            text:
-            title:
+            text: Nous avons écouté vos commentaires. Nous avons changé un paramètre pour améliorer le mode de personnalisation !
+            title: Avez-vous remarqué que quelque chose était différent ?
           step_2:
-            text:
-            title:
+            text: Chaque carte peut être résumée par une colonne différente. Nous avons également retiré le numéro 15 de la limite de la colonne.
+            title: Utilisez les paramètres pour changer la fonction d'agrégation
           step_3:
-            text:
-            title:
+            text: Choisissez le numéro de la colonne que vous voulez résumer ou de compter les lignes.
+            title: Résumez par SUM ou COUNT
           step_4:
-            text:
-            title:
+            text: Vous pouvez ajouter plusieurs cartes pour la même colonne, puis résumer selon différentes valeurs de colonne, vous permettant ainsi de réaliser des comparaisons utiles.
+            title: C'est maintenant plus flexible !
           step_5:
-            text_one:
-            text_two:
-            title:
+            text_one: Créez votre page en utilisant cette façon flexible pour résumer les données.
+            text_two: |
+              Pour en savoir plus, consultez l'article<a href="https://support.socrata.com/hc/en-us/articles/216510338">Utilisation de la fonction agrégation</a> sur la base de connaissances Socrata. Comme toujours, nous aimerions recevoir vos commentaires.
+            title: Essayez !
   controls:
     browse:
       actions:
@@ -427,12 +436,12 @@ fr:
         compact_list: Visualiser en liste compacte
         create_dataset: Créez ou téléchargez votre propre série
         create_dataset_short: Créez une nouvelle série de données
-        create_dataset_shorter:
+        create_dataset_shorter: Ensemble de données
         create_dataset_verb: Créer
-        create_resource:
-        create_resource_short:
-        create_resource_verb:
-        create_story_short:
+        create_resource: Créer une nouvelle ressource Socrata
+        create_resource_short: Créer une nouvelle...
+        create_resource_verb: 'Créer '
+        create_story_short: Histoire
         dataset_subscribe: Abonnez-vous aux changements de cette vue
         delete:
           button: Enlever
@@ -461,117 +470,120 @@ fr:
       browse2:
         api:
           link:
-            label:
-            title:
-        comment_count:
+            label: Documentation API
+            title: Afficher la documentation API pour cet ensemble de données
+        comment_count: Nombre de commentaires
         create:
           dataset:
-            label:
-            title:
-          label:
+            label: Créer / Importer un ensemble de données
+            title: Créer / Importer un ensemble de données à la plate-forme Socrata
+          label: Ajouter un nouveau
           story:
-            label:
-            title:
-          title:
+            label: Créer une histoire Socrata
+            title: Créer une nouvelle histoire Socrata
+          title: Créer une nouvelle ressource Socrata
         created_at:
-          label:
+          label: Créé
         data_types:
-          label:
+          label: Types de données
         description:
-          show_less_label:
-          show_more_label:
+          show_less_label: Moins
+          show_more_label: Plus
         display_types:
-          api:
-          blob:
-          calendar:
-          chart:
-          data_lens:
-          dataset:
-          draft:
-          filter:
-          form:
-          href:
-          map:
-          predeply_api:
-          pulse:
-          story:
-          unknown:
+          api: API
+          blob: |
+            Fichier ou document
+          calendar: Calendrier
+          chart: Graphique
+          data_lens: Data Lens
+          dataset: Ensemble de données
+          draft: Projet d'ensemble de données
+          filter: Vue filtrée
+          form: Formulaire
+          href: Lien externe
+          map: Carte
+          predeply_api: Pré-déployer API
+          pulse: Impulsion
+          story: Histoire
+          unknown: Inconnu
         edit:
           delete:
-            confirm:
-            error:
-            label:
-            title:
+            confirm: Désirez-ous vraiment supprimer "%{dataset}" ?
+            error: Une erreur est survenue lors de la suppression de "%{dataset}". Veullez réessayer.
+            label: Supprimer
+            title: Supprimer "%{name}"
           make_private:
-            error:
-            label:
-            title:
+            error: Une erreur est survenue lors de la modification du statut de "%{dataset}" à privé. Veullez réessayer.
+            label: Modifier le statut à privé
+            title: Modifier le statut de "%{name}" à privé
           make_public:
-            error:
-            label:
-            title:
+            error: Une erreur est survenue lors de la modification du statut de %{dataset}" à public. Veuillez réessayer.
+            label: Modifier le statut à public
+            title: Modifier le statut de "%{name}" à public
         facets:
           clear_all:
-            label:
+            label: Tout effacer
           expand:
-            label:
-            title:
+            label: Tout afficher
+            title: Afficher toutes les options
           header:
-            filter:
-            filtered_by:
-            result:
-          hint:
+            filter: Filtre
+            filtered_by: filtré par
+            result: Résultat
+          hint: " Résultats du filtre ou de la navigation"
           mobile:
-            back:
-            clear_all:
-            filter:
-            sort:
-            sort_by:
+            back: Retour
+            clear_all: Tout effacer
+            filter: Filtre
+            sort: Trier
+            sort_by: Trier par
           modal:
-            alphaAscending:
-            close:
-            top:
+            alphaAscending: A -Z
+            close: Fermer
+            top: Principal
         federation:
-          label:
-          label_with_source:
+          label: Données fournies par
+          label_with_source: Données fournies par %{source}
         last_updated:
-          label:
+          label: Mis à jour
         odn:
           link:
-            label:
-            title:
-          prompt:
+            label: sur le réseau Open Data
+            title: Trouver plus de données comme celle-ci sur le réseau Open Data
+          prompt: Trouver des données comme celle-ci
         results:
-          cetera_count:
-          count:
+          cetera_count: 'Affichage des résultats %{start}-%{end} de %{total} '
+          count: Affichage des résultats %{this} de %{total}
         search:
           clear:
-            title:
-          placeholder:
-          title:
+            title: Effacer la recherche
+          placeholder: Recherche
+          title: Rechercher
         settings:
-          label:
-          title:
+          label: Paramètres
+          title: Paramètres
         skiplinks:
-          results:
+          results: Passer aux résultats
         sort:
-          label:
+          label: Trier par
         sorts:
           last_modified: Mise à jour récente
           most_accessed: Plus visité
           newest: le plus récent en premier
           relevance: Plus pertinent
         topics:
-          empty:
-          label:
-          more:
+          empty: |2-
+
+            Aucun sujet assigné
+          label: Sujets
+          more: et %{count} de plus
         view_count:
-          label:
+          label: Vues
         visibility:
           private:
-            label:
+            label: 'Visibilité : privée'
           public:
-            label:
+            label: 'Visibilité : publique'
       facets:
         categories_singular_title: Catégorie
         categories_title: Catégories
@@ -590,15 +602,15 @@ fr:
           blob: Fichiers et documents
           calendars: Calendriers
           charts: Graphiques
-          data_lens:
+          data_lens: 'Pages Data Lens '
           datasets: Séries de données
-          draft:
+          draft: Projet d'ensembles de données
           filters: Vues filtrées
           forms: Formulaires
           href: Séries de données externes
           maps: Cartes
-          pulse:
-          pulse_help:
+          pulse: Pulse
+          pulse_help: En savoir plus sur Pulse
           story: Histoires
           story_help: En apprendre sur les histoires
           unpublished: Séries de données non publiées
@@ -606,18 +618,18 @@ fr:
         view_types_title: Types de vues
       listing:
         comment_count: Nombre de commentaires
+        error: Désolé. L’accès aux résultats est momentanément impossible. Veuillez réessayer ultérieurement.
         federation_source: Fédéré à partir de %{source}
         federation_source_html: Fourni par  %{source_link}
         no_results: Pas de résultats
         result_count: Affichage de %{this} sur %{total}
-        result_count_cetera:
+        result_count_cetera: Affichage de %{start}-%{end} de %{total}
         table_header:
           name: Nom
           popularity: Popularité
           rss: RSS
           type: Type
-        error: Désolé. L’accès aux résultats est momentanément impossible. Veuillez réessayer ultérieurement.
-      ordered_topics:
+      ordered_topics: Sujets ordonnés
       row_results:
         less_link: Moins
         matching_rows: Trouve rangées correspondantes
@@ -648,8 +660,8 @@ fr:
           main: Résultats %{body}
           term: pour « %{term} »
     charts:
-      inaccessible:
-      missing_column_html:
+      inaccessible: Cette visualisation est inaccessible ou manquante.
+      missing_column_html: Oups ... il semblerait qu'un changement de configuration a été effectué pour l'ensemble de données alimentant ce tableau. Si vous êtes le propriétaire de cette page veuillez consulter <a href = "https://support.socrata.com/hc/en-us/articles/216102847"  title="Classic Visualization Chart Configuration Changes" target="_blank">cet article d'assistance</a> ou contacter <a href="mailto:support@socrata.com" title="support@socrata.com"> support@socrata.com </a>pour assistance.
       negatives_in_data: Diagramme non valide
       no_data: Aucune donnée
       other_slice_label: Autres
@@ -689,7 +701,7 @@ fr:
           email: Courrier électronique
           facebook: Facebook
           twitter: Twitter
-        share_story_text:
+        share_story_text: 'Vérifiez %{name} sur  %{site}:'
         share_text: 'Voyez la série %{name} sur %{site}: '
       sidebar:
         tabs:
@@ -837,32 +849,32 @@ fr:
       delete_warning_multi_column: Voulez-vous enlever les colonnes sélectionnées ? Toutes les données qui y figurent seront supprimées !
       delete_warning_single_column: Voulez-vous enlever la colonne sélectionnée ? Toutes les données qui y figurent seront supprimées !
       edit_column_properties: Modifier les propriétés de la colonne
-      end_page:
+      end_page: Dernière page
       errors:
         cannot_edit_at_this_time: Cette colonne ne peut pas être éditée pour le moment. Veuillez réessayer.
-        data_lens_is_incompatible_with_group_bys:
+        data_lens_is_incompatible_with_group_bys: Des ensembles de données avec des groupements ne peuvent pas être utilisés avec une page de Data Lens. Nous nous excusons pour ce désagrément.
         primary_key_collision: Cette valeur existe déjà en tant que clé principale. Vous ne pouvez pas l'écraser.
         row_locked_for_edit: Actuellement, nous ne pouvons éditer une rangée qui vient à peine d'être crée. Nous travaillons pour rendre la chambre la plus accueillante possible.
-        something_went_wrong:
-        timeout_on_bootstrap:
+        something_went_wrong: Il semblerait que quelque chose s'est mal passé. Veuillez actualiser la page.
+        timeout_on_bootstrap: L'expiration du délai a eu lieu, mais nous sommes toujours en cours de génération de votre Data Lens en arrière-plan. Veuillez réessayer dans quelques minutes.
       filter_this_column: Filtrer cette colonne
       geocodes_pending: Les rangées dans la colonne d'emplacement sont toujours en cours de géocodage. Veuillez attendre leur complétion pour publier ce set de données
       hide_column: Cacher la colonne
       menu: Menu
       must_enter_name: Vous devez inscrire un nom pour cette colonne
       new_row: Nouvelle
-      next_page:
+      next_page: Page suivante
       no_columns: Le set de données %{uid} n'a pas de colonnes.
       no_rows: Pas de rangées affichables
-      page_size:
+      page_size: Affichage de %{pageSize} lignes par page
       permission_denied: Vous n'avez pas accès à cet affichage.
       previous: Précédent
-      previous_page:
+      previous_page: Page précédente
       required_cols_missing: Les colonnes nécessaires pour cet affichage sont manquantes
-      row_count:
+      row_count: Nombre total de lignes %{count}
       sort_ascending: Tri par ordre ascendant
       sort_descending: Tri par ordre descendant
-      start_page:
+      start_page: Première page
       totals: Totaux
       view_cell_comments: Voir les commentaires pour cette cellule
       view_first_row: Afficher première ligne
@@ -871,7 +883,8 @@ fr:
       view_previous_row: Affichez ligne précédente
       view_row: Voir rangée
       view_single_row: Visualiser les données en une seule rangée
-      viewing_current_page:
+      viewing_current_page: |
+        Affichage de la page %{current} de %{total}
       viewing_row_html: Afficher ligne <span class="curPage"></span> de <span class="totalPages"></span>
     map:
       address_prompt: Entrer l'adresse ici
@@ -898,8 +911,9 @@ fr:
       previous: Précédent
       previous_row: Rangée précédente
       request_timed_out: La requête pour ces données n'a pas abouti.
-      unable_to_display_features_html:
-      unable_to_load_map_html:
+      unable_to_display_features_html: "<h3>Aucune caractéristique disponible à ce niveau de zoom.</h3>"
+      unable_to_load_map_html: |
+        <h3>Nous avons des difficultés à nous connecter au service de cartes Esri qui héberge cette carte.</h3> <p>Si le problème persiste, veuillez contacter l'administrateur de ce site avec ce message d'erreur.</p>
     nominate:
       all: Tous
       approve: "(Approuver)"
@@ -982,7 +996,7 @@ fr:
     and: et
     auth:
       invalid_userpass: Nom d'utilisateur ou mot de passe non valide
-      need_email_verification:
+      need_email_verification: Avant que vous puissiez compléter votre inscription et vous connecter, vous devez vérifier l'adresse e-mail pour ce compte. Si vous ne pouvez pas accéder  à l'e-mail de vérification que nous vous avons envoyé, il vous suffit de créer un nouveau compte avec la même adresse e-mail afin de recevoir un nouveau message e-mail.
       need_login: Vous devez être connecté pour avoir accès à cette page
       need_permission: Vous n'êtes pas autorisé à voir cette page
       too_many_tries: Trop de tentatives de connexion pour cet identifiant. Compte temporairement désactivé.
@@ -1016,7 +1030,7 @@ fr:
       timeline: Chronologie
       treemap: Organigramme
     data_types:
-      blob:
+      blob: Blob
       calendar_date: Date & heure
       checkbox: Case à cocher
       dataset_link: Lien vers une série
@@ -1027,14 +1041,14 @@ fr:
       flag: Drapeau
       geospatial: Données géospatiales
       html: Texte formaté
-      line:
+      line: 'Ligne de chaîne de caractères '
       link: Lien
       list: Liste
       location: Lieu
       money: Données monétaires
-      multiline:
-      multipoint:
-      multipolygon:
+      multiline: " Chaîne de caractères multi-lignes"
+      multipoint: Multi-point
+      multipolygon: Multi-polygone
       nested_table: Tableau imbriqué
       number: Nombre
       object: Objet
@@ -1042,7 +1056,7 @@ fr:
       phone: Téléphone
       photo: Photo (image)
       point: Point
-      polygon:
+      polygon: Polygone
       stars: "Étoile"
       text: Texte brut
       url: URL de site web
@@ -1092,7 +1106,7 @@ fr:
       years_past: Il y a %{time} ans
     dialogs:
       apply: Appliquer
-      back:
+      back: Retour
       cancel: Annuler
       close: Fermer
       continue: Continuer
@@ -1134,16 +1148,16 @@ fr:
         between: est entre
         contains: contient
         equals: est
-        exists:
+        exists: existe
         greater_than: est supérieur à
         greater_than_or_equals: est au moins
-        is_after:
-        is_before:
+        is_after: est après
+        is_before: est avant
         is_blank: est vide
-        is_checked:
-        is_empty:
+        is_checked: est vérifié
+        is_empty: est vide
         is_not_blank: n’est pas vide
-        is_not_checked:
+        is_not_checked: n'est pas vérifié
         less_than: est inférieur à
         less_than_or_equals: est au plus
         not_contains: ne contient pas
@@ -1221,7 +1235,7 @@ fr:
       dateISO: Veuillez entrer une date valide (ISO).
       digits: Veuillez entrer uniquement des chiffres.
       email: Veuillez entrer une adresse courriel valide.
-      email_recipient:
+      email_recipient: Veuillez saisir une adresse e-mail valide ou choisir un groupe.
       equalTo: Veuillez entrer à nouveau la même valeur.
       max: Veuillez entrer une valeur inférieure ou égale à {0}.
       maxlength: Veuillez entrer au maximum {0} caractères.
@@ -1238,7 +1252,7 @@ fr:
       blob: Fichier ou document non tabulaire
       calendar: Calendrier
       chart: Graphique
-      data_lens:
+      data_lens: 'Page Data Lens '
       dataset: Jeu de données
       filter: Vue filtrée
       form: Formulaire
@@ -1246,7 +1260,7 @@ fr:
       grouped: Vue groupée
       href: Série de données externe
       map: Carte
-      story:
+      story: histoire
       table: Tableau
       working_copy: Copie de travail
     view_types_plural:
@@ -1262,244 +1276,257 @@ fr:
       private: privé
       public: public
   data_lens:
-    render_error:
+    render_error: Un problème est survenu lors de la représentation de cette page.
   dataset_landing_page:
     action_buttons:
-      api:
-      comment:
-      contact_owner:
-      data:
-      download:
-      odata:
-      share:
-    add:
+      api: API
+      comment: Commentaire sur cet ensemble de données
+      contact_owner: Contacter le propriétaire de l'ensemble de données
+      data: Afficher les données
+      download: Télécharger
+      odata: Accès aux données via OData
+      share: Partager
+    add: Ajouter
     api_flannel:
-      description:
-      developer_portal_button:
-      endpoint_title:
-      foundry_button:
-      multiple_geo_layers:
-      title:
-    back:
+      description: L'API Socrata Open Data (SODA) fournit un accès programmatique à cet ensemble de données, y compris la possibilité de filtrer, d'interroger et d'agréger les données.
+      developer_portal_button: Portail du développeur
+      endpoint_title: Point de terminaison API
+      foundry_button: Documentation de l'API
+      multiple_geo_layers: Cet ensemble de données contient plusieurs couches géospatiales. Chaque couche a sa propre documentation et son point de terminaison API en dessous.
+      title: Accéder à cet ensemble de données via l'API de SODA
+    back: Retour
     blob_download:
-      download:
-      edit_prompt_button:
-      edit_prompt_message:
-      title:
+      download: Télécharger
+      edit_prompt_button: Modifier la source
+      edit_prompt_message: Modifiez le fichier source pour cet ensemble de données.
+      title: Télécharger cette ressource
     blob_preview:
-      title:
-    bootstrap_button:
-    bootstrap_disabled_notice:
-    bootstrap_message:
-    cancel:
-    change:
-    choose:
-    close:
-    contact_dataset_owner:
+      title: Aperçu
+    bootstrap_button: Créer une visualisation
+    bootstrap_disabled_notice: Vos données sont en cours de traitement. Actualisez la page dans quelques minutes et vous serez en mesure de créer une nouvelle visualisation.
+    bootstrap_message: Cet ensemble de données n'a aucune visualisation liée. Voulez-vous en créer une maintenant ?
+    cancel: Annuler
+    change: Changer
+    choose: Choisir
+    close: Fermer
+    contact_dataset_owner: 'Contactez le propriétaire de l''ensemble des données '
     contact_dataset_owner_modal:
-      description:
-      email:
-      email_description:
-      error_empty_email:
-      error_empty_message:
-      error_empty_recaptcha:
-      error_empty_subject:
-      error_invalid_email:
-      failure_html:
-      message:
-      recaptcha:
-      recaptcha_loading:
-      send:
-      sending:
-      subject:
-      success_html:
-      title:
-    copy:
-    copy_success:
+      description: Envoyez un message court au propriétaire de l'ensemble de données pour poser une question, faire un commentaire ou souligner quelque chose au sujet des données.
+      email: Votre e-mail
+      email_description: "(Votre adresse e-mail sera partagée avec le propriétaire de l'ensemble de données afin qu'il puisse vous répondre)"
+      error_empty_email: Veuillez indiquer votre e-mail afin que le propriétaire des données puisse vous contacter.
+      error_empty_message: Veuillez remplir le formulaire du message.
+      error_empty_recaptcha: Veuillez confirmer que vous n'êtes pas un robot en cochant la case ci-dessus.
+      error_empty_subject: Veuillez saisir le sujet de votre message.
+      error_invalid_email: Veuillez saisir une adresse e-mail valide.
+      failure_html: b>Oh non ! </b> Quelque chose a mal tourné. Veuillez réessayer plus tard.
+      message: Message
+      recaptcha: 'Défi du recaptcha '
+      recaptcha_loading: Recaptcha est en cours de chargement
+      send: Envoyer
+      sending: Le formulaire est en cour d'envoi
+      subject: Sujet
+      success_html: "<b>Merci !</b> Votre message a été envoyé."
+      title: Envoyez un message au propriétaire de cet ensemble de données
+    copy: Copier
+    copy_success: Copié !
     dataset_contents:
-      columns:
-      row_display_unit:
-      rows:
-      title:
+      columns: Colonnes
+      row_display_unit: Chaque ligne est une
+      rows: Lignes
+      title: Que contient cet ensemble de données ?
     dataset_preview:
-      all_rows:
-      grid_view_link:
-      latitude:
-      longitude:
-      many_rows:
-      next:
-      no_column_description:
-      no_row_count:
-      no_rows:
-      only_rows:
-      previous:
-      title:
-      unable_to_render:
-    default_row_label:
-    done:
+      all_rows: Afficher toutes les lignes
+      grid_view_link: Explorer les données
+      latitude: Latitude
+      longitude: Longitude
+      many_rows: Affichage {unitOther} {firstRowOrdinal} - {lastRowOrdinal} sur {datasetRowCount}
+      next: Suivant
+      no_column_description: Aucune description fournie.
+      no_row_count: Nombre de lignes indisponible
+      no_rows: Non {unitOther}
+      only_rows: Affichage {Unitone} {firstRowOrdinal} de {datasetRowCount}
+      previous: Précédent
+      title: 'Aperçu du tableau '
+      unable_to_render: Nous avons des difficultés à afficher ce tableau.
+    default_row_label: Ligne
+    done: Terminé
     download:
-      csv_for_excel:
-      csv_without_geo:
-      json_without_geo:
-      original:
-      shapefile:
-    error:
+      csv_for_excel: CSV vers Excel
+      csv_without_geo: CSV (sans données géospatiales)
+      json_without_geo: JSON (sans données géospatiales)
+      original: Original
+      shapefile: Fichier de forme
+    error: Erreur
     featured_content:
       manage_prompt:
-        button:
-        message:
-        message_blob:
-      title:
+        button: 'Gérer le contenu '
+        message: Choisissez de promouvoir jusqu'à 3 actifs Socrata qui utilisent ces données ou de présenter toutes les ressources externes pertinentes. Si cette section reste vide elle sera invisible.
+        message_blob: |
+          Choisissez de promouvoir jusqu'à 3 ressources externes qui sont pertinentes pour ce ficher ou ce document. Si cette section reste vide elle sera invisible.
+        message_external: |
+          Choisissez de promouvoir jusqu'à 3 ressources externes qui sont pertinentes pour ces donnée. Si cette section reste vide elle sera invisible.
+      title: Contenu figuré en utilisant ces données
     featured_content_modal:
-      external:
+      external: Ressource externe
       external_resource_form:
-        description:
-        header:
-        invalid_image_message:
-        invalid_url_message:
-        message:
-        preview_image:
-        title:
-        url:
-      header:
-      introduction:
-      introduction_blobby:
-      preview:
-      remove_error:
-      remove_prompt:
-      save_error_message:
-      story:
+        description: Description
+        header: Présenter une ressource externe
+        invalid_image_message: Cela ne ressemble pas à une image. Essayez de télécharger un fichier gif, png ou un jpg.
+        invalid_url_message: Cela ressemble à un lien non valide. Essayez d'ajouter http:// au début de votre lien.
+        message: Créer un lien vers un actif externe lié à ces données. Il pourrait être une visualisation impressionnante sur le web, un blog sur la façon dont les données ont été publiées ou un lien vers une autre partie de votre site.
+        preview_image: Prévisualiser la photo
+        title: Titre
+        url: Lien vers la ressource
+      header: 'Gérer le contenu '
+      introduction: Que voulez-vous que les gens puissent voir quand lorsqu'ils affchent pour la première fois cet ensemble de données ? Favorisez jusqu'à 3 actifs Socrata qui utilisent ces données ou choisissez de présenter toutes les ressources externes pertinentes. Pensez à cette section comme la façade de vos données.
+      introduction_blobby: 'Que voulez-vous que les gens puissent voir quand lorsqu''ils affichent pour la première fois cet actif ? Favorisez jusqu''à 3 ressources externes qui sont pertinentes pour ce fichier ou ce document. '
+      introduction_external: 'Que voulez-vous que les gens puissent voir quand lorsqu''ils affichent pour la première fois cet ensemble de données ? Favorisez jusqu''à 3 ressources externes qui sont pertinentes pour ces données. '
+      preview: Aperçu du contenu
+      remove_error: Oh non ! Une erreur s'est produite. Veuillez réessayer.
+      remove_prompt: |
+        Souhaitez-vous vraiment supprimer cette partie du contenu ?
+      save_error_message: Oh non ! Une erreur s'est produite. Veuillez réessayer.
+      story: Histoire
       story_form:
-        header:
-        invalid_url_message:
-        message_html:
-        url:
-      title:
+        header: Figurer une histoire Socrata
+        invalid_url_message: |
+          Humm ... Une erreur s'est produite. Essayez d'utiliser un lien valide à une histoire Socrata.
+        message_html: L'utilisation de Socrata Perspectives, guidera vos utilisateurs aux récits pertinents basés sur ces données. Pour une liste complète des histoires publiques sur ce domaine <span class="no-wrap"><a href="/browse?limitTo=story" target="_blank">click&nbsp;here <span class="icon-external"></span></a></span>
+        url: Lien vers l'histoire
+      title: Contenu affiché
       view_selector_modal:
-        header:
-        message:
-        view_fetch_error:
-      visualization:
+        header: Figurez une visualisation Socrata
+        message: Choisissez une visualisation ou une vue filtrée qui représente vraiment, selon vous, votre ensemble de données. Ce sera l'une des premières choses que vos utilisateurs verront lorsqu'ils afficheront cet ensemble de données.
+        view_fetch_error: Oh non ! Une erreur s'est produite lors de notre recherche de visualisations pour ces données. Réessayez plus tard.
+      visualization: Visualisation
     featured_views:
-      no_content_alert_html:
-      title:
-      view:
+      no_content_alert_html: "<b>Humm...</b>Il semblerait qu'il n'existe aucun contenu public utilisant ces données."
+      title: Contenu populaire en utilisant ces données.
+      view: Vue
     feedback:
-      panel_details_html:
-      panel_title:
-      screenshot_no:
-      screenshot_yes:
-      title:
-    less:
-    manage_dataset:
-    manage_prompt:
+      panel_details_html: Avec une capture d'écran, vous pouvez nous montrer exactement le sujet auquel vos commentaires se rapportent. Nous utilisons <a href="https://usersnap.com">Usersnap</a> pour les captures d'écran. Consultez leur <a href="https://usersnap.com/privacy-policy">Politique de confidentialité.</a>
+      panel_title: Voulez-vous inclure une capture d'écran annotée de la page en cours ?
+      screenshot_no: Non merci
+      screenshot_yes: Oui, ajoutez une capture d'écran
+      title: Commentaire
+    href_download:
+      data_dictionary: Dictionnaire de données
+      edit_prompt_button: Modifier les liens
+      edit_prompt_message: Modifier le(s) lien(s) de source externe pour cet ensemble de données.
+      title: Accéder à ces données
+    less: Afficher moins
+    manage_dataset: 'Gérer un ensemble de données '
+    manage_prompt: Cliquez ici pour gérer les autorisations
     metadata:
-      attachments:
-      category:
-      creation_date:
-      data_last_updated:
-      data_provided_by:
-      dataset_owner:
-      downloads:
-      edit_metadata:
-      license:
-      licensing:
-      metadata_last_updated:
-      no_category_value:
-      no_license_value:
-      no_tags_value:
-      no_value:
-      source_link:
-      tags:
-      title:
-      topics:
-      view_statistics:
-      views:
-    more:
-    multiple_geo_layers:
+      attachments: Pièces jointes
+      category: Catégorie
+      creation_date: Date de création
+      data_last_updated: Dernière mise à jour des données
+      data_provided_by: Données fournies par
+      dataset_owner: Propriétaire de l'ensemble de données
+      downloads: Téléchargements
+      edit_metadata: Modifier les métadonnées
+      license: Licence
+      licensing: Licences et attribution
+      metadata_last_updated: 'Dernière mise à jour des métadonnées '
+      no_category_value: Cet ensemble de données n'a pas été classifié
+      no_license_value: La licence pour cet ensemble de données est indéterminée
+      no_tags_value: Cet ensemble de données n'a pas de balises
+      no_value: "(aucun)"
+      source_link: 'Lien  de la source '
+      tags: Balises
+      title: "À propos de cet ensemble de données"
+      topics: Sujets
+      view_statistics: Afficher toutes les statistiques pour cet ensemble de données
+      views: Vues
+    more: Afficher plus
+    multiple_geo_layers: Cet ensemble de données contient plusieurs couches géospatiales détaillées ci-dessous.
     odata_modal:
-      description:
-      developer_portal_button:
-      endpoint_title:
-      multiple_geo_layers:
-      title:
-    official:
+      description: Créer une feuille de calcul dans Microsoft Excel pour analyser ou visualiser cet ensemble de données. En utilisant un lien OData, les données seront actualisables.
+      developer_portal_button: 'Documentation Socrata OData '
+      endpoint_title: 'Point de terminaison OData '
+      multiple_geo_layers: Cet ensemble de données contient plusieurs couches géospatiales. Chaque couche a son propre point de terminaison OData ci-dessous.
+      title: Accéder à cet ensemble de données via OData
+    official: Officiel
     popular_views:
-      load_more_error:
-      title:
-      view:
-    private_notice:
-    publish:
-    publish_error:
-    publish_notice:
-    published:
-    published_by:
+      load_more_error: Un problème est survenu lors du chargement du contenu supplémentaire.
+      title: Contenu populaire en utilisant ces données
+      view: Vue
+    private_notice: Vous regardez un ensemble de données privé.
+    publish: Publier
+    publish_error: Un problème est survenu lors de la publication de cet ensemble de données. Assurez-vous que vous êtes connecté et que vous disposez des autorisations appropriées. Si le problème persiste, veuillez contacter <a href="https://support.socrata.com">le service d'assistance de Socrata</a>.
+    publish_geocoding_message: Les lignes dans la colonne de localisation sont encore en cours de géocodage. Veuillez patienter jusqu'à la fin de la publication de cet ensemble de données.
+    publish_notice: Cette base de données n'est <strong>pas publiée</strong>. La publication de cette page publiera également la <a href="{url}" target="_blank">vue tabulaire</a> de cet ensemble de données.
+    published: Publié
+    published_by: Données fournies par
     related_views:
-      load_more_error:
-      title:
-      view:
-    remove:
-    render_error:
-    save:
-    saved:
-    saving:
+      load_more_error: Un problème est survenu lors du chargement du contenu supplémentaire.
+      title: Contenu lié en utilisant ces données
+      view: Vue
+    remove: Retirer
+    render_error: Un problème est survenu lors de la représentation de cette page.
+    save: Sauvegarder
+    saved: Sauvegardé
+    saving: Sauvegarde en cours
     schema_preview:
-      api_field_name:
-      column_name:
-      data_type:
+      api_field_name: Nom du champ API
+      column_name: Nom de colonne
+      data_type: Type de données
       data_types:
-        blob:
-        calendar_date:
-        checkbox:
-        dataset_link:
-        date:
-        document:
-        drop_down_list:
-        email:
-        flag:
-        geospatial:
-        html:
-        line:
-        link:
-        list:
-        location:
-        money:
-        multiline:
-        multipoint:
-        multipolygon:
-        nested_table:
-        number:
-        object:
-        percent:
-        phone:
-        photo:
-        point:
-        polygon:
-        stars:
-        text:
-        url:
-      description:
-      geospatial_layer_title:
-      show_all:
-      show_less:
-      title:
-      type:
+        blob: Blob
+        calendar_date: Horodatage variable
+        checkbox: Case à cocher
+        dataset_link: Lien de l'ensemble des données
+        date: Horodatage fixe
+        document: Document
+        drop_down_list: Texte
+        email: Texte
+        flag: Texte
+        geospatial: Géospatial
+        html: Texte
+        line: Ligne
+        link: Texte
+        list: Liste
+        location: Emplacement
+        money: Argent
+        multiline: Ligne
+        multipoint: Point
+        multipolygon: Polygone
+        nested_table: Tableau intégré
+        number: Nombre
+        object: Objet
+        percent: Nombre
+        phone: Texte
+        photo: Photo
+        point: Point
+        polygon: Polygone
+        stars: Nombre
+        text: Texte
+        url: Texte
+      description: Description
+      geospatial_layer_title: Colonnes dans cette couche
+      show_all: Tout afficher
+      show_less: Afficher moins
+      title: 'Colonnes dans cet ensemble de données '
+      type: Type
     share:
-      cancel:
-      email:
-      email_body:
-      facebook:
-      title:
-      twitter:
-      visibility_alert_html:
+      cancel: Annuler
+      email: Partager via e-mail
+      email_body: 'Voici un ensemble de données de %{provider} que je voudrais partager avec vous : %{url}'
+      facebook: Partager via Facebook
+      title: 'Partager '
+      twitter: Partager via Twitter
+      visibility_alert_html: |
+        <b>Avertissement !</b> Cet ensemble de données est privé et pourrait ne pas être accessible aux personnes avec lesquelles vous partagez.
     tour:
-      description:
-      done:
-      title:
-    updated:
+      description: Nous l'appelons Page de destination de l'ensemble de données, mais si vous souhaitez afficher la vue tabulaire des données, vous pouvez y accéder à partir d'ici.
+      done: D'accord
+      title: Les ensembles de données ont un nouveau look !
+    updated: Mis à jour
     view_widget:
-      external_content:
-      views:
+      external_content: Contenu externe
+      views: Vues
   dataslate:
     component:
       edit: Modifier ce composant
@@ -1593,7 +1620,7 @@ fr:
       title: Paramètres de Page
   date:
     abbr_month_names:
-    -
+    - 
     - Jan
     - Fév
     - Mar
@@ -1607,7 +1634,7 @@ fr:
     - Nov
     - Déc
     month_names:
-    -
+    - 
     - Janvier
     - Févier
     - Mars
@@ -1622,6 +1649,9 @@ fr:
     - Décembre
   error:
     back: Retour
+    error_400:
+      description: Les paramètres fournis pour cette demande ne sont pas valides, veuillez réessayer avec des paramètres différents.
+      were_sorry: Nous sommes désolés, mais nous ne pouvons pas traiter votre demande.
     error_500:
       description_html: Veuillez réessayer dans un petit moment, ou nous <a href="http://support.socrata.com">signaler cette erreur</a> en expliquant de manière détaillée ce qui s’est passé.
       somethings_wrong: Erreur !
@@ -1646,119 +1676,157 @@ fr:
   govstat:
     admin:
       bulk_edit:
-        button_title:
-        cancel:
-        date_range_from:
-        date_range_label:
-        date_range_to:
-        failure_message:
-        items_selected:
-        not_configured_message:
-        override_label:
+        button_title: Modifier plusieurs éléments...
+        cancel: Annuler
+        date_range_from: De
+        date_range_label: Période
+        date_range_to: "À"
+        failure_message: "<strong>Erreur.</strong>Une erreur est survenue lors de la réalisation de cette action. Réessayez ou annuler."
+        items_selected: "{0} éléments sélectionnés"
+        not_configured_message: |
+          <strong>Oups.</strong> Il semblerait qu'un ou plusieurs de vos objectifs ne sont pas configurés. Des modifications groupées ne peuvent être apportées aux objectifs qui ont déjà été configurés.
+        override_label: Passer outre
         override_types:
-          bad:
-          good:
-          no_judgement:
-          none:
-          within_tolerance:
-        revert_changes:
-        success_message:
-        title:
-        update:
-        visibility:
+          bad: A besoin d'améliorations
+          good: Cible atteinte
+          no_judgement: Mesure en cours
+          none: Aucun
+          within_tolerance: 'Proche de la cible visée '
+        revert_changes: Annuler les changements
+        success_message: Succès ! {0} de vos objectifs ont été mis à jour.
+        title: Modifier plusieurs éléments
+        update: Mettre à jour
+        visibility: Visibilité
+      default_error_message: "<span><b> Oh non ! </b>Une erreur  est suvenue et notre équipe en a été avertie. En attendant, réessayez ou actualisez la page.</span>"
       export:
         Csv:
-          button_label:
-          info_description:
-          info_title:
+          button_label: Exporter
+          info_description: Génération en cours d'un CSV. Le téléchargement démarre automatiquement lorsque vous êtes prêt
+          info_title: Génération en cours du téléchargement
         info_box:
-          cancel:
-          ok:
+          cancel: Annuler
+          ok: D'accord
       feedback_flannel:
-        message:
-        no_thanks:
-        title:
-        yes_include_screenshot:
+        message: Avec une capture d'écran, vous pouvez nous montrer exactement le sujet sur lequel vous avez des commentaires. Nous utilisons <a href="https://usersnap.com" target="_blank">Usersnap</a> pour les captures d'écran. Consultez leur <a href="https://usersnap.com/privacy-policy"  target="_blank">Politique de confidentialité</a>.
+        no_thanks: Non merci
+        title: Voulez-vous ajouter une capture d'écran annotée de la page en cours ?
+        yes_include_screenshot: Oui, ajoutez une capture d'écran
       goal_values:
-        status_private:
-        status_public:
+        status_private: Privé
+        status_public: Public
       listing:
-        dashboard:
-        default_alert_message:
-        goal_page:
-        goal_status:
-        load_error:
-        manage_on_goal_page:
-        of:
-        owner:
-        quick_edit:
-        rows_per_page:
-        title:
-        updated_at:
-        view_dashboard:
-        visibility:
-      manage_performance_goals:
+        dashboard: Tableau de bord
+        default_alert_message: "<span><b> Oh non ! </b>Une erreur  est suvenue et notre équipe en a été avertie. En attendant, réessayez ou actualisez la page.</span>"
+        goal_page: Gérer la page de l'objectif
+        goal_status: Statut de l'objectif
+        load_error: Un problème est survenu lors du chargement du contenu.
+        manage_on_goal_page: Gérer la page de l'objectif
+        of: de
+        owner: Dernière mise à jour effectuée par
+        quick_edit: Modfication rapide
+        rows_per_page: Lignes par page
+        title: Titre
+        updated_at: Mis à jour
+        view_dashboard: Afficher le tableau de bord
+        visibility: Visibilité
+      manage_performance_goals: Gérer les objectifs de performance
       modal:
-        close_without_save_message:
-      page_title:
+        close_without_save_message: |
+          Souhaitez-vous vraiment fermer ? Vos modifications seront perdues.
+      page_title: Gestion de l'objectif
       preview_bar:
-        back_to_configuration:
-        feedback:
-        learn_more:
-        performance_goal_management_preview:
+        back_to_configuration: Retour à la configuration
+        feedback: Commentaire
+        learn_more: 'En savoir davantage '
+        performance_goal_management_preview: Gestion de l'objectif de performance
       quick_edit:
-        action_type:
+        action_type: Action
         action_types:
-          increase:
-          maintain:
-          measure:
-          reduce:
-        cancel:
-        category:
-        dashboard:
-        dataset_owner:
-        dataset_updated:
-        date_range:
-        default_alert_message:
-        feedback:
-        goal_name:
-        goal_owner:
-        goal_updated:
-        manage_on_goal_page:
-        measure_baseline:
-        measure_delta:
+          increase: Augmenter
+          maintain: |
+            Maintenir
+          measure: Mesure
+          reduce: Réduire
+        cancel: Annuler
+        category: Catégorie
+        dashboard: Tableau de bord
+        dataset_owner: Propriétaire de l'ensemble de données
+        dataset_updated: Ensemble de données mis à jour
+        date_range: Période
+        default_alert_message: "<span><b> Oh non ! </b> Une erreur  s’est produite et notre équipe en a été avertie. En attendant, réessayez ou actualisez la page. </span>"
+        feedback: Commentaire
+        goal_name: Titre de l'objectif
+        goal_owner: Dernière mise à jour effectuée par
+        goal_updated: Objectif mis à jour
+        manage_on_goal_page: Gérer la page de l'objectif
+        measure_baseline: Référentiel
+        measure_delta: Plage de valeurs
         measure_maintain_types:
-          above:
-          below:
-          within:
-        measure_target:
-        measure_target_type:
+          above: Dessus
+          below: Dessous
+          within: Environ
+        measure_target: Valeur cible
+        measure_target_type: Type
         measure_target_type_types:
-          absolute:
-          relative:
+          absolute: "À"
+          relative: De
         not_configured_goal_message:
-          link:
-          text:
-        override:
+          link: aller à la page d'objectif
+          text: Cet objectif n'a pas été configuré. Pour apporter des modifications à cette section,
+        override: Passer outre
         override_types:
-          bad:
-          good:
-          no_judgement:
-          none:
-          within_tolerance:
-        prevailing_measure:
-        prevailing_measure_name:
-        quick_edit_measure:
-        range:
+          bad: A besoin d'améliorations
+          good: Cible atteinte
+          no_judgement: Mesure en cours
+          none: Aucun
+          within_tolerance: " Près de la cible visée"
+        prevailing_measure: Mesure en vigueur
+        prevailing_measure_name: Sujet
+        quick_edit_measure: Mesure rapide de la modification
+        range: Plage
         range_types:
-          above:
-          around:
-          below:
-        save:
-        status:
-        success_message:
-        unit:
-        visibility:
+          above: Dessus
+          around: Environ
+          below: Dessous
+        save: Sauvegarder
+        status: Statut
+        success_message: |
+          Succès ! {0} mis à jour.
+        unit: Unité
+        validation:
+          action:
+            enum: 'L''action devrait être l''un des suivantes : augmenter, diminuer, maintenir et mesurer.'
+          baseline:
+            blank: Le référenciel  ne devrait pas être vide.
+            numeric: Le référenciel devrait être numérique.
+          end:
+            end_not_after_start: |+
+              Contradiction entre les dates de début et de fin.
+
+            invalid: Date de fin incorrecte.
+          maintain_type:
+            enum: Le type de maintien devrait être environ,>, <
+          name:
+            blank: Le nom ne devrait pas être vide.
+          start:
+            invalid: Date de début incorrecte.
+          subject:
+            blank: Le sujet ne devrait pas être vide.
+          target:
+            blank: |
+              La valeur cible ne devrait pas être vide.
+            numeric: La valeur cible devrait être numérique.
+          target_delta:
+            blank: La plage de valeurs ne devrait pas être vide.
+            numeric: La plage de valeurs devrait être numérique.
+          target_delta_is_percent:
+            bool: Le type d'unité devrait être sélectionné
+          target_type:
+            enum: Le type devrait être absolu, relatif.
+          unit:
+            blank: |
+              L'unité ne doit pas être vide.
+        visibility: Visibilité
     chrome:
       header:
         links:
@@ -1785,9 +1853,9 @@ fr:
       data_management: Gestion de Données
       datasets: Sets de données
       federations: Fédérations
-      goal_management_preview:
+      goal_management_preview: Gestion de l'objectif
       homepage: Page d'accueil
-      jobs:
+      jobs: Jobs
       metadata: Métadonnées
       moderation: Modération de Commentaire
       nomination: Modération de Nomination
@@ -1797,26 +1865,26 @@ fr:
       users: Utilisateurs
     measure:
       end_progress:
-        bad:
-        good:
-        needs_more_data:
-        no_judgement:
-        none:
-        poor:
-        progressing:
-        within_tolerance:
+        bad: N'a pas atteint la cible
+        good: Objectif atteint
+        needs_more_data: Plus de données sont nécessaires
+        no_judgement: Mesuré
+        none: Plus de données sont nécessaires
+        poor: N'a pas atteint la cible
+        progressing: A presque atteint la cible
+        within_tolerance: A presque atteint la cible
       progress:
-        bad:
-        good:
-        needs_more_data:
-        no_judgement:
-        no_status:
-        none:
-        poor:
-        progressing:
-        within_tolerance:
-      subheadline:
-      unit_percent:
+        bad: A besoin d'amélioration
+        good: Sur la bonne voie
+        needs_more_data: A besoin de plus de données
+        no_judgement: 'Mesure en cours '
+        no_status: Pas de statut
+        none: A besoin de plus de données
+        poor: A besoin d'amélioration
+        progressing: En cours
+        within_tolerance: Près de la cible
+      subheadline: Cet objectif est mesuré en suivant {0} dans {1}.
+      unit_percent: pour cent
     reports:
       component:
         base_map: Carte de Base
@@ -1860,31 +1928,31 @@ fr:
       title: Sélectionner Disposition
   plugins:
     daterangepicker:
-      clear:
+      clear: Effacer
       date_range: Plage de Dates
       done: Terminé
       end_date: Date de fin
-      last_30_days:
-      last_3_days:
+      last_30_days: 30 derniers jours
+      last_3_days: 3 derniers jours
       last_month: Mois Dernier
-      last_week:
-      last_year:
+      last_week: " Semaine dernière"
+      last_year: Année dernière
       month_to_date: "À ce Mois"
       next: Suivant
-      preceding_30_days:
-      preceding_month:
-      preceding_week:
+      preceding_30_days: les 30 jours précédents
+      preceding_month: le mois précédent
+      preceding_week: la semaine précédente
       prev: Précédent
       specific_date: Date Spécifique
       start_date: Date de début
-      the_day_of:
+      the_day_of: Le jour de...
       the_month_of: Le Mois De...
       the_week_of: La Semaine Du...
       the_year_of: L'Année De...
       today: Aujourd'hui
       week_to_date: "À cette Semaine"
       year_to_date: "À cette Année"
-      yesterday:
+      yesterday: Hier
     fileuploader:
       drop_files: Déposez fichiers ici pour mise en ligne
       failed: "Échec"
@@ -1955,7 +2023,7 @@ fr:
     about:
       actions: Actions
       activity: Activité
-      admin_debugging:
+      admin_debugging: 'Débogage de Superadmin '
       attachments: Pièces jointes
       category: Catégorie
       comments: Commentaires
@@ -1965,10 +2033,10 @@ fr:
       created: créé
       data_provided_by: Source des données
       dataset_landing_page:
-        button:
-        description:
-        title:
-      datasync_status:
+        button: Emmenez-moi là-bas !
+        description: Toutes les informations qui se trouvent dans ce volet, et plus,sont maintenant sur la Page d'accueil de l'ensemble de données dans un format plus pratique et plus convivial pour l'utilisateur.
+        title: 'Cette information est maintenant sur la Page d''accueil de l''ensemble de données '
+      datasync_status: 'Status de Datasync '
       description: Description
       downloads: Téléchargements
       edit_metadata: "Éditer les métadonnées"
@@ -2004,72 +2072,82 @@ fr:
       visits: Visites
       your: Votre notation
     admin:
+      canvas:
+        path_must_be_unique: Ce chemin existe déjà ; veuillez en choisir un autre.
+        title_cannot_be_blank: Veuillez saisir un titre.
       connector:
-        actions:
-        add_connector:
-        add_new:
-        all_assets:
-        arcgis_layer:
-        arcgis_server_address:
+        actions: Actions
+        add_connector: Ajouter un connecteur
+        add_new: Ajouter un nouveau
+        all_assets: Connecter tous les actifs
+        arcgis_layer: 'Couche ArcGIS '
+        arcgis_server_address: 'Adresse du serveur ArcGIS '
         assets_connected:
+          one: 1 actif connecté
+          other: "%{count} actifs connectés"
         assets_discovered:
-        back_to_connector_list:
-        catalog:
-        connected_assets:
-        current_status:
-        data:
-        dataset:
-        discovered_assets:
-        edit:
-        edit_connector:
+          one: 1 actif découvert
+          other: "%{count} actifs découverts"
+        back_to_connector_list: Retour à la liste Connecteur
+        catalog: Catalogue
+        connected_assets: Actifs connectés
+        current_status: Statut actuel
+        data: Données
+        dataset: Ensemble de données
+        discovered_assets: Actifs découverts
+        edit: Modifier
+        edit_connector: Modifier le connecteur :%{url}
         errors:
-          duplicate_server_error:
-          invalid_attributes_error:
-          json_format_error:
-          missing_attributes_error:
-          not_found_error:
-          problem_with_errors:
-          server_ping_error:
-          unknown_error:
-        esri_arcgis:
-        esri_arcgis_url:
-        failing:
+          duplicate_server_error: Ce serveur Esri a déjà été connecté à ce domaine.
+          invalid_attributes_error: 'Ces paramètres ne sont pas valides : %{invalid}.'
+          json_format_error: Votre JSON est malformé.
+          missing_attributes_error: 'Ces paramètres sont manquants : %{missing}.'
+          not_found_error: Cette ressource n'a pas été trouvée.
+          problem_with_errors: Nous avons été incapables de traiter votre demande.
+          server_ping_error: 'Impossible d''atteindre le serveur : %{url}'
+          unknown_error: 'Votre demande a échoué pour la raison suivante : %{reason}'
+        esri_arcgis: Esri ArcGIS
+        esri_arcgis_url: Adresse du serveur ArcGIS
+        failing: "Échec"
         flashes:
-          created:
-          deleted:
-          server_not_found:
-          updated:
-        ignore:
-        last_synced:
-        never:
-        no_connectors:
-        not_synced_yet_edit:
-        not_yet:
-        save:
-        search:
-        selective_connection:
-        service_unavailable:
-        show_title:
-        some_assets:
-        source:
-        success:
-        terminate:
-        title:
+          created: Succès ! Nous avons atteint votre serveur. Il faudra un certain temps pour synchroniser le catalogue ArcGIS, vous pourrez ensuite modifier les paramètres du connecteur et continuer l'installation.
+          deleted: |
+            Votre connecteur a été marqué pour être supprimé.
+          server_not_found: Nous n'avons pas pu trouver ce serveur-- il pourrait avoir été récemment supprimé.
+          updated: Les paramètres de votre connecteur ont été sauvegardés.
+        ignore: Ignoré
+        last_synced: Dernier synchronisé
+        never: Jamais
+        no_connectors: |
+          Il n'y a pas de connecteurs actuels. Si vous souhaitez connecter une source externe à votre catalogue, cliquez ci-dessus sur Ajouter un nouveau.
+        not_synced_yet_edit: Vous pourrez modifier les paramètres du connecteur une fois que nous avons synchronisé le catalogue ArcGIS.
+        not_yet: Synchronisation en cours
+        save: Sauvegarder
+        search: Rechercher dans le domaine
+        selective_connection: Connexion sélective
+        service_unavailable: Les services de connecteurs sont actuellement indisponibles.
+        show_title: |
+          Fédération ArcGIS Server
+        some_assets: Connectez seulement ces actifs
+        source: Source de connecteur
+        success: Succès
+        terminate: Mettre fin
+        title: Gérer les connecteurs
       datasets:
         asset_inventory:
-          tooltip:
-        description:
+          tooltip: Cette option n'est pas disponible en raison d'un retard de traitement. Si le problème persiste après 24 heures, veuillez contacter le service d'assistance.
+        description: Listez les actifs de ce domaine et configurez la Page de l'ensemble des données
         layout_config: Configuration de la Disposition
         left: Gauche
         right: Droite
         saved: Enregistré
         saving: Enregistrement en cours
         sidebar_position: Position de la barre latérale
-        skip_to_dataset_listing:
-        table_description:
+        skip_to_dataset_listing: Passez à la fiche  de l'ensemble des données
+        table_description: Ensembles de données
         title: Sets de données
         unpublished_datasets: Sets de données non publiées
-        view_as_a_dataset:
+        view_as_a_dataset: Afficher comme un ensemble de données
       federation:
         accept: Accepter
         accepted: Accepté
@@ -2100,67 +2178,72 @@ fr:
         terminate: Mettre fin
         title: Ouvrir Fédération de Données
       georegions:
-        actions:
-        choose_a_dataset:
+        actions: Actions
+        choose_a_dataset: Choisissez une couche
         configure_boundary:
-          boundary_geometry_label_field_error:
-          boundary_geometry_label_page_error:
-          boundary_name:
-          boundary_name_description:
-          boundary_name_required_field_error:
-          boundary_name_required_page_error:
-          boundary_name_unique_error:
-          choose_a_column:
-          configure_boundary:
-          confirm_html:
-          confirm_title:
-          description:
-          next:
-          page_title:
-          primary_key_column:
-          primary_key_column_description:
-          primary_key_column_missing_field_error:
-          save_core_error:
-          save_error:
-          save_success:
-          shape_label:
-          shape_label_description:
-        create_new:
-        custom_georegions:
-        date_added:
-        default:
-        default_georegions:
-        default_georegions_flyout:
-        default_georegions_limit:
-        default_success:
-        delete:
-        description:
-        disable:
-        disable_success:
-        edit:
-        enable:
-        enable_success:
-        enabled?:
+          boundary_geometry_label_field_error: La frontière doit avoir une étiquette de forme.
+          boundary_geometry_label_page_error: 'Impossible de sauvegarder : la frontière doit avoir une forme d''étiquette.'
+          boundary_name: Nom de la frontière
+          boundary_name_description: 'Le nom de la frontière (p. ex : « États » ou « quartiers ») sera affiché dans les cartes Spartial Lens.'
+          boundary_name_required_field_error: La frontière doit avoir un nom.
+          boundary_name_required_page_error: 'Impossible de sauvegarder : la frontière doit avoir un nom.'
+          boundary_name_unique_error: Le nom de la frontière doit être unique.
+          choose_a_column: Choisissez une colonne...
+          configure_boundary: Configurer la frontière
+          confirm_html: <p>Cliquez sur « Créer » pour ajouter une nouvelle frontière de Spatial Lens basée sur l'ensemble de données géospatiales "%{boundary_name}".</p><p>Cette nouvelle frontière Spatial Lens est un instantané et ne changera pas même si vous mettez à jour l'ensemble de données géospatiales  "%{boundary_name}".</p>
+          confirm_title: Créer votre Spatial Lens
+          description: Configurez des frontières personnalisées qui peuvent être utilisées pour créer des cartes Spatial Lens
+          next: Suivant
+          page_title: Gérer des frontières
+          primary_key_column: ID de forme
+          primary_key_column_description: La colonne contient l'ID unique qui identifie chaque forme dans la ffrontière. Si une telle colonne n'existe pas, choisissez toute colonne unique.
+          primary_key_column_missing_field_error: Vous devez spécifier une colonne pour l'ID de forme.
+          save_core_error: 'Impossible de créer la frontière : %{error_message}'
+          save_error: Une erreur s'est produite lors de la sauvegarde de  vos modifications. Veuillez réessayer plus tard, ou contacter le service d'assistance Socrata si le problème persiste.
+          save_success: Modifications sauvegardées avec succès.
+          shape_label: "Étiquette de forme "
+          shape_label_description: |
+            La colonne qui doit être utilisée comme étiquette pour chaque forme (p. ex. : une colonne contenant « WA » et « NY »).
+        create_new: Créer une nouvelle frontière
+        custom_georegions: Frontières personnalisées
+        date_added: Date ajoutée
+        default: Configurer Ajout rapide pour les frontières
+        default_georegions: Activez Ajout rapide pour les nouveaux ensembles de données (%{count} de %{limit})
+        default_georegions_flyout: Si vous avez une frontière que vous souhaitez utiliser sur la plupart des pages de données Lens, cette option vous permettra de visualiser plus rapidement tout ensemble de données téléchargé après l'activation d'Ajout rapide. Vous pouvez activer jusqu'à 5 frontières  avec Ajout rapide.
+        default_georegions_limit: Vous pouvez au plus avoir %{limit} frontières avec Ajout rapide.
+        default_success: "%{name} a été configuré avec Ajout rapide. Tous les nouveaux ensembles de données seront automatiquement codés par région à l'aide de cette frontière Spatial Lens."
+        delete: Effacer
+        description: Configurez les frontières personnalisées qui peuvent être utilisées pour créer des cartes Spatial Lens.
+        disable: Désactiver
+        disable_default_label: Cette frontière doit être activée avant de pouvoir activer Ajout rapide.
+        disable_label: Désactiver la frontière
+        disable_success: "%{name}  a été désactivé et ne sera plus disponible pour la création de cartes choroplèthes en données Lens utilisant cette frontière de Spatial Lens."
+        edit: Modifier
+        edit_label: 'Modifier la frontière '
+        enable: Activer
+        enable_label: Activer la frontière
+        enable_success: '%{name} a été activé. Vous pouvez maintenant créer des cartes choroplèthes en données Lens en utilisant cette frontière Spatial Lens.<a href="https://support.socrata.com/hc/en-us/articles/212862177"> En savoir plus</a>  sur l''utilisation de Spatial  Lens pour créer des cartes.'
+        enabled?: Activé ?
         flashes:
-          add_georegion_error:
-          service_unavailable_html:
-        learn_more:
-        page_subtitle:
-        page_title:
-        picker_explanation:
-        picker_explanation_html:
-        picker_support_html:
-        region_name:
-        remove:
-        status_disabled:
-        status_enabled:
-        status_failed:
-        status_progress:
-        substatus_failed_html:
-        substatus_progress:
-        title:
-        undefault:
-        undefault_success:
+          add_georegion_error: <div>%{error_message}</div><div><a href="https://support.socrata.com/hc/en-us/articles/212862177">En savoir davantage</a></div>
+          service_unavailable_html: <p> Nous éprouvons des difficultés techniques avec certains services liés à Spatial Lens.</p><p> Veuillez contacter <a href="https://support.socrata.com">le service d'assistance de Socrata</a> si ce problème persiste.</p>
+        learn_more: En savoir plus sur comment <a href="https://support.socrata.com/hc/en-us/articles/212862177">gérer votre Spatial Lens sur votre domaine</a>
+        page_subtitle: Vous avez défini %{default_count} des %{available_count} frontières disponibles comme des frontières  encodées automatiquement.
+        page_title: Gérer Spatial Lens
+        picker_explanation: Choisissez une couche géospatiale que vous souhaitez utiliser comme base pour votre Spatial Lens.Vous pouvez cliquer sur le nom pour afficher un aperçu de la couche dans un nouvel onglet du navigateur.
+        picker_explanation_html: "<p>Choisissez une couche géospatiale que vous souhaitez utiliser comme base pour votre Spatial Lens.</p><p> Vous pouvez cliquer sur le nom pour afficher un aperçu de la couche dans un nouvel onglet du navigateur.</p>"
+        picker_support_html: Vous ne trouvez pas ce que vous cherchez ? Consultez l'article <a href="https://support.socrata.com/hc/en-us/articles/217039278">Trouver un ensemble de données pour votre  Spatial Lens</a> pour en savoir plus.
+        region_name: Nom de la frontière
+        remove: Retirer
+        status_disabled: Non activé
+        status_enabled: Prêt à l'emploi
+        status_failed: Quelque-chose s'est mal passé...
+        status_progress: Traitement en cours
+        substatus_failed_html: Veuillez contacter <a href="https://support.socrata.com">le service d'assistance de Socrata</a> et y inclure le code<strong>%{code}</strong>.
+        substatus_progress: Disponible prochainement
+        title: Spatial Lens
+        undefault: Désactiver Ajout rapide pour les frontières
+        undefault_success: Ajout rapide a été désactivé pour %{name}.  De nouveaux ensembles de données utilisant cette frontière de Spatial Lens ne seront plus automatiquement codés par région.
       home:
         add_featured_dataset: Ajouter un nouveau Set de Données à Présenter
         are_you_sure: En êtes-vous certain ? Cette action est irréversible.
@@ -2207,338 +2290,355 @@ fr:
         title: Gérer Page d'Accueil
         up: En haut
       index:
-        comment_moderation:
-        comment_moderation_description:
-        connectors:
-        connectors_description:
-        dataset_routing_and_approval:
-        dataset_routing_and_approval_description:
-        datasets:
-        datasets_description:
-        dataslate_pages:
-        dataslate_pages_description:
-        federation:
-        federation_description:
-        georegions:
-        georegions_description:
-        home_page:
-        home_page_description:
-        internal:
-        internal_description:
-        jobs:
-        jobs_description:
-        metadata:
-        metadata_description:
-        sdp_templates:
-        sdp_templates_description:
-        site_analytics:
-        site_analytics_description:
-        site_chrome:
-        site_chrome_description:
-        stories:
-        stories_description:
-        users:
-        users_description:
-        view_moderation:
-        view_moderation_description:
+        comment_moderation: |
+          Modération des commentaires
+        comment_moderation_description: Examinez et modérez les commentaires pour les ensembles de données de votre site
+        connectors: Connecteurs
+        connectors_description: Enregistrer un connecteur pour créer en vrac des ensembles de données connectés et les gérer.
+        dataset_routing_and_approval: Routage et approbation des ensembles de données
+        dataset_routing_and_approval_description: Examinez les ensembles de données qui sont  au stade du processus d'approbation et gérez-en les étapes
+        datasets: Inventaire des actifs
+        datasets_description: Listez les actifs sur ce domaine et configurez la Page des ensembles de données
+        dataslate_pages: 'Pages DataSlate '
+        dataslate_pages_description: Listez et gérez les pages de DataSlate sur ce domaine
+        federation: Fédération
+        federation_description: Gérez les connexions et le partage des données avec d'autres sites via les services de la Fédérations des données ouvertes (Open Data Federation Services)
+        georegions: Spatial Lens
+        georegions_description: Configurez les frontières personnalisées qui peuvent être utilisées pour créer des cartes Spatial Lens
+        home_page: Page d'accueil
+        home_page_description: Configurez la présentattion de ce contenu sur la page d'accueil
+        internal: Interne
+        internal_description: Modifier et ajouter des modules, des sites, etc.
+        jobs: Jobs
+        jobs_description: |
+          Afficher tous les jobs à traitement de longue durée actuels et récents en cours d'exécution sur votre plate-forme
+        metadata: Métadonnées
+        metadata_description: Gérer les champs des ensembles  de métadonnées, y compris les catégories et les champs personnalisés
+        sdp_templates: Modèles SDP
+        sdp_templates_description: Gérer et personnaliser les modèles utilisés pour la publication de vos données via les Socrata Data Players
+        site_analytics: Données analytiques du site
+        site_analytics_description: Afficher les statistiques au niveau du site pour les ensembles de données, les vues, les visiteurs, etc.
+        site_chrome: 'Apparence du site '
+        site_chrome_description: Configurer l'apparence de votre site Socrata
+        stories: Histoires
+        stories_description: Modifier les thèmes personnalisés de l'histoire
+        users: Utilisateurs
+        users_description: Gérer les utilisateurs sur votre site ainsi que leurs autorisations et leurs capacités
+        view_moderation: Afficher la modération
+        view_moderation_description: Afficher et gérer des vues créées par l'utilisateur, y compris des filtres, des graphiques et des cartes. Autoriser une vue pour qu'elle apparaisse sur votre catalogue de données.
       jobs:
         actions:
-          geocoding:
-          import:
-          replace:
-          upsert:
-          working_copy:
+          geocoding: Géocodage
+          import: Importer
+          replace: Remplacer
+          upsert: Upsert
+          working_copy: Copie de travail
         filters:
-          all:
-          append:
-          apply_filters:
-          data_workflow:
-          delete:
-          filter_by:
-          import:
-          import_activity:
-          publish:
-          replace:
-          restore:
-          type:
-          upsert:
-          working_copy:
+          all: Tout
+          append: Ajouter
+          apply_filters: Aller
+          data_workflow: 'Données du flux de travail '
+          delete: Effacer
+          filter_by: Filtrer par
+          import: Importer
+          import_activity: Importer une activité
+          publish: Publier
+          replace: Remplacer
+          restore: Restaurer
+          type: Type
+          upsert: Upsert
+          working_copy: Copie de travail
         index_page:
-          action:
-          dataset:
-          deleted:
-          deleted_dataset:
-          deleted_user:
-          export_as_csv:
-          initiated_by:
-          no_jobs:
-          page_title:
+          action: Type
+          dataset: Ensemble de données
+          deleted: Supprimé
+          deleted_dataset: Ensemble de données supprimé
+          deleted_user: L'utilisateur a été supprimé
+          export_as_csv: Exporter en tant que CSV
+          initiated_by: Initié par
+          no_jobs: Aucun job à afficher
+          page_title: Jobs sur les données
           restore_deleted_dataset:
-          restore_deleted_dataset_confirm:
-          showing_all_so_far:
-          showing_most_recent:
-          started:
-          status:
-          title:
-          to_working_copy:
-          with_problems:
+            button: Restaurer
+            confirm: Souhaitez-vous vraiment restaurer l'ensemble de données %{dataset} ?
+            disabled_restore_explanation: Restaurer est disponible uniquement pour certains types d'ensembles de données pour un temps limité. Pour plus d'informations, veuillez contacter le service d'assistance.
+            disabled_restore_time: 
+            disabled_restore_type: 
+          restore_deleted_dataset_confirm: Souhaitez-vous vraiment restaurer l'ensemble de données %{dataset} ?
+          showing_all_so_far: Affichage de tous les jobs qui ont été enregistrés à ce jour
+          showing_most_recent: Affichage des %{limit} plus récents jobs
+          started: A débuté
+          status: Statut
+          title: Jobs sur les données
+          to_working_copy: "à la copie de travail"
+          with_problems: avec des problèmes
         show_page:
-          back:
-          error_details_heading:
+          back: Retour à la liste des jobs
+          error_details_heading: Détails de l'erreur
           event_messages:
             failure:
               bad_response_from_server:
-                description:
-                title:
+                description: Nous n'avons pas pu importer vos données en raison d'une erreur inattendue. Veuillez réessayer plus tard.
+                title: Quelque-chose s'est mal passé
               bad_timestamp_format:
-                description:
-                title:
+                description: La valeur de la date "%{pattern}"  a été formatée d'une manière que nous ne pouvons pas interpréter. Veuillez revérifier que toutes les dates que vous importez sont conformes aux <a href="https://en.wikipedia.org/wiki/ISO_8601"href="https://en.wikipedia.org/wiki/ISO_8601">normes ISO-8601</a>.
+                title: Valeur incorrecte de la date / du temps
               bad_timezone:
-                description:
-                title:
+                description: Le fuseau horaire "%{name}" fourni est incorrect. Veuillez revérifier que toutes les dates que vous importez sont conformes aux <a href="https://en.wikipedia.org/wiki/ISO_8601">normes ISO-8601</a>.
+                title: Fuseau horaire incorrect
               completed_with_warnings:
-                description:
-                title:
+                description: 'Vos données ont été importées avec des avertissements, mais une erreur s''est produite lors de leur sauvegarde dans l''ensemble de données. Vous pouvez cependant, trouver ici une liste complète des avertissements : %{warnings}'
+                title: 'Erreur lors de la sauvegarde des avertissements '
               control_file_invalid_json:
-                description:
-                title:
+                description: 'Votre fichier de contrôle n''a pas été interprétable en tant que fichier JSON. Message d''erreur : "%{message}". Veuillez vérifier que ce  fichier  a un format JSON valide.'
+                title: Fichier de contrôle malformé
               control_file_malformed:
-                description:
-                title:
+                description: |
+                  Votre fichier de contrôle avait un format JSON valide, mais il ne correspond pas au format que nous attendons. Veuillez vous assurer que votre fichier de contrôle correspond à <a href="https://socrata.github.io/datasync/resources/control-config.html">cette spécification</a>.
+                title: Fichier de contrôle malformé
               control_file_too_large:
-                description:
-                title:
+                description: Votre fichier de contrôle était trop grand.Veuillez en  réduire la taille à %{limit} caractères ou moins et réessayez.
+                title: Fichier de contrôle trop grand
               corrupt_archive:
-                description:
-                title:
+                description: 'Nous n''avons pas pu traiter l''archive que vous avez importée. Message d''erreur : %{reason}'
+                title: Archive corrompue
               corrupt_gzip:
-                description:
-                title:
+                description: 'L''extraction du fichier compressé  selon GZip que vous avez fourni n''a pas été réussie. Message d''erreur : "%{message}". Veuillez vérifier que le format GZip de ce fichier est valide.'
+                title: Impossible d'extraire le fichier compressé
               corrupt_shapefile:
-                description:
-                title:
+                description: L'en-tête du fichier de forme (shapefile) n´a pas pu être lue.
+                title: Fichier de forme (shapefile) corrompu
               corrupt_xz:
-                description:
-                title:
+                description: 'L’extraction du fichier compressé selon XZ que vous avez fourni n''a pas réussi. Message d''erreur : "%{message}". Veuillez vérifier que le format XZ de ce fichier est valide.'
+                title: Impossible d'extraire le fichier compressé
               delete_without_user_pk:
-                description:
-                title:
+                description: Nous ne pouvons traiter avec succès les opérations de suppression que si un champ d'identificateur de ligne est déclaré.
+                title: Impossible de supprimer sans identificateur de ligne
               di2_counts:
-                description:
-                title:
+                description: |
+                  Votre fichier d'importation l'a été, mais sur un total de %{rowCount} lignes nous avons été incapables de charger %{failCount} lignes dans votre ensemble de données. Si cela est inattendu, veuillez télécharger les lignes qui ont échouées situées à droite et vérifiez que vos valeurs correspondent  aux <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">formats Socrata attendus</a>. Vous pouvez ensuite réimporter seulement ces lignes.
+                title: Terminé
               duplicated_fields_in_input:
-                description:
-                title:
+                description: Le(s) nom(s) de champ %{fieldNames}  est/sont utilisé(s) plusieurs fois dans votre fichier de données. Veuillez vous assurer qu'il(s) est/sont unique(s).
+                title: Noms de champ en double spécifiés
               field_not_in_dataset:
-                description:
-                title:
+                description: Le(s) nom(s) de champ %{fieldNames}  n'a/ n'ont pas pu être trouvé(s) dans l'ensemble de données que vous essayez d'importer. Si vous avez l'intention d'importer cette colonne, Veuillez revérifier votre orthographe et réessayer.
+                title: Impossible de trouver le champ dans l'ensemble de données
               field_not_in_input:
-                description:
-                title:
+                description: La colonne que nous attendions (%{fieldNames}) n'a pas pu être trouvée dans le fichier de données que vous avez fourni, en outre, vous n'avez pas spécifié une colonne d'identificateur de ligne. Veuillez revérifier les colonnes fournies et réessayer.
+                title: |
+                  Impossible de trouver le champ dans le fichier
               field_wrong_format:
-                description:
-                title:
+                description: Le nom du champ "%{fieldName}" fourni dans votre fichier de données n'est pas vailide. Les noms de champs valides ne doivent contenir que des caractères ASCII et commencer par un tiret bas ou une lettre.
+                title: |
+                  Nom du champ donné invalide
               generic:
-                description:
-                title:
+                description: Désolé, nous avons été incapables de traiter votre demande d'importation en raison d'une erreur inattendue.
+                title: Quelque-chose s'est mal passé
               geocoding_failure:
-                description:
-                title:
+                description: Nous ne pouvions pas géocoder les données source fournies pour une raison inconnue. Veuillez réessayer plus tard et contacter <a href="https://support.socrata.com">le service d'assistance de Socrata</a> si le problème persiste.
+                title: Erreur de géocodage inconnue
               geocoding_source_ignored:
-                description:
-                title:
+                description: Les colonnes %{fieldNames.join(", ")} sont une partie de la source de géocodage alimentant  une colonne de points, nous n'avons donc pas pu les ignorer comme demandé.
+                title: Impossible d'ignorer les colonnes spécifiées
               geocoding_source_invalid_type:
-                description:
-                title:
+                description: |
+                  Nous n'avons pas pu utiliser les colonnes %{fieldNames} comme la source de géocodage des informations de localisation. Veuillez revérifier qu'il y a des colonnes de texte et numériques valides.
+                title: Impossible de géocoder à partir des colonnes données
               ignored_synthetic_location_column_inputs_in_nbe_dataset:
-                description:
-                title:
+                description: Les colonnes sont une partie de la source de géocodage alimentant une colonne d'emplacement, nous n'avons donc pas pu les ignorer comme demandé.
+                title: Impossible d'ignorer les colonnes spécifiées
               incomplete_archive:
-                description:
-                title:
+                description: Un fichier avec l’extension "%{missing}"  est absent dans l’archive fichier de forme (shapefile) que vous avez téléchargée. Veuillez vous assurer ce fichier existe dans votre archive et réessayer.
+                title: Archive fichier de forme (shapefile) incomplète
               invalid_encoding:
-                description:
-                title:
+                description: |
+                  Nous n'avons pas pu lire votre fichier car il a été codé avec %{encoding}, et nous ne prenons en charge qu'UTF-8. Pour de meilleurs résultats, veuillez vous assurer que votre fichier est un fichier UTF-8 valide.
+                title: Encodage de fichier invalide
               invalid_row_length:
-                description:
-                title:
+                description: 'La ligne  #%{record} dans votre fichier CSV contient %{actual} champs, alors que vos autres lignes contiennent %{expected} champs. Veuillez vous assurer que votre fichier a un nombre constant de champs par ligne.'
+                title: Nombre inattendu de champs dans la ligne
               malformed_blueprint:
-                description:
-                title:
+                description: 'Le plan que vous avez fourni ne peut pas être utilisé. Message d''erreur : "%{message}".'
+                title: Plan malformé
               malformed_upsert:
-                description:
-                title:
+                description: Votre charge utile upsert n'était pas analysable en tant que JSON, proche de l'enregistrement %{record}. Veuillez vérifier que le fichier a un format JSON valide.
+                title: Upsert malformé
               no_field_names_in_input:
-                description:
-                title:
+                description: La raison est due généralement lorsque le fichier CSV fourni est complètement vide. Veuillez vous assurer que votre fichier contient des données et réessayer.
+                title: Impossible de trouver l'en-tête CSV
               no_identity_column:
-                description:
-                title:
+                description: Cet ensemble de données a une colonne d'identificateur de ligne fournie "%{fieldName}"), mais nous n'avons pas pu la trouver dans le fichier de données que vous avez fourni. Veuillez vous assurer qu'elle existe et réessayer .
+                title: Colonne identifiante de ligne non trouvée
               parse_error:
-                description:
-                title:
+                description: L'interprétation du fichier que vous avez téléchargé a échoué sur la ligne %{lineNumber} avec le message "%{reason}".
+                title: Erreur d'analyse
               permission_denied:
-                description:
-                title:
+                description: |
+                  L'utilisateur (%{user}) qui a initié cette opération ne semble pas avoir les autorisations nécessaires pour l'exécuter. Veuillez vous assurer que vos autorisations ont été correctement définies et réessayez.
+                title: Permission refusée
               record_too_large:
-                description:
-                title:
+                description: Nous avons interrompu la lecture de votre fichier parce que nous avons trouvé un seul enregistrement qui était trop grand sur la ligne %{record} (il a dépassé la limite de %{limit}). Ceci est généralement dû à un format CSV incorrect  conduisant à ce que plusieurs lignes de données soient lues comme une seule cellule. Veuillez vérifier la validité de votre fichier.
+                title: Enregistrement unique trop grand
               row_too_large:
-                description:
-                title:
+                description: Ce numéro de ligne %{nearRecord} de votre fichier avait trop de caractères ; la limite est de %{limit}.
+                title: Ligne trop grande
               synthetic_location_in_input:
-                description:
-                title:
+                description: Une colonne (%{fieldNames}) a été trouvée dans votre fichier de données correspondant à une colonne synthétique sur cet ensemble de données. Les colonnes synthétiques sont calculées automatiquement et ne peuvent pas être importées manuellement.
+                title: Vous ne pouvez pas importer dans une colonne synthétique
               too_many_errors_in_input:
-                description:
-                title:
+                description: Le job en cours a été interrompu parce que trop d'erreurs ont été trouvées dans vos données d'entrée.
+                title: Trop d'erreurs d'entrée trouvées
               too_many_records_in_input:
-                description:
-                title:
+                description: |
+                  Votre fichier de données a dépassé le nombre maximum d'enregistrements que nous pouvons importer en même temps (vous avez %{recordCount} ; le nombre maximal est de %{maxRecordCount}). Veuillez réduire le nombre d'enregistrements par fichier et réessayer.
+                title: Trop d'enregistrements
               uninterpretable_value:
-                description:
-                title:
+                description: La valeur "%{value}" dans la ligne %{record}, la colonne "%{column}"  ne peut pas être lue en tant que %{expectedType}. Veuillez vous assurer que toutes les valeurs sont formatées correctement pour leurs colonnes cibles.
+                title: Valeur ininterprétable de l'enregistrement
               unknown_domain:
-                description:
-                title:
+                description: Nous ne reconnaissons pas le domaine cible (%{domain}) fourni de votre job. Veuillez vous assurer  que c'est un domaine cible Socrata valide et réessayez.
+                title: Domaine non reconnu
               unknown_file_type:
-                description:
-                title:
+                description: 'Nous ne reconnaissons pas le type de fichier que vous nous avez fourni (extension : %{extension}). Veuillez vous assurer que vous utilisez un type de fichier pris en charge et valide.'
+                title: Type de fichier inconnu
               unsupported_import_type:
-                description:
-                title:
+                description: La méthode d'importation "%{importType}" n'est pas prise en charge. Veuillez utiliser « remplacer », « ajouter » ou « importer ».
+                title: Cette méthode d'importation n'est pas prise en charge
               upsert_already_in_progress_by_someone_else:
-                description:
-                title:
+                description: Deux opération upserts ne peuvent être exécutées simultanément sur un ensemble de données, en outre, quelqu'un d'autre est déjà au milieu d'une opération upsert.
+                title: Upsert déjà en cours
               upsert_counts:
-                description:
-                title:
+                description: Votre fichier d'importation a été importé, mais sur un total de %{rowCount} lignes nous avons été incapables de charger %{failCount} lignes dans votre ensemble de données. Veuillez  vérifier que vos valeurs correspondent aux <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">formats attendus de Socrata</a>.
+                title: Terminé
             success_with_data_errors:
               di2_counts:
-                description:
-                title:
+                description: 'Votre fichier d''importation a été importé, mais sur un total de %{rowCount} lignes nous avons été incapables de charger %{failCount} lignes dans votre ensemble de données. Si cela est inattendu, veuillez télécharger les lignes qui ont échoué situées à droite, et vérifiez que vos valeurs correspondent aux <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">formats attendus de Socrata </a>. Vous pourrez ensuite réimporter seulement ces lignes. '
+                title: Terminé
               upsert_counts:
-                description:
-                title:
-          failed_rows:
-          fallback_event_title:
-          file_name_unknown:
-          import:
+                description: Votre fichier d'importation a été importé, mais sur un total de %{rowCount} lignes nous avons été incapables de charger %{failCount} lignes dans votre ensemble de données. Veuillez  vérifier que vos valeurs correspondent aux <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">formats attendus de Socrata</a>.
+                title: Terminé
+          failed_rows: Lignes qui ont échouées
+          fallback_event_title: 'Erreur : %{error_code}'
+          file_name_unknown: Nom de fichier inconnu
+          import: Importer
           import_failures:
             bad_timestamp_format:
-              description:
-              title:
+              description: La valeur de la date  "%{pattern}" a été formatée d'une manière que nous ne comprenons pas. Veuillez revérifier que toutes les dates que vous importez sont conformes aux <a href="https://en.wikipedia.org/wiki/ISO_8601">normes ISO-8601</a>.
+              title: Valeur incorrecte de la date / du temps
             bad_timezone:
-              description:
-              title:
+              description: Nous ne comprenons pas le fuseau horaire "%{name}".  Veuillez revérifier que toutes les dates que vous importez sont conformes aux  <a href="https://en.wikipedia.org/wiki/ISO_8601">normes ISO-8601</a>.
+              title: Fuseau horaire incorect
             control_file_invalid_json:
-              description:
-              title:
+              description: |
+                Votre fichier de contrôle n'a pas été analysable en tant que format JSON. Message d'erreur : "%{message}". Veuillez vérifier que le fichier a un format JSON valide.
+              title: Fichier de contrôle malformé
             control_file_malformed:
-              description:
-              title:
+              description: Votre fichier de contrôle a un format JSON valide, mais il ne correspond pas au format que nous attendions. Veuillez vous assurer  que votre fichier de contrôle correspond à <a href="https://socrata.github.io/datasync/resources/control-config.html">cette spécification</a>.
+              title: Fichier de contrôle malformé
             control_file_too_large:
-              description:
-              title:
+              description: Votre fichier de contrôle était trop grand. Veuillez réduire sa taille à %{limit} caractères ou moins et réessayer.
+              title: " Fichier de contrôle trop grand"
             corrupt_gzip:
-              description:
-              title:
+              description: 'L’extraction du fichier compressé selon GZip que vous avez fourni n''a pas réussi. Message d''erreur : "%{message}". Veuillez vérifier que le format GZip de ce fichier est valide.'
+              title: Impossible d'extraire le fichier compressé
             corrupt_xz:
-              description:
-              title:
+              description: 'L’extraction du fichier compressé selon XZ que vous avez fourni n''a pas réussi. Message d''erreur : "%{message}". Veuillez vérifier que le format XZ de ce fichier est valide.'
+              title: Impossible d'extraire le fichier compressé
             delete_without_user_pk:
-              description:
-              title:
+              description: |
+                Nous ne pouvons traiter avec succès les opérations de suppression que si un champ d'identificateur de ligne est indiqué.
+              title: impossible de supprimer sans identificateur de ligne
             duplicated_fields_in_input:
-              description:
-              title:
+              description: Le(s) nom(s) de champ %{fieldNames} est/sont utilisé(s) plusieurs fois dans votre fichier de données. Veuillez vous assurer que les noms de champ sont uniques.
+              title: " Noms en double de champ définis"
             field_not_in_dataset:
-              description:
-              title:
+              description: Le(s) nom(s) de champ %{fieldNames}  n'a/ont pas été trouvé(s) dans l'ensemble de données que vous essayez d'importer. Si vous avez l'intention d'importer cette colonne, veuillez vérifier l'orthographe et réessayer.
+              title: Impossible de trouver le champ dans l'ensemble de données
             field_not_in_input:
-              description:
-              title:
+              description: La colonne (%{fieldNames}) que nous attendions  n'a pas été trouvée dans le fichier de données que vous avez fourni, en outre, vous n'avez pas spécifié une colonne d'identificateur de ligne. Veuillez revérifier les colonnes fournies et réessayer.
+              title: Impossible de trouver le champ dans le fichier
             field_wrong_format:
-              description:
-              title:
+              description: Le nom du champ "%{fieldName}" fourni dans votre fichier de données n'est pas valide. Les noms de champs valides ne doivent contenir que des caractères ascii et commencer par un tiret bas ou par une lettre.
+              title: 'Nom du champ donné invalide '
             geocoding_failure:
-              description:
-              title:
+              description: Nous ne pouvions pas géocoder les données de la source fournie pour une raison inconnue. Veuillez réessayer  plus tard, et contactez le <a href="https://support.socrata.com">service d'assistance de Socrata</a>si le problème persiste.
+              title: Erreur de géocodage Inconnue
             geocoding_source_ignored:
-              description:
-              title:
+              description: Les colonnes %{fieldNames.join(", ")} sont une partie de la source de géocodage alimentant une colonne de points, nous ne pouvions donc pas les ignorer comme demandé.
+              title: Impossible d'ignorer les colonnes spécifiées
             geocoding_source_invalid_type:
-              description:
-              title:
+              description: 'Nous n''avons pas pu utiliser les colonnes %{fieldNames} comme source de géocodage des informations de localisation.Veuillez revérifier que les colonnes numériques ou de texte sont valides, '
+              title: Impossible de géocoder à partir des colonnes données
             ignored_synthetic_location_column_inputs_in_nbe_dataset:
-              description:
-              title:
+              description: Les colonnes sont une partie de la source de géocodage alimentant une colonne de points, nous ne pouvions donc pas les ignorer comme demandé.
+              title: Impossible d'ignorer les colonnes spécifiées
             invalid_encoding:
-              description:
-              title:
+              description: Nous ne pouvions pas lire votre fichier car il a été codé avec %{encoding}, et nous ne prenons en charge qu'UTF-8. Pour de meilleurs résultats, veillez vous assurer que votre fichier est un fichier UTF-8 valide.
+              title: Encodage de fichier non valide
             invalid_row_length:
-              description:
-              title:
+              description: 'La ligne #%{record} dans votre fichier CSV contient %{actual} champs, alors que vos autres lignes contiennent %{expected} champs. Veuillez vous assurer que votre fichier a un nombre constant de champs par ligne.'
+              title: Nombre inattendu de champs dans la ligne
             malformed_upsert:
-              description:
-              title:
+              description: Votre charge utile upsert  n'était pas analysable en tant que JSON, proche de l'enregistrement %{record}. Veuillez vérifier que le format est un format JSON valide.
+              title: Upsert malformé
             no_field_names_in_input:
-              description:
-              title:
+              description: La raison est due habituellement, lorsque le fichier CSV que nous avons reçu est complètement vide. Veuilez vous assurer que votre fichier contient des données, et réessayez.
+              title: Impossible de trouver l'en-tête CSV
             no_identity_column:
-              description:
-              title:
+              description: Cette ensemble de données a une colonne d'identificateur de ligne fournie ("%{fieldName}"), mais nous n'avons pas pu la trouver dans le fichier de données fourni. Veuillez vous assurer qu'elle existe et réessayez.
+              title: Colonne identifiant de ligne non trouvée
             permission_denied:
-              description:
-              title:
+              description: L'utilisateur (%{user}) qui a initié cette opération ne semble pas avoir les autorisations nécessaires pour l'exécuter. Veuillez vous assurer que vos autorisations ont été correctement définies, et réessayez.
+              title: Permission refusée
             record_too_large:
-              description:
-              title:
+              description: Nous avons interrompu la lecture de votre fichier parce que nous avons trouvé un seul enregistrement trop grand sur la ligne %{record} (il a dépassé la limite de %{limit}). Ceci est généralement dû à un  format CSV incorrect conduisant à la lecture  des données de plusieurs lignes dans une seule cellule. Veuillez vérifier que votre fichier est valide.
+              title: Enregistrement unique trop grand
             synthetic_location_in_input:
-              description:
-              title:
+              description: La  colonne (%{fieldNames}) a été trouvée dans votre fichier de données correspondant à une colonne synthétique sur cet ensemble de données. Les colonnes synthétiques sont calculées automatiquement et ne peuvent pas être importés manuellement.
+              title: Vous ne pouvez pas importer dans une colonne synthétique
             too_many_errors_in_input:
-              description:
-              title:
+              description: Le job en cours a été interrompu parce que trop d'erreurs ont été trouvées dans vos données d'entrée.
+              title: Trop d'erreurs d'entrée ont été trouvées
             too_many_records_in_input:
-              description:
-              title:
+              description: Votre fichier de données à dépassé le nombre maximum d'enregistrements que nous pouvons importer en même temps (vous avez %{recordCount} ; le nombre maximal est de %{maxRecordCount}). Veuillez réduire le nombre d'enregistrements par fichier et réessayer.
+              title: Trop d'enregistrements
             uninterpretable_value:
-              description:
-              title:
+              description: La valeur "%{value}" dans la ligne %{record}, la colonne "%{column}" ne peut pas être lue en tant que %{expectedType}. Veuillez vous asssurer que toutes les valeurs sont formatées correctement pour leurs colonnes cibles.
+              title: Valeur de l'enregistrement ininterprétable
             unknown_domain:
-              description:
-              title:
+              description: Nous ne reconnaissons pas le domaine cible fourni de votre job  (%{domain}). Veuillez vous assurer que ce domaine est un domaine cible Socrata valide, et réessayez.
+              title: Domaine non reconnu
             unknown_file_type:
-              description:
-              title:
+              description: 'Nous ne reconnaissons pas le type de fichier que vous nous avez fourni (extension : %{extension}). Veuillez vous assurer que vous utilisez un type de fichier pris en charge et valide.'
+              title: Type de fichier inconnu
             upsert_already_in_progress_by_someone_else:
-              description:
-              title:
-          import_method:
-          initiated_at:
-          no_events:
-          page_title:
+              description: Deux  opérations upserts ne peuvent être exécutées simultanément sur un ensemble de données, en outre, quelqu'un d'autre est déjà en cours de traitement d'une opération upsert.
+              title: Upsert est déjà en cours
+          import_method: Méthode d'importation
+          initiated_at: Initié à
+          no_events: Aucun progrès n'a encore été enregistré pour ce job.
+          page_title: Détail des données du job
           services:
-            DeltaImporter2:
-            Imports2:
-            ResourcesAPI:
-          started_by:
-          title:
-          to:
+            DeltaImporter2: DataSync
+            Imports2: Interface Web
+            ResourcesAPI: a href="https://dev.socrata.com/publishers/upsert.html">Ressources API</a>
+          started_by: Commencé par
+          title: Détail des données du job
+          to: "à"
         statuses:
-          failure:
-          in_progress:
-          not_started:
-          success:
-          success_with_data_errors:
+          failure: "Échoué"
+          in_progress: en cours
+          not_started: Pas encore commencé
+          success: Terminé
+          success_with_data_errors: Terminé, avec des problèmes
       metadata:
         add_new_category: Ajouter Nouvelle Catégorie
         add_new_field: Ajouter Nouveau Champ
         allowed_values: Valeurs Autorisées
         are_you_sure: "Êtes-vous certain de vouloir supprimer ce set de champs et tous les champs qui y sont associés ?"
         category_name: Nom de Catégorie
-        category_table_description:
+        category_table_description: Catégories de métadonnées
         create: Créer
         create_new_fieldset: Créer un Nouveau Set de Champs
         define_categories: Définir Catégories de Set de Données
@@ -2549,6 +2649,12 @@ fr:
         field_name: Nom de Champ
         flashes:
           cannot_move_field: 'Ne peut pas déplacer le champ appelé''%{name}'': pas trouvé'
+          category_cannot_be_blank: Veuillez saisir un nom pour créer une nouvelle catégorie.
+          category_must_be_unique: Impossible de créer la catégorie double nommée '%{new_category}'
+          could_not_delete_category: Impossible de supprimer la catégorie nommée '%{category_name}'
+          could_not_update_category: Impossible de mettre à jour la catégorie nommée '%{category_name}'
+          created_category: Catégorie créée avec succès.
+          deleted_category: Catégorie supprimée avec succès
           field_duplicated: Vous ne pouvez pas créer un champ dupliqué appelé '%{name}'
           field_name_required: Ne peut pas créer de champ sans un nom
           field_successful_create: Champ Créé avec Succès
@@ -2556,10 +2662,12 @@ fr:
           field_successful_save: Champ sauvegardé avec succès
           fieldset_duplicated: Ne peut pas créer un ensemble de champ dupliqué appelé '%{name}'
           fieldset_name_required: Ne peut pas créer un ensemble de champ sans un nom
+          must_select_category_to_delete: Veuillez sélectionner une catégorie pour la supprimer de la liste
           no_such_field: Aucun champ de ce genre n'existe
           no_such_fieldset: Aucun ensemble de champ de ce genre n'existe
           successful_create: Ensemble de Champ Créé avec Succès
           successful_remove: Ensemble de Champ Supprimé avec Succès
+          updated_category: Catégorie mise à jour avec succès.
         locales: Emplacements
         make_optional: Rendre Optionnel
         make_private: Rendre Privé
@@ -2568,7 +2676,7 @@ fr:
         metadata_explain1: Les métadonnées personnalisées sont séparées en <span class="code">sets de champs</span> et <span class="code">champs</span>. Un <span class="code">set de champ</span> est une façon de grouper logiquement et visuellement un ou plusieurs <span class="code">champs</span> personnalisés ensemble.
         metadata_explain2: Les champs peuvent être configurés de multiples façons. Ils peuvent être span class="code">requis</span>, ce qui sera appliqué lorsque les éditeurs créent de nouveaux sets de données et mettent à jour des métadonnées existantes. Ils peuvent aussi être <span class="code">privés</span>, ce qui signifie que les valeurs entrées ne seront pas visibles par le public.
         metadata_explain3: Finalement, vous pouvez choisir de prédéfinir les options pour vos <span class="code">champs</span> si vous souhaitez avoir des valeurs choisies à partir d'une liste et non entrées sous forme de texte libre.
-        metadata_field_table_description:
+        metadata_field_table_description: Champs de métadonnées pour '%{name}'
         no_data: Aucun champ de sets de données personnalisés n'a encore été défini pour votre domaine. Entrer un nom ci-dessous et cliquer « Créer » pour commencer.
         no_fields_defined: Ce set de champ n'a pas encore de champs définis
         page_title: Gérer Métadonnées de Set de Données
@@ -2578,217 +2686,248 @@ fr:
         title: Gérer Métadonnées
         'true': true
         up: En haut
+      sdp:
+        cannot_delete_default_template: Impossible de supprimer le modèle par défaut. Veuillez d'abord en choisir un nouveau par défaut.
+        could_not_delete_template: 'Impossible de définir le modèle par défaut : modèle introuvable.'
+        could_not_find_template_customization: Cette personnalisation de modèle ne peut pas être trouvée.
+        could_not_set_default_template: 'Impossible de définir le modèle par défaut : modèle introuvable.'
+        error_on_creation: 'Une erreur est survenue lors de votre demande : ''%{error_message}'''
+        preview_could_not_be_found: Un ensemble de données à prévisualiser n'a pas pu être trouvé.
+        requires_published_dataset: Veuillez créer un ensemble de données que vous pourrez publier en premier.
+        template_name_cannot_be_blank: Le nom du modèle est nécessaire.
+        too_many_templates: Vous avez créé votre numéro attribué de modèles. Veuillez en supprimer un ou contacter le service d'assistance pour en acheter plus.
       site_chrome:
-        activate:
-        add_new_link_menu:
-        add_new_link_row:
-        cancel:
-        congratulations:
-        description:
-        link_menu_label_html:
-        move_link_row:
-        ok:
-        preview:
-        preview_changes:
-        remove_link_menu:
-        remove_link_row:
-        save:
-        save_changes:
-        see_both_features:
-        site_appearance:
+        activate: Activer
+        add_new_link_menu: Ajouter un menu
+        add_new_link_row: 'Ajouter un lien %{section} '
+        after_clicking_ok: Après avoir cliqué sur 'OK' ci-dessous, découvrez les deux fonctionnalités en action en visitant l'un de vos ensembles de données.
+        cancel: Annuler
+        congratulations: Félicitations !
+        description: Configurer l'apparence de votre site Socrata
+        get_excited: Soyez enthousiaste !
+        link_menu_label_html: "<b>Menu</b> - <i>Vous pouvez faire glisser des liens pour les réorganiser</i>"
+        move_link_row: Faites glisser pour réorganiser
+        ok: D'accord
+        preview: Aperçu
+        preview_changes: Aperçu des modifications
+        remove_link_menu: Supprimer le lien du Menu
+        remove_link_row: Supprimer le lien
+        save: Sauvegarder
+        save_changes: Sauvegarder les modifications
+        see_both_features: Découvrez les fonctionnalités en action en visitant l'un de vos ensembles de données.
+        site_appearance: Aspect du site
         tabs:
           footer:
             fields:
               copyright_notice:
-                description:
-                label:
-                title:
+                description: Choisissez d'afficher ou pas un avis de droit d'auteur dans le pied de page. L'avis sera automatiquement mis à jour pour l'année civile en cours.
+                label: Afficher un avis de droit d'auteur
+                title: 'Avis de droit d''auteur '
               copyright_notice_source:
-                description:
-                placeholder:
+                description: Le nom de votre organisation, de votre ville, de votre comté ou de votre État qui apparaît avec le droit d'auteur et l'année en cours.
+                placeholder: 'Source du droit d''auteur '
               footer_background_color:
-                description:
-                placeholder:
-                title:
+                description: |
+                  Couleur de fond du pied de page et couleur des liens et des textes affichés dans la zone de pied de page.
+                placeholder: "# 123456"
+                title: Couleur de fond du pied de page
               footer_display_name:
-                description:
-                placeholder:
-                title:
+                description: Ceci est le nom affiché dans la zone de pied de page et qui est en général défini comme le nom de votre organisation.
+                placeholder: 'Nom d''affichage du pied de page '
+                title: 'Nom d''affichage du pied de page '
               footer_logo:
-                description:
-                placeholder:
-                title:
+                description: Référence URL pour le logo du pied de page. La taille minimale recommandée est de 80 x 80 pixels.
+                placeholder: https://yoursite.gov/logos/footer_logo.png
+                title: 'Logo du pied de page '
+              footer_logo_alt:
+                description: 
+                placeholder: 
+                title: 
               footer_logo_height:
-                description:
-                error:
-                placeholder:
-                title:
+                description: Vous pouvez éventuellement définir la hauteur et la largeur de votre logo affiché dans le pied de page.
+                error: 'Veuillez saisir une valeur pour représenter la hauteur désirée de votre logo en unités CSS valides. Pixels, ems, et pourcentages sont pris en charge, p.ex. : 100 px'
+                placeholder: 80 px
+                title: 'Hauteur du logo de pied de page '
               footer_logo_width:
-                description:
-                error:
-                placeholder:
-                title:
+                description: Vous pouvez éventuellement définir la hauteur et la largeur de votre logo affiché dans le pied de page.
+                error: 'Veuillez saisir une valeur pour représenter la hauteur désirée de votre logo en unités CSS valides. Pixels, ems, et pourcentages sont pris en charge, p.ex. : 100 px'
+                placeholder: 80 px
+                title: Largeur du logo du pied de page
               footer_text_link_color:
-                placeholder:
-                title:
-              link_title_label:
-              link_title_placeholder:
+                placeholder: "#ffffff"
+                title: 'Couleur du texte et du lien du pied de page '
+              link_title_label: "Étiquette du lien "
+              link_title_placeholder: 'Texte du lien '
               menu_links:
-                description:
-                title:
-              menu_title_placeholder:
+                description: Vous pouvez afficher jusqu'à 15 liens dans le pied de page. Les liens seront affichés sur une seule ligne ou sur plusieurs lignes pour les mobiles et les petits écrans.
+                title: 'Liens de pied de page '
+              menu_title_placeholder: Menu texte
               powered_by:
-                description:
-                label:
-                title:
-              url_label:
-              url_placeholder:
-            title:
+                description: Affiche l'image de marque « Powered by Socrata » dans le pied de page et fournit également un lien vers socrata.com
+                label: Afficher l'image de marque Socrata dans le pied de page
+                title: Développé par Socrata
+              url_label: URL
+              url_placeholder: http://data.evergreen.gov
+            title: Pied de page
           general:
             fields:
               font_family:
-                description:
-                placeholder:
-                title:
+                description: Choisissez la police de caractères qui sera utilisée pour tout le texte dans l'en-tête et dans le pied de page.
+                placeholder: " Police de caractères"
+                title: " Police de caractères"
               google_analytics_token:
-                description:
-                error:
-                placeholder:
-                title:
+                description: Saisissez le jeton (pas l'intégralité du script) de votre code de suivi Google Analytics pour recueillir l'analyse de votre site.
+                error: 'Le jeton devrait correspondre au format : UA-XXXX-XXXX'
+                placeholder: UA-12345678-1
+                title: 'Jeton Google Analytics '
               max_width:
-                description:
-                placeholder:
-                title:
+                description: Saisissez la largeur maximale (en pixels) du contenu de votre en-tête et pied de page. Si cette largeur est laissée vide, elle prendra les dimensions de la fenêtre du navigateur du visiteur.
+                placeholder: 1 200 px
+                title: Largeur maximale
               show_signin_signout:
-                description:
-                show_profile:
-                show_signin_signout:
-                show_signup:
-                title:
+                description: Afficher ces options si votre site nécessite un profil utilisateur  / une connexion.
+                show_profile: Afficher un lien vers le profil après la connexion
+                show_signin_signout: Afficher Connexion / Déconnexion
+                show_signup: Afficher possibilité de créer un compte via la connexion
+                title: Connexion / Déconnexion
               template:
-                description:
-                description_html:
-                placeholder:
-                title:
+                description: Modifier l'apparence de l'en-tête en changeant le modèle. Les modèles pris en charge sont « Evergreen » (par défaut) et « Rally ».
+                description_html: Modifier l'apparence de l'en-tête en changeant le modèle. Les modèles pris en charge sont <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">« Evergreen » et « Rally »</a>.
+                placeholder: Sélectionnez un modèle
+                title: Modèle
               window_icon:
-                description:
-                placeholder:
-                title:
+                description: La référence URL de l'icône est affichée dans le champ de la fenêtre du navigateur, de l'onglet et de l'URL.
+                placeholder: https://yoursite.gov/logos/favicon.png
+                title: Fenêtre du navigateur ou icône de de l'onglet (favicon)
               window_title_display:
-                description:
-                placeholder:
-                title:
-            title:
+                description: Ceci est le nom affiché dans la fenêtre du navigateur ou dans le titre de l'onglet.
+                placeholder: Fenêtre de navigateur ou  affichage du titre de l'onglet
+                title: Fenêtre de navigateur ou  affichage du titre de l'onglet
+            title: Paramètres généraux
           header:
             fields:
               bar_background_color:
-                description:
-                placeholder:
-                title:
+                description: Couleurs primaires et secondaires du fond de la barre d'en-tête. La couleur secondaire est utilisée uniquement dans le modèle Rally pour la zone du menu. Utilisez des valeurs HEX pour la couleur ou « transparent ».
+                placeholder: "# 123456"
+                title: Couleur de fond (primaire) de la barre
               bar_secondary_background_color:
-                description:
-                placeholder:
-                title:
+                description: Couleurs primaires et secondaires du fond de la barre d'en-tête. La couleur secondaire est utilisée uniquement dans le modèle Rally pour la zone du menu. Utilisez des valeurs HEX pour la couleur ou « transparent ».
+                placeholder: "# 123456"
+                title: Couleur de fond (secondaire) de la barre
               bar_text_link_color:
-                description:
-                placeholder:
-                title:
+                description: Couleur du premier plan du texte et des liens qui sont situés au sommet de la barre d'en-tête.
+                placeholder: "# ffffff"
+                title: Couleur du texte de barre et du lien
               header_bar_logo:
-                description:
-                placeholder:
-                title:
+                description: Référence URL pour le logo d'en-tête du site. La taille minimale recommandée est de 80 x 80 pixels. Ce logo sera affiché dans une petite taille.
+                placeholder: https://yoursite.gov/logos/header_logo.png
+                title: " Logo d'en-tête de la barre"
+              header_bar_logo_alt:
+                description: 
+                placeholder: 
+                title: 
               header_display_name:
-                description:
-                placeholder:
-                title:
+                description: Nom affiché dans la barre de l'en-tête. Habituellement défini au nom de votre organisation.
+                placeholder: " Nom d'affichage de l'en-tête"
+                title: Nom d'affichage de l'en-tête
               header_logo_height:
-                description:
-                error:
-                placeholder:
-                title:
+                description: Vous pouvez éventuellement définir la hauteur et la largeur de votre logo affiché dans la barre d'en-tête.
+                error: 'Veuillez saisir une valeur pour représenter la hauteur désirée de votre logo en unités CSS valides. Pixels, ems et pourcentages sont pris en charge, par. ex. : 100 px'
+                placeholder: 80 px
+                title: Hauteur du logo de l'en-tête
               header_logo_width:
-                description:
-                error:
-                placeholder:
-                title:
-              link_title_label:
-              link_title_placeholder:
+                description: Vous pouvez éventuellement définir la hauteur et la largeur de votre logo affiché dans la barre de l'en-tête.
+                error: 'Veuillez saisir une valeur pour représenter la hauteur désirée de votre logo en unités CSS valides. Pixels, ems et pourcentages sont pris en charge, par. ex. : 100 px'
+                placeholder: 80 px
+                title: Largeur du logo de l'en-tête
+              link_title_label: "Étiquette du lien"
+              link_title_placeholder: Texte du lien
               menu_links:
-                description:
-                title:
-              menu_title_placeholder:
-              url_label:
-              url_placeholder:
-            title:
+                description: Afficher jusqu'à 15 liens ou menus avec des liens dans la barre de l'en-tête. Pour créer un menu déroulant, ajoutez d'abord un menu puis les étiquettes de liens et les URL qui lui sont associés. Les menus et autres liens seront placés dans une seule ligne dans l'en-tête. Si les étiquettes deviennent trop longues ou qu'un visiteur consulte votre site sur un petit appareil, les menus et les liens seront automatiquement regroupés en un seul menu.
+                title: Liens d'en-tête
+              menu_title_placeholder: Texte du menu
+              url_label: URL
+              url_placeholder: http://data.evergreen.gov
+            title: Barre d'en-tête
           homepage:
-            fields:
-            title:
+            fields: 
+            title: Page d'accueil
           social:
             fields:
               facebook_profile_link:
-                description:
-                placeholder:
-                title:
+                description: Ajoutez ici l'URL pour afficher un lien vers le profile Facebook de votre organisation dans l'en-tête et dans le pied de page.
+                placeholder: http://www.facebook.com/
+                title: 'Lien vers le profile Facebook '
               flickr_profile_link:
-                description:
-                placeholder:
-                title:
+                description: Ajoutez ici l'URL pour afficher un lien vers le profile Flickr de votre organisation dans l'en-tête et dans le pied de page.
+                placeholder: http://www.flickr.com/
+                title: Lien vers le profile Flickr
+              github_profile_link:
+                description: Ajoutez ici l'URL pour afficher un lien vers le profile GitHub de votre organisation dans l'en-tête et dans le pied de page.
+                placeholder: http://www.github.com/
+                title: Lien vers le profile Github
               google_plus_profile_link:
-                description:
-                placeholder:
-                title:
+                description: Ajoutez ici l'URL pour afficher un lien vers le profile Google Plus de votre organisation dans l'en-tête et le pied de page.
+                placeholder: http://www.plus.google.com/
+                title: Lien vers le profile Google Plus
               instagram_profile_link:
-                description:
-                placeholder:
-                title:
+                description: Ajoutez ici l'URL pour afficher un lien vers le profile Instagram de votre organisation dans l'en-tête et le pied de page.
+                placeholder: http://www.instagram.com/
+                title: Lien vers le profile Instagram
               linked_in_profile_link:
-                description:
-                placeholder:
-                title:
+                description: Ajoutez ici l'URL pour afficher un lien vers le profile Linkedln de votre organisation dans l'en-tête et le pied de page.
+                placeholder: http://www.linkedin.com/
+                title: Lien vers le profile Linkedln
               pinterest_profile_link:
-                description:
-                placeholder:
-                title:
+                description: Ajoutez ici l'URL pour afficher un lien vers le profile Pinterest de votre organisation dans l'en-tête et le pied de page.
+                placeholder: http://www.pinterest.com/
+                title: Lien vers le profile Pinterest
               tumblr_profile_link:
-                description:
-                placeholder:
-                title:
+                description: Ajoutez ici l'URL pour afficher un lien vers le profile Tumblr de votre organisation dans l'en-tête et le pied de page.
+                placeholder: http://www.tumblr.com/
+                title: Lien vers le profile Tumblr
               twitter_profile_link:
-                description:
-                placeholder:
-                title:
+                description: Ajoutez ici l'URL pour afficher un lien vers le profile Twitter de votre organisation dans l'en-tête et le pied de page.
+                placeholder: http://www.twitter.com/
+                title: Lien vers le profile Twitter
               vimeo_profile_link:
-                description:
-                placeholder:
-                title:
+                description: Ajoutez ici l'URL pour afficher un lien vers le profile Vimeo de votre organisation dans l'en-tête et le pied de page.
+                placeholder: http://www.vimeo.com/
+                title: Lien vers le profile Vimeo
               yammer_profile_link:
-                description:
-                placeholder:
-                title:
+                description: Ajoutez ici l'URL pour afficher un lien vers le profileYammer de votre organisation dans l'en-tête et le pied de page.
+                placeholder: http://www.yammer.com/
+                title: Lien vers le profile Yammer
               youtube_profile_link:
-                description:
-                placeholder:
-                title:
-            title:
+                description: Ajoutez ici l'URL pour afficher un lien vers le profile You Tube de votre organisation dans l'en-tête et le pied de page.
+                placeholder: http://www.youtube.com/
+                title: Lien vers le profile You Tube
+            title: Partage social
           whats_new:
             fields:
               a_bundle_of_goodness:
-                description_html:
-                title:
+                description_html: "<p>L'attente est terminée : La page d'accueil de l'ensemble de données et votre en-tête et pied de page nouveaux et configurables sont prêts ! Lisez la suite pour en apprendre davantage sur ces améliorations et comment vous pouvez les activer, dès aujourd'hui.</p>"
+                title: 'Un pack de cadeaux : Deux nouvelles fonctionnalités sont maintenant disponibles '
               a_new_configurable_header_footer:
-                description_html:
-                title:
+                description_html: "<p>Dans le cadre de cette version, nous avons également introduit pour votre site une en-tête et un pied de page nouveaux, unifiés, adaptés au mobile et configurable par admin. Ces nouveaux pied de page et en-tête vous permettent de configurer les logos, les couleurs, les droits d'auteur, les liens de navigation, les icônes sociales, etc. sur votre propre site - selon votre propre style. Ils vous permettent de contrôler facilement l'apparence de votre site et de mettre à jour ces composants essentiels sans que vous ayez à contacter le service d'assistance de Socrata</p><p> En outre, En utilisant la conception de votre site actuel et le gestionnaire de satisfaction client comme guide, nous avons déjà préparé votre en-tête et votre pied de page pour les découvrir en avant-première. Cliquez sur le bouton « Aperçu » ci-dessus pour y jeter un œil, puis ajustez-les selon vos souhaits - il vous appartiennent.</p>"
+                title: Une en-tête et un pied de page nouveaux et configurables
               active_both_today:
-                description_html:
-                title:
+                description_html: '<p>La page d’accueil de votre ensemble de données et votre en-tête et pied de page nouveaux et configurables sont tous deux disponibles dès maintenant. Examinez les onglets ci-dessus pour configurer et visualiser l''aspect de votre site - et une fois que vous êtes prêt, activez-les ensemble ! </p> <p> <b> Remarque : </b> Si vous n''avez pas configuré l''en-tête et le pied de page pour votre site dans les 30 jours, Socrata les configurera pour vous et les activera automatiquement avec la page d’accueil de votre ensemble de données. Nous utiliserons votre style de site existant et votre Gestionnaire de satisfaction clients pour obtenir des conseils de style.</p><p>Pour obtenir des conseils sur la configuration de votre en-tête et/ou pied de page et activer la page d’accueil de votre ensemble de données, veuillez assister au webinaire <a href="https://event.on24.com/eventRegistration/EventLobbyServlet?target=reg20.jsp&referrer=&eventid=1223356&sessionid=1&key=9ED33D00A47ABC3419890552EBA81D93®Tag=&sourcepage=register" target="_blank"> « Tirer le meilleur parti des dernières fonctionnalités »</a> ou consultez notre site d’assistance : <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank"> https://support.socrata.com/hc/en-us / articles / 223723227</a>.</p>'
+                title: Activez tous les deux aujourd'hui !
               dataset_landing_page:
-                description_html:
-                title:
-            title:
-        these_features_help:
-        update:
-        you_have_activated:
-      update:
+                description_html: "<p>Soyez enthousiaste ! Avec cette mise à jour, la page d’accueil de l’ensemble de données devient l'expérience principale de première page pour les ensembles de données téléchargées – elle met en évidence les aspects les plus fréquemment consultés de chaque ensemble de données de façon intuitive et assure que vos utilisateurs de données puissent consulter les métadonnées avant d'agir. Les éditeurs et les administrateurs ont la liberté de « présentation » des vues et des visualisations associées, les utilisateurs sophistiqués peuvent explorer les métadonnées et les paramètres initiaux et tous les utilisateurs peuvent accéder aux données de la manière qu'ils désirent, que ce soit via des visualisations de données, des téléchargements de fichiers directs ou via l'API. Et bien sûr - la vue tabulaire classique des données est toujours accessible à partir de la barre de navigation supérieure de cette vue pour les utilisateurs qui préfèrent agir de cette façon. </p>"
+                title: 'Page d’accueil de l’ensemble de données '
+            title: Quoi de neuf
+        these_features: Ces caractéristiques vous donneront les moyens de mieux contrôler l'apparence de votre site et aidera les consommateurs de données à explorer vos données et même mieux qu'avant. Vos utilisateurs vont adorer !
+        these_features_help: Ces fonctionnalités aideront les utilisateurs à explorer vos données et vous permettront de gérer plus facilement l'apparence de votre site.
+        update: Mettre à jour
+        you_are_about: Vous êtes sur le point d'activer votre en-tête, pied de page et les pages d'accueil pour vos ensembles de données.
+        you_are_about_html: 
+        you_have_activated: Vous avez activé votre nouvel en-tête / pied de page et votre page d'accueil d'ensemble de données.
+      tos:
+        accepted: Merci d'avoir accepté les conditions de service.
+        must_agree: Vous devez accepter les conditions fournies pour continuer.
+      update: Mettre à jour
       users:
         actions: Actions
         all: Tout
@@ -2798,7 +2937,7 @@ fr:
         email_prompt: Entrer les adresses e-mail pour les comptes que vous souhaitez créer
         emails: E-mails
         error_permission_request: Il y a eu une erreur lors du traitement de votre demande d'autorisation
-        export_as_csv:
+        export_as_csv: Exporter en CSV
         filter_by: Filtrer par
         flashes:
           accounts_created:
@@ -2818,7 +2957,7 @@ fr:
         no_users_found: Aucun utilisateur existant n'a été trouvé
         no_users_match: Aucun utilisateur ne correspond à votre filtre actuel.
         pending_users: Les utilisateurs suivants possèdent des comptes en attente, mais ne les ont pas encore activés
-        pending_users_table_description:
+        pending_users_table_description: Utilisateurs en attente
         reenable_privileges: Réactiver Privilèges
         remove: Supprimer
         reset_password: Réinitialiser Mot de Passe
@@ -2828,19 +2967,21 @@ fr:
           administrator: administrateur
           designer: designer
           editor: rédacteur
-          editor_stories:
+          editor_stories: " rédacteur + perspectives"
           none: aucun
           publisher: "éditeur"
-          publisher_stories:
+          publisher_stories: "éditeur + perspectives"
           viewer: lecteur
         search: Rechercher
         search_for_users: Rechercher des Utilisateurs à Ajouter
         search_results: Rechercher des Résultats pour '%{term}'
         title: Gérer les Utilisateurs
         user_saved: Utilisateur a enregistré
-        users_table_description:
+        users_table_description: Utilisateurs
       view_moderation:
-        table_description:
+        could_not_find_view: Impossible de trouver une vue pour modifier le statut de modération
+        set_moderation_status: La vue '%{view_name}' a été %{moderation_status}. Veuillez patienter quelques minutes pour que les changements soient répercutés sur votre page d'accueil
+        table_description: Ensembles de données modérés
     dataset_edit:
       append: Apposer
       append_and_replace: Apposer et Remplacer les Données
@@ -2873,35 +3014,35 @@ fr:
         supported: Les fichiers pris en charge sont CSV, TSV, et Excel. Les protocoles pris en charge sont HTTP et HTTPS.
         url_prompt: Quel est l'URL Web du fichier que vous souhaiteriez importer ?
       errors:
-        archive_error:
-        corrupt_shapefile_error:
-        create_column_error:
-        create_dataset_error:
-        create_working_copy_error:
-        decode_filetype_error:
-        delete_column_error:
-        get_column_error:
-        incomplete_shapefile_error:
+        archive_error: 'Impossible d''ouvrir l''archive zip : {reason}'
+        corrupt_shapefile_error: 'Impossible de lire le fichier de forme : {reason}'
+        create_column_error: Impossible de créer un ensemble de données
+        create_dataset_error: Impossible de créer un ensemble de données
+        create_working_copy_error: Impossible de créer une copie de travail
+        decode_filetype_error: Aucun décodeur trouvé pour {kind}
+        delete_column_error: Impossible de supprimer une colonne de cet ensemble de données
+        get_column_error: Impossible d'obtenir une colonne de cet ensemble de données
+        incomplete_shapefile_error: 'Votre archive fichier de forme (shapefile) est incomplète. Il doit contenir un fichier .dbf, .shp et .prj pour chaque couche. Elle devrait contenir les fichiers suivants, qui ont été effectivement absents : {missing}.'
         insecure_esri_url: Une URL de couche cartographique ESRI non sécurisée a été ajoutée. De ce fait, certaines fonctionnalités ne fonctionneront pas pour cet ensemble de données.
-        invalid_arity_error:
+        invalid_arity_error: L'un des points de la ligne suivante n'avait pas 2 coordonnées {geom}
         invalid_crossload_url: Veuillez entrer un URL valide commençant par HTTP ou HTTPS.
         invalid_url: Cela ne semble pas être un URL valide.
-        jsonparse_error:
+        jsonparse_error: Impossible d'analyser JSON à la ligne {line}. la colonne {column}, le jeton {token} en raison de {reason}
         missing_data_provider: Vous devez indiquer le fournisseur de données (attribution) dans une licence de Creative Commons.
         missing_esri_url: Un URL de couche de carte ESRI valide est requis.
         missing_name: Le nom de set de données est requis.
         need_description: Veuillez décrire &ldquo;%{name}&rdquo;
         point:
-          missing_latlong:
-          suboptimal_column:
-        publication_error:
-        shapefile_header_error:
-        shapefile_row_error:
-        update_metadata_error:
-        upsert_error:
-        vertex_too_complex_error:
-        xmlparse_error:
-        zkerror:
+          missing_latlong: défini pour importer un <strong>%{coordinateType} mais pas une <strong> colonne %{missingCoordinateType}. Veuillez spécifier la  paire complète latitude/longitude.
+          suboptimal_column: défini pour importer son <strong>%{field}</strong> à partir de la colonne source <strong>%{originalColumnName}</strong>, mais notre analyse montre que la colonne source est une colonne %{suggestion}, tandis que le %{field} attend une colonne de type %{type}. Si vous choisissez de procéder avec ces paramètres d'importation, des erreurs d'importation ou de géocodage sont susceptibles de se produire.
+        publication_error: Impossible de publier cet ensemble de données
+        shapefile_header_error: 'Impossible de lire l''en-tête dans le fichier de forme : {reason}'
+        shapefile_row_error: 'Impossible de lire une ligne dans le fichier de forme : {reason}'
+        update_metadata_error: Impossible de mettre à jour les métadonnées sur l'ensemble de données parent
+        upsert_error: "Échec de la fonction upsert sur l'ensemble de données"
+        vertex_too_complex_error: Il y avait {counted} sommets dans la ligne {rowNum}, la valeur maximale est {maxVerticesPerRow}
+        xmlparse_error: Impossible d'analyser le noeud XML en raison de {reason} près de {path}
+        zkerror: 'Une erreur s''est produite en amont : {reason}'
       finish:
         headline: Votre Set de données a été créé.
         subheadline: Cliquer sur Terminer pour le voir !
@@ -2933,36 +3074,36 @@ fr:
         errors:
           multiple_columns:
             blank_names:
-              many_html:
-              one_html:
+              many_html: "<Strong>{instances}</strong> de vos colonnes n'ont pas de nom. Veuillez leur donner un nom."
+              one_html: "<Strong>Une</strong> de vos colonnes n'a pas de nom. Veuillez lui donner un nom."
             columns_named_tags:
-              many_html:
-              one_html:
-            duplicate_names:
+              many_html: "<strong>{instances}</strong> de vos colonnes sont nommées « tags ». Les colonnes ne peuvent pas être nommées « tags »."
+              one_html: "<strong>Une</strong> de vos colonnes est nommée « tags ». Les colonnes ne peuvent pas être nommées « tags »."
+            duplicate_names: "<strong>{instances}</strong> de vos colonnes sont nommées <strong>“{name}”</strong>. Les colonnes ne peuvent pas partager le même nom."
             source_columns_dropped:
-              many_html:
-              one_html:
+              many_html: Les colonnes {sourceColumns} sont dans votre fichier de données source, mais ne sont pas actuellement configurées pour être importées dans votre ensemble de données.
+              one_html: La colonne {sourceColumns} est dans votre fichier de données source, mais n'est pas actuellement configurée pour être importée dans votre ensemble de données.
           single_column:
-            empty_composite_col:
-            missing_lat_long:
-            non_text_composite_col:
-            type_too_generic:
-            wrong_type:
-            wrong_type_location:
-            wrong_type_unknown_count:
+            empty_composite_col: La colonne <strong>{resultColumnName}</strong> est une colonne composite qui sera créée à partir de plusieurs colonnes source, mais qui n'est pas  actuellement définie pour être peuplée par quoi que ce soit. Veuillez ajouter quelques colonnes source ou du texte.
+            missing_lat_long: La colonne "<strong>{resultColumnName}</strong>" est définie pour importer une colonne <strong>{coordinateType}</strong> et non pas une du type <strong>{missingCoordinateType}</strong>. Veuillez spécifier la paire complète lat/long.
+            non_text_composite_col: La colonne <strong>{resultColumnName}</strong> est une colonne composite qui sera créée à partir de plusieurs colonnes source, mais qui est actuellement définie pour importer <strong>{chosenType}</strong>. Veuillez vous assurer que la combinaison des colonnes que vous avez spécifiée vous fournira un  {chosenType} valide.
+            type_too_generic: La colonne <strong>{resultColumnName}</strong> est définie pour importer <strong>{chosenType}</strong>, mais notre analyse indique que la colonne est probablement une colonne de type <strong>{suggestedType}</strong>. Vous pouvez l'importer en tant que {chosenType}, mais vous perdrez dans ce cas certaines fonctionnalités. Nous vous recommandons vivement de l'importer en tant que <strong>{suggestedType}</ strong>.
+            wrong_type: La colonne <strong>{resultColumnName} </strong> est une <strong>{chosenType}</ strong>, mais notre analyse indique que la colonne source que vous essayez d'y importer est de type <strong>{suggestedType}</ strong>. Si vous choisissez d'importer cette colonne, environ <strong> {invalidPercent} %</strong> de vos données seront probablement importées incorrectement.
+            wrong_type_location: La colonne "<strong>{resultColumnName}</strong>" est définie pour importer son <strong>{field}</strong> à partir de la colonne source <strong>{chosenColumn}</strong>, mais notre analyse indique que la colonne source est une colonne {chosenType}, tandis que le {field} attend une colonne de type {suggestedType}. Si vous choisissez de procéder avec ces paramètres d'importation, des erreurs d'importation ou de géocodage sont susceptibles de se produire.
+            wrong_type_unknown_count: La colonne <strong>{resultColumnName}</strong> est définie pour importer en tant que <strong>{chosenType}</strong>, mais notre analyse indique que le type <strong>{suggestedType}</strong>pourrait mieux correspondre. Les données peuvent être importées de façon erronée à moins que les données de la colonne soient correctement formatées en tant que {chosenType}.
         errors_warnings: Erreurs et Avertissements
         fewer_rows: Moins de Rangées
         headers: En-têtes
         headers_instructions: Les en-têtes devraient être ignorées et pas importées en tant que données. Veuillez indiquer combien de rangées de votre fichier source sont des en-têtes.
         headline: Indiquer comment &ldquo;<span class="fileName"></span>&rdquo; devrait être importé.
-        headline_interpolate:
+        headline_interpolate: Spécifiez comment "{0}" doit être importé.
         help_message: Pour de l'aide, jetez un œil à <a href="%{common_errors}" rel="external">la liste des avertissements et erreurs fréquents</a>.
-        help_message_js:
+        help_message_js: Pour de l'aide, consultez une <a href="{common_errors}" rel="external">liste des avertissements et des erreurs courantes</a>.
         more_rows: Plus de Rangées
         name: Nom
         pending_columns: Veuillez attendre pendant que nous chargeons vos colonnes...
         reset_to_preset: Réinitialiser pour prédéfinir
-        restore_suggested_settings:
+        restore_suggested_settings: Restaurer les paramètres suggérés
         set: Définir
         source_column: Colonne Source
         subheadline: Colonnes à importer
@@ -2970,21 +3111,21 @@ fr:
         suggested_columns: Colonnes suggérées
         suggested_flat: Colonnes suggérées (pas de composites)
         suggested_plus_discrete: Colonnes suggérées (composites et discrètes)
-        upload_success:
+        upload_success: Votre fichier a été téléchargé avec succès et sauvegardé dans notre système. Continuez maintenant à créer votre ensemble de données  ou revenez plus tard pour le terminer.
         why_choose_now: Pourquoi est-il important de choisir les types de colonnes maintenant ?
       import_help: <strong>Besoin d'aide ?</strong> Nous avons une <a href="%{common_errors}" rel="external">liste des avertissements et erreurs les plus fréquents</a> qui pourrait vous aider.
       import_shapefile:
-        abbreviatedSubheadline:
-        abbreviatedSummary:
-        abbreviatedSummary_js:
+        abbreviatedSubheadline: Résumer cet ensemble de données peut prendre un certain temps. Cliquez sur Suivant pour l'importer.
+        abbreviatedSummary: Les couches de la carte dans &ldquo;<span class = "filename"></ span>&rdquo; seront créées lors de l'importation.
+        abbreviatedSummary_js: Les couches de la carte dans "filename">seront créées lors de l'importation.
         crs: Système de Référence des Coordonnées
         headline: Indiquer comment &ldquo;<span class="fileName"></span>&rdquo; devrait être importé.
-        headline_interpolate:
+        headline_interpolate: Spécifiez comment "{0}" devrait être importé.
         layers_list: Couches à importer
         name: Nom
         pending: Veuillez patienter pendant que nous chargeons vos couches...
         subheadline: Le fichier de forme comprend <span class="featureCount"></span> des fonctionnalités en <span class="layerCount"></span> couches.
-        subheadline_interpolate:
+        subheadline_interpolate: Ce fichier de forme contient {0} couches.
       import_warnings:
         headline: Avertissements au cours de l'importation
         see_docs: <strong>Confus(e) ?</strong> Veuillez jeter un oeil à <a href="%{publisher_link}" rel="external">à la documentation de l'éditeur</a> sur l'importation des données pour une explication détaillée sur la façon dont l'importateur traite les données. Vous pouvez aussi vous référer à notre <a href="%{common_errors}" rel="external">liste des avertissements et erreurs fréquents.</a>.
@@ -2999,12 +3140,12 @@ fr:
         private_explain: Mes données sont <strong>privées</strong>
         prompt: Veuillez décrire vos données.
         public_explain: 'Mes données sont <strong>publiques</strong> : elles peuvent seulement être modifiées par moi, mais tout le monde peut les voir'
-      notify_me:
-      notify_me_error_html:
-      notify_me_messaging:
-      notify_me_success_addl:
-      notify_me_success_html:
-      notify_me_success_html_js:
+      notify_me: Prévenez-moi
+      notify_me_error_html: Quelque chose s'est mal passé en essayant de planifier la notification via e-mail. Veuillez réessayer plus tard ou contactez <a href="mailto:support@socrata.com"> le service d'assistance de Socrata</a> si le problème persiste.
+      notify_me_messaging: par e-mail une fois terminé.
+      notify_me_success_addl: Vous pouvez fermer  en toute sécurité ce navigateur en attendant.
+      notify_me_success_html: "<strong>Super !</strong> Nous enverrons un e-mail à <strong>%{email}</strong> lorsque votre ensemble de données sera prêt."
+      notify_me_success_html_js: "<strong>Super !</strong> Nous enverrons un e-mail à <strong>{0}</strong> lorsque votre ensemble de données sera prêt."
       processing: En cours de traitement...
       title: Nouveau Set de données
       upload_accessible: Mettre en ligne un nouveau set de données de manière accessible
@@ -3022,7 +3163,7 @@ fr:
       bar:
         api_unsavable: Les vues API ne peuvent pas être créées ou modifiées
         based_on_html: Basé sur <a class="revertLink currentViewName" href="#revert">%{name}</a>
-        based_on_layer_html:
+        based_on_layer_html: Une couche de l'ensemble de données géospatiales <a href="%{href}" class="parentName">%{name}</a>
         based_on_parent_html: Basé sur <a class="parentName"></a>
         based_on_private_view: Un affichage privé
         based_on_working_copy_html: Basé sur la copie de travail de <a class="revertLink currentViewName" href="#revert">%{name}</a>
@@ -3039,11 +3180,11 @@ fr:
           underline: Souligné
           undo: Annuler
         full_screen: Basculer en mode plein écran
-        no_description:
+        no_description: "(Aucune description fournie)"
         out_of_date: Cet ensemble de données est dépassé de %{age}
         publish_button: Publier la série de données
         publish_prompt: Cette série de données est une copie de travail et n’est pas publiquement disponible. Une fois que vous avez effectué les changements souhaités, il convient de publier cette série pour la rendre publiquement disponible.
-        publish_prompt_with_dataset_landing_page:
+        publish_prompt_with_dataset_landing_page: Cet ensemble de données est une copie de travail et n'est pas accessible au public. Une fois que vous avez effectué les changements souhaités, cet ensemble de données devrait être publié pour le rendre accessible au public. La publication de cette page publiera également la page d'accueil de l'ensemble des données.
         publish_rights: Les propriétaires ou éditeurs sont les seuls à pouvoir publier cette série de données
         revert_button: Rétablir
         revert_prompt: Rétablir la vue enregistrée
@@ -3142,7 +3283,7 @@ fr:
         success: Votre message a bien été envoyé.
         title_html: Partager “<span class="datasetName">%{name}</span>”
       fatrow:
-        edit_layout:
+        edit_layout: Modifier la mise en page
       grid_sidebar:
         add_column:
           convert_address:
@@ -3175,8 +3316,8 @@ fr:
           developer_portal: Portail de dévelopeur
           endpoint_title: 'Point de terminaison de l’API : '
           intro_html: 'La <strong>Socrata Open Data API</strong> (SODA) permet aux développeurs de logiciels d’accéder selon des paramètres préétablis aux données hébergées dans les sites de données Socrata. Ils peuvent par ce biais créer des applications qui se servent des API de type SODA pour présenter, sous des formes novatrices et attractives, des visualisations et composites des séries de données Socrata. Par exemple : une application iPhone permettant de visualiser les dépenses publiques dans telle ou telle région, une application web fournissant aux particuliers des renseignements sur des prestations publiques méconnues, ou un service adressant des alertes automatiques par courrier électronique à ceux que cela intéresse lorsque des affectations de crédits budgétaires sont inscrites dans les projets de lois qu’ils suivent.'
-          multiple_endpoints_intro_html:
-          no_endpoints_available:
+          multiple_endpoints_intro_html: L’API Socrata Open Data <a href="http://dev.socrata.com/" target="external">(SODA) </a>fournit un accès programmatique à cet ensemble de données, y compris la capacité de <a href="http://dev.socrata.com/docs/filtering.html" target="external">filtrer</a>, <a href="http://dev.socrata.com/docs/queries.html" target="external"> de passer des requêtes </a>et <a href="http://dev.socrata.com/docs/aggregation.html" target="external">d’agréger </a>des données. Pour de plus amples informations, consultez ci-dessous la documentation de l'API pour cet ensemble de données ou visitez notre <a href="http://dev.socrata.com" target="external">portail du développeur</a>
+          no_endpoints_available: Aucun point de terminaison disponible.
           reference_html: Pour commencer à accéder à cette série de données selon des paramètres préétablis, utilisez le point de terminaison ci-dessous. Pour plus de renseignements et d’exemples sur la façon d’utiliser la Socrata Open Data API, référez-vous à notre Documentation pour développeurs <a href="http://dev.socrata.com" rel="external"></a>.
           subtitle: Accéder à cette %{view_type} par le biais de SODA
           title: SODA API
@@ -3200,8 +3341,8 @@ fr:
             immutable: Lancer l’assistant Remplacer
             mutable: Lancer l’assistant Ajouter et remplacer
         backup:
-          button:
-          item_html:
+          button: Sauvegardez cet ensemble de données
+          item_html: Sauvegardé à <span class="backupTime"></span>
         base:
           buttons:
             apply: Appliquer
@@ -3232,8 +3373,8 @@ fr:
             formatted_text: Texte formaté
             geospatial: géospatial
             groups:
-              geometry:
-              standard:
+              geometry: Géométrie
+              standard: Standard
             list: Liste
             location: emplacement
             money: Argent
@@ -3428,7 +3569,7 @@ fr:
             title: Type de colonne
             type: Type de données
             type_prompt: Sélectionner un type de données
-            working_copy_html:
+            working_copy_html: Veuillez<a href="#" class="createWorkingCopy">faire une copie de travail</a> pour modifier le type de données de cette colonne
         column_order:
           columns:
             title: Colonnes
@@ -3467,10 +3608,10 @@ fr:
           money:
             abbreviated: Abréviation
             currency: Monnaie
-            format_mask_warning:
+            format_mask_warning: 
             groups:
-              all:
-              common:
+              all: Tout
+              common: Commun
             no_precision: Néant
             precision: Précision
             title: Formatage de données monétaires
@@ -3503,17 +3644,17 @@ fr:
           subtitle: Mettre à jour les propriétés de cette colonne
           success: Votre colonne a été mise à jour
           text_formatting:
-            display_style:
-            title:
+            display_style: Style d'affichage
+            title: Formatage du texte
           title: Propriétés de la colonne
           url:
             base_url: URL de base
             base_url_prompt: Entrer le préfixe URL courant
             title: Options URL
           validation:
-            notallowed:
+            notallowed: Vous n'êtes pas autorisé à modifier les propriétés de colonne
             published: Veuillez faire une copie de travail de cette série pour modifier les propriétés de colonnes
-            snapshot:
+            snapshot: Vous ne pouvez pas modifier les propriétés de colonne pour un aperçu de la vue
             unsaved: Vous ne pouvez pas éditer les propriétés de colonnes pour une vue non enregistrée
         conditional_formatting:
           change_icon: Modifier
@@ -3539,14 +3680,14 @@ fr:
             no_columns: Cette vue n’a pas de colonnes à filtrer
             no_icons: Les icônes ne s’appliquent qu’à la vue carte
         data_lens:
-          button:
-          button_flyout:
-          subtitle:
-          title:
+          button: Nouvelle Data Lens
+          button_flyout: Vos données sont en cours de traitement. Actualisez la page dans quelques minutes et vous serez en mesure de créer une nouvelleData Lens.
+          subtitle: Data Lens est une expérience visuelle engageante et interactive qui comprend l'amélioration de l'exploration et de la conservation des données. Cliquez sur <strong>Nouvelle Data Lens</ strong> pour en créer un nouvelle qui vous permettra d'explorer visuellement les données, de personnaliser la façon dont elles sont affichées et de gérer leur présentation dans le catalogue.
+          title: Data Lens
         delete:
           confirm: Cela va enlever le %{view_type} à titre permanent. Il n’y a pas de fonction Annuler. Êtes-vous sûr de vouloir continuer ?
-          confirm_permanent:
-          confirm_restorable:
+          confirm_permanent: Cela supprimera le %{view_type} de façon permanente. Vous ne pourrez plus annuler cette opération ! Souhaitez-vous vraiment continuer ?
+          confirm_restorable: Cette suppression est réversible pendant une période de jusqu'à %{number_of_days_restorable} jours par un administrateur de votre domaine.  Souhaitez-vous vraiment continuer ?
           delete_button: Enlever ce %{view_type}
           subtitle: Enlever ce %{view_type}
           title: Enlever
@@ -3570,8 +3711,8 @@ fr:
           download_as: Télécharger au format…
           download_dataset: Veuillez télécharger l'ensemble de données à partir duquel cette affichage est dérivé.
           geo_header: Télécharger des données géospatiales
-          monolayer_header:
-          multilayer_header:
+          monolayer_header: Télécharger sans données géospatiales
+          multilayer_header: Télécharger les données d'une couche spécifique
           subtitle: Télécharger un exemplaire de cette série de données dans un format statique
           title: Télécharger
         feed:
@@ -3665,13 +3806,13 @@ fr:
           validation:
             hidden_location_html: Vous pouvez <a href="#showLoc" title="Show a location column">afficher une colonne emplacement masquée</a>.
             location_column: Une colonne emplacement est requise pour créer une carte.
-            location_column_invalid_dataset:
+            location_column_invalid_dataset: L'ensemble de données requis n'existe pas.
             viz_limit: Une vue ne peut avoir qu’une visualisation correspondante
         odata:
           endpoint_action: 'Copiez ce lien :'
           intro_html1: Créez une feuille de calcul dans Microsoft Excel pour analyser ou visualiser ce jeu de données. En utilisant un lien OData, les données seront actualisables.
           intro_html2: Utilisez Microsoft Excel 2010, Microsoft Excel 2013 ou Microsoft Power Query. Suivez les instructions ici, en vous aidant de la <a href="%{doc_link}">documentation OData de Socrata</a>.
-          no_endpoints_available:
+          no_endpoints_available: Aucun point de terminaison disponible.
           subtitle: Accédez à ce jeu de données via OData
           title: OData
         ownership:
@@ -3753,7 +3894,7 @@ fr:
           subtitle: Spécifiez les colonnes à afficher dans cette vue
           title: Afficher et masquer des colonnes
           warnings:
-            active_filter:
+            active_filter: Vous ne pouvez pas cacher cette colonne, car elle a un filtre actif.
         sort_rollup:
           rollup:
             add_group_button: Ajouter colonne de regroupement
@@ -3828,7 +3969,7 @@ fr:
       new_ux_text: Afficher ces données dans la nouvelle expérience de lentille de données
       new_ux_title: Prêt à explorer visuellement ?
       page_render_type:
-        edit_layout:
+        edit_layout: Modifier la mise en page
       save_dialog:
         descriptions:
           leaving: Vous avez des données non sauvegardées qui seront perdues si vous sortez de cette page. Veuillez sauvegarder ou non cette vue avant de sortir, ou utiliser l’option Annuler pour revenir à la page.
@@ -3857,14 +3998,15 @@ fr:
       unable_to_find_dataset_page: Nous avons été incapable de trouver une page de Lentille de données pour cet ensemble de données
     edit_metadata:
       about: "À Propos"
-      add_link:
-      add_source:
+      add_link: Ajouter un lien
+      add_source: Ajouter une source
       additional_source: Source supplémentaire
       alternative_access_prompt: Entrez un point d'accès différent pour ce jeu de données
       api_endpoint: Terminal API
       attachments: Pièces jointes
       attachmentsDisabledMessagePart1: Pour mettre des attachements en ligne, finir d'abord de publier ce set de données. Ensuite, cliquer
       attachmentsDisabledMessagePart2: dans la barre d'outils, et cliquer Éditer Métadonnées. Vous serez alors capable de mettre des attachements en ligne
+      blob_uploaded: 'Excellent : nous avons sauvegardé votre fichier. Tout ce qui reste est de décrire les métadonnées de votre fichier.'
       brief_description: Description rapide
       brief_description_prompt: Entrez une description
       cancel: Annuler
@@ -3881,10 +4023,10 @@ fr:
       dataset_title_prompt: Entrez un titre
       dataset_url: URL Set de Données
       dataset_url_prompt: Entrer la location de votre set de données externe
-      default_row_label:
+      default_row_label: Ligne
       delete: Supprimer
-      described_by:
-      described_by_prompt:
+      described_by: Dictionnaire de données
+      described_by_prompt: Saisissez un lien de dictionnaire de données
       email_address: Adresse e-mail
       email_help: Cette adresse ne sera pas visible pour le public Si ce champ reste vierge, il indiquera votre adresse par défaut
       existing_attachments: Pièces jointes existantes
@@ -3903,8 +4045,8 @@ fr:
       licensing_attr: Licence & attribution
       list: Liste
       metadata_help: Ce champ a été identifié comme privé par votre organisation et ne peut être vu publiquement
-      missing_external_dataset:
-      multiple_extensions:
+      missing_external_dataset: Veuillez fournir au moins un ensemble de données externe.
+      multiple_extensions: Plus d'une même extension pour le même point de terminaison n'est pas autorisée.
       new_attachment: Nouvelle pièce jointe
       none: "(néant)"
       northwest_latitude: Latitude nord-ouest
@@ -3912,7 +4054,7 @@ fr:
       optional: Optionnel
       private_help: Ce champ a été identifié comme privé par votre organisation et ne peut être vu publiquement
       remove_image: Supprimer l'image
-      remove_link:
+      remove_link: Supprimer le lien
       required_field: Champ obligatoire
       resource_name: Nom de ressource
       resource_name_prompt: Entrez un nom de ressource
@@ -3920,12 +4062,13 @@ fr:
       row_class: Classe de ligne
       row_identifier: Identificateur de ligne
       row_identifier_help_text: L'identifiant de rangée ne peut être modifié une fois qu'une vue est publiée.
-      row_label:
-      row_label_help:
-      row_label_prompt:
+      row_label: "Étiquette de ligne. "
+      row_label_help: Décrivez ce que chaque ligne de l'ensemble de données représente (le cas échéant).
+      row_label_prompt: par. ex., crime, personne, hôpital
       save: Sauvegarder
       save_changes: Sauvegarder les modifications
       semantics_rdf: Sémantique & système RDF
+      settings_saved: Votre progression a été sauvegardée. Continuez à créer votre ensemble de données en complétant les métadonnées ci-dessous.
       source_link: Lien source
       source_link_error: Cette URL n'est pas valide
       source_link_prompt: Entrez l'adresse web
@@ -3941,7 +4084,7 @@ fr:
       upload_help: Cette image sera rognée dans un carré
       upload_image: Charger l’image
       upload_new_attachment: Charger la nouvelle pièce jointe
-      url:
+      url: URL
     forgot_password:
       already_authenticated: 'Impossible de réinitialiser le mot de passe : vous êtes déjà connecté.'
       failed: Problème lors de l’envoi de votre demande de réinitialisation de votre mot de passe. Veuillez réessayer.
@@ -3967,10 +4110,10 @@ fr:
       existing_latlng_cols: Colonnes de Latitude et Longitude Existantes
       find: trouver
       find_and_replace: Trouver et Remplacer valeur...
-      import_from_latlong:
+      import_from_latlong: Importer à partir des colonnes de <strong>latitude</strong> et de <strong>longitude</strong>
       import_from_multiple: Importer de <strong>plusieurs colonnes</strong>
       import_from_single: Importer d'une <strong>colonne unique</strong>
-      insert_static_text:
+      insert_static_text: "(Insérer le texte statique...)"
       latitude: Latitude
       location_source_col: Colonnes Source d'Emplacement
       longitude: Longitude
@@ -3982,7 +4125,7 @@ fr:
       new_source_col: Ajouter nouvelle colonne source
       new_transform: Ajouter nouvelle transformation
       options: Options
-      point_source_col:
+      point_source_col: Colonnnes de source ponctuelle
       properly_formatted: La colonne doit être <a href="%{formatting_link}" rel="external">correctement formatée</a> avant l'importation.
       regular_expression: expression régulière
       remove: supprimer
@@ -4000,24 +4143,24 @@ fr:
       combine_multiple_cols: "(Combiner Plusieurs Colonnes...)"
       downloading: Téléchargement de votre fichier...
       errors:
-        http_error:
-        network_error:
+        http_error: 'Nous avons été incapables de sauver vos métadonnées en raison d''une erreur : {0}'
+        network_error: Nous avons été incapables de sauver vos métadonnées en raison d'une erreur réseau.
       filetype_error_blist: Veuillez choisir un fichier CSV, TSV, XLS ou XLSX.
       filetype_error_shapefile: Veuillez choisir un fichier KML, KMZ ou ZIP.
       headline_import: Veuillez choisir un fichier à importer
       headline_upload: Veuillez choisir un fichier à mettre en ligne
       layer: Couche
       many_headers: "%{num} de vos rangées sont des en-têtes."
-      new_column:
+      new_column: Nouvelle colonne {num}
       no_file_selected: Aucun fichier encore sélectionné.
       no_headers: Aucune de vos rangées sont des en-têtes.
       no_source_column: "(Aucune Colonne Source)"
       one_header: Une de vos rangées est une en-tête.
       problem_importing: Il y a eu un problème lors de l'importation de ce fichier. Veuillez vous assurer qu'il soit bien valide.
       problem_uploading: Il y a eu un problème lors de la mise en ligne de ce fichier. Veuillez vous assurer qu'il soit bien valide.
-      replicating:
+      replicating: Réplication de l'ensemble de données.
       rows_imported: "%{num} rangées importées jusqu'à maintenant."
-      rows_imported_js:
+      rows_imported_js: "{0} lignes importées jusqu'à présent."
       try_again: Veuillez réessayer dans quelques instants.
       unknown_error: Une erreur inconnue s'est produite
       uploading: Mise en ligne de votre fichier
@@ -4039,7 +4182,7 @@ fr:
         no_applications: Vous n’avez pas encore créé d’applications. Cliquez sur Gérer (à droite) pour démarrer
         title: Applications de %{user}
       bar:
-        edit_info_link:
+        edit_info_link: Modifier les informations de base
         edit_settings_link: "Éditer paramètres de compte"
         follow_link: Suivre
         join_date: Membre depuis
@@ -4070,7 +4213,7 @@ fr:
               comment_to_moderate: 'Soumission d’un commentaire nécessitant un traitement par le modérateur '
               nomination_created: Création d’une nouvelle nomination
               nomination_moderated: Nomination en cours de traitement par le modérateur
-              other_label:
+              other_label: Autre
               privileged_account_created: Création d’un compte privilégié par un utilisateur
               user_affected: Actions vous concernant directement (réponses à commentaires, mise à jour de statut, etc.)
               view_deleted: Quelconque vue supprimée
@@ -4083,11 +4226,13 @@ fr:
           learn_openid: Pour en savoir plus sur OpenID
           new_email: Nouvelle adresse courriel
           new_password: Nouveau mot de passe
+          no_auth0id: Vous avez pas  d'identificateurs uniques de connexion encore associés à ce compte.
           no_openid: Vous n’avez pas encore d’identifiants OpenID associés à ce compte.
           old_password: Ancien mot de passe
           password: Mot de passe
           password_prompt: "(Pour votre sécurité)"
           password_restrictions_html: (Des restrictions s’appliquent <span class="icon"> </span>)
+          sso_identifiers: 'Identificateurs uniques de connexion '
           title: Paramètres de compte
         app_tokens:
           application_name: Nom de l’application
@@ -4146,6 +4291,7 @@ fr:
           image_format: Veuillez sélectionner un type d’image valide (PNG, JPG ou GIF)
           invalid_links: Un problème a été rencontré dans la mise à jour de vos liens. %{message}
           no_display_name: 'Erreur : Le nom complet est requis'
+          no_password_no_auth0id: Vous ne pouvez pas supprimer tous vos identifiants Auth0 avant de définir un mot de passe
           no_password_no_openid: Vous ne pouvez pas enlever l’ensemble de vos identifiants OpenID avant d’établir un mot de passe
           password_mismatch: Les nouveaux mots de passe ne correspondent pas
           user_missing: Cet utilisateur ne peut être trouvé ou a été enlevé.
@@ -4159,7 +4305,7 @@ fr:
           my_blog: Mon blog
           my_company: Mon entreprise
           my_site: Mon site
-          other_label:
+          other_label: Autre
           twitter: Twitter
         no_description: Aucune description fournie
         other_ext_link: Autres
@@ -4171,10 +4317,10 @@ fr:
         following: Abonnements
         hide_contacts_link: Cacher
       whats_new:
-        caught_up:
-        older_news:
-        read_more:
-        title:
+        caught_up: Vous êtes tous impliqués ! <a target="_blank" href="%{href}">Consultez nos mises à jour les plus récentes</a>.
+        older_news: Consulter les nouvelles les plus anciennes
+        read_more: Lire la suite
+        title: Les dernières nouvelles de Socrata
     reset_password:
       failed: Problème lors de la réinitialisation de votre mot de passe. Veuillez réessayer.
       form:
@@ -4185,20 +4331,28 @@ fr:
     sign_in:
       auth0_intro: Il existe plusieurs façons pour vous de vous décharger. Si vous ne vous êtes pas encore inscrit dans un établissement contraire.
       back_to_sign_in_selection: a class="login-back">Retour aux options de connexion</a>
+      dont_have_account: Pas encore de compte ?
+      error: Erreur lors de la connexion
       failed: Ouverture de session impossible avec cet e-mail et ce mot de passe, veuillez réessayer
+      forgot_password: Mot de passe oublié ?
       form:
+        email_placeholder: E-mail
+        password_placeholder: Mot de passe
         sign_in_button: Connexion
       headline: S’inscrire à %{site}
       mismatch: Les mots de passe ne correspondent pas. Veuillez réessayer
       prompt_html: Connexion avec votre <strong>ID Socrata</strong>
+      sign_in_using: Connectez-vous en utilisant
       sign_in_with: "<strong>Connexion</strong> avec %{provider}"
-      sso_required:
+      sign_up: S'inscrire
+      sso_enabled: SSO activé
+      sso_required: L'administrateur de ce site exige que les utilisateurs privilégiés se connectent avec un compte autre qu'un ID Socrata. Veuillez vous connecter en utilisant une méthode différente.
       tips_html: Utilisez votre adresse e-mail et mot de passe pour vous connecter sur tous les sites fonctionnant sous  <strong><a href="http://www.socrata.com" rel="external">Socrata</a> </strong>.
     sign_up:
       email_verification:
-        expired:
-        sent:
-        success:
+        expired: Ce lien de vérification d'e-mail a expiré.Veuillez créer un nouveau compte avec la même adresse e-mail et vous recevrez un autre e-mail de vérification pour terminer l'enregistrement.
+        sent: Nous avons envoyé un message de vérification à %{email}, veuillez suivre les instructions dans l'e-mail pour terminer le processus d'inscription.
+        success: Votre adresse e-mail a été vérifiée, veuillez vous connecter.
       form:
         create_account_button: Créer mon compte
         have_account_link: J’ai déjà un compte
@@ -4212,7 +4366,7 @@ fr:
     stats:
       api: API
       apply: Appliquer
-      browser_page_views:
+      browser_page_views: Navigateur de vues de pages
       bytes_out: Octets Sortants
       chart_created: diagramme créé
       charts: Diagrammes
@@ -4221,12 +4375,12 @@ fr:
       comments: Commentaires
       comments_created: commentaires créés
       daily: Par jour
-      date_range:
+      date_range: Période
       deleted_application: application supprimée
-      delta_decrease:
-      delta_decrease_compared:
-      delta_increase:
-      delta_increase_compared:
+      delta_decrease: Le nombre de {0} a diminué de {1} pendant {2}
+      delta_decrease_compared: Le nombre de {0} a diminué de {1} pendant {2} par rapport à {3}
+      delta_increase: Le nombre de {0} a augmenté de {1} pendant {2}
+      delta_increase_compared: Le nombre de {0} a augmenté de {1} pendant {2} par rapport à {3}
       dependent_metrics: Indicateurs métriques dépendants
       download: télécharger
       downloads: téléchargements
@@ -4251,7 +4405,7 @@ fr:
       no_data_time_period: Aucune donnée pour cette période
       page_viewed: page vue
       pages_viewed: pages vues
-      preceding_period:
+      preceding_period: La période précédente
       referrals: Références
       rows_loaded: Rangées Chargées
       sdp: SDP
@@ -4289,31 +4443,31 @@ fr:
         name: Nouveau Nom de Modèle
         title: Créer un nouveau Modèle
       create_new_dataset:
-        explanation_html:
-        prompt:
-        title:
+        explanation_html: Lorsque vous appuyez sur <strong>Sauvegarder</ strong>, votre nouveau <strong>Projet d'ensemble de données</ strong> sera visible dans votre catalogue personnel. Personne d'autre ne sera capable de le voir avant que vous ayez terminé l'Assistant du nouvel ensemble de données.
+        prompt: Veuillez donner  un nom à votre nouvel ensemble de données.
+        title: Créer un nouvel ensemble de données
       menu:
-        about:
-        api:
-        api_subtext:
-        discuss:
-        discuss_subtext:
-        download:
-        download_subtext:
-        embed:
-        embed_subtext:
-        more_views:
-        more_views_subtext:
-        odata:
-        odata_subtext:
-        print:
-        print_subtext:
+        about: "À propos de la plate-forme Open Data de Socrata"
+        api: API
+        api_subtext: Accéder à cet ensemble de données via SODA
+        discuss: Discuter
+        discuss_subtext: Discuter de cet ensemble de données
+        download: Télécharger
+        download_subtext: Télécharger en divers formats
+        embed: Intégré
+        embed_subtext: Intégrer ce lecteur sur votre site
+        more_views: Plus de vues
+        more_views_subtext: Filtres, graphiques et cartes
+        odata: OData
+        odata_subtext: Accéder à cet ensemble de données via OData
+        print: Imprimer
+        print_subtext: Imprimer cet ensemble de données
     wizard:
       cancel: Annuler
       finish: Finir
       next: Suivant
       previous: Précédent
-      save:
+      save: Sauvegarder
   support:
     array:
       last_word_connector: ", et "
@@ -4322,5 +4476,5 @@ fr:
       last_word_connector: ", ou "
       two_words_connector: " ou "
   table:
-    no_summary_available:
-    summary:
+    no_summary_available: Aucun résumé disponible
+    summary: Ce tableau de %{data_description} a %{column_heading_count} en-tête(s) de colonne(s) %{column_headings} pour chacune des %{row_heading_count} descriptions des en-têtes de ligne %{row_headings}

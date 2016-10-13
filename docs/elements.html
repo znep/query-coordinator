@@ -8,8 +8,8 @@
     <title>Socrata Styleguide</title>
 
     <link rel="stylesheet" href="stylesheets/vendor/prism-2ae3b88e.css">
-    <link rel="stylesheet" href="css/styleguide-4d1f67d1.css">
-    <link rel="stylesheet" href="stylesheets/pages-c06bab17.css">
+    <link rel="stylesheet" href="css/styleguide-fa40af11.css">
+    <link rel="stylesheet" href="stylesheets/pages-cb0a5092.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic' rel='stylesheet' type='text/css'>
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
@@ -69,6 +69,7 @@
         <li><a href="components.html#color-picker">Color Picker</a></li>
         <li><a href="components.html#view-card">View Card</a></li>
         <li><a href="components.html#filter-bar">Filter Bar</a></li>
+        <li><a href="components.html#info-pane">Info Pane</a></li>
         <!-- TEMPLATE_TOKEN (Don't remove this. Like seriously.) -->
       </ul>
     </li>
@@ -1541,27 +1542,80 @@
 
   <h4 class="h6 styleguide-subheader">Text Field</h4>
   
+
 <label class="inline-label">An input field:</label>
-<input class="text-input" type="text" placeholder="Example Text"/>
+<input class="text-input []" type="text" placeholder="Example Text" value="" >
 
 
 <pre class="usage">
 <code class="language-markup">
+
 &lt;label class=&quot;inline-label&quot;&gt;An input field:&lt;&#x2F;label&gt;
-&lt;input class=&quot;text-input&quot; type=&quot;text&quot; placeholder=&quot;Example Text&quot;&#x2F;&gt;
+&lt;input class=&quot;text-input []&quot; type=&quot;text&quot; placeholder=&quot;Example Text&quot; value=&quot;&quot; &gt;
 
 </code>
 </pre>
 
+
   
+
 <label class="block-label">Another input field:</label>
-<input class="text-input" type="text" placeholder="Example Text"/>
+<input class="text-input []" type="text" placeholder="Example Text" value="" >
 
 
 <pre class="usage">
 <code class="language-markup">
+
 &lt;label class=&quot;block-label&quot;&gt;Another input field:&lt;&#x2F;label&gt;
-&lt;input class=&quot;text-input&quot; type=&quot;text&quot; placeholder=&quot;Example Text&quot;&#x2F;&gt;
+&lt;input class=&quot;text-input []&quot; type=&quot;text&quot; placeholder=&quot;Example Text&quot; value=&quot;&quot; &gt;
+
+</code>
+</pre>
+
+
+  
+
+<label class="block-label">What would you like to see succeed?</label>
+<input class="text-input text-input-success" type="text" placeholder="" value="A successful endeavour!" >
+
+
+<pre class="usage">
+<code class="language-markup">
+
+&lt;label class=&quot;block-label&quot;&gt;What would you like to see succeed?&lt;&#x2F;label&gt;
+&lt;input class=&quot;text-input text-input-success&quot; type=&quot;text&quot; placeholder=&quot;&quot; value=&quot;A successful endeavour!&quot; &gt;
+
+</code>
+</pre>
+
+
+  
+
+<label class="block-label">A curious warning says:</label>
+<input class="text-input text-input-warning text-input-block" type="text" placeholder="" value="I'm not so sure about this!" >
+
+
+<pre class="usage">
+<code class="language-markup">
+
+&lt;label class=&quot;block-label&quot;&gt;A curious warning says:&lt;&#x2F;label&gt;
+&lt;input class=&quot;text-input text-input-warning text-input-block&quot; type=&quot;text&quot; placeholder=&quot;&quot; value=&quot;I&#x27;m not so sure about this!&quot; &gt;
+
+</code>
+</pre>
+
+
+  
+
+<label class="block-label">Et tu, Brute?</label>
+<input class="text-input text-input-error" type="text" placeholder="" value="A treacherous endeavour!" aria-invalid="true">
+
+
+<pre class="usage">
+<code class="language-markup">
+
+&lt;label class=&quot;block-label&quot;&gt;Et tu, Brute?&lt;&#x2F;label&gt;
+&lt;input class=&quot;text-input text-input-error&quot; type=&quot;text&quot; placeholder=&quot;&quot; value=&quot;A treacherous endeavour!&quot; aria-invalid=&quot;true&quot;&gt;
 
 </code>
 </pre>
@@ -1602,6 +1656,7 @@
 </code>
 </pre>
 
+
   
 <div class="checkbox">
     <input id="2" type="checkbox" />
@@ -1624,7 +1679,7 @@
 </pre>
 
 
-  <h4 class="h6 styleguide-subheader">Radiobuttons</h4>
+  <h4 class="h6 styleguide-subheader">Radio Buttons</h4>
   
 <div class="radiobutton">
   <div>
@@ -2768,7 +2823,7 @@
     <script type="text/javascript" src="javascripts/vendor/tether-a78651e0.js"></script>
     <script type="text/javascript" src="javascripts/vendor/shepherd-b8acca87.js"></script>
 
-    <script type="text/javascript" src="js/socrata-components-29b6d73a.js"></script>
+    <script type="text/javascript" src="js/socrata-components-6a98b5c0.js"></script>
     <script type="text/javascript" src="javascripts/all-df92dbb1.js"></script>
   </body>
 </html>

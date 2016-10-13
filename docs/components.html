@@ -8,8 +8,8 @@
     <title>Socrata Styleguide</title>
 
     <link rel="stylesheet" href="stylesheets/vendor/prism-2ae3b88e.css">
-    <link rel="stylesheet" href="css/styleguide-4d1f67d1.css">
-    <link rel="stylesheet" href="stylesheets/pages-c06bab17.css">
+    <link rel="stylesheet" href="css/styleguide-fa40af11.css">
+    <link rel="stylesheet" href="stylesheets/pages-cb0a5092.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic' rel='stylesheet' type='text/css'>
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
@@ -69,6 +69,7 @@
         <li><a href="components.html#color-picker">Color Picker</a></li>
         <li><a href="components.html#view-card">View Card</a></li>
         <li><a href="components.html#filter-bar">Filter Bar</a></li>
+        <li><a href="components.html#info-pane">Info Pane</a></li>
         <!-- TEMPLATE_TOKEN (Don't remove this. Like seriously.) -->
       </ul>
     </li>
@@ -305,10 +306,10 @@
         
 <div id="dropdown-container"></div>
 
-<script type="text/javascript">
-  document.addEventListener('DOMContentLoaded', function() {
-    var props = {
-      onSelection: function(option) {
+<script type="text/babel" data-presets="es2015,react">
+  $(() => {
+    const props = {
+      onSelection: (option) => {
         console.log('option selected:', option.title, option.value);
       },
       options: [
@@ -321,7 +322,7 @@
     };
 
     ReactDOM.render(
-      React.createElement(styleguide.Dropdown, props),
+      <styleguide.Dropdown {...props} />,
       document.getElementById('dropdown-container')
     );
   });
@@ -332,10 +333,10 @@
 <code class="language-markup">
 &lt;div id=&quot;dropdown-container&quot;&gt;&lt;&#x2F;div&gt;
 
-&lt;script type=&quot;text&#x2F;javascript&quot;&gt;
-  document.addEventListener(&#x27;DOMContentLoaded&#x27;, function() {
-    var props = {
-      onSelection: function(option) {
+&lt;script type=&quot;text&#x2F;babel&quot; data-presets=&quot;es2015,react&quot;&gt;
+  $(() =&gt; {
+    const props = {
+      onSelection: (option) =&gt; {
         console.log(&#x27;option selected:&#x27;, option.title, option.value);
       },
       options: [
@@ -348,7 +349,7 @@
     };
 
     ReactDOM.render(
-      React.createElement(styleguide.Dropdown, props),
+      &lt;styleguide.Dropdown {...props} &#x2F;&gt;,
       document.getElementById(&#x27;dropdown-container&#x27;)
     );
   });
@@ -359,6 +360,89 @@
 
 
         
+<div id="custom-dropdown-container"></div>
+
+<script type="text/babel" data-presets="es2015,react">
+  $(() => {
+    const DropdownWithIcon = (props) => {
+      const { icon, title } = props;
+
+      return (
+        <div className="special-dropdown-option">
+          <span className={icon} key={icon} />
+          {title}
+        </div>
+      );
+    };
+
+    const renderOption = (option) => <DropdownWithIcon {...option} />;
+
+    const customRenderProps = {
+      displayTrueWidthOptions: true,
+      onSelection: (option) => {
+        const { title, value } = option;
+        console.log(`option selected: ${title}, ${value}`);
+      },
+      placeholder: () => <button className="btn btn-alternate-3">Hello, World!</button>,
+      options: [
+        { title: 'Emotional technicality', value: 'emotecho', icon: 'icon-facebook', render: renderOption },
+        { title: 'Pontificate harder', value: 'ponfer', icon: 'icon-twitter', render: renderOption },
+        { title: 'No one misses these', value: 'noone', icon: 'icon-dataset', render: renderOption }
+      ]
+    };
+
+    ReactDOM.render(
+      <styleguide.Dropdown {...customRenderProps} />,
+      document.getElementById('custom-dropdown-container')
+    );
+  });
+</script>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;custom-dropdown-container&quot;&gt;&lt;&#x2F;div&gt;
+
+&lt;script type=&quot;text&#x2F;babel&quot; data-presets=&quot;es2015,react&quot;&gt;
+  $(() =&gt; {
+    const DropdownWithIcon = (props) =&gt; {
+      const { icon, title } = props;
+
+      return (
+        &lt;div className=&quot;special-dropdown-option&quot;&gt;
+          &lt;span className={icon} key={icon} &#x2F;&gt;
+          {title}
+        &lt;&#x2F;div&gt;
+      );
+    };
+
+    const renderOption = (option) =&gt; &lt;DropdownWithIcon {...option} &#x2F;&gt;;
+
+    const customRenderProps = {
+      displayTrueWidthOptions: true,
+      onSelection: (option) =&gt; {
+        const { title, value } = option;
+        console.log(`option selected: ${title}, ${value}`);
+      },
+      placeholder: () =&gt; &lt;button className=&quot;btn btn-alternate-3&quot;&gt;Hello, World!&lt;&#x2F;button&gt;,
+      options: [
+        { title: &#x27;Emotional technicality&#x27;, value: &#x27;emotecho&#x27;, icon: &#x27;icon-facebook&#x27;, render: renderOption },
+        { title: &#x27;Pontificate harder&#x27;, value: &#x27;ponfer&#x27;, icon: &#x27;icon-twitter&#x27;, render: renderOption },
+        { title: &#x27;No one misses these&#x27;, value: &#x27;noone&#x27;, icon: &#x27;icon-dataset&#x27;, render: renderOption }
+      ]
+    };
+
+    ReactDOM.render(
+      &lt;styleguide.Dropdown {...customRenderProps} &#x2F;&gt;,
+      document.getElementById(&#x27;custom-dropdown-container&#x27;)
+    );
+  });
+&lt;&#x2F;script&gt;
+
+</code>
+</pre>
+
+
       </div>
     </section>
 
@@ -370,16 +454,16 @@
         
 <div id="color-picker-container"></div>
 
-<script type="text/javascript">
+<script type="text/babel" data-presets="es2015,react">
   function handleColorChange(color) {
-    console.log('Color changed to ' + color + '!');
+    console.log(`Color changed to ${color}!`);
   }
 
-  document.addEventListener('DOMContentLoaded', function() {
-    var props = { handleColorChange: handleColorChange };
+  $(() => {
+    const props = { handleColorChange };
 
     ReactDOM.render(
-      React.createElement(styleguide.ColorPicker, props),
+      <styleguide.ColorPicker {...props} />,
       document.getElementById('color-picker-container')
     );
   });
@@ -390,16 +474,16 @@
 <code class="language-markup">
 &lt;div id=&quot;color-picker-container&quot;&gt;&lt;&#x2F;div&gt;
 
-&lt;script type=&quot;text&#x2F;javascript&quot;&gt;
+&lt;script type=&quot;text&#x2F;babel&quot; data-presets=&quot;es2015,react&quot;&gt;
   function handleColorChange(color) {
-    console.log(&#x27;Color changed to &#x27; + color + &#x27;!&#x27;);
+    console.log(`Color changed to ${color}!`);
   }
 
-  document.addEventListener(&#x27;DOMContentLoaded&#x27;, function() {
-    var props = { handleColorChange: handleColorChange };
+  $(() =&gt; {
+    const props = { handleColorChange };
 
     ReactDOM.render(
-      React.createElement(styleguide.ColorPicker, props),
+      &lt;styleguide.ColorPicker {...props} &#x2F;&gt;,
       document.getElementById(&#x27;color-picker-container&#x27;)
     );
   });
@@ -772,6 +856,114 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
       </div>
     </section>
 
+    <section class="styleguide-section" id="info-pane">
+      <div class="meta">
+        <h2 class="styleguide-header">InfoPane</h2>
+      </div>
+      <div class="example">
+        
+<div id="info-pane-container"></div>
+
+<script type="text/babel" data-presets="es2015,react">
+  $(() => {
+    const props = {
+      name: 'A Different View',
+      description: `Now this is a story all about how
+        My life got flipped-turned upside down
+        And I'd like to take a minute
+        Just sit right there
+        I'll tell you how I became the prince of a town called Bel-Air
+
+        In west Philadelphia born and raised
+        On the playground was where I spent most of my days
+        Chillin' out maxin' relaxin' all cool
+        And all shooting some b-ball outside of the school
+        When a couple of guys who were up to no good
+        Started making trouble in my neighborhood
+        I got in one little fight and my mom got scared
+        She said, "You're movin' with your auntie and uncle in Bel-Air."`,
+      category: 'Fun',
+      isOfficial: true,
+      isPrivate: true,
+      footer: 'Athlete\'s Footer',
+      metadata: {
+        first: {
+          label: 'Updated',
+          content: 'Today'
+        },
+        second: {
+          label: 'View count',
+          content: 1
+        }
+      },
+      renderButtons: () => {
+        return <div className="btn btn-primary">Click me!</div>
+      }
+    };
+
+    ReactDOM.render(
+      <styleguide.InfoPane {...props} />,
+      document.getElementById('info-pane-container')
+    );
+  });
+</script>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;info-pane-container&quot;&gt;&lt;&#x2F;div&gt;
+
+&lt;script type=&quot;text&#x2F;babel&quot; data-presets=&quot;es2015,react&quot;&gt;
+  $(() =&gt; {
+    const props = {
+      name: &#x27;A Different View&#x27;,
+      description: `Now this is a story all about how
+        My life got flipped-turned upside down
+        And I&#x27;d like to take a minute
+        Just sit right there
+        I&#x27;ll tell you how I became the prince of a town called Bel-Air
+
+        In west Philadelphia born and raised
+        On the playground was where I spent most of my days
+        Chillin&#x27; out maxin&#x27; relaxin&#x27; all cool
+        And all shooting some b-ball outside of the school
+        When a couple of guys who were up to no good
+        Started making trouble in my neighborhood
+        I got in one little fight and my mom got scared
+        She said, &quot;You&#x27;re movin&#x27; with your auntie and uncle in Bel-Air.&quot;`,
+      category: &#x27;Fun&#x27;,
+      isOfficial: true,
+      isPrivate: true,
+      footer: &#x27;Athlete\&#x27;s Footer&#x27;,
+      metadata: {
+        first: {
+          label: &#x27;Updated&#x27;,
+          content: &#x27;Today&#x27;
+        },
+        second: {
+          label: &#x27;View count&#x27;,
+          content: 1
+        }
+      },
+      renderButtons: () =&gt; {
+        return &lt;div className=&quot;btn btn-primary&quot;&gt;Click me!&lt;&#x2F;div&gt;
+      }
+    };
+
+    ReactDOM.render(
+      &lt;styleguide.InfoPane {...props} &#x2F;&gt;,
+      document.getElementById(&#x27;info-pane-container&#x27;)
+    );
+  });
+&lt;&#x2F;script&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
     <!-- TEMPLATE_TOKEN (Don't remove this. Like seriously.) -->
   </div>
 </div>
@@ -785,7 +977,7 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
     <script type="text/javascript" src="javascripts/vendor/tether-a78651e0.js"></script>
     <script type="text/javascript" src="javascripts/vendor/shepherd-b8acca87.js"></script>
 
-    <script type="text/javascript" src="js/socrata-components-29b6d73a.js"></script>
+    <script type="text/javascript" src="js/socrata-components-6a98b5c0.js"></script>
     <script type="text/javascript" src="javascripts/all-df92dbb1.js"></script>
   </body>
 </html>

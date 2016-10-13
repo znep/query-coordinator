@@ -1,5 +1,5 @@
 /*!
- * Socrata Styleguide v7.4.0
+ * Socrata Styleguide v7.7.1
  * Copyright 2015-2016 undefined
  * Licensed under undefined
  */
@@ -46,15 +46,15 @@ html {
 
 @font-face {
   font-family: "socrata-icons";
-  src: url("../fonts/socrata-icons.1475885496-46728c3a.eot");
-  src: url("../fonts/socrata-icons.1475885496-46728c3a.eot?#iefix") format("eot"), url("../fonts/socrata-icons.1475885496-298b6beb.woff2") format("woff2"), url("../fonts/socrata-icons.1475885496-840a00dc.woff") format("woff"), url("../fonts/socrata-icons.1475885496-6a787098.ttf") format("truetype"), url("../fonts/socrata-icons.1475885496-6f12bb72.svg#socrata-icons") format("svg");
+  src: url("../fonts/socrata-icons.1476395886-81bbb56a.eot");
+  src: url("../fonts/socrata-icons.1476395886-81bbb56a.eot?#iefix") format("eot"), url("../fonts/socrata-icons.1476395886-0892abaa.woff2") format("woff2"), url("../fonts/socrata-icons.1476395886-d20e1c3f.woff") format("woff"), url("../fonts/socrata-icons.1476395886-18a445c7.ttf") format("truetype"), url("../fonts/socrata-icons.1476395886-892de624.svg#socrata-icons") format("svg");
   font-weight: normal;
   font-style: normal; }
 
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
   @font-face {
     font-family: "socrata-icons";
-    src: url("../fonts/socrata-icons.1475885496-6f12bb72.svg#socrata-icons") format("svg"); } }
+    src: url("../fonts/socrata-icons.1476395886-892de624.svg#socrata-icons") format("svg"); } }
 
 .icon-add-collaborator::before,
 .icon-add::before,
@@ -1256,24 +1256,6 @@ ol > li ol {
   margin: 1px 0; }
 
 /* Forms */
-::-webkit-input-placeholder {
-  color: #c8c8c8;
-  opacity: 1; }
-
-:-moz-placeholder {
-  /* Firefox 18- */
-  color: #c8c8c8;
-  opacity: 1; }
-
-::-moz-placeholder {
-  /* Firefox 19+ */
-  color: #c8c8c8;
-  opacity: 1; }
-
-:-ms-input-placeholder {
-  color: #c8c8c8;
-  opacity: 1; }
-
 body.modal-open {
   overflow: hidden; }
 
@@ -2513,10 +2495,7 @@ body.modal-open {
 .dropdown-container {
   display: inline-block;
   box-sizing: border-box;
-  position: relative;
-  overflow: hidden; }
-  .dropdown-container.dropdown-opened {
-    overflow: visible; }
+  position: relative; }
 
 .dropdown-invisible {
   visibility: hidden; }
@@ -2545,7 +2524,8 @@ body.modal-open {
   .dropdown-placeholder.dropdown-selected {
     color: #2c2c2c; }
   .dropdown-focused .dropdown-placeholder {
-    border-color: #00be9b; }
+    border-color: #e6f9f5;
+    outline: solid 2px #00be9b; }
   .dropdown-disabled .dropdown-placeholder {
     background: #c8c8c8;
     border-color: #adadad;
@@ -2572,7 +2552,6 @@ body.modal-open {
 .dropdown-options-list {
   position: fixed;
   z-index: 999;
-  overflow: auto;
   border: solid 1px #c8c8c8; }
   .dropdown-options-list .picklist {
     border: none; }
@@ -2627,7 +2606,7 @@ body.modal-open {
       align-self: flex-end;
   z-index: 999; }
   .color-picker .hidden {
-    display: none; }
+    visibility: hidden; }
 
 .color-picker-overlay {
   position: fixed;
@@ -2648,6 +2627,9 @@ body.modal-open {
   transition: border-color 0.15s ease-in; }
   .color-frame:hover {
     border-color: #288dc1; }
+  .color-frame:focus {
+    border-color: #e6f9f5;
+    outline: solid 2px #00be9b; }
   .color-frame .caret {
     display: -ms-inline-flexbox;
     display: inline-flex;
@@ -2676,6 +2658,8 @@ body.modal-open {
     top: -121px; }
   .color-buckets-container input {
     width: 100%; }
+    .color-buckets-container input:focus {
+      outline: solid 2px #00be9b; }
 
 .color-buckets {
   display: -ms-flexbox;
@@ -2689,14 +2673,16 @@ body.modal-open {
   width: 20px;
   height: 20px;
   margin-right: 5px;
-  margin-bottom: 5px; }
+  margin-bottom: 5px;
+  border: solid 1px #fff; }
 
 .color-24 .color-bucket:nth-child(8n) {
   margin-right: 0; }
 
 .selected-color,
-.color-bucket:hover {
-  outline: 2px solid #71a8e7; }
+.color-bucket:hover,
+.color-bucket:focus {
+  outline: 2px solid #00be9b; }
 
 /* Base Palette Colors */
 /* Colors light version */
@@ -3165,4 +3151,78 @@ body.modal-open {
   .filter-bar-container .filter-bar-column-option [class^="icon"] {
     margin-right: 8px; }
 
-/*# sourceMappingURL=styleguide-no-tag-level.css-b0c4f1c6.map */
+/* Base Palette Colors */
+/* Colors light version */
+/* Colors dark version */
+/* Greys */
+/* Shades of Grey */
+/* Color Vars */
+/* Button Colors */
+/* Header */
+/* Settings Panel */
+/* Backgrounds */
+.info-pane {
+  background: #fff;
+  width: 100%; }
+  .info-pane .container {
+    margin-top: 0;
+    max-width: 68em; }
+  .info-pane h1.info-pane-name {
+    margin: 0;
+    margin-right: 11px;
+    display: inline;
+    font-size: 29px;
+    font-weight: 300;
+    letter-spacing: -0.5px; }
+    .info-pane h1.info-pane-name .icon-private {
+      color: #e6af00;
+      padding-right: 4px; }
+  .info-pane .entry-header.dataset-landing-page-header {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap; }
+    .info-pane .entry-header.dataset-landing-page-header .entry-title {
+      -ms-flex: 1 1 auto;
+          flex: 1 1 auto;
+      width: auto;
+      margin-right: 20px; }
+      .info-pane .entry-header.dataset-landing-page-header .entry-title .icon-official {
+        margin-right: 4px;
+        width: 13px; }
+      .info-pane .entry-header.dataset-landing-page-header .entry-title .tag-category {
+        margin-right: 0; }
+    .info-pane .entry-header.dataset-landing-page-header .entry-actions {
+      -ms-flex: 0 1 auto;
+          flex: 0 1 auto; }
+  .info-pane .entry-main .entry-description-container .entry-description {
+    display: inline-block;
+    line-height: 24px;
+    max-width: 100%;
+    word-wrap: break-word; }
+  .info-pane .entry-content .entry-meta.updated .meta-title {
+    padding-top: 0; }
+  @media (max-width: 420px) {
+    .info-pane .entry-header .entry-actions {
+      -ms-flex: 1 0 auto;
+          flex: 1 0 auto; } }
+
+.collapsible {
+  overflow: hidden; }
+  .collapsible .collapse-toggle.more {
+    display: none; }
+  .collapsible .collapse-toggle.less {
+    display: inherit; }
+  .collapsible[data-collapsed] .collapse-toggle.more {
+    display: inherit; }
+  .collapsible[data-collapsed] .collapse-toggle.less {
+    display: none; }
+  .collapsible .collapse-toggle {
+    padding: 0;
+    text-decoration: underline;
+    color: #919191;
+    cursor: pointer;
+    border: none;
+    background-color: #fff; }
+
+/*# sourceMappingURL=styleguide-no-tag-level.css-2866ff72.map */

@@ -356,7 +356,7 @@ function SvgPieChart($element, vif) {
     //
     // horizontal layout
     if (width > height) {
-      outerWidth = height - (MAX_HORIZONTAL_LEGEND_SIZE / 2);
+      outerWidth = Math.max(0, width - (MAX_HORIZONTAL_LEGEND_SIZE / 2));
     // vertical layout
     } else {
 

@@ -690,6 +690,11 @@ blist.datasetControls.hookUpPublishing = function($container) {
 
     e.preventDefault();
 
+    // If this button has been disabled elsewhere just return.
+    if ($(e.target).hasClass('disabled')) {
+      return;
+    }
+
     // First check if publishing is available (i.e. if geo- or region-coding is done)
     blist.dataset.getPublishingAvailable(function(isAvail, unavailMsg) {
       if (isAvail) {

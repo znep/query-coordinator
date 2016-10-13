@@ -2339,20 +2339,47 @@
     },
     getPublishingAvailable: function(successCallback) {
       var ds = this;
-      if (ds.columnsForType('location').length < 1) {
-        successCallback(true);
-        return;
-      }
-
-      ds.makeRequest({
-        url: '/api/geocoding/' + ds.id + '.json',
-        params: {
-          method: 'pending'
-        },
-        success: function(results) {
-          successCallback(results.view < 1, $.t('controls.grid.geocodes_pending'));
+      if (!ds.newBackend) {
+        if (ds.columnsForType('location').length < 1) {
+          successCallback(true);
+          return;
         }
-      });
+
+        ds.makeRequest({
+          url: '/api/geocoding/{0}.json'.format(ds.id),
+          params: {
+            method: 'pending'
+          },
+          success: function(results) {
+            successCallback(results.view < 1, $.t('controls.grid.geocodes_pending'));
+          },
+          error: function() {
+            successCallback(false, $.t('controls.grid.unknown_publishability_available_error'));
+          }
+        });
+      } else {
+        // EN-10105 - Show “you can’t publish this! It’s geocoding!” message on grid view
+        //
+        //
+        // Note that successCallback takes arguments:
+        //
+        // 1. boolean indicating whether publishing is available
+        // 2. an error message to display if publishing is not available
+        //
+        // TODO: check for computed columns
+        // or at least point and number columns?
+        ds.makeRequest({
+          url: '/api/views/{0}/replication.json'.format(ds.id),
+          success: function(replicationStatus) {
+            var computationUpToDate = _.get(replicationStatus, 'asynchronous_computation_up_to_date', true);
+
+            successCallback(computationUpToDate, $.t('controls.grid.asynchronous_computation_pending'));
+          },
+          error: function() {
+            successCallback(false, $.t('controls.grid.unknown_publishability_available_error'));
+          }
+        });
+      }
     },
 
     getBackups: function(callback) {

@@ -629,42 +629,79 @@ blist.datasetControls.editPublishedMessage = function() {
 };
 
 blist.datasetControls.hookUpPublishing = function($container) {
+  var $publishButton = $container.find('.publish');
+
   $container.find('.unpublished').socrataTitleTip();
   $container.find('.snapshotted').socrataTitleTip();
-  $container.find('.publish').click(function(e) {
-    e.preventDefault();
-    if ($(e.target).hasClass('disabled')) {
-      return;
-    }
-    blist.dataset.publish(function(pubDS) {
-        pubDS.redirectTo();
-      },
-      function(http) {
-        var errorMessage = $.t('screens.ds.dataset_status.error_publishing_html');
-        if ((JSON.parse((http || {}).responseText) || {}).message == 'Only unpublished datasets can be published.') {
-          errorMessage = $.t('screens.ds.dataset_status.error_publishing_unpublished');
-        }
+  $publishButton.click(function(e) {
 
-        $container.find('#datasetName').socrataTip({
-          content: $.tag({
-            tagName: 'p',
-            'class': 'errorMessage',
-            contents: errorMessage
-          }),
-          showSpike: false,
-          trigger: 'now'
-        });
-      });
+    function onAsyncComputationComplete() {
+
+      blist.dataset.publish(
+        function(pubDS) {
+          pubDS.redirectTo();
+        },
+        function(http) {
+          var errorMessage = $.t('screens.ds.dataset_status.error_publishing_html');
+          if ((JSON.parse((http || {}).responseText) || {}).message == 'Only unpublished datasets can be published.') {
+            errorMessage = $.t('screens.ds.dataset_status.error_publishing_unpublished');
+          }
+
+          $container.find('#datasetName').socrataTip({
+            content: $.tag2({
+              _: 'p',
+              className: 'errorMessage',
+              contents: errorMessage
+            }),
+            showSpike: false,
+            trigger: 'now'
+          });
+        }
+      );
+    }
+
+    function onAsyncComputationError(errorMessage) {
+
+      // Socrata Tip seems to refuse to re-render itself if you attempt to
+      // re-instantiate it on an object to which a Socrata Tip is already bound,
+      // so we will destroy it first (if it is a Socrata Tip) and then reinstantiate
+      // in order to persist the least amount of state possible.
+      if ($publishButton.isSocrataTip()) {
+        $publishButton.data('socrataTip').destroy();
+      }
+
+      // We use a defer here to escape the stack and allow the Socrata Tip to
+      // destroy itself before attempting to reinstantiate it.
+      _.defer(
+        function() {
+
+          $publishButton.socrataTip({
+            content: $.tag2({
+              _: 'p',
+              className: 'errorMessage',
+              contents: errorMessage
+            }),
+            showSpike: false,
+            trigger: 'now'
+          });
+        }
+      );
+    }
+
+    e.preventDefault();
+
+    // First check if publishing is available (i.e. if geo- or region-coding is done)
+    blist.dataset.getPublishingAvailable(function(isAvail, unavailMsg) {
+      if (isAvail) {
+        onAsyncComputationComplete();
+      } else {
+        onAsyncComputationError(unavailMsg);
+      }
+    });
   });
 
-  if ($container.find('.publish').exists()) {
-    blist.dataset.getPublishingAvailable(function(isAvail, unavailMsg) {
-      var $pub = $container.find('.publish');
-      if (!isAvail) {
-        $pub.addClass('disabled').attr('title', unavailMsg);
-      }
-      $pub.socrataTitleTip();
-    });
+  if ($publishButton.exists()) {
+    $publishButton.socrataTitleTip();
   }
 
   if (!blist.dataset.isPublished()) {

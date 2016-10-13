@@ -122,7 +122,20 @@
           // Unclear why format options aren't inherited to begin with.
           if (parView && $.isEmptyObject(col.format)) {
             var parCol = parView.columnForIdentifier(col.fieldName);
-            if (!$.isEmptyObject(parCol.format)) {
+
+            // EN-9556
+            //
+            // Note that sometimes parCol is not able to be found (e.g. if the
+            // fieldName has been changed in the parent dataset but that change
+            // did not get propagated to the child/derived views somehow, so we
+            // need to only attempt to read parCol.format if parCol is an object,
+            // otherwise the resulting TypeError for trying to read .format of
+            // null causes execution to stop and the chart to not be rendered.
+            //
+            // For some reason, a TypeError here does not get exposed in the
+            // console as an error, so it must be being swallowed somewhere
+            // above here.
+            if ($.isPlainObject(parCol) && !$.isEmptyObject(parCol.format)) {
               col.format = $.extend({}, parCol.format, col.format);
             }
           }

@@ -20,7 +20,10 @@ RSpec.describe 'undo/redo', type: :feature, js: true do
     stub_logged_in_user
     stub_sufficient_rights
     stub_core_view('hasb-lock')
+    stub_current_domain
+
     visit '/s/magic-thing/hasb-lock/edit'
+
     @original_story_json = current_story_json
     @undo_btn = page.find('.undo-btn')
     @redo_btn = page.find('.redo-btn')

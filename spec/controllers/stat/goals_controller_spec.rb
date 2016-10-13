@@ -7,6 +7,7 @@ RSpec.describe Stat::GoalsController, type: :controller do
 
   before do
     stub_logged_in_user
+    stub_current_domain
   end
 
   describe '#show' do

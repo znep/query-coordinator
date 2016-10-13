@@ -7,6 +7,8 @@ class StoriesController < ApplicationController
 
   FAKE_DIGEST = 'the contents of the digest do not matter'
 
+  before_action :setup_site_chrome_prerequisites
+
   after_action :allow_iframe, only: :tile
   after_action :allow_origin, only: :tile
 
@@ -205,6 +207,12 @@ class StoriesController < ApplicationController
   end
 
   private
+
+  # +before_filter+
+  def setup_site_chrome_prerequisites
+    ::RequestStore.store[:current_user] ||= current_user
+    ::RequestStore.store[:current_domain] ||= current_domain['cname']
+  end
 
   def copy_attachments(story)
     story.blocks.map do |block|

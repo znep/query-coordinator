@@ -6,7 +6,10 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
     stub_logged_in_user
     stub_sufficient_rights
     stub_core_view('hasb-lock')
+    stub_current_domain
+
     visit '/s/magic-thing/hasb-lock/edit'
+
     @blocks = page.all('.user-story .block-edit')
   end
 

@@ -18,6 +18,8 @@ RSpec.describe 'settings panel', type: :feature, js: true do
         'id' => 'tugg-xxxx'
       }
     })
+    stub_current_domain
+
     visit '/s/magic-thing/hasb-lock/edit'
   end
 

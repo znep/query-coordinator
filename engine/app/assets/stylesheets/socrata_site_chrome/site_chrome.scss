@@ -5,8 +5,8 @@
 
 @import 'styleguide-dropdown';
 
-// TODO - find a good way to add only the current_template styles (default vs rally)
-@import 'default/header';
+// TODO - find a good way to add only the current_template styles (evergreen vs rally)
+@import 'evergreen/header';
 
 @import 'rally/header';
 @import 'rally/small_header';

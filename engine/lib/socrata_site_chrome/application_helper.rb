@@ -314,7 +314,7 @@ module SocrataSiteChrome
       )
     end
 
-    # Returns template name - either 'default' or 'rally'
+    # Returns template name - either 'evergreen' (default) or 'rally'
     # Users can override with query parameter `?site_chrome_template=rally`
     def current_template
       template = (request.try(:query_parameters).dig(:site_chrome_template) ||
@@ -323,7 +323,7 @@ module SocrataSiteChrome
       when 'rally'
         'rally'
       else
-        'default'
+        'evergreen'
       end
     end
 

@@ -2,7 +2,7 @@ $banner_padding: 20px;
 $banner_height: calc(#{$header_logo_height} + #{$banner_padding});
 $searchbox-height: 36px;
 
-header#site-chrome-header[template="default"] {
+header#site-chrome-header[template="evergreen"] {
   font-family: $font_family, "Open Sans", Helvetica, Arial, "sans-serif";
 
   .banner {

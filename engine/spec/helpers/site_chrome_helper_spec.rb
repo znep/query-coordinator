@@ -567,13 +567,13 @@ describe SocrataSiteChrome::ApplicationHelper do
   end
 
   describe '#current_template' do
-    it 'returns "default" by default' do
-      expect(helper.current_template).to eq('default')
+    it 'returns "evergreen" by default' do
+      expect(helper.current_template).to eq('evergreen')
     end
 
-    it 'returns "default" if an invalid string is set in the url param' do
+    it 'returns "evergreen" if an invalid string is set in the url param' do
       helper.request.query_parameters[:site_chrome_template] = 'asdf'
-      expect(helper.current_template).to eq('default')
+      expect(helper.current_template).to eq('evergreen')
     end
 
     it 'returns "rally" if it is set in the url param, regardless of type' do

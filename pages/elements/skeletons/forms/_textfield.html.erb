@@ -1,2 +1,7 @@
+<% classes = [] if locals[:classes].nil? %>
+<% value = "" if locals[:value].nil? %>
+<% placeholder_text = "" if locals[:placeholder_text].nil? %>
+<% attributes = [] if locals[:attributes].nil? %>
+
 <label class="<%= label_position %>"><%= label_text %></label>
-<input class="text-input" type="text" placeholder="<%= placeholder_text %>"/>
+<input class="text-input <%= classes %>" type="text" placeholder="<%= placeholder_text %>" value="<%= value %>" <%= attributes.join(' ') %>>

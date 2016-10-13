@@ -88,7 +88,6 @@ Aborted.'
     git.add(SemVer.find_file)
     git.commit("Bump version #{new_semver}")
 
-
     # 3- Apply tag.
     dialog.infobox('Tagging release...')
     git.add_tag(new_semver.to_s.tr('v', ''))
@@ -96,6 +95,18 @@ Aborted.'
     # 4- Push origin
     dialog.infobox('Pushing to origin/release...')
     git.push('origin', RELEASE_BRANCH_NAME, tags: ACTUALLY_PUSH_TAG, force: true)
+
+    # 5- Merge release back to master
+    dialog.infobox("Merging #{RELEASE_BRANCH_NAME} back to master...")
+    git.checkout('master')
+    git.pull('origin', 'master')
+    if new_semver > SemVer.find
+      git.merge("origin/#{RELEASE_BRANCH_NAME}")
+      git.push('origin', 'master')
+    else
+      dialog.msgbox("Did not merge #{RELEASE_BRANCH_NAME} back to master; compare semver on each branch.")
+    end
+    git.checkout(RELEASE_BRANCH_NAME)
   end
 
   def wait_for_jenkins_build

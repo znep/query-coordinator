@@ -1,0 +1,105 @@
+@import "variables/colors";
+
+.info-pane {
+  background: $white;
+  width: 100%;
+
+  .container {
+    margin-top: 0;
+    max-width: 68em;
+  }
+
+  h1.info-pane-name {
+    margin: 0;
+    margin-right: 11px;
+    display: inline;
+    font-size: 29px;
+    font-weight: 300;
+    letter-spacing: -0.5px;
+
+    .icon-private {
+      color: $warning;
+      padding-right: 4px;
+    }
+  }
+
+  .entry-header.dataset-landing-page-header {
+    display: flex;
+    flex-wrap: wrap;
+
+    .entry-title {
+      flex: 1 1 auto;
+      width: auto;
+      margin-right: 20px;
+
+      .icon-official {
+        margin-right: 4px;
+        width: 13px;
+      }
+
+      .tag-category {
+        margin-right: 0;
+      }
+    }
+
+    .entry-actions {
+      flex: 0 1 auto;
+    }
+  }
+
+  .entry-main {
+    .entry-description-container {
+      .entry-description {
+        display: inline-block;
+        line-height: 24px;
+        max-width: 100%;
+        word-wrap: break-word;
+      }
+    }
+  }
+
+  .entry-content {
+    .entry-meta.updated .meta-title {
+      padding-top: 0;
+    }
+  }
+
+  @media(max-width: $small) {
+    .entry-header {
+      .entry-actions {
+        flex: 1 0 auto;
+      }
+    }
+  }
+}
+
+.collapsible {
+  overflow: hidden;
+
+  .collapse-toggle.more {
+    display: none;
+  }
+
+  .collapse-toggle.less {
+    display: inherit;
+  }
+
+  &[data-collapsed] {
+    .collapse-toggle.more {
+      display: inherit;
+    }
+
+    .collapse-toggle.less {
+      display: none;
+    }
+  }
+
+  .collapse-toggle {
+    padding: 0;
+    text-decoration: underline;
+    color: $light-grey-1;
+    cursor: pointer;
+    border: none;
+    background-color: $white;
+  }
+}

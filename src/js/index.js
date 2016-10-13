@@ -13,6 +13,7 @@ import Picklist from './components/Picklist';
 import ViewCard from './components/ViewCard';
 import ExternalViewCard from './components/ViewCard/ExternalViewCard';
 import FilterBar from './components/FilterBar';
+import InfoPane from './components/InfoPane';
 
 module.exports = {
   attachTo: function(element) {
@@ -37,5 +38,6 @@ module.exports = {
   Picklist,
   ViewCard,
   ExternalViewCard,
-  FilterBar
+  FilterBar,
+  InfoPane
 };

@@ -24,5 +24,11 @@ export default {
     pickable_color: 'Pickable color',
     open_color_picker: 'Open Color Picker',
     with_currently_selected_color: 'with currently selected color'
+  },
+  info_pane: {
+    less: 'Less',
+    more: 'More',
+    official: 'Official',
+    private_notice: 'This view is private'
   }
 };

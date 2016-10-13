@@ -2,7 +2,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import React from 'react';
 
-import { translate } from '../../common/i18n';
+import { translate } from '../../common/I18n';
 import { DOWN, ENTER, ESCAPE, SPACE, isolateEventByKeys } from '../../common/keycodes';
 
 export const ColorPicker = React.createClass({

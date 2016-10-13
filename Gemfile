@@ -22,7 +22,7 @@ gem 'omniauth', '~> 1.2'
 gem 'omniauth-auth0', '~> 1.1'
 gem 'parser', '~> 2.3', '>= 2.3.0.6'
 gem 'rack'
-gem 'rails', '~> 4.2.6', :require => nil
+gem 'rails', '~> 4.2.7.1', :require => nil
 gem 'recaptcha', '0.3.5', :require => 'recaptcha/rails'
 gem 'redcarpet'
 gem 'request_store'

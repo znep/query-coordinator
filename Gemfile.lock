@@ -398,7 +398,7 @@ DEPENDENCIES
   omniauth-auth0 (~> 1.1)
   parser (~> 2.3, >= 2.3.0.6)
   rack
-  rails (~> 4.2.6)
+  rails (~> 4.2.7.1)
   rails-dom-testing
   rb-fsevent
   rb-readline
@@ -439,4 +439,4 @@ RUBY VERSION
    ruby 2.3.1p112
 
 BUNDLED WITH
-   1.13.1
+   1.13.3

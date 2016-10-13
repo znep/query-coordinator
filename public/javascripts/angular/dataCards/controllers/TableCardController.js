@@ -67,11 +67,6 @@ module.exports = function TableCardController(
         column.physicalDatatype
       );
 
-      // SIGH. I'd love to not do this, but we'd have to change a whole heap of table and
-      // table test code to support that sort of idealism. The main issue is that table
-      // expects its column information in a significant-order array.
-      column.fieldName = fieldName;
-
       result[fieldName] = column;
     }, {});
   }

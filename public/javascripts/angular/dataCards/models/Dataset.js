@@ -48,6 +48,7 @@ module.exports = function(
       _.forOwn(datasetMetadata.columns, function(columnBlob, columnFieldName) {
         columnBlob.isSystemColumn = isSystemColumnFieldName(columnFieldName);
         columnBlob.dataset = self;
+        columnBlob.fieldName = columnFieldName;
       });
 
       self.defineObservableProperty('columns', datasetMetadata.columns);

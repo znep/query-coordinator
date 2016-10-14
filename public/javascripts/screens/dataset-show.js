@@ -357,9 +357,11 @@ $(function() {
 
   $searchForm.submit(function(e) {
     e.preventDefault();
-    var searchText = $(e.currentTarget).find(':input').val();
+    var searchText = $(e.currentTarget).find(':input.searchField').val();
+    var inDatasetSearch = $(e.currentTarget).find(':input[name=inDatasetSearch]').val() === 'true';
     var md = $.extend(true, {}, blist.dataset.metadata);
     md.jsonQuery.search = searchText;
+    md.inDatasetSearch = inDatasetSearch;
     blist.dataset.update({
       metadata: md
     });

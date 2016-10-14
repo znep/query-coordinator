@@ -92,7 +92,7 @@
       // should be rare and small, so don't bother yet
       var cell = parRow.data[parCol.lookup];
       return _.detect(cell || {}, function(sr) {
-        return sr.id == id;
+        return sr.id === id;
       });
     },
 
@@ -177,7 +177,7 @@
       // If we aren't complete, but can grab data from our parent, pre-emptively do so
       // Also exclude client side filtering on the catalog dataset because its filtering is somewhat unusual.
       if (rs._dataset.resourceName !== 'datasets' && !rs._isComplete && (rs._parent || {})._isComplete &&
-        rs._jsonQuery.search == rs._parent._jsonQuery.search &&
+        rs._jsonQuery.search === rs._parent._jsonQuery.search &&
         _.isEmpty(rs._jsonQuery.group) && _.isEmpty(rs._parent._jsonQuery.group)) {
         var newRows = _.map(_.select(rs._parent._rows, function(rowItem) {
           return rs._doesBelong(rowItem);
@@ -221,7 +221,7 @@
           var a = left.sorts;
           var b = right.sorts;
           var sortIndex = 0;
-          while (sortIndex < a.length && a[sortIndex] == b[sortIndex]) {
+          while (sortIndex < a.length && a[sortIndex] === b[sortIndex]) {
             sortIndex++;
           }
           // Nulls always sort last
@@ -231,7 +231,7 @@
           if ($.isBlank(b[sortIndex])) {
             return -1;
           }
-          return (sortIndex == a.length ? 0 : ((a[sortIndex] < b[sortIndex] ? -1 : 1) * (sorts[sortIndex].ascending ? 1 : -1)));
+          return (sortIndex === a.length ? 0 : ((a[sortIndex] < b[sortIndex] ? -1 : 1) * (sorts[sortIndex].ascending ? 1 : -1)));
         }), 'row');
         rs._addRows(newRows, 0, true);
       }
@@ -261,7 +261,7 @@
       var now = new Date().getTime();
 
       var doLoaded = function() {
-        if (loaded.length > 0 || rs._totalCount == 0) {
+        if (loaded.length > 0 || rs._totalCount === 0) {
           if (_.isFunction(successCallback)) {
             successCallback(loaded);
           }
@@ -511,7 +511,7 @@
       // Check all loaded rows for the primary key candidate.
       var row = _.detect(rs._rows, function(r) {
         var unchanged = !r.changed[primaryKeyColumnID];
-        var alreadyHasPrimaryKey = r.data[primaryKeyColumnID] == candidatePrimaryKey;
+        var alreadyHasPrimaryKey = r.data[primaryKeyColumnID] === candidatePrimaryKey;
 
         return unchanged && alreadyHasPrimaryKey;
       });
@@ -663,7 +663,7 @@
 
     markRow: function(markType, value, origRow) {
       var row = this.rowForID((origRow || {}).id);
-      if ($.isBlank(row) || (row.sessionMeta || {})[markType] == value) {
+      if ($.isBlank(row) || (row.sessionMeta || {})[markType] === value) {
         return;
       }
 
@@ -743,7 +743,7 @@
                   ilViews[i] = rs._dataset.cleanCopy();
                 }
                 var col = _.detect(ilViews[i].columns, function(c) {
-                  return c.fieldName == curCol.fieldName;
+                  return c.fieldName === curCol.fieldName;
                 });
                 col.format.aggregate = a;
               }
@@ -962,6 +962,12 @@
         'X-Socrata-Federation': 'Honey Badger'
       });
       var rs = this;
+
+      // This parameter has no effect except for NBE datasets, but it's harmless to send with OBE queries.
+      if ($.deepGet(rs, '_curMetaReqMeta', 'metadata', 'inDatasetSearch') === true) {
+        args.params.$$query_timeout_seconds =
+          $.deepGet(blist, 'configuration', 'inDatasetSearchQueryTimeoutSeconds') || 30;
+      }
       if (rs._dataset._useSODA2) {
         rs._makeSODA2Request(args);
       } else {
@@ -981,7 +987,7 @@
           if ($.subKeyDefined(d, 'metadata.jsonQuery.select')) {
             _.each(d.metadata.jsonQuery.select, function(s) {
               var col = _.detect(d.columns, function(c) {
-                s.columnFieldName == c.fieldName;
+                s.columnFieldName === c.fieldName;
               });
               if ($.isBlank(col)) {
                 return;
@@ -1024,9 +1030,7 @@
       var baseQueryIsQuery = rs._dataset.id === rs._dataset._queryBase.id;
 
       // Need to take the difference from queryBase, and adjust columns if necessary
-      var adjSearchString = rs._jsonQuery.search == baseQuery.search ?
-        '' :
-        rs._jsonQuery.search;
+      var adjSearchString = rs._jsonQuery.search === baseQuery.search ? '' : rs._jsonQuery.search;
 
       if (!$.isBlank(adjSearchString)) {
         args.params.$search = adjSearchString;
@@ -1065,7 +1069,6 @@
             (args.params.$where + ' and ' + soqlWhere) : soqlWhere;
         }
       }
-
 
       if (!_.isEmpty(rs._jsonQuery.having)) {
         var soqlHaving = '';
@@ -1137,8 +1140,7 @@
 
         var sel = (args.params.$select || '').replace(/:\*,\*/, '');
 
-        args.params.$select = !$.isBlank(sel) ?
-          (sel + ',' + groupSelect) : groupSelect;
+        args.params.$select = !$.isBlank(sel) ? (sel + ',' + groupSelect) : groupSelect;
       }
 
       if (!_.isEmpty(rs._jsonQuery.order)) {
@@ -1264,7 +1266,7 @@
         if (!$.isBlank(result.meta)) {
           // If another meta request started while this was loading, then
           // skip this one, and only use the latest
-          if (rs._curMetaReq != reqId) {
+          if (rs._curMetaReq !== reqId) {
             if (_.isFunction(errorCallback)) {
               _.defer(function() {
                 errorCallback({
@@ -1294,7 +1296,7 @@
                 // Is it a group function column?
                 var indexOfGroupingCol = c.fieldName.indexOf('__');
                 var realC = rs._dataset.columnForFieldName(c.fieldName.slice(0, indexOfGroupingCol));
-                return !$.isBlank(realC) && realC.format.group_function == blist.datatypes.groupFunctionFromSoda2(c.fieldName.slice(indexOfGroupingCol + 2));
+                return !$.isBlank(realC) && realC.format.group_function === blist.datatypes.groupFunctionFromSoda2(c.fieldName.slice(indexOfGroupingCol + 2));
               });
             }
           } else {
@@ -1350,7 +1352,7 @@
           });
 
           var hasSystemIDColumn = _.any(newCols, function(c) {
-            return c && c.fieldName == ':id';
+            return c && c.fieldName === ':id';
           });
 
           var hasIDColumn = !$.isBlank(rs._dataset.metaColumnForName('id'));
@@ -1510,7 +1512,7 @@
         // If a row already exists at this index, clean it out
         var oldRow;
         if (hasIndex) {
-          if (!$.isBlank(rs._rows[ind]) && ($.isBlank(newRow) || newRow.id != rs._rows[ind].id)) {
+          if (!$.isBlank(rs._rows[ind]) && ($.isBlank(newRow) || newRow.id !== rs._rows[ind].id)) {
             oldRow = rs._rows[ind];
             oldRows.push(oldRow);
             delete rs._rows[ind];
@@ -1539,7 +1541,7 @@
         adjRows.push(newRow);
       });
 
-      rs._isComplete = rs._totalCount == rs._loadedCount;
+      rs._isComplete = rs._totalCount === rs._loadedCount;
       if (oldRows.length > 0) {
         rs.trigger('row_change', [oldRows, true]);
       }
@@ -1576,7 +1578,7 @@
       }
 
       var agg = _.detect(col.renderType.aggregates, function(a) {
-        return blist.datatypes.aggregateFromSoda2(a.value) == aggName;
+        return blist.datatypes.aggregateFromSoda2(a.value) === aggName;
       });
       if ($.isBlank(agg)) {
         return null;
@@ -1691,7 +1693,7 @@
           return !skipMissingCols;
         }
 
-        if (c.isMeta && c.name == 'meta' && _.isString(newVal)) {
+        if (c.isMeta && c.name === 'meta' && _.isString(newVal)) {
           newVal = JSON.parse(newVal || 'null');
         }
 
@@ -1712,18 +1714,18 @@
           newVal = c.renderType.fromSoQLValue(newVal, c);
         }
 
-        if (c.renderTypeName == 'checkbox' && newVal === false ||
-          c.renderTypeName == 'stars' && newVal === 0) {
+        if (c.renderTypeName === 'checkbox' && newVal === false ||
+          c.renderTypeName === 'stars' && newVal === 0) {
           newVal = null;
         }
 
-        if (c.renderTypeName == 'geospatial' && r[dataset._useSODA2 ? ':id' : 'sid']) {
+        if (c.renderTypeName === 'geospatial' && r[dataset._useSODA2 ? ':id' : 'sid']) {
           newVal = $.extend({}, newVal, {
             row_id: r[dataset._useSODA2 ? ':id' : 'sid']
           });
         }
 
-        if (c.dataTypeName == 'nested_table' && _.isArray(newVal)) {
+        if (c.dataTypeName === 'nested_table' && _.isArray(newVal)) {
           newVal = _.map(newVal, function(cr) {
             return RowSet.translateRow(cr, dataset, rowSet, c);
           });
@@ -1862,7 +1864,7 @@
       if (_.isArray(expr.children)) {
         var leftoverChildren = _.select(expr.children, processOther);
         // If all children are added, then just add this expr, not each child
-        if (leftoverChildren.length == expr.children.length) {
+        if (leftoverChildren.length === expr.children.length) {
           return true;
         } else if (leftoverChildren.length > 0) {
           leftoverLeaves = leftoverLeaves.concat(leftoverChildren);
@@ -1878,16 +1880,16 @@
       curLeaves = _.reject(curLeaves, function(cl) {
         // If we found a matching leaf, make sure the parents of each have
         // the proper relationship
-        if (cl._key == expr._key) {
-          var parMatch = cl._parent == baseFC && expr._parent == otherFC &&
-            baseFC.operator == otherFC.operator ||
+        if (cl._key === expr._key) {
+          var parMatch = cl._parent === baseFC && expr._parent === otherFC &&
+            baseFC.operator === otherFC.operator ||
             $.isBlank(cl._parent) && $.isBlank(expr._parent) ||
-            $.isBlank(cl._parent) && expr._parent.operator.toLowerCase() == 'and' ||
-            $.isBlank(expr._parent) && cl._parent.operator.toLowerCase() == 'or';
+            $.isBlank(cl._parent) && expr._parent.operator.toLowerCase() === 'and' ||
+            $.isBlank(expr._parent) && cl._parent.operator.toLowerCase() === 'or';
           var k;
           if (!parMatch) {
             if ($.isBlank(cl._parent) || $.isBlank(expr._parent) ||
-              cl._parent.operator != expr._parent.operator) {
+              cl._parent.operator !== expr._parent.operator) {
               return false;
             }
             if ($.isBlank(cl._parent._key)) {
@@ -1929,13 +1931,13 @@
         var p = n._parent;
         var found = [];
         nodes = _.reject(nodes, function(nn) {
-          if (nn._parent == p) {
+          if (nn._parent === p) {
             found.push(nn);
             return true;
           }
           return false;
         });
-        if (found.length == p.children.length) {
+        if (found.length === p.children.length) {
           result.push(p);
           madeChange = true;
         } else {
@@ -1948,10 +1950,10 @@
 
     // Added operator under AND, removed under OR are good
     return _.all(curLeaves, function(cl) {
-        return !$.isBlank(cl._parent) && cl._parent.operator.toLowerCase() == 'or';
+        return !$.isBlank(cl._parent) && cl._parent.operator.toLowerCase() === 'or';
       }) &&
       _.all(leftoverLeaves, function(ll) {
-        return $.isBlank(ll._parent) || ll._parent.operator.toLowerCase() == 'and';
+        return $.isBlank(ll._parent) || ll._parent.operator.toLowerCase() === 'and';
       });
   }
 

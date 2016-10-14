@@ -104,6 +104,10 @@ nbe_timezone:
   description: Configures which time zone your datasets are presumed to be in when ingressing.
   known_properties:
   - name
+nbe_query_timeouts:
+  description: Configuration to specify timeout values in seconds for various NBE queries.
+  known_properties:
+  - in_dataset_search
 quotas:
   cs_wiki_admins: https://sites.google.com/a/socrata.com/client-services/5-site-configurations/allowing-extra-administrators
   cs_wiki_snapshots: https://sites.google.com/a/socrata.com/client-services/5-site-configurations/snapshot-counts

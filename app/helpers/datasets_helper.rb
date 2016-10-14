@@ -372,15 +372,15 @@ module DatasetsHelper
   end
 
   def configuration
-    hash = Hashie::Mash.new
-
-    hash.newChartsEnabled = true
-    hash.newMapsEnabled = module_enabled?(:new_maps)
-    hash.oldChartsForced = module_enabled?(:old_charts)
-    hash.newCharts!.newBarChart = module_enabled?(:newBarChart)
-    hash.newCharts!.newLineChart = module_enabled?(:newLineChart)
-
-    hash
+    Hashie::Mash.new.tap do |hash|
+      hash.newChartsEnabled = true
+      hash.newMapsEnabled = module_enabled?(:new_maps)
+      hash.oldChartsForced = module_enabled?(:old_charts)
+      hash.newCharts!.newBarChart = module_enabled?(:newBarChart)
+      hash.newCharts!.newLineChart = module_enabled?(:newLineChart)
+      hash.inDatasetSearchQueryTimeoutSeconds = CurrentDomain.domain.
+        default_configuration('nbe_query_timeouts').try(:properties).try(:in_dataset_search) || '30'
+    end
   end
 
   def sidebar_hidden

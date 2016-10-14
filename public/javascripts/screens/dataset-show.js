@@ -542,8 +542,11 @@ $(function() {
       if (!$.isBlank(unpub)) {
         unpub.redirectTo();
       } else {
-        var wasPending = false;
-        blist.dataset.makeUnpublishedCopy(function(copyView) {
+
+        var onAsyncComputationComplete = function() {
+          var wasPending = false;
+
+          var success = function(copyView) {
             if (wasPending) {
               datasetPageNS.sidebar.show('edit');
               $('.editAlert').find('.editPublished, .doneCopyingMessage').removeClass('hide');
@@ -551,19 +554,62 @@ $(function() {
             } else {
               copyView.redirectTo();
             }
-          },
-          function() {
-            $('.editAlert').find('.editPublished, .editMessage').addClass('hide');
-            $('.editAlert').find('.copyingMessage').removeClass('hide');
-            wasPending = true;
-          },
-          function() {
-            if (wasPending) {
-              datasetPageNS.sidebar.show('edit');
+          };
+
+          var pending = function() {
+              $('.editAlert').find('.editPublished, .editMessage').addClass('hide');
+              $('.editAlert').find('.copyingMessage').removeClass('hide');
+              wasPending = true;
+          };
+
+          var error = function() {
+              if (wasPending) {
+                datasetPageNS.sidebar.show('edit');
+              }
+              $('.editAlert').find('.errorMessage').removeClass('hide');
+              $('.editAlert').find('.copyingMessage, .editPublished, .editMessage').addClass('hide');
+          };
+
+          blist.dataset.makeUnpublishedCopy(success, pending, error);
+        };
+
+        var onAsyncComputationError = function(errorMessage) {
+          var $editPublishedButton = $('.editAlert').find('.editPublished');
+
+          // Socrata Tip seems to refuse to re-render itself if you attempt to
+          // re-instantiate it on an object to which a Socrata Tip is already bound,
+          // so we will destroy it first (if it is a Socrata Tip) and then reinstantiate
+          // in order to persist the least amount of state possible.
+          if ($editPublishedButton.isSocrataTip()) {
+            $editPublishedButton.data('socrataTip').destroy();
+          }
+
+          // We use a defer here to escape the stack and allow the Socrata Tip to
+          // destroy itself before attempting to reinstantiate it.
+          _.defer(
+            function() {
+              $editPublishedButton.socrataTip({
+                content: $.tag2({
+                  _: 'p',
+                  className: 'errorMessage',
+                  contents: errorMessage
+                }),
+                showSpike: false,
+                trigger: 'now'
+              });
             }
-            $('.editAlert').find('.errorMessage').removeClass('hide');
-            $('.editAlert').find('.copyingMessage, .editPublished, .editMessage').addClass('hide');
-          });
+          );
+        };
+
+        // First check if working copy creation is available (i.e. if geo- or region-coding is done)
+        var isPublished = true;
+        blist.dataset.isPublicationStageChangeAvailable(isPublished, function(isAvail, unavailMsg) {
+          if (isAvail) {
+            onAsyncComputationComplete();
+          } else {
+            onAsyncComputationError(unavailMsg);
+          }
+        });
       }
     });
   });

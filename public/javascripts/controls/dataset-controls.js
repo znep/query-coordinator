@@ -696,7 +696,8 @@ blist.datasetControls.hookUpPublishing = function($container) {
     }
 
     // First check if publishing is available (i.e. if geo- or region-coding is done)
-    blist.dataset.getPublishingAvailable(function(isAvail, unavailMsg) {
+    var isPublished = false;
+    blist.dataset.isPublicationStageChangeAvailable(isPublished, function(isAvail, unavailMsg) {
       if (isAvail) {
         onAsyncComputationComplete();
       } else {

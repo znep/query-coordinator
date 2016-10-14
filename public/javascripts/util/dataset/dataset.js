@@ -2337,11 +2337,13 @@
         error: errorCallback
       });
     },
-    getPublishingAvailable: function(successCallback) {
+    isPublicationStageChangeAvailable: function(isPublished, resultCallback) {
       var ds = this;
+      var controlsGridStatusKey = 'controls.grid.{0}'.format(isPublished ? 'published' : 'unpublished');
+
       if (!ds.newBackend) {
         if (ds.columnsForType('location').length < 1) {
-          successCallback(true);
+          resultCallback(true);
           return;
         }
 
@@ -2351,10 +2353,10 @@
             method: 'pending'
           },
           success: function(results) {
-            successCallback(results.view < 1, $.t('controls.grid.geocodes_pending'));
+            resultCallback(results.view < 1, $.t('{0}.geocodes_pending'.format(controlsGridStatusKey)));
           },
           error: function() {
-            successCallback(false, $.t('controls.grid.unknown_publishability_available_error'));
+            resultCallback(false, $.t('{0}.unknown_publication_stage_change_available_error'.format(controlsGridStatusKey)));
           }
         });
       } else {
@@ -2373,10 +2375,10 @@
           success: function(replicationStatus) {
             var computationUpToDate = _.get(replicationStatus, 'asynchronous_computation_up_to_date', true);
 
-            successCallback(computationUpToDate, $.t('controls.grid.asynchronous_computation_pending'));
+            resultCallback(computationUpToDate, $.t('{0}.asynchronous_computation_pending'.format(controlsGridStatusKey)));
           },
           error: function() {
-            successCallback(false, $.t('controls.grid.unknown_publishability_available_error'));
+            resultCallback(false, $.t('{0}.unknown_publication_stage_change_available_error'.format(controlsGridStatusKey)));
           }
         });
       }

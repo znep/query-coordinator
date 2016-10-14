@@ -21,7 +21,7 @@ module SocrataSiteChrome
       img_src = img.dig('logo', 'src')
       if img_src.present?
         image_tag(
-          massage_url(img_src, false),
+          massage_url(img_src, add_locale: false),
           :alt => img.dig('logo', 'alt').presence || display_name.presence || ::RequestStore.store[:current_domain],
           :onerror => 'this.style.display="none"')
       end
@@ -206,7 +206,7 @@ module SocrataSiteChrome
 
     # EN-9586: prepend "http://" onto links that do not start with it, and are not relative paths.
     # EN-7151: prepend locales onto relative links, and turn URLs into relative links if applicable
-    def massage_url(url, add_locale = true)
+    def massage_url(url, add_locale: true)
       return unless url.present?
 
       # If relative path, prerepend current locale if necessary and return

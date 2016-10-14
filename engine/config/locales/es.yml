@@ -1,2 +1,16 @@
 es:
   current_language: Español
+  header:
+    administration: Administración
+    menu: Menú
+    language: Lenguaje
+    profile: Perfil
+    search: Búsqueda
+    sign_in: Iniciar sesión
+    sign_out: Cerrar sesión
+    view_profile: Ve el perfil
+  footer:
+    powered_by: Ofrecido por
+  preview:
+    warning: Ésta es una versión de la VISTA PRELIMINAR de su sitio.
+    disable: Neutralización Modo Preliminar

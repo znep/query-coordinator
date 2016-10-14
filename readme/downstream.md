@@ -70,6 +70,9 @@ All of the bundled Styleguide assets are located in `dist`. To add them to your 
 <link href="node_modules/socrata-styleguide/dist/css/styleguide.min.css" rel="stylesheet">
 ```
 
+#### Inclusion in React with CSS modules
+See the [CSS Modules and You!](css-modules-and-you.md) document for details on including the styles in a React component using CSS modules.
+
 #### Inclusion through Rails Sprockets
 If you're using Rails Sprockets, you can include them in your asset configuration file and Sprockets directory files.
 ```ruby

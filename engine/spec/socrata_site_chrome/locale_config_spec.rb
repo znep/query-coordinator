@@ -21,7 +21,7 @@ describe SocrataSiteChrome::LocaleConfig do
       expect(locale_config).to eq(helper.default_configuration)
     end
 
-    it 'returns the default locale config if the response body doesn\'t contain the correct keys' do
+    it 'returns the default locale config if the response body does not contain the correct keys' do
       stub_locale_config(:status => 200, :body =>
         '[ {"properties": [ { "name": "blah", "value": "batman" }, { "name": "asdf", "value": ["1234"] } ] } ]'
       )

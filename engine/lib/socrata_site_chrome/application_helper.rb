@@ -22,7 +22,8 @@ module SocrataSiteChrome
       if img_src.present?
         image_tag(
           massage_url(img_src, add_locale: false),
-          :alt => img.dig('logo', 'alt').presence || display_name.presence || ::RequestStore.store[:current_domain],
+          :alt => img.dig('logo', 'alt').presence || display_name.presence ||
+            ::RequestStore.store[:current_domain],
           :onerror => 'this.style.display="none"')
       end
     end
@@ -136,8 +137,13 @@ module SocrataSiteChrome
       end.sort_by { |x| social_link_order.find_index(x[:type]).to_i }
     end
 
-    def social_link_classnames(args)
-      "site-chrome-nav-link site-chrome-social-link #{'mobile-button' if args[:is_mobile]} noselect"
+    def nav_link_classnames(child_link: false, social_link: false, is_mobile: false)
+      [
+        child_link ? 'site-chrome-nav-child-link' : 'site-chrome-nav-link',
+        social_link ? 'site-chrome-social-link' : nil,
+        is_mobile ? 'mobile-button' : nil,
+        'noselect'
+      ].compact.join(' ')
     end
 
     def navbar_links
@@ -168,7 +174,8 @@ module SocrataSiteChrome
               # Top level link
               link_to(link_text,
                 massage_url(link[:url]),
-                :class => "site-chrome-nav-link #{'mobile-button' if args[:is_mobile]} noselect")
+                :class => nav_link_classnames(is_mobile: args[:is_mobile])
+              )
             end
           )
         end
@@ -180,7 +187,8 @@ module SocrataSiteChrome
         link_text = localized("header.links.#{link[:key]}", get_site_chrome.locales)
         if valid_link_item?(link, link_text)
           link_to(link_text, massage_url(link[:url]),
-            :class => "site-chrome-nav-child-link #{'mobile-button' if is_mobile} noselect")
+            :class => nav_link_classnames(child_link: true, is_mobile: is_mobile)
+          )
         end
       end
     end

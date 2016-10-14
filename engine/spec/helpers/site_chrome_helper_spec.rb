@@ -319,6 +319,27 @@ describe SocrataSiteChrome::ApplicationHelper do
     end
   end
 
+  describe '#nav_link_classnames' do
+    it 'returns a nav link class without social or mobile classes by default' do
+      expect(helper.nav_link_classnames).to eq('site-chrome-nav-link noselect')
+    end
+
+    it 'returns a nav link class with the social-link class' do
+      result = helper.nav_link_classnames(social_link: true)
+      expect(result).to eq('site-chrome-nav-link site-chrome-social-link noselect')
+    end
+
+    it 'returns a nav link class with the mobile class' do
+      result = helper.nav_link_classnames(is_mobile: true)
+      expect(result).to eq('site-chrome-nav-link mobile-button noselect')
+    end
+
+    it 'returns a nav link class with the social-link and mobile classes' do
+      result = helper.nav_link_classnames(social_link: true, is_mobile: true)
+      expect(result).to eq('site-chrome-nav-link site-chrome-social-link mobile-button noselect')
+    end
+  end
+
   describe '#navbar_links_div' do
     it 'returns a div with the classname "site-chrome-nav-links"' do
       site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)

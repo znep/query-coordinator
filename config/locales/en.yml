@@ -2734,6 +2734,10 @@ en:
             title: Footer
           general:
             fields:
+              display_language_switcher:
+                description: Use this setting to define which languages your site supports. English is required and included for all sites. To add additional languages, please contact support@socrata.com
+                title: Languages
+                label: Display Language Switcher in header and footer
               font_family:
                 description: Choose the typeface that will be used in both Header and Footer for all text.
                 placeholder: Typeface

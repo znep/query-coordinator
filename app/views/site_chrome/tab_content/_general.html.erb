@@ -14,9 +14,15 @@
 
 <%= section_separator %>
 
+<%= render('checkbox',
+  :fields => [:general, :languages, :display_language_switcher],
+  :locale_string => "#{locale_string}.display_language_switcher",
+  :default_checked => false) %>
+
+<%= section_separator %>
+
 <section class="settings-group">
   <div class="settings-form full signin-signout">
-    <%- fields = [:general] %>
     <%- singin_signout_locale_key = "#{locale_string}.show_signin_signout" %>
     <h3><%= t("#{singin_signout_locale_key}.title") %></h3>
     <aside>

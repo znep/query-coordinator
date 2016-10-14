@@ -270,7 +270,15 @@ class SiteChrome
       all_versions_content = config.dig('value') || { 'versions' => {} }.tap do |content|
         content['current_version'] = current_version
       end
+
+      # Merge new_content localizations with all existing localizations
+      all_locales =
+        (all_versions_content.dig('versions', current_version, stage, 'content', 'locales') || {}).
+          merge(new_content_hash['locales'] || {})
+
       all_versions_content.bury('versions', current_version, stage, 'content', new_content_hash)
+      all_versions_content.bury('versions', current_version, stage, 'content', 'locales', all_locales)
+
       create_or_update_property(SiteChrome.core_configuration_property_name, all_versions_content)
     end
   end

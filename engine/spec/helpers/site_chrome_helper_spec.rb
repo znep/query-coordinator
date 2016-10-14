@@ -556,11 +556,11 @@ describe SocrataSiteChrome::ApplicationHelper do
 
       locale_key = 'bruce.lee.is'
 
-      I18n.locale = :en
+      allow(I18n).to receive(:locale).and_return(:en)
       result_english = helper.localized(locale_key, locales)
       expect(result_english).to eq('pretty neat')
 
-      I18n.locale = :es
+      allow(I18n).to receive(:locale).and_return(:es)
       result_spanish = helper.localized(locale_key, locales)
       expect(result_spanish).to eq('con buena pinta')
     end

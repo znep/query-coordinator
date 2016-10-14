@@ -20,11 +20,6 @@
       });
       this.layerId = params.layers.split(':')[1];
 
-      // Hopefully, this can be taken out one day.
-      if (url.match(/nycopendata.esri.com/)) {
-        this.projection = this.internalMapProjection;
-      }
-
       if (this.secure) {
         dojo.require('esri.layers.FeatureLayer');
         dojo.addOnLoad(function() {

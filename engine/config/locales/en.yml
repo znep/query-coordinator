@@ -1,7 +1,9 @@
 en:
+  current_language: English
   header:
     administration: Administration
     menu: Menu
+    language: Language
     profile: Profile
     search: Search
     sign_in: Sign In

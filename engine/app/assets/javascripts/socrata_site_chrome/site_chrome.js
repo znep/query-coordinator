@@ -22,9 +22,20 @@ function mobileMenuToggle() {
   if ($menu.hasClass('active')) {
     // Disable body from scrolling while menu is open
     $('body').css('overflow-y', 'hidden');
+    mobileLanguageSwitcher($('.mobile-language-dropdown'));
   } else {
     $('body').css('overflow-y', initialBodyOverflowY || 'visible');
   }
+}
+
+function mobileLanguageSwitcher($div) {
+  $div.children('.mobile-language-dropdown-title').click(function() {
+    $div.children('.mobile-language-dropdown-options').slideToggle('fast');
+    // Scroll down as the dropdown options div appears
+    $('.mobile-menu').animate({
+      scrollTop: $('.mobile-language-dropdown-options').offset().top
+    }, 'fast');
+  });
 }
 
 function toggleCollapsibleSearch(self) {

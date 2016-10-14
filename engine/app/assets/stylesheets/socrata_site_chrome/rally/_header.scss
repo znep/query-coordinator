@@ -123,13 +123,20 @@ header#site-chrome-header[template="rally"] {
 
             .site-chrome-social-links {
               float: left;
+              max-height: $banner_height;
 
               .site-chrome-social-link {
+                color: $footer_fg_color;
                 &:hover, &:focus, &:active {
                   text-decoration: none;
                 }
               }
             }
+
+            .language-switcher-container {
+              float: left;
+            }
+
             a.site-chrome-nav-link {
               padding: 0 5px;
               max-height: $banner_height;
@@ -148,10 +155,6 @@ header#site-chrome-header[template="rally"] {
               &:hover, &:focus, &:active {
                 text-decoration: underline;
               }
-            }
-
-            span.divider {
-              margin: (($banner_height - ($divider_height * 2)) / 2) $text_padding;
             }
           }
         }

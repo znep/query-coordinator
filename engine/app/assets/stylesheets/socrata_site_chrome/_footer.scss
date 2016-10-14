@@ -122,6 +122,10 @@ footer#site-chrome-footer {
           margin-top: -3px;
         }
       }
+
+      .language-switcher-container {
+        display: inline-block;
+      }
     }
 
     // When no footer title is present, center the content
@@ -136,6 +140,7 @@ footer#site-chrome-footer {
 
       .powered-by-socrata {
         vertical-align: middle;
+        margin: 0 $addendum_content_margin 0 auto;
       }
     }
 
@@ -157,6 +162,9 @@ footer#site-chrome-footer {
           margin: 0;
           float: none;
           display: block;
+        }
+        .language-switcher-container {
+          display: none;
         }
         .powered-by-socrata {
           clear: both;

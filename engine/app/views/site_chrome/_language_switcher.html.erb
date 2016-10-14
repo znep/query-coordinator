@@ -1,0 +1,10 @@
+<div class="language-switcher-container">
+  <div class="language-switcher noselect">
+    <% icon_arrow_class = orientation == 'bottom' ? 'icon-arrow-down' : 'icon-arrow-up' %>
+    <%= dropdown(
+      (locale_full_name(I18n.locale) << content_tag(:span, nil, :class => icon_arrow_class)).html_safe,
+      language_switcher_options,
+      orientation
+    ) %>
+  </div>
+</div>

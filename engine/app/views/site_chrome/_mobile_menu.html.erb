@@ -5,14 +5,16 @@
   </a>
 
   <div class="menu-content">
-    <%= navbar_links_div(use_dropdown: false) %>
+    <%= navbar_links_div(:use_dropdown => false, :is_mobile => true) %>
 
     <%= render 'site_chrome/mobile_user_actions' %>
 
-    <%= render 'site_chrome/searchbox', path: '/browse', mobile: true %>
+    <%= render 'site_chrome/searchbox', path: massage_url('/browse'), mobile: true %>
 
     <div class="site-chrome-nav-links site-chrome-social-links">
-      <%= render 'site_chrome/social_links' %>
+      <%= render 'site_chrome/social_links', :is_mobile => true %>
     </div>
+
+    <%= render 'site_chrome/mobile_language_switcher' if show_language_switcher? %>
   </div>
 </div>

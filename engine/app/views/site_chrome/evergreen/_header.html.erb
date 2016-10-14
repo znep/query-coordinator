@@ -1,4 +1,4 @@
-<header id="site-chrome-header" class="<%= size %>" role="banner" template="default">
+<header id="site-chrome-header" class="<%= size %>" role="banner" template="evergreen">
   <div class="banner">
     <div class="header-content">
       <%= header_logo %>
@@ -9,28 +9,32 @@
 
           <%= render 'site_chrome/user_actions' %>
 
-          <%= content_tag(:span, nil, :class => 'divider') %>
+          <% if show_language_switcher? %>
+            <%= render 'site_chrome/language_switcher', :orientation => 'bottom' %>
+          <% else %>
+            <%= divider %>
+          <% end %>
 
           <div class="collapsible-search">
             <span class="icon-search collapsible-search-toggle"
               title="<%= t('header.search') %>" onclick="toggleCollapsibleSearch(this)">
             </span>
-            <%= render 'site_chrome/searchbox', path: '/browse', vanishing_search_button: true %>
+            <%= render 'site_chrome/searchbox', path: massage_url('/browse'), vanishing_search_button: true %>
           </div>
 
           <% if valid_social_links(get_site_chrome.general[:social_shares]).present? %>
-            <%= content_tag(:span, nil, :class => 'divider') %>
+            <%= divider %>
           <% end %>
 
           <div class="site-chrome-social-links">
             <%= render 'site_chrome/social_links' %>
           </div>
 
-          <%= content_tag(:span, nil, :class => 'divider') if navbar_links.present? %>
+          <%= divider %>
 
         </div>
 
-        <%= navbar_links_div %>
+        <%= navbar_links_div(:use_dropdown => true) %>
       </nav>
 
       <nav class="mobile">

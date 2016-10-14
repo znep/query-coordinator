@@ -3,7 +3,7 @@
     <div class="rally-top">
       <div class="header-content">
         <%= header_logo %>
-        <%= render 'site_chrome/searchbox', path: '/browse', vanishing_search_button: true %>
+        <%= render 'site_chrome/searchbox', path: massage_url('/browse'), vanishing_search_button: true %>
       </div>
     </div>
 
@@ -11,7 +11,7 @@
       <div class="header-content">
         <nav class="desktop">
           <div class="navbar-left">
-            <%= navbar_links_div %>
+            <%= navbar_links_div(:use_dropdown => true) %>
           </div>
 
           <div class="navbar-right">
@@ -20,7 +20,11 @@
             </div>
 
             <% if valid_social_links(get_site_chrome.general[:social_shares]).present? %>
-              <%= content_tag(:span, nil, :class => 'divider') %>
+              <%= divider %>
+            <% end %>
+
+            <% if show_language_switcher? %>
+              <%= render 'site_chrome/language_switcher', :orientation => 'bottom' %>
             <% end %>
 
             <%= render 'site_chrome/user_actions' %>

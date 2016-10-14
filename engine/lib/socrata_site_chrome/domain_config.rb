@@ -27,7 +27,7 @@ module SocrataSiteChrome
     end
 
     def config
-      @config = Hash.new(@config).empty? ? get_domain_config : @domain
+      @config = Hash.new(@config).empty? ? get_domain_config : @config
     end
 
     def self.default_configuration
@@ -80,7 +80,7 @@ module SocrataSiteChrome
         begin
           response = HTTParty.get(
             domain_config_uri,
-            :verify => Rails.env.production?,
+            :verify => !!ENV['SSL_VERIFY_NONE'] || Rails.env.production?,
             :headers => { 'X-Socrata-Host' => domain }
           )
           response.code == 200 ? response.body : nil

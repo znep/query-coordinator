@@ -1,5 +1,6 @@
 $divider_height: 14px;
 $searchbox_height: 36px;
+$language_switcher_height: 30px;
 
 $divider_color: $header_fg_color;
 
@@ -75,13 +76,51 @@ header#site-chrome-header, footer#site-chrome-footer {
     cursor: pointer;
   }
 
-  span.divider {
+  div.divider {
     float: left;
-    display: inline-block;
-    vertical-align: middle;
-    padding: $divider_height 0;
-    border-left: 1px solid $divider_color;
-    opacity: 0.3;
+    margin: 0 $text_padding;
+    > span {
+      display: inline-block;
+      vertical-align: middle;
+      padding: $divider_height 0;
+      border-left: 1px solid $divider_color;
+      opacity: 0.3;
+    }
+  }
+
+  .language-switcher-container {
+    .language-switcher {
+      cursor: pointer;
+      display: inline-block;
+      vertical-align: middle;
+      margin: 0 $text_padding * 2;
+      padding: 0 $text_padding;
+      line-height: $language_switcher_height;
+      height: $language_switcher_height;
+      font-size: 13px;
+      background: white;
+      color: black;
+      border: 1px solid $faint_border_color;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+
+      .dropdown {
+        span[class^="icon-arrow-"] {
+          margin-left: 6px;
+          font-size: 10px;
+        }
+
+        > ul.dropdown-options {
+          margin-top: -1px;
+          margin-left: -$text_padding;
+
+          .language-switcher-option {
+            padding: 0 $text_padding;
+          }
+        }
+      }
+    }
   }
 
   .searchbox {

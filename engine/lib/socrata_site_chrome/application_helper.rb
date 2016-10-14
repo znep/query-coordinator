@@ -3,6 +3,12 @@ require 'request_store'
 
 module SocrataSiteChrome
   module ApplicationHelper
+    def divider
+      content_tag(:div, :class => 'divider') do
+        content_tag(:span, nil)
+      end
+    end
+
     def header_title
       localized('header.site_name', get_site_chrome.locales)
     end
@@ -15,8 +21,9 @@ module SocrataSiteChrome
       img_src = img.dig('logo', 'src')
       if img_src.present?
         image_tag(
-          massage_url(img_src),
-          :alt => img.dig('logo', 'alt').presence || display_name.presence || ::RequestStore.store[:current_domain],
+          massage_url(img_src, add_locale: false),
+          :alt => img.dig('logo', 'alt').presence || display_name.presence ||
+            ::RequestStore.store[:current_domain],
           :onerror => 'this.style.display="none"')
       end
     end
@@ -130,71 +137,90 @@ module SocrataSiteChrome
       end.sort_by { |x| social_link_order.find_index(x[:type]).to_i }
     end
 
+    def nav_link_classnames(child_link: false, social_link: false, is_mobile: false)
+      [
+        child_link ? 'site-chrome-nav-child-link' : 'site-chrome-nav-link',
+        social_link ? 'site-chrome-social-link' : nil,
+        is_mobile ? 'mobile-button' : nil,
+        'noselect'
+      ].compact.join(' ')
+    end
+
     def navbar_links
       get_site_chrome.header[:links].to_a
     end
 
-    def navbar_links_div(use_dropdown: true)
+    def navbar_links_div(args)
       content_tag(:div, :class => 'site-chrome-nav-links') do
         navbar_links.each do |link|
+          link_text = localized("header.links.#{link[:key]}", get_site_chrome.locales)
           concat(
             if valid_navbar_menu_item?(link)
-              if use_dropdown
+              if args[:use_dropdown]
                 content_tag(:div, :class => 'site-chrome-nav-menu noselect') do
                   dropdown(
-                    content_tag(:span, localized("header.links.#{link[:key]}", get_site_chrome.locales)) <<
-                      content_tag(:span, nil, :class => 'icon-arrow-down'),
-                    navbar_child_links_array(link[:links])
+                    content_tag(:span, link_text) << content_tag(:span, nil, :class => 'icon-arrow-down'),
+                    navbar_child_links_array(link[:links], args[:is_mobile])
                   )
                 end
               else
                 # Instead of a dropdown, print out the name of the menu item followed by all its links
                 content_tag(:div, :class => 'site-chrome-nav-menu noselect') do
-                  content_tag(:span, localized("header.links.#{link[:key]}", get_site_chrome.locales),
-                    :class => 'nav-menu-title') <<
-                  navbar_child_links_array(link[:links]).join('').html_safe
+                  content_tag(:span, link_text, :class => 'nav-menu-title') <<
+                  navbar_child_links_array(link[:links], args[:is_mobile]).join('').html_safe
                 end
               end
-            elsif valid_link_item?(link)
+            elsif valid_link_item?(link, link_text)
               # Top level link
-              link_to(localized("header.links.#{link[:key]}", get_site_chrome.locales),
-                massage_url(link[:url]), :class => 'site-chrome-nav-link noselect')
+              link_to(link_text,
+                massage_url(link[:url]),
+                :class => nav_link_classnames(is_mobile: args[:is_mobile])
+              )
             end
           )
         end
       end
     end
 
-    def navbar_child_links_array(child_links)
+    def navbar_child_links_array(child_links, is_mobile)
       child_links.to_a.map do |link|
-        if valid_link_item?(link)
-          link_to(localized("header.links.#{link[:key]}", get_site_chrome.locales),
-            massage_url(link[:url]), :class => 'site-chrome-nav-child-link noselect')
+        link_text = localized("header.links.#{link[:key]}", get_site_chrome.locales)
+        if valid_link_item?(link, link_text)
+          link_to(link_text, massage_url(link[:url]),
+            :class => nav_link_classnames(child_link: true, is_mobile: is_mobile)
+          )
         end
       end
     end
 
     # Valid if link has :key and :links, and :links contains at least one valid_link_item
     def valid_navbar_menu_item?(link)
-      !!(link.try(:dig, :key).present? && link.dig(:links) && link[:links].any?(&method(:valid_link_item?)))
+      link.try(:dig, :key).present? && link.dig(:links).present? && link[:links].any? do |link_item|
+        link_text = localized("header.links.#{link_item[:key]}", get_site_chrome.locales)
+        valid_link_item?(link_item, link_text)
+      end
     end
 
     # Valid if link has :key and :url
-    def valid_link_item?(link)
-      !!(link.try(:dig, :key).present? && link[:url].present?)
+    def valid_link_item?(link, link_text)
+      link.try(:dig, :key).present? &&
+      link[:url].present? &&
+      link_text.present?
     end
 
     def relative_url_with_locale(url)
-      I18n.locale == I18n.default_locale ? url : "/#{I18n.locale}#{url}"
+      I18n.locale.to_s == default_locale ? url : "/#{I18n.locale}#{url}"
     end
 
     # EN-9586: prepend "http://" onto links that do not start with it, and are not relative paths.
     # EN-7151: prepend locales onto relative links, and turn URLs into relative links if applicable
-    def massage_url(url)
+    def massage_url(url, add_locale: true)
       return unless url.present?
 
       # If relative path, prerepend current locale if necessary and return
-      return relative_url_with_locale(url) if url.start_with?('/')
+      if url.start_with?('/')
+        return add_locale ? relative_url_with_locale(url) : url
+      end
 
       supported_scheme_matchers = Regexp.union(%r{^https?://}, %r{^mailto:})
 
@@ -206,18 +232,52 @@ module SocrataSiteChrome
       if uri.host == ::RequestStore.store[:current_domain]
         uri.scheme = nil
         uri.host = nil
-        return relative_url_with_locale(uri.to_s)
+        add_locale ? relative_url_with_locale(uri.to_s) : uri.to_s
+      else
+        # Outoing link
+        uri.to_s
       end
+    end
 
-      # Outoing link
-      uri.to_s
+    def locale_config
+      if Rails.env.test?
+        SocrataSiteChrome::LocaleConfig.default_configuration
+      else
+        SocrataSiteChrome::LocaleConfig.new(CurrentDomain.cname).get_locale_config
+      end
+    end
+
+    def show_language_switcher?
+      get_site_chrome.general.dig(:languages, :display_language_switcher).to_s.downcase == 'true'
+    end
+
+    def language_switcher_locales
+      locale_config.dig(:available_locales)
+    end
+
+    def language_switcher_options
+      language_switcher_locales.map do |locale_key|
+        link_to(
+          locale_full_name(locale_key),
+          url_for(:locale => locale_key),
+          :class => 'language-switcher-option'
+        )
+      end
+    end
+
+    def locale_full_name(locale_key)
+      t('current_language', :locale => locale_key, :default => locale_key)
+    end
+
+    def default_locale
+      locale_config.dig(:default_locale)
     end
 
     def dropdown(prompt, dropdown_options = [], orientation = 'bottom')
       dropdown_options = dropdown_options.compact.map { |option| content_tag :li, option }
       div_options = {
         'data-dropdown' => '',
-        'data-orientation' => 'bottom',
+        'data-orientation' => orientation,
         'class' => 'dropdown'
       }
       content_tag(:div, div_options) do
@@ -237,8 +297,7 @@ module SocrataSiteChrome
     end
 
     def localized(locale_key, locales)
-      # TODO - actually handle different locales
-      locales['en'].dig(*locale_key.split('.'))
+      locales[I18n.locale.to_s].try(:dig, *locale_key.split('.'))
     end
 
     def site_chrome_test_config
@@ -263,7 +322,7 @@ module SocrataSiteChrome
       )
     end
 
-    # Returns template name - either 'default' or 'rally'
+    # Returns template name - either 'evergreen' (default) or 'rally'
     # Users can override with query parameter `?site_chrome_template=rally`
     def current_template
       template = (request.try(:query_parameters).dig(:site_chrome_template) ||
@@ -272,7 +331,7 @@ module SocrataSiteChrome
       when 'rally'
         'rally'
       else
-        'default'
+        'evergreen'
       end
     end
 

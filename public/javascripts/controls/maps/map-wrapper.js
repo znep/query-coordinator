@@ -619,11 +619,6 @@
 
       var config;
 
-      // Legacy support
-      if ($.isBlank(layerOptions.layerKey) && !$.isBlank(layerOptions.layerName)) {
-        layerOptions.layerKey = layerOptions.layerName;
-      }
-
       if (layerOptions.custom_url) {
         config = $.extend({}, Dataset.map.backgroundLayer.custom, {
           custom_url: layerOptions.custom_url

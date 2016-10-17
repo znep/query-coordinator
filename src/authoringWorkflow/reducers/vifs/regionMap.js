@@ -5,6 +5,7 @@ import { translate } from '../../../I18n';
 import vifs from '../../vifs';
 import { forEachSeries, setStringValueOrDefaultValue, setUnits } from '../../helpers';
 import {
+  RESET_STATE,
   RECEIVE_METADATA,
   SET_DIMENSION,
   SET_MEASURE,
@@ -38,6 +39,10 @@ export default function regionMap(state, action) {
   state = _.cloneDeep(state);
 
   switch (action.type) {
+    case RESET_STATE:
+      state = vifs().regionMap;
+      break;
+
     case RECEIVE_METADATA:
       forEachSeries(state, series => {
         setUnits(series, action);

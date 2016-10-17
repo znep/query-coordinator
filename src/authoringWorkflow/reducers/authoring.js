@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import {
+  RESET_STATE,
   AWAIT_REGION_CODING,
   FINISH_REGION_CODING,
   HANDLE_REGION_CODING_ERROR,
@@ -29,6 +30,10 @@ export default function authoring(state, action) {
   state = _.cloneDeep(state);
 
   switch (action.type) {
+    case RESET_STATE:
+      state = defaultState;
+      break;
+
     case SET_VIF_CHECKPOINT:
       state.checkpointVifs = _.cloneDeep(action.vifs);
       break;

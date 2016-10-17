@@ -4,6 +4,7 @@ import moment from 'moment';
 import MetadataProvider from '../dataProviders/MetadataProvider';
 import RegionCodingProvider from '../dataProviders/RegionCodingProvider';
 import { getVifs } from './selectors/vifAuthoring';
+import { load } from './vifs/loader';
 
 export const SET_VIF_CHECKPOINT = 'SET_VIF_CHECKPOINT';
 export function setVifCheckpoint(vifs) {
@@ -544,5 +545,19 @@ export function setShowOtherCategory(showOtherCategory) {
   return {
     type: SET_SHOW_OTHER_CATEGORY,
     showOtherCategory
+  };
+}
+
+export const RESET_STATE = 'RESET_STATE';
+export function resetState() {
+  return (dispatch, getState) => {
+    const state = getState();
+
+    // Dispatching RESET_STATE to all reducers
+    // Reducers will return initial states
+    dispatch({ type: RESET_STATE });
+
+    // Trigger load on initial VIF
+    load(dispatch, state.vifAuthoring.vifs.initialVif);
   };
 }

@@ -13,6 +13,7 @@ import {
 } from '../../helpers';
 
 import {
+  RESET_STATE,
   RECEIVE_METADATA,
   SET_DATASET_UID,
   SET_DESCRIPTION,
@@ -43,6 +44,10 @@ export default function columnChart(state, action) {
   state = _.cloneDeep(state);
 
   switch (action.type) {
+    case RESET_STATE:
+      state = vifs().columnChart;
+      break;
+
     case RECEIVE_METADATA:
       forEachSeries(state, series => {
         setUnits(series, action);

@@ -2,8 +2,9 @@ import _ from 'lodash';
 import thunk from 'redux-thunk';
 
 import reducer from 'src/authoringWorkflow/reducers';
-import vifs from 'src/authoringWorkflow/vifs';
+import getVifTemplates from 'src/authoringWorkflow/vifs';
 import * as actions from 'src/authoringWorkflow/actions';
+import vifs from 'src/authoringWorkflow/vifs';
 
 // Note: by convention, reducers return their default state when passed undefined.
 function getDefaultState() {
@@ -13,7 +14,8 @@ function getDefaultState() {
 function getTestState() {
   var state = {};
 
-  _.set(state, 'vifAuthoring.vifs', vifs());
+  const vifs = _.merge(getVifTemplates(), { initialVif: {} });
+  _.set(state, 'vifAuthoring.vifs', vifs);
   _.set(state, 'vifAuthoring.authoring.selectedVisualizationType', 'columnChart');
 
   return state;
@@ -172,6 +174,16 @@ describe('AuthoringWorkflow reducer', function() {
           var regionMap = newState.vifAuthoring.vifs.regionMap;
 
           expect(_.get(regionMap, 'configuration.baseLayerOpacity')).to.equal(0.5);
+        });
+      });
+
+      it('should reset vif to default state', () => {
+        const newState = reducer(getTestState(), actions['RESET_STATE']);
+
+        _.each(newState.vifAuthoring.vifs, (vif, type) => {
+          if (type !== 'initialVif') {
+            assert.deepEqual(newState.vifAuthoring.vifs[type], vifs()[type]);
+          }
         });
       });
     });

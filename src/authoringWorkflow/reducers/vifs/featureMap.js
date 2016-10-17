@@ -10,6 +10,7 @@ import {
 } from '../../helpers';
 
 import {
+  RESET_STATE,
   RECEIVE_METADATA,
   SET_TITLE,
   SET_DESCRIPTION,
@@ -36,6 +37,10 @@ export default function featureMap(state, action) {
   state = _.cloneDeep(state);
 
   switch (action.type) {
+    case RESET_STATE:
+      state = vifs().featureMap;
+      break;
+
     case RECEIVE_METADATA:
       forEachSeries(state, series => {
         setUnits(series, action);

@@ -224,6 +224,10 @@ export default {
   table_view: {
     title: 'Table Preview'
   },
+  common: {
+    reset_confirm: 'Are you sure you want to reset? All changes made during this editing session will be lost.',
+    reset_button_label: 'Reset'
+  },
   visualizations: {
     bar_chart: {
       error_exceeded_max_bar_count: 'For optimal performance and legibility bar charts are limited to {0} bars. Use filters to render a more specific chart.',

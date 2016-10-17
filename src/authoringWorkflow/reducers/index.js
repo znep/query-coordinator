@@ -12,11 +12,15 @@ import histogram from './vifs/histogram';
 import table from './vifs/table';
 import timelineChart from './vifs/timelineChart';
 
+// Placeholder reducer for initialVif
+const initialVif = state => state || {};
+
 module.exports = combineReducers({
   metadata,
   vifAuthoring: combineReducers({
     authoring,
     vifs: combineReducers({
+      initialVif,
       barChart,
       regionMap,
       columnChart,

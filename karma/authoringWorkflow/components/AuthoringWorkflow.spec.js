@@ -14,6 +14,7 @@ function render(type, backButtonText) {
     onComplete: sinon.spy(),
     onCancel: sinon.spy(),
     onBack: sinon.spy(),
+    onReset: sinon.spy(),
     backButtonText: backButtonText
   });
 
@@ -84,6 +85,10 @@ describe('AuthoringWorkflow', function() {
       it('renders the back button', function() {
         expect(component).to.contain('.authoring-back-button');
       });
+    });
+
+    it('renders a reset button', () => {
+      expect(component).to.contain('.authoring-reset-button');
     });
   });
 
@@ -164,6 +169,25 @@ describe('AuthoringWorkflow', function() {
         TestUtils.Simulate.click(component.querySelector('.authoring-back-button'));
         sinon.assert.calledOnce(props.onBack);
       });
+    });
+
+    describe('when the reset button is clicked', () => {
+      beforeEach(() => {
+        // Watch confirm to ensure that it is called to prompt user.
+        sinon.stub(window, 'confirm', _.constant(true));
+      });
+
+      afterEach(() => {
+        window.confirm.restore();
+      });
+
+      it('asks the user for confirmation before reset', () => {
+        expect(props.onReset.called).to.be.false;
+        TestUtils.Simulate.click(component.querySelector('button.authoring-reset-button'));
+        expect(props.onReset.calledOnce).to.be.true;
+        expect(window.confirm.calledOnce).to.be.true;
+      });
+
     });
   });
 

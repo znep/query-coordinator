@@ -36,7 +36,6 @@ footer#site-chrome-footer {
     }
 
     > div.links {
-      height: $links_height;
 
       ul.links-col {
         margin: 0;
@@ -67,7 +66,6 @@ footer#site-chrome-footer {
     }
 
     > div.addendum {
-      height: $addendum_height;
 
       .site-chrome-copyright {
         display: inline-block;
@@ -75,6 +73,7 @@ footer#site-chrome-footer {
         font-weight: 300;
         color: $footer_fg_color;
         margin: 0 $addendum_content_margin 0 auto;
+        line-height: $addendum_height;
         vertical-align: middle;
       }
 

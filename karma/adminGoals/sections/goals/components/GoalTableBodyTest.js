@@ -7,6 +7,18 @@ import translations from 'mockTranslations';
 
 var getDefaultStore = require('testStore').getDefaultStore;
 
+// Avoid a warning about div > tbody that would otherwise be generated
+// due to TestUtils.renderIntoDocument.
+class TableWrapper extends React.Component {
+  render() {
+    return (
+      <table>
+        <GoalTableBody />
+      </table>
+    );
+  }
+}
+
 describe('sections/goals/components/GoalTable/GoalTableBody', function() {
   beforeEach(function() {
     var state = {
@@ -28,7 +40,7 @@ describe('sections/goals/components/GoalTable/GoalTableBody', function() {
       },
     };
 
-    this.output = renderComponentWithStore(GoalTableBody, state.goals.data, getDefaultStore(state));
+    this.output = renderComponentWithStore(TableWrapper, state.goals.data, getDefaultStore(state));
   });
 
   it('should have 4 rows', function() {

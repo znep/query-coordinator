@@ -83,7 +83,12 @@ class EditPrevailingMeasure extends React.Component {
   }
 
   renderSubjectPart() {
-    const { translations, formData, isGoalNotConfigured } = this.props;
+    const {
+      translations,
+      formData,
+      isGoalNotConfigured,
+      onInputChange
+    } = this.props;
 
     return (
       <div className="form-line measure-subject">
@@ -92,16 +97,22 @@ class EditPrevailingMeasure extends React.Component {
         </label>
         <input
           name="prevailingMeasureName"
+          type="text"
           className="text-input"
-          onChange={ this.props.onInputChange }
+          onChange={ onInputChange }
           disabled={ isGoalNotConfigured }
-          value={ formData.get('prevailingMeasureName', '') }/>
+          value={ formData.get('prevailingMeasureName') || '' } />
       </div>
     );
   }
 
   renderUnitPart() {
-    const { translations, formData, isGoalNotConfigured } = this.props;
+    const {
+      translations,
+      formData,
+      isGoalNotConfigured,
+      onInputChange
+    } = this.props;
 
     return (
       <div className="form-line measure-unit">
@@ -111,17 +122,22 @@ class EditPrevailingMeasure extends React.Component {
         <input
           name="unit"
           className="text-input"
-          onChange={ this.props.onInputChange }
+          onChange={ onInputChange }
           disabled={ isGoalNotConfigured }
-          value={ formData.get('unit', '') }/>
+          value={ formData.get('unit') || '' }/>
       </div>
     );
   }
 
   renderPercentUnitPart() {
-    const { translations, formData, isGoalNotConfigured } = this.props;
+    const {
+      translations,
+      formData,
+      isGoalNotConfigured,
+      onSelectChange
+    } = this.props;
 
-    let options = [
+    const options = [
       { label: formData.get('unit'), value: formData.get('unit') },
       { label: '%', value: '%' }
     ];
@@ -134,8 +150,8 @@ class EditPrevailingMeasure extends React.Component {
         <Components.Select
           className="form-select-wide"
           options={ options }
-          value={ formData.get('percentUnit', null) }
-          onChange={ _.wrap('percentUnit', this.props.onSelectChange) }
+          value={ formData.get('percentUnit') || null }
+          onChange={ _.wrap('percentUnit', onSelectChange) }
           searchable={ false }
           clearable={ false }
           disabled={ isGoalNotConfigured }/>
@@ -144,7 +160,12 @@ class EditPrevailingMeasure extends React.Component {
   }
 
   renderDateRangePart() {
-    const { translations, formData, isGoalNotConfigured } = this.props;
+    const {
+      translations,
+      formData,
+      isGoalNotConfigured,
+      onSelectChange
+    } = this.props;
     const startDate = formData.get('startDate') ? moment(formData.get('startDate')) : null;
     const endDate = formData.get('endDate') ? moment(formData.get('endDate')) : null;
 
@@ -157,14 +178,14 @@ class EditPrevailingMeasure extends React.Component {
           <span className="icon-date"/>
           <Components.Socrata.DatePicker
             className="text-input datepicker-input"
-            onChange={ _.wrap('startDate', this.props.onSelectChange) }
+            onChange={ _.wrap('startDate', onSelectChange) }
             selected={ startDate } disabled={ isGoalNotConfigured }/>
         </div>
         <div className="datepicker-wrapper">
           <span className="icon-date"/>
           <Components.Socrata.DatePicker
             className="text-input datepicker-input"
-            onChange={ _.wrap('endDate', this.props.onSelectChange) }
+            onChange={ _.wrap('endDate', onSelectChange) }
             selected={ endDate } disabled={ isGoalNotConfigured }/>
         </div>
       </div>
@@ -172,7 +193,12 @@ class EditPrevailingMeasure extends React.Component {
   }
 
   renderOverridePart() {
-    const { translations, formData, isGoalNotConfigured } = this.props;
+    const {
+      translations,
+      formData,
+      isGoalNotConfigured,
+      onSelectChange
+    } = this.props;
 
     return (
       <div className="form-line measure-override">
@@ -183,7 +209,7 @@ class EditPrevailingMeasure extends React.Component {
           className="form-select-wide"
           options={ this.overrideOptions }
           value={ formData.get('prevailingMeasureProgressOverride') }
-          onChange={ _.wrap('prevailingMeasureProgressOverride', this.props.onSelectChange) }
+          onChange={ _.wrap('prevailingMeasureProgressOverride', onSelectChange) }
           searchable={ false }
           clearable={ false }
           disabled={ isGoalNotConfigured }/>
@@ -192,7 +218,12 @@ class EditPrevailingMeasure extends React.Component {
   }
 
   renderMeasureTarget() {
-    const { translations, formData, isGoalNotConfigured } = this.props;
+    const {
+      translations,
+      formData,
+      isGoalNotConfigured,
+      onInputChange
+    } = this.props;
 
     return (
       <div className="form-line measure-target">
@@ -202,15 +233,20 @@ class EditPrevailingMeasure extends React.Component {
         <input
           name="measureTarget"
           className="text-input"
-          onChange={ this.props.onInputChange }
-          value={ formData.get('measureTarget', '') }
+          onChange={ onInputChange }
+          value={ formData.get('measureTarget') || '' }
           disabled={ isGoalNotConfigured }/>
       </div>
     );
   }
 
   renderMeasureTargetTypePart() {
-    const { translations, formData, isGoalNotConfigured } = this.props;
+    const {
+      translations,
+      formData,
+      isGoalNotConfigured,
+      onSelectChange
+    } = this.props;
 
     return <div className="form-line measure-target-type">
       <label className="inline-label">
@@ -220,7 +256,7 @@ class EditPrevailingMeasure extends React.Component {
         className="form-select-small"
         options={ this.measureTargetTypeOptions }
         value={ formData.get('measureTargetType') }
-        onChange={ _.wrap('measureTargetType', this.props.onSelectChange) }
+        onChange={ _.wrap('measureTargetType', onSelectChange) }
         searchable={ false }
         clearable={ false }
         disabled={ isGoalNotConfigured }/>
@@ -228,7 +264,12 @@ class EditPrevailingMeasure extends React.Component {
   }
 
   renderMeasureBaseline() {
-    const { translations, formData, isGoalNotConfigured } = this.props;
+    const {
+      translations,
+      formData,
+      isGoalNotConfigured,
+      onInputChange
+    } = this.props;
 
     return (
       <div className="form-line measure-baseline">
@@ -238,15 +279,20 @@ class EditPrevailingMeasure extends React.Component {
         <input
           name="measureBaseline"
           className="text-input"
-          onChange={ this.props.onInputChange }
-          value={ formData.get('measureBaseline', '') }
+          onChange={ onInputChange }
+          value={ formData.get('measureBaseline') || '' }
           disabled={ isGoalNotConfigured }/>
       </div>
     );
   }
 
   renderMeasureTargetDelta() {
-    const { translations, formData, isGoalNotConfigured } = this.props;
+    const {
+      translations,
+      formData,
+      isGoalNotConfigured,
+      onInputChange
+    } = this.props;
 
     return <div className="form-line measure-target-delta">
       <label className="inline-label">
@@ -255,14 +301,19 @@ class EditPrevailingMeasure extends React.Component {
       <input
         name="measureTargetDelta"
         className="text-input"
-        onChange={ this.props.onInputChange }
-        value={ formData.get('measureTargetDelta', '') }
+        onChange={ onInputChange }
+        value={ formData.get('measureTargetDelta') || ''}
         disabled={ isGoalNotConfigured }/>
     </div>;
   }
 
   renderMeasureMaintainType() {
-    const { translations, formData, isGoalNotConfigured } = this.props;
+    const {
+      translations,
+      formData,
+      isGoalNotConfigured,
+      onSelectChange
+    } = this.props;
 
     return (
       <div className="form-line measure-maintain-type">
@@ -273,7 +324,7 @@ class EditPrevailingMeasure extends React.Component {
           className="form-select-small"
           options={ this.measureMaintainTypeOptions }
           value={ formData.get('measureMaintainType') }
-          onChange={ _.wrap('measureMaintainType', this.props.onSelectChange) }
+          onChange={ _.wrap('measureMaintainType', onSelectChange) }
           searchable={ false }
           clearable={ false }
           disabled={ isGoalNotConfigured }/>
@@ -335,7 +386,12 @@ class EditPrevailingMeasure extends React.Component {
   }
 
   render() {
-    const { translations, formData, isGoalNotConfigured } = this.props;
+    const {
+      translations,
+      formData,
+      isGoalNotConfigured,
+      onSelectChange
+    } = this.props;
 
     return (
       <div>
@@ -350,7 +406,7 @@ class EditPrevailingMeasure extends React.Component {
               className="form-select-small"
               options={ this.actionTypeOptions }
               value={ formData.get('actionType') }
-              onChange={ _.wrap('actionType', this.props.onSelectChange) }
+              onChange={ _.wrap('actionType', onSelectChange) }
               searchable={ false }
               clearable={ false }
               disabled={ isGoalNotConfigured }/>

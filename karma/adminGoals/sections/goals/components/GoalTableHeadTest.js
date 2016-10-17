@@ -5,6 +5,18 @@ import translations from 'mockTranslations';
 
 const getDefaultStore = require('testStore').getDefaultStore;
 
+// Avoid a warning about div > tbody that would otherwise be generated
+// due to TestUtils.renderIntoDocument.
+class TableWrapper extends React.Component {
+  render() {
+    return (
+      <table>
+        <GoalTableHead />
+      </table>
+    );
+  }
+}
+
 describe('sections/goals/components/GoalTable/GoalTableHead', () => {
   let output;
 
@@ -28,7 +40,7 @@ describe('sections/goals/components/GoalTable/GoalTableHead', () => {
       },
     });
 
-    output = renderComponentWithStore(GoalTableHead, {}, getDefaultStore(state));
+    output = renderComponentWithStore(TableWrapper, {}, getDefaultStore(state));
   });
 
   it('should have 1 row', () => {
@@ -76,7 +88,7 @@ describe('sections/goals/components/GoalTable/GoalTableHead sorting', () => {
       },
     });
 
-    return renderComponentWithStore(GoalTableHead, {}, getDefaultStore(state));
+    return renderComponentWithStore(TableWrapper, {}, getDefaultStore(state));
   };
 
   const titlesList = ['title', 'owner', 'updated_at', 'visibility', 'goal_status', 'dashboard'];
@@ -116,7 +128,7 @@ describe('sections/goals/components/GoalTable/GoalTableHead check all toggle', (
       },
     });
 
-    const output = renderComponentWithStore(GoalTableHead, {}, getDefaultStore(state));
+    const output = renderComponentWithStore(TableWrapper, {}, getDefaultStore(state));
     expect(output.querySelectorAll('tr:first-child .icon-checkmark3').length).to.eq(0);
   });
 
@@ -140,7 +152,7 @@ describe('sections/goals/components/GoalTable/GoalTableHead check all toggle', (
       },
     });
 
-    const output = renderComponentWithStore(GoalTableHead, {}, getDefaultStore(state));
+    const output = renderComponentWithStore(TableWrapper, {}, getDefaultStore(state));
     expect(output.querySelectorAll('tr:first-child .icon-checkmark3').length).to.eq(1);
   });
 });

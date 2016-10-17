@@ -12,6 +12,7 @@ import {
 } from '../../helpers';
 
 import {
+  RESET_STATE,
   RECEIVE_METADATA,
   SET_DIMENSION,
   SET_MEASURE,
@@ -40,6 +41,10 @@ export default function histogram(state, action) {
   state = _.cloneDeep(state);
 
   switch (action.type) {
+    case RESET_STATE:
+      state = vifs().featureMap;
+      break;
+
     case RECEIVE_METADATA:
       forEachSeries(state, series => {
         setUnits(series, action);

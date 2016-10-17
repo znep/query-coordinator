@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import {
+  RESET_STATE,
   REQUEST_METADATA,
   RECEIVE_METADATA,
   HANDLE_METADATA_ERROR,
@@ -25,6 +26,11 @@ export default function metadata(state, action) {
   state = _.cloneDeep(state);
 
   switch (action.type) {
+    // Return with defaultState on reset
+    case RESET_STATE:
+      state = defaultState;
+      break;
+
     case REQUEST_METADATA:
       state.isLoading = true;
       state.error = null;

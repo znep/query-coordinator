@@ -11,6 +11,7 @@ import {
   setUnits,
 } from '../../helpers';
 import {
+  RESET_STATE,
   RECEIVE_METADATA,
   SET_DOMAIN,
   SET_DATASET_UID,
@@ -26,6 +27,10 @@ export default function table(state, action) {
   state = _.cloneDeep(state);
 
   switch (action.type) {
+    case RESET_STATE:
+      state = vifs().table;
+      break;
+
     case RECEIVE_METADATA:
       let metadata = {
         datasetUid: '',

@@ -235,6 +235,8 @@ export var Visualization = React.createClass({
           this.preview.removeChild(this.preview.firstChild);
         }
       }
+    } else {
+      this.destroyVisualizationPreview();
     }
   },
 

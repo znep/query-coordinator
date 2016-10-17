@@ -5,7 +5,10 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 
 import { translate } from '../../I18n';
-import { setXAxisScalingMode } from '../actions';
+import {
+  setXAxisScalingMode,
+  resetState
+} from '../actions';
 
 import {
   getCurrentVif,
@@ -33,6 +36,7 @@ export const AuthoringWorkflow = React.createClass({
     vif: React.PropTypes.object,
     onComplete: React.PropTypes.func,
     onBack: React.PropTypes.func,
+    onReset: React.PropTypes.func,
     onCancel: React.PropTypes.func,
     tabs: React.PropTypes.array
   },
@@ -48,6 +52,7 @@ export const AuthoringWorkflow = React.createClass({
     return {
       onComplete: _.noop,
       onBack: _.noop,
+      onReset: _.noop,
       onCancel: _.noop,
       tabs: [
         {
@@ -196,6 +201,24 @@ export const AuthoringWorkflow = React.createClass({
       ) : null;
   },
 
+  renderResetButton() {
+    const { backButtonText, onReset } = this.props;
+    const confirmDialog = () => {
+      if(confirm(translate('common.reset_confirm'))) {
+        onReset();
+      }
+    };
+
+    const className = classNames('authoring-reset-button', { 'with-back-button': _.isString(backButtonText) });
+
+    return (
+      <button className={className} onClick={confirmDialog}>
+        <span className="icon-undo" />
+        {translate('common.reset_button_label')}
+      </button>
+    );
+  },
+
   render() {
     const { metadata, vifAuthoring, backButtonText } = this.props;
     const isNotInsertable = !isInsertableVisualization(vifAuthoring);
@@ -231,7 +254,10 @@ export const AuthoringWorkflow = React.createClass({
 
           <footer className="modal-footer authoring-modal-footer">
             <div className={modalFooterActionsClassNames}>
-              {this.renderBackButton()}
+              <div className="authoring-footer-buttons">
+                {this.renderBackButton()}
+                {this.renderResetButton()}
+              </div>
               <div className="authoring-actions">
                 <button className="btn btn-sm btn-default cancel" onClick={this.onCancel}>{translate('modal.close')}</button>
                 <button className="btn btn-sm btn-primary done" onClick={this.onComplete} disabled={isNotInsertable}>{translate('modal.insert')}</button>
@@ -257,7 +283,8 @@ function mapDispatchToProps(dispatch) {
     onChangeXAxisScalingMode(event) {
       const xAxisScalingMode = event.target.checked;
       dispatch(setXAxisScalingMode(xAxisScalingMode));
-    }
+    },
+    onReset: () => dispatch(resetState())
   };
 }
 

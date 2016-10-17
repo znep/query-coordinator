@@ -14,6 +14,7 @@ import {
 } from '../../helpers';
 
 import {
+  RESET_STATE,
   RECEIVE_METADATA,
   SET_DATASET_UID,
   SET_DESCRIPTION,
@@ -48,6 +49,10 @@ export default function barChart(state, action) {
   state = _.cloneDeep(state);
 
   switch (action.type) {
+    case RESET_STATE:
+      state = vifs().barChart;
+      break;
+
     case RECEIVE_METADATA:
       forEachSeries(state, series => {
         setUnits(series, action);

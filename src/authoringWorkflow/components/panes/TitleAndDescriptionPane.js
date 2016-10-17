@@ -4,9 +4,10 @@ import { connect } from 'react-redux';
 
 import { translate } from '../../../I18n';
 import { INPUT_DEBOUNCE_MILLISECONDS } from '../../constants';
-import { getTitle, getDescription, getViewSourceDataLink } from '../../selectors/vifAuthoring';
+import { getTitle, getDescription, getViewSourceDataLink, getVisualizationType } from '../../selectors/vifAuthoring';
 import { setTitle, setDescription, setViewSourceDataLink } from '../../actions';
 import CustomizationTabPane from '../CustomizationTabPane';
+import EmptyPane from './EmptyPane';
 
 export const TitleAndDescriptionPane = React.createClass({
   propTypes: {
@@ -60,11 +61,24 @@ export const TitleAndDescriptionPane = React.createClass({
   },
 
   render() {
+    const chartType = getVisualizationType(this.props.vifAuthoring);
+    let content;
+
+    if(_.isNull(chartType)) {
+      content = <EmptyPane />;
+    } else {
+      content = (
+        <div>
+          {this.renderTitleField()}
+          {this.renderDescriptionField()}
+          {this.renderShowSourceDataLink()}
+        </div>
+      );
+    }
+
     return (
       <form>
-        {this.renderTitleField()}
-        {this.renderDescriptionField()}
-        {this.renderShowSourceDataLink()}
+        { content }
       </form>
     );
   }

@@ -3,13 +3,13 @@ import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
 import utils from 'socrata-utils';
 
 import reducer from './reducers';
-import vifs from './vifs';
+import getVifTemplates from './vifs';
 import { setLocale } from '../I18n';
 import { setVifCheckpoint } from './actions';
 import { load } from './vifs/loader';
@@ -32,11 +32,14 @@ module.exports = function(element, configuration) {
 
   vif = vif ? migrateVif(vif) : {};
 
+  // Adding initial VIF to vifs list
+  // Serves as a fallback for reset options
+  const vifs = _.merge(getVifTemplates(), { initialVif: vif });
   const vifType = _.get(vif, 'series[0].type', null);
   const initialState = {
     metadata: defaultMetadata,
     vifAuthoring: {
-      vifs: vifs(),
+      vifs: vifs,
       authoring: {
         selectedVisualizationType: vifType,
         showCenteringAndZoomingSaveMessage: false

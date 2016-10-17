@@ -393,7 +393,7 @@
                     df.type = 'google';
                     df.exclusiveLayers = true;
                     df.bkgdLayers = Dataset.map.backgroundLayerSet.Google;
-                } else if (df.plotStyle == 'heatmap' && df.forceBasemap) {
+                } else {
                     // There are only three possible values for type: google, bing, or esri.
                     // So the "else" case here is actually only esri.
                     df.bkgdLayers = _.map(df.layers, function(layer) {

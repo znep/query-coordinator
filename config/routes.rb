@@ -42,6 +42,7 @@ Rails.application.routes.draw do
     get '/stat/version(.:format)' => 'odysseus#version'
     scope :controller => 'odysseus'do
       scope :action => 'chromeless' do
+        get '/stat/goals/single/:goal_id/embed'
         get '/stat/goals/:dashboard_id/:category_id/:goal_id/embed'
       end
 

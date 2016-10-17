@@ -118,6 +118,16 @@ RSpec.describe 'routes for Data Lens' do
       end
     end
 
+    describe 'single goal embed' do
+      it('routes /stat/goals/single/goal-goal/embed to odysseus#chromeless') do
+        expect(get: '/stat/goals/single/goal-goal/embed').to route_to(
+          controller: 'odysseus',
+          action: 'chromeless',
+          goal_id: 'goal-goal'
+        )
+      end
+    end
+
     describe 'soon-to-be-deprecated' do
       it('routes /stat/goals/dash-dash/cate-cate/goal-goal to odysseus#index') do
         expect(get: '/stat/goals/dash-dash/cate-cate/goal-goal').to route_to(

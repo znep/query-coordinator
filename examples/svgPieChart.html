@@ -25,7 +25,7 @@
           height: 600px;
         }
 
-        #pie-chart-1, #pie-chart-2, #pie-chart-4 {
+        #pie-chart-1, #pie-chart-2, #pie-chart-4, #pie-chart-5 {
           width: 100%;
           height: 480px;
         }
@@ -36,6 +36,7 @@
   <div class="chart" id="pie-chart-2"></div>
   <div class="chart" id="pie-chart-3"></div>
   <div class="chart" id="pie-chart-4"></div>
+  <div class="chart" id="pie-chart-5"></div>
 </body>
 
 <!-- Include external vendor -->
@@ -232,6 +233,9 @@
         }
       }
     ];
+
+    var pieChart5Vif = _.cloneDeep(pieChart3Vif);
+    pieChart5Vif.configuration.showValueLabels = false;
     
     /**
      * Instantiate the plugins
@@ -254,6 +258,10 @@
     var $pieChart4Element = $('#pie-chart-4');
     $pieChart4Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
     $pieChart4Element.socrataSvgPieChart(_.cloneDeep(pieChart4Vif));
+
+    var $pieChart5Element = $('#pie-chart-5');
+    $pieChart5Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+    $pieChart5Element.socrataSvgPieChart(_.cloneDeep(pieChart5Vif));
 
     function handleFlyout(event) {
       var payload = event.originalEvent.detail;

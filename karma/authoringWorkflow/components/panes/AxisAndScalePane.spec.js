@@ -208,4 +208,11 @@ describe('AxisAndScalePane', function() {
     rendersTimelinePrecision();
     rendersTreatNullValuesAsZeroAndEmitsEvents();
   });
+
+  describe('pieChart', () => {
+    beforeEach(setUpVisualization('pieChart'));
+
+    rendersShowValueLabelsAndEmitsEvents();
+    rendersChartSortingAndEmitsEvents();
+  });
 });

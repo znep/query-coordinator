@@ -335,11 +335,13 @@ export var AxisAndScalePane = React.createClass({
   },
 
   renderPieChartControls() {
+    const showValueLabels = this.renderShowValueLabels();
     const chartSorting = this.renderChartSorting();
 
     return (
       <div>
         {chartSorting}
+        {showValueLabels}
       </div>
     );
   },

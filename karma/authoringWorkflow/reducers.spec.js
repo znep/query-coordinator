@@ -110,6 +110,8 @@ describe('AuthoringWorkflow reducer', function() {
       shouldSetVif('setLabelLeft', 'labelLeft', 'configuration.axisLabels.left', ['columnChart', 'timelineChart', 'histogram']);
       shouldSetVif('setLabelRight', 'labelRight', 'configuration.axisLabels.right', ['columnChart', 'timelineChart', 'histogram']);
 
+      shouldSetVif('setShowValueLabels', true, 'configuration.showValueLabels', ['barChart', 'pieChart']);
+
       shouldSetVif('setUnitsOne', 'Thought', 'series[0].unit.one', ['regionMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram', 'pieChart']);
       shouldSetVif('setUnitsOther', 'Thought', 'series[0].unit.other', ['regionMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram', 'pieChart']);
 

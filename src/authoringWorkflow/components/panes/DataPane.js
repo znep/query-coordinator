@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 
 import { translate } from '../../../I18n';
 import { isLoading, hasData, hasError } from '../../selectors/metadata';
-import { getLimitCount, getShowOtherCategory, isBarChart } from '../../selectors/vifAuthoring';
-import { INPUT_DEBOUNCE_MILLISECONDS } from '../../constants';
+import { getVisualizationType, getLimitCount, getShowOtherCategory, isBarChart, isPieChart } from '../../selectors/vifAuthoring';
+import { INPUT_DEBOUNCE_MILLISECONDS, DEFAULT_LIMIT_FOR_SHOW_OTHER_CATEGORY } from '../../constants';
 import {
   setLimitNoneAndShowOtherCategory,
   setLimitCountAndShowOtherCategory,
@@ -38,10 +38,12 @@ export var DataPane = React.createClass({
     );
   },
 
-  renderBarChartLimitAndShowOtherCategory() {
+  renderLimitAndShowOtherCategory() {
     const { vifAuthoring } = this.props;
     const limitCount = getLimitCount(vifAuthoring);
     const showOtherCategory = getShowOtherCategory(vifAuthoring);
+    const visualizationType = getVisualizationType(vifAuthoring);
+    const translationKey = visualizationType == 'barChart' ? 'bar_chart_limit' : 'pie_chart_limit';
     const limitCountDisabled = limitCount === null;
     // 'Do not limit results' radio button
     const limitNoneInputAttributes = {
@@ -57,7 +59,7 @@ export var DataPane = React.createClass({
         <label htmlFor="limit-none">
           <span />
         </label>
-        {translate('panes.data.fields.bar_chart_limit.none')}
+        {translate(`panes.data.fields.${translationKey}.none`)}
       </div>
     );
     // 'Limit results' radio button
@@ -92,7 +94,7 @@ export var DataPane = React.createClass({
 
         this.props.onChangeLimitCount(event);
       },
-      defaultValue: limitCount || 10,
+      defaultValue: DEFAULT_LIMIT_FOR_SHOW_OTHER_CATEGORY[visualizationType] || 10,
       disabled: limitCountDisabled
     };
     const showOtherCategoryInputAttributes = {
@@ -110,7 +112,7 @@ export var DataPane = React.createClass({
           <input {...showOtherCategoryInputAttributes}/>
           <label className="inline-label" htmlFor="show-other-category">
             <span className="fake-checkbox">
-              <span className="icon-checkmark3"></span>
+              <span className="icon-checkmark3" />
             </span>
             {translate('panes.data.fields.show_other_category.title')}
           </label>
@@ -123,15 +125,15 @@ export var DataPane = React.createClass({
         <label htmlFor="limit-count">
           <span />
         </label>
-        {translate('panes.data.fields.bar_chart_limit.count')}
+        {translate(`panes.data.fields.${translationKey}.count`)}
         {limitCountValueContainer}
       </div>
     );
 
     return (
       <div className="authoring-field-group">
-        <h5>{translate('panes.data.fields.bar_chart_limit.title')}</h5>
-        <span id="limit-subtitle">{translate('panes.data.fields.bar_chart_limit.subtitle')}</span>
+        <h5>{translate(`panes.data.fields.${translationKey}.title`)}</h5>
+        <span id="limit-subtitle">{translate(`panes.data.fields.${translationKey}.subtitle`)}</span>
         <div className="authoring-field">
           <div className="radiobutton">
             {limitNoneContainer}
@@ -154,8 +156,8 @@ export var DataPane = React.createClass({
       metadataInfo = this.renderMetadataLoading();
     } else {
 
-      if (isBarChart(vifAuthoring)) {
-        limitAndShowOtherCategory = this.renderBarChartLimitAndShowOtherCategory();
+      if (isBarChart(vifAuthoring) || isPieChart(vifAuthoring)) {
+        limitAndShowOtherCategory = this.renderLimitAndShowOtherCategory();
       }
     }
 

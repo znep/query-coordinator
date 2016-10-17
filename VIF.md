@@ -318,6 +318,15 @@ Required |Optional
 :-------:|:---------------------------:
     -    |Column Chart, Timeline Chart
 
+##### `showOtherCategory`
+`showOtherCategory` controls whether grouping data above specified limit into `(other)` category. 
+Default limit in Pie Chart is 12 and `showOtherCategory` is true by default.
+There isn't a default limit in Bar Chart and `showOtherCategory` is false by default.
+
+Required |Optional
+:-------:|:---------------------------:
+    -    |Bar Chart, Pie Chart
+
 ### The `format` Object
 The format object specifies the format and version of the vif. It is of type `<object>`. This object must have the following properties:
 

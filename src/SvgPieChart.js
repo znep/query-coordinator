@@ -105,7 +105,6 @@ $.fn.socrataSvgPieChart = function(originalVif) {
     if (window.console && console.error) {
       console.error(error);
     }
-console.log(error.message);
 
     if (error.errorMessages) {
       messages = error.errorMessages;
@@ -202,7 +201,7 @@ console.log(error.message);
     );
 
     const limitConf = _.get(vifToRender, `series[${seriesIndex}].dataSource.limit`);
-    const isLimitInRange = _.inRange(limitConf, 1, MAX_ROWS_BEFORE_FORCED_OTHER_GROUP + 1);
+    const isLimitInRange = _.inRange(limitConf, 2, MAX_ROWS_BEFORE_FORCED_OTHER_GROUP + 2);
 
     if (limitConf && !isLimitInRange) {
       const error = new Error();
@@ -217,6 +216,7 @@ console.log(error.message);
 
     const limit = limitConf || MAX_ROWS_BEFORE_FORCED_OTHER_GROUP + 1;
 
+    const showOtherCategory = _.get(vifToRender, 'configuration.showOtherCategory', true);
     const isUnaggregatedQuery = (
       _.isNull(series.dataSource.dimension.aggregationFunction) &&
       _.isNull(series.dataSource.measure.aggregationFunction)
@@ -309,7 +309,7 @@ console.log(error.message);
         // If the number of rows in the query is one more than the maximum that
         // we allow before grouping into an "other" category, then we need to do
         // a second query to count the things that are in the "other" category.
-        if (queryResponseRowCount === MAX_ROWS_BEFORE_FORCED_OTHER_GROUP + 1) {
+        if (showOtherCategory && queryResponseRowCount === limit) {
 
           const otherCategoryName = I18n.translate(
             'visualizations.common.other_category'

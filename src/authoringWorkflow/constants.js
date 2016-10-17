@@ -225,3 +225,8 @@ export const TIMELINE_PRECISION = [
     value: 'DAY'
   }
 ];
+
+export const DEFAULT_LIMIT_FOR_SHOW_OTHER_CATEGORY = {
+  barChart: 10,
+  pieChart: 12
+};

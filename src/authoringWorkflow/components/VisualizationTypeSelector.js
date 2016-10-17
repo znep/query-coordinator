@@ -120,6 +120,7 @@ export const VisualizationTypeSelector = React.createClass({
     const flyout = this.renderVisualizationTypeFlyout(visualizationTypeMetadata, isRecommended);
 
     const buttonAttributes = {
+      type: 'button',
       className: classNames('btn btn-default btn-lg', {
         active: isSelected,
         recommended: isRecommended

@@ -8,7 +8,8 @@ export default {
   configuration: {
     viewSourceDataLink: true,
     showValueLabels: true,
-    showValueLabelsAsPercent: false
+    showValueLabelsAsPercent: false,
+    showOtherCategory: true
   },
   description: '',
   series: [
@@ -34,7 +35,8 @@ export default {
           sort: 'desc'
         },
         type: 'socrata.soql',
-        filters: []
+        filters: [],
+        limit: 12
       },
       label: null,
       type: 'pieChart'

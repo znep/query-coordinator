@@ -89,7 +89,33 @@ describe('DataPane', function() {
         emitsEvent('#show-other-category', 'onChangeShowOtherCategory');
       });
 
-      describe('when the current visualization type is not "barChart"', function() {
+      describe('when the current visualization type is "pieChart"', function() {
+
+        beforeEach(setUpVisualization('pieChart'));
+
+        it('renders a limit none radio button', function() {
+          expect(component.querySelector('#limit-none')).to.exist;
+        });
+
+        it('renders a limit count radio button', function() {
+          expect(component.querySelector('#limit-count')).to.exist;
+        });
+
+        it('renders a limit count number input field', function() {
+          expect(component.querySelector('#limit-count-value')).to.exist;
+        });
+
+        it('renders a show other category checkbox', function() {
+          expect(component.querySelector('#show-other-category')).to.exist;
+        });
+
+        emitsEvent('#limit-none', 'onSelectLimitNone');
+        emitsEvent('#limit-count', 'onSelectLimitCount');
+        emitsEvent('#limit-count-value', 'onChangeLimitCount');
+        emitsEvent('#show-other-category', 'onChangeShowOtherCategory');
+      });
+
+      describe('when the current visualization type is not "barChart or pieChart"', function() {
 
         beforeEach(setUpVisualization(''));
 

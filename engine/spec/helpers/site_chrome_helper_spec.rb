@@ -525,6 +525,12 @@ describe SocrataSiteChrome::ApplicationHelper do
         url = 'mailto:bob@test.com'
         expect(helper.massage_url(url)).to eq('mailto:bob@test.com')
       end
+
+      it 'does not remove the scheme from mailto links if RequestStore[:current_domain] is nil' do
+        stub_current_domain_with(nil)
+        url = 'mailto:bob@test.com'
+        expect(helper.massage_url(url)).to eq('mailto:bob@test.com')
+      end
     end
   end
 

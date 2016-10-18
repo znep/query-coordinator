@@ -229,7 +229,7 @@ module SocrataSiteChrome
       uri = URI.parse(url)
 
       # Turn full URL into a relative link if the url host matches the current domain host
-      if uri.host == ::RequestStore.store[:current_domain]
+      if ::RequestStore.store[:current_domain].present? && uri.host == ::RequestStore.store[:current_domain]
         uri.scheme = nil
         uri.host = nil
         add_locale ? relative_url_with_locale(uri.to_s) : uri.to_s

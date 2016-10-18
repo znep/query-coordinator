@@ -519,7 +519,9 @@ en:
           header:
             filter: Filter
             filtered_by: filtered by
-            result: Result
+            result:
+              one: '%{count} Result'
+              other: '%{count} Results'
           hint: Filter or Browse Results
           mobile:
             back: Back

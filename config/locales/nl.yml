@@ -522,7 +522,9 @@ nl:
           header:
             filter: Filtreren
             filtered_by: Filterer door
-            result: Resultaat
+            result:
+              one: "%{count} Resultaat"
+              other: "%{count} Resultat"
           hint: Filteren of Doorbladeren Resultaat
           mobile:
             back: Terug

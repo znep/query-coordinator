@@ -333,6 +333,8 @@ GEM
     unicorn-worker-killer (0.4.4)
       get_process_mem (~> 0)
       unicorn (>= 4, < 6)
+    unicorn_metrics (0.2.3)
+      raindrops (~> 0.11, >= 0.11.0)
     unparser (0.2.5)
       abstract_type (~> 0.0.7)
       adamantium (~> 0.2.0)
@@ -425,6 +427,7 @@ DEPENDENCIES
   uglifier
   unicorn
   unicorn-worker-killer
+  unicorn_metrics (~> 0.2.3)
   unparser (~> 0.2.5)
   vcr
   webmock
@@ -439,4 +442,4 @@ RUBY VERSION
    ruby 2.3.1p112
 
 BUNDLED WITH
-   1.13.1
+   1.13.3

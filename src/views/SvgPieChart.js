@@ -5,6 +5,7 @@ const $ = require('jquery');
 const SvgVisualization = require('./SvgVisualization');
 const I18n = require('../I18n');
 
+const MINIMUM_PIE_CHART_WIDTH = 100;
 const MAX_HORIZONTAL_LEGEND_SIZE = 250;
 const MAX_VERTICAL_LEGEND_SIZE = 250;
 const MARGINS = {
@@ -26,7 +27,7 @@ function SvgPieChart($element, vif) {
   let dataToRender; // chart data
   let width; // container element width
   let height; // container element height
-  let outerWidth; // width of pie
+  let outerWidth = 0; // width of pie
   let svg; // main svg element
   let color; // renderData and renderLegend uses this
   let flyoutArc; // this will change with resize
@@ -370,22 +371,13 @@ function SvgPieChart($element, vif) {
    * Sets width, height, outerWidth in upper scope
    */
   function determineSize() {
-    // getting container width / height
     width = $chartElement.width();
     height = $chartElement.height();
 
-    // Deciding pie width by our available space
-    //
-    // horizontal layout
-    if (width > height) {
-      outerWidth = Math.max(0, width - (MAX_HORIZONTAL_LEGEND_SIZE / 2));
-    // vertical layout
-    } else {
-
-      outerWidth = height - MAX_VERTICAL_LEGEND_SIZE > outerWidth ?
-        height * MARGINS.verticalLayoutPieMargin - MAX_VERTICAL_LEGEND_SIZE :
-        width * MARGINS.verticalLayoutPieMargin;
-    }
+    // Start by fitting the pie within the allotted margins.
+    outerWidth = width * MARGINS.verticalLayoutPieMargin;
+    // Clamp the value between a min-width and max (based on height).
+    outerWidth = _.clamp(outerWidth, MINIMUM_PIE_CHART_WIDTH, height * MARGINS.verticalLayoutPieMargin);
   }
 
   /**

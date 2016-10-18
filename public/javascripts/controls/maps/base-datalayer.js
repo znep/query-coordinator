@@ -476,23 +476,13 @@
       }
 
       if (!_.isEmpty(mapLinkQuery)) {
-        if (layerObj._map.baseLayer instanceof OpenLayers.Layer.Bing) {
-          $info.append($.tag({
-            tagName: 'a',
-            'class': 'external_link',
-            href: 'http://www.bing.com/maps/?where1=' + mapLinkQuery,
-            target: '_blank',
-            contents: $.t('controls.common.visualization.in_bing')
-          }));
-        } else {
-          $info.append($.tag({
-            tagName: 'a',
-            'class': 'external_link',
-            href: 'http://maps.google.com/maps?q=' + mapLinkQuery,
-            target: '_blank',
-            contents: $.t('controls.common.visualization.in_google')
-          }));
-        }
+        $info.append($.tag({
+          tagName: 'a',
+          'class': 'external_link',
+          href: 'http://maps.google.com/maps?q=' + mapLinkQuery,
+          target: '_blank',
+          contents: $.t('controls.common.visualization.in_google')
+        }));
       }
 
       return $info;

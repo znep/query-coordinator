@@ -59,27 +59,32 @@
       });
     }
 
+    // We don't want to force a base layer on any boundary maps we are migrating from
+    // the legacy format. This is intended behavior.
     var notABoundaryMap = df.plotStyle != 'heatmap';
-    if (df.type == 'google' && notABoundaryMap) {
-      df.exclusiveLayers = true;
-      df.bkgdLayers = Dataset.map.backgroundLayerSet.Google;
-    } else if (df.type == 'bing' && notABoundaryMap) {
-      df.exclusiveLayers = true;
-      df.bkgdLayers = Dataset.map.backgroundLayerSet.Bing;
-    } else if ((df.plotStyle == 'heatmap' && df.forceBasemap) || notABoundaryMap) {
-      df.bkgdLayers = _.map(df.layers, function(layer) {
-        if (layer.custom_url) {
-          return {
-            custom_url: layer.custom_url
-          };
-        } else {
-          return {
-            layerKey: (_.detect(Dataset.map.backgroundLayers, function(lConfig) {
-              return layer.url.indexOf((lConfig.options || {}).url) > -1;
-            }) || {}).key
-          };
-        }
-      });
+    if (notABoundaryMap) {
+      if (df.type === 'google' || df.type === 'bing') {
+        // Bing is no longer supported; use Google instead.
+        df.type = 'google';
+        df.exclusiveLayers = true;
+        df.bkgdLayers = Dataset.map.backgroundLayerSet.Google;
+      } else {
+        // There are only three possible values for type: google, bing, or esri.
+        // So the "else" case here is actually only esri.
+        df.bkgdLayers = _.map(df.layers, function(layer) {
+          if (layer.custom_url) {
+            return {
+              custom_url: layer.custom_url
+            };
+          } else {
+            return {
+              layerKey: (_.detect(Dataset.map.backgroundLayers, function(lConfig) {
+                return layer.url.indexOf((lConfig.options || {}).url) > -1;
+              }) || {}).key
+            };
+          }
+        });
+      }
     }
 
     if (view.isArcGISDataset()) {
@@ -207,16 +212,6 @@
     opacity: 1
   }];
 
-  Dataset.map.backgroundLayerSet.Bing = [{
-    layerKey: 'Bing Road',
-    alias: $.t('core.map_layers.roadmap'),
-    opacity: 1
-  }, {
-    layerKey: 'Bing Aerial',
-    alias: $.t('core.map_layers.aerial'),
-    opacity: 1
-  }];
-
   // Deprecation Support: Bing maps are now rendered as Google Maps.
   Dataset.map.backgroundLayerDeprecationMap = {
     'Bing Road': 'Google Roadmap',
@@ -240,8 +235,7 @@
       return Dataset.map.isValid(this, this.displayFormat);
     },
 
-    // Old Maps didn't have an explicit 'self' reference. This function fixes
-    // up this view to have correct self-references.
+    // Migrate legacy map configurations to the most current state of the world.
     _convertLegacy: function() {
       var view = this;
       if (view._convertedLegacy) {
@@ -249,15 +243,24 @@
       }
       view._convertedLegacy = true;
 
-      // Legacy Support: Replace Bing keys with Google equivalents.
+      // Convert background layer configurations.
       if ($.subKeyDefined(view, 'displayFormat.bkgdLayers')) {
         view.displayFormat.bkgdLayers.forEach(function(layer) {
+          // Convert layerName to layerKey.
+          if ($.isBlank(layer.layerKey) && !$.isBlank(layer.layerName)) {
+            layer.layerKey = layer.layerName;
+            delete layer.layerName;
+          }
+
+          // Replace Bing keys with Google equivalents.
           if (Dataset.map.backgroundLayerDeprecationMap[layer.layerKey]) {
             layer.layerKey = Dataset.map.backgroundLayerDeprecationMap[layer.layerKey];
           }
         });
       }
 
+      // Old Maps didn't have an explicit 'self' reference. This fixes
+      // up the view to have correct self-references.
       if ($.subKeyDefined(view, 'displayFormat.viewDefinitions')) {
         var fixIds = function(checkView) {
           var fixFilter = function(fc) {

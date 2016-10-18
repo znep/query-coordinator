@@ -1,1 +1,1 @@
-Refer to doc/update-translations.md
+../../doc/update-translations.md

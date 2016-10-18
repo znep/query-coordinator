@@ -70,12 +70,11 @@ describe('VisualizationTypeSelector', function() {
           }));
         });
 
-        it('renders recommended visualizations', function() {
-          expect(component.querySelector('.btn.recommended')).to.exist;
-        });
+        it('adds recommended to the visualization button', function() {
+          const columnChart = component.querySelector('[data-flyout="columnChart-flyout"]');
 
-        it('renders recommended flyouts', function() {
-          expect(component.querySelector('.flyout.recommended')).to.exist;
+          expect(columnChart).to.have.class('recommended');
+          expect(columnChart.querySelector('.flyout')).to.have.class('recommended');
         });
       });
     });

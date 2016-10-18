@@ -55,22 +55,23 @@ export const VisualizationTypeSelector = React.createClass({
   },
 
   renderVisualizationTypeFlyout(visualizationType, isRecommended) {
-    const recommendedLabel = isRecommended ? (
+    const recommendedLabel = (
       <div className="visualization-type-recommended-label">
         <span className="visualization-type-recommended-indicator" />
         <span>{translate('panes.data.fields.visualization_type.recommended')}</span>
       </div>
-    ) : null;
+    );
 
-    const recommendedInfo = isRecommended ? (
+    const recommendedInfo = (
       <p className="visualization-type-info">
         {translate('panes.data.fields.visualization_type.recommended_based_on')}
       </p>
-    ) : null;
+    );
 
     const flyoutAttributes = {
       id: `${visualizationType.type}-flyout`,
       className: classNames('visualization-type-flyout flyout flyout-hidden', {
+        // Controls the visibility of recommended labels and info.
         recommended: isRecommended
       })
     };

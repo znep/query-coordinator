@@ -1,4 +1,5 @@
 import 'whatwg-fetch';
+import 'babel-polyfill';
 
 function requireAll(context) {
   return context.keys().map(context);

@@ -451,6 +451,14 @@
   &.recommended {
     width: 234px;
     max-width: none;
+
+    .flyout-header .visualization-type-recommended-label {
+      display: inline-flex;
+    }
+
+    .visualization-type-info {
+      display: block;
+    }
   }
 
   .flyout-header {
@@ -469,7 +477,7 @@
     .visualization-type-recommended-label {
       margin-right: 0;
       font-size: 10px;
-      display: inline-flex;
+      display: none;
       text-transform: uppercase;
       font-weight: 400;
       color: #999;
@@ -490,6 +498,7 @@
   }
 
   .visualization-type-info {
+    display: none;
     text-align: left;
     font-size: 13px;
     margin-top: 8px;

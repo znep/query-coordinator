@@ -238,6 +238,7 @@ export default {
       view_source_data: 'View Source Data',
       panning_notice: 'Click and drag to pan the chart',
       currency_symbol: '$',
+      percent_symbol: '%',
       decimal_separator: '.',
       error_generic: 'An error occurred when rendering this chart.',
       error_no_data: 'There is no data to display.',

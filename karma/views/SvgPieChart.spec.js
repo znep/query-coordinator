@@ -157,13 +157,12 @@ describe('SvgPieChart', () => {
     it('should show correct values in flyout on slices', done => {
       pieChart.chart.render(null, testData);
 
-      var slice = pieChart.$element.find('.slice')[0];
+      var slice = pieChart.$element.find('.slice-group')[0];
 
       pieChart.$element.on('SOCRATA_VISUALIZATION_PIE_CHART_FLYOUT', event => {
         let payload = event.originalEvent.detail;
         let $content = $(payload.content);
 
-        expect(payload.element).to.equal(slice);
         expect($content.find('.socrata-flyout-title').text()).to.equal(testData[0].rows[0][0]);
         done();
       });
@@ -174,21 +173,19 @@ describe('SvgPieChart', () => {
     it('should show correct values in flyout on legend', done => {
       pieChart.chart.render(null, testData);
 
-      var slice = pieChart.$element.find('.slice')[0];
+      var slice = pieChart.$element.find('.slice-group')[0];
       var legendRow = pieChart.$element.find('.legend-row')[0];
 
       pieChart.$element.on('SOCRATA_VISUALIZATION_PIE_CHART_FLYOUT', event => {
         let payload = event.originalEvent.detail;
         let $content = $(payload.content);
 
-        expect(payload.element).to.equal(slice);
         expect($content.find('.socrata-flyout-title').text()).to.equal(testData[0].rows[0][0]);
         done();
       });
 
       testHelpers.fireMouseEvent(legendRow, 'mouseover');
     });
-
   });
 
   describe('when called with a specific configuration', () => {

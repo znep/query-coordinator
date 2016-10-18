@@ -20,6 +20,7 @@ const LEGEND_SPACING = 4;
 const LEGEND_CONTAINER_PADDING = 20;
 const LEGEND_WRAP_PADDING = 5;
 const VERTICAL_LEGEND_SPACING = 20;
+const FLYOUT_Y_OFFSET = -9;
 
 function SvgPieChart($element, vif) {
   const self = this;
@@ -100,6 +101,7 @@ function SvgPieChart($element, vif) {
 
     // creating pie
     let pie = d3.layout.pie().value(d => d[1]).sort(null);
+    let total = dataToRender[0].rows.map(d => d[1]).reduce((acc, d) => acc + d, 0);
 
     // not compatible with multiple series
     const dimensionIndex = dataToRender[0].columns.indexOf('dimension');
@@ -120,7 +122,8 @@ function SvgPieChart($element, vif) {
       data(pie).
       enter().
       append('svg:g').
-      attr('class', 'slice-group');
+      attr('class', 'slice-group').
+      attr('data-index', (d, i) => i);
 
     arcs.
       append('path').
@@ -129,6 +132,12 @@ function SvgPieChart($element, vif) {
       /* eslint-disable no-unused-vars */
       attr('data-label', (d, i) => d.data[dimensionIndex]).
       attr('data-value', (d, i) => d.data[measureIndex]).
+      attr('data-percent', function(d, i) {
+
+        return (total !== 0) ?
+          (100 * d.data[measureIndex]) / total :
+          null;
+      }).
       /* eslint-enable no-unused-vars */
       attr('fill', (d, i) => color(i));
 
@@ -466,7 +475,7 @@ function SvgPieChart($element, vif) {
   function attachPieEvents() {
 
     // bind flyout to slices
-    svg.selectAll('.slice').
+    svg.selectAll('.slice-group').
       on('mouseover', (d, index) => {
         const pathElement = svg.select(`.slice[data-index="${index}"]`)[0][0];
 
@@ -478,11 +487,15 @@ function SvgPieChart($element, vif) {
 
         // Arc mid point is relative, so we're adding pie center offset to it
         const flyoutPositionX = pieCenter.left + midPoint[0];
-        const flyoutPositionY = pieCenter.top + midPoint[1];
+        // Apply the FLYOUT_Y_OFFSET to the calculated 'center' of the slice
+        // in order to position the flyout above the text label, not on its
+        // center.
+        const flyoutPositionY = pieCenter.top + midPoint[1] + FLYOUT_Y_OFFSET;
 
         const data = {
           label: pathElement.getAttribute('data-label'),
           value: Number(pathElement.getAttribute('data-value')),
+          percent: Math.round(Number(pathElement.getAttribute('data-percent'))),
           flyoutPositionX,
           flyoutPositionY
         };
@@ -500,7 +513,7 @@ function SvgPieChart($element, vif) {
     // bind flyout to legend rows
     svg.selectAll('.legend-row').
       on('mouseover', (d, index) => {
-        const pathElement = svg.select(`.slice[data-index="${index}"]`);
+        const pathElement = svg.select(`.slice-group[data-index="${index}"]`);
         // delegate event to svg path
         pathElement.on('mouseover').call(
           pathElement.node(),
@@ -523,13 +536,18 @@ function SvgPieChart($element, vif) {
       I18n.translate('visualizations.common.no_value')
     );
     // not compatible with multiple series
+    const percentSymbol = I18n.translate(
+      'visualizations.common.percent_symbol'
+    );
+    const percentAsString = (data.percent !== null) ?
+      `(${data.percent}${percentSymbol})` :
+      '';
     const label = self.getVif().series.map(series => series.label)[0];
     const seriesIndex = self.getSeriesIndexByLabel(label);
+
     // Constructing html table for flyout content
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append($('<td>', {'colspan': 2}).text(title || ''));
-    const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
-      text(label);
     const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
     const $valueRow = $('<tr>', {'class': 'socrata-flyout-row'});
     const $table = $('<table>', {'class': 'socrata-flyout-table'}).
@@ -550,10 +568,10 @@ function SvgPieChart($element, vif) {
       );
     }
 
-    $valueCell.text(valueString);
+    $valueCell.html(`${valueString} ${percentAsString}`);
 
     $valueRow.
-      append([$labelCell, $valueCell]).
+      append([$valueCell]).
       appendTo($table);
 
     const payload = {

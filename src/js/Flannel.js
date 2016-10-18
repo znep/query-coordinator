@@ -9,7 +9,6 @@ module.exports = function FlannelFactory() {
 
   function hideFlannel(flannel, hoverable) {
     if (window.innerWidth <= mobileBreakpoint) {
-      document.body.classList.remove('modal-open');
       velocity(flannel, {
         left: window.innerWidth
       }, {
@@ -24,6 +23,10 @@ module.exports = function FlannelFactory() {
       flannel.classList.add('flannel-hidden');
       hoverable.classList.remove('active');
     }
+
+    // Always remove modal-open because there's no harm
+    // and we will avoid an unscrollable state.
+    document.body.classList.remove('modal-open');
 
     var elementToFocus = flannel.children[0] || flannel;
     elementToFocus.removeAttribute('tabindex');
@@ -45,7 +48,12 @@ module.exports = function FlannelFactory() {
     var windowWidth = window.innerWidth; // With scrollbar
 
     if (windowWidth <= mobileBreakpoint) {
-      document.body.classList.add('modal-open');
+      if (!flannel.classList.contains('flannel-hidden')) {
+        document.body.classList.add('modal-open');
+      } else {
+        document.body.classList.remove('modal-open');
+      }
+
       flannel.style.left = 0;
       flannel.style.top = 0;
       return;
@@ -67,6 +75,7 @@ module.exports = function FlannelFactory() {
 
     flannel.style.left = `${left}px`;
     flannel.style.top = `${top}px`;
+
     document.body.classList.remove('modal-open');
   }
 

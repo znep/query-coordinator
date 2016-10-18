@@ -359,6 +359,14 @@ export function setColorScale(negativeColor, zeroColor, positiveColor) {
   };
 }
 
+export const SET_COLOR_PALETTE = 'SET_COLOR_PALETTE';
+export function setColorPalette(colorPalette) {
+  return {
+    type: SET_COLOR_PALETTE,
+    colorPalette
+  };
+}
+
 export const SET_NEGATIVE_COLOR = 'SET_NEGATIVE_COLOR';
 export function setNegativeColor(negativeColor) {
   return {

@@ -15,6 +15,12 @@ export default {
     green_white_purple: 'Green White Purple',
     red_yellow: 'Red Yellow'
   },
+  color_palettes: {
+    categorical: 'Categorical',
+    alternate1: 'Alternate 1',
+    alternate2: 'Alternate 2',
+    dark: 'Dark'
+  },
   modal: {
     title: 'Create A Visualization',
     based_on: 'Based on ',
@@ -126,6 +132,9 @@ export default {
         },
         color_scale: {
           title: 'Color Scale'
+        },
+        color_palette: {
+          title: 'Color Palette'
         },
         base_layer: {
           title: 'Type'
@@ -293,7 +302,8 @@ export default {
       title: 'Column Chart'
     },
     pie_chart: {
-      title: 'Pie Chart'
+      title: 'Pie Chart',
+      error_limit_out_of_bounds: 'This visualization requires dataSource.limit should be between {0} and {1}.'
     },
     histogram: {
       //TODO We've disabled log scales in histogram until we can figure out how we're going to handle these invalid domains.

@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { createSelector } from 'reselect';
 import defaultVifs from '../vifs';
+import { COLOR_PALETTES } from '../constants';
 
 export const getVifs = state => _.get(state, 'vifs', {})
 export const getCheckpointVifs = state => _.get(state, 'authoring.checkpointVifs', {});
@@ -91,6 +92,11 @@ export const getColorScale = createSelector(
       positiveColor: _.get(vif, 'configuration.legend.positiveColor'),
     };
   }
+);
+
+export const getColorPalette = createSelector(
+  getCurrentVif,
+  vif => _.get(vif, 'series[0].color.palette', _.first(COLOR_PALETTES).value)
 );
 
 export const getBaseLayer = createSelector(

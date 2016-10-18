@@ -7,6 +7,7 @@ import { translate } from '../../../I18n';
 import {
   BASE_LAYERS,
   COLOR_SCALES,
+  COLOR_PALETTES,
   COLORS,
   INPUT_DEBOUNCE_MILLISECONDS
 } from '../../constants';
@@ -20,6 +21,7 @@ import {
   getPointOpacity,
   getPointSize,
   getColorScale,
+  getColorPalette,
   getBaseLayer,
   getBaseLayerOpacity,
   isBarChart,
@@ -27,7 +29,8 @@ import {
   isColumnChart,
   isFeatureMap,
   isHistogram,
-  isTimelineChart
+  isTimelineChart,
+  isPieChart
 } from '../../selectors/vifAuthoring';
 
 import {
@@ -36,6 +39,7 @@ import {
   setPointOpacity,
   setPointSize,
   setColorScale,
+  setColorPalette,
   setBaseLayer,
   setBaseLayerOpacity
 } from '../../actions';
@@ -44,7 +48,8 @@ export var ColorsAndStylePane = React.createClass({
   getDefaultProps() {
     return {
       baseLayers: BASE_LAYERS,
-      colorScales: COLOR_SCALES
+      colorScales: COLOR_SCALES,
+      colorPalettes: COLOR_PALETTES
     };
   },
 
@@ -219,6 +224,26 @@ export var ColorsAndStylePane = React.createClass({
     );
   },
 
+  renderPieChartControls() {
+    const { vifAuthoring, colorPalettes, onSelectColorPalette } = this.props;
+    const selectedColorPalette = getColorPalette(vifAuthoring);
+    const colorPaletteAttributes = {
+      id: 'color-palette',
+      options: colorPalettes,
+      value: selectedColorPalette,
+      onSelection: onSelectColorPalette
+    };
+
+    return (
+      <div>
+        <label className="block-label" htmlFor="color-palette">{translate('panes.colors_and_style.fields.color_palette.title')}</label>
+        <div className="color-scale-dropdown-container">
+          <Styleguide.Dropdown {...colorPaletteAttributes} />
+        </div>
+      </div>
+    );
+  },
+
   renderEmptyPane() {
     return <EmptyPane />;
   },
@@ -239,6 +264,8 @@ export var ColorsAndStylePane = React.createClass({
       configuration = this.renderFeatureMapControls();
     } else if (isRegionMap(vifAuthoring)) {
       configuration = this.renderRegionMapControls();
+    } else if (isPieChart(vifAuthoring)) {
+      configuration = this.renderPieChartControls();
     } else {
       configuration = this.renderEmptyPane();
     }
@@ -288,7 +315,9 @@ function mapDispatchToProps(dispatch) {
 
     onSelectColorScale: colorScale => {
       dispatch(setColorScale(...colorScale.scale));
-    }
+    },
+
+    onSelectColorPalette: _.debounce(event => dispatch(setColorPalette(event.value)), INPUT_DEBOUNCE_MILLISECONDS),
   };
 }
 

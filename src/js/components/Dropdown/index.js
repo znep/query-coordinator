@@ -253,8 +253,12 @@ export default React.createClass({
     const setEventsOnEveryParent = (node) => {
       let parent = node.parentNode;
 
-      while (parent !== null) {
-        if (parent.scrollHeight > parent.clientHeight) {
+      while (parent !== null && parent instanceof HTMLElement) {
+        const overflowY = window.getComputedStyle(parent).overflowY;
+        const isScrollable = overflowY === 'scroll' || overflowY === 'auto';
+        const hasScrollableArea = parent.scrollHeight > parent.clientHeight;
+
+        if (isScrollable && hasScrollableArea) {
           toggleEvents(parent);
         }
 

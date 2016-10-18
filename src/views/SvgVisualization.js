@@ -419,6 +419,10 @@ function SvgVisualization($element, vif) {
     );
   };
 
+  this.getMeasureAxisMinValue = () => _.get(self.getVif(), 'configuration.measureAxisMinValue', null);
+
+  this.getMeasureAxisMaxValue = () => _.get(self.getVif(), 'configuration.measureAxisMaxValue', null);
+
   this.getShowDimensionLabels = function() {
 
     return _.get(

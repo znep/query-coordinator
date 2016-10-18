@@ -21,7 +21,8 @@
       #timeline-chart-5,
       #timeline-chart-6,
       #timeline-chart-7,
-      #timeline-chart-8 {
+      #timeline-chart-8,
+      #timeline-chart-9 {
         display: block;
         position: relative;
         width: 640px;
@@ -48,6 +49,8 @@
     <div id="timeline-chart-7"></div>
     <p>Chart with OBE percent column as measure</p>
     <div id="timeline-chart-8"></div>
+    <p>Measure axis limited between 35000 and 44000</p>
+    <div id="timeline-chart-9"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -390,6 +393,9 @@
       _.set(timelineChart8Vif, 'series[0].dataSource.precision', "YEAR");
 
 
+      var timelineChart9Vif = _.cloneDeep(timelineChart2Vif);
+      _.set(timelineChart9Vif, 'configuration.measureAxisMinValue', 35000);
+      _.set(timelineChart9Vif, 'configuration.measureAxisMaxValue', 44000);
 
       /**
        * Instantiate the plugins
@@ -436,6 +442,12 @@
       $timelineChart8Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
       $timelineChart8Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       $timelineChart8Element.socrataSvgTimelineChart(timelineChart8Vif);
+
+      var $timelineChart9Element = $('#timeline-chart-9');
+      $timelineChart9Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $timelineChart9Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $timelineChart9Element.socrataSvgTimelineChart(timelineChart9Vif);
+
       /**
        * Handle plugin events
        */

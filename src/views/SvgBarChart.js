@@ -348,13 +348,19 @@ function SvgBarChart($element, vif) {
         attr(
           'x',
           (d) => {
+            const value = _.clamp(
+              d[1],
+              (minXValue) ? minXValue : d[1],
+              (maxXValue) ? maxXValue : d[1]
+            );
+
             let xAttr;
 
             // If the value is zero or null we want it to be present at the
             // baseline for the rest of the bars (on the left of the chart if
             // the minimum value is 0 or more, on the right of the chart if the
             // maximum value is less than zero.
-            if (d[1] === null || d[1] === 0) {
+            if (value === null || value === 0) {
 
               if (minXValue > 0) {
                 xAttr = d3XScale(minXValue) - 0.0001;
@@ -363,84 +369,79 @@ function SvgBarChart($element, vif) {
               } else {
                 xAttr = d3XScale(0) - 0.0001;
               }
-            } else if (d[1] > 0) {
+            } else if (value > 0) {
 
               if (minXValue > 0) {
 
-                xAttr = Math.min(
-                  d3XScale(d[1]),
-                  d3XScale(minXValue) + 1
-                );
+                if (value < minXValue) {
+                  xAttr = d3XScale(minXValue) + 1;
+                } else {
+                  xAttr = Math.min(
+                    d3XScale(value),
+                    d3XScale(minXValue) + 1
+                  );
+                }
+
               } else {
 
                 xAttr = Math.min(
-                  d3XScale(d[1]),
+                  d3XScale(value),
                   d3XScale(0) + 1
                 );
               }
-            } else if (d[1] < 0) {
+            } else if (value < 0) {
 
-              if (maxXValue <= 0) {
-
-                xAttr = Math.max(
-                  d3XScale(d[1]),
-                  1
-                );
+              if (value < minXValue) {
+                xAttr = d3XScale(minXValue) - 1;
+              } else if (maxXValue <= 0) {
+                xAttr = _.max([d3XScale(value), 1]);
               } else {
-                xAttr = d3XScale(d[1]);
+                xAttr = d3XScale(value);
               }
+
             }
 
             return xAttr;
           }
         ).
         attr('y', (d) => d3GroupingYScale(d[0])).
-        attr(
-          'width',
-          (d) => {
-            let baselineValue;
+        attr('width', (d) => {
 
-            if (d[1] === null || d[1] === 0) {
-              // We want the flyout for null or zero values to appear along
-              // the x axis, rather than at the top of the chart.
-              //
-              // This means that we need to push the container element for
-              // null values down to the x axis, rather than the default
-              // behavior which places it at the top of the visualization
-              // container. This is accomplished by the 'y' attribute, but
-              // that does not have the expected behavior if the element is
-              // not visible (or in this case, has a width of zero).
-              //
-              // Ultimately the way we force the bar's container to actually
-              // do the intended layout is to give the element a very small
-              // width which should be more or less indiscernable, which
-              // causes the layout to do the right thing.
-              return 0.0001;
-            } else if (d[1] > 0) {
+          if (d[1] === 0 || !_.isFinite(d[1])) {
+            // We want the flyout for null or zero values to appear along
+            // the x axis, rather than at the top of the chart.
+            //
+            // This means that we need to push the container element for
+            // null values down to the x axis, rather than the default
+            // behavior which places it at the top of the visualization
+            // container. This is accomplished by the 'y' attribute, but
+            // that does not have the expected behavior if the element is
+            // not visible (or in this case, has a height of zero).
+            //
+            // Ultimately the way we force the column's container to
+            // actually do the intended layout is to give the element a very
+            // small height which should be more or less indiscernible,
+            // which causes the layout to do the right thing.
+            return 0.0001;
+          } else {
+            // Value of column clamped between min and max possible values.
+            const value = _.clamp(d[1], minXValue, maxXValue);
 
-              if (minXValue > 0) {
-                baselineValue = minXValue;
-              } else {
-                baselineValue = 0;
-              }
-            } else if (d[1] < 0) {
+            // Calculating baseline depending on column value
+            // Value;
+            //   > 0 : Baseline should be 0 or minXValue depending on which is lower.
+            //   < 0 : Baseline should be 0 or maxXValue depending on which is higher.
+            const baselineValue = (value > 0) ? _.max([minXValue, 0]) : _.min([maxXValue, 0]);
 
-              if (maxXValue < 0) {
-                baselineValue = maxXValue;
-              } else {
-                baselineValue = 0;
-              }
-            }
+            // Height / width calculated based on the difference between value and baseline
+            const length = Math.abs(d3XScale(value) - d3XScale(baselineValue));
 
             // See comment about setting the y attribute above for the
-            // rationale behind ensuring a minimum width of one pixel for
+            // rationale behind ensuring a minimum height of one pixel for
             // non-null and non-zero values.
-            return Math.max(
-              2,
-              Math.abs(d3XScale(d[1]) - d3XScale(baselineValue))
-            );
+            return _.max([2, length]);
           }
-        ).
+        }).
         attr('height', d3GroupingYScale.rangeBand() - 1).
         attr('stroke', 'none').
         attr('fill', getPrimaryColorOrNone).
@@ -452,7 +453,11 @@ function SvgBarChart($element, vif) {
           attr(
             'x',
             (d) => {
-              const value = d[1];
+              const value = _.clamp(
+                d[1],
+                (minXValue) ? minXValue : d[1],
+                (maxXValue) ? maxXValue : d[1]
+              );
               const scaledValue = d3XScale(value);
               const barWidth = (value >= 0) ?
                 scaledValue - d3XScale(0) :
@@ -748,16 +753,25 @@ function SvgBarChart($element, vif) {
      * 2. Set up the x-scale and -axis.
      */
 
-    minXValue = getMinXValue(groupedDataToRender);
-    maxXValue = getMaxXValue(groupedDataToRender);
+    const dataMinXValue = getMinXValue(groupedDataToRender);
+    const dataMaxXValue = getMaxXValue(groupedDataToRender);
+
+    const limitMin = self.getMeasureAxisMinValue();
+    minXValue = _.isFinite(limitMin) ? limitMin : _.min([dataMinXValue, 0]);
+
+    const limitMax = self.getMeasureAxisMaxValue();
+    maxXValue = _.isFinite(limitMax) ? limitMax : _.max([dataMaxXValue, 0]);
 
     // TODO: Figure out how we want to handle scaling modes.
     // if (self.getXAxisScalingModeBySeriesIndex(0) === 'showZero') {
 
       // Normalize min and max values so that we always show 0 if the user
       // has specified that behavior in the Vif.
-      minXValue = Math.min(minXValue, 0);
-      maxXValue = Math.max(0, maxXValue);
+      //if (_.isNull(limitMin) && _.isNull(limitMax)) {
+      //  minXValue = Math.min(minXValue, 0);
+      //  maxXValue = Math.max(0, maxXValue);
+      //}
+
     // See TODO above.
     // }
 

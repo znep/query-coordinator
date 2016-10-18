@@ -3,7 +3,7 @@ require 'cgi'
 module SocrataSiteChrome
   module ThemesHelper
 
-    def sass_engine_options
+    def self.sass_engine_options
       {
         :style => Rails.env.development? ? :nested : :compressed,
         :syntax => :scss,

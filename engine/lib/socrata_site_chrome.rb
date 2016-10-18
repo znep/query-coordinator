@@ -14,6 +14,7 @@ module SocrataSiteChrome
   require_relative '../app/models/socrata_site_chrome/user'
 
   require 'socrata_site_chrome/application_helper'
+  require 'socrata_site_chrome/custom_content'
   require 'socrata_site_chrome/domain_config'
   require 'socrata_site_chrome/locale_config'
   require 'socrata_site_chrome/site_chrome'

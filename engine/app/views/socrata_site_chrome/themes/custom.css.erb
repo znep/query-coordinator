@@ -9,6 +9,7 @@
 
     <%== render('theme', :custom_themes => get_site_chrome.styles) %>
   <% else %>
-    <%== Sass::Engine.new(render('theme', :custom_themes => get_site_chrome.styles), sass_engine_options).render %>
+    <%== Sass::Engine.new(render('theme', :custom_themes => get_site_chrome.styles),
+      SocrataSiteChrome::ThemesHelper.sass_engine_options).render %>
   <% end %>
 <% end %>

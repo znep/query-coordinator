@@ -1,3 +1,8 @@
-<%= render "site_chrome/#{current_template}/header", size: local_assigns[:size] %>
-
-<%= render 'site_chrome/preview_mode_warning' if in_preview_mode? %>
+<% if using_custom_header_footer? %>
+  <%= render 'custom_content/custom',
+    :section => 'header',
+    :content => custom_header_footer_content[:header] %>
+<% else %>
+  <%= render "site_chrome/#{current_template}/header", :size => local_assigns[:size] %>
+  <%= render 'site_chrome/preview_mode_warning' if in_preview_mode? %>
+<% end %>

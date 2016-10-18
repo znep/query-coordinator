@@ -518,8 +518,12 @@ it:
             title: Mostra tutte le opzioni
           header:
             filter: Filtra
-            filtered_by: filtrato per
-            result: Risultato
+            filtered_by:
+              one: filtrato per
+              other: filtrati per
+            result:
+              one: "%{count} Risultato"
+              other: "%{count} Risultati"
           hint: Filtrare o Passare in Rassegna i Risultati
           mobile:
             back: Indietro

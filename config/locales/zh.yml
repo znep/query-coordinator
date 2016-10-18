@@ -519,7 +519,7 @@ zh:
           header:
             filter: "筛选"
             filtered_by: "筛选由"
-            result: "结果"
+            result: "%{count} 结果"
           hint: "筛选或浏览结果"
           mobile:
             back: "返回"

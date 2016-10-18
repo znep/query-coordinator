@@ -529,7 +529,9 @@ fr:
           header:
             filter: Filtre
             filtered_by: filtré par
-            result: Résultat
+            result:
+              one: "%{count} Résultat"
+              other: "%{count} Résultats"
           hint: " Résultats du filtre ou de la navigation"
           mobile:
             back: Retour

@@ -519,7 +519,9 @@ ca:
           header:
             filter: Filtre
             filtered_by: Filtrada per
-            result: Resultat
+            result:
+              one: "%{count} Resultat"
+              other: "%{count} Resultats"
           hint: Filtrar o Revisar els Resultats
           mobile:
             back: Torna

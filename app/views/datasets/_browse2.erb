@@ -87,10 +87,10 @@
   <div class="browse2-mobile-filter">
     <div class="browse2-mobile-filter-header">
       <div class="browse2-mobile-filter-result-count">
-        <%= pluralize(opts[:view_count], t('controls.browse.browse2.facets.header.result')) %>
+        <%= t('controls.browse.browse2.facets.header.result', count: opts[:view_count]) %>
         <span class="browse2-mobile-filter-result-subtitle">
           <%= opts[:facets].any? { |facet| opts[:user_params][facet[:param]].present? } ?
-            t('controls.browse.browse2.facets.header.filtered_by') + '...' : '' -%>
+            t('controls.browse.browse2.facets.header.filtered_by', count: opts[:view_count]) + '...' : '' -%>
         </span>
       </div>
       <a class="browse2-mobile-filter-link" href="#">

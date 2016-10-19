@@ -14,12 +14,14 @@
 
 <%= section_separator %>
 
-<%= render('checkbox',
-  :fields => [:general, :languages, :display_language_switcher],
-  :locale_string => "#{locale_string}.display_language_switcher",
-  :default_checked => false) %>
+<% if FeatureFlags.derive(nil, request)[:site_chrome_language_switcher] %>
+  <%= render('checkbox',
+    :fields => [:general, :languages, :display_language_switcher],
+    :locale_string => "#{locale_string}.display_language_switcher",
+    :default_checked => false) %>
 
-<%= section_separator %>
+  <%= section_separator %>
+<% end %>
 
 <section class="settings-group">
   <div class="settings-form full signin-signout">

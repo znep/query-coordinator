@@ -21,6 +21,7 @@ describe DatasetsController do
     before(:each) do
       init_current_domain
       init_core_session
+      init_signaller
       stub_site_chrome
       allow(subject).to receive(:enable_site_chrome?).and_return(false)
     end
@@ -74,6 +75,7 @@ describe DatasetsController do
       init_core_session
       init_current_domain
       init_current_user(controller)
+      init_signaller
       login
       allow(subject).to receive(:get_view).and_return(view)
       allow(subject).to receive(:using_canonical_url?).and_return(true)

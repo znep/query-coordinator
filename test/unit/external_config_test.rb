@@ -36,8 +36,8 @@ class ExternalConfigTest < Minitest::Test
 
   def test_config_updates_when_file_does_not_exist
     @test_config = TestConfig.new
-    File.stubs(:mtime).raises(Errno::ENOENT)
-    refute @test_config.has_changed?
+    File.stubs(:exists? => false)
+    assert @test_config.has_changed?
   end
 
   def test_config_acquired_dynamically

@@ -5,6 +5,7 @@ class PolaroidControllerTest < ActionController::TestCase
   def setup
     init_core_session
     init_current_domain
+    init_signaller
     @polaroid = Polaroid.new
     @controller.stubs(:polaroid => @polaroid)
     @vif = {}

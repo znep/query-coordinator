@@ -5,6 +5,7 @@ class DatasetMetadataControllerTest < ActionController::TestCase
   def setup
     init_core_session
     init_current_domain
+    init_signaller
     UserSession.any_instance.stubs(
       save: Net::HTTPSuccess.new(1.1, 200, 'Success'),
       find_token: true

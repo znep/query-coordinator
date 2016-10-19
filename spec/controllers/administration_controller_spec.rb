@@ -5,6 +5,10 @@ describe AdministrationController do
 
   let(:view) { double(View, :createdAt => 1456530636244, :columns => []) }
 
+  before(:each) do
+    init_signaller
+  end
+
   # Can't use self-verifying stubs because the User class uses method_missing for all of the data properties
   describe 'georegions', :verify_stubs => false do
     before(:each) do

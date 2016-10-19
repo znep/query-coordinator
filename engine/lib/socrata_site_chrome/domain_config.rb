@@ -7,7 +7,7 @@ module SocrataSiteChrome
     attr_reader :domain
 
     def initialize(domain)
-      @domain = domain
+      @domain = domain.to_s
     end
 
     # Convert domain_config to data structure needed for Site Chrome

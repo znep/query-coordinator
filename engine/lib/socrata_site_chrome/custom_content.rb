@@ -13,7 +13,7 @@ module SocrataSiteChrome
     end
 
     def get_custom_content
-      config = SocrataSiteChrome::DomainConfig.new(::RequestStore.store[:current_domain]).config
+      config = SocrataSiteChrome::DomainConfig.new(domain).config
       content = config[:properties].to_a.select do |property|
         custom_content_property_names.include?(property[:name])
       end.to_a

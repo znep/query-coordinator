@@ -110,7 +110,7 @@ Finally, in order to satisfy certain security requirements in Google Chrome, you
 application with an extra argument. This is necessary to resolve Chrome refusing to load "insecure" 
 resources. This manifests as failures when loading CSS or Javascript which breaks page rendering.
 
-    open -a Google\ Chrome --args --disable-web-security
+    open -a Google Chrome --args --disable-web-security
 
 ## Dependencies
 
@@ -183,9 +183,9 @@ Each rake task accepts three arguments:
 
 - `watch`: Whether or not to watch files for changes. If a change to any of the tested files is 
 detected, the tests will re-run.
-> IMPORTANT: If you're using vim, you need to add this to your .vimrc:
+> IMPORTANT: If you're using vim, you need to add this to your `.vimrc`:
 
-  `set backupcopy=yes`
+        set backupcopy=yes
 
   Otherwise, vim's rename-on-save behavior will confuse webpack. See
   [this issue](https://github.com/webpack/webpack/issues/781#issuecomment-95523711).
@@ -202,6 +202,31 @@ For the simple case where a single test run under PhantomJS is needed for a
 general pass/fail check, a faster parallelized test run is also available:
 
     bundle exec rake test:js:parallel
+
+#### To run a specific Ruby unit test
+
+###### For MiniTest tests
+
+    ruby -I test path/to/file.rb -n /regex_matcher_for_your_test_name/
+
+> Note: The regex match technique does not work for MiniTest tests written using the [MiniTest](https://github.com/seattlerb/minitest) "spec" style.
+
+###### For RSpec tests
+
+    bundle exec rspec path/to/file.rb:line_number
+
+> Note: The line_number can be within a single test, a context, or a describe block and all tests within the enclosing scope will be run.
+
+## Javascript/other asset package management
+
+The frontend has classically used [Jammit](http://documentcloud.github.io/jammit/)
+for asset management instead of the standard Rails asset pipeline. All assets
+must be added manually to assets.yml, and the appropriate include_javascripts
+calls must be included in .erb. If the assets must be loaded on-demand from JS,
+make sure the new jammit package is added to the "dump" section of assets.yml
+(the JS asset loader reads this section). Please note that though Jammit allows
+globs in its package definitions, the JS loader doesn't support globs. This is
+only an issue for on-demand loading.
 
 ### Webpack
 
@@ -234,7 +259,7 @@ variables set, which simulates running webpack in production:
 Running the Rails stack with [foreman](https://github.com/ddollar/foreman) will
 spawn a sidecar process running the webpack dev server, which allows for re-bundling
 and automatic reloading on code change. IMPORTANT: If you're using vim, you need to
-add this to your .vimrc:
+add this to your `.vimrc`:
 
     set backupcopy=yes
 
@@ -265,7 +290,7 @@ It is helpful for making changes across a codebase that are more complicated tha
 Under the `tools/jscodeshift-transforms` are a few transformations for modifying our code in an AST-to-AST manner.
 
 To run a transform, follow the instructions on the jscodeshift project page, but setting and environment variable 
-of `BABEL_ENV="jscodeshift"` - this ensures that a clean babel configuration is used for the transforms, alleviating 
+of `BABEL_ENV=jscodeshift` — this ensures that a clean babel configuration is used for the transforms, alleviating 
 an issue with babel versions.
 
 ## Tools in `bin` directory

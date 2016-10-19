@@ -373,7 +373,7 @@ $(function() {
   });
 
   var resetSearchForm = function() {
-    $searchForm.find(':input').focus().val(blist.dataset.metadata.jsonQuery.search).blur();
+    $searchForm.find(':input:text').focus().val(blist.dataset.metadata.jsonQuery.search).blur();
     $clearSearch.toggle(!$.isBlank(blist.dataset.metadata.jsonQuery.search));
   };
 

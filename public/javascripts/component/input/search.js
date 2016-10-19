@@ -48,8 +48,7 @@
               'class': ['searchButton', 'button', 'hide']
             }]
           }));
-
-          cObj.$input = cObj.$contents.find(':text');
+          cObj.$input = cObj.$contents.find(':input:text');
         }
         cObj.$searchIcon = cObj.$contents.find('.searchIcon');
         cObj.$searchButton = cObj.$contents.find('.searchButton');

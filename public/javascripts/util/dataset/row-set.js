@@ -963,8 +963,12 @@
       });
       var rs = this;
 
-      // This parameter has no effect except for NBE datasets, but it's harmless to send with OBE queries.
-      if ($.deepGet(rs, '_curMetaReqMeta', 'metadata', 'inDatasetSearch') === true) {
+      // Adding $$query_timeout_seconds to the NBE search request. This parameter has no effect on, and is
+      // harmless to send on OBE queries. We're adding it here due to EN-10852 in order to limit the amount
+      // of time the database allows in-dataset-search queries to run before being terminated.
+      // The TTL for these queries can be controlled by setting inDatasetSearchQueryTimeoutSeconds which is
+      // derived from the "nbe_query_timeouts" domain configuration using the "in_dataset_search" property.
+      if ($.deepGet(rs, '_dataset', 'metadata', 'inDatasetSearch') === true) {
         args.params.$$query_timeout_seconds =
           $.deepGet(blist, 'configuration', 'inDatasetSearchQueryTimeoutSeconds') || 30;
       }

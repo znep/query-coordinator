@@ -1,6 +1,9 @@
 import 'script!jquery';
 import { Provider } from 'react-redux';
 
+// This is required by socrata-components
+import 'babel-polyfill';
+
 window._ = require('lodash');
 window.React = require('react');
 window.ReactDOM = require('react-dom');

@@ -16,6 +16,9 @@ module.exports = function(
   //TODO cache instances or share cache.
   var Dataset = Model.extend({
     init: function(datasetMetadata, migrationMetadata) {
+      if (datasetMetadata.rowDisplayUnit === '') {
+        delete datasetMetadata.rowDisplayUnit;
+      }
 
       datasetMetadataSchemas.assertValidAgainstVersion(1, datasetMetadata);
 

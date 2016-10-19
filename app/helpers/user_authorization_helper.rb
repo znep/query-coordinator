@@ -62,6 +62,12 @@ module UserAuthorizationHelper
     OpenPerformance::Goal.new(goal_uid).accessible?
   end
 
+  def can_edit_goals?
+    admin? &&
+    has_domain_right?('edit_goals') &&
+    super_admin? # Super-admin restriction temporary while feature under development.
+  end
+
   private
 
   def authorization

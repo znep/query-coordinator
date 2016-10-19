@@ -100,6 +100,7 @@ describe('StoryPermissionsRenderer', function() {
 
     var StoryStoreMock = function() {
       _.extend(this, new Store());
+      this.storyExists = _.constant(true);
     };
 
     StoryPermissionsRendererAPI.__Rewire__('storyStore', new StoryStoreMock());

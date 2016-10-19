@@ -9,6 +9,17 @@
   color: $grey;
   box-sizing: border-box;
 
+  &.disabled {
+    // ?autosave=false feedback.
+    background: repeating-linear-gradient(
+      -45deg,
+      red,
+      red 10px,
+      gray 10px,
+      gray 20px
+    );
+  }
+
   h5 {
     display: inline-flex;
     width: 100%;

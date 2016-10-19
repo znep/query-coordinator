@@ -85,7 +85,7 @@ RSpec.describe Api::V1::DraftsController, type: :controller do
         expect(response.code).to eq('200')
       end
 
-      context 'when digest mismatch occurs' do
+      context 'when DigestMismatchError is raised' do
 
         before do
           allow(mock_story_draft_creator).to receive(:create).and_raise(StoryDraftCreator::DigestMismatchError)
@@ -96,32 +96,30 @@ RSpec.describe Api::V1::DraftsController, type: :controller do
           expect(response.code).to eq('412')
         end
 
-        it 'returns json' do
+        it 'renders json' do
           post :create, params
           expect(response.content_type).to eq('application/json')
         end
 
       end
 
-      context 'when IF_MATCH is missing' do
+      context 'when DigestMissingError is raised' do
 
-        let(:headers) { {} }
+        context 'and a draft exists' do
+          before do
+            allow(mock_story_draft_creator).to receive(:create).and_raise(StoryDraftCreator::DigestMissingError)
+          end
 
-        it 'does not call story_draft_creator' do
-          expect(mock_story_draft_creator).to_not receive(:create)
-          post :create, params
+          it 'responds with 428 status' do
+            post :create, params
+            expect(response.code).to eq('428')
+          end
+
+          it 'renders json' do
+            post :create, params
+            expect(response.content_type).to eq('application/json')
+          end
         end
-
-        it 'responds with 428 status' do
-          post :create, params
-          expect(response.code).to eq('428')
-        end
-
-        it 'does not render json' do
-          post :create, params
-          expect(response.body).to be_blank
-        end
-
       end
 
       context 'when format is not json' do
@@ -137,6 +135,7 @@ RSpec.describe Api::V1::DraftsController, type: :controller do
   describe '#handle_authorization' do
     let(:action) { :nothing }
     let(:get_request) { get action, uid: 'test-test' }
+    let(:post_request) { post action, uid: 'test-test', theme: 'sans' }
 
     before do
       stub_core_view('test-test')
@@ -154,7 +153,7 @@ RSpec.describe Api::V1::DraftsController, type: :controller do
         let(:can_edit_story) { true }
 
         it 'does not 403' do
-          get_request
+          post_request
           expect(response.status).to_not be(403)
         end
       end
@@ -163,7 +162,7 @@ RSpec.describe Api::V1::DraftsController, type: :controller do
         let(:can_edit_story) { false }
 
         it '403s' do
-          get_request
+          post_request
           expect(response.status).to be(403)
         end
       end

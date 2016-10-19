@@ -4,13 +4,18 @@ RSpec.describe ApplicationHelper, type: :helper do
 
   describe '#page_title' do
     let(:view_name) { 'bob' }
-    let(:core_attributes) do
-      { 'name' => view_name }
+    let(:mock_core_response) do
+      {
+        'uid' => 'four-four',
+        'name' => view_name,
+        'description' => 'Description'
+      }
     end
     let(:site_chrome_window_title) { 'Fancy' }
 
     before do
-      allow(helper).to receive(:core_attributes).and_return(core_attributes)
+      expect(CoreServer).to receive(:get_view).once.and_return(mock_core_response)
+      @story_metadata = CoreStoryMetadata.new('fooo-baar')
       allow(helper).to receive(:site_chrome_window_title).and_return(site_chrome_window_title)
     end
 

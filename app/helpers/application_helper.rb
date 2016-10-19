@@ -37,7 +37,7 @@ module ApplicationHelper
 
   def page_title
     page_title_parts = []
-    page_title_parts << core_attributes['name'] || t('default_page_title')
+    page_title_parts << @story_metadata.title
     page_title_parts << site_chrome_window_title unless site_chrome_window_title.blank?
 
     page_title_parts.join(' | ')

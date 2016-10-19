@@ -3,7 +3,9 @@ import _ from 'lodash';
 
 import I18n from '../I18n';
 import Constants from '../Constants';
+import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
+import { storyStore } from '../stores/StoryStore';
 import { storySaveStatusStore } from '../stores/StorySaveStatusStore';
 
 $.fn.storySavingStatus = StorySavingStatus;
@@ -33,6 +35,9 @@ export default function StorySavingStatus(options) {
 
 
   function render() {
+    if (!storyStore.storyExists(Environment.STORY_UID)) {
+      return null; // Story not loaded yet.
+    }
     var isStorySaved = !storySaveStatusStore.isStoryDirty();
     var isStorySaveInProgress = storySaveStatusStore.isStorySaveInProgress();
     var isSaveImpossible = storySaveStatusStore.isSaveImpossibleDueToConflict();

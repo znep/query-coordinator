@@ -23,9 +23,7 @@ export default function Autosave(storyUid) {
   var saveOnceSettled;
   // Autosave can be disabled from a URL parameter: autosave.
   // For example: https://example.com?autosave=false
-  var disabledByUrlParam = StorytellerUtils.queryParameters().some(function(parameter) {
-    return parameter[0] === 'autosave' && parameter[1] === 'false';
-  });
+  var disabledByUrlParam = storySaveStatusStore.autosaveDisabledByUrlParam();
 
   function saveASAP() {
 

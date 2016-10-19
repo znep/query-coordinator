@@ -129,6 +129,12 @@ RSpec.describe StoriesController, type: :controller do
           expect(assigns(:story)).to eq(story_revision)
         end
 
+        it 'assigns :story_metadata to an instance of CoreStoryMetadata' do
+          get :show, uid: story_revision.uid
+          expect(assigns(:story_metadata)).to be_a(CoreStoryMetadata).
+            and have_attributes(uid: story_revision.uid)
+        end
+
         it 'renders json when requested' do
           get :show, uid: story_revision.uid, format: :json
           expect(response.body).to eq(story_revision.to_json)
@@ -185,6 +191,7 @@ RSpec.describe StoriesController, type: :controller do
           end
 
           it 'does not log view access when story does not exist' do
+            stub_invalid_lenses_view
             expect(StoryAccessLogger).to_not receive(:log_story_view_access)
             get :show, uid: 'notf-ound'
           end
@@ -192,6 +199,9 @@ RSpec.describe StoriesController, type: :controller do
       end
 
       context 'when there is no story with the given four by four' do
+        before do
+          stub_invalid_lenses_view
+        end
 
         it 'renders 404' do
           get :show, uid: 'notf-ound'
@@ -418,6 +428,10 @@ RSpec.describe StoriesController, type: :controller do
       end
 
       context 'when there is no story with the given four by four' do
+        before do
+          stub_invalid_lenses_view
+        end
+
         it '404s' do
           get :about, uid: 'notf-ound'
           expect(response.status).to eq(404)
@@ -624,11 +638,6 @@ RSpec.describe StoriesController, type: :controller do
           expect(assigns(:story)).to eq(story_revision)
         end
 
-        it 'renders 404' do
-          get :preview, uid: 'notf-ound'
-          expect(response).to be_not_found
-        end
-
         it 'assigns the :story' do
           get :preview, uid: story_revision.uid
           expect(assigns(:story)).to eq(story_revision)
@@ -648,6 +657,9 @@ RSpec.describe StoriesController, type: :controller do
       end
 
       context 'when there is no story with the given four by four' do
+        before do
+          stub_invalid_lenses_view
+        end
 
         it 'renders 404' do
           get :preview, uid: 'notf-ound'
@@ -950,6 +962,12 @@ RSpec.describe StoriesController, type: :controller do
           expect(assigns(:story)).to eq draft_story
         end
 
+        it 'assigns :story_metadata to an instance of CoreStoryMetadata' do
+          get :edit, uid: draft_story.uid
+          expect(assigns(:story_metadata)).to be_a(CoreStoryMetadata).
+            and have_attributes(uid: draft_story.uid)
+        end
+
         it 'renders the edit layout' do
           get :edit, uid: draft_story.uid
           expect(response).to render_template('editor')
@@ -970,6 +988,10 @@ RSpec.describe StoriesController, type: :controller do
             get :edit, uid: draft_story.uid
           end
 
+          it '200s' do
+            expect(response).to have_http_status(200)
+          end
+
           it 'renders themes CSS' do
             expect(response.body).to match(/\s*<style id="themes">/)
           end
@@ -983,7 +1005,7 @@ RSpec.describe StoriesController, type: :controller do
           end
 
           it 'renders a string for PRIMARY_OWNER_UID' do
-            expect(response.body).to match(/window\.PRIMARY_OWNER_UID = '.*';$/)
+            expect(response.body).to match(/window\.PRIMARY_OWNER_UID = '.*';/)
           end
 
           it 'renders a json object for CURRENT_USER' do
@@ -1001,10 +1023,17 @@ RSpec.describe StoriesController, type: :controller do
           it 'renders a json object for PUBLISHED_STORY_DATA' do
             expect(response.body).to match(/window\.PUBLISHED_STORY_DATA = {.*};$/)
           end
+
+          it 'renders false for IS_GOAL' do
+            expect(response.body).to match(/window\.IS_GOAL = false;/)
+          end
         end
       end
 
       context 'when there is no matching story' do
+        before do
+          stub_invalid_lenses_view
+        end
 
         it 'returns a 404' do
           get :edit, uid: 'notf-ound'
@@ -1064,6 +1093,7 @@ RSpec.describe StoriesController, type: :controller do
       before do
         stub_valid_session
         stub_sufficient_rights
+        stub_valid_initialized_lenses_view
       end
 
       it 'redirects to /d/<four-four>/stats' do

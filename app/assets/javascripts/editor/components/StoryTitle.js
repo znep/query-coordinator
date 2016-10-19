@@ -24,7 +24,11 @@ export default function StoryTitle(storyUid) {
   }
 
   function render() {
-    var title = storyStore.getStoryTitle(storyUid);
+    if (!storyStore.storyExists(storyUid)) {
+      return null; // Story not loaded yet.
+    }
+
+    const title = storyStore.getStoryTitle(storyUid);
 
     $title.
       text(title).

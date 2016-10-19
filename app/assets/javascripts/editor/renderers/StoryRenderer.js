@@ -264,6 +264,7 @@ export default function StoryRenderer(options) {
 
   function _renderStory() {
     if (destroyed) { return; }
+    if (!storyStore.storyExists(storyUid)) { return; }
 
     // Reentrant call to _renderStory. Defer this render
     // until the original _renderStory is done.

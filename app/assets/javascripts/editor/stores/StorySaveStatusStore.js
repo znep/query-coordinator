@@ -84,6 +84,12 @@ export default function StorySaveStatusStore(forStoryUid) {
 
   });
 
+  // Autosave can be disabled from a URL parameter: autosave.
+  // For example: https://example.com?autosave=false
+  this.autosaveDisabledByUrlParam = function() {
+    return StorytellerUtils.queryParameterMatches('autosave', false);
+  };
+
   storyStore.addChangeListener(function() {
     self._emitChange();
   });

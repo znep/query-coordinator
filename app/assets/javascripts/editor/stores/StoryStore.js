@@ -37,6 +37,10 @@ export default function StoryStore() {
         _importStory(payload.data);
         break;
 
+      case Actions.GOAL_MIGRATION_END:
+        _importStory(payload.story);
+        break;
+
       case Actions.STORY_UPDATED:
         _setStoryUpdatedAt(payload);
         break;

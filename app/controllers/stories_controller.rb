@@ -8,6 +8,7 @@ class StoriesController < ApplicationController
   FAKE_DIGEST = 'the contents of the digest do not matter'
 
   before_action :setup_site_chrome_prerequisites
+  before_action :load_story_metadata
 
   after_action :allow_iframe, only: :tile
   after_action :allow_origin, only: :tile
@@ -38,11 +39,11 @@ class StoriesController < ApplicationController
       StoryAccessLogger.log_story_view_access(@story, embedded: true)
 
       @tile_properties = {
-        title: tile_config['title'] || title_from_core_attributes,
-        description: tile_config['description'] || description_from_core_attributes,
+        title: @story_metadata.tile_config['title'] || @story_metadata.title,
+        description: @story_metadata.tile_config['description'] || @story_metadata.description,
         image: @story.block_images(:large).first,
         theme: @story.theme,
-        url: story_url(uid: @story.uid, vanity_text: title_to_vanity_text(title_from_core_attributes))
+        url: story_url(uid: @story_metadata.uid, vanity_text: title_to_vanity_text(@story_metadata.title))
       }
 
       respond_to do |format|
@@ -157,34 +158,16 @@ class StoriesController < ApplicationController
   end
 
   def edit
-    @story = DraftStory.find_by_uid(params[:uid])
+    # May be set by GoalsController#edit
+    @story ||= DraftStory.find_by_uid(params[:uid])
 
     if @story
-      if Rails.application.assets_manifest.assets['themes/themes.css']
-        themes = File.read(Rails.root.join('public', 'assets', Rails.application.assets_manifest.assets['themes/themes.css']))
-      else
-        themes = Rails.application.assets.find_asset(Rails.root.join('app/assets/stylesheets/themes/themes.scss')).to_s
-      end
+      @story_view_url = story_view_url
 
-      @bootstrap_styles = {
-        themes: themes,
-        custom: render_to_string(
-          'stories/custom.css',
-          locals: { custom_themes: Theme.all_custom_for_current_domain }
-        )
-      }
+      load_themes
 
-      core_attributes = CoreServer.get_view(params[:uid])
-
-      @story_view_url = story_url(uid: params[:uid], vanity_text: title_to_vanity_text(title_from_core_attributes))
-      @inspiration_category_list = InspirationCategoryList.new(current_user, relative_url_root).to_parsed_json
-      theme_list = ThemeList.new
-      @standard_theme_configs = theme_list.standard_theme_list.sort_by { |key| key["title"] }
-      @custom_theme_configs = theme_list.custom_theme_list.sort_by { |key| key["title"] }
-      @default_themes = theme_list
-      @custom_themes = theme_list.custom_themes
       @published_story = PublishedStory.find_by_uid(params[:uid])
-      @primary_owner_uid = core_attributes['owner']['id']
+      @primary_owner_uid = @story_metadata.owner_id
 
       respond_to do |format|
         format.html do
@@ -208,10 +191,47 @@ class StoriesController < ApplicationController
 
   private
 
-  # +before_filter+
+  # +before_action+
   def setup_site_chrome_prerequisites
     ::RequestStore.store[:current_user] ||= current_user
     ::RequestStore.store[:current_domain] ||= current_domain['cname']
+  end
+
+  # +before_action+
+  def load_story_metadata
+    @story_metadata = story_metadata
+  end
+
+  # Overridden in GoalsController
+  def story_metadata
+    CoreStoryMetadata.new(params[:uid])
+  end
+
+  def story_view_url
+    story_url(uid: params[:uid], vanity_text: title_to_vanity_text(@story_metadata.title))
+  end
+
+  def load_themes
+    if Rails.application.assets_manifest.assets['themes/themes.css']
+      themes = File.read(Rails.root.join('public', 'assets', Rails.application.assets_manifest.assets['themes/themes.css']))
+    else
+      themes = Rails.application.assets.find_asset(Rails.root.join('app/assets/stylesheets/themes/themes.scss')).to_s
+    end
+
+    @bootstrap_styles = {
+      themes: themes,
+      custom: render_to_string(
+        'stories/custom.css',
+        locals: { custom_themes: Theme.all_custom_for_current_domain }
+      )
+    }
+
+    @inspiration_category_list = InspirationCategoryList.new(current_user, relative_url_root).to_parsed_json
+    theme_list = ThemeList.new
+    @standard_theme_configs = theme_list.standard_theme_list.sort_by { |key| key["title"] }
+    @custom_theme_configs = theme_list.custom_theme_list.sort_by { |key| key["title"] }
+    @default_themes = theme_list
+    @custom_themes = theme_list.custom_themes
   end
 
   def copy_attachments(story)

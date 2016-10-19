@@ -2,8 +2,6 @@ import $ from 'jQuery';
 import _ from 'lodash';
 import SocrataUtils from 'socrata-utils';
 
-import Constants from './editor/Constants';
-import Environment from './StorytellerEnvironment';
 import VifUtils from './VifUtils';
 
 function exportImpl(thing, as) {
@@ -38,6 +36,12 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
    * @function queryParameters
    * @description
    * Build URL query parameters into a consumable data structure.
+   * This function does not combine array-style parameters:
+   *
+   *   // for the URL http://example.com/?foo[]=bar&foo[]=baz
+   *   > queryParameters()
+   *   < [["foo[]", "bar"], ["foo[]", "baz"]]
+   *
    * @returns {Array} - A list of key-value pairs: [['key', 'value'], ...]
    */
   queryParameters: function() {
@@ -54,6 +58,32 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
     } else {
       return [];
     }
+  },
+
+  /**
+   * Returns true if the given named parameter matches the given value.
+   * If provided, the value will be stringified for comparison.
+   * If no value is provided, this function only checks for the key's existence.
+   *
+   *   Example URL: https://example.com/?test=true&other=false
+   *
+   *   True examples:
+   *   queryParameterMatches('test')
+   *   queryParameterMatches('other')
+   *   queryParameterMatches('test', true)
+   *   queryParameterMatches('other', false)
+   *
+   *   False examples:
+   *   queryParameterMatches('georgina')
+   *   queryParameterMatches('test', 'pass')
+   *   queryParameterMatches('other', true)
+   *
+   */
+  queryParameterMatches: function(paramKey, paramValue) {
+    return this.queryParameters().some((param) => {
+      const [key, value] = param;
+      return key === `${paramKey}` && (_.isUndefined(paramValue) || value === `${paramValue}`);
+    });
   },
 
   mapDOMFragmentDescending: function(element, applyFn, shouldTerminateFn) {

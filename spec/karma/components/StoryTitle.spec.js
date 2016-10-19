@@ -23,6 +23,8 @@ describe('StoryTitle jQuery plugin', function() {
       this.getStoryTitle = function() {
         return title;
       };
+
+      this.storyExists = _.constant(true);
     };
 
     storyStoreMock = new StoreMock();
@@ -47,12 +49,10 @@ describe('StoryTitle jQuery plugin', function() {
   });
 
   describe('given a storyUid that does not correspond to a story', function() {
-    // We might revisit this behavior - another totally
-    // valid approach would be to wait for the story
-    // to exist.
-    it('should throw', function() {
-      storyStoreMock.getStoryTitle = function() { throw new Error('BADDGUISE'); };
-      assert.throws(function() { node.storyTitle('badd-guyz'); });
+    it('should not do anything', function() {
+      storyStoreMock.storyExists = _.constant(false);
+      node.storyTitle('badd-guyz');
+      assert.equal(node.text(), '');
     });
   });
 

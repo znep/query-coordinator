@@ -4,33 +4,15 @@ module StoriesHelper
     action_name == 'show'
   end
 
-  def core_attributes
-    @core_attributes ||= CoreServer.get_view(@story.uid) || {}
-  end
-
-  def title_from_core_attributes
-    core_attributes['name'] || t('default_page_title')
-  end
-
-  def description_from_core_attributes
-    core_attributes['description'] || ''
-  end
-
-  def tile_config
-    @tile_config ||= core_attributes['metadata'].try(:[], 'tileConfig') || {}
-  end
-
   def user_story_json
-    story = @story.as_json.merge(
+    @story.as_json.merge(
       {
-        :tileConfig => tile_config,
-        :title => core_attributes['name'] || '',
-        :description => core_attributes['description'] || '',
-        :permissions => determine_permissions_from_core_attributes
+        :tileConfig => @story_metadata.tile_config,
+        :title => @story_metadata.title,
+        :description => @story_metadata.description,
+        :permissions => @story_metadata.permissions
       }
-    )
-
-    story.to_json
+    ).to_json
   end
 
   def google_font_code_embed
@@ -172,15 +154,5 @@ module StoriesHelper
 
   def should_launch_print_dialog_on_page_load?
     request.query_parameters['print'] == 'true'
-  end
-
-  private
-
-  def determine_permissions_from_core_attributes
-    grants = core_attributes['grants'] || []
-
-    {
-      isPublic: grants.any? { |grant| (grant['flags'] || []).include?('public') }
-    }
   end
 end

@@ -463,6 +463,10 @@ export default function CollaboratorsRenderer() {
   }
 
   function render() {
+    if (Environment.IS_GOAL) {
+      return null;
+    }
+
     var isOpen = collaboratorsStore.isOpen();
     var isSaving = collaboratorsStore.isSaving();
     var isDirty = collaboratorsStore.isDirty();

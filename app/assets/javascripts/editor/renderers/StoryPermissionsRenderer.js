@@ -9,74 +9,78 @@ import { storySaveStatusStore } from '../stores/StorySaveStatusStore';
 import { storyPermissionsManager } from '../StoryPermissionsManager';
 
 export default function StoryPermissionsRenderer() {
-  var _$settingsPanelStoryStatus;
-  var _$visibilityLabel;
-  var _$visibilityButton;
-  var _$visibilityButtonText;
-  var _$updatePublicLabel;
-  var _$updatePublicButton;
-  var _$publishingHelpText;
-  var _$errorContainer;
+  var $settingsPanelStoryStatus;
+  var $visibilityLabel;
+  var $visibilityButton;
+  var $visibilityButtonText;
+  var $updatePublicLabel;
+  var $updatePublicButton;
+  var $publishingHelpText;
+  var $errorContainer;
 
-  var _$settingsPanelPublishing = $('.settings-panel-publishing');
+  var $settingsPanelPublishing = $('.settings-panel-publishing');
 
   StorytellerUtils.assert(storySaveStatusStore, 'storySaveStatusStore must be instantiated');
-  StorytellerUtils.assert(_$settingsPanelPublishing.length === 1, 'Cannot find a publishing section in settings panel.');
+  StorytellerUtils.assert($settingsPanelPublishing.length === 1, 'Cannot find a publishing section in settings panel.');
 
-  _$settingsPanelStoryStatus = _$settingsPanelPublishing.find('.settings-panel-story-status');
+  $settingsPanelStoryStatus = $settingsPanelPublishing.find('.settings-panel-story-status');
 
-  _$visibilityLabel = _$settingsPanelPublishing.find('.settings-panel-story-visibility h3');
-  _$visibilityButton = _$settingsPanelPublishing.find('.settings-panel-story-visibility button');
-  _$visibilityButtonText = _$visibilityButton.find('span');
+  $visibilityLabel = $settingsPanelPublishing.find('.settings-panel-story-visibility h3');
+  $visibilityButton = $settingsPanelPublishing.find('.settings-panel-story-visibility button');
+  $visibilityButtonText = $visibilityButton.find('span');
 
-  _$updatePublicLabel = _$settingsPanelPublishing.find('.settings-panel-story-status h3');
-  _$updatePublicButton = _$settingsPanelPublishing.find('.settings-panel-story-status button');
+  $updatePublicLabel = $settingsPanelPublishing.find('.settings-panel-story-status h3');
+  $updatePublicButton = $settingsPanelPublishing.find('.settings-panel-story-status button');
 
-  _$publishingHelpText = _$settingsPanelPublishing.find('.settings-panel-story-publishing-help-text');
+  $publishingHelpText = $settingsPanelPublishing.find('.settings-panel-story-publishing-help-text');
 
-  _$errorContainer = $('.settings-panel .settings-panel-errors');
+  $errorContainer = $('.settings-panel .settings-panel-errors');
 
-  _attachEvents();
-  _render();
+  attachEvents();
+  render();
 
-  function _attachEvents() {
-    storyStore.addChangeListener(_render);
-    storySaveStatusStore.addChangeListener(_render);
+  function attachEvents() {
+    storyStore.addChangeListener(render);
+    storySaveStatusStore.addChangeListener(render);
 
-    _$visibilityButton.click(function() {
+    $visibilityButton.click(function() {
       var isPublic = storyPermissionsManager.isPublic();
 
       if (isPublic) {
-        storyPermissionsManager.makePrivate(_renderError);
+        storyPermissionsManager.makePrivate(renderError);
       } else {
-        storyPermissionsManager.makePublic(_renderError);
+        storyPermissionsManager.makePublic(renderError);
       }
 
-      _$errorContainer.addClass('hidden');
-      _$visibilityButton.addClass('btn-busy');
+      $errorContainer.addClass('hidden');
+      $visibilityButton.addClass('btn-busy');
     });
 
-    _$updatePublicButton.click(function() {
+    $updatePublicButton.click(function() {
       var isPublic = storyPermissionsManager.isPublic();
 
       if (isPublic) {
-        storyPermissionsManager.makePublic(_renderError);
+        storyPermissionsManager.makePublic(renderError);
       } else {
-        _renderError(I18n.t('editor.settings_panel.publishing_section.errors.not_published_not_updated'));
+        renderError(I18n.t('editor.settings_panel.publishing_section.errors.not_published_not_updated'));
       }
 
-      _$errorContainer.addClass('hidden');
-      _$updatePublicButton.addClass('btn-busy');
+      $errorContainer.addClass('hidden');
+      $updatePublicButton.addClass('btn-busy');
     });
   }
 
-  function _renderError() {
-    _$errorContainer.removeClass('hidden');
-    _$visibilityButton.removeClass('btn-busy');
-    _$updatePublicButton.removeClass('btn-busy');
+  function renderError() {
+    $errorContainer.removeClass('hidden');
+    $visibilityButton.removeClass('btn-busy');
+    $updatePublicButton.removeClass('btn-busy');
   }
 
-  function _render() {
+  function render() {
+    if (!storyStore.storyExists(Environment.STORY_UID)) {
+      return null; // Story not loaded yet.
+    }
+
     var havePublishedAndDraftDiverged;
     var canManagePublicVersion = _.includes(Environment.CURRENT_USER_STORY_AUTHORIZATION.domainRights, 'manage_story_public_version');
     var isNotContributor = Environment.CURRENT_USER_STORY_AUTHORIZATION.viewRole !== 'contributor';
@@ -90,29 +94,29 @@ export default function StoryPermissionsRenderer() {
     if (isPublic) {
       havePublishedAndDraftDiverged = storyPermissionsManager.havePublishedAndDraftDiverged();
 
-      _$visibilityLabel.text(i18n('visibility.public'));
-      _$visibilityButtonText.text(i18n('visibility.make_story_private'));
-      _$visibilityButton.addClass('btn-default').removeClass('btn-alternate-2');
-      _$updatePublicButton.prop('disabled', true);
-      _$updatePublicLabel.text(i18n('status.published'));
-      _$publishingHelpText.text(i18n('messages.has_been_published'));
+      $visibilityLabel.text(i18n('visibility.public'));
+      $visibilityButtonText.text(i18n('visibility.make_story_private'));
+      $visibilityButton.addClass('btn-default').removeClass('btn-alternate-2');
+      $updatePublicButton.prop('disabled', true);
+      $updatePublicLabel.text(i18n('status.published'));
+      $publishingHelpText.text(i18n('messages.has_been_published'));
 
       if (havePublishedAndDraftDiverged && canManagePublicVersion && isNotContributor) {
-        _$updatePublicButton.prop('disabled', false);
-        _$publishingHelpText.text(i18n('messages.previously_published'));
-        _$updatePublicLabel.text(i18n('status.draft'));
+        $updatePublicButton.prop('disabled', false);
+        $publishingHelpText.text(i18n('messages.previously_published'));
+        $updatePublicLabel.text(i18n('status.draft'));
       }
     } else {
-      _$visibilityLabel.text(i18n('visibility.private'));
-      _$visibilityButtonText.text(i18n('visibility.make_story_public'));
-      _$visibilityButton.removeClass('btn-default').addClass('btn-alternate-2');
-      _$updatePublicButton.prop('disabled', true);
-      _$publishingHelpText.text(i18n('messages.can_be_shared_publicly'));
+      $visibilityLabel.text(i18n('visibility.private'));
+      $visibilityButtonText.text(i18n('visibility.make_story_public'));
+      $visibilityButton.removeClass('btn-default').addClass('btn-alternate-2');
+      $updatePublicButton.prop('disabled', true);
+      $publishingHelpText.text(i18n('messages.can_be_shared_publicly'));
     }
 
-    _$settingsPanelStoryStatus.toggleClass('hidden', !isPublic);
-    _$errorContainer.addClass('hidden');
-    _$visibilityButton.removeClass('btn-busy');
-    _$updatePublicButton.removeClass('btn-busy');
+    $settingsPanelStoryStatus.toggleClass('hidden', !isPublic);
+    $errorContainer.addClass('hidden');
+    $visibilityButton.removeClass('btn-busy');
+    $updatePublicButton.removeClass('btn-busy');
   }
 }

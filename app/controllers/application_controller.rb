@@ -372,22 +372,22 @@ class ApplicationController < ActionController::Base
     action = params[:action]
     goal_uid = params[:uid]
 
-    # TODO:
-    # * flesh out all actions
-    # * define appropriate error responses
+    # User always needs permission to view goal.
+    # Defer to Procrustes/Odysseus.
+    render_story_404 unless can_view_goal?(goal_uid)
+
     if current_user.present?
       case action
         when 'show'
-          # pass
+          # Above checks sufficient.
+        when 'edit'
+          render_story_404 unless can_edit_goals?
         else
-          # pass
+          raise_undefined_authorization_handler_error
       end
     else
-      if action != 'show'
-        handle_unauthorized_request
-      elsif !can_view_goal(goal_uid)
-        render_story_404
-      end
+      # Only anonymous action is 'show'
+      handle_unauthorized_request unless action == 'show'
     end
   end
 

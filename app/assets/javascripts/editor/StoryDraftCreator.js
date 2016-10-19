@@ -23,24 +23,33 @@ function _saveDraft(storyUid) {
   StorytellerUtils.assertIsOneOfTypes(storyUid, 'string');
   StorytellerUtils.assert(storyStore.storyExists(storyUid), 'Cannot save draft of non-existent story');
 
-  var storyJson = JSON.stringify(
+  const storyJson = JSON.stringify(
     storyStore.serializeStory(storyUid)
   );
 
   // important note here: we need to use the storyteller server's csrf token on the page
-  var storytellerCsrfToken = $('meta[name="csrf-token"]').attr('content');
+  const storytellerCsrfToken = $('meta[name="csrf-token"]').attr('content');
 
   // Should be updated from the X-Story-Digest header in the last save repsonse
-  var storyDigest = storyStore.getStoryDigest(storyUid);
-
-  var appToken = Environment.CORE_SERVICE_APP_TOKEN;
+  const storyDigest = storyStore.getStoryDigest(storyUid);
 
   dispatcher.dispatch({
     action: Actions.STORY_SAVE_STARTED,
     storyUid: storyUid
   });
 
-  StorytellerUtils.assert(storyDigest && storyDigest.length > 0, 'storyDigest is not present, cannot save.');
+  const headers = {
+    'X-Socrata-Host': location.host,
+    'X-CSRF-Token': storytellerCsrfToken,
+    'X-App-Token': Environment.CORE_SERVICE_APP_TOKEN
+  };
+
+  // This story will only have a digest if a
+  // saved draft exists. I.e., goals which have just
+  // been migrated will not have a digest.
+  if (storyDigest) {
+    headers['If-Match'] = storyDigest;
+  }
 
   return $.ajax({
     type: 'POST',
@@ -48,12 +57,7 @@ function _saveDraft(storyUid) {
     data: storyJson,
     contentType: 'application/json',
     dataType: 'json',
-    headers: {
-      'X-Socrata-Host': location.host,
-      'X-CSRF-Token': storytellerCsrfToken,
-      'If-Match': storyDigest,
-      'X-App-Token': appToken
-    }
+    headers: headers
   }).
   then(function(data, status, response) {
     dispatcher.dispatch({
@@ -63,7 +67,7 @@ function _saveDraft(storyUid) {
     });
 
     // Get the new draft digest from the response X-Story-Digest header.
-    var newDigest = response.getResponseHeader('X-Story-Digest');
+    const newDigest = response.getResponseHeader('X-Story-Digest');
     if (_.isString(newDigest) && newDigest.length > 0) {
       return newDigest;
     } else {
@@ -78,7 +82,7 @@ function _saveDraft(storyUid) {
     });
   }).
   fail(function(data) {
-    var errorReportingLabel = 'StoryDraftCreator#_saveDraft';
+    const errorReportingLabel = 'StoryDraftCreator#_saveDraft';
 
     dispatcher.dispatch({
       action: Actions.STORY_SAVE_FAILED,

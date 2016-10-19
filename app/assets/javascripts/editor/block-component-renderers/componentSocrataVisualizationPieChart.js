@@ -2,7 +2,6 @@ import $ from 'jQuery';
 import _ from 'lodash';
 
 import '../componentBase';
-import I18n from '../I18n';
 import Constants from '../Constants';
 import StorytellerUtils from '../../StorytellerUtils';
 import { flyoutRenderer } from '../FlyoutRenderer';

@@ -204,6 +204,13 @@ describe('StoryRenderer', function() {
       $('#rich-text-editor-toolbar').remove();
     });
 
+    describe('that does not exist', function() {
+      it('should not throw', function() {
+        options.storyUid = 'nope-nope';
+        storyRenderer = new StoryRenderer(options);
+      });
+    });
+
     describe('window size class', function() {
       it('should apply the current class break to the story container', function() {
         storyRenderer = new StoryRenderer(options);

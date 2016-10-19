@@ -79,39 +79,7 @@ RSpec.describe StoryDraftCreator do
     it 'raises an exception' do
       expect {
         StoryDraftCreator.new(
-          user: mock_valid_user.tap{|user| user['id'] = 'not' },
-          uid: uid,
-          digest: digest,
-          theme: theme,
-          blocks: blocks
-        )
-      }.to raise_error(ArgumentError)
-    end
-  end
-
-  context 'when initialized without a digest' do
-    let(:digest) { nil }
-
-    it 'raises an exception' do
-      expect {
-        StoryDraftCreator.new(
-          user: user,
-          uid: uid,
-          digest: digest,
-          theme: theme,
-          blocks: blocks
-        )
-      }.to raise_error(ArgumentError)
-    end
-  end
-
-  context 'when initialized with a blank digest' do
-    let(:digest) { '' }
-
-    it 'raises an exception' do
-      expect {
-        StoryDraftCreator.new(
-          user: user,
+          user: mock_valid_user.tap {|user| user['id'] = 'not' },
           uid: uid,
           digest: digest,
           theme: theme,
@@ -155,23 +123,7 @@ RSpec.describe StoryDraftCreator do
 
   describe '#create' do
 
-    context 'when called with a digest that does not match last known digest' do
-      let!(:previous_digest) { FactoryGirl.create(:draft_story, uid: uid).digest }
-
-      let(:story_creator) do
-        StoryDraftCreator.new(
-          user: user,
-          uid: uid,
-          digest: previous_digest + 'NOPE',
-          theme: theme,
-          blocks: blocks
-        )
-      end
-
-      it 'raises exception' do
-        expect{ story_creator.create }.to raise_error(StoryDraftCreator::DigestMismatchError)
-      end
-
+    shared_examples 'story draft rejector' do |expected_error_class|
       it 'does not create a draft' do
         expect {
           begin
@@ -180,6 +132,41 @@ RSpec.describe StoryDraftCreator do
           end
         }.to_not change { DraftStory.count }
       end
+
+      it 'raises exception' do
+        expect { story_creator.create }.to raise_error(expected_error_class)
+      end
+    end
+
+    context 'with an existing draft' do
+      let(:existing_draft) { FactoryGirl.create(:draft_story, uid: uid) }
+      let!(:previous_digest) { existing_draft.digest }
+      let(:story_creator) do
+        StoryDraftCreator.new(
+          user: user,
+          uid: uid,
+          digest: digest_to_send,
+          theme: theme,
+          blocks: blocks
+        )
+      end
+
+
+      context 'when called with a digest that does not match last known digest' do
+        let(:digest_to_send) { previous_digest + 'NOPE' }
+        it_behaves_like 'story draft rejector', StoryDraftCreator::DigestMismatchError
+      end
+
+      context 'when called with an empty digest' do
+        let(:digest_to_send) { '' }
+        it_behaves_like 'story draft rejector', StoryDraftCreator::DigestMissingError
+      end
+
+      context 'when called with a nil digest' do
+        let(:digest_to_send) { nil }
+        it_behaves_like 'story draft rejector', StoryDraftCreator::DigestMissingError
+      end
+
     end
 
     context 'when called on an instance created with valid attributes' do

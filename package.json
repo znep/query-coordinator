@@ -5,12 +5,12 @@
     "url": "https://github.com/socrata/storyteller.git"
   },
   "scripts": {
-    "lint": "./node_modules/.bin/eslint --ignore-path .eslintignore -- app/assets/javascripts spec/karma",
-    "test": "RAILS_ENV=karma ./node_modules/.bin/karma start spec/karma/karma.conf.js",
-    "test-watch": "RAILS_ENV=karma ./node_modules/.bin/karma start spec/karma/karma.conf.js --singleRun false",
-    "test-browser": "RAILS_ENV=karma ./node_modules/.bin/karma start spec/karma/karma.conf.js --singleRun false --browsers Chrome",
-    "webpack": "./node_modules/.bin/webpack --config config/webpack.config.js",
-    "watch": "./node_modules/.bin/webpack-dev-server --config config/webpack.config.js",
+    "lint": "eslint --ignore-path .eslintignore -- app/assets/javascripts spec/karma",
+    "test": "RAILS_ENV=karma karma start spec/karma/karma.conf.js",
+    "test-watch": "RAILS_ENV=karma karma start spec/karma/karma.conf.js --singleRun false",
+    "test-browser": "RAILS_ENV=karma karma start spec/karma/karma.conf.js --singleRun false --browsers Chrome",
+    "webpack": "webpack --config config/webpack.config.js",
+    "watch": "webpack-dev-server --config config/webpack.config.js",
     "build": "npm run webpack",
     "postinstall": "npm run webpack"
   },
@@ -108,6 +108,7 @@
     "react": "15.3.2",
     "react-dom": "15.3.2",
     "react-image-crop": "1.0.0-rc3",
+    "showdown": "git+https://github.com/socrata/showdown.git#openperformance-compat",
     "socrata-components": "7.3.3",
     "socrata-utils": "2.0.0",
     "socrata-visualizations": "18.3.2",

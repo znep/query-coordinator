@@ -23,12 +23,19 @@ Rails.application.routes.draw do
   end
 
   # Routes for interacting with Goals
+  # Note that these routes are accessible without
+  # the /stories global prefix (see config.ru).
   scope '/stat/goals', module: 'stat', as: 'stat' do
-    get ':dashboard/:category/:uid' => 'goals#show', as: 'goal'
     get 'single/:uid' => 'goals#show', as: 'single_goal'
+    get 'single/:uid/edit-story' => 'goals#edit', as: 'edit_single_goal'
+
+    get ':dashboard/:category/:uid' => 'goals#show', as: 'goal'
+    get ':dashboard/:category/:uid/edit-story' => 'goals#edit', as: 'edit_goal'
   end
 
   # API routes
+  # Note that these routes are accessible without
+  # the /stories global prefix (see config.ru).
   namespace :api do
     # for Perspectives
     namespace :v1, defaults: { format: 'json' } do

@@ -138,22 +138,24 @@ class Block < ActiveRecord::Base
           # always set to false (which is what we expect for classic
           # visualizations that have been added to stories).
           if view && view.is_a?(Hash)
-            default_metadata_subtree = {
-              'metadata' => {
-                'renderTypeConfig' => {
-                  'visible' => {
-                    'table' => false
+            unless view['displayType'] == 'table'
+              default_metadata_subtree = {
+                'metadata' => {
+                  'renderTypeConfig' => {
+                    'visible' => {
+                      'table' => false
+                    }
                   }
                 }
-              }
-            }.freeze
+              }.freeze
 
-            view = default_metadata_subtree.deep_merge(view)
+              view = default_metadata_subtree.deep_merge(view)
 
-            # Still need to set this path to false in case it already existed
-            # (and as such wasn't set using the reverse_merge!) but is set to
-            # true in the canonical view.
-            view['metadata']['renderTypeConfig']['visible']['table'] = false
+              # Still need to set this path to false in case it already existed
+              # (and as such wasn't set using the reverse_merge!) but is set to
+              # true in the canonical view.
+              view['metadata']['renderTypeConfig']['visible']['table'] = false
+            end
           end
 
           component['value']['visualization'] = view

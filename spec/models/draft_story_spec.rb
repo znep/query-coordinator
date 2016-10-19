@@ -27,6 +27,12 @@ RSpec.describe DraftStory, type: :model do
     end
   end
 
+  describe 'defaults' do
+    it 'theme to classic' do
+      expect(DraftStory.new.theme).to eq('classic')
+    end
+  end
+
   describe 'validations' do
 
     it 'has a valid factory' do

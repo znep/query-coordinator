@@ -8,6 +8,7 @@ import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
 import { storyPermissionsManager } from '../StoryPermissionsManager';
 import { storyStore } from '../stores/StoryStore';
+import { storySaveStatusStore} from '../stores/StorySaveStatusStore';
 
 export const StoryPublicationStatus = React.createClass({
   getInitialState() {
@@ -182,8 +183,17 @@ export const StoryPublicationStatus = React.createClass({
 
   render() {
     let translationKey;
+    if (!storyStore.storyExists(Environment.STORY_UID)) {
+      return null; // Story not loaded yet.
+    }
     const isPublic = storyPermissionsManager.isPublic();
     const publishedAndDraftDiverged = storyPermissionsManager.havePublishedAndDraftDiverged();
+
+    const wrapperAttributes = {
+      className: classNames('story-publication-status', {
+        'disabled': storySaveStatusStore.autosaveDisabledByUrlParam()
+      })
+    };
 
     const buttonAttributes = {
       ref: ref => this.statusElement = ref,
@@ -191,7 +201,6 @@ export const StoryPublicationStatus = React.createClass({
       onClick: this.togglePublicationFlannel
     };
 
-    const statusIcon = !isPublic || publishedAndDraftDiverged ? '!' : '';
     const statusIconAttributes = {
       className: classNames('story-publication-status-icon', {
         'unpublished icon-warning-alt2': !isPublic || publishedAndDraftDiverged,
@@ -210,7 +219,7 @@ export const StoryPublicationStatus = React.createClass({
     }
 
     return (
-      <div className="story-publication-status">
+      <div {...wrapperAttributes}>
         <button {...buttonAttributes}>
           {I18n.t(`editor.settings_panel.publishing_section.${translationKey}`)}
           <span {...statusIconAttributes} />

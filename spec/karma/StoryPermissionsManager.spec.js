@@ -43,7 +43,7 @@ describe('StoryPermissionsManager', () => {
     StoryPermissionsManagerAPI.__ResetDependency__('dispatcher');
   });
 
-  function testVariant(apiName, expectedUrl, expectedHttpMethod, expectedData, expectedActions, expectedPayload) {
+  function testVariant(apiName, expectedUrl, expectedHttpMethod, expectedData, expectedActions) {
     describe('.' + apiName, () => {
       it('should throw on non- arguments', () => {
         assert.throws(() => { manager[apiName](2); });

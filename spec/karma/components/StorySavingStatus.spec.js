@@ -38,11 +38,15 @@ describe('storySavingStatus jQuery plugin', function() {
     mockStore = new MockStore();
     StorySavingStatusAPI.__Rewire__('storySaveStatusStore', mockStore);
     StorySavingStatusAPI.__Rewire__('I18n', I18nMocker);
+    StorySavingStatusAPI.__Rewire__('storyStore', {
+      storyExists: _.constant(true)
+    });
   });
 
   afterEach(function() {
     StorySavingStatusAPI.__ResetDependency__('storySaveStatusStore');
     StorySavingStatusAPI.__ResetDependency__('I18n');
+    StorySavingStatusAPI.__ResetDependency__('storyStore');
   });
 
   it('should throw when passed invalid arguments', function() {

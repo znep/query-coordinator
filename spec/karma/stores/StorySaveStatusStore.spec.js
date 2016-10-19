@@ -4,6 +4,7 @@ import Actions from 'editor/Actions';
 import Dispatcher from 'editor/Dispatcher';
 import Store, {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
 import StorySaveStatusStore, {__RewireAPI__ as StorySaveStatusStoreAPI} from 'editor/stores/StorySaveStatusStore';
+import StorytellerUtils from 'StorytellerUtils';
 
 describe('StorySaveStatusStore', function() {
 
@@ -12,6 +13,20 @@ describe('StorySaveStatusStore', function() {
   var serializeStory;
   var storyUid = 'test-test';
   var storyStore;
+  var autosaveUrlParam;
+
+  const storytellerUtilsMock = _.extend(
+    {},
+    StorytellerUtils,
+    {
+      queryParameterMatches: (paramName) => {
+        if (paramName !== 'autosave') {
+          throw new Error(`unexpected param: ${paramName}`);
+        }
+        return !autosaveUrlParam;
+      }
+    }
+  );
 
   beforeEach(function() {
     dispatcher =  new Dispatcher();
@@ -28,9 +43,11 @@ describe('StorySaveStatusStore', function() {
     };
 
     storyStore = new StoryStoreMock();
+    autosaveUrlParam = true;
 
     StorySaveStatusStoreAPI.__Rewire__('dispatcher', dispatcher);
     StorySaveStatusStoreAPI.__Rewire__('storyStore', storyStore);
+    StorySaveStatusStoreAPI.__Rewire__('StorytellerUtils', storytellerUtilsMock);
 
     storySaveStatusStore = new StorySaveStatusStore('test-test');
 
@@ -64,6 +81,15 @@ describe('StorySaveStatusStore', function() {
 
     beforeEach(function() {
       store = storySaveStatusStore;
+    });
+
+    describe('autosaveDisabledByUrlParam', function() {
+      it('should be true only if ?autosave=false', function() {
+        autosaveUrlParam = true;
+        assert.isFalse(store.autosaveDisabledByUrlParam());
+        autosaveUrlParam = false;
+        assert.isTrue(store.autosaveDisabledByUrlParam());
+      });
     });
 
     describe('on story loaded', function() {

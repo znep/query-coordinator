@@ -6,6 +6,3 @@ Rails.application.config.enable_filtered_table_creation = (ENV['ENABLE_FILTERED_
 
 # Enable or disable Getty Images gallery
 Rails.application.config.enable_getty_images_gallery = (ENV['ENABLE_GETTY_IMAGES_GALLERY'].to_s.downcase == 'true')
-
-# Allows testing experimental OP goal embeds via big, ugly button.
-Rails.application.config.enable_goal_embed_experimental = (ENV['ENABLE_GOAL_EMBED_EXPERIMENTAL'].to_s.downcase == 'true')

@@ -24,8 +24,8 @@
     <meta name="twitter:image" content="<%= block_images.first %>">
   <% end %>
   <!-- Open Graph Sharing Metadata -->
-  <meta property="og:title" content="<%= core_attributes['name'] %>">
-  <meta property="og:description" content="<%= core_attributes['description'] %>">
+  <meta property="og:title" content="<%= @story_metadata.title %>">
+  <meta property="og:description" content="<%= @story_metadata.description %>">
   <% block_images.each do |image| %>
     <meta property="og:image" content="<%= image %>">
   <% end %>

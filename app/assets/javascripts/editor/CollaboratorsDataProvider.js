@@ -13,14 +13,15 @@ import { exceptionNotifier } from '../services/ExceptionNotifier';
  *
  * An access level is defined as a String equal to "owner", "contributor", or "viewer".
  */
-export default function CollaboratorsDataProvider(storyUid) {
+export default function CollaboratorsDataProvider() {
+
+  var uid = Environment.STORY_UID;
   StorytellerUtils.assert(
-    /\w{4}\-\w{4}/.test(storyUid),
+    /\w{4}\-\w{4}/.test(uid),
     'A valid story UID must be provided.'
   );
 
   var self = this;
-  var uid = storyUid;
   var urls = {
     read: StorytellerUtils.format('/api/views/{0}/grants', uid),
     add: StorytellerUtils.format('/api/views/{0}/grants?accessType=WEBSITE', uid),

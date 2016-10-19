@@ -5,6 +5,7 @@ class StoryDraftCreator
   class InvalidNewBlocksError < StandardError ; end
   class CreateTransactionError < StandardError ; end
   class DigestMismatchError < StandardError ; end
+  class DigestMissingError < StandardError ; end
 
   #TODO: Make user another attribute rather than its own thing.
 
@@ -27,9 +28,6 @@ class StoryDraftCreator
     end
 
     @digest = attributes[:digest]
-    if @digest.blank?
-      raise ArgumentError.new('Digest attribute is empty')
-    end
 
     # This will raise an exception if :blocks is not present.
     @json_blocks = attributes.fetch(:blocks) || []
@@ -105,8 +103,12 @@ class StoryDraftCreator
   end
 
   def validate_digest_matches_against_last_draft
-    if existing_story.present? && digest != existing_story.digest
-      raise DigestMismatchError.new('Provided digest does not match last known draft story digest.')
+    if existing_story.present?
+      if digest.blank?
+        raise DigestMissingError.new('Digest was not provided, yet older draft exists.')
+      elsif digest != existing_story.digest
+        raise DigestMismatchError.new('Provided digest does not match last known draft story digest.')
+      end
     end
   end
 end

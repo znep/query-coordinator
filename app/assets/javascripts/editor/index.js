@@ -1,12 +1,13 @@
 import $ from 'jQuery';
 import _ from 'lodash';
-import React from 'react';
+import React from 'react'; //eslint-disable-line no-unused-vars
 import ReactDOM from 'react-dom';
 import SocrataVisualizations from 'socrata-visualizations';
 
 import I18n from './I18n';
 import Actions from './Actions';
 import DragDrop from './DragDrop';
+import GoalMigrationRunner from './GoalMigrationRunner';
 import ErrorReporter from '../services/ErrorReporter';
 import Environment from '../StorytellerEnvironment';
 import StorytellerUtils from '../StorytellerUtils';
@@ -15,10 +16,11 @@ import './components';
 import { dispatcher } from './Dispatcher';
 import { storyStore } from './stores/StoryStore';
 import { storySaveStatusStore } from './stores/StorySaveStatusStore';
+import { goalMigrationStore } from './stores/GoalMigrationStore';
 import { richTextEditorManager } from './RichTextEditorManager';
 import { exceptionNotifier } from '../services/ExceptionNotifier';
 import CollaboratorsDataProvider from './CollaboratorsDataProvider';
-import StoryPublicationStatus from './components/StoryPublicationStatus';
+import StoryPublicationStatus from './components/StoryPublicationStatus'; //eslint-disable-line no-unused-vars
 
 dispatcher.register(function(payload) {
   if (Environment.ENVIRONMENT === 'development' && window.console) {
@@ -32,25 +34,38 @@ dispatcher.register(function(payload) {
   }
 });
 
-dispatcher.dispatch({
-  action: Actions.STORY_CREATE,
-  data: Environment.STORY_DATA
-});
+if (goalMigrationStore.needsMigration()) {
+  // Need to migrate narrative first. Ideally we'd do this server-side,
+  // but it's easier in JS (the original renderer and support utilities
+  // used to process the narrative in Odysseus are in JS).
+  // StoryStore will load the story automatically when migration is complete.
+  (new GoalMigrationRunner(
+    Environment.OP_GOAL_NARRATIVE_MIGRATION_METADATA,
+    Environment.STORY_DATA)).run();
+} else {
+  dispatcher.dispatch({
+    action: Actions.STORY_CREATE,
+    data: Environment.STORY_DATA
+  });
+}
 
 (new ErrorReporter());
 
-(new CollaboratorsDataProvider(Environment.STORY_UID)).
-  getCollaborators().
-    then(
-      function(collaborators) {
+if (Environment.IS_GOAL) {
+  // TODO: Why is this being called from index? Can the store manage it itself?
+  (new CollaboratorsDataProvider()).
+    getCollaborators().
+      then(
+        function(collaborators) {
 
-        dispatcher.dispatch({
-          action: Actions.COLLABORATORS_LOAD,
-          collaborators: collaborators
-        });
-      }
-    ).
-    catch(exceptionNotifier.notify);
+          dispatcher.dispatch({
+            action: Actions.COLLABORATORS_LOAD,
+            collaborators: collaborators
+          });
+        }
+      ).
+      catch(exceptionNotifier.notify);
+}
 
 $(document).on('ready', function() {
   /**
@@ -59,7 +74,9 @@ $(document).on('ready', function() {
 
   SocrataVisualizations.views.RowInspector.setup();
 
+
   /*eslint-disable no-unused-vars */
+  var goalMigrationOverlayRenderer = new Renderers.GoalMigrationOverlayRenderer();
   var assetSelectorRenderer = new Renderers.AssetSelectorRenderer({
     assetSelectorContainerElement: $('#asset-selector-container')
   });

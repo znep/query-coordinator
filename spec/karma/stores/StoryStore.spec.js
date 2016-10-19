@@ -737,6 +737,28 @@ describe('StoryStore', function() {
 
   describe('actions', function() {
 
+    describe('GOAL_MIGRATION_END', function() {
+      // Very basic validation, this calls into the exact same handler as STORY_CREATE.
+      describe('given valid story data', function() {
+
+        it('should create the story', function() {
+
+          var validStoryUid = 'test-titl';
+          var validStoryTitle = 'Test Title';
+
+          var validStoryData = DataGenerators.generateStoryData({
+            uid: validStoryUid,
+            title: validStoryTitle
+          });
+
+          dispatch({ action: Actions.GOAL_MIGRATION_END, story: validStoryData });
+
+          assert.equal(storyStore.getStoryTitle(validStoryUid), validStoryTitle);
+        });
+      });
+
+    });
+
     describe('STORY_CREATE', function() {
 
       describe('when `storyData` is incomplete', function() {

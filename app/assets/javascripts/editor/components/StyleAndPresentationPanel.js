@@ -101,6 +101,9 @@ export default function StyleAndPresentationPanel(toggleButton) {
   }
 
   function updateSelectedTheme() {
+    if (!storyStore.storyExists(Environment.STORY_UID)) {
+      return;
+    }
     const currentTheme = storyStore.getStoryTheme(Environment.STORY_UID);
     const currentThemeItem = $themeList.find(`.theme[data-theme="${currentTheme}"]`);
     if (!currentThemeItem.hasClass('active')) {

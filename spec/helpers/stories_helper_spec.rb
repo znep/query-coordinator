@@ -6,6 +6,7 @@ RSpec.describe StoriesHelper, type: :helper do
     let(:valid_story) { FactoryGirl.create(:draft_story) }
     let(:mock_core_response) do
       {
+        'uid' => 'four-four',
         'title' => 'Title',
         'description' => 'Description'
       }
@@ -15,11 +16,11 @@ RSpec.describe StoriesHelper, type: :helper do
       before do
         # We expect the call to #get_view to be memoized
         expect(CoreServer).to receive(:get_view).once.and_return(mock_core_response)
+        @story_metadata = CoreStoryMetadata.new(mock_core_response['uid'])
+        @story = valid_story
       end
 
       it 'adds title, description, and permissions properties' do
-        @story = valid_story
-
         expect(user_story_json).to include('title')
         expect(user_story_json).to include('description')
         expect(user_story_json).to include('permissions')
@@ -27,8 +28,6 @@ RSpec.describe StoriesHelper, type: :helper do
 
       context 'that is private' do
         it 'returns permissions with isPublic equal to false' do
-          @story = valid_story
-
           expect(JSON.parse(user_story_json)['permissions']['isPublic']).to be(false)
         end
       end
@@ -47,7 +46,6 @@ RSpec.describe StoriesHelper, type: :helper do
         end
 
         it 'returns permissions with isPublic equal to true' do
-          @story = valid_story
           expect(JSON.parse(user_story_json)['permissions']['isPublic']).to be(true)
         end
       end

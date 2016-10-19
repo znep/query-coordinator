@@ -120,16 +120,16 @@ RSpec.describe Block, type: :model do
       end
 
       context 'when the metadata includes the "renderTypeConfig" subtree' do
+        let(:display_type) { 'chart' }
         let(:view) {
-          {'metadata' => {'renderTypeConfig' => {'visible' => {'table' => true, 'chart' => true}}}}
+          {
+            'name' => 'the updated view name',
+            'displayType' => display_type,
+            'metadata' => {'renderTypeConfig' => {'visible' => {'table' => true, 'chart' => true}}}}
         }
 
-        before do
-          allow(CoreServer).to receive(:get_view).and_return(view)
-        end
-
-        it 'replaces the component sub-value, "visualization", with a fresh copy from api/views' do
-          test_components = [
+        let(:test_components) do
+          [
             {
               type: 'socrata.visualization.classic',
               value: {
@@ -137,11 +137,32 @@ RSpec.describe Block, type: :model do
               }
             }
           ]
+        end
 
-          new_block = Block.new(layout: 12, components: test_components, created_by: 'test@example.com')
+        subject(:new_block) do
+          Block.new(layout: 12, components: test_components, created_by: 'test@example.com')
+        end
 
-          expect(new_block.components[0]['value']['visualization'].to_json).to match(/table":false/)
+        before do
+          allow(CoreServer).to receive(:get_view).and_return(view)
+        end
+
+        it 'replaces the component sub-value, "visualization", with a fresh copy from api/views' do
+          expect(new_block.components[0]['value']['visualization']['name']).to eq('the updated view name')
           expect(new_block.components[0]['value']['visualization'].to_json).to match(/chart":true/)
+        end
+
+        context 'the visualization is not a table' do
+          it 'hides the table' do
+            expect(new_block.components[0]['value']['visualization'].to_json).to match(/table":false/)
+          end
+        end
+
+        context 'the visualization is a table' do
+          let(:display_type) { 'table' }
+          it 'keeps the table' do
+            expect(new_block.components[0]['value']['visualization'].to_json).to match(/table":true/)
+          end
         end
       end
     end

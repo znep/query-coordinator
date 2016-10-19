@@ -85,7 +85,7 @@
             <%- unless can_manage_story_visibility? -%>
               <section class="warning-bar">
                 <p><span class="icon-warning"></span></p>
-                <%- if determine_permissions_from_core_attributes[:isPublic] -%>
+                <%- if @story_metadata.public? -%>
                   <p class="settings-panel-error-message"><%= t('editor.settings_panel.errors.cannot_change_visibility_or_update_public_version') %></p>
                 <%- else -%>
                   <p class="settings-panel-error-message"><%= t('editor.settings_panel.errors.cannot_change_visibility') %></p>
@@ -149,16 +149,6 @@
           <%- end %>
         <% end -%>
       </li>
-
-      <% if Rails.application.config.enable_goal_embed_experimental %>
-      <li id="settings-panel-goal-embed-test-button" class="menu-list-item">
-        <button class="menu-list-item-header">
-          <span class="icon-pulse"></span>
-          <span>Convert To Goal</span>
-        </button>
-      </li>
-      <% end %>
-
     </ul>
   </div>
   <div id="settings-panel-overlay" data-panel-toggle="settings-panel"></div>

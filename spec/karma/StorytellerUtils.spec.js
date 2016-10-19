@@ -20,6 +20,42 @@ describe('StorytellerUtils', function() {
     });
   });
 
+  describe('queryParameterMatches', function() {
+    const paramName = 'bob';
+
+    let originalQueryParameters;
+    before(function() {
+      originalQueryParameters = StorytellerUtils.queryParameters;
+      StorytellerUtils.queryParameters = _.constant([[paramName, 'false']]);
+    });
+    after(function() {
+      StorytellerUtils.queryParameters = originalQueryParameters;
+    });
+
+    function expectTrue(conditionDescription, key, value) {
+      it('should return true', function() {
+        assert.isTrue(StorytellerUtils.queryParameterMatches(key, value));
+      });
+    }
+
+    function expectFalse(conditionDescription, key, value) {
+      it('should return false', function() {
+        assert.isFalse(StorytellerUtils.queryParameterMatches(key, value));
+      });
+    }
+
+    describe('given a parameter value to match', function() {
+      expectTrue('when a matching key/value pair exists', 'bob', false);
+      expectFalse('when a matching value does not exist', 'bob', true);
+      expectFalse('when a matching key does not exist', 'frank', false);
+    });
+
+    describe('without a parameter value to match', function() {
+      expectTrue('when a matching key exists', 'bob');
+      expectFalse('when a matching key does not exist', 'frank');
+    });
+  });
+
   describe('event binding functions', function() {
     var spy;
     beforeEach(function() {

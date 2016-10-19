@@ -20,6 +20,10 @@ end
 
 require ::File.expand_path('../config/environment', __FILE__)
 
+# Support Open Performance paths via rewrite into
+# Storyteller-compatible URLs.
+use UriRewriteMiddleware
+
 map Storyteller::Application.config.relative_url_root || '' do
   run Rails.application
 end

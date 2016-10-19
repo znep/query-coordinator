@@ -398,6 +398,15 @@ export default {
   // No payload
   LOGIN_BUTTON_CLICK: 'LOGIN_BUTTON_CLICK',
 
+  // No payload
+  GOAL_MIGRATION_START: 'GOAL_MIGRATION_START',
+
+  // {Error} error
+  GOAL_MIGRATION_ERROR: 'GOAL_MIGRATION_ERROR',
+
+  // {Array} blocks
+  GOAL_MIGRATION_END: 'GOAL_MIGRATION_END',
+
   // {Object} Downtime
   DOWNTIME_ACKNOWLEDGE: 'DOWNTIME_ACKNOWLEDGE'
 };

@@ -59,7 +59,10 @@ describe('StoryPublicationStatus', () => {
 
   beforeEach(() => {
     StoryPublicationStatusAPI.__Rewire__('I18n', I18nMocker);
-    StoryPublicationStatusAPI.__Rewire__('storyStore', { getStoryUpdatedAt: _.constant(storyUpdatedAt) });
+    StoryPublicationStatusAPI.__Rewire__('storyStore', {
+      getStoryUpdatedAt: _.constant(storyUpdatedAt),
+      storyExists: _.constant(true)
+    });
   });
 
   afterEach(() => {

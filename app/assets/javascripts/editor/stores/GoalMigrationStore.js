@@ -1,0 +1,61 @@
+import _ from 'lodash';
+
+import Store from './Store';
+import Actions from '../Actions';
+import Environment from '../../StorytellerEnvironment';
+import StorytellerUtils from '../../StorytellerUtils';
+
+export var goalMigrationStore = new GoalMigrationStore();
+export default function GoalMigrationStore() {
+  _.extend(this, new Store());
+  const self = this;
+
+  const state = {
+    isMigrating: false,
+    error: null
+  };
+
+  self.register(function(payload) {
+    switch (payload.action) {
+      case Actions.GOAL_MIGRATION_START:
+        startMigration();
+        break;
+      case Actions.GOAL_MIGRATION_END:
+        endMigration();
+        break;
+      case Actions.GOAL_MIGRATION_ERROR:
+        errorMigration(payload.error);
+        break;
+    }
+  });
+
+  // Returns true if the narrative migration needs
+  // to be run.
+  self.needsMigration = () =>
+    Environment.OP_GOAL_NARRATIVE_MIGRATION_METADATA && (
+      StorytellerUtils.queryParameterMatches('redoGoalMigration', true) ||
+      Environment.STORY_DATA.digest === null // Never saved
+    );
+
+  self.isMigrating = () => state.isMigrating;
+  self.hasError = () => state.error !== null;
+  self.error = () => state.error;
+
+  function startMigration() {
+    state.isMigrating = true;
+    state.error = null;
+    self._emitChange();
+  }
+
+  function endMigration() {
+    state.isMigrating = false;
+    state.error = null;
+    self._emitChange();
+  }
+
+  function errorMigration(payloadError) {
+    state.isMigrating = false;
+    state.error = payloadError;
+    self._emitChange();
+  }
+}

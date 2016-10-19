@@ -198,6 +198,10 @@ site_chrome_header_and_footer_for_dataslate:
   description: Turns on site chrome header/footer for (non-homepage) dataslate pages.
   defaultValue: false
   category: site chrome
+site_chrome_language_switcher:
+  description: Turns on Language Switcher checkbox in General tab of Site Appearance panel.
+  defaultValue: false
+  category: site chrome
 timeline:
   description: D3 Timeline Charts
   defaultValue: old

@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { handleKeyPress } from '../lib/a11yHelpers';
 
 export var PrivateNotice = React.createClass({
   propTypes: {
@@ -65,7 +66,13 @@ export var PrivateNotice = React.createClass({
             target="_blank">
             {I18n.manage_prompt}
           </a>
-          <span className="icon-close-2 alert-dismiss" onClick={this.onClickDismiss}></span>
+          <span
+            className="icon-close-2 alert-dismiss"
+            aria-label={I18n.close}
+            role="button"
+            tabIndex="0"
+            onClick={this.onClickDismiss}
+            onKeyDown={handleKeyPress(this.onClickDismiss)}></span>
         </div>
       </div>
     );

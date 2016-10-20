@@ -88,7 +88,7 @@ export default function GoalMigrationRunner(narrativeMigrationMetadata, storyDat
 // the need to pass some cache object around.
 function prefetchDataNeededForMigration(sections) {
   function prefetchSection(section) {
-    if (section.type === 'viz') {
+    if (section.type === 'viz' && section.dataset) { // dataset may be blank if unconfigured.
       return httpRequest('GET', `https://${window.location.hostname}/api/views/${section.dataset}.json`).
         then((data) => section.dataset = data );
     } else if (section.type === 'twoColLayout') {
@@ -114,16 +114,12 @@ function prefetchDataNeededForMigration(sections) {
 function migrateTextSection(section) {
   // Current strategy: migrate Showdown output directly, and let Squire re-write
   // to meet its own needs.
-  if (section.text) {
-    const correctMarkdown = escapeMarkdownLinks(section.text);
-    const html = linkify(converter.makeHtml(correctMarkdown));
-    return [{
-      type: 'html',
-      value: html
-    }];
-  } else {
-    return [];
-  }
+  const correctMarkdown = escapeMarkdownLinks(section.text || '');
+  const html = linkify(converter.makeHtml(correctMarkdown));
+  return [{
+    type: 'html',
+    value: html
+  }];
 }
 
 function migrateImageSection(section) {
@@ -136,14 +132,21 @@ function migrateImageSection(section) {
       }
     }];
   } else {
-    return [];
+    return [{
+      type: 'assetSelector'
+    }];
   }
 }
 
 function migrateVizSection(section) {
-  const displayType = section.dataset.displayType;
+  const displayType = _.get(section, 'dataset.displayType');
   const isGrouped = _.get(section.dataset, 'query.groupBys.length', 0) > 0;
-  if (!isGrouped && displayType === 'table') {
+  if (_.isUndefined(section.dataset)) {
+    // User did not pick a dataset.
+    return [{
+      type: 'assetSelector'
+    }];
+  } else if (!isGrouped && displayType === 'table') {
     const defaultSortColumn = section.dataset.columns[0];
     const unit = I18n.t('editor.visualizations.default_unit');
     const vif = {

@@ -135,6 +135,9 @@ hide_interpolated_nulls:
   description: "Ref: SI-5927, if set to true, will hide interpolated nulls in DSG bar charts."
   defaultValue: false
   category: testing bug fix
+hide_socrata_id:
+  description: When auth0_connections are present and multiple buttons are presented on the login page, this will hide the "Sign in with Socrata ID" button
+  defaultValue: false
 include_sr_in_esri:
   description: ESRI-only; stop using SRs in the export URL.
   defaultValue: false

@@ -21,6 +21,9 @@ export default
     // Whether to show social login
     showSocial: PropTypes.bool,
 
+    // Whether or not to hide the "Sign in with Socrata ID" button
+    hideSocrataId: PropTypes.bool,
+
     // Whether to bypass logging in through auth0 with @socrata.com emails
     // (note that this is still enforced in frontend)
     socrataEmailsBypassAuth0: PropTypes.bool,

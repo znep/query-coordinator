@@ -5,6 +5,32 @@ import OptionsPropType from '../OptionsPropType';
 import styles from './choose-connection.scss';
 
 class ChooseConnection extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.renderSocrataIdButton = this.renderSocrataIdButton.bind(this);
+  }
+
+  renderSocrataIdButton() {
+    if (!this.props.options.hideSocrataId) {
+      return (
+        <a
+          styleName="button"
+          onClick={() => { this.props.setLoginFormVisibility(true); }}>
+          <div styleName="button-image-container">
+            <img
+              styleName="button-image"
+              src="/stylesheets/images/common/logo.png"
+              alt="socrata-logo" />
+          </div>
+          <span styleName="button-text">
+            {$.t('screens.sign_in.sign_in_with', { provider: 'Socrata ID' })}
+          </span>
+        </a>
+      );
+    }
+  }
+
   renderConnectionImage(auth0Connection) {
     const { image, name } = auth0Connection;
     if (!_.isEmpty(image)) {
@@ -41,24 +67,12 @@ class ChooseConnection extends React.Component {
   }
 
   render() {
-    const { options, setLoginFormVisibility } = this.props;
+    const { options } = this.props;
 
     return (
       <div>
         <div styleName="message">{options.message}</div>
-        <a
-          styleName="button"
-          onClick={() => { setLoginFormVisibility(true); }}>
-          <div styleName="button-image-container">
-            <img
-              styleName="button-image"
-              src="/stylesheets/images/common/logo.png"
-              alt="socrata-logo" />
-          </div>
-          <span styleName="button-text">
-            {$.t('screens.sign_in.sign_in_with', { provider: 'Socrata ID' })}
-          </span>
-        </a>
+        {this.renderSocrataIdButton()}
         {this.renderConnections()}
       </div>
     );

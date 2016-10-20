@@ -1,4 +1,10 @@
 namespace :gem do
+  desc 'Cleaning old gem versions'
+  task :clean do
+    Dir.chdir("#{Dir.pwd}/engine") unless Dir.pwd.ends_with?('engine')
+    puts `rm socrata_site_chrome-*.gem`
+  end
+
   desc 'Build Chrome Gem'
   task :build do
     puts `npm install`
@@ -18,4 +24,4 @@ namespace :gem do
   end
 end
 
-task :gem => ['gem:build', 'gem:publish']
+task :gem => ['gem:clean', 'gem:build', 'gem:publish']

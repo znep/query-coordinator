@@ -1,6 +1,8 @@
 package_json_file = Rails.root.join('package.json')
 
 # See also config/application.rb
+# That is where the values in Rails.configuration.webpack are initialized.
+
 if ENV.key?('WEBPACK_USE_MANIFEST')
   Rails.configuration.webpack[:use_manifest] = ENV['WEBPACK_USE_MANIFEST'].to_s.downcase == 'true'
 end

@@ -45,7 +45,7 @@ module Clytemnestra
 
     def self.from_result(result)
       unless result.nil?
-        obj = self.new(JSON.parse(result, :max_nesting => 25))
+        obj = self.new(JSONWithAirbrake.parse(result, :max_nesting => 25))
       end
     end
 

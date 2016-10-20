@@ -1,0 +1,41 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:8080/views/8hbj-mt5f.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 500
+      message: OK
+    headers:
+      X-Socrata-Requestid:
+      - lts0gldb279fzvhrri643qgx
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(7.5.1.v20110908)
+    body:
+      encoding: UTF-8
+      string: |
+        <html><body><h1>503 Service Unavailable</h1>
+        No server is available to handle this request.
+        </body></html>
+    http_version:
+  recorded_at: Thu, 20 Oct 2016 16:50:44 GMT
+recorded_with: VCR 3.0.3

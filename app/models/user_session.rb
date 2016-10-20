@@ -16,43 +16,27 @@ class UserSession
     # Check to see if we've been provided a controller instance already.
     # Many things won't work if this is false.
     def activated?
-      !controller.nil?
+      controller.present?
     end
 
     def find
-      session = new()
-      if session.find_token
-        session
-      else
-        nil
-      end
+      session = new
+      session if session.find_token
     end
 
     def rpx(token)
-      session = new()
-      if session.find_rpx_token(token)
-        session
-      else
-        nil
-      end
+      session = new
+      session if session.find_rpx_token(token)
     end
 
     def auth0(token)
       session = new
-      if session.find_auth0_token(token)
-        session
-      else
-        nil
-      end
+      session if session.find_auth0_token(token)
     end
 
     def user_no_security_check(user)
-      session = new()
-      if session.find_user(user)
-        session
-      else
-        nil
-      end
+      session = new
+      session if session.find_user(user)
     end
 
     def controller=(value)
@@ -86,7 +70,7 @@ class UserSession
 
   # Your login credentials in hash format.
   def credentials
-    {:login => login, :password => password}
+    { :login => login, :password => password }
   end
 
   # Lets you set your login and password via a hash format. It's safe to use
@@ -110,15 +94,17 @@ class UserSession
   # and look up the user associated with that token.
   def find_token
     if core_session.valid?(true) # true to force load
-      user = User.find(core_session.user_id,
-                       {'Cookie' => "#{::CoreServer::Connection.cookie_name}=#{core_session.to_s}"})
+      user = User.find(
+        core_session.user_id,
+        'Cookie' => "#{::CoreServer::Connection::COOKIE_NAME}=#{core_session}"
+      )
       UserSession.update_current_user(user, core_session)
-      if !(controller.request.headers["x-socrata-auth"] == "unauthenticated")
-        new_core_cookie = controller.request.env["socrata.new-core-session-cookie"]
+      unless controller.request.headers['x-socrata-auth'] == 'unauthenticated'
+        new_core_cookie = controller.request.env['socrata.new-core-session-cookie']
         exp = UserSession.expiration_from_core_cookie(new_core_cookie)
         create_core_session_credentials(user, exp) if exp > 0
       end
-    elsif !cookies['remember_token'].blank?
+    elsif cookies['remember_token'].present?
       response = post_cookie_authentication
       if response.is_a?(Net::HTTPSuccess)
         expiration = UserSession.expiration_from_core_response(response)
@@ -130,43 +116,42 @@ class UserSession
       end
     end
 
-    return user
+    user
   end
   # Return true if the session hasn't been saved yet.
   def persisted?
-    !@new_session.blank?
+    @new_session.present?
   end
 
   def self.expiration_from_core_cookie(cookie)
     core_data = ::CoreSession.unmangle_core_session_from_cookie(cookie)
-    return -1 if core_data.nil? or core_data.split[1].nil?
-    expiration_data = core_data.split[1].to_i
-    return expiration_data - Time.now.to_i
+    expiration = core_data.try(:split).try(:[], 1)
+
+    expiration.nil? ? -1 : expiration.to_i - Time.now.to_i
   end
 
   def self.expiration_from_core_response(response)
     if response.is_a?(Net::HTTPSuccess)
       response.get_fields('set-cookie').each do |cookie_header|
-        if match = /\b#{::CoreServer::Connection.cookie_name}=([A-Za-z0-9%\-|]+)/.match(cookie_header)
+        if match = /\b#{::CoreServer::Connection::COOKIE_NAME}=([A-Za-z0-9%\-|]+)/.match(cookie_header)
           return expiration_from_core_cookie(match[1])
         end
       end
     end
-    return 15.minutes
+
+    15.minutes
   end
 
   def self.find_seconds_until_timeout
-    path = "/sessionExpiration/" + User.current_user.id + ".json"
-    return CoreServer::Base.connection.get_request(path, {}, false, true)
+    CoreServer::Base.connection.get_request("/sessionExpiration/#{User.current_user.id}.json", {}, false, true)
   end
 
   def extend
-    path = "/sessionExpiration/" + User.current_user.id + ".json"
-    coreResponse = CoreServer::Base.connection.get_request(path)
-    new_core_cookie = controller.request.env["socrata.new-core-session-cookie"]
+    core_response = CoreServer::Base.connection.get_request("/sessionExpiration/#{User.current_user.id}.json")
+    new_core_cookie = controller.request.env['socrata.new-core-session-cookie']
     expiration = UserSession.expiration_from_core_cookie(new_core_cookie)
-      create_core_session_credentials(user, expiration) if expiration > 0
-    return coreResponse
+    create_core_session_credentials(user, expiration) if expiration > 0
+    core_response
   end
 
 
@@ -174,33 +159,24 @@ class UserSession
   # If the RpxAuthentication has a valid user associated with it, log in
   # that user.
   def find_rpx_token(rpx_authentication)
-    result = nil
-    if rpx_authentication.existing_account?
-      result = find_user(rpx_authentication.user)
-    end
-    result
+    find_user(rpx_authentication.user) if rpx_authentication.existing_account?
   end
 
   def find_auth0_token(auth0_authentication)
-    if auth0_authentication.authenticated?
-      find_user(auth0_authentication.user)
-    end
+    find_user(auth0_authentication.user) if auth0_authentication.authenticated?
   end
 
   # Obtain a UserSession initialized based on a User object.
   # WARNING: This doesn't offer any authentication checks. You better know that
   # this user should be logged in before you go calling it.
   def find_user(user)
-    result = nil
     unless user.nil?
       create_core_session_credentials(user)
       self.new_session = false
       UserSession.update_current_user(user, core_session)
       cookies[:logged_in] = { value: true, secure: true }
-      result = self
+      self
     end
-
-    result
   end
 
   # Create or update an existing authentication session.
@@ -212,6 +188,7 @@ class UserSession
   def save(wants_response = false)
     result = false
     response = post_core_authentication
+
     if response.is_a?(Net::HTTPSuccess)
       expiration = UserSession.expiration_from_core_response(response)
       user = User.parse(response.body)
@@ -231,7 +208,8 @@ class UserSession
     end
 
     yield result if result && block_given?
-    return wants_response ? response : result
+
+    wants_response ? response : result
   end
 
   def destroy
@@ -247,22 +225,27 @@ class UserSession
     User.current_user
   end
 
-private
+  private
+
   @@auth_uri = CORESERVICE_URI.clone
-  @@auth_uri.path += '/authenticate'
+  @@auth_uri.path << '/authenticate'
+
   cattr_reader :auth_uri
 
   # We're calling it 'username' here, but the authentication service prefers
   # 'username' instead. I like login better, since login-by-email is something
   # we want to support and emails aren't usernames. :-P
   def credentials_for_post
-    creds = {'username' => login, 'password' => password,
-      'remoteAddress' => controller.request.remote_ip}
+    creds = {
+      'username' => login,
+      'password' => password,
+      'remoteAddress' => controller.request.remote_ip
+    }
     if remember_me
       creds['remember_me'] = 'true'
     end
 
-    return creds
+    creds
   end
 
   def post_core_authentication
@@ -286,7 +269,7 @@ private
     post['X-Socrata-Host'] = CurrentDomain.cname
 
     Net::HTTP.start(uri.host, uri.port) do |http|
-      http.request post
+      http.request(post)
     end
   end
 
@@ -299,7 +282,7 @@ private
     post['X-Socrata-Host'] = CurrentDomain.cname
 
     Net::HTTP.start(uri.host, uri.port) do |http|
-      http.request post
+      http.request(post)
     end
   end
 
@@ -337,8 +320,6 @@ end
 
 class NotActivatedError < StandardError
   def initialize(session)
-    super("You must activate the authentication controller hook by setting UserSession.controller before creating objects.")
+    super('You must first activate the authentication controller hook by setting UserSession.controller.')
   end
 end
-
-# class SessionErrors < ActiveResource::Errors; end

@@ -177,6 +177,7 @@ fedramp-prod:
 # eu-west-test.socrata.com
 eu-prod:
   <<: *default
+  cetera_host: https://api.eu.socrata.com/api
   # service hosts/ports/names et simil
   sitemap_s3_url: https://s3-eu-west-1.amazonaws.com/sa-socrata-sitemaps-eu-west-1-prod/sitemaps
   # third-party app tokens

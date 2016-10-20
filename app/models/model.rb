@@ -350,7 +350,7 @@ class Model
       return nil
     end
 
-    return self.set_up_model(JSON.parse(data, {:max_nesting => 25}))
+    return self.setup_model(JSON.parse(data, {:max_nesting => 25}))
   end
 
   def parse(*args)
@@ -362,7 +362,7 @@ class Model
     return parse(CoreServer::Base.connection.delete_request(path))
   end
 
-  def self.set_up_model(json_data)
+  def self.setup_model(json_data)
     return json_data if json_data.is_a?(self)
     if json_data.is_a?(Array)
       model = json_data.collect do | item |

@@ -147,7 +147,7 @@ module DatasetLandingPageHelper
   def attachments
     if @view.metadata && @view.metadata.attachments.present?
       @view.metadata.attachments.map do |attachment_data|
-        attachment = Attachment.set_up_model(attachment_data)
+        attachment = Attachment.setup_model(attachment_data)
         {
           :name => attachment.displayName,
           :href => attachment.href(@view.id),

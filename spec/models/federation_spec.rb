@@ -12,7 +12,7 @@ describe Federation do
   it 'should consider only the first two federations to be valid' do
     # only the first two federations in the json response are "valid"
     expected = JSON.parse(federations_json_response).first(2).map do |hash|
-      Federation.set_up_model(hash)
+      Federation.setup_model(hash)
     end
     actual = Federation.federations
     expect(actual).to eq(expected)

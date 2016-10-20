@@ -1,7 +1,7 @@
 # Be sure to restart your server when you modify this file.
 Rails.application.config.session_store :socrata_cookie_store, {
   :key => '_socrata_session_id',
-  :core_key => ::CoreServer::Connection.cookie_name,
+  :core_key => ::CoreServer::Connection::COOKIE_NAME,
   :cookie_only => false,
   :session_http_only => true,
   :secret => Rails.application.secrets.session_store_secret

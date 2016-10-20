@@ -1,3 +1,8 @@
+class AppHelper
+  include Singleton
+  include ApplicationHelper
+end
+
 class Page < Model
 
   # Implements an mtime-keyed cache of pages.
@@ -60,10 +65,14 @@ class Page < Model
     end
 
 
-    # The point in time this cache is valid for.
+    # The point in time this cache is valid for. For historical reasons, both this method and the clear
+    # method above, store times as string values instead of integers.
     def self.mtime
-      [(VersionAuthority.paths_mtime.to_i / 1000).to_s || Time.now.to_i.to_s,
-        VersionAuthority.resource('pages') || Time.now.to_i.to_s].max
+      present = Time.now.to_i.to_s
+      [
+        (VersionAuthority.paths_mtime.to_i / 1000).to_s || present,
+        VersionAuthority.resource('pages') || present
+      ].max
     end
 
     private
@@ -72,10 +81,11 @@ class Page < Model
     # Fetched from memcache because presumably core can update it too,
     # though this is horrible practice.
     def self.fetch_cache_key
-      AppHelper.instance.cache_key("page-dataset-v2-snappy", {
+      AppHelper.instance.cache_key(
+        'page-dataset-v2-snappy',
         'domain' => CurrentDomain.cname,
         'updated' => mtime
-      })
+      )
     end
 
     def self.write(cache_data)
@@ -96,7 +106,7 @@ class Page < Model
         cur_obj[part] ||= {}
         cur_obj = cur_obj[part]
       end
-      key = ':' + item.format
+      key = ":#{item.format}"
       if cur_obj.has_key?(key) && !is_update
         Rails.logger.error "***************** Routing collision! #{item.path}"
         # Shouldn't overload our messaging since it only happens when the
@@ -130,26 +140,24 @@ class Page < Model
     end
   end
 
-  def self.find( options = nil, custom_headers = {}, batch = nil, is_anon = false )
-    if options.nil?
-      options = Hash.new
-    end
-    if options.is_a? String
-      path = "/pages/#{options}.json"
-      page = parse(CoreServer::Base.connection.get_request(path, custom_headers, batch, is_anon))
-      return page
-    end
+  def self.find(options, custom_headers = {}, batch = nil, is_anon = false)
+    options ||= Hash.new
 
+    if options.is_a?(String)
+      return parse(
+        CoreServer::Base.connection.get_request("/pages/#{options}.json", custom_headers, batch, is_anon)
+      )
+    end
 
     # If fetching by ID with additional args, handle specially
-    if !options[:id].nil?
-      path = "/pages.json?#{options.to_param}"
-      page = parse(CoreServer::Base.connection.get_request(path, custom_headers, batch, is_anon))
-      return page
+    if options[:id].present?
+      return parse(
+        CoreServer::Base.connection.get_request("/pages.json?#{options.to_param}", custom_headers, batch, is_anon)
+      )
     end
 
     # Fetch real service
-    base_path = "/pages.json"
+    base_path = '/pages.json'
     svc_path = base_path
     if options.respond_to?(:to_param) && !options.to_param.blank?
       svc_options = options.clone.with_indifferent_access
@@ -162,10 +170,10 @@ class Page < Model
 
     # Set up index of existing paths to check against
     svc_paths = {}
-    pages.each { |p| svc_paths[p.index_path + '|' + p.format] = true }
+    pages.each { |p| svc_paths["#{p.index_path}|#{p.format}"] = true }
 
     # Then dataset, and merge
-    ds_path = '/id' + base_path
+    ds_path = "/id#{base_path}"
     if options.respond_to?(:to_param) && !options.to_param.blank?
       ds_options = options.clone.with_indifferent_access
       ds_options.delete('method')
@@ -175,7 +183,7 @@ class Page < Model
     # For when the Pages dataset doesn't exist
     begin
       result = CoreServer::Base.connection.get_request(ds_path, custom_headers, batch, is_anon)
-      parse(result).each { |p| pages.push(p) if !svc_paths[p.index_path + '|' + p.format] }
+      parse(result).each { |p| pages.push(p) if !svc_paths["#{p.index_path}|#{p.format}"] }
     rescue CoreServer::ResourceNotFound
       # Nothing; we just don't merge
     end
@@ -191,23 +199,19 @@ class Page < Model
   end
 
   def self.routing_table(custom_headers = {}, batch = nil, is_anon = false)
-    path = "/pages.json?method=getLightweightRouting"
-    JSON.parse(with_path(path, custom_headers, batch, is_anon))
+    JSON.parse(with_path('/pages.json?method=getLightweightRouting', custom_headers, batch, is_anon))
   end
 
   def self.find_by_uid(uid, custom_headers = {}, batch = nil, is_anon = false)
-    path = "/pages/#{uid}.json"
-    parse(with_path(path, custom_headers, batch, is_anon))
+    parse(with_path("/pages/#{uid}.json", custom_headers, batch, is_anon))
   end
 
   def self.find_by_unique_path(path, custom_headers = {}, batch = nil, is_anon = false )
-    path = "/pages.json?method=getPageByPath&path=#{path}"
-    parse(with_path(path, custom_headers, batch, is_anon))
+    parse(with_path("/pages.json?method=getPageByPath&path=#{path}", custom_headers, batch, is_anon))
   end
 
   def self.last_updated_at(uid, custom_headers = {})
-    path = "/pages/#{uid}.json?method=getLastUpdated"
-    timestamp = with_path(path, custom_headers)
+    timestamp = with_path("/pages/#{uid}.json?method=getLastUpdated", custom_headers)
     Time.at(timestamp.strip.to_i) unless timestamp.nil?
   end
 
@@ -234,7 +238,7 @@ class Page < Model
       vars = var_hash
     end
     Canvas2::Util.add_vars(vars) if vars.is_a?(Hash)
-    return !(!data.nil? && !data.empty? && !Canvas2::DataContext.load(data))
+    !(data.present? && !Canvas2::DataContext.load(data))
   end
 
   def render(full = true)
@@ -246,12 +250,12 @@ class Page < Model
         r[0]
       end.join('')
     else
-      '<div id="' + content['id'] + '"></div>'
+      %Q{<div id="#{content['id']}"></div>}
     end
   end
 
   def render_timings
-    (@timings || []).compact
+    @timings.to_a.compact
   end
 
   def generate_file(type)
@@ -261,14 +265,14 @@ class Page < Model
   end
 
   def index_path
-    p = @update_data['path'] || @data['path']
-    p.gsub(':[^/]+', ':')
+    path = @update_data['path'] || @data['path']
+    path.gsub(':[^/]+', ':')
   end
 
   def name
     n = @update_data['name'] || @data['name']
     begin
-      n = JSON.parse(n) if !n.blank?
+      n = JSON.parse(n) if n.present?
     rescue JSON::ParserError
     end
     r = Canvas2::Util.string_substitute(n, Canvas2::Util.base_resolver)
@@ -296,7 +300,8 @@ class Page < Model
   end
 
   def redirect_info
-    { path: metadata['redirect'],
+    {
+      path: metadata['redirect'],
       code: metadata['redirectCode'] || 301
     }
   end
@@ -310,44 +315,44 @@ class Page < Model
   end
 
   def owner_id
-    @data['owner'] = User.set_up_model(@data['owner']) if @data['owner'].is_a?(Hash)
-    return owner if !owner.is_a?(User)
+    @data['owner'] = User.setup_model(@data['owner']) if @data['owner'].is_a?(Hash)
+    return owner unless owner.is_a?(User)
+
     owner.id
   end
 
   def owner_user
-    @data['owner'] = User.set_up_model(@data['owner']) if @data['owner'].is_a?(Hash)
+    @data['owner'] = User.setup_model(@data['owner']) if @data['owner'].is_a?(Hash)
     return owner if @data['owner'].nil? || @data['owner'].is_a?(User)
+
     User.find(owner.to_s)
   end
 
   def uneditable
-    !content.blank? && (content['uneditable'] == true || content['uneditable'] == 'true')
+    content.present? && (content['uneditable'] == true || content['uneditable'] == 'true')
   end
 
   def private_data?
     @data.key?('privateData') ? @data['privateData'] :
-      !content.blank? && (content['privateData'] == true || content['privateData'] == 'true')
+      content.present? && (content['privateData'] == true || content['privateData'] == 'true')
   end
 
   def viewable_by?(user)
     case permission
-    when 'private'
-      user.present? && (user.id == owner_id || user.has_right?(UserRights::EDIT_PAGES))
-    when 'domain_private'
-      user.present? && (user.id == owner_id || !CurrentDomain.member?(user))
-    when 'public'
-      true
+      when 'private'
+        user.present? && (user.id == owner_id || user.has_right?(UserRights::EDIT_PAGES))
+      when 'domain_private'
+        user.present? && (user.id == owner_id || !CurrentDomain.member?(user))
+      when 'public' then true
     end
   end
 
   def full_path(ext = nil)
-    @full_path ||=
-      begin
-        full_path = "/#{path}"
-        full_path << ".#{ext}" if ext.present?
-        full_path
-      end
+    @full_path ||= begin
+      full_path = "/#{path}"
+      full_path << ".#{ext}" if ext.present?
+      full_path
+    end
   end
 
   def homepage?
@@ -403,7 +408,7 @@ class Page < Model
 
     page = search_result[:page]
 
-    if !page.nil? && !page.uid.nil? # TODO what is page.uid.nil? catching?
+    if page.present? && page.uid.present? # TODO what is page.uid.present? catching?
       page = find(method: 'getPageRouting', id: page.uid)
       search_result[:page] = page
 
@@ -426,14 +431,11 @@ class Page < Model
 
       # Now check permissions
       case page.permission
-      when 'private'
-        return nil if user.nil? ||
-          (user.id != page.owner_id && !user.has_right?(UserRights::EDIT_PAGES))
-      when 'domain_private'
-        return nil if user.nil? ||
-          (user.id != page.owner_id && !CurrentDomain.member?(user))
-      when 'public'
-        # Yay, they can view it
+        when 'private'
+          return nil if user.nil? || (user.id != page.owner_id && !user.has_right?(UserRights::EDIT_PAGES))
+        when 'domain_private'
+          return nil if user.nil? || (user.id != page.owner_id && !CurrentDomain.member?(user))
+        when 'public' # Yay, they can view it
       end
     end
 
@@ -455,22 +457,20 @@ class Page < Model
       # apparently valid JSON that has been truncated in addition to HTML error
       # pages from nginx).
       if data.start_with?('<html>')
-        error_message = "It appears that CoreServer was unreachable: "\
-          "#{data.inspect}"
+        error_message = "It appears that CoreServer was unreachable: #{data.inspect}"
       else
-        error_message = "CoreServer responded with truncated and/or "\
-          "invalid JSON: #{data.inspect}"
+        error_message = "CoreServer responded with truncated and/or invalid JSON: #{data.inspect}"
       end
 
       Airbrake.notify(
-        :error_class => "Failed to parse invalid JSON",
+        :error_class => 'Failed to parse invalid JSON',
         :error_message => error_message,
         :session => {:domain => CurrentDomain.cname}
       )
       return nil
     end
 
-    return self.set_up_model(json_data)
+    setup_model(json_data)
   end
 
   def self.path_exists?(cur_path)
@@ -484,18 +484,16 @@ class Page < Model
   def self.create(attributes, custom_headers = {})
     # Status should eventually start as unpublished
     attributes = {content: { type: 'Container', id: 'pageRoot' }}.merge(attributes)
-    path = "/pages.json"
+    path = '/pages.json'
 
-    new_page = parse(CoreServer::Base.connection.
-      create_request(path, attributes.to_json, custom_headers)
-    )
+    new_page = parse(CoreServer::Base.connection.create_request(path, attributes.to_json, custom_headers))
 
     PageCache.clear
 
     new_page
   end
 
-private
+  private
 
   def self.get_pages
     cached = PageCache.pages
@@ -535,9 +533,4 @@ private
     }
   end
 
-end
-
-class AppHelper
-  include Singleton
-  include ApplicationHelper
 end

@@ -251,7 +251,7 @@
     </a>
     <ul class="sectionContent">
       <%- @view.metadata.attachments.each do |attachment| -%>
-        <%- attachmentObj = Attachment.set_up_model(attachment) -%>
+        <%- attachmentObj = Attachment.setup_model(attachment) -%>
         <li>
           <%= link_to( attachmentObj.displayName, attachmentObj.href(@view.id), :target => "_blank" ) %>
         </li>

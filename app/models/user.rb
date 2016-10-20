@@ -47,7 +47,7 @@ class User < Model
       http.request(req)
     end
 
-    return result.is_a? Net::HTTPSuccess
+    result.is_a?(Net::HTTPSuccess)
   end
 
   def self.roles_list
@@ -59,9 +59,7 @@ class User < Model
   end
 
   def self.verify_email(token)
-    path = "/users.json?method=finishAccountCreate&token=#{token}"
-    result = CoreServer::Base.connection.create_request(path)
-    parse(result)
+    parse(CoreServer::Base.connection.create_request("/users.json?method=finishAccountCreate&token=#{token}"))
   end
 
   def create(inviteToken = nil, authToken = nil)
@@ -69,8 +67,7 @@ class User < Model
   end
 
   def update_password(params)
-    path = "/users/#{id}.json"
-    self.class.parse(CoreServer::Base.connection.update_request(path, params.to_json))
+    self.class.parse(CoreServer::Base.connection.update_request("/users/#{id}.json", params.to_json))
   end
 
   def to_json(options = nil)

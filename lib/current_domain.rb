@@ -5,9 +5,9 @@ class CurrentDomain
   REFRESH_CHECK_TIME = 10
 
   def self.set(cname)
-    @@property_store = {} unless defined? @@property_store
+    @@property_store = {} unless defined?(@@property_store)
 
-    if !@@property_store.has_key?(cname)
+    unless @@property_store.has_key?(cname)
       begin
         RequestStore[:current_domain] = cname
         @@property_store[cname] = { :data => Domain.find(cname) }
@@ -20,7 +20,7 @@ class CurrentDomain
       end
     end
 
-    return @@current_domain = @@property_store[cname]
+    @@current_domain = @@property_store[cname]
   end
 
   def self.set?
@@ -34,12 +34,12 @@ class CurrentDomain
     cname ||= default_cname
 
     @@property_store.delete(cname)
-    self.set(cname) if cname == default_cname
+    set(cname) if cname == default_cname
   end
 
   # Main properties
   def self.set_domain(domain)
-    @@current_domain = {} unless defined? @@current_domain
+    @@current_domain = {} unless defined?(@@current_domain)
     @@current_domain[:data] = domain
   end
 
@@ -54,7 +54,7 @@ class CurrentDomain
   def self.cname
     # We need to account for the case where we make a generic_request
     # before we know what domain we're on (eg to get the domain obj).
-    if defined? @@current_domain
+    if defined?(@@current_domain)
       @@current_domain[:data].cname
     else
       ''
@@ -75,7 +75,7 @@ class CurrentDomain
 
   def self.flag_out_of_date!(cname)
     if Rails.env.development?
-      self.reload(cname)
+      reload(cname)
     else
       # By writing the time to this key, we're notifying all
       # frontend servers to reload this domain as soon as they notice
@@ -84,7 +84,7 @@ class CurrentDomain
   end
 
   def self.needs_refresh_check?(cname)
-    @@refresh_times = {} unless defined? @@refresh_times
+    @@refresh_times ||= {}
 
     @@refresh_times[cname].nil? || (Time.now - @@refresh_times[cname]) > REFRESH_CHECK_TIME
   end
@@ -95,8 +95,7 @@ class CurrentDomain
 
   def self.last_refresh(cname)
     value = Rails.cache.read(generate_cache_key(cname))
-    value = nil unless value.is_a?(Time)
-    value
+    value if value.is_a?(Time)
   end
 
   def self.check_for_theme_update(cname)
@@ -127,60 +126,49 @@ class CurrentDomain
         CurrentDomain.cname, false).first.properties.sdp_template || false
       # a 'false' value indicates there is no default widget
     end
+
     @@current_domain[:widget_customization]
   end
 
   def self.set_default_widget_customization_id(id)
     begin
-      self.current_theme.update_property('sdp_template', id)
+      current_theme.update_property('sdp_template', id)
     rescue
       # Something went wrong when we tried to update the property. Probably it
       # doesn't exist. Just create it.
-      self.current_theme.create_property('sdp_template', id)
+      current_theme.create_property('sdp_template', id)
     end
   end
 
   def self.property(prop, config = 'site_theme')
-    cfg = self.configuration(config.to_s)
-    cfg.properties[prop] if cfg
+    configuration(config.to_s).try(:properties).try(:[], prop)
   end
 
   def self.properties
-    if @@current_domain[:site_properties].nil?
-      conf = self.current_theme
-      @@current_domain[:site_properties] = conf.nil? ?
-        Hashie::Mash.new : conf.properties
-    end
-
-    @@current_domain[:site_properties]
+    @@current_domain[:site_properties] ||= current_theme.try(:properties) || Hashie::Mash.new
   end
 
   def self.raw_properties
-    if @@current_domain[:site_properties_raw].nil?
-      conf = self.current_theme
-      @@current_domain[:site_properties_raw] = conf.nil? ?
-        Hash.new : conf.raw_properties
-    end
-
-    @@current_domain[:site_properties_raw]
+    @@current_domain[:site_properties_raw] ||= current_theme.try(:raw_properties) || Hashie::Mash.new
   end
 
   def self.templates(version = '2b', locale = nil)
-    return self.properties.templates if version == 0
+    return properties.templates if version.to_i == 0
 
     # TODO: not sure how to safely per-request cache
-    result = self.properties['templates_v' + version]
-    result = result.merge(self.properties['templates_v' + version][locale] || {}) unless locale.nil?
+    property_name = "templates_v#{version}"
+    result = properties[property_name]
+    result = result.merge(properties[property_name][locale] || {}) unless locale.nil?
 
     result
   end
 
   def self.theme(version = '2b')
-    if version == 0
-      self.properties.theme || Hashie::Mash.new
+    if version.to_i == 0
+      properties.theme
     else
-      self.properties['theme_v' + version] || Hashie::Mash.new
-    end
+      properties["theme_v#{version}"]
+    end || Hashie::Mash.new
   end
 
   def self.strings(locale = nil)
@@ -188,13 +176,13 @@ class CurrentDomain
     # current locale, unless it's the default one.
     locale = I18n.locale unless locale.present? || I18n.locale.to_s == CurrentDomain.default_locale
 
-    default_strings = self.properties.strings!
+    default_strings = properties.strings!
 
     if locale.present?
       # If necessary, merge the default strings with the locale strings and cache the result.
-      computed_merged_with_default = self.properties.strings.computed_merged_with_default!
-      if !computed_merged_with_default.key?(locale)
-        computed_merged_with_default[locale] = default_strings.dup.deep_merge!(self.properties.strings[locale] || {})
+      computed_merged_with_default = properties.strings.computed_merged_with_default!
+      unless computed_merged_with_default.key?(locale)
+        computed_merged_with_default[locale] = default_strings.deep_merge(properties.strings[locale] || {})
       end
 
       computed_merged_with_default[locale]
@@ -216,11 +204,12 @@ class CurrentDomain
       @@current_domain[:modules] = ((@@current_domain[:data].data['accountModules'] || []) +
         (@@current_domain[:data].accountTier.data['accountModules'] || [])).uniq
     end
+
     @@current_domain[:modules]
   end
 
   def self.module_names
-    @@current_domain[:module_names] ||= self.modules.collect{|m| m['name']}
+    @@current_domain[:module_names] ||= modules.pluck('name')
   end
 
   def self.default_config_id
@@ -240,12 +229,12 @@ class CurrentDomain
   end
 
   def self.module_available?(name_or_set)
-    return false if self.modules.nil?
+    return false if modules.nil?
 
     if name_or_set.is_a? Array
-      name_or_set.any?{|mod| self.module_names.include? mod.to_s }
+      name_or_set.any? { |module_name| module_names.include?(module_name.to_s) }
     else
-      self.module_names.include? name_or_set.to_s
+      module_names.include?(name_or_set.to_s)
     end
   end
 
@@ -255,18 +244,15 @@ class CurrentDomain
 
   # CAUTION! This method implementation differs from the method of the same name in the View class
   def self.module_enabled?(name_or_set)
-    !!(self.module_available?(name_or_set) && self.feature?(name_or_set)) # Force boolean return value
+    !!(module_available?(name_or_set) && feature?(name_or_set)) # Force boolean return value
   end
 
   def self.available_locales
-    locale_props = self.configuration(:locales)
-
-    locale_props.properties['available_locales'] || [ default_locale ]
+    configuration(:locales).properties['available_locales'] || [default_locale]
   end
 
   def self.default_locale
-    locale_props = self.configuration(:locales)
-
+    locale_props = configuration(:locales)
     locale_props.properties[cname] || locale_props.properties['*'] || 'en'
   end
 
@@ -277,7 +263,7 @@ class CurrentDomain
 
   # CurrentDomain['preference name'] returns properties
   def self.[](key)
-    self.properties.send key
+    properties.send(key)
   end
 
   def self.method_missing(key, *args)
@@ -285,11 +271,11 @@ class CurrentDomain
 
     # If they ask for .something?, assume they're asking about the something feature
     if key =~ /\?$/
-      return (self.properties['features.' + key.gsub(/\?$/, '')] == true)
+      return properties['features.' + key.gsub(/\?$/, '')] == true
     end
 
     ## Otherwise, assume we're looking for a property
-    self.properties.send key
+    properties.send(key)
   end
 
   def self.member?(user)
@@ -297,11 +283,11 @@ class CurrentDomain
   end
 
   def self.user_can?(user, action)
-    user && user.has_right?(action)
+    !!(user && user.has_right?(action))
   end
 
   def self.truthy?(key)
-    self.properties[key.to_s].to_s == 'true' # TrueClass.to_s => 'true'
+    properties[key.to_s].to_s == 'true' # TrueClass.to_s => 'true'
   end
 
   private
@@ -311,7 +297,7 @@ class CurrentDomain
   end
 
   def self.generate_cache_key(key)
-    "domains.#{key.to_s}.updated_at"
+    "domains.#{key}.updated_at"
   end
 
 end

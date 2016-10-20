@@ -65,7 +65,7 @@ class DatasetLandingPage
     preview_image_url_request_threads = featured_content.map do |featured_item|
       Thread.new do
         if featured_item['contentType'] == 'internal'
-          featured_view = View.set_up_model(featured_item['featuredView'])
+          featured_view = View.setup_model(featured_item['featuredView'])
           image_url = featured_view.get_preview_image_url(cookie_string, request_id)
 
           preview_image_urls[featured_view.id] = image_url
@@ -91,7 +91,7 @@ class DatasetLandingPage
     image_url = nil
 
     if view['contentType'] == 'internal'
-      featured_view = View.set_up_model(view['featuredView'])
+      featured_view = View.setup_model(view['featuredView'])
       image_url = featured_view.get_preview_image_url(cookie_string, request_id)
     end
 
@@ -149,7 +149,7 @@ class DatasetLandingPage
 
   def format_featured_item(featured_item, image_url = nil)
     if featured_item['contentType'] == 'internal'
-      view = View.set_up_model(featured_item['featuredView'])
+      view = View.setup_model(featured_item['featuredView'])
 
       return featured_item.merge(
         :featuredView => format_view_widget(view, image_url)

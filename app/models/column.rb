@@ -81,8 +81,7 @@ class Column < Model
   end
 
   def form_enabled?
-    return client_type != 'meta_data' &&
-      client_type != 'nested_table' && !flag?('hidden')
+    client_type != 'meta_data' && client_type != 'nested_table' && !flag?('hidden')
   end
 
   def possible_filter_conditions

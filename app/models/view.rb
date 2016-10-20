@@ -10,44 +10,38 @@ class View < Model
   def self.find(options = nil, custom_headers = {}, batch = false, is_anon = false, get_all = false)
     raise ArgumentError.new("Invalid header value (must be a string): #{custom_headers}") unless
       custom_headers.all? { |k, v| k.kind_of?(String) && v.kind_of?(String) }
-    custom_headers.merge!({'X-Socrata-Federation' => 'Honey Badger'})
+
+    custom_headers.merge!(federation_headers)
+
     if get_all || options.is_a?(String)
-      return super(options, custom_headers, batch, is_anon)
+      super(options, custom_headers, batch, is_anon)
     else
-      return self.find_under_user(options)
+      find_under_user(options)
     end
   end
 
   def self.find_external(ext_id)
-    return self.find({'method' => 'getByExternalId', 'externalId' => ext_id}, {}, false, false, true)
+    find({'method' => 'getByExternalId', 'externalId' => ext_id}, {}, false, false, true)
   end
 
   def self.find_filtered(options)
-    path = "/views.json?#{options.to_param}"
-    parse(CoreServer::Base.connection.get_request(path,
-                                                  {'X-Socrata-Federation' => 'Honey Badger'}))
+    parse(CoreServer::Base.connection.get_request("/views.json?#{options.to_param}", federation_headers))
   end
 
   def self.find_by_resource_name(resource_name, is_anon = false)
-    return self.find({'method' => 'getByResourceName', 'name' => resource_name}, {}, false, is_anon, true)
+    find({'method' => 'getByResourceName', 'name' => resource_name}, {}, false, is_anon, true)
   end
 
   def self.find_multiple(ids)
     path = "/#{self.name.pluralize.downcase}.json?" + {'ids' => ids}.to_param
-    parse(CoreServer::Base.connection.get_request(path,
-                                                  {'X-Socrata-Federation' => 'Honey Badger'}))
+    parse(CoreServer::Base.connection.get_request(path, federation_headers))
   end
 
   def self.find_deleted(id)
-    params = { 'method' => 'getDeletedViewById', 'id' => id }.to_param
-    path = "/#{name.pluralize.downcase}.json?#{params}"
     begin
-      parse(
-        CoreServer::Base.connection.get_request(
-          path,
-          'X-Socrata-Federation' => 'Honey Badger'
-        )
-      )
+      parse(CoreServer::Base.connection.get_request(
+        "/#{name.pluralize.downcase}.json?#{{'method' => 'getDeletedViewById', 'id' => id}.to_param}", federation_headers
+      ))
     # enough things can go wrong in this get to core that
     # many different exception types can be thrown...
     # we can try to catch em all, but like the hydra every
@@ -55,7 +49,7 @@ class View < Model
     rescue StandardError => error
       Airbrake.notify(
         error,
-        error_class:  'DeletedViewNotFound',
+        error_class: 'DeletedViewNotFound',
         error_message: "Could not find deleted view #{id}"
       )
       nil # This means the view is completely gone or something went wrong
@@ -63,38 +57,37 @@ class View < Model
   end
 
   def self.find_for_user(id)
-    path = "/users/#{id}/views.json"
-    parse(CoreServer::Base.connection.get_request(path))
+    parse(CoreServer::Base.connection.get_request("/users/#{id}/views.json"))
   end
 
   def self.find_favorites()
-    path = "/favorite_views.json"
-    parse(CoreServer::Base.connection.get_request(path))
+    parse(CoreServer::Base.connection.get_request('/favorite_views.json'))
   end
 
   def self.find_shared_to_user(id, options)
     options[:method] = 'getShared'
-    path = "/users/#{id}/views.json?" + options.to_param
-    r = JSON.parse(CoreServer::Base.connection.get_request(path))
-    r['results'] = (r['results'] || []).map { |d| self.set_up_model(d) }
-    r
+    result = JSON.parse(CoreServer::Base.connection.get_request("/users/#{id}/views.json?#{options.to_param}"))
+    result['results'] = (result['results'] || []).map(&method(:setup_model))
+    result
   end
 
   def self.find_in_store(id, store)
     unless store =~ /^[a-z0-9]+\.[a-z0-9]+$/
       raise "Invalid store identifier: #{store}"
     end
-    path = "/#{self.service_name}/#{id}.json?$$store=#{store}"
-    parse(CoreServer::Base.connection.get_request(path, federation_headers))
+    parse(CoreServer::Base.connection.get_request(
+      "/#{service_name}/#{id}.json?$$store=#{store}", federation_headers
+    ))
   end
 
   def self.federation_headers
-    {'X-Socrata-Federation' => 'Honey Badger'}
+    { 'X-Socrata-Federation' => 'Honey Badger' }
   end
 
   def self.get_predeploy_api_view(baseUid)
-    path = "/views/#{baseUid}/publication.json?" + {'method' => 'getPredeployApiView'}.to_param
-    parse(CoreServer::Base.connection.get_request(path))
+    parse(CoreServer::Base.connection.get_request(
+      "/views/#{baseUid}/publication.json?#{{'method' => 'getPredeployApiView'}.to_param}"
+    ))
   end
 
   def migrations
@@ -104,8 +97,7 @@ class View < Model
   # Will raise CoreServer::ResourceNotFound if no migration is found
   def self.migrations(id)
     # This is hitting core migrations, which is at /migrations/4x4. NOT /api/migrations/4x4
-    path = "/migrations/#{id}"
-    JSON.parse(CoreServer::Base.connection.get_request(path)).with_indifferent_access
+    JSON.parse(CoreServer::Base.connection.get_request("/migrations/#{id}")).with_indifferent_access
   end
 
   # NBE geospatial datasets no longer have an OBE component, so this method
@@ -217,8 +209,7 @@ class View < Model
   end
 
   def fetch_json
-    path = "/views/#{id}.json"
-    parse_json_with_max_nesting(CoreServer::Base.connection.get_request(path))
+    parse_json_with_max_nesting(CoreServer::Base.connection.get_request("/views/#{id}.json"))
   end
 
 
@@ -239,13 +230,12 @@ class View < Model
   def find_related(page, limit = 10, sort_by = 'most_accessed')
     params = {
       method: 'getByTableId',
-      tableId: self.tableId,
+      tableId: tableId,
       page: page,
       count: limit, # the core server is super consistent
       sortBy: sort_by
     }
-    path = "/views.json?" + params.to_param
-    View.parse(CoreServer::Base.connection.get_request(path))
+    View.parse(CoreServer::Base.connection.get_request("/views.json?#{params.to_param}"))
   end
 
   def find_dataset_landing_page_related_content(sort_by = 'most_accessed')
@@ -270,18 +260,19 @@ class View < Model
   end
 
   def featured_content
-    path = "/views/#{self.id}/featured_content.json"
-    JSON.parse(CoreServer::Base.connection.get_request(path))
+    JSON.parse(CoreServer::Base.connection.get_request("/views/#{id}/featured_content.json"))
   end
 
   def find_api_throttles()
-    path = "/views/#{self.id}/apiThrottle.json?" + {'method' => 'findViewThrottles'}.to_param
-    View.parse(CoreServer::Base.connection.get_request(path))
+    View.parse(CoreServer::Base.connection.get_request(
+      "/views/#{id}/apiThrottle.json?#{{'method' => 'findViewThrottles'}.to_param}"
+    ))
   end
 
   def find_api_anonymous_throttle()
-    path = "/views/#{self.id}/apiThrottle.json?" + {'method' => 'findViewAnonThrottle'}.to_param
-    View.parse(CoreServer::Base.connection.get_request(path))
+    View.parse(CoreServer::Base.connection.get_request(
+      "/views/#{id}/apiThrottle.json?#{{'method' => 'findViewAnonThrottle'}.to_param}"
+    ))
   end
 
   def prefetch(rows, conditions = {})
@@ -306,16 +297,15 @@ class View < Model
       'dayLimit' => dayLimit,
       'monthLimit' => monthLimit
     }
-    path = "/views/#{self.id}/apiThrottle.json?" + params.to_param
-    View.parse(CoreServer::Base.connection.get_request(path))
+    View.parse(CoreServer::Base.connection.get_request("/views/#{id}/apiThrottle.json?#{params.to_param}"))
   end
 
   def restorable?
-    self.data.fetch('flags', []).include?('restorable')
+    data.fetch('flags', []).include?('restorable')
   end
 
   def restorePossibleForType?
-    self.data.fetch('flags', []).include?('restorePossibleForType')
+    data.fetch('flags', []).include?('restorePossibleForType')
   end
 
   def self.category_tree
@@ -334,10 +324,10 @@ class View < Model
         p = o['parent'].titleize_if_necessary
         top_level_cats[p] ||= {}
         top_level_cats[p][:children] ||= []
-        top_level_cats[p][:children].push({ value: c, text: t })
+        top_level_cats[p][:children].push(value: c, text: t)
       end
     end
-    return top_level_cats.reject { |k, c| c[:value].nil? }
+    top_level_cats.reject { |_, c| c[:value].nil? }
   end
 
   def self.category_display(category)
@@ -360,14 +350,14 @@ class View < Model
   end
 
   def module_enabled?(name)
-    return false if self.disabledFeatureFlags && self.disabledFeatureFlags.member?(name.to_s)
-    return CurrentDomain.module_enabled?(name.to_s.downcase.to_sym)
+    return false if disabledFeatureFlags && disabledFeatureFlags.member?(name.to_s)
+    CurrentDomain.module_enabled?(name.to_s.downcase.to_sym)
   end
 
   def enabled_modules
     result = {}
     overridable_features.each do |feature|
-      result[feature[:key]] = self.module_enabled?(feature[:key])
+      result[feature[:key]] = module_enabled?(feature[:key])
     end
     return result
   end
@@ -376,9 +366,9 @@ class View < Model
     features = overridable_features.select do |flag|
       CurrentDomain.module_enabled?(flag[:key].to_s.downcase.to_sym) && flag[:if] != false
     end
-    unless self.disabledFeatureFlags.blank?
-      self.disabledFeatureFlags.each do |flag|
-        feature_index = features.find_index {|f| f[:key] == flag}
+    unless disabledFeatureFlags.blank?
+      disabledFeatureFlags.each do |flag|
+        feature_index = features.find_index { |f| f[:key] == flag }
         features[feature_index][:disabled] = true if feature_index
       end
     end
@@ -390,17 +380,17 @@ class View < Model
   end
 
   def column_by_id(column_id)
-    self.columns.find{ |c| c.id == column_id }
+    columns.find { |c| c.id == column_id }
   end
 
   def column_by_table_column_id(table_column_id)
-    self.columns.find{ |c| c.tableColumnId == table_column_id }
+    columns.find { |c| c.tableColumnId == table_column_id }
   end
 
   def column_by_id_or_field_name(column_id_or_field_name)
-    self.columns.find{ |c|
-      c.id == column_id_or_field_name.to_i ||
-      c.fieldName == column_id_or_field_name }
+    columns.find do |c|
+      c.id == column_id_or_field_name.to_i || c.fieldName == column_id_or_field_name
+    end
   end
 
   def visible_columns(custom_query = nil)
@@ -409,11 +399,10 @@ class View < Model
       grouped_cols = {}
       q['groupBys'].each { |c| grouped_cols[c['columnId']] = true }
     end
-    vc = (self.custom_vis_cols || self.columns).reject do |c|
-      c.flag?('hidden') ||
-        (!grouped_cols.blank? && !grouped_cols[c.id] && c.format.grouping_aggregate.blank?)
+    vc = (custom_vis_cols || columns).reject do |c|
+      c.flag?('hidden') || (!grouped_cols.blank? && !grouped_cols[c.id] && c.format.grouping_aggregate.blank?)
     end
-    vc = vc.sort_by {|c| c.position} if self.custom_vis_cols.blank?
+    vc = vc.sort_by(&:position) if custom_vis_cols.blank?
     vc
   end
 
@@ -429,19 +418,21 @@ class View < Model
       'name' => name,
       'searchString' => conditions.delete('searchString'),
       'query' => conditions,
-      'originalViewId' => self.id
+      'originalViewId' => id
     }.to_json
 
     View.parse(CoreServer::Base.connection.create_request("/views.json", request_body))
   end
 
   def find_data(per_page, page = 1, conditions = {})
-    params = { :method => 'getByIds',
-               :asHashes => true,
-               :accessType => 'WEBSITE',
-               :meta => true,
-               :start => (page - 1) * per_page,
-               :length => per_page }
+    params = {
+      :method => 'getByIds',
+      :asHashes => true,
+      :accessType => 'WEBSITE',
+      :meta => true,
+      :start => (page - 1) * per_page,
+      :length => per_page
+    }
 
     if conditions.empty?
       if use_soda2?
@@ -453,34 +444,23 @@ class View < Model
         url = "/id/#{id}.json?#{page_params.to_param}"
         meta_and_data = {
           'data' => parse_json_with_max_nesting(
-            CoreServer::Base.connection.get_request(
-              url,
-              { 'X-Socrata-Federation' => 'Honey Badger' }
-            )
+            CoreServer::Base.connection.get_request(url, federation_headers)
           )
         }
         meta_and_data['meta'] = { 'view' => { 'columns' => columns }}
       else
         url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
         meta_and_data = parse_json_with_max_nesting(
-          CoreServer::Base.connection.get_request(
-            url,
-            { 'X-Socrata-Federation' => 'Honey Badger' }
-          )
+          CoreServer::Base.connection.get_request(url, federation_headers)
         )
 
         url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?method=getAggregates"
         aggregates = parse_json_with_max_nesting(
-          CoreServer::Base.connection.create_request(
-            url,
-            {},
-            { 'X-Socrata-Federation' => 'Honey Badger' }
-          )
+          CoreServer::Base.connection.create_request(url, {}, federation_headers)
         )
       end
     else
-      merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).
-        deep_merge(conditions)
+      merged_conditions = query.cleaned.merge('searchString' => searchString).deep_merge(conditions)
       if use_soda2?
         soql_obj = ConditionsQueryParser.parse(self, Hashie::Mash.new(merged_conditions))
         params['$$version'] = '2.0' if FeatureFlags.derive(self).send_soql_version
@@ -492,56 +472,44 @@ class View < Model
         params['$limit'] = per_page
         params['$order'] ||= ':id'
 
-        meta_and_data =
-          make_rows_request_using_soda2(url: "/id/#{self.id}.json?#{params.to_param}")
+        meta_and_data = make_rows_request_using_soda2(url: "/id/#{id}.json?#{params.to_param}")
       else
         request_body = {
-          'name' => self.name,
+          'name' => name,
           'searchString' => merged_conditions.delete('searchString'),
           'query' => merged_conditions,
-          'originalViewId' => self.id
+          'originalViewId' => id
         }.to_json
 
         url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?#{params.to_param}"
         meta_and_data = parse_json_with_max_nesting(
-          CoreServer::Base.connection.create_request(
-            url,
-            request_body,
-            { 'X-Socrata-Federation' => 'Honey Badger' }
-          )
+          CoreServer::Base.connection.create_request(url, request_body, federation_headers)
         )
 
         url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?method=getAggregates"
         aggregates = parse_json_with_max_nesting(
-          CoreServer::Base.connection.create_request(
-            url,
-            request_body,
-            { 'X-Socrata-Federation' => 'Honey Badger' }
-          )
+          CoreServer::Base.connection.create_request(url, request_body, federation_headers)
         )
       end
     end
 
     # grab viewable columns; this is inline rather than a separate method to
     # mitigate the need for another core server request
-    viewable_columns =
-      (meta_and_data.try(:[], 'meta').try(:[], 'view').try(:[], 'columns') || []).
-        map{ |column_hash| Column.set_up_model(column_hash) }.
-        each_with_index{ |column, i| column.data_position = i }.
-        find_all{ |column| column.dataTypeName != 'meta_data' &&
-                          !column.flag?("hidden") }.
-        sort_by { |column| column.position }
+    viewable_columns = (meta_and_data.try(:[], 'meta').try(:[], 'view').try(:[], 'columns') || []).
+      map { |column_hash| Column.setup_model(column_hash) }.
+      each_with_index{ |column, i| column.data_position = i }.
+      find_all{ |column| column.dataTypeName != 'meta_data' && !column.flag?('hidden') }.
+      sort_by { |column| column.position }
 
     # grab other return values
     data = meta_and_data['data']
-    row_count =
-      if use_soda2?
-        self.row_count
-      else
-        meta_and_data['meta']['totalRows']
-      end
+    row_count = if use_soda2?
+      row_count
+    else
+      meta_and_data['meta']['totalRows']
+    end
 
-    return data, viewable_columns, aggregates, row_count
+    [data, viewable_columns, aggregates, row_count]
   end
 
   #
@@ -556,10 +524,12 @@ class View < Model
   end
 
   def get_rows_request_using_soda1(per_page_or_ids, page = 1, merged_conditions, include_meta)
-    params = { :method => 'getByIds',
-               :asHashes => true,
-               :accessType => 'WEBSITE',
-               :meta => include_meta}
+    params = {
+      :method => 'getByIds',
+      :asHashes => true,
+      :accessType => 'WEBSITE',
+      :meta => include_meta
+    }
     if per_page_or_ids.is_a?(Array)
       params[:ids] = per_page_or_ids
     else
@@ -567,15 +537,14 @@ class View < Model
       params[:length] = per_page_or_ids
     end
     request_body = {
-               'name' => self.name,
-               'searchString' => merged_conditions.delete('searchString'),
-               'query' => merged_conditions,
-               'originalViewId' => self.id
-               }
-    request_body['columns'] = visible_columns(merged_conditions).map {|c| c.to_core}
+      'name' => name,
+      'searchString' => merged_conditions.delete('searchString'),
+      'query' => merged_conditions,
+      'originalViewId' => id
+    }
+    request_body['columns'] = visible_columns(merged_conditions).map(&:to_core)
 
-    url = "/views/INLINE/rows.json?#{params.to_param}"
-    { url: url, request: request_body}
+    { url: "/views/INLINE/rows.json?#{params.to_param}", request: request_body }
   end
 
   def get_rows_request_using_soda2(per_page_or_ids, page = 1, merged_conditions, include_meta)
@@ -595,7 +564,7 @@ class View < Model
 
     params['$select'] = [ ':*', params['$select'] || '*' ].compact.join(',') if include_meta
 
-    { url: "/id/#{self.id}.json?#{params.to_param}", request: {} }
+    { url: "/id/#{id}.json?#{params.to_param}", request: {} }
   end
 
   #
@@ -609,11 +578,11 @@ class View < Model
     # dedup with create request
     merged_conditions = query.cleaned.merge('searchString' => searchString).deep_merge(conditions)
     unless @sodacan.nil? || !@sodacan.can_query?(merged_conditions)
-      return {rows: @sodacan.get_rows(merged_conditions, per_page, page), meta: nil}
+      return { rows: @sodacan.get_rows(merged_conditions, per_page, page), meta: nil }
     end
 
     req = get_rows_request(per_page, page, merged_conditions, true)
-    cache_key = "rows:#{id}:#{Digest::MD5.hexdigest(req.sort.to_json)}:#{self.rowsUpdatedAt}"
+    cache_key = "rows:#{id}:#{Digest::MD5.hexdigest(req.sort.to_json)}:#{rowsUpdatedAt}"
     cache_key << ':anon' if is_anon
     result = cache.read(cache_key)
     if result.nil?
@@ -629,7 +598,7 @@ class View < Model
         cache.write(cache_key, result, :expires_in => cache_ttl)
       rescue Exception => e
         Rails.logger.info(
-          "Possibly invalid model found in row request, deleting model cache key: " +
+          "Possibly invalid model found in row request, deleting model cache key: " <<
           "#{model_cache_key}. Exception details: #{e.inspect}, #{e.backtrace[0]}"
         )
         cache.delete(model_cache_key) if model_cache_key
@@ -637,7 +606,8 @@ class View < Model
       end
     end
     cache_row_result(result, result.merge({ start: (page - 1) * per_page })) if conditions.empty?
-    {rows: result[:rows], meta: nil}
+
+    { rows: result[:rows], meta: nil }
   end
 
   def get_rows(per_page, page = 1, conditions = {}, include_meta = false, is_anon = false)
@@ -651,7 +621,7 @@ class View < Model
   def get_rows_with_soda1(per_page, page = 1, conditions = {}, include_meta = false, is_anon = false)
     include_meta = true if @cached_rows.try(:[], :rows).nil?
     # dedup with create request
-    merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).deep_merge(conditions)
+    merged_conditions = query.cleaned.merge('searchString' => searchString).deep_merge(conditions)
     unless @sodacan.nil? || !@sodacan.can_query?(merged_conditions)
       result = {
         rows: @sodacan.get_rows(merged_conditions, per_page, page),
@@ -664,113 +634,115 @@ class View < Model
     result = make_rows_request_using_soda1(req, is_anon)
     result[:rows] = row_result = include_meta ? result['data'] : result
     if conditions.empty?
-      cache_row_results(result, { start: (page - 1) * per_page,
-                                  no_meta: !include_meta })
+      cache_row_results(result, start: (page - 1) * per_page, no_meta: !include_meta)
     end
-    {rows: row_result, meta: include_meta ? result['meta'] : nil}
+
+    { rows: row_result, meta: include_meta ? result['meta'] : nil }
   end
 
   def get_rows_with_soda2(per_page, page = 1, conditions = {}, include_meta = false, is_anon = false)
     include_meta = true if @cached_rows.try(:[], :rows).nil?
-    merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).deep_merge(conditions)
+    merged_conditions = query.cleaned.merge('searchString' => searchString).deep_merge(conditions)
 
     req = get_rows_request_using_soda2(per_page, page, merged_conditions, include_meta)
     row_result = result = make_rows_request_using_soda2(req, is_anon)
     if conditions.empty?
-      cache_row_results({ rows: row_result }, { start: (page - 1) * per_page,
-                                                total_count: row_count,
-                                                meta_columns: [] })
+      cache_row_results(
+        { rows: row_result },
+        start: (page - 1) * per_page,
+        total_count: row_count,
+        meta_columns: []
+      )
     end
-    {rows: row_result, meta: nil}
+
+    { rows: row_result, meta: nil }
   end
 
   def get_total_rows(conditions = {}, is_anon = false)
-    merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).deep_merge(conditions)
+    merged_conditions = query.cleaned.merge('searchString' => searchString).deep_merge(conditions)
     unless @sodacan.nil?
       return @sodacan.total_rows if conditions.empty?
       return @sodacan.get_rows(merged_conditions).size
     end
-    params = { :method => 'getByIds',
-               :accessType => 'WEBSITE',
-               :meta => true,
-               :start => 0,
-               :length => 1 }
+    params = {
+      :method => 'getByIds',
+      :accessType => 'WEBSITE',
+      :meta => true,
+      :start => 0,
+      :length => 1
+    }
     request_body = {
-      'name' => self.name,
+      'name' => name,
       'searchString' => merged_conditions.delete('searchString'),
       'query' => merged_conditions,
-      'originalViewId' => self.id
+      'originalViewId' => id
     }
-    request_body['columns'] = visible_columns(merged_conditions).map {|c| c.to_core}
+    request_body['columns'] = visible_columns(merged_conditions).map(&:to_core)
 
-    url = "/views/INLINE/rows.json?#{params.to_param}"
-    result = parse_json_with_max_nesting(
-      CoreServer::Base.connection.create_request(url, request_body.to_json,
-                                                 { 'X-Socrata-Federation' => 'Honey Badger' },
-                                                 false, false, is_anon))
+    result = parse_json_with_max_nesting(CoreServer::Base.connection.create_request(
+      "/views/INLINE/rows.json?#{params.to_param}", request_body.to_json, federation_headers, false, false, is_anon
+    ))
     cache_row_results(result, only_meta: true) if conditions.empty?
-    return result['meta']['totalRows']
+
+    result['meta']['totalRows']
   end
 
   # This does not work for SODA2.
   def get_row(row_id, is_anon = false)
-    merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString})
+    merged_conditions = query.cleaned.merge('searchString' => searchString)
     req = get_rows_request([row_id], 0, merged_conditions, false)
-    JSON.parse(CoreServer::Base.connection.create_request(req[:url], req[:request].to_json,
-                                                          { 'X-Socrata-Federation' => 'Honey Badger' },
-                                                          false, false, is_anon),
-      {:max_nesting => 25})[0]
+    JSON.parse(CoreServer::Base.connection.create_request(
+      req[:url], req[:request].to_json, federation_headers, false, false, is_anon),
+      :max_nesting => 25
+    ).first
   end
 
   def get_row_by_index(row_index)
-    url =
-      if use_soda2?
-        params = {}
-        params['$$exclude_system_fields'] = false
-        params['$offset'] = row_index
-        params['$limit'] = 1
-        "/id/#{id}.json?#{params.to_param}"
-      else
-        params = {}
-        params['start'] = row_index
-        params['length'] = 1
-        params['method'] = 'getByIds'
-        params['asHashes'] = true
-        "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
-      end
-    parse_json_with_max_nesting(
-      CoreServer::Base.connection.get_request(url,
-        { 'X-Socrata-Federation' => 'Honey Badger' }))[0]
+    url = if use_soda2?
+      params = {}
+      params['$$exclude_system_fields'] = false
+      params['$offset'] = row_index
+      params['$limit'] = 1
+      "/id/#{id}.json?#{params.to_param}"
+    else
+      params = {}
+      params['start'] = row_index
+      params['length'] = 1
+      params['method'] = 'getByIds'
+      params['asHashes'] = true
+      "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
+    end
+
+    parse_json_with_max_nesting(CoreServer::Base.connection.get_request(url, federation_headers)).first
   end
 
   def get_sid_by_row_identifier(row_identifier)
     CoreServer::Base.connection.get_request(
-      "/#{self.class.name.pluralize.downcase}/#{id}/" +
+      "/#{self.class.name.pluralize.downcase}/#{id}/" <<
       "rows?method=getSidByRowIdentifier&id=#{row_identifier}",
-      { 'X-Socrata-Federation' => 'Honey Badger' }
+      federation_headers
     )
   end
 
   def get_aggregates(aggregates, conditions = {})
-    merged_conditions = self.query.cleaned.merge({'searchString'=>self.searchString}).deep_merge(conditions)
+    merged_conditions = query.cleaned.merge('searchString' => searchString).deep_merge(conditions)
     request_body = {
-      'name' => self.name,
+      'name' => name,
       'searchString' => merged_conditions.delete('searchString'),
       'query' => merged_conditions,
-      'originalViewId' => self.id,
-      'columns' => visible_columns(conditions).map { |c| c.deep_clone(Column) }
+      'originalViewId' => id,
+      'columns' => visible_columns(conditions).map { |column| column.deep_clone(Column) } # Column class here
     }
 
-    url = "/views/INLINE/rows.json?method=getAggregates"
     reqs = []
     aggregates.each do |col_id, agg_list|
-      col = self.column_by_id(col_id)
+      col = column_by_id(col_id)
       next if col.blank?
       agg_list = [agg_list] if !agg_list.is_a?(Array)
       agg_list.each_with_index do |agg, i|
         if reqs.length <= i
           reqs << request_body.clone
-          reqs[i]['columns'] = request_body['columns'].map { |c| c.deep_clone(Column) }
+          reqs[i]['columns'] = request_body['columns'].map { |column| column.deep_clone(Column) }
         end
         req_col = reqs[i]['columns'].detect { |c| c.id == col.id }
         req_col.update({ 'aggregate' => { 'type' => agg } }) if !req_col.blank?
@@ -778,57 +750,59 @@ class View < Model
     end
 
     agg_results = {}
-    CoreServer::Base.connection.batch_request do |b_id|
+    CoreServer::Base.connection.batch_request do |batch_id|
       reqs.each do |req|
-        req['columns'] = req['columns'].map {|c| c.to_core}
-        r = req.to_json
-        CoreServer::Base.connection.create_request(url, r, {'X-Socrata-Federation' => 'Honey Badger'},
-                                                   true, b_id)
+        req['columns'] = req['columns'].map(&:to_core)
+        CoreServer::Base.connection.create_request(
+          '/views/INLINE/rows.json?method=getAggregates',
+          req.to_json,
+          federation_headers,
+          true,
+          batch_id
+        )
       end
-    end.each do |r|
-      agg_resp = parse_json_with_max_nesting(r['response'])
+    end.each do |response|
+      agg_resp = parse_json_with_max_nesting(response['response'])
       agg_resp.each do |agg|
         agg_results[agg['columnId']] ||= {}
         agg_results[agg['columnId']][agg['name']] = agg['value']
-        col = self.column_by_id(agg['columnId'])
+        col = column_by_id(agg['columnId'])
         if !col.blank?
           col.data['aggregates'] ||= {}
           col.data['aggregates'][agg['name']] = agg['value'].to_f
         end
       end
     end
+
     agg_results
   end
 
   def json(params)
     url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json"
-    if !params.nil?
-      url += '?' + params.to_param
-    end
-    escape_object(parse_json_with_max_nesting(CoreServer::Base.connection.get_request(url))).
-      to_json.html_safe
+    url << "?#{params.to_param}" if params.present?
+    escape_object(parse_json_with_max_nesting(CoreServer::Base.connection.get_request(url))).to_json.html_safe
   end
 
   def self.notify_all_of_changes(id)
-    path = "/#{self.name.pluralize.downcase}/#{id}.json?" +
-        {"method" => "notifyUsers"}.to_param
-    parse(CoreServer::Base.connection.create_request(path))
+    parse(CoreServer::Base.connection.create_request(
+      "/#{name.pluralize.downcase}/#{id}.json?#{{'method' => 'notifyUsers'}.to_param}"
+    ))
   end
 
   def set_permission(permission_type)
-    path = "/#{self.class.name.pluralize.downcase}/#{self.id}.json?" +
-        {"method" => "setPermission", 'value' => permission_type}.to_param
-    self.class.parse(CoreServer::Base.connection.update_request(path))
+    self.class.parse(CoreServer::Base.connection.update_request(
+      "/#{self.class.name.pluralize.downcase}/#{id}.json?" <<
+        "#{{'method' => 'setPermission', 'value' => permission_type}.to_param}"
+    ))
   end
 
   def self.create_favorite(id)
-    path = "/favorite_views?" + {"id" => id}.to_param
-    parse(CoreServer::Base.connection.create_request(path))
+    parse(CoreServer::Base.connection.create_request("/favorite_views?#{{'id' => id}.to_param}"))
   end
 
   def create_favorite
-    self.data['flags'] << "favorite"
-    self.class.create_favorite(self.id)
+    data['flags'] << 'favorite'
+    self.class.create_favorite(id)
   end
 
   def self.create(attributes)
@@ -851,13 +825,13 @@ class View < Model
   end
 
   def self.delete(id)
-    path = "/#{self.name.pluralize.downcase}.json?" + {"id" => id, "method" => "delete"}.to_param
-    parse(CoreServer::Base.connection.delete_request(path))
+    parse(CoreServer::Base.connection.delete_request(
+      "/#{name.pluralize.downcase}.json?#{{'id' => id, 'method' => 'delete'}.to_param}"
+    ))
   end
 
   def self.delete_favorite(id)
-    path = "/favorite_views/#{id}"
-    parse(CoreServer::Base.connection.delete_request(path))
+    parse(CoreServer::Base.connection.delete_request("/favorite_views/#{id}"))
   end
 
   def self.featured_image(featured_view)
@@ -867,46 +841,51 @@ class View < Model
       when 'custom' then
         assetId = featured_view['assetId']
         if assetId.start_with?('fileId:')
-          return "/api/views/#{featured_view['viewId']}/files/#{assetId.split(':')[1]}?s=featured"
+          "/api/views/#{featured_view['viewId']}/files/#{assetId.split(':')[1]}?s=featured"
         else
-          return "/api/assets/#{assetId}?s=featured"
+          "/api/assets/#{assetId}?s=featured"
         end
     end
   end
 
   def delete
-    self.class.delete(self.id)
+    self.class.delete(id)
   end
 
   def delete_favorite
-    self.data['flags'].delete("favorite")
-    self.class.delete_favorite(self.id)
+    data['flags'].delete('favorite')
+    self.class.delete_favorite(id)
   end
 
   def register_opening(referrer)
-    params = {"method" => "opening"}
+    params = { 'method' => 'opening' }
 
-    if !referrer.blank?
-      params["referrer"] = referrer
+    if referrer.present?
+      params['referrer'] = referrer
     end
-    View.parse(CoreServer::Base.connection.create_request("/#{self.class.name.pluralize.downcase}/#{id}.json?" + params.to_param))
+    View.parse(CoreServer::Base.connection.create_request(
+      "/#{self.class.name.pluralize.downcase}/#{id}.json?#{params.to_param}"
+    ))
   end
 
   def set_permissions(perm_value)
-    CoreServer::Base.connection.
-      update_request("/#{self.class.name.pluralize.downcase}/#{id}.json" +
-                     "?method=setPermission&value=#{perm_value}")
+    CoreServer::Base.connection.update_request(
+      "/#{self.class.name.pluralize.downcase}/#{id}.json?method=setPermission&value=#{perm_value}"
+    )
   end
 
   def as_json(opts = nil)
     dhash = data_hash
-    dhash["numberOfComments"] = numberOfComments
-    dhash["averageRating"] = averageRating
-    dhash["totalTimesRated"] = totalTimesRated
-    dhash['columns'] = (columns || []).map {|c| c.to_core}
+    dhash['numberOfComments'] = numberOfComments
+    dhash['averageRating'] = averageRating
+    dhash['totalTimesRated'] = totalTimesRated
+    dhash['columns'] = (columns || []).map(&:to_core)
     if !@cached_rows.nil?
-      dhash['initialRows'] = { rows: @cached_rows[:rows] || [], start: @cached_rows[:start] || 0,
-        total: @cached_rows[:total_count] }
+      dhash['initialRows'] = {
+        rows: @cached_rows[:rows] || [],
+        start: @cached_rows[:start] || 0,
+        total: @cached_rows[:total_count]
+      }
       dhash['initialMetaColumns'] = @cached_rows[:meta_columns]
     end
 
@@ -915,6 +894,7 @@ class View < Model
     # (Possible exception: choropleths; not planned, though.)
     # Including these columns breaks edit functionality, so we're just going to exclude them.
     dhash['columns'].reject! { |col| col[:fieldName].starts_with? ':@' }
+
     dhash
   end
 
@@ -937,6 +917,7 @@ class View < Model
     else # I guess we'll guess...
       row.each { |k, v| r[':' + k] = v if !k.match(/^\d/) }
     end
+
     r
   end
 
@@ -955,17 +936,16 @@ class View < Model
   def user_rating(type)
     r = data.deep_value_at(['currentUserRatings', type])
     return '' if r.nil?
+
     r / 20.0
   end
+
   def totalTimesRated
     data['totalTimesRated'] || 0
   end
 
   def last_activity
-    if @last_activity.nil?
-      @last_activity = [rowsUpdatedAt || 0, createdAt || 0, viewLastModified || 0].max
-    end
-    @last_activity
+    @last_activity ||= [rowsUpdatedAt || 0, createdAt || 0, viewLastModified || 0].max
   end
 
   def time_created_at
@@ -987,20 +967,20 @@ class View < Model
   # Returns the meta keyword tags for this view that we'll use in headers
   @@default_meta_tags = %w(public data statistics dataset)
   def meta_keywords
-    (self.tags.nil? ? @@default_meta_tags : self.tags + @@default_meta_tags).sort_by {rand}
+    (tags.nil? ? @@default_meta_tags : tags + @@default_meta_tags).sort_by {rand}
   end
 
   # Return the description we'll use in the meta description header
   def meta_description
-    if self.description.blank?
+    if description.blank?
       desc = 'View this dataset'
-      updated_at = self.rowsUpdatedAt.nil? ? nil : blist_long_date(self.rowsUpdatedAt, true)
+      updated_at = rowsUpdatedAt.nil? ? nil : blist_long_date(rowsUpdatedAt, true)
       if updated_at
-        desc += ", last updated #{updated_at}"
+        desc << ", last updated #{updated_at}"
       end
-      return desc
+      desc
     else
-      return self.description
+      description
     end
   end
 
@@ -1027,11 +1007,11 @@ class View < Model
   end
 
   def is_grouped?
-    !self.query.nil? && !self.query.groupBys.nil? && self.query.groupBys.length > 0
+    !query.nil? && !query.groupBys.nil? && query.groupBys.length > 0
   end
 
   def has_modifying_parent_view?
-    !self.modifyingViewUid.nil?
+    !modifyingViewUid.nil?
   end
 
   def last_updated_user
@@ -1086,7 +1066,7 @@ class View < Model
   end
 
   def download_path(extension, params = {})
-    path = "/api/views/#{self.id}/rows.#{extension}"
+    path = "/api/views/#{id}/rows.#{extension}"
     query_string = '?' + params.reverse_merge({ :accessType => 'DOWNLOAD' }).to_query
     path + query_string
   end
@@ -1278,23 +1258,30 @@ class View < Model
       users_list.each {|u| users[u.id] = u }
     end
     user_shares = Hash.new
-    filtered_grants.each do |g|
-      user_id = g.userId.nil? ? g.userEmail : g.userId
-      s = Share.new((g.type || '').capitalize, user_id,
-                    g.userId.nil? ? g.userEmail : users[g.userId].displayName, users[g.userId],
-                    !g.userId.nil?, false, g.inherited)
-      user_shares[user_id] = s
+    filtered_grants.each do |grant|
+      user_id = grant.userId.nil? ? grant.userEmail : grant.userId
+      share = Share.new(
+        (grant.type || '').capitalize,
+        user_id,
+        grant.userId.nil? ? grant.userEmail : users[grant.userId].displayName,
+        users[grant.userId],
+        !grant.userId.nil?,
+        false,
+        grant.inherited
+      )
+      user_shares[user_id] = share
     end
     user_shares.values
   end
 
   def filters
-    View.find({"method" => 'getByTableId', "tableId" => self.tableId}, {}, false, false, true).
-      reject {|l| l.is_blist? || l.is_blobby?}
+    View.find({'method' => 'getByTableId', 'tableId' => tableId}, {}, false, false, true).
+      reject { |l| l.is_blist? || l.is_blobby? }
   end
 
   def parent_dataset
-    return @parent_dataset unless !defined? @parent_dataset
+    return @parent_dataset unless !defined?(@parent_dataset)
+
     if is_blist? || ((is_href? || is_blobby?) && flag?("default"))
       @parent_dataset = self
     else
@@ -1311,18 +1298,21 @@ class View < Model
         @parent_dataset = nil
       end
     end
-    return @parent_dataset
+
+    @parent_dataset
   end
 
   # in case there's a modifyingViewUid
   def parent_view
     return @parent_view unless @parent_view.nil?
+
     if modifyingViewUid.present?
       @parent_view = View.find modifyingViewUid
     else
-      @parent_view = self.parent_dataset
+      @parent_view = parent_dataset
     end
-    return @parent_view
+
+    @parent_view
   end
 
   def comments
@@ -1330,9 +1320,9 @@ class View < Model
   end
 
   def share_date_for_contact(contact)
-    out = ""
-    contact_grant = grants.find {|g| g.userId == contact.id}
-    if (contact_grant)
+    out = ''
+    contact_grant = grants.find { |grant| grant.userId == contact.id }
+    if contact_grant
       out = contact_grant.createdAt
     end
   end
@@ -1353,27 +1343,27 @@ class View < Model
     should_use = newBackend? || FeatureFlags.derive(self).useSoda2
 
     case should_use
-    when 'always', TrueClass
-      true
-    else
-      false
+      when 'always', TrueClass then true
+      else false
     end
   end
 
   def can_add_form?
-    columns.any? {|c| !c.flag?('hidden')}
+    columns.any? { |c| !c.flag?('hidden') }
   end
 
   def can_add_calendar?
-    columns.any? {|c| (c.renderTypeName == 'date' ||
-                       c.renderTypeName == 'calendar_date') &&
-                       !c.flag?('hidden')} &&
-      columns.any? {|c| c.renderTypeName == 'text' && !c.flag?('hidden')}
+    columns.any? { |c|
+      (c.renderTypeName == 'date' || c.renderTypeName == 'calendar_date') && !c.flag?('hidden')
+    } && columns.any? { |c|
+      c.renderTypeName == 'text' && !c.flag?('hidden')
+    }
   end
 
   def can_add_map?
-    return columns.select {|c| ['location', 'point'].include?(c.renderTypeName) &&
-      !c.flag?('hidden')}.length > 0
+    columns.select { |c|
+      ['location', 'point'].include?(c.renderTypeName) && !c.flag?('hidden')
+    }.length > 0
   end
 
   def is_tabular?
@@ -1640,7 +1630,7 @@ class View < Model
     if user.nil?
       false
     else
-      self.owner.id == user.id ||
+      owner.id == user.id ||
         (grants && grants.any? { |p| p.userId == user.id && (p.type || '').downcase == 'owner' })
     end
   end
@@ -1654,7 +1644,7 @@ class View < Model
     # - This is a blist
     # - They can edit it
     # - It is unpublished
-    return (self.can_edit? && self.is_blist? && self.is_unpublished?)
+    can_edit? && is_blist? && is_unpublished?
   end
 
   def columns_for_datatypes(datatypes, include_hidden = false)
@@ -1750,11 +1740,11 @@ class View < Model
   end
 
   def custom_image(size = 'medium')
-    if self.iconUrl
-      if self.iconUrl.start_with?('fileId:')
-        return "/api/views/#{self.id}/files/#{self.iconUrl.split(':')[1]}?size=#{size}"
+    if iconUrl
+      if iconUrl.start_with?('fileId:')
+        return "/api/views/#{id}/files/#{iconUrl.split(':')[1]}?size=#{size}"
       else
-        return "/assets/#{self.iconUrl}?s=#{size}"
+        return "/assets/#{iconUrl}?s=#{size}"
       end
     else
       return nil
@@ -1764,10 +1754,10 @@ class View < Model
   def preferred_image(port = 80)
     if !custom_image.nil?
       return custom_image('thumb')
-    elsif !self.metadata.nil? && ((self.metadata.data['thumbnail'] || {})['page'] || {})['filename'].present?
+    elsif !metadata.nil? && ((metadata.data['thumbnail'] || {})['page'] || {})['filename'].present?
       url_port = (port == 80) ? '' : ':' + port.to_s
       protocol = federated? ? "//#{domainCName}#{url_port}" : ''
-      return "#{protocol}/api/views/#{self.id}/snapshots/page?size=thumb"
+      return "#{protocol}/api/views/#{id}/snapshots/page?size=thumb"
     end
     nil
   end
@@ -1775,7 +1765,7 @@ class View < Model
   def preferred_image_type
     if !custom_image.nil?
       return 'customImage'
-    elsif !self.metadata.nil? && ((self.metadata.data['thumbnail'] || {})['page'] || {})['filename'].present?
+    elsif !metadata.nil? && ((metadata.data['thumbnail'] || {})['page'] || {})['filename'].present?
       return 'thumbnail'
     end
     ''
@@ -2057,7 +2047,7 @@ class View < Model
   def self.search_sorts
     sorts = Array.new
     @@search_sorts.each do |sort|
-      next if(!sort[:module].nil? && !CurrentDomain.module_enabled?(sort[:module]))
+      next if !sort[:module].nil? && !CurrentDomain.module_enabled?(sort[:module])
 
       sorts.push [sort[:key], sort[:name]]
     end
@@ -2101,24 +2091,14 @@ class View < Model
   end
 
   def make_rows_request_using_soda1(req, is_anon, cache_req = true)
-    parse_json_with_max_nesting(
-      CoreServer::Base.connection.create_request(
-        req[:url],
-        req[:request].to_json,
-        { 'X-Socrata-Federation' => 'Honey Badger' },
-        cache_req,
-        false,
-        is_anon
+    parse_json_with_max_nesting(CoreServer::Base.connection.create_request(
+      req[:url], req[:request].to_json, federation_headers, cache_req, false, is_anon
     ))
   end
 
   def make_rows_request_using_soda2(req, is_anon)
-    parse_json_with_max_nesting(
-      CoreServer::Base.connection.get_request(
-        req[:url],
-        { 'X-Socrata-Federation' => 'Honey Badger' },
-        false,
-        is_anon
+    parse_json_with_max_nesting(CoreServer::Base.connection.get_request(
+      req[:url], federation_headers, false, is_anon
     ))
   end
 

@@ -102,6 +102,7 @@ class UserSessionsController < ApplicationController
         end
       end
 
+      Rails.logger.info('Somebody used inline login!') if params[:inline]
       meter 'login.success'
       # need both .data and .json formats because firefox detects as .data and chrome detects as .json
       respond_to do |format|

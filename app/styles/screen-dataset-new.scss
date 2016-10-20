@@ -833,6 +833,19 @@
   $error-light: tint($error, 90%);
   $error-dark: shade($error, 30%);
 
+  .btn-success {
+    color: white;
+    background: $success-dark;
+    border-color: $success-dark;
+    text-shadow: none;
+  }
+
+  .btn-error {
+    color: white;
+    background: $error-dark;
+    border-color: $error-dark;
+    text-shadow: none;
+  }
 
   .flash-alert {
     background-color: $light-grey-6;

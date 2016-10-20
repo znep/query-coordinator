@@ -4,6 +4,8 @@ import format from 'stringformat';
 import 'jquery.awesomereorder';
 import _ from 'lodash';
 
+import { FlashMessage, ApiErrorFlashMessage } from './flashMessage';
+import { anyCallHasError } from '../apiCallUtils';
 import * as ST from '../sharedTypes';
 import * as UploadFile from './uploadFile';
 import * as DownloadFile from './downloadFile';
@@ -13,9 +15,8 @@ import SampleRow from './importColumns/sampleRow';
 import UpdateHeadersButton from './importColumns/updateHeadersButton';
 import * as Utils from '../utils';
 import * as Validation from './importColumns/validation';
-import NavigationControl from './navigationControl';
+import NavigationControl, { saveButtonStatus } from './navigationControl';
 import * as SaveState from '../saveState';
-import FlashMessage from './flashMessage';
 
 /*
 - Blueprint: schema (names & types)
@@ -162,7 +163,6 @@ function reorderItems(originalIdx, newIdx) {
   };
 }
 
-
 export function update(transform: Transform = null, action): Transform {
   switch (action.type) {
     // this is gross because it falls through
@@ -171,6 +171,7 @@ export function update(transform: Transform = null, action): Transform {
       if (!_.isUndefined(action.summary.columns)) {
         const columns = initialTranslation(action.summary);
         return {
+          ...transform,
           columns: columns,
           nextId: columns.length,
           defaultColumns: columns,
@@ -180,6 +181,31 @@ export function update(transform: Transform = null, action): Transform {
       } else {
         return transform;
       }
+    case SaveState.STATE_SAVE_STARTED:
+      return {
+        ...transform,
+        saveState: {
+          type: 'InProgress',
+          resultTimestamp: Date.now()
+        }
+      };
+    case SaveState.STATE_SAVE_COMPLETE:
+      return {
+        ...transform,
+        saveState: {
+          type: 'Success',
+          resultTimestamp: Date.now()
+        }
+      };
+    case SaveState.STATE_SAVE_ERROR:
+      return {
+        ...transform,
+        saveState: {
+          type: 'Error',
+          error: action.error,
+          resultTimestamp: Date.now()
+        }
+      };
     case CHANGE_HEADER_COUNT:
       return {
         ...transform,
@@ -242,7 +268,6 @@ export function update(transform: Transform = null, action): Transform {
 const NUM_PREVIEW_ROWS = 5;
 const I18nPrefixed = I18n.screens.dataset_new.import_columns;
 
-
 export function view({ transform, fileName, sourceColumns, dispatch, goToPage, goToPrevious }) {
   const problems = Validation.validate(transform.columns, sourceColumns);
   const nextAction =
@@ -250,18 +275,19 @@ export function view({ transform, fileName, sourceColumns, dispatch, goToPage, g
       ? (() => goToPage('Metadata'))
       : null;
 
-  var onSave = () => dispatch(SaveState.save());
-  if (transform.saveState === 'InProgress') {
-    onSave = undefined;
-  }
+  const successFlash =
+    anyCallHasError([transform.saveState])
+    ? null
+    : (
+      <FlashMessage flashType="success">
+          {I18nPrefixed.upload_success}
+      </FlashMessage>
+      );
 
   return (
     <div>
       <div className="importColumnsPane columnsPane">
-
-        <FlashMessage flashType="success">
-          {I18nPrefixed.upload_success}
-        </FlashMessage>
+        {successFlash}
         <p className="headline">{format(I18nPrefixed.headline_interpolate, fileName)}</p>
         <h2>{I18nPrefixed.subheadline}</h2>
         <ViewColumns columns={transform.columns} dispatch={dispatch} sourceColumns={sourceColumns} />
@@ -273,11 +299,13 @@ export function view({ transform, fileName, sourceColumns, dispatch, goToPage, g
         <Validation.ViewProblems problems={problems} />
 
         <hr />
+        <ApiErrorFlashMessage saveDescription="column settings" apiCalls={[transform.saveState]} />
       </div>
       <NavigationControl
         onNext={nextAction}
         onPrev={goToPrevious}
-        onSave={onSave}
+        onSave={() => {dispatch(SaveState.save());}}
+        saveStatus={saveButtonStatus(transform.saveState.type, transform.saveState.resultTimestamp)}
         cancelLink="/profile" />
     </div>
   );
@@ -391,7 +419,6 @@ const ViewColumns = React.createClass({
     );
   }
 });
-
 
 function ViewToolbar({dispatch, sourceColumns}) {
   return (

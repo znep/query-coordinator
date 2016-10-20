@@ -5,13 +5,16 @@ import {
   goToPrevious,
   initialNewDatasetModel
 } from 'wizard';
+
+import { combineReducers } from 'redux';
 import { fileUploadComplete } from 'components/uploadFile';
+import * as ImportColumns from 'components/importColumns';
 import * as SaveState from 'saveState';
 import * as LocationColumn from 'components/importColumns/locationColumn';
 import { withMockFetch, testThunk } from '../asyncUtils';
 
 describe('updateNavigation', function() {
-  this.timeout(100);
+  this.timeout(SaveState.SHOW_RESPONSE_MS + 100);
 
   const initialState = {
     operation: null,

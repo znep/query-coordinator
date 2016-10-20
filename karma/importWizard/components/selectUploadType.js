@@ -1,14 +1,5 @@
-import {
-  updateNavigation,
-  chooseDataSource,
-  goToPage,
-  goToPrevious,
-  initialNewDatasetModel
-} from 'wizard';
-import { fileUploadComplete } from 'components/uploadFile';
+import { updateNavigation, goToPage } from 'wizard';
 import * as SaveState from 'saveState';
-import { withMockFetch, testThunk } from '../asyncUtils';
-
 
 describe('selectUploadType', function() {
   this.timeout(100);
@@ -21,7 +12,6 @@ describe('selectUploadType', function() {
 
   it('sets currentPage to UploadFile when you choose UploadFile', () => {
     const actual = updateNavigation(initialState, goToPage('UploadFile'))
-
     expect(actual).to.eql({
       operation: 'UPLOAD_DATA',
       page: 'UploadFile',

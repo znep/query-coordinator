@@ -11,6 +11,7 @@ import * as ImportColumns from './components/importColumns';
 import * as Metadata from './components/metadata';
 import * as Utils from './utils';
 import * as LocationColumns from './components/importColumns/locationColumn';
+import { rerenderSaveButton } from './saveState';
 import * as ImportStatus from './importStatus';
 import { goToPage, goToPreviousPage } from './wizard';
 import licenses from 'licenses';
@@ -29,6 +30,7 @@ export const authenticityToken: string = authenticityMetaTag === null
 
 export const appToken: string = 'U29jcmF0YS0td2VraWNrYXNz0';
 
+export const SHOW_RESPONSE_MS = 1000;
 declare var I18n: any;
 type CurrentUser = { id: string }
 export type Blist = { currentUser: CurrentUser }
@@ -45,6 +47,7 @@ export function saveMetadataThenProceed() {
   };
 }
 
+// TODO: refactor common elements of this and the fetch in saveState.js to a shared method
 export function saveMetadataToViewsApi() {
   return (dispatch, getState) => {
     dispatch(Metadata.metadataSaveStart());
@@ -68,10 +71,15 @@ export function saveMetadataToViewsApi() {
       });
     }).catch((err) => {
       dispatch(Metadata.metadataSaveError(err));
+    }).then(() => {
+      setTimeout(() => {
+        dispatch(rerenderSaveButton());
+      }, SHOW_RESPONSE_MS);
     });
   };
 }
 
+// TODO: refactor common elements of this and the fetch in saveState.js to a shared method
 export function savePrivacySettings() {
   return (dispatch, getState) => {
     const { datasetId, metadata } = getState();
@@ -90,6 +98,10 @@ export function savePrivacySettings() {
       }
     }).catch((err) => {
       dispatch(Metadata.metadataPrivacySaveError(err));
+    }).then(() => {
+      setTimeout(() => {
+        dispatch(rerenderSaveButton());
+      }, SHOW_RESPONSE_MS);
     });
   };
 }
@@ -369,6 +381,7 @@ export function importProgress(progress: ImportStatus.ImportProgress, notificati
 
 const IMPORT_ERROR = 'IMPORT_ERROR';
 function importError(error: string = I18n.screens.import_pane.unknown_error) {
+// TODO: EN-10650 pass in error messages from imports on this page
   return {
     type: IMPORT_ERROR,
     error: error

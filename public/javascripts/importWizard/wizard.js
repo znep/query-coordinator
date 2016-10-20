@@ -238,7 +238,6 @@ export function updateNavigation(navigation: Navigation = initialNavigation, act
   }
 }
 
-
 // view
 
 export function view({ state, dispatch }) {
@@ -352,7 +351,7 @@ export function view({ state, dispatch }) {
                   metadata={state.metadata}
                   onMetadataAction={dispatch}
                   operation={state.navigation.operation}
-                  importError={state.importStatus.error}
+                  importStatus={state.importStatus}
                   goToPrevious={onPrevious} />
               );
 

@@ -3,6 +3,7 @@ import * as ED from 'components/exampleData';
 import * as UF from 'components/uploadFile';
 import * as CD from 'components/importColumns/columnDetail';
 import * as LC from 'components/importColumns/locationColumn';
+import { combineReducers } from 'redux';
 import * as SaveState from 'saveState';
 
 import { withMockFetch, testThunk } from '../asyncUtils';
@@ -438,7 +439,8 @@ describe('ImportColumns component', () => {
 
   });
 
-  describe('thunks', () => {
+  describe('thunks', function() {
+    this.timeout(SaveState.SHOW_RESPONSE_MS + 100);
 
     it(`makes a call to cores importSources endpoint when the saveImportColumns thunk is dispatched`, (done) => {
       const resultColumns = [
@@ -467,6 +469,17 @@ describe('ImportColumns component', () => {
           id: 1
         }
       ];
+
+      function identityReducer(model = null, action) { // eslint-disable-line no-unused-vars
+        return model;
+      }
+
+      const mockUpdate = combineReducers({
+        datasetId: identityReducer,
+        lastSavedVersion: SaveState.update,
+        transform: IC.update
+      });
+
       withMockFetch(
         (url, options, resolve, reject) => {
           expect(url).to.equal('/views/abcd-efgh/import_sources');
@@ -515,12 +528,18 @@ describe('ImportColumns component', () => {
                 columns: resultColumns
               }
             },
+            mockUpdate,
             [
               (state, action) => {
                 return state;
               },
               (state, action) => {
-                expect(action.version).to.equal(1470979299528);
+                expect(action.importSource.version).to.equal(1470979299528);
+              },
+              (state, action) => {
+                expect(action).to.deep.equal({
+                  type: SaveState.RERENDER_SAVE_BUTTON,
+                });
               }
             ]
           );

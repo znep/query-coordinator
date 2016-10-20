@@ -1,4 +1,5 @@
 import {withMockFetch, testThunk} from '../asyncUtils';
+import { combineReducers } from 'redux';
 
 
 describe('withMockFetch', () => {
@@ -35,23 +36,43 @@ describe('testThunk', () => {
   it('dispatches to actions sequentially, feeding the response of one thunk to the next', (done) => {
     const thunk = (dispatch) => {
       dispatch({
-        type: 'MY_TEST_ACTION'
+        type: 'MY_TEST_ACTION',
+        foo: 'state1'
       });
       dispatch({
-        type: 'ACTION_LATER'
+        type: 'ACTION_LATER',
+        foo: 'state2'
       });
     };
-    testThunk(done, thunk, {foo: 2}, [
+
+    function fooUpdate(state, action) {
+      switch(action.type) {
+        case 'MY_TEST_ACTION':
+          return action.foo;
+        case 'ACTION_LATER':
+          return action.foo;
+        default:
+          return 'meow';
+      }
+    }
+
+    const mockUpdate = combineReducers({
+      foo: fooUpdate
+    });
+
+    testThunk(done, thunk, {foo: 2}, mockUpdate, [
       (state, action) => {
         expect(action).to.deep.equal({
-          type: 'MY_TEST_ACTION'
+          type: 'MY_TEST_ACTION',
+          foo: 'state1'
         });
-        return 'new_state';
+        expect (state.foo).to.equal('state1');
       },
       (state, action) => {
-        expect(state).to.equal('new_state');
+        expect(state.foo).to.equal('state2');
         expect(action).to.deep.equal({
-          type: 'ACTION_LATER'
+          type: 'ACTION_LATER',
+          foo: 'state2'
         });
       }
     ]);
@@ -94,19 +115,14 @@ describe('withMockFetch + testThunk', () => {
         });
       },
       () => {
-        testThunk(done, myThunk, 'initialState', [
+        testThunk(done, myThunk, 'initialState', myUpdate, [
           (state, action) => {
-            expect(state).to.equal('initialState');
             expect(action).to.deep.equal({ type: 'LOAD_STARTED' });
-            const newState = myUpdate(state, action);
-            expect(newState).to.equal('loadingState');
-            return newState;
+            expect(state).to.equal('loadingState');
           },
           (state, action) => {
-            expect(state).to.equal('loadingState'); // don't really need this; was asserted in prev thunk
             expect(action).to.deep.equal({ type: 'LOAD_FINISHED' });
-            const newState = myUpdate(state, action);
-            expect(newState).to.equal('finishedState');
+            expect(state).to.equal('finishedState');
           }
         ]);
       }

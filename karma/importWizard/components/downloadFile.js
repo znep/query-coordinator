@@ -6,8 +6,11 @@ import {
   scanURL
 }
 from 'components/downloadFile';
+import * as Download from 'components/downloadFile';
+import * as SaveState from 'saveState';
 import TestUtils from 'react-addons-test-utils';
 import { withMockFetch, testThunk } from '../asyncUtils';
+import { combineReducers } from 'redux';
 import * as ExampleData from './exampleData';
 
 describe("downloadFile's", () => {
@@ -117,9 +120,19 @@ describe("downloadFile's", () => {
       ]
     };
 
+    function identityReducer(model = null, action) { // eslint-disable-line no-unused-vars
+      return model;
+    }
+
     it('posts to the correct url, polls, and dispatches the correct action on success', (done) => {
       const url = 'http://example.com/data.csv';
       const ticket = 'da1a1d2c-594d-4678-8cac-cded42b68991';
+      const mockUpdate = combineReducers({
+          datasetId: identityReducer,
+          download: Download.update,
+          lastSavedVersion: SaveState.update
+      });
+
       withMockFetch(
         [
           (url, options, resolve, reject) => {
@@ -150,13 +163,26 @@ describe("downloadFile's", () => {
                 })
               )
             });
+          },
+          (url, options, resolve, reject) => {
+            expect(url).to.equal(`/views/abcd-efgh/import_sources`);
+            const state = 'foo';
+            const requestBody = JSON.parse(options.body)
+            resolve({
+              status: 200,
+              json: () => Promise.resolve({
+                state: JSON.stringify(state),
+                version: 124
+              })
+            })
           }
         ],
         () => {
           testThunk(
             done,
             scanURL(url),
-            { datasetId: 'abcd-efgh', download: { type: 'NotStart', url: url, fileName: 'data.csv' } },
+            { datasetId: 'abcd-efgh', download: { type: 'NotStart', url: url, fileName: 'data.csv' }, lastSavedVersion: 123 },
+            mockUpdate,
             [
               (state, action) => {
                 expect(action).to.deep.equal({
@@ -217,6 +243,19 @@ describe("downloadFile's", () => {
                   summary: scanWithIndices,
                 };
                 expect(newState).to.deep.equal(expected);
+              },
+              (state, action) => {
+                expect(action).to.deep.equal({
+                  type: SaveState.STATE_SAVE_STARTED
+                });
+              },
+              (state, action) => {
+                expect(action.type).to.eql('STATE_SAVE_COMPLETE');
+                expect(action.importSource.version).to.eql(124);
+                expect(state.lastSavedVersion).to.equal(124);
+              },
+              (state, action) => {
+                expect(action.type).to.eql('RERENDER_SAVE_BUTTON');
               }
             ]
           );

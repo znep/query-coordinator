@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
-import FlashMessage from './flashMessage';
+import { FlashMessage } from './flashMessage';
 import NavigationControl from './navigationControl';
 import {socrataFetch, authenticityToken, appToken} from '../server';
 import airbrake from '../airbrake';
@@ -351,4 +351,3 @@ view.propTypes = {
   goToPage: PropTypes.func.isRequired,
   connectToEsri: PropTypes.object.isRequired
 };
-

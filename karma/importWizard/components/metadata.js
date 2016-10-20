@@ -16,6 +16,7 @@ import {
   updateContactEmail,
   updateNextClicked,
   updateLastSaved,
+  updatePrivacyLastSaved,
   updateLicenseName,
   updateLicensing,
   updateLicenseSourceLink,
@@ -232,6 +233,16 @@ describe('validators', () => {
               }
             ]
           }
+      },
+      apiCall: {
+        type: 'NotStarted'
+      },
+      privacyApiCall: {
+        type: 'NotStarted'
+      },
+      privacySettings: 'private',
+      lastSaved: {
+        //  not sure yet if anything needs to be here
       }
     };
   });
@@ -524,8 +535,20 @@ describe('lastSaved', () => {
 
     expect(lastSavedMetadata).to.deep.equal({
       lastSavedContents: metadata.contents,
-      lastSavedLicense: metadata.license,
-      lastSavedPrivacySettings: metadata.privacySettings
+      lastSavedLicense: metadata.license
+    });
+  });
+
+  it('updates privacy to match metadata when a user successfully saves', () => {
+    const state = initialNewDatasetModel({});
+    metadata = state.metadata;
+    const tempLastSaved = state.metadata.lastSaved.lastSavedContents;
+    metadata = update(metadata, updatePrivacySettings('public'));
+    lastSavedMetadata = updateForLastSaved(tempLastSaved, updatePrivacyLastSaved('public'));
+
+
+    expect(lastSavedMetadata).to.deep.equal({
+      lastSavedPrivacySettings: 'public'
     });
   });
 });

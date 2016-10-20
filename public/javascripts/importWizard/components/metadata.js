@@ -5,11 +5,11 @@ import _ from 'lodash';
 import { combineReducers } from 'redux';
 import isEmail from 'validator/lib/isEmail';
 import RadioGroup from 'react-radio-group';
-import format from 'stringformat';
 
 import * as Server from '../server';
-import FlashMessage from './flashMessage';
-import NavigationControl from './navigationControl';
+import { FlashMessage, ApiErrorFlashMessage } from './flashMessage';
+import { anyCallHasError } from '../apiCallUtils';
+import NavigationControl, { saveButtonStatus } from './navigationControl';
 
 import customMetadataSchema from 'customMetadataSchema';
 import datasetCategories from 'datasetCategories';
@@ -17,25 +17,19 @@ import licenses from 'licenses';
 
 type DatasetMetadata = {
   nextClicked: boolean,
-  apiCall: MetadataApiCall,
+  apiCall: ApiCall,
   license: LicenseType,
   contents: MetadataContents,
   lastSaved: LastSaved,
   privacySettings: String,
-  privacyApiCall: PrivacyApiCall
+  privacyApiCall: ApiCall
 }
 
-type MetadataApiCall
+type ApiCall
   = { type: 'NotStarted' }
   | { type: 'InProgress' }
-  | { type: 'Error', error: any }
-  | { type: 'Success', contents: MetadataContents }
-
-type PrivacyApiCall
-  = { type: 'NotStarted' }
-  | { type: 'InProgress' }
-  | { type: 'Error', error: any }
-  | { type: 'Success', privacySettings: String }
+  | { type: 'Error', error: any, showResultButton: boolean }
+  | { type: 'Success', contents: MetadataContents, showResultButton: boolean }
 
 type DisplayType
   = 'table'
@@ -265,10 +259,10 @@ export function metadataSaveComplete(contents) {
 }
 
 const METADATA_SAVE_ERROR = 'METADATA_SAVE_ERROR';
-export function metadataSaveError(err) {
+export function metadataSaveError(error) {
   return {
     type: METADATA_SAVE_ERROR,
-    err: err
+    error
   };
 }
 
@@ -276,7 +270,7 @@ const METADATA_PRIVACY_LAST_SAVED = 'METADATA_PRIVACY_LAST_SAVED';
 export function updatePrivacyLastSaved(savedPrivacySettings) {
   return {
     type: METADATA_PRIVACY_LAST_SAVED,
-    savedMetadata: savedPrivacySettings
+    savedPrivacySettings: savedPrivacySettings
   };
 }
 
@@ -296,10 +290,10 @@ export function metadataPrivacySaveComplete(contents) {
 }
 
 const METADATA_PRIVACY_SAVE_ERROR = 'METADATA_PRIVACY_SAVE_ERROR';
-export function metadataPrivacySaveError(err) {
+export function metadataPrivacySaveError(error) {
   return {
     type: METADATA_PRIVACY_SAVE_ERROR,
-    err: err
+    error
   };
 }
 
@@ -310,7 +304,6 @@ export function updateHref(href) {
     href: href
   };
 }
-
 
 const METADATA_UPDATE_DISPLAY_TYPE = 'METADATA_UPDATE_DISPLAY_TYPE';
 export function updateDisplayType(operation) {
@@ -331,14 +324,16 @@ export const update =
     privacyApiCall: updateForPrivacyApiCallState
   });
 
-
 export function updateForLastSaved(lastSavedMetadata = emptyContents(''), action) {
   switch (action.type) {
     case METADATA_LAST_SAVED:
       return {
         lastSavedContents: _.cloneDeep(action.savedMetadata.contents),
-        lastSavedLicense: _.cloneDeep(action.savedMetadata.license),
-        lastSavedPrivacySettings: action.savedMetadata.privacySettings
+        lastSavedLicense: _.cloneDeep(action.savedMetadata.license)
+      };
+    case METADATA_PRIVACY_LAST_SAVED:
+      return {
+        lastSavedPrivacySettings: action.savedPrivacySettings
       };
     default:
       return lastSavedMetadata;
@@ -480,9 +475,9 @@ export function updateForPrivacyApiCallState(privacyApiCallState = {type: 'NotSt
     case METADATA_PRIVACY_SAVE_START:
       return {type: 'InProgress'};
     case METADATA_PRIVACY_SAVE_COMPLETE:
-      return {type: 'Success', contents: action.contents};
+      return {type: 'Success', contents: action.contents, showResultButton: Date.now()};
     case METADATA_PRIVACY_SAVE_ERROR:
-      return {type: 'Error', error: action.err};
+      return {type: 'Error', error: action.error, resultTimestamp: Date.now()};
     default:
       return privacyApiCallState;
   }
@@ -502,9 +497,9 @@ export function updateApiCallState(apiCallState = {type: 'NotStarted'}, action) 
     case METADATA_SAVE_START:
       return {type: 'InProgress'};
     case METADATA_SAVE_COMPLETE:
-      return {type: 'Success', contents: action.contents};
+      return {type: 'Success', contents: action.contents, resultTimestamp: Date.now()};
     case METADATA_SAVE_ERROR:
-      return {type: 'Error', error: action.err};
+      return {type: 'Error', error: action.error, resultTimestamp: Date.now()};
     default:
       return apiCallState;
   }
@@ -765,73 +760,6 @@ function renderLicenses(metadata, onMetadataAction) {
   );
 }
 
-function hasApiError(apiCall) {
-  return _.get(apiCall, 'type') === 'Error';
-}
-
-function renderFlashMessageApiError(apiCall, privacyApiCall) {
-  if (!hasApiError(apiCall) && !hasApiError(privacyApiCall)) {
-    return;
-  } else {
-    const messages = _.map([apiCall, privacyApiCall], function(call) {
-      if (hasApiError(call)) {
-        return getErrorMessage(call.error);
-      }
-    });
-    return (
-      <FlashMessage flashType="error">
-        {messages.length > 1
-          ? <ul>{messages.map((message) => <li>{message}</li>)}</ul>
-          : messages[0]}
-      </FlashMessage>
-    );
-  }
-}
-
-
-function getFormattedErrorMessage(error, hadMessage) {
-  switch (error) {
-    case 'Failed to fetch':
-      return I18n.screens.import_pane.errors.network_error;
-    case 'Bad Gateway':
-      return I18n.screens.import_pane.errors.http_error.format(error);
-    default:
-      if (hadMessage) {
-        return error;
-      } else {
-        return I18n.screens.import_pane.unknown_error;
-      }
-  }
-}
-
-function getErrorMessage(error) {
-  if (error.message) {
-    return getFormattedErrorMessage(error.message, true);
-  } else {
-    return getFormattedErrorMessage(error, false);
-  }
-}
-
-function hasImportError(importError) {
-  return !_.isUndefined(importError);
-}
-
-function renderFlashMessageImportError(importError) {
-  if (!hasImportError(importError)) {
-    return;
-  }
-  return (
-    <FlashMessage flashType="error">
-      <p>{importError}</p>
-      <p
-        dangerouslySetInnerHTML={{__html: format(
-        I18n.screens.dataset_new.import_help,
-        {common_errors: 'https://support.socrata.com/hc/en-us/articles/202950008-Import-Warning-and-Errors'}
-      )}} />
-    </FlashMessage>
-  );
-}
-
 export function showMapLayer(operation) {
   return operation === 'ConnectToEsri';
 }
@@ -845,54 +773,37 @@ function metadataSuccessMessage(operation) {
   }
 }
 
-function renderMetadataSuccessMessage(operation, importError, apiCall) {
-  if (hasImportError(importError) || hasApiError(apiCall)) {
-    return;
-  }
-  if (operation === 'CREATE_FROM_SCRATCH' || operation === 'LINK_EXTERNAL') {
-    return;
-  }
-  return (
-    <FlashMessage flashType="success">
-      {metadataSuccessMessage(operation)}
-    </FlashMessage>
-  );
+function hideSuccessFlash(operation, apiCalls) {
+  return (anyCallHasError(apiCalls) || operation === 'CREATE_FROM_SCRATCH' || operation === 'LINK_EXTERNAL');
 }
 
-function apiCallInProgress(metadata) {
-  return _.get(metadata, 'apiCall.type') === 'InProgress' ||
-    _.get(metadata, 'privacyApiCall.type' === 'InProgress');
+function getMostImportantStatus(metadata) {
+  const metadataStatus = _.get(metadata, 'apiCall.type');
+  const privacyStatus = _.get(metadata, 'privacyApiCall.type');
+  const statuses = ['InProgress', 'Error', 'Success', 'NotStarted'];
+  return _.find(statuses, (status) => {
+    return (metadataStatus === status || privacyStatus === status);
+  });
 }
 
-export function view({ metadata, onMetadataAction, operation, importError, goToPrevious }) {
+export function view({ metadata, importStatus, onMetadataAction, operation, goToPrevious }) {
   const I18nPrefixed = I18n.screens.edit_metadata;
   const validationErrors = validate(metadata, operation);
+  const apiCalls = [importStatus, metadata.apiCall, metadata.privacyApiCall];
 
-  var onSave = () => {
-    onMetadataAction(updateNextClicked());
-    if (isMetadataValid(metadata, operation)) {
-      if (isMetadataUnsaved(metadata)) {
-        onMetadataAction(Server.saveMetadataToViewsApi());
-      }
-
-      // if metadata is invalid, don't make any save requests
-      // Confusing messaging to the user if we simultaneously
-      // say 'saving... saved' while displaying a validation error
-      if (isPrivacyChanged(metadata)) {
-        onMetadataAction(Server.savePrivacySettings());
-      }
-    }
-  };
-
-  if (apiCallInProgress(metadata)) {
-    onSave = undefined;
-  }
-
+  const successFlash =
+    hideSuccessFlash(operation, apiCalls)
+    ? null
+    : (
+      <FlashMessage flashType="success">
+        {metadataSuccessMessage(operation)}
+      </FlashMessage>
+      );
   return (
     <div className="metadataPane">
-      {renderMetadataSuccessMessage(operation, importError, metadata.apiCall)}
-      {renderFlashMessageApiError(metadata.apiCall, metadata.privacyApiCall)}
-      {renderFlashMessageImportError(importError)}
+      {successFlash}
+      <ApiErrorFlashMessage saveDescription="metadata" apiCalls={apiCalls} />
+
       <p className="headline">{I18n.screens.dataset_new.metadata.prompt}</p>
       <div className="commonForm metadataForm">
         {renderHref(metadata, operation, validationErrors, onMetadataAction)}
@@ -1036,7 +947,29 @@ export function view({ metadata, onMetadataAction, operation, importError, goToP
       </div>
       <NavigationControl
         onPrev={goToPrevious}
-        onSave={onSave}
+        onSave={
+          () => {
+            onMetadataAction(updateNextClicked());
+            // if metadata is invalid, don't make any save requests
+            // (even for privacy, which is always valid)
+            // It's confusing messaging to the user if we simultaneously
+            // say 'saving... saved' while displaying a validation error
+            if (!isMetadataValid(metadata, operation)) {
+              return;
+            }
+            if (isMetadataUnsaved(metadata)) {
+              onMetadataAction(Server.saveMetadataToViewsApi());
+            }
+            if (isPrivacyChanged(metadata)) {
+              onMetadataAction(Server.savePrivacySettings());
+            }
+          }
+        }
+        saveStatus={saveButtonStatus(
+           getMostImportantStatus(metadata),
+           _.max([metadata.apiCall.resultTimestamp, metadata.privacyApiCall.resultTimestamp]),
+           isMetadataUnsaved(metadata) || isPrivacyChanged(metadata)
+         )}
         onNext={(() => {
           onMetadataAction(updateNextClicked());
           onMetadataAction(updateDisplayType(operation));
@@ -1054,8 +987,8 @@ export function view({ metadata, onMetadataAction, operation, importError, goToP
 
 view.propTypes = {
   metadata: PropTypes.object.isRequired,
+  importStatus: PropTypes.object.isRequired,
   onMetadataAction: PropTypes.func.isRequired,
   operation: PropTypes.string.isRequired,
-  importError: PropTypes.string,
   goToPrevious: PropTypes.func.isRequired
 };

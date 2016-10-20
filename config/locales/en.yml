@@ -4115,8 +4115,8 @@ en:
       combine_multiple_cols: "(Combine Multiple Columns...)"
       downloading: Downloading your file...
       errors:
-        http_error: 'We were unable to save your metadata due to an error: {0}'
-        network_error: We were unable to save your metadata due to a network error.
+        http_error: 'We were unable to save your {1} due to an error: {0}'
+        network_error: 'We were unable to save your {0} due to a network error.'
       filetype_error_blist: Please choose a CSV, TSV, XLS, or XLSX file.
       filetype_error_shapefile: Please choose a KML, KMZ, or ZIP file.
       headline_import: Please choose a file to import
@@ -4438,6 +4438,7 @@ en:
       cancel: Cancel
       finish: Finish
       next: Next
+      no_changes_to_be_saved: "No changes to be saved."
       previous: Previous
       save: Save
   support:

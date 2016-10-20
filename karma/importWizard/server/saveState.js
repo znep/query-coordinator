@@ -3,9 +3,19 @@ import { withMockFetch, testThunk } from '../asyncUtils';
 import * as SaveState from 'saveState';
 
 import { fileUploadComplete  } from 'components/uploadFile';
+import { combineReducers } from 'redux';
 
+import * as Wizard from 'wizard';
+import * as Server from 'server';
+import * as Upload from 'components/uploadFile';
+import * as Download from 'components/downloadFile';
+import * as Metadata from 'components/metadata';
+import * as ImportColumns from 'components/importColumns';
+import * as ImportShapefile from 'components/importShapefile';
+import * as ConnectToEsri from 'components/connectToEsri';
 
-describe('saveState', () => {
+describe('saveState', function() {
+  this.timeout(SaveState.SHOW_RESPONSE_MS + 100);
 
   const initialState = {
     datasetId: 'asdf-jklo',
@@ -157,9 +167,27 @@ describe('saveState', () => {
   };
 
   it('saves the operation, returning an ImportSource object with the new version timestamp', (done) => {
+
+    function identityReducer(model = null, action) { // eslint-disable-line no-unused-vars
+      return model;
+    }
+
+    const mockUpdate = combineReducers({
+      datasetId: identityReducer,
+      lastSavedVersion: SaveState.update,
+      navigation: Wizard.updateNavigation,
+      upload: Upload.update,
+      download: Download.update,
+      connectToEsri: ConnectToEsri.update,
+      transform: ImportColumns.update, // null except in the UPLOAD_DATA operation
+      importStatus: Server.update,
+      layers: ImportShapefile.update,
+      metadata: Metadata.update
+    });
+
     withMockFetch(
       (url, options, resolve, reject) => {
-        expect(url).to.equal('/views/asdf-jklo/import_sources');
+        expect(url).to.equal(`/views/${initialState.datasetId}/import_sources`);
 
         const state = 'foo';
         const requestBody = JSON.parse(options.body)
@@ -180,26 +208,28 @@ describe('saveState', () => {
           done,
           SaveState.save(),
           initialState,
+          mockUpdate,
           [
             (state, action) => {
-              expect(action.type).to.eql('STATE_SAVE_STARTED')
-              return state;
+              expect(action).to.deep.equal({
+                type: SaveState.STATE_SAVE_STARTED
+              });
             },
             (state, action) => {
-              expect(action.type).to.eql('STATE_SAVED');
-              expect(action.version).to.eql(124)
-              return state;
+              expect(action.type).to.eql('STATE_SAVE_COMPLETE');
+              expect(action.importSource.version).to.eql(124)
+              expect(state.lastSavedVersion).to.equal(124);
+            },
+            (state, action) => {
+              expect(action.type).to.eql('RERENDER_SAVE_BUTTON');
             }
-
           ]
         )
-
       }
     );
   });
 
 });
-
 
 describe ("saveState's reducer", () => {
   it('it handles fileUploadComplete', () => {

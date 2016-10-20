@@ -11,25 +11,45 @@ tested in meta/asyncUtils.js
 
 
 // something like this probably already exists in NPM
-export function testThunk(done, actionThunk, wholeState, expectationThunks) {
-  let curExpectationThunkIdx = 0;
+export function testThunk(done, actionThunk, wholeState, update, assertionThunks) {
   let curState = wholeState;
+  const dispatchedActions = []
   function mockDispatch(dispatchedAction) {
+
+    // we can't actually fail this with an assertionbecause delayed actions will cause the wrong test to fail.
     assert(
-      curExpectationThunkIdx < expectationThunks.length,
-      `more actions dispatched than expectation thunks (${expectationThunks.length} thunks supplied); ` +
-      `extra action: ${JSON.stringify(dispatchedAction)}`
-    );
+      dispatchedActions.length < assertionThunks.length,
+      `more actions dispatched than expectation thunks (${assertionThunks.length} thunks supplied); ` +
+      `extra action: ${JSON.stringify(dispatchedAction)}. ` +
+      '\nWARNING: the asynchronous nature of this test & dispatches may have caused the wrong test to fail.'
+    )
+
+    if (dispatchedActions.length >= assertionThunks.length) {
+      console.error(`TEST FAILED: more actions dispatched than expectation thunks (${assertionThunks.length} thunks supplied); ` +
+            `extra action: ${JSON.stringify(dispatchedAction)}`)
+    }
+
     if (typeof dispatchedAction === 'function') {
       dispatchedAction(mockDispatch, () => curState);
     } else {
-      const expectationThunk = expectationThunks[curExpectationThunkIdx++];
-      curState = expectationThunk(curState, dispatchedAction);
+      // state to compare within the assertionThunk is created from the passed update method
+      // this method is a description of how the state is expected to change
+      curState = update(curState, dispatchedAction);
+      dispatchedActions.push([dispatchedAction, curState]);
     }
-    if (curExpectationThunkIdx === expectationThunks.length) {
+
+    if (dispatchedActions.length === assertionThunks.length) {
+      const assertions = _.zip(dispatchedActions, assertionThunks);
+
+      _.forEach(assertions, ([[actualAction, state], assertionThunk]) => {
+        // each thunks makes assertions around the action and state that they expect
+        // we pass in the action and state that we observed while running the original action
+        assertionThunk(state, actualAction)
+      })
       done();
     }
   }
+
   actionThunk(
     mockDispatch,
     () => wholeState

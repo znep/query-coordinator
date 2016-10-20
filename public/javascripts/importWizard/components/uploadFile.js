@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 import * as SharedTypes from '../sharedTypes';
 import Upload from 'component-upload';
 import * as url from 'url';
-import FlashMessage from './flashMessage';
+import { FlashMessage } from './flashMessage';
 import NavigationControl from './navigationControl';
 import { authenticityToken, appToken } from '../server';
 import airbrake from '../airbrake';
@@ -150,9 +150,9 @@ export function selectFile(file: File, operation: SharedTypes.OperationName) {
           dispatch(fileUploadError());
       }
     });
-    upload.on('error', (err) => {
+    upload.on('error', (error) => {
       airbrake.notify({
-        error: err,
+        error: error,
         context: { component: 'UploadFile' }
       });
       dispatch(fileUploadError());

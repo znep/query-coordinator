@@ -151,7 +151,7 @@ This will run all Ruby (MiniTest _and_ RSpec) and Javascript (Karma) tests.
 > or writing new ones and you see error messages from VCR complaining about unregistered 
 > HTTP requests, you can tell VCR to record the HTTP request(s) in your test by setting the 
 > [record mode](https://relishapp.com/vcr/vcr/v/3-0-3/docs/record-modes) to either 
-> `:record_mode => :new_episodes` or `:record_mode => :all`.
+> `:record => :new_episodes` or `:record => :all`.
 
 ### Karma tests
 

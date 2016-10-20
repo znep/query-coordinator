@@ -520,7 +520,8 @@ function SvgPieChart($element, vif) {
           pathElement.datum(),
           index
         );
-      });
+      }).
+      on('mouseleave', hideFlyout);
   }
 
   /**

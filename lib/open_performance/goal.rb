@@ -16,6 +16,10 @@ class OpenPerformance::Goal
     odysseus_goal_data_response.ok?
   end
 
+  def unauthorized?
+    odysseus_goal_data_response.unauthorized?
+  end
+
   def title
     odysseus_goal_data['name']
   end

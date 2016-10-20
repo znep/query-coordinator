@@ -27,6 +27,10 @@ class HttpResponse
     raw && raw.is_a?(Net::HTTPBadRequest)
   end
 
+  def unauthorized?
+    raw && raw.is_a?(Net::HTTPUnauthorized)
+  end
+
   def to_s
     "URI: #{raw.uri} Code: #{raw.code} Body: #{raw.body}"
   end

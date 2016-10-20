@@ -40,6 +40,18 @@ describe 'HttpResponse' do
     end
   end
 
+  describe '#unauthorized?' do
+    it 'returns true if the response is an instance of Net::HTTPUnauthorized' do
+      response = HttpResponse.new(double('Net:HTTPUnauthorized', :is_a? => true))
+      expect(response.unauthorized?).to be(true)
+    end
+
+    it 'returns false if the response is not an instance of Net::HTTPUnauthorized' do
+      response = HttpResponse.new(double('Net:HTTPUnauthorized', :is_a? => false))
+      expect(response.unauthorized?).to be(false)
+    end
+  end
+
   describe '#not_found?' do
     it 'returns true if the response is an instance of Net::HTTPNotFound' do
       response = HttpResponse.new(double('Net:HTTPNotFound', :instance_of? => true))

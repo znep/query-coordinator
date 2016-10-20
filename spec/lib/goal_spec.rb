@@ -83,6 +83,8 @@ describe OpenPerformance::Goal do
     it_behaves_like 'odysseus error forwarder'
 
     context '200' do
+      let(:odysseus_status) { 200 }
+
       it 'should return true' do
         expect(instance.accessible?).to eq(true)
       end
@@ -91,20 +93,64 @@ describe OpenPerformance::Goal do
     context 'normal errors' do
       context '404' do
         let(:odysseus_status) { 404 }
+
         it 'should return false' do
           expect(instance.accessible?).to eq(false)
         end
       end
+
       context '403' do
         let(:odysseus_status) { 403 }
+
         it 'should return false' do
           expect(instance.accessible?).to eq(false)
         end
       end
+
       context '401' do
         let(:odysseus_status) { 401 }
+
         it 'should return false' do
           expect(instance.accessible?).to eq(false)
+        end
+      end
+    end
+  end
+
+  describe '#unauthorized?' do
+    let(:method) { :unauthorized? }
+    it_behaves_like 'odysseus error forwarder'
+
+    context '200' do
+      let(:odysseus_status) { 200 }
+
+      it 'should return false' do
+        expect(instance.unauthorized?).to eq(false)
+      end
+    end
+
+    context 'normal errors' do
+      context '404' do
+        let(:odysseus_status) { 404 }
+
+        it 'should return false' do
+          expect(instance.unauthorized?).to eq(false)
+        end
+      end
+
+      context '403' do
+        let(:odysseus_status) { 403 }
+
+        it 'should return false' do
+          expect(instance.unauthorized?).to eq(false)
+        end
+      end
+
+      context '401' do
+        let(:odysseus_status) { 401 }
+
+        it 'should return true' do
+          expect(instance.unauthorized?).to eq(true)
         end
       end
     end

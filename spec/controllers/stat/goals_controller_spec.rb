@@ -5,6 +5,7 @@ RSpec.describe Stat::GoalsController, type: :controller do
   let(:category) { 'cate-gory' }
   let(:uid) { 'test-goal' }
   let(:accessible) { false }
+  let(:unauthorized) { false }
   let(:narrative_migration_marker) { 'narrative migration marker' }
   let(:narrative) do
     {
@@ -20,6 +21,7 @@ RSpec.describe Stat::GoalsController, type: :controller do
       :description => 'description',
       :public? => true,
       :accessible? => accessible,
+      :unauthorized? => unauthorized,
       :narrative_migration_metadata => narrative
     )
   end
@@ -66,12 +68,37 @@ RSpec.describe Stat::GoalsController, type: :controller do
   describe '#edit' do
 
     describe 'user not signed in' do
-      it 'redirects to login' do
+      let(:accessible) { false }
+      let(:unauthorized) { false }
+
+      before do
         stub_invalid_session
-        # Not typo, goal may be visible (public).
-        allow(goal).to receive(:accessible?).and_return(true)
-        get :edit, uid: uid
-        expect(response).to have_http_status(302)
+        allow(goal).to receive(:accessible?).and_return(accessible)
+        allow(goal).to receive(:unauthorized?).and_return(unauthorized)
+      end
+
+      describe 'goal not present' do
+        it '404s' do
+          get :edit, uid: uid
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      describe 'private goal' do
+        let(:unauthorized) { true }
+        it 'redirects to login' do
+          get :edit, uid: uid
+          expect(response).to have_http_status(302)
+        end
+      end
+
+      describe 'public goal' do
+        let(:accessible) { true }
+
+        it 'redirects to login' do
+          get :edit, uid: uid
+          expect(response).to have_http_status(302)
+        end
       end
     end
 
@@ -81,6 +108,7 @@ RSpec.describe Stat::GoalsController, type: :controller do
         stub_current_user_story_authorization(mock_user_authorization_unprivileged)
         # Not typo, goal may be visible (public).
         allow(goal).to receive(:accessible?).and_return(true)
+        allow(goal).to receive(:unauthorized?).and_return(false)
         get :edit, uid: uid
         expect(response).to have_http_status(404)
       end

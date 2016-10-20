@@ -62,6 +62,10 @@ module UserAuthorizationHelper
     OpenPerformance::Goal.new(goal_uid).accessible?
   end
 
+  def goal_unauthorized?(goal_uid)
+    OpenPerformance::Goal.new(goal_uid).unauthorized?
+  end
+
   def can_edit_goals?
     admin? &&
     has_domain_right?('edit_goals') &&

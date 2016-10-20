@@ -374,7 +374,8 @@ class ApplicationController < ActionController::Base
 
     # User always needs permission to view goal.
     # Defer to Procrustes/Odysseus.
-    render_story_404 unless can_view_goal?(goal_uid)
+    return handle_unauthorized_request if goal_unauthorized?(goal_uid)
+    return render_story_404 unless can_view_goal?(goal_uid)
 
     if current_user.present?
       case action

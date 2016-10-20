@@ -369,16 +369,50 @@ RSpec.describe UserAuthorizationHelper, type: :helper do
       expect(OpenPerformance::Goal).to receive(:new).with(goal_uid).and_call_original
       can_view_goal?('asdf-fdsa')
     end
+
     describe 'goal is not accessible' do
       let(:isAccessible) { false }
+
       it 'returns false' do
         expect(can_view_goal?('asdf-fdsa')).to be(isAccessible)
       end
     end
+
     describe 'goal is accessible' do
       let(:isAccessible) { true }
+
       it 'returns true' do
         expect(can_view_goal?('asdf-fdsa')).to be(isAccessible)
+      end
+    end
+  end
+
+  describe '#goal_unauthorized?' do
+    let(:goal_uid) { 'asdf-fdsa' }
+    let(:unauthorized) { true }
+
+    before do
+      allow_any_instance_of(OpenPerformance::Goal).to(
+        receive(:unauthorized?).and_return(unauthorized)
+      )
+    end
+
+    it 'passes argument to Goal.new' do
+      expect(OpenPerformance::Goal).to receive(:new).with(goal_uid).and_call_original
+      goal_unauthorized?(goal_uid)
+    end
+
+    describe 'user not authorized' do
+      let(:unauthorized) { true }
+      it 'returns true' do
+        expect(goal_unauthorized?(goal_uid)).to be(true)
+      end
+    end
+
+    describe 'user authorized' do
+      let(:unauthorized) { false }
+      it 'returns false' do
+        expect(goal_unauthorized?(goal_uid)).to be(false)
       end
     end
   end

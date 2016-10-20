@@ -33,7 +33,8 @@ const InfoPane = React.createClass({
 
     /**
      * The optional footer prop can be a string or an HTML element.  It is rendered below the
-     * description.
+     * description.  The content may contain HTML, meaning that it is important to sanitize the
+     * content before passing it to this component.
      */
     footer: PropTypes.node,
 
@@ -88,15 +89,18 @@ const InfoPane = React.createClass({
   },
 
   componentDidMount() {
+    if (this.metadataPane && this.description) {
+      const metadataHeight = this.metadataPane.getBoundingClientRect().height;
+      const descriptionHeight = this.description.getBoundingClientRect().height;
+
+      if (descriptionHeight < metadataHeight) {
+        this.description.style.height = `${metadataHeight}px`;
+      }
+    }
+
     const { descriptionLines, onExpandDescription } = this.props;
-    const metadataHeight = this.metadataPane.getBoundingClientRect().height;
-    const descriptionHeight = this.description.getBoundingClientRect().height;
     const descriptionLineHeight = 24;
     const descriptionPadding = 11;
-
-    if (descriptionHeight < metadataHeight) {
-      this.description.style.height = `${metadataHeight}px`;
-    }
 
     collapsible(this.description, {
       height: descriptionLines * descriptionLineHeight + 2 * descriptionPadding,
@@ -128,7 +132,7 @@ const InfoPane = React.createClass({
 
     return (
       <div className="entry-meta first">
-        <div className="entry-meta topics">{footer}</div>
+        <div className="entry-meta topics" dangerouslySetInnerHTML={{ __html: footer }} />
       </div>
     );
   },
@@ -187,7 +191,7 @@ const InfoPane = React.createClass({
       </span> : null;
 
     const buttons = renderButtons ?
-      <div className="entry-actions">{renderButtons()}</div> :
+      <div className="entry-actions">{renderButtons(this.props)}</div> :
       null;
 
     return (

@@ -29,9 +29,9 @@ export default function componentSocrataVisualizationPieChart(componentData, the
     {
       resizeSupported: true,
       resizeOptions: {
-        minHeight: Constants.MINIMUM_COMPONENT_HEIGHTS_PX.VISUALIZATION
+        minHeight: Constants.MINIMUM_COMPONENT_HEIGHTS_PX.PIE_CHART
       },
-      defaultHeight: Constants.DEFAULT_VISUALIZATION_HEIGHT
+      defaultHeight: Constants.DEFAULT_PIE_CHART_HEIGHT
     },
     options
   ));

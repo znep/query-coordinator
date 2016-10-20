@@ -1,3 +1,4 @@
+import 'babel-polyfill';
 import _ from 'lodash';
 
 // When singletons use anything environmental to

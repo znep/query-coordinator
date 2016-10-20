@@ -166,6 +166,9 @@ export default {
         show_value_labels: {
           title: 'Show Value Labels'
         },
+        show_value_labels_as_percent: {
+          title: 'Label chart slices as %'
+        },
         chart_sorting: {
           large_to_small: 'Largest to smallest by value',
           small_to_large: 'Smallest to largest by value',

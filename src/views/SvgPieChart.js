@@ -153,7 +153,7 @@ function SvgPieChart($element, vif) {
     resizePie();
 
     if (self.getShowValueLabels()) {
-      renderArcLabels();
+      renderArcLabels(self.getShowValueLabelsAsPercent());
     }
   }
 
@@ -195,7 +195,7 @@ function SvgPieChart($element, vif) {
   /**
    * Render Arc Labels
    */
-  function renderArcLabels() {
+  function renderArcLabels(showPercentages) {
     svg.selectAll('g.slice-group').
       // Don't show label if arc angle is below a certain point
       filter((d) => (d.endAngle - d.startAngle) > 0.2).
@@ -203,7 +203,13 @@ function SvgPieChart($element, vif) {
         // Positioning text on bigger arc's center point
         attr('transform', (d) => `translate(${flyoutArc.centroid(d)})`).
         attr('text-anchor', 'middle').
-        text((d) => utils.formatNumber(d.data[1]));
+        // old function syntax used for this binding
+        text(function(d) {
+          var percent = d3.select(this.parentElement).select('.slice').attr('data-percent');
+          var percentAsString = renderPercentLabel(percent);
+
+          return showPercentages ? percentAsString : utils.formatNumber(d.data[1]);
+        });
   }
 
   /**
@@ -604,6 +610,13 @@ function SvgPieChart($element, vif) {
       'SOCRATA_VISUALIZATION_PIE_CHART_FLYOUT',
       null
     );
+  }
+
+  /**
+   * Formats given percentage as string
+   */
+  function renderPercentLabel(percent) {
+    return Math.round(Number(percent)) + I18n.translate('visualizations.common.percent_symbol');
   }
 }
 

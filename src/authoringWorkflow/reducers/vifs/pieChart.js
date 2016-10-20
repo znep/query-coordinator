@@ -24,7 +24,8 @@ import {
   SET_UNIT_ONE,
   SET_UNIT_OTHER,
   SET_VIEW_SOURCE_DATA_LINK,
-  SET_SHOW_VALUE_LABELS
+  SET_SHOW_VALUE_LABELS,
+  SET_SHOW_VALUE_LABELS_AS_PERCENT
 } from '../../actions';
 
 export default function pieChart(state, action) {
@@ -97,6 +98,10 @@ export default function pieChart(state, action) {
 
     case SET_SHOW_VALUE_LABELS:
       setBooleanValueOrDefaultValue(state, 'configuration.showValueLabels', action.showValueLabels, true);
+      break;
+
+    case SET_SHOW_VALUE_LABELS_AS_PERCENT:
+      setBooleanValueOrDefaultValue(state, 'configuration.showValueLabelsAsPercent', action.showValueLabelsAsPercent, false);
       break;
 
     case SET_UNIT_ONE:

@@ -14,6 +14,7 @@ function render(type) {
     onChangeLabelLeft: sinon.spy(),
     onChangeShowDimensionLabels: sinon.spy(),
     onChangeShowValueLabels: sinon.spy(),
+    onChangeShowValueLabelsAsPercent: sinon.spy(),
     onSelectChartSorting: sinon.spy(),
     onSelectTimelinePrecision: sinon.spy(),
     onChangeTreatNullValuesAsZero: sinon.spy()
@@ -117,6 +118,20 @@ describe('AxisAndScalePane', function() {
     });
   }
 
+  function rendersShowValueLabelsAsPercentAndEmitEvents() {
+    describe('rendering', function() {
+      it('renders a show value labels as percentage checkbox', function() {
+        expect(component.querySelector('#show-value-labels-as-percent')).to.exist;
+      });
+    });
+
+    describe('events', function () {
+      describe('when changing the show value labels as percent checkbox', function () {
+        emitsEvent('#show-value-labels-as-percent', 'onChangeShowValueLabelsAsPercent');
+      })
+    });
+  }
+
   function rendersChartSortingAndEmitsEvents() {
     describe('rendering', function() {
       it('renders a dropdown with chart sorting options', function() {
@@ -213,6 +228,7 @@ describe('AxisAndScalePane', function() {
     beforeEach(setUpVisualization('pieChart'));
 
     rendersShowValueLabelsAndEmitsEvents();
+    rendersShowValueLabelsAsPercentAndEmitEvents();
     rendersChartSortingAndEmitsEvents();
   });
 });

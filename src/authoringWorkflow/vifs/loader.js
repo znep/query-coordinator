@@ -31,6 +31,8 @@ const paths = {
   viewSourceDataLink: 'configuration.viewSourceDataLink',
   visualizationType: 'series[0].type',
   showDimensionLabels: 'configuration.showDimensionLabels',
+  showValueLabels: 'configuration.showValueLabels',
+  showValueLabelsAsPercent: 'configuration.showValueLabelsAsPercent',
   zeroColor: 'configuration.legend.zeroColor',
   precision: 'series[0].dataSource.precision',
   treatNullValuesAsZero: 'configuration.treatNullValuesAsZero',
@@ -153,6 +155,14 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.showDimensionLabels)) {
     dispatch(actions.setShowDimensionLabels(get(paths.showDimensionLabels)));
+  }
+
+  if (has(paths.showValueLabels)) {
+    dispatch(actions.setShowValueLabels(get(paths.showValueLabels)));
+  }
+
+  if (has(paths.showValueLabelsAsPercent)) {
+    dispatch(actions.setShowValueLabelsAsPercent(get(paths.showValueLabelsAsPercent)));
   }
 
   if (has(paths.zeroColor)) {

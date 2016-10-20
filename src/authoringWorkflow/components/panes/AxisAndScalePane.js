@@ -11,6 +11,7 @@ import {
   setLabelLeft,
   setShowDimensionLabels,
   setShowValueLabels,
+  setShowValueLabelsAsPercent,
   setOrderBy,
   setPrecision,
   setTreatNullValuesAsZero
@@ -22,6 +23,7 @@ import {
   getTreatNullValuesAsZero,
   getShowDimensionLabels,
   getShowValueLabels,
+  getShowValueLabelsAsPercent,
   isBarChart,
   isColumnChart,
   isHistogram,
@@ -46,7 +48,7 @@ export var AxisAndScalePane = React.createClass({
   },
 
   renderBarChartVisualizationLabels() {
-    const vifAuthoring = this.props.vifAuthoring;
+    const { vifAuthoring } = this.props;
     const axisLabels = getAxisLabels(vifAuthoring);
     const topAxisLabel = _.get(axisLabels, 'top', null);
     const leftAxisLabel = _.get(axisLabels, 'left', null);
@@ -87,7 +89,7 @@ export var AxisAndScalePane = React.createClass({
   },
 
   renderVisualizationLabels() {
-    const vifAuthoring = this.props.vifAuthoring;
+    const { vifAuthoring } = this.props;
     const axisLabels = getAxisLabels(vifAuthoring);
     const leftAxisLabel = _.get(axisLabels, 'left', null);
     const bottomAxisLabel = _.get(axisLabels, 'bottom', null);
@@ -128,7 +130,7 @@ export var AxisAndScalePane = React.createClass({
   },
 
   renderShowDimensionLabels() {
-    const vifAuthoring = this.props.vifAuthoring;
+    const { vifAuthoring } = this.props;
     const inputAttributes = {
       id: 'show-dimension-labels',
       type: 'checkbox',
@@ -154,8 +156,27 @@ export var AxisAndScalePane = React.createClass({
     );
   },
 
+  renderDataLabelField() {
+    return (
+      <div className="authoring-field-group">
+        <h5>{translate('panes.axis_and_scale.subheaders.data_labels')}</h5>
+        { this.renderShowValueLabels() }
+      </div>
+    );
+  },
+
+  renderDataLabelFieldsWithPercent() {
+    return (
+      <div className="authoring-field-group">
+        <h5>{translate('panes.axis_and_scale.subheaders.data_labels')}</h5>
+        { this.renderShowValueLabels() }
+        { this.renderShowPercentLabels() }
+      </div>
+    );
+  },
+
   renderShowValueLabels() {
-    const vifAuthoring = this.props.vifAuthoring;
+    const { vifAuthoring } = this.props;
     const inputAttributes = {
       id: 'show-value-labels',
       type: 'checkbox',
@@ -164,8 +185,6 @@ export var AxisAndScalePane = React.createClass({
     };
 
     return (
-      <div className="authoring-field-group">
-        <h5>{translate('panes.axis_and_scale.subheaders.data_labels')}</h5>
         <div className="authoring-field">
           <div className="checkbox">
             <input {...inputAttributes}/>
@@ -176,6 +195,29 @@ export var AxisAndScalePane = React.createClass({
               {translate('panes.axis_and_scale.fields.show_value_labels.title')}
             </label>
           </div>
+        </div>
+    );
+  },
+
+  renderShowPercentLabels() {
+    const { vifAuthoring } = this.props;
+    const inputAttributes = {
+      id: 'show-value-labels-as-percent',
+      type: 'checkbox',
+      onChange: this.props.onChangeShowValueLabelsAsPercent,
+      defaultChecked: getShowValueLabelsAsPercent(vifAuthoring)
+    };
+
+    return (
+      <div className="authoring-field">
+        <div className="checkbox">
+          <input {...inputAttributes}/>
+          <label className="inline-label" htmlFor="show-value-labels-as-percent">
+              <span className="fake-checkbox">
+                <span className="icon-checkmark3"></span>
+              </span>
+            {translate('panes.axis_and_scale.fields.show_value_labels_as_percent.title')}
+          </label>
         </div>
       </div>
     );
@@ -204,7 +246,7 @@ export var AxisAndScalePane = React.createClass({
       onSelection: onSelectChartSorting,
       id: 'chart-sorting-selection',
       value: `${defaultChartSort.parameter}-${defaultChartSort.sort}`
-    }
+    };
 
     return (
       <div className="authoring-field-group">
@@ -291,14 +333,14 @@ export var AxisAndScalePane = React.createClass({
   renderBarChartControls() {
     const visualizationLabels = this.renderBarChartVisualizationLabels();
     const showDimensionLabels = this.renderShowDimensionLabels();
-    const showValueLabels = this.renderShowValueLabels();
+    const dataLabelField = this.renderDataLabelField();
     const chartSorting = this.renderChartSorting();
 
     return (
       <div>
         {visualizationLabels}
         {showDimensionLabels}
-        {showValueLabels}
+        {dataLabelField}
         {chartSorting}
       </div>
     );
@@ -335,13 +377,14 @@ export var AxisAndScalePane = React.createClass({
   },
 
   renderPieChartControls() {
-    const showValueLabels = this.renderShowValueLabels();
+    const dataLabelFieldsWithPercent = this.renderDataLabelFieldsWithPercent();
+
     const chartSorting = this.renderChartSorting();
 
     return (
       <div>
         {chartSorting}
-        {showValueLabels}
+        {dataLabelFieldsWithPercent}
       </div>
     );
   },
@@ -351,7 +394,7 @@ export var AxisAndScalePane = React.createClass({
   },
 
   render() {
-    const vifAuthoring = this.props.vifAuthoring;
+    const { vifAuthoring } = this.props;
 
     let configuration;
 
@@ -416,6 +459,12 @@ function mapDispatchToProps(dispatch) {
       const showValueLabels = event.target.checked;
 
       dispatch(setShowValueLabels(showValueLabels));
+    },
+
+    onChangeShowValueLabelsAsPercent: (event) => {
+      const showValueLabelsAsPercent = event.target.checked;
+
+      dispatch(setShowValueLabelsAsPercent(showValueLabelsAsPercent));
     },
 
     onSelectChartSorting: (chartSorting) => {

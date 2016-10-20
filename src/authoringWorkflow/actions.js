@@ -446,6 +446,14 @@ export function setShowValueLabels(showValueLabels) {
   };
 }
 
+export const SET_SHOW_VALUE_LABELS_AS_PERCENT = 'SET_SHOW_VALUE_LABELS_AS_PERCENT';
+export function setShowValueLabelsAsPercent(showValueLabelsAsPercent) {
+  return {
+    type: SET_SHOW_VALUE_LABELS_AS_PERCENT,
+    showValueLabelsAsPercent
+  };
+}
+
 export const SET_X_AXIS_SCALING_MODE = 'SET_X_AXIS_SCALING_MODE';
 export function setXAxisScalingMode(shouldFit) {
   return {

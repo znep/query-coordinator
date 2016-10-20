@@ -8,6 +8,7 @@ export default {
   configuration: {
     viewSourceDataLink: true,
     showValueLabels: true,
+    showValueLabelsAsPercent: false
   },
   description: '',
   series: [

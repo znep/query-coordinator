@@ -441,6 +441,15 @@ function SvgVisualization($element, vif) {
     );
   };
 
+  this.getShowValueLabelsAsPercent = function() {
+
+    return _.get(
+      self.getVif(),
+      'configuration.showValueLabelsAsPercent',
+      false
+    );
+  };
+
   this.emitEvent = function(name, payload) {
 
     self.$element[0].dispatchEvent(

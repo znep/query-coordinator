@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var utils = require('socrata-utils');
 var $ = require('jquery');
+var I18n = require('src/I18n');
 var SvgPieChart = require('../../src/views/SvgPieChart');
 
 describe('SvgPieChart', () => {
@@ -113,6 +114,8 @@ describe('SvgPieChart', () => {
     it('slices should have correct data', () => {
       pieChart.chart.render(null, testData);
 
+      const total = testData[0].rows.reduce((sum, d) => sum + d[1], 0);
+
       for(let i = 0; i < testData[0].rows.length; i++) {
         let renderedValue = Number(pieChart.$element.find('.slice')[i].getAttribute('data-value'));
         let expectedValue = testData[0].rows[i][1];
@@ -123,6 +126,11 @@ describe('SvgPieChart', () => {
         let expectedLabel = testData[0].rows[i][0];
 
         expect(renderedLabel).to.equal(expectedLabel);
+
+        let renderedPercent = pieChart.$element.find('.slice')[i].getAttribute('data-percent');
+        let expectedPercent = ((100 * testData[0].rows[i][1]) / total).toString();
+
+        expect(renderedPercent).to.equal(expectedPercent);
       }
     });
 
@@ -141,16 +149,30 @@ describe('SvgPieChart', () => {
       pieChart.$element.find('.slice-group').each((i, el) => {
 
         const $textEl = $(el).find('text');
-        const text = $textEl.find('text').text();
+        const text = $textEl.text();
 
         if (text) {
           const actualValue = Number($(el).find('path').attr('data-value'));
           const formattedValue = utils.formatNumber(actualValue);
           expect(formattedValue).to.equal(text);
-          expect($textEl.css('font-size')).to.equal('10px');
-          expect($textEl.css('fill')).to.equal('#FFFFFF');
         }
+      });
+    });
 
+    it('should show percentage of values in arc labels if show as percentage is checked', () => {
+      let chart = createPieChart({ configuration: { 'showValueLabels': true, 'showValueLabelsAsPercent': true } });
+
+      chart.chart.render(null, testData);
+
+      chart.$element.find('.slice-group').each((i, el) => {
+        const text = $(el).find('text').text();
+
+        if (text) {
+          const actualValue = Number($(el).find('path').attr('data-percent'));
+          const formattedValue = Math.round(Number(actualValue)) + I18n.translate('visualizations.common.percent_symbol');
+
+          expect(formattedValue).to.equal(text);
+        }
       });
     });
 
@@ -158,12 +180,15 @@ describe('SvgPieChart', () => {
       pieChart.chart.render(null, testData);
 
       var slice = pieChart.$element.find('.slice-group')[0];
+      var percent = Math.round(Number(pieChart.$element.find('.slice-group:nth(0) .slice')[0].attributes['data-percent'].value));
+      var percentSymbol = I18n.translate('visualizations.common.percent_symbol');
 
       pieChart.$element.on('SOCRATA_VISUALIZATION_PIE_CHART_FLYOUT', event => {
         let payload = event.originalEvent.detail;
         let $content = $(payload.content);
 
         expect($content.find('.socrata-flyout-title').text()).to.equal(testData[0].rows[0][0]);
+        expect($content.find('.socrata-flyout-cell').text()).to.contains(`(${percent}${percentSymbol})`);
         done();
       });
 

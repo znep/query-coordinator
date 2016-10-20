@@ -510,8 +510,8 @@ class AdministrationController < ApplicationController
       # EN-7318: ajax calls to this endpoint (currently from data lens pages) should not persist flash messages
       flash[:notice] = t(
         'screens.admin.view_moderation.set_moderation_status',
-        :view_name => v.name,
-        :moderation_status => v.moderation_status.downcase
+        :view_name => view.name,
+        :moderation_status => view.moderation_status.downcase
       )
     end
 

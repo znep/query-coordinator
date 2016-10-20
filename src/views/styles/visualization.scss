@@ -18,7 +18,7 @@ $axis-padding: 42px;
   height: 100%;
   font-size: 14px;
   font-style: normal;
-  font-weight: 200;
+  font-weight: 400;
   line-height: 1.618;
   color: #5e5e5e;
   border: 1px solid $visualization-border-color;
@@ -87,6 +87,7 @@ $axis-padding: 42px;
     }
 
     .socrata-visualization-view-source-data {
+      font-weight: 200;
       margin-left: 6px;
 
       .socrata-visualization-icon-external {

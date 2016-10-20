@@ -372,7 +372,7 @@ $(function() {
         subtext: t('menu.odata_subtext'),
         href: '#odata',
         iconColor: '#f93f06',
-        onlyIf: widgetNS.isTabular && menuOptions.odata
+        onlyIf: widgetNS.isTabular && menuOptions.api
       }, {
         text: t('menu.print'),
         className: 'print',

@@ -357,11 +357,11 @@ module SocrataSiteChrome
     end
 
     def using_custom_header_footer?
-      site_chrome_custom_content.custom_content_is_present?
+      site_chrome_custom_content.present?
     end
 
     def custom_header_footer_content
-      site_chrome_custom_content.get_custom_content
+      site_chrome_custom_content.fetch
     end
   end
 end

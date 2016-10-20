@@ -10,17 +10,17 @@ describe SocrataSiteChrome::CustomContent do
   let(:coreservice_uri) { Rails.application.config_for(:config)['coreservice_uri'] }
   let(:uri) { "#{coreservice_uri}/configurations.json?type=site_chrome&defaultOnly=true" }
 
-  describe '#get_custom_content' do
+  describe '#fetch' do
     it 'returns empty content if the config is empty' do
       stub_configurations(:status => 200, :body => nil)
-      expect(helper.get_custom_content).to eq(
+      expect(helper.fetch).to eq(
         {:header=>{:html=>nil, :css=>nil, :js=>nil}, :footer=>{:html=>nil, :css=>nil, :js=>nil}}
       )
     end
 
     it 'returns content for each corresponding section from the config' do
       stub_configurations(:status => 200, :body => site_chrome_config_with_custom_content)
-      result = helper.get_custom_content
+      result = helper.fetch
 
       expect(result.dig(:header, :html)).to eq('<div id="nyc-custom-header">my custom header</div>')
       expect(result.dig(:header, :css)).to eq('#nyc-custom-header { color: red; }')
@@ -31,20 +31,20 @@ describe SocrataSiteChrome::CustomContent do
     end
   end
 
-  describe '#custom_content_is_present?' do
+  describe '#present?' do
     it 'returns false if the config response is empty' do
       stub_configurations(:status => 200, :body => nil)
-      expect(helper.custom_content_is_present?).to eq(false)
+      expect(helper.present?).to eq(false)
     end
 
     it 'returns false if the config response contains normal site chrome content but no custom content' do
       stub_configurations(:status => 200, :body => site_chrome_config_without_custom_content)
-      expect(helper.custom_content_is_present?).to eq(false)
+      expect(helper.present?).to eq(false)
     end
 
     it 'returns true if custom content is present' do
       stub_configurations(:status => 200, :body => site_chrome_config_with_custom_content)
-      expect(helper.custom_content_is_present?).to eq(true)
+      expect(helper.present?).to eq(true)
     end
   end
 

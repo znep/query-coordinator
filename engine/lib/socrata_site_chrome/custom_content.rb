@@ -12,39 +12,43 @@ module SocrataSiteChrome
       @domain = domain
     end
 
-    def get_custom_content
+    def fetch
       config = SocrataSiteChrome::DomainConfig.new(domain).config
       content = config[:properties].to_a.select do |property|
-        custom_content_property_names.include?(property[:name])
+        property_names.include?(property[:name])
       end.to_a
 
       {
         :header => {
-          :html => custom_content_property(content, 'custom_header_html'),
-          :css => custom_content_property(content, 'custom_header_css'),
-          :js => custom_content_property(content, 'custom_header_js')
+          :html => property(content, 'custom_header_html'),
+          :css => property(content, 'custom_header_css'),
+          :js => property(content, 'custom_header_js')
         },
         :footer => {
-          :html => custom_content_property(content, 'custom_footer_html'),
-          :css => custom_content_property(content, 'custom_footer_css'),
-          :js => custom_content_property(content, 'custom_footer_js')
+          :html => property(content, 'custom_footer_html'),
+          :css => property(content, 'custom_footer_css'),
+          :js => property(content, 'custom_footer_js')
         }
       }
     end
 
-    def custom_content_is_present?
-      custom_content = get_custom_content
-      custom_content[:header].values.any? || custom_content[:footer].values.any?
+    def present?
+      custom_content = fetch
+      (custom_content[:header].values + custom_content[:footer].values).any?(&:present?)
+    end
+
+    def blank?
+      !present?
     end
 
     private
 
-    def custom_content_property_names
+    def property_names
       %w(custom_header_html custom_header_css custom_header_js
         custom_footer_html custom_footer_css custom_footer_js)
     end
 
-    def custom_content_property(custom_content, property_name)
+    def property(custom_content, property_name)
       custom_content.detect { |content| content[:name] == property_name }.try(:[], :value)
     end
   end

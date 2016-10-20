@@ -17,7 +17,7 @@ http_interactions:
       - localhost
   response:
     status:
-      code: 500
+      code: 503
       message: OK
     headers:
       X-Socrata-Requestid:

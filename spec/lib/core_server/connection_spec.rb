@@ -25,7 +25,7 @@ describe CoreServer::Connection do
           "<html><body><h1>503 Service Unavailable</h1>\n" <<
           "No server is available to handle this request.\n</body></html>\n'",
         :session => {
-          :current_domain=>'localhost',
+          :current_domain => 'localhost',
           :current_user_id => 'test-test'
         },
         :parameters => {

@@ -12,7 +12,7 @@ module.exports = {
     contentBase: 'public/js',
     https: true
   },
-  devtool: 'eval',
+  devtool: 'cheap-source-map',
   plugins: [
     new AssetsPlugin()
   ]

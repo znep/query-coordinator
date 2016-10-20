@@ -183,7 +183,7 @@ GEM
     mime-types-data (3.2016.0521)
     mimemagic (0.3.0)
     mini_portile2 (2.1.0)
-    minitest (5.9.0)
+    minitest (5.9.1)
     mixlib-shellout (2.2.6)
     mrdialog (1.0.1)
     multi_json (1.12.1)
@@ -199,7 +199,7 @@ GEM
     nokogumbo (1.4.7)
       nokogiri
     os (0.9.6)
-    paperclip (4.3.6)
+    paperclip (4.3.7)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
       cocaine (~> 0.5.5)

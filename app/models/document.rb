@@ -66,7 +66,8 @@ class Document < ActiveRecord::Base
     processors: [:manual_cropper],
     convert_options: {
       thumb: '-strip' # Default imagemagick quality setting is 92. See https://www.imagemagick.org/script/command-line-options.php#quality
-    }
+    },
+    s3_server_side_encryption: 'AES256'
 
   validates :direct_upload_url, presence: true, format: { with: EXPECTED_UPLOAD_URL_FORMAT }
   validates_attachment_content_type :upload, content_type: /\A(image|text\/html)/

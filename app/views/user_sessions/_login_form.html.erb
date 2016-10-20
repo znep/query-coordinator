@@ -15,13 +15,16 @@
           <%= t('screens.sign_in.auth0_intro') %>
         <%- end -%>
       </p>
-      <a class="button" data-connection="socrata.com">
-        <span class="iconContainer">
-          <img src="/stylesheets/images/common/logo.png">
-        </span>
-        <%=raw t('screens.sign_in.sign_in_with', provider: 'Socrata ID') %>
-      <%- if @auth0_connections.length > 1 %>
-        <hr>
+      <%- unless FeatureFlags.derive(nil, request).hide_socrata_id %>
+        <a class="button" data-connection="socrata.com">
+          <span class="iconContainer">
+            <img src="/stylesheets/images/common/logo.png">
+          </span>
+          <%== t('screens.sign_in.sign_in_with', provider: 'Socrata ID') %>
+        </a>
+        <%- if @auth0_connections.length > 1 %>
+          <hr>
+        <%- end -%>
       <%- end -%>
       <%- @auth0_connections.each do |connection| %>
         <a class="button" data-connection="<%= connection.connection %>">
@@ -35,7 +38,7 @@
       <%- end -%>
     </div>
 
-    <%- if FeatureFlags.derive(@view, request).use_auth0_login_flow %>
+    <%- if FeatureFlags.derive(nil, request).use_auth0_login_flow %>
       <div class="auth0login" id="auth0login-socrata-id"></div>
     <%- else %>
       <div class="authProvider socrata">

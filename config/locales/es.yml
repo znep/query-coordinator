@@ -455,7 +455,7 @@ es:
         share_button: Compartir
         subscribe: Suscripción
         suggest_dataset: "¿No encontró lo que estaba buscando? Sugiera un conjunto de datos"
-        suggest_dataset_short: Sugerir un conjunto de datos
+        suggest_dataset_short: Sugerir un nuevo dataset
         suggest_dataset_verb: Dar sugerencias
       back_to_dataset: Volver al conjunto de datos
       browse2:
@@ -955,7 +955,7 @@ es:
       status: Estado
       submit: Enviar
       submitted_by: Enviado por
-      suggest_a_dataset: Sugerir un Conjunto de Datos
+      suggest_a_dataset: Sugerir un nuevo dataset
       suggestion_received: 'Su sugerencia ha sido recibida y está en la cola de moderación. Aparecerá en esta página cuando el administrador lo apruebe. '
       suggestion_updated: Su sugerencia ha sido actualizada
       title: Título

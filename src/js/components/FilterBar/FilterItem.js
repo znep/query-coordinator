@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import NumberFilter from './NumberFilter';
 import TextFilter from './TextFilter';
+import FilterConfig from './FilterConfig';
 import { translate as t } from '../../common/I18n';
 import { getToggleTextForFilter } from './filters';
 import { ESCAPE } from '../../common/keycodes';
@@ -25,42 +26,50 @@ export const FilterItem = React.createClass({
       name: PropTypes.string.isRequired
     }).isRequired,
     fetchSuggestions: PropTypes.func,
-    onUpdate: PropTypes.func
-  },
-
-  getDefaultProps() {
-    return {
-      onUpdate: _.noop
-    };
+    onUpdate: PropTypes.func.isRequired,
+    onRemove: PropTypes.func.isRequired
   },
 
   getInitialState() {
     return {
-      isOpened: false
+      isControlOpen: false,
+      isConfigOpen: false
     };
   },
 
   componentDidMount() {
-    this.bodyClickHandler = document.body.addEventListener('click', (event) => {
-      const { isOpened } = this.state;
+    this.bodyClickHandler = (event) => {
+      // Avoid closing flannels if the click is inside any of these refs.
+      const flannelElements = [
+        this.filterControl,
+        this.filterConfig,
+        this.filterControlToggle,
+        this.filterConfigToggle
+      ];
 
-      const filterControl = ReactDOM.findDOMNode(this.filterComponent);
-      const toggleText = ReactDOM.findDOMNode(this.toggleText);
+      // Are there any flannelElements that contain event.target?
+      const isInsideFlannels = _.chain(flannelElements).
+        compact().
+        map(ReactDOM.findDOMNode).
+        invokeMap('contains', event.target).
+        some().
+        value();
 
-      const isFilterControl = isOpened && filterControl.contains(event.target);
-      const isToggleText = toggleText.contains(event.target);
-
-      if (isOpened && !isFilterControl && !isToggleText) {
-        this.toggleOpened();
+      // If none of the flannelElements contain event.target, close all the flannels.
+      if (!isInsideFlannels) {
+        this.closeAll();
       }
-    });
+    };
 
-    this.bodyEscapeHandler = document.body.addEventListener('keyup', (event) => {
-      if (this.state.isOpened && event.keyCode === ESCAPE) {
-        this.toggleOpened();
+    this.bodyEscapeHandler = (event) => {
+      if (event.keyCode === ESCAPE) {
+        this.closeAll();
         this.toggleText.focus();
       }
-    });
+    };
+
+    document.body.addEventListener('click', this.bodyClickHandler);
+    document.body.addEventListener('keyup', this.bodyEscapeHandler);
   },
 
   componentWillUnmount() {
@@ -69,25 +78,45 @@ export const FilterItem = React.createClass({
   },
 
   onCancel() {
-    this.toggleOpened();
+    this.toggleControl();
   },
 
   onUpdate(newFilter) {
     this.props.onUpdate(newFilter);
-    this.toggleOpened();
+    this.closeAll();
   },
 
-  toggleOpened() {
+  onRemove(filter) {
+    this.props.onRemove(filter);
+    this.closeAll();
+  },
+
+  toggleControl() {
     this.setState({
-      isOpened: !this.state.isOpened
+      isControlOpen: !this.state.isControlOpen,
+      isConfigOpen: false
+    });
+  },
+
+  toggleConfig() {
+    this.setState({
+      isControlOpen: false,
+      isConfigOpen: !this.state.isConfigOpen
+    });
+  },
+
+  closeAll() {
+    this.setState({
+      isControlOpen: false,
+      isConfigOpen: false
     });
   },
 
   renderFilterControl() {
     const { filter, column, fetchSuggestions } = this.props;
-    const { isOpened } = this.state;
+    const { isControlOpen } = this.state;
 
-    if (!isOpened) {
+    if (!isControlOpen) {
       return null;
     }
 
@@ -97,7 +126,7 @@ export const FilterItem = React.createClass({
       fetchSuggestions,
       onCancel: this.onCancel,
       onUpdate: this.onUpdate,
-      ref: _.partial(_.set, this, 'filterComponent')
+      ref: _.partial(_.set, this, 'filterControl')
     };
 
     switch (column.dataTypeName) {
@@ -107,25 +136,57 @@ export const FilterItem = React.createClass({
     }
   },
 
+  renderFilterConfig() {
+    const { filter } = this.props;
+    const { isConfigOpen } = this.state;
+
+    if (!isConfigOpen) {
+      return null;
+    }
+
+    const configProps = {
+      filter,
+      onRemove: this.onRemove,
+      ref: _.partial(_.set, this, 'filterConfig')
+    };
+
+    return <FilterConfig {...configProps} />;
+  },
+
   render() {
     const { filter, column } = this.props;
 
     return (
       <div className="filter-bar-filter">
         <div className="filter-title">{column.name}</div>
+
         <div className="filter-control-container">
           <div
             className="filter-control-toggle"
             aria-label={`${t('filter_bar.filter')} ${column.name}`}
             tabIndex="0"
-            onClick={this.toggleOpened}
-            onKeyPress={this.toggleOpened}
-            ref={(el) => this.toggleText = el}>
+            onClick={this.toggleControl}
+            onKeyPress={this.toggleControl}
+            ref={(el) => this.filterControlToggle = el}>
             {getToggleTextForFilter(filter, column)}
             <span className="icon-chevron-down" role="presentation" />
           </div>
 
           {this.renderFilterControl()}
+        </div>
+
+        <div className="filter-config-container">
+          <div
+            className="filter-config-toggle"
+            aria-label={t('filter_bar.configure_filter')}
+            tabIndex="0"
+            onClick={this.toggleConfig}
+            onKeyPress={this.toggleConfig}
+            ref={(el) => this.filterConfigToggle = el}>
+            <span className="icon-kebab" role="presentation" />
+          </div>
+
+          {this.renderFilterConfig()}
         </div>
       </div>
     );

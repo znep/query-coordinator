@@ -30,9 +30,8 @@ export default React.createClass({
 
     /**
      * The description prop renders a description in the lower area of the ViewCard. The description
-     * will automatically be ellipsified using dotdotdot if it is longer than 3 lines of text.
-     * Currently the ellipsification has problems in Firefox. If this prop is omitted, the
-     * description area will render blank.
+     * will automatically be ellipsified using dotdotdot if it is longer than 3 lines of text.  If
+     * this prop is omitted, the description area will render blank.
      */
     description: PropTypes.string,
 

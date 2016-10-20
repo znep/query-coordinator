@@ -11,12 +11,11 @@ export const Slider = React.createClass({
       start: PropTypes.number,
       end: PropTypes.number
     }),
-    onChange: PropTypes.func
+    onChange: PropTypes.func.isRequired
   },
 
   getDefaultProps() {
     return {
-      onChange: _.noop,
       step: 5
     };
   },

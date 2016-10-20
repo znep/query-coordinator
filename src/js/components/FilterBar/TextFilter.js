@@ -8,15 +8,8 @@ export const TextFilter = React.createClass({
     filter: PropTypes.object.isRequired,
     column: PropTypes.object.isRequired,
     fetchSuggestions: PropTypes.func,
-    onCancel: PropTypes.func,
-    onUpdate: PropTypes.func
-  },
-
-  getDefaultProps() {
-    return {
-      onCancel: _.noop,
-      onUpdate: _.noop
-    };
+    onCancel: PropTypes.func.isRequired,
+    onUpdate: PropTypes.func.isRequired
   },
 
   getInitialState() {

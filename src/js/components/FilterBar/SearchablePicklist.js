@@ -8,15 +8,8 @@ export const SearchablePicklist = React.createClass({
     isLoading: PropTypes.bool,
     options: PropTypes.arrayOf(PropTypes.object),
     value: PropTypes.string,
-    onChangeSearchTerm: PropTypes.func,
-    onSelection: PropTypes.func
-  },
-
-  getDefaultProps() {
-    return {
-      onChangeSearchTerm: _.noop,
-      onSelection: _.noop
-    };
+    onChangeSearchTerm: PropTypes.func.isRequired,
+    onSelection: PropTypes.func.isRequired
   },
 
   componentDidMount() {

@@ -18,7 +18,7 @@ describe('FilterFooter', () => {
   }
 
   it('renders an element', () => {
-    element = renderComponent(FilterFooter, getProps());
+    element = renderPureComponent(FilterFooter(getProps()));
 
     expect(element).to.exist;
   });
@@ -26,9 +26,9 @@ describe('FilterFooter', () => {
   describe('apply', () => {
     beforeEach(() => {
       handlerStub = sinon.stub();
-      element = renderComponent(FilterFooter, getProps({
+      element = renderPureComponent(FilterFooter(getProps({
         onClickApply: handlerStub
-      }));
+      })));
       button = element.querySelector('.apply-btn');
     });
 
@@ -43,9 +43,9 @@ describe('FilterFooter', () => {
     });
 
     it('renders a disabled button if disabled', () => {
-      element = renderComponent(FilterFooter, getProps({
+      element = renderPureComponent(FilterFooter(getProps({
         disableApplyFilter: true
-      }));
+      })));
       button = element.querySelector('.apply-btn');
 
       expect(button.disabled).to.eq(true);
@@ -55,9 +55,9 @@ describe('FilterFooter', () => {
   describe('clear', () => {
     beforeEach(() => {
       handlerStub = sinon.stub();
-      element = renderComponent(FilterFooter, getProps({
+      element = renderPureComponent(FilterFooter(getProps({
         onClickClear: handlerStub
-      }));
+      })));
       button = element.querySelector('.clear-btn');
     });
 
@@ -75,9 +75,9 @@ describe('FilterFooter', () => {
   describe('cancel', () => {
     beforeEach(() => {
       handlerStub = sinon.stub();
-      element = renderComponent(FilterFooter, getProps({
+      element = renderPureComponent(FilterFooter(getProps({
         onClickCancel: handlerStub
-      }));
+      })));
       button = element.querySelector('.cancel-btn');
     });
 

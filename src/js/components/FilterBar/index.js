@@ -76,7 +76,15 @@ export const FilterBar = React.createClass({
     onUpdate(filters);
   },
 
-  onUpdate(filter, index) {
+  onFilterRemove(index) {
+    const { filters, onUpdate } = this.props;
+
+    filters.splice(index, 1);
+
+    onUpdate(filters);
+  },
+
+  onFilterUpdate(filter, index) {
     const { filters, onUpdate } = this.props;
 
     filters.splice(index, 1, filter);
@@ -111,7 +119,8 @@ export const FilterBar = React.createClass({
         column,
         filter,
         fetchSuggestions,
-        onUpdate: _.partial(this.onUpdate, _, i)
+        onUpdate: _.partialRight(this.onFilterUpdate, i),
+        onRemove: _.partial(this.onFilterRemove, i)
       };
 
       return <FilterItem key={i} {...props} />;

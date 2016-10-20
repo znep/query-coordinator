@@ -1,12 +1,12 @@
 @import "variables/colors";
 @import "partials/alerts";
 @import "partials/input-groups";
-@import "./add-filter.scss";
-@import "./filter-footer.scss";
-@import "./searchable-picklist.scss";
-@import "./text-filter.scss";
-@import "./number-filter.scss";
-@import "./slider.scss";
+@import "./css/add-filter.scss";
+@import "./css/filter-footer.scss";
+@import "./css/number-filter.scss";
+@import "./css/searchable-picklist.scss";
+@import "./css/slider.scss";
+@import "./css/text-filter.scss";
 
 .filter-bar-container {
   height: 83px;
@@ -33,6 +33,7 @@
     }
 
     .filter-control-container {
+      display: inline-block;
       position: relative;
 
       .filter-control-toggle {
@@ -43,7 +44,8 @@
         position: relative;
         cursor: pointer;
         min-width: 100px;
-        border-radius: 1px;
+        border-top-left-radius: 1px;
+        border-bottom-left-radius: 1px;
         user-select: none;
 
         .icon-chevron-down {
@@ -90,6 +92,36 @@
           }
         }
       }
+    }
+
+    .filter-config-container {
+      display: inline-block;
+      position: relative;
+
+      .filter-config-toggle {
+        background: $white;
+        border: 1px solid $light-grey-3;
+        margin-left: -1px;
+        padding: 8px;
+        cursor: pointer;
+        border-top-right-radius: 1px;
+        border-bottom-right-radius: 1px;
+      }
+
+      .filter-config {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        width: 300px;
+        margin-top: -1px;
+        background: $white;
+        border-radius: 1px;
+        border: 1px solid $light-grey-3;
+      }
+    }
+
+    .filter-control-toggle:focus, .filter-config-toggle:focus {
+      z-index: 1;
     }
   }
 

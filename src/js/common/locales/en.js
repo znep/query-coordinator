@@ -8,6 +8,7 @@ export default {
     apply: 'Apply',
     cancel: 'Cancel',
     clear: 'Clear',
+    configure_filter: 'Configure Filter',
     filter: 'Filter:',
     from: 'From',
     to: 'To',
@@ -18,6 +19,7 @@ export default {
       less_label: 'Less than {0}'
     },
     range: 'Range',
+    remove_filter: 'Remove Filter',
     search: 'Search options'
   },
   color_picker: {

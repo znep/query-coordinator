@@ -7,6 +7,7 @@ describe('Slider', () => {
     return _.defaultsDeep({}, props, {
       rangeMin: 0,
       rangeMax: 100,
+      onChange: _.noop
     });
   }
 

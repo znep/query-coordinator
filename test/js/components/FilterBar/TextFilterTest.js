@@ -8,7 +8,9 @@ describe('TextFilter', () => {
     return _.defaultsDeep({}, props, {
       filter: {},
       column: {},
-      fetchSuggestions: _.constant(Promise.resolve([]))
+      fetchSuggestions: _.constant(Promise.resolve([])),
+      onCancel: _.noop,
+      onUpdate: _.noop
     });
   }
 

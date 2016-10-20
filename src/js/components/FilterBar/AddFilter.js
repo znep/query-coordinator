@@ -9,13 +9,7 @@ import { ESCAPE } from '../../common/keycodes';
 export const AddFilter = React.createClass({
   propTypes: {
     columns: PropTypes.arrayOf(PropTypes.object),
-    onClickColumn: PropTypes.func
-  },
-
-  getDefaultProps() {
-    return {
-      onClickColumn: _.noop
-    };
+    onClickColumn: PropTypes.func.isRequired
   },
 
   getInitialState() {

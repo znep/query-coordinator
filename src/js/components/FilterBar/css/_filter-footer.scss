@@ -3,7 +3,6 @@
 .filter-footer {
   background: $light-grey-6;
   display: flex;
-  justify-content: space-between;
   padding: 8px;
 
   .btn {
@@ -21,6 +20,10 @@
       text-decoration: underline;
     }
   }
+}
+
+.filter-controls .filter-footer {
+  justify-content: space-between;
 
   .apply-btn-container {
     display: inline-block;
@@ -33,4 +36,8 @@
       padding: 6px 12px;
     }
   }
+}
+
+.filter-config .filter-footer {
+  justify-content: flex-end;
 }

@@ -6,7 +6,9 @@ describe('NumberFilter', () => {
   function getProps(props) {
     return _.defaultsDeep({}, props, {
       filter: mockValueRangeFilter,
-      column: mockNumberColumn
+      column: mockNumberColumn,
+      onCancel: _.noop,
+      onUpdate: _.noop
     });
   }
 

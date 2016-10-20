@@ -243,7 +243,8 @@ module SocrataSiteChrome
       if Rails.env.test?
         SocrataSiteChrome::LocaleConfig.default_configuration
       else
-        SocrataSiteChrome::LocaleConfig.new(CurrentDomain.cname).get_locale_config
+        SocrataSiteChrome::LocaleConfig.new(::RequestStore.store[:current_domain]).get_locale_config rescue
+          SocrataSiteChrome::LocaleConfig.default_configuration
       end
     end
 
@@ -266,7 +267,7 @@ module SocrataSiteChrome
     end
 
     def locale_full_name(locale_key)
-      t('current_language', :locale => locale_key, :default => locale_key)
+      t('current_language', :locale => locale_key, :default => locale_key) rescue locale_key
     end
 
     def default_locale

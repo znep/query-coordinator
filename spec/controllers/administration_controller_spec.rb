@@ -8,7 +8,7 @@ describe AdministrationController do
   # Can't use self-verifying stubs because the User class uses method_missing for all of the data properties
   describe 'georegions', :verify_stubs => false do
     before(:each) do
-      init_current_user(controller)
+      init_current_user(subject)
       init_current_domain
       allow(subject).to receive(:default_url_options).and_return({})
       allow(subject).to receive(:sync_logged_in_cookie)
@@ -461,6 +461,38 @@ describe AdministrationController do
       end
     end
 
+  end
+
+  describe 'set_view_moderation_status' do
+
+    before do
+      init_current_user(subject)
+      init_current_domain
+    end
+
+    it 'should set a flash[:notice] unless request is JSON' do
+      double(View).tap do |view_double|
+        allow(view_double).to receive(:moderationStatus=)
+        allow(view_double).to receive(:save!)
+        allow(view_double).to receive(:name).and_return('view name')
+        allow(view_double).to receive(:moderation_status).and_return('APPROVED')
+        allow(View).to receive(:find).and_return(view_double)
+      end
+
+      double.tap do |flash_double|
+        expect(flash_double).to receive(:[]=).with(:notice, "The view 'view name' has been approved. Please allow a few minutes for the changes to be reflected on your home page")
+        expect(flash_double).to receive(:update)
+        expect(flash_double).to receive(:to_session_value)
+        allow(request).to receive(:flash).and_return(flash_double)
+      end
+
+      allow(request.format).to receive(:json?).and_return(false)
+      expect(subject).to receive(:check_auth_level).with(UserRights::APPROVE_NOMINATIONS).and_return(true)
+
+      VCR.use_cassette('set_view_moderation_status') do
+        post :set_view_moderation_status, :id => 'test-test', :approved => 'yes'
+      end
+    end
   end
 
   describe 'site appearance panel', :verify_stubs => false do

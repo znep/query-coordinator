@@ -243,16 +243,19 @@ function mapDispatchToProps(dispatch) {
     },
 
     onClickWidget(event) {
-      var resultCard = event.target.closest('.result-card');
-      var payload = {
-        name: 'Clicked a Related View',
-        properties: {
-          'Related View Id': resultCard.dataset.id,
-          'Related View Type': resultCard.dataset.type
-        }
-      };
+      var resultCard = $(event.target).closest('.result-card')[0];
 
-      dispatch(emitMixpanelEvent(payload));
+      if (resultCard) {
+        var payload = {
+          name: 'Clicked a Related View',
+          properties: {
+            'Related View Id': resultCard.dataset.id,
+            'Related View Type': resultCard.dataset.type
+          }
+        };
+
+        dispatch(emitMixpanelEvent(payload));
+      }
     }
   };
 }

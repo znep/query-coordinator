@@ -75,6 +75,8 @@ describe 'administration/georegions.html.erb' do
   end
 
   before(:each) do
+    allow(Signaller).to receive(:healthy?).and_return(true)
+    allow(Signaller::FeatureFlags).to receive(:on_domain).and_return({})
     allow_any_instance_of(ActionView::Helpers::CaptureHelper).to receive(:content_for)
     allow_any_instance_of(Jammit::Helper).to receive(:include_javascripts).and_return('')
     allow_any_instance_of(ApplicationHelper).to receive(:render_translations).and_return('')

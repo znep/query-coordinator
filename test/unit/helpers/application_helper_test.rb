@@ -7,6 +7,7 @@ class ApplicationHelperTest < ActionView::TestCase
 
   def setup
     init_current_domain
+    init_signaller
     application_helper.stubs(:cookies => {})
   end
 

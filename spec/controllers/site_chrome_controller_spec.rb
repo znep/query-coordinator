@@ -6,6 +6,7 @@ describe SiteChromeController do
   before :each do
     init_current_domain
     init_core_session
+    init_signaller
     @request.host = 'localhost' # VCR tapes were recorded against localhost
   end
 

@@ -6,6 +6,7 @@ describe BrowseController do
   before(:each) do
     init_core_session
     init_current_domain
+    init_signaller
     allow(subject).to receive(:enable_site_chrome?).and_return(false)
   end
 

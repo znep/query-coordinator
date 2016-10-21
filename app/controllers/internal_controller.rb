@@ -604,7 +604,7 @@ class InternalController < ApplicationController
 
     if FeatureFlags.using_signaller?
       updates['feature_flags'].try(:each) do |flag, value|
-        response =
+        begin
           if updates['reset_to_default'].try(:[], flag)
             message = %Q{reset to its default value of "#{FeatureFlags.default_for(flag)}".}
             FeatureFlags.reset_value(flag, domain: domain_cname)
@@ -613,13 +613,11 @@ class InternalController < ApplicationController
             message = %Q{set with value "#{processed_value}".}
             FeatureFlags.set_value(flag, processed_value, domain: domain_cname)
           end
-        case response.code
-          when 200
-            notices << "#{flag} was #{message}"
-          else
-            err_msg = "#{flag} could not be #{message}"
-            err_msg << " Reason: #{JSON.parse(response.body)['error']}."
-            errors << err_msg
+          notices << "#{flag} was #{message}"
+        rescue => e
+          err_msg = "#{flag} could not be #{message}"
+          err_msg << " Reason: #{e.message}."
+          errors << err_msg
         end
       end
     else # if not using signaller

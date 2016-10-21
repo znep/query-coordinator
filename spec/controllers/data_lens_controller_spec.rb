@@ -18,6 +18,7 @@ describe DataLensController do
   before(:each) do
     init_current_domain
     init_core_session
+    init_signaller
   end
 
   it 'should render the data_lens template if enabled' do

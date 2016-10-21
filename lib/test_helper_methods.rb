@@ -120,4 +120,14 @@ module TestHelperMethods
       )
     end
   end
+
+  def init_signaller
+    if Object.respond_to?(:stubs)
+      Signaller.stubs(healthy?: true)
+      Signaller::FeatureFlags.stubs(on_domain: {})
+    else
+      allow(Signaller).to receive(:healthy?).and_return(true)
+      allow(Signaller::FeatureFlags).to receive(:on_domain).and_return({})
+    end
+  end
 end

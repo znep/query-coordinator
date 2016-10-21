@@ -5,6 +5,7 @@ class VersionAuthorityTest < Minitest::Test
 
   def setup
     init_current_domain
+    init_signaller
     @path = "path-test"
     @user = "user-test"
     @start = Time.now

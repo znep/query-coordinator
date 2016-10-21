@@ -21,6 +21,7 @@ describe DatasetLandingPageController do
     init_core_session
     init_current_domain
     init_current_user(controller)
+    init_signaller
     login
   end
 

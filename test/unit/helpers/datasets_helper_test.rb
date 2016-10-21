@@ -6,6 +6,7 @@ class DatasetsHelperTest < Minitest::Test
 
   def setup
     init_current_domain
+    init_signaller
     @object = Object.new.tap { |object| object.extend(DatasetsHelper) }
     @view = View.new.tap { |view| view.stubs(default_view_state) }
     @object.stubs(:view => @view, :request => nil)

@@ -4,6 +4,7 @@ class ViewTest < Minitest::Test
 
   def setup
     init_current_domain
+    init_signaller
   end
 
   def test_find_has_valid_custom_headers

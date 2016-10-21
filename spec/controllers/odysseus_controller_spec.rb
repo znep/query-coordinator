@@ -6,6 +6,7 @@ describe OdysseusController do
   before(:each) do
     init_core_session
     init_current_domain
+    init_signaller
     # Prevent a config request from being made
     allow(subject).to receive(:enable_site_chrome?).and_return(false)
     allow(CurrentDomain).to receive(:cname).and_return('localhost')

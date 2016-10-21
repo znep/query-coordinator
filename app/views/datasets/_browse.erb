@@ -458,7 +458,7 @@
       <div class="line clearfix">
         <input type="text" id="newDatasetName" name="new_dataset_name" class="required"/>
       </div>
-      <p class="explanation"><%= html_safe(t('screens.widget.create_new_dataset.explanation_html')) %></p>
+      <p class="explanation"><%= t('screens.widget.create_new_dataset.explanation_html').html_safe %></p>
       <ul class="submitActions clearfix">
         <li><a class="submitButton button"><%= t('core.dialogs.save') %></a></li>
         <li><a class="jqmClose button"><%= t('core.dialogs.cancel') %></a></li>

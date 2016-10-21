@@ -12,7 +12,6 @@ gem 'dalli', '~> 2.7', '>= 2.7.6' # Doesn't work with nutcracker / twemproxy
 gem 'diplomat' # Used by downtime / mainenance window notices
 gem 'hashie', '2.1.2'
 gem 'httparty'
-gem 'jammit'
 gem 'lograge'
 gem 'memcache-client', '~> 1.8.5' # Using this unsupported gem since twemproxy doesn't support binary protocol used by Dalli
 gem 'mixpanel-ruby', '~> 1.6.0'
@@ -37,6 +36,7 @@ gem 'statsd-ruby', '~>1.3.0'
 gem 'therubyracer'
 gem 'unicorn'
 gem 'unicorn_metrics', '~> 0.2.3'
+gem 'unicorn-worker-killer'
 gem 'unparser', '~> 0.2.5'
 gem 'xray', :require => 'xray/thread_dump_signal_handler'
 gem 'zip'
@@ -51,18 +51,6 @@ gem 'inifile'
 gem 'git'
 gem 'clipboard'
 gem 'jenkins_api_client'
-
-# These are for jammit. Possibly the worst behavior for a gem I have ever laid eyes upon. If any of the
-# following gems are not installed, jammit will silently ignore both this fact, and the fact that you have
-# configured the gem to use one of them.
-group :development, :test, :production do
-  gem 'closure-compiler'
-  gem 'sass'
-  gem 'uglifier'
-  gem 'unicorn-worker-killer'
-  gem 'yui-compressor'
-  # Note the default js compressor used by jammit, jsmin, is known to generate syntactically invalid js.
-end
 
 group :test do
   gem 'factory_girl'

@@ -66,14 +66,14 @@ class Displays::Base
       "blist.dataset = new Dataset(blist.viewCache['#{@view.id}']);"
     end
 
-    def render_inline_setup_js(target_dom_id, context, debug = false)
+    def render_inline_setup_js(target_dom_id, context)
       # Set common base variables communicating display configuration to JS
       js = <<END
 blist.namespace.fetch('blist.configuration');
 blist.configuration.development = #{Rails.env.development?};
 blist.configuration.useSoda2 = #{CurrentDomain.module_enabled?(:use_soda2)};
 #{render_dataset_setup_js}
-blist.assets = {libraries: #{debug ? ASSET_MAP.debug_javascripts : ASSET_MAP.javascripts}, stylesheets: #{@@app_helper.stylesheet_assets.to_json}};
+blist.assets = {stylesheets: #{@@app_helper.stylesheet_assets.to_json}};
 $(function()
 {
     blist.$container = $('##{target_dom_id}');

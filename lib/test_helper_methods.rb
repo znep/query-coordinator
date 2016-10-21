@@ -63,7 +63,6 @@ module TestHelperMethods
       object.extend(ApplicationHelper)
       object.extend(ActionView::Helpers::JavaScriptHelper)
       object.extend(ActionView::Helpers::TagHelper)
-      object.extend(Jammit::Helper)
       object.stubs(:request => stub(:query_parameters => {}))
     end
   end

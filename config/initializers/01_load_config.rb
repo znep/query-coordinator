@@ -17,13 +17,6 @@ rescue
 end
 
 begin
-  assets = YAML.load_file(File.join(Rails.root, "config/assets.yml"))
-  ASSET_MAP = AssetMapper.new(assets, assets['dump'])
-rescue
-  ASSET_MAP = AssetMapper.new(nil, nil)
-end
-
-begin
   VIDEO_LIST = YAML.load_file(File.join(Rails.root, "config/videos.yml"))
 rescue
   VIDEO_LIST = []

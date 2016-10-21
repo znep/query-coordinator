@@ -62,7 +62,6 @@ GEM
     chroma (0.1.0)
     cistern (2.7.1)
     clipboard (1.1.1)
-    closure-compiler (1.1.12)
     coderay (1.1.1)
     concord (0.1.5)
       adamantium (~> 0.2.0)
@@ -71,7 +70,6 @@ GEM
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     crass (1.0.2)
-    cssmin (1.0.3)
     daemons (1.2.4)
     dalli (2.7.6)
     diff-lcs (1.2.5)
@@ -81,7 +79,6 @@ GEM
     equalizer (0.0.11)
     erubis (2.7.0)
     eventmachine (1.2.0.1)
-    execjs (2.7.0)
     factory_girl (4.7.0)
       activesupport (>= 3.0.0)
     faraday (0.9.2)
@@ -121,9 +118,6 @@ GEM
     i18n (0.7.0)
     ice_nine (0.11.2)
     inifile (3.0.0)
-    jammit (0.7.0)
-      cssmin (~> 1.0)
-      jsmin (~> 1.0)
     jenkins_api_client (1.4.5)
       json (~> 1.0)
       mixlib-shellout (>= 1.1.0)
@@ -131,7 +125,6 @@ GEM
       socksify (>= 1.7.0)
       terminal-table (>= 1.4.0)
       thor (>= 0.16.0)
-    jsmin (1.0.1)
     json (1.8.3)
     jwt (1.5.6)
     kgio (2.10.0)
@@ -328,8 +321,6 @@ GEM
     timecop (0.8.1)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    uglifier (3.0.2)
-      execjs (>= 0.3.0, < 3)
     unicode-display_width (1.1.1)
     unicorn (5.1.0)
       kgio (~> 2.6)
@@ -353,7 +344,6 @@ GEM
       crack (>= 0.3.2)
       hashdiff
     xray (1.1)
-    yui-compressor (0.12.0)
     zendesk2 (1.8.1)
       cistern (~> 2.3)
       faraday (~> 0.9)
@@ -376,7 +366,6 @@ DEPENDENCIES
   byebug
   cetera-ruby (= 0.1.2)
   clipboard
-  closure-compiler
   dalli (~> 2.7, >= 2.7.6)
   diplomat
   factory_girl
@@ -388,7 +377,6 @@ DEPENDENCIES
   hashie (= 2.1.2)
   httparty
   inifile
-  jammit
   jenkins_api_client
   lograge
   memcache-client (~> 1.8.5)
@@ -417,7 +405,6 @@ DEPENDENCIES
   rspec-core (~> 3.4, >= 3.4.3)
   rspec-rails (~> 3.4, >= 3.4.2)
   sanitize
-  sass
   sass-rails (~> 5.0)
   semver2
   shoulda-context
@@ -429,7 +416,6 @@ DEPENDENCIES
   therubyracer
   thin
   timecop
-  uglifier
   unicorn
   unicorn-worker-killer
   unicorn_metrics (~> 0.2.3)
@@ -437,7 +423,6 @@ DEPENDENCIES
   vcr
   webmock
   xray
-  yui-compressor
   zendesk2 (~> 1.8.1)
   zip
   zk (~> 1.9.2)

@@ -1,6 +1,5 @@
 class GovstatController < ApplicationController
   include ActionView::Helpers::AssetTagHelper
-  include Jammit::Helper
   include CustomContentHelper
   include BrowseActions
 
@@ -68,11 +67,5 @@ class GovstatController < ApplicationController
       end
     end
     return own_reports, other_reports
-  end
-
-  private
-  # make jammit happy
-  def controller
-    self
   end
 end

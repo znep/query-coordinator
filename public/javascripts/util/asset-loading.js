@@ -73,23 +73,7 @@
       assetNS.loadPartials(translateUrls('/modals/', assets.newModals, 'newModals'), 'newModals', finished);
     }
     if (loadJS) {
-      if (blist.feature_flags.prefer_webpack) {
-        var sources;
-
-        if (blist.configuration.development) {
-          sources = _.map(assets.javascripts, function(item) {
-            return '/javascripts/webpack/open-data/' + item.assets + '.js';
-          });
-        } else {
-          sources = _.map(assets.javascripts, function(item) {
-            return '/javascripts/build/' + blist.configuration.webpackManifest['open-data/' + item.assets + '.js'];
-          });
-        }
-
-        assetNS.loadLibraries(sources, finished);
-      } else {
-        assetNS.loadLibraries(translateUrls('/javascripts/', assets.javascripts, 'libraries'), finished);
-      }
+      assetNS.loadLibraries(assetNS.getJavascriptSources(assets.javascripts), finished);
     }
     if (loadTranslations) {
       assetNS.loadTranslations(assets.translations, finished);
@@ -404,6 +388,19 @@
       callback();
     }
   };
+
+  assetNS.getJavascriptSources = function(packages) {
+    if (blist.configuration.development) {
+      return _.map(packages, function(item) {
+        return '/javascripts/webpack/open-data/' + item.assets + '.js';
+      });
+    } else {
+      return _.map(packages, function(item) {
+        return '/javascripts/build/' + blist.configuration.webpackManifest['open-data/' + item.assets + '.js'];
+      });
+    }
+  };
+
   var checkTranslationJobs = function() {
     lazyLoadingTranslationJobs = _.filter(lazyLoadingTranslationJobs, function(job) {
       if (_.all(job.queue, function(translation) {

@@ -5,7 +5,6 @@ class DataLensController < ActionController::Base
   include ActionControllerExtensions
   include CommonMetadataTransitionMethods
   include UserAuthMethods
-  include UnminifiedAssetsHelper
   include FrameEmbedding
 
   skip_before_filter :disable_frame_embedding, :only => :data_lens

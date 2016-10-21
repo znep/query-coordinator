@@ -219,14 +219,8 @@ general pass/fail check, a faster parallelized test run is also available:
 
 ## Javascript/other asset package management
 
-The frontend has classically used [Jammit](http://documentcloud.github.io/jammit/)
-for asset management instead of the standard Rails asset pipeline. All assets
-must be added manually to assets.yml, and the appropriate include_javascripts
-calls must be included in .erb. If the assets must be loaded on-demand from JS,
-make sure the new jammit package is added to the "dump" section of assets.yml
-(the JS asset loader reads this section). Please note that though Jammit allows
-globs in its package definitions, the JS loader doesn't support globs. This is
-only an issue for on-demand loading.
+See the [doc/javascript.md#dependency-management](Dependency Management section) of the JavaScript
+documentation.
 
 ### Webpack
 

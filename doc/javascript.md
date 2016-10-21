@@ -237,10 +237,6 @@ configuration to `~/.npmrc`.
 Bundling
 ---
 
-### Jammit
-
-TODO
-
 ### Webpack
 
 TODO
@@ -296,7 +292,7 @@ The script is located in `bin/test`. The jenkins job is called `frontend-pull-re
 There are two main release scripts that will build frontend in order to deploy it to an environment.
 These are `frontend-staging` and `frontend-release`. Both of these jobs call the main `frontend`
 Jenkins job. The `frontend` Jenkins job calls the script located in `bin/build`, which runs webpack
-and jammit to generate a production build.
+to generate a production build.
 
 Troubleshooting
 ---

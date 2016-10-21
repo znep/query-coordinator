@@ -41,9 +41,6 @@ data_lens_transition_state:
   defaultValue: post_beta
   disableTrueFalse: true
   expectedValues: pre_beta beta post_beta
-debug_assets:
-  description: Switch over to using unpackaged Javascript files.
-  defaultValue: false
 debug_labjs:
   description: Turn on debugging in the lazy-loader that old UX uses so that we can see problems.
   defaultValue: false
@@ -170,10 +167,6 @@ open_performance_enable_goal_management_admin_pane:
   description: Enable the 'Goal Management' link in the admin panel.
   defaultValue: true
   category: open performance
-prefer_webpack:
-  description: Serve JavaScript bundles with webpack instead of jammit when possible.
-  defaultValue: false
-  category: webpack
 reenable_ui_for_nbe:
   description: Some pieces of the UI were disabled for NBE; setting this to true renables them.
   defaultValue: false

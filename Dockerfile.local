@@ -15,7 +15,7 @@ WORKDIR $APP_DIR
 COPY . $APP_DIR
 COPY docker/ship.d/run /etc/ship.d/run
 
-RUN bundle install --path ${GEM_DIR} --without=development --deployment && bundle exec rake assets:unminified
+RUN bundle install --path ${GEM_DIR} --without=development --deployment
 RUN bundle exec rake assets:precompile
 
 EXPOSE 3000

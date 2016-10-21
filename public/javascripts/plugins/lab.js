@@ -222,7 +222,7 @@
     // michael.chui@socrata.com - leveraging blist.feature_flags.debug_labjs to
     // turn on debugging conditionally.
     var blist_feature_flags = (window.blist || {}).feature_flags || {};
-    var turn_on_debugging = !!(blist_feature_flags.debug_assets || blist_feature_flags.debug_labjs);
+    var turn_on_debugging = !!blist_feature_flags.debug_labjs;
                 global_defaults[_Debug] = turn_on_debugging;
                 /*!END_DEBUG*/
 		global_defaults[_BasePath] = "";

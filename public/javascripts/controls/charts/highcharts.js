@@ -393,7 +393,7 @@
     },
 
     getRequiredJavascripts: function() {
-      return blist.assets.libraries.highcharts;
+      return blist.util.assetLoading.getJavascriptSources([{ assets: 'highcharts' }]);
     },
 
     generateFlyoutLayout: function(columns, valueColumn) {

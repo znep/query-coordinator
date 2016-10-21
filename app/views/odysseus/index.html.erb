@@ -21,7 +21,7 @@
 
 <%- content_for :js_footer do -%>
   <%- @script_packages.each do |pkg| -%>
-    <%= include_javascripts pkg %>
+    <%= include_webpack_bundle "open-data/#{pkg}.js" %>
   <%- end -%>
   <script type="text/javascript" src="/asset/js/socket.io?<%= @client_version %>"></script>
   <script type="text/javascript" src="/asset/js/client?<%= @client_version %>"></script>
@@ -35,8 +35,7 @@
 
   <%# TEMPORARY for using RTM %>
   <script type="text/javascript">
-    blist.assets = blist.assets ||
-      {libraries: <%= raw ASSET_MAP.javascripts %>, stylesheets: <%= raw stylesheet_assets.to_json %>};
+    blist.assets = blist.assets || {stylesheets: <%= raw stylesheet_assets.to_json %>};
   </script>
 <%- end -%>
 

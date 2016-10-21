@@ -173,7 +173,8 @@ module ApplicationHelper
   end
 
   def javascript_error_helper_tag
-    %Q{<script type="text/javascript">blistEnv = "#{Rails.env}";</script>}.html_safe + include_javascripts('errors')
+    %Q{<script type="text/javascript">blistEnv = "#{Rails.env}";</script>}.html_safe +
+      include_webpack_bundle('open-data/errors.js')
   end
 
   def needs_view_js(uid, view)
@@ -300,10 +301,6 @@ module ApplicationHelper
   end
 
   def include_webpack_bundle(resource)
-    if !FeatureFlags.derive(nil, request).prefer_webpack && resource =~ /open\-data/
-      return include_javascripts(File.basename(resource, File.extname(resource)))
-    end
-
     if Rails.configuration.webpack[:use_dev_server]
       src = "/javascripts/webpack/#{resource}"
     else

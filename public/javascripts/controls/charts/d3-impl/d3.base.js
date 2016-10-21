@@ -44,7 +44,7 @@
 
     getRequiredJavascripts: function() {
       // get d3 stuffs
-      return blist.assets.libraries.d3;
+      return blist.util.assetLoading.getJavascriptSources([{ assets: 'd3' }]);
     },
 
     initialRenderDone: _.once(function() {

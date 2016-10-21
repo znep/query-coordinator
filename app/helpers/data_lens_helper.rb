@@ -104,10 +104,6 @@ module DataLensHelper
     rendered_stylesheet_tag("angular-app-#{angular_app}")
   end
 
-  def angular_javascript_tag
-    include_javascripts_unminified("angular-app-#{angular_app}")
-  end
-
   def angular_templates
     basedir = "#{Rails.root}/public"
     Dir.glob("#{basedir}/angular_templates/**/*.html").map do |path|

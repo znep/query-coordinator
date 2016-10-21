@@ -16,16 +16,15 @@ def cachebust_key_for_templates_and_styles
 end
 
 def cachebust_keys_for_js
-  # Sample: [ '1427229395', '1427229995' ]
+  # Sample: [ '1427229395' ]
   #
   # HOW TO GET:
   # 1) Load any user-facing data lens page on any domain in the environment you care about.
   # 2) Open the debugger, refresh. Look at the fetched JS assets. You will see a query parameter tacked on
-  #    to each JS request. Note that there are 2 - one for all the minified JS assets, another for all
-  #    the unminified assets.
-  # 3) Copy/paste both here, minus the ?.
+  #    to each JS request.
+  # 3) Copy/paste it here, minus the ?.
   raise 'Please configure a cachebust key for JS assets (edit the script).'
-  # %w(1429030889 1429031236)
+  # %w(1429030889)
 end
 
 def ats_hosts
@@ -75,7 +74,7 @@ end
 
 def all_js_package_paths
   all_js_package_names.map do |package_name|
-    [ "/packages/#{package_name}.js", "/packages/unminified/#{package_name}.js" ]
+    [ "/packages/#{package_name}.js" ]
   end.flatten
 end
 

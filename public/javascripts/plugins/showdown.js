@@ -1452,3 +1452,5 @@ if (typeof define === 'function' && define.amd) {
         return Showdown;
     });
 }
+
+window.Showdown = Showdown;

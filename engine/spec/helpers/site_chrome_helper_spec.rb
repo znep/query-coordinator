@@ -7,7 +7,100 @@ describe SocrataSiteChrome::ApplicationHelper do
       SocrataSiteChrome::SiteChrome::LATEST_VERSION, 'published', 'content') }
   end
 
-  describe'#logo' do
+  describe '#admin_title' do
+    let(:current_domain) { 'globalhost' }
+    let(:header_title) { '' }
+
+    before do
+      allow(::RequestStore.store).to receive(:[]).with(:current_domain).and_return(current_domain)
+      allow(helper).to receive(:header_title).and_return(header_title)
+    end
+
+    it 'returns the domain name' do
+      expect(helper.admin_title).to eq(current_domain)
+    end
+
+    describe 'when the header title is set' do
+      let(:header_title) { 'the best is yet to come' }
+
+      it 'returns the header title' do
+        expect(helper.admin_title).to eq(header_title)
+      end
+    end
+  end
+
+  describe '#profile_image?' do
+    let(:user_profile_image_url) { nil }
+
+    before do
+      allow(helper).to receive(:user_profile_image_url).and_return(user_profile_image_url)
+    end
+
+    it 'returns false' do
+      expect(helper.profile_image?).to eq(false)
+    end
+
+    describe 'when the user has a profile image' do
+      let(:user_profile_image_url) {
+        'http://thedailycorgi.com/wp-content/uploads/2016/03/spacecowboys.jpg'
+      }
+
+      it 'returns true' do
+        expect(helper.profile_image?).to eq(true)
+      end
+    end
+  end
+
+  describe '#user_profile_image_url' do
+    let(:profileImageUrlMedium) { nil }
+
+    before do
+      user = SocrataSiteChrome::User.new('profileImageUrlMedium' => profileImageUrlMedium)
+      allow(helper).to receive(:site_chrome_current_user).and_return(user)
+    end
+
+    it 'returns nil' do
+      expect(helper.user_profile_image_url).to be_nil
+    end
+
+    describe 'when the user has a profile image' do
+      let(:profileImageUrlMedium) { 'https://idk.com/idk.png' }
+
+      it 'returns the user\'s profile image' do
+        expect(helper.user_profile_image_url).to eq(profileImageUrlMedium)
+      end
+    end
+  end
+
+  describe '#open_performance_enabled?' do
+    let(:feature_enabled) { false }
+
+    before do
+      feature_set = double('FeatureSet', :feature_enabled? => feature_enabled)
+      allow(helper.request).to receive(:host).and_return('host')
+      allow(SocrataSiteChrome::FeatureSet).to receive(:new).and_return(feature_set)
+    end
+
+    it 'returns false' do
+      expect(helper.open_performance_enabled?).to be false
+    end
+
+    describe 'when GovStat is enabled' do
+      let(:feature_enabled) { true }
+
+      it 'returns true' do
+        expect(helper.open_performance_enabled?).to be true
+      end
+    end
+
+    describe 'when FeatureSet throws' do
+      it 'returns false' do
+        expect(helper.open_performance_enabled?).to be false
+      end
+    end
+  end
+
+  describe '#logo' do
     it 'returns nil if there is not an image src present' do
       allow(helper).to receive(:header_title).and_return('')
       source = {}

@@ -1,0 +1,25 @@
+<%- if logged_in? %>
+  <section id="site-chrome-admin-header" role="navigation">
+    <div class="site-chrome-admin-title">
+      <a href="/"><%= admin_title %></a>
+    </div>
+
+    <div class="site-chrome-admin-separator"></div>
+
+    <div class="site-chrome-admin-menus" role="menubar">
+      <%- if open_performance_enabled? %>
+        <%= render 'site_chrome/admin/open_performance' %>
+      <%- end %>
+    </div>
+
+    <div
+      class="site-chrome-admin-user"
+      tabIndex="0"
+      role="button"
+      aria-haspopup="true"
+      aria-label="<%= t('header.profile') %>"
+      onClick="toggleAdminDropdown(this);">
+        <%= render 'site_chrome/admin/user' %>
+    </div>
+  </section>
+<%- end %>

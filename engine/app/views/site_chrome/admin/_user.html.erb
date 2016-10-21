@@ -1,0 +1,39 @@
+<%- if profile_image? %>
+  <div class="site-chrome-admin-user-image">
+    <img id="site-chrome-admin-user-image" src="<%= user_profile_image_url %>" alt="<%= username %>">
+  </div>
+<%- else %>
+  <span class="icon-user"></span>
+<%- end %>
+
+<ul role="menu" aria-hidden="true">
+  <li>
+    <a href="<%= massage_url('/profile') %>">
+      <span class="icon-user"></span>
+      <span><%= t('admin.user.my_profile') %></span>
+    </a>
+  </li>
+
+  <%- if current_user_can_see_admin_link? %>
+    <li>
+      <a href="<%= massage_url('/admin') %>">
+        <span class="icon-settings"></span>
+        <span><%= t('admin.user.administration') %></span>
+      </a>
+    </li>
+  <%- end %>
+
+  <li>
+    <a href="https://support.socrata.com">
+      <span class="icon-question-inverse"></span>
+      <span><%= t('admin.user.get_help') %></span>
+    </a>
+  </li>
+
+  <li>
+    <a href="<%= massage_url('/logout') %>">
+      <span class="icon-download"></span>
+      <span><%= t('admin.user.sign_out') %></span>
+    </a>
+  </li>
+</ul>

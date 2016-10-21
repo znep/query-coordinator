@@ -2,7 +2,8 @@ require 'request_store'
 
 class DemoController < ApplicationController
   DEMO_USER = {
-    'displayName' => 'Demo User'
+    'displayName' => 'Demo User',
+    'profileImageUrlMedium' => 'http://cdn.dailypainters.com/paintings/boxer_dog_portrait_realistic_animal_painting_by_li_dogs__animals__765aad3231c665c25e24f9ddd307bc4c.jpg'
   }
 
   ADMIN_USER = {
@@ -23,6 +24,8 @@ class DemoController < ApplicationController
         when 'superadmin' then SUPERADMIN_USER
         else nil
       end
+
+    ::RequestStore.store[:current_domain] = request.host
 
     render 'fake_content', :layout => 'unified'
   end

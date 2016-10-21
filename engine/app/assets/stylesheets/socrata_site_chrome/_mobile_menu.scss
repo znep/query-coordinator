@@ -156,3 +156,11 @@ header#site-chrome-header, footer#site-chrome-footer {
     }
   }
 }
+
+// If the admin header is present, we need to bump the mobile
+// header down the height of the admin header.
+#site-chrome-admin-header + #site-chrome-header {
+  .mobile-menu {
+    top: 46px;
+  }
+}

@@ -33,6 +33,26 @@ export default function CollaboratorsDataProvider() {
    */
 
   /**
+   * Looks up a user object via email.
+   * Returns null if the user is not found or there is an
+   * error.
+   */
+  this.lookupUserByEmail = function(email) {
+    const userUrl = Environment.ENABLE_DEPRECATED_USER_SEARCH_API ?
+      `/api/search/users.json?q=${email}` : // Core
+      `/stories/search/users.json?email=${email}`; // Cetera
+
+    return httpRequest('GET', userUrl).
+      then(
+        (data) => _.get(data, 'results[0]', null),
+        (error) => {
+          exceptionNotifier.notify(error);
+          return null;
+        }
+      );
+  };
+
+  /**
    * @function getCollaborators
    * @description
    * Obtains a list of collaborators from the grants Core API endpoint.

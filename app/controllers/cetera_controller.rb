@@ -19,6 +19,7 @@ class CeteraController < ApplicationController
       cetera_response = user_search_client.send(method, args)
       render :json => cetera_response
     rescue StandardError => ex
+      Rails.logger.warn(ex)
       render :nothing => true, :status => :internal_server_error
     end
   end

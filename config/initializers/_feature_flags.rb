@@ -6,3 +6,7 @@ Rails.application.config.enable_filtered_table_creation = (ENV['ENABLE_FILTERED_
 
 # Enable or disable Getty Images gallery
 Rails.application.config.enable_getty_images_gallery = (ENV['ENABLE_GETTY_IMAGES_GALLERY'].to_s.downcase == 'true')
+
+# If true, falls back to Core's deprecated user search (backed by clytemnestra).
+# If false (default), uses Cetera for user searches via CeteraController.
+Rails.application.config.enable_deprecated_user_search_api = (ENV['ENABLE_DEPRECATED_USER_SEARCH_API'].to_s.downcase == 'true')

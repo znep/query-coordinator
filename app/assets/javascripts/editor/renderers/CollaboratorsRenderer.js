@@ -7,7 +7,6 @@ import Constants from '../Constants';
 import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
 import CollaboratorsDataProvider from '../CollaboratorsDataProvider';
-import httpRequest from '../../services/httpRequest';
 import { exceptionNotifier } from '../../services/ExceptionNotifier';
 import { storyStore } from '../stores/StoryStore';
 import { collaboratorsStore } from '../stores/CollaboratorsStore';
@@ -251,22 +250,6 @@ export default function CollaboratorsRenderer() {
     $userHasNoAccountWarning.toggleClass('hidden', !enabled);
   }
 
-  function getUserOrNull(email) {
-    var userUrl = StorytellerUtils.format('/stories/search/users.json?email={0}', email);
-
-    return httpRequest('GET', userUrl).
-      then(
-        function(data) {
-          return _.get(data, 'results[0]', null);
-        },
-        function(error) {
-
-          exceptionNotifier.notify(error);
-          return null;
-        }
-      );
-  }
-
   function isStoriesOrAdministratorRole(role) {
     return _.includes(['publisher_stories', 'editor_stories', 'administrator'], role);
   }
@@ -275,7 +258,7 @@ export default function CollaboratorsRenderer() {
   // Then, call updateUi.
   function fetchUserThenUpdateUi(email) {
     if (!_.has(userDetailsCache, email)) {
-      getUserOrNull(email).
+      collaboratorsDataProvider.lookupUserByEmail(email).
         catch(_.constant(null)). // If the request fails, assume user does not exist.
         then(function(userDetails) {
           userDetailsCache[email] = userDetails;

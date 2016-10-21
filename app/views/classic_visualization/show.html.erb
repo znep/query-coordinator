@@ -31,6 +31,7 @@
       blist.configuration.newMapsEnabled = <%= module_enabled?(:new_maps) == true %>;
       blist.configuration.oldChartsForced = <%= module_enabled?(:old_charts) == true %>;
       blist.configuration.appToken = 'U29jcmF0YS0td2VraWNrYXNz0';
+      blist.configuration.webpackManifest = <%= raw Rails.configuration.webpack[:asset_manifest].to_json %>;
 
       var csrfToken = $('meta[name="csrf-token"]').attr('content');
 

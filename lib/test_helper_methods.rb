@@ -96,7 +96,7 @@ module TestHelperMethods
     }
   end
 
-  def stub_site_chrome
+  def stub_site_chrome(body = SocrataSiteChrome::DomainConfig.default_configuration.first)
     if Object.respond_to?(:stubs)
       # Minitest
       SiteChrome.stubs(:find => Hashie::Mash.new(
@@ -106,6 +106,9 @@ module TestHelperMethods
           :data_lens => false
         }
       ))
+      SocrataSiteChrome::DomainConfig.any_instance.stubs(:config =>
+        HashWithIndifferentAccess.new(body)
+      )
     else
       # RSpec
       allow(SiteChrome).to receive(:find).and_return(
@@ -116,6 +119,24 @@ module TestHelperMethods
             :data_lens => false
           }
         )
+      )
+      allow_any_instance_of(SocrataSiteChrome::DomainConfig).to receive(:config).and_return(
+        HashWithIndifferentAccess.new(body)
+      )
+    end
+  end
+
+  def stub_site_chrome_custom_content(content = {})
+    default_content = {
+      :header => { :html => nil, :css => nil, :js => nil },
+      :footer => { :html => nil, :css => nil, :js => nil }
+    }
+
+    if Object.respond_to?(:stubs)
+      SocrataSiteChrome::CustomContent.any_instance.stubs(:fetch => default_content.deep_merge(content))
+    else
+      allow_any_instance_of(SocrataSiteChrome::CustomContent).to receive(:fetch).and_return(
+        default_content.deep_merge(content)
       )
     end
   end

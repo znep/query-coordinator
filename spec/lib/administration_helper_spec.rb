@@ -35,6 +35,8 @@ describe AdministrationHelper do
     it 'returns true for permitted users on non-OP sites' do
       allow(user).to receive(:can_use_site_appearance?).and_return(true)
       allow(CurrentDomain).to receive(:module_enabled?).and_return(false)
+      stub_site_chrome
+      stub_site_chrome_custom_content
       expect(dummy_class_instance.show_site_chrome_admin_panel?).to eq(true)
     end
   end

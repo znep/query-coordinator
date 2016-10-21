@@ -215,16 +215,13 @@ class DatasetsControllerTest < ActionController::TestCase
     setup do
       @controller.stubs(:dataset_landing_page_enabled? => true)
       @test_view.stubs(migrations: {'nbeId' => 'test-nbe1'})
-
-      # Site chrome
-      stub_request(:get, "https://test.host/api/configurations.json?defaultOnly=true&type=site_chrome").
-        to_return(:status => 200, :body => "{}", :headers => {})
     end
 
     context 'if the view is a dataset' do
       context 'display the DLSP' do
         setup do
           DatasetLandingPage.any_instance.stubs(:get_derived_views => [])
+          stub_site_chrome_custom_content
           @controller.stubs(get_view: @test_view)
           @test_view.stubs(:dataset? => true)
           @test_view.stubs(find_dataset_landing_page_related_content: [])

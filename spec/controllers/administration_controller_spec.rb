@@ -7,6 +7,7 @@ describe AdministrationController do
 
   before(:each) do
     init_signaller
+    stub_site_chrome
   end
 
   # Can't use self-verifying stubs because the User class uses method_missing for all of the data properties
@@ -24,7 +25,6 @@ describe AdministrationController do
       allow(subject).to receive(:enable_site_chrome?).and_return(false)
       allow_any_instance_of(CuratedRegion).to receive(:view).and_return(view)
       allow(CurrentDomain).to receive(:strings).and_return(Hashie::Mash.new(:site_title => 'My Site'))
-      stub_site_chrome
     end
 
     describe 'GET /admin/geo' do
@@ -500,12 +500,16 @@ describe AdministrationController do
   end
 
   describe 'site appearance panel', :verify_stubs => false do
+    before(:each) do
+      init_current_domain
+    end
 
-    context 'show_site_chrome_admin_panel helper method' do
+    context '#show_site_chrome_admin_panel?' do
 
       context 'with site_appearance_visible set to true' do
         before(:each) do
           set_site_appearance_visible(true)
+          stub_site_chrome_custom_content
         end
 
         context 'as an anonymous user' do
@@ -547,6 +551,7 @@ describe AdministrationController do
       context 'with site_appearance_visible set to false' do
         before(:each) do
           set_site_appearance_visible(false)
+          stub_site_chrome_custom_content
         end
 
         context 'as an anonymous user' do
@@ -567,6 +572,41 @@ describe AdministrationController do
           it 'should return true' do
             stub_superadmin_user
             expect(subject.show_site_chrome_admin_panel?).to eq(true)
+          end
+        end
+
+        context 'as an administrator' do
+          it 'should return false' do
+            stub_administrator_user
+            expect(subject.show_site_chrome_admin_panel?).to eq(false)
+          end
+        end
+
+        context 'as a designer' do
+          it 'should return false' do
+            stub_designer_user
+            expect(subject.show_site_chrome_admin_panel?).to eq(false)
+          end
+        end
+      end
+
+      # EN-6555: Hide site appearance panel if custom h/f is activated
+      context 'with custom content in the site chrome config' do
+        before(:each) do
+          init_current_domain
+          set_site_appearance_visible(true)
+          stub_site_chrome_custom_content(:header => { :html => '<div>custom header</div>' })
+          stub_site_chrome(SocrataSiteChrome::DomainConfig.default_configuration.first.tap do |config|
+            config['properties'].push(
+              :name => 'activation_state', :value => { 'custom' => true }
+            )
+          end)
+        end
+
+        context 'as a superadmin' do
+          it 'should return false' do
+            stub_superadmin_user
+            expect(subject.show_site_chrome_admin_panel?).to eq(false)
           end
         end
 

@@ -41,7 +41,7 @@ class ExternalConfig
     return false if @cache > Time.now
     @cache = Time.now + cache_period
 
-    return true unless File.exists?(filename)
+    return true unless File.exists?(filename.to_s)
 
     has_changed = false
     begin

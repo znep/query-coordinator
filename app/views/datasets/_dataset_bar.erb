@@ -40,6 +40,7 @@
     <%- end -%>
     <h2 id="datasetName" class="clipText currentViewName" title="<%= @view.name %>">
       <%= @view.name %>
+      <%= dataset_provenance_tag %>
     </h2>
     <%- if @view.is_snapshotted? -%>
     <h3 class="snapshotted" title="<%= t('screens.ds.bar.snapshot_notice') %>"><%= t('screens.ds.bar.snapshot_title_html', date: blist_date_time(@view.publicationDate)) %></h3>

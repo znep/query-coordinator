@@ -27,6 +27,8 @@
 
 <%- content_for :head do -%>
   <%= rendered_stylesheet_tag 'browse2-control' %>
+  <%# This is for provenance tags, basically. TODO: NOT DO THIS. %>
+  <link type="text/css" media="all" rel="stylesheet" href="/stylesheets/socrata-components/css/styleguide-no-tag-level.css"/>
 <%- end -%>
 
 <!-- Container -->
@@ -364,6 +366,7 @@
               :show_official_badge =>
                 result.respond_to?(:show_official_badge_in_catalog?) &&
                 result.show_official_badge_in_catalog?, # not implemented for Cetera results
+              :result_provenance => result.provenance,
               :federated_site_title => federated_site_title(result.domainCName),
               :result_federated_origin_url => result_federated_origin_url,
               :result_domain_icon_href => result.domain_icon_href,

@@ -1744,6 +1744,32 @@ html {
   }
 }
 
+.browse2-result-name {
+
+  .tag-provenance {
+    font-size: 16px;
+    margin: 0 16px 0 0;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .tag-community {
+    color: #176289;
+
+    span.icon-community {
+      color: #288dc1;
+    }
+  }
+
+  .tag-official2 {
+    color: #e48424;
+
+    span.icon-official2 {
+      color: #9e5c23;
+    }
+  }
+}
+
 #modals {
   .browse2-facet-section-modal {
     z-index: 10;

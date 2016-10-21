@@ -88,6 +88,21 @@ module BrowseActions
     }
   end
 
+  def authority_facet(params = nil)
+    {
+      :type => :authority,
+      :title => t('controls.browse.facets.authority.title'),
+      :singular_description => t('controls.browse.facets.authority.singular_title'),
+      :param => :provenance,
+      :options => [
+        { text: t('controls.browse.facets.authority.official'), value: 'official' },
+        { text: t('controls.browse.facets.authority.community'), value: 'community' },
+        { text: t('controls.browse.facets.authority.none') }
+      ],
+      :sort_facet_options => false
+    }
+  end
+
   def topics_facet(params = nil)
     params = params || request_params || {}
 
@@ -386,6 +401,7 @@ module BrowseActions
     browse_options[:facets] ||= [
       view_types_facet,
       cfs,
+      authority_facet,
       topics_facet,
       federated_facet
     ].insert(categories_index, categories_facet)
@@ -802,7 +818,7 @@ module BrowseActions
       :for_user, :datasetView, :sortPeriod, :admin, :nofederate, :moderation,
       :xmin, :ymin, :xmax, :ymax, :for_approver, :approval_stage_id,
       :publication_stage, :federation_filter, :metadata_tag, :row_count, :q_fields,
-      :shared_to
+      :shared_to, :provenance
     ]
   )
 end

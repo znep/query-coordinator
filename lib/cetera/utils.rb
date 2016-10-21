@@ -210,7 +210,7 @@ module Cetera
       Set.new(%i(boostCalendars boostCharts boostDatalenses boostDatasets boostDomains boostFiles
                  boostFilters boostForms boostHrefs boostMaps boostPulses boostStories categories
                  derived_from domains for_user limit locale offset only order q search_context tags
-                 shared_to show_hidden))
+                 shared_to show_hidden provenance))
     end
   end
 end

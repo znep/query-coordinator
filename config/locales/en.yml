@@ -580,6 +580,12 @@ en:
           public:
             label: 'Visibility: Public'
       facets:
+        authority:
+          title: Authority
+          singular_title: authority
+          official: Official
+          community: Community
+          none: Show All
         categories_singular_title: category
         categories_title: Categories
         federated_domains_singular_title: domain
@@ -619,6 +625,9 @@ en:
         federation_source: Federated from %{source}
         federation_source_html: Provided by %{source_link}
         no_results: No Results
+        provenance:
+          official2: OFFICIAL
+          community: COMMUNITY
         result_count: Showing %{this} of %{total}
         result_count_cetera: Showing %{start}-%{end} of %{total}
         table_header:

@@ -96,11 +96,15 @@ module Browse2Helper
   #
   # NOTE: At this point, the partitioning from lib/browse_actions.rb is lost
   def get_all_facet_options(facet)
-    sort_facet_options(
-      facet[:options] + facet[:extra_options].to_a.reject do |facet_extra_option|
-        facet[:options].detect { |facet_option| facet_extra_option[:value] == facet_option[:value] }
-      end
-    )
+    options = facet[:options] + facet[:extra_options].to_a.reject do |facet_extra_option|
+      facet[:options].detect { |facet_option| facet_extra_option[:value] == facet_option[:value] }
+    end
+
+    if facet.fetch(:sort_facet_options, true)
+      sort_facet_options(options)
+    else
+      options
+    end
   end
 
   # Sorts facet options by summary boolean, then count, then name
@@ -229,5 +233,24 @@ module Browse2Helper
       url_params = user_params.merge(tags: result_topic).to_param
       "#{base_url}?#{url_params}"
     end
+  end
+
+  def browse2_provenance_tag(provenance)
+    html_key =
+      case provenance.to_s
+        when 'official' then 'official2'
+        when 'community' then 'community'
+        else nil
+      end
+
+    disable_badge = [ 'all', html_key ].include?(FeatureFlags.derive.disable_authority_badge)
+    html_key = nil if disable_badge
+
+    <<-HTML.html_safe unless html_key.nil?
+      <span class="tag-provenance tag-#{html_key}">
+        <span class="icon-#{html_key}"></span>
+        #{t("controls.browse.listing.provenance.#{html_key}")}
+      </span>
+    HTML
   end
 end

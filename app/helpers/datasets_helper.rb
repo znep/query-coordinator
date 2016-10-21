@@ -707,4 +707,28 @@ module DatasetsHelper
       view.is_href?
     ].any?
   end
+
+  def dataset_provenance_tag
+    html_key =
+      case @view.provenance
+        when 'official' then 'official2'
+        when 'community' then 'community'
+        else nil
+      end
+
+    disable_badge = [ 'all', html_key ].include?(FeatureFlags.derive.disable_authority_badge)
+    html_key = nil if disable_badge
+
+    unless html_key.nil?
+      (@svg_file ||= {})[html_key] ||=
+        File.read(File.expand_path("public/images/#{html_key}.svg"))
+
+      <<-HTML.html_safe
+        <span class="tag-provenance tag-#{html_key}">
+          #{@svg_file[html_key]}
+          #{t("controls.browse.listing.provenance.#{html_key}")}
+        </span>
+      HTML
+    end
+  end
 end

@@ -3,7 +3,7 @@ require 'cgi'
 module SocrataSiteChrome
   module ThemesHelper
 
-    def sass_engine_options
+    def self.sass_engine_options
       {
         :style => Rails.env.development? ? :nested : :compressed,
         :syntax => :scss,
@@ -20,7 +20,7 @@ module SocrataSiteChrome
       if request.try(:params).try(:keys).try(:length).to_i > 0
         version = "#{version}-#{request.params.keys.first}"
       end
-      "#{Thread.current[:current_domain]}/config/custom-#{version}"
+      "#{request.host}/config/custom-#{version}"
     end
 
     # theme_section is one of 'general', 'header', or 'footer'

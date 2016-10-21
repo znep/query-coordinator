@@ -99,7 +99,7 @@ RSpec.configure do |config|
 =end
 
   def stub_current_domain_with(domain)
-    allow(::RequestStore.store).to receive(:[]).with(:current_domain).and_return(domain)
+    @request.host = domain
   end
 
 end

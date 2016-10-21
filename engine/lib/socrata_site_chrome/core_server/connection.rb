@@ -35,7 +35,7 @@ module SocrataSiteChrome
           @batch_queue[batch_id] << {:url => path, :requestType => 'GET'}
           nil
         else
-          cache_key = "#{::RequestStore.store[:current_domain]}:#{path}:#{custom_headers}"
+          cache_key = "#{request.host}:#{path}:#{custom_headers}"
           cache_key += ':anon' if is_anon
           result_body = cache.read(cache_key)
           if result_body.nil?
@@ -55,7 +55,7 @@ module SocrataSiteChrome
         if !batch_id.nil? && batch_id != true && batch_id != false
          @batch_queue[batch_id] << {:url => path, :body => payload, :requestType => 'POST'}
         else
-          cache_key = "#{::RequestStore.store[:current_domain]}:#{path}:#{payload}"
+          cache_key = "#{request.host}:#{path}:#{payload}"
           cache_key += ':anon' if is_anon
           result_body = cache_req ? cache.read(cache_key) : nil
           if result_body.nil?
@@ -121,7 +121,7 @@ module SocrataSiteChrome
           result = nil
           ms = Benchmark.ms { result = yield }
           @runtime += ms
-          log_info("#{::RequestStore.store[:current_domain]}:#{request.path}", ms)
+          log_info("#{request.host}:#{request.path}", ms)
           result
         else
           log_info(request.path, 0)
@@ -179,7 +179,7 @@ module SocrataSiteChrome
         request['X-Socrata-Auth'] = 'unauthenticated' if is_anon
 
         # pass/spoof in the current domain cname
-        request['X-Socrata-Host'] = ::RequestStore.store[:current_domain]
+        request['X-Socrata-Host'] = request.host
 
         # proxy user agent
         if env.present?

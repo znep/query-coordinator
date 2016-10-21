@@ -23,7 +23,7 @@ module SocrataSiteChrome
         image_tag(
           massage_url(img_src, add_locale: false),
           :alt => img.dig('logo', 'alt').presence || display_name.presence ||
-            ::RequestStore.store[:current_domain],
+            request.host,
           :onerror => 'this.style.display="none"')
       end
     end
@@ -53,7 +53,7 @@ module SocrataSiteChrome
     end
 
     def site_chrome_current_user
-      Rails.logger.error("DEBUG EN-10582 (chrome gem): Domain = #{::RequestStore.store[:current_domain]}; request_current_user = #{request_current_user.inspect}")
+      Rails.logger.error("DEBUG EN-10582 (chrome gem): Domain = #{request.host}; request_current_user = #{request_current_user.inspect}")
       SocrataSiteChrome::User.new(request_current_user) if request_current_user.present?
     end
 
@@ -229,7 +229,7 @@ module SocrataSiteChrome
       uri = URI.parse(url)
 
       # Turn full URL into a relative link if the url host matches the current domain host
-      if ::RequestStore.store[:current_domain].present? && uri.host == ::RequestStore.store[:current_domain]
+      if request.host.present? && uri.host == request.host
         uri.scheme = nil
         uri.host = nil
         add_locale ? relative_url_with_locale(uri.to_s) : uri.to_s
@@ -243,7 +243,7 @@ module SocrataSiteChrome
       if Rails.env.test?
         SocrataSiteChrome::LocaleConfig.default_configuration
       else
-        SocrataSiteChrome::LocaleConfig.new(::RequestStore.store[:current_domain]).get_locale_config rescue
+        SocrataSiteChrome::LocaleConfig.new(request.host).get_locale_config rescue
           SocrataSiteChrome::LocaleConfig.default_configuration
       end
     end
@@ -346,6 +346,22 @@ module SocrataSiteChrome
 
     def pub_stage
       in_preview_mode? ? :draft : :published
+    end
+
+    # EN-6555: Support for entirely custom headers/footers.
+    # This will bypass the Site Appearance configuration and pull the custom header/footer content
+    # from the Site Chrome configuration properties `custom_[header|footer]_[html|css|js]`
+    def site_chrome_custom_content
+      ::RequestStore.store[:site_chrome_custom_content] ||=
+        SocrataSiteChrome::CustomContent.new(request.host)
+    end
+
+    def using_custom_header_footer?
+      site_chrome_custom_content.activated?
+    end
+
+    def custom_header_footer_content
+      site_chrome_custom_content.fetch(pub_stage)
     end
   end
 end

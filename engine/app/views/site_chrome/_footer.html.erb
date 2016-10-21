@@ -1,46 +1,52 @@
-<footer id="site-chrome-footer" class="<%= local_assigns[:size] %>" role="contentinfo">
-  <div class="footer-content <%= footer_title.present? ? 'title-present' : 'title-absent' %>">
-    <div class="logo">
-      <a href="/">
-        <%= logo(get_site_chrome.footer, footer_title) %>
-        <% if footer_title.present? %>
-          <span class="site-name"><%= footer_title %></span>
-        <% end %>
-      </a>
-    </div>
-    <div class="links">
-      <ul class="links-col">
-        <% get_site_chrome.footer[:links].to_a.each do |link| %>
-          <% link_text = localized("footer.links.#{link[:key]}", get_site_chrome.locales) %>
-          <% if valid_link_item?(link, link_text) %>
-            <li>
-              <%= link_to(link_text, massage_url(link[:url]), :class => 'footer-link') %>
-            </li>
+<% if using_custom_header_footer? %>
+  <%= render 'custom_content/custom',
+    :section => 'footer',
+    :content => custom_header_footer_content[:footer] %>
+<% else %>
+  <footer id="site-chrome-footer" class="<%= local_assigns[:size] %>" role="contentinfo">
+    <div class="footer-content <%= footer_title.present? ? 'title-present' : 'title-absent' %>">
+      <div class="logo">
+        <a href="/">
+          <%= logo(get_site_chrome.footer, footer_title) %>
+          <% if footer_title.present? %>
+            <span class="site-name"><%= footer_title %></span>
           <% end %>
+        </a>
+      </div>
+      <div class="links">
+        <ul class="links-col">
+          <% get_site_chrome.footer[:links].to_a.each do |link| %>
+            <% link_text = localized("footer.links.#{link[:key]}", get_site_chrome.locales) %>
+            <% if valid_link_item?(link, link_text) %>
+              <li>
+                <%= link_to(link_text, massage_url(link[:url]), :class => 'footer-link') %>
+              </li>
+            <% end %>
+          <% end %>
+        </ul>
+      </div>
+      <div class="addendum">
+        <%= content_tag(:div, copyright, :class => 'site-chrome-copyright') if show_copyright? %>
+
+        <%- if valid_social_links(get_site_chrome.general[:social_shares]).present? -%>
+          <div class="site-chrome-social-links">
+            <%= render 'site_chrome/social_links' %>
+          </div>
+        <%- end -%>
+
+        <%- if show_powered_by? -%>
+          <span class="powered-by-socrata">
+            <span class="powered-by"><%= t('footer.powered_by') %></span>
+            <a href="//socrata.com" target="_blank">
+              <img class="logo" alt="Socrata" src="<%= powered_by_logo_src %>" />
+            </a>
+          </span>
+        <%- end -%>
+
+        <% if show_language_switcher? %>
+          <%= render 'site_chrome/language_switcher', :orientation => 'top' %>
         <% end %>
-      </ul>
+      </div>
     </div>
-    <div class="addendum">
-      <%= content_tag(:div, copyright, :class => 'site-chrome-copyright') if show_copyright? %>
-
-      <%- if valid_social_links(get_site_chrome.general[:social_shares]).present? -%>
-        <div class="site-chrome-social-links">
-          <%= render 'site_chrome/social_links' %>
-        </div>
-      <%- end -%>
-
-      <%- if show_powered_by? -%>
-        <span class="powered-by-socrata">
-          <span class="powered-by"><%= t('footer.powered_by') %></span>
-          <a href="//socrata.com" target="_blank">
-            <img class="logo" alt="Socrata" src="<%= powered_by_logo_src %>" />
-          </a>
-        </span>
-      <%- end -%>
-
-      <% if show_language_switcher? %>
-        <%= render 'site_chrome/language_switcher', :orientation => 'top' %>
-      <% end %>
-    </div>
-  </div>
-</footer>
+  </footer>
+<% end %>

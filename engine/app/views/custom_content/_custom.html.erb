@@ -1,0 +1,10 @@
+<%# EN-6555: Support for entirely custom headers/footers :sadpanda: %>
+
+<% custom_content_id = "site-chrome-custom-#{section}-content" %>
+
+<%= content_tag(:style, Sass::Engine.new("##{custom_content_id} { #{raw(content[:css])} }",
+    SocrataSiteChrome::ThemesHelper.sass_engine_options).render) rescue nil %>
+
+<%= content_tag(:div, raw(content[:html]), :id => custom_content_id) %>
+
+<%= content_tag(:script, raw(content[:js])) %>

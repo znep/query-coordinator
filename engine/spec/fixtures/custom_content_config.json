@@ -197,7 +197,17 @@
     },
     {
       "name": "custom_footer_html",
-      "value": "<div id=\"nyc-custom-footer\">my custom footer!</div>"
+      "value": "<div id=\"nyc-custom-footer\">my custom footer</div>"
+    },
+    {
+      "name": "draft_custom_footer_html",
+      "value": "<div id=\"nyc-custom-footer\">my draft custom footer</div>"
+    },
+    {
+      "name": "activation_state",
+      "value": {
+        "custom": true
+      }
     }
   ],
   "type": "site_chrome",

@@ -5,7 +5,6 @@ describe SocrataSiteChrome::CustomContent do
 
   let(:domain) { 'data.seattle.gov' }
   let(:site_chrome_config_with_custom_content) { File.read('spec/fixtures/custom_content_config.json') }
-  let(:site_chrome_config_without_custom_content) { "[#{File.read('spec/fixtures/site_chrome_config.json')}]" }
   let(:helper) { SocrataSiteChrome::CustomContent.new(domain) }
   let(:coreservice_uri) { Rails.application.config_for(:config)['coreservice_uri'] }
   let(:uri) { "#{coreservice_uri}/configurations.json?type=site_chrome&defaultOnly=true" }
@@ -14,7 +13,8 @@ describe SocrataSiteChrome::CustomContent do
     it 'returns empty content if the config is empty' do
       stub_configurations(:status => 200, :body => nil)
       expect(helper.fetch).to eq(
-        {:header=>{:html=>nil, :css=>nil, :js=>nil}, :footer=>{:html=>nil, :css=>nil, :js=>nil}}
+        :header => { :html => nil, :css => nil, :js => nil },
+        :footer => { :html => nil, :css => nil, :js => nil }
       )
     end
 
@@ -25,26 +25,37 @@ describe SocrataSiteChrome::CustomContent do
       expect(result.dig(:header, :html)).to eq('<div id="nyc-custom-header">my custom header</div>')
       expect(result.dig(:header, :css)).to eq('#nyc-custom-header { color: red; }')
       expect(result.dig(:header, :js)).to eq('(function() { console.log(\'nyc is neat\'); } )();')
-      expect(result.dig(:footer, :html)).to eq('<div id="nyc-custom-footer">my custom footer!</div>')
+      expect(result.dig(:footer, :html)).to eq('<div id="nyc-custom-footer">my custom footer</div>')
       expect(result.dig(:footer, :css)).to eq(nil)
       expect(result.dig(:footer, :js)).to eq(nil)
     end
+
+    it 'returns draft content' do
+      stub_configurations(:status => 200, :body => site_chrome_config_with_custom_content)
+      result = helper.fetch(:draft)
+
+      expect(result.dig(:header, :html)).to eq(nil)
+      expect(result.dig(:footer, :html)).to eq('<div id="nyc-custom-footer">my draft custom footer</div>')
+    end
   end
 
-  describe '#present?' do
-    it 'returns false if the config response is empty' do
+  describe '#activated?' do
+    it 'returns false if the activation_state property is nil' do
       stub_configurations(:status => 200, :body => nil)
-      expect(helper.present?).to eq(false)
+      expect(helper.activated?).to eq(false)
     end
 
-    it 'returns false if the config response contains normal site chrome content but no custom content' do
-      stub_configurations(:status => 200, :body => site_chrome_config_without_custom_content)
-      expect(helper.present?).to eq(false)
+    it 'returns false if the activation_state is not true' do
+      body = JSON.parse(site_chrome_config_with_custom_content).tap do |content|
+        content[0]['properties'].detect { |p| p['name'] == 'activation_state' }['value'] = nil
+      end
+      stub_configurations(:status => 200, :body => body)
+      expect(helper.activated?).to eq(false)
     end
 
-    it 'returns true if custom content is present' do
+    it 'returns true if activation_state is true' do
       stub_configurations(:status => 200, :body => site_chrome_config_with_custom_content)
-      expect(helper.present?).to eq(true)
+      expect(helper.activated?).to eq(true)
     end
   end
 

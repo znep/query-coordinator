@@ -228,7 +228,7 @@ class UserSession
   private
 
   @@auth_uri = CORESERVICE_URI.clone
-  @@auth_uri.path << '/authenticate'
+  @@auth_uri.path += '/authenticate'
 
   cattr_reader :auth_uri
 

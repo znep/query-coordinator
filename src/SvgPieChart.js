@@ -105,6 +105,7 @@ $.fn.socrataSvgPieChart = function(originalVif) {
     if (window.console && console.error) {
       console.error(error);
     }
+console.log(error.message);
 
     if (error.errorMessages) {
       messages = error.errorMessages;
@@ -199,11 +200,23 @@ $.fn.socrataSvgPieChart = function(originalVif) {
       vifToRender,
       seriesIndex
     );
-    const limit = _.get(
-      vifToRender,
-      `series[${seriesIndex}].dataSource.limit`,
-      MAX_ROWS_BEFORE_FORCED_OTHER_GROUP + 1
-    );
+
+    const limitConf = _.get(vifToRender, `series[${seriesIndex}].dataSource.limit`);
+    const isLimitInRange = _.inRange(limitConf, 1, MAX_ROWS_BEFORE_FORCED_OTHER_GROUP + 1);
+
+    if (limitConf && !isLimitInRange) {
+      const error = new Error();
+      const errorMessage = I18n.
+        translate('visualizations.pie_chart.error_limit_out_of_bounds').
+        format(1, MAX_ROWS_BEFORE_FORCED_OTHER_GROUP + 1);
+
+      error.errorMessages = [errorMessage];
+
+      throw error;
+    }
+
+    const limit = limitConf || MAX_ROWS_BEFORE_FORCED_OTHER_GROUP + 1;
+
     const isUnaggregatedQuery = (
       _.isNull(series.dataSource.dimension.aggregationFunction) &&
       _.isNull(series.dataSource.measure.aggregationFunction)

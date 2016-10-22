@@ -31,6 +31,7 @@ function SvgPieChart($element, vif) {
   let outerWidth = 0; // width of pie
   let svg; // main svg element
   let color; // renderData and renderLegend uses this
+  let colorPalette;
   let flyoutArc; // this will change with resize
   let centerDot; // hidden circle at the center of pie
 
@@ -116,8 +117,11 @@ function SvgPieChart($element, vif) {
       append('g').
       attr('class', 'slices');
 
+    // Color from custom palette
+    colorPalette = self.getColorPaletteBySeriesIndex(0);
+    color = (index) => d3.rgb(colorPalette[index]);
+
     // pie slices
-    color = d3.scale.category20();
     let arcs = g.datum(dataToRender[0].rows).selectAll('g.slice-group').
       data(pie).
       enter().
@@ -161,9 +165,10 @@ function SvgPieChart($element, vif) {
    * Render legend
    */
   function renderLegend() {
-    // create legend rows with current color domain and decorate rows
-    let legend = svg.selectAll('.legend').
-      data(color.domain()).
+    // create legend rows with a domain created with data and decorate rows
+    const domain = dataToRender[0].rows.map((val, i) => i);
+    const legend = svg.selectAll('.legend').
+      data(domain).
       enter().
       append('g').
       attr('class', 'legend-row');
@@ -430,7 +435,7 @@ function SvgPieChart($element, vif) {
     // single legend row height
     const legendRowHeight = LEGEND_RECT_SIZE + LEGEND_SPACING;
     // total legend height
-    const legendHeight = legendRowHeight * color.domain().length;
+    const legendHeight = legendRowHeight * dataToRender[0].rows.length;
     const legendLeft = pieLeft + radius + padding;
     // legend offset from top
     const legendTopOffset = (height - legendHeight) / 2;

@@ -101,6 +101,8 @@ describe('AuthoringWorkflow reducer', function() {
       shouldSetVif('setColorScale', ['one', 'two', 'three'], 'configuration.legend.zeroColor', ['regionMap']);
       shouldSetVif('setColorScale', ['one', 'two', 'three'], 'configuration.legend.positiveColor', ['regionMap']);
 
+      shouldSetVif('setColorPalette', 'alternate2', 'series[0].color.palette', ['pieChart']);
+
       shouldSetVif('setShapefileUid', 'four-four', 'configuration.shapefile.uid', ['regionMap']);
       shouldSetVif('setShapefilePrimaryKey', 'imaprimarykey', 'configuration.shapefile.primaryKey', ['regionMap']);
       shouldSetVif('setShapefileGeometryLabel', 'elaborawhat?', 'configuration.shapefile.geometryLabel', ['regionMap']);

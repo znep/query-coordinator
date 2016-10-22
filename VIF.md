@@ -410,6 +410,8 @@ Some chart types allow for specifying optional variants. Accepted variants are:
 
 * The `highlight` property specifies the primary, or dominant, color to be used when rendering highlights on individual data (e.g. when the user moves the mouse over a column in a Column Chart). Its type is `<string>` and it must be a valid CSS color declaration (e.g. `#ff0000`, `rgb(255, 0, 0)` or `rgba(255, 0, 0, 1.0)`).
 
+* The `palette` property sets color palette. It's type is `<string>`. Accepted values are `paired`, `set1`, `set2` , `dark2`.
+
 If any of these properties is omitted, defaults will be used instead.
 
 The following example would cause the series in question to be rendered primarily in red, with green accents and blue highlights:

@@ -15,7 +15,8 @@ function render(type) {
     onChangePointColor: sinon.spy(),
     onChangePointOpacity: sinon.spy(),
     onChangePointSize: sinon.spy(),
-    onSelectColorScale: sinon.spy()
+    onSelectColorScale: sinon.spy(),
+    onSelectColorPalette: sinon.spy()
   });
 
   return {
@@ -161,6 +162,20 @@ describe('ColorsAndStylePane', function() {
     describe('rendering', function() {
       it('renders an input', function() {
         expect(component.querySelector('.color-picker')).to.exist;
+      });
+    });
+  });
+
+  describe('pieChart', () => {
+    beforeEach(() => {
+      const renderedParts = render('pieChart');
+      component = renderedParts.component;
+      props = renderedParts.props;
+    });
+
+    describe('rendering', () => {
+      it('renders color palette selection', () => {
+        expect(component.querySelector('#color-palette')).to.exist;
       });
     });
   });

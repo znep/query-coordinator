@@ -153,6 +153,25 @@ export const COLOR_SCALES = [
   }
 ];
 
+export const COLOR_PALETTES = [
+  {
+    title: translate('color_palettes.categorical'),
+    value: 'categorical'
+  },
+  {
+    title: translate('color_palettes.alternate1'),
+    value: 'alternate1'
+  },
+  {
+    title: translate('color_palettes.alternate2'),
+    value: 'alternate2'
+  },
+  {
+    title: translate('color_palettes.dark'),
+    value: 'dark'
+  }
+];
+
 export const COLORS = [
   '#f0f2ff', '#eff8fb', '#eff8fb', '#f7f7f7', '#fdeddd', '#f6eef7', '#feffc8', '#fdebe1', '#fdffac',
   '#bed7e8', '#b5e3e2', '#b5cce5', '#cccccc', '#fac07e', '#bfc8e3', '#a2deb2', '#f8b2b8', '#fad04b',

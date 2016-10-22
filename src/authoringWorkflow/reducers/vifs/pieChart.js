@@ -6,6 +6,7 @@ import vifs from '../../vifs';
 import {
   forEachSeries,
   setStringValueOrDefaultValue,
+  setStringValueOrDeleteProperty,
   setBooleanValueOrDefaultValue,
   setUnits
 } from '../../helpers';
@@ -25,7 +26,8 @@ import {
   SET_UNIT_OTHER,
   SET_VIEW_SOURCE_DATA_LINK,
   SET_SHOW_VALUE_LABELS,
-  SET_SHOW_VALUE_LABELS_AS_PERCENT
+  SET_SHOW_VALUE_LABELS_AS_PERCENT,
+  SET_COLOR_PALETTE
 } from '../../actions';
 
 export default function pieChart(state, action) {
@@ -76,6 +78,12 @@ export default function pieChart(state, action) {
       _.set(state, 'configuration.viewSourceDataLink', action.viewSourceDataLink);
       break;
 
+    case SET_COLOR_PALETTE:
+      forEachSeries(state, series => {
+        setStringValueOrDeleteProperty(series, 'color.palette', action.colorPalette, null);
+      });
+      break;
+
     case SET_MEASURE:
       forEachSeries(state, series => {
         var aggregationFunction = series.dataSource.measure.aggregationFunction;
@@ -124,4 +132,4 @@ export default function pieChart(state, action) {
   }
 
   return state;
-}
+};

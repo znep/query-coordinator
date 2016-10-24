@@ -1,6 +1,6 @@
 - [ ] Made sure the JIRA ticket ID is in at least the first commit message.
 - [ ] Bumped the gem version in [version.rb](https://github.com/socrata/socrata_site_chrome/blob/master/engine/lib/socrata_site_chrome/version.rb)
 - [ ] Ran `bundle install` and updated the `Gemfile.lock`
-- [ ] Run `rake gem` to publish the gem. — This seems weird, but it allows making the PR below.
+- [ ] Run `rake socrata_site_chrome:gem` to publish the gem. — This seems weird, but it allows making the PR below.
 - [ ] `git add engine/*.gem` to add the newly built gem to this PR.
 - [ ] Created a PR to bump the `socrata_site_chrome` gem version in `Gemfile` in relevant projects (Frontend, Storyteller, etc...)

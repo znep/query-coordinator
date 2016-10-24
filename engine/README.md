@@ -389,12 +389,12 @@ Ensure `$RUBYGEMS_HOST` is set in environment:
 
 Build the gem and push it to artifactory.
 
-    rake gem
+    rake socrata_site_chrome:gem
 
 Alternatively you can run each step individually
 
-    rake gem:build
-    rake gem:publish
+    rake socrata_site_chrome:gem:build
+    rake socrata_site_chrome:gem:publish
 
 ## Running tests
 

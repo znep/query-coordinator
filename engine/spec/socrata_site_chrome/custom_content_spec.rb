@@ -59,6 +59,23 @@ describe SocrataSiteChrome::CustomContent do
     end
   end
 
+  describe '#get_property_by_name' do
+    it 'returns an empty hash if there is not a match for the property name in the config' do
+      stub_configurations(:status => 200, :body => site_chrome_config_with_custom_content)
+      result = helper.send(:get_property_by_name, 'wrong_name')
+      expect(result).to eq({})
+    end
+
+    it 'returns the correct property hash for a given property name' do
+      stub_configurations(:status => 200, :body => site_chrome_config_with_custom_content)
+      result = helper.send(:get_property_by_name, 'draft_custom_footer_html')
+      expect(result).to eq(
+        'name' => 'draft_custom_footer_html',
+        'value' => '<div id="nyc-custom-footer">my draft custom footer</div>'
+      )
+    end
+  end
+
   private
 
   def stub_configurations(response)

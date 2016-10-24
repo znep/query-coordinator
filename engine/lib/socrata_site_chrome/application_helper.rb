@@ -217,6 +217,8 @@ module SocrataSiteChrome
     def massage_url(url, add_locale: true)
       return unless url.present?
 
+      url.strip!
+
       # If relative path, prerepend current locale if necessary and return
       if url.start_with?('/')
         return add_locale ? relative_url_with_locale(url) : url
@@ -226,7 +228,11 @@ module SocrataSiteChrome
 
       # Prepend with 'http://' if they don't provide a scheme
       url = "http://#{url}" unless url.match(supported_scheme_matchers)
-      uri = URI.parse(url)
+      uri = begin
+        URI.parse(url)
+      rescue
+        return url
+      end
 
       # Turn full URL into a relative link if the url host matches the current domain host
       if request.host.present? && uri.host == request.host

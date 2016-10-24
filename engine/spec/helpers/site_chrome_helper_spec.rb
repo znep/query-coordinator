@@ -488,10 +488,24 @@ describe SocrataSiteChrome::ApplicationHelper do
       expect(helper.massage_url(url)).to eq('/browse')
     end
 
-    it 'doesn\'t drop url params and fragments' do
+    it 'does not drop url params and fragments' do
       stub_current_domain_with('data.seattle.gov')
       url = 'https://data.seattle.gov/browse?some_stuff=true#show'
       expect(helper.massage_url(url)).to eq('/browse?some_stuff=true#show')
+    end
+
+    it 'just returns the url (with a scheme) if the url is invalid and it cannot parse it' do
+      url = '@#(*$*@#*@(#*(*@#$(*@#*($&#^#%@*%*@#$(@#'
+      expect(helper.massage_url(url)).to eq('http://@#(*$*@#*@(#*(*@#$(*@#*($&#^#%@*%*@#$(@#')
+
+      url2 = 'htpp://stuf.com'
+      expect(helper.massage_url(url2)).to eq('http://htpp//stuf.com')
+
+    end
+
+    it 'strips spaces from the start/end of the urls' do
+      url = ' google.com '
+      expect(helper.massage_url(url)).to eq('http://google.com')
     end
 
     context 'localization' do

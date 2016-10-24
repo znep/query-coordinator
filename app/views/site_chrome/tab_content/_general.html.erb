@@ -9,8 +9,7 @@
 <%= site_chrome_form_field(:general, :window_icon, "#{locale_string}.window_icon") %>
 
 <%= site_chrome_dropdown_field(:general, [:styles, :font_family], valid_webfonts, "#{locale_string}.font_family") %>
-<!-- EN-9176: Hide Google Analytics field for now -->
-<!--<%#= site_chrome_form_field(:general, :google_analytics_token, t("#{locale_string}.google_analytics_token")) %>-->
+<%= site_chrome_form_field(:general, :google_analytics_token, "#{locale_string}.google_analytics_token") %>
 
 <%= section_separator %>
 

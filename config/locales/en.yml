@@ -1610,7 +1610,7 @@ en:
       title: Page Settings
   date:
     abbr_month_names:
-    - 
+    -
     - Jan
     - Feb
     - Mar
@@ -1624,7 +1624,7 @@ en:
     - Nov
     - Dec
     month_names:
-    - 
+    -
     - January
     - February
     - March
@@ -2819,7 +2819,7 @@ en:
               url_placeholder: http://data.evergreen.gov
             title: Header Bar
           homepage:
-            fields: 
+            fields:
             title: Homepage
           social:
             fields:
@@ -3017,7 +3017,7 @@ en:
         zkerror: 'There was an upstream error: {reason}'
       finish:
         headline: Your Dataset has been created.
-        subheadline: Click on Finish to see it!
+        subheadline: Click on Done to see it!
       first_page:
         blobby: Upload a Non-Data File
         blobby_explain: Choose this if you have a file that has data in it but which cannot be imported, such as a PDF, or an image file. It will be imported into the data catalog, but will not be as interactive as real data.
@@ -3169,7 +3169,7 @@ en:
         share_facebook: Share on Facebook
         share_twitter: Share on Twitter
         snapshot_notice: This is a previously published version of the dataset. It is archived and cannot be modified.
-        snapshot_title: 
+        snapshot_title:
         snapshot_title_html: Snapshotted %{date}
         snapshot_unsavable: Snapshotted datasets and views cannot be created or modified
         subscribe: Subscribe to Changes
@@ -3580,7 +3580,7 @@ en:
           money:
             abbreviated: Abbreviated
             currency: Currency
-            format_mask_warning: 
+            format_mask_warning:
             groups:
               all: All
               common: Common
@@ -3914,7 +3914,7 @@ en:
             delete: Delete this view
             expand: Click to expand
           no_results: There are no results
-          no_results_html: 
+          no_results_html:
           pagination:
             last: See last view
             next: See next %{count} views

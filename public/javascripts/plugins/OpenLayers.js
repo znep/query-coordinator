@@ -85138,3 +85138,5 @@ OpenLayers.Control.KeyboardDefaults = OpenLayers.Class(OpenLayers.Control, {
 
     CLASS_NAME: "OpenLayers.Control.KeyboardDefaults"
 });
+
+window.OpenLayers = OpenLayers;

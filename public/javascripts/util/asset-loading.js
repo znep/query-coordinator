@@ -392,11 +392,19 @@
   assetNS.getJavascriptSources = function(packages) {
     if (blist.configuration.development) {
       return _.map(packages, function(item) {
-        return '/javascripts/webpack/open-data/' + item.assets + '.js';
+        if (_.get(item, 'assets')) {
+          return '/javascripts/webpack/open-data/' + item.assets + '.js';
+        } else {
+          return item;
+        }
       });
     } else {
       return _.map(packages, function(item) {
-        return '/javascripts/build/' + blist.configuration.webpackManifest['open-data/' + item.assets + '.js'];
+        if (_.get(item, 'assets')) {
+          return '/javascripts/build/' + blist.configuration.webpackManifest['open-data/' + item.assets + '.js'];
+        } else {
+          return item;
+        }
       });
     }
   };

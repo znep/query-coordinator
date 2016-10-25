@@ -21,13 +21,14 @@ Install rbenv and ruby:
 
 ```
 brew install rbenv ruby-build
-rbenv install 2.3.1
+rbenv install $(cat .ruby-version)
 ```
 
-Install the latest LTS node and npm (https://nodejs.org/download/)
+Install n and node:
 
 ```
-brew install node4-lts
+brew install n
+n $(cat .node-version)
 ```
 
 then install npm dependencies:

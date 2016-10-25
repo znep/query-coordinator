@@ -36,7 +36,7 @@ COPY runit/core_events_listener ${SERVICE_DIR_BASE}/storyteller-core-events-list
 
 # Run this early since we don't expect it to change very often
 RUN npm install -g n
-RUN n lts
+RUN n 6.9.1
 
 # Only bundle install when Gemfile has changed
 COPY Gemfile* /tmp/

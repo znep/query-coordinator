@@ -99,7 +99,6 @@ group :production do
 end
 
 group :development, :test do
-  gem 'rspec-rails', '~> 3.4'
   # Make pry the default in rails console
   gem 'pry-rails'
 

@@ -167,6 +167,10 @@ export const COLOR_PALETTES = [
     value: 'alternate2'
   },
   {
+    title: translate('color_palettes.accent'),
+    value: 'accent'
+  },
+  {
     title: translate('color_palettes.dark'),
     value: 'dark'
   }

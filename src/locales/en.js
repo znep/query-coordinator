@@ -19,6 +19,7 @@ export default {
     categorical: 'Categorical',
     alternate1: 'Alternate 1',
     alternate2: 'Alternate 2',
+    accent: 'Accent',
     dark: 'Dark'
   },
   modal: {

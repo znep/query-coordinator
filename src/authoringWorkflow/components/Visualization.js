@@ -75,7 +75,6 @@ export var Visualization = React.createClass({
   },
 
   updateVisualization() {
-
     this.visualizationPreview().dispatchEvent(
       new CustomEvent(
         'SOCRATA_VISUALIZATION_RENDER_VIF',
@@ -134,7 +133,7 @@ export var Visualization = React.createClass({
       this.destroyVisualizationPreview();
 
       $visualizationPreview.
-      socrataSvgPieChart(vif);
+        socrataSvgPieChart(vif);
     }
   },
 

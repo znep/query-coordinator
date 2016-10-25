@@ -32,7 +32,10 @@ describe('SvgPieChart', () => {
         ['i', 90],
         ['j', 100],
         ['k', 110],
-        ['l', 120]
+        ['l', 120],
+        ['m', 130],
+        ['n', 140],
+        ['o', 150]
       ],
       columns: ['dimension', 'measure']
     }

@@ -7,7 +7,6 @@ const I18n = require('../I18n');
 
 const MINIMUM_PIE_CHART_WIDTH = 100;
 const MAX_HORIZONTAL_LEGEND_SIZE = 250;
-const MAX_VERTICAL_LEGEND_SIZE = 250;
 const MARGINS = {
   verticalLayoutPieMargin: 0.7,
   // arc multiplier for determining flyout position

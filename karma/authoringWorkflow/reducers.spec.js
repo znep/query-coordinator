@@ -127,6 +127,10 @@ describe('AuthoringWorkflow reducer', function() {
       shouldSetVif('setPrecision', 'DAY', 'series[0].dataSource.precision', ['timelineChart']);
       shouldSetVif('setTreatNullValuesAsZero', true, 'configuration.treatNullValuesAsZero', ['timelineChart']);
 
+      shouldSetVif('setLimitNoneAndShowOtherCategory', undefined, 'configuration.showOtherCategory', ['barChart', 'pieChart']);
+
+      shouldSetVif('setShowOtherCategory', true, 'configuration.showOtherCategory', ['barChart', 'pieChart']);
+
       describe('when configuring a Feature map', function() {
         resetsCenterAndZoomWhenChangingDimensions();
 

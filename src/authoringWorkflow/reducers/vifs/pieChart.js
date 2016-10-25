@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import utils from 'socrata-utils';
 
 import { translate } from '../../../I18n';
 import vifs from '../../vifs';
@@ -8,7 +7,8 @@ import {
   setStringValueOrDefaultValue,
   setStringValueOrDeleteProperty,
   setBooleanValueOrDefaultValue,
-  setUnits
+  setUnits,
+  setBooleanValueOrDeleteProperty
 } from '../../helpers';
 
 import {
@@ -27,7 +27,10 @@ import {
   SET_VIEW_SOURCE_DATA_LINK,
   SET_SHOW_VALUE_LABELS,
   SET_SHOW_VALUE_LABELS_AS_PERCENT,
-  SET_COLOR_PALETTE
+  SET_COLOR_PALETTE,
+  SET_LIMIT_NONE_AND_SHOW_OTHER_CATEGORY,
+  SET_LIMIT_COUNT_AND_SHOW_OTHER_CATEGORY,
+  SET_SHOW_OTHER_CATEGORY
 } from '../../actions';
 
 export default function pieChart(state, action) {
@@ -128,6 +131,26 @@ export default function pieChart(state, action) {
       forEachSeries(state, series => {
         _.set(series, 'dataSource.orderBy', _.cloneDeep(action.orderBy));
       });
+      break;
+
+    case SET_LIMIT_NONE_AND_SHOW_OTHER_CATEGORY:
+      setBooleanValueOrDeleteProperty(state, 'configuration.showOtherCategory', action.showOtherCategory);
+
+      forEachSeries(state, series => {
+        _.unset(series, 'dataSource.limit');
+      });
+      break;
+
+    case SET_LIMIT_COUNT_AND_SHOW_OTHER_CATEGORY:
+      setBooleanValueOrDefaultValue(state, 'configuration.showOtherCategory', action.showOtherCategory, true);
+
+      forEachSeries(state, series => {
+        _.set(series, 'dataSource.limit', action.limitCount);
+      });
+      break;
+
+    case SET_SHOW_OTHER_CATEGORY:
+      setBooleanValueOrDefaultValue(state, 'configuration.showOtherCategory', action.showOtherCategory, true);
       break;
   }
 

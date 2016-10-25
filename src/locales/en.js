@@ -86,6 +86,12 @@ export default {
           none: 'Show all',
           count: 'Show'
         },
+        pie_chart_limit: {
+          title: 'Limit Displayed Slices',
+          subtitle: 'Number of slices to display',
+          none: 'Show all',
+          count: 'Show'
+        },
         show_other_category: {
           title: 'Group remaining as "Other"'
         }

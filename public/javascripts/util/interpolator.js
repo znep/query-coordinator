@@ -54,3 +54,5 @@ Interpolator.prototype.addListener = function(thunk) {
 Interpolator.prototype.stop = function() {
     clearInterval(this.intervalId);
 };
+
+module.exports = Interpolator;

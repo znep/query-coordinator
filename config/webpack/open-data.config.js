@@ -455,6 +455,7 @@ module.exports = _.defaultsDeep({
     'dataset-new-old': [
       './util/serialize.js',
       './util/datasync.js',
+      './util/interpolator.js',
       './plugins/ajaxupload.js',
       './plugins/fileuploader.js',
       './plugins/blist.fileuploader.js',

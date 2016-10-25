@@ -12,6 +12,8 @@
 //      objects are going to be the final product. An importColumn can be composed
 //      of zero, one, or more sourceColumns.
 
+var Interpolator = require('../util/interpolator');
+
 (function($) {
 
   var importNS = blist.namespace.fetch('blist.importer');
@@ -1957,10 +1959,12 @@
       } else {
         var interpolator = new Interpolator(250); // eslint-disable-line no-undef
         interpolator.addListener(function(rows) {
-          var message = t('rows_imported', {
-            num: rows
-          });
-          $importingPane.find('.importStatus').text(message);
+          if (rows > 0) {
+            var message = t('rows_imported', {
+              num: rows
+            });
+            $importingPane.find('.importStatus').text(message);
+          }
         });
         $.socrataServer.makeRequest({
           type: 'post',

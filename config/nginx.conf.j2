@@ -31,31 +31,31 @@ http {
 
     location ^~ /packages/ {
       gzip_static on;
-      expires 1d;
+      expires 1h;
       add_header Cache-Control public;
     }
 
     location ^~ /javascripts/ {
       gzip_static on;
-      expires 1d;
+      expires 1h;
       add_header Cache-Control public;
     }
 
     location ^~ /stylesheets/ {
       gzip_static on;
-      expires 1d;
+      expires 1h;
       add_header Cache-Control public;
     }
 
     location ^~ /images/ {
       gzip_static on;
-      expires 1d;
+      expires 1h;
       add_header Cache-Control public;
     }
 
     location ^~ /asset_pipeline/ {
       gzip_static on;
-      expires 1d;
+      expires 1h;
       add_header Cache-Control public;
     }
 

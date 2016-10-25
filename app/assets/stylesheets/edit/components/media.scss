@@ -71,6 +71,7 @@
   .component-socrata-visualization-histogram,
   .component-socrata-visualization-table,
   .component-socrata-visualization-timeline-chart,
+  .component-socrata-visualization-pie-chart,
   .component-story-tile,
   .component-story-widget,
   .component-goal-tile,
@@ -97,6 +98,7 @@
 .component-socrata-visualization-histogram,
 .component-socrata-visualization-table,
 .component-socrata-visualization-timeline-chart,
+.component-socrata-visualization-pie-chart,
 .component-story-tile,
 .component-story-widget,
 .component-goal-tile,
@@ -191,6 +193,7 @@
   .component-socrata-visualization-feature-map,
   .component-socrata-visualization-histogram,
   .component-socrata-visualization-timeline-chart
+  .component-socrata-visualization-pie-chart
   .component-youtube-video {
     $small-height: $col3-block-edit-content-width-small * (4/5);
     $medium-height: $col3-block-edit-content-width-medium * (3/4);
@@ -218,6 +221,7 @@
   .component-socrata-visualization-feature-map,
   .component-socrata-visualization-histogram,
   .component-socrata-visualization-timeline-chart,
+  .component-socrata-visualization-pie-chart,
   .component-youtube-video {
     $small-height: $col4-block-edit-content-width-small * (4/5);
     $medium-height: $col4-block-edit-content-width-medium * (3/4);
@@ -249,8 +253,9 @@
     .component-socrata-visualization-bar-chart,
     .component-socrata-visualization-column-chart,
     .component-socrata-visualization-feature-map,
-  .component-socrata-visualization-histogram,
+    .component-socrata-visualization-histogram,
     .component-socrata-visualization-timeline-chart,
+    .component-socrata-visualization-pie-chart,
     .component-youtube-video {
       @include media-query-property(
         'height',
@@ -271,6 +276,7 @@
   .component-socrata-visualization-feature-map,
   .component-socrata-visualization-histogram,
   .component-socrata-visualization-timeline-chart,
+  .component-socrata-visualization-pie-chart,
   .component-youtube-video {
     @include media-query-property(
       'height',
@@ -307,6 +313,7 @@
   .component-socrata-visualization-feature-map,
   .component-socrata-visualization-histogram,
   .component-socrata-visualization-timeline-chart,
+  .component-socrata-visualization-pie-chart,
   .component-youtube-video {
     @include media-query-property(
       'height',
@@ -344,6 +351,7 @@
   .component-socrata-visualization-feature-map,
   .component-socrata-visualization-histogram,
   .component-socrata-visualization-timeline-chart,
+  .component-socrata-visualization-pie-chart,
   .component-youtube-video {
     @include media-query-property(
       'height',

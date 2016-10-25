@@ -199,7 +199,7 @@ GEM
     nokogumbo (1.4.7)
       nokogiri
     os (0.9.6)
-    paperclip (4.3.7)
+    paperclip (4.3.6)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
       cocaine (~> 0.5.5)
@@ -394,7 +394,7 @@ DEPENDENCIES
   neat
   net-ping
   os
-  paperclip (~> 4.3)
+  paperclip (= 4.3.6)
   pg
   powder
   pry-byebug

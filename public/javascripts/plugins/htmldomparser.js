@@ -430,3 +430,5 @@ function escapeCharOther(original) {
 	}
 
 }
+
+window.HTMLParser = HTMLParser;

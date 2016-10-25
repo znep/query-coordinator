@@ -151,7 +151,7 @@ describe('API response for', () => {
           licenseId: '',
           licenseName: '-- No License --',
           licensing: '',
-          sourceLink: undefined
+          sourceLink: ''
         }
       };
       const actual = modelToViewParam(metadataWithNoLicenseSelected);

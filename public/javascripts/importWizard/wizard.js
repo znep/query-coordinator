@@ -16,6 +16,7 @@ import * as SelectUploadType from './components/selectUploadType';
 import * as SaveState from './saveState';
 import * as ImportStatus from './importStatus';
 import enabledModules from 'enabledModules';
+import { migrateState } from './stateMigration';
 
 type Layer = {
   name: string
@@ -43,6 +44,7 @@ type Navigation = {
 
 
 type NewDatasetModel = {
+  version: number,
   datasetId: string,                  // this should never change
   lastSavedVersion: string,
   navigation: Navigation,
@@ -82,6 +84,7 @@ export function initialNewDatasetModel(initialView, importSource: SaveState.Impo
     try {
       var state = JSON.parse(importSource.state);
 
+      state = migrateState(state);
       // Metadata is special; it's stored on the view and the
       // metadata in the view takes precedence over whatever is in the
       // redux state
@@ -100,6 +103,9 @@ export function initialNewDatasetModel(initialView, importSource: SaveState.Impo
   }
 
   const initial = {
+    // if you change the shape of the state
+    // update this version number and import_wizard_migrations.js
+    version: 1,
     datasetId: initialView.id,
     lastSavedVersion: 0,
     navigation: initialNavigation(),

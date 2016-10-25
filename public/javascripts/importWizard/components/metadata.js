@@ -4,6 +4,7 @@ import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 import _ from 'lodash';
 import { combineReducers } from 'redux';
 import isEmail from 'validator/lib/isEmail';
+import isURL from 'validator/lib/isURL';
 import RadioGroup from 'react-radio-group';
 
 import * as Server from '../server';
@@ -99,7 +100,7 @@ export function emptyLicense(): LicenseType {
     licensing: '',
     licenseId: '',
     attribution: '',
-    sourceLink: null
+    sourceLink: ''
   };
 }
 
@@ -564,12 +565,18 @@ export function isAttributionValid(metadata) {
   return !(attributionRequiredTag(metadata) === 'required' && metadata.license.attribution.length === 0);
 }
 
+export function isSourceLinkValid(metadata) {
+  const sourceLink = metadata.license.sourceLink;
+  return isURL(sourceLink, { require_protocol: true }) || sourceLink.length === 0;
+}
+
 export function isMetadataValid(metadata: DatasetMetadata, operation) {
   return isStandardMetadataValid(metadata, operation) &&
          isCustomMetadataValid(metadata) &&
          isEmailValid(metadata) &&
          isHrefValid(metadata) &&
-         isAttributionValid(metadata);
+         isAttributionValid(metadata) &&
+         isSourceLinkValid(metadata);
 }
 
 export function isMetadataUnsaved(metadata) {
@@ -754,6 +761,9 @@ function renderLicenses(metadata, onMetadataAction) {
           placeholder={I18n.screens.edit_metadata.source_link_prompt}
           onChange={(evt) => onMetadataAction(updateLicenseSourceLink(evt.target.value))}
           className="textPrompt" />
+          {(!isSourceLinkValid(metadata) && metadata.nextClicked)
+            ? <label htmlFor="view_attributionLink" className="error">{I18n.screens.edit_metadata.source_link_error}</label>
+            : null}
       </div>
 
     </div>

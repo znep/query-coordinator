@@ -166,6 +166,7 @@ describe('initialNewDatasetModel', () => {
   };
 
   const initialState = {
+    version: 1,
     datasetId: 'abcd-efgh',
     lastSavedVersion: 0,
     connectToEsri: {},
@@ -244,7 +245,7 @@ describe('initialNewDatasetModel', () => {
         licensing: '',
         licenseId: '',
         attribution: '',
-        sourceLink: null
+        sourceLink: ''
       },
       lastSaved: {
         lastSavedContents: {
@@ -304,7 +305,7 @@ describe('initialNewDatasetModel', () => {
           licensing: '',
           licenseId: '',
           attribution: '',
-          sourceLink: null
+          sourceLink: ''
         },
         lastSavedPrivacySettings: 'private'
       }

@@ -39,6 +39,7 @@ function identityReducer(model = null, action) { // eslint-disable-line no-unuse
 }
 
 const rootReducer = combineReducers({
+  version: identityReducer,
   datasetId: identityReducer,
   lastSavedVersion: SaveState.update,
   navigation: Wizard.updateNavigation,

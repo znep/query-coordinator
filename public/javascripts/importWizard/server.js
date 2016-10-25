@@ -201,7 +201,6 @@ function viewMetadata({href, rowLabel, mapLayer, customMetadata, displayType}) {
 export function modelToViewParam(metadata) {
   const model = {
     name: metadata.contents.name,
-    attributionLink: metadata.license.sourceLink,
     attribution: metadata.license.attribution,
     description: metadata.contents.description,
     category: metadata.contents.category,
@@ -213,6 +212,11 @@ export function modelToViewParam(metadata) {
     },
     displayType: metadata.contents.displayType
   };
+
+  if (metadata.license.sourceLink.length > 0) {
+    // don't send an empty attributionLink to core.
+    model.attributionLink = metadata.license.sourceLink;
+  }
 
   const license = metadata.license;
   if (license.licenseId === '') {

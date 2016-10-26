@@ -50,7 +50,8 @@ module.exports = _.defaultsDeep({
       'node_modules/socrata-components',
       'node_modules/socrata-components/styles',
       'node_modules/socrata-components/styles/variables',
-      'node_modules/socrata-components/dist/fonts'
+      'node_modules/socrata-components/dist/fonts',
+      'node_modules/react-input-range/dist'
     ]
   },
   resolve: {

@@ -39,6 +39,9 @@ module ActivityFeedHelper
   end
 
   def event_description(event)
+    if event.info.keys.sort == %w(params type)
+      info = event.info[:params]
+    end
     info = Hash[event.info.map do |key, value|
       [key.to_sym, value.is_a?(Array) ? value.to_sentence : value]
     end]

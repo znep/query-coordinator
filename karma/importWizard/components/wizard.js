@@ -318,7 +318,7 @@ describe('initialNewDatasetModel', () => {
   const serverState = {
     version: 2,
     state: JSON.stringify(initialState)
-  }
+  };
 
   it('returns an initial state when `importSource` is null', () => {
     const actual = initialNewDatasetModel(theView, null);
@@ -357,7 +357,7 @@ describe('initialNewDatasetModel', () => {
         "status": "InProgress",
         "user_id": "kacw-u8uj"
       }
-    ]
+    ];
     const actual = initialNewDatasetModel(theView, serverState, issActivities);
     expect(actual).to.deep.equal({
       ...initialState,
@@ -403,7 +403,7 @@ describe('initialNewDatasetModel', () => {
         "status": "Success",
         "user_id": "kacw-u8uj"
       }
-    ]
+    ];
     const actual = initialNewDatasetModel(theView, serverState, issActivities);
     expect(actual).to.deep.equal({
       ...initialState,
@@ -443,7 +443,7 @@ describe('initialNewDatasetModel', () => {
           "event_id": "2533d096-8266-4aed-a207-f2b854563965"
         }
       }
-    ]
+    ];
     const actual = initialNewDatasetModel(theView, serverState, issActivities);
     expect(actual).to.deep.equal({
       ...initialState,
@@ -453,7 +453,12 @@ describe('initialNewDatasetModel', () => {
         page: 'Metadata'
       },
       importStatus: {
-        error: "Row #64766 in your CSV file contained 1 fields, whereas your other rows contained 19 fields. Please ensure that your file has a consistent number of fields per row.",
+        error: {
+          "record": 64766,
+          "actual": 1,
+          "expected": 19,
+          "type": "invalid-row-length"
+        },
         type: "Error"
       }
     });

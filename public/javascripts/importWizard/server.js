@@ -31,7 +31,6 @@ export const authenticityToken: string = authenticityMetaTag === null
 export const appToken: string = 'U29jcmF0YS0td2VraWNrYXNz0';
 
 export const SHOW_RESPONSE_MS = 1000;
-declare var I18n: any;
 type CurrentUser = { id: string }
 export type Blist = { currentUser: CurrentUser }
 declare var blist: Blist;
@@ -112,8 +111,8 @@ export function proceedFromMetadataPane() {
     if (metadata.apiCall.type === 'Error') {
       dispatch(goToPreviousPage('Metadata'));
     } else {
-      const onImportError = () => {
-        dispatch(importError());
+      const onImportError = (error) => {
+        dispatch(importError(error));
         dispatch(goToPreviousPage('Metadata'));
       };
       switch (navigation.operation) {
@@ -384,8 +383,7 @@ export function importProgress(progress: ImportStatus.ImportProgress, notificati
 }
 
 const IMPORT_ERROR = 'IMPORT_ERROR';
-function importError(error: string = I18n.screens.import_pane.unknown_error) {
-// TODO: EN-10650 pass in error messages from imports on this page
+function importError(error) {
   return {
     type: IMPORT_ERROR,
     error: error
@@ -545,13 +543,14 @@ function importData(onError) {
           });
           break;
         }
-
         default:
           airbrake.notify({
             error: `Unexpected status code received while importing: ${response.status}`,
             context: { component: 'Server' }
           });
-          onError();
+          response.json().then((resp) => {
+            dispatch(onError(resp.failureDetails));
+          });
       }
     }).catch((err) => {
       airbrake.notify({
@@ -607,8 +606,8 @@ const POLL_INTERVAL_MS = 5000;
 
 export function resumePolling(ticket) {
   return (dispatch, getState) => {
-    const onImportError = () => {
-      dispatch(importError());
+    const onImportError = (error) => {
+      dispatch(importError(error));
       dispatch(goToPreviousPage('Metadata'));
     };
     return pollTicket(ticket, onImportError)(dispatch, getState);
@@ -633,31 +632,31 @@ export function pollTicket(ticket, onError) {
 }
 
 
-function isAccepted(response) {
-  return response.status === 202;
-}
-function isOk(response) {
-  return response.status === 200;
-}
-
 export function pollUntilDone(ticket, dispatch, onProgress, onError) {
   socrataFetch(`/api/imports2.json?ticket=${ticket}`, {
     credentials: 'same-origin'
   }).then((response) => {
-    if (isAccepted(response)) {
-      response.json().then((resp) => {
-        onProgress(resp);
-      });
-      const interval = setTimeout(() => {
-        pollUntilDone(ticket, dispatch, onProgress, onError);
-      }, POLL_INTERVAL_MS);
-      dispatch(pollScheduled(interval));
-    } else if (isOk(response)) {
-      dispatch(importComplete());
-      dispatch(goToPage('Finish'));
-    } else {
-      console.error('response error: ', response);
-      onError();
+    switch (response.status) {
+      case 202: {
+        response.json().then(onProgress);
+        const interval = setTimeout(() => {
+          pollUntilDone(ticket, dispatch, onProgress, onError);
+        }, POLL_INTERVAL_MS);
+        dispatch(pollScheduled(interval));
+        break;
+      }
+      case 200:
+        dispatch(importComplete());
+        dispatch(goToPage('Finish'));
+        break;
+
+      default:
+        response.json().then((error) => {
+          console.error('response error: ', error);
+          onError(error.failureDetails);
+          // ^^ will pass in undefined if `failureDetails` key is not there, defaulting to a
+          // generic error message
+        });
     }
   });
 }

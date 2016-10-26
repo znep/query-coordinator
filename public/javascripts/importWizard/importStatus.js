@@ -1,7 +1,3 @@
-import format from 'stringformat';
-
-declare var I18n: any;
-
 type NotificationStatus
   = 'Available'
   | 'InProgress'
@@ -38,7 +34,10 @@ function serverEventToImportStatus(activity, issEvent) {
   if (issEvent.status === 'Failure') {
     return {
       type: 'Error',
-      error: localizeError(issEvent.info)
+      error: {
+        ...issEvent.info,
+        type: issEvent.event_type
+      }
     };
   }
 
@@ -62,20 +61,6 @@ function serverEventToImportStatus(activity, issEvent) {
   }
 
   console.error('Got an unexpected ISS event with status: ', issEvent.status);
-}
-
-/**
- * In ISS this is called `info`. it has stuff in it
- */
-function localizeError(info) {
-  if (info.type) {
-    const underscored = _.snakeCase(info.type);
-    const template = I18n.screens.admin.jobs.show_page.event_messages.failure[underscored];
-    if (template) {
-      return format(template.description.replace(/%{/g, '{'), info);
-    }
-  }
-  return info.message;
 }
 
 export function initialImportStatus(issActivities): ImportStatus {

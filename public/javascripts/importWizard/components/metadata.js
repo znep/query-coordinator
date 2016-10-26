@@ -6,6 +6,7 @@ import { combineReducers } from 'redux';
 import isEmail from 'validator/lib/isEmail';
 import isURL from 'validator/lib/isURL';
 import RadioGroup from 'react-radio-group';
+import format from 'stringformat';
 
 import * as Server from '../server';
 import { FlashMessage, ApiErrorFlashMessage } from './flashMessage';
@@ -770,6 +771,30 @@ function renderLicenses(metadata, onMetadataAction) {
   );
 }
 
+function renderFlashMessageImportError(importError: string | {type: string}) {
+  const errorMessages = I18n.screens.admin.jobs.show_page.event_messages.failure;
+  const descriptionAndTitle = errorMessages[_.snakeCase(importError.type)];
+  const template =
+    _.isUndefined(descriptionAndTitle)
+      ? errorMessages.bad_response_from_server.description
+      : descriptionAndTitle.description.replace(/%{/g, '{');
+  // eventually they should all have a params key, but DI2 and Imports2 use an internal type tag
+  const errorParams =
+    _.isEqual(_.keys(importError).sort(), ['params', 'type'])
+    ? importError.params
+    : importError;
+  return (
+    <FlashMessage flashType="error">
+      <p>{format(template, errorParams)}</p>
+      <p
+        dangerouslySetInnerHTML={{__html: format(
+        I18n.screens.dataset_new.import_help,
+        {common_errors: 'https://support.socrata.com/hc/en-us/articles/202950008-Import-Warning-and-Errors'}
+      )}} />
+    </FlashMessage>
+  );
+}
+
 export function showMapLayer(operation) {
   return operation === 'ConnectToEsri';
 }
@@ -784,7 +809,7 @@ function metadataSuccessMessage(operation) {
 }
 
 function hideSuccessFlash(operation, apiCalls) {
-  return (anyCallHasError(apiCalls) || operation === 'CREATE_FROM_SCRATCH' || operation === 'LINK_EXTERNAL');
+  return anyCallHasError(apiCalls) || operation === 'CREATE_FROM_SCRATCH' || operation === 'LINK_EXTERNAL';
 }
 
 function getMostImportantStatus(metadata) {
@@ -799,10 +824,9 @@ function getMostImportantStatus(metadata) {
 export function view({ metadata, importStatus, onMetadataAction, operation, goToPrevious }) {
   const I18nPrefixed = I18n.screens.edit_metadata;
   const validationErrors = validate(metadata, operation);
-  const apiCalls = [importStatus, metadata.apiCall, metadata.privacyApiCall];
 
   const successFlash =
-    hideSuccessFlash(operation, apiCalls)
+    hideSuccessFlash(operation, [importStatus, metadata.apiCall, metadata.privacyApiCall])
     ? null
     : (
       <FlashMessage flashType="success">
@@ -812,7 +836,12 @@ export function view({ metadata, importStatus, onMetadataAction, operation, goTo
   return (
     <div className="metadataPane">
       {successFlash}
-      <ApiErrorFlashMessage saveDescription="metadata" apiCalls={apiCalls} />
+      <ApiErrorFlashMessage
+        saveDescription="metadata"
+        apiCalls={[metadata.apiCall, metadata.privacyApiCall]} />
+      {_.isMatch(importStatus, {type: 'Error'})
+        ? renderFlashMessageImportError(importStatus.error)
+        : null}
 
       <p className="headline">{I18n.screens.dataset_new.metadata.prompt}</p>
       <div className="commonForm metadataForm">

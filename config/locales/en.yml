@@ -2479,6 +2479,49 @@ en:
               upsert_counts:
                 description: Your import file has been imported, but out of %{rowCount} total rows, we were unable to load %{failCount} rows into your dataset. Please verify that your values match <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata’s expected formats</a>.
                 title: Completed
+              # geo import errors
+              # we'll show the following errors as generic "server error", because they're not
+              # not the user's fault:
+              # leaving out zkerror, create_dataset_error, create_working_copy_error,
+              # create_column_error, publication_error, get_column_error, delete_column_error,
+              # update_metadata_error, upsert_error
+              vertex_too_complex_error:
+                title: Too many vertices in shape
+                description: >-
+                  There were %{counted} vertices in row %{rowNum}, the max is
+                  %{maxVerticesPerRow}
+              shapefile_header_error:
+                title: Invalid shapefile header
+                description: 'Failed to read the header in the shapefile: %{reason}'
+              shapefile_row_error:
+                title: Invalid shapefile row
+                description: 'Failed to read a row in the shapefile: %{reason}'
+              archive_error:
+                title: Archive decoding error
+                description: 'Failed to open the zip archive: %{reason}'
+              xmlparse_error:
+                title: XML parse error
+                description: 'Failed to parse XML node due to %{reason} near %{path}'
+              jsonparse_error:
+                title: JSON parse error
+                description: >-
+                  Failed to parse JSON at line %{line} column %{column} token %{token}
+                  because %{reason}
+              invalid_arity_error:
+                title: Invalid coordinates
+                description: 'One of the points in the following row did not have 2 coordinates: %{row}'
+              corrupt_shapefile_error:
+                title: Corrupt shapefile
+                describe: 'Failed to read the shapefile: %{reason}'
+              incomplete_shapefile_error:
+                title: Incomplete shapefile
+                describe: >-
+                  Your shapefile archive is incomplete. It must contain a .dbf, .shp, and .prj
+                  file for every layer. Expected it to contain the following files, which were
+                  actually missing: %{missing}.
+              decode_filetype_error:
+                title: Unrecognized file format
+                describe: 'Unable to read file with extension %{kind}'
             success_with_data_errors:
               di2_counts:
                 description: Your import file has been imported, but out of %{rowCount} total rows, we were unable to load %{failCount} rows into your dataset. If this is unexpected, please download the Failed Rows from the right, and verify that your values match <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata’s expected formats</a>. You can then re-import just these rows.

@@ -16,11 +16,21 @@ export function FlashMessage({ flashType, children }) {
   );
 }
 
+FlashMessage.propTypes = {
+  flashType: PropTypes.oneOf(['info', 'success', 'warning', 'error']).isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.element,
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.element)
+  ]).isRequired
+};
+
 // saveDescription is the phrase we'll use to describe what we tried to saveState
 // i.e. We were unable to save your {0} due to a network error.
+// TODO: I18n it...
 export function ApiErrorFlashMessage({ apiCalls, saveDescription }) {
   const filteredCalls = _.filter(apiCalls, hasApiError);
-  const messages = _.uniq(_.map(filteredCalls, function(call) {
+  const messages = _.uniq(_.map(filteredCalls, (call) => {
     return getErrorMessage(call.error, saveDescription);
   }));
 
@@ -28,18 +38,23 @@ export function ApiErrorFlashMessage({ apiCalls, saveDescription }) {
     return null;
   } else if (messages.length === 1) {
     return (
-      <div className={'flash-alert error'}>
+      <FlashMessage flashType="error">
         {messages[0]}
-      </div>
+      </FlashMessage>
     );
   } else {
     return (
-      <div className={'flash-alert error'}>
+      <FlashMessage flashType="error">
         <ul>{messages.map((message) => <li>{message}</li>)}</ul>
-      </div>
+      </FlashMessage>
     );
   }
 }
+
+ApiErrorFlashMessage.propTypes = {
+  apiCalls: PropTypes.arrayOf(PropTypes.object).isRequired,
+  saveDescription: PropTypes.string.isRequired
+};
 
 function getFormattedErrorMessage(error, hadMessage, saveDescription) {
   switch (error) {
@@ -63,17 +78,3 @@ function getErrorMessage(error, saveDescription) {
     return getFormattedErrorMessage(error, false, saveDescription);
   }
 }
-
-FlashMessage.propTypes = {
-  flashType: PropTypes.oneOf(['info', 'success', 'warning', 'error']).isRequired,
-  children: PropTypes.oneOfType([
-    PropTypes.element,
-    PropTypes.string,
-    PropTypes.arrayOf(PropTypes.element)
-  ]).isRequired
-};
-
-ApiErrorFlashMessage.propTypes = {
-  apiCalls: PropTypes.arrayOf(PropTypes.object).isRequired,
-  saveDescription: PropTypes.string.isRequired
-};

@@ -218,8 +218,10 @@ module.exports = function CardsViewController(
       return _.includes(_.get(user, 'rights', []), UserRights.MANAGE_PROVENANCE);
     });
 
+  var shouldDisplayCustomizeBar$ = currentUser$.map(_.isPresent);
+
   $scope.$bindObservable('currentUserHasProvenanceRight', currentUserHasProvenanceRight$);
-  $scope.$bindObservable('shouldDisplayCustomizeBar', currentUser$.map(_.isPresent));
+  $scope.$bindObservable('shouldDisplayCustomizeBar', shouldDisplayCustomizeBar$);
 
   initDownload($scope, WindowState);
 
@@ -230,6 +232,10 @@ module.exports = function CardsViewController(
   // or enable_data_lens_provenance feature flag is disabled
   $scope.showProvenanceSection = $scope.currentUserHasProvenanceRight &&
     ServerConfig.get('enableDataLensProvenance');
+
+  shouldDisplayCustomizeBar$.subscribe(function(hasCustomizeBar) {
+    $('body').toggleClass('with-customize-bar', hasCustomizeBar);
+  });
 
   /*******************************
   * Filters and the where clause *

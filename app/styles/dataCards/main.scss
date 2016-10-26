@@ -21,6 +21,10 @@ body {
     -o-user-select: none;
     user-select: none;
   }
+
+  &.with-customize-bar footer {
+    margin-bottom: 45px;
+  }
 }
 
 // Begin workaround for OSX + chrome + Magic Mouse hiding scrollbars by default.

@@ -9,6 +9,7 @@ import { AxisAndScalePane } from 'src/authoringWorkflow/components/panes/AxisAnd
 function render(type) {
   var props = defaultProps({
     vifAuthoring: { authoring: { selectedVisualizationType: type } },
+    measureAxisScaleControl: 'custom',
     onChangeLabelTop: sinon.spy(),
     onChangeLabelBottom: sinon.spy(),
     onChangeLabelLeft: sinon.spy(),
@@ -17,7 +18,9 @@ function render(type) {
     onChangeShowValueLabelsAsPercent: sinon.spy(),
     onSelectChartSorting: sinon.spy(),
     onSelectTimelinePrecision: sinon.spy(),
-    onChangeTreatNullValuesAsZero: sinon.spy()
+    onChangeTreatNullValuesAsZero: sinon.spy(),
+    onMeasureAxisMinValueChange: sinon.spy(),
+    onMeasureAxisMaxValueChange: sinon.spy()
   });
 
   return {
@@ -174,6 +177,37 @@ describe('AxisAndScalePane', function() {
     });
   }
 
+  function rendersScaleAndEmitsEvents() {
+    describe('rendering', function() {
+      it('renders automatic selection', function() {
+        expect(component.querySelector('#measure-axis-scale-automatic')).to.exist;
+      });
+
+      it('renders custom selection', function() {
+        expect(component.querySelector('#measure-axis-scale-custom')).to.exist;
+      });
+
+      it('renders min input', function() {
+        expect(component.querySelector('#measure-axis-scale-custom-min')).to.exist;
+      });
+
+      it('renders max input', function() {
+        expect(component.querySelector('#measure-axis-scale-custom-max')).to.exist;
+      });
+    });
+
+    describe('events', function() {
+      describe('when clicking #measure-axis-scale-custom-min', function() {
+        emitsEvent('#measure-axis-scale-custom-min', 'onMeasureAxisMinValueChange');
+      });
+
+      describe('when clicking #measure-axis-scale-custom-max', function() {
+        emitsEvent('#measure-axis-scale-custom-max', 'onMeasureAxisMaxValueChange');
+      });
+
+    });
+  }
+
   describe('without a visualization type', function() {
     beforeEach(function() {
       var renderedParts = render(null);
@@ -196,6 +230,7 @@ describe('AxisAndScalePane', function() {
     rendersTopAndLeftLabelsAndEmitsEvents();
     rendersShowDimensionLabelsAndEmitsEvents();
     rendersShowValueLabelsAndEmitsEvents();
+    rendersScaleAndEmitsEvents();
     rendersChartSortingAndEmitsEvents();
   });
 
@@ -206,6 +241,7 @@ describe('AxisAndScalePane', function() {
     rendersBottomAndLeftLabelsAndEmitsEvents();
     rendersShowDimensionLabelsAndEmitsEvents();
     rendersChartSortingAndEmitsEvents();
+    rendersScaleAndEmitsEvents();
   });
 
   describe('histogram', function() {
@@ -213,6 +249,7 @@ describe('AxisAndScalePane', function() {
     beforeEach(setUpVisualization('histogram'));
 
     rendersBottomAndLeftLabelsAndEmitsEvents();
+    rendersScaleAndEmitsEvents();
   });
 
   describe('timelineChart', function() {
@@ -222,6 +259,7 @@ describe('AxisAndScalePane', function() {
     rendersBottomAndLeftLabelsAndEmitsEvents();
     rendersTimelinePrecision();
     rendersTreatNullValuesAsZeroAndEmitsEvents();
+    rendersScaleAndEmitsEvents();
   });
 
   describe('pieChart', () => {

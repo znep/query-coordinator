@@ -127,6 +127,21 @@
       &:last-child {
         margin-bottom: 0;
       }
+
+      .translation-within-label {
+        display: inline-block;
+      }
+
+      .double-column-input-group {
+        div {
+          width: 48%;
+          display: inline-block;
+        }
+
+        div + div {
+          margin-left: 4%;
+        }
+      }
     }
 
     .authoring-empty-pane {

@@ -36,6 +36,8 @@ const paths = {
   zeroColor: 'configuration.legend.zeroColor',
   precision: 'series[0].dataSource.precision',
   treatNullValuesAsZero: 'configuration.treatNullValuesAsZero',
+  measureAxisMinValue: 'configuration.measureAxisMinValue',
+  measureAxisMaxValue: 'configuration.measureAxisMaxValue',
   orderBy: 'series[0].dataSource.orderBy',
   limit: 'series[0].dataSource.limit',
   showOtherCategory: 'configuration.showOtherCategory'
@@ -175,6 +177,14 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.treatNullValuesAsZero)) {
     dispatch(actions.setTreatNullValuesAsZero(get(paths.treatNullValuesAsZero)));
+  }
+
+  if (has(paths.measureAxisMinValue)) {
+    dispatch(actions.setMeasureAxisMin(get(paths.measureAxisMinValue)));
+  }
+
+  if (has(paths.measureAxisMaxValue)) {
+    dispatch(actions.setMeasureAxisMax(get(paths.measureAxisMaxValue)));
   }
 
   if (has(paths.limit)) {

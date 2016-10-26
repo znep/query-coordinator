@@ -425,9 +425,47 @@ function SvgVisualization($element, vif) {
     );
   };
 
-  this.getMeasureAxisMinValue = () => _.get(self.getVif(), 'configuration.measureAxisMinValue', null);
+  this.getMeasureAxisMinValue = () => {
+    const value = _.get(
+      self.getVif(),
+      'configuration.measureAxisMinValue',
+      null
+    );
+    const check = isFinite(value) && parseFloat(value);
 
-  this.getMeasureAxisMaxValue = () => _.get(self.getVif(), 'configuration.measureAxisMaxValue', null);
+    if (value !== null && (check === false || isNaN(check))) {
+      throw new Error(
+        I18n.translate(
+          'visualizations.common.validation.errors.' +
+          'measure_axis_min_value_should_be_numeric'
+        )
+      );
+    } else {
+      return value;
+    }
+  };
+
+  this.getMeasureAxisMaxValue = () => {
+    const value = _.get(
+      self.getVif(),
+      'configuration.measureAxisMaxValue',
+      null
+    );
+    const check = isFinite(value) && parseFloat(value);
+
+    if (value !== null && (check === false || isNaN(check))) {
+
+      throw new Error(
+        I18n.translate(
+          'visualizations.common.validation.errors.' +
+          'measure_axis_max_value_should_be_numeric'
+        )
+      );
+
+    } else {
+      return value;
+    }
+  };
 
   this.getShowDimensionLabels = function() {
 

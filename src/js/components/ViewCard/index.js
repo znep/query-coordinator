@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import $ from 'jquery';
 import 'dotdotdot';
+import purify from '../../common/purify';
 
 /**
  * ViewCard
@@ -188,7 +189,7 @@ export default React.createClass({
               </div>
             </a>
             <div className="entry-description" ref={el => this.description = el}>
-              {description}
+              <div dangerouslySetInnerHTML={{ __html: purify(description) }} />
             </div>
           </div>
         </div>

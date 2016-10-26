@@ -1,6 +1,6 @@
 {
   "name": "socrata-styleguide",
-  "version": "7.7.4",
+  "version": "7.7.5",
   "description": "Socrata's Product Styleguide",
   "main": "styleguide.js",
   "private": true,
@@ -93,6 +93,7 @@
   },
   "dependencies": {
     "classnames": "2.2.5",
+    "dompurify": "0.8.3",
     "dotdotdot": "1.7.0",
     "jquery": "2.1.1",
     "lodash": "4.14.0",

@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import collapsible from '../../common/collapsible';
+import purify from '../../common/purify';
 import { translate as t } from '../../common/I18n';
 
 /**
@@ -21,8 +22,7 @@ const InfoPane = React.createClass({
     /**
      * A string containing the description of the asset.  It will be ellipsified using dotdotdot,
      * and will have a control for expanding and collapsing the full description.  HTML is allowed
-     * in the description; it is important to sanitize this prop to prevent security
-     * vulnerabilities.
+     * in the description; it will be sanitized to prevent security vulnerabilities.
      */
     description: PropTypes.string,
 
@@ -33,8 +33,8 @@ const InfoPane = React.createClass({
 
     /**
      * The optional footer prop can be a string or an HTML element.  It is rendered below the
-     * description.  The content may contain HTML, meaning that it is important to sanitize the
-     * content before passing it to this component.
+     * description.  HTML is allowed in the footer; it will be sanitized to prevent security
+     * vulnerabilities.
      */
     footer: PropTypes.node,
 
@@ -114,7 +114,7 @@ const InfoPane = React.createClass({
     return (
       <div className="entry-description-container collapsible">
         <div className="entry-description" ref={(el) => this.description = el}>
-          <div dangerouslySetInnerHTML={{ __html: description }} />
+          <div dangerouslySetInnerHTML={{ __html: purify(description) }} />
 
           <button className="collapse-toggle more">{t('info_pane.more')}</button>
           <button className="collapse-toggle less">{t('info_pane.less')}</button>
@@ -132,7 +132,7 @@ const InfoPane = React.createClass({
 
     return (
       <div className="entry-meta first">
-        <div className="entry-meta topics" dangerouslySetInnerHTML={{ __html: footer }} />
+        <div className="entry-meta topics" dangerouslySetInnerHTML={{ __html: purify(footer) }} />
       </div>
     );
   },

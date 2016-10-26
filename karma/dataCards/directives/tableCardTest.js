@@ -8,6 +8,7 @@ describe('tableCard', function() {
     outerScope.rowCount = rowCount >= 0 ? rowCount : 200;
     outerScope.filteredRowCount = rowCount >= 0 ? rowCount : 170;
     outerScope.columnDetails = [];
+    outerScope.allColumnsMetadata = [];
     outerScope.showCount = showCount;
     outerScope.whereClause = '';
     outerScope.rowDisplayUnit = rowDisplayUnit || 'row';
@@ -19,6 +20,7 @@ describe('tableCard', function() {
       column.dataset = { version: '1' };
       if (column.fieldName[0].match(/[a-zA-Z0-9]/g)) {
         outerScope.columnDetails.push(column);
+        outerScope.allColumnsMetadata.push(column);
         columnCount += 1;
       }
     });
@@ -46,6 +48,7 @@ describe('tableCard', function() {
       $scope.rowCount = outerScope.rowCount;
       $scope.filteredRowCount = outerScope.filteredRowCount;
       $scope.columnDetails = outerScope.columnDetails;
+      $scope.allColumnsMetadata = outerScope.allColumnsMetadata;
       $scope.showCount = outerScope.showCount;
       $scope.whereClause = outerScope.whereClause;
       $scope.rowDisplayUnit = outerScope.rowDisplayUnit;

@@ -54,7 +54,7 @@ module SiteChromeHelper
   #   <input type="text" name="content[locales][en][header]links[link_0]" value="Home" class="localized-label-input">
   #   <span class="icon-move move-link-row" title="Drag to reorder"></span>
   #   <input type="text" name="content[header]links[][url]" value="/">
-  #   <span class="icon-close-2 remove-link-row" title="Remove Link" onclick="removeLinkRow(this);"></span>
+  #   <span class="icon-close-2 remove-link-row" title="Remove Link"></span>
   # </div>
   def link_row_div(link, options)
     link ||= { 'key' => 'link_PLACEHOLDER_INDEX', 'url' => '' }
@@ -98,8 +98,7 @@ module SiteChromeHelper
         :span,
         nil,
         :class => 'icon-close-2 remove-link-row',
-        :title => t('screens.admin.site_chrome.remove_link_row'),
-        :onclick => 'removeLinkRow(this);'
+        :title => t('screens.admin.site_chrome.remove_link_row')
       )
     end
   end
@@ -135,8 +134,7 @@ module SiteChromeHelper
         :span,
         nil,
         :class => 'icon-close-2 remove-link-menu',
-        :title => t('screens.admin.site_chrome.remove_link_menu'),
-        :onclick => 'removeLinkMenu(this);'
+        :title => t('screens.admin.site_chrome.remove_link_menu')
       ) <<
       child_link_row_divs(menu_links['links'], {
         :content_key => options[:content_key],
@@ -145,8 +143,7 @@ module SiteChromeHelper
       content_tag(
         :button,
         :class => 'add-new-link-row',
-        :type => 'button',
-        :onclick => 'addNewLinkRow(this);'
+        :type => 'button'
       ) do
         content_tag(:span, ' ', :class => 'icon-add') <<
         t('screens.admin.site_chrome.add_new_link_row', section: options[:content_key].capitalize)
@@ -214,7 +211,7 @@ module SiteChromeHelper
   def page_controls
     content_tag(:div, :class => 'page-controls') do
       safe_join([
-        link_to('#', :onclick => 'return confirmReload();') do
+        link_to('#', :class => 'confirm-reload') do
           content_tag(
             :button,
             t('screens.admin.site_chrome.cancel'),
@@ -259,9 +256,7 @@ module SiteChromeHelper
   def dropdown_option_tags(dropdown_options)
     dropdown_options.to_a.reduce('') do |result, option|
       result << content_tag(:li) do
-        link_to(option, '#', :value => option,
-          :onclick => 'dropdownValueSelected(this);'
-        )
+        link_to(option, '#', :value => option, :class => 'dropdown-option')
       end
     end.html_safe
   end

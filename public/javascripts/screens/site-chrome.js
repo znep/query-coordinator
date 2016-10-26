@@ -185,7 +185,7 @@ $(document).ready(function() {
   sortableListOfLinks();
 });
 
-function activateSiteChrome() { //eslint-disable-line no-unused-vars
+$('.activate-site-chrome').click(function() {
   if ($siteChromeForm.length && $siteChromeForm.valid()) {
     preSubmitLinkCleansing();
     $('#enable_activation').attr('disabled', false);
@@ -193,7 +193,7 @@ function activateSiteChrome() { //eslint-disable-line no-unused-vars
     $siteChromeForm.find('input#stage').remove();
     $siteChromeForm.submit();
   }
-}
+});
 
 // Figure out which tab is active (current) and get its id
 function getActiveTabId() {
@@ -252,7 +252,7 @@ function toggleSaveButton() {
   }
 }
 
-function confirmReload() { //eslint-disable-line no-unused-vars
+$('.confirm-reload').click(function() {
   var href = window.location.href; // store href with the hash of the current tab
   var confirmation = confirm('Cancelling will reload the page and erase any current changes.');
   if (confirmation) {
@@ -268,25 +268,25 @@ function confirmReload() { //eslint-disable-line no-unused-vars
       window.location.href = href;
     });
   }
-}
+});
 
-function dropdownValueSelected(selectedElement) { //eslint-disable-line no-unused-vars
+$('.dropdown-option').click(function() {
   // Update the hidden dropdown input value
-  var selectedValue = $(selectedElement).attr('value');
-  $(selectedElement).closest('div.dropdown').siblings('.hidden-dropdown-input').value(selectedValue);
+  var selectedValue = $(this).attr('value');
+  $(this).closest('div.dropdown').siblings('.hidden-dropdown-input').value(selectedValue);
 
   // Remove the placeholder class on the title if it's present
-  $(selectedElement).closest('div.dropdown').find('span.placeholder').removeClass('placeholder');
-}
+  $(this).closest('div.dropdown').find('span.placeholder').removeClass('placeholder');
+});
 
 function currentLocale() {
   return blist.locale || 'en';
 }
 
-function toggleDisabledCopyrightText(checkbox) { //eslint-disable-line no-unused-vars
+$('.copyright-checkbox').click(function() {
   var $textbox = $('#copyright-notice-text');
-  $textbox.prop('disabled', !checkbox.checked);
-}
+  $textbox.prop('disabled', !this.checked);
+});
 
 /*
   listOfLinks - a sortable list of text inputs.
@@ -330,9 +330,9 @@ function checkTopLevelLinkCount($listOfLinks) {
   }
 }
 
-function addNewLinkRow(button) {
-  var isChildLink = $(button).parent().hasClass('link-menu');
-  var $listOfLinks = $(button).closest('.list-of-links');
+$('.list-of-links').on('click', '.add-new-link-row', function() {
+  var isChildLink = $(this).parent().hasClass('link-menu');
+  var $listOfLinks = $(this).closest('.list-of-links');
 
   var defaultLinkRowSelector = isChildLink ? '.link-row.default.child' : '.link-row.default:not(.child)';
   var $defaultLinkRow = $listOfLinks.find(defaultLinkRowSelector);
@@ -340,44 +340,44 @@ function addNewLinkRow(button) {
 
   $newLinkRow.removeClass('default');
   // Append newLinkMenu to end (of either top level or inside a menu).
-  $(button).siblings('.links-and-menus, .child-links').append($newLinkRow);
+  $(this).siblings('.links-and-menus, .child-links').append($newLinkRow);
 
   checkTopLevelLinkCount($listOfLinks);
-}
+});
 
-function removeLinkRow(button) { //eslint-disable-line no-unused-vars
-  var $listOfLinks = $(button).closest('.list-of-links');
-  $(button).closest('.link-row').remove();
+$('.list-of-links').on('click', '.remove-link-row', function() {
+  var $listOfLinks = $(this).closest('.list-of-links');
+  $(this).closest('.link-row').remove();
   checkTopLevelLinkCount($listOfLinks);
-}
+});
 
-function addNewLinkMenu(button) { //eslint-disable-line no-unused-vars
-  var $defaultLinkMenu = $(button).siblings('.links-and-menus').find('.link-menu.default');
+$('.list-of-links').on('click', '.add-new-link-menu', function() {
+  var $defaultLinkMenu = $(this).siblings('.links-and-menus').find('.link-menu.default');
   var $newLinkMenu = $defaultLinkMenu.clone();
 
   $newLinkMenu.removeClass('default');
   // Append new link menu after all other top-level links and menus
-  $(button).siblings('.links-and-menus').
+  $(this).siblings('.links-and-menus').
     // Use `.children` instead of `.find` to make sure we are only getting top-level link-rows
     children('.link-menu, .link-row').
     not('.default').
     last().
     after($newLinkMenu);
   // Create new link-row inside new menu.
-  addNewLinkRow($newLinkMenu.find('.add-new-link-row'));
-}
+  $newLinkMenu.find('.add-new-link-row').click();
+});
 
 // Remove menu and move its child links to top-level links.
-function removeLinkMenu(button) { //eslint-disable-line no-unused-vars
-  var $listOfLinks = $(button).closest('.list-of-links');
-  var $childLinks = $(button).siblings('.child-links').find('.link-row');
+$('.list-of-links').on('click', '.remove-link-menu', function() {
+  var $listOfLinks = $(this).closest('.list-of-links');
+  var $childLinks = $(this).siblings('.child-links').find('.link-row');
   $childLinks.each(function() {
     moveChildLinkToTopLevelLink($childLinks);
   });
 
-  $(button).closest('.link-menu').replaceWith($childLinks);
+  $(this).closest('.link-menu').replaceWith($childLinks);
   checkTopLevelLinkCount($listOfLinks);
-}
+});
 
 // Before submit, reorder the indices of the present links and menus to reflect the current
 // appearance. Also remove any empty links to prevent them from being saved to the config.

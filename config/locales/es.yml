@@ -455,7 +455,7 @@ es:
         share_button: Compartir
         subscribe: Suscripción
         suggest_dataset: "¿No encontró lo que estaba buscando? Sugiera un conjunto de datos"
-        suggest_dataset_short: Sugerir un nuevo dataset
+        suggest_dataset_short: Sugerir un dataset
         suggest_dataset_verb: Dar sugerencias
       back_to_dataset: Volver al conjunto de datos
       browse2:
@@ -910,12 +910,12 @@ es:
       approved: Aprobado
       attachment: Archivo adjunto
       attachments: Documentos Adjuntos
-      back_to_suggestions: Volver a Sugerencias para el Conjunto de Datos
+      back_to_suggestions: Volver a Sugerir un nuevo dataset
       browse: Examinar
       cancel: Cancelar
       comments: Comentarios
       contact_author: Contactar con el Autor de la Sugerencia
-      dataset_suggestions: Sugerencias para el Conjunto de Datos
+      dataset_suggestions: Sugerir un nuevo dataset
       delete_attachment: archivo adjunto
       delete_confirm: "¿Está seguro de que quiere borrar este%{type}?"
       delete_error: |
@@ -955,7 +955,7 @@ es:
       status: Estado
       submit: Enviar
       submitted_by: Enviado por
-      suggest_a_dataset: Sugerir un nuevo dataset
+      suggest_a_dataset: Sugerir un dataset
       suggestion_received: 'Su sugerencia ha sido recibida y está en la cola de moderación. Aparecerá en esta página cuando el administrador lo apruebe. '
       suggestion_updated: Su sugerencia ha sido actualizada
       title: Título
@@ -1607,7 +1607,7 @@ es:
       title: Ajustes de página
   date:
     abbr_month_names:
-    - 
+    -
     - Ene
     - Feb
     - Mar
@@ -1621,7 +1621,7 @@ es:
     - Nov
     - Dic
     month_names:
-    - 
+    -
     - Enero
     - Febrero
     - Marzo
@@ -2335,8 +2335,8 @@ es:
             button: Restablecer
             confirm: "¿Está seguro de que desea restablecer %{dataset}?"
             disabled_restore_explanation: El restablecimiento se encuentra solo disponible para determinados tipos de conjuntos de datos por un plazo de tiempo limitado. Para obtener más información, le rogamos ponerse en contacto con el servicio de asistencia.
-            disabled_restore_time: 
-            disabled_restore_type: 
+            disabled_restore_time:
+            disabled_restore_type:
           restore_deleted_dataset_confirm: "¿Seguro que desea restaurar el conjunto de datos %{dataset}?"
           showing_all_so_far: Mostrando todas las tareas que se han registrado hasta ahora
           showing_most_recent: Mostrando las tareas más recientes %{limit}
@@ -2702,9 +2702,9 @@ es:
                 placeholder: URL
                 title: Logotipo del pie de página
               footer_logo_alt:
-                description: 
-                placeholder: 
-                title: 
+                description:
+                placeholder:
+                title:
               footer_logo_height:
                 description: Puede determinar de forma opcional la altura y ancho de su logo a pie de página.
                 error: 'Por favor, introduzca un valor (1-999) que represente la altura deseada para su logotipo en pixels. Ej: 100px'
@@ -2785,9 +2785,9 @@ es:
                 placeholder: URL
                 title: Logotipo de la barra del encabezado
               header_bar_logo_alt:
-                description: 
-                placeholder: 
-                title: 
+                description:
+                placeholder:
+                title:
               header_display_name:
                 description: Nombre mostrado en la barra del encabezado. Normalmente configurado con el nombre de su organización.
                 placeholder: Datos Abiertos Evergreen
@@ -2812,7 +2812,7 @@ es:
               url_placeholder: http://data.evergreen.gov
             title: Barra del encabezado
           homepage:
-            fields: 
+            fields:
             title: Página de inicio
           social:
             fields:
@@ -2871,7 +2871,7 @@ es:
                 description_html: "<p>La espera se ha terminado: ¡la página de aterrizaje del conjunto de datos y su nuevo encabezado/pie de página configurable ya están listo! Siga leyendo para informarse más acerca de estas mejoras y cómo activarlas hoy.</p>"
                 title: 'La mar de bueno: dos nuevas características disponibles ahora'
               a_new_configurable_header_footer:
-                description_html: 
+                description_html:
                 title: Un nuevo encabezado/pie de página configurable
               active_both_today:
                 description_html: '<p>La página de aterrizaje del conjunto de datos y su nuevo encabezado/pie de página configurable ya están disponibles. Revise las pestañas de arriba para configurar y previsualizar el aspecto de su sitio web. Cuando esté listo, ¡actívelos juntos!</p> <p><b>Nota:</b> Si no ha configurado el encabezado/pie de página para su sitio web en el plazo de 30 días, Socrata lo hará por usted y lo activará junto con la página de aterrizaje del conjunto de datos automáticamente. Utilizaremos el estilo existente de su sitio web y su administrador de éxito del cliente como guía de estilo.</p> <p>Para obtener consejos sobre cómo configurar tu encabezado/pie de página y activar la página de aterrizaje del conjunto de datos, por favor asista al <a href="https://event.on24.com/eventRegistration/EventLobbyServlet?target=reg20.jsp&referrer=&eventid=1223356&sessionid=1&key=9ED33D00A47ABC3419890552EBA81D93®Tag=&sourcepage=register" target="_blank">seminario web "Making the Most of the Latest Features" ("Aprovechar al máximo las últimas características")</a> o visite nuestro sitio web de Asistencia: <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">https://support.socrata.com/hc/en-us/articles/223723227</a>.</p>'
@@ -2884,7 +2884,7 @@ es:
         these_features_help: Estas características ayudarán a los usuarios a explorar sus datos y se facilitarán la administración del aspecto de su sitio web.
         update: Actualizar
         you_are_about: Estás a punto de activa tu cabecera, pie de página y páginas de inicio de conjuntos de datos para tus conjuntos de datos.
-        you_are_about_html: 
+        you_are_about_html:
         you_have_activated: Has activado tu nuevo encabezado/pie de página y la página de aterrizaje del conjunto de datos.
       tos:
         accepted: Gracias por aceptar los términos del servicio.

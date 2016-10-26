@@ -1,3 +1,5 @@
+require 'securerandom'
+
 # Helper for SiteChromeController and its views
 module SiteChromeHelper
 
@@ -91,6 +93,7 @@ module SiteChromeHelper
 
       text_field_tag(
         url_path, link['url'] || '',
+        :id => SecureRandom.uuid, # Unique id so jquery validate plugin can hook onto individual inputs
         :class => 'url-input',
         :placeholder => options.dig(:placeholder, :url)
       ) <<

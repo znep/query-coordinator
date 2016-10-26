@@ -126,7 +126,7 @@ header#site-chrome-header[template="rally"] {
               max-height: $banner_height;
 
               .site-chrome-social-link {
-                color: $footer_fg_color;
+                color: $header_fg_color;
                 &:hover, &:focus, &:active {
                   text-decoration: none;
                 }

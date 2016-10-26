@@ -220,5 +220,6 @@ module.exports = function TableCardController(
   $scope.$bindObservable('rowCount', rowCount$);
   $scope.$bindObservable('filteredRowCount', filteredRowCount$);
   $scope.$bindObservable('columnDetails', displayableColumnDetailsAsArray$);
+  $scope.$bindObservable('allColumnsMetadata', columns$);
   $scope.$bindObservable('defaultSortColumnName', defaultSortColumnName$);
 };

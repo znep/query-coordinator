@@ -27,6 +27,7 @@ module.exports = function tableCard(
     templateUrl: templateUrl,
     link: function($scope, element) {
       var columnDetails$ = $scope.$observe('columnDetails');
+      var allColumnsMetadata$ = $scope.$observe('allColumnsMetadata');
       var whereClause$ = $scope.$observe('whereClause');
       var rowCount$ = $scope.$observe('rowCount');
       var filteredRowCount$ = $scope.$observe('filteredRowCount');
@@ -48,6 +49,7 @@ module.exports = function tableCard(
         rowCount$.filter(_.isNumber),
         filteredRowCount$.filter(_.isNumber),
         columnDetails$.filter(_.isPresent),
+        allColumnsMetadata$.filter(_.isPresent),
         _.identity
       ).take(1).
         subscribe(setupTable);
@@ -372,7 +374,7 @@ module.exports = function tableCard(
               return;
             }
 
-            function formatCellText(cellType, cellContent, column) {
+            function formatCellText(cellType, cellContent, additionalCellContent, column) {
               var cellText;
 
               switch (cellType) {
@@ -396,8 +398,14 @@ module.exports = function tableCard(
                   cellText = _.escape(DataTypeFormatService.renderMoneyCell(cellContent, column));
                   break;
                 default:
-                  // linkyFilter does its own escaping, so _.escape is not needed
-                  cellText = linkyFilter(cellContent, '_blank');
+                  if (additionalCellContent) {
+                    // handling the results of migrating an OBE URL column to NBE,
+                    // see EN-9880 notes below
+                    cellText = `<a href="${cellContent}" target="_blank">${additionalCellContent}</a>`;
+                  } else {
+                    // linkyFilter does its own escaping, so _.escape is not needed
+                    cellText = linkyFilter(cellContent, '_blank');
+                  }
                   break;
               }
               return cellText;
@@ -411,15 +419,43 @@ module.exports = function tableCard(
               var cells = [];
 
               _.each(columns, function(column, index) {
+
                 var cellContent = _.hasValue(dataRow[column.fieldName]) ?
                   dataRow[column.fieldName] : '';
+
+                // EN-9880:
+                // It's possible that we need to borrow some data from a related
+                // column, as in the case where a URL column (OBE) gets split
+                // into two columns in the NBE, representing href + description
+                // separately. This violates a precondition that we had believed
+                // previously, that the combination of 1 column + 1 row gives us
+                // everything we need to render the cell contents. We're going
+                // to work around this by exposing *all* column metadata (where
+                // previously we only passed in metadata for visible columns),
+                // then extracting any relevant content from non-visible columns
+                // and incorporating it in the formatCellText method.
+                var additionalCellContent;
+                if (column.renderTypeName === 'url') {
+                  var relatedColumn = _.find(
+                    $scope.allColumnsMetadata,
+                    {
+                      // This is the new hidden column marked (isSubcolumn: true)
+                      // which stores the URL description after NBE migration.
+                      fieldName: column.fieldName + '_description'
+                    }
+                  );
+                  if (relatedColumn) {
+                    additionalCellContent = _.hasValue(dataRow[relatedColumn.fieldName]) ?
+                      dataRow[relatedColumn.fieldName] : '';
+                  }
+                }
 
                 var dataType = column.physicalDatatype;
                 var width = columnWidths[column.fieldName];
 
                 cells.push([
                   `<div class="cell ${dataType}" data-index="${index}" style="width: ${width}px;">`,
-                    `<div class="cell-content">${formatCellText(dataType, cellContent, column)}</div>`,
+                    `<div class="cell-content">${formatCellText(dataType, cellContent, additionalCellContent, column)}</div>`,
                   '</div>'
                 ].join(''));
               });

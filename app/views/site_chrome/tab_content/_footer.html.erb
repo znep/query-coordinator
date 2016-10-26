@@ -48,7 +48,7 @@
   :fields => copyright_notice_fields,
   :locale_string => "#{locale_string}.copyright_notice",
   :additional_options => {
-    :onchange => 'toggleDisabledCopyrightText(this);'
+    :class => 'copyright-checkbox'
   }) %>
 
 <% copyright_notice_source_fields = [:locales, current_locale(suppress_locale = false), :footer,

@@ -49,12 +49,12 @@
   </div>
 
   <% if local_assigns[:allow_child_links] %>
-    <button class="add-new-link-menu" type="button" onclick="addNewLinkMenu(this);">
+    <button class="add-new-link-menu" type="button">
       <span class="icon-add"></span>
       <%= t('screens.admin.site_chrome.add_new_link_menu') %>
     </button>
   <% end %>
-  <button class="add-new-link-row" type="button" onclick="addNewLinkRow(this);">
+  <button class="add-new-link-row" type="button">
     <span class="icon-add"></span>
     <%= t('screens.admin.site_chrome.add_new_link_row', :section => content_key.capitalize) %>
   </button>

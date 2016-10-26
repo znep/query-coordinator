@@ -16,7 +16,7 @@
 
     <div class="page-controls">
 
-      <%= link_to('#', :onclick => 'return confirmReload();') do %>
+      <%= link_to('#', :class => 'confirm-reload') do %>
         <button id="site_chrome_cancel">
           <%= t('screens.admin.site_chrome.cancel') %>
         </button>
@@ -82,6 +82,6 @@
 </div>
 
 <% content_for :js_footer do %>
-  <%= include_webpack_bundle 'open-data/admin-site-chrome.js' %>
   <%= include_webpack_bundle 'site-chrome/main.js' %>
+  <%= include_webpack_bundle 'open-data/admin-site-chrome.js' %>
 <% end %>

@@ -39,7 +39,7 @@ export const COLUMN_TYPES = [
   },
   {
     type: 'number',
-    preferredVisualizationTypes: ['barChart', 'columnChart', 'histogram', 'pieChart'],
+    preferredVisualizationTypes: ['barChart', 'columnChart', 'histogram'],
     icon: 'icon-number'
   },
   {
@@ -80,7 +80,7 @@ export const VISUALIZATION_TYPES = [
     type: 'pieChart',
     title: translate('visualizations.pie_chart.title'),
     icon: 'icon-pie-chart',
-    preferredDimensionTypes: ['money', 'number', 'percent', 'text']
+    preferredDimensionTypes: ['text']
   },
   {
     type: 'histogram',

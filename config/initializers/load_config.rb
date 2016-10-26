@@ -1,4 +1,4 @@
-revision_file = File.join(Rails.root, "REVISION")
+revision_file = File.join(Rails.root, 'REVISION')
 
 begin
   Storyteller::REVISION_NUMBER = File.read(revision_file).chomp
@@ -7,3 +7,5 @@ rescue
   Storyteller::REVISION_NUMBER = nil
   Storyteller::BUILD_TIMESTAMP = nil
 end
+
+Rails.application.config.cache_key_prefix = Storyteller::REVISION_NUMBER.to_s[0..7]

@@ -1,5 +1,5 @@
 $banner_padding: 20px;
-$banner_height: calc(#{$header_logo_height} + #{$banner_padding});
+$banner_height: calc(#{max($header_logo_height, $header_display_name_size)} + #{$banner_padding});
 $searchbox-height: 36px;
 
 header#site-chrome-header[template="evergreen"] {
@@ -29,15 +29,15 @@ header#site-chrome-header[template="evergreen"] {
         > img {
           height: $header_logo_height;
           width: $header_logo_width;
-          vertical-align: top;
-          margin-top: $banner_padding / 2;
+          vertical-align: middle;
           margin-right: $banner_padding / 2;
         }
 
         > span.site-name {
           font-weight: 300;
-          font-size: 24px;
-          line-height: $header_logo_height;
+          font-size: $header_display_name_size;
+          line-height: max($header_logo_height, $header_display_name_size);
+          color: $header_display_name_fg_color;
           vertical-align: middle;
         }
       }

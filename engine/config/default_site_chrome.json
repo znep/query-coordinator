@@ -292,6 +292,8 @@
                   "styles": {
                     "bg_color": "#3b3a3c",
                     "fg_color": "#fff",
+                    "display_name_fg_color": "#fff",
+                    "display_name_size": "14pt",
                     "logo_height": "44px",
                     "logo_width": ""
                   }
@@ -370,6 +372,8 @@
                     "bg_color": "#22b479",
                     "bg_color_secondary": "",
                     "fg_color": "#fff",
+                    "display_name_fg_color": "#fff",
+                    "display_name_size": "16pt",
                     "logo_height": "36px",
                     "logo_width": ""
                   }

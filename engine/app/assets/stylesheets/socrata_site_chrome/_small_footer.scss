@@ -19,7 +19,7 @@ footer#site-chrome-footer.small {
       }
 
       span.site-name {
-        font-size: 18px;
+        font-size: min($footer_display_name_size, 18px);
         line-height: 16px;
       }
     }

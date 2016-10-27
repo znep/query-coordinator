@@ -20,6 +20,7 @@ header#site-chrome-header[template="rally"] {
       padding: 16px;
       box-sizing: content-box;
       overflow: hidden;
+      vertical-align: middle;
 
       a.logo {
         float: left;
@@ -31,15 +32,16 @@ header#site-chrome-header[template="rally"] {
           width: $header_logo_width;
           margin-right: 16px;
           display: inline-block;
+          vertical-align: middle;
         }
 
         > span.site-name {
           font-weight: 300;
-          font-size: 24px;
-          line-height: max($header_logo_height, $rally_top_min_height);
-          color: $header_fg_color;
+          font-size: $header_display_name_size;
+          line-height: max($header_logo_height, $header_display_name_size, $rally_top_min_height);
+          color: $header_display_name_fg_color;
           white-space: nowrap;
-          vertical-align: top;
+          vertical-align: middle;
         }
       }
 

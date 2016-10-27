@@ -401,7 +401,18 @@ module.exports = function tableCard(
                   if (additionalCellContent) {
                     // handling the results of migrating an OBE URL column to NBE,
                     // see EN-9880 notes below
-                    cellText = `<a href="${cellContent}" target="_blank">${additionalCellContent}</a>`;
+                    //
+                    // Note that it appears to be possible to have a URL column with
+                    // a description but with no actual URL, in which (else) case we
+                    // should just print the description but not as a link.
+                    //
+                    // In other words, only display a link if there is a URL to which
+                    // the link should point.
+                    if (_.isString(cellContent) && !_.isEmpty(cellContent)) {
+                      cellText = `<a href="${cellContent}" target="_blank">_.escape(${additionalCellContent})</a>`;
+                    } else {
+                      cellText = _.escape(additionalCellContent);
+                    }
                   } else {
                     // linkyFilter does its own escaping, so _.escape is not needed
                     cellText = linkyFilter(cellContent, '_blank');

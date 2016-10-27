@@ -110,9 +110,22 @@ bin/rake spec
 bundle exec rspec <path-to-file>
 ```
 
-If you need to run an outdated Firefox version for the sake of Selenium compatibility,
-use the environment variable `FIREFOX_BINARY_PATH`. The default path for Selenium is
-`/Applications/Firefox.app/Contents/MacOS/firefox-bin`.
+If you need to run an outdated Firefox version for the sake of Selenium compatibility, the recommended
+old version of Firefox to to use is 46.0 which can be downloaded
+[here](https://ftp.mozilla.org/pub/firefox/releases/46.0/mac/en-US/Firefox%2046.0.dmg).
+
+Set the environment variable `FIREFOX_BINARY_PATH` so Selenium can find the correct Firefox binary:
+
+```
+export FIREFOX_BINARY_PATH=/Applications/Firefox.app/Contents/MacOS/firefox-bin
+```
+
+`NodeJS` requires that you put environment settings into an `.env` file, so create such a file
+if you don't already have one and add the following:
+
+```sh
+export FIREFOX_BINARY_PATH=/Applications/Firefox.app/Contents/MacOS/firefox-bin
+```
 
 #### Javascript tests
 

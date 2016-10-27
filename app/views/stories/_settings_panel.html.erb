@@ -82,7 +82,7 @@
         </button>
         <div class="menu-list-item-content settings-panel-publishing collapsed">
           <div>
-            <%- unless can_manage_story_visibility? -%>
+            <%- unless can_manage_story_visibility? && can_publish_story? -%>
               <section class="warning-bar">
                 <p><span class="icon-warning"></span></p>
                 <%- if @story_metadata.public? -%>

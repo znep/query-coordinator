@@ -62,7 +62,7 @@ export default function DropHintStore() {
   function _storyDragOver(payload) {
     StorytellerUtils.assertHasProperties(payload, 'storyUid', 'pointer', 'storyElement');
 
-    if (storyStore.storyExists(payload.storyUid)) {
+    if (storyStore.doesStoryExist(payload.storyUid)) {
       var dropIndex;
 
       var pointerY = Unipointer.getPointerPoint(payload.pointer).y - window.pageYOffset;

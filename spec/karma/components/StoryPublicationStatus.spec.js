@@ -22,7 +22,7 @@ describe('StoryPublicationStatus', () => {
 
   const storyUpdatedAt = '2010-03-10';
 
-  function createStoryPermissionsManagerMocker(isPublic, havePublishedAndDraftDiverged) {
+  function createStoryPermissionsManagerMocker() {
     beforeEach(() => {
       makePublicStubPromise = new Promise((resolve, reject) => {
         makePublicStubPromiseResolve = resolve;
@@ -39,8 +39,6 @@ describe('StoryPublicationStatus', () => {
       makePrivateStub.returns(makePrivateStubPromise);
 
       StoryPublicationStatusAPI.__Rewire__('storyPermissionsManager', {
-        isPublic: _.constant(isPublic),
-        havePublishedAndDraftDiverged: _.constant(havePublishedAndDraftDiverged),
         makePublic: makePublicStub,
         makePrivate: makePrivateStub
       });
@@ -48,6 +46,21 @@ describe('StoryPublicationStatus', () => {
 
     afterEach(() => {
       StoryPublicationStatusAPI.__ResetDependency__('storyPermissionsManager', storyPermissionsManagerMocker);
+    });
+  }
+
+  function createStoryStoreMocker(isPublic, isCurrentDraftUnpublished) {
+    beforeEach(() => {
+      StoryPublicationStatusAPI.__Rewire__('storyStore', {
+        getStoryUpdatedAt: () => storyUpdatedAt,
+        doesStoryExist: _.constant(true),
+        isStoryPublic: () => isPublic,
+        isCurrentDraftUnpublished: () => isCurrentDraftUnpublished
+      });
+    });
+
+    afterEach(() => {
+      StoryPublicationStatusAPI.__ResetDependency__('storyStore');
     });
   }
 
@@ -59,15 +72,10 @@ describe('StoryPublicationStatus', () => {
 
   beforeEach(() => {
     StoryPublicationStatusAPI.__Rewire__('I18n', I18nMocker);
-    StoryPublicationStatusAPI.__Rewire__('storyStore', {
-      getStoryUpdatedAt: _.constant(storyUpdatedAt),
-      storyExists: _.constant(true)
-    });
   });
 
   afterEach(() => {
     StoryPublicationStatusAPI.__ResetDependency__('I18n');
-    StoryPublicationStatusAPI.__ResetDependency__('storyStore');
   });
 
   describe('render', () => {
@@ -91,7 +99,7 @@ describe('StoryPublicationStatus', () => {
     }
 
     describe('regardless of story state', () => {
-      createStoryPermissionsManagerMocker(true, true);
+      createStoryStoreMocker(true, true);
       createStoryPublicationStatus();
 
       it('renders last saved header text', () => {
@@ -106,7 +114,7 @@ describe('StoryPublicationStatus', () => {
     });
 
     describe('when the story is private and unpublished', () => {
-      createStoryPermissionsManagerMocker(false, false);
+      createStoryStoreMocker(false, false);
       createStoryPublicationStatus();
 
       rendersDraftAndUnpublished();
@@ -127,7 +135,7 @@ describe('StoryPublicationStatus', () => {
     });
 
     describe('when the story is public and unpublished', () => {
-      createStoryPermissionsManagerMocker(true, true);
+      createStoryStoreMocker(true, true);
       createStoryPublicationStatus();
 
       rendersDraftAndUnpublished();
@@ -145,7 +153,7 @@ describe('StoryPublicationStatus', () => {
     });
 
     describe('when the story is public and published', () => {
-      createStoryPermissionsManagerMocker(true, false);
+      createStoryStoreMocker(true, false);
       createStoryPublicationStatus();
 
       rendersMakePrivateButton();
@@ -175,7 +183,7 @@ describe('StoryPublicationStatus', () => {
 
   describe('events', () => {
     describe('when clicking the status button', () => {
-      createStoryPermissionsManagerMocker(true, true);
+      createStoryStoreMocker(true, true);
       createStoryPublicationStatus();
 
       it('toggles the flannel visibility', () => {
@@ -226,7 +234,8 @@ describe('StoryPublicationStatus', () => {
     }
 
     describe('when the story is private and unpublished', () => {
-      createStoryPermissionsManagerMocker(false, true);
+      createStoryPermissionsManagerMocker();
+      createStoryStoreMocker(false, true);
       createStoryPublicationStatus();
 
       describe('when clicking the "Make Story Public" button', () => {
@@ -235,7 +244,8 @@ describe('StoryPublicationStatus', () => {
     });
 
     describe('when the story is public and unpublished', () => {
-      createStoryPermissionsManagerMocker(true, true);
+      createStoryPermissionsManagerMocker();
+      createStoryStoreMocker(true, true);
       createStoryPublicationStatus();
 
       describe('when clicking the "Update Public Version" button', () => {
@@ -244,7 +254,8 @@ describe('StoryPublicationStatus', () => {
     });
 
     describe('when the story is public', () => {
-      createStoryPermissionsManagerMocker(true, true);
+      createStoryPermissionsManagerMocker();
+      createStoryStoreMocker(true, true);
       createStoryPublicationStatus();
 
       describe('when clicking the "Make Private" button', () => {

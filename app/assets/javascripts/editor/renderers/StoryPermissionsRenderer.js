@@ -1,12 +1,18 @@
 import $ from 'jQuery';
-import _ from 'lodash';
 
 import I18n from '../I18n';
 import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
 import { storyStore } from '../stores/StoryStore';
 import { storySaveStatusStore } from '../stores/StorySaveStatusStore';
+import { permissionStore } from '../stores/PermissionStore';
 import { storyPermissionsManager } from '../StoryPermissionsManager';
+
+const { STORY_UID } = Environment;
+
+function i18n(key) {
+  return I18n.t(`editor.settings_panel.publishing_section.${key}`);
+}
 
 export default function StoryPermissionsRenderer() {
   var $settingsPanelStoryStatus;
@@ -44,7 +50,7 @@ export default function StoryPermissionsRenderer() {
     storySaveStatusStore.addChangeListener(render);
 
     $visibilityButton.click(function() {
-      var isPublic = storyPermissionsManager.isPublic();
+      var isPublic = storyStore.isStoryPublic(STORY_UID);
 
       if (isPublic) {
         storyPermissionsManager.makePrivate(renderError);
@@ -57,12 +63,12 @@ export default function StoryPermissionsRenderer() {
     });
 
     $updatePublicButton.click(function() {
-      var isPublic = storyPermissionsManager.isPublic();
+      var isPublic = storyStore.isStoryPublic(STORY_UID);
 
       if (isPublic) {
         storyPermissionsManager.makePublic(renderError);
       } else {
-        renderError(I18n.t('editor.settings_panel.publishing_section.errors.not_published_not_updated'));
+        renderError(i18n('errors.not_published_not_updated'));
       }
 
       $errorContainer.addClass('hidden');
@@ -77,39 +83,32 @@ export default function StoryPermissionsRenderer() {
   }
 
   function render() {
-    if (!storyStore.storyExists(Environment.STORY_UID)) {
+    if (!storyStore.doesStoryExist(STORY_UID)) {
       return null; // Story not loaded yet.
     }
 
-    var havePublishedAndDraftDiverged;
-    var canManagePublicVersion = _.includes(Environment.CURRENT_USER_STORY_AUTHORIZATION.domainRights, 'manage_story_public_version');
-    var isNotContributor = Environment.CURRENT_USER_STORY_AUTHORIZATION.viewRole !== 'contributor';
-    var isPublic = storyPermissionsManager.isPublic();
-    var i18n = function(key) {
-      return I18n.t(
-        StorytellerUtils.format('editor.settings_panel.publishing_section.{0}', key)
-      );
-    };
+    const isPublic = storyStore.isStoryPublic(STORY_UID);
+    const isCurrentDraftUnpublished = storyStore.isCurrentDraftUnpublished(STORY_UID);
 
     if (isPublic) {
-      havePublishedAndDraftDiverged = storyPermissionsManager.havePublishedAndDraftDiverged();
-
       $visibilityLabel.text(i18n('visibility.public'));
       $visibilityButtonText.text(i18n('visibility.make_story_private'));
       $visibilityButton.addClass('btn-default').removeClass('btn-alternate-2');
-      $updatePublicButton.prop('disabled', true);
-      $updatePublicLabel.text(i18n('status.published'));
-      $publishingHelpText.text(i18n('messages.has_been_published'));
 
-      if (havePublishedAndDraftDiverged && canManagePublicVersion && isNotContributor) {
+      if (isCurrentDraftUnpublished && permissionStore.canPublishCurrentStory()) {
         $updatePublicButton.prop('disabled', false);
-        $publishingHelpText.text(i18n('messages.previously_published'));
         $updatePublicLabel.text(i18n('status.draft'));
+        $publishingHelpText.text(i18n('messages.previously_published'));
+      } else {
+        $updatePublicButton.prop('disabled', true);
+        $updatePublicLabel.text(i18n('status.published'));
+        $publishingHelpText.text(i18n('messages.has_been_published'));
       }
     } else {
       $visibilityLabel.text(i18n('visibility.private'));
       $visibilityButtonText.text(i18n('visibility.make_story_public'));
       $visibilityButton.removeClass('btn-default').addClass('btn-alternate-2');
+
       $updatePublicButton.prop('disabled', true);
       $publishingHelpText.text(i18n('messages.can_be_shared_publicly'));
     }

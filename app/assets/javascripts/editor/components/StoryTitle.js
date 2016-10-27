@@ -24,7 +24,7 @@ export default function StoryTitle(storyUid) {
   }
 
   function render() {
-    if (!storyStore.storyExists(storyUid)) {
+    if (!storyStore.doesStoryExist(storyUid)) {
       return null; // Story not loaded yet.
     }
 

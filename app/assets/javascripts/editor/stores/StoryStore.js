@@ -112,12 +112,21 @@ export default function StoryStore() {
    * Public methods
    */
 
-  this.storyExists = function(storyUid) {
+  this.doesStoryExist = function(storyUid) {
     return _stories.hasOwnProperty(storyUid);
   };
 
-  this.storyHasBlock = function(storyUid, blockId) {
-    return _.includes(this.getStoryBlockIds(storyUid), blockId);
+  this.isStoryPublic = function(storyUid) {
+    return !!this.getStoryPermissions(storyUid).isPublic;
+  };
+
+  this.isCurrentDraftUnpublished = (storyUid) => {
+    const publishedStory = this.getStoryPublishedStory(storyUid);
+    const digest = this.getStoryDigest(storyUid);
+
+    // Only stories that have been published can have their published and
+    // draft versions diverge.
+    return _.has(publishedStory, 'digest') && publishedStory.digest !== digest;
   };
 
   this.getStoryTitle = function(storyUid) {
@@ -164,7 +173,15 @@ export default function StoryStore() {
   this.getStoryPermissions = function(storyUid) {
     var story = _getStory(storyUid);
 
-    return _.cloneDeep(story.permissions);
+    let permissions = _.cloneDeep(story.permissions);
+
+    // Ensure that property checks on the return value won't fail
+    // due to null reference.
+    if (!_.isPlainObject(permissions)) {
+      permissions = {};
+    }
+
+    return permissions;
   };
 
   this.getStoryPrimaryOwnerUid = function() {

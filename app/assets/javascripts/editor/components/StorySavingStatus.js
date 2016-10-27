@@ -35,7 +35,7 @@ export default function StorySavingStatus(options) {
 
 
   function render() {
-    if (!storyStore.storyExists(Environment.STORY_UID)) {
+    if (!storyStore.doesStoryExist(Environment.STORY_UID)) {
       return null; // Story not loaded yet.
     }
     var isStorySaved = !storySaveStatusStore.isStoryDirty();

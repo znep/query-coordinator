@@ -10,7 +10,10 @@ import Constants from './Constants';
 
 export const storyPermissionsManager = new StoryPermissionsManager();
 export default function StoryPermissionsManager() {
-  const { STORY_UID, PUBLISHED_STORY_DATA } = Environment;
+  // For now, this has to be defined inside the export because of the way the
+  // tests are written. Should it be okay to destructure Environment early? Yes.
+  // But something about the way this file's stubs are set up requires otherwise.
+  const { STORY_UID } = Environment;
 
   this.makePublic = (errorCallback) => {
     StorytellerUtils.assertIsOneOfTypes(errorCallback, 'undefined', 'function');
@@ -36,31 +39,6 @@ export default function StoryPermissionsManager() {
     return setToPrivate().
       then(handleRequestSuccess).
       catch(error => handleRequestError(error, errorCallback));
-  };
-
-  this.isPublic = () => {
-    const permissions = storyStore.getStoryPermissions(STORY_UID);
-    return permissions && permissions.isPublic;
-  };
-
-  this.havePublishedAndDraftDiverged = () => {
-    let publishedAndDraftDiverged = false;
-    const publishedStory = storyStore.getStoryPublishedStory(STORY_UID) || PUBLISHED_STORY_DATA;
-    const digest = storyStore.getStoryDigest(STORY_UID);
-
-    // Only stories that have been published can have their published and
-    // draft versions diverge. If a story has never been published, storyStore
-    // will return undefined for .getStoryPublishedStory() and the
-    // publishedStory object embedded in the page by the Rails app will be set
-    // to null. Because of the '|| root.publishedStory;' conditional
-    // assignment to publishedStory above, we can be reasonably confident that
-    // we will only ever encounter a JSON representation of the published
-    // story or null.
-    if (publishedStory !== null && publishedStory.hasOwnProperty('digest')) {
-      publishedAndDraftDiverged = publishedStory.digest !== digest;
-    }
-
-    return publishedAndDraftDiverged;
   };
 
   function handleRequestSuccess(response) {

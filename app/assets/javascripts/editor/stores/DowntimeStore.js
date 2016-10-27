@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Cookies from 'js-cookie';
 import moment from 'moment';
 
-import Store from '../stores/Store';
+import Store from './Store';
 import Actions from '../Actions';
 import Environment from '../../StorytellerEnvironment';
 import { exceptionNotifier } from '../../services/ExceptionNotifier';

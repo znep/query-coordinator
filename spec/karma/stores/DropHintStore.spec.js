@@ -9,7 +9,7 @@ describe('DropHintStore', function() {
 
   var dispatcher;
   var dropHintStore;
-  var storyExists;
+  var doesStoryExist;
   var validStoryUid = 'test-test';
   var invalidStoryUid = 'invalid-story';
   var invalidBlockId = 'invalid-block';
@@ -40,15 +40,15 @@ describe('DropHintStore', function() {
   }
 
   beforeEach(function() {
-    storyExists = true;
+    doesStoryExist = true;
     dispatcher = new Dispatcher();
 
     StoreAPI.__Rewire__('dispatcher', dispatcher);
 
     var StoryStoreMock = function() {
       _.extend(this, new Store());
-      this.storyExists = function() {
-        return storyExists;
+      this.doesStoryExist = function() {
+        return doesStoryExist;
       };
     };
 
@@ -81,7 +81,7 @@ describe('DropHintStore', function() {
             done();
           });
 
-          storyExists = false;
+          doesStoryExist = false;
           dragOver(invalidStoryUid, invalidBlockId);
         });
       });

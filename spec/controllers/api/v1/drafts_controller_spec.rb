@@ -172,7 +172,7 @@ RSpec.describe Api::V1::DraftsController, type: :controller do
       let(:action) { :latest }
 
       before do
-        allow(controller).to receive(:can_edit_story?).and_return(can_view_unpublished_story)
+        allow(controller).to receive(:can_view_unpublished_story?).and_return(can_view_unpublished_story)
       end
 
       describe 'when the user can view unpublished story' do

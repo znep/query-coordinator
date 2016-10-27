@@ -37,7 +37,7 @@ export default function HistoryStore(forStoryUid) {
 
   storyStore.addChangeListener(function() {
 
-    if (storyStore.storyExists(forStoryUid)) {
+    if (storyStore.doesStoryExist(forStoryUid)) {
 
       var historyLength = _history.length;
       var newHistoryLength;

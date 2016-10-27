@@ -22,6 +22,7 @@ export default {
   // {String} theme
   STORY_UPDATE_THEME: 'STORY_UPDATE_THEME',
 
+  // {String} storyUid
   // {Object} publishedStory
   STORY_SET_PUBLISHED_STORY: 'STORY_SET_PUBLISHED_STORY',
 

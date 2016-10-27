@@ -127,7 +127,7 @@ module DatasetLandingPageHelper
   end
 
   def export_formats
-    [ 'csv', 'csv_for_excel', 'json', 'rdf', 'rss', 'xml' ]
+    [ 'csv', 'csv_for_excel', 'json', 'rdf', 'rss', 'tsv_for_excel', 'xml']
   end
 
   def custom_metadata_fieldsets
@@ -214,7 +214,6 @@ module DatasetLandingPageHelper
       :blobMimeType => @view.blobMimeType,
       :blobType => @view.is_blobby? && @view.display.display_type,
       :gridUrl => data_grid_path(@view),
-      :downloadOverride => @view.downloadOverride,
       :exportFormats => export_formats,
       :lastUpdatedAt => @view.time_last_updated_at,
       :dataLastUpdatedAt => @view.time_data_last_updated_at,
@@ -242,7 +241,8 @@ module DatasetLandingPageHelper
       :editMetadataUrl => edit_metadata_url,
       :editUrl => edit_view_path(@view),
       :sortOrder => sort_order,
-      :bootstrapUrl => bootstrap_url
+      :bootstrapUrl => bootstrap_url,
+      :metadata => @view.metadata
     }
   end
 end

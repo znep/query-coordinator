@@ -1352,6 +1352,7 @@ en:
       json_without_geo: JSON (without geospatial data)
       original: Original
       shapefile: Shapefile
+      tsv_for_excel: TSV for Excel
     error: Error
     featured_content:
       manage_prompt:

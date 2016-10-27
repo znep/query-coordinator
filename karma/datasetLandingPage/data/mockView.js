@@ -19,8 +19,7 @@ export default {
   isTabular: true,
   isBlobby: false,
   gridUrl: 'gridUrl',
-  downloadOverride: null,
-  exportFormats: [ 'csv', 'json' ],
+  exportFormats: [ 'csv', 'json', 'csv_for_excel', 'tsv_for_excel' ],
   lastUpdatedAt: 'May 5, 2016',
   dataLastUpdatedAt: 'Jan 1, 1970',
   metadataLastUpdatedAt: 'May 5, 2016',
@@ -46,5 +45,6 @@ export default {
   sortOrder: [{
     ascending: true,
     columnName: 'frogs'
-  }]
+  }],
+  metadata: {}
 };

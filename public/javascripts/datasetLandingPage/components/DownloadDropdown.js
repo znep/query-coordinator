@@ -20,6 +20,12 @@ var DownloadDropdown = React.createClass({
       params.bom = 'true';
     }
 
+    if (format === 'tsv_for_excel') {
+      extension = 'tsv';
+      type = 'TSV for Excel';
+      params.bom = 'true';
+    }
+
     var queryString = _.toPairs(params).map(function(param) { return param.join('='); }).join('&');
     var url = `/api/views/${view.id}/rows.${extension}?${queryString}`;
     var label = I18n.download[format] || format.toUpperCase();
@@ -35,10 +41,10 @@ var DownloadDropdown = React.createClass({
 
   render() {
     var { onDownloadData, view } = this.props;
-
-    if (view.downloadOverride) {
+    const overrideLink = _.get(view.metadata, 'overrideLink');
+    if (overrideLink) {
       return (
-        <a href={view.downloadOverride} className="btn btn-simple btn-sm unstyled-link download">
+        <a href={overrideLink} className="btn btn-simple btn-sm unstyled-link download">
           {I18n.action_buttons.download}
         </a>
       );

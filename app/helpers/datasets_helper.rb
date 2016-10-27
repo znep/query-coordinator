@@ -364,7 +364,7 @@ module DatasetsHelper
   end
 
   def normal_download_types
-    ['CSV', 'CSV for Excel', 'JSON', 'RDF', 'RSS', 'XML']
+    ['CSV', 'CSV for Excel', 'JSON', 'RDF', 'RSS', 'TSV for Excel', 'XML']
   end
 
   def display_dataset_landing_page_link

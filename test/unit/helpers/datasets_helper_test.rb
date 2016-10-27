@@ -13,7 +13,7 @@ class DatasetsHelperTest < Minitest::Test
   end
 
   def test_normal_download_types
-    assert_equal @object.normal_download_types, ['CSV', 'CSV for Excel', 'JSON', 'RDF', 'RSS', 'XML']
+    assert_equal @object.normal_download_types, ['CSV', 'CSV for Excel', 'JSON', 'RDF', 'RSS', 'TSV for Excel', 'XML']
   end
 
   def test_row_identifier_select_tag

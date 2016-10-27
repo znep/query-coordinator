@@ -14,6 +14,7 @@ import ViewCard from './components/ViewCard';
 import ExternalViewCard from './components/ViewCard/ExternalViewCard';
 import FilterBar from './components/FilterBar';
 import InfoPane from './components/InfoPane';
+import Slider from './components/Slider';
 
 module.exports = {
   attachTo: function(element) {
@@ -39,5 +40,6 @@ module.exports = {
   ViewCard,
   ExternalViewCard,
   FilterBar,
-  InfoPane
+  InfoPane,
+  Slider
 };

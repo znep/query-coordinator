@@ -17,7 +17,11 @@
     border-radius: 0;
 
     &.InputRange-track--active {
-      background: $primary;
+      background: $alternate-2;
+    }
+
+    .InputRange-labelContainer {
+      bottom: 5px;
     }
   }
 

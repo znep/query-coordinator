@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
-import Slider from './Slider';
+import Slider from '../Slider';
 import FilterFooter from './FilterFooter';
 import { translate as t } from '../../common/I18n';
 

@@ -349,6 +349,19 @@
             }
           });
         }
+
+        // EN-11257: when there are multiple 'self' viewDefinitions, the select dataset modal opens
+        // (because base-pane.js gets confused... somewhere). To avoid heavily refactoring map-config.js
+        // and/or base-pane.js, let's remove any duplicate viewDefinitions. Yes, this removes all
+        // duplicate viewDefinitions, not just duplicate 'self' ones. We decided that it seems
+        // unlikely that a user would want to add the exact same map layer twice and are removing
+        // those duplicates aggressively.
+        //
+        // Caveat: the modal still pops up if you have added two different viewDefinitions from the
+        // dataset the map was originally derived from (for instance, ones using different location
+        // columns). That is a known issue that we should tackle another day.
+        view.displayFormat.viewDefinitions = _.uniq(view.displayFormat.viewDefinitions, _.isEqual);
+
         return;
       }
 

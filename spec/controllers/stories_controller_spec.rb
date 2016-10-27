@@ -10,6 +10,8 @@ RSpec.describe StoriesController, type: :controller do
     allow(StorytellerService).to receive(:downtimes).and_return([])
 
     stub_current_domain
+    stub_domains_request
+    stub_configurations_request
 
     request.env['HTTPS'] = 'on'
   end

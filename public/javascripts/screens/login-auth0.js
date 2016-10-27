@@ -86,7 +86,9 @@
 
     // If there is only one link, then no enterprise connections are present.
     // Just render the Socrata login immediately.
-    if (links.length === 1) {
+    // UNLESS the "hide_socrata_id" feature flag is on, in which case we want to show the one button
+    // that goes straight to the customer's identity provider
+    if (links.length === 1 && !blist.feature_flags.hide_socrata_id) {
       document.querySelector('.authProvider.socrata').style.display = 'block';
       document.querySelector('.auth0login').style.display = 'none';
     }

@@ -25,6 +25,16 @@
 
 <%= render('site_chrome/tab_content/form_field_pair',
   :left => {
+    :fields => [:header, :styles, :display_name_fg_color],
+    :locale_string => "#{locale_string}.header_display_name_color"
+  },
+  :right => {
+    :fields => [:header, :styles, :display_name_size],
+    :locale_string => "#{locale_string}.header_display_name_size"
+  }) %>
+
+<%= render('site_chrome/tab_content/form_field_pair',
+  :left => {
     :fields => [:header, :styles, :bg_color],
     :locale_string => "#{locale_string}.bar_background_color"
   },

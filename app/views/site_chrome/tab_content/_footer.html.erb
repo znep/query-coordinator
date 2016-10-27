@@ -24,6 +24,16 @@
 
 <%= render('site_chrome/tab_content/form_field_pair',
   :left => {
+    :fields => [:footer, :styles, :display_name_fg_color],
+    :locale_string => "#{locale_string}.footer_display_name_color"
+  },
+  :right => {
+    :fields => [:footer, :styles, :display_name_size],
+    :locale_string => "#{locale_string}.footer_display_name_size"
+  }) %>
+
+<%= render('site_chrome/tab_content/form_field_pair',
+  :left => {
     :fields => [:footer, :styles, :bg_color],
     :locale_string => "#{locale_string}.footer_background_color"
   },

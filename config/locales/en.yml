@@ -2744,6 +2744,14 @@ en:
                 description: This is the name displayed in the Footer area. Usually set to your organization's name.
                 placeholder: Footer Display Name
                 title: Footer Display Name
+              footer_display_name_color:
+                description: Color and size of the text for Footer Display Name.
+                placeholder: "#123456"
+                title: Footer Display Name Color
+              footer_display_name_size:
+                description: Color and size of the text for Footer Display Name.
+                placeholder: "14pt"
+                title: Footer Display Name Size
               footer_logo:
                 description: URL reference to the Footer logo. Recommended minimum size is 80 x 80 pixels.
                 placeholder: https://yoursite.gov/logos/footer_logo.png
@@ -2834,7 +2842,7 @@ en:
                 placeholder: "#123456"
                 title: Bar Background Color (Secondary)
               bar_text_link_color:
-                description: Foreground color of the text and links that sit atop the Header Bar.
+                description: Color of the text and links that sit atop the Header Bar.
                 placeholder: "#ffffff"
                 title: Bar Text & Link Color
               header_bar_logo:
@@ -2849,6 +2857,14 @@ en:
                 description: Name displayed in the Header Bar. Usually set to your organization's name.
                 placeholder: Header Display Name
                 title: Header Display Name
+              header_display_name_color:
+                description: Color and size of the text for Header Display Name.
+                placeholder: "#123456"
+                title: Header Display Name Color
+              header_display_name_size:
+                description: Color and size of the text for Header Display Name.
+                placeholder: "16pt"
+                title: Header Display Name Size
               header_logo_height:
                 description: You can optionally set the height and width for your logo displayed in the Header Bar.
                 error: 'Please enter a value to represent your desired logo height in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'

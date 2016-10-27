@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var $ = require('jquery');
+const I18n = require('src/I18n');
 var SvgHistogram = require('../../src/views/SvgHistogram');
 
 describe('SvgHistogram', function() {
@@ -212,6 +213,34 @@ describe('SvgHistogram', function() {
       expect(columns.length).to.equal(5);
       expect(columns[2]).attr('height').to.equal('1');
       expect(columns[3]).attr('height').to.not.equal('1');
+    });
+  });
+
+  describe('when configured wrong', () => {
+    afterEach(function() {
+      removeHistogram(histogram);
+    });
+
+    it('should show an error message if configuration.measureAxisMinValue ' +
+      'is bigger then configuration.measureAxisMaxValue', () => {
+
+      histogram = createHistogram(null, {
+        configuration: {
+          measureAxisMinValue: 2,
+          measureAxisMaxValue: 1,
+        }
+      });
+      histogram.chart.render(null, testData);
+
+      const errorMessage = histogram.element.
+        find('.socrata-visualization-error-message').text();
+
+      const expectedMessage = I18n.translate(
+        'visualizations.common.validation.errors.' +
+        'measure_axis_min_should_be_lesser_then_max'
+      );
+
+      expect(errorMessage).to.equal(expectedMessage);
     });
   });
 

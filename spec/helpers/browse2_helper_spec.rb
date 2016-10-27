@@ -231,20 +231,29 @@ describe Browse2Helper do
 
   describe '#browse2_facet_cutoff' do
     it 'defaults to 5' do
-      facet = { :type => :category, :singular_description => 'categorias' }
-      allow(CurrentDomain).to receive(:property).and_return({})
+      facet = { :type => :category }
+      allow(CurrentDomain).to receive(:property).with(:facet_cutoffs, :catalog).and_return({})
       expect(helper.browse2_facet_cutoff(facet)).to eq(5)
     end
 
     it 'returns the property set in domain configuration if available' do
-      facet = { :type => :category, :singular_description => 'categorias' }
-      allow(CurrentDomain).to receive(:property).and_return({ :category => 13 })
+      facet = { :type => :category }
+      allow(CurrentDomain).to receive(:property).with(:facet_cutoffs, :catalog).and_return('category' => 13)
       expect(helper.browse2_facet_cutoff(facet)).to eq(13)
+    end
+
+    it 'returns the correct property for both string and symbol syntax' do
+      allow(CurrentDomain).to receive(:property).with(:facet_cutoffs, :catalog).and_return('category' => 7)
+      facet_symbol = { :type => :category }
+      facet_string = { :type => 'category' }
+
+      expect(helper.browse2_facet_cutoff(facet_symbol)).to eq(7)
+      expect(helper.browse2_facet_cutoff(facet_string)).to eq(7)
     end
 
     it 'returns 100 for the view type facet' do
       facet = { :type => :type, :singular_description => 'tipo' }
-      allow(CurrentDomain).to receive(:property).and_return({})
+      allow(CurrentDomain).to receive(:property).with(:facet_cutoffs, :catalog).and_return({})
       expect(helper.browse2_facet_cutoff(facet)).to eq(100) # Browse2Helper::MAX_FACET_CUTOFF
     end
 
@@ -319,7 +328,7 @@ describe Browse2Helper do
 
     it 'provides default value to custom facets if not defined' do
       facet = { :singular_description => 'something custom' }
-      allow(CurrentDomain).to receive(:property).and_return({})
+      allow(CurrentDomain).to receive(:property).with(:facet_cutoffs, :catalog).and_return({})
       expect(helper.browse2_facet_cutoff(facet)).to eq(5) # Browse2Helper::DEFAULT_FACET_CUTOFF
     end
   end

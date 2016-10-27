@@ -70,13 +70,13 @@ module Browse2Helper
   # Returns the facet option cutoff point. Looks at the domain configuration cutoff if set,
   # else falls back to default, 5. "View Type" is special and always shows everything.
   def browse2_facet_cutoff(facet)
-    domain_cutoffs = CurrentDomain.property(:facet_cutoffs, :catalog) || {}
+    domain_cutoffs = CurrentDomain.property(:facet_cutoffs, :catalog).to_h.with_indifferent_access
 
     facet_type = facet[:type]
 
     if facet_type == :type
       MAX_FACET_CUTOFF
-    elsif domain_cutoffs.keys.include?(facet_type)
+    elsif domain_cutoffs.keys.map(&:to_s).include?(facet_type.to_s)
       domain_cutoffs[facet_type]
     else
       # It's a custom facet

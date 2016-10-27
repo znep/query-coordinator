@@ -174,22 +174,6 @@
   };
 
   Dataset.modules.chart = {
-    supportsSnapshotting: function() {
-      // Highcharts compatibility
-      // TODO: Tree, donut?
-      return _.include(['area', 'bar', 'column', 'donut', 'line', 'pie', 'timeline', 'treemap'],
-        this.displayFormat.chartType);
-    },
-
-    _setupSnapshotting: function() {
-      if (_.include(['treemap'], this.displayFormat.chartType)) {
-        this._setupDefaultSnapshotting(2000);
-      }
-
-      // Let highcharts types deal with it themselves
-    },
-
-
     _checkValidity: function() {
       if (!this._super()) {
         return false;

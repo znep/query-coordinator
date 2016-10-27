@@ -219,10 +219,6 @@
   };
 
   Dataset.modules.map = {
-    supportsSnapshotting: function() {
-      return _.include(['bing', 'google', 'esri'], this.displayFormat.type);
-    },
-
     _setupPolaroidImageCapturing: function() {
       var polaroidDelay = this.viewType === 'geo' ? 20000 : 10000;
       this._super(polaroidDelay);

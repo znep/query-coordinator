@@ -1404,7 +1404,7 @@
     }
 
     // If we already loaded and are just re-rendering, don't animate
-    if (chartObj._loadedOnce || chartObj._primaryView.snapshotting) {
+    if (chartObj._loadedOnce) {
       typeConfig.animation = false;
     }
 
@@ -1645,10 +1645,6 @@
     }
 
     chartObj._renderDoneTimer = setTimeout(function() {
-      // Once the chart's ready to draw, let's take a picture
-      if (chartObj._primaryView.snapshotting) {
-        chartObj._primaryView.takeSnapshot();
-      }
       chartObj.$dom().trigger('render_finished');
       $.metrics.measure('domain-intern', 'js-chart-' + chartObj._chartType + '-page-load-time');
     }, 1000);

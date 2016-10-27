@@ -126,20 +126,6 @@
         }
       }
 
-      // Set up Snapshotting service, currently defunct
-      if (!$.isBlank(blist.snapshot) && blist.snapshot.takeSnapshot) {
-        this.snapshotting = true;
-
-        if (!$.isBlank(blist.snapshot.forcedTimeout)) {
-          this._setupDefaultSnapshotting(blist.snapshot.forcedTimeout * 1000);
-        } else if (_.isFunction(this.supportsSnapshotting) && this.supportsSnapshotting()) {
-          if (_.isFunction(this._setupSnapshotting)) {
-            this._setupSnapshotting();
-          }
-        } else {
-          this._setupDefaultSnapshotting(5000);
-        }
-      }
       this.bucketSize = parseInt(blist.feature_flags.nbe_bucket_size, 10) || 1000;
     },
 
@@ -2189,27 +2175,6 @@
         });
     },
 
-    supportsSnapshotting: function() {
-      // if you don't override me, you don't know how to be snapshotted
-      return false;
-    },
-
-    takeSnapshot: function() {
-      var name = blist.snapshot.name;
-      // use the current viewport
-      setTimeout(function() {
-        // NOTE: socrataScreenshot is injected into the window by the snapper
-        // service itself (snapper hosts webkit and pulls up the frontend).
-        // socrataScreenshot isn't defined in normal operation.
-        /* eslint-disable no-undef */
-        socrataScreenshot.defineRegion(name, 0, 0, window.innerWidth, window.innerHeight);
-        socrataScreenshot.snap(name);
-        socrataScreenshot.done();
-        /* eslint-enable no-undef */
-      }, 1000);
-    },
-
-
     getFullSnapshotUrl: function(name) {
       name = this._getThumbNameOrDefault(name);
 
@@ -3974,21 +3939,6 @@
             window.callPhantom('snapshotReady');
           });
         }, timeout || 5000);
-      });
-    },
-
-    _setupDefaultSnapshotting: function(delay) {
-      // by default, just wait til the rows are loaded
-      this.bind('request_finish', function() {
-        var ds = this;
-        // if there was already a return call, e.g. aggregates
-        if (!$.isBlank(ds._snapshotTimer)) {
-          clearTimeout(ds._snapshotTimer);
-        }
-
-        ds._snapshotTimer = setTimeout(function() {
-          _.defer(ds.takeSnapshot);
-        }, (delay || 1000));
       });
     },
 

@@ -48,7 +48,6 @@ module.exports = _.defaultsDeep({
       './util/dataset/column.js',
       './util/dataset/row-set.js',
       './util/dataset/dataset.js',
-      './util/dataset/table.js',
       './util/dataset/calendar.js',
       './util/dataset/chart.js',
       './util/dataset/form.js',

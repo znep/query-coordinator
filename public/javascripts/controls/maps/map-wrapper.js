@@ -498,13 +498,6 @@
         mapObj.viewportHandler().stopExpecting();
         mapObj.viewportHandler().saveViewport(true);
         mapObj.geolocate();
-        // Often, at this point, the images of the tiles themselves are not done loading.
-        // Thus, we timeout to wait for this.
-        setTimeout(function() {
-          if ((mapObj._primaryView || {}).snapshotting) {
-            mapObj._primaryView.takeSnapshot();
-          }
-        }, 2000);
 
         // taken out for now. seems we just attempt to do this for sanitycheck/cleanliness
         // but it causes race conditions if temporaryness applies before maploaded is called.

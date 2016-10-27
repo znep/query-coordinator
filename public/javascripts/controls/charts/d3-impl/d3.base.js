@@ -49,15 +49,6 @@
 
     initialRenderDone: _.once(function() {
       $.metrics.measure('domain-intern', 'js-chart-' + this._chartType + '-page-load-time');
-      this.takeSnapshot();
-    }),
-
-    takeSnapshot: _.once(function() {
-      if (this._primaryView.snapshotting) {
-        setTimeout(function() {
-          this._primaryView.takeSnapshot();
-        }, 1000);
-      }
     }),
 
     _animationLengthMillisec: 600,

@@ -1,0 +1,3 @@
+- [ ] Updated `package.json` if this PR includes any changed Node package dependencies
+- [ ] Ran `bundle install` and updated the `Gemfile.lock` if any `Gemfile` changes were made
+- [ ] Made sure the JIRA ticket ID is in the commit message(s)

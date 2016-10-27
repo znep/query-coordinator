@@ -141,6 +141,7 @@ header#site-chrome-header, footer#site-chrome-footer {
     form {
       line-height: $header_logo_height;
       position: relative;
+      margin-bottom: 0;
 
       span.icon-search {
         position: absolute;

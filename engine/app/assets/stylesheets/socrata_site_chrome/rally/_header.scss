@@ -1,5 +1,6 @@
 $banner_height: 58px;
 $divider_height: 14px;
+$rally_top_min_height: 36px;
 
 header#site-chrome-header[template="rally"] {
   font-family: $font_family, 'Open Sans', Helvetica, Arial, 'sans-serif';
@@ -13,29 +14,32 @@ header#site-chrome-header[template="rally"] {
 
     .rally-top {
       background-color: $header_bg_color_secondary;
-      min-height: 32px;
-      height: $header_logo_height;
-      line-height: $header_logo_height;
+      min-height: $rally_top_min_height;
+      height: max($header_logo_height, $rally_top_min_height);
+      line-height: max($header_logo_height, $rally_top_min_height);
       padding: 16px;
       box-sizing: content-box;
+      overflow: hidden;
 
       a.logo {
         float: left;
         text-decoration: none;
+        white-space: nowrap;
 
         > img {
           height: $header_logo_height;
           width: $header_logo_width;
           margin-right: 16px;
-          float: left;
+          display: inline-block;
         }
 
         > span.site-name {
           font-weight: 300;
           font-size: 24px;
-          line-height: $header_logo_height;
-          float: left;
+          line-height: max($header_logo_height, $rally_top_min_height);
           color: $header_fg_color;
+          white-space: nowrap;
+          vertical-align: top;
         }
       }
 

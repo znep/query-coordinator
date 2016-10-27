@@ -65,7 +65,9 @@ RSpec.describe Stat::GoalsController, type: :controller do
     end
   end
 
-  describe '#edit' do
+
+
+  shared_examples 'action available to goal editors' do |action|
 
     describe 'user not signed in' do
       let(:accessible) { false }
@@ -79,7 +81,7 @@ RSpec.describe Stat::GoalsController, type: :controller do
 
       describe 'goal not present' do
         it '404s' do
-          get :edit, uid: uid
+          get action, uid: uid
           expect(response).to have_http_status(404)
         end
       end
@@ -87,7 +89,7 @@ RSpec.describe Stat::GoalsController, type: :controller do
       describe 'private goal' do
         let(:unauthorized) { true }
         it 'redirects to login' do
-          get :edit, uid: uid
+          get action, uid: uid
           expect(response).to have_http_status(302)
         end
       end
@@ -96,7 +98,7 @@ RSpec.describe Stat::GoalsController, type: :controller do
         let(:accessible) { true }
 
         it 'redirects to login' do
-          get :edit, uid: uid
+          get action, uid: uid
           expect(response).to have_http_status(302)
         end
       end
@@ -109,10 +111,15 @@ RSpec.describe Stat::GoalsController, type: :controller do
         # Not typo, goal may be visible (public).
         allow(goal).to receive(:accessible?).and_return(true)
         allow(goal).to receive(:unauthorized?).and_return(false)
-        get :edit, uid: uid
+        get action, uid: uid
         expect(response).to have_http_status(404)
       end
     end
+  end
+
+  describe '#edit' do
+
+    it_behaves_like 'action available to goal editors', :edit
 
     describe 'user can edit goal' do
       before do
@@ -186,9 +193,9 @@ RSpec.describe Stat::GoalsController, type: :controller do
             expect(assigns(:dashboard_uid)).to be_nil
             expect(assigns(:category_uid)).to be_nil
           end
-          it 'should set @story_view_url to the correct single view url' do
+          it 'should set @story_url_for_view to the correct single view url' do
             get :edit, uid: uid
-            expect(assigns(:story_view_url)).to eq("http://test.host/stat/goals/single/#{uid}")
+            expect(assigns(:story_url_for_view)).to eq("http://test.host/stat/goals/single/#{uid}")
           end
         end
 
@@ -203,9 +210,48 @@ RSpec.describe Stat::GoalsController, type: :controller do
             expect(assigns(:dashboard_uid)).to eq(dashboard)
             expect(assigns(:category_uid)).to eq(category)
           end
-          it 'should set @story_view_url to the correct fully-qualified view url' do
-            expect(assigns(:story_view_url)).to eq("http://test.host/stat/goals/#{dashboard}/#{category}/#{uid}")
+          it 'should set @story_url_for_view to the correct fully-qualified view url' do
+            expect(assigns(:story_url_for_view)).to eq("http://test.host/stat/goals/#{dashboard}/#{category}/#{uid}")
           end
+        end
+      end
+    end
+  end
+
+  describe '#preview' do
+
+    it_behaves_like 'action available to goal editors', :preview
+
+    describe 'user can edit goal' do
+      before do
+        stub_logged_in_user
+        stub_super_admin_session
+        allow(StorytellerService).to receive(:downtimes).and_return([])
+      end
+
+      describe 'goal does not exist' do
+        it 'should 404' do
+          allow(goal).to receive(:accessible?).and_return(false)
+          get :preview, uid: uid
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      describe 'draft not present' do
+        it 'should 404' do
+          allow(goal).to receive(:accessible?).and_return(true)
+          get :preview, uid: uid
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      describe 'draft present' do
+        let(:uid) { 'test-test' } # This story exists in the test seed.
+
+        it 'should 200' do
+          allow(goal).to receive(:accessible?).and_return(true)
+          get :preview, uid: uid
+          expect(response).to have_http_status(200)
         end
       end
     end

@@ -31,11 +31,19 @@ class Stat::GoalsController < StoriesController
     @goal = OpenPerformance::Goal.new(params[:uid])
   end
 
-  def story_view_url
+  def story_url_for_view
     if @dashboard_uid && @category_uid
       stat_goal_url(uid: params[:uid], dashboard: @dashboard_uid, category: @category_uid)
     else
       stat_single_goal_url(uid: params[:uid])
+    end
+  end
+
+  def story_url_for_preview
+    if @dashboard_uid && @category_uid
+      stat_preview_goal_url(uid: params[:uid], dashboard: @dashboard_uid, category: @category_uid)
+    else
+      stat_preview_single_goal_url(uid: params[:uid])
     end
   end
 end

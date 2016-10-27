@@ -45,4 +45,26 @@ RSpec.describe 'goal routing', type: :routing do
       )
     end
   end
+
+  describe 'fully-qualified goal preview' do
+    it 'renders preview route' do
+      expect(get: '/stat/goals/dash-bord/cate-gory/test-test/preview').to route_to(
+        controller: 'stat/goals',
+        action: 'preview',
+        dashboard: 'dash-bord',
+        category: 'cate-gory',
+        uid: 'test-test'
+      )
+    end
+  end
+
+  describe 'single goal preview' do
+    it 'renders preview route' do
+      expect(get: '/stat/goals/single/test-test/preview').to route_to(
+        controller: 'stat/goals',
+        action: 'preview',
+        uid: 'test-test'
+      )
+    end
+  end
 end

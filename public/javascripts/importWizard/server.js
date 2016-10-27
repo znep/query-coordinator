@@ -319,7 +319,7 @@ function coreViewLicense(view) {
     return {
       ...Metadata.emptyLicense(),
       attribution: view.attribution,
-      sourceLink: view.attributionLink
+      sourceLink: view.attributionLink || ''
     };
   }
 }

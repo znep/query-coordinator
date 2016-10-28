@@ -1,7 +1,7 @@
 PATH
   remote: engine
   specs:
-    socrata_site_chrome (1.2.7)
+    socrata_site_chrome (1.2.8)
       airbrake (>= 4.3.0)
       chroma
       dalli
@@ -50,9 +50,9 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     addressable (2.4.0)
-    airbrake (5.5.0)
-      airbrake-ruby (~> 1.5)
-    airbrake-ruby (1.5.0)
+    airbrake (5.6.1)
+      airbrake-ruby (~> 1.6)
+    airbrake-ruby (1.6.0)
     arel (6.0.3)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)

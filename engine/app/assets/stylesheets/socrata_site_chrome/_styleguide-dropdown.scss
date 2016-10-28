@@ -3,6 +3,18 @@ header#site-chrome-header, footer#site-chrome-footer {
   .dropdown {
     display: inline-block;
     position: relative;
+    /**
+     * EN-11443 - Profile drop down does not appear on homepage (montgomery)
+     *
+     * Third-party content (such as image carousels) can accidentally obscure
+     * the dropdown if said third-party content sets a z-index higher than the
+     * 100 that site chrome assigns itself. This problem is of course
+     * exacerbated by the fact that the header typically appears very high up
+     * in the markup. Accordingly, we set the z-index of the dropdown container
+     * to a value that is exactly one above the thing that broke the home page
+     * of data.montgomeryal.gov.
+     */
+    z-index: 100;
 
     span[class*="icon-"] {
       padding-left: ms(2);

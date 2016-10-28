@@ -61,15 +61,22 @@ Run all three processes in the same terminal window with foreman.
 
     bundle exec foreman start
 
-To run the webpack-dev-server:
+#### Alternatively you can start each process separately
+
+To start the Rails app:
+
+    bin/start
+
+To start the webpack-dev-server:
 
     npm run watch
 
-- You *must* run the NGINX configuration in [frontend](https://github.com/socrata/frontend)
-for the dev-server to work.
+> You *must* run the NGINX configuration in 
+[frontend](https://github.com/socrata/frontend) for the dev-server to work.
 
-We also have a delayed job queue for processing uploaded files. Everything but uploading files
-will work without this. The jobs can be processed manually with a rake task:
+We also have a delayed job queue for processing uploaded files. Everything but
+uploading files (which also requires AWS S3 credentials) will work without this.
+The jobs can be processed manually with a rake task:
 
     bundle exec rake jobs:work
 

@@ -33,7 +33,13 @@
             <img src="<%= connection.image %>">
           </span>
           <%- end -%>
-          <span class="description"><%=raw t('screens.sign_in.sign_in_with', provider: connection.name) %></span>
+          <span class="description">
+            <%- if connection[:buttonText].present? -%>
+              <%== connection.buttonText %> 
+            <%- else -%>
+              <%== t('screens.sign_in.sign_in_with', provider: connection.name) %>
+            <%- end -%>
+          </span>
         </a>
       <%- end -%>
     </div>

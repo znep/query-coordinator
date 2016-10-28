@@ -30,7 +30,8 @@ export default
 
     // These connections are shown as buttons to login through specific auth0 federated connections
     connections: PropTypes.array({
-      name: PropTypes.string.isRequired,
+      name: PropTypes.string,
+      buttonText: PropTypes.string,
       connection: PropTypes.string.isRequired,
       image: PropTypes.string // no image is supported
     }),

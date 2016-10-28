@@ -11,6 +11,26 @@ class ChooseConnection extends React.Component {
     this.renderSocrataIdButton = this.renderSocrataIdButton.bind(this);
   }
 
+  getConnectionText(auth0Connection) {
+    return _.isEmpty(auth0Connection.buttonText) ?
+      $.t('screens.sign_in.sign_in_with', { provider: auth0Connection.name }) :
+      auth0Connection.buttonText;
+  }
+
+  renderConnectionImage(auth0Connection) {
+    const { image, name } = auth0Connection;
+    if (!_.isEmpty(image)) {
+      return (
+        <div styleName="button-image-container">
+          <img
+            styleName="button-image"
+            src={image}
+            alt={!_.isEmpty(name) ? name : 'SSO Connection'} />
+        </div>
+      );
+    }
+  }
+
   renderSocrataIdButton() {
     if (!this.props.options.hideSocrataId) {
       return (
@@ -31,25 +51,11 @@ class ChooseConnection extends React.Component {
     }
   }
 
-  renderConnectionImage(auth0Connection) {
-    const { image, name } = auth0Connection;
-    if (!_.isEmpty(image)) {
-      return (
-        <div styleName="button-image-container">
-          <img
-            styleName="button-image"
-            src={image}
-            alt={!_.isEmpty(name) ? name : 'SSO Connection'} />
-        </div>
-      );
-    }
-  }
-
   renderConnections() {
     const { onConnectionChosen, options } = this.props;
 
     return options.connections.map((auth0Connection) => {
-      const { connection, name, image } = auth0Connection;
+      const { connection, image } = auth0Connection;
       const textStyle = _.isEmpty(image) ? 'button-text-no-image' : 'button-text';
 
       return (
@@ -59,7 +65,7 @@ class ChooseConnection extends React.Component {
           onClick={() => { onConnectionChosen(connection); }}>
           {this.renderConnectionImage(auth0Connection)}
           <span styleName={textStyle}>
-            {$.t('screens.sign_in.sign_in_with', { provider: name })}
+            {this.getConnectionText(auth0Connection)}
           </span>
         </a>
       );

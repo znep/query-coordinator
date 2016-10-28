@@ -187,12 +187,13 @@ class UserSessionsController < ApplicationController
   # Tests an unknown variable with three requirements:
   # 1. It is an array.
   # 2. It is an array with hash maps.
-  # 3. Each hash map has two parameters: connection and name.
+  # 3. Each hash map has two parameters: connection and a name OR buttonText.
   def valid_auth0_connections?(connections)
-    valid = connections.kind_of?(Array) && connections.present?
+    valid = connections.is_a?(Array) && connections.present?
     valid && connections.each do |connection|
-      valid = connection[:connection].present? && connection[:name].present?
-      break if !valid
+      valid = connection[:connection].present? &&
+              (connection[:name].present? || connection[:buttonText].present?)
+      break unless valid
     end
 
     valid

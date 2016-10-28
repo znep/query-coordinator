@@ -21,6 +21,11 @@ const LEGEND_WRAP_PADDING = 5;
 const VERTICAL_LEGEND_SPACING = 20;
 const FLYOUT_Y_OFFSET = -9;
 
+const PERCENT_LABEL_THRESHOLD = 45;
+const VALUE_LABEL_THRESHOLD = 60;
+
+const PI2 = Math.PI * 2;
+
 function SvgPieChart($element, vif) {
   const self = this;
   let $chartElement; // chart container element
@@ -153,11 +158,12 @@ function SvgPieChart($element, vif) {
 
     attachPieEvents();
     renderLegend();
-    resizePie();
 
     if (self.getShowValueLabels()) {
       renderArcLabels(self.getShowValueLabelsAsPercent());
     }
+
+    resizePie();
   }
 
   /**
@@ -201,11 +207,8 @@ function SvgPieChart($element, vif) {
    */
   function renderArcLabels(showPercentages) {
     svg.selectAll('g.slice-group').
-      // Don't show label if arc angle is below a certain point
-      filter((d) => (d.endAngle - d.startAngle) > 0.2).
       append('svg:text').
         // Positioning text on bigger arc's center point
-        attr('transform', (d) => `translate(${flyoutArc.centroid(d)})`).
         attr('text-anchor', 'middle').
         // old function syntax used for this binding
         text(function(d) {
@@ -257,6 +260,27 @@ function SvgPieChart($element, vif) {
     // apply arcs
     svg.selectAll('path').
       attr('d', arc);
+
+    // align labels
+    svg.selectAll('g.slice-group text').
+      attr('transform', (d) => `translate(${flyoutArc.centroid(d)})`);
+
+    const flyoutArcRadius = flyoutArc.outerRadius()();
+
+    // Show/hide labels according to length of each slice
+    const labelVisibilityThreshold =
+      self.getShowValueLabelsAsPercent()
+        ? PERCENT_LABEL_THRESHOLD
+        : VALUE_LABEL_THRESHOLD;
+
+    svg.selectAll('g.slice-group path').
+      each(function(d) {
+        const length = calculateArcLength(flyoutArcRadius, d.startAngle, d.endAngle);
+        const textEl = d3.select(this.parentElement).select('text');
+        const visibility = length >= labelVisibilityThreshold ? 'visible' : 'hidden';
+
+        textEl.style('visibility', visibility);
+      });
   }
 
   /**
@@ -621,6 +645,19 @@ function SvgPieChart($element, vif) {
    */
   function renderPercentLabel(percent) {
     return Math.round(Number(percent)) + I18n.translate('visualizations.common.percent_symbol');
+  }
+
+  /**
+   * Calculates arc's length for given startAngle and endAngle
+   * @param {number} radius
+   * @param {number} startAngle
+   * @param {number} endAngle
+   * @return {number}
+   */
+  function calculateArcLength(radius, startAngle, endAngle) {
+    var angleDiff = endAngle - startAngle;
+    var circumference = PI2 * radius;
+    return (angleDiff * circumference) / PI2;
   }
 }
 

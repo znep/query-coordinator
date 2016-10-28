@@ -29,7 +29,7 @@ gem 'rinku', :require => 'rails_rinku'
 gem 'sanitize' # Note that this is in addition to the default Rails implementation.
 gem 'sass-rails', '~> 5.0'
 gem 'semver2'
-gem 'signaller-ruby', :require => 'signaller'
+gem 'signaller-ruby', '0.0.2', :require => 'signaller'
 gem 'socrata_site_chrome', '1.2.7'
 gem 'snappy'
 gem 'statsd-ruby', '~>1.3.0'

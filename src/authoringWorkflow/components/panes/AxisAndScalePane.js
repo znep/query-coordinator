@@ -275,6 +275,10 @@ export var AxisAndScalePane = React.createClass({
     this.setState({
       measureAxisScaleControl: event.target.value
     });
+
+    if (event.target.value == 'automatic') {
+      onDebouncedEvent(this, this.props.onMeasureAxisControlAuto)();
+    }
   },
 
   renderMeasureAxisScaleControl() {
@@ -287,7 +291,8 @@ export var AxisAndScalePane = React.createClass({
     const limitMax = getMeasureAxisMaxValue(vifAuthoring);
     const limitMin = getMeasureAxisMinValue(vifAuthoring);
 
-    const isAuto = this.state.measureAxisScaleControl == 'automatic';
+    const isAuto = this.state.measureAxisScaleControl == 'automatic' &&
+      (!limitMin && !limitMax);
 
     const boundariesPart = (
       <div className="double-column-input-group">
@@ -312,43 +317,41 @@ export var AxisAndScalePane = React.createClass({
       </div>
     );
 
-    return null;
-    // TODO: Finish implementing this feature. See comments in EN-9281.
-    // (
-    //   <div className="authoring-field-group">
-    //     <h5>{translate('panes.axis_and_scale.subheaders.scale')}</h5>
-    //     {translate('panes.axis_and_scale.fields.scale.title')}
+    return (
+       <div className="authoring-field-group">
+         <h5>{translate('panes.axis_and_scale.subheaders.scale')}</h5>
+         {translate('panes.axis_and_scale.fields.scale.title')}
 
-    //     <div className="authoring-field radiobutton">
-    //       <div>
-    //         <input type="radio"
-    //                name="measure-axis-scale"
-    //                id="measure-axis-scale-automatic"
-    //                value="automatic"
-    //                onChange={this.onMeasureAxisScaleControlChange}
-    //                checked={isAuto} />
-    //         <label htmlFor="measure-axis-scale-automatic">
-    //           <span />
-    //           <div className="translation-within-label">{translate('panes.axis_and_scale.fields.scale.automatic')}</div>
-    //         </label>
-    //       </div>
-    //       <div>
-    //         <input type="radio"
-    //                name="measure-axis-scale"
-    //                id="measure-axis-scale-custom"
-    //                value="custom"
-    //                onChange={this.onMeasureAxisScaleControlChange}
-    //                checked={!isAuto} />
-    //         <label htmlFor="measure-axis-scale-custom">
-    //           <span />
-    //           <div className="translation-within-label">{translate('panes.axis_and_scale.fields.scale.custom')}</div>
-    //         </label>
-    //       </div>
-    //     </div>
+         <div className="authoring-field radiobutton">
+           <div>
+             <input type="radio"
+                    name="measure-axis-scale"
+                    id="measure-axis-scale-automatic"
+                    value="automatic"
+                    onChange={this.onMeasureAxisScaleControlChange}
+                    checked={isAuto} />
+             <label htmlFor="measure-axis-scale-automatic">
+               <span />
+               <div className="translation-within-label">{translate('panes.axis_and_scale.fields.scale.automatic')}</div>
+             </label>
+           </div>
+           <div>
+             <input type="radio"
+                    name="measure-axis-scale"
+                    id="measure-axis-scale-custom"
+                    value="custom"
+                    onChange={this.onMeasureAxisScaleControlChange}
+                    checked={!isAuto} />
+             <label htmlFor="measure-axis-scale-custom">
+               <span />
+               <div className="translation-within-label">{translate('panes.axis_and_scale.fields.scale.custom')}</div>
+             </label>
+           </div>
+         </div>
 
-    //     {this.state.measureAxisScaleControl == 'custom' ? boundariesPart : null}
-    //   </div>
-    // );
+         {!isAuto ? boundariesPart : null}
+       </div>
+     );
 
   },
 
@@ -589,6 +592,11 @@ function mapDispatchToProps(dispatch) {
 
     onMeasureAxisMaxValueChange: (measureAxisMaxValue) => {
       dispatch(setMeasureAxisMaxValue(measureAxisMaxValue));
+    },
+
+    onMeasureAxisControlAuto: () => {
+      dispatch(setMeasureAxisMinValue());
+      dispatch(setMeasureAxisMaxValue());
     },
   };
 }

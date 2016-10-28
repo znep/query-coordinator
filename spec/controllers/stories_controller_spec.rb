@@ -41,7 +41,7 @@ RSpec.describe StoriesController, type: :controller do
 
         it 'redirects to #edit' do
           get :show, uid: 'unpu-blsh', from_collaboration_email: true
-          expect(response).to redirect_to "/s/unpu-blsh/edit"
+          expect(response).to redirect_to '/s/unpu-blsh/edit'
         end
       end
 
@@ -53,7 +53,7 @@ RSpec.describe StoriesController, type: :controller do
 
         it 'redirects to #edit' do
           get :show, uid: 'unpu-blsh', from_collaboration_email: true
-          expect(response).to redirect_to "/s/unpu-blsh/edit"
+          expect(response).to redirect_to '/s/unpu-blsh/edit'
         end
       end
 
@@ -65,7 +65,7 @@ RSpec.describe StoriesController, type: :controller do
 
         it 'redirects to #preview' do
           get :show, uid: 'unpu-blsh', from_collaboration_email: true
-          expect(response).to redirect_to "/s/unpu-blsh/preview"
+          expect(response).to redirect_to '/s/unpu-blsh/preview'
         end
       end
 
@@ -77,7 +77,7 @@ RSpec.describe StoriesController, type: :controller do
 
         it 'redirects to #edit' do
           get :show, uid: 'unpu-blsh', from_collaboration_email: true
-          expect(response).to redirect_to "/s/unpu-blsh"
+          expect(response).to redirect_to '/s/unpu-blsh'
         end
       end
     end

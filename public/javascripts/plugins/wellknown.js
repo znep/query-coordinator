@@ -6,7 +6,7 @@
  * - Support 2/3-tuple WKT conversions only. This makes GeoJSON conversions easier.
  * - Moved into WKT global module because we don't support module.exports here.
  */
-var WKT = (function () {
+window.WKT = (function () {
 
   var numberRegexp = /[-+]?([0-9]*\.[0-9]+|[0-9]+)([eE][-+]?[0-9]+)?/;
   // Matches sequences like "100 100" or "100 100 100".

@@ -133,4 +133,12 @@ body.modal-open {
 
 .modal-actions {
   text-align: right;
+
+  .btn {
+    margin-right: 6px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
 }

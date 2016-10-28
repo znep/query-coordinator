@@ -103,4 +103,12 @@
 .flannel-actions {
   margin-top: 1rem;
   text-align: right;
+
+  .btn {
+    margin-right: 6px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
 }

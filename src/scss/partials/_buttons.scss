@@ -28,12 +28,7 @@
   transition: color $btn-transition-duration, background-color $btn-transition-duration;
   cursor: pointer;
   text-decoration: none;
-  margin-right: 6px;
   letter-spacing: 0;
-
-  &:last-child {
-    margin-right: 0;
-  }
 
   &.btn-lg {
     font-size: ms(1);

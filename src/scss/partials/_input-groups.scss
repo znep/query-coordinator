@@ -16,16 +16,24 @@
       margin-left: 0;
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
-      padding: 8px 8px 8px 0;
 
-      [class*="icon-"] {
-        padding-left: 11px;
+      &.btn-lg {
+        padding: 13px 17px;
+      }
+
+      &.btn-sm {
+        padding: 11px 13px;
+      }
+
+      &.btn-xs {
+        padding: 10px 13px;
       }
     }
 
     .dropdown {
       margin-right: -0.1px;
-      padding: 5px 12px;
+
+      @include default-font;
 
       .icon-arrow-down {
         padding-left: ms(-2);

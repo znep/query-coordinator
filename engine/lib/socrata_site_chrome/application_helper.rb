@@ -369,5 +369,19 @@ module SocrataSiteChrome
     def custom_header_footer_content
       site_chrome_custom_content.fetch(pub_stage)
     end
+
+    def render_custom_content_html(content, custom_content_id)
+      begin
+        content_tag(:div, raw(ERB.new(content[:html].to_s).result), :id => custom_content_id)
+      rescue StandardError, SyntaxError => e
+        error_msg = "Error parsing custom html: #{e.inspect}"
+        Rails.logger.debug(error_msg)
+        ::Airbrake.notify(
+          :error_class => 'InvalidSiteChromeCustomContentConfiguration',
+          :error_message => error_msg
+        )
+        error_msg
+      end
+    end
   end
 end

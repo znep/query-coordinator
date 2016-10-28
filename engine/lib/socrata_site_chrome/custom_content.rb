@@ -28,7 +28,7 @@ module SocrataSiteChrome
     end
 
     def config
-      SocrataSiteChrome::DomainConfig.new(domain).config
+      HashWithIndifferentAccess.new(SocrataSiteChrome::DomainConfig.new(domain).config)
     end
 
     def fetch(pub_stage = :published)
@@ -51,9 +51,15 @@ module SocrataSiteChrome
     end
 
     def activated?
-      (config[:properties].to_a.detect do |property|
-        property[:name] == 'activation_state'
-      end || {}).dig(:value, :custom) == true
+      get_property_by_name('activation_state').dig(:value, :custom) == true
+    end
+
+    # Using translation data in custom content, seed the translations in I18n so
+    # the custom html can use them.
+    def populate_translations
+      get_property_by_name('translations')['value'].to_h.each do |locale, translations|
+        I18n.backend.store_translations(locale, translations)
+      end
     end
 
     private
@@ -66,6 +72,13 @@ module SocrataSiteChrome
 
     def property_name_with_prefix(property_name, pub_stage)
       pub_stage == :draft ? "draft_#{property_name}" : property_name
+    end
+
+    # Returns the property hash for property matching provided name
+    def get_property_by_name(name)
+      config[:properties].to_a.detect do |property|
+        property[:name] == name
+      end || {}
     end
   end
 end

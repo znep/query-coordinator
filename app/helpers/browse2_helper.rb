@@ -15,10 +15,9 @@ module Browse2Helper
     classes.join(' ')
   end
 
-  # EN-2938: browse2 sort options are limited to Relevance, Most Accessed, Recently Added, and Recently Updated
   def browse2_sort_opts(opts)
     opts[:sort_opts].to_a.tap do |sort_opts|
-      sort_opts.select! { |sort_opt| %w(relevance most_accessed newest last_modified).include?(sort_opt[:value]) }
+      sort_opts.select! { |sort_opt| %w(relevance most_accessed newest last_modified alpha).include?(sort_opt[:value]) }
     end
   end
 

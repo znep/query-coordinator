@@ -373,6 +373,10 @@ module BrowseActions
         end
     end
 
+    unless browse_options[:sortBy].present?
+      browse_options[:sortBy] = 'relevance'
+    end
+
     # Categories should be at the top in browse2, otherwise in the 3rd slot
     categories_index = using_cetera? ? 0 : 2
     browse_options[:facets] ||= [
@@ -633,8 +637,9 @@ module BrowseActions
   # but let's keep the underlying keys consistent.
   def cetera_sort_opts
     [
-      { value: 'relevance', name: t('controls.browse.browse2.sorts.relevance') },
+      { value: 'alpha', name: t('controls.browse.sorts.alpha') },
       { value: 'most_accessed', name: t('controls.browse.browse2.sorts.most_accessed') },
+      { value: 'relevance', name: t('controls.browse.browse2.sorts.relevance') },
       { value: 'newest', name: t('controls.browse.browse2.sorts.newest') },
       { value: 'last_modified', name: t('controls.browse.browse2.sorts.last_modified') }
     ]

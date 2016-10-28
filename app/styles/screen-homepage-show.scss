@@ -16,6 +16,7 @@ $is_customizer: false !default;
   overflow: hidden;
   padding: 0;
   position: relative;
+  z-index: 1;
   .storyTexts {
     height: 100%;
     position: absolute;

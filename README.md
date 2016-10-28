@@ -115,8 +115,9 @@ create such a file if you don't already have one and add the following:
 
     export FIREFOX_BINARY_PATH=/Applications/Firefox.app/Contents/MacOS/firefox-bin
 
-You may also need to download and install `geckodriver` and move it to a directory on your `PATH`.
-The tool can be downloaded [here](https://github.com/mozilla/geckodriver/releases).
+You may also need to download `geckodriver` and move it to a directory on your
+`PATH`. The tool can be downloaded
+[here](https://github.com/mozilla/geckodriver/releases).
 
 #### Javascript tests
 

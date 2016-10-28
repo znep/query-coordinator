@@ -1,3 +1,0 @@
-#!/bin/bash
-
-bundle exec unicorn_rails -p 3010 -c ./config/unicorn.rb

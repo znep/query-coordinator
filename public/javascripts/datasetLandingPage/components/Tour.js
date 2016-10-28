@@ -13,7 +13,8 @@ export var Tour = (props) => {
     return <div />;
   }
 
-  var setTourClosedCookie = () => window.document.cookie = 'dslpTourClosed=1';
+  // Use path so the tour is scoped to the domain, not the dataset.
+  var setTourClosedCookie = () => window.document.cookie = 'dslpTourClosed=1;path=/';
 
   window.document.addEventListener(
     'SOCRATA_STYLEGUIDE_TOUR_COMPLETE',
@@ -25,7 +26,10 @@ export var Tour = (props) => {
 
   window.document.addEventListener(
     'SOCRATA_STYLEGUIDE_TOUR_CLOSED',
-    () => onCloseTour()
+    () => {
+      onCloseTour();
+      setTourClosedCookie();
+    }
   );
 
   return (

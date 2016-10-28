@@ -17,7 +17,7 @@
 
           <div class="collapsible-search">
             <span class="icon-search collapsible-search-toggle"
-              title="<%= t('header.search') %>" onclick="toggleCollapsibleSearch(this)">
+              title="<%= t('header.search') %>" onclick="toggleCollapsibleSearch(this)" role="button">
             </span>
             <%= render 'site_chrome/searchbox', path: massage_url('/browse'), vanishing_search_button: true %>
           </div>

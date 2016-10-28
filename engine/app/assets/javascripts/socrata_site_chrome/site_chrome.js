@@ -4,6 +4,9 @@ var initialBodyOverflowY;
 
 $(document).ready(function() {
   initialBodyOverflowY = $('body').css('overflow-y');
+  addAriaHiddenAttributeToUnusedNavVariant();
+  addAriaExpandedAttributeToSearchBox();
+
   $('.disablePreviewMode').click(function(evt) {
     evt.preventDefault();
     // Apparently this is how you delete cookies?
@@ -16,14 +19,32 @@ $(document).ready(function() {
   });
 });
 
+function addAriaHiddenAttributeToUnusedNavVariant() {
+  var $desktopNav = $('#site-chrome-header nav.desktop');
+  var $mobileNav = $('#site-chrome-header nav.mobile');
+
+  if ($desktopNav.css('display') === 'block') {
+    $mobileNav.attr('aria-hidden', 'true');
+    $('#site-chrome-header .mobile-menu').attr('aria-hidden', 'true');
+  } else {
+    $desktopNav.attr('aria-hidden', 'true');
+  }
+}
+
+function addAriaExpandedAttributeToSearchBox() {
+  $('.searchbox').attr('aria-expanded', 'false');
+}
+
 function mobileMenuToggle() {
   var $menu = $('#site-chrome-header .mobile-menu');
   $menu.toggleClass('active');
   if ($menu.hasClass('active')) {
+    $menu.attr('aria-expanded', 'true');
     // Disable body from scrolling while menu is open
     $('body').css('overflow-y', 'hidden');
     mobileLanguageSwitcher($('.mobile-language-dropdown'));
   } else {
+    $menu.attr('aria-expanded', 'false');
     $('body').css('overflow-y', initialBodyOverflowY || 'visible');
   }
 }
@@ -43,10 +64,15 @@ function toggleCollapsibleSearch(self) {
   $searchbox.toggleClass('expanded');
   $searchbox.find('input').focus();
 
+  if ($searchbox.hasClass('expanded')) {
+    $searchbox.attr('aria-expanded', 'true');
+  }
+
   // Close searchbox on click outside of box
   $(document).mouseup(function(e) {
     if (!$searchbox.is(e.target) && $searchbox.has(e.target).length === 0) {
       $searchbox.removeClass('expanded');
+      $searchbox.attr('aria-expanded', 'false');
     }
   });
 
@@ -54,6 +80,7 @@ function toggleCollapsibleSearch(self) {
   $(document).keyup(function(e) {
     if (e.keyCode === 27) {
       $searchbox.removeClass('expanded');
+      $searchbox.attr('aria-expanded', 'false');
     }
   });
 }

@@ -66,6 +66,13 @@ header#site-chrome-header, footer#site-chrome-footer {
     }
   }
 
+  a.site-chrome-social-link:focus {
+    outline: 5px auto -webkit-focus-ring-color;
+    outline: 5px auto -moz-focus-ring-color;
+    outline: 5px auto -ms-focus-ring-color;
+    outline: 5px auto focus-ring-color;
+  }
+
   span.monosocial {
     font-size: 34px;
     text-align: center;

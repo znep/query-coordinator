@@ -15,6 +15,10 @@ $(document).ready(function() {
 
     this.dd.classList.add('dropdown-orientation-' + this.orientation);
 
+    // Set the 'role' and 'aria-expanded' attributes for better ADA/508 compliance.
+    this.dd.setAttribute('role', 'button');
+    this.dd.setAttribute('aria-expanded', 'false');
+
     this.placeholder = this.dd.querySelector('span');
     this.opts = Array.prototype.slice.call(this.dd.querySelectorAll('.dropdown-options > li'));
 
@@ -34,6 +38,13 @@ $(document).ready(function() {
       obj.dd.addEventListener('click', function() {
         positionDropdown();
         obj.dd.classList.toggle('active');
+
+        if (obj.dd.classList.contains('active')) {
+          obj.dd.setAttribute('aria-expanded', 'true');
+        } else {
+          obj.dd.setAttribute('aria-expanded', 'false');
+        }
+
         return false;
       });
 

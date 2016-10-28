@@ -103,6 +103,7 @@ http://www.socrata.com
     blist.namespace.fetch('blist.configuration');
     blist.configuration.strings = <%= safe_json(CurrentDomain.strings) %>;
     blist.configuration.webpackManifest = <%= raw Rails.configuration.webpack[:asset_manifest].to_json %>;
+    blist.configuration.development = <%= Rails.env.development? %>;
     blist.locale = "<%= I18n.locale %>";
     blist.feature_flags = <%= raw json_escape(FeatureFlags.derive(nil, request, true).to_json) %>;
     blist.rights = { user: <%= raw UserRights.to_h.to_json %>, view: <%= raw ViewRights.to_h.to_json %> };

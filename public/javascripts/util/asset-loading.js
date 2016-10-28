@@ -390,23 +390,39 @@
   };
 
   assetNS.getJavascriptSources = function(packages) {
-    if (blist.configuration.development) {
-      return _.map(packages, function(item) {
-        if (_.get(item, 'assets')) {
-          return '/javascripts/webpack/open-data/' + item.assets + '.js';
-        } else {
-          return item;
-        }
-      });
-    } else {
-      return _.map(packages, function(item) {
-        if (_.get(item, 'assets')) {
-          return '/javascripts/build/' + blist.configuration.webpackManifest['open-data/' + item.assets + '.js'];
-        } else {
-          return item;
-        }
-      });
+    if (_.isUndefined(blist.configuration.development)) {
+      console.warn('Application environment not set. Defaulting to production.');
     }
+
+    // Given a package object, returns the JS path to load
+    // or undefined if the package could not be found in the
+    // webpack manifest.
+    function assetsPath(packageObject) {
+      var assetPath = 'open-data/' + packageObject.assets + '.js';
+      if (blist.configuration.development) {
+        return '/javascripts/webpack/' + assetPath;
+      } else {
+        var manifestEntry = blist.configuration.webpackManifest[assetPath];
+
+        if (manifestEntry) {
+          return '/javascripts/build/' + manifestEntry;
+        } else {
+          console.error('Asset configuration could not be found in webpack manifest for package: ', packageObject);
+          return undefined;
+        }
+      }
+    }
+
+    return _(packages).map(function(item) {
+      if (_.get(item, 'assets')) {
+        return assetsPath(item); // Package object.
+      } else if (_.isString(item)) {
+        return item; // Literal URL.
+      } else {
+        console.error('Page attempted to load unintelligible package:', item);
+        return undefined;
+      }
+    }).compact().value();
   };
 
   var checkTranslationJobs = function() {

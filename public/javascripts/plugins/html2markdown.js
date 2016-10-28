@@ -673,3 +673,5 @@ if (typeof Array.prototype.indexOf != 'function') {
     return -1;
   };
 }
+
+window.HTML2Markdown = HTML2Markdown;

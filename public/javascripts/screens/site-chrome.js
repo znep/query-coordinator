@@ -245,10 +245,11 @@ function inputValidation() {
 
 // Toggle "save" button if form is valid/invalid
 function toggleSaveButton() {
+  var $saveButtons = $('#site_chrome_save, #site_chrome_preview, #site_chrome_activate, #save_without_activation');
   if ($siteChromeForm.valid()) {
-    $('#site_chrome_save, #site_chrome_preview').removeClass('error');
+    $saveButtons.removeClass('error');
   } else {
-    $('#site_chrome_save, #site_chrome_preview').addClass('error');
+    $saveButtons.addClass('error');
   }
 }
 

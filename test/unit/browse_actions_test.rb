@@ -311,6 +311,10 @@ class BrowseActionsTest3 < Minitest::Test
     stub_feature_flags_with(:cetera_search => false)
     cly_unaffected_category = 'Test Category 4'
 
+    stub_request(:get, 'http://localhost:8080/search/views.json?category=Test%20Category%204&limit=10&page=1&sortBy=relevance').
+      with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'}).
+      to_return(:status => 200, :body => '', :headers => {})
+
     expected_category = 'Test Category 4'
     stub_core_for_category(expected_category)
 
@@ -321,6 +325,10 @@ class BrowseActionsTest3 < Minitest::Test
     stub_feature_flags_with(:cetera_search => false)
 
     stub_core_for_category(nil)
+
+    stub_request(:get, 'http://localhost:8080/search/views.json?limit=10&page=1&sortBy=relevance').
+      with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'}).
+      to_return(:status => 200, :body => '', :headers => {})
 
     assert_empty search_and_return_category_param(nil)
   end

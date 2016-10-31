@@ -43,7 +43,7 @@ module CoreServer
       cache_key << ':anon' if is_anon
       cache.fetch(cache_key) do
         # generic_request(Net::HTTP::Get.new(path), nil, custom_headers, is_anon, timeout).body
-        make_request(Net::HTTP::Get.new(path), custom_headers.symbolize_keys).body
+        make_request(Net::HTTP::Get.new(path), custom_headers.to_h.symbolize_keys).body
       end
     end
 

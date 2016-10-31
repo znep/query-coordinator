@@ -120,21 +120,19 @@ export var ColorsAndStylePane = React.createClass({
 
     var pointOpacityAttributes = {
       id: 'point-opacity',
-      type: 'range',
-      min: '0',
-      max: '1',
-      step: '0.1',
-      defaultValue: pointOpacity / 100,
-      onChange: onDebouncedEvent(this, onChangePointOpacity)
+      rangeMin: 0,
+      rangeMax: 1,
+      step: 0.1,
+      value: pointOpacity / 100,
+      onChange: onChangePointOpacity
     };
 
     const pointSizeAttributes = {
       id: 'point-size',
-      type: 'range',
-      min: '1',
-      max: '3.2',
-      step: '0.1',
-      defaultValue: pointSize,
+      rangeMin: 1,
+      rangeMax: 3.2,
+      step: 0.1,
+      value: pointSize,
       onChange: onChangePointSize
     };
 
@@ -148,11 +146,15 @@ export var ColorsAndStylePane = React.createClass({
           </div>
           <div className="authoring-field">
             <label className="block-label" htmlFor="point-opacity">{translate('panes.colors_and_style.fields.point_opacity.title')}</label>
-            <input {...pointOpacityAttributes} />
+            <div id="point-opacity">
+              <Styleguide.Slider {...pointOpacityAttributes} />
+            </div>
           </div>
           <div className="authoring-field">
             <label className="block-label" htmlFor="point-size">{translate('panes.colors_and_style.fields.point_size.title')}</label>
-            <input {...pointSizeAttributes} />
+            <div id="point-size">
+              <Styleguide.Slider {...pointSizeAttributes} />
+            </div>
           </div>
           {this.renderMapLayerControls()}
         </div>
@@ -204,12 +206,11 @@ export var ColorsAndStylePane = React.createClass({
 
     var baseLayerOpacityAttributes = {
       id: 'base-layer-opacity',
-      type: 'range',
-      min: '0',
-      max: '1',
-      step: '0.1',
-      defaultValue: defaultBaseLayerOpacity / 100,
-      onChange: onDebouncedEvent(this, onChangeBaseLayerOpacity)
+      rangeMin: 0,
+      rangeMax: 1,
+      step: 0.1,
+      value: defaultBaseLayerOpacity / 100,
+      onChange: onChangeBaseLayerOpacity
     };
 
     return (
@@ -223,7 +224,9 @@ export var ColorsAndStylePane = React.createClass({
         </div>
         <div className="authoring-field">
           <label className="block-label" htmlFor="base-layer-opacity">{translate('panes.colors_and_style.fields.base_layer_opacity.title')}</label>
-          <input {...baseLayerOpacityAttributes}/>
+          <div id="base-layer-opacity">
+            <Styleguide.Slider {...baseLayerOpacityAttributes} />
+          </div>
         </div>
       </div>
     );
@@ -304,15 +307,15 @@ function mapDispatchToProps(dispatch) {
     },
 
     onChangeBaseLayerOpacity: baseLayerOpacity => {
-      dispatch(setBaseLayerOpacity(baseLayerOpacity));
+      dispatch(setBaseLayerOpacity(_.round(baseLayerOpacity, 2)));
     },
 
     onChangePointOpacity: pointOpacity => {
-      dispatch(setPointOpacity(pointOpacity));
+      dispatch(setPointOpacity(_.round(pointOpacity, 2)));
     },
 
     onChangePointSize: pointSize => {
-      dispatch(setPointSize(pointSize));
+      dispatch(setPointSize(_.round(pointSize, 2)));
     },
 
     onSelectColorScale: colorScale => {

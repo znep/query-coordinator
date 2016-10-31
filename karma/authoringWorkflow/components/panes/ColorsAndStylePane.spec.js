@@ -85,10 +85,6 @@ describe('ColorsAndStylePane', function() {
       describe('when changing the map type', function() {
         emitsEvent('#base-layer .picklist-option', 'onSelectBaseLayer', 'click');
       });
-
-      describe('when changing map opacity', function() {
-        emitsEvent('#base-layer-opacity', 'onChangeBaseLayerOpacity');
-      });
     });
   });
 
@@ -150,10 +146,7 @@ describe('ColorsAndStylePane', function() {
     });
 
     describe('events', function() {
-      emitsEvent('#point-opacity', 'onChangePointOpacity');
-      emitsEvent('#point-size', 'onChangePointSize');
       emitsEvent('#base-layer .picklist-option', 'onSelectBaseLayer', 'click');
-      emitsEvent('#base-layer-opacity', 'onChangeBaseLayerOpacity');
     });
   });
 

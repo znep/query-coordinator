@@ -40,10 +40,14 @@ $max_width: 100%;
 $header_bg_color: $bg_color;
 $header_bg_color_secondary: transparent;
 $header_fg_color: $fg_color;
+$header_display_name_fg_color: $header_fg_color;
+$header_display_name_size: 16pt;
 $header_logo_height: 36px;
 $header_logo_width: auto;
 
 $footer_bg_color: #3b3a3c;
 $footer_fg_color: $fg_color;
+$footer_display_name_fg_color: $footer_fg_color;
+$footer_display_name_size: 14pt;
 $footer_logo_height: 44px;
 $footer_logo_width: auto;

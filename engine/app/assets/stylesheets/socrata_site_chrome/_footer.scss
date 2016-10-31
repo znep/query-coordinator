@@ -28,8 +28,8 @@ footer#site-chrome-footer {
 
         > span.site-name {
           font-weight: 300;
-          font-size: 22px;
-          color: $footer_fg_color;
+          font-size: $footer_display_name_size;
+          color: $footer_display_name_fg_color;
           vertical-align: middle;
         }
       }

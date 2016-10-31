@@ -17,7 +17,7 @@ Rails.application.routes.draw do
     get '(:vanity_text)/:uid/about' => 'stories#about'
     get '(:vanity_text)/:uid/edit' => 'stories#edit'
     get '(:vanity_text)/:uid/stats' => 'stories#stats'
-    get '(:vanity_text)/:uid/preview' => 'stories#preview'
+    get '(:vanity_text)/:uid/preview' => 'stories#preview', as: 'preview'
     get '(:vanity_text)/:uid/tile' => 'stories#tile', as: 'tile'
     get '(:vanity_text)/:uid/widget' => 'stories#tile'
   end
@@ -28,9 +28,11 @@ Rails.application.routes.draw do
   scope '/stat/goals', module: 'stat', as: 'stat' do
     get 'single/:uid' => 'goals#show', as: 'single_goal'
     get 'single/:uid/edit-story' => 'goals#edit', as: 'edit_single_goal'
+    get 'single/:uid/preview' => 'goals#preview', as: 'preview_single_goal'
 
     get ':dashboard/:category/:uid' => 'goals#show', as: 'goal'
     get ':dashboard/:category/:uid/edit-story' => 'goals#edit', as: 'edit_goal'
+    get ':dashboard/:category/:uid/preview' => 'goals#preview', as: 'preview_goal'
   end
 
   # API routes

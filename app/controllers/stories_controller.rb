@@ -162,7 +162,8 @@ class StoriesController < ApplicationController
     @story ||= DraftStory.find_by_uid(params[:uid])
 
     if @story
-      @story_view_url = story_view_url
+      @story_url_for_view = story_url_for_view
+      @story_url_for_preview = story_url_for_preview
 
       load_themes
 
@@ -207,8 +208,12 @@ class StoriesController < ApplicationController
     CoreStoryMetadata.new(params[:uid])
   end
 
-  def story_view_url
+  def story_url_for_view
     story_url(uid: params[:uid], vanity_text: title_to_vanity_text(@story_metadata.title))
+  end
+
+  def story_url_for_preview
+    preview_url(uid: params[:uid], vanity_text: title_to_vanity_text(@story_metadata.title))
   end
 
   def load_themes

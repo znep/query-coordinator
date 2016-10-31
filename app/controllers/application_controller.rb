@@ -381,7 +381,7 @@ class ApplicationController < ActionController::Base
       case action
         when 'show'
           # Above checks sufficient.
-        when 'edit'
+        when 'edit', 'preview'
           render_story_404 unless can_edit_goals?
         else
           raise_undefined_authorization_handler_error

@@ -1,14 +1,14 @@
 // Karma configuration
 // Generated on Wed Jul 29 2015 12:58:51 GMT-0700 (PDT)
 
-var webpackConfig = require('./webpack.config');
+var socrataComponentsConfig = require('./webpack/socrata-components.config');
 
-delete webpackConfig.entry;
-delete webpackConfig.output;
-delete webpackConfig.externals;
+delete socrataComponentsConfig.entry;
+delete socrataComponentsConfig.output;
+delete socrataComponentsConfig.externals;
 
-webpackConfig.resolve = { root: [ __dirname, `${__dirname}/src/js` ] };
-webpackConfig.devtool = 'inline-source-map';
+socrataComponentsConfig.resolve = { root: [ __dirname, `${__dirname}/src/js` ] };
+socrataComponentsConfig.devtool = 'inline-source-map';
 
 module.exports = function(config) {
   config.set({
@@ -61,7 +61,7 @@ module.exports = function(config) {
     // if true, Karma captures browsers, runs the tests and exits
     singleRun: false,
 
-    webpack: webpackConfig,
+    webpack: socrataComponentsConfig,
     webpackMiddleware: {
       noInfo: true
     }

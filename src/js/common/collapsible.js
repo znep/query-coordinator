@@ -1,11 +1,7 @@
 import _ from 'lodash';
 import $ from 'jquery';
 import 'dotdotdot';
-
-var velocity = require('velocity-animate');
-
-velocity.defaults.duration = 320;
-velocity.defaults.easing = [0.645, 0.045, 0.355, 1];
+import 'velocity-animate';
 
 module.exports = function(el, options) {
   var $el = $(el);
@@ -40,6 +36,11 @@ module.exports = function(el, options) {
   }
 
   $el.find('.collapse-toggle').click(function(event) {
+    var velocityOptions = {
+      duration: 320,
+      easing: [0.645, 0.045, 0.355, 1]
+    };
+
     event.preventDefault();
 
     if (parent.dataset.collapsed) {
@@ -51,17 +52,19 @@ module.exports = function(el, options) {
 
       parent.style.height = `${collapsedHeight}px`;
 
-      velocity(parent, {
+      $(parent).velocity({
         height: originalHeight
-      });
+      }, velocityOptions);
 
       if (_.isFunction(expandedCallback)) {
         expandedCallback();
       }
     } else {
-      velocity(parent, {
+      velocityOptions.complete = collapse;
+
+      $(parent).velocity({
         height: collapsedHeight
-      }, collapse);
+      }, velocityOptions);
     }
   });
 

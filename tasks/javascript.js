@@ -3,14 +3,15 @@ const gulp = require('gulp');
 const _ = require('lodash');
 const UglifyJsPlugin = require('webpack').optimize.UglifyJsPlugin;
 
-const webpack = require('gulp-webpack');
-const webpackConfig = require('../webpack.config');
+const webpack = require('webpack-stream');
+const socrataComponentsConfig = require('../webpack/socrata-components.config');
+const vendorConfig = require('../webpack/vendor.config');
 
 function configuration(filename, minify) {
   const isProduction = process.env.NODE_ENV === 'production';
   const devtool = isProduction ? 'source-map' : 'eval';
 
-  return _.merge({}, webpackConfig, {
+  return _.merge({}, socrataComponentsConfig, {
     devtool,
     output: {
       filename
@@ -36,9 +37,17 @@ function compileMinifiedJS(callback) {
     on('finish', callback);
 }
 
+function compileVendor(callback) {
+  gulp.src('pages/javascripts/vendor.js').
+    pipe(webpack(vendorConfig)).
+    pipe(gulp.dest('dist/js')).
+    on('finish', callback);
+}
+
 module.exports = (done) => {
   async.parallel([
     compileJS,
-    compileMinifiedJS
+    compileMinifiedJS,
+    compileVendor
   ], done);
 };

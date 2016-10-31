@@ -19,10 +19,3 @@ activate :external_pipeline,
   name: :gulp,
   command: build? ? 'npm run gulp' : 'npm run watch',
   source: 'dist'
-
-after_configuration do
-  FileUtils.mkdir_p('./pages/javascripts/vendor')
-  FileUtils.cp(Dir.glob('./node_modules/prismjs/prism.js'), './pages/javascripts/vendor')
-  FileUtils.cp(Dir.glob('./node_modules/tether/dist/js/tether.js'), './pages/javascripts/vendor')
-  FileUtils.cp(Dir.glob('./node_modules/tether-shepherd/dist/js/shepherd.js'), './pages/javascripts/vendor')
-end

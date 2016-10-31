@@ -660,7 +660,7 @@ class BrowseControllerTest < ActionController::TestCase
       CoreServer::Base.unstub(:connection) # we stubbed all the things
 
       stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json').
-        with(query: { limit: 10, page: 1 }, headers: { 'X-Socrata-Host' => 'example.com' }).
+        with(query: { limit: 10, page: 1, sortBy: 'relevance' }, headers: { 'X-Socrata-Host' => 'example.com' }).
         to_timeout
 
       get(:show, {})
@@ -674,7 +674,7 @@ class BrowseControllerTest < ActionController::TestCase
       CoreServer::Base.unstub(:connection) # we stubbed all the things
 
       stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json').
-        with(query: { limit: 10, page: 1 }, headers: { 'X-Socrata-Host' => 'example.com' }).
+        with(query: { limit: 10, page: 1, sortBy: 'relevance' }, headers: { 'X-Socrata-Host' => 'example.com' }).
         to_return(status: 500)
 
       get(:show, {})
@@ -688,7 +688,7 @@ class BrowseControllerTest < ActionController::TestCase
       CoreServer::Base.unstub(:connection) # we stubbed all the things
 
       stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json').
-        with(query: { limit: 10, page: 1 }, headers: { 'X-Socrata-Host' => 'example.com' }).
+        with(query: { limit: 10, page: 1, sortBy: 'relevance' }, headers: { 'X-Socrata-Host' => 'example.com' }).
         to_return(status: 200, body: 'core has been deprecated')
 
       get(:show, {})

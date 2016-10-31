@@ -45,7 +45,7 @@ http_interactions:
             "value" : "browse2"
           } ]
         } ]
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 17:32:21 GMT
 - request:
     method: get
@@ -111,7 +111,7 @@ http_interactions:
           "name" : "tag",
           "frequency" : 1
         } ]
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 17:32:21 GMT
 - request:
     method: get
@@ -146,11 +146,11 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "[ ]\n"
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 17:32:21 GMT
 - request:
     method: get
-    uri: http://localhost:8080/search/views.json?limit=10&page=1
+    uri: http://localhost:8080/search/views.json?limit=10&page=1&sortBy=relevance
     body:
       encoding: US-ASCII
       string: ''
@@ -5515,7 +5515,7 @@ http_interactions:
             "totalRows" : 0
           } ]
         }
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 17:32:21 GMT
 - request:
     method: get
@@ -5791,7 +5791,7 @@ http_interactions:
             }
           } ]
         } ]
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 17:32:21 GMT
 - request:
     method: get
@@ -6067,6 +6067,6 @@ http_interactions:
             }
           } ]
         } ]
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 17:32:21 GMT
 recorded_with: VCR 3.0.3

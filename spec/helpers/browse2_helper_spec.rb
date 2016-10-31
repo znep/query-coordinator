@@ -110,6 +110,7 @@ describe Browse2Helper do
       expect(helper.browse2_sort_opts(test_opts)).to eq([
         { :value=>'relevance', :name=>'Most Relevant' },
         { :value=>'most_accessed', :name=>'Most Accessed' },
+        { :value=>'alpha', :name=>'Alphabetical' },
         { :value=>'newest', :name=>'Newest' },
         { :value=>'last_modified', :name=>'Recently Updated' }
       ])

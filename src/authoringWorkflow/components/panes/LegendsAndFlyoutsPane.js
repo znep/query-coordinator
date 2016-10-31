@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import Styleguide from 'socrata-components';
 
 import { translate } from '../../../I18n';
-import { COLUMN_TYPES, INPUT_DEBOUNCE_MILLISECONDS } from '../../constants';
+import { onDebouncedEvent } from '../../helpers';
+import { COLUMN_TYPES } from '../../constants';
 import { getDisplayableColumns, hasData } from '../../selectors/metadata';
 import {
   getRowInspectorTitleColumnName,
@@ -28,7 +29,7 @@ import {
 import CustomizationTabPane from '../CustomizationTabPane';
 import EmptyPane from './EmptyPane';
 
-export var LegendsAndFlyoutsPane = React.createClass({
+export const LegendsAndFlyoutsPane = React.createClass({
   propTypes: {
     onChangeUnitOne: React.PropTypes.func,
     onChangeUnitOther: React.PropTypes.func,
@@ -36,22 +37,23 @@ export var LegendsAndFlyoutsPane = React.createClass({
   },
 
   renderUnits() {
-    var unitOne = getUnitOne(this.props.vifAuthoring);
-    var unitOneAttributes = {
+    const { vifAuthoring, onChangeUnitOne, onChangeUnitOther } = this.props;
+    const unitOne = getUnitOne(vifAuthoring);
+    const unitOneAttributes = {
       id: 'units-one',
       className: 'text-input',
       type: 'text',
-      onChange: this.props.onChangeUnitOne,
+      onChange: onDebouncedEvent(this, onChangeUnitOne),
       placeholder: translate('panes.legends_and_flyouts.fields.units_one.placeholder'),
       defaultValue: unitOne
     };
 
-    var unitOther = getUnitOther(this.props.vifAuthoring);
-    var unitOtherAttributes = {
+    const unitOther = getUnitOther(vifAuthoring);
+    const unitOtherAttributes = {
       id: 'units-other',
       className: 'text-input',
       type: 'text',
-      onChange: this.props.onChangeUnitOther,
+      onChange: onDebouncedEvent(this, onChangeUnitOther),
       placeholder: translate('panes.legends_and_flyouts.fields.units_other.placeholder'),
       defaultValue: unitOther
     };
@@ -99,9 +101,9 @@ export var LegendsAndFlyoutsPane = React.createClass({
   },
 
   renderFeatureMapControls() {
-    var { onSelectRowInspectorTitle, vifAuthoring, metadata } = this.props;
-    var rowInspectorTitleColumnName = getRowInspectorTitleColumnName(vifAuthoring);
-    var columnAttributes = {
+    const { onSelectRowInspectorTitle, vifAuthoring, metadata } = this.props;
+    const rowInspectorTitleColumnName = getRowInspectorTitleColumnName(vifAuthoring);
+    const columnAttributes = {
       id: 'flyout-title-column',
       placeholder: translate('panes.legends_and_flyouts.fields.row_inspector_title.no_value'),
       options: _.map(getDisplayableColumns(metadata), column => ({
@@ -131,8 +133,8 @@ export var LegendsAndFlyoutsPane = React.createClass({
   },
 
   renderRowInspectorTitleColumnOption(option) {
-    var columnType = _.find(COLUMN_TYPES, {type: option.type});
-    var icon = columnType ? columnType.icon : '';
+    const columnType = _.find(COLUMN_TYPES, {type: option.type});
+    const icon = columnType ? columnType.icon : '';
 
     return (
       <div className="dataset-column-dropdown-option">
@@ -146,8 +148,8 @@ export var LegendsAndFlyoutsPane = React.createClass({
   },
 
   render() {
-    var { metadata, vifAuthoring } = this.props;
-    var configuration;
+    let configuration;
+    const { metadata, vifAuthoring } = this.props;
 
     if (hasData(metadata)) {
       if (isBarChart(vifAuthoring)) {
@@ -188,18 +190,16 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onChangeUnitOne: _.debounce(event => {
-      var one = event.target.value;
+    onChangeUnitOne: (one) => {
       dispatch(setUnitsOne(one));
-    }, INPUT_DEBOUNCE_MILLISECONDS),
+    },
 
-    onChangeUnitOther: _.debounce(event => {
-      var other = event.target.value;
+    onChangeUnitOther: (other) => {
       dispatch(setUnitsOther(other));
-    }, INPUT_DEBOUNCE_MILLISECONDS),
+    },
 
     onSelectRowInspectorTitle: flyoutTitle => {
-      var columnName = flyoutTitle.value;
+      const columnName = flyoutTitle.value;
       dispatch(setRowInspectorTitleColumnName(columnName));
     }
   };

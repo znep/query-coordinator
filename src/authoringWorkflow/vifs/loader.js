@@ -180,11 +180,11 @@ export const load = (dispatch, vif) => {
   }
 
   if (has(paths.measureAxisMinValue)) {
-    dispatch(actions.setMeasureAxisMin(get(paths.measureAxisMinValue)));
+    dispatch(actions.setMeasureAxisMinValue(get(paths.measureAxisMinValue)));
   }
 
   if (has(paths.measureAxisMaxValue)) {
-    dispatch(actions.setMeasureAxisMax(get(paths.measureAxisMaxValue)));
+    dispatch(actions.setMeasureAxisMaxValue(get(paths.measureAxisMaxValue)));
   }
 
   if (has(paths.limit)) {

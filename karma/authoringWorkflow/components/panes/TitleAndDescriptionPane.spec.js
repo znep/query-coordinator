@@ -4,6 +4,7 @@ import TestUtils from 'react-addons-test-utils';
 
 import defaultProps from '../../defaultProps';
 import renderComponent from '../../renderComponent';
+import { INPUT_DEBOUNCE_MILLISECONDS } from 'src/authoringWorkflow/constants';
 import { TitleAndDescriptionPane } from 'src/authoringWorkflow/components/panes/TitleAndDescriptionPane';
 
 describe('TitleAndDescriptionPane', function() {
@@ -53,20 +54,28 @@ describe('TitleAndDescriptionPane', function() {
 
     describe('events', function() {
       describe('when changing the title', function() {
-        it('should emit an onChangeTitle event', function() {
+        it('should emit an onChangeTitle event', function(done) {
           var input = component.querySelector('input[type="text"]');
 
           TestUtils.Simulate.change(input);
-          sinon.assert.calledOnce(props.onChangeTitle);
+
+          setTimeout(() => {
+            sinon.assert.calledOnce(props.onChangeTitle);
+            done();
+          }, INPUT_DEBOUNCE_MILLISECONDS);
         });
       });
 
       describe('when changing the description', function() {
-        it('should emit an onChangeDescription event', function() {
+        it('should emit an onChangeDescription event', function(done) {
           var textarea = component.querySelector('textarea');
 
           TestUtils.Simulate.change(textarea);
-          sinon.assert.calledOnce(props.onChangeDescription);
+
+          setTimeout(() => {
+            sinon.assert.calledOnce(props.onChangeDescription);
+            done();
+          }, INPUT_DEBOUNCE_MILLISECONDS);
         });
       });
 

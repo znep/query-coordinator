@@ -2,9 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { translate } from '../../../I18n';
+import { onDebouncedEvent } from '../../helpers';
 import { isLoading, hasData, hasError } from '../../selectors/metadata';
 import { getVisualizationType, getLimitCount, getShowOtherCategory, isBarChart, isPieChart } from '../../selectors/vifAuthoring';
-import { INPUT_DEBOUNCE_MILLISECONDS, DEFAULT_LIMIT_FOR_SHOW_OTHER_CATEGORY } from '../../constants';
+import { DEFAULT_LIMIT_FOR_SHOW_OTHER_CATEGORY } from '../../constants';
 import {
   setLimitNoneAndShowOtherCategory,
   setLimitCountAndShowOtherCategory,
@@ -39,12 +40,13 @@ export var DataPane = React.createClass({
   },
 
   renderLimitAndShowOtherCategory() {
-    const { vifAuthoring } = this.props;
+    const { vifAuthoring, onChangeLimitCount, onSelectLimitCount } = this.props;
     const limitCount = getLimitCount(vifAuthoring);
     const showOtherCategory = getShowOtherCategory(vifAuthoring);
     const visualizationType = getVisualizationType(vifAuthoring);
     const translationKey = visualizationType == 'barChart' ? 'bar_chart_limit' : 'pie_chart_limit';
     const limitCountDisabled = limitCount === null;
+
     // 'Do not limit results' radio button
     const limitNoneInputAttributes = {
       id: 'limit-none',
@@ -53,6 +55,7 @@ export var DataPane = React.createClass({
       onChange: this.props.onSelectLimitNone,
       defaultChecked: limitCountDisabled
     };
+
     const limitNoneContainer = (
       <div id="limit-none-container">
         <input {...limitNoneInputAttributes} />
@@ -62,17 +65,18 @@ export var DataPane = React.createClass({
         {translate(`panes.data.fields.${translationKey}.none`)}
       </div>
     );
+
     // 'Limit results' radio button
     const limitCountInputAttributes = {
       id: 'limit-count',
       type: 'radio',
       name: 'limit-radio',
-      onChange: (event) => {
-        event.limitCount = parseInt(this.refs.limitCountValueInput.value, 10);
-        event.showOtherCategory = this.refs.showOtherCategoryCheckbox.checked;
-
-        this.props.onSelectLimitCount(event);
-      },
+      onChange: onDebouncedEvent(this, onSelectLimitCount, (event) => {
+        return {
+          limitCount: parseInt(this.refs.limitCountValueInput.value, 10),
+          showOtherCategory: this.refs.showOtherCategoryCheckbox.checked
+        };
+      }),
       defaultChecked: !limitCountDisabled
     };
 
@@ -81,6 +85,7 @@ export var DataPane = React.createClass({
       id: 'limit-count-value-container',
       className: `authoring-field${(limitCountDisabled) ? ' disabled' : ''}`
     };
+
     const limitCountValueInputAttributes = {
       className: 'text-input',
       id: 'limit-count-value',
@@ -88,15 +93,16 @@ export var DataPane = React.createClass({
       type: 'number',
       min: 1,
       step: 1,
-      onChange: (event) => {
-        event.limitCount = parseInt(event.target.value, 10);
-        event.showOtherCategory = this.refs.showOtherCategoryCheckbox.checked;
-
-        this.props.onChangeLimitCount(event);
-      },
+      onChange: onDebouncedEvent(this, onChangeLimitCount, (event) => {
+        return {
+          limitCount: parseInt(event.target.value, 10),
+          showOtherCategory: this.refs.showOtherCategoryCheckbox.checked
+        };
+      }),
       defaultValue: DEFAULT_LIMIT_FOR_SHOW_OTHER_CATEGORY[visualizationType] || 10,
       disabled: limitCountDisabled
     };
+
     const showOtherCategoryInputAttributes = {
       id: 'show-other-category',
       ref: 'showOtherCategoryCheckbox',
@@ -105,6 +111,7 @@ export var DataPane = React.createClass({
       defaultChecked: showOtherCategory,
       disabled: limitCountDisabled
     };
+
     const limitCountValueContainer = (
       <div {...limitCountValueContainerAttributes}>
         <input {...limitCountValueInputAttributes} />
@@ -119,6 +126,7 @@ export var DataPane = React.createClass({
         </div>
       </div>
     );
+
     const limitCountContainer = (
       <div id="limit-count-container">
         <input {...limitCountInputAttributes} />
@@ -186,21 +194,19 @@ function mapDispatchToProps(dispatch) {
 
     onSelectLimitNone: (event) => {
       const limitNone = event.target.checked;
-
       dispatch(setLimitNoneAndShowOtherCategory(limitNone, false));
     },
 
-    onSelectLimitCount: (event) => {
-      dispatch(setLimitCountAndShowOtherCategory(event.limitCount, event.showOtherCategory));
+    onSelectLimitCount: (values) => {
+      dispatch(setLimitCountAndShowOtherCategory(values.limitCount, values.showOtherCategory));
     },
 
-    onChangeLimitCount: _.debounce((event) => {
-      dispatch(setLimitCountAndShowOtherCategory(event.limitCount, event.showOtherCategory));
-    }, INPUT_DEBOUNCE_MILLISECONDS),
+    onChangeLimitCount: (values) => {
+      dispatch(setLimitCountAndShowOtherCategory(values.limitCount, values.showOtherCategory));
+    },
 
     onChangeShowOtherCategory: (event) => {
       const showOtherCategory = event.target.checked;
-
       dispatch(setShowOtherCategory(showOtherCategory));
     }
   };

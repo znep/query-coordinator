@@ -5,6 +5,7 @@ import defaultProps from '../../defaultProps';
 import renderComponent from '../../renderComponent';
 import vifs from 'src/authoringWorkflow/vifs';
 import { ColorsAndStylePane } from 'src/authoringWorkflow/components/panes/ColorsAndStylePane';
+import { INPUT_DEBOUNCE_MILLISECONDS } from 'src/authoringWorkflow/constants';
 
 function render(type) {
   var props = defaultProps({
@@ -30,9 +31,13 @@ describe('ColorsAndStylePane', function() {
   var props;
 
   function emitsEvent(selector, eventName, eventType) {
-    it(`should emit an ${eventName} event`, function() {
+    it(`should emit an ${eventName} event`, function(done) {
       TestUtils.Simulate[eventType || 'change'](component.querySelector(selector));
-      sinon.assert.calledOnce(props[eventName]);
+
+      setTimeout(() => {
+        sinon.assert.calledOnce(props[eventName]);
+        done();
+      }, INPUT_DEBOUNCE_MILLISECONDS);
     });
   }
 

@@ -5,6 +5,7 @@ import defaultProps from '../../defaultProps';
 import renderComponent from '../../renderComponent';
 import vifs from 'src/authoringWorkflow/vifs';
 import { LegendsAndFlyoutsPane } from 'src/authoringWorkflow/components/panes/LegendsAndFlyoutsPane';
+import { INPUT_DEBOUNCE_MILLISECONDS } from 'src/authoringWorkflow/constants';
 
 function render(type) {
   var props = defaultProps({
@@ -26,9 +27,13 @@ describe('LegendsAndFlyoutsPane', function() {
   var props;
 
   function emitsEvent(id, eventName, eventType) {
-    it(`should emit an ${eventName} event`, function() {
+    it(`should emit an ${eventName} event`, function(done) {
       TestUtils.Simulate[eventType || 'change'](component.querySelector(id));
-      sinon.assert.calledOnce(props[eventName]);
+
+      setTimeout(() => {
+        sinon.assert.calledOnce(props[eventName]);
+        done();
+      }, INPUT_DEBOUNCE_MILLISECONDS);
     });
   }
 

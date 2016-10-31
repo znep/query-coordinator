@@ -8,6 +8,15 @@ module.exports = [
       path: __dirname + '/examples',
       filename: 'vendor.js'
     },
+    module: {
+      loaders: [
+        {
+          loader: 'imports-loader',
+          test: require.resolve('dotdotdot'),
+          query: { 'jQuery': 'jquery' }
+        }
+      ]
+    },
     resolve: {
       modulesDirectories: ['node_modules']
     }
@@ -24,7 +33,11 @@ module.exports = [
       'leaflet': true,
       'socrata-components': true,
       'react': true,
-      'react-dom': true
+      'react-dom': true,
+      'react-redux': true,
+      'redux': true,
+      'redux-logger': true,
+      'redux-thunk': true
     },
     output: {
       path: __dirname + '/dist',
@@ -38,7 +51,7 @@ module.exports = [
           test: /\.js$/,
           exclude: /node_modules/,
           loader: 'babel'
-        },
+        }
       ]
     },
     resolve: {

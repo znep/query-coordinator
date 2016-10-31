@@ -63,6 +63,14 @@
   }
 }
 
+.authoring-actions .btn {
+  margin-right: 6px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
 .authoring-controls {
   display: flex;
   flex-direction: row;

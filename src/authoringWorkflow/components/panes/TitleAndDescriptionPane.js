@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { translate } from '../../../I18n';
-import { INPUT_DEBOUNCE_MILLISECONDS } from '../../constants';
+import { onDebouncedEvent } from '../../helpers';
 import { getTitle, getDescription, getViewSourceDataLink, getVisualizationType } from '../../selectors/vifAuthoring';
 import { setTitle, setDescription, setViewSourceDataLink } from '../../actions';
 import CustomizationTabPane from '../CustomizationTabPane';
@@ -39,23 +39,27 @@ export const TitleAndDescriptionPane = React.createClass({
   },
 
   renderTitleField() {
-    const title = getTitle(this.props.vifAuthoring);
+    const { vifAuthoring, onChangeTitle } = this.props;
+    const title = getTitle(vifAuthoring);
+    const onChange = onDebouncedEvent(this, onChangeTitle);
 
     return (
       <div className="authoring-field">
         <label className="block-label" htmlFor="title">{translate('panes.title_and_description.fields.title.title')}</label>
-        <input id="title" className="text-input" type="text" onChange={this.props.onChangeTitle} defaultValue={title} />
+        <input id="title" className="text-input" type="text" onChange={onChange} defaultValue={title} />
       </div>
     );
   },
 
   renderDescriptionField() {
-    const description = getDescription(this.props.vifAuthoring);
+    const { vifAuthoring, onChangeDescription } = this.props;
+    const description = getDescription(vifAuthoring);
+    const onChange = onDebouncedEvent(this, onChangeDescription);
 
     return (
       <div className="authoring-field">
         <label className="block-label" htmlFor="description">{translate('panes.title_and_description.fields.description.title')}</label>
-        <textarea id="description" className="text-input text-area" onChange={this.props.onChangeDescription} defaultValue={description} />
+        <textarea id="description" className="text-input text-area" onChange={onChange} defaultValue={description} />
       </div>
     );
   },
@@ -92,15 +96,13 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onChangeTitle: _.debounce(event => {
-      const title = event.target.value;
+    onChangeTitle: title => {
       dispatch(setTitle(title));
-    }, INPUT_DEBOUNCE_MILLISECONDS),
+    },
 
-    onChangeDescription: _.debounce(event => {
-      const description = event.target.value;
+    onChangeDescription: description => {
       dispatch(setDescription(description));
-    }, INPUT_DEBOUNCE_MILLISECONDS),
+    },
 
     onChangeShowSourceDataLink: event => {
       const viewSourceDataLink = event.target.checked;

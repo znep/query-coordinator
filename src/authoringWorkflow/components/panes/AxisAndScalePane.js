@@ -4,7 +4,8 @@ import Styleguide from 'socrata-components';
 import { connect } from 'react-redux';
 
 import { translate } from '../../../I18n';
-import { INPUT_DEBOUNCE_MILLISECONDS, CHART_SORTING, TIMELINE_PRECISION } from '../../constants';
+import { onDebouncedEvent } from '../../helpers';
+import { CHART_SORTING, TIMELINE_PRECISION } from '../../constants';
 import {
   setLabelTop,
   setLabelBottom,
@@ -60,7 +61,7 @@ export var AxisAndScalePane = React.createClass({
   },
 
   renderBarChartVisualizationLabels() {
-    const { vifAuthoring } = this.props;
+    const { vifAuthoring, onChangeLabelTop, onChangeLabelLeft } = this.props;
     const axisLabels = getAxisLabels(vifAuthoring);
     const topAxisLabel = _.get(axisLabels, 'top', null);
     const leftAxisLabel = _.get(axisLabels, 'left', null);
@@ -69,7 +70,7 @@ export var AxisAndScalePane = React.createClass({
       className: 'text-input',
       id: 'label-top',
       type: 'text',
-      onChange: this.props.onChangeLabelTop,
+      onChange: onDebouncedEvent(this, onChangeLabelTop),
       defaultValue: topAxisLabel
     };
 
@@ -77,7 +78,7 @@ export var AxisAndScalePane = React.createClass({
       className: 'text-input',
       id: 'label-left',
       type: 'text',
-      onChange: this.props.onChangeLabelLeft,
+      onChange: onDebouncedEvent(this, onChangeLabelLeft),
       defaultValue: leftAxisLabel
     };
 
@@ -101,7 +102,7 @@ export var AxisAndScalePane = React.createClass({
   },
 
   renderVisualizationLabels() {
-    const { vifAuthoring } = this.props;
+    const { vifAuthoring, onChangeLabelLeft, onChangeLabelBottom } = this.props;
     const axisLabels = getAxisLabels(vifAuthoring);
     const leftAxisLabel = _.get(axisLabels, 'left', null);
     const bottomAxisLabel = _.get(axisLabels, 'bottom', null);
@@ -110,7 +111,7 @@ export var AxisAndScalePane = React.createClass({
       className: 'text-input',
       id: 'label-left',
       type: 'text',
-      onChange: this.props.onChangeLabelLeft,
+      onChange: onDebouncedEvent(this, onChangeLabelLeft),
       defaultValue: leftAxisLabel
     };
 
@@ -118,7 +119,7 @@ export var AxisAndScalePane = React.createClass({
       className: 'text-input',
       id: 'label-bottom',
       type: 'text',
-      onChange: this.props.onChangeLabelBottom,
+      onChange: onDebouncedEvent(this, onChangeLabelBottom),
       defaultValue: bottomAxisLabel
     };
 
@@ -277,7 +278,11 @@ export var AxisAndScalePane = React.createClass({
   },
 
   renderMeasureAxisScaleControl() {
-    const vifAuthoring = this.props.vifAuthoring;
+    const {
+      vifAuthoring,
+      onMeasureAxisMinValueChange,
+      onMeasureAxisMaxValueChange
+    } = this.props;
 
     const limitMax = getMeasureAxisMaxValue(vifAuthoring);
     const limitMin = getMeasureAxisMinValue(vifAuthoring);
@@ -293,7 +298,7 @@ export var AxisAndScalePane = React.createClass({
           <input className="text-input"
                  id="measure-axis-scale-custom-min"
                  defaultValue={ limitMin }
-                 onChange={this.props.onMeasureAxisMinValueChange} />
+                 onChange={onDebouncedEvent(this, onMeasureAxisMinValueChange)} />
         </div>
         <div>
           <label className="block-label" htmlFor="measure-axis-scale-custom-max">
@@ -302,46 +307,48 @@ export var AxisAndScalePane = React.createClass({
           <input className="text-input"
                  id="measure-axis-scale-custom-max"
                  defaultValue={ limitMax }
-                 onChange={this.props.onMeasureAxisMaxValueChange} />
+                 onChange={onDebouncedEvent(this, onMeasureAxisMaxValueChange)} />
         </div>
       </div>
     );
 
-    return (
-      <div className="authoring-field-group">
-        <h5>{translate('panes.axis_and_scale.subheaders.scale')}</h5>
-        {translate('panes.axis_and_scale.fields.scale.title')}
+    return null;
+    // TODO: Finish implementing this feature. See comments in EN-9281.
+    // (
+    //   <div className="authoring-field-group">
+    //     <h5>{translate('panes.axis_and_scale.subheaders.scale')}</h5>
+    //     {translate('panes.axis_and_scale.fields.scale.title')}
 
-        <div className="authoring-field radiobutton">
-          <div>
-            <input type="radio"
-                   name="measure-axis-scale"
-                   id="measure-axis-scale-automatic"
-                   value="automatic"
-                   onChange={this.onMeasureAxisScaleControlChange}
-                   checked={isAuto} />
-            <label htmlFor="measure-axis-scale-automatic">
-              <span />
-              <div className="translation-within-label">{translate('panes.axis_and_scale.fields.scale.automatic')}</div>
-            </label>
-          </div>
-          <div>
-            <input type="radio"
-                   name="measure-axis-scale"
-                   id="measure-axis-scale-custom"
-                   value="custom"
-                   onChange={this.onMeasureAxisScaleControlChange}
-                   checked={!isAuto} />
-            <label htmlFor="measure-axis-scale-custom">
-              <span />
-              <div className="translation-within-label">{translate('panes.axis_and_scale.fields.scale.custom')}</div>
-            </label>
-          </div>
-        </div>
+    //     <div className="authoring-field radiobutton">
+    //       <div>
+    //         <input type="radio"
+    //                name="measure-axis-scale"
+    //                id="measure-axis-scale-automatic"
+    //                value="automatic"
+    //                onChange={this.onMeasureAxisScaleControlChange}
+    //                checked={isAuto} />
+    //         <label htmlFor="measure-axis-scale-automatic">
+    //           <span />
+    //           <div className="translation-within-label">{translate('panes.axis_and_scale.fields.scale.automatic')}</div>
+    //         </label>
+    //       </div>
+    //       <div>
+    //         <input type="radio"
+    //                name="measure-axis-scale"
+    //                id="measure-axis-scale-custom"
+    //                value="custom"
+    //                onChange={this.onMeasureAxisScaleControlChange}
+    //                checked={!isAuto} />
+    //         <label htmlFor="measure-axis-scale-custom">
+    //           <span />
+    //           <div className="translation-within-label">{translate('panes.axis_and_scale.fields.scale.custom')}</div>
+    //         </label>
+    //       </div>
+    //     </div>
 
-        {this.state.measureAxisScaleControl == 'custom' ? boundariesPart : null}
-      </div>
-    );
+    //     {this.state.measureAxisScaleControl == 'custom' ? boundariesPart : null}
+    //   </div>
+    // );
 
   },
 
@@ -532,23 +539,17 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 
   return {
-    onChangeLabelTop: _.debounce(event => {
-      const labelTop = event.target.value;
-
+    onChangeLabelTop: labelTop => {
       dispatch(setLabelTop(labelTop));
-    }, INPUT_DEBOUNCE_MILLISECONDS),
+    },
 
-    onChangeLabelBottom: _.debounce(event => {
-      const labelBottom = event.target.value;
-
+    onChangeLabelBottom: labelBottom => {
       dispatch(setLabelBottom(labelBottom));
-    }, INPUT_DEBOUNCE_MILLISECONDS),
+    },
 
-    onChangeLabelLeft: _.debounce(event => {
-      const labelLeft = event.target.value;
-
+    onChangeLabelLeft: labelLeft => {
       dispatch(setLabelLeft(labelLeft));
-    }, INPUT_DEBOUNCE_MILLISECONDS),
+    },
 
     onChangeShowDimensionLabels: (event) => {
       const showDimensionLabels = event.target.checked;
@@ -582,15 +583,13 @@ function mapDispatchToProps(dispatch) {
       dispatch(setTreatNullValuesAsZero(treatNullValuesAsZero));
     },
 
-    onMeasureAxisMinValueChange: _.debounce(
-      event => dispatch(setMeasureAxisMinValue(event.target.value)),
-      INPUT_DEBOUNCE_MILLISECONDS
-    ),
+    onMeasureAxisMinValueChange: (measureAxisMinValue) => {
+      dispatch(setMeasureAxisMinValue(measureAxisMinValue));
+    },
 
-    onMeasureAxisMaxValueChange: _.debounce(
-      event => dispatch(setMeasureAxisMaxValue(event.target.value)),
-      INPUT_DEBOUNCE_MILLISECONDS
-    )
+    onMeasureAxisMaxValueChange: (measureAxisMaxValue) => {
+      dispatch(setMeasureAxisMaxValue(measureAxisMaxValue));
+    },
   };
 }
 

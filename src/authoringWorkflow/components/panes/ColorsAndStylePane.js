@@ -4,12 +4,13 @@ import Styleguide from 'socrata-components';
 import { connect } from 'react-redux';
 
 import { translate } from '../../../I18n';
+import { onDebouncedEvent } from '../../helpers';
+
 import {
   BASE_LAYERS,
   COLOR_SCALES,
   COLOR_PALETTES,
-  COLORS,
-  INPUT_DEBOUNCE_MILLISECONDS
+  COLORS
 } from '../../constants';
 
 import CustomizationTabPane from '../CustomizationTabPane';
@@ -59,23 +60,27 @@ export var ColorsAndStylePane = React.createClass({
   },
 
   renderPrimaryColor(labelText) {
-    var primaryColor = getPrimaryColor(this.props.vifAuthoring);
+    var { vifAuthoring, onChangePrimaryColor } = this.props;
+    var primaryColor = getPrimaryColor(vifAuthoring);
+    var handleColorChange = onDebouncedEvent(this, onChangePrimaryColor, (color) => color);
 
     return (
       <div>
         <label className="block-label" htmlFor="primary-color">{labelText}</label>
-        <Styleguide.ColorPicker handleColorChange={this.props.onChangePrimaryColor} value={primaryColor} palette={COLORS}/>
+        <Styleguide.ColorPicker handleColorChange={handleColorChange} value={primaryColor} palette={COLORS}/>
       </div>
     );
   },
 
   renderSecondaryColor(labelText) {
-    var secondaryColor = getSecondaryColor(this.props.vifAuthoring);
+    var { vifAuthoring, onChangeSecondaryColor } = this.props;
+    var secondaryColor = getSecondaryColor(vifAuthoring);
+    var handleColorChange = onDebouncedEvent(this, onChangeSecondaryColor, (color) => color);
 
     return (
       <div>
         <label className="block-label" htmlFor="secondary-color">{labelText}</label>
-        <Styleguide.ColorPicker handleColorChange={this.props.onChangeSecondaryColor} value={secondaryColor} palette={COLORS}/>
+        <Styleguide.ColorPicker handleColorChange={handleColorChange} value={secondaryColor} palette={COLORS}/>
       </div>
     );
   },
@@ -120,7 +125,7 @@ export var ColorsAndStylePane = React.createClass({
       max: '1',
       step: '0.1',
       defaultValue: pointOpacity / 100,
-      onChange: onChangePointOpacity
+      onChange: onDebouncedEvent(this, onChangePointOpacity)
     };
 
     const pointSizeAttributes = {
@@ -204,7 +209,7 @@ export var ColorsAndStylePane = React.createClass({
       max: '1',
       step: '0.1',
       defaultValue: defaultBaseLayerOpacity / 100,
-      onChange: onChangeBaseLayerOpacity
+      onChange: onDebouncedEvent(this, onChangeBaseLayerOpacity)
     };
 
     return (
@@ -231,7 +236,7 @@ export var ColorsAndStylePane = React.createClass({
       id: 'color-palette',
       options: colorPalettes,
       value: selectedColorPalette,
-      onSelection: onSelectColorPalette
+      onSelection: onDebouncedEvent(this, onSelectColorPalette, (event) => event.value)
     };
 
     return (
@@ -286,38 +291,37 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onChangePrimaryColor: _.debounce(primaryColor => {
+    onChangePrimaryColor: primaryColor => {
       dispatch(setPrimaryColor(primaryColor));
-    }, INPUT_DEBOUNCE_MILLISECONDS),
+    },
 
-    onChangeSecondaryColor: _.debounce(secondaryColor => {
+    onChangeSecondaryColor: secondaryColor => {
       dispatch(setSecondaryColor(secondaryColor));
-    }, INPUT_DEBOUNCE_MILLISECONDS),
+    },
 
     onSelectBaseLayer: baseLayer => {
       dispatch(setBaseLayer(baseLayer.value));
     },
 
-    onChangeBaseLayerOpacity: _.debounce(event => {
-      var baseLayerOpacity = event.target.value;
+    onChangeBaseLayerOpacity: baseLayerOpacity => {
       dispatch(setBaseLayerOpacity(baseLayerOpacity));
-    }, INPUT_DEBOUNCE_MILLISECONDS),
+    },
 
-    onChangePointOpacity: _.debounce(event => {
-      var pointOpacity = event.target.value;
+    onChangePointOpacity: pointOpacity => {
       dispatch(setPointOpacity(pointOpacity));
-    }, INPUT_DEBOUNCE_MILLISECONDS),
+    },
 
-    onChangePointSize: _.debounce(event => {
-      const pointSize = event.target.value;
+    onChangePointSize: pointSize => {
       dispatch(setPointSize(pointSize));
-    }, INPUT_DEBOUNCE_MILLISECONDS),
+    },
 
     onSelectColorScale: colorScale => {
       dispatch(setColorScale(...colorScale.scale));
     },
 
-    onSelectColorPalette: _.debounce(event => dispatch(setColorPalette(event.value)), INPUT_DEBOUNCE_MILLISECONDS),
+    onSelectColorPalette: palette => {
+      dispatch(setColorPalette(palette));
+    }
   };
 }
 

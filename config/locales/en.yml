@@ -2779,6 +2779,12 @@ en:
               url_placeholder: http://data.evergreen.gov
             title: Footer
           general:
+            activation:
+              all_pages_except_home: All pages except Home page
+              entire_site: Entire site
+              primer_included: Primer is also included in this update.
+              revert_html: "Revert all pages to non-configurable Header/Footer and<br/>turn off Primer"
+              select_where: "Select where these Site Appearance settings will appear:"
             fields:
               display_language_switcher:
                 description: Use this setting to define which languages your site supports. English is required and included for all sites. To add additional languages, please contact support@socrata.com

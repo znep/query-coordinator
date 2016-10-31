@@ -47,7 +47,7 @@ export function saveMetadataThenProceed() {
 }
 
 // TODO: refactor common elements of this and the fetch in saveState.js to a shared method
-export function saveMetadataToViewsApi() {
+export function saveMetadataToViewsApi(privacyChanged) {
   return (dispatch, getState) => {
     dispatch(Metadata.metadataSaveStart());
     const { datasetId, metadata, navigation } = getState();
@@ -56,6 +56,11 @@ export function saveMetadataToViewsApi() {
       credentials: 'same-origin',
       body: JSON.stringify(modelToViewParam(metadata, navigation))
     }).then((response) => {
+
+      if (privacyChanged) {
+        dispatch(savePrivacySettings());
+      }
+
       return response.json().then((body) => {
         if (response.status >= 200 && response.status < 300) {
           dispatch(Metadata.metadataSaveComplete(metadata.contents));

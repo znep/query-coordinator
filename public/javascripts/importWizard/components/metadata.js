@@ -73,7 +73,7 @@ export function defaultCustomData() {
       name,
       fields.map(field => ({
         field: field.name,
-        value: field.options ? field.options[0] : '',
+        value: '',
         privateField: _.has(field, 'private')
       }))
     ];
@@ -330,11 +330,13 @@ export function updateForLastSaved(lastSavedMetadata = emptyContents(''), action
   switch (action.type) {
     case METADATA_LAST_SAVED:
       return {
+        ...lastSavedMetadata,
         lastSavedContents: _.cloneDeep(action.savedMetadata.contents),
         lastSavedLicense: _.cloneDeep(action.savedMetadata.license)
       };
     case METADATA_PRIVACY_LAST_SAVED:
       return {
+        ...lastSavedMetadata,
         lastSavedPrivacySettings: action.savedPrivacySettings
       };
     default:
@@ -594,6 +596,9 @@ export function isPrivacyChanged(metadata) {
 function renderSingleField(metadata, field, onMetadataAction, setName, fieldIdx) {
   if (_.has(field, 'options')) {
     const options = field.options;
+    if (options[0] !== '') {
+      options.unshift('');
+    }
     return (
       <select
         className={field.name}
@@ -996,11 +1001,15 @@ export function view({ metadata, importStatus, onMetadataAction, operation, goTo
             if (!isMetadataValid(metadata, operation)) {
               return;
             }
+
             if (isMetadataUnsaved(metadata)) {
-              onMetadataAction(Server.saveMetadataToViewsApi());
-            }
-            if (isPrivacyChanged(metadata)) {
-              onMetadataAction(Server.savePrivacySettings());
+              // this will also send the save_privacty_settings action, after the first call finishes
+              // sending the two calls simultaneously overwrites the metadata changes from the first call ;_;
+              onMetadataAction(Server.saveMetadataToViewsApi(isPrivacyChanged(metadata)));
+            } else {
+              if (isPrivacyChanged(metadata)) {
+                onMetadataAction(Server.savePrivacySettings());
+              }
             }
           }
         }

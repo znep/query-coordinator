@@ -527,27 +527,28 @@ describe('lastSaved', () => {
   it('updates to match metadata when a user successfully saves', () => {
     const state = initialNewDatasetModel({});
     metadata = state.metadata;
-    const tempLastSaved = state.metadata.lastSaved.lastSavedContents;
     metadata = update(metadata, updateContactEmail('wombats@australia.au'));
-    lastSavedMetadata = updateForLastSaved(tempLastSaved, updateLastSaved(metadata));
 
-    // can we test this by releasing actions and checking the state anew instead?
+    const updated_metadata = update(metadata, updateLastSaved(metadata));
+    const lastSavedMetadata = updated_metadata.lastSaved;
 
     expect(lastSavedMetadata).to.deep.equal({
       lastSavedContents: metadata.contents,
-      lastSavedLicense: metadata.license
+      lastSavedLicense: metadata.license,
+      lastSavedPrivacySettings: metadata.privacySettings
     });
   });
 
   it('updates privacy to match metadata when a user successfully saves', () => {
     const state = initialNewDatasetModel({});
     metadata = state.metadata;
-    const tempLastSaved = state.metadata.lastSaved.lastSavedContents;
     metadata = update(metadata, updatePrivacySettings('public'));
-    lastSavedMetadata = updateForLastSaved(tempLastSaved, updatePrivacyLastSaved('public'));
-
+    const updated_metadata = update(metadata, updatePrivacyLastSaved('public'));
+    const lastSavedMetadata = updated_metadata.lastSaved;
 
     expect(lastSavedMetadata).to.deep.equal({
+      lastSavedContents: metadata.contents,
+      lastSavedLicense: metadata.license,
       lastSavedPrivacySettings: 'public'
     });
   });

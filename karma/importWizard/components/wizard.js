@@ -201,7 +201,7 @@ describe('initialNewDatasetModel', () => {
           first: [
             {
               field: '1',
-              value: 'ant',
+              value: '',
               privateField: false
             },
             {
@@ -228,7 +228,7 @@ describe('initialNewDatasetModel', () => {
             },
             {
               field: 'neptune',
-              value: '50',
+              value: '',
               privateField: false
             },
             {
@@ -261,7 +261,7 @@ describe('initialNewDatasetModel', () => {
             first: [
               {
                 field: '1',
-                value: 'ant',
+                value: '',
                 privateField: false
               },
               {
@@ -288,7 +288,7 @@ describe('initialNewDatasetModel', () => {
               },
               {
                 field: 'neptune',
-                value: '50',
+                value: '',
                 privateField: false
               },
               {

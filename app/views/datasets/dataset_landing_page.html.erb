@@ -1,3 +1,16 @@
+<% content_for :head do %>
+  <title><%= @view.name %> | <%= get_site_title %></title>
+  <link rel="canonical" href="<%= view_path(@view) %>" />
+
+  <meta name="description" content="<%= meta_description %>">
+  <meta name="page_name" content="Primer">
+
+  <%= rendered_stylesheet_tag("dataset-landing-page") %>
+
+  <link rel="stylesheet" href="/stylesheets/socrata-visualizations/socrata-visualizations.css"/>
+  <link rel="canonical" href="<%= view_path(@view) %>" />
+<% end %>
+
 <div class="dataset-landing-page">
   <div id="app">
     <div class="main-spinner">
@@ -7,3 +20,22 @@
 
   <div id="dynamic-content"></div>
 </div>
+
+<% content_for :scripts do %>
+  <%= render_dataset_landing_page_translations %>
+
+  <%= render_dataset_landing_page_session_data %>
+  <%= render_dataset_landing_page_server_config %>
+
+  <script>
+    var initialState = {
+      view: <%= raw transformed_view.to_json %>,
+      relatedViews: <%= raw @related_views.to_json %>,
+      featuredContent: <%= raw @featured_content.to_json %>
+    };
+  </script>
+
+  <%= include_webpack_bundle 'dataset-landing-page/main.js' %>
+
+  <script src="https://www.google.com/recaptcha/api.js?render=explicit" async></script>
+<% end %>

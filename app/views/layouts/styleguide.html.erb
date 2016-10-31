@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="<%= I18n.locale %>">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <%= yield :head %>
+
+    <link rel="stylesheet" href="/stylesheets/socrata-components/css/styleguide.min.css"/>
+
+    <%= get_favicon_tag %>
+    <%= site_chrome_meta_viewport_tag %>
+    <%= site_chrome_stylesheet_tag %>
+  </head>
+
+  <body>
+    <%= render 'site_chrome/header' %>
+
+    <div id="noticeContainer">
+      <%= display_styleguide_flashes %>
+    </div>
+
+    <%= yield %>
+
+    <%= render 'site_chrome/footer' %>
+
+    <%# Ensure mixpanelConfig is defined before loading other scripts %>
+    <%= render_mixpanel_config %>
+
+    <%= yield :scripts %>
+
+    <%# These are below `content_for :scripts` because they require jQuery to be present %>
+    <%= render_ga_tracking %>
+    <%= site_chrome_javascript_tag %>
+  </body>
+</html>

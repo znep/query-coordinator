@@ -1,5 +1,21 @@
+<% content_for :head do %>
+  <title><%= @view.name %> | <%= get_site_title %></title>
+  <link rel="canonical" href="<%= view_path(@view) %>" />
+
+  <%= rendered_stylesheet_tag 'data-lens' %>
+
+  <link rel="canonical" href="<%= view_path(@view) %>" />
+<% end %>
+
 <div id="app" class="data-lens">
   <div class="main-spinner">
     <div class="spinner-default spinner-large"></div>
   </div>
 </div>
+
+<% content_for :scripts do %>
+  <%= render_data_lens_translations %>
+  <%= render_data_lens_server_config %>
+
+  <%= include_webpack_bundle 'data-lens/main.js' %>
+<% end %>

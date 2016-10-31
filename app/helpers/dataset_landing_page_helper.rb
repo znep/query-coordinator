@@ -20,21 +20,6 @@ module DatasetLandingPageHelper
     javascript_tag("var I18n = #{json_escape(dataset_landing_page_translations.to_json)};")
   end
 
-  def render_mixpanel_config
-    mixpanel_config = {
-      :token => APP_CONFIG.mixpanel_token
-    }
-
-    if CurrentDomain.feature?(:mixpanelTracking)
-      mixpanel_config[:options] = {:cookie_expiration => nil, :secure_cookie => true}
-    elsif CurrentDomain.feature?(:fullMixpanelTracking)
-      mixpanel_config[:options] = {:cookie_expiration => 365, :secure_cookie => true}
-    else
-      mixpanel_config[:disable] = true
-    end
-    javascript_tag("var mixpanelConfig = #{json_escape(mixpanel_config.to_json)};")
-  end
-
   def render_dataset_landing_page_session_data
     session_data = {
       :userId => current_user.try(:id) || 'N/A',

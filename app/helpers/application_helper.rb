@@ -826,6 +826,21 @@ module ApplicationHelper
     end
   end
 
+  def render_mixpanel_config
+    mixpanel_config = {
+      :token => APP_CONFIG.mixpanel_token
+    }
+
+    if CurrentDomain.feature?(:mixpanelTracking)
+      mixpanel_config[:options] = {:cookie_expiration => nil, :secure_cookie => true}
+    elsif CurrentDomain.feature?(:fullMixpanelTracking)
+      mixpanel_config[:options] = {:cookie_expiration => 365, :secure_cookie => true}
+    else
+      mixpanel_config[:disable] = true
+    end
+    javascript_tag("window.mixpanelConfig = #{json_escape(mixpanel_config.to_json)};")
+  end
+
   def mixpanel_tracking_enabled?
     CurrentDomain.feature?(:mixpanelTracking) || CurrentDomain.feature?(:fullMixpanelTracking)
   end

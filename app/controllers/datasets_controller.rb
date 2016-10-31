@@ -124,7 +124,7 @@ class DatasetsController < ApplicationController
 
       RequestStore[:current_user] = current_user.try(:data)
 
-      render 'dataset_landing_page', :layout => 'dataset_landing_page'
+      render 'dataset_landing_page', :layout => 'styleguide'
 
       return
     end
@@ -751,7 +751,7 @@ class DatasetsController < ApplicationController
 
       RequestStore[:current_user] = current_user.try(:data)
 
-      render 'dataset_landing_page', :layout => 'dataset_landing_page'
+      render 'dataset_landing_page', :layout => 'styleguide'
 
       return
     end

@@ -264,7 +264,7 @@ class DataLensController < ActionController::Base
     # Then fetch the view we're going to render
     @view = View.find(params[:id])
 
-    render 'data_lens', :layout => 'data_lens'
+    render 'data_lens', :layout => 'styleguide'
   end
 
   def view_vif

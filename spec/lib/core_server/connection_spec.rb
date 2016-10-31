@@ -42,5 +42,12 @@ describe CoreServer::Connection do
     end
   end
 
+  it 'handles get_request with or without custom_headers' do
+    mock_response = double.tap { |double| allow(double).to receive(:body).and_return('') }
+    allow(subject).to receive(:make_request).and_return(mock_response)
+    subject.get_request('/', 'X-Socrata-Host': 'localhost')
+    subject.get_request('/', nil)
+  end
+
 end
 

@@ -356,12 +356,13 @@ class AdministrationController < ApplicationController
   # Manage Users and User Roles
   #
 
+  # TODO: page user results (EN-10520)
   def users
     begin
       user_search_client = Cetera::Utils.user_search_client(forwardable_session_cookies)
       if params[:username].present?
         @search = params[:username]
-        users = user_search_client.find_all_by_query(@search)
+        users = user_search_client.find_all_by_query(@search, :limit => 100)
         @user_search_results = Cetera::Results::UserSearchResult.new(users).results
         @futures = FutureAccount.find.select { |f| f.email.downcase.include? params[:username].downcase }
       else

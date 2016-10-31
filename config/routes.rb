@@ -437,7 +437,7 @@ Rails.application.routes.draw do
     if Frontend.auth0_configured?
       scope :protocol => 'https' do
         get '/auth/auth0/callback' => 'auth0#callback', :as => 'auth0_callback'
-        get '/auth/failure' => 'auth0#failure'
+        match '/auth/auth0/link' => 'auth0#link', :as => 'auth0_link', via: [:get, :post]
       end
     end
 

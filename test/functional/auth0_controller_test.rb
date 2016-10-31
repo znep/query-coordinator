@@ -114,14 +114,14 @@ class Auth0ControllerTest < ActionController::TestCase
     assert_response(404)
   end
 
-  test 'Federated Auth failure should return 500' do
+  test 'Social Auth not-found should redirect to linking page' do
     OmniAuth.config.mock_auth[:auth0] = get_mock_token('samlp','samlp|someidentifier','samlp|someidentifier|socrata.com')
     @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
     Auth0Controller.any_instance.expects(:authentication_provider_class).returns(NotAuthenticatedStub)
     get :callback, :protocol => 'https'
     assert_nil(@response.cookies['_core_session_id'])
     assert_nil(@response.cookies['logged_in'])
-    assert_response(500)
+    assert_response(302)
   end
 
   test 'Auth0 federated token should result in a user_session' do
@@ -131,11 +131,6 @@ class Auth0ControllerTest < ActionController::TestCase
     get :callback, :protocol => 'https'
     refute_nil(@response.cookies['logged_in'])
     assert_redirected_to(login_redirect_url)
-  end
-
-  test 'Failure route should redirect to a 500' do
-    get :failure, :protocol => 'https'
-    assert_redirected_to('/500')
   end
 
   class StubAuth0Authentication < ActionController::TestCase
@@ -155,11 +150,19 @@ class Auth0ControllerTest < ActionController::TestCase
     def authenticated?
       raise 'This class should be considered abstract.  Please use the provided concrete instances'
     end
+
+    def error
+        false
+    end
   end
 
   class NotAuthenticatedStub < StubAuth0Authentication
     def authenticated?
       false
+    end
+
+    def user
+        nil
     end
   end
 

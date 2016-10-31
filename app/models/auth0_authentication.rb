@@ -1,14 +1,15 @@
+
 class Auth0Authentication
-  attr_accessor :token, :user, :response
+  attr_accessor :token, :user, :response, :error
 
   def initialize(token)
+    @error = false
     @token = token
     load
   end
 
   def authenticated?
-    return false if @user.nil?
-    return @user.auth0IdentifierId.nil?
+    return !(@user.nil?)
   end
 
 protected
@@ -26,6 +27,11 @@ protected
     if @response.is_a?(Net::HTTPSuccess)
       @user = User.parse(response.body)
       Rails.logger.info("User: #{@user}")
+    elsif @response.is_a?(Net::HTTPNotFound)
+      Rails.logger.info("User not found")
+    else
+      Rails.logger.info("Unexpected response code from core (#{@response.code}). Did you try to log in as a deleted user via auth0?")
+      @error = true
     end
   end
 end

@@ -24,7 +24,7 @@ class User < Model
     if FeatureFlags.derive[:enable_new_account_verification_email]
       opts[:email_verification] = true
     end
-    path = "/#{name.pluralize.downcase}.json?#{opts.to_param}"
+    path = "/users.json?#{opts.to_param}"
     parse(CoreServer::Base.connection.create_request(path, attributes.to_json))
   end
 

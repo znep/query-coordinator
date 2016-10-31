@@ -1,8 +1,8 @@
 class SignupPresenter < Presenter
   include ActionView::Helpers::TranslationHelper
 
-  def_delegators :user,  :firstName,  :lastName,  :email,  :screenName, :login,  :password,  :company,  :title,  :openIdIdentifierId,
-                 :user=, :firstName=, :lastName=, :email=, :screenName=, :login=, :password=, :company=, :title=, :openIdIdentifierId=
+  def_delegators :user,  :firstName,  :lastName,  :email,  :screenName,  :login,  :password,  :company,  :title,  :openIdIdentifierId,  :auth0Identifier,
+                 :user=, :firstName=, :lastName=, :email=, :screenName=, :login=, :password=, :company=, :title=, :openIdIdentifierId=, :auth0Identifier=
 
   attr_accessor :user
   attr_accessor :inviteToken
@@ -47,7 +47,7 @@ class SignupPresenter < Presenter
     false
   end
 
-  protected
+protected
 
   def create_user
     temp_password = user.password

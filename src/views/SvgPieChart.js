@@ -212,7 +212,7 @@ function SvgPieChart($element, vif) {
         attr('text-anchor', 'middle').
         // old function syntax used for this binding
         text(function(d) {
-          var percent = d3.select(this.parentElement).select('.slice').attr('data-percent');
+          var percent = d3.select(this.parentNode).select('.slice').attr('data-percent');
           var percentAsString = renderPercentLabel(percent);
 
           return showPercentages ? percentAsString : utils.formatNumber(d.data[1]);
@@ -276,7 +276,7 @@ function SvgPieChart($element, vif) {
     svg.selectAll('g.slice-group path').
       each(function(d) {
         const length = calculateArcLength(flyoutArcRadius, d.startAngle, d.endAngle);
-        const textEl = d3.select(this.parentElement).select('text');
+        const textEl = d3.select(this.parentNode).select('text');
         const visibility = length >= labelVisibilityThreshold ? 'visible' : 'hidden';
 
         textEl.style('visibility', visibility);

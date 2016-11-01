@@ -105,7 +105,8 @@ export const setUnits = (series, action) => {
  */
 export const onDebouncedEvent = (componentInstance, propertyEventHandler, valueHandler) => {
   return (event) => {
-    const value = _.isFunction(valueHandler) ? valueHandler(event) : event.target.value;
+    const value = _.isFunction(valueHandler) ?
+      valueHandler(event) : _.get(event, 'target.value');
     const fingerprint = btoa(propertyEventHandler);
     const debouncedEventHandler = `onDebouncedEvent${fingerprint}`;
     const isAlreadyDebounced = _.isFunction(componentInstance[debouncedEventHandler]);

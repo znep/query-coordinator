@@ -10,6 +10,12 @@ RSpec.describe StoriesController, type: :controller do
     allow(StorytellerService).to receive(:downtimes).and_return([])
 
     stub_current_domain
+
+    # There is an upcoming refactor for how the API between the gem and the hosting application operates in
+    # that the hosting app will pass in the request for the gem to derive of it's state from as a dependency.
+    # After this refactor, the hosting app can simply pass in the test request to adjust the behavior of the
+    # gem without having to do any stubbing or mocking of internals or requiring the gem to be aware that it's
+    # in test mode.
     stub_domains_request
     stub_configurations_request
 

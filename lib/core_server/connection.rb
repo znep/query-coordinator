@@ -33,6 +33,7 @@ module CoreServer
 
     # Require the caller to tell us to use batching, since we won't return anything when we do
     def get_request(path, custom_headers = {}, batch_id = nil, is_anon = false, timeout = 60)
+      custom_headers = custom_headers.to_h
       # batch_id must be both non-nil and neither true/false for legacy reasons
       if batch_id.present? && [true, false].none?(&batch_id.method(:==))
         @batch_queue[batch_id] << { :url => path, :requestType => 'GET' }
@@ -43,7 +44,7 @@ module CoreServer
       cache_key << ':anon' if is_anon
       cache.fetch(cache_key) do
         # generic_request(Net::HTTP::Get.new(path), nil, custom_headers, is_anon, timeout).body
-        make_request(Net::HTTP::Get.new(path), custom_headers.to_h.symbolize_keys).body
+        make_request(Net::HTTP::Get.new(path), custom_headers.symbolize_keys).body
       end
     end
 
@@ -57,7 +58,7 @@ module CoreServer
       if !batch_id.nil? && batch_id != true && batch_id != false
        @batch_queue[batch_id] << {:url => path, :body => payload, :requestType => 'POST'}
       else
-        cache_key = "#{request.host}:#{path}:#{payload}"
+        cache_key = "#{CurrentDomain.cname}:#{path}:#{payload}"
         cache_key += ':anon' if is_anon
         result_body = cache_req ? cache.read(cache_key) : nil
         if result_body.nil?
@@ -167,6 +168,7 @@ module CoreServer
     end
 
     def generic_request(request, json = nil, custom_headers = {}, is_anon = false, timeout = 60)
+      custom_headers = custom_headers.to_h
       requestor = User.current_user
       if requestor && requestor.session_token
         request['Cookie'] = "#{COOKIE_NAME}=#{requestor.session_token}"

@@ -1,5 +1,5 @@
-import $ from 'jQuery';
-import 'jQuery-sidebar';
+import $ from 'jquery';
+import 'jquery-sidebar';
 
 import Actions from '../Actions';
 import Environment from '../../StorytellerEnvironment';

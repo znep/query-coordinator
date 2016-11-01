@@ -1,4 +1,4 @@
-import $ from 'jQuery';
+import $ from 'jquery';
 
 import { storySaveStatusStore } from '../stores/StorySaveStatusStore';
 

@@ -1,4 +1,4 @@
-import $ from 'jQuery';
+import $ from 'jquery';
 
 import { $transient } from '../TransientElement';
 import {__RewireAPI__ as componentHTMLAPI} from 'editor/block-component-renderers/componentHTML';

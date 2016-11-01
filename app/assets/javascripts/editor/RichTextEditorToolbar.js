@@ -1,4 +1,4 @@
-import $ from 'jQuery';
+import $ from 'jquery';
 
 import { dispatcher } from './Dispatcher';
 import StorytellerUtils from '../StorytellerUtils';

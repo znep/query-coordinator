@@ -1,4 +1,4 @@
-import $ from 'jQuery';
+import $ from 'jquery';
 
 /*
  * A component that renders a modal. It is very dumb. It's entirely up

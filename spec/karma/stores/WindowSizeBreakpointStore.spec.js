@@ -1,4 +1,4 @@
-import $ from 'jQuery';
+import $ from 'jquery';
 
 import Constants from 'editor/Constants';
 import WindowSizeBreakpointStore from 'editor/stores/WindowSizeBreakpointStore';

@@ -1,4 +1,4 @@
-import $ from 'jQuery';
+import $ from 'jquery';
 import moment from 'moment';
 import React from 'react';
 import classNames from 'classnames';

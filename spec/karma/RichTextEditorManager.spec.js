@@ -1,4 +1,4 @@
-import $ from 'jQuery';
+import $ from 'jquery';
 
 import { $transient } from './TransientElement';
 import RichTextEditor from '../../app/assets/javascripts/editor/RichTextEditor';

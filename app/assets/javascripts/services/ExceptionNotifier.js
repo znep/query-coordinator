@@ -1,6 +1,6 @@
-import $ from 'jQuery';
+import $ from 'jquery';
 import _ from 'lodash';
-import Airbrake from 'airbrake';
+import Airbrake from 'airbrake-js';
 
 import Environment from '../StorytellerEnvironment';
 import StorytellerUtils from '../StorytellerUtils';

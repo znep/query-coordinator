@@ -4,7 +4,7 @@
   "description": "Socrata's Shared Component Library",
   "main": "dist/js/socrata-components",
   "publishConfig": {
-    "registry": "https://socrata.artifactoryonline.com/socrata/api/npm/npm-local"
+    "registry": "https://repo.socrata.com/artifactory/api/npm/npm-local"
   },
   "repository": {
     "type": "git",

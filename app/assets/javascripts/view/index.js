@@ -1,4 +1,5 @@
-import $ from 'jQuery';
+import 'babel-polyfill';
+import $ from 'jquery';
 import SocrataVisualizations from 'socrata-visualizations';
 
 import '../editor/componentBase';

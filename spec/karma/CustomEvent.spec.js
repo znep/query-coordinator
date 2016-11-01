@@ -1,4 +1,4 @@
-import $ from 'jQuery';
+import $ from 'jquery';
 import { $transient } from './TransientElement';
 import CustomEvent from '../../app/assets/javascripts/CustomEvent';
 

@@ -1,4 +1,4 @@
-import $ from 'jQuery';
+import $ from 'jquery';
 
 import { $transient } from './TransientElement';
 import '../../app/assets/javascripts/editor/componentBase';

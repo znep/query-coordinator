@@ -1,4 +1,4 @@
-import $ from 'jQuery';
+import $ from 'jquery';
 
 import { $transient } from './TransientElement';
 import StorytellerUtils from '../../app/assets/javascripts/StorytellerUtils';

@@ -1,4 +1,4 @@
-import $ from 'jQuery';
+import $ from 'jquery';
 import Unidragger from 'unidragger';
 
 import Actions from './Actions';

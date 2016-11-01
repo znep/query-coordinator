@@ -1,4 +1,4 @@
-import $ from 'jQuery';
+import $ from 'jquery';
 
 import Environment from '../StorytellerEnvironment';
 import StorytellerUtils from '../StorytellerUtils';

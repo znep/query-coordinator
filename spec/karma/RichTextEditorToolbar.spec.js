@@ -1,4 +1,4 @@
-import $ from 'jQuery';
+import $ from 'jquery';
 import RichTextEditorToolbar from '../../app/assets/javascripts/editor/RichTextEditorToolbar.js';
 
 describe('RichTextEditorToolbar', function() {

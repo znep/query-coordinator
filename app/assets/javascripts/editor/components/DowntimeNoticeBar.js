@@ -1,4 +1,4 @@
-import $ from 'jQuery';
+import $ from 'jquery';
 import moment from 'moment';
 
 import I18n from '../I18n';

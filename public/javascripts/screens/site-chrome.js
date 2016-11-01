@@ -1,7 +1,7 @@
 var inputTypeValidations = {
   google_analytics: /^ua-\d+-\d+$/i,
   color: /^(#(?=[a-z\d]*$)(?:.{3}|.{6})|transparent)$/i,
-  dimensions: /^\d{1,4}(px|em|rem|%)$/,
+  dimensions: /^\d{1,4}(px|pt|em|rem|%)$/,
   url: /^(https?|www|\/)/
 };
 
@@ -27,6 +27,12 @@ var validationRules = {
   'content[header][styles][logo_width]': {
     pattern: inputTypeValidations.dimensions
   },
+  'content[header][styles][display_name_fg_color]': {
+    pattern: inputTypeValidations.color
+  },
+  'content[header][styles][display_name_size]': {
+    pattern: inputTypeValidations.dimensions
+  },
   'content[header][styles][bg_color]': {
     pattern: inputTypeValidations.color
   },
@@ -49,6 +55,12 @@ var validationRules = {
     pattern: inputTypeValidations.dimensions
   },
   'content[footer][styles][logo_width]': {
+    pattern: inputTypeValidations.dimensions
+  },
+  'content[footer][styles][display_name_fg_color]': {
+    pattern: inputTypeValidations.color
+  },
+  'content[footer][styles][display_name_size]': {
     pattern: inputTypeValidations.dimensions
   },
   'content[footer][styles][bg_color]': {

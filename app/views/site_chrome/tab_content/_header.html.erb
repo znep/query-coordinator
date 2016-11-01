@@ -13,7 +13,8 @@
   :right => {
     :fields => [:header, :styles, :logo_width],
     :locale_string => "#{locale_string}.header_logo_width"
-  }) %>
+  },
+  :description => t("#{locale_string}.logo_height_logo_width.description")) %>
 
 <%= render('site_chrome/tab_content/form_field',
   :fields => [:header, :logo, :alt],
@@ -25,13 +26,25 @@
 
 <%= render('site_chrome/tab_content/form_field_pair',
   :left => {
+    :fields => [:header, :styles, :display_name_fg_color],
+    :locale_string => "#{locale_string}.header_display_name_color"
+  },
+  :right => {
+    :fields => [:header, :styles, :display_name_size],
+    :locale_string => "#{locale_string}.header_display_name_size"
+  },
+  :description => t("#{locale_string}.display_name_color_display_name_size.description")) %>
+
+<%= render('site_chrome/tab_content/form_field_pair',
+  :left => {
     :fields => [:header, :styles, :bg_color],
     :locale_string => "#{locale_string}.bar_background_color"
   },
   :right => {
     :fields => [:header, :styles, :bg_color_secondary],
     :locale_string => "#{locale_string}.bar_secondary_background_color"
-  }) %>
+  },
+  :description => t("#{locale_string}.bar_background_color_bar_secondary_background_color.description")) %>
 
 <%= render('site_chrome/tab_content/form_field',
   :fields => [:header, :styles, :fg_color],

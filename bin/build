@@ -3,7 +3,7 @@ set -ex
 
 # Called by Jenkins to build and package frontend in preparation for a deploy
 # Note that dependencies should be installed before running this script.
-bundle config socrata.artifactoryonline.com $ARTIFACTORYONLINE_USER:$ARTIFACTORYONLINE_PASSWORD
+bundle config repo.socrata.com $ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD
 bundle check || bundle install
 
 # Write REVISION file

@@ -1,5 +1,5 @@
 GEM
-  remote: https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/
+  remote: https://repo.socrata.com/artifactory/api/gems/rubygems-virtual/
   specs:
     abstract_type (0.0.7)
     actionmailer (4.2.7.1)

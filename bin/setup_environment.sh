@@ -2,31 +2,31 @@
 
 cp tools/hooks/pre-push .git/hooks/pre-push
 
-# Setup for Artifactory Online
+# Setup for Artifactory
 # 1. Credentials
-if [ ! -e "$HOME/.sbt/artifactory-online.txt" ]; then
-    touch "$HOME/.sbt/artifactory-online.txt"
-    echo 'Please enter your Artifactory Online username and encrypted password. '
+if [ ! -e "$HOME/.sbt/artifactory.txt" ]; then
+    touch "$HOME/.sbt/artifactory.txt"
+    echo 'Please enter your Artifactory username and encrypted password. '
     echo
     echo 'The encrypted password you need to use to login is in LastPass.'
-    echo 'For now, you should use the "socrata-frontend" user. We may switch to individual accounts soon.'
+    echo 'For now, you should use the "shared-engr" user. We may switch to individual accounts soon.'
     echo
-    read -rp 'Username: ' ARTIFACTORY_ONLINE_USER
-    read -rp 'Encrypted Password: ' ARTIFACTORY_ONLINE_PASSWORD
+    read -rp 'Username: ' ARTIFACTORY_USER
+    read -rp 'Encrypted Password: ' ARTIFACTORY_PASSWORD
 
-    echo "$ARTIFACTORY_ONLINE_USER, $ARTIFACTORY_ONLINE_PASSWORD" >> $HOME/.sbt/artifactory-online.txt
+    echo "$ARTIFACTORY_USER, $ARTIFACTORY_PASSWORD" >> $HOME/.sbt/artifactory.txt
 else
-    IFS=', ' read -ra CREDENTIALS <<< "$(<"$HOME/.sbt/artifactory-online.txt")"
-    ARTIFACTORY_ONLINE_USER="${CREDENTIALS[0]}"
-    ARTIFACTORY_ONLINE_PASSWORD="${CREDENTIALS[1]}"
-    echo "Artifactory Online user: $ARTIFACTORY_ONLINE_USER"
-    echo "Artifactory Online encrypted password: $ARTIFACTORY_ONLINE_PASSWORD"
+    IFS=', ' read -ra CREDENTIALS <<< "$(<"$HOME/.sbt/artifactory.txt")"
+    ARTIFACTORY_USER="${CREDENTIALS[0]}"
+    ARTIFACTORY_PASSWORD="${CREDENTIALS[1]}"
+    echo "Artifactory user: $ARTIFACTORY_USER"
+    echo "Artifactory encrypted password: $ARTIFACTORY_PASSWORD"
 fi
 
 # 2. Ruby
-gem source -a "https://${ARTIFACTORY_ONLINE_USER}:${ARTIFACTORY_ONLINE_PASSWORD}@socrata.artifactoryonline.com/socrata/api/gems/rubygems-remote/"
+gem source -a "https://${ARTIFACTORY_USER}:${ARTIFACTORY_PASSWORD}@repo.socrata.com/artifactory/api/gems/rubygems-remote/"
 gem install bundler
-bundle config socrata.artifactoryonline.com "${ARTIFACTORY_ONLINE_USER}":"${ARTIFACTORY_ONLINE_PASSWORD}"
+bundle config repo.socrata.com "${ARTIFACTORY_USER}":"${ARTIFACTORY_PASSWORD}"
 bundle install
 
 # 3. NPM
@@ -40,8 +40,8 @@ if [ "$(find /usr/local/lib/node_modules -not -user "$(whoami)")" ]; then
     sudo chown -R "$(whoami)" /usr/local/lib/node_modules
 fi
 
-npm config set registry https://socrata.artifactoryonline.com/socrata/api/npm/npm-virtual
-curl -u"${ARTIFACTORY_ONLINE_USER}":"${ARTIFACTORY_ONLINE_PASSWORD}" "https://socrata.artifactoryonline.com/socrata/api/npm/auth" >> ~/.npmrc
+npm config set registry https://repo.socrata.com/artifactory/api/npm/npm-virtual
+curl -u"${ARTIFACTORY_USER}":"${ARTIFACTORY_PASSWORD}" "https://repo.socrata.com/artifactory/api/npm/auth" >> ~/.npmrc
 npm install -g karma-cli phantomjs karma-phantomjs-launcher
 npm install
 

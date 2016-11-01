@@ -114,16 +114,16 @@ resources. This manifests as failures when loading CSS or Javascript which break
 
 ## Dependencies
 
-Dependencies are stored in artifactoryonline.com. A shared username and password can be found in 
-LastPass under the user "Socrata-frontend." Instructions on how to use these credentials can be 
-found in the "Getting Artifacts" section of the 
-[Artifactory Ops Doc](https://docs.google.com/document/d/1KihQV3-UBfZEOKIInsQlloESR6NLck8RuP4BUKzX_Y8).
+Dependencies are stored in repo.socrata.com. A shared username and password can be found in
+LastPass under the user "shared-engr". Instructions on how to use these credentials can be
+found in the "Getting Artifacts" section of the
+[Artifactory Ops Doc](https://docs.google.com/document/d/1xXUHPVtChsk1UHuw2b-m7fslCs4IVe-VTaDwrd4-6-M).
 
 To install dependencies, run:
 
     bin/setup_environment.sh
 
-This will set up NPM properly and will create a user for `frontend@socrata.com` with password `OpenData!`.
+This will set up Bundler and NPM properly and will create a user for `frontend@socrata.com` with password `OpenData!`.
 
 ## Tests
 

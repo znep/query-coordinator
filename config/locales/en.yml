@@ -2737,7 +2737,6 @@ en:
                 description: The name of your organization, city, county or state that appears with the copyright and current year.
                 placeholder: Copyright Source
               footer_background_color:
-                description: Background color of the Footer and the color of the text & links displayed inside the Footer area.
                 placeholder: "#123456"
                 title: Footer Background Color
               footer_display_name:
@@ -2745,13 +2744,13 @@ en:
                 placeholder: Footer Display Name
                 title: Footer Display Name
               footer_display_name_color:
-                description: Color and size of the text for Footer Display Name.
                 placeholder: "#123456"
                 title: Footer Display Name Color
               footer_display_name_size:
-                description: Color and size of the text for Footer Display Name.
                 placeholder: "14pt"
                 title: Footer Display Name Size
+              display_name_color_display_name_size:
+                description: Color and size of the text for Footer Display Name.
               footer_logo:
                 description: URL reference to the Footer logo. Recommended minimum size is 80 x 80 pixels.
                 placeholder: https://yoursite.gov/logos/footer_logo.png
@@ -2761,18 +2760,20 @@ en:
                 placeholder: Footer Logo
                 title: Footer Logo Alt Text for Screen Readers
               footer_logo_height:
-                description: You can optionally set a height and width for your logo displayed in the Footer.
                 error: 'Please enter a value to represent your desired logo height in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
                 placeholder: 80px
                 title: Footer Logo Height
               footer_logo_width:
-                description: You can optionally set a height and width for your logo displayed in the Footer.
                 error: 'Please enter a value to represent your desired logo width in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
                 placeholder: 80px
                 title: Footer Logo Width
+              logo_height_logo_width:
+                description: You can optionally set a height and width for your logo displayed in the Footer.
               footer_text_link_color:
                 placeholder: "#ffffff"
                 title: Footer Text & Link Color
+              background_color_text_link_color:
+                description: Background color of the Footer and the color of the text & links displayed inside the Footer area.
               link_title_label: Link Label
               link_title_placeholder: Link Text
               menu_links:
@@ -2834,13 +2835,13 @@ en:
           header:
             fields:
               bar_background_color:
-                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area. Use HEX values for color or "transparent".
                 placeholder: "#123456"
                 title: Bar Background Color (Primary)
               bar_secondary_background_color:
-                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area. Use HEX values for color or "transparent".
                 placeholder: "#123456"
                 title: Bar Background Color (Secondary)
+              bar_background_color_bar_secondary_background_color:
+                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area. Use HEX values for color or "transparent".
               bar_text_link_color:
                 description: Color of the text and links that sit atop the Header Bar.
                 placeholder: "#ffffff"
@@ -2858,23 +2859,23 @@ en:
                 placeholder: Header Display Name
                 title: Header Display Name
               header_display_name_color:
-                description: Color and size of the text for Header Display Name.
                 placeholder: "#123456"
                 title: Header Display Name Color
               header_display_name_size:
-                description: Color and size of the text for Header Display Name.
                 placeholder: "16pt"
                 title: Header Display Name Size
+              display_name_color_display_name_size:
+                description: Color and size of the text for Header Display Name.
               header_logo_height:
-                description: You can optionally set the height and width for your logo displayed in the Header Bar.
                 error: 'Please enter a value to represent your desired logo height in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
                 placeholder: 80px
                 title: Header Logo Height
               header_logo_width:
-                description: You can optionally set the height and width for your logo displayed in the Header Bar.
                 error: 'Please enter a value to represent your desired logo width in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
                 placeholder: 80px
                 title: Header Logo Width
+              logo_height_logo_width:
+                description: You can optionally set the height and width for your logo displayed in the Header Bar.
               link_title_label: Link Label
               link_title_placeholder: Link Text
               menu_links:

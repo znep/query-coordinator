@@ -12,7 +12,8 @@
   :right => {
     :fields => [:footer, :styles, :logo_width],
     :locale_string => "#{locale_string}.footer_logo_width"
-  }) %>
+  },
+  :description => t("#{locale_string}.logo_height_logo_width.description")) %>
 
 <%= render('site_chrome/tab_content/form_field',
   :fields => [:footer, :logo, :alt],
@@ -30,7 +31,8 @@
   :right => {
     :fields => [:footer, :styles, :display_name_size],
     :locale_string => "#{locale_string}.footer_display_name_size"
-  }) %>
+  },
+  :description => t("#{locale_string}.display_name_color_display_name_size.description")) %>
 
 <%= render('site_chrome/tab_content/form_field_pair',
   :left => {
@@ -40,7 +42,8 @@
   :right => {
     :fields => [:footer, :styles, :fg_color],
     :locale_string => "#{locale_string}.footer_text_link_color"
-  }) %>
+  },
+  :description => t("#{locale_string}.background_color_text_link_color.description")) %>
 
 <%= section_separator %>
 

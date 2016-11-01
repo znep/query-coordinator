@@ -7,7 +7,7 @@
     "url": "https://github.com/socrata/frontend-utils.git"
   },
   "publishConfig": {
-    "registry": "https://socrata.artifactoryonline.com/socrata/api/npm/npm-local"
+    "registry": "https://repo.socrata.com/artifactory/api/npm/npm-local"
   },
   "scripts": {
     "release": "sh tools/release.sh",

@@ -1,8 +1,8 @@
 FROM socrata/runit-ruby-2.3
 MAINTAINER Socrata <sysadmin@socrata.com>
 
-ARG ARTIFACTORYONLINE_USER
-ARG ARTIFACTORYONLINE_PASSWORD
+ARG ARTIFACTORY_USER
+ARG ARTIFACTORY_PASSWORD
 
 ENV APP_DIR=/opt/socrata/storyteller \
     APP_TMP_DIR=/opt/socrata/storyteller/tmp \
@@ -43,7 +43,7 @@ COPY Gemfile* /tmp/
 COPY .ruby-version /tmp/
 COPY vendor /tmp/vendor
 WORKDIR /tmp
-RUN bundle config socrata.artifactoryonline.com "${ARTIFACTORYONLINE_USER}":"${ARTIFACTORYONLINE_PASSWORD}"
+RUN bundle config repo.socrata.com "${ARTIFACTORY_USER}":"${ARTIFACTORY_PASSWORD}"
 RUN bundle install
 
 # Only run npm install fresh when package.json is changed

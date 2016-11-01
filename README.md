@@ -222,4 +222,4 @@ The configuration options for `eslint` can be found in `package.json` and [eslin
 ### Dependencies
 
 - Ruby dependencies are via [bundler](http://bundler.io/).
-- Javascript dependencies are via [npm](https://npmjs.org) and Artifactory ([setup](https://docs.google.com/document/d/1KihQV3-UBfZEOKIInsQlloESR6NLck8RuP4BUKzX_Y8)).
+- Javascript dependencies are via [npm](https://npmjs.org) and Artifactory ([setup](https://docs.google.com/document/d/1xXUHPVtChsk1UHuw2b-m7fslCs4IVe-VTaDwrd4-6-M)).

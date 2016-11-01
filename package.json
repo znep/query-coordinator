@@ -112,7 +112,7 @@
     "showdown": "git+https://github.com/socrata/showdown.git#openperformance-compat",
     "socrata-components": "7.7.3",
     "socrata-utils": "2.0.0",
-    "socrata-visualizations": "18.6.5",
+    "socrata-visualizations": "18.1.4",
     "squire-rte": "git+https://github.com/socrata-platform/Squire.git#1.4.2-fixes",
     "unidragger": "2.1.0",
     "unipointer": "2.1.0"

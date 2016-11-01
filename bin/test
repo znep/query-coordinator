@@ -8,7 +8,6 @@ set -ex
 rbenv install -s `cat .ruby-version`
 
 gem install bundler --conservative
-bundle config socrata.artifactoryonline.com $ARTIFACTORYONLINE_USER:$ARTIFACTORYONLINE_PASSWORD
 
 bin/test_setup
 ( cd engine && bundle exec rake test )

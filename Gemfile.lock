@@ -12,7 +12,7 @@ PATH
       sass
 
 GEM
-  remote: https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/
+  remote: https://repo.socrata.com/artifactory/api/gems/rubygems-virtual/
   specs:
     actionmailer (4.2.6)
       actionpack (= 4.2.6)

@@ -51,34 +51,23 @@ module CoreServer
       create_request(path, payload, headers.with_indifferent_access, use_cache, batch_id, is_anon, timeout)
     end
 
-    def create_request(path, *args)
-      payload, custom_headers, use_cache, batch_id, is_anon, timeout = args
-      payload ||= '{}'
-      (custom_headers ||= {}).symbolize_keys!
-      use_cache ||= false
-      is_anon ||= false
-      timeout ||= 60
-
+    def create_request(path, payload = "{}", custom_headers = {}, cache_req = false, batch_id = nil,
+                      is_anon = false, timeout = 60)
       # Check true/false for legacy
-      if batch_id.present? && [true, false].none?(&batch_id.method(:==))
-        @batch_queue[batch_id] << { :url => path, :body => payload, :requestType => 'POST' }
-        return
+      if !batch_id.nil? && batch_id != true && batch_id != false
+       @batch_queue[batch_id] << {:url => path, :body => payload, :requestType => 'POST'}
+      else
+        cache_key = "#{request.host}:#{path}:#{payload}"
+        cache_key += ':anon' if is_anon
+        result_body = cache_req ? cache.read(cache_key) : nil
+        if result_body.nil?
+          result_body = generic_request(Net::HTTP::Post.new(path),
+                                        payload, custom_headers, is_anon, timeout).body
+          cache.write(cache_key, result_body) if cache_req
+        end
+
+        result_body
       end
-
-      cache_key = "#{CurrentDomain.cname}:#{path}:#{payload}"
-      cache_key << ':anon' if is_anon
-
-      request = lambda do
-        generic_request(
-          Net::HTTP::Post.new(path),
-          payload,
-          custom_headers,
-          is_anon,
-          timeout
-        ).body
-      end
-
-      use_cache ? cache.fetch(cache_key) &request : request.call
     end
 
     def update_request(path, payload = '', custom_headers = {}, batch_id = nil)

@@ -321,11 +321,11 @@ Required |Optional
 ##### `showOtherCategory`
 `showOtherCategory` controls whether grouping data above specified limit into `(other)` category. 
 Default limit in Pie Chart is 12 and `showOtherCategory` is true by default.
-There isn't a default limit in Bar Chart and `showOtherCategory` is false by default.
+There isn't a default limit in Bar Chart and Column Chart. `showOtherCategory` is false by default.
 
 Required |Optional
 :-------:|:---------------------------:
-    -    |Bar Chart, Pie Chart
+    -    |Bar Chart, Pie Chart, Column Chart
 
 ### The `format` Object
 The format object specifies the format and version of the vif. It is of type `<object>`. This object must have the following properties:
@@ -464,6 +464,24 @@ The following example would cause a column in a Column Chart with a value of 1 t
   ]
 }
 ```
+
+##### `limit`
+`limit` specifies maximum columns/bars/slices can be displayed on chart.
+
+```
+{
+  series: [
+    {
+      ...
+      limit: 10
+    }
+  ]
+}
+```
+ 
+ Required |Optional
+ :-------:|:---------------------------:
+     -    |Bar Chart, Pie Chart, Column Chart
 
 ### Appendix: SoQL Filter Objects
 

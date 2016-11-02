@@ -4,7 +4,14 @@ import { connect } from 'react-redux';
 import { translate } from '../../../I18n';
 import { onDebouncedEvent } from '../../helpers';
 import { isLoading, hasData, hasError } from '../../selectors/metadata';
-import { getVisualizationType, getLimitCount, getShowOtherCategory, isBarChart, isPieChart } from '../../selectors/vifAuthoring';
+import {
+  getVisualizationType,
+  getLimitCount,
+  getShowOtherCategory,
+  isBarChart,
+  isPieChart,
+  isColumnChart
+} from '../../selectors/vifAuthoring';
 import { DEFAULT_LIMIT_FOR_SHOW_OTHER_CATEGORY } from '../../constants';
 import {
   setLimitNoneAndShowOtherCategory,
@@ -44,7 +51,12 @@ export var DataPane = React.createClass({
     const limitCount = getLimitCount(vifAuthoring);
     const showOtherCategory = getShowOtherCategory(vifAuthoring);
     const visualizationType = getVisualizationType(vifAuthoring);
-    const translationKey = visualizationType == 'barChart' ? 'bar_chart_limit' : 'pie_chart_limit';
+    const translationKeys = {
+      barChart: 'bar_chart_limit',
+      pieChart: 'pie_chart_limit',
+      columnChart: 'column_chart_limit',
+    };
+    const translationKey = translationKeys[visualizationType];
     const limitCountDisabled = limitCount === null;
 
     // 'Do not limit results' radio button
@@ -172,7 +184,12 @@ export var DataPane = React.createClass({
       metadataInfo = this.renderMetadataLoading();
     } else {
 
-      if (isBarChart(vifAuthoring) || isPieChart(vifAuthoring)) {
+      const showLimitAndShowOtherCategory =
+        isBarChart(vifAuthoring) ||
+        isPieChart(vifAuthoring) ||
+        isColumnChart(vifAuthoring);
+
+      if (showLimitAndShowOtherCategory) {
         limitAndShowOtherCategory = this.renderLimitAndShowOtherCategory();
       }
     }

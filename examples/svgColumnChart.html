@@ -18,7 +18,8 @@
       #column-chart-2,
       #column-chart-3,
       #column-chart-4,
-      #column-chart-5 {
+      #column-chart-5,
+      #column-chart-6 {
         display: block;
         position: relative;
         width: 640px;
@@ -33,6 +34,7 @@
     <div id="column-chart-3"></div>
     <div id="column-chart-4"></div>
     <div id="column-chart-5"></div>
+    <div id="column-chart-6"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -297,6 +299,58 @@
       columnChart5Vif.configuration.measureAxisMinValue = 250;
       columnChart5Vif.configuration.measureAxisMaxValue = 500;
 
+      var columnChart6Vif = {
+        configuration: {
+          viewSourceDataLink: true,
+          showOtherCategory: true
+        },
+        description: 'Sum of Liquor sales by brand, ordered by bottle count descending, column limit = 10, showOtherCategory = true',
+        series: [
+          {
+            color: {
+              secondary: null,
+              highlight: '#44ffaa'
+            },
+            dataSource: {
+              datasetUid: 'm3tr-qhgy',
+              dimension: {
+                columnName: 'category_name',
+                aggregationFunction: null
+              },
+              domain: 'data.iowa.gov',
+              measure: {
+                columnName: 'sale_bottles',
+                aggregationFunction: 'sum'
+              },
+              type: 'socrata.soql',
+              filters: [],
+              orderBy: {
+                parameter: 'measure',
+                sort: 'desc'
+              },
+              limit: 10
+            },
+            label: 'Quantity',
+            type: 'columnChart',
+            unit: {
+              one: 'bottle',
+              other: 'bottles'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        scale: {},
+        title: 'Iowa Liquor Sales'
+      };
+
       /**
        * Instantiate the plugins
        */
@@ -342,6 +396,14 @@
         handleVifUpdated
       );
       $columnChart5Element.socrataSvgColumnChart(columnChart5Vif);
+
+      var $columnChart6Element = $('#column-chart-6');
+      $columnChart6Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $columnChart6Element.on(
+        'SOCRATA_VISUALIZATION_VIF_UPDATED',
+        handleVifUpdated
+      );
+      $columnChart6Element.socrataSvgColumnChart(columnChart6Vif);
 
       /**
        * Handle plugin events

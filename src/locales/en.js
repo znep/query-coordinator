@@ -94,6 +94,12 @@ export default {
           count: 'Show',
           description: 'Max of 12 slices. Additional values grouped into "Other"'
         },
+        column_chart_limit: {
+          title: 'Limit Displayed Columns',
+          subtitle: 'Number of columns to display',
+          none: 'Show all',
+          count: 'Show'
+        },
         show_other_category: {
           title: 'Group remaining as "Other"'
         }

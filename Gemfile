@@ -1,4 +1,4 @@
-source 'https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-virtual/'
+source 'https://repo.socrata.com/artifactory/api/gems/rubygems-virtual'
 
 ruby '2.3.0'
 

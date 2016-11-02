@@ -1,9 +1,19 @@
-<% if using_custom_header_footer? %>
-  <%= render 'custom_content/custom',
-    :section => 'header',
-    :content => custom_header_footer_content[:header] %>
-<% else %>
-  <%= render "site_chrome/#{current_template}/header", :size => local_assigns[:size] %>
-<% end %>
+<% begin %>
+  <% if using_custom_header_footer? %>
+    <%= render 'custom_content/custom',
+      :section => 'header',
+      :content => custom_header_footer_content[:header] %>
+  <% else %>
+    <%= render "site_chrome/#{current_template}/header", :size => local_assigns[:size] %>
+  <% end %>
 
-<%= render 'site_chrome/preview_mode_warning' if in_preview_mode? %>
+  <%= render 'site_chrome/preview_mode_warning' if in_preview_mode? %>
+<% rescue StandardError, SyntaxError => e
+  error_msg = "Site Chrome error parsing configuration: #{e.inspect}"
+  Rails.logger.debug(error_msg)
+  ::Airbrake.notify(
+    :error_class => 'InvalidSiteChromeConfiguration',
+    :error_message => error_msg
+  )
+  error_msg
+end %>

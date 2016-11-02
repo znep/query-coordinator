@@ -303,44 +303,7 @@
                   "default_locale": "en",
                   "window_icon": "/socrata_site_chrome/images/default_favicon.ico",
                   "window_title_display": "",
-                  "social_shares": {
-                    "youtube": {
-                      "url": ""
-                    },
-                    "yammer": {
-                      "url": ""
-                    },
-                    "twitter": {
-                      "url": ""
-                    },
-                    "github": {
-                      "url": "https://github.com/"
-                    },
-                    "vimeo": {
-                      "url": ""
-                    },
-                    "flickr": {
-                      "url": ""
-                    },
-                    "facebook": {
-                      "url": "http://facebook.com"
-                    },
-                    "linked_in": {
-                      "url": ""
-                    },
-                    "tumblr": {
-                      "url": ""
-                    },
-                    "pinterest": {
-                      "url": "https://www.pinterest.com/socrata/"
-                    },
-                    "google_plus": {
-                      "url": ""
-                    },
-                    "instagram": {
-                      "url": ""
-                    }
-                  },
+                  "social_shares": {},
                   "styles": {
                     "font_family": "Open Sans"
                   }

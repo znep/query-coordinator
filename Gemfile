@@ -42,7 +42,7 @@ gem 'lograge'
 gem 'aws-sdk-v1'
 
 # File uploading
-gem 'paperclip', '~> 4.3'
+gem 'paperclip', '4.3.6'
 
 # Run async jobs in the background
 gem 'delayed_job_active_record'

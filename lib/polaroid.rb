@@ -17,7 +17,7 @@ class Polaroid < SocrataHttp
 
 
   def on_failure(response, url, verb)
-    result = { status: response.code, content_type: 'application/json' }
+    result = { status: response.code.to_s, content_type: 'application/json' }
 
     if json?(response.content_type)
       begin

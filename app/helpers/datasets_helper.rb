@@ -430,9 +430,7 @@ module DatasetsHelper
     view.metadata.try(:rowLabel)
   end
 
-  private
-
-  # all of the hide_* methods are invoked only by sidebar_hidden.
+  # All of the hide_* methods are invoked only by sidebar_hidden. There _were_ private, but are no longer.
 
   def hide_redirect?
     return false if force_editable?

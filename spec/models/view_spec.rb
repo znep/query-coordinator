@@ -404,4 +404,31 @@ describe View do
         to eq('https://localhost/resource/wombats.json')
     end
   end
+
+  describe '.new_backend?' do
+    let(:view) { View.new }
+
+    xit 'defaults to nil, because why not' do
+      # this test has different results on Jenkins!
+      expect(view.newBackend?).to be(nil)
+    end
+
+    it 'reflects the underlying model data' do
+      view.data = {'newBackend' => false}
+      expect(view.newBackend?).to be(false)
+
+      view.data = {'newBackend' => true}
+      expect(view.newBackend?).to be(true)
+    end
+
+    it 'reflects the underlying model update data which may override model data' do
+      view.data = {'newBackend' => false}
+      view.update_data = {'newBackend' => true}
+      expect(view.newBackend?).to be(true)
+
+      view.data = {'newBackend' => true}
+      view.update_data = {'newBackend' => false}
+      expect(view.newBackend?).to be(false)
+    end
+  end
 end

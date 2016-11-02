@@ -759,6 +759,16 @@ function SvgBarChart($element, vif) {
       const limitMin = self.getMeasureAxisMinValue();
       const limitMax = self.getMeasureAxisMaxValue();
 
+      if (limitMin && limitMax && limitMin >= limitMax) {
+        self.renderError(
+          I18n.translate(
+            'visualizations.common.validation.errors.' +
+            'measure_axis_min_should_be_lesser_then_max'
+          )
+        );
+        return;
+      }
+
       minXValue = limitMin || _.min([dataMinXValue, 0]);
       maxXValue = limitMax || _.max([dataMaxXValue, 0]);
     } catch (error) {

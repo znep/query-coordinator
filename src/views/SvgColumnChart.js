@@ -721,7 +721,20 @@ function SvgColumnChart($element, vif) {
 
     try {
       const dataMinYValue = getMinYValue(groupedDataToRender);
+      const dataMaxYValue = getMaxYValue(groupedDataToRender);
+
       const limitMin = self.getMeasureAxisMinValue();
+      const limitMax = self.getMeasureAxisMaxValue();
+
+      if (limitMin && limitMax && limitMin >= limitMax) {
+        self.renderError(
+          I18n.translate(
+            'visualizations.common.validation.errors.' +
+            'measure_axis_min_should_be_lesser_then_max'
+          )
+        );
+        return;
+      }
 
       if (self.getYAxisScalingMode() === 'showZero' && !limitMin) {
         minYValue = _.min([dataMinYValue, 0]);
@@ -730,9 +743,6 @@ function SvgColumnChart($element, vif) {
       } else {
         minYValue = dataMinYValue;
       }
-
-      const dataMaxYValue = getMaxYValue(groupedDataToRender);
-      const limitMax = self.getMeasureAxisMaxValue();
 
       if (self.getYAxisScalingMode() === 'showZero' && !limitMax) {
         maxYValue = _.max([dataMaxYValue, 0]);

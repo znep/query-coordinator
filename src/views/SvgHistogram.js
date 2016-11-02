@@ -585,9 +585,19 @@ function SvgHistogram($element, vif) {
 
     try {
       const limitMin = self.getMeasureAxisMinValue();
-      minYValue = limitMin || _.min([measureExtent[0], 0]);
-
       const limitMax = self.getMeasureAxisMaxValue();
+
+      if (limitMin && limitMax && limitMin >= limitMax) {
+        self.renderError(
+          I18n.translate(
+            'visualizations.common.validation.errors.' +
+            'measure_axis_min_should_be_lesser_then_max'
+          )
+        );
+        return;
+      }
+
+      minYValue = limitMin || _.min([measureExtent[0], 0]);
       maxYValue = limitMax || _.max([measureExtent[1], 0]);
     } catch (error) {
       self.renderError(error.message);

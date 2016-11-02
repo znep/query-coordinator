@@ -299,7 +299,8 @@ export default {
           need_all_series_from_same_domain: 'This visualization requires all series to be from the same domain.',
           need_single_series: 'This visualization requires a single series.',
           measure_axis_min_value_should_be_numeric: 'If configured, the minimum value for the measure axis must be a number.',
-          measure_axis_max_value_should_be_numeric: 'If configured, the maximum value for the measure axis must be a number.'
+          measure_axis_max_value_should_be_numeric: 'If configured, the maximum value for the measure axis must be a number.',
+          measure_axis_min_should_be_lesser_then_max: 'Please ensure your minimum value is smaller than your maximum value.'
         }
       },
       error_other_category_query_failed: 'An error was encountered when preparing the "Other" grouping. This data configuration may not support the \'Group remaining as "Other"\' option.',

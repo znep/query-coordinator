@@ -45,7 +45,7 @@ RSpec.describe Aws::BucketEncrypter do
 
   describe '#encrypt' do
     it 'it calls system with aws command' do
-      expected = "aws s3 cp --region #{region} --profile #{environment} --recursive --sse s3://#{bucket} s3://#{bucket}"
+      expected = "aws s3 cp --region #{region} --profile #{environment} --recursive --sse --acl public-read s3://#{bucket} s3://#{bucket}"
       expect(subject).to receive(:system).with(expected)
       subject.encrypt
     end

@@ -10,6 +10,8 @@ import { storyPermissionsManager } from '../StoryPermissionsManager';
 import { storyStore } from '../stores/StoryStore';
 import { storySaveStatusStore} from '../stores/StorySaveStatusStore';
 
+const { STORY_UID } = Environment;
+
 export const StoryPublicationStatus = React.createClass({
   getInitialState() {
     return {
@@ -68,7 +70,6 @@ export const StoryPublicationStatus = React.createClass({
   },
 
   renderLastSavedMessage() {
-    const { STORY_UID } = Environment;
     const storyUpdatedAt = storyStore.getStoryUpdatedAt(STORY_UID);
     const humanFriendlyUpdatedAt = moment(storyUpdatedAt).calendar().toString();
 
@@ -85,10 +86,10 @@ export const StoryPublicationStatus = React.createClass({
 
   renderPublicationMessage() {
     let message;
-    const isPublic = storyPermissionsManager.isPublic();
-    const havePublishedAndDraftDiverged = storyPermissionsManager.havePublishedAndDraftDiverged();
+    const isPublic = storyStore.isStoryPublic(STORY_UID);
+    const isCurrentDraftUnpublished = storyStore.isCurrentDraftUnpublished(STORY_UID);
 
-    if (isPublic && havePublishedAndDraftDiverged) {
+    if (isPublic && isCurrentDraftUnpublished) {
       message = 'previously_published';
     } else if (isPublic) {
       message = 'has_been_published';
@@ -105,8 +106,8 @@ export const StoryPublicationStatus = React.createClass({
 
   renderPublishButton() {
     const { isLoading } = this.state;
-    const isPublic = storyPermissionsManager.isPublic();
-    const havePublishedAndDraftDiverged = storyPermissionsManager.havePublishedAndDraftDiverged();
+    const isPublic = storyStore.isStoryPublic(STORY_UID);
+    const isCurrentDraftUnpublished = storyStore.isCurrentDraftUnpublished(STORY_UID);
 
     const buttonText = isPublic ?
       'status.update_public_version' :
@@ -119,7 +120,7 @@ export const StoryPublicationStatus = React.createClass({
         'btn-busy': isLoading
       }),
       onClick: this.publicize,
-      disabled: isPublic && !havePublishedAndDraftDiverged
+      disabled: isPublic && !isCurrentDraftUnpublished
     };
 
     return (
@@ -130,7 +131,7 @@ export const StoryPublicationStatus = React.createClass({
   },
 
   renderPrivateButton() {
-    const isPublic =  storyPermissionsManager.isPublic();
+    const isPublic =  storyStore.isStoryPublic(STORY_UID);
     const buttonAttributes = {
       className: 'btn btn-transparent',
       onClick: this.privatize
@@ -183,11 +184,12 @@ export const StoryPublicationStatus = React.createClass({
 
   render() {
     let translationKey;
-    if (!storyStore.storyExists(Environment.STORY_UID)) {
+
+    if (!storyStore.doesStoryExist(STORY_UID)) {
       return null; // Story not loaded yet.
     }
-    const isPublic = storyPermissionsManager.isPublic();
-    const publishedAndDraftDiverged = storyPermissionsManager.havePublishedAndDraftDiverged();
+    const isPublic = storyStore.isStoryPublic(STORY_UID);
+    const isCurrentDraftUnpublished = storyStore.isCurrentDraftUnpublished(STORY_UID);
 
     const wrapperAttributes = {
       className: classNames('story-publication-status', {
@@ -203,13 +205,13 @@ export const StoryPublicationStatus = React.createClass({
 
     const statusIconAttributes = {
       className: classNames('story-publication-status-icon', {
-        'unpublished icon-warning-alt2': !isPublic || publishedAndDraftDiverged,
-        'published icon-checkmark3': isPublic && !publishedAndDraftDiverged
+        'unpublished icon-warning-alt2': !isPublic || isCurrentDraftUnpublished,
+        'published icon-checkmark3': isPublic && !isCurrentDraftUnpublished
       })
     };
 
     if (isPublic) {
-      if (publishedAndDraftDiverged) {
+      if (isCurrentDraftUnpublished) {
         translationKey = 'status.draft';
       } else {
         translationKey = 'status.published';

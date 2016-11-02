@@ -1,15 +1,15 @@
 FROM socrata/runit-ruby-2.3
 MAINTAINER Socrata <sysadmin@socrata.com>
 
-ARG ARTIFACTORYONLINE_USER
-ARG ARTIFACTORYONLINE_PASSWORD
+ARG ARTIFACTORY_USER
+ARG ARTIFACTORY_PASSWORD
 
-ENV APP_DIR /opt/socrata/storyteller
-ENV APP_TMP_DIR ${APP_DIR}/tmp
-ENV RACK_ENV production
-ENV RAILS_ENV production
-ENV RAILS_SERVE_STATIC_FILES true
-ENV SERVICE_DIR_BASE /etc/service
+ENV APP_DIR=/opt/socrata/storyteller \
+    APP_TMP_DIR=/opt/socrata/storyteller/tmp \
+    RACK_ENV=production \
+    RAILS_ENV=production \
+    RAILS_SERVE_STATIC_FILES=true \
+    SERVICE_DIR_BASE=/etc/service
 
 # Install additional packages for building our gems
 RUN DEBIAN_FRONTEND=noninteractive && \
@@ -36,14 +36,14 @@ COPY runit/core_events_listener ${SERVICE_DIR_BASE}/storyteller-core-events-list
 
 # Run this early since we don't expect it to change very often
 RUN npm install -g n
-RUN n lts
+RUN n 6.9.1
 
 # Only bundle install when Gemfile has changed
 COPY Gemfile* /tmp/
 COPY .ruby-version /tmp/
 COPY vendor /tmp/vendor
 WORKDIR /tmp
-RUN bundle config socrata.artifactoryonline.com "${ARTIFACTORYONLINE_USER}":"${ARTIFACTORYONLINE_PASSWORD}"
+RUN bundle config repo.socrata.com "${ARTIFACTORY_USER}":"${ARTIFACTORY_PASSWORD}"
 RUN bundle install
 
 # Only run npm install fresh when package.json is changed

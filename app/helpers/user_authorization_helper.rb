@@ -20,42 +20,52 @@ module UserAuthorizationHelper
     authorization['superAdmin'] == true
   end
 
+  # NOTE: Generally, this is not what you want to check against.
+  # Roles should be treated as bags of permissions (which can be customized!).
+  # Users can be assigned roles, but behaviors should check against permissions.
   def storyteller_role?
     ['editor_stories', 'publisher_stories'].include?(authorization['domainRole'])
   end
 
   def can_create_story?
-    admin? || (owner? && storyteller_role?)
+    admin? || (owner? && has_domain_right?('create_story'))
   end
 
   def can_edit_story?
     admin? ||
-    (owner? && storyteller_role?) ||
-    contributor?
+    contributor? ||
+    (owner? && has_domain_right?('edit_story'))
   end
 
   def can_view_unpublished_story?
-    can_edit_story? || viewer?
+    admin? ||
+    contributor? ||
+    viewer? ||
+    (owner? && has_domain_right?('view_unpublished_story'))
   end
 
   def can_edit_title_and_description?
-    admin? || (owner? && storyteller_role?)
+    admin? || (owner? && has_domain_right?('edit_story_title_desc'))
   end
 
   def can_make_copy?
-    admin? || (owner? && storyteller_role?)
+    admin? || (owner? && has_domain_right?('create_story_copy'))
   end
 
   def can_manage_collaborators?
-    admin? || (owner? && storyteller_role?)
+    admin? || (owner? && has_domain_right?('manage_story_collaborators'))
   end
 
   def can_manage_story_visibility?
-    admin? || (owner? && storyteller_role?)
+    admin? || (owner? && has_domain_right?('manage_story_visibility'))
+  end
+
+  def can_publish_story?
+    admin? || (owner? && has_domain_right?('manage_story_public_version'))
   end
 
   def can_see_story_stats?
-    admin? || (owner? && storyteller_role?)
+    admin? || (owner? && storyteller_role?) # TODO: is there a corresponding right?
   end
 
   def can_view_goal?(goal_uid)
@@ -79,14 +89,14 @@ module UserAuthorizationHelper
   end
 
   def has_view_role?(role)
-    authorization['viewRole'] == role
+    authorization['viewRole'].present? && authorization['viewRole'] == role
   end
 
   def has_domain_role?(role)
-    authorization['domainRole'] == role
+    authorization['domainRole'].present? && authorization['domainRole'] == role
   end
 
   def has_domain_right?(right)
-    authorization['domainRights'].include?(right)
+    authorization['domainRights'].present? && authorization['domainRights'].include?(right)
   end
 end

@@ -8,46 +8,36 @@ import {__RewireAPI__ as StoryStoreAPI} from 'editor/stores/StoryStore';
 import CollaboratorsStore, {__RewireAPI__ as CollaboratorsStoreAPI} from 'editor/stores/CollaboratorsStore';
 import CollaboratorsRenderer, {__RewireAPI__ as CollaboratorsRendererAPI} from 'editor/renderers/CollaboratorsRenderer';
 
-describe('CollaboratorsRenderer', function() {
+describe('CollaboratorsRenderer', () => {
 
-  var dispatcher;
-  var $collaborators;
-  var renderer;
-  var server;
-  var debounceStub;
+  let dispatcher;
+  let $collaborators;
+  let renderer;
+  let server;
+  let debounceStub;
 
+  let userLookupResponse;
   function respondWithNoUserFound() {
-    server.respondWith([
-      200,
-      {'Content-Type': 'application/json'},
-      JSON.stringify({
-        results: []
-      })
-    ]);
+    userLookupResponse = null;
   }
 
   function respondWithUserRole(role) {
-    server.respondWith([
-      200,
-      { 'Content-Type': 'application/json' },
-      JSON.stringify({
-        results: [
-          { roleName: role }
-        ]
-      })
-    ]);
+    userLookupResponse = { roleName: role };
   }
 
-  beforeEach(function() {
-    debounceStub = sinon.stub(window._, 'debounce', function(fn) {
-      return fn;
-    });
+  function MockCollaboratorsDataProvider() {
+    this.lookupUserByEmail = () => Promise.resolve(userLookupResponse);
+    this.getCollaborators = () => Promise.resolve([]);
+  }
+
+  beforeEach(() => {
+    debounceStub = sinon.stub(window._, 'debounce', (fn) => fn);
 
     server = sinon.fakeServer.create();
     server.respondImmediately = true;
     dispatcher = new Dispatcher();
 
-    var environment = {
+    let environment = {
       STORY_UID: 'what-what',
       CURRENT_USER: {id: 'test-test'}
     };
@@ -62,6 +52,7 @@ describe('CollaboratorsRenderer', function() {
     });
     CollaboratorsRendererAPI.__Rewire__('collaboratorsStore', new CollaboratorsStore());
     CollaboratorsRendererAPI.__Rewire__('Environment', environment);
+    CollaboratorsRendererAPI.__Rewire__('CollaboratorsDataProvider', MockCollaboratorsDataProvider);
 
     renderer = new CollaboratorsRenderer();
 
@@ -72,7 +63,7 @@ describe('CollaboratorsRenderer', function() {
     $collaborators = $('#collaborators-modal');
   });
 
-  afterEach(function() {
+  afterEach(() => {
     delete window.PRIMARY_OWNER_UID;
 
     StoreAPI.__ResetDependency__('dispatcher');
@@ -82,35 +73,36 @@ describe('CollaboratorsRenderer', function() {
 
     CollaboratorsRendererAPI.__ResetDependency__('collaboratorsStore');
     CollaboratorsRendererAPI.__ResetDependency__('Environment');
+    CollaboratorsRendererAPI.__ResetDependency__('CollaboratorsDataProvider');
 
     renderer.destroy();
     debounceStub.restore();
     server.restore();
   });
 
-  describe('rendering', function() {
-    it('should have a quick-add input area', function() {
+  describe('rendering', () => {
+    it('should have a quick-add input area', () => {
       assert.lengthOf($collaborators.find('.modal-input-group'), 1);
     });
 
-    it('should have a button group', function() {
+    it('should have a button group', () => {
       assert.lengthOf($collaborators.find('.modal-button-group'), 1);
     });
 
-    describe('with no collaborators', function() {
-      it('should have a collaborators table', function() {
+    describe('with no collaborators', () => {
+      it('should have a collaborators table', () => {
         assert.lengthOf($collaborators.find('table'), 1);
       });
 
-      it('should have an empty notice entry in the table', function() {
+      it('should have an empty notice entry in the table', () => {
         assert.lengthOf($collaborators.find('td.collaborators-empty'), 1);
       });
     });
 
-    describe('with collaborators', function() {
-      var $tr;
+    describe('with collaborators', () => {
+      let $tr;
 
-      beforeEach(function() {
+      beforeEach(() => {
         dispatcher.dispatch({
           action: Actions.COLLABORATORS_LOAD,
           collaborators: [{email: 'already-shared-with@socrata.com', accessLevel: 'accessLevel', uid: 'four-four', displayName: 'Hello'}]
@@ -123,11 +115,11 @@ describe('CollaboratorsRenderer', function() {
         $tr = $collaborators.find('tbody tr');
       });
 
-      it('should have a collaborators table', function() {
+      it('should have a collaborators table', () => {
         assert.lengthOf($collaborators.find('table'), 1);
       });
 
-      it('should have one, valid entry in the table', function() {
+      it('should have one, valid entry in the table', () => {
         $tr = $collaborators.find('tbody tr');
 
         assert.lengthOf($tr, 1);
@@ -136,19 +128,19 @@ describe('CollaboratorsRenderer', function() {
         assert.isTrue($tr.hasClass('loaded'));
       });
 
-      it('should have data-* attributes that identify the table entry', function() {
+      it('should have data-* attributes that identify the table entry', () => {
         assert.equal($tr.attr('data-email'), 'already-shared-with@socrata.com');
         assert.equal($tr.attr('data-access-level'), 'accessLevel');
       });
 
-      it('should have a class that identifies the table\'s state', function() {
+      it('should have a class that identifies the table\'s state', () => {
         assert.isTrue($tr.hasClass('loaded'));
       });
     });
   });
 
-  describe('events', function() {
-    beforeEach(function() {
+  describe('events', () => {
+    beforeEach(() => {
       dispatcher.dispatch({
         action: Actions.COLLABORATORS_LOAD,
         collaborators: [{
@@ -162,9 +154,9 @@ describe('CollaboratorsRenderer', function() {
       });
     });
 
-    describe('closing the modal', function() {
-      describe('when clicking the "Cancel" button', function() {
-        it('should add a "hidden" class', function() {
+    describe('closing the modal', () => {
+      describe('when clicking the "Cancel" button', () => {
+        it('should add a "hidden" class', () => {
           $collaborators.
             find('.btn-default[data-action="COLLABORATORS_CANCEL"]').
             click();
@@ -173,15 +165,15 @@ describe('CollaboratorsRenderer', function() {
         });
       });
 
-      describe('when the modal indicates it is dismissed', function() {
-        it('should add a "hidden" class to the modal', function() {
+      describe('when the modal indicates it is dismissed', () => {
+        it('should add a "hidden" class to the modal', () => {
           $collaborators.trigger('modal-dismissed');
 
           assert.isTrue($collaborators.hasClass('hidden'));
         });
 
-        it('should add a "hidden" class to any warnings present', function() {
-          var $alreadyAddedWarning = $collaborators.find('.already-added');
+        it('should add a "hidden" class to any warnings present', () => {
+          let $alreadyAddedWarning = $collaborators.find('.already-added');
 
           $alreadyAddedWarning.removeClass('hidden');
           $collaborators.trigger('modal-dismissed');
@@ -191,14 +183,14 @@ describe('CollaboratorsRenderer', function() {
       });
     });
 
-    describe('adding a collaborator', function() {
-      var $email;
+    describe('adding a collaborator', () => {
+      let $email;
 
-      beforeEach(function() {
+      beforeEach(() => {
         $email = $collaborators.find('input[type="email"]');
       });
 
-      it('should disallow an improperly-structured email', function() {
+      it('should disallow an improperly-structured email', () => {
         $email.
           val('hello').
           trigger('input');
@@ -208,7 +200,7 @@ describe('CollaboratorsRenderer', function() {
         );
       });
 
-      it('should disallow adding the user\'s email address', function() {
+      it('should disallow adding the user\'s email address', () => {
         $email.
           val('rawr@socrata.com').
           trigger('input');
@@ -218,7 +210,7 @@ describe('CollaboratorsRenderer', function() {
         );
       });
 
-      it('should disallow adding an already-added user\'s email address', function() {
+      it('should disallow adding an already-added user\'s email address', () => {
         $email.
           val('already-shared-with@socrata.com').
           trigger('input');
@@ -228,7 +220,7 @@ describe('CollaboratorsRenderer', function() {
         );
       });
 
-      it('should disallow a properly-structured but unregistered email address', function(done) {
+      it('should disallow a properly-structured but unregistered email address', (done) => {
         $email.
           val('valid-but-not-a-user@valid.com').
           trigger('input');
@@ -236,7 +228,7 @@ describe('CollaboratorsRenderer', function() {
         respondWithNoUserFound();
 
         setTimeout(
-          function() {
+          () => {
             assert.isTrue(
               $collaborators.find('[data-action="COLLABORATORS_ADD"]').prop('disabled')
             );
@@ -247,16 +239,16 @@ describe('CollaboratorsRenderer', function() {
         );
       });
 
-      describe('user has a stories/administrator role', function() {
+      describe('user has a stories/administrator role', () => {
         verifyAddButtonBehaviorWithRole('administrator');
 
-        it('should enable owner selection for an administrator', function(done) {
+        it('should enable owner selection for an administrator', (done) => {
           respondWithUserRole('administrator');
 
           $email.val('valid@valid.com').trigger('input');
 
           setTimeout(
-            function() {
+            () => {
 
               assert.isFalse(
                 $collaborators.find('.modal-radio-group ul li:last-child label').hasClass('disabled')
@@ -268,13 +260,13 @@ describe('CollaboratorsRenderer', function() {
           );
         });
 
-        it('should enable owner selection for a stories role', function(done) {
+        it('should enable owner selection for a stories role', (done) => {
           respondWithUserRole('publisher_stories');
 
           $email.val('valid@valid.com').trigger('input');
 
           setTimeout(
-            function() {
+            () => {
               assert.isFalse(
                 $collaborators.find('.modal-radio-group ul li:last-child label').hasClass('disabled')
               );
@@ -286,16 +278,16 @@ describe('CollaboratorsRenderer', function() {
         });
       });
 
-      describe('user does not have a stories/administrator role', function() {
+      describe('user does not have a stories/administrator role', () => {
         verifyAddButtonBehaviorWithRole('nope');
 
-        it('should disable owner selection for users without a stories/administrator role', function(done) {
+        it('should disable owner selection for users without a stories/administrator role', (done) => {
           respondWithUserRole('nope');
 
           $email.val('valid@valid.com').trigger('input');
 
           setTimeout(
-            function() {
+            () => {
               assert.isTrue(
                 $collaborators.find('.modal-radio-group ul li:last-child label').hasClass('disabled')
               );
@@ -308,20 +300,20 @@ describe('CollaboratorsRenderer', function() {
       });
 
       function verifyAddButtonBehaviorWithRole(role) {
-        describe('add button', function() {
-          var $resultantTableRow;
+        describe('add button', () => {
+          let $resultantTableRow;
 
           function addCollaborator() {
             $collaborators.find('.modal-input-group button').click();
           }
 
-          beforeEach(function(done) {
+          beforeEach((done) => {
             respondWithUserRole(role);
 
             $email.val('valid@valid.com').trigger('input');
 
             setTimeout(
-              function() {
+              () => {
                 addCollaborator();
                 $resultantTableRow = $collaborators.find('tbody tr[data-email="valid@valid.com"]');
                 done();
@@ -330,29 +322,29 @@ describe('CollaboratorsRenderer', function() {
             );
           });
 
-          it('should add the collaborator to the table', function() {
+          it('should add the collaborator to the table', () => {
             assert.lengthOf(
               $resultantTableRow,
               1
             );
           });
 
-          it('should set the row state class to "added"', function() {
+          it('should set the row state class to "added"', () => {
             assert.isTrue($resultantTableRow.hasClass('added'));
           });
         });
       }
     });
 
-    describe('when manipulating a newly-added collaborator', function() {
-      var newCollaborator = 'new@socrata.com';
-      var newestCollaborator = 'newest@socrata.com';
+    describe('when manipulating a newly-added collaborator', () => {
+      let newCollaborator = 'new@socrata.com';
+      let newestCollaborator = 'newest@socrata.com';
 
       function getCollaborator(email) {
         return $collaborators.find('tbody tr[data-email="' + email + '"]');
       }
 
-      beforeEach(function() {
+      beforeEach(() => {
         dispatcher.dispatch({
           action: Actions.COLLABORATORS_ADD,
           collaborator: {email: newCollaborator, accessLevel: 'viewer'}
@@ -364,9 +356,9 @@ describe('CollaboratorsRenderer', function() {
         });
       });
 
-      describe('removing a newly-added collaborator', function() {
-        it('should immediately remove the collaborator from the table', function() {
-          var $tr = getCollaborator(newCollaborator);
+      describe('removing a newly-added collaborator', () => {
+        it('should immediately remove the collaborator from the table', () => {
+          let $tr = getCollaborator(newCollaborator);
           assert.lengthOf($tr, 1);
 
           $tr.find('button').click();
@@ -376,10 +368,10 @@ describe('CollaboratorsRenderer', function() {
         });
       });
 
-      describe('changing a newly-added collaborator', function() {
-        it('should not change the collaborator\'s "added" state.', function() {
-          var $tr = getCollaborator(newCollaborator);
-          var $selected = $tr.find('option:selected');
+      describe('changing a newly-added collaborator', () => {
+        it('should not change the collaborator\'s "added" state.', () => {
+          let $tr = getCollaborator(newCollaborator);
+          let $selected = $tr.find('option:selected');
 
           assert.equal($selected.val(), 'viewer');
 
@@ -399,10 +391,10 @@ describe('CollaboratorsRenderer', function() {
           assert.isTrue($tr.hasClass('added'));
         });
 
-        it('should only change the targeted, new collaborator', function() {
-          var $trNewest;
-          var $tr = getCollaborator(newCollaborator);
-          var $selected = $tr.find('option:selected');
+        it('should only change the targeted, new collaborator', () => {
+          let $trNewest;
+          let $tr = getCollaborator(newCollaborator);
+          let $selected = $tr.find('option:selected');
 
           $selected.
             prop('selected', false);
@@ -424,11 +416,11 @@ describe('CollaboratorsRenderer', function() {
       });
     });
 
-    describe('when manipulating a persisted collaborator', function() {
-      describe('removing a presisted collaborator', function() {
-        it('should change the collaborator\'s state to "marked"', function() {
-          var $tr = $collaborators.find('tbody tr');
-          var $button = $tr.find('button');
+    describe('when manipulating a persisted collaborator', () => {
+      describe('removing a presisted collaborator', () => {
+        it('should change the collaborator\'s state to "marked"', () => {
+          let $tr = $collaborators.find('tbody tr');
+          let $button = $tr.find('button');
 
           $button.click();
           $tr = $collaborators.find('tbody tr');
@@ -437,10 +429,10 @@ describe('CollaboratorsRenderer', function() {
         });
       });
 
-      describe('keeping a persisted collaborator aftering attempting to remove', function() {
-        it('should change the collaborator\'s state back to the previous state', function() {
-          var $tr = $collaborators.find('tbody tr');
-          var $button = $tr.find('button');
+      describe('keeping a persisted collaborator aftering attempting to remove', () => {
+        it('should change the collaborator\'s state back to the previous state', () => {
+          let $tr = $collaborators.find('tbody tr');
+          let $button = $tr.find('button');
 
           $button.click();
           $tr = $collaborators.find('tbody tr');
@@ -455,10 +447,10 @@ describe('CollaboratorsRenderer', function() {
         });
       });
 
-      describe('changing a persisted collaborator', function() {
-        it('should change the collaborator\'s state to "changed"', function() {
-          var $tr = $collaborators.find('tbody tr');
-          var $selected = $tr.find('option:selected');
+      describe('changing a persisted collaborator', () => {
+        it('should change the collaborator\'s state to "changed"', () => {
+          let $tr = $collaborators.find('tbody tr');
+          let $selected = $tr.find('option:selected');
           assert.equal($selected.val(), 'viewer');
 
           $selected.

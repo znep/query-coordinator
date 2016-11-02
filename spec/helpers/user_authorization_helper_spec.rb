@@ -156,9 +156,9 @@ RSpec.describe UserAuthorizationHelper, type: :helper do
       end
     end
 
-    describe 'when the user is an owner and in a Stories role' do
+    describe 'when the user is an owner and has a valid right' do
       let(:view_role) { 'owner' }
-      let(:domain_role) { 'publisher_stories' }
+      let(:domain_rights) { ['edit_story'] }
 
       it 'returns true' do
         expect(can_edit_story?).to be(true)
@@ -184,10 +184,16 @@ RSpec.describe UserAuthorizationHelper, type: :helper do
   end
 
   describe '#can_view_unpublished_story?' do
-    describe 'when the user can edit the story' do
-      before do
-        allow_any_instance_of(UserAuthorizationHelper).to receive(:can_edit_story?).and_return(true)
+    describe 'when the user is an admin' do
+      let(:domain_role) { 'administrator' }
+
+      it 'returns true' do
+        expect(can_view_unpublished_story?).to be(true)
       end
+    end
+
+    describe 'when the user is a contributor' do
+      let(:view_role) { 'contributor' }
 
       it 'returns true' do
         expect(can_view_unpublished_story?).to be(true)
@@ -202,12 +208,17 @@ RSpec.describe UserAuthorizationHelper, type: :helper do
       end
     end
 
-    describe 'when the user is neither an editor nor a viewer' do
-      let(:view_role) { 'not-editor-or-viewer' }
+    describe 'when the user is an owner and has a valid right' do
+      let(:view_role) { 'owner' }
+      let(:domain_rights) { ['view_unpublished_story'] }
 
-      before do
-        allow_any_instance_of(UserAuthorizationHelper).to receive(:can_edit_story?).and_return(false)
+      it 'returns true' do
+        expect(can_view_unpublished_story?).to be(true)
       end
+    end
+
+    describe 'when the user lacks a valid role or right' do
+      let(:view_role) { 'not-editor-or-viewer' }
 
       it 'returns false' do
         expect(can_view_unpublished_story?).to be(false)
@@ -224,16 +235,16 @@ RSpec.describe UserAuthorizationHelper, type: :helper do
       end
     end
 
-    describe 'when the user is an owner and in a Stories role' do
+    describe 'when the user is an owner and has a valid right' do
       let(:view_role) { 'owner' }
-      let(:domain_role) { 'publisher_stories' }
+      let(:domain_rights) { ['edit_story_title_desc'] }
 
       it 'returns true' do
         expect(can_edit_title_and_description?).to be(true)
       end
     end
 
-    describe 'when the user is neither an admin nor an owner with a Stories role' do
+    describe 'when the user is neither an admin nor an owner with a valid right' do
       let(:domain_role) { 'not-administator-nor-publisher_stories' }
       let(:view_role) { 'not-owner' }
 
@@ -252,16 +263,16 @@ RSpec.describe UserAuthorizationHelper, type: :helper do
       end
     end
 
-    describe 'when the user is an owner and in a Stories role' do
+    describe 'when the user is an owner and has a valid right' do
       let(:view_role) { 'owner' }
-      let(:domain_role) { 'publisher_stories' }
+      let(:domain_rights) { 'create_story_copy' }
 
       it 'returns true' do
         expect(can_make_copy?).to be(true)
       end
     end
 
-    describe 'when the user is neither an admin nor an owner with a Stories role' do
+    describe 'when the user is neither an admin nor an owner with a valid right' do
       let(:domain_role) { 'not-administator-nor-publisher_stories' }
       let(:view_role) { 'not-owner' }
 
@@ -280,16 +291,16 @@ RSpec.describe UserAuthorizationHelper, type: :helper do
       end
     end
 
-    describe 'when the user is an owner and in a Stories role' do
+    describe 'when the user is an owner and has a valid right' do
       let(:view_role) { 'owner' }
-      let(:domain_role) { 'publisher_stories' }
+      let(:domain_rights) { ['manage_story_collaborators'] }
 
       it 'returns true' do
         expect(can_manage_collaborators?).to be(true)
       end
     end
 
-    describe 'when the user is neither an admin nor an owner with a Stories role' do
+    describe 'when the user is neither an admin nor an owner with a valid right' do
       let(:domain_role) { 'not-administator-nor-publisher_stories' }
       let(:view_role) { 'not-owner' }
 
@@ -308,21 +319,49 @@ RSpec.describe UserAuthorizationHelper, type: :helper do
       end
     end
 
-    describe 'when the user is an owner and in a Stories role' do
+    describe 'when the user is an owner and has a valid right' do
       let(:view_role) { 'owner' }
-      let(:domain_role) { 'publisher_stories' }
+      let(:domain_rights) { ['manage_story_visibility'] }
 
       it 'returns true' do
         expect(can_manage_story_visibility?).to be(true)
       end
     end
 
-    describe 'when the user is neither an admin nor an owner with a Stories role' do
+    describe 'when the user is neither an admin nor an owner with a valid right' do
       let(:domain_role) { 'not-administator-nor-publisher_stories' }
       let(:view_role) { 'not-owner' }
 
       it 'returns false' do
         expect(can_manage_story_visibility?).to be(false)
+      end
+    end
+  end
+
+  describe '#can_publish_story?' do
+    describe 'when the user is an admin' do
+      let(:domain_role) { 'administrator' }
+
+      it 'returns true' do
+        expect(can_publish_story?).to be(true)
+      end
+    end
+
+    describe 'when the user is an owner and has a valid right' do
+      let(:view_role) { 'owner' }
+      let(:domain_rights) { ['manage_story_public_version'] }
+
+      it 'returns true' do
+        expect(can_publish_story?).to be(true)
+      end
+    end
+
+    describe 'when the user is neither an admin nor an owner with a valid right' do
+      let(:domain_role) { 'not-administator-nor-publisher_stories' }
+      let(:view_role) { 'not-owner' }
+
+      it 'returns false' do
+        expect(can_publish_story?).to be(false)
       end
     end
   end

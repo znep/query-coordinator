@@ -140,19 +140,19 @@ describe('StoryStore', function() {
 
     describe('given an invalid story uid', function() {
 
-      describe('.storyExists()', function() {
+      describe('.doesStoryExist()', function() {
 
         it('should return false', function() {
-          assert.isFalse(storyStore.storyExists(null));
+          assert.isFalse(storyStore.doesStoryExist(null));
         });
       });
 
-      describe('.storyHasBlock()', function() {
+      describe('.isStoryPublic()', function() {
 
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyStore.storyHasBlock(null);
+            storyStore.isStoryPublic(null);
           });
         });
       });
@@ -280,19 +280,19 @@ describe('StoryStore', function() {
 
     describe('given a non-existent story uid', function() {
 
-      describe('.storyExists()', function() {
+      describe('.doesStoryExist()', function() {
 
         it('should return false', function() {
-          assert.isFalse(storyStore.storyExists('notf-ound'));
+          assert.isFalse(storyStore.doesStoryExist('notf-ound'));
         });
       });
 
-      describe('.storyHasBlock()', function() {
+      describe('.isStoryPublic()', function() {
 
         it('should throw an error', function() {
 
           assert.throw(function() {
-            storyStore.storyHasBlock('notf-ound');
+            storyStore.isStoryPublic('notf-ound');
           });
         });
       });
@@ -420,18 +420,18 @@ describe('StoryStore', function() {
 
     describe('given an existing story uid', function() {
 
-      describe('.storyExists()', function() {
+      describe('.doesStoryExist()', function() {
 
         it('should return true', function() {
-          assert.isTrue(storyStore.storyExists(story1Uid));
+          assert.isTrue(storyStore.doesStoryExist(story1Uid));
         });
       });
 
-      describe('.storyHasBlock()', function() {
+      describe('.isStoryPublic()', function() {
 
         it('should return the correct value', function() {
-          assert.isTrue(storyStore.storyHasBlock(story2Uid, block3Id));
-          assert.isFalse(storyStore.storyHasBlock(story2Uid, 'notthere'));
+          assert.isFalse(storyStore.isStoryPublic(story1Uid));
+          assert.isTrue(storyStore.isStoryPublic(story2Uid));
         });
       });
 

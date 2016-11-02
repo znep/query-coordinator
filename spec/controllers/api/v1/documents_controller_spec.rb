@@ -74,119 +74,43 @@ RSpec.describe Api::V1::DocumentsController, type: :controller do
         end
       end
 
-      it 'initializes correct service object with params' do
-        expect(CreateDocument).to receive(:new).with(mock_valid_user, params[:document].stringify_keys)
-        expect(CreateDocumentFromGettyImage).to_not receive(:new)
-        post :create, params
-      end
-
-      it 'returns success' do
-        post :create, params
-        expect(response).to be_created
-      end
-
-      it 'renders new document json' do
-        post :create, params
-        response_json = JSON.parse(response.body)
-
-        expect(response_json['document']['id']).to eq(document.id)
-        expect(response_json['document']['upload_file_name']).to eq(document.upload_file_name)
-        expect(response_json['document']['upload_file_size']).to eq(document.upload_file_size)
-        expect(response_json['document']['upload_content_type']).to eq(document.upload_content_type)
-        expect(response_json['document']['status']).to eq(document.status)
-        expect(response_json['document']['url']).to eq(document.upload.url)
-      end
-
-      context 'when params include cropping values' do
-        let(:params) do
-          {
-            document: {
-              story_uid: story_uid,
-              direct_upload_url: direct_upload_url,
-              upload_content_type: upload_content_type,
-              upload_file_name: upload_file_name,
-              upload_file_size: upload_file_size,
-              crop_x: '0',
-              crop_y: '0',
-              crop_width: '1',
-              crop_height: '0.5'
-            }
-          }
-        end
-
-        it 'passes cropping params to service object' do
-          expect(CreateDocument).to receive(:new).with(mock_valid_user, params[:document].stringify_keys)
-          post :create, params
-        end
-      end
-
-      context 'when CreateDocument service fails' do
-
-        # used to create some errors for the test below
-        let(:document) { Document.create(params[:document].except(:direct_upload_url)) }
-
+      describe 'after successful authorization' do
         before do
-          expect(create_document_service).to receive(:create).and_return(false)
-        end
-
-        it 'returns unprocessable_entity' do
-          post :create, params
-          expect(response).to be_unprocessable
-        end
-
-        it 'renders errors' do
-          post :create, params
-          response_json = JSON.parse(response.body)
-          expect(response_json['errors']).to_not be_empty
-        end
-      end
-
-      context 'when params includes getty_image_id' do
-        let(:getty_image_id) { 'abc12345' }
-        let(:getty_image_document_params) do
-          {
-            document: {
-              story_uid: story_uid,
-              getty_image_id: getty_image_id
-            }
-          }
-        end
-
-        before do
-          allow(CreateDocumentFromGettyImage).to receive(:new).and_return(create_document_service)
+          stub_sufficient_rights
         end
 
         it 'initializes correct service object with params' do
-          expect(CreateDocument).to_not receive(:new)
-          expect(CreateDocumentFromGettyImage).to receive(:new).with(mock_valid_user, getty_image_document_params[:document].stringify_keys)
-          post :create, getty_image_document_params
+          expect(CreateDocument).to receive(:new).with(mock_valid_user, params[:document].stringify_keys)
+          expect(CreateDocumentFromGettyImage).to_not receive(:new)
+          post :create, params
         end
 
-        context 'when CreateDocumentFromGettyImage service fails' do
-          let(:document) { Document.create(params[:document].except(:direct_upload_url)) }
+        it 'returns success' do
+          post :create, params
+          expect(response).to be_created
+        end
 
-          before do
-            expect(create_document_service).to receive(:create).and_return(false)
-          end
+        it 'renders new document json' do
+          post :create, params
+          response_json = JSON.parse(response.body)
 
-          it 'returns unprocessable_entity' do
-            post :create, getty_image_document_params
-            expect(response).to be_unprocessable
-          end
-
-          it 'renders errors' do
-            post :create, getty_image_document_params
-            response_json = JSON.parse(response.body)
-            expect(response_json['errors']).to_not be_empty
-          end
+          expect(response_json['document']['id']).to eq(document.id)
+          expect(response_json['document']['upload_file_name']).to eq(document.upload_file_name)
+          expect(response_json['document']['upload_file_size']).to eq(document.upload_file_size)
+          expect(response_json['document']['upload_content_type']).to eq(document.upload_content_type)
+          expect(response_json['document']['status']).to eq(document.status)
+          expect(response_json['document']['url']).to eq(document.upload.url)
         end
 
         context 'when params include cropping values' do
-          let(:getty_image_document_params) do
+          let(:params) do
             {
               document: {
                 story_uid: story_uid,
-                getty_image_id: getty_image_id,
+                direct_upload_url: direct_upload_url,
+                upload_content_type: upload_content_type,
+                upload_file_name: upload_file_name,
+                upload_file_size: upload_file_size,
                 crop_x: '0',
                 crop_y: '0',
                 crop_width: '1',
@@ -196,8 +120,90 @@ RSpec.describe Api::V1::DocumentsController, type: :controller do
           end
 
           it 'passes cropping params to service object' do
+            expect(CreateDocument).to receive(:new).with(mock_valid_user, params[:document].stringify_keys)
+            post :create, params
+          end
+        end
+
+        context 'when CreateDocument service fails' do
+
+          # used to create some errors for the test below
+          let(:document) { Document.create(params[:document].except(:direct_upload_url)) }
+
+          before do
+            expect(create_document_service).to receive(:create).and_return(false)
+          end
+
+          it 'returns unprocessable_entity' do
+            post :create, params
+            expect(response).to be_unprocessable
+          end
+
+          it 'renders errors' do
+            post :create, params
+            response_json = JSON.parse(response.body)
+            expect(response_json['errors']).to_not be_empty
+          end
+        end
+
+        context 'when params includes getty_image_id' do
+          let(:getty_image_id) { 'abc12345' }
+          let(:getty_image_document_params) do
+            {
+              document: {
+                story_uid: story_uid,
+                getty_image_id: getty_image_id
+              }
+            }
+          end
+
+          before do
+            allow(CreateDocumentFromGettyImage).to receive(:new).and_return(create_document_service)
+          end
+
+          it 'initializes correct service object with params' do
+            expect(CreateDocument).to_not receive(:new)
             expect(CreateDocumentFromGettyImage).to receive(:new).with(mock_valid_user, getty_image_document_params[:document].stringify_keys)
             post :create, getty_image_document_params
+          end
+
+          context 'when CreateDocumentFromGettyImage service fails' do
+            let(:document) { Document.create(params[:document].except(:direct_upload_url)) }
+
+            before do
+              expect(create_document_service).to receive(:create).and_return(false)
+            end
+
+            it 'returns unprocessable_entity' do
+              post :create, getty_image_document_params
+              expect(response).to be_unprocessable
+            end
+
+            it 'renders errors' do
+              post :create, getty_image_document_params
+              response_json = JSON.parse(response.body)
+              expect(response_json['errors']).to_not be_empty
+            end
+          end
+
+          context 'when params include cropping values' do
+            let(:getty_image_document_params) do
+              {
+                document: {
+                  story_uid: story_uid,
+                  getty_image_id: getty_image_id,
+                  crop_x: '0',
+                  crop_y: '0',
+                  crop_width: '1',
+                  crop_height: '0.5'
+                }
+              }
+            end
+
+            it 'passes cropping params to service object' do
+              expect(CreateDocumentFromGettyImage).to receive(:new).with(mock_valid_user, getty_image_document_params[:document].stringify_keys)
+              post :create, getty_image_document_params
+            end
           end
         end
       end
@@ -289,42 +295,48 @@ RSpec.describe Api::V1::DocumentsController, type: :controller do
         end
       end
 
-      it 'is success' do
-        post :crop, id: document.id, document: document_params
-        expect(response).to be_success
-      end
-
-      it 'regenerates thumbnails' do
-        expect(Document).to receive(:find).with(document.id.to_s).and_return(document)
-        expect(document).to receive(:regenerate_thumbnails!)
-        post :crop, id: document.id, document: document_params
-      end
-
-      context 'when document params are invalid' do
-        let(:document_params) do
-          {
-            crop_x: 0,
-            crop_y: nil,
-            crop_width: 1,
-            crop_height: 1
-          }
+      describe 'after successful authorization' do
+        before do
+          stub_sufficient_rights
         end
 
-        it 'returns unprocessable entity' do
+        it 'is success' do
           post :crop, id: document.id, document: document_params
-          expect(response).to be_unprocessable
+          expect(response).to be_success
         end
 
-        it 'does not generate thumbnails' do
+        it 'regenerates thumbnails' do
           expect(Document).to receive(:find).with(document.id.to_s).and_return(document)
-          expect(document).to_not receive(:regenerate_thumbnails!)
+          expect(document).to receive(:regenerate_thumbnails!)
           post :crop, id: document.id, document: document_params
         end
 
-        it 'returns error messages' do
-          post :crop, id: document.id, document: document_params
-          json_response = JSON.parse(response.body)
-          expect(json_response['errors']).to_not be_empty
+        context 'when document params are invalid' do
+          let(:document_params) do
+            {
+              crop_x: 0,
+              crop_y: nil,
+              crop_width: 1,
+              crop_height: 1
+            }
+          end
+
+          it 'returns unprocessable entity' do
+            post :crop, id: document.id, document: document_params
+            expect(response).to be_unprocessable
+          end
+
+          it 'does not generate thumbnails' do
+            expect(Document).to receive(:find).with(document.id.to_s).and_return(document)
+            expect(document).to_not receive(:regenerate_thumbnails!)
+            post :crop, id: document.id, document: document_params
+          end
+
+          it 'returns error messages' do
+            post :crop, id: document.id, document: document_params
+            json_response = JSON.parse(response.body)
+            expect(json_response['errors']).to_not be_empty
+          end
         end
       end
     end

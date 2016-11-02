@@ -39,7 +39,7 @@ describe('storySavingStatus jQuery plugin', function() {
     StorySavingStatusAPI.__Rewire__('storySaveStatusStore', mockStore);
     StorySavingStatusAPI.__Rewire__('I18n', I18nMocker);
     StorySavingStatusAPI.__Rewire__('storyStore', {
-      storyExists: _.constant(true)
+      doesStoryExist: _.constant(true)
     });
   });
 

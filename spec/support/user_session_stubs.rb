@@ -10,9 +10,44 @@ module UserSessionStubs
   def mock_user_authorization_super_admin
     {
       'viewRole' => 'owner',
-      'viewRights' => ['read', 'write', 'delete', 'update_view', 'edit_story'],
+      'viewRights' => %w(read write delete update_view edit_story),
       'domainRole' => 'publisher_stories',
-      'domainRights' => [ 'create_datasets', 'edit_others_datasets', 'edit_sdp', 'edit_site_theme', 'moderate_comments', 'manage_users', 'chown_datasets', 'edit_nominations', 'approve_nominations', 'feature_items', 'federations', 'manage_stories', 'manage_approval', 'change_configurations', 'view_domain', 'view_others_datasets', 'edit_pages', 'create_pages', 'view_goals', 'view_dashboards', 'edit_goals', 'edit_dashboards', 'create_dashboards', 'create_story', 'edit_story_title_desc', 'create_story_copy', 'delete_story', 'manage_story_collaborators', 'manage_story_visibility', 'manage_story_public_version', 'edit_story', 'view_unpublished_story', 'view_story', 'manage_provenance' ],
+      'domainRights' => %w(
+        create_datasets
+        edit_others_datasets
+        edit_sdp
+        edit_site_theme
+        moderate_comments
+        manage_users
+        chown_datasets
+        edit_nominations
+        approve_nominations
+        feature_items
+        federations
+        manage_stories
+        manage_approval
+        change_configurations
+        view_domain
+        view_others_datasets
+        edit_pages
+        create_pages
+        view_goals
+        view_dashboards
+        edit_goals
+        edit_dashboards
+        create_dashboards
+        create_story
+        edit_story_title_desc
+        create_story_copy
+        delete_story
+        manage_story_collaborators
+        manage_story_visibility
+        manage_story_public_version
+        edit_story
+        view_unpublished_story
+        view_story
+        manage_provenance
+      ),
       'superAdmin' => true
     }
   end
@@ -20,23 +55,42 @@ module UserSessionStubs
   def mock_user_authorization_owner_publisher
     {
       'viewRole' => 'owner',
-      'viewRights' => ['read', 'write', 'delete', 'update_view', 'edit_story'],
-      'domainRole' => 'publisher_stories'
+      'viewRights' => %w(read write delete update_view edit_story),
+      'domainRole' => 'publisher_stories',
+      'domainRights' => %w(
+        read
+        write
+        delete
+        update_view
+        view_story
+        view_unpublished_story
+        edit_story
+        create_story
+        create_story_copy
+        manage_story_collaborators
+        manage_story_visibility
+        manage_story_public_version
+        edit_story_title_desc
+      )
     }
   end
 
+  # ALERT: This mock is missing domain rights!
+  # You may need to add them and fix tests accordingly.
   def mock_user_authorization_collaborator
     {
       'viewRole' => 'contributor',
-      'viewRights' => ['read', 'write', 'delete', 'update_view'],
+      'viewRights' => %w(read write delete update_view),
       'domainRole' => 'viewer'
     }
   end
 
+  # ALERT: This mock is missing domain rights!
+  # You may need to add them and fix tests accordingly.
   def mock_user_authorization_viewer
     {
       'viewRole' => 'viewer',
-      'viewRights' => ['read', 'write', 'delete', 'update_view'],
+      'viewRights' => %w(read write delete update_view),
       'domainRole' => 'viewer'
     }
   end

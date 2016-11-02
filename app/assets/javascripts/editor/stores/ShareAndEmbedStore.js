@@ -1,11 +1,11 @@
 import _ from 'lodash';
 
-import Store from '../stores/Store';
 import Actions from '../Actions';
 import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
 import httpRequest from '../../services/httpRequest';
-import { coreSavingStore } from '../stores/CoreSavingStore';
+import Store from './Store';
+import { coreSavingStore } from './CoreSavingStore';
 
 export var shareAndEmbedStore = new ShareAndEmbedStore();
 export default function ShareAndEmbedStore() {

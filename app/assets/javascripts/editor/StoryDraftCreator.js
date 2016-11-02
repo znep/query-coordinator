@@ -21,7 +21,7 @@ export default {
 
 function _saveDraft(storyUid) {
   StorytellerUtils.assertIsOneOfTypes(storyUid, 'string');
-  StorytellerUtils.assert(storyStore.storyExists(storyUid), 'Cannot save draft of non-existent story');
+  StorytellerUtils.assert(storyStore.doesStoryExist(storyUid), 'Cannot save draft of non-existent story');
 
   const storyJson = JSON.stringify(
     storyStore.serializeStory(storyUid)

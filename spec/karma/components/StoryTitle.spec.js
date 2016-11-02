@@ -24,7 +24,7 @@ describe('StoryTitle jQuery plugin', function() {
         return title;
       };
 
-      this.storyExists = _.constant(true);
+      this.doesStoryExist = _.constant(true);
     };
 
     storyStoreMock = new StoreMock();
@@ -50,7 +50,7 @@ describe('StoryTitle jQuery plugin', function() {
 
   describe('given a storyUid that does not correspond to a story', function() {
     it('should not do anything', function() {
-      storyStoreMock.storyExists = _.constant(false);
+      storyStoreMock.doesStoryExist = _.constant(false);
       node.storyTitle('badd-guyz');
       assert.equal(node.text(), '');
     });

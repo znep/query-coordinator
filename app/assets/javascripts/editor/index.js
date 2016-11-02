@@ -23,8 +23,17 @@ import { exceptionNotifier } from '../services/ExceptionNotifier';
 import CollaboratorsDataProvider from './CollaboratorsDataProvider';
 import StoryPublicationStatus from './components/StoryPublicationStatus'; //eslint-disable-line no-unused-vars
 
+const {
+  ENVIRONMENT,
+  IS_GOAL,
+  OP_GOAL_NARRATIVE_MIGRATION_METADATA,
+  PUBLISHED_STORY_DATA,
+  STORY_DATA,
+  STORY_UID
+} = Environment;
+
 dispatcher.register(function(payload) {
-  if (Environment.ENVIRONMENT === 'development' && window.console) {
+  if (ENVIRONMENT === 'development' && window.console) {
     console.info('Dispatcher action: ', payload);
   }
 
@@ -41,18 +50,24 @@ if (goalMigrationStore.needsMigration()) {
   // used to process the narrative in Odysseus are in JS).
   // StoryStore will load the story automatically when migration is complete.
   (new GoalMigrationRunner(
-    Environment.OP_GOAL_NARRATIVE_MIGRATION_METADATA,
-    Environment.STORY_DATA)).run();
+    OP_GOAL_NARRATIVE_MIGRATION_METADATA,
+    STORY_DATA
+  )).run();
 } else {
   dispatcher.dispatch({
     action: Actions.STORY_CREATE,
-    data: Environment.STORY_DATA
+    data: STORY_DATA
+  });
+  dispatcher.dispatch({
+    action: Actions.STORY_SET_PUBLISHED_STORY,
+    storyUid: STORY_UID,
+    publishedStory: PUBLISHED_STORY_DATA
   });
 }
 
 (new ErrorReporter());
 
-if (Environment.IS_GOAL) {
+if (IS_GOAL) {
   // TODO: Why is this being called from index? Can the store manage it itself?
   (new CollaboratorsDataProvider()).
     getCollaborators().
@@ -94,7 +109,7 @@ $(document).on('ready', function() {
   });
 
   var userStoryRenderer = new Renderers.StoryRenderer({
-    storyUid: Environment.STORY_UID,
+    storyUid: STORY_UID,
     storyContainerElement: $('.user-story'),
     editable: true,
     insertionHintElement: $('#story-insertion-hint'),
@@ -157,14 +172,14 @@ $(document).on('ready', function() {
   $('.undo-btn').on('click', function() {
     dispatcher.dispatch({
       action: Actions.HISTORY_UNDO,
-      storyUid: Environment.STORY_UID
+      storyUid: STORY_UID
     });
   });
 
   $('.redo-btn').on('click', function() {
     dispatcher.dispatch({
       action: Actions.HISTORY_REDO,
-      storyUid: Environment.STORY_UID
+      storyUid: STORY_UID
     });
   });
 
@@ -185,7 +200,7 @@ $(document).on('ready', function() {
   // Respond to changes in the user story's block ordering by scrolling the
   // window to always show the top of the moved block.
   dispatcher.register(function(payload) {
-    if (payload.storyUid === Environment.STORY_UID) {
+    if (payload.storyUid === STORY_UID) {
       switch (payload.action) {
         case Actions.STORY_MOVE_BLOCK_UP:
         case Actions.STORY_MOVE_BLOCK_DOWN:
@@ -246,7 +261,7 @@ $(document).on('ready', function() {
   dragDrop.setup();
 
   // Story title
-  $('title, .story-title').storyTitle(Environment.STORY_UID);
+  $('title, .story-title').storyTitle(STORY_UID);
 
   // Draft or Published status
   function renderStoryPublicationStatus() {

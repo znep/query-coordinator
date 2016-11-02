@@ -22,7 +22,7 @@ describe('StoryDraftCreator', function() {
       dispatcher = new Dispatcher();
 
       storyStoreStub = sinon.createStubInstance(StoryStore);
-      storyStoreStub.storyExists = _.constant(true);
+      storyStoreStub.doesStoryExist = _.constant(true);
       storyStoreStub.serializeStory = _.constant(story);
       storyStoreStub.getStoryDigest = _.constant('digest');
 
@@ -55,7 +55,7 @@ describe('StoryDraftCreator', function() {
     });
 
     it('should throw when given a non-existent story uid', function() {
-      storyStoreStub.storyExists = _.constant(false);
+      storyStoreStub.doesStoryExist = _.constant(false);
       assert.throws(function() { StoryDraftCreator.saveDraft('notastory'); });
     });
 

@@ -70,15 +70,18 @@ class User < Model
     self.class.parse(CoreServer::Base.connection.update_request("/users/#{id}.json", params.to_json))
   end
 
-  def to_json(options = nil)
+  def prepare_json
     dhash = data_hash
     dhash['displayState'] = displayState
     dhash['displayCountry'] = displayCountry
     dhash['displayLocation'] = displayLocation
     dhash['htmlDescription'] = htmlDescription
     dhash['profile_image'] = profile_image_path
+    dhash
+  end
 
-    dhash.to_json(options)
+  def to_json(options = nil)
+    prepare_json.to_json(options)
   end
 
   def to_csv_row(options = nil)

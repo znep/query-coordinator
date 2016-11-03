@@ -71,10 +71,10 @@ module BrowseHelper
   # It is not currently endorsed for use against other fields.
   # Please bear these facts in mind when making modifications!
   # The tags/attr list should be kept in parity with DOMPurify settings in JS.
-  def sanitize_string(input)
+  def sanitize_string(input, autolink: true)
     input = h(raw(input))
     # autolinking - uses a deprecated function, and further-deprecated syntax for that function
-    input = auto_link(input, :all)
+    input = auto_link(input, :all) if autolink
     # sanitize to eliminate risky html tags and attributes
     allowed_elements = %w(a b br div em hr i p span strong sub sup u)
     allowed_attributes = {

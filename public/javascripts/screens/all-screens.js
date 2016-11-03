@@ -258,29 +258,34 @@ $(function() {
     }
   };
 
+  var createCurrentUser = function(jsonData) {
+    currentUserDone = true;
+    blist.currentUser = new User(jsonData);
+    blist.currentUserId = blist.currentUser.id;
+    var callbacks = onCurrentUser.concat(onCurrentUserComplete);
+    dispatchCurrentUser(callbacks, blist.currentUser);
+  };
+
   var getCurrentUser = function() {
-    $.socrataServer.makeRequest({
-      type: 'GET',
-      url: '/api/users/current.json',
-      cache: false,
-      headers: {
-        'Cache-Control': 'nocache'
-      },
-      success: function(user) {
-        currentUserDone = true;
-        user = new User(user);
-        blist.currentUser = user;
-        blist.currentUserId = user.id;
-        var callbacks = onCurrentUser.concat(onCurrentUserComplete);
-        dispatchCurrentUser(callbacks, user);
-      },
-      error: function() {
-        // We dispatch an undefined user to anything waiting for this
-        // process to complete
-        currentUserDone = true;
-        dispatchCurrentUser(onCurrentUserComplete);
-      }
-    });
+    if (window.currentUserJson) {
+      createCurrentUser(window.currentUserJson);
+    } else {
+      $.socrataServer.makeRequest({
+        type: 'GET',
+        url: '/api/users/current.json',
+        cache: false,
+        headers: {
+          'Cache-Control': 'nocache'
+        },
+        success: createCurrentUser,
+        error: function() {
+          // We dispatch an undefined user to anything waiting for this
+          // process to complete
+          currentUserDone = true;
+          dispatchCurrentUser(onCurrentUserComplete);
+        }
+      });
+    }
   };
 
   // kick off the process of setting the current user

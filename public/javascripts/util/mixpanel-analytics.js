@@ -145,6 +145,7 @@ $(document).ready(function() {
   blist.util.enforceLodashFunctions();
   // These are properties that don't change once a page has loaded;
   var userId = _.get(blist, 'currentUserId', 'Not Logged In');
+
   var ownerId = _.get(blist, 'dataset.owner.id', MISSING_PROP_VALUE);
   var staticPageProperties = {
     'Dataset Owner': ownerId,
@@ -188,6 +189,18 @@ $(document).ready(function() {
       mixpanel.register(properties);
       //set user ID to mixpanels user ID if not logged in
       mixpanel.identify(userId === 'Not Logged In' ? mixpanel.get_distinct_id() : userId);
+
+      // set the profile information about the user
+      if (_.isObject(blist.currentUser)) {
+        mixpanel.people.set({
+          '$first_name': blist.currentUser.firstName,
+          '$last_name': blist.currentUser.lastName,
+          '$email': blist.currentUser.email,
+          '$role:': blist.currentUser.roleName,
+          '$id': blist.currentUser.id,
+          '$domain': window.location.hostname
+        });
+      }
     }
   };
 

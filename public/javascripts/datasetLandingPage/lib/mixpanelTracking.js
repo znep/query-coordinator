@@ -166,6 +166,17 @@ function registerUserProperties() {
     // Set user ID to mixpanels user ID if not logged in
     var userId = sessionData.userId;
     mixpanel.identify(userId === 'Not Logged In' ? mixpanel.get_distinct_id() : userId);
+
+    // set the profile information about the user
+    if (_.isObject(blist.currentUser)) {
+      mixpanel.people.set({
+        '$first_name': blist.currentUser.firstName,
+        '$last_name': blist.currentUser.lastName,
+        '$email': blist.currentUser.email,
+        '$role:': blist.currentUser.roleName,
+        '$id': blist.currentUser.id
+      });
+    }
   }
 }
 

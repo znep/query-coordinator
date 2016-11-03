@@ -234,6 +234,8 @@ http://www.socrata.com
     </script>
   <%- end -%>
 
+  <%= render 'shared/current_user_blist_js' %>
+
   <script type="text/javascript">//<![CDATA[
     blist.rights = { user: <%= raw UserRights.to_h.to_json %>, view: <%= raw ViewRights.to_h.to_json %> };
     blist.feature_flags = <%= raw json_escape(FeatureFlags.derive(@view, request).to_json) %>;
@@ -243,6 +245,8 @@ http://www.socrata.com
     blist.requestId = '<%= request_id %>';
     blist.sessionId = '<%= safe_session_id %>';
     blist.requestIp = '<%= request_ip_address %>';
+
+
     blist.configuration.maintenance_messages = _.map(<%== Downtime.map(&:to_json) %>,
         function(item) {
           var data = JSON.parse(item);

@@ -154,6 +154,22 @@ module ApplicationHelper
   end
 
 # js
+
+  # to load into blist.currentUser in main.html.erb
+  def current_user_to_sanitized_json(current_user, options = nil)
+    Hash[
+      current_user.prepare_json.map do |key, value|
+        if value.kind_of?(Array)
+          [key, value.map {|v| sanitize_string(v, autolink: false)}]
+        elsif value.kind_of?(Numeric)
+          [key, value]
+        else
+          [key, sanitize_string(value, autolink: false)]
+        end
+      end
+    ].to_json(options)
+  end
+
   def jquery_include(version = '1.7.1')
     if Rails.env.development?
       return ("<script src=\"/javascripts/jquery-#{version}.js\" type=\"text/javascript\" " +

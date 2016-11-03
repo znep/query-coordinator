@@ -84,6 +84,7 @@ http://www.socrata.com
     blist.rights = { user: <%= raw UserRights.to_h.to_json %>, view: <%= raw ViewRights.to_h.to_json %> };
   </script>
 
+  <%= render 'shared/current_user_blist_js' %>
   <%= yield :js_footer %>
 
   <%# we don't trust custom tracking code to be nonblocking like the async

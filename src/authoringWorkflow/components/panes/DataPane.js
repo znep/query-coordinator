@@ -138,6 +138,13 @@ export var DataPane = React.createClass({
       </div>
     );
 
+    const descriptionForPieChart = isPieChart(vifAuthoring) ?
+      (
+        <p className="authoring-field-description">
+          <small>{translate('panes.data.fields.pie_chart_limit.description')}</small>
+        </p>
+      ) : null;
+
     return (
       <div className="authoring-field-group">
         <h5>{translate(`panes.data.fields.${translationKey}.title`)}</h5>
@@ -148,6 +155,7 @@ export var DataPane = React.createClass({
             {limitCountContainer}
           </div>
         </div>
+        {descriptionForPieChart}
       </div>
     );
   },

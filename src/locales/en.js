@@ -91,7 +91,8 @@ export default {
           title: 'Limit Displayed Slices',
           subtitle: 'Number of slices to display',
           none: 'Show all',
-          count: 'Show'
+          count: 'Show',
+          description: 'Max of 12 slices. Additional values grouped into "Other"'
         },
         show_other_category: {
           title: 'Group remaining as "Other"'
@@ -322,7 +323,7 @@ export default {
     },
     pie_chart: {
       title: 'Pie Chart',
-      error_limit_out_of_bounds: 'This visualization requires dataSource.limit should be between {0} and {1}.'
+      error_limit_out_of_bounds: 'Please choose a value between {0} and {1}.'
     },
     histogram: {
       //TODO We've disabled log scales in histogram until we can figure out how we're going to handle these invalid domains.

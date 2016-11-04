@@ -363,24 +363,20 @@ class AdministrationController < ApplicationController
       if params[:username].present?
         @search = params[:username]
         users = user_search_client.find_all_by_query(@search, :limit => 100)
-        @user_search_results = Cetera::Results::UserSearchResult.new(users).results
+        @users_list = Cetera::Results::UserSearchResult.new(users).results
         @futures = FutureAccount.find.select { |f| f.email.downcase.include? params[:username].downcase }
+        if @users_list.empty?
+          @table_title = t('screens.admin.users.no_users_found')
+        else
+          @table_title = t('screens.admin.users.search_results', :term => @search)
+        end
+        @existing_user_actions = false
       else
         roled_users = user_search_client.find_all_by_domain(CurrentDomain.cname)
         user_results = Cetera::Results::UserSearchResult.new(roled_users).results
-        @admins = user_results.sort_by(&:sort_key)
+        @users_list = user_results.sort_by(&:sort_key)
         @futures = FutureAccount.find
-      end
-
-      if @user_search_results.blank?
-        @users_list = @admins
         @existing_user_actions = true
-      elsif @user_search_results.empty?
-        @table_title = t('screens.admin.users.no_users_found')
-      else
-        @table_title = t('screens.admin.users.search_results', :term => @search)
-        @users_list = @user_search_results
-        @existing_user_actions = false
       end
     rescue => e
       Rails.logger.warn("Error reaching Cetera: #{e.inspect}")

@@ -96,16 +96,12 @@
 
     .settings-save-failure-message {
       font-size: 1.5rem;
-      padding-bottom: 0.8rem;
+      margin-bottom: 1.2rem;
       display: none;
       text-align: center;
 
       &.active {
         display: block;
-      }
-
-      .settings-save-failure-message-details {
-        font-size: 1.5rem;
       }
     }
   }

@@ -53,7 +53,6 @@ module SocrataSiteChrome
     end
 
     def site_chrome_current_user
-      Rails.logger.error("DEBUG EN-10582 (chrome gem): Domain = #{request.host}; request_current_user = #{request_current_user.inspect}")
       SocrataSiteChrome::User.new(request_current_user) if request_current_user.present?
     end
 

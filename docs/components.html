@@ -8,8 +8,8 @@
     <title>Socrata Styleguide</title>
 
     <link rel="stylesheet" href="stylesheets/vendor/prism-2ae3b88e.css">
-    <link rel="stylesheet" href="css/styleguide-fa40af11.css">
-    <link rel="stylesheet" href="stylesheets/pages-cb0a5092.css">
+    <link rel="stylesheet" href="css/styleguide-e96381f3.css">
+    <link rel="stylesheet" href="stylesheets/pages-9d90cfca.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic' rel='stylesheet' type='text/css'>
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
@@ -70,6 +70,7 @@
         <li><a href="components.html#view-card">View Card</a></li>
         <li><a href="components.html#filter-bar">Filter Bar</a></li>
         <li><a href="components.html#info-pane">Info Pane</a></li>
+        <li><a href="components.html#slider">Slider</a></li>
         <!-- TEMPLATE_TOKEN (Don't remove this. Like seriously.) -->
       </ul>
     </li>
@@ -525,8 +526,8 @@ links.</p>
   document.addEventListener('DOMContentLoaded', function() {
     var props = {
       name: 'Chicago Crimes',
-      description: 'This dataset reflects reported incidents of crime that ' +
-        'occurred in the City of Chicago from 2001 to present, minus the most recent ' +
+      description: 'This dataset reflects <b>reported incidents</b> of crime that ' +
+        'occurred in the <i>City of Chicago</i> from 2001 to present, minus the most recent ' +
         'seven days. Also this description is really long and might even ellipsify.',
       url: 'https://data.cityofchicago.org/view/5cd6-ry5g',
       imageUrl: 'images/dataLensThumbnail-213726d3.png',
@@ -559,8 +560,8 @@ links.</p>
   document.addEventListener(&#x27;DOMContentLoaded&#x27;, function() {
     var props = {
       name: &#x27;Chicago Crimes&#x27;,
-      description: &#x27;This dataset reflects reported incidents of crime that &#x27; +
-        &#x27;occurred in the City of Chicago from 2001 to present, minus the most recent &#x27; +
+      description: &#x27;This dataset reflects &lt;b&gt;reported incidents&lt;&#x2F;b&gt; of crime that &#x27; +
+        &#x27;occurred in the &lt;i&gt;City of Chicago&lt;&#x2F;i&gt; from 2001 to present, minus the most recent &#x27; +
         &#x27;seven days. Also this description is really long and might even ellipsify.&#x27;,
       url: &#x27;https:&#x2F;&#x2F;data.cityofchicago.org&#x2F;view&#x2F;5cd6-ry5g&#x27;,
       imageUrl: &#x27;&#x2F;images&#x2F;dataLensThumbnail.png&#x27;,
@@ -599,8 +600,8 @@ ViewCard and it will be rendered as an overlay:</p>
   document.addEventListener('DOMContentLoaded', function() {
     var props = {
       name: 'Chicago Crimes',
-      description: 'This dataset reflects reported incidents of crime that ' +
-        'occurred in the City of Chicago from 2001 to present, minus the most recent ' +
+      description: 'This dataset reflects <b>reported incidents</b> of crime that ' +
+        'occurred in the <i>City of Chicago</i> from 2001 to present, minus the most recent ' +
         'seven days. Also this description is really long and might even ellipsify.',
       url: 'https://data.cityofchicago.org/view/5cd6-ry5g',
       imageUrl: 'images/dataLensThumbnail-213726d3.png',
@@ -634,8 +635,8 @@ ViewCard and it will be rendered as an overlay:</p>
   document.addEventListener(&#x27;DOMContentLoaded&#x27;, function() {
     var props = {
       name: &#x27;Chicago Crimes&#x27;,
-      description: &#x27;This dataset reflects reported incidents of crime that &#x27; +
-        &#x27;occurred in the City of Chicago from 2001 to present, minus the most recent &#x27; +
+      description: &#x27;This dataset reflects &lt;b&gt;reported incidents&lt;&#x2F;b&gt; of crime that &#x27; +
+        &#x27;occurred in the &lt;i&gt;City of Chicago&lt;&#x2F;i&gt; from 2001 to present, minus the most recent &#x27; +
         &#x27;seven days. Also this description is really long and might even ellipsify.&#x27;,
       url: &#x27;https:&#x2F;&#x2F;data.cityofchicago.org&#x2F;view&#x2F;5cd6-ry5g&#x27;,
       imageUrl: &#x27;&#x2F;images&#x2F;dataLensThumbnail.png&#x27;,
@@ -964,20 +965,167 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
       </div>
     </section>
 
+    <section class="styleguide-section" id="slider">
+      <div class="meta">
+        <h2 class="styleguide-header">Slider</h2>
+      </div>
+      <div class="example">
+        <h2>Slider with a single value selection</h2>
+
+<div id="slider-container"></div>
+
+<script type="text/babel" data-presets="es2015,react">
+  $(() => {
+    let value = 10;
+
+    const props = {
+      rangeMin: 0,
+      rangeMax: 20,
+      step: 2,
+      value,
+      onChange: (newValue) => {
+        props.value = newValue;
+        render();
+      }
+    };
+
+    function render() {
+      ReactDOM.render(
+        <styleguide.Slider {...props} />,
+        document.getElementById('slider-container')
+      );
+    }
+
+    render();
+  });
+</script>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;slider-container&quot;&gt;&lt;&#x2F;div&gt;
+
+&lt;script type=&quot;text&#x2F;babel&quot; data-presets=&quot;es2015,react&quot;&gt;
+  $(() =&gt; {
+    let value = 10;
+
+    const props = {
+      rangeMin: 0,
+      rangeMax: 20,
+      step: 2,
+      value,
+      onChange: (newValue) =&gt; {
+        props.value = newValue;
+        render();
+      }
+    };
+
+    function render() {
+      ReactDOM.render(
+        &lt;styleguide.Slider {...props} &#x2F;&gt;,
+        document.getElementById(&#x27;slider-container&#x27;)
+      );
+    }
+
+    render();
+  });
+&lt;&#x2F;script&gt;
+
+</code>
+</pre>
+
+
+<h2>Slider with a range value selection</h2>
+
+<div id="slider-range-value-container"></div>
+
+<script type="text/babel" data-presets="es2015,react">
+  $(() => {
+    let value = {
+      start: 10,
+      end: 15
+    };
+
+    const props = {
+      rangeMin: 0,
+      rangeMax: 20,
+      step: 0.1,
+      value,
+      onChange: (newValue) => {
+        // There are rounding errors thanks to floating point numbers.
+        // We'll just bump each to the nearest decimal place.
+        newValue.start = _.round(newValue.start, 2);
+        newValue.end = _.round(newValue.end, 2);
+        props.value = newValue;
+        render();
+      }
+    };
+
+    function render() {
+      ReactDOM.render(
+        <styleguide.Slider {...props} />,
+        document.getElementById('slider-range-value-container')
+      );
+    }
+
+    render();
+  });
+</script>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;slider-range-value-container&quot;&gt;&lt;&#x2F;div&gt;
+
+&lt;script type=&quot;text&#x2F;babel&quot; data-presets=&quot;es2015,react&quot;&gt;
+  $(() =&gt; {
+    let value = {
+      start: 10,
+      end: 15
+    };
+
+    const props = {
+      rangeMin: 0,
+      rangeMax: 20,
+      step: 0.1,
+      value,
+      onChange: (newValue) =&gt; {
+        &#x2F;&#x2F; There are rounding errors thanks to floating point numbers.
+        &#x2F;&#x2F; We&#x27;ll just bump each to the nearest decimal place.
+        newValue.start = _.round(newValue.start, 2);
+        newValue.end = _.round(newValue.end, 2);
+        props.value = newValue;
+        render();
+      }
+    };
+
+    function render() {
+      ReactDOM.render(
+        &lt;styleguide.Slider {...props} &#x2F;&gt;,
+        document.getElementById(&#x27;slider-range-value-container&#x27;)
+      );
+    }
+
+    render();
+  });
+&lt;&#x2F;script&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
     <!-- TEMPLATE_TOKEN (Don't remove this. Like seriously.) -->
   </div>
 </div>
 
 
-    <script src="https://fb.me/react-15.1.0.js"></script>
-    <script src="https://fb.me/react-dom-15.1.0.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.14.0/lodash.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.16.0/polyfill.js"></script>
-    <script type="text/javascript" src="javascripts/vendor/prism-383ea744.js"></script>
-    <script type="text/javascript" src="javascripts/vendor/tether-a78651e0.js"></script>
-    <script type="text/javascript" src="javascripts/vendor/shepherd-b8acca87.js"></script>
+    <!-- NPM peerDependencies and Webpack externals -->
+    <script type="text/javascript" src="js/vendor-bf248325.js"></script>
 
-    <script type="text/javascript" src="js/socrata-components-6a98b5c0.js"></script>
+    <script type="text/javascript" src="js/socrata-components-83c9e5e8.js"></script>
     <script type="text/javascript" src="javascripts/all-df92dbb1.js"></script>
   </body>
 </html>

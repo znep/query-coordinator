@@ -8,8 +8,8 @@
     <title>Socrata Styleguide</title>
 
     <link rel="stylesheet" href="stylesheets/vendor/prism-2ae3b88e.css">
-    <link rel="stylesheet" href="css/styleguide-fa40af11.css">
-    <link rel="stylesheet" href="stylesheets/pages-cb0a5092.css">
+    <link rel="stylesheet" href="css/styleguide-e96381f3.css">
+    <link rel="stylesheet" href="stylesheets/pages-9d90cfca.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic' rel='stylesheet' type='text/css'>
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
@@ -70,6 +70,7 @@
         <li><a href="components.html#view-card">View Card</a></li>
         <li><a href="components.html#filter-bar">Filter Bar</a></li>
         <li><a href="components.html#info-pane">Info Pane</a></li>
+        <li><a href="components.html#slider">Slider</a></li>
         <!-- TEMPLATE_TOKEN (Don't remove this. Like seriously.) -->
       </ul>
     </li>
@@ -92,6 +93,15 @@
 
   <div class="content">
     <h1 class="page-header">JavaScript Components</h1>
+    <p>
+      There are three primary ways to use a legacy component:
+      <pre class="usage"><code class="language-markup">// For example, setting up all dropdowns:
+new DropdownFactory(document.querySelector('.container'));
+// Or attach the Styleguide legacy components to that section of the DOM:
+styleguide.attachTo(document.querySelector('.container'));
+// Or attach the Styleguide legacy components to everything on the page:
+styleguide.attachTo(document);</code></pre>
+    </p>
 
     <section class="styleguide-section modal-section" id="modals">
       <div class="meta">
@@ -618,15 +628,10 @@
 </div>
 
 
-    <script src="https://fb.me/react-15.1.0.js"></script>
-    <script src="https://fb.me/react-dom-15.1.0.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.14.0/lodash.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.16.0/polyfill.js"></script>
-    <script type="text/javascript" src="javascripts/vendor/prism-383ea744.js"></script>
-    <script type="text/javascript" src="javascripts/vendor/tether-a78651e0.js"></script>
-    <script type="text/javascript" src="javascripts/vendor/shepherd-b8acca87.js"></script>
+    <!-- NPM peerDependencies and Webpack externals -->
+    <script type="text/javascript" src="js/vendor-bf248325.js"></script>
 
-    <script type="text/javascript" src="js/socrata-components-6a98b5c0.js"></script>
+    <script type="text/javascript" src="js/socrata-components-83c9e5e8.js"></script>
     <script type="text/javascript" src="javascripts/all-df92dbb1.js"></script>
   </body>
 </html>

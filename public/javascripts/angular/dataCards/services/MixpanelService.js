@@ -76,13 +76,15 @@ module.exports = function MixpanelService($log, MixpanelEvents, MixpanelProperti
       $window.mixpanel.identify(userId === 'Not Logged In' ? $window.mixpanel.get_distinct_id() : userId);
 
       // set the profile information about the user
-      if (_.isObject(blist.currentUser)) {
+    if (_.isObject(blist) && _.isObject(blist.currentUser)) {
         mixpanel.people.set({
           '$first_name': blist.currentUser.firstName,
           '$last_name': blist.currentUser.lastName,
           '$email': blist.currentUser.email,
           '$role:': blist.currentUser.roleName,
-          '$id': blist.currentUser.id
+          '$id': blist.currentUser.id,
+          '$domain': $window.location.hostname,
+          '$socrataEmployee': _.includes(blist.currentUser.flags, 'admin')
         });
       }
     }

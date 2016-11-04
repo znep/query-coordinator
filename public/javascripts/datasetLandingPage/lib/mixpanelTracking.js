@@ -168,13 +168,13 @@ function registerUserProperties() {
     mixpanel.identify(userId === 'Not Logged In' ? mixpanel.get_distinct_id() : userId);
 
     // set the profile information about the user
-    if (_.isObject(blist.currentUser)) {
+    if (_.isObject(sessionData)) {
       mixpanel.people.set({
-        '$first_name': blist.currentUser.firstName,
-        '$last_name': blist.currentUser.lastName,
-        '$email': blist.currentUser.email,
-        '$role:': blist.currentUser.roleName,
-        '$id': blist.currentUser.id
+        '$email': _.get(sessionData, 'email'),
+        '$role:': _.get(sessionData, 'userRoleName'),
+        '$id': _.get(sessionData, 'ownerId'),
+        '$domain': window.location.hostname,
+        '$socrataEmployee': _.get(sessionData, 'socrataEmployee')
       });
     }
   }

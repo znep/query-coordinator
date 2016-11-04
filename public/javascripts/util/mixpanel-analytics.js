@@ -147,6 +147,8 @@ $(document).ready(function() {
   var userId = _.get(blist, 'currentUserId', 'Not Logged In');
 
   var ownerId = _.get(blist, 'dataset.owner.id', MISSING_PROP_VALUE);
+
+  // WARNING: in some areas, for example the import wizard, blist.currentUser will not be loaded yet, even if logged in
   var staticPageProperties = {
     'Dataset Owner': ownerId,
     'Domain': window.location.hostname,
@@ -156,11 +158,11 @@ $(document).ready(function() {
     'Request Id': blist.requestId,
     'Result Ids': _.keys(_.get(blist, 'browse.datasets')),
     'Session Id': blist.sessionId,
-    'Socrata Employee': _.includes(_.get(blist, 'currentUser.flags'), 'admin'),
+    'Socrata Employee': _.includes(_.get(blist, 'currentUserJson.flags'), 'admin'),
     'URL': window.location.href,
     'User Id': userId,
     'User Owns Dataset': ownerId === userId,
-    'User Role Name': _.get(blist, 'currentUser.roleName', MISSING_PROP_VALUE),
+    'User Role Name': _.get(blist, 'currentUserJson.roleName', MISSING_PROP_VALUE),
     'View Id': _.get(blist, 'dataset.id', MISSING_PROP_VALUE),
     'View Type': _.get(blist, 'dataset._mixpanelViewType', MISSING_PROP_VALUE)
   };
@@ -189,16 +191,16 @@ $(document).ready(function() {
       mixpanel.register(properties);
       //set user ID to mixpanels user ID if not logged in
       mixpanel.identify(userId === 'Not Logged In' ? mixpanel.get_distinct_id() : userId);
-
       // set the profile information about the user
-      if (_.isObject(blist.currentUser)) {
+    if (_.isObject(blist) && _.isObject(blist.currentUser)) {
         mixpanel.people.set({
           '$first_name': blist.currentUser.firstName,
           '$last_name': blist.currentUser.lastName,
           '$email': blist.currentUser.email,
           '$role:': blist.currentUser.roleName,
           '$id': blist.currentUser.id,
-          '$domain': window.location.hostname
+          '$domain': window.location.hostname,
+          '$socrataEmployee': _.includes(blist.currentUser.flags, 'admin')
         });
       }
     }

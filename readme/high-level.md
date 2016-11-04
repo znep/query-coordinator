@@ -19,6 +19,10 @@ For example:
 ```
 ```js
 new DropdownFactory(document.querySelector('.container'));
+// Or attach the Styleguide legacy components to that section of the DOM:
+styleguide.attachTo(document.querySelector('.container'));
+// Or attach the Styleguide legacy components to everything on the page:
+styleguide.attachTo(document);
 ```
 These components are on their way out of the Styleguide, but can still be viewed in `src/js`.
 

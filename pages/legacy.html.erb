@@ -9,6 +9,15 @@ title: Socrata Styleguide
 
   <div class="content">
     <h1 class="page-header">JavaScript Components</h1>
+    <p>
+      There are three primary ways to use a legacy component:
+      <pre class="usage"><code class="language-markup">// For example, setting up all dropdowns:
+new DropdownFactory(document.querySelector('.container'));
+// Or attach the Styleguide legacy components to that section of the DOM:
+styleguide.attachTo(document.querySelector('.container'));
+// Or attach the Styleguide legacy components to everything on the page:
+styleguide.attachTo(document);</code></pre>
+    </p>
 
     <section class="styleguide-section modal-section" id="modals">
       <div class="meta">

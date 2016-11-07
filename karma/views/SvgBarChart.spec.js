@@ -136,7 +136,7 @@ describe('SvgBarChart', () => {
     });
 
     it('should show an error message if configuration.measureAxisMinValue ' +
-      'is bigger then configuration.measureAxisMaxValue', () => {
+      'is bigger than configuration.measureAxisMaxValue', () => {
 
       barChart = createBarChart(null, {
         configuration: {
@@ -152,6 +152,27 @@ describe('SvgBarChart', () => {
       const expectedMessage = I18n.translate(
         'visualizations.common.validation.errors.' +
         'measure_axis_min_should_be_lesser_then_max'
+      );
+
+      expect(errorMessage).to.equal(expectedMessage);
+    });
+
+    it('should show an error message if configuration.measureAxisMinValue ' +
+      'is bigger than values within dataset', () => {
+
+      barChart = createBarChart(null, {
+        configuration: {
+          measureAxisMinValue: 1000
+        }
+      });
+      barChart.chart.render(null, testData);
+
+      const errorMessage = barChart.element.
+        find('.socrata-visualization-error-message').text();
+
+      const expectedMessage = I18n.translate(
+        'visualizations.common.validation.errors.' +
+        'measure_axis_biggest_value_should_be_more_than_min_limit'
       );
 
       expect(errorMessage).to.equal(expectedMessage);

@@ -751,6 +751,16 @@ function SvgColumnChart($element, vif) {
       } else {
         maxYValue = dataMaxYValue;
       }
+
+      if (minYValue >= maxYValue) {
+        self.renderError(
+          I18n.translate(
+            'visualizations.common.validation.errors.' +
+            'measure_axis_biggest_value_should_be_more_than_min_limit'
+          )
+        );
+        return;
+      }
     } catch (error) {
       self.renderError(error.message);
       return;

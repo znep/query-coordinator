@@ -2119,7 +2119,7 @@ ca:
         sidebar_position: Posició de la Barra Lateral
         skip_to_dataset_listing: Saltar a llistat de conjunt de dades
         table_description: Conjunts de dades
-        title: Conjunts de Dades
+        title: Inventari
         unpublished_datasets: Conjunts de Dades no publicats
         view_as_a_dataset: Veure com a conjunt de dades
       federation:
@@ -2269,7 +2269,7 @@ ca:
         connectors_description: Registrar un connector per crear-ne i administrar els conjunts de dades connectats.
         dataset_routing_and_approval: Conjunt de dades d'enrutament i aprovació
         dataset_routing_and_approval_description: Revisió dels conjunts de dades que es troben en el procés d'aprovació i gestió dels passos del procés d'aprovació
-        datasets: Inventari d'eines
+        datasets: Inventari
         datasets_description: Ennumereu les eines d'aquest domini i configureu-ne el disseny de la pàgina de dades
         dataslate_pages: Pàgines DataSlate
         dataslate_pages_description: Ennumereu i gestioneu les pàgines DataSlate d'aquest domini

@@ -2121,7 +2121,7 @@ es:
         sidebar_position: Posición de la barra lateral
         skip_to_dataset_listing: Saltar al listado del conjunto de datos
         table_description: Conjuntos de datos
-        title: Conjuntos de datos
+        title: Inventario
         unpublished_datasets: Conjuntos de datos no publicados
         view_as_a_dataset: Ver como conjunto de datos
       federation:
@@ -2271,7 +2271,7 @@ es:
         connectors_description: Registre un conector para crear en masa y controlar los conjuntos de datos conectados.
         dataset_routing_and_approval: Aprobación y enrutamiento de los conjuntos de datos
         dataset_routing_and_approval_description: Revise los conjuntos de datos que están en proceso de aprobación y controle los pasos del proceso de aprobación
-        datasets: Inventario de bienes
+        datasets: Inventario
         datasets_description: Enumere los bienes en este dominio y configure el diseño de la página del conjunto de datos
         dataslate_pages: Páginas DataSlate
         dataslate_pages_description: Enumere y controle las páginas DataSlate en este dominio

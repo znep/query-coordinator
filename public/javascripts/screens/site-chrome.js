@@ -2,7 +2,7 @@ var inputTypeValidations = {
   google_analytics: /^ua-\d+-\d+$/i,
   color: /^(#(?=[a-z\d]*$)(?:.{3}|.{6})|transparent)$/i,
   dimensions: /^\d{1,4}(px|pt|em|rem|%)$/,
-  url: /^(https?|www|\/)/
+  url: /^(https?|www|mailto|\/)/
 };
 
 var validationRules = {
@@ -352,16 +352,23 @@ $('.list-of-links').on('click', '.add-new-link-row', function() {
   var $newLinkRow = $defaultLinkRow.clone();
 
   $newLinkRow.removeClass('default');
+
+  // EN-11064: Unique id so jquery validate plugin can hook onto individual url-inputs
+  var randomId = Math.random().toString(36).slice(2);
+  $newLinkRow.find('.url-input').attr('id', randomId);
+
   // Append newLinkMenu to end (of either top level or inside a menu).
   $(this).siblings('.links-and-menus, .child-links').append($newLinkRow);
 
   checkTopLevelLinkCount($listOfLinks);
+  inputValidation();
 });
 
 $('.list-of-links').on('click', '.remove-link-row', function() {
   var $listOfLinks = $(this).closest('.list-of-links');
   $(this).closest('.link-row').remove();
   checkTopLevelLinkCount($listOfLinks);
+  inputValidation();
 });
 
 $('.list-of-links').on('click', '.add-new-link-menu', function() {

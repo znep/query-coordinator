@@ -44,9 +44,8 @@
               <textarea id="description" class="text-area" name="description" <%= ' disabled' unless can_edit_title_and_description? %>></textarea>
             </form>
 
-            <div class="settings-save-failure-message">
-              <div><%= t('editor.settings_panel.errors.generic_save_failure_message') %></div>
-              <div class="settings-save-failure-message-details"></div>
+            <div class="settings-save-failure-message alert error">
+              <p><%= t('editor.settings_panel.errors.generic_save_failure_message') %></p>
             </div>
             <button class="btn btn-default btn-dark settings-save-btn">
               <span><%= t('editor.settings_panel.displaying_section.save_button_label') %></span>

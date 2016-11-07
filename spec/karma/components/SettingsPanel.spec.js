@@ -23,9 +23,7 @@ describe('SettingsPanel jQuery plugin', function() {
             '<input name="title" type="text" />',
             '<textarea></textarea>',
           '</form>',
-          '<div class="settings-save-failure-message">',
-            '<div class="settings-save-failure-message-details"></div>',
-          '</div>',
+          '<div class="settings-save-failure-message"></div>',
           '<button class="settings-save-btn"></button>',
           '<section class="settings-panel-publishing"></section>',
         '</div>',
@@ -365,11 +363,9 @@ describe('SettingsPanel jQuery plugin', function() {
 
       describe('error explanation text', function() {
         var errorDiv;
-        var errorDetails;
 
         beforeEach(function() {
           errorDiv = node.find('.settings-save-failure-message');
-          errorDetails = node.find('.settings-save-failure-message-details');
         });
 
         describe('when there is no error', function() {
@@ -388,10 +384,6 @@ describe('SettingsPanel jQuery plugin', function() {
 
           it('should have the `active` class.', function() {
             assert.isTrue(errorDiv.hasClass('active'));
-          });
-
-          it('should put the error text on the page', function() {
-            assert.equal(errorDetails.text(), error);
           });
         });
       });

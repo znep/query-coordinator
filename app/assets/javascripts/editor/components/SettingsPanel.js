@@ -34,7 +34,6 @@ export default function SettingsPanel(toggleButton) {
   });
   var saveButton = settingsContainer.find('.settings-save-btn');
   var saveErrorMessage = settingsContainer.find('.settings-save-failure-message');
-  var saveErrorMessageDetails = settingsContainer.find('.settings-save-failure-message-details');
 
   var storyTitleInputBox = settingsContainer.find('form input[type="text"]');
   var storyDescriptionTextarea = settingsContainer.find('textarea');
@@ -54,7 +53,6 @@ export default function SettingsPanel(toggleButton) {
     saveButton.toggleClass('btn-busy', saveInProgress);
 
     saveErrorMessage.toggleClass('active', lastSaveError !== null);
-    saveErrorMessageDetails.text(lastSaveError);
   });
 
   function loadCurrentMetadata() {

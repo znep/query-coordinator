@@ -186,6 +186,12 @@
       // set up the filter dropdown
       if (!_.isArray(opts.filterCategories) || (opts.filterCategories.length === 0)) {
         $this.find('.feedFilterLine').hide();
+      } else if ((opts.filterCategories.length === 1)) {
+        // If the dropdown menu has only one item, then there is no need to have feedFilter
+        // This should only happen if `remove_views_from_discuss_pane` feature flag is turned on
+        // and the filterCategories contain only "comments" item.
+        // We need to show a message that orients the users to the `more views` pane
+        $this.find('.feedFilterLine').hide();
       } else {
         $feedFilter.empty().append($.tag(_.map(opts.filterCategories, function(category) {
           return {
@@ -544,6 +550,19 @@
     return parseInt($elem.closest('.feedItem' + (type || '')).attr('data-serialId'));
   };
 
+  // This method is part of a fix for the issue in ticket EN-5453
+  // The strategy here is to remove views from the list of dropdown items in the discuss pane
+  // For customers that have feature flag `remove_views_from_discuss_pane` set to true
+  // This feature flag is false by default and will be turned on only for data.cityofnewyork.us
+  // on feature flag rollback, getCategories function will always return ['all items', 'comments', 'views'];
+  function getCategories() {
+    var categories = ['all items', 'comments', 'views'];
+    if (window.blist.feature_flags.remove_views_from_discuss_pane === true) {
+      categories = ['comments'];
+    }
+    return categories;
+  }
+
   $.fn.feedList.defaults = {
     addCommentCallback: function() {},
     actionDelegate: function(targetComment, opts) {
@@ -554,7 +573,7 @@
     commentCreateData: {},
     comments: [],
     defaultFilter: 'comments',
-    filterCategories: ['all items', 'comments', 'views'],
+    filterCategories: getCategories(),
     hideFeed: false,
     highlightCallback: function(feedItem) {
       // by default highlight items that have to do with the blist owner

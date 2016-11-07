@@ -3756,6 +3756,7 @@ en:
           title: Download
         feed:
           subtitle: The discussion feed shows you the conversation and activity around a dataset
+          route_to_more_views_subtitle: Looking for additional activity on this dataset? Click on More Views tab.
           title: Discuss
         form:
           information:

@@ -1,5 +1,5 @@
 /*!
- * Socrata Styleguide v8.0.1
+ * Socrata Styleguide v8.0.2
  * Copyright 2015-2016 undefined
  * Licensed under undefined
  */
@@ -18,6 +18,7 @@ html {
 .icon-arrow-prev::before,
 .icon-arrow-right::before,
 .icon-arrow-up::before,
+.icon-axis-scale::before,
 .icon-bar-chart-horz::before,
 .icon-bar-chart::before,
 .icon-bold2::before,
@@ -34,6 +35,7 @@ html {
 .icon-close-circle::before,
 .icon-close::before,
 .icon-collapse::before,
+.icon-color::before,
 .icon-community::before,
 .icon-copy-document::before,
 .icon-crop::before,
@@ -55,6 +57,7 @@ html {
 .icon-facebook::before,
 .icon-failed::before,
 .icon-filter::before,
+.icon-flyout-options::before,
 .icon-geo::before,
 .icon-goal::before,
 .icon-google::before,
@@ -178,311 +181,320 @@ html {
 .icon-arrow-up::before {
   content: "\EA08"; }
 
-.icon-bar-chart-horz::before {
+.icon-axis-scale::before {
   content: "\EA09"; }
 
-.icon-bar-chart::before {
+.icon-bar-chart-horz::before {
   content: "\EA0A"; }
 
-.icon-bold2::before {
+.icon-bar-chart::before {
   content: "\EA0B"; }
 
-.icon-cards::before {
+.icon-bold2::before {
   content: "\EA0C"; }
 
-.icon-chart::before {
+.icon-cards::before {
   content: "\EA0D"; }
 
-.icon-check-2::before {
+.icon-chart::before {
   content: "\EA0E"; }
 
-.icon-check::before {
+.icon-check-2::before {
   content: "\EA0F"; }
 
-.icon-checkmark-alt::before {
+.icon-check::before {
   content: "\EA10"; }
 
-.icon-checkmark3::before {
+.icon-checkmark-alt::before {
   content: "\EA11"; }
 
-.icon-chevron-down::before {
+.icon-checkmark3::before {
   content: "\EA12"; }
 
-.icon-chevron-up::before {
+.icon-chevron-down::before {
   content: "\EA13"; }
 
-.icon-clear-formatting::before {
+.icon-chevron-up::before {
   content: "\EA14"; }
 
-.icon-close-2::before {
+.icon-clear-formatting::before {
   content: "\EA15"; }
 
-.icon-close-circle::before {
+.icon-close-2::before {
   content: "\EA16"; }
 
-.icon-close::before {
+.icon-close-circle::before {
   content: "\EA17"; }
 
-.icon-collapse::before {
+.icon-close::before {
   content: "\EA18"; }
 
-.icon-community::before {
+.icon-collapse::before {
   content: "\EA19"; }
 
-.icon-copy-document::before {
+.icon-color::before {
   content: "\EA1A"; }
 
-.icon-crop::before {
+.icon-community::before {
   content: "\EA1B"; }
 
-.icon-cross2::before {
+.icon-copy-document::before {
   content: "\EA1C"; }
 
-.icon-data::before {
+.icon-crop::before {
   content: "\EA1D"; }
 
-.icon-dataset::before {
+.icon-cross2::before {
   content: "\EA1E"; }
 
-.icon-date::before {
+.icon-data::before {
   content: "\EA1F"; }
 
-.icon-distribution::before {
+.icon-dataset::before {
   content: "\EA20"; }
 
-.icon-download::before {
+.icon-date::before {
   content: "\EA21"; }
 
-.icon-droplet::before {
+.icon-distribution::before {
   content: "\EA22"; }
 
-.icon-edit::before {
+.icon-download::before {
   content: "\EA23"; }
 
-.icon-email::before {
+.icon-droplet::before {
   content: "\EA24"; }
 
-.icon-embed::before {
+.icon-edit::before {
   content: "\EA25"; }
 
-.icon-expand::before {
+.icon-email::before {
   content: "\EA26"; }
 
-.icon-external-square::before {
+.icon-embed::before {
   content: "\EA27"; }
 
-.icon-external::before {
+.icon-expand::before {
   content: "\EA28"; }
 
-.icon-eye-blocked::before {
+.icon-external-square::before {
   content: "\EA29"; }
 
-.icon-eye::before {
+.icon-external::before {
   content: "\EA2A"; }
 
-.icon-facebook::before {
+.icon-eye-blocked::before {
   content: "\EA2B"; }
 
-.icon-failed::before {
+.icon-eye::before {
   content: "\EA2C"; }
 
-.icon-filter::before {
+.icon-facebook::before {
   content: "\EA2D"; }
 
-.icon-geo::before {
+.icon-failed::before {
   content: "\EA2E"; }
 
-.icon-goal::before {
+.icon-filter::before {
   content: "\EA2F"; }
 
-.icon-google::before {
+.icon-flyout-options::before {
   content: "\EA30"; }
 
-.icon-gte::before {
+.icon-geo::before {
   content: "\EA31"; }
 
-.icon-hamburger::before {
+.icon-goal::before {
   content: "\EA32"; }
 
-.icon-image::before {
+.icon-google::before {
   content: "\EA33"; }
 
-.icon-info-inverse::before {
+.icon-gte::before {
   content: "\EA34"; }
 
-.icon-info::before {
+.icon-hamburger::before {
   content: "\EA35"; }
 
-.icon-italic2::before {
+.icon-image::before {
   content: "\EA36"; }
 
-.icon-kebab::before {
+.icon-info-inverse::before {
   content: "\EA37"; }
 
-.icon-line-chart::before {
+.icon-info::before {
   content: "\EA38"; }
 
-.icon-link::before {
+.icon-italic2::before {
   content: "\EA39"; }
 
-.icon-linked::before {
+.icon-kebab::before {
   content: "\EA3A"; }
 
-.icon-list-numbered::before {
+.icon-line-chart::before {
   content: "\EA3B"; }
 
-.icon-list2::before {
+.icon-link::before {
   content: "\EA3C"; }
 
-.icon-lte::before {
+.icon-linked::before {
   content: "\EA3D"; }
 
-.icon-map::before {
+.icon-list-numbered::before {
   content: "\EA3E"; }
 
-.icon-move-vertical::before {
+.icon-list2::before {
   content: "\EA3F"; }
 
-.icon-move::before {
+.icon-lte::before {
   content: "\EA40"; }
 
-.icon-number::before {
+.icon-map::before {
   content: "\EA41"; }
 
-.icon-official::before {
+.icon-move-vertical::before {
   content: "\EA42"; }
 
-.icon-official2::before {
+.icon-move::before {
   content: "\EA43"; }
 
-.icon-paragraph-center3::before {
+.icon-number::before {
   content: "\EA44"; }
 
-.icon-paragraph-left::before {
+.icon-official::before {
   content: "\EA45"; }
 
-.icon-paragraph-left3::before {
+.icon-official2::before {
   content: "\EA46"; }
 
-.icon-paragraph-right3::before {
+.icon-paragraph-center3::before {
   content: "\EA47"; }
 
-.icon-pause::before {
+.icon-paragraph-left::before {
   content: "\EA48"; }
 
-.icon-pie-chart::before {
+.icon-paragraph-left3::before {
   content: "\EA49"; }
 
-.icon-play::before {
+.icon-paragraph-right3::before {
   content: "\EA4A"; }
 
-.icon-plus2::before {
+.icon-pause::before {
   content: "\EA4B"; }
 
-.icon-plus3::before {
+.icon-pie-chart::before {
   content: "\EA4C"; }
 
-.icon-presentation::before {
+.icon-play::before {
   content: "\EA4D"; }
 
-.icon-preview::before {
+.icon-plus2::before {
   content: "\EA4E"; }
 
-.icon-print::before {
+.icon-plus3::before {
   content: "\EA4F"; }
 
-.icon-private::before {
+.icon-presentation::before {
   content: "\EA50"; }
 
-.icon-processing::before {
+.icon-preview::before {
   content: "\EA51"; }
 
-.icon-pulse::before {
+.icon-print::before {
   content: "\EA52"; }
 
-.icon-puzzle::before {
+.icon-private::before {
   content: "\EA53"; }
 
-.icon-question-inverse::before {
+.icon-processing::before {
   content: "\EA54"; }
 
-.icon-question::before {
+.icon-pulse::before {
   content: "\EA55"; }
 
-.icon-quotes-left::before {
+.icon-puzzle::before {
   content: "\EA56"; }
 
-.icon-redo::before {
+.icon-question-inverse::before {
   content: "\EA57"; }
 
-.icon-region::before {
+.icon-question::before {
   content: "\EA58"; }
 
-.icon-search::before {
+.icon-quotes-left::before {
   content: "\EA59"; }
 
-.icon-settings::before {
+.icon-redo::before {
   content: "\EA5A"; }
 
-.icon-share::before {
+.icon-region::before {
   content: "\EA5B"; }
 
-.icon-sort-asc::before {
+.icon-search::before {
   content: "\EA5C"; }
 
-.icon-sort-az::before {
+.icon-settings::before {
   content: "\EA5D"; }
 
-.icon-sort-desc::before {
+.icon-share::before {
   content: "\EA5E"; }
 
-.icon-sort-za::before {
+.icon-sort-asc::before {
   content: "\EA5F"; }
 
-.icon-stories-icon::before {
+.icon-sort-az::before {
   content: "\EA60"; }
 
-.icon-stories-menu::before {
+.icon-sort-desc::before {
   content: "\EA61"; }
 
-.icon-story::before {
+.icon-sort-za::before {
   content: "\EA62"; }
 
-.icon-table::before {
+.icon-stories-icon::before {
   content: "\EA63"; }
 
-.icon-tag::before {
+.icon-stories-menu::before {
   content: "\EA64"; }
 
-.icon-text::before {
+.icon-story::before {
   content: "\EA65"; }
 
-.icon-twitter::before {
+.icon-table::before {
   content: "\EA66"; }
 
-.icon-undo::before {
+.icon-tag::before {
   content: "\EA67"; }
 
-.icon-user::before {
+.icon-text::before {
   content: "\EA68"; }
 
-.icon-waiting::before {
+.icon-twitter::before {
   content: "\EA69"; }
 
-.icon-warning-alt::before {
+.icon-undo::before {
   content: "\EA6A"; }
 
-.icon-warning-alt2::before {
+.icon-user::before {
   content: "\EA6B"; }
 
-.icon-warning::before {
+.icon-waiting::before {
   content: "\EA6C"; }
 
-.icon-windows::before {
+.icon-warning-alt::before {
   content: "\EA6D"; }
 
-.icon-yahoo::before {
+.icon-warning-alt2::before {
   content: "\EA6E"; }
+
+.icon-warning::before {
+  content: "\EA6F"; }
+
+.icon-windows::before {
+  content: "\EA70"; }
+
+.icon-yahoo::before {
+  content: "\EA71"; }
 
 /* Base Palette Colors */
 /* Colors light version */
@@ -494,155 +506,14 @@ html {
 /* Header */
 /* Settings Panel */
 /* Backgrounds */
-ul ul,
-ul ol,
-ol ul,
-ol ol {
-  margin: 0; }
-
-ol > li ol {
-  list-style-type: lower-alpha; }
-  ol > li ol > li ol {
-    list-style-type: lower-roman; }
-
-.list-unstyled {
-  list-style: none;
-  padding-left: 0; }
-  .list-unstyled > ul {
-    padding-left: inherit; }
-
-.list-inline, .tabs {
-  list-style: none;
-  padding-left: 0;
-  margin-left: -12px; }
-  .list-inline li, .tabs li {
-    display: inline-block;
-    padding-left: 12px;
-    padding-right: 12px; }
-
-@font-face {
-  font-family: "socrata-icons";
-  src: url("/fonts/socrata-icons.eot");
-  src: url("/fonts/socrata-icons.eot?#iefix") format("embedded-opentype"), url("/fonts/socrata-icons.woff") format("woff"), url("/fonts/socrata-icons.ttf") format("truetype"), url("/fonts/socrata-icons.svg#socrata-icons") format("svg");
-  font-weight: normal;
-  font-style: normal; }
-
-@media screen and (-webkit-min-device-pixel-ratio: 0) {
-  @font-face {
-    font-family: "socrata-icons";
-    src: url("/fonts/socrata-icons.svg#socrata-icons") format("svg"); } }
-
-form input {
-  width: 100%; }
-
-label {
-  font-weight: 600; }
-  .checkbox label {
-    font-weight: 400; }
-
-h1, h2, h3, h4, h5, h6 {
-  letter-spacing: -0.5px; }
-
-.tabs {
-  border-bottom: 1px solid #c8c8c8;
-  padding-bottom: 10px; }
-  .tabs .current a {
-    border-bottom: 4px solid #288dc1; }
-    .tabs .current a:hover {
-      border-bottom: 4px solid #1c6387; }
-  .tabs a {
-    text-decoration: none;
+table tbody td {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; }
+  table tbody td.has-more-text:hover {
+    background-color: #f5f5f5;
     color: #5e5e5e;
-    padding: 9px 11px; }
-    .tabs a.active {
-      border-bottom: 4px solid #288dc1; }
-    .tabs a:hover {
-      border-bottom: 4px solid #c8c8c8;
-      color: #2f2f2f; }
+    cursor: pointer; }
 
-.tab-content {
-  display: none; }
-  .tab-content.current {
-    display: inherit; }
-
-.container {
-  margin-top: 20px;
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-  background-color: red; }
-  .container::after {
-    clear: both;
-    content: "";
-    display: table; }
-
-.content {
-  float: left;
-  display: block;
-  margin-right: 2.35765%;
-  width: 100%;
-  background-color: #fff; }
-  .content:last-child {
-    margin-right: 0; }
-
-.admin-header {
-  display: block;
-  margin-bottom: 29px; }
-  .admin-header::after {
-    clear: both;
-    content: "";
-    display: table; }
-  .admin-header .header-title {
-    float: left;
-    display: block;
-    margin-right: 2.35765%;
-    width: 48.82117%; }
-    .admin-header .header-title:last-child {
-      margin-right: 0; }
-  .admin-header .header-controls {
-    float: left;
-    display: block;
-    margin-right: 2.35765%;
-    width: 48.82117%;
-    text-align: right; }
-    .admin-header .header-controls:last-child {
-      margin-right: 0; }
-
-.section-header {
-  margin-top: 23px; }
-
-.settings-group {
-  display: block;
-  padding-top: 23px; }
-  .settings-group::after {
-    clear: both;
-    content: "";
-    display: table; }
-  .settings-group .settings-form {
-    float: left;
-    display: block;
-    margin-right: 2.35765%;
-    width: 65.88078%; }
-    .settings-group .settings-form:last-child {
-      margin-right: 0; }
-    .settings-group .settings-form.half {
-      float: left;
-      display: block;
-      margin-right: 2.35765%;
-      width: 31.76157%; }
-      .settings-group .settings-form.half:last-child {
-        margin-right: 0; }
-  .settings-group aside {
-    float: left;
-    display: block;
-    margin-right: 2.35765%;
-    width: 31.76157%; }
-    .settings-group aside:last-child {
-      margin-right: 0; }
-
-.page-controls {
-  border-top: 1px solid #e4e4e4;
-  padding: 17px 0;
-  margin-bottom: 19px; }
-
-/*# sourceMappingURL=homepage-settings.css-02b6825c.map */
+/*# sourceMappingURL=tables.css-14f3b2e8.map */

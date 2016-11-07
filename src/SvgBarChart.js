@@ -408,9 +408,15 @@ $.fn.socrataSvgBarChart = function(originalVif) {
               WHERE ${otherCategoryWhereClauseComponents}`;
           }
 
+          // Since we're using values from first query as filters, we have to url
+          // encode query string. Characters like `&` comes with surprises
+          const uriEncodedOtherCategoryQueryString = encodeURIComponent(
+            otherCategoryQueryString.replace(/[\n\s]+/g, ' ')
+          );
+
           return soqlDataProvider.
             query(
-              otherCategoryQueryString.replace(/[\n\s]+/g, ' '),
+              uriEncodedOtherCategoryQueryString,
               dimensionAlias,
               measureAlias
             ).

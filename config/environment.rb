@@ -28,3 +28,7 @@ end
 
 # Initialize the Rails application.
 Rails.application.initialize!
+
+# TODO: fix this path?
+site_chrome_views_pathset = ActionView::PathSet.new(["#{Rails.root}/../socrata_site_chrome/engine/app/views/site_chrome"])
+ActionController::Base.view_paths += site_chrome_views_pathset

@@ -45,7 +45,7 @@ export default function histogram(state, action) {
 
   switch (action.type) {
     case RESET_STATE:
-      state = vifs().featureMap;
+      state = vifs().histogram;
       break;
 
     case RECEIVE_METADATA:

@@ -47,7 +47,7 @@ export default function timelineChart(state, action) {
 
   switch (action.type) {
     case RESET_STATE:
-      state = vifs().table;
+      state = vifs().timelineChart;
       break;
 
     case RECEIVE_METADATA:

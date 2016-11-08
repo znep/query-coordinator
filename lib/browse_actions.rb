@@ -95,8 +95,12 @@ module BrowseActions
 
     if using_cetera?
       all_tags = Cetera::Utils.get_tags(forwardable_session_cookies, request_id(request)).results
+      title = t('controls.browse.facets.tags_title')
+      singular_description = t('controls.browse.facets.tags_singular_title')
     else
       all_tags = Tag.find(:method => 'viewsTags')
+      title = t('controls.browse.facets.topics_title')
+      singular_description = t('controls.browse.facets.topics_singular_title')
     end
 
     # top_tags appear above the fold and contain the first "topic_chop" number of tags + the selected tag
@@ -120,8 +124,8 @@ module BrowseActions
 
     {
       :type => :topic,
-      :title => t('controls.browse.facets.topics_title'),
-      :singular_description => t('controls.browse.facets.topics_singular_title'),
+      :title => title,
+      :singular_description => singular_description,
       :param => :tags,
       :options => top_tags,
       :extra_options => tag_cloud,

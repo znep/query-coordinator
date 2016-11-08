@@ -457,6 +457,7 @@ class BrowseActionsTest4 < Minitest::Test
   end
 
   def test_cly_topics_facet_without_param
+    stub_feature_flags_with(:cetera_search => false)
     @browse_actions_container.unstub(:topics_facet)
     facets = @browse_actions_container.send(:topics_facet).with_indifferent_access
     expected_facets = JSON.parse('{"type":"topic","title":"Topics","singular_description":"topic","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
@@ -466,6 +467,7 @@ class BrowseActionsTest4 < Minitest::Test
   end
 
   def test_cly_topics_facet_with_matching_param
+    stub_feature_flags_with(:cetera_search => false)
     @browse_actions_container.unstub(:topics_facet)
     facets = @browse_actions_container.send(:topics_facet, :tags => 'neato').with_indifferent_access
     expected_facets = JSON.parse('{"type":"topic","title":"Topics","singular_description":"topic","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
@@ -475,6 +477,7 @@ class BrowseActionsTest4 < Minitest::Test
   end
 
   def test_cly_topics_facet_with_non_matching_param
+    stub_feature_flags_with(:cetera_search => false)
     @browse_actions_container.unstub(:topics_facet)
     expected_facets = JSON.parse('{"type":"topic","title":"Topics","singular_description":"topic","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
     expected_facets[:type] = expected_facets.delete(:type).to_sym
@@ -488,7 +491,7 @@ class BrowseActionsTest4 < Minitest::Test
     stub_feature_flags_with(:cetera_search => true)
     @browse_actions_container.unstub(:topics_facet)
     facets = @browse_actions_container.send(:topics_facet).with_indifferent_access
-    expected_facets = JSON.parse('{"type":"topic","title":"Topics","singular_description":"topic","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
+    expected_facets = JSON.parse('{"type":"topic","title":"Tags","singular_description":"tag","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
     expected_facets[:type] = expected_facets.delete(:type).to_sym
     expected_facets[:param] = expected_facets.delete(:param).to_sym # Hack because using JSON for fixture data
     assert_equal(expected_facets, facets)
@@ -498,7 +501,7 @@ class BrowseActionsTest4 < Minitest::Test
     stub_feature_flags_with(:cetera_search => true)
     @browse_actions_container.unstub(:topics_facet)
     facets = @browse_actions_container.send(:topics_facet, :tags => 'neato').with_indifferent_access
-    expected_facets = JSON.parse('{"type":"topic","title":"Topics","singular_description":"topic","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
+    expected_facets = JSON.parse('{"type":"topic","title":"Tags","singular_description":"tag","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
     expected_facets[:type] = expected_facets.delete(:type).to_sym
     expected_facets[:param] = expected_facets.delete(:param).to_sym # Hack because using JSON for fixture data
     assert_equal(expected_facets, facets)
@@ -508,7 +511,7 @@ class BrowseActionsTest4 < Minitest::Test
     stub_feature_flags_with(:cetera_search => true)
     @browse_actions_container.unstub(:topics_facet)
     facets = @browse_actions_container.send(:topics_facet, :tags => 'unknown').with_indifferent_access
-    expected_facets = JSON.parse('{"type":"topic","title":"Topics","singular_description":"topic","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
+    expected_facets = JSON.parse('{"type":"topic","title":"Tags","singular_description":"tag","param":"tags","options":[{"text":"crazy","value":"crazy","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2}],"extra_options":[{"text":"crazy","value":"crazy","count":1},{"text":"keyword","value":"keyword","count":1},{"text":"neato","value":"neato","count":1},{"text":"other","value":"other","count":2},{"text":"tag","value":"tag","count":2},{"text":"ufo","value":"ufo","count":1},{"text":"weird","value":"weird","count":1}],"tag_cloud":true}').with_indifferent_access
     expected_facets[:type] = expected_facets.delete(:type).to_sym
     expected_facets[:param] = expected_facets.delete(:param).to_sym # Hack because using JSON for fixture data
     expected_facets['options'] = facets['options'].push('text' => 'unknown', 'value' => 'unknown', 'count' => 0)
@@ -517,6 +520,7 @@ class BrowseActionsTest4 < Minitest::Test
 
   def test_categories_come_first_in_new_catalog
     request = OpenStruct.new(params: { cetera_search: 'true' }.with_indifferent_access)
+    @browse_actions_container.unstub(:topics_facet)
     browse_options = @browse_actions_container.send(:process_browse, request)
     facet_titles = browse_options[:facets].map { |f| f[:title] }
     expected_titles = [
@@ -525,7 +529,7 @@ class BrowseActionsTest4 < Minitest::Test
       'Custom Superheroes',
       'Custom Tomatoes',
       'Custom Follies',
-      'Topics',
+      'Tags',
       'Federated'
     ]
 

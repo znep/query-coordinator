@@ -3,14 +3,16 @@
 require 'cgi'
 
 module SiteChromeHelper
-  include SocrataSiteChrome::ApplicationHelper
+  include SocrataSiteChrome::ApplicationHelper # TODO: getting rid of this caused all sorts of issues.
+  # the views need access to the ApplicationHelper methods, and they don't have it without this line.
+  # because we render the views from within the hosting app?
 
   def site_chrome_meta_viewport_tag
     raw('<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">')
   end
 
   def google_analytics_tracking_code
-    CGI.escapeHTML(get_site_chrome.general[:google_analytics_token].to_s)
+    CGI.escapeHTML(Rails.application.config.socrata_site_chrome.general[:google_analytics_token].to_s)
   end
 
   def site_chrome_google_analytics_tag
@@ -42,12 +44,12 @@ module SiteChromeHelper
   end
 
   def site_chrome_favicon_tag
-    favicon_url = get_site_chrome.general[:window_icon]
+    favicon_url = Rails.application.config.socrata_site_chrome.general[:window_icon]
     favicon_link_tag(massage_url(favicon_url, add_locale: false)) if favicon_url.present?
   end
 
   def site_chrome_window_title
-    get_site_chrome.general[:window_title_display]
+    Rails.application.config.socrata_site_chrome.general[:window_title_display]
   end
 
 end

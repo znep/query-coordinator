@@ -3,6 +3,7 @@ require 'request_store'
 
 module SocrataSiteChrome
   module ApplicationHelper
+
     def divider
       content_tag(:div, :class => 'divider') do
         content_tag(:span, nil)
@@ -322,26 +323,16 @@ module SocrataSiteChrome
       locales[I18n.locale.to_s].try(:dig, *locale_key.split('.'))
     end
 
-    def site_chrome_test_config
-      site_chrome_config = DomainConfig.default_configuration.first.with_indifferent_access
-      site_chrome_config_values = site_chrome_config[:properties].first.dig(:value)
-      current_version = site_chrome_config_values[:current_version]
-      {
-        id: site_chrome_config[:id],
-        content: site_chrome_config_values.dig(:versions, current_version, :published, :content),
-        updated_at: site_chrome_config[:updatedAt],
-        current_version: current_version
-      }
-    end
-
     def get_site_chrome
-      (::RequestStore.store[:site_chrome] ||= {})[pub_stage] ||= SocrataSiteChrome::SiteChrome.new(
-        if Rails.env.test?
-          site_chrome_test_config
-        else
-          SocrataSiteChrome::DomainConfig.new(request.host).site_chrome_config(pub_stage)
-        end
-      )
+      Rails.application.config.socrata_site_chrome
+
+      # (::RequestStore.store[:site_chrome] ||= {})[pub_stage] ||= SocrataSiteChrome::SiteChrome.new(
+      #   if Rails.env.test?
+      #     SocrataSiteChrome::DomainConfig.site_chrome_test_configuration
+      #   else
+      #     SocrataSiteChrome::DomainConfig.new(request.host).site_chrome_config(pub_stage)
+      #   end
+      # )
     end
 
     # Returns template name - either 'evergreen' (default) or 'rally'
@@ -406,5 +397,6 @@ module SocrataSiteChrome
         false
       end
     end
+
   end
 end

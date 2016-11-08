@@ -36,6 +36,19 @@ module SocrataSiteChrome
       JSON.parse(File.read("#{SocrataSiteChrome::Engine.root}/config/default_site_chrome.json"))
     end
 
+    # Dummy config to use in test
+    def self.site_chrome_test_configuration
+      site_chrome_config = default_configuration.first.with_indifferent_access
+      site_chrome_config_values = site_chrome_config[:properties].first.dig(:value)
+      current_version = site_chrome_config_values[:current_version]
+      {
+        id: site_chrome_config[:id],
+        content: site_chrome_config_values.dig(:versions, current_version, :published, :content),
+        updated_at: site_chrome_config[:updatedAt],
+        current_version: current_version
+      }
+    end
+
     def cache_key
       "#{@domain}_site_chrome_config"
     end

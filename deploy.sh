@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 if [[ -z $(git status -s) ]]; then
   git checkout .

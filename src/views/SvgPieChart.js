@@ -10,7 +10,9 @@ const MAX_HORIZONTAL_LEGEND_SIZE = 250;
 const MARGINS = {
   verticalLayoutPieMargin: 0.7,
   // arc multiplier for determining flyout position
-  flyoutArcMultiplier: 1.6,
+  flyoutArcInnerMultiplier: 1.4,
+  flyoutArcOuterMultiplier: 1.8,
+  textLabelArcMultiplier: 1.6,
   // space between pie and legend, multiplied by container width
   pieToLegendMargin: 0.1
 };
@@ -19,10 +21,9 @@ const LEGEND_SPACING = 4;
 const LEGEND_CONTAINER_PADDING = 20;
 const LEGEND_WRAP_PADDING = 5;
 const VERTICAL_LEGEND_SPACING = 20;
-const FLYOUT_Y_OFFSET = -9;
 
-const PERCENT_LABEL_THRESHOLD = 45;
-const VALUE_LABEL_THRESHOLD = 60;
+const PERCENT_LABEL_THRESHOLD = 20;
+const VALUE_LABEL_THRESHOLD = 25;
 
 const PI2 = Math.PI * 2;
 
@@ -36,7 +37,6 @@ function SvgPieChart($element, vif) {
   let svg; // main svg element
   let color; // renderData and renderLegend uses this
   let colorPalette;
-  let flyoutArc; // this will change with resize
   let centerDot; // hidden circle at the center of pie
 
   _.extend(this, new SvgVisualization($element, vif));
@@ -151,7 +151,7 @@ function SvgPieChart($element, vif) {
 
     // invisible dot at the center of pie
     // hack solution to find "true" center of pie chart.
-    centerDot = g.
+    centerDot = arcs.
       append('svg:circle').
       attr('r', 0.1).
       attr('fill-opacity', 0);
@@ -255,17 +255,18 @@ function SvgPieChart($element, vif) {
     let arc = getArc(radius);
 
     // flyout's bigger arc
-    flyoutArc = getArc(radius * MARGINS.flyoutArcMultiplier);
+    let textLabelArc = getArc(radius * MARGINS.textLabelArcMultiplier);
 
     // apply arcs
     svg.selectAll('path').
       attr('d', arc);
 
     // align labels
+    // use textLabelArc for positioning
     svg.selectAll('g.slice-group text').
-      attr('transform', (d) => `translate(${flyoutArc.centroid(d)})`);
+      attr('transform', (d) => `translate(${textLabelArc.centroid(d)})`);
 
-    const flyoutArcRadius = flyoutArc.outerRadius()();
+    const arcRadius = arc.outerRadius()();
 
     // Show/hide labels according to length of each slice
     const labelVisibilityThreshold =
@@ -275,7 +276,7 @@ function SvgPieChart($element, vif) {
 
     svg.selectAll('g.slice-group path').
       each(function(d) {
-        const length = calculateArcLength(flyoutArcRadius, d.startAngle, d.endAngle);
+        const length = calculateArcLength(arcRadius, d.startAngle, d.endAngle);
         const textEl = d3.select(this.parentNode).select('text');
         const visibility = length >= labelVisibilityThreshold ? 'visible' : 'hidden';
 
@@ -513,7 +514,43 @@ function SvgPieChart($element, vif) {
       on('mouseover', (d, index) => {
         const pathElement = svg.select(`.slice[data-index="${index}"]`)[0][0];
 
-        // Mid point of larger arc
+        // Pie chart radius
+        const radius = outerWidth / 2;
+
+        // This arc's middle point in radian
+        const arcMidAngle = ((d.endAngle - d.startAngle) / 2) + d.startAngle;
+
+        // This arc's outer border length in px
+        const length = calculateArcLength(radius, d.startAngle, d.endAngle);
+
+        // Are labels plain or percentage ?
+        const labelVisibilityThreshold =
+          self.getShowValueLabelsAsPercent()
+            ? PERCENT_LABEL_THRESHOLD
+            : VALUE_LABEL_THRESHOLD;
+
+        // Is labels visible with this arc's length and label styling ?
+        const labelVisibility = length >= labelVisibilityThreshold ?
+          'visible' :
+          'hidden';
+
+        // Decide which arc multiplier to use
+        let arcMultiplier;
+        if (labelVisibility) {
+          // If between 130 and 315 degrees display flyout on a bigger arc's middle point
+          // If not use a smaller arc's middle point
+          // In other words; try to avoid covering label with flyout window.
+          arcMultiplier = _.inRange(arcMidAngle, 2.35619, 5.49779) ?
+            MARGINS.flyoutArcInnerMultiplier :
+            MARGINS.flyoutArcOuterMultiplier;
+        } else {
+          arcMultiplier = MARGINS.textLabelArcMultiplier;
+        }
+
+        // create flyout's arc
+        const flyoutArc = getArc(radius * arcMultiplier);
+
+        // Mid point of flyout arc
         const midPoint = flyoutArc.centroid(d);
 
         // Getting pie center from the dot at the center
@@ -521,10 +558,7 @@ function SvgPieChart($element, vif) {
 
         // Arc mid point is relative, so we're adding pie center offset to it
         const flyoutPositionX = pieCenter.left + midPoint[0];
-        // Apply the FLYOUT_Y_OFFSET to the calculated 'center' of the slice
-        // in order to position the flyout above the text label, not on its
-        // center.
-        const flyoutPositionY = pieCenter.top + midPoint[1] + FLYOUT_Y_OFFSET;
+        const flyoutPositionY = pieCenter.top + midPoint[1];
 
         const data = {
           label: pathElement.getAttribute('data-label'),

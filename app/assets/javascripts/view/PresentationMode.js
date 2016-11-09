@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import $ from 'jquery';
 
 /**
@@ -24,6 +25,7 @@ export default function PresentationMode() {
 
   attachPageIndexes();
   attachEvents();
+  presentOnStart();
 
   function attachPageIndexes() {
     var index = 0;
@@ -42,6 +44,24 @@ export default function PresentationMode() {
     presentationButtons.next.addEventListener('click', pageNext);
     presentationButtons.previous.addEventListener('click', pagePrevious);
     presentationMode.addEventListener('click', enablePresentationMode);
+  }
+
+  function presentOnStart() {
+    var searchParameters = {};
+    var search = window.location.search[0] === '?' ?
+      window.location.search.slice(1) :
+      window.location.search;
+
+    var keyValues = _.compact(search.split('&'));
+
+    _.each(keyValues, (keyValue) => {
+      var [key, value] = keyValue.split('=');
+      searchParameters[key] = value !== 'false';
+    });
+
+    if (searchParameters.present) {
+      enablePresentationMode();
+    }
   }
 
   function editPage() {

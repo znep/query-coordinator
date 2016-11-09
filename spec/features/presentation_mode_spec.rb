@@ -171,4 +171,11 @@ RSpec.describe 'presentation mode', type: :feature, js: true do
     it_behaves_like 'presentation mode'
   end
 
+  context 'using ?present=true' do
+    let(:story) { "#{story_url}?present=true" }
+
+    it 'immediately starts presentation mode' do
+      expect(page).to have_selector('.presentation-mode')
+    end
+  end
 end

@@ -57,23 +57,22 @@ npm test
 There is a Jenkins job responsible for PR testing (see styleguide-pull-request-tester).
 
 #### Releasing Styleguide
-The process is fully automated (see styleguide-publisher). :tada:
+There are two parts to releasing styleguide:
 
-If you need to run a manual release:
-```
-npm run release
-```
+1. Publish an NPM package to artifactory. This is fully automated (see styleguide-publisher). :tada:
 
-#### Deploying to https://socrata.github.io/styleguide
-The process is fully automated through Jenkins (see styleguide-publisher). :tada:
+    If you need to run a manual release:
+    ```
+    npm run release
+    ```
 
-If you need to run a manual deploy:
+2. Deploy to  https://socrata.github.io/styleguide
 
-A deployment of the static website to our Github pages domain can be carried out with:
-```
-npm run deploy
-```
-This runs Middleman and makes a commit to `gh-pages`. Do note that the website may take a few seconds to minutes to update to the newest version. After running the command, please check the website for any hiccups. Other people rely on the Styleguide for showcasing prototypes.
+    This is not automated. Run:
+    ```
+    npm run deploy
+    ```
+    This runs Middleman and makes a commit to `master` after building and placing files in `docs/`. Do note that the website may take a few seconds to minutes to update to the newest version. After running the command, please check the website for any hiccups. Other people rely on the Styleguide for showcasing prototypes.
 
 #### Adding a React component
 Use the React generation command to set up a new React component:

@@ -1,0 +1,22 @@
+<p>Modals can be cancelled in several ways:</p>
+
+<ul>
+  <li>By clicking outside the bounds of the modal, if not fullscreen</li>
+  <li>By clicking a close icon in the upper right corner of the header</li>
+  <li>By clicking a cancel button in the footer</li>
+  <li>By pressing the Esc key, when permissible</li>
+</ul>
+
+<p>
+  It is the responsibility of the consumer to create a handler (e.g.
+  <code>onDismiss</code> below) which dispatches the appropriate actions to the
+  appropriate stores for controlling the rendering and internal state of the
+  modal. For the sake of example, the store pattern has been omitted from this
+  documentation.
+</p>
+
+<p>
+  Also note that the footer's cancel button is not provided by the modal itself.
+</p>
+
+<%= partial "code_sample", locals: { component: "components/skeletons/modal" } %>

@@ -64,7 +64,15 @@ module.exports = function(config) {
     webpack: socrataComponentsConfig,
     webpackMiddleware: {
       noInfo: true
+    },
+
+    phantomjsLauncher: {
+      options: {
+        viewportSize: {
+          width: 1024,
+          height: 768
+        }
+      }
     }
   })
 };
-

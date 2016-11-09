@@ -15,6 +15,7 @@ import ExternalViewCard from './components/ViewCard/ExternalViewCard';
 import FilterBar from './components/FilterBar';
 import InfoPane from './components/InfoPane';
 import Slider from './components/Slider';
+import Modal, { ModalHeader, ModalContent, ModalFooter } from './components/Modal';
 
 module.exports = {
   attachTo: function(element) {
@@ -41,5 +42,9 @@ module.exports = {
   ExternalViewCard,
   FilterBar,
   InfoPane,
-  Slider
+  Slider,
+  Modal,
+  ModalHeader,
+  ModalContent,
+  ModalFooter
 };

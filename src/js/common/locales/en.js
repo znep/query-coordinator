@@ -1,6 +1,8 @@
 export default {
-  view_card: {
-    external_content: 'External Content'
+  color_picker: {
+    open_color_picker: 'Open Color Picker',
+    pickable_color: 'Pickable color',
+    with_currently_selected_color: 'with currently selected color'
   },
   filter_bar: {
     add_filter: 'Add Filter',
@@ -22,15 +24,16 @@ export default {
     remove_filter: 'Remove Filter',
     search: 'Search options'
   },
-  color_picker: {
-    pickable_color: 'Pickable color',
-    open_color_picker: 'Open Color Picker',
-    with_currently_selected_color: 'with currently selected color'
-  },
   info_pane: {
     less: 'Less',
     more: 'More',
     official: 'Official',
     private_notice: 'This view is private'
+  },
+  modal: {
+    aria_close: 'Close modal'
+  },
+  view_card: {
+    external_content: 'External Content'
   }
 };

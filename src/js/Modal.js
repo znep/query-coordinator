@@ -32,9 +32,16 @@ ModalFactory.prototype = {
         );
 
         modals.forEach(function(modal) {
-          modal.classList.add('modal-hidden');
-          document.body.classList.remove('modal-open');
-          this.restoreFocus(modal);
+          // All legacy modals instantiated by this factory will have this
+          // attribute; this check allows us to use the same classes in our
+          // newer React component without accidentally inheriting behavior,
+          // in the event that both legacy and React modals are simultaneously
+          // in use. See open() for the line that sets this data attribute.
+          if (modal.getAttribute('data-legacy-modal')) {
+            modal.classList.add('modal-hidden');
+            document.body.classList.remove('modal-open');
+            this.restoreFocus(modal);
+          }
         }.bind(this));
       }
     }.bind(this));
@@ -54,6 +61,7 @@ ModalFactory.prototype = {
     var modal = event.target.getAttribute('data-modal');
     modal = this.root.querySelector(`#${modal}`);
     modal.classList.remove('modal-hidden');
+    modal.setAttribute('data-legacy-modal', true);
 
     document.body.classList.add('modal-open');
 
@@ -146,6 +154,10 @@ ModalFactory.prototype = {
 
   reposition: function(modal) {
     if (modal.classList.contains('modal-hidden')) {
+      return;
+    }
+
+    if (!modal.getAttribute('data-legacy-modal')) {
       return;
     }
 

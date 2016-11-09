@@ -118,17 +118,17 @@ body.modal-open {
   }
 }
 
-.modal-footer {
+.modal-full .modal-footer {
   position: absolute;
   width: 100%;
   bottom: 0;
   padding: ms(-2);
   border-top: 1px solid $light-grey-3;
   background-color: $light-grey-7;
+}
 
-  .modal-footer-actions {
-    text-align: right;
-  }
+.modal-footer-actions {
+  text-align: right;
 }
 
 .modal-actions {

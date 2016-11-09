@@ -9,7 +9,7 @@ import 'babel-polyfill';
 window.jQuery = require('jquery');
 window.renderComponent = _.flow(React.createElement, TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
 window.renderPureComponent = _.flow(TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
-window.renderComponentWithStore = function(component, props, store) {
+window.renderComponentWithStore = (component, props, store) => {
   return window.renderComponent(Provider, { store }, React.createElement(component, props));
 }
 

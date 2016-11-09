@@ -1,6 +1,7 @@
+import _ from 'lodash';
 import AirbrakeJs from 'airbrake-js';
 
-var airbrake;
+let airbrake;
 
 function init() {
   airbrake = new AirbrakeJs({
@@ -8,7 +9,18 @@ function init() {
     projectKey: window.serverConfig.airbrakeKey
   });
 
-  airbrake.addReporter(function(notice) {
+  airbrake.addFilter((notice) => {
+    const browser = _.get(notice, 'context.userAgentInfo.browserName');
+    const browserVersion = _.toNumber(_.get(notice, 'context.userAgentInfo.browserVersion'));
+
+    if (browser === 'Internet Explorer' && browserVersion < 11) {
+      return null;
+    }
+
+    return notice;
+  });
+
+  airbrake.addReporter((notice) => {
     console.log('Airbrake error: ', notice);
   });
 }

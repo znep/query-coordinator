@@ -570,7 +570,7 @@ export function isAttributionValid(metadata) {
 
 export function isSourceLinkValid(metadata) {
   const sourceLink = metadata.license.sourceLink;
-  return isURL(sourceLink, { require_protocol: true }) || sourceLink.length === 0;
+  return !_.isString(sourceLink) || sourceLink.length === 0 || isURL(sourceLink, { require_protocol: true });
 }
 
 export function isMetadataValid(metadata: DatasetMetadata, operation) {

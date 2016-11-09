@@ -217,7 +217,7 @@ export function modelToViewParam(metadata) {
     displayType: metadata.contents.displayType
   };
 
-  if (metadata.license.sourceLink.length > 0) {
+  if (_.isString(metadata.license.sourceLink) && metadata.license.sourceLink.length > 0) {
     // don't send an empty attributionLink to core.
     model.attributionLink = metadata.license.sourceLink;
   }

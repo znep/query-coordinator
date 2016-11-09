@@ -178,9 +178,8 @@ $(function() {
       '.delete.button@class+': function(v) {
         var isStory = v.context.displayType === 'story';
         var canDeleteStories = blist.currentUser && blist.currentUser.hasRight(blist.rights.user.DELETE_STORY);
-        var ownsAsset = v.context.owner.id === blist.currentUserId;
 
-        if (isStory && canDeleteStories && ownsAsset) {
+        if (isStory && canDeleteStories) {
           return '';
         } else if (isStory) {
           return 'hide';

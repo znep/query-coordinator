@@ -25,7 +25,7 @@
             <input id="emailRecipient" type="text" class="emailRecipient email" name="emailRecipient0" />
           </div>
           <%- if !@view.nil? && @view.has_rights?(ViewRights::GRANT) -%>
-            <%= select_tag 'role', options_for_select(@view.share_types.map{ |type| [ t('core.share_types.' + type.downcase), type ] }),
+            <%= select_tag 'role', options_for_select(@view.share_types.map{ |type| [ t("core.share_types.#{type.downcase}"), type ] }),
                   :class => 'recipientRole', :id => nil %>
           <%- end -%>
         </div>

@@ -30,7 +30,7 @@
         <%- disabled_features.each do |feature| -%>
           <div class="line clearfix">
             <label for="<%= feature[:key] %>">
-              <%= t('core.features.' + feature[:key]) %></label>
+              <%= t("core.features.#{feature[:key]}") %></label>
             <span class="inputWrapper">
               <span>
                 <input type="checkbox"

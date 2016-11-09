@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Import our english strings to LocaleApp
+# Pulls api key from:
+# - LOCALEAPP_API_KEY env var
+# - .env
+# - .localeapp/config.rb
+
+set -e
+
+localeapp pull config/locales

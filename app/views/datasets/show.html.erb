@@ -64,7 +64,7 @@
           <li><a
             href="<%= view_path(@view, defaultRender: url_types[type] || type) %>"
             class="<%= type %> noRedirPrompt<%= ' hide' if type == 'template' %>"
-            title="<%= t('screens.ds.bar.view_type', type: t('screens.ds.bar.view_types.' + type)) %>">
+            title="<%= t('screens.ds.bar.view_type', type: t("screens.ds.bar.view_types.#{type}")) %>">
             <span class="icon"></span>
           </a></li>
           <%- end -%>

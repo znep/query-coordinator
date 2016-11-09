@@ -49,7 +49,7 @@
     <%- end -%>
 
     <%- if @view.is_href? -%>
-      <h2><%= t('screens.edit_metadata.external_datasets') %></h2>
+      <h2><%= t('screens.edit_metadata.external_dataset') %></h2>
       <%- if @view.allAccessPoints.present? -%>
         <div class="externalDatasetBox">
           <%- @view.allAccessPoints.each_with_index do |entry, source_index| -%>

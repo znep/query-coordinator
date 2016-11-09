@@ -433,6 +433,7 @@ en:
         create_resource_short: Create new...
         create_resource_verb: Create
         create_story_short: Story
+        create_story_verb: Create
         dataset_subscribe: Subscribe to changes on this view
         delete:
           button: Delete
@@ -520,8 +521,8 @@ en:
             filter: Filter
             filtered_by: filtered by
             result:
-              one: '%{count} Result'
-              other: '%{count} Results'
+              one: "%{count} Result"
+              other: "%{count} Results"
           hint: Filter or Browse Results
           mobile:
             back: Back
@@ -558,6 +559,10 @@ en:
           results: Skip to the results
         sort:
           label: Sort by
+          periods:
+            month: month
+            week: week
+            year: year
         sorts:
           last_modified: Recently Updated
           most_accessed: Most Accessed
@@ -850,14 +855,7 @@ en:
         something_went_wrong: Looks like something went wrong. Please refresh this page.
         timeout_on_bootstrap: A timeout occurred, but we're still generating your Data Lens in the background. Please try again in a few minutes.
       filter_this_column: Filter This Column
-      published:
-        geocodes_pending: Rows in the location column are still geocoding. Please wait until they are finished to publish this dataset.
-        asynchronous_computation_pending: Cannot publish this dataset before asynchronous computations (such as geo- and region-coding) have completed. Please wait a few minutes and try again.
-        unknown_publication_stage_change_available_error: Cannot determine the publishability of this dataset. Please try again.
-      unpublished:
-        geocodes_pending: Rows in the location column are still geocoding. Please wait until they are finished to create a working copy for this dataset.
-        asynchronous_computation_pending: Cannot create a working copy for this dataset before asynchronous computations (such as geo- and region-coding) have completed. Please wait a few minutes and try again.
-        unknown_publication_stage_change_available_error: Cannot determine if a working copy can be created for this dataset. Please try again.
+      geocodes_pending: Rows in the location column are still geocoding. Please wait until they are finished to publish this dataset
       hide_column: Hide Column
       menu: Menu
       must_enter_name: You must enter a name for this column
@@ -869,12 +867,20 @@ en:
       permission_denied: You do not have access to this view.
       previous: Previous
       previous_page: Previous Page
+      published:
+        asynchronous_computation_pending: Cannot publish this dataset before asynchronous computations (such as geo- and region-coding) have completed. Please wait a few minutes and try again.
+        geocodes_pending: Rows in the location column are still geocoding. Please wait until they are finished to publish this dataset.
+        unknown_publication_stage_change_available_error: Cannot determine the publishability of this dataset. Please try again.
       required_cols_missing: Columns required for this view are missing
       row_count: Total number of rows %{count}
       sort_ascending: Sort Ascending
       sort_descending: Sort Descending
       start_page: First Page
       totals: Totals
+      unpublished:
+        asynchronous_computation_pending: Cannot create a working copy for this dataset before asynchronous computations (such as geo- and region-coding) have completed. Please wait a few minutes and try again.
+        geocodes_pending: Rows in the location column are still geocoding. Please wait until they are finished to create a working copy for this dataset.
+        unknown_publication_stage_change_available_error: Cannot determine if a working copy can be created for this dataset. Please try again.
       view_cell_comments: View comments for this cell
       view_first_row: View first row
       view_last_row: View last row
@@ -1257,6 +1263,7 @@ en:
       grouped: grouped view
       href: external dataset
       map: map
+      pulse: pulse
       story: story
       table: table
       working_copy: working copy
@@ -1643,6 +1650,7 @@ en:
   error:
     back: Back
     error_400:
+      bad_request: Bad Request.
       description: The given parameters for the request are invalid, please try again with different parameters.
       were_sorry: We're sorry, but we can't process your request.
     error_500:
@@ -2041,6 +2049,7 @@ en:
       row_class: Row Class
       row_count: Row Count
       row_identifier: Row Identifier
+      row_label: Row Label
       semantics: Semantics and RDF
       short_url: Short URL
       snapshotted: snapshotted
@@ -2356,6 +2365,9 @@ en:
           error_details_heading: Error details
           event_messages:
             failure:
+              archive_error:
+                description: 'Failed to open the zip archive: %{reason}'
+                title: Archive decoding error
               bad_response_from_server:
                 description: We were not able to import your data because of an unexpected error. Please try again later.
                 title: Something went wrong
@@ -2386,9 +2398,15 @@ en:
               corrupt_shapefile:
                 description: The shapefile header could not be read.
                 title: Corrupt shapefile
+              corrupt_shapefile_error:
+                describe: 'Failed to read the shapefile: %{reason}'
+                title: Corrupt shapefile
               corrupt_xz:
                 description: 'The XZ-compressed file you provided could not be successfully extracted. Error message: "%{message}". Please verify that it is a valid XZ file.'
                 title: Unable to extract compressed file
+              decode_filetype_error:
+                describe: Unable to read file with extension %{kind}
+                title: Unrecognized file format
               delete_without_user_pk:
                 description: We cannot successfully process delete operations unless a row identifier field is declared.
                 title: Cannot delete without row identifier
@@ -2425,12 +2443,21 @@ en:
               incomplete_archive:
                 description: The shapefile archive you uploaded is missing a file with extension "%{missing}". Please ensure that your archive has this file and try again.
                 title: Incomplete shapefile archive
+              incomplete_shapefile_error:
+                describe: 'Your shapefile archive is incomplete. It must contain a .dbf, .shp, and .prj file for every layer. Expected it to contain the following files, which were actually missing: %{missing}.'
+                title: Incomplete shapefile
+              invalid_arity_error:
+                description: 'One of the points in the following row did not have 2 coordinates: %{row}'
+                title: Invalid coordinates
               invalid_encoding:
                 description: We could not read your file because it was encoded with %{encoding}, and we only support UTF-8. For best results, please ensure that your file is a valid UTF-8 file.
                 title: Invalid file encoding
               invalid_row_length:
                 description: 'Row #%{record} in your CSV file contained %{actual} fields, whereas your other rows contained %{expected} fields. Please ensure that your file has a consistent number of fields per row.'
                 title: Unexpected number of fields in row
+              jsonparse_error:
+                description: Failed to parse JSON at line %{line} column %{column} token %{token} because %{reason}
+                title: JSON parse error
               malformed_blueprint:
                 description: 'The blueprint you provided could not be used. Error message: "%{message}".'
                 title: Malformed blueprint
@@ -2455,6 +2482,12 @@ en:
               row_too_large:
                 description: Row number %{nearRecord} of your file had too many characters; the limit is %{limit}.
                 title: Row too large
+              shapefile_header_error:
+                description: 'Failed to read the header in the shapefile: %{reason}'
+                title: Invalid shapefile header
+              shapefile_row_error:
+                description: 'Failed to read a row in the shapefile: %{reason}'
+                title: Invalid shapefile row
               synthetic_location_in_input:
                 description: A column (%{fieldNames}) was found in your data file matching a synthetic column on this dataset. Synthetic columns are computed automatically and may not be manually imported into.
                 title: Cannot import into synthetic column
@@ -2482,49 +2515,12 @@ en:
               upsert_counts:
                 description: Your import file has been imported, but out of %{rowCount} total rows, we were unable to load %{failCount} rows into your dataset. Please verify that your values match <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata’s expected formats</a>.
                 title: Completed
-              # geo import errors
-              # we'll show the following errors as generic "server error", because they're not
-              # not the user's fault:
-              # leaving out zkerror, create_dataset_error, create_working_copy_error,
-              # create_column_error, publication_error, get_column_error, delete_column_error,
-              # update_metadata_error, upsert_error
               vertex_too_complex_error:
+                description: There were %{counted} vertices in row %{rowNum}, the max is %{maxVerticesPerRow}
                 title: Too many vertices in shape
-                description: >-
-                  There were %{counted} vertices in row %{rowNum}, the max is
-                  %{maxVerticesPerRow}
-              shapefile_header_error:
-                title: Invalid shapefile header
-                description: 'Failed to read the header in the shapefile: %{reason}'
-              shapefile_row_error:
-                title: Invalid shapefile row
-                description: 'Failed to read a row in the shapefile: %{reason}'
-              archive_error:
-                title: Archive decoding error
-                description: 'Failed to open the zip archive: %{reason}'
               xmlparse_error:
+                description: Failed to parse XML node due to %{reason} near %{path}
                 title: XML parse error
-                description: 'Failed to parse XML node due to %{reason} near %{path}'
-              jsonparse_error:
-                title: JSON parse error
-                description: >-
-                  Failed to parse JSON at line %{line} column %{column} token %{token}
-                  because %{reason}
-              invalid_arity_error:
-                title: Invalid coordinates
-                description: 'One of the points in the following row did not have 2 coordinates: %{row}'
-              corrupt_shapefile_error:
-                title: Corrupt shapefile
-                describe: 'Failed to read the shapefile: %{reason}'
-              incomplete_shapefile_error:
-                title: Incomplete shapefile
-                describe: >-
-                  Your shapefile archive is incomplete. It must contain a .dbf, .shp, and .prj
-                  file for every layer. Expected it to contain the following files, which were
-                  actually missing: %{missing}.
-              decode_filetype_error:
-                title: Unrecognized file format
-                describe: 'Unable to read file with extension %{kind}'
             success_with_data_errors:
               di2_counts:
                 description: Your import file has been imported, but out of %{rowCount} total rows, we were unable to load %{failCount} rows into your dataset. If this is unexpected, please download the Failed Rows from the right, and verify that your values match <a href="https://support.socrata.com/hc/en-us/articles/202949918-Importing-Data-Types-and-You-">Socrata’s expected formats</a>. You can then re-import just these rows.
@@ -2731,6 +2727,8 @@ en:
         tabs:
           footer:
             fields:
+              background_color_text_link_color:
+                description: Background color of the Footer and the color of the text & links displayed inside the Footer area.
               copyright_notice:
                 description: Choose whether or not to display a copyright notice in the Footer. The notice will automatically update to the current calendar year.
                 label: Show Copyright Notice
@@ -2738,7 +2736,10 @@ en:
               copyright_notice_source:
                 description: The name of your organization, city, county or state that appears with the copyright and current year.
                 placeholder: Copyright Source
+              display_name_color_display_name_size:
+                description: Color and size of the text for Footer Display Name.
               footer_background_color:
+                description: Background color of the Footer and the color of the text & links displayed inside the Footer area.
                 placeholder: "#123456"
                 title: Footer Background Color
               footer_display_name:
@@ -2749,10 +2750,8 @@ en:
                 placeholder: "#123456"
                 title: Footer Display Name Color
               footer_display_name_size:
-                placeholder: "14pt"
+                placeholder: 14pt
                 title: Footer Display Name Size
-              display_name_color_display_name_size:
-                description: Color and size of the text for Footer Display Name.
               footer_logo:
                 description: URL reference to the Footer logo. Recommended minimum size is 80 x 80 pixels.
                 placeholder: https://yoursite.gov/logos/footer_logo.png
@@ -2762,22 +2761,22 @@ en:
                 placeholder: Footer Logo
                 title: Footer Logo Alt Text for Screen Readers
               footer_logo_height:
+                description: You can optionally set a height and width for your logo displayed in the Footer.
                 error: 'Please enter a value to represent your desired logo height in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
                 placeholder: 80px
                 title: Footer Logo Height
               footer_logo_width:
+                description: You can optionally set a height and width for your logo displayed in the Footer.
                 error: 'Please enter a value to represent your desired logo width in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
                 placeholder: 80px
                 title: Footer Logo Width
-              logo_height_logo_width:
-                description: You can optionally set a height and width for your logo displayed in the Footer.
               footer_text_link_color:
                 placeholder: "#ffffff"
                 title: Footer Text & Link Color
-              background_color_text_link_color:
-                description: Background color of the Footer and the color of the text & links displayed inside the Footer area.
               link_title_label: Link Label
               link_title_placeholder: Link Text
+              logo_height_logo_width:
+                description: You can optionally set a height and width for your logo displayed in the Footer.
               menu_links:
                 description: You may display up to 15 links in the Footer. Links will be shown in a single row, and will wrap to multiple rows for mobile and on smaller screens.
                 title: Footer Links
@@ -2794,15 +2793,16 @@ en:
               all_pages_except_home: All pages except Home page
               entire_site: Entire site
               primer_included: Primer is also included in this update.
-              revert_html: "Revert all pages to non-configurable Header/Footer and<br/>turn off Primer"
-              select_where: "Select where these Site Appearance settings will appear:"
+              revert_html: Revert all pages to non-configurable Header/Footer and<br/>turn off Primer
+              select_where: 'Select where these Site Appearance settings will appear:'
             fields:
               display_language_switcher:
                 description: Use this setting to define which languages your site supports. English is required and included for all sites. To add additional languages, please contact support@socrata.com
-                title: Languages
                 label: Display Language Switcher in header and footer
+                title: Languages
               font_family:
                 description: Choose the typeface that will be used in both Header and Footer for all text.
+                description_html: Choose the typeface that will be used in both Header and Footer for all text.
                 placeholder: Typeface
                 title: Typeface
               google_analytics_token:
@@ -2837,17 +2837,21 @@ en:
           header:
             fields:
               bar_background_color:
+                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area. Use HEX values for color or "transparent".
                 placeholder: "#123456"
                 title: Bar Background Color (Primary)
-              bar_secondary_background_color:
-                placeholder: "#123456"
-                title: Bar Background Color (Secondary)
               bar_background_color_bar_secondary_background_color:
                 description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area. Use HEX values for color or "transparent".
+              bar_secondary_background_color:
+                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area. Use HEX values for color or "transparent".
+                placeholder: "#123456"
+                title: Bar Background Color (Secondary)
               bar_text_link_color:
                 description: Color of the text and links that sit atop the Header Bar.
                 placeholder: "#ffffff"
                 title: Bar Text & Link Color
+              display_name_color_display_name_size:
+                description: Color and size of the text for Header Display Name.
               header_bar_logo:
                 description: URL reference to the site Header logo. Recommended minimum size is 80 x 80 pixels. This logo will be displayed at a small size.
                 placeholder: https://yoursite.gov/logos/header_logo.png
@@ -2864,22 +2868,22 @@ en:
                 placeholder: "#123456"
                 title: Header Display Name Color
               header_display_name_size:
-                placeholder: "16pt"
+                placeholder: 16pt
                 title: Header Display Name Size
-              display_name_color_display_name_size:
-                description: Color and size of the text for Header Display Name.
               header_logo_height:
+                description: You can optionally set the height and width for your logo displayed in the Header Bar.
                 error: 'Please enter a value to represent your desired logo height in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
                 placeholder: 80px
                 title: Header Logo Height
               header_logo_width:
+                description: You can optionally set the height and width for your logo displayed in the Header Bar.
                 error: 'Please enter a value to represent your desired logo width in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
                 placeholder: 80px
                 title: Header Logo Width
-              logo_height_logo_width:
-                description: You can optionally set the height and width for your logo displayed in the Header Bar.
               link_title_label: Link Label
               link_title_placeholder: Link Text
+              logo_height_logo_width:
+                description: You can optionally set the height and width for your logo displayed in the Header Bar.
               menu_links:
                 description: Display up to 15 links or menus with links in the Header Bar. To create a drop down menu, first add a Menu then add the link labels and associated URLs to it. The menus and other links will be placed in a single row in the Header. If the labels get too long or a visitor is viewing your site on a small device, the menus and links will automatically be collapsed into a single menu.
                 title: Header Links
@@ -2887,9 +2891,6 @@ en:
               url_label: URL
               url_placeholder: http://data.evergreen.gov
             title: Header Bar
-          homepage:
-            fields:
-            title: Homepage
           social:
             fields:
               facebook_profile_link:
@@ -2947,12 +2948,10 @@ en:
                 description_html: "<p>Get excited! Socrata Primer, formerly known as the Dataset Landing Page, and your new, configurable Header/Footer are both ready to go! Read on to learn about these enhancements and how you can activate them, today.</p>"
                 title: 'A Bundle of Goodness: Two New Features Available Now'
               a_new_configurable_header_footer:
-                description_html: |
-                  <p>We've also introduced a new unified, mobile-responsive, configurable header/footer for your site. This new header/footer empowers you to control your site's logos, colors, copyright, navigational links, social icons, and more on your own, without having to contact Socrata Support.</p> <p>By the way, we've already prepared your header and footer for preview. Click the "Preview" button above to take a look, and then change it however you'd like - it's all yours.</p>
+                description_html: <p>We've also introduced a new unified, mobile-responsive, configurable header/footer for your site. This new header/footer empowers you to control your site's logos, colors, copyright, navigational links, social icons, and more on your own, without having to contact Socrata Support.</p> <p>By the way, we've already prepared your header and footer for preview. Click the "Preview" button above to take a look, and then change it however you'd like - it's all yours.</p>
                 title: A New Configurable Header/Footer
               active_both_today:
-                description_html: |
-                  <p>Primer and your new Configurable Header/Footer are both available now. Review the tabs above, update what you'd like, and when you're ready, activate them together!</p> <p><b>Note:</b> If you haven't configured the header/footer for your site within one month, Socrata will use our suggested configuration to activate it and Primer automatically. We'll do this to ensure your data users are getting the most up-to-date experience available.</p> <p>For tips on configuring your header/footer, please visit our Support site here: <a href=" https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">https://support.socrata.com/hc/en-us/articles/223723227</a>.</p>
+                description_html: '<p>Primer and your new Configurable Header/Footer are both available now. Review the tabs above, update what you''d like, and when you''re ready, activate them together!</p> <p><b>Note:</b> If you haven''t configured the header/footer for your site within one month, Socrata will use our suggested configuration to activate it and Primer automatically. We''ll do this to ensure your data users are getting the most up-to-date experience available.</p> <p>For tips on configuring your header/footer, please visit our Support site here: <a href=" https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">https://support.socrata.com/hc/en-us/articles/223723227</a>.</p>'
                 title: Activate Both Today!
               dataset_landing_page:
                 description_html: <p>With this upgrade, your datasets have a new front-page experience known as 'Primer'. This experience highlights commonly accessed aspects of a dataset and ensures your data users see metadata before taking action. Publishers and Administrators have the freedom to "feature" related views and visualizations, sophisticated users can explore metadata and metrics up-front, and all users can access data in the way they desire, whether this is via data visualizations, direct file downloads, or the API. And of course - the classic tabular data view is still accessible from the top navigation of this view for users who are comfortable there.</p>
@@ -2962,8 +2961,7 @@ en:
         these_features_help: These features will help users explore your data and will make it easier for you to manage the appearance of your site.
         update: Update
         you_are_about: You are about to activate your header, footer and Dataset Landing Pages for your datasets.
-        you_are_about_html: |
-          <p>You are about to activate your header, footer, and Primer for your datasets. Your users are going to love the new look!</p> <p>To see Primer and your header/footer in action, click 'Ok' below and then navigate to one of your datasets.</p>
+        you_are_about_html: "<p>You are about to activate your header, footer, and Primer for your datasets. Your users are going to love the new look!</p> <p>To see Primer and your header/footer in action, click 'Ok' below and then navigate to one of your datasets.</p>\n"
         you_have_activated: You have activated your new header/footer and Dataset Landing Page.
       tos:
         accepted: Thank you for accepting the terms of service.
@@ -3012,6 +3010,7 @@ en:
           none: none
           publisher: publisher
           publisher_stories: publisher + perspectives
+          test_role: test role
           viewer: viewer
         search: Search
         search_for_users: Search for Users to Add
@@ -3239,7 +3238,6 @@ en:
         share_facebook: Share on Facebook
         share_twitter: Share on Twitter
         snapshot_notice: This is a previously published version of the dataset. It is archived and cannot be modified.
-        snapshot_title:
         snapshot_title_html: Snapshotted %{date}
         snapshot_unsavable: Snapshotted datasets and views cannot be created or modified
         subscribe: Subscribe to Changes
@@ -3256,6 +3254,7 @@ en:
           map: map
           page: single row
           table: table
+          template: template
         working_copy_notice: This is a copy of the dataset that allows you to make changes to it. It is not visible to others until you publish it.
         working_copy_title: "[Working Copy]"
       blob:
@@ -3650,7 +3649,6 @@ en:
           money:
             abbreviated: Abbreviated
             currency: Currency
-            format_mask_warning:
             groups:
               all: All
               common: Common
@@ -3985,7 +3983,6 @@ en:
             delete: Delete this view
             expand: Click to expand
           no_results: There are no results
-          no_results_html:
           pagination:
             last: See last view
             next: See next %{count} views
@@ -4096,6 +4093,7 @@ en:
       northwest_longitude: Northwest Longitude
       optional: Optional
       private_help: This field has been marked private by your organization and is not publicly viewable
+      remove: Remove
       remove_image: Remove Image
       remove_link: Remove link
       required_field: Required Field
@@ -4187,7 +4185,7 @@ en:
       downloading: Downloading your file...
       errors:
         http_error: 'We were unable to save your {1} due to an error: {0}'
-        network_error: 'We were unable to save your {0} due to a network error.'
+        network_error: We were unable to save your {0} due to a network error.
       filetype_error_blist: Please choose a CSV, TSV, XLS, or XLSX file.
       filetype_error_shapefile: Please choose a KML, KMZ, or ZIP file.
       headline_import: Please choose a file to import
@@ -4509,7 +4507,7 @@ en:
       cancel: Cancel
       finish: Finish
       next: Next
-      no_changes_to_be_saved: "No changes to be saved."
+      no_changes_to_be_saved: No changes to be saved.
       previous: Previous
       save: Save
   support:

@@ -125,7 +125,7 @@
           <div class="line emailInterestLine clearfix">
             <div class="spacer"></div>
             <%= check_box_tag("email_interests[#{interest.first}]", true, @email_interests.any? { |i| i.eventTag == interest.first }) %>
-            <label class="description" for="email_interests_<%= interest.first %>"><%= t('screens.profile.edit.account.email.interests.' + interest.last[:description]) %></label>
+            <label class="description" for="email_interests_<%= interest.first %>"><%= t("screens.profile.edit.account.email.interests.#{interest.last[:description]}") %></label>
           </div>
         <%- end -%>
         <div class="line emailSubscribeLine clearfix">

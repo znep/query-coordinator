@@ -75,6 +75,8 @@ end
 group :development, :test do
   gem 'byebug'
   gem 'foreman'
+  gem 'i18n-tasks', '~> 0.9.5'
+  gem 'localeapp', '~> 2.0'
   gem 'rb-readline'
   gem 'reek', '~> 2.2.1'
   gem 'thin'

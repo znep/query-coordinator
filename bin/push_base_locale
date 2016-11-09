@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Import our english strings to LocaleApp
+# Pulls api key from:
+# - LOCALEAPP_API_KEY env var
+# - .env
+# - .localeapp/config.rb
+
+set -e
+
+usage="$(basename $0) [-hy] -- Pushes en.yml file to LocaleApp
+
+where:
+    -h show this help text
+    -y Automatic yes to prompts. Assume 'yes' as answer to all prompts and run non-interactively."
+
+yflag=''
+while getopts ':yh' flag; do
+  case "${flag}" in
+    h)  echo "${usage}"
+        exit
+        ;;
+    y)  yflag='true'
+        ;;
+    ?)  error "Unexpected option ${flag}"
+        ;;
+  esac
+done
+
+confirm () {
+  # call with a prompt string or use a default
+  read -r -p "${1:-Are you sure? [y/N]} " response
+  case ${response} in
+    [yY][eE][sS]|[yY])
+    true
+    ;;
+  *)
+    false
+    ;;
+  esac
+}
+
+if [[ ${yflag} == 'true' ]] || confirm "Would you really like to push your english locale file? [y/N]" ; then
+  localeapp push config/locales/en.yml
+fi

@@ -1,3 +1,5 @@
+.byebug_history
+*.sw?
 /.bundle
 /build
 /.sass-cache
@@ -12,6 +14,6 @@
 /pages/stylesheets/pages.css
 /pages/stylesheets/pages.css.map
 /dist
-npm-debug.log
+npm-debug.log*
 packages/socrata-components/*
 !packages/socrata-components/package.json

@@ -14,8 +14,18 @@
 
   <body>
     <%= render 'site_chrome/admin_header' %>
-    <%= render 'site_chrome/header' %>
+
+    <%==
+      SocrataSiteChrome::SiteChromeController.new.tap do |cont|
+        cont.request = request
+        cont.response = response
+      end.header %>
+
     <%= yield %>
-    <%= render 'site_chrome/footer' %>
+    <%==
+      SocrataSiteChrome::SiteChromeController.new.tap do |cont|
+        cont.request = request
+        cont.response = response
+      end.footer %>
   </body>
 </html>

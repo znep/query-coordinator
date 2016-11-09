@@ -3,20 +3,17 @@
 require 'cgi'
 
 module SiteChromeHelper
-  include SocrataSiteChrome::ApplicationHelper # TODO: getting rid of this caused all sorts of issues.
-  # the views need access to the ApplicationHelper methods, and they don't have it without this line.
-  # because we render the views from within the hosting app?
 
   def site_chrome_meta_viewport_tag
     raw('<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">')
   end
 
-  def google_analytics_tracking_code
+  def site_chrome_google_analytics_tracking_code
     CGI.escapeHTML(Rails.application.config.socrata_site_chrome.general[:google_analytics_token].to_s)
   end
 
   def site_chrome_google_analytics_tag
-    if google_analytics_tracking_code.present?
+    if site_chrome_google_analytics_tracking_code.present?
       javascript_tag(<<-eos)
         if (typeof window._gaSocrata === 'undefined') {
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -25,7 +22,7 @@ module SiteChromeHelper
           })(window,document,'script','//www.google-analytics.com/analytics.js','_gaSocrata');
         }
 
-        _gaSocrata('create', '#{google_analytics_tracking_code}', 'auto', 'socrataSiteChrome');
+        _gaSocrata('create', '#{site_chrome_google_analytics_tracking_code}', 'auto', 'socrataSiteChrome');
         _gaSocrata('socrataSiteChrome.send', 'pageview');
       eos
     end
@@ -50,6 +47,45 @@ module SiteChromeHelper
 
   def site_chrome_window_title
     Rails.application.config.socrata_site_chrome.general[:window_title_display]
+  end
+
+  private
+
+  # Copied from SocrataSiteChrome::SiteChromeHelper
+
+  def massage_url(url, add_locale: true)
+    return unless url.present?
+
+    url.strip!
+
+    # If relative path, prerepend current locale if necessary and return
+    if url.start_with?('/')
+      return add_locale ? relative_url_with_locale(url) : url
+    end
+
+    supported_scheme_matchers = Regexp.union(%r{^https?://}, %r{^mailto:})
+
+    # Prepend with 'http://' if they don't provide a scheme
+    url = "http://#{url}" unless url.match(supported_scheme_matchers)
+    uri = begin
+      URI.parse(url)
+    rescue
+      return url
+    end
+
+    # Turn full URL into a relative link if the url host matches the current domain host
+    if request.host.present? && uri.host == request.host
+      uri.scheme = nil
+      uri.host = nil
+      add_locale ? relative_url_with_locale(uri.to_s) : uri.to_s
+    else
+      # Outoing link
+      uri.to_s
+    end
+  end
+
+  def relative_url_with_locale(url)
+    I18n.locale.to_s == default_locale ? url : "/#{I18n.locale}#{url}"
   end
 
 end

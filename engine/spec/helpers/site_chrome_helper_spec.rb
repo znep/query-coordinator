@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SocrataSiteChrome::ApplicationHelper do
+describe SocrataSiteChrome::SiteChromeHelper do
   let(:site_chrome_config) do { content: JSON.parse(
     File.read("#{SocrataSiteChrome::Engine.root}/spec/fixtures/site_chrome_config.json")).
     with_indifferent_access['properties'].first.dig('value', 'versions',

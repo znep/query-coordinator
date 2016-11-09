@@ -1,6 +1,3 @@
-require 'chroma'
-require 'request_store'
-
 module SocrataSiteChrome
   module ApplicationHelper
 

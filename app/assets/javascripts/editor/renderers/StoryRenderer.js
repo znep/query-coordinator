@@ -485,6 +485,8 @@ export default function StoryRenderer(options) {
 
   function _renderBlockEditControls(blockId) {
 
+    const components = storyStore.getBlockComponents(blockId);
+    const hasGoalEmbed = _.some(components, { type: 'goal.embed' });
     var isPresentable = storyStore.isBlockPresentable(blockId);
     var togglePresentationClassNames = StorytellerUtils.format(
       'block-edit-controls-toggle-presentation-btn btn btn-alternate-2 icon-eye-blocked{0}',
@@ -538,6 +540,15 @@ export default function StoryRenderer(options) {
       }
     );
 
+    const $deleteButton = $(
+      '<span>',
+      {
+        'class': 'block-edit-controls-delete-btn btn btn-alternate-2 icon-close-2',
+        'data-block-id': blockId,
+        'data-block-delete-action': Actions.STORY_DELETE_BLOCK
+      }
+    );
+
     $presentationToggleButton.
       on('mouseover', function() {
         $presentationFlyout.removeClass('flyout-hidden');
@@ -562,23 +573,18 @@ export default function StoryRenderer(options) {
         $moveDownFlyout.addClass('flyout-hidden');
       });
 
+    const withoutDelete = hasGoalEmbed ? 'block-edit-controls-without-delete' : '';
+
     var blockEditControls = $(
       '<div>',
       {
-        'class': 'block-edit-controls hidden'
+        'class': `block-edit-controls hidden ${withoutDelete}`
       }
     ).append([
       $moveUpButton,
       $moveDownButton,
       $presentationToggleButton,
-      $(
-        '<span>',
-        {
-          'class': 'block-edit-controls-delete-btn btn btn-alternate-2 icon-close-2',
-          'data-block-id': blockId,
-          'data-block-delete-action': Actions.STORY_DELETE_BLOCK
-        }
-      ),
+      hasGoalEmbed ? null : $deleteButton,
       $presentationFlyout,
       $moveUpFlyout,
       $moveDownFlyout

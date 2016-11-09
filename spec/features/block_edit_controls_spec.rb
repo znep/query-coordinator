@@ -2,15 +2,20 @@ require 'rails_helper'
 
 RSpec.describe 'block edit controls', type: :feature, js: true do
 
-  before do
+  def go_to_edit_page(uid)
     stub_logged_in_user
     stub_sufficient_rights
     stub_core_view('hasb-lock')
     stub_current_domain
 
-    visit '/s/magic-thing/hasb-lock/edit'
+    visit "/s/magic-thing/#{uid}/edit"
 
     @blocks = page.all('.user-story .block-edit')
+  end
+
+  def move_button(dir)
+    dir = dir.to_s.upcase
+    %Q{[data-block-move-action="STORY_MOVE_BLOCK_#{dir}"]}
   end
 
   after :each do
@@ -22,131 +27,149 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
     unload_page_and_dismiss_confirmation_dialog
   end
 
-  def move_button(dir)
-    dir = dir.to_s.upcase
-    %Q{[data-block-move-action="STORY_MOVE_BLOCK_#{dir}"]}
-  end
-
-  describe 'move' do
+  describe 'when editing a normal story' do
+    # "normal" here means non-Open Performance.
 
     before do
-      @first_block = @blocks.first
-      @last_block = @blocks.last
-
-      # Remove the transform transition so that we do not have to coordinate
-      # checking blocks' positions with the transition animation.
-      page.evaluate_script("$('.block-edit').css('transition', 'none');")
+      go_to_edit_page('hasb-lock')
     end
 
-    context 'hovering over the move up button' do
-      it 'displays a flyout on hover' do
-        @first_block.find(move_button(:up), visible: false).hover
-        expect(@first_block).to have_selector('.block-edit-controls-move-up-flyout', visible: false)
-      end
-    end
+    describe 'move' do
 
-    context 'hovering over the move down button' do
-      it 'displays a flyout on hover' do
-        @first_block.find(move_button(:down), visible: false).hover
-        expect(@first_block).to have_selector('.block-edit-controls-move-down-flyout', visible: false)
-      end
-    end
-
-    # TODO These tests don't account for the block scrolling into view after moving.
-    it 'moves up when "move up" button is clicked' do
-      initial_position = @last_block.native.location.y
-
-      # move block up
-      up_button = @last_block.find(move_button(:up), visible: false)
-      expect(up_button).to_not have_selector('.btn-disabled')
-      javascript_click(up_button)
-      after_move_position = @last_block.native.location.y
-
-      expect(after_move_position).to be < initial_position
-    end
-
-    it 'disables "move up" for the first block' do
-      # for some reason, the have_selector match doesn't work here...
-      expect(@first_block.find(move_button(:up), visible: false)[:class]).to match(/\bbtn-disabled\b/)
-    end
-
-    it 'moves down when "move down" button is clicked' do
-      initial_position = @first_block.native.location.y
-
-      # move block down
-      down_button = @first_block.find(move_button(:down), visible: false)
-      expect(down_button).to_not have_selector('.btn-disabled')
-      javascript_click(down_button)
-      after_move_position = @first_block.native.location.y
-
-      expect(after_move_position).to be > initial_position
-    end
-
-    it 'disables "move down" for the last block' do
-      # for some reason, the have_selector match doesn't work here...
-      expect(@last_block.find(move_button(:down), visible: false)[:class]).to match(/\bbtn-disabled\b/)
-    end
-  end
-
-  describe 'toggle presentation view' do
-    before do
-      @first_block = @blocks.first
-    end
-
-    context 'when the block is hovered over' do
-      it 'displays a flyout' do
-        @first_block.hover
-        @first_block.find('[data-block-presentation-action]').hover
-        expect(@first_block).to have_selector('.block-edit-controls-presentation-flyout')
-      end
-    end
-
-    context 'when the block is toggled from visible to hidden' do
-      before do
-        @first_block.hover
-        @first_block.find('[data-block-presentation-action]').click
-      end
-
-      it 'adds .active' do
-        expect(@first_block).to have_selector('[data-block-presentation-action].active')
-      end
-    end
-
-    context 'when the block is toggled from hidden to visible' do
-      it 'removes .active' do
-        @first_block.hover
-        @first_block.find('[data-block-presentation-action]').click
-        @first_block.hover
-        @first_block.find('[data-block-presentation-action]').click
-        expect(@first_block).to_not have_selector('[data-block-presentation-action].active')
-      end
-    end
-  end
-
-  describe 'delete' do
-
-    context 'when the block needs a delete confirmation' do
       before do
         @first_block = @blocks.first
-        @first_block.hover
+        @last_block = @blocks.last
+
+        # Remove the transform transition so that we do not have to coordinate
+        # checking blocks' positions with the transition animation.
+        page.evaluate_script("$('.block-edit').css('transition', 'none');")
       end
 
-      it 'removes a block when delete is clicked' do
-        expect {
-          @first_block.find('[data-block-delete-action="STORY_DELETE_BLOCK"]').click
-          page.accept_alert
-        }.to change{
-          page.all('.user-story .block-edit').count
-        }.by(-1)
+      context 'hovering over the move up button' do
+        it 'displays a flyout on hover' do
+          @first_block.find(move_button(:up), visible: false).hover
+          expect(@first_block).to have_selector('.block-edit-controls-move-up-flyout', visible: false)
+        end
       end
 
-      it 'does not delete when the confirmation is cancelled' do
-        expect {
-          @first_block.find('[data-block-delete-action="STORY_DELETE_BLOCK"]').click
-          page.driver.browser.switch_to.alert.dismiss
-        }.to_not change{
-          page.all('.user-story .block-edit').count
-        }
+      context 'hovering over the move down button' do
+        it 'displays a flyout on hover' do
+          @first_block.find(move_button(:down), visible: false).hover
+          expect(@first_block).to have_selector('.block-edit-controls-move-down-flyout', visible: false)
+        end
+      end
+
+      # TODO These tests don't account for the block scrolling into view after moving.
+      it 'moves up when "move up" button is clicked' do
+        initial_position = @last_block.native.location.y
+
+        # move block up
+        up_button = @last_block.find(move_button(:up), visible: false)
+        expect(up_button).to_not have_selector('.btn-disabled')
+        javascript_click(up_button)
+        after_move_position = @last_block.native.location.y
+
+        expect(after_move_position).to be < initial_position
+      end
+
+      it 'disables "move up" for the first block' do
+        # for some reason, the have_selector match doesn't work here...
+        expect(@first_block.find(move_button(:up), visible: false)[:class]).to match(/\bbtn-disabled\b/)
+      end
+
+      it 'moves down when "move down" button is clicked' do
+        initial_position = @first_block.native.location.y
+
+        # move block down
+        down_button = @first_block.find(move_button(:down), visible: false)
+        expect(down_button).to_not have_selector('.btn-disabled')
+        javascript_click(down_button)
+        after_move_position = @first_block.native.location.y
+
+        expect(after_move_position).to be > initial_position
+      end
+
+      it 'disables "move down" for the last block' do
+        # for some reason, the have_selector match doesn't work here...
+        expect(@last_block.find(move_button(:down), visible: false)[:class]).to match(/\bbtn-disabled\b/)
+      end
+    end
+
+    describe 'toggle presentation view' do
+      before do
+        @first_block = @blocks.first
+      end
+
+      context 'when the block is hovered over' do
+        it 'displays a flyout' do
+          @first_block.hover
+          @first_block.find('[data-block-presentation-action]').hover
+          expect(@first_block).to have_selector('.block-edit-controls-presentation-flyout')
+        end
+      end
+
+      context 'when the block is toggled from visible to hidden' do
+        before do
+          @first_block.hover
+          @first_block.find('[data-block-presentation-action]').click
+        end
+
+        it 'adds .active' do
+          expect(@first_block).to have_selector('[data-block-presentation-action].active')
+        end
+      end
+
+      context 'when the block is toggled from hidden to visible' do
+        it 'removes .active' do
+          @first_block.hover
+          @first_block.find('[data-block-presentation-action]').click
+          @first_block.hover
+          @first_block.find('[data-block-presentation-action]').click
+          expect(@first_block).to_not have_selector('[data-block-presentation-action].active')
+        end
+      end
+    end
+
+    describe 'delete' do
+      context 'when the block needs a delete confirmation' do
+        before do
+          @first_block = @blocks.first
+          @first_block.hover
+        end
+
+        it 'removes a block when delete is clicked' do
+          expect {
+            @first_block.find('[data-block-delete-action="STORY_DELETE_BLOCK"]').click
+            page.accept_alert
+          }.to change{
+            page.all('.user-story .block-edit').count
+          }.by(-1)
+        end
+
+        it 'does not delete when the confirmation is cancelled' do
+          expect {
+            @first_block.find('[data-block-delete-action="STORY_DELETE_BLOCK"]').click
+            page.driver.browser.switch_to.alert.dismiss
+          }.to_not change{
+            page.all('.user-story .block-edit').count
+          }
+        end
+      end
+    end
+  end
+
+  context 'when editing an Open Performance story' do
+    before do
+      go_to_edit_page('open-perf')
+    end
+
+    describe 'delete' do
+      it 'cannot be deleted' do
+        first_block = @blocks.first
+        first_block.hover
+
+        expect(first_block).to have_selector('.block-edit-controls-without-delete')
+        expect(first_block).to_not have_selector('.block-edit-controls-delete-btn')
       end
     end
   end

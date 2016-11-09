@@ -55,6 +55,14 @@ body.story-save-error .user-story-container {
         opacity: 1;
       }
 
+      &.block-edit-controls-without-delete {
+        height: calc(#{$block-edit-controls-width} * 4);
+
+        .block-edit-controls-toggle-presentation-btn {
+          bottom: 0;
+        }
+      }
+
       .block-edit-controls-move-up-btn,
       .block-edit-controls-move-down-btn,
       .block-edit-controls-delete-btn,

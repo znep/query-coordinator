@@ -134,6 +134,21 @@ block_11 = Block.create(
   created_by: 'good-doer'
 )
 
+block_12 = Block.create(
+  layout: '12',
+  components: [
+    {
+      'type': 'goal.embed',
+      'value': {
+        domain: 'fourfour.com',
+        dashboard: 'four-four',
+        category: 'four-four',
+        uid: 'four-four'
+      }
+    }
+  ],
+  created_by: 'perf-lord'
+)
 
 published_story = PublishedStory.create(
   uid: 'test-test',
@@ -212,5 +227,12 @@ unpublished_story = DraftStory.create(
   uid: 'unpu-blsh',
   block_ids: [block_8.id],
   created_by: 'good-doer',
+  theme: 'serif'
+)
+
+open_performance_story = DraftStory.create(
+  uid: 'open-perf',
+  block_ids: [block_12.id],
+  created_by: 'perf-lord',
   theme: 'serif'
 )

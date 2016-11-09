@@ -103,6 +103,37 @@ block_9 = Block.create(
   created_by: 'good-doer'
 )
 
+block_10 = Block.create(
+  layout: '12',
+  components: [
+    {
+      'type': 'image',
+      'value': {
+        'documentId': '1234',
+        'url': 'https://bucket-name.s3.amazonaws.com/uploads/random/image.jpg',
+        'link': 'http://example.com',
+        'alt': 'image with link'
+      }
+    }
+  ],
+  created_by: 'good-doer'
+)
+
+block_11 = Block.create(
+  layout: '12',
+  components: [
+    {
+      'type': 'image',
+      'value': {
+        'documentId': '1234',
+        'url': 'https://bucket-name.s3.amazonaws.com/uploads/random/image.jpg',
+        'alt': 'image without link'
+      }
+    }
+  ],
+  created_by: 'good-doer'
+)
+
 
 published_story = PublishedStory.create(
   uid: 'test-test',
@@ -135,6 +166,16 @@ presentation_story = DraftStory.create(
 presentation_published = PublishedStory.create(
   uid: 'pres-ents',
   block_ids: [block_1.id, block_2.id, block_3.id, block_5.id, block_4.id],
+  created_by: 'good-doer',
+  theme: 'serif'
+)
+
+view_mode_kitchen_sink = PublishedStory.create(
+  uid: 'kchn-sink',
+  block_ids: [
+    block_1, block_2, block_3, block_4, block_5, block_6, block_7, block_8,
+    block_9, block_10, block_11
+  ].map(&:id),
   created_by: 'good-doer',
   theme: 'serif'
 )

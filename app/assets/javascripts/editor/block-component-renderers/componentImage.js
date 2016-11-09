@@ -19,7 +19,8 @@ import StorytellerUtils from '../../StorytellerUtils';
  *    type: "image",
  *    value: {
  *      documentId: "1234",
- *      url: "https://bucket-name.s3.amazonaws.com/uploads/random/image.jpg"
+ *      url: "https://bucket-name.s3.amazonaws.com/uploads/random/image.jpg",
+ *      link: "http://this-image-is-a-link.example.com"
  *    }
  *  }
  *

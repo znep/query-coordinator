@@ -57,6 +57,11 @@
     logo: images/licenses/cc30byncnd.png
     terms_link: http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode
     attribution_required: true
+  - id: CC_30_BY_NC_ND_IGO
+    name: Attribution | Noncommercial | No Derivative Works 3.0 IGO
+    logo: images/licenses/cc30byncnd.png
+    terms_link: https://creativecommons.org/licenses/by-nc-nd/3.0/igo/legalcode
+    attribution_required: true
   - id: CC_30_BY_AUS
     name: Attribution 3.0 Australia
     logo: images/licenses/cc30by.png

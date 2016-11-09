@@ -52,7 +52,7 @@
     </footer>
   <% end %>
 <% rescue StandardError, SyntaxError => e
-  error_msg = "Site Chrome error parsing configuration: #{e.inspect}"
+  error_msg = "Site Chrome error parsing configuration: #{e.inspect}\n#{e.backtrace}"
   Rails.logger.debug(error_msg)
   ::Airbrake.notify(
     :error_class => 'InvalidSiteChromeConfiguration',

@@ -46,16 +46,7 @@
                   "default_locale": "en",
                   "window_icon": "/socrata_site_chrome/images/default_favicon.ico",
                   "window_title_display": null,
-                  "social_shares": [
-                    {
-                      "type": "facebook",
-                      "url": null
-                    },
-                    {
-                      "type": "twitter",
-                      "url": null
-                    }
-                  ],
+                  "social_shares": [],
                   "styles": {
                     "bg_color": "#2c97de",
                     "fg_color": "#eee",
@@ -172,16 +163,7 @@
                   "window_title_display": null,
                   "show_signin_signout": "true",
                   "show_profile": "true",
-                  "social_shares": [
-                    {
-                      "type": "facebook",
-                      "url": null
-                    },
-                    {
-                      "type": "twitter",
-                      "url": null
-                    }
-                  ],
+                  "social_shares": [],
                   "styles": {
                     "bg_color": "#2c97de",
                     "fg_color": "#eee",

@@ -15,7 +15,7 @@
     <% end %>
   <% end %>
 <% rescue StandardError, SyntaxError => e
-  error_msg = "Site Chrome error parsing styling configuration: #{e.inspect}"
+  error_msg = "Site Chrome error parsing styling configuration: #{e.inspect}\n#{e.backtrace}"
   Rails.logger.debug(error_msg)
   ::Airbrake.notify(
     :error_class => 'InvalidSiteChromeStylingConfiguration',

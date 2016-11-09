@@ -449,7 +449,7 @@ module ApplicationHelper
     if time && time != 0
       r = no_html ? '' :
         "<span class=\"dateReplace\" data-dateFormat=\"#{date_format}\" data-rawDateTime=\"#{time.to_s}\">"
-      r << Time.at(time).strftime(format_string)
+      r << Time.at(time).localtime.strftime(format_string)
       r << '</span>' if !no_html
     end
     return r.html_safe if r

@@ -9,3 +9,15 @@ body.unscrollable {
 .siteInnerWrapper {
   padding: 0;
 }
+
+// Styles that only apply to the edit modal in Storyteller.
+.goal.embed.edit {
+  .titleContainer {
+    margin: 0;
+    border: 0;
+  }
+
+  .goalBox {
+    padding: 1rem;
+  }
+}

@@ -100,7 +100,13 @@ describe SocrataSiteChrome::SiteChromeHelper do
     end
   end
 
-  describe '#logo' do
+  before(:all) do
+    Rails.application.config.socrata_site_chrome = SocrataSiteChrome::SiteChrome.new(
+      SocrataSiteChrome::DomainConfig.site_chrome_test_configuration
+    )
+  end
+
+  describe'#logo' do
     it 'returns nil if there is not an image src present' do
       allow(helper).to receive(:header_title).and_return('')
       source = {}

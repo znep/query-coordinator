@@ -91,6 +91,8 @@ helpers to the bottom of the `<head>` section:
 <%= site_chrome_javascript_tag %>
 ```
 
+TODO: update these steps
+
 Within the `<body>` section add the `<%= render 'site_chrome/header' %>` just inside the opening
 `<body>` section, then add the `<%= render 'site_chrome/footer' %>` just before the closing
 `</body>` tag.

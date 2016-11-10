@@ -13,8 +13,6 @@
   </head>
 
   <body>
-    <%= render 'site_chrome/admin_header' %>
-
     <%==
       SocrataSiteChrome::SiteChromeController.new.tap do |cont|
         cont.request = request

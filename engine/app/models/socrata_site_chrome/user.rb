@@ -31,5 +31,10 @@ module SocrataSiteChrome
     def can_approve?
       has_right?(UserRights::MANAGE_APPROVAL) || (Approval.find[0] || Approval.new).is_approver?(self)
     end
+
+    # Attribute helpers in an attempt to move away from method_missing.
+    def profileImageUrlMedium
+      @data['profileImageUrlMedium']
+    end
   end
 end

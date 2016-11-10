@@ -1,5 +1,17 @@
 en:
   current_language: English
+  admin:
+    open_performance:
+      title: Performance
+      home: Performance Home
+      data: Data
+      goals_and_dashboards: Goals & Dashboards
+      goal_inventory: Goal Inventory
+    user:
+      my_profile: My Profile
+      administration: Administration
+      get_help: Get Help
+      sign_out: Sign Out
   header:
     administration: Administration
     menu: Menu

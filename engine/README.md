@@ -121,6 +121,7 @@ An example layout is shown below:
   </head>
 
   <body>
+    <%= render 'site_chrome/admin_header' %>
     <%= render 'site_chrome/header' %>
     <%= yield %>
     <%= render 'site_chrome/footer' %>

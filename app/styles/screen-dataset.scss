@@ -67,6 +67,41 @@ html, body {
       font-size: 1.6em;
       font-weight: normal;
       padding: 0;
+
+      .tag-provenance {
+        font-size: 13px;
+        margin-left: 10px;
+        text-transform: uppercase;
+        white-space: nowrap;
+
+        svg {
+          width: 14px;
+          height: 14px;
+          position: relative;
+        }
+      }
+
+      .tag-community {
+        color: #176289;
+
+        svg {
+          top: 1px;
+          path {
+            fill: #288dc1;
+          }
+        }
+      }
+
+      .tag-official2 {
+        color: #e48424;
+
+        svg {
+          top: 2px;
+          path {
+            fill: #9e5c23;
+          }
+        }
+      }
     }
     #description {
       margin-top: -0.2em;

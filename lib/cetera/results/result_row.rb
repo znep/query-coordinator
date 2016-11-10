@@ -30,13 +30,14 @@ module Cetera
           domainCName: @metadata['domain'],
           updatedAt: @resource['updatedAt'],
           createdAt: @resource['createdAt'],
-          previewImageUrl: @data['preview_image_url']
+          previewImageUrl: @data['preview_image_url'],
+          provenance: @resource['provenance']
         )
       end
 
       def_delegators :@data_ostruct,
                      :id, :link, :name, :description, :type, :categories, :tags, :viewCount,
-                     :domainCName, :updatedAt, :createdAt, :previewImageUrl
+                     :domainCName, :updatedAt, :createdAt, :previewImageUrl, :provenance
 
       def airbrake_type_error(type)
         Airbrake.notify(

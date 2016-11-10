@@ -8,6 +8,7 @@
         <div class="browse2-result-title">
           <h2 class="browse2-result-name">
             <%= browse2_result_link(result_name, result_link, result_is_federated, result_link_rel_type) %>
+            <%= browse2_provenance_tag(result_provenance) %>
           </h2>
 
           <%- if show_official_badge -%>

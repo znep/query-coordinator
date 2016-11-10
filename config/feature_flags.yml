@@ -48,6 +48,11 @@ debug_data_lens:
   description: expose useful debugging information (data source, etc) for data lens pages
   defaultValue: false
   category: data lens
+disable_authority_badge:
+  description: HIDE this particular authority badge.
+  defaultValue: official2
+  disableTrueFalse: true
+  expectedValues: all official2 community none
 display_dataset_landing_page_notice:
   description: Display the notice informing site admins that the page they are seeing will soon be replaced by the dataset landing page.
   defaultValue: false

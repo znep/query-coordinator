@@ -23,6 +23,7 @@
           <%= definition('Type', @config.type) %>
           <%= definition('Domain', domain_link) %>
           <%= definition('Default', explain_defaultness) %>
+          <%= definition('Inherited Config', explain_config_inheritance, inherited: true) if @config.has_child_configs? %>
           <% @type_description.try(:each) do |key, value| %>
             <%= definition(key.titleize, autolink(value)) %>
           <% end %>

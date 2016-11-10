@@ -21,6 +21,10 @@ class Configuration < Model
     {id: id}
   end
 
+  def has_child_configs?
+    childCount > 0
+  end
+
   def properties
     props = Hashie::Mash.new
     return props if data['properties'].nil?

@@ -28,10 +28,12 @@ export const Modal = React.createClass({
 
   componentDidMount() {
     window.addEventListener('resize', this.checkDimensions);
+    document.documentElement.classList.add('modal-open');
   },
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.checkDimensions);
+    document.documentElement.classList.remove('modal-open');
   },
 
   computeState() {

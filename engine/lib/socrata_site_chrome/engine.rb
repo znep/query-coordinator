@@ -15,9 +15,9 @@ module SocrataSiteChrome
       end
     end
 
-    # initializer "socrata_site_chrome.add_middleware" do |app|
-    #   app.middleware.use SocrataSiteChrome::Middleware
-    # end
+    initializer "socrata_site_chrome.add_middleware" do |app|
+      app.middleware.use SocrataSiteChrome::Middleware
+    end
 
   end
 end

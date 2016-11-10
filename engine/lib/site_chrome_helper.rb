@@ -9,7 +9,7 @@ module SiteChromeHelper
   end
 
   def site_chrome_google_analytics_tracking_code
-    CGI.escapeHTML(Rails.application.config.socrata_site_chrome.general[:google_analytics_token].to_s)
+    CGI.escapeHTML(get_site_chrome.general[:google_analytics_token].to_s)
   end
 
   def site_chrome_google_analytics_tag
@@ -41,17 +41,21 @@ module SiteChromeHelper
   end
 
   def site_chrome_favicon_tag
-    favicon_url = Rails.application.config.socrata_site_chrome.general[:window_icon]
+    favicon_url = get_site_chrome.general[:window_icon]
     favicon_link_tag(massage_url(favicon_url, add_locale: false)) if favicon_url.present?
   end
 
   def site_chrome_window_title
-    Rails.application.config.socrata_site_chrome.general[:window_title_display]
+    get_site_chrome.general[:window_title_display]
   end
 
   private
 
   # Copied from SocrataSiteChrome::SiteChromeHelper
+
+  def get_site_chrome
+    Rails.application.config.try(:socrata_site_chrome) || SocrataSiteChrome::SiteChrome.new
+  end
 
   def massage_url(url, add_locale: true)
     return unless url.present?

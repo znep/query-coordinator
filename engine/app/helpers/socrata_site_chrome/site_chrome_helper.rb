@@ -120,7 +120,7 @@ module SocrataSiteChrome
     def footer_bg_color
       color = get_site_chrome.footer.dig(:styles, :bg_color)
       color.present? ?
-        color : SiteChrome.default_site_chrome_content.dig(:footer, :styles, :bg_color)
+        color : SocrataSiteChrome::SiteChrome.default_site_chrome_content.dig(:footer, :styles, :bg_color)
     end
 
     def social_link_icon(type)
@@ -333,7 +333,7 @@ module SocrataSiteChrome
     end
 
     def get_site_chrome
-      Rails.application.config.socrata_site_chrome
+      Rails.application.config.try(:socrata_site_chrome) || SocrataSiteChrome::SiteChrome.new
     end
 
     # Returns template name - either 'evergreen' (default) or 'rally'

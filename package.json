@@ -143,7 +143,7 @@
     "redux-thunk": "2.1.0",
     "rx": "2.5.0",
     "rx-angular": "0.0.14",
-    "socrata-components": "7.7.3",
+    "socrata-components": "7.7.5",
     "socrata-styleguide": "5.1.9",
     "socrata-utils": "3.0.0",
     "socrata-visualizations": "17.14.2",

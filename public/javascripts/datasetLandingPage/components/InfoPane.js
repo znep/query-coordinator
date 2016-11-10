@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import DownloadDropdown from './DownloadDropdown';
 import collapsible from '../collapsible';
 import formatDate from '../lib/formatDate';
-import purify from '../lib/purify';
+import purify from 'socrata-components/common/purify';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 
 export var InfoPane = React.createClass({

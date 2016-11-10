@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 describe SocrataSiteChrome::SiteChromeHelper do
-  let(:site_chrome_config) do { content: JSON.parse(
-    File.read("#{SocrataSiteChrome::Engine.root}/spec/fixtures/site_chrome_config.json")).
-    with_indifferent_access['properties'].first.dig('value', 'versions',
-      SocrataSiteChrome::SiteChrome::LATEST_VERSION, 'published', 'content') }
+  before(:all) do
+    Rails.application.config.socrata_site_chrome = SocrataSiteChrome::SiteChrome.new(
+      SocrataSiteChrome::DomainConfig.site_chrome_test_configuration
+    )
   end
 
   describe '#admin_title' do
@@ -100,12 +100,6 @@ describe SocrataSiteChrome::SiteChromeHelper do
     end
   end
 
-  before(:all) do
-    Rails.application.config.socrata_site_chrome = SocrataSiteChrome::SiteChrome.new(
-      SocrataSiteChrome::DomainConfig.site_chrome_test_configuration
-    )
-  end
-
   describe'#logo' do
     it 'returns nil if there is not an image src present' do
       allow(helper).to receive(:header_title).and_return('')
@@ -149,9 +143,11 @@ describe SocrataSiteChrome::SiteChromeHelper do
   end
 
   describe '#header_logo' do
+    before(:all) do
+      stub_site_chrome
+    end
+
     it 'returns only the site title if the header image is not present' do
-      site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
-      allow(::RequestStore.store).to receive(:[]).with(:site_chrome).and_return(:published => site_chrome)
       allow(helper).to receive(:logo).and_return(nil)
       result = helper.header_logo
       expect(result).to eq('<a class="logo" href="/"><span class="site-name"></span></a>')
@@ -159,8 +155,6 @@ describe SocrataSiteChrome::SiteChromeHelper do
 
     it 'returns both the site title and the header image' do
       stub_current_domain_with('data.seattle.gov')
-      site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
-      allow(::RequestStore.store).to receive(:[]).with(:site_chrome).and_return(:published => site_chrome)
       result = helper.header_logo
       expect(result).to eq('<a class="logo" href="/"><img alt="data.seattle.gov" onerror="this.style.display=&quot;none&quot;" src="http://i.imgur.com/E8wtc6d.png" /><span class="site-name"></span></a>')
     end
@@ -322,25 +316,30 @@ describe SocrataSiteChrome::SiteChromeHelper do
   end
 
   describe '#show_powered_by?' do
-    let(:site_chrome) do
-      SocrataSiteChrome::SiteChrome.new(site_chrome_config)
-    end
-
     it 'defaults to true if powered_by does not exist' do
-      site_chrome.footer.delete(:powered_by)
-      allow(::RequestStore.store).to receive(:[]).with(:site_chrome).and_return(:published => site_chrome)
+      config = site_chrome_config.tap do |c|
+        c[:footer].delete(:powered_by)
+      end
+
+      stub_site_chrome(config)
       expect(helper.show_powered_by?).to eq(true)
     end
 
     it 'can be set to true' do
-      site_chrome.footer[:powered_by] = 'true'
-      allow(::RequestStore.store).to receive(:[]).with(:site_chrome).and_return(:published => site_chrome)
+      config = site_chrome_config.tap do |c|
+        c[:footer][:powered_by] = 'true'
+      end
+
+      stub_site_chrome(config)
       expect(helper.show_powered_by?).to eq(true)
     end
 
     it 'can be set to false' do
-      site_chrome.footer[:powered_by] = 'false'
-      allow(::RequestStore.store).to receive(:[]).with(:site_chrome).and_return(:published => site_chrome)
+      config = site_chrome_config.tap do |c|
+        c[:footer][:powered_by] = 'false'
+      end
+
+      stub_site_chrome(config)
       expect(helper.show_powered_by?).to eq(false)
     end
   end
@@ -441,19 +440,21 @@ describe SocrataSiteChrome::SiteChromeHelper do
 
   describe '#navbar_links_div' do
     it 'returns a div with the classname "site-chrome-nav-links"' do
-      site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
-      ::RequestStore.store[:site_chrome] = { :published => site_chrome }
+      stub_site_chrome
       result = Nokogiri::HTML.parse(helper.navbar_links_div({}))
       expect(result.search('div.site-chrome-nav-links').length).to eq(1)
     end
 
     it 'creates a site-chrome-nav-menu for nested links' do
-      site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
-      site_chrome.content['header']['links'].push(
-        { :key => 'menu_0', :links => [{ :key => 'menu_0_link_0', :url => 'http://opendata.gov' }] }
-      )
-      site_chrome.content['locales']['en']['header']['links']['menu_0_link_0'] = 'blah'
-      ::RequestStore.store[:site_chrome] = { :published => site_chrome }
+      config = site_chrome_config.tap do |c|
+        c[:header][:links].push(
+          :key => 'menu_0', :links => [{ :key => 'menu_0_link_0', :url => 'http://opendata.gov' }]
+        )
+        c[:locales][:en][:header][:links][:menu_0_link_0] = 'blah'
+      end
+
+      stub_site_chrome(config)
+
       result = Nokogiri::HTML.parse(helper.navbar_links_div(:use_dropdown => true))
       expect(result.search('div.site-chrome-nav-menu').length).to eq(1)
       expect(result.search('div.site-chrome-nav-menu div.dropdown').length).to eq(1)
@@ -462,24 +463,30 @@ describe SocrataSiteChrome::SiteChromeHelper do
     end
 
     it 'creates top level links' do
-      site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
-      site_chrome.content['header']['links'] = [
-        { :key => 'link_0', :url => 'http://a.gov' },
-        { :key => 'link_1', :url => 'http://b.gov' },
-        { :key => 'link_2', :url => 'http://c.gov' }
-      ]
-      ::RequestStore.store[:site_chrome] = { :published => site_chrome }
+      config = site_chrome_config.tap do |c|
+        c[:header][:links] = [
+          { :key => 'link_0', :url => 'http://a.gov' },
+          { :key => 'link_1', :url => 'http://b.gov' },
+          { :key => 'link_2', :url => 'http://c.gov' }
+        ]
+      end
+
+      stub_site_chrome(config)
+
       result = Nokogiri::HTML.parse(helper.navbar_links_div({}))
       expect(result.search('.site-chrome-nav-link').length).to eq(3)
     end
 
     it 'returns nav-menu-title instead of nested dropdown links if use_dropdown is false' do
-      site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
-      site_chrome.content['header']['links'].push(
-        { :key => 'menu_0', :links => [{ :key => 'menu_0_link_0', :url => 'http://opendata.gov' }] }
-      )
-      site_chrome.content['locales']['en']['header']['links']['menu_0_link_0'] = 'blah'
-      ::RequestStore.store[:site_chrome] = { :published => site_chrome }
+      config = site_chrome_config.tap do |c|
+        c[:header][:links].push(
+          :key => 'menu_0', :links => [{ :key => 'menu_0_link_0', :url => 'http://opendata.gov' }]
+        )
+        c[:locales][:en][:header][:links][:menu_0_link_0] = 'blah'
+      end
+
+      stub_site_chrome(config)
+
       result = Nokogiri::HTML.parse(helper.navbar_links_div(:use_dropdown => false))
       expect(result.search('div.site-chrome-nav-menu div.dropdown').length).to eq(0)
       expect(result.search('.site-chrome-nav-menu').length).to eq(1)

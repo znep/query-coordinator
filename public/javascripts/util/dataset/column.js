@@ -20,9 +20,7 @@
       if (this.renderTypeName == 'geospatial') {
         return '/api/views/' + this.view.id + '/geometry/';
       } else {
-        return '/views/' + this.view.id + '/' +
-          (this.renderTypeName.endsWith('_obsolete') ?
-            'obsolete_' : '') + 'files/';
+        return '/views/' + this.view.id + '/files/';
       }
     },
 
@@ -394,8 +392,8 @@
 
     cleanCopy: function() {
       var col = this._super();
-      // Support for picklists, linked columns
-      if (_.include(['dataset_link', 'picklist'], col.dataTypeName)) {
+      // Support for linked columns
+      if (_.include(['dataset_link'], col.dataTypeName)) {
         delete col.dropDownList;
       }
       return col;

@@ -1897,17 +1897,6 @@ blist.namespace.fetch('blist.datatypes');
       priority: 17
     },
 
-    document_obsolete: {
-      title: 'Document (old)',
-      interfaceType: blist.datatypes.interfaceTypes.document,
-
-      aggregates: nonNumericAggs,
-      deleteable: true,
-      filterConditions: blist.filter.groups.blob,
-      inlineType: true,
-      soda1Only: true
-    },
-
     photo: {
       title: 'Photo (Image)',
       interfaceType: blist.datatypes.interfaceTypes.photo,
@@ -1920,18 +1909,6 @@ blist.namespace.fetch('blist.datatypes');
       filterConditions: blist.filter.groups.blob,
       priority: 16
     },
-
-    photo_obsolete: {
-      title: 'Photo (Image, old)',
-      interfaceType: blist.datatypes.interfaceTypes.photo,
-
-      aggregates: nonNumericAggs,
-      cls: 'photo',
-      deleteable: true,
-      filterConditions: blist.filter.groups.blob,
-      soda1Only: true
-    },
-
 
     // Linking/customization types
     drop_down_list: {
@@ -2014,16 +1991,6 @@ blist.namespace.fetch('blist.datatypes');
       rollUpAggregates: nonNumericAggs,
       sortable: true
     },
-
-    picklist: {
-      title: 'Multiple Choice',
-      interfaceType: blist.datatypes.interfaceTypes.lookupList,
-
-      deleteable: true,
-      filterConditions: blist.filter.groups.numeric,
-      sortable: true
-    },
-
 
     // Generic types
     object: {

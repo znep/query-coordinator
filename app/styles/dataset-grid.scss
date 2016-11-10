@@ -945,9 +945,7 @@ img.blist-table-option-icon {
   }
   .type-blob a.tableButton,
   .type-document a.tableButton,
-  .type-photo a.tableButton,
-  .type-document_obsolete a.tableButton,
-  .type-photo_obsolete a.tableButton {
+  .type-photo a.tableButton {
     background-image: url(/stylesheets/images/content/table/blob_editor_sprites.png);
     background-position: 0 16px;
     background-repeat: no-repeat;
@@ -960,30 +958,23 @@ img.blist-table-option-icon {
     width: 16px;
   }
   .type-blob a.tableButton.add,
-  .type-document a.tableButton.add,
-  .type-document_obsolete a.tableButton.add {
+  .type-document a.tableButton.add {
     background-position: (-2px) 0;
   }
   .type-blob a.tableButton.replace,
   .type-document a.tableButton.replace,
-  .type-photo a.tableButton.replace,
-  .type-document_obsolete a.tableButton.replace,
-  .type-photo_obsolete a.tableButton.replace {
+  .type-photo a.tableButton.replace {
     background-position: (-2px) -48px;
   }
   .type-blob a.tableButton.remove,
   .type-document a.tableButton.remove,
-  .type-photo a.tableButton.remove,
-  .type-document_obsolete a.tableButton.remove,
-  .type-photo_obsolete a.tableButton.remove {
+  .type-photo a.tableButton.remove {
     background-position: (-2px) -64px;
   }
-  .type-photo a.tableButton.add,
-  .type-photo_obsolete a.tableButton.add {
+  .type-photo a.tableButton.add {
     background-position: (-2px) -16px;
   }
-  .type-photo a.tableButton.view,
-  .type-photo_obsolete a.tableButton.view {
+  .type-photo a.tableButton.view {
     background-position: 0 -32px;
     width: 20px;
   }

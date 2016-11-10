@@ -1064,12 +1064,10 @@ $data-lens-color: #80acca;
     background-position: 0 -120px;
   }
   &.blob #{$subselector},
-  &.document #{$subselector},
-  &.document_obsolete #{$subselector} {
+  &.document #{$subselector} {
     background-position: 0 -280px;
   }
-  &.drop_down_list #{$subselector},
-  &.picklist #{$subselector} {
+  &.drop_down_list #{$subselector} {
     background-position: 0 -400px;
   }
   &.email #{$subselector} {
@@ -1109,8 +1107,7 @@ $data-lens-color: #80acca;
   &.phone #{$subselector} {
     background-position: 0 -240px;
   }
-  &.photo #{$subselector},
-  &.photo_obsolete #{$subselector} {
+  &.photo #{$subselector} {
     background-position: 0 -100px;
   }
   &.stars #{$subselector} {

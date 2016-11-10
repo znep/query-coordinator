@@ -434,15 +434,14 @@ div.blist-table-editor {
 }
 
 .blist-tr {
-  .blist-td-photo img,
-  .blist-td-photo_obsolete img {
+  .blist-td-photo img {
     height: 100%;
   }
 }
 
 .blist-table div.blist-table-active-container .blist-td,
 .blist-table div.blist-table-expander .blist-td {
-  &.blist-td-photo, &.blist-td-photo_obsolete {
+  &.blist-td-photo {
     padding: 0;
   }
 }
@@ -569,17 +568,14 @@ div.blist-table-editor {
 }
 
 .blob .blist-th-icon,
-.document .blist-th-icon,
-.document_obsolete .blist-th-icon {
+.document .blist-th-icon {
   background-position: 0 -280px;
 }
 
-.photo .blist-th-icon,
-.photo_obsolete .blist-th-icon {
+.photo .blist-th-icon {
   background-position: 0 -100px;
 }
 
-.picklist .blist-th-icon,
 .drop_down_list .blist-th-icon {
   background-position: 0 -400px;
 }

@@ -76,8 +76,8 @@
     longitude: ['number']
   };
   var forbiddenTypes = [
-    'document', 'document_obsolete',
-    'photo', 'photo_obsolete',
+    'document',
+    'photo',
     'nested_table'
   ];
 

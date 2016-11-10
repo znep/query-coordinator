@@ -670,7 +670,7 @@
         type: 'columnSelect',
         isTableColumn: true,
         columns: {
-          type: ['photo', 'photo_obsolete', 'url'],
+          type: ['photo', 'url'],
           noDefault: true,
           hidden: options.isEdit
         }

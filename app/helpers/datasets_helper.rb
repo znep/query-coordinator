@@ -90,7 +90,7 @@ module DatasetsHelper
       end
       ret = value.strftime('%c')
 
-    when 'drop_down_list', 'picklist', 'dataset_link'
+    when 'drop_down_list', 'dataset_link'
       if column.dropDown
         column.dropDown.values.each do |option|
           if option['id'] == cell
@@ -99,7 +99,7 @@ module DatasetsHelper
         end
       end
 
-    when 'document', 'document_obsolete'
+    when 'document'
       name_i = column.sub_type_index('filename')
       size_i = column.sub_type_index('size')
       type_i = column.sub_type_index('content_type')
@@ -119,8 +119,8 @@ module DatasetsHelper
           "(" + cell[type_i] + ")"
       end
 
-    when 'photo', 'photo_obsolete'
-      url = "/views/#{view.id}/#{(column.dataTypeName == 'photo_obsolete' ? 'obsolete_' : '')}files/#{cell}"
+    when 'photo'
+      url = "/views/#{view.id}/files/#{cell}"
       ret = %Q{<a href="#{url}">Image</a>}
 
     when 'location'

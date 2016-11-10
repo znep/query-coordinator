@@ -118,7 +118,7 @@
               "filter[#{column.id}][operator]",
               options_for_limit_to(column, params.deep_value_at([:filter, column.id.to_s.to_sym, :operator]))
             ) %>;
-             <%- unless %w(photo document photo_obsolete document_obsolete).include?(column.dataTypeName) -%>
+             <%- unless %w(photo document).include?(column.dataTypeName) -%>
             <%= label_tag("filter_#{column.id}_value", "Value for #{column.name}") %>
             <%= text_field_tag(
               "filter[#{column.id}][value]",

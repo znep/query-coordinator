@@ -486,7 +486,7 @@ class DatasetsController < ApplicationController
   def append
     @view = View.find(params[:id])
     @error_type = @view.columns.any?{ |column| !column.flag?('hidden') && column.client_type.match(
-      /(document|photo|document_obsolete|photo_obsolete|location|nested_table)/) }
+      /(document|photo|location|nested_table)/) }
     @type = params[:type] == 'replace' ? 'replace' : 'append'
   end
 

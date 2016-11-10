@@ -32,7 +32,7 @@ class RenderType
       phone_type = cell['phone_type']
       ret += '(' + phone_type + ')' if !phone_type.nil?
 
-    when 'drop_down_list', 'picklist'
+    when 'drop_down_list'
       column.dropDown.values.each do |option|
         ret = CGI.escapeHTML(option['description'] || '') if option['id'] == cell
       end
@@ -90,7 +90,7 @@ class RenderType
             else                      value.strftime('%m/%d/%Y %I:%M:%S' + tz_str)
             end || value.strftime('%c')
 
-    when 'document', 'document_obsolete'
+    when 'document'
       name_i = 'filename'
       size_i = 'size'
       type_i = 'content_type'
@@ -114,9 +114,8 @@ class RenderType
         end
       end
 
-    when 'photo', 'photo_obsolete'
-      url = '/views/' + dataset.id + '/' +
-        (self.type == 'photo_obsolete' ? 'obsolete_' : '') + 'files/' + cell
+    when 'photo'
+      url = '/views/' + dataset.id + '/files/' + cell
       ret = '<a href="' + url + '">' +
         '<img width="20" height="20" alt="User-uploaded image" src="' + url + '" />' +
         '</a>'

@@ -18,9 +18,6 @@ class Column < Model
       "flag" => "Flag",
       "document" => "Document",
       "photo" => "Photo (Image)",
-      "document_obsolete" => "Document (old)",
-      "photo_obsolete" => "Photo (Image, old)",
-      "picklist" => "Multiple Choice",
       "drop_down_list" => "Multiple Choice",
       "nested_table" => "Nested Table",
       'location' => 'Location'
@@ -73,8 +70,6 @@ class Column < Model
 
   def is_sortable?
     return client_type != "nested_table" &&
-      client_type != "photo_obsolete" &&
-      client_type != "document_obsolete" &&
       client_type != "photo" &&
       client_type != "document" &&
       client_type != 'location'
@@ -89,9 +84,9 @@ class Column < Model
       case dataTypeName
       when 'text', 'html', 'url', 'email', 'phone'
         'textual'
-      when 'number', 'money', 'percent', 'stars', 'picklist', 'drop_down_list'
+      when 'number', 'money', 'percent', 'stars', 'drop_down_list'
         'numeric'
-      when 'photo_obsolete', 'photo', 'document_obsolete', 'document'
+      when 'photo', 'document'
         'blob'
       when 'checkbox', 'flag', 'location'
         'comparable'
@@ -117,8 +112,8 @@ class Column < Model
     case (dataTypeName || renderTypeName).downcase
     when "nested_table"
       aggs.reject! {|a| a['name'] != 'none'}
-    when "text", 'html', "photo_obsolete", "photo", "phone", "checkbox",
-      "flag", "url", "email", "document_obsolete", "document", "picklist",
+    when "text", 'html', "photo", "phone", "checkbox",
+      "flag", "url", "email", "document",
       "drop_down_list", 'location'
       aggs.reject! {|a|
         ['average', 'sum', 'maximum', 'minimum'].any? {|n| n == a['name']}}
@@ -179,7 +174,7 @@ class Column < Model
   def has_formatting?
     types_with_formatting = ["text", 'calendar_date', "date", "number",
         "money", "percent", "phone", "email", 'location',
-        "url", "checkbox", "stars", "flag", "picklist", "drop_down_list"]
+        "url", "checkbox", "stars", "flag", "drop_down_list"]
 
     return types_with_formatting.include?(client_type)
   end
@@ -187,8 +182,7 @@ class Column < Model
   def has_totals?
     types_with_totals = ["text", 'html', "number", "money", "percent",
                          'calendar_date', "date", "phone", "email", "url",
-                         "checkbox", "stars", "flag", "document_obsolete",
-                         "document", "photo_obsolete", "photo", "picklist",
+                         "checkbox", "stars", "flag", "document", "photo",
                          "drop_down_list", 'location']
 
     return types_with_totals.include?(client_type)

@@ -77,7 +77,7 @@
     "semver": "5.1.0",
     "shelljs": "0.6.0",
     "sinon": "1.17.5",
-    "socrata-components": "8.0.1",
+    "socrata-components": "8.1.1",
     "socrata-utils": "3.1.1",
     "tether": "1.0.1",
     "tether-shepherd": "1.2.0",

@@ -565,7 +565,11 @@ class InternalController < ApplicationController
   end
 
   def editing_this_page_is_dangerous?(domain = @domain)
-    !Rails.env.development? && %w(default socrata).include?(domain.shortName)
+    case
+      #when Rails.env.development? then false
+      when domain.has_child_domains? then :child_domains
+      when %w(socrata default).include?(domain.shortName) then :short_name
+    end
   end
   helper_method :editing_this_page_is_dangerous?
 

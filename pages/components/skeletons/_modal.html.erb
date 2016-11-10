@@ -4,15 +4,21 @@
 
 <script type="text/babel" data-presets="es2015,react">
   $(() => {
-    $('.modal-trigger').click((event) => {
-      const onDismiss = () => {
-        const doDismiss = window.confirm(
-          'Are you sure you want to close this modal?\n\n(This handler would normally be responsible for dispatching an action.)');
-        if (doDismiss) {
-          $('#modal-target').empty();
-        }
-      };
+    const targetNode = document.getElementById('modal-target');
 
+    const onDismiss = () => {
+      const doDismiss = window.confirm('Are you sure you want to close this modal?');
+      if (doDismiss) {
+        // If you are unmounting a subtree, you won't have to do this, but
+        // because unmounting the root node is slightly different, the current
+        // wisdom is to wait for the stack to clear.
+        //
+        // See https://github.com/facebook/react/issues/3298#issuecomment-213225142
+        _.defer(() => ReactDOM.unmountComponentAtNode(targetNode));
+      }
+    };
+
+    $('.modal-trigger').click((event) => {
       const fullScreen = $(event.target).data('full-screen');
 
       const modalProps = {
@@ -45,7 +51,7 @@
             </div>
           </styleguide.ModalFooter>
         </styleguide.Modal>,
-        document.getElementById('modal-target')
+        targetNode
       );
     });
   });

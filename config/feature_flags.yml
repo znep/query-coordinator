@@ -177,6 +177,10 @@ reenable_ui_for_nbe:
 remove_views_from_discuss_pane:
   description: Datasets with a lot of derived views slow down loading the discuss pane in grid view; setting this to true disables loading derived views when a user opens the discuss pane.
   defaultValue: false
+report_builder_enabled:
+  description: Enable reports section on an Open Performance domain
+  defaultValue: false
+  category: open performance
 route_dataslate_without_caching:
   description: Use DataslateRouting to handle a per-page fetch of dataslate pages, rather than scraping the Pages Service/Dataset for updates without caching the contents in Memcached.
   defaultValue: false

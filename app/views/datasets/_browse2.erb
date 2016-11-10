@@ -89,11 +89,13 @@
   <div class="browse2-mobile-filter">
     <div class="browse2-mobile-filter-header">
       <div class="browse2-mobile-filter-result-count">
-        <%= t('controls.browse.browse2.facets.header.result', count: opts[:view_count]) %>
-        <span class="browse2-mobile-filter-result-subtitle">
-          <%= opts[:facets].any? { |facet| opts[:user_params][facet[:param]].present? } ?
-            t('controls.browse.browse2.facets.header.filtered_by', count: opts[:view_count]) + '...' : '' -%>
-        </span>
+        <%- unless opts[:view_request_error] -%>
+          <%= t('controls.browse.browse2.facets.header.result', count: opts.fetch(:view_count, 0)) %>
+          <span class="browse2-mobile-filter-result-subtitle">
+            <%= opts[:facets].any? { |facet| opts[:user_params][facet[:param]].present? } ?
+              t('controls.browse.browse2.facets.header.filtered_by', count: opts.fetch(:view_count, 0)) + '...' : '' -%>
+          </span>
+        <%- end -%>
       </div>
       <a class="browse2-mobile-filter-link" href="#">
         <%= t('controls.browse.browse2.facets.header.filter') %>

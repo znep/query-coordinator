@@ -15,6 +15,8 @@ gem 'dalli', '~> 2.7', '>= 2.7.6' # Doesn't work with nutcracker / twemproxy
 gem 'diplomat' # Used by downtime / mainenance window notices
 gem 'hashie', '2.1.2'
 gem 'httparty'
+gem 'i18n-tasks', '~> 0.9.5'
+gem 'localeapp', '~> 2.0'
 gem 'lograge'
 gem 'memcache-client', '~> 1.8.5' # Using this unsupported gem since twemproxy doesn't support binary protocol used by Dalli
 gem 'mixpanel-ruby', '~> 1.6.0'
@@ -77,8 +79,6 @@ end
 
 group :development, :test do
   gem 'byebug'
-  gem 'i18n-tasks', '~> 0.9.5'
-  gem 'localeapp', '~> 2.0'
   gem 'rb-readline'
   gem 'reek', '~> 2.2.1'
   gem 'thin'

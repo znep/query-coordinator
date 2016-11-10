@@ -41,5 +41,5 @@ confirm () {
 }
 
 if [[ ${yflag} == 'true' ]] || confirm "Would you really like to push your english locale file? [y/N]" ; then
-  localeapp push config/locales/en.yml
+  localeapp push ${PWD}/config/locales/en.yml
 fi

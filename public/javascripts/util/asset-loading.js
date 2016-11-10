@@ -405,7 +405,7 @@
         var manifestEntry = blist.configuration.webpackManifest[assetPath];
 
         if (manifestEntry) {
-          return '/javascripts/build/' + manifestEntry;
+          return '/javascripts/build/' + manifestEntry + '?' + blist.configuration.assetRevisionKey;
         } else {
           console.error('Asset configuration could not be found in webpack manifest for package: ', packageObject);
           return undefined;

@@ -108,6 +108,10 @@ RSpec.configure do |config|
     )
   end
 
+  def unstub_site_chrome
+    Rails.application.config.socrata_site_chrome = nil
+  end
+
   def site_chrome_config
     JSON.parse(File.read("#{SocrataSiteChrome::Engine.root}/spec/fixtures/site_chrome_config.json")).
       with_indifferent_access['properties'].first.dig('value', 'versions',

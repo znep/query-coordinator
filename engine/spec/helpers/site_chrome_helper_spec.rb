@@ -2,6 +2,10 @@ require 'rails_helper'
 
 describe SocrataSiteChrome::SiteChromeHelper do
 
+  after(:all) do
+    unstub_site_chrome
+  end
+
   describe '#admin_title' do
     let(:current_domain) { 'globalhost' }
     let(:header_title) { '' }
@@ -95,7 +99,7 @@ describe SocrataSiteChrome::SiteChromeHelper do
     end
   end
 
-  describe'#logo' do
+  describe '#logo' do
     it 'returns nil if there is not an image src present' do
       allow(helper).to receive(:header_title).and_return('')
       source = {}
@@ -315,8 +319,8 @@ describe SocrataSiteChrome::SiteChromeHelper do
       config = site_chrome_config.tap do |c|
         c[:footer].delete(:powered_by)
       end
-
       stub_site_chrome(config)
+
       expect(helper.show_powered_by?).to eq(true)
     end
 
@@ -324,8 +328,8 @@ describe SocrataSiteChrome::SiteChromeHelper do
       config = site_chrome_config.tap do |c|
         c[:footer][:powered_by] = 'true'
       end
-
       stub_site_chrome(config)
+
       expect(helper.show_powered_by?).to eq(true)
     end
 
@@ -333,8 +337,8 @@ describe SocrataSiteChrome::SiteChromeHelper do
       config = site_chrome_config.tap do |c|
         c[:footer][:powered_by] = 'false'
       end
-
       stub_site_chrome(config)
+
       expect(helper.show_powered_by?).to eq(false)
     end
   end

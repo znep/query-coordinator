@@ -25,8 +25,6 @@ class DemoController < ApplicationController
         else nil
       end
 
-    ::RequestStore.store[:current_domain] = request.host
-
     render 'fake_content', :layout => 'unified'
   end
 

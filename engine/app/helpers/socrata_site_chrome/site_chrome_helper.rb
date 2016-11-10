@@ -11,6 +11,30 @@ module SocrataSiteChrome
       end
     end
 
+    def my_profile
+      t('admin.user.my_profile')
+    end
+
+    def admin_title
+      header_title.presence || request.host
+    end
+
+    def profile_image?
+      user_profile_image_url.present?
+    end
+
+    def user_profile_image_url
+      site_chrome_current_user.profileImageUrlMedium
+    end
+
+    def open_performance_enabled?
+      begin
+        SocrataSiteChrome::FeatureSet.new(request.host).feature_enabled?('govstat')
+      rescue
+        false
+      end
+    end
+
     def header_title
       localized('header.site_name', get_site_chrome.locales)
     end

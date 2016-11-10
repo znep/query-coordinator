@@ -1,18 +1,13 @@
 require 'rails_helper'
 
 describe SocrataSiteChrome::SiteChromeHelper do
-  before(:all) do
-    Rails.application.config.socrata_site_chrome = SocrataSiteChrome::SiteChrome.new(
-      SocrataSiteChrome::DomainConfig.site_chrome_test_configuration
-    )
-  end
 
   describe '#admin_title' do
     let(:current_domain) { 'globalhost' }
     let(:header_title) { '' }
 
     before do
-      allow(::RequestStore.store).to receive(:[]).with(:current_domain).and_return(current_domain)
+      stub_current_domain_with(current_domain)
       allow(helper).to receive(:header_title).and_return(header_title)
     end
 

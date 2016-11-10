@@ -548,13 +548,20 @@ function importData(onError) {
           });
           break;
         }
+        case 500:
+          onError({
+            type: 'generic',
+            params: {}
+          });
+          break;
+
         default:
           airbrake.notify({
             error: `Unexpected status code received while importing: ${response.status}`,
             context: { component: 'Server' }
           });
           response.json().then((resp) => {
-            dispatch(onError(resp.failureDetails));
+            onError(resp.failureDetails);
           });
       }
     }).catch((err) => {
@@ -598,10 +605,18 @@ function importGeospatial(onError) {
           break;
         }
 
+        case 500:
+          onError({
+            type: 'generic'
+          });
+          break;
+
         default:
           // TODO: AIRBRAKE THIS STUFF: EN-6942
           console.error('IMPORTING DATA FAILED', response);
-          onError();
+          response.json().then((json) => {
+            onError(json.failureDetails);
+          });
       }
     }).catch(() => onError());
   };

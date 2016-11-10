@@ -29,6 +29,9 @@ data-lens:
 dataset-landing-page:
 - dataset-landing-page/dataset-landing-page
 
+dataset-management-ui:
+- dataset-management-ui/dataset-management-ui
+
 ie9:
 - dataCards/ie9
 

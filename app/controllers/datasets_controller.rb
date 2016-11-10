@@ -286,6 +286,16 @@ class DatasetsController < ApplicationController
     end
   end
 
+  def updates
+    if FeatureFlags.derive(@view, request).enable_dataset_management_ui
+      @view = get_view(params[:id])
+      @update_id = params[:update_id] # will use this to fetch from DSMAPI
+      render 'datasets/dataset_management_ui', :layout => 'styleguide'
+    else
+      render_404
+    end
+  end
+
   def blob
     @view = get_view(params[:id])
     respond_to do |format|

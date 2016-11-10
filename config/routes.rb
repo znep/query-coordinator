@@ -373,6 +373,7 @@ Rails.application.routes.draw do
       get '/form_success', :action => 'form_success', :as => :view_form_success
       get '/form_error', :action => 'form_error', :as => :view_form_error
       get '/about', :action => 'about', :as => :about_view
+      get '/updates/:update_id', :action => 'updates'
       match '/alt', :action => 'alt', :via => [:get, :post], :as => :alt_view
       match '/flags', :action => 'flag_check', :via => [:get, :post], :as => :flag_check
       match '/edit_metadata', :action => 'edit_metadata', :via => [:get, :post], :as => :edit_view_metadata
@@ -406,6 +407,8 @@ Rails.application.routes.draw do
       get 'd/:id/stats', :action => 'stats'
       get 'd/:id/about', :action => 'about'
       get 'd/:id/data', :action => 'show', :bypass_dslp => true
+
+      get 'd/:id/updates/:update_id', :action => 'updates'
 
       get 'd/:id/:row_id', :action => 'show', :constraints => {:row_id => /\d+/}
     end

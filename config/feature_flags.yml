@@ -58,6 +58,9 @@ display_dataset_landing_page_preview_images:
 enable_dataset_landing_page_tour:
   description: Display the tour when visitors first access a dataset landing page.
   defaultValue: true
+enable_dataset_management_ui:
+  description: New management page for datasets
+  defaultValue: false
 enable_flexible_data_lens:
   description: Enables Flexible Data Lens
   defaultValue: false

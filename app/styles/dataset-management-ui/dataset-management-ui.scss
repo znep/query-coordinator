@@ -1,0 +1,46 @@
+@import "styleguide-colors";
+
+.dataset-management-ui {
+
+  .app-navbar {
+    user-select: initial;
+    box-shadow: none;
+    top: initial;
+    position: relative;
+    height: 3em;
+    display: flex;
+    align-items: center;
+
+    .dataset-name {
+      padding-left: 1em;
+      font-weight: bold;
+    }
+  }
+
+  .management-ui-section {
+    padding-top: 1em;
+
+    .manage-section-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  .app-navbar:after {
+    background: none;
+  }
+
+}
+
+#home-pane {
+  max-width: 68em;
+  margin: 0 auto;
+  padding-top: 10px;
+  padding-bottom: 30px;
+}
+
+.metadata-validation-error {
+  color: $error-text;
+  padding-left: 10px;
+}

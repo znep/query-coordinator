@@ -32,7 +32,7 @@ class StylesController < ApplicationController
                            :style => :nested,
                            :syntax => :scss,
                            :cache => false,
-                           :load_paths => ["#{Rails.root}/app/styles"]).render
+                           :load_paths => ["#{Rails.root}/app/styles", "#{Rails.root}/node_modules/"]).render
         end
       elsif File.exist?(css_stylesheet_filename)
         render :text => File.read(css_stylesheet_filename)

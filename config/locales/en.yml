@@ -1527,6 +1527,23 @@ en:
     view_widget:
       external_content: External Content
       views: Views
+  dataset_management_ui:
+    common:
+      ok: Ok
+      save: Save
+      cancel: Cancel
+    home_pane:
+      metadata: Metadata
+      metadata_manage_button: Manage Metadata
+      metadata_blurb: Tell people about this dataset.
+      data: Data
+      data_manage_button: Manage Data
+      data_blurb: Add a data file and enable visualizations and mapping.
+      required: Required
+    manage: Manage
+    metadata_manage:
+      errors:
+        missing_name: Dataset name is required.
   dataslate:
     component:
       edit: Edit this component

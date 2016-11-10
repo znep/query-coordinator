@@ -1,0 +1,22 @@
+<% content_for :head do %>
+  <title><%= @view.name %> | <%= t('dataset_management_ui.manage') %></title>
+  <%= rendered_stylesheet_tag('dataset-management-ui') %>
+<% end %>
+
+<div id="app"></div>
+
+<% content_for :scripts do %>
+  <%= render_dataset_management_ui_server_config %>
+  <%= render_dataset_management_ui_translations %>
+
+  <script>
+    var initialState = {
+      view: <%== @view.to_json %>,
+      datasetCategories: <%== flatten_category_tree.to_json %>.map(([title, value]) => (
+        {title: title, value: value}
+      ))
+    };
+  </script>
+
+  <%= include_webpack_bundle 'dataset-management-ui/main.js' %>
+<% end %>

@@ -16,21 +16,33 @@ namespace :test do
     translations = all_translations['dataset_landing_page'].merge({
       data_types: all_translations['core']['data_types']
     })
-    File.write(output_filename, 'module.exports = ' + translations.to_json.html_safe + ';')
+    File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
   end
 
   task :update_import_wizard_translations do
     translations_filename = 'config/locales/en.yml'
     output_filename = 'karma/importWizard/mockTranslations.js'
     all_translations = YAML.load_file(translations_filename)['en']
-    File.write(output_filename, 'module.exports = ' + all_translations.to_json.html_safe + ';')
+    File.write(output_filename, "module.exports = #{all_translations.to_json.html_safe};")
+  end
+
+  task :update_dataset_management_ui_translations do
+    translations_filename = 'config/locales/en.yml'
+    output_filename = 'karma/datasetManagementUI/mockTranslations.js'
+    all_translations = YAML.load_file(translations_filename)['en']
+    translations = all_translations['dataset_management_ui'].
+      merge({
+        data_types: all_translations['core']['data_types'],
+        edit_metadata: all_translations['screens']['edit_metadata']
+      })
+    File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
   end
 
   task :update_admin_goals_translations do
     translations_filename = 'config/locales/en.yml'
     output_filename = 'karma/adminGoals/mockTranslations.js'
     translations = YAML.load_file(translations_filename)['en']['govstat']
-    File.write(output_filename, 'export default ' + translations.to_json.html_safe + ';')
+    File.write(output_filename, "export default #{translations.to_json.html_safe};")
   end
 
   namespace :js do
@@ -68,6 +80,10 @@ namespace :test do
       run_karma('importWizard', args)
     end
 
+    task :datasetManagementUI, [:watch, :browser, :reporter] => 'update_dataset_management_ui_translations' do |task, args|
+      run_karma('datasetManagementUI', args)
+    end
+
     task :oldUx, [:watch, :browser, :reporter] do |task, args|
       run_karma('oldUx', args)
     end
@@ -77,7 +93,8 @@ namespace :test do
       'test:update_datacards_translations',
       'test:update_dataset_landing_page_translations',
       'test:update_import_wizard_translations',
-      'test:update_admin_goals_translations'
+      'test:update_admin_goals_translations',
+      'test:update_dataset_management_ui_translations'
     ]
     task :parallel => parallel_deps do
       cmd = 'node karma/parallelize.js'
@@ -86,7 +103,14 @@ namespace :test do
     end
   end
 
-  task :js, [:watch, :browser, :reporter] => ['js:dataCards', 'js:datasetLandingPage', 'js:importWizard', 'js:oldUx', 'js:adminGoals']
+  task :js, [:watch, :browser, :reporter] => [
+    'js:dataCards',
+    'js:datasetLandingPage',
+    'js:importWizard',
+    'js:oldUx',
+    'js:adminGoals',
+    'js:datasetManagementUI'
+  ]
 
 end
 

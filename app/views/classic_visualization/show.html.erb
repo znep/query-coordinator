@@ -32,6 +32,7 @@
       blist.configuration.oldChartsForced = <%= module_enabled?(:old_charts) == true %>;
       blist.configuration.appToken = 'U29jcmF0YS0td2VraWNrYXNz0';
       blist.configuration.webpackManifest = <%= raw Rails.configuration.webpack[:asset_manifest].to_json %>;
+      blist.configuration.assetRevisionKey = '<%= asset_revision_key %>';
 
       var csrfToken = $('meta[name="csrf-token"]').attr('content');
 

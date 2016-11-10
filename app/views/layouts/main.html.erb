@@ -216,6 +216,7 @@ http://www.socrata.com
     blist.configuration.normalDownloadTypes = <%= raw json_escape(normal_download_types.to_json) %>;
     blist.configuration.dataset_landing_page_enabled = <%= dataset_landing_page_enabled? %>;
     blist.configuration.webpackManifest = <%= raw Rails.configuration.webpack[:asset_manifest].to_json %>;
+    blist.configuration.assetRevisionKey = '<%= asset_revision_key %>';
     blist.configuration.development = <%= Rails.env.development? %>;
   </script>
 

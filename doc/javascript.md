@@ -12,14 +12,20 @@ The script `bin/setup_environment.sh` sets up artifactory, ruby, npm, and postgr
 part of the [onramp script](https://github.com/socrata/docs/tree/master/onramp). Next, start
 nginx:
 
-```
+```sh
 sudo nginx -c ${PWD}/dev-server/nginx.conf
 ```
 
-Finally, run rails and webpack-dev-server using foreman:
+Next, run rails:
 
+```sh
+bundle exec unicorn -c config/unicorn.rb -N
 ```
-bundle exec foreman start
+
+Finally, run webpack-dev-server
+
+```sh
+npm run webpack-dev-server
 ```
 
 Filesystem Overview
@@ -76,8 +82,8 @@ recompilation of modified Javascript files. There are some situations when it mu
   an `npm install`).
 - The webpack config is updated.
 
-webpack-dev-server is run using foreman (`bundle exec foreman start`) or by running `npm run
-webpack-dev-server`.
+An npm task is provided to run `webpack-dev-server` with the correct command line arguments: `npm
+run webpack-dev-server`.
 
 If you are only working in one or two areas of the JavaScript codebase, you can specify the
 environment variable `FRONTEND_WEBPACK_BUNDLES` to tell `webpack-dev-server` to only compile a
@@ -296,31 +302,35 @@ to generate a production build.
 
 Troubleshooting
 ---
+
 ### Node modules
 
 If you are stuck on a perplexing issue and it seems to be related to a missing reference to a
 library, try running `npm install` or the equivalent command `npm i`. If that doesn't fix the
-issue and you haven't touched `frontend` in a while, you can reinstall _all_ Node dependencies 
-by running the command below. 
+issue and you haven't touched `frontend` in a while, you can reinstall _all_ Node dependencies
+by running the command below.
 
-```
+```sh
 rm -rf node_modules && npm i
 ```
+
 > Note that this approach is the nuclear option and while it usually works, it takes a long time to run.
+> Try the less extreme suggestions below first.
 
 ### General
 
-- Try restarting foreman. Quit foreman in the tab spawned by the start script and run
-  `bundle exec foreman start`.
-- If you haven't touched `frontend` in a really long time you may need to upgrade your version 
+- Try restarting webpack-dev-server. Quit the process in the tab spawned by the start script and run
+  `npm run webpack-dev-server`.
+- If you haven't touched `frontend` in a really long time you may need to upgrade your version
   of Node by running the command below:
 
-```
+```sh
 brew install n
 n 4.4.3
 npm rebuild node-sass
 npm install
 ```
+
 > Note that `n` is a version manager akin to `rbenv` for Ruby.
 
 - Another thing to try is to rerun `bin/setup_environment.sh`, which will reconfigure a few key
@@ -336,3 +346,11 @@ Error: ENOENT: no such file or directory, rename '/Users/user/frontend/node_modu
 
 Then run `npm cache clean` and try to install the package again. See [this Github
 issue](https://github.com/npm/npm/issues/9633).
+
+### EADDRINUSE 0.0.0.0:3030
+
+If you see an `EADDRINUSE` error from npm when trying to run webpack, this means you are running a
+process that is listening on the port that webpack is trying to listen on.  Frequently this means
+another instance of webpack is running, you can check for this by running `ps aux | grep webpack`.
+You may also use `lsof` to find the process listening on port 3030.  After killing the process, try
+running webpack-dev-server again.

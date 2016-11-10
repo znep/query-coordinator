@@ -2,6 +2,9 @@ source 'https://repo.socrata.com/artifactory/api/gems/rubygems-virtual/'
 
 ruby '2.3.1'
 
+# This needs to be included before other gems that use environment variables
+gem 'dotenv-rails', :groups => [ :development, :test ]
+
 gem 'actionpack-page_caching'
 gem 'addressable'
 gem 'airbrake', '4.3.0'
@@ -74,7 +77,6 @@ end
 
 group :development, :test do
   gem 'byebug'
-  gem 'foreman'
   gem 'i18n-tasks', '~> 0.9.5'
   gem 'localeapp', '~> 2.0'
   gem 'rb-readline'

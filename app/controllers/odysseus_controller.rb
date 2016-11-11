@@ -41,7 +41,7 @@ class OdysseusController < ApplicationController
   private
 
   def goal_has_published_narrative?(goal_uid)
-    raise 'Unconfigured storyteller_hostname' if APP_CONFIG.storyteller_hostname.nil?
+    raise 'Unconfigured storyteller_uri' if APP_CONFIG.storyteller_uri.nil?
     raise 'goal_uid is blank' if goal_uid.blank?
 
     uri = URI.join(

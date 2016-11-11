@@ -22,7 +22,7 @@ module SocrataSiteChrome
     private
 
     def pub_stage(cookies = {})
-      !!cookies[:socrata_site_chrome_preview] ? :draft : :published
+      !!cookies.with_indifferent_access[:socrata_site_chrome_preview] ? :draft : :published
     end
   end
 end

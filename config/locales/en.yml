@@ -1012,11 +1012,6 @@ en:
       need_login: You must be logged in to access this page.
       need_permission: You do not have permission to view this page.
       too_many_tries: Too many login attempts for that login. Account temporarily disabled.
-    browser_support:
-      chrome: Chrome
-      internet_explorer: Internet Explorer
-      link_text: Learn more.
-      message_html: This site is best viewed using a newer web browser. %{link_text}
     chart_types:
       area: Area Chart
       bar: Bar Chart
@@ -1241,6 +1236,9 @@ en:
       owner: Owner
       view: Viewer
       viewer: Viewer
+    unsupported_browser:
+      link_text: Click here now to confirm your browser is current.
+      message_html: Socrata has upgraded site security. On December 1, 2016, unsupported browsers will no longer be able to access Socrata sites. %{link_text}
     validation:
       accept: Please enter a value with a valid extension.
       date: Please enter a valid date.

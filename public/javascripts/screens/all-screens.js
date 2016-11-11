@@ -122,20 +122,20 @@ $(function() {
         return false;
       }
 
-      return $.browser.msie && $.browser.majorVersion < 9 ||
-        $.browser.safari && $.browser.majorVersion < 6 ||
-        // Chrome & Firefox update regularly, so this is not technically current - 1
-        $.browser.chrome && $.browser.majorVersion < 28 ||
-        $.browser.mozilla && $.browser.majorVersion < 24;
+      return $.browser.msie && $.browser.majorVersion < 11 ||
+        $.browser.safari && $.browser.majorVersion < 7 ||
+        // Chrome & Firefox update regularly, so this may not be technically current - 1
+        $.browser.chrome && $.browser.majorVersion < 38 ||
+        $.browser.mozilla && $.browser.majorVersion < 27;
     };
     var oldBrowserMessage = [{
       _: 'div',
-      contents: $.t('core.browser_support.message_html', {
+      contents: $.t('core.unsupported_browser.message_html', {
         link_text: $.tag2({
           _: 'a',
           target: '_blank',
-          href: 'http://support.socrata.com/entries/23245818-Socrata-Browser-Support',
-          contents: $.t('core.browser_support.link_text')
+          href: 'https://support.socrata.com/hc/en-us/articles/202951618',
+          contents: $.t('core.unsupported_browser.link_text')
         }, false)
       })
     }];

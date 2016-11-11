@@ -1,3 +1,5 @@
+$page-margin: 5mm;
+
 @media print {
 
   * {
@@ -58,6 +60,38 @@
               font-size: 12px;
             }
           }
+
+          &.component-hero {
+            // We need to forcibly remove the height set in px on the hero's
+            // container because it does not play nicely with our hero width as
+            // specified below. In some cases it would cause the background
+            // image to render much taller than necessary (wasting space and ink
+            // on a background image), while in other cases it would result in
+            // the background image to be rendered too short to contain multi-
+            // paragraph hero text.
+            height: auto !important;
+
+            .hero {
+              // A minimum height helps to ensure that the hero retains the feel
+              // of a "thick stripe" even if there's not a lot of text. It could
+              // be bumped up to 1in without a problem; beyond that, we'd want
+              // to think carefully.
+              min-height: 0.5in;
+
+              // There does not seem to be a good way to approximate the correct
+              // proportions for the hero image, except in the context of the
+              // margins used when printing the page. We can suggest desired
+              // margins in the @page rule below, but the user can override that
+              // margin (and it is also subject to the printer's capabilities).
+              //
+              // The calculation below is full page width (portrait orientation)
+              // minus the default side margins we suggest for the page.
+              //
+              // Note that SCSS calculations involving different units resolve
+              // by using the first unit. We don't want px for physical media.
+              width: (8.5in - (2 * $page-margin));
+            }
+          }
         }
       }
     }
@@ -66,4 +100,9 @@
   .actions-bar {
     display: none !important;
   }
+}
+
+@page {
+  margin: $page-margin;
+  padding: 0;
 }

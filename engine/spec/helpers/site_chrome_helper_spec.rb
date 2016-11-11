@@ -563,54 +563,54 @@ describe SocrataSiteChrome::SiteChromeHelper do
     end
   end
 
-  describe '#massage_url' do
+  describe '#site_chrome_massage_url' do
     it 'does not modify a url that starts with http://' do
       url = 'http://google.com'
-      expect(helper.massage_url(url)).to eq('http://google.com')
+      expect(helper.site_chrome_massage_url(url)).to eq('http://google.com')
     end
 
     it 'does not modify a url that starts with https://' do
       url = 'https://google.com'
-      expect(helper.massage_url(url)).to eq('https://google.com')
+      expect(helper.site_chrome_massage_url(url)).to eq('https://google.com')
     end
 
     it 'does not modify a url that starts with /' do
       url = '/browse'
-      expect(helper.massage_url(url)).to eq('/browse')
+      expect(helper.site_chrome_massage_url(url)).to eq('/browse')
     end
 
     it 'prepends http:// to a url that does not have a scheme or leading slash' do
       url = 'facebook.com/bananas'
-      expect(helper.massage_url(url)).to eq('http://facebook.com/bananas')
+      expect(helper.site_chrome_massage_url(url)).to eq('http://facebook.com/bananas')
 
       url2 = 'www.test.com/asdf'
-      expect(helper.massage_url(url2)).to eq('http://www.test.com/asdf')
+      expect(helper.site_chrome_massage_url(url2)).to eq('http://www.test.com/asdf')
     end
 
     it 'turns a url with the same host as the current domain into a relative url' do
       stub_current_domain_with('data.seattle.gov')
       url = 'https://data.seattle.gov/browse'
-      expect(helper.massage_url(url)).to eq('/browse')
+      expect(helper.site_chrome_massage_url(url)).to eq('/browse')
     end
 
     it 'does not drop url params and fragments' do
       stub_current_domain_with('data.seattle.gov')
       url = 'https://data.seattle.gov/browse?some_stuff=true#show'
-      expect(helper.massage_url(url)).to eq('/browse?some_stuff=true#show')
+      expect(helper.site_chrome_massage_url(url)).to eq('/browse?some_stuff=true#show')
     end
 
     it 'just returns the url (with a scheme) if the url is invalid and it cannot parse it' do
       url = '@#(*$*@#*@(#*(*@#$(*@#*($&#^#%@*%*@#$(@#'
-      expect(helper.massage_url(url)).to eq('http://@#(*$*@#*@(#*(*@#$(*@#*($&#^#%@*%*@#$(@#')
+      expect(helper.site_chrome_massage_url(url)).to eq('http://@#(*$*@#*@(#*(*@#$(*@#*($&#^#%@*%*@#$(@#')
 
       url2 = 'htpp://stuf.com'
-      expect(helper.massage_url(url2)).to eq('http://htpp//stuf.com')
+      expect(helper.site_chrome_massage_url(url2)).to eq('http://htpp//stuf.com')
 
     end
 
     it 'strips spaces from the start/end of the urls' do
       url = ' google.com '
-      expect(helper.massage_url(url)).to eq('http://google.com')
+      expect(helper.site_chrome_massage_url(url)).to eq('http://google.com')
     end
 
     context 'localization' do
@@ -621,20 +621,20 @@ describe SocrataSiteChrome::SiteChromeHelper do
       it 'prepends the current locale to a relative path' do
         allow(I18n).to receive(:locale).and_return(:zz)
         url = '/browse'
-        expect(helper.massage_url(url)).to eq('/zz/browse')
+        expect(helper.site_chrome_massage_url(url)).to eq('/zz/browse')
       end
 
       it 'does not prepend the current locale to a relative path if the current locale is the default_locale' do
         allow(I18n).to receive(:locale).and_return(:en)
         url = '/browse'
-        expect(helper.massage_url(url)).to eq('/browse')
+        expect(helper.site_chrome_massage_url(url)).to eq('/browse')
       end
 
       it 'turns a url with the same host as the current domain into a localized relative url' do
         stub_current_domain_with('data.seattle.gov')
         allow(I18n).to receive(:locale).and_return(:kr)
         url = 'https://data.seattle.gov/browse'
-        expect(helper.massage_url(url)).to eq('/kr/browse')
+        expect(helper.site_chrome_massage_url(url)).to eq('/kr/browse')
       end
     end
 
@@ -642,13 +642,13 @@ describe SocrataSiteChrome::SiteChromeHelper do
       it 'does not prepend "http" to a mailto link' do
         stub_current_domain_with('data.seattle.gov')
         url = 'mailto:bob@test.com'
-        expect(helper.massage_url(url)).to eq('mailto:bob@test.com')
+        expect(helper.site_chrome_massage_url(url)).to eq('mailto:bob@test.com')
       end
 
       it 'does not remove the scheme from mailto links if current domain is nil' do
         stub_current_domain_with(nil)
         url = 'mailto:bob@test.com'
-        expect(helper.massage_url(url)).to eq('mailto:bob@test.com')
+        expect(helper.site_chrome_massage_url(url)).to eq('mailto:bob@test.com')
       end
     end
   end

@@ -3,6 +3,7 @@
 require 'cgi'
 
 module SiteChromeHelper
+  include SocrataSiteChrome::SharedHelperMethods
 
   def site_chrome_meta_viewport_tag
     raw('<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">')
@@ -42,7 +43,7 @@ module SiteChromeHelper
 
   def site_chrome_favicon_tag
     favicon_url = get_site_chrome.general[:window_icon]
-    favicon_link_tag(massage_url(favicon_url, add_locale: false)) if favicon_url.present?
+    favicon_link_tag(site_chrome_massage_url(favicon_url, add_locale: false)) if favicon_url.present?
   end
 
   def site_chrome_window_title
@@ -72,7 +73,7 @@ module SiteChromeHelper
     Rails.application.config.try(:socrata_site_chrome) || SocrataSiteChrome::SiteChrome.new
   end
 
-  def massage_url(url, add_locale: true)
+  def site_chrome_massage_url(url, add_locale: true)
     return unless url.present?
 
     url.strip!

@@ -20,7 +20,7 @@
               <% link_text = localized("footer.links.#{link[:key]}", get_site_chrome.locales) %>
               <% if valid_link_item?(link, link_text) %>
                 <li>
-                  <%= link_to(link_text, massage_url(link[:url]), :class => 'footer-link') %>
+                  <%= link_to(link_text, site_chrome_massage_url(link[:url]), :class => 'footer-link') %>
                 </li>
               <% end %>
             <% end %>

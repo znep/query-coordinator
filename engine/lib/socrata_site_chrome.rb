@@ -17,12 +17,12 @@ module SocrataSiteChrome
   require_relative '../app/models/socrata_site_chrome/find_extensions'
   require_relative '../app/models/socrata_site_chrome/user'
 
-  require 'socrata_site_chrome/application_helper'
   require 'socrata_site_chrome/custom_content'
   require 'socrata_site_chrome/domain_config'
   require 'socrata_site_chrome/feature_set'
   require 'socrata_site_chrome/locale_config'
   require 'socrata_site_chrome/middleware'
+  require 'socrata_site_chrome/shared_helper_methods'
   require 'socrata_site_chrome/site_chrome'
   require 'socrata_site_chrome/version'
 

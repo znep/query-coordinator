@@ -4,6 +4,7 @@ require 'request_store'
 # Internal helpers for the rendering of views
 module SocrataSiteChrome
   module SiteChromeHelper
+    include SharedHelperMethods
 
     def divider
       content_tag(:div, :class => 'divider') do
@@ -47,7 +48,7 @@ module SocrataSiteChrome
       img_src = img.dig('logo', 'src')
       if img_src.present?
         image_tag(
-          massage_url(img_src, add_locale: false),
+          site_chrome_massage_url(img_src, add_locale: false),
           :alt => img.dig('logo', 'alt').presence || display_name.presence ||
             request.host,
           :onerror => 'this.style.display="none"')
@@ -55,7 +56,7 @@ module SocrataSiteChrome
     end
 
     def header_logo
-      link_to(massage_url('/'), class: 'logo') do
+      link_to(site_chrome_massage_url('/'), class: 'logo') do
         img = logo(get_site_chrome.header, header_title)
         span = content_tag(:span, header_title, :class => 'site-name')
         img.present? ? img << span : span
@@ -198,7 +199,7 @@ module SocrataSiteChrome
             elsif valid_link_item?(link, link_text)
               # Top level link
               link_to(link_text,
-                massage_url(link[:url]),
+                site_chrome_massage_url(link[:url]),
                 :class => nav_link_classnames(is_mobile: args[:is_mobile])
               )
             end
@@ -211,7 +212,7 @@ module SocrataSiteChrome
       child_links.to_a.map do |link|
         link_text = localized("header.links.#{link[:key]}", get_site_chrome.locales)
         if valid_link_item?(link, link_text)
-          link_to(link_text, massage_url(link[:url]),
+          link_to(link_text, site_chrome_massage_url(link[:url]),
             :class => nav_link_classnames(child_link: true, is_mobile: is_mobile)
           )
         end
@@ -239,7 +240,7 @@ module SocrataSiteChrome
 
     # EN-9586: prepend "http://" onto links that do not start with it, and are not relative paths.
     # EN-7151: prepend locales onto relative links, and turn URLs into relative links if applicable
-    def massage_url(url, add_locale: true)
+    def site_chrome_massage_url(url, add_locale: true)
       return unless url.present?
 
       url.strip!

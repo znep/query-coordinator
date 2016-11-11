@@ -184,7 +184,7 @@ module SocrataSiteChrome
               if args[:use_dropdown]
                 content_tag(:div, :class => 'site-chrome-nav-menu noselect') do
                   dropdown(
-                    content_tag(:span, link_text) << content_tag(:span, nil, :class => 'icon-arrow-down'),
+                    content_tag(:span, link_text) << content_tag(:span, nil, :class => 'socrata-icon-arrow-down'),
                     navbar_child_links_array(link[:links], args[:is_mobile])
                   )
                 end

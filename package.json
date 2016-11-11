@@ -6,6 +6,18 @@
   "author": "Socrata Engineering <engineering@socrata.com>",
   "license": "UNLICENSED",
   "dependencies": {
-    "socrata-components": "^6.5.2"
+    "classnames": "2.2.5",
+    "dompurify": "0.8.3",
+    "dotdotdot": "1.7.0",
+    "jquery": "2.2.4",
+    "lodash": "4.14.2",
+    "moment": "2.14.1",
+    "react": "15.3.2",
+    "react-dom": "15.3.2",
+    "socrata-components": "8.2.0",
+    "socrata-utils": "3.1.1",
+    "tether": "1.0.1",
+    "tether-shepherd": "1.2.0",
+    "velocity-animate": "1.2.3"
   }
 }

@@ -16,7 +16,7 @@
           <% end %>
 
           <div class="collapsible-search">
-            <span class="icon-search collapsible-search-toggle"
+            <span class="socrata-icon-search collapsible-search-toggle"
               title="<%= t('header.search') %>" onclick="toggleCollapsibleSearch(this)" role="button">
             </span>
             <%= render 'site_chrome/searchbox', path: massage_url('/browse'), vanishing_search_button: true %>
@@ -39,7 +39,7 @@
 
       <nav class="mobile">
         <a class="site-chrome-btn menu-toggle" href="#" onclick="mobileMenuToggle()">
-          <span class="icon-hamburger"></span>
+          <span class="socrata-icon-hamburger"></span>
           <%= t('header.menu') %>
         </a>
       </nav>

@@ -249,6 +249,10 @@ header#site-chrome-header, footer#site-chrome-footer {
   }
 }
 
+#site-chrome-admin-header + #site-chrome-header {
+  margin-top: 46px;
+}
+
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none;   /* Chrome/Safari/Opera */

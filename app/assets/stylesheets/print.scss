@@ -17,7 +17,6 @@
     .user-story {
 
       .block {
-        page-break-inside: avoid;
         margin-bottom: 12px !important;
 
         .component {
@@ -42,6 +41,15 @@
           }
           h6 {
             font-size: 1.5em;
+          }
+
+          &.squire-formatted {
+            page-break-inside: auto;
+
+            * {
+              orphans: 3;
+              widows: 3;
+            }
           }
 
           .socrata-visualization {

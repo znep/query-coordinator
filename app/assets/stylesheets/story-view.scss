@@ -8,7 +8,7 @@
   width: 100%;
   height: 100%;
   background: #fff;
-  z-index: 99999;
+  z-index: $print-overlay-z-index;
   text-align: center;
   padding-top: 20%;
   color: $modal-title-color;

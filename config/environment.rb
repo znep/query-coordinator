@@ -28,6 +28,3 @@ end
 
 # Initialize the Rails application.
 Rails.application.initialize!
-
-site_chrome_views_pathset = ActionView::PathSet.new(["#{SocrataSiteChrome::Engine.root}/app/views/site_chrome"])
-ActionController::Base.view_paths += site_chrome_views_pathset

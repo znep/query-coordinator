@@ -171,6 +171,12 @@ nbe_bucket_size:
 notify_import_result:
   description: Enable 'notify me' button during data set import. Button will register an email interest for the user and trigger an email to be sent once dataset import is completed.
   defaultValue: false
+open_performance_narrative_editor:
+  description: 'Editor to use for Open Performance goal narratives. WARNING: Changing from "storyteller" to "classic" is DANGEROUS and unsupported. Contact #openperformance for assistance.'
+  defaultValue: classic
+  expectedValues: classic storyteller
+  disableTrueFalse: true
+  category: open performance
 open_performance_enable_goal_management_admin_pane:
   description: Enable the 'Goal Management' link in the admin panel.
   defaultValue: true

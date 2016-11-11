@@ -262,24 +262,20 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
     return 'https://' + goalDomain + '/api/stat/v1/goals/' + goalUid + '.json';
   },
 
-  generateGoalEditSrc: function(domain, dashboard, category, uid) {
+  generateGoalEmbedEditSrc: function(domain, uid) {
 
     this.assertIsOneOfTypes(domain, 'string');
-    this.assertIsOneOfTypes(dashboard, 'string');
-    this.assertIsOneOfTypes(category, 'string');
     this.assertIsOneOfTypes(uid, 'string');
 
-    return `https://${domain}/stat/goals/${dashboard}/${category}/${uid}/edit`;
+    return `https://${domain}/stat/goals/single/${uid}/embed/edit`;
   },
 
-  generateGoalEmbedSrc: function(domain, dashboard, category, uid) {
+  generateGoalEmbedSrc: function(domain, uid) {
 
     this.assertIsOneOfTypes(domain, 'string');
-    this.assertIsOneOfTypes(dashboard, 'string');
-    this.assertIsOneOfTypes(category, 'string');
     this.assertIsOneOfTypes(uid, 'string');
 
-    return `https://${domain}/stat/goals/${dashboard}/${category}/${uid}/embed`;
+    return `https://${domain}/stat/goals/single/${uid}/embed`;
   },
 
   generateYoutubeUrl: function(youtubeId) {

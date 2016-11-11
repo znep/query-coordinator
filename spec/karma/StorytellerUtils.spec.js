@@ -561,6 +561,80 @@ describe('StorytellerUtils', function() {
     });
   });
 
+  describe('.generateGoalEmbedEditSrc()', function() {
+
+    describe('missing or invalid arguments', function() {
+
+      it('should throw', function() {
+        assert.throw(function() {
+          StorytellerUtils.generateGoalEmbedEditSrc();
+        });
+        assert.throw(function() {
+          StorytellerUtils.generateGoalEmbedEditSrc('example.com');
+        });
+        assert.throw(function() {
+          StorytellerUtils.generateGoalEmbedEditSrc('example.com', null);
+        });
+        assert.throw(function() {
+          StorytellerUtils.generateGoalEmbedEditSrc('example.com', {});
+        });
+        assert.throw(function() {
+          StorytellerUtils.generateGoalEmbedEditSrc(null, 'four-four');
+        });
+        assert.throw(function() {
+          StorytellerUtils.generateGoalEmbedEditSrc(null, 5);
+        });
+      });
+    });
+
+    describe('given valid arguments', function() {
+
+      it('should return the correct url', function() {
+        assert.equal(
+          StorytellerUtils.generateGoalEmbedEditSrc('example.com', 'four-four'),
+          'https://example.com/stat/goals/single/four-four/embed/edit'
+        );
+      });
+    });
+  });
+
+  describe('.generateGoalEmbedSrc()', function() {
+
+    describe('missing or invalid arguments', function() {
+
+      it('should throw', function() {
+        assert.throw(function() {
+          StorytellerUtils.generateGoalEmbedSrc();
+        });
+        assert.throw(function() {
+          StorytellerUtils.generateGoalEmbedSrc('example.com');
+        });
+        assert.throw(function() {
+          StorytellerUtils.generateGoalEmbedSrc('example.com', null);
+        });
+        assert.throw(function() {
+          StorytellerUtils.generateGoalEmbedSrc('example.com', {});
+        });
+        assert.throw(function() {
+          StorytellerUtils.generateGoalEmbedSrc(null, 'four-four');
+        });
+        assert.throw(function() {
+          StorytellerUtils.generateGoalEmbedSrc(null, 5);
+        });
+      });
+    });
+
+    describe('given valid arguments', function() {
+
+      it('should return the correct url', function() {
+        assert.equal(
+          StorytellerUtils.generateGoalEmbedSrc('example.com', 'four-four'),
+          'https://example.com/stat/goals/single/four-four/embed'
+        );
+      });
+    });
+  });
+
   describe('.generateYoutubeIframeSrc()', function() {
 
     describe('not given an id', function() {

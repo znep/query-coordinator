@@ -1,4 +1,9 @@
 import $ from 'jquery';
+import React from 'react'; //eslint-disable-line no-unused-vars
+import ReactDOM from 'react-dom';
+import classNames from 'classnames';
+
+import { Modal, ModalHeader, ModalContent, ModalFooter } from 'socrata-components'; //eslint-disable-line no-unused-vars
 
 import '../componentBase';
 import StorytellerUtils from '../../StorytellerUtils';
@@ -17,10 +22,28 @@ const HEIGHT_SETTLE_TIME = 5000;
 // should not be too onerous.
 const HEIGHT_POLL_INTERVAL = 500;
 
+const ModalState = {
+  LOADING: 'LOADING',
+  IDLE: 'IDLE',
+  SAVING: 'SAVING'
+};
+
 $.fn.componentGoalEmbed = componentGoalEmbed;
 
 export default function componentGoalEmbed(componentData, theme, options) {
-  var $this = $(this);
+  function onFirstRender() {
+    // Generate container for the goal edit modal now, so that we have a clear
+    // reference to it for both displaying and destroying the modal.
+    const $editModal = $('<div>', { 'class': 'goal-edit-modal' }).appendTo('body');
+    $this.data('edit-modal', $editModal);
+
+    $this.one('destroy', () => {
+      $this.data('edit-modal', null);
+      $editModal.remove();
+    });
+  }
+
+  const $this = $(this);
 
   StorytellerUtils.assertHasProperties(componentData, 'type');
   StorytellerUtils.assert(
@@ -41,7 +64,7 @@ export default function componentGoalEmbed(componentData, theme, options) {
       editButtonSupported: false // we roll our own with special behavior.
     },
     options
-  ));
+  ), onFirstRender);
 
   return $this;
 }
@@ -129,22 +152,28 @@ function _renderGoal($element, componentData, options) {
 }
 
 function _handleEditClick() {
-  const $element = $(this).closest('.component');
-  const blockId = StorytellerUtils.findClosestAttribute(this, 'data-block-id');
-  const componentIndex = parseInt(StorytellerUtils.findClosestAttribute(this, 'data-component-index'), 10);
+  const componentClassName = StorytellerUtils.typeToClassNameForComponentType('goal.embed');
+  const $element = $(this).closest(`.${componentClassName}`);
+  _renderModal($element, ModalState.LOADING);
+}
 
-  StorytellerUtils.assertIsOneOfTypes(blockId, 'string');
-  StorytellerUtils.assert(_.isFinite(componentIndex));
+function _renderModal($element, state) {
+  const { LOADING, IDLE, SAVING } = ModalState;
+  const componentData = $element.data('component-rendered-data');
 
-  const componentData = storyStore.getBlockComponentAtIndex(blockId, componentIndex);
-
-  const goalEditUrl = StorytellerUtils.generateGoalEditSrc(
+  const goalEditUrl = StorytellerUtils.generateGoalEmbedEditSrc(
     componentData.value.domain,
-    componentData.value.dashboard,
-    componentData.value.category,
     componentData.value.uid
   );
-  const newWindow = window.open(goalEditUrl, '_blank');
+
+  const $editModal = $element.data('edit-modal');
+
+  function getOdyApi() {
+    return _.get(
+      $editModal.find('iframe')[0],
+      'contentWindow.EmbeddedGoalEditAPI.V1'
+    );
+  }
 
   function reloadIframe() {
     const $iframe = $element.find('iframe');
@@ -156,9 +185,80 @@ function _handleEditClick() {
     $iframe[0].contentWindow.location.reload();
   }
 
-  $(newWindow).on('DOMContentLoaded', () => {
-    newWindow.addEventListener('goal-saved', reloadIframe);
+  const onLoad = () => _renderModal($element, IDLE);
+  const onDismiss = () => {
+    const odyApi = getOdyApi();
+    if (odyApi && odyApi.isGoalDirty()) {
+      const doDismiss = window.confirm(I18n.t('editor.components.goal_embed.unsaved_goal_changes'));
+      if (!doDismiss) {
+        return;
+      }
+    }
+
+    _.defer(() => ReactDOM.unmountComponentAtNode($editModal[0]));
+  };
+  const onSaveMeasure = () => {
+    if (state === SAVING) {
+      return;
+    }
+
+    getOdyApi().saveGoal(() => {
+      reloadIframe();
+      onDismiss();
+    });
+    _renderModal($element, SAVING);
+  };
+
+  const iframeClasses = classNames({
+    loaded: state !== LOADING
   });
+
+  const saveButtonClasses = classNames(
+    'btn',
+    'btn-primary',
+    { 'btn-busy': state === SAVING }
+  );
+
+  ReactDOM.render(
+    <Modal onDismiss={onDismiss} fullScreen={true}>
+      <ModalHeader title={I18n.t('editor.components.goal_embed.edit_title')} onDismiss={onDismiss} />
+
+      <ModalContent>
+        <div className="alert alert-full-width-top warning">
+          <strong>{I18n.t('editor.components.goal_embed.unsaved_goal_warning.warning')}</strong>
+          <span> {I18n.t('editor.components.goal_embed.unsaved_goal_warning.explanation')} </span>
+          <a
+            href="https://socrata.zendesk.com/knowledge/articles/234470628/en-us?brand_id=3285806"
+            target="_blank">
+            {I18n.t('editor.components.goal_embed.unsaved_goal_warning.link')}
+          </a>
+        </div>
+
+        {
+          state === LOADING ?
+            <span className="spinner-default spinner-large iframe-spinner" /> :
+            null
+        }
+
+        <iframe
+          src={goalEditUrl}
+          title={I18n.t('editor.components.goal_embed.edit_title')}
+          onLoad={onLoad}
+          className={iframeClasses}
+          frameBorder="0" />
+      </ModalContent>
+
+      <ModalFooter>
+        <button className="btn btn-default" onClick={onDismiss}>
+          <span>{I18n.t('editor.modal.buttons.cancel')}</span>
+        </button>
+        <button className={saveButtonClasses} onClick={onSaveMeasure} disabled={state === LOADING}>
+          <span>{I18n.t('editor.modal.buttons.save')}</span>
+        </button>
+      </ModalFooter>
+    </Modal>,
+    $editModal[0]
+  );
 }
 
 function _updateSrcAndTitle($element, componentData) {
@@ -166,8 +266,6 @@ function _updateSrcAndTitle($element, componentData) {
     componentData,
     'value',
     'value.domain',
-    'value.dashboard',
-    'value.category',
     'value.uid'
   );
 
@@ -175,8 +273,6 @@ function _updateSrcAndTitle($element, componentData) {
   const title = _.get(componentData.value, 'title');
   const goalSource = StorytellerUtils.generateGoalEmbedSrc(
     componentData.value.domain,
-    componentData.value.dashboard,
-    componentData.value.category,
     componentData.value.uid
   );
 

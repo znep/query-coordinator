@@ -21,3 +21,50 @@
     margin-right: 5rem;
   }
 }
+
+// Styles for the edit modal, which is directly appended to body.
+.goal-edit-modal .modal-full {
+  $warning-height: 3em;
+
+  .iframe-spinner {
+    height: 64px;
+    width: 64px;
+    display: block;
+    position: absolute;
+    top: calc(50% - 32px);
+    left: calc(50% - 32px);
+  }
+
+  iframe {
+    width: 100%;
+    height: calc(100% - #{$warning-height} - 4px);
+    opacity: 0;
+
+    &.loaded {
+      opacity: 1;
+    }
+  }
+
+  header {
+    line-height: 1.618; // Same comment as in authoring workflow SCSS.
+    box-shadow-color: #ebebeb; // Slight tweak from styleguide, because it looks odd at full strength.
+  }
+
+  section {
+    height: 100%;
+    padding: 0;
+    overflow: hidden;
+
+    .alert {
+      height: $warning-height;
+      text-align: center;
+    }
+  }
+
+  footer {
+    button {
+      vertical-align: top;
+      margin-left: 1rem;
+    }
+  }
+}

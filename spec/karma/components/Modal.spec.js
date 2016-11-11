@@ -87,7 +87,7 @@ describe('Modal jQuery plugin', function() {
     });
 
     it('should hide overflow', function() {
-      assert.isTrue($('html').css('overflow') === 'hidden');
+      assert.isTrue($('html').hasClass('modal-open'));
     });
   });
 
@@ -122,7 +122,7 @@ describe('Modal jQuery plugin', function() {
 
     it('should set overflow to auto', function() {
       node.trigger('modal-close');
-      assert.isTrue($('html').css('overflow') === 'auto');
+      assert.isFalse($('html').hasClass('modal-open'));
     });
   });
 

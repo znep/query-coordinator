@@ -63,11 +63,11 @@ export default function Modal(options) {
       addClass('storyteller-modal').
       on('modal-open', function() {
         self.removeClass('hidden');
-        $('html').css('overflow', 'hidden');
+        $('html').addClass('modal-open');
       }).
       on('modal-close', function() {
         self.addClass('hidden');
-        $('html').css('overflow', 'auto');
+        $('html').removeClass('modal-open');
       });
 
     $(document).on('keyup', function(event) {

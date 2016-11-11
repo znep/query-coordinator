@@ -8,6 +8,7 @@ const initialState = Immutable.fromJS({
     goalsPerPage: 25
   },
   selectedGoalIds: [],
+  lastSelectionTarget: null,
   sorting: {
     fieldName: 'title',
     fieldType: 'string',
@@ -16,13 +17,15 @@ const initialState = Immutable.fromJS({
 });
 
 const setSelection = (state, { goalIds }) => state.set('selectedGoalIds', new Immutable.List(goalIds));
-const toggleSelectionById = (state, { goalId }) => state.update('selectedGoalIds', goalIds => {
-  if (goalIds.includes(goalId)) {
-    return goalIds.remove(goalIds.indexOf(goalId));
-  }
+const toggleSelectionById = (state, { goalId }) => {
+  return state.update('selectedGoalIds', goalIds => {
+    if (goalIds.includes(goalId)) {
+      return goalIds.remove(goalIds.indexOf(goalId));
+    }
 
-  return goalIds.push(goalId);
-});
+    return goalIds.push(goalId);
+  }).set('lastSelectionTarget', goalId);
+};
 
 const sortBy = (state, { fieldName, fieldType, direction }) => state.mergeIn(['sorting'], {
   fieldName,
@@ -49,10 +52,15 @@ const setGoalsPerPage = (state, { goalsPerPage, goalsCount }) => {
 };
 
 const selectUntil = (state, { untilGoalId, paginatedGoalIds }) => {
-  const lastSelectedId = state.get('selectedGoalIds').last();
+  const lastSelectedId = state.get('lastSelectionTarget');
   if (!lastSelectedId) {
-    return state.update('selectedGoalIds', ids => ids.push(untilGoalId));
+    return state.
+      update('selectedGoalIds', ids => ids.push(untilGoalId)).
+      set('lastSelectionTarget', untilGoalId);
   }
+
+  // if untilGoalId is already clicked we should deselect the range
+  const shouldDeselect = state.get('selectedGoalIds').includes(untilGoalId);
 
   const lastSelectedIndex = paginatedGoalIds.findIndex(goalId => goalId === lastSelectedId);
   const untilGoalIndex = paginatedGoalIds.findIndex(goalId => goalId === untilGoalId);
@@ -62,7 +70,16 @@ const selectUntil = (state, { untilGoalId, paginatedGoalIds }) => {
   }
 
   const range = paginatedGoalIds.slice(Math.min(lastSelectedIndex, untilGoalIndex), Math.max(lastSelectedIndex, untilGoalIndex) + 1);
-  return state.update('selectedGoalIds', selectedIds => selectedIds.concat(range.filter(goalId => !selectedIds.includes(goalId))));
+
+  let newSelectedGoalIds;
+  const selectedGoalIds = state.get('selectedGoalIds');
+  if (shouldDeselect) {
+    newSelectedGoalIds = selectedGoalIds.filter(goalId => range.indexOf(goalId) === -1);
+  } else {
+    newSelectedGoalIds = selectedGoalIds.concat(range.filter(goalId => !selectedGoalIds.includes(goalId)));
+  }
+
+  return state.set('selectedGoalIds', newSelectedGoalIds).set('lastSelectionTarget', untilGoalId);
 };
 
 export default ReduxImmutable.createReducer(initialState, {

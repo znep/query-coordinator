@@ -32,6 +32,15 @@
 </head>
 <body id="story-view">
 
+<% if should_launch_print_dialog_on_page_load? %>
+<div id='print-overlay'>
+  <span class="spinner-default spinner-large"></span>
+  <h3>Preparing story for printing...</h3>
+  Having trouble? Please read our <a href="https://example.com">support article</a>
+  <div class="progress-bar"></div>
+</div>
+<% end %>
+
 <%= yield %>
 
 <% if Rails.env.test? -%>
@@ -42,10 +51,22 @@
 <%= render 'shared/google_analytics_script' %>
 <%= site_chrome_google_analytics_tag %>
 <%= site_chrome_javascript_tag %>
+
 <% if should_launch_print_dialog_on_page_load? %>
 <script>
-  $(document).ready(function() {
-    window.print();
+  $(function() {
+    var timeout = 5000;
+    var $overlay = $('#print-overlay');
+    $overlay.find('.progress-bar').animate(
+      {
+        'width': '100%'
+      },
+      timeout,
+      function() {
+        $overlay.remove();
+        window.print();
+      }
+    );
   });
 </script>
 <% end %>

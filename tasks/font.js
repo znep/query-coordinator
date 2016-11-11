@@ -28,7 +28,7 @@ function compileIconStyles(stream) {
   return (callback) => {
     stream.on('glyphs', (glyphs) => {
       var selector = glyphs.map((glyph) => (
-        `.${className}-${glyph.name}::before`
+        `.${className}-${glyph.name}::before, .socrata-icon-${glyph.name}::before`
       )).join(',\n');
 
       var locals = {

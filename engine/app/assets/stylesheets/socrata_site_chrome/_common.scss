@@ -28,7 +28,7 @@ header#site-chrome-header, footer#site-chrome-footer {
       color: $btn_hover_color;
     }
 
-    [class*="icon-"] {
+    [class*="socrata-icon-"] {
       position: relative;
       padding-right: $text_padding;
     }
@@ -50,7 +50,7 @@ header#site-chrome-header, footer#site-chrome-footer {
       background: $mobile_btn_hover_bg_color;
     }
 
-    [class*="icon-"] {
+    [class*="socrata-icon-"] {
       position: relative;
       padding-right: 6px;
     }
@@ -113,7 +113,7 @@ header#site-chrome-header, footer#site-chrome-footer {
       -webkit-box-sizing: border-box;
 
       .dropdown {
-        span[class^="icon-arrow-"] {
+        span[class^="socrata-icon-arrow-"] {
           margin-left: 6px;
           font-size: 10px;
         }
@@ -143,7 +143,7 @@ header#site-chrome-header, footer#site-chrome-footer {
       position: relative;
       margin-bottom: 0;
 
-      span.icon-search {
+      span.socrata-icon-search {
         position: absolute;
         left: 8px;
         top: 2px;
@@ -209,7 +209,7 @@ header#site-chrome-header, footer#site-chrome-footer {
       text-decoration: underline;
     }
 
-    span.icon-arrow-down {
+    span.socrata-icon-arrow-down {
       margin-left: 6px;
       font-size: 10px;
     }

@@ -126,7 +126,7 @@ header#site-chrome-header, footer#site-chrome-footer {
             background-color: transparent;
             border: none;
 
-            span.icon-search {
+            span.socrata-icon-search {
               top: 0;
               left: 0;
               font-size: 20px;
@@ -139,7 +139,7 @@ header#site-chrome-header, footer#site-chrome-footer {
 
       .mobile-language-dropdown {
         margin: $section_margin 0;
-        .mobile-language-dropdown-title > span.icon-arrow-down {
+        .mobile-language-dropdown-title > span.socrata-icon-arrow-down {
           float: right;
           margin-top: calc(calc(#{$button_height} / 2) - 7px);
         }

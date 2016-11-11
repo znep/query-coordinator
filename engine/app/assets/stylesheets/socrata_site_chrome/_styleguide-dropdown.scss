@@ -16,7 +16,7 @@ header#site-chrome-header, footer#site-chrome-footer {
      */
     z-index: 100;
 
-    span[class*="icon-"] {
+    span[class*="socrata-icon-"] {
       padding-left: ms(2);
     }
   }
@@ -57,7 +57,7 @@ header#site-chrome-header, footer#site-chrome-footer {
     color: $header_dropdown_option_color;
     padding: ms(-5) ms(0);
 
-    > span[class*="icon-"] {
+    > span[class*="socrata-icon-"] {
       padding-right: ms(-2);
     }
   }

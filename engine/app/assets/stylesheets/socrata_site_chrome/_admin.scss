@@ -5,11 +5,43 @@
   right:0;
   display: flex;
   flex-direction: row;
-  background-color: #535353;
+  background-color: #636a71;
   color: #ffffff;
   height: 46px;
   z-index: 9999;
   font-family: 'Open Sans', 'Helvetica', sans-serif;
+
+  &.site-chrome-small {
+    height: 32px;
+
+    a {
+      font-size: 13px;
+      padding: 6px 12px;
+    }
+
+    .site-chrome-admin-separator {
+      height: 20px;
+    }
+
+    .site-chrome-admin-menu h1 {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
+    .site-chrome-admin-user {
+      padding: 2px 13px;
+    }
+
+    .site-chrome-admin-user-image {
+      width: 28px;
+      height: 28px;
+
+      img {
+        width: 28px;
+        height: 28px;
+      }
+    }
+  }
 
   * {
     box-sizing: border-box;
@@ -32,9 +64,10 @@
 
   a, [tabIndex] {
     &:focus {
-      outline-color: #2279a6;
+      outline-color: #42bfff;
       outline-style: auto;
       outline-width: 5px;
+      outline-offset: -4px;
     }
   }
 
@@ -48,6 +81,7 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
+      font-weight: 400;
     }
   }
 
@@ -78,7 +112,7 @@
 
     &:hover,
     &.active {
-      background-color: #333333;
+      background-color: #3b454e;
     }
   }
 
@@ -110,9 +144,9 @@
       left: 0;
       top: 100%;
       width: 225px;
-      border-top: solid 2px #535353;
+      border-top: solid 2px #636a71;
       box-shadow: 0 0 10px #333;
-      background: #3c3c3c;
+      background: #3b454e;
 
       li {
 
@@ -121,7 +155,7 @@
           padding: 5px 14px;
 
           &:hover {
-            background-color: #111111;
+            background-color: #182633;
             cursor: pointer;
           }
         }

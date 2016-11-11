@@ -101,6 +101,10 @@ this, just use the argument `size: 'small'` when rendering the header or footer.
 
     <%= render 'site_chrome/header', size: 'small' %>
 
+And the same goes for the admin header.
+
+    <%= render 'site_chrome/admin_header', size: 'small' %>
+
 An example layout is shown below:
 
 ```erb

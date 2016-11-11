@@ -53,6 +53,10 @@
 <%= site_chrome_javascript_tag %>
 
 <% if should_launch_print_dialog_on_page_load? %>
+<%# We need to wait for charts, etc to load data before printing.
+  # We don't have a way to do that that will work across all embeddable
+  # chart types (and HTML embeds, etc). So, we do a blind wait. This
+  # fake progress bar gives the user something to look at.%>
 <script>
   $(function() {
     var timeout = 10000;

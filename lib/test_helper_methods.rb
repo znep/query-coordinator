@@ -1,5 +1,8 @@
+require 'signaller/test/helpers'
+
 # Add more helper methods to be used by all tests here...
 module TestHelperMethods
+  include Signaller::Test::Helpers
 
   def init_current_domain
     # For some reason, Domain and Configuration aren't autoloaded at this point,
@@ -138,16 +141,6 @@ module TestHelperMethods
       allow_any_instance_of(SocrataSiteChrome::CustomContent).to receive(:fetch).and_return(
         default_content.deep_merge(content)
       )
-    end
-  end
-
-  def init_signaller
-    if Object.respond_to?(:stubs)
-      Signaller.stubs(healthy?: true)
-      Signaller::FeatureFlags.stubs(on_domain: {})
-    else
-      allow(Signaller).to receive(:healthy?).and_return(true)
-      allow(Signaller::FeatureFlags).to receive(:on_domain).and_return({})
     end
   end
 end

@@ -93,15 +93,17 @@ helpers to the bottom of the `<head>` section:
 
 TODO: update these steps
 
-Within the `<body>` section add the `<%= render 'site_chrome/header' %>` just inside the opening
-`<body>` section, then add the `<%= render 'site_chrome/footer' %>` just before the closing
-`</body>` tag.
+Within the `<body>` section add
+`<%== site_chrome_header(request, response) %>`
+just inside the opening `<body>` section, then add
+`<%== site_chrome_footer(request, response) %>`
+just before the closing `</body>` tag.
 
 There are also "small" versions of the header and footer that you can choose to render. For example,
 on dataset/view pages, where the full header/footer takes up too much screen real estate. To do
 this, just use the argument `size: 'small'` when rendering the header or footer.
 
-    <%= render 'site_chrome/header', size: 'small' %>
+    <%== site_chrome_header(request, response, :size => 'small') %>
 
 An example layout is shown below:
 
@@ -124,9 +126,9 @@ An example layout is shown below:
 
   <body>
     <%= render 'site_chrome/admin_header' %>
-    <%= render 'site_chrome/header' %>
+    <%== site_chrome_header(request, response) %>
     <%= yield %>
-    <%= render 'site_chrome/footer' %>
+    <%== site_chrome_footer(request, response) %>
   </body>
 </html>
 ```

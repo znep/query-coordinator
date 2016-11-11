@@ -49,7 +49,22 @@ module SiteChromeHelper
     get_site_chrome.general[:window_title_display]
   end
 
+  def site_chrome_header(request, response, args = {})
+    site_chrome_controller_instance(request, response).header(args)
+  end
+
+  def site_chrome_footer(request, response, args = {})
+    site_chrome_controller_instance(request, response).footer(args)
+  end
+
   private
+
+  def site_chrome_controller_instance(request, response)
+    SocrataSiteChrome::SiteChromeController.new.tap do |cont|
+      cont.request = request
+      cont.response = response
+    end
+  end
 
   # Copied from SocrataSiteChrome::SiteChromeHelper
 

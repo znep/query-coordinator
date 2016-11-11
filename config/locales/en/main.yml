@@ -44,6 +44,9 @@ en:
       title: 'Not Found'
       login_notice_html: 'Do you need to <a href="/login?return_to=%{return_to}">log in</a>?'
   login_successful: 'Login Successful'
+  print:
+    preparing_story: 'Preparing story for printing...'
+    help_link: 'Get help with printing.'
   preview_mode:
     presentation_mode:
       next: 'Next'

@@ -35,8 +35,8 @@
 <% if should_launch_print_dialog_on_page_load? %>
 <div id='print-overlay'>
   <span class="spinner-default spinner-large"></span>
-  <h3>Preparing story for printing...</h3>
-  Having trouble? Please read our <a href="https://example.com">support article</a>
+  <h3><%= t('print.preparing_story') %></h3>
+  <a href="https://example.com"><%= t('print.help_link') %></a>
   <div class="progress-bar"></div>
 </div>
 <% end %>
@@ -55,7 +55,7 @@
 <% if should_launch_print_dialog_on_page_load? %>
 <script>
   $(function() {
-    var timeout = 5000;
+    var timeout = 10000;
     var $overlay = $('#print-overlay');
     $overlay.find('.progress-bar').animate(
       {

@@ -6,6 +6,12 @@
   color: #ffffff;
   height: 46px;
   z-index: 9999;
+  font-family: 'Open Sans', 'Helvetica', sans-serif;
+
+  * {
+    box-sizing: border-box;
+    line-height: 1.6;
+  }
 
   > div {
     margin: auto;
@@ -19,6 +25,14 @@
     padding: 11px 17px;
     font-weight: lighter;
     font-size: 15px;
+  }
+
+  a, [tabIndex] {
+    &:focus {
+      outline-color: #2279a6;
+      outline-style: auto;
+      outline-width: 5px;
+    }
   }
 
   .site-chrome-admin-title {
@@ -50,6 +64,7 @@
     display: flex;
     margin-left: 5px;
     margin-right: 5px;
+    height: 100%;
   }
 
   .site-chrome-admin-menu,
@@ -73,7 +88,9 @@
       font-size: 15px;
       font-weight: lighter;
       padding: 11px 17px;
+      margin: 0;
       white-space: nowrap;
+      height: 100%;
     }
 
     .icon-arrow-down {

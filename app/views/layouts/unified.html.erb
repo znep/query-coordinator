@@ -13,17 +13,10 @@
   </head>
 
   <body>
-    <%==
-      SocrataSiteChrome::SiteChromeController.new.tap do |cont|
-        cont.request = request
-        cont.response = response
-      end.header %>
+    <%== site_chrome_header(request, response) %>
 
     <%= yield %>
-    <%==
-      SocrataSiteChrome::SiteChromeController.new.tap do |cont|
-        cont.request = request
-        cont.response = response
-      end.footer %>
+
+    <%== site_chrome_footer(request, response) %>
   </body>
 </html>

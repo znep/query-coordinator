@@ -14,6 +14,8 @@ class CustomContentControllerTest < ActionController::TestCase
     init_signaller
     stub_site_chrome
 
+    stub_feature_flags_with(:route_dataslate_without_caching => false)
+
     @basic_cache_params = {
       'domain' => CurrentDomain.cname,
       'locale' => I18n.locale,

@@ -120,7 +120,7 @@ class DataLensManager
       :id => page_metadata['datasetId'],
       :originalViewId => page_metadata['datasetId'],
       :category => category,
-      :provenance => page_metadata['provenance']
+      :provenance => page_metadata['provenance'] ||= 'community'
     }
 
     begin

@@ -7,6 +7,10 @@ module SocrataSiteChrome
 
   if defined?(Rails) # If the host application is not Rails (i.e. Sinatra) do something different.
     require 'socrata_site_chrome/engine'
+
+    site_chrome_views_pathset = ActionView::PathSet.new(["#{SocrataSiteChrome::Engine.root}/app/views/site_chrome"])
+    ActionController::Base.view_paths += site_chrome_views_pathset
+
   end
 
   require_relative '../app/models/socrata_site_chrome/model'
@@ -22,7 +26,7 @@ module SocrataSiteChrome
   require 'socrata_site_chrome/site_chrome'
   require 'socrata_site_chrome/version'
 
-  require 'site_chrome_helper' # ApplicationHelper methods for the host application, not the engine
+  require 'site_chrome_helper' # Helper methods for the host application, not the engine
 
   def self.configuration
     @configuration ||= Configuration.new

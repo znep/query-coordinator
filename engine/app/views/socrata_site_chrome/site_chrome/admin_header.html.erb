@@ -1,5 +1,9 @@
 <%- if logged_in? %>
-  <section id="site-chrome-admin-header" role="navigation">
+  <section
+    id="site-chrome-admin-header"
+    role="navigation"
+    class="<%= local_assigns.has_key?(:size) ? "site-chrome-#{size}" : '' %>">
+
     <div class="site-chrome-admin-title">
       <a href="/"><%= admin_title %></a>
     </div>

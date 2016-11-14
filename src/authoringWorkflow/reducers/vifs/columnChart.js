@@ -9,6 +9,7 @@ import {
   setBooleanValueOrDefaultValue,
   setStringValueOrDeleteProperty,
   setNumericValueOrDeleteProperty,
+  setBooleanValueOrDeleteProperty,
   setUnits,
   isNonEmptyString
 } from '../../helpers';
@@ -36,7 +37,10 @@ import {
   SET_SHOW_DIMENSION_LABELS,
   SET_X_AXIS_SCALING_MODE,
   SET_MEASURE_AXIS_MIN_VALUE,
-  SET_MEASURE_AXIS_MAX_VALUE
+  SET_MEASURE_AXIS_MAX_VALUE,
+  SET_LIMIT_NONE_AND_SHOW_OTHER_CATEGORY,
+  SET_LIMIT_COUNT_AND_SHOW_OTHER_CATEGORY,
+  SET_SHOW_OTHER_CATEGORY
 } from '../../actions';
 
 export default function columnChart(state, action) {
@@ -167,6 +171,26 @@ export default function columnChart(state, action) {
       forEachSeries(state, series => {
         _.set(series, 'dataSource.orderBy', _.cloneDeep(action.orderBy));
       });
+      break;
+
+    case SET_LIMIT_NONE_AND_SHOW_OTHER_CATEGORY:
+      setBooleanValueOrDeleteProperty(state, 'configuration.showOtherCategory', action.showOtherCategory);
+
+      forEachSeries(state, series => {
+        _.unset(series, 'dataSource.limit');
+      });
+      break;
+
+    case SET_LIMIT_COUNT_AND_SHOW_OTHER_CATEGORY:
+      setBooleanValueOrDeleteProperty(state, 'configuration.showOtherCategory', action.showOtherCategory);
+
+      forEachSeries(state, series => {
+        _.set(series, 'dataSource.limit', parseInt(action.limitCount, 10));
+      });
+      break;
+
+    case SET_SHOW_OTHER_CATEGORY:
+      setBooleanValueOrDeleteProperty(state, 'configuration.showOtherCategory', action.showOtherCategory);
       break;
   }
 

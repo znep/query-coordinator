@@ -12,8 +12,6 @@ const getSoqlVifValidator = require('./dataProviders/SoqlVifValidator.js').getSo
 const MAX_COLUMN_COUNT = 1000;
 const SOQL_DATA_PROVIDER_DIMENSION_ALIAS = SoqlHelpers.dimensionAlias();
 const SOQL_DATA_PROVIDER_MEASURE_ALIAS = SoqlHelpers.measureAlias();
-const UNAGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} ORDER BY {5} NULL LAST LIMIT {6}';
-const AGGREGATED_BASE_QUERY = 'SELECT {0} AS {1}, {2} AS {3} {4} GROUP BY {5} ORDER BY {6} NULL LAST LIMIT {7}';
 const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 $.fn.socrataSvgColumnChart = function(originalVif) {
@@ -179,83 +177,219 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
 
     const orderClause = SoqlHelpers.orderByClauseFromSeries(vifToRender, seriesIndex);
 
-    let ascending;
+    const limit = _.get(
+      vifToRender,
+      `series[${seriesIndex}].dataSource.limit`,
+      MAX_COLUMN_COUNT
+    );
+
+    // We only want to follow the showOtherCategory code path if that property
+    // is set to true AND there is a defined limit.
+    const showOtherCategory =
+      _.get(vifToRender, 'configuration.showOtherCategory', false) &&
+      _.isNumber(
+        _.get(vifToRender, `series[${seriesIndex}].dataSource.limit`, null)
+      );
+
+    const isUnaggregatedQuery =
+      series.dataSource.dimension.aggregationFunction === null &&
+      series.dataSource.measure.aggregationFunction === null;
+
     let queryString;
 
-    if (
-      series.dataSource.dimension.aggregationFunction === null &&
-      series.dataSource.measure.aggregationFunction === null
-    ) {
-
-      queryString = UNAGGREGATED_BASE_QUERY.format(
-        dimension,
-        SOQL_DATA_PROVIDER_DIMENSION_ALIAS,
-        measure,
-        SOQL_DATA_PROVIDER_MEASURE_ALIAS,
-        whereClause,
-        orderClause,
-        MAX_COLUMN_COUNT + 1
-      );
+    if (isUnaggregatedQuery) {
+      queryString = `
+        SELECT 
+          ${dimension} as ${SOQL_DATA_PROVIDER_DIMENSION_ALIAS},
+          ${measure} as ${SOQL_DATA_PROVIDER_MEASURE_ALIAS}
+        ${whereClause}
+        ORDER BY ${orderClause}
+        NULL LAST
+        LIMIT ${limit}
+      `;
     } else {
-
-      queryString = AGGREGATED_BASE_QUERY.format(
-        dimension,
-        SOQL_DATA_PROVIDER_DIMENSION_ALIAS,
-        measure,
-        SOQL_DATA_PROVIDER_MEASURE_ALIAS,
-        whereClause,
-        aggregationClause,
-        orderClause,
-        MAX_COLUMN_COUNT + 1
-      );
+      queryString = `
+        SELECT 
+          ${dimension} as ${SOQL_DATA_PROVIDER_DIMENSION_ALIAS},
+          ${measure} as ${SOQL_DATA_PROVIDER_MEASURE_ALIAS}
+        ${whereClause}
+        GROUP BY ${aggregationClause}
+        ORDER BY ${orderClause}
+        NULL LAST
+        LIMIT ${limit}
+      `;
     }
+
+    const processQueryResponse = (queryResponse) => {
+      const dimensionIndex = queryResponse.
+        columns.
+        indexOf(SOQL_DATA_PROVIDER_DIMENSION_ALIAS);
+      const measureIndex = queryResponse.
+        columns.
+        indexOf(SOQL_DATA_PROVIDER_MEASURE_ALIAS);
+        let valueAsNumber;
+
+      queryResponse.columns[dimensionIndex] = 'dimension';
+      queryResponse.columns[measureIndex] = 'measure';
+
+      queryResponse.
+        rows.
+        forEach(function(row) {
+
+          try {
+
+            if (typeof row[measureIndex] === 'undefined') {
+              valueAsNumber = null;
+            } else {
+              valueAsNumber = Number(row[measureIndex]);
+            }
+          } catch (error) {
+
+            console.error(
+              'Could not convert measure value to number: {0}'.
+              format(row[measureIndex])
+            );
+
+            valueAsNumber = null;
+          }
+
+          row[measureIndex] = valueAsNumber;
+        });
+
+      return queryResponse;
+    };
+
+    const queryForOthersCategory = (queryResponse) => {
+      if (showOtherCategory) {
+
+        const otherCategoryName = I18n.translate(
+          'visualizations.common.other_category'
+        );
+
+        // Note that we can't just use the multiple argument version of the
+        // binaryOperator filter since it joins arguments with OR, and we need
+        // to join all of the terms with AND.
+        const otherCategoryFilters = queryResponse.rows.
+          filter((row) => !_.isUndefined(row[0])).
+          map((row) => {
+
+          return {
+            arguments: {
+              operator: '!=',
+              operand: row[0]
+            },
+            // Note that the SoqlHelpers.dimension() method returns the name
+            // of the dimension with backticks (for SoQL quoting), but if we
+            // try to include the backticks in the filter's columnName
+            // property it will double-quote the dimension in the actual
+            // query string, which causes the query to fail. In this case we
+            // actually want to remove the backticks added by the dimension
+            // method, since the field will be quoted by the query mechanism
+            // when the where clause is compiled.
+            columnName: dimension.replace(/`/g, ''),
+            function: 'binaryOperator'
+          };
+        });
+
+        const otherCategoryVifToRender = _.cloneDeep(vifToRender);
+        const originalVifFilters = _.get(
+          otherCategoryVifToRender,
+          `series[${seriesIndex}].dataSource.filters`,
+          []
+        );
+
+        _.set(
+          otherCategoryVifToRender,
+          `series[${seriesIndex}].dataSource.filters`,
+          originalVifFilters.concat(otherCategoryFilters)
+        );
+
+        // If one of the categories was 'null', then we also need to add an
+        // 'is not null' filter so that null values do not end up in the other
+        // category. We can tell if there was a 'null' category because we
+        // will have filtered it out of the collection from which we derive
+        // otherCategoryFilters. If the length of otherCategoryFilters is not
+        // equal to the length of the original query response rows, then we
+        // must have filtered a null value.
+        if (queryResponse.rows.length !== otherCategoryFilters.length) {
+          otherCategoryVifToRender.series[seriesIndex].dataSource.filters.
+            push({
+              arguments: {
+                isNull: false
+              },
+              // See note above about SoqlHelpers.dimension() returning the
+              // name of the dimension with backticks.
+              columnName: dimension.replace(/`/g, ''),
+              function: 'isNull'
+            });
+        }
+
+        const otherCategoryWhereClauseComponents = SoqlHelpers.
+          whereClauseFilteringOwnColumn(
+            otherCategoryVifToRender,
+            seriesIndex
+          );
+
+        const otherCategoryAggregationClause = SoqlHelpers.aggregationClause(
+          otherCategoryVifToRender,
+          seriesIndex,
+          'measure'
+        );
+
+        let otherCategoryQueryString;
+
+        if (isUnaggregatedQuery) {
+          otherCategoryQueryString = `
+            SELECT 
+              '${otherCategoryName}' as ${SOQL_DATA_PROVIDER_DIMENSION_ALIAS},
+              COUNT(*) AS ${SOQL_DATA_PROVIDER_MEASURE_ALIAS}
+            WHERE  ${otherCategoryWhereClauseComponents}
+          `;
+        } else {
+          otherCategoryQueryString = `
+            SELECT 
+              '${otherCategoryName}' as ${SOQL_DATA_PROVIDER_DIMENSION_ALIAS},
+              ${otherCategoryAggregationClause} as ${SOQL_DATA_PROVIDER_MEASURE_ALIAS}
+            WHERE  ${otherCategoryWhereClauseComponents}
+          `;
+        }
+
+        // Since we're using values from first query as filters, we have to url
+        // encode query string. Characters like `&` comes with surprises
+        const uriEncodedQueryString = encodeURIComponent(
+          otherCategoryQueryString.replace(/[\n\s]+/g, ' ')
+        );
+
+        return soqlDataProvider.
+          query(
+            uriEncodedQueryString,
+            SOQL_DATA_PROVIDER_DIMENSION_ALIAS,
+            SOQL_DATA_PROVIDER_MEASURE_ALIAS
+          ).
+          then((otherCategoryQueryResponse) => {
+            // If the limit is higher than the number of total rows then
+            // otherCategoryQueryResponse will come back with no rows; in this
+            // case there is no need to modify the original queryResponse.
+            if (otherCategoryQueryResponse.rows.length > 0) {
+              queryResponse.rows.push(otherCategoryQueryResponse.rows[0]);
+            }
+
+            return queryResponse;
+          });
+
+      } else {
+        return Promise.resolve(queryResponse);
+      }
+    };
 
     return soqlDataProvider.
       query(
-        queryString.replace(/\s+/, ' '),
+        queryString.replace(/[\n\s]+/g, ' '),
         SOQL_DATA_PROVIDER_DIMENSION_ALIAS,
         SOQL_DATA_PROVIDER_MEASURE_ALIAS
       ).
-      then(
-        function(queryResponse) {
-          const dimensionIndex = queryResponse.
-            columns.
-            indexOf(SOQL_DATA_PROVIDER_DIMENSION_ALIAS);
-          const measureIndex = queryResponse.
-            columns.
-            indexOf(SOQL_DATA_PROVIDER_MEASURE_ALIAS);
-          let valueAsNumber;
-
-          queryResponse.columns[dimensionIndex] = 'dimension';
-          queryResponse.columns[measureIndex] = 'measure';
-
-          queryResponse.
-            rows.
-            forEach(function(row) {
-
-              try {
-
-                if (typeof row[measureIndex] === 'undefined') {
-                  valueAsNumber = null;
-                } else {
-                  valueAsNumber = Number(row[measureIndex]);
-                }
-              } catch (error) {
-
-                console.error(
-                  'Could not convert measure value to number: {0}'.
-                    format(row[measureIndex])
-                );
-
-                valueAsNumber = null;
-              }
-
-              row[measureIndex] = valueAsNumber;
-            });
-
-          return queryResponse;
-        }
-      );
+      then(queryForOthersCategory).
+      then(processQueryResponse);
   }
 
   /**

@@ -67,60 +67,40 @@ describe('DataPane', function() {
       });
     });
 
-    describe('limit and other category', function() {
-      describe('when the current visualization type is "barChart"', function() {
+    describe('limit and other category', () => {
 
-        beforeEach(setUpVisualization('barChart'));
+      ['barChart', 'columnChart', 'pieChart'].forEach((chartType) => {
 
-        it('renders a limit none radio button', function() {
-          expect(component.querySelector('#limit-none')).to.exist;
+        describe(`when the current visualization type is "${chartType}"`, () => {
+
+          beforeEach(setUpVisualization(chartType));
+
+          it('renders a limit none radio button', function() {
+            expect(component.querySelector('#limit-none')).to.exist;
+          });
+
+          it('renders a limit count radio button', function() {
+            expect(component.querySelector('#limit-count')).to.exist;
+          });
+
+          it('renders a limit count number input field', function() {
+            expect(component.querySelector('#limit-count-value')).to.exist;
+          });
+
+          it('renders a show other category checkbox', function() {
+            expect(component.querySelector('#show-other-category')).to.exist;
+          });
+
+          emitsEvent('#limit-none', 'onSelectLimitNone');
+          emitsEvent('#limit-count', 'onSelectLimitCount');
+          emitsEvent('#limit-count-value', 'onChangeLimitCount');
+          emitsEvent('#show-other-category', 'onChangeShowOtherCategory');
+
         });
 
-        it('renders a limit count radio button', function() {
-          expect(component.querySelector('#limit-count')).to.exist;
-        });
-
-        it('renders a limit count number input field', function() {
-          expect(component.querySelector('#limit-count-value')).to.exist;
-        });
-
-        it('renders a show other category checkbox', function() {
-          expect(component.querySelector('#show-other-category')).to.exist;
-        });
-
-        emitsEvent('#limit-none', 'onSelectLimitNone');
-        emitsEvent('#limit-count', 'onSelectLimitCount');
-        emitsEvent('#limit-count-value', 'onChangeLimitCount');
-        emitsEvent('#show-other-category', 'onChangeShowOtherCategory');
       });
 
-      describe('when the current visualization type is "pieChart"', function() {
-
-        beforeEach(setUpVisualization('pieChart'));
-
-        it('renders a limit none radio button', function() {
-          expect(component.querySelector('#limit-none')).to.exist;
-        });
-
-        it('renders a limit count radio button', function() {
-          expect(component.querySelector('#limit-count')).to.exist;
-        });
-
-        it('renders a limit count number input field', function() {
-          expect(component.querySelector('#limit-count-value')).to.exist;
-        });
-
-        it('renders a show other category checkbox', function() {
-          expect(component.querySelector('#show-other-category')).to.exist;
-        });
-
-        emitsEvent('#limit-none', 'onSelectLimitNone');
-        emitsEvent('#limit-count', 'onSelectLimitCount');
-        emitsEvent('#limit-count-value', 'onChangeLimitCount');
-        emitsEvent('#show-other-category', 'onChangeShowOtherCategory');
-      });
-
-      describe('when the current visualization type is not "barChart or pieChart"', function() {
+      describe('when the current visualization type is not "barChart or pieChart or columnChart"', function() {
 
         beforeEach(setUpVisualization(''));
 

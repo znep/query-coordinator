@@ -264,21 +264,22 @@ describe SocrataSiteChrome::SiteChromeHelper do
   end
 
   describe '#username' do
-    it 'returns "Profile" if there is no request_current_user' do
-      allow(::RequestStore.store).to receive(:[]).and_return(nil)
-      allow(::RequestStore.store).to receive(:has_key?).with(:current_user).and_return(true)
+    after(:each) do
+      unstub_current_user
+    end
+
+    it 'returns "Profile" if there is no current_user' do
+      stub_current_user(nil)
       expect(helper.username).to eq('Profile')
     end
 
     it 'returns "Profile" if there is a request_current_user with no displayName' do
-      allow(::RequestStore.store).to receive(:[]).and_return('id' => 'fooo-baar')
-      allow(::RequestStore.store).to receive(:has_key?).with(:current_user).and_return(true)
+      stub_current_user('displayName' => nil)
       expect(helper.username).to eq('Profile')
     end
 
     it 'returns the request_current_user displayName if there is a request_current_user' do
-      allow(::RequestStore.store).to receive(:[]).and_return('displayName' => 'derek zoolander')
-      allow(::RequestStore.store).to receive(:has_key?).with(:current_user).and_return(true)
+      stub_current_user('displayName' => 'derek zoolander')
       expect(helper.username).to eq('derek zoolander')
     end
   end

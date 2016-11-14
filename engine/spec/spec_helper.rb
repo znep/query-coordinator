@@ -118,4 +118,12 @@ RSpec.configure do |config|
         SocrataSiteChrome::SiteChrome::LATEST_VERSION, 'published', 'content')
   end
 
+  def stub_current_user(user_hash)
+    @request.env['action_controller.instance'] = OpenStruct.new(:current_user => user_hash)
+  end
+
+  def unstub_current_user
+    @request.env['action_controller.instance'] = nil
+  end
+
 end

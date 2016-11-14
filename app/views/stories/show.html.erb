@@ -1,4 +1,4 @@
-<%= render 'site_chrome/header' %>
+<%== site_chrome_header(request, response) %>
 
 <div class="user-story-container">
 
@@ -49,6 +49,6 @@
   </div>
 
 </div>
-<%= render 'site_chrome/footer', size: 'small' %>
+<%== site_chrome_footer(request, response, size: 'small') %>
 
 <%= render(partial: 'stories/partials/presentation_mode') %>

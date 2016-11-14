@@ -54,6 +54,10 @@ module SiteChromeHelper
     site_chrome_controller_instance(request, response).header(args)
   end
 
+  def site_chrome_admin_header(request, response, args = {})
+    site_chrome_controller_instance(request, response).admin_header(args)
+  end
+
   def site_chrome_footer(request, response, args = {})
     site_chrome_controller_instance(request, response).footer(args)
   end

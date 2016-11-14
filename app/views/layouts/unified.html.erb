@@ -13,7 +13,11 @@
   </head>
 
   <body>
-    <%== site_chrome_header(request, response) %>
+    <% if params[:admin_header] %>
+      <%== site_chrome_admin_header(request, response) %>
+    <% else %>
+      <%== site_chrome_header(request, response) %>
+    <% end %>
 
     <%= yield %>
 

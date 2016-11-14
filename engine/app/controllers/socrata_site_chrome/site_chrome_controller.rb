@@ -7,6 +7,10 @@ module SocrataSiteChrome
       render('/header', :locals => args).join
     end
 
+    def admin_header(args = {})
+      render('/admin_header', :locals => args).join
+    end
+
     def footer(args = {})
       render('/footer', :locals => args).join
     end

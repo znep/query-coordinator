@@ -97,6 +97,9 @@ just inside the opening `<body>` section, then add
 `<%== site_chrome_footer(request, response) %>`
 just before the closing `</body>` tag.
 
+There is also an Admin header (currently used for Open Performance) which can be rendered with
+`<%== site_chrome_admin_header(request, response) %>`
+
 There are also "small" versions of the header and footer that you can choose to render. For example,
 on dataset/view pages, where the full header/footer takes up too much screen real estate. To do
 this, just use the argument `size: 'small'` when rendering the header or footer.
@@ -123,7 +126,6 @@ An example layout is shown below:
   </head>
 
   <body>
-    <%= render 'site_chrome/admin_header' %>
     <%== site_chrome_header(request, response) %>
     <%= yield %>
     <%== site_chrome_footer(request, response) %>

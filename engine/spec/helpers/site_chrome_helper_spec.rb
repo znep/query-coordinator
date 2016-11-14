@@ -159,14 +159,6 @@ describe SocrataSiteChrome::SiteChromeHelper do
     end
   end
 
-  describe '#request_current_user' do
-    it 'returns the contents of ::RequestStore.store[:current_user]' do
-      allow(::RequestStore.store).to receive(:has_key?).with(:current_user).and_return(true)
-      allow(::RequestStore.store).to receive(:[]).with(:current_user).and_return('id' => 'fooo-baar')
-      expect(helper.request_current_user).to eq('id' => 'fooo-baar')
-    end
-  end
-
   describe '#site_chrome_current_user' do
     it 'returns nil if request_current_user is nil' do
       allow(helper).to receive(:request_current_user).and_return(nil)

@@ -76,7 +76,7 @@ module SocrataSiteChrome
     end
 
     def request_current_user
-      ::RequestStore.store[:current_user] # TODO fix this to use the request?
+      request.env['action_controller.instance'].try(:current_user)
     end
 
     def site_chrome_current_user

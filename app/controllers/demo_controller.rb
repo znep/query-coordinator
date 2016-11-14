@@ -17,7 +17,13 @@ class DemoController < ApplicationController
   }
 
   def index
-    # Stub current_user
+    stub_current_user
+    render 'fake_content', :layout => 'unified'
+  end
+
+  private
+
+  def stub_current_user
     request.env['action_controller.instance'] = OpenStruct.new(:current_user =>
       case params[:logged_in]
         when 'true' then DEMO_USER
@@ -26,8 +32,6 @@ class DemoController < ApplicationController
         else nil
       end
     )
-
-    render 'fake_content', :layout => 'unified'
   end
 
 end

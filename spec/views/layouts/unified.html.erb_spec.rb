@@ -2,12 +2,6 @@ require 'rails_helper'
 
 describe 'layouts/unified' do
 
-  before(:all) do
-    Rails.application.config.socrata_site_chrome = SocrataSiteChrome::SiteChrome.new(
-      SocrataSiteChrome::DomainConfig.site_chrome_test_configuration
-    )
-  end
-
   it 'does not make a core request in test mode' do
     render
 

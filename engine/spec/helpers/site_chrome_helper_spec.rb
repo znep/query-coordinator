@@ -309,8 +309,8 @@ describe SocrataSiteChrome::SiteChromeHelper do
 
   describe '#show_powered_by?' do
     it 'defaults to true if powered_by does not exist' do
-      config = site_chrome_config.tap do |c|
-        c[:footer].delete(:powered_by)
+      config = site_chrome_config.tap do |config|
+        config[:footer].delete(:powered_by)
       end
       stub_site_chrome(config)
 
@@ -318,8 +318,8 @@ describe SocrataSiteChrome::SiteChromeHelper do
     end
 
     it 'can be set to true' do
-      config = site_chrome_config.tap do |c|
-        c[:footer][:powered_by] = 'true'
+      config = site_chrome_config.tap do |config|
+        config[:footer][:powered_by] = 'true'
       end
       stub_site_chrome(config)
 
@@ -327,8 +327,8 @@ describe SocrataSiteChrome::SiteChromeHelper do
     end
 
     it 'can be set to false' do
-      config = site_chrome_config.tap do |c|
-        c[:footer][:powered_by] = 'false'
+      config = site_chrome_config.tap do |config|
+        config[:footer][:powered_by] = 'false'
       end
       stub_site_chrome(config)
 
@@ -438,11 +438,11 @@ describe SocrataSiteChrome::SiteChromeHelper do
     end
 
     it 'creates a site-chrome-nav-menu for nested links' do
-      config = site_chrome_config.tap do |c|
-        c[:header][:links].push(
+      config = site_chrome_config.tap do |config|
+        config[:header][:links].push(
           :key => 'menu_0', :links => [{ :key => 'menu_0_link_0', :url => 'http://opendata.gov' }]
         )
-        c[:locales][:en][:header][:links][:menu_0_link_0] = 'blah'
+        config[:locales][:en][:header][:links][:menu_0_link_0] = 'blah'
       end
 
       stub_site_chrome(config)
@@ -455,8 +455,8 @@ describe SocrataSiteChrome::SiteChromeHelper do
     end
 
     it 'creates top level links' do
-      config = site_chrome_config.tap do |c|
-        c[:header][:links] = [
+      config = site_chrome_config.tap do |config|
+        config[:header][:links] = [
           { :key => 'link_0', :url => 'http://a.gov' },
           { :key => 'link_1', :url => 'http://b.gov' },
           { :key => 'link_2', :url => 'http://c.gov' }
@@ -470,11 +470,11 @@ describe SocrataSiteChrome::SiteChromeHelper do
     end
 
     it 'returns nav-menu-title instead of nested dropdown links if use_dropdown is false' do
-      config = site_chrome_config.tap do |c|
-        c[:header][:links].push(
+      config = site_chrome_config.tap do |config|
+        config[:header][:links].push(
           :key => 'menu_0', :links => [{ :key => 'menu_0_link_0', :url => 'http://opendata.gov' }]
         )
-        c[:locales][:en][:header][:links][:menu_0_link_0] = 'blah'
+        config[:locales][:en][:header][:links][:menu_0_link_0] = 'blah'
       end
 
       stub_site_chrome(config)

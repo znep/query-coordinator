@@ -15,6 +15,9 @@ module SocrataSiteChrome
     end
 
     initializer "socrata_site_chrome.add_middleware" do |app|
+      # NOTE: any middlewares in the hosting app that expect to be able to use SocrataSiteChrome must come
+      # after this middleware. Not entirely sure where in the middleware stack this will be loaded, worth
+      # investigating if we ever need to use Site Chrome in another middleware.
       app.middleware.use SocrataSiteChrome::Middleware
     end
   end

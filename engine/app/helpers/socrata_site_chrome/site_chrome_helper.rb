@@ -234,43 +234,6 @@ module SocrataSiteChrome
       link_text.present?
     end
 
-    def relative_url_with_locale(url)
-      I18n.locale.to_s == default_locale ? url : "/#{I18n.locale}#{url}"
-    end
-
-    # EN-9586: prepend "http://" onto links that do not start with it, and are not relative paths.
-    # EN-7151: prepend locales onto relative links, and turn URLs into relative links if applicable
-    def site_chrome_massage_url(url, add_locale: true)
-      return unless url.present?
-
-      url.strip!
-
-      # If relative path, prerepend current locale if necessary and return
-      if url.start_with?('/')
-        return add_locale ? relative_url_with_locale(url) : url
-      end
-
-      supported_scheme_matchers = Regexp.union(%r{^https?://}, %r{^mailto:})
-
-      # Prepend with 'http://' if they don't provide a scheme
-      url = "http://#{url}" unless url.match(supported_scheme_matchers)
-      uri = begin
-        URI.parse(url)
-      rescue
-        return url
-      end
-
-      # Turn full URL into a relative link if the url host matches the current domain host
-      if request.host.present? && uri.host == request.host
-        uri.scheme = nil
-        uri.host = nil
-        add_locale ? relative_url_with_locale(uri.to_s) : uri.to_s
-      else
-        # Outoing link
-        uri.to_s
-      end
-    end
-
     def locale_config
       if Rails.env.test?
         SocrataSiteChrome::LocaleConfig.default_configuration

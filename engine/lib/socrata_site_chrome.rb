@@ -8,6 +8,7 @@ module SocrataSiteChrome
   if defined?(Rails) # If the host application is not Rails (i.e. Sinatra) do something different.
     require 'socrata_site_chrome/engine'
 
+    # EN-11291: Exposes Site Chrome's view templates to the hosting application
     site_chrome_views_pathset = ActionView::PathSet.new(["#{SocrataSiteChrome::Engine.root}/app/views/socrata_site_chrome"])
     ActionController::Base.view_paths += site_chrome_views_pathset
 

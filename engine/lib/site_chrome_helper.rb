@@ -65,51 +65,14 @@ module SiteChromeHelper
   private
 
   def site_chrome_controller_instance(request, response)
-    SocrataSiteChrome::SiteChromeController.new.tap do |cont|
-      cont.request = request
-      cont.response = response
+    SocrataSiteChrome::SiteChromeController.new.tap do |controller|
+      controller.request = request
+      controller.response = response
     end
   end
-
-  # Copied from SocrataSiteChrome::SiteChromeHelper
 
   def get_site_chrome
     Rails.application.config.try(:socrata_site_chrome) || SocrataSiteChrome::SiteChrome.new
-  end
-
-  def site_chrome_massage_url(url, add_locale: true)
-    return unless url.present?
-
-    url.strip!
-
-    # If relative path, prerepend current locale if necessary and return
-    if url.start_with?('/')
-      return add_locale ? relative_url_with_locale(url) : url
-    end
-
-    supported_scheme_matchers = Regexp.union(%r{^https?://}, %r{^mailto:})
-
-    # Prepend with 'http://' if they don't provide a scheme
-    url = "http://#{url}" unless url.match(supported_scheme_matchers)
-    uri = begin
-      URI.parse(url)
-    rescue
-      return url
-    end
-
-    # Turn full URL into a relative link if the url host matches the current domain host
-    if request.host.present? && uri.host == request.host
-      uri.scheme = nil
-      uri.host = nil
-      add_locale ? relative_url_with_locale(uri.to_s) : uri.to_s
-    else
-      # Outoing link
-      uri.to_s
-    end
-  end
-
-  def relative_url_with_locale(url)
-    I18n.locale.to_s == default_locale ? url : "/#{I18n.locale}#{url}"
   end
 
 end

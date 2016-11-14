@@ -53,6 +53,8 @@ Rails.application.routes.draw do
       # for this goal.
       get '/stat/goals/single/:goal_id/view', :action => 'classic_single_goal'
       get '/stat/goals/:dashboard_id/:category_id/:goal_id/view', :action => 'classic_goal'
+      get '/stat/goals/:dashboard_id/:category_id/:goal_id/edit-classic', :action => 'classic_goal_edit'
+      get '/stat/goals/single/:goal_id/edit-classic', :action => 'classic_single_goal_edit'
 
       scope :action => 'index' do
         get '/stat', :as => 'govstat_root'

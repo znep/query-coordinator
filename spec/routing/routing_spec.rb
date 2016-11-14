@@ -107,13 +107,13 @@ RSpec.describe 'routes for Data Lens' do
 
   describe 'OpenPerformance goal routes' do
     describe 'goal embed' do
-      it('routes /stat/goals/dash-dash/cate-cate/goal-goal/embed to odysseus#chromeless') do
-        expect(get: '/stat/goals/dash-dash/cate-cate/goal-goal/embed').to route_to(
+      it('routes /stat/goals/dash-dash/cate-gory/goal-goal/embed to odysseus#chromeless') do
+        expect(get: '/stat/goals/dash-dash/cate-gory/goal-goal/embed').to route_to(
           controller: 'odysseus',
           action: 'chromeless',
           goal_id: 'goal-goal',
           dashboard_id: 'dash-dash',
-          category_id: 'cate-cate'
+          category_id: 'cate-gory'
         )
       end
     end
@@ -139,13 +139,13 @@ RSpec.describe 'routes for Data Lens' do
     end
 
     describe 'soon-to-be-deprecated' do
-      it('routes /stat/goals/dash-dash/cate-cate/goal-goal to odysseus#index') do
-        expect(get: '/stat/goals/dash-dash/cate-cate/goal-goal').to route_to(
+      it('routes /stat/goals/dash-dash/cate-gory/goal-goal to odysseus#index') do
+        expect(get: '/stat/goals/dash-dash/cate-gory/goal-goal').to route_to(
           controller: 'odysseus',
           action: 'index',
           goal_id: 'goal-goal',
           dashboard_id: 'dash-dash',
-          category_id: 'cate-cate'
+          category_id: 'cate-gory'
         )
       end
 
@@ -159,13 +159,13 @@ RSpec.describe 'routes for Data Lens' do
     end
 
     describe 'classic goal view' do
-      it('routes /stat/goals/dash-dash/cate-cate/goal-goal/view to odysseus#classic_goal') do
-        expect(get: '/stat/goals/dash-dash/cate-cate/goal-goal/view').to route_to(
+      it('routes /stat/goals/dash-dash/cate-gory/goal-goal/view to odysseus#classic_goal') do
+        expect(get: '/stat/goals/dash-dash/cate-gory/goal-goal/view').to route_to(
           controller: 'odysseus',
           action: 'classic_goal',
           goal_id: 'goal-goal',
           dashboard_id: 'dash-dash',
-          category_id: 'cate-cate'
+          category_id: 'cate-gory'
         )
       end
 
@@ -173,6 +173,26 @@ RSpec.describe 'routes for Data Lens' do
         expect(get: '/stat/goals/single/four-four/view').to route_to(
           controller: 'odysseus',
           action: 'classic_single_goal',
+          goal_id: 'four-four'
+        )
+      end
+    end
+
+    describe 'classic goal edit' do
+      it('routes /stat/goals/dash-dash/cate-gory/goal-goal/edit-classic to odysseus#classic_goal_edit') do
+        expect(get: '/stat/goals/dash-dash/cate-gory/goal-goal/edit-classic').to route_to(
+          controller: 'odysseus',
+          action: 'classic_goal_edit',
+          goal_id: 'goal-goal',
+          dashboard_id: 'dash-dash',
+          category_id: 'cate-gory'
+        )
+      end
+
+      it('routes /stat/goals/single/four-four/edit-classic to odysseus#classic_single_goal_edit') do
+        expect(get: '/stat/goals/single/four-four/edit-classic').to route_to(
+          controller: 'odysseus',
+          action: 'classic_single_goal_edit',
           goal_id: 'four-four'
         )
       end

@@ -26,6 +26,23 @@ class OdysseusController < ApplicationController
     end
   end
 
+  def classic_goal_edit
+    if using_storyteller_editor?
+      redirect_to(govstat_goal_edit_path)
+    else
+      render_odysseus_path(request.path)
+    end
+
+  end
+
+  def classic_single_goal_edit
+    if using_storyteller_editor?
+      redirect_to(govstat_single_goal_edit_path)
+    else
+      render_odysseus_path(request.path)
+    end
+  end
+
   def chromeless
     @suppress_chrome = true
     @suppress_govstat = true # remove background and other unnecessary styles
@@ -39,6 +56,10 @@ class OdysseusController < ApplicationController
   end
 
   private
+
+  def using_storyteller_editor?
+    FeatureFlags.derive().open_performance_narrative_editor == 'storyteller'
+  end
 
   def goal_has_published_narrative?(goal_uid)
     raise 'Unconfigured storyteller_uri' if APP_CONFIG.storyteller_uri.nil?

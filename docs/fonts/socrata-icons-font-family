@@ -1,10 +1,10 @@
 @font-face {
   font-family: "socrata-icons";
-  src: url(socrata-icons-path("socrata-icons.1478802009.eot"));
-  src: url(socrata-icons-path("socrata-icons.1478802009.eot?#iefix")) format("eot"), url(socrata-icons-path("socrata-icons.1478802009.woff2")) format("woff2"), url(socrata-icons-path("socrata-icons.1478802009.woff")) format("woff"), url(socrata-icons-path("socrata-icons.1478802009.ttf")) format("truetype"), url(socrata-icons-path("socrata-icons.1478802009.svg#socrata-icons")) format("svg");
+  src: url(socrata-icons-path("socrata-icons.1479144228.eot"));
+  src: url(socrata-icons-path("socrata-icons.1479144228.eot?#iefix")) format("eot"), url(socrata-icons-path("socrata-icons.1479144228.woff2")) format("woff2"), url(socrata-icons-path("socrata-icons.1479144228.woff")) format("woff"), url(socrata-icons-path("socrata-icons.1479144228.ttf")) format("truetype"), url(socrata-icons-path("socrata-icons.1479144228.svg#socrata-icons")) format("svg");
   font-weight: normal;
   font-style: normal; }
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
   @font-face {
     font-family: "socrata-icons";
-    src: url(socrata-icons-path("socrata-icons.1478802009.svg#socrata-icons")) format("svg"); } }
+    src: url(socrata-icons-path("socrata-icons.1479144228.svg#socrata-icons")) format("svg"); } }

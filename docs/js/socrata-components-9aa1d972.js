@@ -1150,12 +1150,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  renderColorBuckets: function renderColorBuckets() {
 	    var _this = this;
 	
-	    var _props = this.props;
-	    var palette = _props.palette;
-	    var bucketRevealDirection = _props.bucketRevealDirection;
-	    var _state = this.state;
-	    var selectedColor = _state.selectedColor;
-	    var showingBuckets = _state.showingBuckets;
+	    var _props = this.props,
+	        palette = _props.palette,
+	        bucketRevealDirection = _props.bucketRevealDirection;
+	    var _state = this.state,
+	        selectedColor = _state.selectedColor,
+	        showingBuckets = _state.showingBuckets;
 	
 	    var colorBuckets = _lodash2.default.map(palette, this.renderColorBucket);
 	    var bucketContainerClassName = (0, _classnames2.default)('color-buckets-container', {
@@ -1611,8 +1611,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.setState({ selectedOption: selectedOption });
 	  },
 	  getSelectedOption: function getSelectedOption(props) {
-	    var value = props.value;
-	    var options = props.options;
+	    var value = props.value,
+	        options = props.options;
 	
 	    return _lodash2.default.find(options, { value: value }) || null;
 	  },
@@ -1771,14 +1771,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  render: function render() {
 	    var _this3 = this;
 	
-	    var _props = this.props;
-	    var disabled = _props.disabled;
-	    var options = _props.options;
-	    var id = _props.id;
-	    var _state = this.state;
-	    var focused = _state.focused;
-	    var opened = _state.opened;
-	    var selectedOption = _state.selectedOption;
+	    var _props = this.props,
+	        disabled = _props.disabled,
+	        options = _props.options,
+	        id = _props.id;
+	    var _state = this.state,
+	        focused = _state.focused,
+	        opened = _state.opened,
+	        selectedOption = _state.selectedOption;
 	
 	    var value = _lodash2.default.get(selectedOption, 'value', null);
 	
@@ -1992,8 +1992,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.setState({ selectedIndex: selectedIndex });
 	  },
 	  setSelectedOptionBasedOnValue: function setSelectedOptionBasedOnValue(props) {
-	    var options = props.options;
-	    var value = props.value;
+	    var options = props.options,
+	        value = props.value;
 	
 	    var selectedOptionIndex = _lodash2.default.findIndex(options, { value: value });
 	
@@ -2023,9 +2023,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var newIndex = void 0;
 	    var newSelectedOption = void 0;
 	
-	    var _state = this.state;
-	    var selectedOption = _state.selectedOption;
-	    var selectedIndex = _state.selectedIndex;
+	    var _state = this.state,
+	        selectedOption = _state.selectedOption,
+	        selectedIndex = _state.selectedIndex;
 	    var options = this.props.options;
 	
 	
@@ -2086,14 +2086,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _this = this;
 	
 	    var renderedOptions = [];
-	    var _props = this.props;
-	    var disabled = _props.disabled;
-	    var options = _props.options;
-	    var id = _props.id;
-	    var _state2 = this.state;
-	    var focused = _state2.focused;
-	    var selectedOption = _state2.selectedOption;
-	    var selectedIndex = _state2.selectedIndex;
+	    var _props = this.props,
+	        disabled = _props.disabled,
+	        options = _props.options,
+	        id = _props.id;
+	    var _state2 = this.state,
+	        focused = _state2.focused,
+	        selectedOption = _state2.selectedOption,
+	        selectedIndex = _state2.selectedIndex;
 	
 	    var activeDescendant = selectedOption ? selectedOption.value + '-' + selectedIndex : '';
 	    var attributes = {
@@ -2320,17 +2320,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  render: function render() {
 	    var _this = this;
 	
-	    var _props = this.props;
-	    var description = _props.description;
-	    var icon = _props.icon;
-	    var imageUrl = _props.imageUrl;
-	    var isPrivate = _props.isPrivate;
-	    var linkProps = _props.linkProps;
-	    var metadataLeft = _props.metadataLeft;
-	    var metadataRight = _props.metadataRight;
-	    var name = _props.name;
-	    var onClick = _props.onClick;
-	    var url = _props.url;
+	    var _props = this.props,
+	        description = _props.description,
+	        icon = _props.icon,
+	        imageUrl = _props.imageUrl,
+	        isPrivate = _props.isPrivate,
+	        linkProps = _props.linkProps,
+	        metadataLeft = _props.metadataLeft,
+	        metadataRight = _props.metadataRight,
+	        name = _props.name,
+	        onClick = _props.onClick,
+	        url = _props.url;
 	
 	
 	    var privateIcon = isPrivate ? _react2.default.createElement('span', { className: 'icon icon-private' }) : null;
@@ -2611,9 +2611,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  },
 	  onFilterAdd: function onFilterAdd(filter) {
-	    var _props = this.props;
-	    var filters = _props.filters;
-	    var onUpdate = _props.onUpdate;
+	    var _props = this.props,
+	        filters = _props.filters,
+	        onUpdate = _props.onUpdate;
 	
 	
 	    filters.unshift(filter);
@@ -2621,9 +2621,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onUpdate(filters);
 	  },
 	  onFilterRemove: function onFilterRemove(index) {
-	    var _props2 = this.props;
-	    var filters = _props2.filters;
-	    var onUpdate = _props2.onUpdate;
+	    var _props2 = this.props,
+	        filters = _props2.filters,
+	        onUpdate = _props2.onUpdate;
 	
 	
 	    filters.splice(index, 1);
@@ -2631,9 +2631,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onUpdate(filters);
 	  },
 	  onFilterUpdate: function onFilterUpdate(filter, index) {
-	    var _props3 = this.props;
-	    var filters = _props3.filters;
-	    var onUpdate = _props3.onUpdate;
+	    var _props3 = this.props,
+	        filters = _props3.filters,
+	        onUpdate = _props3.onUpdate;
 	
 	
 	    filters.splice(index, 1, filter);
@@ -2643,9 +2643,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  renderAddFilter: function renderAddFilter() {
 	    var _this = this;
 	
-	    var _props4 = this.props;
-	    var columns = _props4.columns;
-	    var filters = _props4.filters;
+	    var _props4 = this.props,
+	        columns = _props4.columns,
+	        filters = _props4.filters;
 	
 	
 	    var availableColumns = _lodash2.default.reject(columns, function (column) {
@@ -2665,10 +2665,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  renderFilters: function renderFilters() {
 	    var _this2 = this;
 	
-	    var _props5 = this.props;
-	    var filters = _props5.filters;
-	    var columns = _props5.columns;
-	    var fetchSuggestions = _props5.fetchSuggestions;
+	    var _props5 = this.props,
+	        filters = _props5.filters,
+	        columns = _props5.columns,
+	        fetchSuggestions = _props5.fetchSuggestions;
 	
 	
 	    return _lodash2.default.map(filters, function (filter, i) {
@@ -2784,9 +2784,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _this2 = this;
 	
 	    var columns = this.props.columns;
-	    var _state = this.state;
-	    var isChoosingColumn = _state.isChoosingColumn;
-	    var searchTerm = _state.searchTerm;
+	    var _state = this.state,
+	        isChoosingColumn = _state.isChoosingColumn,
+	        searchTerm = _state.searchTerm;
 	
 	
 	    if (!isChoosingColumn) {
@@ -2908,11 +2908,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.props.onChangeSearchTerm(event.target.value);
 	  },
 	  renderPicklist: function renderPicklist() {
-	    var _props = this.props;
-	    var isLoading = _props.isLoading;
-	    var options = _props.options;
-	    var value = _props.value;
-	    var onSelection = _props.onSelection;
+	    var _props = this.props,
+	        isLoading = _props.isLoading,
+	        options = _props.options,
+	        value = _props.value,
+	        onSelection = _props.onSelection;
 	
 	    var hasNoOptions = _lodash2.default.isEmpty(options);
 	    var visibleOptions = options;
@@ -3150,10 +3150,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	  },
 	  renderFilterControl: function renderFilterControl() {
-	    var _props = this.props;
-	    var filter = _props.filter;
-	    var column = _props.column;
-	    var fetchSuggestions = _props.fetchSuggestions;
+	    var _props = this.props,
+	        filter = _props.filter,
+	        column = _props.column,
+	        fetchSuggestions = _props.fetchSuggestions;
 	    var isControlOpen = this.state.isControlOpen;
 	
 	
@@ -3199,9 +3199,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  render: function render() {
 	    var _this2 = this;
 	
-	    var _props2 = this.props;
-	    var filter = _props2.filter;
-	    var column = _props2.column;
+	    var _props2 = this.props,
+	        filter = _props2.filter,
+	        column = _props2.column;
 	
 	
 	    return _react2.default.createElement(
@@ -3324,17 +3324,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.updateValueState(newValue);
 	  },
 	  getStepInterval: function getStepInterval() {
-	    var _props$column = this.props.column;
-	    var rangeMin = _props$column.rangeMin;
-	    var rangeMax = _props$column.rangeMax;
+	    var _props$column = this.props.column,
+	        rangeMin = _props$column.rangeMin,
+	        rangeMax = _props$column.rangeMax;
 	
 	
 	    return (rangeMax - rangeMin) / 20;
 	  },
 	  isValidValue: function isValidValue(value) {
-	    var _props$column2 = this.props.column;
-	    var rangeMin = _props$column2.rangeMin;
-	    var rangeMax = _props$column2.rangeMax;
+	    var _props$column2 = this.props.column,
+	        rangeMin = _props$column2.rangeMin,
+	        rangeMax = _props$column2.rangeMax;
 	
 	
 	    return _lodash2.default.isFinite(value) && value >= rangeMin && value <= rangeMax;
@@ -3364,8 +3364,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  clearFilter: function clearFilter() {
 	    var column = this.props.column;
-	    var rangeMin = column.rangeMin;
-	    var rangeMax = column.rangeMax;
+	    var rangeMin = column.rangeMin,
+	        rangeMax = column.rangeMax;
 	
 	
 	    this.updateValueState({
@@ -3374,9 +3374,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	  },
 	  updateFilter: function updateFilter() {
-	    var _props = this.props;
-	    var filter = _props.filter;
-	    var onUpdate = _props.onUpdate;
+	    var _props = this.props,
+	        filter = _props.filter,
+	        onUpdate = _props.onUpdate;
 	    var value = this.state.value;
 	
 	
@@ -3425,8 +3425,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  renderSlider: function renderSlider() {
 	    var column = this.props.column;
-	    var rangeMin = column.rangeMin;
-	    var rangeMax = column.rangeMax;
+	    var rangeMin = column.rangeMin,
+	        rangeMax = column.rangeMax;
 	    var value = this.state.value;
 	
 	
@@ -3557,11 +3557,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  render: function render() {
 	    var displayableValue = void 0;
-	    var _props = this.props;
-	    var rangeMin = _props.rangeMin;
-	    var rangeMax = _props.rangeMax;
-	    var step = _props.step;
-	    var value = _props.value;
+	    var _props = this.props,
+	        rangeMin = _props.rangeMin,
+	        rangeMax = _props.rangeMax,
+	        step = _props.step,
+	        value = _props.value;
 	
 	
 	    if (_lodash2.default.isPlainObject(value)) {
@@ -5461,10 +5461,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function FilterFooter(props) {
-	  var disableApplyFilter = props.disableApplyFilter;
-	  var onClickApply = props.onClickApply;
-	  var onClickCancel = props.onClickCancel;
-	  var onClickClear = props.onClickClear;
+	  var disableApplyFilter = props.disableApplyFilter,
+	      onClickApply = props.onClickApply,
+	      onClickCancel = props.onClickCancel,
+	      onClickClear = props.onClickClear;
 	
 	
 	  return _react2.default.createElement(
@@ -5553,9 +5553,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  componentDidMount: function componentDidMount() {
 	    var _this = this;
 	
-	    var _props = this.props;
-	    var fetchSuggestions = _props.fetchSuggestions;
-	    var column = _props.column;
+	    var _props = this.props,
+	        fetchSuggestions = _props.fetchSuggestions,
+	        column = _props.column;
 	
 	
 	    this.isMounted = true;
@@ -5575,9 +5575,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  onChangeSearchTerm: function onChangeSearchTerm(searchTerm) {
 	    var _this2 = this;
 	
-	    var _props2 = this.props;
-	    var fetchSuggestions = _props2.fetchSuggestions;
-	    var column = _props2.column;
+	    var _props2 = this.props,
+	        fetchSuggestions = _props2.fetchSuggestions,
+	        column = _props2.column;
 	
 	
 	    this.setState({
@@ -5605,9 +5605,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	  },
 	  updateFilter: function updateFilter() {
-	    var _props3 = this.props;
-	    var filter = _props3.filter;
-	    var onUpdate = _props3.onUpdate;
+	    var _props3 = this.props,
+	        filter = _props3.filter,
+	        onUpdate = _props3.onUpdate;
 	    var value = this.state.value;
 	
 	
@@ -5622,13 +5622,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onUpdate(newFilter);
 	  },
 	  render: function render() {
-	    var _props4 = this.props;
-	    var filter = _props4.filter;
-	    var onCancel = _props4.onCancel;
-	    var _state = this.state;
-	    var isLoading = _state.isLoading;
-	    var value = _state.value;
-	    var suggestions = _state.suggestions;
+	    var _props4 = this.props,
+	        filter = _props4.filter,
+	        onCancel = _props4.onCancel;
+	    var _state = this.state,
+	        isLoading = _state.isLoading,
+	        value = _state.value,
+	        suggestions = _state.suggestions;
 	
 	
 	    var picklistProps = {
@@ -5923,9 +5923,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	
-	    var _props = this.props;
-	    var descriptionLines = _props.descriptionLines;
-	    var onExpandDescription = _props.onExpandDescription;
+	    var _props = this.props,
+	        descriptionLines = _props.descriptionLines,
+	        onExpandDescription = _props.onExpandDescription;
 	
 	    var descriptionLineHeight = 24;
 	    var descriptionPadding = 11;
@@ -6029,12 +6029,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 	  },
 	  render: function render() {
-	    var _props2 = this.props;
-	    var category = _props2.category;
-	    var isOfficial = _props2.isOfficial;
-	    var isPrivate = _props2.isPrivate;
-	    var name = _props2.name;
-	    var renderButtons = _props2.renderButtons;
+	    var _props2 = this.props,
+	        category = _props2.category,
+	        isOfficial = _props2.isOfficial,
+	        isPrivate = _props2.isPrivate,
+	        name = _props2.name,
+	        renderButtons = _props2.renderButtons;
 	
 	
 	    var privateIcon = isPrivate ? _react2.default.createElement('span', {
@@ -6301,11 +6301,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  render: function render() {
 	    var _this = this;
 	
-	    var _props = this.props;
-	    var children = _props.children;
-	    var className = _props.className;
-	    var fullScreen = _props.fullScreen;
-	    var overlay = _props.overlay;
+	    var _props = this.props,
+	        children = _props.children,
+	        className = _props.className,
+	        fullScreen = _props.fullScreen,
+	        overlay = _props.overlay;
 	    var forceFullScreen = this.state.forceFullScreen;
 	
 	
@@ -6362,10 +6362,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	
 	var Header = exports.Header = function Header(props) {
-	  var children = props.children;
-	  var className = props.className;
-	  var title = props.title;
-	  var onDismiss = props.onDismiss;
+	  var children = props.children,
+	      className = props.className,
+	      title = props.title,
+	      onDismiss = props.onDismiss;
 	
 	
 	  var headerClasses = (0, _classnames2.default)(_defineProperty({
@@ -6426,8 +6426,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	
 	var Content = exports.Content = function Content(props) {
-	  var children = props.children;
-	  var className = props.className;
+	  var children = props.children,
+	      className = props.className;
 	
 	
 	  var contentClasses = (0, _classnames2.default)(_defineProperty({
@@ -6472,8 +6472,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	
 	var Footer = exports.Footer = function Footer(props) {
-	  var children = props.children;
-	  var className = props.className;
+	  var children = props.children,
+	      className = props.className;
 	
 	
 	  var footerClasses = (0, _classnames2.default)(_defineProperty({
@@ -6502,4 +6502,4 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ ])
 });
 ;
-//# sourceMappingURL=socrata-components.js-02227453.map
+//# sourceMappingURL=socrata-components.js-75443add.map

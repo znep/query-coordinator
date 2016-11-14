@@ -146,21 +146,20 @@ module DatasetLandingPageHelper
     query = @view.metadata && @view.metadata.json_query
     order = query.try(:[], 'order').try(:first)
 
-
     # If query exists and the columnFieldName is part of existing columns
     # then use the custom query
-    if order
+    if query
       order_column = order['columnName'] || order['columnFieldName']
       if @view.columns.map(&:fieldName).find { |c| c == order_column }
         order['columnName'] = order_column
         [order]
-      end
-    else
+      else
       # Default to sorting by the first column
-      [{
-        :ascending => true,
-        :columnName => @view.columns.try(:first).try(:fieldName)
-      }]
+        [{
+          :ascending => true,
+          :columnName => @view.columns.try(:first).try(:fieldName)
+        }]
+      end
     end
   end
 

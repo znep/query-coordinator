@@ -8,7 +8,13 @@
       # each stylesheet. Accordingly, we need to use strip_byte_order_mark! to
       # search and destroy BOMs throughout the file (remember, there might be
       # many since we're concatenating a bunch of files together). Yuck!
-      css = Sass::Engine.new(render(custom_theme), sass_engine_options).render
+      scss = render(
+        # Must manually specify the partial; we're not guaranteed to be
+        # relative to /views if called from i.e. GoalsController.
+        :partial => '/themes/theme',
+        :locals => { :theme => custom_theme }
+      )
+      css = Sass::Engine.new(scss, sass_engine_options).render
       strip_byte_order_marks!(css)
       raw(css)
     %>

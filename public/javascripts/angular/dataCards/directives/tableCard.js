@@ -408,8 +408,11 @@ module.exports = function tableCard(
                     //
                     // In other words, only display a link if there is a URL to which
                     // the link should point.
+                    //
+                    // EN-12001 - Address incorrect nesting of _.escape and string
+                    // interpolation.
                     if (_.isString(cellContent) && !_.isEmpty(cellContent)) {
-                      cellText = `<a href="${cellContent}" target="_blank">_.escape(${additionalCellContent})</a>`;
+                      cellText = `<a href="${cellContent}" target="_blank">${_.escape(additionalCellContent)}</a>`;
                     } else {
                       cellText = _.escape(additionalCellContent);
                     }

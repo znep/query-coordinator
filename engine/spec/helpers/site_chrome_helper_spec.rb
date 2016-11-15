@@ -115,7 +115,7 @@ describe SocrataSiteChrome::SiteChromeHelper do
         }
       }
       result = helper.logo(source)
-      expect(result).to eq('<img alt="Goats" onerror="this.style.display=&quot;none&quot;" src="http://myimage.png" />')
+      expect(result).to eq('<img src="http://myimage.png" alt="Goats" onerror="this.style.display=&quot;none&quot;" />')
     end
 
     it 'falls back to the provided display name if there is no source logo alt' do
@@ -125,7 +125,7 @@ describe SocrataSiteChrome::SiteChromeHelper do
         }
       }
       result = helper.logo(source, 'Goldfinger')
-      expect(result).to eq('<img alt="Goldfinger" onerror="this.style.display=&quot;none&quot;" src="http://myimage.png" />')
+      expect(result).to eq('<img src="http://myimage.png" alt="Goldfinger" onerror="this.style.display=&quot;none&quot;" />')
     end
 
     it 'falls back to current_domain if there is no source logo alt or display name provided' do
@@ -137,7 +137,7 @@ describe SocrataSiteChrome::SiteChromeHelper do
         }
       }
       result = helper.logo(source)
-      expect(result).to eq('<img alt="data.seattle.gov" onerror="this.style.display=&quot;none&quot;" src="http://myimage.png" />')
+      expect(result).to eq('<img src="http://myimage.png" alt="data.seattle.gov" onerror="this.style.display=&quot;none&quot;" />')
     end
   end
 
@@ -155,7 +155,7 @@ describe SocrataSiteChrome::SiteChromeHelper do
     it 'returns both the site title and the header image' do
       stub_current_domain_with('data.seattle.gov')
       result = helper.header_logo
-      expect(result).to eq('<a class="logo" href="/"><img alt="data.seattle.gov" onerror="this.style.display=&quot;none&quot;" src="http://i.imgur.com/E8wtc6d.png" /><span class="site-name"></span></a>')
+      expect(result).to eq('<a class="logo" href="/"><img src="http://i.imgur.com/E8wtc6d.png" alt="data.seattle.gov" onerror="this.style.display=&quot;none&quot;" /><span class="site-name"></span></a>')
     end
   end
 

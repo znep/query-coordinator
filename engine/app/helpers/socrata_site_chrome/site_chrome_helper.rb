@@ -47,8 +47,8 @@ module SocrataSiteChrome
     def logo(img, display_name = nil)
       img_src = img.dig('logo', 'src')
       if img_src.present?
-        image_tag(
-          site_chrome_massage_url(img_src, add_locale: false),
+        tag('img',
+          :src => site_chrome_massage_url(img_src, add_locale: false),
           :alt => img.dig('logo', 'alt').presence || display_name.presence ||
             request.host,
           :onerror => 'this.style.display="none"')

@@ -8,4 +8,5 @@ npm-debug.log
 engine/spec/dummy/log/*.log
 node_modules/
 engine/node_modules/
+engine/socrata_site_chrome-*.gem
 .bundle

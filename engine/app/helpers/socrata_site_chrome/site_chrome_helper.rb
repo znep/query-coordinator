@@ -334,7 +334,7 @@ module SocrataSiteChrome
     end
 
     def using_custom_header_footer?
-      site_chrome_custom_content.activated?
+      Rails.env.test? ? false : site_chrome_custom_content.activated?
     end
 
     def custom_header_footer_content

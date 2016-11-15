@@ -24,6 +24,7 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
 
   helper_method :current_user
+  helper_method :current_user_json
   helper_method :current_user_session
   helper_method :current_domain
 

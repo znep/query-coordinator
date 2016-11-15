@@ -27,6 +27,10 @@ module UserAuthMethods
     @current_user
   end
 
+  def current_user_json
+    current_user.try(:data)
+  end
+
   def basic_auth
     authenticate_with_http_basic do |username, password|
       user_session = UserSession.new('login' => username, 'password' => password)

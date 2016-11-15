@@ -3110,7 +3110,7 @@ en:
       finish:
         headline: Your Dataset has been created.
         subheadline: Click on Finish to see it!
-        done_subheadline: Click on Done to seet it!
+        done_subheadline: Click on Done to see it!
       first_page:
         blobby: Upload a Non-Data File
         blobby_explain: Choose this if you have a file that has data in it but which cannot be imported, such as a PDF, or an image file. It will be imported into the data catalog, but will not be as interactive as real data.

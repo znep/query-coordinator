@@ -269,7 +269,7 @@ describe SocrataSiteChrome::SiteChromeHelper do
     end
 
     it 'returns "Profile" if there is no current_user' do
-      stub_current_user(nil)
+      stub_current_user
       expect(helper.username).to eq('Profile')
     end
 

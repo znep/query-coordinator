@@ -101,4 +101,9 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+
+  def stub_current_user(user_hash = nil)
+    @request.env['action_controller.instance'] = OpenStruct.new(:current_user_json => user_hash)
+  end
+
 end

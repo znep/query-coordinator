@@ -984,6 +984,13 @@ class View < Model
     end
   end
 
+  def html_description
+    if description
+      new_lines_preserved = description.gsub(/\r?\n/, '<br />')
+      Rinku.auto_link(new_lines_preserved, :all, 'target="_blank" rel="nofollow external"')
+    end
+  end
+
   def is_blist?
     flag?('default') && is_tabular? && !is_arcgis? # allow modifying view_format for arcgis
   end
@@ -1982,6 +1989,33 @@ class View < Model
     visualization[:format] = 'classic'
 
     visualization
+  end
+
+  def new_data_lens_visualization
+    View.setup_model({
+      :name => I18n.t('data_lens.info_pane.bootstrap_title', name: name),
+      :description => html_description,
+      :category => category,
+      :columns => columns.map(&:data),
+      :displayType => 'data_lens',
+      :originalViewId => id
+    }.with_indifferent_access)
+  end
+
+  def as_data_lens_visualization_parent
+    {
+      :name => name,
+      :url => Rails.application.routes.url_helpers.view_path(self)
+    }
+  end
+
+  def as_data_lens_visualization
+    {
+      :name => name,
+      :description => html_description,
+      :category => category,
+      :columns => columns
+    }
   end
 
 

@@ -1288,6 +1288,12 @@ en:
       public: public
   data_lens:
     render_error: There was a problem rendering this page.
+    info_pane:
+      based_on: Based on <em>%{name}</em>
+      bootstrap_title: Untitled Visualization - Based on %{name}
+      unsaved: Unsaved
+      updated: Updated
+      view_count: View Count
   dataset_landing_page:
     action_buttons:
       api: API

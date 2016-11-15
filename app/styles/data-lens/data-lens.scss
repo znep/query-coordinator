@@ -6,9 +6,26 @@ body {
   background: $light-grey-6;
 }
 
-#app {
-  // TODO: remove this once we have content
-  min-height: 90vh;
+.container {
+  margin: 0 auto;
+}
+
+.data-lens {
+  min-height: 90vh; // TODO: remove this once we have content
+
+  .main-spinner {
+    display: flex;
+    height: 400px;
+
+    .spinner-large {
+      margin: auto;
+    }
+  }
+
+  .info-pane {
+    padding-top: 15px;
+    margin-bottom: 0;
+  }
 }
 
 footer#site-chrome-footer {

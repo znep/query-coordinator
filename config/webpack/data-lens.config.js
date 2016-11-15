@@ -14,7 +14,10 @@ module.exports = _.defaultsDeep({
     loaders: [
       {
         test: /\.jsx?$/,
-        include: path.resolve(common.root, 'public/javascripts'),
+        include: [
+          path.resolve(common.root, 'public/javascripts'),
+          path.resolve(common.root, 'node_modules/socrata-components/common')
+        ],
         loader: 'babel'
       }
     ]

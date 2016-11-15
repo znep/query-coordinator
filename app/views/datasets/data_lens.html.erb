@@ -1,10 +1,7 @@
 <% content_for :head do %>
   <title><%= @view.name %> | <%= get_site_title %></title>
-  <link rel="canonical" href="<%= view_path(@view) %>" />
 
   <%= rendered_stylesheet_tag 'data-lens' %>
-
-  <link rel="canonical" href="<%= view_path(@view) %>" />
 <% end %>
 
 <div id="app" class="data-lens">
@@ -14,6 +11,13 @@
 </div>
 
 <% content_for :scripts do %>
+  <script id="data-lens-initial-state">
+    var initialState = {
+      parentView: <%= raw @parent_view.as_data_lens_visualization_parent.to_json %>,
+      view: <%= raw @view.as_data_lens_visualization.to_json %>
+    };
+  </script>
+
   <%= render_data_lens_translations %>
   <%= render_data_lens_server_config %>
 

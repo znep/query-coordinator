@@ -2,6 +2,7 @@ class DatasetsController < ApplicationController
 
   include ApplicationHelper
   include DatasetsHelper
+  include DataLensHelper
   include CommonMetadataMethods
 
   prepend_before_filter :check_chrome, :only => [:show, :alt]
@@ -772,6 +773,16 @@ class DatasetsController < ApplicationController
     @suppress_content_wrapper = true
     @page_custom_header = 'header'
     @page_custom_footer = 'footer'
+  end
+
+  def visualization
+    @parent_view = get_view(params[:id])
+
+    return if @parent_view.nil?
+
+    @view = @parent_view.new_data_lens_visualization
+
+    render 'data_lens', :layout => 'styleguide'
   end
 
   # Make sure that the url provided actually returns a layer of some kind.

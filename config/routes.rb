@@ -376,6 +376,7 @@ Rails.application.routes.draw do
       get '/form_error', :action => 'form_error', :as => :view_form_error
       get '/about', :action => 'about', :as => :about_view
       get '/updates/:update_id', :action => 'updates'
+      get '/visualization', :action => 'visualization', :as => :view_visualization
       match '/alt', :action => 'alt', :via => [:get, :post], :as => :alt_view
       match '/flags', :action => 'flag_check', :via => [:get, :post], :as => :flag_check
       match '/edit_metadata', :action => 'edit_metadata', :via => [:get, :post], :as => :edit_view_metadata

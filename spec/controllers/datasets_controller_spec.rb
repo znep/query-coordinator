@@ -137,4 +137,30 @@ describe DatasetsController do
 
   end
 
+  describe 'standalone visualization' do
+
+    before(:each) do
+      init_core_session
+      init_current_domain
+      init_signaller
+      init_current_user(controller)
+      login
+      allow(subject).to receive(:get_view).and_return(view)
+      allow(subject).to receive(:using_canonical_url?).and_return(true)
+      subject.instance_variable_set('@meta', {})
+      allow(subject).to receive(:enable_site_chrome?).and_return(false)
+      stub_site_chrome
+    end
+
+    describe 'GET /category/view_name/id/visualization' do
+
+      it 'should render the standalone visualization page' do
+        get :visualization, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+        expect(response).to have_http_status(:success)
+      end
+
+    end
+
+  end
+
 end

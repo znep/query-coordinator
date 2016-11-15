@@ -174,10 +174,6 @@ module DatasetLandingPageHelper
     end
 
     row_count = @view.row_count rescue 0
-    if @view.description
-      description = @view.description.gsub(/\r?\n/, '<br />')
-      description = Rinku.auto_link(description, :all, 'target="_blank" rel="nofollow external"')
-    end
 
     # This makes an HTTP request, so we want to avoid it if possible
     can_publish = @view.can_publish? if @view.is_unpublished?
@@ -185,7 +181,7 @@ module DatasetLandingPageHelper
     {
       :id => @view.id,
       :name => @view.name,
-      :description => description,
+      :description => @view.html_description,
       :category => @view.category,
       :attribution => @view.attribution,
       :rowLabel => row_label,

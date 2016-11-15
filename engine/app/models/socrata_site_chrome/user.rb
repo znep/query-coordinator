@@ -24,12 +24,12 @@ module SocrataSiteChrome
       @data['roleName']
     end
 
-    def has_right?(right)
-      self.rights && self.rights.include?(right)
+    def display_name
+      @data['displayName']
     end
 
-    def can_approve?
-      has_right?(UserRights::MANAGE_APPROVAL) || (Approval.find[0] || Approval.new).is_approver?(self)
+    def has_right?(right)
+      self.rights && self.rights.include?(right)
     end
 
     # Attribute helpers in an attempt to move away from method_missing.

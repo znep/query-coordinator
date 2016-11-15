@@ -169,6 +169,9 @@ TODO: Once this is done in Frontend, document the steps here.
 The host app must provide the configuration directive that specifies the `coreservice_uri`. This
 value is used by the gem to make requests to core to fetch and update the site chrome configuration.
 
+The host app must also provide an ApplicationController method called `current_user_json` which should
+return a json representation of the current user. If this is not set, and exception will be raised.
+
 ## Site Configuration & Styling
 
 The site configuration is domain-specific. The configuration is fetched from core using the domain

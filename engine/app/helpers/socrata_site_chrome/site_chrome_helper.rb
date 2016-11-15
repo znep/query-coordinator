@@ -68,15 +68,13 @@ module SocrataSiteChrome
     end
 
     def username
-      if site_chrome_current_user.try(:displayName).blank?
-        t('header.profile')
-      else
-        site_chrome_current_user.displayName
-      end
+      site_chrome_current_user.try(:display_name).presence || t('header.profile')
     end
 
     def request_current_user
-      request.env['action_controller.instance'].try(:current_user)
+      raise 'Hosting app must provide a method for current_user_json on ApplicationController' unless
+        request.env['action_controller.instance'].respond_to?(:current_user_json)
+      request.env['action_controller.instance'].current_user_json
     end
 
     def site_chrome_current_user

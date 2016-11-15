@@ -17,17 +17,21 @@ class DemoController < ApplicationController
   }
 
   def index
-    ::RequestStore.store[:current_user] =
+    stub_current_user
+    render 'fake_content', :layout => 'unified'
+  end
+
+  private
+
+  def stub_current_user
+    request.env['action_controller.instance'] = OpenStruct.new(:current_user =>
       case params[:logged_in]
         when 'true' then DEMO_USER
         when 'admin' then ADMIN_USER
         when 'superadmin' then SUPERADMIN_USER
         else nil
       end
-
-    ::RequestStore.store[:current_domain] = request.host
-
-    render 'fake_content', :layout => 'unified'
+    )
   end
 
 end

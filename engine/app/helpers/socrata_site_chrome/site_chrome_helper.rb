@@ -1,8 +1,11 @@
 require 'chroma'
 require 'request_store'
 
+# Internal helpers for the rendering of views
 module SocrataSiteChrome
-  module ApplicationHelper
+  module SiteChromeHelper
+    include SharedHelperMethods
+
     def divider
       content_tag(:div, :class => 'divider') do
         content_tag(:span, nil)
@@ -14,7 +17,23 @@ module SocrataSiteChrome
     end
 
     def admin_title
-      header_title.presence || ::RequestStore.store[:current_domain]
+      header_title.presence || request.host
+    end
+
+    def profile_image?
+      user_profile_image_url.present?
+    end
+
+    def user_profile_image_url
+      site_chrome_current_user.profileImageUrlMedium
+    end
+
+    def open_performance_enabled?
+      begin
+        SocrataSiteChrome::FeatureSet.new(request.host).feature_enabled?('govstat')
+      rescue
+        false
+      end
     end
 
     def header_title
@@ -29,7 +48,7 @@ module SocrataSiteChrome
       img_src = img.dig('logo', 'src')
       if img_src.present?
         image_tag(
-          massage_url(img_src, add_locale: false),
+          site_chrome_massage_url(img_src, add_locale: false),
           :alt => img.dig('logo', 'alt').presence || display_name.presence ||
             request.host,
           :onerror => 'this.style.display="none"')
@@ -37,7 +56,7 @@ module SocrataSiteChrome
     end
 
     def header_logo
-      link_to(massage_url('/'), class: 'logo') do
+      link_to(site_chrome_massage_url('/'), class: 'logo') do
         img = logo(get_site_chrome.header, header_title)
         span = content_tag(:span, header_title, :class => 'site-name')
         img.present? ? img << span : span
@@ -56,16 +75,8 @@ module SocrataSiteChrome
       end
     end
 
-    def profile_image?
-      user_profile_image_url.present?
-    end
-
-    def user_profile_image_url
-      site_chrome_current_user.profileImageUrlMedium
-    end
-
     def request_current_user
-      ::RequestStore.store[:current_user]
+      request.env['action_controller.instance'].try(:current_user)
     end
 
     def site_chrome_current_user
@@ -110,7 +121,7 @@ module SocrataSiteChrome
     def footer_bg_color
       color = get_site_chrome.footer.dig(:styles, :bg_color)
       color.present? ?
-        color : SiteChrome.default_site_chrome_content.dig(:footer, :styles, :bg_color)
+        color : SocrataSiteChrome::SiteChrome.default_site_chrome_content.dig(:footer, :styles, :bg_color)
     end
 
     def social_link_icon(type)
@@ -188,7 +199,7 @@ module SocrataSiteChrome
             elsif valid_link_item?(link, link_text)
               # Top level link
               link_to(link_text,
-                massage_url(link[:url]),
+                site_chrome_massage_url(link[:url]),
                 :class => nav_link_classnames(is_mobile: args[:is_mobile])
               )
             end
@@ -201,7 +212,7 @@ module SocrataSiteChrome
       child_links.to_a.map do |link|
         link_text = localized("header.links.#{link[:key]}", get_site_chrome.locales)
         if valid_link_item?(link, link_text)
-          link_to(link_text, massage_url(link[:url]),
+          link_to(link_text, site_chrome_massage_url(link[:url]),
             :class => nav_link_classnames(child_link: true, is_mobile: is_mobile)
           )
         end
@@ -221,43 +232,6 @@ module SocrataSiteChrome
       link.try(:dig, :key).present? &&
       link[:url].present? &&
       link_text.present?
-    end
-
-    def relative_url_with_locale(url)
-      I18n.locale.to_s == default_locale ? url : "/#{I18n.locale}#{url}"
-    end
-
-    # EN-9586: prepend "http://" onto links that do not start with it, and are not relative paths.
-    # EN-7151: prepend locales onto relative links, and turn URLs into relative links if applicable
-    def massage_url(url, add_locale: true)
-      return unless url.present?
-
-      url.strip!
-
-      # If relative path, prerepend current locale if necessary and return
-      if url.start_with?('/')
-        return add_locale ? relative_url_with_locale(url) : url
-      end
-
-      supported_scheme_matchers = Regexp.union(%r{^https?://}, %r{^mailto:})
-
-      # Prepend with 'http://' if they don't provide a scheme
-      url = "http://#{url}" unless url.match(supported_scheme_matchers)
-      uri = begin
-        URI.parse(url)
-      rescue
-        return url
-      end
-
-      # Turn full URL into a relative link if the url host matches the current domain host
-      if request.host.present? && uri.host == request.host
-        uri.scheme = nil
-        uri.host = nil
-        add_locale ? relative_url_with_locale(uri.to_s) : uri.to_s
-      else
-        # Outoing link
-        uri.to_s
-      end
     end
 
     def locale_config
@@ -281,7 +255,7 @@ module SocrataSiteChrome
       language_switcher_locales.map do |locale_key|
         link_to(
           locale_full_name(locale_key),
-          url_for(:locale => locale_key),
+          "/#{locale_key}#{request.path}",
           :class => 'language-switcher-option'
         )
       end
@@ -322,26 +296,8 @@ module SocrataSiteChrome
       locales[I18n.locale.to_s].try(:dig, *locale_key.split('.'))
     end
 
-    def site_chrome_test_config
-      site_chrome_config = DomainConfig.default_configuration.first.with_indifferent_access
-      site_chrome_config_values = site_chrome_config[:properties].first.dig(:value)
-      current_version = site_chrome_config_values[:current_version]
-      {
-        id: site_chrome_config[:id],
-        content: site_chrome_config_values.dig(:versions, current_version, :published, :content),
-        updated_at: site_chrome_config[:updatedAt],
-        current_version: current_version
-      }
-    end
-
     def get_site_chrome
-      (::RequestStore.store[:site_chrome] ||= {})[pub_stage] ||= SocrataSiteChrome::SiteChrome.new(
-        if Rails.env.test?
-          site_chrome_test_config
-        else
-          SocrataSiteChrome::DomainConfig.new(request.host).site_chrome_config(pub_stage)
-        end
-      )
+      Rails.application.config.try(:socrata_site_chrome) || SocrataSiteChrome::SiteChrome.new
     end
 
     # Returns template name - either 'evergreen' (default) or 'rally'
@@ -396,14 +352,6 @@ module SocrataSiteChrome
           :error_message => error_msg
         )
         error_msg
-      end
-    end
-
-    def open_performance_enabled?
-      begin
-        SocrataSiteChrome::FeatureSet.new(request.host).feature_enabled?('govstat')
-      rescue
-        false
       end
     end
   end

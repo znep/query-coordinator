@@ -13,9 +13,13 @@
   </head>
 
   <body>
-    <%= render 'site_chrome/admin_header' %>
-    <%= render 'site_chrome/header' %>
+    <% if params[:admin_header] %>
+      <%== site_chrome_admin_header(request, response) %>
+    <% end %>
+    <%== site_chrome_header(request, response) %>
+
     <%= yield %>
-    <%= render 'site_chrome/footer' %>
+
+    <%== site_chrome_footer(request, response) %>
   </body>
 </html>

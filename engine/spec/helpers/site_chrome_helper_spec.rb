@@ -1,10 +1,9 @@
 require 'rails_helper'
 
-describe SocrataSiteChrome::ApplicationHelper do
-  let(:site_chrome_config) do { content: JSON.parse(
-    File.read("#{SocrataSiteChrome::Engine.root}/spec/fixtures/site_chrome_config.json")).
-    with_indifferent_access['properties'].first.dig('value', 'versions',
-      SocrataSiteChrome::SiteChrome::LATEST_VERSION, 'published', 'content') }
+describe SocrataSiteChrome::SiteChromeHelper do
+
+  after(:all) do
+    unstub_site_chrome
   end
 
   describe '#admin_title' do
@@ -12,7 +11,7 @@ describe SocrataSiteChrome::ApplicationHelper do
     let(:header_title) { '' }
 
     before do
-      allow(::RequestStore.store).to receive(:[]).with(:current_domain).and_return(current_domain)
+      stub_current_domain_with(current_domain)
       allow(helper).to receive(:header_title).and_return(header_title)
     end
 
@@ -143,9 +142,11 @@ describe SocrataSiteChrome::ApplicationHelper do
   end
 
   describe '#header_logo' do
+    before(:all) do
+      stub_site_chrome
+    end
+
     it 'returns only the site title if the header image is not present' do
-      site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
-      allow(::RequestStore.store).to receive(:[]).with(:site_chrome).and_return(:published => site_chrome)
       allow(helper).to receive(:logo).and_return(nil)
       result = helper.header_logo
       expect(result).to eq('<a class="logo" href="/"><span class="site-name"></span></a>')
@@ -153,18 +154,8 @@ describe SocrataSiteChrome::ApplicationHelper do
 
     it 'returns both the site title and the header image' do
       stub_current_domain_with('data.seattle.gov')
-      site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
-      allow(::RequestStore.store).to receive(:[]).with(:site_chrome).and_return(:published => site_chrome)
       result = helper.header_logo
       expect(result).to eq('<a class="logo" href="/"><img alt="data.seattle.gov" onerror="this.style.display=&quot;none&quot;" src="http://i.imgur.com/E8wtc6d.png" /><span class="site-name"></span></a>')
-    end
-  end
-
-  describe '#request_current_user' do
-    it 'returns the contents of ::RequestStore.store[:current_user]' do
-      allow(::RequestStore.store).to receive(:has_key?).with(:current_user).and_return(true)
-      allow(::RequestStore.store).to receive(:[]).with(:current_user).and_return('id' => 'fooo-baar')
-      expect(helper.request_current_user).to eq('id' => 'fooo-baar')
     end
   end
 
@@ -273,21 +264,22 @@ describe SocrataSiteChrome::ApplicationHelper do
   end
 
   describe '#username' do
-    it 'returns "Profile" if there is no request_current_user' do
-      allow(::RequestStore.store).to receive(:[]).and_return(nil)
-      allow(::RequestStore.store).to receive(:has_key?).with(:current_user).and_return(true)
+    after(:each) do
+      unstub_current_user
+    end
+
+    it 'returns "Profile" if there is no current_user' do
+      stub_current_user(nil)
       expect(helper.username).to eq('Profile')
     end
 
     it 'returns "Profile" if there is a request_current_user with no displayName' do
-      allow(::RequestStore.store).to receive(:[]).and_return('id' => 'fooo-baar')
-      allow(::RequestStore.store).to receive(:has_key?).with(:current_user).and_return(true)
+      stub_current_user('displayName' => nil)
       expect(helper.username).to eq('Profile')
     end
 
     it 'returns the request_current_user displayName if there is a request_current_user' do
-      allow(::RequestStore.store).to receive(:[]).and_return('displayName' => 'derek zoolander')
-      allow(::RequestStore.store).to receive(:has_key?).with(:current_user).and_return(true)
+      stub_current_user('displayName' => 'derek zoolander')
       expect(helper.username).to eq('derek zoolander')
     end
   end
@@ -316,25 +308,30 @@ describe SocrataSiteChrome::ApplicationHelper do
   end
 
   describe '#show_powered_by?' do
-    let(:site_chrome) do
-      SocrataSiteChrome::SiteChrome.new(site_chrome_config)
-    end
-
     it 'defaults to true if powered_by does not exist' do
-      site_chrome.footer.delete(:powered_by)
-      allow(::RequestStore.store).to receive(:[]).with(:site_chrome).and_return(:published => site_chrome)
+      config = site_chrome_config.tap do |config|
+        config[:footer].delete(:powered_by)
+      end
+      stub_site_chrome(config)
+
       expect(helper.show_powered_by?).to eq(true)
     end
 
     it 'can be set to true' do
-      site_chrome.footer[:powered_by] = 'true'
-      allow(::RequestStore.store).to receive(:[]).with(:site_chrome).and_return(:published => site_chrome)
+      config = site_chrome_config.tap do |config|
+        config[:footer][:powered_by] = 'true'
+      end
+      stub_site_chrome(config)
+
       expect(helper.show_powered_by?).to eq(true)
     end
 
     it 'can be set to false' do
-      site_chrome.footer[:powered_by] = 'false'
-      allow(::RequestStore.store).to receive(:[]).with(:site_chrome).and_return(:published => site_chrome)
+      config = site_chrome_config.tap do |config|
+        config[:footer][:powered_by] = 'false'
+      end
+      stub_site_chrome(config)
+
       expect(helper.show_powered_by?).to eq(false)
     end
   end
@@ -435,19 +432,21 @@ describe SocrataSiteChrome::ApplicationHelper do
 
   describe '#navbar_links_div' do
     it 'returns a div with the classname "site-chrome-nav-links"' do
-      site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
-      ::RequestStore.store[:site_chrome] = { :published => site_chrome }
+      stub_site_chrome
       result = Nokogiri::HTML.parse(helper.navbar_links_div({}))
       expect(result.search('div.site-chrome-nav-links').length).to eq(1)
     end
 
     it 'creates a site-chrome-nav-menu for nested links' do
-      site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
-      site_chrome.content['header']['links'].push(
-        { :key => 'menu_0', :links => [{ :key => 'menu_0_link_0', :url => 'http://opendata.gov' }] }
-      )
-      site_chrome.content['locales']['en']['header']['links']['menu_0_link_0'] = 'blah'
-      ::RequestStore.store[:site_chrome] = { :published => site_chrome }
+      config = site_chrome_config.tap do |config|
+        config[:header][:links].push(
+          :key => 'menu_0', :links => [{ :key => 'menu_0_link_0', :url => 'http://opendata.gov' }]
+        )
+        config[:locales][:en][:header][:links][:menu_0_link_0] = 'blah'
+      end
+
+      stub_site_chrome(config)
+
       result = Nokogiri::HTML.parse(helper.navbar_links_div(:use_dropdown => true))
       expect(result.search('div.site-chrome-nav-menu').length).to eq(1)
       expect(result.search('div.site-chrome-nav-menu div.dropdown').length).to eq(1)
@@ -456,24 +455,30 @@ describe SocrataSiteChrome::ApplicationHelper do
     end
 
     it 'creates top level links' do
-      site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
-      site_chrome.content['header']['links'] = [
-        { :key => 'link_0', :url => 'http://a.gov' },
-        { :key => 'link_1', :url => 'http://b.gov' },
-        { :key => 'link_2', :url => 'http://c.gov' }
-      ]
-      ::RequestStore.store[:site_chrome] = { :published => site_chrome }
+      config = site_chrome_config.tap do |config|
+        config[:header][:links] = [
+          { :key => 'link_0', :url => 'http://a.gov' },
+          { :key => 'link_1', :url => 'http://b.gov' },
+          { :key => 'link_2', :url => 'http://c.gov' }
+        ]
+      end
+
+      stub_site_chrome(config)
+
       result = Nokogiri::HTML.parse(helper.navbar_links_div({}))
       expect(result.search('.site-chrome-nav-link').length).to eq(3)
     end
 
     it 'returns nav-menu-title instead of nested dropdown links if use_dropdown is false' do
-      site_chrome = SocrataSiteChrome::SiteChrome.new(site_chrome_config)
-      site_chrome.content['header']['links'].push(
-        { :key => 'menu_0', :links => [{ :key => 'menu_0_link_0', :url => 'http://opendata.gov' }] }
-      )
-      site_chrome.content['locales']['en']['header']['links']['menu_0_link_0'] = 'blah'
-      ::RequestStore.store[:site_chrome] = { :published => site_chrome }
+      config = site_chrome_config.tap do |config|
+        config[:header][:links].push(
+          :key => 'menu_0', :links => [{ :key => 'menu_0_link_0', :url => 'http://opendata.gov' }]
+        )
+        config[:locales][:en][:header][:links][:menu_0_link_0] = 'blah'
+      end
+
+      stub_site_chrome(config)
+
       result = Nokogiri::HTML.parse(helper.navbar_links_div(:use_dropdown => false))
       expect(result.search('div.site-chrome-nav-menu div.dropdown').length).to eq(0)
       expect(result.search('.site-chrome-nav-menu').length).to eq(1)
@@ -551,54 +556,54 @@ describe SocrataSiteChrome::ApplicationHelper do
     end
   end
 
-  describe '#massage_url' do
+  describe '#site_chrome_massage_url' do
     it 'does not modify a url that starts with http://' do
       url = 'http://google.com'
-      expect(helper.massage_url(url)).to eq('http://google.com')
+      expect(helper.site_chrome_massage_url(url)).to eq('http://google.com')
     end
 
     it 'does not modify a url that starts with https://' do
       url = 'https://google.com'
-      expect(helper.massage_url(url)).to eq('https://google.com')
+      expect(helper.site_chrome_massage_url(url)).to eq('https://google.com')
     end
 
     it 'does not modify a url that starts with /' do
       url = '/browse'
-      expect(helper.massage_url(url)).to eq('/browse')
+      expect(helper.site_chrome_massage_url(url)).to eq('/browse')
     end
 
     it 'prepends http:// to a url that does not have a scheme or leading slash' do
       url = 'facebook.com/bananas'
-      expect(helper.massage_url(url)).to eq('http://facebook.com/bananas')
+      expect(helper.site_chrome_massage_url(url)).to eq('http://facebook.com/bananas')
 
       url2 = 'www.test.com/asdf'
-      expect(helper.massage_url(url2)).to eq('http://www.test.com/asdf')
+      expect(helper.site_chrome_massage_url(url2)).to eq('http://www.test.com/asdf')
     end
 
     it 'turns a url with the same host as the current domain into a relative url' do
       stub_current_domain_with('data.seattle.gov')
       url = 'https://data.seattle.gov/browse'
-      expect(helper.massage_url(url)).to eq('/browse')
+      expect(helper.site_chrome_massage_url(url)).to eq('/browse')
     end
 
     it 'does not drop url params and fragments' do
       stub_current_domain_with('data.seattle.gov')
       url = 'https://data.seattle.gov/browse?some_stuff=true#show'
-      expect(helper.massage_url(url)).to eq('/browse?some_stuff=true#show')
+      expect(helper.site_chrome_massage_url(url)).to eq('/browse?some_stuff=true#show')
     end
 
     it 'just returns the url (with a scheme) if the url is invalid and it cannot parse it' do
       url = '@#(*$*@#*@(#*(*@#$(*@#*($&#^#%@*%*@#$(@#'
-      expect(helper.massage_url(url)).to eq('http://@#(*$*@#*@(#*(*@#$(*@#*($&#^#%@*%*@#$(@#')
+      expect(helper.site_chrome_massage_url(url)).to eq('http://@#(*$*@#*@(#*(*@#$(*@#*($&#^#%@*%*@#$(@#')
 
       url2 = 'htpp://stuf.com'
-      expect(helper.massage_url(url2)).to eq('http://htpp//stuf.com')
+      expect(helper.site_chrome_massage_url(url2)).to eq('http://htpp//stuf.com')
 
     end
 
     it 'strips spaces from the start/end of the urls' do
       url = ' google.com '
-      expect(helper.massage_url(url)).to eq('http://google.com')
+      expect(helper.site_chrome_massage_url(url)).to eq('http://google.com')
     end
 
     context 'localization' do
@@ -609,20 +614,20 @@ describe SocrataSiteChrome::ApplicationHelper do
       it 'prepends the current locale to a relative path' do
         allow(I18n).to receive(:locale).and_return(:zz)
         url = '/browse'
-        expect(helper.massage_url(url)).to eq('/zz/browse')
+        expect(helper.site_chrome_massage_url(url)).to eq('/zz/browse')
       end
 
       it 'does not prepend the current locale to a relative path if the current locale is the default_locale' do
         allow(I18n).to receive(:locale).and_return(:en)
         url = '/browse'
-        expect(helper.massage_url(url)).to eq('/browse')
+        expect(helper.site_chrome_massage_url(url)).to eq('/browse')
       end
 
       it 'turns a url with the same host as the current domain into a localized relative url' do
         stub_current_domain_with('data.seattle.gov')
         allow(I18n).to receive(:locale).and_return(:kr)
         url = 'https://data.seattle.gov/browse'
-        expect(helper.massage_url(url)).to eq('/kr/browse')
+        expect(helper.site_chrome_massage_url(url)).to eq('/kr/browse')
       end
     end
 
@@ -630,13 +635,13 @@ describe SocrataSiteChrome::ApplicationHelper do
       it 'does not prepend "http" to a mailto link' do
         stub_current_domain_with('data.seattle.gov')
         url = 'mailto:bob@test.com'
-        expect(helper.massage_url(url)).to eq('mailto:bob@test.com')
+        expect(helper.site_chrome_massage_url(url)).to eq('mailto:bob@test.com')
       end
 
       it 'does not remove the scheme from mailto links if current domain is nil' do
         stub_current_domain_with(nil)
         url = 'mailto:bob@test.com'
-        expect(helper.massage_url(url)).to eq('mailto:bob@test.com')
+        expect(helper.site_chrome_massage_url(url)).to eq('mailto:bob@test.com')
       end
     end
   end

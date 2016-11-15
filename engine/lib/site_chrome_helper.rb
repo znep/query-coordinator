@@ -3,18 +3,18 @@
 require 'cgi'
 
 module SiteChromeHelper
-  include SocrataSiteChrome::ApplicationHelper
+  include SocrataSiteChrome::SharedHelperMethods
 
   def site_chrome_meta_viewport_tag
     raw('<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">')
   end
 
-  def google_analytics_tracking_code
+  def site_chrome_google_analytics_tracking_code
     CGI.escapeHTML(get_site_chrome.general[:google_analytics_token].to_s)
   end
 
   def site_chrome_google_analytics_tag
-    if google_analytics_tracking_code.present?
+    if site_chrome_google_analytics_tracking_code.present?
       javascript_tag(<<-eos)
         if (typeof window._gaSocrata === 'undefined') {
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -23,7 +23,7 @@ module SiteChromeHelper
           })(window,document,'script','//www.google-analytics.com/analytics.js','_gaSocrata');
         }
 
-        _gaSocrata('create', '#{google_analytics_tracking_code}', 'auto', 'socrataSiteChrome');
+        _gaSocrata('create', '#{site_chrome_google_analytics_tracking_code}', 'auto', 'socrataSiteChrome');
         _gaSocrata('socrataSiteChrome.send', 'pageview');
       eos
     end
@@ -43,11 +43,36 @@ module SiteChromeHelper
 
   def site_chrome_favicon_tag
     favicon_url = get_site_chrome.general[:window_icon]
-    favicon_link_tag(massage_url(favicon_url, add_locale: false)) if favicon_url.present?
+    favicon_link_tag(site_chrome_massage_url(favicon_url, add_locale: false)) if favicon_url.present?
   end
 
   def site_chrome_window_title
     get_site_chrome.general[:window_title_display]
+  end
+
+  def site_chrome_header(request, response, args = {})
+    site_chrome_controller_instance(request, response).header(args)
+  end
+
+  def site_chrome_admin_header(request, response, args = {})
+    site_chrome_controller_instance(request, response).admin_header(args)
+  end
+
+  def site_chrome_footer(request, response, args = {})
+    site_chrome_controller_instance(request, response).footer(args)
+  end
+
+  private
+
+  def site_chrome_controller_instance(request, response)
+    SocrataSiteChrome::SiteChromeController.new.tap do |controller|
+      controller.request = request
+      controller.response = response
+    end
+  end
+
+  def get_site_chrome
+    Rails.application.config.try(:socrata_site_chrome) || SocrataSiteChrome::SiteChrome.new
   end
 
 end

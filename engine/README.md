@@ -91,15 +91,20 @@ helpers to the bottom of the `<head>` section:
 <%= site_chrome_javascript_tag %>
 ```
 
-Within the `<body>` section add the `<%= render 'site_chrome/header' %>` just inside the opening
-`<body>` section, then add the `<%= render 'site_chrome/footer' %>` just before the closing
-`</body>` tag.
+Within the `<body>` section add
+`<%== site_chrome_header(request, response) %>`
+just inside the opening `<body>` section, then add
+`<%== site_chrome_footer(request, response) %>`
+just before the closing `</body>` tag.
+
+There is also an Admin header (currently used for Open Performance) which can be rendered with
+`<%== site_chrome_admin_header(request, response) %>`
 
 There are also "small" versions of the header and footer that you can choose to render. For example,
 on dataset/view pages, where the full header/footer takes up too much screen real estate. To do
 this, just use the argument `size: 'small'` when rendering the header or footer.
 
-    <%= render 'site_chrome/header', size: 'small' %>
+    <%== site_chrome_header(request, response, :size => 'small') %>
 
 And the same goes for the admin header.
 
@@ -125,10 +130,9 @@ An example layout is shown below:
   </head>
 
   <body>
-    <%= render 'site_chrome/admin_header' %>
-    <%= render 'site_chrome/header' %>
+    <%== site_chrome_header(request, response) %>
     <%= yield %>
-    <%= render 'site_chrome/footer' %>
+    <%== site_chrome_footer(request, response) %>
   </body>
 </html>
 ```
@@ -162,13 +166,7 @@ TODO: Once this is done in Frontend, document the steps here.
 
 ### Runtime Dependencies
 
-The host app must provide a value for `:current_user` in `::RequestStore.store`.
-If there is a signed in user, the value must be a hash containing all properties from the current
-user object (typically obtained via a call to `/api/users/current.json`). The keys are expected to be
-strings. If there is no signed in user, the value must be set to nil in the request store.
-If `:current_user` is not set, an error will be thrown.
-
-The host app must also provide the configuration directive that specifies the `coreservice_uri`. This
+The host app must provide the configuration directive that specifies the `coreservice_uri`. This
 value is used by the gem to make requests to core to fetch and update the site chrome configuration.
 
 ## Site Configuration & Styling

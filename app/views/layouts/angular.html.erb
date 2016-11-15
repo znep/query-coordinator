@@ -11,7 +11,7 @@
     <%= canary_warning %>
 
     <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-air.css?<%= asset_revision_key %>"/>
-    <link type="text/css" media="all" rel="stylesheet" href="/webfonts/socrata-icons/socrata-icons.css?<%= asset_revision_key %>"/>
+    <%= rendered_stylesheet_tag 'socrata-icons' %>
 
     <%= angular_theme_tag %>
 

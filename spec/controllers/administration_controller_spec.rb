@@ -10,6 +10,39 @@ describe AdministrationController do
     stub_site_chrome
   end
 
+  describe 'goals', :verify_stubs => false do
+    before do
+      init_current_user(subject)
+      init_current_domain
+      stub_administrator_user
+    end
+
+    describe 'GET /admin/goals' do
+      before do
+        allow(CurrentDomain).to receive(:module_enabled?).with(:govStat).and_return(govstat_enabled)
+      end
+
+      describe 'when govstat is enabled' do
+        let(:govstat_enabled) { true }
+
+        it 'renders' do
+          get :goals
+          expect(response).to have_http_status(:ok)
+        end
+      end
+
+      describe 'when govstat is disabled' do
+        let(:govstat_enabled) { false }
+
+        it '404s' do
+          get :goals
+          expect(response).to have_http_status(:not_found)
+        end
+      end
+    end
+  end
+
+
   # Can't use self-verifying stubs because the User class uses method_missing for all of the data properties
   describe 'georegions', :verify_stubs => false do
     before(:each) do

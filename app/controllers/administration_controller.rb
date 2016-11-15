@@ -1130,7 +1130,11 @@ class AdministrationController < ApplicationController
 
   before_filter :check_admin_or_superadmin, :only => [:goals]
   def goals
-    render :layout => 'plain'
+    if CurrentDomain.module_enabled?(:govStat)
+      render :layout => 'plain'
+    else
+      render_404
+    end
   end
 
   #

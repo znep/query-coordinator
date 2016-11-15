@@ -52,6 +52,11 @@ $new-ux-link-color-2: #dddddd;
 $new-ux-link-bg-color: #4b4748;
 $new-ux-link-button-color: #fafafa;
 
+// socrata_site_chrome admin header heights defined by
+// https://github.com/socrata/socrata_site_chrome
+$site-chrome-admin-header-height: 46px;
+$site-chrome-admin-header-small-height: 32px;
+
 // Compat functions
 
 @mixin border-radius($a, $b: true, $c: true, $d: true) {

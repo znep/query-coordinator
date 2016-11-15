@@ -45,17 +45,6 @@ module.exports = function ( karma ) {
       },
       plugins: [ new WebpackFailurePlugin() ],
       resolve: {
-        alias: {
-          'dotdotdot': 'dotdotdot/src/js/jquery.dotdotdot.min.js',
-          'socrata-utils': path.resolve(root, 'node_modules/socrata-utils/dist/socrata.utils.js'),
-          'socrata.utils': path.resolve(root, 'node_modules/socrata-utils/dist/socrata.utils.js'),
-          '_': path.resolve(root, 'node_modules/lodash'),
-          'jQuery': path.resolve(root, 'node_modules/jquery/dist/jquery.js'),
-          'jquery': path.resolve(root, 'node_modules/jquery/dist/jquery.js'),
-          'L': 'leaflet',
-          'react': path.resolve(root, 'node_modules/react'),
-          'react-dom': path.resolve(root, 'node_modules/react-dom')
-        },
         root: [
           path.resolve('.'),
           path.resolve('public/javascripts/datasetLandingPage'),

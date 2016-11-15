@@ -26,6 +26,11 @@
     <%# Ensure mixpanelConfig is defined before loading other scripts %>
     <%= render_mixpanel_config %>
 
+    <!-- dotdotdot and velocity are finicky about jQuery. -->
+    <!-- We made jquery an external, load it here and then bind it to window to be loaded into our Webpack bundle. -->
+    <%= jquery_include('2.2.4') %>
+    <script> window.jquery = window.jQuery </script>
+
     <%= yield :scripts %>
 
     <%# These are below `content_for :scripts` because they require jQuery to be present %>

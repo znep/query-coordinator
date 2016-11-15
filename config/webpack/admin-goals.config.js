@@ -39,5 +39,10 @@ module.exports = _.defaultsDeep({
       'styleguide': 'socrata-styleguide/dist/js/styleguide.js'
     }
   },
-  plugins: common.plugins.concat(common.getManifestPlugin(identifier))
+  plugins: common.plugins.concat(common.getManifestPlugin(identifier)),
+  sassLoader: {
+    includePaths: [
+      common.root
+    ]
+  }
 }, require('./base'));

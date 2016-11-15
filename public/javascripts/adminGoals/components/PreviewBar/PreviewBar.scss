@@ -1,6 +1,8 @@
+@import 'app/styles/scss-common.scss';
+
 .preview-bar {
   position: fixed;
-  top: 0;
+  top: $site-chrome-admin-header-small-height;
   right: 0;
   left: 0;
   background: white;

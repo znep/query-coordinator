@@ -47,6 +47,7 @@ base:
 - old-controls
 - controls
 - tables
+- socrata-icons
 base-sdp:
 - base
 - common
@@ -295,3 +296,5 @@ mobile:
 - mobile/states
 - mobile/components/navbar
 - mobile/components/meta
+socrata-icons:
+- socrata-icons

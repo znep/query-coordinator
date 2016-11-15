@@ -1238,7 +1238,7 @@ en:
       viewer: Viewer
     unsupported_browser:
       link_text: Click here now to confirm your browser is current.
-      message_html: Socrata has upgraded site security. On December 1, 2016, unsupported browsers will no longer be able to access Socrata sites. %{link_text}
+      message_html_no_date: Socrata has upgraded site security. Unsupported browsers will soon no longer be able to access Socrata sites. %{link_text}
     validation:
       accept: Please enter a value with a valid extension.
       date: Please enter a valid date.

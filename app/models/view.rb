@@ -1335,7 +1335,9 @@ class View < Model
   end
 
   def is_alt_view?
-    !available_display_types.eql?(['table', 'fatrow', 'page'])
+    normative_display_types = ['assetinventory', 'table', 'fatrow', 'page']
+    diff = available_display_types.reject { |x| normative_display_types.include?(x) }
+    diff.length != 0
   end
 
   def is_form?

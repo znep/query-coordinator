@@ -175,7 +175,7 @@ describe SocrataSiteChrome::SiteChromeHelper do
       result = helper.site_chrome_current_user
 
       expect(result.class).to eq(SocrataSiteChrome::User)
-      expect(result.displayName).to eq('bob ross')
+      expect(result.display_name).to eq('bob ross')
       expect(result.is_designer?).to be(true)
       expect(result.id).to eq('999')
     end

@@ -24,6 +24,10 @@ module SocrataSiteChrome
       @data['roleName']
     end
 
+    def display_name
+      @data['displayName']
+    end
+
     def has_right?(right)
       self.rights && self.rights.include?(right)
     end

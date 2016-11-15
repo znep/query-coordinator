@@ -143,19 +143,22 @@ module DatasetLandingPageHelper
   end
 
   def sort_order
+    order = [{
+      :ascending => true,
+      :columnName => @view.columns.try(:first).try(:fieldName)
+    }]
+    # If query exists and the columnFieldName is part of existing columns
+    # then use the custom query
     query = @view.metadata && @view.metadata.json_query
-    order = query.try(:[], 'order').try(:first)
-
     if query
-      order['columnName'] = order['columnName'] || order['columnFieldName']
-      [order]
-    else
-      # Default to sorting by the first column
-      [{
-        :ascending => true,
-        :columnName => @view.columns.try(:first).try(:fieldName)
-      }]
+      custom_order = query.try(:[], 'order').try(:first)
+      order_column_name = custom_order['columnName'] || custom_order['columnFieldName']
+      if @view.columns.map(&:fieldName).find { |c| c == order_column_name }
+        custom_order['columnName'] = order_column_name
+        order = [custom_order]
+      end
     end
+    order
   end
 
   def row_label

@@ -159,7 +159,6 @@ class ApplicationController < ActionController::Base
     if current_user_session
       @current_user = current_user_session.user
     end
-    Rails.logger.error("DEBUG EN-10582 (frontend): Domain = #{CurrentDomain.cname}; request_current_user = #{request_current_user.inspect}")
     RequestStore[:current_user] = @current_user.try(:data)
   end
 

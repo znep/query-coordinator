@@ -51,11 +51,11 @@
     <%= include_webpack_bundle 'data-cards/main.js' %>
 
     <%= site_chrome_javascript_tag if site_chrome_enabled? %>
-    <%= render 'site_chrome/header' if site_chrome_enabled? %>
+    <%== site_chrome_header(request, response) if site_chrome_enabled? %>
 
     <%= yield %>
 
-    <%= render 'site_chrome/footer', :size => 'small' if site_chrome_enabled? %>
+    <%== site_chrome_footer(request, response, :size => 'small') if site_chrome_enabled? %>
   </body>
 
 

@@ -7,9 +7,7 @@ module ApplicationHelper
   include CommonSocrataMethods
   include UserAuthMethods
   include Socrata::UrlHelpers
-  # Note: SiteChromeHelper is included automatically due to the naming coinciding with
-  # SiteChromeController, but here anyways for posterity
-  include SiteChromeHelper
+  include SiteChromeHelper # Pull in helpers from SocrataSiteChrome engine
 
 # RAILS OVERRIDE
 

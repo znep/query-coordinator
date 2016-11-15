@@ -30,6 +30,12 @@
 
     .site-chrome-admin-user {
       padding: 2px 13px;
+
+      > .socrata-icon-user {
+        width: 28px;
+        height: 28px;
+        font-size: 28px;
+      }
     }
 
     .site-chrome-admin-user-image {
@@ -174,7 +180,7 @@
       cursor: pointer;
     }
 
-    > .icon-user {
+    > .socrata-icon-user {
       width: 35px;
       height: 35px;
       border-radius: 50%;
@@ -225,7 +231,7 @@
             vertical-align: middle;
           }
 
-          [class^="icon-"] {
+          [class^="socrata-icon-"] {
             margin-right: 4px;
             font-size: 18px;
           }

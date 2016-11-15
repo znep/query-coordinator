@@ -16,7 +16,7 @@ module Constraints
         cookie_string = request.cookies.respond_to?(:map) ?
           request.cookies.map { |k, v| "#{k}=#{v}" }.join(';') : request.cookies.to_s
         view = View.find(params[:id], 'Cookie' => cookie_string)
-        view.data_lens?
+        view.data_lens? && !view.visualization_canvas?
       rescue
         false
       end

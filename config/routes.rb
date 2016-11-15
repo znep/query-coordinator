@@ -375,7 +375,7 @@ Rails.application.routes.draw do
       get '/form_error', :action => 'form_error', :as => :view_form_error
       get '/about', :action => 'about', :as => :about_view
       get '/updates/:update_id', :action => 'updates'
-      get '/visualization', :action => 'visualization', :as => :view_visualization
+      get '/visualization', :action => 'create_visualization_canvas', :as => :create_visualization_canvas
       match '/alt', :action => 'alt', :via => [:get, :post], :as => :alt_view
       match '/flags', :action => 'flag_check', :via => [:get, :post], :as => :flag_check
       match '/edit_metadata', :action => 'edit_metadata', :via => [:get, :post], :as => :edit_view_metadata
@@ -409,6 +409,7 @@ Rails.application.routes.draw do
       get 'd/:id/stats', :action => 'stats'
       get 'd/:id/about', :action => 'about'
       get 'd/:id/data', :action => 'show', :bypass_dslp => true
+      get 'd/:id/visualization', :action => 'create_visualization_canvas'
 
       get 'd/:id/updates/:update_id', :action => 'updates'
 

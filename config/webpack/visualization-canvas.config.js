@@ -6,10 +6,13 @@ var common = require('./common');
 var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
-  context: path.resolve(common.root, 'public/javascripts/dataLens'),
+  context: path.resolve(common.root, 'public/javascripts/visualizationCanvas'),
   entry: './main',
   output: common.getOutput(identifier),
-  eslint: common.getEslintConfig('public/javascripts/dataLens/.eslintrc.json'),
+  eslint: common.getEslintConfig('public/javascripts/visualizationCanvas/.eslintrc.json'),
+  externals: {
+    jquery: true
+  },
   module: {
     loaders: [
       {
@@ -31,7 +34,7 @@ module.exports = _.defaultsDeep({
       'react-dom': path.resolve(common.root, 'node_modules/react-dom')
     },
     root: [
-      path.resolve(common.root, 'public/javascripts/dataLens')
+      path.resolve(common.root, 'public/javascripts/visualizationCanvas')
     ]
   },
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))

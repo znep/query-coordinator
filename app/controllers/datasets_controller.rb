@@ -6,7 +6,7 @@ class DatasetsController < ApplicationController
   include CommonMetadataMethods
 
   prepend_before_filter :check_chrome, :only => [:show, :alt]
-  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :validate_contact_owner, :contact_dataset_owner, :form_success, :form_error, :external, :external_download, :download, :about]
+  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :validate_contact_owner, :contact_dataset_owner, :form_success, :form_error, :external, :external_download, :download, :about, :create_visualization_canvas]
   skip_before_filter :disable_frame_embedding, :only => [:form_success, :form_error]
   # When CSRF token validation is skipped for this method (see skip_before_filter above), the
   # verify_recaptcha test in the 'create' method is our only protection against abuse.
@@ -92,7 +92,7 @@ class DatasetsController < ApplicationController
     # Dataset landing page case
     if dataset_landing_page_enabled? && view.has_landing_page? && !params[:bypass_dslp]
       # See if the user is accessing the canonical URL; if not, redirect
-      unless request.path == canonical_path_proc.call(locale: nil)
+      unless using_canonical_url?
         return redirect_to canonical_path
       end
 
@@ -108,6 +108,9 @@ class DatasetsController < ApplicationController
 
       return
     end
+
+    # Visualization Canvas case
+    return if render_as_visualization_canvas
 
     # We're going to some version of the grid/viz page
 
@@ -739,14 +742,15 @@ class DatasetsController < ApplicationController
     @page_custom_footer = 'footer'
   end
 
-  def visualization
-    @parent_view = get_view(params[:id])
+  def create_visualization_canvas
+    return render_404 unless visualization_canvas_enabled?
 
+    @parent_view = get_view(params[:id])
     return if @parent_view.nil?
 
-    @view = @parent_view.new_data_lens_visualization
+    @view = @parent_view.new_visualization_canvas
 
-    render 'data_lens', :layout => 'styleguide'
+    render 'visualization_canvas', :layout => 'styleguide'
   end
 
   # Make sure that the url provided actually returns a layer of some kind.
@@ -1268,6 +1272,29 @@ class DatasetsController < ApplicationController
 
   def using_canonical_url?
     request.path == canonical_path_proc.call(locale: nil) || request.path =~ /\/data$/
+  end
+
+  def render_as_visualization_canvas
+    if visualization_canvas_enabled? && @view.visualization_canvas?
+      # See if the user is accessing the canonical URL; if not, redirect
+      unless using_canonical_url?
+        redirect_to canonical_path
+        return true
+      end
+
+      # Fetch parent view
+      @parent_view = @view.parent_view
+      return false if @parent_view.nil?
+
+      render 'visualization_canvas', :layout => 'styleguide'
+      true
+    elsif !visualization_canvas_enabled? && @view.visualization_canvas?
+      # Return a 404 if they're trying to reach a visualization canvas and the feature flag is off
+      render_404
+      true
+    else
+      false
+    end
   end
 
 end

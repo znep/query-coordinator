@@ -1,14 +1,14 @@
 import _ from 'lodash';
 import components from 'socrata-components';
-import formatDate from 'socrata-components/common/dates';
+import { formatDate } from 'socrata-components/common/dates';
 import { translate as t } from '../lib/I18n';
 import { connect } from 'react-redux';
 
 function mapStateToProps(state) {
   const { view } = state;
 
-  const updatedDate = _.isString(view.lastUpdated) ?
-    formatDate(view.lastUpdated) :
+  const updatedDate = _.isString(view.lastUpdatedAt) ?
+    formatDate(view.lastUpdatedAt) :
     t('info_pane.unsaved');
 
   const basedOnHtml = t('info_pane.based_on').replace('%{name}', state.parentView.name);

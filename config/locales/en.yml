@@ -1286,14 +1286,6 @@ en:
     visibility:
       private: private
       public: public
-  data_lens:
-    render_error: There was a problem rendering this page.
-    info_pane:
-      based_on: Based on <em>%{name}</em>
-      bootstrap_title: Untitled Visualization - Based on %{name}
-      unsaved: Unsaved
-      updated: Updated
-      view_count: View Count
   dataset_landing_page:
     action_buttons:
       api: API
@@ -4548,3 +4540,11 @@ en:
   table:
     no_summary_available: No Summary Available
     summary: This table of %{data_description} has %{column_heading_count} column heading(s) %{column_headings} for each of %{row_heading_count} description row headings %{row_headings}
+  visualization_canvas:
+    render_error: There was a problem rendering this page.
+    info_pane:
+      based_on: Based on <em>%{name}</em>
+      bootstrap_title: Untitled Visualization - Based on %{name}
+      unsaved: Unsaved
+      updated: Updated
+      view_count: View Count

@@ -8,6 +8,8 @@ import { getTitle, getDescription, getViewSourceDataLink, getVisualizationType }
 import { setTitle, setDescription, setViewSourceDataLink } from '../../actions';
 import CustomizationTabPane from '../CustomizationTabPane';
 import EmptyPane from './EmptyPane';
+import Accordion from '../shared/Accordion';
+import AccordionPane from '../shared/AccordionPane';
 
 export const TitleAndDescriptionPane = React.createClass({
   propTypes: {
@@ -68,15 +70,17 @@ export const TitleAndDescriptionPane = React.createClass({
     const chartType = getVisualizationType(this.props.vifAuthoring);
     let content;
 
-    if(_.isNull(chartType)) {
+    if (_.isNull(chartType)) {
       content = <EmptyPane />;
     } else {
       content = (
-        <div>
-          {this.renderTitleField()}
-          {this.renderDescriptionField()}
-          {this.renderShowSourceDataLink()}
-        </div>
+        <Accordion>
+          <AccordionPane title={translate('panes.title_and_description.subheaders.general')}>
+            {this.renderTitleField()}
+            {this.renderDescriptionField()}
+            {this.renderShowSourceDataLink()}
+          </AccordionPane>
+        </Accordion>
       );
     }
 

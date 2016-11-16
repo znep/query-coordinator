@@ -15,6 +15,8 @@ import {
 
 import CustomizationTabPane from '../CustomizationTabPane';
 import EmptyPane from './EmptyPane';
+import Accordion from '../shared/Accordion';
+import AccordionPane from '../shared/AccordionPane';
 
 import {
   getPrimaryColor,
@@ -86,23 +88,35 @@ export var ColorsAndStylePane = React.createClass({
   },
 
   renderBarChartControls() {
-    return this.renderPrimaryColor(translate('panes.colors_and_style.fields.bar_color.title'));
+    return (
+      <AccordionPane title={translate('panes.colors_and_style.subheaders.colors')}>
+        {this.renderPrimaryColor(translate('panes.colors_and_style.fields.bar_color.title'))}
+      </AccordionPane>
+    );
   },
 
   renderColumnChartControls() {
-    return this.renderPrimaryColor(translate('panes.colors_and_style.fields.bar_color.title'));
+    return (
+      <AccordionPane title={translate('panes.colors_and_style.subheaders.colors')}>
+        {this.renderPrimaryColor(translate('panes.colors_and_style.fields.bar_color.title'))}
+      </AccordionPane>
+    );
   },
 
   renderHistogramControls() {
-    return this.renderPrimaryColor(translate('panes.colors_and_style.fields.bar_color.title'));
+    return (
+      <AccordionPane title={translate('panes.colors_and_style.subheaders.colors')}>
+        {this.renderPrimaryColor(translate('panes.colors_and_style.fields.bar_color.title'))}
+      </AccordionPane>
+    );
   },
 
   renderTimelineChartControls() {
     return (
-      <div>
+      <AccordionPane title={translate('panes.colors_and_style.subheaders.colors')}>
         {this.renderPrimaryColor(translate('panes.colors_and_style.fields.line_color.title'))}
         {this.renderSecondaryColor(translate('panes.colors_and_style.fields.area_color.title'))}
-      </div>
+      </AccordionPane>
     );
   },
 
@@ -136,30 +150,28 @@ export var ColorsAndStylePane = React.createClass({
       onChange: onChangePointSize
     };
 
-    return (
-      <div>
-        <div className="authoring-field-group">
-          <h5>{translate('panes.colors_and_style.subheaders.points')}</h5>
-          <div className="authoring-field">
-            <label className="block-label" htmlFor="point-color">{translate('panes.colors_and_style.fields.point_color.title')}</label>
-            <Styleguide.ColorPicker {...pointColorAttributes} />
-          </div>
-          <div className="authoring-field">
-            <label className="block-label" htmlFor="point-opacity">{translate('panes.colors_and_style.fields.point_opacity.title')}</label>
-            <div id="point-opacity">
-              <Styleguide.Slider {...pointOpacityAttributes} />
-            </div>
-          </div>
-          <div className="authoring-field">
-            <label className="block-label" htmlFor="point-size">{translate('panes.colors_and_style.fields.point_size.title')}</label>
-            <div id="point-size">
-              <Styleguide.Slider {...pointSizeAttributes} />
-            </div>
-          </div>
-          {this.renderMapLayerControls()}
+    const pointControls = (
+      <AccordionPane title={translate('panes.colors_and_style.subheaders.points')}>
+        <div className="authoring-field">
+          <label className="block-label" htmlFor="point-color">{translate('panes.colors_and_style.fields.point_color.title')}</label>
+          <Styleguide.ColorPicker {...pointColorAttributes} />
         </div>
-      </div>
+        <div className="authoring-field">
+          <label className="block-label" htmlFor="point-opacity">{translate('panes.colors_and_style.fields.point_opacity.title')}</label>
+          <div id="point-opacity">
+            <Styleguide.Slider {...pointOpacityAttributes} />
+          </div>
+        </div>
+        <div className="authoring-field">
+          <label className="block-label" htmlFor="point-size">{translate('panes.colors_and_style.fields.point_size.title')}</label>
+          <div id="point-size">
+            <Styleguide.Slider {...pointSizeAttributes} />
+          </div>
+        </div>
+      </AccordionPane>
     );
+
+    return [pointControls, this.renderMapLayerControls()];
   },
 
   renderRegionMapControls() {
@@ -181,15 +193,16 @@ export var ColorsAndStylePane = React.createClass({
       onSelection: onSelectColorScale
     };
 
-    return (
-      <div>
+    const colorControls = (
+      <AccordionPane title={translate('panes.colors_and_style.subheaders.colors')}>
         <label className="block-label" htmlFor="color-scale">{translate('panes.colors_and_style.fields.color_scale.title')}</label>
         <div className="color-scale-dropdown-container">
           <Styleguide.Dropdown {...colorScaleAttributes} />
         </div>
-        {this.renderMapLayerControls()}
-      </div>
+      </AccordionPane>
     );
+
+    return [colorControls, this.renderMapLayerControls()];
   },
 
   renderMapLayerControls() {
@@ -199,7 +212,7 @@ export var ColorsAndStylePane = React.createClass({
 
     var baseLayerAttributes = {
       id: 'base-layer',
-      options: _.map(baseLayers, baseLayer => ({title: baseLayer.title, value: baseLayer.value})),
+      options: _.map(baseLayers, baseLayer => ({ title: baseLayer.title, value: baseLayer.value })),
       value: defaultBaseLayer,
       onSelection: onSelectBaseLayer
     };
@@ -214,8 +227,7 @@ export var ColorsAndStylePane = React.createClass({
     };
 
     return (
-      <div className="authoring-field-group">
-        <h5>{translate('panes.colors_and_style.subheaders.map')}</h5>
+      <AccordionPane title={translate('panes.colors_and_style.subheaders.map')}>
         <div className="authoring-field">
           <label className="block-label" htmlFor="base-layer">{translate('panes.colors_and_style.fields.base_layer.title')}</label>
           <div className="base-layer-dropdown-container">
@@ -228,7 +240,7 @@ export var ColorsAndStylePane = React.createClass({
             <Styleguide.Slider {...baseLayerOpacityAttributes} />
           </div>
         </div>
-      </div>
+      </AccordionPane>
     );
   },
 
@@ -243,12 +255,13 @@ export var ColorsAndStylePane = React.createClass({
     };
 
     return (
-      <div>
-        <label className="block-label" htmlFor="color-palette">{translate('panes.colors_and_style.fields.color_palette.title')}</label>
+      <AccordionPane title={translate('panes.colors_and_style.subheaders.colors')}>
+        <label className="block-label"
+               htmlFor="color-palette">{translate('panes.colors_and_style.fields.color_palette.title')}</label>
         <div className="color-scale-dropdown-container">
           <Styleguide.Dropdown {...colorPaletteAttributes} />
         </div>
-      </div>
+      </AccordionPane>
     );
   },
 
@@ -280,7 +293,9 @@ export var ColorsAndStylePane = React.createClass({
 
     return (
       <form>
-        {configuration}
+        <Accordion>
+          {configuration}
+        </Accordion>
       </form>
     );
   }

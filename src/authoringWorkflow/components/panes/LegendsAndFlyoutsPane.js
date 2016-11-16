@@ -28,6 +28,8 @@ import {
 
 import CustomizationTabPane from '../CustomizationTabPane';
 import EmptyPane from './EmptyPane';
+import Accordion from '../shared/Accordion';
+import AccordionPane from '../shared/AccordionPane';
 
 export const LegendsAndFlyoutsPane = React.createClass({
   propTypes: {
@@ -59,20 +61,21 @@ export const LegendsAndFlyoutsPane = React.createClass({
     };
 
     return (
-      <div className="authoring-field-group">
-        <h5>{translate('panes.legends_and_flyouts.subheaders.units.title')}</h5>
+      <AccordionPane title={translate('panes.legends_and_flyouts.subheaders.units.title')}>
         <p className="authoring-field-description">
           <small>{translate('panes.legends_and_flyouts.subheaders.units.description')}</small>
         </p>
         <div className="authoring-field">
-          <label className="block-label" htmlFor="units-one">{translate('panes.legends_and_flyouts.fields.units_one.title')}</label>
+          <label className="block-label"
+                 htmlFor="units-one">{translate('panes.legends_and_flyouts.fields.units_one.title')}</label>
           <input {...unitOneAttributes} />
         </div>
         <div className="authoring-field">
-          <label className="block-label" htmlFor="units-other">{translate('panes.legends_and_flyouts.fields.units_other.title')}</label>
+          <label className="block-label"
+                 htmlFor="units-other">{translate('panes.legends_and_flyouts.fields.units_other.title')}</label>
           <input {...unitOtherAttributes} />
         </div>
-      </div>
+      </AccordionPane>
     );
   },
 
@@ -119,15 +122,14 @@ export const LegendsAndFlyoutsPane = React.createClass({
     return (
       <div>
         {this.renderUnits()}
-        <div className="authoring-field-group">
-          <h5>{translate('panes.legends_and_flyouts.subheaders.row_inspector_title')}</h5>
+        <AccordionPane title={translate('panes.legends_and_flyouts.subheaders.row_inspector_title')}>
           <div className="authoring-field">
             <label className="block-label" htmlFor="flyout-title-column">Column</label>
             <div className="flyout-title-dropdown-container">
               <Styleguide.Dropdown {...columnAttributes} />
             </div>
           </div>
-        </div>
+        </AccordionPane>
       </div>
     );
   },
@@ -172,7 +174,9 @@ export const LegendsAndFlyoutsPane = React.createClass({
 
       return (
         <form>
-          {configuration}
+          <Accordion>
+            {configuration}
+          </Accordion>
         </form>
       );
     } else {

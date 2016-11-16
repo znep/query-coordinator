@@ -38,6 +38,8 @@ import {
 
 import CustomizationTabPane from '../CustomizationTabPane';
 import EmptyPane from './EmptyPane';
+import Accordion from '../shared/Accordion';
+import AccordionPane from '../shared/AccordionPane';
 
 export var AxisAndScalePane = React.createClass({
   propTypes: {
@@ -83,8 +85,7 @@ export var AxisAndScalePane = React.createClass({
     };
 
     return (
-      <div className="authoring-field-group">
-        <h5>{translate('panes.axis_and_scale.subheaders.axis_titles')}</h5>
+      <AccordionPane title={translate('panes.axis_and_scale.subheaders.axis_titles')}>
         <div className="authoring-field">
           <label className="block-label" htmlFor="label-top">
             {translate('panes.axis_and_scale.fields.top_axis_title.title')}
@@ -97,7 +98,7 @@ export var AxisAndScalePane = React.createClass({
           </label>
           <input {...labelLeftInputAttributes}/>
         </div>
-      </div>
+      </AccordionPane>
     );
   },
 
@@ -124,8 +125,7 @@ export var AxisAndScalePane = React.createClass({
     };
 
     return (
-      <div className="authoring-field-group">
-        <h5>{translate('panes.axis_and_scale.subheaders.axis_titles')}</h5>
+      <AccordionPane title={translate('panes.axis_and_scale.subheaders.axis_titles')}>
         <div className="authoring-field">
           <label className="block-label" htmlFor="label-left">
             {translate('panes.axis_and_scale.fields.left_axis_title.title')}
@@ -138,7 +138,7 @@ export var AxisAndScalePane = React.createClass({
           </label>
           <input {...labelBottomInputAttributes} />
         </div>
-      </div>
+      </AccordionPane>
     );
   },
 
@@ -152,8 +152,7 @@ export var AxisAndScalePane = React.createClass({
     };
 
     return (
-      <div className="authoring-field-group">
-        <h5>{translate('panes.axis_and_scale.subheaders.axis_labels')}</h5>
+      <AccordionPane title={translate('panes.axis_and_scale.subheaders.axis_labels')}>
         <div className="authoring-field">
           <div className="checkbox">
             <input {...inputAttributes}/>
@@ -165,26 +164,24 @@ export var AxisAndScalePane = React.createClass({
             </label>
           </div>
         </div>
-      </div>
+      </AccordionPane>
     );
   },
 
   renderDataLabelField() {
     return (
-      <div className="authoring-field-group">
-        <h5>{translate('panes.axis_and_scale.subheaders.data_labels')}</h5>
+      <AccordionPane title={translate('panes.axis_and_scale.subheaders.data_labels')}>
         { this.renderShowValueLabels() }
-      </div>
+      </AccordionPane>
     );
   },
 
   renderDataLabelFieldsWithPercent() {
     return (
-      <div className="authoring-field-group">
-        <h5>{translate('panes.axis_and_scale.subheaders.data_labels')}</h5>
+      <AccordionPane title={translate('panes.axis_and_scale.subheaders.data_labels')}>
         { this.renderShowValueLabels() }
         { this.renderShowPercentLabels() }
-      </div>
+      </AccordionPane>
     );
   },
 
@@ -198,17 +195,17 @@ export var AxisAndScalePane = React.createClass({
     };
 
     return (
-        <div className="authoring-field">
-          <div className="checkbox">
-            <input {...inputAttributes}/>
-            <label className="inline-label" htmlFor="show-value-labels">
+      <div className="authoring-field">
+        <div className="checkbox">
+          <input {...inputAttributes}/>
+          <label className="inline-label" htmlFor="show-value-labels">
               <span className="fake-checkbox">
                 <span className="icon-checkmark3"></span>
               </span>
-              {translate('panes.axis_and_scale.fields.show_value_labels.title')}
-            </label>
-          </div>
+            {translate('panes.axis_and_scale.fields.show_value_labels.title')}
+          </label>
         </div>
+      </div>
     );
   },
 
@@ -262,12 +259,11 @@ export var AxisAndScalePane = React.createClass({
     };
 
     return (
-      <div className="authoring-field-group">
-        <h5>{translate('panes.axis_and_scale.subheaders.chart_sorting')}</h5>
+      <AccordionPane title={translate('panes.axis_and_scale.subheaders.chart_sorting')}>
         <div className="authoring-field">
           <Styleguide.Dropdown {...attributes} />
         </div>
-      </div>
+      </AccordionPane>
     );
   },
 
@@ -318,41 +314,39 @@ export var AxisAndScalePane = React.createClass({
     );
 
     return (
-       <div className="authoring-field-group">
-         <h5>{translate('panes.axis_and_scale.subheaders.scale')}</h5>
-         {translate('panes.axis_and_scale.fields.scale.title')}
+      <AccordionPane title={translate('panes.axis_and_scale.subheaders.scale')}>
+        {translate('panes.axis_and_scale.fields.scale.title')}
 
-         <div className="authoring-field radiobutton">
-           <div>
-             <input type="radio"
-                    name="measure-axis-scale"
-                    id="measure-axis-scale-automatic"
-                    value="automatic"
-                    onChange={this.onMeasureAxisScaleControlChange}
-                    checked={isAuto} />
-             <label htmlFor="measure-axis-scale-automatic">
-               <span />
-               <div className="translation-within-label">{translate('panes.axis_and_scale.fields.scale.automatic')}</div>
-             </label>
-           </div>
-           <div>
-             <input type="radio"
-                    name="measure-axis-scale"
-                    id="measure-axis-scale-custom"
-                    value="custom"
-                    onChange={this.onMeasureAxisScaleControlChange}
-                    checked={!isAuto} />
-             <label htmlFor="measure-axis-scale-custom">
-               <span />
-               <div className="translation-within-label">{translate('panes.axis_and_scale.fields.scale.custom')}</div>
-             </label>
-           </div>
-         </div>
+        <div className="authoring-field radiobutton">
+          <div>
+            <input type="radio"
+                   name="measure-axis-scale"
+                   id="measure-axis-scale-automatic"
+                   value="automatic"
+                   onChange={this.onMeasureAxisScaleControlChange}
+                   checked={isAuto}/>
+            <label htmlFor="measure-axis-scale-automatic">
+              <span />
+              <div className="translation-within-label">{translate('panes.axis_and_scale.fields.scale.automatic')}</div>
+            </label>
+          </div>
+          <div>
+            <input type="radio"
+                   name="measure-axis-scale"
+                   id="measure-axis-scale-custom"
+                   value="custom"
+                   onChange={this.onMeasureAxisScaleControlChange}
+                   checked={!isAuto}/>
+            <label htmlFor="measure-axis-scale-custom">
+              <span />
+              <div className="translation-within-label">{translate('panes.axis_and_scale.fields.scale.custom')}</div>
+            </label>
+          </div>
+        </div>
 
-         {!isAuto ? boundariesPart : null}
-       </div>
-     );
-
+        {!isAuto ? boundariesPart : null}
+      </AccordionPane>
+    );
   },
 
   renderTimelinePrecisionOption(option) {
@@ -419,11 +413,10 @@ export var AxisAndScalePane = React.createClass({
     const treatNullValuesAsZero = this.renderTreatNullValuesAsZero();
 
     return (
-      <div className="authoring-field-group">
-        <h5>{translate('panes.axis_and_scale.subheaders.grouping_and_display')}</h5>
+      <AccordionPane title={translate('panes.axis_and_scale.subheaders.grouping_and_display')}>
         {timelinePrecision}
         {treatNullValuesAsZero}
-      </div>
+      </AccordionPane>
     );
   },
 
@@ -435,13 +428,13 @@ export var AxisAndScalePane = React.createClass({
     const measureAxisScaleControl = this.renderMeasureAxisScaleControl();
 
     return (
-      <div>
+      <Accordion>
         {visualizationLabels}
         {showDimensionLabels}
         {dataLabelField}
         {measureAxisScaleControl}
         {chartSorting}
-      </div>
+      </Accordion>
     );
   },
 
@@ -452,12 +445,12 @@ export var AxisAndScalePane = React.createClass({
     const measureAxisScaleControl = this.renderMeasureAxisScaleControl();
 
     return (
-      <div>
+      <Accordion>
         {visualizationLabels}
         {showDimensionLabels}
         {measureAxisScaleControl}
         {chartSorting}
-      </div>
+      </Accordion>
     );
   },
 
@@ -466,10 +459,10 @@ export var AxisAndScalePane = React.createClass({
     const measureAxisScaleControl = this.renderMeasureAxisScaleControl();
 
     return (
-      <div>
+      <Accordion>
         {visualizationLabels}
         {measureAxisScaleControl}
-      </div>
+      </Accordion>
     );
   },
 
@@ -479,11 +472,11 @@ export var AxisAndScalePane = React.createClass({
     const measureAxisScaleControl = this.renderMeasureAxisScaleControl();
 
     return (
-      <div>
+      <Accordion>
         {visualizationLabels}
         {groupingAndDisplay}
         {measureAxisScaleControl}
-      </div>
+      </Accordion>
     );
   },
 
@@ -493,10 +486,10 @@ export var AxisAndScalePane = React.createClass({
     const chartSorting = this.renderChartSorting();
 
     return (
-      <div>
+      <Accordion>
         {chartSorting}
         {dataLabelFieldsWithPercent}
-      </div>
+      </Accordion>
     );
   },
 

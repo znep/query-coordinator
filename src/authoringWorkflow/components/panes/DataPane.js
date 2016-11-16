@@ -19,6 +19,9 @@ import {
   setShowOtherCategory
 } from '../../actions';
 
+import Accordion from '../shared/Accordion';
+import AccordionPane from '../shared/AccordionPane';
+
 import VisualizationTypeSelector from '../VisualizationTypeSelector';
 import DimensionSelector from '../DimensionSelector';
 import MeasureSelector from '../MeasureSelector';
@@ -32,8 +35,10 @@ export var DataPane = React.createClass({
 
   renderMetadataLoading() {
     return (
-      <div className="metadata-loading">
-        <span className="spinner-default metadata-loading-spinner"></span> {translate('panes.data.loading_metadata')}
+      <div className="alert">
+        <div className="metadata-loading">
+          <span className="spinner-default metadata-loading-spinner"></span> {translate('panes.data.loading_metadata')}
+        </div>
       </div>
     );
   },
@@ -158,8 +163,7 @@ export var DataPane = React.createClass({
       ) : null;
 
     return (
-      <div className="authoring-field-group">
-        <h5>{translate(`panes.data.fields.${translationKey}.title`)}</h5>
+      <AccordionPane title={translate(`panes.data.fields.${translationKey}.title`)}>
         <span id="limit-subtitle">{translate(`panes.data.fields.${translationKey}.subtitle`)}</span>
         <div className="authoring-field">
           <div className="radiobutton">
@@ -168,7 +172,7 @@ export var DataPane = React.createClass({
           </div>
         </div>
         {descriptionForPieChart}
-      </div>
+      </AccordionPane>
     );
   },
 
@@ -183,7 +187,6 @@ export var DataPane = React.createClass({
     } else if (isLoading(metadata)) {
       metadataInfo = this.renderMetadataLoading();
     } else {
-
       const showLimitAndShowOtherCategory =
         isBarChart(vifAuthoring) ||
         isPieChart(vifAuthoring) ||
@@ -194,14 +197,26 @@ export var DataPane = React.createClass({
       }
     }
 
+    const sections = (
+      <Accordion>
+        <AccordionPane title={translate('panes.data.subheaders.data_selection')}>
+          <div className="authoring-field">
+            <DimensionSelector/>
+          </div>
+          <div className="authoring-field">
+            <MeasureSelector/>
+          </div>
+          <div className="authoring-field">
+            <RegionSelector/>
+          </div>
+        </AccordionPane>
+        {limitAndShowOtherCategory}
+      </Accordion>
+    );
+
     return (
       <form>
-        {metadataInfo}
-        <VisualizationTypeSelector/>
-        <DimensionSelector/>
-        <MeasureSelector/>
-        <RegionSelector/>
-        {limitAndShowOtherCategory}
+        {metadataInfo ? metadataInfo : sections}
       </form>
     );
   }

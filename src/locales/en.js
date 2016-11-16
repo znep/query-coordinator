@@ -33,6 +33,9 @@ export default {
     nothing_here: 'There\'s nothing to configure in this pane yet!',
     data: {
       title: 'Data',
+      subheaders: {
+        data_selection: 'Data Selection'
+      },
       uhoh: 'Uh oh!',
       loading_metadata: 'Loading metadata...',
       loading_metadata_error: 'There was a mishap loading your metadata.',
@@ -107,6 +110,9 @@ export default {
     },
     title_and_description: {
       title: 'Title & Description',
+      subheaders: {
+        general: 'General'
+      },
       fields: {
         title: {
           title: 'Title'
@@ -122,6 +128,7 @@ export default {
     colors_and_style: {
       title: 'Colors & Style',
       subheaders: {
+        colors: 'Color',
         points: 'Points',
         map: 'Map'
       },

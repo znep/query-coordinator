@@ -27,9 +27,13 @@ export var CustomizationTab = React.createClass({
   },
 
   render() {
+    const {title, icon} = this.props;
+
     return (
       <li {...this.listItemAttributes()}>
-        <a {...this.linkAttributes()}>{this.props.title}</a>
+        <a {...this.linkAttributes()} title={title}>
+          <i className={`icon-${icon}`} />
+        </a>
       </li>
     );
   }

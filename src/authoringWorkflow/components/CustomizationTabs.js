@@ -14,6 +14,7 @@ export var CustomizationTabs = React.createClass({
       key: tab.id,
       id: tab.id,
       title: tab.title,
+      icon: tab.icon,
       selected: this.props.selection === tab.id,
       onTabNavigation: this.props.onTabNavigation
     };

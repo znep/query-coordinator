@@ -27,6 +27,7 @@ import TitleAndDescriptionPane from './panes/TitleAndDescriptionPane';
 import ColorsAndStylePane from './panes/ColorsAndStylePane';
 import AxisAndScalePane from './panes/AxisAndScalePane';
 import LegendsAndFlyoutsPane from './panes/LegendsAndFlyoutsPane';
+import VisualizationTypeSelector from './VisualizationTypeSelector';
 
 import FlyoutRenderer from '../../views/FlyoutRenderer';
 import RowInspector from '../../views/RowInspector';
@@ -58,27 +59,32 @@ export const AuthoringWorkflow = React.createClass({
         {
           id: 'authoring-data',
           title: translate('panes.data.title'),
-          paneComponent: DataPane
+          paneComponent: DataPane,
+          icon: 'data'
         },
         {
           id: 'authoring-axis-and-scale',
           title: translate('panes.axis_and_scale.title'),
-          paneComponent: AxisAndScalePane
+          paneComponent: AxisAndScalePane,
+          icon: 'axis-scale',
         },
         {
           id: 'authoring-title-and-description',
           title: translate('panes.title_and_description.title'),
-          paneComponent: TitleAndDescriptionPane
+          paneComponent: TitleAndDescriptionPane,
+          icon: 'text'
         },
         {
           id: 'authoring-colors-and-style',
           title: translate('panes.colors_and_style.title'),
-          paneComponent: ColorsAndStylePane
+          paneComponent: ColorsAndStylePane,
+          icon: 'color'
         },
         {
           id: 'authoring-legends-and-flyouts',
           title: translate('panes.legends_and_flyouts.title'),
-          paneComponent: LegendsAndFlyoutsPane
+          paneComponent: LegendsAndFlyoutsPane,
+          icon: 'flyout-options'
         }
       ]
     };
@@ -239,17 +245,18 @@ export const AuthoringWorkflow = React.createClass({
           </header>
 
           <section className="authoring-modal-content modal-content">
-            <CustomizationTabs onTabNavigation={this.onTabNavigation} selection={this.state.currentTabSelection} tabs={this.props.tabs} />
-
             <div className="authoring-controls">
-              <CustomizationTabPanes selection={this.state.currentTabSelection} tabs={this.props.tabs} />
+              <div className="authoring-editor">
+                <CustomizationTabs onTabNavigation={this.onTabNavigation} selection={this.state.currentTabSelection} tabs={this.props.tabs} />
+                <CustomizationTabPanes selection={this.state.currentTabSelection} tabs={this.props.tabs} />
+              </div>
               <div className="authoring-preview-container">
+                <VisualizationTypeSelector/>
                 <Visualization />
+                <TableView />
                 {scalingMode}
               </div>
             </div>
-
-            <TableView />
           </section>
 
           <footer className="modal-footer authoring-modal-footer">

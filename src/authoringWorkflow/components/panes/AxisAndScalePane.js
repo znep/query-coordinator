@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import Styleguide from 'socrata-components';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 
 import { translate } from '../../../I18n';
 import { onDebouncedEvent } from '../../helpers';
@@ -211,15 +212,22 @@ export var AxisAndScalePane = React.createClass({
 
   renderShowPercentLabels() {
     const { vifAuthoring } = this.props;
+    const showLabels = getShowValueLabels(vifAuthoring);
+
     const inputAttributes = {
       id: 'show-value-labels-as-percent',
       type: 'checkbox',
       onChange: this.props.onChangeShowValueLabelsAsPercent,
-      defaultChecked: getShowValueLabelsAsPercent(vifAuthoring)
+      defaultChecked: getShowValueLabelsAsPercent(vifAuthoring),
+      disabled: !showLabels
     };
 
+    const authoringFieldClasses = classNames('authoring-field', {
+      disabled: !showLabels
+    });
+
     return (
-      <div className="authoring-field">
+      <div className={authoringFieldClasses}>
         <div className="checkbox">
           <input {...inputAttributes}/>
           <label className="inline-label" htmlFor="show-value-labels-as-percent">

@@ -152,8 +152,6 @@ class InternalController < ApplicationController
     begin
       params[:domain]['shortName'] ||= params[:domain]['cName']
       params[:domain]['accountTierId'] ||= AccountTier.find_by_name('Ultimate').id
-      params[:domain]['salesforceId'].try(:strip!)
-      params[:domain].delete('salesforceId') if params[:domain]['salesforceId'].blank?
       domain = Domain.create(params[:domain])
 
       parentConfigId = params[:config][:parentDomainCName]

@@ -360,7 +360,18 @@
         // Caveat: the modal still pops up if you have added two different viewDefinitions from the
         // dataset the map was originally derived from (for instance, ones using different location
         // columns). That is a known issue that we should tackle another day.
-        view.displayFormat.viewDefinitions = _.uniq(view.displayFormat.viewDefinitions, _.isEqual);
+        //
+        // TODO: if we ever update lodash in the old ux from 3.7.0, use _.uniqBy instead of this.
+        // Note that while _.uniq exists in 3.7.0, it does not do a deep comparison for objects, and
+        // doesn't do what we need it to do.
+        var dedupedViewDefinitions = _.select(view.displayFormat.viewDefinitions, function(definition, i) {
+          var otherViewDefinitions = _.slice(view.displayFormat.viewDefinitions, i + 1);
+
+          return !_.any(otherViewDefinitions, function(otherDefinition) {
+            return _.isEqual(otherDefinition, definition);
+          });
+        });
+        view.displayFormat.viewDefinitions = dedupedViewDefinitions;
 
         return;
       }

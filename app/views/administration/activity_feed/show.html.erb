@@ -81,7 +81,7 @@
             <% description = event_description(last_event) %>
             <% unless description.blank? %>
               <p class="event-description event-description-human-readable">
-                <%= html_safe(description) %>
+                <%== description %>
               </p>
             <% else %>
               <p class="error-details-heading">
@@ -108,7 +108,7 @@
         <span><%= @activity.created_at.strftime('%d %b %Y at %H:%M:%S %Z') %></span>
       </p>
       <h3><%= t("#{activity_feed_prefix}.show_page.import_method") %></h3>
-      <p><%= html_safe(t("#{activity_feed_prefix}.show_page.services.#{@activity.service}")) %></p>
+      <p><%== t("#{activity_feed_prefix}.show_page.services.#{@activity.service}") %></p>
       <% unless @activity.bad_rows_url.blank? %>
         <h3>
           <%= t("#{activity_feed_prefix}.show_page.failed_rows") %>

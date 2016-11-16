@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import $ from 'jquery';
 
+import Environment from '../StorytellerEnvironment';
+
 /**
  * @class PresentationMode
  * @description
@@ -65,10 +67,8 @@ export default function PresentationMode() {
   }
 
   function editPage() {
-    var hasSlash = window.location.href.lastIndexOf('/') === window.location.href.length - 1;
-    var slash = hasSlash ? '' : '/';
-
-    window.location = window.location.href + slash + 'edit';
+    const segment = Environment.IS_GOAL ? 'edit-story' : 'edit';
+    window.location = `${window.location.pathname}/${segment}`.replace('//', '/');
   }
 
   function setUserStoryHeight() {

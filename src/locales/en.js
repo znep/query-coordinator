@@ -27,7 +27,7 @@ export default {
     based_on: 'Based on ',
     close: 'Close',
     insert: 'Insert',
-    changes_made_confirmation: 'You have made changes! Are you sure you want to cancel?'
+    changes_made_confirmation: 'Are you sure you want to close without saving changes?'
   },
   panes: {
     nothing_here: 'There\'s nothing to configure in this pane yet!',

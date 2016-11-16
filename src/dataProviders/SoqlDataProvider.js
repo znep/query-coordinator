@@ -186,6 +186,35 @@ function SoqlDataProvider(config) {
       );
   };
 
+  // Requests aggregate statistics about the data in all of the columns.  This potentially fires
+  // off many data requests that perform slow queries, use with caution.
+  this.getColumnStats = function(columns) {
+    utils.assert(_.isArray(columns), 'columns parameter must be an array');
+
+    const promises = _.map(columns, function(column) {
+      const minAlias = '__min__';
+      const maxAlias = '__max__';
+      const { fieldName, dataTypeName } = column;
+
+      // For number columns, we need the min and max of the column
+      if (dataTypeName === 'number') {
+        const select = `min(${fieldName}) as ${minAlias}, max(${fieldName}) as ${maxAlias}`;
+        const queryString = `$select=${select}`;
+        const url = urlForQuery(queryString);
+        return makeSoqlGetRequest(url).then((result) => {
+          return {
+            rangeMin: _.toNumber(result[0][minAlias]),
+            rangeMax: _.toNumber(result[0][maxAlias])
+          };
+        });
+      } else {
+        return Promise.resolve(null);
+      }
+    });
+
+    return Promise.all(promises);
+  };
+
   /**
    * Private methods
    */

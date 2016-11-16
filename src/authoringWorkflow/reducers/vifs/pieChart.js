@@ -4,6 +4,7 @@ import { translate } from '../../../I18n';
 import vifs from '../../vifs';
 import {
   forEachSeries,
+  getValidVifFilters,
   setStringValueOrDefaultValue,
   setStringValueOrDeleteProperty,
   setBooleanValueOrDefaultValue,
@@ -18,6 +19,7 @@ import {
   SET_DESCRIPTION,
   SET_DIMENSION,
   SET_DOMAIN,
+  SET_FILTERS,
   SET_MEASURE,
   SET_MEASURE_AGGREGATION,
   SET_ORDER_BY,
@@ -60,6 +62,12 @@ export default function pieChart(state, action) {
     case SET_DATASET_UID:
       forEachSeries(state, series => {
         setStringValueOrDefaultValue(series, 'dataSource.datasetUid', action.datasetUid, null);
+      });
+      break;
+
+    case SET_FILTERS:
+      forEachSeries(state, series => {
+        _.set(series, 'dataSource.filters', getValidVifFilters(action.filters));
       });
       break;
 

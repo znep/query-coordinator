@@ -47,6 +47,7 @@ export default function metadata(state, action) {
       state.data = action.datasetMetadata;
       state.curatedRegions = action.curatedRegions;
       state.phidippidesMetadata = action.phidippidesMetadata;
+      state.hasColumnStats = action.hasColumnStats;
       break;
 
     case HANDLE_METADATA_ERROR:

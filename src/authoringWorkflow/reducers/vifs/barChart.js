@@ -5,6 +5,7 @@ import { translate } from '../../../I18n';
 import vifs from '../../vifs';
 import {
   forEachSeries,
+  getValidVifFilters,
   setStringValueOrDefaultValue,
   setBooleanValueOrDefaultValue,
   setStringValueOrDeleteProperty,
@@ -21,6 +22,7 @@ import {
   SET_DESCRIPTION,
   SET_DIMENSION,
   SET_DOMAIN,
+  SET_FILTERS,
   SET_LABEL_BOTTOM,
   SET_LABEL_LEFT,
   SET_LABEL_RIGHT,
@@ -71,6 +73,12 @@ export default function barChart(state, action) {
     case SET_DATASET_UID:
       forEachSeries(state, series => {
         setStringValueOrDefaultValue(series, 'dataSource.datasetUid', action.datasetUid, null);
+      });
+      break;
+
+    case SET_FILTERS:
+      forEachSeries(state, series => {
+        _.set(series, 'dataSource.filters', getValidVifFilters(action.filters));
       });
       break;
 

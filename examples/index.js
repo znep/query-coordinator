@@ -2,7 +2,7 @@
 // Update them accordingly!
 window['classnames'] = require('classnames');
 window['d3'] = require('d3');
-window['jquery'] = window['$'] = require('jquery');
+window['jquery'] = window['$'] = window['jQuery'] = require('jquery');
 window['leaflet'] = require('leaflet');
 window['lodash'] = require('lodash');
 window['moment'] = require('moment');

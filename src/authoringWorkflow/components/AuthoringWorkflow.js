@@ -28,6 +28,7 @@ import ColorsAndStylePane from './panes/ColorsAndStylePane';
 import AxisAndScalePane from './panes/AxisAndScalePane';
 import LegendsAndFlyoutsPane from './panes/LegendsAndFlyoutsPane';
 import VisualizationTypeSelector from './VisualizationTypeSelector';
+import FilterBar from './FilterBar';
 
 export const AuthoringWorkflow = React.createClass({
   propTypes: {
@@ -226,6 +227,8 @@ export const AuthoringWorkflow = React.createClass({
           </header>
 
           <section className="authoring-modal-content modal-content">
+            <FilterBar />
+
             <div className="authoring-controls">
               <div className="authoring-editor">
                 <CustomizationTabs onTabNavigation={this.onTabNavigation} selection={this.state.currentTabSelection} tabs={this.props.tabs} />

@@ -193,7 +193,7 @@ export const StoryPublicationStatus = React.createClass({
 
     const wrapperAttributes = {
       className: classNames('story-publication-status', {
-        'disabled': storySaveStatusStore.autosaveDisabledByUrlParam()
+        'disabled': storySaveStatusStore.autosaveDisabled()
       })
     };
 

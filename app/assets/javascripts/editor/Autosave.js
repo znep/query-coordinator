@@ -21,13 +21,10 @@ export default function Autosave(storyUid) {
 
   var autosaveDebounceMsec = Constants.AUTOSAVE_DEBOUNCE_TIME_IN_SECONDS * 1000;
   var saveOnceSettled;
-  // Autosave can be disabled from a URL parameter: autosave.
-  // For example: https://example.com?autosave=false
-  var disabledByUrlParam = storySaveStatusStore.autosaveDisabledByUrlParam();
+  var disabled = storySaveStatusStore.autosaveDisabled();
 
   function saveASAP() {
-
-    if (disabledByUrlParam) {
+    if (disabled) {
       return;
     }
 

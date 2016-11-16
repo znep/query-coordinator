@@ -19,14 +19,16 @@ describe('StorySaveStatusStore', function() {
     {},
     StorytellerUtils,
     {
-      queryParameterMatches: (paramName) => {
-        if (paramName !== 'autosave') {
-          throw new Error(`unexpected param: ${paramName}`);
+      queryParameterMatches: (paramKey, paramValue) => {
+        if (paramKey !== 'autosave') {
+          throw new Error(`unexpected param: ${paramKey}`);
         }
-        return !autosaveUrlParam;
+        return _.isUndefined(paramValue) || `${autosaveUrlParam}` === `${paramValue}`;
       }
     }
   );
+
+  const environmentMock = {};
 
   beforeEach(function() {
     dispatcher =  new Dispatcher();
@@ -48,6 +50,7 @@ describe('StorySaveStatusStore', function() {
     StorySaveStatusStoreAPI.__Rewire__('dispatcher', dispatcher);
     StorySaveStatusStoreAPI.__Rewire__('storyStore', storyStore);
     StorySaveStatusStoreAPI.__Rewire__('StorytellerUtils', storytellerUtilsMock);
+    StorySaveStatusStoreAPI.__Rewire__('Environment', environmentMock);
 
     storySaveStatusStore = new StorySaveStatusStore('test-test');
 
@@ -62,6 +65,8 @@ describe('StorySaveStatusStore', function() {
     StoreAPI.__ResetDependency__('dispatcher');
     StorySaveStatusStoreAPI.__ResetDependency__('dispatcher');
     StorySaveStatusStoreAPI.__ResetDependency__('storyStore');
+    StorySaveStatusStoreAPI.__ResetDependency__('StorytellerUtils');
+    StorySaveStatusStoreAPI.__ResetDependency__('Environment');
   });
 
   describe('when StoryStore is uninitialized', function() {
@@ -83,12 +88,27 @@ describe('StorySaveStatusStore', function() {
       store = storySaveStatusStore;
     });
 
-    describe('autosaveDisabledByUrlParam', function() {
+    describe('autosaveDisabled', function() {
       it('should be true only if ?autosave=false', function() {
         autosaveUrlParam = true;
-        assert.isFalse(store.autosaveDisabledByUrlParam());
+        assert.isFalse(store.autosaveDisabled());
         autosaveUrlParam = false;
-        assert.isTrue(store.autosaveDisabledByUrlParam());
+        assert.isTrue(store.autosaveDisabled());
+        autosaveUrlParam = undefined;
+        assert.isFalse(store.autosaveDisabled());
+      });
+
+      it('should be true by default on goals', function() {
+        environmentMock.IS_GOAL = true;
+
+        autosaveUrlParam = true;
+        assert.isFalse(store.autosaveDisabled());
+        autosaveUrlParam = false;
+        assert.isTrue(store.autosaveDisabled());
+        autosaveUrlParam = undefined;
+        assert.isTrue(store.autosaveDisabled());
+
+        delete environmentMock.IS_GOAL;
       });
     });
 

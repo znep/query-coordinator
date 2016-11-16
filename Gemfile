@@ -93,6 +93,9 @@ gem 'jenkins_api_client'
 # ActiveMQ message processing
 gem 'stomp', '1.4.3'
 
+# Feature flag operations.
+gem 'signaller-ruby', :require => 'signaller'
+
 group :production do
   # Reaps unicorn worker processes under predefined conditions
   gem 'unicorn-worker-killer', '~> 0.4'

@@ -3,6 +3,9 @@ require 'simplecov-cobertura'
 require 'webmock/rspec'
 require 'database_cleaner'
 require 'os'
+require 'signaller/test/helpers'
+
+include Signaller::Test::Helpers
 
 SimpleCov.profiles.define 'filtered' do
   load_profile 'rails'
@@ -148,6 +151,10 @@ RSpec.configure do |config|
 
   config.before(:each) do
     @google_analytics_tracking_id = 'money-in-banana-stand'
+  end
+
+  config.before(:each) do
+    init_signaller # Note, this comes from the Signaller gem.
   end
 
 # The settings below are suggested to provide a good initial experience
@@ -312,4 +319,24 @@ end
 # (for instance, it can't figure out how to scroll the element into the viewport).
 def javascript_click(element)
   page.driver.browser.execute_script("$(arguments[0]).click()", element.native)
+end
+
+# Set feature flags to the given values. Example:
+# set_feature_flags( 'use_awesomeness' => true )
+#
+# TODO
+# This is the simplest thing that will work for the single usage of Signaller
+# so far. We need to come up with a better stubbing system, ideally supported
+# by Signaller itself (extending init_signaller?).
+def set_feature_flags(flags_hash)
+  allow(Signaller::FeatureFlags).to receive(:list).and_return(flags_hash.keys)
+  allow(Signaller::FeatureFlags).to receive(:on_domain).and_return(flags_hash)
+  allow_any_instance_of(Signaller::Connection).to receive(:read_from).and_return(
+    flags_hash.each_with_object({}) do |(flag, value), memo|
+      memo[flag] = {
+        'value' => value,
+        'source' => 'test_stub'
+      }
+    end
+  )
 end

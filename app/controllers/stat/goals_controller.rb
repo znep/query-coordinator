@@ -12,16 +12,33 @@ class Stat::GoalsController < StoriesController
   def edit
     @dashboard_uid = params[:dashboard]
     @category_uid = params[:category]
+    @goal_uid = params[:uid]
 
-    # This will create an in-memory draft if there is no draft story
-    # in the DB (for normal stories, this would be a 404 condition.)
-    @story = DraftStory.find_by_uid(params[:uid]) || DraftStory.new
-    @story.uid = params[:uid]
+    if using_storyteller_editor?
+      # This will create an in-memory draft if there is no draft story
+      # in the DB (for normal stories, this would be a 404 condition.)
+      @story = DraftStory.find_by_uid(@goal_uid) || DraftStory.new
+      @story.uid = @goal_uid
 
-    super
+      super
+    else
+      if @dashboard_uid && @category_uid
+        redirect_to "/stat/goals/#{@dashboard_uid}/#{@category_uid}/#{@goal_uid}/edit-classic"
+      else
+        redirect_to "/stat/goals/single/#{@goal_uid}/edit-classic"
+      end
+    end
   end
 
   private
+
+  def using_storyteller_editor?
+    signaller_value = Signaller.for(flag: 'open_performance_narrative_editor').
+      value(on_domain: request.host)
+    url_param_value = request.params['open_performance_narrative_editor']
+
+    (url_param_value || signaller_value) == 'storyteller'
+  end
 
   def story_metadata
     ProcrustesStoryMetadata.new(@goal)

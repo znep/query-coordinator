@@ -146,8 +146,7 @@ GEM
       activesupport (>= 4.1.0)
     hashie (3.4.6)
     headless (2.3.1)
-    httparty (0.13.5)
-      json (~> 1.8)
+    httparty (0.14.0)
       multi_xml (>= 0.5.2)
     i18n (0.7.0)
     inifile (3.0.0)
@@ -300,6 +299,10 @@ GEM
       rubyzip (~> 1.0)
       websocket (~> 1.0)
     semver2 (3.4.2)
+    signaller-ruby (0.0.4)
+      activesupport (~> 4.2)
+      httparty (~> 0.13)
+      semver2 (~> 3.4)
     simplecov (0.10.0)
       docile (~> 1.1.0)
       json (~> 1.8)
@@ -411,6 +414,7 @@ DEPENDENCIES
   sdoc (~> 0.4.0)
   selenium-webdriver
   semver2
+  signaller-ruby
   simplecov
   simplecov-cobertura
   socrata_site_chrome (= 1.2.0)

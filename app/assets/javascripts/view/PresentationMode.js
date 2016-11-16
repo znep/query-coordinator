@@ -126,6 +126,8 @@ export default function PresentationMode() {
     setUserStoryHeight();
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
+
+    $('.socrata-visualization').trigger('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');
   }
 
   function pageNext() {

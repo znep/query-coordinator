@@ -4,6 +4,8 @@ require 'digest/md5'
 class StylesController < ApplicationController
   skip_before_filter :require_user, :set_user, :set_meta, :sync_logged_in_cookie, :poll_external_configs
 
+  SCSS_LOAD_PATHS = %w(/app/styles /node_modules).map { |path| path.prepend(Rails.root.to_s) }
+
   # Only used in development
   def individual
     path = params[:path]
@@ -32,7 +34,7 @@ class StylesController < ApplicationController
                            :style => :nested,
                            :syntax => :scss,
                            :cache => false,
-                           :load_paths => ["#{Rails.root}/app/styles", "#{Rails.root}/node_modules/"]).render
+                           :load_paths => SCSS_LOAD_PATHS).render
         end
       elsif File.exist?(css_stylesheet_filename)
         render :text => File.read(css_stylesheet_filename)
@@ -109,7 +111,7 @@ class StylesController < ApplicationController
                                          :style => :compressed,
                                          :syntax => :scss,
                                          :cache => false,
-                                         :load_paths => ["#{Rails.root}/app/styles"]).render
+                                         :load_paths => SCSS_LOAD_PATHS).render
       Rails.cache.write(cache_key, rendered_styles)
       render :text => rendered_styles
     else
@@ -150,7 +152,7 @@ class StylesController < ApplicationController
       :style => :compressed,
       :syntax => :scss,
       :cache => false,
-      :load_paths => ["#{Rails.root}/app/styles"]
+      :load_paths => SCSS_LOAD_PATHS
     ).render
 
     # Wow, this is super important. Since stylesheets come from heterogenous

@@ -208,6 +208,9 @@ show_federated_site_name_instead_of_cname:
 show_provenance_badge_in_catalog:
   description: Show the provenance "Official" badge for official views in the catalog.
   defaultValue: false
+show_provenance_facet_in_catalog:
+  description: Show the Authority facet in the catalog page.
+  defaultValue: false
 site_appearance_visible:
   description: Display "Site Appearance" link in the /admin panel. Note that it will always be displayed for superadmins. This only toggles it for regular admins and designers.
   defaultValue: false

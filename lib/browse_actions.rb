@@ -93,6 +93,7 @@ module BrowseActions
       :type => :authority,
       :title => t('controls.browse.facets.authority.title'),
       :singular_description => t('controls.browse.facets.authority.singular_title'),
+      :hidden => !FeatureFlags.derive.show_provenance_facet_in_catalog,
       :param => :provenance,
       :options => [
         { text: t('controls.browse.facets.authority.official'), value: 'official' },
@@ -302,6 +303,10 @@ module BrowseActions
       merge(options).            # whatever the call configures is more important
       merge(configured_params).  # gives the domain a chance to override the call
       merge(user_params)         # anything from the queryparam is most important
+
+    if FeatureFlags.derive.show_provenance_facet_in_catalog
+      browse_options[:provenance] = 'official' unless browse_options.key?(:provenance)
+    end
 
     # munge params to types we expect
     @@numeric_options.each do |option|

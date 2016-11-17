@@ -18,7 +18,11 @@ export default function HomePane() {
         <h2>{I18n.home_pane.data}</h2>
         <div className="alert default manage-section-box">
           {I18n.home_pane.data_blurb}
-          <button className="btn btn-default btn-sm">{I18n.home_pane.data_manage_button}</button>
+          <button
+            className="btn btn-default btn-sm"
+            data-modal="manage-data-modal">
+            {I18n.home_pane.data_manage_button}
+          </button>
         </div>
       </section>
     </div>

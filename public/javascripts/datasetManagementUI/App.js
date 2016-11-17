@@ -2,6 +2,7 @@ import React from 'react';
 import HomePane from './components/HomePane';
 import AppBar from './components/AppBar';
 import ManageMetadata from './components/ManageMetadata';
+import ManageData from './components/ManageData';
 
 export default function App() {
   return (
@@ -9,6 +10,7 @@ export default function App() {
       <AppBar />
       <HomePane />
       <ManageMetadata />
+      <ManageData />
     </div>
   );
 }

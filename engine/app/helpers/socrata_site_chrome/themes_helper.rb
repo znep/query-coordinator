@@ -15,12 +15,20 @@ module SocrataSiteChrome
       }
     end
 
-    def cache_key_for_site_chrome(site_chrome, request)
-      version = site_chrome.try(:updated_at) || SocrataSiteChrome::VERSION
-      if request.try(:params).try(:keys).try(:length).to_i > 0
-        version = "#{version}-#{request.params.keys.first}"
-      end
-      "#{request.host}/config/custom-#{version}"
+    # NOTE!! It is critical that the composition this cache key structurally match the corresponding
+    # cache_key method in consuming applications. For example in the frontend, this is defined in the
+    # frontend/app/models/configuration.rb class.
+    def cache_key_for_site_chrome
+      [
+        'frontend',
+        Rails.application.config.cache_key_prefix,
+        'domain',
+        domain_config.cname,
+        domain_config.config_updated_at,
+        'configurations',
+        'site_chrome',
+        'custom.css'
+      ].join(':')
     end
 
     # theme_section is one of 'general', 'header', or 'footer'
@@ -36,6 +44,10 @@ module SocrataSiteChrome
     def theme_value(key, value)
       # Return font family values in quotes
       key == 'font_family' ? %Q{"#{CGI.escapeHTML(value.to_s)}"} : value
+    end
+
+    def domain_config
+      ::RequestStore.store['site_chrome.domain_config'] ||= SocrataSiteChrome::DomainConfig.new(request.host)
     end
 
   end

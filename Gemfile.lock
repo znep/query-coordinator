@@ -1,13 +1,13 @@
 PATH
   remote: engine
   specs:
-    socrata_site_chrome (2.0.4)
-      airbrake (>= 4.3.0)
+    socrata_site_chrome (2.0.5)
+      airbrake (~> 4.3.0)
       chroma
       dalli
-      hashie (>= 2.1.2)
+      hashie (~> 2.1.2)
       httparty
-      rails (~> 4.2, >= 4.2.6)
+      rails (~> 4.2.6, ~> 4.2)
       request_store
       sass
 
@@ -51,9 +51,9 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.5.0)
       public_suffix (~> 2.0, >= 2.0.2)
-    airbrake (5.6.1)
-      airbrake-ruby (~> 1.6)
-    airbrake-ruby (1.6.0)
+    airbrake (4.3.8)
+      builder
+      multi_json
     arel (6.0.3)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
@@ -70,7 +70,7 @@ GEM
     globalid (0.3.7)
       activesupport (>= 4.1.0)
     hashdiff (0.3.0)
-    hashie (3.4.6)
+    hashie (2.1.2)
     httparty (0.14.0)
       multi_xml (>= 0.5.2)
     i18n (0.7.0)
@@ -88,6 +88,7 @@ GEM
     mime-types-data (3.2016.0521)
     mini_portile2 (2.1.0)
     minitest (5.9.1)
+    multi_json (1.12.1)
     multi_xml (0.5.5)
     nokogiri (1.6.8.1)
       mini_portile2 (~> 2.1.0)

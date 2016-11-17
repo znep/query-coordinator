@@ -7,10 +7,12 @@ describe SocrataSiteChrome::CustomContent do
   let(:site_chrome_config_with_custom_content) { File.read('spec/fixtures/custom_content_config.json') }
   let(:helper) { SocrataSiteChrome::CustomContent.new(domain) }
   let(:coreservice_uri) { Rails.application.config_for(:config)['coreservice_uri'] }
-  let(:uri) { "#{coreservice_uri}/configurations.json?type=site_chrome&defaultOnly=true" }
+  let(:configurations_uri) { "#{coreservice_uri}/configurations.json?type=site_chrome&defaultOnly=true" }
+  let(:domains_uri) { "#{coreservice_uri}/domains/#{domain}.json" }
 
   describe '#fetch' do
     it 'returns empty content if the config is empty' do
+      stub_domains
       stub_configurations(:status => 200, :body => nil)
       expect(helper.fetch).to eq(
         :header => { :html => nil, :css => nil, :js => nil },
@@ -19,6 +21,7 @@ describe SocrataSiteChrome::CustomContent do
     end
 
     it 'returns content for each corresponding section from the config' do
+      stub_domains
       stub_configurations(:status => 200, :body => site_chrome_config_with_custom_content)
       result = helper.fetch
 
@@ -31,6 +34,7 @@ describe SocrataSiteChrome::CustomContent do
     end
 
     it 'returns draft content' do
+      stub_domains
       stub_configurations(:status => 200, :body => site_chrome_config_with_custom_content)
       result = helper.fetch(:draft)
 
@@ -41,6 +45,7 @@ describe SocrataSiteChrome::CustomContent do
 
   describe '#activated?' do
     it 'returns false if the activation_state property is nil' do
+      stub_domains
       stub_configurations(:status => 200, :body => nil)
       expect(helper.activated?).to eq(false)
     end
@@ -49,11 +54,13 @@ describe SocrataSiteChrome::CustomContent do
       body = JSON.parse(site_chrome_config_with_custom_content).tap do |content|
         content[0]['properties'].detect { |p| p['name'] == 'activation_state' }['value'] = nil
       end
+      stub_domains
       stub_configurations(:status => 200, :body => body)
       expect(helper.activated?).to eq(false)
     end
 
     it 'returns true if activation_state is true' do
+      stub_domains
       stub_configurations(:status => 200, :body => site_chrome_config_with_custom_content)
       expect(helper.activated?).to eq(true)
     end
@@ -77,9 +84,5 @@ describe SocrataSiteChrome::CustomContent do
   end
 
   private
-
-  def stub_configurations(response)
-    stub_request(:get, uri).to_return(:status => response[:status], :body => response[:body])
-  end
 
 end

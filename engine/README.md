@@ -166,11 +166,26 @@ TODO: Once this is done in Frontend, document the steps here.
 
 ### Runtime Dependencies
 
-The host app must provide the configuration directive that specifies the `coreservice_uri`. This
-value is used by the gem to make requests to core to fetch and update the site chrome configuration.
+#### `current_user_json`
 
-The host app must also provide an ApplicationController method called `current_user_json` which should
-return a json representation of the current user. If this is not set, and exception will be raised.
+The host app must provide an ApplicationController method called 
+`current_user_json` which should return a json representation of the current
+user. If this is not set, and exception will be raised.
+
+#### `coreservice_uri`
+
+The host app must also provide the configuration directive that specifies the
+`coreservice_uri`. This value is used by the gem to make requests to core to
+fetch and update the site chrome configuration.
+It is expected to be a full URI, for example: `http://some.host.com:8080`.
+
+#### `cache_key_prefix`
+
+The host app must also provide a cache key prefix used to generate the same memcached key that the 
+hosting application uses to cache the underyling configuration data. The configuration property must
+be called `Rails.application.config.cache_key_prefix` and usually consists of the first 8 characters
+of the `REVISION` file which contains the `SHA1` representing the current release. For example: 
+`c597c5c5`.
 
 ## Site Configuration & Styling
 
@@ -401,9 +416,9 @@ Alternatively you can run each step individually
 
 ## Running tests
 
-Run RSPec tests from within the `engine` directory with:
+Run RSpec tests from within the `engine` directory with:
 
-    bundle exec rspec
+    bundle exec rake
 
 You can also watch the specs for changes and re-run them automatically with:
 

@@ -29,11 +29,7 @@ module SocrataSiteChrome
     end
 
     def open_performance_enabled?
-      begin
-        SocrataSiteChrome::FeatureSet.new(request.host).feature_enabled?('govstat')
-      rescue
-        false
-      end
+      SocrataSiteChrome::FeatureSet.new(request.host).feature_enabled?('govstat') rescue false
     end
 
     def header_title
@@ -45,13 +41,14 @@ module SocrataSiteChrome
     end
 
     def logo(img, display_name = nil)
-      img_src = img.dig('logo', 'src')
-      if img_src.present?
-        tag('img',
-          :src => site_chrome_massage_url(img_src, add_locale: false),
-          :alt => img.dig('logo', 'alt').presence || display_name.presence ||
-            request.host,
-          :onerror => 'this.style.display="none"')
+      logo_src = img.dig('logo', 'src')
+      if logo_src.present?
+        tag(
+          'img',
+          :src => site_chrome_massage_url(logo_src, add_locale: false),
+          :alt => img.dig('logo', 'alt').presence || display_name.presence || request.host,
+          :onerror => 'this.style.display="none"'
+        )
       end
     end
 
@@ -156,9 +153,9 @@ module SocrataSiteChrome
         social_links = links.to_a
       end
 
-      social_links.select do |link|
-        link[:url].present?
-      end.sort_by { |x| social_link_order.find_index(x[:type]).to_i }
+      social_links.select { |link| link[:url].present? }.sort_by do |link|
+        social_link_order.find_index(link[:type]).to_i
+      end
     end
 
     def nav_link_classnames(child_link: false, social_link: false, is_mobile: false)
@@ -210,7 +207,9 @@ module SocrataSiteChrome
       child_links.to_a.map do |link|
         link_text = localized("header.links.#{link[:key]}", get_site_chrome.locales)
         if valid_link_item?(link, link_text)
-          link_to(link_text, site_chrome_massage_url(link[:url]),
+          link_to(
+            link_text,
+            site_chrome_massage_url(link[:url]),
             :class => nav_link_classnames(child_link: true, is_mobile: is_mobile)
           )
         end
@@ -268,7 +267,7 @@ module SocrataSiteChrome
     end
 
     def dropdown(prompt, dropdown_options = [], orientation = 'bottom')
-      dropdown_options = dropdown_options.compact.map { |option| content_tag :li, option }
+      dropdown_options = dropdown_options.compact.map { |option| content_tag(:li, option) }
       div_options = {
         'data-dropdown' => '',
         'data-orientation' => orientation,
@@ -304,10 +303,8 @@ module SocrataSiteChrome
       template = (request.try(:query_parameters).dig(:site_chrome_template) ||
         get_site_chrome.general[:template]).to_s.strip.downcase
       case template
-      when 'rally'
-        'rally'
-      else
-        'evergreen'
+        when 'rally' then 'rally'
+        else 'evergreen'
       end
     end
 
@@ -327,8 +324,7 @@ module SocrataSiteChrome
     # This will bypass the Site Appearance configuration and pull the custom header/footer content
     # from the Site Chrome configuration properties `custom_[header|footer]_[html|css|js]`
     def site_chrome_custom_content
-      ::RequestStore.store[:site_chrome_custom_content] ||=
-        SocrataSiteChrome::CustomContent.new(request.host)
+      ::RequestStore.store['site_chrome.custom_content'] ||= SocrataSiteChrome::CustomContent.new(request.host)
     end
 
     def using_custom_header_footer?

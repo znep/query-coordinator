@@ -18,7 +18,7 @@ module SocrataSiteChrome
     end
 
     def get_locale_config
-      ::RequestStore.store[:site_chrome_locale_config] ||= begin
+      ::RequestStore.store['site_chrome.locale_config'] ||= begin
         response = HTTParty.get(
           locale_config_uri,
           :verify => !!ENV['SSL_VERIFY_NONE'] || Rails.env.production?,
@@ -30,7 +30,7 @@ module SocrataSiteChrome
       end
 
       ActiveSupport::HashWithIndifferentAccess.new(
-        configuration_or_default(::RequestStore.store[:site_chrome_locale_config])
+        configuration_or_default(::RequestStore.store['site_chrome.locale_config'])
       )
     end
 

@@ -10,7 +10,7 @@ describe SocrataSiteChrome::LocaleConfig do
 
   def stub_locale_config(response = { :status => 200, :body => '[]' })
     stub_request(:get, uri).to_return(:status => response[:status], :body => response[:body])
-    ::RequestStore.store[:site_chrome_locale_config] = nil
+    ::RequestStore.store['site_chrome.locale_config'] = nil
   end
 
   describe '#get_locale_config' do

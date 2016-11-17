@@ -4,15 +4,22 @@ require 'httparty'
 module SocrataSiteChrome
   class DomainConfig
 
-    attr_reader :domain
+    CONFIGURATION_TYPE = 'site_chrome'
 
-    def initialize(domain)
-      @domain = domain.to_s
+    attr_reader :cname, :config_updated_at
+
+    def initialize(domain_name)
+      if Rails.env.test?
+        @cname = domain_name
+        @config_updated_at = Time.now.to_i
+      else
+        fetch_domain(domain_name) if [@cname, @config_updated_at].any?(&:blank?)
+      end
     end
 
     # Convert domain_config to data structure needed for Site Chrome
     def site_chrome_config(stage = :published)
-      raise RuntimeError.new('Empty configuration in site_chrome.') unless config
+      raise RuntimeError.new("Empty configuration in #{CONFIGURATION_TYPE}") unless config
 
       site_chrome_config = current_site_chrome(stage).to_h.with_indifferent_access
       site_chrome_content = config[:properties].to_a.detect do |property|
@@ -49,8 +56,35 @@ module SocrataSiteChrome
       }
     end
 
+    # NOTE!! It is critical that the composition this cache key structurally match the corresponding
+    # cache_key method in consuming applications. For example in the frontend, this is defined in the
+    # frontend/app/models/configuration.rb class.
     def cache_key
-      "#{@domain}_site_chrome_config"
+      "domain:#{cname}:#{config_updated_at}:configurations:#{CONFIGURATION_TYPE}"
+      [
+        'frontend',
+        Rails.application.config.cache_key_prefix,
+        'domain',
+        cname,
+        config_updated_at,
+        'configurations',
+        CONFIGURATION_TYPE,
+      ].join(':')
+    end
+
+    def fetch_domain(domain_name)
+      begin
+        domain_json = HTTParty.get(
+          "#{Rails.application.config.coreservice_uri}/domains/#{domain_name}.json",
+          :headers => { 'X-Socrata-Host' => domain_name }
+        ).body
+      rescue HTTParty::ResponseError => e
+        raise "Failed to get domain configuration for #{domain_name}: #{e}"
+      end
+      @cname, @config_updated_at = JSON.parse(domain_json).slice('cname', 'configUpdatedAt').values
+      unless @config_updated_at.present?
+        raise RuntimeError.new("Unable to fetch domain configUpdatedAt for #{domain_name}")
+      end
     end
 
     private
@@ -71,7 +105,7 @@ module SocrataSiteChrome
             latest_existing_version(site_chrome_config)
           site_chrome_config_for_stage = site_chrome_config.dig(:value, :versions, current_version, stage)
         else
-          message = "Invalid site_chrome configuration in domain: #{domain}"
+          message = "Invalid #{CONFIGURATION_TYPE} configuration in domain: #{cname}"
           ::Airbrake.notify(
             :error_class => 'InvalidSiteChromeConfiguration',
             :error_message => message
@@ -95,12 +129,11 @@ module SocrataSiteChrome
         begin
           response = HTTParty.get(
             domain_config_uri,
-            :verify => !!ENV['SSL_VERIFY_NONE'] || Rails.env.production?,
-            :headers => { 'X-Socrata-Host' => domain }
+            :headers => { 'X-Socrata-Host' => cname }
           )
           response.code == 200 ? response.body : nil
         rescue HTTParty::ResponseError => e
-          raise "Failed to get domain configuration for #{domain}: #{e}"
+          raise "Failed to get domain configuration for #{cname}: #{e}"
         end
       end
 
@@ -108,11 +141,7 @@ module SocrataSiteChrome
     end
 
     def domain_config_uri
-      "#{coreservice_uri}/configurations.json?type=site_chrome&defaultOnly=true"
-    end
-
-    def coreservice_uri
-      Rails.application.config.coreservice_uri
+      "#{Rails.application.config.coreservice_uri}/configurations.json?type=#{CONFIGURATION_TYPE}&defaultOnly=true"
     end
 
     def configuration_or_default(configuration_response)

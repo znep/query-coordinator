@@ -1,12 +1,13 @@
-<% begin %>
-  <% cache(cache_key_for_site_chrome(get_site_chrome, request)) do %>
+<%- # Must set config.action_controller.perform_caching = true in order for this cache to be used -%>
+<%- begin -%>
+  <% cache(cache_key_for_site_chrome) do %>
     @import url("/socrata_site_chrome/stylesheets/open_sans/open_sans.css");
     @import url("/socrata_site_chrome/stylesheets/mono_social_icons_font/monosocialiconsfont.css");
 
     <% if params.key?(:debug_sass) %>
-    ///////////////////////
-    //   Unparsed SASS   //
-    ///////////////////////
+      ///////////////////////
+      //   Unparsed SASS   //
+      ///////////////////////
 
       <%== render('theme', :custom_themes => get_site_chrome.styles) %>
     <% else %>
@@ -21,5 +22,6 @@
     :error_class => 'InvalidSiteChromeStylingConfiguration',
     :error_message => error_msg
   )
-  error_msg
+  # Not using string interpolation to ensure that error_msg remains tainted
+  concat('/*'.html_safe + error_msg + '*/'.html_safe)
 end %>

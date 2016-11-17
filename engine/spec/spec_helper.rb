@@ -97,33 +97,44 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
-
-  def stub_current_domain_with(domain)
-    @request.host = domain
-  end
-
-  def stub_site_chrome(custom_config = nil)
-    Rails.application.config.socrata_site_chrome = SocrataSiteChrome::SiteChrome.new(
-      :content => custom_config || site_chrome_config
-    )
-  end
-
-  def unstub_site_chrome
-    Rails.application.config.socrata_site_chrome = nil
-  end
-
-  def site_chrome_config
-    JSON.parse(File.read("#{SocrataSiteChrome::Engine.root}/spec/fixtures/site_chrome_config.json")).
-      with_indifferent_access['properties'].first.dig('value', 'versions',
-        SocrataSiteChrome::SiteChrome::LATEST_VERSION, 'published', 'content')
-  end
-
-  def stub_current_user(user_hash = nil)
-    @request.env['action_controller.instance'] = OpenStruct.new(:current_user_json => user_hash)
-  end
-
-  def unstub_current_user
-    @request.env['action_controller.instance'] = nil
-  end
-
 end
+
+def stub_current_domain_with(domain)
+  @request.host = domain
+end
+
+def stub_site_chrome(custom_config = nil)
+  Rails.application.config.socrata_site_chrome = SocrataSiteChrome::SiteChrome.new(
+    :content => custom_config || site_chrome_config
+  )
+end
+
+def unstub_site_chrome
+  Rails.application.config.socrata_site_chrome = nil
+end
+
+def site_chrome_config
+  JSON.parse(File.read("#{SocrataSiteChrome::Engine.root}/spec/fixtures/site_chrome_config.json")).
+    with_indifferent_access['properties'].first.dig('value', 'versions',
+      SocrataSiteChrome::SiteChrome::LATEST_VERSION, 'published', 'content')
+end
+
+def stub_current_user(user_hash = nil)
+  @request.env['action_controller.instance'] = OpenStruct.new(:current_user_json => user_hash)
+end
+
+def unstub_current_user
+  @request.env['action_controller.instance'] = nil
+end
+
+# domains_uri is expected to be let'd in the examples
+def stub_domains(response = { status: 200, body: %Q({ "cname": "#{domain}", "configUpdatedAt": #{Time.now.to_i} }) })
+  stub_request(:get, domains_uri).to_return(response)
+end
+
+# configurations_uri is expected to be let'd in the example
+def stub_configurations(response = { status: 200, body: '[{ "stuff": true }]' })
+  stub_request(:get, configurations_uri).to_return(response)
+end
+
+Rails.application.config.cache_key_prefix = 'deadbeef'

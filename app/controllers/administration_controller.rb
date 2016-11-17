@@ -148,6 +148,7 @@ class AdministrationController < ApplicationController
     args = { :path => url, :name => title }
     args[:grouping] = 'report' if CurrentDomain.module_enabled?(:govStat)
     res = Page.create(args)
+    DataslateRouting.clear_cache_for_current_domain!
     redirect_to "#{res.path}?_edit_mode=true"
   end
 

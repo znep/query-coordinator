@@ -569,8 +569,8 @@ en:
           newest: Recently Added
           relevance: Most Relevant
         topics:
-          empty: No topics assigned
-          label: Topics
+          empty: No tags assigned
+          label: Tags
           more: and %{count} more
         view_count:
           label: Views

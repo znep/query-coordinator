@@ -709,6 +709,8 @@ module DatasetsHelper
   end
 
   def dataset_provenance_tag
+    return nil unless FeatureFlags.derive.show_provenance_facet_in_catalog
+
     html_key =
       case @view.provenance
         when 'official' then 'official2'

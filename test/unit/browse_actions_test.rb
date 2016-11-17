@@ -529,7 +529,6 @@ class BrowseActionsTest4 < Minitest::Test
       'Custom Superheroes',
       'Custom Tomatoes',
       'Custom Follies',
-      'Authority',
       'Tags',
       'Federated'
     ]
@@ -552,7 +551,6 @@ class BrowseActionsTest4 < Minitest::Test
       'Custom Tomatoes',
       'Custom Follies',
       'Categories',
-      'Authority',
       'Topics',
       'Federated'
     ]

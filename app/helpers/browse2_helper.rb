@@ -236,6 +236,8 @@ module Browse2Helper
   end
 
   def browse2_provenance_tag(provenance)
+    return nil unless FeatureFlags.derive.show_provenance_facet_in_catalog
+
     html_key =
       case provenance.to_s
         when 'official' then 'official2'

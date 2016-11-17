@@ -16,7 +16,7 @@ module CoreDomainStubs
       with(:headers => {'X-Socrata-Host'=>'test.host'}).
       to_return(
         :status => 200,
-        :body => '{"id": "four-four", "cname": "test.host", "configsLastUpdatedAt": 1477332982}',
+        :body => '{"id": "four-four", "cname": "test.host", "configUpdatedAt": 1477332982}',
         :headers => {}
       )
   end

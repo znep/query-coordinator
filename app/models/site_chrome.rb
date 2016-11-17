@@ -348,6 +348,13 @@ class SiteChrome
       !activation_state['homepage']
   end
 
+  # EN-11700: Enable site chrome on dataslate pages if it's activated on any page,
+  # and the feature flag isn't explicitly set to disable site chrome on dataslate pages
+  def enabled_on_dataslate?(request)
+    activation_state.values.any? &&
+      !FeatureFlags.derive(nil, request).disable_site_chrome_header_footer_on_dataslate_pages
+  end
+
   # If the site chrome header/footer is enabled on ANY page, then we activate the Dataset Landing Page
   def dslp_enabled?
     activation_state.values.any?

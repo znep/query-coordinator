@@ -211,8 +211,8 @@ show_provenance_badge_in_catalog:
 site_appearance_visible:
   description: Display "Site Appearance" link in the /admin panel. Note that it will always be displayed for superadmins. This only toggles it for regular admins and designers.
   defaultValue: false
-site_chrome_header_and_footer_for_dataslate:
-  description: Turns on site chrome header/footer for (non-homepage) dataslate pages.
+disable_site_chrome_header_footer_on_dataslate_pages:
+  description: When site chrome is activated on a domain (for any page), it will also be activated on dataslate pages UNLESS this is set to true. (see EN-11700)
   defaultValue: false
   category: site chrome
 site_chrome_language_switcher:

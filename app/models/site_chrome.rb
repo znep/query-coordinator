@@ -24,7 +24,7 @@ class SiteChrome
 
   # Attribute fields of Configuration as surfaced by core.
   def self.attribute_names
-    %w(id name default domainCName type updatedAt properties)
+    %w(id name default domainCName type updatedAt properties childCount)
   end
   attribute_names.each(&method(:attr_accessor))
 
@@ -44,13 +44,18 @@ class SiteChrome
 
   def self.create_site_chrome_config(cookies)
     begin
-      SiteChrome.new(default_values).tap do |sc|
+      site_chrome = SiteChrome.new(default_values).tap do |sc|
         sc.cookies = cookies
         sc.create
       end
-    rescue
-      @errors << 'Error creating Site Chrome configuration'
-      # airbrake on rescue?
+    rescue => e
+      error = "Error creating Site Chrome configuration: #{e.inspect}"
+      site_chrome.errors << error if site_chrome.present?
+      Airbrake.notify(
+        :error_class => 'Site Appearance',
+        :error_message => error
+      )
+      Rails.logger.error(error)
     end
   end
 

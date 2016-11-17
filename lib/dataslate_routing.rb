@@ -5,6 +5,11 @@ class DataslateRouting
       page_for(path, options)
   end
 
+  def self.clear_cache_for_current_domain!
+    cache_key = "dataslate_routing:#{CurrentDomain.cname}"
+    Rails.cache.delete(cache_key)
+  end
+
   # This method is entirely for debugging. Here's how you use it:
   # 1. Change config/config.yml corservice_uri to point at an appropriate core.
   # 2. Start `rails c` in the console.

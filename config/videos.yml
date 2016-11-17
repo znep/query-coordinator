@@ -3,27 +3,27 @@
 # so try to preserve that order when inserting new videos.
 
 - name: sorting-datasets
-  title: Sorting Datasets
+  title: Sort a Dataset
   type: analyzing
   audience: consumer
   added: 2011-02-10
-  length: 1:43 mins
+  length: 1:39 mins
   wistia:
     embedid: e499cf99cb
 - name: find-in-dataset
-  title: Find in Dataset
+  title: Search within a Dataset
   type: analyzing
   audience: consumer
   added: 2011-02-11
-  length: 1:00 min
+  length: 1:23 min
   wistia:
     embedid: 81ee2ffd16
 - name: comment
-  title: Commenting
+  title: Comment on a Dataset
   type: sharing
   audience: consumer
   added: 2011-02-25
-  length: 0:24 mins
+  length: 2:11 mins
   wistia:
     embedid: da5532febd
 - name: basic-filtering
@@ -31,31 +31,47 @@
   type: analyzing
   audience: consumer
   added: 2011-02-11
-  length: 3:27 mins
+  length: 3:58 mins
   wistia:
     embedid: a4aa44a3cb
 - name: point-map
-  title: Creating a Point Map
+  title: Create a Map
   type: maps
   audience: consumer
   added: 2011-02-24
-  length: 0:59 mins
+  length: 5:43 mins
   wistia:
     embedid: 474b3838fa
 - name: bar-chart
-  title: Creating a Bar Chart
+  title: Create a Chart
   type: charts
   audience: consumer
   added: 2011-02-24
-  length: 0:59 mins
+  length: 1:53 mins
   wistia:
     embedid: 39ebfbe6a1
+- name: data-lens
+  title: Use Data Lens
+  type: charts
+  audience: consumer
+  added: 2016-11-14
+  length: 2:16 mins
+  wistia:
+    embedid: hskvi9mmyl
+- name: aggregate-data
+  title: Aggregate Data
+  type: analyzing
+  audience: consumer
+  added: 2016-11-14
+  length: 4:48 mins
+  wistia:
+    embedid: xxq9zu63n5
 - name: import-dataset
   title: Importing a Dataset
   type: publishing
   audience: publisher
-  added: 2011-02-23
-  length: 1:08 mins
+  added: 2016-11-14
+  length: 1:09 mins
   wistia:
     embedid: 9034a4cd28
 - name: dataset-publication

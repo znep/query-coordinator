@@ -606,6 +606,12 @@ describe SocrataSiteChrome::SiteChromeHelper do
       expect(helper.site_chrome_massage_url(url)).to eq('http://google.com')
     end
 
+    it 'returns "/" for a scheme and host equivalent to "/"' do
+      stub_current_domain_with('data.seattle.gov')
+      url = 'https://data.seattle.gov'
+      expect(helper.site_chrome_massage_url(url)).to eq('/')
+    end
+
     context 'localization' do
       before(:each) do
         allow(I18n).to receive(:default_locale).and_return(:en)

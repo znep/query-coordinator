@@ -129,7 +129,13 @@ header#site-chrome-header[template="evergreen"] {
               }
               &.expanded {
                 opacity: 1;
-                z-index: 10;
+                /*
+                  EN-12069:
+                  101, 1 higher than the z-index set on .dropdown elements due to EN-11443.
+                  Otherwise the dropdowns will be clickable through the expanded search bar.
+                */
+                z-index: 101;
+
                 input {
                   width: 250px;
                 }

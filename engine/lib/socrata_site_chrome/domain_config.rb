@@ -99,7 +99,7 @@ module SocrataSiteChrome
           config[:name] == 'siteChromeConfigVars'
         end
 
-        if site_chrome_config.dig(:value, :versions).present?
+        if site_chrome_config.try(:dig, :value, :versions).present?
           # If current_version does not exist, use latest existing version
           current_version = site_chrome_config.dig(:value, :current_version) ||
             latest_existing_version(site_chrome_config)

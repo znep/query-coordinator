@@ -31,7 +31,7 @@ export const getDisplayableColumns = createSelector(
     if (datasetMetadata) {
       return new MetadataProvider({domain, datasetUid}).getDisplayableColumns(datasetMetadata);
     } else {
-      return [] // No data yet.
+      return []; // No data yet.
     }
   }
 );
@@ -43,12 +43,22 @@ export const getDatasetLink = createSelector(
 );
 
 export const getValidDimensions = createSelector(
-  getDatasetMetadata, getPhidippidesMetadata,
-  (datasetMetadata, phidippidesMetadata) => {
+  getDomain,
+  getDatasetUid,
+  getDatasetMetadata,
+  getPhidippidesMetadata,
+  (domain, datasetUid, datasetMetadata, phidippidesMetadata) => {
+    const datasetMetadataProvider = new MetadataProvider({domain, datasetUid});
+
     return _.chain(phidippidesMetadata.columns).
       map(injectFieldName).
       filter(isNotSystemColumn).
       filter(isNotComputedColumn).
+      filter(
+        column =>
+          !datasetMetadataProvider.
+            isSubcolumn(column.fieldName, datasetMetadata)
+      ).
       map(toDatasetMetadata(datasetMetadata)).
       sortBy('name').
       value();

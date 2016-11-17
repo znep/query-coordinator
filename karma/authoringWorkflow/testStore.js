@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { createStore, applyMiddleware } from 'redux';
 import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
@@ -7,6 +8,14 @@ import vifs from 'src/authoringWorkflow/vifs';
 import { defaultState as defaultMetadata } from 'src/authoringWorkflow/reducers/metadata';
 
 export default function(stateOverrides) {
+  const testMetadata = _.merge(
+    defaultMetadata,
+    {
+      domain: 'test.domain',
+      datasetUid: 'xxxx-xxxx'
+    }
+  );
+
   var initialState = _.merge(
     {
       vifAuthoring: {
@@ -15,7 +24,7 @@ export default function(stateOverrides) {
         },
         vifs: vifs()
       },
-      metadata: defaultMetadata
+      metadata: testMetadata
     },
     stateOverrides
   );

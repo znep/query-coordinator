@@ -8,13 +8,13 @@ function getDefaultState() {
   return {
     data: {
       columns: [
-        {renderTypeName: 'text', fieldName: 'text'},
-        {renderTypeName: 'number', fieldName: 'number'},
-        {renderTypeName: 'point', fieldName: 'point'},
-        {renderTypeName: 'location', fieldName: 'location'},
-        {renderTypeName: 'calendar_date', fieldName: 'calendar_date'},
-        {renderTypeName: 'money', fieldName: 'money' },
-        {renderTypeName: 'percent', fieldName: 'percent' }
+        {renderTypeName: 'text', fieldName: 'text', name: 'text'},
+        {renderTypeName: 'number', fieldName: 'number', name: 'number'},
+        {renderTypeName: 'point', fieldName: 'point', name: 'point'},
+        {renderTypeName: 'location', fieldName: 'location', name: 'location'},
+        {renderTypeName: 'calendar_date', fieldName: 'calendar_date', name: 'calendar date'},
+        {renderTypeName: 'money', fieldName: 'money', name: 'money'},
+        {renderTypeName: 'percent', fieldName: 'percent', name: 'percent' }
       ]
     },
     phidippidesMetadata: {
@@ -27,7 +27,9 @@ function getDefaultState() {
         'money': {renderTypeName: 'money', name: 'Money', fieldName: 'money'},
         'percent': {renderTypeName: 'percent', name: 'Percent', fieldName: 'percent'}
       }
-    }
+    },
+    domain: 'test.domain',
+    datasetUid: 'xxxx-xxxx'
   };
 }
 

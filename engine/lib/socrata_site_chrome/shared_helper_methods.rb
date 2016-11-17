@@ -8,6 +8,7 @@ module SocrataSiteChrome
 
     def site_chrome_massage_url(url, add_locale: true)
       def relative_url_with_locale(url)
+        url = url.presence || '/' # EN-11978
         I18n.locale.to_s == default_locale ? url : "/#{I18n.locale}#{url}"
       end
 

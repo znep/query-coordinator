@@ -73,9 +73,6 @@ class DatasetsController < ApplicationController
     @page_custom_chrome = ''
     @suppress_content_wrapper = true
 
-    dsmtime = VersionAuthority.get_core_dataset_mtime(@view.id)[@view.id]
-    user = @current_user.nil? ? 'ANONYMOUS' : @current_user.id
-
     # NBE/OBE redirect & flash messages
     if @view.new_backend? && !permitted_nbe_view?
       destination_url = view_redirection_url
@@ -99,29 +96,11 @@ class DatasetsController < ApplicationController
         return redirect_to canonical_path
       end
 
-      dataset_landing_page = DatasetLandingPage.new
+      result = DatasetLandingPage.fetch_all(view, current_user, forwardable_session_cookies, request_id)
 
-      begin
-        @related_views = dataset_landing_page.get_derived_views(
-          params[:id],
-          forwardable_session_cookies,
-          request_id,
-          4, # limit
-          0 # offset
-        )
-      rescue CoreServer::CoreServerError
-        @related_views = []
-      end
-
-      begin
-        @featured_content = dataset_landing_page.get_featured_content(
-          params[:id],
-          forwardable_session_cookies,
-          request_id
-        )
-      rescue CoreServer::CoreServerError => e
-        @featured_content = []
-      end
+      @related_views = result[:related_views]
+      @featured_content = result[:featured_content]
+      @dataset_landing_page_view = result[:dataset_landing_page_view]
 
       RequestStore[:current_user] = current_user.try(:data)
 
@@ -140,6 +119,9 @@ class DatasetsController < ApplicationController
     if @view.has_landing_page?
       display_dataset_landing_page_notice
     end
+
+    dsmtime = VersionAuthority.get_core_dataset_mtime(@view.id)[@view.id]
+    user = @current_user.nil? ? 'ANONYMOUS' : @current_user.id
 
     etag = "#{dsmtime}-#{user}"
     ConditionalRequestHandler.set_etag(response, etag)
@@ -736,29 +718,11 @@ class DatasetsController < ApplicationController
     return if @view.nil?
 
     if dataset_landing_page_enabled? && view.has_landing_page?
-      dataset_landing_page = DatasetLandingPage.new
+      result = DatasetLandingPage.fetch_all(view, current_user, forwardable_session_cookies, request_id)
 
-      begin
-        @related_views = dataset_landing_page.get_derived_views(
-          params[:id],
-          forwardable_session_cookies,
-          request_id,
-          4, # limit
-          0 # offset
-        )
-      rescue CoreServer::CoreServerError
-        @related_views = []
-      end
-
-      begin
-        @featured_content = dataset_landing_page.get_featured_content(
-          params[:id],
-          forwardable_session_cookies,
-          request_id
-        )
-      rescue CoreServer::CoreServerError => e
-        @featured_content = []
-      end
+      @related_views = result[:related_views]
+      @featured_content = result[:featured_content]
+      @dataset_landing_page_view = result[:dataset_landing_page_view]
 
       RequestStore[:current_user] = current_user.try(:data)
 

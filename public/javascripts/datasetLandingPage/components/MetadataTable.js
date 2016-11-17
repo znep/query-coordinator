@@ -11,7 +11,7 @@ import { emitMixpanelEvent } from '../actions/mixpanel';
 import { handleKeyPress } from '../lib/a11yHelpers';
 import { localizeLink } from '../lib/locale';
 
-export var MetadataTable = React.createClass({
+export const MetadataTable = React.createClass({
   propTypes: {
     onClickEditMetadata: PropTypes.func,
     onClickStats: PropTypes.func,
@@ -28,7 +28,7 @@ export var MetadataTable = React.createClass({
 
   // Legendary firefox hack, see https://bugzilla.mozilla.org/show_bug.cgi?id=1266901
   applyFirefoxHack() {
-    var el = ReactDOM.findDOMNode(this);
+    const el = ReactDOM.findDOMNode(this);
     _.toArray(el.querySelectorAll('td.attachment a')).forEach((link) => {
       link.style.display = 'none';
       link.offsetHeight; // eslint-disable-line no-unused-expressions
@@ -41,7 +41,7 @@ export var MetadataTable = React.createClass({
       return;
     }
 
-    var el = ReactDOM.findDOMNode(this);
+    const el = ReactDOM.findDOMNode(this);
 
     collapsible(el.querySelector('.tag-list'), {
       height: 2 * 24,
@@ -54,11 +54,11 @@ export var MetadataTable = React.createClass({
   },
 
   collapseTable() {
-    var el = ReactDOM.findDOMNode(this);
-    var leftColumnHeight = el.querySelector('.metadata-column.fancy').offsetHeight;
-    var tableColumn = el.querySelector('.metadata-column.tables');
-    var tables = _.toArray(tableColumn.querySelectorAll('.metadata-table'));
-    var shouldHideToggles = true;
+    const el = ReactDOM.findDOMNode(this);
+    const leftColumnHeight = el.querySelector('.metadata-column.fancy').offsetHeight;
+    const tableColumn = el.querySelector('.metadata-column.tables');
+    const tables = _.toArray(tableColumn.querySelectorAll('.metadata-table'));
+    let shouldHideToggles = true;
 
     // Add a 'hidden' class to tables whose top is below the bottom of the left column.
     // These will be shown and hidden as the tableColumn is expanded and collapsed.
@@ -72,7 +72,7 @@ export var MetadataTable = React.createClass({
     // If there is not enough content in the tableColumn, hide the toggles and avoid
     // binding event handlers, as no collapsing is necessary.
     if (shouldHideToggles) {
-      var toggleGroups = _.toArray(el.querySelectorAll('.metadata-table-toggle-group'));
+      const toggleGroups = _.toArray(el.querySelectorAll('.metadata-table-toggle-group'));
       toggleGroups.forEach((group) => group.style.display = 'none');
 
       tableColumn.classList.remove('collapsed');
@@ -85,14 +85,14 @@ export var MetadataTable = React.createClass({
   toggleTable(event) {
     event.preventDefault();
 
-    var { onExpandMetadataTable } = this.props;
-    var el = ReactDOM.findDOMNode(this);
-    var tableColumn = el.querySelector('.metadata-column.tables');
+    const { onExpandMetadataTable } = this.props;
+    const el = ReactDOM.findDOMNode(this);
+    const tableColumn = el.querySelector('.metadata-column.tables');
 
-    var wasCollapsed = tableColumn.classList.contains('collapsed');
-    var originalHeight = tableColumn.getBoundingClientRect().height;
+    const wasCollapsed = tableColumn.classList.contains('collapsed');
+    const originalHeight = tableColumn.getBoundingClientRect().height;
     tableColumn.classList.toggle('collapsed');
-    var targetHeight = tableColumn.getBoundingClientRect().height;
+    const targetHeight = tableColumn.getBoundingClientRect().height;
     tableColumn.style.height = `${originalHeight}px`;
 
     if (wasCollapsed) {
@@ -117,17 +117,17 @@ export var MetadataTable = React.createClass({
   },
 
   render() {
-    var { view, onClickEditMetadata, onClickStats } = this.props;
+    const { view, onClickEditMetadata, onClickStats } = this.props;
 
-    var attachments;
-    var attribution;
-    var attributionLink;
-    var category;
-    var customMetadataFieldsets;
-    var license;
-    var tags;
-    var statsSection;
-    var editMetadata;
+    let attachments;
+    let attribution;
+    let attributionLink;
+    let category;
+    let customMetadataFieldsets;
+    let license;
+    let tags;
+    let statsSection;
+    let editMetadata;
 
     if (view.attribution) {
       attribution = (
@@ -145,7 +145,7 @@ export var MetadataTable = React.createClass({
 
     if (!_.isEmpty(view.customMetadataFieldsets)) {
       customMetadataFieldsets = _.map(view.customMetadataFieldsets, (fieldset, i) => {
-        var fields = _.map(fieldset.fields, (field, j) => {
+        const fields = _.map(fieldset.fields, (field, j) => {
           if (fieldset.existing_fields[field.name]) {
             return (
               <tr key={j}>
@@ -179,7 +179,7 @@ export var MetadataTable = React.createClass({
     }
 
     if (!_.isEmpty(view.attachments)) {
-      var attachmentRows = _.map(view.attachments, (attachment, i) => (
+      const attachmentRows = _.map(view.attachments, (attachment, i) => (
         <tr key={i}>
           <td className="attachment">
             <span className="icon-copy-document"></span>
@@ -209,7 +209,7 @@ export var MetadataTable = React.createClass({
     }
 
     if (!_.isEmpty(view.tags)) {
-      var tagLinks = _.map(view.tags, (tag, i) => (
+      const tagLinks = _.map(view.tags, (tag, i) => (
         <span key={i}>
           <a href={localizeLink(`/browse?tags=${tag}`)}>{tag}</a>
           {i === view.tags.length - 1 ? '' : ', '}
@@ -494,7 +494,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onClickEditMetadata() {
-      var payload = {
+      const payload = {
         name: 'Edited Metadata',
         properties: {
           'From Page': 'DSLP'
@@ -505,7 +505,7 @@ function mapDispatchToProps(dispatch) {
     },
 
     onClickStats() {
-      var payload = {
+      const payload = {
         name: 'Viewed Dataset Statistics',
         properties: {
           'From Page': 'DSLP'
@@ -516,7 +516,7 @@ function mapDispatchToProps(dispatch) {
     },
 
     onExpandTags() {
-      var payload = {
+      const payload = {
         name: 'Expanded Details',
         properties: {
           'Expanded Target': 'Tags'
@@ -527,7 +527,7 @@ function mapDispatchToProps(dispatch) {
     },
 
     onExpandMetadataTable() {
-      var payload = {
+      const payload = {
         name: 'Expanded Details',
         properties: {
           'Expanded Target': 'Metadata Table'

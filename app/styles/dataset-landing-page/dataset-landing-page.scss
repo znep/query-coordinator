@@ -61,6 +61,7 @@ body {
     .icon-private {
       color: $warning-base;
       padding-right: 4px;
+      display: none;
     }
   }
 
@@ -173,8 +174,28 @@ body {
     }
   }
 
+  // Make this really tall so a scrollbar appears
   .main-spinner {
-    height: 400px;
+    height: 100vh;
+    opacity: 0;
+    animation-name: fadeIn;
+    animation-duration: .5s;
+    animation-delay: 1s;
+    animation-fill-mode: forwards;
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .spinner-large {
+      margin-top: 100px;
+    }
   }
 }
 

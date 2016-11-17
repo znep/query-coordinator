@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
-export var isUserAdminOrPublisher = function() {
-  var { currentUser } = window.serverConfig;
+export const isUserAdminOrPublisher = function() {
+  const { currentUser } = window.serverConfig;
 
   if (_.isEmpty(currentUser)) {
     return false;

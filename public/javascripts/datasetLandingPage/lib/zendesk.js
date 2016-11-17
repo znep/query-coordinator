@@ -1,11 +1,11 @@
 import _ from 'lodash';
 
 // Control to load Zendesk only once.
-var loaded = false;
+let loaded = false;
 
 // One-time setup options.
-var locale = null;
-var user = null;
+let locale = null;
+let user = null;
 
 // Script loader provided by Zendesk.
 function loadAsyncScript() {

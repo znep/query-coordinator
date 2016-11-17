@@ -2,13 +2,13 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { isUserAdminOrPublisher } from '../lib/user';
 
-export var HrefDownload = React.createClass({
+export const HrefDownload = React.createClass({
   propTypes: {
     view: PropTypes.object.isRequired
   },
 
   renderManagePrompt() {
-    var { view } = this.props;
+    const { view } = this.props;
 
     if (!isUserAdminOrPublisher()) {
       return null;
@@ -28,14 +28,14 @@ export var HrefDownload = React.createClass({
   },
 
   renderContent() {
-    var { allAccessPoints } = this.props.view;
+    const { allAccessPoints } = this.props.view;
 
     if (_.isEmpty(allAccessPoints)) {
       return;
     }
 
-    var content = _.map(allAccessPoints, (accessPoint, i) => {
-      var buttons = _.map(accessPoint.urls, (url, mimeType) =>
+    const content = _.map(allAccessPoints, (accessPoint, i) => {
+      let buttons = _.map(accessPoint.urls, (url, mimeType) =>
         <a
           className="btn btn-primary btn-sm download all-caps"
           href={url}
@@ -82,8 +82,8 @@ export var HrefDownload = React.createClass({
   },
 
   render() {
-    var { view } = this.props;
-    var { isHref } = view;
+    const { view } = this.props;
+    const { isHref } = view;
 
     if (!isHref) {
       return null;

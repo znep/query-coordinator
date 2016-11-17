@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
-var TextArea = React.createClass({
+const TextArea = React.createClass({
   propTypes: {
     field: PropTypes.object.isRequired,
     label: PropTypes.string.isRequired,
@@ -20,11 +20,11 @@ var TextArea = React.createClass({
   },
 
   render() {
-    var { field, label, name, onChange } = this.props;
+    const { field, label, name, onChange } = this.props;
 
-    var classes = classNames('text-input text-area', name);
-    var labelId = `${name}-label`;
-    var isInvalid = field.invalid && this.state.dirty;
+    const classes = classNames('text-input text-area', name);
+    const labelId = `${name}-label`;
+    const isInvalid = field.invalid && this.state.dirty;
 
     return (
       <div>

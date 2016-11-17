@@ -1,7 +1,7 @@
 import React, { Children, PropTypes } from 'react';
 import breakpoints from './breakpoints';
 
-var Responsive = React.createClass({
+const Responsive = React.createClass({
   propTypes: {
     children: PropTypes.object.isRequired
   },
@@ -43,16 +43,16 @@ var Responsive = React.createClass({
   },
 
   updateState() {
-    var newState = this.getState();
+    const newState = this.getState();
     if (!_.isEqual(newState, this.state)) {
       this.setState(newState);
     }
   },
 
   render() {
-    var state = this.state;
+    const state = this.state;
 
-    var children = Children.map(this.props.children, (child) => React.cloneElement(child, state));
+    const children = Children.map(this.props.children, (child) => React.cloneElement(child, state));
 
     return <div>{children}</div>;
   }

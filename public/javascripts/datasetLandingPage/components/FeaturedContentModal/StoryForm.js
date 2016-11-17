@@ -13,7 +13,7 @@ import {
   setStoryUrlField
 } from '../../actions/featuredContent';
 
-export var StoryForm = React.createClass({
+export const StoryForm = React.createClass({
   propTypes: {
     canSave: PropTypes.bool,
     createdAt: PropTypes.string,
@@ -54,7 +54,7 @@ export var StoryForm = React.createClass({
     this.loadStoryIfNeeded();
 
     if (this.props.hasSaveError) {
-      var invalidField = ReactDOM.findDOMNode(this).querySelector('[aria-invalid="true"]');
+      const invalidField = ReactDOM.findDOMNode(this).querySelector('[aria-invalid="true"]');
       if (invalidField) {
         invalidField.focus();
       }
@@ -78,9 +78,9 @@ export var StoryForm = React.createClass({
   I18n: I18n.featured_content_modal.story_form,
 
   renderForm() {
-    var { url, hasSaveError, hasValidationError } = this.props;
+    const { url, hasSaveError, hasValidationError } = this.props;
 
-    var validationWarning = hasValidationError ?
+    const validationWarning = hasValidationError ?
       <div className="alert warning">{this.I18n.invalid_url_message}</div> :
       null;
 
@@ -106,8 +106,8 @@ export var StoryForm = React.createClass({
   },
 
   renderPreview() {
-    var contents;
-    var {
+    let contents;
+    const {
       description,
       title,
       createdAt,
@@ -119,7 +119,7 @@ export var StoryForm = React.createClass({
     } = this.props;
 
     if (canSave) {
-      var cardProps = {
+      const cardProps = {
         name: title,
         description: description,
         icon: 'icon-story',
@@ -148,16 +148,16 @@ export var StoryForm = React.createClass({
   },
 
   renderContent() {
-    var { hasSaveError, onClickCancel } = this.props;
+    const { hasSaveError, onClickCancel } = this.props;
 
-    var backButton = (
+    const backButton = (
       <button className="btn btn-default btn-simple btn-xs back-button" onClick={onClickCancel}>
         <span className="icon-arrow-prev" />
         {I18n.back}
       </button>
     );
 
-    var saveError = hasSaveError ?
+    const saveError = hasSaveError ?
       <div className="alert error">{I18n.featured_content_modal.save_error_message}</div> :
       null;
 
@@ -182,9 +182,9 @@ export var StoryForm = React.createClass({
   },
 
   renderFooter() {
-    var { canSave, isSaved, isSaving, onClickCancel, onClickSave } = this.props;
+    const { canSave, isSaved, isSaving, onClickCancel, onClickSave } = this.props;
 
-    var footerProps = {
+    const footerProps = {
       cancelText: I18n.cancel,
       canSave: canSave,
       displaySaveButton: true,
@@ -200,7 +200,7 @@ export var StoryForm = React.createClass({
   },
 
   render() {
-    var { onClickClose } = this.props;
+    const { onClickClose } = this.props;
 
     return (
       <div className="modal-container">

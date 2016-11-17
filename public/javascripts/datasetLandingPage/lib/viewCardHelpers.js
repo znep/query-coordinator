@@ -29,7 +29,7 @@ export function getViewCardPropsForView(view) {
 }
 
 export function getViewCardPropsForExternalContent(externalContent) {
-  var imageUrl = externalContent.previewImage;
+  let imageUrl = externalContent.previewImage;
 
   if (!_.isEmpty(imageUrl) && !/^(https?:\/\/|data:)/.test(imageUrl)) {
     imageUrl = `/api/views/${window.initialState.view.id}/files/${imageUrl}`;

@@ -27,7 +27,7 @@ describe DatasetLandingPageController do
 
   describe 'GET /dataset_landing_page/id/related_views' do
     it 'returns the related views as json' do
-      allow_any_instance_of(DatasetLandingPage).to receive(:get_derived_views).and_return(views)
+      allow(DatasetLandingPage).to receive(:fetch_derived_views).and_return(views)
 
       get :related_views, :id => 'abcd-1234'
       expect(response).to have_http_status(:success)
@@ -35,7 +35,7 @@ describe DatasetLandingPageController do
     end
 
     it 'returns an error message when a core error is thrown' do
-      allow_any_instance_of(DatasetLandingPage).to receive(:get_derived_views).and_raise(error)
+      allow(DatasetLandingPage).to receive(:fetch_derived_views).and_raise(error)
 
       get :related_views, :id => 'abcd-1234'
       expect(response).to have_http_status(:internal_server_error)
@@ -45,7 +45,7 @@ describe DatasetLandingPageController do
 
   describe 'GET /dataset_landing_page/id/featured_content' do
     it 'returns the featured content as json' do
-      allow_any_instance_of(DatasetLandingPage).to receive(:get_featured_content).and_return(views)
+      allow(DatasetLandingPage).to receive(:fetch_featured_content).and_return(views)
 
       get :get_featured_content, :id => 'abcd-1234'
       expect(response).to have_http_status(:success)
@@ -53,7 +53,7 @@ describe DatasetLandingPageController do
     end
 
     it 'returns an error message when a core error is thrown' do
-      allow_any_instance_of(DatasetLandingPage).to receive(:get_featured_content).and_raise(error)
+      allow(DatasetLandingPage).to receive(:fetch_featured_content).and_raise(error)
 
       get :get_featured_content, :id => 'abcd-1234'
       expect(response).to have_http_status(:internal_server_error)
@@ -63,8 +63,7 @@ describe DatasetLandingPageController do
 
   describe 'POST /dataset_landing_page/id/featured_content' do
     it 'returns the added view as json' do
-      allow_any_instance_of(DatasetLandingPage).to receive(:add_featured_content).
-        and_return(view_data)
+      allow(DatasetLandingPage).to receive(:add_featured_content).and_return(view_data)
 
       post :post_featured_content, :id => 'abcd-1234'
       expect(response).to have_http_status(:success)
@@ -72,7 +71,7 @@ describe DatasetLandingPageController do
     end
 
     it 'returns an error message when a core error is thrown' do
-      allow_any_instance_of(DatasetLandingPage).to receive(:add_featured_content).and_raise(error)
+      allow(DatasetLandingPage).to receive(:add_featured_content).and_raise(error)
 
       post :post_featured_content, :id => 'abcd-1234'
       expect(response).to have_http_status(:internal_server_error)
@@ -82,7 +81,7 @@ describe DatasetLandingPageController do
 
   describe 'GET /dataset_landing_page/formatted_view/id' do
     it 'returns the fetched view as json' do
-      allow_any_instance_of(DatasetLandingPage).to receive(:get_formatted_view_widget_by_id).
+      allow(DatasetLandingPage).to receive(:get_formatted_view_widget_by_id).
         and_return(view_data)
 
       get :get_formatted_view_by_id, :id => 'abcd-1234'
@@ -91,7 +90,7 @@ describe DatasetLandingPageController do
     end
 
     it 'returns an error message when a core error is thrown' do
-      allow_any_instance_of(DatasetLandingPage).to receive(:get_formatted_view_widget_by_id).
+      allow(DatasetLandingPage).to receive(:get_formatted_view_widget_by_id).
         and_raise(error)
 
       get :get_formatted_view_by_id, :id => 'abcd-1234'

@@ -18,10 +18,10 @@ import TextInput from './ContactForm/TextInput';
 import TextArea from './ContactForm/TextArea';
 import { VALID_EMAIL_REGEX } from '../lib/constants';
 
-var animationDuration = 300;
-var animationEasing = [0.645, 0.045, 0.355, 1];
+const animationDuration = 300;
+const animationEasing = [0.645, 0.045, 0.355, 1];
 
-export var ContactForm = React.createClass({
+export const ContactForm = React.createClass({
   propTypes: {
     fields: PropTypes.object.isRequired,
     onRecaptchaReset: PropTypes.func,
@@ -45,7 +45,7 @@ export var ContactForm = React.createClass({
   },
 
   componentDidUpdate() {
-    var { onRecaptchaReset, resetRecaptcha, status } = this.props;
+    const { onRecaptchaReset, resetRecaptcha, status } = this.props;
 
     if (resetRecaptcha) {
       recaptcha.reset(this.recaptchaId);
@@ -60,32 +60,33 @@ export var ContactForm = React.createClass({
   onClickSend(event) {
     event.preventDefault();
 
-    var { onClickSend } = this.props;
-    var errors = this.validateForm();
+    const { onClickSend } = this.props;
+    const errors = this.validateForm();
 
     if (_.some(errors)) {
-      var invalidField = ReactDOM.findDOMNode(this).querySelector('[aria-invalid="true"]');
+      const invalidField = ReactDOM.findDOMNode(this).querySelector('[aria-invalid="true"]');
       if (invalidField) {
         invalidField.focus();
       }
-      this.setState({ errors: errors });
+      this.setState({ errors });
     } else {
       onClickSend();
     }
   },
 
   onFieldChange(event) {
-    var { id, value } = event.target;
-    var isInvalid = _.isEmpty(value) || (_.isEqual(id, 'email') && !VALID_EMAIL_REGEX.test(value));
+    const { id, value } = event.target;
+    const isInvalid = _.isEmpty(value) ||
+      (_.isEqual(id, 'email') && !VALID_EMAIL_REGEX.test(value));
 
     this.props.onChangeFormField(id, {
-      value: value,
+      value,
       invalid: isInvalid
     });
   },
 
   initializeRecaptcha() {
-    var { onRecaptchaLoaded } = this.props;
+    const { onRecaptchaLoaded } = this.props;
 
     recaptcha.init(this.recaptchaContainer, function(id) {
       onRecaptchaLoaded(true);
@@ -94,7 +95,7 @@ export var ContactForm = React.createClass({
   },
 
   validateForm() {
-    var { fields } = this.props;
+    const { fields } = this.props;
 
     return _.reduce(fields, (result, field, id) => {
       if (_.isEqual(id, 'recaptchaResponseToken') && this.isRecaptchaIncomplete()) {
@@ -115,27 +116,27 @@ export var ContactForm = React.createClass({
   // our state might not accurately reflect whether the user has completed the
   // Recaptcha challenge yet. Instead, verify it right now and store its response
   isRecaptchaIncomplete() {
-    var { fields, onChangeFormField } = this.props;
-    var { recaptchaResponseToken } = fields;
+    const { fields, onChangeFormField } = this.props;
+    const { recaptchaResponseToken } = fields;
 
     if (!_.isEmpty(recaptchaResponseToken)) {
       return false;
     }
 
-    var responseToken = recaptcha.getResponseToken(this.recaptchaId);
+    const responseToken = recaptcha.getResponseToken(this.recaptchaId);
     onChangeFormField('recaptchaResponseToken', responseToken);
 
     return _.isEmpty(responseToken);
   },
 
   cleanUpAfterClose() {
-    var { resetForm } = this.props;
-    var element = ReactDOM.findDOMNode(this);
+    const { resetForm } = this.props;
+    const element = ReactDOM.findDOMNode(this);
 
     element.classList.add('modal-hidden');
     document.body.classList.remove('modal-open');
 
-    var container = element.querySelector('.modal-container');
+    const container = element.querySelector('.modal-container');
 
     // these attributes are set by velocity's transitions
     container.style.left = '';
@@ -148,9 +149,9 @@ export var ContactForm = React.createClass({
   },
 
   closeModal() {
-    var element = ReactDOM.findDOMNode(this).querySelector('.modal-container');
-    var windowWidth = document.body.offsetWidth;
-    var isMobile = windowWidth <= breakpoints.mobile;
+    const element = ReactDOM.findDOMNode(this).querySelector('.modal-container');
+    const windowWidth = document.body.offsetWidth;
+    const isMobile = windowWidth <= breakpoints.mobile;
 
     _.delay(() => {
       if (isMobile) {
@@ -171,20 +172,20 @@ export var ContactForm = React.createClass({
   },
 
   renderContactForm() {
-    var { fields, status, recaptchaLoaded } = this.props;
+    const { fields, status, recaptchaLoaded } = this.props;
 
-    var recaptchaPlaceholderSpinner = recaptchaLoaded ?
+    const recaptchaPlaceholderSpinner = recaptchaLoaded ?
       '' :
       <div
         aria-label={I18n.contact_dataset_owner_modal.recaptcha_loading}
         className="spinner-default" />;
 
-    var isSending = _.isEqual(status, 'sending');
-    var sendButtonClasses = classNames('btn btn-primary btn-sm', {
+    const isSending = _.isEqual(status, 'sending');
+    const sendButtonClasses = classNames('btn btn-primary btn-sm', {
       sending: isSending
     });
 
-    var sendButtonContent = isSending ?
+    const sendButtonContent = isSending ?
       <span aria-label={I18n.contact_dataset_owner_modal.sending} className="spinner-default" /> :
       I18n.contact_dataset_owner_modal.send;
 
@@ -252,9 +253,9 @@ export var ContactForm = React.createClass({
   },
 
   renderConfirmationMessage() {
-    var success = this.props.status === 'success';
+    const success = this.props.status === 'success';
 
-    var text = success ?
+    const text = success ?
       I18n.contact_dataset_owner_modal.success_html :
       I18n.contact_dataset_owner_modal.failure_html;
 
@@ -262,10 +263,10 @@ export var ContactForm = React.createClass({
   },
 
   renderErrorMessages() {
-    var { errors } = this.state;
+    const { errors } = this.state;
 
     if (_.some(errors)) {
-      var messages = _.map(errors, function(error, i) {
+      const messages = _.map(errors, function(error, i) {
         return <p key={i}>{error}</p>;
       });
 
@@ -278,8 +279,8 @@ export var ContactForm = React.createClass({
   },
 
   render() {
-    var { status } = this.props;
-    var content;
+    const { status } = this.props;
+    let content;
 
     if (status === 'success' || status === 'failure') {
       content = this.renderConfirmationMessage();

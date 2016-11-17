@@ -11,9 +11,9 @@ import {
   HANDLE_CONTACT_FORM_RECAPTCHA_RESET
 } from '../actionTypes';
 
-var currentUserEmail = _.get(window.sessionData, 'email', '');
+const currentUserEmail = _.get(window.sessionData, 'email', '');
 
-var initialState = {
+const initialState = {
   fields: {
     email: {
       value: currentUserEmail,

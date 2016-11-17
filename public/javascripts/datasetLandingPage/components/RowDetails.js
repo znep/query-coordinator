@@ -2,12 +2,12 @@ import utils from 'socrata-utils';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-export var RowDetails = (props) => {
-  var { view } = props;
+export const RowDetails = (props) => {
+  const { view } = props;
 
-  var rowCountInfo;
-  var columnCountInfo;
-  var rowLabelInfo;
+  let rowCountInfo;
+  let columnCountInfo;
+  let rowLabelInfo;
 
   if (_.isNumber(view.rowCount)) {
     rowCountInfo = (

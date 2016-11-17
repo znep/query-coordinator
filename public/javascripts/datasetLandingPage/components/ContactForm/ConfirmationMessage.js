@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
-var ConfirmationMessage = (props) => {
-  var { success, text } = props;
+const ConfirmationMessage = (props) => {
+  const { success, text } = props;
 
-  var alertClasses = classNames('alert', {
+  const alertClasses = classNames('alert', {
     success: success,
     error: !success
   });

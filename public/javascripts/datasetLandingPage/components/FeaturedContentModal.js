@@ -9,7 +9,7 @@ import ViewSelectorModal from './FeaturedContentModal/ViewSelectorModal';
 import { ESCAPE_KEY_CODE } from '../lib/constants';
 import { cancelFeaturedItemEdit } from '../actions/featuredContent';
 
-export var FeaturedContentModal = React.createClass({
+export const FeaturedContentModal = React.createClass({
   propTypes: {
     isEditing: PropTypes.bool,
     editType: PropTypes.string,
@@ -25,8 +25,8 @@ export var FeaturedContentModal = React.createClass({
   },
 
   onKeyUp(event) {
-    var isModalHidden = ReactDOM.findDOMNode(this).classList.contains('modal-hidden');
-    var isKeyEscape = event.keyCode === ESCAPE_KEY_CODE;
+    const isModalHidden = ReactDOM.findDOMNode(this).classList.contains('modal-hidden');
+    const isKeyEscape = event.keyCode === ESCAPE_KEY_CODE;
 
     if (!isModalHidden && isKeyEscape) {
       this.props.onPressEscape();
@@ -34,7 +34,7 @@ export var FeaturedContentModal = React.createClass({
   },
 
   renderContent() {
-    var { isEditing, editType } = this.props;
+    const { isEditing, editType } = this.props;
 
     if (!isEditing) {
       return <FeaturedItemSelector />;

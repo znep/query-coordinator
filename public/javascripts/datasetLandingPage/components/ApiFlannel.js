@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import { initClipboardControl, isCopyingSupported } from '../lib/clipboardControl';
 
-export var ApiFlannel = React.createClass({
+export const ApiFlannel = React.createClass({
   propTypes: {
     onClickCopy: PropTypes.func.isRequired,
     view: PropTypes.object.isRequired
@@ -13,7 +13,7 @@ export var ApiFlannel = React.createClass({
 
   componentDidMount() {
     if (isCopyingSupported) {
-      var el = ReactDOM.findDOMNode(this);
+      const el = ReactDOM.findDOMNode(this);
       initClipboardControl(el.querySelectorAll('.btn.copy'));
     }
   },
@@ -27,9 +27,9 @@ export var ApiFlannel = React.createClass({
   },
 
   renderEndpoint() {
-    var { view, onClickCopy } = this.props;
+    const { view, onClickCopy } = this.props;
 
-    var copyButton = isCopyingSupported ?
+    const copyButton = isCopyingSupported ?
       <span className="input-group-btn">
         <button
           type="button"
@@ -116,7 +116,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onClickCopy() {
-      var payload = {
+      const payload = {
         name: 'Copied API Link'
       };
 

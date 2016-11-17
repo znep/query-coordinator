@@ -1,15 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-export var BlobPreview = React.createClass({
+export const BlobPreview = React.createClass({
   propTypes: {
     view: PropTypes.object.isRequired
   },
 
   renderPreview() {
-    var { view } = this.props;
+    const { view } = this.props;
 
-    var href = `/api/file_data/${view.blobId}`;
+    const href = `/api/file_data/${view.blobId}`;
 
     switch (view.blobType) {
       case 'image':
@@ -27,7 +27,7 @@ export var BlobPreview = React.createClass({
   },
 
   render() {
-    var { isBlobby, blobType } = this.props.view;
+    const { isBlobby, blobType } = this.props.view;
 
     if (!isBlobby || (blobType !== 'image' && blobType !== 'google_viewer')) {
       return null;

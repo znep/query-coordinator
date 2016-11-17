@@ -1,4 +1,4 @@
-var dataTypeMetadata = {
+const dataTypeMetadata = {
   blob: {
     icon: 'icon-data',
     sodaType: null
@@ -118,12 +118,12 @@ var dataTypeMetadata = {
 };
 
 function getIconClassForDataType(dataType) {
-  var icon = _.get(dataTypeMetadata, `${dataType}.icon`);
+  const icon = _.get(dataTypeMetadata, `${dataType}.icon`);
   return icon ? `icon ${icon}` : '';
 }
 
 function getDocumentationLinkForDataType(dataType) {
-  var sodaType = _.get(dataTypeMetadata, `${dataType}.sodaType`);
+  const sodaType = _.get(dataTypeMetadata, `${dataType}.sodaType`);
   return sodaType ? `https://dev.socrata.com/docs/datatypes/${sodaType}.html` : null;
 }
 

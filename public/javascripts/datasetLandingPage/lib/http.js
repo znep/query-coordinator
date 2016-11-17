@@ -1,4 +1,4 @@
-export var defaultHeaders = {
+export const defaultHeaders = {
   'Accept': 'application/json',
   'Content-Type': 'application/json',
   'X-CSRF-Token': window.serverConfig.csrfToken
@@ -10,7 +10,7 @@ export function checkStatus(response) {
     return response;
   }
 
-  var error = new Error(response.statusText);
+  const error = new Error(response.statusText);
   error.response = response;
   throw error;
 }

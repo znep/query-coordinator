@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import FeaturedViewCard from './FeaturedViewCard';
 import { isUserAdminOrPublisher } from '../lib/user';
 
-export var FeaturedContent = React.createClass({
+export const FeaturedContent = React.createClass({
   propTypes: {
     contentList: PropTypes.array.isRequired,
     isBlobby: PropTypes.bool,
@@ -11,14 +11,14 @@ export var FeaturedContent = React.createClass({
   },
 
   renderManagePrompt() {
-    var { isBlobby, isHref } = this.props;
+    const { isBlobby, isHref } = this.props;
 
     if (!isUserAdminOrPublisher()) {
       return null;
     }
 
-    var translationKey = (isBlobby || isHref) ? 'message_external' : 'message';
-    var message = I18n.featured_content.manage_prompt[translationKey];
+    const translationKey = (isBlobby || isHref) ? 'message_external' : 'message';
+    const message = I18n.featured_content.manage_prompt[translationKey];
 
     return (
       <div className="alert default manage-prompt">
@@ -36,13 +36,13 @@ export var FeaturedContent = React.createClass({
   },
 
   renderFeaturedContent() {
-    var { contentList } = this.props;
+    const { contentList } = this.props;
 
     if (_.every(contentList, _.isNull)) {
       return null;
     }
 
-    var cards = _.map(_.compact(contentList), (featuredItem, i) =>
+    const cards = _.map(_.compact(contentList), (featuredItem, i) =>
       <FeaturedViewCard key={i} featuredItem={featuredItem} />
     );
 
@@ -50,7 +50,7 @@ export var FeaturedContent = React.createClass({
   },
 
   render() {
-    var { contentList } = this.props;
+    const { contentList } = this.props;
 
     if (!_.some(contentList) && !isUserAdminOrPublisher()) {
       return null;

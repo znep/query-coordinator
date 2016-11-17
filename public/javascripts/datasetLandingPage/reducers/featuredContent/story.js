@@ -9,7 +9,7 @@ import {
   SET_STORY_URL_FIELD
 } from '../../actionTypes';
 
-var initialState = _.merge(
+const initialState = _.merge(
   {
     canSave: false,
     hasValidationError: false,

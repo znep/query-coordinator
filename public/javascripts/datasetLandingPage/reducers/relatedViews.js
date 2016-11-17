@@ -10,8 +10,8 @@ import {
   TOGGLE_RELATED_VIEWS
 } from '../actionTypes';
 
-var initialRelatedViews = _.get(window.initialState, 'relatedViews', []);
-var initialState = {
+const initialRelatedViews = _.get(window.initialState, 'relatedViews', []);
+const initialState = {
   viewList: _.take(initialRelatedViews, RELATED_VIEWS_CHUNK_SIZE),
   hasMore: initialRelatedViews.length > RELATED_VIEWS_CHUNK_SIZE,
   hasError: false,
@@ -37,7 +37,7 @@ export default function(state, action) {
 
       return {
         ...state,
-        viewList: viewList,
+        viewList,
         hasMore: action.relatedViews.length > RELATED_VIEWS_CHUNK_SIZE,
         hasError: false,
         isLoading: false

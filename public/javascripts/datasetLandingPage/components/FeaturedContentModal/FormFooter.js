@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import React, { PropTypes } from 'react';
 
-var FormFooter = (props) => {
-  var {
+const FormFooter = (props) => {
+  const {
     cancelText,
     canSave,
     displaySaveButton,
@@ -14,10 +14,10 @@ var FormFooter = (props) => {
     savedText
   } = props;
 
-  var renderSaveButton = () => {
+  const renderSaveButton = () => {
     if (!displaySaveButton) { return null; }
 
-    var saveButtonClassName = classNames({
+    const saveButtonClassName = classNames({
       'btn': true,
       'btn-sm': true,
       'btn-success': isSaved,
@@ -26,7 +26,7 @@ var FormFooter = (props) => {
       'save-button': true
     });
 
-    var saveButtonContents;
+    let saveButtonContents;
 
     if (isSaving) {
       saveButtonContents = (

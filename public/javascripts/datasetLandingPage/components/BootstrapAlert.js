@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import components from 'socrata-components';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 
-export var BootstrapAlert = React.createClass({
+export const BootstrapAlert = React.createClass({
   propTypes: {
     bootstrapUrl: PropTypes.string,
     onClickBootstrap: PropTypes.func
@@ -23,11 +23,11 @@ export var BootstrapAlert = React.createClass({
   },
 
   render() {
-    var { bootstrapUrl, onClickBootstrap } = this.props;
-    var isDisabled = !_.isString(bootstrapUrl);
-    var className = 'btn btn-sm btn-alternate-2';
-    var flyoutId;
-    var flyout;
+    const { bootstrapUrl, onClickBootstrap } = this.props;
+    const isDisabled = !_.isString(bootstrapUrl);
+    let className = 'btn btn-sm btn-alternate-2';
+    let flyoutId;
+    let flyout;
 
     if (isDisabled) {
       className = classNames(className, 'btn-disabled');
@@ -53,7 +53,9 @@ export var BootstrapAlert = React.createClass({
           className={className}
           target="_blank"
           data-flyout={flyoutId}
-          onClick={onClickBootstrap}>
+          onClick={onClickBootstrap}
+          tabIndex="0"
+          role="link">
           {I18n.bootstrap_button}
         </a>
         {flyout}
@@ -65,7 +67,7 @@ export var BootstrapAlert = React.createClass({
 function mapDispatchToProps(dispatch) {
   return {
     onClickBootstrap() {
-      var payload = {
+      const payload = {
         name: 'Created a Data Lens',
         properties: {
           'From Page': 'DSLP'

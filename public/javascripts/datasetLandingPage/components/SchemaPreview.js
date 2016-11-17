@@ -7,9 +7,9 @@ import { emitMixpanelEvent } from '../actions/mixpanel';
 import { getIconClassForDataType, getDocumentationLinkForDataType } from '../lib/dataTypeMetadata';
 import { handleKeyPress } from '../lib/a11yHelpers';
 
-var SCHEMA_TABLE_COLUMN_COUNT = 7;
+const SCHEMA_TABLE_COLUMN_COUNT = 7;
 
-export var SchemaPreview = React.createClass({
+export const SchemaPreview = React.createClass({
   propTypes: {
     view: PropTypes.object.isRequired,
     onExpandColumn: PropTypes.func.isRequired,
@@ -17,16 +17,16 @@ export var SchemaPreview = React.createClass({
   },
 
   toggleTable() {
-    var { onExpandSchemaTable } = this.props;
-    var el = ReactDOM.findDOMNode(this).querySelector('.section-content');
-    var tableWrapper = el.querySelector('.table-wrapper');
-    var wasCollapsed = el.classList.contains('collapsed');
-    var originalScrollPosition = window.pageYOffset;
+    const { onExpandSchemaTable } = this.props;
+    const el = ReactDOM.findDOMNode(this).querySelector('.section-content');
+    const tableWrapper = el.querySelector('.table-wrapper');
+    const wasCollapsed = el.classList.contains('collapsed');
+    const originalScrollPosition = window.pageYOffset;
 
     // Calculate current height and the height we are going to animate to.
-    var originalHeight = tableWrapper.getBoundingClientRect().height;
+    const originalHeight = tableWrapper.getBoundingClientRect().height;
     el.classList.toggle('collapsed');
-    var newHeight = tableWrapper.getBoundingClientRect().height;
+    const newHeight = tableWrapper.getBoundingClientRect().height;
 
     if (wasCollapsed) {
       onExpandSchemaTable();
@@ -58,33 +58,34 @@ export var SchemaPreview = React.createClass({
   },
 
   toggleColumn(event) {
-    var { onExpandColumn } = this.props;
-    var el = ReactDOM.findDOMNode(this);
-    var row = event.currentTarget;
+    const { onExpandColumn } = this.props;
+    const el = ReactDOM.findDOMNode(this);
+    const row = event.currentTarget;
 
     // Expand and collapse each row of the table when clicked.  There are two elements that are
     // simultaneously animated: the row itself (animated to show the full description), and the
     // "details" row that immediately follows the "summary" row in the DOM, containing more
     // information about the column.
-    var columnId = row.dataset.column;
+    const columnId = row.dataset.column;
 
     // Animate the sister row
-    var detailRow = el.querySelector(`.column-details[data-column="${columnId}"]`);
+    const detailRow = el.querySelector(`.column-details[data-column="${columnId}"]`);
     if (detailRow) {
-      var detailRowIsHidden = detailRow.style.display === 'none' || detailRow.style.display === '';
-      var detailRowContents = detailRow.querySelector('.contents');
+      const detailRowIsHidden = detailRow.style.display === 'none' ||
+        detailRow.style.display === '';
+
+      const detailRowContents = detailRow.querySelector('.contents');
 
       if (detailRowIsHidden) {
-        var originalRowHeight = 0;
-        var targetRowHeight;
-        var padding = 15;
+        const originalRowHeight = 0;
+        const padding = 15;
 
         // Show the row
         detailRow.style.display = 'table-row';
 
         // Temporarily set height to auto to determine the height to animate to
         detailRowContents.style.height = 'auto';
-        targetRowHeight = detailRowContents.getBoundingClientRect().height;
+        const targetRowHeight = detailRowContents.getBoundingClientRect().height;
         detailRowContents.style.height = originalRowHeight;
 
         // Also animate padding due to the way <td>s work
@@ -110,11 +111,10 @@ export var SchemaPreview = React.createClass({
     }
 
     // Animate the description
-    var description = row.querySelector('.column-description .contents');
+    const description = row.querySelector('.column-description .contents');
     if (description) {
       if (description.classList.contains('clamped')) {
-        var originalDescriptionHeight = description.getBoundingClientRect().height;
-        var targetDescriptionHeight;
+        const originalDescriptionHeight = description.getBoundingClientRect().height;
 
         // Keep track of current collapsed height for collapse animation.
         description.dataset.originalHeight = originalDescriptionHeight;
@@ -122,7 +122,7 @@ export var SchemaPreview = React.createClass({
         // Remove ellipsification and determine target height
         description.classList.remove('clamped');
         description.style.height = 'auto';
-        targetDescriptionHeight = description.getBoundingClientRect().height;
+        const targetDescriptionHeight = description.getBoundingClientRect().height;
 
         // Set height to original and animate to target
         description.style.height = `${originalDescriptionHeight}px`;
@@ -145,11 +145,11 @@ export var SchemaPreview = React.createClass({
   },
 
   render() {
-    var { view } = this.props;
-    var toggleColumn = this.toggleColumn;
+    const { view } = this.props;
+    const toggleColumn = this.toggleColumn;
 
-    var toggles;
-    var tableRows;
+    let toggles;
+    let tableRows;
 
     if (_.isEmpty(view.columns) || view.rowCount === 0) {
       return null;
@@ -180,7 +180,7 @@ export var SchemaPreview = React.createClass({
     }
 
     tableRows = _.map(view.columns, (column) => {
-      var typeCell;
+      let typeCell;
 
       if (column.dataTypeName) {
         typeCell = (
@@ -193,9 +193,9 @@ export var SchemaPreview = React.createClass({
         );
       }
 
-      var documentationUrl = getDocumentationLinkForDataType(column.dataTypeName);
-      var documentationText = I18n.schema_preview.data_types[column.dataTypeName];
-      var documentationLink;
+      const documentationUrl = getDocumentationLinkForDataType(column.dataTypeName);
+      const documentationText = I18n.schema_preview.data_types[column.dataTypeName];
+      let documentationLink;
 
       if (documentationUrl) {
         documentationLink = <a href={documentationUrl} target="_blank">{documentationText}</a>;
@@ -305,9 +305,9 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onExpandColumn(event) {
-      var row = $(event.target).closest('.column-summary');
+      const row = $(event.target).closest('.column-summary');
 
-      var payload = {
+      const payload = {
         name: 'Expanded Column Info',
         properties: {
           'Name': row.find('.column-name').text().trim(),
@@ -319,7 +319,7 @@ function mapDispatchToProps(dispatch) {
     },
 
     onExpandSchemaTable() {
-      var payload = {
+      const payload = {
         name: 'Expanded Details',
         properties: {
           'Expanded Target': 'Schema Preview Table'

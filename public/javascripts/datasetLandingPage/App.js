@@ -13,9 +13,8 @@ import RowDetails from './components/RowDetails';
 import SchemaPreview from './components/SchemaPreview';
 import DatasetPreview from './components/DatasetPreview';
 import RelatedViewList from './components/RelatedViewList';
-import { VelocityComponent } from 'velocity-react';
 
-export var App = React.createClass({
+export const App = React.createClass({
   propTypes: {
     view: PropTypes.object
   },
@@ -76,24 +75,15 @@ export var App = React.createClass({
   },
 
   render() {
-    var { view } = this.props;
-    var content;
+    const { view } = this.props;
 
     if (view.isBlobby) {
-      content = this.renderBlobContainer();
+      return this.renderBlobContainer();
     } else if (view.isHref) {
-      content = this.renderHrefContainer();
+      return this.renderHrefContainer();
     } else {
-      content = this.renderDatasetContainer();
+      return this.renderDatasetContainer();
     }
-
-    return (
-      <VelocityComponent animation={{ opacity: 1 }} runOnMount duration={275}>
-        <div style={{ opacity: 0 }}>
-          {content}
-        </div>
-      </VelocityComponent>
-    );
   }
 });
 

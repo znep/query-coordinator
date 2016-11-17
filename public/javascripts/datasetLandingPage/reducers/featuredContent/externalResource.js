@@ -6,7 +6,7 @@ import {
   CANCEL_FEATURED_ITEM_EDIT
 } from '../../actionTypes';
 
-var initialState = {
+const initialState = {
   description: '',
   previewImage: '',
   title: '',

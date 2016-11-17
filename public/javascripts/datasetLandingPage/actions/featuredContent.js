@@ -26,7 +26,7 @@ import {
 } from '../actionTypes';
 
 function parseUid(url) {
-  var trimmedUrl = trimEditFromUrl(url);
+  const trimmedUrl = trimEditFromUrl(url);
   return trimmedUrl.match(UID_REGEX)[1] || '';
 }
 
@@ -80,16 +80,15 @@ export function handleFeaturedItemSaveError() {
 
 export function saveFeaturedItem(options) {
   return (dispatch, getState) => {
-    var state = getState();
-    var viewId = state.view.id;
-    var featuredContent = state.featuredContent;
-    var editType = featuredContent.editType;
-    var editPosition = featuredContent.editPosition;
+    const state = getState();
+    const viewId = state.view.id;
+    const featuredContent = state.featuredContent;
+    const editType = featuredContent.editType;
+    const editPosition = featuredContent.editPosition;
 
-    var payload;
-    var fetchOptions;
+    let payload;
 
-    var mixpanelPayload = {
+    const mixpanelPayload = {
       name: 'Saved a Featured Item',
       properties: {
         'Content Type': 'Unknown',
@@ -108,9 +107,9 @@ export function saveFeaturedItem(options) {
         position: editPosition
       };
 
-      var viewList = featuredContent.viewSelector.viewList;
-      var selectedView = _.find(viewList, { id: options.featuredLensUid });
-      var displayType = _.get(selectedView, 'displayType');
+      const viewList = featuredContent.viewSelector.viewList;
+      const selectedView = _.find(viewList, { id: options.featuredLensUid });
+      const displayType = _.get(selectedView, 'displayType');
 
       mixpanelPayload.properties['Content Type'] = 'Visualization';
       mixpanelPayload.properties['Display Type'] = getSemanticNameForDisplayType(displayType);
@@ -125,13 +124,13 @@ export function saveFeaturedItem(options) {
       mixpanelPayload.properties['Content Type'] = 'Visualization';
       mixpanelPayload.properties['Display Type'] = 'Story';
     } else if (editType === 'externalResource') {
-      var previewImage = _.get(featuredContent.externalResource, 'previewImage', '');
-      var matches = previewImage.match(/base64,([^\s]+)$/);
-      var previewImageBase64 = _.isNull(matches) ? null : matches[1];
+      const previewImage = _.get(featuredContent.externalResource, 'previewImage', '');
+      const matches = previewImage.match(/base64,([^\s]+)$/);
+      const previewImageBase64 = _.isNull(matches) ? null : matches[1];
 
       payload = {
         description: featuredContent.externalResource.description,
-        previewImageBase64: previewImageBase64,
+        previewImageBase64,
         title: featuredContent.externalResource.title,
         url: featuredContent.externalResource.url,
         position: editPosition,
@@ -146,7 +145,7 @@ export function saveFeaturedItem(options) {
       );
     }
 
-    fetchOptions = {
+    const fetchOptions = {
       method: 'POST',
       credentials: 'same-origin',
       headers: defaultHeaders,
@@ -172,14 +171,14 @@ export function saveFeaturedItem(options) {
 export function requestedFeaturedItemRemoval(position) {
   return {
     type: REQUESTED_FEATURED_ITEM_REMOVAL,
-    position: position
+    position
   };
 }
 
 export function handleFeaturedItemRemovalSuccess(position) {
   return {
     type: HANDLE_FEATURED_ITEM_REMOVAL_SUCCESS,
-    position: position
+    position
   };
 }
 
@@ -191,12 +190,9 @@ export function handleFeaturedItemRemovalError() {
 
 export function removeFeaturedItem(position) {
   return (dispatch, getState) => {
-    var state = getState();
-    var viewId = state.view.id;
-
-    var fetchOptions;
-
-    fetchOptions = {
+    const state = getState();
+    const viewId = state.view.id;
+    const fetchOptions = {
       method: 'DELETE',
       credentials: 'same-origin',
       headers: defaultHeaders
@@ -217,8 +213,8 @@ export function removeFeaturedItem(position) {
 export function setExternalResourceField(field, value) {
   return {
     type: SET_EXTERNAL_RESOURCE_FIELD,
-    field: field,
-    value: value
+    field,
+    value
   };
 }
 
@@ -226,7 +222,7 @@ export function setExternalResourceField(field, value) {
 export function setStoryUrlField(value) {
   return {
     type: SET_STORY_URL_FIELD,
-    value: value
+    value
   };
 }
 
@@ -251,10 +247,10 @@ export function handleLoadingStorySuccess(story) {
 
 export function loadStory() {
   return (dispatch, getState) => {
-    var state = getState();
-    var uid = parseUid(state.featuredContent.story.url);
+    const state = getState();
+    const uid = parseUid(state.featuredContent.story.url);
 
-    var fetchOptions = {
+    const fetchOptions = {
       method: 'GET',
       credentials: 'same-origin',
       headers: {
@@ -276,17 +272,17 @@ export function loadStory() {
 export function setSavingFeaturedItem(viewUid) {
   return {
     type: SET_SAVING_FEATURED_ITEM,
-    viewUid: viewUid
+    viewUid
   };
 }
 
 export function requestDerivedViews() {
   return function(dispatch, getState) {
-    var state = getState();
+    const state = getState();
 
-    var viewId = state.view.id;
-    var fetchUrl = `/dataset_landing_page/${viewId}/derived_views?sort_by=date`;
-    var fetchOptions = {
+    const viewId = state.view.id;
+    const fetchUrl = `/dataset_landing_page/${viewId}/derived_views?sort_by=date`;
+    const fetchOptions = {
       credentials: 'same-origin'
     };
 
@@ -309,7 +305,7 @@ export function requestedDerivedViews() {
 export function receiveDerivedViews(views) {
   return {
     type: RECEIVE_DERIVED_VIEWS,
-    views: views
+    views
   };
 }
 

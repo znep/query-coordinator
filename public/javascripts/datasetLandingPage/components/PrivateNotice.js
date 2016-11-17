@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { handleKeyPress } from '../lib/a11yHelpers';
 
-export var PrivateNotice = React.createClass({
+export const PrivateNotice = React.createClass({
   propTypes: {
     view: PropTypes.object.isRequired
   },
@@ -15,10 +15,10 @@ export var PrivateNotice = React.createClass({
   },
 
   componentWillMount() {
-    var hasDismissedPrivateNotice = true;
+    let hasDismissedPrivateNotice = true;
 
     try {
-      var privateNoticesClosed = JSON.parse(
+      const privateNoticesClosed = JSON.parse(
         window.sessionStorage.getItem('dismissedPrivateNotices')
       );
       hasDismissedPrivateNotice = privateNoticesClosed[this.props.view.id];
@@ -33,7 +33,7 @@ export var PrivateNotice = React.createClass({
 
   onClickDismiss() {
     try {
-      var privateNoticesClosed = JSON.parse(
+      let privateNoticesClosed = JSON.parse(
         window.sessionStorage.getItem('dismissedPrivateNotices')
       );
       privateNoticesClosed = privateNoticesClosed || {};
@@ -50,7 +50,7 @@ export var PrivateNotice = React.createClass({
   },
 
   render() {
-    var { view } = this.props;
+    const { view } = this.props;
 
     if (this.state.isHidden || !view.isPrivate) {
       return null;

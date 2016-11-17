@@ -13,6 +13,37 @@
 
 <div class="dataset-landing-page">
   <div id="app">
+
+    <%# Info pane skeleton %>
+    <div class="info-pane result-card">
+      <div class="container">
+        <div class="entry-header dataset-landing-page-header">
+          <div class="entry-title"><h1 class="info-pane-name"></h1></div>
+          <div class="entry-actions"></div>
+        </div>
+        <div class="entry-content">
+          <div class="entry-main">
+            <div class="entry-description-container" style="min-height: 70px;">
+              <div class="entry-description">&nbsp;</div>
+            </div>
+          </div>
+          <div class="entry-meta second">
+            <div class="entry-meta updated">
+              <span class="meta-title">&nbsp;</span>
+              <span class="date">&nbsp;</span>
+            </div>
+
+            <% if @view.attribution %>
+              <div class="entry-meta views">
+                <span class="meta-title">&nbsp;</span>
+                <span class="attribution">&nbsp;</span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="main-spinner">
       <div class="spinner-default spinner-large"></div>
     </div>
@@ -29,7 +60,7 @@
 
   <script>
     var initialState = {
-      view: <%= raw transformed_view.to_json %>,
+      view: <%= raw @dataset_landing_page_view.to_json %>,
       relatedViews: <%= raw @related_views.to_json %>,
       featuredContent: <%= raw @featured_content.to_json %>
     };

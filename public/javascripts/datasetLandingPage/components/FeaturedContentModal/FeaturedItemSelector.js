@@ -15,7 +15,7 @@ import {
   removeFeaturedItem
 } from '../../actions/featuredContent';
 
-export var FeaturedItemSelector = React.createClass({
+export const FeaturedItemSelector = React.createClass({
   propTypes: {
     contentList: PropTypes.array.isRequired,
     hasRemoveError: PropTypes.bool,
@@ -52,8 +52,8 @@ export var FeaturedItemSelector = React.createClass({
 
   // When we click the add button that shows more add buttons.
   onClickPreAdd(position) {
-    var { isBlobby, isHref } = this.props;
-    var { showPlaceholderDetails } = this.state;
+    const { isBlobby, isHref } = this.props;
+    const { showPlaceholderDetails } = this.state;
 
     showPlaceholderDetails[position] = true;
 
@@ -65,7 +65,7 @@ export var FeaturedItemSelector = React.createClass({
   },
 
   renderAddButton(index, type, text) {
-    var { onClickAdd } = this.props;
+    const { onClickAdd } = this.props;
 
     return (
       <button
@@ -78,7 +78,7 @@ export var FeaturedItemSelector = React.createClass({
   },
 
   renderEditButton(index) {
-    var { contentList, onClickEdit } = this.props;
+    const { contentList, onClickEdit } = this.props;
 
     return (
       <button
@@ -92,11 +92,11 @@ export var FeaturedItemSelector = React.createClass({
   },
 
   renderRemoveButton(index) {
-    var { contentList, isRemoving, removePosition, onClickRemove } = this.props;
+    const { contentList, isRemoving, removePosition, onClickRemove } = this.props;
 
-    var contents;
-    var onClick;
-    var style;
+    let contents;
+    let onClick;
+    let style;
 
     if (isRemoving && removePosition === index) {
       contents = <div className="spinner-default spinner-btn-primary" />;
@@ -120,8 +120,8 @@ export var FeaturedItemSelector = React.createClass({
   },
 
   renderActionButtons(index) {
-    var { contentList } = this.props;
-    var { showPlaceholderDetails } = this.state;
+    const { contentList } = this.props;
+    const { showPlaceholderDetails } = this.state;
 
     if (_.isNull(contentList[index])) {
       if (showPlaceholderDetails[index]) {
@@ -152,7 +152,7 @@ export var FeaturedItemSelector = React.createClass({
   },
 
   renderFooter() {
-    var { onClickDone } = this.props;
+    const { onClickDone } = this.props;
 
     return (
       <footer className="modal-footer">
@@ -170,15 +170,15 @@ export var FeaturedItemSelector = React.createClass({
   },
 
   renderContent() {
-    var { contentList, isRemoving, removePosition, isBlobby, isHref } = this.props;
+    const { contentList, isRemoving, removePosition, isBlobby, isHref } = this.props;
 
-    var introduction = (isBlobby || isHref) ?
+    const introduction = (isBlobby || isHref) ?
       I18n.featured_content_modal.introduction_external :
       I18n.featured_content_modal.introduction;
 
-    var items = _.map(contentList, (featuredItem, i) => {
-      var actionButtons = this.renderActionButtons(i);
-      var className = classNames('featured-item', {
+    const items = _.map(contentList, (featuredItem, i) => {
+      const actionButtons = this.renderActionButtons(i);
+      const className = classNames('featured-item', {
         'placeholder': _.isEmpty(featuredItem),
         'show-buttons': isRemoving && removePosition === i
       });
@@ -220,7 +220,7 @@ export var FeaturedItemSelector = React.createClass({
   },
 
   renderRemoveError() {
-    var { hasRemoveError } = this.props;
+    const { hasRemoveError } = this.props;
 
     if (!hasRemoveError) {
       return null;
@@ -234,7 +234,7 @@ export var FeaturedItemSelector = React.createClass({
   },
 
   render() {
-    var { onClickClose } = this.props;
+    const { onClickClose } = this.props;
 
     return (
       <div className="modal-container">
@@ -273,7 +273,7 @@ function mapDispatchToProps(dispatch) {
 
   return {
     onClickAdd(type, position) {
-      var mixpanelPayload = {
+      const mixpanelPayload = {
         name: 'Clicked to Add a Featured Item',
         properties: {
           'Item Type': _.upperFirst(type),
@@ -294,7 +294,7 @@ function mapDispatchToProps(dispatch) {
     },
 
     onClickEdit(position, featuredItem) {
-      var mixpanelPayload = {
+      const mixpanelPayload = {
         name: 'Clicked to Edit a Featured Item',
         properties: {
           'Item Type': getMixpanelEditType(featuredItem),
@@ -307,7 +307,7 @@ function mapDispatchToProps(dispatch) {
     },
 
     onClickRemove(position, featuredItem) {
-      var mixpanelPayload = {
+      const mixpanelPayload = {
         name: 'Clicked to Remove a Featured Item',
         properties: {
           'Item Type': getMixpanelEditType(featuredItem),

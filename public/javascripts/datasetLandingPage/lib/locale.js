@@ -1,6 +1,6 @@
 // Expects serverConfig.localePrefix
 function localizeLink(href) {
-  var config = window.serverConfig;
+  const config = window.serverConfig;
 
   if ('localePrefix' in config) {
     return `${config.localePrefix}${href}`;

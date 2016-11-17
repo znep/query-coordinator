@@ -4,7 +4,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 
-export var DatasetPreview = React.createClass({
+export const DatasetPreview = React.createClass({
   propTypes: {
     onClickGrid: PropTypes.func,
     view: PropTypes.object.isRequired
@@ -29,7 +29,7 @@ export var DatasetPreview = React.createClass({
   },
 
   getVif() {
-    var { view } = this.props;
+    const { view } = this.props;
 
     return {
       configuration: {
@@ -65,7 +65,7 @@ export var DatasetPreview = React.createClass({
   },
 
   shouldRenderTable() {
-    var { view } = this.props;
+    const { view } = this.props;
 
     return view.isTabular &&
       !_.isEmpty(view.columns) &&
@@ -73,11 +73,11 @@ export var DatasetPreview = React.createClass({
   },
 
   initializeTable() {
-    var $table = $(this.table);
+    const $table = $(this.table);
 
     require.ensure(['socrata-visualizations'], (require) => {
-      var SocrataVisualizations = require('socrata-visualizations');
-      var flyoutRenderer = new SocrataVisualizations.views.FlyoutRenderer();
+      const SocrataVisualizations = require('socrata-visualizations');
+      const flyoutRenderer = new SocrataVisualizations.views.FlyoutRenderer();
 
       // Initialize the table
       $table.socrataTable(this.getVif());
@@ -101,7 +101,7 @@ export var DatasetPreview = React.createClass({
   },
 
   removeTable() {
-    var { $table } = this;
+    const { $table } = this;
 
     // Tell the table to self-destruct
     $table.trigger('SOCRATA_VISUALIZATION_DESTROY');
@@ -127,7 +127,7 @@ export var DatasetPreview = React.createClass({
   },
 
   render() {
-    var { view, onClickGrid } = this.props;
+    const { view, onClickGrid } = this.props;
 
     if (this.shouldRenderTable()) {
       return (
@@ -166,7 +166,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onClickGrid() {
-      var payload = {
+      const payload = {
         name: 'Navigated to Gridpage'
       };
 

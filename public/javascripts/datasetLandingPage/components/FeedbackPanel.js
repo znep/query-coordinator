@@ -10,12 +10,12 @@ function t(key) {
   return I18n.feedback[key];
 }
 
-export var FeedbackPanel = React.createClass({
+export const FeedbackPanel = React.createClass({
   componentDidMount() {
     // Copy some of the close behavior of socrata-components flannels because they don't
     // support the behavior we want for the feedback panel yet.
     document.body.addEventListener('keyup', (event) => {
-      var key = event.which || event.keyCode;
+      const key = event.which || event.keyCode;
 
       // ESC
       if (key === ESCAPE_KEY_CODE) {

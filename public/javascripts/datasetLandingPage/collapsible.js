@@ -1,28 +1,28 @@
 import _ from 'lodash';
 import 'dotdotdot';
 
-var velocity = require('velocity-animate');
+const velocity = require('velocity-animate');
 
 velocity.defaults.duration = 320;
 velocity.defaults.easing = [0.645, 0.045, 0.355, 1];
 
 module.exports = function(el, options) {
-  var $el = $(el);
-  var parent = el.parentElement;
-  var collapsedHeight = null;
-  var originalHeight = parent.getBoundingClientRect().height;
-  var expandedCallback = options.expandedCallback;
+  const $el = $(el);
+  const parent = el.parentElement;
+  const originalHeight = parent.getBoundingClientRect().height;
+  const expandedCallback = options.expandedCallback;
+  let collapsedHeight = null;
 
-  var dotdotdotOptions = {
+  const dotdotdotOptions = {
     after: '.collapse-toggle.more',
     watch: true,
     callback: function(isTruncated) {
-      var parentHeight = parent.getBoundingClientRect().height;
+      const parentHeight = parent.getBoundingClientRect().height;
       if (isTruncated && parentHeight !== originalHeight) {
         parent.dataset.collapsed = true;
         collapsedHeight = collapsedHeight || parentHeight;
       } else {
-        var toggles = _.toArray(el.querySelectorAll('.collapse-toggle'));
+        const toggles = _.toArray(el.querySelectorAll('.collapse-toggle'));
         toggles.forEach(function(toggle) {
           toggle.style.display = 'none';
         });
@@ -30,7 +30,7 @@ module.exports = function(el, options) {
     }
   };
 
-  for (var prop in options) {
+  for (const prop in options) {
     dotdotdotOptions[prop] = options[prop];
   }
 

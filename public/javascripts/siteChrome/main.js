@@ -1,7 +1,7 @@
 // See also config/webpack/site-chrome.config.js
 // See also public/stylesheets/socrata-components/styleguide.css
 
-import styleguide from 'socrata-styleguide';
-styleguide.attachTo(document.querySelector('div.site-chrome'));
+import components from 'socrata-components';
+components.attachTo(document.querySelector('div.site-chrome'));
 
-require('socrata-styleguide/dist/css/styleguide.css');
+require('socrata-components/dist/css/styleguide.css');

@@ -7,7 +7,7 @@ import ODataModal from './components/ODataModal';
 import ShareModal from './components/ShareModal';
 import Tour from './components/Tour';
 
-var DynamicContent = () => (
+const DynamicContent = () => (
   <div>
     <ApiFlannel />
     <ContactForm />

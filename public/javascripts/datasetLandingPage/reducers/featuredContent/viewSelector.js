@@ -5,7 +5,7 @@ import {
   RECEIVE_DERIVED_VIEWS
 } from '../../actionTypes';
 
-var initialState = {
+const initialState = {
   hasError: false,
   isLoading: false,
   viewList: []

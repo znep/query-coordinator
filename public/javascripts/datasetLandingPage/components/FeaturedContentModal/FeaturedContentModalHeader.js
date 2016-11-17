@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 
 function FeaturedContentModalHeader(props) {
-  var { onClickClose } = props;
+  const { onClickClose } = props;
 
   return (
     <header className="modal-header">

@@ -15,7 +15,7 @@ import {
   toggleRelatedViews
 } from '../actions/relatedViews';
 
-export var RelatedViewList = React.createClass({
+export const RelatedViewList = React.createClass({
   propTypes: {
     bootstrapUrl: PropTypes.string,
     dismissError: PropTypes.func.isRequired,
@@ -31,14 +31,14 @@ export var RelatedViewList = React.createClass({
   },
 
   onScrollList(event) {
-    var { isDesktop, hasMore, isLoading, loadMore } = this.props;
+    const { isDesktop, hasMore, isLoading, loadMore } = this.props;
 
     if (isDesktop || !hasMore || isLoading) {
       return;
     }
 
-    var el = event.target;
-    var isAtRightEdge = ((el.scrollWidth - el.offsetWidth) - el.scrollLeft) < 200;
+    const el = event.target;
+    const isAtRightEdge = ((el.scrollWidth - el.offsetWidth) - el.scrollLeft) < 200;
 
     if (isAtRightEdge) {
       loadMore();
@@ -46,14 +46,14 @@ export var RelatedViewList = React.createClass({
   },
 
   getAnimation() {
-    var { viewList, isCollapsed, isDesktop, isLoading } = this.props;
+    const { viewList, isCollapsed, isDesktop, isLoading } = this.props;
 
     if (_.isEmpty(viewList)) {
       return;
     }
 
-    var relatedViewHeight = 297;
-    var relatedViewMargin = 18;
+    const relatedViewHeight = 297;
+    const relatedViewMargin = 18;
 
     if (!isDesktop) {
       return {
@@ -61,8 +61,8 @@ export var RelatedViewList = React.createClass({
       };
     }
 
-    var visibleCount = isCollapsed ? RELATED_VIEWS_CHUNK_SIZE : viewList.length;
-    var rowCount = Math.ceil(visibleCount / RELATED_VIEWS_CHUNK_SIZE);
+    const visibleCount = isCollapsed ? RELATED_VIEWS_CHUNK_SIZE : viewList.length;
+    let rowCount = Math.ceil(visibleCount / RELATED_VIEWS_CHUNK_SIZE);
 
     // While loading on desktop, we immediately expand the container to make room for the new views.
     if (isLoading) {
@@ -75,13 +75,13 @@ export var RelatedViewList = React.createClass({
   },
 
   renderEmptyListAlert() {
-    var { bootstrapUrl } = this.props;
+    const { bootstrapUrl } = this.props;
 
     return <BootstrapAlert bootstrapUrl={bootstrapUrl} />;
   },
 
   renderContents() {
-    var {
+    const {
       viewList,
       hasMore,
       isCollapsed,
@@ -94,8 +94,8 @@ export var RelatedViewList = React.createClass({
       return this.renderEmptyListAlert();
     }
 
-    var relatedViews = _.map(viewList, (relatedView, i) => {
-      var opacity;
+    const relatedViews = _.map(viewList, (relatedView, i) => {
+      let opacity;
 
       if (isDesktop) {
         opacity = (i > 2 && isCollapsed) ? 0 : 1;
@@ -103,10 +103,8 @@ export var RelatedViewList = React.createClass({
         opacity = 1;
       }
 
-      var animation = { opacity: opacity };
-
       return (
-        <VelocityComponent key={i} animation={animation} runOnMount={i > 2} duration={400}>
+        <VelocityComponent key={i} animation={{ opacity }} runOnMount={i > 2} duration={400}>
           <ViewCard {...getViewCardPropsForView(relatedView)} onClick={onClickWidget} />
         </VelocityComponent>
       );
@@ -136,13 +134,13 @@ export var RelatedViewList = React.createClass({
   },
 
   renderLoadMoreLink() {
-    var { hasMore, isLoading, loadMore, isDesktop } = this.props;
+    const { hasMore, isLoading, loadMore, isDesktop } = this.props;
 
     if (!hasMore || !isDesktop) {
       return null;
     }
 
-    var clickHandler = isLoading ? null : loadMore;
+    const clickHandler = isLoading ? null : loadMore;
 
     return (
       <a
@@ -157,7 +155,7 @@ export var RelatedViewList = React.createClass({
   },
 
   renderError() {
-    var { hasError, dismissError } = this.props;
+    const { hasError, dismissError } = this.props;
 
     if (!hasError) {
       return;
@@ -172,7 +170,7 @@ export var RelatedViewList = React.createClass({
   },
 
   renderCollapseLink() {
-    var { viewList, hasMore, isCollapsed, toggleList, isDesktop } = this.props;
+    const { viewList, hasMore, isCollapsed, toggleList, isDesktop } = this.props;
 
     if (hasMore || viewList.length <= RELATED_VIEWS_CHUNK_SIZE || !isDesktop) {
       return;
@@ -191,7 +189,7 @@ export var RelatedViewList = React.createClass({
   },
 
   render() {
-    var { viewList } = this.props;
+    const { viewList } = this.props;
 
     if (_.isEmpty(viewList) && !isUserAdminOrPublisher()) {
       return null;
@@ -227,7 +225,7 @@ function mapDispatchToProps(dispatch) {
     loadMore() {
       dispatch(loadMoreRelatedViews());
 
-      var mixpanelPayload = {
+      const mixpanelPayload = {
         name: 'Clicked to Show More Views'
       };
 
@@ -243,10 +241,10 @@ function mapDispatchToProps(dispatch) {
     },
 
     onClickWidget(event) {
-      var resultCard = $(event.target).closest('.result-card')[0];
+      const resultCard = $(event.target).closest('.result-card')[0];
 
       if (resultCard) {
-        var payload = {
+        const payload = {
           name: 'Clicked a Related View',
           properties: {
             'Related View Id': resultCard.dataset.id,

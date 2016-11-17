@@ -18,7 +18,7 @@ import {
   SET_SAVING_FEATURED_ITEM
 } from '../../actionTypes';
 
-var initialState = {
+const initialState = {
 
   // Source of truth
   contentList: assembleInitialFeaturedContent(),
@@ -41,8 +41,8 @@ var initialState = {
 };
 
 function assembleInitialFeaturedContent() {
-  var featuredContent = _.get(window.initialState, 'featuredContent', []);
-  var contentList = [null, null, null];
+  const featuredContent = _.get(window.initialState, 'featuredContent', []);
+  const contentList = [null, null, null];
 
   featuredContent.forEach(function(item) {
     contentList[item.position] = item;

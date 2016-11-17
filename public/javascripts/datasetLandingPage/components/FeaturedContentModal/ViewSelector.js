@@ -4,7 +4,7 @@ import React, { PropTypes } from 'react';
 import { ViewCard } from 'socrata-components';
 import { getViewCardPropsForView } from '../../lib/viewCardHelpers';
 
-export var ViewSelector = React.createClass({
+export const ViewSelector = React.createClass({
   propTypes: {
     hasSaveError: PropTypes.bool,
     isSaved: PropTypes.bool,
@@ -18,13 +18,13 @@ export var ViewSelector = React.createClass({
   I18n: I18n.featured_content_modal.internal_resource_selector,
 
   renderChooseButton(viewUid) {
-    var { onClickChoose, isSaving, isSaved, isSavingViewUid, hasSaveError } = this.props;
-    var isSavingSelf = (isSavingViewUid === viewUid);
-    var renderSavingButton = (isSaving && isSavingSelf);
-    var renderSavedButton = (isSaved && isSavingSelf);
-    var renderErrorButton = (hasSaveError && isSavingSelf);
+    const { onClickChoose, isSaving, isSaved, isSavingViewUid, hasSaveError } = this.props;
+    const isSavingSelf = (isSavingViewUid === viewUid);
+    const renderSavingButton = (isSaving && isSavingSelf);
+    const renderSavedButton = (isSaved && isSavingSelf);
+    const renderErrorButton = (hasSaveError && isSavingSelf);
 
-    var chooseButtonClassName = classNames({
+    const chooseButtonClassName = classNames({
       'btn': true,
       'btn-primary': true,
       'view-select': true,
@@ -33,7 +33,7 @@ export var ViewSelector = React.createClass({
       'btn-error': renderErrorButton
     });
 
-    var chooseButtonContents;
+    let chooseButtonContents;
 
     if (renderSavingButton) {
       chooseButtonContents = <div className="spinner-default spinner-btn-primary" />;
@@ -56,9 +56,9 @@ export var ViewSelector = React.createClass({
   },
 
   render() {
-    var { viewList, renderNoViews } = this.props;
-    var renderChooseButton = this.renderChooseButton;
-    var viewContent;
+    const { viewList, renderNoViews } = this.props;
+    const renderChooseButton = this.renderChooseButton;
+    let viewContent;
 
     if (viewList.length === 0) {
       viewContent = renderNoViews();

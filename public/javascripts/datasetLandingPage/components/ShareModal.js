@@ -2,10 +2,10 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 
-export var ShareModal = (props) => {
-  var { view, onClickOption } = props;
+export const ShareModal = (props) => {
+  const { view, onClickOption } = props;
 
-  var privateNotice = null;
+  let privateNotice = null;
   if (view.isPrivate) {
     privateNotice = (
       <section className="modal-content">
@@ -98,7 +98,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onClickOption(event) {
-      var payload = {
+      const payload = {
         name: 'Shared Dataset',
         properties: {
           'Provider': event.currentTarget.dataset.shareOption

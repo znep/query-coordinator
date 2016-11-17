@@ -2,13 +2,13 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { isUserAdminOrPublisher } from '../lib/user';
 
-export var BlobDownload = React.createClass({
+export const BlobDownload = React.createClass({
   propTypes: {
     view: PropTypes.object.isRequired
   },
 
   renderManagePrompt() {
-    var { view } = this.props;
+    const { view } = this.props;
 
     if (!isUserAdminOrPublisher()) {
       return null;
@@ -28,14 +28,14 @@ export var BlobDownload = React.createClass({
   },
 
   render() {
-    var { view } = this.props;
-    var { blobFilename, blobMimeType, isBlobby } = view;
+    const { view } = this.props;
+    const { blobFilename, blobMimeType, isBlobby } = view;
 
     if (!isBlobby) {
       return null;
     }
 
-    var href = `/download/${view.id}/${encodeURIComponent(_.replace(blobMimeType, /;.*/, ''))}`;
+    const href = `/download/${view.id}/${encodeURIComponent(_.replace(blobMimeType, /;.*/, ''))}`;
 
     return (
       <section className="landing-page-section blob-download download-section">

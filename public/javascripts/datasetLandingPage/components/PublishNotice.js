@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { handleKeyPress } from '../lib/a11yHelpers';
 import { publishView, clearViewPublishError } from '../actions/view';
 
-export var PublishNotice = React.createClass({
+export const PublishNotice = React.createClass({
   propTypes: {
     onClickPublish: PropTypes.func,
     onDismissError: PropTypes.func,
@@ -15,7 +15,7 @@ export var PublishNotice = React.createClass({
   },
 
   renderPublishErrorAlert() {
-    var { view, onDismissError } = this.props;
+    const { view, onDismissError } = this.props;
 
     if (!view.hasPublishingError) {
       return null;
@@ -38,11 +38,11 @@ export var PublishNotice = React.createClass({
   },
 
   renderPublishAlert() {
-    var { view, onClickPublish } = this.props;
-    var message = I18n.publish_notice.format({ url: view.gridUrl });
-    var flyout = null;
-    var buttonContents = I18n.publish;
-    var buttonProps = {
+    const { view, onClickPublish } = this.props;
+    const message = I18n.publish_notice.format({ url: view.gridUrl });
+    let flyout = null;
+    let buttonContents = I18n.publish;
+    const buttonProps = {
       className: classNames('btn btn-primary btn-sm'),
       onClick: onClickPublish,
       'data-flyout': null
@@ -86,7 +86,7 @@ export var PublishNotice = React.createClass({
   },
 
   render() {
-    var { view } = this.props;
+    const { view } = this.props;
 
     if (!view.isUnpublished) {
       return null;

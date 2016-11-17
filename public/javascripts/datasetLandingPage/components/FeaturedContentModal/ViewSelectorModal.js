@@ -11,7 +11,7 @@ import FeaturedContentModalHeader from './FeaturedContentModalHeader';
 import FormFooter from './FormFooter';
 import ViewSelector from './ViewSelector';
 
-export var ViewSelectorModal = React.createClass({
+export const ViewSelectorModal = React.createClass({
   propTypes: {
     bootstrapUrl: PropTypes.string,
     hasSaveError: PropTypes.bool,
@@ -38,7 +38,7 @@ export var ViewSelectorModal = React.createClass({
   I18n: I18n.featured_content_modal.view_selector_modal,
 
   renderBackButton() {
-    var { onClickCancel } = this.props;
+    const { onClickCancel } = this.props;
     return (
       <button className="btn btn-default btn-simple btn-xs back-button" onClick={onClickCancel}>
         <span className="icon-arrow-prev" />
@@ -48,7 +48,7 @@ export var ViewSelectorModal = React.createClass({
   },
 
   renderContent() {
-    var {
+    const {
       hasSaveError,
       hasViewFetchError,
       isLoading,
@@ -70,7 +70,7 @@ export var ViewSelectorModal = React.createClass({
         </div>
       );
     } else {
-      var viewSelectorProps = {
+      const viewSelectorProps = {
         hasSaveError: hasSaveError,
         isSaved: isSaved,
         isSaving: isSaving,
@@ -87,14 +87,14 @@ export var ViewSelectorModal = React.createClass({
   },
 
   renderNoViews() {
-    var { bootstrapUrl } = this.props;
+    const { bootstrapUrl } = this.props;
 
     return <BootstrapAlert bootstrapUrl={bootstrapUrl} />;
   },
 
   renderFooter() {
-    var { onClickCancel } = this.props;
-    var footerProps = {
+    const { onClickCancel } = this.props;
+    const footerProps = {
       cancelText: I18n.cancel,
       onClickCancel: onClickCancel
     };
@@ -103,7 +103,7 @@ export var ViewSelectorModal = React.createClass({
   },
 
   renderSaveError() {
-    var { hasSaveError } = this.props;
+    const { hasSaveError } = this.props;
     if (hasSaveError) {
       return (
         <div className="alert error">{I18n.featured_content_modal.save_error_message}</div>
@@ -112,7 +112,7 @@ export var ViewSelectorModal = React.createClass({
   },
 
   render() {
-    var { onClickClose } = this.props;
+    const { onClickClose } = this.props;
 
     return (
       <div className="modal-container">

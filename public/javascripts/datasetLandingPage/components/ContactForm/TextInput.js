@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
-var TextInput = React.createClass({
+const TextInput = React.createClass({
   propTypes: {
     description: PropTypes.string,
     field: PropTypes.object.isRequired,
@@ -21,18 +21,18 @@ var TextInput = React.createClass({
   },
 
   render() {
-    var { description, field, label, name, onChange } = this.props;
+    const { description, field, label, name, onChange } = this.props;
 
-    var classes = classNames('text-input', name);
-    var labelId = `${name}-label`;
+    const classes = classNames('text-input', name);
+    const labelId = `${name}-label`;
 
-    var descriptionElement = description ?
+    const descriptionElement = description ?
       <span id="description" className="x-small quiet">
         {description}
       </span> :
       null;
 
-    var isInvalid = field.invalid && this.state.dirty;
+    const isInvalid = field.invalid && this.state.dirty;
 
     return (
       <div>

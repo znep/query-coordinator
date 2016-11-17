@@ -1,12 +1,12 @@
 import _ from 'lodash';
 
 // Control to load UserSnap only once.
-var loaded = false;
+let loaded = false;
 
 // One-time setup options.
-var locale = null;
-var user = {};
-var onClose = _.noop;
+let locale = null;
+let user = {};
+let onClose = _.noop;
 
 // Configuration for UserSnap, which will be bound to window.
 function generateConfig() {
@@ -45,12 +45,12 @@ function getLocalizationKey() {
 
 // Script loader provided by UserSnap.
 function loadAsyncScript() {
-  var s = document.createElement('script');
+  const s = document.createElement('script');
   s.type = 'text/javascript';
   s.async = true;
   s.src = '//api.usersnap.com/load/' +
           'db69b856-0f89-42cb-aec0-83c78ba79c03.js';
-  var x = document.getElementsByTagName('script')[0];
+  const x = document.getElementsByTagName('script')[0];
   x.parentNode.insertBefore(s, x);
 }
 

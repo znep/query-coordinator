@@ -25,7 +25,7 @@ export function requestRelatedViews() {
 export function receiveRelatedViews(relatedViews) {
   return {
     type: RECEIVE_RELATED_VIEWS,
-    relatedViews: relatedViews
+    relatedViews
   };
 }
 
@@ -43,17 +43,17 @@ export function dismissRelatedViewsError() {
 
 export function loadMoreRelatedViews() {
   return (dispatch, getState) => {
-    var state = getState();
+    const state = getState();
 
     if (_.get(state, 'relatedViews.isLoading', false)) {
       return;
     }
 
-    var viewId = state.view.id;
-    var offset = _.get(state, 'relatedViews.viewList.length', 0);
-    var limit = RELATED_VIEWS_CHUNK_SIZE + 1;
-    var fetchUrl = `/dataset_landing_page/${viewId}/related_views?limit=${limit}&offset=${offset}`;
-    var fetchOptions = {
+    const uid = state.view.id;
+    const offset = _.get(state, 'relatedViews.viewList.length', 0);
+    const limit = RELATED_VIEWS_CHUNK_SIZE + 1;
+    const fetchUrl = `/dataset_landing_page/${uid}/related_views?limit=${limit}&offset=${offset}`;
+    const fetchOptions = {
       credentials: 'same-origin',
       headers: defaultHeaders
     };

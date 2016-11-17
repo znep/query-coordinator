@@ -16,15 +16,15 @@ import {
 export function setContactFormField(field, value) {
   return {
     type: SET_CONTACT_FORM_FIELD,
-    field: field,
-    value: value
+    field,
+    value
   };
 }
 
 export function setContactFormRecaptchaLoaded(value) {
   return {
     type: SET_CONTACT_FORM_RECAPTCHA_LOADED,
-    value: value
+    value
   };
 }
 
@@ -66,10 +66,10 @@ export function handleContactFormRecaptchaReset() {
 
 export function submitContactForm() {
   return (dispatch, getState) => {
-    var state = getState();
-    var viewId = state.view.id;
-    var { fields } = state.contactForm;
-    var { csrfToken } = window.serverConfig;
+    const state = getState();
+    const viewId = state.view.id;
+    const { fields } = state.contactForm;
+    const { csrfToken } = window.serverConfig;
 
     dispatch(sendContactForm());
 
@@ -109,4 +109,3 @@ export function submitContactForm() {
       );
   };
 }
-

@@ -6,7 +6,7 @@ class DatasetLandingPageController < ApplicationController
 
   def related_views
     begin
-      related_views = dataset_landing_page.get_derived_views(
+      related_views = DatasetLandingPage.fetch_derived_views(
         params[:id],
         forwardable_session_cookies,
         request_id,
@@ -24,7 +24,7 @@ class DatasetLandingPageController < ApplicationController
 
   def get_featured_content
     begin
-      featured_content = dataset_landing_page.get_featured_content(
+      featured_content = DatasetLandingPage.fetch_featured_content(
         params[:id],
         forwardable_session_cookies,
         request_id
@@ -43,7 +43,7 @@ class DatasetLandingPageController < ApplicationController
     sort_by = params[:sort_by] || 'most_accessed'
 
     begin
-      derived_content = dataset_landing_page.get_derived_views(
+      derived_content = DatasetLandingPage.fetch_derived_views(
         params[:id],
         forwardable_session_cookies,
         request_id,
@@ -62,7 +62,7 @@ class DatasetLandingPageController < ApplicationController
 
   def post_featured_content
     begin
-      featured_item = dataset_landing_page.add_featured_content(
+      featured_item = DatasetLandingPage.add_featured_content(
         params[:id],
         request.body.read,
         forwardable_session_cookies,
@@ -79,7 +79,7 @@ class DatasetLandingPageController < ApplicationController
 
   def delete_featured_content
     begin
-      featured_item = dataset_landing_page.delete_featured_content(params[:id], params[:position])
+      featured_item = DatasetLandingPage.delete_featured_content(params[:id], params[:position])
     rescue CoreServer::ResourceNotFound => error
       return render :json => error.message, :status => :not_found
     rescue CoreServer::CoreServerError => error
@@ -91,7 +91,7 @@ class DatasetLandingPageController < ApplicationController
 
   def get_formatted_view_by_id
     begin
-      view = dataset_landing_page.get_formatted_view_widget_by_id(
+      view = DatasetLandingPage.get_formatted_view_widget_by_id(
         params[:id],
         forwardable_session_cookies,
         request_id
@@ -103,11 +103,5 @@ class DatasetLandingPageController < ApplicationController
     end
 
     render :json => view
-  end
-
-  private
-
-  def dataset_landing_page
-    @dataset_landing_page ||= DatasetLandingPage.new
   end
 end

@@ -220,7 +220,7 @@ class DatasetsControllerTest < ActionController::TestCase
     context 'if the view is a dataset' do
       context 'display the DLSP' do
         setup do
-          DatasetLandingPage.any_instance.stubs(:get_derived_views => [])
+          DatasetLandingPage.stubs(:fetch_derived_views => [])
           stub_site_chrome_custom_content
           @controller.stubs(get_view: @test_view)
           @test_view.stubs(:dataset? => true)

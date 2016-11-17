@@ -12,7 +12,7 @@ import {
   setExternalResourceField
 } from '../../actions/featuredContent';
 
-export var ExternalResourceForm = React.createClass({
+export const ExternalResourceForm = React.createClass({
   propTypes: {
     canSave: PropTypes.bool,
     description: PropTypes.string,
@@ -56,10 +56,10 @@ export var ExternalResourceForm = React.createClass({
   },
 
   onChangePreviewImage(event) {
-    var { onChangePreviewImage } = this.props;
+    const { onChangePreviewImage } = this.props;
 
-    var file = event.target.files[0];
-    var isFileImage = file && /\.(jpe?g|png|gif)$/i.test(file.name);
+    const file = event.target.files[0];
+    const isFileImage = file && /\.(jpe?g|png|gif)$/i.test(file.name);
 
     this.setState({
       isImageInvalid: !isFileImage
@@ -69,10 +69,10 @@ export var ExternalResourceForm = React.createClass({
       return;
     }
 
-    var fileReader = new FileReader();
+    const fileReader = new FileReader();
 
     fileReader.addEventListener('load', () => {
-      var dataUrl = fileReader.result;
+      const dataUrl = fileReader.result;
       onChangePreviewImage(dataUrl);
     }, false);
 
@@ -92,10 +92,10 @@ export var ExternalResourceForm = React.createClass({
   I18n: I18n.featured_content_modal.external_resource_form,
 
   renderInputField(key, inputProps) {
-    var prefix = 'external-resource';
-    var value = this.props[key];
-    var onChange = this[`onChange${_.upperFirst(key)}`];
-    var kebabKey = _.kebabCase(key);
+    const prefix = 'external-resource';
+    const value = this.props[key];
+    const onChange = this[`onChange${_.upperFirst(key)}`];
+    const kebabKey = _.kebabCase(key);
 
     inputProps = _.defaults(inputProps, {
       id: `${prefix}-${kebabKey}`,
@@ -124,9 +124,9 @@ export var ExternalResourceForm = React.createClass({
   },
 
   renderPreview() {
-    var { description, previewImage, title } = this.props;
+    const { description, previewImage, title } = this.props;
 
-    var cardProps = {
+    const cardProps = {
       description: _.isEmpty(description) ? this.I18n.description : description,
       imageUrl: _.isEmpty(previewImage) ? null : previewImage,
       name: _.isEmpty(title) ? this.I18n.title : title
@@ -136,38 +136,38 @@ export var ExternalResourceForm = React.createClass({
   },
 
   renderContent() {
-    var { url, hasSaveError, onClickCancel } = this.props;
-    var { isImageInvalid } = this.state;
+    const { url, hasSaveError, onClickCancel } = this.props;
+    const { isImageInvalid } = this.state;
 
-    var isUrlInvalid = !_.isEmpty(url) && !VALID_URL_REGEX.test(url);
+    const isUrlInvalid = !_.isEmpty(url) && !VALID_URL_REGEX.test(url);
 
-    var backButton = (
+    const backButton = (
       <button className="btn btn-default btn-simple btn-xs back-button" onClick={onClickCancel}>
         <span className="icon-arrow-prev" />
         {I18n.back}
       </button>
     );
 
-    var titleField = this.renderInputField('title', { maxLength: 80 });
-    var descriptionField = this.renderInputField('description', { maxLength: 160 });
-    var urlField = this.renderInputField('url', {
+    const titleField = this.renderInputField('title', { maxLength: 80 });
+    const descriptionField = this.renderInputField('description', { maxLength: 160 });
+    const urlField = this.renderInputField('url', {
       'placeholder': 'https://example.com',
       'aria-invalid': isUrlInvalid
     });
-    var previewImageField = this.renderInputField('previewImage', {
+    const previewImageField = this.renderInputField('previewImage', {
       type: 'file',
       className: 'file-input preview-image'
     });
 
-    var urlWarning = isUrlInvalid ?
+    const urlWarning = isUrlInvalid ?
       <div className="alert warning">{this.I18n.invalid_url_message}</div> :
       null;
 
-    var imageWarning = isImageInvalid ?
+    const imageWarning = isImageInvalid ?
       <div className="alert error">{this.I18n.invalid_image_message}</div> :
       null;
 
-    var saveError = hasSaveError ?
+    const saveError = hasSaveError ?
       <div className="alert error">{I18n.featured_content_modal.save_error_message}</div> :
       null;
 
@@ -202,10 +202,10 @@ export var ExternalResourceForm = React.createClass({
   },
 
   renderFooter() {
-    var { canSave, isSaved, isSaving, onClickCancel, onClickSave } = this.props;
-    var { isImageInvalid } = this.state;
+    const { canSave, isSaved, isSaving, onClickCancel, onClickSave } = this.props;
+    const { isImageInvalid } = this.state;
 
-    var footerProps = {
+    const footerProps = {
       cancelText: I18n.cancel,
       canSave: canSave && !isImageInvalid,
       displaySaveButton: true,
@@ -221,7 +221,7 @@ export var ExternalResourceForm = React.createClass({
   },
 
   render() {
-    var { onClickClose } = this.props;
+    const { onClickClose } = this.props;
 
     return (
       <div className="modal-container">

@@ -1,10 +1,6 @@
 require 'rails_helper'
 
 describe DatasetLandingPage do
-  let(:dataset_landing_page) do
-    DatasetLandingPage.new
-  end
-
   let(:view) do
     View.new({
       'id' => '1234-5678',
@@ -50,8 +46,8 @@ describe DatasetLandingPage do
     it 'returns nothing if the view does not exist' do
       expect(View).to receive(:find).and_return(nil)
       expect(view).not_to receive(:find_dataset_landing_page_related_content)
-      expect(dataset_landing_page).not_to receive(:format_view_widget)
-      results = dataset_landing_page.get_derived_views('abcd-1234', 'cookie', 'request_id')
+      expect(DatasetLandingPage).not_to receive(:format_view_widget)
+      results = DatasetLandingPage.fetch_derived_views('abcd-1234', 'cookie', 'request_id')
 
       expect(results).to eq([])
     end
@@ -78,7 +74,7 @@ describe DatasetLandingPage do
           at_least(:once).
           and_return([])
 
-        dataset_landing_page.get_derived_views(uid, 'cookie', 'request_id')
+        DatasetLandingPage.fetch_derived_views(uid, 'cookie', 'request_id')
       end
 
       it 'uses the provided uid if view is OBE' do
@@ -105,7 +101,7 @@ describe DatasetLandingPage do
 
       it 'uses Cetera.get_derived_from_views to retrieve the related views from Cetera' do
         expect(Cetera::Utils).to receive(:get_derived_from_views).and_return([])
-        results = dataset_landing_page.get_derived_views('data-lens', 'cookie', 'request_id')
+        results = DatasetLandingPage.fetch_derived_views('data-lens', 'cookie', 'request_id')
 
         expect(results).to eq([])
       end
@@ -126,16 +122,15 @@ describe DatasetLandingPage do
           ).
           and_return([])
 
-        dataset_landing_page.get_derived_views('data-lens', 'cookie', 'request_id', 19, 31, 'most_accessed')
+        DatasetLandingPage.fetch_derived_views('data-lens', 'cookie', 'request_id', 19, 31, 'most_accessed')
       end
 
       it 'formats the response' do
         cetera_result_double = instance_double(Cetera::Results::ResultRow, :id => 'elep-hant')
         expect(cetera_result_double).to receive(:get_preview_image_url).and_return('image')
         expect(Cetera::Utils).to receive(:get_derived_from_views).and_return([cetera_result_double])
-        expect(dataset_landing_page).to receive(:format_view_widget).
-          and_return(formatted_view)
-        results = dataset_landing_page.get_derived_views('data-lens', 'cookie', 'request_id')
+        expect(DatasetLandingPage).to receive(:format_view_widget).and_return(formatted_view)
+        results = DatasetLandingPage.fetch_derived_views('data-lens', 'cookie', 'request_id')
 
         expect(results).to eq([formatted_view])
       end
@@ -146,28 +141,28 @@ describe DatasetLandingPage do
         expect(View).to receive(:find).and_return(view)
         expect(view).to receive(:is_public?).and_return(false)
         expect(view).to receive(:find_dataset_landing_page_related_content).and_return([view])
-        expect(dataset_landing_page).to receive(:format_view_widget).
+        expect(DatasetLandingPage).to receive(:format_view_widget).
           and_return(formatted_featured_item).
           exactly(1).times
-        results = dataset_landing_page.get_derived_views('abcd-1234', 'cookie', 'request_id')
+        results = DatasetLandingPage.fetch_derived_views('abcd-1234', 'cookie', 'request_id')
 
         expect(results).to eq([formatted_featured_item])
       end
     end
   end
 
-  describe '#get_featured_content' do
+  describe '#fetch_featured_content' do
     it 'uses View.featured_content to retrieve featured content' do
       expect(View).to receive(:find).and_return(view)
       expect(view).to receive(:featured_content).and_return(
         Array.new(3, featured_item)
       )
 
-      expect(dataset_landing_page).to receive(:format_featured_item).
+      expect(DatasetLandingPage).to receive(:format_featured_item).
         and_return(formatted_featured_item).
         exactly(3).times
 
-      result = dataset_landing_page.get_featured_content(
+      result = DatasetLandingPage.fetch_featured_content(
         'view-wooo',
         'cookies',
         'request_id'
@@ -184,11 +179,11 @@ describe DatasetLandingPage do
         invalid_featured_item
       ])
 
-      expect(dataset_landing_page).to receive(:format_featured_item).
+      expect(DatasetLandingPage).to receive(:format_featured_item).
         and_return(formatted_featured_item).
         exactly(2).times
 
-      result = dataset_landing_page.get_featured_content(
+      result = DatasetLandingPage.fetch_featured_content(
         'view-wooo',
         'cookies',
         'request_id'
@@ -202,11 +197,11 @@ describe DatasetLandingPage do
     it 'uses View.find to retrieve the view by id' do
       expect(View).to receive(:find).and_return(view)
 
-      expect(dataset_landing_page).to receive(:format_view_widget).
+      expect(DatasetLandingPage).to receive(:format_view_widget).
         and_return(formatted_featured_item).
         exactly(1).times
 
-      result = dataset_landing_page.get_formatted_view_widget_by_id(
+      result = DatasetLandingPage.get_formatted_view_widget_by_id(
         'abcd-1234',
         'cookies',
         'request_id'

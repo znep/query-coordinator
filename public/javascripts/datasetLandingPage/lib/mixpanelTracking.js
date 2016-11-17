@@ -1,12 +1,12 @@
 import _ from 'lodash';
 import mixpanel from 'mixpanel-browser';
 
-var sessionData = window.sessionData;
-var config = window.mixpanelConfig;
+const sessionData = window.sessionData;
+const config = window.mixpanelConfig;
 
 // Mixpanel constants
 // This is duplicated in angular/common/values.js and util/mixpanel-analytics.js
-var MIXPANEL_EVENTS = [
+const MIXPANEL_EVENTS = [
   'Changed Render Type Options',
   'Chose Visualization Type',
   'Cleared Facets',
@@ -47,7 +47,7 @@ var MIXPANEL_EVENTS = [
 ];
 
 // This is duplicated in angular/common/values.js and util/mixpanel-analytics.js
-var MIXPANEL_PROPERTIES = [
+const MIXPANEL_PROPERTIES = [
   'Catalog Version',
   'Chart/Map Type',
   'Click Position',
@@ -105,7 +105,7 @@ var MIXPANEL_PROPERTIES = [
 ];
 
 // These are properties that don't change once a page has loaded;
-var staticPageProperties = {
+const staticPageProperties = {
   'Dataset Owner': sessionData.ownerId,
   'Domain': window.location.hostname,
   'On Page': window.location.pathname,
@@ -119,7 +119,7 @@ var staticPageProperties = {
 
 // Event name validation
 function validateEventName(eventName) {
-  var valid = _.includes(MIXPANEL_EVENTS, eventName);
+  const valid = _.includes(MIXPANEL_EVENTS, eventName);
 
   if (!valid) {
     console.error(`Mixpanel payload validation failed: Unknown event name: "${eventName}"`);
@@ -130,7 +130,7 @@ function validateEventName(eventName) {
 
 // Payload property validation
 function validateProperties(properties) {
-  var valid = true;
+  let valid = true;
 
   _.forEach(properties, (value, key) => {
     if (_.isObject(value)) {
@@ -151,7 +151,7 @@ function validateProperties(properties) {
 
 // Note this is duplicated from util/mixpanel-analytics.js
 function registerUserProperties() {
-  var properties = _.pick(
+  const properties = _.pick(
     staticPageProperties,
     'User Id',
     'Socrata Employee',
@@ -164,7 +164,7 @@ function registerUserProperties() {
     mixpanel.register(properties);
 
     // Set user ID to mixpanels user ID if not logged in
-    var userId = sessionData.userId;
+    const userId = sessionData.userId;
     mixpanel.identify(userId === 'Not Logged In' ? mixpanel.get_distinct_id() : userId);
 
     // set the profile information about the user
@@ -198,7 +198,7 @@ function sendPayload(eventName, properties) {
     registerUserProperties();
 
     // Merge custom properties with properties we always want to track
-    var mergedProperties = _.extend(genericPagePayload(), properties);
+    const mergedProperties = _.extend(genericPagePayload(), properties);
 
     // Track!
     validateEventName(eventName);

@@ -15,10 +15,10 @@ import DynamicContent from './DynamicContent';
 
 // Update the csrf cookie to match the one from serverConfig, this is necessary to properly
 // authenticate with core.
-var csrfCookie = encodeURIComponent(window.serverConfig.csrfToken);
+const csrfCookie = encodeURIComponent(window.serverConfig.csrfToken);
 document.cookie = `socrata-csrf-token=${csrfCookie};secure;path=/`;
 
-var middleware = [thunk];
+const middleware = [thunk];
 
 if (window.serverConfig.environment === 'development') {
   a11y(React, { ReactDOM: ReactDOM });
@@ -31,7 +31,7 @@ if (window.serverConfig.environment === 'development') {
   airbrake.init();
 }
 
-var store = createStore(datasetLandingPage, applyMiddleware(...middleware));
+const store = createStore(datasetLandingPage, applyMiddleware(...middleware));
 
 // Defer rendering so the spinner in the erb can render.
 _.defer(() => {
@@ -56,7 +56,7 @@ _.defer(() => {
   }
 
   // Show the footer
-  var footer = document.querySelector('#site-chrome-footer');
+  const footer = document.querySelector('#site-chrome-footer');
   if (footer) {
     footer.style.visibility = 'visible';
   }

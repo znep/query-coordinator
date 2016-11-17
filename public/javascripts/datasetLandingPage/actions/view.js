@@ -26,8 +26,8 @@ export function clearViewPublishError() {
 
 export function publishView() {
   return (dispatch, getState) => {
-    var viewId = getState().view.id;
-    var fetchOptions = {
+    const viewId = getState().view.id;
+    const fetchOptions = {
       method: 'POST',
       headers: defaultHeaders,
       credentials: 'same-origin'

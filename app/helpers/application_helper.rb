@@ -91,7 +91,7 @@ module ApplicationHelper
     if on_homepage
       site_chrome.is_activated_on?('homepage')
     elsif using_dataslate
-      FeatureFlags.derive(nil, request).site_chrome_header_and_footer_for_dataslate
+      site_chrome.enabled_on_dataslate?(defined?(request) && request)
     else
       site_chrome.is_activated_on?('open_data')
     end

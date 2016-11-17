@@ -289,7 +289,7 @@ describe 'FeatureFlags' do
     context 'FFS is not enabled' do
       it 'should not raise' do
         allow(FeatureFlags).to receive(:using_signaller?).and_return(false)
-        FeatureFlags.set_value(:site_chrome_header_and_footer_for_dataslate, false, CurrentDomain.cname)
+        FeatureFlags.set_value(:disable_site_chrome_header_footer_on_dataslate_pages, false, CurrentDomain.cname)
       end
     end
   end

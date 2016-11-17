@@ -2827,7 +2827,7 @@ en:
               select_where: 'Select where these Site Appearance settings will appear:'
             fields:
               display_language_switcher:
-                description: Use this setting to define which languages your site supports. English is required and included for all sites. To add additional languages, please contact support@socrata.com
+                description: Use this setting to display a Language menu in your header and footer, which will allow users to switch between languages already configured for your site. English is included and required for all sites. To add additional languages to your site, please contact support@socrata.com.
                 label: Display Language Switcher in header and footer
                 title: Languages
               font_family:

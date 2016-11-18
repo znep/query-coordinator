@@ -3843,8 +3843,8 @@ en:
             region_level_prompt: Select a region level
             region_prompt: Select a region
           layers:
-            advanced: Advanced Config for %{name}
-            config: Config for %{name}
+            advanced: Advanced Configuration for %{name}
+            config: Configuration for %{name}
             custom: Custom Layer
             dataset: Dataset
             edit: edit

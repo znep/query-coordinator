@@ -1,0 +1,25 @@
+<% content_for :head do %>
+  <title><%= @view.name %> | <%= get_site_title %></title>
+
+  <%= rendered_stylesheet_tag 'visualization-canvas' %>
+<% end %>
+
+<div id="app" class="visualization-canvas">
+  <div class="main-spinner">
+    <div class="spinner-default spinner-large"></div>
+  </div>
+</div>
+
+<% content_for :scripts do %>
+  <script id="visualization-canvas-initial-state">
+    var initialState = {
+      parentView: <%= raw @parent_view.as_visualization_canvas_parent.to_json %>,
+      view: <%= raw @view.as_visualization_canvas.to_json %>
+    };
+  </script>
+
+  <%= render_visualization_canvas_translations %>
+  <%= render_visualization_canvas_server_config %>
+
+  <%= include_webpack_bundle 'visualization-canvas/main.js' %>
+<% end %>

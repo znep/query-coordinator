@@ -115,6 +115,10 @@ module ApplicationHelper
     !!SiteChrome.find.try(:dslp_enabled?) || !!cookies[:socrata_site_chrome_preview]
   end
 
+  def visualization_canvas_enabled?
+    FeatureFlags.derive(nil, request).enable_visualization_canvas
+  end
+
 # PAGE-HEADER
 
   def get_favicon_tag

@@ -1,4 +1,3 @@
-import 'script!jquery';
 import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -6,14 +5,14 @@ import a11y from 'react-a11y';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 
-import dataLens from './reducer';
+import visualizationCanvas from './reducer';
 import App from './App';
 
 if (window.serverConfig.environment === 'development') {
   a11y(React, { ReactDOM: ReactDOM });
 }
 
-const store = createStore(dataLens);
+const store = createStore(visualizationCanvas);
 
 // Defer rendering so the spinner in the erb can render.
 _.defer(function() {

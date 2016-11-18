@@ -23,8 +23,8 @@ angular-app-dataCards:
 - dataCards/classic-visualization-previewer
 - dataCards/export-menu
 
-data-lens:
-- data-lens/data-lens
+visualization-canvas:
+- visualization-canvas/visualization-canvas
 
 dataset-landing-page:
 - dataset-landing-page/dataset-landing-page

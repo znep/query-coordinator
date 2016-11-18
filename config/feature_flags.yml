@@ -66,14 +66,13 @@ enable_dataset_landing_page_tour:
 enable_dataset_management_ui:
   description: New management page for datasets
   defaultValue: false
-enable_flexible_data_lens:
-  description: Enables Flexible Data Lens
-  defaultValue: false
-  category: data lens
 enable_ingress_geometry_types:
   description: 'Add the types: point, multipoint, line, multiline, polygon, multipolygon. This flag only functions when `ingress_strategy` is delta-importer or nbe.'
   defaultValue: false
   category: obe deprecation
+enable_visualization_canvas:
+  description: Enables Visualization Canvas (viewing saved VCs when this flag is off will result in a 404)
+  defaultValue: false
 disable_legacy_types:
   description: 'According to CORE-5097, the disabled types are: Formatted Text, Email, Website URL, Date & Time (with timezone), Star, Phone, Multiple Choice, Photo (Image), Document, and Dataset Link.'
   defaultValue: false

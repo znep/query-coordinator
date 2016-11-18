@@ -32,6 +32,7 @@ RSpec.describe 'routes for Data Lens' do
     allow_any_instance_of(ActionDispatch::Request).to receive(:path_parameters).and_return(datalens_matching_datalens_constraint_params)
     view_double = double
     allow(view_double).to receive(:data_lens?).and_return(true)
+    allow(view_double).to receive(:visualization_canvas?).and_return(false)
     allow(View).to receive(:find).and_return(view_double)
     expect(get('/view/1234-1234')).to route_to('angular#data_lens', datalens_matching_datalens_constraint_params)
   end

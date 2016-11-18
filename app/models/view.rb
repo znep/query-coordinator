@@ -945,7 +945,7 @@ class View < Model
   end
 
   def last_activity
-    @last_activity ||= [rowsUpdatedAt || 0, createdAt || 0, viewLastModified || 0].max
+    @last_activity ||= [rowsUpdatedAt, createdAt, viewLastModified].compact.max
   end
 
   def time_created_at
@@ -1391,6 +1391,10 @@ class View < Model
     is_tabular? && displayType == 'data_lens'
   end
 
+  def visualization_canvas?
+    data_lens? && !(displayFormat && displayFormat.has_data_lens_metadata?)
+  end
+
   def has_landing_page?
     dataset? || is_blobby? || is_href?
   end
@@ -1399,6 +1403,7 @@ class View < Model
     standalone_visualization? || classic_visualization?
   end
 
+  # standalone visualization saved from a data lens (creating these is now deprecated)
   def standalone_visualization?
     is_tabular? && (is_data_lens_chart? || is_data_lens_map?)
   end
@@ -1993,9 +1998,9 @@ class View < Model
     visualization
   end
 
-  def new_data_lens_visualization
+  def new_visualization_canvas
     View.setup_model({
-      :name => I18n.t('data_lens.info_pane.bootstrap_title', name: name),
+      :name => I18n.t('visualization_canvas.info_pane.bootstrap_title', name: name),
       :description => html_description,
       :category => category,
       :columns => columns.map(&:data),
@@ -2004,19 +2009,20 @@ class View < Model
     }.with_indifferent_access)
   end
 
-  def as_data_lens_visualization_parent
+  def as_visualization_canvas_parent
     {
       :name => name,
       :url => Rails.application.routes.url_helpers.view_path(self)
     }
   end
 
-  def as_data_lens_visualization
+  def as_visualization_canvas
     {
       :name => name,
       :description => html_description,
       :category => category,
-      :columns => columns
+      :columns => columns,
+      :lastUpdatedAt => time_last_updated_at
     }
   end
 

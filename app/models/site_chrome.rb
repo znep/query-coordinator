@@ -207,6 +207,13 @@ class SiteChrome
     config.try(:dig, 'value', 'versions', '0.3', 'published')
   end
 
+  # TODO! Do away with the OTHER activation_state inside the siteChromeConfigVars property value,
+  # and just use this separate property to handle the entire activation_state.
+  # It will require migrating the old activation_state values over to the separate property.
+  def self.custom_content_activation_state_property_name
+    'activation_state'
+  end
+
   def authorized_request_headers
     SiteChrome.default_request_headers.merge('Cookie' => @cookies)
   end
@@ -324,6 +331,10 @@ class SiteChrome
   # True only if it has been activated and then reverted
   def reverted?
     activation_state.present? && activation_state.values.none?
+  end
+
+  def custom_content_activated?
+    property(SiteChrome.custom_content_activation_state_property_name).try(:dig, :value, :custom)
   end
 
   private

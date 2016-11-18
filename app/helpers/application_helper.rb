@@ -87,6 +87,7 @@ module ApplicationHelper
     site_chrome = SiteChrome.find
     return false unless site_chrome
     return true if in_preview_mode?
+    return true if site_chrome.custom_content_activated? # EN-12113
 
     if on_homepage
       site_chrome.is_activated_on?('homepage')

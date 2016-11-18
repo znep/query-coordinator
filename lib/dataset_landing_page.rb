@@ -2,6 +2,7 @@
 class DatasetLandingPage
   class << self
     include Rails.application.routes.url_helpers
+    include ActionView::Helpers::UrlHelper
     include Socrata::UrlHelpers
     include DatasetsHelper
 

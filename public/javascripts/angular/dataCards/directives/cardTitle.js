@@ -1,4 +1,4 @@
-module.exports = function CardTitleDirective(Constants, Dataset, PageHelpersService) {
+module.exports = function CardTitleDirective(Constants, Dataset, PageHelpersService, I18n) {
   return {
     restrict: 'E',
     scope: {
@@ -22,7 +22,7 @@ module.exports = function CardTitleDirective(Constants, Dataset, PageHelpersServ
       var dynamicTitle$ = PageHelpersService.dynamicCardAggregationTitle(model$).
         map(_.upperFirst).
         map(function(title) {
-          return `${title} by`;
+          return `${title} ${I18n.common.by}`;
         });
 
       var displayDynamicTitle$ = model$.

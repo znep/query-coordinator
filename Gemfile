@@ -57,9 +57,6 @@ gem 'unicorn'
 # Semantic versioning
 gem 'semver2'
 
-# Memcache library
-gem 'dalli'
-
 # Stores the request for use later
 gem 'request_store'
 

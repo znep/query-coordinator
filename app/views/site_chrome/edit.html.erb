@@ -66,18 +66,6 @@
         </div>
       <% end %>
     <% end %>
-
-    <% if current_user.is_superadmin? %>
-      <div class="site-chrome-bust-cache-div">
-        <%= link_to('#') do %>
-          <%= button_tag('Bust cache', :id => 'site-chrome-bust-cache', :title => 'Only visible to superadmins') %>
-        <% end %>
-        <span>
-          (Only visible to superadmins) If you manually edit the Site Chrome configuration in the internal panel
-          you will not see the updates immediately unless you bust the cache.
-        </span>
-      </div>
-    <% end %>
   </div>
 </div>
 

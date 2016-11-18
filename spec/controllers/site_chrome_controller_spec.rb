@@ -24,9 +24,9 @@ describe SiteChromeController do
   def auth_cookies_for_vcr_tapes
     {
       'logged_in' => 'true',
-      '_socrata_session_id' => 'BAh7C0kiD3Nlc3Npb25faWQGOgZFRkkiJTE0ODEzNzdkODA0OWM1ZTQzNDFhN2RhYjdmNGYzODlhBjsARkkiCXVzZXIGOwBGMEkiEF9jc3JmX3Rva2VuBjsARkkiMWNSenU3VjNaMi9WVkVoQ1o0NURTeUdWTEtQaktXS2w2MnZxVHd0aDZ1QUE9BjsARkkiCWluaXQGOwBUVEkiDnJldHVybl90bwY7AEYwSSIKZmxhc2gGOwBUewdJIgxkaXNjYXJkBjsAVFsGSSILbm90aWNlBjsARkkiDGZsYXNoZXMGOwBUewZJIgtub3RpY2UGOwBGSSIXU2l0ZSB0aGVtZSB1cGRhdGVkBjsAVA',
-      'socrata-csrf-token' => 'dbIpjcrCMkifCCB47xe4gwioH1JW3j9nrLjJ9Uko2PIErsdglxvpvcoaMOEMh2pLbeM3qpyGlh12Qlo3kVJg8g',
-      '_core_session_id' => 'M2hwYS10Znp5IDE0NzU4OTgyNjAgYzMyZTA4NmVhMjVjIDVhZTU4NTJiZTJmN2VkMmRmMDcyOWEzYTc2MWJkYTBkZTk0YjA2MTU'
+      '_socrata_session_id' => 'BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJWIyYTMxODQyNTEwY2MyNDk1NjBjMzM3MzMyYmYxMTEyBjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjE5cjM4YlFoTkpvZW5nUVpTcmlhQmQxNWVZZU5hMzd0SktIeld5V3pBRE1BPQY7AEZJIglpbml0BjsAVFRJIg5yZXR1cm5fdG8GOwBGMA%3D%3D--63d2b3642bbed8e6cd26449c6991d5e6d4188889',
+      'socrata-csrf-token' => 'ZUh2rOC0dawpsn7ZDtDBQac2m6D%2FvbTX6DexbFJR0YST9YrB6PlTK44zeIug9kA2%2BWj6Q6ViD57AS2elPpHdRA%3D%3D',
+      '_core_session_id' => 'M2hwYS10Znp5IDE0NzczNTAyMTQgMzlhNmE3ZjdmMzI0IDdkZjNjZjk0OTU2YmI2ZDhlYWZmZmRjZDkxZDQ5MjJlNDJlMjUyMzA%3D'
     }
   end
 
@@ -101,24 +101,25 @@ describe SiteChromeController do
       expect(response).to have_http_status(:forbidden)
     end
 
-    it 'works if admin' do
-      init_current_user(@controller)
-      stub_superadmin_user # auth for rails but not for core
+    # TODO Refactor this as a Cheetah test, it can't really be a functional test since it mutates data.
+    # it 'works if admin' do
+    #   init_current_user(@controller)
+    #   stub_superadmin_user # auth for rails but not for core
 
-      # now we get auth for core
-      auth_cookies_for_vcr_tapes.each { |key, value| @request.cookies[key] = value }
+    #   # now we get auth for core
+    #   auth_cookies_for_vcr_tapes.each { |key, value| @request.cookies[key] = value }
 
-      VCR.use_cassette('site_chrome/controller/update') do
-        site_chrome = SiteChrome.find
-        expect(site_chrome.content).not_to include(new_content)
+    #   VCR.use_cassette('site_chrome/controller/update') do
+    #     site_chrome = SiteChrome.find
+    #     expect(site_chrome.content).not_to include(new_content)
 
-        put :update, content: new_content
-        expect(response).to redirect_to(edit_site_chrome_path)
+    #     put :update, content: new_content
+    #     expect(response).to redirect_to(edit_site_chrome_path)
 
-        after_update = site_chrome.reload
-        expect(after_update.content).to include(new_content)
-      end
-    end
+    #     after_update = site_chrome.reload
+    #     expect(after_update.content).to include(new_content)
+    #   end
+    # end
 
     describe 'activation_state' do
       before(:each) do

@@ -221,6 +221,13 @@ class DatasetsControllerTest < ActionController::TestCase
       context 'display the DLSP' do
         setup do
           DatasetLandingPage.stubs(:fetch_derived_views => [])
+          stub_request(:get, 'http://localhost:8080/domains/test.host.json').
+            with(:headers => { 'X-Socrata-Host' => 'test.host' }).
+            to_return(
+              :status => 200,
+              :body => '{"id": "four-four", "cname": "test.host", "configsLastUpdatedAt": 1477332982}',
+              :headers => {}
+            )
           stub_site_chrome_custom_content
           @controller.stubs(get_view: @test_view)
           @test_view.stubs(:dataset? => true)

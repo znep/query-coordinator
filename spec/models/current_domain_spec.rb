@@ -73,4 +73,20 @@ describe CurrentDomain, :type => :model do
 
   end
 
+  context 'configUpdatedAt' do
+    it 'returns the expected timestamp' do
+      expect(CurrentDomain.configUpdatedAt).to be(1477332900)
+    end
+
+    it 'return the same value using snake case' do
+      expect(CurrentDomain.config_updated_at).to be(1477332900)
+    end
+
+    it 'returns a quantized time instead of nil' do
+      allow_any_instance_of(Domain).to receive(:configUpdatedAt).and_return(nil)
+      allow(Time).to receive(:now).and_return(Time.at(1477332900))
+      expect(CurrentDomain.config_updated_at).to be(1477333200)
+    end
+  end
+
 end

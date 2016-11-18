@@ -19,9 +19,9 @@ describe SiteChrome do
     def auth_cookies_for_vcr_tapes
       {
         'logged_in' => 'true',
-        '_socrata_session_id' => 'BAh7C0kiD3Nlc3Npb25faWQGOgZFRkkiJTE0ODEzNzdkODA0OWM1ZTQzNDFhN2RhYjdmNGYzODlhBjsARkkiCXVzZXIGOwBGMEkiEF9jc3JmX3Rva2VuBjsARkkiMWNSenU3VjNaMi9WVkVoQ1o0NURTeUdWTEtQaktXS2w2MnZxVHd0aDZ1QUE9BjsARkkiCWluaXQGOwBUVEkiDnJldHVybl90bwY7AEYwSSIKZmxhc2gGOwBUewdJIgxkaXNjYXJkBjsAVFsGSSILbm90aWNlBjsARkkiDGZsYXNoZXMGOwBUewZJIgtub3RpY2UGOwBGSSIXU2l0ZSB0aGVtZSB1cGRhdGVkBjsAVA',
-        'socrata-csrf-token' => 'dbIpjcrCMkifCCB47xe4gwioH1JW3j9nrLjJ9Uko2PIErsdglxvpvcoaMOEMh2pLbeM3qpyGlh12Qlo3kVJg8g',
-        '_core_session_id' => 'M2hwYS10Znp5IDE0NzU4OTgyNjAgYzMyZTA4NmVhMjVjIDVhZTU4NTJiZTJmN2VkMmRmMDcyOWEzYTc2MWJkYTBkZTk0YjA2MTU'
+        '_socrata_session_id' => 'BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJWIyYTMxODQyNTEwY2MyNDk1NjBjMzM3MzMyYmYxMTEyBjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjE5cjM4YlFoTkpvZW5nUVpTcmlhQmQxNWVZZU5hMzd0SktIeld5V3pBRE1BPQY7AEZJIglpbml0BjsAVFRJIg5yZXR1cm5fdG8GOwBGMA%3D%3D--63d2b3642bbed8e6cd26449c6991d5e6d4188889',
+        'socrata-csrf-token' => 'ZUh2rOC0dawpsn7ZDtDBQac2m6D%2FvbTX6DexbFJR0YST9YrB6PlTK44zeIug9kA2%2BWj6Q6ViD57AS2elPpHdRA%3D%3D',
+        '_core_session_id' => 'M2hwYS10Znp5IDE0NzczNTAyMTQgMzlhNmE3ZjdmMzI0IDdkZjNjZjk0OTU2YmI2ZDhlYWZmZmRjZDkxZDQ5MjJlNDJlMjUyMzA%3D'
       }.map { |key, value| "#{key}=#{value}" }.join(';')
     end
 
@@ -38,13 +38,14 @@ describe SiteChrome do
           type: 'site_chrome'
         )
         site_chrome.cookies = auth_cookies_for_vcr_tapes
-
         res = site_chrome.create
+
         expect(res).to be_instance_of(SiteChrome)
         expect(site_chrome.id).not_to be_nil
         expect(site_chrome.default).to be false # find should not find us
         expect(site_chrome.properties).to be_empty
         expect(site_chrome.updatedAt).not_to be_nil
+        expect(site_chrome.childCount).to be_nil
       end
     end
 
@@ -146,14 +147,14 @@ describe SiteChrome do
         res = site_chrome.create
         expect(res).not_to be(false) # make sure it saves
         expect(res.errors).to be_empty
+        before = site_chrome.attributes
 
         fancy_new_property = { 'evenNewerPropertyName' => { 'first key' => 'first value' } }
         site_chrome.update_published_content(fancy_new_property)
 
-        expect(site_chrome.content).to include(fancy_new_property)
+        expect(site_chrome.published['content']).to include(fancy_new_property)
 
-        before = site_chrome.attributes
-        after = site_chrome.reload_properties.attributes
+        after = site_chrome.attributes
         expect(after).to eq(before)
       end
     end

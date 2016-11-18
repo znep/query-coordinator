@@ -26,6 +26,7 @@ describe ProfileController do
       before do
         rspec_stub_feature_flags_with(:cetera_search => true, :cetera_profile_search => false)
         stub_site_chrome
+        allow(CurrentDomain).to receive(:configUpdatedAt).and_return(1477332912)
       end
 
       it 'should not use browse2 to render the embedded catalog' do

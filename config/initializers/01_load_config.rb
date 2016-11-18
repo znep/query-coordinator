@@ -6,10 +6,10 @@ end
 
 CORESERVICE_URI = URI.parse(APP_CONFIG.coreservice_uri)
 
-revision_file = File.join(Rails.root, "REVISION")
+revision_file = File.join(Rails.root, 'REVISION')
 
 begin
-  REVISION_NUMBER = File.read(revision_file).chomp()
+  REVISION_NUMBER = File.read(revision_file).chomp
   REVISION_DATE = File.stat(revision_file).mtime.to_i
 rescue
   REVISION_NUMBER = nil
@@ -17,7 +17,7 @@ rescue
 end
 
 begin
-  VIDEO_LIST = YAML.load_file(File.join(Rails.root, "config/videos.yml"))
+  VIDEO_LIST = YAML.load_file(File.join(Rails.root, 'config/videos.yml'))
 rescue
   VIDEO_LIST = []
 end

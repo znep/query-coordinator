@@ -43,6 +43,6 @@ http_interactions:
           "type" : "site_chrome",
           "updatedAt" : 1475623194
         }
-    http_version: 
+    http_version:
   recorded_at: Tue, 04 Oct 2016 23:19:54 GMT
 recorded_with: VCR 3.0.3

@@ -489,12 +489,3 @@ function sortableListOfLinks() {
     });
   });
 }
-
-(function() {
-  $('#site-chrome-bust-cache').click(function(e) {
-    e.preventDefault();
-    $.post('/admin/site_chrome/flush_cache', function() {
-      location.reload();
-    });
-  });
-})();

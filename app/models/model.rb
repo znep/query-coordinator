@@ -346,15 +346,11 @@ class Model
   end
 
   def self.parse(data)
-    if data.blank?
-      return nil
-    end
-
-    return self.setup_model(JSON.parse(data, {:max_nesting => 25}))
+    setup_model(JSON.parse(data, :max_nesting => 25)) if data.present?
   end
 
   def parse(*args)
-    raise "You probably wanted the class method instead."
+    self.class.parse(*args)
   end
 
   def self.delete(id)

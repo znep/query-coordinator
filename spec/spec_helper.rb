@@ -1,4 +1,5 @@
 require 'webmock/rspec'
+require 'time_extensions'
 
 Dir['./spec/support/**/*.rb'].sort.each {|f| require f}
 

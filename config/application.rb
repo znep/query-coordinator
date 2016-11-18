@@ -77,6 +77,9 @@ module Frontend
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
+    # This prefix should be used as part of the cache_key for ALL objects cached in the app with memcached
+    config.cache_key_prefix = File.read(File.join(Rails.root, 'REVISION'))[0..7] rescue 'beefcafe'
+
     config.cache_store = :dalli_store, *ENV['MEMCACHED_HOSTS'].to_s.split(',').map(&:strip), {
       :namespace => ENV['MEMCACHED_KEYSPACE'] || 'webapp_rails4',
       :expires_in => 1.day,

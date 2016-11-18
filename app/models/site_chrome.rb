@@ -11,6 +11,10 @@ require 'httparty'
 #   Set the cookies on your SiteChrome instance
 #     sc.cookies = {cookies hash}.map { |key, value| "#{key}=#{value}" }.join(';')
 #
+
+# Since this class is used in service of the administrative interface and its primary purpose is to make
+# changes to the site chrome configuration, we are explicitly not using caching at all.
+
 class SiteChrome
   include HTTParty
 
@@ -18,72 +22,42 @@ class SiteChrome
   default_timeout 5 # seconds
   format :json
 
+  PUBLICATION_STAGES = %w(draft published)
+
+  PUBLICATION_STAGES.each do |stage|
+    define_method "#{stage}_content" do
+      config.dig('value', 'versions', current_version, stage, 'content')
+    end
+  end
+
+  # WARN: deep merge!
+  PUBLICATION_STAGES.each do |stage|
+    # For grepping: update_published_content, update_draft_content
+    define_method "update_#{stage}_content" do |new_content_hash|
+      all_versions_content = config.dig('value') || { 'versions' => {} }.tap do |content|
+        content['current_version'] = current_version
+      end
+
+      # Merge new_content localizations with all existing localizations
+      all_locales =
+        (all_versions_content.dig('versions', current_version, stage, 'content', 'locales') || {}).
+          merge(new_content_hash['locales'] || {})
+
+      all_versions_content.bury('versions', current_version, stage, 'content', new_content_hash)
+      all_versions_content.bury('versions', current_version, stage, 'content', 'locales', all_locales)
+
+      create_or_update_property(SiteChrome.core_configuration_property_name, all_versions_content)
+    end
+  end
+
+  # Attribute fields of Configuration as surfaced by core.
+  ATTRIBUTE_NAMES = %w(id name default domainCName type updatedAt properties childCount)
+
+  ATTRIBUTE_NAMES.each(&method(:attr_accessor))
+
   # For authenticating with and talking to core
   # cookies is a string e.g., "cookie_name=cookie_value;other_cookie=other_value"
   attr_accessor :cookies, :errors, :request_id
-
-  # Attribute fields of Configuration as surfaced by core.
-  def self.attribute_names
-    %w(id name default domainCName type updatedAt properties childCount)
-  end
-  attribute_names.each(&method(:attr_accessor))
-
-  def clear_errors
-    @errors = []
-  end
-
-  def self.default_values
-    {
-      name: 'Site Chrome',
-      default: true,
-      domainCName: CurrentDomain.cname,
-      type: SiteChrome.core_configuration_type,
-      properties: [] # separate db records, must be created later
-    }
-  end
-
-  def self.create_site_chrome_config(cookies)
-    begin
-      site_chrome = SiteChrome.new(default_values).tap do |sc|
-        sc.cookies = cookies
-        sc.create
-      end
-    rescue => e
-      error = "Error creating Site Chrome configuration: #{e.inspect}"
-      site_chrome.errors << error if site_chrome.present?
-      Airbrake.notify(
-        :error_class => 'Site Appearance',
-        :error_message => error
-      )
-      Rails.logger.error(error)
-    end
-  end
-
-  def self.latest_version
-    SocrataSiteChrome::SiteChrome::LATEST_VERSION
-  end
-
-  def self.cache_key
-    SocrataSiteChrome::DomainConfig.new(CurrentDomain.cname).cache_key
-  end
-
-  def self.flush_cache
-    Rails.cache.delete(cache_key) unless Rails.env.test?
-    RequestStore[:frontend_site_chrome] = nil
-  end
-
-  def attributes
-    SiteChrome.attribute_names.each_with_object({}) do |field, hash|
-      hash[field] = instance_variable_get("@#{field}")
-    end
-  end
-
-  def assign_attributes(attributes)
-    attributes.each do |key, value|
-      next unless SiteChrome.attribute_names.include?(key.to_s)
-      instance_variable_set("@#{key}", value)
-    end
-  end
 
   def initialize(attributes = nil)
     @cookies = nil # Remember to set you cookies if you want to do any posting/putting!
@@ -93,9 +67,118 @@ class SiteChrome
     assign_attributes(initial_attributes)
   end
 
-  ####################
-  # Shortcut accessors
-  # TODO: rewrite with `dig` after Ruby upgrade
+  class << self
+
+    def default_values
+      {
+        name: 'Site Chrome',
+        default: true,
+        domainCName: CurrentDomain.cname,
+        type: SiteChrome.core_configuration_type,
+        properties: [] # separate db records, must be created later
+      }
+    end
+
+    def create_site_chrome_config(cookies)
+      begin
+        site_chrome = SiteChrome.new
+        site_chrome.cookies = cookies
+        site_chrome.create
+      rescue => e
+        error_message = "Error creating Site Chrome configuration. Exception: #{e.inspect}"
+        site_chrome.errors << error_message if site_chrome.present?
+        Rails.logger.error(error_message)
+        Airbrake.notify(:error_class => 'SiteChrome', :error_message => error_message)
+      end
+      site_chrome
+    end
+
+    def latest_version
+      SocrataSiteChrome::SiteChrome::LATEST_VERSION
+    end
+
+    def core_configurations_path
+      "#{CORESERVICE_URI}/configurations"
+    end
+
+    def core_configuration_type
+      'site_chrome' # or SiteChrome.name.underscore
+    end
+
+    # I live in properties[] where properties[x]['name'] ==
+    def core_configuration_property_name
+      'siteChromeConfigVars'
+    end
+
+    def default_request_headers
+      {
+        'Content-Type' => 'application/json', # this is necessary despite format :json above
+        'X-Socrata-Host' => CurrentDomain.cname
+      }
+    end
+
+    # Get default config from Site Chrome engine method `default_site_chrome_config`
+    # and select only the latest version of the default data.
+    def default_site_chrome_config
+      SocrataSiteChrome::SiteChrome.default_site_chrome_config.tap do |config|
+        config.dig('value', 'versions').select! do |version_number, content|
+          version_number == SiteChrome.latest_version
+        end
+      end
+    end
+
+    def core_query_options
+      {
+        :query => { :type => core_configuration_type, :defaultOnly => true },
+        :headers => default_request_headers
+      }
+    end
+
+    # Site Chrome config as it currently exists in Core
+    def site_chrome_config
+      res = get(core_configurations_path, core_query_options) rescue OpenStruct.new(:body => '[]', :code => 200)
+      if res.code == 200
+        JSON.parse(res.body.to_s).to_a.detect { |obj| obj['default'] }
+      end
+    end
+
+    def site_chrome_config_exists?
+      site_chrome_config.present?
+    end
+
+    def site_chrome_property_exists?(property_name)
+      return false unless site_chrome_config_exists?
+
+      site_chrome_config['properties'].to_a.detect { |config| config['name'] == property_name }.present?
+    end
+
+    # Find existing site_chrome DomainConfig from the Site Chrome gem, and instantiate a new instance from it.
+    def find
+      new(SocrataSiteChrome::DomainConfig.new(CurrentDomain.cname).config)
+    end
+
+  end # end of << self methods
+
+  def properties_path
+    "#{SiteChrome.core_configurations_path}/#{id}/properties"
+  end
+
+  def clear_errors
+    @errors = []
+  end
+
+  def attributes
+    ATTRIBUTE_NAMES.each_with_object({}) do |field, hash|
+      hash[field] = instance_variable_get("@#{field}")
+    end
+  end
+
+  def assign_attributes(attributes)
+    attributes.each do |key, value|
+      next unless ATTRIBUTE_NAMES.include?(key.to_s)
+      instance_variable_set("@#{key}", value)
+    end
+  end
 
   def property(property_name)
     properties.find { |key, _| key['name'] == property_name.to_s }
@@ -108,120 +191,27 @@ class SiteChrome
   end
 
   def current_version
-    if config.present? && config.dig('value', 'versions').present?
+    if config.try(:dig, 'value', 'versions').present?
       config.dig('value', 'current_version') || latest_published_version
     else
       # No existing data, use latest version
       SiteChrome.latest_version
     end
-
   end
 
   def latest_published_version
     config.dig('value', 'versions').keys.map { |version| Gem::Version.new(version) }.max.to_s
   end
 
-  publication_stages = %w(draft published)
-
   def published
-    # TODO: these things:
-    # * Factor out paths
-    # * Rewrite as inject (or dig in >= 2.3)
-    # * Rewrite update_published_content to use paths as well
-    config.
-      try(:[], 'value').
-      try(:[], 'versions').
-      try(:[], current_version).
-      try(:[], 'published')
-  end
-
-  # Use like s.content['some_key'] = 'some_value' or s.content.merge!('key' => 'value')
-  # But, s.content = { 'key' => 'value', 'thing' => 'other_thing' } will not work!
-  def content
-    published.try(:[], 'content')
-  end
-
-  publication_stages.each do |stage|
-    define_method "#{stage}_content" do
-      config.dig('value', 'versions', current_version, stage, 'content')
-    end
-  end
-
-  #######
-  # Paths
-
-  def self.core_configurations_path
-    '/configurations'
-  end
-
-  def self.core_configuration_type
-    'site_chrome' # or SiteChrome.name.underscore
-  end
-
-  def properties_path
-    "#{SiteChrome.core_configurations_path}/#{id}/properties"
-  end
-
-  # I live in properties[] where properties[x]['name'] ==
-  def self.core_configuration_property_name
-    'siteChromeConfigVars'
+    config.try(:dig, 'value', 'versions', '0.3', 'published')
   end
 
   def authorized_request_headers
     SiteChrome.default_request_headers.merge('Cookie' => @cookies)
   end
 
-  def self.default_request_headers
-    {
-      'Content-Type' => 'application/json', # this is necessary despite format :json above
-      'X-Socrata-Host' => CurrentDomain.cname
-    }
-  end
-
-  # Get default config from Site Chrome engine method `default_site_chrome_config`
-  # and select only the latest version of the default data.
-  def self.default_site_chrome_config
-    SocrataSiteChrome::SiteChrome.default_site_chrome_config.tap do |config|
-      config.dig('value', 'versions').select! do |version_number, content|
-        version_number == SiteChrome.latest_version
-      end
-    end
-  end
-
-  #######################
-  # The Calls to Cthorehu
-
-  def self.core_query_options
-    {
-      :query => { :type => core_configuration_type, :defaultOnly => true },
-      :headers => default_request_headers
-    }
-  end
-
-  # Site Chrome config as it currently exists in Core
-  def self.site_chrome_config
-    res = get(core_configurations_path, core_query_options) rescue OpenStruct.new(:body => '[]')
-    JSON.parse(res.body.to_s).to_a.detect { |obj| obj['default'] }
-  end
-
-  def self.site_chrome_config_exists?
-    site_chrome_config.present?
-  end
-
-  def self.site_chrome_property_exists?(property_name)
-    return false unless site_chrome_config_exists?
-    site_chrome_config['properties'].to_a.
-      detect { |config| config['name'] == property_name }.present?
-  end
-
-  # Find existing site_chrome DomainConfig from the Site Chrome gem, and instantiate a new
-  # SiteChrome instance from it.
-  def self.find
-    RequestStore[:frontend_site_chrome] ||= new SocrataSiteChrome::DomainConfig.new(CurrentDomain.cname).config
-  end
-
   def create_or_update_property(property_name, property_value)
-    SiteChrome.flush_cache
     if SiteChrome.site_chrome_property_exists?(property_name)
       update_property(property_name, property_value)
     else
@@ -231,17 +221,19 @@ class SiteChrome
 
   # Step 1: create a site theme configuration
   def create
-    res = begin
+    response = begin
       SiteChrome.post(
         SiteChrome.core_configurations_path,
         headers: authorized_request_headers,
         body: attributes.to_json
       )
-    rescue
-      return false
+    rescue => e
+      error_mesage = "Failed to create SiteChrome. Exception: #{e.inspect}"
+      Rails.logger.error(error_message)
+      Airbrake.notify(:error_class => 'SiteChrome', :error_message => error_message)
     end
 
-    handle_configuration_response(res)
+    handle_configuration_response(response) if response.present?
   end
 
   # Step 2: Create a siteChromeConfigVars property
@@ -268,26 +260,6 @@ class SiteChrome
     handle_property_response(res)
   end
 
-  # WARN: deep merge!
-  publication_stages.each do |stage|
-    # For grepping: update_published_content, update_draft_content
-    define_method "update_#{stage}_content" do |new_content_hash|
-      all_versions_content = config.dig('value') || { 'versions' => {} }.tap do |content|
-        content['current_version'] = current_version
-      end
-
-      # Merge new_content localizations with all existing localizations
-      all_locales =
-        (all_versions_content.dig('versions', current_version, stage, 'content', 'locales') || {}).
-          merge(new_content_hash['locales'] || {})
-
-      all_versions_content.bury('versions', current_version, stage, 'content', new_content_hash)
-      all_versions_content.bury('versions', current_version, stage, 'content', 'locales', all_locales)
-
-      create_or_update_property(SiteChrome.core_configuration_property_name, all_versions_content)
-    end
-  end
-
   def update_content(publication_stage, new_content_hash)
     meth = :"update_#{publication_stage}_content"
     if respond_to?(meth)
@@ -295,22 +267,6 @@ class SiteChrome
     else
       @errors << "Publication Stage #{publication_stage} unknown."
     end
-  end
-
-  def reload_properties
-    res = SiteChrome.get(properties_path, SiteChrome.default_request_headers)
-    if res.success?
-      self.properties = res.to_a
-      self
-    else
-      false
-    end
-  end
-
-  def reload
-    path = "#{SiteChrome.core_configurations_path}/#{id}"
-    res = SiteChrome.get(path, SiteChrome.default_request_headers)
-    handle_configuration_response(res)
   end
 
   def activation_state
@@ -371,9 +327,6 @@ class SiteChrome
   end
 
   private
-
-  ###################
-  # Response handlers
 
   def handle_configuration_response(res)
     if res.success?

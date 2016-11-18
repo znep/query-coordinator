@@ -37,7 +37,9 @@ describe AdministrationHelper do
       allow(CurrentDomain).to receive(:module_enabled?).and_return(false)
       stub_site_chrome
       stub_site_chrome_custom_content
-      expect(dummy_class_instance.show_site_chrome_admin_panel?).to eq(true)
+      VCR.use_cassette('admin_custom_content') do
+        expect(dummy_class_instance.show_site_chrome_admin_panel?).to eq(true)
+      end
     end
   end
 end

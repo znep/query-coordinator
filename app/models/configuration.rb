@@ -1,24 +1,54 @@
 class Configuration < Model
 
   def self.find_by_type(type, default_only = false, cname = nil, merge = true)
-    path = "/#{self.name.pluralize.downcase}.json?type=#{type}&defaultOnly=#{default_only.to_s}&merge=#{merge}"
-    headers = cname.nil? ? {} : { 'X-Socrata-Host' => cname }
-    response = CoreServer::Base.connection.get_request(path, headers)
+    fetch_config_from_core = lambda do |*cache_key|
+      CoreServer::Base.connection.get_request(
+        "/#{name.pluralize.downcase}.json?type=#{type}&defaultOnly=#{default_only}&merge=#{merge}",
+        { 'X-Socrata-Host': cname }.compact
+      )
+    end
+
+    response = if type.nil?
+      fetch_config_from_core.call
+    else
+      Rails.cache.fetch(cache_key(type), &fetch_config_from_core)
+    end
+
     parse(response) || []
   end
 
+  # Currently used only by the InternalController
   def self.find_unmerged(id)
-    path = "/#{self.name.pluralize.downcase}/#{id}.json?merge=false"
-    parse(CoreServer::Base.connection.get_request(path))
+    parse(CoreServer::Base.connection.get_request("/#{name.pluralize.downcase}/#{id}.json?merge=false"))
   end
 
   def self.get_or_create(type, opts)
-    config = self.find_by_type(type, true, CurrentDomain.cname).first
-    config ||= self.create({'type' => type, 'default' => true, 'domainCName' => CurrentDomain.cname}.merge(opts))
+    find_by_type(type, true, CurrentDomain.cname).first ||
+      create(opts.reverse_merge('type' => type, 'default' => true, 'domainCName' => CurrentDomain.cname))
+  end
+
+  # NOTE!! It is critical that the composition this cache key structurally match the corresponding cache_key
+  # method in the site_chrome gem and any others that consume / cache configuration data. For example in the
+  # site_chrome gem, this is defined in socrata_site_chrome/engine/lib/socrata_site_chrome/domain_config.rb
+  def self.cache_key(configuration_type)
+    unless CurrentDomain.configUpdatedAt.present?
+      raise RuntimeError.new(
+        "configUpdatedAt missing on domain #{CurrentDomain.cname} for type #{configuration_type}"
+      )
+    end
+    [
+      'frontend',
+      Rails.application.config.cache_key_prefix,
+      'domain',
+      CurrentDomain.cname,
+      CurrentDomain.configUpdatedAt,
+      'configurations',
+      configuration_type
+    ].join(':')
   end
 
   def route_params
-    {id: id}
+    { id: id }
   end
 
   def properties
@@ -106,7 +136,7 @@ class Configuration < Model
     CoreServer::Base.connection.delete_request(url, '', {}, batch_id)
   end
 
-  def update_or_create_property(name, value, batch_id = nil)
+  def create_or_update_property(name, value, batch_id = nil)
     unless value.nil?
       if (!raw_properties.key?(name))
         create_property(name, value, batch_id)

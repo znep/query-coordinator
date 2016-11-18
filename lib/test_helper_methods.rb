@@ -102,13 +102,15 @@ module TestHelperMethods
   def stub_site_chrome(body = SocrataSiteChrome::DomainConfig.default_configuration.first)
     if Object.respond_to?(:stubs)
       # Minitest
-      SiteChrome.stubs(:find => Hashie::Mash.new(
-        :activation_state => {
-          :open_data => false,
-          :homepage => false,
-          :data_lens => false
-        }
-      ))
+      SiteChrome.stubs(
+        :find => Hashie::Mash.new(
+          :activation_state => {
+            :open_data => false,
+            :homepage => false,
+            :data_lens => false
+          }
+        )
+      )
       SocrataSiteChrome::DomainConfig.any_instance.stubs(:config =>
         HashWithIndifferentAccess.new(body)
       )

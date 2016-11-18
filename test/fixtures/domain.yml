@@ -3,6 +3,7 @@ data:
   id: 1
   name: Socrata Website
   cname: localhost
+  configUpdatedAt: 1477332900
   httpsEnforced: false
   organizationId: 1
   parentDomainId: 2

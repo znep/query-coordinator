@@ -484,7 +484,7 @@ describe AdministrationController do
       allow(subject).to receive(:set_meta)
       allow(subject).to receive(:feature_flag?).and_return(true)
       allow(Configuration).to receive(:find_by_type).and_return(Configuration.parse('[{}]'))
-      allow_any_instance_of(Configuration).to receive(:update_or_create_property)
+      allow_any_instance_of(Configuration).to receive(:create_or_update_property)
       allow(CurrentDomain).to receive(:user_can?).with(anything, UserRights::EDIT_SITE_THEME).and_return(true)
     end
 
@@ -562,21 +562,27 @@ describe AdministrationController do
         context 'as a superadmin' do
           it 'should return true' do
             stub_superadmin_user
-            expect(subject.show_site_chrome_admin_panel?).to eq(true)
+            VCR.use_cassette('administration_controller_superadmin') do
+              expect(subject.show_site_chrome_admin_panel?).to eq(true)
+            end
           end
         end
 
         context 'as an administrator' do
           it 'should return true' do
             stub_administrator_user
-            expect(subject.show_site_chrome_admin_panel?).to eq(true)
+            VCR.use_cassette('administration_controller_administrator') do
+              expect(subject.show_site_chrome_admin_panel?).to eq(true)
+            end
           end
         end
 
         context 'as a designer' do
           it 'should return true' do
             stub_designer_user
-            expect(subject.show_site_chrome_admin_panel?).to eq(true)
+            VCR.use_cassette('administration_controller_designer') do
+              expect(subject.show_site_chrome_admin_panel?).to eq(true)
+            end
           end
         end
       end
@@ -604,7 +610,9 @@ describe AdministrationController do
         context 'as a superadmin' do
           it 'should return true' do
             stub_superadmin_user
-            expect(subject.show_site_chrome_admin_panel?).to eq(true)
+            VCR.use_cassette('administration_controller_superadmin') do
+              expect(subject.show_site_chrome_admin_panel?).to eq(true)
+            end
           end
         end
 
@@ -639,21 +647,27 @@ describe AdministrationController do
         context 'as a superadmin' do
           it 'should return false' do
             stub_superadmin_user
-            expect(subject.show_site_chrome_admin_panel?).to eq(false)
+            VCR.use_cassette('administration_controller_superadmin') do
+              expect(subject.show_site_chrome_admin_panel?).to eq(false)
+            end
           end
         end
 
         context 'as an administrator' do
           it 'should return false' do
             stub_administrator_user
-            expect(subject.show_site_chrome_admin_panel?).to eq(false)
+            VCR.use_cassette('administration_controller_administrator') do
+              expect(subject.show_site_chrome_admin_panel?).to eq(false)
+            end
           end
         end
 
         context 'as a designer' do
           it 'should return false' do
             stub_designer_user
-            expect(subject.show_site_chrome_admin_panel?).to eq(false)
+            VCR.use_cassette('administration_controller_designer') do
+              expect(subject.show_site_chrome_admin_panel?).to eq(false)
+            end
           end
         end
       end

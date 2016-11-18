@@ -99,7 +99,7 @@ class AdministrationController < ApplicationController
     config = ::Configuration.get_or_create('sidebar', 'name' => 'Sidebar configuration')
 
     params[:sidebar].each do |k, v|
-      update_or_create_property(config, k.to_s, v)
+      create_or_update_property(config, k.to_s, v)
     end
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
@@ -584,7 +584,7 @@ class AdministrationController < ApplicationController
   end
 
   def sdp_set_default_template
-    configuration = ::Configuration.find_by_type('site_theme',  true, request.host, false)[0]
+    configuration = ::Configuration.find_by_type('site_theme', true, request.host, false)[0]
     begin
       customization = WidgetCustomization.find(params[:id])
     rescue CoreServer::ResourceNotFound
@@ -592,7 +592,7 @@ class AdministrationController < ApplicationController
       return render 'shared/error', :status => :not_found
     end
 
-    update_or_create_property(configuration, 'sdp_template', params[:id])
+    create_or_update_property(configuration, 'sdp_template', params[:id])
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
     respond_to do |format|
@@ -792,7 +792,7 @@ class AdministrationController < ApplicationController
     field = fieldset[params[:index].to_i]
     field[option] = field[option].blank? ? true : false
 
-    update_or_create_property(config, 'fieldsets', metadata)
+    create_or_update_property(config, 'fieldsets', metadata)
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
@@ -822,7 +822,7 @@ class AdministrationController < ApplicationController
 
     fieldset[index], fieldset[swap_index] = fieldset[swap_index], fieldset[index]
 
-    update_or_create_property(config, 'fieldsets', metadata)
+    create_or_update_property(config, 'fieldsets', metadata)
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
@@ -936,7 +936,7 @@ class AdministrationController < ApplicationController
 
     # Rails apparently converts [] to nil; so fix it
     new_features = params[:features] || []
-    update_or_create_property(config, 'featured_views', new_features)
+    create_or_update_property(config, 'featured_views', new_features)
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
     clear_homepage_cache
@@ -1033,7 +1033,7 @@ class AdministrationController < ApplicationController
 
     theme = config.properties.theme_v2b || {}
 
-    update_or_create_property(config, 'theme_v2b', theme.merge('stories' => params[:stories]))
+    create_or_update_property(config, 'theme_v2b', theme.merge('stories' => params[:stories]))
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 
@@ -1055,7 +1055,7 @@ class AdministrationController < ApplicationController
     end
 
     params[:catalog].each do |k, v|
-      update_or_create_property(config, k.to_s, v)
+      create_or_update_property(config, k.to_s, v)
     end
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
@@ -1072,7 +1072,7 @@ class AdministrationController < ApplicationController
     if request.post?
       if params[:terms_accepted].present?
         actions = ::Configuration.get_or_create('actions', :name => 'Actions')
-        update_or_create_property(actions, 'tos_accepted',
+        create_or_update_property(actions, 'tos_accepted',
           :user => current_user,
           :text => @tos,
           :timestamp => Time.now
@@ -1249,8 +1249,8 @@ class AdministrationController < ApplicationController
     config
   end
 
-  def update_or_create_property(configuration, name, value)
-    configuration.update_or_create_property(name, value)
+  def create_or_update_property(configuration, name, value)
+    configuration.create_or_update_property(name, value)
   end
 
   def clear_homepage_cache
@@ -1272,7 +1272,7 @@ class AdministrationController < ApplicationController
   end
 
   def save_metadata(config, metadata, successMessage, json = false)
-    update_or_create_property(config, 'fieldsets', metadata)
+    create_or_update_property(config, 'fieldsets', metadata)
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
 

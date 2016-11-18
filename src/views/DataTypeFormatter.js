@@ -398,6 +398,31 @@ function renderMultipleChoiceCell(cellContent, column) {
 /**
 * Render a date or timestamp following column formatting, otherwise following defaults.
 */
+
+const timeFormattings = {
+  date_time: 'MM/DD/YYYY hh:MM:ss A',
+  date: 'MM/DD/YYYY',
+  date_dmy: 'DD/MM/YYYY',
+  date_dmy_time: 'DD/MM/YYYY hh:MM:ss A',
+  date_ymd: 'YYYY/MM/DD',
+  date_ymd_time: 'YYYY/MM/DD hh:MM:ss A',
+  date_monthdy: 'MMMM DD, YYYY',
+  date_monthdy_shorttime: 'MMMM DD, YYYY hh:MM A',
+  date_shortmonthdy: 'MMM DD, YYYY',
+  date_monthdy_time: 'MMMM DD, YYYY hh:MM:ss A',
+  date_dmonthy: 'DD MMMM YYYY',
+  date_shortmonthdy_shorttime: 'MMM DD, YYYY hh:MM A',
+  date_ymonthd: 'YYYY MMMM DD',
+  date_ymonthd_time: 'YYYY MMMM DD hh:MM:ss A',
+  date_my: 'MM/YYYY',
+  date_ym: 'YYYY/MM',
+  date_shortmonthy: 'MMM YYYY',
+  date_yshortmonth: 'YYYY MMM',
+  date_monthy: 'MMMM YYYY',
+  date_ymonth: 'YYYY MMMM',
+  date_y: 'YYYY'
+};
+
 function renderTimestampCell(cellContent, column) {
   if (_.isString(cellContent) || _.isNumber(cellContent)) {
     if (_.isNumber(cellContent)) {
@@ -405,15 +430,19 @@ function renderTimestampCell(cellContent, column) {
     }
 
     const time = moment(new Date(cellContent));
+    const fallbackFormat = timeFormattings['date_time'];
     if (time.isValid()) {
       if (column.format && column.format.formatString) {
         // Option A: format using user-specified format string
         return time.format(column.format.formatString);
+      } else if (column.format && column.format.view) {
+        // Option B: format using preferred builtin style
+        return time.format(timeFormattings[column.format.view] || fallbackFormat);
       } else if (time.hour() + time.minute() + time.second() + time.millisecond() === 0) {
-        // Option B: infer date-only string format
+        // Option C: infer date-only string format
         return time.format('YYYY MMM DD');
       } else {
-        // Option C: use date-with-time format
+        // Option D: use date-with-time format
         return time.format('YYYY MMM DD hh:mm:ss A');
       }
     }

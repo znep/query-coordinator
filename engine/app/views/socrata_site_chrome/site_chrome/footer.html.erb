@@ -7,12 +7,7 @@
     <footer id="site-chrome-footer" class="<%= local_assigns[:size] %>" role="contentinfo">
       <div class="footer-content <%= footer_title.present? ? 'title-present' : 'title-absent' %>">
         <div class="logo">
-          <a href="/">
-            <%= logo(get_site_chrome.footer, footer_title) %>
-            <% if footer_title.present? %>
-              <span class="site-name"><%= footer_title %></span>
-            <% end %>
-          </a>
+          <%= footer_logo %>
         </div>
         <div class="links">
           <ul class="links-col">

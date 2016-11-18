@@ -10,7 +10,6 @@ class DataLensController < ActionController::Base
   skip_before_filter :disable_frame_embedding, :only => :data_lens
 
   before_filter :hook_auth_controller
-  before_filter :set_locale
   before_filter :preload_metadata, :only => :show_mobile
   before_filter :allow_frame_embedding, :only => :data_lens
 
@@ -365,10 +364,5 @@ class DataLensController < ActionController::Base
       :error_message => error_message
     )
     Rails.logger.error(error_message)
-  end
-
-  # EN-1111: Force Data Lens to always use English
-  def set_locale
-    I18n.locale = 'en'
   end
 end

@@ -90,30 +90,14 @@ class DatasetsController < ApplicationController
     end
 
     # Dataset landing page case
-    if dataset_landing_page_enabled? && view.has_landing_page? && !params[:bypass_dslp]
-      # See if the user is accessing the canonical URL; if not, redirect
-      unless using_canonical_url?
-        return redirect_to canonical_path
-      end
-
-      result = DatasetLandingPage.fetch_all(view, current_user, forwardable_session_cookies, request_id)
-
-      @related_views = result[:related_views]
-      @featured_content = result[:featured_content]
-      @dataset_landing_page_view = result[:dataset_landing_page_view]
-
-      RequestStore[:current_user] = current_user.try(:data)
-
-      render 'dataset_landing_page', :layout => 'styleguide'
-
-      return
-    end
+    return if render_as_dataset_landing_page
 
     # Visualization Canvas case
     return if render_as_visualization_canvas
 
-    # We're going to some version of the grid/viz page
+    # We're going to some version of the grid/classic viz page
 
+    # Mobile case
     if is_mobile?
       return(redirect_to :controller => 'widgets', :action => 'show', :id => params[:id])
     end
@@ -1272,6 +1256,27 @@ class DatasetsController < ApplicationController
 
   def using_canonical_url?
     request.path == canonical_path_proc.call(locale: nil) || request.path =~ /\/data$/
+  end
+
+  def render_as_dataset_landing_page
+    if dataset_landing_page_enabled? && view.has_landing_page? && !params[:bypass_dslp]
+      # See if the user is accessing the canonical URL; if not, redirect
+      unless using_canonical_url?
+        redirect_to canonical_path
+        return true
+      end
+
+      result = DatasetLandingPage.fetch_all(view, current_user, forwardable_session_cookies, request_id)
+
+      @related_views = result[:related_views]
+      @featured_content = result[:featured_content]
+      @dataset_landing_page_view = result[:dataset_landing_page_view]
+
+      RequestStore[:current_user] = current_user.try(:data)
+
+      render 'dataset_landing_page', :layout => 'styleguide'
+      true
+    end
   end
 
   def render_as_visualization_canvas

@@ -2800,6 +2800,10 @@ en:
                 error: 'Please enter a value to represent your desired logo width in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
                 placeholder: 80px
                 title: Footer Logo Width
+              footer_logo_url:
+                description: This is the URL that visitors are redirected to upon clicking the footer logo from any page on your site. You can specify a URL here or just leave it as "/" to go to your homepage.
+                placeholder: /
+                title: Footer Logo URL
               footer_text_link_color:
                 placeholder: "#ffffff"
                 title: Footer Text & Link Color
@@ -2908,6 +2912,10 @@ en:
                 error: 'Please enter a value to represent your desired logo width in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
                 placeholder: 80px
                 title: Header Logo Width
+              header_logo_url:
+                description: This is the URL that visitors are redirected to upon clicking the header logo from any page on your site. You can specify a URL here or just leave it as "/" to go to your homepage.
+                placeholder: /
+                title: Header Logo URL
               link_title_label: Link Label
               link_title_placeholder: Link Text
               logo_height_logo_width:

@@ -27,6 +27,9 @@ var validationRules = {
   'content[header][styles][logo_width]': {
     pattern: inputTypeValidations.dimensions
   },
+  'content[header][logo][url]': {
+    pattern: inputTypeValidations.url
+  },
   'content[header][styles][display_name_fg_color]': {
     pattern: inputTypeValidations.color
   },
@@ -56,6 +59,9 @@ var validationRules = {
   },
   'content[footer][styles][logo_width]': {
     pattern: inputTypeValidations.dimensions
+  },
+  'content[footer][logo][url]': {
+    pattern: inputTypeValidations.url
   },
   'content[footer][styles][display_name_fg_color]': {
     pattern: inputTypeValidations.color

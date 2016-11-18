@@ -12,9 +12,7 @@ export const ShareModal = (props) => {
         <div className="alert info">
           <span dangerouslySetInnerHTML={{ __html: I18n.share.visibility_alert_html }} />
           {' '}
-          <a
-            href={`${view.gridUrl}?pane=manage`}
-            target="_blank">
+          <a href={`${view.gridUrl}?pane=manage`}>
             {I18n.manage_prompt}
           </a>
         </div>

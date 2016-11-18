@@ -61,9 +61,7 @@ export const PrivateNotice = React.createClass({
         <div className="alert-container">
           {I18n.private_notice}
           {' '}
-          <a
-            href={`${view.gridUrl}?pane=manage`}
-            target="_blank">
+          <a href={`${view.gridUrl}?pane=manage`}>
             {I18n.manage_prompt}
           </a>
           <span

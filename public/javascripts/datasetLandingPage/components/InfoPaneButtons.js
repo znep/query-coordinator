@@ -18,8 +18,7 @@ export default React.createClass({
           href={view.gridUrl}
           id="tour-anchor"
           className="btn btn-simple btn-sm unstyled-link grid"
-          onClick={onClickGrid}
-          target="_blank">
+          onClick={onClickGrid}>
           {I18n.action_buttons.data}
           <span className="icon-external" />
         </a>
@@ -34,8 +33,7 @@ export default React.createClass({
       return (
         <a
           href={`${view.gridUrl}?pane=manage`}
-          className="btn btn-simple btn-sm unstyled-link manage"
-          target="_blank">
+          className="btn btn-simple btn-sm unstyled-link manage">
           {I18n.manage_dataset}
         </a>
       );

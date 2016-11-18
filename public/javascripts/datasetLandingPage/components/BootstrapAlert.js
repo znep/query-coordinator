@@ -51,7 +51,6 @@ export const BootstrapAlert = React.createClass({
         <a
           href={bootstrapUrl}
           className={className}
-          target="_blank"
           data-flyout={flyoutId}
           onClick={onClickBootstrap}
           tabIndex="0"

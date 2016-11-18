@@ -139,8 +139,7 @@ export const DatasetPreview = React.createClass({
             <a
               href={view.gridUrl}
               className="btn btn-primary btn-sm grid"
-              onClick={onClickGrid}
-              target="_blank">
+              onClick={onClickGrid}>
               {I18n.dataset_preview.grid_view_link}
               <span className="icon-external" />
             </a>

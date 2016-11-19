@@ -130,7 +130,7 @@ $(function() {
     };
     var oldBrowserMessage = [{
       _: 'div',
-      contents: $.t('core.unsupported_browser.message_html_no_date', {
+      contents: $.t('core.unsupported_browser.message_no_date_html', {
         link_text: $.tag2({
           _: 'a',
           target: '_blank',

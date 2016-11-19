@@ -53,7 +53,7 @@
       color: '#a92c2a',
       links: [
         { icon: 'chat', translateKey: 'moderation', href: '/admin/comment_moderation',
-          right: UserRights::MODERATE_COMMENTS },
+          right: UserRights::MODERATE_COMMENTS, module_enabled: 'publisher_comment_moderation' },
         { icon: 'userprofile', translateKey: 'nomination', href: '/admin/nominations',
           right: UserRights::APPROVE_NOMINATIONS, feature: :view_moderation }
       ]

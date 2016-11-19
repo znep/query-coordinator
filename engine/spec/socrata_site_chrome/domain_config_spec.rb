@@ -92,6 +92,22 @@ describe SocrataSiteChrome::DomainConfig do
     end
   end
 
+  describe 'config_updated_at' do
+    it 'returns the expected timestamp' do
+      allow(Time).to receive(:now).and_return(Time.at(1477332900))
+      stub_domains
+      subject = SocrataSiteChrome::DomainConfig.new(domain)
+      expect(subject.config_updated_at).to eq(1477332900)
+    end
+
+    it 'returns a quantized time instead of nil' do
+      allow(Time).to receive(:now).and_return(Time.at(1477332900))
+      stub_domains(status: 200, body: %Q({ "cname": "#{domain}" }))
+      subject = SocrataSiteChrome::DomainConfig.new(domain)
+      expect(subject.config_updated_at).to eq(1477333200)
+    end
+  end
+
   describe '#current_site_chrome' do
     it 'returns an empty hash if site_chrome_config does not have properties' do
       allow_any_instance_of(helper).to receive(:get_domain_config) { {} }

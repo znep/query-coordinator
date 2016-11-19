@@ -11,7 +11,8 @@ describe SocrataSiteChrome::ThemesHelper do
     let(:domain) { 'test.host' }
 
     before do
-      allow(Time).to receive(:now).and_return('1477415059')
+      allow(Time).to receive(:now).and_return(1477415059)
+      stub_domains
     end
 
     it 'returns a cache key with the cache_key_prefix and site_chrome updated_at timestamp' do

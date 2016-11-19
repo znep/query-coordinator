@@ -1,5 +1,6 @@
 require 'airbrake'
 require 'httparty'
+require 'time_extensions'
 
 module SocrataSiteChrome
   class DomainConfig
@@ -9,12 +10,7 @@ module SocrataSiteChrome
     attr_reader :cname, :config_updated_at
 
     def initialize(domain_name)
-      if Rails.env.test?
-        @cname = domain_name
-        @config_updated_at = Time.now.to_i
-      else
-        fetch_domain(domain_name) if [@cname, @config_updated_at].any?(&:blank?)
-      end
+      fetch_domain(domain_name) if [@cname, @config_updated_at].any?(&:blank?)
     end
 
     # Convert domain_config to data structure needed for Site Chrome
@@ -82,9 +78,7 @@ module SocrataSiteChrome
         raise "Failed to get domain configuration for #{domain_name}: #{e}"
       end
       @cname, @config_updated_at = JSON.parse(domain_json).slice('cname', 'configUpdatedAt').values
-      unless @config_updated_at.present?
-        raise RuntimeError.new("Unable to fetch domain configUpdatedAt for #{domain_name}")
-      end
+      @config_updated_at ||= Time.now.quantize_to(300).to_i
     end
 
     private

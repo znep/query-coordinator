@@ -6,6 +6,7 @@ $(document).ready(function() {
   initialBodyOverflowY = $('body').css('overflow-y');
   addAriaHiddenAttributeToUnusedNavVariant();
   addAriaExpandedAttributeToSearchBox();
+  verticallyPositionSearchbar();
 
   $('.disablePreviewMode').click(function(evt) {
     evt.preventDefault();
@@ -208,4 +209,19 @@ function blurAdminDropdown(event) {
         attr('aria-hidden', 'true');
     }
   }, 1);
+}
+
+/**
+ * Browsers like IE11 don't understand nested calc commands, which are used to position the searchbar
+ * due to vertically aligning it with the dynamically sized logo.
+ * Instead, we need to position it with javascript.
+ */
+function verticallyPositionSearchbar() {
+  if (navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') > 0) {
+    var $searchbox = $('header#site-chrome-header .collapsible-search .searchbox');
+    var $logoImg = $('header#site-chrome-header .logo img');
+    var positionTop = $logoImg.offset().top + $logoImg.height() / 2 - $searchbox.height() / 2;
+
+    $searchbox.css('top', positionTop);
+  }
 }

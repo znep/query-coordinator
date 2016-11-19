@@ -142,6 +142,8 @@ header#site-chrome-header[template="evergreen"] {
               }
 
               position: absolute;
+              // This is a nested calc, which doesn't work in browsers shittier than or equal to IE11.
+              // There is javascript to position it for those browsers instead: verticallyPositionSearchbar()
               top: calc((#{$banner_height} - #{$searchbox-height}) / 2);
               right: 0;
 

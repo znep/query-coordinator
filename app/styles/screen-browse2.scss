@@ -1113,14 +1113,14 @@ html {
                 line-height: normal;
 
                 .browse2-result-name-link {
-                  color: $link-color;
+                  color: #176289;
 
                   &:hover, &:focus {
                     text-decoration: underline;
                   }
 
                   &:visited {
-                    color: $link-color;
+                    color: #800080;
                   }
                 }
               }
@@ -1748,8 +1748,8 @@ html {
 .browse2-result-name {
 
   .tag-provenance {
-    font-size: 16px;
-    margin: 0 16px 0 0;
+    font-size: 12px;
+    margin: 0 10px 0 14px;
     text-transform: uppercase;
     white-space: nowrap;
   }
@@ -1759,6 +1759,11 @@ html {
 
     span.icon-community {
       color: #288dc1;
+      font-size: 14px;
+      -webkit-transform: translate(0, -0.05rem);
+      -moz-transform: translate(0, -0.05rem);
+      -ms-transform: translate(0, -0.05rem);
+      transform: translate(0, -0.05rem);
     }
   }
 

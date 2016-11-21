@@ -2991,6 +2991,7 @@ en:
         actions: Actions
         all: All
         bulk_create: Bulk Create
+        create_users: Create Users
         create_accounts: Create Accounts
         email: Email
         email_prompt: Enter email addresses for the accounts you wish to create

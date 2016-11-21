@@ -17,7 +17,7 @@
     <div class="usersTopPageButtonArea">
       <%= link_to t("#{prefix}.export_as_csv"), {:action => 'users', :format => :csv}, {:class => 'button'} %>
       <%- unless no_js -%>
-        <%= link_to t("#{prefix}.bulk_create"), {:anchor => 'BulkCreate'}, {:class => ['button','showBulkCreateForm']} =%>
+        <%= link_to t("#{prefix}.create_users"), {:anchor => 'BulkCreate'}, {:class => ['button','showBulkCreateForm']} =%>
       <%- end -%>
     </div>
     <span class="icon"></span>

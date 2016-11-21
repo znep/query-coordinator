@@ -17,6 +17,10 @@
   :description => t("#{locale_string}.logo_height_logo_width.description")) %>
 
 <%= render('site_chrome/tab_content/form_field',
+  :fields => [:header, :logo, :url],
+  :locale_string => "#{locale_string}.header_logo_url") %>
+
+<%= render('site_chrome/tab_content/form_field',
   :fields => [:header, :logo, :alt],
   :locale_string => "#{locale_string}.header_bar_logo_alt") %>
 

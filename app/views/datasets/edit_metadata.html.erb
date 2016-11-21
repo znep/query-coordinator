@@ -202,7 +202,7 @@
     <h2><%= t('screens.edit_metadata.thumbnail_image') %></h2>
     <div class="customImage">
       <div class="line clearfix">
-        <label><%= t('screens.edit_metadata.upload_image') %></label>
+        <label for="view_iconUrl"><%= t('screens.edit_metadata.upload_image') %></label>
         <%= file_field_tag('custom_image', :accept => '(jpe?g|gif|png)',
                            'data-endpoint' => "/api/views/#{@view.id}/files.txt",
                            :class => 'customDatasetImageSelect') %>

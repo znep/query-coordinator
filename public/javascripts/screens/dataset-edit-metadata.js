@@ -155,8 +155,10 @@ $(function() {
   $form.find('.comboToggle').click(function(event) {
     event.preventDefault();
     var $cbo = $(this).parent().find('.uniform');
+    var $label = $(this).parent().find('label');
 
     if ($cbo.is(':visible')) {
+      $label.attr('for', 'view_metadata_customRdfClass');
       $(this).find('a').text($.t('screens.edit_metadata.list'));
       $cbo.hide();
       var $txt = $cbo.next('input');
@@ -169,6 +171,7 @@ $(function() {
       $validator.element($txt);
     } else {
       // custom rdf class is visible
+      $label.attr('for', 'view_metadata_rdfClass');
       $(this).find('a').text($.t('screens.edit_metadata.custom'));
       $cbo.show();
       $cbo.next('input').addClass('hide');

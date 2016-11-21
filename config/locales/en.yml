@@ -2746,6 +2746,7 @@ en:
         save_changes: Save Changes
         see_both_features: See both features in action by visiting one of your datasets.
         site_appearance: Site Appearance
+        warning_html: <b>Warning!</b> You changed your language setting from the default. Check that all of your content is speaking the same language.
         tabs:
           footer:
             fields:

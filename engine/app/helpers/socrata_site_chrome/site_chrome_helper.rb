@@ -53,9 +53,19 @@ module SocrataSiteChrome
     end
 
     def header_logo
-      link_to(site_chrome_massage_url('/'), class: 'logo') do
+      url = get_site_chrome.header.dig(:logo, :url).presence || '/'
+      link_to(site_chrome_massage_url(url), :class => 'logo') do
         img = logo(get_site_chrome.header, header_title)
         span = content_tag(:span, header_title, :class => 'site-name')
+        img.present? ? img << span : span
+      end
+    end
+
+    def footer_logo
+      url = get_site_chrome.footer.dig(:logo, :url).presence || '/'
+      link_to(site_chrome_massage_url(url)) do
+        img = logo(get_site_chrome.footer, footer_title)
+        span = content_tag(:span, footer_title, :class => 'site-name')
         img.present? ? img << span : span
       end
     end

@@ -268,8 +268,8 @@
                     }
                   ],
                   "logo": {
-                    "href": "#",
-                    "src": "/socrata_site_chrome/images/socrata-logo-2c-dark.png"
+                    "src": "/socrata_site_chrome/images/socrata-logo-2c-dark.png",
+                    "url": "/"
                   },
                   "styles": {
                     "bg_color": "#3b3a3c",
@@ -310,8 +310,8 @@
                     }
                   ],
                   "logo": {
-                    "href": "#",
-                    "src": "/socrata_site_chrome/images/socrata-logo-2c-dark.png"
+                    "src": "/socrata_site_chrome/images/socrata-logo-2c-dark.png",
+                    "url": "/"
                   },
                   "styles": {
                     "bg_color": "#22b479",

@@ -159,6 +159,24 @@ describe SocrataSiteChrome::SiteChromeHelper do
     end
   end
 
+  describe '#footer_logo' do
+    before(:all) do
+      stub_site_chrome
+    end
+
+    it 'returns only the site title if the footer image is not present' do
+      allow(helper).to receive(:logo).and_return(nil)
+      result = helper.footer_logo
+      expect(result).to eq('<a href="/"><span class="site-name"></span></a>')
+    end
+
+    it 'returns both the site title and the footer image' do
+      stub_current_domain_with('data.seattle.gov')
+      result = helper.footer_logo
+      expect(result).to eq('<a href="/"><img src="http://i.imgur.com/rF2EJ4P.gif" alt="data.seattle.gov" onerror="this.style.display=&quot;none&quot;" /><span class="site-name"></span></a>')
+    end
+  end
+
   describe '#site_chrome_current_user' do
     it 'returns nil if request_current_user is nil' do
       allow(helper).to receive(:request_current_user).and_return(nil)

@@ -2,3 +2,4 @@
 - [ ] Ran `bundle install` and updated the `Gemfile.lock` if any `Gemfile` changes were made
 - [ ] Made sure the JIRA ticket ID is in the commit message(s)
 - [ ] Made sure the tests passed for realzies (check Jenkins [frontend-pull-request-test](https://jenkins-build.socrata.com/job/frontend-pull-request-test/) job)
+- [ ] Notify #stories-op-internal if this commit depends on an odysseus change. The next deploy of either service must handle this dependency with care.

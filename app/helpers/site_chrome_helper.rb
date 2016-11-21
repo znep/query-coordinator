@@ -298,4 +298,11 @@ module SiteChromeHelper
     ['Arial', 'Georgia', 'Open Sans', 'Verdana']
   end
 
+  def using_non_default_locale?
+    default_locale = CurrentDomain.configuration(:locales).try(:properties).try(:*)
+    # EN-12054: Ensure the default locale (as specified in the locales configuration)
+    # is present and not equal to the current locale
+    default_locale.present? && default_locale.to_sym != I18n.locale.to_sym
+  end
+
 end

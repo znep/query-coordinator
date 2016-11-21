@@ -84,18 +84,35 @@ $link_color: #2279a6;
     overflow: hidden;
 
     .header-title {
+      display: inline-block;
+
       h1 {
+        display: inline-block;
         font-size: 27px;
         margin-bottom: 2rem;
         }
     }
 
+    .locale-warning {
+      float: right;
+      margin-bottom: 1rem;
+
+      .alert {
+        font-size: 13px;
+      }
+    }
+
     .page-controls {
+      clear: both;
       float: right;
 
       > a,
       > button {
         margin-right: 9px;
+
+        &:last-of-type {
+          margin-right: 0;
+        }
       }
     }
   }

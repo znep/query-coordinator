@@ -358,4 +358,27 @@ describe SiteChromeHelper do
       expect(subject.site_chrome_on_entire_site_or_default_state(site_chrome_double)).to eq(true)
     end
   end
+
+  describe '#using_non_default_locale?' do
+    it 'returns false if there is no default locale set' do
+      allow(CurrentDomain).to receive(:configuration).with(:locales).and_return(nil)
+      expect(subject.using_non_default_locale?).to eq(false)
+    end
+
+    it 'returns false if the default locale equals the current locale' do
+      allow(CurrentDomain).to receive(:configuration).with(:locales).and_return(
+        OpenStruct.new(:properties => OpenStruct.new(:* => :en))
+      )
+      allow(I18n).to receive(:locale).and_return(:en)
+      expect(subject.using_non_default_locale?).to eq(false)
+    end
+
+    it 'returns true if the default locale does not equal the current locale' do
+      allow(CurrentDomain).to receive(:configuration).with(:locales).and_return(
+        OpenStruct.new(:properties => OpenStruct.new(:* => :en))
+      )
+      allow(I18n).to receive(:locale).and_return(:es)
+      expect(subject.using_non_default_locale?).to eq(true)
+    end
+  end
 end

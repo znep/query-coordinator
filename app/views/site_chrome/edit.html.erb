@@ -14,6 +14,14 @@
       <h1><%= t('screens.admin.site_chrome.site_appearance') %></h1>
     </div>
 
+    <div class="locale-warning">
+      <% if using_non_default_locale? %>
+        <div class="alert warning">
+          <%= t('screens.admin.site_chrome.warning_html') %>
+        </div>
+      <% end %>
+    </div>
+
     <div class="page-controls">
 
       <%= link_to('#', :class => 'confirm-reload') do %>

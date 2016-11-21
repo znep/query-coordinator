@@ -26,6 +26,16 @@ class Auth0HelperTest < ActionView::TestCase
                            'socrata_role' => 'viewer',
                            'name' => 'alterego',
                            'email' => 'alterego@testshib.org',
+                           'identities' => [{ 'isSocial' => false }]
+                           )
+  end
+
+  def get_mock_social_user_token
+    OmniAuth::AuthHash.new(
+                           'provider' => 'facebook',
+                           'uid' => 'facebook|magicstring',
+                           'socrata_user_id' => 'facebook|magicstring|facebook',
+                           'identities' => [{ 'isSocial' => true }]
                            )
   end
 
@@ -43,6 +53,11 @@ class Auth0HelperTest < ActionView::TestCase
       authHash.delete(requiredField)
       refute(valid_token?(authHash))
     end
+  end
+
+  test 'Token is allowed when social' do
+    hash = get_mock_social_user_token
+    assert_equal(valid_token?(hash), true)
   end
 
   test 'UID correctly extracted' do

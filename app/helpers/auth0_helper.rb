@@ -24,10 +24,18 @@ module Auth0Helper
     Digest::SHA1.hexdigest("#{COOKIE_SECRET} #{uid} #{expiration} #{salt}")
   end
 
-  def valid_token?(auth0Hash)
-    contains_valid_email?(auth0Hash) &&
-      contains_valid_name?(auth0Hash) &&
-      contains_valid_userid?(auth0Hash)
+  def valid_token?(auth0_hash)
+    if auth0_hash['identities'].length != 1
+      false
+    elsif auth0_hash['identities'].any? { |id| id['isSocial'] }
+      # social identities get linked to a profile manually
+      # so we don't need email/name/user id
+      true
+    else
+      contains_valid_email?(auth0_hash) &&
+        contains_valid_name?(auth0_hash) &&
+        contains_valid_userid?(auth0_hash)
+    end
   end
 
   def contains_valid_email?(auth0Hash)

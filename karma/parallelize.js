@@ -4,6 +4,7 @@
 
 var cp = require('child_process');
 var fs = require('fs');
+var _ = require('lodash');
 
 function getSuiteConf(name) {
   return 'karma/' + name + '/karma.conf.js';
@@ -19,6 +20,12 @@ var suites = fs.readdirSync('karma').filter(function(path) {
   }
 });
 
+// A selection of ports based on the number of suites we have.
+// This avoids port conflicts, which was causing intermittent
+// unexpected test failures when running parallel locally.
+var startingPort = 7000;
+var ports = _.range(startingPort, startingPort + suites.length);
+
 // Display warning if test suites will
 var cpus = require('os').cpus();
 console.log('Detected ' + cpus.length + ' cores');
@@ -29,7 +36,7 @@ if (cpus.length < suites.length) {
 // For launching a Karma test run.
 var flags = '--singleRun true --browsers PhantomJS --reporters dots'.split(' ');
 function generateArgs(suite) {
-  return ['start', getSuiteConf(suite)].concat(flags);
+  return ['start', getSuiteConf(suite), '--port', ports.pop()].concat(flags);
 }
 
 // For printing Karma results, with early abort on test failures.

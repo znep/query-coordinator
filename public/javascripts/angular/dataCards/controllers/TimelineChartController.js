@@ -135,11 +135,11 @@ module.exports = function TimelineChartController(
       // the second condition. We're doing this instead of just cloning
       // the objects because moment.clone is surprisingly slow (something
       // like 40ms).
-      if (domain.start.add('years', 1).isAfter(domain.end)) {
+      if (domain.start.add(1, 'years').isAfter(domain.end)) {
         precision = 'DAY';
       // We're actually checking for 20 years but have already added one
       // to the original domain start date in the if block above.
-      } else if (domain.start.add('years', 19).isAfter(domain.end)) {
+      } else if (domain.start.add(19, 'years').isAfter(domain.end)) {
         precision = 'MONTH';
       } else {
         precision = 'YEAR';

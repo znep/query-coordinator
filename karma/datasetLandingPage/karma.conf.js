@@ -15,8 +15,8 @@ module.exports = function ( karma ) {
     ],
 
     proxies: {
-      '/image.png': 'http://localhost:7019/base/karma/datasetLandingPage/data/mockImage.png',
-      '/api/file_data/guid': 'http://localhost:7019/base/karma/datasetLandingPage/data/mockImage.png'
+      '/image.png': `http://localhost:${karma.port}/base/karma/datasetLandingPage/data/mockImage.png`,
+      '/api/file_data/guid': `http://localhost:${karma.port}/base/karma/datasetLandingPage/data/mockImage.png`
     },
 
     preprocessors: {
@@ -61,7 +61,6 @@ module.exports = function ( karma ) {
       showDiff: true
     },
 
-    port: 7019,
     colors: true,
     logLevel: 'INFO',
 

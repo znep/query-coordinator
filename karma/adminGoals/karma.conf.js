@@ -72,7 +72,6 @@ module.exports = function ( karma ) {
       showDiff: true
     },
 
-    port: 7019,
     colors: true,
     logLevel: 'INFO',
 

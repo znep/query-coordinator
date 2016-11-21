@@ -17,7 +17,7 @@ const LoadingButton = socrataTitleTipWrapper(React.createClass({
     };
   },
   render() {
-    const { isLoading, children, disabled, ...props } = this.props;
+    const { isLoading, children, disabled } = this.props;
     const className = classNames(
       'button',
       { disabled }
@@ -32,8 +32,7 @@ const LoadingButton = socrataTitleTipWrapper(React.createClass({
       <button
         className={className}
         name="commit"
-        onClick={(event) => { if (disabled) { event.preventDefault(); }}}
-        {...props}>
+        onClick={(event) => { if (disabled) { event.preventDefault(); }}}>
         <span style={labelStyle}>{children}</span>
         <span className="loading" style={spinnerStyle}></span>
       </button>

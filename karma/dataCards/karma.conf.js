@@ -27,9 +27,9 @@ module.exports = function ( karma ) {
     ],
 
     proxies: {
-      '/images/dataCards': 'http://localhost:7019/base/public/images/dataCards',
-      '/javascripts/plugins/': 'http://localhost:7019/base/public/javascripts/plugins/',
-      '/stylesheets/images/common/': 'http://localhost:7019/base/public/stylesheets/images/common/'
+      '/images/dataCards': `http://localhost:${karma.port}/base/public/images/dataCards`,
+      '/javascripts/plugins/': `http://localhost:${karma.port}/base/public/javascripts/plugins/`,
+      '/stylesheets/images/common/': `http://localhost:${karma.port}/base/public/stylesheets/images/common/`
     },
 
     preprocessors: {
@@ -104,7 +104,6 @@ module.exports = function ( karma ) {
       showDiff: true
     },
 
-    port: 7019,
     colors: true,
     logLevel: 'INFO',
 

@@ -48,7 +48,7 @@ describe('TimelineChartController', function() {
     mockCardDataService = {
       getTimelineDomain: function() {
         return $q.when({
-          start: moment().subtract('years', 10),
+          start: moment().subtract(10, 'years'),
           end: moment()
         });
       },
@@ -56,7 +56,7 @@ describe('TimelineChartController', function() {
         return withHeaders({}, $q.when(
           [
             {
-              date: moment().subtract('years', 10)
+              date: moment().subtract(10, 'years')
             },
             {
               date: moment()

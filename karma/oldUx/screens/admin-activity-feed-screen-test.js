@@ -56,12 +56,12 @@ describe('adminActivityFeedScreen', function() {
     });
 
     it('returns "yesterday" for a date yesterday', function() {
-      var yesterday = moment().subtract(1, 'days');
+      var yesterday = moment().subtract('days', 1);
       expect(adminActivityFeedScreen.todayYesterdayOrDate(yesterday)).to.equal('Yesterday');
     });
 
     it('returns the date for a date before yesterday', function() {
-      var weekAgo = moment().subtract(1, 'weeks');
+      var weekAgo = moment().subtract('weeks', 1);
       expect(adminActivityFeedScreen.todayYesterdayOrDate(weekAgo)).to.equal(weekAgo.format('M/D/YYYY'));
     });
   });

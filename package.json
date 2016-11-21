@@ -150,7 +150,7 @@
     "tether-shepherd": "1.2.0",
     "url": "0.11.0",
     "validator": "5.4.0",
-    "velocity-animate": "git+https://github.com/julianshapiro/velocity#master",
+    "velocity-animate": "git+https://github.com/socrata-platform/velocity.git#04e6c35cf1ebed41c909ed77467ea8e7d18ad00c",
     "velocity-react": "1.1.5",
     "whatwg-fetch": "1.0.0"
   }

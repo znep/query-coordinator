@@ -63,8 +63,8 @@ module.exports = function ( karma ) {
     ],
 
     proxies: {
-      '/stylesheets/images/': 'http://localhost:7019/base/public/stylesheets/images/',
-      '/stylesheets/images/common/': 'http://localhost:7019/base/public/stylesheets/images/common/'
+      '/stylesheets/images/': `http://localhost:${karma.port}/base/public/stylesheets/images/`,
+      '/stylesheets/images/common/': `http://localhost:${karma.port}/base/public/stylesheets/images/common/`
     },
 
     // Options for phantomJS launcher
@@ -96,11 +96,6 @@ module.exports = function ( karma ) {
      */
     reporters: ['dots', 'mocha'],
 
-    /**
-     * On which port should the browser connect, on which port is the test runner
-     * operating, and what is the URL path for the browser to use.
-     */
-    port: 7019,
     urlRoot: '/',
 
     /**

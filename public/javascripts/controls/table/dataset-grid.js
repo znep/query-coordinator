@@ -393,7 +393,8 @@
 
         //Add DOM for menu drop-down options
         html.push('<a class="menuLink" href="#row-menu#',
-          row.id, colAdjust, '"></a>',
+          row.id, colAdjust, '"',
+          'aria-label="', $.t('controls.grid.view_single_row'),'"></a>',
           '<ul class="menu rowMenu" id="row-menu_', row.id,
           colAdjust, '">', options.join(''),
           '<li class="footer"><div class="outerWrapper">',

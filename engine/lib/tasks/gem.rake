@@ -3,7 +3,7 @@ namespace :socrata_site_chrome do
     desc "Build release #{SocrataSiteChrome::VERSION} of gem and push to socrata_site_chrome-#{SocrataSiteChrome::VERSION}"
     task :release do
       puts "Previously released version of socrata_site_chrome gem: #{previously_released_version}"
-      if previously_released_version?
+      if version_has_already_been_released?
         puts "socrata-site-chrome-#{SocrataSiteChrome::VERSION} has already been released. Skipping."
         next
       end
@@ -25,10 +25,10 @@ namespace :socrata_site_chrome do
 
     private
 
-    def previously_released_version?
+    def version_has_already_been_released?
       current_version = Gem::Version.new(SocrataSiteChrome::VERSION)
       released_version = Gem::Version.new(previously_released_version)
-      current_version < released_version
+      current_version <= released_version
     end
 
     def previously_released_version

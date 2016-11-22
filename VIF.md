@@ -392,11 +392,15 @@ For example, a chart rendering a comparison of budgeted amounts against actual a
 
 Values of `type` map to visualization implementations. Accepted values are:
 
+* `barChart`
+
 * `columnChart`
 
 * `featureMap`
 
 * `histogram`
+
+* `pieChart`
 
 * `regionMap`
 

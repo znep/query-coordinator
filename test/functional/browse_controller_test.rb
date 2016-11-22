@@ -62,6 +62,9 @@ class BrowseControllerTest < ActionController::TestCase
     stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1/domain_tags?domains=localhost&offset=0&order=relevance').
       with(:headers => {'Content-Type'=>'application/json', 'Cookie'=>'_core_session_id=this cookie is valid so it goes through', 'X-Socrata-Host'=>'localhost'}).
       to_return(:status => 200, :body => return_body, :headers => {})
+    stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1/domain_tags?domains=localhost&offset=0&order=relevance").
+        with(:headers => {'Content-Type'=>'application/json', 'X-Socrata-Host'=>'localhost'}).
+        to_return(:status => 404, :body => nil, :headers => {})
   end
 
   test 'it should render page meta content over https and not http' do

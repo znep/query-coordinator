@@ -150,13 +150,13 @@ export default React.createClass({
       </li>
     );
 
-    const commentLink = (
+    const commentLink = view.commentUrl ? (
       <li>
-        <a className="option" href={`${view.gridUrl}?pane=feed`}>
+        <a className="option" href={view.commentUrl}>
           {I18n.action_buttons.comment}
         </a>
       </li>
-    );
+    ) : null;
 
     const odataLink = (view.isBlobby || view.isHref) ? null : (
       <li>

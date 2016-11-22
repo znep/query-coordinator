@@ -32,6 +32,7 @@ export default {
   facebookShareUrl: 'facebookShareUrl',
   twitterShareUrl: 'twitterShareUrl',
   emailShareUrl: 'emailShareUrl',
+  commentUrl: 'commentUrl',
   viewCount: 1,
   downloadCount: 1,
   ownerName: 'Marc Millstone',

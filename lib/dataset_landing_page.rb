@@ -76,6 +76,7 @@ class DatasetLandingPage
         :facebookShareUrl => share_facebook_url(view),
         :twitterShareUrl => share_twitter_url(view),
         :emailShareUrl => share_email_url(view),
+        :commentUrl => comment_url(view),
         :viewCount => view.viewCount,
         :downloadCount => view.downloadCount,
         :ownerName => view.owner.displayName,
@@ -339,6 +340,10 @@ class DatasetLandingPage
       if view.has_rights?(ViewRights::UPDATE_VIEW)
         edit_view_metadata_path(view)
       end
+    end
+
+    def comment_url(view)
+      "#{data_grid_path(view)}?pane=feed" if view.module_enabled?(:allow_comments)
     end
 
     def export_formats

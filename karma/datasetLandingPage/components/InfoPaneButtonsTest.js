@@ -151,9 +151,18 @@ describe('components/InfoPaneButtons', () => {
 
   describe('more actions dropdown', () => {
     describe('comment link', () => {
-      it('exists', function() {
+      it('exists if commentUrl is defined', () => {
         const element = renderComponent(InfoPaneButtons, getProps());
-        expect(element.querySelector('a[href="gridUrl?pane=feed"]')).to.exist;
+        expect(element.querySelector('a[href="commentUrl"]')).to.exist;
+      });
+
+      it('does not exist if commentUrl is not defined', () => {
+        const element = renderComponent(InfoPaneButtons, getProps({
+          view: {
+            commentUrl: null
+          }
+        }));
+        expect(element.querySelector('a[href="commentUrl"]')).to.not.exist;
       });
     });
   });

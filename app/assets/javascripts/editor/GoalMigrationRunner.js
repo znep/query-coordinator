@@ -88,9 +88,19 @@ export default function GoalMigrationRunner(narrativeMigrationMetadata, storyDat
 // the need to pass some cache object around.
 function prefetchDataNeededForMigration(sections) {
   function prefetchSection(section) {
-    if (section.type === 'viz' && section.dataset) { // dataset may be blank if unconfigured.
+    if (section.type === 'viz' && section.dataset) {
+      // dataset may be blank if unconfigured.
+      // also possible to have dataset reference to nonexistent dataset.
       return httpRequest('GET', `https://${window.location.hostname}/api/views/${section.dataset}.json`).
-        then((data) => section.dataset = data );
+        then((data) => section.dataset = data ).
+        catch((error) => {
+          const missingResourceStatusCodes = [403, 404];
+          if (_.includes(missingResourceStatusCodes, error.statusCode)) {
+            section.dataset = undefined;
+          } else {
+            throw error;
+          }
+        });
     } else if (section.type === 'twoColLayout') {
       return Promise.all([
         prefetchDataNeededForMigration(section.columns[0]),

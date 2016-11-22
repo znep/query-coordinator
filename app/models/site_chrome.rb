@@ -24,12 +24,6 @@ class SiteChrome
 
   PUBLICATION_STAGES = %w(draft published)
 
-  PUBLICATION_STAGES.each do |stage|
-    define_method "#{stage}_content" do
-      config.dig('value', 'versions', current_version, stage, 'content')
-    end
-  end
-
   # WARN: deep merge!
   PUBLICATION_STAGES.each do |stage|
     # For grepping: update_published_content, update_draft_content
@@ -190,6 +184,10 @@ class SiteChrome
       config_content : SiteChrome.default_site_chrome_config
   end
 
+  def content(published = true)
+    config.dig('value', 'versions', current_version, published ? 'published' : 'draft', 'content')
+  end
+
   def current_version
     if config.try(:dig, 'value', 'versions').present?
       config.dig('value', 'current_version') || latest_published_version
@@ -201,10 +199,6 @@ class SiteChrome
 
   def latest_published_version
     config.dig('value', 'versions').keys.map { |version| Gem::Version.new(version) }.max.to_s
-  end
-
-  def published
-    config.try(:dig, 'value', 'versions', '0.3', 'published')
   end
 
   # TODO! Do away with the OTHER activation_state inside the siteChromeConfigVars property value,

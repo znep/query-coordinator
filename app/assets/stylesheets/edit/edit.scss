@@ -66,13 +66,12 @@ body .header-main {
     border-left: 1px solid #6B6B6B;
   }
 
-  .story-title {
+  .link-header {
     display: inline-block;
     margin: 0 1em;
     max-width: $header-title-max-width;
     height: 5.5rem;
     line-height: 5.5rem;
-    font-weight: 600;
     color: $header-story-title-color;
     vertical-align: middle;
     overflow: hidden;
@@ -89,6 +88,10 @@ body .header-main {
     &:focus {
       outline: none;
     }
+  }
+
+  .story-title {
+    font-weight: 600;
   }
 
   // Buttons
@@ -373,4 +376,3 @@ ul.quick-action-menu {
   top: 6rem !important;
   z-index: 10 !important;
 }
-

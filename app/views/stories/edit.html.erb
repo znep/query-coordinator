@@ -1,6 +1,13 @@
 <header class="header-main">
   <button data-panel-toggle="settings-panel" class="icon-stories-menu settings-panel-btn"></button>
-  <button class="story-title" role="button" data-panel-toggle="settings-panel"></button>
+  <%- if @story_metadata.goal? -%>
+    <a class="link-header story-dashboard-link" href="/stat/goals/<%= @dashboard_uid %>" aria-labelledby="story-dashboard-link-text">
+      <span class="story-dashboard-link-icon icon-arrow-prev"></span>
+      <span class="story-dashboard-link-text" id="story-dashboard-link-text"><%= t('editor.app_bar.back_to_dashboard') %></span>
+    </a>
+    <div class="menu-divider"></div>
+  <%- end -%>
+  <button class="link-header story-title" role="button" data-panel-toggle="settings-panel"></button>
   <div class="menu-divider"></div>
   <div id="story-publication-status" class="status-indicator"></div>
   <div id="story-saving-indicator" class="status-indicator"></div>
@@ -18,13 +25,13 @@
       </li>
       <li class="menu-divider"></li>
       <li>
-        <button class="btn btn-transparent preview-btn" role="button" data-href="<%= @story_url_for_preview %>" target="_blank">Preview <span class="icon-preview"></span></button>
+        <button class="btn btn-transparent preview-btn" role="button" data-href="<%= @story_url_for_preview %>" target="_blank"><%= t('editor.app_bar.preview') %> <span class="icon-preview"></span></button>
       </li>
       <li>
-        <button class="btn btn-transparent panel-btn content-panel-btn" data-panel-toggle="add-content-panel">Add Content</button>
+        <button class="btn btn-transparent panel-btn content-panel-btn" data-panel-toggle="add-content-panel"><%= t('editor.app_bar.add_content_panel') %></button>
       </li>
       <li>
-        <button class="btn btn-transparent panel-btn style-panel-btn" data-panel-toggle="style-and-presentation-panel">Style &amp; Presentation</button>
+        <button class="btn btn-transparent panel-btn style-panel-btn" data-panel-toggle="style-and-presentation-panel"><%= t('editor.app_bar.style_and_presentation') %></button>
       </li>
     </ul>
   </div>
@@ -41,13 +48,11 @@
 </div>
 
 <main class="user-story-container">
-
   <div class="user-story">
     <p class="message-warning"></p>
   </div>
 
   <div id="story-insertion-hint" class="hidden"></div>
-
 </main>
 
 <div id="asset-selector-container"></div>

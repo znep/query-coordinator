@@ -98,7 +98,11 @@ module SocrataSiteChrome
           current_version = site_chrome_config.dig(:value, :current_version) ||
             latest_existing_version(site_chrome_config)
           site_chrome_config_for_stage = site_chrome_config.dig(:value, :versions, current_version, stage)
+        elsif site_chrome_config.try(:dig, :value, :content).present?
+          # This is the case for a domain with Perspectives configuration set up,
+          # but not the Site Chrome header/footer. Don't Airbrake.
         else
+          # Unrecognized Site Chrome config, Airbrake.
           message = "Invalid #{CONFIGURATION_TYPE} configuration in domain: #{cname}"
           ::Airbrake.notify(
             :error_class => 'InvalidSiteChromeConfiguration',

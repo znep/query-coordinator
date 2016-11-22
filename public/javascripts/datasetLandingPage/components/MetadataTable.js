@@ -146,13 +146,14 @@ export const MetadataTable = React.createClass({
     if (!_.isEmpty(view.customMetadataFieldsets)) {
       customMetadataFieldsets = _.map(view.customMetadataFieldsets, (fieldset, i) => {
         const fields = _.map(fieldset.fields, (field, j) => {
-          if (fieldset.existing_fields[field.name]) {
+          const existingField = fieldset.existing_fields[field.name];
+          if (_.isString(existingField) || _.isNumber(existingField)) {
             return (
               <tr key={j}>
                 <td>{field.displayName || field.name}</td>
                 <td>
                   <Linkify properties={{ rel: 'nofollow', target: '_blank' }}>
-                    {fieldset.existing_fields[field.name]}
+                    {existingField}
                   </Linkify>
                 </td>
               </tr>

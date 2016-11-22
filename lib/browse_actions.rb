@@ -110,7 +110,12 @@ module BrowseActions
     topic_chop = get_facet_cutoff(:topic)
 
     if using_cetera?
-      all_tags = Cetera::Utils.get_tags(forwardable_session_cookies, request_id(request)).results
+      # TODO: Fix this line when we stop using globals in DataSlate server-rendering.
+      _request = (defined?(request) && request) || Canvas::Environment.request || Canvas2::Util.request
+      cookies = _request.cookies unless defined?(cookies)
+
+      all_tags = Cetera::Utils.get_tags(forwardable_session_cookies(cookies),
+                                        request_id(_request)).results
       title = t('controls.browse.facets.tags_title')
       singular_description = t('controls.browse.facets.tags_singular_title')
     else

@@ -1040,7 +1040,7 @@ module Canvas2
       t += '<span class="icon"></span>' if facet[:use_icon]
         t += t('controls.browse.actions.clear_facet') + '</a></li>'
       if facet[:tag_cloud]
-        facet[:extra_options].sort_by { |o| o[:count] }.reverse.each_with_index do |facet_option, i|
+        facet[:extra_options].to_a.sort_by { |o| o[:count] }.reverse.each_with_index do |facet_option, i|
           t += render_facet_item(facet_option, facet, cur_val, i >= facet[:options].length ? 'cutoff' : '')
         end
       else

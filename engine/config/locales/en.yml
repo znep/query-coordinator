@@ -1,28 +1,28 @@
 en:
-  current_language: English
   admin:
     open_performance:
-      title: Performance
-      home: Performance Home
       data: Data
-      goals_and_dashboards: Goals & Dashboards
       goal_inventory: Goal Inventory
+      goals_and_dashboards: Goals & Dashboards
+      home: Performance Home
+      title: Performance
     user:
-      my_profile: My Profile
       administration: Administration
       get_help: Get Help
+      my_profile: My Profile
       sign_out: Sign Out
+  current_language: English
+  footer:
+    powered_by: Powered By
   header:
     administration: Administration
-    menu: Menu
     language: Language
+    menu: Menu
     profile: Profile
     search: Search
     sign_in: Sign In
     sign_out: Sign Out
     view_profile: View Profile
-  footer:
-    powered_by: Powered By
   preview:
-    warning: This is a PREVIEW version of your site.
     disable: Disable Preview Mode
+    warning: This is a PREVIEW version of your site.

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [ -z "${SITE_CHROME_LOCALEAPP_API_KEY}" ]; then
+    echo "Need to set SITE_CHROME_LOCALEAPP_API_KEY"
+    exit 1
+fi
+
+bundle check || bundle install
+LOCALEAPP_API_KEY=${SITE_CHROME_LOCALEAPP_API_KEY} bundle exec rake socrata_site_chrome:gem:release

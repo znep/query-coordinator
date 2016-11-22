@@ -1,4 +1,9 @@
 .bundle/
+
+# Ignoring all locale files except en since they are stored in LocaleApp
+config/locales/*.yml
+!config/locales/en.yml
+
 log/*.log
 npm-debug.log
 pkg/

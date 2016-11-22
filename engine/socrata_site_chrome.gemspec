@@ -14,6 +14,10 @@ Gem::Specification.new do |s|
   s.description = 'The "Chrome" is the header (including navigation bar) and footer of a customer site. This gem exists so that our various services/pages (catalogs, storyteller, data_lens, etc.) can easily render the same html for these components.'
   s.license = 'MIT'
 
+  if s.respond_to?(:metadata)
+    s.metadata['allowed_push_host'] = 'https://repo.socrata.com/artifactory/api/gems/ruby-local'
+  end
+
   s.files = Dir['{app,config,db,public,lib}/**/*', 'lib/*.rb', 'MIT-LICENSE', 'Rakefile', 'README.rdoc']
   s.test_files = Dir['test/**/*']
 

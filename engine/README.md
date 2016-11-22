@@ -19,11 +19,11 @@ Ensure the `rubygems-virtual` artifactory source is in your Gemfile:
 
 Then add the `socrata_site_chrome` gem to your Gemfile:
 
-    ruby gem 'socrata_site_chrome', '~> 1.1.8'
+    ruby gem 'socrata_site_chrome', '~> 2.0.3'
 
 Or specify the source directly:
 
-    ruby gem 'socrata_site_chrome', '~> 1.1.8', :source => 'https://repo.socrata.com/artifactory/api/gems/rubygems-virtual/'
+    ruby gem 'socrata_site_chrome', '~> 2.0.3', :source => 'https://repo.socrata.com/artifactory/api/gems/rubygems-virtual/'
 
 ### From Source
 
@@ -382,9 +382,18 @@ $footer_fg_color: $fg_color;
 $text_padding: 11px;
 ```
 
-### Deploy to Socrata Artifactory
+## Making a release
 
-To deploy gem to Artifactory ([See Artifactory
+To make a release, bump the version of the gem by editing `engine/lib/socrata_site_chrome/version.rb`
+and push to the master branch. There is a jenkins job that will watch for version
+bump changes and automatically publish the gem to artifactory.
+
+### Manual Deploy to Socrata Artifactory
+
+_**If the automated publishing job fails, below you'll find the steps to manually deploy
+the gem to artifactory**_
+
+To manually deploy gem to Artifactory ([See Artifactory
 OpsDoc](https://docs.google.com/document/d/1xXUHPVtChsk1UHuw2b-m7fslCs4IVe-VTaDwrd4-6-M/edit)),
 follow the directions to setup your access to artifactory.
 
@@ -407,12 +416,7 @@ Ensure `$RUBYGEMS_HOST` is set in environment:
 
 Build the gem and push it to artifactory.
 
-    rake socrata_site_chrome:gem
-
-Alternatively you can run each step individually
-
-    rake socrata_site_chrome:gem:build
-    rake socrata_site_chrome:gem:publish
+    bin/release
 
 ## Running tests
 

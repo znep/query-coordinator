@@ -7,5 +7,10 @@ if [ -z "${SITE_CHROME_LOCALEAPP_API_KEY}" ]; then
     exit 1
 fi
 
+echo "Configuring bundler to use repo.socrata.com..."
+set +x
+bundle config repo.socrata.com "${ARTIFACTORY_USER}":"${ARTIFACTORY_PASSWORD}"
+set -x
+
 bundle check || bundle install
 LOCALEAPP_API_KEY=${SITE_CHROME_LOCALEAPP_API_KEY} bundle exec rake socrata_site_chrome:gem:release

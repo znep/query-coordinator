@@ -140,8 +140,16 @@ class SignInForm extends React.Component {
     }
   }
 
-  renderRememberMe() {
-    if (this.props.options.rememberMe) {
+  renderFormMessage(options) {
+    const message = options.formMessage;
+
+    if (!_.isEmpty(message)) {
+      return <div styleName="form-message">{message}</div>;
+    }
+  }
+
+  renderRememberMe(options) {
+    if (options.rememberMe) {
       return <RememberMe />;
     }
   }
@@ -165,12 +173,14 @@ class SignInForm extends React.Component {
           type="hidden"
           value={options.authenticityToken} />
 
+        {this.renderFormMessage(options)}
+
         <EmailInput onChange={this.onEmailChange} />
         <PasswordInput
           onChange={this.onPasswordChange}
           connectionName={connectionName} />
 
-        {this.renderRememberMe()}
+        {this.renderRememberMe(options)}
 
         <a
           href="/forgot_password"

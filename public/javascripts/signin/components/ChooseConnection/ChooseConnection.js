@@ -77,7 +77,7 @@ class ChooseConnection extends React.Component {
 
     return (
       <div>
-        <div styleName="message">{options.message}</div>
+        <div styleName="message">{options.chooseConnectionMessage}</div>
         {this.renderSocrataIdButton()}
         {this.renderConnections()}
       </div>

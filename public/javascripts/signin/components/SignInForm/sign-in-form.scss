@@ -9,6 +9,10 @@ $default-font-path: "socrata-components/dist/fonts/";
   position: relative;
 }
 
+.form-message {
+  margin-bottom: 1em;
+}
+
 .spinner {
   @extend .spinner-default;
   @extend .spinner-large;

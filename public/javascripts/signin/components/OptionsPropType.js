@@ -47,7 +47,10 @@ export default
 
     // The message that displays above the "connections"
     // Note that if there are no connections, no message is shown
-    message: PropTypes.string,
+    chooseConnectionMessage: PropTypes.string,
+
+    // This message is displayed above the signin form
+    formMessage: PropTypes.string,
 
     // Any flashes to display
     flashes: PropTypes.arrayOf(

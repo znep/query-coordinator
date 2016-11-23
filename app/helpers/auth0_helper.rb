@@ -152,7 +152,8 @@ module Auth0Helper
       socrataEmailsBypassAuth0: feature?('socrata_emails_bypass_auth0'),
       connections: @auth0_connections,
       forcedConnections: @auth0_forced_connections,
-      message: @auth0_message || t('screens.sign_in.auth0_intro'),
+      chooseConnectionMessage: @auth0_message || t('screens.sign_in.auth0_intro'),
+      formMessage: @auth0_form_message,
       flashes: formatted_flashes
     }.to_json.html_safe
   end

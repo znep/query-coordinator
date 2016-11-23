@@ -22,7 +22,7 @@ $(function() {
   blist.util.loadCaptcha('captchaPlaceholder');
 
   // Signup form validation.
-  $('#signup #signupForm, .loginScreen #signupForm').validate({
+  $('#signupForm').validate({
     rules: {
       'signup[screenName]': {
         required: true

@@ -65,7 +65,8 @@ $(function() {
       data('renderTypeManager', null).
       renderTypeManager({
         view: dataset,
-        editEnabled: false
+        editEnabled: false,
+        hideDividers: true
       });
     } else {
       renderMissingDatasetMessage();

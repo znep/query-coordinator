@@ -463,7 +463,7 @@
         $dom.append($content);
       }
 
-      if ($dom.children('.divider').length < 1) {
+      if ($dom.children('.divider').length < 1 && !rtmObj.settings.hideDividers) {
         $dom.prepend($.tag({
           tagName: 'div',
           'class': 'divider',

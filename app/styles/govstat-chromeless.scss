@@ -21,3 +21,75 @@ body.unscrollable {
     padding: 1rem;
   }
 }
+
+// Print styles. Nesting is important unless you apply !important liberally.
+// Explanatory notes given where possible.
+@media print {
+  body.unscrollable {
+    // This cannot be set higher than ~7.3in because the JS is responsible for
+    // dynamically calculating the position of the X-axis ticks and does so in
+    // pixels, which somehow ends up going all kinds of crazy in print mode and
+    // leads to the last tick label being placed outside the printable area.
+    max-width: 7.25in;
+
+    .titleContainer {
+      // The container already provides its own whitespace, so it looks bad if
+      // we double up.
+      margin: {
+        left: 0;
+        right: 0;
+      }
+
+      .goalBox {
+        // More whitespace condensing.
+        padding: 1em;
+
+        // These two changes are related. Allows the title to wrap text more
+        // naturally in the absence of the social media icons.
+        .goalTitle {
+          margin-right: 0;
+        }
+        .component-Share {
+          display: none;
+        }
+
+        .measureChart {
+          .chartArea {
+            margin: {
+              // We use ridiculous things like negative margins to render the
+              // Y-axis tick labels, and that ends up going badly once we fix
+              // the other stuff above. This margin allocates space for them.
+              left: 5em;
+              // Even after we get the X-axis tick placement right (see note on
+              // body.unscrollable above), the label for the tick will also
+              // overflow the container unless we pad the right side. It needs
+              // to be set to at least half the tick label width (5.6em), and
+              // keeping the value low allows us to give the illusion that we
+              // know how to take up the full width.
+              right: 3em;
+            }
+          }
+        }
+      }
+    }
+
+    // The markup for related measures is oddly different than prevailing ones.
+    // This padding is basically analogous to what we have for .goalBox above.
+    .measuresContainer {
+      padding: 1em;
+
+      // Lots of nesting because specificity is annoying.
+      .relatedMeasure {
+        .measureChart {
+          .chartArea {
+            // Values to match the prevailing measure chart. Without any
+            // adjustments, the related measures render at a narrower width than
+            // the prevailing measures and it just looks weird.
+            margin-left: 5em;
+            margin-right: 3em;
+          }
+        }
+      }
+    }
+  }
+}

@@ -151,6 +151,7 @@ module Auth0Helper
       hideSocrataId: FeatureFlags.derive(nil, request).hide_socrata_id,
       socrataEmailsBypassAuth0: feature?('socrata_emails_bypass_auth0'),
       connections: @auth0_connections,
+      forcedConnections: @auth0_forced_connections,
       message: @auth0_message || t('screens.sign_in.auth0_intro'),
       flashes: formatted_flashes
     }.to_json.html_safe

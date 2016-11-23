@@ -189,14 +189,13 @@ class UserSessionsController < ApplicationController
   # 2. It is an array with hash maps.
   # 3. Each hash map has two parameters: connection and a name OR buttonText.
   def valid_auth0_connections?(connections)
-    valid = connections.is_a?(Array) && connections.present?
-    valid && connections.each do |connection|
-      valid = connection[:connection].present? &&
-              (connection[:name].present? || connection[:buttonText].present?)
-      break unless valid
-    end
+    connections.is_a?(Array) && connections.present? &&
+      connections.all? { |conn| conn[:connection].present? && (conn[:name].present? || conn[:buttonText].present?) }
+  end
 
-    valid
+  def valid_auth0_forced_connections?(forced_connections)
+    forced_connections.is_a?(Array) && forced_connections.present? &&
+      forced_connections.all? { |conn| conn[:match].present? && conn[:connection].present? }
   end
 
   ##
@@ -230,6 +229,17 @@ class UserSessionsController < ApplicationController
           @auth0_connections = connections
         elsif connections.present?
           error = "auth0_connections, #{connections}, has been specified incorrectly in the Auth0 configuration."
+
+          Rails.logger.error(error)
+          Airbrake.notify(:error_class => 'UnexpectedInput', :error_message => error)
+        end
+
+        forced_connections = properties.try(:auth0_forced_connections)
+
+        if valid_auth0_forced_connections?(forced_connections)
+          @auth0_forced_connections = forced_connections
+        elsif forced_connections.present?
+          error = "auth0_forced_connections, #{force_connections}, has been specified incorrectly in the Auth0 configuration."
 
           Rails.logger.error(error)
           Airbrake.notify(:error_class => 'UnexpectedInput', :error_message => error)

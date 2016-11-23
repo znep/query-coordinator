@@ -18,10 +18,14 @@ $(function() {
     } else {
       // apply the code and pop the window
       $('.videoPopupModal').
-      find('.videoContainer').
-      html(embedCode).
-      end().
-      jqmShow();
+        find('.videoContainer').
+        html(embedCode).
+        end().
+        jqmShow();
+
+      // focus the modal
+      $('.videoPopupModal').
+        focus();
     }
   };
 

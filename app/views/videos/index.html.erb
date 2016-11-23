@@ -70,7 +70,7 @@
 <textarea id="embedTemplate"><script charset="ISO-8859-1" src="//fast.wistia.com/assets/external/E-v1.js" async></script><div class="wistia_embed wistia_async_%embedid% autoPlay=true playerColor=274066" style="width:640px;height:360px">&nbsp;</div></textarea>
 
 <%- content_for :modals do -%>
-  <%= modal :class => 'videoPopupModal' do %>
+  <%= modal :class => 'videoPopupModal', :tabIndex => 0 do %>
     <div class="videoContainer"></div>
   <%- end -%>
 <%- end -%>

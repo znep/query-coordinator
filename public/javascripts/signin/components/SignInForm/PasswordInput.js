@@ -40,7 +40,7 @@ class PasswordInput extends React.Component {
   }
 
   render() {
-    if (_.isEmpty(this.props.connection)) {
+    if (_.isEmpty(this.props.connectionName)) {
       return this.renderDefault();
     } else {
       return this.renderSsoEnabled();
@@ -50,7 +50,7 @@ class PasswordInput extends React.Component {
 
 PasswordInput.propTypes = {
   onChange: PropTypes.func.isRequired,
-  connection: PropTypes.object
+  connectionName: PropTypes.string
 };
 
 export default cssModules(PasswordInput, styles);

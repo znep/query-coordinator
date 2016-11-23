@@ -144,7 +144,7 @@ GEM
     globalid (0.3.7)
       activesupport (>= 4.1.0)
     hashdiff (0.3.0)
-    hashie (2.1.2)
+    hashie (3.4.6)
     headless (2.3.1)
     httparty (0.14.0)
       multi_xml (>= 0.5.2)
@@ -312,9 +312,9 @@ GEM
       airbrake (>= 4.3.0)
       chroma
       dalli
-      hashie (~> 2.1.2)
+      hashie (>= 2.1.2)
       httparty
-      rails (~> 4.2.6, ~> 4.2)
+      rails (~> 4.2, >= 4.2.6)
       request_store
       sass
     spring (2.0.0)

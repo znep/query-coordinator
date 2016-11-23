@@ -22,7 +22,7 @@ RSpec.describe HealthController, type: :controller do
         'documents'=>{'maxAge'=>30, 'count'=>0},
         'domains'=>{'maxAge'=>300, 'count'=>0},
         'metrics'=>{'maxAge'=>60, 'count'=>0},
-        'thumbnails'=>{'maxAge'=>60, 'count'=>0}
+        'thumbnails'=>{'maxAge'=>120, 'count'=>0}
       }
       expect(result['delayedJobQueues']).to eq(expected)
     end
@@ -58,16 +58,16 @@ RSpec.describe HealthController, type: :controller do
         get :show
       end
 
-      context 'when job age is less than 60 seconds' do
-        let(:job_age) { 59 }
+      context 'when job age is less than 120 seconds' do
+        let(:job_age) { 119 }
 
         it 'does not include new thumbnails job in count' do
           expect(result['delayedJobQueues']['thumbnails']['count']).to eq(0)
         end
       end
 
-      context 'when job age is more than 60 seconds' do
-        let(:job_age) { 61 }
+      context 'when job age is more than 120 seconds' do
+        let(:job_age) { 121 }
 
         it 'includes older thumbnails jobs in count' do
           expect(result['delayedJobQueues']['thumbnails']['count']).to eq(1)

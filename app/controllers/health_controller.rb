@@ -14,7 +14,7 @@ class HealthController < ApplicationController
     queue_status.merge!(get_queue_status(:documents, 30))
     queue_status.merge!(get_queue_status(:domains, 300))
     queue_status.merge!(get_queue_status(:metrics, 60))
-    queue_status.merge!(get_queue_status(:thumbnails, 60))
+    queue_status.merge!(get_queue_status(:thumbnails, 120))
 
     queue_status
   end

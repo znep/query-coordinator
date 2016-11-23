@@ -30,72 +30,72 @@ RSpec.describe 'presentation mode', type: :feature, js: true do
 
   shared_examples 'presentation mode' do
     it 'toggles presentation mode' do
-      presentation_mode = page.all(presentation_mode_selector).first()
+      presentation_mode = page.all(presentation_mode_selector).first
 
       expect_presentation_mode_to_be_off
       expect_presentation_navigation_to_be_off
 
-      presentation_mode.click()
+      presentation_mode.click
 
       expect_presentation_mode_to_be_on
       expect_presentation_navigation_to_be_on
 
-      presentation_mode.click()
+      presentation_mode.click
 
       expect_presentation_mode_to_be_off
       expect_presentation_navigation_to_be_off
     end
 
     it 'opens presentation mode and uses presentation navigation next' do
-      presentation_mode = page.all(presentation_mode_selector).first()
+      presentation_mode = page.all(presentation_mode_selector).first
 
-      presentation_mode.click()
+      presentation_mode.click
 
-      presentation_next = page.all(presentation_nav_next).first()
+      presentation_next = page.all(presentation_nav_next).first
 
       expect_presentation_mode_to_be_on
       expect_presentation_navigation_to_be_on
 
-      currently_showing_block = page.all(valid_showing_block_selector).first()
+      currently_showing_block = page.all(valid_showing_block_selector).first
       estimated_next_showing_block = currently_showing_block['data-page-index'].last.to_i + 1
 
-      presentation_next.click()
+      presentation_next.click
 
-      currently_showing_block = page.all(valid_showing_block_selector).first()['data-page-index'].last.to_i
+      currently_showing_block = page.all(valid_showing_block_selector).first['data-page-index'].last.to_i
 
       expect(currently_showing_block).to equal(estimated_next_showing_block)
     end
 
     it 'opens presentation mode and uses presentation navigation previous' do
-      presentation_mode = page.all(presentation_mode_selector).first()
-      presentation_prev = page.all(presentation_nav_previous, :visible => false).first()
-      presentation_next = page.all(presentation_nav_next, :visible => false).first()
+      presentation_mode = page.all(presentation_mode_selector).first
+      presentation_prev = page.all(presentation_nav_previous, :visible => false).first
+      presentation_next = page.all(presentation_nav_next, :visible => false).first
 
-      presentation_mode.click()
+      presentation_mode.click
 
       expect_presentation_mode_to_be_on
       expect_presentation_navigation_to_be_on
 
-      presentation_next.click()
+      presentation_next.click
 
-      currently_showing_block = page.all(valid_showing_block_selector).first()
+      currently_showing_block = page.all(valid_showing_block_selector).first
       estimated_next_showing_block = currently_showing_block['data-page-index'].last.to_i - 1
 
-      presentation_prev.click()
+      presentation_prev.click
 
-      currently_showing_block = page.all(valid_showing_block_selector).first()['data-page-index'].last.to_i
+      currently_showing_block = page.all(valid_showing_block_selector).first['data-page-index'].last.to_i
 
       expect(currently_showing_block).to equal(estimated_next_showing_block)
     end
 
     it 'opens presentation mode and excludes blacklisted blocks' do
-      presentation_mode = page.all(presentation_mode_selector).first()
-      presentation_mode.click()
+      presentation_mode = page.all(presentation_mode_selector).first
+      presentation_mode.click
 
       blacklisted_elements = page.all(blacklisted_hidden_block_selector, :visible => false)
       expect(blacklisted_elements).not_to be_empty
 
-      presentation_mode.click()
+      presentation_mode.click
 
       blacklisted_elements = page.all(blacklisted_hidden_block_selector, :visible => false)
       expect(blacklisted_elements).to be_empty
@@ -141,7 +141,7 @@ RSpec.describe 'presentation mode', type: :feature, js: true do
 
         it 'redirects to /edit when clicked' do
           expect(page).to have_selector(edit_mode_selector)
-          page.all(edit_mode_selector).first.click()
+          page.all(edit_mode_selector).first.click
 
           expect(page.current_path).to match('/edit')
         end

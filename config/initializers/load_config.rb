@@ -4,8 +4,8 @@ begin
   Storyteller::REVISION_NUMBER = File.read(revision_file).chomp
   Storyteller::BUILD_TIMESTAMP = File.stat(revision_file).mtime.to_i
 rescue
-  Storyteller::REVISION_NUMBER = nil
-  Storyteller::BUILD_TIMESTAMP = nil
+  Storyteller::REVISION_NUMBER = 'deadca1f'
+  Storyteller::BUILD_TIMESTAMP = Time.now.to_i
 end
 
 Rails.application.config.cache_key_prefix = Storyteller::REVISION_NUMBER.to_s[0..7]

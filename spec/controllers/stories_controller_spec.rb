@@ -11,6 +11,14 @@ RSpec.describe StoriesController, type: :controller do
 
     stub_current_domain
 
+    # There is an upcoming refactor for how the API between the gem and the hosting application operates in
+    # that the hosting app will pass in the request for the gem to derive of it's state from as a dependency.
+    # After this refactor, the hosting app can simply pass in the test request to adjust the behavior of the
+    # gem without having to do any stubbing or mocking of internals or requiring the gem to be aware that it's
+    # in test mode.
+    stub_domains_request
+    stub_configurations_request
+
     request.env['HTTPS'] = 'on'
   end
 
@@ -39,7 +47,7 @@ RSpec.describe StoriesController, type: :controller do
 
         it 'redirects to #edit' do
           get :show, uid: 'unpu-blsh', from_collaboration_email: true
-          expect(response).to redirect_to "/s/unpu-blsh/edit"
+          expect(response).to redirect_to '/s/unpu-blsh/edit'
         end
       end
 
@@ -51,7 +59,7 @@ RSpec.describe StoriesController, type: :controller do
 
         it 'redirects to #edit' do
           get :show, uid: 'unpu-blsh', from_collaboration_email: true
-          expect(response).to redirect_to "/s/unpu-blsh/edit"
+          expect(response).to redirect_to '/s/unpu-blsh/edit'
         end
       end
 
@@ -63,7 +71,7 @@ RSpec.describe StoriesController, type: :controller do
 
         it 'redirects to #preview' do
           get :show, uid: 'unpu-blsh', from_collaboration_email: true
-          expect(response).to redirect_to "/s/unpu-blsh/preview"
+          expect(response).to redirect_to '/s/unpu-blsh/preview'
         end
       end
 
@@ -75,7 +83,7 @@ RSpec.describe StoriesController, type: :controller do
 
         it 'redirects to #edit' do
           get :show, uid: 'unpu-blsh', from_collaboration_email: true
-          expect(response).to redirect_to "/s/unpu-blsh"
+          expect(response).to redirect_to '/s/unpu-blsh'
         end
       end
     end

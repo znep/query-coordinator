@@ -15,8 +15,7 @@ Rails.application.configure do
   # We turn on caching in development mode so our custom theme SASS generation
   # is manageable.
   config.action_controller.perform_caching = ENV['DISABLE_CACHE'].to_s !~ /^true$/i
-  config.cache_store = :mem_cache_store, ENV['MEMCACHED_HOST'] || 'localhost', { :namespace => 'storyteller' }
-
+  config.cache_store = :dalli_store, ENV['MEMCACHED_HOST'] || 'localhost', { :namespace => 'storyteller' }
 
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false

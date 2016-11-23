@@ -209,10 +209,8 @@ export default React.createClass({
 
       if (exceedsBrowserWindowHeight) {
         this.optionsRef.style.height = `${Math.max(determinedHeight, optionHeight)}px`;
-        this.picklistRef.picklist.style.height = `${Math.max(determinedHeight, optionHeight)}px`;
       } else if (this.optionsRef.style.height !== 'auto') {
         this.optionsRef.style.height = 'auto';
-        this.picklistRef.picklist.style.height = 'auto';
       }
 
       if (!displayTrueWidthOptions) {

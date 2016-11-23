@@ -76,6 +76,7 @@
   position: fixed;
   z-index: 999;
   border: solid 1px $light-grey-3;
+  overflow-y: auto;
 
   .picklist {
     border: none;

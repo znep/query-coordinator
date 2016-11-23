@@ -7,6 +7,7 @@ module VisualizationCanvasHelper
 
   def render_visualization_canvas_server_config
     server_config = {
+      :domain => CurrentDomain.cname,
       :environment => Rails.env
     }
 

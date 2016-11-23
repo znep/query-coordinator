@@ -10,4 +10,18 @@ class DisplayFormat < Model
   def has_data_lens_metadata?
     data_lens_page_metadata.is_a?(Hash)
   end
+
+  def visualization_canvas_metadata
+    data.fetch(
+      'visualizationCanvasMetadata',
+      default_visualization_canvas_metadata
+    ).with_indifferent_access
+  end
+
+  def default_visualization_canvas_metadata
+    {
+      :version => 1,
+      :vifs => []
+    }
+  end
 end

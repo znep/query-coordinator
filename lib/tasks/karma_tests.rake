@@ -45,6 +45,13 @@ namespace :test do
     File.write(output_filename, "export default #{translations.to_json.html_safe};")
   end
 
+  task :update_visualization_canvas_translations do
+    translations_filename = 'config/locales/en.yml'
+    output_filename = 'karma/visualizationCanvas/mockTranslations.js'
+    translations = YAML.load_file(translations_filename)['en']['visualization_canvas']
+    File.write(output_filename, "export default #{translations.to_json.html_safe};")
+  end
+
   namespace :js do
     def run_karma(dir, args = {})
       watch = args.watch == 'true'
@@ -84,6 +91,10 @@ namespace :test do
       run_karma('datasetManagementUI', args)
     end
 
+    task :visualizationCanvas, [:watch, :browser, :reporter] => 'update_visualization_canvas_translations' do |task, args|
+      run_karma('visualizationCanvas', args)
+    end
+
     task :oldUx, [:watch, :browser, :reporter] do |task, args|
       run_karma('oldUx', args)
     end
@@ -94,7 +105,8 @@ namespace :test do
       'test:update_dataset_landing_page_translations',
       'test:update_import_wizard_translations',
       'test:update_admin_goals_translations',
-      'test:update_dataset_management_ui_translations'
+      'test:update_dataset_management_ui_translations',
+      'test:update_visualization_canvas_translations'
     ]
     task :parallel => parallel_deps do
       cmd = 'node karma/parallelize.js'
@@ -109,7 +121,8 @@ namespace :test do
     'js:importWizard',
     'js:oldUx',
     'js:adminGoals',
-    'js:datasetManagementUI'
+    'js:datasetManagementUI',
+    'js:visualizationCanvas'
   ]
 
 end

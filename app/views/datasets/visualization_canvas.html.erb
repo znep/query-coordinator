@@ -1,6 +1,7 @@
 <% content_for :head do %>
   <title><%= @view.name %> | <%= get_site_title %></title>
 
+  <link rel="stylesheet" href="/stylesheets/socrata-visualizations/socrata-visualizations.css">
   <%= rendered_stylesheet_tag 'visualization-canvas' %>
 <% end %>
 
@@ -14,7 +15,8 @@
   <script id="visualization-canvas-initial-state">
     var initialState = {
       parentView: <%= raw @parent_view.as_visualization_canvas_parent.to_json %>,
-      view: <%= raw @view.as_visualization_canvas.to_json %>
+      view: <%= raw @view.as_visualization_canvas.to_json %>,
+      vifs: <%= raw @view.displayFormat.visualization_canvas_metadata[:vifs] %>
     };
   </script>
 

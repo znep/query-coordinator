@@ -1,0 +1,13 @@
+.visualization-container {
+  height: 500px;
+  display: flex;
+  justify-content: center;
+
+  .add-visualization {
+    align-self: center;
+
+    .socrata-icon-add {
+      padding-right: 4px;
+    }
+  }
+}

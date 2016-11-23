@@ -2005,12 +2005,14 @@ class View < Model
       :category => category,
       :columns => columns.map(&:data),
       :displayType => 'data_lens',
-      :originalViewId => id
+      :originalViewId => id,
+      :displayFormat => {}
     }.with_indifferent_access)
   end
 
   def as_visualization_canvas_parent
     {
+      :id => nbe_view.id, # the authoring workflow only works on NBE datasets
       :name => name,
       :url => Rails.application.routes.url_helpers.view_path(self)
     }

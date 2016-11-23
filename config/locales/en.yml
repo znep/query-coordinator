@@ -2328,8 +2328,8 @@ en:
         sdp_templates_description: Manage and customize the templates used for publishing your data via Socrata Data Players
         site_analytics: Site Analytics
         site_analytics_description: View sitewide statistics for datasets, views, visitors and more
-        site_chrome: Site Appearance
-        site_chrome_description: Configure the appearance of your Socrata site
+        site_appearance: Site Appearance
+        site_appearance_description: Configure the appearance of your Socrata site
         stories: Stories
         stories_description: Edit custom story themes
         users: Users
@@ -2726,7 +2726,7 @@ en:
         requires_published_dataset: Please create a dataset you can publish first.
         template_name_cannot_be_blank: Template name is required.
         too_many_templates: You have created your allotted number of templates. Please delete one or contact support to purchase more.
-      site_chrome:
+      site_appearance:
         activate: Activate
         add_new_link_menu: Add Menu
         add_new_link_row: Add %{section} Link
@@ -2734,6 +2734,7 @@ en:
         cancel: Cancel
         congratulations: Congratulations!
         description: Configure the appearance of your Socrata site.
+        editing: Editing Site Appearance
         get_excited: Get Excited!
         link_menu_label_html: "<b>Menu</b> - <i>You can drag links to reorder them</i>"
         move_link_row: Drag to reorder

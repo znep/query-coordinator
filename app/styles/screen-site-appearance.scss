@@ -13,7 +13,7 @@ $link_color: #2279a6;
   background: white;
 }
 
-.site-chrome {
+.site-appearance {
   .flannel-hidden {
     display: none;
   }
@@ -247,7 +247,7 @@ $link_color: #2279a6;
           font-weight: 400;
           color: $grey;
 
-          &.site-chrome-input-error {
+          &.site-appearance-input-error {
             color: $red-text;
             font-size: 14px;
           }
@@ -274,7 +274,7 @@ $link_color: #2279a6;
           }
           /* ie */
 
-          &.site-chrome-input-error {
+          &.site-appearance-input-error {
             border-color: $red-text;
           }
 
@@ -398,12 +398,12 @@ $link_color: #2279a6;
               font-style: italic;
             }
             /* ie */
-            &.site-chrome-input-error {
+            &.site-appearance-input-error {
               border-color: $red-text;
             }
           }
 
-          label.site-chrome-input-error {
+          label.site-appearance-input-error {
             color: $red-text;
           }
 
@@ -534,7 +534,7 @@ $link_color: #2279a6;
     }
   }
 
-  #site_chrome_activation_flannel {
+  #site_appearance_activation_flannel {
     position: fixed;
     z-index: 1;
     text-align: left;

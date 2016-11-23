@@ -51,7 +51,7 @@ describe ApplicationHelper do
     end
 
     before do
-      allow(SiteChrome).to receive(:find).and_return(site_chrome_find_double)
+      allow(SiteAppearance).to receive(:find).and_return(site_chrome_find_double)
     end
 
     context 'site chrome is activated' do

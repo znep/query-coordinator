@@ -1,11 +1,11 @@
 <% header = @content['header'] %>
 
 <% #TODO: factor these out into a single lookup table %>
-<%= render('site_chrome/tab_content/form_field',
+<%= render('site_appearance/tab_content/form_field',
   :fields => [:header, :logo, :src],
   :locale_string => "#{locale_string}.header_bar_logo") %>
 
-<%= render('site_chrome/tab_content/form_field_pair',
+<%= render('site_appearance/tab_content/form_field_pair',
   :left => {
     :fields => [:header, :styles, :logo_height],
     :locale_string => "#{locale_string}.header_logo_height"
@@ -16,19 +16,19 @@
   },
   :description => t("#{locale_string}.logo_height_logo_width.description")) %>
 
-<%= render('site_chrome/tab_content/form_field',
+<%= render('site_appearance/tab_content/form_field',
   :fields => [:header, :logo, :url],
   :locale_string => "#{locale_string}.header_logo_url") %>
 
-<%= render('site_chrome/tab_content/form_field',
+<%= render('site_appearance/tab_content/form_field',
   :fields => [:header, :logo, :alt],
   :locale_string => "#{locale_string}.header_bar_logo_alt") %>
 
-<%= render('site_chrome/tab_content/form_field',
+<%= render('site_appearance/tab_content/form_field',
   :fields => [:locales, current_locale(suppress_locale = false), :header, :site_name],
   :locale_string => "#{locale_string}.header_display_name") %>
 
-<%= render('site_chrome/tab_content/form_field_pair',
+<%= render('site_appearance/tab_content/form_field_pair',
   :left => {
     :fields => [:header, :styles, :display_name_fg_color],
     :locale_string => "#{locale_string}.header_display_name_color"
@@ -39,7 +39,7 @@
   },
   :description => t("#{locale_string}.display_name_color_display_name_size.description")) %>
 
-<%= render('site_chrome/tab_content/form_field_pair',
+<%= render('site_appearance/tab_content/form_field_pair',
   :left => {
     :fields => [:header, :styles, :bg_color],
     :locale_string => "#{locale_string}.bar_background_color"
@@ -50,7 +50,7 @@
   },
   :description => t("#{locale_string}.bar_background_color_bar_secondary_background_color.description")) %>
 
-<%= render('site_chrome/tab_content/form_field',
+<%= render('site_appearance/tab_content/form_field',
   :fields => [:header, :styles, :fg_color],
   :locale_string => "#{locale_string}.bar_text_link_color") %>
 

@@ -1,10 +1,10 @@
 <% footer = @content['footer'] %>
 
-<%= render('site_chrome/tab_content/form_field',
+<%= render('site_appearance/tab_content/form_field',
   :fields => [:footer, :logo, :src],
   :locale_string => "#{locale_string}.footer_logo") %>
 
-<%= render('site_chrome/tab_content/form_field_pair',
+<%= render('site_appearance/tab_content/form_field_pair',
   :left => {
     :fields => [:footer, :styles, :logo_height],
     :locale_string => "#{locale_string}.footer_logo_height"
@@ -15,19 +15,19 @@
   },
   :description => t("#{locale_string}.logo_height_logo_width.description")) %>
 
-<%= render('site_chrome/tab_content/form_field',
+<%= render('site_appearance/tab_content/form_field',
   :fields => [:footer, :logo, :url],
   :locale_string => "#{locale_string}.footer_logo_url") %>
 
-<%= render('site_chrome/tab_content/form_field',
+<%= render('site_appearance/tab_content/form_field',
   :fields => [:footer, :logo, :alt],
   :locale_string => "#{locale_string}.footer_logo_alt") %>
 
-<%= render('site_chrome/tab_content/form_field',
+<%= render('site_appearance/tab_content/form_field',
   :fields => [:locales, current_locale(suppress_locale = false), :footer, :site_name],
   :locale_string => "#{locale_string}.footer_display_name") %>
 
-<%= render('site_chrome/tab_content/form_field_pair',
+<%= render('site_appearance/tab_content/form_field_pair',
   :left => {
     :fields => [:footer, :styles, :display_name_fg_color],
     :locale_string => "#{locale_string}.footer_display_name_color"
@@ -38,7 +38,7 @@
   },
   :description => t("#{locale_string}.display_name_color_display_name_size.description")) %>
 
-<%= render('site_chrome/tab_content/form_field_pair',
+<%= render('site_appearance/tab_content/form_field_pair',
   :left => {
     :fields => [:footer, :styles, :bg_color],
     :locale_string => "#{locale_string}.footer_background_color"

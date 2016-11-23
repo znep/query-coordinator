@@ -15,7 +15,7 @@ require 'httparty'
 # Since this class is used in service of the administrative interface and its primary purpose is to make
 # changes to the site chrome configuration, we are explicitly not using caching at all.
 
-class SiteChrome
+class SiteAppearance
   include HTTParty
 
   base_uri CORESERVICE_URI.to_s
@@ -40,7 +40,7 @@ class SiteChrome
       all_versions_content.bury('versions', current_version, stage, 'content', new_content_hash)
       all_versions_content.bury('versions', current_version, stage, 'content', 'locales', all_locales)
 
-      create_or_update_property(SiteChrome.core_configuration_property_name, all_versions_content)
+      create_or_update_property(SiteAppearance.core_configuration_property_name, all_versions_content)
     end
   end
 
@@ -56,7 +56,7 @@ class SiteChrome
   def initialize(attributes = nil)
     @cookies = nil # Remember to set you cookies if you want to do any posting/putting!
     clear_errors
-    initial_attributes = SiteChrome.default_values
+    initial_attributes = SiteAppearance.default_values
     initial_attributes.merge!(attributes) if attributes
     assign_attributes(initial_attributes)
   end
@@ -68,21 +68,21 @@ class SiteChrome
         name: 'Site Chrome',
         default: true,
         domainCName: CurrentDomain.cname,
-        type: SiteChrome.core_configuration_type,
+        type: SiteAppearance.core_configuration_type,
         properties: [] # separate db records, must be created later
       }
     end
 
     def create_site_chrome_config(cookies)
       begin
-        site_chrome = SiteChrome.new
+        site_chrome = SiteAppearance.new
         site_chrome.cookies = cookies
         site_chrome.create
       rescue => e
         error_message = "Error creating Site Chrome configuration. Exception: #{e.inspect}"
         site_chrome.errors << error_message if site_chrome.present?
         Rails.logger.error(error_message)
-        Airbrake.notify(:error_class => 'SiteChrome', :error_message => error_message)
+        Airbrake.notify(:error_class => 'SiteAppearance', :error_message => error_message)
       end
       site_chrome
     end
@@ -96,7 +96,7 @@ class SiteChrome
     end
 
     def core_configuration_type
-      'site_chrome' # or SiteChrome.name.underscore
+      'site_chrome' # or SiteAppearance.name.underscore
     end
 
     # I live in properties[] where properties[x]['name'] ==
@@ -116,7 +116,7 @@ class SiteChrome
     def default_site_chrome_config
       SocrataSiteChrome::SiteChrome.default_site_chrome_config.tap do |config|
         config.dig('value', 'versions').select! do |version_number, content|
-          version_number == SiteChrome.latest_version
+          version_number == SiteAppearance.latest_version
         end
       end
     end
@@ -154,7 +154,7 @@ class SiteChrome
   end # end of << self methods
 
   def properties_path
-    "#{SiteChrome.core_configurations_path}/#{id}/properties"
+    "#{SiteAppearance.core_configurations_path}/#{id}/properties"
   end
 
   def clear_errors
@@ -179,9 +179,9 @@ class SiteChrome
   end
 
   def config
-    config_content = property(SiteChrome.core_configuration_property_name)
+    config_content = property(SiteAppearance.core_configuration_property_name)
     config_content.try(:dig, 'value').present? ?
-      config_content : SiteChrome.default_site_chrome_config
+      config_content : SiteAppearance.default_site_chrome_config
   end
 
   def content(published = true)
@@ -193,7 +193,7 @@ class SiteChrome
       config.dig('value', 'current_version') || latest_published_version
     else
       # No existing data, use latest version
-      SiteChrome.latest_version
+      SiteAppearance.latest_version
     end
   end
 
@@ -209,11 +209,11 @@ class SiteChrome
   end
 
   def authorized_request_headers
-    SiteChrome.default_request_headers.merge('Cookie' => @cookies)
+    SiteAppearance.default_request_headers.merge('Cookie' => @cookies)
   end
 
   def create_or_update_property(property_name, property_value)
-    if SiteChrome.site_chrome_property_exists?(property_name)
+    if SiteAppearance.site_chrome_property_exists?(property_name)
       update_property(property_name, property_value)
     else
       create_property(property_name, property_value)
@@ -223,15 +223,15 @@ class SiteChrome
   # Step 1: create a site theme configuration
   def create
     response = begin
-      SiteChrome.post(
-        SiteChrome.core_configurations_path,
+      SiteAppearance.post(
+        SiteAppearance.core_configurations_path,
         headers: authorized_request_headers,
         body: attributes.to_json
       )
     rescue => e
       error_mesage = "Failed to create SiteChrome. Exception: #{e.inspect}"
       Rails.logger.error(error_message)
-      Airbrake.notify(:error_class => 'SiteChrome', :error_message => error_message)
+      Airbrake.notify(:error_class => 'SiteAppearance', :error_message => error_message)
     end
 
     handle_configuration_response(response) if response.present?
@@ -240,7 +240,7 @@ class SiteChrome
   # Step 2: Create a siteChromeConfigVars property
   def create_property(property_name, property_value)
     # Q: createdAt shows up on create but never again?
-    res = SiteChrome.post(
+    res = SiteAppearance.post(
       properties_path,
       headers: authorized_request_headers,
       body: { name: property_name, value: property_value }.to_json
@@ -251,7 +251,7 @@ class SiteChrome
 
   # Step 3: Update the siteChromeConfigVars property as desired
   def update_property(property_name, property_value)
-    res = SiteChrome.put(
+    res = SiteAppearance.put(
       properties_path,
       headers: authorized_request_headers,
       query: { method: :update }, # WARN: Necessary for Core to accept a put
@@ -291,7 +291,7 @@ class SiteChrome
 
     all_versions_content = config.dig('value') || { 'versions' => {} }
     all_versions_content['activation_state'] = new_activation_state
-    create_or_update_property(SiteChrome.core_configuration_property_name, all_versions_content)
+    create_or_update_property(SiteAppearance.core_configuration_property_name, all_versions_content)
   end
 
   # If activation_state exists in the config, we know that it has been set by a user.
@@ -328,7 +328,7 @@ class SiteChrome
   end
 
   def custom_content_activated?
-    property(SiteChrome.custom_content_activation_state_property_name).try(:dig, :value, :custom)
+    property(SiteAppearance.custom_content_activation_state_property_name).try(:dig, :value, :custom)
   end
 
   private

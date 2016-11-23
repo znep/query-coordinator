@@ -1,13 +1,13 @@
 require 'securerandom'
 
-# Helper for SiteChromeController and its views
-module SiteChromeHelper
+# Helper for SiteAppearanceController and its views
+module SiteAppearanceHelper
 
-  def social_share_link(type, site_chrome = @site_chrome)
-    social_shares = site_chrome.content(site_chrome_published_mode?).to_h.dig('general', 'social_shares')
+  def social_share_link(type, site_appearance = @site_appearance)
+    social_shares = site_appearance.content(site_appearance_published_mode?).to_h.dig('general', 'social_shares')
 
     if social_shares
-      if site_chrome_version_is_greater_than_or_equal?('0.3', site_chrome)
+      if site_appearance_version_is_greater_than_or_equal?('0.3', site_appearance)
         social_shares.dig(type, 'url')
       else
         share_type_hash = social_shares.detect { |x| x['type'] == type }
@@ -19,15 +19,15 @@ module SiteChromeHelper
   end
 
   # TODO: replace with `dig` after the Ruby upgrade
-  def fetch_content(array_of_path_elements, site_chrome = @site_chrome)
-    array_of_path_elements.inject(site_chrome.content(site_chrome_published_mode?)) do |acc, element|
+  def fetch_content(array_of_path_elements, site_appearance = @site_appearance)
+    array_of_path_elements.inject(site_appearance.content(site_appearance_published_mode?)) do |acc, element|
       acc[element.to_s] if acc.is_a?(Hash) # do not throw on strings or arrays
     end
   end
 
   # Forms will default to "1" and "0" but manual configurations could vary
-  def fetch_boolean(array_of_path_elements, default_to_true = false, site_chrome = @site_chrome)
-    content = fetch_content(array_of_path_elements, site_chrome)
+  def fetch_boolean(array_of_path_elements, default_to_true = false, site_appearance = @site_appearance)
+    content = fetch_content(array_of_path_elements, site_appearance)
     ['1', 'true', 1, true].include?(content) || (content.nil? && default_to_true)
   end
 
@@ -77,14 +77,14 @@ module SiteChromeHelper
       #   :span,
       #   nil,
       #   :class => 'icon-move-vertical move-link-row',
-      #   :title => t('screens.admin.site_chrome.move_link_row')
+      #   :title => t('screens.admin.site_appearance.move_link_row')
       # ) <<
 
       # Temporary img until we get the icon font in socrata-components
       image_tag(
         'admin/site_appearance/icon_move_vertical.svg',
         :class => 'move-link-row',
-        :title => t('screens.admin.site_chrome.move_link_row')
+        :title => t('screens.admin.site_appearance.move_link_row')
       ) <<
 
       text_field_tag(
@@ -97,7 +97,7 @@ module SiteChromeHelper
         :span,
         nil,
         :class => 'icon-close-2 remove-link-row',
-        :title => t('screens.admin.site_chrome.remove_link_row')
+        :title => t('screens.admin.site_appearance.remove_link_row')
       )
     end
   end
@@ -121,7 +121,7 @@ module SiteChromeHelper
     )
 
     content_tag(:div, :class => "link-menu#{' default' if options[:default]}") do
-      label_tag(nil, t('screens.admin.site_chrome.link_menu_label_html'), :class => 'link-menu-header') <<
+      label_tag(nil, t('screens.admin.site_appearance.link_menu_label_html'), :class => 'link-menu-header') <<
       hidden_field_tag(key_path, menu_links['key'] || '', :class => 'hidden-label-input') <<
       text_field_tag(
         translated_label_path,
@@ -133,7 +133,7 @@ module SiteChromeHelper
         :span,
         nil,
         :class => 'icon-close-2 remove-link-menu',
-        :title => t('screens.admin.site_chrome.remove_link_menu')
+        :title => t('screens.admin.site_appearance.remove_link_menu')
       ) <<
       child_link_row_divs(menu_links['links'], {
         :content_key => options[:content_key],
@@ -145,7 +145,7 @@ module SiteChromeHelper
         :type => 'button'
       ) do
         content_tag(:span, ' ', :class => 'icon-add') <<
-        t('screens.admin.site_chrome.add_new_link_row', section: options[:content_key].capitalize)
+        t('screens.admin.site_appearance.add_new_link_row', section: options[:content_key].capitalize)
       end
     end
   end
@@ -187,8 +187,8 @@ module SiteChromeHelper
     content_tag(:div, nil, :class => 'section-separator')
   end
 
-  def site_chrome_version_is_greater_than_or_equal?(version, site_chrome = @site_chrome)
-    Gem::Version.new(site_chrome.current_version) >= Gem::Version.new(version)
+  def site_appearance_version_is_greater_than_or_equal?(version, site_appearance = @site_appearance)
+    Gem::Version.new(site_appearance.current_version) >= Gem::Version.new(version)
   end
 
   def signin_signout_checkbox(field, locale_string, options = {})
@@ -213,38 +213,38 @@ module SiteChromeHelper
         link_to('#', :class => 'confirm-reload') do
           content_tag(
             :button,
-            t('screens.admin.site_chrome.cancel'),
-            :id => 'site_chrome_cancel')
+            t('screens.admin.site_appearance.cancel'),
+            :id => 'site_appearance_cancel')
         end,
         link_to('#') do
-          content_tag(:button, :id => 'site_chrome_preview') do
+          content_tag(:button, :id => 'site_appearance_preview') do
             [
-              t('screens.admin.site_chrome.preview'),
+              t('screens.admin.site_appearance.preview'),
               content_tag(:span, nil, :class => 'icon-preview')
             ].join(' ').html_safe
           end
         end,
         content_tag(
           :button,
-          t('screens.admin.site_chrome.update'),
+          t('screens.admin.site_appearance.update'),
           :class => 'primary',
-          :id => 'site_chrome_save'
+          :id => 'site_appearance_save'
         )
       ])
     end
   end
 
-  def site_chrome_form_field(section, fields, locale_string)
+  def site_appearance_form_field(section, fields, locale_string)
     render(
-      'site_chrome/tab_content/form_field',
+      'site_appearance/tab_content/form_field',
       :fields => Array[*fields].unshift(section),
       :locale_string => locale_string
     )
   end
 
-  def site_chrome_dropdown_field(section, fields, dropdown_options, locale_string)
+  def site_appearance_dropdown_field(section, fields, dropdown_options, locale_string)
     render(
-      'site_chrome/tab_content/dropdown_field',
+      'site_appearance/tab_content/dropdown_field',
       :fields => Array[*fields].unshift(section),
       :options => dropdown_option_tags(dropdown_options),
       :locale_string => locale_string
@@ -268,11 +268,11 @@ module SiteChromeHelper
   end
 
   # Should return true if the site chrome has never been activated, or if enabled for entire site
-  def site_chrome_on_entire_site_or_default_state(site_chrome = @site_chrome)
-    !site_chrome.activated? || site_chrome.on_entire_site?
+  def site_appearance_on_entire_site_or_default_state(site_appearance = @site_appearance)
+    !site_appearance.activated? || site_appearance.on_entire_site?
   end
 
-  def site_chrome_radio_button(name, value, title, selected: false, disabled: false)
+  def site_appearance_radio_button(name, value, title, selected: false, disabled: false)
     content_tag('div', :class => 'radiobutton horizontal') do
       radio_button_tag(name, value, selected, :disabled => disabled) <<
       label_tag([name, sanitize_to_id(value)].join('_'), :class => disabled ? 'disabled' : nil) do
@@ -283,10 +283,10 @@ module SiteChromeHelper
 
   def activate_button_options
     {
-      :id => 'site_chrome_activate',
+      :id => 'site_appearance_activate',
       :class => 'primary'
     }.merge(
-      @site_chrome.reverted? ? {} : { :'data-flannel' => 'site_chrome_activation_flannel' }
+      @site_appearance.reverted? ? {} : { :'data-flannel' => 'site_appearance_activation_flannel' }
     )
   end
 

@@ -1,10 +1,10 @@
 # Encoding: utf-8
 require 'rails_helper'
 
-describe SiteChromeHelper do
+describe SiteAppearanceHelper do
   let(:site_chrome) do
     json = JSON.parse(File.read('spec/fixtures/site_chrome.json'))
-    sc = SiteChrome.new(json) # properties will get ignored an initialization
+    sc = SiteAppearance.new(json) # properties will get ignored an initialization
     sc.properties = json['properties'] # have to add then separately
     sc
   end
@@ -13,7 +13,7 @@ describe SiteChromeHelper do
     Class.new do
       attr_accessor :output_buffer
       include ApplicationHelper
-      include SiteChromeHelper
+      include SiteAppearanceHelper
       include ActionView::Helpers
     end
   end
@@ -22,7 +22,7 @@ describe SiteChromeHelper do
 
   describe '#social_share_link' do
     before(:each) do
-      allow(subject).to receive(:site_chrome_published_mode?).and_return(true)
+      allow(subject).to receive(:site_appearance_published_mode?).and_return(true)
     end
 
     it 'should return nil if social shares do not exist' do
@@ -37,7 +37,7 @@ describe SiteChromeHelper do
 
   describe 'fetch_content' do
     before(:each) do
-      allow(subject).to receive(:site_chrome_published_mode?).and_return(true)
+      allow(subject).to receive(:site_appearance_published_mode?).and_return(true)
     end
 
     it 'should not raise on empty content' do
@@ -89,7 +89,7 @@ describe SiteChromeHelper do
 
   describe '#fetch_boolean' do
     before(:each) do
-      allow(subject).to receive(:site_chrome_published_mode?).and_return(true)
+      allow(subject).to receive(:site_appearance_published_mode?).and_return(true)
     end
 
     it 'returns false if the content is nil' do
@@ -315,9 +315,9 @@ describe SiteChromeHelper do
       result = Nokogiri::HTML.parse(subject.page_controls)
       expect(result.search('.page-controls').length).to eq(1)
       expect(result.search('button').length).to eq(3)
-      expect(result.search('#site_chrome_save').length).to eq(1)
-      expect(result.search('#site_chrome_cancel').length).to eq(1)
-      expect(result.search('#site_chrome_preview').length).to eq(1)
+      expect(result.search('#site_appearance_save').length).to eq(1)
+      expect(result.search('#site_appearance_cancel').length).to eq(1)
+      expect(result.search('#site_appearance_preview').length).to eq(1)
     end
   end
 
@@ -338,25 +338,25 @@ describe SiteChromeHelper do
     end
   end
 
-  describe 'site_chrome_on_entire_site_or_default_state' do
+  describe 'site_appearance_on_entire_site_or_default_state' do
     it 'should be false when activated but not on for the entire site' do
-      site_chrome_double = double(SiteChrome)
+      site_chrome_double = double(SiteAppearance)
       expect(site_chrome_double).to receive(:activated?).and_return(true)
       expect(site_chrome_double).to receive(:on_entire_site?).and_return(false)
-      expect(subject.site_chrome_on_entire_site_or_default_state(site_chrome_double)).to eq(false)
+      expect(subject.site_appearance_on_entire_site_or_default_state(site_chrome_double)).to eq(false)
     end
 
     it 'should be true when site chrome has not been activated' do
-      site_chrome_double = double(SiteChrome)
+      site_chrome_double = double(SiteAppearance)
       expect(site_chrome_double).to receive(:activated?).and_return(false)
-      expect(subject.site_chrome_on_entire_site_or_default_state(site_chrome_double)).to eq(true)
+      expect(subject.site_appearance_on_entire_site_or_default_state(site_chrome_double)).to eq(true)
     end
 
     it 'should be true when site chrome has on for the entire site' do
-      site_chrome_double = double(SiteChrome)
+      site_chrome_double = double(SiteAppearance)
       expect(site_chrome_double).to receive(:activated?).and_return(true)
       expect(site_chrome_double).to receive(:on_entire_site?).and_return(true)
-      expect(subject.site_chrome_on_entire_site_or_default_state(site_chrome_double)).to eq(true)
+      expect(subject.site_appearance_on_entire_site_or_default_state(site_chrome_double)).to eq(true)
     end
   end
 

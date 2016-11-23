@@ -360,8 +360,8 @@ module.exports = _.defaultsDeep({
       './screens/admin-customizer.js',
       './screens/admin-sdp-template.js'
     ],
-    'admin-site-chrome': [
-      './screens/site-chrome.js'
+    'admin-site-appearance': [
+      './screens/site-appearance.js'
     ],
     'admin-story': [
       './plugins/colorpicker.js',

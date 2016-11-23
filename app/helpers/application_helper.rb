@@ -84,26 +84,26 @@ module ApplicationHelper
   # Note that the order of these checks is important. For example, if the user is on the homepage,
   # we enable site chrome only if the homepage flag is true (regardless of the other flags).
   def enable_site_chrome?
-    site_chrome = SiteChrome.find
-    return false unless site_chrome
-    return true if site_chrome_preview_mode?
-    return true if site_chrome.custom_content_activated? # EN-12113
+    site_appearance = SiteAppearance.find
+    return false unless site_appearance
+    return true if site_appearance_preview_mode?
+    return true if site_appearance.custom_content_activated? # EN-12113
 
     if on_homepage
-      site_chrome.is_activated_on?('homepage')
+      site_appearance.is_activated_on?('homepage')
     elsif using_dataslate
-      site_chrome.enabled_on_dataslate?(defined?(request) && request)
+      site_appearance.enabled_on_dataslate?(defined?(request) && request)
     else
-      site_chrome.is_activated_on?('open_data')
+      site_appearance.is_activated_on?('open_data')
     end
   end
 
-  def site_chrome_preview_mode?
+  def site_appearance_preview_mode?
     !!cookies[:socrata_site_chrome_preview]
   end
 
-  def site_chrome_published_mode?
-    !site_chrome_preview_mode?
+  def site_appearance_published_mode?
+    !site_appearance_preview_mode?
   end
 
   def on_view_page?(view = @view)
@@ -116,7 +116,7 @@ module ApplicationHelper
 
 # DATASET LANDING PAGE
   def dataset_landing_page_enabled?
-    !!SiteChrome.find.try(:dslp_enabled?) || site_chrome_preview_mode?
+    !!SiteAppearance.find.try(:dslp_enabled?) || site_appearance_preview_mode?
   end
 
   def visualization_canvas_enabled?

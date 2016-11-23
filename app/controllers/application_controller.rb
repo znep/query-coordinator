@@ -31,9 +31,10 @@ class ApplicationController < ActionController::Base
   #   => {"id"=>"tugg-ikce", "createdAt"=>1425577015, "displayName"=>"cspurgeon", etc }
   #   current_user  # with invalid cookies
   #   => nil
-  def current_user
+  def current_user_json
     @current_user ||= env[SocrataSession::SOCRATA_SESSION_ENV_KEY].authenticate(env)
   end
+  alias :current_user :current_user_json
 
   # Returns the current domain, or nil
   def current_domain

@@ -312,7 +312,7 @@ GEM
       simplecov (~> 0.8)
     simplecov-html (0.10.0)
     slop (3.6.0)
-    socrata_site_chrome (1.2.0)
+    socrata_site_chrome (2.0.5)
       airbrake (>= 4.3.0)
       chroma
       dalli
@@ -417,7 +417,7 @@ DEPENDENCIES
   signaller-ruby
   simplecov
   simplecov-cobertura
-  socrata_site_chrome (= 1.2.0)
+  socrata_site_chrome (= 2.0.5)
   spring
   stackprof
   stomp (= 1.4.3)

@@ -19,8 +19,9 @@ class SignInForm extends React.Component {
 
       password: '',
 
-      // the connection is found based off of the email domain
-      connection: undefined,
+      // the connection name is found based off of the email
+      // either by the email domain or the "forced connections" config option
+      connectionName: undefined,
 
       // any errors that happened during login
       error: undefined,
@@ -43,10 +44,23 @@ class SignInForm extends React.Component {
    */
   onEmailChange(email) {
     if (this.isValidEmail(email)) {
-      const connection = this.findConnection(email, this.props.auth0Connections);
-      this.setState({ email, connection });
+      const { auth0Connections, options } = this.props;
+
+      const connection = this.findConnection(email, auth0Connections);
+      const forcedConnection =
+        this.findForcedConnection(email, options.forcedConnections);
+
+      // forced connection takes precedence
+      let connectionName = undefined;
+      if (!_.isUndefined(forcedConnection)) {
+        connectionName = forcedConnection.connection;
+      } else if (!_.isUndefined(connection)) {
+        connectionName = connection.name;
+      }
+
+      this.setState({ email, connectionName });
     } else {
-      this.setState({ email: undefined, connection: undefined });
+      this.setState({ email: undefined, connectionName: undefined });
     }
   }
 
@@ -64,6 +78,17 @@ class SignInForm extends React.Component {
     }
 
     this.setState({ error });
+  }
+
+  /**
+   * This finds the first connection in the list of forced connections that matches the given email.
+   * If no such forced connection is found, undefined is returned instead.
+   */
+  findForcedConnection(email, forcedConnections) {
+    return _.find(
+      forcedConnections,
+      (forcedConnection) => new RegExp(`^${forcedConnection.match}$`).test(email)
+    );
   }
 
   /**
@@ -123,7 +148,7 @@ class SignInForm extends React.Component {
 
   render() {
     const { options, doAuth0Login } = this.props;
-    const { connection, email, password } = this.state;
+    const { connectionName, email, password } = this.state;
 
     return (
       <form
@@ -141,7 +166,9 @@ class SignInForm extends React.Component {
           value={options.authenticityToken} />
 
         <EmailInput onChange={this.onEmailChange} />
-        <PasswordInput onChange={this.onPasswordChange} connection={connection} />
+        <PasswordInput
+          onChange={this.onPasswordChange}
+          connectionName={connectionName} />
 
         {this.renderRememberMe()}
 
@@ -153,7 +180,7 @@ class SignInForm extends React.Component {
 
         <SignInButton
           form={this.formDomNode}
-          connection={connection}
+          connectionName={connectionName}
           doAuth0Login={doAuth0Login}
           email={email}
           password={password}

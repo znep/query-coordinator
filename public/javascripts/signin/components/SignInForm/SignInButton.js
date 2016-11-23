@@ -17,7 +17,7 @@ class SignInButton extends React.Component {
       doAuth0Login,
       onLoginError,
       onLoginStart,
-      connection,
+      connectionName,
       email,
       password,
       form
@@ -26,12 +26,12 @@ class SignInButton extends React.Component {
     // blank out error
     onLoginError(undefined);
 
-    if (connection !== undefined) {
+    if (!_.isEmpty(connectionName)) {
       onLoginStart();
 
       // SSO connection
       doAuth0Login({
-        connection: connection.name
+        connection: connectionName
       });
     } else if (!_.isEmpty(email) && !_.isEmpty(password)) {
       onLoginStart();
@@ -52,7 +52,7 @@ SignInButton.propTypes = {
   form: PropTypes.object,
   onLoginError: PropTypes.func.isRequired,
   onLoginStart: PropTypes.func.isRequired,
-  connection: PropTypes.object,
+  connectionName: PropTypes.string,
   doAuth0Login: PropTypes.func.isRequired,
   email: PropTypes.string,
   password: PropTypes.string

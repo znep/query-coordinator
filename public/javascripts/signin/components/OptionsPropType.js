@@ -29,20 +29,31 @@ export default
     socrataEmailsBypassAuth0: PropTypes.bool,
 
     // These connections are shown as buttons to login through specific auth0 federated connections
-    connections: PropTypes.array({
-      name: PropTypes.string,
-      buttonText: PropTypes.string,
-      connection: PropTypes.string.isRequired,
-      image: PropTypes.string // no image is supported
-    }),
+    connections: PropTypes.arrayOf(
+      PropTypes.shape({
+        name: PropTypes.string,
+        buttonText: PropTypes.string,
+        connection: PropTypes.string.isRequired,
+        image: PropTypes.string // no image is supported
+      })
+    ),
+
+    forcedConnections: PropTypes.arrayOf(
+      PropTypes.shape({
+        match: PropTypes.string.isRequired,
+        connection: PropTypes.string.isRequired
+      })
+    ),
 
     // The message that displays above the "connections"
     // Note that if there are no connections, no message is shown
     message: PropTypes.string,
 
     // Any flashes to display
-    flashes: PropTypes.array({
-      level: PropTypes.oneOf(['warning', 'notice', 'info', 'error']).isRequired,
-      message: PropTypes.string.isRequired
-    })
+    flashes: PropTypes.arrayOf(
+      PropTypes.shape({
+        level: PropTypes.oneOf(['warning', 'notice', 'info', 'error']).isRequired,
+        message: PropTypes.string.isRequired
+      })
+    )
   }).isRequired;

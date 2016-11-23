@@ -4,6 +4,7 @@
 config/locales/*.yml
 !config/locales/en.yml
 
+Gemfile.lock
 log/*.log
 npm-debug.log
 pkg/

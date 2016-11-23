@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.files = Dir['{app,config,db,public,lib}/**/*', 'lib/*.rb', 'MIT-LICENSE', 'Rakefile', 'README.rdoc']
   s.test_files = Dir['test/**/*']
 
-  s.add_dependency 'airbrake', '~> 4.3.0'
+  s.add_dependency 'airbrake', '>= 4.3.0'
   s.add_dependency 'chroma'
   s.add_dependency 'dalli'
   s.add_dependency 'hashie', '~> 2.1.2'

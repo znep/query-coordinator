@@ -2,7 +2,7 @@ import { PublishNotice } from 'components/PublishNotice';
 import { Simulate } from 'react-addons-test-utils';
 import mockView from 'data/mockView';
 
-describe('components/PublishNotice', function() {
+describe('components/PublishNotice', () => {
   function getProps(props) {
     return _.defaultsDeep({}, props, {
       view: _.merge(mockView, {
@@ -13,12 +13,20 @@ describe('components/PublishNotice', function() {
     });
   }
 
-  it('renders an element', function() {
+  beforeEach(() => {
+    window.serverConfig.currentUser = { roleName: 'publisher' };
+  });
+
+  afterEach(() => {
+    window.serverConfig.currentUser = null;
+  });
+
+  it('renders an element', () => {
     var element = renderComponent(PublishNotice, getProps());
     expect(element).to.exist;
   });
 
-  it('does not render if the dataset is not unpublished', function() {
+  it('does not render if the dataset is not unpublished', () => {
     var element = renderComponent(PublishNotice, getProps({
       view: {
         isUnpublished: false
@@ -28,7 +36,7 @@ describe('components/PublishNotice', function() {
     expect(element).to.not.exist;
   });
 
-  it('renders an error if the publish operation failed', function() {
+  it('renders an error if the publish operation failed', () => {
     var element = renderComponent(PublishNotice, getProps({
       view: {
         hasPublishingError: true
@@ -39,7 +47,7 @@ describe('components/PublishNotice', function() {
     expect(element.querySelector('.alert.publish-error')).to.exist;
   });
 
-  it('renders a button by default', function() {
+  it('renders a button by default', () => {
     var element = renderComponent(PublishNotice, getProps());
     var button = element.querySelector('button');
     expect(button).to.exist;
@@ -48,7 +56,13 @@ describe('components/PublishNotice', function() {
     expect(button.classList.contains('btn-success')).to.equal(false);
   });
 
-  it('renders a button with a spinner if the view is being published', function() {
+  it('does not render a button if the user is unroled', () => {
+    window.serverConfig.currentUser = null;
+    const element = renderComponent(PublishNotice, getProps());
+    expect(element.querySelector('button')).to.not.exist;
+  });
+
+  it('renders a button with a spinner if the view is being published', () => {
     var element = renderComponent(PublishNotice, getProps({
       view: {
         isPublishing: true
@@ -59,7 +73,7 @@ describe('components/PublishNotice', function() {
     expect(button.querySelector('.spinner-default')).to.exist;
   });
 
-  it('renders a success button if the publishing succeeded', function() {
+  it('renders a success button if the publishing succeeded', () => {
     var element = renderComponent(PublishNotice, getProps({
       view: {
         hasPublishingSuccess: true
@@ -70,7 +84,7 @@ describe('components/PublishNotice', function() {
     expect(button.classList.contains('btn-success')).to.equal(true);
   });
 
-  it('calls the onClickPublish prop when the publish button is clicked', function() {
+  it('calls the onClickPublish prop when the publish button is clicked', () => {
     var spy = sinon.spy();
     var element = renderComponent(PublishNotice, getProps({
       onClickPublish: spy
@@ -81,7 +95,7 @@ describe('components/PublishNotice', function() {
     expect(spy.callCount).to.equal(1);
   });
 
-  it('does not call the onClickPublish prop when the publish button is clicked if the view is publishing', function() {
+  it('does not call the onClickPublish prop when the publish button is clicked if the view is publishing', () => {
     var spy = sinon.spy();
     var element = renderComponent(PublishNotice, getProps({
       view: {
@@ -95,7 +109,7 @@ describe('components/PublishNotice', function() {
     expect(spy.callCount).to.equal(0);
   });
 
-  it('calls the onDismissError prop when the dismiss icon is clicked', function() {
+  it('calls the onDismissError prop when the dismiss icon is clicked', () => {
     var spy = sinon.spy();
     var element = renderComponent(PublishNotice, getProps({
       onDismissError: spy,
@@ -109,7 +123,7 @@ describe('components/PublishNotice', function() {
     expect(spy.callCount).to.equal(1);
   });
 
-  it('disables the button and includes a flyout if the dataset is not able to be published', function() {
+  it('disables the button and includes a flyout if the dataset is not able to be published', () => {
     var spy = sinon.spy();
     var element = renderComponent(PublishNotice, getProps({
       onClickPublish: spy,

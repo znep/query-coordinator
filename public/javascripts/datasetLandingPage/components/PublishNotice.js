@@ -5,6 +5,7 @@ import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { handleKeyPress } from '../lib/a11yHelpers';
+import { isUserAdminOrPublisher } from '../lib/user';
 import { publishView, clearViewPublishError } from '../actions/view';
 
 export const PublishNotice = React.createClass({
@@ -70,15 +71,16 @@ export const PublishNotice = React.createClass({
       buttonContents = <div className="spinner-default spinner-btn-primary" />;
     }
 
+    const button = isUserAdminOrPublisher() ?
+      <button {...buttonProps}>{buttonContents}</button> :
+      null;
+
     return (
       <div className="alert warning alert-full-width-top publish-notice">
         <div className="alert-container">
           <span className="message" dangerouslySetInnerHTML={{ __html: message }} />
 
-          <button {...buttonProps}>
-            {buttonContents}
-          </button>
-
+          {button}
           {flyout}
         </div>
       </div>

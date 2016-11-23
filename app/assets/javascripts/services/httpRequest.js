@@ -20,17 +20,19 @@ export default function httpRequest(method, url, options) {
       // jQuery's XHR properties.
       function handleError(jqXHR) {
 
-        reject(
-          new Error(
-            StorytellerUtils.format(
-              'Request "{0} {1}" failed ({2}) {3}',
-              method.toUpperCase(),
-              url,
-              jqXHR.status,
-              JSON.stringify(jqXHR.responseText) || '<No response>'
-            )
+        const responseError = new Error(
+          StorytellerUtils.format(
+            'Request "{0} {1}" failed ({2}) {3}',
+            method.toUpperCase(),
+            url,
+            jqXHR.status,
+            JSON.stringify(jqXHR.responseText) || '<No response>'
           )
         );
+        responseError.statusCode = jqXHR.status;
+        responseError.response = jqXHR.responseText;
+
+        reject(responseError);
       }
 
       // Reject unsupported HTTP verbs.

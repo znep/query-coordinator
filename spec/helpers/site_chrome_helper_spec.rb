@@ -12,6 +12,7 @@ describe SiteChromeHelper do
   let(:dummy_class) do
     Class.new do
       attr_accessor :output_buffer
+      include ApplicationHelper
       include SiteChromeHelper
       include ActionView::Helpers
     end
@@ -21,7 +22,7 @@ describe SiteChromeHelper do
 
   describe '#social_share_link' do
     before(:each) do
-      allow(subject).to receive(:content_at_stage).and_return(:published_content)
+      allow(subject).to receive(:site_chrome_published_mode?).and_return(true)
     end
 
     it 'should return nil if social shares do not exist' do
@@ -36,7 +37,7 @@ describe SiteChromeHelper do
 
   describe 'fetch_content' do
     before(:each) do
-      allow(subject).to receive(:content_at_stage).and_return(:published_content)
+      allow(subject).to receive(:site_chrome_published_mode?).and_return(true)
     end
 
     it 'should not raise on empty content' do
@@ -46,40 +47,40 @@ describe SiteChromeHelper do
     end
 
     it 'should find something one deep' do
-      site_chrome.published['content']['pants'] = 'bloomers'
+      site_chrome.content['pants'] = 'bloomers'
       path = [:pants]
       assert_equal 'bloomers', subject.fetch_content(path, site_chrome)
     end
 
     it 'should be able to find things are depth three' do
-      site_chrome.published['content']['here'] = { 'there' => { 'everywhere' => { 'key' => 'value' } } }
+      site_chrome.content['here'] = { 'there' => { 'everywhere' => { 'key' => 'value' } } }
       path = [:here, :there, :everywhere]
       expect(subject.fetch_content(path, site_chrome)).to eq('key' => 'value')
     end
 
     it 'should be nil and not raise if nothing is found at depth three' do
-      site_chrome.published['content']['here'] = { 'there' => { 'somewhere' => { 'some_key' => 'some_value' } } }
+      site_chrome.content['here'] = { 'there' => { 'somewhere' => { 'some_key' => 'some_value' } } }
       path = [:here, :there, :everywhere]
       expect { subject.fetch_content(path, site_chrome) }.not_to raise_error
       expect(subject.fetch_content(path, site_chrome)).to be_nil
     end
 
     it 'should be nil and not raise if nothing is found at depth four' do
-      site_chrome.published['content']['here'] = { 'there' => { 'somewhere' => { 'some_key' => 'some_value' } } }
+      site_chrome.content['here'] = { 'there' => { 'somewhere' => { 'some_key' => 'some_value' } } }
       path = [:here, :there, :everywhere, :nowhere]
       expect { subject.fetch_content(path, site_chrome) }.not_to raise_error
       expect(subject.fetch_content(path, site_chrome)).to be_nil
     end
 
     it 'should not throw when colliding with arrays' do
-      site_chrome.published['content']['here'] = ["array", "of", "strings"]
+      site_chrome.content['here'] = ["array", "of", "strings"]
       path = [:here, :there, :everywhere, :nowhere]
       expect { subject.fetch_content(path, site_chrome) }.not_to raise_error
       expect(subject.fetch_content(path, site_chrome)).to be_nil
     end
 
     it 'should not throw when colliding with a string' do
-      site_chrome.published['content']['here'] = "i am a length stringvalue"
+      site_chrome.content['here'] = "i am a length stringvalue"
       path = [:here, :there, :everywhere, :nowhere]
       expect { subject.fetch_content(path, site_chrome) }.not_to raise_error
       expect(subject.fetch_content(path, site_chrome)).to be_nil
@@ -88,7 +89,7 @@ describe SiteChromeHelper do
 
   describe '#fetch_boolean' do
     before(:each) do
-      allow(subject).to receive(:content_at_stage).and_return(:published_content)
+      allow(subject).to receive(:site_chrome_published_mode?).and_return(true)
     end
 
     it 'returns false if the content is nil' do

@@ -152,7 +152,7 @@ describe SiteChrome do
         fancy_new_property = { 'evenNewerPropertyName' => { 'first key' => 'first value' } }
         site_chrome.update_published_content(fancy_new_property)
 
-        expect(site_chrome.published['content']).to include(fancy_new_property)
+        expect(site_chrome.content).to include(fancy_new_property)
 
         after = site_chrome.attributes
         expect(after).to eq(before)

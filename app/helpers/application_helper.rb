@@ -86,7 +86,7 @@ module ApplicationHelper
   def enable_site_chrome?
     site_chrome = SiteChrome.find
     return false unless site_chrome
-    return true if in_preview_mode?
+    return true if site_chrome_preview_mode?
     return true if site_chrome.custom_content_activated? # EN-12113
 
     if on_homepage
@@ -98,8 +98,12 @@ module ApplicationHelper
     end
   end
 
-  def in_preview_mode?
+  def site_chrome_preview_mode?
     !!cookies[:socrata_site_chrome_preview]
+  end
+
+  def site_chrome_published_mode?
+    !site_chrome_preview_mode?
   end
 
   def on_view_page?(view = @view)
@@ -112,7 +116,7 @@ module ApplicationHelper
 
 # DATASET LANDING PAGE
   def dataset_landing_page_enabled?
-    !!SiteChrome.find.try(:dslp_enabled?) || !!cookies[:socrata_site_chrome_preview]
+    !!SiteChrome.find.try(:dslp_enabled?) || site_chrome_preview_mode?
   end
 
   def visualization_canvas_enabled?

@@ -63,13 +63,17 @@ class SiteChromeController < ApplicationController
 
   # Use existing Site Chrome config or instantiate a new one with the default content
   def fetch_site_chrome_content
-    @site_chrome = SiteChrome.find || SiteChrome.new
+    @site_chrome = existing_site_chrome_has_content? ? SiteChrome.find : SiteChrome.new
 
     # Ensure site_chrome has content necessary for rendering plain views
-    @content = @site_chrome.send(in_preview_mode? ? :draft_content : :published_content) || {}
+    @content = @site_chrome.content(site_chrome_published_mode?) || {}
     %w(header footer general locales).each do |key|
       @content[key] ||= {}
     end
   end
 
+  # EN-12237: Check that a Site Chrome config exists, and it is populated with valid Site Chrome data
+  def existing_site_chrome_has_content?
+    SiteChrome.find.try(:content, site_chrome_published_mode?).present?
+  end
 end

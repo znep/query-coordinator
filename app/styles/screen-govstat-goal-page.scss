@@ -286,7 +286,7 @@
             letter-spacing: -2px;
           }
           .unit {
-            color: #999;
+            color: #5e5e5e;
             font-size: 2.5em;
             letter-spacing: -1px;
           }
@@ -310,12 +310,12 @@
         .metricValue {
           margin-left: 2.5em;
           .value {
-            color: #999;
+            color: #5e5e5e;
             font-size: 2.5em;
             letter-spacing: -1px;
           }
           .unit {
-            color: #bbb;
+            color: #5e5e5e;
             font-size: 1.4em;
             letter-spacing: -1px;
             margin-left: 0.3em;
@@ -641,7 +641,7 @@ $chartHeight: 210px;
       @include transition(2s, opacity);
       z-index: 0;
       .bubble {
-        color: #797979;
+        color: #767676;
         font-size: 1.2em;
         margin-right: 1em;
         margin-top: -0.8em;
@@ -682,7 +682,7 @@ $chartHeight: 210px;
       }
     }
     .nowMarker {
-      background-color: #ababab;
+      background-color: #5e5e5e;
       z-index: 2;
       font-size: 1.4em;
       bottom: 4px;
@@ -692,7 +692,7 @@ $chartHeight: 210px;
       margin-left: -2.5em;
       width: 5.6em;
       background-color: transparent;
-      color: #797979;
+      color: #767676;
     }
     .marker {
       @include progress-colors(background-color);

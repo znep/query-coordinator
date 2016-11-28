@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import { getIconClassForDataType, getDocumentationLinkForDataType } from '../lib/dataTypeMetadata';
 import { handleKeyPress } from '../lib/a11yHelpers';
+import Linkify from 'react-linkify';
 
 const SCHEMA_TABLE_COLUMN_COUNT = 7;
 
@@ -58,6 +59,10 @@ export const SchemaPreview = React.createClass({
   },
 
   toggleColumn(event) {
+    if (event.target.tagName === 'A') {
+      return;
+    }
+
     const { onExpandColumn } = this.props;
     const el = ReactDOM.findDOMNode(this);
     const row = event.currentTarget;
@@ -219,7 +224,9 @@ export const SchemaPreview = React.createClass({
 
           <td className="column-description">
             <div className="contents clamped">
-              {column.description}
+              <Linkify properties={{ rel: 'nofollow', target: '_blank' }}>
+                {column.description}
+              </Linkify>
             </div>
           </td>
 

@@ -33,8 +33,11 @@ if [ ! -f ${WORKSPACE}/config/locales/es.yml ]; then
   exit 1
 fi
 
-# Run tests
-bundle exec rake test
+# Run tests (just running rake _should_ run all the tests, but this often fails)
+bundle exec rake test:units
+bundle exec rake test:functionals
+bundle exec rake spec --no-color
+bundle exec rake test:js:parallel
 
 # Remove certain javascript files from public/javascripts (BUT WHY)
 if [ ! ${COMPRESS_ASSETS} = "true" ] ; then

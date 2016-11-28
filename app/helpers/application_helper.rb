@@ -949,6 +949,12 @@ module ApplicationHelper
   def using_cetera?
     return false unless APP_CONFIG.cetera_host.present?
 
+    uri = URI(APP_CONFIG.cetera_host)
+    unless uri.host.present? && uri.scheme.present?
+      Rails.logger.error('APP_CONFIG.cetera_host is incorrectly defined. Missing host and/or scheme')
+      return false
+    end
+
     # Hack to deal with lack of support for cetera_profile_search == true and not yet having a design
     # for the profile embedded catalog that isn't browse2.
     return false if defined?(controller_name) && controller_name == 'profile'
@@ -956,18 +962,11 @@ module ApplicationHelper
     # Hack to deal with consumers of the asset picker (i.e. StoryTeller) needing the old browse view.
     return false if defined?(controller_name) && controller_name == 'browse' && action_name == 'select_dataset'
 
-    uri = URI(APP_CONFIG.cetera_host)
-    unless uri.host.present? && uri.scheme.present?
-      Rails.logger.error('APP_CONFIG.cetera_host is incorrectly defined. Missing host and/or scheme')
-      return false
-    end
-
-    req = request if defined?(request)
-
     # TODO: the admin page needs clytemnestra; only until cetera honors private datasets and other things
-    return false if req.try(:path) =~ /^\/(admin)/
+    return false if defined?(controller_name) && controller_name == 'administration' && action_name != 'home'
 
     # all dataslate pages are free to use cetera, by consideration after the blacklist is applied
+    req = request if defined?(request)
     req ||= Canvas2::Util.request if Canvas2::Util.class_variable_defined?(:@@request)
 
     FeatureFlags.derive(nil, req, nil).cetera_search?

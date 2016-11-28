@@ -13,5 +13,7 @@
         <%= t('header.search') %>
       <% end %>
     </button>
+    <%# EN-12158: Force a sortBy of "relevance" on the query results %>
+    <input type="hidden" name="sortBy" value="relevance" />
   </form>
 </div>

@@ -46,23 +46,35 @@
         border-top-left-radius: 1px;
         border-bottom-left-radius: 1px;
         user-select: none;
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
 
         .icon-chevron-down {
           color: $light-grey-0;
           position: absolute;
           right: 8px;
         }
+
+        &.left + .filter-controls {
+          left: 0;
+        }
+
+        &.right + .filter-controls {
+          right: 0;
+        }
       }
 
       .filter-controls {
         position: absolute;
         top: 100%;
-        right: 0;
         width: 300px;
         margin-top: -1px;
         background: $white;
         border-radius: 1px;
         border: 1px solid $light-grey-3;
+        z-index: 1000;
 
         .filter-control-title {
           margin: 8px;
@@ -96,6 +108,7 @@
     .filter-config-container {
       display: inline-block;
       position: relative;
+      vertical-align: top;
 
       .filter-config-toggle {
         background: $white;
@@ -105,17 +118,25 @@
         cursor: pointer;
         border-top-right-radius: 1px;
         border-bottom-right-radius: 1px;
+
+        &.left + .filter-config {
+          left: 0;
+        }
+
+        &.right + .filter-config {
+          right: 0;
+        }
       }
 
       .filter-config {
         position: absolute;
         top: 100%;
-        right: 0;
         width: 300px;
         margin-top: -1px;
         background: $white;
         border-radius: 1px;
         border: 1px solid $light-grey-3;
+        z-index: 1000;
       }
     }
 

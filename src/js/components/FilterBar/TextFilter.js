@@ -14,25 +14,25 @@ export const TextFilter = React.createClass({
 
   getInitialState() {
     return {
-      isLoading: true,
       value: _.get(this.props.filter, 'parameters.arguments.operand'),
       suggestions: []
     };
   },
 
   componentDidMount() {
-    const { fetchSuggestions, column } = this.props;
-
     this.isMounted = true;
 
-    fetchSuggestions(column, '').then((suggestions) => {
-      if (this.isMounted) {
-        this.setState({
-          suggestions,
-          isLoading: false
-        });
-      }
-    });
+    this.updateSuggestions = _.debounce(() => {
+      const { column } = this.props;
+      const { value } = this.state;
+      this.props.fetchSuggestions(column, _.defaultTo(value, '')).then((suggestions) => {
+        if (this.isMounted) {
+          this.setState({ suggestions });
+        }
+      });
+    }, 350, { leading: true, maxWait: 500 });
+
+    this.updateSuggestions();
   },
 
   componentWillUnmount() {
@@ -40,21 +40,10 @@ export const TextFilter = React.createClass({
   },
 
   onChangeSearchTerm(searchTerm) {
-    const { fetchSuggestions, column } = this.props;
-
     this.setState({
       loading: true,
       value: searchTerm
-    }, () => {
-      fetchSuggestions(column, searchTerm).then((suggestions) => {
-        if (this.isMounted) {
-          this.setState({
-            suggestions,
-            isLoading: false
-          });
-        }
-      });
-    });
+    }, this.updateSuggestions);
   },
 
   onSelectSuggestion(suggestion) {
@@ -66,7 +55,7 @@ export const TextFilter = React.createClass({
   clearFilter() {
     this.setState({
       value: null
-    });
+    }, this.updateSuggestions);
   },
 
   updateFilter() {
@@ -86,10 +75,9 @@ export const TextFilter = React.createClass({
 
   render() {
     const { filter, onCancel } = this.props;
-    const { isLoading, value, suggestions } = this.state;
+    const { value, suggestions } = this.state;
 
     const picklistProps = {
-      isLoading: isLoading,
       onSelection: this.onSelectSuggestion,
       onChangeSearchTerm: this.onChangeSearchTerm,
       options: _.map(suggestions, (suggestion) => {

@@ -56,14 +56,6 @@ describe('SearchablePicklist', () => {
       expect(getPicklist(element)).to.exist;
     });
 
-    it('displays a spinner if isLoading is true', () => {
-      const element = renderComponent(SearchablePicklist, getProps({
-        isLoading: true
-      }));
-
-      expect(element.querySelector('.spinner')).to.exist;
-    });
-
     it('displays the no options message if no options are available', () => {
       const element = renderComponent(SearchablePicklist, getProps());
       const picklist = getPicklist(element);

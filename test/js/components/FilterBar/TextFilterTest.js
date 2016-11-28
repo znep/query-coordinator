@@ -29,14 +29,6 @@ describe('TextFilter', () => {
     expect(stub).to.have.been.called;
   });
 
-  it('displays a spinner on first load', () => {
-    const element = renderComponent(TextFilter, getProps({
-      fetchSuggestions: sinon.stub().returns({ then: () => null })
-    }));
-
-    expect(element.querySelector('.spinner')).to.exist;
-  });
-
   it('renders a searchable picklist when results returned', () => {
     const results = ['suggestion1', 'suggestion2'];
     const element = renderComponent(TextFilter, getProps({
@@ -45,10 +37,10 @@ describe('TextFilter', () => {
     const picklistOptions = element.querySelectorAll('.picklist-option');
 
     expect(picklistOptions.length).to.eq(2);
-    expect(element.querySelector('.spinner')).to.not.exist;
   });
 
   it('invokes fetchSuggestions when the search term changes', () => {
+    const clock = sinon.useFakeTimers();
     const stub = sinon.stub().returns({ then: (callback) => callback([]) });
     const element = renderComponent(TextFilter, getProps({
       fetchSuggestions: stub
@@ -58,7 +50,11 @@ describe('TextFilter', () => {
     search.value = 'corgi palace';
     Simulate.change(search);
 
-    expect(stub).to.have.been.calledTwice; // once on load, once on search
+    clock.tick(650);
+
+    sinon.assert.calledTwice(stub);
+
+    clock.restore();
   });
 
   describe('footer', () => {
@@ -66,6 +62,25 @@ describe('TextFilter', () => {
       const element = renderComponent(TextFilter, getProps());
 
       expect(element.querySelector('.filter-footer')).to.exist;
+    });
+
+    it('invokes fetchSuggestions when the clear button is clicked', () => {
+      const clock = sinon.useFakeTimers();
+      const stub = sinon.stub().returns({ then: (callback) => callback([]) });
+      const element = renderComponent(TextFilter, getProps({
+        fetchSuggestions: stub
+      }));
+
+      const search = element.querySelector('input');
+      search.value = 'corgi disaster';
+      Simulate.change(search);
+      clock.tick(500);
+      Simulate.click(element.querySelector('.clear-btn'));
+      clock.tick(500);
+
+      sinon.assert.calledThrice(stub); // once on load, once on search, once on clear
+
+      clock.restore();
     });
 
     it('calls onCancel when cancel button is clicked', () => {

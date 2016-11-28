@@ -74,4 +74,10 @@ describe('NumberFilter', () => {
 
     expect(getApplyButton(element)).to.not.be.disabled;
   });
+
+  it('computes the proper step based on the minimum precision of the range', () => {
+    const element = renderComponent(NumberFilter, getProps());
+    const inputs = getInputs(element);
+    expect(_.map(inputs, 'step')).to.deep.equal(['0.01', '0.01']);
+  });
 });

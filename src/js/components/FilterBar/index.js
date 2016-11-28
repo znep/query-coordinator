@@ -70,18 +70,18 @@ export const FilterBar = React.createClass({
 
   onFilterAdd(filter) {
     const { filters, onUpdate } = this.props;
+    const newFilters = _.cloneDeep(filters);
 
-    filters.unshift(filter);
-
-    onUpdate(filters);
+    newFilters.unshift(filter);
+    onUpdate(newFilters);
   },
 
   onFilterRemove(index) {
     const { filters, onUpdate } = this.props;
+    const newFilters = _.cloneDeep(filters);
 
-    filters.splice(index, 1);
-
-    onUpdate(filters);
+    newFilters.splice(index, 1);
+    onUpdate(newFilters);
   },
 
   onFilterUpdate(filter, index) {

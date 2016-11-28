@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 import Slider from '../Slider';
 import FilterFooter from './FilterFooter';
 import { translate as t } from '../../common/I18n';
+import { getPrecision, roundToPrecision } from '../../common/numbers';
 
 export const NumberFilter = React.createClass({
   propTypes: {
@@ -43,7 +44,7 @@ export const NumberFilter = React.createClass({
   getStepInterval() {
     const { rangeMin, rangeMax } = this.props.column;
 
-    return (rangeMax - rangeMin) / 20;
+    return _.min(_.map([rangeMin, rangeMax], getPrecision));
   },
 
   isValidValue(value) {
@@ -102,6 +103,8 @@ export const NumberFilter = React.createClass({
 
   renderInputFields() {
     const { value } = this.state;
+    const step = this.getStepInterval();
+    const formatLabel = _.partialRight(roundToPrecision, step);
 
     return (
       <div className="range-text-inputs-container input-group">
@@ -109,7 +112,8 @@ export const NumberFilter = React.createClass({
           id="start"
           className="range-input text-input"
           type="number"
-          value={value.start}
+          value={formatLabel(value.start)}
+          step={step}
           onChange={this.onInputChange}
           aria-label={t('filter_bar.from')}
           placeholder={t('filter_bar.from')}
@@ -119,7 +123,8 @@ export const NumberFilter = React.createClass({
           id="end"
           className="range-input text-input"
           type="number"
-          value={value.end}
+          value={formatLabel(value.end)}
+          step={step}
           onChange={this.onInputChange}
           aria-label={t('filter_bar.to')}
           placeholder={t('filter_bar.to')} />
@@ -131,12 +136,13 @@ export const NumberFilter = React.createClass({
     const { column } = this.props;
     const { rangeMin, rangeMax } = column;
     const { value } = this.state;
+    const step = this.getStepInterval();
 
     const sliderProps = {
       rangeMin,
       rangeMax,
       value,
-      step: this.getStepInterval(),
+      step,
       onChange: this.onSliderChange
     };
 

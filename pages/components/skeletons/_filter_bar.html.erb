@@ -11,8 +11,8 @@
           function: 'valueRange',
           columnName: 'some_number',
           arguments: {
-            start: 10,
-            end: 20
+            start: 3,
+            end: 3000
           }
         },
         isLocked: false,
@@ -28,8 +28,8 @@
           name: 'Some Number',
           fieldName: 'some_number',
           dataTypeName: 'number',
-          rangeMin: 0,
-          rangeMax: 100
+          rangeMin: 0.01,
+          rangeMax: 30000.1
         },
         {
           name: 'Some Word',
@@ -39,7 +39,7 @@
       ],
       filters,
       onUpdate,
-      fetchSuggestions: (column, searchTerm) => Promise.resolve([ 'purple', 'pesto', 'russian' ])
+      fetchSuggestions: (column, searchTerm) => Promise.resolve(_.shuffle([ 'purple', 'pesto', 'russian' ]))
     };
 
     function render() {

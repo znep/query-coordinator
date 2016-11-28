@@ -32,8 +32,8 @@ export const mockNumberColumn = {
   dataTypeName: 'number',
   fieldName: 'dinosaurAge',
   name: 'Dinosaur Age (approximate)',
-  rangeMin: 0,
-  rangeMax: 100
+  rangeMin: .1,
+  rangeMax: 100.01
 };
 
 export const mockTextColumn = {

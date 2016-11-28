@@ -33,7 +33,8 @@ export const FilterItem = React.createClass({
   getInitialState() {
     return {
       isControlOpen: false,
-      isConfigOpen: false
+      isConfigOpen: false,
+      isLeftAligned: false
     };
   },
 
@@ -94,7 +95,8 @@ export const FilterItem = React.createClass({
   toggleControl() {
     this.setState({
       isControlOpen: !this.state.isControlOpen,
-      isConfigOpen: false
+      isConfigOpen: false,
+      isLeftAligned: this.filterControlToggle.getBoundingClientRect().right < window.innerWidth / 2
     });
   },
 
@@ -155,6 +157,9 @@ export const FilterItem = React.createClass({
 
   render() {
     const { filter, column } = this.props;
+    const { isLeftAligned } = this.state;
+
+    const alignment = isLeftAligned ? 'left' : 'right';
 
     return (
       <div className="filter-bar-filter">
@@ -162,7 +167,7 @@ export const FilterItem = React.createClass({
 
         <div className="filter-control-container">
           <div
-            className="filter-control-toggle"
+            className={`filter-control-toggle ${alignment}`}
             aria-label={`${t('filter_bar.filter')} ${column.name}`}
             tabIndex="0"
             onClick={this.toggleControl}
@@ -177,7 +182,7 @@ export const FilterItem = React.createClass({
 
         <div className="filter-config-container">
           <div
-            className="filter-config-toggle"
+            className={`filter-config-toggle ${alignment}`}
             aria-label={t('filter_bar.configure_filter')}
             tabIndex="0"
             onClick={this.toggleConfig}

@@ -5,7 +5,6 @@ import Picklist from '../Picklist';
 
 export const SearchablePicklist = React.createClass({
   propTypes: {
-    isLoading: PropTypes.bool,
     options: PropTypes.arrayOf(PropTypes.object),
     value: PropTypes.string,
     onChangeSearchTerm: PropTypes.func.isRequired,
@@ -23,13 +22,9 @@ export const SearchablePicklist = React.createClass({
   },
 
   renderPicklist() {
-    const { isLoading, options, value, onSelection } = this.props;
+    const { options, value, onSelection } = this.props;
     const hasNoOptions = _.isEmpty(options);
     let visibleOptions = options;
-
-    if (isLoading) {
-      return <div className="spinner spinner-default" />;
-    }
 
     if (hasNoOptions) {
       visibleOptions = [

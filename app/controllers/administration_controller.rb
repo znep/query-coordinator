@@ -694,7 +694,7 @@ class AdministrationController < ApplicationController
   def metadata
     config = ::Configuration.get_or_create('metadata', 'name' => 'Metadata configuration')
     @metadata = config.properties.fieldsets || []
-    @categories = get_configuration('view_categories', true).properties_with_dots.sort { |a, b| a[0].downcase <=> b[0].downcase }
+    @categories = get_configuration('view_categories', true).raw_properties.sort { |a, b| a[0].downcase <=> b[0].downcase }
     @locales = CurrentDomain.available_locales
   end
 

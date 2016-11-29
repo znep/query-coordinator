@@ -365,7 +365,7 @@ class ApplicationController < ActionController::Base
         Notice to Socrata Administrators: You can now configure the header and footer for your site,
         including the links, colors, logos, and more. Tabular datasets also have a new front-page
         experience which surfaces content more intuitively. To preview these features and activate
-        them on your site, please visit your <a href="/admin/site_chrome">Site Appearance</a> panel.
+        them on your site, please visit your <a href="/admin/site_appearance">Site Appearance</a> panel.
       }.html_safe
     end
   end

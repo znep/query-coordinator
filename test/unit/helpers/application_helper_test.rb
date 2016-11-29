@@ -450,27 +450,27 @@ class ApplicationHelperTest < ActionView::TestCase
     refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
   end
 
-  def test_enable_site_chrome_is_false_if_no_site_chrome_activation_states_are_true
-    SiteChrome.stubs(:find => SiteChrome.new)
-    SiteChrome.any_instance.stubs(:is_activated_on?).with('open_data').returns(false)
-    SiteChrome.any_instance.stubs(:is_activated_on?).with('homepage').returns(false)
-    SiteChrome.any_instance.stubs(:is_activated_on?).with('data_lens').returns(false)
+  def test_enable_site_chrome_is_false_if_no_site_appearance_activation_states_are_true
+    SiteAppearance.stubs(:find => SiteAppearance.new)
+    SiteAppearance.any_instance.stubs(:is_activated_on?).with('open_data').returns(false)
+    SiteAppearance.any_instance.stubs(:is_activated_on?).with('homepage').returns(false)
+    SiteAppearance.any_instance.stubs(:is_activated_on?).with('data_lens').returns(false)
     refute application_helper.enable_site_chrome?
   end
 
   def test_enable_site_chrome_is_false_on_homepage_and_dataset_if_the_states_are_true_but_the_other_conditions_are_not_met
-    SiteChrome.stubs(:find => SiteChrome.new)
-    SiteChrome.any_instance.stubs(:is_activated_on?).with('open_data').returns(false)
-    SiteChrome.any_instance.stubs(:is_activated_on?).with('homepage').returns(true)
-    SiteChrome.any_instance.stubs(:is_activated_on?).with('data_lens').returns(true)
+    SiteAppearance.stubs(:find => SiteAppearance.new)
+    SiteAppearance.any_instance.stubs(:is_activated_on?).with('open_data').returns(false)
+    SiteAppearance.any_instance.stubs(:is_activated_on?).with('homepage').returns(true)
+    SiteAppearance.any_instance.stubs(:is_activated_on?).with('data_lens').returns(true)
     refute application_helper.enable_site_chrome?
   end
 
   def test_enable_site_chrome_is_true_for_homepage
-    SiteChrome.stubs(:find => SiteChrome.new)
-    SiteChrome.any_instance.stubs(:is_activated_on?).with('open_data').returns(false)
-    SiteChrome.any_instance.stubs(:is_activated_on?).with('homepage').returns(true)
-    SiteChrome.any_instance.stubs(:is_activated_on?).with('data_lens').returns(false)
+    SiteAppearance.stubs(:find => SiteAppearance.new)
+    SiteAppearance.any_instance.stubs(:is_activated_on?).with('open_data').returns(false)
+    SiteAppearance.any_instance.stubs(:is_activated_on?).with('homepage').returns(true)
+    SiteAppearance.any_instance.stubs(:is_activated_on?).with('data_lens').returns(false)
     application_helper.stubs(:on_homepage => false)
     application_helper.stubs(:using_dataslate => false)
     refute application_helper.enable_site_chrome?
@@ -480,16 +480,16 @@ class ApplicationHelperTest < ActionView::TestCase
   end
 
   def test_enable_site_chrome_is_false_for_dataslate_when_site_chrome_is_not_activated
-    SiteChrome.stubs(:find => SiteChrome.new)
-    SiteChrome.any_instance.stubs(:activation_state).returns('open_data' => false)
+    SiteAppearance.stubs(:find => SiteAppearance.new)
+    SiteAppearance.any_instance.stubs(:activation_state).returns('open_data' => false)
     application_helper.stubs(:on_homepage => false)
     application_helper.stubs(:using_dataslate => true)
     refute application_helper.enable_site_chrome?
   end
 
   def test_enable_site_chrome_is_false_for_dataslate_when_site_chrome_is_activated_but_the_disable_flag_is_true
-    SiteChrome.stubs(:find => SiteChrome.new)
-    SiteChrome.any_instance.stubs(:activation_state).returns('open_data' => true)
+    SiteAppearance.stubs(:find => SiteAppearance.new)
+    SiteAppearance.any_instance.stubs(:activation_state).returns('open_data' => true)
     application_helper.stubs(:on_homepage => false)
     application_helper.stubs(:using_dataslate => true)
     FeatureFlags.stubs(:derive => Hashie::Mash.new(
@@ -499,20 +499,20 @@ class ApplicationHelperTest < ActionView::TestCase
   end
 
   def test_enable_site_chrome_is_true_for_dataslate_when_site_chrome_is_activated
-    SiteChrome.stubs(:find => SiteChrome.new)
-    SiteChrome.any_instance.stubs(:activation_state).returns('open_data' => true)
+    SiteAppearance.stubs(:find => SiteAppearance.new)
+    SiteAppearance.any_instance.stubs(:activation_state).returns('open_data' => true)
     application_helper.stubs(:on_homepage => false)
     application_helper.stubs(:using_dataslate => true)
     assert application_helper.enable_site_chrome?
   end
 
   def test_enable_site_chrome_doesnt_error_if_site_chrome_is_nil
-    SiteChrome.stubs(:find => nil)
+    SiteAppearance.stubs(:find => nil)
     refute application_helper.enable_site_chrome?
   end
 
   def test_enable_site_chrome_doesnt_error_if_site_chrome_is_false
-    SiteChrome.stubs(:find => false)
+    SiteAppearance.stubs(:find => false)
     refute application_helper.enable_site_chrome?
   end
 

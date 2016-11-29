@@ -102,7 +102,7 @@ module TestHelperMethods
   def stub_site_chrome(body = SocrataSiteChrome::DomainConfig.default_configuration.first)
     if Object.respond_to?(:stubs)
       # Minitest
-      SiteChrome.stubs(
+      SiteAppearance.stubs(
         :find => Hashie::Mash.new(
           :activation_state => {
             :open_data => false,
@@ -116,7 +116,7 @@ module TestHelperMethods
       )
     else
       # RSpec
-      allow(SiteChrome).to receive(:find).and_return(
+      allow(SiteAppearance).to receive(:find).and_return(
         Hashie::Mash.new(
           :activation_state => {
             :open_data => false,

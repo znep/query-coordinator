@@ -4,13 +4,13 @@ html, body {
 
 div.siteInnerWrapper {
   padding-bottom: 90px;
-  margin-top: $site-chrome-admin-header-height;
+  margin-top: $site-appearance-admin-header-height;
 
   .flash {
     &.notice,
     &.warning,
     &.error {
-      margin-top: calc(#{$site-chrome-admin-header-height} + 1em);
+      margin-top: calc(#{$site-appearance-admin-header-height} + 1em);
     }
   }
 }

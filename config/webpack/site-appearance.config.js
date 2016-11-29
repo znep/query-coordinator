@@ -1,4 +1,4 @@
-// See also public/javascripts/site-chrome/main.js
+// See also public/javascripts/site-appearance/main.js
 // See also public/stylesheets/socrata-components/styleguide.css
 
 /* eslint-env node */
@@ -14,12 +14,12 @@ if (!common.isProduction) {
 }
 
 module.exports = _.defaultsDeep({
-  context: path.resolve(common.root, 'public/javascripts/siteChrome'),
+  context: path.resolve(common.root, 'public/javascripts/siteAppearance'),
   entry: common.getHotModuleEntries().concat([
     './main'
   ]),
   output: common.getOutput(identifier),
-  eslint: common.getEslintConfig('public/javascripts/siteChrome/.eslintrc.json'),
+  eslint: common.getEslintConfig('public/javascripts/siteAppearance/.eslintrc.json'),
   module: {
     loaders: [
       {
@@ -37,7 +37,7 @@ module.exports = _.defaultsDeep({
       'react-dom': path.resolve(common.root, 'node_modules/react-dom')
     },
     root: [
-      path.resolve(common.root, 'public/javascripts/siteChrome')
+      path.resolve(common.root, 'public/javascripts/siteAppearance')
     ]
   },
   plugins: plugins

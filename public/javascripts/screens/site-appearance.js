@@ -116,19 +116,19 @@ var validationRules = {
 // Note: This needs to be a function rather than an object because $.t is not defined on load.
 var validationMessages = function() {
   return {
-    'content[general][google_analytics_token]': $.t('screens.admin.site_chrome.tabs.general.fields.google_analytics_token.error'),
-    'content[header][styles][logo_height]': $.t('screens.admin.site_chrome.tabs.header.fields.header_logo_height.error'),
-    'content[header][styles][logo_width]': $.t('screens.admin.site_chrome.tabs.header.fields.header_logo_width.error'),
-    'content[footer][styles][logo_height]': $.t('screens.admin.site_chrome.tabs.footer.fields.footer_logo_height.error'),
-    'content[footer][styles][logo_width]': $.t('screens.admin.site_chrome.tabs.footer.fields.footer_logo_width.error')
+    'content[general][google_analytics_token]': $.t('screens.admin.site_appearance.tabs.general.fields.google_analytics_token.error'),
+    'content[header][styles][logo_height]': $.t('screens.admin.site_appearance.tabs.header.fields.header_logo_height.error'),
+    'content[header][styles][logo_width]': $.t('screens.admin.site_appearance.tabs.header.fields.header_logo_width.error'),
+    'content[footer][styles][logo_height]': $.t('screens.admin.site_appearance.tabs.footer.fields.footer_logo_height.error'),
+    'content[footer][styles][logo_width]': $.t('screens.admin.site_appearance.tabs.footer.fields.footer_logo_width.error')
   };
 };
 
-var $siteChromeForm = $('form#site_chrome_form');
+var $siteAppearanceForm = $('form#site_appearance_form');
 
 $(document).ready(function() {
   var curTab = getActiveTabId();
-  // Show appropriate tab given the url hash. Ex: /site_chrome#tab=general
+  // Show appropriate tab given the url hash. Ex: /site_appearance#tab=general
   showTab(curTab);
 
   inputValidation();
@@ -150,39 +150,39 @@ $(document).ready(function() {
   };
 
   // Submit the form from the active tab when save button is clicked
-  $('button#site_chrome_save').click(function() {
-    if ($siteChromeForm.length && $siteChromeForm.valid()) {
+  $('button#site_appearance_save').click(function() {
+    if ($siteAppearanceForm.length && $siteAppearanceForm.valid()) {
       preSubmitLinkCleansing();
-      $siteChromeForm.removeAttr('target');
-      $siteChromeForm.find('input#stage').remove();
-      $siteChromeForm.submit();
+      $siteAppearanceForm.removeAttr('target');
+      $siteAppearanceForm.find('input#stage').remove();
+      $siteAppearanceForm.submit();
     }
   });
 
   // Secret button only visible to superadmins that allows saving the configuration without activation.
   $('button#save_without_activation').click(function() {
-    if ($siteChromeForm.length && $siteChromeForm.valid()) {
+    if ($siteAppearanceForm.length && $siteAppearanceForm.valid()) {
       preSubmitLinkCleansing();
       $('#enable_activation').attr('disabled', true);
-      $siteChromeForm.removeAttr('target');
-      $siteChromeForm.find('input#stage').remove();
-      $siteChromeForm.submit();
+      $siteAppearanceForm.removeAttr('target');
+      $siteAppearanceForm.find('input#stage').remove();
+      $siteAppearanceForm.submit();
     }
   });
 
   // Submit the form from the active tab when save button is clicked
-  $('button#site_chrome_preview').click(function(e) {
+  $('button#site_appearance_preview').click(function(e) {
     e.preventDefault();
-    if ($siteChromeForm.length && $siteChromeForm.valid()) {
+    if ($siteAppearanceForm.length && $siteAppearanceForm.valid()) {
       preSubmitLinkCleansing();
-      $siteChromeForm.attr('target', '_blank');
-      var $stage = $siteChromeForm.find('input#stage');
+      $siteAppearanceForm.attr('target', '_blank');
+      var $stage = $siteAppearanceForm.find('input#stage');
       if (!$stage.exists()) {
         $stage = $('<input type="hidden" id="stage" name="stage" />');
-        $siteChromeForm.append($stage);
+        $siteAppearanceForm.append($stage);
       }
       $stage.val('draft');
-      $siteChromeForm.submit();
+      $siteAppearanceForm.submit();
       setTimeout(function() { window.location.reload(); }, 500);
     }
   });
@@ -203,13 +203,13 @@ $(document).ready(function() {
   sortableListOfLinks();
 });
 
-$('.activate-site-chrome').click(function() {
-  if ($siteChromeForm.length && $siteChromeForm.valid()) {
+$('.activate-site-appearance').click(function() {
+  if ($siteAppearanceForm.length && $siteAppearanceForm.valid()) {
     preSubmitLinkCleansing();
     $('#enable_activation').attr('disabled', false);
-    $siteChromeForm.removeAttr('target');
-    $siteChromeForm.find('input#stage').remove();
-    $siteChromeForm.submit();
+    $siteAppearanceForm.removeAttr('target');
+    $siteAppearanceForm.find('input#stage').remove();
+    $siteAppearanceForm.submit();
   }
 });
 
@@ -231,7 +231,7 @@ function showTab(tabId) {
   $('.tab-content[data-tab-id="{0}"], .tab-link[data-tab-id="{0}"]'.format(tabId)).addClass('current');
 
   // Replace the anchor part so that we reload onto the same tab we submit from.
-  $siteChromeForm.attr('action', $siteChromeForm.attr('action').replace(/#tab=.*/, '#tab=' + tabId));
+  $siteAppearanceForm.attr('action', $siteAppearanceForm.attr('action').replace(/#tab=.*/, '#tab=' + tabId));
   updatePageControlsForActiveTab(tabId);
 }
 
@@ -242,7 +242,7 @@ function updatePageControlsForActiveTab(tabId) {
 // Displays a notification to the user if they type invalid input.
 // Uses jQuery Validate plugin: public/javascripts/plugins/jquery.validate.js
 function inputValidation() {
-  $siteChromeForm.validate({
+  $siteAppearanceForm.validate({
     rules: validationRules,
     messages: validationMessages(),
     onkeyup: false,
@@ -253,18 +253,18 @@ function inputValidation() {
     errorPlacement: function($error, $element) {
       $error.appendTo($element.parent());
     },
-    errorClass: 'site-chrome-input-error'
+    errorClass: 'site-appearance-input-error'
   });
 
   toggleSaveButton();
 
-  $siteChromeForm.find('input').on('blur', toggleSaveButton);
+  $siteAppearanceForm.find('input').on('blur', toggleSaveButton);
 }
 
 // Toggle "save" button if form is valid/invalid
 function toggleSaveButton() {
-  var $saveButtons = $('#site_chrome_save, #site_chrome_preview, #site_chrome_activate, #save_without_activation');
-  if ($siteChromeForm.valid()) {
+  var $saveButtons = $('#site_appearance_save, #site_appearance_preview, #site_appearance_activate, #save_without_activation');
+  if ($siteAppearanceForm.valid()) {
     $saveButtons.removeClass('error');
   } else {
     $saveButtons.addClass('error');
@@ -408,7 +408,7 @@ $('.list-of-links').on('click', '.remove-link-menu', function() {
 // Before submit, reorder the indices of the present links and menus to reflect the current
 // appearance. Also remove any empty links to prevent them from being saved to the config.
 function preSubmitLinkCleansing() {
-  $siteChromeForm.find('.list-of-links').each(function(i, listOfLinks) {
+  $siteAppearanceForm.find('.list-of-links').each(function(i, listOfLinks) {
     var contentKey = $(listOfLinks).data('contentKey');
     var $linkRows = $(listOfLinks).children('.links-and-menus').children('.link-row');
     var $presentLinkRows = $linkRows.filter(function() {

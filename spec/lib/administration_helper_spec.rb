@@ -20,16 +20,16 @@ describe AdministrationHelper do
     allow(dummy_class_instance).to receive(:current_user).and_return(user)
   end
 
-  context '#show_site_chrome_admin_panel?' do
+  context '#show_site_appearance_admin_panel?' do
     it 'returns false for OP sites' do
       allow(user).to receive(:can_use_site_appearance?).and_return(true)
       allow(CurrentDomain).to receive(:module_enabled?).and_return(true)
-      expect(dummy_class_instance.show_site_chrome_admin_panel?).to eq(false)
+      expect(dummy_class_instance.show_site_appearance_admin_panel?).to eq(false)
     end
 
     it 'returns false if the user is not permitted to use site chrome' do
       allow(user).to receive(:can_use_site_appearance?).and_return(false)
-      expect(dummy_class_instance.show_site_chrome_admin_panel?).to eq(false)
+      expect(dummy_class_instance.show_site_appearance_admin_panel?).to eq(false)
     end
 
     it 'returns true for permitted users on non-OP sites' do
@@ -38,7 +38,7 @@ describe AdministrationHelper do
       stub_site_chrome
       stub_site_chrome_custom_content
       VCR.use_cassette('admin_custom_content') do
-        expect(dummy_class_instance.show_site_chrome_admin_panel?).to eq(true)
+        expect(dummy_class_instance.show_site_appearance_admin_panel?).to eq(true)
       end
     end
   end

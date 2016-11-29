@@ -15922,7 +15922,7 @@ http_interactions:
                             "url" : "http://local.dev/admin/users"
                           }, {
                             "key" : "menu_0_link_2",
-                            "url" : "https://local.dev/admin/site_chrome"
+                            "url" : "https://local.dev/admin/site_appearance"
                           } ],
                           "key" : "menu_0"
                         } ]
@@ -16198,7 +16198,7 @@ http_interactions:
                             "url" : "http://local.dev/admin/users"
                           }, {
                             "key" : "menu_0_link_2",
-                            "url" : "https://local.dev/admin/site_chrome"
+                            "url" : "https://local.dev/admin/site_appearance"
                           } ],
                           "key" : "menu_0"
                         } ]
@@ -21395,7 +21395,7 @@ http_interactions:
                             "url" : "http://local.dev/admin/users"
                           }, {
                             "key" : "menu_0_link_2",
-                            "url" : "https://local.dev/admin/site_chrome"
+                            "url" : "https://local.dev/admin/site_appearance"
                           } ],
                           "key" : "menu_0"
                         } ]
@@ -21671,7 +21671,7 @@ http_interactions:
                             "url" : "http://local.dev/admin/users"
                           }, {
                             "key" : "menu_0_link_2",
-                            "url" : "https://local.dev/admin/site_chrome"
+                            "url" : "https://local.dev/admin/site_appearance"
                           } ],
                           "key" : "menu_0"
                         } ]
@@ -21947,7 +21947,7 @@ http_interactions:
                             "url" : "http://local.dev/admin/users"
                           }, {
                             "key" : "menu_0_link_2",
-                            "url" : "https://local.dev/admin/site_chrome"
+                            "url" : "https://local.dev/admin/site_appearance"
                           } ],
                           "key" : "menu_0"
                         } ]
@@ -22223,7 +22223,7 @@ http_interactions:
                             "url" : "http://local.dev/admin/users"
                           }, {
                             "key" : "menu_0_link_2",
-                            "url" : "https://local.dev/admin/site_chrome"
+                            "url" : "https://local.dev/admin/site_appearance"
                           } ],
                           "key" : "menu_0"
                         } ]
@@ -22499,7 +22499,7 @@ http_interactions:
                             "url" : "http://local.dev/admin/users"
                           }, {
                             "key" : "menu_0_link_2",
-                            "url" : "https://local.dev/admin/site_chrome"
+                            "url" : "https://local.dev/admin/site_appearance"
                           } ],
                           "key" : "menu_0"
                         } ]
@@ -22775,7 +22775,7 @@ http_interactions:
                             "url" : "http://local.dev/admin/users"
                           }, {
                             "key" : "menu_0_link_2",
-                            "url" : "https://local.dev/admin/site_chrome"
+                            "url" : "https://local.dev/admin/site_appearance"
                           } ],
                           "key" : "menu_0"
                         } ]
@@ -23051,7 +23051,7 @@ http_interactions:
                             "url" : "http://local.dev/admin/users"
                           }, {
                             "key" : "menu_0_link_2",
-                            "url" : "https://local.dev/admin/site_chrome"
+                            "url" : "https://local.dev/admin/site_appearance"
                           } ],
                           "key" : "menu_0"
                         } ]

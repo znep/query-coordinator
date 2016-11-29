@@ -112,6 +112,6 @@ module DataLensHelper
   end
 
   def site_chrome_enabled?
-    SiteChrome.find.try(:is_activated_on?, 'data_lens') && !@suppress_site_chrome
+    SiteAppearance.find.try(:is_activated_on?, 'data_lens') && !@suppress_site_chrome
   end
 end

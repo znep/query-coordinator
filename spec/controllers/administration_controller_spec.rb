@@ -537,25 +537,25 @@ describe AdministrationController do
       init_current_domain
     end
 
-    context '#show_site_chrome_admin_panel?' do
+    context '#show_site_appearance_admin_panel?' do
 
       context 'with site_appearance_visible set to true' do
         before(:each) do
-          set_site_appearance_visible(true)
+          make_site_appearance_visible(true)
           stub_site_chrome_custom_content
         end
 
         context 'as an anonymous user' do
           it 'should return false' do
             allow(subject).to receive(:current_user).and_return(nil)
-            expect(subject.show_site_chrome_admin_panel?).to eq(false)
+            expect(subject.show_site_appearance_admin_panel?).to eq(false)
           end
         end
 
         context 'as a viewer' do
           it 'should return false' do
             stub_viewer_user
-            expect(subject.show_site_chrome_admin_panel?).to eq(false)
+            expect(subject.show_site_appearance_admin_panel?).to eq(false)
           end
         end
 
@@ -563,7 +563,7 @@ describe AdministrationController do
           it 'should return true' do
             stub_superadmin_user
             VCR.use_cassette('administration_controller_superadmin') do
-              expect(subject.show_site_chrome_admin_panel?).to eq(true)
+              expect(subject.show_site_appearance_admin_panel?).to eq(true)
             end
           end
         end
@@ -572,7 +572,7 @@ describe AdministrationController do
           it 'should return true' do
             stub_administrator_user
             VCR.use_cassette('administration_controller_administrator') do
-              expect(subject.show_site_chrome_admin_panel?).to eq(true)
+              expect(subject.show_site_appearance_admin_panel?).to eq(true)
             end
           end
         end
@@ -581,7 +581,7 @@ describe AdministrationController do
           it 'should return true' do
             stub_designer_user
             VCR.use_cassette('administration_controller_designer') do
-              expect(subject.show_site_chrome_admin_panel?).to eq(true)
+              expect(subject.show_site_appearance_admin_panel?).to eq(true)
             end
           end
         end
@@ -589,21 +589,21 @@ describe AdministrationController do
 
       context 'with site_appearance_visible set to false' do
         before(:each) do
-          set_site_appearance_visible(false)
+          make_site_appearance_visible(false)
           stub_site_chrome_custom_content
         end
 
         context 'as an anonymous user' do
           it 'should return false' do
             allow(subject).to receive(:current_user).and_return(nil)
-            expect(subject.show_site_chrome_admin_panel?).to eq(false)
+            expect(subject.show_site_appearance_admin_panel?).to eq(false)
           end
         end
 
         context 'as a viewer' do
           it 'should return false' do
             stub_viewer_user
-            expect(subject.show_site_chrome_admin_panel?).to eq(false)
+            expect(subject.show_site_appearance_admin_panel?).to eq(false)
           end
         end
 
@@ -611,7 +611,7 @@ describe AdministrationController do
           it 'should return true' do
             stub_superadmin_user
             VCR.use_cassette('administration_controller_superadmin') do
-              expect(subject.show_site_chrome_admin_panel?).to eq(true)
+              expect(subject.show_site_appearance_admin_panel?).to eq(true)
             end
           end
         end
@@ -619,14 +619,14 @@ describe AdministrationController do
         context 'as an administrator' do
           it 'should return false' do
             stub_administrator_user
-            expect(subject.show_site_chrome_admin_panel?).to eq(false)
+            expect(subject.show_site_appearance_admin_panel?).to eq(false)
           end
         end
 
         context 'as a designer' do
           it 'should return false' do
             stub_designer_user
-            expect(subject.show_site_chrome_admin_panel?).to eq(false)
+            expect(subject.show_site_appearance_admin_panel?).to eq(false)
           end
         end
       end
@@ -635,7 +635,7 @@ describe AdministrationController do
       context 'with custom content in the site chrome config' do
         before(:each) do
           init_current_domain
-          set_site_appearance_visible(true)
+          make_site_appearance_visible(true)
           stub_site_chrome_custom_content(:header => { :html => '<div>custom header</div>' })
           stub_site_chrome(SocrataSiteChrome::DomainConfig.default_configuration.first.tap do |config|
             config['properties'].push(
@@ -648,7 +648,7 @@ describe AdministrationController do
           it 'should return false' do
             stub_superadmin_user
             VCR.use_cassette('administration_controller_superadmin') do
-              expect(subject.show_site_chrome_admin_panel?).to eq(false)
+              expect(subject.show_site_appearance_admin_panel?).to eq(false)
             end
           end
         end
@@ -657,7 +657,7 @@ describe AdministrationController do
           it 'should return false' do
             stub_administrator_user
             VCR.use_cassette('administration_controller_administrator') do
-              expect(subject.show_site_chrome_admin_panel?).to eq(false)
+              expect(subject.show_site_appearance_admin_panel?).to eq(false)
             end
           end
         end
@@ -666,7 +666,7 @@ describe AdministrationController do
           it 'should return false' do
             stub_designer_user
             VCR.use_cassette('administration_controller_designer') do
-              expect(subject.show_site_chrome_admin_panel?).to eq(false)
+              expect(subject.show_site_appearance_admin_panel?).to eq(false)
             end
           end
         end
@@ -707,7 +707,7 @@ describe AdministrationController do
     allow(subject).to receive(:current_user).and_return(user)
   end
 
-  def set_site_appearance_visible(state)
+  def make_site_appearance_visible(state)
     allow(CurrentDomain).to receive(:feature_flags).and_return(
       Hashie::Mash.new.tap { |mash| mash.site_appearance_visible = state }
     )

@@ -133,8 +133,8 @@ administration-sdp-template:
 - control-pane
 - grid-sidebar
 - screen-admin-customizer
-administration-site-chrome:
-- screen-site-chrome
+administration-site-appearance:
+- screen-site-appearance
 administration-stories-appearance:
 - control-pane
 - grid-sidebar

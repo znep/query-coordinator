@@ -72,6 +72,11 @@ RSpec.describe 'XSS protection', type: :feature, js: true do
     stub_sufficient_rights
     stub_current_domain
 
+    set_feature_flags(
+      'enable_getty_images_gallery' => true,
+      'enable_deprecated_user_search_api' => false
+    )
+
     story = FactoryGirl.build(:draft_story, uid: attack_story_uid) do |story|
       story.block_ids = story_blocks.map(&:id)
     end

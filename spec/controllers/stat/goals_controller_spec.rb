@@ -13,7 +13,11 @@ RSpec.describe Stat::GoalsController, type: :controller do
     }
   end
   let(:feature_flags) do
-    { 'open_performance_narrative_editor' => 'storyteller' }
+    {
+      'open_performance_narrative_editor' => 'storyteller',
+      'enable_getty_images_gallery' => true,
+      'enable_deprecated_user_search_api' => false
+    }
   end
 
   let(:goal) do

@@ -19,6 +19,11 @@ RSpec.describe StoriesController, type: :controller do
     stub_domains_request
     stub_configurations_request
 
+    set_feature_flags(
+      'enable_getty_images_gallery' => true,
+      'enable_deprecated_user_search_api' => false
+    )
+
     request.env['HTTPS'] = 'on'
   end
 

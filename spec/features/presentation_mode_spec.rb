@@ -125,6 +125,12 @@ RSpec.describe 'presentation mode', type: :feature, js: true do
     stub_sufficient_rights
     stub_core_view('pres-ents')
     stub_current_domain
+
+    set_feature_flags(
+      'enable_getty_images_gallery' => true,
+      'enable_deprecated_user_search_api' => false
+    )
+
     allow(CoreServer).to receive(:current_user_story_authorization).and_return(user_story_authorization)
 
     visit story

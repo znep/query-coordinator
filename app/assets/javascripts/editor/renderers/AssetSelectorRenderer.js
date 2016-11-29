@@ -2204,17 +2204,13 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderChooseTableTemplate() {
-    if (Environment.ENABLE_FILTERED_TABLE_CREATION) {
-      // Due to bugs in frontend we cannot limitTo datasets plus filtered views.
-      // We can limitTo one or the other, but not both. Without refactoring
-      // the frontend dataset picker, our only recourse is to limitTo tables, which
-      // includes datasets, filtered views, and grouped views. We don't support
-      // grouped views, but for now we're OK just notifying the user if they
-      // select a grouped view.
-      return _renderViewChooserTemplate('suppressed_facets[]=type&limitTo=tables');
-    } else {
-      return _renderChooseDatasetTemplate();
-    }
+    // Due to bugs in frontend we cannot limitTo datasets plus filtered views.
+    // We can limitTo one or the other, but not both. Without refactoring
+    // the frontend dataset picker, our only recourse is to limitTo tables, which
+    // includes datasets, filtered views, and grouped views. We don't support
+    // grouped views, but for now we're OK just notifying the user if they
+    // select a grouped view.
+    return _renderViewChooserTemplate('suppressed_facets[]=type&limitTo=tables');
   }
 
   function _renderChooseMapOrChartTemplate() {

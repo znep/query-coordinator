@@ -16,6 +16,22 @@ describe('VisualizationContainer', () => {
     expect(element).to.exist;
   });
 
+  describe('when rendering visualizations', () => {
+    it('renders nothing if this.props.vifs is empty', () => {
+      const element = renderPureComponentWithStore(VisualizationContainer(getProps()));
+      expect(element.querySelector('.socrata-visualization-renderer')).to.not.exist;
+    });
+
+    it('renders a visualization for each VIF in this.props.vifs', () => {
+      const element = renderPureComponentWithStore(VisualizationContainer(getProps({
+        vifs: [mockVif, mockVif]
+      })));
+      const visualizations = element.querySelectorAll('.socrata-visualization-renderer');
+
+      expect(visualizations.length).to.eq(2);
+    });
+  });
+
   describe('add visualization button', () => {
     it('does not render if VIFs are provided', () => {
       const element = renderPureComponentWithStore(VisualizationContainer(getProps({

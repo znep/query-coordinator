@@ -31,10 +31,7 @@ module.exports = function ( karma ) {
               path.resolve(root, 'node_modules/socrata-components/common'),
               path.resolve(root, 'karma/visualizationCanvas')
             ],
-            loader: 'babel',
-            query: {
-              plugins: ['babel-plugin-rewire']
-            }
+            loader: 'babel'
           }
         ]
       },

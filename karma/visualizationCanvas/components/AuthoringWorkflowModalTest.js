@@ -1,12 +1,7 @@
-import {
-  AuthoringWorkflowModal,
-  __RewireAPI__ as AuthoringWorkflowModalRewireApi
-} from 'components/AuthoringWorkflowModal';
+import { AuthoringWorkflowModal } from 'components/AuthoringWorkflowModal';
 import mockVif from 'data/mockVif';
 
 describe('AuthoringWorkflowModal', () => {
-  let AuthoringWorkflowStub;
-
   const getProps = (props) => {
     return {
       config: {
@@ -19,15 +14,6 @@ describe('AuthoringWorkflowModal', () => {
     };
   };
 
-  beforeEach(() => {
-    AuthoringWorkflowStub = sinon.stub();
-    AuthoringWorkflowModalRewireApi.__Rewire__('AuthoringWorkflow', AuthoringWorkflowStub);
-  });
-
-  afterEach(() => {
-    AuthoringWorkflowModalRewireApi.__ResetDependency__('AuthoringWorkflow');
-  });
-
   it('renders an element', () => {
     const element = renderComponent(AuthoringWorkflowModal, getProps());
     expect(element).to.exist;
@@ -35,7 +21,7 @@ describe('AuthoringWorkflowModal', () => {
 
   it('initializes the AuthoringWorkflow', () => {
     const element = renderComponent(AuthoringWorkflowModal, getProps());
-    expect(AuthoringWorkflowStub).to.have.been.calledWithNew;
+    expect(element.querySelector('.authoring-modal')).to.exist;
   });
 
   it('does not initialize the AuthoringWorkflow when VIF is missing', () => {
@@ -45,19 +31,16 @@ describe('AuthoringWorkflowModal', () => {
         vif: {}
       }
     }));
-    expect(AuthoringWorkflowStub).to.not.have.been.calledWithNew;
+    expect(element.querySelector('.authoring-modal')).to.not.exist;
   });
 
-  it('calls destroy on unmount', () => {
-    const destroySpy = sinon.spy();
-    AuthoringWorkflowStub.returns({
-      destroy: destroySpy
-    });
+  it('removes the AuthoringWorkflow on unmount', () => {
     const reactElement = React.createElement(AuthoringWorkflowModal, getProps());
     const element = TestUtils.renderIntoDocument(reactElement);
+    const node = ReactDOM.findDOMNode(element);
 
     element.componentWillUnMount();
 
-    expect(destroySpy).to.have.been.calledOnce;
+    expect(node.querySelector('.authoring-modal')).to.not.exist;
   });
 });

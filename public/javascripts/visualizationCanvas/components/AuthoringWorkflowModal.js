@@ -36,7 +36,8 @@ export const AuthoringWorkflowModal = React.createClass({
     this.authoringWorkflow = new AuthoringWorkflow(this.authoringWorkflowContainer, {
       vif: config.vif,
       onCancel: _.flow(onCancel, this.destroyAuthoringWorkflow),
-      onComplete: _.flow(onComplete, this.destroyAuthoringWorkflow)
+      onComplete: _.flow(onComplete, this.destroyAuthoringWorkflow),
+      useLogger: _.get(window, 'serverConfig.environment') === 'development'
     });
   },
 

@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import AddVisualizationButton from './AddVisualizationButton';
 import AuthoringWorkflowModal from './AuthoringWorkflowModal';
+import { components } from 'socrata-visualizations';
 
 export const VisualizationContainer = (props) => {
   const { vifs, isEditingVisualization } = props;
@@ -12,7 +13,7 @@ export const VisualizationContainer = (props) => {
     null;
 
   const visualizations = !_.isEmpty(vifs) ?
-    _.map(vifs, (vif, i) => <code key={i}>{JSON.stringify(vif)}</code>) :
+    _.map(vifs, (vif, i) => <components.Visualization key={i} vif={vif} />) :
     null;
 
   const authoringWorkflowModal = isEditingVisualization ?
@@ -21,8 +22,10 @@ export const VisualizationContainer = (props) => {
 
   return (
     <div className="visualization-container">
-      {addVisualizationButton}
-      {visualizations}
+      <div className="visualizations">
+        {addVisualizationButton}
+        {visualizations}
+      </div>
       {authoringWorkflowModal}
     </div>
   );

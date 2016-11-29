@@ -26,14 +26,10 @@ describe('AssetSelectorRenderer', function() {
   var fileUploaderStoreMock;
   var storyStoreMock;
   var server;
-  var environment;
   var dispatcher;
 
   beforeEach(function() {
     server = sinon.fakeServer.create();
-    environment = {
-      ENABLE_FILTERED_TABLE_CREATION: true
-    };
 
     container = $('<div>', { 'class': 'asset-selector-container' });
     $transient.append(container);
@@ -58,7 +54,6 @@ describe('AssetSelectorRenderer', function() {
 
     StoreAPI.__Rewire__('dispatcher', dispatcher);
     AssetSelectorStoreAPI.__Rewire__('dispatcher', dispatcher);
-    AssetSelectorStoreAPI.__Rewire__('Environment', environment);
     AssetSelectorStoreAPI.__Rewire__('fileUploaderStore', fileUploaderStoreMock);
     AssetSelectorStoreAPI.__Rewire__('storyStore', storyStoreMock);
 
@@ -66,7 +61,6 @@ describe('AssetSelectorRenderer', function() {
 
     AssetSelectorRendererAPI.__Rewire__('dispatcher', dispatcher);
     AssetSelectorRendererAPI.__Rewire__('assetSelectorStore', assetSelectorStoreMock);
-    AssetSelectorRendererAPI.__Rewire__('Environment', environment);
     AssetSelectorRendererAPI.__Rewire__('I18n', I18nMocker);
 
     dispatcher.dispatch({

@@ -110,7 +110,7 @@ class DatasetsController < ApplicationController
     dsmtime = VersionAuthority.get_core_dataset_mtime(@view.id)[@view.id]
     user = @current_user.nil? ? 'ANONYMOUS' : @current_user.id
 
-    etag = "#{dsmtime}-#{user}"
+    etag = "#{dsmtime}-#{user}-#{get_revision}"
     ConditionalRequestHandler.set_etag(response, etag)
     ConditionalRequestHandler.set_cache_control_headers(response, @current_user.nil?)
     unless current_user

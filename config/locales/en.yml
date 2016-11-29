@@ -2731,6 +2731,7 @@ en:
         add_new_link_menu: Add Menu
         add_new_link_row: Add %{section} Link
         after_clicking_ok: After clicking 'OK' below, see both features in action by visiting one of your datasets.
+        browse: Browse
         cancel: Cancel
         congratulations: Congratulations!
         description: Configure the appearance of your Socrata site.
@@ -2747,7 +2748,6 @@ en:
         save_changes: Save Changes
         see_both_features: See both features in action by visiting one of your datasets.
         site_appearance: Site Appearance
-        warning_html: <b>Warning!</b> You changed your language setting from the default. Check that all of your content is speaking the same language.
         tabs:
           footer:
             fields:
@@ -2990,6 +2990,8 @@ en:
         these_features: These features will empower you to better control the appearance of your site and will help data consumers explore your data even better than before. Your users are going to love them!
         these_features_help: These features will help users explore your data and will make it easier for you to manage the appearance of your site.
         update: Update
+        upload_failed: Upload failed
+        warning_html: <b>Warning!</b> You changed your language setting from the default. Check that all of your content is speaking the same language.
         you_are_about: You are about to activate your header, footer and Dataset Landing Pages for your datasets.
         you_are_about_html: "<p>You are about to activate your header, footer, and Primer for your datasets. Your users are going to love the new look!</p> <p>To see Primer and your header/footer in action, click 'Ok' below and then navigate to one of your datasets.</p>\n"
         you_have_activated: You have activated your new header/footer and Dataset Landing Page.

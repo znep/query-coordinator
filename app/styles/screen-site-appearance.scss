@@ -240,6 +240,51 @@ $link_color: #2279a6;
           }
         }
 
+        &.image {
+          .form-field-url-input {
+            width: calc(100% - 144px);
+            display: inline-block;
+          }
+
+          // Hide actual file input. Instead show styleguide button that triggers this hidden input's click.
+          .form-field-image-hidden-input {
+            display: none;
+          }
+
+          button {
+            float: right;
+            margin-right: 14px;
+            margin-bottom: 0;
+            width: 120px;
+            vertical-align: top;
+            padding: 8px 15px;
+
+            &.btn-busy {
+              display: none;
+
+              span {
+                width: 16px;
+                height: 16px;
+              }
+            }
+
+            &.form-field-image-input-button {
+              span[class^="icon-"] {
+                margin-left: 0.5rem;
+              }
+            }
+          }
+
+          .upload-failed {
+            display: none;
+            clear: both;
+            float: right;
+            margin-right: 14px;
+            font-style: 14px;
+            color: $red-text;
+          }
+        }
+
         label {
           display: block;
           margin-bottom: 0.5em;
@@ -250,6 +295,7 @@ $link_color: #2279a6;
           &.site-appearance-input-error {
             color: $red-text;
             font-size: 14px;
+            float: left;
           }
         }
         input {

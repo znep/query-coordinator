@@ -1,0 +1,29 @@
+<section class="settings-group">
+  <div class="settings-form image">
+    <%= label_tag(form_field(fields), t("#{locale_string}.title")) %>
+    <%= text_field_tag(
+      form_field(fields),
+      fetch_content(fields),
+      :class => 'form-field-url-input',
+      :placeholder => t("#{locale_string}.placeholder")) %>
+
+    <%= file_field_tag(
+      "#{form_field(fields)}_image",
+      :name => nil, # Name should be nil, we don't want this input included in the POST to Configurations
+      :class => 'form-field-image-hidden-input',
+      :accept => 'image/*') %>
+
+    <%= button_tag(:type => 'button', :class => 'form-field-image-input-button btn-default') do
+      content_tag(:span, t('screens.admin.site_appearance.browse')) <<
+        content_tag(:span, nil, :class => 'icon-preview')
+    end %>
+
+    <%= button_tag(:type => 'button', :class => 'btn-busy btn-primary') do
+      content_tag(:span, nil, :class => 'spinner-default spinner-btn-primary')
+    end %>
+
+    <%= content_tag(:span, t('screens.admin.site_appearance.upload_failed'), :class => 'upload-failed') %>
+
+  </div>
+  <aside><p><%= t("#{locale_string}.description") %></p></aside>
+</section>

@@ -7,8 +7,8 @@
   window.CSRF_TOKEN = (meta && meta.content) || '';
   window.DOWNTIMES = <%== downtimes.to_json %>;
   window.EMBED_CODE_SANDBOX_IFRAME_ALLOWANCES = '<%= embed_code_iframe_sandbox_allowances %>';
-  window.ENABLE_GETTY_IMAGES_GALLERY = <%= Rails.application.config.enable_getty_images_gallery %>;
-  window.ENABLE_DEPRECATED_USER_SEARCH_API = <%= Rails.application.config.enable_deprecated_user_search_api %>;
+  window.ENABLE_GETTY_IMAGES_GALLERY = <%= getty_images_enabled? %>;
+  window.ENABLE_DEPRECATED_USER_SEARCH_API = <%= deprecated_user_search_api_enabled? %>;
   window.ENVIRONMENT = '<%= Rails.env %>';
   window.IMAGES = { COVER_IMAGE_ICON: '<%= asset_path("editor/cover-image.png") %>' };
   window.IS_STORY_PUBLISHED = <%= @story.is_a?(PublishedStory) %>;

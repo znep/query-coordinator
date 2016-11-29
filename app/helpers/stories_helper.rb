@@ -155,4 +155,12 @@ module StoriesHelper
   def should_launch_print_dialog_on_page_load?
     request.query_parameters['print'] == 'true'
   end
+
+  def getty_images_enabled?
+    Signaller.for(flag: 'enable_getty_images_gallery').value(on_domain: request.host)
+  end
+
+  def deprecated_user_search_api_enabled?
+    Signaller.for(flag: 'enable_deprecated_user_search_api').value(on_domain: request.host)
+  end
 end

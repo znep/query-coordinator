@@ -10,6 +10,12 @@ RSpec.describe 'add content panel', type: :feature, js: true do
     stub_sufficient_rights
     stub_core_view('hasb-lock')
     stub_current_domain
+
+    set_feature_flags(
+      'enable_getty_images_gallery' => true,
+      'enable_deprecated_user_search_api' => false
+    )
+
     visit '/s/magic-thing/hasb-lock/edit'
     @blocks = page.all('.user-story .block-edit')
     @first_block = @blocks.first

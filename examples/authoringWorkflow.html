@@ -38,37 +38,20 @@
     var vif;
     var authoringWorkflow;
     var AuthoringWorkflow = socrata.visualizations.AuthoringWorkflow;
+    var VisualizationRenderer = socrata.visualizations.VisualizationRenderer;
     var container = document.querySelector('#authoring-workflow');
     var output = document.querySelector('#output');
-    var $chart = $('#chart');
+    var chart = document.querySelector('#chart');
+    var visualization;
     var onComplete = function(result) {
       vif = result.vif;
       output.innerHTML = JSON.stringify(result.vif, null, 2);
-      $chart.empty();
+      chart.innerHTML = '';
 
-      switch (result.vif.series[0].type) {
-        case 'barChart':
-          $chart.socrataSvgBarChart(result.vif);
-          break;
-        case 'columnChart':
-          $chart.socrataSvgColumnChart(result.vif);
-          break;
-        case 'pieChart':
-          $chart.socrataSvgPieChart(result.vif);
-          break;
-        case 'timelineChart':
-          $chart.socrataSvgTimelineChart(result.vif);
-          break;
-        case 'histogram':
-          $chart.socrataSvgHistogram(result.vif);
-          break;
-        case 'featureMap':
-          $chart.socrataSvgFeatureMap(result.vif);
-          break;
-        case 'regionMap':
-          $chart.socrataSvgRegionMap(result.vif);
-          break;
+      if (visualization) {
+        visualization.destroy();
       }
+      visualization = new VisualizationRenderer(result.vif, chart);
 
       authoringWorkflow.destroy();
     };
@@ -84,7 +67,7 @@
     $('#launch').click(function() {
       output.innerHTML = '';
       vif = null;
-      $chart.empty();
+      chart.innerHTML = '';
 
       var axisLabels = {
         top: 'Top Axis Label',
@@ -94,10 +77,6 @@
       };
 
       var choroplethVif = {
-        format: {
-          type: 'visualization_interchange_format',
-          version: 2
-        },
         format: {
           type: 'visualization_interchange_format',
           version: 2
@@ -118,10 +97,6 @@
           type: 'visualization_interchange_format',
           version: 2
         },
-        format: {
-          type: 'visualization_interchange_format',
-          version: 2
-        },
         series: [
           {
             dataSource: {
@@ -133,10 +108,6 @@
       };
 
       var featureMapVif = {
-        format: {
-          type: 'visualization_interchange_format',
-          version: 2
-        },
         format: {
           type: 'visualization_interchange_format',
           version: 2
@@ -175,10 +146,6 @@
         configuration: {
           axisLabels: axisLabels
         },
-        format: {
-          type: 'visualization_interchange_format',
-          version: 2
-        },
         series: [
           {
             color: {
@@ -214,10 +181,6 @@
           version: 2
         },
         configuration: {},
-        format: {
-          type: 'visualization_interchange_format',
-          version: 2
-        },
         series: [
           {
             dataSource: {
@@ -349,7 +312,8 @@
         backButtonText: 'Back to Dataset Selection',
         onComplete: onComplete,
         onCancel: onCancel,
-        onBack: onBack
+        onBack: onBack,
+        useLogger: true
       });
     });
 
@@ -358,7 +322,8 @@
         authoringWorkflow = new AuthoringWorkflow(container, {
           vif: vif,
           onComplete: onComplete,
-          onCancel: onCancel
+          onCancel: onCancel,
+          useLogger: true
         });
       }
     });

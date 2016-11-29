@@ -20,7 +20,7 @@ import {
 
 import CustomizationTabs from './CustomizationTabs';
 import CustomizationTabPanes from './CustomizationTabPanes';
-import Visualization from './Visualization';
+import VisualizationPreview from './VisualizationPreview';
 import TableView from './TableView';
 import DataPane from './panes/DataPane';
 import TitleAndDescriptionPane from './panes/TitleAndDescriptionPane';
@@ -28,9 +28,6 @@ import ColorsAndStylePane from './panes/ColorsAndStylePane';
 import AxisAndScalePane from './panes/AxisAndScalePane';
 import LegendsAndFlyoutsPane from './panes/LegendsAndFlyoutsPane';
 import VisualizationTypeSelector from './VisualizationTypeSelector';
-
-import FlyoutRenderer from '../../views/FlyoutRenderer';
-import RowInspector from '../../views/RowInspector';
 
 export const AuthoringWorkflow = React.createClass({
   propTypes: {
@@ -44,8 +41,7 @@ export const AuthoringWorkflow = React.createClass({
 
   getInitialState() {
     return {
-      currentTabSelection: 'authoring-data',
-      flyoutRenderer: null
+      currentTabSelection: 'authoring-data'
     };
   },
 
@@ -91,20 +87,8 @@ export const AuthoringWorkflow = React.createClass({
   },
 
   componentDidMount() {
-    this.setState({
-      flyoutRenderer: new FlyoutRenderer()
-    });
-
-    RowInspector.setup();
-
     // Prevents the form from submitting and refreshing the page.
-    $(this.modal).
-      on('submit', _.constant(false)).
-      on('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout);
-  },
-
-  componentWillUnmount() {
-    $(this.modal).off('SOCRATA_VISUALIZATION_FLYOUT', this.onFlyout);
+    $(this.modal).on('submit', _.constant(false));
   },
 
   createRollups(vif) {
@@ -113,17 +97,6 @@ export const AuthoringWorkflow = React.createClass({
     const rollupRequests = [ Promise.resolve(true) ];
 
     return Promise.all(rollupRequests);
-  },
-
-  onFlyout(event) {
-    const payload = event.originalEvent.detail;
-
-    // Render/hide a flyout
-    if (payload !== null) {
-      this.state.flyoutRenderer.render(payload);
-    } else {
-      this.state.flyoutRenderer.clear();
-    }
   },
 
   onComplete() {
@@ -252,7 +225,7 @@ export const AuthoringWorkflow = React.createClass({
               </div>
               <div className="authoring-preview-container">
                 <VisualizationTypeSelector/>
-                <Visualization />
+                <VisualizationPreview />
                 <TableView />
                 {scalingMode}
               </div>

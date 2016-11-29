@@ -8,7 +8,7 @@ import {
   getDatasetName,
   hasData
 } from '../selectors/metadata';
-import '../../views/Table';
+import '../../Table';
 
 export var TableView = React.createClass({
   propTypes: {

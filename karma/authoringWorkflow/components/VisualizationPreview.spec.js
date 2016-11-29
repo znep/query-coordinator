@@ -2,7 +2,7 @@ import _ from 'lodash';
 import $ from 'jquery';
 
 import renderComponent from '../renderComponent';
-import { Visualization } from 'src/authoringWorkflow/components/Visualization';
+import { VisualizationPreview } from 'src/authoringWorkflow/components/VisualizationPreview';
 import vifs from 'src/authoringWorkflow/vifs';
 
 function defaultProps() {
@@ -42,12 +42,12 @@ function stubCharts() {
 
 function rendersChartType(props, jqueryFunctionName) {
   it(`calls $.fn.${jqueryFunctionName}`, function() {
-    renderComponent(Visualization, props);
+    renderComponent(VisualizationPreview, props);
     sinon.assert.calledOnce($.fn[jqueryFunctionName]);
   });
 }
 
-describe('Visualization', function() {
+describe('VisualizationPreview', function() {
   stubCharts();
 
   afterEach(function() {
@@ -55,7 +55,7 @@ describe('Visualization', function() {
   });
 
   it('with an invalid vif renders the get started message <div>', function() {
-    var element = renderComponent(Visualization, _.set(defaultProps(), 'vif', {}));
+    var element = renderComponent(VisualizationPreview, _.set(defaultProps(), 'vif', {}));
 
     expect(element.querySelector('.get-started-container')).to.exist;
     expect(element).to.have.class('visualization-preview-container');

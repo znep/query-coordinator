@@ -49,7 +49,13 @@ module.exports = function(element, configuration) {
 
   this.element = element;
   this.configuration = configuration;
-  this.store = createStore(reducer, initialState, applyMiddleware(thunk, logger));
+
+  const middleware = [thunk];
+  if (this.configuration.useLogger) {
+    middleware.push(logger);
+  }
+
+  this.store = createStore(reducer, initialState, applyMiddleware(...middleware));
 
   load(this.store.dispatch, vif);
   setLocale(locale);

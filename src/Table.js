@@ -690,3 +690,5 @@ $.fn.socrataTable = function(originalVif) {
 
   initialize();
 };
+
+module.exports = $.fn.socrataTable;

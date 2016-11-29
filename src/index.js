@@ -1,44 +1,46 @@
-const views = require('./views');
-const dataProviders = require('./dataProviders');
-const helpers = require('./helpers');
-const AuthoringWorkflow = require('./authoringWorkflow');
-const I18n = require('./I18n');
-// vv these requires have the side effect of registering jQuery plugins vv
-const ChoroplethMap = require('./ChoroplethMap');
-const SvgRegionMap = require('./SvgRegionMap');
-const ColumnChart = require('./ColumnChart');
-const SvgColumnChart = require('./SvgColumnChart');
-const SvgPieChart = require('./SvgPieChart');
-const DistributionChart = require('./DistributionChart');
-const FeatureMap = require('./FeatureMap');
-const SvgFeatureMap = require('./SvgFeatureMap');
-const Table = require('./Table');
-const TimelineChart = require('./TimelineChart');
-const SvgTimelineChart = require('./SvgTimelineChart');
-const SvgHistogram = require('./SvgHistogram');
-const SampleChart = require('./SampleChart');
-const SvgBarChart = require('./SvgBarChart');
+import views from './views';
+import dataProviders from './dataProviders';
+import helpers from './helpers';
+import components from './components';
+import AuthoringWorkflow from './authoringWorkflow';
+import VisualizationRenderer from './VisualizationRenderer';
+import I18n from './I18n';
 
-// TODO: add exported function here called `init` which takes a VIF and instantiates the
-// appropriate visualization based on the VIF's `type` field
+// vv these requires have the side effect of registering jQuery plugins vv
+import ChoroplethMap from './ChoroplethMap';
+import SvgRegionMap from './SvgRegionMap';
+import ColumnChart from './ColumnChart';
+import SvgColumnChart from './SvgColumnChart';
+import SvgPieChart from './SvgPieChart';
+import DistributionChart from './DistributionChart';
+import FeatureMap from './FeatureMap';
+import SvgFeatureMap from './SvgFeatureMap';
+import Table from './Table';
+import TimelineChart from './TimelineChart';
+import SvgTimelineChart from './SvgTimelineChart';
+import SvgHistogram from './SvgHistogram';
+import SampleChart from './SampleChart';
+import SvgBarChart from './SvgBarChart';
 
 module.exports = {
-  AuthoringWorkflow: AuthoringWorkflow,
-  views: views,
-  dataProviders: dataProviders,
-  helpers: helpers,
-  ChoroplethMap: ChoroplethMap,
-  ColumnChart: ColumnChart,
-  svgRegionMap: SvgRegionMap,
-  SvgPieChart: SvgPieChart,
-  SvgColumnChart: SvgColumnChart,
-  DistributionChart: DistributionChart,
-  FeatureMap: FeatureMap,
-  SvgFeatureMap: SvgFeatureMap,
-  Table: Table,
-  TimelineChart: TimelineChart,
-  SvgTimelineChart: SvgTimelineChart,
-  SvgHistogram: SvgHistogram,
-  SampleChart: SampleChart,
-  SvgBarChart: SvgBarChart
+  AuthoringWorkflow,
+  views,
+  dataProviders,
+  helpers,
+  components,
+  VisualizationRenderer,
+  ChoroplethMap,
+  ColumnChart,
+  SvgRegionMap,
+  SvgPieChart,
+  SvgColumnChart,
+  DistributionChart,
+  FeatureMap,
+  SvgFeatureMap,
+  Table,
+  TimelineChart,
+  SvgTimelineChart,
+  SvgHistogram,
+  SampleChart,
+  SvgBarChart
 };

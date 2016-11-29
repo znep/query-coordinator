@@ -27,6 +27,20 @@ Optionally listen to events emitted by the wrapper or trigger your own events on
 
 The example pages (`/examples/*.html`) show usage patterns for various visualization types in greater detail.
 
+Alternatively, use the `VisualizationRenderer` to handle rendering a visualization based on the visualization type provided in its VIF:
+
+`new VisualizationRenderer(vif, element)`
+
+An instance of the `VisualizationRenderer` exposes `update` and `destroy` functions, but the rendered visualization also responds to the same events as a visualization instantiated through one of the jQuery plugin wrappers.
+
+There is also a simple React wrapper available for the `VisualizationRenderer`:
+
+```
+const Visualization = socrata.visualizations.components.Visualization;
+
+return <Visualization vif={vif} />;
+```
+
 ## Implementing a New Visualization
 Before implementing a new visualization with the intent to integrate it back into this project, please read the following to understand our overall design. Once you understand how the pieces of this project fit together, you can find annotated implementations of each component in the following locations:
 

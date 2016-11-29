@@ -248,9 +248,9 @@ en:
           title: Owner
           warning: You must select an Owner for this Data Lens in order to proceed.
         provenance:
-          description: Selecting this option will give the view a special demarcation indicating that it is an Official View
-          label: Official View
-          title: View Status
+          description: Marking an asset as "Official" indicates which pages are authoritative so that users can quickly understand the quality of the view.
+          label: Mark asset as Official
+          title: Authority
         sharing:
           add_new: Add New
           contributor: Contributor

@@ -2200,7 +2200,11 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderChooseDatasetTemplate() {
-    return _renderViewChooserTemplate('suppressed_facets[]=type&limitTo=datasets');
+    if (Environment.ENABLE_FILTERED_TABLES_IN_AX) {
+      return _renderViewChooserTemplate('suppressed_facets[]=type&limitTo=tables');
+    } else {
+      return _renderViewChooserTemplate('suppressed_facets[]=type&limitTo=datasets');
+    }
   }
 
   function _renderChooseTableTemplate() {

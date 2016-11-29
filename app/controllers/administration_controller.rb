@@ -1123,7 +1123,7 @@ class AdministrationController < ApplicationController
     asset_inventory = AssetInventory.find
 
     if asset_inventory.present?
-      redirect_to :controller => 'datasets', :action => 'show', :id => asset_inventory.id
+      redirect_to :controller => 'datasets', :action => 'show', :id => asset_inventory.id, :bypass_dslp => true
     else
       render 'shared/error', :status => :not_found
     end

@@ -114,6 +114,10 @@ enable_pulse:
 enable_standard_ga_tracking:
   description: If enabled, uses a standard Socrata GA code (same across all domains) defined in the config for tracking. It will also cause any custom GA tokens defined in "enable_opendata_ga_tracking" to be ignored.
   defaultValue: false
+enable_storyteller_mixpanel:
+  category: storyteller
+  defaultValue: false
+  description: Allows Mixpanel to be enabled on Storyteller pages. Storyteller will also need a token from the environment in order to activate Mixpanel successfully.
 enable_third_party_survey_qualtrics:
   category: third-party survey
   defaultValue: false

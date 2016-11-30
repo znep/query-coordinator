@@ -82,7 +82,7 @@
     }
     > dd {
       .wrap {
-        display: inline-block;
+        word-wrap: break-word;
       }
       .hardWrap {
         display: inline-block;

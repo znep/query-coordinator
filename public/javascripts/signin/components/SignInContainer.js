@@ -1,7 +1,7 @@
 import React from 'react';
 import Auth0 from 'auth0-js';
 import cssModules from 'react-css-modules';
-import OptionsPropType from './OptionsPropType';
+import OptionsPropType from '../PropTypes/OptionsPropType';
 import SignIn from './SignIn';
 import ChooseConnection from './ChooseConnection/ChooseConnection';
 import styles from './signin.scss';
@@ -25,6 +25,7 @@ class SignInContainer extends React.Component {
     this.renderChooseConnectionOrSignInForm = this.renderChooseConnectionOrSignInForm.bind(this);
     this.onConnectionChosen = this.onConnectionChosen.bind(this);
     this.setLoginFormVisibility = this.setLoginFormVisibility.bind(this);
+    this.renderFormMessage = this.renderFormMessage.bind(this);
   }
 
   componentDidMount() {
@@ -75,6 +76,15 @@ class SignInContainer extends React.Component {
     }
   }
 
+  renderFormMessage() {
+    const { formMessage, connections } = this.props.options;
+    const renderingLoginForm = _.isEmpty(connections) || this.state.renderLoginForm === true;
+
+    if (renderingLoginForm && !_.isEmpty(formMessage)) {
+      return <div styleName="form-message" dangerouslySetInnerHTML={{ __html: formMessage }} />;
+    }
+  }
+
   renderBackButton() {
     const { options } = this.props;
 
@@ -122,6 +132,7 @@ class SignInContainer extends React.Component {
           {$.t('screens.sign_in.headline', { site: blist.configuration.strings.company })}
         </h2>
 
+        {this.renderFormMessage()}
         {this.renderChooseConnectionOrSignInForm()}
       </div>
     );
@@ -129,7 +140,7 @@ class SignInContainer extends React.Component {
 }
 
 SignInContainer.propTypes = {
-  options: OptionsPropType
+  options: OptionsPropType.isRequired
 };
 
 export default cssModules(SignInContainer, styles);

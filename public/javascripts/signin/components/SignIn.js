@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
-import OptionsPropType from './OptionsPropType';
+import OptionsPropType from '../PropTypes/OptionsPropType';
 import SignInForm from './SignInForm/SignInForm';
 import SocialSignIn from './Social/SocialSignIn';
 import styles from './signin.scss';
@@ -44,7 +44,7 @@ class SignIn extends React.Component {
 }
 
 SignIn.propTypes = {
-  options: OptionsPropType,
+  options: OptionsPropType.isRequired,
   doAuth0Login: PropTypes.func.isRequired,
   auth0Connections: PropTypes.array.isRequired,
   setLoginFormVisibility: PropTypes.func.isRequired

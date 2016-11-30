@@ -7,10 +7,9 @@ $default-font-path: "socrata-components/dist/fonts/";
   @include form;
 
   position: relative;
-}
-
-.form-message {
-  margin-bottom: 1em;
+  max-width: 350px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .spinner {
@@ -84,7 +83,7 @@ $default-font-path: "socrata-components/dist/fonts/";
 .sso-enabled-text {
   text-align: left;
   padding-top: 8px;
-  padding-bottom: 7px;
+  padding-bottom: 9px;
   padding-left: 32px;
 }
 

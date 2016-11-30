@@ -3,6 +3,12 @@ $default-font-path: "socrata-components/dist/fonts/";
 @import "styleguide-no-tag-level.scss";
 @import "_colors.scss";
 
+.container {
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .button {
   @extend .btn;
   @extend .btn-default;

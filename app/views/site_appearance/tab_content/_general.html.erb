@@ -6,7 +6,10 @@
 
 <%= site_appearance_form_field(:general, [:styles, :max_width], "#{locale_string}.max_width") %>
 <%= site_appearance_form_field(:general, :window_title_display, "#{locale_string}.window_title_display") %>
-<%= site_appearance_form_field(:general, :window_icon, "#{locale_string}.window_icon") %>
+
+<%= render('site_appearance/tab_content/form_field_image',
+  :fields => [:general, :window_icon],
+  :locale_string => "#{locale_string}.window_icon") %>
 
 <%= site_appearance_dropdown_field(:general, [:styles, :font_family], valid_webfonts, "#{locale_string}.font_family") %>
 <%= site_appearance_form_field(:general, :google_analytics_token, "#{locale_string}.google_analytics_token") %>

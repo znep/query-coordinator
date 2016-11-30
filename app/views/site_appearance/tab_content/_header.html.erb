@@ -1,7 +1,7 @@
 <% header = @content['header'] %>
 
 <% #TODO: factor these out into a single lookup table %>
-<%= render('site_appearance/tab_content/form_field',
+<%= render('site_appearance/tab_content/form_field_image',
   :fields => [:header, :logo, :src],
   :locale_string => "#{locale_string}.header_bar_logo") %>
 

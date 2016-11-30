@@ -405,6 +405,51 @@ $('.list-of-links').on('click', '.remove-link-menu', function() {
   checkTopLevelLinkCount($listOfLinks);
 });
 
+// EN-9029: Allow users to upload images as assets
+$('.form-field-image-input-button').click(function() {
+  $(this).siblings('.form-field-image-hidden-input').click();
+});
+
+$('.form-field-image-hidden-input').on('change', function() {
+  var imageFile = this.files[0];
+  if (imageFile && /^image/.test(imageFile.type)) {
+    var formData = new FormData();
+    formData.append('file', imageFile);
+
+    var $defaultButton = $(this).siblings('button.form-field-image-input-button');
+    var $busyButton = $(this).siblings('button.btn-busy');
+    $defaultButton.hide();
+    $busyButton.show();
+
+    $.ajax({
+      url: '/api/assets',
+      type: 'POST',
+      data: formData,
+      context: this,
+      contentType: false,
+      processData: false,
+      timeout: 30000,
+      success: function(json) {
+        var response = JSON.parse(json);
+        var relativeUrl = '/api/assets/{0}?{1}'.format(response.id, response.nameForOutput);
+        $(this).siblings('.upload-failed').hide(); // hide any previous errors
+        $(this).siblings('.form-field-url-input').val(relativeUrl);
+        $busyButton.hide();
+        $defaultButton.show();
+      },
+      error: function(e) {
+        console.log(e);
+        $(this).siblings('.upload-failed').show();
+        $busyButton.hide();
+        $defaultButton.show();
+        // Clear the value of the hidden input, so if the user tries again to upload the same image,
+        // we detect the `change` event.
+        this.value = '';
+      }
+    });
+  }
+});
+
 // Before submit, reorder the indices of the present links and menus to reflect the current
 // appearance. Also remove any empty links to prevent them from being saved to the config.
 function preSubmitLinkCleansing() {

@@ -87,7 +87,7 @@ module ApplicationHelper
     site_appearance = SiteAppearance.find
     return false unless site_appearance
     return true if site_appearance_preview_mode?
-    return true if site_appearance.custom_content_activated? # EN-12113
+    return true if using_custom_site_chrome?(site_appearance) # EN-12113
 
     if on_homepage
       site_appearance.is_activated_on?('homepage')
@@ -96,6 +96,10 @@ module ApplicationHelper
     else
       site_appearance.is_activated_on?('open_data')
     end
+  end
+
+  def using_custom_site_chrome?(site_appearance = nil)
+    (site_appearance || SiteAppearance.find).try(:custom_content_activated?)
   end
 
   def site_appearance_preview_mode?

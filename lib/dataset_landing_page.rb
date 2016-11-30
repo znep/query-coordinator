@@ -213,7 +213,7 @@ class DatasetLandingPage
         image_url = featured_view.get_preview_image_url(cookie_string, request_id)
       end
 
-      format_featured_item(view, image_url)
+      format_featured_item(result, image_url)
     end
 
     def delete_featured_content(uid, item_position)

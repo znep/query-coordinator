@@ -13,7 +13,9 @@ describe DatasetLandingPage do
       'position' => 2,
       'contentType' => 'internal',
       'name' => 'featured',
-      'featuredView' => {}
+      'featuredView' => {
+        'id' => 'four-four'
+      }
     }
   end
 
@@ -190,6 +192,23 @@ describe DatasetLandingPage do
       )
 
       expect(result.length).to eq(2)
+    end
+  end
+
+  describe '#add_featured_content' do
+    it 'makes a request to core and formats the result' do
+      expect(CoreServer::Base.connection).to receive(:create_request).and_return(
+        featured_item.to_json
+      )
+
+      expect(DatasetLandingPage).to receive(:format_featured_item).with(featured_item, nil)
+
+      result = DatasetLandingPage.add_featured_content(
+        'view-wooo',
+        featured_item,
+        'cookies',
+        'request_id'
+      )
     end
   end
 

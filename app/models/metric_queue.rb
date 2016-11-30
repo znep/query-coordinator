@@ -59,6 +59,7 @@ class MetricQueue
       now -= now % 120
       now *= 1_000
       filename = "#{targetdir}#{sprintf('/metrics2012.%016x.data', now)}"
+      Rails.logger.debug("Flushing #{current_requests.length} metrics to file #{filename}")
       File.open(filename, 'ab') do |metricfile|
         current_requests.each do |request|
           write_start_of_record(metricfile)

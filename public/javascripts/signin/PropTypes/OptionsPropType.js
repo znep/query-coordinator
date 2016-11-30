@@ -1,4 +1,6 @@
 import { PropTypes } from 'react';
+import ConnectionsPropType from './ConnectionsPropType';
+import ForcedConnectionsPropType from './ForcedConnectionsPropType';
 
 // This is what gets passed in to the component, generated in the auth0_helper.rb file
 export default
@@ -29,21 +31,9 @@ export default
     socrataEmailsBypassAuth0: PropTypes.bool,
 
     // These connections are shown as buttons to login through specific auth0 federated connections
-    connections: PropTypes.arrayOf(
-      PropTypes.shape({
-        name: PropTypes.string,
-        buttonText: PropTypes.string,
-        connection: PropTypes.string.isRequired,
-        image: PropTypes.string // no image is supported
-      })
-    ),
+    connections: PropTypes.arrayOf(ConnectionsPropType),
 
-    forcedConnections: PropTypes.arrayOf(
-      PropTypes.shape({
-        match: PropTypes.string.isRequired,
-        connection: PropTypes.string.isRequired
-      })
-    ),
+    forcedConnections: PropTypes.arrayOf(ForcedConnectionsPropType),
 
     // The message that displays above the "connections"
     // Note that if there are no connections, no message is shown
@@ -53,10 +43,5 @@ export default
     formMessage: PropTypes.string,
 
     // Any flashes to display
-    flashes: PropTypes.arrayOf(
-      PropTypes.shape({
-        level: PropTypes.oneOf(['warning', 'notice', 'info', 'error']).isRequired,
-        message: PropTypes.string.isRequired
-      })
-    )
-  }).isRequired;
+    flashes: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
+  });

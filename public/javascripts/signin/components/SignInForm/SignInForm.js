@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
-import OptionsPropType from '../OptionsPropType';
+import { isValidEmail, findForcedOrEmailDomainConnection } from '../../Util';
+import OptionsPropType from '../../PropTypes/OptionsPropType';
 import EmailInput from './EmailInput';
 import PasswordInput from './PasswordInput';
 import SignInButton from './SignInButton';
@@ -43,21 +44,14 @@ class SignInForm extends React.Component {
    * login with based on the email domain
    */
   onEmailChange(email) {
-    if (this.isValidEmail(email)) {
+    if (isValidEmail(email)) {
       const { auth0Connections, options } = this.props;
-
-      const connection = this.findConnection(email, auth0Connections);
-      const forcedConnection =
-        this.findForcedConnection(email, options.forcedConnections);
-
-      // forced connection takes precedence
-      let connectionName = undefined;
-      if (!_.isUndefined(forcedConnection)) {
-        connectionName = forcedConnection.connection;
-      } else if (!_.isUndefined(connection)) {
-        connectionName = connection.name;
-      }
-
+      const connectionName = findForcedOrEmailDomainConnection(
+        email,
+        auth0Connections,
+        options.forcedConnections,
+        options.socrataEmailsBypassAuth0
+      );
       this.setState({ email, connectionName });
     } else {
       this.setState({ email: undefined, connectionName: undefined });
@@ -80,52 +74,6 @@ class SignInForm extends React.Component {
     this.setState({ error });
   }
 
-  /**
-   * This finds the first connection in the list of forced connections that matches the given email.
-   * If no such forced connection is found, undefined is returned instead.
-   */
-  findForcedConnection(email, forcedConnections) {
-    return _.find(
-      forcedConnections,
-      (forcedConnection) => new RegExp(`^${forcedConnection.match}$`).test(email)
-    );
-  }
-
-  /**
-   * This finds the connection in the list of connections that matches the given email.
-   * If no such connection is found, undefined is returned instead.
-   */
-  findConnection(email, connections) {
-    const emailSplit = email.split('@');
-
-    if (emailSplit.length !== 2) {
-      return undefined;
-    }
-
-    const emailDomain = emailSplit[1];
-
-    // this option allows users with @socrata.com emails to login directly to rails and
-    // bypass auth0; note that this is also enforced in the user_sessions controller
-    if (this.props.options.socrataEmailsBypassAuth0 && emailDomain === 'socrata.com') {
-      return undefined;
-    }
-
-    return _.find(connections, (connection) => {
-      const { status, domain_aliases } = connection;
-      return status === true && _.includes(domain_aliases, emailDomain);
-    });
-  }
-
-  /**
-   * Currently, anything with an @ followed by text is considered "valid"
-   * This is so for SSO (federated) email adresses you can just type @whatever
-   * and be sent to the right login system (i.e. just typing "@socrata" will log you
-   * in with our login system)
-   */
-  isValidEmail(email) {
-    return email.match(/@.+/);
-  }
-
   renderErrorOrSpinner() {
     const { error, loggingIn } = this.state;
 
@@ -140,14 +88,6 @@ class SignInForm extends React.Component {
     }
   }
 
-  renderFormMessage(options) {
-    const message = options.formMessage;
-
-    if (!_.isEmpty(message)) {
-      return <div styleName="form-message">{message}</div>;
-    }
-  }
-
   renderRememberMe(options) {
     if (options.rememberMe) {
       return <RememberMe />;
@@ -155,8 +95,9 @@ class SignInForm extends React.Component {
   }
 
   render() {
-    const { options, doAuth0Login } = this.props;
+    const { options, doAuth0Login, auth0Connections } = this.props;
     const { connectionName, email, password } = this.state;
+    const { forcedConnections, socrataEmailsBypassAuth0 } = options;
 
     return (
       <form
@@ -172,8 +113,6 @@ class SignInForm extends React.Component {
           name="authenticity_token"
           type="hidden"
           value={options.authenticityToken} />
-
-        {this.renderFormMessage(options)}
 
         <EmailInput onChange={this.onEmailChange} />
         <PasswordInput
@@ -195,14 +134,17 @@ class SignInForm extends React.Component {
           email={email}
           password={password}
           onLoginStart={this.onLoginStart}
-          onLoginError={this.onLoginError} />
+          onLoginError={this.onLoginError}
+          auth0Connections={auth0Connections}
+          forcedConnections={forcedConnections}
+          socrataEmailsBypassAuth0={socrataEmailsBypassAuth0} />
       </form>
     );
   }
 }
 
 SignInForm.propTypes = {
-  options: OptionsPropType,
+  options: OptionsPropType.isRequired,
   doAuth0Login: PropTypes.func.isRequired,
   auth0Connections: PropTypes.array
 };

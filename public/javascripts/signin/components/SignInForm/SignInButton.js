@@ -1,6 +1,9 @@
 import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
+import Auth0ConnectionsPropType from '../../PropTypes/Auth0ConnectionsPropType';
+import ForcedConnectionsPropType from '../../PropTypes/ForcedConnectionsPropType';
+import { findForcedOrEmailDomainConnection } from '../../Util';
 import styles from './sign-in-form.scss';
 
 class SignInButton extends React.Component {
@@ -8,35 +11,61 @@ class SignInButton extends React.Component {
     super(props);
 
     this.doSignIn = this.doSignIn.bind(this);
+    this.auth0Login = this.auth0Login.bind(this);
   }
 
   doSignIn(event) {
     event.preventDefault();
 
     const {
-      doAuth0Login,
       onLoginError,
       onLoginStart,
       connectionName,
       email,
       password,
-      form
+      form,
+      auth0Connections,
+      forcedConnections,
+      socrataEmailsBypassAuth0
     } = this.props;
 
     // blank out error
     onLoginError(undefined);
 
     if (!_.isEmpty(connectionName)) {
-      onLoginStart();
+      // we were passed a connection name; just use that
+      this.auth0Login(connectionName);
+    } else if (!_.isEmpty(email)) {
+      // make sure we really shouldn't have a connection...
+      const foundConnection = findForcedOrEmailDomainConnection(
+        email,
+        auth0Connections,
+        forcedConnections,
+        socrataEmailsBypassAuth0
+      );
 
-      // SSO connection
-      doAuth0Login({
-        connection: connectionName
-      });
-    } else if (!_.isEmpty(email) && !_.isEmpty(password)) {
-      onLoginStart();
-      form.submit();
+      if (!_.isEmpty(foundConnection)) {
+        // if an email was entered and matched a connection, use that connection
+        this.auth0Login(foundConnection);
+      } else if (!_.isEmpty(password)) {
+        // otherwise do a regular ol login
+        onLoginStart();
+        form.submit();
+      }
     }
+  }
+
+  auth0Login(connectionName) {
+    const {
+      doAuth0Login,
+      onLoginStart
+    } = this.props;
+    onLoginStart();
+
+    // SSO connection
+    doAuth0Login({
+      connection: connectionName
+    });
   }
 
   render() {
@@ -55,7 +84,10 @@ SignInButton.propTypes = {
   connectionName: PropTypes.string,
   doAuth0Login: PropTypes.func.isRequired,
   email: PropTypes.string,
-  password: PropTypes.string
+  password: PropTypes.string,
+  auth0Connections: PropTypes.arrayOf(Auth0ConnectionsPropType),
+  forcedConnections: PropTypes.arrayOf(ForcedConnectionsPropType),
+  socrataEmailsBypassAuth0: PropTypes.bool
 };
 
 export default cssModules(SignInButton, styles);

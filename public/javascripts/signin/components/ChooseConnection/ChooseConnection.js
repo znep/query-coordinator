@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
-import OptionsPropType from '../OptionsPropType';
+import OptionsPropType from '../../PropTypes/OptionsPropType';
 import styles from './choose-connection.scss';
 
 class ChooseConnection extends React.Component {
@@ -76,7 +76,7 @@ class ChooseConnection extends React.Component {
     const { options } = this.props;
 
     return (
-      <div>
+      <div styleName="container">
         <div styleName="message">{options.chooseConnectionMessage}</div>
         {this.renderSocrataIdButton()}
         {this.renderConnections()}
@@ -86,7 +86,7 @@ class ChooseConnection extends React.Component {
 }
 
 ChooseConnection.propTypes = {
-  options: OptionsPropType,
+  options: OptionsPropType.isRequired,
   onConnectionChosen: PropTypes.func.isRequired,
   setLoginFormVisibility: PropTypes.func.isRequired
 };

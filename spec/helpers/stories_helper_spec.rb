@@ -344,4 +344,14 @@ RSpec.describe StoriesHelper, type: :helper do
       expect(helper.deprecated_user_search_api_enabled?).to eq(false)
     end
   end
+
+  describe '#filtered_tables_in_ax_enabled?' do
+    it 'returns the value of the corresponding feature flag' do
+      set_feature_flags('enable_filtered_tables_in_ax' => true)
+      expect(helper.filtered_tables_in_ax_enabled?).to eq(true)
+
+      set_feature_flags('enable_filtered_tables_in_ax' => false)
+      expect(helper.filtered_tables_in_ax_enabled?).to eq(false)
+    end
+  end
 end

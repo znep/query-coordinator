@@ -349,11 +349,28 @@
         });
     };
 
+    // Much of this code is copy-pasted from Dataset.map._convertLegacy and Dataset.map.convertToVersion2,
+    // but note that it is not an exact copy of the configuration transformations happening in those
+    // functions.
+    //
+    // TODO: reconcile the differences between transformations here and ones in Dataset.map
     var convertLegacy = function(props) {
+        // Copied from Dataset.map._convertLegacy
+        if ($.subKeyDefined(props, 'displayFormat.bkgdLayers')) {
+            props.displayFormat.bkgdLayers.forEach(function(layer) {
+                // Convert layerName to layerKey.
+                if ($.isBlank(layer.layerKey) && !$.isBlank(layer.layerName)) {
+                    layer.layerKey = layer.layerName;
+                    delete layer.layerName;
+                }
+            });
+        }
+
         if (props.viewDefinitions) {
             return props;
         }
         var contextId;
+
         if ($.subKeyDefined(props, 'displayFormat.viewDefinitions')) {
             contextId = props.contextId;
             props.viewDefinitions = _.map(props.displayFormat.viewDefinitions,

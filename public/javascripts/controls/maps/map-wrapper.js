@@ -1,5 +1,10 @@
 /* eslint-disable */
 
+// Note that this file renders maps coming from:
+// - utils/dataset/map.js (grid view maps)
+// - component/data/map.js (Dataslate (aka: "canvas") maps)
+//
+// Be wary of making assumptions about how configurations look for one and not for the other!
 (function($) {
   window.requestAnimationFrame = window.webkitRequestAnimationFrame ||
     window.mozRequestAnimationFrame ||

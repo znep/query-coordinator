@@ -232,6 +232,12 @@
     },
 
     // Migrate legacy map configurations to the most current state of the world.
+    //
+    // Much of this code is copy-pasted into component/data/map.js but note that it is not an exact
+    // copy of the configuration transformations happening in those functions. Be wary of making
+    // breaking transformations here and not updating component/data/map.js!
+    //
+    // TODO: reconcile the differences between transformations here and ones in component/data/map.js
     _convertLegacy: function() {
       var view = this;
       if (view._convertedLegacy) {

@@ -44,7 +44,7 @@ $(function() {
       return $.t('controls.nominate.open');
     }
 
-    return nom.status;
+    return $.t('controls.nominate.' + nom.status);
   };
 
   blist.nominations.remove = function(id, successCallback) {

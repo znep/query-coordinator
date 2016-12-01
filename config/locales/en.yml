@@ -3281,6 +3281,7 @@ en:
         view_published_html: View the published <span class="publishedName">dataset</span>
         view_type: View as a %{type}
         view_types:
+          assetinventory: asset inventory
           calendar: calendar
           chart: chart
           fatrow: rich list

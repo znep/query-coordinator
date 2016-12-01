@@ -11,6 +11,7 @@ import ColorPicker from './components/ColorPicker';
 import Dropdown from './components/Dropdown';
 import Picklist from './components/Picklist';
 import ViewCard from './components/ViewCard';
+import EditBar from './components/EditBar';
 import ExternalViewCard from './components/ViewCard/ExternalViewCard';
 import FilterBar from './components/FilterBar';
 import InfoPane from './components/InfoPane';
@@ -39,6 +40,7 @@ module.exports = {
   Dropdown,
   Picklist,
   ViewCard,
+  EditBar,
   ExternalViewCard,
   FilterBar,
   InfoPane,

@@ -33,21 +33,8 @@ export const DatasetPreview = React.createClass({
 
     return {
       configuration: {
-        allowObeDataset: true,
-        localization: {
-          all_rows: I18n.dataset_preview.all_rows,
-          previous: I18n.dataset_preview.previous,
-          next: I18n.dataset_preview.next,
-          no_rows: I18n.dataset_preview.no_rows,
-          only_row: I18n.dataset_preview.only_rows,
-          many_rows: I18n.dataset_preview.many_rows,
-          no_row_count: I18n.dataset_preview.no_row_count,
-          latitude: I18n.dataset_preview.latitude,
-          longitude: I18n.dataset_preview.longitude,
-          no_column_description: I18n.dataset_preview.no_column_description,
-          unable_to_render: I18n.dataset_preview.unable_to_render
-        },
-        order: view.sortOrder
+        order: view.sortOrder,
+        viewSourceDataLink: false
       },
       datasetUid: view.id,
       domain: window.serverConfig.domain,

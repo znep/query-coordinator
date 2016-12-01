@@ -10,7 +10,11 @@ namespace :manifest do
       puts "Default comparison is #{from_tag} .. #{to_tag}"
       
       cmd = ARGV.last
-      task cmd.to_sym do ; end
+      task cmd.to_sym do 
+        if cmd.nil? 
+          cmd = ''
+        end
+      end
 
       if cmd != 'auto'
         puts "Press <Enter> to continue, or 'n' to choose a previous tag"

@@ -20,6 +20,9 @@ allow_data_lens_owner_change:
 auth0_social:
   description: Show auth0 social sign-on buttons
   defaultValue: false
+browse_autocomplete:
+  description: Show new autocomplete search box on browse page
+  defaultValue: false
 bubble:
   description: D3 Bubble Charts
   defaultValue: old

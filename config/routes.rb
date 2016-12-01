@@ -346,6 +346,7 @@ Rails.application.routes.draw do
     end
 
     get 'cetera/users', :controller => 'cetera', :action => 'fuzzy_user_search'
+    get 'cetera/autocomplete', :controller => 'cetera', :action => 'autocomplete'
 
     scope do
       # Data Lens endpoint for a standalone add card page that uses dataset metadata

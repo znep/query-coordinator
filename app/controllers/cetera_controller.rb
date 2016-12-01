@@ -21,9 +21,34 @@ class CeteraController < ApplicationController
     end
   end
 
+  def autocomplete
+    params[:limit] = (params[:limit] || 30).to_i
+    cetera_params = params.slice(:limit, :flags, :domain, :categories).symbolize_keys
+    cetera_params[:domains] = Federation.federated_domain_cnames('') * ','
+    cetera_params[:search_context] = CurrentDomain.cname
+
+    if params[:q]
+      begin
+        cetera_response = autocomplete_search_client.find_by_title(
+          params[:q], cetera_params
+        )
+        render :json => cetera_response
+      rescue StandardError => e
+        Rails.logger.error("Encountered error while getting autocomplete response from Cetera: #{e}")
+        render :nothing => true, :status => :internal_server_error
+      end
+    else
+      render :nothing => true, :status => :bad_request
+    end
+  end
+
   private
 
   def user_search_client
     @user_search_client ||= Cetera::Utils.user_search_client(forwardable_session_cookies)
+  end
+
+  def autocomplete_search_client
+    @autocomplete_search_client ||= Cetera::Utils.autocomplete_search_client(forwardable_session_cookies)
   end
 end

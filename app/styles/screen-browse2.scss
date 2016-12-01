@@ -222,12 +222,15 @@ html {
     }
   }
 
-  .browse2-search {
+  #browse2-search-container {
     @include desktop {
       width: 85%;
     }
 
     margin: 1rem auto 0;
+  }
+
+  .browse2-search {
     overflow: hidden;
     position: relative;
     background-color: #fff;

@@ -26,6 +26,7 @@ namespace :test do
       'importWizard' => 'update_import_wizard_translations',
       'datasetManagementUI' => 'update_dataset_management_ui_translations',
       'visualizationCanvas' => 'update_visualization_canvas_translations',
+      'autocomplete' => nil,
       'oldUx' => nil
     }.each do |task_name, dependency|
       desc task_name
@@ -118,7 +119,8 @@ namespace :test do
       'karma:oldUx',
       'karma:adminGoals',
       'karma:datasetManagementUI',
-      'karma:visualizationCanvas'
+      'karma:visualizationCanvas',
+      'karma:autocomplete'
     ]
   end
 end

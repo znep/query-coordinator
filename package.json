@@ -48,6 +48,7 @@
     "chai-as-promised": "4.1.1",
     "css-loader": "0.23.1",
     "dompurify": "0.8.3",
+    "enzyme": "2.6.0",
     "es6-promise": "3.2.1",
     "eslint": "2.9.0",
     "eslint-config-angular": "0.4.0",

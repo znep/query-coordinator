@@ -25,6 +25,14 @@ module Cetera
       )
     end
 
+    def self.autocomplete_search_client(cookie_string)
+      Cetera::AutocompleteSearch.new(
+        client,
+        CurrentDomain.cname,
+        cookie_string
+      )
+    end
+
     def self.get(path, options)
       uri = File.join(base_uri, path)
       Rails.logger.info("Cetera request to #{path} with query: #{options[:query].inspect}")

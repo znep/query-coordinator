@@ -1,0 +1,135 @@
+@import "../common";
+@import "styles/partials/_forms";
+
+$animation-speed: 0.2s;
+
+$search-box-active-padding: 10px;
+$search-box-inactive-padding: 35px;
+
+$search-icon-default-transform: scaleX(1) translateX(0);
+$search-icon-hidden-transform: scaleX(0) translateX(-30px);
+
+.form {
+  @include form;
+
+  margin-bottom: 0;
+  display: block !important;
+}
+
+.form-collapsible {
+  @extend .form;
+
+  /* Since the icon gets totally replace, add a margin to the form to keep things from moving around */
+  margin-right: 22px;
+}
+
+.search-box-base {
+  @include default-font;
+  @extend .text-input;
+
+  width: 100%;
+  margin-bottom: 0 !important;
+  padding-left: $search-box-inactive-padding !important;
+}
+
+@keyframes searchBoxFocused {
+  from { padding-left: $search-box-inactive-padding; }
+  to { padding-left: $search-box-active-padding; }
+}
+
+@keyframes searchBoxBlurred {
+  from { padding-left : $search-box-active-padding; }
+  to { padding-left: $search-box-inactive-padding; }
+}
+
+.search-box-focused {
+  @extend .search-box-base;
+
+  padding-left: $search-box-active-padding !important;
+  animation-name: searchBoxFocused;
+  animation-duration: $animation-speed;
+}
+
+.search-box-unfocused {
+  @extend .search-box-base;
+
+  padding-left: $search-box-inactive-padding !important;
+  animation-name: searchBoxBlurred;
+  animation-duration: $animation-speed;
+}
+
+@keyframes searchBoxUncollapse {
+  from { width: 0px; }
+  to { width: 250px; }
+}
+
+.search-box-collapsible {
+  @extend .search-box-base;
+
+  position: absolute;
+  width: 250px;
+  top: 10px;
+  right: 0;
+  animation-name: searchBoxUncollapse;
+  animation-duration: $animation-speed;
+}
+
+.icon-container-base {
+  position: absolute;
+  margin-top: 11px;
+  margin-left: 9px;
+
+  & svg {
+    width: 20px;
+    height: 20px;
+
+    & path {
+      fill: $light-grey-1;
+    }
+  }
+}
+
+@keyframes showIcon {
+  from { transform: scaleX(0) translateX(-30px); }
+  to { transform: $search-icon-default-transform; }
+}
+
+@keyframes hideIcon {
+  from { transform: $search-icon-default-transform; }
+  to { transform: scaleX(0) translateX(-30px); }
+}
+
+.icon-container-unfocused {
+  @extend .icon-container-base;
+
+  & svg {
+    transform: $search-icon-default-transform;
+    animation-name: showIcon;
+    animation-duration: $animation-speed;
+  }
+}
+
+.icon-container-focused {
+  @extend .icon-container-base;
+
+  & svg {
+    transform: scaleX(0) translateX(-30px);
+    animation-name: hideIcon;
+    animation-duration: $animation-speed;
+  }
+}
+
+@keyframes iconUncollapse {
+  from { left: 0px; }
+  to{ left: -229px; }
+}
+
+.icon-container-collapsible {
+  @extend .icon-container-base;
+
+  z-index: 1000;
+  left: -229px;
+  top: -4px;
+  animation-name: iconUncollapse;
+  animation-duration: $animation-speed;
+}

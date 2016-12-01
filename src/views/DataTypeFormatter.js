@@ -7,6 +7,122 @@ const moment = require('moment');
 const wkt = require('wellknown');
 const I18n = require('../I18n');
 
+const CURRENCY_SYMBOLS = {
+  'AFN': '؋',
+  'ALL': 'Lek',
+  'ANG': 'ƒ',
+  'ARS': '$',
+  'AUD': '$',
+  'AWG': 'ƒ',
+  'AZN': 'ман',
+  'BAM': 'KM',
+  'BBD': '$',
+  'BGN': 'лв',
+  'BMD': '$',
+  'BND': '$',
+  'BOB': '$b',
+  'BRL': 'R$',
+  'BSD': '$',
+  'BWP': 'P',
+  'BYR': 'p.',
+  'BZD': 'BZ$',
+  'CAD': '$',
+  'CHF': 'CHF',
+  'CLP': '$',
+  'CNY': '¥',
+  'COP': '$',
+  'CRC': '₡',
+  'CUP': '₱',
+  'CZK': 'Kč',
+  'DKK': 'kr',
+  'DOP': 'RD$',
+  'EEK': 'kr',
+  'EGP': '£',
+  'EUR': '€',
+  'FJD': '$',
+  'FKP': '£',
+  'GBP': '£',
+  'GGP': '£',
+  'GHC': '¢',
+  'GIP': '£',
+  'GTQ': 'Q',
+  'GYD': '$',
+  'HKD': '$',
+  'HNL': 'L',
+  'HRK': 'kn',
+  'HUF': 'Ft',
+  'INR': 'Rp',
+  'ILS': '₪',
+  'IMP': '£',
+  'IRR': '﷼',
+  'ISK': 'kr',
+  'JEP': '£',
+  'JMD': 'J$',
+  'JPY': '¥',
+  'KES': 'KSh',
+  'KGS': 'лв',
+  'KHR': '៛',
+  'KPW': '₩',
+  'KRW': '₩',
+  'KYD': '$',
+  'KZT': 'лв',
+  'LAK': '₭',
+  'LBP': '£',
+  'LKR': '₨',
+  'LRD': '$',
+  'LTL': 'Lt',
+  'LVL': 'Ls',
+  'MKD': 'ден',
+  'MNT': '₮',
+  'MUR': '₨',
+  'MXN': '$',
+  'MYR': 'RM',
+  'MZN': 'MT',
+  'NAD': '$',
+  'NGN': '₦',
+  'NIO': 'C$',
+  'NOK': 'kr',
+  'NPR': '₨',
+  'NZD': '$',
+  'OMR': '﷼',
+  'PAB': 'B/.',
+  'PEN': 'S/.',
+  'PHP': 'Php',
+  'PKR': '₨',
+  'PLN': 'zł',
+  'PYG': 'Gs',
+  'QAR': '﷼',
+  'RON': 'lei',
+  'RSD': 'Дин.',
+  'RUB': 'руб',
+  'SAR': '﷼',
+  'SBD': '$',
+  'SCR': '₨',
+  'SEK': 'kr',
+  'SGD': '$',
+  'SHP': '£',
+  'SOS': 'S',
+  'SRD': '$',
+  'SVC': '$',
+  'SYP': '£',
+  'THB': '฿',
+  'TRL': '₤',
+  'TRY': 'TL',
+  'TTD': 'TT$',
+  'TVD': '$',
+  'TWD': 'NT$',
+  'UAH': '₴',
+  'USD': '$',
+  'UYU': '$U',
+  'UZS': 'лв',
+  'VEF': 'Bs',
+  'VND': '₫',
+  'XCD': '$',
+  'YER': '﷼',
+  'ZAR': 'R',
+  'ZWD': 'Z$'
+};
+
 module.exports = {
   renderCell: renderCell,
   renderBooleanCell: renderBooleanCell,
@@ -244,17 +360,35 @@ function renderWKTCell(cellContent) {
 * Render a numeric value as currency
 */
 function renderMoneyCell(cellContent, column) {
-  const format = _.extend({
-    currency: '$',
-    decimalSeparator: '.',
-    groupSeparator: ',',
-    humane: false,
-    precision: 2
-  }, column.format || {});
+  const format = _.extend(
+    {
+      currency: 'USD',
+      decimalSeparator: '.',
+      groupSeparator: ',',
+      humane: 'false',
+      precision: 2
+    },
+    column.format || {}
+  );
+  const getHumaneProperty = (formatToCheck) => {
+    // So, the 'true/false'-ness of the humane property is actually serialized
+    // as the string literals 'true' and 'false', not by actual boolean values
+    // in the JSON response from the /api/views endpoint.
+    //
+    // Accordingly, we need to actually compare strings when deciding whether
+    // or not to use 'humane' numbers as opposed to simply reading the value
+    // out of the column format blob.
+    //
+    // Although this is expressed below as a not-equals comparison, the intent
+    // is basically just to return the value false if the string matches
+    // 'false' and the value true if it does not.
+    return _.get(formatToCheck, 'humane', 'false').toLowerCase() !== 'false';
+  };
+  const currencySymbol = CURRENCY_SYMBOLS[format.currency];
   const amount = parseFloat(cellContent);
 
   if (_.isFinite(amount)) {
-    if (format.humane) {
+    if (getHumaneProperty(format)) {
       // We can't use formatNumber here because this use case is
       // slightly different — we want to enforce a certain precision,
       // whereas the normal humane numbers want to use the fewest
@@ -264,8 +398,11 @@ function renderMoneyCell(cellContent, column) {
       // scale suffix, whereas our normal humane numbers allow four-
       // digit thousands output.
       const absVal = Math.abs(amount);
+
       if (absVal < 1000) {
-        cellContent = absVal.toFixed(format.precision).
+
+        cellContent = absVal.
+          toFixed(format.precision).
           replace('.', format.decimalSeparator);
       } else {
         // At this point, we know that we're going to use a suffix for
@@ -282,14 +419,18 @@ function renderMoneyCell(cellContent, column) {
         let symbolIndex = scaleGroupedVal.length - 2;
 
         let value = parseFloat(scaleGroupedVal[0] + '.' + scaleGroupedVal[1]);
+
         value = value.toFixed(format.precision);
+
         if (parseFloat(value) === 1000) {
           // The only edge case is when rounding takes us into the
           // next scale group: 999,999 should be 1M not 1000K.
           value = '1';
+
           if (format.precision > 0) {
             value += '.' + _.repeat('0', format.precision);
           }
+
           symbolIndex++;
         }
 
@@ -307,7 +448,7 @@ function renderMoneyCell(cellContent, column) {
         commaifyOptions
       );
     }
-    cellContent = `${amount < 0 ? '-' : ''}${format.currency}${cellContent}`;
+    cellContent = `${amount < 0 ? '-' : ''}${currencySymbol}${cellContent}`;
   }
 
   return cellContent;

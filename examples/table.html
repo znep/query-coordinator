@@ -50,6 +50,35 @@
     <div id="table-8"></div>
     <p>Tests rendering a table at a small width, which causes the pager label to be omitted</p>
     <div id="table-9"></div>
+    <p>Tests various money column configurations. Expected values:
+      <table>
+        <tr>
+          <td>currency_1</td>
+          <td>currency_2</td>
+          <td>currency_3</td>
+          <td>currency_4</td>
+          <td>currency_5</td>
+          <td>currency_6</td>
+          <td>currency_7</td>
+          <td>currency_8</td>
+          <td>currency_9</td>
+          <td>currency_10</td>
+        </tr>
+        <tr>
+          <td>$100,000</td>
+          <td>$100,000.0</td>
+          <td>$100K</td>
+          <td>$100.00K</td>
+          <td>$100,000</td>
+          <td>$100,000</td>
+          <td>$100,000</td>
+          <td>€100,000</td>
+          <td>£100,000</td>
+          <td>руб100,000</td>
+        </tr>
+      </table>
+    </p>
+    <div id="table-10"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -227,6 +256,50 @@
 
     var $table9Element = $('#table-9');
     $table9Element.socrataTable(table8VIF);
+
+    var table10VIF = {
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      },
+      configuration: {
+        order: [{
+          ascending: true,
+          columnName: 'currency_1'
+        }],
+        viewSourceDataLink: false
+      },
+      description: 'Table description',
+      series: [
+        {
+          color: {
+          },
+          dataSource: {
+            datasetUid: '6a8v-tndy',
+            dimension: {
+              columnName: null,
+              aggregationFunction: null
+            },
+            domain: 'vertex-stories.test-socrata.com',
+            measure: {
+              columnName: null,
+              aggregationFunction: 'count'
+            },
+            type: 'socrata.soql',
+            filters: []
+          },
+          label: null,
+          type: 'table',
+          unit: {
+            one: 'case',
+            other: 'cases'
+          }
+        }
+      ],
+      title: 'Table title'
+    };
+    var $table10Element = $('#table-10');
+    $table10Element.socrataTable(table10VIF);
 
     var $tables = $('[id^=table-]');
 

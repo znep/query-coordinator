@@ -142,12 +142,16 @@ def gitlab_tag_url(from, to)
 end
 
 def get_commits_with_jira(git_log_output)
-  git_log_output.lines.grep(ticket_regex).inject([]) do |list, line|
-    id = line.match(ticket_regex).to_s.strip
-    commit = line.strip
+  unless git_log_output.nil?
+    git_log_output.lines.grep(ticket_regex).inject([]) do |list, line|
+      id = line.match(ticket_regex).to_s.strip
+      commit = line.strip
 
-    list << { id => commit.gsub(id, "https://socrata.atlassian.net/browse/#{id}") }
-    list.uniq.sort_by(&:keys)
+      list << { id => commit.gsub(id, "https://socrata.atlassian.net/browse/#{id}") }
+      list.uniq.sort_by(&:keys)
+    end
+  else
+    ""
   end
 end
 

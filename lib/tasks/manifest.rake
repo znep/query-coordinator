@@ -151,7 +151,7 @@ def get_commits_with_jira(git_log_output)
       list.uniq.sort_by(&:keys)
     end
   else
-    ""
+    []
   end
 end
 

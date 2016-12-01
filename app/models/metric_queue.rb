@@ -35,31 +35,33 @@ class MetricQueue
   def flush_requests(synchronous = false)
     return if @@requests.blank?
 
+    logger = Rails.logger
     current_requests = @@requests
     @@requests = []
 
     if Rails.env.development? || synchronous
-      do_flush_requests(current_requests)
+      do_flush_requests(current_requests, logger)
     else
       Thread.new do
         # be chivalrous
         Thread.pass
-        do_flush_requests(current_requests)
+        do_flush_requests(current_requests, logger)
       end
     end
   end
 
-  def do_flush_requests(current_requests)
+  def do_flush_requests(current_requests, logger)
     targetdir = APP_CONFIG.metrics_dir
     FileUtils.mkdir_p(targetdir)
     lockfilename = "#{targetdir}/ruby-metrics.lock"
     File.open(lockfilename, 'wb') do |lockfile|
+      logger.debug("About to acquire file lock")
       lockfile.flock(File::LOCK_EX) # Cross-process locking wooo!
       now = Time.now.to_i
       now -= now % 120
       now *= 1_000
       filename = "#{targetdir}#{sprintf('/metrics2012.%016x.data', now)}"
-      Rails.logger.debug("Flushing #{current_requests.length} metrics to file #{filename}")
+      logger.debug("Flushing #{current_requests.length} metrics to file #{filename}")
       File.open(filename, 'ab') do |metricfile|
         current_requests.each do |request|
           write_start_of_record(metricfile)
@@ -70,6 +72,7 @@ class MetricQueue
           write_field(metricfile, request[:type].to_s)
         end
       end
+      logger.debug("Successfully wrote to file #{filename}.")
     end
     if APP_CONFIG.statsd_enabled
       current_requests.each do |request|
@@ -77,7 +80,7 @@ class MetricQueue
         if Frontend.statsd.present?
           Frontend.statsd.timing("browser.#{request[:name]}", request[:value])
         else
-          Rails.logger.error('Unable to report timing to statsd because it is not configured properly.')
+          logger.error('Unable to report timing to statsd because it is not configured properly.')
         end
       end
     end

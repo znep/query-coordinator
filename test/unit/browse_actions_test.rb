@@ -325,7 +325,7 @@ class BrowseActionsTest3 < Minitest::Test
 
     expected_category = 'Test Category 4'
     stub_core_for_category(expected_category)
-
+    User.stubs(:current_user => nil)
     assert_equal [expected_category], search_and_return_category_param(cly_unaffected_category)
   end
 
@@ -338,6 +338,7 @@ class BrowseActionsTest3 < Minitest::Test
       with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'}).
       to_return(:status => 200, :body => '', :headers => {})
 
+    User.stubs(:current_user => nil)
     assert_empty search_and_return_category_param(nil)
   end
 

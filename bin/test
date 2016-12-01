@@ -63,7 +63,7 @@ if ! [[ -z $JAVASCRIPT_FILES ]] || ! [[ -z $JSON_FILES ]]; then
     echo "No JavaScript lint errors"
   fi
 
-  bundle exec rake test:js:parallel
+  bundle exec rake test:karma:parallel
 else
   echo "No JavaScript files changed, skipping JavaScript linting."
 fi

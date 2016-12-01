@@ -1,58 +1,6 @@
 namespace :test do
-
-  # Helper task that creates a js file that injects translation into browser.
-  task :update_datacards_translations do
-    translations_filename = 'config/locales/en.yml'
-    output_filename = 'karma/dataCards/mockTranslations.js'
-    translations = YAML.load_file(translations_filename)['en']['angular']['dataCards']
-    File.write(output_filename, 'window.translations = ' + translations.to_json.html_safe + ';')
-  end
-
-  # Helper task that creates a js file that injects translation into browser.
-  task :update_dataset_landing_page_translations do
-    translations_filename = 'config/locales/en.yml'
-    output_filename = 'karma/datasetLandingPage/mockTranslations.js'
-    all_translations = YAML.load_file(translations_filename)['en']
-    translations = all_translations['dataset_landing_page'].merge({
-      data_types: all_translations['core']['data_types']
-    })
-    File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
-  end
-
-  task :update_import_wizard_translations do
-    translations_filename = 'config/locales/en.yml'
-    output_filename = 'karma/importWizard/mockTranslations.js'
-    all_translations = YAML.load_file(translations_filename)['en']
-    File.write(output_filename, "module.exports = #{all_translations.to_json.html_safe};")
-  end
-
-  task :update_dataset_management_ui_translations do
-    translations_filename = 'config/locales/en.yml'
-    output_filename = 'karma/datasetManagementUI/mockTranslations.js'
-    all_translations = YAML.load_file(translations_filename)['en']
-    translations = all_translations['dataset_management_ui'].
-      merge({
-        data_types: all_translations['core']['data_types'],
-        edit_metadata: all_translations['screens']['edit_metadata']
-      })
-    File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
-  end
-
-  task :update_admin_goals_translations do
-    translations_filename = 'config/locales/en.yml'
-    output_filename = 'karma/adminGoals/mockTranslations.js'
-    translations = YAML.load_file(translations_filename)['en']['govstat']
-    File.write(output_filename, "export default #{translations.to_json.html_safe};")
-  end
-
-  task :update_visualization_canvas_translations do
-    translations_filename = 'config/locales/en.yml'
-    output_filename = 'karma/visualizationCanvas/mockTranslations.js'
-    translations = YAML.load_file(translations_filename)['en']['visualization_canvas']
-    File.write(output_filename, "export default #{translations.to_json.html_safe};")
-  end
-
-  namespace :js do
+  desc 'Run the Karma test suites'
+  namespace :karma do
     def run_karma(dir, args = {})
       watch = args.watch == 'true'
       browser = args.browser || 'PhantomJS'
@@ -71,60 +19,106 @@ namespace :test do
       fail($?.exitstatus) unless system(cmd)
     end
 
-    task :dataCards, [:watch, :browser, :reporter] => 'update_datacards_translations' do |task, args|
-      run_karma('dataCards', args)
-    end
-
-    task :datasetLandingPage, [:watch, :browser, :reporter] => 'update_dataset_landing_page_translations' do |task, args|
-      run_karma('datasetLandingPage', args)
-    end
-
-    task :adminGoals, [:watch, :browser, :reporter] => :update_admin_goals_translations do |task, args|
-      run_karma('adminGoals', args)
-    end
-
-    task :importWizard, [:watch, :browser, :reporter] => 'update_import_wizard_translations' do |task, args|
-      run_karma('importWizard', args)
-    end
-
-    task :datasetManagementUI, [:watch, :browser, :reporter] => 'update_dataset_management_ui_translations' do |task, args|
-      run_karma('datasetManagementUI', args)
-    end
-
-    task :visualizationCanvas, [:watch, :browser, :reporter] => 'update_visualization_canvas_translations' do |task, args|
-      run_karma('visualizationCanvas', args)
-    end
-
-    task :oldUx, [:watch, :browser, :reporter] do |task, args|
-      run_karma('oldUx', args)
+    {
+      'dataCards' => 'update_datacards_translations',
+      'datasetLandingPage' => 'update_dataset_landing_page_translations',
+      'adminGoals' => 'update_admin_goals_translations',
+      'importWizard' => 'update_import_wizard_translations',
+      'datasetManagementUI' => 'update_dataset_management_ui_translations',
+      'visualizationCanvas' => 'update_visualization_canvas_translations',
+      'oldUx' => nil
+    }.each do |task_name, dependency|
+      desc task_name
+      task_args = { %i(watch browser reporter) => "translations:#{dependency}" }
+      task task_name, dependency ? task_args : task_args.keys.first do |_, args|
+        run_karma(task_name, args)
+      end
     end
 
     # an opinionated JS test runner for a parallelized single run
     parallel_deps = [
-      'test:update_datacards_translations',
-      'test:update_dataset_landing_page_translations',
-      'test:update_import_wizard_translations',
-      'test:update_admin_goals_translations',
-      'test:update_dataset_management_ui_translations',
-      'test:update_visualization_canvas_translations'
+      'test:karma:translations:update_datacards_translations',
+      'test:karma:translations:update_dataset_landing_page_translations',
+      'test:karma:translations:update_import_wizard_translations',
+      'test:karma:translations:update_admin_goals_translations',
+      'test:karma:translations:update_dataset_management_ui_translations',
+      'test:karma:translations:update_visualization_canvas_translations'
     ]
+    desc 'parallel'
     task :parallel => parallel_deps do
       cmd = 'node karma/parallelize.js'
       puts cmd
       exit($?.exitstatus) unless system(cmd)
     end
+
+    desc 'mock translations in support of Karma tests'
+    namespace :translations do
+      desc 'Helper task that creates a js file that injects translation into browser'
+      task :update_datacards_translations do
+        translations_filename = 'config/locales/en.yml'
+        output_filename = 'karma/dataCards/mockTranslations.js'
+        translations = YAML.load_file(translations_filename)['en']['angular']['dataCards']
+        File.write(output_filename, 'window.translations = ' + translations.to_json.html_safe + ';')
+      end
+
+      desc 'Helper task that creates a js file that injects translation into browser'
+      task :update_dataset_landing_page_translations do
+        translations_filename = 'config/locales/en.yml'
+        output_filename = 'karma/datasetLandingPage/mockTranslations.js'
+        all_translations = YAML.load_file(translations_filename)['en']
+        translations = all_translations['dataset_landing_page'].merge({
+          data_types: all_translations['core']['data_types']
+        })
+        File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
+      end
+
+      desc 'update_import_wizard_translations'
+      task :update_import_wizard_translations do
+        translations_filename = 'config/locales/en.yml'
+        output_filename = 'karma/importWizard/mockTranslations.js'
+        all_translations = YAML.load_file(translations_filename)['en']
+        File.write(output_filename, "module.exports = #{all_translations.to_json.html_safe};")
+      end
+
+      desc 'update_dataset_management_ui_translations'
+      task :update_dataset_management_ui_translations do
+        translations_filename = 'config/locales/en.yml'
+        output_filename = 'karma/datasetManagementUI/mockTranslations.js'
+        all_translations = YAML.load_file(translations_filename)['en']
+        translations = all_translations['dataset_management_ui'].
+          merge({
+            data_types: all_translations['core']['data_types'],
+            edit_metadata: all_translations['screens']['edit_metadata']
+          })
+        File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
+      end
+
+      desc 'update_admin_goals_translations'
+      task :update_admin_goals_translations do
+        translations_filename = 'config/locales/en.yml'
+        output_filename = 'karma/adminGoals/mockTranslations.js'
+        translations = YAML.load_file(translations_filename)['en']['govstat']
+        File.write(output_filename, "export default #{translations.to_json.html_safe};")
+      end
+
+      desc 'update_visualization_canvas_translations'
+      task :update_visualization_canvas_translations do
+        translations_filename = 'config/locales/en.yml'
+        output_filename = 'karma/visualizationCanvas/mockTranslations.js'
+        translations = YAML.load_file(translations_filename)['en']['visualization_canvas']
+        File.write(output_filename, "export default #{translations.to_json.html_safe};")
+      end
+    end
+
+    desc 'all the karma tasks'
+    task :karma, [:watch, :browser, :reporter] => [
+      'karma:dataCards',
+      'karma:datasetLandingPage',
+      'karma:importWizard',
+      'karma:oldUx',
+      'karma:adminGoals',
+      'karma:datasetManagementUI',
+      'karma:visualizationCanvas'
+    ]
   end
-
-  task :js, [:watch, :browser, :reporter] => [
-    'js:dataCards',
-    'js:datasetLandingPage',
-    'js:importWizard',
-    'js:oldUx',
-    'js:adminGoals',
-    'js:datasetManagementUI',
-    'js:visualizationCanvas'
-  ]
-
 end
-
-Rake::Task[:test].enhance { Rake::Task['test:js:parallel'].invoke }

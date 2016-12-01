@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 describe 'administration/georegions.html.erb' do
+  include TestHelperMethods
+
+  before do
+    init_current_domain
+  end
 
   let(:view_model) do
     double(::ViewModels::Administration::Georegions,

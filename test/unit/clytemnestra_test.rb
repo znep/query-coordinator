@@ -76,6 +76,13 @@ class ClytemnestraTest < Minitest::Test
 
   def test_search_views_timeout_throws_core_server_timeout
     CurrentDomain.stubs(:cname).returns('localhost')
+    init_current_user(
+      ApplicationController.new.tap do |controller|
+        controller.request = ActionDispatch::Request.new(ENV)
+        controller.response = ActionDispatch::Response.new
+        controller.stubs(:session => stub(:[]= => nil))
+      end
+    )
     stub_request(:get, APP_CONFIG.coreservice_uri + '/search/views.json').
       with(query: {}, headers: { 'X-Socrata-Host' => 'localhost' }).
       to_timeout

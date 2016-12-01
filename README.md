@@ -165,12 +165,12 @@ Ensure that you are using Ruby version 2.3.0 or greater.
 #### Karma Test Rake Tasks
 
 ```sh
-bundle exec rake test:js
-bundle exec rake test:js:dataCards
-bundle exec rake test:js:datasetLandingPage
-bundle exec rake test:js:importWizard
-bundle exec rake test:js:oldUx
-bundle exec rake test:js:adminGoals
+bundle exec rake test:karma
+bundle exec rake test:karma:dataCards
+bundle exec rake test:karma:datasetLandingPage
+bundle exec rake test:karma:importWizard
+bundle exec rake test:karma:oldUx
+bundle exec rake test:karma:adminGoals
 ```
 
 Each rake task accepts three arguments:
@@ -190,12 +190,12 @@ detected, the tests will re-run.
 Example invocation that watches file changes, runs the dataCards tests in chrome,
 and uses the mocha reporter:
 
-    bundle exec rake test:js:dataCards[true,chrome,mocha]
+    bundle exec rake test:karma:dataCards[true,chrome,mocha]
 
 For the simple case where a single test run under PhantomJS is needed for a
 general pass/fail check, a faster parallelized test run is also available:
 
-    bundle exec rake test:js:parallel
+    bundle exec rake test:karma:parallel
 
 #### To run a specific Ruby unit test
 

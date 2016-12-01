@@ -57,7 +57,7 @@ Developing
 To run the karma tests, run:
 
 ```
-bundle exec rake test:js
+bundle exec rake test:karma:parallel
 ```
 
 Test files are located in `karma`. Each directory corresponds to a suite of tests. For testing

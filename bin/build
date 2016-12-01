@@ -36,8 +36,8 @@ fi
 # Run tests (just running rake _should_ run all the tests, but this often fails)
 bundle exec rake test:units
 bundle exec rake test:functionals
-bundle exec rspec --no-color
-bundle exec rake test:js:parallel
+bundle exec rake spec --no-color
+bundle exec rake test:karma:parallel
 
 # Remove certain javascript files from public/javascripts (BUT WHY)
 if [ ! ${COMPRESS_ASSETS} = "true" ] ; then

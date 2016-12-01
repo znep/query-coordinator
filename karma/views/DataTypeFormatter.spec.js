@@ -599,7 +599,7 @@ describe('socrata.visualizations.views.DataTypeFormatter', function() {
       columnMetadata = {
         renderTypeName: 'money',
         format: {
-          currency: '€',
+          currency: 'EUR',
           decimalSeparator: ',',
           groupSeparator: '.'
         }
@@ -614,7 +614,7 @@ describe('socrata.visualizations.views.DataTypeFormatter', function() {
       columnMetadata = {
         renderTypeName: 'money',
         format: {
-          humane: true
+          humane: 'true'
         }
       };
       MONEY_DATA.forEach(function(value) {

@@ -855,8 +855,9 @@ class AdministrationController < ApplicationController
     # name: category, value: { parent: parent_category, enabled: true }
     # where parent is optional
     prop_val = { :enabled => new_category_displayed }
-    new_category_parent.present?
-    prop_val[:parent] = new_category_parent.titleize_if_necessary
+    if new_category_parent.present?
+      prop_val[:parent] = new_category_parent.titleize_if_necessary
+    end
 
     locales = params[:new_locales] || []
     prop_val[:locale_strings] = locales if locales.present?

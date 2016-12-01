@@ -516,6 +516,29 @@ class ApplicationHelperTest < ActionView::TestCase
     refute application_helper.enable_site_chrome?
   end
 
+  def test_using_custom_site_chrome_is_false_if_there_is_no_site_chrome_config
+    SiteAppearance.stubs(:find => nil)
+    refute application_helper.using_custom_site_chrome?
+  end
+
+  def test_using_custom_site_chrome_is_false_if_there_is_no_activation_state_property
+    SiteAppearance.stubs(:find => SiteAppearance.new)
+    SiteAppearance.any_instance.stubs(:properties => [])
+    refute application_helper.using_custom_site_chrome?
+  end
+
+  def test_using_custom_site_chrome_is_false_if_the_activation_state_property_specifies_false
+    SiteAppearance.stubs(:find => SiteAppearance.new)
+    SiteAppearance.any_instance.stubs(:properties => [ { 'name' => 'activation_state', :value => { :custom => false } } ])
+    refute application_helper.using_custom_site_chrome?
+  end
+
+  def test_using_custom_site_chrome_is_true_if_the_activation_state_property_specifies_true
+    SiteAppearance.stubs(:find => SiteAppearance.new)
+    SiteAppearance.any_instance.stubs(:properties => [ { 'name' => 'activation_state', :value => { :custom => true } } ])
+    assert application_helper.using_custom_site_chrome?
+  end
+
   def test_on_view_page_is_false_if_view_is_nil
     refute application_helper.on_view_page?(nil)
   end

@@ -127,6 +127,17 @@ var validationMessages = function() {
 var $siteAppearanceForm = $('form#site_appearance_form');
 
 $(document).ready(function() {
+  // EN-12175: If using custom header/footer, only show a Preview button on Site Appearance.
+  if ($('.site-appearance').hasClass('custom')) {
+    $('button#site_appearance_preview').click(function(e) {
+      e.preventDefault();
+      document.cookie = 'socrata_site_chrome_preview=true';
+      location.reload();
+    });
+
+    return;
+  }
+
   var curTab = getActiveTabId();
   // Show appropriate tab given the url hash. Ex: /site_appearance#tab=general
   showTab(curTab);
@@ -221,7 +232,7 @@ function getActiveTabId() {
     return activeTabId;
   } else {
     // No tab specified, show first tab
-    return $('ul.tabs li').first().data().tabId || 'general';
+    return _.get($('ul.tabs li').first().data(), 'tabId', 'general');
   }
 }
 

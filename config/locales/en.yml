@@ -2734,6 +2734,7 @@ en:
         browse: Browse
         cancel: Cancel
         congratulations: Congratulations!
+        custom_content_warning_html: <b>Note!</b> You are using a custom header/footer, so you do not see the normal Site Appearance panel.<br>You can still use the "Preview" button to view your <b>draft</b> custom content.
         description: Configure the appearance of your Socrata site.
         editing: Editing Site Appearance
         get_excited: Get Excited!

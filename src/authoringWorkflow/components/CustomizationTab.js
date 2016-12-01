@@ -34,6 +34,7 @@ export var CustomizationTab = React.createClass({
         <a {...this.linkAttributes()} title={title}>
           <i className={`icon-${icon}`} />
         </a>
+        <span className="pane-tooltip">{title}</span>
       </li>
     );
   }

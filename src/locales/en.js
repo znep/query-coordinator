@@ -109,7 +109,7 @@ export default {
       }
     },
     title_and_description: {
-      title: 'Title & Description',
+      title: 'Title and Description',
       subheaders: {
         general: 'General'
       },
@@ -126,7 +126,7 @@ export default {
       }
     },
     colors_and_style: {
-      title: 'Colors & Style',
+      title: 'Presentation',
       subheaders: {
         colors: 'Color',
         points: 'Points',
@@ -166,7 +166,7 @@ export default {
       }
     },
     axis_and_scale: {
-      title: 'Axis & Scale',
+      title: 'Axis',
       subheaders: {
         axis_titles: 'Axis Titles',
         axis_labels: 'Axis labels',
@@ -228,7 +228,7 @@ export default {
       }
     },
     legends_and_flyouts: {
-      title: 'Legends & Flyouts',
+      title: 'Legends and Flyouts',
       subheaders: {
         units: {
           title: 'Flyout Unit Label',

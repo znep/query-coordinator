@@ -138,6 +138,9 @@ function SvgFeatureMap(element, vif) {
       if (extent) {
         fitBounds(buildBoundsFromExtent(extent));
       }
+    } else {
+      // If nothing to render again call completion asynchronously
+      _.defer(handleVectorTileRenderComplete);
     }
 
     lastRenderedVif = newVif || lastRenderedVif || vif;
@@ -1003,6 +1006,9 @@ function SvgFeatureMap(element, vif) {
         featureLayers[layerId] = layer;
         currentLayerId = layerId;
       }
+    } else {
+      // If nothing to render again call completion asynchronously
+      _.defer(handleVectorTileRenderComplete);
     }
   }
 

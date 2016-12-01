@@ -1,6 +1,6 @@
-# The purpose of this module is to add helper methods to the host Rails application.
-
 require 'cgi'
+
+# The purpose of this module is to add helper methods to the host Rails application.
 
 module SiteChromeHelper
   include SocrataSiteChrome::SharedHelperMethods
@@ -10,7 +10,7 @@ module SiteChromeHelper
   end
 
   def site_chrome_google_analytics_tracking_code
-    CGI.escapeHTML(get_site_chrome.general[:google_analytics_token].to_s)
+    CGI.escapeHTML(site_chrome_instance.general[:google_analytics_token].to_s)
   end
 
   def site_chrome_google_analytics_tag
@@ -42,12 +42,12 @@ module SiteChromeHelper
   end
 
   def site_chrome_favicon_tag
-    favicon_url = get_site_chrome.general[:window_icon]
+    favicon_url = site_chrome_instance.general[:window_icon]
     favicon_link_tag(site_chrome_massage_url(favicon_url, add_locale: false)) if favicon_url.present?
   end
 
   def site_chrome_window_title
-    get_site_chrome.general[:window_title_display]
+    site_chrome_instance.general[:window_title_display]
   end
 
   def site_chrome_header(request, response, args = {})
@@ -69,10 +69,6 @@ module SiteChromeHelper
       controller.request = request
       controller.response = response
     end
-  end
-
-  def get_site_chrome
-    Rails.application.config.try(:socrata_site_chrome) || SocrataSiteChrome::SiteChrome.new
   end
 
 end

@@ -1,7 +1,8 @@
 require 'chroma'
 require 'request_store'
 
-# Internal helpers for the rendering of views
+# Internal helpers for the rendering of views within the gem only.
+
 module SocrataSiteChrome
   module SiteChromeHelper
     include SharedHelperMethods
@@ -33,11 +34,11 @@ module SocrataSiteChrome
     end
 
     def header_title
-      localized('header.site_name', get_site_chrome.locales)
+      localized('header.site_name', site_chrome_instance.locales)
     end
 
     def footer_title
-      localized('footer.site_name', get_site_chrome.locales)
+      localized('footer.site_name', site_chrome_instance.locales)
     end
 
     def logo(img, display_name = nil)
@@ -53,18 +54,18 @@ module SocrataSiteChrome
     end
 
     def header_logo
-      url = get_site_chrome.header.dig(:logo, :url).presence || '/'
+      url = site_chrome_instance.header.dig(:logo, :url).presence || '/'
       link_to(site_chrome_massage_url(url), :class => 'logo') do
-        img = logo(get_site_chrome.header, header_title)
+        img = logo(site_chrome_instance.header, header_title)
         span = content_tag(:span, header_title, :class => 'site-name')
         img.present? ? img << span : span
       end
     end
 
     def footer_logo
-      url = get_site_chrome.footer.dig(:logo, :url).presence || '/'
+      url = site_chrome_instance.footer.dig(:logo, :url).presence || '/'
       link_to(site_chrome_massage_url(url)) do
-        img = logo(get_site_chrome.footer, footer_title)
+        img = logo(site_chrome_instance.footer, footer_title)
         span = content_tag(:span, footer_title, :class => 'site-name')
         img.present? ? img << span : span
       end
@@ -96,7 +97,7 @@ module SocrataSiteChrome
     end
 
     def copyright_source
-      localized('footer.copyright_notice_source', get_site_chrome.locales)
+      localized('footer.copyright_notice_source', site_chrome_instance.locales)
     end
 
     def copyright
@@ -104,11 +105,11 @@ module SocrataSiteChrome
     end
 
     def show_copyright?
-      get_site_chrome.footer[:copyright_notice].to_s.downcase == 'true'
+      site_chrome_instance.footer[:copyright_notice].to_s.downcase == 'true'
     end
 
     def show_powered_by?
-      get_site_chrome.footer.fetch(:powered_by, 'true').downcase == 'true'
+      site_chrome_instance.footer.fetch(:powered_by, 'true').downcase == 'true'
     end
 
     def powered_by_logo_src
@@ -124,7 +125,7 @@ module SocrataSiteChrome
     end
 
     def footer_bg_color
-      color = get_site_chrome.footer.dig(:styles, :bg_color)
+      color = site_chrome_instance.footer.dig(:styles, :bg_color)
       color.present? ?
         color : SocrataSiteChrome::SiteChrome.default_site_chrome_content.dig(:footer, :styles, :bg_color)
     end
@@ -178,13 +179,13 @@ module SocrataSiteChrome
     end
 
     def navbar_links
-      get_site_chrome.header[:links].to_a
+      site_chrome_instance.header[:links].to_a
     end
 
     def navbar_links_div(args)
       content_tag(:div, :class => 'site-chrome-nav-links') do
         navbar_links.each do |link|
-          link_text = localized("header.links.#{link[:key]}", get_site_chrome.locales)
+          link_text = localized("header.links.#{link[:key]}", site_chrome_instance.locales)
           concat(
             if valid_navbar_menu_item?(link)
               if args[:use_dropdown]
@@ -215,7 +216,7 @@ module SocrataSiteChrome
 
     def navbar_child_links_array(child_links, is_mobile)
       child_links.to_a.map do |link|
-        link_text = localized("header.links.#{link[:key]}", get_site_chrome.locales)
+        link_text = localized("header.links.#{link[:key]}", site_chrome_instance.locales)
         if valid_link_item?(link, link_text)
           link_to(
             link_text,
@@ -229,7 +230,7 @@ module SocrataSiteChrome
     # Valid if link has :key and :links, and :links contains at least one valid_link_item
     def valid_navbar_menu_item?(link)
       link.try(:dig, :key).present? && link.dig(:links).present? && link[:links].any? do |link_item|
-        link_text = localized("header.links.#{link_item[:key]}", get_site_chrome.locales)
+        link_text = localized("header.links.#{link_item[:key]}", site_chrome_instance.locales)
         valid_link_item?(link_item, link_text)
       end
     end
@@ -251,7 +252,7 @@ module SocrataSiteChrome
     end
 
     def show_language_switcher?
-      get_site_chrome.general.dig(:languages, :display_language_switcher).to_s.downcase == 'true'
+      site_chrome_instance.general.dig(:languages, :display_language_switcher).to_s.downcase == 'true'
     end
 
     def language_switcher_locales
@@ -292,26 +293,22 @@ module SocrataSiteChrome
     end
 
     def show_profile?
-      get_site_chrome.general.fetch(:show_profile, 'true').downcase == 'true'
+      site_chrome_instance.general.fetch(:show_profile, 'true').downcase == 'true'
     end
 
     def show_signin_signout?
-      get_site_chrome.general.fetch(:show_signin_signout, 'true').downcase == 'true'
+      site_chrome_instance.general.fetch(:show_signin_signout, 'true').downcase == 'true'
     end
 
     def localized(locale_key, locales)
       locales[I18n.locale.to_s].try(:dig, *locale_key.split('.'))
     end
 
-    def get_site_chrome
-      Rails.application.config.try(:socrata_site_chrome) || SocrataSiteChrome::SiteChrome.new
-    end
-
     # Returns template name - either 'evergreen' (default) or 'rally'
     # Users can override with query parameter `?site_chrome_template=rally`
     def current_template
       template = (request.try(:query_parameters).dig(:site_chrome_template) ||
-        get_site_chrome.general[:template]).to_s.strip.downcase
+        site_chrome_instance.general[:template]).to_s.strip.downcase
       case template
         when 'rally' then 'rally'
         else 'evergreen'
@@ -319,7 +316,7 @@ module SocrataSiteChrome
     end
 
     def current_version_is_greater_than_or_equal?(version)
-      Gem::Version.new(get_site_chrome.current_version) >= Gem::Version.new(version)
+      Gem::Version.new(site_chrome_instance.current_version) >= Gem::Version.new(version)
     end
 
     def in_preview_mode?

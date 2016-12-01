@@ -106,4 +106,8 @@ RSpec.configure do |config|
     @request.env['action_controller.instance'] = OpenStruct.new(:current_user_json => user_hash)
   end
 
+  def stub_site_chrome_middleware
+    @request.env[SocrataSiteChrome::Middleware::SOCRATA_SITE_CHROME_ENV_KEY] = SocrataSiteChrome::Middleware.new(@app)
+  end
+
 end

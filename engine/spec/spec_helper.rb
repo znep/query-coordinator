@@ -104,13 +104,9 @@ def stub_current_domain_with(domain)
 end
 
 def stub_site_chrome(custom_config = nil)
-  Rails.application.config.socrata_site_chrome = SocrataSiteChrome::SiteChrome.new(
+  allow(self).to receive(:site_chrome_instance).and_return(SocrataSiteChrome::SiteChrome.new(
     :content => custom_config || site_chrome_config
-  )
-end
-
-def unstub_site_chrome
-  Rails.application.config.socrata_site_chrome = nil
+  ))
 end
 
 def site_chrome_config

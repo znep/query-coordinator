@@ -9,9 +9,9 @@
       //   Unparsed SASS   //
       ///////////////////////
 
-      <%== render('theme', :custom_themes => get_site_chrome.styles) %>
+      <%== render('theme', :custom_themes => site_chrome_instance.styles) %>
     <% else %>
-      <%== Sass::Engine.new(render('theme', :custom_themes => get_site_chrome.styles),
+      <%== Sass::Engine.new(render('theme', :custom_themes => site_chrome_instance.styles),
         SocrataSiteChrome::ThemesHelper.sass_engine_options).render %>
     <% end %>
   <% end %>

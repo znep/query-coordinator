@@ -1,50 +1,3 @@
-namespace :manifest_auto do
-  %w[staging release].each do |environment|
-    desc "Create a changelog between the last two #{environment} releases"
-    task environment.to_sym [:output_file] do |task,args|
-      tags = `git tag -l #{environment}/*`.split.sort.reverse.first((ENV['RELEASE_TAGS'] || 10).to_i)
-
-      # Find your tags to compare
-      to_tag = ENV['TO_TAG'] || tags[0]
-      from_tag = ENV['FROM_TAG'] || tags[1]
-      puts "Default comparison is #{from_tag} .. #{to_tag}"
-
-      # Generate the manifest info
-      manifest_output = ("= FRONTEND = (from #{from_tag} to #{to_tag})")
-      manifest_output << "\n\nGit diff: https://github.com/socrata/frontend/compare/#{from_tag}...#{to_tag}"
-
-      git_log_output = `git log --no-color --right-only --cherry-pick --no-merges --reverse #{from_tag}...#{to_tag}`
-
-      manifest_output << "\n\nCommits with JIRA tickets:\n"
-      manifest_output << get_commits_with_jira(git_log_output).map(&:values).join("\n")
-
-      commits_without_jira_tickets = get_commits_without_jira(git_log_output).join("\n")
-      if commits_without_jira_tickets.present?
-        manifest_output << "\n\nCommits without JIRA tickets:\n"
-        manifest_output << commits_without_jira_tickets
-      end
-
-      puts manifest_output
-      puts
-
-      puts 'Link to Jira query for current issues...'
-      Rake::Task['manifest:commits:jira_query'].invoke(git_log_output)
-
-      # Write the manifest to a file
-      if args.output_file.present?
-        puts "\nWriting manifest file to... #{File.expand_path(args.output_file)}"
-        File.open(args.output_file, 'w') do |f|
-          f << manifest_output
-          f << "\n\n"
-          f << git_log_output
-        end
-        puts manifest_output
-      else
-        puts manifest_output
-      end
-    end
- end
-
 namespace :manifest do
   %w[staging release].each do |environment|
     desc "Create a changelog between the last two #{environment} releases"
@@ -55,8 +8,14 @@ namespace :manifest do
       to_tag = ENV['TO_TAG'] || tags[0]
       from_tag = ENV['FROM_TAG'] || tags[1]
       puts "Default comparison is #{from_tag} .. #{to_tag}"
-      puts "Press <Enter> to continue, or 'n' to choose a previous tag"
-      answer = STDIN.gets.downcase.chomp
+      
+      cmd = ARGV.last
+      task cmd.to_sym do ; end
+
+      if cmd != 'auto'
+        puts "Press <Enter> to continue, or 'n' to choose a previous tag"
+        answer = STDIN.gets.downcase.chomp
+      end
 
       # Override the default compare if requested
       if answer == 'n'
@@ -146,14 +105,6 @@ namespace :manifest do
     puts "\t#{copy_cmd}"
 
     system(copy_cmd)
-  end
-
-  desc 'Generates useful information for the current release automated'
-  task :release_info_auto do
-    manifest_file_path = File.expand_path("manifest_#{Time.now.strftime('%Y%m%d-%H%M%S')}.txt")
-    puts
-    Rake::Task['manifest_auto:release'].invoke(manifest_file_path)
-    puts
   end
 end
 

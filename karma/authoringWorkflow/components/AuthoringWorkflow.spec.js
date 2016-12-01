@@ -157,17 +157,48 @@ describe('AuthoringWorkflow', function() {
       });
     });
 
-    describe('when configured with backButtonText', function() {
-      beforeEach(function() {
+    describe('when the back button is clicked', () => {
+      beforeEach(() => {
+        // Watch confirm to ensure that it is called to prompt user.
+        sinon.stub(window, 'confirm', _.constant(true));
         var renderedParts = render('columnChart', 'Back Button Text');
         component = renderedParts.component;
         props = renderedParts.props;
       });
 
-      it('calls the onBack callback when the back button is clicked', function() {
-        sinon.assert.notCalled(props.onBack);
-        TestUtils.Simulate.click(component.querySelector('.authoring-back-button'));
-        sinon.assert.calledOnce(props.onBack);
+      afterEach(() => {
+        window.confirm.restore();
+      });
+
+      describe('when no changes have been made', () => {
+        beforeEach(() => {
+          _.set(props, 'vifAuthoring.vifs', {});
+          _.set(props, 'vifAuthoring.authoring.checkpointVifs', {});
+          var renderedParts = render('columnChart', 'Back Button Text');
+          component = renderedParts.component;
+          props = renderedParts.props;
+        });
+
+        it('calls the onBack callback immediately', function() {
+          sinon.assert.notCalled(props.onBack);
+          TestUtils.Simulate.click(component.querySelector('.authoring-back-button'));
+          sinon.assert.calledOnce(props.onBack);
+        });
+      });
+
+      describe('when changes have been made', () => {
+        beforeEach(() => {
+          _.set(props, 'vifAuthoring.vifs', {notI: 'saidHe'});
+          _.set(props, 'vifAuthoring.authoring.checkpointVifs', {notI: 'saidThey'});
+          component = renderComponent(AuthoringWorkflow, props);
+        });
+
+        it('asks the user for confirmation before closing', () => {
+          expect(props.onBack.called).to.be.false;
+          TestUtils.Simulate.click(component.querySelector('button.authoring-back-button'));
+          sinon.assert.calledOnce(props.onBack);
+          sinon.assert.calledOnce(window.confirm);
+        });
       });
     });
 

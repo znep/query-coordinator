@@ -122,18 +122,26 @@ export const AuthoringWorkflow = React.createClass({
     }
   },
 
-  onCancel() {
-    const { vifAuthoring, onCancel } = this.props;
+  confirmUserCanEscape() {
+    const { vifAuthoring } = this.props;
     const message = translate('modal.changes_made_confirmation');
     const changesMade = hasMadeChangesToVifs(vifAuthoring);
-    const changesMadeAndConfirmedCancel = changesMade && window.confirm(message);
+    return !changesMade || window.confirm(message);
+  },
 
-    if (!changesMade) {
+  onCancel() {
+    const { onCancel } = this.props;
+
+    if (this.confirmUserCanEscape()) {
       onCancel();
-    } else if (changesMadeAndConfirmedCancel) {
-      onCancel();
-    } else {
-      // Don't cancel. Simple as that.
+    }
+  },
+
+  onBack() {
+    const { onBack } = this.props;
+
+    if (this.confirmUserCanEscape()) {
+      onBack();
     }
   },
 
@@ -170,10 +178,10 @@ export const AuthoringWorkflow = React.createClass({
   },
 
   renderBackButton() {
-    const { backButtonText, onBack } = this.props;
+    const { backButtonText } = this.props;
 
       return _.isString(backButtonText) ? (
-        <button className="authoring-back-button" onClick={onBack}>
+        <button className="authoring-back-button" onClick={this.onBack}>
           <span className="icon-arrow-left" />
           {backButtonText}
         </button>

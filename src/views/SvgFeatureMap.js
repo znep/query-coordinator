@@ -658,7 +658,7 @@ function SvgFeatureMap(element, vif) {
   function handleVectorTileRenderComplete() {
     removeOldFeatureLayers();
 
-    if (interactive) {
+    if (interactive && map) {
       map.fire('clearhighlightrequest');
     }
 

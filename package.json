@@ -145,7 +145,7 @@
     "redux-thunk": "2.1.0",
     "rx": "2.5.0",
     "rx-angular": "0.0.14",
-    "socrata-components": "8.3.0",
+    "socrata-components": "9.0.1",
     "socrata-visualizations": "20.0.0",
     "stringformat": "0.0.5",
     "tether-shepherd": "1.2.0",

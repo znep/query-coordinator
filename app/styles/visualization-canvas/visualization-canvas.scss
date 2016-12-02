@@ -2,14 +2,20 @@
 @import "visualization-canvas/visualization-container";
 @import "visualization-canvas/table";
 
+$edit-bar-height: 60px;
+
 body {
   margin: 0;
   padding: 0;
   background: $light-grey-6;
 }
 
+#site-chrome-header {
+  display: none;
+}
+
 .container {
-  margin: 0 auto;
+  margin: $edit-bar-height auto 0 auto;
 }
 
 .visualization-canvas {

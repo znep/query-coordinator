@@ -135,3 +135,5 @@
 - id: OGL_CANADA
   name: Canada Open Government Licence
   terms_link: http://open.canada.ca/en/open-government-licence-canada
+- id: SEE_TERMS_OF_USE
+  name: See Terms of Use

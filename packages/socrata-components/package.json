@@ -1,6 +1,6 @@
 {
   "name": "socrata-components",
-  "version": "9.0.0",
+  "version": "9.0.1",
   "description": "Socrata's Shared Component Library",
   "main": "dist/js/socrata-components",
   "publishConfig": {

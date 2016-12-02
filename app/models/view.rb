@@ -83,6 +83,7 @@ class View < Model
   def self.federation_headers
     { 'X-Socrata-Federation' => 'Honey Badger' }
   end
+  def federation_headers; self.class.federation_headers; end
 
   def self.get_predeploy_api_view(baseUid)
     parse(CoreServer::Base.connection.get_request(

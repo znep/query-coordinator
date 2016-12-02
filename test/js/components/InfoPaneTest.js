@@ -1,4 +1,5 @@
 import InfoPane from 'components/InfoPane';
+import { renderComponent } from '../helpers';
 
 describe('InfoPane', () => {
   function getProps(props) {

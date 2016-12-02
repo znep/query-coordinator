@@ -1,5 +1,6 @@
 import FilterConfig from 'components/FilterBar/FilterConfig';
 import { Simulate } from 'react-addons-test-utils';
+import { renderComponent } from '../../helpers';
 
 describe('FilterConfig', () => {
   function getProps(props) {

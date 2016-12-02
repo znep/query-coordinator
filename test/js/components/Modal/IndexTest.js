@@ -2,6 +2,7 @@ import _ from 'lodash';
 import $ from 'jquery'
 import React from 'react';
 import { Simulate } from 'react-addons-test-utils';
+import { renderComponent } from '../../helpers';
 
 import Modal from 'components/Modal';
 import { ENTER, ESCAPE } from 'common/keycodes';

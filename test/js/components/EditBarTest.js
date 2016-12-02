@@ -2,6 +2,7 @@ import React from 'react';
 import EditBar from 'components/EditBar';
 import Picklist from 'components/Picklist';
 import { Simulate } from 'react-addons-test-utils';
+import { renderPureComponent } from '../helpers';
 
 describe('EditBar', () => {
   const getMenu = (element) => element.querySelector('.btn-menu');

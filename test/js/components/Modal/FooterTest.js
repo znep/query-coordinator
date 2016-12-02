@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { renderPureComponent } from '../../helpers';
 
 import Footer from 'components/Modal/Footer';
 

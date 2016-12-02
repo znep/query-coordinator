@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
+import { renderComponent } from '../../helpers';
 import FilterBar from 'components/FilterBar';
 import { mockValueRangeFilter, mockNumberColumn } from './data';
 

@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { Simulate } from 'react-addons-test-utils';
+import { renderPureComponent } from '../../helpers';
 
 import Header from 'components/Modal/Header';
 

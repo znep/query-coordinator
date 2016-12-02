@@ -197,4 +197,64 @@ describe View do
       expect(View.new(data_lens_data).visualization_canvas?).to be false
     end
   end
+
+  describe '.sort_order' do
+    it 'defaults to using the fieldName of the first column with a fieldName' do
+      data = {
+        'columns' => [
+          { 'foo' => 'elephant' },
+          { 'fieldName' => 'giraffe' }
+        ]
+      }
+      sort_order = View.new(data).sort_order.first
+
+      expect(sort_order[:ascending]).to eq(true)
+      expect(sort_order[:columnName]).to eq('giraffe')
+    end
+
+    context 'when jsonQuery is present' do
+      it 'returns the columnName for queries if available' do
+        data = {
+          'metadata' => {
+            'jsonQuery' => {
+              'order' => [{ 'columnName' => 'puffins', 'ascending' => false }]
+            }
+          }
+        }
+        sort_order = View.new(data).sort_order.first
+
+        expect(sort_order[:ascending]).to eq(false)
+        expect(sort_order[:columnName]).to eq('puffins')
+      end
+
+      it 'returns the columnFieldName for queries if columnName is not available' do
+        data = {
+          'metadata' => {
+            'jsonQuery' => {
+              'order' => [{ 'columnFieldName' => 'penguins', 'ascending' => true }]
+            }
+          }
+        }
+        sort_order = View.new(data).sort_order.first
+
+        expect(sort_order[:ascending]).to eq(true)
+        expect(sort_order[:columnName]).to eq('penguins')
+      end
+    end
+
+    it 'returns all of the sort order rules' do
+      data = {
+        'metadata' => {
+          'jsonQuery' => {
+            'order' => [
+              { 'columnName' => 'penguins', 'ascending' => true },
+              { 'columnName' => 'puffins', 'ascending' => true }
+            ]
+          }
+        }
+      }
+
+      expect(View.new(data).sort_order.length).to eq(2)
+    end
+  end
 end

@@ -91,7 +91,7 @@ class DatasetLandingPage
         :statsUrl => stats_url(view, current_user),
         :editMetadataUrl => edit_metadata_url(view),
         :editUrl => edit_view_path(view),
-        :sortOrder => sort_order(view),
+        :sortOrder => view.sort_order,
         :bootstrapUrl => bootstrap_url(view),
         :metadata => view.metadata
       }
@@ -374,22 +374,6 @@ class DatasetLandingPage
             :link => link_to(attachment.displayName, attachment.href(view.id), :target => '_blank')
           }
         end
-      end
-    end
-
-    def sort_order(view)
-      query = view.metadata && view.metadata.json_query
-      order = query.try(:[], 'order').try(:first)
-
-      if query
-        order['columnName'] = order['columnName'] || order['columnFieldName']
-        [order]
-      else
-        # Default to sorting by the first column
-        [{
-          :ascending => true,
-          :columnName => view.columns.try(:first).try(:fieldName)
-        }]
       end
     end
 

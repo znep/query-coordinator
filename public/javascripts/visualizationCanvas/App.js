@@ -2,6 +2,7 @@ import React from 'react';
 import { VelocityComponent } from 'velocity-react';
 import InfoPane from './components/InfoPane';
 import VisualizationContainer from './components/VisualizationContainer';
+import Table from './components/Table';
 
 export default function App() {
   return (
@@ -10,6 +11,7 @@ export default function App() {
         <div className="container">
           <InfoPane />
           <VisualizationContainer />
+          <Table />
         </div>
       </div>
     </VelocityComponent>

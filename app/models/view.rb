@@ -2011,9 +2011,16 @@ class View < Model
   end
 
   def as_visualization_canvas_parent
+    canvas_row_label = (row_label || I18n.t('visualization_canvas.default_row_label')).capitalize
+
     {
       :id => nbe_view.id, # the authoring workflow only works on NBE datasets
       :name => name,
+      :rowLabel => {
+        :one => canvas_row_label,
+        :other => canvas_row_label.pluralize(2)
+      },
+      :sortOrder => sort_order,
       :url => Rails.application.routes.url_helpers.view_path(self)
     }
   end
@@ -2028,6 +2035,27 @@ class View < Model
     }
   end
 
+  def sort_order
+    query = self.metadata && self.metadata.json_query
+    order = query.try(:[], 'order')
+
+    if order
+      order.map do |rule|
+        {
+          :ascending => rule['ascending'],
+          :columnName => rule['columnName'] || rule['columnFieldName']
+        }
+      end
+    else
+      # Default to sorting by the first column with a fieldName. The table will render an error,
+      # but we shouldn't break the entire page if we can't find a valid column.
+      column_with_fieldName = self.columns.find { |column| !column.try(:fieldName).nil? }
+      [{
+        :ascending => true,
+        :columnName => column_with_fieldName.try(:fieldName) # in case column_with_fieldName is nil
+      }]
+    end
+  end
 
   @@default_categories = {
     '' => { text: "-- #{I18n.t 'core.no_category'} --", value: '' }

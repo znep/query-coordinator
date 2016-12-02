@@ -1,5 +1,6 @@
 @import "styleguide-colors";
 @import "visualization-canvas/visualization-container";
+@import "visualization-canvas/table";
 
 body {
   margin: 0;
@@ -12,8 +13,6 @@ body {
 }
 
 .visualization-canvas {
-  min-height: 90vh; // TODO: remove this once we have content
-
   .main-spinner {
     display: flex;
     height: 400px;
@@ -29,7 +28,6 @@ body {
   }
 }
 
-footer#site-appearance-footer {
-  margin-top: 20px;
+footer#site-chrome-footer {
   visibility: hidden;
 }

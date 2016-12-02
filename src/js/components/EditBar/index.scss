@@ -10,6 +10,7 @@
   align-items: center;
   background-color: $header-bg-color;
   box-shadow: 0 0 3px $header-box-shadow-color;
+  z-index: 3;
 
   .btn-menu {
     width: 60px;

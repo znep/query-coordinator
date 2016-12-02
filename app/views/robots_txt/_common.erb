@@ -1,7 +1,10 @@
 <%# This is primarily targeted at Bing who are very aggressive and have hit us with 10+ req/sec on a single domain, but lets include it for everyone  %>
 Crawl-delay: 1
 
-<% if !Rails.env.end_with?('production') || CurrentDomain.feature?('suppress_robots') || CurrentDomain.truthy?('suppress_robots') -%>Disallow: /<% end -%>
+<% if !Rails.env.end_with?('production') ||
+    CurrentDomain.feature?('suppress_robots') ||
+    CurrentDomain.truthy?('suppress_robots') ||
+    CurrentDomain.cname.to_s.match(/(test|rc)-socrata\.com$/)-%>Disallow: /<% end -%>
 
 <%==
 # Attempt to prevent crawling endless catalog filter combinations.  Still allows a single filter for SEO

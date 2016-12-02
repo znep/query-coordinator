@@ -1,0 +1,12 @@
+<% content_for :head do %>
+  <title><%= '(TODO)' %> | <%= get_site_title %></title>
+
+  <meta name="description" content="<%= 'TODO' %>">
+  <meta name="page_name" content="Asset Selector">
+<% end %>
+
+<div class="asset-selector"></div>
+
+<% content_for :scripts do %>
+  <%= include_webpack_bundle 'asset-selector/main.js' %>
+<% end %>

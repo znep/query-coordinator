@@ -28,11 +28,15 @@ class PendingUpload
 
   def url
     @url ||= begin
-      s3_obj = AWS::S3.new.
-        buckets[Rails.application.secrets.aws['s3_bucket_name']].
-        objects["uploads/#{SecureRandom.uuid}/#{filename}"]
+      s3_obj = Aws::S3::Bucket.new(Rails.application.secrets.aws['s3_bucket_name']).
+        object("uploads/#{SecureRandom.uuid}/#{filename}")
 
-      s3_obj.url_for(:write, content_type: @content_type, acl: :public_read)
+      s3_obj.presigned_url(
+        :put,
+        content_type: @content_type,
+        acl: 'public-read',
+        server_side_encryption: 'AES256'
+      )
     end
   end
 

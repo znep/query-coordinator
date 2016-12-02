@@ -38,11 +38,8 @@ gem 'retries'
 # Logging formatter to make sumo happier
 gem 'lograge'
 
-# We use aws-sdk-v1 for paperclip for S3
-gem 'aws-sdk-v1'
-
 # File uploading
-gem 'paperclip', '4.3.6'
+gem 'paperclip', '~> 5.0.0'
 
 # Run async jobs in the background
 gem 'delayed_job_active_record'
@@ -67,7 +64,7 @@ gem 'airbrake'
 gem 'ConnectSDK', path: 'vendor/gems/ConnectSDK'
 
 # We use aws-sdk v2 for RDS database migrations
-gem 'aws-sdk'
+gem 'aws-sdk', '~> 2'
 
 # Provides common header and footer
 gem 'socrata_site_chrome', '2.1.2'

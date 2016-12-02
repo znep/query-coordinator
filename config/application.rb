@@ -31,6 +31,8 @@ module SocrataSiteChrome
     config.coreservice_uri = Rails.application.config_for(:config)['coreservice_uri']
 
     config.assets.prefix = '/asset_pipeline'
+
+    config.cache_key_prefix = 'deadbeef';
   end
 end
 

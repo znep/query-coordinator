@@ -7,11 +7,45 @@ RSpec.describe Stat::GoalsController, type: :controller do
   let(:accessible) { false }
   let(:unauthorized) { false }
   let(:narrative_migration_marker) { 'narrative migration marker' }
+
+  let(:asset_id_one) { 'good-doog' }
+  let(:document_id_one) { 1 }
+  let(:created_one) { true }
+  let(:document_from_core_asset_one) do
+    double(
+      CreateDocumentFromCoreAsset,
+      :create => created_one,
+      :document => double(Document, :id => document_id_one)
+    )
+  end
+
+  let(:asset_id_two) { 'baad-daab' }
+  let(:document_id_two) { 2 }
+  let(:document_from_core_asset_two) do
+    double(
+      CreateDocumentFromCoreAsset,
+      :create => true,
+      :document => double(Document, :id => document_id_two)
+    )
+  end
+
+  let(:goal_document_ids) do
+    mapping = {}
+    mapping[asset_id_one] = document_id_one
+    mapping[asset_id_two] = document_id_two
+    mapping
+  end
+
   let(:narrative) do
     {
-      'narrative' => [ { 'foo' => narrative_migration_marker } ]
+      'narrative' => [
+        { 'foo' => narrative_migration_marker },
+        { 'type' => 'image', 'src' => "/api/assets/#{asset_id_one}" },
+        { 'type' => 'twoColLayout', 'columns' => [ { 'type' => 'image', 'src' => "/api/assets/#{asset_id_two}" } ] }
+      ]
     }
   end
+
   let(:feature_flags) do
     {
       'open_performance_narrative_editor' => 'storyteller',
@@ -36,6 +70,12 @@ RSpec.describe Stat::GoalsController, type: :controller do
   before do
     stub_current_domain
     allow(CoreServer).to receive(:story_themes).and_return([])
+
+    allow(CreateDocumentFromCoreAsset).
+      to receive(:new).with(asset_id_one, any_args).and_return(document_from_core_asset_one)
+    allow(CreateDocumentFromCoreAsset).
+      to receive(:new).with(asset_id_two, any_args).and_return(document_from_core_asset_two)
+
     allow(OpenPerformance::Goal).to receive(:new).and_return(goal)
     set_feature_flags(feature_flags)
   end
@@ -203,6 +243,10 @@ RSpec.describe Stat::GoalsController, type: :controller do
             it 'should set @story to a new story with theme="classic"' do
               expect(assigns(:story)).to be_a_new(DraftStory)
             end
+
+            it 'should set @goal_document_ids to a hash of core => document mappings' do
+              expect(assigns(:goal_document_ids)).to eq(goal_document_ids)
+            end
           end
 
           describe 'draft present' do
@@ -210,6 +254,18 @@ RSpec.describe Stat::GoalsController, type: :controller do
 
             it 'should set @story' do
               expect(assigns(:story)).to_not be_a_new(DraftStory)
+            end
+
+            it 'should set @goal_document_ids to an empty hash' do
+              expect(assigns(:goal_document_ids)).to eq({})
+            end
+          end
+
+          describe 'backfilling images fails' do
+            let(:created_one) { false }
+
+            it 'should render a 500' do
+              expect(response).to have_http_status(500)
             end
           end
 

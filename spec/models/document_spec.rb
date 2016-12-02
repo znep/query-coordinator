@@ -210,28 +210,40 @@ RSpec.describe Document, type: :model do
       allow(subject.upload).to receive(:url).and_return(upload_url)
     end
 
-    it 'sets content type on document' do
-      expect(subject.upload.content_type).to eq('image/png')
-      subject.set_content_type
-      expect(subject.upload.content_type).to eq('image/jpeg')
+    describe 'when uploading a non-Getty Image' do
+      it 'leaves content type as the originating content type' do
+        expect(subject.upload.content_type).to eq('image/png')
+        subject.set_content_type
+        expect(subject.upload.content_type).to eq('image/png')
+      end
     end
 
-    context 'when extension is in all caps' do
-      let(:extension) { 'JPG' }
+    describe 'when uploading a Getty Image' do
+      let(:upload_url) { "https://delivery.gettyimages.com/path/to/file/file.#{extension}" }
 
-      it 'sets content type correctly' do
+      it 'sets content type on document' do
         expect(subject.upload.content_type).to eq('image/png')
         subject.set_content_type
         expect(subject.upload.content_type).to eq('image/jpeg')
       end
-    end
 
-    context 'when extension cannot be read' do
-      let(:upload_url) { "http://example.com/path/to/file/file_without_extension" }
+      context 'when extension is in all caps' do
+        let(:extension) { 'JPG' }
 
-      it 'raises an exception' do
-        expect { subject.set_content_type }.to raise_error(MissingContentTypeError)
-        expect(subject.upload.content_type).to eq('image/png') # doesn't change after raising
+        it 'sets content type correctly' do
+          expect(subject.upload.content_type).to eq('image/png')
+          subject.set_content_type
+          expect(subject.upload.content_type).to eq('image/jpeg')
+        end
+      end
+
+      context 'when extension cannot be read' do
+        let(:upload_url) { "https://delivery.gettyimages.com/path/to/file/file_without_extension" }
+
+        it 'raises an exception' do
+          expect { subject.set_content_type }.to raise_error(MissingContentTypeError)
+          expect(subject.upload.content_type).to eq('image/png') # doesn't change after raising
+        end
       end
     end
   end

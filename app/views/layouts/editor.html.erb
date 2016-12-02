@@ -18,6 +18,9 @@
     window.CURRENT_USER_STORY_AUTHORIZATION = <%== current_user_story_authorization.to_json %>;
     window.CUSTOM_THEMES = <%== @custom_themes.to_json %>;
     window.DEFAULT_THEMES = <%== @default_themes.to_json %>;
+    <%- if @goal_document_ids -%>
+    window.OP_GOAL_DOCUMENT_IDS_BY_ASSET_IDS = <%== @goal_document_ids.to_json %>;
+    <%- end -%>
   </script>
 
   <% if Rails.env.test? -%>

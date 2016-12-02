@@ -48,6 +48,8 @@ class Document < ActiveRecord::Base
       https://#{Rails.application.secrets.aws['s3_bucket_name']}\.s3.*\.amazonaws\.com/(documents/)?(?<path>uploads\/.+\/(?<filename>.+))
     )|(
       https://delivery\.gettyimages\.com/.+\/.+\.(jpg|png|gif)\?.*
+    )|(
+      #{Rails.application.config.coreservice_uri}/assets/.+
     )
     \z
   }x.freeze
@@ -81,9 +83,11 @@ class Document < ActiveRecord::Base
   # application/x-download. We convert the image to its relevant MIME type here before
   # sending it off to Paperclip and S3.
   def set_content_type
-    extension = File.extname(URI.parse(self.upload.url).path)[1..-1].to_s.downcase
-    raise MissingContentTypeError.new if extension.blank?
-    self.upload.instance_write(:content_type, Mime::Type.lookup_by_extension(extension))
+    if self.upload.url =~ /gettyimages/
+      extension = File.extname(URI.parse(self.upload.url).path)[1..-1].to_s.downcase
+      raise MissingContentTypeError.new if extension.blank?
+      self.upload.instance_write(:content_type, Mime::Type.lookup_by_extension(extension))
+    end
   end
 
   # We only want to do post processing on uploaded images, not html files

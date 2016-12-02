@@ -71,6 +71,10 @@ class CoreServer
     response.json if response.ok?
   end
 
+  def self.get_asset(id)
+    core_server_request_with_retries(verb: :get, path: "/assets/#{id}")
+  end
+
   # Gets the configuration based on id
   def self.get_configuration(id)
     configuration_request(id: id, verb: :get)

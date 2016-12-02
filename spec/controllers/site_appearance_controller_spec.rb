@@ -97,6 +97,7 @@ describe SiteAppearanceController do
     it 'is forbidden to non-admins' do
       init_current_user(@controller)
       stub_normal_user
+      allow(@controller).to receive(:get_site_title).and_return('site title')
       put :update, content: new_content
       expect(response).to have_http_status(:forbidden)
     end
@@ -125,6 +126,7 @@ describe SiteAppearanceController do
       before(:each) do
         init_current_user(@controller)
         stub_superadmin_user
+        allow(@controller).to receive(:get_site_title).and_return('site title')
         auth_cookies_for_vcr_tapes.each { |key, value| @request.cookies[key] = value }
       end
 

@@ -128,6 +128,9 @@ module TestHelperMethods
       allow_any_instance_of(SocrataSiteChrome::DomainConfig).to receive(:config).and_return(
         HashWithIndifferentAccess.new(body)
       )
+      allow_any_instance_of(ApplicationController).to receive(:site_chrome_instance).and_return(
+        SocrataSiteChrome::SiteChrome.new(:content => HashWithIndifferentAccess.new(body))
+      )
     end
   end
 

@@ -92,10 +92,12 @@ body {
       }
 
       .dropdown {
-        z-index: 5;
-
         &:after {
           display: none;
+        }
+
+        ul.dropdown-options {
+          z-index: 5;
         }
       }
 

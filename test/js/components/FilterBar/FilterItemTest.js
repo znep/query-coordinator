@@ -1,5 +1,6 @@
 import FilterItem from 'components/FilterBar/FilterItem';
 import { Simulate } from 'react-addons-test-utils';
+import { renderComponent } from '../../helpers';
 import { mockValueRangeFilter, mockBinaryOperatorFilter, mockNumberColumn, mockTextColumn } from './data';
 
 describe('FilterItem', () => {

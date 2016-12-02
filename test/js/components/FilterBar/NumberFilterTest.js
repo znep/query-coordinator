@@ -1,6 +1,7 @@
 import NumberFilter from 'components/FilterBar/NumberFilter';
 import { mockValueRangeFilter, mockNumberColumn } from './data';
 import { Simulate } from 'react-addons-test-utils';
+import { renderComponent } from '../../helpers';
 
 describe('NumberFilter', () => {
   function getProps(props) {

@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import { Simulate } from 'react-addons-test-utils';
+import { renderComponent } from '../../helpers';
 import TextFilter from 'components/FilterBar/TextFilter';
 
 describe('TextFilter', () => {

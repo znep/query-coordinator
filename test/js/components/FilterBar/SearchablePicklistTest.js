@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import { Simulate } from 'react-addons-test-utils';
+import { renderComponent } from '../../helpers';
 import SearchablePicklist from 'components/FilterBar/SearchablePicklist';
 import { mockPicklistOptions } from './data';
 

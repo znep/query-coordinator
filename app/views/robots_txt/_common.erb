@@ -33,6 +33,8 @@ filters = [
 prefixes.product(filters).map { |prefix, filter| "Disallow: #{prefix}?*&#{filter}=" }.join("\n")
 %>
 
+Disallow: */alt$
+Disallow: */alt?
 Disallow: */edit$
 Disallow: /*/*/*/widget_preview
 Disallow: /OData.svc/
@@ -40,5 +42,5 @@ Disallow: /analytics/add
 Disallow: /browse/embed
 Disallow: /login
 Disallow: /reset_password/
-Disallow: /views/INLINE/rows.json?*method=clustered2*
 Disallow: /tiles/
+Disallow: /views/INLINE/rows.json?*method=clustered2*

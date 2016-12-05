@@ -7,7 +7,7 @@
 		exports["styleguide"] = factory(require("velocity-animate"), require("tether-shepherd"), require("lodash"), require("classnames"), require("react"), require("jquery"), require("socrata-utils"), require("dotdotdot"), require("dompurify"), require("react-dom"));
 	else
 		root["styleguide"] = factory(root["velocity-animate"], root["tether-shepherd"], root["lodash"], root["classnames"], root["react"], root["jquery"], root["socrata-utils"], root["dotdotdot"], root["dompurify"], root["react-dom"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_10__, __WEBPACK_EXTERNAL_MODULE_12__, __WEBPACK_EXTERNAL_MODULE_13__, __WEBPACK_EXTERNAL_MODULE_14__, __WEBPACK_EXTERNAL_MODULE_19__, __WEBPACK_EXTERNAL_MODULE_20__, __WEBPACK_EXTERNAL_MODULE_23__, __WEBPACK_EXTERNAL_MODULE_25__, __WEBPACK_EXTERNAL_MODULE_29__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_10__, __WEBPACK_EXTERNAL_MODULE_12__, __WEBPACK_EXTERNAL_MODULE_13__, __WEBPACK_EXTERNAL_MODULE_14__, __WEBPACK_EXTERNAL_MODULE_19__, __WEBPACK_EXTERNAL_MODULE_20__, __WEBPACK_EXTERNAL_MODULE_23__, __WEBPACK_EXTERNAL_MODULE_25__, __WEBPACK_EXTERNAL_MODULE_30__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -104,23 +104,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _ViewCard2 = _interopRequireDefault(_ViewCard);
 	
-	var _ExternalViewCard = __webpack_require__(26);
+	var _EditBar = __webpack_require__(26);
+	
+	var _EditBar2 = _interopRequireDefault(_EditBar);
+	
+	var _ExternalViewCard = __webpack_require__(27);
 	
 	var _ExternalViewCard2 = _interopRequireDefault(_ExternalViewCard);
 	
-	var _FilterBar = __webpack_require__(27);
+	var _FilterBar = __webpack_require__(28);
 	
 	var _FilterBar2 = _interopRequireDefault(_FilterBar);
 	
-	var _InfoPane = __webpack_require__(48);
+	var _InfoPane = __webpack_require__(50);
 	
 	var _InfoPane2 = _interopRequireDefault(_InfoPane);
 	
-	var _Slider = __webpack_require__(34);
+	var _Slider = __webpack_require__(35);
 	
 	var _Slider2 = _interopRequireDefault(_Slider);
 	
-	var _Modal3 = __webpack_require__(50);
+	var _Modal3 = __webpack_require__(52);
 	
 	var _Modal4 = _interopRequireDefault(_Modal3);
 	
@@ -148,6 +152,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Dropdown: _Dropdown4.default,
 	  Picklist: _Picklist2.default,
 	  ViewCard: _ViewCard2.default,
+	  EditBar: _EditBar2.default,
 	  ExternalViewCard: _ExternalViewCard2.default,
 	  FilterBar: _FilterBar2.default,
 	  InfoPane: _InfoPane2.default,
@@ -1223,7 +1228,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      _react2.default.createElement(
 	        'div',
 	        { className: 'caret', role: 'presentation' },
-	        _react2.default.createElement('span', { className: 'icon-arrow-down' })
+	        _react2.default.createElement('span', { className: 'socrata-icon-arrow-down' })
 	      )
 	    );
 	  },
@@ -1652,10 +1657,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      if (exceedsBrowserWindowHeight) {
 	        this.optionsRef.style.height = Math.max(determinedHeight, optionHeight) + 'px';
-	        this.picklistRef.picklist.style.height = Math.max(determinedHeight, optionHeight) + 'px';
 	      } else if (this.optionsRef.style.height !== 'auto') {
 	        this.optionsRef.style.height = 'auto';
-	        this.picklistRef.picklist.style.height = 'auto';
 	      }
 	
 	      if (!displayTrueWidthOptions) {
@@ -2333,7 +2336,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        url = _props.url;
 	
 	
-	    var privateIcon = isPrivate ? _react2.default.createElement('span', { className: 'icon icon-private' }) : null;
+	    var privateIcon = isPrivate ? _react2.default.createElement('span', { className: 'icon socrata-icon-private' }) : null;
 	
 	    var image = _lodash2.default.isString(imageUrl) && !_lodash2.default.isEmpty(imageUrl) ? _react2.default.createElement('img', { src: imageUrl, alt: name }) : _react2.default.createElement('span', { className: icon + ' x-large-icon' });
 	
@@ -2472,6 +2475,84 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.EditBar = undefined;
+	
+	var _react = __webpack_require__(14);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	/**
+	 * The EditBar is a component designed to render a basic Edit Bar. It renders a simple black bar
+	 * with a menu button (with its own click handler, to be used, for instance, to trigger opening a
+	 * sidebar), an automatically ellipsified title, and an area to render custom elements.
+	 */
+	var EditBar = exports.EditBar = function EditBar(props) {
+	  var name = props.name,
+	      menuIcon = props.menuIcon,
+	      menuLabel = props.menuLabel,
+	      onClickMenu = props.onClickMenu,
+	      children = props.children;
+	
+	
+	  var menuClasses = 'btn-menu ' + (menuIcon || 'socrata-icon-cards');
+	  var pageName = name ? _react2.default.createElement(
+	    'span',
+	    { className: 'page-name' },
+	    name
+	  ) : null;
+	
+	  return _react2.default.createElement(
+	    'nav',
+	    { className: 'edit-bar' },
+	    _react2.default.createElement('button', { className: menuClasses, onClick: onClickMenu, 'aria-label': menuLabel }),
+	    pageName,
+	    children
+	  );
+	};
+	
+	EditBar.propTypes = {
+	  /**
+	   * The name displayed, bolded, next to the menu button.
+	   */
+	  name: _react.PropTypes.string,
+	
+	  /**
+	   * The class of the icon to display in the menu button.
+	   */
+	  menuIcon: _react.PropTypes.string,
+	
+	  /**
+	   * The aria label to use for the menu button.
+	   */
+	  menuLabel: _react.PropTypes.string,
+	
+	  /**
+	   * The click handler for the menu button.
+	   */
+	  onClickMenu: _react.PropTypes.func,
+	
+	  /**
+	   * Any children elements you'd like to render. Accessible as a prop or like this:
+	   * <EditBar>
+	   *   <OtherComponent />
+	   * </EditBar>
+	   */
+	  children: _react.PropTypes.node
+	};
+	
+	exports.default = EditBar;
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
@@ -2500,7 +2581,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return _react2.default.createElement(
 	    _ViewCard2.default,
 	    _extends({
-	      icon: 'icon-external-square',
+	      icon: 'socrata-icon-external-square',
 	      metadataLeft: (0, _I18n.translate)('view_card.external_content')
 	    }, props, {
 	      linkProps: linkProps }),
@@ -2513,7 +2594,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ExternalViewCard;
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2533,15 +2614,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _lodash2 = _interopRequireDefault(_lodash);
 	
-	var _AddFilter = __webpack_require__(28);
+	var _AddFilter = __webpack_require__(29);
 	
 	var _AddFilter2 = _interopRequireDefault(_AddFilter);
 	
-	var _FilterItem = __webpack_require__(32);
+	var _FilterItem = __webpack_require__(33);
 	
 	var _FilterItem2 = _interopRequireDefault(_FilterItem);
 	
-	var _filters = __webpack_require__(47);
+	var _filters = __webpack_require__(49);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -2615,20 +2696,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	        filters = _props.filters,
 	        onUpdate = _props.onUpdate;
 	
+	    var newFilters = _lodash2.default.cloneDeep(filters);
 	
-	    filters.unshift(filter);
-	
-	    onUpdate(filters);
+	    newFilters.unshift(filter);
+	    onUpdate(newFilters);
 	  },
 	  onFilterRemove: function onFilterRemove(index) {
 	    var _props2 = this.props,
 	        filters = _props2.filters,
 	        onUpdate = _props2.onUpdate;
 	
+	    var newFilters = _lodash2.default.cloneDeep(filters);
 	
-	    filters.splice(index, 1);
-	
-	    onUpdate(filters);
+	    newFilters.splice(index, 1);
+	    onUpdate(newFilters);
 	  },
 	  onFilterUpdate: function onFilterUpdate(filter, index) {
 	    var _props3 = this.props,
@@ -2697,7 +2778,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = FilterBar;
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2711,11 +2792,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactDom = __webpack_require__(29);
+	var _reactDom = __webpack_require__(30);
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _SearchablePicklist = __webpack_require__(30);
+	var _SearchablePicklist = __webpack_require__(31);
 	
 	var _SearchablePicklist2 = _interopRequireDefault(_SearchablePicklist);
 	
@@ -2723,7 +2804,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _lodash2 = _interopRequireDefault(_lodash);
 	
-	var _icons = __webpack_require__(31);
+	var _icons = __webpack_require__(32);
 	
 	var _I18n = __webpack_require__(15);
 	
@@ -2841,7 +2922,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        role: 'button',
 	        tabIndex: '0' },
 	      (0, _I18n.translate)('filter_bar.add_filter'),
-	      _react2.default.createElement('span', { className: 'icon-add', role: 'presentation' })
+	      _react2.default.createElement('span', { className: 'socrata-icon-add', role: 'presentation' })
 	    );
 	
 	    return _react2.default.createElement(
@@ -2856,13 +2937,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AddFilter;
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports) {
 
-	module.exports = __WEBPACK_EXTERNAL_MODULE_29__;
+	module.exports = __WEBPACK_EXTERNAL_MODULE_30__;
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2892,7 +2973,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  displayName: 'SearchablePicklist',
 	
 	  propTypes: {
-	    isLoading: _react.PropTypes.bool,
 	    options: _react.PropTypes.arrayOf(_react.PropTypes.object),
 	    value: _react.PropTypes.string,
 	    onChangeSearchTerm: _react.PropTypes.func.isRequired,
@@ -2909,17 +2989,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  renderPicklist: function renderPicklist() {
 	    var _props = this.props,
-	        isLoading = _props.isLoading,
 	        options = _props.options,
 	        value = _props.value,
 	        onSelection = _props.onSelection;
 	
 	    var hasNoOptions = _lodash2.default.isEmpty(options);
 	    var visibleOptions = options;
-	
-	    if (isLoading) {
-	      return _react2.default.createElement('div', { className: 'spinner spinner-default' });
-	    }
 	
 	    if (hasNoOptions) {
 	      visibleOptions = [{ title: (0, _I18n.translate)('filter_bar.no_options_found') }];
@@ -2943,7 +3018,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return _react2.default.createElement(
 	      'div',
 	      { className: 'searchable-picklist-input-container' },
-	      _react2.default.createElement('span', { className: 'icon-search', role: 'presentation' }),
+	      _react2.default.createElement('span', { className: 'socrata-icon-search', role: 'presentation' }),
 	      _react2.default.createElement('input', {
 	        className: 'searchable-picklist-input',
 	        type: 'text',
@@ -2968,7 +3043,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = SearchablePicklist;
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2978,35 +3053,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.getIconForDataType = getIconForDataType;
 	var dataTypes = {
-	  blob: 'icon-data',
-	  calendar_date: 'icon-date',
-	  checkbox: 'icon-check',
-	  dataset_link: 'icon-link',
-	  date: 'icon-date',
-	  document: 'icon-copy-document',
-	  drop_down_list: 'icon-list-2',
-	  email: 'icon-email',
-	  flag: 'icon-region',
-	  geospatial: 'icon-geo',
-	  html: 'icon-clear-formatting',
-	  line: 'icon-geo',
-	  link: 'icon-link',
-	  list: 'icon-list-numbered',
-	  location: 'icon-map',
-	  money: 'icon-number',
-	  multiline: 'icon-geo',
-	  multipoint: 'icon-geo',
-	  multipolygon: 'icon-geo',
-	  nested_table: 'icon-table',
-	  number: 'icon-number',
-	  object: 'icon-data',
-	  percent: 'icon-number',
-	  photo: 'icon-chart',
-	  point: 'icon-map',
-	  polygon: 'icon-geo',
+	  blob: 'socrata-icon-data',
+	  calendar_date: 'socrata-icon-date',
+	  checkbox: 'socrata-icon-check',
+	  dataset_link: 'socrata-icon-link',
+	  date: 'socrata-icon-date',
+	  document: 'socrata-icon-copy-document',
+	  drop_down_list: 'socrata-icon-list-2',
+	  email: 'socrata-icon-email',
+	  flag: 'socrata-icon-region',
+	  geospatial: 'socrata-icon-geo',
+	  html: 'socrata-icon-clear-formatting',
+	  line: 'socrata-icon-geo',
+	  link: 'socrata-icon-link',
+	  list: 'socrata-icon-list-numbered',
+	  location: 'socrata-icon-map',
+	  money: 'socrata-icon-number',
+	  multiline: 'socrata-icon-geo',
+	  multipoint: 'socrata-icon-geo',
+	  multipolygon: 'socrata-icon-geo',
+	  nested_table: 'socrata-icon-table',
+	  number: 'socrata-icon-number',
+	  object: 'socrata-icon-data',
+	  percent: 'socrata-icon-number',
+	  photo: 'socrata-icon-chart',
+	  point: 'socrata-icon-map',
+	  polygon: 'socrata-icon-geo',
 	  stars: null,
-	  text: 'icon-text',
-	  url: 'icon-link'
+	  text: 'socrata-icon-text',
+	  url: 'socrata-icon-link'
 	};
 	
 	function getIconForDataType(dataType) {
@@ -3018,7 +3093,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3036,25 +3111,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactDom = __webpack_require__(29);
+	var _reactDom = __webpack_require__(30);
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _NumberFilter = __webpack_require__(33);
+	var _NumberFilter = __webpack_require__(34);
 	
 	var _NumberFilter2 = _interopRequireDefault(_NumberFilter);
 	
-	var _TextFilter = __webpack_require__(45);
+	var _TextFilter = __webpack_require__(47);
 	
 	var _TextFilter2 = _interopRequireDefault(_TextFilter);
 	
-	var _FilterConfig = __webpack_require__(46);
+	var _FilterConfig = __webpack_require__(48);
 	
 	var _FilterConfig2 = _interopRequireDefault(_FilterConfig);
 	
 	var _I18n = __webpack_require__(15);
 	
-	var _filters = __webpack_require__(47);
+	var _filters = __webpack_require__(49);
 	
 	var _keycodes = __webpack_require__(17);
 	
@@ -3087,7 +3162,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  getInitialState: function getInitialState() {
 	    return {
 	      isControlOpen: false,
-	      isConfigOpen: false
+	      isConfigOpen: false,
+	      isLeftAligned: false
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -3134,7 +3210,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  toggleControl: function toggleControl() {
 	    this.setState({
 	      isControlOpen: !this.state.isControlOpen,
-	      isConfigOpen: false
+	      isConfigOpen: false,
+	      isLeftAligned: this.filterControlToggle.getBoundingClientRect().right < window.innerWidth / 2
 	    });
 	  },
 	  toggleConfig: function toggleConfig() {
@@ -3202,7 +3279,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _props2 = this.props,
 	        filter = _props2.filter,
 	        column = _props2.column;
+	    var isLeftAligned = this.state.isLeftAligned;
 	
+	
+	    var alignment = isLeftAligned ? 'left' : 'right';
 	
 	    return _react2.default.createElement(
 	      'div',
@@ -3218,7 +3298,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _react2.default.createElement(
 	          'div',
 	          {
-	            className: 'filter-control-toggle',
+	            className: 'filter-control-toggle ' + alignment,
 	            'aria-label': (0, _I18n.translate)('filter_bar.filter') + ' ' + column.name,
 	            tabIndex: '0',
 	            onClick: this.toggleControl,
@@ -3227,7 +3307,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	              return _this2.filterControlToggle = el;
 	            } },
 	          (0, _filters.getToggleTextForFilter)(filter, column),
-	          _react2.default.createElement('span', { className: 'icon-chevron-down', role: 'presentation' })
+	          _react2.default.createElement('span', { className: 'socrata-icon-chevron-down', role: 'presentation' })
 	        ),
 	        this.renderFilterControl()
 	      ),
@@ -3237,7 +3317,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _react2.default.createElement(
 	          'div',
 	          {
-	            className: 'filter-config-toggle',
+	            className: 'filter-config-toggle ' + alignment,
 	            'aria-label': (0, _I18n.translate)('filter_bar.configure_filter'),
 	            tabIndex: '0',
 	            onClick: this.toggleConfig,
@@ -3245,7 +3325,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            ref: function ref(el) {
 	              return _this2.filterConfigToggle = el;
 	            } },
-	          _react2.default.createElement('span', { className: 'icon-kebab', role: 'presentation' })
+	          _react2.default.createElement('span', { className: 'socrata-icon-kebab', role: 'presentation' })
 	        ),
 	        this.renderFilterConfig()
 	      )
@@ -3256,7 +3336,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = FilterItem;
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3274,15 +3354,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Slider = __webpack_require__(34);
+	var _Slider = __webpack_require__(35);
 	
 	var _Slider2 = _interopRequireDefault(_Slider);
 	
-	var _FilterFooter = __webpack_require__(44);
+	var _FilterFooter = __webpack_require__(45);
 	
 	var _FilterFooter2 = _interopRequireDefault(_FilterFooter);
 	
 	var _I18n = __webpack_require__(15);
+	
+	var _numbers = __webpack_require__(46);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -3329,7 +3411,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        rangeMax = _props$column.rangeMax;
 	
 	
-	    return (rangeMax - rangeMin) / 20;
+	    return _lodash2.default.min(_lodash2.default.map([rangeMin, rangeMax], _numbers.getPrecision));
 	  },
 	  isValidValue: function isValidValue(value) {
 	    var _props$column2 = this.props.column,
@@ -3393,6 +3475,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    var value = this.state.value;
 	
+	    var step = this.getStepInterval();
+	    var formatLabel = _lodash2.default.partialRight(_numbers.roundToPrecision, step);
 	
 	    return _react2.default.createElement(
 	      'div',
@@ -3401,7 +3485,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        id: 'start',
 	        className: 'range-input text-input',
 	        type: 'number',
-	        value: value.start,
+	        value: formatLabel(value.start),
+	        step: step,
 	        onChange: this.onInputChange,
 	        'aria-label': (0, _I18n.translate)('filter_bar.from'),
 	        placeholder: (0, _I18n.translate)('filter_bar.from'),
@@ -3417,7 +3502,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        id: 'end',
 	        className: 'range-input text-input',
 	        type: 'number',
-	        value: value.end,
+	        value: formatLabel(value.end),
+	        step: step,
 	        onChange: this.onInputChange,
 	        'aria-label': (0, _I18n.translate)('filter_bar.to'),
 	        placeholder: (0, _I18n.translate)('filter_bar.to') })
@@ -3429,12 +3515,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        rangeMax = column.rangeMax;
 	    var value = this.state.value;
 	
+	    var step = this.getStepInterval();
 	
 	    var sliderProps = {
 	      rangeMin: rangeMin,
 	      rangeMax: rangeMax,
 	      value: value,
-	      step: this.getStepInterval(),
+	      step: step,
 	      onChange: this.onSliderChange
 	    };
 	
@@ -3473,7 +3560,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = NumberFilter;
 
 /***/ },
-/* 34 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3491,7 +3578,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactInputRange = __webpack_require__(35);
+	var _reactInputRange = __webpack_require__(36);
 	
 	var _reactInputRange2 = _interopRequireDefault(_reactInputRange);
 	
@@ -3595,7 +3682,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Slider;
 
 /***/ },
-/* 35 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3610,7 +3697,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _InputRange = __webpack_require__(36);
+	var _InputRange = __webpack_require__(37);
 	
 	var _InputRange2 = _interopRequireDefault(_InputRange);
 	
@@ -3632,7 +3719,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3659,29 +3746,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Slider = __webpack_require__(37);
+	var _Slider = __webpack_require__(38);
 	
 	var _Slider2 = _interopRequireDefault(_Slider);
 	
-	var _Track = __webpack_require__(40);
+	var _Track = __webpack_require__(41);
 	
 	var _Track2 = _interopRequireDefault(_Track);
 	
-	var _Label = __webpack_require__(38);
+	var _Label = __webpack_require__(39);
 	
 	var _Label2 = _interopRequireDefault(_Label);
 	
-	var _defaultClassNames = __webpack_require__(41);
+	var _defaultClassNames = __webpack_require__(42);
 	
 	var _defaultClassNames2 = _interopRequireDefault(_defaultClassNames);
 	
-	var _valueTransformer = __webpack_require__(42);
+	var _valueTransformer = __webpack_require__(43);
 	
 	var _valueTransformer2 = _interopRequireDefault(_valueTransformer);
 	
-	var _util = __webpack_require__(39);
+	var _util = __webpack_require__(40);
 	
-	var _propTypes = __webpack_require__(43);
+	var _propTypes = __webpack_require__(44);
 	
 	/**
 	 * A map for storing internal members
@@ -4410,7 +4497,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -4437,11 +4524,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Label = __webpack_require__(38);
+	var _Label = __webpack_require__(39);
 	
 	var _Label2 = _interopRequireDefault(_Label);
 	
-	var _util = __webpack_require__(39);
+	var _util = __webpack_require__(40);
 	
 	/**
 	 * Get the owner document of slider
@@ -4667,7 +4754,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -4758,7 +4845,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports) {
 
 	/**
@@ -4998,7 +5085,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -5025,7 +5112,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _util = __webpack_require__(39);
+	var _util = __webpack_require__(40);
 	
 	/**
 	 * Get the CSS styles for an active track
@@ -5161,7 +5248,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports) {
 
 	/**
@@ -5200,7 +5287,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -5213,7 +5300,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 	
-	var _util = __webpack_require__(39);
+	var _util = __webpack_require__(40);
 	
 	/**
 	 * Convert position into percentage value
@@ -5388,7 +5475,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -5402,7 +5489,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.maxMinValuePropType = maxMinValuePropType;
 	
-	var _util = __webpack_require__(39);
+	var _util = __webpack_require__(40);
 	
 	/**
 	 * A prop type accepting a range of numeric values or a single numeric value
@@ -5442,7 +5529,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5473,7 +5560,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _react2.default.createElement(
 	      'button',
 	      { className: 'btn btn-sm btn-transparent clear-btn', onClick: onClickClear },
-	      _react2.default.createElement('span', { className: 'icon-close-2', role: 'presentation' }),
+	      _react2.default.createElement('span', { className: 'socrata-icon-close-2', role: 'presentation' }),
 	      (0, _I18n.translate)('filter_bar.clear')
 	    ),
 	    _react2.default.createElement(
@@ -5504,7 +5591,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 45 */
+/* 46 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.getPrecision = getPrecision;
+	exports.roundToPrecision = roundToPrecision;
+	
+	var _lodash = __webpack_require__(12);
+	
+	var _lodash2 = _interopRequireDefault(_lodash);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function getPrecision(x) {
+	  if (_lodash2.default.isInteger(x) || !_lodash2.default.isFinite(x)) {
+	    return 1;
+	  }
+	
+	  var places = _lodash2.default.toString(x).split('.')[1].length;
+	  return Math.pow(10, -places);
+	}
+	
+	function roundToPrecision(x, precision) {
+	  if (precision < 0 || !_lodash2.default.isFinite(x) || !_lodash2.default.isFinite(precision)) {
+	    return x;
+	  }
+	
+	  var places = precision === 1 ? 0 : -Math.log10(precision);
+	  return _lodash2.default.round(x, _lodash2.default.round(places));
+	}
+
+/***/ },
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5522,11 +5645,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _SearchablePicklist = __webpack_require__(30);
+	var _SearchablePicklist = __webpack_require__(31);
 	
 	var _SearchablePicklist2 = _interopRequireDefault(_SearchablePicklist);
 	
-	var _FilterFooter = __webpack_require__(44);
+	var _FilterFooter = __webpack_require__(45);
 	
 	var _FilterFooter2 = _interopRequireDefault(_FilterFooter);
 	
@@ -5545,7 +5668,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  getInitialState: function getInitialState() {
 	    return {
-	      isLoading: true,
 	      value: _lodash2.default.get(this.props.filter, 'parameters.arguments.operand'),
 	      suggestions: []
 	    };
@@ -5553,46 +5675,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	  componentDidMount: function componentDidMount() {
 	    var _this = this;
 	
-	    var _props = this.props,
-	        fetchSuggestions = _props.fetchSuggestions,
-	        column = _props.column;
-	
-	
 	    this.isMounted = true;
 	
-	    fetchSuggestions(column, '').then(function (suggestions) {
-	      if (_this.isMounted) {
-	        _this.setState({
-	          suggestions: suggestions,
-	          isLoading: false
-	        });
-	      }
-	    });
+	    this.updateSuggestions = _lodash2.default.debounce(function () {
+	      var column = _this.props.column;
+	      var value = _this.state.value;
+	
+	      _this.props.fetchSuggestions(column, _lodash2.default.defaultTo(value, '')).then(function (suggestions) {
+	        if (_this.isMounted) {
+	          _this.setState({ suggestions: suggestions });
+	        }
+	      }).catch(function () {
+	        _this.setState({ suggestions: [] });
+	      });
+	    }, 350, { leading: true, maxWait: 500 });
+	
+	    this.updateSuggestions();
 	  },
 	  componentWillUnmount: function componentWillUnmount() {
 	    this.isMounted = false;
 	  },
 	  onChangeSearchTerm: function onChangeSearchTerm(searchTerm) {
-	    var _this2 = this;
-	
-	    var _props2 = this.props,
-	        fetchSuggestions = _props2.fetchSuggestions,
-	        column = _props2.column;
-	
-	
 	    this.setState({
 	      loading: true,
 	      value: searchTerm
-	    }, function () {
-	      fetchSuggestions(column, searchTerm).then(function (suggestions) {
-	        if (_this2.isMounted) {
-	          _this2.setState({
-	            suggestions: suggestions,
-	            isLoading: false
-	          });
-	        }
-	      });
-	    });
+	    }, this.updateSuggestions);
 	  },
 	  onSelectSuggestion: function onSelectSuggestion(suggestion) {
 	    this.setState({
@@ -5602,12 +5709,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  clearFilter: function clearFilter() {
 	    this.setState({
 	      value: null
-	    });
+	    }, this.updateSuggestions);
 	  },
 	  updateFilter: function updateFilter() {
-	    var _props3 = this.props,
-	        filter = _props3.filter,
-	        onUpdate = _props3.onUpdate;
+	    var _props = this.props,
+	        filter = _props.filter,
+	        onUpdate = _props.onUpdate;
 	    var value = this.state.value;
 	
 	
@@ -5622,17 +5729,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onUpdate(newFilter);
 	  },
 	  render: function render() {
-	    var _props4 = this.props,
-	        filter = _props4.filter,
-	        onCancel = _props4.onCancel;
+	    var _props2 = this.props,
+	        filter = _props2.filter,
+	        onCancel = _props2.onCancel;
 	    var _state = this.state,
-	        isLoading = _state.isLoading,
 	        value = _state.value,
 	        suggestions = _state.suggestions;
 	
 	
 	    var picklistProps = {
-	      isLoading: isLoading,
 	      onSelection: this.onSelectSuggestion,
 	      onChangeSearchTerm: this.onChangeSearchTerm,
 	      options: _lodash2.default.map(suggestions, function (suggestion) {
@@ -5667,7 +5772,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = TextFilter;
 
 /***/ },
-/* 46 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5705,7 +5810,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _react2.default.createElement(
 	          'button',
 	          { className: 'btn btn-sm btn-transparent remove-btn', onClick: this.props.onRemove },
-	          _react2.default.createElement('span', { className: 'icon-close-2' }),
+	          _react2.default.createElement('span', { className: 'socrata-icon-close-2' }),
 	          (0, _I18n.translate)('filter_bar.remove_filter')
 	        )
 	      )
@@ -5714,7 +5819,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 47 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5730,6 +5835,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _lodash2 = _interopRequireDefault(_lodash);
 	
 	var _I18n = __webpack_require__(15);
+	
+	var _numbers = __webpack_require__(46);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -5775,17 +5882,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	function getToggleTextForFilter(filter, column) {
 	  switch (column.dataTypeName) {
 	    case 'number':
-	      var value = _lodash2.default.get(filter, 'parameters.arguments', {});
+	      var _$get = _lodash2.default.get(filter, 'parameters.arguments', {}),
+	          start = _$get.start,
+	          end = _$get.end;
 	
-	      var hasMinValue = _lodash2.default.isFinite(value.start) && !_lodash2.default.isEqual(column.rangeMin, value.start);
-	      var hasMaxValue = _lodash2.default.isFinite(value.end) && !_lodash2.default.isEqual(column.rangeMax, value.end);
+	      var hasMinValue = _lodash2.default.isFinite(start) && !_lodash2.default.isEqual(column.rangeMin, start);
+	      var hasMaxValue = _lodash2.default.isFinite(end) && !_lodash2.default.isEqual(column.rangeMax, end);
+	      var step = _lodash2.default.min(_lodash2.default.map([column.rangeMin, column.rangeMax], _numbers.getPrecision));
+	
+	      var startLabel = (0, _numbers.roundToPrecision)(start, step);
+	      var endLabel = (0, _numbers.roundToPrecision)(end, step);
 	
 	      if (hasMinValue && hasMaxValue) {
-	        return (0, _I18n.translate)('filter_bar.range_filter.range_label').format(value.start, value.end);
+	        return (0, _I18n.translate)('filter_bar.range_filter.range_label').format(startLabel, endLabel);
 	      } else if (hasMinValue) {
-	        return (0, _I18n.translate)('filter_bar.range_filter.greater_label').format(value.start);
+	        return (0, _I18n.translate)('filter_bar.range_filter.greater_label').format(startLabel);
 	      } else if (hasMaxValue) {
-	        return (0, _I18n.translate)('filter_bar.range_filter.less_label').format(value.end);
+	        return (0, _I18n.translate)('filter_bar.range_filter.less_label').format(endLabel);
 	      } else {
 	        return (0, _I18n.translate)('filter_bar.all');
 	      }
@@ -5799,7 +5912,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 48 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5816,7 +5929,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _collapsible = __webpack_require__(49);
+	var _collapsible = __webpack_require__(51);
 	
 	var _collapsible2 = _interopRequireDefault(_collapsible);
 	
@@ -6038,7 +6151,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	
 	    var privateIcon = isPrivate ? _react2.default.createElement('span', {
-	      className: 'icon-private',
+	      className: 'socrata-icon-private',
 	      'aria-label': (0, _I18n.translate)('info_pane.private_notice'),
 	      title: (0, _I18n.translate)('info_pane.private_notice') }) : null;
 	
@@ -6051,7 +6164,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var officialBadge = isOfficial ? _react2.default.createElement(
 	      'span',
 	      { className: 'tag-official' },
-	      _react2.default.createElement('span', { 'aria-hidden': true, className: 'icon-official' }),
+	      _react2.default.createElement('span', { 'aria-hidden': true, className: 'socrata-icon-official' }),
 	      (0, _I18n.translate)('info_pane.official')
 	    ) : null;
 	
@@ -6103,7 +6216,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = InfoPane;
 
 /***/ },
-/* 49 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6191,7 +6304,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 50 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6201,7 +6314,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.ModalFooter = exports.ModalContent = exports.ModalHeader = exports.Modal = undefined;
 	
-	var _Header = __webpack_require__(51);
+	var _Header = __webpack_require__(53);
 	
 	Object.defineProperty(exports, 'ModalHeader', {
 	  enumerable: true,
@@ -6210,7 +6323,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 	
-	var _Content = __webpack_require__(52);
+	var _Content = __webpack_require__(54);
 	
 	Object.defineProperty(exports, 'ModalContent', {
 	  enumerable: true,
@@ -6219,7 +6332,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 	
-	var _Footer = __webpack_require__(53);
+	var _Footer = __webpack_require__(55);
 	
 	Object.defineProperty(exports, 'ModalFooter', {
 	  enumerable: true,
@@ -6337,7 +6450,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Modal;
 
 /***/ },
-/* 51 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6388,7 +6501,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        className: 'btn btn-transparent modal-header-dismiss',
 	        onClick: onDismiss,
 	        'aria-label': (0, _I18n.translate)('modal.aria_close') },
-	      _react2.default.createElement('span', { className: 'icon-close-2' })
+	      _react2.default.createElement('span', { className: 'socrata-icon-close-2' })
 	    )
 	  );
 	};
@@ -6403,7 +6516,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Header;
 
 /***/ },
-/* 52 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6449,7 +6562,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Content;
 
 /***/ },
-/* 53 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6502,4 +6615,4 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ ])
 });
 ;
-//# sourceMappingURL=socrata-components.js-75443add.map
+//# sourceMappingURL=socrata-components.js-203b3a50.map

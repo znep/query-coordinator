@@ -1,5 +1,5 @@
 /*!
- * Socrata Styleguide v8.2.0
+ * Socrata Styleguide v9.0.2
  * Copyright 2015-2016 undefined
  * Licensed under undefined
  */
@@ -12,9 +12,7 @@ html {
 
 .icon-add-collaborator::before, .socrata-icon-add-collaborator::before,
 .icon-add::before, .socrata-icon-add::before,
-.icon-arrow-down::before,
-.filter-list .facet-group a:after,
-.filter-list ul > li a.show-all::before, .socrata-icon-arrow-down::before,
+.icon-arrow-down::before, .socrata-icon-arrow-down::before, .filter-list .facet-group a:after, .filter-list ul > li a.show-all::before,
 .icon-arrow-left::before, .socrata-icon-arrow-left::before,
 .icon-arrow-next::before, .socrata-icon-arrow-next::before,
 .icon-arrow-prev::before, .socrata-icon-arrow-prev::before,
@@ -29,13 +27,11 @@ html {
 .icon-check-2::before, .socrata-icon-check-2::before,
 .icon-check::before, .socrata-icon-check::before,
 .icon-checkmark-alt::before, .socrata-icon-checkmark-alt::before,
-.icon-checkmark3::before,
-.filter-list.sort ul > li a.active:after, .socrata-icon-checkmark3::before,
+.icon-checkmark3::before, .socrata-icon-checkmark3::before, .filter-list.sort ul > li a.active:after,
 .icon-chevron-down::before, .socrata-icon-chevron-down::before,
 .icon-chevron-up::before, .socrata-icon-chevron-up::before,
 .icon-clear-formatting::before, .socrata-icon-clear-formatting::before,
-.icon-close-2::before,
-.filter-list ul > li a.active:after, .socrata-icon-close-2::before,
+.icon-close-2::before, .socrata-icon-close-2::before, .filter-list ul > li a.active:after,
 .icon-close-circle::before, .socrata-icon-close-circle::before,
 .icon-close::before, .socrata-icon-close::before,
 .icon-collapse::before, .socrata-icon-collapse::before,
@@ -108,6 +104,7 @@ html {
 .icon-search::before, .socrata-icon-search::before,
 .icon-settings::before, .socrata-icon-settings::before,
 .icon-share::before, .socrata-icon-share::before,
+.icon-sign-out::before, .socrata-icon-sign-out::before,
 .icon-sort-asc::before, .socrata-icon-sort-asc::before,
 .icon-sort-az::before, .socrata-icon-sort-az::before,
 .icon-sort-desc::before, .socrata-icon-sort-desc::before,
@@ -167,7 +164,7 @@ html {
 .icon-add::before, .socrata-icon-add::before {
   content: "\EA02"; }
 
-.icon-arrow-down::before, .filter-list .facet-group a:after, .filter-list ul > li a.show-all::before, .socrata-icon-arrow-down::before {
+.icon-arrow-down::before, .socrata-icon-arrow-down::before, .filter-list .facet-group a:after, .filter-list ul > li a.show-all::before {
   content: "\EA03"; }
 
 .icon-arrow-left::before, .socrata-icon-arrow-left::before {
@@ -212,7 +209,7 @@ html {
 .icon-checkmark-alt::before, .socrata-icon-checkmark-alt::before {
   content: "\EA11"; }
 
-.icon-checkmark3::before, .filter-list.sort ul > li a.active:after, .socrata-icon-checkmark3::before {
+.icon-checkmark3::before, .socrata-icon-checkmark3::before, .filter-list.sort ul > li a.active:after {
   content: "\EA12"; }
 
 .icon-chevron-down::before, .socrata-icon-chevron-down::before {
@@ -224,7 +221,7 @@ html {
 .icon-clear-formatting::before, .socrata-icon-clear-formatting::before {
   content: "\EA15"; }
 
-.icon-close-2::before, .filter-list ul > li a.active:after, .socrata-icon-close-2::before {
+.icon-close-2::before, .socrata-icon-close-2::before, .filter-list ul > li a.active:after {
   content: "\EA16"; }
 
 .icon-close-circle::before, .socrata-icon-close-circle::before {
@@ -443,62 +440,65 @@ html {
 .icon-share::before, .socrata-icon-share::before {
   content: "\EA5E"; }
 
-.icon-sort-asc::before, .socrata-icon-sort-asc::before {
+.icon-sign-out::before, .socrata-icon-sign-out::before {
   content: "\EA5F"; }
 
-.icon-sort-az::before, .socrata-icon-sort-az::before {
+.icon-sort-asc::before, .socrata-icon-sort-asc::before {
   content: "\EA60"; }
 
-.icon-sort-desc::before, .socrata-icon-sort-desc::before {
+.icon-sort-az::before, .socrata-icon-sort-az::before {
   content: "\EA61"; }
 
-.icon-sort-za::before, .socrata-icon-sort-za::before {
+.icon-sort-desc::before, .socrata-icon-sort-desc::before {
   content: "\EA62"; }
 
-.icon-stories-icon::before, .socrata-icon-stories-icon::before {
+.icon-sort-za::before, .socrata-icon-sort-za::before {
   content: "\EA63"; }
 
-.icon-stories-menu::before, .socrata-icon-stories-menu::before {
+.icon-stories-icon::before, .socrata-icon-stories-icon::before {
   content: "\EA64"; }
 
-.icon-story::before, .socrata-icon-story::before {
+.icon-stories-menu::before, .socrata-icon-stories-menu::before {
   content: "\EA65"; }
 
-.icon-table::before, .socrata-icon-table::before {
+.icon-story::before, .socrata-icon-story::before {
   content: "\EA66"; }
 
-.icon-tag::before, .socrata-icon-tag::before {
+.icon-table::before, .socrata-icon-table::before {
   content: "\EA67"; }
 
-.icon-text::before, .socrata-icon-text::before {
+.icon-tag::before, .socrata-icon-tag::before {
   content: "\EA68"; }
 
-.icon-twitter::before, .socrata-icon-twitter::before {
+.icon-text::before, .socrata-icon-text::before {
   content: "\EA69"; }
 
-.icon-undo::before, .socrata-icon-undo::before {
+.icon-twitter::before, .socrata-icon-twitter::before {
   content: "\EA6A"; }
 
-.icon-user::before, .socrata-icon-user::before {
+.icon-undo::before, .socrata-icon-undo::before {
   content: "\EA6B"; }
 
-.icon-waiting::before, .socrata-icon-waiting::before {
+.icon-user::before, .socrata-icon-user::before {
   content: "\EA6C"; }
 
-.icon-warning-alt::before, .socrata-icon-warning-alt::before {
+.icon-waiting::before, .socrata-icon-waiting::before {
   content: "\EA6D"; }
 
-.icon-warning-alt2::before, .socrata-icon-warning-alt2::before {
+.icon-warning-alt::before, .socrata-icon-warning-alt::before {
   content: "\EA6E"; }
 
-.icon-warning::before, .socrata-icon-warning::before {
+.icon-warning-alt2::before, .socrata-icon-warning-alt2::before {
   content: "\EA6F"; }
 
-.icon-windows::before, .socrata-icon-windows::before {
+.icon-warning::before, .socrata-icon-warning::before {
   content: "\EA70"; }
 
-.icon-yahoo::before, .socrata-icon-yahoo::before {
+.icon-windows::before, .socrata-icon-windows::before {
   content: "\EA71"; }
+
+.icon-yahoo::before, .socrata-icon-yahoo::before {
+  content: "\EA72"; }
 
 /* Base Palette Colors */
 /* Colors light version */
@@ -891,4 +891,4 @@ a {
 }
  */
 
-/*# sourceMappingURL=catalog.css-f74ead8a.map */
+/*# sourceMappingURL=catalog.css-b043a9b1.map */

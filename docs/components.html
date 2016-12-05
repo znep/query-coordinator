@@ -8,8 +8,8 @@
     <title>Socrata Styleguide</title>
 
     <link rel="stylesheet" href="stylesheets/vendor/prism-2ae3b88e.css">
-    <link rel="stylesheet" href="css/styleguide-fd944441.css">
-    <link rel="stylesheet" href="stylesheets/pages-a522e01d.css">
+    <link rel="stylesheet" href="css/styleguide-09c08e9b.css">
+    <link rel="stylesheet" href="stylesheets/pages-52af5227.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic' rel='stylesheet' type='text/css'>
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
@@ -19,7 +19,7 @@
   <body class="components">
     <div class="responsive-navbar responsive-navbar-fixed">
        <span class="site-controls">
-         <a class="menu-link" data-menu-toggle="pagemap" data-toggle><span class="icon-hamburger"> <span class="menu-link-text">Menu</span></a>
+         <a class="menu-link" data-menu-toggle="pagemap" data-toggle><span class="socrata-icon-hamburger"> <span class="menu-link-text">Menu</span></a>
 
         <a class="home" href="index.html">
           <span>Product Styleguide</span>
@@ -35,7 +35,7 @@
        <header class="menu-header">
     <h1 class="h6 menu-header-title">Styleguide Menu</h1>
     <button class="btn btn-block btn-sm btn-transparent menu-header-dismiss" data-menu-dismiss>
-      <span class="icon-close-2"></span>
+      <span class="socrata-icon-close-2"></span>
     </button>
   </header>
   <ul class="menu-navigation">
@@ -72,6 +72,7 @@
         <li><a href="components.html#info-pane">Info Pane</a></li>
         <li><a href="components.html#slider">Slider</a></li>
         <li><a href="components.html#modal">Modal</a></li>
+        <li><a href="components.html#edit-bar">Edit Bar</a></li>
         <!-- TEMPLATE_TOKEN (Don't remove this. Like seriously.) -->
       </ul>
     </li>
@@ -387,9 +388,9 @@
       },
       placeholder: () => <button className="btn btn-alternate-3">Hello, World!</button>,
       options: [
-        { title: 'Emotional technicality', value: 'emotecho', icon: 'icon-facebook', render: renderOption },
-        { title: 'Pontificate harder', value: 'ponfer', icon: 'icon-twitter', render: renderOption },
-        { title: 'No one misses these', value: 'noone', icon: 'icon-dataset', render: renderOption }
+        { title: 'Emotional technicality', value: 'emotecho', icon: 'socrata-icon-facebook', render: renderOption },
+        { title: 'Pontificate harder', value: 'ponfer', icon: 'socrata-icon-twitter', render: renderOption },
+        { title: 'No one misses these', value: 'noone', icon: 'socrata-icon-dataset', render: renderOption }
       ]
     };
 
@@ -428,9 +429,9 @@
       },
       placeholder: () =&gt; &lt;button className=&quot;btn btn-alternate-3&quot;&gt;Hello, World!&lt;&#x2F;button&gt;,
       options: [
-        { title: &#x27;Emotional technicality&#x27;, value: &#x27;emotecho&#x27;, icon: &#x27;icon-facebook&#x27;, render: renderOption },
-        { title: &#x27;Pontificate harder&#x27;, value: &#x27;ponfer&#x27;, icon: &#x27;icon-twitter&#x27;, render: renderOption },
-        { title: &#x27;No one misses these&#x27;, value: &#x27;noone&#x27;, icon: &#x27;icon-dataset&#x27;, render: renderOption }
+        { title: &#x27;Emotional technicality&#x27;, value: &#x27;emotecho&#x27;, icon: &#x27;socrata-icon-facebook&#x27;, render: renderOption },
+        { title: &#x27;Pontificate harder&#x27;, value: &#x27;ponfer&#x27;, icon: &#x27;socrata-icon-twitter&#x27;, render: renderOption },
+        { title: &#x27;No one misses these&#x27;, value: &#x27;noone&#x27;, icon: &#x27;socrata-icon-dataset&#x27;, render: renderOption }
       ]
     };
 
@@ -532,7 +533,7 @@ links.</p>
         'seven days. Also this description is really long and might even ellipsify.',
       url: 'https://data.cityofchicago.org/view/5cd6-ry5g',
       imageUrl: 'images/dataLensThumbnail-213726d3.png',
-      icon: 'icon-cards',
+      icon: 'socrata-icon-cards',
       metadataLeft: 'Updated Jan 1, 1970',
       metadataRight: '1,234 views',
       isPrivate: true,
@@ -566,7 +567,7 @@ links.</p>
         &#x27;seven days. Also this description is really long and might even ellipsify.&#x27;,
       url: &#x27;https:&#x2F;&#x2F;data.cityofchicago.org&#x2F;view&#x2F;5cd6-ry5g&#x27;,
       imageUrl: &#x27;&#x2F;images&#x2F;dataLensThumbnail.png&#x27;,
-      icon: &#x27;icon-cards&#x27;,
+      icon: &#x27;socrata-icon-cards&#x27;,
       metadataLeft: &#x27;Updated Jan 1, 1970&#x27;,
       metadataRight: &#x27;1,234 views&#x27;,
       isPrivate: true,
@@ -606,7 +607,7 @@ ViewCard and it will be rendered as an overlay:</p>
         'seven days. Also this description is really long and might even ellipsify.',
       url: 'https://data.cityofchicago.org/view/5cd6-ry5g',
       imageUrl: 'images/dataLensThumbnail-213726d3.png',
-      icon: 'icon-cards',
+      icon: 'socrata-icon-cards',
       metadataLeft: 'Updated Jan 1, 1970',
       metadataRight: '1,234 views',
       isPrivate: true,
@@ -641,7 +642,7 @@ ViewCard and it will be rendered as an overlay:</p>
         &#x27;seven days. Also this description is really long and might even ellipsify.&#x27;,
       url: &#x27;https:&#x2F;&#x2F;data.cityofchicago.org&#x2F;view&#x2F;5cd6-ry5g&#x27;,
       imageUrl: &#x27;&#x2F;images&#x2F;dataLensThumbnail.png&#x27;,
-      icon: &#x27;icon-cards&#x27;,
+      icon: &#x27;socrata-icon-cards&#x27;,
       metadataLeft: &#x27;Updated Jan 1, 1970&#x27;,
       metadataRight: &#x27;1,234 views&#x27;,
       isPrivate: true,
@@ -737,8 +738,8 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
           function: 'valueRange',
           columnName: 'some_number',
           arguments: {
-            start: 10,
-            end: 20
+            start: 3,
+            end: 3000
           }
         },
         isLocked: false,
@@ -754,8 +755,8 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
           name: 'Some Number',
           fieldName: 'some_number',
           dataTypeName: 'number',
-          rangeMin: 0,
-          rangeMax: 100
+          rangeMin: 0.01,
+          rangeMax: 30000.1
         },
         {
           name: 'Some Word',
@@ -765,7 +766,7 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
       ],
       filters,
       onUpdate,
-      fetchSuggestions: (column, searchTerm) => Promise.resolve([ 'purple', 'pesto', 'russian' ])
+      fetchSuggestions: (column, searchTerm) => Promise.resolve(_.shuffle([ 'purple', 'pesto', 'russian' ]))
     };
 
     function render() {
@@ -802,8 +803,8 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
           function: &#x27;valueRange&#x27;,
           columnName: &#x27;some_number&#x27;,
           arguments: {
-            start: 10,
-            end: 20
+            start: 3,
+            end: 3000
           }
         },
         isLocked: false,
@@ -819,8 +820,8 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
           name: &#x27;Some Number&#x27;,
           fieldName: &#x27;some_number&#x27;,
           dataTypeName: &#x27;number&#x27;,
-          rangeMin: 0,
-          rangeMax: 100
+          rangeMin: 0.01,
+          rangeMax: 30000.1
         },
         {
           name: &#x27;Some Word&#x27;,
@@ -830,7 +831,7 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
       ],
       filters,
       onUpdate,
-      fetchSuggestions: (column, searchTerm) =&gt; Promise.resolve([ &#x27;purple&#x27;, &#x27;pesto&#x27;, &#x27;russian&#x27; ])
+      fetchSuggestions: (column, searchTerm) =&gt; Promise.resolve(_.shuffle([ &#x27;purple&#x27;, &#x27;pesto&#x27;, &#x27;russian&#x27; ]))
     };
 
     function render() {
@@ -1274,6 +1275,76 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
       </div>
     </section>
 
+    <section class="styleguide-section" id="edit-bar">
+      <div class="meta">
+        <h2 class="styleguide-header">Edit Bar</h2>
+      </div>
+      <div class="example">
+        
+<div id="edit-bar-container"></div>
+
+<script type="text/babel" data-presets="es2015,react">
+  $(() => {
+    const props = {
+      name: 'Wombats in Spacesuits, Floating Gently Near the Moon',
+      menuLabel: 'Menu',
+      onClickMenu: () => console.log('Clicked menu')
+    };
+
+    const editBar = (
+      <styleguide.EditBar {...props}>
+        <button className="btn btn-warning">Look, a Child Element!</button>
+      </styleguide.EditBar>
+    );
+
+    ReactDOM.render(
+      editBar,
+      document.getElementById('edit-bar-container')
+    );
+
+    // This is normally position fixed, we're modifying it here to render it by its example code
+    const element = document.querySelector('.edit-bar');
+    element.style.position = 'relative';
+  });
+</script>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;edit-bar-container&quot;&gt;&lt;&#x2F;div&gt;
+
+&lt;script type=&quot;text&#x2F;babel&quot; data-presets=&quot;es2015,react&quot;&gt;
+  $(() =&gt; {
+    const props = {
+      name: &#x27;Wombats in Spacesuits, Floating Gently Near the Moon&#x27;,
+      menuLabel: &#x27;Menu&#x27;,
+      onClickMenu: () =&gt; console.log(&#x27;Clicked menu&#x27;)
+    };
+
+    const editBar = (
+      &lt;styleguide.EditBar {...props}&gt;
+        &lt;button className=&quot;btn btn-warning&quot;&gt;Look, a Child Element!&lt;&#x2F;button&gt;
+      &lt;&#x2F;styleguide.EditBar&gt;
+    );
+
+    ReactDOM.render(
+      editBar,
+      document.getElementById(&#x27;edit-bar-container&#x27;)
+    );
+
+    &#x2F;&#x2F; This is normally position fixed, we&#x27;re modifying it here to render it by its example code
+    const element = document.querySelector(&#x27;.edit-bar&#x27;);
+    element.style.position = &#x27;relative&#x27;;
+  });
+&lt;&#x2F;script&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
     <!-- TEMPLATE_TOKEN (Don't remove this. Like seriously.) -->
   </div>
 </div>
@@ -1282,7 +1353,7 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
     <!-- NPM peerDependencies and Webpack externals -->
     <script type="text/javascript" src="js/vendor-bf248325.js"></script>
 
-    <script type="text/javascript" src="js/socrata-components-9aa1d972.js"></script>
+    <script type="text/javascript" src="js/socrata-components-0e72670b.js"></script>
     <script type="text/javascript" src="javascripts/all-df92dbb1.js"></script>
   </body>
 </html>

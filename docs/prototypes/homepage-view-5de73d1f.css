@@ -1,5 +1,5 @@
 /*!
- * Socrata Styleguide v8.2.0
+ * Socrata Styleguide v9.0.2
  * Copyright 2015-2016 undefined
  * Licensed under undefined
  */
@@ -121,7 +121,7 @@ html {
     padding-bottom: 8px; }
   .responsive-navbar .nav-links #sign-in-toggle {
     font-weight: 500; }
-    .responsive-navbar .nav-links #sign-in-toggle .icon-user {
+    .responsive-navbar .nav-links #sign-in-toggle .socrata-icon-user {
       font-size: 17px; }
 
 .content {
@@ -205,4 +205,4 @@ footer {
       content: "";
       display: table; }
 
-/*# sourceMappingURL=homepage-view.css-391bd88e.map */
+/*# sourceMappingURL=homepage-view.css-33491208.map */

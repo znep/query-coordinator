@@ -2,11 +2,13 @@
 @import 'neat';
 @import 'dist/css/styleguide';
 
+@import 'lib/variables/layout.scss';
 @import 'lib/variables/mixin.scss';
 
 .body-wrapper {
   @include outer-container;
   @include padding(2rem 0);
+  margin-top: $site-chrome-admin-header-height;
 }
 
 .alert {

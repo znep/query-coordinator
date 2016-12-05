@@ -2,14 +2,6 @@
 @import 'dist/fonts/socrata-icons';
 @import 'bourbon';
 
-body.story-save-error #rich-text-editor-toolbar-wrapper {
-  top: $story-save-error-bar-reserved-height + $rich-text-editor-toolbar-top-offset;
-}
-
-body.downtime-notice #rich-text-editor-toolbar-wrapper {
-  top: $downtime-notice-bar-reserved-height + $rich-text-editor-toolbar-top-offset;
-}
-
 #rich-text-editor-toolbar-wrapper { // for positioning
   position: fixed;
   top: $rich-text-editor-toolbar-top-offset;
@@ -20,6 +12,26 @@ body.downtime-notice #rich-text-editor-toolbar-wrapper {
   background: #EEEEEE;
   border-bottom: solid 1px #DDDDDD;
   text-align: center;
+
+  .story-save-error & {
+    top: calc(#{$story-save-error-bar-reserved-height + $rich-text-editor-toolbar-top-offset});
+  }
+
+  .downtime-notice & {
+    top: calc(#{$downtime-notice-bar-reserved-height + $rich-text-editor-toolbar-top-offset});
+  }
+
+  .open-performance-enabled & {
+    top: calc(#{$rich-text-editor-toolbar-top-offset} + #{$site-chrome-admin-header-small-height});
+  }
+
+  .open-performance-enabled.story-save-error & {
+    top: calc(#{$story-save-error-bar-reserved-height + $rich-text-editor-toolbar-top-offset} + #{$site-chrome-admin-header-small-height});
+  }
+
+  .open-performance-enabled.downtime-notice & {
+    top: calc(#{$downtime-notice-bar-reserved-height + $rich-text-editor-toolbar-top-offset} + #{$site-chrome-admin-header-small-height});
+  }
 }
 
 #rich-text-editor-toolbar {

@@ -4,20 +4,23 @@
   <%= default_meta_tags %>
   <%= csrf_meta_tags %>
   <title>Perspectives Admin</title>
-  <%= favicon_link_tag %>
+  <%= site_chrome_favicon_tag %>
+  <%= site_chrome_stylesheet_tag %>
   <%= stylesheet_link_tag 'admin', media: 'all' %>
   <%= storyteller_javascript_include_tag 'admin' %>
   <%= render 'shared/google_analytics_script' %>
 </head>
 <body>
+  <%== site_chrome_admin_header(request, response) if open_performance_enabled? %>
 
-<div class="body-wrapper">
-  <% flash.each do |name, msg| -%>
-    <%= content_tag :div, msg, class: [name, 'alert'] %>
-  <% end -%>
+  <div class="body-wrapper">
+    <% flash.each do |name, msg| -%>
+      <%= content_tag :div, msg, class: [name, 'alert'] %>
+    <% end -%>
 
-  <%= yield %>
-</div>
+    <%= yield %>
+  </div>
 
+  <%= site_chrome_javascript_tag %>
 </body>
 </html>

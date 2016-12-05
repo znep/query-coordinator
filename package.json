@@ -119,7 +119,7 @@
     "redux-thunk": "2.1.0",
     "reselect": "2.5.3",
     "showdown": "git+https://github.com/socrata/showdown.git#openperformance-compat",
-    "socrata-components": "8.2.0",
+    "socrata-components": "8.3.0",
     "socrata-utils": "3.1.1",
     "socrata-visualizations": "19.3.3",
     "squire-rte": "git+https://github.com/socrata-platform/Squire.git#1.4.2-fixes",

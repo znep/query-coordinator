@@ -88,6 +88,14 @@ class CoreServer
     configuration_request(id: id, verb: :delete)
   end
 
+  def self.get_feature_set(domain_cname)
+    response = core_server_request_with_retries(verb: get, path: '/configurations?type=feature_set')
+
+    response.json.select {
+      |feature_set| feature_set['properties']['domainCName'] == domain_cname
+    } if response.ok?
+  end
+
   def self.story_themes
     configurations_request(verb: :get, type: 'story_theme', default_only: false, merge: false)
   end

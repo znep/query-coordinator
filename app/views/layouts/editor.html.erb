@@ -6,7 +6,8 @@
 
   <title><%= t('editor.default_page_title') %></title>
 
-  <%= favicon_link_tag %>
+  <%= site_chrome_favicon_tag %>
+  <%= site_chrome_stylesheet_tag %>
   <%= stylesheet_link_tag 'application', media: 'all' %>
   <style id="themes"><%== @bootstrap_styles[:themes] %></style>
   <style id="custom"><%== @bootstrap_styles[:custom] %></style>
@@ -32,9 +33,9 @@
   <%= render 'shared/google_analytics_script' %>
   <%= render 'shared/mixpanel_script' %>
 </head>
-<body id="story-edit">
-
-<%= yield %>
-
+<body id="story-edit" class="<%= open_performance_enabled? ? 'open-performance-enabled' : '' %>">
+  <%== site_chrome_admin_header(request, response, size: 'small') if open_performance_enabled? %>
+  <%= yield %>
+  <%= site_chrome_javascript_tag %>
 </body>
 </html>

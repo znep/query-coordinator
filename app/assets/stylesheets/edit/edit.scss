@@ -32,7 +32,7 @@ a {
   color: $link-color;
 }
 
-body .header-main {
+.header-main {
   @include unselectable();
   @include clearfix();
 
@@ -48,6 +48,10 @@ body .header-main {
   box-sizing: content-box;
   z-index: $site-header-z-index;
   min-width: 73rem; // current point where header would bump to line 2
+
+  .open-performance-enabled & {
+    top: $site-chrome-admin-header-small-height;
+  }
 
   .header-right {
     display: inline-block;
@@ -202,6 +206,12 @@ body .header-main {
   }
 }
 
+#site-chrome-admin-header {
+  // site-chrome defaults to 9999, but
+  // we'd prefer it to fit our z-index scaling.
+  z-index: 13;
+}
+
 #story-save-error-bar, #downtime-notice-bar {
   display: inline-flex;
   position: fixed;
@@ -221,6 +231,10 @@ body .header-main {
   border: 1px solid $story-save-error-bar-border-color;
   border-left: none;
   border-right: none;
+
+  .open-performance-enabled & {
+    top: calc(6rem + #{$site-chrome-admin-header-small-height});
+  }
 
   &.visible {
     opacity: 1;

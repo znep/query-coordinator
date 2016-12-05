@@ -8,7 +8,7 @@ body.story-save-error .user-story-container {
   position: relative;
   display: block;
   width: 100vw;
-  padding-top: $header-height + $user-story-container-vertical-padding;
+  padding-top: calc(#{$header-height} + #{$user-story-container-vertical-padding} + #{$site-chrome-admin-header-small-height});
   z-index: $user-story-container-z-index;
   -webkit-font-smoothing: antialiased;
 

@@ -45,6 +45,13 @@ class ApplicationController < ActionController::Base
     @current_user_story_authorization ||= CoreServer.current_user_story_authorization
   end
 
+  # site_chrome expects current_user and current_domain to be in place
+  # to identify proper render states.
+  def setup_site_chrome_prerequisites
+    ::RequestStore.store[:current_user] ||= current_user
+    ::RequestStore.store[:current_domain] ||= current_domain['cname']
+  end
+
   def downtimes
     @downtimes ||= StorytellerService.downtimes
   end

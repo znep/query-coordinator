@@ -27,7 +27,7 @@ export default {
   createdAt: 'Jan 1, 1970',
   rowCount: 1,
   apiFoundryUrl: 'apiFoundryUrl',
-  resourceUrl: 'resourceUrl',
+  resourceUrl: 'resourceUrl/four-four',
   odataUrl: 'odataUrl',
   facebookShareUrl: 'facebookShareUrl',
   twitterShareUrl: 'twitterShareUrl',

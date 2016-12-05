@@ -1297,11 +1297,13 @@ en:
       share: Share
     add: Add
     api_flannel:
+      canonical: Canonical ID
       description: The Socrata Open Data API (SODA) provides programmatic access to this dataset including the ability to filter, query, and aggregate data.
       developer_portal_button: Developer Portal
       endpoint_title: API Endpoint
       foundry_button: API Docs
-      multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own documentation and API Endpoint below.
+      name: Name
+      resource_type: Resource Type
       title: Access this Dataset via SODA API
     back: Back
     blob_download:

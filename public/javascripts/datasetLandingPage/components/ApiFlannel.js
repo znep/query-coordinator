@@ -4,11 +4,19 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import { initClipboardControl, isCopyingSupported } from '../lib/clipboardControl';
+import { handleKeyPress } from '../lib/a11yHelpers';
+import { UID_REGEX } from '../lib/constants';
 
 export const ApiFlannel = React.createClass({
   propTypes: {
     onClickCopy: PropTypes.func.isRequired,
     view: PropTypes.object.isRequired
+  },
+
+  getInitialState() {
+    return {
+      resourceType: this.props.view.resourceName ? 'name' : 'canonical'
+    };
   },
 
   componentDidMount() {
@@ -26,8 +34,77 @@ export const ApiFlannel = React.createClass({
     event.preventDefault();
   },
 
+  getResourceTypes() {
+    const { view } = this.props;
+    const resourceTypes = {};
+
+    resourceTypes.canonical = {
+      label: I18n.api_flannel.canonical,
+      url: view.resourceUrl
+    };
+
+    if (!_.isEmpty(view.resourceName)) {
+      resourceTypes.name = {
+        label: I18n.api_flannel.name,
+        url: view.resourceUrl.replace(UID_REGEX, view.resourceName)
+      };
+    }
+
+    return resourceTypes;
+  },
+
+  renderResourceToggle() {
+    const { resourceType } = this.state;
+    const resourceTypes = this.getResourceTypes();
+
+    if (_.size(resourceTypes) < 2) {
+      return null;
+    }
+
+    const setResourceType = (newResourceType) => {
+      return () => {
+        this.setState({ resourceType: newResourceType });
+      };
+    };
+
+    const dropdownOptions = _.map(resourceTypes, (type, key) => {
+      return (
+        <li key={key}>
+          {/* These links have empty hrefs so browsers let you tab to them */}
+          <a
+            role="menuitem"
+            href=""
+            className="option"
+            onMouseUp={setResourceType(key)}
+            onKeyDown={handleKeyPress(setResourceType(key))}>
+            {type.label}
+          </a>
+        </li>
+      );
+    });
+
+    return (
+      <span className="input-group-btn">
+        <div
+          className="dropdown btn btn-sm btn-default resource-toggle"
+          data-orientation="bottom"
+          data-selectable
+          data-dropdown
+          tabIndex="0">
+          <span aria-hidden>{resourceTypes[resourceType].label}</span>
+          <span className="socrata-icon-arrow-down" role="presentation" />
+          <ul role="menu" aria-label={I18n.api_flannel.resource_type} className="dropdown-options">
+            {dropdownOptions}
+          </ul>
+        </div>
+      </span>
+    );
+  },
+
   renderEndpoint() {
     const { view, onClickCopy } = this.props;
+    const { resourceType } = this.state;
+    const resourceTypes = this.getResourceTypes();
 
     const copyButton = isCopyingSupported ?
       <span className="input-group-btn">
@@ -70,10 +147,11 @@ export const ApiFlannel = React.createClass({
                 aria-labelledby="api-endpoint"
                 className="endpoint-input text-input text-input-sm"
                 type="text"
-                value={view.resourceUrl}
+                value={resourceTypes[resourceType].url}
                 readOnly
                 onFocus={this.onFocusInput}
                 onMouseUp={this.onMouseUpInput} />
+              {this.renderResourceToggle()}
               {copyButton}
             </span>
           </form>

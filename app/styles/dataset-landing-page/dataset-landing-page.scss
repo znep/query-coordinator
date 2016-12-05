@@ -603,6 +603,10 @@ main.container.landing-page-container {
     &.api-description {
       margin-bottom: 1.5rem;
     }
+
+    .btn.documentation-link {
+      margin-right: 6px;
+    }
   }
 }
 
@@ -646,14 +650,6 @@ main.container.landing-page-container {
     .endpoint-input {
       color: $dark-grey-2;
       margin-bottom: 0;
-    }
-
-    .dropdown {
-      padding: 6px 12px;
-    }
-
-    .input-group .input-group-btn .btn {
-      padding: 11px;
     }
   }
 

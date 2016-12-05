@@ -1,6 +1,6 @@
 import 'whatwg-fetch';
 import { defaultHeaders, checkStatus } from '../lib/http';
-import { UID_REGEX } from '../lib/constants';
+import { TRAILING_UID_REGEX } from '../lib/constants';
 import { getSemanticNameForDisplayType } from '../lib/displayTypeMetadata';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 
@@ -27,7 +27,7 @@ import {
 
 function parseUid(url) {
   const trimmedUrl = trimEditFromUrl(url);
-  return trimmedUrl.match(UID_REGEX)[1] || '';
+  return trimmedUrl.match(TRAILING_UID_REGEX)[1] || '';
 }
 
 function trimEditFromUrl(url) {

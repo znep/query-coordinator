@@ -22,7 +22,7 @@ describe('TextFilter', () => {
   });
 
   it('invokes fetchSuggestions on load', () => {
-    const stub = sinon.stub().returns({ then: (callback) => callback([]) });
+    const stub = sinon.stub().returns(Promise.resolve([]));
     const element = renderComponent(TextFilter, getProps({
       fetchSuggestions: stub
     }));
@@ -30,19 +30,34 @@ describe('TextFilter', () => {
     expect(stub).to.have.been.called;
   });
 
-  it('renders a searchable picklist when results returned', () => {
+  it('renders a searchable picklist when results returned', (done) => {
     const results = ['suggestion1', 'suggestion2'];
     const element = renderComponent(TextFilter, getProps({
-      fetchSuggestions: sinon.stub().returns({ then: (callback) => callback(results) })
+      fetchSuggestions: sinon.stub().returns(Promise.resolve(results))
     }));
-    const picklistOptions = element.querySelectorAll('.picklist-option');
 
-    expect(picklistOptions.length).to.eq(2);
+    _.defer(() => {
+      const picklistOptions = element.querySelectorAll('.picklist-option');
+      expect(picklistOptions.length).to.eq(2);
+      done();
+    });
+  });
+
+  it('renders an empty set of suggestions when request errors', (done) => {
+    const element = renderComponent(TextFilter, getProps({
+      fetchSuggestions: sinon.stub().returns(Promise.reject())
+    }));
+
+    _.defer(() => {
+      const picklistOptions = element.querySelectorAll('.picklist-option');
+      expect(picklistOptions.length).to.eq(1); // Just the "No results found" message
+      done();
+    });
   });
 
   it('invokes fetchSuggestions when the search term changes', () => {
     const clock = sinon.useFakeTimers();
-    const stub = sinon.stub().returns({ then: (callback) => callback([]) });
+    const stub = sinon.stub().returns(Promise.resolve([]));
     const element = renderComponent(TextFilter, getProps({
       fetchSuggestions: stub
     }));
@@ -67,7 +82,7 @@ describe('TextFilter', () => {
 
     it('invokes fetchSuggestions when the clear button is clicked', () => {
       const clock = sinon.useFakeTimers();
-      const stub = sinon.stub().returns({ then: (callback) => callback([]) });
+      const stub = sinon.stub().returns(Promise.resolve([]));
       const element = renderComponent(TextFilter, getProps({
         fetchSuggestions: stub
       }));
@@ -96,7 +111,7 @@ describe('TextFilter', () => {
       expect(stub).to.have.been.called;
     });
 
-    it('calls onUpdate with the new filter when apply button used', () => {
+    it('calls onUpdate with the new filter when apply button used', (done) => {
       const filter = {
         parameters: {
           'function': 'binaryOperator',
@@ -108,7 +123,7 @@ describe('TextFilter', () => {
         }
       };
       const results = ['penguin'];
-      const fetchSuggestionsStub = sinon.stub().returns({ then: (callback) => callback(results) });
+      const fetchSuggestionsStub = sinon.stub().returns(Promise.resolve(results));
       const onUpdateStub = sinon.stub();
       const element = renderComponent(TextFilter, getProps({
         filter,
@@ -116,21 +131,25 @@ describe('TextFilter', () => {
         fetchSuggestions: fetchSuggestionsStub
       }));
 
-      const picklistOption = element.querySelector('.picklist-option');
-      Simulate.click(picklistOption);
+      _.defer(() => {
+        const picklistOption = element.querySelector('.picklist-option');
+        Simulate.click(picklistOption);
 
-      const button = element.querySelector('.apply-btn');
-      Simulate.click(button);
+        const button = element.querySelector('.apply-btn');
+        Simulate.click(button);
 
-      expect(onUpdateStub).to.have.been.calledWith({
-        parameters: {
-          'function': 'binaryOperator',
-          columnName: 'some_word',
-          arguments: {
-            operator: '=',
-            operand: 'penguin'
+        expect(onUpdateStub).to.have.been.calledWith({
+          parameters: {
+            'function': 'binaryOperator',
+            columnName: 'some_word',
+            arguments: {
+              operator: '=',
+              operand: 'penguin'
+            }
           }
-        }
+        });
+
+        done();
       });
     });
   });

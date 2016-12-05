@@ -29,6 +29,8 @@ export const TextFilter = React.createClass({
         if (this.isMounted) {
           this.setState({ suggestions });
         }
+      }).catch(() => {
+        this.setState({ suggestions: [] });
       });
     }, 350, { leading: true, maxWait: 500 });
 

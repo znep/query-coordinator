@@ -2,6 +2,7 @@ import _ from 'lodash';
 import moment from 'moment';
 
 import MetadataProvider from '../dataProviders/MetadataProvider';
+import SoqlDataProvider from '../dataProviders/SoqlDataProvider';
 import RegionCodingProvider from '../dataProviders/RegionCodingProvider';
 import { getVifs } from './selectors/vifAuthoring';
 import { load } from './vifs/loader';
@@ -21,16 +22,27 @@ export function setDataSource(domain, datasetUid) {
     }
 
     const datasetMetadataProvider = new MetadataProvider({ domain, datasetUid });
+    const soqlDataProvider = new SoqlDataProvider({ domain, datasetUid });
 
     dispatch(requestMetadata(domain, datasetUid));
+
+    const finishMetadataRequests = (resolutions, hasColumnStats) => {
+      dispatch(receiveMetadata(resolutions, hasColumnStats));
+      dispatch(setVifCheckpoint(getVifs(getState().vifAuthoring)));
+    };
 
     return Promise.all([
       datasetMetadataProvider.getDatasetMetadata(),
       datasetMetadataProvider.getPhidippidesMetadata(),
       datasetMetadataProvider.getCuratedRegions()
     ]).then(resolutions => {
-      dispatch(receiveMetadata(resolutions));
-      dispatch(setVifCheckpoint(getVifs(getState().vifAuthoring)));
+      const datasetMetadata = resolutions[0];
+      soqlDataProvider.getColumnStats(datasetMetadata.columns).then((columnStats) => {
+        resolutions[0].columns = _.merge([], columnStats, resolutions[0].columns);
+        finishMetadataRequests(resolutions, true);
+      }).catch(error => {
+        finishMetadataRequests(resolutions, false);
+      });
     }).catch(error => {
       console.error(error);
       dispatch(handleMetadataError());
@@ -48,12 +60,13 @@ export function requestMetadata(domain, datasetUid) {
 }
 
 export const RECEIVE_METADATA = 'RECEIVE_METADATA';
-export function receiveMetadata(resolutions) {
+export function receiveMetadata(resolutions, hasColumnStats) {
   return {
     type: RECEIVE_METADATA,
     datasetMetadata: resolutions[0],
     phidippidesMetadata: resolutions[1],
-    curatedRegions: resolutions[2]
+    curatedRegions: resolutions[2],
+    hasColumnStats
   };
 }
 
@@ -86,6 +99,14 @@ export function setDomain(domain) {
   return {
     type: SET_DOMAIN,
     domain
+  };
+}
+
+export const SET_FILTERS = 'SET_FILTERS';
+export function setFilters(filters) {
+  return {
+    type: SET_FILTERS,
+    filters
   };
 }
 

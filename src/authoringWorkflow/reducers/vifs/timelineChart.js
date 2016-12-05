@@ -5,6 +5,7 @@ import { translate } from '../../../I18n';
 import vifs from '../../vifs';
 import {
   forEachSeries,
+  getValidVifFilters,
   setStringValueOrDefaultValue,
   setStringValueOrDeleteProperty,
   setBooleanValueOrDeleteProperty,
@@ -15,6 +16,7 @@ import {
 import {
   RESET_STATE,
   RECEIVE_METADATA,
+  SET_FILTERS,
   SET_DIMENSION,
   SET_MEASURE,
   SET_MEASURE_AGGREGATION,
@@ -65,6 +67,12 @@ export default function timelineChart(state, action) {
     case SET_DATASET_UID:
       forEachSeries(state, series => {
         setStringValueOrDefaultValue(series, 'dataSource.datasetUid', action.datasetUid, null);
+      });
+      break;
+
+    case SET_FILTERS:
+      forEachSeries(state, series => {
+        _.set(series, 'dataSource.filters', getValidVifFilters(action.filters));
       });
       break;
 

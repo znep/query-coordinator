@@ -868,4 +868,58 @@ describe('SoqlDataProvider', function() {
       });
     });
   });
+
+  describe('getColumnStats()', function() {
+    var soqlDataProvider;
+    var soqlDataProviderOptions = {
+      domain: VALID_DOMAIN,
+      datasetUid: VALID_DATASET_UID
+    };
+    var numberColumn = {
+      fieldName: 'numberColumn',
+      dataTypeName: 'number'
+    };
+    var textColumn = {
+      fieldName: 'textColumn',
+      dataTypeName: 'text'
+    };
+
+    beforeEach(() => {
+      server = sinon.fakeServer.create();
+      soqlDataProvider = new SoqlDataProvider(soqlDataProviderOptions);
+    });
+
+    afterEach(() => {
+      server.restore();
+    });
+
+    it('errors if input is not an array', () => {
+      expect(() => soqlDataProvider.getColumnStats()).to.throw();
+      expect(() => soqlDataProvider.getColumnStats({})).to.throw();
+    });
+
+    it('queries', () => {
+      soqlDataProvider.getColumnStats([numberColumn]);
+      var url = server.requests[0].url;
+      expect(server.requests).to.have.length(1);
+      expect(url).to.match(/select.+min/);
+      expect(url).to.match(/select.+max/);
+    });
+
+    it('only fetches stats for number columns', () => {
+      var promise = soqlDataProvider.getColumnStats([textColumn, numberColumn, textColumn]);
+      var url = server.requests[0].url;
+      expect(server.requests).to.have.length(1);
+      expect(url).to.match(/select.+min/);
+      expect(url).to.match(/select.+max/);
+    });
+
+    it('passes through errors', (done) => {
+      soqlDataProvider.getColumnStats([numberColumn]).then((a) => {
+        throw new Error('Expected promise to reject');
+      }).catch(() => done());
+
+      _respondWithError('');
+    });
+  });
 });

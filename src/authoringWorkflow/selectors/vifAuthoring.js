@@ -6,6 +6,8 @@ import { COLOR_PALETTES } from '../constants';
 export const getVifs = state => _.get(state, 'vifs', {})
 export const getCheckpointVifs = state => _.get(state, 'authoring.checkpointVifs', {});
 
+export const getFilters = state => _.get(state, 'filters', []);
+
 export const getSelectedVisualizationType = state => _.get(state, 'authoring.selectedVisualizationType', null)
 export const getShowCenteringAndZoomingSaveMessage = state => _.get(state, 'authoring.showCenteringAndZoomingSaveMessage', null);
 
@@ -50,6 +52,18 @@ export const getAnyMeasure = createSelector(
     return _.isEmpty(vif) ?
       _.get(vifs, 'columnChart.series[0].dataSource.measure', null) :
       _.get(vif, 'series[0].dataSource.measure', null);
+  }
+);
+
+export const getValidVifFilters = createSelector(
+  getFilters,
+  (filters) => {
+    return _.chain(filters).
+      map('parameters').
+      reject((filter) => {
+        return filter['function'] === 'binaryOperator' && _.isEmpty(_.get(filter, 'arguments.operand'));
+      }).
+      value();
   }
 );
 

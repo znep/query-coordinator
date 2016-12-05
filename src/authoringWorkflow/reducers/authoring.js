@@ -2,6 +2,7 @@ import _ from 'lodash';
 
 import {
   RESET_STATE,
+  SET_FILTERS,
   AWAIT_REGION_CODING,
   FINISH_REGION_CODING,
   HANDLE_REGION_CODING_ERROR,
@@ -19,7 +20,8 @@ export var defaultState = {
   showRegionCodingProcessingMessage: false,
   regionCodingError: null,
   regionCodingLastChecked: null,
-  hasPannedOrZoomed: false
+  hasPannedOrZoomed: false,
+  filters: []
 };
 
 export default function authoring(state, action) {
@@ -32,6 +34,10 @@ export default function authoring(state, action) {
   switch (action.type) {
     case RESET_STATE:
       state = defaultState;
+      break;
+
+    case SET_FILTERS:
+      state.filters = action.filters;
       break;
 
     case SET_VIF_CHECKPOINT:

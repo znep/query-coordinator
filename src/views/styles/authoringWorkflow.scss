@@ -9,8 +9,14 @@
 
   .authoring-modal-content {
     margin-bottom: 49px;
-    padding: 20px 0 0 0;
+    padding: 0;
     overflow-y: hidden;
+
+    .filter-bar-container {
+      .column-container {
+        z-index: 100;
+      }
+    }
 
     .nav-tabs {
       float: left;

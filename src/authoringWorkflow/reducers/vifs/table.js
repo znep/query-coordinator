@@ -7,6 +7,7 @@ import vifs from '../../vifs';
 import { getDisplayableColumns } from '../../selectors/metadata';
 import {
   forEachSeries,
+  getValidVifFilters,
   setStringValueOrDefaultValue,
   setUnits,
 } from '../../helpers';
@@ -15,6 +16,7 @@ import {
   RECEIVE_METADATA,
   SET_DOMAIN,
   SET_DATASET_UID,
+  SET_FILTERS,
   SET_UNIT_ONE,
   SET_UNIT_OTHER
 } from '../../actions';
@@ -62,6 +64,12 @@ export default function table(state, action) {
     case SET_DATASET_UID:
       forEachSeries(state, series => {
         setStringValueOrDefaultValue(series, 'dataSource.datasetUid', action.datasetUid, null);
+      });
+      break;
+
+    case SET_FILTERS:
+      forEachSeries(state, series => {
+        _.set(series, 'dataSource.filters', getValidVifFilters(action.filters));
       });
       break;
 

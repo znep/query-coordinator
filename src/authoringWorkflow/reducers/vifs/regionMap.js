@@ -3,11 +3,18 @@ import utils from 'socrata-utils';
 
 import { translate } from '../../../I18n';
 import vifs from '../../vifs';
-import { forEachSeries, setStringValueOrDefaultValue, setUnits } from '../../helpers';
+import {
+  forEachSeries,
+  getValidVifFilters,
+  setStringValueOrDefaultValue,
+  setUnits
+} from '../../helpers';
+
 import {
   RESET_STATE,
   RECEIVE_METADATA,
   SET_DIMENSION,
+  SET_FILTERS,
   SET_MEASURE,
   SET_MEASURE_AGGREGATION,
   SET_COMPUTED_COLUMN,
@@ -58,6 +65,12 @@ export default function regionMap(state, action) {
     case SET_DATASET_UID:
       forEachSeries(state, series => {
         setStringValueOrDefaultValue(series, 'dataSource.datasetUid', action.datasetUid, null);
+      });
+      break;
+
+    case SET_FILTERS:
+      forEachSeries(state, series => {
+        _.set(series, 'dataSource.filters', getValidVifFilters(action.filters));
       });
       break;
 

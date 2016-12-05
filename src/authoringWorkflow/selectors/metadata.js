@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import MetadataProvider from '../../dataProviders/MetadataProvider';
+import SpandexDataProvider from '../../dataProviders/SpandexDataProvider';
 
 import { createSelector } from 'reselect';
 
@@ -11,6 +12,7 @@ const getDatasetUid = state => state.datasetUid;
 const getDatasetMetadata = state => state.data;
 const getCuratedRegions = state => state.curatedRegions;
 const getPhidippidesMetadata = state => state.phidippidesMetadata;
+const hasColumnStats = state => state.hasColumnStats;
 const getError = state => state.error;
 
 export const isLoading = createSelector(getLoading, isLoading => isLoading);
@@ -33,6 +35,16 @@ export const getDisplayableColumns = createSelector(
     } else {
       return []; // No data yet.
     }
+  }
+);
+
+export const getFilterableColumns = createSelector(
+  getDisplayableColumns,
+  hasColumnStats,
+  (columns, hasColumnStats) => {
+    return _.filter(columns, (column) => {
+      return column.dataTypeName === 'text' || (hasColumnStats && column.dataTypeName === 'number');
+    });
   }
 );
 
@@ -147,6 +159,12 @@ export const hasRegions = createSelector(
 export const getAnyLocationColumn = createSelector(
   getDatasetMetadata,
   (datasetMetadata) => _.find(datasetMetadata.columns, {renderTypeName: 'point'})
+);
+
+export const getSpandexDataProvider = createSelector(
+  getDomain,
+  getDatasetUid,
+  (domain, datasetUid) => new SpandexDataProvider({ domain, datasetUid })
 );
 
 const toDatasetMetadata = (metadata) => (column) => _.find(metadata.columns, {fieldName: column.fieldName});

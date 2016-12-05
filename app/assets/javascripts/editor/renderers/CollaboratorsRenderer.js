@@ -281,7 +281,7 @@ export default function CollaboratorsRenderer() {
     var hasCollaborator = collaboratorsStore.hasCollaborator(collaborator);
     var hasUserDetails = _.has(userDetailsCache, value);
     var userDetails = userDetailsCache[value]; // Updated async, we'll get called again if it changes.
-    var roleName = _.get(userDetails, 'roleName');
+    var roleName = _.get(userDetails, 'roleName') || _.get(userDetails, 'role_name'); // Cetera uses the latter! Remove the first half once we're fully off Core for user search.
 
     var validEmail = getValidEmailInInputBoxOrNull();
     $collaborators.find('.collaborators-email-input-wrapper').toggleClass('busy', !!validEmail && !hasUserDetails);

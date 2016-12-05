@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { FilterBar } from 'socrata-components';
@@ -7,15 +8,18 @@ import { getFilterableColumns, getSpandexDataProvider } from '../selectors/metad
 const mapStateToProps = (state) => {
   const { metadata, vifAuthoring } = state;
 
-  const filters = vifAuthoring.authoring.filters;
   const columns = getFilterableColumns(metadata);
+  const filters = _.filter(vifAuthoring.authoring.filters, (filter) => {
+    const columnName = _.get(filter, 'parameters.columnName');
+    return _.isString(columnName) && _.find(columns, 'fieldName', columnName);
+  });
   const fetchSuggestions = (column, searchTerm) => {
     return getSpandexDataProvider(metadata).getSuggestions(column.fieldName, searchTerm, 10);
   };
 
   return {
-    filters,
     columns,
+    filters,
     fetchSuggestions
   };
 };

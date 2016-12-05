@@ -11,7 +11,7 @@ import utils from 'socrata-utils';
 import reducer from './reducers';
 import getVifTemplates from './vifs';
 import { setLocale } from '../I18n';
-import { setVifCheckpoint } from './actions';
+import { setVifCheckpoint, setFilters } from './actions';
 import { load } from './vifs/loader';
 import { defaultState as defaultMetadata } from './reducers/metadata';
 import { migrateVif } from '../helpers/VifHelpers';
@@ -23,6 +23,7 @@ module.exports = function(element, configuration) {
   const logger = createLogger();
 
   let vif = _.get(configuration, 'vif');
+  const filters = _.get(configuration, 'filters', []);
   const formatVersion = _.get(vif, 'format.version');
   const formatType = _.get(vif, 'format.type');
   const locale = _.get(configuration, 'locale', 'en');
@@ -41,6 +42,7 @@ module.exports = function(element, configuration) {
     vifAuthoring: {
       vifs: vifs,
       authoring: {
+        filters,
         selectedVisualizationType: vifType,
         showCenteringAndZoomingSaveMessage: false
       }
@@ -58,6 +60,7 @@ module.exports = function(element, configuration) {
   this.store = createStore(reducer, initialState, applyMiddleware(...middleware));
 
   load(this.store.dispatch, vif);
+  this.store.dispatch(setFilters(filters));
   setLocale(locale);
 
   this.render = () => {

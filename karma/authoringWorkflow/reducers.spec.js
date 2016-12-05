@@ -5,6 +5,7 @@ import reducer from 'src/authoringWorkflow/reducers';
 import getVifTemplates from 'src/authoringWorkflow/vifs';
 import * as actions from 'src/authoringWorkflow/actions';
 import vifs from 'src/authoringWorkflow/vifs';
+import mockFilters from './mockFilters';
 
 // Note: by convention, reducers return their default state when passed undefined.
 function getDefaultState() {
@@ -317,6 +318,25 @@ describe('AuthoringWorkflow reducer', function() {
 
       it('sets phidippides metadata', function() {
         expect(newState.metadata.phidippidesMetadata).to.equal('newphi');
+      });
+    });
+
+    describe('SET_FILTERS', function() {
+      var state, action, newState;
+
+      beforeEach(function() {
+        state = getTestState();
+        action = actions.setFilters(mockFilters);
+        newState = reducer(state, action);
+      });
+
+      it('sets the authoring filters', function() {
+        expect(newState.vifAuthoring.authoring.filters).to.deep.equal(mockFilters);
+      });
+
+      it('sets the filters for each vif', function() {
+        const filters = newState.vifAuthoring.vifs.columnChart.series[0].dataSource.filters;
+        expect(filters).to.deep.equal(_.map(mockFilters, 'parameters'));
       });
     });
   });

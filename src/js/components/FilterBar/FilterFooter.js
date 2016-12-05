@@ -7,7 +7,7 @@ export default function FilterFooter(props) {
   return (
     <div className="filter-footer">
       <button className="btn btn-sm btn-transparent clear-btn" onClick={onClickClear}>
-        <span className="icon-close-2" role="presentation" />
+        <span className="socrata-icon-close-2" role="presentation" />
         {t('filter_bar.clear')}
       </button>
       <div className="apply-btn-container">

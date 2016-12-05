@@ -177,7 +177,7 @@ const InfoPane = React.createClass({
 
     const privateIcon = isPrivate ?
       <span
-        className="icon-private"
+        className="socrata-icon-private"
         aria-label={t('info_pane.private_notice')}
         title={t('info_pane.private_notice')} /> : null;
 
@@ -186,7 +186,7 @@ const InfoPane = React.createClass({
 
     const officialBadge = isOfficial ?
       <span className="tag-official">
-        <span aria-hidden className="icon-official"></span>
+        <span aria-hidden className="socrata-icon-official"></span>
         {t('info_pane.official')}
       </span> : null;
 

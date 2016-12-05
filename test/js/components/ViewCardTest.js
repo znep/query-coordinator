@@ -7,7 +7,7 @@ describe('ViewCard', function() {
   function getProps(props) {
     return _.defaultsDeep({}, props, {
       description: 'The final frontier',
-      icon: 'icon-bar-chart',
+      icon: 'socrata-icon-bar-chart',
       imageUrl: null,
       isPrivate: false,
       linkProps: {},
@@ -36,14 +36,14 @@ describe('ViewCard', function() {
       var element = renderComponent(ViewCard, getProps({
         isPrivate: true
       }));
-      expect(element.querySelector('.icon-private')).to.exist;
+      expect(element.querySelector('.socrata-icon-private')).to.exist;
     });
 
     it('does not render an icon if the dataset is public', function() {
       var element = renderComponent(ViewCard, getProps({
         isPrivate: false
       }));
-      expect(element.querySelector('.icon-private')).to.not.exist;
+      expect(element.querySelector('.socrata-icon-private')).to.not.exist;
     });
 
     it('renders the metadata values', function() {

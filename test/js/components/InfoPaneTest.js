@@ -25,7 +25,7 @@ describe('InfoPane', () => {
 
   const getName = (element) => element.querySelector('.info-pane-name');
   const getOfficial = (element) => element.querySelector('.tag-official');
-  const getPrivateIcon = (element) => element.querySelector('.icon-private');
+  const getPrivateIcon = (element) => element.querySelector('.socrata-icon-private');
   const getDescription = (element) => element.querySelector('.entry-description div');
   const getButtons = (element) => element.querySelector('.entry-actions');
 

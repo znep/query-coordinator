@@ -65,7 +65,7 @@
   }
 
   &::after {
-    @extend .icon-arrow-down::before;
+    @extend .socrata-icon-arrow-down::before;
 
     margin-top: 14px;
     margin-left: 2px;

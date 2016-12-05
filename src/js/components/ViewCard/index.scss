@@ -14,7 +14,7 @@ $external-blue: #1c6387;;
   position: relative;
 
   .entry-header {
-    .icon-private {
+    .socrata-icon-private {
       color: $warning;
       font-size: 18px;
     }
@@ -26,7 +26,7 @@ $external-blue: #1c6387;;
       h3 {
         margin: 0;
 
-        .icon-private {
+        .socrata-icon-private {
           margin-right: 4px;
         }
 
@@ -63,43 +63,43 @@ $external-blue: #1c6387;;
       margin: auto;
     }
 
-    .icon-story {
+    .socrata-icon-story {
       &.x-large-icon {
         color: $alternate-2;
       }
     }
 
-    .icon-date {
+    .socrata-icon-date {
       &.x-large-icon {
         color: $alternate-3;
       }
     }
 
-    .icon-list-2 {
+    .socrata-icon-list-2 {
       &.x-large-icon {
         color: $alternate-4;
       }
     }
 
-    .icon-map {
+    .socrata-icon-map {
       &.x-large-icon {
         color: $map-green;
       }
     }
 
-    .icon-cards {
+    .socrata-icon-cards {
       &.x-large-icon {
         color: $data-lens-blue;
       }
     }
 
-    .icon-bar-chart {
+    .socrata-icon-bar-chart {
       &.x-large-icon {
         color: $alternate-1;
       }
     }
 
-    .icon-external-square {
+    .socrata-icon-external-square {
       &.x-large-icon {
         color: $external-blue;
       }

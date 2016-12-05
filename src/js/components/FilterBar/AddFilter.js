@@ -110,7 +110,7 @@ export const AddFilter = React.createClass({
         role="button"
         tabIndex="0">
         {t('filter_bar.add_filter')}
-        <span className="icon-add" role="presentation" />
+        <span className="socrata-icon-add" role="presentation" />
       </div>
     );
 

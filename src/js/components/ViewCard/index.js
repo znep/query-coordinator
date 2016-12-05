@@ -150,7 +150,7 @@ export default React.createClass({
     } = this.props;
 
     const privateIcon = isPrivate ?
-      <span className="icon icon-private" /> : null;
+      <span className="icon socrata-icon-private" /> : null;
 
     const image = _.isString(imageUrl) && !_.isEmpty(imageUrl) ?
       <img src={imageUrl} alt={name} /> :

@@ -22,7 +22,7 @@ export const Header = (props) => {
         className="btn btn-transparent modal-header-dismiss"
         onClick={onDismiss}
         aria-label={t('modal.aria_close')}>
-        <span className="icon-close-2" />
+        <span className="socrata-icon-close-2" />
       </button>
     </header>
   );

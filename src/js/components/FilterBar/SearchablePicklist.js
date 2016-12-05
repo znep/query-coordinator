@@ -47,7 +47,7 @@ export const SearchablePicklist = React.createClass({
 
     return (
       <div className="searchable-picklist-input-container">
-        <span className="icon-search" role="presentation" />
+        <span className="socrata-icon-search" role="presentation" />
         <input
           className="searchable-picklist-input"
           type="text"

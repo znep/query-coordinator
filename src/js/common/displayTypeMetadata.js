@@ -2,22 +2,22 @@ function getIconClassForDisplayType(displayType) {
   switch (displayType) {
     case 'grouped':
     case 'filter':
-      return 'icon-filter';
+      return 'socrata-icon-filter';
 
     case 'href':
-      return 'icon-external';
+      return 'socrata-icon-external';
 
     case 'data_lens':
-      return 'icon-cards';
+      return 'socrata-icon-cards';
 
     case 'story':
-      return 'icon-story';
+      return 'socrata-icon-story';
 
     case 'map':
     case 'intensitymap':
     case 'geomap':
     case 'data_lens_map':
-      return 'icon-map';
+      return 'socrata-icon-map';
 
     case 'chart':
     case 'annotatedtimeline':
@@ -28,16 +28,16 @@ function getIconClassForDisplayType(displayType) {
     case 'linechart':
     case 'piechart':
     case 'data_lens_chart':
-      return 'icon-bar-chart';
+      return 'socrata-icon-bar-chart';
 
     case 'calendar':
-      return 'icon-date';
+      return 'socrata-icon-date';
 
     case 'form':
-      return 'icon-list-2';
+      return 'socrata-icon-list-2';
 
     default:
-      return 'icon-dataset';
+      return 'socrata-icon-dataset';
   }
 }
 

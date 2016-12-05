@@ -12,7 +12,7 @@ function compileIconErb(stream) {
   return (callback) => {
     stream.on('glyphs', (glyphs) => {
       var locals = {
-        className,
+        className: 'socrata-icon',
         glyphs
       };
 

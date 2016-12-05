@@ -200,7 +200,7 @@ export const ColorPicker = React.createClass({
       <div {...colorFrameAttributes}>
         <div {...selectedColorFrameAttributes} />
         <div className="caret" role="presentation">
-          <span className="icon-arrow-down" />
+          <span className="socrata-icon-arrow-down" />
         </div>
       </div>
     );

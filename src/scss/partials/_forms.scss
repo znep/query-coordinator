@@ -2,7 +2,7 @@
   display: inline-block;
   position: relative;
 
-  > span[class*="icon-"] {
+  > span[class*="socrata-icon-"] {
     padding-left: ms(2);
   }
 }
@@ -38,7 +38,7 @@
   color: $dark-grey-1;
   padding: ms(-5) ms(0);
 
-  > span[class*="icon-"] {
+  > span[class*="socrata-icon-"] {
     padding-right: ms(-2);
   }
 }

@@ -15,7 +15,7 @@ export default React.createClass({ // eslint-disable-line react/prefer-stateless
       <div className="filter-config">
         <div className="filter-footer">
           <button className="btn btn-sm btn-transparent remove-btn" onClick={this.props.onRemove}>
-            <span className="icon-close-2" />
+            <span className="socrata-icon-close-2" />
             {t('filter_bar.remove_filter')}
           </button>
         </div>

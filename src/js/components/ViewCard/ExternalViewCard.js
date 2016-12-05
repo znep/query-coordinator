@@ -11,7 +11,7 @@ const ExternalViewCard = function(props) {
 
   return (
     <ViewCard
-      icon="icon-external-square"
+      icon="socrata-icon-external-square"
       metadataLeft={translate('view_card.external_content')}
       {...props}
       linkProps={linkProps}>

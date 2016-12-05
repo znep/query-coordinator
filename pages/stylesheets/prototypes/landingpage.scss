@@ -71,7 +71,7 @@ body {
       font-size: ms(-2);
       color: $primary-dark;
     }
-    .icon-close-2 {
+    .socrata-icon-close-2 {
       float: right;
       &:hover {
         cursor: pointer;
@@ -157,7 +157,7 @@ body {
       -webkit-overflow-scrolling: touch;
       -ms-overflow-style: -ms-autohiding-scrollbar;
 
-      .icon-private {
+      .socrata-icon-private {
         color: $warning;
         margin-right: 5px;
       }
@@ -401,10 +401,10 @@ body {
           color: $black;
           > span {
             float: right;
-            &.icon-arrow-down {
+            &.socrata-icon-arrow-down {
                 display: block;
               }
-              &.icon-arrow-up {
+              &.socrata-icon-arrow-up {
                 display: none;
               }
           }
@@ -443,10 +443,10 @@ body {
             white-space: normal;
               overflow: visible;
               border-bottom: none;
-              .icon-arrow-down {
+              .socrata-icon-arrow-down {
                 display: none;
               }
-              .icon-arrow-up {
+              .socrata-icon-arrow-up {
                 display: block;
               }
             }
@@ -698,7 +698,7 @@ body {
         font-weight: 300;
 
       }
-      .icon-private:before {
+      .socrata-icon-private:before {
         font-size: ms(3);
         color: $warning;
       }
@@ -904,7 +904,7 @@ body {
         background-color: $light-grey-5;
       }
 
-      [class^="icon-"], [class*="icon-"] {
+      [class^="socrata-icon-"], [class*="socrata-icon-"] {
         font-size: ms(-3);
         line-height: 1;
       }
@@ -926,7 +926,7 @@ body {
   }
   .email a {
     color: $dark-grey-3;
-    .icon-email {
+    .socrata-icon-email {
       color: $alternate-1;
     }
   }
@@ -977,7 +977,7 @@ body {
     font-weight: 400;
   }
 
-  .input-group-btn .dropdown span.icon-arrow-down {
+  .input-group-btn .dropdown span.socrata-icon-arrow-down {
     padding-left: ms(-2);
     padding-right: 0;
   }
@@ -1001,7 +1001,7 @@ body {
     display: none;
   }
 
-  span.icon-arrow-right {
+  span.socrata-icon-arrow-right {
     font-size: 12px;
     vertical-align: middle;
     margin: 0 10px;

@@ -174,7 +174,7 @@ export const FilterItem = React.createClass({
             onKeyPress={this.toggleControl}
             ref={(el) => this.filterControlToggle = el}>
             {getToggleTextForFilter(filter, column)}
-            <span className="icon-chevron-down" role="presentation" />
+            <span className="socrata-icon-chevron-down" role="presentation" />
           </div>
 
           {this.renderFilterControl()}
@@ -188,7 +188,7 @@ export const FilterItem = React.createClass({
             onClick={this.toggleConfig}
             onKeyPress={this.toggleConfig}
             ref={(el) => this.filterConfigToggle = el}>
-            <span className="icon-kebab" role="presentation" />
+            <span className="socrata-icon-kebab" role="presentation" />
           </div>
 
           {this.renderFilterConfig()}

@@ -4558,6 +4558,7 @@ en:
   visualization_canvas:
     add_visualization: Add Visualization
     default_row_label: row
+    edit_menu_label: Menu
     info_pane:
       based_on: Based on <em>%{name}</em>
       bootstrap_title: Untitled Visualization - Based on %{name}

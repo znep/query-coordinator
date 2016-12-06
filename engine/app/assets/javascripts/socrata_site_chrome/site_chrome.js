@@ -219,8 +219,8 @@ function blurAdminDropdown(event) {
 function verticallyPositionSearchbar() {
   if (navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') > 0) {
     var $searchbox = $('header#site-chrome-header .collapsible-search .searchbox');
-    var $logoImg = $('header#site-chrome-header .logo img');
-    var positionTop = $logoImg.offset().top + $logoImg.height() / 2 - $searchbox.height() / 2;
+    var $nav = $('#site-chrome-header nav.desktop');
+    var positionTop = $nav.offset().top + $nav.height() / 2 - $searchbox.height() / 2;
 
     $searchbox.css('top', positionTop);
   }

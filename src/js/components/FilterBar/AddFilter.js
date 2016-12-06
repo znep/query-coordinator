@@ -20,19 +20,22 @@ export const AddFilter = React.createClass({
   },
 
   componentDidMount() {
-    this.bodyClickHandler = document.body.addEventListener('click', (event) => {
+    this.bodyClickHandler = (event) => {
       var el = ReactDOM.findDOMNode(this);
       if (this.state.isChoosingColumn && !el.contains(event.target)) {
         this.toggleColumnPicklist(event);
       }
-    });
+    };
 
-    this.bodyEscapeHandler = document.body.addEventListener('keyup', (event) => {
+    this.bodyEscapeHandler = (event) => {
       if (this.state.isChoosingColumn && event.keyCode === ESCAPE) {
         this.toggleColumnPicklist();
         this.addFilterButton.focus();
       }
-    });
+    };
+
+    document.body.addEventListener('click', this.bodyClickHandler);
+    document.body.addEventListener('keyup', this.bodyEscapeHandler);
   },
 
   componentWillUnmount() {

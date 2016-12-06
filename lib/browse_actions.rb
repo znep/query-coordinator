@@ -445,9 +445,6 @@ module BrowseActions
     ignore_params = (browse_options[:ignore_params] || []) + [:controller, :action, :page]
     browse_options[:user_params] = user_params.reject { |k| ignore_params.include?(k) }
 
-    # insert utf8 snowman thing
-    browse_options[:user_params][:utf8] = '✓'
-
     # Don't get rows in search, just in JS
     browse_options[:row_count] = browse_options[:search_options].delete(:row_count)
 

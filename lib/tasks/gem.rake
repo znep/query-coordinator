@@ -8,8 +8,10 @@ namespace :socrata_site_chrome do
         next
       end
 
-      puts `npm install`
       Dir.chdir("#{Dir.pwd}/engine") unless Dir.pwd.ends_with?('engine')
+
+      puts `npm install`
+      abort('Could not run npm install') unless $?.success?
 
       puts `bin/push_base_locale -y`
       abort('Could not push to LocaleApp') unless $?.success?

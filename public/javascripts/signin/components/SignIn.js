@@ -1,19 +1,11 @@
 import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
-import _ from 'lodash';
 import OptionsPropType from '../PropTypes/OptionsPropType';
 import SignInForm from './SignInForm/SignInForm';
 import SocialSignIn from './Social/SocialSignIn';
 import styles from './signin.scss';
 
 class SignIn extends React.Component {
-  constructor(props) {
-    super(props);
-
-    // because people like overriding the global lodash...
-    _.noConflict();
-  }
-
   renderSocialSignIn(doAuth0Login) {
     // only render social sign-in if module is enabled
     if (this.props.options.showSocial) {

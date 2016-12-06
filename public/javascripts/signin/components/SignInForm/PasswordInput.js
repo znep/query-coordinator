@@ -1,18 +1,14 @@
 import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
+import PollingInput from './PollingInput';
 import styles from './sign-in-form.scss';
 import passwordIcon from 'icons/private.svg';
 
 class PasswordInput extends React.Component {
   constructor(props) {
     super(props);
-    this.handleChange = this.handleChange.bind(this);
     this.renderDefault = this.renderDefault.bind(this);
-  }
-
-  handleChange(event) {
-    this.props.onChange(event.target.value);
   }
 
   renderSsoEnabled() {
@@ -28,13 +24,13 @@ class PasswordInput extends React.Component {
     return (
       <div>
         <div styleName="icon-container" dangerouslySetInnerHTML={{ __html: passwordIcon }} />
-        <input
+        <PollingInput
           name="user_session[password]"
           aria-label={$.t('screens.sign_in.form.password_placeholder')}
           styleName="input-password"
           type="password"
           placeholder={$.t('screens.sign_in.form.password_placeholder')}
-          onChange={this.handleChange} />
+          onChange={this.props.onChange} />
       </div>
       );
   }

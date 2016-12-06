@@ -32,6 +32,7 @@ import FilterBar from './FilterBar';
 
 export const AuthoringWorkflow = React.createClass({
   propTypes: {
+    enableFiltering: React.PropTypes.bool,
     vif: React.PropTypes.object,
     onComplete: React.PropTypes.func,
     onBack: React.PropTypes.func,
@@ -156,6 +157,10 @@ export const AuthoringWorkflow = React.createClass({
     );
   },
 
+  renderFilterBar() {
+    return this.props.enableFiltering ? <FilterBar /> : null;
+  },
+
   renderBackButton() {
     const { backButtonText } = this.props;
 
@@ -205,7 +210,7 @@ export const AuthoringWorkflow = React.createClass({
           </header>
 
           <section className="authoring-modal-content modal-content">
-            <FilterBar />
+            {this.renderFilterBar()}
 
             <div className="authoring-controls">
               <div className="authoring-editor">

@@ -1,14 +1,8 @@
 import metadataReducer, { getInitialState } from 'reducers/metadata';
-import { updateMetadata } from 'actions/manageMetadata';
+import { updateMetadata, openMetadataModal, closeMetadataModal } from 'actions/manageMetadata';
 
 describe('metadata reducer', () => {
 
-  window.initialState = {
-    view: {
-      name: 'Initial Name',
-      description: 'initial description'
-    }
-  };
   const initialState = getInitialState();
 
   it('handles UPDATE_METADATA for name', () => {
@@ -21,6 +15,26 @@ describe('metadata reducer', () => {
     const action = updateMetadata('description', 'new description');
     const newState = metadataReducer(initialState, action);
     expect(newState.description).to.eql('new description');
+  });
+
+  it('handles OPEN_METADATA_MODAL', () => {
+    const action = openMetadataModal();
+    const newState = metadataReducer(
+      {...initialState,
+       modalOpen: false },
+      action
+    );
+    expect(newState.modalOpen).to.eql(true);
+  });
+
+  it('handles CLOSE_METADATA_MODAL', () => {
+    const action = closeMetadataModal();
+    const newState = metadataReducer(
+      {...initialState,
+       modalOpen: true },
+      action
+    );
+    expect(newState.modalOpen).to.eql(false);
   });
 
 });

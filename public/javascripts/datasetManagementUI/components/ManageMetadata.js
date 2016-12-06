@@ -1,11 +1,27 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { Modal, ModalHeader, ModalFooter, ModalContent } from 'socrata-components';
 import { bindActionCreators } from 'redux';
 import MetadataField from './MetadataField';
-import { saveMetadata, updateMetadata } from '../actions/manageMetadata';
+import { saveMetadata, updateMetadata, closeMetadataModal } from '../actions/manageMetadata';
 
-export function ManageMetadata({ metadata, onChange, onSave }) {
+export function ManageMetadata({ onDismiss, onChange, onSave, metadata }) {
+
+  if (!metadata.modalOpen) {
+    return null;
+  }
+
+  const modalProps = {
+    fullScreen: true,
+    onDismiss
+  };
+
+  const headerProps = {
+    title: I18n.home_pane.metadata,
+    onDismiss
+  };
+
   const generalFields = [
     {
       type: 'text',
@@ -47,41 +63,31 @@ export function ManageMetadata({ metadata, onChange, onSave }) {
   });
 
   return (
-    <div
-      id="manage-metadata-modal"
-      className="modal modal-full modal-overlay modal-hidden"
-      data-modal-dismiss>
-      <div className="modal-container">
-        <header className="modal-header">
-          <h1 className="modal-header-title">{I18n.home_pane.metadata}</h1>
-          <button className="btn btn-transparent modal-header-dismiss" data-modal-dismiss>
-            <span className="icon-close-2" aria-label={I18n.common.cancel}></span>
-          </button>
-        </header>
+    <Modal {...modalProps} >
+      <ModalHeader {...headerProps} />
 
+      <ModalContent>
         <section className="modal-content">
-          <form>
-            {generalFieldsHtml}
-          </form>
+          {generalFieldsHtml}
         </section>
+      </ModalContent>
 
-        <footer className="modal-footer">
-          <div className="modal-footer-actions">
-            <button className="btn btn-default" data-modal-dismiss>{I18n.common.cancel}</button>
-            <button
-              className="btn btn-primary"
-              onClick={onSave}
-              data-modal-dismiss>
-              {I18n.common.save}
-            </button>
-          </div>
-        </footer>
-      </div>
-    </div>
+      <ModalFooter>
+        <div className="modal-footer-actions">
+          <button id="cancel" className="btn btn-default" onClick={onDismiss}>
+            {I18n.common.cancel}
+          </button>
+          <button id="save" className="btn btn-primary" onClick={onSave}>
+            {I18n.common.save}
+          </button>
+        </div>
+      </ModalFooter>
+    </Modal>
   );
 }
 
 ManageMetadata.propTypes = {
+  onDismiss: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   metadata: PropTypes.object.isRequired
@@ -94,7 +100,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     onChange: updateMetadata,
-    onSave: saveMetadata
+    onSave: saveMetadata,
+    onDismiss: closeMetadataModal
   }, dispatch);
 }
 

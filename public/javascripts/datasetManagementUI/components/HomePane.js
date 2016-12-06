@@ -1,6 +1,11 @@
-import React from 'react';
+import _ from 'lodash';
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { openDataModal } from '../actions/manageData';
+import { openMetadataModal } from '../actions/manageMetadata';
 
-export default function HomePane() {
+export function HomePane({ onClickManageMetadata, onClickManageData }) {
   return (
     <div id="home-pane">
       <section className="management-ui-section">
@@ -8,9 +13,10 @@ export default function HomePane() {
         <div className="alert default manage-section-box">
           {I18n.home_pane.metadata_blurb}
           <button
+            id="manage-metadata"
             className="btn btn-default btn-sm"
-            data-modal="manage-metadata-modal">
-            {I18n.home_pane.metadata_manage_button}
+            onClick={onClickManageMetadata}>
+              {I18n.home_pane.metadata_manage_button}
           </button>
         </div>
       </section>
@@ -18,9 +24,7 @@ export default function HomePane() {
         <h2>{I18n.home_pane.data}</h2>
         <div className="alert default manage-section-box">
           {I18n.home_pane.data_blurb}
-          <button
-            className="btn btn-default btn-sm"
-            data-modal="manage-data-modal">
+          <button id="manage-data" className="btn btn-default btn-sm" onClick={onClickManageData}>
             {I18n.home_pane.data_manage_button}
           </button>
         </div>
@@ -28,3 +32,17 @@ export default function HomePane() {
     </div>
   );
 }
+
+HomePane.propTypes = {
+  onClickManageMetadata: PropTypes.func.isRequired,
+  onClickManageData: PropTypes.func.isRequired
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    onClickManageMetadata: openMetadataModal,
+    onClickManageData: openDataModal
+  }, dispatch);
+}
+
+export default connect(_.stubObject, mapDispatchToProps)(HomePane);

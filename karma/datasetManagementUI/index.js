@@ -8,6 +8,22 @@ window.ReactDOM = require('react-dom');
 window.TestUtils = require('react-addons-test-utils');
 window.redux = require('redux');
 window.I18n = require('mockTranslations');
+window.initialState = {
+  view: {
+    name: 'Initial Name',
+    description: 'initial description'
+  },
+  datasetCategories: [
+    {
+      title: 'Important Cats',
+      value: 'Important Cats'
+    },
+    {
+      title: 'Historical Dogs',
+      value: 'Historical Dogs'
+    }
+  ]
+};
 
 window.renderPureComponent = _.flow(TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
 

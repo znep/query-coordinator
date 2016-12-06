@@ -326,7 +326,7 @@ rm -rf node_modules && npm i
 
 ```sh
 brew install n
-n 4.4.3
+n "`cat .node-version`"
 npm rebuild node-sass
 npm install
 ```

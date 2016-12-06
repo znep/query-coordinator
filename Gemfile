@@ -67,7 +67,7 @@ gem 'ConnectSDK', path: 'vendor/gems/ConnectSDK'
 gem 'aws-sdk', '~> 2'
 
 # Provides common header and footer
-gem 'socrata_site_chrome', '2.2.1'
+gem 'socrata_site_chrome', '2.2.2'
 
 # AWS DB migration tasks
 gem 'httparty'

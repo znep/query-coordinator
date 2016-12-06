@@ -1,7 +1,7 @@
 namespace :manifest do
   %w[staging release].each do |environment|
     desc "Create a changelog between the last two #{environment} releases"
-    task environment.to_sym, [:output_file] do |task, args|
+    task environment.to_sym, [:output_file, :auto] do |task, args|
       tags = `git tag -l #{environment}/*`.split.sort.reverse.first((ENV['RELEASE_TAGS'] || 10).to_i)
 
       # Find your tags to compare
@@ -9,14 +9,9 @@ namespace :manifest do
       from_tag = ENV['FROM_TAG'] || tags[1]
       puts "Default comparison is #{from_tag} .. #{to_tag}"
       
-      cmd = ARGV.last
-      task cmd.to_sym do 
-        if cmd.nil? 
-          cmd = ''
-        end
-      end
-
-      if cmd != 'auto'
+      if args.auto.present?
+        puts 'Automated comparison requested'
+      else
         puts "Press <Enter> to continue, or 'n' to choose a previous tag"
         answer = STDIN.gets.downcase.chomp
       end
@@ -97,10 +92,11 @@ namespace :manifest do
 
 
   desc 'Generates useful information for the current release'
-  task :release_info do
+  task :release_info, [:auto] do |t, args|
+    args.with_defaults(:auto => false)
     manifest_file_path = File.expand_path("manifest_#{Time.now.strftime('%Y%m%d-%H%M%S')}.txt")
     puts
-    Rake::Task['manifest:release'].invoke(manifest_file_path)
+    Rake::Task['manifest:release'].invoke(manifest_file_path,args[:auto])
     puts
 
     copy_cmd = "cat #{manifest_file_path} | pbcopy"
@@ -146,7 +142,9 @@ def gitlab_tag_url(from, to)
 end
 
 def get_commits_with_jira(git_log_output)
-  unless git_log_output.nil?
+  if git_log_output.nil?
+    []
+  else
     git_log_output.lines.grep(ticket_regex).inject([]) do |list, line|
       id = line.match(ticket_regex).to_s.strip
       commit = line.strip
@@ -154,8 +152,6 @@ def get_commits_with_jira(git_log_output)
       list << { id => commit.gsub(id, "https://socrata.atlassian.net/browse/#{id}") }
       list.uniq.sort_by(&:keys)
     end
-  else
-    []
   end
 end
 

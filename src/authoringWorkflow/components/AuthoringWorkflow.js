@@ -32,6 +32,7 @@ import FilterBar from './FilterBar';
 
 export const AuthoringWorkflow = React.createClass({
   propTypes: {
+    enableFiltering: React.PropTypes.bool,
     vif: React.PropTypes.object,
     onComplete: React.PropTypes.func,
     onBack: React.PropTypes.func,
@@ -92,35 +93,13 @@ export const AuthoringWorkflow = React.createClass({
     $(this.modal).on('submit', _.constant(false));
   },
 
-  createRollups(vif) {
-    // TODO: Figure out how we can create rollups without direct access to soda
-    // fountain.
-    const rollupRequests = [ Promise.resolve(true) ];
-
-    return Promise.all(rollupRequests);
-  },
-
   onComplete() {
     const { vifAuthoring, vif } = this.props;
 
-    if (isTimelineChart(vifAuthoring)) {
-
-      this.createRollups(vif).
-        then(() => {
-
-            this.props.onComplete({
-              vif
-            });
-          }
-        );
-        // TODO: Add error handling when we actually make external requests
-        // to create rollups.
-    } else {
-
-      this.props.onComplete({
-        vif
-      });
-    }
+    this.props.onComplete({
+      vif,
+      filters: vifAuthoring.authoring.filters
+    });
   },
 
   confirmUserCanEscape() {
@@ -178,6 +157,10 @@ export const AuthoringWorkflow = React.createClass({
     );
   },
 
+  renderFilterBar() {
+    return this.props.enableFiltering ? <FilterBar /> : null;
+  },
+
   renderBackButton() {
     const { backButtonText } = this.props;
 
@@ -227,7 +210,7 @@ export const AuthoringWorkflow = React.createClass({
           </header>
 
           <section className="authoring-modal-content modal-content">
-            <FilterBar />
+            {this.renderFilterBar()}
 
             <div className="authoring-controls">
               <div className="authoring-editor">

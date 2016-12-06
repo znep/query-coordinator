@@ -24,7 +24,6 @@ function render(type, backButtonText) {
   };
 }
 
-
 describe('AuthoringWorkflow', function() {
   var component;
   var props;
@@ -105,6 +104,11 @@ describe('AuthoringWorkflow', function() {
       _.set(props.vifAuthoring.vifs.columnChart, 'series[0].dataSource.domain', 'something');
       _.set(props.vifAuthoring.vifs.columnChart, 'series[0].dataSource.datasetUid', 'something');
       _.set(props.vifAuthoring.vifs.columnChart, 'series[0].dataSource.dimension.columnName', 'something');
+      _.set(props, 'vifAuthoring.authoring.filters', [{
+        parameters: {
+          columnName: 'test'
+        }
+      }]);
 
       var component = renderComponent(AuthoringWorkflow, props);
 
@@ -112,8 +116,10 @@ describe('AuthoringWorkflow', function() {
       TestUtils.Simulate.click(component.querySelector('button.done'));
 
       sinon.assert.calledOnce(props.onComplete);
-      sinon.assert.calledWithExactly(props.onComplete, { vif: props.vif });
-
+      sinon.assert.calledWithExactly(props.onComplete, {
+        vif: props.vif,
+        filters: props.vifAuthoring.authoring.filters
+      });
     });
 
     describe('when the cancel button is clicked', () => {

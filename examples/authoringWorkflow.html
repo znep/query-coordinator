@@ -23,7 +23,13 @@
 
     <div id="authoring-workflow"></div>
 
-    <pre id="output" style="white-space: pre-wrap;"></pre>
+    Vif:
+    <pre id="vif-output" style="white-space: pre-wrap;"></pre>
+
+    Filters:
+    <pre id="filter-output" style="white-space: pre-wrap;"></pre>
+
+    Chart:
     <div id="chart"></div>
     <button id="edit" class="btn btn-default">Edit</button>
   </body>
@@ -36,21 +42,26 @@
 
   <script type="text/javascript">
     var vif;
+    var filters;
     var authoringWorkflow;
     var AuthoringWorkflow = socrata.visualizations.AuthoringWorkflow;
     var VisualizationRenderer = socrata.visualizations.VisualizationRenderer;
     var container = document.querySelector('#authoring-workflow');
-    var output = document.querySelector('#output');
+    var vifOutput = document.querySelector('#vif-output');
+    var filterOutput = document.querySelector('#filter-output');
     var chart = document.querySelector('#chart');
     var visualization;
     var onComplete = function(result) {
       vif = result.vif;
-      output.innerHTML = JSON.stringify(result.vif, null, 2);
+      filters = result.filters;
+      vifOutput.innerHTML = JSON.stringify(vif, null, 2);
+      filterOutput.innerHTML = JSON.stringify(filters, null, 2);
       chart.innerHTML = '';
 
       if (visualization) {
         visualization.destroy();
       }
+
       visualization = new VisualizationRenderer(result.vif, chart);
 
       authoringWorkflow.destroy();
@@ -65,8 +76,10 @@
     };
 
     $('#launch').click(function() {
-      output.innerHTML = '';
+      vifOutput.innerHTML = '';
+      filterOutput.innerHTML = '';
       vif = null;
+      filters = null;
       chart.innerHTML = '';
 
       var axisLabels = {
@@ -310,6 +323,7 @@
         // vif: v1FeatureMapVif,
         // vif: percentColumnNBEExample,
         backButtonText: 'Back to Dataset Selection',
+        enableFiltering: true,
         onComplete: onComplete,
         onCancel: onCancel,
         onBack: onBack,
@@ -321,6 +335,8 @@
       if (vif) {
         authoringWorkflow = new AuthoringWorkflow(container, {
           vif: vif,
+          filters: filters,
+          enableFiltering: true,
           onComplete: onComplete,
           onCancel: onCancel,
           useLogger: true

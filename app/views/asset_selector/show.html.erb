@@ -1,12 +1,15 @@
 <% content_for :head do %>
-  <title><%= '(TODO)' %> | <%= get_site_title %></title>
-
-  <meta name="description" content="<%= 'TODO' %>">
+  <title><%= get_site_title %></title>
+  <meta name="description" content="<%= CurrentDomain.cname %> | Socrata Open Data Catalog">
   <meta name="page_name" content="Asset Selector">
 <% end %>
 
 <div class="asset-selector"></div>
 
 <% content_for :scripts do %>
+  <script>
+    var assetSelectorContent = <%= raw @asset_selector_content.to_json %>;
+  </script>
+
   <%= include_webpack_bundle 'asset-selector/main.js' %>
 <% end %>

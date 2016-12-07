@@ -32,22 +32,15 @@
       <label for="app_token_public"><%= t('screens.profile.edit.app_tokens.public') %></label>
       <%= check_box_tag 'app_token[public]', 'on', @token.public %>
     </div>
-    <%- unless @token.id.nil? -%>
+    <!-- We deprecated app_token thumbnail upload as part of EN-1426.
+         We now only allow you to edit this if you created a thumbnail before the deprecation. -->
+    <%- if !@token.id.nil? && @token.has_thumbnail? -%>
       <div class="line clearfix">
         <label><%= t('screens.profile.edit.app_tokens.thumbnail') %></label>
-        <%- if @token.has_thumbnail? -%>
-          <div class="thumbnail thumbnailArea">
-            <img src="<%= @token.thumbnail_url %>" alt="thumbnail" />
-          </div>
-          <span class="flash error thumbnailError"><%= t('screens.profile.edit.validation.image_format') %></span>
-        <%- else -%>
-          <div class="noThumbnail thumbnailArea">
-            <img alt="thumbnail" />
-            <span class="noThumbnailText">
-              <em><%= t('screens.profile.app_tokens.item.no_thumbnail') %></em>
-            </span>
-          </div>
-        <%- end -%>
+        <div class="thumbnail thumbnailArea">
+          <img src="<%= @token.thumbnail_url %>" alt="thumbnail" />
+        </div>
+        <span class="flash error thumbnailError"><%= t('screens.profile.edit.validation.image_format') %></span>
       </div>
       <div class="line clearfix">
         <label>&nbsp;</label>

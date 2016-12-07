@@ -123,11 +123,21 @@ module SocrataSiteChrome
     end
 
     def get_domain_config
+      unless cname.present?
+        error_msg = 'cname is nil! cname must be present to fetch domain config'
+        ::Airbrake.notify(
+          :error_class => 'InvalidSiteChromeDomainConfig',
+          :error_message => error_msg
+        )
+        Rails.logger.error(error_msg)
+        raise error_msg
+      end
+
       body = Rails.cache.fetch(cache_key) do
         begin
           response = HTTParty.get(
             domain_config_uri,
-            :headers => { 'X-Socrata-Host' => cname }
+            :headers => { 'X-Socrata-Host' => cname.to_s }
           )
           response.code == 200 ? response.body : nil
         rescue HTTParty::ResponseError => e

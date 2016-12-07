@@ -76,6 +76,7 @@ header#site-chrome-header[template="rally"] {
         font-size: 15px;
         font-weight: 300;
         height: 100%;
+        max-height: $banner_height;
 
         &.desktop {
           position: relative;
@@ -97,6 +98,10 @@ header#site-chrome-header[template="rally"] {
 
             .site-chrome-nav-links {
               height: 100%;
+
+              a.site-chrome-nav-link, .site-chrome-nav-menu, div.dropdown {
+                max-height: $banner_height;
+              }
 
               .site-chrome-nav-menu {
                 div.dropdown {
@@ -140,11 +145,6 @@ header#site-chrome-header[template="rally"] {
 
             .language-switcher-container {
               float: left;
-            }
-
-            a.site-chrome-nav-link {
-              padding: 0 5px;
-              max-height: $banner_height;
             }
             a.sign-in-toggle {
               font-size: 12px;

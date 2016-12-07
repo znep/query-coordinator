@@ -105,6 +105,10 @@ header#site-chrome-header[template="evergreen"] {
             float: none;
             display: inline-block;
             text-align: right;
+
+            .site-chrome-nav-link, .site-chrome-nav-menu, div.dropdown {
+              max-height: $banner_height;
+            }
           }
 
           .collapsible-search {

@@ -69,7 +69,7 @@
       &.expandable {
         &::after {
           @include transition(transform 0.15s ease-in-out);
-          @extend .icon-arrow-down::before;
+          @extend .socrata-icon-arrow-down::before;
 
           font-size: 1.75rem;
           display: block;

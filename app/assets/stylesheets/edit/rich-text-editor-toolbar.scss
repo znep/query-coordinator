@@ -92,43 +92,43 @@
   }
 
   .rich-text-editor-toolbar-btn-bold:before {
-    @extend .icon-bold2::before
+    @extend .socrata-icon-bold2::before
   }
 
   .rich-text-editor-toolbar-btn-italic:before {
-    @extend .icon-italic2::before
+    @extend .socrata-icon-italic2::before
   }
 
   .rich-text-editor-toolbar-btn-left:before {
-    @extend .icon-paragraph-left3::before
+    @extend .socrata-icon-paragraph-left3::before
   }
 
   .rich-text-editor-toolbar-btn-center:before {
-    @extend .icon-paragraph-center3::before
+    @extend .socrata-icon-paragraph-center3::before
   }
 
   .rich-text-editor-toolbar-btn-right:before {
-    @extend .icon-paragraph-right3::before;
+    @extend .socrata-icon-paragraph-right3::before;
   }
 
   .rich-text-editor-toolbar-btn-link:before {
-    @extend .icon-link::before;
+    @extend .socrata-icon-link::before;
   }
 
   .rich-text-editor-toolbar-btn-orderedList:before {
-    @extend .icon-list-numbered::before;
+    @extend .socrata-icon-list-numbered::before;
   }
 
   .rich-text-editor-toolbar-btn-unorderedList:before {
-    @extend .icon-list2::before;
+    @extend .socrata-icon-list2::before;
   }
 
   .rich-text-editor-toolbar-btn-blockquote:before {
-    @extend .icon-quotes-left::before;
+    @extend .socrata-icon-quotes-left::before;
   }
 
   .rich-text-editor-toolbar-btn-clearFormatting:before {
-    @extend .icon-clear-formatting::before;
+    @extend .socrata-icon-clear-formatting::before;
   }
 
   .rich-text-editor-toolbar-select-container {
@@ -177,7 +177,7 @@
       font-size: 1.2rem;
 
       &:before {
-        @extend .icon-arrow-down::before;
+        @extend .socrata-icon-arrow-down::before;
       }
     }
   }

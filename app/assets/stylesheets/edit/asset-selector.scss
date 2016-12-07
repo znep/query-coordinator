@@ -125,7 +125,7 @@
   }
 
   .asset-selector-image-url-wrapper-container {
-    .icon-warning {
+    .socrata-icon-warning {
       margin-right: 0.5rem;
     }
 
@@ -167,7 +167,7 @@
     color: $btn-primary-background-color;
     margin-right: 5px;
 
-    .icon-checkmark3 {
+    .socrata-icon-checkmark3 {
       margin-right: 5px;
     }
   }
@@ -182,7 +182,7 @@
       margin: 0 1rem 0 0;
       text-align: center;
 
-      .icon-info-inverse {
+      .socrata-icon-info-inverse {
         margin: 0;
         font-size: 1.5rem;
       }
@@ -405,7 +405,7 @@
   }
 
   &::after {
-    @extend .icon-arrow-right::before;
+    @extend .socrata-icon-arrow-right::before;
 
     position: absolute;
     right: 1rem;
@@ -562,13 +562,13 @@
     position: relative;
 
     &.active {
-      .icon-checkmark3,
+      .socrata-icon-checkmark3,
       .gallery-result-cover {
         display: block;
       }
     }
 
-    .icon-checkmark3 {
+    .socrata-icon-checkmark3 {
       display: none;
       position: absolute;
       top: calc(50% - 24px);

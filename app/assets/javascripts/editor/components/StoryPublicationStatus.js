@@ -78,7 +78,7 @@ export const StoryPublicationStatus = React.createClass({
         <strong>{I18n.t('editor.settings_panel.publishing_section.saved')}</strong>
         <span>{humanFriendlyUpdatedAt}</span>
         <button className="btn-close" onClick={this.hidePublicationFlannel}>
-          <span className="icon-close-2" />
+          <span className="socrata-icon-close-2" />
         </button>
       </h5>
     );
@@ -205,8 +205,8 @@ export const StoryPublicationStatus = React.createClass({
 
     const statusIconAttributes = {
       className: classNames('story-publication-status-icon', {
-        'unpublished icon-warning-alt2': !isPublic || isCurrentDraftUnpublished,
-        'published icon-checkmark3': isPublic && !isCurrentDraftUnpublished
+        'unpublished socrata-icon-warning-alt2': !isPublic || isCurrentDraftUnpublished,
+        'published socrata-icon-checkmark3': isPublic && !isCurrentDraftUnpublished
       })
     };
 

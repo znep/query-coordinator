@@ -741,10 +741,12 @@ describe('AssetSelectorRenderer', function() {
 
         describe('when jumping back a step', function() {
           it('should render dataset selection', function() {
+            sinon.stub(window, 'confirm').returns(true);
             $('#authoring-workflow .authoring-back-button').click();
 
             assert.equal($('#authoring-workflow *').length, 0);
             assert.isAbove($('.asset-selector-dataset-chooser-iframe').length, 0);
+            window.confirm.restore();
           });
         });
       });

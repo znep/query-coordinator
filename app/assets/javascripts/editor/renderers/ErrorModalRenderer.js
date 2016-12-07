@@ -21,7 +21,7 @@ export default function ErrorModalRenderer() {
 
   $modal.modal({
     title: StorytellerUtils.format(
-      '<span class="icon-warning"></span> {0}',
+      '<span class="socrata-icon-warning"></span> {0}',
       I18n.t('editor.generic_error')
     ),
     content: $modalContents

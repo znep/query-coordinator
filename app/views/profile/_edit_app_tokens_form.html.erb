@@ -32,8 +32,8 @@
       <label for="app_token_public"><%= t('screens.profile.edit.app_tokens.public') %></label>
       <%= check_box_tag 'app_token[public]', 'on', @token.public %>
     </div>
-    <!-- We deprecated app_token thumbnail upload as part of EN-1426.
-         We now only allow you to edit this if you created a thumbnail before the deprecation. -->
+    <%# We deprecated app_token thumbnail upload as part of EN-1426.
+         We now only allow you to edit this if you created a thumbnail before the deprecation. %>
     <%- if !@token.id.nil? && @token.has_thumbnail? -%>
       <div class="line clearfix">
         <label><%= t('screens.profile.edit.app_tokens.thumbnail') %></label>

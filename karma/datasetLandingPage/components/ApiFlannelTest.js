@@ -19,10 +19,10 @@ describe('components/ApiFlannel', () => {
     expect(element).to.exist;
   });
 
-  it('renders a dropdown for the resource type if the view has a resource name', () => {
+  it('renders a dropdown for the resource type if the view has a named resource url', () => {
     const element = renderComponent(ApiFlannel, getProps({
       view: {
-        resourceName: 'affinity'
+        namedResourceUrl: 'ohm'
       }
     }));
 
@@ -30,7 +30,7 @@ describe('components/ApiFlannel', () => {
     expect(getDropdownOptions(element).length).to.equal(2);
   });
 
-  it('does not render a dropdown for the resource type if the view does not have a resource name', () => {
+  it('does not render a dropdown for the resource type if the view does not have a named resource url', () => {
     const element = renderComponent(ApiFlannel, getProps());
     expect(getDropdownOptions(element).length).to.equal(0);
   });
@@ -38,7 +38,7 @@ describe('components/ApiFlannel', () => {
   it('switches the resource text when clicking the dropdown options', () => {
     const element = renderComponent(ApiFlannel, getProps({
       view: {
-        resourceName: 'ohm'
+        namedResourceUrl: 'ohm'
       }
     }));
 

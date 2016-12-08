@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import { initClipboardControl, isCopyingSupported } from '../lib/clipboardControl';
 import { handleKeyPress } from '../lib/a11yHelpers';
-import { UID_REGEX } from '../lib/constants';
 
 export const ApiFlannel = React.createClass({
   propTypes: {
@@ -15,7 +14,7 @@ export const ApiFlannel = React.createClass({
 
   getInitialState() {
     return {
-      resourceType: this.props.view.resourceName ? 'name' : 'canonical'
+      resourceType: this.props.view.namedResourceUrl ? 'name' : 'canonical'
     };
   },
 
@@ -43,10 +42,10 @@ export const ApiFlannel = React.createClass({
       url: view.resourceUrl
     };
 
-    if (!_.isEmpty(view.resourceName)) {
+    if (!_.isEmpty(view.namedResourceUrl)) {
       resourceTypes.name = {
         label: I18n.api_flannel.name,
-        url: view.resourceUrl.replace(UID_REGEX, view.resourceName)
+        url: view.namedResourceUrl
       };
     }
 
@@ -61,27 +60,25 @@ export const ApiFlannel = React.createClass({
       return null;
     }
 
-    const setResourceType = (newResourceType) => {
-      return () => {
+    const setResourceType = (newResourceType) => (
+      () => {
         this.setState({ resourceType: newResourceType });
-      };
-    };
+      }
+    );
 
-    const dropdownOptions = _.map(resourceTypes, (type, key) => {
-      return (
-        <li key={key}>
-          {/* These links have empty hrefs so browsers let you tab to them */}
-          <a
-            role="menuitem"
-            href=""
-            className="option"
-            onMouseUp={setResourceType(key)}
-            onKeyDown={handleKeyPress(setResourceType(key))}>
-            {type.label}
-          </a>
-        </li>
-      );
-    });
+    const dropdownOptions = _.map(resourceTypes, (type, key) => (
+      <li key={key}>
+        {/* These links have empty hrefs so browsers let you tab to them */}
+        <a
+          role="menuitem"
+          href=""
+          className="option"
+          onMouseUp={setResourceType(key)}
+          onKeyDown={handleKeyPress(setResourceType(key))}>
+          {type.label}
+        </a>
+      </li>
+    ));
 
     return (
       <span className="input-group-btn">

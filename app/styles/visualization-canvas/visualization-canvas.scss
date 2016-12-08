@@ -1,8 +1,10 @@
 @import "styleguide-colors";
-@import "visualization-canvas/visualization-container";
-@import "visualization-canvas/table";
 
 $edit-bar-height: 60px;
+$edit-bar-font-color: #e4e4e4;
+$edit-bar-name-width: 280px;
+$edit-bar-menu-width: 60px;
+$preview-bar-height: 26px;
 
 body {
   margin: 0;
@@ -10,15 +12,64 @@ body {
   background: $light-grey-6;
 }
 
-#site-chrome-header {
-  display: none;
-}
-
-.container {
-  margin: $edit-bar-height auto 0 auto;
-}
-
 .visualization-canvas {
+  min-height: 90vh;
+
+  .edit-bar {
+    z-index: 5;
+
+    .edit-bar-child {
+      display: flex;
+      justify-content: flex-end;
+      width: calc(100% - #{$edit-bar-menu-width + $edit-bar-name-width});
+      padding: 0 16px;
+
+      .btn-preview {
+        color: $edit-bar-font-color;
+        text-decoration: none;
+        text-align: right;
+
+        &:hover, &:focus {
+          text-decoration: underline;
+        }
+
+        .socrata-icon-preview {
+          padding-left: 8px;
+          font-size: 16px;
+        }
+      }
+    }
+  }
+
+  .preview-bar {
+    width: 100%;
+    background: $dark-grey-1;
+    height: $preview-bar-height;
+    color: $white;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 16px;
+    position: fixed;
+    top: 0;
+    z-index: 5;
+
+    .btn-transparent {
+      color: $white;
+      padding: 0;
+
+      &:hover,
+      &:focus,
+      &:active {
+        color: $light-grey-2;
+      }
+    }
+
+    .socrata-icon-close-2 {
+      font-size: 12px;
+      padding-left: 7px;
+    }
+  }
+
   .main-spinner {
     display: flex;
     height: 400px;
@@ -28,12 +79,77 @@ body {
     }
   }
 
-  .info-pane {
-    padding-top: 15px;
-    margin-bottom: 0;
+  .container {
+    margin: 0 auto;
+
+    .info-pane {
+      padding-top: 15px;
+      margin-bottom: 0;
+    }
+
+    .add-visualization-button-container {
+      padding: 200px 0px;
+      display: flex;
+
+      .btn {
+        margin: auto;
+      }
+
+      .socrata-icon-add {
+        padding-right: 10px;
+      }
+    }
+
+    .visualizations {
+      min-height: 500px;
+      padding: 20px;
+      padding-bottom: 0;
+      display: flex;
+      justify-content: center;
+
+      .socrata-visualization-renderer {
+        height: 600px;
+        width: 100%;
+        background: $white;
+
+        .alert.error {
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+    }
+
+    .table-contents {
+      padding: 20px;
+      height: 574px;
+
+      .socrata-visualization {
+        background: $white;
+      }
+    }
   }
 }
 
 footer#site-chrome-footer {
   visibility: hidden;
+}
+
+.placeholder-wrapper {
+  margin-top: $edit-bar-height;
+}
+
+.preview-mode {
+  margin-top: $preview-bar-height;
+}
+
+.hide-site-chrome {
+  #site-chrome-header {
+    display: none;
+  }
+
+  .container {
+    margin-top: $edit-bar-height;
+  }
 }

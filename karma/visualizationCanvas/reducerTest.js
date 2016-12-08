@@ -2,7 +2,9 @@ import reducer from 'reducer';
 import {
   addVisualization,
   cancelEditingVisualization,
-  updateVisualization
+  updateVisualization,
+  enterPreviewMode,
+  enterEditMode
 } from 'actions';
 import mockView from 'data/mockView';
 import mockParentView from 'data/mockParentView';
@@ -84,6 +86,20 @@ describe('Reducer', () => {
 
     it('updates the VIFs array', () => {
       expect(state.vifs).to.eql([mockVif, newVif]);
+    });
+  });
+
+  describe('ENTER_EDIT_MODE', () => {
+    it('sets mode to "edit"', () => {
+      const state = reducer(state, enterEditMode());
+      expect(state.mode).to.be.eq('edit');
+    });
+  });
+
+  describe('ENTER_PREVIEW_MODE', () => {
+    it('sets mode to "preview"', () => {
+      const state = reducer(state, enterPreviewMode());
+      expect(state.mode).to.eq('preview')
     });
   });
 });

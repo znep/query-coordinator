@@ -734,6 +734,9 @@ class DatasetsController < ApplicationController
 
     @view = @parent_view.new_visualization_canvas
 
+    @body_classes = 'hide-site-chrome'
+    @display_placeholder_edit_bar = true
+
     render 'visualization_canvas', :layout => 'styleguide'
   end
 
@@ -1290,6 +1293,8 @@ class DatasetsController < ApplicationController
       # Fetch parent view
       @parent_view = @view.parent_view
       return false if @parent_view.nil?
+
+      @display_placeholder_edit_bar = false
 
       render 'visualization_canvas', :layout => 'styleguide'
       true

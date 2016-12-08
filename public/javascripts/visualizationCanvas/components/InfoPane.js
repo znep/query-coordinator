@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import components from 'socrata-components';
+import { InfoPane as SocrataComponentsInfoPane } from 'socrata-components';
 import { formatDate } from 'socrata-components/common/dates';
 import { translate as t } from '../lib/I18n';
 import { connect } from 'react-redux';
@@ -34,4 +34,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(components.InfoPane);
+export default connect(mapStateToProps)(SocrataComponentsInfoPane);

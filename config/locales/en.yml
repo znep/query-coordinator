@@ -4561,11 +4561,13 @@ en:
     add_visualization: Add Visualization
     default_row_label: row
     edit_menu_label: Menu
+    exit_preview_mode: Exit Preview Mode
     info_pane:
       based_on: Based on <em>%{name}</em>
       bootstrap_title: Untitled Visualization - Based on %{name}
       unsaved: Unsaved
       updated: Updated
       view_count: View Count
+    preview: Preview
     render_error: There was a problem rendering this page.
     visualization_error: There was a problem rendering this visualization.

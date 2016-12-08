@@ -6,8 +6,19 @@
 <% end %>
 
 <div id="app" class="visualization-canvas">
-  <div class="main-spinner">
-    <div class="spinner-default spinner-large"></div>
+
+  <% # note that this is a placeholder for the EditBar.js component %>
+  <% if @display_placeholder_edit_bar %>
+    <nav class="edit-bar">
+      <button class="socrata-icon-stories-menu btn-menu"></button>
+      <span class="page-name"><%= @view.name %></span>
+    </nav>
+  <% end %>
+
+  <div class="placeholder-wrapper">
+    <div class="main-spinner">
+      <div class="spinner-default spinner-large"></div>
+    </div>
   </div>
 </div>
 

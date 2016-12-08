@@ -5,6 +5,7 @@ import a11y from 'react-a11y';
 import createLogger from 'redux-logger';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
+import { translate as t } from 'lib/I18n';
 
 import visualizationCanvas from './reducer';
 import App from './App';
@@ -37,15 +38,15 @@ _.defer(function() {
     console.error(`Fatal error when rendering: ${e.stack}`);
 
     ReactDOM.render(
-      <div className="alert error alert-full-width-top">{I18n.render_error}</div>,
-      document.querySelector('#app')
+      <div className="alert error alert-full-width-top">{t('render_error')}</div>,
+      document.querySelector('.placeholder-wrapper')
     );
 
     return;
   }
 
   // Show the footer
-  var footer = document.querySelector('#site-chrome-footer');
+  const footer = document.querySelector('#site-chrome-footer');
   if (footer) {
     footer.style.visibility = 'visible';
   }

@@ -6,7 +6,8 @@ describe('AuthoringWorkflowModal', () => {
     return {
       config: {
         position: 0,
-        vif: mockVif
+        vif: mockVif,
+        isActive: true
       },
       onCancel: _.noop,
       onComplete: _.noop,
@@ -14,24 +15,48 @@ describe('AuthoringWorkflowModal', () => {
     };
   };
 
-  it('renders an element', () => {
-    const element = renderComponent(AuthoringWorkflowModal, getProps());
-    expect(element).to.exist;
+  describe('when isActive is false', () => {
+    let element;
+
+    beforeEach(() => {
+      element = renderComponent(AuthoringWorkflowModal, getProps({
+        config: {
+          isActive: false
+        }
+      }));
+    });
+
+    it('does not render when isActive is false', () => {
+      expect(element).to.not.exist;
+    });
+
+    it('does not initialize the AuthoringWorkflow if isActive is false', () => {
+      // the element is null, this is assert makes sure that it is not present at all
+      expect(document.querySelector('.authoring-modal')).to.not.exist;
+    });
   });
 
-  it('initializes the AuthoringWorkflow', () => {
-    const element = renderComponent(AuthoringWorkflowModal, getProps());
-    expect(element.querySelector('.authoring-modal')).to.exist;
-  });
+  describe('when isActive is true', () => {
+    it('renders', () => {
+      const element = renderComponent(AuthoringWorkflowModal, getProps());
+      expect(element).to.exist;
+    });
 
-  it('does not initialize the AuthoringWorkflow when VIF is missing', () => {
-    const element = renderComponent(AuthoringWorkflowModal, getProps({
-      config: {
-        position: 0,
-        vif: {}
-      }
-    }));
-    expect(element.querySelector('.authoring-modal')).to.not.exist;
+    it('initializes the AuthoringWorkflow if isActive is true and VIFs are present', () => {
+      const element = renderComponent(AuthoringWorkflowModal, getProps());
+      expect(element.querySelector('.authoring-modal')).to.exist;
+    });
+
+    it('does not initialize the AuthoringWorkflow when VIF is missing', () => {
+      const element = renderComponent(AuthoringWorkflowModal, getProps({
+        config: {
+          position: 0,
+          vif: {},
+          isActive: true
+        }
+      }));
+      expect(element.querySelector('.authoring-modal')).to.not.exist;
+    });
   });
 
   it('removes the AuthoringWorkflow on unmount', () => {
@@ -39,8 +64,9 @@ describe('AuthoringWorkflowModal', () => {
     const element = TestUtils.renderIntoDocument(reactElement);
     const node = ReactDOM.findDOMNode(element);
 
-    element.componentWillUnMount();
+    element.componentWillUnmount();
 
-    expect(node.querySelector('.authoring-modal')).to.not.exist;
+    // double check it's nowhere on the document
+    expect(document.querySelector('.authoring-modal')).to.not.exist;
   });
 });

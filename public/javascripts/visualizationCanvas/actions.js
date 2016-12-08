@@ -13,3 +13,13 @@ export const updateVisualization = (data) => ({
   type: UPDATE_VISUALIZATION,
   data
 });
+
+export const ENTER_PREVIEW_MODE = 'ENTER_PREVIEW_MODE';
+export const enterPreviewMode = () => ({
+  type: ENTER_PREVIEW_MODE
+});
+
+export const ENTER_EDIT_MODE = 'ENTER_EDIT_MODE';
+export const enterEditMode = () => ({
+  type: ENTER_EDIT_MODE
+});

@@ -1,23 +1,36 @@
 import { AddVisualizationButton } from 'components/AddVisualizationButton';
+import mockVif from 'data/mockVif';
 
 describe('AddVisualizationButton', () => {
-  let element;
-  let onClickSpy;
-
-  before(() => {
-    onClickSpy = sinon.spy();
-
-    element = renderPureComponent(AddVisualizationButton({
-      openAuthoringWorkflowModal: onClickSpy
-    }));
-  });
+  const getProps = (props) => {
+    return {
+      vifs: [],
+      openAuthoringWorkflowModal: _.noop,
+      ...props
+    };
+  };
 
   it('renders an element', () => {
+    const element = renderPureComponent(AddVisualizationButton(getProps()));
     expect(element).to.exist;
   });
 
   it('invokes openAuthoringWorkflowModal on click', () => {
-    TestUtils.Simulate.click(element);
+    const onClickSpy = sinon.spy();
+    const element = renderPureComponent(AddVisualizationButton(getProps({
+      openAuthoringWorkflowModal: onClickSpy
+    })));
+
+    TestUtils.Simulate.click(element.querySelector('button'));
+
     expect(onClickSpy).to.have.been.called;
+  });
+
+  it('does not render a button if vifs exist', () => {
+    const component = AddVisualizationButton(getProps({
+      vifs: [mockVif]
+    }));
+
+    expect(component).to.be.null;
   });
 });

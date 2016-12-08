@@ -11,8 +11,8 @@ import {
 export const AuthoringWorkflowModal = React.createClass({
   propTypes: {
     config: PropTypes.shape({
-      position: PropTypes.number.isRequired,
-      vif: PropTypes.object.isRequired
+      position: PropTypes.number,
+      vif: PropTypes.object
     }).isRequired,
     onCancel: PropTypes.func,
     onComplete: PropTypes.func
@@ -26,10 +26,21 @@ export const AuthoringWorkflowModal = React.createClass({
   },
 
   componentDidMount() {
+    this.createAuthoringWorkflow();
+  },
+
+  componentDidUpdate() {
+    this.createAuthoringWorkflow();
+  },
+
+  componentWillUnmount() {
+    this.destroyAuthoringWorkflow();
+  },
+
+  createAuthoringWorkflow() {
     const { config, onCancel, onComplete } = this.props;
 
-    // don't initialize the AuthoringWorkflow if there isn't a VIF
-    if (_.isEmpty(config.vif)) {
+    if (!config.isActive || this.authoringWorkflow || _.isEmpty(config.vif)) {
       return;
     }
 
@@ -44,14 +55,17 @@ export const AuthoringWorkflowModal = React.createClass({
   destroyAuthoringWorkflow() {
     if (this.authoringWorkflow) {
       this.authoringWorkflow.destroy();
+      this.authoringWorkflow = null;
     }
   },
 
-  componentWillUnMount() {
-    this.destroyAuthoringWorkflow();
-  },
-
   render() {
+    const { config } = this.props;
+
+    if (!config.isActive) {
+      return null;
+    }
+
     return (
       <div
         className="authoring-workflow-modal"

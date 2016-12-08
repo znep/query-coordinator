@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
-import { components } from 'socrata-visualizations';
+import { components as SocrataVisualizations } from 'socrata-visualizations';
 import { connect } from 'react-redux';
 
 export const Table = ({ vif }) => (
   <div className="table-contents">
-    <components.Visualization vif={vif} />
+    <SocrataVisualizations.Visualization vif={vif} />
   </div>
 );
 

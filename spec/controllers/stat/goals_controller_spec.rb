@@ -49,6 +49,8 @@ RSpec.describe Stat::GoalsController, type: :controller do
   let(:feature_flags) do
     {
       'open_performance_narrative_editor' => 'storyteller',
+      'enable_filtered_tables_in_ax' => false,
+      'enable_storyteller_mixpanel' => false,
       'enable_getty_images_gallery' => true,
       'enable_deprecated_user_search_api' => false
     }
@@ -115,7 +117,9 @@ RSpec.describe Stat::GoalsController, type: :controller do
 
 
 
-  shared_examples 'action available to goal editors' do |action|
+  shared_examples 'action available to goal editors' do
+    # The action_lambda parameter (via `let`) allows this shared example to work
+    # regardless of HTTP verb or params.
 
     describe 'user not signed in' do
       let(:accessible) { false }
@@ -129,7 +133,7 @@ RSpec.describe Stat::GoalsController, type: :controller do
 
       describe 'goal not present' do
         it '404s' do
-          get action, uid: uid
+          action_lambda.call
           expect(response).to have_http_status(404)
         end
       end
@@ -137,7 +141,7 @@ RSpec.describe Stat::GoalsController, type: :controller do
       describe 'private goal' do
         let(:unauthorized) { true }
         it 'redirects to login' do
-          get action, uid: uid
+          action_lambda.call
           expect(response).to have_http_status(302)
         end
       end
@@ -146,7 +150,7 @@ RSpec.describe Stat::GoalsController, type: :controller do
         let(:accessible) { true }
 
         it 'redirects to login' do
-          get action, uid: uid
+          action_lambda.call
           expect(response).to have_http_status(302)
         end
       end
@@ -159,7 +163,7 @@ RSpec.describe Stat::GoalsController, type: :controller do
         # Not typo, goal may be visible (public).
         allow(goal).to receive(:accessible?).and_return(true)
         allow(goal).to receive(:unauthorized?).and_return(false)
-        get action, uid: uid
+        action_lambda.call
         expect(response).to have_http_status(404)
       end
     end
@@ -200,6 +204,11 @@ RSpec.describe Stat::GoalsController, type: :controller do
 
         describe 'with magic param' do
           it 'does not redirect' do
+            allow(OpenPerformance::Odysseus).to receive(:list_dashboards).
+              and_return(
+                object_double(HttpResponse.new, {ok?: true, json: %w(dash dash dash)})
+              )
+
             get :edit, uid: uid, open_performance_narrative_editor: 'storyteller'
             expect(response).to have_http_status(:ok)
 
@@ -216,18 +225,29 @@ RSpec.describe Stat::GoalsController, type: :controller do
     end
 
     describe 'storyteller editor enabled via feature flag' do
-      it_behaves_like 'action available to goal editors', :edit
+      let(:action_lambda) { -> { get :edit, uid: uid } }
+
+      it_behaves_like 'action available to goal editors'
 
       describe 'user can edit goal' do
         before do
           stub_logged_in_user
           stub_super_admin_session
           allow(StorytellerService).to receive(:downtimes).and_return([])
+
+          allow(OpenPerformance::Odysseus).to receive(:list_dashboards).
+            and_return(
+              object_double(HttpResponse.new, {ok?: true, json: %w(dash dash dash)})
+            )
         end
 
         shared_examples 'goal narrative editor' do
           it 'should set @goal' do
             expect(assigns(:goal)).to eq(goal)
+          end
+
+          it 'should set @dashboard_list' do
+            expect(assigns(:dashboard_list)).to eq(%w(dash dash dash))
           end
 
           it 'should render the edit interface' do
@@ -286,7 +306,7 @@ RSpec.describe Stat::GoalsController, type: :controller do
         describe 'goal does not exist' do
           it 'should 404' do
             allow(goal).to receive(:accessible?).and_return(false)
-            get :edit, uid: uid
+            action_lambda.call
             expect(response).to have_http_status(404)
           end
         end
@@ -296,18 +316,18 @@ RSpec.describe Stat::GoalsController, type: :controller do
 
           describe 'single goal edit' do
             before do
-              get :edit, uid: uid
+              action_lambda.call
             end
 
             it_behaves_like 'goal narrative editor'
 
             it 'should set @category_uid and @dashboard_uid to nil' do
-              get :edit, uid: uid
+              action_lambda.call
               expect(assigns(:dashboard_uid)).to be_nil
               expect(assigns(:category_uid)).to be_nil
             end
             it 'should set @story_url_for_view to the correct single view url' do
-              get :edit, uid: uid
+              action_lambda.call
               expect(assigns(:story_url_for_view)).to eq("http://test.host/stat/goals/single/#{uid}")
             end
           end
@@ -333,8 +353,9 @@ RSpec.describe Stat::GoalsController, type: :controller do
   end
 
   describe '#preview' do
+    let(:action_lambda) { -> { get :preview, uid: uid } }
 
-    it_behaves_like 'action available to goal editors', :preview
+    it_behaves_like 'action available to goal editors'
 
     describe 'user can edit goal' do
       before do
@@ -346,7 +367,7 @@ RSpec.describe Stat::GoalsController, type: :controller do
       describe 'goal does not exist' do
         it 'should 404' do
           allow(goal).to receive(:accessible?).and_return(false)
-          get :preview, uid: uid
+          action_lambda.call
           expect(response).to have_http_status(404)
         end
       end
@@ -354,7 +375,7 @@ RSpec.describe Stat::GoalsController, type: :controller do
       describe 'draft not present' do
         it 'should 404' do
           allow(goal).to receive(:accessible?).and_return(true)
-          get :preview, uid: uid
+          action_lambda.call
           expect(response).to have_http_status(404)
         end
       end
@@ -364,8 +385,84 @@ RSpec.describe Stat::GoalsController, type: :controller do
 
         it 'should 200' do
           allow(goal).to receive(:accessible?).and_return(true)
-          get :preview, uid: uid
+          action_lambda.call
           expect(response).to have_http_status(200)
+        end
+      end
+    end
+  end
+
+  describe '#copy' do
+    let(:action_lambda) { -> { get :copy, uid: uid, dashboard_uid: dashboard } }
+
+    it_behaves_like 'action available to goal editors'
+
+    describe 'user can edit goal' do
+      before do
+        stub_logged_in_user
+        stub_super_admin_session
+        allow(StorytellerService).to receive(:downtimes).and_return([])
+      end
+
+      describe 'goal does not exist' do
+        it 'should 404' do
+          allow(goal).to receive(:accessible?).and_return(false)
+          action_lambda.call
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      describe 'draft not present' do
+        it 'sets flash message' do
+          allow(goal).to receive(:accessible?).and_return(true)
+          action_lambda.call
+          expect(flash[:error]).to_not be_blank
+        end
+      end
+
+      describe 'draft present' do
+        let(:uid) { 'test-test' } # This story exists in the test seed.
+        let(:copy_uid) { 'copy-copy' }
+        let(:story) { instance_double(DraftStory) }
+        let(:odysseus_response) { instance_double(HttpResponse) }
+
+        before do
+          allow(goal).to receive(:accessible?).and_return(true)
+
+          allow(DraftStory).to receive(:find_by_uid).and_return(story)
+          allow(story).to receive(:blocks).and_return([])
+          allow(story).to receive(:theme).and_return('classic')
+          allow(story).to receive(:digest).and_return(StoriesController::FAKE_DIGEST)
+        end
+
+        describe 'and Odysseus errors' do
+          before do
+            allow(OpenPerformance::Odysseus).to receive(:copy_goal).
+              and_return(odysseus_response)
+
+            allow(odysseus_response).to receive(:ok?).and_return(false)
+          end
+
+          it 'sets flash message' do
+            action_lambda.call
+            expect(flash[:error]).to_not be_blank
+          end
+        end
+
+        describe 'under normal operation' do
+          before do
+            allow(OpenPerformance::Odysseus).to receive(:copy_goal).
+              with(uid, dashboard, anything).
+              and_return(odysseus_response)
+
+            allow(odysseus_response).to receive(:ok?).and_return(true)
+            allow(odysseus_response).to receive(:json).and_return({ 'new_goal_id' => copy_uid })
+          end
+
+          it 'should redirect to the edit mode for the new goal with dashboard' do
+            action_lambda.call
+            expect(response).to redirect_to "/stat/goals/#{dashboard}/uncategorized/#{copy_uid}/edit-story"
+          end
         end
       end
     end

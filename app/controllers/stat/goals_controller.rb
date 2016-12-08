@@ -1,4 +1,7 @@
 class BackfillImagesError < StandardError; end
+
+# Controller for use in differentiating permissions on goals.
+# Can handle special cases of redirection as well.
 class Stat::GoalsController < StoriesController
   before_action :load_goal
   before_action :load_story_metadata # enforce order - this depends on load_goal
@@ -20,6 +23,10 @@ class Stat::GoalsController < StoriesController
       @story = DraftStory.find_by_uid(@goal_uid) || DraftStory.new
       @story.uid = @goal_uid
 
+      dashboards_data = OpenPerformance::Odysseus.list_dashboards
+      raise 'Unable to fetch dashboards; is Odysseus healthy?' unless dashboards_data.ok?
+      @dashboard_list = dashboards_data.json
+
       begin
         # Only backfill the images if we are dealing with a draft story
         # that hasn't been saved.
@@ -35,6 +42,55 @@ class Stat::GoalsController < StoriesController
         redirect_to "/stat/goals/single/#{@goal_uid}/edit-classic"
       end
     end
+  end
+
+  def copy
+    uid = params[:uid]
+    dashboard_uid = params[:dashboard_uid]
+    title = params[:title]
+
+    story = DraftStory.find_by_uid(uid)
+
+    return redirect_to '/', :flash => {
+      :error => I18n.t('goals_controller.not_found_error_flash')
+    } unless @goal.accessible? && story.present?
+
+    # NOTE: Our JS and Ruby I18n helpers have different ways of interpolating
+    # variables into localized strings. This was a bad choice.
+    #
+    # Because we don't do much server-side interpolation, I'm prefering to keep
+    # the JS-style localized strings and work around them here.
+    copy_title = title || I18n.t('editor.make_a_copy.copy_placeholder').sub('{0}', @story_metadata.title)
+    copy_title = sanitize_story_title(copy_title)
+
+    odysseus_response = OpenPerformance::Odysseus.copy_goal(
+      uid,
+      dashboard_uid,
+      copy_title
+    )
+
+    return redirect_to '/', :flash => {
+      :error => I18n.t('goals_controller.failed_to_publish')
+    } unless odysseus_response.ok?
+
+    copy_uid = odysseus_response.json['new_goal_id']
+
+    blocks = copy_attachments(story)
+    blocks = blocks.map do |block|
+      block.as_json.symbolize_keys
+    end
+
+    story_draft_creator = StoryDraftCreator.new(
+      user: current_user,
+      uid: copy_uid,
+      digest: FAKE_DIGEST,
+      blocks: blocks,
+      theme: story.theme
+    )
+
+    @story = story_draft_creator.create
+
+    redirect_to "/stat/goals/#{dashboard_uid}/uncategorized/#{copy_uid}/edit-story"
   end
 
   private

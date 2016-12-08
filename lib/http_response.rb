@@ -11,6 +11,10 @@ class HttpResponse
     end
   end
 
+  def code
+    raw && raw.code
+  end
+
   def ok?
     raw && raw.instance_of?(Net::HTTPOK)
   end

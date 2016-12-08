@@ -20,6 +20,7 @@ const envProperties = [
   'IS_GOAL',
   'IS_STORY_PUBLISHED',
   'OP_CATEGORY_UID',
+  'OP_DASHBOARD_LIST',
   'OP_DASHBOARD_UID',
   /*
    * Document: A Storyteller-based file upload; saved into our documents database table.

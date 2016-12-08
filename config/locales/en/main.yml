@@ -46,6 +46,9 @@ en:
     migration_500:
       description: 'An unexpected error occurred while migrating your Goal.'
       title: 'Migration Error'
+  goals_controller:
+    failed_to_publish: 'Failed to copy goal. Please try again later.'
+    not_found_error_flash: 'Goal not found.'
   login_successful: 'Login Successful'
   print:
     preparing_story: 'Preparing story for printing...'

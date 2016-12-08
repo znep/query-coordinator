@@ -29,6 +29,7 @@ Rails.application.routes.draw do
     get 'single/:uid' => 'goals#show', as: 'single_goal'
     get 'single/:uid/edit-story' => 'goals#edit', as: 'edit_single_goal'
     get 'single/:uid/preview' => 'goals#preview', as: 'preview_single_goal'
+    get 'single/:uid/copy' => 'goals#copy', as: 'copy_single_goal'
 
     get ':dashboard/:category/:uid' => 'goals#show', as: 'goal'
     get ':dashboard/:category/:uid/edit-story' => 'goals#edit', as: 'edit_goal'

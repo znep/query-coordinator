@@ -28,6 +28,13 @@ describe 'HttpResponse' do
     end
   end
 
+  describe '#code' do
+    it 'returns the raw response code' do
+      response = HttpResponse.new(double('Net:HTTPOK', :code => 200))
+      expect(response.code).to be(200)
+    end
+  end
+
   describe '#ok?' do
     it 'returns true if the response is an instance of Net::HTTPOK' do
       response = HttpResponse.new(double('Net:HTTPOK', :instance_of? => true))

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import $ from 'jquery';
 
 import I18n from '../I18n';
@@ -8,32 +9,36 @@ import { dispatcher } from '../Dispatcher';
 import { storyStore } from '../stores/StoryStore';
 import { storyCopierStore } from '../stores/StoryCopierStore';
 
+function t(key) {
+  return I18n.t(`editor.make_a_copy.${key}`);
+}
+
 export default function StoryCopierRenderer(options) {
-  var _container = options.storyCopierContainerElement || null;
-  var _rendered = false;
+  const container = options.storyCopierContainerElement || null;
+  let rendered = false;
 
-  StorytellerUtils.assertInstanceOf(_container, $);
+  StorytellerUtils.assertInstanceOf(container, $);
 
-  _listenForChanges();
-  _attachEvents();
+  listenForChanges();
+  attachEvents();
 
   /**
    * Private methods
    */
 
-  function _listenForChanges() {
-    storyCopierStore.addChangeListener(_renderModal);
+  function listenForChanges() {
+    storyCopierStore.addChangeListener(renderModal);
   }
 
-  function _attachEvents() {
-    _container.on('modal-dismissed', function() {
+  function attachEvents() {
+    container.on('modal-dismissed', () => {
       dispatcher.dispatch({
         action: Actions.STORY_MAKE_COPY_MODAL_CANCEL
       });
     });
 
-    _container.on('click', '[data-action]', function() {
-      var action = this.getAttribute('data-action');
+    container.on('click', '[data-action]', (event) => {
+      const action = event.target.getAttribute('data-action');
 
       switch (action) {
         case Actions.STORY_MAKE_COPY_MODAL_SUBMIT:
@@ -49,73 +54,128 @@ export default function StoryCopierRenderer(options) {
     });
   }
 
-  function _renderModal() {
-    var isOpen = storyCopierStore.getCurrentOpenState();
+  function renderModal() {
+    const isOpen = storyCopierStore.getCurrentOpenState();
 
-    if (!_rendered) {
-      _container.modal({
-        title: I18n.t('editor.make_a_copy.title'),
-        content: _renderModalContents()
+    if (!rendered) {
+      container.modal({
+        title: Environment.IS_GOAL ? t('title_goal') : t('title_story'),
+        content: renderModalContents()
       });
-      _rendered = true;
+      rendered = true;
     }
 
     if (isOpen) {
-      _showModal();
+      showModal();
     } else {
-      _hideModal();
+      hideModal();
     }
   }
 
-  function _showModal() {
-    var storyTitle = storyStore.getStoryTitle(Environment.STORY_UID);
+  function showModal() {
+    const storyTitle = storyStore.getStoryTitle(Environment.STORY_UID);
 
-    _container.find('input.make-a-copy-title-input').val(
-      StorytellerUtils.format('Copy of {0}', storyTitle)
-    );
-    _container.find('input.make-a-copy-title-input').select();
+    container.find('input.make-a-copy-title-input').
+      val(t('copy_placeholder').format(storyTitle)).
+      select();
 
-    _container.trigger('modal-open');
+    container.trigger('modal-open');
   }
 
-  function _hideModal() {
-    _container.trigger('modal-close');
+  function hideModal() {
+    container.trigger('modal-close');
   }
 
-  function _renderModalContents() {
-
-    var inputField = $('<input>', {
+  function renderModalContents() {
+    const inputField = $('<input>', {
       'class': 'make-a-copy-title-input text-input',
       'name': 'title',
       'type': 'text',
       'maxlength': 255
     });
 
-    var copyWarning = $('<p>', {
+    const copyWarning = $('<p>', {
       'class': 'make-a-copy-copy-warning'
-    }).text(I18n.t('editor.make_a_copy.copy_warning'));
+    }).text(Environment.IS_GOAL ? t('copy_warning_goal') : t('copy_warning_story'));
 
-    var cancelButton = $('<button>', {
+    const cancelButton = $('<button>', {
       'class': 'btn btn-default back-btn',
       'data-action': Actions.STORY_MAKE_COPY_MODAL_CANCEL,
       'type': 'button'
-    }).text(I18n.t('editor.make_a_copy.cancel'));
+    }).text(t('cancel'));
 
-    var copyButton = $('<button>', {
+    const copyButton = $('<button>', {
       'class': 'btn btn-primary',
       'data-action': Actions.STORY_MAKE_COPY_MODAL_SUBMIT,
       'type': 'submit'
-    }).text(I18n.t('editor.make_a_copy.copy'));
+    }).text(t('copy'));
 
-    var buttons = $('<div>', {
+    const buttons = $('<div>', {
       'class': 'make-a-copy-button-group r-to-l'
     }).append([cancelButton, copyButton]);
 
-    var form = $('<form>', {
+    const formUrl = Environment.IS_GOAL ?
+      `/stat/goals/single/${Environment.STORY_UID}/copy` :
+      `/stories/s/${Environment.STORY_UID}/copy`;
+    const form = $('<form>', {
       'method': 'GET',
-      'action': StorytellerUtils.format('/stories/s/{uid}/copy', { uid: Environment.STORY_UID }),
+      'action': formUrl,
       'target': '_blank'
     }).append([ inputField, copyWarning, buttons ]);
+
+    // Goals get an extra widget to pick where the copied goal will live.
+    // A disabled input is used instead of a dropdown if there's only one dashboard.
+    if (Environment.IS_GOAL) {
+      const dashboardLabel = $('<h2>', {
+        'class': 'input-label modal-input-label'
+      }).text(t('dashboard'));
+
+      const dashboardSelector = $('<div>', {
+        'class': 'goal-copy-dashboard-selector'
+      });
+
+      if (Environment.OP_DASHBOARD_LIST.length > 1) {
+        // If there are multiple dashboards, selection occurs via dropdown.
+        const dashboardDropdown = $(`
+          <div class="modal-select">
+            <select name="dashboard_uid"></select>
+          </div>
+        `);
+        dashboardDropdown.find('select').append(_.map(
+          _.sortBy(Environment.OP_DASHBOARD_LIST, ['name']),
+          (dashboard) => {
+            return $('<option>', {
+              'value': dashboard.id,
+              'selected': dashboard.id === Environment.OP_DASHBOARD_UID
+            }).text(dashboard.name);
+          }
+        ));
+
+        dashboardSelector.append([dashboardLabel, dashboardDropdown]);
+      } else {
+        // Otherwise, use a disabled input to select the dashboard.
+        const dashboard = Environment.OP_DASHBOARD_LIST[0];
+
+        const dashboardInputVisible = $('<input>', {
+          'type': 'text',
+          'class': 'text-input',
+          'disabled': true,
+          'value': dashboard.name
+        });
+
+        const dashboardInputHidden = $('<input>', {
+          'type': 'text',
+          'name': 'dashboard_uid',
+          'disabled': true,
+          'hidden': true,
+          'value': dashboard.id
+        });
+
+        dashboardSelector.append([dashboardLabel, dashboardInputVisible, dashboardInputHidden]);
+      }
+
+      dashboardSelector.insertAfter(inputField);
+    }
 
     return form;
   }

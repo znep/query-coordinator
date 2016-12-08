@@ -16,6 +16,7 @@
   window.IS_STORY_PUBLISHED = <%= @story.is_a?(PublishedStory) %>;
   <%- if @story_metadata.goal? %>
     window.OP_CATEGORY_UID = <%== @category_uid.to_json %>;
+    window.OP_DASHBOARD_LIST = <%== @dashboard_list.to_json %>;
     window.OP_DASHBOARD_UID = <%== @dashboard_uid.to_json %>;
     window.OP_GOAL_NARRATIVE_MIGRATION_METADATA = <%== @goal.narrative_migration_metadata.to_json %>;
   <%- end %>

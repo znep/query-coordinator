@@ -190,8 +190,9 @@ header#site-chrome-header, footer#site-chrome-footer {
         border-bottom-right-radius: 3px;
         margin: 0;
         font-size: 13px;
-        height: $searchbox_height - 2px;
+        height: $searchbox_height;
         line-height: $searchbox_height;
+        box-sizing: border-box;
         z-index: 3;
         &:hover, &:focus, &:active {
           background: #e4e4e4;

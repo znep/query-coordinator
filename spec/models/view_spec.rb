@@ -257,4 +257,19 @@ describe View do
       expect(View.new(data).sort_order.length).to eq(2)
     end
   end
+
+  describe '.named_resource_url' do
+    before do
+      CurrentDomain.stubs(:cname => 'localhost')
+    end
+
+    it 'does not return a url if there is no resourceName' do
+      expect(View.new({}).named_resource_url).to be_nil
+    end
+
+    it 'returns a url if there is a resourceName' do
+      expect(View.new({ 'resourceName' => 'wombats' }).named_resource_url).
+        to eq('https://localhost/resource/wombats.json')
+    end
+  end
 end

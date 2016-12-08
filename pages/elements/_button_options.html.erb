@@ -74,7 +74,7 @@
 <%= escape_html(partial "elements/skeletons/buttons/button_secondary", locals: { text: "Secondary Button" }) %>
 <%= escape_html(partial "elements/skeletons/buttons/button_secondary_inverse", locals: { text: "Secondary Inverse Button" }) %>
 </code>
-</pre> 
+</pre>
 
 <p>
 <%= partial "elements/skeletons/buttons/button_simple", locals: { text: "Simple Button" } %>
@@ -157,5 +157,20 @@
 <%= escape_html(partial "elements/skeletons/buttons/button_default_dark_disabled", locals: { text: "Disabled Button" }) %>
 <%= escape_html(partial "elements/skeletons/buttons/button_primary_dark", locals: { text: "Primary Button" }) %>
 <%= escape_html(partial "elements/skeletons/buttons/button_secondary_dark", locals: { text: "Secondary Button" }) %>
+</code>
+</pre>
+
+<h3 class="h6 styleguide-subheader">Unstyled Buttons</h3>
+<p>Note that these buttons have no hover, focus, or active state. Don't forget to add these when using these.</p>
+<p>
+  <%= partial "elements/skeletons/buttons/button_transparent", locals: { text: "Doesn't look like button" } %>
+</p>
+<p>
+  <%= partial "elements/skeletons/buttons/button_transparent_disabled", locals: { text: "Disabled transparent button" } %>
+</p>
+<pre class="usage">
+<code class="language-markup">
+<%= escape_html(partial "elements/skeletons/buttons/button_transparent", locals: { text: "Doesn't look like a button" }) %>
+<%= escape_html(partial "elements/skeletons/buttons/button_transparent_disabled", locals: { text: "Disabled transparent button" }) %>
 </code>
 </pre>

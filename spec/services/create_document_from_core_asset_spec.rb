@@ -50,6 +50,7 @@ RSpec.describe CreateDocumentFromCoreAsset do
   describe '#create' do
     context 'with valid document attributes' do
       before do
+        allow(ProcessDocumentJob).to receive(:perform_now).with(subject.document.id)
         allow(subject.document).to receive(:save).and_return(true)
       end
 

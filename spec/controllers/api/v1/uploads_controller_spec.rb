@@ -51,11 +51,15 @@ RSpec.describe Api::V1::UploadsController, type: :controller do
       end
 
       it 'renders json' do
+        expect_any_instance_of(PendingUpload).to receive(:url).and_return('a_fake_url_for_testing')
+
         post :create, params
         expect(response.content_type).to eq('application/json')
       end
 
       it 'returns success' do
+        expect_any_instance_of(PendingUpload).to receive(:url).and_return('a_fake_url_for_testing')
+
         post :create, params
         expect(response).to be_created
       end

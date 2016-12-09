@@ -48,11 +48,7 @@ RSpec.describe Stat::GoalsController, type: :controller do
 
   let(:feature_flags) do
     {
-      'open_performance_narrative_editor' => 'storyteller',
-      'enable_filtered_tables_in_ax' => false,
-      'enable_storyteller_mixpanel' => false,
-      'enable_getty_images_gallery' => true,
-      'enable_deprecated_user_search_api' => false
+      'open_performance_narrative_editor' => 'storyteller'
     }
   end
 
@@ -70,6 +66,8 @@ RSpec.describe Stat::GoalsController, type: :controller do
   end
 
   before do
+    stub_configurations_request
+    stub_site_chrome
     stub_current_domain
     allow(CoreServer).to receive(:story_themes).and_return([])
 

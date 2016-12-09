@@ -87,6 +87,9 @@ gem 'jenkins_api_client'
 # ActiveMQ message processing
 gem 'stomp', '1.4.3'
 
+# Testing framework
+gem 'rspec-rails', '~> 3.4'
+
 # Feature flag operations.
 gem 'signaller-ruby', :require => 'signaller'
 
@@ -117,9 +120,6 @@ group :development, :test do
 end
 
 group :test do
-  # Testing framework
-  gem 'rspec-rails', '~> 3.4'
-
   gem 'webmock', require: false
   gem 'database_cleaner'
 

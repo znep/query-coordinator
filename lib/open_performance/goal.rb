@@ -6,16 +6,14 @@ class OpenPerformance::Goal
 
   def initialize(uid)
     @uid = uid
-    @goal_response = OpenPerformance::Odysseus.get_goal(@uid)
-    @narrative_response = OpenPerformance::Odysseus.get_goal_narrative(@uid)
   end
 
   def accessible?
-    @goal_response.ok?
+    goal_response.ok?
   end
 
   def unauthorized?
-    @goal_response.unauthorized?
+    goal_response.unauthorized?
   end
 
   def title
@@ -43,12 +41,20 @@ class OpenPerformance::Goal
   private
 
   def goal_metadata
-    raise "Data inaccessible #{@goal_response.code}" unless @goal_response.ok?
-    @goal_response.json
+    raise "Data inaccessible #{goal_response.code}" unless goal_response.ok?
+    goal_response.json
   end
 
   def narrative_metadata
-    raise "Data inaccessible #{@narrative_response.code}" unless @narrative_response.ok?
-    @narrative_response.json
+    raise "Data inaccessible #{narrative_response.code}" unless narrative_response.ok?
+    narrative_response.json
+  end
+
+  def goal_response
+    @goal_response ||= OpenPerformance::Odysseus.get_goal(@uid)
+  end
+
+  def narrative_response
+    @narrative_response ||= OpenPerformance::Odysseus.get_goal_narrative(@uid)
   end
 end

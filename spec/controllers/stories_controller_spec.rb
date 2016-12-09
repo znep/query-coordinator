@@ -9,6 +9,7 @@ RSpec.describe StoriesController, type: :controller do
     allow(StoryAccessLogger).to receive(:log_story_view_access)
     allow(StorytellerService).to receive(:downtimes).and_return([])
 
+    stub_site_chrome
     stub_current_domain
 
     # There is an upcoming refactor for how the API between the gem and the hosting application operates in
@@ -18,11 +19,6 @@ RSpec.describe StoriesController, type: :controller do
     # in test mode.
     stub_domains_request
     stub_configurations_request
-
-    set_feature_flags(
-      'enable_getty_images_gallery' => true,
-      'enable_deprecated_user_search_api' => false
-    )
 
     request.env['HTTPS'] = 'on'
   end

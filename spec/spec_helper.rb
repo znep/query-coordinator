@@ -155,6 +155,9 @@ RSpec.configure do |config|
 
   config.before(:each) do
     init_signaller # Note, this comes from the Signaller gem.
+
+    # Set default feature flags.
+    set_feature_flags
   end
 
 # The settings below are suggested to provide a good initial experience
@@ -321,14 +324,36 @@ def javascript_click(element)
   page.driver.browser.execute_script("$(arguments[0]).click()", element.native)
 end
 
+# Feature flag values used for tests, unless overriden via set_feature_flags.
+def default_test_feature_flags
+  {
+    'enable_getty_images_gallery' => true,
+    'enable_deprecated_user_search_api' => false,
+    'enable_filtered_tables_in_ax' => true,
+    'enable_filterable_visualizations_in_ax' => true
+  }
+end
+
 # Set feature flags to the given values. Example:
 # set_feature_flags( 'use_awesomeness' => true )
+#
+# Defaults come from default_test_feature_flags.
 #
 # TODO
 # This is the simplest thing that will work for the single usage of Signaller
 # so far. We need to come up with a better stubbing system, ideally supported
 # by Signaller itself (extending init_signaller?).
-def set_feature_flags(flags_hash)
+def set_feature_flags(flags_hash = {})
+  flags_hash = default_test_feature_flags.merge(flags_hash)
+
+  allow(Signaller).to receive(:for) do |options|
+    flag = options[:flag]
+    raise "Mocked feature flag not found: #{flag}" unless flags_hash.has_key?(flag)
+    value = flags_hash[flag]
+    mock = double("mock flag value #{flag} => #{value}")
+    allow(mock).to receive(:value).and_return(value)
+    mock
+  end
   allow(Signaller::FeatureFlags).to receive(:list).and_return(flags_hash.keys)
   allow(Signaller::FeatureFlags).to receive(:on_domain).and_return(flags_hash)
   allow_any_instance_of(Signaller::Connection).to receive(:read_from).and_return(

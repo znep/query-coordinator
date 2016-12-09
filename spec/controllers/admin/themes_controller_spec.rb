@@ -17,6 +17,8 @@ RSpec.describe Admin::ThemesController, type: :controller do
   end
 
   before do
+    stub_site_chrome
+    stub_current_domain
     allow(Theme).to receive(:find).with(theme.id.to_s).and_return(theme)
   end
 

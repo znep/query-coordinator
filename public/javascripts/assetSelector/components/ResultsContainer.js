@@ -1,45 +1,68 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
+import { connect } from 'react-redux';
+import _ from 'lodash';
+import { changeViewType } from '../actions/viewType';
 import NoResults from './NoResults';
-import Result from './Result';
+// import TableContainer from './TableContainer';
+// import ViewCardsContainer from './ViewCardsContainer'
 
-export const ResultsContainer = React.createClass({
-  propTypes: {
-    results: PropTypes.array.isRequired
-  },
+export class ResultsContainer extends Component {
+  constructor(props) {
+    super(props);
+    _.bindAll(this, ['onViewTypeClick']);
+  }
 
-  resultsList() {
-    const results = this.props.results.map((result, i) =>
-      <Result key={i} data={result.data} />
-    );
-
-    return (
-      <div className="results-container table-responsive">
-        <table className="table">
-          <thead>
-            <tr>
-              {/* Do we need to worry about these changing? */}
-              {/* What about categories and tags? */}
-              <th scope="col">Type</th>
-              <th scope="col">Name</th>
-              <th scope="col">Updated Date</th>
-              <th scope="col">Popularity</th> {/* view count? */}
-            </tr>
-          </thead>
-          <tbody>
-            {results}
-          </tbody>
-        </table>
-      </div>
-    );
-  },
+  onViewTypeClick(newViewType) {
+    return () => {
+      this.props.changeViewType(newViewType);
+    };
+  }
 
   render() {
-    if (this.props.results.length > 0) {
-      return this.resultsList();
+    if (!this.props.results.length) {
+      return (
+        <NoResults />
+      );
     } else {
-      return <NoResults />;
+      return (
+        <div>
+          <a href="#" onClick={this.onViewTypeClick('CARD_VIEW')}>Card view</a>
+          or
+          <a href="#" onClick={this.onViewTypeClick('TABLE_VIEW')}>Table view</a>
+          <div>
+            Current: {this.props.viewType}
+          </div>
+         {  /* TODO: render either TableContainer or ViewCardsContainer */ }
+        </div>
+      );
     }
   }
-});
+}
 
-export default ResultsContainer;
+ResultsContainer.propTypes = {
+  results: PropTypes.array.isRequired,
+  changeViewType: PropTypes.func.isRequired,
+  viewType: PropTypes.string.isRequired
+};
+
+ResultsContainer.defaultProps = {
+  results: [],
+  changeViewType: _.noop,
+  viewType: 'CARD_VIEW'
+};
+
+function mapStateToProps(state) {
+  return {
+    viewType: _.get(state, 'viewType.type')
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    changeViewType: function(newViewType) {
+      dispatch(changeViewType(newViewType));
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ResultsContainer);

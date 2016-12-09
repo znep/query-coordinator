@@ -1,23 +1,13 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import ResultsContainer from './components/ResultsContainer';
 
-export const App = React.createClass({
-  resultsContainer(results) {
-    return (
-      <div>
-        <ResultsContainer results={results} />
-      </div>
-    );
-  },
-
-  render() {
-    return this.resultsContainer(window.assetSelectorContent.results);
-  }
-});
-
-function mapStateToProps(state) {
-  return state;
-}
-
-export default connect(mapStateToProps)(App);
+export default () => (
+  <div>
+    {/* TODO: instead of this, we need an inbetween container component that decides to show
+      a certain view: grid vs table view.
+      Then rename ResultsContainer to TableContainer, and rename Result to TableResult or something.
+      and make a GridContainer, which contains Tile/Grid/whatever we want to call those. ask DJ?
+    */}
+    <ResultsContainer results={window.assetSelectorContent.results} />
+  </div>
+);

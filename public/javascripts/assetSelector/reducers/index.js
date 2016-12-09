@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
-import test from './test';
+import viewType from './viewType';
 
 export default combineReducers({
-  test
+  viewType
 });

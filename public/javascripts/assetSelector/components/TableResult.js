@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-export const Result = React.createClass({
+export const TableResult = React.createClass({
   propTypes: {
     data: PropTypes.object.isRequired
   },
@@ -30,4 +30,4 @@ export const Result = React.createClass({
   }
 });
 
-export default Result;
+export default TableResult;

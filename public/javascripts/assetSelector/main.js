@@ -4,12 +4,12 @@ import { Provider } from 'react-redux';
 import App from './App';
 import _ from 'lodash';
 import { createStore } from 'redux';
-import assetSelectorReducers from './reducers';
+import assetSelector from './reducers';
 import components from 'socrata-components';
 
 require('socrata-components/dist/css/styleguide.css');
 
-const store = createStore(assetSelectorReducers);
+const store = createStore(assetSelector);
 
 _.defer(() => {
   try {

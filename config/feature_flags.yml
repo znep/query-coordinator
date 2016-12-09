@@ -69,6 +69,14 @@ enable_dataset_landing_page_tour:
 enable_dataset_management_ui:
   description: New management page for datasets
   defaultValue: false
+enable_filterable_visualizations_in_ax:
+  category: storyteller
+  defaultValue: false
+  description: Allow filterable visualizations to be built in the Authoring Workflow.
+enable_filtered_tables_in_ax:
+  category: storyteller
+  defaultValue: false
+  description: Allow filtered and grouped views to be selected for AX visualizations.
 enable_ingress_geometry_types:
   description: 'Add the types: point, multipoint, line, multiline, polygon, multipolygon. This flag only functions when `ingress_strategy` is delta-importer or nbe.'
   defaultValue: false

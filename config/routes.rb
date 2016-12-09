@@ -56,6 +56,9 @@ Rails.application.routes.draw do
       get '/stat/goals/:dashboard_id/:category_id/:goal_id/edit-classic', :action => 'classic_goal_edit'
       get '/stat/goals/single/:goal_id/edit-classic', :action => 'classic_single_goal_edit'
 
+      # Dashboards can be seen with public anonymity by appending /preview.
+      get '/stat/goals/:dashboard_id/preview', :action => 'dashboard_preview'
+
       scope :action => 'index' do
         get '/stat', :as => 'govstat_root'
         get '/stat/goals', :as => 'govstat_goals'

@@ -25,6 +25,18 @@ describe OdysseusController do
     end
   end
 
+  describe 'get #preview' do
+    it 'renders path on odysseus with suppress_govstat set' do
+      allow(subject).to receive(:render_odysseus_path) do |path, options|
+        expect(options).to be_nil
+        expect(path).to eq('/stat/goals/dash-cash/preview')
+        expect(assigns(:suppress_govstat)).to be true
+      end
+
+      get :dashboard_preview, :dashboard_id => 'dash-cash'
+    end
+  end
+
   describe 'goal-related routes' do
     let(:dashboard_id) { 'dash-dash' }
     let(:category_id) { 'cate-gory' }

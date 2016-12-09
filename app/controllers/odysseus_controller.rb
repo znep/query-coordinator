@@ -43,6 +43,11 @@ class OdysseusController < ApplicationController
     end
   end
 
+  def dashboard_preview
+    @suppress_govstat = true
+    index
+  end
+
   def chromeless
     @suppress_chrome = true
     @suppress_govstat = true # remove background and other unnecessary styles

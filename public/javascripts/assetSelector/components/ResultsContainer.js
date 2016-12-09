@@ -1,21 +1,35 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { changeViewType } from '../actions/viewType';
 import NoResults from './NoResults';
-// import TableContainer from './TableContainer';
+import TableContainer from './TableContainer';
 // import ViewCardsContainer from './ViewCardsContainer'
 
 export class ResultsContainer extends Component {
   constructor(props) {
     super(props);
-    _.bindAll(this, ['onViewTypeClick']);
+    _.bindAll(this, ['onViewTypeClick', 'renderResults']);
   }
 
   onViewTypeClick(newViewType) {
     return () => {
       this.props.changeViewType(newViewType);
     };
+  }
+
+  renderResults() {
+    if (this.props.viewType === 'CARD_VIEW') {
+      return (
+        <div>
+          <p>im cards</p>
+        </div>
+      );
+    } else {
+      return (
+        <TableContainer results={this.props.results} />
+      );
+    }
   }
 
   render() {
@@ -26,13 +40,9 @@ export class ResultsContainer extends Component {
     } else {
       return (
         <div>
-          <a href="#" onClick={this.onViewTypeClick('CARD_VIEW')}>Card view</a>
-          or
+          <a href="#" onClick={this.onViewTypeClick('CARD_VIEW')}>Card view</a> |
           <a href="#" onClick={this.onViewTypeClick('TABLE_VIEW')}>Table view</a>
-          <div>
-            Current: {this.props.viewType}
-          </div>
-         {  /* TODO: render either TableContainer or ViewCardsContainer */ }
+          {this.renderResults()}
         </div>
       );
     }

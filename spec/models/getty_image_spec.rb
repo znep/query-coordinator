@@ -116,9 +116,10 @@ RSpec.describe GettyImage, type: :model do
   end
 
   describe '#download!' do
-    let(:create) { true }
-    let(:create_document_document) { FactoryGirl.create(:document) }
-    let(:create_document) { spy('create_document', :create => create, :document => create_document_document) }
+    let(:pending_upload_url) { 'http://earl.com' }
+    let(:pending_upload) { double('PendingUpload', :url => pending_upload_url) }
+    let(:response_success) { true }
+    let(:response) { double('Response', :message => "Here's a letter I'm writing to you.", :success? => response_success) }
     let(:current_domain) { {'id' => domain_id} }
     let(:download_parameters) { {} }
     let(:story_uid) { 'four-four' }
@@ -126,23 +127,32 @@ RSpec.describe GettyImage, type: :model do
 
     before do
       allow(CoreServer).to receive(:current_domain).and_return(current_domain)
-      allow(CreateDocument).to receive(:new).and_return(create_document)
+
+      allow(Document).to receive(:new).and_return(document)
+      allow(PendingUpload).to receive(:new).and_return(pending_upload)
+      allow(HTTParty).to receive(:put).with(pending_upload_url, any_args).and_return(response)
+
+      allow(subject).to receive(:open).and_return('open sesame?')
       allow(subject).to receive(:download_parameters).and_return(download_parameters)
     end
 
     describe 'when the document is already associated with the model' do
+      let(:document) { FactoryGirl.create(:document, :skip_thumbnail_generation => false) }
+
       it 'returns' do
         expect(subject.download!(user, story_uid)).to be_nil
-        expect(CreateDocument).to_not have_received(:new)
+        expect(PendingUpload).to_not have_received(:new)
+        expect(Document).to_not have_received(:new)
       end
     end
 
     describe 'when the document is already associated with the model' do
-      let(:document) { FactoryGirl.create(:document, skip_thumbnail_generation: true) }
+      let(:document) { FactoryGirl.create(:document, :skip_thumbnail_generation => true) }
 
       it 'proceeds' do
         subject.download!(user, story_uid)
-        expect(CreateDocument).to have_received(:new)
+        expect(PendingUpload).to have_received(:new)
+        expect(Document).to have_received(:new)
       end
     end
 
@@ -156,15 +166,14 @@ RSpec.describe GettyImage, type: :model do
       end
 
       describe 'when the document creation fails' do
-        let(:create) { false }
+        let(:response_success) { false }
 
         it 'raises' do
-          expect { subject.download!(user, story_uid) }.to raise_error(/Failed to create a new document/)
+          expect { subject.download!(user, story_uid) }.to raise_error(/Failed/)
         end
       end
 
       describe 'when document creation succeeds' do
-        let(:create) { true }
 
         describe 'when saving fails' do
           before do

@@ -11,12 +11,11 @@ export const TableContainer = (props) => {
       <table className="table">
         <thead>
           <tr>
-            {/* Do we need to worry about these changing? */}
-            {/* What about categories and tags? */}
             <th scope="col">Type</th>
             <th scope="col">Name</th>
             <th scope="col">Updated Date</th>
             <th scope="col">Popularity</th> {/* view count? */}
+            {/* What about categories/tags? */}
           </tr>
         </thead>
         <tbody>

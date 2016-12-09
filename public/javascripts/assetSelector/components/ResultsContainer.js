@@ -4,6 +4,7 @@ import _ from 'lodash';
 import { changeViewType } from '../actions/viewType';
 import NoResults from './NoResults';
 import TableContainer from './TableContainer';
+import ViewCount from './ViewCount';
 // import ViewCardsContainer from './ViewCardsContainer'
 
 export class ResultsContainer extends Component {
@@ -42,6 +43,9 @@ export class ResultsContainer extends Component {
         <div>
           <a href="#" onClick={this.onViewTypeClick('CARD_VIEW')}>Card view</a> |
           <a href="#" onClick={this.onViewTypeClick('TABLE_VIEW')}>Table view</a>
+
+          <ViewCount count={this.props.viewCount} />
+
           {this.renderResults()}
         </div>
       );
@@ -52,12 +56,14 @@ export class ResultsContainer extends Component {
 ResultsContainer.propTypes = {
   results: PropTypes.array.isRequired,
   changeViewType: PropTypes.func.isRequired,
+  viewCount: PropTypes.number.isRequired,
   viewType: PropTypes.string.isRequired
 };
 
 ResultsContainer.defaultProps = {
   results: [],
   changeViewType: _.noop,
+  viewCount: 0,
   viewType: 'CARD_VIEW'
 };
 

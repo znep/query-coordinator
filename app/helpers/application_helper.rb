@@ -1,10 +1,6 @@
 module ApplicationHelper
   include SiteChromeHelper
 
-  def open_performance_enabled?
-    SocrataSiteChrome::FeatureSet.new(current_domain['cname']).feature_enabled?('govstat') rescue false
-  end
-
   # Build translations to pass into javascript
   # Loads only from the lang/editor
   def current_editor_translations

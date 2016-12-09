@@ -2287,7 +2287,7 @@ export default function AssetSelectorRenderer(options) {
 
     var authoringWorkflow = new SocrataVisualizations.AuthoringWorkflow(element, {
       vif: vifToEdit,
-      enableFiltering: true,
+      enableFiltering: Environment.ENABLE_FILTERABLE_VISUALIZATIONS_IN_AX,
       backButtonText: I18n.t('editor.asset_selector.visualization.authoring_visualization_back_button'),
       onBack: () => {
         authoringWorkflow.destroy();

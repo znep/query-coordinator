@@ -883,7 +883,7 @@
         var $layerSet = layer instanceof OpenLayers.Layer.Vector ? $dom.find('ul.feature') :
           $dom.find('ul.data');
         var lId = 'mapLayer_' + layer.name;
-        var layerName = layerObj._displayFormat.alias || layer.name;
+        var layerName = $.htmlEscape(layerObj._displayFormat.alias || layer.name);
         var layerType = typeMap[layerObj._displayFormat.plotStyle];
         if (layerType) {
           layerType = ' title="' + layerType + '"';
@@ -913,7 +913,7 @@
         }, {
           _: 'div',
           className: 'description',
-          contents: entry.label
+          contents: $.htmlEscape(entry.label)
         }],
         'className': 'legendRow clearfix oneColor'
       }));
@@ -948,7 +948,7 @@
           }, {
             _: 'div',
             className: 'description',
-            contents: datum.description
+            contents: $.htmlEscape(datum.description)
           }],
           'className': 'legendRow clearfix ' + datum.symbolType
         }));

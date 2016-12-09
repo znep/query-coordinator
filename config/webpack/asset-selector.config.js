@@ -17,11 +17,17 @@ module.exports = _.defaultsDeep({
   ]),
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/assetSelector/.eslintrc.json'),
+  externals: {
+    jquery: true
+  },
   module: {
     loaders: [
       {
         test: /\.jsx?$/,
-        include: path.resolve(common.root, 'public/javascripts'),
+        include: [
+          path.resolve(common.root, 'public/javascripts'),
+          path.resolve(common.root, 'node_modules/socrata-components/common')
+        ],
         loaders: (common.isProduction ? ['babel'] : ['react-hot', 'babel'])
       },
       { test: /\.css$/, loader: 'style-loader!css-loader' },
@@ -29,10 +35,6 @@ module.exports = _.defaultsDeep({
     ]
   },
   resolve: {
-    alias: {
-      'react': path.resolve(common.root, 'node_modules/react'),
-      'react-dom': path.resolve(common.root, 'node_modules/react-dom')
-    },
     root: [
       path.resolve(common.root, 'public/javascripts/assetSelector')
     ]

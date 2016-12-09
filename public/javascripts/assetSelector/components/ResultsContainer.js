@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { changeViewType } from '../actions/viewType';
 import NoResults from './NoResults';
-import TableContainer from './TableContainer';
 import ViewCount from './ViewCount';
-// import ViewCardsContainer from './ViewCardsContainer'
+import CardContainer from './CardContainer';
+import TableContainer from './TableContainer';
 
 export class ResultsContainer extends Component {
   constructor(props) {
@@ -22,9 +22,7 @@ export class ResultsContainer extends Component {
   renderResults() {
     if (this.props.viewType === 'CARD_VIEW') {
       return (
-        <div>
-          <p>im cards</p>
-        </div>
+        <CardContainer results={this.props.results} />
       );
     } else {
       return (
@@ -40,7 +38,7 @@ export class ResultsContainer extends Component {
       );
     } else {
       return (
-        <div>
+        <div className="results-container">
           <a href="#" onClick={this.onViewTypeClick('CARD_VIEW')}>Card view</a> |
           <a href="#" onClick={this.onViewTypeClick('TABLE_VIEW')}>Table view</a>
 

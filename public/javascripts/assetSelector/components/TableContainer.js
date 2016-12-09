@@ -7,15 +7,14 @@ export const TableContainer = (props) => {
   );
 
   return (
-    <div className="results-container table-responsive">
+    <div className="table-responsive table-container">
       <table className="table">
         <thead>
-          <tr>
+          <tr>{/* What about categories/tags? */}
             <th scope="col">Type</th>
             <th scope="col">Name</th>
             <th scope="col">Updated Date</th>
-            <th scope="col">Popularity</th> {/* view count? */}
-            {/* What about categories/tags? */}
+            <th scope="col">Popularity</th>{/* view count? */}
           </tr>
         </thead>
         <tbody>

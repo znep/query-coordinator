@@ -1,17 +1,19 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
+import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
-import { Modal, ModalHeader, ModalFooter, ModalContent } from 'socrata-components';
-import { bindActionCreators } from 'redux';
+import { Modal, ModalHeader, ModalContent, ModalFooter } from 'socrata-components';
+import { edit } from '../actions/database';
 import MetadataField from './MetadataField';
-import { saveMetadata, updateMetadata, closeMetadataModal } from '../actions/manageMetadata';
+import * as Actions from '../actions/manageMetadata';
+import * as Links from '../links';
+import {
+  STATUS_SAVED,
+  STATUS_UPDATING
+} from '../lib/database/statuses';
 
-export function ManageMetadata({ onDismiss, onChange, onSave, metadata }) {
 
-  if (!metadata.modalOpen) {
-    return null;
-  }
-
+export function ManageMetadata({ onDismiss, onEdit, onSave, view }) {
   const modalProps = {
     fullScreen: true,
     onDismiss
@@ -55,9 +57,14 @@ export function ManageMetadata({ onDismiss, onChange, onSave, metadata }) {
 
   const generalFieldsHtml = generalFields.map((descriptor) => {
     const fieldProps = {
-      onChange: _.partial(onChange, descriptor.key),
+      onChange: (newValue) => {
+        onEdit('views', {
+          id: view.id,
+          [descriptor.key]: newValue
+        });
+      },
       descriptor,
-      value: _.defaultTo(metadata[descriptor.key], descriptor.defaultValue)
+      value: _.defaultTo(view[descriptor.key], descriptor.defaultValue)
     };
     return <MetadataField key={descriptor.key} {...fieldProps} />;
   });
@@ -67,9 +74,9 @@ export function ManageMetadata({ onDismiss, onChange, onSave, metadata }) {
       <ModalHeader {...headerProps} />
 
       <ModalContent>
-        <section className="modal-content">
+        <form>
           {generalFieldsHtml}
-        </section>
+        </form>
       </ModalContent>
 
       <ModalFooter>
@@ -77,9 +84,9 @@ export function ManageMetadata({ onDismiss, onChange, onSave, metadata }) {
           <button id="cancel" className="btn btn-default" onClick={onDismiss}>
             {I18n.common.cancel}
           </button>
-          <button id="save" className="btn btn-primary" onClick={onSave}>
-            {I18n.common.save}
-          </button>
+          <SaveButton
+            onSave={onSave}
+            status={view.__status__} />
         </div>
       </ModalFooter>
     </Modal>
@@ -88,21 +95,63 @@ export function ManageMetadata({ onDismiss, onChange, onSave, metadata }) {
 
 ManageMetadata.propTypes = {
   onDismiss: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
-  metadata: PropTypes.object.isRequired
+  view: PropTypes.object.isRequired
 };
 
-function mapStateToProps(state) {
-  return _.pick(state, 'metadata');
+function mapDispatchToProps(dispatch, ownProps) {
+  return {
+    onSave: () => { dispatch(Actions.saveMetadata()); },
+    onEdit: (tableName, edits) => { dispatch(edit(tableName, edits)); },
+    onDismiss: () => {
+      dispatch(push(Links.home(ownProps.location)));
+    }
+  };
 }
 
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({
-    onChange: updateMetadata,
-    onSave: saveMetadata,
-    onDismiss: closeMetadataModal
-  }, dispatch);
-}
+const mapStateToProps = (state) => ({
+  view: state.db.views[0]
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManageMetadata);
+
+function SaveButton({ onSave, status }) {
+  switch (status.type) {
+    case STATUS_SAVED:
+      return (
+        <button
+          id="save"
+          className="btn btn-primary btn-success"
+          disabled="true">
+          {I18n.common.save}
+        </button>
+      );
+
+    case STATUS_UPDATING:
+      return (
+        <button
+          id="save"
+          className="btn btn-primary"
+          disabled="true">
+          <span className="spinner-default spinner-btn-primary" />
+          {I18n.common.save}
+        </button>
+      );
+
+    default: // STATUS_DIRTY
+      return (
+        <button
+          id="save"
+          className="btn btn-primary"
+          onClick={onSave}>
+          {I18n.common.save}
+        </button>
+      );
+  }
+}
+
+SaveButton.propTypes = {
+  onSave: PropTypes.func.isRequired,
+  status: PropTypes.object.isRequired
+};

@@ -168,6 +168,7 @@ Ensure that you are using Ruby version 2.3.0 or greater.
 bundle exec rake test:karma
 bundle exec rake test:karma:dataCards
 bundle exec rake test:karma:datasetLandingPage
+bundle exec rake test:karma:datasetManagementUI
 bundle exec rake test:karma:importWizard
 bundle exec rake test:karma:oldUx
 bundle exec rake test:karma:adminGoals
@@ -428,6 +429,8 @@ Variable Name | Type | Source | Description
 `http_x_ssl_request` | String | NGINX | Protocol of the originating request. Expected to be `https` or the request will be redirected to use that scheme. Used as a fallback if `http_x_forwarded_proto` is not present. See `SslEnforcer`.
 `import_status_service_hostname` | String | Configuration | Host name to connect to for the ISS.
 `import_status_service_port` | Integer | Configuration | Port to connect to on `import_status_service_hostname`.
+`dataset_management_api_hostname` | String | Configuration | Host name to connect to for DSMAPI.
+`dataset_management_api_port` | Integer | Configuration | Port to connect to on `dataset_management_api_hostname`.
 `log_level` | String | Configuration | Log level directive used when configuring `Rails.logger`.
 `memcached_hosts` | String | Configuration | _Comma-separated_ list of URIs _including weighting_ used to connect to Memcached via Dalli. i.e. `10.1.0.72:11211:1,...`
 `memcached_value_max_bytes` | Integer | Configuration | Maximum size of values allowed to be written to Memcached via Dalli.

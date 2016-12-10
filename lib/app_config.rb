@@ -47,6 +47,10 @@ class AppConfig < Hashie::Dash
   property :import_status_service_hostname
   property :import_status_service_port
 
+  # Dataset Management API
+  property :dataset_management_api_hostname
+  property :dataset_management_api_port
+
   # Esri Crawler service
   property :esri_crawler_hostname
   property :esri_crawler_port

@@ -13,10 +13,9 @@ export default function TextInput({ descriptor, onChange, value }) {
     <div>
       <label
         htmlFor={descriptor.key}
-        className="inline-label">
+        className="block-label">
         {descriptor.label}
       </label>
-      <br />
       <input
         type="text"
         id={descriptor.key}

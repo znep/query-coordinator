@@ -1,0 +1,52 @@
+<% content_for :head do %>
+  <title><%= t('dataset_management_ui.manage') %></title>
+<% end %>
+
+<div style="text-align: center">
+  <h1>Create a New Tabular Dataset</h1>
+  <form onSubmit="return createDataset();">
+    <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
+
+    <div>
+      <h4>To get started, choose a name for your dataset.</h4>
+      <input
+        id="dataset-title-input"
+        class="asset-selector-text-input"
+        type="text"
+        name="title"
+        autofocus="autofocus"
+        placeholder="New Dataset" />
+    </div>
+    <div>
+      <button id="submit-btn" class="btn btn-primary" type="submit">Create Dataset</button>
+    </div>
+  </form>
+
+  <script>
+function createDataset() {
+  var datasetTitle = document.getElementById('dataset-title-input').value;
+  $.ajax({
+    type: "POST",
+    url: "/api/views",
+    data: JSON.stringify({
+      displayType: "table",
+      name: datasetTitle
+    }),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function(newView) {
+      $.ajax({
+        type: "POST",
+        url: "/api/update/" + newView.id,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(newUpdate) {
+          document.location = "/d/" + newView.id + "/updates/0";
+        }
+      });
+    }
+  });
+  return false;
+}
+  </script>
+</div>

@@ -1,9 +1,10 @@
 import { combineReducers } from 'redux';
+import { routerReducer } from 'react-router-redux';
+import dbReducer from './database';
 
-import metadata from './metadata';
-import data from './data';
-
-export default combineReducers({
-  metadata,
-  data
+const rootReducer = combineReducers({
+  db: dbReducer,
+  routing: routerReducer
 });
+
+export default rootReducer;

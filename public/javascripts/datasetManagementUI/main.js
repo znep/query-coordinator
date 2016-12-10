@@ -4,15 +4,29 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
+import { Router, Route, IndexRoute, browserHistory } from 'react-router';
+import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux';
 import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
 import a11y from 'react-a11y';
-import components from 'socrata-components';
+import * as Phoenix from 'phoenix';
 
-import App from './App';
+import App from './components/App';
+import ShowUpdate from './components/ShowUpdate';
+import ManageMetadata from './components/ManageMetadata';
+import ManageUploads from './components/ManageUploads';
+import ShowOutputSchema from './components/ShowOutputSchema';
+import ShowUpload from './components/ShowUpload';
+import NoMatch from './components/NoMatch';
 import rootReducer from './reducers';
+import { bootstrap } from './lib/database/bootstrap';
 
-const middleware = [thunk];
+window.DSMAPI_PHOENIX_SOCKET = new Phoenix.Socket('/api/update/socket', {});
+window.DSMAPI_PHOENIX_SOCKET.connect();
+
+// middleware
+
+const middleware = [thunk, routerMiddleware(browserHistory)];
 
 if (window.serverConfig.environment === 'development') {
   a11y(React, { ReactDOM: ReactDOM });
@@ -26,12 +40,23 @@ if (window.serverConfig.environment === 'development') {
 }
 
 const store = createStore(rootReducer, applyMiddleware(...middleware));
+bootstrap(store, window.initialState.view, window.initialState.update);
+const history = syncHistoryWithStore(browserHistory, store);
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <Router history={history}>
+      <Route path="/:category/:name/:fourfour/updates/:updateSeq" component={App}>
+        <IndexRoute component={ShowUpdate} />
+        <Route path="metadata" component={ManageMetadata} />
+        <Route path="uploads" component={ManageUploads} />
+        <Route path="uploads/:uploadId" component={ShowUpload} />
+        <Route
+          path="uploads/:uploadId/schemas/:schemaId/output/:outputSchemaId"
+          component={ShowOutputSchema} />
+        <Route path="*" component={NoMatch} />
+      </Route>
+    </Router>
   </Provider>,
   document.querySelector('#app')
 );
-
-components.attachTo(document.getElementById('app'));

@@ -1,14 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { EditBar } from 'socrata-components';
 
 function AppBar({ name }) {
   return (
-    <nav className="app-navbar">
-      <button
-        data-panel-toggle="settings-panel"
-        className="icon-stories-menu settings-panel-btn"></button>
-      <span className="dataset-name">{name}</span>
-    </nav>
+    <EditBar name={name} />
   );
 }
 
@@ -18,7 +14,7 @@ AppBar.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    name: state.metadata.name
+    name: state.db.views[0].name
   };
 }
 

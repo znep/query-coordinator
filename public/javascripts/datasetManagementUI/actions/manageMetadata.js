@@ -1,42 +1,41 @@
-export const UPDATE_METADATA = 'UPDATE_METADATA';
-export function updateMetadata(key, newValue) {
-  return {
-    type: UPDATE_METADATA,
-    key,
-    newValue
-  };
-}
+import _ from 'lodash';
+import { push } from 'react-router-redux';
+import * as Links from '../links';
+import { checkStatus } from '../lib/http';
+import {
+  updateStarted,
+  updateSucceeded,
+  updateFailed
+} from './database';
 
-export const OPEN_METADATA_MODAL = 'OPEN_METADATA_MODAL';
-export function openMetadataModal() {
-  return {
-    type: OPEN_METADATA_MODAL
-  };
-}
-
-export const CLOSE_METADATA_MODAL = 'CLOSE_METADATA_MODAL';
-export function closeMetadataModal() {
-  return {
-    type: CLOSE_METADATA_MODAL
-  };
-}
-
-// TODO: this should be a SAVE_METADATA action or something like that
 export function saveMetadata() {
   return (dispatch, getState) => {
-    const metadata = getState().metadata;
+    const metadata = _.omit(getState().db.views[0], '__status__');
+    dispatch(updateStarted('views', metadata));
     fetch(`/api/views/${window.initialState.view.id}`, {
       method: 'PUT',
       credentials: 'same-origin',
-      body: JSON.stringify({
-        name: metadata.name,
-        description: metadata.description,
-        category: metadata.category
-      })
-    }).then(() => {
-      // TODO: handle response success/failure differently
-      dispatch(closeMetadataModal());
-    }
-  );
+      body: JSON.stringify(metadata)
+    }).
+      then(checkStatus).
+      then(() => {
+        dispatch(updateSucceeded('views', metadata));
+        dispatch(redirectAfterInterval());
+      }).
+      catch((error) => {
+        dispatch(updateFailed('views', metadata, error));
+      });
+  };
+}
+
+// when save succeeds, wait this long until modal goes away
+// so user can see "saved" button is green
+export const DELAY_UNTIL_CLOSE_MS = 1000;
+
+function redirectAfterInterval() {
+  return (dispatch, getState) => {
+    setTimeout(() => {
+      dispatch(push(Links.home(getState().routing)));
+    }, DELAY_UNTIL_CLOSE_MS);
   };
 }

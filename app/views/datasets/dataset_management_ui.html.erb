@@ -3,15 +3,21 @@
   <%= rendered_stylesheet_tag('dataset-management-ui') %>
 <% end %>
 
-<div id="app"></div>
+<div id="app">
+  <div id="initial-spinner-container">
+    <span class="spinner-default spinner-large"></span>
+  </div>
+</div>
 
 <% content_for :scripts do %>
   <%= render_dataset_management_ui_server_config %>
   <%= render_dataset_management_ui_translations %>
 
   <script>
+    // TODO what is the difference between this an server_config
     var initialState = {
       view: <%== @view.to_json %>,
+      update: <%== @update.to_json %>,
       datasetCategories: <%== flatten_category_tree.to_json %>.map(([title, value]) => (
         {title: title, value: value}
       ))

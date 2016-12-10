@@ -2,19 +2,8 @@
 
 .dataset-management-ui {
 
-  .app-navbar {
-    user-select: initial;
-    box-shadow: none;
-    top: initial;
-    position: relative;
-    height: 3em;
-    display: flex;
-    align-items: center;
-
-    .dataset-name {
-      padding-left: 1em;
-      font-weight: bold;
-    }
+  .edit-bar {
+    position: static;
   }
 
   .management-ui-section {
@@ -27,10 +16,25 @@
     }
   }
 
-  .app-navbar:after {
-    background: none;
+  #show-output-schema .modal-content {
+    margin-bottom: 0;
   }
 
+  thead {
+    .col-name {
+      font-weight: bold;
+    }
+
+    .col-type {
+      font-weight: normal;
+      font-style: italic;
+    }
+
+    .col-processed {
+      font-weight: normal;
+      font-size: 7pt;
+    }
+  }
 }
 
 #home-pane {
@@ -40,7 +44,17 @@
   padding-bottom: 30px;
 }
 
+#no-match {
+  text-align: center;
+}
+
 .metadata-validation-error {
   color: $error-text;
   padding-left: 10px;
+}
+
+#initial-spinner-container {
+  text-align: center;
+  padding-top: 10em;
+  padding-bottom: 10em;
 }

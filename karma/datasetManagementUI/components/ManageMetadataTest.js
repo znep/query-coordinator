@@ -1,36 +1,31 @@
 import _ from 'lodash';
 import { ManageMetadata } from 'components/ManageMetadata';
+import { statusSavedOnServer, statusDirty } from 'lib/database/statuses';
 
-describe('ManageMetadata', () => {
+describe('components/ManageMetadata', () => {
+
   const defaultProps = {
-    metadata: {
+    view: {
+      __status__: statusSavedOnServer,
       name: 'a name',
       description: 'a description',
       category: 'category',
       tags: ['a tag'],
-      rowLabel: 'row label',
-      modalOpen: true
+      rowLabel: 'row label'
     },
     onChange: _.noop,
     onSave: _.noop,
     onDismiss: _.noop
   };
 
-  it('renders an element', () => {
+  it('renders without errors', () => {
     const element = renderPureComponent(ManageMetadata(defaultProps));
     expect(element).to.exist;
   });
 
-  it('does not create a component if modalOpen is false', () => {
-    const element = ManageMetadata({
-      ...defaultProps,
-      metadata: {
-        ...defaultProps.metadata,
-        modalOpen: false
-      }
-    });
-
-    expect(element).to.eq(null);
+  it('renders an element', () => {
+    const element = renderPureComponent(ManageMetadata(defaultProps));
+    expect(element).to.exist;
   });
 
   it('renders a title', () => {
@@ -64,7 +59,7 @@ describe('ManageMetadata', () => {
   });
 
   describe('onSave handling', () => {
-    it('is invoked when you click save', () => {
+    it('isn\'t invoked when you click save if the view isn\'t dirty', () => {
       const stub = sinon.stub();
 
       const element = renderPureComponent(ManageMetadata({
@@ -73,7 +68,30 @@ describe('ManageMetadata', () => {
       }));
 
       TestUtils.Simulate.click(element.querySelector('#save'));
+      expect(stub.called).to.eq(false);
+    });
+
+    it('is invoked when you click save if the view is dirty', () => {
+      const stub = sinon.stub();
+
+      const dirtyView = {
+        ...defaultProps.view,
+        __status__: statusDirty(defaultProps.view)
+      };
+
+      const propsWithDirtyView = {
+        ...defaultProps,
+        view: dirtyView
+      };
+
+      const element = renderPureComponent(ManageMetadata({
+        ...propsWithDirtyView,
+        onSave: stub
+      }));
+
+      TestUtils.Simulate.click(element.querySelector('#save'));
       expect(stub.called).to.eq(true);
     });
   });
+
 });

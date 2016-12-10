@@ -432,6 +432,9 @@ en:
         create_resource: Create a New Socrata Resource
         create_resource_short: Create new...
         create_resource_verb: Create
+        create_tabular_beta: Create a tabular Dataset (beta)
+        create_tabular_beta_short: Tabular Dataset (beta)
+        create_tabular_beta_verb: Create (beta)
         create_story_short: Story
         create_story_verb: Create
         dataset_subscribe: Subscribe to changes on this view

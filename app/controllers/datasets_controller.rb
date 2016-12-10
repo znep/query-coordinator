@@ -256,10 +256,37 @@ class DatasetsController < ApplicationController
     end
   end
 
+  def new_update
+    if FeatureFlags.derive(@view, request).enable_dataset_management_ui
+      render 'datasets/new_update', :layout => 'styleguide'
+    else
+      render_404
+    end
+  end
+
+  def create_update
+    if FeatureFlags.derive(@view, request).enable_dataset_management_ui
+      redirect_to
+    else
+      render_404
+    end
+  end
+
   def updates
     if FeatureFlags.derive(@view, request).enable_dataset_management_ui
       @view = get_view(params[:id])
-      @update_id = params[:update_id] # will use this to fetch from DSMAPI
+      unless request.path.starts_with?(canonical_path_proc.call)
+        return redirect_to("#{canonical_path_proc.call}/updates/#{params[:update_seq]}#{params[:rest_of_path]}")
+      end
+      uploads = DatasetManagementAPI.get("/api/update/#{@view.id}/#{params[:update_seq]}/upload", cookies)
+      full_uploads = uploads.map do |upload|
+        upload_id = upload['resource']['id']
+        DatasetManagementAPI.get("/api/update/#{@view.id}/#{params[:update_seq]}/upload/#{upload_id}", cookies)['resource']
+      end
+      @update = {
+        :update_seq => params[:update_seq],
+        :uploads => full_uploads
+      }
       render 'datasets/dataset_management_ui', :layout => 'styleguide'
     else
       render_404

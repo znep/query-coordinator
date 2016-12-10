@@ -106,6 +106,8 @@ development: &development
   http_port: 9292
   import_status_service_hostname: localhost
   import_status_service_port: 8082
+  dataset_management_api_hostname: localhost
+  dataset_management_api_port: 4000
   polaroid_hostname: localhost
   polaroid_port: 1337
   sitemap_s3_url: https://localhost.amazonaws.com/bucket_dne/sitemaps

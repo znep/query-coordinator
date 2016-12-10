@@ -65,7 +65,6 @@
     _newBackendMetadata = blist.dataset.getNewBackendMetadata();
   }
 
-  // Refer to getNewUXLinkParams in dataset-show.js
   function generateDataLensLinkParams() {
     var hasGroupBys = !_.isUndefined(blist.dataset.query) && !_.isUndefined(blist.dataset.query.groupBys);
 
@@ -76,9 +75,6 @@
     };
   }
 
-  // Refer to getNewUXLinkHref in dataset-show.js.
-  // This function duplicates logic, but returns a promise instead of creating data lens popup
-  // through side effects.
   function generateDataLensLinkHref() {
     var href = '#';
     var localePart = blist.locale === blist.defaultLocale ? '' : '/' + blist.locale;

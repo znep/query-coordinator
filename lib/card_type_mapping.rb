@@ -7,11 +7,11 @@ module CardTypeMapping
   # to compute default and available card types, not the old way.
   CARDINALITY_THRESHOLD = 35
 
-  def card_type_for(column, logical_datatype_key, dataset_size=nil)
-    default_card_type_for(column, dataset_size)
+  def card_type_for(column, dataset_size=nil, is_derived_view=false)
+    default_card_type_for(column, dataset_size, is_derived_view)
   end
 
-  def default_card_type_for(column, dataset_size)
+  def default_card_type_for(column, dataset_size, is_derived_view=false)
     physical_datatype = column.try(:[], :physicalDatatype)
 
     unless physical_datatype.present?
@@ -35,6 +35,8 @@ module CardTypeMapping
     case physical_datatype
       when 'boolean'
         card_type = 'column'
+      when 'calendar_date'
+        card_type = 'timeline'
       when 'fixed_timestamp'
         card_type = 'timeline'
       when 'floating_timestamp'
@@ -44,7 +46,7 @@ module CardTypeMapping
       when 'money'
         card_type = 'histogram'
       when 'number'
-        if has_georegion_computation_strategy?(column)
+        if has_georegion_computation_strategy?(column) && !is_derived_view
           card_type = 'choropleth'
         else
           card_type = 'histogram'
@@ -52,7 +54,7 @@ module CardTypeMapping
       when 'point'
         card_type = 'feature'
       when 'text'
-        if has_georegion_computation_strategy?(column)
+        if has_georegion_computation_strategy?(column) && !is_derived_view
           card_type = 'choropleth'
         # See: https://socrata.atlassian.net/browse/CORE-4755
         elsif dataset_size <= 10
@@ -80,7 +82,7 @@ module CardTypeMapping
     card_type
   end
 
-  def available_card_types_for(column, dataset_size)
+  def available_card_types_for(column, dataset_size, is_derived_view=false)
     physical_datatype = column.try(:[], :physicalDatatype)
 
     unless physical_datatype.present?
@@ -103,6 +105,8 @@ module CardTypeMapping
     case physical_datatype
       when 'boolean'
         available_card_types= ['column']
+      when 'calendar_date'
+        available_card_types = ['timeline']
       when 'fixed_timestamp'
         available_card_types = ['timeline']
       when 'floating_timestamp'
@@ -112,15 +116,19 @@ module CardTypeMapping
       when 'money'
         available_card_types = ['column', 'search', 'histogram']
       when 'number'
-        if has_georegion_computation_strategy?(column)
+        if has_georegion_computation_strategy?(column) && !is_derived_view
           available_card_types = ['choropleth']
         else
           available_card_types = ['histogram', 'column', 'search']
         end
       when 'point'
-        available_card_types = ['feature', 'choropleth']
+        if is_derived_view
+          available_card_types = ['feature']
+        else
+          available_card_types = ['feature', 'choropleth']
+        end
       when 'text'
-        if has_georegion_computation_strategy?(column)
+        if has_georegion_computation_strategy?(column) && !is_derived_view
           available_card_types = ['choropleth']
         else
           available_card_types = ['column', 'search']

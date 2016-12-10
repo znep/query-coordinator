@@ -58,11 +58,19 @@
   var useEphemeralBootstrap = blist.feature_flags.use_ephemeral_bootstrap;
   var _newBackendMetadata;
 
+  // We already check the feature flag when deciding whether or not to show the data lens pane,
+  // but just to be extra safe, let's double check the feature flag to bootstrap derived views
+  // is turned on.
+  var isDerivedView = ['grouped', 'filter'].includes(blist.dataset.type);
+  var allowDerivedViewBootstrap = blist.feature_flags.enable_data_lens_using_derived_view;
+
   if (useEphemeralBootstrap && userCanUpdateMetadata) {
     $.gridSidebar.registerConfig('visualize.dataLensCreate', 'pane_dataLensCreate', 2, 'chart');
 
     // Fetch dataset migration, in case it's needed later
-    _newBackendMetadata = blist.dataset.getNewBackendMetadata();
+    if (!isDerivedView) {
+      _newBackendMetadata = blist.dataset.getNewBackendMetadata();
+    }
   }
 
   function generateDataLensLinkParams() {
@@ -96,6 +104,47 @@
       deferred.resolve(href);
       return deferred.promise();
 
+    } else if (isDerivedView && allowDerivedViewBootstrap) {
+
+      // we need to ensure that there's a NBE copy for the parent view, or the read_from_nbe flag
+      // we use to make derived views work will return OBE columns and everything in data lens will
+      // self-destruct.
+      var getParentViewPromise = function() {
+        var parentViewDeferred = $.Deferred(); // eslint-disable-line new-cap
+
+        // we're creating parentViewDeferred because dataset.getParentView takes a callback,
+        // but dataset.getNewBackendMetadata returns a promise. parentViewDeferred lets us
+        // get all the information we need to enable the button, below.
+        blist.dataset.getParentView(function(parentView) {
+          if (parentView) {
+            parentViewDeferred.resolve(parentView);
+          } else {
+            parentViewDeferred.reject();
+          }
+        });
+
+        return parentViewDeferred.promise();
+      };
+
+      // as of 12/2016, this page is using jQuery 1.7. pipe is deprecated as of jQuery 1.8, but
+      // in 1.7, the promise chain breaks if you use then (then invokes callbacks but does not
+      // return a promise, whereas pipe invokes callbacks and then returns a promise with the
+      // result of the callbacks). generateDataLensLinkHref needs to return a promise (see where
+      // it is invoked, above).
+      return getParentViewPromise().
+        pipe(function(parentView) {
+          return parentView.getNewBackendMetadata();
+        }).
+        pipe(function(nbeMetadata) {
+          if (nbeMetadata) {
+            href = '{0}/view/bootstrap/{1}'.format(localePart, linkParams.dataset.id);
+          }
+          return href;
+        }).
+        fail(function() {
+          return href;
+        });
+
     } else {
 
       if (_.isUndefined(_newBackendMetadata)) {
@@ -103,15 +152,21 @@
         return deferred.promise();
       }
 
-      // pipe is deprecated as of jQuery 1.8, but the promise chain breaks without it :(
-      return _newBackendMetadata.pipe(function(nbeMetadata) {
-        if (nbeMetadata && canBootstrapDataLens) {
-          href = '{0}/view/bootstrap/{1}'.format(localePart, nbeMetadata.id);
-        }
-        return href;
-      }).fail(function() {
-        return href;
-      });
+      // as of 12/2016, this page is using jQuery 1.7. pipe is deprecated as of jQuery 1.8, but
+      // in 1.7, the promise chain breaks if you use then (then invokes callbacks but does not
+      // return a promise, whereas pipe invokes callbacks and then returns a promise with the
+      // result of the callbacks). generateDataLensLinkHref needs to return a promise (see where
+      // it is invoked, above).
+      return _newBackendMetadata.
+        pipe(function(nbeMetadata) {
+          if (nbeMetadata && canBootstrapDataLens) {
+            href = '{0}/view/bootstrap/{1}'.format(localePart, nbeMetadata.id);
+          }
+          return href;
+        }).
+        fail(function() {
+          return href;
+        });
 
     }
   }

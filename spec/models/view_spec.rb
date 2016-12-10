@@ -7,6 +7,33 @@ describe View do
     init_current_domain
   end
 
+  describe 'self.find_derived_view_using_read_from_nbe' do
+    let(:view_id) { '1234-5679' }
+
+    it 'returns the parsed response from the core endpoint' do
+      stub_request(:get, 'http://localhost:8080/views/1234-5679.json?read_from_nbe=true').
+         with(:headers => request_headers).
+         to_return(
+           :status => 200,
+           :headers => {},
+           :body => JSON::dump({ :id => view_id })
+         )
+
+      result = View.find_derived_view_using_read_from_nbe(view_id)
+
+      expect(result).to be_an_instance_of(View)
+      expect(result.id).to eq(view_id)
+    end
+
+    it 'raises an error if Core returns an error' do
+      stub_request(:get, 'http://localhost:8080/views/1234-5679.json?read_from_nbe=true').
+         with(:headers => request_headers).
+         to_raise(CoreServer::Error)
+
+      expect { View.find_derived_view_using_read_from_nbe(view_id) }.to raise_error
+    end
+  end
+
   describe 'draft display types' do
     let(:fake_views) do
       [

@@ -115,6 +115,9 @@ enable_data_lens_page_metadata_migrations:
 enable_data_lens_provenance:
   description: Ability to set data lens views to "Official" or not.
   defaultValue: true
+enable_data_lens_using_derived_view:
+  description: Enable creating data lenses from derived views.
+  defaultValue: false
 enable_catalog_connector:
   description: Turn on the 'Connectors' admin page to create catalog entries for datasets from external sources, like ArcGIS online.
   defaultValue: true

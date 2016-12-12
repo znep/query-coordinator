@@ -2348,6 +2348,8 @@ en:
           replace: Replace
           upsert: Upsert
           working_copy: Working Copy
+          delete: Delete
+          append: Append
         filters:
           all: All
           append: Append

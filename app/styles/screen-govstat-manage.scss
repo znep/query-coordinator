@@ -142,6 +142,12 @@
     max-width: 100em;
     margin: 0 auto 3em;
     // odysseus:
+    .deprecated-report-builder {
+      display: none;
+      &.show-deprecated-report-builder {
+          display: list-item;
+      }
+    }
     .page.govstatRoot & {
       li {
         float: left;
@@ -151,6 +157,14 @@
         float: none;
         overflow: hidden;
         width: auto;
+      }
+      // TODO .col classes should be removed after we remove report builder completely
+      // and width should be moved to `li`
+      .col2 {
+        width: 50%;
+      }
+      .col3 {
+        width: 33.3333%;
       }
     }
     .component-wrapper {

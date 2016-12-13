@@ -80,7 +80,7 @@ class SignInForm extends React.Component {
     if (!_.isEmpty(error)) {
       return (
         <div styleName="login-error">
-          <strong>{$.t('screens.sign_in.error')}:</strong> {error.message}
+          <strong>{this.props.translate('screens.sign_in.error')}:</strong> {error.message}
         </div>
       );
     } else if (loggingIn === true) {
@@ -88,14 +88,14 @@ class SignInForm extends React.Component {
     }
   }
 
-  renderRememberMe(options) {
+  renderRememberMe(options, translate) {
     if (options.rememberMe) {
-      return <RememberMe />;
+      return <RememberMe translate={translate} />;
     }
   }
 
   render() {
-    const { options, doAuth0Login, auth0Connections } = this.props;
+    const { options, doAuth0Login, auth0Connections, translate } = this.props;
     const { connectionName, email, password } = this.state;
     const { forcedConnections, socrataEmailsBypassAuth0 } = options;
 
@@ -114,23 +114,27 @@ class SignInForm extends React.Component {
           type="hidden"
           value={options.authenticityToken} />
 
-        <EmailInput onChange={this.onEmailChange} />
+        <EmailInput
+          onChange={this.onEmailChange}
+          translate={translate} />
         <PasswordInput
           onChange={this.onPasswordChange}
+          translate={this.props.translate}
           connectionName={connectionName} />
 
-        {this.renderRememberMe(options)}
+        {this.renderRememberMe(options, translate)}
 
         <a
           href="/forgot_password"
           styleName="reset-password">
-            {$.t('screens.sign_in.forgot_password')}
+            {translate('screens.sign_in.forgot_password')}
         </a>
 
         <SignInButton
           form={this.formDomNode}
           connectionName={connectionName}
           doAuth0Login={doAuth0Login}
+          translate={this.props.translate}
           email={email}
           password={password}
           onLoginStart={this.onLoginStart}
@@ -145,6 +149,7 @@ class SignInForm extends React.Component {
 
 SignInForm.propTypes = {
   options: OptionsPropType.isRequired,
+  translate: PropTypes.func.isRequired,
   doAuth0Login: PropTypes.func.isRequired,
   auth0Connections: PropTypes.array
 };

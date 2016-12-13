@@ -71,7 +71,7 @@ class SignInButton extends React.Component {
   render() {
     return (
       <button onClick={this.doSignIn} styleName="sign-in-button">
-        {$.t('screens.sign_in.form.sign_in_button')}
+        {this.props.translate('screens.sign_in.form.sign_in_button')}
       </button>
     );
   }
@@ -83,6 +83,7 @@ SignInButton.propTypes = {
   onLoginStart: PropTypes.func.isRequired,
   connectionName: PropTypes.string,
   doAuth0Login: PropTypes.func.isRequired,
+  translate: PropTypes.func.isRequired,
   email: PropTypes.string,
   password: PropTypes.string,
   auth0Connections: PropTypes.arrayOf(Auth0ConnectionsPropType),

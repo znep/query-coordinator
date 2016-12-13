@@ -13,7 +13,7 @@ class ChooseConnection extends React.Component {
 
   getConnectionText(auth0Connection) {
     return _.isEmpty(auth0Connection.buttonText) ?
-      $.t('screens.sign_in.sign_in_with', { provider: auth0Connection.name }) :
+      this.props.translate('screens.sign_in.sign_in_with', { provider: auth0Connection.name }) :
       auth0Connection.buttonText;
   }
 
@@ -33,19 +33,20 @@ class ChooseConnection extends React.Component {
 
   renderSocrataIdButton() {
     if (!this.props.options.hideSocrataId) {
+      const { setLoginFormVisibility, translate } = this.props;
       return (
         <a
           styleName="button"
-          onClick={() => { this.props.setLoginFormVisibility(true); }}>
+          onClick={() => { setLoginFormVisibility(true); }}>
           <div styleName="button-image-container">
             <img
               styleName="button-image"
               src="/stylesheets/images/common/logo.png"
               alt="socrata-logo" />
           </div>
-          <span styleName="button-text">
-            {$.t('screens.sign_in.sign_in_with', { provider: 'Socrata ID' })}
-          </span>
+          <span
+            styleName="button-text"
+            dangerouslySetInnerHTML={{ __html: translate('screens.sign_in.sign_in_with', { provider: 'Socrata ID' }) }} />
         </a>
       );
     }
@@ -64,9 +65,9 @@ class ChooseConnection extends React.Component {
           styleName="button"
           onClick={() => { onConnectionChosen(connection); }}>
           {this.renderConnectionImage(auth0Connection)}
-          <span styleName={textStyle}>
-            {this.getConnectionText(auth0Connection)}
-          </span>
+          <span
+            styleName={textStyle}
+            dangerouslySetInnerHTML={{ __html: this.getConnectionText(auth0Connection) }} />
         </a>
       );
     });
@@ -87,6 +88,7 @@ class ChooseConnection extends React.Component {
 
 ChooseConnection.propTypes = {
   options: OptionsPropType.isRequired,
+  translate: PropTypes.func.isRequired,
   onConnectionChosen: PropTypes.func.isRequired,
   setLoginFormVisibility: PropTypes.func.isRequired
 };

@@ -15,22 +15,25 @@ class PasswordInput extends React.Component {
     return (
       <div>
         <div styleName="icon-container" dangerouslySetInnerHTML={{ __html: passwordIcon }} />
-        <div styleName="sso-enabled-text">{$.t('screens.sign_in.sso_enabled')}</div>
+        <div styleName="sso-enabled-text">
+            {this.props.translate('screens.sign_in.sso_enabled')}
+        </div>
       </div>
     );
   }
 
   renderDefault() {
+    const { translate, onChange } = this.props;
     return (
       <div>
         <div styleName="icon-container" dangerouslySetInnerHTML={{ __html: passwordIcon }} />
         <PollingInput
           name="user_session[password]"
-          aria-label={$.t('screens.sign_in.form.password_placeholder')}
+          aria-label={translate('screens.sign_in.form.password_placeholder')}
           styleName="input-password"
           type="password"
-          placeholder={$.t('screens.sign_in.form.password_placeholder')}
-          onChange={this.props.onChange} />
+          placeholder={translate('screens.sign_in.form.password_placeholder')}
+          onChange={onChange} />
       </div>
       );
   }
@@ -46,6 +49,7 @@ class PasswordInput extends React.Component {
 
 PasswordInput.propTypes = {
   onChange: PropTypes.func.isRequired,
+  translate: PropTypes.func.isRequired,
   connectionName: PropTypes.string
 };
 

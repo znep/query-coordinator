@@ -43,5 +43,11 @@ export default
     formMessage: PropTypes.string,
 
     // Any flashes to display
-    flashes: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
+    flashes: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+
+    // Translations object
+    translations: PropTypes.object.isRequired,
+
+    // Company name to display above login form ("Sign In to ....")
+    companyName: PropTypes.string.isRequired
   });

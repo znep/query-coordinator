@@ -227,23 +227,32 @@ module ApplicationHelper
     LocalePart.controls.common,
     LocalePart.controls.charts,
     LocalePart.plugins.jquery_ui
-  ]
-  def render_translations(part = nil)
-    @rendered_translations ||= Set.new()
-    to_render = [part].concat(DEFAULT_TRANSLATIONS)
+  ].freeze
+
+  def get_translations(part = nil)
+    @rendered_translations ||= Set.new
+    parts = [part].concat DEFAULT_TRANSLATIONS
     if module_enabled?(:govStat)
-      to_render << LocalePart.govstat.chrome.header
-      to_render << LocalePart.plugins
+      parts << LocalePart.govstat.chrome.header
+      parts << LocalePart.plugins
     end
-    to_render = to_render.compact.reject {|t| @rendered_translations.include?(t)}
-    return '' if to_render.empty?
-    @rendered_translations = @rendered_translations.merge(to_render)
+    parts = parts.compact.reject {|t| @rendered_translations.include?(t)}
+
+    if parts.empty?
+      ''
+    else
+      @rendered_translations = @rendered_translations.merge(parts)
+      LocaleCache.render_translations(parts)
+    end
+  end
+
+  def render_translations(part = nil)
     content_tag :script, :type => 'text/javascript' do
       <<-EOS
         if (typeof blistTranslations == 'undefined') blistTranslations = [];
         blistTranslations.push(function()
         {
-            return #{safe_json(LocaleCache.render_translations(to_render))};
+            return #{safe_json(get_translations(part))};
         });
       EOS
         .html_safe

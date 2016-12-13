@@ -1,6 +1,7 @@
 import React from 'react';
 import Auth0 from 'auth0-js';
 import cssModules from 'react-css-modules';
+import { Translate } from '../Util';
 import OptionsPropType from '../PropTypes/OptionsPropType';
 import SignIn from './SignIn';
 import ChooseConnection from './ChooseConnection/ChooseConnection';
@@ -11,7 +12,9 @@ class SignInContainer extends React.Component {
   constructor(props) {
     super(props);
 
-    const { auth0Uri, auth0ClientId, baseDomainUri } = this.props.options;
+    const { auth0Uri, auth0ClientId, baseDomainUri, translations } = this.props.options;
+    const translate = new Translate(translations);
+
     this.state = {
       auth0Client: new Auth0({
         domain: auth0Uri,
@@ -19,7 +22,8 @@ class SignInContainer extends React.Component {
         callbackURL: `${baseDomainUri}/auth/auth0/callback`
       }),
       auth0Connections: [],
-      renderLoginForm: false
+      renderLoginForm: false,
+      translate: translate.get.bind(translate)
     };
 
     this.renderChooseConnectionOrSignInForm = this.renderChooseConnectionOrSignInForm.bind(this);
@@ -52,7 +56,7 @@ class SignInContainer extends React.Component {
 
   renderChooseConnectionOrSignInForm() {
     const { options } = this.props;
-    const { auth0Client, auth0Connections, renderLoginForm } = this.state;
+    const { auth0Client, auth0Connections, renderLoginForm, translate } = this.state;
 
     // if "auth0_connections" is set in the site config, we show a list
     // of buttons to choose a connection
@@ -60,6 +64,7 @@ class SignInContainer extends React.Component {
       return (
         <ChooseConnection
           options={options}
+          translate={this.state.translate}
           onConnectionChosen={this.onConnectionChosen}
           setLoginFormVisibility={this.setLoginFormVisibility} />);
     } else {
@@ -68,6 +73,7 @@ class SignInContainer extends React.Component {
         // either there aren't any specific connections set up,
         // or the "Sign in with a Socrata ID" button was clicked
         <SignIn
+          translate={translate}
           doAuth0Login={doAuth0Login}
           auth0Connections={auth0Connections}
           options={options}
@@ -87,28 +93,35 @@ class SignInContainer extends React.Component {
 
   renderBackButton() {
     const { options } = this.props;
+    const { renderLoginForm, translate } = this.state;
 
     // only show the button to go back to "choose connection" if we're told to
-    if (!_.isEmpty(options.connections) && this.state.renderLoginForm === true) {
+    if (!_.isEmpty(options.connections) && renderLoginForm === true) {
       return (
         <a
           styleName="back-to-options"
           onClick={() => this.setLoginFormVisibility(false)} >
           <span
             styleName="back-to-options-icon"
-            dangerouslySetInnerHTML={{ __html: backIcon }} />
-          {$.t('screens.sign_in.back_to_sign_in_selection')}
+            dangerouslySetInnerHTML={
+              {
+                __html:
+                  `${backIcon} ${translate('screens.sign_in.back_to_sign_in_selection')}`
+              }
+            } />
         </a>
       );
     }
   }
 
   renderFlashes() {
-    if (_.isEmpty(this.props.options.flashes)) {
+    const { flashes } = this.props.options;
+
+    if (_.isEmpty(flashes)) {
       return;
     }
 
-    return this.props.options.flashes.map((flash, i) => {
+    return flashes.map((flash, i) => {
       const level = flash[0];
       const message = flash[1];
 
@@ -122,6 +135,8 @@ class SignInContainer extends React.Component {
   }
 
   render() {
+    const { translate } = this.state;
+    const { options } = this.props;
     return (
       <div styleName="container">
         {this.renderBackButton()}
@@ -129,7 +144,12 @@ class SignInContainer extends React.Component {
         {this.renderFlashes()}
 
         <h2 styleName="header">
-          {$.t('screens.sign_in.headline', { site: blist.configuration.strings.company })}
+          {
+            translate(
+              'screens.sign_in.headline',
+              { site: options.companyName }
+            )
+          }
         </h2>
 
         {this.renderFormMessage()}

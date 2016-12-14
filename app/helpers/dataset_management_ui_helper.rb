@@ -2,7 +2,9 @@ module DatasetManagementUiHelper
 
   def dataset_management_ui_server_config
     {
-      :environment => Rails.env
+      :environment => Rails.env,
+      :csrfToken => form_authenticity_token.to_s,
+      :appToken => APP_CONFIG.app_token
     }
   end
 

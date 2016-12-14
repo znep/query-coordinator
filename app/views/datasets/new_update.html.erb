@@ -1,5 +1,6 @@
 <% content_for :head do %>
   <title><%= t('dataset_management_ui.manage') %></title>
+  <%= render_dataset_management_ui_server_config %>
 <% end %>
 
 <div style="text-align: center">
@@ -25,22 +26,28 @@
   <script>
 function createDataset() {
   var datasetTitle = document.getElementById('dataset-title-input').value;
+  var headers = {
+    'X-CSRF-Token': window.serverConfig.csrfToken,
+    'X-App-Token': 'U29jcmF0YS0td2VraWNrYXNz0'
+  };
   $.ajax({
     type: "POST",
     url: "/api/views",
+    headers: headers,
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
     data: JSON.stringify({
       displayType: "table",
       name: datasetTitle
     }),
-    contentType: "application/json; charset=utf-8",
-    dataType: "json",
     success: function(newView) {
       $.ajax({
         type: "POST",
         url: "/api/update/" + newView.id,
+        headers: headers,
         contentType: "application/json; charset=utf-8",
         dataType: "json",
-        success: function(newUpdate) {
+        success: function() {
           document.location = "/d/" + newView.id + "/updates/0";
         }
       });

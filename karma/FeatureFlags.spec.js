@@ -1,7 +1,6 @@
 var FeatureFlags = require('../src/FeatureFlags');
 
 describe('FeatureFlags', function() {
-  var featureFlags = new FeatureFlags();
 
   before(function() {
     window.socrata = window.socrata || {};
@@ -82,10 +81,10 @@ describe('FeatureFlags', function() {
   });
 
   it('should return the value for feature flag', function() {
-    expect(featureFlags.value('useAuth0')).to.equal(false);
+    expect(FeatureFlags.value('useAuth0')).to.equal(false);
   });
 
   it('should throw when given an invalid feature flag key', function() {
-    expect(function() { featureFlags.value('foo') }).to.throw;
+    expect(function() { FeatureFlags.value('foo') }).to.throw;
   });
 });

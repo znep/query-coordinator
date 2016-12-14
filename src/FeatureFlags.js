@@ -1,11 +1,11 @@
 'use strict';
 
-var FeatureFlags = function() {
-  this.source = function(key) {
+var FeatureFlags = {
+  source: function(key) {
     throw new Error('Not yet implemented');
-  };
+  },
 
-  this.value = function(key) {
+  value: function(key) {
     if (window.socrata.featureFlags === undefined) {
       throw new Error(
         'FeatureFlags requires window.socrata.featureFlags to be defined. Please see README.md in frontend-utils.'
@@ -16,7 +16,7 @@ var FeatureFlags = function() {
     } else {
       return window.socrata.featureFlags[key];
     }
-  };
+  }
 };
 
 module.exports = FeatureFlags;

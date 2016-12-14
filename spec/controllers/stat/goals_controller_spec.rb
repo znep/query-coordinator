@@ -15,7 +15,8 @@ RSpec.describe Stat::GoalsController, type: :controller do
     double(
       CreateDocumentFromCoreAsset,
       :create => created_one,
-      :document => double(Document, :id => document_id_one)
+      :document => double(Document, :id => document_id_one),
+      :error_messages => []
     )
   end
 
@@ -25,7 +26,8 @@ RSpec.describe Stat::GoalsController, type: :controller do
     double(
       CreateDocumentFromCoreAsset,
       :create => true,
-      :document => double(Document, :id => document_id_two)
+      :document => double(Document, :id => document_id_two),
+      :error_messages => []
     )
   end
 
@@ -326,13 +328,17 @@ RSpec.describe Stat::GoalsController, type: :controller do
             end
             it 'should set @story_url_for_view to the correct single view url' do
               action_lambda.call
-              expect(assigns(:story_url_for_view)).to eq("http://test.host/stat/goals/single/#{uid}")
+              expect(assigns(:story_url_for_view)).to eq("/stat/goals/single/#{uid}")
+            end
+            it 'should set @story_url_for_preview to the correct single view url' do
+              action_lambda.call
+              expect(assigns(:story_url_for_preview)).to eq("/stat/goals/single/#{uid}/preview")
             end
           end
 
           describe 'fully-qualified goal edit' do
             before do
-              get :edit, uid: uid, dashboard: dashboard, category: category
+              get :edit, uid: uid, dashboard: dashboard, category: category, locale: 'en'
             end
 
             it_behaves_like 'goal narrative editor'
@@ -342,7 +348,10 @@ RSpec.describe Stat::GoalsController, type: :controller do
               expect(assigns(:category_uid)).to eq(category)
             end
             it 'should set @story_url_for_view to the correct fully-qualified view url' do
-              expect(assigns(:story_url_for_view)).to eq("http://test.host/stat/goals/#{dashboard}/#{category}/#{uid}")
+              expect(assigns(:story_url_for_view)).to eq("/en/stat/goals/#{dashboard}/#{category}/#{uid}")
+            end
+            it 'should set @story_url_for_preview to the correct fully-qualified preview url' do
+              expect(assigns(:story_url_for_preview)).to eq("/en/stat/goals/#{dashboard}/#{category}/#{uid}/preview")
             end
           end
         end

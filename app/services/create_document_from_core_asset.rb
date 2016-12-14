@@ -35,6 +35,10 @@ class CreateDocumentFromCoreAsset
     saved
   end
 
+  def error_messages
+    @document.errors.full_messages
+  end
+
   private
 
   def queue_process

@@ -15,7 +15,7 @@ export class ResultsContainer extends Component {
 
   onViewTypeClick(newViewType) {
     return () => {
-      this.props.changeViewType(newViewType);
+      this.props.dispatchChangeViewType(newViewType);
     };
   }
 
@@ -53,14 +53,14 @@ export class ResultsContainer extends Component {
 
 ResultsContainer.propTypes = {
   results: PropTypes.array.isRequired,
-  changeViewType: PropTypes.func.isRequired,
+  dispatchChangeViewType: PropTypes.func.isRequired,
   viewCount: PropTypes.number.isRequired,
   viewType: PropTypes.string.isRequired
 };
 
 ResultsContainer.defaultProps = {
   results: [],
-  changeViewType: _.noop,
+  dispatchChangeViewType: _.noop,
   viewCount: 0,
   viewType: 'CARD_VIEW'
 };
@@ -73,7 +73,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    changeViewType: function(newViewType) {
+    dispatchChangeViewType: function(newViewType) {
       dispatch(changeViewType(newViewType));
     }
   };

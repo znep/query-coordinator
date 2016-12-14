@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { getDateLabel } from '../../datasetLandingPage/lib/viewCardHelpers';
+import { getDateLabel, getViewCountLabel } from '../../datasetLandingPage/lib/viewCardHelpers';
 
 export const TableResult = (props) => {
   const data = props.data;
@@ -17,7 +17,9 @@ export const TableResult = (props) => {
       <td className="result-updated-date">
         {getDateLabel(data.updated_at)}
       </td>
-      <td className="result-popularity">???</td>
+      <td className="result-popularity">
+        {getViewCountLabel(data.view_count)}
+      </td>
     </tr>
   );
 };

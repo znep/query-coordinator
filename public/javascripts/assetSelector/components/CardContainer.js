@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import Card from './Card';
 
-export const CardContainer = (props) => {
+const CardContainer = (props) => {
   const results = props.results.map((result, i) =>
     <Card key={i} data={result} />
   );

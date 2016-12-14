@@ -6,12 +6,11 @@ import { getDateLabel, getViewCountLabel, getAriaLabel } from '../../datasetLand
 export class Card extends Component {
   constructor(props) {
     super(props);
-    _.bindAll(this, ['getCardProps']);
+    _.bindAll(this, ['viewCardProps']);
   }
 
-  getCardProps() {
+  viewCardProps() {
     const data = this.props.data;
-    console.log(data);
 
     return {
       name: data.name,
@@ -25,15 +24,12 @@ export class Card extends Component {
       linkProps: {
         target: '_blank',
         'aria-label': getAriaLabel(data)
-      },
-      onClick: function(event) {
-        console.log(event);
       }
     };
   }
 
   render() {
-    return <ViewCard {...this.getCardProps()} />;
+    return <ViewCard {...this.viewCardProps()} />;
   }
 }
 

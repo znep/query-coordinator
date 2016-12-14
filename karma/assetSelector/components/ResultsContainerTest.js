@@ -1,4 +1,3 @@
-// ./node_modules/karma/bin/karma start karma/assetSelector/karma.conf.js --singleRun false --browsers Chrome --reporters mocha
 import { ResultsContainer } from 'components/ResultsContainer';
 
 describe('components/ResultsContainer', function() {
@@ -7,15 +6,10 @@ describe('components/ResultsContainer', function() {
       results: [
         {
           id: 'abcd-1234',
-          data: {
-            resource: {
-              name: 'test view',
-              description: 'test view description',
-              id: 'abcd-1234',
-              type: 'dataset',
-            },
-            link: 'https://localhost/A/B/abcd-1234'
-          }
+          name: 'test view',
+          description: 'test view description',
+          type: 'dataset',
+          link: 'https://localhost/A/B/abcd-1234'
         }
       ],
       viewCount: 100,
@@ -26,6 +20,12 @@ describe('components/ResultsContainer', function() {
   function getProps(props = {}) {
     return Object.assign({}, defaultProps(), props);
   }
+
+  it('renders the "no results" element if the results array is empty', function() {
+    var element = renderComponent(ResultsContainer, getProps({ results: [] }));
+    expect(element).to.exist;
+    expect(element.className).to.eq('no-results');
+  });
 
   it('renders the results container if the results array is present', function() {
     var element = renderComponent(ResultsContainer, getProps());
@@ -41,11 +41,5 @@ describe('components/ResultsContainer', function() {
   it('renders a table container if the viewType prop is TABLE_VIEW', function() {
     var element = renderComponent(ResultsContainer, getProps({ viewType: 'TABLE_VIEW' }));
     expect(element.querySelector('.table-container')).to.exist;
-  });
-
-  it('renders the "no results" element if the results array is empty', function() {
-    var element = renderComponent(ResultsContainer, getProps({ results: [] }));
-    expect(element).to.exist;
-    expect(element.className).to.eq('no-results');
   });
 });

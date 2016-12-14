@@ -201,41 +201,6 @@ RSpec.describe Document, type: :model do
     end
   end
 
-  describe '#set_content_type' do
-    let(:subject) { FactoryGirl.build(:document) }
-    let(:extension) { 'jpg' }
-    let(:upload_url) { "http://example.com/path/to/file/file.#{extension}" }
-
-    before do
-      allow(subject.upload).to receive(:url).and_return(upload_url)
-    end
-
-    it 'sets content type on document' do
-      expect(subject.upload.content_type).to eq('image/png')
-      subject.set_content_type
-      expect(subject.upload.content_type).to eq('image/jpeg')
-    end
-
-    context 'when extension is in all caps' do
-      let(:extension) { 'JPG' }
-
-      it 'sets content type correctly' do
-        expect(subject.upload.content_type).to eq('image/png')
-        subject.set_content_type
-        expect(subject.upload.content_type).to eq('image/jpeg')
-      end
-    end
-
-    context 'when extension cannot be read' do
-      let(:upload_url) { "http://example.com/path/to/file/file_without_extension" }
-
-      it 'raises an exception' do
-        expect { subject.set_content_type }.to raise_error(MissingContentTypeError)
-        expect(subject.upload.content_type).to eq('image/png') # doesn't change after raising
-      end
-    end
-  end
-
   describe '#canonical_url' do
     context 'when content_type is not an image' do
       subject { FactoryGirl.create(:document, upload_content_type: 'text/html') }
@@ -266,6 +231,47 @@ RSpec.describe Document, type: :model do
       it 'gets original upload url' do
         expect(subject.upload).to receive(:url).with(nil).and_return('original-url')
         expect(subject.canonical_url).to eq('original-url')
+      end
+    end
+  end
+
+  describe '#can_use_thumbnails?' do
+    let(:check_content_type_is_image) { true }
+    let(:skip_thumbnail_generation) { false }
+    let(:status) { 'processed' }
+    let(:subject) { FactoryGirl.create(:document, skip_thumbnail_generation: skip_thumbnail_generation, status: status) }
+
+    before do
+      allow(subject).to receive(:check_content_type_is_image).and_return(check_content_type_is_image)
+    end
+
+    context 'when the document is not an image' do
+      let(:check_content_type_is_image) { false }
+
+      it 'is false' do
+        expect(subject.can_use_thumbnails?).to eq(false)
+      end
+    end
+
+    context 'when the document did not skipped thumbnail generation' do
+      let(:skip_thumbnail_generation) { true }
+
+      it 'is false' do
+        expect(subject.can_use_thumbnails?).to eq(false)
+      end
+    end
+
+    context 'when the document hasn\'t been processed' do
+      let(:status) { 0 }
+
+      it 'is false' do
+        expect(subject.can_use_thumbnails?).to eq(false)
+      end
+    end
+
+    context 'when the document is an image, has thumbnails, and is processed' do
+      it 'is true' do
+        expect(subject.can_use_thumbnails?).to eq(true)
       end
     end
   end

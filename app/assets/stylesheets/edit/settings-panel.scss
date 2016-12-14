@@ -25,7 +25,8 @@
     z-index: 2;
     overflow: auto;
 
-    .back-to-profile-btn, .close-side-panel-btn {
+    .close-side-panel-btn,
+    .back-to-profile-btn {
       padding: 0.3em 0.8em;
       color: $settings-panel-close-font-color;
       line-height: $settings-panel-close-bar-height;
@@ -39,21 +40,6 @@
       &:hover {
         color: white;
         outline: none;
-      }
-    }
-
-    .back-to-profile-btn {
-      position: absolute;
-      left: 0;
-      top: 0px;
-      z-index: 1;
-
-      background-color: #565656;
-      font-size: 1.2rem;
-
-      .back-to-profile-icon {
-        position: relative;
-        top: 1px;
       }
     }
 
@@ -79,6 +65,21 @@
         line-height: $settings-panel-close-bar-height;
       }
     }
+
+     .back-to-profile-btn {
+        position: absolute;
+        left: 0;
+        top: 0px;
+        z-index: 1;
+
+        background-color: #565656;
+        font-size: 1.2rem;
+
+        .back-to-profile-icon {
+          position: relative;
+          top: 1px;
+        }
+      }
 
     hr {
       @include thin-hr();

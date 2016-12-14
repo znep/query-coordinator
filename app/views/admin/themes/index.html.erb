@@ -14,9 +14,9 @@
       <td scope="row"><%= custom_theme.title %></td>
       <td><%= custom_theme.updated_at %></td>
       <td>
-        <%= link_to 'Edit', edit_admin_theme_path(custom_theme) %>
+        <%= link_to 'Edit', edit_admin_theme_path(id: custom_theme.id) %>
         <%#= link_to(custom_theme, :clone) %>
-        <%= link_to 'Delete', admin_theme_path(custom_theme), data: { confirm: 'Are you sure?' }, method: :delete %>
+        <%= link_to 'Delete', admin_theme_path(id: custom_theme.id), data: { confirm: 'Are you sure?' }, method: :delete %>
       </td>
     </tr>
   <% end -%>

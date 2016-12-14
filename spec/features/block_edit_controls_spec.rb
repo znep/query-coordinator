@@ -8,6 +8,11 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
     stub_core_view('hasb-lock')
     stub_current_domain
 
+    set_feature_flags(
+      'enable_getty_images_gallery' => true,
+      'enable_deprecated_user_search_api' => false
+    )
+
     visit "/s/magic-thing/#{uid}/edit"
 
     @blocks = page.all('.user-story .block-edit')
@@ -16,6 +21,16 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
   def move_button(dir)
     dir = dir.to_s.upcase
     %Q{[data-block-move-action="STORY_MOVE_BLOCK_#{dir}"]}
+  end
+
+  def hover_block(block)
+    stop_animations # Loading animation interferes with hovering.
+    block.hover
+    expect(block).to have_selector('[data-block-presentation-action]')
+  end
+
+  def stop_animations
+    page.evaluate_script("$('.block-edit').css('transition', 'none');")
   end
 
   after :each do
@@ -42,7 +57,7 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
 
         # Remove the transform transition so that we do not have to coordinate
         # checking blocks' positions with the transition animation.
-        page.evaluate_script("$('.block-edit').css('transition', 'none');")
+        stop_animations
       end
 
       context 'hovering over the move up button' do
@@ -102,7 +117,7 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
 
       context 'when the block is hovered over' do
         it 'displays a flyout' do
-          @first_block.hover
+          hover_block(@first_block)
           @first_block.find('[data-block-presentation-action]').hover
           expect(@first_block).to have_selector('.block-edit-controls-presentation-flyout')
         end
@@ -110,7 +125,7 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
 
       context 'when the block is toggled from visible to hidden' do
         before do
-          @first_block.hover
+          hover_block(@first_block)
           @first_block.find('[data-block-presentation-action]').click
         end
 
@@ -121,9 +136,9 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
 
       context 'when the block is toggled from hidden to visible' do
         it 'removes .active' do
-          @first_block.hover
+          hover_block(@first_block)
           @first_block.find('[data-block-presentation-action]').click
-          @first_block.hover
+          hover_block(@first_block)
           @first_block.find('[data-block-presentation-action]').click
           expect(@first_block).to_not have_selector('[data-block-presentation-action].active')
         end
@@ -134,7 +149,7 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
       context 'when the block needs a delete confirmation' do
         before do
           @first_block = @blocks.first
-          @first_block.hover
+          hover_block(@first_block)
         end
 
         it 'removes a block when delete is clicked' do
@@ -166,7 +181,7 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
     describe 'delete' do
       it 'cannot be deleted' do
         first_block = @blocks.first
-        first_block.hover
+        hover_block(first_block)
 
         expect(first_block).to have_selector('.block-edit-controls-without-delete')
         expect(first_block).to_not have_selector('.block-edit-controls-delete-btn')

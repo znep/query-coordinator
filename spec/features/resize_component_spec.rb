@@ -11,6 +11,11 @@ RSpec.describe 'resize component', type: :feature, js: true do
     stub_core_view('embd-html')
     stub_current_domain
 
+    set_feature_flags(
+      'enable_getty_images_gallery' => true,
+      'enable_deprecated_user_search_api' => false
+    )
+
     visit '/s/magic-thing/embd-html/edit?autosave=false'
   end
 

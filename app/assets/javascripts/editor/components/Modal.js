@@ -112,7 +112,7 @@ function _renderModalCloseButton() {
     $(
       '<span>',
       {
-        'class': 'icon-close-2'
+        'class': 'socrata-icon-close-2'
       }
     )
   );

@@ -51,7 +51,8 @@ Rails.application.configure do
       :access_key_id =>     Rails.application.secrets.aws['access_key_id'],
       :secret_access_key => Rails.application.secrets.aws['secret_access_key']
     },
-    :s3_protocol => 'https'
+    :s3_protocol => 'https',
+    :s3_region => Rails.application.secrets.aws['s3_region']
   }
 
   config.action_controller.action_on_unpermitted_parameters = :log

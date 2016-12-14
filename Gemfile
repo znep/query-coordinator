@@ -38,11 +38,8 @@ gem 'retries'
 # Logging formatter to make sumo happier
 gem 'lograge'
 
-# We use aws-sdk-v1 for paperclip for S3
-gem 'aws-sdk-v1'
-
 # File uploading
-gem 'paperclip', '4.3.6'
+gem 'paperclip', '~> 5.0.0'
 
 # Run async jobs in the background
 gem 'delayed_job_active_record'
@@ -67,10 +64,10 @@ gem 'airbrake'
 gem 'ConnectSDK', path: 'vendor/gems/ConnectSDK'
 
 # We use aws-sdk v2 for RDS database migrations
-gem 'aws-sdk'
+gem 'aws-sdk', '~> 2'
 
 # Provides common header and footer
-gem 'socrata_site_chrome', '2.0.5'
+gem 'socrata_site_chrome', '2.2.2'
 
 # AWS DB migration tasks
 gem 'httparty'
@@ -89,6 +86,9 @@ gem 'jenkins_api_client'
 
 # ActiveMQ message processing
 gem 'stomp', '1.4.3'
+
+# Testing framework
+gem 'rspec-rails', '~> 3.4'
 
 # Feature flag operations.
 gem 'signaller-ruby', :require => 'signaller'
@@ -120,9 +120,6 @@ group :development, :test do
 end
 
 group :test do
-  # Testing framework
-  gem 'rspec-rails', '~> 3.4'
-
   gem 'webmock', require: false
   gem 'database_cleaner'
 

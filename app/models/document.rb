@@ -48,6 +48,8 @@ class Document < ActiveRecord::Base
       https://#{Rails.application.secrets.aws['s3_bucket_name']}\.s3.*\.amazonaws\.com/(documents/)?(?<path>uploads\/.+\/(?<filename>.+))
     )|(
       https://delivery\.gettyimages\.com/.+\/.+\.(jpg|png|gif)\?.*
+    )|(
+      #{Rails.application.config.coreservice_uri}/assets/.+
     )
     \z
   }x.freeze
@@ -74,17 +76,7 @@ class Document < ActiveRecord::Base
 
   validate :all_or_none_cropping_values
 
-  before_post_process :set_content_type
   before_post_process :check_content_type_is_image
-
-  # When requesting images from Getty Images, the Download API returns a content type of
-  # application/x-download. We convert the image to its relevant MIME type here before
-  # sending it off to Paperclip and S3.
-  def set_content_type
-    extension = File.extname(URI.parse(self.upload.url).path)[1..-1].to_s.downcase
-    raise MissingContentTypeError.new if extension.blank?
-    self.upload.instance_write(:content_type, Mime::Type.lookup_by_extension(extension))
-  end
 
   # We only want to do post processing on uploaded images, not html files
   def check_content_type_is_image
@@ -112,7 +104,7 @@ class Document < ActiveRecord::Base
   # if it's an image, or the original upload location if it's an html snippet.
   # Optionally specify one of THUMBNAIL_SIZES to get that thumbnail size.
   def canonical_url(size = nil)
-    default_thumbnail_size_or_nil = if check_content_type_is_image && !skip_thumbnail_generation
+    default_thumbnail_size_or_nil = if can_use_thumbnails?
       size || :xlarge
     else
       # Sending nil to self.upload.url() will return the original uploaded file url
@@ -120,6 +112,10 @@ class Document < ActiveRecord::Base
     end
 
     self.upload.url(default_thumbnail_size_or_nil)
+  end
+
+  def can_use_thumbnails?
+    check_content_type_is_image && !skip_thumbnail_generation && status == 'processed'
   end
 
   # Images sizes at different breakpoints in the UI.

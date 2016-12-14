@@ -45,6 +45,13 @@ class ApplicationController < ActionController::Base
     @current_user_story_authorization ||= CoreServer.current_user_story_authorization
   end
 
+  # site_chrome expects current_user and current_domain to be in place
+  # to identify proper render states.
+  def setup_site_chrome_prerequisites
+    ::RequestStore.store[:current_user] ||= current_user
+    ::RequestStore.store[:current_domain] ||= current_domain['cname']
+  end
+
   def downtimes
     @downtimes ||= StorytellerService.downtimes
   end
@@ -382,7 +389,7 @@ class ApplicationController < ActionController::Base
       case action
         when 'show'
           # Above checks sufficient.
-        when 'edit', 'preview'
+        when 'edit', 'preview', 'copy'
           render_story_404 unless can_edit_goals?
         else
           raise_undefined_authorization_handler_error

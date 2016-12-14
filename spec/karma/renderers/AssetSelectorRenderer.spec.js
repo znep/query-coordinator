@@ -26,14 +26,10 @@ describe('AssetSelectorRenderer', function() {
   var fileUploaderStoreMock;
   var storyStoreMock;
   var server;
-  var environment;
   var dispatcher;
 
   beforeEach(function() {
     server = sinon.fakeServer.create();
-    environment = {
-      ENABLE_FILTERED_TABLE_CREATION: true
-    };
 
     container = $('<div>', { 'class': 'asset-selector-container' });
     $transient.append(container);
@@ -58,7 +54,6 @@ describe('AssetSelectorRenderer', function() {
 
     StoreAPI.__Rewire__('dispatcher', dispatcher);
     AssetSelectorStoreAPI.__Rewire__('dispatcher', dispatcher);
-    AssetSelectorStoreAPI.__Rewire__('Environment', environment);
     AssetSelectorStoreAPI.__Rewire__('fileUploaderStore', fileUploaderStoreMock);
     AssetSelectorStoreAPI.__Rewire__('storyStore', storyStoreMock);
 
@@ -66,7 +61,6 @@ describe('AssetSelectorRenderer', function() {
 
     AssetSelectorRendererAPI.__Rewire__('dispatcher', dispatcher);
     AssetSelectorRendererAPI.__Rewire__('assetSelectorStore', assetSelectorStoreMock);
-    AssetSelectorRendererAPI.__Rewire__('Environment', environment);
     AssetSelectorRendererAPI.__Rewire__('I18n', I18nMocker);
 
     dispatcher.dispatch({
@@ -651,6 +645,42 @@ describe('AssetSelectorRenderer', function() {
       it('renders an iframe', function() {
         assert.lengthOf(container.find('.asset-selector-dataset-chooser-iframe'), 1);
       });
+
+      // NOTE: Because of the way these tests are set up, this does NOT cover
+      // the path where ENABLE_FILTERED_TABLES_IN_AX is true! Introducing a
+      // variant behavior is not straightforward.
+      //
+      // The only thing that should change is that `limitTo=datasets` would
+      // become `limitTo=tables`.
+      describe('the iframe', function() {
+        it('has the correct source', function() {
+          var iframeSrc = decodeURI(container.find('iframe').attr('src'));
+          assert.include(iframeSrc, 'browse/select_dataset');
+          assert.include(iframeSrc, 'suppressed_facets[]=type');
+          assert.include(iframeSrc, 'limitTo=datasets');
+        });
+      });
+
+      describe('the modal', function() {
+        it('has the wide class to display the iframe', function() {
+          assert.include(container.find('.modal-dialog').attr('class'), 'modal-dialog-wide');
+        });
+
+        it('has a modal title loading spinner', function() {
+          assert.lengthOf(container.find('.btn-busy:not(.hidden)'), 1);
+        });
+
+        it('has a close button', function() {
+          assert.equal(container.find('.modal-close-btn').length, 1);
+        });
+
+        it('has a button that goes back to the provider list', function() {
+          assert.lengthOf(
+            container.find('[data-resume-from-step="SELECT_VISUALIZATION_OPTION"]'),
+            1
+          );
+        });
+      });
     });
 
     describe('when within the Authoring Workflow', function() {
@@ -711,10 +741,12 @@ describe('AssetSelectorRenderer', function() {
 
         describe('when jumping back a step', function() {
           it('should render dataset selection', function() {
+            sinon.stub(window, 'confirm').returns(true);
             $('#authoring-workflow .authoring-back-button').click();
 
             assert.equal($('#authoring-workflow *').length, 0);
             assert.isAbove($('.asset-selector-dataset-chooser-iframe').length, 0);
+            window.confirm.restore();
           });
         });
       });

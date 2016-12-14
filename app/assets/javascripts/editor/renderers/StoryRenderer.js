@@ -489,14 +489,14 @@ export default function StoryRenderer(options) {
     const hasGoalEmbed = _.some(components, { type: 'goal.embed' });
     var isPresentable = storyStore.isBlockPresentable(blockId);
     var togglePresentationClassNames = StorytellerUtils.format(
-      'block-edit-controls-toggle-presentation-btn btn btn-alternate-2 icon-eye-blocked{0}',
+      'block-edit-controls-toggle-presentation-btn btn btn-alternate-2 socrata-icon-eye-blocked{0}',
       isPresentable ? '' : ' active'
     );
 
     var $moveUpButton = $(
       '<span>',
       {
-        'class': 'block-edit-controls-move-up-btn btn btn-alternate-2 icon-arrow-up',
+        'class': 'block-edit-controls-move-up-btn btn btn-alternate-2 socrata-icon-arrow-up',
         'data-block-id': blockId,
         'data-block-move-action': Actions.STORY_MOVE_BLOCK_UP
       }
@@ -505,7 +505,7 @@ export default function StoryRenderer(options) {
     var $moveDownButton = $(
       '<span>',
       {
-        'class': 'block-edit-controls-move-down-btn btn btn-alternate-2 icon-arrow-down',
+        'class': 'block-edit-controls-move-down-btn btn btn-alternate-2 socrata-icon-arrow-down',
         'data-block-id': blockId,
         'data-block-move-action': Actions.STORY_MOVE_BLOCK_DOWN
       }
@@ -543,7 +543,7 @@ export default function StoryRenderer(options) {
     const $deleteButton = $(
       '<span>',
       {
-        'class': 'block-edit-controls-delete-btn btn btn-alternate-2 icon-close-2',
+        'class': 'block-edit-controls-delete-btn btn btn-alternate-2 socrata-icon-close-2',
         'data-block-id': blockId,
         'data-block-delete-action': Actions.STORY_DELETE_BLOCK
       }

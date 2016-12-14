@@ -160,8 +160,13 @@ en:
     make_a_copy:
       cancel: 'Cancel'
       copy: 'Copy'
-      copy_warning: 'When a story is copied, Publishing and Visibility settings are set to private even if the current story is published.'
-      title: 'Make a Copy of this Story'
+      copy_placeholder: 'Copy of {0}'
+      copy_warning_goal: 'When a goal is copied, Publishing and Visibility settings are set to private even if the current goal is published.'
+      copy_warning_story: 'When a story is copied, Publishing and Visibility settings are set to private even if the current story is published.'
+      dashboard: Dashboard
+      dashboard_choose: 'Choose a Dashboard'
+      title_goal: 'Make a Copy of This Goal'
+      title_story: 'Make a Copy of This Story'
     asset_selector:
       choose_provider_heading: 'Select Data or Media Provider'
       back_button_text: 'Back'

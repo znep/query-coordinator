@@ -1,9 +1,14 @@
 @import 'lib/variables';
 
 #modal {
+  .open-performance-enabled & {
+    top: $site-chrome-admin-header-height;
+  }
+
   .modal-dialog {
     padding: 6rem 2rem;
     text-align: center;
+    margin-top: $site-chrome-admin-header-small-height;
   }
 
   .modal-title {

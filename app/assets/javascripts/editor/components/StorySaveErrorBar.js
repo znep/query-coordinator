@@ -27,7 +27,7 @@ export default function StorySaveErrorBar() {
   );
 
   $container.append([
-    $('<span>', { 'class': 'icon-warning' }),
+    $('<span>', { 'class': 'socrata-icon-warning' }),
     $message,
     $tryAgainButton,
     $spinner

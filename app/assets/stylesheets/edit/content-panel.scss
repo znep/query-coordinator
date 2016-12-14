@@ -15,6 +15,11 @@
   padding: $content-panel-padding / 2;
   background-color: $content-panel-bg-color;
 
+  .open-performance-enabled & {
+    height: calc(100% - #{$header-height} - #{$site-chrome-admin-header-small-height});
+    top: calc(#{$header-height} + #{$site-chrome-admin-header-small-height});
+  }
+
   .scrollable {
     position: absolute;
     left: 0;

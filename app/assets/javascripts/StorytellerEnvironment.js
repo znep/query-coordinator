@@ -1,29 +1,52 @@
-export default {
-  AIRBRAKE: window.AIRBRAKE,
-  CORE_SERVICE_APP_TOKEN: window.CORE_SERVICE_APP_TOKEN,
-  CSRF_TOKEN: window.CSRF_TOKEN,
-  CURRENT_USER: window.CURRENT_USER,
-  CURRENT_USER_STORY_AUTHORIZATION: window.CURRENT_USER_STORY_AUTHORIZATION,
-  CUSTOM_THEMES: window.CUSTOM_THEMES,
-  DEFAULT_THEMES: window.DEFAULT_THEMES,
-  DOWNTIMES: window.DOWNTIMES,
-  EMBED_CODE_SANDBOX_IFRAME_ALLOWANCES: window.EMBED_CODE_SANDBOX_IFRAME_ALLOWANCES,
-  ENABLE_FILTERED_TABLE_CREATION: window.ENABLE_FILTERED_TABLE_CREATION,
-  ENABLE_GETTY_IMAGES_GALLERY: window.ENABLE_GETTY_IMAGES_GALLERY,
-  ENABLE_DEPRECATED_USER_SEARCH_API: window.ENABLE_DEPRECATED_USER_SEARCH_API,
-  ENVIRONMENT: window.ENVIRONMENT,
-  IMAGES: window.IMAGES,
-  IS_GOAL: window.IS_GOAL,
-  IS_STORY_PUBLISHED: window.IS_STORY_PUBLISHED,
-  OP_CATEGORY_UID: window.OP_CATEGORY_UID,
-  OP_DASHBOARD_UID: window.OP_DASHBOARD_UID,
-  OP_GOAL_NARRATIVE_MIGRATION_METADATA: window.OP_GOAL_NARRATIVE_MIGRATION_METADATA,
-  PRIMARY_OWNER_UID: window.PRIMARY_OWNER_UID,
-  PUBLISHED_STORY_DATA: window.PUBLISHED_STORY_DATA,
-  RELATIVE_URL_ROOT: window.RELATIVE_URL_ROOT,
-  STORY_DATA: window.STORY_DATA,
-  STORY_UID: window.STORY_UID,
-  STORY_VIEW_URL: window.STORY_VIEW_URL,
-  THEMES_ASSET_PATH: window.THEMES_ASSET_PATH,
-  TRANSLATIONS: window.TRANSLATIONS
-};
+// Copies select properties off the window object as an encapsulated environment.
+
+import _ from 'lodash';
+
+const envProperties = [
+  'AIRBRAKE',
+  'CORE_SERVICE_APP_TOKEN',
+  'CSRF_TOKEN',
+  'CURRENT_USER',
+  'CURRENT_USER_STORY_AUTHORIZATION',
+  'CUSTOM_THEMES',
+  'DEFAULT_THEMES',
+  'DOWNTIMES',
+  'EMBED_CODE_SANDBOX_IFRAME_ALLOWANCES',
+  'ENABLE_DEPRECATED_USER_SEARCH_API',
+  'ENABLE_FILTERED_TABLES_IN_AX',
+  'ENABLE_FILTERABLE_VISUALIZATIONS_IN_AX',
+  'ENABLE_GETTY_IMAGES_GALLERY',
+  'ENVIRONMENT',
+  'IMAGES',
+  'IS_GOAL',
+  'IS_STORY_PUBLISHED',
+  'OP_CATEGORY_UID',
+  'OP_DASHBOARD_LIST',
+  'OP_DASHBOARD_UID',
+  /*
+   * Document: A Storyteller-based file upload; saved into our documents database table.
+   * Asset: A Core-based file upload; saved into MetaDB's assets database table.
+   *
+   * This is an object, keyed by asset ID, and mapped to the document ID.
+   *
+   * It's used to migrate Open Performance images from Core to Storyteller
+   * in our GoalMigrationRunner.js.
+   */
+  'OP_GOAL_DOCUMENT_IDS_BY_ASSET_IDS',
+  'OP_GOAL_NARRATIVE_MIGRATION_METADATA',
+  'PRIMARY_OWNER_UID',
+  'PUBLISHED_STORY_DATA',
+  'RELATIVE_URL_ROOT',
+  'STORY_DATA',
+  'STORY_UID',
+  'STORY_VIEW_URL',
+  'THEMES_ASSET_PATH',
+  'TRANSLATIONS'
+];
+
+const environment = _.reduce(envProperties, (acc, prop) => {
+  acc[prop] = window[prop];
+  return acc;
+}, {});
+
+export default environment;

@@ -1,8 +1,8 @@
 <header class="header-main">
-  <button data-panel-toggle="settings-panel" class="icon-stories-menu settings-panel-btn"></button>
-  <%- if @story_metadata.goal? -%>
+  <button data-panel-toggle="settings-panel" class="socrata-icon-stories-menu settings-panel-btn"></button>
+  <%- if @story_metadata.goal? && @dashboard_uid -%>
     <a class="link-header story-dashboard-link" href="/stat/goals/<%= @dashboard_uid %>" aria-labelledby="story-dashboard-link-text">
-      <span class="story-dashboard-link-icon icon-arrow-prev"></span>
+      <span class="story-dashboard-link-icon socrata-icon-arrow-prev"></span>
       <span class="story-dashboard-link-text" id="story-dashboard-link-text"><%= t('editor.app_bar.back_to_dashboard') %></span>
     </a>
     <div class="menu-divider"></div>
@@ -15,20 +15,20 @@
     <ul class="quick-action-menu">
       <li>
         <button class="btn btn-transparent undo-btn" disabled="disabled" title="undo">
-          <span class="icon-undo"></span>
+          <span class="socrata-icon-undo"></span>
         </button>
       </li>
       <li>
         <button class="btn btn-transparent redo-btn" disabled="disabled" title="redo">
-          <span class="icon-redo"></span>
+          <span class="socrata-icon-redo"></span>
         </button>
       </li>
       <li class="menu-divider"></li>
       <li>
-        <button class="btn btn-transparent preview-btn" role="button" data-href="<%= @story_url_for_preview %>" target="_blank"><%= t('editor.app_bar.preview') %> <span class="icon-preview"></span></button>
+        <button class="btn btn-transparent preview-btn" role="button" data-href="<%= @story_url_for_preview %>" target="_blank"><%= t('editor.app_bar.preview') %> <span class="socrata-icon-preview"></span></button>
       </li>
       <li>
-        <button class="btn btn-transparent panel-btn content-panel-btn" data-panel-toggle="add-content-panel"><%= t('editor.app_bar.add_content_panel') %></button>
+        <button class="btn btn-transparent panel-btn content-panel-btn" data-panel-toggle="add-content-panel"><%= t('editor.app_bar.add_content') %></button>
       </li>
       <li>
         <button class="btn btn-transparent panel-btn style-panel-btn" data-panel-toggle="style-and-presentation-panel"><%= t('editor.app_bar.style_and_presentation') %></button>
@@ -80,7 +80,7 @@
     </label>
     <input type="url" id="link-text" class="text-input" placeholder="http://example.com">
     <span class="link-warning invisible">
-      <span class="icon-warning"></span>
+      <span class="socrata-icon-warning"></span>
       <%= t('editor.invalid_link_message') %>
     </span>
   </div>
@@ -88,7 +88,7 @@
   <div class="checkbox">
     <input type="checkbox" id="open-in-new-window">
     <label for="open-in-new-window">
-      <span class="fake-checkbox"><span class="icon-checkmark3"></span></span>
+      <span class="fake-checkbox"><span class="socrata-icon-checkmark3"></span></span>
       <%= t('editor.rich_text_toolbar.link_modal.open_in_new_window') %>
     </label>
   </div>

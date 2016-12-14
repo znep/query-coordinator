@@ -60,8 +60,8 @@ export default function CollaboratorsRenderer() {
               '<button type="button" class="btn btn-transparent btn-busy"><span></span></button>',
             '</div>',
             '<div class="modal-radio-group">',
-              StorytellerUtils.format('<div class="alert warning-bar hidden already-added"><p><span class="icon-warning"></span></p><p>{0}</p></div>', t('editor.collaborators.modal.errors.already_added')),
-              StorytellerUtils.format('<div class="alert warning-bar hidden user-has-no-account"><p><span class="icon-warning"></span></p><p>{0}</p></div>', t('editor.collaborators.modal.errors.user_has_no_account')),
+              StorytellerUtils.format('<div class="alert warning-bar hidden already-added"><p><span class="socrata-icon-warning"></span></p><p>{0}</p></div>', t('editor.collaborators.modal.errors.already_added')),
+              StorytellerUtils.format('<div class="alert warning-bar hidden user-has-no-account"><p><span class="socrata-icon-warning"></span></p><p>{0}</p></div>', t('editor.collaborators.modal.errors.user_has_no_account')),
               StorytellerUtils.format('<h2 class="modal-input-label">{0}</h2>', t('editor.collaborators.modal.access_level')),
               '<ul>',
                 '<li>',
@@ -83,7 +83,7 @@ export default function CollaboratorsRenderer() {
                     '<input type="radio" value="owner" name="access-levels" id="access-level-owner" disabled>',
                     StorytellerUtils.format('<div class="radio-label-title">{0}</div>', t('editor.collaborators.modal.owner')),
                     StorytellerUtils.format('<div class="radio-label-subtitle"><small>{0}</small></div>', t('editor.collaborators.modal.owner_description')),
-                    StorytellerUtils.format('<div class="radio-label-subtitle alert info"><small><span class="icon-info-inverse"></span>{0}</small></div>', t('editor.collaborators.modal.licenses')),
+                    StorytellerUtils.format('<div class="radio-label-subtitle alert info"><small><span class="socrata-icon-info-inverse"></span>{0}</small></div>', t('editor.collaborators.modal.licenses')),
                   '</label>',
                 '</li>',
               '</ul>',
@@ -281,7 +281,7 @@ export default function CollaboratorsRenderer() {
     var hasCollaborator = collaboratorsStore.hasCollaborator(collaborator);
     var hasUserDetails = _.has(userDetailsCache, value);
     var userDetails = userDetailsCache[value]; // Updated async, we'll get called again if it changes.
-    var roleName = _.get(userDetails, 'roleName');
+    var roleName = _.get(userDetails, 'roleName') || _.get(userDetails, 'role_name'); // Cetera uses the latter! Remove the first half once we're fully off Core for user search.
 
     var validEmail = getValidEmailInInputBoxOrNull();
     $collaborators.find('.collaborators-email-input-wrapper').toggleClass('busy', !!validEmail && !hasUserDetails);

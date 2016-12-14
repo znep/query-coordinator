@@ -726,7 +726,7 @@ export default function AssetSelectorRenderer(options) {
     var searchError = $('<div>', {
       class: 'alert warning-bar hidden images-error'
     }).append(
-      $('<p>').append($('<span>', {class: 'icon-warning'})),
+      $('<p>').append($('<span>', {class: 'socrata-icon-warning'})),
       $('<p>').text(I18n.t('editor.asset_selector.image_upload.errors.image_search'))
     );
 
@@ -889,7 +889,7 @@ export default function AssetSelectorRenderer(options) {
                 $('<div>', {class: 'gallery-result', 'data-height': column.adjustedImageHeight}).append(
                   imageElement,
                   $('<div>', {class: 'gallery-result-cover'}),
-                  $('<span>', {class: 'icon-checkmark3'})
+                  $('<span>', {class: 'socrata-icon-checkmark3'})
                 )
               );
 
@@ -1216,7 +1216,7 @@ export default function AssetSelectorRenderer(options) {
       'class': 'btn btn-xs btn-default btn-toggle image-crop-btn',
       'data-action': 'ASSET_SELECTOR_IMAGE_CROP_START'
     }).append([
-      $('<span>', {'class': 'icon-crop image-crop-btn-icon'}),
+      $('<span>', {'class': 'socrata-icon-crop image-crop-btn-icon'}),
       I18n.t('editor.asset_selector.image_preview.crop')
     ]);
 
@@ -1224,7 +1224,7 @@ export default function AssetSelectorRenderer(options) {
       'class': 'btn btn-xs btn-default image-crop-reset-btn',
       'data-action': 'ASSET_SELECTOR_IMAGE_CROP_RESET'
     }).append([
-      $('<span>', {'class': 'icon-close-2 image-crop-reset-btn-icon'}),
+      $('<span>', {'class': 'socrata-icon-close-2 image-crop-reset-btn-icon'}),
       I18n.t('editor.asset_selector.image_preview.reset_image')
     ]);
 
@@ -1246,7 +1246,7 @@ export default function AssetSelectorRenderer(options) {
       { class: 'alert info getty-image-info hidden' }
     ).append(
       $('<div>', { class: 'alert-icon' }).append(
-        $('<span>', {class: 'icon-info-inverse'})
+        $('<span>', {class: 'socrata-icon-info-inverse'})
       ),
       $('<div>', { class: 'alert-content' }).append(
         $('<p>').append(
@@ -1255,7 +1255,7 @@ export default function AssetSelectorRenderer(options) {
       )
     );
 
-    var questionIcon = $('<span>', { 'class': 'icon-question-inverse asset-selector-image-alt-hint' });
+    var questionIcon = $('<span>', { 'class': 'socrata-icon-question-inverse asset-selector-image-alt-hint' });
 
     var descriptionLabel = $(
       '<h2>',
@@ -1287,7 +1287,7 @@ export default function AssetSelectorRenderer(options) {
     ]);
 
     var urlWrapperQuestionMark = $('<span>', {
-      class: 'icon-question-inverse asset-selector-image-url-wrapper-hint'
+      class: 'socrata-icon-question-inverse asset-selector-image-url-wrapper-hint'
     });
 
     var urlWrapperLabel = $(
@@ -1303,7 +1303,7 @@ export default function AssetSelectorRenderer(options) {
     );
 
     var warningIcon = $('<span>', {
-      class: 'icon-warning'
+      class: 'socrata-icon-warning'
     });
 
     var urlValidityMessage = $('<p>', {
@@ -1611,7 +1611,7 @@ export default function AssetSelectorRenderer(options) {
     ).append([
       $('<input>', { type: 'checkbox', id: 'open-story-in-new-window', 'class': 'modal-input' }),
       $('<label>', { 'for': 'open-story-in-new-window', 'class': 'modal-input-label' }).append([
-        $('<span>', { 'class': 'icon-checkmark3' }),
+        $('<span>', { 'class': 'socrata-icon-checkmark3' }),
         I18n.t('editor.asset_selector.story_tile.open_in_new_window')
       ])
     ]);
@@ -1716,7 +1716,7 @@ export default function AssetSelectorRenderer(options) {
     var inputLabel = $('<h2>', { 'class': 'modal-input-label input-label' }).
       append([
         $('<span>').text(I18n.t('editor.asset_selector.goal_tile.input_label')),
-        $('<span>', {'class': 'icon-question-inverse asset-selector-goal-url-hint'})
+        $('<span>', {'class': 'socrata-icon-question-inverse asset-selector-goal-url-hint'})
       ]);
 
     var inputControl = $(
@@ -1933,7 +1933,7 @@ export default function AssetSelectorRenderer(options) {
       previewIframe
     ]);
 
-    var questionIcon = $('<span>', { 'class': 'icon-question-inverse asset-selector-youtube-title-hint' });
+    var questionIcon = $('<span>', { 'class': 'socrata-icon-question-inverse asset-selector-youtube-title-hint' });
 
     var titleLabel = $(
       '<h2>',
@@ -2200,21 +2200,21 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderChooseDatasetTemplate() {
-    return _renderViewChooserTemplate('suppressed_facets[]=type&limitTo=datasets');
+    if (Environment.ENABLE_FILTERED_TABLES_IN_AX) {
+      return _renderViewChooserTemplate('suppressed_facets[]=type&limitTo=tables');
+    } else {
+      return _renderViewChooserTemplate('suppressed_facets[]=type&limitTo=datasets');
+    }
   }
 
   function _renderChooseTableTemplate() {
-    if (Environment.ENABLE_FILTERED_TABLE_CREATION) {
-      // Due to bugs in frontend we cannot limitTo datasets plus filtered views.
-      // We can limitTo one or the other, but not both. Without refactoring
-      // the frontend dataset picker, our only recourse is to limitTo tables, which
-      // includes datasets, filtered views, and grouped views. We don't support
-      // grouped views, but for now we're OK just notifying the user if they
-      // select a grouped view.
-      return _renderViewChooserTemplate('suppressed_facets[]=type&limitTo=tables');
-    } else {
-      return _renderChooseDatasetTemplate();
-    }
+    // Due to bugs in frontend we cannot limitTo datasets plus filtered views.
+    // We can limitTo one or the other, but not both. Without refactoring
+    // the frontend dataset picker, our only recourse is to limitTo tables, which
+    // includes datasets, filtered views, and grouped views. We don't support
+    // grouped views, but for now we're OK just notifying the user if they
+    // select a grouped view.
+    return _renderViewChooserTemplate('suppressed_facets[]=type&limitTo=tables');
   }
 
   function _renderChooseMapOrChartTemplate() {
@@ -2287,6 +2287,7 @@ export default function AssetSelectorRenderer(options) {
 
     var authoringWorkflow = new SocrataVisualizations.AuthoringWorkflow(element, {
       vif: vifToEdit,
+      enableFiltering: Environment.ENABLE_FILTERABLE_VISUALIZATIONS_IN_AX,
       backButtonText: I18n.t('editor.asset_selector.visualization.authoring_visualization_back_button'),
       onBack: () => {
         authoringWorkflow.destroy();
@@ -2531,7 +2532,7 @@ export default function AssetSelectorRenderer(options) {
       '<div>',
       { 'class': 'asset-selector-insecure-html-warning warning-bar' }
     ).append(
-      $('<p>').append($('<span>', {'class': 'icon-warning'})),
+      $('<p>').append($('<span>', {'class': 'socrata-icon-warning'})),
       $('<p>').text(I18n.t('editor.asset_selector.embed_code.insecure_html_warning'))
     );
 
@@ -2581,7 +2582,7 @@ export default function AssetSelectorRenderer(options) {
       previewIframe
     ]);
 
-    var questionIcon = $('<span>', { 'class': 'icon-question-inverse asset-selector-embed-code-title-hint' });
+    var questionIcon = $('<span>', { 'class': 'socrata-icon-question-inverse asset-selector-embed-code-title-hint' });
 
     var titleLabel = $(
       '<h2>',

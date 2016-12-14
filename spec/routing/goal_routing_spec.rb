@@ -67,4 +67,14 @@ RSpec.describe 'goal routing', type: :routing do
       )
     end
   end
+
+  describe 'single goal copy' do
+    it 'renders copy route' do
+      expect(get: '/stat/goals/single/test-test/copy').to route_to(
+        controller: 'stat/goals',
+        action: 'copy',
+        uid: 'test-test'
+      )
+    end
+  end
 end

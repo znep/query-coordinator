@@ -36,6 +36,7 @@ $(document).on('ready', function() {
 
   var $userStoryContainer = $('.user-story-container');
   var $userStory = $('.user-story');
+  var $adminHeader = $('#site-chrome-admin-header');
   var $header = $('#site-chrome-header');
   var $footer = $('#site-chrome-footer');
 
@@ -55,10 +56,11 @@ $(document).on('ready', function() {
   function _moveFooterToBottomOfWindowOrContent() {
     const viewportHeight = $window.height();
     const headerHeight = $header.outerHeight();
+    const adminHeaderHeight = $adminHeader.outerHeight() || 0;
     const contentHeight = $userStory.outerHeight();
     const footerHeight = $footer.outerHeight();
 
-    if (viewportHeight > contentHeight + headerHeight + footerHeight) {
+    if (viewportHeight > contentHeight + adminHeaderHeight + headerHeight + footerHeight) {
       $footer.css({ position: 'absolute', bottom: 0 });
     } else {
       $footer.css({ position: '', bottom: '' });

@@ -92,8 +92,8 @@ export default function PresentationMode() {
 
       userStory.classList.add('presentation-mode');
       footer.classList.add('presentation-mode');
-      presentationMode.classList.remove('icon-presentation');
-      presentationMode.classList.add('icon-close-2');
+      presentationMode.classList.remove('socrata-icon-presentation');
+      presentationMode.classList.add('socrata-icon-close-2');
       presentationButtons.previous.classList.remove('hidden');
       presentationButtons.next.classList.remove('hidden');
 
@@ -114,8 +114,8 @@ export default function PresentationMode() {
 
     userStory.classList.remove('presentation-mode');
     footer.classList.remove('presentation-mode');
-    presentationMode.classList.remove('icon-close-2');
-    presentationMode.classList.add('icon-presentation');
+    presentationMode.classList.remove('socrata-icon-close-2');
+    presentationMode.classList.add('socrata-icon-presentation');
     presentationButtons.previous.classList.add('hidden');
     presentationButtons.next.classList.add('hidden');
 

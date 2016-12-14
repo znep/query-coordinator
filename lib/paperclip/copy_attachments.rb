@@ -5,10 +5,9 @@
 #
 # This module should be mixed into the target AR model.
 
-if Gem::Version.new(::AWS::VERSION) >= Gem::Version.new(2)
-  raise NotImplementedError, 'coded for aws-sdk v1'
+if Gem::Version.new(::Aws::VERSION) < Gem::Version.new(2.6)
+  raise NotImplementedError, 'coded for aws-sdk v2.6'
 end
-
 
 module Paperclip
   module CopyAttachments
@@ -29,11 +28,14 @@ module Paperclip
           source_s3_object = source_attachment.s3_object(style)
           destination_s3_object = destination_attachment.s3_object(style)
 
-          source_s3_object.copy_to(destination_s3_object, acl: source_attachment.s3_permissions(style))
+          source_s3_object.copy_to(
+            destination_s3_object,
+            acl: source_attachment.s3_permissions(style),
+            server_side_encryption: 'AES256'
+          )
         end
       end
     end
 
   end
 end
-

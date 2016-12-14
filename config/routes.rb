@@ -5,34 +5,44 @@ Rails.application.routes.draw do
   get 'version' => 'version#show'
   get 'consul_checks/active' => 'consul_checks#active'
 
-  # Login success handler
-  get 'post_login' => 'post_login#show'
+  # Routes supporting locale prefix.
+  scope '(:locale)', :locale => /#{I18n.available_locales.join("|")}/ do
+    # Login success handler
+    get 'post_login' => 'post_login#show'
 
-  # Routes for interacting with Perspectives
-  scope '/s', constraints: { uid: UNANCHORED_FOUR_BY_FOUR_PATTERN } do
-    get '(:vanity_text)/:uid' => 'stories#show', as: 'story'
-    get ':uid/create' => 'stories#new'
-    get ':uid/copy' => 'stories#copy'
-    post ':uid/create' => 'stories#create'
-    get '(:vanity_text)/:uid/about' => 'stories#about'
-    get '(:vanity_text)/:uid/edit' => 'stories#edit'
-    get '(:vanity_text)/:uid/stats' => 'stories#stats'
-    get '(:vanity_text)/:uid/preview' => 'stories#preview', as: 'preview'
-    get '(:vanity_text)/:uid/tile' => 'stories#tile', as: 'tile'
-    get '(:vanity_text)/:uid/widget' => 'stories#tile'
-  end
+    # Routes for interacting with Perspectives
+    scope 's', constraints: { uid: UNANCHORED_FOUR_BY_FOUR_PATTERN } do
+      get '(:vanity_text)/:uid' => 'stories#show', as: 'story'
+      get ':uid/create' => 'stories#new'
+      get ':uid/copy' => 'stories#copy'
+      post ':uid/create' => 'stories#create'
+      get '(:vanity_text)/:uid/about' => 'stories#about'
+      get '(:vanity_text)/:uid/edit' => 'stories#edit'
+      get '(:vanity_text)/:uid/stats' => 'stories#stats'
+      get '(:vanity_text)/:uid/preview' => 'stories#preview', as: 'preview'
+      get '(:vanity_text)/:uid/tile' => 'stories#tile', as: 'tile'
+      get '(:vanity_text)/:uid/widget' => 'stories#tile'
+    end
 
-  # Routes for interacting with Goals
-  # Note that these routes are accessible without
-  # the /stories global prefix (see config.ru).
-  scope '/stat/goals', module: 'stat', as: 'stat' do
-    get 'single/:uid' => 'goals#show', as: 'single_goal'
-    get 'single/:uid/edit-story' => 'goals#edit', as: 'edit_single_goal'
-    get 'single/:uid/preview' => 'goals#preview', as: 'preview_single_goal'
+    # Routes for interacting with Goals
+    # Note that these routes are accessible without
+    # the /stories global prefix (see config.ru, specifically
+    # re: UriRewriteMiddleware).
+    scope 'stat/goals', module: 'stat', as: 'stat' do
+      get 'single/:uid' => 'goals#show', as: 'single_goal'
+      get 'single/:uid/edit-story' => 'goals#edit', as: 'edit_single_goal'
+      get 'single/:uid/preview' => 'goals#preview', as: 'preview_single_goal'
+      get 'single/:uid/copy' => 'goals#copy', as: 'copy_single_goal'
 
-    get ':dashboard/:category/:uid' => 'goals#show', as: 'goal'
-    get ':dashboard/:category/:uid/edit-story' => 'goals#edit', as: 'edit_goal'
-    get ':dashboard/:category/:uid/preview' => 'goals#preview', as: 'preview_goal'
+      get ':dashboard/:category/:uid' => 'goals#show', as: 'goal'
+      get ':dashboard/:category/:uid/edit-story' => 'goals#edit', as: 'edit_goal'
+      get ':dashboard/:category/:uid/preview' => 'goals#preview', as: 'preview_goal'
+    end
+
+    # Story theme configuration routes
+    namespace :admin do
+      resources :themes
+    end
   end
 
   # API routes
@@ -69,11 +79,6 @@ Rails.application.routes.draw do
 
   # Search proxy routes
   get '/search/users' => 'cetera#users', defaults: { format: 'json' }
-
-  # Story theme configuration routes
-  namespace :admin do
-    resources :themes
-  end
 
   # Story theme CSS generator
   get 'themes/custom' => 'themes#custom', defaults: { format: 'css' }

@@ -43,6 +43,12 @@ en:
       description: 'This story does not exist or has not yet been published.'
       title: 'Not Found'
       login_notice_html: 'Do you need to <a href="/login?return_to=%{return_to}">log in</a>?'
+    migration_500:
+      description: 'An unexpected error occurred while migrating your Goal.'
+      title: 'Migration Error'
+  goals_controller:
+    failed_to_publish: 'Failed to copy goal. Please try again later.'
+    not_found_error_flash: 'Goal not found.'
   login_successful: 'Login Successful'
   print:
     preparing_story: 'Preparing story for printing...'

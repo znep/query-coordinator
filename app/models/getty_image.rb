@@ -20,29 +20,44 @@ class GettyImage < ActiveRecord::Base
   def download!(user, story_uid, options = {})
     return if document.present? && !document.skip_thumbnail_generation
 
-    create_document = CreateDocument.new(
-      user,
-      download_parameters.merge(
+    document_params = download_parameters
+
+    temp_upload_url = PendingUpload.new(document_params[:upload_file_name]).url
+
+    download_file = open(document_params[:direct_upload_url])
+    response = HTTParty.put(temp_upload_url,
+      body_stream: download_file,
+      headers: {
+        'Content-Length' => download_file.size.to_s,
+        'Content-Type' => document_params[:upload_content_type]
+      }
+    )
+
+    raise "Failed to upload image from Getty Images to temporary directory: #{response.message}" unless response.success?
+
+    new_document = Document.new(
+      document_params.merge(
+        direct_upload_url: temp_upload_url[/([^?]+)/], # remove the presigned url parameters
         story_uid: story_uid,
         skip_thumbnail_generation: options[:skip_thumbnail_generation]
       )
     )
-    document_saved = create_document.create
+    new_document.created_by = user['id']
 
-    unless document_saved
-      raise "Failed to create a new document.\n#{create_document.document.errors.full_messages.to_sentence}"
+    unless new_document.save
+      raise "Failed to save a new document.\n#{new_document.errors.full_messages.to_sentence}"
     end
 
-    self.document = create_document.document
+    self.document = new_document
     self.domain_id = CoreServer.current_domain['id']
     self.created_by = user['id']
 
     save!
 
     if options[:process_immediately]
-      ProcessDocumentJob.perform_now(create_document.document.id)
+      ProcessDocumentJob.perform_now(self.document.id)
     else
-      ProcessDocumentJob.perform_later(create_document.document.id)
+      ProcessDocumentJob.perform_later(self.document.id)
     end
   end
 

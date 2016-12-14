@@ -13,9 +13,9 @@ export default function DowntimeNoticeBar() {
   var $this = $(this);
   var $container = $('<span>', { 'class': 'container' });
   var $message = $('<span>', { 'class': 'message' });
-  var $close = $('<a>', { 'class': 'icon-close' });
+  var $close = $('<a>', { 'class': 'socrata-icon-close' });
 
-  $container.append($('<span>', { 'class': 'icon-warning' }));
+  $container.append($('<span>', { 'class': 'socrata-icon-warning' }));
   $container.append($message);
   $container.append($close);
   $this.append($container);

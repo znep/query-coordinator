@@ -6,7 +6,8 @@
 
   <title><%= t('editor.default_page_title') %></title>
 
-  <%= favicon_link_tag %>
+  <%= site_chrome_favicon_tag %>
+  <%= site_chrome_stylesheet_tag %>
   <%= stylesheet_link_tag 'application', media: 'all' %>
   <style id="themes"><%== @bootstrap_styles[:themes] %></style>
   <style id="custom"><%== @bootstrap_styles[:custom] %></style>
@@ -18,6 +19,9 @@
     window.CURRENT_USER_STORY_AUTHORIZATION = <%== current_user_story_authorization.to_json %>;
     window.CUSTOM_THEMES = <%== @custom_themes.to_json %>;
     window.DEFAULT_THEMES = <%== @default_themes.to_json %>;
+    <%- if @goal_document_ids -%>
+    window.OP_GOAL_DOCUMENT_IDS_BY_ASSET_IDS = <%== @goal_document_ids.to_json %>;
+    <%- end -%>
   </script>
 
   <% if Rails.env.test? -%>
@@ -27,10 +31,11 @@
 
   <%= storyteller_javascript_include_tag 'editor' %>
   <%= render 'shared/google_analytics_script' %>
+  <%= render 'shared/mixpanel_script' %>
 </head>
-<body id="story-edit">
-
-<%= yield %>
-
+<body id="story-edit" class="<%= open_performance_enabled? ? 'open-performance-enabled' : '' %>">
+  <%== site_chrome_admin_header(request, response, size: 'small') if open_performance_enabled? %>
+  <%= yield %>
+  <%= site_chrome_javascript_tag %>
 </body>
 </html>

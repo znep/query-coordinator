@@ -140,7 +140,7 @@ block_12 = Block.create(
     {
       'type': 'goal.embed',
       'value': {
-        domain: 'fourfour.com',
+        domain: 'example.com',
         dashboard: 'four-four',
         category: 'four-four',
         uid: 'four-four'

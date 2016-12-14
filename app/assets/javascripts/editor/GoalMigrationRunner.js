@@ -4,6 +4,7 @@ import Showdown from 'showdown';
 import StorytellerUtils from '../StorytellerUtils';
 import httpRequest from '../services/httpRequest';
 import Actions from './Actions';
+import Constants from './Constants';
 import { dispatcher } from './Dispatcher';
 import I18n from './I18n';
 import Environment from '../StorytellerEnvironment';
@@ -14,6 +15,7 @@ const urlMatcher = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-
 export default function GoalMigrationRunner(narrativeMigrationMetadata, storyData) {
   StorytellerUtils.assert(narrativeMigrationMetadata, 'Narrative data must be provided.');
   StorytellerUtils.assert(storyData, 'Story data must be provided.');
+
   this.run = () => {
     dispatcher.dispatch({
       action: Actions.GOAL_MIGRATION_START
@@ -24,8 +26,8 @@ export default function GoalMigrationRunner(narrativeMigrationMetadata, storyDat
     const hasTwoColumn = hasTwoColumnLayout(narrativeMigrationMetadata.narrative);
     const hasMismatchedTwoColumn = hasMismatchedTwoColumnLayout(narrativeMigrationMetadata.narrative);
 
-    prefetchDataNeededForMigration(narrativeMigrationMetadata.narrative).then(
-      (narrative) => {
+    prefetchDataNeededForMigration(narrativeMigrationMetadata.narrative).
+      then((narrative) => {
         // generate blocks from narrative sections.
         //
         // because a two-column section can generate more than one block,
@@ -67,14 +69,13 @@ export default function GoalMigrationRunner(narrativeMigrationMetadata, storyDat
             blocks: migrationSummary.narrativeBlocks
           })
         });
-      },
-      (error) => {
+      }).
+      catch((error) => {
         dispatcher.dispatch({
           action: Actions.GOAL_MIGRATION_ERROR,
           error: error
         });
-      }
-    );
+      });
   };
 
 }
@@ -88,7 +89,15 @@ export default function GoalMigrationRunner(narrativeMigrationMetadata, storyDat
 // the need to pass some cache object around.
 function prefetchDataNeededForMigration(sections) {
   function prefetchSection(section) {
-    if (section.type === 'viz' && section.dataset) {
+    if (section.type === 'image' && section.src) {
+      // Backfills images from MetaDB to Storyteller's documents database.
+      return awaitDocumentProcessing(section.src).then((document) => {
+        // Replace the Core asset URL with our document URL.
+        section.src = document.url;
+        // Add the document ID to enable cropping and thumbnailing.
+        section.documentId = document.id;
+      });
+    } else if (section.type === 'viz' && section.dataset) {
       // dataset may be blank if unconfigured.
       // also possible to have dataset reference to nonexistent dataset.
       return httpRequest('GET', `https://${window.location.hostname}/api/views/${section.dataset}.json`).
@@ -116,6 +125,42 @@ function prefetchDataNeededForMigration(sections) {
   ).then(_.constant(sections)); // Ignore promise resolutions, we just want to return sections.
 }
 
+/*
+ * Checks our documents API for the upload status of
+ * the soon-to-be migrated Core asset, and returns the
+ * document once it's processed.
+ *
+ * If the document is not immediately processsed, we wait
+ * for a predetermined retry interval before asking again.
+ *
+ * This handles document errors.
+ *
+ * @param assetUrl - Of the form /api/assets/<asset-id>
+ * @returns Promise
+ */
+function awaitDocumentProcessing(assetUrl) {
+  const assetId = assetUrl.replace('/api/assets/', '');
+  const documentId = Environment.OP_GOAL_DOCUMENT_IDS_BY_ASSET_IDS[assetId];
+  const url = `https://${window.location.hostname}${Constants.API_PREFIX_PATH}/documents/${documentId}`;
+
+  return new Promise((resolve, reject) => {
+    const requestStatus = () => httpRequest('GET', url).then(handleStatus);
+    const handleStatus = (data) => {
+      const { status } = data.document;
+
+      if (status === 'processed') {
+        resolve(data.document);
+      } else if (status === 'error') {
+        reject(`There was an error backfilling document ${documentId}`);
+      } else {
+        _.delay(requestStatus, Constants.CHECK_DOCUMENT_PROCESSED_RETRY_INTERVAL);
+      }
+    };
+
+    requestStatus();
+  });
+}
+
 // SECTION MIGRATION LOGIC
 //
 // All of these functions accept a narrative section and produce one or more
@@ -137,8 +182,8 @@ function migrateImageSection(section) {
     return [{
       type: 'image',
       value: {
-        url: section.src, // TODO: normally this has the domain prepended
-        documentId: null // TODO: are we backfilling this?
+        url: section.src,
+        documentId: section.documentId
       }
     }];
   } else {

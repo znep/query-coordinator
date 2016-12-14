@@ -4,6 +4,8 @@ RSpec.describe PostLoginController, type: :controller do
 
   before do
     stub_valid_session
+    stub_current_domain
+    stub_configurations_request
     request.env['HTTPS'] = 'on'
   end
 

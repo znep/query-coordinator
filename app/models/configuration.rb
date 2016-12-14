@@ -1,6 +1,6 @@
 class Configuration < Model
 
-  def self.find_by_type(type, default_only = false, cname = nil, merge = true)
+  def self.find_by_type(type, default_only = false, cname = nil, merge = true, cache = true)
     fetch_config_from_core = lambda do |*cache_key|
       CoreServer::Base.connection.get_request(
         "/#{name.pluralize.downcase}.json?type=#{type}&defaultOnly=#{default_only}&merge=#{merge}",
@@ -8,7 +8,7 @@ class Configuration < Model
       )
     end
 
-    response = if type.nil?
+    response = if type.nil? || !cache
       fetch_config_from_core.call
     else
       Rails.cache.fetch(cache_key(type), &fetch_config_from_core)

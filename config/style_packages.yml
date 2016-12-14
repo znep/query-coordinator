@@ -33,6 +33,9 @@ visualization-canvas:
 dataset-landing-page:
 - dataset-landing-page/dataset-landing-page
 
+asset-selector:
+- asset-selector/asset-selector
+
 dataset-management-ui:
 - dataset-management-ui/dataset-management-ui
 

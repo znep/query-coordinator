@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 export const ViewCount = (props) => {
   const count = props.count;
-  const isPlural = count !== 1; // TODO: I think there's a pluralize type of function for this..
+  const isPlural = count !== 1; // TODO: is there an I18n pluralize function for this?
 
   return (
     <div className="view-count">

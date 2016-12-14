@@ -5,7 +5,6 @@ export default () => (
   <div>
     <ResultsContainer
       results={window.assetSelectorContent.results}
-      viewCount={window.assetSelectorContent.view_count}
-      facets={window.assetSelectorContent.facets} />
+      viewCount={window.assetSelectorContent.view_count} />
   </div>
 );

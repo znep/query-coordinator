@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { ViewCard } from 'socrata-components';
+import { getIconClassForDisplayType } from 'socrata-components/common/displayTypeMetadata';
 
-// export const Card = (props) => {
 export class Card extends Component {
   constructor(props) {
     super(props);
@@ -13,25 +13,31 @@ export class Card extends Component {
     console.log(data);
 
     return {
-      name: data.resource.name,
-      description: data.resource.description,
+      name: data.name,
+      description: data.description,
       url: data.link,
-      imageUrl: '/images/dataLensThumbnail.png',
-      icon: 'socrata-icon-cards',
-      // metadataLeft: 'Updated Jan 1, 1970',
-      metadataLeft: this.formatDate(data.resource.updatedAt),
-      metadataRight: this.formatPopularity(data.resource.view_count.page_views_total),
-      // metadataRight: '1,234 views',
-      // isPrivate: ,
-      linkProps: { target: '_blank' },
+      icon: getIconClassForDisplayType(data.type),
+      metadataLeft: this.formatDate(data.updated_at), // TODO - use viewCardHelpers methods.. will need to refactor them to not require I18n
+      metadataRight: this.formatPopularity(data.view_count),
+      imageUrl: data.preview_image_url,
+      isPrivate: !data.is_public,
+      linkProps: {
+        target: '_blank',
+        'aria-label': this.getAriaLabel(data)
+      },
       onClick: function(event) {
         console.log(event);
       }
     };
   }
 
-  // Move to helpers
+  // Move to helpers?
+  getAriaLabel(view) {
+    return `${view.name} | ${view.type}`;
+  }
+
   monthName(index) {
+    // TODO: Localization
     return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][index];
   }
 
@@ -50,18 +56,13 @@ export class Card extends Component {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     };
 
-    // TODO: Localization.. and a better variable name
+    // TODO: Localization
     const viewDescription = (viewCount === 1) ? 'view' : 'views';
     return `${numberWithCommas(viewCount)} ${viewDescription}`;
   }
 
   render() {
-    return (
-      <div>
-        card:
-        <ViewCard {...this.getCardProps()} />
-      </div>
-    );
+    return <ViewCard {...this.getCardProps()} />;
   }
 }
 

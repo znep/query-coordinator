@@ -1,0 +1,56 @@
+@import "asset-selector/breakpoints";
+
+.asset-selector {
+  .results-container {
+    .view-count {
+      margin: 1rem 0;
+    }
+
+    .card-container {
+      display: flex;
+      justify-content: flex-start;
+      align-content: flex-start;
+      flex-wrap: wrap;
+      overflow: hidden;
+      position: relative;
+
+      .result-card {
+        flex: 0 0 auto;
+        width: 31.9%;
+        height: 300px;
+        margin-right: 2%;
+
+        &.loading-card {
+          display: flex;
+
+          .spinner-large {
+            margin: auto;
+          }
+        }
+
+        @media(max-width: $medium) {
+          flex: 0 0 260px;
+        }
+
+        @media(min-width: $medium) {
+          &:nth-child(3n) {
+            margin-right: 0;
+          }
+        }
+      }
+
+      @media(max-width: $medium) {
+        flex-flow: row nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+      }
+    }
+
+    .table-container {
+      table.table {
+        margin-top: 0;
+      }
+    }
+  }
+}

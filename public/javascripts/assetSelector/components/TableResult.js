@@ -2,16 +2,16 @@ import React, { PropTypes } from 'react';
 
 export const TableResult = (props) => {
   const data = props.data;
-  const updatedAt = new Date(data.resource.updatedAt).toDateString();
+  const updatedAt = new Date(data.updated_at).toDateString();
 
   return (
     <tr className="result">
       <td className="result-type" scope="row">
-        {data.resource.type}
+        {data.type}
       </td>
       <td className="result-name">
         <a href={data.link}>
-          {data.resource.name}
+          {data.name}
         </a>
       </td>
       <td className="result-updated-date">

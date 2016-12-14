@@ -5,12 +5,12 @@ class AssetSelectorController < ApplicationController
   layout 'styleguide'
 
   def show
-    old_browse_content = process_browse(request)
+    browse_content = process_browse(request)
+    results = AssetSelectorResource.from_cetera_result(browse_content[:view_results])
 
     @asset_selector_content = {
-      :results => old_browse_content[:view_results],
-      :view_count => old_browse_content[:view_count],
-      :facets => old_browse_content[:facets]
+      :results => results,
+      :view_count => browse_content[:view_count]
     }
   end
 end

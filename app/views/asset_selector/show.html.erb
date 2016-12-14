@@ -2,9 +2,13 @@
   <title><%= get_site_title %></title>
   <meta name="description" content="<%= CurrentDomain.cname %> | Socrata Open Data Catalog">
   <meta name="page_name" content="Asset Selector">
+
+  <%= rendered_stylesheet_tag('asset-selector') %>
 <% end %>
 
-<div class="asset-selector"></div>
+<div style="padding: 1rem;">
+  <div class="asset-selector"></div>
+</div>
 
 <% content_for :scripts do %>
   <script>

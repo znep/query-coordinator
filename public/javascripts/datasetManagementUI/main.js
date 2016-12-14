@@ -34,7 +34,8 @@ if (window.serverConfig.environment === 'development') {
   middleware.push(createLogger({
     duration: true,
     timestamp: false,
-    collapsed: true
+    collapsed: true,
+    logErrors: false
   }));
   middleware.push(windowDBMiddleware);
   console.log(

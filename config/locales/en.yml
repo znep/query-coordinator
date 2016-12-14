@@ -2321,6 +2321,8 @@ en:
         federation_description: Manage connections and data sharing with other sites via Open Data Federation Services
         georegions: Spatial Lens
         georegions_description: Configure custom boundaries that can be used to create Spatial Lens maps
+        goals: Goal Management
+        goals_description: Manage all Open Performance goals on this domain.
         home_page: Home Page
         home_page_description: Configure what content is featured on the home page
         internal: Internal

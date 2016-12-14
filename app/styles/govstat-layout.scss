@@ -6,7 +6,7 @@ div.siteInnerWrapper {
   padding-bottom: 90px;
   margin-top: $site-appearance-admin-header-height;
 
-  .flash {
+  > .flash {
     &.notice,
     &.warning,
     &.error {

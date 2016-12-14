@@ -2,6 +2,7 @@
 
   <% content_for :head do %>
     <title><%= [ @page_title, get_site_title ].flatten.reject{ |s| s.blank? }.join(' | ') %></title>
+
     <%= rendered_stylesheet_tag "canvas" %>
     <%= rendered_stylesheet_tag "homepage-show" if Canvas::Environment.context == :homepage &&
                                                    @page_config.default_styles %>

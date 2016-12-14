@@ -24,7 +24,6 @@ module AdministrationHelper
 
   def show_site_appearance_admin_panel?
     !!current_user.try(:can_use_site_appearance?) &&
-      !CurrentDomain.module_enabled?(:govStat) &&
       !SocrataSiteChrome::CustomContent.new(CurrentDomain.cname).activated?
   end
 

@@ -92,6 +92,11 @@
         <%= admin_nav_link_to t("#{prefix}.stories"), '/stories/admin/themes' %>
       </li>
     <%- end -%>
+    <%- if CurrentDomain.module_enabled?(:govStat) -%>
+      <li class="datasets">
+        <%= admin_nav_link_to t("#{prefix}.goals"), '/admin/goals' %>
+      </li>
+    <%- end -%>
     <%- if feature_flag?('enable_catalog_connector', request) && CurrentDomain.user_can?(current_user, UserRights::USE_DATA_CONNECTORS) %>
       <li class="connectors">
         <%= admin_nav_link_to t("#{prefix}.connectors"), :controller => '/administration/connector', :action => 'connectors' %>

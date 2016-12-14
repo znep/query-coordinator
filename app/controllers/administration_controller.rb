@@ -44,7 +44,6 @@ class AdministrationController < ApplicationController
   before_filter :only => [:delete_story, :new_story, :create_story, :move_story, :edit_story, :stories_appearance, :update_stories_appearance] { |request| request.check_auth_level(UserRights::MANAGE_STORIES) }
 
   def index
-    redirect_to '/manage/site_config' if CurrentDomain.module_enabled?(:govStat)
   end
 
   def datasets

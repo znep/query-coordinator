@@ -12,7 +12,7 @@ class PreviewBar extends React.Component {
       <div className="preview-bar" role="banner">
         <div className="preview-bar-header clearfix">
           <div className="back-link icon-arrow-prev">
-            <a href={ `${serverConfig.localePrefix}/manage/site_config` }>{ translations.getIn(['admin', 'preview_bar', 'back_to_configuration']) }</a>
+            <a href={ `${serverConfig.localePrefix}/admin` }>{ translations.getIn(['admin', 'preview_bar', 'back_to_configuration']) }</a>
           </div>
           <div className="header">
             <span>{ translations.getIn(['admin', 'preview_bar', 'performance_goal_management_preview']) }</span>

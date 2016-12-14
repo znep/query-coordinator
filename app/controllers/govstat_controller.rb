@@ -11,6 +11,7 @@ class GovstatController < ApplicationController
   end
 
   def manage_config
+    redirect_to '/admin'
   end
 
   protected

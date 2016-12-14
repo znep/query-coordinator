@@ -607,6 +607,16 @@ module ApplicationHelper
 
 # THEME HELPERS
 
+  def body_classes
+    [
+      "controller_#{controller.controller_name}",
+      "action_#{controller.controller_name}_#{controller.action_name}",
+      @suppress_chrome ? 'suppressChrome' : nil,
+      "locale_#{I18n.locale}",
+      @body_class
+    ].compact.join(' ')
+  end
+
   # Simple technique to do nested layouts. If you want to include one layout
   # inside of another, in the inner layout, put the following at the bottom
   # of your layouts/foo.html.erb:

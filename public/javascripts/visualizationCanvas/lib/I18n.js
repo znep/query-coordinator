@@ -9,3 +9,5 @@ export function translate(key) {
 
   return translation;
 }
+
+export { translate as t };

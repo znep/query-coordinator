@@ -3,6 +3,12 @@ export const addVisualization = () => ({
   type: ADD_VISUALIZATION
 });
 
+export const EDIT_VISUALIZATION = 'EDIT_VISUALIZATION';
+export const editVisualization = (data) => ({
+  type: EDIT_VISUALIZATION,
+  data
+});
+
 export const CANCEL_EDITING_VISUALIZATION = 'CANCEL_EDITING_VISUALIZATION';
 export const cancelEditingVisualization = () => ({
   type: CANCEL_EDITING_VISUALIZATION

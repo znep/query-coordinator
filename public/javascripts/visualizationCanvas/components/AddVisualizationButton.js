@@ -3,10 +3,10 @@ import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { addVisualization } from '../actions';
-import { translate as t } from '../lib/I18n';
+import { t } from '../lib/I18n';
 
 export const AddVisualizationButton = (props) => {
-  const { openAuthoringWorkflowModal, vifs } = props;
+  const { onClickHandler, vifs } = props;
 
   if (!_.isEmpty(vifs)) {
     return null;
@@ -16,7 +16,7 @@ export const AddVisualizationButton = (props) => {
     <div className="add-visualization-button-container">
       <button
         className="btn btn-primary "
-        onClick={openAuthoringWorkflowModal}>
+        onClick={onClickHandler}>
         <span className="socrata-icon-add" role="presentation" />
         {t('add_visualization')}
       </button>
@@ -25,7 +25,7 @@ export const AddVisualizationButton = (props) => {
 };
 
 AddVisualizationButton.propTypes = {
-  openAuthoringWorkflowModal: PropTypes.func.isRequired,
+  onClickHandler: PropTypes.func.isRequired,
   vifs: PropTypes.array.isRequired
 };
 
@@ -34,7 +34,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ openAuthoringWorkflowModal: addVisualization }, dispatch);
+  return bindActionCreators({ onClickHandler: addVisualization }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddVisualizationButton);

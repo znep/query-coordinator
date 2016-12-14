@@ -36,6 +36,6 @@ describe('PreviewBar', () => {
   });
 
   it('renders the preview title', () => {
-    expect(element.innerText).to.eq(I18n.preview);
+    expect(element.innerText).to.equal(I18n.preview);
   });
 });

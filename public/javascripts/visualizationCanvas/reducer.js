@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import {
   ADD_VISUALIZATION,
+  EDIT_VISUALIZATION,
   CANCEL_EDITING_VISUALIZATION,
   UPDATE_VISUALIZATION,
   ENTER_PREVIEW_MODE,
@@ -38,9 +39,17 @@ const defaultVif = () => (
 
 const updateVifs = (state, newVif) => {
   const updatedVifs = _.clone(state.vifs);
-  updatedVifs[state.authoringWorkflow.position] = newVif;
+  updatedVifs[state.authoringWorkflow.vifIndex] = newVif;
 
   return updatedVifs;
+};
+
+const getVif = (state, vifIndex) => {
+  if (vifIndex > state.vifs.length || vifIndex < 0) {
+    throw new Error(`invalid vifIndex: ${vifIndex}`);
+  }
+
+  return state.vifs[vifIndex];
 };
 
 export default (state = initialState(), action) => {
@@ -54,8 +63,18 @@ export default (state = initialState(), action) => {
         ...state,
         authoringWorkflow: {
           isActive: true,
-          position: state.vifs.length,
+          vifIndex: state.vifs.length,
           vif: defaultVif()
+        }
+      };
+
+    case EDIT_VISUALIZATION:
+      return {
+        ...state,
+        authoringWorkflow: {
+          isActive: true,
+          vifIndex: action.data.vifIndex,
+          vif: getVif(state, action.data.vifIndex)
         }
       };
 

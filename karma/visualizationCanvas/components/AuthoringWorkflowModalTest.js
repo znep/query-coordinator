@@ -5,7 +5,7 @@ describe('AuthoringWorkflowModal', () => {
   const getProps = (props) => {
     return {
       config: {
-        position: 0,
+        vifIndex: 0,
         vif: mockVif,
         isActive: true
       },
@@ -50,7 +50,7 @@ describe('AuthoringWorkflowModal', () => {
     it('does not initialize the AuthoringWorkflow when VIF is missing', () => {
       const element = renderComponent(AuthoringWorkflowModal, getProps({
         config: {
-          position: 0,
+          vifIndex: 0,
           vif: {},
           isActive: true
         }

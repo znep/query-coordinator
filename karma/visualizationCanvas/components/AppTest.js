@@ -41,8 +41,29 @@ describe('App', function() {
     });
 
     it('renders any visualizations', () => {
-      element = renderComponentWithStore(App, {}, getStore({ mode: 'preview', vifs: [mockVif] }));
-      expect(element.querySelector('.socrata-visualization-renderer')).to.exist;
+      element = renderComponentWithStore(App, {}, getStore({
+          mode: 'edit',
+          authoringWorkflow: {
+            isActive: false
+          },
+          vifs: [mockVif]
+        }
+      ));
+      expect(element.querySelector('.visualization-wrapper')).to.exist;
+    });
+
+    it('renders edit visualization buttons', () => {
+      element = renderComponentWithStore(App, {}, getStore(
+        {
+          mode: 'edit',
+          authoringWorkflow: {
+            isActive: false
+          },
+          vifs: [mockVif, mockVif]
+        }
+      ));
+      const editVisualizationButtons = element.querySelectorAll('.edit-visualization-button');
+      expect(editVisualizationButtons.length).to.equal(2);
     });
 
     it('renders a Table', () => {
@@ -58,7 +79,7 @@ describe('App', function() {
         }
       });
       element = renderComponentWithStore(App, {}, store);
-      expect(element.querySelector('.socrata-visualization-renderer')).to.exist;
+      expect(element.querySelector('.authoring-workflow-modal')).to.exist;
     });
   });
 
@@ -91,7 +112,12 @@ describe('App', function() {
 
     it('renders any visualizations', () => {
       element = renderComponentWithStore(App, {}, getStore({ mode: 'preview', vifs: [mockVif] }));
-      expect(element.querySelector('.socrata-visualization-renderer')).to.exist;
+      expect(element.querySelector('.visualization-wrapper')).to.exist;
+    });
+
+    it('does not render edit visualization buttons', () => {
+      element = renderComponentWithStore(App, {}, getStore({ mode: 'preview', vifs: [mockVif] }));
+      expect(element.querySelectorAll('.edit-visualization-button-container').length).to.equal(0);
     });
 
     it('renders a Table', () => {

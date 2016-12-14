@@ -4566,6 +4566,7 @@ en:
     add_visualization: Add Visualization
     default_row_label: row
     edit_menu_label: Menu
+    edit_visualization: Edit
     exit_preview_mode: Exit Preview Mode
     info_pane:
       based_on: Based on <em>%{name}</em>

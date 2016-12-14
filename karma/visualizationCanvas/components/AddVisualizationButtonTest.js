@@ -5,7 +5,7 @@ describe('AddVisualizationButton', () => {
   const getProps = (props) => {
     return {
       vifs: [],
-      openAuthoringWorkflowModal: _.noop,
+      onClickHandler: _.noop,
       ...props
     };
   };
@@ -15,10 +15,10 @@ describe('AddVisualizationButton', () => {
     expect(element).to.exist;
   });
 
-  it('invokes openAuthoringWorkflowModal on click', () => {
+  it('invokes onClickHandler on click', () => {
     const onClickSpy = sinon.spy();
     const element = renderPureComponent(AddVisualizationButton(getProps({
-      openAuthoringWorkflowModal: onClickSpy
+      onClickHandler: onClickSpy
     })));
 
     TestUtils.Simulate.click(element.querySelector('button'));

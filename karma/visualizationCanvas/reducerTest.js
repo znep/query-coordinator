@@ -1,6 +1,7 @@
 import reducer from 'reducer';
 import {
   addVisualization,
+  editVisualization,
   cancelEditingVisualization,
   updateVisualization,
   enterPreviewMode,
@@ -35,8 +36,8 @@ describe('Reducer', () => {
       expect(state.authoringWorkflow.isActive).to.be.true;
     });
 
-    it('sets the authoringWorkflow position to next index in VIFs array', () => {
-      expect(state.authoringWorkflow.position).to.eql(1);
+    it('sets the authoringWorkflow vifIndex to next index in VIFs array', () => {
+      expect(state.authoringWorkflow.vifIndex).to.eql(1);
     });
 
     it('sets a default VIF for the authoringWorkflow', () => {
@@ -45,6 +46,27 @@ describe('Reducer', () => {
       expect(_.isObject(state.authoringWorkflow.vif)).to.be.ok;
       expect(dataSource.domain).to.eql('wombats-in-space.com');
       expect(dataSource.datasetUid).to.eql(mockParentView.id);
+    });
+  });
+
+  describe('EDIT_VISUALIZATION', () => {
+    before(() => {
+      state = reducer(state, editVisualization({
+        vifIndex: 0,
+        vifs: [mockVif]
+      }));
+    });
+
+    it('sets authoringWorkflow.isActive to true', () => {
+      expect(state.authoringWorkflow.isActive).to.be.true;
+    });
+
+    it('sets the authoringWorkflow.vif to vif at index vifIndex', () => {
+      expect(state.authoringWorkflow.vif).to.eql(mockVif);
+    });
+
+    it('throws an error if vifIndex is out of range', () => {
+      expect(() => reducer(state, editVisualization({ vifIndex: 3, vifs: [mockVif] })).to.throw(/invalid vifIndex/));
     });
   });
 
@@ -58,9 +80,9 @@ describe('Reducer', () => {
       expect(state.authoringWorkflow.isActive).to.be.false;
     });
 
-    it('removes authoringWorkflow VIF and position', () => {
+    it('removes authoringWorkflow VIF and vifIndex', () => {
       expect(state.authoringWorkflow.vif).to.be.undefined;
-      expect(state.authoringWorkflow.position).to.be.undefined;
+      expect(state.authoringWorkflow.vifIndex).to.be.undefined;
     });
   });
 
@@ -79,9 +101,9 @@ describe('Reducer', () => {
       expect(state.authoringWorkflow.isActive).to.be.false;
     });
 
-    it('removes authoringWorkflow VIF and position', () => {
+    it('removes authoringWorkflow VIF and vifIndex', () => {
       expect(state.authoringWorkflow.vif).to.be.undefined;
-      expect(state.authoringWorkflow.position).to.be.undefined;
+      expect(state.authoringWorkflow.vifIndex).to.be.undefined;
     });
 
     it('updates the VIFs array', () => {
@@ -92,14 +114,14 @@ describe('Reducer', () => {
   describe('ENTER_EDIT_MODE', () => {
     it('sets mode to "edit"', () => {
       const state = reducer(state, enterEditMode());
-      expect(state.mode).to.be.eq('edit');
+      expect(state.mode).to.be.equal('edit');
     });
   });
 
   describe('ENTER_PREVIEW_MODE', () => {
     it('sets mode to "preview"', () => {
       const state = reducer(state, enterPreviewMode());
-      expect(state.mode).to.eq('preview')
+      expect(state.mode).to.equal('preview')
     });
   });
 });

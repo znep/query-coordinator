@@ -11,7 +11,7 @@ import {
 export const AuthoringWorkflowModal = React.createClass({
   propTypes: {
     config: PropTypes.shape({
-      position: PropTypes.number,
+      vifIndex: PropTypes.number,
       vif: PropTypes.object
     }).isRequired,
     onCancel: PropTypes.func,

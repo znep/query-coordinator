@@ -5,7 +5,7 @@ import a11y from 'react-a11y';
 import createLogger from 'redux-logger';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-import { translate as t } from 'lib/I18n';
+import { t } from 'lib/I18n';
 
 import visualizationCanvas from './reducer';
 import App from './App';

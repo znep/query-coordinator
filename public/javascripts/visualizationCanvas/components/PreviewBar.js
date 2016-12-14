@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { translate as t } from '../lib/I18n';
+import { t } from '../lib/I18n';
 import { enterEditMode } from '../actions';
 
 export const PreviewBar = ({ onClickExit }) => (

@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { EditBar as SocrataComponentsEditBar } from 'socrata-components';
-import { translate as t } from '../lib/I18n';
+import { t } from '../lib/I18n';
 import { enterPreviewMode } from '../actions';
 
 // Note that there is a placeholder version of this component in visualization_canvas.html.erb,

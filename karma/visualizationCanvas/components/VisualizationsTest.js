@@ -10,8 +10,7 @@ describe('Visualizations', () => {
 
   it('renders a visualization for each VIF in this.props.vifs', () => {
     const element = renderPureComponent(Visualizations({ vifs: [mockVif, mockVif] }));
-
-    const visualizations = element.querySelectorAll('.socrata-visualization-renderer');
-    expect(visualizations.length).to.eq(2);
+    const visualizations = element.querySelectorAll('.visualization-wrapper');
+    expect(visualizations.length).to.equal(2);
   });
 });

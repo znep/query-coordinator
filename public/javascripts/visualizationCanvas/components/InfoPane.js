@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { InfoPane as SocrataComponentsInfoPane } from 'socrata-components';
 import { formatDate } from 'socrata-components/common/dates';
-import { translate as t } from '../lib/I18n';
+import { t } from '../lib/I18n';
 import { connect } from 'react-redux';
 
 function mapStateToProps(state) {

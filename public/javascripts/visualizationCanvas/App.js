@@ -7,6 +7,7 @@ import PreviewBar from './components/PreviewBar';
 import InfoPane from './components/InfoPane';
 import AddVisualizationButton from './components/AddVisualizationButton';
 import AuthoringWorkflowModal from './components/AuthoringWorkflowModal';
+import EditableVisualizations from './components/EditableVisualizations';
 import Visualizations from './components/Visualizations';
 import Table from './components/Table';
 
@@ -37,6 +38,9 @@ export const App = React.createClass({
     }
   },
 
+  /* EditableVisualizations are visualization with an edit button
+     See EditableVisualizations component for a more verbose explanation
+  */
   renderEditMode() {
     return (
       <div>
@@ -44,7 +48,7 @@ export const App = React.createClass({
         <div className="container">
           <InfoPane />
           <AddVisualizationButton />
-          <Visualizations />
+          <EditableVisualizations />
           <Table />
         </div>
         <AuthoringWorkflowModal />

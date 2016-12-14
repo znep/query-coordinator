@@ -13,6 +13,16 @@
 <% content_for :scripts do %>
   <script>
     var assetSelectorContent = <%= raw @asset_selector_content.to_json %>;
+
+    // Stub I18n so we can use viewCardHelpers. TODO remove this once it isn't necessary.
+    window.I18n = {
+      view_widget: {
+        views: 'views'
+      },
+      related_views: {
+        view: 'View'
+      }
+    };
   </script>
 
   <%= include_webpack_bundle 'asset-selector/main.js' %>

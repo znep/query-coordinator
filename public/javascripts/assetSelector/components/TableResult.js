@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
+import { getDateLabel } from '../../datasetLandingPage/lib/viewCardHelpers';
 
 export const TableResult = (props) => {
   const data = props.data;
-  const updatedAt = new Date(data.updated_at).toDateString();
 
   return (
     <tr className="result">
@@ -15,7 +15,7 @@ export const TableResult = (props) => {
         </a>
       </td>
       <td className="result-updated-date">
-        {updatedAt}
+        {getDateLabel(data.updated_at)}
       </td>
       <td className="result-popularity">???</td>
     </tr>

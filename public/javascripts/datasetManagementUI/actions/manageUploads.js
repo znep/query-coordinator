@@ -14,7 +14,7 @@ import {
   batch
 } from './database';
 import { push } from 'react-router-redux';
-import { checkStatus, getJson } from '../lib/http';
+import { socrataFetch, checkStatus, getJson } from '../lib/http';
 
 export function createUpload(file) {
   return (dispatch, getState) => {
@@ -23,12 +23,8 @@ export function createUpload(file) {
       filename: file.name
     };
     dispatch(insertStarted('uploads', uploadInsert));
-    fetch(dsmapiLinks.uploadCreate(routing), {
+    socrataFetch(dsmapiLinks.uploadCreate(routing), {
       method: 'POST',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json'
-      },
       body: JSON.stringify({
         filename: file.name
       })
@@ -82,9 +78,7 @@ function pollForOutputSchema(uploadId) {
       }, SCHEMA_POLL_INTERVAL_MS);
     }
 
-    fetch(dsmapiLinks.uploadShow(routing, uploadId), {
-      credentials: 'same-origin'
-    }).
+    socrataFetch(dsmapiLinks.uploadShow(routing, uploadId)).
       then(getJson).
       then((resp) => {
         if (resp.status === 404) {
@@ -176,9 +170,7 @@ function subscribeToTransform(dispatch, transform, outputColumn) {
 function fetchAndInsertDataForColumn(transform, outputColumn, offset, limit) {
   return (dispatch, getState) => {
     const routing = getState().routing;
-    fetch(dsmapiLinks.transformResults(routing, transform.id, limit, offset), {
-      credentials: 'same-origin'
-    }).
+    socrataFetch(dsmapiLinks.transformResults(routing, transform.id, limit, offset)).
       then(checkStatus).
       then(getJson).
       then((resp) => {

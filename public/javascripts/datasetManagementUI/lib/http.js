@@ -1,8 +1,24 @@
-export const defaultHeaders = {
-  'Accept': 'application/json',
-  'Content-Type': 'application/json'
-  // 'X-CSRF-Token': window.serverConfig.csrfToken // TODO get this
+const defaultFetchOptions = {
+  credentials: 'same-origin',
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
 };
+
+const headersForWrites = {
+  'X-CSRF-Token': window.serverConfig.csrfToken,
+  'X-App-Token': window.serverConfig.appToken
+};
+
+export function socrataFetch(path, options = {}) {
+  // only need to add in authenticityToken for non-GET requests
+  const mergedBasic = _.merge(options, defaultFetchOptions);
+  const mergedForWrites = (!_.isUndefined(options.method) && options.method.toUpperCase() !== 'GET')
+    ? _.merge(mergedBasic, { headers: headersForWrites })
+    : mergedBasic;
+  return fetch(path, mergedForWrites);
+}
 
 // Used to throw errors from non-200 responses when using fetch.
 export function checkStatus(response) {

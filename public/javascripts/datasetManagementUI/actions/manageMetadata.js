@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { push } from 'react-router-redux';
 import * as Links from '../links';
-import { checkStatus } from '../lib/http';
+import { checkStatus, socrataFetch } from '../lib/http';
 import {
   updateStarted,
   updateSucceeded,
@@ -12,9 +12,8 @@ export function saveMetadata() {
   return (dispatch, getState) => {
     const metadata = _.omit(getState().db.views[0], '__status__');
     dispatch(updateStarted('views', metadata));
-    fetch(`/api/views/${window.initialState.view.id}`, {
+    socrataFetch(`/api/views/${window.initialState.view.id}`, {
       method: 'PUT',
-      credentials: 'same-origin',
       body: JSON.stringify(metadata)
     }).
       then(checkStatus).

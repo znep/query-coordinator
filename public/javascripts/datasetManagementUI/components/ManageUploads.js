@@ -46,8 +46,8 @@ export function ManageUploads({ uploads, createUpload, goHome }) {
         <form>
           <h6>Previous uploads</h6>
           <ul>
-            {uploads.map((upload) => (
-              <li key={upload.id}>
+            {uploads.map((upload, idxInTable) => (
+              <li key={idxInTable}>
                 <UploadListItem upload={upload} />
               </li>
             ))}

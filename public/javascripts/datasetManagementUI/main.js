@@ -9,6 +9,7 @@ import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux';
 import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
 import a11y from 'react-a11y';
+import windowDBMiddleware from './lib/database/middleware';
 import * as Phoenix from 'phoenix';
 
 import App from './components/App';
@@ -35,6 +36,10 @@ if (window.serverConfig.environment === 'development') {
     timestamp: false,
     collapsed: true
   }));
+  middleware.push(windowDBMiddleware);
+  console.log(
+    'for convenience, try `console.table(DB.schemas)` (only works when RAILS_ENV==development)'
+  );
 } else {
   // TODO: setup airbrake if not development
 }

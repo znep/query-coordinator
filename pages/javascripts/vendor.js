@@ -11,3 +11,6 @@ window['socrata-utils'] = require('socrata-utils');
 window['tether'] = require('tether');
 window['tether-shepherd'] = require('tether-shepherd');
 window['velocity-animate'] = require('velocity-animate');
+
+// Display a11y warnings about React components
+require('react-a11y')(window.react);

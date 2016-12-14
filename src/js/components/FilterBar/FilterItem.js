@@ -65,7 +65,7 @@ export const FilterItem = React.createClass({
     this.bodyEscapeHandler = (event) => {
       if (event.keyCode === ESCAPE) {
         this.closeAll();
-        this.toggleText.focus();
+        this.filterControlToggle.focus();
       }
     };
 
@@ -170,8 +170,9 @@ export const FilterItem = React.createClass({
             className={`filter-control-toggle ${alignment}`}
             aria-label={`${t('filter_bar.filter')} ${column.name}`}
             tabIndex="0"
+            role="button"
             onClick={this.toggleControl}
-            onKeyPress={this.toggleControl}
+            onKeyDown={this.toggleControl}
             ref={(el) => this.filterControlToggle = el}>
             {getToggleTextForFilter(filter, column)}
             <span className="socrata-icon-chevron-down" role="presentation" />
@@ -185,8 +186,9 @@ export const FilterItem = React.createClass({
             className={`filter-config-toggle ${alignment}`}
             aria-label={t('filter_bar.configure_filter')}
             tabIndex="0"
+            role="button"
             onClick={this.toggleConfig}
-            onKeyPress={this.toggleConfig}
+            onKeyDown={this.toggleConfig}
             ref={(el) => this.filterConfigToggle = el}>
             <span className="socrata-icon-kebab" role="presentation" />
           </div>

@@ -109,7 +109,7 @@ export const AddFilter = React.createClass({
         className="add-filter-button"
         ref={(el) => this.addFilterButton = el}
         onClick={this.toggleColumnPicklist}
-        onKeyPress={this.toggleColumnPicklist}
+        onKeyDown={this.toggleColumnPicklist}
         role="button"
         tabIndex="0">
         {t('filter_bar.add_filter')}

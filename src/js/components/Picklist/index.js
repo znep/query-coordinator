@@ -217,7 +217,8 @@ export const Picklist = React.createClass({
       key: index,
       role: 'option',
       id: `${option.value}-${index}`,
-      'aria-selected': isSelected
+      'aria-selected': isSelected,
+      tabIndex: 0
     };
 
     const content = hasRenderFunction ?

@@ -1,6 +1,6 @@
 {
   "name": "socrata-styleguide",
-  "version": "9.0.3",
+  "version": "9.1.0",
   "description": "Socrata's Product Styleguide",
   "main": "styleguide.js",
   "private": true,
@@ -97,7 +97,7 @@
     "stylelint-config-standard": "12.0.0",
     "tether": "1.0.1",
     "tether-shepherd": "1.2.0",
-    "velocity-animate": "1.2.3",
+    "velocity-animate": "1.3.2",
     "webpack-stream": "3.2.0"
   },
   "dependencies": {
@@ -115,6 +115,6 @@
     "socrata-utils": "3.1.1",
     "tether": "1.0.1",
     "tether-shepherd": "1.2.0",
-    "velocity-animate": "1.2.3"
+    "velocity-animate": "1.3.2"
   }
 }

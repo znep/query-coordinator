@@ -128,6 +128,7 @@ $.fn.socrataColumnChart = function(vif) {
   function _getRenderOptions(vifToRender) {
     return {
       showAllLabels: true,
+      showUnfiltered: true,
       showFiltered: true,
       vif: vifToRender
     };

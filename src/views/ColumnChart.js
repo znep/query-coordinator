@@ -377,6 +377,7 @@ function ColumnChart(element, vif) {
     var chartWidth = el.width();
     var chartHeight = el.height();
     var showAllLabels = options.showAllLabels;
+    var showUnfiltered = options.showUnfiltered;
     var showFiltered = options.showFiltered;
 
     if (chartWidth <= 0 || chartHeight <= 0) {
@@ -452,7 +453,7 @@ function ColumnChart(element, vif) {
     // visible. We still render the bars outside the viewport to speed up horizontal resizes.
     var chartDataRelevantForVerticalScale = showAllLabels ?
       data : _.take(data, Math.ceil(chartWidth / rangeBand) + 1);
-    var verticalScale = _computeVerticalScale(innerHeight, chartDataRelevantForVerticalScale, showFiltered);
+    var verticalScale = _computeVerticalScale(innerHeight, chartDataRelevantForVerticalScale, showFiltered, showUnfiltered);
 
     var chartLeftOffset = horizontalScale.range()[0];
     var chartRightEdge = chartWidth - chartLeftOffset;
@@ -809,15 +810,16 @@ function ColumnChart(element, vif) {
       function makeBarData(d) {
         // If we're not showing the filtered value, just render it zero height.
         var filtered = showFiltered ? d[FILTERED_INDEX] : 0;
+        var unfiltered = d[UNFILTERED_INDEX];
 
         // Figure out if the totals bar is on top. This controls styling.
         var totalIsOnTop;
-        if (d[UNFILTERED_INDEX] * filtered < 0) {
+        if (unfiltered * filtered < 0) {
           // Opposite signs. Setting total on top by convention (makes styles easier).
           totalIsOnTop = true;
         } else {
           // Same sign.
-          totalIsOnTop = Math.abs(d[UNFILTERED_INDEX]) >= Math.abs(filtered);
+          totalIsOnTop = Math.abs(unfiltered) >= Math.abs(filtered);
         }
 
         if (totalIsOnTop) {
@@ -825,7 +827,7 @@ function ColumnChart(element, vif) {
           return [
             {
               isTotal: true,
-              value: d[UNFILTERED_INDEX]
+              value: unfiltered
             },
             {
               isTotal: false,
@@ -842,7 +844,7 @@ function ColumnChart(element, vif) {
             },
             {
               isTotal: true,
-              value: d[UNFILTERED_INDEX]
+              value: unfiltered
             }
           ];
 
@@ -944,13 +946,11 @@ function ColumnChart(element, vif) {
       valueText;
   }
 
-  function _computeDomain(chartData, showFiltered) {
+  function _computeDomain(chartData, showFiltered, showUnfiltered) {
 
-    var allData = chartData.map(function(d) { return d[UNFILTERED_INDEX]; }).concat(
-      (showFiltered) ?
-        chartData.map(function(d) { return d[FILTERED_INDEX]; }) :
-        []
-    );
+    var unfilteredData = showUnfiltered ? chartData.map((d) => d[UNFILTERED_INDEX]) : [];
+    var filteredData = showFiltered ? chartData.map((d) => d[FILTERED_INDEX]) : [];
+    var allData = _.flatten([ unfilteredData, filteredData ]);
 
     function _makeDomainIncludeZero(domain) {
       var min = domain[0];
@@ -963,8 +963,8 @@ function ColumnChart(element, vif) {
     return _makeDomainIncludeZero(d3.extent(allData));
   }
 
-  function _computeVerticalScale(innerHeight, chartData, showFiltered) {
-    return d3.scale.linear().domain(_computeDomain(chartData, showFiltered)).range([0, innerHeight]);
+  function _computeVerticalScale(innerHeight, chartData, showFiltered, showUnfiltered) {
+    return d3.scale.linear().domain(_computeDomain(chartData, showFiltered, showUnfiltered)).range([0, innerHeight]);
   }
 
   function _computeHorizontalScale(chartWidth, chartData, showAllLabels) {

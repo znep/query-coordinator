@@ -75,7 +75,7 @@ export default function LinkModalRenderer() {
       var urlValidity = linkModalStore.getURLValidity();
 
       toggleModal(visibility);
-      toggleModalOK(valid);
+      toggleModalOK(valid && urlValidity);
       toggleWarning(urlValidity);
       setInputs(inputs);
     });

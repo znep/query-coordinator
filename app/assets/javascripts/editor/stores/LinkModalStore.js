@@ -8,13 +8,13 @@ export var linkModalStore = new LinkModalStore();
 export default function LinkModalStore() {
   _.extend(this, new Store());
 
-  var _self = this;
-  var _inputs = null;
-  var _visible = false;
-  var _editorId = null;
-  var _valid = false;
-  var _urlValidity = false;
-  var _accepted = false;
+  var self = this;
+  var inputs = null;
+  var visible = false;
+  var editorId = null;
+  var valid = false;
+  var urlValidity = false;
+  var accepted = false;
 
   this.register(function(payload) {
     switch (payload.action) {
@@ -34,73 +34,79 @@ export default function LinkModalStore() {
   });
 
   this.getEditorId = function() {
-    return _editorId;
+    return editorId;
   };
 
   this.getVisibility = function() {
-    return _visible;
+    return visible;
   };
 
   this.getAccepted = function() {
-    return _accepted;
+    return accepted;
   };
 
   this.getInputs = function() {
-    return _inputs;
+    return inputs;
   };
 
   this.getValidity = function() {
-    return _valid;
+    return valid;
   };
 
   this.getURLValidity = function() {
-    return _urlValidity;
+    return urlValidity;
   };
 
-  this.shouldSelectLink = function(editorId) {
-    return editorId === _editorId && _visible;
+  this.shouldSelectLink = function(targetEditorId) {
+    return editorId === targetEditorId && visible;
   };
 
-  this.shouldInsertLink = function(editorId) {
-    return editorId === _editorId && _accepted;
+  this.shouldInsertLink = function(targetEditorId) {
+    return editorId === targetEditorId && accepted;
   };
 
   function _openModal(payload) {
     StorytellerUtils.assertHasProperty(payload, 'editorId');
 
-    _visible = true;
-    _editorId = payload.editorId;
+    visible = true;
+    editorId = payload.editorId;
 
     _setInputs(payload);
   }
 
   function _closeModal() {
-    _visible = _valid = _urlValidity = _accepted = false;
-    _inputs = null;
+    visible = valid = urlValidity = accepted = false;
+    inputs = null;
 
-    _self._emitChange();
+    self._emitChange();
   }
 
   function _setAccepted(payload) {
-    _accepted = true;
+    accepted = true;
     _setInputs(payload);
   }
 
   function _setInputs(payload) {
     StorytellerUtils.assertHasProperties(payload, 'text', 'link', 'openInNewWindow');
 
-    _inputs = {
+    var urlRegex = /^https?:\/\/.+\../;
+    var emailRegex = /^(mailto:)?.+@./;
+
+    inputs = {
       text: payload.text,
       link: payload.link,
       openInNewWindow: payload.openInNewWindow
     };
 
-    _valid = typeof _inputs.text === 'string' &&
-      (typeof _inputs.link === 'string' && _inputs.link.length > 0);
+    valid = _.isString(inputs.text) && _.isString(inputs.link) && inputs.link.length > 0;
 
-    _urlValidity = (typeof _inputs.link === 'string' && _inputs.link.length === 0) ||
-      /^https?:\/\/.+/.test(_inputs.link);
+    urlValidity = urlRegex.test(inputs.link) || emailRegex.test(inputs.link);
 
-    _self._emitChange();
+    // If we have an email address without a protocol, inject the protocol.
+    if (emailRegex.test(inputs.link) && !_.startsWith(inputs.link, 'mailto:')) {
+      inputs.link = `mailto:${inputs.link}`;
+    }
+
+    self._emitChange();
   }
 }

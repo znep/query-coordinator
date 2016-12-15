@@ -28,6 +28,7 @@ namespace :manifest do
       manifest_output = ("= FRONTEND = (from #{from_tag} to #{to_tag})")
       manifest_output << "\n\nGit diff: https://github.com/socrata/frontend/compare/#{from_tag}...#{to_tag}"
 
+      puts "Diff Command: `git log --no-color --right-only --cherry-pick --no-merges --reverse #{from_tag}...#{to_tag}`"
       git_log_output = `git log --no-color --right-only --cherry-pick --no-merges --reverse #{from_tag}...#{to_tag}`
 
       manifest_output << "\n\nCommits with JIRA tickets:\n"

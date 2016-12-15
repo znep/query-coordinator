@@ -1260,8 +1260,8 @@ class AdministrationController < ApplicationController
     clear_success = expire_fragment(cache_key)
   end
 
-  def get_configuration(type = 'site_theme', merge = false, cache = false)
-    ::Configuration.find_by_type(type, true, CurrentDomain.cname, merge, cache).first
+  def get_configuration(type = 'site_theme', merge = false)
+    ::Configuration.find_by_type(type, true, CurrentDomain.cname, merge).first
   end
 
   def georegion_enabler

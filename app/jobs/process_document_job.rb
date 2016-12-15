@@ -33,7 +33,14 @@ class ProcessDocumentJob < ActiveJob::Base
 
   def perform(document_id)
     document = Document.find(document_id)
-    document.upload = URI.parse(document.direct_upload_url)
+
+    # X-Socrata-Host is required for create_document_from_core_asset
+    # We knowingly over-assign it here for other document types because it'll
+    # be innocuous to other services (like S3 and others).
+    #
+    # dontuse.ly exists in all environments as the base domain.
+    document.upload = open(document.direct_upload_url, "X-Socrata-Host" => 'dontuse.ly')
+
     document.status = 'processed'
     document.save!
   end

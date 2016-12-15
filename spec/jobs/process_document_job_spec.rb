@@ -5,6 +5,7 @@ RSpec.describe ProcessDocumentJob do
   describe '#perform' do
 
     let(:document) { FactoryGirl.create(:document) }
+    let(:file) { URI.parse(document.direct_upload_url) }
 
     subject { ProcessDocumentJob.new }
 
@@ -12,6 +13,10 @@ RSpec.describe ProcessDocumentJob do
       # prevent the paperclip default of pulling the doc from s3 and doing other stuff
       allow(Document).to receive(:find).with(document.id).and_return(document)
       allow(document).to receive(:upload=)
+      allow_any_instance_of(ProcessDocumentJob).
+        to receive(:open).
+        with(document.direct_upload_url, any_args).
+        and_return(file)
     end
 
     it 'sets document status to "processed"' do
@@ -20,7 +25,7 @@ RSpec.describe ProcessDocumentJob do
     end
 
     it 'sets document upload to documents upload url' do
-      expect(document).to receive(:upload=).with(URI.parse(document.direct_upload_url))
+      expect(document).to receive(:upload=).with(file)
       subject.perform(document.id)
     end
 

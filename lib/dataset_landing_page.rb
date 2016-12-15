@@ -260,7 +260,7 @@ class DatasetLandingPage
       }
 
       if view.story?
-        formatted_view[:url] = "https:#{view_url(view)}"
+        formatted_view[:url] = view.try(:link) || "https:#{view_url(view)}"
       end
 
       formatted_view

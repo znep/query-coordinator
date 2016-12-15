@@ -8,7 +8,11 @@ class Configuration < Model
       )
     end
 
-    response = if type.nil? || cname.nil?
+    # If we don't have a cname, we don't know what cache key to use, so skip caching.
+    # If cname is not CurrentDomain, we're in the internal panel, and caching is
+    # 1: more complicated (needs another domain object), 2: riskier,
+    # and 3: low-benefit, so skip it.
+    response = if type.nil? || cname.nil? || cname != CurrentDomain.cname
       fetch_config_from_core.call
     else
       Rails.cache.fetch(cache_key(type), &fetch_config_from_core)

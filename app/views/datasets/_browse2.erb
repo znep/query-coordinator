@@ -286,8 +286,8 @@
               result_link = result.link
               result_categories = (result.categories || []).map(&View.method(:category_display)).compact
               result_topics = (result.tags || []).reject(&:empty?)
-              result_last_updated = result.updatedAt.present? ? Time.iso8601(result.updatedAt).localtime.to_s(:catalog) : nil
-              result_created_at = result.createdAt.present? ? Time.iso8601(result.createdAt).localtime.to_s(:catalog) : nil
+              result_last_updated = result.updatedAt.present? ? blist_long_date(Time.iso8601(result.updatedAt).to_i, true) : nil
+              result_created_at = result.createdAt.present? ? blist_long_date(Time.iso8601(result.createdAt).to_i, true) : nil
               result_view_count = result.viewCount.present? ? number_with_delimiter(result.viewCount) : nil
             else
               result_link = result.link.present? ? result.link : view_url(result)

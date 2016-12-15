@@ -129,7 +129,7 @@
     <div class="browse2-result-metrics">
       <%-
         # Show Created instead of Updated when sorting by createdAt
-        timestamp, timelabel =
+        datetime, timelabel =
           if current_sort && current_sort[:value] == 'newest'
             [result_created_at, t("controls.browse.browse2.created_at.label")]
           else
@@ -142,7 +142,7 @@
           <%= timelabel %>
         </div>
         <div class="browse2-result-timestamp-value">
-          <%= l(Time.parse(timestamp), :format => "%B %d, %Y") %>
+          <%= datetime %>
         </div>
       </div>
 

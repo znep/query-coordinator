@@ -37,24 +37,68 @@ describe Configuration do
 
     context 'find_by_type' do
 
+      before do
+        Rails.cache = ActiveSupport::Cache::MemoryStore.new
+        Rails.cache.clear
+        allow(CurrentDomain).to receive(:configUpdatedAt).and_return(1477332984)
+      end
+
       it 'calls core only once for a given type', :verify_stubs => false do
         begin
-          Rails.cache = ActiveSupport::Cache::MemoryStore.new
-          Rails.cache.clear
-          allow(CurrentDomain).to receive(:configUpdatedAt).and_return(1477332984)
-          allow(CoreServer::Base.connection).to receive(:get_request).once.and_return(site_chrome_response)
+          expect(CoreServer::Base.connection).to receive(:get_request).once.and_return(site_chrome_response)
           config = subject.class.find_by_type('site_chrome', default_only = true, CurrentDomain.cname)
           expect(config.type).to eq('site_chrome')
           subject.class.find_by_type('site_chrome', default_only = true, CurrentDomain.cname)
           subject.class.find_by_type('site_chrome', default_only = true, CurrentDomain.cname)
           subject.class.find_by_type('site_chrome', default_only = true, CurrentDomain.cname)
 
-          Rails.cache.clear
         ensure
           Rails.cache = ActiveSupport::Cache::NullStore.new
         end
       end
 
+      it 'does not cache when cname is nil', :verify_stubs => false do
+        begin
+          expect(CoreServer::Base.connection).to receive(:get_request).twice.and_return(site_chrome_response)
+          config = subject.class.find_by_type('site_chrome', default_only = true, nil)
+          expect(config.type).to eq('site_chrome')
+          subject.class.find_by_type('site_chrome', default_only = true, nil)
+
+        ensure
+          Rails.cache = ActiveSupport::Cache::NullStore.new
+        end
+      end
+
+      # This case covers the internal panel editing experience
+      it 'does not cache when CurrentDomain.cname is not the find_by_type cname', :verify_stubs => false do
+        begin
+          expect(CoreServer::Base.connection).to receive(:get_request).twice.and_return(site_chrome_response)
+          config = subject.class.find_by_type('site_chrome', default_only = true, 'local.dev')
+          expect(config.type).to eq('site_chrome')
+          subject.class.find_by_type('site_chrome', default_only = true, 'local.dev')
+
+        ensure
+          Rails.cache = ActiveSupport::Cache::NullStore.new
+        end
+      end
+
+      it 'does cache when CurrentDomain.cname is the find_by_type cname', :verify_stubs => false do
+        begin
+          expect(CoreServer::Base.connection).to receive(:get_request).once.and_return(site_chrome_response)
+          config = subject.class.find_by_type('site_chrome', default_only = true, 'localhost')
+          expect(config.type).to eq('site_chrome')
+          subject.class.find_by_type('site_chrome', default_only = true, 'localhost')
+          subject.class.find_by_type('site_chrome', default_only = true, 'localhost')
+          subject.class.find_by_type('site_chrome', default_only = true, 'localhost')
+
+        ensure
+          Rails.cache = ActiveSupport::Cache::NullStore.new
+        end
+      end
+
+      after do
+        Rails.cache.clear
+      end
     end
 
   end

@@ -1400,9 +1400,23 @@ export default function AssetSelectorStore() {
   function _updateImageUrlWrapper(payload) {
     var value = self.getComponentValue();
     var url = payload.url;
-    var urlValidity = _.isString(url) && url.length === 0 || /^https?:\/\/.+/.test(url);
+
+    // If it isn't empty, it should look like an HTTP URI, mailto URI, or plain email address.
+    var urlRegex = /^https?:\/\/.+\../;
+    var emailRegex = /^(mailto:)?.+@./;
+    var urlValidity = _.isString(url) &&
+      (
+        url.length === 0 ||
+        urlRegex.test(url) ||
+        emailRegex.test(url)
+      );
 
     if (_state.componentType === 'image') {
+      // If we have an email address without a protocol, inject the protocol.
+      if (emailRegex.test(url) && !_.startsWith(url, 'mailto:')) {
+        url = `mailto:${url}`;
+      }
+
       value.link = url;
       value.urlValidity = urlValidity;
     } else {

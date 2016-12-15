@@ -1,6 +1,6 @@
 module StoryMetadata
   def title
-    metadata[:title] || I18n.t('default_page_title')
+    metadata[:title] || default_title
   end
 
   def description

@@ -26,4 +26,8 @@ class CoreStoryMetadata
   def goal?
     false
   end
+
+  def default_title
+    I18n.t('default_page_title')
+  end
 end

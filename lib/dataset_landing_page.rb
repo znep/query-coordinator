@@ -94,7 +94,8 @@ class DatasetLandingPage
         :editUrl => edit_view_path(view),
         :sortOrder => view.sort_order,
         :bootstrapUrl => bootstrap_url(view),
-        :metadata => view.metadata
+        :metadata => view.metadata,
+        :disableContactDatasetOwner => disable_contact_dataset_owner(view)
       }
 
       results
@@ -380,6 +381,10 @@ class DatasetLandingPage
 
     def row_label(view)
       view.row_label || I18n.t('dataset_landing_page.default_row_label').capitalize
+    end
+
+    def disable_contact_dataset_owner(view)
+      CurrentDomain.feature?(:disable_contact_dataset_owner)
     end
   end
 end

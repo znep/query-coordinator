@@ -165,5 +165,30 @@ describe('components/InfoPaneButtons', () => {
         expect(element.querySelector('a[href="commentUrl"]')).to.not.exist;
       });
     });
+
+    describe('contact dataset owner link', () => {
+      it('exists by default (disableContactDatasetOwner is false or undefined)', () => {
+        const element = renderComponent(InfoPaneButtons, getProps());
+         expect(element.querySelector('a[data-modal="contact-form"]')).to.exist;
+      });
+
+      it('exists if disableContactDatasetOwner is defined and set to false', () => {
+        const element = renderComponent(InfoPaneButtons, getProps({
+          view: {
+            disableContactDatasetOwner: false
+          }
+        }));
+        expect(element.querySelector('a[data-modal="contact-form"]')).to.exist;
+      });
+
+      it('does not exist if disableContactDatasetOwner is defined and set to true', () => {
+        const element = renderComponent(InfoPaneButtons, getProps({
+          view: {
+            disableContactDatasetOwner: true
+          }
+        }));
+        expect(element.querySelector('a[data-modal="contact-form"]')).to.not.exist;
+      });
+    });
   });
 });

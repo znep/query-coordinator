@@ -142,13 +142,14 @@ export default React.createClass({
   renderMoreActions() {
     const { view } = this.props;
 
-    const contactFormLink = (
+
+    const contactFormLink = !view.disableContactDatasetOwner ? (
       <li>
         <a tabIndex="0" role="button" className="option" data-modal="contact-form">
           {I18n.action_buttons.contact_owner}
         </a>
       </li>
-    );
+    ) : null;
 
     const commentLink = view.commentUrl ? (
       <li>

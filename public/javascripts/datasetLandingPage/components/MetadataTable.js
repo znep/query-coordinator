@@ -128,6 +128,7 @@ export const MetadataTable = React.createClass({
     let tags;
     let statsSection;
     let editMetadata;
+    let contactDatasetOwner;
 
     if (view.attribution) {
       attribution = (
@@ -284,6 +285,15 @@ export const MetadataTable = React.createClass({
       );
     }
 
+    if (!view.disableContactDatasetOwner) {
+      contactDatasetOwner = (<button
+        className="btn btn-sm btn-primary btn-block contact-dataset-owner"
+        data-modal="contact-form">
+        {I18n.contact_dataset_owner}
+      </button>
+      );
+    }
+
     return (
       <section className="landing-page-section">
         <div className="landing-page-header-wrapper">
@@ -391,12 +401,7 @@ export const MetadataTable = React.createClass({
                   </dd>
                 </div>
               </div>
-
-              <button
-                className="btn btn-sm btn-primary btn-block contact-dataset-owner"
-                data-modal="contact-form">
-                {I18n.contact_dataset_owner}
-              </button>
+              {contactDatasetOwner}
             </div>
           </dl>
 

@@ -8,7 +8,7 @@ class Configuration < Model
       )
     end
 
-    response = if type.nil?
+    response = if type.nil? || cname.nil?
       fetch_config_from_core.call
     else
       Rails.cache.fetch(cache_key(type), &fetch_config_from_core)

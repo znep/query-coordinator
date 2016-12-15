@@ -136,6 +136,32 @@ describe DatasetLandingPage do
 
         expect(results).to eq([formatted_view])
       end
+
+      context 'results contain story' do
+        let(:story_link) { 'http://example.com/stories/s/good-best' }
+        let(:cetera_result_double) do
+          instance_double(Cetera::Results::ResultRow,
+            :id => 'elep-hant',
+            :get_preview_image_url => 'image',
+            :link => story_link
+          ).as_null_object
+        end
+
+        let(:results) { DatasetLandingPage.fetch_derived_views('data-lens', 'cookie', 'request_id') }
+
+        before do
+          allow(Cetera::Utils).to receive(:get_derived_from_views).and_return([cetera_result_double])
+          allow(cetera_result_double).to receive(:story?).and_return(true)
+        end
+
+        it 'does not raise' do
+          expect{ results }.to_not raise_error
+        end
+
+        it 'renders link to story' do
+          expect(results.first[:url]).to eq(story_link)
+        end
+      end
     end
 
     context 'private dataset' do

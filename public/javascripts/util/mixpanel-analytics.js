@@ -125,7 +125,7 @@ $(document).ready(function() {
     var valid = true;
 
     _.forEach(properties, function(value, key) {
-      if (_.isObject(value)) {
+      if (_.isObject(value) && !_.isArray(properties)) {
         validateProperties(value);
       } else {
         blist.util.enforceLodashFunctions();
@@ -153,10 +153,8 @@ $(document).ready(function() {
     'Dataset Owner': ownerId,
     'Domain': window.location.hostname,
     'IP': blist.requestIp,
-    'Limit': _.get(blist, 'browse.limit'),
     'On Page': window.location.pathname,
     'Request Id': blist.requestId,
-    'Result Ids': _.keys(_.get(blist, 'browse.datasets')),
     'Session Id': blist.sessionId,
     'Socrata Employee': _.includes(_.get(blist, 'currentUserJson.flags'), 'admin'),
     'URL': window.location.href,
@@ -239,7 +237,9 @@ $(document).ready(function() {
   var genericBrowsePayload = function() {
     var uniqueToBrowseProperties = {
       'Catalog Version': 'browse2',
-      'User Id': blist.currentUser ? blist.currentUser.email : 'Anonymous'
+      'User Id': blist.currentUser ? blist.currentUser.email : 'Anonymous',
+      'Result Ids': _.keys(_.get(blist, 'browse.datasets')),
+      'Limit': _.get(blist, 'browse.limit')
     };
     var staticPropertyNames = [
       'IP',

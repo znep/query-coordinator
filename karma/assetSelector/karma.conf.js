@@ -5,16 +5,14 @@ var root = path.resolve(__dirname, '../..');
 
 module.exports = function ( karma ) {
   karma.set({
-    basePath: '../../',
-
     singleRun: true,
 
     files: [
-      'karma/assetSelector/index.js'
+      'index.js'
     ],
 
     preprocessors: {
-      'karma/assetSelector/index.js': ['webpack', 'sourcemap']
+      'index.js': ['webpack', 'sourcemap']
     },
 
     frameworks: ['mocha', 'chai', 'chai-as-promised', 'sinon-chai'],

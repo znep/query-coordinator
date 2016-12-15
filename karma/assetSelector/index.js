@@ -1,3 +1,7 @@
+/*** Run all assetSelector tests:
+./node_modules/karma/bin/karma start karma/assetSelector/karma.conf.js --singleRun false --browsers PhantomJS --reporters mocha
+***/
+
 // This is required by socrata-components
 import 'babel-polyfill';
 import { Provider } from 'react-redux';
@@ -11,14 +15,14 @@ window.redux = require('redux');
 window.I18n = require('mockTranslations');
 
 // This needs to happen after setting all of the mock window data.
-// var getDefaultStore = require('testStore').getDefaultStore;
+var getDefaultStore = require('testStore').getDefaultStore;
 
 window.renderComponent = _.flow(React.createElement, TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
 window.renderPureComponent = _.flow(TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
-// window.renderComponentWithStore = function(component, props, store) {
-//   store = store || getDefaultStore();
-//   return window.renderComponent(Provider, { store }, React.createElement(component, props));
-// }
+window.renderComponentWithStore = function(component, props, store) {
+  store = store || getDefaultStore();
+  return window.renderComponent(Provider, { store }, React.createElement(component, props));
+}
 
 function requireAll(context) {
   context.keys().forEach(context);
@@ -26,7 +30,4 @@ function requireAll(context) {
 
 // Run all the tests
 requireAll(require.context('./components', true, /\.js$/));
-// requireAll(require.context('./reducers', true, /\.js$/));
-
-// Run all assetSelector tests:
-// ./node_modules/karma/bin/karma start karma/assetSelector/karma.conf.js --singleRun false --browsers PhantomJS --reporters mocha
+requireAll(require.context('./reducers', true, /\.js$/));

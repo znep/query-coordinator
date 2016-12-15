@@ -3,7 +3,7 @@ import Card from './Card';
 
 const CardContainer = (props) => {
   const results = props.results.map((result, i) =>
-    <Card key={i} data={result} />
+    <Card key={i} {...result} />
   );
 
   return (

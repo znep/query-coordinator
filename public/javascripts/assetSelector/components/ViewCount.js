@@ -6,7 +6,7 @@ export const ViewCount = (props) => {
 
   return (
     <div className="view-count">
-      {count} {isPlural ? 'Results' : 'Result'} {/* TODO: localization */}
+      {count} {isPlural ? 'Results' : 'Result'}{/* TODO: localization */}
     </div>
   );
 };

@@ -6,7 +6,7 @@ const initialState = function() {
   };
 };
 
-export default (state = initialState(), action) => {
+export default (state = initialState(), action = {}) => {
   state = _.cloneDeep(state);
   switch (action.type) {
     case 'CHANGE_VIEW_TYPE':

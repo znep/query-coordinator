@@ -10,20 +10,19 @@ export class Card extends Component {
   }
 
   viewCardProps() {
-    const data = this.props.data;
 
     return {
-      name: data.name,
-      description: data.description,
-      url: data.link,
-      icon: getIconClassForDisplayType(data.type),
-      metadataLeft: getDateLabel(data.updated_at),
-      metadataRight: getViewCountLabel(data.view_count),
-      imageUrl: data.preview_image_url,
-      isPrivate: !data.is_public,
+      name: this.props.name,
+      description: this.props.description,
+      url: this.props.link,
+      icon: getIconClassForDisplayType(this.props.type),
+      metadataLeft: getDateLabel(this.props.updated_at),
+      metadataRight: getViewCountLabel(this.props.view_count),
+      imageUrl: this.props.preview_image_url,
+      isPrivate: !this.props.is_public,
       linkProps: {
         target: '_blank',
-        'aria-label': getAriaLabel(data)
+        'aria-label': getAriaLabel(this.props)
       }
     };
   }
@@ -34,11 +33,28 @@ export class Card extends Component {
 }
 
 Card.propTypes = {
-  data: PropTypes.object.isRequired
+  categories: PropTypes.array,
+  created_at: PropTypes.string,
+  description: PropTypes.string,
+  display_title: PropTypes.string,
+  id: PropTypes.string,
+  is_federated: PropTypes.bool,
+  is_public: PropTypes.bool,
+  link: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  preview_image_url: PropTypes.string,
+  provenance: PropTypes.string,
+  tags: PropTypes.array,
+  type: PropTypes.string.isRequired,
+  updated_at: PropTypes.string,
+  view_count: PropTypes.number.isRequired
 };
 
 Card.defaultProps = {
-  data: {}
+  link: '',
+  name: '',
+  type: '',
+  view_count: 0
 };
 
 export default Card;

@@ -3,7 +3,7 @@ import TableResult from './TableResult';
 
 export const TableContainer = (props) => {
   const results = props.results.map((result, i) =>
-    <TableResult key={i} data={result} />
+    <TableResult key={i} {...result} />
   );
 
   return (

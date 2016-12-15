@@ -42,4 +42,15 @@ describe('components/ResultsContainer', function() {
     var element = renderComponent(ResultsContainer, getProps({ viewType: 'TABLE_VIEW' }));
     expect(element.querySelector('.table-container')).to.exist;
   });
+
+  it('renders the correct number of cards', function() {
+    const results = defaultProps().results.slice(0);
+    const originalResult = results[0];
+    for (var i = 0; i < 99; i++) {
+      results.push(originalResult)
+    }
+    var element = renderComponent(ResultsContainer, getProps({ results }));
+    expect(element.querySelectorAll('.result-card').length).to.equal(100);
+    expect(element.querySelector('.view-count').textContent).to.equal('100 Results');
+  });
 });

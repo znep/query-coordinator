@@ -1,4 +1,5 @@
-$page-margin: 5mm;
+$page-top-margin: 10mm;
+$page-side-margin: 5mm;
 
 @media print {
 
@@ -6,10 +7,30 @@ $page-margin: 5mm;
     -webkit-print-color-adjust: exact;
   }
 
-  #site-chrome-header {
+  // Stylesheet load order makes all of this very... important.
 
-    nav {
-      display: none;
+  #site-chrome-admin-header {
+    display: none !important;
+
+    & + #site-chrome-header {
+      margin-top: 0 !important;
+    }
+  }
+
+  #site-chrome-header {
+    &[template="evergreen"] {
+      nav {
+        display: none !important;
+      }
+    }
+
+    &[template="rally"] {
+      .searchbox {
+        display: none !important
+      }
+      .rally-bottom {
+        display: none !important
+      }
     }
   }
 
@@ -97,7 +118,7 @@ $page-margin: 5mm;
               //
               // Note that SCSS calculations involving different units resolve
               // by using the first unit. We don't want px for physical media.
-              width: (8.5in - (2 * $page-margin));
+              width: (8.5in - (2 * $page-side-margin));
             }
           }
         }
@@ -111,6 +132,6 @@ $page-margin: 5mm;
 }
 
 @page {
-  margin: $page-margin;
+  margin: $page-top-margin $page-side-margin;
   padding: 0;
 }

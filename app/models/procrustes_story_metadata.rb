@@ -22,4 +22,8 @@ class ProcrustesStoryMetadata
   def goal?
     true
   end
+
+  def default_title
+    I18n.t('default_goal_title')
+  end
 end

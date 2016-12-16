@@ -199,6 +199,7 @@ describe('ColumnChart', function() {
 
     var renderOptions = {
       showAllLabels: false,
+      showUnfiltered: true,
       showFiltered: false
     };
 

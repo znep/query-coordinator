@@ -3,6 +3,7 @@ require 'signaller/test/helpers'
 # Add more helper methods to be used by all tests here...
 module TestHelperMethods
   include Signaller::Test::Helpers
+  include SocrataSiteChrome::Test::Helpers
 
   def init_current_domain
     # For some reason, Domain and Configuration aren't autoloaded at this point,
@@ -100,6 +101,8 @@ module TestHelperMethods
   end
 
   def stub_site_chrome(body = SocrataSiteChrome::DomainConfig.default_configuration.first)
+    stub_site_chrome_instance # SocrataSiteChrome::Test::Helpers
+
     if Object.respond_to?(:stubs)
       # Minitest
       SiteAppearance.stubs(
@@ -127,9 +130,6 @@ module TestHelperMethods
       )
       allow_any_instance_of(SocrataSiteChrome::DomainConfig).to receive(:config).and_return(
         HashWithIndifferentAccess.new(body)
-      )
-      allow_any_instance_of(ApplicationController).to receive(:site_chrome_instance).and_return(
-        SocrataSiteChrome::SiteChrome.new(:content => HashWithIndifferentAccess.new(body))
       )
     end
   end

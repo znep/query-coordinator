@@ -228,7 +228,6 @@ class DatasetsControllerTest < ActionController::TestCase
               :body => '{"id": "four-four", "cname": "test.host", "configsLastUpdatedAt": 1477332982}',
               :headers => {}
             )
-          stub_site_chrome_custom_content
           @controller.stubs(get_view: @test_view)
           @test_view.stubs(:dataset? => true)
           @test_view.stubs(find_dataset_landing_page_related_content: [])

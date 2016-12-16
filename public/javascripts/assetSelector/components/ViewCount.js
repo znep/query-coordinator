@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
+import { getViewCountLabel } from '../../datasetLandingPage/lib/viewCardHelpers';
 
 export const ViewCount = (props) => {
-  const count = props.count;
-  const isPlural = count !== 1; // TODO: is there an I18n pluralize function for this?
+  const isPlural = props.count !== 1; // TODO: is there an I18n pluralize function for this?
 
   return (
     <div className="view-count">
-      {count} {isPlural ? 'Results' : 'Result'}{/* TODO: localization */}
+      {getViewCountLabel(props.count)} {isPlural ? 'Results' : 'Result'}{/* TODO: localization */}
     </div>
   );
 };

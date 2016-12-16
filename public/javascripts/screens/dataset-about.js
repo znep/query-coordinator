@@ -20,4 +20,8 @@ $(function() {
       $container.find('.row_count').text(blist.dataset.totalRows());
     });
   }
+
+  if (!blist.feature_flags.enable_inline_login && !blist.currentUserId) {
+    $container.find('.yourRating').socrataTip($.t('screens.about.tooltip.rating_disabled'));
+  }
 });

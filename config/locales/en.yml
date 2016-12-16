@@ -792,6 +792,10 @@ en:
         next_item_page: View next %{count} items
         no_results: There are no items to display
         user_create_action: 'created a %{thing}:'
+      tooltips:
+        add_comment_disabled: You must be logged in to add a comment.
+        flag_inappropriate_disabled: You must be logged in to flag as inappropriate.
+        rate_comment_disabled: You must be logged in to rate a comment.
       types:
         all items: all items
         comments: comments
@@ -2087,6 +2091,8 @@ en:
       subject_column: Subject Column
       tags: Tags
       terms_of_use: Terms of Use
+      tooltips:
+        rating_disabled: You must be logged in to add a rating.
       updated: updated
       view_full_page: View Full Page
       view_statistics: View Statistics
@@ -3273,6 +3279,7 @@ en:
         revert_button: Revert
         revert_prompt: Revert to saved view
         save_as_button: Save As...
+        save_as_button_disabled_tooltip: You must be logged in to save changes.
         save_as_prompt: Save View As...
         save_button: Save
         save_progress: Saving...
@@ -4069,6 +4076,7 @@ en:
           view_name_required: A view name is required
       show:
         remove_confirm: Are you sure you want to remove this view?
+        unauthenticated_alert: Changes will not be saved unless you first sign in.
         unpublished_alert: This dataset is not yet published to allow you to make any necessary changes before making it available to everyone. It will not be visible until you publish this dataset.
       subscribe:
         intro_html: '<strong>To subscribe to the <span class="datasetName">%{name}</span> dataset via an RSS reader</strong>, use one of the following links:'

@@ -22,6 +22,32 @@ blist.datasetPage.clearTempView = function() {
   });
 };
 
+blist.datasetPage.flashTimedNotice = function(warning, timeout) {
+  var closeIcon = {
+    _: 'a',
+    href: '#',
+    className: 'close',
+    contents: {
+      _: 'span',
+      className: 'icon',
+      contents: 'close'
+    }
+  };
+  var flash = $.tag2({
+    _: 'div',
+    className: 'flash notice',
+    contents: [closeIcon, warning]
+  });
+  $('#noticeContainer').append(flash);
+  flash.find('a.close').click(function(e) {
+    e.preventDefault();
+    flash.fadeOut();
+  });
+  if (timeout) {
+    setTimeout(flash.fadeOut.bind(flash), timeout);
+  }
+};
+
 blist.datasetPage.setTempView = function() {
   if (blist.dataset.minorChange && !blist.dataset.hasRight(blist.rights.view.UPDATE_VIEW)) {
     return;
@@ -32,6 +58,10 @@ blist.datasetPage.setTempView = function() {
   // For now unsaved view means something has changed in filter tab
   $('#sidebarOptions .tabFilter a').addClass('alert');
   datasetPageNS.sidebar.updateEnabledSubPanes();
+
+  if (!blist.feature_flags.enable_inline_login && !blist.currentuserid) {
+    blist.datasetPage.flashTimedNotice($.t('screens.ds.show.unauthenticated_alert'), 10000);
+  }
 };
 
 blist.datasetPage.updateValidView = function() {
@@ -987,4 +1017,12 @@ $(function() {
       datasetShowHelpers.getNewUXLinkHref(linkParams);
     }
   });
+
+  // disable "save as" button if the user isn't logged in
+  if (!blist.feature_flags.enable_inline_login && !blist.currentUserId) {
+    var $saveAs = $('.unsavedLine a.saveAs');
+    $saveAs.addClass('disabled');
+    $saveAs.off('click');
+    $saveAs.socrataTip($.t('screens.ds.bar.save_as_button_disabled_tooltip'));
+  }
 });

@@ -18,13 +18,17 @@
               });
             }
 
-            $sect.find('.datasetAverageRating').each(function() {
+            $sect.find('.starsControl').each(function() {
               blist.datasetControls.datasetRating($(this), $sect, true);
               // HACK: basePane validates the parent form; but the validator
               // crashes because it can't find a validate object on the star form
               // Bad nested forms!
               $(this).validate();
             });
+
+            if (!blist.feature_flags.enable_inline_login && !blist.currentUserId) {
+              $sect.find('.yourRating').socrataTip($.t('screens.about.tooltips.rating_disabled'));
+            }
 
             $sect.find('.expander').click(function(event) {
               event.preventDefault();

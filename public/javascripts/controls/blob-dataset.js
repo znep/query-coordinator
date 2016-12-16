@@ -80,7 +80,7 @@
             e.preventDefault();
           });
 
-          $domObj.find('.datasetAverageRating').each(function() {
+          $domObj.find('.starsControl').each(function() {
             blist.datasetControls.datasetRating($(this), $domObj,
               blobObj.settings.editEnabled);
           });

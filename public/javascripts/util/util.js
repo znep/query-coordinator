@@ -995,7 +995,7 @@ String.prototype.linkify = function(extra) { //eslint-disable-line no-extend-nat
   // Wrapper around inlineLogin.verifyUser; simply does nothing
   // if auth fails
   blist.util.doAuthedAction = function(actionText, callback) {
-    if (!$.isBlank(blist.util.inlineLogin)) {
+    if (blist.feature_flags.enable_inline_login && !$.isBlank(blist.util.inlineLogin)) {
       blist.util.inlineLogin.verifyUser(
         function(isSuccess, successCallback) {
           if (isSuccess)

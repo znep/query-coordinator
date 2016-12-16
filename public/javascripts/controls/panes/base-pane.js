@@ -763,7 +763,7 @@
             cpObj._finish(data, $button.attr('data-value'), finalCallback);
           };
 
-          if (!$.isBlank(blist.util.inlineLogin) && $button.is('.requiresLogin')) {
+          if (blist.feature_flags.enable_inline_login && !$.isBlank(blist.util.inlineLogin) && $button.is('.requiresLogin')) {
             var msg = $button.attr('data-loginMsg') || cpObj.settings.defaultLoginMessage;
             blist.util.inlineLogin.verifyUser(
               function(isSuccess, successCallback) {

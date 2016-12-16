@@ -538,6 +538,23 @@
         if (opts.alwaysShowNewCommentForm === true) {
           createCommentForm($this.find('.noResults'), opts.mainView);
         }
+
+        // disable certain features if the user is not logged in
+        if (!blist.feature_flags.enable_inline_login && !blist.currentUserId) {
+          $('.feedNewCommentButton, .postNewCommentButton').
+            addClass('disabled').
+            prop('disabled', true).
+            socrataTip($.t('controls.feed.tooltips.add_comment_disabled'));
+          $('.commentReplyLink').
+            prop('disabled', true).
+            socrataTip($.t('controls.feed.tooltips.add_comment_disabled'));
+          $('.commentInappropriateLink').
+            prop('disabled', true).
+            socrataTip($.t('controls.feed.tooltips.flag_inappropriate_disabled'));
+          $('.commentRateUpLink, .commentRateDownLink').
+            prop('disabled', true).
+            socrataTip($.t('controls.feed.tooltips.rate_comment_disabled'));
+        }
       }
     });
   };

@@ -185,7 +185,7 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
       }
     };
 
-    if (!$.isBlank(blist.util.inlineLogin)) {
+    if (blist.feature_flags.enable_inline_login && !$.isBlank(blist.util.inlineLogin)) {
       var msg = $.t('screens.ds.save_dialog.validation.auth_required');
       blist.util.inlineLogin.verifyUser(
         function(isSuccess) {

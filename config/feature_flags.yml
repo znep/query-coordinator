@@ -81,6 +81,9 @@ enable_ingress_geometry_types:
   description: 'Add the types: point, multipoint, line, multiline, polygon, multipolygon. This flag only functions when `ingress_strategy` is delta-importer or nbe.'
   defaultValue: false
   category: obe deprecation
+enable_inline_login:
+  defaultValue: true
+  description: If set to false, disables all controls which would trigger inline-login (mostly affects unsaved views while logged out).
 enable_visualization_canvas:
   description: Enables Visualization Canvas (viewing saved VCs when this flag is off will result in a 404)
   defaultValue: false

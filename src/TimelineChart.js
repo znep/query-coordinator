@@ -92,6 +92,7 @@ $.fn.socrataTimelineChart = function(vif) {
   function _getRenderOptions(vifToRender) {
     return {
       showAllLabels: true,
+      showUnfiltered: true,
       showFiltered: false,
       precision: precision,
       vif: vifToRender

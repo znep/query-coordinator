@@ -163,7 +163,6 @@ module Auth0Helper
       chooseConnectionMessage: @auth0_message || t('screens.sign_in.auth0_intro'),
       formMessage: @auth0_form_message,
       flashes: formatted_flashes,
-      translations: get_translations(LocalePart.screens.sign_in),
       companyName: CurrentDomain.strings.company
     }.to_json.html_safe
   end

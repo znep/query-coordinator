@@ -72,7 +72,11 @@ export function findForcedOrEmailDomainConnection(
  */
 export class Translate {
   constructor(translations) {
-    this.translations = translations;
+    if (_.isEmpty(translations)) {
+      this.translations = blist.translations;
+    } else {
+      this.translations = translations;
+    }
   }
 
   /**

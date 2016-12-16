@@ -169,7 +169,9 @@ function awaitDocumentProcessing(assetUrl) {
 function migrateTextSection(section) {
   // Current strategy: migrate Showdown output directly, and let Squire re-write
   // to meet its own needs.
-  const correctMarkdown = escapeMarkdownLinks(section.text || '');
+  //
+  // However, we are preemptively converting <h1> to <h3>.
+  const correctMarkdown = escapeMarkdownLinks(section.text || '').replace(/^# /gm, '### ');
   const html = linkify(converter.makeHtml(correctMarkdown));
   return [{
     type: 'html',

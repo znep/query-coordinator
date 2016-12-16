@@ -90,6 +90,8 @@ class ApplicationController < ActionController::Base
     case controller
       when 'admin/themes'
         require_sufficient_rights_for_admin_themes
+      when 'api/stat/v1/goals/permissions'
+        require_sufficient_rights_for_api_stat_goals_permissions
       when 'api/stat/v1/goals/published'
         require_sufficient_rights_for_api_stat_goals_published
       when 'api/v1/documents'
@@ -299,12 +301,25 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def require_sufficient_rights_for_api_stat_goals_permissions
+    action = params[:action]
+
+    case action
+      when 'update'
+        render nothing: true, status: 403 unless can_edit_goals?
+      else
+        raise_undefined_authorization_handler_error
+    end
+  end
+
   def require_sufficient_rights_for_api_stat_goals_published
     action = params[:action]
 
     case action
       when 'latest'
-        render_story_404 unless can_view_goal?(params[:uid])
+        render nothing: true, status: 403 unless can_view_goal?(params[:uid])
+      when 'create'
+        render nothing: true, status: 403 unless can_edit_goals?
       else
         raise_undefined_authorization_handler_error
     end

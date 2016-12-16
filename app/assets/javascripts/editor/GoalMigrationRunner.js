@@ -141,7 +141,7 @@ function prefetchDataNeededForMigration(sections) {
 function awaitDocumentProcessing(assetUrl) {
   const assetId = assetUrl.replace('/api/assets/', '');
   const documentId = Environment.OP_GOAL_DOCUMENT_IDS_BY_ASSET_IDS[assetId];
-  const url = `https://${window.location.hostname}${Constants.API_PREFIX_PATH}/documents/${documentId}`;
+  const url = `${Constants.API_PREFIX_PATH}/documents/${documentId}`;
 
   return new Promise((resolve, reject) => {
     const requestStatus = () => httpRequest('GET', url).then(handleStatus);

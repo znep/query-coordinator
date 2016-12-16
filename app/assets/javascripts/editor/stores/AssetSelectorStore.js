@@ -402,21 +402,20 @@ export default function AssetSelectorStore() {
 
     var page = this.getImageSearchPage();
     var pageSize = this.getImageSearchPageSize();
-    var query = StorytellerUtils.format(
-      'phrase={0}&page={1}&page_size={2}',
-      encodeURIComponent(phrase),
-      encodeURIComponent(page),
-      encodeURIComponent(pageSize)
-    );
 
     if (phraseIsNull || phraseIsEmptyString) {
       return null;
     } else {
-      return StorytellerUtils.format(
-        '{0}getty-images/search?{1}',
-        Constants.API_PREFIX_PATH,
-        query
-      );
+      var queryString = _.map(
+        {
+          phrase: phrase,
+          page: page,
+          page_size: pageSize
+        },
+        (val, key) => `${key}=${encodeURIComponent(val)}`
+      ).join('&');
+
+      return `${Constants.API_PREFIX_PATH}/getty-images/search?${queryString}`;
     }
   };
 
@@ -518,7 +517,7 @@ export default function AssetSelectorStore() {
     StorytellerUtils.assertIsOneOfTypes(payload.id, 'string', 'number');
 
     var type = self.getComponentType();
-    var url = StorytellerUtils.format('{0}getty-images/{1}', Constants.API_PREFIX_PATH, payload.id);
+    var url = `${Constants.API_PREFIX_PATH}/getty-images/${payload.id}`;
     var image = {
       documentId: null,
       url: url
@@ -552,7 +551,7 @@ export default function AssetSelectorStore() {
 
   function commitImageCrop() {
     var value = getImageComponent(self.getComponentValue());
-    var documentUrl = StorytellerUtils.format('{0}documents/{1}', Constants.API_PREFIX_PATH, value.documentId);
+    var documentUrl = `${Constants.API_PREFIX_PATH}/documents/${value.documentId}`;
     var documentRequestOptions = {
       dataType: 'json',
       headers: storytellerAPIRequestHeaders()
@@ -570,7 +569,7 @@ export default function AssetSelectorStore() {
 
   function cropImage(data) {
     var value = getImageComponent(self.getComponentValue());
-    var cropUrl = StorytellerUtils.format('{0}documents/{1}/crop', Constants.API_PREFIX_PATH, value.documentId);
+    var cropUrl = `${Constants.API_PREFIX_PATH}/documents/${value.documentId}/crop`;
     var document = value.crop ? {
       crop_x: value.crop.x / 100,
       crop_y: value.crop.y / 100,

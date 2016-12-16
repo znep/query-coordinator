@@ -151,6 +151,10 @@ describe('StoryPermissionsManager', () => {
     isPublic: false
   }];
 
+  // TODO: we'd ideally like to test that we use a different endpoint when
+  // Environment.IS_GOAL === true, but that requires unraveling some of this
+  // fancy test structure.
+
   testVariant('makePublic', '/stories/api/v1/stories/four-four/published', 'POST', { isPublic: true }, publicActions, JSON.stringify({ digest: 'test-digest' }));
   testVariant('makePrivate', '/stories/api/v1/stories/four-four/permissions', 'PUT', { isPublic: false }, privateActions, JSON.stringify({ isPublic: false }));
 });

@@ -11,7 +11,6 @@ import { assetSelectorStore } from './AssetSelectorStore';
 import { exceptionNotifier } from '../../services/ExceptionNotifier';
 
 var MAX_FILE_SIZE_BYTES = Constants.MAX_FILE_SIZE_BYTES || (1024 * 1024 * 5);
-var API_PREFIX_PATH = '/stories/api/v1';
 var CODE = {
   OK: 200
 };
@@ -404,10 +403,11 @@ export default function FileUploaderStore() {
     return file && file.status === STATUS.CANCELLED;
   }
 
+  // TODO: replace with httpRequest
   function request(url, method, data) {
     return Promise.resolve(
       $.ajax({
-        url: API_PREFIX_PATH + url,
+        url: `${Constants.API_PREFIX_PATH}/${url}`,
         type: method,
         dataType: 'json',
         headers: {

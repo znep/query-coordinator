@@ -88,14 +88,14 @@ export default function StoryPermissionsRenderer() {
     }
 
     const isPublic = storyStore.isStoryPublic(STORY_UID);
-    const isCurrentDraftUnpublished = storyStore.isCurrentDraftUnpublished(STORY_UID);
+    const isDraftUnpublished = storyStore.isDraftUnpublished(STORY_UID);
 
     if (isPublic) {
       $visibilityLabel.text(i18n('visibility.public'));
       $visibilityButtonText.text(i18n('visibility.make_story_private'));
       $visibilityButton.addClass('btn-default').removeClass('btn-alternate-2');
 
-      if (isCurrentDraftUnpublished && permissionStore.canPublishCurrentStory()) {
+      if (isDraftUnpublished && permissionStore.canPublishCurrentStory()) {
         $updatePublicButton.prop('disabled', false);
         $updatePublicLabel.text(i18n('status.draft'));
         $publishingHelpText.text(i18n('messages.previously_published'));

@@ -60,7 +60,6 @@ RSpec.describe Api::V1::PublishedController, type: :controller do
 
     context 'when authenticated' do
       let(:user) { mock_valid_user }
-      let(:user_authorization) { mock_user_authorization_owner_publisher }
       let(:mock_story_publisher) { double('StoryPublisher') }
       let(:success) { nil }
       let(:published_story) { FactoryGirl.create(:published_story) }
@@ -71,10 +70,11 @@ RSpec.describe Api::V1::PublishedController, type: :controller do
         allow(mock_story_publisher).to receive(:publish) { success }
         allow(mock_story_publisher).to receive(:story).and_return(published_story)
         stub_valid_session
+        stub_core_view(params[:uid])
       end
 
       it 'calls StoryPublisher#publish' do
-        expect(StoryPublisher).to receive(:new).with(user, user_authorization, params).and_return(mock_story_publisher)
+        expect(StoryPublisher).to receive(:new).with(user, instance_of(CorePermissionsUpdater), params).and_return(mock_story_publisher)
         expect(mock_story_publisher).to receive(:publish)
         post :create, params
       end

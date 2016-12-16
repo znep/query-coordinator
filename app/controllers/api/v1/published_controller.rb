@@ -12,10 +12,10 @@ class Api::V1::PublishedController < ApplicationController
     end
   end
 
-  # Takes a draft story and creates a published version of it, then sets the published story
-  # as publicly visible in core.
+  # Takes a draft story and creates a published version of it, then sets the
+  # published story as publicly visible.
   def create
-    story_publisher = StoryPublisher.new(current_user, current_user_story_authorization, story_params)
+    story_publisher = StoryPublisher.new(current_user, permissions_updater, story_params)
     success = story_publisher.publish
 
     if success
@@ -31,5 +31,10 @@ class Api::V1::PublishedController < ApplicationController
 
   def story_params
     params.permit(:uid, :digest, :theme)
+  end
+
+  # NOTE: Overridden by the equivalent controller for goals.
+  def permissions_updater
+    CorePermissionsUpdater.new(params[:uid])
   end
 end

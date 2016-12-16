@@ -99,6 +99,12 @@ describe OpenPerformance::Goal do
     it_behaves_like 'goal metadata accessor', 'created_by'
   end
 
+  describe '#updated_at' do
+    let(:method) { :updated_at }
+    it_behaves_like 'odysseus error forwarder'
+    it_behaves_like 'goal metadata accessor', 'updated_at'
+  end
+
   describe '#narrative_migration_metadata' do
     let(:method) { :narrative_migration_metadata }
     let(:odysseus_narrative_body) do

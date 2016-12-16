@@ -34,6 +34,10 @@ class OpenPerformance::Goal
     goal_metadata['created_by']
   end
 
+  def updated_at
+    goal_metadata['updated_at']
+  end
+
   def narrative_migration_metadata
     narrative_metadata
   end

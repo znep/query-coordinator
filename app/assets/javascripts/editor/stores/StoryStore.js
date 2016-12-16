@@ -120,13 +120,16 @@ export default function StoryStore() {
     return !!this.getStoryPermissions(storyUid).isPublic;
   };
 
-  this.isCurrentDraftUnpublished = (storyUid) => {
+  this.isDraftUnpublished = function(storyUid) {
+    const isPublic = this.isStoryPublic(storyUid);
     const publishedStory = this.getStoryPublishedStory(storyUid);
     const digest = this.getStoryDigest(storyUid);
 
-    // Only stories that have been published can have their published and
-    // draft versions diverge.
-    return _.has(publishedStory, 'digest') && publishedStory.digest !== digest;
+    if (!publishedStory || !isPublic) {
+      return true;
+    } else {
+      return publishedStory.digest !== digest;
+    }
   };
 
   this.getStoryTitle = function(storyUid) {

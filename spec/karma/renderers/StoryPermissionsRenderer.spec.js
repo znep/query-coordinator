@@ -12,7 +12,7 @@ describe('StoryPermissionsRenderer', function() {
   let dispatcher;
   let storyPermissionsManager;
   let isPublic;
-  let isCurrentDraftUnpublished;
+  let isDraftUnpublished;
   let canPublishCurrentStory;
   let $settingsPanelPublishing;
   let $visibilityLabel;
@@ -86,7 +86,7 @@ describe('StoryPermissionsRenderer', function() {
       _.extend(this, new Store());
       this.doesStoryExist = _.constant(true);
       this.isStoryPublic = () => isPublic;
-      this.isCurrentDraftUnpublished = () => isCurrentDraftUnpublished;
+      this.isDraftUnpublished = () => isDraftUnpublished;
     };
 
     const PermissionStoreMock = function() {
@@ -146,7 +146,7 @@ describe('StoryPermissionsRenderer', function() {
 
           describe('and has diverged from the published story', function() {
             beforeEach(function() {
-              isCurrentDraftUnpublished = true;
+              isDraftUnpublished = true;
             });
 
             it('renders', function() {
@@ -233,7 +233,7 @@ describe('StoryPermissionsRenderer', function() {
     describe('when the story is public', function() {
       beforeEach(function() {
         isPublic = true;
-        isCurrentDraftUnpublished = true;
+        isDraftUnpublished = true;
         canPublishCurrentStory = true;
       });
 

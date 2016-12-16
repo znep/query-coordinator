@@ -19,9 +19,9 @@ RSpec.describe Api::Stat::V1::Goals::PublishedController, type: :controller do
       let(:action) { :latest }
       describe 'goal not visible' do
         let(:is_goal_accessible) { false }
-        it '404s' do
+        it '403s' do
           get_request
-          expect(response.status).to be(404)
+          expect(response.status).to be(403)
         end
       end
       describe 'goal visible' do

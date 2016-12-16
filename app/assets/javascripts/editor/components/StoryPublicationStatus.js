@@ -87,9 +87,9 @@ export const StoryPublicationStatus = React.createClass({
   renderPublicationMessage() {
     let message;
     const isPublic = storyStore.isStoryPublic(STORY_UID);
-    const isCurrentDraftUnpublished = storyStore.isCurrentDraftUnpublished(STORY_UID);
+    const isDraftUnpublished = storyStore.isDraftUnpublished(STORY_UID);
 
-    if (isPublic && isCurrentDraftUnpublished) {
+    if (isPublic && isDraftUnpublished) {
       message = 'previously_published';
     } else if (isPublic) {
       message = 'has_been_published';
@@ -107,7 +107,7 @@ export const StoryPublicationStatus = React.createClass({
   renderPublishButton() {
     const { isLoading } = this.state;
     const isPublic = storyStore.isStoryPublic(STORY_UID);
-    const isCurrentDraftUnpublished = storyStore.isCurrentDraftUnpublished(STORY_UID);
+    const isDraftUnpublished = storyStore.isDraftUnpublished(STORY_UID);
 
     const buttonText = isPublic ?
       'status.update_public_version' :
@@ -120,7 +120,7 @@ export const StoryPublicationStatus = React.createClass({
         'btn-busy': isLoading
       }),
       onClick: this.publicize,
-      disabled: isPublic && !isCurrentDraftUnpublished
+      disabled: !isDraftUnpublished
     };
 
     return (
@@ -183,13 +183,11 @@ export const StoryPublicationStatus = React.createClass({
   },
 
   render() {
-    let translationKey;
-
     if (!storyStore.doesStoryExist(STORY_UID)) {
       return null; // Story not loaded yet.
     }
-    const isPublic = storyStore.isStoryPublic(STORY_UID);
-    const isCurrentDraftUnpublished = storyStore.isCurrentDraftUnpublished(STORY_UID);
+
+    const isDraftUnpublished = storyStore.isDraftUnpublished(STORY_UID);
 
     const wrapperAttributes = {
       className: classNames('story-publication-status', {
@@ -205,20 +203,12 @@ export const StoryPublicationStatus = React.createClass({
 
     const statusIconAttributes = {
       className: classNames('story-publication-status-icon', {
-        'unpublished socrata-icon-warning-alt2': !isPublic || isCurrentDraftUnpublished,
-        'published socrata-icon-checkmark3': isPublic && !isCurrentDraftUnpublished
+        'unpublished socrata-icon-warning-alt2': isDraftUnpublished,
+        'published socrata-icon-checkmark3': !isDraftUnpublished
       })
     };
 
-    if (isPublic) {
-      if (isCurrentDraftUnpublished) {
-        translationKey = 'status.draft';
-      } else {
-        translationKey = 'status.published';
-      }
-    } else {
-      translationKey = 'status.draft';
-    }
+    const translationKey = isDraftUnpublished ? 'status.draft' : 'status.published';
 
     return (
       <div {...wrapperAttributes}>

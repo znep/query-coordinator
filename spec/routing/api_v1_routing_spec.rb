@@ -1,12 +1,23 @@
 require 'rails_helper'
 
 RSpec.describe 'api v1 routing', type: :routing do
+  let(:verb) { nil }
+  let(:path) { nil }
 
-  # POST /api/v1/stories/four-four/drafts
+  let(:default_route) do
+    { verb => path }
+  end
+  let(:explicit_json_route) do
+    default_route.merge(:format => 'json')
+  end
+
   describe 'drafts' do
     describe 'create endpoint' do
+      let(:verb) { :post }
+      let(:path) { '/api/v1/stories/four-four/drafts' }
+
       it 'routes json requests to DraftsController' do
-        expect(post: '/api/v1/stories/four-four/drafts', format: 'json').to route_to(
+        expect(explicit_json_route).to route_to(
           controller: 'api/v1/drafts',
           action: 'create',
           uid: 'four-four',
@@ -14,8 +25,8 @@ RSpec.describe 'api v1 routing', type: :routing do
         )
       end
 
-      it 'routes to draftscontroller with json by default' do
-        expect(post: '/api/v1/stories/four-four/drafts').to route_to(
+      it 'routes to DraftsController with json by default' do
+        expect(default_route).to route_to(
           controller: 'api/v1/drafts',
           action: 'create',
           uid: 'four-four',
@@ -23,13 +34,38 @@ RSpec.describe 'api v1 routing', type: :routing do
         )
       end
     end
+
+    describe 'latest endpoint' do
+      let(:verb) { :get }
+      let(:path) { '/api/v1/stories/four-four/drafts/latest' }
+
+      it 'routes json requests to DraftsController' do
+        expect(explicit_json_route).to route_to(
+          controller: 'api/v1/drafts',
+          action: 'latest',
+          uid: 'four-four',
+          format: 'json'
+        )
+      end
+
+      it 'routes to DraftsController with json by default' do
+        expect(default_route).to route_to(
+          controller: 'api/v1/drafts',
+          action: 'latest',
+          uid: 'four-four',
+          format: 'json'
+        )
+      end
+    end
   end
 
-  # POST /api/v1/stories/four-four/published
   describe 'publishing' do
     describe 'create endpoint' do
-      it 'routes json requests to published_controller' do
-        expect(post: '/api/v1/stories/four-four/published', format: 'json').to route_to(
+      let(:verb) { :post }
+      let(:path) { '/api/v1/stories/four-four/published' }
+
+      it 'routes json requests to PublishedController' do
+        expect(explicit_json_route).to route_to(
           controller: 'api/v1/published',
           action: 'create',
           format: 'json',
@@ -37,8 +73,8 @@ RSpec.describe 'api v1 routing', type: :routing do
         )
       end
 
-      it 'routes to published_controller with json by default' do
-        expect(post: '/api/v1/stories/four-four/published').to route_to(
+      it 'routes to PublishedController with json by default' do
+        expect(default_route).to route_to(
           controller: 'api/v1/published',
           action: 'create',
           format: 'json',
@@ -46,13 +82,38 @@ RSpec.describe 'api v1 routing', type: :routing do
         )
       end
     end
+
+    describe 'latest endpoint' do
+      let(:verb) { :get }
+      let(:path) { '/api/v1/stories/four-four/published/latest' }
+
+      it 'routes json requests to PublishedController' do
+        expect(explicit_json_route).to route_to(
+          controller: 'api/v1/published',
+          action: 'latest',
+          uid: 'four-four',
+          format: 'json'
+        )
+      end
+
+      it 'routes to PublishedController with json by default' do
+        expect(default_route).to route_to(
+          controller: 'api/v1/published',
+          action: 'latest',
+          uid: 'four-four',
+          format: 'json'
+        )
+      end
+    end
   end
 
-  # PUT /api/v1/stories/four-four/permissions
   describe 'permissions' do
     describe 'update endpoint' do
-      it 'routes json requests to permissions_controller' do
-        expect(put: '/api/v1/stories/four-four/permissions', format: 'json').to route_to(
+      let(:verb) { :put }
+      let(:path) { '/api/v1/stories/four-four/permissions' }
+
+      it 'routes json requests to PermissionsController' do
+        expect(explicit_json_route).to route_to(
           controller: 'api/v1/permissions',
           action: 'update',
           format: 'json',
@@ -60,8 +121,8 @@ RSpec.describe 'api v1 routing', type: :routing do
         )
       end
 
-      it 'routes to permissions_controller with json by default' do
-        expect(put: '/api/v1/stories/four-four/permissions').to route_to(
+      it 'routes to PermissionsController with json by default' do
+        expect(default_route).to route_to(
           controller: 'api/v1/permissions',
           action: 'update',
           format: 'json',
@@ -71,11 +132,13 @@ RSpec.describe 'api v1 routing', type: :routing do
     end
   end
 
-  # POST /api/v1/documents
   describe 'documents' do
     describe 'create endpoint' do
+      let(:verb) { :post }
+      let(:path) { '/api/v1/documents' }
+
       it 'routes json requests to DocumentsController' do
-        expect(post: '/api/v1/documents', format: 'json').to route_to(
+        expect(explicit_json_route).to route_to(
           controller: 'api/v1/documents',
           action: 'create',
           format: 'json'
@@ -83,7 +146,7 @@ RSpec.describe 'api v1 routing', type: :routing do
       end
 
       it 'routes to DocumentsController with json by default' do
-        expect(post: '/api/v1/documents').to route_to(
+        expect(default_route).to route_to(
           controller: 'api/v1/documents',
           action: 'create',
           format: 'json'
@@ -91,9 +154,13 @@ RSpec.describe 'api v1 routing', type: :routing do
       end
     end
 
+    # GET /api/v1/documents/id
     describe 'show endpoint' do
+      let(:verb) { :get }
+      let(:path) { '/api/v1/documents/1' }
+
       it 'routes json requests to DocumentsController' do
-        expect(get: '/api/v1/documents/1', format: 'json').to route_to(
+        expect(explicit_json_route).to route_to(
           controller: 'api/v1/documents',
           action: 'show',
           format: 'json',
@@ -102,18 +169,30 @@ RSpec.describe 'api v1 routing', type: :routing do
       end
 
       it 'routes to DocumentsController with json by default' do
-        expect(get: '/api/v1/documents/2').to route_to(
+        expect(default_route).to route_to(
           controller: 'api/v1/documents',
           action: 'show',
           format: 'json',
-          id: '2'
+          id: '1'
         )
       end
     end
 
     describe 'crop endpoint' do
-      it 'routes to DocumentController' do
-        expect(put: '/api/v1/documents/3/crop', format: 'json').to route_to(
+      let(:verb) { :put }
+      let(:path) { '/api/v1/documents/3/crop' }
+
+      it 'routes to DocumentsController' do
+        expect(explicit_json_route).to route_to(
+          controller: 'api/v1/documents',
+          action: 'crop',
+          format: 'json',
+          id: '3'
+        )
+      end
+
+      it 'routes to DocumentsController with json by default' do
+        expect(default_route).to route_to(
           controller: 'api/v1/documents',
           action: 'crop',
           format: 'json',
@@ -123,19 +202,21 @@ RSpec.describe 'api v1 routing', type: :routing do
     end
   end
 
-  # POST /api/v1/uploads
   describe 'uploads' do
     describe 'create endpoint' do
+      let(:verb) { :post }
+      let(:path) { '/api/v1/uploads' }
+
       it 'routes json requests to UploadsController' do
-        expect(post: '/api/v1/uploads', format: 'json').to route_to(
+        expect(explicit_json_route).to route_to(
           controller: 'api/v1/uploads',
           action: 'create',
           format: 'json'
         )
       end
 
-      it 'routes to DocumentsController with json by default' do
-        expect(post: '/api/v1/uploads').to route_to(
+      it 'routes to UploadsController with json by default' do
+        expect(default_route).to route_to(
           controller: 'api/v1/uploads',
           action: 'create',
           format: 'json'

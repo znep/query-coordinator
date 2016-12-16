@@ -4,7 +4,7 @@ RSpec.describe Api::V1::PermissionsController, type: :controller do
 
   describe '#update' do
 
-    let(:mock_permissions_updater) { double('PermissionsUpdater') }
+    let(:mock_permissions_updater) { double('CorePermissionsUpdater') }
     let(:story_uid) { 'dink-donk' }
     let(:is_public) { true }
     let(:params) do
@@ -32,16 +32,14 @@ RSpec.describe Api::V1::PermissionsController, type: :controller do
 
     context 'when authenticated' do
       before do
-        allow(PermissionsUpdater).to receive(:new).and_return(mock_permissions_updater)
+        allow(CorePermissionsUpdater).to receive(:new).and_return(mock_permissions_updater)
         allow(mock_permissions_updater).to receive(:update_permissions).and_return(true)
         stub_valid_session
         stub_sufficient_rights
       end
 
-      it 'initializes PermissionsUpdater with params' do
-        expect(PermissionsUpdater).to receive(:new).with(
-          mock_valid_user,
-          mock_user_authorization_owner_publisher,
+      it 'initializes CorePermissionsUpdater with params' do
+        expect(CorePermissionsUpdater).to receive(:new).with(
           story_uid
         )
         put :update, params
@@ -105,8 +103,8 @@ RSpec.describe Api::V1::PermissionsController, type: :controller do
       let(:action) { :update }
 
       before do
-        permissions_updater = instance_double('PermissionsUpdater', :update_permissions => true)
-        allow(PermissionsUpdater).to receive(:new).and_return(permissions_updater)
+        permissions_updater = instance_double('CorePermissionsUpdater', :update_permissions => true)
+        allow(CorePermissionsUpdater).to receive(:new).and_return(permissions_updater)
         allow_any_instance_of(ApplicationController).to receive(:admin?).and_return(admin)
         allow_any_instance_of(ApplicationController).to receive(:owner?).and_return(owner)
       end

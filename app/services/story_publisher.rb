@@ -10,9 +10,9 @@ class StoryPublisher
 
   attr_reader :story
 
-  def initialize(user, user_authorization, params)
+  def initialize(user, permissions_updater, params)
     @user = user
-    @user_authorization = user_authorization
+    @permissions_updater = permissions_updater
     @story_uid = params[:uid]
 
     creating_user_id = (user || {})['id']
@@ -34,7 +34,6 @@ class StoryPublisher
     saved = story.save
 
     if saved
-      permissions_updater = PermissionsUpdater.new(user, user_authorization, story_uid)
       permissions_response = nil
 
       begin
@@ -42,7 +41,7 @@ class StoryPublisher
       rescue => exception
         AirbrakeNotifier.report_error(
           exception,
-          on_method: "PermissionsUpdater#update_permissions(story_uid: '#{story_uid}')"
+          on_method: "#{permissions_updater.class}#update_permissions(story_uid: '#{story_uid}')"
         )
       end
 
@@ -67,6 +66,6 @@ class StoryPublisher
 
   private
 
-  attr_reader :user, :user_authorization, :story_uid
+  attr_reader :user, :permissions_updater, :story_uid
 
 end

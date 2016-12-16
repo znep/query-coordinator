@@ -49,13 +49,13 @@ describe('StoryPublicationStatus', () => {
     });
   }
 
-  function createStoryStoreMocker(isPublic, isCurrentDraftUnpublished) {
+  function createStoryStoreMocker(isPublic, isDraftUnpublished) {
     beforeEach(() => {
       StoryPublicationStatusAPI.__Rewire__('storyStore', {
         getStoryUpdatedAt: () => storyUpdatedAt,
         doesStoryExist: _.constant(true),
         isStoryPublic: () => isPublic,
-        isCurrentDraftUnpublished: () => isCurrentDraftUnpublished
+        isDraftUnpublished: () => isDraftUnpublished
       });
     });
 
@@ -114,7 +114,7 @@ describe('StoryPublicationStatus', () => {
     });
 
     describe('when the story is private and unpublished', () => {
-      createStoryStoreMocker(false, false);
+      createStoryStoreMocker(false, true);
       createStoryPublicationStatus();
 
       rendersDraftAndUnpublished();

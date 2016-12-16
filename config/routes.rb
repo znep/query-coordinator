@@ -32,6 +32,9 @@ Rails.application.routes.draw do
       get 'single/:uid' => 'goals#show', as: 'single_goal'
       get 'single/:uid/edit-story' => 'goals#edit', as: 'edit_single_goal'
       get 'single/:uid/preview' => 'goals#preview', as: 'preview_single_goal'
+
+      # This route doesn't need a fully-qualified equivalent; it's not a user-
+      # facing page, just a target for a form submission.
       get 'single/:uid/copy' => 'goals#copy', as: 'copy_single_goal'
 
       get ':dashboard/:category/:uid' => 'goals#show', as: 'goal'
@@ -57,8 +60,10 @@ Rails.application.routes.draw do
 
       get 'stories/:uid/drafts/latest' => 'drafts#latest'
       post 'stories/:uid/drafts' => 'drafts#create'
+
       get 'stories/:uid/published/latest' => 'published#latest'
       post 'stories/:uid/published' => 'published#create'
+
       put 'stories/:uid/permissions' => 'permissions#update'
 
       put 'documents/:id/crop' => 'documents#crop'
@@ -71,7 +76,10 @@ Rails.application.routes.draw do
     namespace :stat do
       namespace :v1, defaults: { format: 'json' } do
         namespace :goals do
+          post ':uid/narrative/published' => 'published#create'
           get ':uid/narrative/published/latest' => 'published#latest'
+
+          put ':uid/narrative/permissions' => 'permissions#update'
         end
       end
     end

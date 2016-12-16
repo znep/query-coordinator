@@ -13,23 +13,22 @@ export default function StoryPermissionsManager() {
   // For now, this has to be defined inside the export because of the way the
   // tests are written. Should it be okay to destructure Environment early? Yes.
   // But something about the way this file's stubs are set up requires otherwise.
-  const { STORY_UID } = Environment;
+  const { IS_GOAL, STORY_UID } = Environment;
 
   this.makePublic = (errorCallback) => {
     StorytellerUtils.assertIsOneOfTypes(errorCallback, 'undefined', 'function');
 
-    const setPublishedStoryAndHandleRequest = response => {
-      dispatcher.dispatch({
-        action: Actions.STORY_SET_PUBLISHED_STORY,
-        storyUid: STORY_UID,
-        publishedStory: response
-      });
-
-      return handleRequestSuccess(response);
-    };
-
     return setToPublic().
-      then(setPublishedStoryAndHandleRequest).
+      then((response) => {
+        dispatcher.dispatch({
+          action: Actions.STORY_SET_PUBLISHED_STORY,
+          storyUid: STORY_UID,
+          publishedStory: response
+        });
+
+        return response;
+      }).
+      then(handleRequestSuccess).
       catch(error => handleRequestError(error, errorCallback));
   };
 
@@ -65,7 +64,9 @@ export default function StoryPermissionsManager() {
     const digest = storyStore.getStoryDigest(STORY_UID);
 
     const method = 'POST';
-    const url = `${Constants.API_PREFIX_PATH}stories/${STORY_UID}/published`;
+    const url = IS_GOAL ?
+      `${Constants.GOALS_API_V1_PREFIX_PATH}/goals/${STORY_UID}/narrative/published` :
+      `${Constants.API_PREFIX_PATH}/stories/${STORY_UID}/published`;
     const options = {
       headers: storytellerAPIRequestHeaders(),
       data: JSON.stringify({ digest })
@@ -76,7 +77,9 @@ export default function StoryPermissionsManager() {
 
   function setToPrivate() {
     const method = 'PUT';
-    const url = `${Constants.API_PREFIX_PATH}stories/${STORY_UID}/permissions`;
+    const url = IS_GOAL ?
+      `${Constants.GOALS_API_V1_PREFIX_PATH}/goals/${STORY_UID}/narrative/permissions` :
+      `${Constants.API_PREFIX_PATH}/stories/${STORY_UID}/permissions`;
     const options = {
       headers: storytellerAPIRequestHeaders(),
       data: JSON.stringify({ isPublic: false })

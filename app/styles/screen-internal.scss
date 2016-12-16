@@ -420,7 +420,7 @@ ul.autocomplete {
       &:first-of-type {
         border-top: 0;
       }
-      &.unknownConfigType, &.discouragedConfigType {
+      &.unknownConfigType, &.discouragedConfigType, &.inheritedConfig {
         color: red;
       }
 

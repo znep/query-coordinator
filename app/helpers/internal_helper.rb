@@ -38,6 +38,7 @@ module InternalHelper
     dd_html_options = {}
     dd_html_options[:class] = 'unknownConfigType' if options[:unknown]
     dd_html_options[:class] = 'discouragedConfigType' if options[:discouraged]
+    dd_html_options[:class] = 'inheritedConfig' if options[:inherited]
 
     content_tag(:dt, term) + content_tag(:dd, definition, dd_html_options)
   end
@@ -48,6 +49,10 @@ module InternalHelper
     else
       'False: A non-default config is a spare that is not intended to be read by our systems.'
     end
+  end
+
+  def explain_config_inheritance
+    'This configuration, when changed, will modify other configurations which are its children. If this surprises you, ask for help!'
   end
 
   def autolink(value)

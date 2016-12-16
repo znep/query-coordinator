@@ -98,8 +98,12 @@ class InternalController < ApplicationController
   end
 
   def show_config
-    @domain = Domain.find(params[:domain_id])
     @config = ::Configuration.find_unmerged(params[:config_id])
+    unless @config.domainCName == params[:domain_id]
+      redirect_to show_config_path(domain_id: @config.domainCName, config_id: @config.id)
+      return
+    end
+    @domain = Domain.find(@config.domainCName)
     if @config.parentId.present?
       @parent_config = ::Configuration.find(@config.parentId.to_s)
       @parent_domain = Domain.find(@parent_config.domainCName)
@@ -564,7 +568,11 @@ class InternalController < ApplicationController
   end
 
   def editing_this_page_is_dangerous?(domain = @domain)
-    !Rails.env.development? && %w(default socrata).include?(domain.shortName)
+    case
+      #when Rails.env.development? then false
+      when domain.has_child_domains? then :child_domains
+      when %w(socrata default).include?(domain.shortName) then :short_name
+    end
   end
   helper_method :editing_this_page_is_dangerous?
 

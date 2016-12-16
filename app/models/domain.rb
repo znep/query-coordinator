@@ -71,6 +71,10 @@ class Domain < Model
     shortName == 'default'
   end
 
+  def has_child_domains?
+    childCount > 0
+  end
+
   def configurations(type)
     # Note: searching for @configs returns results, but they're typically set
     # in a controller method instead of here.

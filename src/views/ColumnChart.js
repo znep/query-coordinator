@@ -377,7 +377,7 @@ function ColumnChart(element, vif) {
     var chartWidth = el.width();
     var chartHeight = el.height();
     var showAllLabels = options.showAllLabels;
-    var showUnfiltered = options.showUnfiltered;
+    var rescaleAxis = options.rescaleAxis;
     var showFiltered = options.showFiltered;
 
     if (chartWidth <= 0 || chartHeight <= 0) {
@@ -453,7 +453,7 @@ function ColumnChart(element, vif) {
     // visible. We still render the bars outside the viewport to speed up horizontal resizes.
     var chartDataRelevantForVerticalScale = showAllLabels ?
       data : _.take(data, Math.ceil(chartWidth / rangeBand) + 1);
-    var verticalScale = _computeVerticalScale(innerHeight, chartDataRelevantForVerticalScale, showFiltered, showUnfiltered);
+    var verticalScale = _computeVerticalScale(innerHeight, chartDataRelevantForVerticalScale, showFiltered, rescaleAxis);
 
     var chartLeftOffset = horizontalScale.range()[0];
     var chartRightEdge = chartWidth - chartLeftOffset;
@@ -946,9 +946,9 @@ function ColumnChart(element, vif) {
       valueText;
   }
 
-  function _computeDomain(chartData, showFiltered, showUnfiltered) {
+  function _computeDomain(chartData, showFiltered, rescaleAxis) {
 
-    var unfilteredData = showUnfiltered ? chartData.map((d) => d[UNFILTERED_INDEX]) : [];
+    var unfilteredData = rescaleAxis ? [] : chartData.map((d) => d[UNFILTERED_INDEX]);
     var filteredData = showFiltered ? chartData.map((d) => d[FILTERED_INDEX]) : [];
     var allData = _.flatten([ unfilteredData, filteredData ]);
 
@@ -963,8 +963,8 @@ function ColumnChart(element, vif) {
     return _makeDomainIncludeZero(d3.extent(allData));
   }
 
-  function _computeVerticalScale(innerHeight, chartData, showFiltered, showUnfiltered) {
-    return d3.scale.linear().domain(_computeDomain(chartData, showFiltered, showUnfiltered)).range([0, innerHeight]);
+  function _computeVerticalScale(innerHeight, chartData, showFiltered, rescaleAxis) {
+    return d3.scale.linear().domain(_computeDomain(chartData, showFiltered, rescaleAxis)).range([0, innerHeight]);
   }
 
   function _computeHorizontalScale(chartWidth, chartData, showAllLabels) {

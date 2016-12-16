@@ -696,7 +696,7 @@ function TimelineChart(element, vif) {
     var chartWidth = el.width();
     var chartHeight = el.height();
     var showAllLabels = options.showAllLabels;
-    var showUnfiltered = options.showUnfiltered;
+    var rescaleAxis = options.rescaleAxis;
     var showFiltered = options.showFiltered;
     var precision = options.precision;
     var unit = options.unit;
@@ -2194,7 +2194,7 @@ function TimelineChart(element, vif) {
         currentDatum.filtered :
         currentDatum.unfiltered);
     } else {
-      if (!_lastRenderOptions.showUnfiltered) {
+      if (_lastRenderOptions.rescaleAxis) {
         return d3YScale(_.max([currentDatum.filtered, 0]));
       }
 

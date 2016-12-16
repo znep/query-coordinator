@@ -199,8 +199,8 @@ describe('ColumnChart', function() {
 
     var renderOptions = {
       showAllLabels: false,
-      showUnfiltered: true,
-      showFiltered: false
+      showFiltered: false,
+      rescaleAxis: false
     };
 
     return {

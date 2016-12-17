@@ -47,7 +47,7 @@ Useful commands:
 
 ### Feature flags
 
-Support for feature flags requires that `window.socrata.featureFlags` be defined at page load time. This is expected to be a simple object containing keys for all defined feature flags.
+Support for feature flags requires that `window.socrata.featureFlags` be defined at page load time. This is expected to be a simple object containing keys for all defined feature flags. The purpose of this module is provide validation of requested feature flag keys 
 See example below. Usage example:
 
 ```javascript

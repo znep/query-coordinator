@@ -3,81 +3,7 @@ var FeatureFlags = require('../src/FeatureFlags');
 describe('FeatureFlags', function() {
 
   before(function() {
-    window.socrata = window.socrata || {};
-    window.socrata.featureFlags = {
-      "allowDataLensOwnerChange": true,
-      "auth0Social": false,
-      "browseAutocomplete": false,
-      "bubble": "old",
-      "ceteraProfileSearch": false,
-      "ceteraSearch": true,
-      "createV2DataLens": true,
-      "currentPageMetadataVersion": 1,
-      "dataLensTransitionState": "post_beta",
-      "debugDataLens": false,
-      "debugLabjs": false,
-      "disableAuthorityBadge": "none",
-      "disableLegacyTypes": false,
-      "disableNbeRedirectionWarningMessage": false,
-      "disableObeRedirection": false,
-      "disableSiteChromeHeaderFooterOnDataslatePages": false,
-      "displayDatasetLandingPageNotice": false,
-      "displayDatasetLandingPagePreviewImages": false,
-      "embetterAnalyticsBrowserViewsOnly": false,
-      "embetterAnalyticsPage": false,
-      "enableApiFoundryPane": false,
-      "enableCatalogConnector": true,
-      "enableDataLensPageMetadataMigrations": true,
-      "enableDataLensProvenance": true,
-      "enableDatasetLandingPageTour": true,
-      "enableDatasetManagementUi": false,
-      "enableEmbedWidgetForNbe": false,
-      "enableIngressGeometryTypes": false,
-      "enableNewAccountVerificationEmail": false,
-      "enableOpendataGaTracking": null,
-      "enablePulse": false,
-      "enableStandardGaTracking": false,
-      "enableStorytellerMixpanel": false,
-      "enableThirdPartySurveyQualtrics": false,
-      "enableVisualizationCanvas": false,
-      "featureMapDefaultExtent": "",
-      "govstatProgressSettings": true,
-      "hideInterpolatedNulls": false,
-      "hideSocrataId": false,
-      "includeSrInEsri": false,
-      "ingressReenter": false,
-      "ingressStrategy": "obe",
-      "internalPanelRedesign": "all",
-      "killEsriReprojectionAndPassDifferentWebm": false,
-      "killSnowflakeMapProjections": false,
-      "nbeBucketSize": true,
-      "notifyImportResult": false,
-      "openPerformanceEnableGoalManagementAdminPane": true,
-      "openPerformanceNarrativeEditor": "classic",
-      "reenableUiForNbe": false,
-      "removeViewsFromDiscussPane": false,
-      "reportBuilderEnabled": false,
-      "routeDataslateWithoutCaching": true,
-      "sendSoqlVersion": false,
-      "showAuth0Identifiers": false,
-      "showFederatedSiteNameInsteadOfCname": false,
-      "showProvenanceBadgeInCatalog": true,
-      "showProvenanceFacetInCatalog": true,
-      "siteAppearanceVisible": false,
-      "siteChromeLanguageSwitcher": false,
-      "storiesEnabled": true,
-      "storiesShowFacetInCatalog": true,
-      "timeline": "old",
-      "useAuth0": false,
-      "useAuth0Component": false,
-      "useAuth0LoginFlow": false,
-      "useDataLensChoroplethCustomBoundary": false,
-      "useEphemeralBootstrap": true,
-      "useMergedStyles": false,
-      "useSoda2": "never",
-      "validateFragmentCacheBeforeRender": true,
-      "zealousDataslateCacheExpiry": false
-    };
+    FeatureFlags.useTestFixture();
   });
 
   it('should return the value for feature flag', function() {
@@ -85,6 +11,17 @@ describe('FeatureFlags', function() {
   });
 
   it('should throw when given an invalid feature flag key', function() {
-    expect(function() { FeatureFlags.value('foo') }).to.throw;
+    expect(function() { FeatureFlags.value('foo'); }).to.throw();
   });
+
+  it('should throw when scorata is not on the window', function() {
+    delete(window.socrata);
+    expect(function() { FeatureFlags.value('timeline'); }).to.throw();
+  });
+
+  it('should throw when featureFlags is not on the socrata object', function() {
+    window.socrata = {};
+    expect(function() { FeatureFlags.value('enablePulse'); }).to.throw();
+  });
+
 });

@@ -9,12 +9,15 @@ export var CustomizationTab = React.createClass({
   },
 
   linkAttributes() {
+    const { id, selected, onTabNavigation } = this.props;
+
     return {
-      id: `${this.props.id}-link`,
-      href: `#${this.props.id}`,
-      onFocus: this.props.onTabNavigation,
-      'aria-selected': this.props.selected,
-      'aria-controls': `${this.props.id}-panel`
+      id: `${id}-link`,
+      href: `#${id}`,
+      onFocus: onTabNavigation,
+      'aria-selected': selected,
+      'aria-controls': `${id}-panel`,
+      'aria-labelledby': id
     };
   },
 
@@ -26,15 +29,19 @@ export var CustomizationTab = React.createClass({
     };
   },
 
+  onClick(event) {
+    event.preventDefault();
+  },
+
   render() {
-    const {title, icon} = this.props;
+    const {id, title, icon} = this.props;
 
     return (
       <li {...this.listItemAttributes()}>
-        <a {...this.linkAttributes()} title={title}>
-          <i className={`icon-${icon}`} />
+        <a {...this.linkAttributes()} onClick={this.onClick}>
+          <span className={`icon-${icon}`} role="presentation" />
         </a>
-        <span className="pane-tooltip">{title}</span>
+        <span id={id} className="pane-tooltip">{title}</span>
       </li>
     );
   }

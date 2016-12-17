@@ -30,6 +30,7 @@ describe('CustomizationTab', () => {
     expect(link).to.have.id('id-link');
     expect(link.getAttribute('aria-selected')).to.equal('false');
     expect(link).to.have.attribute('aria-controls', 'id-panel');
+    expect(link).to.have.attribute('aria-labelledby', 'id');
     expect(link).to.have.attribute('href', '#id');
 
     expect(tooltip).to.have.text('Tooltip');

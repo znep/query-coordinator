@@ -119,19 +119,18 @@ export const LegendsAndFlyoutsPane = React.createClass({
       value: rowInspectorTitleColumnName
     };
 
-    return (
-      <div>
-        {this.renderUnits()}
-        <AccordionPane title={translate('panes.legends_and_flyouts.subheaders.row_inspector_title')}>
-          <div className="authoring-field">
-            <label className="block-label" htmlFor="flyout-title-column">Column</label>
-            <div className="flyout-title-dropdown-container">
-              <Styleguide.Dropdown {...columnAttributes} />
-            </div>
+    const rowInspector = (
+      <AccordionPane key="rowInspector" title={translate('panes.legends_and_flyouts.subheaders.row_inspector_title')}>
+        <div className="authoring-field">
+          <label className="block-label" htmlFor="flyout-title-column">Column</label>
+          <div className="flyout-title-dropdown-container">
+            <Styleguide.Dropdown {...columnAttributes} />
           </div>
-        </AccordionPane>
-      </div>
+        </div>
+      </AccordionPane>
     );
+
+    return [this.renderUnits(), rowInspector];
   },
 
   renderRowInspectorTitleColumnOption(option) {

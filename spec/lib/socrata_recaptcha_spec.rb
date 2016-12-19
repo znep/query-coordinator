@@ -41,6 +41,7 @@ describe SocrataRecaptcha do
 
   it 'returns false when the requesting domain is not the current domain' do
     allow(CurrentDomain).to receive(:cname) { 'wombats-in-tuxedos.com' }
+    allow(CurrentDomain).to receive(:aliases) { ['puppies-in-dresses', 'penguins-in-trains.com'] }
     stub_request(:post, recaptcha_url).
       with(:body => 'secret=&response=test-response-token').
       to_return(
@@ -57,6 +58,7 @@ describe SocrataRecaptcha do
 
   it 'returns true when Recaptcha is valid and domain verification succeeds' do
     allow(CurrentDomain).to receive(:cname) { 'elephants-in-space.com' }
+    allow(CurrentDomain).to receive(:aliases) { ['puppies-in-dresses', 'penguins-in-trains.com'] }
     stub_request(:post, recaptcha_url).
       with(:body => 'secret=&response=test-response-token').
       to_return(
@@ -65,6 +67,24 @@ describe SocrataRecaptcha do
         :body => {
           'success' => true,
           'hostname' => 'elephants-in-space.com'
+        }.to_json
+      )
+
+    expect(SocrataRecaptcha.valid(response_token)).to eq(true)
+  end
+
+  it 'returns true when domain is in the current domain aliases' do
+    allow(CurrentDomain).to receive(:cname) { 'dragons-on-boats.com' }
+    allow(CurrentDomain).to receive(:aliases) { ['puppies-in-dresses', 'penguins-in-trains.com'] }
+
+    stub_request(:post, recaptcha_url).
+      with(:body => 'secret=&response=test-response-token').
+      to_return(
+        :status => 200,
+        :headers => {'Content-Type' => 'application/json'},
+        :body => {
+          'success' => true,
+          'hostname' => 'penguins-in-trains.com'
         }.to_json
       )
 

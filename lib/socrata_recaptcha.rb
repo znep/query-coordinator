@@ -26,8 +26,7 @@ class SocrataRecaptcha
     if response.success?
       valid_recaptcha = response.parsed_response.fetch('success', false)
       requesting_domain = response.parsed_response.fetch('hostname', nil)
-
-      valid_recaptcha && requesting_domain == CurrentDomain.cname
+      valid_recaptcha && CurrentDomain.cname_and_aliases.include?(requesting_domain)
     else
       false
     end

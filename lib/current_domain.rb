@@ -61,6 +61,14 @@ class CurrentDomain
       (@@current_domain[:data].cname if defined?(@@current_domain)).to_s
     end
 
+    def aliases
+      domain.try(:aliases).try(:split, ',').compact || []
+    end
+
+    def cname_and_aliases
+      [cname] + aliases
+    end
+
     def short_name
       @@current_domain[:data].shortName
     end

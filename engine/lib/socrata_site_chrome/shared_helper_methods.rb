@@ -46,6 +46,5 @@ module SocrataSiteChrome
       @site_chrome_instance ||=
         request.env[SocrataSiteChrome::Middleware::SOCRATA_SITE_CHROME_ENV_KEY].socrata_site_chrome(request.env)
     end
-
   end
 end

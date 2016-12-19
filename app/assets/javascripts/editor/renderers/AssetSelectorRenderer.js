@@ -2285,8 +2285,20 @@ export default function AssetSelectorRenderer(options) {
       };
     }
 
+    // TODO: https://socrata.atlassian.net/browse/EN-12749
+    // We're leaking the state of our VIF filters outside and have to pipe it right back in.
+    // This is a hack to get filters into the AuthoringWorkflow without all of the
+    // other QFB configurations on top. See the QFB's Styleguide documentation for
+    // more information about what the shape of this object should look like.
+    //
+    // The ticket linked details absorbing this configuration into our VIF spec instead
+    // of letting it coexist.
+    var vifFilters = _.get(vifToEdit, 'series[0].dataSource.filters', []);
+    var axFilters = _.map(vifFilters, (filter) => ({ parameters: filter }));
+
     var authoringWorkflow = new SocrataVisualizations.AuthoringWorkflow(element, {
       vif: vifToEdit,
+      filters: axFilters,
       enableFiltering: Environment.ENABLE_FILTERABLE_VISUALIZATIONS_IN_AX,
       backButtonText: I18n.t('editor.asset_selector.visualization.authoring_visualization_back_button'),
       onBack: () => {

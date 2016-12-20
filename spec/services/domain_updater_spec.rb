@@ -105,6 +105,16 @@ RSpec.describe DomainUpdater do
         expect(migrated_component).to eq(new_component)
       end
     end
+
+    describe '#migrate_image' do
+      it 'returns a migrated component' do
+        old_component = image_component(component_domain)
+        new_component = image_component(destination_domain)
+
+        migrated_component = DomainUpdater.send(:migrate_image, old_component, destination_domain)
+        expect(migrated_component).to eq(new_component)
+      end
+    end
   end
 
   private
@@ -211,6 +221,17 @@ RSpec.describe DomainUpdater do
           'domain' => cname,
           'datasetUid' => 'test-test'
         }
+      }
+    }
+  end
+
+  def image_component(cname)
+    {
+      'type' => 'image',
+      'value' => {
+        'alt' => 'Image with Link',
+        'url' => 'https://s3bucket.example.com/documents/uploads/my-image',
+        'link' => "https://#{cname}/page"
       }
     }
   end

@@ -6,6 +6,9 @@ class DomainUpdater
     # Various components are aware of domains, but some of them store the domain
     # at a different path in the blob than others.
     DOMAIN_AWARE_COMPONENT_TYPES = {
+      'value.link' => %w(
+        image
+      ),
       'value.domain' => %w(
         story.widget
         story.tile
@@ -45,6 +48,11 @@ class DomainUpdater
 
       affected_blocks.each do |block|
         new_components = block.components.map do |component|
+          # Check that each component _needs_ migration, because it is possible
+          # for a block to contain components associated with different domains;
+          # for example, one block may have two story tiles, one pointing to
+          # domain A and another pointing to domain B, and the latter should not
+          # update when A changes to X!
           is_affected_component = has_domain_reference(component, source_domains)
 
           # In plain English:
@@ -81,6 +89,9 @@ class DomainUpdater
                 component
               end
 
+            when 'image'
+              migrate_image(component, destination_domain)
+
             else
               error_message = 'Unknown affected component type in component migration!'
               error_description = "Type #{component['type']} is marked domain-aware but has no migration case."
@@ -103,12 +114,6 @@ class DomainUpdater
 
     # Be extremely careful when adding or modifying a migration!
     # You do not want to completely muck up the component data structure!
-    #
-    # Also, be sure to check that each component _needs_ migration, because
-    # it is possible for a block to contain components associated with
-    # different domains; for example, one block may have two story tiles,
-    # one pointing to domain A and another pointing to domain B, and the
-    # latter should not update when A changes to X!
 
     def migrate_story_tile(component, destination_domain)
       component.deep_merge(
@@ -119,7 +124,7 @@ class DomainUpdater
     end
 
     def migrate_goal_tile(component, destination_domain)
-      new_url = component.dig('value', 'goalFullUrl').sub(%r(//[^/]+), "//#{destination_domain}")
+      new_url = replace_url_domain(component.dig('value', 'goalFullUrl'), destination_domain)
 
       component.deep_merge(
         'value' => {
@@ -143,7 +148,7 @@ class DomainUpdater
     end
 
     def migrate_v1_vif(component, destination_domain)
-      new_url = component.dig('value', 'vif', 'origin', 'url').sub(%r(//[^/]+), "//#{destination_domain}")
+      new_url = replace_url_domain(component.dig('value', 'vif', 'origin', 'url'), destination_domain)
 
       component.deep_merge(
         'value' => {
@@ -181,13 +186,38 @@ class DomainUpdater
       )
     end
 
+    def migrate_image(component, destination_domain)
+      new_url = replace_url_domain(component.dig('value', 'link'), destination_domain)
+
+      component.deep_merge(
+        'value' => {
+          'link' => new_url
+        }
+      )
+    end
+
+    # Replace the domain in a URL.
+    def replace_url_domain(url, domain)
+      uri = Addressable::URI.parse(url)
+      uri.hostname = domain
+      uri.to_s
+    end
+
     # Figure out whether a component refers to a source domain.
     def has_domain_reference(component, source_domains)
       domain_path = DOMAIN_AWARE_COMPONENT_TYPES.find do |(_, types)|
         types.include?(component['type'])
       end
 
-      domain_path && source_domains.include?(component.dig(*domain_path.first.split('.')))
+      return false unless domain_path
+
+      component_domain = component.dig(*domain_path.first.split('.'))
+      if component_domain =~ %r{^https?://}
+        # special case for things that *only* store a URL
+        component_domain = Addressable::URI.parse(component_domain).hostname
+      end
+
+      source_domains.include?(component_domain)
     end
 
     # Find blocks that have components which will be affected. The affected
@@ -211,21 +241,24 @@ class DomainUpdater
     #     ]::jsonb[]);
     #
     def candidate_blocks(domains)
-      # To create the component matchers, we need to generate the cross product
-      # of all the affected types and all the affected domains.
-      #
-      # Then we format it for the containment predicate (the right side of @>).
-      combine_and_format = -> ((type_hash, domain_hash)) { JSON.generate([type_hash.merge(domain_hash)]) }
-
       # Sadly, our components don't have a consistent way of storing the path
       # to the domain that they are based on, so we need to do the same thing
-      # twice with some slight tweaks.
+      # a few times with some slight tweaks.
       #
       #   vd = the component stores it at value.domain
       #   vdd = the component stores it at value.dataset.domain
+      #   vl = the component stores it at value.link (which is a URL!)
       #
       # I apologize for the naming, but I can't think of a good semantic way to
       # describe why we have more than one convention.
+
+
+
+      # To create the component matchers for "vd" and "vdd", we need to generate
+      # a cross product of all the affected types and all the affected domains.
+      #
+      # Then we format it for the containment predicate (the right side of @>).
+      combine_and_format = -> ((type_hash, domain_hash)) { JSON.generate([type_hash.merge(domain_hash)]) }
 
       vd_types = DOMAIN_AWARE_COMPONENT_TYPES['value.domain']
       vd_type_hashes = vd_types.map { |type| {type: type} }
@@ -237,10 +270,43 @@ class DomainUpdater
       vdd_domain_hashes = domains.map { |domain| {value: {dataset: {domain: domain}}} }
       vdd_component_matchers = vdd_type_hashes.product(vdd_domain_hashes).map(&combine_and_format)
 
-      Block.where(
+      pure_json_query = Block.where(
         'deleted_at IS NULL AND components @> ANY (ARRAY [:matchers]::jsonb[])',
         matchers: vd_component_matchers.concat(vdd_component_matchers)
       )
+
+
+
+      # It's not possible to use only JSON manipulation functions to retrieve
+      # records for the "vl" case. We have to run a separate nasty query to find
+      # these affected blocks.
+
+      vl_types = DOMAIN_AWARE_COMPONENT_TYPES['value.link']
+      vl_type_hashes = vl_types.map { |type| {type: type} }
+      vl_component_matchers = vl_type_hashes.map(&JSON.method(:generate))
+
+      # The implicit lateral join allows us to write sane WHERE conditions
+      # against the values in the components column. The substring clause
+      # isolates domains in URLs in order to compare against input.
+      json_and_regexp_query = Block.find_by_sql([<<~SQL,
+        SELECT DISTINCT blocks.*
+        FROM blocks, jsonb_array_elements(blocks.components) block_components
+        WHERE deleted_at IS NULL
+          AND block_components @> ANY (ARRAY [:matchers]::jsonb[])
+          AND substring(block_components#>>'{value,link}' FROM '//([^/?#]+)') IN (:domains)
+        SQL
+        matchers: vl_component_matchers,
+        domains: domains
+      ])
+
+
+
+      # Return the union of these queries.
+      #
+      #   pure_json_query = ActiveRecord::Relation
+      #   json_and_regexp_query = Array
+      #
+      pure_json_query.to_a + json_and_regexp_query
     end
   end
 end

@@ -11,6 +11,9 @@ export default
     // Auth0 URI (most likely socrata.auth0.com)
     auth0Uri: PropTypes.string.isRequired,
 
+    // Site key for recaptcha (for signup page)
+    recaptchaSitekey: PropTypes.string,
+
     // URI for the current domain
     baseDomainUri: PropTypes.string.isRequired,
 
@@ -33,6 +36,7 @@ export default
     // These connections are shown as buttons to login through specific auth0 federated connections
     connections: PropTypes.arrayOf(ConnectionsPropType),
 
+    // Regex strings that can force emails matching certain patterns to go through a specific connection
     forcedConnections: PropTypes.arrayOf(ForcedConnectionsPropType),
 
     // The message that displays above the "connections"
@@ -49,5 +53,12 @@ export default
     translations: PropTypes.object,
 
     // Company name to display above login form ("Sign In to ....")
-    companyName: PropTypes.string.isRequired
+    companyName: PropTypes.string.isRequired,
+
+    // A function that switches between Sign Up and Log In and vice versa when called
+    toggleViewMode: PropTypes.func,
+
+    // Any params that come in from the request to load the page; used i.e. to grab the entered userName and emails
+    // if the sign up form submission fails (so user doesn't have to re-type them)
+    params: PropTypes.object
   });

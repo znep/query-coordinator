@@ -38,6 +38,9 @@ en:
       validation:
         mismatch: Passwords do not match.
         terms: You must accept the terms of service and privacy policy.
+        recaptcha2: Please confirm you are not a robot by checking the box below.
+        password_short: Please enter at least 8 characters.
+        password_long: Please enter no more than 40 characters.
   angular:
     dataCards:
       add_card_dialog:
@@ -4450,6 +4453,7 @@ en:
       sso_required: The administrator for this site requires that privileged users log in with an account other than a Socrata ID. Please log in using a different method.
       tips_html: Use your Email and Password to sign into all <strong>Socrata powered</strong> sites.
     sign_up:
+      already_have_account: Already have an account?
       email_verification:
         expired: This email verification link has expired. Please create a new account with the same email address and you will receive another verification email to complete the registration.
         sent: We sent a verification email to %{email}, please follow the instructions in the email to complete the registration process.

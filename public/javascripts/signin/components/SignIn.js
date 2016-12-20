@@ -15,6 +15,7 @@ class SignIn extends React.Component {
 
   render() {
     const { doAuth0Login, auth0Connections, translate, options } = this.props;
+    const { toggleViewMode } = options;
     return (
       <div styleName="inner-container">
         <div styleName="form-container">
@@ -28,9 +29,9 @@ class SignIn extends React.Component {
         {this.renderSocialSignIn(doAuth0Login, translate)}
 
         <div styleName="signup-container">
-          {translate('screens.sign_in.dont_have_account')}
+          {translate('screens.sign_in.dont_have_account')}{' '}
           <a
-            href="/signup"
+            onClick={toggleViewMode}
             styleName="signup-link">
               {translate('screens.sign_in.sign_up')}
           </a>

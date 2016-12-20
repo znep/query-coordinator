@@ -152,6 +152,7 @@ module Auth0Helper
     {
       auth0ClientId: AUTH0_ID,
       auth0Uri: AUTH0_URI,
+      recaptchaSitekey: RECAPTCHA_2_SITE_KEY,
       baseDomainUri: request.base_url,
       authenticityToken: form_authenticity_token,
       rememberMe: feature?('remember_me'),
@@ -163,7 +164,9 @@ module Auth0Helper
       chooseConnectionMessage: @auth0_message || t('screens.sign_in.auth0_intro'),
       formMessage: @auth0_form_message,
       flashes: formatted_flashes,
-      companyName: CurrentDomain.strings.company
+      companyName: CurrentDomain.strings.company,
+      signUpDisclaimer: CurrentDomain.strings.disclaimer,
+      params: request.params
     }.to_json.html_safe
   end
 end

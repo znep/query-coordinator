@@ -2,9 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'babel-polyfill';
 import _ from 'lodash';
-import SignInContainer from './components/SignInContainer';
+import SignInSignUpSwitcher from './components/SignInSignUpSwitcher';
 
-window.auth0Login = function(container, options) {
+window.auth0Login = function(container, options, signin) {
   // because people like overriding the global lodash...
   _.noConflict();
 
@@ -13,13 +13,13 @@ window.auth0Login = function(container, options) {
     rootNode = document.querySelector(container);
   } catch (err) {
     console.error(
-      `[auth0Login] Cannot render SignInContainer; no node matched ${container} in querySelector`
+      `[auth0Login] Cannot render Authorization; no node matched ${container} in querySelector`
     );
     return;
   }
 
   ReactDOM.render(
-    <SignInContainer options={options} />,
+    <SignInSignUpSwitcher signin={signin} options={options} />,
     rootNode
   );
 };

@@ -1,0 +1,87 @@
+$default-font-path: "socrata-components/dist/fonts/";
+
+@import "styleguide-no-tag-level.scss";
+@import "_colors.scss";
+
+.form {
+  @include form;
+  margin-bottom: 0;
+}
+
+.spinner {
+  @extend .spinner-default;
+  @extend .spinner-large;
+
+  position: absolute;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+}
+
+.label {
+  @extend .block-label;
+}
+
+.input {
+  @extend .text-input;
+  width: 100%;
+}
+
+.input-error {
+  @extend .input;
+  @extend .text-input-error;
+}
+
+.sign-up-button {
+  @extend .btn;
+  @extend .btn-primary;
+  @extend .btn-lg;
+
+  width: 100%;
+  margin-top: 8px;
+}
+
+.required {
+  color: #C4282D;
+}
+
+.label-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.error-message {
+  color: #C4282D;
+}
+
+.password-hint {
+  font-size: 10px;
+  margin-top: 4px;
+  position: absolute;
+  left: 130px;
+}
+
+.info-icon {
+  & svg {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+.terms {
+  font-size: 0.9em;
+  margin-top: 1.5em;
+
+  & a {
+    @extend .unstyled-link;
+  }
+}
+
+.signin-link {
+  @extend .unstyled-link;
+  cursor: pointer;
+}
+
+.go-to-signin {
+  text-align: center;
+  margin-top: 15px;
+}

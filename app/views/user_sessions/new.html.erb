@@ -3,7 +3,7 @@
 <% end %>
 
 <% if use_auth0_component(@view, request) %>
-  <%= render 'user_sessions/auth0_login' %>
+  <%= render partial: 'user_sessions/auth0_login', locals: { login: true } %>
 <% else %>
 
   <% content_for :head do %>

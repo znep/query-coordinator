@@ -46,7 +46,9 @@ class ChooseConnection extends React.Component {
           </div>
           <span
             styleName="button-text"
-            dangerouslySetInnerHTML={{ __html: translate('screens.sign_in.sign_in_with', { provider: 'Socrata ID' }) }} />
+            dangerouslySetInnerHTML={{
+              __html: translate('screens.sign_in.sign_in_with', { provider: 'Socrata ID' })
+            }} />
         </a>
       );
     }

@@ -39,10 +39,14 @@ class AccountsController < ApplicationController
 
     @signup = SignupPresenter.new(params[:signup])
     respond_to do |format|
+      recaptcha_verified = FeatureFlags.derive[:use_auth0_component] ?
+        SocrataRecaptcha.valid(params['g-recaptcha-response']) :
+        verify_recaptcha
+
       # need both .data and .json formats because firefox detects as .data and chrome detects as .json
       # When CSRF token validation is skipped for this method (see skip_before_filter above), this
       # verify_recaptcha test is our only protection against abuse.
-      if !verify_recaptcha
+      if !recaptcha_verified
         flash.now[:error] = t('recaptcha.errors.verification_failed')
         @user_session = UserSession.new
         format.html { render :action => :new }

@@ -1,0 +1,22 @@
+$default-font-path: "socrata-components/dist/fonts/";
+@import "styleguide-no-tag-level.scss";
+
+.alert-base {
+  @extend .alert;
+  margin-bottom: 1.5em;
+}
+
+.alert-notice {
+  @extend .alert-base;
+  @extend .info;
+}
+
+.alert-warning {
+  @extend .alert-base;
+  @extend .warning;
+}
+
+.alert-error {
+  @extend .alert-base;
+  @extend .error;
+}

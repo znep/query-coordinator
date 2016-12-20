@@ -1,11 +1,22 @@
+import React from 'react';
+import Alerts from './components/Alerts';
+
+// this came from core (yuck!)
+// eslint-disable-next-line max-len
+const CORE_EMAIL_REGEX = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
+
 /**
- * Currently, anything with an @ followed by text is considered "valid"
+ * Unless 'strict' is true, anything with an @ followed by text is considered "valid"
  * This is so for SSO (federated) email adresses you can just type @whatever
  * and be sent to the right login system (i.e. just typing "@socrata" will log you
  * in with our login system)
  */
-export function isValidEmail(email) {
-  return email.match(/@.+$/);
+export function isValidEmail(email, strict = false) {
+  if (strict === true) {
+    return new RegExp(CORE_EMAIL_REGEX, 'i').test(email);
+  } else {
+    return email.match(/@.+$/);
+  }
 }
 
 /**
@@ -68,7 +79,27 @@ export function findForcedOrEmailDomainConnection(
 }
 
 /**
- * Handles getting translations out of a translation object
+ * Render all the alerts;
+ * Note that the component this is called in *must* be using react-css-modules
+ * and *must* have a stylesheet that has all the proper alert levels set.
+ */
+export function renderAlerts(alerts) {
+  if (_.isEmpty(alerts)) {
+    return null;
+  }
+
+  const messages = alerts.map((flash) => {
+    return {
+      level: flash[0],
+      message: flash[1]
+    };
+  });
+
+  return (<Alerts alerts={messages} />);
+}
+
+/**
+ * Handles getting translations out of a translations object
  */
 export class Translate {
   constructor(translations) {
@@ -77,6 +108,8 @@ export class Translate {
     } else {
       this.translations = translations;
     }
+
+    this.get = this.get.bind(this);
   }
 
   /**

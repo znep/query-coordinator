@@ -1,7 +1,7 @@
 import React from 'react';
 import Auth0 from 'auth0-js';
 import cssModules from 'react-css-modules';
-import { Translate } from '../Util';
+import { Translate, renderAlerts } from '../Util';
 import OptionsPropType from '../PropTypes/OptionsPropType';
 import SignIn from './SignIn';
 import ChooseConnection from './ChooseConnection/ChooseConnection';
@@ -23,7 +23,7 @@ class SignInContainer extends React.Component {
       }),
       auth0Connections: [],
       renderLoginForm: false,
-      translate: translate.get.bind(translate)
+      translate: translate.get
     };
 
     this.renderChooseConnectionOrSignInForm = this.renderChooseConnectionOrSignInForm.bind(this);
@@ -114,34 +114,15 @@ class SignInContainer extends React.Component {
     }
   }
 
-  renderFlashes() {
-    const { flashes } = this.props.options;
-
-    if (_.isEmpty(flashes)) {
-      return;
-    }
-
-    return flashes.map((flash, i) => {
-      const level = flash[0];
-      const message = flash[1];
-
-      return (
-        <div
-          styleName={`alert-${level}`}
-          key={`alert-${level}-${i}`}
-          dangerouslySetInnerHTML={{ __html: message }} />
-      );
-    });
-  }
-
   render() {
     const { translate } = this.state;
     const { options } = this.props;
+    const { flashes } = options;
     return (
       <div styleName="container">
         {this.renderBackButton()}
 
-        {this.renderFlashes()}
+        {renderAlerts(flashes)}
 
         <h2 styleName="header">
           {

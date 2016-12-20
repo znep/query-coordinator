@@ -1,0 +1,47 @@
+$default-font-path: "socrata-components/dist/fonts/";
+
+@import "styleguide-no-tag-level.scss";
+@import "_colors.scss";
+
+.center {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.container {
+  @include base;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  max-width: 650px;
+  min-width: 445px;
+  background: $white;
+  border: 1px solid $light-grey-3;
+  padding-left: 3em;
+  padding-right: 3em;
+  padding-bottom: 1em;
+  padding-top: 3em;
+}
+
+.divider {
+  border-top: 1px solid $light-grey-3;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.create-new-id {
+  margin-bottom: 10px;
+}
+
+.socrata-powered {
+  font-size: 1em;
+  margin-bottom: 10px;
+}
+
+.disclaimer {
+  margin-top: 10px;
+}

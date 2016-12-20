@@ -5,13 +5,16 @@
 <div id="signin" style="width: 40%; margin-left: auto; margin-right: auto;"></div>
 
 <% content_for :translations do %>
- <%= render_translations LocalePart.screens.sign_in %>
+  <%= render_translations LocalePart.screens.sign_in %>
+  <%= render_translations LocalePart.screens.sign_up %>
+  <%= render_translations LocalePart.core.validation %>
+  <%= render_translations LocalePart.account.common %>
 <%- end -%>
 
 <% content_for :js_footer do %>
   <%= include_webpack_bundle 'signin/main.js' %>
 
   <script>
-    window.auth0Login('#signin', <%= generate_auth0_options %>);
+    window.auth0Login('#signin', <%= generate_auth0_options %>, <%= login %>);
   </script>
 <%- end -%>

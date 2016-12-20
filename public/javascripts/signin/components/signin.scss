@@ -54,6 +54,7 @@ $default-font-path: "socrata-components/dist/fonts/";
 
 .signup-link {
   @extend .unstyled-link;
+  cursor: pointer;
 }
 
 .back-to-options {

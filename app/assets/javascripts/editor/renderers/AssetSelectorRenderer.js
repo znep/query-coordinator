@@ -273,7 +273,7 @@ export default function AssetSelectorRenderer(options) {
 
     var debounceForOneSecondThenUploadHtmlFragment = _.debounce(function(event) {
       var htmlFragment = $(event.target).val();
-      _warnAboutInsecureHTML = /src=("|')http:\/\//.test(htmlFragment);
+      _warnAboutInsecureHTML = /src=['"]?http:\/\//.test(htmlFragment);
       if (htmlFragment.length === 0) {
         return;
       }
@@ -285,7 +285,7 @@ export default function AssetSelectorRenderer(options) {
         });
       }
 
-      var blobForUpload = new Blob([htmlFragment], {type: 'text/html'});
+      var blobForUpload = new Blob([`<!DOCTYPE html>${htmlFragment}`], {type: 'text/html'});
       blobForUpload.name = Constants.EMBEDDED_FRAGMENT_FILE_NAME;
 
       dispatcher.dispatch({

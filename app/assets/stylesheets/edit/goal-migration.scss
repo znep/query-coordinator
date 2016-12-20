@@ -7,7 +7,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   background-color: #fff;
-  color: #f00;
   z-index: 10000;
+
+  p {
+    margin-top: -3rem;
+  }
+
+  .spinner-default {
+    margin-top: 3rem;
+  }
 }

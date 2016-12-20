@@ -331,6 +331,9 @@ en:
       full_month_11: 'November'
       full_month_12: 'December'
     downtime: 'This Socrata-powered site may be unavailable for routine maintenance<br>from {0} to {1}.'
+    op_migration:
+      error: 'Oh no! Something went wrong while updating this goal. Please contact Socrata support.'
+      in_progress: 'Updating your experience...'
     # Translations common with OpenPerformance
     open_performance:
       measure:

@@ -36,6 +36,7 @@ class ChooseConnection extends React.Component {
       const { setLoginFormVisibility, translate } = this.props;
       return (
         <a
+          className="signin-button-socrata-id"
           styleName="button"
           onClick={() => { setLoginFormVisibility(true); }}>
           <div styleName="button-image-container">

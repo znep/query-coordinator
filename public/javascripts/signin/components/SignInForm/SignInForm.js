@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
-import { isValidEmail, findForcedOrEmailDomainConnection } from '../../Util';
+import { isValidEmail, findConnection } from '../../Util';
 import OptionsPropType from '../../PropTypes/OptionsPropType';
+import Auth0ConnectionsPropType from '../../PropTypes/Auth0ConnectionsPropType';
 import EmailInput from './EmailInput';
 import PasswordInput from './PasswordInput';
-import SignInButton from './SignInButton';
 import RememberMe from './RememberMe';
 import styles from './sign-in-form.scss';
 
@@ -22,10 +22,10 @@ class SignInForm extends React.Component {
 
       // the connection name is found based off of the email
       // either by the email domain or the "forced connections" config option
-      connectionName: undefined,
+      connectionName: null,
 
       // any errors that happened during login
-      error: undefined,
+      error: null,
 
       // if this is true, and there are no errors,
       // then a spinner is rendered
@@ -34,9 +34,10 @@ class SignInForm extends React.Component {
 
     this.onEmailChange = this.onEmailChange.bind(this);
     this.onPasswordChange = this.onPasswordChange.bind(this);
-    this.onLoginError = this.onLoginError.bind(this);
+    this.setLoginErrorMessage = this.setLoginErrorMessage.bind(this);
     this.onLoginStart = this.onLoginStart.bind(this);
     this.renderErrorOrSpiiner = this.renderErrorOrSpinner.bind(this);
+    this.doSignIn = this.doSignIn.bind(this);
   }
 
   /**
@@ -46,15 +47,17 @@ class SignInForm extends React.Component {
   onEmailChange(email) {
     if (isValidEmail(email)) {
       const { auth0Connections, options } = this.props;
-      const connectionName = findForcedOrEmailDomainConnection(
+      const { forcedConnections, socrataEmailsBypassAuth0 } = options;
+      const connectionName = findConnection(
         email,
         auth0Connections,
-        options.forcedConnections,
-        options.socrataEmailsBypassAuth0
+        forcedConnections,
+        socrataEmailsBypassAuth0
       );
+
       this.setState({ email, connectionName });
     } else {
-      this.setState({ email: undefined, connectionName: undefined });
+      this.setState({ email: null, connectionName: null });
     }
   }
 
@@ -66,12 +69,65 @@ class SignInForm extends React.Component {
     this.setState({ loggingIn: true });
   }
 
-  onLoginError(error) {
-    if (error !== undefined) {
+  setLoginErrorMessage(error) {
+    if (!_.isEmpty(error)) {
       console.error(error);
     }
 
     this.setState({ error });
+  }
+
+  doSignIn(event) {
+    event.preventDefault();
+
+    const { options, auth0Connections } = this.props;
+    const { connectionName, email } = this.state;
+    const { forcedConnections, socrataEmailsBypassAuth0 } = options;
+
+    // blank out error
+    this.setLoginErrorMessage(null);
+
+    if (!_.isEmpty(connectionName)) {
+      // we already have a connection name; just use that
+      this.auth0Login(connectionName);
+    } else if (!_.isEmpty(email)) {
+      // make sure we *really* shouldn't have a connection...
+      const foundConnection = findConnection(
+        email,
+        auth0Connections,
+        forcedConnections,
+        socrataEmailsBypassAuth0
+      );
+
+      if (!_.isEmpty(foundConnection)) {
+        // if an email was entered and matched a connection, use that connection
+        this.auth0Login(foundConnection);
+      } else {
+        // otherwise do a regular ol login
+        this.formLogin();
+        this.formDomNode.submit();
+      }
+    } else {
+      // by default, we just do a login when the fields are blank;
+      // frontend will redirect back to the login page with a flash
+      // describing what went wrong.
+      this.formLogin();
+    }
+  }
+
+  auth0Login(connectionName) {
+    const { doAuth0Login } = this.props;
+    this.onLoginStart();
+
+    // SSO connection
+    doAuth0Login({
+      connection: connectionName
+    });
+  }
+
+  formLogin() {
+    this.onLoginStart();
+    this.formDomNode.submit();
   }
 
   renderErrorOrSpinner() {
@@ -79,12 +135,12 @@ class SignInForm extends React.Component {
 
     if (!_.isEmpty(error)) {
       return (
-        <div styleName="login-error">
+        <div className="signin-form-error" styleName="login-error">
           <strong>{this.props.translate('screens.sign_in.error')}:</strong> {error.message}
         </div>
       );
     } else if (loggingIn === true) {
-      return <span styleName="spinner"></span>;
+      return <span className="signin-form-spinner" styleName="spinner"></span>;
     }
   }
 
@@ -95,9 +151,8 @@ class SignInForm extends React.Component {
   }
 
   render() {
-    const { options, doAuth0Login, auth0Connections, translate } = this.props;
-    const { connectionName, email, password } = this.state;
-    const { forcedConnections, socrataEmailsBypassAuth0 } = options;
+    const { options, translate } = this.props;
+    const { connectionName } = this.state;
 
     return (
       <form
@@ -130,18 +185,9 @@ class SignInForm extends React.Component {
             {translate('screens.sign_in.forgot_password')}
         </a>
 
-        <SignInButton
-          form={this.formDomNode}
-          connectionName={connectionName}
-          doAuth0Login={doAuth0Login}
-          translate={this.props.translate}
-          email={email}
-          password={password}
-          onLoginStart={this.onLoginStart}
-          onLoginError={this.onLoginError}
-          auth0Connections={auth0Connections}
-          forcedConnections={forcedConnections}
-          socrataEmailsBypassAuth0={socrataEmailsBypassAuth0} />
+        <button onClick={this.doSignIn} styleName="sign-in-button">
+          {translate('screens.sign_in.form.sign_in_button')}
+        </button>
       </form>
     );
   }
@@ -151,7 +197,7 @@ SignInForm.propTypes = {
   options: OptionsPropType.isRequired,
   translate: PropTypes.func.isRequired,
   doAuth0Login: PropTypes.func.isRequired,
-  auth0Connections: PropTypes.array
+  auth0Connections: PropTypes.arrayOf(Auth0ConnectionsPropType)
 };
 
 export default cssModules(SignInForm, styles);

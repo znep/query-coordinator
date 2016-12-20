@@ -87,7 +87,12 @@ class SignInContainer extends React.Component {
     const renderingLoginForm = _.isEmpty(connections) || this.state.renderLoginForm === true;
 
     if (renderingLoginForm && !_.isEmpty(formMessage)) {
-      return <div styleName="form-message" dangerouslySetInnerHTML={{ __html: formMessage }} />;
+      return (
+        <div
+          className="signin-form-message"
+          styleName="form-message"
+          dangerouslySetInnerHTML={{ __html: formMessage }} />
+      );
     }
   }
 
@@ -99,6 +104,7 @@ class SignInContainer extends React.Component {
     if (!_.isEmpty(options.connections) && renderLoginForm === true) {
       return (
         <a
+          className="signin-button-back-to-options"
           styleName="back-to-options"
           onClick={() => this.setLoginFormVisibility(false)} >
           <span

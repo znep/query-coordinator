@@ -27,6 +27,7 @@ namespace :test do
       'datasetManagementUI' => 'update_dataset_management_ui_translations',
       'visualizationCanvas' => 'update_visualization_canvas_translations',
       'autocomplete' => nil,
+      'signin' => 'update_signin_translations',
       'oldUx' => nil
     }.each do |task_name, dependency|
       desc task_name
@@ -43,7 +44,8 @@ namespace :test do
       'test:karma:translations:update_import_wizard_translations',
       'test:karma:translations:update_admin_goals_translations',
       'test:karma:translations:update_dataset_management_ui_translations',
-      'test:karma:translations:update_visualization_canvas_translations'
+      'test:karma:translations:update_visualization_canvas_translations',
+      'test:karma:translations:update_signin_translations'
     ]
     desc 'parallel'
     task :parallel => parallel_deps do
@@ -109,6 +111,19 @@ namespace :test do
         translations = YAML.load_file(translations_filename)['en']['visualization_canvas']
         File.write(output_filename, "export default #{translations.to_json.html_safe};")
       end
+
+      desc 'update_signin_translations'
+      task :update_signin_translations do
+        translations_filename = 'config/locales/en.yml'
+        output_filename = 'karma/signin/mockTranslations.js'
+        all_translations = YAML.load_file(translations_filename)['en']
+        translations = {
+          screens: {
+            sign_in: all_translations['screens']['sign_in']
+          }
+        }
+        File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
+      end
     end
 
     desc 'all the karma tasks'
@@ -120,7 +135,8 @@ namespace :test do
       'karma:adminGoals',
       'karma:datasetManagementUI',
       'karma:visualizationCanvas',
-      'karma:autocomplete'
+      'karma:autocomplete',
+      'karma:signin'
     ]
   end
 end

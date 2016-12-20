@@ -15,7 +15,9 @@ class PasswordInput extends React.Component {
     return (
       <div>
         <div styleName="icon-container" dangerouslySetInnerHTML={{ __html: passwordIcon }} />
-        <div styleName="sso-enabled-text">
+        <div
+          className="signin-password-sso-enabled-text"
+          styleName="sso-enabled-text">
             {this.props.translate('screens.sign_in.sso_enabled')}
         </div>
       </div>

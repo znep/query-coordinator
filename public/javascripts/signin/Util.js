@@ -1,7 +1,8 @@
 import React from 'react';
 import Alerts from './components/Alerts';
+import _ from 'lodash';
 
-// this came from core (yuck!)
+// (yuck!)
 // eslint-disable-next-line max-len
 const CORE_EMAIL_REGEX = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
 
@@ -15,7 +16,7 @@ export function isValidEmail(email, strict = false) {
   if (strict === true) {
     return new RegExp(CORE_EMAIL_REGEX, 'i').test(email);
   } else {
-    return email.match(/@.+$/);
+    return new RegExp('@.+$', 'i').test(email);
   }
 }
 
@@ -38,7 +39,7 @@ export function findEmailDomainConnection(email, connections, socrataEmailsBypas
   const emailSplit = email.split('@');
 
   if (emailSplit.length !== 2) {
-    return undefined;
+    return null;
   }
 
   const emailDomain = emailSplit[1];
@@ -46,7 +47,7 @@ export function findEmailDomainConnection(email, connections, socrataEmailsBypas
   // this option allows users with @socrata.com emails to login directly to rails and
   // bypass auth0; note that this is also enforced in the user_sessions controller
   if (socrataEmailsBypassAuth0 && emailDomain === 'socrata.com') {
-    return undefined;
+    return null;
   }
 
   return _.find(connections, (connection) => {
@@ -58,23 +59,23 @@ export function findEmailDomainConnection(email, connections, socrataEmailsBypas
 /**
  * Finds a connection either by the email domain or by the configured forced connection regex
  */
-export function findForcedOrEmailDomainConnection(
+export function findConnection(
     email,
     auth0Connections,
     forcedConnections,
     socrataEmailsBypassAuth0
   ) {
-  const emailDomainconnection =
+  const emailDomainConnection =
     findEmailDomainConnection(email, auth0Connections, socrataEmailsBypassAuth0);
 
   const forcedConnection =
     findForcedConnection(email, forcedConnections);
 
   // forced connection takes precedence
-  if (!_.isUndefined(forcedConnection)) {
+  if (!_.isEmpty(forcedConnection)) {
     return forcedConnection.connection;
-  } else if (!_.isUndefined(emailDomainconnection)) {
-    return emailDomainconnection.name;
+  } else if (!_.isEmpty(emailDomainConnection)) {
+    return emailDomainConnection.name;
   }
 }
 
@@ -103,7 +104,7 @@ export function renderAlerts(alerts) {
  */
 export class Translate {
   constructor(translations) {
-    if (_.isEmpty(translations)) {
+    if (_.isEmpty(translations) && blist) {
       this.translations = blist.translations;
     } else {
       this.translations = translations;
@@ -126,6 +127,7 @@ export class Translate {
       return `(missing translation: ${key})`;
     }
 
+    // replacements come in like %{this}
     const template = _.template(translation, { interpolate: /%{([\s\S]+?)}/g });
     return template(values);
   }

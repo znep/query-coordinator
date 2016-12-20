@@ -104,3 +104,8 @@ $default-font-path: "socrata-components/dist/fonts/";
 .psuedo-checkbox-check {
   @extend .icon-checkmark3;
 }
+
+.login-error {
+  @extend .alert;
+  @extend .error;
+}

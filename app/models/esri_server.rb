@@ -41,5 +41,8 @@ class EsriServer
     @sync_type == 'catalog'
   end
 
+  def data_connect_all?
+    @sync_type == 'data'
+  end
 
 end

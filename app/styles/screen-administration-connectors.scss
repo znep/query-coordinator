@@ -27,9 +27,73 @@ $pager-blue: #2f4589;
 
   }
 
+  .asset-name {
+    padding-left: 5px;
+  }
+
+  .has-focus {
+    outline: 2px solid #00BF9B;
+  }
+
+  .select-icon {
+    margin: 5px 5px 5px 5px;
+    font-size: 1em;
+    position: absolute;
+  }
+
+  .icon-data {
+    color: #288DC1;
+  }
+
+  .icon-external-square {
+    color: #00A1AF;
+  }
+
+  .icon-plus3 {
+    color: #5E5E5E;
+  }
+
+  .is-disabled {
+    background-color: #F1F1F1;
+    color: #cacaca;
+  }
+
+  .select-style {
+    padding: 0;
+    display: inline-flex;
+    overflow: hidden;
+    width: 20px;
+    height: 20px;
+
+    border: 1px solid #E4E4E4;
+    border-radius: 1px;
+
+    select {
+      z-index: 2;
+      padding: 5px 50px;
+      width: 130%;
+      border: none;
+      border-radius: 3px;
+      box-shadow: none;
+      background-color: transparent;
+      background-image: none;
+      -webkit-appearance: none;
+         -moz-appearance: none;
+              appearance: none;
+    }
+
+  }
+
   .flexbox-space-between {
     display: flex;
     justify-content: space-between;
+  }
+
+  .flexbox-right-section {
+    flex-direction: column;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
   }
 
   .connector-list-go-back {
@@ -59,11 +123,6 @@ $pager-blue: #2f4589;
     color: $success-green;
   }
 
-  .current-status {
-    font-size: 2em;
-    font-weight: 900;
-  }
-
   .result-time-stamp {
     color: $timestamp-grey;
     font-size: 1.2em;
@@ -79,10 +138,44 @@ $pager-blue: #2f4589;
     font-size: 1.5em;
   }
 
-
 }
 
 .selective-connection {
+
+  .inline-value-label {
+    padding-left: 0px;
+    padding-right: 10px;
+  }
+
+  .legend {
+    font-size: 1.2em;
+    margin: 5px;
+
+    .legend-icon {
+      margin-right: 3px;
+    }
+
+    .legend-info {
+    }
+
+    .legend-item {
+      margin: 7px;
+    }
+
+    .legend-key {
+      font-weight: 600;
+    }
+  }
+
+  .inline-value {
+    display: inline-block;
+    padding-top: 9px
+  }
+
+  .inline-button {
+    float: right;
+    display: inline-block;
+  }
 
   .filter-assets {
     margin-top: 1em;
@@ -99,7 +192,7 @@ $pager-blue: #2f4589;
     }
     .folder {
       .child {
-        border-left: 1px solid $color_chrome_box_border;
+        // border-left: 1px solid $color_chrome_box_border;
         margin-left: 1em;
         padding-left: 1em;
       }

@@ -23,29 +23,69 @@
   </div>
 
   <div class="selective-connection">
-
     <%= form_tag({:action => 'update_connector'}, :method => 'post', :class => 'commonForm') %>
-      <h2><%= t("#{prefix}.selective_connection") %></h2>
-      <div class="new-connector-form flexbox-space-between">
-        <div class="flexbox-left-section">
-          <fieldset class="line">
-            <div class="valueBox">
-              <input type="radio" id="federateAll" class="server-sync"
-                name="server[sync_type]" value="catalog"
-                <%= @server.federate_all? ? 'checked="checked"' : '' %> />
-              <label for="federateAll"><%= t("#{prefix}.all_assets") %></label>
-            </div>
-            <div class="valueBox">
-              <input type="radio" id="federateSome" class="server-sync"
-                name="server[sync_type]" value="ignored"
-                <%= @server.federate_all? ? '' : 'checked="checked"' %> />
-              <label for="federateAll"><%= t("#{prefix}.some_assets") %></label>
-            </div>
+      <h2><%= t("#{prefix}.connection_type") %></h2>
+      <% if @data_connection_on %>
+      <div class="legend">
+        <div class="legend-item">
+          <span class="icon-data legend-icon"></span>
+          <span class="legend-info">
+            <span class= "legend-key"> <%= t("#{prefix}.data_option") %> </span>- <%= t("#{prefix}.data_option_explanation") %>
+          </span>
+        </div>
+        <div class="legend-item">
+          <span class="icon-external-square legend-icon"></span>
+          <span class="legend-info">
+            <span class="legend-key"><%= t("#{prefix}.catalog_option") %> </span>- <%= t("#{prefix}.catalog_option_explanation") %>
+          </span>
+        </div>
+        </div>
+        <fieldset class="line">
+          <div class="valueBox inline-value">
+            <input type="radio" id="dataConnectAll" class="server-sync"
+              name="server[sync_type]" value="data"
+              <%= @server.data_connect_all? ? 'checked="checked"' : '' %> />
+            <label for="dataConnectAll" class="inline-value-label"><%= t("#{prefix}.data_connect_all") %></label>
+          </div>
+          <div class="valueBox inline-value">
+            <input type="radio" id="federateAll" class="server-sync"
+              name="server[sync_type]" value="catalog"
+              <%= @server.federate_all? ? 'checked="checked"' : '' %> />
+            <label for="federateAll" class="inline-value-label"><%= t("#{prefix}.catalog_connect_all") %></label>
+          </div>
+          <div class="valueBox inline-value">
+            <input type="radio" id="connectSome" class="server-sync"
+              name="server[sync_type]" value="ignored"
+              <%= @server.federate_all? || @server.data_connect_all? ? '' : 'checked="checked"' %> />
+            <label for="connectSome" class="inline-value-label"><%= t("#{prefix}.some_assets") %></label>
+          </div>
+          <input type="submit" value=<%=t("#{prefix}.save")%> class="button inline-button"/>
+        </fieldset>
+      <% else %>
+        <div class="new-connector-form flexbox-space-between">
+          <div class="flexbox-left-section">
+            <fieldset class="line">
+              <div class="valueBox">
+                <input type="radio" id="federateAll" class="server-sync"
+                  name="server[sync_type]" value="catalog"
+                  <%= @server.federate_all? ? 'checked="checked"' : '' %> />
+                <label for="federateAll"><%= t("#{prefix}.all_assets") %></label>
+              </div>
+              <div class="valueBox">
+                <input type="radio" id="federateSome" class="server-sync"
+                  name="server[sync_type]" value="ignored"
+                  <%= @server.federate_all? ? '' : 'checked="checked"' %> />
+                <label for="federateAll"><%= t("#{prefix}.some_assets") %></label>
+              </div>
           </div> <%# end flex left section %>
           <div class="line clearfix flexbox-right-section">
-            <input type="submit" value=<%=t("#{prefix}.save")%> class="button"/>
+            <div class="flexbox-upper-right">
+              <input type="submit" value=<%=t("#{prefix}.save")%> class="button"/>
+            </div>
           </div>
         </div> <%# end flex box container %>
+      <% end %>
+
       <%= form_tag({:action => 'update_connector'}, {:method => 'post', :class => 'commonForm'}) %>
         <fieldset class="line">
 
@@ -60,29 +100,62 @@
             <%- @tree['folders'].each do |folder| -%>
               <div class="item folder search-item">
                 <div class="editItem">
-                  <%= folder_check_box(@server, folder) %>
-                  <%= truncate(folder['name'], length: 120) %>
+                  <% if @data_connection_on %>
+                    <div
+                      class="select-style <%= disabled_class(@server)%>"
+                      id="style-div-for-<%=folder['id']%>">
+                      <%= icon_for_asset(@server, folder) %>
+                      <%= folder_select_tag(@server, folder) %>
+                    </div>
+                  <% else %>
+                    <%= folder_check_box(@server, folder) %>
+                  <% end %>
+                  <span class="asset-name">
+                    <%= truncate(folder['name'], length: 120) %>
+                  </span>
                 </div>
 
                 <%- folder['services'].each do |service| -%>
                   <div class="item child service search-item">
                     <div class="editItem">
-                      <%= service_check_box(@server, folder, service) %>
+                      <% if @data_connection_on %>
+                        <div
+                          class="select-style <%=disabled_class(@server)%>"
+                          id="style-div-for-<%=service['id']%>">
+                          <%= icon_for_asset(@server, service) %>
+                          <%= service_select_tag(@server, folder, service) %>
+                        </div>
+                      <% else %>
+                        <%= service_check_box(@server, folder, service) %>
+                      <% end %>
                       <a target="_blank" href="<%= service['url'] %>"
                         name="<%= service_display_string(service) %>">
-                        <%= truncate(service_display_string(service), length: 120) %>
+                        <span class="asset-name">
+                          <%= truncate(service_display_string(service), length: 120) %>
+                        </span>
                       </a>
                     </div>
 
                     <%- service['layers'].each do |layer| -%>
                       <div class="item child layer search-item">
                         <div class="editItem">
-                          <%= layer_check_box(@server, folder, service, layer) %>
+                          <% if @data_connection_on %>
+                            <div
+                              class="select-style <%= disabled_class(@server)%>"
+                              id="style-div-for-<%=layer['id']%>">
+                              <%= icon_for_asset(@server, layer) %>
+                              <%= layer_select_tag(@server, folder, service, layer) %>
+                            </div>
+                          <% else %>
+                            <%= layer_check_box(@server, folder, service, layer) %>
+                          <% end %>
                           <a target="_blank" href="<%= layer['url'] %>">
                             <%- if layer['name'].blank? -%>
                               <%= layer['url'] %>
                             <%- else -%>
-                              <%= truncate(layer['name'], length: 120) %>
+                              <span class="asset-name">
+                                <%= truncate(layer['name'], length: 120) %>
+                              </span>
                             <%- end -%>
                           </a>
                         </div>
@@ -100,3 +173,4 @@
 </div>
 
 <%= render_admin_qualtrics %>
+<%= render_translations LocalePart.screens.admin.connector %>

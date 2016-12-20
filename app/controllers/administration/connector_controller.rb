@@ -45,9 +45,8 @@ class Administration::ConnectorController < AdministrationController
   end
 
   def edit_connector
-    @sync_types = Hash[['ignore', 'catalog', 'data'].map do |k|
-      [t("screens.admin.connector.#{k}"), k]
-    end]
+    @data_connection_on = feature_flag?('enable_data_connector', request)
+
     begin
       @tree = DataConnector.tree(params[:server_id])
       @server = DataConnector.server(params[:server_id])
@@ -142,8 +141,6 @@ class Administration::ConnectorController < AdministrationController
     end
 
     @pager_elements = Pager::paginate(count, page_size, page_idx, { :all_threshold => all_threshold, :params => {} })
-
-
   end
 
 end

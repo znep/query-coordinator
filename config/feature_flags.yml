@@ -106,6 +106,9 @@ embetter_analytics_browser_views_only:
 enable_api_foundry_pane:
   description: Will allow the api_foundry pane to be displayed. If there is another reason for the api_foundry pane to be hidden, it will still be hidden.
   defaultValue: false
+enable_data_connector:
+  description: Turn on the ability to create Mondata maps as opposed to external link datasets on the 'Connectors' admin page.
+  defaultValue: false
 enable_data_lens_page_metadata_migrations:
   description: Lazily migrate data lens page metadata schemas on each request.
   defaultValue: true

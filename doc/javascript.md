@@ -191,12 +191,20 @@ npm install
 ```
 
 from the root of the frontend repository. This command reads metadata about packages from the
-`package.json` file and performs any necessary installation. In general, this command should be run
-any time new JavaScript code is pulled in that is suspected to use new or updated dependencies. It
-has been observed that this command can be non-deterministic in nature. If your dependencies are
-more than several weeks out of date, it may be necessary to run `npm install` twice. In severe
-cases it may be necessary to completely remove the `node_modules` directory and run `npm install`
-from a clean slate.
+`package.json` file and performs any necessary installation.  To determine whether or not your local
+modules are out of date with those in `package.json`, run:
+
+```
+npm run check-dependencies
+```
+
+This will automatically be run before starting webpack and after pulling in new code to inform you
+whether or not an `npm install` is required.
+
+It has been observed that `npm install` can be non-deterministic in nature. If your dependencies are
+more than several weeks out of date, it may be necessary to run `npm install` twice. In severe cases
+it may be necessary to completely remove the `node_modules` directory and run `npm install` from a
+clean slate.
 
 In general, to add a new dependency, run `npm install some-library --save` which will cause npm to
 add an entry to `package.json` that refers to the new library. Alternatively, one can manually edit

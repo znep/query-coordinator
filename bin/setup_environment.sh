@@ -1,6 +1,7 @@
 #!/bin/bash
 
 cp tools/hooks/pre-push .git/hooks/pre-push
+cp tools/hooks/post-merge .git/hooks/post-merge
 
 # Setup for Artifactory
 # 1. Credentials

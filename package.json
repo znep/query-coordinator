@@ -21,10 +21,11 @@
     "prebuild:prod": "npm run webpack-clean",
     "postbuild:prod": "node ./tools/merge-asset-manifests.js",
     "webpack-clean": "rimraf ${npm_package_config_webpackDestination}",
-    "webpack-dev-server": "webpack-dev-server --progress --config ${npm_package_config_webpackConfig} --https --cert dev-server/ssl/host.crt --cacert dev-server/ssl/ca.crt --key dev-server/ssl/host.key",
+    "webpack-dev-server": "check-dependencies && webpack-dev-server --progress --config ${npm_package_config_webpackConfig} --https --cert dev-server/ssl/host.crt --cacert dev-server/ssl/ca.crt --key dev-server/ssl/host.key",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
-    "postinstall": "./tools/postinstall.sh"
+    "postinstall": "./tools/postinstall.sh",
+    "check-dependencies": "check-dependencies"
   },
   "repository": {
     "type": "git",
@@ -117,6 +118,7 @@
     "angular-ui-router": "0.2.10",
     "auth0-js": "7.1.0",
     "babel-polyfill": "6.9.1",
+    "check-dependencies": "1.0.1",
     "classnames": "2.2.5",
     "clipboard": "1.5.12",
     "component-upload": "0.3.0",

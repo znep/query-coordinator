@@ -93,7 +93,7 @@ class DatasetLandingPage
         :editMetadataUrl => edit_metadata_url(view),
         :editUrl => edit_view_path(view),
         :sortOrder => view.sort_order,
-        :bootstrapUrl => bootstrap_url(view),
+        :bootstrapUrl => bootstrap_url(view, results[:migrations]),
         :metadata => view.metadata,
         :disableContactDatasetOwner => disable_contact_dataset_owner(view)
       }
@@ -330,11 +330,11 @@ class DatasetLandingPage
       end
     end
 
-    def bootstrap_url(view)
+    def bootstrap_url(view, migrations)
       if view.newBackend?
         new_data_lens_path(:id => view.id)
       else
-        @migrations.present? ? new_data_lens_path(:id => @migrations['nbeId']) : nil
+        migrations.present? ? new_data_lens_path(:id => migrations['nbeId']) : nil
       end
     end
 

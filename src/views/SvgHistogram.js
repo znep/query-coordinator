@@ -599,15 +599,22 @@ function SvgHistogram($element, vif) {
 
       minYValue = limitMin || _.min([measureExtent[0], 0]);
       maxYValue = limitMax || _.max([measureExtent[1], 0]);
+
+      if (limitMin || limitMax) {
+        d3YScale = d3.scale.linear().
+          domain([minYValue, maxYValue]).
+          range([chartHeight, 0]);
+      } else {
+        d3YScale = d3.scale.linear().
+          domain([minYValue, maxYValue]).
+          nice().
+          range([chartHeight, 0]);
+      }
+
     } catch (error) {
       self.renderError(error.message);
       return;
     }
-
-    d3YScale = d3.scale.linear().
-      domain([minYValue, maxYValue]).
-      nice().
-      range([chartHeight, 0]);
 
     /**
      * 4. Clear out any existing chart.

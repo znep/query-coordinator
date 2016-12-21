@@ -1,8 +1,7 @@
 @import 'lib/variables';
 
 .component-goal-embed {
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
+  max-width: 1320px;
   background-size: cover;
   margin-top: 1rem;
   margin-bottom: 1rem;
@@ -10,7 +9,7 @@
 
   iframe {
     display: block;
-    width: 90%;
+    width: 100%;
     height: 100%;
     z-index: 1;
     margin: 0 auto;
@@ -19,6 +18,20 @@
 
   .component-edit-controls > button {
     margin-right: 5rem;
+  }
+}
+
+@media (min-width: 1320px) {
+  .component-goal-embed {
+    width: 1320px;
+    margin-left: calc(-660px + 50%);
+  }
+}
+
+@media (min-width: 1070px) and (max-width: 1320px) {
+  .component-goal-embed {
+    width: 1070px;
+    margin-left: calc(-535px + 50%);
   }
 }
 

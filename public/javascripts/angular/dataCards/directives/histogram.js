@@ -97,6 +97,8 @@ module.exports = function histogram(
         }).
         distinctUntilChanged();
 
+      var rescaleAxis$ = $scope.$observe('rescaleAxis');
+
       // Listen for our custom brush start and end events
       var brushStartIndices$ = Rx.Observable.fromEventPattern(function(handler) {
         brush.brushDispatcher.on('start', handler);
@@ -165,12 +167,12 @@ module.exports = function histogram(
 
       // Approximates the y value of the x-center of the selection path
       // Updates a placeholder element for positioning the flyout upon
-      Rx.Observable.merge(brushIndicesAndValues$, cardDimensions$).
+      Rx.Observable.merge(brushIndicesAndValues$, cardDimensions$, rescaleAxis$).
         subscribe(function() {
           var extentCenter = { x: 0, y: 0 };
           var extent = brush.control.extent();
           var targetX = extent[0] + (extent[1] - extent[0]) / 2;
-          var yValues = _(['filtered', 'unfiltered']).
+          var yValues = _($scope.rescaleAxis ? ['filtered'] : ['filtered', 'unfiltered']).
             map(function(selector) {
               var path = _.get(dom, `line.${selector}`);
               path = path.node() || null;
@@ -199,8 +201,9 @@ module.exports = function histogram(
         cardData$,
         cardDimensions$,
         currentRangeFilterValues$,
+        rescaleAxis$,
         brushStartIndices$.startWith(null),
-        function(cardData, dimensions, currentRangeFilterValues) {
+        function(cardData, dimensions, currentRangeFilterValues, rescaleAxis) {
 
           var indices = null;
 
@@ -236,6 +239,7 @@ module.exports = function histogram(
             hasSelection: _.isPresent(currentRangeFilterValues),
             hover: hover,
             isFiltered: $scope.isFiltered,
+            rescaleAxis: rescaleAxis,
             rowDisplayUnit: $scope.rowDisplayUnit,
             scale: scale,
             selectionIndices: indices,
@@ -258,7 +262,8 @@ module.exports = function histogram(
           scale = service.updateScale(
             options.scale,
             options.data,
-            options.dimensions
+            options.dimensions,
+            options.rescaleAxis
           );
           axis = service.updateAxis(
             options.scale,
@@ -290,7 +295,8 @@ module.exports = function histogram(
             options.hasSelection,
             options.selectionIndices,
             options.selectionInProgress,
-            options.selectionValues
+            options.selectionValues,
+            options.rescaleAxis
           );
           service.render(
             options.axis,

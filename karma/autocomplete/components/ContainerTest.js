@@ -19,7 +19,7 @@ describe('<Container />', () => {
 
       expect(wrapper.find(CollapsedIcon)).to.have.length(1);
     });
-    
+
     it('renders un-collapsed when collapsible & collapsed are false', () => {
       const wrapper = shallow(
         <ContainerClass

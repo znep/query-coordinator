@@ -486,7 +486,7 @@ module.exports = function HistogramVisualizationService(
     );
   }
 
-  function updateScale(scale, data, dimensions) {
+  function updateScale(scale, data, dimensions, rescaleAxis) {
 
     // First, generate an array of bucket boundaries. This includes all of the
     // bucket 'start' values, as well as the 'end' value of the last bucket.
@@ -499,10 +499,13 @@ module.exports = function HistogramVisualizationService(
 
     // Possible performance refactor (lots of extent calls)
     // The y-domain consists of the min and max value of both the filtered and
-    // unfiltered sets of data.
-    var dataRangeUnfiltered = d3.extent(data.unfiltered, _.property('value'));
-    var dataRangeFiltered = d3.extent(data.filtered, _.property('value'));
-    var extentY = d3.extent(dataRangeUnfiltered.concat(dataRangeFiltered));
+    // unfiltered sets of data.  If rescaling axes is disabled, then both the
+    // unfiltered data and the filtered data are used to calculate the domain of
+    // the x axis.  If rescaling axes is enabled, then only the filtered data
+    // is used to calculate the domain of the x axis.
+    var unfilteredRange = d3.extent(data.unfiltered, _.property('value'));
+    var filteredRange = d3.extent(data.filtered, _.property('value'));
+    var extentY = d3.extent(rescaleAxis ? filteredRange : unfilteredRange.concat(filteredRange));
 
     // Ensure y-domain includes 0
     if (extentY[0] > 0) {
@@ -652,7 +655,8 @@ module.exports = function HistogramVisualizationService(
     selectionActive,
     selectionIndices,
     selectionInProgress,
-    selectionValues
+    selectionValues,
+    rescaleAxis
   ) {
 
     if (_.isPresent(selectionValues) && _.isPresent(selectionIndices)) {
@@ -698,8 +702,8 @@ module.exports = function HistogramVisualizationService(
         var filteredValue = _.get(hover, 'filteredBucket.value', 0);
         var unfilteredValue = _.get(hover, 'unfilteredBucket.value', 0);
         var maxValueOrZero = _.isEmpty(hover.selectedBuckets) ?
-          Math.max(0, filteredValue, unfilteredValue) :
-          Math.max(0, unfilteredValue);
+          Math.max(0, filteredValue, rescaleAxis ? 0 : unfilteredValue) :
+          Math.max(0, rescaleAxis ? filteredValue : unfilteredValue);
         var hoverTargetY = scale.y(maxValueOrZero);
         hoverTargetY = _.isFinite(hoverTargetY) ? hoverTargetY : 0;
         dom.hoverTarget.
@@ -725,7 +729,7 @@ module.exports = function HistogramVisualizationService(
 
         var filteredBucket = _.get(hover, 'filteredBucket.value', 0);
         var unfilteredBucket = _.get(hover, 'unfilteredBucket.value', 0);
-        var maxValueOrZero = Math.max(0, filteredBucket, unfilteredBucket);
+        var maxValueOrZero = Math.max(0, filteredBucket, rescaleAxis ? unfilteredBucket : 0);
         var hoverTargetY = scale.y(maxValueOrZero);
         dom.hoverTarget.
           attr('x1', brushLeft).
@@ -923,7 +927,6 @@ module.exports = function HistogramVisualizationService(
       append('tspan').
       classed('histogram-brush-clear-x', true).
       attr('dx', Constants.HISTOGRAM_TSPAN_OFFSET).
-      attr('dy', '-0.25em').
       text(Constants.CLOSE_ICON_UNICODE_GLYPH);
 
     brushClearText.

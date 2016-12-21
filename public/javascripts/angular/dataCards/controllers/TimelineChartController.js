@@ -13,6 +13,7 @@ module.exports = function TimelineChartController(
   var cardModel$ = $scope.$observe('model').filter(_.isPresent);
   var dataset$ = cardModel$.observeOnLatest('page.dataset').filter(_.isPresent);
   var baseSoqlFilter$ = cardModel$.observeOnLatest('page.baseSoqlFilter');
+  var rescaleAxis$ = cardModel$.observeOnLatest('page.enableAxisRescaling');
   var aggregation$ = cardModel$.observeOnLatest('aggregation');
   var dataRequests$ = new Rx.Subject();
   var dataResponses$ = new Rx.Subject();
@@ -247,12 +248,14 @@ module.exports = function TimelineChartController(
   var chartData$ = Rx.Observable.combineLatest(
     unfilteredData$.switchLatest().pluck('data'),
     filteredData$.switchLatest().pluck('data'),
-    function(unfilteredData, filteredData) {
+    rescaleAxis$,
+    function(unfilteredData, filteredData, rescaleAxis) {
       if (_.isEmpty(unfilteredData) || _.isEmpty(filteredData)) {
         return null;
       } else {
         return TimelineChartService.transformChartDataForRendering(
-          aggregateData(unfilteredData, filteredData)
+          aggregateData(unfilteredData, filteredData),
+          rescaleAxis
         );
       }
     }
@@ -289,6 +292,7 @@ module.exports = function TimelineChartController(
   $scope.$bindObservable('precision', datasetPrecision$);
   $scope.$bindObservable('activeFilters', cardModel$.observeOnLatest('activeFilters'));
   $scope.$bindObservable('rowDisplayUnit', cardModel$.observeOnLatest('aggregation.unit'));
+  $scope.$bindObservable('rescaleAxis', rescaleAxis$);
   $scope.$bindObservable('cannotRenderTimelineChart', cannotRenderTimelineChart);
 
   // Handle filtering

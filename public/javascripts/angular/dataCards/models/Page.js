@@ -64,6 +64,7 @@ module.exports = function PageModelFactory(ServerConfig, Card, Dataset, Model, F
       self.defineEphemeralObservableProperty('moderationStatus', pageMetadata.moderationStatus);
       self.defineEphemeralObservableProperty('ownerId', pageMetadata.ownerId);
       self.defineEphemeralObservableProperty('ownerDisplayName', pageMetadata.ownerDisplayName);
+      self.defineEphemeralObservableProperty('enableAxisRescaling', ServerConfig.get('enableDataLensAxisRescaling'));
 
       var rowDisplayUnit$ = self.observe('dataset.rowDisplayUnit');
 

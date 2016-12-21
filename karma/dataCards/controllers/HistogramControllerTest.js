@@ -11,6 +11,7 @@ describe('HistogramController', function() {
   var HistogramService;
   var mockCardDataService;
   var $controller;
+  var ServerConfig;
 
   beforeEach(angular.mock.module('dataCards'));
 
@@ -39,6 +40,7 @@ describe('HistogramController', function() {
     Model = $injector.get('Model');
     HistogramService = $injector.get('HistogramService');
     $controller = $injector.get('$controller');
+    ServerConfig = $injector.get('ServerConfig');
 
     mockCardDataService = {
       getData: function() {
@@ -81,6 +83,7 @@ describe('HistogramController', function() {
     page.defineObservableProperty('baseSoqlFilter', '');
     page.defineObservableProperty('aggregation', {});
     page.defineObservableProperty('activeFilters', []);
+    page.defineObservableProperty('enableAxisRescaling', false);
     card.page = page;
     card.defineObservableProperty('expanded', false);
     card.defineObservableProperty('activeFilters', []);
@@ -264,5 +267,13 @@ describe('HistogramController', function() {
     expect(linearSpy.callCount).to.equal(0);
     expect(logarithmicSpy.callCount).to.equal(2);
     expect(bucketDataSpy.calledWithMatch(testData, {bucketType: 'logarithmic'})).to.equal(true);
+  });
+
+  it('sets rescaleAxis to be the value of page.enableAxisRescaling', function() {
+    ServerConfig.override('enableDataLensAxisRescaling', false);
+    var histogram = createHistogram();
+    expect(histogram.$scope.rescaleAxis).to.equal(false);
+    histogram.$scope.model.page.set('enableAxisRescaling', true);
+    expect(histogram.$scope.rescaleAxis).to.equal(true);
   });
 });

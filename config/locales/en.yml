@@ -303,6 +303,7 @@ en:
         sign_out: Sign Out
         sign_up: Sign Up
       quick_filter_bar:
+        axis_rescaling_toggle: 'Rescale Axes on Filter'
         clear_all: Clear All
         clear_all_flyout: Click to reset all filters
         filter_title: Showing <span class="light">the {0}</span>

@@ -12,6 +12,7 @@ describe('TimelineChartController', function() {
   var _$provide;
   var mockCardDataService;
   var $controller;
+  var ServerConfig;
   var $scope;
 
   /**
@@ -44,6 +45,7 @@ describe('TimelineChartController', function() {
     Model = $injector.get('Model');
     timelineChartService = $injector.get('TimelineChartService');
     $controller = $injector.get('$controller');
+    ServerConfig = $injector.get('ServerConfig');
 
     mockCardDataService = {
       getTimelineDomain: function() {
@@ -83,6 +85,7 @@ describe('TimelineChartController', function() {
     page.defineObservableProperty('dataset', dataset);
     page.defineObservableProperty('baseSoqlFilter', '');
     page.defineObservableProperty('aggregation', {});
+    page.defineObservableProperty('enableAxisRescaling', false);
     card.page = page;
     card.defineObservableProperty('expanded', false);
     card.defineObservableProperty('activeFilters', []);
@@ -197,4 +200,11 @@ describe('TimelineChartController', function() {
     expect($scope.cannotRenderTimelineChart.reason).to.equal('badDates');
   });
 
+  it('sets rescaleAxis to reflect the value of page.enableAxisRescaling', function() {
+    ServerConfig.override('enableDataLensAxisRescaling', false);
+    makeDirective();
+    expect($scope.rescaleAxis).to.equal(false);
+    $scope.model.page.set('enableAxisRescaling', true);
+    expect($scope.rescaleAxis).to.equal(true);
+  });
 });

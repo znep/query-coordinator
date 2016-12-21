@@ -27,33 +27,33 @@ describe('HistogramService', function() {
 
     describe('input handling', function() {
       it('should throw an error if no input is provided', function() {
-        expect(_.curry(run)).to.throw;
-        expect(_.curry(run, null)).to.throw;
+        expect(_.wrap(undefined, run)).to.throw();
+        expect(_.wrap(null, run)).to.throw();
       });
 
       it('should throw an error if the input object does not have min and max keys', function() {
         var input = {color: 'purple'};
-        expect(_.curry(run, input)).to.throw;
+        expect(_.wrap(input, run)).to.throw();
       });
 
       it('should throw an error if either the min or the max is NaN', function() {
         var input;
 
         input = {min: NaN, max: 19};
-        expect(_.curry(run, input)).to.throw;
+        expect(_.wrap(input, run)).to.throw();
 
         input = {min: -19, max: NaN};
-        expect(_.curry(run, input)).to.throw;
+        expect(_.wrap(input, run)).to.throw();
       });
 
       it('should throw an error if either the min or the max is Infinity', function() {
         var input;
 
         input = {min: -Infinity, max: 19};
-        expect(_.curry(run, input)).to.throw;
+        expect(_.wrap(input, run)).to.throw();
 
         input = {min: 0, max: Infinity};
-        expect(_.curry(run, input)).to.throw;
+        expect(_.wrap(input, run)).to.throw();
       });
     });
 
@@ -326,14 +326,6 @@ describe('HistogramService', function() {
       });
 
       describe('when given the linear bucketType', function() {
-        it('should throw an exception if a bucketSize is not specified', function() {
-          var input, output;
-
-          input = ['validiswear'];
-
-          expect(_.curry(run)(input, {bucketType: 'linear'})).to.throw;
-        });
-
         it('should create start and end boundaries spaced equally according to the bucketSize argument', function() {
           var input, output;
 

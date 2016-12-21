@@ -44,6 +44,29 @@ describe('TimelineChartService', function() {
         expect(transformed.values[i].unfiltered).to.equal(unfilteredValues[i]);
       }
     });
+
+    it('should use the filtered values for minDate and maxDate if the second argument is true', function() {
+      var numValues = 30;
+      var datumCount = _.range(numValues);
+      var dates = _.map(datumCount, function(i) { return moment(new Date(2014, 0, i + 1)); });
+      var unfilteredValues = _.map(datumCount, function(i) { return 100 * i; });
+      var filteredValues = _.map(unfilteredValues, function(val) { return val / 2; });
+
+      var transformed = TimelineChartService.transformChartDataForRendering(
+        _.map(datumCount, function(i) {
+          return {
+            date: dates[i],
+            total: unfilteredValues[i],
+            filtered: filteredValues[i]
+          }
+        }),
+        true
+      );
+
+      expect(transformed.minValue).to.equal(0);
+      expect(transformed.maxValue).to.equal(100 * (numValues - 1) / 2);
+      expect(transformed.meanValue).to.equal(100 * (numValues - 1) / 4);
+    });
   });
 
   describe('getVisualizationConfig', function() {

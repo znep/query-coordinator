@@ -7,6 +7,7 @@ module.exports = function ColumnChartController($scope, CardDataService, rx) {
   var model = $scope.$observe('model').filter(_.isPresent);
   var dataset = model.observeOnLatest('page.dataset');
   var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
+  var rescaleAxis$ = model.observeOnLatest('page.enableAxisRescaling');
   var aggregation$ = model.observeOnLatest('aggregation');
   var dataRequests$ = new Rx.Subject();
   var dataResponses$ = new Rx.Subject();
@@ -161,4 +162,5 @@ module.exports = function ColumnChartController($scope, CardDataService, rx) {
   );
 
   $scope.$bindObservable('expanded', model.observeOnLatest('expanded'));
+  $scope.$bindObservable('rescaleAxis', rescaleAxis$);
 };

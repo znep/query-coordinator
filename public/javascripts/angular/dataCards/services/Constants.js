@@ -85,7 +85,7 @@ module.exports = function Constants() {
     HISTOGRAM_MARGINS: {
       left: 15,
       right: 15,
-      top: 5,
+      top: 0,
       bottom: 30
     },
     HISTOGRAM_DRAG_TARGET_WIDTH: 11,
@@ -123,8 +123,8 @@ module.exports = function Constants() {
     TABLE_UNSORTABLE_PHYSICAL_DATATYPES: ['geo_entity', 'point'],
 
     // Icon Font
-    FILTER_ICON_UNICODE_GLYPH: '\uf121',
-    CLOSE_ICON_UNICODE_GLYPH: '\uf112',
+    FILTER_ICON_UNICODE_GLYPH: '\uea2f',
+    CLOSE_ICON_UNICODE_GLYPH: '\uea18',
 
     // Flyout parameters
     FLYOUT_WINDOW_PADDING: 22,

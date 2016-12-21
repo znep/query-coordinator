@@ -50,9 +50,10 @@ module.exports = function HistogramController(
     });
   }
 
+  var cardModel$ = $scope.$observe('model').filter(_.isPresent);
   var whereClause$ = $scope.$observe('whereClause');
   var isFiltered$ = whereClause$.map(_.isPresent);
-  var cardModel$ = $scope.$observe('model').filter(_.isPresent);
+  var rescaleAxis$ = cardModel$.observeOnLatest('page.enableAxisRescaling');
   var dataset$ = cardModel$.observeOnLatest('page.dataset');
   var baseSoqlFilter$ = cardModel$.observeOnLatest('page.baseSoqlFilter');
   var aggregation$ = cardModel$.observeOnLatest('aggregation');
@@ -261,6 +262,7 @@ module.exports = function HistogramController(
   $scope.$bindObservable('rowDisplayUnit', rowDisplayUnit$);
   $scope.$bindObservable('cardData', cardData$);
   $scope.$bindObservable('isFiltered', isFiltered$);
+  $scope.$bindObservable('rescaleAxis', rescaleAxis$);
   $scope.$bindObservable('expanded', expanded$);
   $scope.$bindObservable('currentRangeFilterValues', currentRangeFilterValues$);
   $scope.$bindObservable('loading', loading$);

@@ -19,6 +19,7 @@ module.exports = function timelineChart(
       var precision$ = $scope.$observe('precision');
       var rowDisplayUnit$ = $scope.$observe('rowDisplayUnit');
       var activeFilters$ = $scope.$observe('activeFilters');
+      var rescaleAxis$ = $scope.$observe('rescaleAxis');
 
       if ($scope.allowFilterChange) {
         element.addClass('filterable');
@@ -89,7 +90,7 @@ module.exports = function timelineChart(
       const timelineChartVisualization = new TimelineChart(timelineChartElement, timelineChartConfig);
 
       // Render function and subscription
-      function render(cardDimensions, qfbDimensions, chartData, precision, rowDisplayUnit, activeFilters) {
+      function render(cardDimensions, qfbDimensions, chartData, precision, rowDisplayUnit, activeFilters, rescaleAxis) {
         // qfbDimensions is not actually used, it is observed to update the cached chart offsets
 
         if (!_.isDefined(chartData) || _.isNull(chartData) || !_.isDefined(precision)) {
@@ -108,6 +109,7 @@ module.exports = function timelineChart(
         const options = {
           precision,
           activeFilters,
+          rescaleAxis,
           unit: TimelineChartService.getUnitConfiguration(rowDisplayUnit)
         };
 
@@ -128,7 +130,8 @@ module.exports = function timelineChart(
         chartData$,
         precision$,
         rowDisplayUnit$,
-        activeFilters$
+        activeFilters$,
+        rescaleAxis$
       ];
 
       Rx.Observable.subscribeLatest(renderTriggers, render);

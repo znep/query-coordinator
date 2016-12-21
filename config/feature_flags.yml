@@ -109,6 +109,11 @@ enable_api_foundry_pane:
 enable_data_connector:
   description: Turn on the ability to create Mondata maps as opposed to external link datasets on the 'Connectors' admin page.
   defaultValue: false
+enable_data_lens_axis_rescaling:
+  description: Resizes Data Lens axes to show only filtered data.  Set to null to hide the control, false to default the option to disabled, or true to default the option to enabled.
+  defaultValue: null
+  expectedValues: true false null
+  category: data lens
 enable_data_lens_page_metadata_migrations:
   description: Lazily migrate data lens page metadata schemas on each request.
   defaultValue: true

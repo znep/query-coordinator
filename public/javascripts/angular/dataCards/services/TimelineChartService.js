@@ -14,7 +14,7 @@ module.exports = function TimelineChartService(I18n, PluralizeService) {
    *     @property {} filtered - the filtered value
    *     @property {} unfiltered - the unfiltered value
    */
-  function transformChartDataForRendering(chartData) {
+  function transformChartDataForRendering(chartData, rescaleAxis) {
 
     var minDate = null;
     var maxDate = null;
@@ -35,12 +35,14 @@ module.exports = function TimelineChartService(I18n, PluralizeService) {
         maxDate = datum.date;
       }
 
-      if (datum.total < minValue) {
-        minValue = datum.total;
+      var value = rescaleAxis ? datum.filtered : datum.total;
+
+      if (value < minValue) {
+        minValue = value;
       }
 
-      if (datum.total > maxValue) {
-        maxValue = datum.total;
+      if (value > maxValue) {
+        maxValue = value;
       }
 
       return {

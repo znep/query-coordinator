@@ -239,4 +239,19 @@ describe('Page model', function() {
 
   });
 
+  describe('enableAxisRescaling', function() {
+    it('reflects the value of enableDataLensAxisRescaling', function() {
+      ServerConfig.override('enableDataLensAxisRescaling', null);
+      var instance = Mockumentary.createPage();
+      expect(instance.getCurrentValue('enableAxisRescaling')).to.equal(null);
+
+      ServerConfig.override('enableDataLensAxisRescaling', true);
+      instance = Mockumentary.createPage();
+      expect(instance.getCurrentValue('enableAxisRescaling')).to.equal(true);
+
+      ServerConfig.override('enableDataLensAxisRescaling', false);
+      instance = Mockumentary.createPage();
+      expect(instance.getCurrentValue('enableAxisRescaling')).to.equal(false);
+    });
+  });
 });

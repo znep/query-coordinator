@@ -22,6 +22,7 @@ module.exports = function columnChart(
       var expanded$ = $scope.$observe('model').observeOnLatest('expanded');
       var showAllLabels$ = $scope.$observe('showAllLabels');
       var rowDisplayUnit$ = $scope.$observe('rowDisplayUnit');
+      var rescaleAxis$ = $scope.$observe('rescaleAxis');
       var columnChartConfig;
       var columnChartComponent;
       var lastFlyoutData;
@@ -92,7 +93,7 @@ module.exports = function columnChart(
 
             // Position the flyout over the bar (filtered v. unfiltered)
             // with the greater value.
-            if (filteredValue > unfilteredValue) {
+            if (filteredValue > unfilteredValue || $scope.rescaleAxis) {
               flyoutTarget = $(barGroup).find('.filtered').get(0);
             } else {
               flyoutTarget = $(barGroup).find('.unfiltered').get(0);
@@ -235,7 +236,8 @@ module.exports = function columnChart(
         expanded$,
         showAllLabels$,
         rowDisplayUnit$,
-        function(cardVisualizationDimensions, cardData, isFiltered, expanded, showAllLabels, rowDisplayUnit) {
+        rescaleAxis$,
+        function(cardVisualizationDimensions, cardData, isFiltered, expanded, showAllLabels, rowDisplayUnit, rescaleAxis) {
 
           if (!columnChartComponent) {
             return undefined;
@@ -259,7 +261,8 @@ module.exports = function columnChart(
               other: PluralizeService.pluralize(rowDisplayUnit)
             },
             showFiltered: isFiltered,
-            showAllLabels: expanded || showAllLabels
+            showAllLabels: expanded || showAllLabels,
+            rescaleAxis: isFiltered && rescaleAxis
           };
           columnChartComponent.render(cardData, chartRenderOptions);
 

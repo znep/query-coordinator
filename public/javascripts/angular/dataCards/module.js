@@ -37,6 +37,7 @@ angular.module('dataCards').
   directive('addCardDialog', require('./directives/addCardDialog.js')).
   directive('animateTo', require('./directives/animateTo.js')).
   directive('apiExplorer', require('./directives/apiExplorer.js')).
+  directive('axisRescalingToggle', require('./directives/axisRescalingToggle.js')).
   directive('card', require('./directives/card.js')).
   directive('cardAggregationSelector', require('./directives/cardAggregationSelector.js')).
   directive('cardLayout', require('./directives/cardLayout.js')).

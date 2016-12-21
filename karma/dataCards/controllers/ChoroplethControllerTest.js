@@ -262,7 +262,7 @@ describe('ChoroplethController', function() {
             status: 'failed',
           }
         }));
-        expect(_.partial(createChoropleth, { computedColumn: 'theLimitDoesNotExist' })).to.throw;
+        expect(_.partial(createChoropleth, { computedColumn: 'theLimitDoesNotExist' })).to.throw();
         delete $window.currentUser;
       });
     });

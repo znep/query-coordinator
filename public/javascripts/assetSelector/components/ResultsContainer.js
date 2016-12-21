@@ -6,6 +6,7 @@ import NoResults from './NoResults';
 import ViewCount from './ViewCount';
 import CardContainer from './CardContainer';
 import TableContainer from './TableContainer';
+import PagerWrapper from './PagerWrapper';
 
 export class ResultsContainer extends Component {
   constructor(props) {
@@ -45,6 +46,7 @@ export class ResultsContainer extends Component {
           <ViewCount count={this.props.viewCount} />
 
           {this.renderResults()}
+          <PagerWrapper viewCount={this.props.viewCount} />
         </div>
       );
     }

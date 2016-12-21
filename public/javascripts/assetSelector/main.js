@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+// import a11y from 'react-a11y';
+// import airbrake from './lib/airbrake';
 import App from './App';
 import _ from 'lodash';
 import { createStore } from 'redux';
@@ -8,6 +10,18 @@ import assetSelector from './reducers';
 import components from 'socrata-components';
 
 require('socrata-components/dist/css/styleguide.css');
+
+// TODO: setup a11y and airbrake
+// if (window.serverConfig.environment === 'development') {
+//   a11y(React, { ReactDOM: ReactDOM });
+//   middleware.push(createLogger({
+//     duration: true,
+//     timestamp: false,
+//     collapsed: true
+//   }));
+// } else {
+//   airbrake.init();
+// }
 
 const store = createStore(assetSelector);
 

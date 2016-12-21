@@ -2,6 +2,18 @@
 $site-chrome-admin-header-height: 46px;
 $site-chrome-admin-header-small-height: 32px;
 
+// Media maximums.
+$media-small: 570px;
+$media-medium: 820px;
+$media-large: 1070px;
+$media-xlarge: 1320px;
+
+// Media window breakpoints.
+$media-query-width-small: "(max-width: #{$media-small})";
+$media-query-width-medium: "(min-width: #{$media-small}) and (max-width: #{$media-medium})";
+$media-query-width-large: "(min-width: #{$media-medium}) and (max-width: #{$media-large})";
+$media-query-width-xlarge: "(min-width: #{$media-large})";
+
 // Header
 $header-height: 6rem;
 $header-margin: 0.7rem;

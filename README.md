@@ -7,20 +7,18 @@ Useful utility functions and modules that we can share between frontend projects
 `socrata-utils` is available in the artifactory npm registry.  To configure npm to use the
 appropriate registry:
 
-```sh
-npm config set registry https://socrata.artifactoryonline.com/socrata/api/npm/npm-virtual
-```
+    npm config set registry https://socrata.artifactoryonline.com/socrata/api/npm/npm-virtual
 
 Then install using npm:
 
-```sh
-npm install --save socrata-utils
-```
+    npm install --save socrata-utils
 
-The npm distribution includes a `dist` folder with `socrata.utils.js`. It should be included on the page using `script` tag or using your favorite
-client-side build system.
+The npm distribution includes a `dist` folder with `socrata.utils.js`. It should be included
+on the page using `script` tag or using your favorite client-side build system.
 
-This library depends on [Lodash](https://lodash.com). When using this library as a dependency in another project, you must also include Lodash in your dependencies because it will not be automatically installed by Bower.
+This library depends on [Lodash](https://lodash.com). When using this library as a dependency
+in another project, you must also include Lodash in your dependencies because it will not be
+automatically installed by Bower.
 
 This library exposes new capabilities in three ways:
 
@@ -28,7 +26,8 @@ This library exposes new capabilities in three ways:
 1. Adding new prototypes to global scope
 1. Providing functions under a namespace
 
-> **NOTE:** When contributing to this library, exercise caution when using either of the first two techniques! The namespace approach should be preferred in almost all cases.
+> **NOTE:** When contributing to this library, exercise caution when using either of the first
+> two techniques! The namespace approach should be preferred in almost all cases.
 
 ## Contributing
 
@@ -38,7 +37,7 @@ Useful commands:
 
 - `npm test` to run the tests.
 - `npm run watch` to automatically run the tests when files change.  The tests can be debugged in
-  a browser by visiting http://localhost:9876/debug.html.
+  a browser by visiting [http://localhost:9876/debug.html](http://localhost:9876/debug.html).
 - `npm run build` to run webpack and generate output files in `dist`.
 - `npm run release` to tag and publish a new version to the npm registry (after bumping the
   version in `package.json`).
@@ -47,15 +46,41 @@ Useful commands:
 
 ### Feature flags
 
-Support for feature flags requires that `window.socrata.featureFlags` be defined at page load time. This is expected to be a simple object containing keys for all defined feature flags. The purpose of this module is provide validation of requested feature flag keys 
-See example below. Usage example:
+Support for feature flags requires that `window.socrata.featureFlags` be
+defined at page load time. This is expected to be a simple object
+containing keys for all defined feature flags. The purpose of this module is
+provide validation of requested feature flag keys.
+
+Usage example:
 
 ```javascript
-import { featureFlagValue } from './FeatureFlags';
-console.log('ceteraProfileSearch = ' + featureFlagValue('ceteraProfileSearch'));
-# alternatively
-import FeatureFlags from './FeatureFlags';
+import { FeatureFlags } from 'socrata-utils';
 console.log('useAuth0 = ' + FeatureFlags.value('useAuth0'));
+```
+
+#### In tests
+
+In tests, the FeatureFlags module provides a test fixture and means over providing
+test-specific override values for one or more feature flags.
+
+Usage example:
+
+```javascript
+import { FeatureFlags } from 'socrata-utils';
+describe('FeatureFlags', function() {
+  before(function() {
+    FeatureFlags.useTestFixture();
+  });
+
+  it('should return the value for feature flag', function() {
+    expect(FeatureFlags.value('useAuth0')).to.equal(false);
+  });
+
+  it('allows values to be overridden in the test fixture', function() {
+    FeatureFlags.useTestFixture({ useAuth0: true });
+    expect(FeatureFlags.value('useAuth0')).to.equal(true);
+  });
+});
 ```
 
 #### Example featureFlag JSON data expected to be on window.
@@ -134,7 +159,7 @@ featureFlags: {
     "validateFragmentCacheBeforeRender": true,
     "zealousDataslateCacheExpiry": false
 }
-  ```
+```
 
 ### Extended prototypes
 
@@ -148,11 +173,14 @@ _(String)_ The string with replaced whitespace characters.
 
 #### String.prototype.format(obj)
 
-Interpolates argument values into the source string and returns the result. Interpolation targets in the source string are wrapped in braces and named (e.g. `{thing}`).
+Interpolates argument values into the source string and returns the result. Interpolation targets
+in the source string are wrapped in braces and named (e.g. `{thing}`).
 
 **Arguments**
 
-* `obj` _(Object)_: An object whose keys correspond to the interpolation target names and whose values will be substituted in. Entries whose keys do not correspond to interpolation targets are ignored, and interpolation targets that have no matching entry are not replaced.
+* `obj` _(Object)_: An object whose keys correspond to the interpolation target names and whose
+* values will be substituted in. Entries whose keys do not correspond to interpolation targets
+* are ignored, and interpolation targets that have no matching entry are not replaced.
 
 **Returns**
 
@@ -160,11 +188,15 @@ _(String)_ The interpolated string.
 
 #### String.prototype.format(args...)
 
-Interpolates argument values into the source string and returns the result. Interpolation targets in the source string are wrapped in braces and numbered (e.g. `{0}`). Negative indices are not supported.
+Interpolates argument values into the source string and returns the result. Interpolation targets
+in the source string are wrapped in braces and numbered (e.g. `{0}`). Negative indices are not
+supported.
 
 **Arguments**
 
-* `args...` _(*)_: One or more values, provided in the order that corresponds to the interpolation target indices. Extraneous values at indices beyond those used in the source string are ignored, and interpolation targets will not be replaced if values do not exist at the corresponding indices.
+* `args...` _(*)_: One or more values, provided in the order that corresponds to the interpolation
+target indices. Extraneous values at indices beyond those used in the source string are ignored,
+and interpolation targets will not be replaced if values do not exist at the corresponding indices.
 
 **Returns**
 

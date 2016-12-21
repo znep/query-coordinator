@@ -33,7 +33,7 @@ export const DatasetPreview = React.createClass({
 
     return {
       configuration: {
-        order: view.sortOrder,
+        order: _.take(view.sortOrder), // The table breaks if more than one sort is present
         viewSourceDataLink: false
       },
       datasetUid: view.id,

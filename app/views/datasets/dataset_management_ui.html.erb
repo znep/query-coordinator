@@ -14,13 +14,15 @@
   <%= render_dataset_management_ui_translations %>
 
   <script>
-    // TODO what is the difference between this an server_config
     var initialState = {
       view: <%== @view.to_json %>,
       update: <%== @update.to_json %>,
-      datasetCategories: <%== flatten_category_tree.to_json %>.map(([title, value]) => (
-        {title: title, value: value}
-      ))
+      datasetCategories: <%== flatten_category_tree.to_json %>.map(function(titleAndValue) {
+        return {
+          title: titleAndValue[0],
+          value: titleAndValue[1]
+        };
+      })
     };
   </script>
 

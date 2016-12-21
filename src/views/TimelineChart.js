@@ -696,6 +696,7 @@ function TimelineChart(element, vif) {
     var chartWidth = el.width();
     var chartHeight = el.height();
     var showAllLabels = options.showAllLabels;
+    var rescaleAxis = options.rescaleAxis;
     var showFiltered = options.showFiltered;
     var precision = options.precision;
     var unit = options.unit;
@@ -761,7 +762,7 @@ function TimelineChart(element, vif) {
         ]).
         range([0, width]);
 
-      // d3YScale is global to the directive so that we can
+      // d3YScale is global to the component so that we can
       // access it without having to re-render.
       d3YScale = d3.
         scale.
@@ -2193,6 +2194,10 @@ function TimelineChart(element, vif) {
         currentDatum.filtered :
         currentDatum.unfiltered);
     } else {
+      if (_lastRenderOptions.rescaleAxis) {
+        return d3YScale(_.max([currentDatum.filtered, 0]));
+      }
+
       var hoveringWithinSelection =
         currentDatum.date >= selectionStartDate && currentDatum.date <= selectionEndDate;
 

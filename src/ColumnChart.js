@@ -129,6 +129,7 @@ $.fn.socrataColumnChart = function(vif) {
     return {
       showAllLabels: true,
       showFiltered: true,
+      rescaleAxis: false,
       vif: vifToRender
     };
   }

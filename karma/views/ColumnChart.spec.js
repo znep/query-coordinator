@@ -199,7 +199,8 @@ describe('ColumnChart', function() {
 
     var renderOptions = {
       showAllLabels: false,
-      showFiltered: false
+      showFiltered: false,
+      rescaleAxis: false
     };
 
     return {
@@ -851,6 +852,41 @@ describe('ColumnChart', function() {
         // Don't forget to remove the chart after this test!
         removeColumnChart(columnChart);
       });
+    });
+
+    it('should rescale the axis to only include filtered data when rescaleAxis is true', function() {
+      columnChart = createColumnChart();
+
+      function getMaxFilteredBarHeight(el) {
+        return _.chain(el[0].querySelectorAll('.bar.filtered')).
+          toArray().
+          map('offsetHeight').
+          max().
+          value();
+      }
+
+      var filteredTestData = _.map(testData, function(datum) {
+        return [
+          datum[0], // label
+          datum[1], // unfiltered
+          datum[2] / 2, // filtered
+          datum[3] // isSpecial
+        ];
+      });
+
+      // Render without scaled axis
+      columnChart.renderOptions.rescaleAxis = false;
+      columnChart.renderOptions.showFiltered = true;
+      columnChart.chart.render(filteredTestData, columnChart.renderOptions);
+      var initialBarHeight = getMaxFilteredBarHeight(columnChart.element);
+
+      // Render with scaled axis
+      columnChart.renderOptions.rescaleAxis = true;
+      columnChart.renderOptions.showFiltered = true;
+      columnChart.chart.render(filteredTestData, columnChart.renderOptions);
+      var finalBarHeight = getMaxFilteredBarHeight(columnChart.element);
+
+      expect(finalBarHeight).to.be.above(initialBarHeight);
     });
   });
 

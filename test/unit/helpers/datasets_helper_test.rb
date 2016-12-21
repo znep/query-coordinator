@@ -384,6 +384,26 @@ class DatasetsHelperTest < Minitest::Test
     # current_user has no rights
     @object.current_user.stubs(:rights => [])
     assert @object.send(:hide_data_lens_create?), 'hide_data_lens_create expected to be true'
+
+    # dataset is a grouped view and feature flag is turned off
+    @object.current_user.stubs(:rights => [:some_right])
+    @view.stubs(:dataset? => false)
+    FeatureFlags.stubs(:derive => Hashie::Mash.new({ :enable_data_lens_using_derived_view => false }))
+    @view.display.stubs(:type => 'grouped')
+    assert @object.send(:hide_data_lens_create?), 'hide_data_lens_create expected to be true'
+
+    # dataset is a filtered view and feature flag is turned off
+    @view.display.stubs(:type => 'filter')
+    assert @object.send(:hide_data_lens_create?), 'hide_data_lens_create expected to be true'
+
+    # dataset is a grouped view and feature flag is turned on
+    FeatureFlags.stubs(:derive => Hashie::Mash.new({ :enable_data_lens_using_derived_view => true }))
+    @view.display.stubs(:type => 'grouped')
+    refute @object.send(:hide_data_lens_create?), 'hide_data_lens_create expected to be false'
+
+    # dataset is a filtered view and feature flag is turned on
+    @view.display.stubs(:type => 'filter')
+    refute @object.send(:hide_data_lens_create?), 'hide_data_lens_create expected to be false'
   end
 
   def test_hide_discuss

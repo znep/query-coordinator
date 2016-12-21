@@ -651,10 +651,18 @@ module DatasetsHelper
   def hide_data_lens_create?
     return true unless current_user
 
+    if view.dataset?
+      is_ineligible_view = false
+    elsif view.is_derived_view?
+      is_ineligible_view = !FeatureFlags.derive(view, request)[:enable_data_lens_using_derived_view]
+    else
+      is_ineligible_view = true
+    end
+
     [
       current_user.rights.blank?,
       view.is_unpublished?,
-      !view.dataset?,
+      is_ineligible_view,
       view.is_api_geospatial?,
       view.geoParent.present?
     ].any?

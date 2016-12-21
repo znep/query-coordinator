@@ -32,24 +32,31 @@ class NewUxBootstrapController < ActionController::Base
     # This method needs to accomplish a few things in order to enable 'new UX' views of
     # existing datasets.
     #
-    # 1. Check to make sure that the user is authorized to create a new view.
-    #    Crucially, this includes SuperAdmins so that Socrata employees can
-    #    test this functionality without having to impersonate customers.
-    #    This check can be skipped when using the ephemeral bootstrapping
-    #    approach, since it separates the creation of something renderable
-    #    from the actual persistence.
+    # 1a. Check to make sure that the user is authorized to create a new view.
+    #     Crucially, this includes SuperAdmins so that Socrata employees can
+    #     test this functionality without having to impersonate customers.
+    #     This check can be skipped when using the ephemeral bootstrapping
+    #     approach, since it separates the creation of something renderable
+    #     from the actual persistence.
     #
-    # 2. Check to make sure the dataset in question is in the new backend.
-    #    If it isn't, 400.
+    # 1b. Check if the dataset is a derived view. If it is, and creating a data lens
+    #     from a derived view is enabled, exit early and gather required metadata.
+    #     While this approach uses the ephemeral bootstrapping approach, so we still
+    #     first check the current user's permissions, as it has the side effect of
+    #     obtaining the user session (which is needed, for instance, if your derived
+    #     view is private).
+    #
+    # 2. Check to make sure the dataset in question is in the new backend,
+    #    if it isn't 400.
     #
     # 3. Check to make sure the dataset does not have a group by.
     #    If it does, redirect and provide a friendly error message.
     #
-    # 4. Fetch the dataset metadata, which is used downstream to create cards.
-    #    If we cannot fetch the dataset data then we fail early. We will let
-    #    Airbrake know about this, but not the user.
+    # 4. Fetch the dataset metadata, which is used downstream to create cards. If we
+    #    cannot fetch the dataset data then we fail early. We will let Airbrake know
+    #    about this, but not the user.
     #
-    # 5. Check to see if any 'new UX' pages already exist.
+    # 5. If use_ephemeral_bootstrap is false, check to see if any 'new UX' pages already exist.
     #
     # 6a. If they do, then we send the user to the default or the last page in
     #     the collection.
@@ -57,7 +64,7 @@ class NewUxBootstrapController < ActionController::Base
     # 6b. If no pages already exist, then we need to create one. This is hacky
     #     and non-deterministic.
 
-    # 1. Check to make sure that the user is authorized to create a new view
+    # 1a. Check to make sure that the user is authorized to create a new view
     use_ephemeral_bootstrap = FeatureFlags.derive(@view, request)[:use_ephemeral_bootstrap]
 
     # IMPORTANT: can_create_metadata? *must* come first in this conditional
@@ -70,6 +77,16 @@ class NewUxBootstrapController < ActionController::Base
         error: true,
         reason: "User must be one of these roles: #{roles_allowed_to_create_data_lenses.join(', ')}"
       }, :status => :forbidden
+    end
+
+    # 1b. Check if dataset is a derived view and exit early if the feature flag is not enabled.
+    if dataset_is_derived_view?
+      if allow_derived_view_bootstrap?
+        return instantiate_ephemeral_view_from_derived_view
+      else
+        flash[:error] = t('controls.grid.errors.data_lens_is_incompatible_with_derived_views')
+        return redirect_to request.base_url
+      end
     end
 
     # 2. Check to make sure the dataset in question is in the new backend.
@@ -408,7 +425,7 @@ class NewUxBootstrapController < ActionController::Base
 
   def generate_cards_from_dataset_metadata_columns(columns)
     interesting_columns(columns).map do |field_name, column|
-      card_type = card_type_for(column, :fred, dataset_size)
+      card_type = card_type_for(column, dataset_size, dataset_is_derived_view?)
       if card_type
         card = page_metadata_manager.merge_new_card_data_with_default(
           field_name,
@@ -445,10 +462,21 @@ class NewUxBootstrapController < ActionController::Base
   def instantiate_ephemeral_view(dataset_metadata)
     @dataset_metadata = dataset_metadata
 
-    @dataset_metadata[:pages] = begin
-      fetch_pages_for_dataset(@dataset_metadata[:id])
-    rescue DatasetMetadataNotFound
-      {}
+    # If this is a derived view, attempt to get the pages associated with the default view
+    if dataset_is_derived_view?
+      @dataset_metadata[:pages] = begin
+        # parent_dataset can be either a View or nil, or it'll throw an error
+        parent_nbe_id = derived_view_dataset.parent_dataset.try(:nbe_view).try(:id)
+        parent_nbe_id ? fetch_pages_for_dataset(parent_nbe_id) : {}
+      rescue DatasetMetadataNotFound
+        {}
+      end
+    else
+      @dataset_metadata[:pages] = begin
+        fetch_pages_for_dataset(@dataset_metadata[:id])
+      rescue DatasetMetadataNotFound
+        {}
+      end
     end
 
     @page_metadata = generate_page_metadata(dataset_metadata)
@@ -459,8 +487,16 @@ class NewUxBootstrapController < ActionController::Base
     # Set up card-type info for (non-system) columns
     @dataset_metadata[:columns].each do |field_name, column|
       unless SYSTEM_COLUMN_ID_REGEX.match(field_name)
-        column['defaultCardType'] = default_card_type_for(column, dataset_size)
-        column['availableCardTypes'] = available_card_types_for(column, dataset_size)
+        column['defaultCardType'] = default_card_type_for(
+          column,
+          dataset_size,
+          dataset_is_derived_view?
+        )
+        column['availableCardTypes'] = available_card_types_for(
+          column,
+          dataset_size,
+          dataset_is_derived_view?
+        )
       end
     end
 
@@ -492,6 +528,36 @@ class NewUxBootstrapController < ActionController::Base
     render 'data_lens/data_cards'
   end
 
+  # EN-12365: This exists to create data lenses from derived views. We have a number of limitations:
+  # - we cannot use Phidippides
+  # - most derived views are based on the OBE version of a dataset, so the /views endpoint will
+  #   return OBE columns, which makes data lens very, very unhappy
+  # - we have to use the `read_from_nbe=true` flag whenever talking to Core, including the /views
+  #   endpoint, because there are special snowflake hacks in place under that flag for derived views
+  #   that make data lens for derived views possible
+  def instantiate_ephemeral_view_from_derived_view
+    # Assemble metadata data similar to what Phidippides would have returned
+    dataset_metadata = derived_view_dataset.as_json.merge({
+      :domain => CurrentDomain.cname,
+      :locale => I18n.locale,
+      :columns => Column.get_derived_view_columns(derived_view_dataset),
+      :ownerId => derived_view_dataset.owner.id,
+      :updatedAt => derived_view_dataset.time_metadata_last_updated_at
+    }).with_indifferent_access
+
+    # This mutates dataset_metadata with the extra things we need by looking up the view again in
+    # Core. While it's in the Phidippides class, it doesn't actually talk to Phidippides.
+    phidippides.mirror_nbe_column_metadata!(derived_view_dataset, dataset_metadata)
+
+    begin
+      # This talks to Phidippides to get pages for the default view's NBE copy
+      instantiate_ephemeral_view(dataset_metadata)
+    rescue CoreServer::TimeoutError
+      flash[:warning] = t('controls.grid.errors.timeout_on_bootstrap').html_safe
+      render 'shared/error', :status => 504, :layout => 'main'
+    end
+  end
+
   def dataset_size
     # Get the size of the dataset so we can compare it against the cardinality when creating cards
     @dataset_size ||= dataset.row_count
@@ -499,6 +565,18 @@ class NewUxBootstrapController < ActionController::Base
 
   def dataset
     View.find(params[:id])
+  end
+
+  def derived_view_dataset
+    @derived_view_dataset ||= View.find_derived_view_using_read_from_nbe(params[:id])
+  end
+
+  def dataset_is_derived_view?
+    dataset.is_derived_view?
+  end
+
+  def allow_derived_view_bootstrap?
+    FeatureFlags.derive(@view, request)[:enable_data_lens_using_derived_view]
   end
 
   def dataset_is_new_backend?

@@ -139,10 +139,21 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('boolean', nil, 15),
-      nil,
       dataset_size
     )
     assert_equal('column', computed_card_type)
+  end
+
+  # Calendar_date
+
+  def test_card_type_mapping_returns_expected_value_for_calendar_date_column
+    dataset_size = 2500
+
+    computed_card_type = card_type_for(
+      fake_column('calendar_date', nil, 15),
+      dataset_size
+    )
+    assert_equal('timeline', computed_card_type)
   end
 
   # Fixed_timestamp
@@ -152,7 +163,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('fixed_timestamp', nil, 15),
-      nil,
       dataset_size
     )
     assert_equal('timeline', computed_card_type)
@@ -165,7 +175,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('floating_timestamp', nil, 15),
-      nil,
       dataset_size
     )
     assert_equal('timeline', computed_card_type)
@@ -178,7 +187,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('geo_entity', nil, 15),
-      nil,
       dataset_size
     )
     assert_equal('feature', computed_card_type)
@@ -191,7 +199,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('money', nil, 1),
-      nil,
       dataset_size
     )
 
@@ -203,7 +210,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('money', nil, 15),
-      nil,
       dataset_size
     )
 
@@ -215,7 +221,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('money', nil, 15),
-      nil,
       dataset_size
     )
 
@@ -227,7 +232,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('money', nil, 35),
-      nil,
       dataset_size
     )
 
@@ -239,7 +243,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('money', nil, 35),
-      nil,
       dataset_size
     )
 
@@ -251,7 +254,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('money', nil, 500),
-      nil,
       dataset_size
     )
 
@@ -263,7 +265,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('money', nil, 2500),
-      nil,
       dataset_size
     )
 
@@ -286,10 +287,30 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       computed_column,
-      nil,
       dataset_size
     )
     assert_equal('choropleth', computed_card_type)
+  end
+
+  def test_card_type_mapping_returns_expected_value_for_number_column_with_computation_strategy_match_on_string_for_derived_view
+    dataset_size = 2500
+    is_derived_view = true
+
+    computed_column = fake_column('number', nil, 1)
+    computed_column['computationStrategy'] = {
+      'parameters' => {
+        'region' => '_abcd-efgh',
+        'geometryLabel' => 'label'
+      },
+      'strategy_type' => 'georegion_match_on_string'
+    }.with_indifferent_access
+
+    computed_card_type = card_type_for(
+      computed_column,
+      dataset_size,
+      is_derived_view
+    )
+    assert_equal('histogram', computed_card_type)
   end
 
   def test_card_type_mapping_returns_expected_value_for_number_column_with_computation_strategy_match_on_point
@@ -306,10 +327,30 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       computed_column,
-      nil,
       dataset_size
     )
     assert_equal('choropleth', computed_card_type)
+  end
+
+  def test_card_type_mapping_returns_expected_value_for_number_column_with_computation_strategy_match_on_point_for_derived_view
+    dataset_size = 2500
+    is_derived_view = true
+
+    computed_column = fake_column('number', nil, 1)
+    computed_column['computationStrategy'] = {
+      'parameters' => {
+        'region' => '_abcd-efgh',
+        'geometryLabel' => 'label'
+      },
+      'strategy_type' => 'georegion_match_on_point'
+    }.with_indifferent_access
+
+    computed_card_type = card_type_for(
+      computed_column,
+      dataset_size,
+      is_derived_view
+    )
+    assert_equal('histogram', computed_card_type)
   end
 
   def test_card_type_mapping_returns_expected_value_for_number_column_with_one_row
@@ -317,7 +358,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('number', nil, 1),
-      nil,
       dataset_size
     )
 
@@ -329,7 +369,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('number', nil, 15),
-      nil,
       dataset_size
     )
 
@@ -341,7 +380,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('number', nil, 15),
-      nil,
       dataset_size
     )
 
@@ -353,7 +391,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('number', nil, 35),
-      nil,
       dataset_size
     )
 
@@ -365,7 +402,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('number', nil, 35),
-      nil,
       dataset_size
     )
 
@@ -377,7 +413,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('number', nil, 500),
-      nil,
       dataset_size
     )
 
@@ -389,7 +424,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('number', nil, 2500),
-      nil,
       dataset_size
     )
 
@@ -403,7 +437,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('point', nil, 2500),
-      nil,
       dataset_size
     )
     assert_equal('feature', computed_card_type)
@@ -416,7 +449,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('multipolygon', nil, 2500),
-      nil,
       dataset_size
     )
     assert_equal('invalid', computed_card_type)
@@ -429,7 +461,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('multiline', nil, 2500),
-      nil,
       dataset_size
     )
     assert_equal('invalid', computed_card_type)
@@ -442,7 +473,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('text', nil, 1),
-      nil,
       dataset_size
     )
     assert_equal('column', computed_card_type)
@@ -453,7 +483,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('text', nil, 15),
-      nil,
       dataset_size
     )
     assert_equal('column', computed_card_type)
@@ -464,7 +493,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('text', nil, 15),
-      nil,
       dataset_size
     )
     assert_equal('search', computed_card_type)
@@ -475,7 +503,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('text', nil, 35),
-      nil,
       dataset_size
     )
     assert_equal('search', computed_card_type)
@@ -486,7 +513,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('text', nil, 35),
-      nil,
       dataset_size
     )
     assert_equal('search', computed_card_type)
@@ -497,7 +523,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('text', nil, 500),
-      nil,
       dataset_size
     )
     assert_equal('search', computed_card_type)
@@ -508,7 +533,6 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       fake_column('text', nil, 2500),
-      nil,
       dataset_size
     )
     assert_equal('search', computed_card_type)
@@ -529,10 +553,31 @@ class CardTypeMappingTest < Minitest::Test
 
     computed_card_type = card_type_for(
       computed_column,
-      nil,
       dataset_size
     )
     assert_equal('choropleth', computed_card_type)
+  end
+
+  def test_card_type_mapping_returns_expected_value_for_text_column_with_computation_strategy_match_on_string_for_derived_view
+    dataset_size = 2500
+    is_derived_view = true
+
+    computed_column = fake_column('text', nil, 1)
+    computed_column['computationStrategy'] = {
+      'parameters' => {
+        'region' => '_abcd-efgh',
+        'geometryLabel' => 'label',
+        'column' => 'name'
+      },
+      'strategy_type' => 'georegion_match_on_string'
+    }.with_indifferent_access
+
+    computed_card_type = card_type_for(
+      computed_column,
+      dataset_size,
+      is_derived_view
+    )
+    assert_equal('search', computed_card_type)
   end
 
 
@@ -550,7 +595,6 @@ class CardTypeMappingTest < Minitest::Test
     end
     computed_card_type = card_type_for(
       fake_column(physical_datatype, nil, 2500),
-      nil,
       dataset_size
     )
   end
@@ -569,7 +613,6 @@ class CardTypeMappingTest < Minitest::Test
     end
     computed_card_type = card_type_for(
       broken_column,
-      nil,
       dataset_size
     )
   end
@@ -585,6 +628,17 @@ class CardTypeMappingTest < Minitest::Test
     )
     assert_equal(['column'], available_card_types)
   end
+
+  def test_card_type_mapping_returns_expected_available_card_types_for_calendar_date_column
+    dataset_size = 2500
+
+    available_card_types = available_card_types_for(
+      fake_column('calendar_date', nil, 15),
+      dataset_size
+    )
+    assert_equal(['timeline'], available_card_types)
+  end
+
 
   def test_card_type_mapping_returns_expected_available_card_types_for_fixed_timestamp_column
     dataset_size = 2500
@@ -647,6 +701,28 @@ class CardTypeMappingTest < Minitest::Test
     assert_equal(['choropleth'], available_card_types)
   end
 
+  def test_card_type_mapping_returns_expected_available_card_types_for_computed_match_on_string_number_column_for_derived_view
+    dataset_size = 2500
+    is_derived_view = true
+
+    computed_column = fake_column('number', nil, 1)
+    computed_column['computationStrategy'] = {
+      'parameters' => {
+        'region' => '_abcd-efgh',
+        'geometryLabel' => 'label',
+        'column' => 'name'
+      },
+      'strategy_type' => 'georegion_match_on_string'
+    }.with_indifferent_access
+
+    available_card_types = available_card_types_for(
+      computed_column,
+      dataset_size,
+      is_derived_view
+    )
+    assert_equal(['histogram', 'column', 'search'], available_card_types)
+  end
+
   def test_card_type_mapping_returns_expected_available_card_types_for_computed_match_on_point_number_column
     dataset_size = 2500
 
@@ -664,6 +740,27 @@ class CardTypeMappingTest < Minitest::Test
       dataset_size
     )
     assert_equal(['choropleth'], available_card_types)
+  end
+
+  def test_card_type_mapping_returns_expected_available_card_types_for_computed_match_on_point_number_column_for_derived_view
+    dataset_size = 2500
+    is_derived_view = true
+
+    computed_column = fake_column('number', nil, 1)
+    computed_column['computationStrategy'] = {
+      'parameters' => {
+        'region' => '_abcd-efgh',
+        'geometryLabel' => 'label'
+      },
+      'strategy_type' => 'georegion_match_on_point'
+    }.with_indifferent_access
+
+    available_card_types = available_card_types_for(
+      computed_column,
+      dataset_size,
+      is_derived_view
+    )
+    assert_equal(['histogram', 'column', 'search'], available_card_types)
   end
 
   def test_card_type_mapping_returns_expected_available_card_types_for_computed_match_on_string_text_column
@@ -684,6 +781,28 @@ class CardTypeMappingTest < Minitest::Test
       dataset_size
     )
     assert_equal(['choropleth'], available_card_types)
+  end
+
+  def test_card_type_mapping_returns_expected_available_card_types_for_computed_match_on_string_text_column_for_derived_view
+    dataset_size = 2500
+    is_derived_view = true
+
+    computed_column = fake_column('text', nil, 1)
+    computed_column['computationStrategy'] = {
+      'parameters' => {
+        'region' => '_abcd-efgh',
+        'geometryLabel' => 'label',
+        'column' => 'name'
+      },
+      'strategy_type' => 'georegion_match_on_string'
+    }.with_indifferent_access
+
+    available_card_types = available_card_types_for(
+      computed_column,
+      dataset_size,
+      is_derived_view
+    )
+    assert_equal(['column', 'search'], available_card_types)
   end
 
   def test_card_type_mapping_returns_expected_available_card_types_for_multiline_column
@@ -726,6 +845,18 @@ class CardTypeMappingTest < Minitest::Test
       dataset_size
     )
     assert_equal(['feature', 'choropleth'], available_card_types)
+  end
+
+  def test_card_type_mapping_returns_expected_available_card_types_for_point_column_for_derived_view
+    dataset_size = 2500
+    is_derived_view = true
+
+    available_card_types = available_card_types_for(
+      fake_column('point', nil, 2500),
+      dataset_size,
+      is_derived_view
+    )
+    assert_equal(['feature'], available_card_types)
   end
 
   def test_card_type_mapping_returns_expected_available_card_types_for_text_column

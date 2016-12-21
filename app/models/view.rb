@@ -20,6 +20,28 @@ class View < Model
     end
   end
 
+  # EN-12365: This method is a hack to allow us to create data lenses from derived views.
+  # The `read_from_nbe=true` flag (as of 12/2016) only returns NBE column metadata from the /views
+  # endpoint for derived views.
+  #
+  # Why not just use the NBE copy instead? Because we have special snowflake hacks in Core under
+  # this flag, only for derived views, in order to make data lens for derived views work.
+  #
+  # Note that if your derived view is based on an NBE default view, this method will still return
+  # everything just fine.
+  def self.find_derived_view_using_read_from_nbe(id)
+    path = "/#{self.service_name}/#{id}.json?read_from_nbe=true"
+
+    begin
+      result = CoreServer::Base.connection.get_request(path)
+    rescue CoreServer::Error => error
+      Rails.logger.debug("CoreServer::Base.connection.get_request ERROR: #{error.inspect}")
+      raise error
+    end
+
+    parse(result)
+  end
+
   def self.find_external(ext_id)
     find({'method' => 'getByExternalId', 'externalId' => ext_id}, {}, false, false, true)
   end
@@ -1016,6 +1038,10 @@ class View < Model
 
   def is_grouped?
     !query.nil? && !query.groupBys.nil? && query.groupBys.length > 0
+  end
+
+  def is_derived_view?
+    ['grouped', 'filter'].include?(display.type)
   end
 
   def has_modifying_parent_view?

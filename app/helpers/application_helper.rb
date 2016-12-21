@@ -118,6 +118,10 @@ module ApplicationHelper
     module_enabled?(:govStat) && !suppress_govstat?
   end
 
+  def govstat_chromeless?
+    module_enabled?(:govStat) && action_name == 'chromeless'
+  end
+
 # DATASET LANDING PAGE
   def dataset_landing_page_enabled?
     !!SiteAppearance.find.try(:dslp_enabled?) || site_appearance_preview_mode?

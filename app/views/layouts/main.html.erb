@@ -60,7 +60,7 @@ http://www.socrata.com
 
   <%= font_tags %>
 
-  <%- unless CurrentDomain.properties.custom_css.blank? || using_govstat_header? -%>
+  <%- unless CurrentDomain.properties.custom_css.blank? || using_govstat_header? || govstat_chromeless? -%>
     <link type="text/css" media="all" rel="stylesheet" href="/styles/current_site.css?<%= asset_revision_key %>"/>
   <%- end -%>
 

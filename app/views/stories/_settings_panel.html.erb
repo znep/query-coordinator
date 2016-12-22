@@ -64,6 +64,7 @@
         </button>
       </li>
 
+      <%- unless @story_metadata.goal? -%>
       <li id="settings-panel-collaborators" class="menu-list-item">
         <button class="menu-list-item-header" data-action="COLLABORATORS_OPEN"<%= ' disabled' unless can_manage_collaborators? %>>
           <span class="socrata-icon-add-collaborator"></span>
@@ -73,6 +74,7 @@
           <%- end %>
         </button>
       </li>
+      <%- end -%>
 
       <li id="settings-panel-publishing" class="menu-list-item">
         <button class="menu-list-item-header expandable">
@@ -125,12 +127,14 @@
         </div>
       </li>
 
+      <%- unless @story_metadata.goal? -%>
       <li id="settings-panel-share" class="menu-list-item">
         <button class="menu-list-item-header" data-action="SHARE_AND_EMBED_MODAL_OPEN">
           <span class="socrata-icon-share"></span>
           <span><%= t('editor.settings_panel.story_tile_embed_section.section_title') %></span>
         </button>
       </li>
+      <%- end -%>
 
       <li id="settings-panel-print-story" class="menu-list-item">
         <%= settings_panel_print_story_link do %>

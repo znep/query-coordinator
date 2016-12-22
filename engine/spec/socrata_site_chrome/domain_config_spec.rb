@@ -57,7 +57,7 @@ describe SocrataSiteChrome::DomainConfig do
       it 'returns the expected configurations_uri' do
         stub_domains
         stub_request(:get, configurations_uri).to_return(status: 200, body: '[{ "stuff": true }]')
-        expect(helper.new('localhost').send(:domain_config_uri)).to eq(configurations_uri)
+        expect(helper.new(domain).send(:domain_config_uri)).to eq(configurations_uri)
       end
     end
   end
@@ -84,7 +84,7 @@ describe SocrataSiteChrome::DomainConfig do
 
         it 'returns the data.wa.gov cache key' do
           stub_domains
-          domain_config_2 = helper.new('data.wa.gov')
+          domain_config_2 = helper.new(domain)
           cache_key_2 = domain_config_2.cache_key
           expect(cache_key_2).to eq('frontend:deadbeef:domain:data.wa.gov:1477076931:configurations:site_chrome')
         end
@@ -96,14 +96,14 @@ describe SocrataSiteChrome::DomainConfig do
     it 'returns the expected timestamp' do
       allow(Time).to receive(:now).and_return(Time.at(1477332900))
       stub_domains
-      subject = SocrataSiteChrome::DomainConfig.new(domain)
+      subject = helper.new(domain)
       expect(subject.config_updated_at).to eq(1477332900)
     end
 
     it 'returns a quantized time instead of nil' do
       allow(Time).to receive(:now).and_return(Time.at(1477332900))
       stub_domains(status: 200, body: %Q({ "cname": "#{domain}" }))
-      subject = SocrataSiteChrome::DomainConfig.new(domain)
+      subject = helper.new(domain)
       expect(subject.config_updated_at).to eq(1477333200)
     end
   end
@@ -179,4 +179,92 @@ describe SocrataSiteChrome::DomainConfig do
     end
   end
 
+  describe '#header_logo' do
+    let(:site_chrome_config) do
+      JSON.parse(File.read('spec/fixtures/site_chrome_config.json')).with_indifferent_access
+    end
+
+    describe 'Configuration Version 0.1' do
+      it 'returns a logo from version 0.1' do
+        dupped = site_chrome_config.deep_dup
+        dupped[:properties][0][:value].merge!(:current_version => '0.1')
+        config_with_changed_version = dupped.to_json
+
+        stub_domains
+        stub_configurations(status:200, body: "[#{config_with_changed_version}]")
+
+        result = helper.new(domain).send(:header_logo)
+
+        expect(result).to eql("src" => 'http://i.imgur.com/version0.1.png')
+      end
+    end
+
+    describe 'Configuration Version 0.2' do
+      it 'returns a logo from version 0.2' do
+        dupped = site_chrome_config.deep_dup
+        dupped[:properties][0][:value].merge!(:current_version => '0.2')
+        config_with_changed_version = dupped.to_json
+
+        stub_domains
+        stub_configurations(status:200, body: "[#{config_with_changed_version}]")
+
+        result = helper.new(domain).send(:header_logo)
+
+        expect(result).to eql({ "src" => 'http://i.imgur.com/version0.2.png' })
+      end
+    end
+
+    describe 'Configuration Version 0.3' do
+      describe 'no header logo present in config' do
+        let(:site_chrome_config) do
+          File.read('spec/fixtures/site_chrome_config_no_header_logo.json')
+        end
+
+        it 'returns nil if no header logo is present' do
+          stub_domains
+          stub_configurations(status:200, body: "[#{site_chrome_config}]")
+
+          result = helper.new(domain).send(:header_logo)
+
+          expect(result).to be_nil
+        end
+      end
+
+      describe 'just header logo src' do
+        let(:site_chrome_config) do
+          File.read('spec/fixtures/site_chrome_config.json')
+        end
+
+        it 'returns the url for the logo header if it is present' do
+          stub_domains
+          stub_configurations(status:200, body: "[#{site_chrome_config}]")
+
+          result = helper.new(domain).send(:header_logo)
+
+          expect(result).to eql(
+            "src" => 'http://i.imgur.com/E8wtc6d.png'
+          )
+        end
+      end
+
+      describe 'header logo src and dimensions' do
+        let(:site_chrome_config) do
+          File.read('spec/fixtures/site_chrome_config_header_logo_height_width.json')
+        end
+
+        it 'returns the url and the height and width info for the header logo if it is present' do
+          stub_domains
+          stub_configurations(status:200, body: "[#{site_chrome_config}]")
+
+          result = helper.new(domain).send(:header_logo)
+
+          expect(result).to eql(
+            "src" => 'http://i.imgur.com/E8wtc6d.png',
+            "logo_height" => '50px',
+            "logo_width" => '60px'
+          )
+        end
+      end
+    end
+  end
 end

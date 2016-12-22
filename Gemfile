@@ -2,6 +2,7 @@ source 'https://repo.socrata.com/artifactory/api/gems/rubygems-virtual'
 
 ruby '2.3.1'
 
+gem 'activesupport', '~> 4.2.6'
 gem 'dalli'
 gem 'hashie'
 gem 'httparty'

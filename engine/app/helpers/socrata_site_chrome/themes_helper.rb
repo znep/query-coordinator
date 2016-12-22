@@ -46,9 +46,8 @@ module SocrataSiteChrome
       key == 'font_family' ? %Q{"#{CGI.escapeHTML(value.to_s)}"} : value
     end
 
-    def domain_config
-      ::RequestStore.store['site_chrome.domain_config'] ||= SocrataSiteChrome::DomainConfig.new(request.host)
+    def domain_config(cname = request.host)
+      ::RequestStore.store['site_chrome.domain_config'] ||= SocrataSiteChrome::DomainConfig.new(cname)
     end
-
   end
 end

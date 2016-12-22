@@ -43,7 +43,5 @@ describe SocrataSiteChrome::ThemesHelper do
       result = helper.theme_value('font_family', 'Comic Sans')
       expect(result).to eq('"Comic Sans"')
     end
-
   end
-
 end

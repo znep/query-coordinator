@@ -1,5 +1,8 @@
+#Making this explicit so it works outside of a Rails app
+require 'active_support/all'
 require 'airbrake'
 require 'httparty'
+require 'logger'
 require 'time_extensions'
 
 module SocrataSiteChrome
@@ -7,9 +10,29 @@ module SocrataSiteChrome
 
     CONFIGURATION_TYPE = 'site_chrome'
 
-    attr_reader :cname, :config_updated_at
+    attr_reader :cname, :config_updated_at, :request_config, :logger, :cache
 
-    def initialize(domain_name)
+    def initialize(domain_name, config: Hash.new, logger: nil, cache: nil)
+      @request_config = {
+        :cache_key_prefix => (defined?(Rails) && !config.has_key?(:cache_key_prefix)) ? Rails.application.config.cache_key_prefix : config[:cache_key_prefix],
+        :coreservice_uri => (defined?(Rails) && !config.has_key?(:coreservice_uri)) ? Rails.application.config.coreservice_uri : config[:coreservice_uri],
+        :application => (defined?(Rails) && !config.has_key?(:application)) ? 'frontend' : config[:application],
+      }
+
+      @logger = logger
+      @logger ||= if defined?(Rails) then
+        Rails.logger
+      else
+        Logger.new(STDOUT)
+      end
+
+      @cache = cache
+      @cache ||= if defined?(Rails) then
+        Rails.cache
+      end
+
+      raise ArgumentError.new('No cache provided as parameter or by Rails environment') unless @cache.present?
+
       fetch_domain(domain_name) if [@cname, @config_updated_at].any?(&:blank?)
     end
 
@@ -58,8 +81,8 @@ module SocrataSiteChrome
     def cache_key
       "domain:#{cname}:#{config_updated_at}:configurations:#{CONFIGURATION_TYPE}"
       [
-        'frontend',
-        Rails.application.config.cache_key_prefix,
+        @request_config[:application],
+        @request_config[:cache_key_prefix],
         'domain',
         cname,
         config_updated_at,
@@ -71,7 +94,7 @@ module SocrataSiteChrome
     def fetch_domain(domain_name)
       begin
         domain_json = HTTParty.get(
-          "#{Rails.application.config.coreservice_uri}/domains/#{domain_name}.json",
+          "#{@request_config[:coreservice_uri]}/domains/#{domain_name}.json",
           :headers => { 'X-Socrata-Host' => domain_name }
         ).body
       rescue HTTParty::ResponseError => e
@@ -108,7 +131,7 @@ module SocrataSiteChrome
             :error_class => 'InvalidSiteChromeConfiguration',
             :error_message => message
           )
-          Rails.logger.error(message)
+          @logger.error(message)
         end
       end
 
@@ -129,11 +152,11 @@ module SocrataSiteChrome
           :error_class => 'InvalidSiteChromeDomainConfig',
           :error_message => error_msg
         )
-        Rails.logger.error(error_msg)
+        @logger.error(error_msg)
         raise error_msg
       end
 
-      body = Rails.cache.fetch(cache_key) do
+      body = @cache.fetch(cache_key) do
         begin
           response = HTTParty.get(
             domain_config_uri,
@@ -149,7 +172,7 @@ module SocrataSiteChrome
     end
 
     def domain_config_uri
-      "#{Rails.application.config.coreservice_uri}/configurations.json?type=#{CONFIGURATION_TYPE}&defaultOnly=true"
+      "#{@request_config[:coreservice_uri]}/configurations.json?type=#{CONFIGURATION_TYPE}&defaultOnly=true"
     end
 
     def configuration_or_default(configuration_response)
@@ -158,5 +181,13 @@ module SocrataSiteChrome
       result || DomainConfig.default_configuration.first
     end
 
+    def header_logo(site_chrome = SiteChrome.new(site_chrome_config))
+      logo_config = site_chrome.header[:logo].slice(:src)
+      style_config = site_chrome.header[:styles].slice(:logo_height, :logo_width)
+
+      if logo_config[:src].present?
+        logo_config.merge(style_config).compact.with_indifferent_access
+      end
+    end
   end
 end

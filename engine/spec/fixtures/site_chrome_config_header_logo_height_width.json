@@ -130,7 +130,7 @@
                   ],
                   "logo": {
                     "href": "#",
-                    "src": "http://i.imgur.com/version0.1.png"
+                    "src": "http://i.imgur.com/E8wtc6d.png"
                   },
                   "styles": {
                     "bg_color": "#5D7365",
@@ -303,7 +303,7 @@
                   ],
                   "logo": {
                     "href": "#",
-                    "src": "http://i.imgur.com/version0.2.png"
+                    "src": "http://i.imgur.com/E8wtc6d.png"
                   },
                   "styles": {
                     "bg_color": "#5D7365",
@@ -478,7 +478,9 @@
                   },
                   "styles": {
                     "bg_color": "#5D7365",
-                    "fg_color": "#eee"
+                    "fg_color": "#eee",
+                    "logo_height": "50px",
+                    "logo_width": "60px"
                   }
                 },
                 "locales": {

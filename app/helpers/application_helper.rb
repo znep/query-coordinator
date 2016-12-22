@@ -780,6 +780,30 @@ module ApplicationHelper
     @suppress_govstat || !CurrentDomain.member?(current_user)
   end
 
+  def apply_custom_css?
+    # The code around suppress_govstat has become challenging to understand
+    # because it's often used in double-negative constructions.
+    #
+    # Let's start using helpers with simpler, more precise semantic names.
+
+    # Only load custom CSS if it exists.
+    return false if CurrentDomain.properties.custom_css.blank?
+
+    # Always load custom CSS if the GovStat module isn't enabled.
+    return true unless module_enabled?(:govStat)
+
+    # Never load custom CSS on chromeless GovStat pages.
+    return false if govstat_chromeless?
+
+    # Always load custom CSS on DataSlate homepages. These properties were
+    # written for sitewide H/F work and are set in CustomContentController.
+    return true if @using_dataslate && @on_homepage
+
+    # For the remaining GovStat pages, load custom CSS if we've set the property
+    # @suppress_govstat to true in CustomContentController.
+    return @suppress_govstat
+  end
+
   def is_mobile?
     param_mobile = params[:mobile].to_s
     param_no_mobile = params[:no_mobile].to_s

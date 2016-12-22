@@ -216,7 +216,7 @@ describe('actions/manageUploads', () => {
             sendMessages();
             return joinedChannel;
           }
-        }
+        };
       }
     };
     store.dispatch(createUpload({

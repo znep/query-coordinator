@@ -367,4 +367,12 @@ describe('reducers/database', () => {
       my_table: []
     });
   });
+
+  it('Throws on invalid table name', () => {
+    const initialDB = {};
+    const badInsert = () =>
+      dbReducer(initialDB, Actions.insertStarted('missingTable', {}));
+
+    expect(badInsert).to.throw(ReferenceError);
+  });
 });

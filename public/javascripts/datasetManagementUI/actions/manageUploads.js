@@ -2,6 +2,7 @@ import * as Links from '../links';
 import * as dsmapiLinks from '../dsmapiLinks';
 import {
   insertFromServer,
+  insertFromServerIfNotExists,
   insertStarted,
   insertSucceeded,
   insertFailed,
@@ -124,14 +125,13 @@ export function insertUploadAndSubscribeToOutput(dispatch, upload) { // => [outp
           ..._.omit(transform, ['transform_input_columns']),
           input_column_ids: transform.transform_input_columns.map((inCol) => inCol.column_id)
         }));
-        dispatch(insertFromServer('columns', _.omit(outputColumn, ['transform_to'])));
+        // vv this is dirty, not to mention slow
+        dispatch(insertFromServerIfNotExists('columns', _.omit(outputColumn, ['transform_to'])));
         dispatch(insertFromServer('schema_columns', {
           schema_id: outputSchema.id,
           column_id: outputColumn.id
         }));
-        // create table
-        dispatch(createTable(`column_${outputColumn.id}`));
-        subscribeToTransform(dispatch, transform, outputColumn);
+        dispatch(createTableAndSubscribeToTransform(transform, outputColumn));
       });
       return outputSchema.id;
     });
@@ -141,30 +141,39 @@ export function insertUploadAndSubscribeToOutput(dispatch, upload) { // => [outp
 
 const INITIAL_FETCH_LIMIT_ROWS = 200;
 
-function subscribeToTransform(dispatch, transform, outputColumn) {
-  const channelName = `transform_progress:${transform.id}`;
-  const channel = window.DSMAPI_PHOENIX_SOCKET.channel(channelName, {});
-  const initialFetchFor = [];
-  channel.on('max_ptr', (maxPtr) => {
-    dispatch(updateFromServer('columns', {
-      id: outputColumn.id,
-      contiguous_rows_processed: maxPtr.end_row_offset
-    }));
-    if (!initialFetchFor.includes(outputColumn.id)) {
-      initialFetchFor.push(outputColumn.id);
-      const offset = 0;
-      dispatch(
-        fetchAndInsertDataForColumn(transform, outputColumn, offset, INITIAL_FETCH_LIMIT_ROWS)
-      );
-    }
-  });
-  channel.join().
-    receive('ok', (response) => {
-      console.log(`successfully joined ${channelName}:`, response);
-    }).
-    receive('error', (error) => {
-      console.log(`failed to join ${channelName}:`, error);
+export function createTableAndSubscribeToTransform(transform, outputColumn) {
+  return (dispatch) => {
+    dispatch(createTable(`column_${outputColumn.id}`));
+    const channelName = `transform_progress:${transform.id}`;
+    const channel = window.DSMAPI_PHOENIX_SOCKET.channel(channelName, {});
+    const initialFetchFor = [];
+    channel.on('max_ptr', (maxPtr) => {
+      dispatch(updateFromServer('columns', {
+        id: outputColumn.id,
+        contiguous_rows_processed: maxPtr.end_row_offset
+      }));
+      if (!initialFetchFor.includes(outputColumn.id)) {
+        initialFetchFor.push(outputColumn.id);
+        const offset = 0;
+        dispatch(
+          fetchAndInsertDataForColumn(transform, outputColumn, offset, INITIAL_FETCH_LIMIT_ROWS)
+        );
+      }
     });
+    channel.on('errors', (errorsMsg) => {
+      dispatch(updateFromServer('columns', {
+        id: outputColumn.id,
+        num_transform_errors: errorsMsg.count
+      }));
+    });
+    channel.join().
+      receive('ok', (response) => {
+        console.log(`successfully joined ${channelName}:`, response);
+      }).
+      receive('error', (error) => {
+        console.log(`failed to join ${channelName}:`, error);
+      });
+  };
 }
 
 function fetchAndInsertDataForColumn(transform, outputColumn, offset, limit) {

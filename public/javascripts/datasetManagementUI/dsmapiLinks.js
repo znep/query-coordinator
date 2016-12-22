@@ -13,6 +13,9 @@ export const uploadCreate = uploadIndex;
 export const uploadBytes = (routing, uploadId) => `${home(routing)}/upload/${uploadId}`;
 export const uploadShow = uploadBytes;
 
+// TODO: find names controller uses!
+export const updateSchema = (routing, inputSchemaId) => `${home(routing)}/schema/${inputSchemaId}`;
+
 export const transformResults = (routing, transformId, limit, offset) => {
   const path = (routing.pathname) ?
     routing.pathname : routing.locationBeforeTransitions.pathname;

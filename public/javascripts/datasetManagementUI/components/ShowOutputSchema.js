@@ -4,20 +4,25 @@ import { Modal, ModalHeader, ModalContent } from 'socrata-components';
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 
+import ColumnHeader from './ColumnHeader';
 import * as Links from '../links';
 import { STATUS_UPDATING } from '../lib/database/statuses';
+import * as Actions from '../actions/showOutputSchema';
 
-function query(db, uploadId, schemaId, outputSchemaId) {
+function query(db, uploadId, schemaId, outputSchemaIdStr) {
+  const outputSchemaId = _.toNumber(outputSchemaIdStr);
   const upload = _.find(db.uploads, { id: _.toNumber(uploadId) });
   const schema = _.find(db.schemas, { id: _.toNumber(schemaId) });
-  const outputSchema = _.find(db.schemas, { id: _.toNumber(outputSchemaId) });
+  const outputSchema = _.find(db.schemas, { id: outputSchemaId });
   const schemaColumns = _.filter(db.schema_columns, { schema_id: outputSchema.id });
-  const columns = _.filter(
+  const unsortedColumns = _.filter(
     db.columns,
     (column) => schemaColumns.some(
-      (schemaColumn) => schemaColumn.column_id === column.id
+      (schemaColumn) =>
+        column.id === schemaColumn.column_id && schemaColumn.schema_id === outputSchemaId
     )
   );
+  const columns = _.sortBy(unsortedColumns, 'schema_column_index');
 
   return {
     db,
@@ -28,7 +33,7 @@ function query(db, uploadId, schemaId, outputSchemaId) {
   };
 }
 
-function ShowOutputSchema({ db, upload, columns, goToUpload }) {
+export function ShowOutputSchema({ db, upload, columns, outputSchema, goToUpload, updateColumnType }) {
   // TODO: I18n
   const uploadProgress = upload.__status__.type === STATUS_UPDATING ?
     `${Math.round(upload.__status__.percentCompleted)}% Uploaded` :
@@ -46,7 +51,7 @@ function ShowOutputSchema({ db, upload, columns, goToUpload }) {
         Preview
       </span>
     ),
-    onDismiss: goToUpload(upload.id)
+    onDismiss: goToUpload
   };
 
   return (
@@ -58,21 +63,14 @@ function ShowOutputSchema({ db, upload, columns, goToUpload }) {
           <table className="table table-condensed">
             <thead>
               <tr>
-                {columns.map((column) => (
-                  <th key={column.id}>
-                    <span className="col-name">
-                      {column.schema_column_name}
-                    </span>
-                    <br />
-                    <span className="col-type">
-                      {column.soql_type}
-                    </span>
-                    <br />
-                    <span className="col-processed">
-                      {column.contiguous_rows_processed}
-                    </span>
-                  </th>
-                ))}
+                {
+                  columns.map(column =>
+                    <ColumnHeader
+                      key={column.id}
+                      outputSchema={outputSchema}
+                      column={column}
+                      updateColumnType={updateColumnType} />)
+                }
               </tr>
             </thead>
             <TableBody db={db} columns={columns} />
@@ -87,9 +85,10 @@ ShowOutputSchema.propTypes = {
   db: PropTypes.object.isRequired,
   upload: PropTypes.object.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
-  goToUpload: PropTypes.func.isRequired
+  outputSchema: PropTypes.object.isRequired,
+  goToUpload: PropTypes.func.isRequired,
+  updateColumnType: PropTypes.func.isRequired
 };
-
 
 function mapStateToProps(state, ownProps) {
   const params = ownProps.params;
@@ -98,6 +97,9 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   return {
+    updateColumnType: (oldSchema, oldColumn, newType) => {
+      dispatch(Actions.updateColumnType(oldSchema, oldColumn, newType));
+    },
     goToUpload: (uploadId) => (
       () => {
         dispatch(push(Links.showUpload(uploadId)(ownProps.location)));
@@ -125,15 +127,19 @@ const TableBody = React.createClass({
     console.debug('render table');
     return (
       <tbody>
-        {_.range(0, 20).map((rowIdx) => (
-          <tr key={rowIdx}>
-            {this.props.columns.map((column) => (
-              <td key={column.id}>
-                {_.get(this.props.db, `column_${column.id}[${rowIdx}]`, '').value}
-              </td>
-            ))}
-          </tr>
-        ))}
+        {
+          _.range(0, 20).map((rowIdx) => (
+            <tr key={rowIdx}>
+              {
+                this.props.columns.map((column) => (
+                  <td key={column.id}>
+                    {_.get(this.props.db, `column_${column.id}[${rowIdx}]`, '').value}
+                  </td>
+                ))
+              }
+            </tr>
+          ))
+        }
       </tbody>
     );
   }

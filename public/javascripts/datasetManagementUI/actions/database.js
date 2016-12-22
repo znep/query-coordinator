@@ -20,6 +20,14 @@ export const insertFromServer = (tableName, newRecord) => ({
   newRecord
 });
 
+// Idempotent version of INSERT_FROM_SERVER.
+export const INSERT_FROM_SERVER_IF_NOT_EXISTS = 'INSERT_FROM_SERVER_IF_NOT_EXISTS';
+export const insertFromServerIfNotExists = (tableName, newRecord) => ({
+  type: INSERT_FROM_SERVER_IF_NOT_EXISTS,
+  tableName,
+  newRecord
+});
+
 export const INSERT_STARTED = 'INSERT_STARTED';
 export const insertStarted = (tableName, newRecord) => ({
   type: INSERT_STARTED,

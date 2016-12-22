@@ -2,6 +2,7 @@ import {
   EDIT,
   INSERT_STARTED,
   INSERT_FROM_SERVER,
+  INSERT_FROM_SERVER_IF_NOT_EXISTS,
   INSERT_SUCCEEDED,
   INSERT_FAILED,
   UPDATE_STARTED,
@@ -29,6 +30,10 @@ import { emptyDB } from '../lib/database/bootstrap';
 // TODO: make resilient to nonexistent tables
 // TODO: use ImmutableJS instead of Object Spread? It may shorten repetitive code here.
 export default function dbReducer(db = emptyDB, action) {
+  if (action.tableName && !db[action.tableName]) {
+    throw new ReferenceError(`Table "${action.tableName}" does not exist!`);
+  }
+
   switch (action.type) {
     case BATCH:
       return action.operations.reduce((dbSoFar, operation) => (
@@ -45,14 +50,31 @@ export default function dbReducer(db = emptyDB, action) {
             const withUpdatedStatus = {
               ...record,
               __status__: record.__status__.type !== STATUS_DIRTY ?
-                statusDirty(record) :
-                record.__status__
+                          statusDirty(record) :
+                          record.__status__
             };
             return _.merge({}, withUpdatedStatus, action.updates);
           }
         )
       };
 
+    case INSERT_FROM_SERVER_IF_NOT_EXISTS:
+      if (!_.find(db[action.tableName], action.newRecord)) {
+        // Same as INSERT_FROM_SERVER!
+        return {
+          ...db,
+          [action.tableName]: [
+            ...db[action.tableName],
+            {
+              ...action.newRecord,
+              __status__: statusSavedOnServer
+            }
+          ]
+        };
+      } else {
+        // Do nothing if already exists!
+        return db;
+      }
     case INSERT_FROM_SERVER:
       return {
         ...db,
@@ -65,7 +87,7 @@ export default function dbReducer(db = emptyDB, action) {
         ]
       };
 
-    // TODO kind of want "new" state to match the "dirty" state updates have
+      // TODO kind of want "new" state to match the "dirty" state updates have
     case INSERT_STARTED:
       return {
         ...db,
@@ -78,7 +100,7 @@ export default function dbReducer(db = emptyDB, action) {
         ]
       };
 
-    // TODO: "additional" will probably always just be an ID. Should probably pare it down to that
+      // TODO: "additional" will probably always just be an ID. Should probably pare it down to that
     case INSERT_SUCCEEDED:
       return {
         ...db,
@@ -86,7 +108,7 @@ export default function dbReducer(db = emptyDB, action) {
           db[action.tableName],
           (record) => (
             record.__status__.type === STATUS_INSERTING &&
-              _.isEqual(record.__status__.newRecord, action.newRecord)
+            _.isEqual(record.__status__.newRecord, action.newRecord)
           ),
           (record) => {
             const withUpdatedStatus = {
@@ -105,7 +127,7 @@ export default function dbReducer(db = emptyDB, action) {
           db[action.tableName],
           (record) => (
             record.__status__.type === STATUS_INSERTING &&
-              _.isEqual(record.__status__.newRecord, action.newRecord)
+            _.isEqual(record.__status__.newRecord, action.newRecord)
           ),
           (record) => ({
             ...record,
@@ -197,8 +219,11 @@ export default function dbReducer(db = emptyDB, action) {
 }
 
 
-// TODO: is there a lodash function which does this?
 function updateIf(array, predicateOrMatch, updater) {
+  if (!array) {
+    throw new TypeError(`Expected Array but got ${array}!`);
+  }
+
   const cloned = _.clone(array);
   const idx = _.findIndex(cloned, predicateOrMatch);
   cloned[idx] = updater(cloned[idx]);

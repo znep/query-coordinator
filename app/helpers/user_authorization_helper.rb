@@ -77,9 +77,7 @@ module UserAuthorizationHelper
   end
 
   def can_edit_goals?
-    admin? &&
-    has_domain_right?('edit_goals') &&
-    super_admin? # Super-admin restriction temporary while feature under development.
+    admin? || has_domain_right?('edit_goals')
   end
 
   private

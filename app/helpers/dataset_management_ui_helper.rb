@@ -9,7 +9,7 @@ module DatasetManagementUiHelper
     }
   end
 
-  def render_dataset_management_ui_server_config(websocket_token)
+  def render_dataset_management_ui_server_config(websocket_token = nil)
     config = dataset_management_ui_server_config(websocket_token)
     javascript_tag("var serverConfig = #{json_escape(config.to_json)};")
   end

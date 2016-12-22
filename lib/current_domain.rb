@@ -62,7 +62,7 @@ class CurrentDomain
     end
 
     def aliases
-      domain.try(:aliases).try(:split, ',').compact || []
+      (domain.try(:aliases).try(:split, ',') || []).compact
     end
 
     def cname_and_aliases

@@ -1,7 +1,7 @@
 <header class="header-main">
   <button data-panel-toggle="settings-panel" class="socrata-icon-stories-menu settings-panel-btn"></button>
   <%- if @story_metadata.goal? && @dashboard_uid -%>
-    <a class="link-header story-dashboard-link" href="/stat/goals/<%= @dashboard_uid %>" aria-labelledby="story-dashboard-link-text">
+    <a class="link-header story-dashboard-link" href="/stat/goals/<%= @dashboard_uid %>/edit" aria-labelledby="story-dashboard-link-text">
       <span class="story-dashboard-link-icon socrata-icon-arrow-prev"></span>
       <span class="story-dashboard-link-text" id="story-dashboard-link-text"><%= t('editor.app_bar.back_to_dashboard') %></span>
     </a>

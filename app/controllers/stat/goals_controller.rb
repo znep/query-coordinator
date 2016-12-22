@@ -7,8 +7,11 @@ class Stat::GoalsController < StoriesController
   before_action :load_story_metadata # enforce order - this depends on load_goal
 
   def show
-    redirect_to "#{request.path.sub('/stories', '')}/view"
-    # TODO: call super instead of redirecting if we have a storyteller-backed goal
+    published_story = PublishedStory.find_by_uid(params[:uid])
+
+    return redirect_to "#{request.path.sub('/stories', '')}/view" unless published_story.present?
+
+    respond_with_story(published_story)
   end
 
   def edit

@@ -84,18 +84,48 @@ RSpec.describe Stat::GoalsController, type: :controller do
 
   describe '#show' do
     shared_examples 'goal viewer' do
-      describe 'goal not accessible' do
-        it '404s' do
-          get :show, dashboard: dashboard , category: category , uid: uid
-          expect(response).to have_http_status(404)
+      before do
+        allow(PublishedStory).to receive(:find_by_uid).and_return(story)
+      end
+
+      describe 'no published story present' do
+        let(:story) { nil }
+
+        describe 'goal not accessible' do
+          it '404s' do
+            get :show, dashboard: dashboard , category: category , uid: uid
+            expect(response).to have_http_status(404)
+          end
+        end
+
+        describe 'goal accessible' do
+          let(:accessible) { true }
+
+          it 'redirects to "classic view" for goal routes' do
+            get :show, dashboard: dashboard , category: category , uid: uid
+            expect(response).to redirect_to "/stat/goals/#{dashboard}/#{category}/#{uid}/view"
+          end
         end
       end
 
-      describe 'goal accessible' do
-        let(:accessible) { true }
-        it 'redirects to "classic view" for goal routes' do
-          get :show, dashboard: dashboard , category: category , uid: uid
-          expect(response).to redirect_to "/stat/goals/#{dashboard}/#{category}/#{uid}/view"
+      describe 'published story present' do
+        let(:story) { instance_double(PublishedStory) }
+
+        describe 'goal not accessible' do
+
+          it '404s' do
+            get :show, dashboard: dashboard , category: category , uid: uid
+            expect(response).to have_http_status(404)
+          end
+        end
+
+        describe 'goal accessible' do
+          let(:accessible) { true }
+
+          it '200s' do
+            get :show, dashboard: dashboard , category: category , uid: uid
+            expect(response).to have_http_status(:ok)
+          end
         end
       end
     end

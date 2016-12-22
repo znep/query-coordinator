@@ -28,18 +28,20 @@ Rails.application.routes.draw do
     # Note that these routes are accessible without
     # the /stories global prefix (see config.ru, specifically
     # re: UriRewriteMiddleware).
-    scope 'stat/goals', module: 'stat', as: 'stat' do
-      get 'single/:uid' => 'goals#show', as: 'single_goal'
-      get 'single/:uid/edit-story' => 'goals#edit', as: 'edit_single_goal'
-      get 'single/:uid/preview' => 'goals#preview', as: 'preview_single_goal'
+    scope 'stat/goals', module: 'stat' do
+      get 'single/:uid' => 'goals#show'
+      get 'single/:uid/edit' => 'goals#edit'
+      get 'single/:uid/edit-story' => 'goals#edit'
+      get 'single/:uid/preview' => 'goals#preview'
 
       # This route doesn't need a fully-qualified equivalent; it's not a user-
       # facing page, just a target for a form submission.
-      get 'single/:uid/copy' => 'goals#copy', as: 'copy_single_goal'
+      get 'single/:uid/copy' => 'goals#copy'
 
-      get ':dashboard/:category/:uid' => 'goals#show', as: 'goal'
-      get ':dashboard/:category/:uid/edit-story' => 'goals#edit', as: 'edit_goal'
-      get ':dashboard/:category/:uid/preview' => 'goals#preview', as: 'preview_goal'
+      get ':dashboard/:category/:uid' => 'goals#show'
+      get ':dashboard/:category/:uid/edit' => 'goals#edit'
+      get ':dashboard/:category/:uid/edit-story' => 'goals#edit'
+      get ':dashboard/:category/:uid/preview' => 'goals#preview'
     end
 
     # Story theme configuration routes

@@ -26,7 +26,7 @@ RSpec.describe 'goal routing', type: :routing do
 
   describe 'fully-qualified goal edit' do
     it 'renders edit route' do
-      expect(get: '/stat/goals/dash-bord/cate-gory/test-test/edit-story').to route_to(
+      expect(get: '/stat/goals/dash-bord/cate-gory/test-test/edit').to route_to(
         controller: 'stat/goals',
         action: 'edit',
         dashboard: 'dash-bord',
@@ -37,6 +37,28 @@ RSpec.describe 'goal routing', type: :routing do
   end
 
   describe 'single goal edit' do
+    it 'renders edit route' do
+      expect(get: '/stat/goals/single/test-test/edit').to route_to(
+        controller: 'stat/goals',
+        action: 'edit',
+        uid: 'test-test'
+      )
+    end
+  end
+
+  describe 'fully-qualified goal edit (transitional)' do
+    it 'renders edit route' do
+      expect(get: '/stat/goals/dash-bord/cate-gory/test-test/edit-story').to route_to(
+        controller: 'stat/goals',
+        action: 'edit',
+        dashboard: 'dash-bord',
+        category: 'cate-gory',
+        uid: 'test-test'
+      )
+    end
+  end
+
+  describe 'single goal edit (transitional)' do
     it 'renders edit route' do
       expect(get: '/stat/goals/single/test-test/edit-story').to route_to(
         controller: 'stat/goals',

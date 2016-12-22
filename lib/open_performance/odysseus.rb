@@ -42,7 +42,7 @@ class OpenPerformance::Odysseus
         # By fetching the latest goal info before making this call, we don't
         # need to track the goal's last-updated timestamp (another pattern that
         # Odysseus uses).
-        'If-Match' => goal.json['updated_at']
+        'If-Match' => goal.json['version']
       }
     )
   end

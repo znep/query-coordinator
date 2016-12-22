@@ -10,7 +10,7 @@
 </div>
 
 <% content_for :scripts do %>
-  <%= render_dataset_management_ui_server_config %>
+  <%= render_dataset_management_ui_server_config(@websocket_token) %>
   <%= render_dataset_management_ui_translations %>
 
   <script>

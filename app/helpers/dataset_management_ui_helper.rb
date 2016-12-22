@@ -1,15 +1,17 @@
 module DatasetManagementUiHelper
 
-  def dataset_management_ui_server_config
+  def dataset_management_ui_server_config(websocket_token)
     {
       :environment => Rails.env,
       :csrfToken => form_authenticity_token.to_s,
-      :appToken => APP_CONFIG.app_token
+      :appToken => APP_CONFIG.app_token,
+      :websocketToken => websocket_token
     }
   end
 
-  def render_dataset_management_ui_server_config
-    javascript_tag("var serverConfig = #{json_escape(dataset_management_ui_server_config.to_json)};")
+  def render_dataset_management_ui_server_config(websocket_token)
+    config = dataset_management_ui_server_config(websocket_token)
+    javascript_tag("var serverConfig = #{json_escape(config.to_json)};")
   end
 
   def render_dataset_management_ui_translations

@@ -3,6 +3,21 @@ module DatasetManagementAPI
 
   class ServerError < StandardError; end
 
+  def self.get_uploads_index(view_uid, update_seq, cookies)
+    get("/api/update/#{view_uid}/#{update_seq}/upload", cookies)
+  end
+
+  def self.get_upload(view_uid, update_seq, upload_id, cookies)
+    path = "/api/update/#{view_uid}/#{update_seq}/upload/#{upload_id}"
+    get(path, cookies)['resource']
+  end
+
+  def self.get_websocket_token(view_uid, cookies)
+    get("/api/update/#{view_uid}/token", cookies)['token']
+  end
+
+  private
+
   def self.get(path, cookies)
     cookie_header = cookies.map { |k, v| "#{k}=#{v}" }.join('; ')
     url = "http://#{hostname}:#{port}#{path}"
@@ -27,6 +42,8 @@ module DatasetManagementAPI
         raise(response.inspect)
     end
   end
+
+  ## Config
 
   def self.hostname
     ENV['DATASET_MANAGEMENT_API_HOSTNAME'] || APP_CONFIG.dataset_management_api_hostname

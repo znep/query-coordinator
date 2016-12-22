@@ -22,11 +22,17 @@ import NoMatch from './components/NoMatch';
 import rootReducer from './reducers';
 import { bootstrap } from './lib/database/bootstrap';
 
-window.DSMAPI_PHOENIX_SOCKET = new Phoenix.Socket('/api/update/socket', {});
+
+const viewId = window.initialState.view.id;
+window.DSMAPI_PHOENIX_SOCKET = new Phoenix.Socket('/api/update/socket', {
+  params: {
+    fourfour: viewId,
+    token: window.serverConfig.websocketToken
+  }
+});
 window.DSMAPI_PHOENIX_SOCKET.connect();
 
 // middleware
-
 const middleware = [thunk, routerMiddleware(browserHistory)];
 
 if (window.serverConfig.environment === 'development') {

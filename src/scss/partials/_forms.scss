@@ -145,7 +145,8 @@
 
   .checkbox {
     input[type=checkbox] {
-      display: none;
+      display: block;
+      opacity: 0;
     }
 
     label {
@@ -166,6 +167,7 @@
       vertical-align: text-bottom;
       line-height: 1;
       padding: 2px;
+      overflow: hidden;
     }
 
     input[type=checkbox] + label .fake-checkbox span {
@@ -177,11 +179,16 @@
       vertical-align: text-top;
       padding-left: 1px;
     }
+
+    input[type=checkbox]:focus + label > .fake-checkbox {
+      outline: auto;
+    }
   }
 
   .radiobutton {
     input[type=radio] {
-      display: none;
+      display: block;
+      opacity: 0;
     }
 
     label {
@@ -190,7 +197,7 @@
       position: relative;
     }
 
-    input[type=radio] + label span {
+    input[type=radio] + label .fake-radiobutton {
       border: solid 1px #e2e2e2;
       border-radius: 10px;
       box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
@@ -202,7 +209,7 @@
       vertical-align: text-bottom;
     }
 
-    input[type=radio]:checked + label span {
+    input[type=radio]:checked + label .fake-radiobutton {
       display: inline-block;
       width: 19px;
       height: 19px;
@@ -211,6 +218,10 @@
       border-radius: 10px;
       box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
       vertical-align: text-bottom;
+    }
+
+    input[type=radio]:focus + label > span.fake-radiobutton {
+      outline: auto;
     }
   }
 }

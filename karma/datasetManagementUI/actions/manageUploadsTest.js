@@ -166,6 +166,7 @@ describe('actions/manageUploads', () => {
       this.method = method;
       this.url = url;
       this.upload = {};
+      this.headers = {};
     };
     window.XMLHttpRequest.prototype.send = function(payload) {
       this.upload.onprogress({
@@ -173,6 +174,9 @@ describe('actions/manageUploads', () => {
         total: 100
       });
       this.onload();
+    };
+    window.XMLHttpRequest.prototype.setRequestHeader = function(header, value) {
+      this.headers[header] = value;
     };
     // mock socket
     const sentIndices = {};

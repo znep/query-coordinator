@@ -16,10 +16,6 @@
     }
   }
 
-  #show-output-schema .modal-content {
-    margin-bottom: 0;
-  }
-
   thead {
     .col-name {
       font-weight: bold;
@@ -40,6 +36,11 @@
       font-size: 7pt;
       color: darkred;
     }
+  }
+
+  .show-upsert-job {
+    // TODO: text-align center (when we're no longer just dumping the <pre>)
+    padding-left: 200px;
   }
 }
 

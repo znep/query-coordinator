@@ -11,7 +11,8 @@ export const emptyDB = {
   schemas: [],
   columns: [],
   schema_columns: [],
-  transforms: []
+  transforms: [],
+  upsert_jobs: []
 };
 
 export function bootstrap(store, initialView, initialUpdate) {

@@ -1,57 +1,12 @@
 import _ from 'lodash';
 import { Simulate } from 'react-addons-test-utils';
-import { getDefaultStore } from '../testStore';
+import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
 import ShowOutputSchema from 'components/ShowOutputSchema';
 import { ShowOutputSchema as ShowOutputSchemaUnConnected } from 'components/ShowOutputSchema';
-import { insertFromServer, createTable, batch } from 'actions/database';
+import { insertFromServer, batch } from 'actions/database';
 import { statusSavedOnServer } from 'lib/database/statuses';
 
 describe('components/ShowOutputSchema', () => {
-
-  function getStoreWithOutputSchema() {
-    const store = getDefaultStore();
-    store.dispatch(insertFromServer('schemas', {
-      id: 18,
-      input_schema_id: 4
-    }));
-    store.dispatch(insertFromServer('columns', {
-      id: 50,
-      schema_column_index: 0,
-      display_name: 'arrest',
-      soql_type: 'SoQLText'
-    }));
-    store.dispatch(insertFromServer('columns', {
-      id: 51,
-      schema_column_index: 1,
-      display_name: 'block',
-      soql_type: 'SoQLText'
-    }));
-    store.dispatch(insertFromServer('schema_columns', {
-      id: 0,
-      schema_id: 18,
-      column_id: 50
-    }));
-    store.dispatch(insertFromServer('schema_columns', {
-      id: 1,
-      schema_id: 18,
-      column_id: 51
-    }));
-    store.dispatch(insertFromServer('transforms', {
-      id: 1,
-      transform_expr: 'identity',
-      input_column_ids: [48],
-      output_column_id: 50
-    }));
-    store.dispatch(insertFromServer('transforms', {
-      id: 2,
-      transform_expr: 'identity',
-      input_column_ids: [49],
-      output_column_id: 51
-    }));
-    store.dispatch(createTable('column_50'));
-    store.dispatch(createTable('column_51'));
-    return store;
-  }
 
   const defaultProps = {
     params: {

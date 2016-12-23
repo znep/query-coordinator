@@ -45,7 +45,7 @@ http://www.socrata.com
 
   <%= yield :head %>
 
-  <%- unless CurrentDomain.properties.custom_css.blank? -%>
+  <%- if apply_custom_css? -%>
     <link type="text/css" rel="stylesheet" href="/styles/current_site.css?<%= asset_revision_key %>"/>
   <%- end -%>
 

@@ -104,6 +104,15 @@ module SocrataSiteChrome
       @config_updated_at ||= Time.now.quantize_to(300).to_i
     end
 
+    def header_logo(site_chrome = SiteChrome.new(site_chrome_config))
+      logo_config = site_chrome.header[:logo].slice(:src)
+      style_config = site_chrome.header[:styles].slice(:logo_height, :logo_width)
+
+      if logo_config[:src].present?
+        logo_config.merge(style_config).compact.with_indifferent_access
+      end
+    end
+
     private
 
     # Config contains various versions, each having a "published" and "draft" set of
@@ -179,15 +188,6 @@ module SocrataSiteChrome
       configuration = configuration_response.to_s
       result = JSON.parse(configuration).first rescue nil
       result || DomainConfig.default_configuration.first
-    end
-
-    def header_logo(site_chrome = SiteChrome.new(site_chrome_config))
-      logo_config = site_chrome.header[:logo].slice(:src)
-      style_config = site_chrome.header[:styles].slice(:logo_height, :logo_width)
-
-      if logo_config[:src].present?
-        logo_config.merge(style_config).compact.with_indifferent_access
-      end
     end
   end
 end

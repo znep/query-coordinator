@@ -39,7 +39,6 @@ const UPSERT_JOB_PROGRESS_POLL_INTERVAL_MS = 1000;
 export function pollForUpsertJobProgress(upsertJobId) {
   return (dispatch, getState) => {
     const routing = getState().routing;
-    console.log('polling for upsert job progress for job', upsertJobId);
     socrataFetch(dsmapiLinks.updateBase(routing)).
       then(checkStatus).
       then(getJson).

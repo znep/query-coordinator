@@ -31,5 +31,8 @@ export function bootstrap(store, initialView, initialUpdate) {
   initialUpdate.uploads.forEach((upload) => {
     insertUploadAndSubscribeToOutput(store.dispatch, upload);
   });
+  initialUpdate.upsert_jobs.forEach((upsertJob) => {
+    operations.push(insertFromServer('upsert_jobs', upsertJob));
+  });
   store.dispatch(batch(operations));
 }

@@ -123,6 +123,12 @@ class View < Model
     JSON.parse(CoreServer::Base.connection.get_request("/migrations/#{id}")).with_indifferent_access
   end
 
+  def mtime_according_to_core
+    path = "/manifest_version.json?uid=#{id}"
+    result = CoreServer::Base.connection.get_request(path, {}, false)
+    JSON.parse(result, :max_nesting => 25)[id]
+  end
+
   # NBE geospatial datasets no longer have an OBE component, so this method
   # answers the question of whether or not an NBE dataset is geospatial.
   def is_geospatial?

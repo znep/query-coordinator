@@ -20,7 +20,6 @@ export default function GoalMigrationOverlayRenderer() {
   // const $modal = $('<div id="goal-migration-welcome">');
 
   goalMigrationStore.addChangeListener(render);
-  render();
 
   function render() {
     const $body = $(document.body);
@@ -28,39 +27,35 @@ export default function GoalMigrationOverlayRenderer() {
 
     if (goalMigrationStore.hasError()) {
 
-      $body.append($overlay);
       $overlay.find('p').text(t('error'));
       $overlay.find('span').remove();
+      $body.append($overlay);
 
       const error = goalMigrationStore.error();
       exceptionNotifier.notify(new Error(`Failed to migrate ${window.location}: ${error.message}`));
 
     } else if (goalMigrationStore.isMigrating()) {
 
-      $body.append($overlay);
       $documentElement.css('overflow-y', 'hidden');
+      $body.append($overlay);
 
     } else {
 
-      _.delay(() => {
+      $documentElement.css('overflow-y', '');
+      $overlay.remove();
 
-        $documentElement.css('overflow-y', '');
-        $overlay.remove();
+      // j/k, we're going to do this in a separate changeset
 
-        // j/k, we're going to do this in a separate changeset
+      // $body.append($modal);
+      // $modal.modal({
+      //   title: t('welcome_title'),
+      //   content: `
+      //     <p>${t('welcome_content')}</p>
+      //   `
+      // }).trigger('modal-open');
 
-        // $body.append($modal);
-        // $modal.modal({
-        //   title: t('welcome_title'),
-        //   content: `
-        //     <p>${t('welcome_content')}</p>
-        //   `
-        // }).trigger('modal-open');
-
-        // // TODO: buttons
-        // $body.one('modal-dismissed', () => $modal.trigger('modal-close'));
-
-      }, 2000);
+      // // TODO: buttons
+      // $body.one('modal-dismissed', () => $modal.trigger('modal-close'));
 
     }
   }

@@ -48,12 +48,16 @@ export default function GoalMigrationStore() {
   }
 
   function endMigration() {
-    state.isMigrating = false;
-    state.error = null;
-    self._emitChange();
+    // Ensure that we spend a non-trivial duration in isMigrating=true state.
+    _.delay(() => {
+      state.isMigrating = false;
+      state.error = null;
+      self._emitChange();
+    }, 2000);
   }
 
   function errorMigration(payloadError) {
+    // Better to fail fast in this case.
     state.isMigrating = false;
     state.error = payloadError;
     self._emitChange();

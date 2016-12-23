@@ -136,11 +136,15 @@ describe('GoalMigrationStore', function() {
 
   describe('isMigrating', function() {
     it('becomes true while migrating and becomes false on complete', function() {
+      const delayStub = sinon.stub(window._, 'delay', (fn) => fn());
+
       assert.isFalse(goalMigrationStore.isMigrating());
       dispatcher.dispatch({ action: Actions.GOAL_MIGRATION_START });
       assert.isTrue(goalMigrationStore.isMigrating());
       dispatcher.dispatch({ action: Actions.GOAL_MIGRATION_END });
       assert.isFalse(goalMigrationStore.isMigrating());
+
+      delayStub.restore();
     });
 
     it('becomes false on error', function() {

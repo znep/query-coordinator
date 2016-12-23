@@ -32,7 +32,9 @@ const {
   STORY_UID
 } = Environment;
 
-dispatcher.register(function(payload) {
+const shouldMigrateGoal = goalMigrationStore.needsMigration();
+
+dispatcher.register((payload) => {
   if (ENVIRONMENT === 'development' && window.console) {
     console.info('Dispatcher action: ', payload);
   }
@@ -44,16 +46,7 @@ dispatcher.register(function(payload) {
   }
 });
 
-if (goalMigrationStore.needsMigration()) {
-  // Need to migrate narrative first. Ideally we'd do this server-side,
-  // but it's easier in JS (the original renderer and support utilities
-  // used to process the narrative in Odysseus are in JS).
-  // StoryStore will load the story automatically when migration is complete.
-  (new GoalMigrationRunner(
-    OP_GOAL_NARRATIVE_MIGRATION_METADATA,
-    STORY_DATA
-  )).run();
-} else {
+if (!shouldMigrateGoal) {
   dispatcher.dispatch({
     action: Actions.STORY_CREATE,
     data: STORY_DATA
@@ -69,84 +62,90 @@ if (goalMigrationStore.needsMigration()) {
 
 if (IS_GOAL) {
   // TODO: Why is this being called from index? Can the store manage it itself?
-  (new CollaboratorsDataProvider()).
-    getCollaborators().
-      then(
-        function(collaborators) {
-
-          dispatcher.dispatch({
-            action: Actions.COLLABORATORS_LOAD,
-            collaborators: collaborators
-          });
-        }
-      ).
-      catch(exceptionNotifier.notify);
+  (new CollaboratorsDataProvider()).getCollaborators().
+    then((collaborators) => {
+      dispatcher.dispatch({
+        action: Actions.COLLABORATORS_LOAD,
+        collaborators: collaborators
+      });
+    }).
+    catch(exceptionNotifier.notify);
 }
 
-$(document).on('ready', function() {
+const $window = $(window);
+
+$(document).on('ready', () => {
   /**
    * Setup
    */
 
   SocrataVisualizations.views.RowInspector.setup();
 
+  new Renderers.LinkModalRenderer();
+  new Renderers.ErrorModalRenderer();
+  new Renderers.LinkTipRenderer();
+  new Renderers.CollaboratorsRenderer();
+  new Renderers.ShareAndEmbedRenderer();
+  new Renderers.LoginWindowRenderer();
 
-  /*eslint-disable no-unused-vars */
-  var goalMigrationOverlayRenderer = new Renderers.GoalMigrationOverlayRenderer();
-  var assetSelectorRenderer = new Renderers.AssetSelectorRenderer({
+  new Renderers.AssetSelectorRenderer({
     assetSelectorContainerElement: $('#asset-selector-container')
   });
 
-  var linkModalRenderer = new Renderers.LinkModalRenderer();
-  var errorModalRenderer = new Renderers.ErrorModalRenderer();
-  var linkTipRenderer = new Renderers.LinkTipRenderer();
-  var collaboratorsRenderer = new Renderers.CollaboratorsRenderer();
-  var shareAndEmbedRenderer = new Renderers.ShareAndEmbedRenderer();
-  var loginWindowRenderer = new Renderers.LoginWindowRenderer();
-
-  var storyCopierRenderer = new Renderers.StoryCopierRenderer({
+  new Renderers.StoryCopierRenderer({
     storyCopierContainerElement: $('#make-a-copy-container')
   });
 
-  var userStoryRenderer = new Renderers.StoryRenderer({
+  new Renderers.StoryRenderer({
     storyUid: STORY_UID,
-    storyContainerElement: $('.user-story'),
     editable: true,
-    insertionHintElement: $('#story-insertion-hint'),
     richTextEditorManager: richTextEditorManager,
+    insertionHintElement: $('#story-insertion-hint'),
+    storyContainerElement: $('.user-story'),
     warningMessageElement: $('.user-story .message-warning')
   });
-  /*eslint-enable no-unused-vars */
+
+  /* Goal migration */
+  if (shouldMigrateGoal) {
+    // Need to migrate narrative first. Ideally we'd do this server-side,
+    // but it's easier in JS (the original renderer and support utilities
+    // used to process the narrative in Odysseus are in JS).
+    // StoryStore will load the story automatically when migration is complete.
+    new Renderers.GoalMigrationOverlayRenderer();
+    (new GoalMigrationRunner(OP_GOAL_NARRATIVE_MIGRATION_METADATA, STORY_DATA)).run();
+  }
 
   /**
    * RichTextEditorToolbar events
    */
 
-  $(window).on('rich-text-editor::focus-change', function(event) {
-    var editors;
-    var currentEditorId;
+  $window.on('rich-text-editor::focus-change', (event) => {
+    const { isFocused, id } = event.originalEvent.detail;
 
     // If an editor is being focused, we must switch the link toolbar's context,
     // and deselect all other editors.
-    if (event.originalEvent.detail.isFocused === true) {
-      currentEditorId = event.originalEvent.detail.id;
-      editors = _.omit(richTextEditorManager.getAllEditors(), currentEditorId);
+    if (isFocused === true) {
+      const otherEditors = _.omit(richTextEditorManager.getAllEditors(), id);
 
-      richTextEditorManager.linkToolbar(currentEditorId);
-      _.invokeMap(editors, 'deselect');
+      richTextEditorManager.linkToolbar(id);
+      _.invokeMap(otherEditors, 'deselect');
     }
   });
 
-  $(window).on('click', function(event) {
-    var target = $(event.target);
+  $window.on('click', (event) => {
+    const target = $(event.target);
 
-    var isInToolbar = target.is($('#rich-text-editor-toolbar')) || target.parents('#rich-text-editor-toolbar').length !== 0;
-    var isInLinkModal = target.is($('#link-modal')) || target.parents('#link-modal').length !== 0;
-    var isInLinkTip = target.is($('#link-tip')) || target.parents('#link-tip').length !== 0;
+    function isSelfOrAncestor(selector) {
+      return target.is(selector) || target.parents(selector).length !== 0;
+    }
 
-    // If the target of the click event is not the toolbar, unlink
-    // the toolbar from the current ext editor (which also dims the
-    // toolbar), and deselect all rich text editors.
+    const isInToolbar = isSelfOrAncestor('#rich-text-editor-toolbar');
+    const isInLinkModal = isSelfOrAncestor('#link-modal');
+    const isInLinkTip = isSelfOrAncestor('#link-tip');
+
+    // If the target of the click event is not the toolbar or a link modal/tip,
+    // unlink the toolbar from the current text editor (which also dims the
+    // toolbar) and deselect all rich text editors.
     if (!isInToolbar && !isInLinkModal && !isInLinkTip) {
       richTextEditorManager.unlinkToolbar();
 
@@ -169,37 +168,32 @@ $(document).on('ready', function() {
    * History events
    */
 
-  $('.undo-btn').on('click', function() {
+  const undoBtn = $('.undo-btn');
+  const redoBtn = $('.redo-btn');
+
+  undoBtn.on('click', () => {
     dispatcher.dispatch({
       action: Actions.HISTORY_UNDO,
       storyUid: STORY_UID
     });
   });
 
-  $('.redo-btn').on('click', function() {
+  redoBtn.on('click', () => {
     dispatcher.dispatch({
       action: Actions.HISTORY_REDO,
       storyUid: STORY_UID
     });
   });
 
-  storyStore.addChangeListener(function() {
-    if (storyStore.canUndo()) {
-      $('.undo-btn').prop('disabled', false);
-    } else {
-      $('.undo-btn').prop('disabled', true);
-    }
-
-    if (storyStore.canRedo()) {
-      $('.redo-btn').prop('disabled', false);
-    } else {
-      $('.redo-btn').prop('disabled', true);
-    }
+  storyStore.addChangeListener(() => {
+    undoBtn.prop('disabled', !storyStore.canUndo());
+    redoBtn.prop('disabled', !storyStore.canRedo());
   });
 
   // Respond to changes in the user story's block ordering by scrolling the
   // window to always show the top of the moved block.
-  dispatcher.register(function(payload) {
+  const htmlAndBody = $('html, body');
+  dispatcher.register((payload) => {
     if (payload.storyUid === STORY_UID) {
       switch (payload.action) {
         case Actions.STORY_MOVE_BLOCK_UP:
@@ -209,23 +203,20 @@ $(document).on('ready', function() {
           // back the y translate value. Since the renderer is synchronous
           // a minimal setTimeout here should cause this block to be executed
           // after the renderer has completed.
-          setTimeout(function() {
+          setTimeout(() => {
 
-            var blockEditElement = document.querySelectorAll(
-              '.block-edit[data-block-id="' + payload.blockId + '"]'
+            const blockEditElement = document.querySelectorAll(
+              `.block-edit[data-block-id="${payload.blockId}"]`
             )[0];
 
-            var blockEditElementTranslateY =
-              parseInt(
-                blockEditElement.getAttribute('data-translate-y'),
-                10
-              ) || 0;
+            const translateY = parseInt(
+              blockEditElement.getAttribute('data-translate-y'), 10
+            ) || 0;
 
-            $('html, body').animate({
-              scrollTop: blockEditElementTranslateY
+            htmlAndBody.animate({
+              scrollTop: translateY
             });
-          // The duration of the layout translations is specified in
-          // `layout.scss`.
+          // The duration of layout translations is specified in `layout.scss`.
           }, 200);
           break;
 
@@ -240,21 +231,24 @@ $(document).on('ready', function() {
    */
 
   // Add Content Panel
-  var addContentPanelElement = $('#add-content-panel');
-  addContentPanelElement.addContentPanel($('.quick-action-menu [data-panel-toggle="add-content-panel"]'));
+  const addContentPanel = $('#add-content-panel');
+  const addContentPanelToggle = $('[data-panel-toggle="add-content-panel"]');
+  addContentPanel.addContentPanel(addContentPanelToggle);
 
   // Style and Presentation Panel
-  var styleAndPresentationPanelElement = $('#style-and-presentation-panel');
-  styleAndPresentationPanelElement.styleAndPresentationPanel($('.quick-action-menu button[data-panel-toggle="style-and-presentation-panel"]'));
+  const styleAndPresentationPanel = $('#style-and-presentation-panel');
+  const styleAndPresentationPanelToggle = $('[data-panel-toggle="style-and-presentation-panel"]');
+  styleAndPresentationPanel.styleAndPresentationPanel(styleAndPresentationPanelToggle);
 
   // Settings Panel
-  var settingsPanelContainer = $('#settings-panel-container');
-  settingsPanelContainer.settingsPanel($('[data-panel-toggle="settings-panel"]'));
+  const settingsPanel = $('#settings-panel-container');
+  const settingsPanelToggle = $('[data-panel-toggle="settings-panel"]');
+  settingsPanel.settingsPanel(settingsPanelToggle);
 
   // Drag-drop
-  var ghostElement = $('#block-ghost');
-  var dragDrop = StorytellerUtils.export(
-    new DragDrop(addContentPanelElement.find('.inspiration-block'), ghostElement),
+  const ghostElement = $('#block-ghost');
+  const dragDrop = StorytellerUtils.export(
+    new DragDrop(addContentPanel.find('.inspiration-block'), ghostElement),
     'storyteller.dragDrop'
   );
 
@@ -286,16 +280,13 @@ $(document).on('ready', function() {
   $('.preview-btn').storyPreviewLink();
 
   // Close confirmation
-  $(window).on('beforeunload', function() {
-    if (
-      storySaveStatusStore.isStoryDirty() ||
-      storySaveStatusStore.isStorySaveInProgress()
-    ) {
-      // If the save is impossible, don't bother confirming the close :(
-      if (!storySaveStatusStore.isSaveImpossibleDueToConflict()) {
-        return I18n.t('editor.page_close_confirmation');
-      }
+  $window.on('beforeunload', () => {
+    const isDirty = storySaveStatusStore.isStoryDirty();
+    const isSaveInProgress = storySaveStatusStore.isStorySaveInProgress();
+    const isSaveImpossible = storySaveStatusStore.isSaveImpossibleDueToConflict();
+
+    if ((isDirty || isSaveInProgress) && !isSaveImpossible) {
+      return I18n.t('editor.page_close_confirmation');
     }
   });
 });
-

@@ -7,14 +7,15 @@ export class PagerWrapper extends Component {
     _.bindAll(this, ['getCurPage', 'getPagerStart', 'getPagerEnd']);
   }
 
-  // Returns current page number in the url param. Note: this is 1-indexed
+  // Returns current page number in the url hash. Note: this is 1-indexed
   getCurPage() {
-    const urlParams = window.location.search.slice(1).split('#')[0].split('&');
-    urlParams.forEach((urlParam) => {
-      const [key, val] = urlParam.split('=');
-      if (key.toString().toLowerCase() === 'page' && val) return parseInt(val, 10);
+    const urlHashes = window.location.hash.split('#');
+    let page = 1;
+    urlHashes.forEach((urlHash) => {
+      const [key, val] = urlHash.split('=');
+      if (key.toString().toLowerCase() === 'page' && val) page = parseInt(val, 10);
     });
-    return 1;
+    return page;
   }
 
   // Index of first page

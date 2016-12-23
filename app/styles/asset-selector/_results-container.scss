@@ -52,5 +52,15 @@
         margin-top: 0;
       }
     }
+
+    .results-pagination-controls {
+      float: none;
+
+      .pagination {
+        a.pageLink:first-of-type {
+          margin-left: 0;
+        }
+      }
+    }
   }
 }

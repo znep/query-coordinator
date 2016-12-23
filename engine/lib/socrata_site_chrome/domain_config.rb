@@ -59,7 +59,9 @@ module SocrataSiteChrome
     end
 
     def self.default_configuration
-      JSON.parse(File.read("#{SocrataSiteChrome::Engine.root}/config/default_site_chrome.json"))
+      spec = Gem::Specification.find_by_name('socrata_site_chrome')
+      gem_root = spec.gem_dir
+      JSON.parse(File.read("#{gem_root}/config/default_site_chrome.json"))
     end
 
     # Dummy config to use in test

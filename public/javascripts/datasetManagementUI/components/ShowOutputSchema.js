@@ -148,7 +148,9 @@ const TableBody = React.createClass({
               {
                 this.props.columns.map((column) => (
                   <td key={column.id}>
-                    {_.get(this.props.db, `column_${column.id}[${rowIdx}]`, '').value}
+                    <div>
+                      {_.get(this.props.db, `column_${column.id}[${rowIdx}]`, '').value}
+                    </div>
                   </td>
                 ))
               }

@@ -38,6 +38,40 @@
     }
   }
 
+  .table.table-condensed td {
+    padding: 0;
+  }
+
+  th, td {
+    max-width: 25em;
+    white-space: nowrap;
+
+    div {
+      max-width: calc(25em - 11px);
+      line-height: 3em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      background: #fff;
+      margin: 0 11px;
+    }
+
+    div:hover {
+      max-width: none;
+      min-width: calc(100% - 10px);
+      padding-right: 11px;
+      white-space: nowrap;
+      overflow: visible;
+      text-overflow: unset;
+      display: inline-block;
+      background: #fff;
+      border-right: 1px solid $light-grey-3;
+      margin-right: -1px;
+
+      z-index: 99;
+      position: relative;
+    }
+  }
+
   .show-upsert-job {
     // TODO: text-align center (when we're no longer just dumping the <pre>)
     padding-left: 200px;

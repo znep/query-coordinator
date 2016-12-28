@@ -450,126 +450,126 @@ class ApplicationHelperTest < ActionView::TestCase
     refute @object.user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
   end
 
-  def test_enable_site_chrome_is_false_if_no_site_appearance_activation_states_are_true
-    SiteAppearance.stubs(:find => SiteAppearance.new)
-    SiteAppearance.any_instance.stubs(:is_activated_on?).with('open_data').returns(false)
-    SiteAppearance.any_instance.stubs(:is_activated_on?).with('homepage').returns(false)
-    SiteAppearance.any_instance.stubs(:is_activated_on?).with('data_lens').returns(false)
-    refute application_helper.enable_site_chrome?
-  end
+  # def test_enable_site_chrome_is_false_if_no_site_appearance_activation_states_are_true
+  #   SiteAppearance.stubs(:find => SiteAppearance.new)
+  #   SiteAppearance.any_instance.stubs(:is_activated_on?).with('open_data').returns(false)
+  #   SiteAppearance.any_instance.stubs(:is_activated_on?).with('homepage').returns(false)
+  #   SiteAppearance.any_instance.stubs(:is_activated_on?).with('data_lens').returns(false)
+  #   refute application_helper.enable_site_chrome?
+  # end
 
-  def test_enable_site_chrome_is_false_on_homepage_and_dataset_if_the_states_are_true_but_the_other_conditions_are_not_met
-    SiteAppearance.stubs(:find => SiteAppearance.new)
-    SiteAppearance.any_instance.stubs(:is_activated_on?).with('open_data').returns(false)
-    SiteAppearance.any_instance.stubs(:is_activated_on?).with('homepage').returns(true)
-    SiteAppearance.any_instance.stubs(:is_activated_on?).with('data_lens').returns(true)
-    refute application_helper.enable_site_chrome?
-  end
+  # def test_enable_site_chrome_is_false_on_homepage_and_dataset_if_the_states_are_true_but_the_other_conditions_are_not_met
+  #   SiteAppearance.stubs(:find => SiteAppearance.new)
+  #   SiteAppearance.any_instance.stubs(:is_activated_on?).with('open_data').returns(false)
+  #   SiteAppearance.any_instance.stubs(:is_activated_on?).with('homepage').returns(true)
+  #   SiteAppearance.any_instance.stubs(:is_activated_on?).with('data_lens').returns(true)
+  #   refute application_helper.enable_site_chrome?
+  # end
 
-  def test_enable_site_chrome_is_true_for_homepage
-    SiteAppearance.stubs(:find => SiteAppearance.new)
-    SiteAppearance.any_instance.stubs(:is_activated_on?).with('open_data').returns(false)
-    SiteAppearance.any_instance.stubs(:is_activated_on?).with('homepage').returns(true)
-    SiteAppearance.any_instance.stubs(:is_activated_on?).with('data_lens').returns(false)
-    application_helper.stubs(:on_homepage => false)
-    application_helper.stubs(:using_dataslate => false)
-    refute application_helper.enable_site_chrome?
-    application_helper.stubs(:on_homepage => true)
-    application_helper.stubs(:using_dataslate => false)
-    assert application_helper.enable_site_chrome?
-  end
+  # def test_enable_site_chrome_is_true_for_homepage
+  #   SiteAppearance.stubs(:find => SiteAppearance.new)
+  #   SiteAppearance.any_instance.stubs(:is_activated_on?).with('open_data').returns(false)
+  #   SiteAppearance.any_instance.stubs(:is_activated_on?).with('homepage').returns(true)
+  #   SiteAppearance.any_instance.stubs(:is_activated_on?).with('data_lens').returns(false)
+  #   application_helper.stubs(:on_homepage => false)
+  #   application_helper.stubs(:using_dataslate => false)
+  #   refute application_helper.enable_site_chrome?
+  #   application_helper.stubs(:on_homepage => true)
+  #   application_helper.stubs(:using_dataslate => false)
+  #   assert application_helper.enable_site_chrome?
+  # end
 
-  def test_enable_site_chrome_is_false_for_dataslate_when_site_chrome_is_not_activated
-    SiteAppearance.stubs(:find => SiteAppearance.new)
-    SiteAppearance.any_instance.stubs(:activation_state).returns('open_data' => false)
-    application_helper.stubs(:on_homepage => false)
-    application_helper.stubs(:using_dataslate => true)
-    refute application_helper.enable_site_chrome?
-  end
+  # def test_enable_site_chrome_is_false_for_dataslate_when_site_chrome_is_not_activated
+  #   SiteAppearance.stubs(:find => SiteAppearance.new)
+  #   SiteAppearance.any_instance.stubs(:activation_state).returns('open_data' => false)
+  #   application_helper.stubs(:on_homepage => false)
+  #   application_helper.stubs(:using_dataslate => true)
+  #   refute application_helper.enable_site_chrome?
+  # end
 
-  def test_enable_site_chrome_is_false_for_dataslate_when_site_chrome_is_activated_but_the_disable_flag_is_true
-    SiteAppearance.stubs(:find => SiteAppearance.new)
-    SiteAppearance.any_instance.stubs(:activation_state).returns('open_data' => true)
-    application_helper.stubs(:on_homepage => false)
-    application_helper.stubs(:using_dataslate => true)
-    FeatureFlags.stubs(:derive => Hashie::Mash.new(
-      :disable_site_chrome_header_footer_on_dataslate_pages => true
-    ))
-    refute application_helper.enable_site_chrome?
-  end
+  # def test_enable_site_chrome_is_false_for_dataslate_when_site_chrome_is_activated_but_the_disable_flag_is_true
+  #   SiteAppearance.stubs(:find => SiteAppearance.new)
+  #   SiteAppearance.any_instance.stubs(:activation_state).returns('open_data' => true)
+  #   application_helper.stubs(:on_homepage => false)
+  #   application_helper.stubs(:using_dataslate => true)
+  #   FeatureFlags.stubs(:derive => Hashie::Mash.new(
+  #     :disable_site_chrome_header_footer_on_dataslate_pages => true
+  #   ))
+  #   refute application_helper.enable_site_chrome?
+  # end
 
-  def test_enable_site_chrome_is_true_for_dataslate_when_site_chrome_is_activated
-    SiteAppearance.stubs(:find => SiteAppearance.new)
-    SiteAppearance.any_instance.stubs(:activation_state).returns('open_data' => true)
-    application_helper.stubs(:on_homepage => false)
-    application_helper.stubs(:using_dataslate => true)
-    assert application_helper.enable_site_chrome?
-  end
+  # def test_enable_site_chrome_is_true_for_dataslate_when_site_chrome_is_activated
+  #   SiteAppearance.stubs(:find => SiteAppearance.new)
+  #   SiteAppearance.any_instance.stubs(:activation_state).returns('open_data' => true)
+  #   application_helper.stubs(:on_homepage => false)
+  #   application_helper.stubs(:using_dataslate => true)
+  #   assert application_helper.enable_site_chrome?
+  # end
 
-  def test_enable_site_chrome_doesnt_error_if_site_chrome_is_nil
-    SiteAppearance.stubs(:find => nil)
-    refute application_helper.enable_site_chrome?
-  end
+  # def test_enable_site_chrome_doesnt_error_if_site_chrome_is_nil
+  #   SiteAppearance.stubs(:find => nil)
+  #   refute application_helper.enable_site_chrome?
+  # end
 
-  def test_enable_site_chrome_doesnt_error_if_site_chrome_is_false
-    SiteAppearance.stubs(:find => false)
-    refute application_helper.enable_site_chrome?
-  end
+  # def test_enable_site_chrome_doesnt_error_if_site_chrome_is_false
+  #   SiteAppearance.stubs(:find => false)
+  #   refute application_helper.enable_site_chrome?
+  # end
 
-  def test_using_custom_site_chrome_is_false_if_there_is_no_site_chrome_config
-    SiteAppearance.stubs(:find => nil)
-    refute application_helper.using_custom_site_chrome?
-  end
+  # def test_using_custom_site_chrome_is_false_if_there_is_no_site_chrome_config
+  #   SiteAppearance.stubs(:find => nil)
+  #   refute application_helper.using_custom_site_chrome?
+  # end
 
-  def test_using_custom_site_chrome_is_false_if_there_is_no_activation_state_property
-    SiteAppearance.stubs(:find => SiteAppearance.new)
-    SiteAppearance.any_instance.stubs(:properties => [])
-    refute application_helper.using_custom_site_chrome?
-  end
+  # def test_using_custom_site_chrome_is_false_if_there_is_no_activation_state_property
+  #   SiteAppearance.stubs(:find => SiteAppearance.new)
+  #   SiteAppearance.any_instance.stubs(:properties => [])
+  #   refute application_helper.using_custom_site_chrome?
+  # end
 
-  def test_using_custom_site_chrome_is_false_if_the_activation_state_property_specifies_false
-    SiteAppearance.stubs(:find => SiteAppearance.new)
-    SiteAppearance.any_instance.stubs(:properties => [ { 'name' => 'activation_state', :value => { :custom => false } } ])
-    refute application_helper.using_custom_site_chrome?
-  end
+  # def test_using_custom_site_chrome_is_false_if_the_activation_state_property_specifies_false
+  #   SiteAppearance.stubs(:find => SiteAppearance.new)
+  #   SiteAppearance.any_instance.stubs(:properties => [ { 'name' => 'activation_state', :value => { :custom => false } } ])
+  #   refute application_helper.using_custom_site_chrome?
+  # end
 
-  def test_using_custom_site_chrome_is_true_if_the_activation_state_property_specifies_true
-    SiteAppearance.stubs(:find => SiteAppearance.new)
-    SiteAppearance.any_instance.stubs(:properties => [ { 'name' => 'activation_state', :value => { :custom => true } } ])
-    assert application_helper.using_custom_site_chrome?
-  end
+  # def test_using_custom_site_chrome_is_true_if_the_activation_state_property_specifies_true
+  #   SiteAppearance.stubs(:find => SiteAppearance.new)
+  #   SiteAppearance.any_instance.stubs(:properties => [ { 'name' => 'activation_state', :value => { :custom => true } } ])
+  #   assert application_helper.using_custom_site_chrome?
+  # end
 
-  def test_on_view_page_is_false_if_view_is_nil
-    refute application_helper.on_view_page?(nil)
-  end
+  # def test_on_view_page_is_false_if_view_is_nil
+  #   refute application_helper.on_view_page?(nil)
+  # end
 
-  def test_on_view_page_is_false_if_view_does_not_have_id
-    view = View.new('id' => nil)
-    refute application_helper.on_view_page?(view)
-  end
+  # def test_on_view_page_is_false_if_view_does_not_have_id
+  #   view = View.new('id' => nil)
+  #   refute application_helper.on_view_page?(view)
+  # end
 
-  def test_on_view_page_is_true_if_view_exists_and_has_id
-    view = View.new('id' => 'blah-blah')
-    assert application_helper.on_view_page?(view)
-  end
+  # def test_on_view_page_is_true_if_view_exists_and_has_id
+  #   view = View.new('id' => 'blah-blah')
+  #   assert application_helper.on_view_page?(view)
+  # end
 
-  def test_using_govstat_header_is_true_when_govstat_module_enabled_and_not_suppressing_govstat
-    application_helper.stubs(:module_enabled? => true)
-    application_helper.stubs(:suppress_govstat? => false)
-    assert application_helper.using_govstat_header?
-  end
+  # def test_using_govstat_header_is_true_when_govstat_module_enabled_and_not_suppressing_govstat
+  #   application_helper.stubs(:module_enabled? => true)
+  #   application_helper.stubs(:suppress_govstat? => false)
+  #   assert application_helper.using_govstat_header?
+  # end
 
-  def test_using_govstat_header_is_false_when_govstat_module_disabled
-    application_helper.stubs(:module_enabled? => false)
-    application_helper.stubs(:suppress_govstat? => false)
-    refute application_helper.using_govstat_header?
-  end
+  # def test_using_govstat_header_is_false_when_govstat_module_disabled
+  #   application_helper.stubs(:module_enabled? => false)
+  #   application_helper.stubs(:suppress_govstat? => false)
+  #   refute application_helper.using_govstat_header?
+  # end
 
-  def test_using_govstat_header_is_false_when_suppressing_govstat
-    application_helper.stubs(:module_enabled? => true)
-    application_helper.stubs(:suppress_govstat? => true)
-    refute application_helper.using_govstat_header?
-  end
+  # def test_using_govstat_header_is_false_when_suppressing_govstat
+  #   application_helper.stubs(:module_enabled? => true)
+  #   application_helper.stubs(:suppress_govstat? => true)
+  #   refute application_helper.using_govstat_header?
+  # end
 
   def test_meta_keywords
     assert application_helper.meta_keywords(nil) == nil

@@ -22,7 +22,7 @@ describe SiteAppearanceHelper do
 
   describe '#social_share_link' do
     before(:each) do
-      allow(subject).to receive(:site_appearance_published_mode?).and_return(true)
+      allow(subject).to receive(:site_chrome_published_mode?).and_return(true)
     end
 
     it 'should return nil if social shares do not exist' do
@@ -37,7 +37,7 @@ describe SiteAppearanceHelper do
 
   describe 'fetch_content' do
     before(:each) do
-      allow(subject).to receive(:site_appearance_published_mode?).and_return(true)
+      allow(subject).to receive(:site_chrome_published_mode?).and_return(true)
     end
 
     it 'should not raise on empty content' do
@@ -89,7 +89,7 @@ describe SiteAppearanceHelper do
 
   describe '#fetch_boolean' do
     before(:each) do
-      allow(subject).to receive(:site_appearance_published_mode?).and_return(true)
+      allow(subject).to receive(:site_chrome_published_mode?).and_return(true)
     end
 
     it 'returns false if the content is nil' do

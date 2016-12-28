@@ -398,11 +398,13 @@ class DatasetsHelperTest < Minitest::Test
 
     # dataset is a grouped view and feature flag is turned on
     FeatureFlags.stubs(:derive => Hashie::Mash.new({ :enable_data_lens_using_derived_view => true }))
-    @view.display.stubs(:type => 'grouped')
+    @view.stubs(:is_grouped? => true)
+    @view.stubs(:is_filtered? => false)
     refute @object.send(:hide_data_lens_create?), 'hide_data_lens_create expected to be false'
 
     # dataset is a filtered view and feature flag is turned on
-    @view.display.stubs(:type => 'filter')
+    @view.stubs(:is_grouped? => false)
+    @view.stubs(:is_filtered? => true)
     refute @object.send(:hide_data_lens_create?), 'hide_data_lens_create expected to be false'
   end
 

@@ -577,7 +577,7 @@ class CardTypeMappingTest < Minitest::Test
       dataset_size,
       is_derived_view
     )
-    assert_equal('search', computed_card_type)
+    assert_equal('column', computed_card_type)
   end
 
 
@@ -720,7 +720,7 @@ class CardTypeMappingTest < Minitest::Test
       dataset_size,
       is_derived_view
     )
-    assert_equal(['histogram', 'column', 'search'], available_card_types)
+    assert_equal(['histogram', 'column'], available_card_types)
   end
 
   def test_card_type_mapping_returns_expected_available_card_types_for_computed_match_on_point_number_column
@@ -760,7 +760,7 @@ class CardTypeMappingTest < Minitest::Test
       dataset_size,
       is_derived_view
     )
-    assert_equal(['histogram', 'column', 'search'], available_card_types)
+    assert_equal(['histogram', 'column'], available_card_types)
   end
 
   def test_card_type_mapping_returns_expected_available_card_types_for_computed_match_on_string_text_column
@@ -802,7 +802,7 @@ class CardTypeMappingTest < Minitest::Test
       dataset_size,
       is_derived_view
     )
-    assert_equal(['column', 'search'], available_card_types)
+    assert_equal(['column'], available_card_types)
   end
 
   def test_card_type_mapping_returns_expected_available_card_types_for_multiline_column

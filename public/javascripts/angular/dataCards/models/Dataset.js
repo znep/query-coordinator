@@ -29,6 +29,8 @@ module.exports = function(
       self.id = datasetMetadata.id;
       self.version = 1;
 
+      self.isFromDerivedView = !_.isEmpty(datasetMetadata.query);
+
       var fields = [
         'defaultPage',
         'description',

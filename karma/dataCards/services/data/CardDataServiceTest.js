@@ -260,6 +260,17 @@ describe('CardDataService', function() {
       $httpBackend.flush();
     });
 
+    it('should add the read_from_nbe flag to support OBE derived views', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getData('fakeNumberColumn', fake4x4, null, countAggregation);
+      $httpBackend.flush();
+      var url = decodeURIComponent(httpSpy.firstCall.args[0]);
+
+      expect(url).to.match(/read_from_nbe=true/i);
+      expect(url).to.match(/version=2.1/i);
+      http.get.restore();
+    });
   });
 
   describe('getMagnitudeData', function() {
@@ -286,6 +297,18 @@ describe('CardDataService', function() {
       expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
         /\/api\/id\/fake-data\.json\?\$query=select\+signed_magnitude_10\(`fakeNumberColumn`\)\+as\+\w+,\+count\(\*\)\+as\+\w+\++\+group\+by\+\w+\+order\+by\+\w+\+limit\+200/i
       );
+      http.get.restore();
+    });
+
+    it('should add the read_from_nbe flag to support OBE derived views', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getMagnitudeData('fakeNumberColumn', fake4x4, null, countAggregation);
+      $httpBackend.flush();
+      var url = decodeURIComponent(httpSpy.firstCall.args[0]);
+
+      expect(url).to.match(/read_from_nbe=true/i);
+      expect(url).to.match(/version=2.1/i);
       http.get.restore();
     });
 
@@ -418,6 +441,18 @@ describe('CardDataService', function() {
       http.get.restore();
     });
 
+    it('should add the read_from_nbe flag to support OBE derived views', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getBucketedData('magnitude', fake4x4, null, countAggregation, defaultOptions);
+      $httpBackend.flush();
+      var url = decodeURIComponent(httpSpy.firstCall.args[0]);
+
+      expect(url).to.match(/read_from_nbe=true/i);
+      expect(url).to.match(/version=2.1/i);
+      http.get.restore();
+    });
+
     it('should not create a circular alias when fieldName is magnitude', function() {
       $httpBackend.whenGET(/.*/);
       var httpSpy = sinon.spy(http, 'get');
@@ -502,6 +537,18 @@ describe('CardDataService', function() {
       expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
         /\/api\/id\/fake-data\.json\?\$query=SELECT\+min\(`fakeNumberColumn`\)\+AS\+\w+,\+max\(`fakeNumberColumn`\)\+AS\+\w+\+WHERE\+`fakeNumberColumn`\+<\+'\d{4}-\d{2}-\d{2}'/i
       );
+      http.get.restore();
+    });
+
+    it('should add the read_from_nbe flag to support OBE derived views', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4);
+      $httpBackend.flush();
+      var url = decodeURIComponent(httpSpy.firstCall.args[0]);
+
+      expect(url).to.match(/read_from_nbe=true/i);
+      expect(url).to.match(/version=2.1/i);
       http.get.restore();
     });
 
@@ -658,6 +705,18 @@ describe('CardDataService', function() {
       expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
         /where\+`fakenumbercolumn`\+is\+not\+null\+and\+`fakenumbercolumn`\+<\+'\d{4}-\d{2}-\d{2}'/i
       );
+      http.get.restore();
+    });
+
+    it('should add the read_from_nbe flag to support OBE derived views', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
+      $httpBackend.flush();
+      var url = decodeURIComponent(httpSpy.firstCall.args[0]);
+
+      expect(url).to.match(/read_from_nbe=true/i);
+      expect(url).to.match(/version=2.1/i);
       http.get.restore();
     });
 
@@ -833,6 +892,18 @@ describe('CardDataService', function() {
       http.get.restore();
     });
 
+    it('should add the read_from_nbe flag to support OBE derived views', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getRowCount(fake4x4);
+      $httpBackend.flush();
+      var url = decodeURIComponent(httpSpy.firstCall.args[0]);
+
+      expect(url).to.match(/read_from_nbe=true/i);
+      expect(url).to.match(/version=2.1/i);
+      http.get.restore();
+    });
+
     it('return 0 if the response has no data', function(done) {
       fakeDataRequestHandler.respond({});
       CardDataService.getRowCount(fake4x4).then(function(actual) {
@@ -949,6 +1020,18 @@ describe('CardDataService', function() {
       expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
         /\$where=score=5.0/i
       );
+      http.get.restore();
+    });
+
+    it('should add the read_from_nbe flag to support OBE derived views', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getRows(fake4x4);
+      $httpBackend.flush();
+      var url = decodeURIComponent(httpSpy.firstCall.args[0]);
+
+      expect(url).to.match(/read_from_nbe=true/i);
+      expect(url).to.match(/version=2.1/i);
       http.get.restore();
     });
 

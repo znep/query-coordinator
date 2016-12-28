@@ -1040,8 +1040,12 @@ class View < Model
     !query.nil? && !query.groupBys.nil? && query.groupBys.length > 0
   end
 
+  def is_filtered?
+    !query.nil? && !is_grouped? && !is_api_geospatial?
+  end
+
   def is_derived_view?
-    ['grouped', 'filter'].include?(display.type)
+    is_grouped? || is_filtered?
   end
 
   def has_modifying_parent_view?

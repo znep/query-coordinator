@@ -30,7 +30,7 @@ describe View do
          with(:headers => request_headers).
          to_raise(CoreServer::Error)
 
-      expect { View.find_derived_view_using_read_from_nbe(view_id) }.to raise_error
+      expect { View.find_derived_view_using_read_from_nbe(view_id) }.to raise_error(CoreServer::Error)
     end
   end
 
@@ -186,6 +186,61 @@ describe View do
       view_data = { 'id' => '1234-5678' }
 
       expect(View.new(view_data).get_preview_image_url('cookies', 'request_id')).to be_nil
+    end
+  end
+
+  describe '.is_filtered?' do
+    it 'returns false if query is missing' do
+      allow_any_instance_of(View).to receive('is_grouped?').and_return(false)
+      allow_any_instance_of(View).to receive('is_api_geospatial?').and_return(false)
+
+      expect(View.new.is_filtered?).to be false
+    end
+
+    it 'returns false if the view is grouped' do
+      allow_any_instance_of(View).to receive('is_grouped?').and_return(true)
+      allow_any_instance_of(View).to receive('is_api_geospatial?').and_return(false)
+
+      expect(View.new({ 'query' => {} }).is_filtered?).to be false
+    end
+
+    it 'returns false if the view is api geospatial' do
+      allow_any_instance_of(View).to receive('is_grouped?').and_return(false)
+      allow_any_instance_of(View).to receive('is_api_geospatial?').and_return(true)
+
+      expect(View.new({ 'query' => {} }).is_filtered?).to be false
+    end
+
+    it 'returns true if it has a query, is not grouped, and is not api geospatial' do
+      allow_any_instance_of(View).to receive('is_grouped?').and_return(false)
+      allow_any_instance_of(View).to receive('is_api_geospatial?').and_return(false)
+
+      expect(View.new({ 'query' => {} }).is_filtered?).to be true
+    end
+  end
+
+  describe '.is_derived_view?' do
+    let(:view) { View.new }
+
+    it 'is true if view is grouped' do
+      allow(view).to receive('is_grouped?').and_return(true)
+      allow(view).to receive('is_filtered?').and_return(false)
+
+      expect(view.is_derived_view?).to be true
+    end
+
+    it 'is true if view is filtered' do
+      allow(view).to receive('is_grouped?').and_return(false)
+      allow(view).to receive('is_filtered?').and_return(true)
+
+      expect(view.is_derived_view?).to be true
+    end
+
+    it 'is false if view is not grouped or filtered' do
+      allow(view).to receive('is_grouped?').and_return(false)
+      allow(view).to receive('is_filtered?').and_return(false)
+
+      expect(view.is_derived_view?).to be false
     end
   end
 

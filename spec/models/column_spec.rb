@@ -28,6 +28,20 @@ describe Column do
 
       expect(result['broccoli'][:physicalDatatype]).to eq('potato')
     end
+
+    it 'filters out hidden columns' do
+      test_view = View.new({
+        'id' => 'peng-uins',
+        'columns' => [{
+          'fieldName' => 'broccoli',
+          'renderTypeName' => 'potato',
+          'flags' => [ 'hidden' ]
+        }]
+      })
+      result = Column.get_derived_view_columns(test_view)
+
+      expect(result).to be_empty
+    end
   end
 
   describe 'get_cardinality_for_derived_view_column' do
@@ -53,6 +67,19 @@ describe Column do
 
     it 'returns a default cardinality if it encounters an error with the request' do
       stub_request(:get, expected_path).to_raise(CoreServer::Error)
+      result = test_column.get_cardinality_for_derived_view_column('peng-uins')
+
+      expect(result).to eq(100)
+    end
+
+    it 'returns a default cardinality if the column is hidden' do
+      # raising error to ensure this path isn't called
+      stub_request(:get, expected_path).to_raise(CoreServer::Error)
+      test_column = Column.new({
+        'fieldName' => 'broccoli',
+        'renderTypeName' => 'potato',
+        'flags' => [ 'hidden' ]
+      })
       result = test_column.get_cardinality_for_derived_view_column('peng-uins')
 
       expect(result).to eq(100)

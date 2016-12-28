@@ -425,8 +425,9 @@ class Column < Model
 
     derived_view.columns.each do |column|
       column_threads << Thread.new do
+        # If the column is hidden, don't get it ready to display.
         # TODO in EN-12731: remove this computed column filter when we add support for choropleths
-        unless column.fieldName.match(/:@computed/)
+        unless column.flag?('hidden') || column.fieldName.match(/:@computed/)
           updated_columns[column.fieldName] = column.as_json.merge({
             :cardinality => column.get_cardinality_for_derived_view_column(derived_view.id),
             :physicalDatatype => column.renderTypeName
@@ -444,32 +445,37 @@ class Column < Model
 
   # EN-12365: see comments above self.get_derived_view_columns
   def get_cardinality_for_derived_view_column(derived_view_id)
-    group_by_soql = {
-      # We're limiting the results to 101, since the 100 is the highest cardinality threshold we
-      # care about in Data Lens (see public/javascripts/angular/dataCards/services/Constants.js)
-      # and we'd rather not count rows unnecessarily, especially since this is already a slow query.
-      '$query' => "select #{fieldName}, count(*) group by #{fieldName} limit 101 |> select count(*)",
-      '$$query_timeout_seconds' => 10, # if we don't get a response quickly, bail out
-      '$$read_from_nbe' => true,
-      '$$version' => 2.1
-    }
-    path = "/id/#{derived_view_id}.json?#{group_by_soql.to_query}"
+    # If we can't get a cardinality estimate from Core, default the cardinality to the column
+    # chart's cardinality threshold warning, since that's the main thing we're using cardinality
+    # for (see javascripts/angular/dataCards/services/Constants.js)
+    cardinality = 100
 
-    begin
-      response = CoreServer::Base.connection.get_request(path)
-      cardinality = JSON.parse(response)[0]['count_1'].to_i
+    # If the column isn't hidden, let's fetch an approximate cardinality for it! We're double-
+    # checking the hidden flag here just in case. We don't care about cardinality for columns we're
+    # not going to display.
+    if !flag?('hidden')
+      group_by_soql = {
+        # We're limiting the results to 101, since the 100 is the highest cardinality threshold we
+        # care about in Data Lens (see public/javascripts/angular/dataCards/services/Constants.js)
+        # and we'd rather not count rows unnecessarily, especially since this is already a slow query.
+        '$query' => "select #{fieldName}, count(*) group by #{fieldName} limit 101 |> select count(*)",
+        '$$query_timeout_seconds' => 10, # if we don't get a response quickly, bail out
+        '$$read_from_nbe' => true,
+        '$$version' => 2.1
+      }
+      path = "/id/#{derived_view_id}.json?#{group_by_soql.to_query}"
 
-    # this request is our sad alternative to using Phidippides for cardinality, so it can, and
-    # probably will, fail regularly for a variety of reasons (mostly timeouts)
-    rescue CoreServer::Error, CoreServer::ConnectionError, CoreServer::TimeoutError => e
-      Rails.logger.error(
-        "Could not determine derived view cardinality: #{e}, Core response: #{response.inspect}"
-      )
+      begin
+        response = CoreServer::Base.connection.get_request(path)
+        cardinality = JSON.parse(response)[0]['count_1'].to_i
 
-      # If we can't get a cardinality estimate from Core, default the cardinality to the column
-      # chart's cardinality threshold warning, since that's the main thing we're using cardinality
-      # for (see javascripts/angular/dataCards/services/Constants.js)
-      cardinality = 100
+      # this request is our sad alternative to using Phidippides for cardinality, so it can, and
+      # probably will, fail regularly for a variety of reasons (mostly timeouts)
+      rescue CoreServer::Error, CoreServer::ConnectionError, CoreServer::TimeoutError => e
+        Rails.logger.error(
+          "Could not determine derived view cardinality: #{e}, Core response: #{response.inspect}"
+        )
+      end
     end
 
     cardinality

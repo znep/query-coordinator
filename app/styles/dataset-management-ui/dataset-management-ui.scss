@@ -1,7 +1,6 @@
 @import "styleguide-colors";
 
 .dataset-management-ui {
-
   .edit-bar {
     position: static;
   }
@@ -17,6 +16,8 @@
   }
 
   thead {
+    height: 7em;
+    
     .col-name {
       font-weight: bold;
     }
@@ -38,12 +39,18 @@
     }
   }
 
+  section.modal-content {
+    padding: 0;
+  }
+
   .table.table-condensed {
     overflow: visible;
     display: inline-block;
     table-layout: fixed;
     min-width: auto;
     white-space: nowrap;
+    height: calc(100vh - 180px);
+    margin: 20px;
 
     tr {
       display: block;
@@ -58,6 +65,8 @@
       overflow-x: hidden;
       overflow-y: auto;
       width: 100%;
+      height: calc(100% - 7em);
+      border-bottom: 1px solid $light-grey-3;
 
       tr {
         height: 45px;

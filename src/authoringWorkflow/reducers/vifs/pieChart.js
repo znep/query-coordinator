@@ -1,14 +1,11 @@
 import _ from 'lodash';
 
-import { translate } from '../../../I18n';
 import vifs from '../../vifs';
+import baseVifReducer from './base';
 import {
   forEachSeries,
-  getValidVifFilters,
-  setStringValueOrDefaultValue,
   setStringValueOrDeleteProperty,
   setBooleanValueOrDefaultValue,
-  setUnits,
   setBooleanValueOrDeleteProperty
 } from '../../helpers';
 
@@ -47,71 +44,9 @@ export default function pieChart(state, action) {
       state = vifs().pieChart;
       break;
 
-    case RECEIVE_METADATA:
-      forEachSeries(state, series => {
-        setUnits(series, action);
-      });
-      break;
-
-    case SET_DOMAIN:
-      forEachSeries(state, series => {
-        setStringValueOrDefaultValue(series, 'dataSource.domain', action.domain, null);
-      });
-      break;
-
-    case SET_DATASET_UID:
-      forEachSeries(state, series => {
-        setStringValueOrDefaultValue(series, 'dataSource.datasetUid', action.datasetUid, null);
-      });
-      break;
-
-    case SET_FILTERS:
-      forEachSeries(state, series => {
-        _.set(series, 'dataSource.filters', getValidVifFilters(action.filters));
-      });
-      break;
-
-    case SET_DIMENSION:
-      forEachSeries(state, series => {
-        setStringValueOrDefaultValue(series, 'dataSource.dimension.columnName', action.dimension, null);
-      });
-      break;
-
-    case SET_TITLE:
-      setStringValueOrDefaultValue(state, 'title', action.title, null);
-      break;
-
-    case SET_DESCRIPTION:
-      setStringValueOrDefaultValue(state, 'description', action.description, null);
-      break;
-
-    case SET_VIEW_SOURCE_DATA_LINK:
-      _.set(state, 'configuration.viewSourceDataLink', action.viewSourceDataLink);
-      break;
-
     case SET_COLOR_PALETTE:
       forEachSeries(state, series => {
         setStringValueOrDeleteProperty(series, 'color.palette', action.colorPalette, null);
-      });
-      break;
-
-    case SET_MEASURE:
-      forEachSeries(state, series => {
-        var aggregationFunction = series.dataSource.measure.aggregationFunction;
-
-        series.dataSource.measure.columnName = action.measure;
-
-        if (_.isNull(action.measure)) {
-          series.dataSource.measure.aggregationFunction = 'count';
-        } else if (aggregationFunction === 'count') {
-          series.dataSource.measure.aggregationFunction = 'sum';
-        }
-      });
-      break;
-
-    case SET_MEASURE_AGGREGATION:
-      forEachSeries(state, series => {
-        series.dataSource.measure.aggregationFunction = action.measureAggregation;
       });
       break;
 
@@ -121,18 +56,6 @@ export default function pieChart(state, action) {
 
     case SET_SHOW_VALUE_LABELS_AS_PERCENT:
       setBooleanValueOrDefaultValue(state, 'configuration.showValueLabelsAsPercent', action.showValueLabelsAsPercent, false);
-      break;
-
-    case SET_UNIT_ONE:
-      forEachSeries(state, series => {
-        setStringValueOrDefaultValue(series, 'unit.one', action.one, translate('visualizations.common.unit.one'));
-      });
-      break;
-
-    case SET_UNIT_OTHER:
-      forEachSeries(state, series => {
-        setStringValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.unit.other'));
-      });
       break;
 
     case SET_ORDER_BY:
@@ -160,6 +83,20 @@ export default function pieChart(state, action) {
     case SET_SHOW_OTHER_CATEGORY:
       setBooleanValueOrDefaultValue(state, 'configuration.showOtherCategory', action.showOtherCategory, true);
       break;
+
+    case RECEIVE_METADATA:
+    case SET_DATASET_UID:
+    case SET_DESCRIPTION:
+    case SET_DIMENSION:
+    case SET_DOMAIN:
+    case SET_FILTERS:
+    case SET_MEASURE:
+    case SET_MEASURE_AGGREGATION:
+    case SET_TITLE:
+    case SET_UNIT_ONE:
+    case SET_UNIT_OTHER:
+    case SET_VIEW_SOURCE_DATA_LINK:
+      return baseVifReducer(state, action);
   }
 
   return state;

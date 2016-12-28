@@ -1,16 +1,12 @@
 import _ from 'lodash';
 import utils from 'socrata-utils';
 
-import { translate } from '../../../I18n';
 import vifs from '../../vifs';
+import baseVifReducer from './base';
 
 import { getDisplayableColumns } from '../../selectors/metadata';
-import {
-  forEachSeries,
-  getValidVifFilters,
-  setStringValueOrDefaultValue,
-  setUnits,
-} from '../../helpers';
+import { setStringValueOrDefaultValue } from '../../helpers';
+
 import {
   RESET_STATE,
   RECEIVE_METADATA,
@@ -50,40 +46,15 @@ export default function table(state, action) {
         );
       }
 
-      forEachSeries(state, series => {
-        setUnits(series, action);
-      });
+      state = baseVifReducer(state, action);
       break;
 
     case SET_DOMAIN:
-      forEachSeries(state, series => {
-        setStringValueOrDefaultValue(series, 'dataSource.domain', action.domain, null);
-      });
-      break;
-
     case SET_DATASET_UID:
-      forEachSeries(state, series => {
-        setStringValueOrDefaultValue(series, 'dataSource.datasetUid', action.datasetUid, null);
-      });
-      break;
-
     case SET_FILTERS:
-      forEachSeries(state, series => {
-        _.set(series, 'dataSource.filters', getValidVifFilters(action.filters));
-      });
-      break;
-
     case SET_UNIT_ONE:
-      forEachSeries(state, series => {
-        setStringValueOrDefaultValue(series, 'unit.one', action.one, translate('visualizations.common.unit.one'));
-      });
-      break;
-
     case SET_UNIT_OTHER:
-      forEachSeries(state, series => {
-        setStringValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.unit.other'));
-      });
-      break;
+      return baseVifReducer(state, action);
   }
 
   return state;

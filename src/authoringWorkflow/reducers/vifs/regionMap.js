@@ -1,14 +1,8 @@
 import _ from 'lodash';
 import utils from 'socrata-utils';
 
-import { translate } from '../../../I18n';
 import vifs from '../../vifs';
-import {
-  forEachSeries,
-  getValidVifFilters,
-  setStringValueOrDefaultValue,
-  setUnits
-} from '../../helpers';
+import baseVifReducer from './base';
 
 import {
   RESET_STATE,
@@ -50,68 +44,9 @@ export default function regionMap(state, action) {
       state = vifs().regionMap;
       break;
 
-    case RECEIVE_METADATA:
-      forEachSeries(state, series => {
-        setUnits(series, action);
-      });
-      break;
-
-    case SET_DOMAIN:
-      forEachSeries(state, series => {
-        setStringValueOrDefaultValue(series, 'dataSource.domain', action.domain, null);
-      });
-      break;
-
-    case SET_DATASET_UID:
-      forEachSeries(state, series => {
-        setStringValueOrDefaultValue(series, 'dataSource.datasetUid', action.datasetUid, null);
-      });
-      break;
-
-    case SET_FILTERS:
-      forEachSeries(state, series => {
-        _.set(series, 'dataSource.filters', getValidVifFilters(action.filters));
-      });
-      break;
-
     case SET_DIMENSION:
       _.unset(state, 'configuration.mapCenterAndZoom');
-
-      forEachSeries(state, series => {
-        setStringValueOrDefaultValue(series, 'dataSource.dimension.columnName', action.dimension, null);
-      });
-      break;
-
-    case SET_TITLE:
-      setStringValueOrDefaultValue(state, 'title', action.title, null);
-      break;
-
-    case SET_DESCRIPTION:
-      setStringValueOrDefaultValue(state, 'description', action.description, null);
-      break;
-
-    case SET_VIEW_SOURCE_DATA_LINK:
-      _.set(state, 'configuration.viewSourceDataLink', action.viewSourceDataLink);
-      break;
-
-    case SET_MEASURE:
-      forEachSeries(state, series => {
-        var aggregationFunction = series.dataSource.measure.aggregationFunction;
-
-        setStringValueOrDefaultValue(series, 'dataSource.measure.columnName', action.measure, null);
-
-        if (_.isNull(action.measure)) {
-          series.dataSource.measure.aggregationFunction = 'count';
-        } else if (aggregationFunction === 'count') {
-          series.dataSource.measure.aggregationFunction = 'sum';
-        }
-      });
-      break;
-
-    case SET_MEASURE_AGGREGATION:
-      forEachSeries(state, series => {
-        setStringValueOrDefaultValue(series, 'dataSource.measure.aggregationFunction', action.measureAggregation, null);
-      });
+      state = baseVifReducer(state, action);
       break;
 
     case SET_COMPUTED_COLUMN:
@@ -163,21 +98,23 @@ export default function regionMap(state, action) {
       _.set(state, 'configuration.legend.positiveColor', action.positiveColor);
       break;
 
-    case SET_UNIT_ONE:
-      forEachSeries(state, series => {
-        setStringValueOrDefaultValue(series, 'unit.one', action.one, translate('visualizations.common.unit.one'));
-      });
-      break;
-
-    case SET_UNIT_OTHER:
-      forEachSeries(state, series => {
-        setStringValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.unit.other'));
-      });
-      break;
-
     case SET_CENTER_AND_ZOOM:
       _.set(state, 'configuration.mapCenterAndZoom', action.centerAndZoom);
       break;
+
+    case RECEIVE_METADATA:
+    case SET_DATASET_UID:
+    case SET_DESCRIPTION:
+    case SET_DIMENSION:
+    case SET_DOMAIN:
+    case SET_FILTERS:
+    case SET_MEASURE:
+    case SET_MEASURE_AGGREGATION:
+    case SET_TITLE:
+    case SET_UNIT_ONE:
+    case SET_UNIT_OTHER:
+    case SET_VIEW_SOURCE_DATA_LINK:
+      return baseVifReducer(state, action);
   }
 
   return state;

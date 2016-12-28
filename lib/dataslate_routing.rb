@@ -46,7 +46,6 @@ class DataslateRouting
 
     if serialized_hash.nil?
       Rails.logger.info("No cache for #{cache_key}. Fetching from core.")
-      scrape_pages_dataset_for_paths!
       scrape_pages_service_for_paths!
       Rails.cache.write(cache_key, to_h, expires_in: APP_CONFIG.cache_dataslate_routing)
     else # deserialize the hash
@@ -63,10 +62,7 @@ class DataslateRouting
     Rails.logger.debug("Mapped `#{path}` as #{lookup.inspect}")
     return if lookup.nil?
 
-    page = case lookup[:from]
-      when :service then Page.find_by_unique_path(lookup[:path], custom_headers)
-      when :dataset then fetch_from_pages_dataset(lookup[:path])
-    end
+    page = Page.find_by_unique_path(lookup[:path], custom_headers)
     if page.present?
       { page: page,
         from: lookup[:from],
@@ -123,25 +119,6 @@ class DataslateRouting
       unique_path = uniqify(entry['path'])
       table.route_to(unique_path, from: :service, path: unique_path)
     end
-  end
-
-  def scrape_pages_dataset_for_paths!
-    begin
-      url = '/id/pages.json?$select=path'
-      ds_paths = JSON.parse(CoreServer::Base.connection.get_request(url)).
-        collect { |row| row['path'] }
-      ds_paths.each do |path|
-        unique_path = uniqify(path)
-        table.route_to(unique_path, from: :dataset, path: unique_path)
-      end
-    rescue CoreServer::ResourceNotFound
-      # Pages Dataset does not exist for this domain. Hooray!
-    end
-  end
-
-  def fetch_from_pages_dataset(unique_path)
-    url = "/id/pages.json?$where=path=%27#{unique_path}%27"
-    Page.parse(CoreServer::Base.connection.get_request(url)).first
   end
 
   # The routing table is a nested hash that can be loosely represented as a tree.

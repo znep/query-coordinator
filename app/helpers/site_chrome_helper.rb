@@ -100,6 +100,9 @@ module SiteChromeHelper
   end
 
   # Determines the size of the site chrome H/F to use.
+  #
+  # TODO: figure out a better way to do this, because DL uses different sizes
+  # for its header and footer.
   def site_chrome_size
     if @view.try(:data).try(:[], 'id').present?
       'small'

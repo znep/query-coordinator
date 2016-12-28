@@ -77,7 +77,7 @@ export var DataPane = React.createClass({
       <div id="limit-none-container">
         <input {...limitNoneInputAttributes} />
         <label htmlFor="limit-none">
-          <span />
+          <span className="fake-radiobutton" />
         </label>
         {translate(`panes.data.fields.${translationKey}.none`)}
       </div>
@@ -148,7 +148,7 @@ export var DataPane = React.createClass({
       <div id="limit-count-container">
         <input {...limitCountInputAttributes} />
         <label htmlFor="limit-count">
-          <span />
+          <span className="fake-radiobutton" />
         </label>
         {translate(`panes.data.fields.${translationKey}.count`)}
         {limitCountValueContainer}

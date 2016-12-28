@@ -199,13 +199,13 @@ export const AuthoringWorkflow = React.createClass({
     });
 
     return (
-      <div className="authoring-modal modal modal-full modal-overlay" onKeyUp={this.onKeyUp} ref={(ref) => this.modal = ref}>
+      <div role="dialog" aria-label={translate('modal.title')} className="authoring-modal modal modal-full modal-overlay" onKeyUp={this.onKeyUp} ref={(ref) => this.modal = ref}>
         <div className="modal-container">
 
           <header className="modal-header">
             <h5 className="modal-header-title">{translate('modal.title')}</h5>
-            <button className="btn btn-transparent modal-header-dismiss" onClick={this.onCancel}>
-              <span className="icon-close-2"></span>
+            <button aria-label={`${translate('modal.close')}`} className="btn btn-transparent modal-header-dismiss" onClick={this.onCancel}>
+              <span className="icon-close-2"/>
             </button>
           </header>
 

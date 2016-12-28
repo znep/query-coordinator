@@ -7,10 +7,18 @@ export default class AccordionPane extends React.Component {
     super(props);
 
     this.handleOnClickTitle = this.handleOnClickTitle.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
   handleOnClickTitle() {
     this.props.onToggle(this.props.paneId);
+  }
+
+  handleKeyDown(event) {
+    if (event.keyCode == 13 || event.keyCode == 32) {
+      this.props.onToggle(this.props.paneId);
+      event.preventDefault();
+    }
   }
 
   render() {
@@ -22,7 +30,13 @@ export default class AccordionPane extends React.Component {
 
     return (
       <div className={paneClasses}>
-        <div className="socrata-accordion-pane-title" onClick={this.handleOnClickTitle}>
+        <div className="socrata-accordion-pane-title"
+             role="button"
+             aria-expanded={isOpen ? 'true' : 'false'}
+             aria-label={this.props['aria-label'] || title}
+             onClick={this.handleOnClickTitle}
+             tabIndex="0"
+             onKeyDown={this.handleKeyDown}>
           <span>{title}</span>
           <div className="dropdown-caret"></div>
         </div>
@@ -41,7 +55,7 @@ AccordionPane.defaultProps = {
 
 AccordionPane.propTypes = {
   title: React.PropTypes.string.isRequired,
-  onToggle: React.PropTypes.func,
+  onToggle: React.PropTypes.func.isRequired,
   isOpen: React.PropTypes.bool,
   paneId: React.PropTypes.string
 };

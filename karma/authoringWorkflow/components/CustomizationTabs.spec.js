@@ -43,7 +43,7 @@ describe('CustomizationTabs', function() {
 
     describe('aria', function() {
       it('should add a role', function() {
-        expect(component.querySelector('li')).to.have.attribute('role', 'presentation');
+        expect(component.querySelector('li')).to.have.attribute('role', 'tab');
       });
 
       it('should add aria-controls that refers to the pane that the tab controls', function() {
@@ -53,14 +53,14 @@ describe('CustomizationTabs', function() {
       describe('aria-selected', function() {
         describe('when selected', function() {
           it('should have aria-selected true', function() {
-            var selectedTab = component.querySelector('.current a');
+            var selectedTab = component.querySelector('.current');
             expect(selectedTab).to.have.attribute('aria-selected', 'true');
           });
         });
 
         describe('when not selected', function() {
           it('should have aria-selected false', function() {
-            var selectedTab = component.querySelector('li:not(.current) a');
+            var selectedTab = component.querySelector('li:not(.current)');
             expect(selectedTab).to.have.attribute('aria-selected', 'false');
           });
         });
@@ -76,10 +76,10 @@ describe('CustomizationTabs', function() {
       sinon.assert.calledOnce(props.onTabNavigation);
     });
 
-    it('should invoke onTabNavigation when focusing on a new tab', function() {
+    it('should invoke onTabNavigation when user press enter key', function() {
       var listItem = component.querySelector('li a');
 
-      TestUtils.Simulate.focus(listItem);
+      TestUtils.Simulate.keyDown(listItem, {keyCode: 13});
       sinon.assert.calledOnce(props.onTabNavigation);
     });
   });

@@ -334,7 +334,7 @@ export var AxisAndScalePane = React.createClass({
                    onChange={this.onMeasureAxisScaleControlChange}
                    checked={isAuto}/>
             <label htmlFor="measure-axis-scale-automatic">
-              <span />
+              <span className="fake-radiobutton" />
               <div className="translation-within-label">{translate('panes.axis_and_scale.fields.scale.automatic')}</div>
             </label>
           </div>
@@ -346,7 +346,7 @@ export var AxisAndScalePane = React.createClass({
                    onChange={this.onMeasureAxisScaleControlChange}
                    checked={!isAuto}/>
             <label htmlFor="measure-axis-scale-custom">
-              <span />
+              <span className="fake-radiobutton" />
               <div className="translation-within-label">{translate('panes.axis_and_scale.fields.scale.custom')}</div>
             </label>
           </div>

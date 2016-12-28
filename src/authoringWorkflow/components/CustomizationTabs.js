@@ -26,7 +26,7 @@ export var CustomizationTabs = React.createClass({
 
   render() {
     return (
-      <ul className="nav-tabs" onClick={this.props.onTabNavigation}>
+      <ul role="tablist" className="nav-tabs" onClick={this.props.onTabNavigation}>
         {_.map(this.props.tabs, (tab) => { return this.tab(tab); })}
       </ul>
     );

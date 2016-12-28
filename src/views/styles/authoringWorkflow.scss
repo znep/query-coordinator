@@ -62,6 +62,10 @@
           line-height: 58px;
           font-size: 22px;
           border: 0;
+
+          i {
+            pointer-events: none;
+          }
         }
 
         .pane-tooltip {

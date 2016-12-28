@@ -2,22 +2,33 @@ import React from 'react';
 import classNames from 'classnames';
 
 export var CustomizationTab = React.createClass({
+  propTypes: {
+    onTabNavigation: React.PropTypes.func.isRequired
+  },
+
   getDefaultProps() {
     return {
       selected: false
     };
   },
 
+  handleKeyDown (event) {
+    if (event.keyCode == 13) {
+      this.props.onTabNavigation(event);
+      event.preventDefault();
+    }
+  },
+
   linkAttributes() {
-    const { id, selected, onTabNavigation } = this.props;
+    const { id, selected, onTabNavigation, title } = this.props;
 
     return {
       id: `${id}-link`,
       href: `#${id}`,
-      onFocus: onTabNavigation,
-      'aria-selected': selected,
-      'aria-controls': `${id}-panel`,
-      'aria-labelledby': id
+      tabIndex: -1,
+      onClick: onTabNavigation,
+      'aria-label': title,
+      'aria-controls': `${id}-panel`
     };
   },
 
@@ -25,7 +36,13 @@ export var CustomizationTab = React.createClass({
     return {
       key: this.props.id,
       className: classNames('tab-link', {'current': this.props.selected}),
-      role: 'presentation'
+      onKeyDown: this.handleKeyDown,
+      role: 'tab',
+      tabIndex: 0,
+      href: `#${this.props.id}`,
+      'aria-label': this.props.title,
+      'aria-selected': this.props.selected,
+      'aria-controls': `${this.props.id}-panel`
     };
   },
 

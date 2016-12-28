@@ -130,8 +130,8 @@ export const VisualizationTypeSelector = React.createClass({
     };
 
     return (
-      <button {...buttonAttributes}>
-        <span className={visualizationTypeMetadata.icon}></span>
+      <button {...buttonAttributes} aria-label={visualizationTypeMetadata.title}>
+        <span className={visualizationTypeMetadata.icon} />
         {flyout}
       </button>
     );

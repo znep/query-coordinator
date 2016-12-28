@@ -24,13 +24,13 @@ describe('CustomizationTab', () => {
     let link = component.querySelector('a');
     let tooltip = component.querySelector('.pane-tooltip');
 
-    expect(component).to.have.attribute('role', 'presentation');
+    expect(component).to.have.attribute('role', 'tab');
     expect(component).not.to.have.class('current');
+    expect(component.getAttribute('aria-selected')).to.equal('false');
+    expect(component).to.have.attribute('aria-controls', 'id-panel');
+    expect(component).to.have.attribute('href', '#id');
 
     expect(link).to.have.id('id-link');
-    expect(link.getAttribute('aria-selected')).to.equal('false');
-    expect(link).to.have.attribute('aria-controls', 'id-panel');
-    expect(link).to.have.attribute('aria-labelledby', 'id');
     expect(link).to.have.attribute('href', '#id');
 
     expect(tooltip).to.have.text('Tooltip');
@@ -39,7 +39,7 @@ describe('CustomizationTab', () => {
     component = renderComponent(CustomizationTab, props);
     link = component.querySelector('a');
     expect(component).to.have.class('current');
-    expect(link).to.have.attribute('aria-selected', 'true');
+    expect(component).to.have.attribute('aria-selected', 'true');
 
     expect(props.onFocus).not.to.have.called;
   });

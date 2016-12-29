@@ -1,6 +1,6 @@
 source 'https://repo.socrata.com/artifactory/api/gems/rubygems-virtual/'
 
-ruby '2.3.1'
+ruby '2.3.3'
 
 # This needs to be included before other gems that use environment variables
 gem 'dotenv-rails', :groups => [ :development, :test ]

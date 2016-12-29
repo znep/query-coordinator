@@ -26,12 +26,20 @@ module.exports = {
     library: 'styleguide'
   },
   resolve: {
-    modulesDirectories: ['node_modules']
+    modulesDirectories: ['node_modules'],
+    root: [ path.resolve(root) ]
   },
   module: {
+    preLoaders: [
+      {
+        loader: 'raw-loader',
+        test: /\.svg$/,
+        include: `${root}/src/fonts/svg`
+      }
+    ],
     loaders: [
       {
-        loader: 'babel?cacheDirectory',
+        loader: 'babel-loader?cacheDirectory',
         test: /\.js$/,
         exclude: /node_modules/
       }

@@ -1,0 +1,14 @@
+<div id="socrata-icon-container"></div>
+
+<script type="text/babel" data-presets="es2015,react">
+  $(() => {
+    const props = {
+      name: 'data'
+    };
+
+    ReactDOM.render(
+      <styleguide.SocrataIcon {...props} />,
+      document.getElementById('socrata-icon-container')
+    );
+  });
+</script>

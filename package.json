@@ -1,6 +1,6 @@
 {
   "name": "socrata-styleguide",
-  "version": "9.4.3",
+  "version": "9.5.0",
   "description": "Socrata's Product Styleguide",
   "main": "styleguide.js",
   "private": true,
@@ -84,6 +84,7 @@
     "moment": "2.14.1",
     "normalize.css": "4.1.1",
     "prismjs": "1.4.1",
+    "raw-loader": "0.5.1",
     "react": "15.3.2",
     "react-a11y": "0.3.3",
     "react-addons-test-utils": "15.3.2",

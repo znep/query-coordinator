@@ -16,6 +16,7 @@ import ExternalViewCard from './components/ViewCard/ExternalViewCard';
 import FilterBar from './components/FilterBar';
 import InfoPane from './components/InfoPane';
 import Slider from './components/Slider';
+import SocrataIcon from './components/SocrataIcon';
 import Modal, { ModalHeader, ModalContent, ModalFooter } from './components/Modal';
 
 module.exports = {
@@ -48,5 +49,6 @@ module.exports = {
   Modal,
   ModalHeader,
   ModalContent,
-  ModalFooter
+  ModalFooter,
+  SocrataIcon
 };

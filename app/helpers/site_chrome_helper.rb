@@ -75,9 +75,12 @@ module SiteChromeHelper
   end
 
   # Similarly, the legacy chrome will only be rendered if we're not rendering
-  # the site chrome and we're not suppressing all chrome.
+  # the site chrome and we're not suppressing all chrome. OP domains also don't
+  # use the legacy chrome.
   def render_legacy_chrome?
     return false if @suppress_chrome
+
+    return false if enable_govstat_chrome?
 
     !enable_site_chrome?
   end
@@ -160,7 +163,7 @@ module SiteChromeHelper
   # (We could use the controller_name method instead, but that would give us
   # strings for our case statement comparisons instead of classes.)
   def current_controller
-    @current_controller ||= self.is_a?(ApplicationController) ? self : self.controller
+    @current_controller ||= self.is_a?(ActionController::Base) ? self : self.controller
   end
 
 end

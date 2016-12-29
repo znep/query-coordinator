@@ -69,7 +69,7 @@ describe SiteChromeHelper do
       end
 
       before do
-        allow(subject).to receive(:is_a?).with(ApplicationController).and_return(true)
+        allow(subject).to receive(:is_a?).with(ActionController::Base).and_return(true)
       end
 
       context 'on the homepage' do
@@ -263,9 +263,11 @@ describe SiteChromeHelper do
   describe '#render_legacy_chrome?' do
     let(:chrome_enabled) { false }
     let(:chrome_suppressed) { false }
+    let(:govstat_enabled) { false }
 
     before do
       allow(subject).to receive(:enable_site_chrome?).and_return(chrome_enabled)
+      allow(subject).to receive(:enable_govstat_chrome?).and_return(govstat_enabled)
       subject.instance_variable_set(:@suppress_chrome, chrome_suppressed)
     end
 
@@ -288,6 +290,14 @@ describe SiteChromeHelper do
     context 'when site chrome is not enabled and all chrome is not suppressed' do
       it 'returns true' do
         expect(subject.render_legacy_chrome?).to eq(true)
+      end
+    end
+
+    context 'when site chrome is not enabled but we use GovStat chrome instead' do
+      let(:govstat_enabled) { true }
+
+      it 'returns false' do
+        expect(subject.render_legacy_chrome?).to eq(false)
       end
     end
   end

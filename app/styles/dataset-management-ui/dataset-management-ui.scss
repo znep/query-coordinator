@@ -15,30 +15,6 @@
     }
   }
 
-  thead {
-    height: 7em;
-
-    .col-name {
-      font-weight: bold;
-    }
-
-    .col-type {
-      font-weight: normal;
-      font-style: italic;
-    }
-
-    .col-processed {
-      font-weight: normal;
-      font-size: 7pt;
-    }
-
-    .col-errors {
-      font-weight: normal;
-      font-size: 7pt;
-      color: darkred;
-    }
-  }
-
   /* TODO: Extract into a dropdown-small class that can be applied. */
   div.dropdown-container {
     width: 100%;
@@ -75,14 +51,42 @@
     min-width: auto;
     white-space: nowrap;
     height: calc(100vh - 180px);
-    margin: 20px;
+    margin: 20px;             /* TODO: Remove once sidebar is added.*/
 
     tr {
       display: block;
       position: relative;
       border-width: 1px 0 0 1px;
       border-style: solid;
-      border-color: $light-grey-3;
+      border-color: $light-grey-4;
+    }
+
+    thead {
+      height: 7em;
+      border-bottom: 1px solid $light-grey-4;
+
+      .col-name {
+        font-size: 14px;
+        font-weight: 600;
+        display: inline-block;
+        padding: 1px 0 3px 2px;
+      }
+
+      .col-type {
+        font-weight: normal;
+        font-style: italic;
+      }
+
+      .col-processed {
+        font-weight: normal;
+        font-size: 7pt;
+      }
+
+      .col-errors {
+        font-weight: normal;
+        font-size: 7pt;
+        color: darkred;
+      }
     }
 
     tbody {
@@ -91,7 +95,7 @@
       overflow-y: auto;
       width: 100%;
       height: calc(100% - 7em);
-      border-bottom: 1px solid $light-grey-3;
+      border-bottom: 1px solid $light-grey-4;
 
       tr {
         height: 35px;
@@ -103,13 +107,20 @@
           clear: both;
         }
       }
+
+      tr {
+        &:first-child {
+          border-top: 1px auto auto;
+          margin-top: -1px;
+        }
+      }
     }
 
     th, td {
       min-height: 35px;
       display: inline-block;
       width: 250px;
-      border: 1px solid $light-grey-3;
+      border: 1px solid $light-grey-4;
       white-space: nowrap;
       border-width: 0 1px 1px 0;
     }
@@ -141,10 +152,10 @@
 
         overflow: hidden;
         text-overflow: ellipsis;
-        
+
         background-color: #fff;
         border-style: solid;
-        border-color: $light-grey-3;
+        border-color: $light-grey-4;
         border-width: 0 1px 1px 0;
 
         &:hover {

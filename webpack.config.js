@@ -1,3 +1,4 @@
+var fs = require('fs');
 var path = require('path');
 
 module.exports = [
@@ -9,6 +10,15 @@ module.exports = [
       filename: 'vendor.js'
     },
     module: {
+      preLoaders: [
+        {
+          test: /\.js$/,
+          loader: 'babel-loader',
+          include: [
+            fs.realpathSync(path.resolve('node_modules/socrata-components'))
+          ]
+        }
+      ],
       loaders: [
         {
           loader: 'imports-loader',
@@ -17,8 +27,11 @@ module.exports = [
         }
       ]
     },
+    resolveLoader: {
+      modulesDirectories: [ fs.realpathSync('node_modules') ]
+    },
     resolve: {
-      modulesDirectories: ['node_modules']
+      modulesDirectories: [ 'node_modules' ]
     }
   },
   {
@@ -46,16 +59,16 @@ module.exports = [
       library: ['socrata', 'visualizations']
     },
     module: {
-      preLoaders: [
+      loaders: [
         {
           test: /\.js$/,
-          exclude: /node_modules/,
-          loader: 'babel'
+          loader: 'babel-loader',
+          include: [ path.resolve('src'), path.resolve('karma') ]
         }
       ]
     },
     resolve: {
-      modulesDirectories: ['node_modules']
+      modulesDirectories: [ 'node_modules' ]
     },
     devtool: 'source-map'
   }

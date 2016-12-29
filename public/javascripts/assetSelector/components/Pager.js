@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import ceteraUtils from '../lib/ceteraUtils';
 import _ from 'lodash';
 
 export class Pager extends Component {
@@ -30,18 +29,9 @@ export class Pager extends Component {
 
   pageLinkClick(e, pageNumber) {
     e.preventDefault();
+    this.props.onPageChange(pageNumber);
+
     // TODO: change "active" class on the links to the current link
-
-    ceteraUtils().fetch({ pageNumber }).
-      success(function(response) {
-        console.log(response.results); // should probably have this callback way higher up, and pass it down to <Pager>.
-                                      // from there, we can trigger a re-render of the results
-      }).
-      error(function(err) {
-        // TODO. airbrake, return error message, etc.
-        console.error(err);
-      });
-
   }
 
   render() {
@@ -68,12 +58,14 @@ export class Pager extends Component {
 
 Pager.propTypes = {
   currentPage: PropTypes.number.isRequired,
+  onPageChange: PropTypes.func.isRequired,
   pagerStart: PropTypes.number.isRequired,
   pagerEnd: PropTypes.number.isRequired
 };
 
 Pager.defaultProps = {
   currentPage: 1,
+  onPageChange: _.noop,
   pagerStart: 1,
   pagerEnd: 9
 };

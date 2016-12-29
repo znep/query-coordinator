@@ -5,18 +5,17 @@ describe('components/Card', function() {
     return {
       categories: ['Fun'],
       description: 'jorts and other denim articles of clothing',
-      display_title: 'Table',
       id: 'abcd-1234',
-      is_federated: false,
-      is_public: true,
+      isFederated: false,
+      isPublic: true,
       link: 'http://davidhasselhoffonline.com/',
       name: 'david hasselhoff',
-      preview_image_url: '',
+      previewImageUrl: '',
       provenance: 'official',
       tags: [],
       type: 'dataset',
-      updated_at: '2016-12-15T22:52:12.006Z',
-      view_count: 9999999
+      updatedAt: '2016-12-15T22:52:12.006Z',
+      viewCount: 9999999
     };
   }
 

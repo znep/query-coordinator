@@ -10,11 +10,11 @@ export const TableContainer = (props) => {
     <div className="table-responsive table-container">
       <table className="table">
         <thead>
-          <tr>{/* What about categories/tags? */}
+          <tr>
             <th scope="col">Type</th>
             <th scope="col">Name</th>
             <th scope="col">Updated Date</th>
-            <th scope="col">Popularity</th>{/* view count? */}
+            <th scope="col">Popularity</th>
           </tr>
         </thead>
         <tbody>

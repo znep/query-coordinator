@@ -16,10 +16,10 @@ export class Card extends Component {
       description: this.props.description,
       url: this.props.link,
       icon: getIconClassForDisplayType(this.props.type),
-      metadataLeft: getDateLabel(this.props.updated_at),
-      metadataRight: getViewCountLabel(this.props.view_count),
-      imageUrl: this.props.preview_image_url,
-      isPrivate: !this.props.is_public,
+      metadataLeft: getDateLabel(this.props.updatedAt),
+      metadataRight: getViewCountLabel(this.props.viewCount),
+      imageUrl: this.props.previewImageUrl,
+      isPrivate: !this.props.isPublic,
       linkProps: {
         target: '_blank',
         'aria-label': getAriaLabel(this.props)
@@ -34,27 +34,26 @@ export class Card extends Component {
 
 Card.propTypes = {
   categories: PropTypes.array,
-  created_at: PropTypes.string,
+  createdAt: PropTypes.string,
   description: PropTypes.string,
-  display_title: PropTypes.string,
   id: PropTypes.string,
-  is_federated: PropTypes.bool,
-  is_public: PropTypes.bool,
+  isFederated: PropTypes.bool,
+  isPublic: PropTypes.bool,
   link: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  preview_image_url: PropTypes.string,
+  previewImageUrl: PropTypes.string,
   provenance: PropTypes.string,
   tags: PropTypes.array,
   type: PropTypes.string.isRequired,
-  updated_at: PropTypes.string,
-  view_count: PropTypes.number.isRequired
+  updatedAt: PropTypes.string,
+  viewCount: PropTypes.number.isRequired
 };
 
 Card.defaultProps = {
   link: '',
   name: '',
   type: '',
-  view_count: 0
+  viewCount: 0
 };
 
 export default Card;

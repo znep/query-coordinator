@@ -30,8 +30,6 @@ export class ResultsContainer extends Component {
         const results = ceteraUtils.mapToAssetSelectorResult(response.results);
         dispatchPageResults(results);
         // TODO: scroll up?
-        // TODO: update pager "active" number
-        // TODO: update hash in url
       }).
       error((err) => {
         // TODO. airbrake, return error message, etc.

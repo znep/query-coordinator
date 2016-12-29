@@ -5,18 +5,7 @@ import _ from 'lodash';
 export class PagerWrapper extends Component {
   constructor(props) {
     super(props);
-    _.bindAll(this, ['getCurPage', 'getPagerStart', 'getPagerEnd']);
-  }
-
-  // Returns current page number in the url hash. Note: this is 1-indexed
-  getCurPage() {
-    const urlHashes = window.location.hash.split('#').slice(1);
-    let page = 1;
-    urlHashes.forEach((urlHash) => {
-      const [key, val] = urlHash.split('=');
-      if (key.toString().toLowerCase() === 'page' && val) page = parseInt(val, 10);
-    });
-    return page;
+    _.bindAll(this, ['getPagerStart', 'getPagerEnd']);
   }
 
   // Index of first page
@@ -31,8 +20,6 @@ export class PagerWrapper extends Component {
 
   render() {
     return (<Pager
-      {/* TODO: refactor this so currentPage is on state.. and gets updated */}
-      currentPage={this.getCurPage()}
       onPageChange={this.props.onPageChange}
       pagerStart={this.getPagerStart()}
       pagerEnd={this.getPagerEnd()} />);

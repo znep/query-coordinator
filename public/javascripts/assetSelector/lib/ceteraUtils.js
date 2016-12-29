@@ -37,23 +37,22 @@ const ceteraUtils = (() => {
 
       return ceteraResults.map((ceteraResult) => {
         const crr = ceteraResult.resource;
-        // TODO: now that this is JS and not ruby, change to camelCase?
+
         return {
           id: crr.id,
           link: ceteraResult.link,
           name: crr.name,
           description: crr.description,
           type: mapResultType(crr.type),
-          display_title: 'display title??', // TODO: where did this come from?
           categories: ceteraResult.classification.categories,
           tags: ceteraResult.classification.tags,
-          preview_image_url: ceteraResult.preview_image_url,
-          is_public: true, // Not implemented yet. See cetera::result_row
-          is_federated: resultIsFederated(ceteraResult.metadata.domain),
+          previewImageUrl: ceteraResult.preview_image_url,
+          isPublic: true, // Not implemented yet. See cetera::result_row
+          isFederated: resultIsFederated(ceteraResult.metadata.domain),
           provenance: crr.provenance,
-          created_at: crr.createdAt,
-          updated_at: crr.updatedAt,
-          view_count: parseInt(crr.view_count.page_views_total, 10)
+          createdAt: crr.createdAt,
+          updatedAt: crr.updatedAt,
+          viewCount: parseInt(crr.view_count.page_views_total, 10)
         };
       });
     }

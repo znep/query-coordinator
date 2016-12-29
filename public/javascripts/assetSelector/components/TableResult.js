@@ -5,7 +5,7 @@ const TableResult = (props) => {
   return (
     <tr className="result">
       <td className="result-type" scope="row">
-        {props.display_title}
+        {props.type}{/* TODO: localization */}
       </td>
       <td className="result-name">
         <a href={props.link}>
@@ -13,10 +13,10 @@ const TableResult = (props) => {
         </a>
       </td>
       <td className="result-updated-date">
-        {getDateLabel(props.updated_at)}
+        {getDateLabel(props.updatedAt)}
       </td>
       <td className="result-popularity">
-        {getViewCountLabel(props.view_count)}
+        {getViewCountLabel(props.viewCount)}
       </td>
     </tr>
   );
@@ -25,16 +25,16 @@ const TableResult = (props) => {
 TableResult.propTypes = {
   name: PropTypes.string.isRequired,
   link: PropTypes.string.isRequired,
-  display_title: PropTypes.string.isRequired,
-  updated_at: PropTypes.string,
-  view_count: PropTypes.number.isRequired
+  type: PropTypes.string.isRequired,
+  updatedAt: PropTypes.string,
+  viewCount: PropTypes.number.isRequired
 };
 
 TableResult.defaultProps = {
   link: '',
   name: '',
-  display_title: '',
-  view_count: 0
+  type: '',
+  viewCount: 0
 };
 
 export default TableResult;

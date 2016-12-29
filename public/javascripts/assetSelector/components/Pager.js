@@ -4,13 +4,16 @@ import _ from 'lodash';
 export class Pager extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      currentPage: 1
+    };
     _.bindAll(this, ['pageLinks', 'pageLinkClick']);
   }
 
   pageLinks() {
     const links = [];
     for (let pageNumber = this.props.pagerStart; pageNumber <= this.props.pagerEnd; pageNumber++) {
-      const linkClasses = 'pageLink{0}'.format((this.props.currentPage === pageNumber) ? ' active' : '');
+      const linkClasses = 'pageLink{0}'.format((this.state.currentPage === pageNumber) ? ' active' : '');
       const pageTranslation = 'Page'; // TODO: localization
 
       links.push(
@@ -30,8 +33,9 @@ export class Pager extends Component {
   pageLinkClick(e, pageNumber) {
     e.preventDefault();
     this.props.onPageChange(pageNumber);
-
-    // TODO: change "active" class on the links to the current link
+    this.setState({
+      currentPage: pageNumber
+    });
   }
 
   render() {
@@ -57,14 +61,12 @@ export class Pager extends Component {
 }
 
 Pager.propTypes = {
-  currentPage: PropTypes.number.isRequired,
   onPageChange: PropTypes.func.isRequired,
   pagerStart: PropTypes.number.isRequired,
   pagerEnd: PropTypes.number.isRequired
 };
 
 Pager.defaultProps = {
-  currentPage: 1,
   onPageChange: _.noop,
   pagerStart: 1,
   pagerEnd: 9

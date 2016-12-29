@@ -74,7 +74,7 @@ http://www.socrata.com
 
   <%= get_favicon_tag %>
 
-  <%- if enable_site_chrome? || using_govstat_header? -%>
+  <%- if enable_site_chrome? || enable_govstat_chrome? -%>
     <%= site_chrome_meta_viewport_tag %>
     <%= site_chrome_google_analytics_tag %>
     <%= site_chrome_stylesheet_tag %>
@@ -97,39 +97,65 @@ http://www.socrata.com
   <div class="siteOuterWrapper">
     <div class="siteInnerWrapper">
 
-      <%- if !@suppress_chrome -%>
-        <%- if using_govstat_header? -%>
-          <%== site_chrome_admin_header(request, response) %>
-        <%- else -%>
-          <%- if enable_site_chrome? -%>
-            <%== site_chrome_header(request, response, :size => on_view_page? ? 'small' : nil) %>
+      <%- if render_site_admin_chrome? -%>
+        <%== site_chrome_admin_header(request, response) %>
+      <%- end -%>
 
-            <%- if FeatureFlags.derive(@view, request).browse_autocomplete -%>
-              <%= include_webpack_bundle 'autocomplete/main.js' %>
+      <%- if render_site_chrome? -%>
+        <%== site_chrome_header(request, response, :size => site_chrome_size) %>
 
-              <script>
-                if ($('#site-chrome-header .collapsible-search').length > 0) {
-                  window.autocomplete('#site-chrome-header .collapsible-search', { collapsed: true }, { collapsible: true });
-                } else if ($('#site-chrome-header .header-content .searchbox').length > 0) {
-                  window.autocomplete('#site-chrome-header .header-content .searchbox', undefined, { animate: false });
-                }
-              </script>
-            <%- end -%>
-          <%- else -%>
-            <div id="siteHeader" class="clearfix" role="banner">
-              <%= render_domain_template(@page_custom_header || 'header_full') %>
-            </div>
-          <%- end -%>
+        <%- if FeatureFlags.derive(@view, request).browse_autocomplete -%>
+          <%= include_webpack_bundle 'autocomplete/main.js' %>
+
+          <script>
+            !function() {
+              // for Evergreen theme
+              var collapsibleSearchSelector = '#site-chrome-header .collapsible-search';
+              // for Rally theme
+              var staticSearchSelector = '#site-chrome-header .searchbox';
+
+              if ($(collapsibleSearchSelector).length > 0) {
+                window.autocomplete(
+                  collapsibleSearchSelector,
+                  { collapsed: true },
+                  { collapsible: true }
+                );
+              } else if ($(staticSearchSelector).length > 0) {
+                window.autocomplete(
+                  staticSearchSelector,
+                  undefined,
+                  { animate: false }
+                );
+              }
+            } ();
+          </script>
         <%- end -%>
 
         <div id="noticeContainer">
           <%== display_homepage_flashes %>
         </div>
-
       <%- end -%>
 
-      <%- if content_for?(:relocated_content) -%><%- yield :relocated_content -%><%- else -%><a name="content"  tabindex="-1"></a><%- end -%>
-      <%= render_domain_template(@page_custom_chrome || 'content_chrome') if !module_enabled?(:govStat) || suppress_govstat? %>
+      <%- if render_legacy_chrome? -%>
+        <div id="siteHeader" class="clearfix" role="banner">
+          <%= render_domain_template(@page_custom_header || 'header_full') %>
+        </div>
+
+        <div id="noticeContainer">
+          <%== display_homepage_flashes %>
+        </div>
+      <%- end -%>
+
+      <%- if content_for?(:relocated_content) -%>
+        <%- yield :relocated_content -%>
+      <%- else -%>
+        <a name="content" tabindex="-1"></a>
+      <%- end -%>
+
+      <%- unless enable_govstat_chrome? -%>
+        <%= render_domain_template(@page_custom_chrome || 'content_chrome') %>
+      <%- end -%>
+
       <%- if @suppress_content_wrapper -%>
         <%= yield :layout %>
       <%- else -%>
@@ -140,15 +166,15 @@ http://www.socrata.com
     </div>
   </div>
 
-  <%- if !@suppress_chrome -%>
-    <%- if enable_site_chrome? -%>
-      <%== site_chrome_footer(request, response, :size => on_view_page? ? 'small' : nil) %>
-    <%- else -%>
-      <div id="siteFooter" role="contentinfo">
-        <a name="footerLinks" tabindex="-1"></a>
-        <%= render_domain_template(@page_custom_footer || 'footer_full') %>
-      </div>
-    <%- end -%>
+  <%- if render_site_chrome? -%>
+    <%== site_chrome_footer(request, response, :size => site_chrome_size) %>
+  <%- end -%>
+
+  <%- if render_legacy_chrome? -%>
+    <div id="siteFooter" role="contentinfo">
+      <a name="footerLinks" tabindex="-1"></a>
+      <%= render_domain_template(@page_custom_footer || 'footer_full') %>
+    </div>
   <%- end -%>
 
   <%# socrata modal fragment to supercede jqm %>
@@ -256,7 +282,7 @@ http://www.socrata.com
           });
         });
 
-    <%- if !@suppress_chrome -%>
+    <%- unless @suppress_chrome -%>
     try {
       if ((self !== top) && (self.location.hostname !== top.location.hostname))
         top.location = self.document.location;

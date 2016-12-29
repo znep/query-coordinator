@@ -20,7 +20,7 @@
 
     <%= get_favicon_tag %>
 
-    <%- if site_chrome_enabled? -%>
+    <%- if enable_site_chrome? -%>
       <%= site_chrome_meta_viewport_tag %>
       <%= site_chrome_stylesheet_tag %>
     <%- end -%>
@@ -50,12 +50,12 @@
 
     <%= include_webpack_bundle 'data-cards/main.js' %>
 
-    <%= site_chrome_javascript_tag if site_chrome_enabled? %>
-    <%== site_chrome_header(request, response) if site_chrome_enabled? %>
+    <%= site_chrome_javascript_tag if enable_site_chrome? %>
+    <%== site_chrome_header(request, response) if render_site_chrome? %>
 
     <%= yield %>
 
-    <%== site_chrome_footer(request, response, :size => 'small') if site_chrome_enabled? %>
+    <%== site_chrome_footer(request, response, :size => 'small') if render_site_chrome? %>
   </body>
 
 

@@ -66,7 +66,7 @@ class SiteAppearanceController < ApplicationController
     @site_appearance = existing_site_chrome_config_has_content? ? SiteAppearance.find : SiteAppearance.new
 
     # Ensure site_chrome has content necessary for rendering plain views
-    @content = @site_appearance.content(site_appearance_published_mode?) || {}
+    @content = @site_appearance.content(site_chrome_published_mode?) || {}
     %w(header footer general locales).each do |key|
       @content[key] ||= {}
     end
@@ -74,6 +74,6 @@ class SiteAppearanceController < ApplicationController
 
   # EN-12237: Check that a Site Chrome config exists, and it is populated with valid Site Chrome data
   def existing_site_chrome_config_has_content?
-    SiteAppearance.find.try(:content, site_appearance_published_mode?).present?
+    SiteAppearance.find.try(:content, site_chrome_published_mode?).present?
   end
 end

@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { Dropdown } from 'socrata-components';
 
 const ColumnHeader = React.createClass({
 
@@ -14,7 +15,6 @@ const ColumnHeader = React.createClass({
 
   render() {
     const { outputSchema, column, updateColumnType } = this.props;
-    // console.log('render column', column.id);
     // TODO: Refactor this to be in an appropriate location!
     const columnTypes = ['SoQLNumber', 'SoQLText'];
     // TODO: Internationalize!
@@ -26,19 +26,11 @@ const ColumnHeader = React.createClass({
           {column.display_name}
         </span>
         <br />
-        <select
+        <Dropdown
           name="col-type"
           value={column.soql_type}
-          onChange={(event) => updateColumnType(outputSchema, column, event.target.value)}>
-          {
-            columnTypes.map((type) =>
-              <option key={type} value={type}>
-                {typeDisplayNames[type]}
-              </option>
-            )
-          }
-          {column.soql_type}
-        </select>
+          onSelection={(option) => updateColumnType(outputSchema, column, option.value)}
+          options={columnTypes.map(type => ({ title: typeDisplayNames[type], value: type }))} />
         <br />
         <span className="col-processed">
           {column.contiguous_rows_processed || 0} total

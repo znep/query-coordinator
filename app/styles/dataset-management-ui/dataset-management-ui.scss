@@ -17,7 +17,7 @@
 
   thead {
     height: 7em;
-    
+
     .col-name {
       font-weight: bold;
     }
@@ -39,11 +39,36 @@
     }
   }
 
+  /* TODO: Extract into a dropdown-small class that can be applied. */
+  div.dropdown-container {
+    width: 100%;
+    font-weight: normal;
+
+    .dropdown-placeholder {
+      font-size: 12px;
+      min-height: 12px;
+      padding: 5px 10px;
+    }
+
+    .dropdown-caret {
+      font-size: 13px;
+      margin-right: -9px;
+
+      &::after {
+        margin-top: 9px;
+      }
+    }
+
+    .picklist-option {
+      padding: 5px 10px;
+    }
+  }
+
   section.modal-content {
     padding: 0;
   }
 
-  .table.table-condensed {
+  table.table {
     overflow: visible;
     display: inline-block;
     table-layout: fixed;
@@ -69,7 +94,7 @@
       border-bottom: 1px solid $light-grey-3;
 
       tr {
-        height: 45px;
+        height: 35px;
         overflow: visible;
 
         &:after {
@@ -81,7 +106,7 @@
     }
 
     th, td {
-      min-height: 45px;
+      min-height: 35px;
       display: inline-block;
       width: 250px;
       border: 1px solid $light-grey-3;
@@ -89,8 +114,12 @@
       border-width: 0 1px 1px 0;
     }
 
+    th {
+      padding: 5px;
+    }
+
     td {
-      height: 45px;
+      height: 35px;
       vertical-align: top;
       overflow: visible;
       padding: 0;
@@ -105,9 +134,18 @@
 
       div {
         width: 250px;
+        min-height: 35px;
+        padding: 5px;
+        display: block;
+        position: relative;
+
         overflow: hidden;
         text-overflow: ellipsis;
-        padding: 10px;
+        
+        background-color: #fff;
+        border-style: solid;
+        border-color: $light-grey-3;
+        border-width: 0 1px 1px 0;
 
         &:hover {
           min-width: 250px;
@@ -120,18 +158,9 @@
           width: -webkit-max-content; /* For Safari. */
           width: max-content; /* For Chrome. */
 
-          min-height: 45px;
           height: auto;
-
-          overflow: visible;
           white-space: normal;
-          background-color: #fff;
-          display: block;
-          border-style: solid;
-          border-color: $light-grey-3;
-          border-width: 0 1px 1px 0;
 
-          position: relative;
           z-index: 99;
         }
       }

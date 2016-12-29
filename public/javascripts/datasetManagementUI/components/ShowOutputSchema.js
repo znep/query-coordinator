@@ -39,12 +39,12 @@ export function ShowOutputSchema({ db, upload, columns, outputSchema,
                                    goToUpload, updateColumnType, applyUpdate }) {
   // TODO: I18n
   const uploadProgress = upload.__status__.type === STATUS_UPDATING ?
-    `${Math.round(upload.__status__.percentCompleted)}% Uploaded` :
-    'Upload Done';
+                         `${Math.round(upload.__status__.percentCompleted)}% Uploaded` :
+                         'Upload Done';
 
   const modalProps = {
     fullScreen: true,
-    onDismiss: goToUpload
+    onDismiss: goToUpload(upload.id)
   };
   const headerProps = {
     title: (
@@ -54,7 +54,7 @@ export function ShowOutputSchema({ db, upload, columns, outputSchema,
         Preview
       </span>
     ),
-    onDismiss: goToUpload
+    onDismiss: goToUpload(upload.id)
   };
 
   return (
@@ -113,9 +113,7 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(ShowActions.updateColumnType(oldSchema, oldColumn, newType));
     },
     goToUpload: (uploadId) => (
-      () => {
-        dispatch(push(Links.showUpload(uploadId)(ownProps.location)));
-      }
+      () => dispatch(push(Links.showUpload(uploadId)(ownProps.location)))
     ),
     applyUpdate: () => (
       dispatch(ApplyActions.applyUpdate(_.toNumber(ownProps.params.outputSchemaId)))

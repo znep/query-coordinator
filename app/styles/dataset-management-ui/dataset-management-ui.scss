@@ -64,7 +64,18 @@
         * {
           text-align: center;
           width: 100%;
+          padding: 0 10em;
         }
+
+        p {
+          margin: 0 0 5em;
+        }
+      }
+    }
+
+    .modal-footer {
+      button#done {
+        width: 8em;
       }
     }
   }

@@ -16,7 +16,7 @@ function query(db, upsertJobId) {
 
 // This whole mess needs to not only be internationalized, but also, you know, have actual
 // non-placeholder text written.
-function showStatus(status) {
+function statusText(status) {
   switch (status) {
     case 'successful':
       return {
@@ -34,6 +34,30 @@ function showStatus(status) {
         body: 'You are good for now.  Feel free to close down this situation and have some coffee.' +
               "We'll keep going behind the scenes, and your data will be good to go in a bit."
       };
+  }
+}
+
+/* TODO: Internationalize!  Also, come up with a failure case!*/
+function showButton(status, onDismiss) {
+  switch (status) {
+    case 'successful':
+      return (
+        <button id="done" className="btn btn-primary" onClick={onDismiss}>
+          Done
+        </button>
+      );
+    case 'failed':
+      return (
+        <button id="done" className="btn btn-error" disabled="true" >
+          Failed
+        </button>
+      );
+    default:
+      return (
+        <button id="done" className="btn btn-primary" disabled="true">
+          <span className="spinner-default spinner-btn-primary" />
+        </button>
+      );
   }
 }
 
@@ -58,7 +82,7 @@ function ShowUpsertJob({ upsertJob, onDismiss }) {
     onDismiss: onDismiss
   };
 
-  const { title, body } = showStatus(upsertJob.status);
+  const { title, body } = statusText(upsertJob.status);
 
   return (
     <div id="show-upsert-job">
@@ -72,11 +96,7 @@ function ShowUpsertJob({ upsertJob, onDismiss }) {
           </div>
         </ModalContent>
 
-        <ModalFooter>
-          <button className="btn btn-primary" onClick={onDismiss}>
-            Done {/* TODO: Internationalize! */}
-          </button>
-        </ModalFooter>
+        <ModalFooter>{showButton(upsertJob.status, onDismiss)}</ModalFooter>
       </Modal>
     </div>
   );

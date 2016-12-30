@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { pageResults } from '../actions/pageResults';
+import { updatePageResults } from '../actions/pageResults';
 import { changeViewType } from '../actions/viewType';
 import NoResults from './NoResults';
 import ViewCount from './ViewCount';
@@ -15,6 +15,8 @@ export class ResultsContainer extends Component {
     super(props);
     _.bindAll(this, ['onViewTypeClick', 'onPageChange', 'renderResults']);
     this.onPageChange(1); // Fetch the first page of results
+    // This may be something we want to make a prop, so one could open the assets at a given page
+    // (based on something like a URL param), useful if this becomes a replacement for the catalog.
   }
 
   onViewTypeClick(newViewType) {
@@ -24,11 +26,11 @@ export class ResultsContainer extends Component {
   }
 
   onPageChange(pageNumber) {
-    const { dispatchPageResults } = this.props;
+    const { dispatchUpdatePageResults } = this.props;
     ceteraUtils.fetch({ pageNumber }).
       success((response) => {
         const results = ceteraUtils.mapToAssetSelectorResult(response.results);
-        dispatchPageResults(results);
+        dispatchUpdatePageResults(results);
         // TODO: scroll up?
       }).
       error((err) => {
@@ -73,7 +75,7 @@ export class ResultsContainer extends Component {
 ResultsContainer.propTypes = {
   results: PropTypes.array.isRequired,
   dispatchChangeViewType: PropTypes.func.isRequired,
-  dispatchPageResults: PropTypes.func.isRequired,
+  dispatchUpdatePageResults: PropTypes.func.isRequired,
   viewCount: PropTypes.number.isRequired,
   viewType: PropTypes.string.isRequired
 };
@@ -81,7 +83,7 @@ ResultsContainer.propTypes = {
 ResultsContainer.defaultProps = {
   results: [],
   dispatchChangeViewType: _.noop,
-  dispatchPageResults: _.noop,
+  dispatchUpdatePageResults: _.noop,
   viewCount: 0,
   viewType: 'CARD_VIEW'
 };
@@ -98,8 +100,8 @@ function mapDispatchToProps(dispatch) {
     dispatchChangeViewType: function(newViewType) {
       dispatch(changeViewType(newViewType));
     },
-    dispatchPageResults: function(newPageResults) {
-      dispatch(pageResults(newPageResults));
+    dispatchUpdatePageResults: function(newPageResults) {
+      dispatch(updatePageResults(newPageResults));
     }
   };
 }

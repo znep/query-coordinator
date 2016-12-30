@@ -1,4 +1,7 @@
 import { ResultsContainer } from 'components/ResultsContainer';
+import { ceteraUtils } from 'lib/ceteraUtils';
+import _ from 'lodash';
+import $ from 'jquery';
 
 describe('components/ResultsContainer', function() {
   function defaultProps() {
@@ -20,6 +23,23 @@ describe('components/ResultsContainer', function() {
   function getProps(props = {}) {
     return Object.assign({}, defaultProps(), props);
   }
+
+  beforeEach(() => {
+    sinon.stub($, 'ajax', function(options) {
+      var deferred = $.Deferred();
+      if (options.success) deferred.done(options.success({ results: [] }));
+      if (options.error) deferred.fail(options.error);
+
+      deferred.success = deferred.done;
+      deferred.error = deferred.fail;
+
+      return deferred;
+    });
+  });
+
+  afterEach(() => {
+    $.ajax.restore();
+  });
 
   it('renders the "no results" element if the results array is empty', function() {
     var element = renderComponent(ResultsContainer, getProps({ results: [] }));
@@ -43,14 +63,18 @@ describe('components/ResultsContainer', function() {
     expect(element.querySelector('.table-container')).to.exist;
   });
 
+  it('renders the total view count', function() {
+    var element = renderComponent(ResultsContainer, getProps());
+    expect(element.querySelector('.view-count').textContent).to.equal('100 Views');
+  });
+
   it('renders the correct number of cards', function() {
     const results = defaultProps().results.slice(0);
     const originalResult = results[0];
-    for (var i = 0; i < 99; i++) {
+    for (var i = 0; i < 8; i++) {
       results.push(originalResult)
     }
     var element = renderComponent(ResultsContainer, getProps({ results }));
-    expect(element.querySelectorAll('.result-card').length).to.equal(100);
-    expect(element.querySelector('.view-count').textContent).to.equal('100 Results');
+    expect(element.querySelectorAll('.result-card').length).to.equal(9);
   });
 });

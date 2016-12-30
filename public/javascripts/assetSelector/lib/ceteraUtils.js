@@ -1,13 +1,13 @@
 import $ from 'jquery';
 
 export const CETERA_URL = '//api.us.socrata.com/api/catalog/v1'; // TODO: get from domain config?
-export const DEFAULT_LIMIT = 10;
+export const DEFAULT_LIMIT = 9;
 
 const getOffset = (pageNumber, limit) => {
   return (pageNumber - 1) * limit;
 };
 
-const ceteraUtils = (() => {
+export const ceteraUtils = (() => {
   const domain = window.location.hostname; // TODO: federation?
 
   return {

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { getDateLabel, getViewCountLabel } from '../../datasetLandingPage/lib/viewCardHelpers';
 
-const TableResult = (props) => {
+export const TableResult = (props) => {
   return (
     <tr className="result">
       <td className="result-type" scope="row">

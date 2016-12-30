@@ -1,4 +1,4 @@
-export const pageResults = (newPageResults) => ({
+export const updatePageResults = (newPageResults) => ({
   type: 'UPDATE_RESULTS',
   newPageResults
 });

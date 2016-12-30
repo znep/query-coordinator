@@ -11,6 +11,9 @@ class CoreServerConnectionMiddleware
 
   def call(env)
     CoreServer::Connection.env = env
+    if defined?(Signaller)
+      Signaller::Connection.request_id = env['action_dispatch.request_id'].to_s.gsub('-', '')
+    end
     @app.call(env)
   end
 end

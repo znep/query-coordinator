@@ -2,49 +2,40 @@ import $ from 'jquery';
 
 import I18n from '../I18n';
 import Actions from '../Actions';
-import StorytellerUtils from '../../StorytellerUtils';
+import Environment from '../../StorytellerEnvironment';
 import { dispatcher } from '../Dispatcher';
 import { storySaveStatusStore } from '../stores/StorySaveStatusStore';
 import { userSessionStore } from '../stores/UserSessionStore';
 
 export default function ErrorModalRenderer() {
-  var $modal = $('#error-modal-container');
-  var $warningMessage = $modal.find('.error-warning-message');
-  var $loginButton = $modal.find('.btn-login');
-  var $reloadButton = $modal.find('.btn-reload');
-  var $modalContents = $modal.children();
+  const $modal = $('#error-modal-container');
+  const $warningMessage = $modal.find('.error-warning-message');
+  const $loginButton = $modal.find('.btn-login');
+  const $reloadButton = $modal.find('.btn-reload');
+  const $modalContents = $modal.children();
 
-  var reasonOpenedFor = null;
+  let reasonOpenedFor = null;
 
   storySaveStatusStore.addChangeListener(render);
   userSessionStore.addChangeListener(render);
 
   $modal.modal({
-    title: StorytellerUtils.format(
-      '<span class="socrata-icon-warning"></span> {0}',
-      I18n.t('editor.generic_error')
-    ),
+    title: `<span class="socrata-icon-warning"></span> ${I18n.t('editor.generic_error')}`,
     content: $modalContents
   });
 
-  $modal.on('modal-dismissed', function() {
-    $modal.trigger('modal-close');
-  });
+  $modal.on('modal-dismissed', () => $modal.trigger('modal-close'));
 
-  $reloadButton.click(function() {
-    window.document.location.reload();
-  });
+  $reloadButton.click(() => window.document.location.reload());
 
-  $loginButton.click(function() {
+  $loginButton.click(() => {
     dispatcher.dispatch({
       action: Actions.LOGIN_BUTTON_CLICK
     });
   });
 
   function render() {
-    var reason = reasonForBeingOpen();
-    var userCausingConflict = storySaveStatusStore.userCausingConflict();
-    var userLinkOrPlaceholder;
+    const reason = reasonForBeingOpen();
 
     $loginButton.hide();
 
@@ -65,25 +56,7 @@ export default function ErrorModalRenderer() {
       $reloadButton.hide();
       $loginButton.show();
     } else if (reason === 'CONFLICT') {
-      // User details are loaded async, show a placeholder while that is in flight.
-      if (userCausingConflict) {
-        userLinkOrPlaceholder =
-          $('<a>', {
-            target: '_blank',
-            href: StorytellerUtils.format('/profile/{0}', userCausingConflict.id)
-          }).text(userCausingConflict.displayName);
-      } else {
-        userLinkOrPlaceholder = I18n.t('editor.story_save_error_conflict_generic_user_name');
-      }
-
-      $warningMessage.empty().append(
-        I18n.t('editor.story_save_error_conflict_detail_1'),
-        ' ',
-        userLinkOrPlaceholder,
-        ' ',
-        I18n.t('editor.story_save_error_conflict_detail_2')
-      );
-
+      renderConflictMessage(storySaveStatusStore.userCausingConflict());
       $reloadButton.show();
     }
 
@@ -95,8 +68,8 @@ export default function ErrorModalRenderer() {
   // - 'EXPIRED_SESSION'
   // - null
   function reasonForBeingOpen() {
-    var hasConflict = storySaveStatusStore.isSaveImpossibleDueToConflict();
-    var hasValidUserSession = userSessionStore.hasValidSession();
+    const hasConflict = storySaveStatusStore.isSaveImpossibleDueToConflict();
+    const hasValidUserSession = userSessionStore.hasValidSession();
 
     if (hasConflict) {
       return 'CONFLICT';
@@ -105,5 +78,28 @@ export default function ErrorModalRenderer() {
     } else {
       return null;
     }
+  }
+
+  function renderConflictMessage(user) {
+    let userPlaceholder;
+    const prefix = Environment.IS_GOAL ? 'goal' : 'story';
+
+    if (user) {
+      // User details are loaded async, show a placeholder while that is in flight.
+      userPlaceholder = $('<a>', {
+        target: '_blank',
+        href: `/profile/${user.id}`
+      }).text(user.displayName);
+    } else {
+      userPlaceholder = I18n.t(`editor.${prefix}_save_error_conflict_generic_user_name`);
+    }
+
+    $warningMessage.empty().append(
+      I18n.t(`editor.${prefix}_save_error_conflict_detail_1`),
+      ' ',
+      userPlaceholder,
+      ' ',
+      I18n.t(`editor.${prefix}_save_error_conflict_detail_2`)
+    );
   }
 }

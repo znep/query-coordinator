@@ -121,7 +121,13 @@
             </div>
 
             <p class="settings-panel-story-publishing-help-text">
-              <%= t('editor.settings_panel.publishing_section.messages.can_be_shared_publicly') %>
+              <%=
+                if @story_metadata.goal?
+                  t('editor.settings_panel.publishing_section.messages.can_be_shared_publicly_goals')
+                else
+                  t('editor.settings_panel.publishing_section.messages.can_be_shared_publicly')
+                end
+              %>
             </p>
           </div>
         </div>

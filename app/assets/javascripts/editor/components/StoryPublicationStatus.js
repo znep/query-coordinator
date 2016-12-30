@@ -97,6 +97,10 @@ export const StoryPublicationStatus = React.createClass({
       message = 'can_be_shared_publicly';
     }
 
+    if (Environment.IS_GOAL) {
+      message += '_goals';
+    }
+
     return (
       <p className="alert">
         {I18n.t(`editor.settings_panel.publishing_section.messages.${message}`)}

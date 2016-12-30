@@ -378,10 +378,7 @@
 
       .dropdown-container + .dropdown-container {
         width: 25%;
-
-        .dropdown-placeholder {
-          border-left: none;
-        }
+        margin-left: 8px;
 
         .dropdown-options-list {
           left: -1px;

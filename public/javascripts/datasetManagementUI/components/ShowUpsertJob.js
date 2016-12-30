@@ -14,6 +14,29 @@ function query(db, upsertJobId) {
   };
 }
 
+// This whole mess needs to not only be internationalized, but also, you know, have actual
+// non-placeholder text written.
+function showStatus(status) {
+  switch (status) {
+    case 'successful':
+      return {
+        title: 'Import Succeeded!',
+        body: 'You did it!  Congratulations!'
+      };
+    case 'failure':
+      return {
+        title: 'Import Failed!',
+        body: "I'm sorry Dave, I can't let you do that."
+      };
+    default:
+      return {
+        title: 'Finalizing Import!',
+        body: 'You are good for now.  Feel free to close down this situation and have some coffee.' +
+              "We'll keep going behind the scenes, and your data will be good to go in a bit."
+      };
+  }
+}
+
 function ShowUpsertJob({ upsertJob, onDismiss }) {
   function goToDataPage() {
     console.log(upsertJob);
@@ -29,27 +52,30 @@ function ShowUpsertJob({ upsertJob, onDismiss }) {
       <span>
         <Link to={Links.uploads}>{I18n.home_pane.data}</Link> &gt;&nbsp;
         {/* TODO: Internationalize! */}
-        Upsert Jobs
+        Finalizing Import
       </span>
     ),
     onDismiss: onDismiss
   };
 
+  const { title, body } = showStatus(upsertJob.status);
+
   return (
-    <div className="show-upsert-job">
+    <div id="show-upsert-job">
       <Modal {...modalProps}>
         <ModalHeader {...headerProps} />
 
         <ModalContent>
-          <p>Job:</p>
-          <pre>{JSON.stringify(upsertJob, null, 4)}</pre>
-        </ModalContent>
-        <ModalFooter>
-          <div className="modal-footer-actions">
-            <button id="done" className="btn btn-primary" onClick={onDismiss}>
-              Done {/* TODO: Internationalize! */}
-            </button>
+          <div>
+            <h2>{title}</h2>
+            <p>{body}</p>
           </div>
+        </ModalContent>
+
+        <ModalFooter>
+          <button className="btn btn-primary" onClick={onDismiss}>
+            Done {/* TODO: Internationalize! */}
+          </button>
         </ModalFooter>
       </Modal>
     </div>

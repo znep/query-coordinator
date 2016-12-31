@@ -80,13 +80,8 @@ class NewUxBootstrapController < ActionController::Base
     end
 
     # 1b. Check if dataset is a derived view and exit early if the feature flag is not enabled.
-    if dataset_is_derived_view?
-      if allow_derived_view_bootstrap?
-        return instantiate_ephemeral_view_from_derived_view
-      else
-        flash[:error] = t('controls.grid.errors.data_lens_is_incompatible_with_derived_views')
-        return redirect_to request.base_url
-      end
+    if is_from_derived_view
+      return instantiate_ephemeral_view_from_derived_view
     end
 
     # 2. Check to make sure the dataset in question is in the new backend.
@@ -323,6 +318,7 @@ class NewUxBootstrapController < ActionController::Base
       'cards' => cards,
       'datasetId' => new_dataset_metadata[:id],
       'description' => new_dataset_metadata[:description],
+      'isFromDerivedView' => is_from_derived_view,
       'name' => new_dataset_metadata[:name],
       'primaryAggregation' => nil,
       'primaryAmountField' => nil,
@@ -425,7 +421,7 @@ class NewUxBootstrapController < ActionController::Base
 
   def generate_cards_from_dataset_metadata_columns(columns)
     interesting_columns(columns).map do |field_name, column|
-      card_type = card_type_for(column, dataset_size, dataset_is_derived_view?)
+      card_type = card_type_for(column, dataset_size, is_from_derived_view)
       if card_type
         card = page_metadata_manager.merge_new_card_data_with_default(
           field_name,
@@ -462,23 +458,6 @@ class NewUxBootstrapController < ActionController::Base
   def instantiate_ephemeral_view(dataset_metadata)
     @dataset_metadata = dataset_metadata
 
-    # If this is a derived view, attempt to get the pages associated with the default view
-    if dataset_is_derived_view?
-      @dataset_metadata[:pages] = begin
-        # parent_dataset can be either a View or nil, or it'll throw an error
-        parent_nbe_id = derived_view_dataset.parent_dataset.try(:nbe_view).try(:id)
-        parent_nbe_id ? fetch_pages_for_dataset(parent_nbe_id) : {}
-      rescue DatasetMetadataNotFound
-        {}
-      end
-    else
-      @dataset_metadata[:pages] = begin
-        fetch_pages_for_dataset(@dataset_metadata[:id])
-      rescue DatasetMetadataNotFound
-        {}
-      end
-    end
-
     @page_metadata = generate_page_metadata(dataset_metadata)
     @page_metadata['displayType'] = 'data_lens'
 
@@ -490,12 +469,12 @@ class NewUxBootstrapController < ActionController::Base
         column['defaultCardType'] = default_card_type_for(
           column,
           dataset_size,
-          dataset_is_derived_view?
+          is_from_derived_view
         )
         column['availableCardTypes'] = available_card_types_for(
           column,
           dataset_size,
-          dataset_is_derived_view?
+          is_from_derived_view
         )
       end
     end
@@ -523,6 +502,8 @@ class NewUxBootstrapController < ActionController::Base
       @migration_metadata = {}
     end
 
+    @skip_link_id = is_from_derived_view ? @dataset_metadata[:id] : @migration_metadata[:obeId]
+
     request[:app] = 'dataCards'
 
     render 'data_lens/data_cards'
@@ -536,21 +517,9 @@ class NewUxBootstrapController < ActionController::Base
   #   endpoint, because there are special snowflake hacks in place under that flag for derived views
   #   that make data lens for derived views possible
   def instantiate_ephemeral_view_from_derived_view
-    # Assemble metadata data similar to what Phidippides would have returned
-    dataset_metadata = derived_view_dataset.as_json.merge({
-      :domain => CurrentDomain.cname,
-      :locale => I18n.locale,
-      :columns => Column.get_derived_view_columns(derived_view_dataset),
-      :ownerId => derived_view_dataset.owner.id,
-      :updatedAt => derived_view_dataset.time_metadata_last_updated_at
-    }).with_indifferent_access
-
-    # This mutates dataset_metadata with the extra things we need by looking up the view again in
-    # Core. While it's in the Phidippides class, it doesn't actually talk to Phidippides.
-    phidippides.mirror_nbe_column_metadata!(derived_view_dataset, dataset_metadata)
+    dataset_metadata = fetch_dataset_metadata_for_derived_view(params[:id])
 
     begin
-      # This talks to Phidippides to get pages for the default view's NBE copy
       instantiate_ephemeral_view(dataset_metadata)
     rescue CoreServer::TimeoutError
       flash[:warning] = t('controls.grid.errors.timeout_on_bootstrap').html_safe
@@ -567,16 +536,8 @@ class NewUxBootstrapController < ActionController::Base
     View.find(params[:id])
   end
 
-  def derived_view_dataset
-    @derived_view_dataset ||= View.find_derived_view_using_read_from_nbe(params[:id])
-  end
-
-  def dataset_is_derived_view?
+  def is_from_derived_view
     dataset.is_derived_view?
-  end
-
-  def allow_derived_view_bootstrap?
-    FeatureFlags.derive(@view, request)[:enable_data_lens_using_derived_view]
   end
 
   def dataset_is_new_backend?

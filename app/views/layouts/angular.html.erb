@@ -41,11 +41,11 @@
 
   <body ng-app="<%= angular_app %>">
 
-    <% if @migration_metadata %>
+    <% if @skip_link_id %>
       <div class="skip-links">
-        <%= link_to 'Go to an accessible version of this page', get_alt_dataset_link(@migration_metadata[:obeId]) %>
+        <%= link_to t('angular.dataCards.skip_link'), get_alt_dataset_link(@skip_link_id) %>
       </div>
-      <%= render_noscript(@migration_metadata[:obeId]) %>
+      <%= render_noscript(@skip_link_id) %>
     <% end %>
 
     <%= include_webpack_bundle 'data-cards/main.js' %>

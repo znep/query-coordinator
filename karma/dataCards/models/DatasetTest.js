@@ -13,11 +13,7 @@ describe('Dataset model', function() {
     updatedAt: '2004-05-20T17:42:55+00:00',
     version: 1,
     locale: 'en_US',
-    columns: {},
-    pages: {
-      publisher: [pageForDataset],
-      user: []
-    }
+    columns: {}
   };
   var minimalMigrationMetadata = {
     nbeId: 'four-four',
@@ -64,16 +60,6 @@ describe('Dataset model', function() {
     instance.observe('rowDisplayUnit').subscribe(function(val) {
       if (val) {
         expect(val).to.equal(minimalDatasetMetadata.rowDisplayUnit);
-        done();
-      }
-    });
-  });
-
-  it('should eventually return a page from the pages property', function(done) {
-    var instance = new Dataset(minimalDatasetMetadata, minimalMigrationMetadata);
-    instance.observe('pages').subscribe(function(pagesBySource) {
-      if (!_.isEmpty(pagesBySource)) {
-        expect(pagesBySource.publisher[0]).to.equal(pageForDataset);
         done();
       }
     });

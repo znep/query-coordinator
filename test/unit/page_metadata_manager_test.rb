@@ -205,6 +205,13 @@ class PageMetadataManagerTest < Minitest::Test
     assert_equal('data-lens', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
   end
 
+  def test_create_does_not_create_rollups_or_secondary_indices_for_derived_views
+    PageMetadataManager.any_instance.expects(:update_metadata_rollup_table).times(0)
+    PageMetadataManager.any_instance.expects(:request_soda_fountain_secondary_index).times(0)
+
+    manager.create(data_lens_from_derived_view_page_metadata)
+  end
+
   def test_update_raises_an_error_if_dataset_id_is_not_present_in_page_metadata
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
 
@@ -238,6 +245,17 @@ class PageMetadataManagerTest < Minitest::Test
     manager.update(data_lens_page_metadata)
   end
 
+  def test_update_does_not_create_rollups_for_derived_views
+    DataLensManager.any_instance.stubs(
+      fetch: v2_page_metadata,
+      update: nil
+    )
+    PageMetadataManager.any_instance.expects(:update_metadata_rollup_table).times(0)
+    stub_request(:put, 'http://localhost:8080/views/mjcb-9cxc.json')
+
+    manager.update(data_lens_from_derived_view_page_metadata)
+  end
+
   def test_delete_deletes_core_and_rollup_representation
     DataLensManager.any_instance.stubs(
       fetch: v2_page_metadata
@@ -256,6 +274,18 @@ class PageMetadataManagerTest < Minitest::Test
 
     result = manager.delete('four-four')
     assert_equal('200', result[:status])
+  end
+
+  def test_delete_does_not_delete_rollup_representation_if_from_derived_view
+    test_page_metadata = v2_page_metadata
+    test_page_metadata['displayFormat']['data_lens_page_metadata'] = data_lens_from_derived_view_page_metadata
+    DataLensManager.any_instance.stubs(
+      fetch: test_page_metadata
+    )
+    View.stubs(delete: nil)
+    SodaFountain.any_instance.expects(:delete_rollup_table).times(0)
+
+    manager.delete('four-four')
   end
 
   def test_time_range_in_column_catches_fetch_min_max_in_column_returning_nil
@@ -754,6 +784,10 @@ class PageMetadataManagerTest < Minitest::Test
 
   def data_lens_page_metadata
     v2_page_metadata['displayFormat']['data_lens_page_metadata']
+  end
+
+  def data_lens_from_derived_view_page_metadata
+    data_lens_page_metadata.merge({ 'isFromDerivedView' => true })
   end
 
   def v1_dataset_metadata

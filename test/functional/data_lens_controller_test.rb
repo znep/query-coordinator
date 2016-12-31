@@ -15,12 +15,16 @@ class DataLensControllerTest < ActionController::TestCase
 
     View.any_instance.stubs(
       :find => test_view,
-      :find_related => [test_view],
+      :find_related => [test_view]
+    )
+
+    View.stubs(
       :migrations => {
         :nbeId => 'test-data',
         :obeId => 'obev-rson'
       }
     )
+
     stub_site_chrome
   end
 
@@ -61,10 +65,6 @@ class DataLensControllerTest < ActionController::TestCase
         :status => '200',
         :body => v1_dataset_metadata
       },
-      :fetch_pages_for_dataset => {
-        :status => '200',
-        :body => {'publisher' => '', 'user' => ''}.with_indifferent_access
-      },
       :set_default_and_available_card_types_to_columns! => {}
     )
 
@@ -85,10 +85,6 @@ class DataLensControllerTest < ActionController::TestCase
       :fetch_dataset_metadata => {
         :status => '200',
         :body => v1_dataset_metadata
-      },
-      :fetch_pages_for_dataset => {
-        :status => '200',
-        :body => v2_pages_for_dataset
       },
       :set_default_and_available_card_types_to_columns! => {}
     )
@@ -151,10 +147,6 @@ class DataLensControllerTest < ActionController::TestCase
           :status => '200',
           :body => v1_dataset_metadata
         },
-        :fetch_pages_for_dataset => {
-          :status => '200',
-          :body => v2_pages_for_dataset
-        },
         :set_default_and_available_card_types_to_columns! => {}
       )
 
@@ -177,10 +169,6 @@ class DataLensControllerTest < ActionController::TestCase
         :fetch_dataset_metadata => {
           :status => '200',
           :body => v1_dataset_metadata
-        },
-        :fetch_pages_for_dataset => {
-          :status => '200',
-          :body => v2_pages_for_dataset
         },
         :set_default_and_available_card_types_to_columns! => {}
       )
@@ -264,10 +252,6 @@ class DataLensControllerTest < ActionController::TestCase
         :fetch_dataset_metadata => {
           :status => '200',
           :body => v1_dataset_metadata
-        },
-        :fetch_pages_for_dataset => {
-          :status => '200',
-          :body => v2_pages_for_dataset
         },
         :set_default_and_available_card_types_to_columns! => {}
       )
@@ -370,10 +354,6 @@ class DataLensControllerTest < ActionController::TestCase
         :fetch_dataset_metadata => {
           :status => '200',
           :body => v1_dataset_metadata
-        },
-        :fetch_pages_for_dataset => {
-          :status => '200',
-          :body => v2_pages_for_dataset
         },
         :set_default_and_available_card_types_to_columns! => {}
       )
@@ -493,10 +473,6 @@ class DataLensControllerTest < ActionController::TestCase
     outer_metadata['displayFormat']['data_lens_page_metadata']
   end
 
-  def v2_pages_for_dataset
-    JSON.parse(File.read("#{Rails.root}/test/fixtures/v2-pages-for-dataset.json")).with_indifferent_access
-  end
-
   def v1_dataset_metadata
     JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-dataset-metadata.json")).with_indifferent_access
   end
@@ -518,10 +494,6 @@ class DataLensControllerTest < ActionController::TestCase
       :fetch_dataset_metadata => {
         :status => '200',
         :body => v1_dataset_metadata
-      },
-      :fetch_pages_for_dataset => {
-        :status => '200',
-        :body => v2_pages_for_dataset
       },
       :set_default_and_available_card_types_to_columns! => {}
     )

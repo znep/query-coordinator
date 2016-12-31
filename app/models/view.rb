@@ -30,7 +30,7 @@ class View < Model
   # Note that if your derived view is based on an NBE default view, this method will still return
   # everything just fine.
   def self.find_derived_view_using_read_from_nbe(id)
-    path = "/#{self.service_name}/#{id}.json?read_from_nbe=true"
+    path = "/#{self.service_name}/#{id}.json?read_from_nbe=true&version=2.1"
 
     begin
       result = CoreServer::Base.connection.get_request(path)

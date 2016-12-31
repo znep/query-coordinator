@@ -29,8 +29,6 @@ module.exports = function(
       self.id = datasetMetadata.id;
       self.version = 1;
 
-      self.isFromDerivedView = !_.isEmpty(datasetMetadata.query);
-
       var fields = [
         'defaultPage',
         'description',
@@ -57,8 +55,6 @@ module.exports = function(
       });
 
       self.defineObservableProperty('columns', datasetMetadata.columns);
-
-      self.defineObservableProperty('pages', datasetMetadata.pages);
 
       self.defineEphemeralObservableProperty('rowCount', null, function() {
         return CardDataService.getRowCount(self.id);

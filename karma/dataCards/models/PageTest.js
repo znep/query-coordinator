@@ -78,10 +78,10 @@ describe('Page model', function() {
   });
 
   it('should correctly serialize', function() {
-    var pageOverrides = {pageId: 'test-page'};
+    var pageOverrides = {pageId: 'test-page', isFromDerivedView: true};
     var datasetOverrides = {id: 'test-data'};
     var instance = Mockumentary.createPage(pageOverrides, datasetOverrides);
-    var expectedFields = ['cards', 'datasetId', 'description', 'name', 'pageId', 'primaryAggregation', 'primaryAmountField', 'version'];
+    var expectedFields = ['cards', 'datasetId', 'description', 'name', 'pageId', 'primaryAggregation', 'primaryAmountField', 'version', 'isFromDerivedView'];
     var serialized = instance.serialize();
 
     expect(serialized).to.have.keys(expectedFields);
@@ -96,6 +96,14 @@ describe('Page model', function() {
     instance.observe('description').subscribe(function(description) {
       expect(description).to.equal('test description');
     });
+  });
+
+  it('should set the "isFromDerivedView" property', function() {
+    var pageOverrides = {pageId: 'test-page', isFromDerivedView: true};
+    var datasetOverrides = {id: 'test-data'};
+    var instance = Mockumentary.createPage(pageOverrides, datasetOverrides);
+
+    expect(instance.isFromDerivedView).to.equal(true);
   });
 
   describe('toggleExpanded', function() {

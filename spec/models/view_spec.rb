@@ -11,7 +11,7 @@ describe View do
     let(:view_id) { '1234-5679' }
 
     it 'returns the parsed response from the core endpoint' do
-      stub_request(:get, 'http://localhost:8080/views/1234-5679.json?read_from_nbe=true').
+      stub_request(:get, 'http://localhost:8080/views/1234-5679.json?read_from_nbe=true&version=2.1').
          with(:headers => request_headers).
          to_return(
            :status => 200,
@@ -26,7 +26,7 @@ describe View do
     end
 
     it 'raises an error if Core returns an error' do
-      stub_request(:get, 'http://localhost:8080/views/1234-5679.json?read_from_nbe=true').
+      stub_request(:get, 'http://localhost:8080/views/1234-5679.json?read_from_nbe=true&version=2.1').
          with(:headers => request_headers).
          to_raise(CoreServer::Error)
 

@@ -368,6 +368,7 @@ en:
         prompt_text: Type some text and press Enter to search
         search_info: Showing {0} of {1} matching results
         two_examples: 'Examples: ''{0}'' or ''{1}'''
+      skip_link: Go to an accessible version of this page
       suggestion_tool_panel:
         all_suggestions: 'Showing all {0} suggestions:'
         loading_suggestions_hint: Type some text and press Enter to search, or wait for suggestions.
@@ -869,7 +870,6 @@ en:
       end_page: Last Page
       errors:
         cannot_edit_at_this_time: The column cannot be edited at this moment. Please try again later.
-        data_lens_is_incompatible_with_derived_views: Derived views cannot be used with a Data Lens page. We apologize for this inconvenience.
         data_lens_is_incompatible_with_group_bys: Datasets with groupings cannot be used with a Data Lens page. We apologize for this inconvenience.
         primary_key_collision: This value already exists as a primary key. You may not overwrite it.
         row_locked_for_edit: Presently, we cannot edit a just-created row. We are working to make that possible. For now, refresh the page before editing this row.

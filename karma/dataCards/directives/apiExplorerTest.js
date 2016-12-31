@@ -173,14 +173,12 @@ describe('API Explorer', function() {
 
         var page = Mockumentary.createPage(
           {
-            datasetId: ''
+            datasetId: '',
+            isFromDerivedView: true
           },
           {
             id: '',
-            domain: null,
-            query: {
-              filterCondition: {}
-            }
+            domain: null
           }
         );
         scope.page = page;

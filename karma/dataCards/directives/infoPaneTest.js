@@ -79,15 +79,6 @@ describe('infoPane', function() {
     });
   });
 
-  describe('datasetPages', function() {
-    it('should be the pages from the dataset model', function() {
-      createInfoPane();
-
-      var pages = self.$scope.dataset.getCurrentValue('pages');
-      expect(self.element.scope().datasetPages).to.deep.equal(pages);
-    });
-  });
-
   describe('sourceDatasetName', function() {
     it('should be the name of the dataset', function() {
       createInfoPane(null, {
@@ -129,12 +120,26 @@ describe('infoPane', function() {
   });
 
   describe('sourceDatasetURL', function() {
-    it('should be a URL containing the dataset OBE id', function() {
+    it('should be a URL containing the dataset OBE id by default', function() {
       createInfoPane(null, {
         obeId: 'what-nooo'
       });
 
       expect(self.element.scope().sourceDatasetURL).to.equal('/d/what-nooo');
+    });
+
+    it('should be a URL containing the derived id if based on a derived view', function() {
+      createInfoPane(
+        {
+          isFromDerivedView: true
+        },
+        {
+          id: 'elep-hant',
+          obeId: 'what-nooo'
+        }
+      );
+
+      expect(self.element.scope().sourceDatasetURL).to.equal('/d/elep-hant');
     });
   });
 });

@@ -35,10 +35,6 @@ const ColumnHeader = React.createClass({
         <span className="col-processed">
           {column.contiguous_rows_processed || 0} total
         </span>
-        <br />
-        <span className="col-errors">
-          {column.num_transform_errors || 0} errors
-        </span>
       </th>
     );
   }

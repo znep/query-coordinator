@@ -5,6 +5,7 @@ import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 
 import ColumnHeader from './ColumnHeader';
+import ColumnStatus from './ColumnStatus';
 import * as Links from '../links';
 import { STATUS_UPDATING } from '../lib/database/statuses';
 import * as ShowActions from '../actions/showOutputSchema';
@@ -74,6 +75,9 @@ export function ShowOutputSchema({ db, upload, columns, outputSchema,
                       column={column}
                       updateColumnType={updateColumnType} />)
                 }
+              </tr>
+              <tr>
+                {columns.map(column => <ColumnStatus column={column} />)}
               </tr>
             </thead>
             <TableBody db={db} columns={columns} />

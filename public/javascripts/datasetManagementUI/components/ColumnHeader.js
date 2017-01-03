@@ -22,7 +22,7 @@ const ColumnHeader = React.createClass({
 
     return (
       <th key={column.id}>
-        <span className="col-name">
+        <span className="col-name" title={column.display_name} >
           {column.display_name}
         </span>
         <br />

@@ -85,14 +85,8 @@ export default function StorySaveStatusStore(forStoryUid) {
   });
 
   // Autosave can be disabled via the URL parameter ?autosave=false.
-  // It is also disabled by default on goals, for the time being.
   this.autosaveDisabled = function() {
-    if (Environment.IS_GOAL) {
-      return !StorytellerUtils.queryParameterMatches('autosave', true);
-    } else {
-      return StorytellerUtils.queryParameterMatches('autosave', false);
-    }
-
+    return StorytellerUtils.queryParameterMatches('autosave', false);
   };
 
   storyStore.addChangeListener(function() {

@@ -22,39 +22,6 @@
     margin-right: 0.20em;
   }
 
-  // TODO: Extract into a dropdown-small class that can be applied.
-  div.dropdown-container {
-    width: 100%;
-    font-weight: normal;
-    word-wrap: normal;
-
-    .dropdown-placeholder, .dropdown-selected {
-      font-size: 12px;
-      min-height: 12px;
-      padding: 6px 10px 3px;
-
-      span {
-        float: left;
-      }
-    }
-
-    .dropdown-caret {
-      position: relative !important; // TODO: Styleguide.
-      float: right;                  // TODO: Styleguide.
-
-      font-size: 13px;
-      margin-right: -20px;
-
-      &::after {
-        margin-top: 0;
-      }
-    }
-
-    .picklist-option {
-      padding: 5px 10px;
-    }
-  }
-
   #show-output-schema {
     section.modal-content {
       padding: 0;
@@ -115,13 +82,17 @@
     }
 
     thead {
-      height: 125px;
+      height: 110px;
       display: block;
       border-top: 1px solid $light-grey-4;
 
       tr {
         border-top-width: 0;
         border-bottom-width: 0;
+
+        select {
+          width: 100%;
+        }
 
         &:last-child {
           th {
@@ -168,7 +139,7 @@
       overflow-x: hidden;
       overflow-y: auto;
       width: 100%;
-      height: calc(100% - 7em);
+      height: calc(100% - 110px);
       border-bottom: 1px solid $light-grey-4;
 
       tr {

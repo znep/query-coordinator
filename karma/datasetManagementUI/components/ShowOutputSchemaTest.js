@@ -21,7 +21,7 @@ describe('components/ShowOutputSchema', () => {
     const store = getStoreWithOutputSchema();
     const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
     expect(_.map(element.querySelectorAll('.col-name'), 'innerText')).to.eql(['arrest', 'block']);
-    expect(_.map(element.querySelectorAll('.dropdown-selected'), 'innerText')).to.eql(['Text', 'Text']);
+    expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['SoQLText', 'SoQLText']);
   });
 
   it('renders a table with data', () => {

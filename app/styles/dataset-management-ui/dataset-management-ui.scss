@@ -15,6 +15,13 @@
     }
   }
 
+  .err-info {
+    color: $white;
+    border-radius: 1.1em;
+    padding: 0 0.5em 1px;
+    margin-right: 0.20em;
+  }
+
   // TODO: Extract into a dropdown-small class that can be applied.
   div.dropdown-container {
     width: 100%;
@@ -153,7 +160,6 @@
         font-weight: normal;
         font-size: 10px;
         color: $grey;
-        background-color: #fff;
       }
     }
 
@@ -223,7 +229,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
 
-        background-color: #fff;
+        background-color: $white;
         border-style: solid;
         border-color: $light-grey-4;
         border-width: 0 1px 1px 0;

@@ -16,7 +16,7 @@ export const ColumnStatus = React.createClass({
       return (
         <th key={column.id} className="col-errors">
           <div>
-            <span className="error-count">{column.num_transform_errors}</span> Type Errors
+            <span className="err-info error">{column.num_transform_errors}</span> Type Errors
           </div>
         </th>
       );
@@ -24,7 +24,7 @@ export const ColumnStatus = React.createClass({
       return (
         <th key={column.id} className="col-errors">
           <div>
-            <span className="socrata-icon-checkmark3" /> All cells will import correctly
+            <span className="err-info success socrata-icon-checkmark3" /> All cells will import correctly
           </div>
         </th>
       );

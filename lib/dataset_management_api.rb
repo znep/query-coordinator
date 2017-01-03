@@ -3,10 +3,6 @@ module DatasetManagementAPI
 
   class ServerError < StandardError; end
 
-  def self.get_update(view_uid, update_seq, cookies)
-    get("/api/update/#{view_uid}/#{update_seq}", cookies)['resource']
-  end
-
   def self.get_uploads_index(view_uid, update_seq, cookies)
     get("/api/update/#{view_uid}/#{update_seq}/upload", cookies)
   end

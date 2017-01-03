@@ -1,15 +1,8 @@
-import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
 import { Link } from 'react-router';
 import * as Links from '../links';
 
-function query(db) {
-  return {
-    upsertJobs: db.upsert_jobs
-  };
-}
-
-function Update({ upsertJobs }) {
+export default function Update() {
   return (
     <div id="home-pane">
       <section className="management-ui-section">
@@ -36,41 +29,8 @@ function Update({ upsertJobs }) {
           </Link>
         </div>
       </section>
-      {upsertJobs.length > 0 ?
-        <ShowUpsertJobs upsertJobs={upsertJobs} /> :
-        null}
     </div>
   );
 }
 
-Update.propTypes = {
-  upsertJobs: PropTypes.arrayOf(PropTypes.object)
-};
-
-function mapStateToProps(state) {
-  return query(state.db);
-}
-
-export default connect(mapStateToProps)(Update);
-
-
-function ShowUpsertJobs({ upsertJobs }) {
-  return (
-    <section className="management-ui-section">
-      <h2>Upsert Jobs</h2>
-      <div className="alert default manage-section-box">
-        <ul>
-          {upsertJobs.map((upsertJob) => (
-            <li>
-              <Link to={Links.showUpsertJob(upsertJob.id)}>Job {upsertJob.id}</Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
-
-ShowUpsertJobs.propTypes = {
-  upsertJobs: PropTypes.arrayOf(PropTypes.object)
-};
+Update.propTypes = {};

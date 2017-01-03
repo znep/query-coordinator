@@ -19,7 +19,7 @@
     color: $white;
     border-radius: 1.1em;
     padding: 0 0.5em 1px;
-    margin-right: 0.20em;
+    margin-right: 0.5em;
   }
 
   #show-output-schema {
@@ -46,17 +46,13 @@
     }
 
     thead {
-      height: 110px;
+      height: 105px;
       display: block;
       border-top: 1px solid $light-grey-4;
 
       tr {
         border-top-width: 0;
         border-bottom-width: 0;
-
-        select {
-          width: 100%;
-        }
 
         &:last-child {
           th {
@@ -75,15 +71,16 @@
       }
 
       .col-name {
-        font-size: 14px;
-        font-weight: 600;
-        display: inline-block;
         padding: 1px 0 3px 2px;
+        color: $dark-grey-3;
       }
 
-      .col-type {
+      select {
+        width: 100%;
+        font-size: 12px;
+        height: 23px;
         font-weight: normal;
-        font-style: italic;
+        color: $dark-grey-2;
       }
 
       .col-processed {
@@ -103,7 +100,7 @@
       overflow-x: hidden;
       overflow-y: auto;
       width: 100%;
-      height: calc(100% - 110px);
+      height: calc(100% - 103px);
       border-bottom: 1px solid $light-grey-4;
 
       tr {

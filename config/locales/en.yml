@@ -2897,7 +2897,7 @@ en:
                 placeholder: "#123456"
                 title: Bar Background Color (Primary)
               bar_background_color_bar_secondary_background_color:
-                description: Primary and secondary background colors of the Header Bar. Primary bar contains the logo. The secondary color is only used in the Rally template for the lower bar. Use HEX values for color or "transparent".
+                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the upper bar. Use HEX values for color or "transparent".
               bar_secondary_background_color:
                 placeholder: "#123456"
                 title: Bar Background Color (Secondary)

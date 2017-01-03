@@ -12,11 +12,21 @@ export const ColumnStatus = React.createClass({
   render() {
     const { column } = this.props;
 
-    if (column.num_transform_errors) {
+    if (column.num_transform_errors === 1) {
       return (
         <th key={column.id} className="col-errors">
           <div>
-            <span className="err-info error">{column.num_transform_errors}</span> Type Errors
+            <span className="err-info error">{column.num_transform_errors}</span>
+            {I18n.show_output_schema.column_header.error_exists}
+          </div>
+        </th>
+      );
+    } else if (column.num_transform_errors) {
+      return (
+        <th key={column.id} className="col-errors">
+          <div>
+            <span className="err-info error">{column.num_transform_errors}</span>
+            {I18n.show_output_schema.column_header.errors_exist}
           </div>
         </th>
       );
@@ -24,7 +34,8 @@ export const ColumnStatus = React.createClass({
       return (
         <th key={column.id} className="col-errors">
           <div>
-            <span className="err-info success socrata-icon-checkmark3" /> All cells will import correctly
+            <span className="err-info success socrata-icon-checkmark3" />
+            {I18n.show_output_schema.column_header.no_errors_exist}
           </div>
         </th>
       );

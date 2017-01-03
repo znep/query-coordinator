@@ -17,7 +17,6 @@ import ShowUpdate from './components/ShowUpdate';
 import ManageMetadata from './components/ManageMetadata';
 import ManageUploads from './components/ManageUploads';
 import ShowOutputSchema from './components/ShowOutputSchema';
-import ShowUpsertJob from './components/ShowUpsertJob';
 import ShowUpload from './components/ShowUpload';
 import NoMatch from './components/NoMatch';
 import rootReducer from './reducers';
@@ -67,7 +66,6 @@ ReactDOM.render(
         <Route
           path="uploads/:uploadId/schemas/:schemaId/output/:outputSchemaId"
           component={ShowOutputSchema} />
-        <Route path="upsert_jobs/:upsertJobId" component={ShowUpsertJob} />
         <Route path="*" component={NoMatch} />
       </Route>
     </Router>

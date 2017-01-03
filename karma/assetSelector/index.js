@@ -12,7 +12,17 @@ window.React = require('react');
 window.ReactDOM = require('react-dom');
 window.TestUtils = require('react-addons-test-utils');
 window.redux = require('redux');
-window.I18n = require('mockTranslations');
+// window.I18n = require('mockTranslations');
+// TODO remove this once it isn't necessary, when we have a plan for config/translations
+window.I18n = {
+  view_widget: {
+    views: 'Views',
+    view: 'View'
+  },
+  related_views: {
+    view: 'View'
+  }
+};
 
 // This needs to happen after setting all of the mock window data.
 var getDefaultStore = require('testStore').getDefaultStore;

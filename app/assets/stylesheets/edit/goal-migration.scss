@@ -19,3 +19,22 @@
     margin-top: 3rem;
   }
 }
+
+#goal-migration-welcome {
+  line-height: normal;
+
+  .modal-content {
+    p {
+      margin: 1rem 0;
+    }
+
+    ul {
+      list-style-type: disc;
+      padding-left: 3rem;
+
+      li {
+        margin-top: 1rem;
+      }
+    }
+  }
+}

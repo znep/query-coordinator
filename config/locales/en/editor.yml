@@ -341,6 +341,10 @@ en:
     op_migration:
       error: 'Oh no! Something went wrong while updating this goal. Please contact Socrata support.'
       in_progress: 'Updating your experience...'
+      welcome_close: 'OK, thanks!'
+      welcome_close_forever: "Don't show this message again"
+      welcome_content: "<p>Have a look around! You'll notice some pretty big improvements, including:</p><ul><li>access to the new Socrata visualization library</li><li>a library of 71 million high-quality images</li><li>ability to add videos and other third-party embeds</li><li>easy-to-use drag-and-drop components</li><li>customizable typefaces and font colors</li></ul><p>Need help getting started? Check out our performance <a href=\"https://support.socrata.com/hc/en-us/categories/200161248-Open-Performance\" target=\"_blank\">support materials</a> or attend a Socrata Performance <a href=\"https://support.socrata.com/hc/en-us/sections/204221087-Education-Courses\" target=\"_blank\">education course</a>.</p>"
+      welcome_title: 'Welcome to Your New Goal Editing Experience'
     # Translations common with OpenPerformance
     open_performance:
       measure:

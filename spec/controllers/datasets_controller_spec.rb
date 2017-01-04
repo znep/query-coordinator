@@ -197,4 +197,46 @@ describe DatasetsController do
 
   end
 
+  describe 'email dataset' do
+
+    before do
+      init_core_session
+      init_current_domain
+      init_signaller
+      init_current_user(controller)
+      login
+      stub_site_chrome
+    end
+
+    it 'bails early if there are no email recipients' do
+      expect(View).to receive(:find).never
+      get :email, :emails => '', :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+      expect(response).to have_http_status(:success)
+    end
+
+    it 'invokes the email method for each recipient when recipients is an array' do
+      view_double = double(View)
+      expect(View).to receive(:find).once.and_return(view_double)
+      expect(view_double).to receive(:email).twice
+      get :email, :emails => ['foo@bar.com', 'bar@foo.com'], :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+      expect(response).to have_http_status(:success)
+    end
+
+    it 'invokes the email method for each recipient when recipients is an string' do
+      view_double = double(View)
+      expect(View).to receive(:find).once.and_return(view_double)
+      expect(view_double).to receive(:email).twice
+      get :email, :emails => 'foo@bar.com, bar@foo.com', :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+      expect(response).to have_http_status(:success)
+    end
+
+    it 'does not raise when an email recipient is blank' do
+      expect(View).to receive(:find).once.and_return(View.new('id' => 'test-test'))
+      expect_any_instance_of(View).to receive(:email).twice.and_call_original
+      get :email, :emails => 'foo@bar.com, ', :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+      expect(response).to have_http_status(:success)
+    end
+
+  end
+
 end

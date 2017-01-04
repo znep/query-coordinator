@@ -13,16 +13,16 @@ class ViewTest < Minitest::Test
       'test_key' => 'random value'
     }
     assert_raises ArgumentError do
-      view = View.find('does-not-matter', 'Cookie' => invalid_cookies_1)
+      View.find('does-not-matter', 'Cookie' => invalid_cookies_1)
     end
 
     invalid_cookies_2 = 234234
     assert_raises ArgumentError do
-      view = View.find('does-not-matter', 'Cookie' => invalid_cookies_2)
+      View.find('does-not-matter', 'Cookie' => invalid_cookies_2)
     end
 
     valid_cookies = 'key1=value1;key2=value2'
-    view = View.find('does-not-matter', 'Cookie' => valid_cookies)
+    View.find('does-not-matter', 'Cookie' => valid_cookies)
   end
 
   def test_prefetch
@@ -206,6 +206,11 @@ class ViewTest < Minitest::Test
 
     assert view.shared_to?(mock_user_shared)
     refute view.shared_to?(mock_user_unshared)
+  end
+
+  def test_email_raises_with_empty_recipient
+    assert_raises(ArgumentError) { View.new.email(nil) }
+    assert_raises(ArgumentError) { View.new.email('') }
   end
 
   def test_has_grant_for

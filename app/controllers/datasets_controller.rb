@@ -459,25 +459,20 @@ class DatasetsController < ApplicationController
   end
 
   def email
+    return if params[:emails].blank?
+
     @view = View.find(params[:id])
 
-    emails = params[:emails]
-    if !emails.nil?
-      # Send our emails
-      if emails.is_a?(String)
-        # Single field, comma separated
-        emails = emails.split(/,/).collect {|e| e.strip}
-      elsif emails.is_a?(Array)
-        emails.collect!{|e| e.strip}
-      end
+    recipients = params[:emails]  # Default is an Array of email addresses
+    recipients = recipients.split(',') if recipients.is_a?(String) # Single field, comma separated
+    recipients.map!(&:strip)
 
-      @bad_addresses = {}
-      emails.each do |email|
-        begin
-          @view.email(email)
-        rescue Exception => e
-          @bad_addresses[email] = e
-        end
+    @bad_addresses = {}
+    recipients.each do |recipient|
+      begin
+        @view.email(recipient)
+      rescue Exception => e
+        @bad_addresses[recipient] = e
       end
     end
   end

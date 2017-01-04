@@ -1,5 +1,5 @@
-<%= modal :class => "emailDatasetDialog#{' ownerDialog' if !@view.nil? && @view.has_rights?(ViewRights::GRANT)}" do %>
-  <h2><%= t('screens.ds.email.title_html', name: h(@view.nil? ? '' : @view.name)) %></h2>
+<%= modal :class => "emailDatasetDialog#{' ownerDialog' if @view && @view.has_rights?(ViewRights::GRANT)}" do %>
+  <h2><%= t('screens.ds.email.title_html', name: h(@view.try(:name))) %></h2>
   <div class="emailSuccess">
     <div class="flash notice">
       <%= t('screens.ds.email.success') %>
@@ -12,21 +12,27 @@
   </div>
   <div class="emailDatasetContent">
     <div class="flash" id="emailDatasetMessage"></div>
-    <label for="emailRecipient" class="emailRecipientPrompt"><%= t('screens.ds.email.prompt_html', name: h(@view.nil? ? '' : @view.name)) %></label>
+    <label for="emailRecipient" class="emailRecipientPrompt">
+      <%= t('screens.ds.email.prompt_html', name: h(@view.try(:name))) %>
+    </label>
     <div class="emailFormContent">
       <form class="commonForm" id="emailDatasetForm"
-        action="<%= @view.nil? ? '' : "/views/#{@view.id}.json?method=sendAsEmail" %>" method="post">
+        action="<%= @view ? "/views/#{@view.id}.json?method=sendAsEmail" : '' %>" method="post">
         <div class="emailLine">
           <a href="#remove" title="<%= t('screens.ds.email.remove_email') %>" class="removeLink delete hiddenLink">
             <span class="icon"></span>
           </a>
           <input type="hidden" class="recipientUid" />
           <div class="textWrapper">
-            <input id="emailRecipient" type="text" class="emailRecipient email" name="emailRecipient0" />
+            <input id="emailRecipient" type="text" class="emailRecipient email" name="emailRecipient0" required />
           </div>
-          <%- if !@view.nil? && @view.has_rights?(ViewRights::GRANT) -%>
-            <%= select_tag 'role', options_for_select(@view.share_types.map{ |type| [ t("core.share_types.#{type.downcase}"), type ] }),
-                  :class => 'recipientRole', :id => nil %>
+          <%- if @view && @view.has_rights?(ViewRights::GRANT) -%>
+            <%= select_tag(
+              'role',
+              options_for_select(@view.share_types.map { |type| [ t("core.share_types.#{type.downcase}"), type ] }),
+              :class => 'recipientRole',
+              :id => nil
+            ) %>
           <%- end -%>
         </div>
         <div class="addMoreLine">
@@ -46,7 +52,9 @@
       </li>
       <li>
         <a href="#email" class="button" id="emailSubmitButton">
-          <span class="icon"></span><span class="emailDatasetHint"><%= t('screens.ds.email.email_button') %></span>
+          <span class="icon"></span><span class="emailDatasetHint">
+            <%= t('screens.ds.email.email_button') %>
+          </span>
         </a>
       </li>
     </ul>

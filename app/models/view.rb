@@ -1,7 +1,10 @@
 require 'soql_duct_tape'
+
 class View < Model
+
   include Rails.application.routes.url_helpers
   include Socrata::UrlHelpers
+
   extend FindExtensions
 
   cattr_accessor :filter_type1s
@@ -1712,10 +1715,11 @@ class View < Model
       { type: type, rating: value }.to_json)
   end
 
-  def email(email = nil)
+  def email(recipient = nil)
+    raise ArgumentError.new('Invalid email recipient: must not be blank') unless recipient.present?
     CoreServer::Base.connection.create_request(
       "/#{self.class.name.pluralize.downcase}/#{id}.json?method=sendAsEmail",
-      { :message => '', :recipient => email }.to_json)
+      { :message => '', :recipient => recipient }.to_json)
   end
 
   def flag(params = {})
@@ -2229,4 +2233,5 @@ class View < Model
   def parse_json_with_max_nesting(data, max_nesting = 25)
     JSON.parse(data, :max_nesting => max_nesting)
   end
+
 end

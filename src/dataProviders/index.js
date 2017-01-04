@@ -1,18 +1,19 @@
 var GeospaceDataProvider = require('./GeospaceDataProvider');
 var MetadataProvider = require('./MetadataProvider');
-var SoqlDataProvider = require('./SoqlDataProvider');
-var TileserverDataProvider = require('./TileserverDataProvider');
 var SampleDataProvider = require('./SampleDataProvider');
-var VectorTileManager = require('./VectorTileManager');
+var SoqlDataProvider = require('./SoqlDataProvider');
 var SoqlHelpers = require('./SoqlHelpers');
+var SpandexDataProvider = require('./SpandexDataProvider');
+var TileserverDataProvider = require('./TileserverDataProvider');
+var VectorTileManager = require('./VectorTileManager');
 
 module.exports = {
-  GeospaceDataProvider: GeospaceDataProvider,
-  MetadataProvider: MetadataProvider,
-  SoqlDataProvider: SoqlDataProvider,
-  TileserverDataProvider: TileserverDataProvider,
-  SampleDataProvider: SampleDataProvider,
-  VectorTileManager: VectorTileManager,
-  SoqlHelpers: SoqlHelpers
+  GeospaceDataProvider,
+  MetadataProvider,
+  SampleDataProvider,
+  SoqlDataProvider,
+  SoqlHelpers,
+  SpandexDataProvider,
+  TileserverDataProvider,
+  VectorTileManager
 };
-

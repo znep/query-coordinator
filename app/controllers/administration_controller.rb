@@ -969,7 +969,7 @@ class AdministrationController < ApplicationController
     story = Hashie::Mash.new
     parse_story_params(story, params[:story])
     story.customization = story.customization.to_json unless story.customization.nil?
-    story.merge!(params[:story].stringify_keys)
+    story.merge!(params[:story].reject { |_, v| v.blank? }.stringify_keys)
 
     begin
       Story.create(story)

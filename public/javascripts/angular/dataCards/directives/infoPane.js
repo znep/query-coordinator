@@ -23,11 +23,14 @@ module.exports = function infoPane(ServerConfig, I18n, WindowOperations) {
     link: function($scope) {
       var dataset$ = $scope.$observe('dataset');
 
-      var sourceDatasetURL$ = dataset$.
-        pluck('obeId').
+      var sourceDatasetId$ = $scope.page.isFromDerivedView ?
+        dataset$.pluck('id') :
+        dataset$.pluck('obeId');
+
+      var sourceDatasetURL$ = sourceDatasetId$.
         filter(_.isPresent).
-        map(function(obeId) {
-          return I18n.a(`/d/${obeId}`);
+        map(function(id) {
+          return I18n.a(`/d/${id}`);
         });
 
       var pageName$ = $scope.page.observe('name').filter(_.isPresent).map(sanitizeUserHtml);
@@ -37,7 +40,6 @@ module.exports = function infoPane(ServerConfig, I18n, WindowOperations) {
         WindowOperations.setTitle(`${pageName} | Socrata`);
       });
 
-      $scope.$bindObservable('datasetPages', dataset$.observeOnLatest('pages'));
       $scope.$bindObservable('sourceDatasetName', dataset$.observeOnLatest('name'));
       $scope.$bindObservable('sourceDatasetURL', sourceDatasetURL$);
       $scope.$bindObservable('pageName', pageName$);

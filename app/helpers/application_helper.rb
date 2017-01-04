@@ -4,10 +4,10 @@ module ApplicationHelper
 
   include Browse2Helper
   include BrowseHelper
+  include SiteChromeHelper
   include CommonSocrataMethods
   include UserAuthMethods
   include Socrata::UrlHelpers
-  include SiteChromeHelper # Pull in helpers from SocrataSiteChrome engine
 
 # RAILS OVERRIDE
 
@@ -78,53 +78,9 @@ module ApplicationHelper
     block.call
   end
 
-# SITE CHROME (header and footer)
-
-  # dataslate_page and homepage are passed to the view that calls this from custom_content_controller.
-  # Note that the order of these checks is important. For example, if the user is on the homepage,
-  # we enable site chrome only if the homepage flag is true (regardless of the other flags).
-  def enable_site_chrome?
-    site_appearance = SiteAppearance.find
-    return false unless site_appearance
-    return true if site_appearance_preview_mode?
-    return true if using_custom_site_chrome?(site_appearance) # EN-12113
-
-    if on_homepage
-      site_appearance.is_activated_on?('homepage')
-    elsif using_dataslate
-      site_appearance.enabled_on_dataslate?(defined?(request) && request)
-    else
-      site_appearance.is_activated_on?('open_data')
-    end
-  end
-
-  def using_custom_site_chrome?(site_appearance = nil)
-    (site_appearance || SiteAppearance.find).try(:custom_content_activated?)
-  end
-
-  def site_appearance_preview_mode?
-    !!cookies[:socrata_site_chrome_preview]
-  end
-
-  def site_appearance_published_mode?
-    !site_appearance_preview_mode?
-  end
-
-  def on_view_page?(view = @view)
-    view.try(:data).try(:[], 'id').present?
-  end
-
-  def using_govstat_header?
-    module_enabled?(:govStat) && !suppress_govstat?
-  end
-
-  def govstat_chromeless?
-    module_enabled?(:govStat) && action_name == 'chromeless'
-  end
-
 # DATASET LANDING PAGE
   def dataset_landing_page_enabled?
-    !!SiteAppearance.find.try(:dslp_enabled?) || site_appearance_preview_mode?
+    !!SiteAppearance.find.try(:dslp_enabled?) || site_chrome_preview_mode?
   end
 
   def visualization_canvas_enabled?
@@ -793,7 +749,7 @@ module ApplicationHelper
     return true unless module_enabled?(:govStat)
 
     # Never load custom CSS on chromeless GovStat pages.
-    return false if govstat_chromeless?
+    return false if action_name == 'chromeless'
 
     # Always load custom CSS on DataSlate homepages. These properties were
     # written for sitewide H/F work and are set in CustomContentController.
@@ -801,7 +757,7 @@ module ApplicationHelper
 
     # For the remaining GovStat pages, load custom CSS if we've set the property
     # @suppress_govstat to true in CustomContentController.
-    return @suppress_govstat
+    @suppress_govstat
   end
 
   def is_mobile?

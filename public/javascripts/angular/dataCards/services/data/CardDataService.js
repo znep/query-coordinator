@@ -114,6 +114,12 @@ module.exports = function CardDataService(
       );
 
       url.searchParams.set('$query', query);
+
+      // These two flags are needed to make queries on the NBE copy of OBE derived views.
+      // They should be noops for any view based on an NBE view (i.e. every other data lens)
+      url.searchParams.set('$$read_from_nbe', true);
+      url.searchParams.set('$$version', 2.1);
+
       var config = httpConfig.call(this);
 
       return http.get(url.href, config).then(function(response) {
@@ -154,6 +160,11 @@ module.exports = function CardDataService(
       url.searchParams.set('$query',
         queryTemplate.format(fieldName, whereClause, aggregationClause, magnitudeAlias, valueAlias)
       );
+
+      // These two flags are needed to make queries on the NBE copy of OBE derived views.
+      // They should be noops for any view based on an NBE view (i.e. every other data lens)
+      url.searchParams.set('$$read_from_nbe', true);
+      url.searchParams.set('$$version', 2.1);
 
       return http.get(url.href, config).then(function(result) {
         var data = result.data;
@@ -199,6 +210,12 @@ module.exports = function CardDataService(
 
       var url = $.baseUrl(`/api/id/${datasetId}.json`);
       url.searchParams.set('$query', query);
+
+      // These two flags are needed to make queries on the NBE copy of OBE derived views.
+      // They should be noops for any view based on an NBE view (i.e. every other data lens)
+      url.searchParams.set('$$read_from_nbe', true);
+      url.searchParams.set('$$version', 2.1);
+
       var config = httpConfig.call(this);
 
       return http.get(url.href, config).then(function(response) {
@@ -227,6 +244,12 @@ module.exports = function CardDataService(
       var endAlias = SoqlHelpers.getFieldNameAlias('end');
       var url = $.baseUrl(`/api/id/${datasetId}.json`);
       url.searchParams.set('$query', `SELECT min(${fieldName}) AS ${startAlias}, max(${fieldName}) AS ${endAlias} WHERE ${fieldName} < '${MAX_LEGAL_JAVASCRIPT_DATE_STRING}'`);
+
+      // These two flags are needed to make queries on the NBE copy of OBE derived views.
+      // They should be noops for any view based on an NBE view (i.e. every other data lens)
+      url.searchParams.set('$$read_from_nbe', true);
+      url.searchParams.set('$$version', 2.1);
+
       var config = httpConfig.call(this);
 
       return http.get(url.href, config).then(function(response) {
@@ -306,6 +329,11 @@ module.exports = function CardDataService(
         `SELECT ${dateTruncFunction}(${fieldName}) AS ${dateAlias}, ${aggregationClause} AS ${valueAlias} ${whereClause} GROUP BY ${dateAlias}`
       );
 
+      // These two flags are needed to make queries on the NBE copy of OBE derived views.
+      // They should be noops for any view based on an NBE view (i.e. every other data lens)
+      url.searchParams.set('$$read_from_nbe', true);
+      url.searchParams.set('$$version', 2.1);
+
       var config = httpConfig.call(this);
 
       return http.get(url.href, config).then(function(response) {
@@ -384,6 +412,12 @@ module.exports = function CardDataService(
       }
       var url = $.baseUrl(`/api/id/${datasetId}.json`);
       url.searchParams.set('$query', query);
+
+      // These two flags are needed to make queries on the NBE copy of OBE derived views.
+      // They should be noops for any view based on an NBE view (i.e. every other data lens)
+      url.searchParams.set('$$read_from_nbe', true);
+      url.searchParams.set('$$version', 2.1);
+
       var config = httpConfig.call(this);
 
       return http.get(url.href, config).
@@ -394,6 +428,7 @@ module.exports = function CardDataService(
         });
     },
 
+    // return search card suggestions, not available for data lenses based on derived views
     getSampleData: function(fieldName, datasetId) {
       var url = $.baseUrl(
         `/views/${datasetId}/columns/${fieldName}/suggest`
@@ -431,6 +466,11 @@ module.exports = function CardDataService(
       if (whereClause) {
         url.searchParams.set('$where', whereClause);
       }
+
+      // These two flags are needed to make queries on the NBE copy of OBE derived views.
+      // They should be noops for any view based on an NBE view (i.e. every other data lens)
+      url.searchParams.set('$$read_from_nbe', true);
+      url.searchParams.set('$$version', 2.1);
 
       var config = httpConfig.call(this, { timeout: timeout });
 
@@ -485,6 +525,12 @@ ${JSON.stringify(errors)}`
       datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
       var url = $.baseUrl(`/resource/${datasetId}.json`);
       url.searchParams.set('$select', `extent(${fieldName}) as extent`);
+
+      // These two flags are needed to make queries on the NBE copy of OBE derived views.
+      // They should be noops for any view based on an NBE view (i.e. every other data lens)
+      url.searchParams.set('$$read_from_nbe', true);
+      url.searchParams.set('$$version', 2.1);
+
       config = httpConfig.call(this);
 
       return http.get(url.href, config).then(function(response) {
@@ -609,7 +655,7 @@ ${JSON.stringify(errors)}`
             // an error message for a choropleth that would have rendered successfully but its
             // cardinality is wonky.
             //
-            // TODO: Update this to use the column's cardinality once we're sure it's acurrate
+            // TODO: Update this to use the column's cardinality once we're sure it's accurate
             var cardinalityUrl = $.baseUrl(`/resource/${datasetId}.json`);
             cardinalityUrl.searchParams.set('$select', datasetSourceColumn);
             cardinalityUrl.searchParams.set('$group', datasetSourceColumn);
@@ -683,7 +729,6 @@ ${JSON.stringify(errors)}`
     },
 
     getChoroplethRegionMetadata: function(shapefileId) {
-
       // Request both curated region and shapefile metadata, and try to
       // extract the data first from the new curated region metadata,
       // falling back to legacy shapefile metadata, and finally to default values
@@ -734,6 +779,12 @@ ${JSON.stringify(errors)}`
       var queryTemplate = 'select min({0}) as `min`, max({0}) as `max` {1}';
       var url = $.baseUrl(`/api/id/${datasetId}.json`);
       url.searchParams.set('$query', queryTemplate.format(fieldName, whereClause));
+
+      // These two flags are needed to make queries on the NBE copy of OBE derived views.
+      // They should be noops for any view based on an NBE view (i.e. every other data lens)
+      url.searchParams.set('$$read_from_nbe', true);
+      url.searchParams.set('$$version', 2.1);
+
       var config = httpConfig.call(this);
 
       return http.get(url.href, config).then(function(response) {

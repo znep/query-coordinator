@@ -121,9 +121,10 @@ class PageMetadataManager
 
     page_metadata['pageId'] = new_page_id
 
-    update_metadata_rollup_table(page_metadata, options)
-
-    request_soda_fountain_secondary_index(page_metadata['datasetId'], options)
+    unless page_metadata['isFromDerivedView']
+      update_metadata_rollup_table(page_metadata, options)
+      request_soda_fountain_secondary_index(page_metadata['datasetId'], options)
+    end
 
     { :body => page_metadata, :status => 200 }
   end
@@ -193,15 +194,17 @@ class PageMetadataManager
       }, status: '500' }
     end
 
-    dataset_id = metadb_metadata['displayFormat']['data_lens_page_metadata']['datasetId']
+    page_metadata = metadb_metadata['displayFormat']['data_lens_page_metadata']
 
-    # Delete any rollups created for the page
-    response = soda_fountain.delete_rollup_table(
-      dataset_id: dataset_id,
-      identifier: id
-    )
-    if response.fetch(:status) !~ /^2[0-9][0-9]$/
-      report_error("Error deleting rollup table for page #{id}: #{response.inspect}")
+    unless page_metadata['isFromDerivedView']
+      # Delete any rollups created for the page
+      response = soda_fountain.delete_rollup_table(
+        dataset_id: page_metadata['datasetId'],
+        identifier: id
+      )
+      if response.fetch(:status) !~ /^2[0-9][0-9]$/
+        report_error("Error deleting rollup table for page #{id}: #{response.inspect}")
+      end
     end
 
     { body: '', status: '200' }
@@ -343,7 +346,9 @@ class PageMetadataManager
   def update_metadb_page_metadata(page_metadata, metadb_metadata, options)
     strip_page_metadata_properties!(page_metadata)
 
-    update_metadata_rollup_table(page_metadata, options)
+    unless page_metadata['isFromDerivedView']
+      update_metadata_rollup_table(page_metadata, options)
+    end
 
     url = "/views/#{CGI::escape(metadb_metadata['id'])}.json"
     payload = {

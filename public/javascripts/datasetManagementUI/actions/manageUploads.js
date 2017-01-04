@@ -64,6 +64,7 @@ export function uploadFile(uploadId, file) {
     xhr.onerror = (error) => {
       dispatch(updateFailed('uploads', uploadUpdate, error));
     };
+    xhr.setRequestHeader('Content-type', file.type);
     xhr.send(file);
   };
 }

@@ -4,7 +4,7 @@ require 'securerandom'
 module SiteAppearanceHelper
 
   def social_share_link(type, site_appearance = @site_appearance)
-    social_shares = site_appearance.content(site_appearance_published_mode?).to_h.dig('general', 'social_shares')
+    social_shares = site_appearance.content(site_chrome_published_mode?).to_h.dig('general', 'social_shares')
 
     if social_shares
       if site_appearance_version_is_greater_than_or_equal?('0.3', site_appearance)
@@ -20,7 +20,7 @@ module SiteAppearanceHelper
 
   # TODO: replace with `dig` after the Ruby upgrade
   def fetch_content(array_of_path_elements, site_appearance = @site_appearance)
-    array_of_path_elements.inject(site_appearance.content(site_appearance_published_mode?)) do |acc, element|
+    array_of_path_elements.inject(site_appearance.content(site_chrome_published_mode?)) do |acc, element|
       acc[element.to_s] if acc.is_a?(Hash) # do not throw on strings or arrays
     end
   end

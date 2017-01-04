@@ -190,9 +190,15 @@ class DataLensController < ActionController::Base
       return render_500
     end
 
+    # Determine whether the data lens was based on a derived view.
+    is_from_derived_view = @page_metadata.fetch(:isFromDerivedView, false)
+
     # Then fetch the dataset metadata.
     begin
-      @dataset_metadata = fetch_dataset_metadata(@page_metadata[:datasetId])
+      @dataset_metadata = fetch_dataset_metadata(
+        @page_metadata[:datasetId],
+        :is_from_derived_view => is_from_derived_view
+      )
     rescue AuthenticationRequired
       return redirect_to_login
     rescue UnauthorizedDatasetMetadataRequest, UnauthorizedPageMetadataRequest
@@ -208,24 +214,6 @@ class DataLensController < ActionController::Base
       return render_500
     end
 
-    # Finally fetch the dataset's pages.
-    begin
-      @dataset_metadata[:pages] = fetch_pages_for_dataset(@page_metadata[:datasetId])
-    rescue AuthenticationRequired
-      return redirect_to_login
-    rescue UnauthorizedDatasetMetadataRequest, UnauthorizedPageMetadataRequest
-      return render_403
-    rescue DatasetMetadataNotFound
-      return render_404
-    rescue UnknownRequestError => error
-      error_class = 'PagesForDatasetRequestFailure'
-      error_message = "Could not serve app: encountered unknown error " \
-        "fetching pages for dataset with id " \
-        "#{@page_metadata[:datasetId]}: #{error.to_s}"
-      report_error(error_class, error_message)
-      return render_500
-    end
-
     # Fetch migration info to get mapping from nbe to obe for skipLinks
     @migration_metadata = {}
     begin
@@ -234,6 +222,8 @@ class DataLensController < ActionController::Base
       return render_403 if error.error_code == 'permission_denied'
     rescue
     end
+
+    @skip_link_id = is_from_derived_view ? @dataset_metadata[:id] : @migration_metadata[:obeId]
   end
 
   def data_lens
@@ -249,7 +239,7 @@ class DataLensController < ActionController::Base
     # First fetch the current user's profile.
     current_user
 
-    @suppress_site_chrome = true
+    @suppress_chrome = true
 
     @page_metadata = page_metadata_manager.page_metadata_from_vif(
         parsed_vif, nil, nil)
@@ -316,6 +306,8 @@ class DataLensController < ActionController::Base
       ].compact
 
       @dataset_metadata = fetch_dataset_metadata(view.nbe_view.id)
+
+      @skip_link_id = view.is_derived_view? ? @dataset_metadata[:id] : @migration_metadata[:obeId]
 
     rescue AuthenticationRequired
       return redirect_to_login

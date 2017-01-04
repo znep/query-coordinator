@@ -37,6 +37,8 @@ module.exports = function PageModelFactory(ServerConfig, Card, Dataset, Model, F
         pageMetadata.version :
         getDefaultPageMetadataVersion();
 
+      this.isFromDerivedView = pageMetadata.isFromDerivedView;
+
       var fields = [
         'datasetId',
         'description',
@@ -153,6 +155,7 @@ module.exports = function PageModelFactory(ServerConfig, Card, Dataset, Model, F
       serialized.pageId = this.id;
       serialized.datasetId = dataset.id;
       serialized.version = this.version;
+      serialized.isFromDerivedView = this.isFromDerivedView;
       delete serialized.dataset;
       return serialized;
     },

@@ -70,34 +70,42 @@ module.exports = function ApiExplorer($window, http, WindowState, rx) {
         domain$,
         safeUrlFormatFn('https://dev.socrata.com/foundry/{0}/{1}'));
       var jsonAvailable$ = Rx.Observable.returnValue(true);
-      var geoJsonAvailable$ = datasetId$.
-        filter(function(value) { return !_.isNull(value); }).
-        flatMapLatest(function(id) {
-          $window.socrata.utils.assert(_.isString(id), 'id should be a string');
-          var url = $.baseUrl(`/resource/${id}.geojson`);
 
-          var config = {
-            headers: {
-              Accept: 'application/vnd.geo+json'
-            },
-            cache: true,
-            requester: {
-              requesterLabel: function() {
-                return 'api-explorer';
+      // EN-12608: If this data lens is based on a derived view, hide the geojson endpoint. As of
+      // 12/2016, the /resource/4x4.geojson endpoint only works for derived views if additional
+      // parameters are set: $$read_from_nbe=true&$$version=2.1. Since we don't want to explicitly,
+      // publicly expose these flags to consumers, we're hiding the geojson endpoint completely
+      // for derived views.
+      var geoJsonAvailable$ = $scope.page.isFromDerivedView ?
+        Rx.Observable.returnValue(false) :
+        datasetId$.
+          filter(function(value) { return !_.isNull(value); }).
+          flatMapLatest(function(id) {
+            $window.socrata.utils.assert(_.isString(id), 'id should be a string');
+            var url = $.baseUrl(`/resource/${id}.geojson`);
+
+            var config = {
+              headers: {
+                Accept: 'application/vnd.geo+json'
+              },
+              cache: true,
+              requester: {
+                requesterLabel: function() {
+                  return 'api-explorer';
+                }
+              },
+              params: {
+                $limit: 1
               }
-            },
-            params: {
-              $limit: 1
-            }
-          };
+            };
 
-          return Rx.Observable.fromPromise(http.get(url.href, config));
-        }).
-        filter(function(response) {
-          // Currently requests to the GeoJson endpoint for datasets that don't have geo data return a 200
-          // But should return a 406, thus the additional check for an empty body
-          return response.status === 200 && _.keys(response.data).length > 0;
-        });
+            return Rx.Observable.fromPromise(http.get(url.href, config));
+          }).
+          filter(function(response) {
+            // Currently requests to the GeoJson endpoint for datasets that don't have geo data return a 200
+            // But should return a 406, thus the additional check for an empty body
+            return response.status === 200 && _.keys(response.data).length > 0;
+          });
 
       var multipleFormatsAvailable$ = Rx.Observable.merge(jsonAvailable$, geoJsonAvailable$).
         filter(_.identity).

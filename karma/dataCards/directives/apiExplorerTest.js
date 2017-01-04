@@ -164,6 +164,37 @@ describe('API Explorer', function() {
         expect(element.find('.selection-label-inner').text()).to.equal('#');
       });
     });
+
+    describe('with a data lens based on a derived view', function() {
+      var element;
+
+      beforeEach(function() {
+        var scope = $rootScope.$new();
+
+        var page = Mockumentary.createPage(
+          {
+            datasetId: '',
+            isFromDerivedView: true
+          },
+          {
+            id: '',
+            domain: null
+          }
+        );
+        scope.page = page;
+
+        element = testHelpers.TestDom.compileAndAppend('<api-explorer></api-explorer>', scope);
+      });
+
+      it('should populate the documentation URL link', function() {
+        expect(element.find('[data-action="documentation"]').attr('href')).
+          to.equal('#');
+      });
+
+      it('should populate the selection label with the JSON API URL', function() {
+        expect(element.find('.selection-label-inner').text()).to.equal('#');
+      });
+    });
   });
 
   describe('when only one type of dataset is available', function() {

@@ -64,33 +64,6 @@ module.exports = function Mockumentary(Page, Dataset, Card) {
       updatedAt: '2004-05-20T17:42:55+00:00',
       locale: 'en_US',
       columns: {},
-      pages: {
-        publisher: [
-          {
-            cards: [],
-            datasetId: 'asdf-fdsa',
-            description: 'Description',
-            name: 'Name',
-            pageId: 'page-page',
-            moderationStatus: true,
-            primaryAmountField: null,
-            primaryAggregation: null,
-            version: 1
-          },
-          {
-            cards: [],
-            datasetId: 'asdf-fdsa',
-            description: 'Description',
-            name: 'Name',
-            pageId: 'aaaa-aaaa',
-            moderationStatus: true,
-            primaryAmountField: null,
-            primaryAggregation: null,
-            version: 1
-          }
-        ],
-        user: []
-      },
       permissions: {
         isPublic: true
       },

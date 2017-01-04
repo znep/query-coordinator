@@ -77,22 +77,35 @@ module CommonMetadataMethods
     # Grab permissions from core.
     permissions = fetch_permissions_and_normalize_exceptions(dataset_id)
 
-    result = phidippides.fetch_dataset_metadata(
-      dataset_id,
-      :request_id => options[:request_id] || request_id,
-      :cookies => options[:cookies] || forwardable_session_cookies
-    )
+    if options[:is_from_derived_view]
+      begin
+        # we're imitating the format phidippides would have returned here so we can use the
+        # metadata formatting methods the normal response returns.
+        result = {
+          :body => fetch_dataset_metadata_for_derived_view(dataset_id),
+          :status => 200
+        }
+      rescue CoreServer::Error
+        raise UnknownRequestError.new("Error fetching derived view metadata for #{dataset_id}")
+      end
+    else
+      result = phidippides.fetch_dataset_metadata(
+        dataset_id,
+        :request_id => options[:request_id] || request_id,
+        :cookies => options[:cookies] || forwardable_session_cookies
+      )
 
-    if result[:status] != '200'
-      case result[:status]
-        when '401'
-          raise AuthenticationRequired.new
-        when '403'
-          raise UnauthorizedDatasetMetadataRequest.new
-        when '404'
-          raise DatasetMetadataNotFound.new
-        else
-          raise UnknownRequestError.new result[:body].to_s
+      if result[:status] != '200'
+        case result[:status]
+          when '401'
+            raise AuthenticationRequired.new
+          when '403'
+            raise UnauthorizedDatasetMetadataRequest.new
+          when '404'
+            raise DatasetMetadataNotFound.new
+          else
+            raise UnknownRequestError.new result[:body].to_s
+        end
       end
     end
 
@@ -124,6 +137,32 @@ module CommonMetadataMethods
     rescue => error
       raise UnknownRequestError.new error.to_s
     end
+  end
+
+  # EN-12365: This method assembles metadata data similar to what Phidippides would have returned.
+  # Data lenses based on derived views have a number of limitations to keep in mind:
+  # - we cannot use Phidippides
+  # - most derived views are based on the OBE version of a dataset, so the /views endpoint will
+  #   return OBE columns, which makes data lens very, very unhappy
+  # - we have to use the `read_from_nbe=true` flag whenever talking to Core, including the /views
+  #   endpoint, because there are special snowflake hacks in place under that flag for derived views
+  #   that make data lens for derived views possible
+  def fetch_dataset_metadata_for_derived_view(dataset_id)
+    derived_view_dataset = View.find_derived_view_using_read_from_nbe(dataset_id)
+
+    dataset_metadata = derived_view_dataset.as_json.merge({
+      :domain => CurrentDomain.cname,
+      :locale => I18n.locale,
+      :columns => Column.get_derived_view_columns(derived_view_dataset),
+      :ownerId => derived_view_dataset.owner.id,
+      :updatedAt => derived_view_dataset.time_metadata_last_updated_at
+    }).with_indifferent_access
+
+    # This mutates dataset_metadata with the extra things we need by looking up the view again in
+    # Core. While it's in the Phidippides class, it doesn't actually talk to Phidippides.
+    phidippides.mirror_nbe_column_metadata!(derived_view_dataset, dataset_metadata)
+
+    dataset_metadata
   end
 
   def add_table_column_to_dataset_metadata!(dataset_metadata)
@@ -201,69 +240,5 @@ module CommonMetadataMethods
         column[:isSubcolumn] = false
       end
     end
-  end
-
-  def fetch_pages_for_dataset(dataset_id)
-
-    # Fetch phiddy (v1) pages
-    phiddy_result = phidippides.fetch_pages_for_dataset(
-      dataset_id,
-      :request_id => request_id,
-      :cookies => forwardable_session_cookies
-    )
-
-    # Fetch metadb (v2) pages
-    metadb_status = begin
-      metadb_response = View.find(dataset_id).find_related(1)
-      '200'
-    rescue CoreServer::ResourceNotFound
-      '404'
-    rescue CoreServer::CoreServerError => error
-      case error.error_code
-      when 'authentication_required'; '401'
-      when 'permission_denied'; '403'
-      end
-    end
-
-    # Filter metadb_response on only published v2 data lenses
-    metadb_result = metadb_response.select { |view| view.data_lens? && view.is_published? }.
-      map { |view| view.as_json.with_indifferent_access }
-
-    combined_statuses = [phiddy_result[:status], metadb_status]
-
-    unless combined_statuses.include? '200'
-      if combined_statuses.include? '401'
-        raise AuthenticationRequired.new
-      elsif combined_statuses.include? '403'
-        raise UnauthorizedDatasetMetadataRequest.new
-      elsif combined_statuses.include? '404'
-        raise DatasetMetadataNotFound.new
-      else
-        raise UnknownRequestError.new combined_result[:body].to_s
-      end
-    end
-
-    metadb_pages = []
-    if metadb_result.present?
-      metadb_pages = metadb_result.select { |page|
-        page[:displayFormat].present? && page[:displayFormat][:data_lens_page_metadata].present?
-      }.map { |page|
-        HashWithIndifferentAccess.new(page[:displayFormat][:data_lens_page_metadata])
-      }
-    end
-
-    phiddy_pages = []
-    phiddy_user_pages = []
-    if phiddy_result[:body].present?
-      phiddy_pages = phiddy_result[:body][:publisher] if phiddy_result[:body][:publisher].present?
-      phiddy_user_pages = phiddy_result[:body][:user] if phiddy_result[:body][:user].present?
-    end
-
-    # Return hash with publisher and user views.
-    # Combines metadb and phiddy results into publisher views.
-    {
-      :publisher => metadb_pages.concat(phiddy_pages),
-      :user => phiddy_user_pages
-    }
   end
 end

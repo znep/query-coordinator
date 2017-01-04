@@ -58,7 +58,7 @@ module DataLensHelper
       'featureSet' => features,
       'themeV3' => theme,
       'tileserverHosts' => tileserver_hosts,
-      'siteChromeEnabled' => site_chrome_enabled?
+      'siteChromeEnabled' => enable_site_chrome?
     }.tap do |config|
       app_config_whitelist.each do |config_key|
         js_config_key = config_key.camelize(:lower)
@@ -109,9 +109,5 @@ module DataLensHelper
     Dir.glob("#{basedir}/angular_templates/**/*.html").map do |path|
       { :id => path.gsub(basedir, ''), :template => File.read(path) }
     end
-  end
-
-  def site_chrome_enabled?
-    SiteAppearance.find.try(:is_activated_on?, 'data_lens') && !@suppress_site_chrome
   end
 end

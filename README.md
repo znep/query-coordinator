@@ -198,20 +198,6 @@ general pass/fail check, a faster parallelized test run is also available:
 
     bundle exec rake test:karma:parallel
 
-#### To run a specific Ruby unit test
-
-###### For MiniTest tests
-
-    ruby -I test path/to/file.rb -n /regex_matcher_for_your_test_name/
-
-> Note: The regex match technique does not work for MiniTest tests written using the [MiniTest](https://github.com/seattlerb/minitest) "spec" style.
-
-###### For RSpec tests
-
-    bundle exec rspec path/to/file.rb:line_number
-
-> Note: The line_number can be within a single test, a context, or a describe block and all tests within the enclosing scope will be run.
-
 ## Javascript/other asset package management
 
 See the [doc/javascript.md#dependency-management](Dependency Management section) of the JavaScript

@@ -8,7 +8,7 @@
 
 <%= display_standard_flashes %>
 
-<div class="site-appearance <%= 'custom' if using_custom_site_chrome? %>">
+<div class="site-appearance <%= 'custom' if enable_custom_chrome? %>">
   <div class="admin-header">
     <div class="header-title">
       <h1><%= t('screens.admin.site_appearance.site_appearance') %></h1>
@@ -22,7 +22,7 @@
       <% end %>
     </div>
 
-    <% if using_custom_site_chrome? %>
+    <% if enable_custom_chrome? %>
       <%= content_tag(
         :div,
         t('screens.admin.site_appearance.custom_content_warning_html'),

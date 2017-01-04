@@ -56,8 +56,6 @@ module.exports = function(
 
       self.defineObservableProperty('columns', datasetMetadata.columns);
 
-      self.defineObservableProperty('pages', datasetMetadata.pages);
-
       self.defineEphemeralObservableProperty('rowCount', null, function() {
         return CardDataService.getRowCount(self.id);
       });

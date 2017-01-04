@@ -61,6 +61,8 @@ module CardTypeMapping
           card_type = 'column'
         elsif is_low_cardinality?(cardinality, dataset_size)
           card_type = 'column'
+        elsif is_derived_view
+          card_type = 'column'
         else
           card_type = 'search'
         end
@@ -114,10 +116,16 @@ module CardTypeMapping
       when 'geo_entity'
         available_card_types = ['feature']
       when 'money'
-        available_card_types = ['column', 'search', 'histogram']
+        if is_derived_view
+          available_card_types = ['column', 'histogram']
+        else
+          available_card_types = ['column', 'search', 'histogram']
+        end
       when 'number'
         if has_georegion_computation_strategy?(column) && !is_derived_view
           available_card_types = ['choropleth']
+        elsif is_derived_view
+          available_card_types = ['histogram', 'column']
         else
           available_card_types = ['histogram', 'column', 'search']
         end
@@ -130,6 +138,8 @@ module CardTypeMapping
       when 'text'
         if has_georegion_computation_strategy?(column) && !is_derived_view
           available_card_types = ['choropleth']
+        elsif is_derived_view
+          available_card_types = ['column']
         else
           available_card_types = ['column', 'search']
         end

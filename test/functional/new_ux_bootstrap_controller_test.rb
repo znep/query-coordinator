@@ -15,7 +15,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         :phidippides => @phidippides,
         :page_metadata_manager => @page_metadata_manager,
         :dataset_is_new_backend? => true,
-        :dataset_is_derived_view? => false
+        :is_from_derived_view => false
       )
 
       Airbrake.stubs(notify: nil)
@@ -149,65 +149,44 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
       context 'bootstrapping from derived views' do
         setup do
-          @controller.stubs(:dataset_is_derived_view? => true)
+          @controller.stubs(:is_from_derived_view => true)
           View.any_instance.stubs(:nbe_view => View.find('test-data'))
         end
 
-        should 'redirect to homepage when the feature flag is disabled' do
-          stub_feature_flags_with(:enable_data_lens_using_derived_view => false)
+        setup do
+          stub_site_chrome
+          CurrentDomain.stubs(domain: stub(configUpdatedAt: 12345))
 
-          get :bootstrap, id: 'data-iden', app: 'dataCards'
-          assert_response(302)
+          test_view = View.find('test-data')
+          columns = test_view.columns.map { |column| [column.fieldName, column.as_json] }.to_h
+
+          @controller.stubs(fetch_dataset_metadata_for_derived_view: {
+            id: test_view.id,
+            columns: columns
+          })
         end
 
-        context 'when the feature flag is enabled' do
-          setup do
-            stub_feature_flags_with(:enable_data_lens_using_derived_view => true)
-            stub_site_chrome
-            CurrentDomain.stubs(domain: stub(configUpdatedAt: 12345))
+        should 'render' do
+          get :bootstrap, id: 'data-iden', app: 'dataCards'
+          assert_response(200)
+        end
 
-            test_view = View.find('test-data')
-            columns = test_view.columns.map { |column| [column.fieldName, column.as_json] }.to_h
-            Column.stubs(:get_derived_view_columns => columns)
+        should 'not ask phidippides for metadata information' do
+          @phidippides.expects(:fetch_dataset_metadata).never
+          get :bootstrap, id: 'data-iden', app: 'dataCards'
+        end
 
-            @controller.stubs(fetch_pages_for_dataset: {
-              status: '200', body: { publisher: [], user: [] }
-            })
-          end
+        should 'assemble phidippides-like dataset metadata' do
+          @controller.expects(:fetch_dataset_metadata_for_derived_view).returns({
+            id: 'elep-hant',
+            columns: {}
+          })
+          get :bootstrap, id: 'data-iden', app: 'dataCards'
+        end
 
-          should 'render' do
-            get :bootstrap, id: 'data-iden', app: 'dataCards'
-            assert_response(200)
-          end
-
-          should 'not ask phidippides for metadata information' do
-            @phidippides.expects(:fetch_dataset_metadata).never
-            get :bootstrap, id: 'data-iden', app: 'dataCards'
-          end
-
-          should 'call the Column class method to mimic phidippides column metadata' do
-            Column.expects(:get_derived_view_columns).returns({})
-            get :bootstrap, id: 'data-iden', app: 'dataCards'
-          end
-
-          should 'use phidippides data column transformations' do
-            @phidippides.expects(:mirror_nbe_column_metadata!)
-            get :bootstrap, id: 'data-iden', app: 'dataCards'
-          end
-
-          should 'fetch pages from phidippides for the default view\'s NBE copy' do
-            test_view = View.find('test-data')
-            test_parent_view = View.find('test-data')
-            test_nbe_view = View.find('test-data')
-
-            test_view.stubs(:parent_dataset => test_parent_view)
-            test_parent_view.stubs(:nbe_view => test_nbe_view)
-            test_nbe_view.stubs(:id => 'elep-hant')
-            @controller.stubs(:derived_view_dataset => test_view)
-
-            @controller.expects(:fetch_pages_for_dataset).with('elep-hant').returns({})
-            get :bootstrap, id: 'data-iden', app: 'dataCards'
-          end
+        should 'set the isFromDerivedView property in page metadata to true' do
+          get :bootstrap, id: 'data-iden', app: 'dataCards'
+          assert(@controller.instance_variable_get(:@page_metadata)['isFromDerivedView'])
         end
       end
 

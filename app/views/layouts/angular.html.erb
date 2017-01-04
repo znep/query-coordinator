@@ -20,7 +20,7 @@
 
     <%= get_favicon_tag %>
 
-    <%- if site_chrome_enabled? -%>
+    <%- if enable_site_chrome? -%>
       <%= site_chrome_meta_viewport_tag %>
       <%= site_chrome_stylesheet_tag %>
     <%- end -%>
@@ -41,21 +41,21 @@
 
   <body ng-app="<%= angular_app %>">
 
-    <% if @migration_metadata %>
+    <% if @skip_link_id %>
       <div class="skip-links">
-        <%= link_to 'Go to an accessible version of this page', get_alt_dataset_link(@migration_metadata[:obeId]) %>
+        <%= link_to t('angular.dataCards.skip_link'), get_alt_dataset_link(@skip_link_id) %>
       </div>
-      <%= render_noscript(@migration_metadata[:obeId]) %>
+      <%= render_noscript(@skip_link_id) %>
     <% end %>
 
     <%= include_webpack_bundle 'data-cards/main.js' %>
 
-    <%= site_chrome_javascript_tag if site_chrome_enabled? %>
-    <%== site_chrome_header(request, response) if site_chrome_enabled? %>
+    <%= site_chrome_javascript_tag if enable_site_chrome? %>
+    <%== site_chrome_header(request, response) if render_site_chrome? %>
 
     <%= yield %>
 
-    <%== site_chrome_footer(request, response, :size => 'small') if site_chrome_enabled? %>
+    <%== site_chrome_footer(request, response, :size => 'small') if render_site_chrome? %>
   </body>
 
 

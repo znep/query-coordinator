@@ -33,12 +33,7 @@ This library exposes new capabilities in three ways:
 
 ## Testing locally with npm link
 
-If you're developing locally and want to try out your changes using another project, say the `frontend` for example, you can use `npm link` to link your work with the project you're testing it in. For example, do link this package with the `frontend` you'd do something like this:
-
-    cd frontend-utils
-    npm link
-    cd ../frontend
-    npm link socrata-utils
+If you're developing locally and want to try out your changes using another project, say the `frontend` for example, you can use `npm link` to link your work with the project you're testing it in. For example, do link this package with the `frontend` you'd do something like this: TBD
 
 #### Command Quick Index
 

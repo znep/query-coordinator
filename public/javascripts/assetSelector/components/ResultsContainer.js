@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { updatePageResults } from '../actions/pageResults';
 import { changeViewType } from '../actions/viewType';
+import { updateResultCount } from '../actions/resultCount';
 import NoResults from './NoResults';
-import ViewCount from './ViewCount';
+import ResultCount from './ResultCount';
 import CardContainer from './CardContainer';
 import TableContainer from './TableContainer';
 import PagerWrapper from './PagerWrapper';
@@ -26,11 +27,12 @@ export class ResultsContainer extends Component {
   }
 
   onPageChange(pageNumber) {
-    const { dispatchUpdatePageResults } = this.props;
+    const { dispatchUpdatePageResults, dispatchUpdateResultCount } = this.props;
     ceteraUtils.fetch({ pageNumber }).
       success((response) => {
         const results = ceteraUtils.mapToAssetSelectorResult(response.results);
         dispatchUpdatePageResults(results);
+        dispatchUpdateResultCount(response.resultSetSize);
         // TODO: scroll up?
       }).
       error((err) => {
@@ -62,10 +64,10 @@ export class ResultsContainer extends Component {
           <a href="#" onClick={this.onViewTypeClick('CARD_VIEW')}>Card view</a> |
           <a href="#" onClick={this.onViewTypeClick('TABLE_VIEW')}>Table view</a>
 
-          <ViewCount count={this.props.viewCount} />
+          <ResultCount count={this.props.resultCount} />
 
           {this.renderResults()}
-          <PagerWrapper viewCount={this.props.viewCount} onPageChange={this.onPageChange} />
+          <PagerWrapper resultCount={this.props.resultCount} onPageChange={this.onPageChange} />
         </div>
       );
     }
@@ -76,7 +78,8 @@ ResultsContainer.propTypes = {
   results: PropTypes.array.isRequired,
   dispatchChangeViewType: PropTypes.func.isRequired,
   dispatchUpdatePageResults: PropTypes.func.isRequired,
-  viewCount: PropTypes.number.isRequired,
+  dispatchUpdateResultCount: PropTypes.func.isRequired,
+  resultCount: PropTypes.number.isRequired,
   viewType: PropTypes.string.isRequired
 };
 
@@ -84,12 +87,14 @@ ResultsContainer.defaultProps = {
   results: [],
   dispatchChangeViewType: _.noop,
   dispatchUpdatePageResults: _.noop,
-  viewCount: 0,
+  dispatchUpdateResultCount: _.noop,
+  resultCount: 0,
   viewType: 'CARD_VIEW'
 };
 
 function mapStateToProps(state) {
   return {
+    resultCount: _.get(state, 'resultCount.count'),
     viewType: _.get(state, 'viewType.type'),
     results: _.get(state, 'pageResults.results')
   };
@@ -102,6 +107,9 @@ function mapDispatchToProps(dispatch) {
     },
     dispatchUpdatePageResults: function(newPageResults) {
       dispatch(updatePageResults(newPageResults));
+    },
+    dispatchUpdateResultCount: function(newResultCount) {
+      dispatch(updateResultCount(newResultCount));
     }
   };
 }

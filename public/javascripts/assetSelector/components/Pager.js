@@ -5,7 +5,7 @@ export class Pager extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentPage: 1
+      currentPage: 1 // TODO: optionally get currentPage from url param? once this becomes a catalog replacement.
     };
     _.bindAll(this, ['pageLinks', 'pageLinkClick']);
   }

@@ -5,7 +5,7 @@ describe('components/PagerWrapper', function() {
   function defaultProps() {
     return {
       onPageChange: _.noop,
-      viewCount: 1000
+      resultCount: 1000
     };
   }
 
@@ -13,7 +13,7 @@ describe('components/PagerWrapper', function() {
     return Object.assign({}, defaultProps(), props);
   }
 
-  // TODO! useful tests regarding the number of pager .pageLink's rendered based on viewCount
+  // TODO! useful tests regarding the number of pager .pageLink's rendered based on resultCount
   it('renders', function() {
     var element = renderComponent(PagerWrapper, getProps());
     expect(element).to.exist;

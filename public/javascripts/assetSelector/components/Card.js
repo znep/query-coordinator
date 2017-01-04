@@ -10,7 +10,6 @@ export class Card extends Component {
   }
 
   viewCardProps() {
-
     return {
       name: this.props.name,
       description: this.props.description,

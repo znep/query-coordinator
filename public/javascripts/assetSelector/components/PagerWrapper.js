@@ -10,12 +10,12 @@ export class PagerWrapper extends Component {
 
   // Index of first page
   getPagerStart() {
-    return 1; // TODO: determine correct pagerStart using this.props.viewCount
+    return 1; // TODO: determine correct pagerStart using this.props.resultCount
   }
 
   // Index of last page (inclusive)
   getPagerEnd() {
-    return 9; // TODO: determine correct pagerEnd using this.props.viewCount
+    return 9; // TODO: determine correct pagerEnd using this.props.resultCount
   }
 
   render() {
@@ -28,12 +28,12 @@ export class PagerWrapper extends Component {
 
 PagerWrapper.propTypes = {
   onPageChange: PropTypes.func.isRequired,
-  viewCount: PropTypes.number.isRequired
+  resultCount: PropTypes.number.isRequired
 };
 
 PagerWrapper.defaultProps = {
   onPageChange: _.noop,
-  viewCount: 0
+  resultCount: 0
 };
 
 export default PagerWrapper;

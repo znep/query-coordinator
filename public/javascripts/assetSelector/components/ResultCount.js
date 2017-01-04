@@ -1,18 +1,18 @@
 import React, { PropTypes } from 'react';
 import { getViewCountLabel } from '../../datasetLandingPage/lib/viewCardHelpers';
 
-export const ViewCount = (props) => (
+export const ResultCount = (props) => (
   <div className="view-count">
     {getViewCountLabel(props.count)}
   </div>
 );
 
-ViewCount.propTypes = {
+ResultCount.propTypes = {
   count: PropTypes.number.isRequired
 };
 
-ViewCount.defaultProps = {
-  count: 0
+ResultCount.defaultProps = {
+  count: 4 // todo
 };
 
-export default ViewCount;
+export default ResultCount;

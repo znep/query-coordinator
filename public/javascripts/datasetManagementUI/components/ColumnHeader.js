@@ -9,12 +9,12 @@ const ColumnHeader = React.createClass({
   },
 
   shouldComponentUpdate(nextProps) {
-    return !_.isEqual(nextProps.column, this.props.column);
+    return !_.isEqual(nextProps.column, this.props.column) ||
+      nextProps.outputSchema.id !== this.props.outputSchema.id;
   },
 
   render() {
     const { outputSchema, column, updateColumnType } = this.props;
-    // console.log('render column', column.id);
     // TODO: Refactor this to be in an appropriate location!
     const columnTypes = ['SoQLNumber', 'SoQLText'];
     // TODO: Internationalize!

@@ -9,10 +9,9 @@ import * as Links from '../links';
 import { STATUS_UPDATING } from '../lib/database/statuses';
 import * as Actions from '../actions/showOutputSchema';
 
-function query(db, uploadId, schemaId, outputSchemaIdStr) {
-  const outputSchemaId = _.toNumber(outputSchemaIdStr);
-  const upload = _.find(db.uploads, { id: _.toNumber(uploadId) });
-  const schema = _.find(db.schemas, { id: _.toNumber(schemaId) });
+function query(db, uploadId, schemaId, outputSchemaId) {
+  const upload = _.find(db.uploads, { id: uploadId });
+  const schema = _.find(db.schemas, { id: schemaId });
   const outputSchema = _.find(db.schemas, { id: outputSchemaId });
   const schemaColumns = _.filter(db.schema_columns, { schema_id: outputSchema.id });
   const unsortedColumns = _.filter(
@@ -92,7 +91,12 @@ ShowOutputSchema.propTypes = {
 
 function mapStateToProps(state, ownProps) {
   const params = ownProps.params;
-  return query(state.db, params.uploadId, params.schemaId, params.outputSchemaId);
+  return query(
+    state.db,
+    _.toNumber(params.uploadId),
+    _.toNumber(params.schemaId),
+    _.toNumber(params.outputSchemaId)
+  );
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
@@ -100,10 +104,8 @@ function mapDispatchToProps(dispatch, ownProps) {
     updateColumnType: (oldSchema, oldColumn, newType) => {
       dispatch(Actions.updateColumnType(oldSchema, oldColumn, newType));
     },
-    goToUpload: (uploadId) => (
-      () => {
-        dispatch(push(Links.showUpload(uploadId)(ownProps.location)));
-      }
+    goToUpload: () => (
+      dispatch(push(Links.showUpload(_.toNumber(ownProps.params.uploadId))(ownProps.location)))
     )
   };
 }

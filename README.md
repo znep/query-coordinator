@@ -1,6 +1,7 @@
 # Socrata Utils
 
-Useful utility functions and modules that we can share between different projects such as `frontend`, `storyteller`, `socrata_site_chrome`, `frontend-visualizations`, etc.
+Useful utility functions and modules that we can share between different projects such as 
+`frontend`, `storyteller`, `socrata_site_chrome`, `frontend-visualizations`, etc.
 
 ## Installation and usage
 
@@ -33,7 +34,10 @@ This library exposes new capabilities in three ways:
 
 ## Testing locally with npm link
 
-If you're developing locally and want to try out your changes using another project, say the `frontend` for example, you can use `npm link` to link your work with the project you're testing it in. For example, do link this package with the `frontend` you'd do something like this: TBD
+If you're developing locally and want to try out your changes using another project, say the
+`frontend` for example, you can use `npm link` to link your work with the project you're 
+testing it in. For example, do link this package with the `frontend` you'd do something 
+like this: TBD
 
 #### Command Quick Index
 
@@ -59,8 +63,10 @@ provide validation of requested feature flag keys.
 
 Usage example:
 
-    import { FeatureFlags } from 'socrata-utils';
-    console.log('useAuth0 = ' + FeatureFlags.value('useAuth0'));
+```javascript
+import { FeatureFlags } from 'socrata-utils';
+console.log('useAuth0 = ' + FeatureFlags.value('useAuth0'));
+```
 
 #### In tests
 
@@ -93,76 +99,7 @@ describe('FeatureFlags', function() {
 featureFlags: {
     "allowDataLensOwnerChange": true,
     "auth0Social": false,
-    "browseAutocomplete": false,
-    "bubble": "old",
-    "ceteraProfileSearch": false,
-    "ceteraSearch": true,
-    "createV2DataLens": true,
-    "currentPageMetadataVersion": 1,
-    "dataLensTransitionState": "post_beta",
-    "debugDataLens": false,
-    "debugLabjs": false,
-    "disableAuthorityBadge": "none",
-    "disableLegacyTypes": false,
-    "disableNbeRedirectionWarningMessage": false,
-    "disableObeRedirection": false,
-    "disableSiteChromeHeaderFooterOnDataslatePages": false,
-    "displayDatasetLandingPageNotice": false,
-    "displayDatasetLandingPagePreviewImages": false,
-    "embetterAnalyticsBrowserViewsOnly": false,
-    "embetterAnalyticsPage": false,
-    "enableApiFoundryPane": false,
-    "enableCatalogConnector": true,
-    "enableDataLensPageMetadataMigrations": true,
-    "enableDataLensProvenance": true,
-    "enableDatasetLandingPageTour": true,
-    "enableDatasetManagementUi": false,
-    "enableEmbedWidgetForNbe": false,
-    "enableIngressGeometryTypes": false,
-    "enableNewAccountVerificationEmail": false,
-    "enableOpendataGaTracking": null,
-    "enablePulse": false,
-    "enableStandardGaTracking": false,
-    "enableStorytellerMixpanel": false,
-    "enableThirdPartySurveyQualtrics": false,
-    "enableVisualizationCanvas": false,
-    "featureMapDefaultExtent": "",
-    "govstatProgressSettings": true,
-    "hideInterpolatedNulls": false,
-    "hideSocrataId": false,
-    "includeSrInEsri": false,
-    "ingressReenter": false,
-    "ingressStrategy": "obe",
-    "internalPanelRedesign": "all",
-    "killEsriReprojectionAndPassDifferentWebm": false,
-    "killSnowflakeMapProjections": false,
-    "nbeBucketSize": true,
-    "notifyImportResult": false,
-    "openPerformanceEnableGoalManagementAdminPane": true,
-    "openPerformanceNarrativeEditor": "classic",
-    "reenableUiForNbe": false,
-    "removeViewsFromDiscussPane": false,
-    "reportBuilderEnabled": false,
-    "routeDataslateWithoutCaching": true,
-    "sendSoqlVersion": false,
-    "showAuth0Identifiers": false,
-    "showFederatedSiteNameInsteadOfCname": false,
-    "showProvenanceBadgeInCatalog": true,
-    "showProvenanceFacetInCatalog": true,
-    "siteAppearanceVisible": false,
-    "siteChromeLanguageSwitcher": false,
-    "storiesEnabled": true,
-    "storiesShowFacetInCatalog": true,
-    "timeline": "old",
-    "useAuth0": false,
-    "useAuth0Component": false,
-    "useAuth0LoginFlow": false,
-    "useDataLensChoroplethCustomBoundary": false,
-    "useEphemeralBootstrap": true,
-    "useMergedStyles": false,
-    "useSoda2": "never",
-    "validateFragmentCacheBeforeRender": true,
-    "zealousDataslateCacheExpiry": false
+   ... Removed for brevity. See FeatureFlags.js for more.
 }
 ```
 
@@ -170,7 +107,9 @@ featureFlags: {
 
 #### String.prototype.escapeSpaces()
 
-Replaces whitespace characters (in the `\s` character class) with Unicode non-breaking space `\u00A0`, which prevents multiple spaces from being collapsed into a single space in HTML contexts.
+Replaces whitespace characters (in the `\s` character class) with Unicode non-breaking 
+space `\u00A0`, which prevents multiple spaces from being collapsed into a single space 
+in HTML contexts.
 
 **Returns**
 
@@ -211,7 +150,9 @@ _(String)_ The interpolated string.
 
 #### CustomEvent
 
-A polyfill for [CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent), to make up for IE's lack of support for the native constructor. `CustomEvent` is used by our visualizations for cross-browser eventing.
+A polyfill for [CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent), to 
+make up for IE's lack of support for the native constructor. `CustomEvent` is used by our 
+visualizations for cross-browser eventing.
 
 ### Namespaced utility functions
 
@@ -237,7 +178,8 @@ Throws an error with a standard message if the two given values are not strictly
 
 #### assertHasProperty(object, name, [message])
 
-Throws an error if `_.has` doesn't return `true` for the given property name when checked against the given object.
+Throws an error if `_.has` doesn't return `true` for the given property name when checked against 
+the given object.
 
 **Arguments**
 
@@ -247,7 +189,8 @@ Throws an error if `_.has` doesn't return `true` for the given property name whe
 
 #### assertHasProperties(object, args...)
 
-Throws an error with a standard message if `_.has` doesn't return `true` for all of the given property names when checked against the given object.
+Throws an error with a standard message if `_.has` doesn't return `true` for all of the given
+property names when checked against the given object.
 
 **Arguments**
 
@@ -258,7 +201,8 @@ Throws an error with a standard message if `_.has` doesn't return `true` for all
 
 > **NOTE:** Maybe rename to `assertHasType`?
 
-Throws an error with a standard message if the type of the given value (as reported by `typeof`) does not match any of the given acceptable types.
+Throws an error with a standard message if the type of the given value (as reported by `typeof`) 
+does not match any of the given acceptable types.
 
 **Arguments**
 
@@ -284,7 +228,10 @@ _(String)_ A representation of the input number with group separators for readab
 
 > **NOTE:** This function needs a more precise name!
 
-Transform a number to a representation with four or fewer alphanumeric characters. The output is not guaranteed to be exactly equivalent to the input, as loss of precision and rounding may occur. Large numbers will be expressed using magnitude group suffixes (K for thousands, M for millions, and so forth).
+Transform a number to a representation with four or fewer alphanumeric characters. The output 
+is not guaranteed to be exactly equivalent to the input, as loss of precision and rounding may
+occur. Large numbers will be expressed using magnitude group suffixes (K for thousands, M for 
+millions, and so forth).
 
 **Arguments**
 

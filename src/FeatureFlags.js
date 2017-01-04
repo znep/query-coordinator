@@ -4,7 +4,7 @@ var _ = require('lodash');
 
 var FeatureFlags = {
   source: function(key) {
-    throw new Error('Not yet implemented');
+    throw new Error('Reserved for future use (FFS).');
   },
 
   value: function(key) {
@@ -20,6 +20,7 @@ var FeatureFlags = {
     }
   },
 
+  // This test fixture data is a point-in-time snapshot and will have to be periodically updated.
   useTestFixture: function(options) {
     window.socrata = window.socrata || {};
     window.socrata.featureFlags = _.extend({
@@ -68,6 +69,7 @@ var FeatureFlags = {
       "internalPanelRedesign": "all",
       "killEsriReprojectionAndPassDifferentWebm": false,
       "killSnowflakeMapProjections": false,
+      "mockedFeatureFlags": true, /* Sentinel indicating this is test fixture data */
       "nbeBucketSize": true,
       "notifyImportResult": false,
       "openPerformanceEnableGoalManagementAdminPane": true,

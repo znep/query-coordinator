@@ -26,6 +26,15 @@
     section.modal-content {
       padding: 0;
     }
+
+    .spinner-default {
+      border-width: 2px;
+      height: 13px;
+      width: 13px;
+      font-size: 9px;
+      margin: 0 10px -2px 2px;
+      border-right-color: $light-grey-3;
+    }
   }
 
   table.table {

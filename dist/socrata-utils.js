@@ -1351,22 +1351,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var FeatureFlags = {
 	  source: function(key) {
-	    throw new Error('Not yet implemented');
+	    throw new Error('Reserved for future use (FFS).');
 	  },
 	
 	  value: function(key) {
-	    if (window.socrata === undefined || window.socrata.featureFlags === undefined) {
+	    var featureFlags = _.get(window, 'socrata.featureFlags');
+	    if (featureFlags === undefined) {
+	      featureFlags = _.get(window, 'serverConfig.featureFlags');
+	    }
+	    if (featureFlags === undefined) {
 	      throw new Error(
-	        'FeatureFlags requires window.socrata.featureFlags to be defined. Please see README.md in frontend-utils.'
+	        'FeatureFlags requires window.socrata.featureFlags or window.serverConfig.featureFlags to be defined. Please see README.md in frontend-utils.'
 	      );
 	    }
-	    if (Object.keys(window.socrata.featureFlags).indexOf(key) === -1) {
+	    if (Object.keys(featureFlags).indexOf(key) === -1) {
 	      throw new Error('Invalid feature flag: ' + key);
 	    } else {
-	      return window.socrata.featureFlags[key];
+	      return featureFlags[key];
 	    }
 	  },
 	
+	  // This test fixture data is a point-in-time snapshot and will have to be periodically updated.
 	  useTestFixture: function(options) {
 	    window.socrata = window.socrata || {};
 	    window.socrata.featureFlags = _.extend({
@@ -1415,6 +1420,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      "internalPanelRedesign": "all",
 	      "killEsriReprojectionAndPassDifferentWebm": false,
 	      "killSnowflakeMapProjections": false,
+	      "mockedFeatureFlags": true, /* Sentinel indicating this is test fixture data */
 	      "nbeBucketSize": true,
 	      "notifyImportResult": false,
 	      "openPerformanceEnableGoalManagementAdminPane": true,

@@ -19,6 +19,7 @@ describe('CollaboratorsDataProvider', () => {
 
   afterEach(() => {
     CollaboratorsDataProviderApi.__ResetDependency__('httpRequest');
+    CollaboratorsDataProviderApi.__ResetDependency__('Environment');
   });
 
   describe('lookupUserByEmail', () => {

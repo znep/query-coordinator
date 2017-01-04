@@ -14,6 +14,7 @@ describe('storySaveErrorBar jQuery plugin', function() {
   var userSessionStoreMock;
   var autosave;
   var dispatcher;
+  var environment;
 
   function tryAgainButtonAvailable() {
     return $errorBar.find('.try-again-link').hasClass('available');
@@ -49,9 +50,13 @@ describe('storySaveErrorBar jQuery plugin', function() {
     userSessionStoreMock = new MockStore();
     autosave = {saveASAP: sinon.stub()};
     dispatcher = new Dispatcher();
+    environment = {
+      IS_GOAL: false
+    };
 
-    StorySaveErrorBarAPI.__Rewire__('storySaveStatusStore', mockStore);
     StorySaveErrorBarAPI.__Rewire__('userSessionStore', userSessionStoreMock);
+    StorySaveErrorBarAPI.__Rewire__('storySaveStatusStore', mockStore);
+    StorySaveErrorBarAPI.__Rewire__('Environment', environment);
     StorySaveErrorBarAPI.__Rewire__('autosave', autosave);
     StorySaveErrorBarAPI.__Rewire__('I18n', I18nMocker);
     StorySaveErrorBarAPI.__Rewire__('dispatcher', dispatcher);
@@ -60,8 +65,10 @@ describe('storySaveErrorBar jQuery plugin', function() {
   afterEach(function() {
     StorySaveErrorBarAPI.__ResetDependency__('userSessionStore');
     StorySaveErrorBarAPI.__ResetDependency__('storySaveStatusStore');
+    StorySaveErrorBarAPI.__ResetDependency__('Environment');
+    StorySaveErrorBarAPI.__ResetDependency__('autosave');
     StorySaveErrorBarAPI.__ResetDependency__('I18n');
-    StorySaveErrorBarAPI.__ResetDependency__('dispatcher', dispatcher);
+    StorySaveErrorBarAPI.__ResetDependency__('dispatcher');
   });
 
   it('should return a jQuery object for chaining', function() {

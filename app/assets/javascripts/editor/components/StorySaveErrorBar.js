@@ -2,6 +2,7 @@ import $ from 'jquery';
 
 import I18n from '../I18n';
 import Actions from '../Actions';
+import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
 import { dispatcher } from '../Dispatcher';
 import { autosave } from '../Autosave';
@@ -57,11 +58,12 @@ export default function StorySaveErrorBar() {
           $('<span>').text(I18n.t('editor.user_session_timeout')),
           $('<a class="login-link" href="" role="button">').text(I18n.t('editor.story_save_error_login_button'))
         ];
+      } else if (saveError.conflict) {
+        text = Environment.IS_GOAL ?
+          I18n.t('editor.goal_save_error_conflict') :
+          I18n.t('editor.story_save_error_conflict');
       } else {
-        text = I18n.t(saveError.conflict ?
-          'editor.story_save_error_conflict' :
-          'editor.story_save_error_generic'
-        );
+        text = I18n.t('editor.story_save_error_generic');
       }
 
       $message.empty().append(text);

@@ -8,9 +8,12 @@ import { storySaveStatusStore } from '../stores/StorySaveStatusStore';
 import { permissionStore } from '../stores/PermissionStore';
 import { storyPermissionsManager } from '../StoryPermissionsManager';
 
-const { STORY_UID } = Environment;
+const { STORY_UID, IS_GOAL } = Environment;
 
 function i18n(key) {
+  if (IS_GOAL) {
+    key += '_goals';
+  }
   return I18n.t(`editor.settings_panel.publishing_section.${key}`);
 }
 

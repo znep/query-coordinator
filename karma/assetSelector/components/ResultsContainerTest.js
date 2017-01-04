@@ -1,6 +1,4 @@
 import { ResultsContainer } from 'components/ResultsContainer';
-import { ceteraUtils } from 'lib/ceteraUtils';
-import _ from 'lodash';
 import $ from 'jquery';
 
 describe('components/ResultsContainer', function() {

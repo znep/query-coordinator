@@ -46,7 +46,7 @@ export class Pager extends Component {
           <span className="ellipses">...</span>
 
           {/* TODO: conditionally show First/Pevious/Next/Last buttons? */}
-          <a href="#" className="next nextLink pagination-button" title="Next Page">
+          <a href="#" className="next nextLink pagination-button" title="Next Page">{/* TODO: Localization */}
             <span className="icon">Next</span>
             <span className="accessible">page</span>
           </a>

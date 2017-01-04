@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { getViewCountLabel } from '../../datasetLandingPage/lib/viewCardHelpers';
 
 export const ResultCount = (props) => (
-  <div className="view-count">
+  <div className="result-count">
     {getViewCountLabel(props.count)}
   </div>
 );
@@ -12,7 +12,7 @@ ResultCount.propTypes = {
 };
 
 ResultCount.defaultProps = {
-  count: 4 // todo
+  count: 0
 };
 
 export default ResultCount;

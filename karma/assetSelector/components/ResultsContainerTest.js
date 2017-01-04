@@ -13,7 +13,7 @@ describe('components/ResultsContainer', function() {
           link: 'https://localhost/A/B/abcd-1234'
         }
       ],
-      viewCount: 100,
+      resultCount: 100,
       viewType: 'CARD_VIEW'
     };
   }
@@ -61,9 +61,9 @@ describe('components/ResultsContainer', function() {
     expect(element.querySelector('.table-container')).to.exist;
   });
 
-  it('renders the total view count', function() {
+  it('renders the total result count', function() {
     var element = renderComponent(ResultsContainer, getProps());
-    expect(element.querySelector('.view-count').textContent).to.equal('100 Views');
+    expect(element.querySelector('.result-count').textContent).to.equal('100 Views');
   });
 
   it('renders the correct number of cards', function() {

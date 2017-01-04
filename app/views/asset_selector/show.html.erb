@@ -12,8 +12,6 @@
 
 <% content_for :scripts do %>
   <script>
-    var assetSelectorContent = <%= raw @asset_selector_content.to_json %>;
-
     // Stub I18n so we can use viewCardHelpers.
     // TODO remove this once it isn't necessary, when we have a plan for config/translations
     window.I18n = {

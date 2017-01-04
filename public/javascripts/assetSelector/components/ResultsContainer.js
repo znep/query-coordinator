@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import $ from 'jquery';
 import { updatePageResults } from '../actions/pageResults';
 import { changeViewType } from '../actions/viewType';
 import { updateResultCount } from '../actions/resultCount';
@@ -15,7 +16,7 @@ export class ResultsContainer extends Component {
   constructor(props) {
     super(props);
     _.bindAll(this, ['onViewTypeClick', 'onPageChange', 'renderResults']);
-    this.onPageChange(1); // Fetch the first page of results
+    this.onPageChange(1, true); // Fetch the first page of results
     // This may be something we want to make a prop, so one could open the assets at a given page
     // (based on something like a URL param), useful if this becomes a replacement for the catalog.
   }
@@ -26,14 +27,19 @@ export class ResultsContainer extends Component {
     };
   }
 
-  onPageChange(pageNumber) {
+  onPageChange(pageNumber, initialFetch = false) {
     const { dispatchUpdatePageResults, dispatchUpdateResultCount } = this.props;
     ceteraUtils.fetch({ pageNumber }).
       success((response) => {
         const results = ceteraUtils.mapToAssetSelectorResult(response.results);
         dispatchUpdatePageResults(results);
         dispatchUpdateResultCount(response.resultSetSize);
-        // TODO: scroll up?
+
+        if (!initialFetch) {
+          $('html, body').animate({
+            scrollTop: $('.asset-selector .results-container').offset().top
+          });
+        }
       }).
       error((err) => {
         // TODO. airbrake, return error message, etc.

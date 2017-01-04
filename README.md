@@ -1,11 +1,13 @@
 # Socrata Utils
 
-Useful utility functions and modules that we can share between frontend projects.
+Useful utility functions and modules that we can share between different projects such as `frontend`, `storyteller`, `socrata_site_chrome`, `frontend-visualizations`, etc.
 
 ## Installation and usage
 
-`socrata-utils` is available in the artifactory npm registry.  To configure npm to use the
-appropriate registry:
+The `socrata-utils` package is available in the artifactory npm registry.
+> Note that in github it the project is called `frontend-utils`.
+
+To configure `npm` to use the appropriate registry, run the following command:
 
     npm config set registry https://socrata.artifactoryonline.com/socrata/api/npm/npm-virtual
 
@@ -13,12 +15,12 @@ Then install using npm:
 
     npm install --save socrata-utils
 
-The npm distribution includes a `dist` folder with `socrata.utils.js`. It should be included
+The `npm` distribution includes a `dist` folder with `socrata.utils.js`. It should be included
 on the page using `script` tag or using your favorite client-side build system.
 
 This library depends on [Lodash](https://lodash.com). When using this library as a dependency
 in another project, you must also include Lodash in your dependencies because it will not be
-automatically installed by Bower.
+automatically installed.
 
 This library exposes new capabilities in three ways:
 
@@ -29,18 +31,27 @@ This library exposes new capabilities in three ways:
 > **NOTE:** When contributing to this library, exercise caution when using either of the first
 > two techniques! The namespace approach should be preferred in almost all cases.
 
-## Contributing
+## Testing locally with npm link
 
-If you are contributing to this library, run `npm install` to set up your environment.
+If you're developing locally and want to try out your changes using another project, say the `frontend` for example, you can use `npm link` to link your work with the project you're testing it in. For example, do link this package with the `frontend` you'd do something like this:
 
-Useful commands:
+    cd frontend-utils
+    npm link
+    cd ../frontend
+    npm link socrata-utils
 
-- `npm test` to run the tests.
-- `npm run watch` to automatically run the tests when files change.  The tests can be debugged in
+#### Command Quick Index
+
+- `npm run test` to run the tests ("npm test" also works).
+- `npm run watch` to automatically run the tests when files change. The tests can be debugged in
   a browser by visiting [http://localhost:9876/debug.html](http://localhost:9876/debug.html).
 - `npm run build` to run webpack and generate output files in `dist`.
 - `npm run release` to tag and publish a new version to the npm registry (after bumping the
   version in `package.json`).
+
+## Contributing
+
+If you are contributing to this library, run `npm install` to set up your environment.
 
 ## Reference
 
@@ -53,10 +64,8 @@ provide validation of requested feature flag keys.
 
 Usage example:
 
-```javascript
-import { FeatureFlags } from 'socrata-utils';
-console.log('useAuth0 = ' + FeatureFlags.value('useAuth0'));
-```
+    import { FeatureFlags } from 'socrata-utils';
+    console.log('useAuth0 = ' + FeatureFlags.value('useAuth0'));
 
 #### In tests
 
@@ -84,6 +93,7 @@ describe('FeatureFlags', function() {
 ```
 
 #### Example featureFlag JSON data expected to be on window.
+
 ```json
 featureFlags: {
     "allowDataLensOwnerChange": true,

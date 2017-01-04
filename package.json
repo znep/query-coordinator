@@ -12,7 +12,6 @@
   "scripts": {
     "release": "tools/release.sh",
     "build": "webpack",
-    "dev-install": "tools/dev_install.sh",
     "prebuild": "rimraf dist",
     "prepublish": "webpack",
     "lint": "eslint -c package.json src/*.js",

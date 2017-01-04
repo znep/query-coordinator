@@ -39,6 +39,22 @@ class SignUpForm extends React.Component {
     onFormSubmit(() => this.formDomNode.submit());
   }
 
+  /**
+   * Renders a hidden input with an auth token passed in by URL params,
+   * for signing up with "bulk created" (aka "future") accounts
+   */
+  renderUrlAuthToken() {
+    const { urlAuthToken } = this.props;
+
+    if (!_.isEmpty(urlAuthToken)) {
+      return (
+        <input name="signup[authToken]" type="hidden" id="signup_authToken" value={urlAuthToken} />
+      );
+    }
+
+    return null;
+  }
+
   renderRecaptchaError() {
     const { translate, recaptchaValid, formSubmitted } = this.props;
 
@@ -85,6 +101,7 @@ class SignUpForm extends React.Component {
           name="authenticity_token"
           type="hidden"
           value={authenticityToken} />
+        {this.renderUrlAuthToken()}
 
         {/* ..... don't ask, yes it's needed */}
         <input type="hidden" name="signup[accept_terms]" id="signup_accept_terms" value="true" />
@@ -164,14 +181,16 @@ SignUpForm.propTypes = {
   translate: PropTypes.func.isRequired,
   options: OptionsPropType.isRequired,
   enteredEmail: PropTypes.string,
-  enteredScreenName: PropTypes.string
+  enteredScreenName: PropTypes.string,
+  urlAuthToken: PropTypes.string
 };
 
 const mapStateToProps = (state) => ({
   recaptchaValid: state.inputs.recaptcha.valid,
   formSubmitted: state.formSubmitted,
   enteredEmail: state.inputs.email.value,
-  enteredScreenName: state.inputs.screenName.value
+  enteredScreenName: state.inputs.screenName.value,
+  urlAuthToken: state.urlAuthToken
 });
 
 const mapDispatchToProps = (dispatch) => ({

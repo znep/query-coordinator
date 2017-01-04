@@ -81,4 +81,4 @@ const mapDispatchToProps = (dispatch) => ({
 export default connect(mapStateToProps, mapDispatchToProps)(cssModules(Container, styles));
 
 /** For testing purposes */
-export const ContainerClass = Container;
+export const ContainerClass = cssModules(Container, styles);

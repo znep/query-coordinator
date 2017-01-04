@@ -3,6 +3,7 @@ import cssModules from 'react-css-modules';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import Auth0 from 'auth0-js';
+import url from 'url';
 import { Translate, renderAlerts } from '../Util';
 import signUpReducer from '../reducers/SignUpReducer';
 import OptionsPropType from '../PropTypes/OptionsPropType';
@@ -16,7 +17,12 @@ class SignUp extends React.Component {
 
     const { auth0Uri, auth0ClientId, baseDomainUri, translations, params } = this.props.options;
 
-    const email = _.get(params, 'signup.email', '');
+    const parsedUrl = url.parse(window.location.href, true);
+    const urlAuthToken = _.get(parsedUrl, 'query.auth_token', '');
+
+    // if an email comes in from the query string, we want to use that,
+    // otherwise grab it from params, otherwise empty
+    const email = _.get(parsedUrl, 'query.email', _.get(params, 'signup.email', ''));
     const screenName = _.get(params, 'signup.screenName', '');
 
     const translate = new Translate(translations);
@@ -32,6 +38,7 @@ class SignUp extends React.Component {
 
     const defaultState = {
       formSubmitted: false,
+      urlAuthToken,
       inputs: {
         email: {
           value: email,

@@ -43,25 +43,32 @@ class SignUp extends React.Component {
         email: {
           value: email,
           valid: true,
-          message: ''
+          message: '',
+          required: true
         },
         screenName: {
           value: screenName,
           valid: true,
-          message: ''
+          message: '',
+          required: true
         },
         password: {
           value: '',
           valid: true,
-          message: ''
+          message: '',
+          required: true
         },
         passwordConfirm: {
           value: '',
           valid: true,
-          message: ''
+          message: '',
+          required: true
         },
         recaptcha: {
-          valid: false
+          // since the recaptcha doesn't have a real "value" (it's just valid or invalid)
+          // we mark it as required false, which skips checking if the value is empty or not
+          valid: false,
+          required: false
         }
       }
     };

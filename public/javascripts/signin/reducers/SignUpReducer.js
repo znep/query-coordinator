@@ -9,6 +9,13 @@ export default (translate) => {
     const { name, value } = action;
     const input = state.inputs[name];
 
+    // if the value is different, set it to valid
+    // (all fields are re-validated on form submit)
+    if (input.value !== value) {
+      input.valid = true;
+      input.message = '';
+    }
+
     input.value = value;
 
     return { ...state };
@@ -19,17 +26,14 @@ export default (translate) => {
     const { value } = inputs.email;
 
     const email = {
+      ...inputs.email,
       valid: true,
-      message: '',
-      value
+      message: ''
     };
 
     const strictValidation = true;
 
-    if (_.isEmpty(value)) {
-      email.valid = false;
-      email.message = translate('core.validation.required');
-    } else if (!isValidEmail(value, strictValidation)) {
+    if (!_.isEmpty(value) && !isValidEmail(value, strictValidation)) {
       email.valid = false;
       email.message = translate('core.validation.email');
     }
@@ -39,18 +43,12 @@ export default (translate) => {
 
   function validateScreenName(state) {
     const { inputs } = state;
-    const { value } = inputs.screenName;
 
     const screenName = {
+      ...inputs.screenName,
       valid: true,
-      message: '',
-      value
+      message: ''
     };
-
-    if (_.isEmpty(value)) {
-      screenName.valid = false;
-      screenName.message = translate('core.validation.required');
-    }
 
     return { ...state, inputs: { ...inputs, screenName } };
   }
@@ -60,20 +58,19 @@ export default (translate) => {
     const { value } = inputs.password;
 
     const password = {
+      ...inputs.password,
       valid: true,
-      message: '',
-      value
+      message: ''
     };
 
-    if (_.isEmpty(value)) {
-      password.valid = false;
-      password.message = translate('core.validation.required');
-    } else if (value.length < passwordMinLength) {
-      password.valid = false;
-      password.message = translate('account.common.validation.password_short');
-    } else if (value.length > passwordMaxLength) {
-      password.valid = false;
-      password.message = translate('account.common.validation.password_long');
+    if (!_.isEmpty(value)) {
+      if (value.length < passwordMinLength) {
+        password.valid = false;
+        password.message = translate('account.common.validation.password_short');
+      } else if (value.length > passwordMaxLength) {
+        password.valid = false;
+        password.message = translate('account.common.validation.password_long');
+      }
     }
 
     return { ...state, inputs: { ...inputs, password } };
@@ -85,26 +82,38 @@ export default (translate) => {
     const passwordValue = inputs.password.value;
 
     const passwordConfirm = {
+      ...inputs.passwordConfirm,
       valid: true,
-      message: '',
-      value
+      message: ''
     };
 
-    if (_.isEmpty(value)) {
-      passwordConfirm.valid = false;
-      passwordConfirm.message = translate('core.validation.required');
-    } else if (value.length < passwordMinLength) {
-      passwordConfirm.valid = false;
-      passwordConfirm.message = translate('account.common.validation.password_short');
-    } else if (value.length > passwordMaxLength) {
-      passwordConfirm.valid = false;
-      passwordConfirm.message = translate('account.common.validation.password_long');
-    } else if (value !== passwordValue) {
-      passwordConfirm.valid = false;
-      passwordConfirm.message = translate('account.common.validation.mismatch');
+    if (!_.isEmpty(value)) {
+      if (value.length < passwordMinLength) {
+        passwordConfirm.valid = false;
+        passwordConfirm.message = translate('account.common.validation.password_short');
+      } else if (value.length > passwordMaxLength) {
+        passwordConfirm.valid = false;
+        passwordConfirm.message = translate('account.common.validation.password_long');
+      } else if (value !== passwordValue) {
+        passwordConfirm.valid = false;
+        passwordConfirm.message = translate('account.common.validation.mismatch');
+      }
     }
 
     return { ...state, inputs: { ...inputs, passwordConfirm } };
+  }
+
+  function validateRequiredInputs(state) {
+    const { inputs } = state;
+
+    _.forOwn(inputs, (input) => {
+      if (input.required && _.isEmpty(input.value)) {
+        input.valid = false;
+        input.message = translate('core.validation.required');
+      }
+    });
+
+    return { ...state, inputs };
   }
 
   function recaptchaCallback(state, action) {
@@ -120,9 +129,11 @@ export default (translate) => {
       validateEmail,
       validateScreenName,
       validatePassword,
-      validatePasswordConfirm
+      validatePasswordConfirm,
+      validateRequiredInputs
     ];
 
+    // force each validation to run and modify the state
     const validated = _.reduce(
       validations,
       (reducedState, validation) => { return validation(reducedState); },

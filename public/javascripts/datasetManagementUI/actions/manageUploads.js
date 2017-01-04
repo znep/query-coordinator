@@ -90,7 +90,7 @@ function pollForOutputSchema(uploadId) {
         } else {
           const upload = resp.resource;
           if (_.get(upload, 'schemas[0].output_schemas.length') > 0) {
-            const outputSchemaIds = insertUploadAndSubscribeToOutput(dispatch, upload);
+            const outputSchemaIds = subscribeToOutputColumns(dispatch, upload);
             dispatch(push(Links.showOutputSchema(
               uploadId,
               upload.schemas[0].id,
@@ -105,7 +105,14 @@ function pollForOutputSchema(uploadId) {
 }
 
 export function insertUploadAndSubscribeToOutput(dispatch, upload) { // => [output_schema_id]
-  dispatch(insertFromServer('uploads', _.omit(upload, ['schemas'])));
+  dispatch(insertFromServer('uploads', {
+    ..._.omit(upload, ['schemas']),
+    inserted_at: new Date(`${upload.inserted_at}Z`)
+  }));
+  subscribeToOutputColumns(dispatch, upload);
+}
+
+function subscribeToOutputColumns(dispatch, upload) {
   const outputSchemaIds = upload.schemas.map((inputSchema) => {
     dispatch(insertFromServer('schemas', {
       id: inputSchema.id,

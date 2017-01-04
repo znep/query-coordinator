@@ -3,7 +3,7 @@ import { Simulate } from 'react-addons-test-utils';
 import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
 import ShowOutputSchema from 'components/ShowOutputSchema';
 import { ShowOutputSchema as ShowOutputSchemaUnConnected } from 'components/ShowOutputSchema';
-import { insertFromServer, batch } from 'actions/database';
+import { insertFromServer, updateFromServer, batch } from 'actions/database';
 import { statusSavedOnServer } from 'lib/database/statuses';
 
 describe('components/ShowOutputSchema', () => {
@@ -22,6 +22,10 @@ describe('components/ShowOutputSchema', () => {
     const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
     expect(_.map(element.querySelectorAll('.col-name'), 'innerText')).to.eql(['arrest', 'block']);
     expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['SoQLText', 'SoQLText']);
+    expect(_.map(element.querySelectorAll('.col-errors'), 'innerText')).to.eql([
+      I18n.show_output_schema.column_header.no_errors_exist,
+      I18n.show_output_schema.column_header.no_errors_exist
+    ]);
   });
 
   it('renders a table with data', () => {
@@ -37,6 +41,10 @@ describe('components/ShowOutputSchema', () => {
     expect(_.map(rows[0].querySelectorAll('td'), 'innerText')).to.eql(['foo', 'bleep']);
     expect(_.map(rows[1].querySelectorAll('td'), 'innerText')).to.eql(['bar', 'bloop']);
     expect(_.map(rows[2].querySelectorAll('td'), 'innerText')).to.eql(['baz', 'blorp']);
+    expect(_.map(element.querySelectorAll('.col-errors'), 'innerText')).to.eql([
+      I18n.show_output_schema.column_header.no_errors_exist,
+      I18n.show_output_schema.column_header.no_errors_exist
+    ]);
   });
 
   it('calls `updateColumnType` when a selector is changed', () => {
@@ -70,4 +78,26 @@ describe('components/ShowOutputSchema', () => {
     ]);
   });
 
+
+  it('properly renders error counts', () => {
+    const store = getStoreWithOutputSchema();
+
+    store.dispatch(updateFromServer('columns', {
+      id: 50,
+      num_transform_errors: 1
+    }));
+
+    store.dispatch(updateFromServer('columns', {
+      id: 51,
+      num_transform_errors: 42
+    }));
+
+    const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
+    expect(_.map(element.querySelectorAll('.col-name'), 'innerText')).to.eql(['arrest', 'block']);
+    expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['SoQLText', 'SoQLText']);
+    expect(_.map(element.querySelectorAll('.col-errors'), 'innerText')).to.eql([
+      '1' + I18n.show_output_schema.column_header.error_exists,
+      '42' + I18n.show_output_schema.column_header.errors_exist
+    ]);
+  });
 });

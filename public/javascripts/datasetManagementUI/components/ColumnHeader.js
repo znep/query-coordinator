@@ -22,7 +22,7 @@ const ColumnHeader = React.createClass({
 
     return (
       <th key={column.id}>
-        <span className="col-name">
+        <span className="col-name" title={column.display_name} >
           {column.display_name}
         </span>
         <br />
@@ -42,10 +42,6 @@ const ColumnHeader = React.createClass({
         <br />
         <span className="col-processed">
           {column.contiguous_rows_processed || 0} total
-        </span>
-        <br />
-        <span className="col-errors">
-          {column.num_transform_errors || 0} errors
         </span>
       </th>
     );

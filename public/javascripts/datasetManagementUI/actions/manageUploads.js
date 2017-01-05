@@ -133,7 +133,6 @@ function subscribeToOutputColumns(dispatch, upload) {
           ..._.omit(transform, ['transform_input_columns']),
           input_column_ids: transform.transform_input_columns.map((inCol) => inCol.column_id)
         }));
-        // vv this is dirty, not to mention slow
         dispatch(insertFromServerIfNotExists('columns', _.omit(outputColumn, ['transform_to'])));
         dispatch(insertFromServer('schema_columns', {
           schema_id: outputSchema.id,

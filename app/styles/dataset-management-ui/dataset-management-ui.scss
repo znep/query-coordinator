@@ -1,7 +1,6 @@
 @import "styleguide-colors";
 
 .dataset-management-ui {
-
   .edit-bar {
     position: static;
   }
@@ -16,38 +15,201 @@
     }
   }
 
-  #show-output-schema .modal-content {
-    margin-bottom: 0;
+  .err-info {
+    color: $white;
+    border-radius: 1.1em;
+    padding: 0 0.5em 1px;
+    margin-right: 0.5em;
   }
 
-  thead {
-    .col-name {
-      font-weight: bold;
+  #show-output-schema {
+    section.modal-content {
+      padding: 0;
     }
 
-    .col-type {
-      font-weight: normal;
-      font-style: italic;
+    .spinner-default {
+      border-width: 2px;
+      height: 13px;
+      width: 13px;
+      font-size: 9px;
+      margin: 0 10px -2px 2px;
+      border-right-color: $light-grey-3;
+    }
+  }
+
+  table.table {
+    overflow: visible;
+    display: inline-block;
+    table-layout: fixed;
+    min-width: auto;
+    white-space: nowrap;
+    height: calc(100vh - 180px);
+    margin: 20px;             // TODO: Remove once sidebar is added.
+
+    tr {
+      display: block;
+      position: relative;
+      border-width: 1px 0 0 1px;
+      border-style: solid;
+      border-color: $light-grey-4;
     }
 
-    .col-processed {
-      font-weight: normal;
-      font-size: 7pt;
+    thead {
+      height: 109px;
+      display: block;
+      border-top: 1px solid $light-grey-4;
+
+      tr {
+        border-top-width: 0;
+        border-bottom-width: 0;
+
+        &:last-child {
+          th {
+            padding: 0;
+
+            div {
+              padding: 5px 5px;
+              border-top: 1px solid $light-grey-3;
+              border-bottom: 2px solid $light-grey-3;
+
+              display: relative;
+              z-index: 100;
+            }
+          }
+        }
+      }
+
+      .col-name {
+        margin: 0 2px -17px;
+        color: $dark-grey-3;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+        width: auto;
+      }
+
+      select {
+        width: 100%;
+        font-size: 12px;
+        height: 23px;
+        font-weight: normal;
+        color: $dark-grey-2;
+      }
+
+      .col-processed {
+        font-weight: normal;
+        font-size: 7pt;
+      }
+
+      .col-errors {
+        font-weight: normal;
+        font-size: 10px;
+        color: $grey;
+      }
     }
 
-    .col-errors {
-      font-weight: normal;
-      font-size: 7pt;
-      color: darkred;
+    tbody {
+      display: block;
+      overflow-x: hidden;
+      overflow-y: auto;
+      width: 100%;
+      height: calc(100% - 103px);
+      border-bottom: 1px solid $light-grey-4;
+
+      tr {
+        height: 29px;
+        overflow: visible;
+      }
+
+      tr {
+        &:first-child {
+          border-top-width: 1px;
+          margin-top: -1px;
+        }
+
+        &:last-child {
+          td, div {
+            border-bottom-width: 0;
+          }
+        }
+      }
     }
+
+    th, td {
+      min-height: 29px;
+      display: inline-block;
+      width: 250px;
+      border-style: solid;
+      border-color: $light-grey-4;
+      white-space: nowrap;
+    }
+
+    th {
+      padding: 5px;
+      border-width: 0 1px 0 0;
+    }
+
+    td {
+      font-size: 12px;
+      vertical-align: top;
+      overflow: visible;
+      padding: 0;
+      border-width: 0 1px 1px 0;
+
+      &:last-child {
+        div {
+          &:hover {
+            width: auto;
+          }
+        }
+      }
+
+      div {
+        width: 250px;
+        min-height: 29px;
+        padding: 5px 7px;
+        display: block;
+        position: relative;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        background-color: $white;
+        border-style: solid;
+        border-color: $light-grey-4;
+        border-width: 0 1px 1px 0;
+
+        &:hover {
+          min-width: 250px;
+          max-width: 350px;
+          /* This uses max-content which is in working draft,
+             if this doesn't get approved the cells will only
+             expand vertically which isn't the end of the world. */
+          width: auto; // For IE.
+          width: -moz-max-content; // For Firefox.
+          width: -webkit-max-content; // For Safari.
+          width: max-content; // For Chrome.
+
+          height: auto;
+          white-space: normal;
+
+          z-index: 99;
+        }
+      }
+    }
+  }
+
+
+  .show-upsert-job {
+    // TODO: text-align center (when we're no longer just dumping the <pre>)
+    padding-left: 200px;
   }
 }
 
 #home-pane {
   max-width: 68em;
   margin: 0 auto;
-  padding-top: 10px;
-  padding-bottom: 30px;
+  padding: 10px 20px 30px;
 }
 
 #no-match {

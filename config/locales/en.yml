@@ -1563,6 +1563,14 @@ en:
     metadata_manage:
       errors:
         missing_name: Dataset name is required.
+    show_output_schema:
+       column_header:
+         scanning: Still scanning for errors...
+         error_exists: Error total
+         error_exists_scanning: Error found so far
+         errors_exist: Errors total
+         errors_exist_scanning: Errors found so far
+         no_errors_exist: All cells will import correctly
   dataslate:
     component:
       edit: Edit this component

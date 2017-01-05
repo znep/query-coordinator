@@ -32,6 +32,13 @@ This library exposes new capabilities in three ways:
 > **NOTE:** When contributing to this library, exercise caution when using either of the first
 > two techniques! The namespace approach should be preferred in almost all cases.
 
+## Publishing the package
+
+Run this:
+
+    npm publish
+    
+    
 ## Testing locally with npm link
 
 If you're developing locally and want to try out your changes using another project, say the

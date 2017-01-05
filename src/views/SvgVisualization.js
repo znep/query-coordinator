@@ -15,7 +15,6 @@ const DEFAULT_SECONDARY_COLOR = '#71abd9';
 const DEFAULT_HIGHLIGHT_COLOR = '#cccccc';
 const DEFAULT_UNIT_ONE = '';
 const DEFAULT_UNIT_OTHER = '';
-const INFO_CLASSES_PATTERN = /(panning\-notice|view\-source\-data)/i;
 const COLOR_PALETTES = {
   categorical: ['#a6cee3', '#5b9ec9', '#2d82af', '#7eba98', '#98d277', '#52af43', '#6f9e4c', '#dc9a88', '#f16666', '#e42022', '#f06c45', '#fdbb69', '#fe982c', '#f78620', '#d9a295', '#b294c7', '#7d54a6', '#9e8099', '#f0eb99', '#dbb466'],
   alternate1: ['#e41a1c', '#9e425a', '#596a98', '#3b87a2', '#449b75', '#4daf4a', '#6b886d', '#896191', '#ac5782', '#d56b41', '#ff7f00', '#ffb214', '#ffe528', '#eddd30', '#c9992c', '#a65628', '#c66764', '#e678a0', '#e485b7', '#be8fa8'],
@@ -262,6 +261,7 @@ function SvgVisualization($element, vif) {
       // measure how much space they have to fill, but only add the
       // view-source-data class to show the link once the optional metadata
       // request has returned, if it is made.
+      self.sourceDataLinkVisible = true;
       self.showInfo();
     }
   };
@@ -271,6 +271,7 @@ function SvgVisualization($element, vif) {
     if (_.get(self.getVif(), 'series[0].dataSource.type') === 'socrata.soql') {
 
       self.$container.removeClass('socrata-visualization-view-source-data');
+      self.sourceDataLinkVisible = false;
       self.hideInfo();
     }
   };
@@ -278,12 +279,14 @@ function SvgVisualization($element, vif) {
   this.showPanningNotice = function() {
 
     self.$container.addClass('socrata-visualization-panning-notice');
+    self.panningNoticeVisible = true;
     self.showInfo();
   };
 
   this.hidePanningNotice = function() {
 
     self.$container.removeClass('socrata-visualization-panning-notice');
+    self.panningNoticeVisible = false;
     self.hideInfo();
   };
 
@@ -292,21 +295,9 @@ function SvgVisualization($element, vif) {
   };
 
   this.hideInfo = function() {
-    // This function used to remove the 'info' class from the container based
-    // on the following check:
-    //
-    //   _.some(<array of class names>, self.$container.hasClass)
-    //
-    // ...but the semantics of _.some were so confusing to me that I spent
-    // fifteen minutes trying to get the right behavior for both the show/hide
-    // case (we should SHOW the info bar if the above returns false).
-    //
-    // In order to potentially spare someone else that confusion, I rewrote it
-    // as below.
-    const containerClasses = self.$container.attr('class');
-    const hasInfoClass = containerClasses.match(INFO_CLASSES_PATTERN) !== null;
+    const safeToHide = !self.panningNoticeVisible && !self.sourceDataLinkVisible;
 
-    if (!hasInfoClass) {
+    if (safeToHide) {
       self.$container.removeClass('socrata-visualization-info');
     }
   };

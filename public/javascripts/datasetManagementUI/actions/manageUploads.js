@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import * as Links from '../links';
 import * as dsmapiLinks from '../dsmapiLinks';
 import {
@@ -11,8 +12,7 @@ import {
   updateSucceeded,
   updateFailed,
   updateProgress,
-  createTable,
-  batch
+  createTable
 } from './database';
 import { push } from 'react-router-redux';
 import { socrataFetch, checkStatus, getJson } from '../lib/http';
@@ -153,14 +153,14 @@ export function createTableAndSubscribeToTransform(transform, outputColumn) {
     dispatch(createTable(`column_${outputColumn.id}`));
     const channelName = `transform_progress:${transform.id}`;
     const channel = window.DSMAPI_PHOENIX_SOCKET.channel(channelName, {});
-    const initialFetchFor = [];
+    let initialRowsFetched = false;
     channel.on('max_ptr', (maxPtr) => {
       dispatch(updateFromServer('columns', {
         id: outputColumn.id,
         contiguous_rows_processed: maxPtr.end_row_offset
       }));
-      if (!initialFetchFor.includes(outputColumn.id)) {
-        initialFetchFor.push(outputColumn.id);
+      if (!initialRowsFetched) {
+        initialRowsFetched = true;
         const offset = 0;
         dispatch(
           fetchAndInsertDataForColumn(transform, outputColumn, offset, INITIAL_FETCH_LIMIT_ROWS)
@@ -190,17 +190,17 @@ function fetchAndInsertDataForColumn(transform, outputColumn, offset, limit) {
       then(checkStatus).
       then(getJson).
       then((resp) => {
-        const operations = resp.resource.map((value, idx) => (
-          insertFromServer(`column_${outputColumn.id}`, {
-            id: idx,
-            value: value
-          })
-        ));
+        const newRecords = resp.resource.map((value, idx) => ({
+          id: idx,
+          value: value
+        }));
+        dispatch(insertFromServer(`column_${outputColumn.id}`, newRecords));
+        // TODO: could just use `db.column_${column_id}.length` instead of this
         const updateFetchedRows = updateFromServer('columns', {
           id: outputColumn.id,
           fetched_rows: offset + limit
         });
-        dispatch(batch([...operations, updateFetchedRows]));
+        dispatch(updateFetchedRows);
       }).
       catch((error) => {
         console.error('failed to get transform results', error);

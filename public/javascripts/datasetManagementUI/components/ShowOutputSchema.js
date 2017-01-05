@@ -4,11 +4,10 @@ import { Modal, ModalHeader, ModalContent } from 'socrata-components';
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 
-import ColumnHeader from './ColumnHeader';
-import ColumnStatus from './ColumnStatus';
 import * as Links from '../links';
 import { STATUS_UPDATING } from '../lib/database/statuses';
 import * as Actions from '../actions/showOutputSchema';
+import Table from './Table';
 
 function query(db, uploadId, schemaId, outputSchemaId) {
   const upload = _.find(db.uploads, { id: uploadId });
@@ -60,24 +59,11 @@ export function ShowOutputSchema({ db, upload, columns, outputSchema, goToUpload
         <ModalHeader {...headerProps} />
 
         <ModalContent>
-          <table className="table table-condensed">
-            <thead>
-              <tr>
-                {
-                  columns.map(column =>
-                    <ColumnHeader
-                      key={column.id}
-                      outputSchema={outputSchema}
-                      column={column}
-                      updateColumnType={updateColumnType} />)
-                }
-              </tr>
-              <tr>
-                {columns.map(column => <ColumnStatus column={column} />)}
-              </tr>
-            </thead>
-            <TableBody db={db} columns={columns} />
-          </table>
+          <Table
+            db={db}
+            columns={columns}
+            outputSchema={outputSchema}
+            updateColumnType={updateColumnType} />
         </ModalContent>
       </Modal>
     </div>
@@ -115,41 +101,3 @@ function mapDispatchToProps(dispatch, ownProps) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShowOutputSchema);
-
-const TableBody = React.createClass({
-
-  propTypes: {
-    db: PropTypes.object.isRequired,
-    columns: PropTypes.array.isRequired
-  },
-
-  shouldComponentUpdate(nextProps) {
-    const currentFetchedRows = this.props.columns.map((column) => (column.fetched_rows));
-    const nextFetchedRows = nextProps.columns.map((column) => (column.fetched_rows));
-    return !_.isEqual(currentFetchedRows, nextFetchedRows);
-  },
-
-  render() {
-    console.debug('render table');
-    return (
-      <tbody>
-        {
-          _.range(0, 20).map((rowIdx) => (
-            <tr key={rowIdx}>
-              {
-                this.props.columns.map((column) => (
-                  <td key={column.id}>
-                    <div>
-                      {_.get(this.props.db, `column_${column.id}[${rowIdx}]`, '').value}
-                    </div>
-                  </td>
-                ))
-              }
-            </tr>
-          ))
-        }
-      </tbody>
-    );
-  }
-
-});

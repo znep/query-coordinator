@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import ColumnHeader from 'components/ColumnHeader';
+import ColumnHeader from 'components/Table/ColumnHeader';
 import ReactDOM from 'react-dom';
 
-describe('components/ColumnHeader', () => {
+describe('components/Table/ColumnHeader', () => {
 
   const defaultProps = {
     outputSchema: {

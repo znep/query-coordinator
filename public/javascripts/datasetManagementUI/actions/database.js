@@ -14,10 +14,10 @@ export const edit = (tableName, updates) => ({
 // used when the server pushes new info to us (e.g. over a web socket)
 // and on initial page load
 export const INSERT_FROM_SERVER = 'INSERT_FROM_SERVER';
-export const insertFromServer = (tableName, newRecord) => ({
+export const insertFromServer = (tableName, newRecordOrRecords) => ({
   type: INSERT_FROM_SERVER,
   tableName,
-  newRecord
+  newRecordOrRecords
 });
 
 // Idempotent version of INSERT_FROM_SERVER.

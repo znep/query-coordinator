@@ -22,17 +22,20 @@ module DatasetManagementAPI
     cookie_header = cookies.map { |k, v| "#{k}=#{v}" }.join('; ')
     url = "http://#{hostname}:#{port}#{path}"
 
-    response = HTTParty.get(
-      url,
-      :headers => {
-        'X-Socrata-Host' => CurrentDomain.cname,
-        'Cookie' => cookie_header
-      }
-    )
+    response = nil
+    ms = Benchmark.ms do
+      response = HTTParty.get(
+        url,
+        :headers => {
+          'X-Socrata-Host' => CurrentDomain.cname,
+          'Cookie' => cookie_header
+        }
+      )
+    end
 
     case response.code
       when 200..299
-        Rails.logger.debug("GET #{url} => ...")
+        Rails.logger.debug('DSMAPI request: %s (%.1fms)' % [path, ms])
         return JSON.parse(response.body)
       when 400..499
         raise(DatasetManagementAPI::ResourceNotFound, response.inspect)

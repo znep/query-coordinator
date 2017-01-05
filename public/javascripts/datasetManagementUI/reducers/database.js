@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {
   EDIT,
   INSERT_STARTED,
@@ -27,8 +28,7 @@ import {
 import { emptyDB } from '../lib/database/bootstrap';
 
 
-// TODO: make resilient to nonexistent tables
-// TODO: use ImmutableJS instead of Object Spread? It may shorten repetitive code here.
+// TODO: use ImmutableJS instead of Object Spread? It may shorten repetitive code here & improve speed
 export default function dbReducer(db = emptyDB, action) {
   if (action.tableName && !db[action.tableName]) {
     throw new ReferenceError(`Table "${action.tableName}" does not exist!`);
@@ -50,8 +50,8 @@ export default function dbReducer(db = emptyDB, action) {
             const withUpdatedStatus = {
               ...record,
               __status__: record.__status__.type !== STATUS_DIRTY ?
-                          statusDirty(record) :
-                          record.__status__
+                statusDirty(record) :
+                record.__status__
             };
             return _.merge({}, withUpdatedStatus, action.updates);
           }
@@ -75,17 +75,21 @@ export default function dbReducer(db = emptyDB, action) {
         // Do nothing if already exists!
         return db;
       }
-    case INSERT_FROM_SERVER:
+    case INSERT_FROM_SERVER: {
+      const records = _.isArray(action.newRecordOrRecords) ?
+        action.newRecordOrRecords :
+        [action.newRecordOrRecords];
       return {
         ...db,
         [action.tableName]: [
           ...db[action.tableName],
-          {
-            ...action.newRecord,
+          ...records.map((record) => ({
+            ...record,
             __status__: statusSavedOnServer
-          }
+          }))
         ]
       };
+    }
 
       // TODO kind of want "new" state to match the "dirty" state updates have
     case INSERT_STARTED:
@@ -100,7 +104,6 @@ export default function dbReducer(db = emptyDB, action) {
         ]
       };
 
-      // TODO: "additional" will probably always just be an ID. Should probably pare it down to that
     case INSERT_SUCCEEDED:
       return {
         ...db,

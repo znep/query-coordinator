@@ -8,7 +8,7 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux';
 import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
-// import a11y from 'react-a11y';
+import a11y from 'react-a11y';
 import windowDBMiddleware from './lib/database/middleware';
 import * as Phoenix from 'phoenix';
 
@@ -36,7 +36,7 @@ window.DSMAPI_PHOENIX_SOCKET.connect();
 const middleware = [thunk, routerMiddleware(browserHistory)];
 
 if (window.serverConfig.environment === 'development') {
-  // a11y(React, { ReactDOM: ReactDOM });
+  a11y(React, { ReactDOM: ReactDOM });
   middleware.push(createLogger({
     duration: true,
     timestamp: false,

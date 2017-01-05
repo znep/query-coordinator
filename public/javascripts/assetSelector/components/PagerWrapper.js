@@ -11,6 +11,8 @@ export class PagerWrapper extends Component {
   // Index of first page
   getPagerStart() {
     return 1; // TODO: determine correct pagerStart using this.props.resultCount
+    // for example, this needs to be be reset if someone pages along to the right..
+    // see functionality from /browse
   }
 
   // Index of last page (inclusive)

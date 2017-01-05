@@ -15,7 +15,7 @@ import ceteraUtils from '../lib/ceteraUtils';
 export class ResultsContainer extends Component {
   constructor(props) {
     super(props);
-    _.bindAll(this, ['onViewTypeClick', 'onPageChange', 'renderResults']);
+    _.bindAll(this, ['onViewTypeClick', 'closeModal', 'onPageChange', 'renderResults']);
     this.onPageChange(1, true); // Fetch the first page of results
     // This may be something we want to make a prop, so one could open the assets at a given page
     // (based on something like a URL param), useful if this becomes a replacement for the catalog.
@@ -47,6 +47,10 @@ export class ResultsContainer extends Component {
       });
   }
 
+  closeModal() {
+    console.log('TODO: close modal');
+  }
+
   renderResults() {
     if (this.props.viewType === 'CARD_VIEW') {
       return (
@@ -66,14 +70,19 @@ export class ResultsContainer extends Component {
       );
     } else {
       return (
-        <div className="results-container">
+        <div>
+          <button className="btn btn-default close-modal" onClick={this.closeModal}>
+            <span className="socrata-icon-arrow-prev"></span> Back
+          </button>
           <a href="#" onClick={this.onViewTypeClick('CARD_VIEW')}>Card view</a> |
           <a href="#" onClick={this.onViewTypeClick('TABLE_VIEW')}>Table view</a>
 
-          <ResultCount count={this.props.resultCount} />
+          <div className="results-container">
+            <ResultCount count={this.props.resultCount} />
 
-          {this.renderResults()}
-          <PagerWrapper resultCount={this.props.resultCount} onPageChange={this.onPageChange} />
+            {this.renderResults()}
+            <PagerWrapper resultCount={this.props.resultCount} onPageChange={this.onPageChange} />
+          </div>
         </div>
       );
     }

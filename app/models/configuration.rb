@@ -1,6 +1,6 @@
 class Configuration < Model
 
-  def self.find_by_type(type, default_only = false, cname = nil, merge = true)
+  def self.find_by_type(type, default_only = false, cname = nil, merge = true, cache = true)
     fetch_config_from_core = lambda do |*cache_key|
       CoreServer::Base.connection.get_request(
         "/#{name.pluralize.downcase}.json?type=#{type}&defaultOnly=#{default_only}&merge=#{merge}",
@@ -12,7 +12,7 @@ class Configuration < Model
     # If cname is not CurrentDomain, we're in the internal panel, and caching is
     # 1: more complicated (needs another domain object), 2: riskier,
     # and 3: low-benefit, so skip it.
-    response = if type.nil? || cname.nil? || cname != CurrentDomain.cname
+    response = if type.nil? || cname.nil? || cname != CurrentDomain.cname || !cache
       fetch_config_from_core.call
     else
       Rails.cache.fetch(cache_key(type), &fetch_config_from_core)

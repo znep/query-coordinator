@@ -23,8 +23,8 @@ describe('components/ShowOutputSchema', () => {
     expect(_.map(element.querySelectorAll('.col-name'), 'innerText')).to.eql(['arrest', 'block']);
     expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['SoQLText', 'SoQLText']);
     expect(_.map(element.querySelectorAll('.col-errors'), 'innerText')).to.eql([
-      I18n.show_output_schema.column_header.no_errors_exist,
-      I18n.show_output_schema.column_header.no_errors_exist
+      I18n.show_output_schema.column_header.scanning,
+      I18n.show_output_schema.column_header.scanning
     ]);
   });
 
@@ -33,9 +33,17 @@ describe('components/ShowOutputSchema', () => {
     store.dispatch(batch(['foo', 'bar', 'baz'].map((value, index) => (
       insertFromServer('column_50', { value, id: index })
     ))));
+    store.dispatch(updateFromServer('columns', {
+      id: 50,
+      contiguous_rows_processed: 1
+    }));
     store.dispatch(batch(['bleep', 'bloop', 'blorp'].map((value, index) => (
       insertFromServer('column_51', { value, id: index })
     ))));
+    store.dispatch(updateFromServer('columns', {
+      id: 51,
+      contiguous_rows_processed: 1
+    }));
     const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
     const rows = element.querySelectorAll('tbody tr');
     expect(_.map(rows[0].querySelectorAll('td'), 'innerText')).to.eql(['foo', 'bleep']);

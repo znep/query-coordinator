@@ -189,6 +189,10 @@ class User < Model
     role_name == 'administrator'
   end
 
+  def is_publisher?
+    role_name == 'publisher'
+  end
+
   def is_designer?
     role_name == 'designer'
   end

@@ -46,7 +46,9 @@
     <h3 class="snapshotted" title="<%= t('screens.ds.bar.snapshot_notice') %>"><%= t('screens.ds.bar.snapshot_title_html', date: blist_date_time(@view.publicationDate)) %></h3>
     <%- end -%>
 
-    <%- if @view.is_unpublished? -%>
+    <%# Only show the publish button on working copies if the user is logged in and their role allows them to publish a dataset %>
+    <%- if @view.is_unpublished? && current_user && (current_user.is_publisher? || current_user.is_superadmin?) -%>
+     <%# Grey out the publish button if the dataset isn't ready to publish  %>
      <a href="#Publish" class="toolbarButton publish <%= @view.can_publish? ? '' : 'disabled' %>"
        <%- if @view.can_publish? && dataset_landing_page_enabled? -%>
          title="<%= t('screens.ds.bar.publish_prompt_with_dataset_landing_page') %>"

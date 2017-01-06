@@ -1,6 +1,7 @@
 {
     "name": "Hello, world",
     "path": "/hello",
+    "permission": "public",
     "status": "published",
     "content": {
         "privateData": true,

@@ -99,21 +99,7 @@ class CustomContentController < ApplicationController
     render :text => sheet, :content_type => 'text/css'
   end
 
-  # Check for a conditional request and return a 304 if the client should
-  # have no issues using their cached copy
-  def handle_conditional_request(request, response, manifest)
-    ConditionalRequestHandler.set_conditional_request_headers(response, manifest)
-    if ConditionalRequestHandler.check_conditional_request?(request, manifest)
-      Rails.logger.info('Conditional Request Matches; returning a 304')
-      MetricQueue.instance.push_metric(CurrentDomain.domain.id.to_s + '-intern', 'ds-no-render', 1)
-      render :nothing => true, :status => 304
-      return true
-    end
-    Rails.logger.info('Conditional Request Does Not Match')
-    false
-  end
-
-  def page_without_caching
+  def page
     @debug = params['debug'] == 'true'
     @edit_mode = params['_edit_mode'] == 'true'
 
@@ -127,6 +113,13 @@ class CustomContentController < ApplicationController
     @page = DataslateRouting.for(full_path, { ext: params[:ext].try(:downcase) })
     @vars = @page.try(:[], :vars)
     @page = @page.try(:[], :page)
+
+    # check for redirects:
+    if @page.try(:redirect?)
+      redirect_info = @page.redirect_info
+      redirect_to(redirect_info[:path], :status => redirect_info[:code])
+      return true # dunno why! but if i don't do this the canvas env is horked for the next req.
+    end
 
     # Pass to the view if we are on a dataslate page and/or the homepage in order to determine
     # whether to render the site chrome header/footer based on the corresponding feature flags.
@@ -162,13 +155,6 @@ class CustomContentController < ApplicationController
     })
     Canvas2::Util.is_private(@page.private_data?)
 
-    # check for redirects:
-    if @page.redirect?
-      redirect_info = @page.redirect_info
-      redirect_to(redirect_info[:path], :status => redirect_info[:code])
-      return true # dunno why! but if i don't do this the canvas env is horked for the next req.
-    end
-
     # suppress govstat toolbar chrome and styling if requested:
     if CurrentDomain.module_enabled?(:govStat)
       # suppress govstat chrome on homepage
@@ -189,275 +175,6 @@ class CustomContentController < ApplicationController
     # template, instead of the main layout
     @custom_meta = @meta
     @meta = nil
-  end
-
-  def page
-    # Entirely for debugging for now.
-    if params[:raw]
-      data = DataslateRouting.for(params[:path], { ext: params[:ext].try(:downcase) })
-      cache_state = Page.last_updated_at(data[:page].uid) if data.present?
-
-      render :json => data.merge( pid: Process.pid, cache_state: cache_state ).to_json
-      return
-    end
-
-    if FeatureFlags.value_for(:route_dataslate_without_caching, request: request)
-      return page_without_caching
-    end
-
-
-    # FIXME: should probably make sure you're a Socrata admin before allowing debugging
-    @debug = params['debug'] == 'true'
-    @edit_mode = params['_edit_mode'] == 'true'
-    @start_time = Time.now
-
-    page_ext = (params[:ext] || '').downcase
-    path = full_path = '/' + (params[:path] || '')
-    if page_ext.present?
-      full_path += '.' + page_ext
-      if page_ext != 'csv' && page_ext != 'xlsx'
-        path += '.' + page_ext
-        page_ext = ''
-      end
-      request.format = page_ext.to_sym if !page_ext.blank? && !@debug && !@edit_mode
-    end
-
-    # Pass to the view if we are on a dataslate page and/or the homepage in order to determine
-    # whether to render the site chrome header/footer based on the corresponding feature flags.
-    @using_dataslate = true
-    @on_homepage = full_path == '/'
-
-    ####### FETCH PAGE ########
-    Canvas2::DataContext.reset
-    Canvas2::Util.reset
-    Canvas2::Util.set_params(params)
-    Canvas2::Util.set_request(request)
-    Canvas2::Util.set_debug(@debug || @edit_mode)
-    Canvas2::Util.set_no_cache(false)
-    Canvas2::Util.set_path(full_path)
-    # Set without user before we load pages
-    Canvas2::Util.set_env({
-      domain: CurrentDomain.cname,
-      renderTime: Time.now.to_i,
-      path: full_path,
-      siteTheme: CurrentDomain.theme,
-      current_locale: I18n.locale,
-      available_locales: request.env['socrata.available_locales']
-    })
-
-    if @page_override.present?
-      @page = @page_override
-      @vars = {}
-    else
-      @page, @vars = Page[path, page_ext, @current_user]
-    end
-
-    # check for redirects:
-    if defined?(@page) && @page.present? && @page.metadata.has_key?('redirect')
-      redirect_to(@page.metadata['redirect'], :status => (@page.metadata['redirectCode'] || 301))
-      return true # dunno why! but if i don't do this the canvas env is horked for the next req.
-    end
-
-    # suppress govstat toolbar chrome and styling if requested:
-    if CurrentDomain.module_enabled?(:govStat)
-      # suppress govstat chrome on homepage
-      @suppress_govstat = true if full_path == '/'
-
-      # suppress govstat chrome for selected urls
-      config = CurrentDomain.configuration('gov_stat')
-      if config.present? && config.properties.suppress_govstat.respond_to?(:any?)
-        @suppress_govstat = true if config.properties.suppress_govstat.any? { |route| request.path =~ Regexp.new(route) }
-      end
-    end
-
-    # Make sure action name is always changed for homepage, even if cached
-    self.action_name = 'homepage' if full_path == '/'
-    unless @page
-      if full_path == '/'
-        homepage
-      else
-        render_404
-      end
-      return true
-    end
-    ######### END #########
-
-    # get bodyClass before caching so it can be applied to the main layout
-    @body_class = @page.body_class
-
-    ######## CACHING #########
-    domain_id = CurrentDomain.domain.id.to_s
-    internal_metric_entity = domain_id + '-intern'
-    MetricQueue.instance.push_metric(CurrentDomain.domain.id.to_s + '-intern', 'ds-total', 1)
-
-    # Notes on page_updated:
-    #  pages_mtime must be a long-lived cache key for this to work; it must also be invalidated
-    #  explicitly by the core server on a pages update.
-    #
-    cache_params = cache_hash(params).merge('page_updated' => VersionAuthority.page_mtime(@page.uid))
-
-
-    # We do not yet know whether the page can be cached globally, so we need to check both
-    # the global cache and the per-user cache.
-
-    cache_user_id = @current_user ? @current_user.id : ANONYMOUS_USER
-    cache_key_no_user = app_helper.cache_key('canvas2-page', cache_params)
-    cache_key_user = app_helper.cache_key('canvas2-page', cache_params.merge('current_user' => cache_user_id))
-    ConditionalRequestHandler.set_cache_control_headers(response, @current_user.nil?)
-
-    # Slate Page Caching
-    # Anonymous/Logged Out OR Logged In w/ Shared Data:
-    #   read manifest for ANONYMOUS_USER; read global fragment cache; 304s valid
-    #   write to global fragment cache
-    #   write manifest for ANONYMOUS_USER
-    # Logged In w/ Private Data:
-    #   read manifest for user; read user-fragment cache; 304s valid
-    #   write to user fragment cache
-    #   write manifest for USER
-
-    # Optimistically lookup from the global manifest and fragment cache
-    can_be_globally_cached = true
-    lookup_manifest = VersionAuthority.validate_manifest?(cache_key_no_user, ANONYMOUS_USER)
-    if lookup_manifest.nil? && @current_user
-      # No global manifest available; page is either private or completely uncached
-      lookup_manifest = VersionAuthority.validate_manifest?(cache_key_no_user, @current_user.id)
-      # if we did, indeed find a manifest for that specific user we can assume the page will
-      # be private
-      can_be_globally_cached = !lookup_manifest.nil?
-    end
-
-    if !lookup_manifest.nil? && !@debug && !@edit_mode
-      Rails.logger.info('Manifest valid; reading content from fragment cache is OK')
-      MetricQueue.instance.push_metric(internal_metric_entity , 'ds-manifest-valid', 1)
-      return true if handle_conditional_request(request, response, lookup_manifest)
-      @cached_fragment = read_fragment(cache_key_no_user) if can_be_globally_cached
-      if @cached_fragment.nil?
-        Rails.logger.info('Global fragment cache not available; trying per-user fragment cache')
-        @cached_fragment = read_fragment(cache_key_user)
-      else
-        # If we got something out of the fragment cache; we can make that something cacheable down the line as well
-        ConditionalRequestHandler.set_cache_control_headers(response, true)
-      end
-    else
-      MetricQueue.instance.push_metric(internal_metric_entity , 'ds-manifest-invalid', 1)
-    end
-
-    # The cached fragment is an error page; just return that then
-    if @cached_fragment.is_a?(String) && @cached_fragment.start_with?('error_page:')
-      str = @cached_fragment.slice(11, @cached_fragment.length)
-      code = str.slice(0, 3)
-      @display_message = str.slice(4, str.length)
-      render :template => 'custom_content/error_page', :layout => 'main', :status => code.to_i
-      true
-    end
-    ######### END ############
-
-    @minimal_render = params['no_render'] == 'true'
-
-    # Move to different variable so we can control rendering in our own
-    # template, instead of the main layout
-    @custom_meta = @meta
-    @meta = nil
-    if @cached_fragment.nil?
-      Rails.logger.info('Performing full render')
-      MetricQueue.instance.push_metric(internal_metric_entity , 'ds-full-render', 1)
-
-      ########### RENDER ########
-      if @page
-        Canvas2::Util.set_env({
-          domain: CurrentDomain.cname,
-          renderTime: Time.now.to_i,
-          path: full_path,
-          siteTheme: CurrentDomain.theme,
-          currentUser: @page.private_data? && @current_user ? @current_user.id : nil,
-          current_locale: I18n.locale,
-          available_locales: request.env['socrata.available_locales']
-        })
-        # Now we know whether the page is private or not; set the render variables for
-        # cache-key
-        Canvas2::Util.is_private(@page.private_data?)
-        # If the page has maxAge <= 0; explicitly disable any and all row or search caching
-        Canvas2::Util.set_no_cache(@page.max_age <= 0) if @page.max_age
-        @cache_key = Canvas2::Util.is_private ? cache_key_user : cache_key_no_user
-        self.action_name = 'page'
-        begin
-          if @page.format == 'export'
-            context_result = @page.set_context(@vars)
-            raise Canvas2::NoContentError.new(Canvas2::DataContext::errors[0]) if context_result == false
-          end
-
-          respond_to do |format|
-            # Make sure HTML is first, since IE8 sends */* accept on Back
-            format.html { render :action => 'page' }
-            format.csv do
-              file_content = @page.generate_file('csv')
-              write_fragment(@cache_key, file_content, :expires_in => Rails.application.config.cache_ttl_fragment)
-              render :text => file_content
-            end
-            format.xlsx do
-              file_content = @page.generate_file('xlsx')
-              write_fragment(@cache_key, file_content, :expires_in => Rails.application.config.cache_ttl_fragment)
-              render :text => file_content
-            end
-            format.any { render :action => 'page' }
-          end
-          # generate and set the manifest for this render on success; we need to recalculate the cache key here
-          # This includes all data context resources along with associated modification times
-          manifest = lookup_manifest || Canvas2::DataContext.manifest
-          # Only set the manifest if we were not successful in during lookup; we do not want to reset the
-          # manifest just because the fragment cache has expired.
-          manifest_user = user_tristate(Canvas2::Util.is_private, @current_user)
-          if lookup_manifest.nil?
-            manifest.max_age = @page.max_age
-            manifest.add_resource('pageUid-' + @page.uid,Time.now.to_i) if !@page.uid.nil?
-            manifest.set_access_level(manifest_user)
-            VersionAuthority.set_manifest(cache_key_no_user, manifest_user, manifest)
-          end
-          ConditionalRequestHandler.set_cache_control_headers(response, manifest_user == ANONYMOUS_USER)
-          ConditionalRequestHandler.set_conditional_request_headers(response, manifest)
-        # It would be really nice to catch the custom Canvas2::NoContentError I'm raising;
-        # but Rails ignores it and passes it all the way up without rescuing
-        # unless I rescue a generic Exception
-        rescue Exception => e
-          Rails.logger.info("Caught exception trying to render page: #{e.inspect}\n#{e.backtrace[0]}\n")
-          if (e.respond_to?(:original_exception))
-            @error = e.original_exception
-          else
-            @error = e
-          end
-
-          if @debug
-            render :action => 'page_debug'
-          elsif @edit_mode
-            render :action => 'page'
-          else
-            code = (@error.respond_to?(:code) ? @error.code : nil) || 404
-            @display_message = (@error.respond_to?(:display_message) ? @error.display_message : nil) || ''
-            write_fragment(@cache_key, 'error_page:' + code.to_s + ':' + @display_message, :expires_in => 1.minutes)
-            render :template => "custom_content/error_page", :layout => 'main', :status => code
-          end
-        end
-      end
-      ########## END ########
-
-      ########### RENDER CACHE #########
-    else
-      # When we're rendering a cached item, force it to use the page action,
-      # since we may have manipulated the action name to be homepage, and there
-      # is no such view
-      Rails.logger.info('Using fragment cache')
-      MetricQueue.instance.push_metric(internal_metric_entity , 'ds-fragment-render', 1)
-      respond_to do |format|
-        format.html { render :action => 'page' }
-        format.csv { render :text => @cached_fragment }
-        format.xlsx { render :text => @cached_fragment }
-        format.any { render :action => 'page' }
-      end
-    end
-    ######### END #######
-
-    ######### PERFORMANCE LOGGING ######
-    Rails.logger.info("#{Canvas2::DataContext::timings.length} contexts loaded.")
   end
 
   before_filter :only => [:template] { |c| c.require_right(UserRights::CREATE_PAGES) }

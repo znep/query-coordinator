@@ -89,7 +89,7 @@ class DatasetsControllerTest < ActionController::TestCase
 
   test 'returns 304 if no changes have occurred for anonymous user' do
     dsmtime = 12345
-    VersionAuthority.stubs(:get_core_dataset_mtime => { 'four-four' => dsmtime })
+    View.any_instance.stubs(:mtime_according_to_core => dsmtime)
     @request.env['HTTP_IF_NONE_MATCH'] = "#{dsmtime}-ANONYMOUS-#{@controller.get_revision}"
     get :show, :id => 'four-four'
     assert_response 304

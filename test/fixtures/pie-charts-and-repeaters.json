@@ -3,6 +3,7 @@
     "status": "published",
     "name": "Pie Charts And Repeaters",
     "path": "/pie-repeat",
+    "permission": "public",
     "data": {
         "test-data": {
             "id": "test-data",

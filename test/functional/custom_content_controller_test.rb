@@ -14,7 +14,8 @@ class CustomContentControllerTest < ActionController::TestCase
     init_signaller
     stub_site_chrome
 
-    stub_feature_flags_with(:route_dataslate_without_caching => false)
+    stub_request(:get, "http://localhost:8080/pages.json?method=getLightweightRouting").
+      to_return(:status => 200, :body => "", :headers => {})
 
     @basic_cache_params = {
       'domain' => CurrentDomain.cname,
@@ -24,11 +25,6 @@ class CustomContentControllerTest < ActionController::TestCase
       'params' => Digest::MD5.hexdigest(BASIC_PARAMS.to_json)
     }
     @basic_cache_key  = AppHelper.instance.cache_key('canvas2-page', @basic_cache_params)
-
-    VersionAuthority.expire(@basic_cache_key, ANONYMOUS_USER)
-    VersionAuthority.expire(@basic_cache_key, 'test-test')
-    assert VersionAuthority.validate_manifest?(@basic_cache_key, ANONYMOUS_USER).nil?
-    assert VersionAuthority.validate_manifest?(@basic_cache_key, 'test-test').nil?
   end
 
   def stub_rails_cache
@@ -48,7 +44,7 @@ class CustomContentControllerTest < ActionController::TestCase
     user = nil
     user = init_current_user(@controller) unless anonymous
     page = Page.parse(File.open(fixture).read)
-    @controller.page_override = page
+    DataslateRouting.stubs(:for => { page: page })
     user
   end
 
@@ -90,38 +86,6 @@ class CustomContentControllerTest < ActionController::TestCase
     get :page, :path => 'not-here'
     assert_response 302
     assert_redirected_to '/here-instead'
-  end
-
-  test '304 for etag' do
-    stub_rails_cache
-    simple_render_with_user
-    assert_etag_request(@response.headers['ETag'], PAGE_PATH)
-  end
-
-  test '304 for Global Manifest Cache' do
-    stub_rails_cache
-    prepare_page(fixture='test/fixtures/dataslate-global-hello.json', anonymous=true)
-    init_current_user(@controller, ANONYMOUS_USER)
-    get :page, :path => PAGE_PATH
-    assert_response :success
-    assert VersionAuthority.validate_manifest?(@basic_cache_key, ANONYMOUS_USER)
-    # Subsequent requests should NOT return 304s
-    @request.env['HTTP_IF_NONE_MATCH'] = @response.headers['ETag']
-    get :page, :path => PAGE_PATH
-    assert_response 304
-  end
-
-  test '304 for User Manifest Cache' do
-    stub_rails_cache
-    prepare_page(fixture='test/fixtures/dataslate-private-hello.json', anonymous=false)
-    get :page, :path => PAGE_PATH
-    assert_response :success
-    assert_etag_request(@response.headers['ETag'], PAGE_PATH)
-
-    prepare_page(fixture='test/fixtures/dataslate-private-hello.json', anonymous=false)
-    get :page, :path => PAGE_PATH
-    assert_response :success
-    assert_etag_request(@response.headers['ETag'], PAGE_PATH)
   end
 
   test 'Render Page With DataSet' do

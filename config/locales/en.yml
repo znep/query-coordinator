@@ -1571,6 +1571,21 @@ en:
          errors_exist: Errors total
          errors_exist_scanning: Errors found so far
          no_errors_exist: All cells will import correctly
+    show_upsert:
+      header:
+        title: Finalizing Import
+      successful:
+        title: Import Succeeded!
+        body: You did it!  Congratulations!
+      failure:
+        title: Import Failed!
+        body: I'm sorry Dave, I can't let you do that.
+      in_progress:
+        title: Finalizing Import!
+        body: You are good for now.  Feel free to close down this situation and have some coffee. We'll keep going behind the scenes, and your data will be good to go in a bit.
+      footer:
+        finished: Done
+        failed: Failed
   dataslate:
     component:
       edit: Edit this component

@@ -1,17 +1,19 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
-import { Modal, ModalHeader, ModalContent } from 'socrata-components';
+import { Modal, ModalHeader, ModalContent, ModalFooter } from 'socrata-components';
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 
 import * as Links from '../links';
 import { STATUS_UPDATING } from '../lib/database/statuses';
-import * as Actions from '../actions/showOutputSchema';
+import * as ShowActions from '../actions/showOutputSchema';
+import * as ApplyActions from '../actions/applyUpdate';
 import Table from './Table';
 
-function query(db, uploadId, schemaId, outputSchemaId) {
-  const upload = _.find(db.uploads, { id: uploadId });
-  const schema = _.find(db.schemas, { id: schemaId });
+function query(db, uploadId, schemaId, outputSchemaIdStr) {
+  const outputSchemaId = _.toNumber(outputSchemaIdStr);
+  const upload = _.find(db.uploads, { id: _.toNumber(uploadId) });
+  const schema = _.find(db.schemas, { id: _.toNumber(schemaId) });
   const outputSchema = _.find(db.schemas, { id: outputSchemaId });
   const schemaColumns = _.filter(db.schema_columns, { schema_id: outputSchema.id });
   const unsortedColumns = _.filter(
@@ -32,7 +34,8 @@ function query(db, uploadId, schemaId, outputSchemaId) {
   };
 }
 
-export function ShowOutputSchema({ db, upload, columns, outputSchema, goToUpload, updateColumnType }) {
+export function ShowOutputSchema({ db, upload, columns, outputSchema,
+                                   goToUpload, updateColumnType, applyUpdate }) {
   // TODO: I18n
   const uploadProgress = upload.__status__.type === STATUS_UPDATING ?
     `${Math.round(upload.__status__.percentCompleted)}% Uploaded` :
@@ -65,6 +68,14 @@ export function ShowOutputSchema({ db, upload, columns, outputSchema, goToUpload
             outputSchema={outputSchema}
             updateColumnType={updateColumnType} />
         </ModalContent>
+
+        <ModalFooter>
+          <button
+            onClick={applyUpdate}
+            className="btn btn-primary">
+            Apply Update
+          </button>
+        </ModalFooter>
       </Modal>
     </div>
   );
@@ -76,7 +87,8 @@ ShowOutputSchema.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   outputSchema: PropTypes.object.isRequired,
   goToUpload: PropTypes.func.isRequired,
-  updateColumnType: PropTypes.func.isRequired
+  updateColumnType: PropTypes.func.isRequired,
+  applyUpdate: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state, ownProps) {
@@ -92,10 +104,13 @@ function mapStateToProps(state, ownProps) {
 function mapDispatchToProps(dispatch, ownProps) {
   return {
     updateColumnType: (oldSchema, oldColumn, newType) => {
-      dispatch(Actions.updateColumnType(oldSchema, oldColumn, newType));
+      dispatch(ShowActions.updateColumnType(oldSchema, oldColumn, newType));
     },
     goToUpload: () => (
       dispatch(push(Links.showUpload(_.toNumber(ownProps.params.uploadId))(ownProps.location)))
+    ),
+    applyUpdate: () => (
+      dispatch(ApplyActions.applyUpdate(_.toNumber(ownProps.params.outputSchemaId)))
     )
   };
 }

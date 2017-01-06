@@ -7,16 +7,16 @@ describe('dsmapi links', () => {
     locationBeforeTransitions: {
       pathname: '/dataset/Herp-Derp-27/p4k7-ka86/updates/0/uploads'
     }
-  }
+  };
 
-  //come from calling Link_to and passing in a function
+  // comes from calling Link_to and passing in a function
   const mockRouting = {
     pathname: '/dataset/Herp-Derp-27/p4k7-ka86/updates/0/uploads'
-  }
+  };
 
-  it('creates a home link', () => {
-    expect(dsmapiLinks.home(mockWrappedRouting)).to.eq('/api/update/p4k7-ka86/0');
-    expect(dsmapiLinks.home(mockRouting)).to.eq('/api/update/p4k7-ka86/0');
+  it('creates a updateBase link', () => {
+    expect(dsmapiLinks.updateBase(mockWrappedRouting)).to.eq('/api/update/p4k7-ka86/0');
+    expect(dsmapiLinks.updateBase(mockRouting)).to.eq('/api/update/p4k7-ka86/0');
   });
 
   it('creates a uploadIndex link', () => {

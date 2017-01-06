@@ -9,7 +9,7 @@ import NoResults from './NoResults';
 import ResultCount from './ResultCount';
 import CardContainer from './CardContainer';
 import TableContainer from './TableContainer';
-import PagerWrapper from './PagerWrapper';
+import Pager from './Pager';
 import ceteraUtils from '../lib/ceteraUtils';
 
 export class ResultsContainer extends Component {
@@ -70,19 +70,17 @@ export class ResultsContainer extends Component {
       );
     } else {
       return (
-        <div>
+        <div className="results-container">
           <button className="btn btn-default close-modal" onClick={this.closeModal}>
             <span className="socrata-icon-arrow-prev"></span> Back
           </button>
           <a href="#" onClick={this.onViewTypeClick('CARD_VIEW')}>Card view</a> |
           <a href="#" onClick={this.onViewTypeClick('TABLE_VIEW')}>Table view</a>
 
-          <div className="results-container">
-            <ResultCount count={this.props.resultCount} />
+          <ResultCount count={this.props.resultCount} />
 
-            {this.renderResults()}
-            <PagerWrapper resultCount={this.props.resultCount} onPageChange={this.onPageChange} />
-          </div>
+          {this.renderResults()}
+          <Pager resultCount={this.props.resultCount} onPageChange={this.onPageChange} />
         </div>
       );
     }

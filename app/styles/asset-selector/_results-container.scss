@@ -1,11 +1,15 @@
 @import "asset-selector/breakpoints";
 
 .asset-selector {
-  button.close-modal {
-    margin-right: 1rem;
-  }
-
   .results-container {
+    .inline-block {
+      display: inline-block;
+    }
+
+    button.close-modal {
+      margin-right: 1rem;
+    }
+
     .result-count {
       float: none;
     }

@@ -2144,14 +2144,14 @@ en:
           one: 1 asset discovered
           other: "%{count} assets discovered"
         back_to_connector_list: Back to Connector list
-        catalog: Catalog
+        catalog: External 
         catalog_connect_all: Connect all assets as External Datasets
-        catalog_option: Catalog Connect
+        catalog_option: External Connection
         catalog_option_explanation: Assets will appear in your catalog as External Datasets
         connected_assets: Connected assets
         current_status: Current Status
         data: Data
-        data_option: Data Connect
+        data_option: Data Connection
         data_option_explanation: Assets will appear in your catalog as Maps
         data_connect_all: Connect all assets as Maps
         dataset: Dataset

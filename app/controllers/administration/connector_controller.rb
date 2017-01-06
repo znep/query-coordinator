@@ -121,6 +121,7 @@ class Administration::ConnectorController < AdministrationController
   end
 
   def show_connector
+    @data_connection_on = feature_flag?('enable_data_connector', request)
     page_size = 50
     all_threshold = 8
     page_idx = params.fetch(:page, '1').to_i

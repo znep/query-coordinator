@@ -16,9 +16,14 @@ const ColumnHeader = React.createClass({
   render() {
     const { outputSchema, column, updateColumnType } = this.props;
     // TODO: Refactor this to be in an appropriate location!
-    const columnTypes = ['SoQLNumber', 'SoQLText'];
+    const columnTypes = ['SoQLNumber', 'SoQLText', 'SoQLBoolean', 'SoQLFixedTimestamp'];
     // TODO: Internationalize!
-    const typeDisplayNames = { 'SoQLText': 'Text', 'SoQLNumber': 'Number' };
+    const typeDisplayNames = {
+      'SoQLText': 'Text',
+      'SoQLNumber': 'Number',
+      'SoQLBoolean': 'Boolean',
+      'SoQLFixedTimestamp': 'Date and time'
+    };
 
     return (
       <th key={column.id}>

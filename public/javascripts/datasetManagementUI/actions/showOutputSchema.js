@@ -48,7 +48,12 @@ export function updateColumnType(oldSchema, oldColumn, newType) {
 
 export function getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType) {
   // TODO: dsmapi shouldn't expose SoQL* in type names, so this should go away
-  const longNameToSoql = { 'SoQLText': 'text', 'SoQLNumber': 'number' };
+  const longNameToSoql = {
+    'SoQLText': 'text',
+    'SoQLNumber': 'number',
+    'SoQLBoolean': 'boolean',
+    'SoQLFixedTimestamp': 'fixed_timestamp'
+  };
 
   const newOutputSchema = {
     input_schema_id: oldSchema.input_schema_id
@@ -60,8 +65,11 @@ export function getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType) 
   const newOutputColumns = oldOutputColumns.map((column) => {
     const xform = _.find(db.transforms, { output_column_id: column.id }).transform_expr;
 
-    const transformExpr = (column.id === oldColumn.id) ?
-      `${column.schema_column_name}::${longNameToSoql[newType]}` :
+    // Input columns are presently always text.  This will eventually
+    // change, and then we'll need the input column here instead of
+    // just hardcoding a comparison to text.
+    const transformExpr = (column.id === oldColumn.id && newType !== 'SoQLText') ?
+      `to_${longNameToSoql[newType]}(${column.schema_column_name})` :
       xform;
 
     return {

@@ -97,6 +97,9 @@ export default function pieChart(state, action) {
     case SET_UNIT_OTHER:
     case SET_VIEW_SOURCE_DATA_LINK:
       return baseVifReducer(state, action);
+
+    default:
+      break;
   }
 
   return state;

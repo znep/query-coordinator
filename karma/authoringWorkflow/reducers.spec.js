@@ -110,10 +110,10 @@ describe('AuthoringWorkflow reducer', function() {
 
       shouldSetVif('setBaseLayer', 'https://yes.com', 'configuration.baseLayerUrl', ['regionMap', 'featureMap']);
 
-      shouldSetVif('setLabelTop', 'labelTop', 'configuration.axisLabels.top', ['columnChart', 'timelineChart', 'histogram']);
+      shouldSetVif('setLabelTop', 'labelTop', 'configuration.axisLabels.top', ['barChart']);
       shouldSetVif('setLabelBottom', 'labelBottom', 'configuration.axisLabels.bottom', ['columnChart', 'timelineChart', 'histogram']);
-      shouldSetVif('setLabelLeft', 'labelLeft', 'configuration.axisLabels.left', ['columnChart', 'timelineChart', 'histogram']);
-      shouldSetVif('setLabelRight', 'labelRight', 'configuration.axisLabels.right', ['columnChart', 'timelineChart', 'histogram']);
+      shouldSetVif('setLabelLeft', 'labelLeft', 'configuration.axisLabels.left', ['barChart', 'columnChart', 'timelineChart', 'histogram']);
+      shouldSetVif('setLabelRight', 'labelRight', 'configuration.axisLabels.right', []);
 
       shouldSetVif('setShowValueLabels', true, 'configuration.showValueLabels', ['barChart', 'pieChart']);
       shouldSetVif('setShowValueLabelsAsPercent', true, 'configuration.showValueLabelsAsPercent', ['pieChart']);

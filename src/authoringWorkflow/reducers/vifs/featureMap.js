@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import utils from 'socrata-utils';
 
 import vifs from '../../vifs';
 import baseVifReducer from './base';
@@ -83,6 +82,9 @@ export default function featureMap(state, action) {
     case SET_DATASET_UID:
     case SET_VIEW_SOURCE_DATA_LINK:
       return baseVifReducer(state, action);
+
+    default:
+      break;
   }
 
   return state;

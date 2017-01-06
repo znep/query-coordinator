@@ -41,6 +41,7 @@ import CustomizationTabPane from '../CustomizationTabPane';
 import EmptyPane from './EmptyPane';
 import Accordion from '../shared/Accordion';
 import AccordionPane from '../shared/AccordionPane';
+import DebouncedInput from '../shared/DebouncedInput';
 
 export var AxisAndScalePane = React.createClass({
   propTypes: {
@@ -66,24 +67,8 @@ export var AxisAndScalePane = React.createClass({
   renderBarChartVisualizationLabels() {
     const { vifAuthoring, onChangeLabelTop, onChangeLabelLeft } = this.props;
     const axisLabels = getAxisLabels(vifAuthoring);
-    const topAxisLabel = _.get(axisLabels, 'top', null);
-    const leftAxisLabel = _.get(axisLabels, 'left', null);
-
-    const labelTopInputAttributes = {
-      className: 'text-input',
-      id: 'label-top',
-      type: 'text',
-      onChange: onDebouncedEvent(this, onChangeLabelTop),
-      defaultValue: topAxisLabel
-    };
-
-    const labelLeftInputAttributes = {
-      className: 'text-input',
-      id: 'label-left',
-      type: 'text',
-      onChange: onDebouncedEvent(this, onChangeLabelLeft),
-      defaultValue: leftAxisLabel
-    };
+    const topAxisLabel = _.get(axisLabels, 'top', '');
+    const leftAxisLabel = _.get(axisLabels, 'left', '');
 
     return (
       <AccordionPane title={translate('panes.axis_and_scale.subheaders.axis_titles')}>
@@ -91,13 +76,13 @@ export var AxisAndScalePane = React.createClass({
           <label className="block-label" htmlFor="label-top">
             {translate('panes.axis_and_scale.fields.top_axis_title.title')}
           </label>
-          <input {...labelTopInputAttributes} />
+          <DebouncedInput value={topAxisLabel} onChange={onChangeLabelTop} id="label-top" className="text-input" />
         </div>
         <div className="authoring-field">
           <label className="block-label" htmlFor="label-left">
             {translate('panes.axis_and_scale.fields.left_axis_title.title')}
           </label>
-          <input {...labelLeftInputAttributes}/>
+          <DebouncedInput value={leftAxisLabel} onChange={onChangeLabelLeft} id="label-left" className="text-input" />
         </div>
       </AccordionPane>
     );
@@ -106,24 +91,8 @@ export var AxisAndScalePane = React.createClass({
   renderVisualizationLabels() {
     const { vifAuthoring, onChangeLabelLeft, onChangeLabelBottom } = this.props;
     const axisLabels = getAxisLabels(vifAuthoring);
-    const leftAxisLabel = _.get(axisLabels, 'left', null);
-    const bottomAxisLabel = _.get(axisLabels, 'bottom', null);
-
-    const labelLeftInputAttributes = {
-      className: 'text-input',
-      id: 'label-left',
-      type: 'text',
-      onChange: onDebouncedEvent(this, onChangeLabelLeft),
-      defaultValue: leftAxisLabel
-    };
-
-    const labelBottomInputAttributes = {
-      className: 'text-input',
-      id: 'label-bottom',
-      type: 'text',
-      onChange: onDebouncedEvent(this, onChangeLabelBottom),
-      defaultValue: bottomAxisLabel
-    };
+    const leftAxisLabel = _.get(axisLabels, 'left', '');
+    const bottomAxisLabel = _.get(axisLabels, 'bottom', '');
 
     return (
       <AccordionPane title={translate('panes.axis_and_scale.subheaders.axis_titles')}>
@@ -131,13 +100,13 @@ export var AxisAndScalePane = React.createClass({
           <label className="block-label" htmlFor="label-left">
             {translate('panes.axis_and_scale.fields.left_axis_title.title')}
           </label>
-          <input {...labelLeftInputAttributes}/>
+          <DebouncedInput value={leftAxisLabel} onChange={onChangeLabelLeft} id="label-left" className="text-input" />
         </div>
         <div className="authoring-field">
           <label className="block-label" htmlFor="label-bottom">
             {translate('panes.axis_and_scale.fields.bottom_axis_title.title')}
           </label>
-          <input {...labelBottomInputAttributes} />
+          <DebouncedInput value={bottomAxisLabel} onChange={onChangeLabelBottom} id="label-bottom" className="text-input" />
         </div>
       </AccordionPane>
     );
@@ -292,8 +261,15 @@ export var AxisAndScalePane = React.createClass({
       onMeasureAxisMaxValueChange
     } = this.props;
 
-    const limitMax = getMeasureAxisMaxValue(vifAuthoring);
-    const limitMin = getMeasureAxisMinValue(vifAuthoring);
+    let limitMax = getMeasureAxisMaxValue(vifAuthoring);
+    if (_.isNull(limitMax)) {
+      limitMax = '';
+    }
+
+    let limitMin = getMeasureAxisMinValue(vifAuthoring);
+    if (_.isNull(limitMin)) {
+      limitMin = '';
+    }
 
     const isAuto = this.state.measureAxisScaleControl == 'automatic' &&
       (!limitMin && !limitMax);
@@ -304,19 +280,13 @@ export var AxisAndScalePane = React.createClass({
           <label className="block-label" htmlFor="measure-axis-scale-custom-min">
             {translate('panes.axis_and_scale.fields.scale.minimum')}
           </label>
-          <input className="text-input"
-                 id="measure-axis-scale-custom-min"
-                 defaultValue={ limitMin }
-                 onChange={onDebouncedEvent(this, onMeasureAxisMinValueChange)} />
+          <DebouncedInput value={limitMin} onChange={onMeasureAxisMinValueChange} className="text-input" id="measure-axis-scale-custom-min" />
         </div>
         <div>
           <label className="block-label" htmlFor="measure-axis-scale-custom-max">
             {translate('panes.axis_and_scale.fields.scale.maximum')}
           </label>
-          <input className="text-input"
-                 id="measure-axis-scale-custom-max"
-                 defaultValue={ limitMax }
-                 onChange={onDebouncedEvent(this, onMeasureAxisMaxValueChange)} />
+          <DebouncedInput value={limitMax} onChange={onMeasureAxisMaxValueChange} className="text-input" id="measure-axis-scale-custom-max" />
         </div>
       </div>
     );
@@ -543,16 +513,16 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 
   return {
-    onChangeLabelTop: labelTop => {
-      dispatch(setLabelTop(labelTop));
+    onChangeLabelTop: (event) => {
+      dispatch(setLabelTop(event.target.value));
     },
 
-    onChangeLabelBottom: labelBottom => {
-      dispatch(setLabelBottom(labelBottom));
+    onChangeLabelBottom: (event) => {
+      dispatch(setLabelBottom(event.target.value));
     },
 
-    onChangeLabelLeft: labelLeft => {
-      dispatch(setLabelLeft(labelLeft));
+    onChangeLabelLeft: (event) => {
+      dispatch(setLabelLeft(event.target.value));
     },
 
     onChangeShowDimensionLabels: (event) => {
@@ -587,12 +557,12 @@ function mapDispatchToProps(dispatch) {
       dispatch(setTreatNullValuesAsZero(treatNullValuesAsZero));
     },
 
-    onMeasureAxisMinValueChange: (measureAxisMinValue) => {
-      dispatch(setMeasureAxisMinValue(measureAxisMinValue));
+    onMeasureAxisMinValueChange: (event) => {
+      dispatch(setMeasureAxisMinValue(event.target.value));
     },
 
-    onMeasureAxisMaxValueChange: (measureAxisMaxValue) => {
-      dispatch(setMeasureAxisMaxValue(measureAxisMaxValue));
+    onMeasureAxisMaxValueChange: (event) => {
+      dispatch(setMeasureAxisMaxValue(event.target.value));
     },
 
     onMeasureAxisControlAuto: () => {

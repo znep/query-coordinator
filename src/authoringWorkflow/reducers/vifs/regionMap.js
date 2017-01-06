@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import utils from 'socrata-utils';
 
 import vifs from '../../vifs';
 import baseVifReducer from './base';
@@ -42,11 +41,6 @@ export default function regionMap(state, action) {
   switch (action.type) {
     case RESET_STATE:
       state = vifs().regionMap;
-      break;
-
-    case SET_DIMENSION:
-      _.unset(state, 'configuration.mapCenterAndZoom');
-      state = baseVifReducer(state, action);
       break;
 
     case SET_COMPUTED_COLUMN:
@@ -115,6 +109,9 @@ export default function regionMap(state, action) {
     case SET_UNIT_OTHER:
     case SET_VIEW_SOURCE_DATA_LINK:
       return baseVifReducer(state, action);
+
+    default:
+      break;
   }
 
   return state;

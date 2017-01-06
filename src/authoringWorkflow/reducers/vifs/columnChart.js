@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import utils from 'socrata-utils';
 
 import vifs from '../../vifs';
 import baseVifReducer from './base';
@@ -19,8 +18,6 @@ import {
   SET_FILTERS,
   SET_LABEL_BOTTOM,
   SET_LABEL_LEFT,
-  SET_LABEL_RIGHT,
-  SET_LABEL_TOP,
   SET_MEASURE,
   SET_MEASURE_AGGREGATION,
   SET_ORDER_BY,
@@ -87,10 +84,8 @@ export default function columnChart(state, action) {
     case SET_DIMENSION:
     case SET_DOMAIN:
     case SET_FILTERS:
-    case SET_LABEL_TOP:
     case SET_LABEL_BOTTOM:
     case SET_LABEL_LEFT:
-    case SET_LABEL_RIGHT:
     case SET_MEASURE:
     case SET_MEASURE_AGGREGATION:
     case SET_MEASURE_AXIS_MAX_VALUE:
@@ -103,6 +98,9 @@ export default function columnChart(state, action) {
     case SET_VIEW_SOURCE_DATA_LINK:
     case SET_X_AXIS_SCALING_MODE:
       return baseVifReducer(state, action);
+
+    default:
+      break;
   }
 
   return state;

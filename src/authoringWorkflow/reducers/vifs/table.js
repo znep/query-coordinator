@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import utils from 'socrata-utils';
 
 import vifs from '../../vifs';
 import baseVifReducer from './base';
@@ -55,6 +54,9 @@ export default function table(state, action) {
     case SET_UNIT_ONE:
     case SET_UNIT_OTHER:
       return baseVifReducer(state, action);
+
+    default:
+      break;
   }
 
   return state;

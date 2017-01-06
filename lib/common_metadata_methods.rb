@@ -83,7 +83,7 @@ module CommonMetadataMethods
         # metadata formatting methods the normal response returns.
         result = {
           :body => fetch_dataset_metadata_for_derived_view(dataset_id),
-          :status => 200
+          :status => '200'
         }
       rescue CoreServer::Error
         raise UnknownRequestError.new("Error fetching derived view metadata for #{dataset_id}")
@@ -113,7 +113,7 @@ module CommonMetadataMethods
     # properties on columns before we send them to the front-end.
     # This method call will check the metadata transition phase
     # internally and just pass through if it is not set to '3'.
-    phidippides.set_default_and_available_card_types_to_columns!(result)
+    phidippides.set_default_and_available_card_types_to_columns!(result, options[:is_from_derived_view])
 
     dataset_metadata = result[:body]
     dataset_metadata[:permissions] = permissions if dataset_metadata && result[:status] =~ /\A20[0-9]\z/
@@ -155,7 +155,9 @@ module CommonMetadataMethods
       :locale => I18n.locale,
       :columns => Column.get_derived_view_columns(derived_view_dataset),
       :ownerId => derived_view_dataset.owner.id,
-      :updatedAt => derived_view_dataset.time_metadata_last_updated_at
+      :updatedAt => derived_view_dataset.time_metadata_last_updated_at,
+      # this fetches the NBE view of the default view. if it errors, we have bigger problems
+      :defaultId => derived_view_dataset.nbe_view.id
     }).with_indifferent_access
 
     # This mutates dataset_metadata with the extra things we need by looking up the view again in

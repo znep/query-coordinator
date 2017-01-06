@@ -294,95 +294,6 @@ describe('ChoroplethController', function() {
     });
   });
 
-  // TODO migrate these to cheetah.
-  xdescribe('clear selection box', function() {
-
-    var choropleth;
-    var choroplethContainer;
-    var feature;
-    var selectionBox;
-    var selectionBoxClearButton;
-    var flyout;
-
-    beforeEach(function() {
-      choropleth = createChoropleth({}).element;
-      choroplethContainer = choropleth.find('.choropleth-container');
-      selectionBox = choropleth.find('.choropleth-selection-box');
-      selectionBoxClearButton = selectionBox.find('.icon-close');
-      feature = choropleth.find('.choropleth-container path')[0];
-      flyout = $('#uber-flyout').hide();
-
-      // Trigger a 'mouseenter' event on the choroplethContainer in order to
-      // register all of our flyouts.
-      choroplethContainer.trigger('mouseenter');
-    });
-
-    it('should be displayed if a region is filtered, and hidden if not', function() {
-
-      // Selection box should be hidden on first render, for no filter has been applied
-      expect(selectionBox.is(':hidden')).to.be.true;
-
-      testHelpers.fireEvent(feature, 'click');
-      timeout.flush();
-
-      // Selection box should be visible because feature is filtered upon
-      expect(selectionBox.is(':visible')).to.be.true;
-    });
-
-    it('should be hidden if a selected feature is clicked', function() {
-      testHelpers.fireEvent(feature, 'click');
-      testHelpers.fireEvent(feature, 'click');
-      timeout.flush();
-
-      expect(selectionBox.is(':hidden')).to.be.true;
-    });
-
-    it('should display a flyout on mouseover', function() {
-      testHelpers.fireEvent(feature, 'click');
-      timeout.flush();
-
-      expect(flyout.is(':hidden')).to.be.true;
-
-      testHelpers.fireEvent(selectionBox[0], 'mousemove');
-
-      expect(flyout.is(':visible')).to.be.true;
-    });
-
-    it('should display a clear filter range flyout on mouseover of the "icon-close"', function() {
-      testHelpers.fireEvent(feature, 'click');
-      timeout.flush();
-
-      expect(flyout.is(':hidden')).to.be.true;
-
-      testHelpers.fireEvent(selectionBoxClearButton[0], 'mousemove');
-
-      expect(flyout.is(':visible')).to.be.true;
-      expect(flyout.find('.flyout-title').text()).to.equal(I18n.flyout.clearFilter);
-    });
-
-    it('should hide on click of the clear button', function() {
-      testHelpers.fireEvent(feature, 'click');
-      timeout.flush();
-
-      expect(selectionBox.is(':visible')).to.be.true;
-
-      testHelpers.fireEvent(selectionBoxClearButton[0], 'click');
-
-      expect(selectionBox.is(':hidden')).to.be.true;
-    });
-
-    it('should hide on click of the box itself', function() {
-      testHelpers.fireEvent(feature, 'click');
-      timeout.flush();
-
-      expect(selectionBox.is(':visible')).to.be.true;
-
-      testHelpers.fireEvent(selectionBox[0], 'click');
-
-      expect(selectionBox.is(':hidden')).to.be.true;
-    });
-  });
-
   // TODO migrate these to cheetah
   xdescribe('when created with instantiated choropleth visualizations', function() {
 
@@ -767,6 +678,52 @@ describe('ChoroplethController', function() {
 
       expect(CardDataService.getChoroplethRegions.called).to.equal(true);
       expect(CardDataService.getChoroplethRegionsUsingSourceColumn.called).to.equal(false);
+      expect(choropleth.$scope.choroplethRenderError).to.equal(false);
+
+      CardDataService.getChoroplethRegions.restore();
+      CardDataService.getChoroplethRegionsUsingSourceColumn.restore();
+
+    });
+
+    it('uses the source column if the computation strategy type is georegion_match_on_point and strategy_type is undefined', function() {
+
+      var columns = {
+        points: {
+          name: 'source column.',
+          description: 'required',
+          fred: 'location',
+          physicalDatatype: 'point'
+        },
+        ward: {
+          name: 'Some area where the crime was committed that can be described by a string',
+          description: 'Batman has bigger fish to fry sometimes, you know.',
+          fred: 'number',
+          physicalDatatype: 'number',
+          computationStrategy: {
+            parameters: {
+              region: '_snuk-a5kv',
+              geometryLabel: 'geoid10',
+              column: 'someTextColumn'
+            },
+            source_columns: ['computed_column_source_column'],
+            type: 'georegion_match_on_point'
+          }
+        }
+      };
+
+      sinon.spy(CardDataService, 'getChoroplethRegions');
+      sinon.spy(CardDataService, 'getChoroplethRegionsUsingSourceColumn');
+
+      var choropleth = createChoropleth({
+        id: 'choropleth-1',
+        whereClause: '',
+        testUndefined: false,
+        datasetModel: createDatasetModelWithColumns(columns, '0'),
+        version: '1'
+      });
+
+      expect(CardDataService.getChoroplethRegions.called).to.equal(false);
+      expect(CardDataService.getChoroplethRegionsUsingSourceColumn.called).to.equal(true);
       expect(choropleth.$scope.choroplethRenderError).to.equal(false);
 
       CardDataService.getChoroplethRegions.restore();

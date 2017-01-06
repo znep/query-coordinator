@@ -1185,6 +1185,20 @@ describe('CardDataService', function() {
       $httpBackend.flush();
     });
 
+    it('should add the read_from_nbe flag to support OBE derived views', function() {
+      var TEST_RESPONSE = require('karma/dataCards/test-data/cardDataServiceTest/extentData.json');
+      $httpBackend.whenGET(/.*/).respond(TEST_RESPONSE);
+      var httpSpy = sinon.spy(http, 'get');
+
+      CardDataService.getChoroplethRegionsUsingSourceColumn('four-four', 'location', 'shap-file');
+      $httpBackend.flush();
+      var url = decodeURIComponent(httpSpy.firstCall.args[0]);
+
+      expect(url).to.match(/read_from_nbe=true/i);
+      expect(url).to.match(/version=2.1/i);
+      http.get.restore();
+    });
+
     describe('when a custom polygon is set', function() {
       beforeEach(function() {
         ServerConfig.override('choroplethCustomBoundary', 'asdf');

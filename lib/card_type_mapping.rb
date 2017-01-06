@@ -46,7 +46,7 @@ module CardTypeMapping
       when 'money'
         card_type = 'histogram'
       when 'number'
-        if has_georegion_computation_strategy?(column) && !is_derived_view
+        if has_georegion_computation_strategy?(column)
           card_type = 'choropleth'
         else
           card_type = 'histogram'
@@ -54,7 +54,7 @@ module CardTypeMapping
       when 'point'
         card_type = 'feature'
       when 'text'
-        if has_georegion_computation_strategy?(column) && !is_derived_view
+        if has_georegion_computation_strategy?(column)
           card_type = 'choropleth'
         # See: https://socrata.atlassian.net/browse/CORE-4755
         elsif dataset_size <= 10
@@ -122,7 +122,7 @@ module CardTypeMapping
           available_card_types = ['column', 'search', 'histogram']
         end
       when 'number'
-        if has_georegion_computation_strategy?(column) && !is_derived_view
+        if has_georegion_computation_strategy?(column)
           available_card_types = ['choropleth']
         elsif is_derived_view
           available_card_types = ['histogram', 'column']
@@ -130,13 +130,9 @@ module CardTypeMapping
           available_card_types = ['histogram', 'column', 'search']
         end
       when 'point'
-        if is_derived_view
-          available_card_types = ['feature']
-        else
-          available_card_types = ['feature', 'choropleth']
-        end
+        available_card_types = ['feature', 'choropleth']
       when 'text'
-        if has_georegion_computation_strategy?(column) && !is_derived_view
+        if has_georegion_computation_strategy?(column)
           available_card_types = ['choropleth']
         elsif is_derived_view
           available_card_types = ['column']
@@ -164,7 +160,12 @@ module CardTypeMapping
   private
 
   def has_georegion_computation_strategy?(column)
-    computation_strategy_type = column.try(:[], :computationStrategy).try(:[], :strategy_type)
+    # Phidippides returns strategy_type in its computation strategies, Core returns type in
+    # its computation strategies. As of 1/2017, the only data lenses using the Core
+    # computation strategies are data lenses created from derived views, since they can't use
+    # Phidippides
+    computation_strategy_type = column.dig(:computationStrategy, :strategy_type) ||
+      column.dig(:computationStrategy, :type)
 
     (computation_strategy_type.present? &&
       (computation_strategy_type == 'georegion_match_on_string' ||

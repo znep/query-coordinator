@@ -300,7 +300,7 @@ class Phidippides < SocrataHttp
     )
   end
 
-  def set_default_and_available_card_types_to_columns!(dataset_metadata)
+  def set_default_and_available_card_types_to_columns!(dataset_metadata, is_derived_view=false)
     dataset_id = dataset_metadata.try(:[], :body).try(:[], :id)
     unless dataset_id.present?
       error_message = 'Could not compute default and available card types ' \
@@ -333,8 +333,8 @@ class Phidippides < SocrataHttp
     columns.each do |field_name, column|
       # Only compute card types for non-system columns
       unless SYSTEM_COLUMN_ID_REGEX.match(field_name)
-        column['defaultCardType'] = default_card_type_for(column, this_dataset_size)
-        column['availableCardTypes'] = available_card_types_for(column, this_dataset_size)
+        column['defaultCardType'] = default_card_type_for(column, this_dataset_size, is_derived_view)
+        column['availableCardTypes'] = available_card_types_for(column, this_dataset_size, is_derived_view)
       end
     end
   end

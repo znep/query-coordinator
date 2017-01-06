@@ -302,8 +302,21 @@ class CardTypeMappingTest < Minitest::Test
         'region' => '_abcd-efgh',
         'geometryLabel' => 'label'
       },
-      'strategy_type' => 'georegion_match_on_string'
+      'type' => 'georegion_match_on_string'
     }.with_indifferent_access
+
+    computed_card_type = card_type_for(
+      computed_column,
+      dataset_size,
+      is_derived_view
+    )
+    assert_equal('choropleth', computed_card_type)
+  end
+
+  def test_card_type_mapping_returns_expected_value_for_number_column_match_on_string_for_derived_view
+    dataset_size = 2500
+    is_derived_view = true
+    computed_column = fake_column('number', nil, 1)
 
     computed_card_type = card_type_for(
       computed_column,
@@ -342,8 +355,21 @@ class CardTypeMappingTest < Minitest::Test
         'region' => '_abcd-efgh',
         'geometryLabel' => 'label'
       },
-      'strategy_type' => 'georegion_match_on_point'
+      'type' => 'georegion_match_on_point'
     }.with_indifferent_access
+
+    computed_card_type = card_type_for(
+      computed_column,
+      dataset_size,
+      is_derived_view
+    )
+    assert_equal('choropleth', computed_card_type)
+  end
+
+  def test_card_type_mapping_returns_expected_value_for_number_column_match_on_point_for_derived_view
+    dataset_size = 2500
+    is_derived_view = true
+    computed_column = fake_column('number', nil, 1)
 
     computed_card_type = card_type_for(
       computed_column,
@@ -352,6 +378,7 @@ class CardTypeMappingTest < Minitest::Test
     )
     assert_equal('histogram', computed_card_type)
   end
+
 
   def test_card_type_mapping_returns_expected_value_for_number_column_with_one_row
     dataset_size = 1
@@ -569,8 +596,21 @@ class CardTypeMappingTest < Minitest::Test
         'geometryLabel' => 'label',
         'column' => 'name'
       },
-      'strategy_type' => 'georegion_match_on_string'
+      'type' => 'georegion_match_on_string'
     }.with_indifferent_access
+
+    computed_card_type = card_type_for(
+      computed_column,
+      dataset_size,
+      is_derived_view
+    )
+    assert_equal('choropleth', computed_card_type)
+  end
+
+  def test_card_type_mapping_returns_expected_value_for_text_column_match_on_string_for_derived_view
+    dataset_size = 2500
+    is_derived_view = true
+    computed_column = fake_column('text', nil, 1)
 
     computed_card_type = card_type_for(
       computed_column,
@@ -712,8 +752,21 @@ class CardTypeMappingTest < Minitest::Test
         'geometryLabel' => 'label',
         'column' => 'name'
       },
-      'strategy_type' => 'georegion_match_on_string'
+      'type' => 'georegion_match_on_string'
     }.with_indifferent_access
+
+    available_card_types = available_card_types_for(
+      computed_column,
+      dataset_size,
+      is_derived_view
+    )
+    assert_equal(['choropleth'], available_card_types)
+  end
+
+  def test_card_type_mapping_returns_expected_available_card_types_for_match_on_string_number_column_for_derived_view
+    dataset_size = 2500
+    is_derived_view = true
+    computed_column = fake_column('number', nil, 1)
 
     available_card_types = available_card_types_for(
       computed_column,
@@ -752,8 +805,21 @@ class CardTypeMappingTest < Minitest::Test
         'region' => '_abcd-efgh',
         'geometryLabel' => 'label'
       },
-      'strategy_type' => 'georegion_match_on_point'
+      'type' => 'georegion_match_on_point'
     }.with_indifferent_access
+
+    available_card_types = available_card_types_for(
+      computed_column,
+      dataset_size,
+      is_derived_view
+    )
+    assert_equal(['choropleth'], available_card_types)
+  end
+
+  def test_card_type_mapping_returns_expected_available_card_types_for_match_on_point_number_column_for_derived_view
+    dataset_size = 2500
+    is_derived_view = true
+    computed_column = fake_column('number', nil, 1)
 
     available_card_types = available_card_types_for(
       computed_column,
@@ -794,8 +860,21 @@ class CardTypeMappingTest < Minitest::Test
         'geometryLabel' => 'label',
         'column' => 'name'
       },
-      'strategy_type' => 'georegion_match_on_string'
+      'type' => 'georegion_match_on_string'
     }.with_indifferent_access
+
+    available_card_types = available_card_types_for(
+      computed_column,
+      dataset_size,
+      is_derived_view
+    )
+    assert_equal(['choropleth'], available_card_types)
+  end
+
+  def test_card_type_mapping_returns_expected_available_card_types_for_match_on_string_text_column_for_derived_view
+    dataset_size = 2500
+    is_derived_view = true
+    computed_column = fake_column('text', nil, 1)
 
     available_card_types = available_card_types_for(
       computed_column,
@@ -856,7 +935,7 @@ class CardTypeMappingTest < Minitest::Test
       dataset_size,
       is_derived_view
     )
-    assert_equal(['feature'], available_card_types)
+    assert_equal(['feature', 'choropleth'], available_card_types)
   end
 
   def test_card_type_mapping_returns_expected_available_card_types_for_text_column

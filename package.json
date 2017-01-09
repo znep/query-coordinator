@@ -1,6 +1,6 @@
 {
   "name": "socrata-styleguide",
-  "version": "9.5.2",
+  "version": "10.0.0",
   "description": "Socrata's Product Styleguide",
   "main": "styleguide.js",
   "private": true,

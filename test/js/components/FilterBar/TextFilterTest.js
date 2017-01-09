@@ -143,14 +143,9 @@ describe('TextFilter', () => {
 
     it('calls onUpdate with the new filter when apply button used', (done) => {
       const filter = {
-        parameters: {
-          'function': 'binaryOperator',
-          columnName: 'some_word',
-          arguments: {
-            operator: '=',
-            operand: null
-          }
-        }
+        'function': 'noop',
+        columnName: 'some_word',
+        arguments: null
       };
       const results = ['penguin'];
       const fetchSuggestionsStub = sinon.stub().returns(Promise.resolve(results));
@@ -169,13 +164,11 @@ describe('TextFilter', () => {
         Simulate.click(button);
 
         expect(onUpdateStub).to.have.been.calledWith({
-          parameters: {
-            'function': 'binaryOperator',
-            columnName: 'some_word',
-            arguments: {
-              operator: '=',
-              operand: 'penguin'
-            }
+          'function': 'binaryOperator',
+          columnName: 'some_word',
+          arguments: {
+            operator: '=',
+            operand: 'penguin'
           }
         });
 

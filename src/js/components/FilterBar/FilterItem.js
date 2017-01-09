@@ -11,11 +11,9 @@ import { ESCAPE } from '../../common/keycodes';
 export const FilterItem = React.createClass({
   propTypes: {
     filter: PropTypes.shape({
-      parameters: PropTypes.shape({
-        'function': PropTypes.string.isRequired,
-        columnName: PropTypes.string.isRequired,
-        arguments: PropTypes.object.isRequired
-      }),
+      'function': PropTypes.string.isRequired,
+      columnName: PropTypes.string.isRequired,
+      arguments: PropTypes.object,
       isLocked: PropTypes.boolean,
       isHidden: PropTypes.boolean,
       isRequired: PropTypes.boolean,

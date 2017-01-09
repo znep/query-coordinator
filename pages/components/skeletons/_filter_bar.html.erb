@@ -7,13 +7,11 @@
   $(() => {
     const filters = [
       {
-        parameters: {
-          function: 'valueRange',
-          columnName: 'some_number',
-          arguments: {
-            start: 3,
-            end: 3000
-          }
+        function: 'valueRange',
+        columnName: 'some_number',
+        arguments: {
+          start: 3,
+          end: 7
         },
         isLocked: false,
         isHidden: false,
@@ -28,8 +26,8 @@
           name: 'Some Number',
           fieldName: 'some_number',
           dataTypeName: 'number',
-          rangeMin: 0.01,
-          rangeMax: 30000.1
+          rangeMin: 1,
+          rangeMax: 10
         },
         {
           name: 'Some Word',

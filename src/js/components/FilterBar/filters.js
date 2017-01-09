@@ -3,37 +3,10 @@ import { translate as t } from '../../common/I18n';
 import { getPrecision, roundToPrecision } from '../../common/numbers';
 
 export function getDefaultFilterForColumn(column) {
-  let parameters;
-
-  switch (column.dataTypeName) {
-    case 'text':
-      parameters = {
-        'function': 'binaryOperator',
-        columnName: column.fieldName,
-        arguments: {
-          operator: '=',
-          operand: null
-        }
-      };
-      break;
-
-    case 'number':
-      parameters = {
-        'function': 'valueRange',
-        columnName: column.fieldName,
-        arguments: {
-          start: column.rangeMin,
-          end: column.rangeMax
-        }
-      };
-      break;
-
-    default:
-      return null;
-  }
-
   return {
-    parameters,
+    'function': 'noop',
+    columnName: column.fieldName,
+    arguments: null,
     isLocked: false,
     isHidden: false,
     isRequired: false,
@@ -44,7 +17,7 @@ export function getDefaultFilterForColumn(column) {
 export function getToggleTextForFilter(filter, column) {
   switch (column.dataTypeName) {
     case 'number':
-      var { start, end } = _.get(filter, 'parameters.arguments', {});
+      var { start, end } = _.defaultTo(filter.arguments, {});
 
       var hasMinValue = _.isFinite(start) && !_.isEqual(column.rangeMin, start);
       var hasMaxValue = _.isFinite(end) && !_.isEqual(column.rangeMax, end);
@@ -64,7 +37,7 @@ export function getToggleTextForFilter(filter, column) {
       }
 
     case 'text':
-      return _.defaultTo(filter.parameters.arguments.operand, t('filter_bar.all'));
+      return _.get(filter, 'arguments.operand', t('filter_bar.all'));
 
     default:
       return '';

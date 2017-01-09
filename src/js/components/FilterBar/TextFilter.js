@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import SearchablePicklist from './SearchablePicklist';
 import FilterFooter from './FilterFooter';
+import { getDefaultFilterForColumn } from './filters';
 
 export const TextFilter = React.createClass({
   propTypes: {
@@ -14,7 +15,7 @@ export const TextFilter = React.createClass({
 
   getInitialState() {
     return {
-      value: _.get(this.props.filter, 'parameters.arguments.operand'),
+      value: _.get(this.props.filter, 'arguments.operand'),
       suggestions: [],
       hasSearchError: false
     };
@@ -70,18 +71,20 @@ export const TextFilter = React.createClass({
   },
 
   updateFilter() {
-    const { filter, onUpdate } = this.props;
+    const { column, filter, onUpdate } = this.props;
     const { value } = this.state;
 
-    const newFilter = _.merge({}, filter, {
-      parameters: {
+    if (_.isEmpty(value)) {
+      onUpdate(getDefaultFilterForColumn(column));
+    } else {
+      onUpdate(_.merge(filter, {
+        'function': 'binaryOperator',
         arguments: {
+          operator: '=',
           operand: value
         }
-      }
-    });
-
-    onUpdate(newFilter);
+      }));
+    }
   },
 
   render() {
@@ -102,7 +105,7 @@ export const TextFilter = React.createClass({
     };
 
     const filterFooterProps = {
-      disableApplyFilter: _.isEqual(value, _.get(filter, 'parameters.arguments.operand')),
+      disableApplyFilter: _.isEqual(value, _.get(filter, 'arguments.operand')),
       onClickApply: this.updateFilter,
       onClickCancel: onCancel,
       onClickClear: this.clearFilter

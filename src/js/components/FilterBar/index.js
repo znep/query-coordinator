@@ -28,25 +28,19 @@ export const FilterBar = React.createClass({
     columns: PropTypes.arrayOf(PropTypes.object),
 
     /**
-     * The filters prop is an array of filter objects that will be rendered.  Each filter object
-     * is structured as follows:
-     *   - parameters (object), an object identical in structure to the elements of the "filters"
-     *     array used in vifs.
-     *   - isLocked (boolean), whether or not users are restricted from changing the filter's value.
-     *   - isHidden (boolean), whether or not the filter is visible to non-roled users.
-     *   - isRequired (boolean), whether or not the filter is required to have a value set.
-     *   - allowMultiple (boolean), whether or not multiple values are able to be selected for the
-     *     filter.
-     * The set of rendered controls will always reflect the contents of this array.
+     * The filters prop is an array of filter objects that will be rendered.  Each filter object is
+     * structured according to the VIF specification.  The set of rendered controls will always
+     * reflect the contents of this array.
      */
     filters: PropTypes.arrayOf(PropTypes.object),
 
     /**
-     * The onUpdate prop is an optional function that will be called whenever the set of filters
-     * has changed.  This may happen when a filter is added, a filter is removed, or the parameters
-     * of a filter have changed.  The function is passed the new set of filters.  The consumer of
-     * this component is expected to respond to the event by applying its own desired processing
-     * (if any), and rerendering this component with the new updated "filters" prop.
+     * The onUpdate prop is an optional function that will be called whenever the set of filters has
+     * changed.  This may happen when a filter is added, a filter is removed, or the parameters of a
+     * filter have changed.  The function is passed the new set of filters.  The consumer of this
+     * component is expected to respond to the event by rerendering this component with the new
+     * updated "filters" prop.  Any filters that do not have any criteria applied will have a filter
+     * function of "noop".
      */
     onUpdate: PropTypes.func,
 
@@ -96,14 +90,13 @@ export const FilterBar = React.createClass({
     const { columns, filters } = this.props;
 
     const availableColumns = _.reject(columns, (column) => {
-      return _.find(filters, ['parameters.columnName', column.fieldName]);
+      return _.find(filters, ['columnName', column.fieldName]);
     });
 
     const props = {
       columns: availableColumns,
       onClickColumn: (column) => {
-        const filter = getDefaultFilterForColumn(column);
-        this.onFilterAdd(filter);
+        this.onFilterAdd(getDefaultFilterForColumn(column));
       }
     };
 
@@ -114,7 +107,7 @@ export const FilterBar = React.createClass({
     const { filters, columns, fetchSuggestions } = this.props;
 
     return _.map(filters, (filter, i) => {
-      const column = _.find(columns, { fieldName: filter.parameters.columnName });
+      const column = _.find(columns, { fieldName: filter.columnName });
       const props = {
         column,
         filter,

@@ -4,20 +4,27 @@ import Slider from '../Slider';
 import FilterFooter from './FilterFooter';
 import { translate as t } from '../../common/I18n';
 import { getPrecision, roundToPrecision } from '../../common/numbers';
+import { getDefaultFilterForColumn } from './filters';
 
 export const NumberFilter = React.createClass({
   propTypes: {
     filter: PropTypes.object.isRequired,
-    column: PropTypes.object.isRequired,
+    column: PropTypes.shape({
+      rangeMin: PropTypes.number.isRequired,
+      rangeMax: PropTypes.number.isRequired
+    }),
     onCancel: PropTypes.func.isRequired,
     onUpdate: PropTypes.func.isRequired
   },
 
   getInitialState() {
-    const { filter } = this.props;
+    const { column, filter } = this.props;
 
     return {
-      value: _.get(filter, 'parameters.arguments', {})
+      value: _.defaults(filter.arguments, {
+        start: column.rangeMin,
+        end: column.rangeMax
+      })
     };
   },
 
@@ -54,11 +61,10 @@ export const NumberFilter = React.createClass({
   },
 
   isValidRange(value) {
-    const isValidRange = value.start <= value.end;
     const isStartValid = this.isValidValue(value.start);
     const isEndValid = this.isValidValue(value.end);
 
-    return isValidRange && isStartValid && isEndValid;
+    return isStartValid && isEndValid && value.start <= value.end;
   },
 
   updateValueState(newValue) {
@@ -70,12 +76,9 @@ export const NumberFilter = React.createClass({
   },
 
   shouldDisableApply() {
-    const { filter } = this.props;
     const { value } = this.state;
 
-    const initialValue = filter.parameters.arguments;
-
-    return _.isEqual(initialValue, value);
+    return _.isEqual(value, this.getInitialState().value);
   },
 
   clearFilter() {
@@ -89,16 +92,17 @@ export const NumberFilter = React.createClass({
   },
 
   updateFilter() {
-    const { filter, onUpdate } = this.props;
+    const { column, filter, onUpdate } = this.props;
     const { value } = this.state;
 
-    const newFilter = _.merge({}, filter, {
-      parameters: {
+    if (_.isEqual(_.at(value, 'start', 'end'), _.at(column, 'rangeMin', 'rangeMax'))) {
+      onUpdate(getDefaultFilterForColumn(column));
+    } else {
+      onUpdate(_.merge({}, filter, {
+        'function': 'valueRange',
         arguments: value
-      }
-    });
-
-    onUpdate(newFilter);
+      }));
+    }
   },
 
   renderInputFields() {

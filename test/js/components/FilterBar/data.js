@@ -1,11 +1,9 @@
 export const mockValueRangeFilter = {
-  parameters: {
-    'function': 'valueRange',
-    columnName: 'dinosaurAge',
-    arguments: {
-      start: 1,
-      end: 3
-    }
+  'function': 'valueRange',
+  columnName: 'dinosaurAge',
+  arguments: {
+    start: 1,
+    end: 3
   },
   isLocked: false,
   isHidden: false,
@@ -14,13 +12,11 @@ export const mockValueRangeFilter = {
 };
 
 export const mockBinaryOperatorFilter = {
-  parameters: {
-    'function': 'binaryOperator',
-    columnName: 'dinosaurName',
-    arguments: {
-      operator: '=',
-      operand: 'Timmy'
-    }
+  'function': 'binaryOperator',
+  columnName: 'dinosaurName',
+  arguments: {
+    operator: '=',
+    operand: 'Timmy'
   },
   isLocked: false,
   isHidden: false,

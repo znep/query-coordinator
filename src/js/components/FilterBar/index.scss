@@ -7,6 +7,8 @@
 @import "./css/searchable-picklist.scss";
 @import "./css/text-filter.scss";
 
+$filter-z-index: 100;
+
 .filter-bar-container {
   height: 83px;
   background: $light-grey-7;
@@ -74,7 +76,7 @@
         background: $white;
         border-radius: 1px;
         border: 1px solid $light-grey-3;
-        z-index: 1000;
+        z-index: $filter-z-index;
 
         .filter-control-title {
           margin: 8px;
@@ -136,7 +138,7 @@
         background: $white;
         border-radius: 1px;
         border: 1px solid $light-grey-3;
-        z-index: 1000;
+        z-index: $filter-z-index;
       }
     }
 

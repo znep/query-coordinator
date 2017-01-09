@@ -7,6 +7,7 @@ export const SearchablePicklist = React.createClass({
   propTypes: {
     options: PropTypes.arrayOf(PropTypes.object),
     value: PropTypes.string,
+    hasSearchError: PropTypes.bool,
     onChangeSearchTerm: PropTypes.func.isRequired,
     onSelection: PropTypes.func.isRequired
   },
@@ -22,20 +23,27 @@ export const SearchablePicklist = React.createClass({
   },
 
   renderPicklist() {
-    const { options, value, onSelection } = this.props;
-    const hasNoOptions = _.isEmpty(options);
-    let visibleOptions = options;
+    const { options, value, hasSearchError, onSelection } = this.props;
 
-    if (hasNoOptions) {
-      visibleOptions = [
-        { title: t('filter_bar.no_options_found') }
-      ];
+    if (hasSearchError) {
+      return (
+        <div className="alert error">
+          {t('filter_bar.search_error')}
+        </div>
+      );
+    }
+
+    if (_.isEmpty(options)) {
+      return (
+        <div className="alert warning">
+          {t('filter_bar.no_options_found')}
+        </div>
+      );
     }
 
     const picklistProps = {
-      options: visibleOptions,
+      options,
       value,
-      disabled: hasNoOptions,
       onSelection: onSelection
     };
 

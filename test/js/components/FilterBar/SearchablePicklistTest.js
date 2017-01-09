@@ -7,10 +7,11 @@ import { mockPicklistOptions } from './data';
 
 describe('SearchablePicklist', () => {
   function getProps(props) {
-    return _.defaultsDeep({}, props, {
+    return _.defaults({}, props, {
       isLoading: false,
-      options: [],
+      options: mockPicklistOptions,
       value: '',
+      hasSearchError: false,
       onChangeSearchTerm: _.noop,
       onSelection: _.noop
     });
@@ -58,16 +59,21 @@ describe('SearchablePicklist', () => {
     });
 
     it('displays the no options message if no options are available', () => {
-      const element = renderComponent(SearchablePicklist, getProps());
-      const picklist = getPicklist(element);
+      const element = renderComponent(SearchablePicklist, getProps({
+        options: []
+      }));
+      expect(element.querySelector('.alert')).to.have.class('warning');
+    });
 
-      expect(picklist).to.have.class('picklist-disabled');
-      expect(picklist.querySelectorAll('.picklist-option').length).to.equal(1);
+    it('displays the search provider error message if search error encountered', () => {
+      const element = renderComponent(SearchablePicklist, getProps({
+        hasSearchError: true
+      }));
+      expect(element.querySelector('.alert')).to.have.class('error');
     });
 
     it('highlights the value in the picklist if provided and available', () => {
       const element = renderComponent(SearchablePicklist, getProps({
-        options: mockPicklistOptions,
         value: 'Pesto'
       }));
       const picklist = getPicklist(element);
@@ -79,7 +85,6 @@ describe('SearchablePicklist', () => {
     it('calls onSelection when a picklist option is clicked', () => {
       const stub = sinon.stub();
       const element = renderComponent(SearchablePicklist, getProps({
-        options: mockPicklistOptions,
         onSelection: stub
       }));
       const picklist = getPicklist(element);

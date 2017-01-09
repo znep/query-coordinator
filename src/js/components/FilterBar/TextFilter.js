@@ -15,7 +15,8 @@ export const TextFilter = React.createClass({
   getInitialState() {
     return {
       value: _.get(this.props.filter, 'parameters.arguments.operand'),
-      suggestions: []
+      suggestions: [],
+      hasSearchError: false
     };
   },
 
@@ -26,11 +27,19 @@ export const TextFilter = React.createClass({
       const { column } = this.props;
       const { value } = this.state;
       this.props.fetchSuggestions(column, _.defaultTo(value, '')).then((suggestions) => {
-        if (this.isMounted) {
-          this.setState({ suggestions });
+        if (!_.isArray(suggestions)) {
+          throw new Error(`Invalid response from suggestion provider: ${suggestions}`);
+        } else if (this.isMounted) {
+          this.setState({
+            suggestions,
+            hasSearchError: false
+          });
         }
       }).catch(() => {
-        this.setState({ suggestions: [] });
+        this.setState({
+          suggestions: [],
+          hasSearchError: true
+        });
       });
     }, 350, { leading: true, maxWait: 500 });
 
@@ -77,11 +86,12 @@ export const TextFilter = React.createClass({
 
   render() {
     const { filter, onCancel } = this.props;
-    const { value, suggestions } = this.state;
+    const { value, suggestions, hasSearchError } = this.state;
 
     const picklistProps = {
       onSelection: this.onSelectSuggestion,
       onChangeSearchTerm: this.onChangeSearchTerm,
+      hasSearchError,
       options: _.map(suggestions, (suggestion) => {
         return {
           title: suggestion,

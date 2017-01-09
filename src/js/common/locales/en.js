@@ -22,7 +22,8 @@ export default {
     },
     range: 'Range',
     remove_filter: 'Remove Filter',
-    search: 'Search options'
+    search: 'Search options',
+    search_error: 'Error getting filter suggestions. Try typing an exact value to filter on this column.'
   },
   info_pane: {
     less: 'Less',

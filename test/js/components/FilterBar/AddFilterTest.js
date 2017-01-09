@@ -57,16 +57,16 @@ describe('AddFilter', () => {
   describe('column options', () => {
     it('renders a searchable picklist', () => {
       clickAddFilter(element);
-      const picklist = element.querySelector('.searchable-picklist .picklist');
+      const searchablePicklist = element.querySelector('.searchable-picklist');
 
-      expect(picklist).to.exist;
+      expect(searchablePicklist).to.exist;
     });
 
-    it('renders a disabled picklist with warning with no columns', () => {
+    it('renders a searchable picklist with warning with no columns', () => {
       clickAddFilter(element);
-      const picklist = element.querySelector('.picklist.picklist-disabled');
+      const warning = element.querySelector('.searchable-picklist .alert');
 
-      expect(picklist).to.exist;
+      expect(warning).to.exist;
     });
 
     it('renders an option for each column', () => {

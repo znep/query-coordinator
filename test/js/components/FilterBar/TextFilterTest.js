@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import { Simulate } from 'react-addons-test-utils';
+import { renderIntoDocument, Simulate } from 'react-addons-test-utils';
 import { renderComponent } from '../../helpers';
 import TextFilter from 'components/FilterBar/TextFilter';
 
@@ -30,6 +30,45 @@ describe('TextFilter', () => {
     expect(stub).to.have.been.called;
   });
 
+  it('sets hasSearchError to false when request succeeds', (done) => {
+    const fetchSuggestions = _.constant(Promise.resolve([]));
+    const instance = React.createElement(TextFilter, getProps({
+      fetchSuggestions
+    }));
+    const component = renderIntoDocument(instance);
+
+    _.defer(() => {
+      expect(component.state.hasSearchError).to.eq(false);
+      done();
+    });
+  });
+
+  it('sets hasSearchError to true when request errors', (done) => {
+    const fetchSuggestions = _.constant(Promise.reject());
+    const instance = React.createElement(TextFilter, getProps({
+      fetchSuggestions
+    }));
+    const component = renderIntoDocument(instance);
+
+    _.defer(() => {
+      expect(component.state.hasSearchError).to.eq(true);
+      done();
+    });
+  });
+
+  it('sets hasSearchError to true when request is not an array', (done) => {
+    const fetchSuggestions = _.constant(Promise.resolve({}));
+    const instance = React.createElement(TextFilter, getProps({
+      fetchSuggestions
+    }));
+    const component = renderIntoDocument(instance);
+
+    _.defer(() => {
+      expect(component.state.hasSearchError).to.eq(true);
+      done();
+    });
+  });
+
   it('renders a searchable picklist when results returned', (done) => {
     const results = ['suggestion1', 'suggestion2'];
     const element = renderComponent(TextFilter, getProps({
@@ -39,18 +78,9 @@ describe('TextFilter', () => {
     _.defer(() => {
       const picklistOptions = element.querySelectorAll('.picklist-option');
       expect(picklistOptions.length).to.eq(2);
-      done();
-    });
-  });
-
-  it('renders an empty set of suggestions when request errors', (done) => {
-    const element = renderComponent(TextFilter, getProps({
-      fetchSuggestions: sinon.stub().returns(Promise.reject())
-    }));
-
-    _.defer(() => {
-      const picklistOptions = element.querySelectorAll('.picklist-option');
-      expect(picklistOptions.length).to.eq(1); // Just the "No results found" message
+      _.each(picklistOptions, function(option, index) {
+        expect(option.innerText).to.eq(results[index]);
+      });
       done();
     });
   });

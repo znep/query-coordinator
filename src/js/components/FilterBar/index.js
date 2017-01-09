@@ -54,8 +54,8 @@ export const FilterBar = React.createClass({
      * The fetchSuggestions prop is an optional function that is expected to return an array of
      * suggestions for a search term.  The function is passed the column to be searched on, which
      * is identical to one of the column objects in the "columns" prop, and a string representing
-     * the current user input.  The function should return an array of suggestions as strings or
-     * a Promise that resolves to such a value.
+     * the current user input.  The function should return a Promise that resolves an array of
+     * suggestions as strings.
      */
     fetchSuggestions: PropTypes.func
   },

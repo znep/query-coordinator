@@ -757,7 +757,7 @@ module ApplicationHelper
 
     # For the remaining GovStat pages, load custom CSS if we've set the property
     # @suppress_govstat to true in CustomContentController.
-    @suppress_govstat
+    suppress_govstat?
   end
 
   def is_mobile?

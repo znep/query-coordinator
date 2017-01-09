@@ -489,7 +489,7 @@ The following example would cause a column in a Column Chart with a value of 1 t
 
 ### Appendix: SoQL Filter Objects
 
-Currently, five types of filters are supported for `socrata.soql` data sources:
+Currently, six types of filters are supported for `socrata.soql` data sources:
 
 ##### `binaryOperator`
 A `binaryOperator` filter performs one or more logical comparisons. It is of type `<object>`. This object must have the following properties:
@@ -596,6 +596,17 @@ WHERE `some_null_values` IS NOT NULL
   function: 'isNull'
 }
 ```
+
+##### `noop`
+The `noop` filter describes a filter that returns all values in a column. It is of type `<object>`. It must contain the following properties:
+
+* The `arguments` property must be of type `<null>`.
+
+* The `columnName` property specifies the column against which values should be returned. It is of type `<string>`.
+
+* The `function` property specifies the desired filtering function. It must contain the string `noop`.
+
+It is recommended that implementors ignore this filter when constructing where clauses.
 
 ##### `timeRange`
 The `timeRange` filter describes a partitioning of the set of all rows into those that fall into the specified date range and those that fall outside of it. It is of type `<object>`. This object must have the following properties:

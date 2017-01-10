@@ -13,17 +13,23 @@
     </p>
   </div>
   <div class="emailSection">
-    <div class="subscribeText">
-      <p><%= t('screens.ds.subscribe.subscribe_html') %></p>
-    </div>
-    <div class="unsubscribeText">
-      <p><%= t('screens.ds.subscribe.subscribed_html') %></p>
-      <p><%= t('screens.ds.subscribe.unsubscribe') %></p>
-    </div>
-    <div>
-      <input type="checkbox" class="subscribeCheckbox" id="email_publish_subscribe" />
-      <label for="email_publish_subscribe"><%= t('screens.ds.subscribe.subscribe_button') %></label>
-    </div>
+    <%- if FeatureFlags.derive(nil, request).enable_inline_login || current_user %>
+      <div class="subscribeText">
+        <p><%= t('screens.ds.subscribe.subscribe_html') %></p>
+      </div>
+      <div class="unsubscribeText">
+        <p><%= t('screens.ds.subscribe.subscribed_html') %></p>
+        <p><%= t('screens.ds.subscribe.unsubscribe') %></p>
+      </div>
+      <div>
+        <input type="checkbox" class="subscribeCheckbox" id="email_publish_subscribe" />
+        <label for="email_publish_subscribe"><%= t('screens.ds.subscribe.subscribe_button') %></label>
+      </div>
+    <% else %>
+      <div class="subscribeText">
+        <p><%= t('screens.ds.subscribe.subscribe_disabled_html') %></p>
+      </div>
+    <%- end %>
   </div>
   <ul class="actions clearfix">
     <li><a href="#cancel" class="jqmClose button"><%= t('core.dialogs.done') %></a></li>

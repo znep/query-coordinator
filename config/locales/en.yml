@@ -798,9 +798,9 @@ en:
         no_results: There are no items to display
         user_create_action: 'created a %{thing}:'
       tooltips:
-        add_comment_disabled: You must be logged in to add a comment.
-        flag_inappropriate_disabled: You must be logged in to flag as inappropriate.
-        rate_comment_disabled: You must be logged in to rate a comment.
+        add_comment_disabled: You must be signed in to add a comment.
+        flag_inappropriate_disabled: You must be signed in to flag as inappropriate.
+        rate_comment_disabled: You must be signed in to rate a comment.
       types:
         all items: all items
         comments: comments
@@ -2120,7 +2120,7 @@ en:
       tags: Tags
       terms_of_use: Terms of Use
       tooltips:
-        rating_disabled: You must be logged in to add a rating.
+        rating_disabled: You must be signed in to add a rating.
       updated: updated
       view_full_page: View Full Page
       view_statistics: View Statistics
@@ -3315,7 +3315,7 @@ en:
         revert_button: Revert
         revert_prompt: Revert to saved view
         save_as_button: Save As...
-        save_as_button_disabled_tooltip: You must be logged in to save changes.
+        save_as_button_disabled_tooltip: You must be signed in to save changes.
         save_as_prompt: Save View As...
         save_button: Save
         save_progress: Saving...
@@ -4120,6 +4120,7 @@ en:
         rss_program: Open in External Program
         subscribe_button: Subscribe via Email
         subscribe_html: "<strong>To receive email notifications</strong> when new data is published, check the Subscribe box below."
+        subscribe_disabled_html: "<strong>To subscribe via email notifications</strong>, you must first sign in."
         subscribed_html: <strong>You are currently subscribed to this <span class="datasetTypeName">dataset</span> via email</strong>, and will receive notifications when new data is published.
         title_html: Subscribe to the &quot;<span class="datasetName">%{name}</span>&quot; <span class="datasetTypeNameUpcase">Dataset</span>
         unsubscribe: If you no longer wish to receive notifications, uncheck the Subscribe box below.

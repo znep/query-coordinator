@@ -108,7 +108,7 @@ en:
         unsaved_goal_changes: 'You have unsaved changes. Are you sure you want to close this window?'
         unsaved_goal_warning:
           warning: 'Warning!'
-          explanation: 'Saving changes to this prevailing measure will make them public immediately.'
+          explanation: 'If this goal is public, changes made to the prevailing measure will immediately be reflected on the public-facing goal page. If this goal is private, changes will remain private.'
           link: 'Learn more...'
     settings_panel:
       panel_title: 'Menu'

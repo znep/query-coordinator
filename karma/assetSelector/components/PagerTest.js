@@ -39,31 +39,5 @@ describe.only('components/Pager', function() {
       TestUtils.Simulate.click(thirdPageLink);
       expect(thirdPageLink.className).to.match(/active/);
     });
-
-    // Note: there may be more logic added to this, so active page can be based off a url param or something.
-    // Once we try to use this a drop-in replacement for the catalog, that will be necessary.
-  });
-
-  describe('pagerEnd', function() {
-    it('does not exceed the max number of pages', function() {
-      var element = renderComponent(Pager, getProps({
-        resultCount: 12
-      }));
-      // We expect there to only be two pages, since there are 9 results per page
-      var pageLinks = element.querySelectorAll('.pageLink');
-      expect(pageLinks.length).to.equal(2)
-      expect(pageLinks[pageLinks.length - 1].textContent).to.equal('Page2');
-    });
-
-    it('shows 4 page links past the currentPage', function() {
-      // TODO
-
-      // var element = renderComponent(Pager, getProps({
-      //   resultCount: 1000
-      // }));
-
-      // element.setState({ currentPage: 25 });
-
-    });
   });
 });

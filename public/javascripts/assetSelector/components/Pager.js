@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import PagerHelpers from 'lib/pagerHelpers';
 import _ from 'lodash';
 
 export class Pager extends Component {
@@ -7,12 +8,8 @@ export class Pager extends Component {
   }
 
   // The number of page buttons we show in the pager
-  static get maxPageLinks() {
+  static get maxPageLinkCount() {
     return 9;
-  }
-
-  static get pagerHalfwayPoint() {
-    return Pager.maxPageLinks / 2.0;
   }
 
   static get resultsPerPage() {
@@ -29,35 +26,21 @@ export class Pager extends Component {
 
   // First pager link to show
   pagerStart() {
-    // If we are on a page > (the last page - the halfway point of maxPageLinks), we want to show additional
-    // prev links so that we always show the maxPageLinks
-    let additionalPrevLinkCount = 0;
-    const breakpoint = this.lastPage() - Math.floor(Pager.pagerHalfwayPoint);
-    if (this.state.currentPage > breakpoint) {
-      additionalPrevLinkCount = this.state.currentPage - breakpoint;
-    }
-
-    // Make sure we don't exceed the firstPage
-    return Math.max(
-      this.state.currentPage - Math.floor(Pager.pagerHalfwayPoint) - additionalPrevLinkCount,
-      Pager.firstPage
-    );
+    return PagerHelpers.getPagerStart({
+      firstPage: Pager.firstPage,
+      lastPage: this.lastPage(),
+      maxPageLinkCount: Pager.maxPageLinkCount(),
+      currentPage: this.state.currentPage
+    });
   }
 
   // Last pager link to show
   pagerEnd() {
-    // If we are on a page < the halfway point, we want to show additional next links so that we always
-    // show the maxPageLinks
-    let additionalNextLinkCount = 0;
-    if (this.state.currentPage < Math.ceil(Pager.pagerHalfwayPoint)) {
-      additionalNextLinkCount = Math.ceil(Pager.pagerHalfwayPoint) - this.state.currentPage;
-    }
-
-    // Make sure we don't exceed the lastPage
-    return Math.min(
-      this.state.currentPage + Math.floor(Pager.pagerHalfwayPoint) + additionalNextLinkCount,
-      this.lastPage()
-    );
+    return PagerHelpers.getPagerEnd({
+      lastPage: this.lastPage(),
+      maxPageLinkCount: Pager.maxPageLinkCount(),
+      currentPage: this.state.currentPage
+    });
   }
 
   lastPage() {

@@ -786,6 +786,8 @@ module.exports = _.defaultsDeep({
     ]
   },
   module: {
+    preLoaders: null, // Disable eslint-loader for this bundle
+
     loaders: [
       {
         test: /plugins\//,

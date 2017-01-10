@@ -336,7 +336,7 @@ describe('AuthoringWorkflow reducer', function() {
 
       it('sets the filters for each vif', function() {
         const filters = newState.vifAuthoring.vifs.columnChart.series[0].dataSource.filters;
-        expect(filters).to.deep.equal(_.map(mockFilters, 'parameters'));
+        expect(filters).to.deep.equal(mockFilters);
       });
     });
   });

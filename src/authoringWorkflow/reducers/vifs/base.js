@@ -2,7 +2,6 @@ import { translate } from '../../../I18n';
 
 import {
   forEachSeries,
-  getValidVifFilters,
   setStringValueOrDefaultValue,
   setStringValueOrDeleteProperty,
   setNumericValueOrDeleteProperty,
@@ -56,7 +55,7 @@ export default function(state, action) {
 
     case SET_FILTERS:
       forEachSeries(state, series => {
-        _.set(series, 'dataSource.filters', getValidVifFilters(action.filters));
+        _.set(series, 'dataSource.filters', action.filters);
       });
       break;
 

@@ -77,7 +77,11 @@
     "semver": "5.1.0",
     "shelljs": "0.6.0",
     "sinon": "1.17.5",
+<<<<<<< HEAD
     "socrata-components": "9.5.1",
+=======
+    "socrata-components": "10.0.0",
+>>>>>>> EN-10748: Use noop filter;
     "socrata-utils": "3.1.1",
     "tether": "1.0.1",
     "tether-shepherd": "1.2.0",
@@ -129,7 +133,7 @@
     "redux-logger": "2.6.1",
     "redux-thunk": "2.1.0",
     "reselect": "2.5.3",
-    "socrata-components": "9.5.1",
+    "socrata-components": "10.0.0",
     "socrata-utils": "3.1.1",
     "whatwg-fetch": "1.0.0"
   },

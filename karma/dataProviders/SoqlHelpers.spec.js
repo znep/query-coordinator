@@ -14,6 +14,7 @@ describe('SoqlHelpers', function() {
   var IS_NULL_FALSE_PATTERN = '`{0}` IS NOT NULL';
   var TIME_RANGE_PATTERN = '`{0}` >= \'2015-09-11T10:17:18\' AND `{0}` < \'2015-09-12T10:17:18\'';
   var VALUE_RANGE_PATTERN = '`{0}` >= 0 AND `{0}` < 100';
+  var NOOP_PATTERN = '1=1';
 
   /**
    * The following functions generate a vif and individual filters to make the
@@ -119,6 +120,16 @@ describe('SoqlHelpers', function() {
     };
   }
 
+  function testNoopFilter(filterOwnColumn) {
+    return {
+      'columnName': (filterOwnColumn) ?
+        TEST_OWN_COLUMN_NAME :
+        TEST_OTHER_COLUMN_NAME,
+      'function': 'noop',
+      'arguments': null
+    };
+  }
+
   /**
    * The following functions match where clause components to make the actual
    * test code a little easier to follow.
@@ -182,6 +193,10 @@ describe('SoqlHelpers', function() {
 
   function matchOtherColumnValueRangeFilter(whereClause) {
     return whereClause.match(new RegExp(VALUE_RANGE_PATTERN.format(TEST_OTHER_COLUMN_NAME))) !== null;
+  }
+
+  function matchNoopFilter(whereClause) {
+    return whereClause.match(new RegExp(NOOP_PATTERN)) !== null;
   }
 
   /**
@@ -254,6 +269,7 @@ describe('SoqlHelpers', function() {
         [testIsNullFilter(true, true)],
         [testTimeRangeFilter(true)],
         [testValueRangeFilter(true)],
+        [testNoopFilter(true)],
       ];
       var whereClause;
 
@@ -273,7 +289,9 @@ describe('SoqlHelpers', function() {
         [testIsNullFilter(false, true)],
         [testTimeRangeFilter(false)],
         [testValueRangeFilter(false)],
+        [testNoopFilter(false)],
       ];
+
       var matchSets = [
         [
           {
@@ -289,6 +307,7 @@ describe('SoqlHelpers', function() {
             column: TEST_OTHER_COLUMN_NAME
           }
         ],
+
         [
           {
             matcher: matchOwnColumnBinaryComputedGeoregionOperatorFilter,
@@ -303,6 +322,7 @@ describe('SoqlHelpers', function() {
             column: TEST_OTHER_COMPUTED_COLUMN_NAME
           }
         ],
+
         [
           {
             matcher: matchOwnColumnIsNullFalseFilter,
@@ -317,6 +337,7 @@ describe('SoqlHelpers', function() {
             column: TEST_OTHER_COLUMN_NAME
           }
         ],
+
         [
           {
             matcher: matchOwnColumnIsNullTrueFilter,
@@ -346,6 +367,7 @@ describe('SoqlHelpers', function() {
             column: TEST_OTHER_COLUMN_NAME
           }
         ],
+
         [
           {
             matcher: matchOwnColumnValueRangeFilter,
@@ -357,6 +379,21 @@ describe('SoqlHelpers', function() {
             matcher: matchOtherColumnValueRangeFilter,
             expectedValue: true,
             pattern: VALUE_RANGE_PATTERN,
+            column: TEST_OTHER_COLUMN_NAME
+          }
+        ],
+
+        [
+          {
+            matcher: matchNoopFilter,
+            expectedValue: true,
+            pattern: NOOP_PATTERN,
+            column: TEST_OWN_COLUMN_NAME
+          },
+          {
+            matcher: matchNoopFilter,
+            expectedValue: true,
+            pattern: NOOP_PATTERN,
             column: TEST_OTHER_COLUMN_NAME
           }
         ],
@@ -373,7 +410,9 @@ describe('SoqlHelpers', function() {
         [testIsNullFilter(true, true), testIsNullFilter(false, true)],
         [testTimeRangeFilter(true), testTimeRangeFilter(false)],
         [testValueRangeFilter(true), testValueRangeFilter(false)],
+        [testNoopFilter(true), testNoopFilter(false)]
       ];
+
       var matchSets = [
         [
           {
@@ -457,6 +496,21 @@ describe('SoqlHelpers', function() {
             matcher: matchOtherColumnValueRangeFilter,
             expectedValue: true,
             pattern: VALUE_RANGE_PATTERN,
+            column: TEST_OTHER_COLUMN_NAME
+          }
+        ],
+
+        [
+          {
+            matcher: matchNoopFilter,
+            expectedValue: true,
+            pattern: NOOP_PATTERN,
+            column: TEST_OWN_COLUMN_NAME
+          },
+          {
+            matcher: matchNoopFilter,
+            expectedValue: true,
+            pattern: NOOP_PATTERN,
             column: TEST_OTHER_COLUMN_NAME
           }
         ],

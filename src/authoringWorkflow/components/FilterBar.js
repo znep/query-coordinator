@@ -10,8 +10,7 @@ const mapStateToProps = (state) => {
 
   const columns = getFilterableColumns(metadata);
   const filters = _.filter(vifAuthoring.authoring.filters, (filter) => {
-    const columnName = _.get(filter, 'parameters.columnName');
-    return _.isString(columnName) && _.find(columns, 'fieldName', columnName);
+    return _.isString(filter.columnName) && _.find(columns, ['fieldName', filter.columnName]);
   });
   const fetchSuggestions = (column, searchTerm) => {
     return getSpandexDataProvider(metadata).getSuggestions(column.fieldName, searchTerm, 10);

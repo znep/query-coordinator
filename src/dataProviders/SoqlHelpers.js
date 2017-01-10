@@ -321,6 +321,8 @@ function filterToWhereClauseComponent(filter) {
       return timeRangeWhereClauseComponent(filter);
     case 'valueRange':
       return valueRangeWhereClauseComponent(filter);
+    case 'noop':
+      return noopWhereClauseComponent(filter);
     default:
       throw new Error(
         'Invalid filter function: `{0}`.'.format(filter.function)
@@ -513,6 +515,10 @@ function valueRangeWhereClauseComponent(filter) {
     soqlEncodeValue(filter.arguments.start),
     soqlEncodeValue(filter.arguments.end)
   );
+}
+
+function noopWhereClauseComponent() {
+  return '1=1';
 }
 
 module.exports = {

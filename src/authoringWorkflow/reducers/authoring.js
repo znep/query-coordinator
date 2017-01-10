@@ -37,7 +37,7 @@ export default function authoring(state, action) {
       break;
 
     case SET_FILTERS:
-      state.filters = action.filters;
+      state.filters = _.cloneDeep(action.filters);
       break;
 
     case SET_VIF_CHECKPOINT:

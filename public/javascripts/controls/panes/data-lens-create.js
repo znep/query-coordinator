@@ -61,7 +61,7 @@
   // We already check the feature flag when deciding whether or not to show the data lens pane,
   // but just to be extra safe, let's double check the feature flag to bootstrap derived views
   // is turned on.
-  var isDerivedView = ['grouped', 'filter'].includes(blist.dataset.type);
+  var isDerivedView = _.includes(['grouped', 'filter'], blist.dataset.type);
   var allowDerivedViewBootstrap = blist.feature_flags.enable_data_lens_using_derived_view;
 
   if (useEphemeralBootstrap && userCanUpdateMetadata) {

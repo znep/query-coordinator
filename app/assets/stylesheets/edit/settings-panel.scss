@@ -95,6 +95,16 @@
       font-weight: lighter;
     }
 
+    .settings-help-link {
+      position: absolute;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: $header-text-color;
+      font-weight: lighter;
+      text-decoration: none;
+    }
+
     .settings-save-failure-message {
       font-size: 1.5rem;
       margin-bottom: 1.2rem;

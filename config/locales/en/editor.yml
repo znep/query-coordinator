@@ -8,6 +8,7 @@
 
 en:
   editor:
+    help: 'Get Help and Support'
     default_page_title: 'Socrata Perspectives - Create a Story'
     empty_story_warning: 'Oh, no! Your story is empty! To get started, drag a block to the canvas.'
     remove_block_confirmation: 'Are you sure you want to remove this block?'

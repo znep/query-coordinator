@@ -192,36 +192,37 @@ describe View do
   describe '.is_derived_view?' do
     let(:view) { View.new }
 
-    it 'is false if view is a default view' do
-      allow(view).to receive('dataset?').and_return(true)
-      allow(view).to receive('is_api_geospatial?').and_return(false)
-      allow(view).to receive('is_unpublished?').and_return(false)
-
+    it 'is false if the view is not tabular' do
+      allow(view).to receive(:is_tabular?).and_return(false)
       expect(view.is_derived_view?).to be false
     end
 
-    it 'is false if view is a api geospatial view' do
-      allow(view).to receive('dataset?').and_return(false)
-      allow(view).to receive('is_api_geospatial?').and_return(true)
-      allow(view).to receive('is_unpublished?').and_return(false)
+    context 'when the view is tabular' do
+      before(:each) do
+        allow(view).to receive(:is_tabular?).and_return(true)
+        allow(view).to receive(:is_blist?).and_return(false)
+        allow(view).to receive(:is_arcgis?).and_return(false)
+        allow(view).to receive(:is_api_geospatial?).and_return(false)
+      end
 
-      expect(view.is_derived_view?).to be false
-    end
+      it 'is false if the view is a blist' do
+        allow(view).to receive(:is_blist?).and_return(true)
+        expect(view.is_derived_view?).to be false
+      end
 
-    it 'is false if view is unpublished' do
-      allow(view).to receive('dataset?').and_return(false)
-      allow(view).to receive('is_api_geospatial?').and_return(false)
-      allow(view).to receive('is_unpublished?').and_return(true)
+      it 'is false if the view is an ESRI map' do
+        allow(view).to receive(:is_arcgis?).and_return(true)
+        expect(view.is_derived_view?).to be false
+      end
 
-      expect(view.is_derived_view?).to be false
-    end
+      it 'is false if the view is an API-ingressed Mondara map' do
+        allow(view).to receive(:is_api_geospatial?).and_return(true)
+        expect(view.is_derived_view?).to be false
+      end
 
-    it 'is true if view is not default, api geospatial, or unpublished' do
-      allow(view).to receive('dataset?').and_return(false)
-      allow(view).to receive('is_api_geospatial?').and_return(false)
-      allow(view).to receive('is_unpublished?').and_return(false)
-
-      expect(view.is_derived_view?).to be true
+      it 'is true if the view is not a blist, an ESRI map, or an API-ingressed Mondara map' do
+        expect(view.is_derived_view?).to be true
+      end
     end
   end
 

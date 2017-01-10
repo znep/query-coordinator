@@ -1050,7 +1050,7 @@ class View < Model
   end
 
   def is_derived_view?
-    !dataset? && !is_unpublished? && !is_api_geospatial?
+    is_tabular? && [is_blist?, is_arcgis?, is_api_geospatial?].none?
   end
 
   def has_modifying_parent_view?
@@ -1427,6 +1427,10 @@ class View < Model
 
   def is_blobby?
     viewType == 'blobby'
+  end
+
+  def is_calendar?
+    displayType == 'calendar'
   end
 
   def data_lens?

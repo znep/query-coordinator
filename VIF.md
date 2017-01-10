@@ -606,7 +606,7 @@ The `noop` filter describes a filter that returns all values in a column. It is 
 
 * The `function` property specifies the desired filtering function. It must contain the string `noop`.
 
-It is recommended that implementors ignore this filter when constructing where clauses.
+`noop` filters exist to express an author's intent to allow filtering on a column without having to specify an explicit filter value. `noop` filters should be ignored when constructing a where clause from the filters array.
 
 ##### `timeRange`
 The `timeRange` filter describes a partitioning of the set of all rows into those that fall into the specified date range and those that fall outside of it. It is of type `<object>`. This object must have the following properties:

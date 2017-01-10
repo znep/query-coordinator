@@ -19,7 +19,10 @@
       #column-chart-3,
       #column-chart-4,
       #column-chart-5,
-      #column-chart-6 {
+      #column-chart-6,
+      #column-chart-7,
+      #column-chart-8,
+      #column-chart-9 {
         display: block;
         position: relative;
         width: 640px;
@@ -35,6 +38,12 @@
     <div id="column-chart-4"></div>
     <div id="column-chart-5"></div>
     <div id="column-chart-6"></div>
+    <p>Multi-series aggregated data with measure axis max value</p>
+    <div id="column-chart-7"></div>
+    <p>Multi-series aggregated data configured through a dimension grouping on number columns</p>
+    <div id="column-chart-8"></div>
+    <p>Multiple defined series and data grouping configured simultaneously should show an error</p>
+    <div id="column-chart-9"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -63,8 +72,7 @@
           arguments: {
             operator: '=',
             operand: 'Math'
-          },
-          pivot: true
+          }
         },
         {
           columnName: 'grade',
@@ -72,8 +80,7 @@
           arguments: {
             operator: '=',
             operand: '3'
-          },
-          pivot: true
+          }
         },
         {
           columnName: 'school_year',
@@ -81,8 +88,7 @@
           arguments: {
             operator: '=',
             operand: '2014'
-          },
-          pivot: true
+          }
         }
       ];
 
@@ -133,18 +139,6 @@
         origin: {
           type: 'test_data',
           url: 'localhost'
-        },
-        scale: {
-          x: {
-            type: 'ordinal',
-            unit: {
-              one: 'category',
-              other: 'categories'
-            }
-          },
-          y: {
-            type: 'quantitative'
-          }
         },
         title: 'Math Proficienty for 3rd Graders - Iowa Public Schools'
       };
@@ -347,9 +341,155 @@
           type: 'test_data',
           url: 'localhost'
         },
-        scale: {},
         title: 'Iowa Liquor Sales'
       };
+
+      var columnChart7Vif = {
+        configuration: {
+          viewSourceDataLink: true,
+          axisLabels: {
+            top: 'Year',
+            right: null,
+            bottom: 'Grouped by county names',
+            left: 'Final Payments'
+          },
+          showOtherCategory: true,
+          measureAxisMaxValue: 100
+        },
+        description: 'This dataset contains Iowa unemployment insurance benefit payments and number of benefit recipients by county. County data is based on the recipient’s place of residence. (Annual)',
+        series: [
+          {
+            color: {
+              secondary: null,
+              highlight: '#44ffaa',
+              palette: 'categorical'
+            },
+            dataSource: {
+              datasetUid: 'yhbr-3t8a',
+              dimension: {
+                columnName: 'year',
+                aggregationFunction: null,
+                grouping: {
+                  columnName: 'county_name'
+                }
+              },
+              domain: 'data.iowa.gov',
+              filters: [
+                {
+                  function: 'binaryOperator',
+                  columnName: 'year',
+                  arguments: [
+                    {
+                      operator: '=',
+                      operand: '2000'
+                    },
+                    {
+                      operator: '=',
+                      operand: '2001'
+                    },
+                    {
+                      operator: '=',
+                      operand: '2002'
+                    }
+                  ]
+                }
+              ],
+              limit: null,
+              measure: {
+                columnName: 'final_payments',
+                aggregationFunction: 'sum'
+              },
+              orderBy: {
+                parameter: 'measure',
+                sort: 'asc'
+              },
+              type: 'socrata.soql'
+            },
+            label: '',
+            type: 'columnChart',
+            unit: {
+              one: 'dollar',
+              other: 'dollars'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        title: 'Unemployment Insurance Recipients and UI Benefit Payments by County (Annual)'
+      };
+
+      var columnChart8Vif = {
+        configuration: {
+          viewSourceDataLink: true,
+          axisLabels: {
+            top: null,
+            right: null,
+            bottom: 'Year',
+            left: 'Final Payments'
+          },
+          showOtherCategory: true
+        },
+        description: 'This dataset contains Iowa unemployment insurance benefit payments and number of benefit recipients by county. County data is based on the recipient’s place of residence. (Annual)',
+        series: [
+          {
+            color: {
+              secondary: null,
+              highlight: '#44ffaa',
+              palette: 'categorical'
+            },
+            dataSource: {
+              datasetUid: 'k6cs-ww27',
+              dimension: {
+                columnName: 'blood_alcohol_level',
+                aggregationFunction: null,
+                grouping: {
+                  columnName: 'plausibility'
+                }
+              },
+              domain: 'vertex-stories.test-socrata.com',
+              filters: [],
+              limit: 5,
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              orderBy: {
+                parameter: 'measure',
+                sort: 'desc'
+              },
+              type: 'socrata.soql'
+            },
+            label: '',
+            type: 'columnChart',
+            unit: {
+              one: 'dollar',
+              other: 'dollars'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        title: 'Unemployment Insurance Recipients and UI Benefit Payments by County (Annual)'
+      };
+
+      var columnChart9Vif = _.cloneDeep(columnChart8Vif);
+      columnChart9VifSecondSeries = _.cloneDeep(columnChart9Vif.series[0]);
+      columnChart9VifSecondSeries.dataSource.dimension.grouping = null;
+      columnChart9Vif.series.push(columnChart9VifSecondSeries);
 
       /**
        * Instantiate the plugins
@@ -405,6 +545,30 @@
       );
       $columnChart6Element.socrataSvgColumnChart(columnChart6Vif);
 
+      var $columnChart7Element = $('#column-chart-7');
+      $columnChart7Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $columnChart7Element.on(
+        'SOCRATA_VISUALIZATION_VIF_UPDATED',
+        handleVifUpdated
+      );
+      $columnChart7Element.socrataSvgColumnChart(columnChart7Vif);
+
+      var $columnChart8Element = $('#column-chart-8');
+      $columnChart8Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $columnChart8Element.on(
+        'SOCRATA_VISUALIZATION_VIF_UPDATED',
+        handleVifUpdated
+      );
+      $columnChart8Element.socrataSvgColumnChart(columnChart8Vif);
+
+      var $columnChart9Element = $('#column-chart-9');
+      $columnChart9Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $columnChart9Element.on(
+        'SOCRATA_VISUALIZATION_VIF_UPDATED',
+        handleVifUpdated
+      );
+      $columnChart9Element.socrataSvgColumnChart(columnChart9Vif);
+
       /**
        * Handle plugin events
        */
@@ -435,20 +599,12 @@
       }
 
       /**
-       * Destroy the plugins
+       * How to destroy the plugin:
        */
 
       // $columnChart1Element.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
       // $columnChart1Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
       // $columnChart1Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
-
-      // $columnChart2Element.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
-      // $columnChart2Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
-      // $columnChart2Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
-
-      // $columnChart2Element.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
-      // $columnChart2Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
-      // $columnChart2Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
     });
   </script>
 </html>

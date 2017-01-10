@@ -368,6 +368,12 @@ If `type` is `'socrata.soql'`, the following properties are also required:
 
    * `aggregationFunction` specifies the aggregation function to apply to values in the column in question. Its type is `<string>` or `<null>`. If it is of type `<string>`, accepted values are `'sum'` and `'count'`.
 
+   For Bar and Column charts, the `dimension` object may also optionally include the following properties:
+
+   * `grouping` property specifies a complex behavior that will decompose dimension values according to the values of a second, potentially orthogonal column, the name of which is the value of the `columnName` property on the `grouping` object. Because this process involves synthesizing multiple series for rendering at runtime, it effectively replaces any series defined in the static VIF with new ones. For this reason, the `grouping` property is only respected on the first series in the VIF (the 0th element of the `series` array), and if this property is present and non-null on the first series, all other series are ignored. Its type is `<string>` or `<null>`. If it is of type `<object>` and it must have the following properties:
+
+     * `columnName` specifies the column to be used in the data grouping. Its type is `<string>` or `<null>`. If it is of type `<string>` it must be a column in the dataset.
+
 * The `domain` property specifies the domain against which to make data queries. It is of type `<string>` and should specify only the domain, not the protocol, path or query string (e.g. `opendata.socrata.com`, not `http://opendata.socrata.com` or `opendata.socrata.com/api`).
 
 * The `measure` property specifies the column to use as the measure of the chart, and any aggregation function to apply to that column. Its type is `<object>`. This object must have the following properties:
@@ -377,6 +383,18 @@ If `type` is `'socrata.soql'`, the following properties are also required:
    * `aggregationFunction` specifies the aggregation function to apply to values in the column in question. Its type is `<string>` or `<null>`. If it is of type `<string>`, accepted values are `'sum'` and `'count'`.
 
 * The `filters` property specifies which filters, if any, to use when constructing a where clause for a data query. It is of type `<array>`, and may be empty. If not empty, each item must be a valid SoQL filter object (see below).
+
+Additionally, if `type` is `'socrata.soql'`, the following properties are optional. If they are of type `<null>` or simply not present, then implementation-specific default behaviors will be used instead:
+
+* The `orderBy` property specifies the sort order that should be used for the visualization. Its type is `<object>` or `<null>`. If it is of type `<object>` it must have the following properties:
+
+   * `parameter` specifies whether the sort should be on the dimension or measure. Its type is `<string>` and accepted values are `'dimension'` or `'measure'`.
+
+   * `sort` specifies the direction of the sort. Its type is `<string>` and accepted values are `'asc'` or `'desc'`.
+
+Required |Optional
+:-------:|:---------------------------:
+    -    |Bar Chart, Column Chart, Histogram, Pie Chart, Timeline Chart
 
 If `type` is `'socrata.sample'`, the following properties are also required:
 

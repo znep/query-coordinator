@@ -181,6 +181,11 @@ export const getMeasureAxisMaxValue = createSelector(
   vif => _.get(vif, 'configuration.measureAxisMaxValue', null)
 );
 
+export const getDimensionGroupingColumnName = createSelector(
+  getCurrentVif,
+  vif => _.get(vif, 'series[0].dataSource.dimension.grouping.columnName', null)
+);
+
 export const getOrderBy = createSelector(
   getCurrentVif,
   vif => _.get(vif, 'series[0].dataSource.orderBy')
@@ -257,6 +262,14 @@ export const isBarChart = createSelector(
   type => type === 'barChart'
 );
 
+export const isGroupedBarChart = createSelector(
+  getVisualizationType,
+  getDimensionGroupingColumnName,
+  (type, dimensionGroupingColumnName) => {
+    return type === 'barChart' && _.isString(dimensionGroupingColumnName);
+  }
+);
+
 export const isValidBarChartVif = createSelector(
   getDimension,
   getMeasure,
@@ -274,6 +287,14 @@ export const isValidBarChartVif = createSelector(
 export const isColumnChart = createSelector(
   getVisualizationType,
   type => type === 'columnChart'
+);
+
+export const isGroupedColumnChart = createSelector(
+  getVisualizationType,
+  getDimensionGroupingColumnName,
+  (type, dimensionGroupingColumnName) => {
+    return type === 'columnChart' && _.isString(dimensionGroupingColumnName);
+  }
 );
 
 export const isValidColumnChartVif = createSelector(

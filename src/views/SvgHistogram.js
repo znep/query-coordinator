@@ -148,22 +148,19 @@ function SvgHistogram($element, vif) {
 
   }
 
-  // Returns scaling to use ('linear' or 'logarithmic').
-  // Scale is determined via two factors, in decreasing priority:
-  // * Our vif's scale.x.scaling.
-  // * The method actually used to bucket the data. This is a concern
-  //   of the code passing us data to render, and is available per-series
-  //   at dataToRender[...].bucketType. If series specifiy different
-  //   bucketing methods, the first series scaling is used (TODO -
-  //   revisit once we support multiple series).
-  //
-  //  Failing those, the default scale is linear.
+  /**
+   * Returns scaling to use ('linear' or 'logarithmic').
+   *
+   * Scale is determined by the method actually used to bucket the data. This
+   * is a concern of the code passing us data to render, and is available per-
+   * series at dataToRender[...].bucketType. If series specifiy different
+   * bucketing methods, the first series scaling is used (TODO - revisit once
+   * we support multiple series).
+   *
+   * Failing this, the default scale is linear.
+   */
   function determineXScaleType(data) {
-    return _.get(
-      self.getVif(),
-      'scale.x.scaling',
-      _.get(data, '[0].bucketType')
-    ) || 'linear';
+    return _.get(data, '[0].bucketType', 'linear');
   }
 
   function validateVif() {

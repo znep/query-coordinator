@@ -523,7 +523,6 @@ export function setUnitsOther(other) {
   };
 }
 
-
 export const SET_ROW_INSPECTOR_TITLE_COLUMN_NAME = 'SET_ROW_INSPECTOR_TITLE_COLUMN_NAME';
 export function setRowInspectorTitleColumnName(rowInspectorTitleColumnName) {
   return {
@@ -548,6 +547,15 @@ export function requestCenterAndZoom(centerAndZoom) {
     setTimeout(() => {
       dispatch(setCenterAndZoom(centerAndZoom));
     }, 3000);
+  };
+}
+
+
+export const SET_DIMENSION_GROUPING_COLUMN_NAME = 'SET_DIMENSION_GROUPING_COLUMN_NAME';
+export function setDimensionGroupingColumnName(dimensionGroupingColumnName) {
+  return {
+    type: SET_DIMENSION_GROUPING_COLUMN_NAME,
+    dimensionGroupingColumnName
   };
 }
 

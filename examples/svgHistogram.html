@@ -95,14 +95,6 @@
         origin: {
           type: 'test_data',
           url: 'localhost'
-        },
-        scale: {
-          x: {
-            type: 'quantitative'
-          },
-          y: {
-            type: 'quantitative'
-          }
         }
       };
 
@@ -171,8 +163,7 @@
         origin: {
           type: 'test_data',
           url: 'localhost'
-        },
-        scale: { x: { type: 'quantitative', unit: { one: 'PSI', other: 'PSI' } }, y: { type: 'quantitative' } }
+        }
       });
 
       vifs.push({
@@ -221,8 +212,7 @@
         origin: {
           type: 'test_data',
           url: 'localhost'
-        },
-        scale: { x: { type: 'quantitative', unit: { one: 'PSI', other: 'PSI' } }, y: { type: 'quantitative' } }
+        }
       });
 
       vifs.push(chicagoCrimesLongitudeVif);
@@ -267,8 +257,7 @@
         format: {
           type: 'visualization_interchange_format',
           version: 2
-        },
-        scale: { x: { type: 'quantitative' }, y: { type: 'quantitative' } }
+        }
       });
 
       vifs.push({
@@ -303,8 +292,7 @@
         format: {
           type: 'visualization_interchange_format',
           version: 2
-        },
-        scale: { x: { type: 'quantitative' }, y: { type: 'quantitative' } }
+        }
       });
 
       vifs.push({
@@ -340,8 +328,7 @@
         format: {
           type: 'visualization_interchange_format',
           version: 2
-        },
-        scale: { x: { type: 'quantitative' }, y: { type: 'quantitative' } }
+        }
       });
 
       vifs.push({
@@ -407,8 +394,7 @@
         origin: {
           type: 'test_data',
           url: 'localhost'
-        },
-        scale: { x: { type: 'quantitative', unit: { one: 'PSI', other: 'PSI' } }, y: { type: 'quantitative' } }
+        }
       });
 
       var chicagoCrimesTime = _.cloneDeep(chicagoCrimesLongitudeVif);

@@ -146,6 +146,21 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
       return validator;
     },
 
+    requireExactlyOneSeriesIfDimensionGroupingEnabled() {
+      const groupingFromVif = _.get(
+        vif,
+        'series[0].dataSource.dimension.grouping.columnName',
+        null
+      );
+      const groupingIsEnabled = _.isString(groupingFromVif) && !_.isEmpty(groupingFromVif);
+
+      if (allSeries.length !== 1 && groupingIsEnabled) {
+        addError(I18n.translate('visualizations.common.validation.errors.need_single_series_if_grouping_enabled'));
+      }
+
+      return validator;
+    },
+
     requireAllSeriesFromSameDomain() {
       const allDomains = allSeries.map((series) => _.get(series, 'dataSource.domain'));
       const uniqDomains = _.uniq(allDomains);

@@ -1,15 +1,12 @@
 const _ = require('lodash');
 const $ = require('jquery');
-const utils = require('socrata-utils');
-const SvgBarChart = require('./views/SvgBarChart');
-const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
-const VifHelpers = require('./helpers/VifHelpers');
-const SoqlHelpers = require('./dataProviders/SoqlHelpers');
-const I18n = require('./I18n');
-const getSoqlVifValidator = require('./dataProviders/SoqlVifValidator.js').
-  getSoqlVifValidator;
 
-const MAX_BAR_COUNT = 1000;
+const SvgBarChart = require('./views/SvgBarChart');
+const VifHelpers = require('./helpers/VifHelpers');
+const CategoricalDataManager = require('./dataProviders/CategoricalDataManager');
+const I18n = require('./I18n');
+const getSoqlVifValidator = require('./dataProviders/SoqlVifValidator.js').getSoqlVifValidator;
+
 const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 $.fn.socrataSvgBarChart = function(originalVif) {
@@ -115,7 +112,7 @@ $.fn.socrataSvgBarChart = function(originalVif) {
     if (error.errorMessages) {
       messages = error.errorMessages;
     } else {
-      messages = I18n.translate('visualizations.common.error_generic')
+      messages = I18n.translate('visualizations.common.error_generic');
     }
 
     visualization.renderError(messages);
@@ -128,326 +125,49 @@ $.fn.socrataSvgBarChart = function(originalVif) {
     detachInteractionEvents();
 
     $.fn.socrataSvgBarChart.validateVif(newVif).then(() => {
-      const processSeries = (series, seriesIndex) => {
-        const type = _.get(series, 'dataSource.type');
 
-        switch (type) {
-
-          case 'socrata.soql':
-            return makeSocrataDataRequest(newVif, seriesIndex);
-
-          default:
-            return Promise.reject(
-              'Invalid/unsupported series dataSource.type: ' +
-              `"${series.dataSource.type}".`
-            );
-        }
-      };
-      const processData = (dataResponses) => {
-        const overMaxRowCount = dataResponses.some(
-          (dataResponse) => dataResponse.rows.length > MAX_BAR_COUNT
-        );
-        const allSeriesMeasureValues = dataResponses.map((dataResponse) => {
-          const measureIndex = dataResponse.columns.indexOf('measure');
-
-          return dataResponse.rows.map((row) => row[measureIndex]);
-        });
-        const onlyNullOrZeroValues = _(allSeriesMeasureValues).
-          flatten().
-          compact().
-          isEmpty();
-
-        $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
-
-        visualization.hideBusyIndicator();
-
-        if (overMaxRowCount) {
-
-          visualization.renderError(
-            I18n.translate(
-              'visualizations.bar_chart.error_exceeded_max_bar_count'
-            ).format(MAX_BAR_COUNT)
-          );
-        } else if (onlyNullOrZeroValues) {
-
-          visualization.renderError(
-            I18n.translate('visualizations.common.error_no_data')
-          );
-        } else {
-
-          attachInteractionEvents();
-          visualization.render(newVif, dataResponses);
-        }
-      };
-      const dataRequests = newVif.series.map(processSeries);
-
-      Promise.
-        all(dataRequests).
-        then(processData);
+      CategoricalDataManager.getData(newVif).
+        then((newData) => {
+          renderVisualization(newVif, newData);
+        }).
+        catch(handleError);
     }).
     catch(handleError);
   }
 
-  function makeSocrataDataRequest(vifToRender, seriesIndex) {
-    const series = vifToRender.series[seriesIndex];
-    const soqlDataProvider = new SoqlDataProvider({
-      datasetUid: series.dataSource.datasetUid,
-      domain: series.dataSource.domain
+  function renderVisualization(vifToRender, dataToRender) {
+    const overMaxRowCount = (
+      dataToRender.rows.length > CategoricalDataManager.MAX_ROW_COUNT
+    );
+    const dimensionIndex = dataToRender.columns.indexOf('dimension');
+    const allSeriesMeasureValues = dataToRender.rows.map((row) => {
+      return row.slice(dimensionIndex + 1);
     });
-    const dimension = SoqlHelpers.dimension(vifToRender, seriesIndex);
-    const dimensionAlias = SoqlHelpers.dimensionAlias();
-    const measure = SoqlHelpers.measure(vifToRender, seriesIndex);
-    const measureAlias = SoqlHelpers.measureAlias();
-    const whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(
-      vifToRender,
-      seriesIndex
-    );
-    const whereClause = (whereClauseComponents.length > 0) ?
-      'WHERE {0}'.format(whereClauseComponents) :
-      '';
-    const groupByClause = SoqlHelpers.aggregationClause(
-      vifToRender,
-      seriesIndex,
-      'dimension'
-    );
-    const orderClause = SoqlHelpers.orderByClauseFromSeries(
-      vifToRender,
-      seriesIndex
-    );
-    const limit = _.get(
-      vifToRender,
-      `series[${seriesIndex}].dataSource.limit`,
-      MAX_BAR_COUNT + 1
-    );
-    const isUnaggregatedQuery = (
-      _.isNull(series.dataSource.dimension.aggregationFunction) &&
-      _.isNull(series.dataSource.measure.aggregationFunction)
-    );
-    // We only want to follow the showOtherCategory code path if that property
-    // is set to true AND there is a defined limit.
-    const showOtherCategory = (
-      _.get(vifToRender, 'configuration.showOtherCategory', false) &&
-      _.isNumber(
-        _.get(vifToRender, `series[${seriesIndex}].dataSource.limit`, null)
-      )
-    );
-    const processQueryResponse = (queryResponse) => {
-      const dimensionIndex = queryResponse.columns.indexOf(dimensionAlias);
-      const measureIndex = queryResponse.columns.indexOf(measureAlias);
+    const onlyNullOrZeroValues = _(allSeriesMeasureValues).
+      flatten().
+      compact().
+      isEmpty();
 
-      let valueAsNumber;
+    $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
+    visualization.hideBusyIndicator();
 
-      queryResponse.columns[dimensionIndex] = 'dimension';
-      queryResponse.columns[measureIndex] = 'measure';
+    if (overMaxRowCount) {
 
-      queryResponse.rows.forEach((row) => {
+      visualization.renderError(
+        I18n.translate(
+          'visualizations.bar_chart.error_exceeded_max_bar_count'
+        ).format(CategoricalDataManager.MAX_ROW_COUNT)
+      );
+    } else if (onlyNullOrZeroValues) {
 
-        try {
-
-          if (_.isUndefined(row[measureIndex])) {
-            valueAsNumber = null;
-          } else {
-            valueAsNumber = Number(row[measureIndex]);
-          }
-        } catch (error) {
-
-          if (window.console && window.console.error) {
-
-            console.error(
-              `Could not convert measure value to number: ${row[measureIndex]}`
-            );
-          }
-
-          valueAsNumber = null;
-        }
-
-        row[measureIndex] = valueAsNumber;
-      });
-
-      return queryResponse;
-    };
-
-    let queryString;
-
-    if (isUnaggregatedQuery) {
-
-      queryString = `
-        SELECT
-          ${dimension} AS ${dimensionAlias},
-          ${measure} AS ${measureAlias}
-        ${whereClause}
-        ORDER BY ${orderClause}
-        NULL LAST
-        LIMIT ${limit}`;
+      visualization.renderError(
+        I18n.translate('visualizations.common.error_no_data')
+      );
     } else {
 
-      queryString = `
-        SELECT
-          ${dimension} AS ${dimensionAlias},
-          ${measure} AS ${measureAlias}
-        ${whereClause}
-        GROUP BY ${groupByClause}
-        ORDER BY ${orderClause}
-        NULL LAST
-        LIMIT ${limit}`;
+      attachInteractionEvents();
+      visualization.render(vifToRender, dataToRender);
     }
-
-    return soqlDataProvider.
-      query(
-        queryString.replace(/[\n\s]+/g, ' '),
-        dimensionAlias,
-        measureAlias
-      ).
-      then((queryResponse) => {
-        const queryResponseRowCount = queryResponse.rows.length;
-        const queryResponseUniqueDimensionCount = _.uniq(
-          queryResponse.rows.map((row) => row[0])
-        ).length;
-
-        if (queryResponseRowCount !== queryResponseUniqueDimensionCount) {
-          const error = new Error();
-
-          error.errorMessages = [
-            I18n.translate(
-              'visualizations.common.error_duplicated_dimension_value'
-            )
-          ];
-
-          throw error;
-        }
-
-        if (showOtherCategory) {
-
-          const otherCategoryName = I18n.translate(
-            'visualizations.common.other_category'
-          );
-          // Note that we can't just use the multiple argument version of the
-          // binaryOperator filter since it joins arguments with OR, and we need
-          // to join all of the terms with AND.
-          const otherCategoryFilters = queryResponse.rows.
-            filter((row) => !_.isUndefined(row[0])).
-            map((row) => {
-
-              return {
-                arguments: {
-                  operator: '!=',
-                  operand: row[0]
-                },
-                // Note that the SoqlHelpers.dimension() method returns the name
-                // of the dimension with backticks (for SoQL quoting), but if we
-                // try to include the backticks in the filter's columnName
-                // property it will double-quote the dimension in the actual
-                // query string, which causes the query to fail. In this case we
-                // actually want to remove the backticks added by the dimension
-                // method, since the field will be quoted by the query mechanism
-                // when the where clause is compiled.
-                columnName: dimension.replace(/`/g, ''),
-                function: 'binaryOperator'
-              };
-            });
-          const otherCategoryVifToRender = _.cloneDeep(vifToRender);
-          const originalVifFilters = _.get(
-            otherCategoryVifToRender,
-            `series[${seriesIndex}].dataSource.filters`,
-            []
-          );
-
-          _.set(
-            otherCategoryVifToRender,
-            `series[${seriesIndex}].dataSource.filters`,
-            originalVifFilters.concat(otherCategoryFilters)
-          );
-
-          // If one of the categories was 'null', then we also need to add an
-          // 'is not null' filter so that null values do not end up in the other
-          // category. We can tell if there was a 'null' category because we
-          // will have filtered it out of the collection from which we derive
-          // otherCategoryFilters. If the length of otherCategoryFilters is not
-          // equal to the length of the original query response rows, then we
-          // must have filtered a null value.
-          if (queryResponse.rows.length !== otherCategoryFilters.length) {
-
-            otherCategoryVifToRender.series[seriesIndex].dataSource.filters.
-              push({
-                arguments: {
-                  isNull: false
-                },
-                // See note above about SoqlHelpers.dimension() returning the
-                // name of the dimension with backticks.
-                columnName: dimension.replace(/`/g, ''),
-                function: 'isNull'
-              });
-          }
-
-          const otherCategoryWhereClauseComponents = SoqlHelpers.
-            whereClauseFilteringOwnColumn(
-              otherCategoryVifToRender,
-              seriesIndex
-            );
-          const otherCategoryAggregationClause = SoqlHelpers.aggregationClause(
-            otherCategoryVifToRender,
-            seriesIndex,
-            'measure'
-          );
-
-          let otherCategoryQueryString;
-
-          if (isUnaggregatedQuery) {
-
-            otherCategoryQueryString = `
-              SELECT
-                '${otherCategoryName}' AS ${dimensionAlias},
-                COUNT(*) AS ${measureAlias}
-              WHERE ${otherCategoryWhereClauseComponents}`;
-          } else {
-
-            otherCategoryQueryString = `
-              SELECT
-                '${otherCategoryName}' AS ${dimensionAlias},
-                ${otherCategoryAggregationClause} AS ${measureAlias}
-              WHERE ${otherCategoryWhereClauseComponents}`;
-          }
-
-          // Since we're using values from first query as filters, we have to url
-          // encode query string. Characters like `&` comes with surprises
-          const uriEncodedOtherCategoryQueryString = encodeURIComponent(
-            otherCategoryQueryString.replace(/[\n\s]+/g, ' ')
-          );
-
-          return soqlDataProvider.
-            query(
-              uriEncodedOtherCategoryQueryString,
-              dimensionAlias,
-              measureAlias
-            ).
-            then((otherCategoryQueryResponse) => {
-
-              // If the limit is higher than the number of total rows then
-              // otherCategoryQueryResponse will come back with no rows; in this
-              // case there is no need to modify the original queryResponse.
-              if (otherCategoryQueryResponse.rows.length > 0) {
-                queryResponse.rows.push(otherCategoryQueryResponse.rows[0]);
-              }
-
-              return queryResponse;
-            }).
-            catch(() => {
-              const error = new Error();
-
-              error.errorMessages = [
-                I18n.translate(
-                  'visualizations.common.error_other_category_query_failed'
-                )
-              ];
-
-              throw error;
-            });
-        } else {
-          return Promise.resolve(queryResponse);
-        }
-      }).
-      then(processQueryResponse).
-      catch(handleError);
   }
 
   /**
@@ -477,6 +197,7 @@ $.fn.socrataSvgBarChart.validateVif = (vif) =>
   getSoqlVifValidator(vif).then(validator =>
     validator.
       requireAtLeastOneSeries().
+      requireExactlyOneSeriesIfDimensionGroupingEnabled().
       toPromise()
   );
 

@@ -47,63 +47,55 @@ describe('SvgHistogram', function() {
     $('body').append(element);
 
     var histogramVIF = {
-        title: CHART_TITLE,
-        description: CHART_DESCRIPTION,
-        configuration: {
-          bucketType: 'linear',
-          axisLabels: {
-            top: 'top',
-            right: 'right',
-            bottom: 'bottom',
-            left: 'left'
-          }
-        },
-        series: [
-          {
-            color: {
-              primary: 'gray',
-              secondary: null,
-              highlight: '#44aa00'
-            },
-            dataSource: {
-              datasetUid: 'example',
-              domain: 'example.com',
-              dimension: {
-                columnName: 'latitude',
-                aggregationFunction: null
-              },
-              measure: {
-                columnName: null,
-                aggregationFunction: 'count'
-              },
-              type: 'socrata.soql',
-              filters: []
-            },
-            label: 'Series 1',
-            type: 'histogram',
-            unit: {
-              one: 'unit_one',
-              other: 'unit_other'
-            }
-          }
-        ],
-        createdAt: '2014-01-01T00:00:00',
-        format: {
-          type: 'visualization_interchange_format',
-          version: 2
-        },
-        origin: {
-          type: 'test_data',
-          url: 'localhost'
-        },
-        scale: {
-          x: {
-            type: 'quantitative'
+      title: CHART_TITLE,
+      description: CHART_DESCRIPTION,
+      configuration: {
+        bucketType: 'linear',
+        axisLabels: {
+          top: 'top',
+          right: 'right',
+          bottom: 'bottom',
+          left: 'left'
+        }
+      },
+      series: [
+        {
+          color: {
+            primary: 'gray',
+            secondary: null,
+            highlight: '#44aa00'
           },
-          y: {
-            type: 'quantitative'
+          dataSource: {
+            datasetUid: 'example',
+            domain: 'example.com',
+            dimension: {
+              columnName: 'latitude',
+              aggregationFunction: null
+            },
+            measure: {
+              columnName: null,
+              aggregationFunction: 'count'
+            },
+            type: 'socrata.soql',
+            filters: []
+          },
+          label: 'Series 1',
+          type: 'histogram',
+          unit: {
+            one: 'unit_one',
+            other: 'unit_other'
           }
         }
+      ],
+      createdAt: '2014-01-01T00:00:00',
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      },
+      origin: {
+        type: 'test_data',
+        url: 'localhost'
+      }
     };
 
     if (overrideVIF) {

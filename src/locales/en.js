@@ -105,6 +105,12 @@ export default {
         },
         show_other_category: {
           title: 'Group remaining as "Other"'
+        },
+        dimension_grouping_column_name: {
+          title: 'Group Dimension Values',
+          subtitle: 'Group Dimension Values By',
+          no_value: 'No Dimension Grouping',
+          description: 'Grouping dimension values breaks out your data into multiple segments based on the selected column.'
         }
       }
     },
@@ -283,6 +289,7 @@ export default {
       decimal_separator: '.',
       error_generic: 'An error occurred when rendering this chart.',
       error_no_data: 'There is no data to display.',
+      error_cardinality_too_high_for_grouping: 'The current chart configuration attempts to group values based on a column with too many unique values.',
       flyout_value_label: 'Value',
       group_separator: ',',
       latitude: 'Latitude',
@@ -296,6 +303,7 @@ export default {
       map_pan_zoom_disabled_warning_title: 'Panning and zooming has been disabled',
       no_value: '(No value)',
       other_category: '(Other)',
+      unlabeled_measure_prefix: 'Measure ',
       unit: {
         one: 'Record',
         other: 'Records'
@@ -315,6 +323,7 @@ export default {
           need_at_least_one_series: 'This visualization requires at least one series.',
           need_all_series_from_same_domain: 'This visualization requires all series to be from the same domain.',
           need_single_series: 'This visualization requires a single series.',
+          need_single_series_if_grouping_enabled: 'This visualization has dimension grouping configured in addition to multiple defined series. Dimension grouping is only available for visualizations with a single defined series.',
           measure_axis_min_value_should_be_numeric: 'If configured, the minimum value for the measure axis must be a number.',
           measure_axis_max_value_should_be_numeric: 'If configured, the maximum value for the measure axis must be a number.',
           measure_axis_min_should_be_lesser_then_max: 'Please ensure your minimum value is smaller than your maximum value.',

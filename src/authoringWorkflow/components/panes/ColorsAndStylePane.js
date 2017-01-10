@@ -151,7 +151,7 @@ export var ColorsAndStylePane = React.createClass({
     };
 
     const pointControls = (
-      <AccordionPane title={translate('panes.colors_and_style.subheaders.points')}>
+      <AccordionPane key="pointControls" title={translate('panes.colors_and_style.subheaders.points')}>
         <div className="authoring-field">
           <label className="block-label" htmlFor="point-color">{translate('panes.colors_and_style.fields.point_color.title')}</label>
           <Styleguide.ColorPicker {...pointColorAttributes} />
@@ -194,7 +194,7 @@ export var ColorsAndStylePane = React.createClass({
     };
 
     const colorControls = (
-      <AccordionPane title={translate('panes.colors_and_style.subheaders.colors')}>
+      <AccordionPane key="colorControls" title={translate('panes.colors_and_style.subheaders.colors')}>
         <label className="block-label" htmlFor="color-scale">{translate('panes.colors_and_style.fields.color_scale.title')}</label>
         <div className="color-scale-dropdown-container">
           <Styleguide.Dropdown {...colorScaleAttributes} />
@@ -227,7 +227,7 @@ export var ColorsAndStylePane = React.createClass({
     };
 
     return (
-      <AccordionPane title={translate('panes.colors_and_style.subheaders.map')}>
+      <AccordionPane key="mapLayerControls" title={translate('panes.colors_and_style.subheaders.map')}>
         <div className="authoring-field">
           <label className="block-label" htmlFor="base-layer">{translate('panes.colors_and_style.fields.base_layer.title')}</label>
           <div className="base-layer-dropdown-container">

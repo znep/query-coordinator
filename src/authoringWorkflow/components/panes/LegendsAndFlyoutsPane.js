@@ -61,7 +61,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
     };
 
     return (
-      <AccordionPane title={translate('panes.legends_and_flyouts.subheaders.units.title')}>
+      <AccordionPane key="units" title={translate('panes.legends_and_flyouts.subheaders.units.title')}>
         <p className="authoring-field-description">
           <small>{translate('panes.legends_and_flyouts.subheaders.units.description')}</small>
         </p>

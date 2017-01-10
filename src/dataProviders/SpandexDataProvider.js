@@ -4,7 +4,7 @@ import utils from 'socrata-utils';
 
 import DataProvider from './DataProvider';
 
-export default function SpandexDataProvider(config) {
+module.exports = function SpandexDataProvider(config) {
   _.extend(this, new DataProvider(config));
 
   utils.assertHasProperty(config, 'domain');
@@ -23,4 +23,4 @@ export default function SpandexDataProvider(config) {
           value();
       });
   };
-}
+};

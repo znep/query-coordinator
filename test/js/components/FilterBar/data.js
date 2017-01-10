@@ -11,6 +11,19 @@ export const mockValueRangeFilter = {
   allowMultiple: false
 };
 
+export const mockTimeRangeFilter = {
+  'function': 'timeRange',
+  columnName: 'dinosaurTime',
+  arguments: {
+    start: '1500-12-01T00:00:00',
+    end: '2017-12-01T00:00:00'
+  },
+  isLocked: false,
+  isHidden: false,
+  isRequired: false,
+  allowMultiple: false
+};
+
 export const mockBinaryOperatorFilter = {
   'function': 'binaryOperator',
   columnName: 'dinosaurName',
@@ -30,6 +43,12 @@ export const mockNumberColumn = {
   name: 'Dinosaur Age (approximate)',
   rangeMin: .1,
   rangeMax: 100.01
+};
+
+export const mockCalendarDateColumn = {
+  dataTypeName: 'calendar_date',
+  fieldName: 'dinosaurTime',
+  name: 'Dinosaur Time (approximate)'
 };
 
 export const mockTextColumn = {

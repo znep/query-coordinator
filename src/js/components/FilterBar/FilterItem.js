@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import CalendarDateFilter from './CalendarDateFilter';
 import NumberFilter from './NumberFilter';
 import TextFilter from './TextFilter';
 import FilterConfig from './FilterConfig';
@@ -20,7 +21,7 @@ export const FilterItem = React.createClass({
       allowMultiple: PropTypes.boolean
     }).isRequired,
     column: PropTypes.shape({
-      dataTypeName: PropTypes.oneOf(['number', 'text']),
+      dataTypeName: PropTypes.oneOf(['calendar_date', 'number', 'text']),
       name: PropTypes.string.isRequired
     }).isRequired,
     fetchSuggestions: PropTypes.func,
@@ -54,8 +55,16 @@ export const FilterItem = React.createClass({
         some().
         value();
 
+      /*
+        the third-party library used for DateRangePicker
+        adds the calendar element on the page body but not within the CalendarDateFilter div element.
+        As a result, clicking on the calendar is considered to be outside of the CalendarDateFilter div element and dismisses it.
+      */
+      const datePickerElement = document.querySelector('.react-datepicker__tether-element');
+      const isInsideDatePicker = datePickerElement && datePickerElement.contains(event.target);
+
       // If none of the flannelElements contain event.target, close all the flannels.
-      if (!isInsideFlannels) {
+      if (!isInsideFlannels && !isInsideDatePicker) {
         this.closeAll();
       }
     };
@@ -130,6 +139,7 @@ export const FilterItem = React.createClass({
     };
 
     switch (column.dataTypeName) {
+      case 'calendar_date': return <CalendarDateFilter {...filterProps} />;
       case 'number': return <NumberFilter {...filterProps} />;
       case 'text': return <TextFilter {...filterProps} />;
       default: return null;

@@ -1,7 +1,14 @@
 import FilterItem from 'components/FilterBar/FilterItem';
 import { Simulate } from 'react-addons-test-utils';
 import { renderComponent } from '../../helpers';
-import { mockValueRangeFilter, mockBinaryOperatorFilter, mockNumberColumn, mockTextColumn } from './data';
+import {
+  mockValueRangeFilter,
+  mockBinaryOperatorFilter,
+  mockTimeRangeFilter,
+  mockCalendarDateColumn,
+  mockNumberColumn,
+  mockTextColumn
+} from './data';
 
 describe('FilterItem', () => {
   function getProps(props) {
@@ -58,6 +65,16 @@ describe('FilterItem', () => {
 
       Simulate.click(getControlToggle(element));
       expect(getControls(element)).to.have.class('text-filter');
+    });
+
+    it('renders a calendar_date filter when the column is a calendar_date column', () => {
+      const element = renderComponent(FilterItem, getProps({
+        filter: mockTimeRangeFilter,
+        column: mockCalendarDateColumn
+      }));
+
+      Simulate.click(getControlToggle(element));
+      expect(getControls(element)).to.have.class('calendar-date-filter');
     });
 
     it('closes the controls when the body is clicked', () => {

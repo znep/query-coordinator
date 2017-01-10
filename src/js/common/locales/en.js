@@ -11,6 +11,7 @@ export default {
     cancel: 'Cancel',
     clear: 'Clear',
     configure_filter: 'Configure Filter',
+    date_range: 'Date Range',
     filter: 'Filter:',
     from: 'From',
     to: 'To',

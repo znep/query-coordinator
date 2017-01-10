@@ -267,6 +267,7 @@ function whereClauseFromSeries(vif, seriesIndex, filterOwnColumn) {
       }
     ).
     map(filterToWhereClauseComponent).
+    filter(_.negate(_.isEmpty)).
     join(' AND ');
 }
 
@@ -518,7 +519,7 @@ function valueRangeWhereClauseComponent(filter) {
 }
 
 function noopWhereClauseComponent() {
-  return '1=1';
+  return '';
 }
 
 module.exports = {

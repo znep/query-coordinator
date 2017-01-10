@@ -30,6 +30,7 @@ class SignUpInput extends React.Component {
 
   render() {
     const {
+      children,
       inputType,
       label,
       name,
@@ -45,6 +46,7 @@ class SignUpInput extends React.Component {
         <div styleName="label-container">
           <label styleName="label" htmlFor={name}>
             {label} {required ? <span styleName="required">*</span> : null}
+            {children}
           </label>
           {this.renderMessage()}
         </div>
@@ -64,6 +66,7 @@ class SignUpInput extends React.Component {
 }
 
 SignUpInput.propTypes = {
+  children: PropTypes.element,
   onChange: PropTypes.func.isRequired,
   onBlur: PropTypes.func,
   value: PropTypes.string,

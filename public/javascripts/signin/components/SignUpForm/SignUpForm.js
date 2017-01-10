@@ -59,7 +59,11 @@ class SignUpForm extends React.Component {
     const { translate, recaptchaValid, formSubmitted } = this.props;
 
     if (formSubmitted === true && recaptchaValid === false) {
-      return (<div styleName="error-message">{translate('account.common.validation.recaptcha2')}</div>);
+      return (
+        <div styleName="recaptcha-error-message">
+          {translate('account.common.validation.recaptcha2')}
+        </div>
+      );
     }
 
     return null;
@@ -120,10 +124,6 @@ class SignUpForm extends React.Component {
           inputName="signup[screenName]"
           inputType="text"
           onBlur={onScreenNameBlur} />
-        <div className="passwordHint" styleName="password-hint">
-          {translate('account.common.form.password_restrictions')}
-          <span styleName="info-icon" dangerouslySetInnerHTML={{ __html: questionMarkIcon }} />
-        </div>
 
         <SignUpInput
           focusOnMount={focusOnPassword}
@@ -131,7 +131,12 @@ class SignUpForm extends React.Component {
           label={translate('account.common.form.password')}
           inputName="signup[password]"
           inputType="password"
-          onBlur={onPasswordBlur} />
+          onBlur={onPasswordBlur}>
+          <div className="passwordHint" styleName="password-hint">
+            {translate('account.common.form.password_restrictions')}
+            <span styleName="info-icon" dangerouslySetInnerHTML={{ __html: questionMarkIcon }} />
+          </div>
+        </SignUpInput>
 
         <SignUpInput
           name="passwordConfirm"

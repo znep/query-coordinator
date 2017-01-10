@@ -192,7 +192,7 @@ function fetchAndInsertDataForColumn(transform, outputColumn, offset, limit) {
       then((resp) => {
         const newRecords = resp.resource.map((value, idx) => ({
           id: idx,
-          value: value
+          value: ('ok' in value) ? value.ok : null
         }));
         dispatch(insertFromServer(`column_${outputColumn.id}`, newRecords));
         // TODO: could just use `db.column_${column_id}.length` instead of this

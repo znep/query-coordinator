@@ -5,7 +5,7 @@ describe('components/Pager', function() {
   function defaultProps() {
     return {
       onPageChange: _.noop,
-      resultCount: 100
+      resultCount: 1000
     };
   }
 
@@ -20,9 +20,7 @@ describe('components/Pager', function() {
   });
 
   it('shows at most 9 page links', function() {
-    var element = renderComponent(Pager, getProps({
-      resultCount: 100000
-    }));
+    var element = renderComponent(Pager, getProps());
     expect(element.querySelectorAll('.pageLink').length).to.equal(9)
   });
 
@@ -38,6 +36,19 @@ describe('components/Pager', function() {
       expect(thirdPageLink.className).to.not.match(/active/);
       TestUtils.Simulate.click(thirdPageLink);
       expect(thirdPageLink.className).to.match(/active/);
+    });
+  });
+
+  describe('page links', function() {
+    it('update when the page changes', function() {
+      var element = renderComponent(Pager, getProps());
+      var pageLinks = element.querySelectorAll('.pageLink');
+      expect(pageLinks[0].textContent).to.eq('Page1');
+      expect(pageLinks[pageLinks.length - 1].textContent).to.eq('Page9');
+      TestUtils.Simulate.click(pageLinks[pageLinks.length - 1]);
+      var pageLinks = element.querySelectorAll('.pageLink');
+      expect(pageLinks[0].textContent).to.eq('Page5');
+      expect(pageLinks[pageLinks.length - 1].textContent).to.eq('Page13');
     });
   });
 });

@@ -12,6 +12,7 @@ class DomainUpdater
       'value.domain' => %w(
         story.widget
         story.tile
+        goal.embed
         goal.tile
       ),
       'value.dataset.domain' => %w(
@@ -63,6 +64,9 @@ class DomainUpdater
 
             when 'story.tile'
               migrate_story_tile(component, destination_domain)
+
+            when 'goal.embed'
+              migrate_goal_embed(component, destination_domain)
 
             when 'goal.tile'
               migrate_goal_tile(component, destination_domain)
@@ -116,6 +120,14 @@ class DomainUpdater
     # You do not want to completely muck up the component data structure!
 
     def migrate_story_tile(component, destination_domain)
+      component.deep_merge(
+        'value' => {
+          'domain' => destination_domain
+        }
+      )
+    end
+
+    def migrate_goal_embed(component, destination_domain)
       component.deep_merge(
         'value' => {
           'domain' => destination_domain

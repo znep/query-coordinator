@@ -1,3 +1,5 @@
+import { dataProviders as DataProviders } from 'socrata-visualizations';
+
 export const ADD_VISUALIZATION = 'ADD_VISUALIZATION';
 export const addVisualization = () => ({
   type: ADD_VISUALIZATION
@@ -29,3 +31,32 @@ export const ENTER_EDIT_MODE = 'ENTER_EDIT_MODE';
 export const enterEditMode = () => ({
   type: ENTER_EDIT_MODE
 });
+
+export const SET_FILTERS = 'SET_FILTERS';
+export const setFilters = (filters) => ({
+  type: SET_FILTERS,
+  filters
+});
+
+export const RECEIVED_COLUMN_STATS = 'RECEIVED_COLUMN_STATS';
+export const receivedColumnStats = (stats) => ({
+  type: RECEIVED_COLUMN_STATS,
+  stats
+});
+
+export const FETCH_COLUMN_STATS = 'FETCH_COLUMN_STATS';
+export const fetchColumnStats = () =>
+  (dispatch, getState) => {
+    const state = getState();
+    const dataProviderConfig = {
+      domain: serverConfig.domain,
+      datasetUid: state.parentView.id
+    };
+
+    const soqlDataProvider = new DataProviders.SoqlDataProvider(dataProviderConfig);
+
+    soqlDataProvider.getColumnStats(state.view.columns).
+      then((stats) => {
+        dispatch(receivedColumnStats(stats));
+      });
+  };

@@ -5,11 +5,13 @@ import {
   cancelEditingVisualization,
   updateVisualization,
   enterPreviewMode,
-  enterEditMode
+  enterEditMode,
+  setFilters
 } from 'actions';
 import mockView from 'data/mockView';
 import mockParentView from 'data/mockParentView';
 import mockVif from 'data/mockVif';
+import mockFilter from 'data/mockFilter';
 
 describe('Reducer', () => {
   let state;
@@ -21,7 +23,8 @@ describe('Reducer', () => {
     window.initialState = {
       view: mockView,
       parentView: mockParentView,
-      vifs: [mockVif]
+      vifs: [mockVif],
+      filters: []
     };
 
     state = reducer();
@@ -93,7 +96,8 @@ describe('Reducer', () => {
       newVif = { name: 'potato' };
       state = reducer(state, addVisualization());
       state = reducer(state, updateVisualization({
-        vif: newVif
+        vif: newVif,
+        filters: [mockFilter, mockFilter, mockFilter]
       }));
     });
 
@@ -109,6 +113,10 @@ describe('Reducer', () => {
     it('updates the VIFs array', () => {
       expect(state.vifs).to.eql([mockVif, newVif]);
     });
+
+    it('updates the filters', () => {
+      expect(state.filters).to.deep.equal([mockFilter, mockFilter, mockFilter]);
+    });
   });
 
   describe('ENTER_EDIT_MODE', () => {
@@ -123,5 +131,23 @@ describe('Reducer', () => {
       const state = reducer(state, enterPreviewMode());
       expect(state.mode).to.equal('preview')
     });
+  });
+
+  describe('SET_FILTERS', () => {
+    before(() => {
+      state = reducer(state, addVisualization());
+      state = reducer(state, updateVisualization({ vif: mockVif }));
+      state = reducer(state, setFilters([mockFilter]));
+    });
+
+     it('sets the filters array', () => {
+       expect(state.filters).to.deep.equal([mockFilter]);
+     });
+
+     it('sets the filters for each vif', () => {
+       const seriesHasExpectedFilters = _.matchesProperty('dataSource.filters', state.filters);
+       const vifHasExpectedFilters = (vif) => _.every(vif.series, seriesHasExpectedFilters);
+       expect(_.every(state.vifs, vifHasExpectedFilters)).to.equal(true);
+     });
   });
 });

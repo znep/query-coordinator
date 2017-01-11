@@ -10,6 +10,7 @@ import AuthoringWorkflowModal from './components/AuthoringWorkflowModal';
 import EditableVisualizations from './components/EditableVisualizations';
 import Visualizations from './components/Visualizations';
 import Table from './components/Table';
+import FilterBar from './components/FilterBar';
 
 export const App = React.createClass({
   propTypes: {
@@ -47,6 +48,7 @@ export const App = React.createClass({
         <EditBar />
         <div className="container">
           <InfoPane />
+          <FilterBar />
           <AddVisualizationButton />
           <EditableVisualizations />
           <Table />
@@ -62,6 +64,7 @@ export const App = React.createClass({
         <PreviewBar />
         <div className="container">
           <InfoPane />
+          <FilterBar />
           <Visualizations />
           <Table />
         </div>

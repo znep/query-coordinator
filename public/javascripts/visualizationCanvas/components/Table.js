@@ -12,7 +12,7 @@ Table.propTypes = {
   vif: PropTypes.object.isRequired
 };
 
-function mapStateToProps({ parentView }) {
+function mapStateToProps({ parentView, filters }) {
   return {
     vif: {
       format: {
@@ -30,7 +30,7 @@ function mapStateToProps({ parentView }) {
             dimension: {},
             domain: window.serverConfig.domain,
             type: 'socrata.soql',
-            filters: []
+            filters
           },
           type: 'table',
           unit: parentView.rowLabel

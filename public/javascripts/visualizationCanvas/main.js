@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import a11y from 'react-a11y';
 import createLogger from 'redux-logger';
+import thunk from 'redux-thunk';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { t } from 'lib/I18n';
@@ -10,7 +11,9 @@ import { t } from 'lib/I18n';
 import visualizationCanvas from './reducer';
 import App from './App';
 
-const middleware = [];
+import { fetchColumnStats } from './actions';
+
+const middleware = [thunk];
 
 if (window.serverConfig.environment === 'development') {
   a11y(React, { ReactDOM: ReactDOM });
@@ -22,6 +25,7 @@ if (window.serverConfig.environment === 'development') {
 }
 
 const store = createStore(visualizationCanvas, applyMiddleware(...middleware));
+store.dispatch(fetchColumnStats());
 
 // Defer rendering so the spinner in the erb can render.
 _.defer(function() {

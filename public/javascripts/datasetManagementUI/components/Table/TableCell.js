@@ -21,7 +21,7 @@ export default React.createClass({
       );
     } else if (this.props.cell.error) {
       const inputs = this.props.cell.error.inputs;
-      const input = _.first(_.map(inputs, (value) => value));
+      const input = _.first(_.map(inputs, (value) => value)).ok;
       return (
         <td className="error" title={this.props.cell.error.message}>
           <div>{input}</div>

@@ -32,7 +32,7 @@ describe('components/ShowOutputSchema', () => {
     const store = getStoreWithOutputSchema();
     store.dispatch(insertFromServer('column_50', [
       { index: 0, ok: 'foo' },
-      { index: 1, error: { message: 'some transform error', inputs: { arrest: 'bar' } } },
+      { index: 1, error: { message: 'some transform error', inputs: { arrest: { ok: 'bar' } } } },
       { index: 2, ok: 'baz' }
     ]));
     store.dispatch(updateFromServer('columns', {

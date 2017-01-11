@@ -42,6 +42,18 @@ module StoriesHelper
     end
   end
 
+  def settings_panel_help_link
+    support_stub = @story_metadata.goal? ? '200161248-Open-Performance' : '202604608-Perspectives'
+
+    content_tag('a',
+      href: "https://support.socrata.com/hc/en-us/categories/#{support_stub}",
+      class: 'settings-help-link',
+      target: '_blank') do
+
+      yield if block_given?
+    end
+  end
+
   # Maps the component type stored in the database to the partial used to render it
   def component_partial_name(component_type)
     component_type_mapping = {

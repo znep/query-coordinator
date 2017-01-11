@@ -18,7 +18,7 @@ function mapStateToProps(state) {
   return {
     name: view.name,
     description: view.description,
-    isOfficial: true,
+    isOfficial: false,
     category: view.category,
     footer,
     metadata: {

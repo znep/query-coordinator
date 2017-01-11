@@ -10,11 +10,13 @@ module.exports = function SpandexDataProvider(config) {
   utils.assertHasProperty(config, 'domain');
   utils.assertHasProperty(config, 'datasetUid');
 
+  const fetchOptions = { credentials: 'include' };
+
   this.getSuggestions = (fieldName, searchTerm, limit) => {
     const { domain, datasetUid } = config;
     const params = `text=${searchTerm}&limit=${_.defaultTo(limit, 10)}`;
     const url = `https://${domain}/views/${datasetUid}/columns/${fieldName}/suggest?${params}`;
-    return fetch(url).
+    return fetch(url, fetchOptions).
       then((response) => response.json()).
       then((response) => {
         return _.chain(response).

@@ -406,6 +406,11 @@ class DatasetsHelperTest < Minitest::Test
     FeatureFlags.stubs(:derive => Hashie::Mash.new({ :enable_data_lens_using_derived_view => true }))
     @view.stubs(:is_derived_view? => true, :is_calendar? => true)
     assert @object.send(:hide_data_lens_create?), 'hide_data_lens_create expected to be true'
+
+    # dataset is a form and feature flag is turned on
+    FeatureFlags.stubs(:derive => Hashie::Mash.new({ :enable_data_lens_using_derived_view => true }))
+    @view.stubs(:is_derived_view? => true, :is_form? => true)
+    assert @object.send(:hide_data_lens_create?), 'hide_data_lens_create expected to be true'
   end
 
   def test_hide_discuss

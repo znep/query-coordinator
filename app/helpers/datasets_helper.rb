@@ -654,7 +654,7 @@ module DatasetsHelper
     if view.dataset?
       is_ineligible_view = false
     # show this option for filtered or grouped views, excluding visualizations.
-    elsif view.is_derived_view? && !(view.classic_visualization? || view.is_calendar?)
+    elsif view.is_derived_view? && !(view.classic_visualization? || view.is_calendar? || view.is_form?)
       is_ineligible_view = !FeatureFlags.derive(view, request)[:enable_data_lens_using_derived_view]
     else
       is_ineligible_view = true

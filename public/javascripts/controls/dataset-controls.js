@@ -103,6 +103,14 @@ blist.datasetControls.unsavedViewPrompt = function() {
 
 blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
   dontSaveCallback, cancelCallback, newViewData) {
+  // If inline-login is disabled, and user is not signed in, then the save view dialog is useless
+  if (!blist.feature_flags.enable_inline_login && !blist.currentUserId) {
+      if (_.isFunction(dontSaveCallback)) {
+        dontSaveCallback();
+      }
+      return;
+  }
+
   var dialogObj = datasetControlsNS.showSaveViewDialog;
 
   var $dialog = $('.saveViewDialog');

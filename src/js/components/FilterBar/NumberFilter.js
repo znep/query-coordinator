@@ -100,7 +100,13 @@ export const NumberFilter = React.createClass({
     } else {
       onUpdate(_.merge({}, filter, {
         'function': 'valueRange',
-        arguments: value
+        arguments: {
+          start: value.start,
+          // We add a small amount to the end of the interval (computed based on precision) to
+          // fake a range that is inclusive on both ends.  The real fix is to generate two
+          // binaryOperator filters from this control (one >=, one <=).
+          end: value.end + this.getStepInterval() / 100
+        }
       }));
     }
   },

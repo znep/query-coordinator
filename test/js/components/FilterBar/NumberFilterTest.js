@@ -81,4 +81,28 @@ describe('NumberFilter', () => {
     const inputs = getInputs(element);
     expect(_.map(inputs, 'step')).to.deep.equal(['0.01', '0.01']);
   });
+
+  it('generates filters that have a small amount added to the end of the range', () => {
+    const spy = sinon.spy();
+    const element = renderComponent(NumberFilter, getProps({
+      onUpdate: spy
+    }));
+
+    const inputs = getInputs(element);
+
+    inputs[0].value = 1.01;
+    Simulate.change(inputs[0]);
+
+    inputs[1].value = 2.4;
+    Simulate.change(inputs[1]);
+
+    expect(spy.callCount).to.equal(0);
+    Simulate.click(getApplyButton(element));
+    expect(spy.callCount).to.equal(1);
+
+    // Since the smallest precision is .01, the end of the range will have .0001 added to it.
+    const filter = spy.firstCall.args[0];
+    expect(filter.arguments.start).to.equal(1.01);
+    expect(filter.arguments.end).to.equal(2.4001);
+  });
 });

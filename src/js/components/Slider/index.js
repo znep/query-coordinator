@@ -50,6 +50,10 @@ export const Slider = React.createClass({
     };
   },
 
+  componentWillMount() {
+    this.labelId = `slider-label-${_.uniqueId()}`;
+  },
+
   onChange(inputRangeComponent, value) {
     const newValue = _.isPlainObject(value) ?
       { start: value.min, end: value.max } :
@@ -59,7 +63,7 @@ export const Slider = React.createClass({
   },
 
   formatAccessibleLabel(label) {
-    return <span className="hidden">{label}</span>;
+    return <span id={this.labelId} className="hidden">{label}</span>;
   },
 
   render() {
@@ -83,6 +87,7 @@ export const Slider = React.createClass({
       step,
       value: displayableValue,
       onChange: this.onChange,
+      ariaLabelledby: this.labelId,
       formatLabel: this.formatAccessibleLabel
     };
 

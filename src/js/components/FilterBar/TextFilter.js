@@ -15,7 +15,7 @@ export const TextFilter = React.createClass({
 
   getInitialState() {
     return {
-      value: _.get(this.props.filter, 'arguments.operand'),
+      value: _.get(this.props.filter, 'arguments.operand', ''),
       suggestions: [],
       hasSearchError: false
     };
@@ -65,9 +65,11 @@ export const TextFilter = React.createClass({
   },
 
   clearFilter() {
-    this.setState({
-      value: null
-    }, this.updateSuggestions);
+    if (this.state.value !== '') {
+      this.setState({
+        value: ''
+      }, this.updateSuggestions);
+    }
   },
 
   updateFilter() {
@@ -105,7 +107,7 @@ export const TextFilter = React.createClass({
     };
 
     const filterFooterProps = {
-      disableApplyFilter: _.isEqual(value, _.get(filter, 'arguments.operand')),
+      disableApplyFilter: _.isEqual(value, _.get(filter.arguments, 'operand', '')),
       onClickApply: this.updateFilter,
       onClickCancel: onCancel,
       onClickClear: this.clearFilter

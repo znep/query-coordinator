@@ -24,8 +24,8 @@ export default React.createClass({
       this.props.columns.map((column, colIdx) => {
         const cell = columnTables[colIdx][rowIdx];
         return {
-          value: cell ? cell.value : null,
-          id: column.id
+          id: column.id,
+          cell
         };
       })
     ));
@@ -39,7 +39,7 @@ export default React.createClass({
             {row.map((column) => (
               <TableCell
                 key={column.id}
-                value={column.value} />
+                cell={column.cell} />
             ))}
           </tr>
         ))}

@@ -70,9 +70,7 @@ export class Pager extends Component {
   pageLinkClick(e, pageNumber) {
     e.preventDefault();
     this.props.onPageChange(pageNumber);
-    this.setState({
-      currentPage: pageNumber
-    });
+    this.setState({ currentPage: pageNumber });
   }
 
   render() {

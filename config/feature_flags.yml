@@ -126,10 +126,18 @@ enable_data_lens_using_derived_view:
 enable_catalog_connector:
   description: Turn on the 'Connectors' admin page to create catalog entries for datasets from external sources, like ArcGIS online.
   defaultValue: true
+enable_deprecated_user_search_api:
+  category: storyteller
+  defaultValue: false
+  description: When false, uses Cetera for user searches via CeteraController. When true, falls back to Core's deprecated user search (backed by clytemnestra).
 enable_embed_widget_for_nbe:
   description: Enable embed widget for NBE datasets.
   defaultValue: false
   category: obe deprecation
+enable_getty_images_gallery:
+  category: storyteller
+  defaultValue: true
+  description: Enable access to Getty Images for Storyteller media blocks.
 enable_opendata_ga_tracking:
   description: Controls behavior of Socrata internal Google Analytics. If true or left blank, GA is enabled with a default Socrata-wide token. If a custom value is provided, GA is enabled with the custom GA token. If false, Socrata GA is disabled. NOTE - if enable_standard_ga_tracking is true, it will override any value that this is set to with a default standard ga tracking code specified in the config.
 enable_pulse:

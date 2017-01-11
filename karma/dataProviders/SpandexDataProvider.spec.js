@@ -32,8 +32,8 @@ describe('SpandexDataProvider', function() {
 
   describe('getSuggestions', () => {
     it('constructs the correct URL', () => {
-      var server = sinon.fakeServer.create();
       var spandex = new SpandexDataProvider({ domain, datasetUid });
+      var server = sinon.fakeServer.create();
 
       spandex.getSuggestions('ultramonstrosityquotient', 'optimus', 2);
 
@@ -41,6 +41,20 @@ describe('SpandexDataProvider', function() {
       expect(server.requests).to.have.length(1);
       expect(url).to.match(new RegExp('\/columns\/ultramonstrosityquotient\/suggest.+text=optimus.+limit=2'));
 
+      server.restore();
+    });
+
+    it('rejects the promise if spandex returns an error', (done) => {
+      var spandex = new SpandexDataProvider({ domain, datasetUid });
+      var server = sinon.fakeServer.create();
+
+      server.respondWith([ 403, { 'Content-Type': 'text/html', 'Content-Length': 3 }, 'BAD' ]);
+
+      spandex.getSuggestions('ultramonstrosityquotient', 'optimus', 2).
+        then(() => { throw new Error('Expected promise to be rejected'); }).
+        catch(() => done());
+
+      server.respond();
       server.restore();
     });
   });

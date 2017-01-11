@@ -25,8 +25,8 @@ module.exports = function SpandexDataProvider(config) {
     const params = `text=${searchTerm}&limit=${_.defaultTo(limit, 10)}`;
     const url = `https://${domain}/views/${datasetUid}/columns/${fieldName}/suggest?${params}`;
     return fetch(url, fetchOptions).
-      then(toJSON).
       then(handleStatus).
+      then(toJSON).
       then((response) => {
         return _.chain(response).
           get('options').

@@ -216,12 +216,15 @@ module Browse2Helper
       link_name << ' <span class="icon-external-square"></span>'.html_safe
     end
     link_to(
-      link_name,
+      add_metadata(link_name, :name),
       result_link,
       class: 'browse2-result-name-link',
-      rel: result_link_rel_type,
-      itemprop: 'url'
+      rel: result_link_rel_type
     )
+  end
+
+  def add_metadata(item, itemprop)
+    content_tag(:span, item, itemprop: itemprop)
   end
 
   def browse2_result_topic_url(base_url, user_params, result_topic, federated_origin_url)
@@ -254,5 +257,34 @@ module Browse2Helper
         #{t("controls.browse.listing.provenance.#{html_key}")}
       </span>
     HTML
+  end
+
+  # File type name => extension & mime-type dictionary
+  # This logic is repeated in dataset.js and templates.js...
+  def download_types
+    {'CSV' => { :extension => 'csv', :mime => 'text/csv' },
+     'CSV for Excel' => { :extension => 'csv', :mime => 'text/csv', :params => '&bom=true'},
+     'JSON' => { :extension => 'json', :mime => 'application/json' },
+     'RDF' =>  { :extension => 'rdf', :mime => 'application/rdf+xml' },
+     'RSS' =>  { :extension => 'rss', :mime => 'application/rss+xml' },
+     'TSV for Excel' =>  { :extension => 'tsv', :mime => 'text/tab-separated-values' },
+     'XML' =>  { :extension => 'xml', :mime => 'application/xml' }
+    }
+  end
+
+  def hidden_download_link(link, uid, type_name, type_info)
+    domain = URI.parse(link)
+
+    file_format = tag(:meta,
+                      itemprop: 'fileFormat',
+                      content: type_info[:mime])
+    url = tag(:meta,
+              itemprop: 'url',
+              content: "#{domain.scheme}://#{domain.host}/api/views/#{uid}." \
+                       "#{type_info[:extension]}?accessType=DOWNLOAD#{type_info.fetch(:params, '')}".html_safe)
+
+    content_tag :div, :id => type_name do
+      file_format + url
+    end
   end
 end

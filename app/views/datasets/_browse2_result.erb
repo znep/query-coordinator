@@ -1,4 +1,4 @@
-<div class="browse2-result" data-view-id="<%= result_id %>" itemscope="itemscope" itemtype="http://schema.org/Dataset">
+<div class="browse2-result" data-view-id="<%= result_id %>" itemscope itemtype="http://schema.org/Dataset">
 
   <div class="<%= result_classes %>">
 
@@ -8,6 +8,13 @@
         <div class="browse2-result-title">
           <h2 class="browse2-result-name">
             <%= browse2_result_link(result_name, result_link, result_is_federated, result_link_rel_type) %>
+            <%= tag(:meta,
+                    itemprop: 'url',
+                    content: result_link) %>
+            <%= tag(:meta,
+                    itemprop: 'sameAs',
+                    content: result_permalink) %>
+
             <%= browse2_provenance_tag(result_provenance) %>
           </h2>
 
@@ -24,8 +31,8 @@
             category_url = "#{base_url}?#{params_for_url.to_param}"
           -%>
             <a class="browse2-result-category browse2-result-header-section"
-              href="<%= category_url %>"
-              itemprop="keywords"><%= category %></a>
+               href="<%= category_url %>">
+                <span itemprop="keywords"><%= category %></span></a>
           <%- end -%>
 
           <%- if result_is_federated -%>
@@ -57,7 +64,7 @@
     <div class="browse2-result-metadata">
       <%- if result_description.present? -%>
         <div class="browse2-result-description-container">
-          <div class="browse2-result-description"><%= result_description %></div>
+          <div class="browse2-result-description" itemprop="description"><%= result_description %></div>
           <div class="browse2-result-description-truncation-toggle-control">
             <a class="browse2-result-description-show-more-label"
               title="<%= t('controls.browse.browse2.description.show_more_label') %>" href="#">
@@ -82,7 +89,7 @@
             top_result_topics = truncate_result_topics(result_topics, user_params, 5)
             top_result_topics.each do |result_topic|
           -%>
-              <%= link_to(result_topic,
+              <%= link_to(content_tag(:span, result_topic, :itemprop => 'keywords'),
                     browse2_result_topic_url(
                       base_url,
                       user_params,
@@ -205,4 +212,10 @@
 
   <%- end -%>
 
+  <%# Some stuff for schema.org markup %>
+  <div itemscope itemprop="distribution" itemtype="http://schema.org/DataDownload">
+      <%- download_types.each do |k, v| -%>
+          <%= hidden_download_link(result_link, result_id, k, v) %>
+      <%- end -%>
+  </div>
 </div>

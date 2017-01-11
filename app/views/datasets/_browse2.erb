@@ -289,8 +289,10 @@
               result_last_updated = result.updatedAt.present? ? blist_long_date(Time.iso8601(result.updatedAt).to_i, true) : nil
               result_created_at = result.createdAt.present? ? blist_long_date(Time.iso8601(result.createdAt).to_i, true) : nil
               result_view_count = result.viewCount.present? ? number_with_delimiter(result.viewCount) : nil
+              result_permalink = result.permalink
             else
-              result_link = result.link.present? ? result.link : view_url(result)
+              result_permalink = view_url(result)
+              result_link = result.link.present? ? result.link : result_permalink
               result_categories = result.categories.present? ? result.categories : [ result.category_display ].compact
               result_topics = (result.tags || []).map(&:to_s).reject(&:empty?)
 
@@ -376,7 +378,8 @@
               :result_api_link => result_api_link,
               :result_edit_controls => result_edit_controls,
               :result_is_public => result_is_public,
-              :result_can_be_deleted => result_can_be_deleted
+              :result_can_be_deleted => result_can_be_deleted,
+              :result_permalink => result_permalink
           %>
         <%-
           end

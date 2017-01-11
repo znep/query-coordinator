@@ -629,7 +629,10 @@ describe Browse2Helper do
       link_parsed = Nokogiri.parse(link).at('a')
       expect(link_parsed[:href]).to eq('/view/abcd-efgh')
       expect(link_parsed[:class]).to eq('browse2-result-name-link')
-      expect(link_parsed.inner_html).to eq('test-result')
+
+      inner = Nokogiri.parse(link_parsed.inner_html).at('span')
+      expect(inner[:itemprop]).to eq('name')
+      expect(inner.inner_html).to eq('test-result')
     end
 
     it 'returns a link with federated icon span for federated results' do
@@ -639,7 +642,10 @@ describe Browse2Helper do
       link_parsed = Nokogiri.parse(link).at('a')
       expect(link_parsed[:href]).to eq('/view/abcd-efgh')
       expect(link_parsed[:class]).to eq('browse2-result-name-link')
-      expect(link_parsed.inner_html).to eq('test-result <span class="icon-external-square"></span>')
+
+      inner = Nokogiri.parse(link_parsed.inner_html).at('span')
+      expect(inner[:itemprop]).to eq('name')
+      expect(inner.inner_html).to eq('test-result <span class="icon-external-square"></span>')
     end
 
     it 'escapes the link result_name in federated results' do
@@ -650,7 +656,10 @@ describe Browse2Helper do
       link_parsed = Nokogiri.parse(link).at('a')
       expect(link_parsed[:href]).to eq('/view/abcd-efgh')
       expect(link_parsed[:class]).to eq('browse2-result-name-link')
-      expect(link_parsed.inner_html).to eq('&lt;img src=x onerror=prompt(1)&gt; <span class="icon-external-square"></span>')
+
+      inner = Nokogiri.parse(link_parsed.inner_html).at('span')
+      expect(inner[:itemprop]).to eq('name')
+      expect(inner.inner_html).to eq('&lt;img src=x onerror=prompt(1)&gt; <span class="icon-external-square"></span>')
     end
   end
 

@@ -267,6 +267,7 @@ function whereClauseFromSeries(vif, seriesIndex, filterOwnColumn) {
       }
     ).
     map(filterToWhereClauseComponent).
+    filter(_.negate(_.isEmpty)).
     join(' AND ');
 }
 
@@ -321,6 +322,8 @@ function filterToWhereClauseComponent(filter) {
       return timeRangeWhereClauseComponent(filter);
     case 'valueRange':
       return valueRangeWhereClauseComponent(filter);
+    case 'noop':
+      return noopWhereClauseComponent(filter);
     default:
       throw new Error(
         'Invalid filter function: `{0}`.'.format(filter.function)
@@ -513,6 +516,10 @@ function valueRangeWhereClauseComponent(filter) {
     soqlEncodeValue(filter.arguments.start),
     soqlEncodeValue(filter.arguments.end)
   );
+}
+
+function noopWhereClauseComponent() {
+  return '';
 }
 
 module.exports = {

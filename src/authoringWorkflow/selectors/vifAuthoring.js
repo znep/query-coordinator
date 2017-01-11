@@ -55,18 +55,6 @@ export const getAnyMeasure = createSelector(
   }
 );
 
-export const getValidVifFilters = createSelector(
-  getFilters,
-  (filters) => {
-    return _.chain(filters).
-      map('parameters').
-      reject((filter) => {
-        return filter['function'] === 'binaryOperator' && _.isEmpty(_.get(filter, 'arguments.operand'));
-      }).
-      value();
-  }
-);
-
 export const getTitle = createSelector(
   getCurrentVif,
   vif => _.get(vif, 'title', null)

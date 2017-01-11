@@ -61,15 +61,6 @@ export const isNonEmptyString = string => {
   return _.isString(string) && string.trim().length > 0;
 };
 
-export const getValidVifFilters = (filters) => {
-  return _.chain(filters).
-    map('parameters').
-    reject((filter) => {
-      return filter['function'] === 'binaryOperator' && _.isEmpty(_.get(filter, 'arguments.operand'));
-    }).
-    value();
-};
-
 export const setUnits = (series, action) => {
   const rowDisplayUnit = _.get(action, 'phidippidesMetadata.rowDisplayUnit', translate('visualizations.common.unit.one'));
   const unitOne = _.get(series, 'unit.one', null);

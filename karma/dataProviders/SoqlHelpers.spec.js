@@ -274,6 +274,112 @@ describe('SoqlHelpers', function() {
         [testTimeRangeFilter(false)],
         [testValueRangeFilter(false)],
       ];
+
+      var matchSets = [
+        [
+          {
+            matcher: matchOwnColumnBinaryOperatorFilter,
+            expectedValue: false,
+            pattern: BINARY_OPERATOR_PATTERN,
+            column: TEST_OWN_COLUMN_NAME
+          },
+          {
+            matcher: matchOtherColumnBinaryOperatorFilter,
+            expectedValue: true,
+            pattern: BINARY_OPERATOR_PATTERN,
+            column: TEST_OTHER_COLUMN_NAME
+          }
+        ],
+
+        [
+          {
+            matcher: matchOwnColumnBinaryComputedGeoregionOperatorFilter,
+            expectedValue: false,
+            pattern: BINARY_COMPUTED_GEOREGION_OPERATOR_PATTERN,
+            column: TEST_OWN_COMPUTED_COLUMN_NAME
+          },
+          {
+            matcher: matchOtherColumnBinaryComputedGeoregionOperatorFilter,
+            expectedValue: true,
+            pattern: BINARY_COMPUTED_GEOREGION_OPERATOR_PATTERN,
+            column: TEST_OTHER_COMPUTED_COLUMN_NAME
+          }
+        ],
+
+        [
+          {
+            matcher: matchOwnColumnIsNullFalseFilter,
+            expectedValue: false,
+            pattern: IS_NULL_FALSE_PATTERN,
+            column: TEST_OWN_COLUMN_NAME
+          },
+          {
+            matcher: matchOtherColumnIsNullFalseFilter,
+            expectedValue: true,
+            pattern: IS_NULL_FALSE_PATTERN,
+            column: TEST_OTHER_COLUMN_NAME
+          }
+        ],
+
+        [
+          {
+            matcher: matchOwnColumnIsNullTrueFilter,
+            expectedValue: false,
+            pattern: IS_NULL_TRUE_PATTERN,
+            column: TEST_OWN_COLUMN_NAME
+          },
+          {
+            matcher: matchOtherColumnIsNullTrueFilter,
+            expectedValue: true,
+            pattern: IS_NULL_TRUE_PATTERN,
+            column: TEST_OTHER_COLUMN_NAME
+          }
+        ],
+
+        [
+          {
+            matcher: matchOwnColumnTimeRangeFilter,
+            expectedValue: false,
+            pattern: TIME_RANGE_PATTERN,
+            column: TEST_OWN_COLUMN_NAME
+          },
+          {
+            matcher: matchOtherColumnTimeRangeFilter,
+            expectedValue: true,
+            pattern: TIME_RANGE_PATTERN,
+            column: TEST_OTHER_COLUMN_NAME
+          }
+        ],
+
+        [
+          {
+            matcher: matchOwnColumnValueRangeFilter,
+            expectedValue: false,
+            pattern: VALUE_RANGE_PATTERN,
+            column: TEST_OWN_COLUMN_NAME
+          },
+          {
+            matcher: matchOtherColumnValueRangeFilter,
+            expectedValue: true,
+            pattern: VALUE_RANGE_PATTERN,
+            column: TEST_OTHER_COLUMN_NAME
+          }
+        ],
+      ];
+
+      testFilterAndMatchSets(filterSets, matchSets, false);
+    });
+
+    it('returns a where clause containing only components for other columns when there are filters on its own and other columns', function() {
+      var filterSets = [
+        [testBinaryOperatorFilter(true), testBinaryOperatorFilter(false)],
+        [testBinaryComputedGeoregionOperatorFilter(true), testBinaryComputedGeoregionOperatorFilter(false)],
+        [testIsNullFilter(true, false), testIsNullFilter(false, false)],
+        [testIsNullFilter(true, true), testIsNullFilter(false, true)],
+        [testTimeRangeFilter(true), testTimeRangeFilter(false)],
+        [testValueRangeFilter(true), testValueRangeFilter(false)],
+      ];
+
       var matchSets = [
         [
           {
@@ -365,104 +471,10 @@ describe('SoqlHelpers', function() {
       testFilterAndMatchSets(filterSets, matchSets, false);
     });
 
-    it('returns a where clause containing only components for other columns when there are filters on its own and other columns', function() {
-      var filterSets = [
-        [testBinaryOperatorFilter(true), testBinaryOperatorFilter(false)],
-        [testBinaryComputedGeoregionOperatorFilter(true), testBinaryComputedGeoregionOperatorFilter(false)],
-        [testIsNullFilter(true, false), testIsNullFilter(false, false)],
-        [testIsNullFilter(true, true), testIsNullFilter(false, true)],
-        [testTimeRangeFilter(true), testTimeRangeFilter(false)],
-        [testValueRangeFilter(true), testValueRangeFilter(false)],
-      ];
-      var matchSets = [
-        [
-          {
-            matcher: matchOwnColumnBinaryOperatorFilter,
-            expectedValue: false,
-            pattern: BINARY_OPERATOR_PATTERN,
-            column: TEST_OWN_COLUMN_NAME
-          },
-          {
-            matcher: matchOtherColumnBinaryOperatorFilter,
-            expectedValue: true,
-            pattern: BINARY_OPERATOR_PATTERN,
-            column: TEST_OTHER_COLUMN_NAME
-          }
-        ],
-        [
-          {
-            matcher: matchOwnColumnBinaryComputedGeoregionOperatorFilter,
-            expectedValue: false,
-            pattern: BINARY_COMPUTED_GEOREGION_OPERATOR_PATTERN,
-            column: TEST_OWN_COMPUTED_COLUMN_NAME
-          },
-          {
-            matcher: matchOtherColumnBinaryComputedGeoregionOperatorFilter,
-            expectedValue: true,
-            pattern: BINARY_COMPUTED_GEOREGION_OPERATOR_PATTERN,
-            column: TEST_OTHER_COMPUTED_COLUMN_NAME
-          }
-        ],
-        [
-          {
-            matcher: matchOwnColumnIsNullFalseFilter,
-            expectedValue: false,
-            pattern: IS_NULL_FALSE_PATTERN,
-            column: TEST_OWN_COLUMN_NAME
-          },
-          {
-            matcher: matchOtherColumnIsNullFalseFilter,
-            expectedValue: true,
-            pattern: IS_NULL_FALSE_PATTERN,
-            column: TEST_OTHER_COLUMN_NAME
-          }
-        ],
-        [
-          {
-            matcher: matchOwnColumnIsNullTrueFilter,
-            expectedValue: false,
-            pattern: IS_NULL_TRUE_PATTERN,
-            column: TEST_OWN_COLUMN_NAME
-          },
-          {
-            matcher: matchOtherColumnIsNullTrueFilter,
-            expectedValue: true,
-            pattern: IS_NULL_TRUE_PATTERN,
-            column: TEST_OTHER_COLUMN_NAME
-          }
-        ],
-
-        [
-          {
-            matcher: matchOwnColumnTimeRangeFilter,
-            expectedValue: false,
-            pattern: TIME_RANGE_PATTERN,
-            column: TEST_OWN_COLUMN_NAME
-          },
-          {
-            matcher: matchOtherColumnTimeRangeFilter,
-            expectedValue: true,
-            pattern: TIME_RANGE_PATTERN,
-            column: TEST_OTHER_COLUMN_NAME
-          }
-        ],
-        [
-          {
-            matcher: matchOwnColumnValueRangeFilter,
-            expectedValue: false,
-            pattern: VALUE_RANGE_PATTERN,
-            column: TEST_OWN_COLUMN_NAME
-          },
-          {
-            matcher: matchOtherColumnValueRangeFilter,
-            expectedValue: true,
-            pattern: VALUE_RANGE_PATTERN,
-            column: TEST_OTHER_COLUMN_NAME
-          }
-        ],
-      ];
-
-      testFilterAndMatchSets(filterSets, matchSets, false);
+    it('ignores noop filters', function() {
+      var vif = vifWithNoFilters();
+      var whereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif);
+      expect(whereClause).to.equal('');
     });
   });
 
@@ -765,6 +777,12 @@ describe('SoqlHelpers', function() {
       ];
 
       testFilterAndMatchSets(filterSets, matchSets, true);
+    });
+
+    it('ignores noop filters', function() {
+      var vif = vifWithNoFilters();
+      var whereClause = SoqlHelpers.whereClauseFilteringOwnColumn(vif);
+      expect(whereClause).to.equal('');
     });
   });
 

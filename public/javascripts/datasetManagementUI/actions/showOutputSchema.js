@@ -25,7 +25,7 @@ export function updateColumnType(oldSchema, oldColumn, newType) {
     dispatch(insertStarted('schemas', newOutputSchema));
 
     // Make "fetch" happen.
-    socrataFetch(dsmapiLinks.updateSchema(routing, oldSchema.input_schema_id), {
+    socrataFetch(dsmapiLinks.updateSchema(oldSchema.input_schema_id), {
       method: 'POST',
       body: JSON.stringify({ output_columns: newOutputColumns })
     }).

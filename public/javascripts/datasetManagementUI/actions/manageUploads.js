@@ -24,7 +24,7 @@ export function createUpload(file) {
       filename: file.name
     };
     dispatch(insertStarted('uploads', uploadInsert));
-    socrataFetch(dsmapiLinks.uploadCreate(routing), {
+    socrataFetch(dsmapiLinks.uploadCreate, {
       method: 'POST',
       body: JSON.stringify({
         filename: file.name
@@ -46,14 +46,13 @@ export function createUpload(file) {
 }
 
 export function uploadFile(uploadId, file) {
-  return (dispatch, getState) => {
-    const routing = getState().routing;
+  return (dispatch) => {
     const uploadUpdate = {
       id: uploadId
     };
     dispatch(updateStarted('uploads', uploadUpdate));
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', dsmapiLinks.uploadBytes(routing, uploadId));
+    xhr.open('POST', dsmapiLinks.uploadBytes(uploadId));
     xhr.upload.onprogress = (evt) => {
       const percent = evt.loaded / evt.total * 100;
       dispatch(updateProgress('uploads', uploadUpdate, percent));
@@ -80,7 +79,7 @@ function pollForOutputSchema(uploadId) {
       }, SCHEMA_POLL_INTERVAL_MS);
     }
 
-    socrataFetch(dsmapiLinks.uploadShow(routing, uploadId)).
+    socrataFetch(dsmapiLinks.uploadShow(uploadId)).
       then(getJson).
       then((resp) => {
         if (resp.status === 404) {
@@ -184,9 +183,8 @@ export function createTableAndSubscribeToTransform(transform, outputColumn) {
 }
 
 function fetchAndInsertDataForColumn(transform, outputColumn, offset, limit) {
-  return (dispatch, getState) => {
-    const routing = getState().routing;
-    socrataFetch(dsmapiLinks.transformResults(routing, transform.id, limit, offset)).
+  return (dispatch) => {
+    socrataFetch(dsmapiLinks.transformResults(transform.id, limit, offset)).
       then(checkStatus).
       then(getJson).
       then((resp) => {

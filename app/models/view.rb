@@ -2067,7 +2067,7 @@ class View < Model
         :one => canvas_row_label,
         :other => canvas_row_label.pluralize(2)
       },
-      :sortOrder => sort_order,
+      :sortOrder => first_usable_sort_order,
       :url => Rails.application.routes.url_helpers.view_path(self)
     }
   end
@@ -2082,24 +2082,51 @@ class View < Model
     }
   end
 
-  def sort_order
-    query = self.metadata && self.metadata.json_query
-    order = query.try(:[], 'order')
+  # The table implementation in socrata-visualizations requires a sort order to be defined, but it
+  # cannot handle more than one sort order nor sorting by geospatial columns. This looks for the
+  # first defined sort order, and then for the first valid-looking column. If it can't find anything,
+  # it will return nil for the columnName, which will result in the table rendering an error, but
+  # the page it's being rendered in shouldn't fail to render.
+  def first_usable_sort_order
+    # Find the first defined sort order, if any, looking at query instead of metadata.jsonQuery, as
+    # query is more likely to be accurate. jsonQuery is defined by the frontend and isn't necessarily
+    # updated if a user makes changes to a dataset through something other than the UI. But since
+    # we're using query instead of metadata.jsonQuery, we now need to look up the column names
+    # manually. We also need to filter out sorts on geospatial columns, since those will definitely
+    # cause the table to error.
+    geo_column_type_regex = /(location|point|polygon|line)$/i
+    existing_sort_orders = self.query.orderBys || []
 
-    if order
-      order.map do |rule|
+    valid_sort_orders = existing_sort_orders.map do |order|
+      column = self.column_by_id(order.dig('expression', 'columnId'))
+      has_field_name = column.try(:fieldName).present?
+      is_not_geo_column = !(column.try(:dataTypeName) =~ geo_column_type_regex)
+
+      if has_field_name && is_not_geo_column
         {
-          :ascending => rule['ascending'],
-          :columnName => rule['columnName'] || rule['columnFieldName']
+          :ascending => order['ascending'],
+          :columnName => column.fieldName
         }
+      else
+        nil
       end
+    end.compact
+
+    if valid_sort_orders.any?
+      valid_sort_orders.take(1)
     else
-      # Default to sorting by the first column with a fieldName. The table will render an error,
-      # but we shouldn't break the entire page if we can't find a valid column.
-      column_with_fieldName = self.columns.find { |column| !column.try(:fieldName).nil? }
+      # If we can't find a valid sort order, return our best guess at a default sort order,
+      # filtering out any geospatial columns.
+      valid_column_for_sorting = self.columns.find do |column|
+        has_field_name = column.try(:fieldName).present?
+        is_not_geo_column = !(column.try(:dataTypeName) =~ geo_column_type_regex)
+
+        has_field_name && is_not_geo_column
+      end
+
       [{
         :ascending => true,
-        :columnName => column_with_fieldName.try(:fieldName) # in case column_with_fieldName is nil
+        :columnName => valid_column_for_sorting.try(:fieldName)
       }]
     end
   end

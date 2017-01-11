@@ -92,7 +92,7 @@ class DatasetLandingPage
         :statsUrl => stats_url(view, current_user),
         :editMetadataUrl => edit_metadata_url(view),
         :editUrl => edit_view_path(view),
-        :sortOrder => view.sort_order,
+        :sortOrder => view.first_usable_sort_order,
         :bootstrapUrl => bootstrap_url(view, results[:migrations]),
         :metadata => view.metadata,
         :disableContactDatasetOwner => disable_contact_dataset_owner(view)

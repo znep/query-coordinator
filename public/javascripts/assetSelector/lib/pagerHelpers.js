@@ -1,7 +1,7 @@
 /**
 * These are helpers for the Pager component. They help the functional calculations of the pager's
 * start and endpoints based on the total number of pages and the current page.
-**/
+*/
 
 // Returns an int for the page number to display as the leftmost pager link.
 export function getPagerStart({ firstPage, lastPage, maxPageLinkCount, currentPage }) {

@@ -1,7 +1,7 @@
 import { Pager } from 'components/Pager';
 import _ from 'lodash';
 
-describe.only('components/Pager', function() {
+describe('components/Pager', function() {
   function defaultProps() {
     return {
       onPageChange: _.noop,

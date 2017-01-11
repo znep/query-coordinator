@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import PagerHelpers from 'lib/pagerHelpers';
+import { getPagerStart, getPagerEnd } from 'lib/pagerHelpers';
 import _ from 'lodash';
 
 export class Pager extends Component {
@@ -26,19 +26,19 @@ export class Pager extends Component {
 
   // First pager link to show
   pagerStart() {
-    return PagerHelpers.getPagerStart({
+    return getPagerStart({
       firstPage: Pager.firstPage,
       lastPage: this.lastPage(),
-      maxPageLinkCount: Pager.maxPageLinkCount(),
+      maxPageLinkCount: Pager.maxPageLinkCount,
       currentPage: this.state.currentPage
     });
   }
 
   // Last pager link to show
   pagerEnd() {
-    return PagerHelpers.getPagerEnd({
+    return getPagerEnd({
       lastPage: this.lastPage(),
-      maxPageLinkCount: Pager.maxPageLinkCount(),
+      maxPageLinkCount: Pager.maxPageLinkCount,
       currentPage: this.state.currentPage
     });
   }

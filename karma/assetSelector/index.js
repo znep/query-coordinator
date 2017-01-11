@@ -41,3 +41,4 @@ function requireAll(context) {
 // Run all the tests
 requireAll(require.context('./components', true, /\.js$/));
 requireAll(require.context('./reducers', true, /\.js$/));
+requireAll(require.context('./lib', true, /\.js$/));

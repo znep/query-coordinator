@@ -30,7 +30,7 @@ export class App extends Component {
             <Header />
             <div className="centered-content">
               <BackButton onClick={this.closeModal} />
-              <ResultsContainer />
+              <ResultsContainer resultsPerPage={6} />
             </div>
           </div>
         </div>

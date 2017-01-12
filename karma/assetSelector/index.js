@@ -24,6 +24,8 @@ window.I18n = {
   }
 };
 
+window.serverConfig = {};
+
 // This needs to happen after setting all of the mock window data.
 var getDefaultStore = require('testStore').getDefaultStore;
 

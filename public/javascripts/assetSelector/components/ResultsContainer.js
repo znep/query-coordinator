@@ -21,16 +21,14 @@ export class ResultsContainer extends Component {
 
   onPageChange(pageNumber, initialFetch = false) {
     const { dispatchUpdatePageResults, dispatchUpdateResultCount } = this.props;
-    ceteraUtils.fetch({ pageNumber }).
+    ceteraUtils.fetch({ pageNumber, limit: this.props.resultsPerPage }).
       success((response) => {
         const results = ceteraUtils.mapToAssetSelectorResult(response.results);
         dispatchUpdatePageResults(results);
         dispatchUpdateResultCount(response.resultSetSize);
 
         if (!initialFetch) {
-          $('html, body').animate({
-            scrollTop: $('.asset-selector .results-container').offset().top
-          });
+          $('.asset-selector .content').animate({ scrollTop: 0 });
         }
       }).
       error((err) => {
@@ -62,14 +60,16 @@ ResultsContainer.propTypes = {
   results: PropTypes.array.isRequired,
   dispatchUpdatePageResults: PropTypes.func.isRequired,
   dispatchUpdateResultCount: PropTypes.func.isRequired,
-  resultCount: PropTypes.number.isRequired
+  resultCount: PropTypes.number.isRequired,
+  resultsPerPage: PropTypes.number.isRequired
 };
 
 ResultsContainer.defaultProps = {
   results: [],
   dispatchUpdatePageResults: _.noop,
   dispatchUpdateResultCount: _.noop,
-  resultCount: 0
+  resultCount: 0,
+  resultsPerPage: 6
 };
 
 function mapStateToProps(state) {

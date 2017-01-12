@@ -14,7 +14,7 @@ describe('components/ResultsContainer', function() {
         }
       ],
       resultCount: 100,
-      viewType: 'CARD_VIEW'
+      resultsPerPage: 6
     };
   }
 
@@ -49,16 +49,6 @@ describe('components/ResultsContainer', function() {
     var element = renderComponent(ResultsContainer, getProps());
     expect(element).to.exist;
     expect(element.className).to.eq('results-container');
-  });
-
-  it('renders a cards container if the viewType prop is CARD_VIEW', function() {
-    var element = renderComponent(ResultsContainer, getProps({ viewType: 'CARD_VIEW' }));
-    expect(element.querySelector('.card-container')).to.exist;
-  });
-
-  it('renders a table container if the viewType prop is TABLE_VIEW', function() {
-    var element = renderComponent(ResultsContainer, getProps({ viewType: 'TABLE_VIEW' }));
-    expect(element.querySelector('.table-container')).to.exist;
   });
 
   it('renders the total result count', function() {

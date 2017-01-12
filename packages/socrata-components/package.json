@@ -1,6 +1,6 @@
 {
   "name": "socrata-components",
-  "version": "10.2.0",
+  "version": "10.2.1",
   "description": "Socrata's Shared Component Library",
   "main": "dist/js/socrata-components",
   "publishConfig": {
@@ -31,7 +31,7 @@
     "moment": "2.14.1",
     "react": "15.3.2",
     "react-dom": "15.3.2",
-    "socrata-utils": "3.1.1",
+    "socrata-utils": "3.2.0",
     "tether": "1.0.2",
     "tether-shepherd": "1.2.0",
     "velocity-animate": "1.3.2"

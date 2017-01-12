@@ -30,6 +30,7 @@ export default {
     less: 'Less',
     more: 'More',
     official: 'Official',
+    community: 'Community',
     private_notice: 'This view is private'
   },
   modal: {

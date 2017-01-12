@@ -13,7 +13,6 @@ import { translate as t } from '../../common/I18n';
  */
 const InfoPane = React.createClass({
   propTypes: {
-
     /**
      * An optional string representing the category of the asset.
      */
@@ -39,9 +38,19 @@ const InfoPane = React.createClass({
     footer: PropTypes.node,
 
     /**
-     * If the isOfficial prop is true, a badge indicating the asset's official status is displayed.
+     * The provenance is used to display an authority badge icon and text.
      */
-    isOfficial: PropTypes.bool,
+    provenance: PropTypes.oneOf(['official', 'community', null]),
+
+    /**
+     * The provenanceIcon is used to display the appropriate icon for the authority badge
+     */
+    provenanceIcon: PropTypes.oneOf(['official2', 'community', null]),
+
+    /**
+     * The hideProvenance is used to conditionally hide the authority badge depending on feature flags.
+     */
+    hideProvenance: PropTypes.bool,
 
     /**
      * If the isPrivate prop is true, a badge indicating the asset's visibility is displayed.
@@ -132,7 +141,9 @@ const InfoPane = React.createClass({
 
     return (
       <div className="entry-meta first">
-        <div className="entry-meta topics" dangerouslySetInnerHTML={{ __html: purify(footer) }} />
+        <div className="entry-meta topics">
+          {footer}
+        </div>
       </div>
     );
   },
@@ -167,13 +178,7 @@ const InfoPane = React.createClass({
   },
 
   render() {
-    const {
-      category,
-      isOfficial,
-      isPrivate,
-      name,
-      renderButtons
-    } = this.props;
+    const { category, isPrivate, name, renderButtons, provenance, provenanceIcon, hideProvenance } = this.props;
 
     const privateIcon = isPrivate ?
       <span
@@ -181,18 +186,15 @@ const InfoPane = React.createClass({
         aria-label={t('info_pane.private_notice')}
         title={t('info_pane.private_notice')} /> : null;
 
-    const categoryBadge = category ?
-      <span className="tag-category">{_.upperFirst(category)}</span> : null;
+    const categoryBadge = category ? <span className="tag-category">{_.upperFirst(category)}</span> : null;
 
-    const officialBadge = isOfficial ?
-      <span className="tag-official">
-        <span aria-hidden className="socrata-icon-official"></span>
-        {t('info_pane.official')}
-      </span> : null;
+    const buttons = renderButtons ? <div className="entry-actions">{renderButtons(this.props)}</div> : null;
 
-    const buttons = renderButtons ?
-      <div className="entry-actions">{renderButtons(this.props)}</div> :
-      null;
+    const provenanceBadge = (hideProvenance || !provenance) ? null :
+      <span className={`tag-${provenance}`}>
+        <span aria-hidden className={`socrata-icon-${provenanceIcon}`}></span>
+        {t(`info_pane.${provenance}`)}
+      </span>;
 
     return (
       <div className="info-pane result-card">
@@ -204,7 +206,7 @@ const InfoPane = React.createClass({
                 {name}
               </h1>
 
-              {officialBadge}
+              {provenanceBadge}
               {categoryBadge}
             </div>
 

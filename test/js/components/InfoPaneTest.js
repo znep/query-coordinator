@@ -7,9 +7,10 @@ describe('InfoPane', () => {
       name: 'A Different View',
       description: 'A description',
       category: 'Fun',
-      isOfficial: true,
+      provenance: 'official',
+      provenanceIcon: 'official2',
       isPrivate: true,
-      footer: 'Athlete\'s Footer',
+      footer: "Athlete's Footer",
       metadata: {
         first: {
           label: 'Updated',
@@ -25,6 +26,7 @@ describe('InfoPane', () => {
 
   const getName = (element) => element.querySelector('.info-pane-name');
   const getOfficial = (element) => element.querySelector('.tag-official');
+  const getCommunity = (element) => element.querySelector('.tag-community');
   const getPrivateIcon = (element) => element.querySelector('.socrata-icon-private');
   const getDescription = (element) => element.querySelector('.entry-description div');
   const getButtons = (element) => element.querySelector('.entry-actions');
@@ -34,14 +36,31 @@ describe('InfoPane', () => {
     expect(getName(element).textContent).to.equal('A Different View');
   });
 
-  it('renders an official badge when isOfficial is set', () => {
-    const element = renderComponent(InfoPane, getProps());
-    expect(getOfficial(element)).to.exist;
+  describe('when provenance is official', () => {
+    it('renders the correct badge', () => {
+      const element = renderComponent(InfoPane, getProps({ provenance: 'official', provenanceIcon: 'official2' }));
+      expect(getOfficial(element)).to.exist;
+    });
+
+    it('does not render the badge when hideProvenance is true', () => {
+      const element = renderComponent(InfoPane, getProps({ provenance: 'official', provenanceIcon: 'official2', hideProvenance: true }));
+      expect(getOfficial(element)).to.not.exist;
+      expect(getCommunity(element)).to.not.exist;
+    });
   });
 
-  it('does not render an official badge when isOfficial is not set', () => {
-    const element = renderComponent(InfoPane, getProps({ isOfficial: false }));
-    expect(getOfficial(element)).to.not.exist;
+  describe('when provenance is community', () => {
+    it('renders the correct badge', () => {
+      const element = renderComponent(InfoPane, getProps({ provenance: 'community', provenanceIcon: 'community' }));
+      expect(getOfficial(element)).to.not.exist;
+      expect(getCommunity(element)).to.exist;
+    });
+
+    it('does not render the badge when hideProvenance is true', () => {
+      const element = renderComponent(InfoPane, getProps({ provenance: 'community', provenanceIcon: 'community', hideProvenance: true }));
+      expect(getOfficial(element)).to.not.exist;
+      expect(getCommunity(element)).to.not.exist;
+    });
   });
 
   it('renders a lock icon when isPrivate is set', () => {

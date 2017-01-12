@@ -37,7 +37,7 @@
 
 // Styles for the edit modal, which is directly appended to body.
 .goal-edit-modal .modal-full {
-  $warning-height: 3em;
+  $warning-height: 4em;
 
   .iframe-spinner {
     height: 64px;
@@ -71,6 +71,7 @@
     .alert {
       height: $warning-height;
       text-align: center;
+      line-height: normal;
     }
   }
 

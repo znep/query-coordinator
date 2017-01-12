@@ -1,7 +1,12 @@
 @import "styleguide-colors";
 @import "asset-selector/breakpoints";
+@import "asset-selector/header";
 @import "asset-selector/results-container";
 
-.hidden {
-  display: none;
+.asset-selector {
+  border: 1px solid $black;
+
+  .hidden {
+    display: none;
+  }
 }

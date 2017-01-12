@@ -47,7 +47,7 @@
     <%- end -%>
 
     <%# Only show the publish button on working copies if the user is logged in and their role allows them to publish a dataset %>
-    <%- if @view.is_unpublished? && current_user && (current_user.is_publisher? || current_user.is_superadmin?) -%>
+    <%- if @view.is_unpublished? && current_user && (current_user.has_right_to_publish?(@view) || current_user.is_superadmin?) -%>
      <%# Grey out the publish button if the dataset isn't ready to publish  %>
      <a href="#Publish" class="toolbarButton publish <%= @view.can_publish? ? '' : 'disabled' %>"
        <%- if @view.can_publish? && dataset_landing_page_enabled? -%>

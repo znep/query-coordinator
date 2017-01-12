@@ -42,7 +42,7 @@ describe('components/ShowOutputSchema', () => {
 
     store.dispatch(insertFromServer('column_51', [
       { index: 0, ok: 'bleep' },
-      { index: 1, ok: 'bloop' },
+      { index: 1, ok: null },
       { index: 2, ok: 'blorp' }
     ]));
     store.dispatch(updateFromServer('columns', {
@@ -52,13 +52,14 @@ describe('components/ShowOutputSchema', () => {
     const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
     const rows = element.querySelectorAll('tbody tr');
     expect(_.map(rows[0].querySelectorAll('td'), 'innerText')).to.eql(['foo', 'bleep']);
-    expect(_.map(rows[1].querySelectorAll('td'), 'innerText')).to.eql(['bar', 'bloop']);
+    expect(_.map(rows[1].querySelectorAll('td'), 'innerText')).to.eql(['bar', '']);
     expect(_.map(rows[2].querySelectorAll('td'), 'innerText')).to.eql(['baz', 'blorp']);
     expect(_.map(element.querySelectorAll('.col-errors'), 'innerText')).to.eql([
       I18n.show_output_schema.column_header.no_errors_exist,
       I18n.show_output_schema.column_header.no_errors_exist
     ]);
     expect(element.querySelectorAll('.error').length).to.equal(1);
+    expect(element.querySelectorAll('.empty').length).to.equal(1);
   });
 
   it('calls `updateColumnType` when a selector is changed', () => {

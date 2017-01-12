@@ -884,6 +884,11 @@ describe('SoqlDataProvider', function() {
       dataTypeName: 'text'
     };
 
+    var calendarDateColumn = {
+      fieldName: 'calendarDateColumn',
+      dataTypeName: 'calendar_date'
+    };
+
     beforeEach(() => {
       server = sinon.fakeServer.create();
       soqlDataProvider = new SoqlDataProvider(soqlDataProviderOptions);
@@ -906,10 +911,10 @@ describe('SoqlDataProvider', function() {
       expect(url).to.match(/select.+max/);
     });
 
-    it('only fetches stats for number columns', () => {
-      var promise = soqlDataProvider.getColumnStats([textColumn, numberColumn, textColumn]);
+    it('only fetches stats for number and calendar_type columns', () => {
+      var promise = soqlDataProvider.getColumnStats([textColumn, numberColumn, textColumn, calendarDateColumn]);
       var url = server.requests[0].url;
-      expect(server.requests).to.have.length(1);
+      expect(server.requests).to.have.length(2);
       expect(url).to.match(/select.+min/);
       expect(url).to.match(/select.+max/);
     });

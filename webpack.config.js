@@ -31,6 +31,9 @@ module.exports = [
       modulesDirectories: [ fs.realpathSync('node_modules') ]
     },
     resolve: {
+      alias: {
+        'react': path.resolve('./node_modules/react')
+      },
       modulesDirectories: [ 'node_modules' ]
     }
   },

@@ -196,16 +196,25 @@ function SoqlDataProvider(config) {
       const maxAlias = '__max__';
       const { fieldName, dataTypeName } = column;
 
-      // For number columns, we need the min and max of the column
-      if (dataTypeName === 'number') {
+      // For number and calendar_date columns, we need the min and max of the column
+      if (dataTypeName === 'number' || dataTypeName === 'calendar_date') {
         const select = `min(${fieldName}) as ${minAlias}, max(${fieldName}) as ${maxAlias}`;
         const queryString = `$select=${select}`;
         const url = urlForQuery(queryString);
         return makeSoqlGetRequest(url).then((result) => {
-          return {
-            rangeMin: _.toNumber(result[0][minAlias]),
-            rangeMax: _.toNumber(result[0][maxAlias])
-          };
+          switch (dataTypeName) {
+            case 'number':
+              return {
+                rangeMin: _.toNumber(result[0][minAlias]),
+                rangeMax: _.toNumber(result[0][maxAlias])
+              };
+
+            case 'calendar_date':
+              return {
+                rangeMin: _.toString(result[0][minAlias]),
+                rangeMax: _.toString(result[0][maxAlias])
+              };
+          }
         });
       } else {
         return Promise.resolve(null);

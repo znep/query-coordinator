@@ -189,8 +189,9 @@ class User < Model
     role_name == 'administrator'
   end
 
-  def is_publisher?
-    role_name == 'publisher'
+  def has_right_to_publish?(view)
+    # Taken from View.java canUpdateView:1257 in core
+    view.rights_include?(ViewRights::UPDATE_VIEW) || has_right?(UserRights::EDIT_OTHERS_DATASETS)
   end
 
   def is_designer?

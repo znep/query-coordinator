@@ -107,6 +107,11 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
     return column;
   };
 
+  const hasColumnWithType = (type, seriesIndex) => {
+    const column = _.find(datasetMetadataPerSeries[seriesIndex].columns, (c) => c.dataTypeName === type);
+    return !_.isUndefined(column);
+  };
+
   if (allSeries.length !== datasetMetadataPerSeries.length) {
     throw new Error('vif.series.length does not match datasetMetadataPerSeries.length');
   }
@@ -173,7 +178,11 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
         const columnName = _.get(series, 'dataSource.dimension.columnName');
         const dataTypeName = getColumn(columnName, seriesIndex).dataTypeName;
         if (dataTypeName !== 'point') {
-          addError(I18n.translate('visualizations.common.validation.errors.dimension_column_should_be_point'));
+          if (hasColumnWithType('point', seriesIndex)) {
+            addError(I18n.translate('visualizations.common.validation.errors.dimension_column_should_be_point'));
+          } else {
+            addError(I18n.translate('visualizations.common.validation.errors.dataset_does_not_include_point_column'));
+          }
         }
       });
       return validator;
@@ -184,7 +193,11 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
         const columnName = _.get(series, 'dataSource.dimension.columnName');
         const dataTypeName = getColumn(columnName, seriesIndex).dataTypeName;
         if (dataTypeName !== 'calendar_date') {
-          addError(I18n.translate('visualizations.common.validation.errors.dimension_column_should_be_calendar_date'));
+          if (hasColumnWithType('calendar_date', seriesIndex)) {
+            addError(I18n.translate('visualizations.common.validation.errors.dimension_column_should_be_calendar_date'));
+          } else {
+            addError(I18n.translate('visualizations.common.validation.errors.dataset_does_not_include_calendar_date_column'));
+          }
         }
       });
       return validator;
@@ -195,7 +208,11 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
         const columnName = _.get(series, 'dataSource.dimension.columnName');
         const dataTypeName = getColumn(columnName, seriesIndex).dataTypeName;
         if (dataTypeName !== 'number' && dataTypeName !== 'money') {
-          addError(I18n.translate('visualizations.common.validation.errors.dimension_column_should_be_numeric'));
+          if (hasColumnWithType('number', seriesIndex) || hasColumnWithType('money', seriesIndex)) {
+            addError(I18n.translate('visualizations.common.validation.errors.dimension_column_should_be_numeric'));
+          } else {
+            addError(I18n.translate('visualizations.common.validation.errors.dataset_does_not_include_numeric_column'));
+          }
         }
       });
       return validator;

@@ -1,6 +1,6 @@
 {
   "name": "socrata-visualizations",
-  "version": "20.11.1",
+  "version": "20.11.2",
   "license": "UNLICENSED",
   "repository": {
     "type": "git",
@@ -129,7 +129,7 @@
     "redux-logger": "2.6.1",
     "redux-thunk": "2.1.0",
     "reselect": "2.5.3",
-    "socrata-components": "10.0.0",
+    "socrata-components": "10.1.0",
     "socrata-utils": "3.1.1",
     "whatwg-fetch": "1.0.0"
   },

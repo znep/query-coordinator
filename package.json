@@ -1,6 +1,6 @@
 {
   "name": "socrata-visualizations",
-  "version": "20.12.0",
+  "version": "20.12.1",
   "license": "UNLICENSED",
   "repository": {
     "type": "git",
@@ -77,7 +77,7 @@
     "semver": "5.1.0",
     "shelljs": "0.6.0",
     "sinon": "1.17.5",
-    "socrata-components": "10.1.0",
+    "socrata-components": "10.2.1",
     "socrata-utils": "3.2.0",
     "tether": "1.0.2",
     "tether-shepherd": "1.2.0",
@@ -129,7 +129,7 @@
     "redux-logger": "2.6.1",
     "redux-thunk": "2.1.0",
     "reselect": "2.5.3",
-    "socrata-components": "10.1.0",
+    "socrata-components": "10.2.1",
     "socrata-utils": "3.2.0",
     "whatwg-fetch": "1.0.0"
   },

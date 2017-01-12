@@ -134,7 +134,7 @@ class Stat::GoalsController < StoriesController
       # Flatten any "columns" found with the rest of the blocks.
       flatten.
       # Only take images.
-      select { |block| block['type'] == 'image' }.
+      select { |block| block['type'] == 'image' && block['src'].present? }.
       each do |block|
         # Reduce those to their Core asset ID.
         asset_id = block['src'].gsub('/api/assets/', '')

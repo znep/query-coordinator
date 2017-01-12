@@ -43,6 +43,7 @@ RSpec.describe Stat::GoalsController, type: :controller do
       'narrative' => [
         { 'foo' => narrative_migration_marker },
         { 'type' => 'image', 'src' => "/api/assets/#{asset_id_one}" },
+        { 'type' => 'image' }, # unconfigured
         { 'type' => 'twoColLayout', 'columns' => [ { 'type' => 'image', 'src' => "/api/assets/#{asset_id_two}" } ] }
       ]
     }

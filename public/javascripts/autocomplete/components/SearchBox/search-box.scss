@@ -28,6 +28,7 @@ $search-icon-hidden-transform: scaleX(0) translateX(-30px);
   @extend .text-input;
 
   width: 100%;
+  line-height: normal !important;
   margin-bottom: 0 !important;
   padding-left: $search-box-inactive-padding !important;
 }

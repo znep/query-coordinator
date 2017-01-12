@@ -1300,6 +1300,28 @@ describe('AssetSelectorStore', function() {
       assert.propertyVal(assetSelectorStore.getComponentValue(), 'domain', 'example.com');
       assert.propertyVal(assetSelectorStore.getComponentValue(), 'goalUid', 'aaaa-aaaa');
     });
+
+    it('sets componentProperties with valid data when the url has optional suffixes', function() {
+      dispatch('https://example.com/stat/goals/single/aaaa-aaaa/view/');
+      assert.propertyVal(assetSelectorStore.getComponentValue(), 'domain', 'example.com');
+      assert.propertyVal(assetSelectorStore.getComponentValue(), 'goalUid', 'aaaa-aaaa');
+
+      dispatch('https://example.com/stat/goals/single/aaaa-aaaa/preview/');
+      assert.propertyVal(assetSelectorStore.getComponentValue(), 'domain', 'example.com');
+      assert.propertyVal(assetSelectorStore.getComponentValue(), 'goalUid', 'aaaa-aaaa');
+
+      dispatch('https://example.com/stat/goals/single/aaaa-aaaa/edit/');
+      assert.propertyVal(assetSelectorStore.getComponentValue(), 'domain', 'example.com');
+      assert.propertyVal(assetSelectorStore.getComponentValue(), 'goalUid', 'aaaa-aaaa');
+
+      dispatch('https://example.com/stat/goals/single/aaaa-aaaa/edit-story/');
+      assert.propertyVal(assetSelectorStore.getComponentValue(), 'domain', 'example.com');
+      assert.propertyVal(assetSelectorStore.getComponentValue(), 'goalUid', 'aaaa-aaaa');
+
+      dispatch('https://example.com/stat/goals/single/aaaa-aaaa/edit-classic/');
+      assert.propertyVal(assetSelectorStore.getComponentValue(), 'domain', 'example.com');
+      assert.propertyVal(assetSelectorStore.getComponentValue(), 'goalUid', 'aaaa-aaaa');
+    });
   });
 
 

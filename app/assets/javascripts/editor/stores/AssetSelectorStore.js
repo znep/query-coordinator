@@ -16,7 +16,7 @@ function t(str) {
 }
 
 // The step in the asset selection flow the user is in.
-export var WIZARD_STEP = {
+export const WIZARD_STEP = {
   // Do you want a Socrata visualization, Youtube, an image, etc?
   SELECT_ASSET_PROVIDER: 'SELECT_ASSET_PROVIDER',
 
@@ -48,7 +48,7 @@ export var WIZARD_STEP = {
   IMAGE_UPLOAD_ERROR: 'IMAGE_UPLOAD_ERROR'
 };
 
-export var assetSelectorStore = StorytellerUtils.export(new AssetSelectorStore(), 'storyteller.assetSelectorStore');
+export const assetSelectorStore = StorytellerUtils.export(new AssetSelectorStore(), 'storyteller.assetSelectorStore');
 
 // Given a view blob an an intended componentType, returns true
 // if there is any hope of visualizing it directly.
@@ -57,8 +57,8 @@ export var assetSelectorStore = StorytellerUtils.export(new AssetSelectorStore()
 // different view than the intended view (but not always,
 // ha ha!).
 export function viewIsDirectlyVisualizable(intendedComponentType, viewData) {
-  var isNewBackend = _.get(viewData, 'newBackend') === true;
-  var isCreatingTable = intendedComponentType === 'socrata.visualization.table';
+  const isNewBackend = _.get(viewData, 'newBackend') === true;
+  const isCreatingTable = intendedComponentType === 'socrata.visualization.table';
 
   return isNewBackend || isCreatingTable;
 }
@@ -66,7 +66,7 @@ export function viewIsDirectlyVisualizable(intendedComponentType, viewData) {
 export default function AssetSelectorStore() {
   _.extend(this, new Store());
 
-  var self = this;
+  const self = this;
 
   // Contains the entire state of this store.
   // Possible properties (all optional):
@@ -77,9 +77,9 @@ export default function AssetSelectorStore() {
   // - componentIndex: Index of component in block being configured.
   // - componentType: Type of component user has selected.
   // - componentProperties: Configuration of component user has selected.
-  var _state = {};
+  let _state = {};
 
-  this.register(function(payload) {
+  this.register((payload) => {
     StorytellerUtils.assertHasProperty(payload, 'action');
 
     switch (payload.action) {
@@ -215,25 +215,15 @@ export default function AssetSelectorStore() {
   // This returns the specific step the user is in right now.
   //
   // Returns one of WIZARD_STEP.
-  this.getStep = function() {
-    return _state.step;
-  };
+  this.getStep = () => _state.step;
 
-  this.getBlockId = function() {
-    return _state.blockId;
-  };
+  this.getBlockId = () => _state.blockId;
 
-  this.getComponentIndex = function() {
-    return _state.componentIndex;
-  };
+  this.getComponentIndex = () => _state.componentIndex;
 
-  this.getComponentType = function() {
-    return _state.componentType;
-  };
+  this.getComponentType = () => _state.componentType;
 
-  this.getComponentValue = function() {
-    return _state.componentProperties;
-  };
+  this.getComponentValue = () => _state.componentProperties;
 
   // Returns the dataset chosen by the user from the
   // dataset picker, if any.
@@ -243,7 +233,7 @@ export default function AssetSelectorStore() {
   //   id: <4x4>,
   //   domain: <dataset domain>
   // }
-  this.getDatasetUserSelectedFromList = function() {
+  this.getDatasetUserSelectedFromList = () => {
     const value = this.getComponentValue();
     const id = _.get(value, 'dataset.datasetUid');
     const domain = _.get(value, 'dataset.domain');
@@ -262,7 +252,7 @@ export default function AssetSelectorStore() {
   //   id: <4x4>,
   //   domain: <dataset domain>
   // }
-  this.getDatasetInVif = function() {
+  this.getDatasetInVif = () => {
     const value = this.getComponentValue();
     const isVersionOneVif = _.get(value, 'vif.format.version') === 1;
 
@@ -283,15 +273,11 @@ export default function AssetSelectorStore() {
   // Gets the dataset metadata (view blob from core)
   // of the dataset related to the asset being
   // edited.
-  this.getDataset = function() {
-    return _state.dataset;
-  };
+  this.getDataset = () => _state.dataset;
 
-  this.getErrorReason = function() {
-    return _.get(_state.componentProperties, 'reason', null);
-  };
+  this.getErrorReason = () => _.get(_state.componentProperties, 'reason', null);
 
-  this.isDirty = function() {
+  this.isDirty = () => {
     const {
       componentType,
       componentProperties,
@@ -309,85 +295,63 @@ export default function AssetSelectorStore() {
     return !isTypeEqual || !isPropsEqual;
   };
 
-  this.getFileId = function() {
-    return _.get(_state, 'fileId', null);
-  };
+  this.getFileId = () => _.get(_state, 'fileId', null);
 
-  this.getPreviewImageData = function() {
-    return _.get(_state, 'previewImage', null);
-  };
+  this.getPreviewImageData = () => _.get(_state, 'previewImage', null);
 
-  this.hasPreviewImageData = function() {
-    return _.isObject(this.getPreviewImageData());
-  };
+  this.getPreviewImageUrl = () => _.get(_state, 'previewImageUrl', null);
 
-  this.getPreviewImageUrl = function() {
-    return _.get(_state, 'previewImageUrl', null);
-  };
+  this.hasPreviewImageData = () => _.isObject(this.getPreviewImageData());
 
-  this.hasPreviewImageUrl = function() {
-    return _.isString(this.getPreviewImageUrl());
-  };
+  this.hasPreviewImageUrl = () => _.isString(this.getPreviewImageUrl());
 
-  this.hasImageUrl = function() {
-    var value = getImageComponent(this.getComponentValue());
+  this.hasImageUrl = () => {
+    const value = getImageComponent(this.getComponentValue());
     return !_.isEmpty(_.get(value, 'url', null));
   };
 
-  this.hasImageUrlChanged = function() {
-    var value = getImageComponent(this.getComponentValue());
-    var originalValue = getImageComponent(_state.originalComponentProperties);
+  this.hasImageUrlChanged = () => {
+    const value = getImageComponent(this.getComponentValue());
+    const originalValue = getImageComponent(_state.originalComponentProperties);
 
-    var url = _.get(value, 'url', null);
-    var originalUrl = _.get(originalValue, 'url', null);
+    const url = _.get(value, 'url', null);
+    const originalUrl = _.get(originalValue, 'url', null);
 
     return url !== originalUrl;
   };
 
-  this.isEditingExisting = function() {
-    return _state.isEditingExisting === true;
-  };
+  this.isEditingExisting = () => _state.isEditingExisting === true;
 
-  this.isUploadingFile = function() {
-    return !_.isNull(_.get(_state, 'fileId', null));
-  };
+  this.isUploadingFile = () => !_.isNull(_.get(_state, 'fileId', null));
 
-  this.isHTMLFragment = function(filename) {
+  this.isHTMLFragment = (filename) => {
     if (filename) {
       return filename === Constants.EMBEDDED_FRAGMENT_FILE_NAME;
     } else if (self.getFileId()) {
-      var file = fileUploaderStore.fileById(self.getFileId());
+      const file = fileUploaderStore.fileById(self.getFileId());
       return file.raw.name === Constants.EMBEDDED_FRAGMENT_FILE_NAME;
     } else {
       return false;
     }
   };
 
-  this.getDroppedImage = function() {
-    return _.get(_state, 'droppedImage', null);
-  };
+  this.getDroppedImage = () => _.get(_state, 'droppedImage', null);
 
-  this.isCropping = function() {
-    return _.get(_state, 'cropping', false);
-  };
+  this.isCropping = () => _.get(_state, 'cropping', false);
 
-  this.isCropComplete = function() {
-    return _.get(_state, 'cropComplete', false);
-  };
+  this.isCropComplete = () => _.get(_state, 'cropComplete', false);
 
-  this.isCroppingUiEnabled = function() {
-    return _.get(_state, 'croppingUiEnabled', false);
-  };
+  this.isCroppingUiEnabled = () => _.get(_state, 'croppingUiEnabled', false);
 
-  this.hasCropChanged = function() {
-    var originalCrop = getImageComponent(_state.originalComponentProperties).crop;
-    var crop = getImageComponent(_state.componentProperties).crop;
+  this.hasCropChanged = () => {
+    const originalCrop = getImageComponent(_state.originalComponentProperties).crop;
+    const crop = getImageComponent(_state.componentProperties).crop;
 
     return !_.isEqual(originalCrop, crop);
   };
 
-  this.hasCrop = function() {
-    var componentProperties = getImageComponent(self.getComponentValue());
+  this.hasCrop = () => {
+    const componentProperties = getImageComponent(self.getComponentValue());
 
     return _.has(componentProperties, 'crop.x') &&
       _.has(componentProperties, 'crop.y') &&
@@ -395,18 +359,18 @@ export default function AssetSelectorStore() {
       _.has(componentProperties, 'crop.height');
   };
 
-  this.getImageSearchUrl = function() {
-    var phrase = this.getImageSearchPhrase();
-    var phraseIsNull = _.isNull(phrase);
-    var phraseIsEmptyString = _.isString(phrase) && _.isEmpty(phrase);
+  this.getImageSearchUrl = () => {
+    const phrase = this.getImageSearchPhrase();
+    const phraseIsNull = _.isNull(phrase);
+    const phraseIsEmptyString = _.isString(phrase) && _.isEmpty(phrase);
 
-    var page = this.getImageSearchPage();
-    var pageSize = this.getImageSearchPageSize();
+    const page = this.getImageSearchPage();
+    const pageSize = this.getImageSearchPageSize();
 
     if (phraseIsNull || phraseIsEmptyString) {
       return null;
     } else {
-      var queryString = _.map(
+      const queryString = _.map(
         {
           phrase: phrase,
           page: page,
@@ -419,48 +383,30 @@ export default function AssetSelectorStore() {
     }
   };
 
-  this.getImageSearchResults = function() {
-    return _.get(_state, 'imageSearchResults', []);
-  };
+  this.getImageSearchResults = () => _.get(_state, 'imageSearchResults', []);
 
-  this.getImageSearchPhrase = function() {
-    return _.get(_state, 'imageSearchPhrase', null);
-  };
+  this.getImageSearchPhrase = () => _.get(_state, 'imageSearchPhrase', null);
 
-  this.getImageSearchPage = function() {
-    return _.get(_state, 'imageSearchPage', 1);
-  };
+  this.getImageSearchPage = () => _.get(_state, 'imageSearchPage', 1);
 
-  this.getImageSearchSelected = function() {
-    return _.get(_state, 'selectedImageId', null);
-  };
+  this.getImageSearchSelected = () => _.get(_state, 'selectedImageId', null);
 
-  this.getImageSearchPageSize = function() {
-    return Constants.IMAGE_SEARCH_PAGE_SIZE;
-  };
+  this.getImageSearchPageSize = () => Constants.IMAGE_SEARCH_PAGE_SIZE;
 
-  this.hasImageSearchPhrase = function() {
-    return self.getImageSearchPhrase() !== null;
-  };
+  this.hasImageSearchPhrase = () => self.getImageSearchPhrase() !== null;
 
-  this.hasImageSearchResults = function() {
-    return !_.get(_state, 'imageSearchEmpty', true);
-  };
+  this.hasImageSearchResults = () => !_.get(_state, 'imageSearchEmpty', true);
 
-  this.isImageSearching = function() {
-    return _.get(_state, 'imageSearching', false);
-  };
+  this.isImageSearching = () => _.get(_state, 'imageSearching', false);
 
-  this.hasImageSearchError = function() {
-    return _.get(_state, 'imageSearchError', false);
-  };
+  this.hasImageSearchError = () => _.get(_state, 'imageSearchError', false);
 
-  this.canPageImageSearchNext = function() {
+  this.canPageImageSearchNext = () => {
     return (self.getImageSearchPage() + 1) * self.getImageSearchPageSize() <= _state.imageSearchCount;
   };
 
   function getImageComponent(componentProperties) {
-    var type = self.getComponentType();
+    const type = self.getComponentType();
 
     return type === 'author' ?
       _.get(componentProperties, 'image') :
@@ -491,14 +437,14 @@ export default function AssetSelectorStore() {
     $.getJSON({
       method: 'GET',
       url: self.getImageSearchUrl()
-    }).then(function(response) {
+    }).then((response) => {
       _state.imageSearchResults = self.getImageSearchResults().concat(response.images);
       _state.imageSearchCount += response.result_count;
       _state.imageSearchEmpty = _state.imageSearchCount === 0;
       _state.imageSearching = false;
       _state.imageSearchError = false;
       self._emitChange();
-    }, function() {
+    }, () => {
       _state.imageSearching = false;
       _state.imageSearchError = true;
       self._emitChange();
@@ -516,9 +462,9 @@ export default function AssetSelectorStore() {
     StorytellerUtils.assertHasProperty(payload, 'id');
     StorytellerUtils.assertIsOneOfTypes(payload.id, 'string', 'number');
 
-    var type = self.getComponentType();
-    var url = `${Constants.API_PREFIX_PATH}/getty-images/${payload.id}`;
-    var image = {
+    const type = self.getComponentType();
+    const url = `${Constants.API_PREFIX_PATH}/getty-images/${payload.id}`;
+    const image = {
       documentId: null,
       url: url
     };
@@ -543,16 +489,16 @@ export default function AssetSelectorStore() {
     StorytellerUtils.assertHasProperty(payload, 'crop');
     StorytellerUtils.assertHasProperties(payload.crop, 'width', 'height', 'x', 'y');
 
-    var value = getImageComponent(self.getComponentValue());
+    const value = getImageComponent(self.getComponentValue());
     value.crop = payload.crop;
 
     self._emitChange();
   }
 
   function commitImageCrop() {
-    var value = getImageComponent(self.getComponentValue());
-    var documentUrl = `${Constants.API_PREFIX_PATH}/documents/${value.documentId}`;
-    var documentRequestOptions = {
+    const value = getImageComponent(self.getComponentValue());
+    const documentUrl = `${Constants.API_PREFIX_PATH}/documents/${value.documentId}`;
+    const documentRequestOptions = {
       dataType: 'json',
       headers: storytellerAPIRequestHeaders()
     };
@@ -568,9 +514,9 @@ export default function AssetSelectorStore() {
   }
 
   function cropImage(data) {
-    var value = getImageComponent(self.getComponentValue());
-    var cropUrl = `${Constants.API_PREFIX_PATH}/documents/${value.documentId}/crop`;
-    var document = value.crop ? {
+    const value = getImageComponent(self.getComponentValue());
+    const cropUrl = `${Constants.API_PREFIX_PATH}/documents/${value.documentId}/crop`;
+    const document = value.crop ? {
       crop_x: value.crop.x / 100,
       crop_y: value.crop.y / 100,
       crop_width: value.crop.width / 100,
@@ -582,14 +528,14 @@ export default function AssetSelectorStore() {
       crop_height: null
     };
 
-    var cropRequestOptions = {
+    const cropRequestOptions = {
       dataType: 'text',
-      data: JSON.stringify({ document: document }),
+      data: JSON.stringify({ document }),
       headers: storytellerAPIRequestHeaders()
     };
 
     httpRequest('put', cropUrl, cropRequestOptions).
-      then(function() {
+      then(() => {
         _state.cropping = false;
         _state.cropComplete = true;
         value.url = data.document.url;
@@ -614,8 +560,8 @@ export default function AssetSelectorStore() {
   }
 
   function startImageCropping() {
-    var value = getImageComponent(self.getComponentValue());
-    var crop = _.cloneDeep(Constants.DEFAULT_CROP);
+    const value = getImageComponent(self.getComponentValue());
+    const crop = _.cloneDeep(Constants.DEFAULT_CROP);
 
     _state.croppingUiEnabled = true;
     value.crop = crop;
@@ -624,7 +570,7 @@ export default function AssetSelectorStore() {
   }
 
   function resetImageCropping() {
-    var value = getImageComponent(self.getComponentValue());
+    const value = getImageComponent(self.getComponentValue());
 
     _state.croppingUiEnabled = false;
 
@@ -638,15 +584,13 @@ export default function AssetSelectorStore() {
   function setPreviewImage(payload) {
     StorytellerUtils.assertHasProperty(payload, 'file');
 
-    var message;
-    var reader;
-    var file = payload.file;
-    var isNotValidFileSize = file.size > Constants.MAX_FILE_SIZE_BYTES;
-    var isNotValidImageType = !_.includes(Constants.VALID_IMAGE_TYPES, file.type);
-    var isNotValidFileType = !_.includes(Constants.VALID_FILE_TYPES, file.type);
+    const file = payload.file;
+    const isNotValidFileSize = file.size > Constants.MAX_FILE_SIZE_BYTES;
+    const isNotValidImageType = !_.includes(Constants.VALID_IMAGE_TYPES, file.type);
+    const isNotValidFileType = !_.includes(Constants.VALID_FILE_TYPES, file.type);
 
     if (isNotValidFileSize || (isNotValidImageType && isNotValidFileType)) {
-      message = isNotValidFileSize ?
+      const message = isNotValidFileSize ?
         'image_upload.errors.validation_file_size' :
         'image_upload.errors.validation_file_type';
 
@@ -661,19 +605,17 @@ export default function AssetSelectorStore() {
 
       _state.step = WIZARD_STEP.IMAGE_PREVIEW;
 
-      reader = new FileReader();
-      reader.
-        addEventListener('load', function() {
-          _state.previewImageUrl = reader.result;
-          _state.previewImage = file;
-          self._emitChange();
-        });
-      reader.
-        addEventListener('error', function() {
-          _state.componentProperties.reason = t('image_preview.errors.cannot_render_image');
-          _state.step = WIZARD_STEP.IMAGE_UPLOAD_ERROR;
-          self._emitChange();
-        });
+      const reader = new FileReader();
+      reader.addEventListener('load', () => {
+        _state.previewImageUrl = reader.result;
+        _state.previewImage = file;
+        self._emitChange();
+      });
+      reader.addEventListener('error', () => {
+        _state.componentProperties.reason = t('image_preview.errors.cannot_render_image');
+        _state.step = WIZARD_STEP.IMAGE_UPLOAD_ERROR;
+        self._emitChange();
+      });
 
       reader.readAsDataURL(payload.file);
     }
@@ -683,7 +625,7 @@ export default function AssetSelectorStore() {
   }
 
   function backToImageUpload() {
-    var value = getImageComponent(self.getComponentValue());
+    const value = getImageComponent(self.getComponentValue());
 
     _state.previewImageUrl = null;
     _state.previewImage = null;
@@ -714,7 +656,7 @@ export default function AssetSelectorStore() {
    * a component.
    */
   function _stepForUpdate(component) {
-    var type = component.type;
+    const type = component.type;
 
     switch (type) {
       case 'hero': return WIZARD_STEP.IMAGE_PREVIEW;
@@ -755,11 +697,9 @@ export default function AssetSelectorStore() {
   }
 
   function _editExisting(payload) {
-    var component;
-
     StorytellerUtils.assertHasProperties(payload, 'blockId', 'componentIndex');
 
-    component = storyStore.getBlockComponentAtIndex(
+    const component = storyStore.getBlockComponentAtIndex(
       payload.blockId,
       payload.componentIndex
     );
@@ -775,8 +715,8 @@ export default function AssetSelectorStore() {
       isEditingExisting: true
     };
 
-    if (component.type === 'image' || component.type === 'hero' || component.type === 'author') {
-      let value = getImageComponent(component.value);
+    if (_.includes(['image', 'hero', 'author'], component.type)) {
+      const value = getImageComponent(component.value);
       _state.previewImageUrl = value.url;
 
       if (!_.isEmpty(value.crop)) {
@@ -878,7 +818,7 @@ export default function AssetSelectorStore() {
     }
 
     return _getNbeView(originalViewData.domain, originalViewData.id).
-      then(function(nbeViewData) {
+      then((nbeViewData) => {
 
         // EN-7322 - No response on choosing some datasets
         //
@@ -908,54 +848,48 @@ export default function AssetSelectorStore() {
 
     _getView(payload.domain, payload.datasetUid).
       then(_getVisualizableView).
-      then(
-        function(viewData) {
-          var isCreatingTable = (
-            _state.componentType === 'socrata.visualization.table'
-          );
+      then((viewData) => {
+        const isCreatingTable = _state.componentType === 'socrata.visualization.table';
 
-          _setComponentPropertiesFromViewData(viewData);
+        _setComponentPropertiesFromViewData(viewData);
 
-          if (isCreatingTable) {
-            _setUpTableFromSelectedDataset();
-            _state.step = WIZARD_STEP.TABLE_PREVIEW;
-          } else {
-            _state.step = WIZARD_STEP.AUTHOR_VISUALIZATION;
+        if (isCreatingTable) {
+          _setUpTableFromSelectedDataset();
+          _state.step = WIZARD_STEP.TABLE_PREVIEW;
+        } else {
+          _state.step = WIZARD_STEP.AUTHOR_VISUALIZATION;
+        }
+
+        self._emitChange();
+      }).
+      catch((error) => {
+
+        // EN-7322 - No response on choosing some datasets
+        //
+        // If the user attempts to add a chart using an OBE dataset that has
+        // no corresponding migrated NBE dataset, this promise chain is
+        // expected to fail. As such, we probably don't want to notify
+        // Airbrake.
+        //
+        // If the user has attempted to add a chart using one of these
+        // datasets we will reject the _getVisualizableView promise with
+        // null, which can be used to signify that this is one of the
+        // expected errors.
+        // Since the messaging to the user that the dataset they selected is
+        // not currently visualizable is done in _getVisualizableView, we can
+        // just fail silently here.
+        //
+        // TODO: Consider consolidating the user messaging for different
+        // expected error cases here and not in their upstream functions.
+        if (error !== null) {
+
+          if (window.console && console.error) {
+            console.error('Error selecting dataset: ', error);
           }
 
-          self._emitChange();
+          exceptionNotifier.notify(error);
         }
-      ).
-      catch(
-        function(error) {
-
-          // EN-7322 - No response on choosing some datasets
-          //
-          // If the user attempts to add a chart using an OBE dataset that has
-          // no corresponding migrated NBE dataset, this promise chain is
-          // expected to fail. As such, we probably don't want to notify
-          // Airbrake.
-          //
-          // If the user has attempted to add a chart using one of these
-          // datasets we will reject the _getVisualizableView promise with
-          // null, which can be used to signify that this is one of the
-          // expected errors.
-          // Since the messaging to the user that the dataset they selected is
-          // not currently visualizable is done in _getVisualizableView, we can
-          // just fail silently here.
-          //
-          // TODO: Consider consolidating the user messaging for different
-          // expected error cases here and not in their upstream functions.
-          if (error !== null) {
-
-            if (window.console && console.error) {
-              console.error('Error selecting dataset: ', error);
-            }
-
-            exceptionNotifier.notify(error);
-          }
-        }
-      );
+      });
   }
 
   function _chooseVisualizationMapOrChart(payload) {
@@ -963,47 +897,38 @@ export default function AssetSelectorStore() {
 
     StorytellerUtils.assertIsOneOfTypes(payload.domain, 'string');
 
-    var mapChartError = function() {
+    const mapChartError = () => {
       alert(t('visualization.choose_map_or_chart_error')); // eslint-disable-line no-alert
     };
 
     _getView(payload.domain, payload.mapOrChartUid).
-      then(
-        function(viewData) {
-          var isChartOrMapView = (
-            _.isPlainObject(viewData) &&
-            (
-              viewData.displayType === 'chart' ||
-              viewData.displayType === 'map'
-            )
-          );
+      then((viewData) => {
+        const isChartOrMapView = (
+          _.isPlainObject(viewData) &&
+          (
+            viewData.displayType === 'chart' ||
+            viewData.displayType === 'map'
+          )
+        );
 
-          if (isChartOrMapView) {
-
-            _setComponentPropertiesFromViewData(viewData);
-            self._emitChange();
-          } else {
-            mapChartError();
-          }
-        }
-      ).
-      catch(
-        function() {
-
+        if (isChartOrMapView) {
+          _setComponentPropertiesFromViewData(viewData);
+          self._emitChange();
+        } else {
           mapChartError();
         }
-      );
+      }).
+      catch(mapChartError);
   }
 
   function _setUpTableFromSelectedDataset() {
-    var visualization;
     // TODO We need an official story for handling row unit.
     // view.rowLabel exists, but does not provide the pluralized form.
     // Also, we don't sync this information to the NBE today.
     // This record/records hardcoding is also done by VisualizationAddController
     // in Data Lens.
-    var unit = I18n.t('editor.visualizations.default_unit');
-    var defaultSortColumn;
+    const unit = I18n.t('editor.visualizations.default_unit');
+
     StorytellerUtils.assertHasProperties(
       _state,
       'componentProperties.dataset.domain',
@@ -1012,41 +937,39 @@ export default function AssetSelectorStore() {
     );
     StorytellerUtils.assert(
       _state.componentType === 'socrata.visualization.table',
-      'Visualization under construction is not a table, cannot proceed. Was: ' + _state.componentType
+      `Visualization under construction is not a table, cannot proceed. Was: ${_state.componentType}`
     );
 
     StorytellerUtils.assert(_state.dataset.columns.length > 0, 'dataset must have at least one column');
-    defaultSortColumn = _state.dataset.columns[0];
+    const defaultSortColumn = _state.dataset.columns[0];
 
-    visualization = {
-      'type': 'table',
-      'unit': unit,
-      'title': _.get(_state, 'dataset.name', ''),
-      'domain': _state.componentProperties.dataset.domain,
-      'format': {
-        'type': 'visualization_interchange_format',
-        'version': 1
+    const visualization = {
+      type: 'table',
+      unit: unit,
+      title: _.get(_state, 'dataset.name', ''),
+      domain: _state.componentProperties.dataset.domain,
+      format: {
+        type: 'visualization_interchange_format',
+        version: 1
       },
-      'origin': {
-        'url': window.location.toString().replace(/\/edit$/, ''),
-        'type': 'storyteller_asset_selector'
+      origin: {
+        url: window.location.toString().replace(/\/edit$/, ''),
+        type: 'storyteller_asset_selector'
       },
-      'filters': [],
-      'createdAt': (new Date()).toISOString(),
-      'datasetUid': _state.componentProperties.dataset.datasetUid,
-      'aggregation': {
-        'field': null,
+      filters: [],
+      createdAt: (new Date()).toISOString(),
+      datasetUid: _state.componentProperties.dataset.datasetUid,
+      aggregation: {
+        field: null,
         'function': 'count'
       },
-      'description': _.get(_state, 'dataset.description', ''),
-      'configuration': {
-        'order': [
-          {
-            'ascending': true,
-            'columnName': defaultSortColumn.fieldName
-          }
-        ],
-        'localization': {}
+      description: _.get(_state, 'dataset.description', ''),
+      configuration: {
+        order: [{
+          ascending: true,
+          columnName: defaultSortColumn.fieldName
+        }],
+        localization: {}
       }
     };
 
@@ -1082,39 +1005,27 @@ export default function AssetSelectorStore() {
   }
 
   function _getNbeView(domain, obeUid) {
-    var migrationsUrl = StorytellerUtils.format(
-      'https://{0}/api/migrations/{1}.json',
-      domain,
-      obeUid
-    );
+    const migrationsUrl = `https://${domain}/api/migrations/${obeUid}.json`;
 
     return httpRequest('GET', migrationsUrl).
-      then(
-        function(migrationData) {
-          return _getView(domain, migrationData.nbeId);
-        }
-      ).
-      catch(
-        function(error) {
-          var noMigrationMatch = error.
-            message.
-              match('Cannot find migration info for view with id');
+      then((migrationData) => _getView(domain, migrationData.nbeId)).
+      catch((error) => {
+        const noMigrationMatch = error.message.match('Cannot find migration info for view with id');
 
-          // We expect to get 404s back for calls to /api/migrations for
-          // OBE datasets with no corresponding NBE dataset, so let's not
-          // notify Airbrake if this is the case. (This isn't a great
-          // approach but it seems better than treating 404s as a special
-          // case in httpRequest and then needing to explicitly check for
-          // 404s in every place that we use it).
-          if (noMigrationMatch === null) {
-            exceptionNotifier.notify(error);
-          }
-
-          // Because this error is already notified here we do not need to
-          // propagate it upward where the return vaule may be misinterpreted.
-          return null;
+        // We expect to get 404s back for calls to /api/migrations for
+        // OBE datasets with no corresponding NBE dataset, so let's not
+        // notify Airbrake if this is the case. (This isn't a great
+        // approach but it seems better than treating 404s as a special
+        // case in httpRequest and then needing to explicitly check for
+        // 404s in every place that we use it).
+        if (noMigrationMatch === null) {
+          exceptionNotifier.notify(error);
         }
-      );
+
+        // Because this error is already notified here we do not need to
+        // propagate it upward where the return vaule may be misinterpreted.
+        return null;
+      });
   }
 
   function _getView(domain, uid) {
@@ -1123,45 +1034,37 @@ export default function AssetSelectorStore() {
     // as of this writing. If you need to get info out of view.metadata
     // (like rowLabel), you'll need to fetch the OBE view separately.
     // Also, I CAN'T BELIEVE I'M WRITING THIS AGAIN
-    var viewUrl = StorytellerUtils.format(
-      'https://{0}/api/views/{1}.json',
-      domain,
-      uid
-    );
+    var viewUrl = `https://${domain}/api/views/${uid}.json`;
 
     return httpRequest('GET', viewUrl).
-      then(
-        function(viewData) {
+      then((viewData) => {
+        // Retcon the domain into the view data.
+        // We'd have to pass it around like 5 methods otherwise.
+        viewData.domain = domain;
+        return viewData;
+      }, (error) => {
+        const step = self.getStep();
 
-          // Retcon the domain into the view data.
-          // We'd have to pass it around like 5 methods
-          // otherwise.
-          viewData.domain = domain;
-
-          return viewData;
-        },
-        function(error) {
-
-          if (self.getStep() === WIZARD_STEP.CONFIGURE_MAP_OR_CHART) {
-            _state.step = WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG;
-          } else if (self.getStep() === WIZARD_STEP.TABLE_PREVIEW) {
-            _state.step = WIZARD_STEP.SELECT_TABLE_FROM_CATALOG;
-          } else {
-            _state.step = WIZARD_STEP.SELECT_ASSET_PROVIDER;
-          }
-
-          self._emitChange();
-
-          exceptionNotifier.notify(error);
-          alert(t('visualization.choose_dataset_error')); // eslint-disable-line no-alert
-
-          return null;
+        if (step === WIZARD_STEP.CONFIGURE_MAP_OR_CHART) {
+          _state.step = WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG;
+        } else if (step === WIZARD_STEP.TABLE_PREVIEW) {
+          _state.step = WIZARD_STEP.SELECT_TABLE_FROM_CATALOG;
+        } else {
+          _state.step = WIZARD_STEP.SELECT_ASSET_PROVIDER;
         }
-      );
+
+        self._emitChange();
+
+        exceptionNotifier.notify(error);
+        alert(t('visualization.choose_dataset_error')); // eslint-disable-line no-alert
+
+        return null;
+      });
   }
 
   function _updateVisualizationConfiguration(payload) {
-    var visualization = payload.visualization.data;
+    const visualization = payload.visualization.data;
+    const format = payload.visualization.format;
 
     if (_.isEmpty(visualization)) {
 
@@ -1171,7 +1074,7 @@ export default function AssetSelectorStore() {
       };
 
       self._emitChange();
-    } else if (payload.visualization.format === 'classic') {
+    } else if (format === 'classic') {
 
       _state.componentType = 'socrata.visualization.classic';
       _state.componentProperties = {
@@ -1181,14 +1084,11 @@ export default function AssetSelectorStore() {
       };
 
       self._emitChange();
-    } else if (payload.visualization.format === 'vif') {
+    } else if (format === 'vif') {
 
-      StorytellerUtils.assertHasProperty(
-        _state,
-        'componentProperties.dataset'
-      );
+      StorytellerUtils.assertHasProperty(_state, 'componentProperties.dataset');
 
-      _state.componentType = StorytellerUtils.format('socrata.visualization.{0}', visualization.type);
+      _state.componentType = `socrata.visualization.${visualization.type}`;
       _state.componentProperties = {
         vif: visualization,
         dataset: _state.componentProperties.dataset,
@@ -1203,7 +1103,7 @@ export default function AssetSelectorStore() {
       // back into the new component properties after they have been reset.
       const layoutHeight = _.get(_state, 'componentProperties.layout.height');
 
-      _state.componentType = StorytellerUtils.format('socrata.visualization.{0}', visualization.series[0].type);
+      _state.componentType = `socrata.visualization.${visualization.series[0].type}`;
       _state.componentProperties = {
         vif: visualization,
         dataset: _state.componentProperties.dataset,
@@ -1221,9 +1121,9 @@ export default function AssetSelectorStore() {
   }
 
   function _updateDroppedImage(payload) {
-    var hasFiles = Array.isArray(payload.files) && payload.files.length > 0;
-    var previouslyDroppedImage = self.getDroppedImage();
-    var fileChanged =  _.isNull(previouslyDroppedImage) || (previouslyDroppedImage.name !== payload.files[0].name);
+    const hasFiles = Array.isArray(payload.files) && payload.files.length > 0;
+    const previouslyDroppedImage = self.getDroppedImage();
+    const fileChanged =  _.isNull(previouslyDroppedImage) || (previouslyDroppedImage.name !== payload.files[0].name);
 
     if (hasFiles && fileChanged) {
       _state.droppedImage = payload.files[0];
@@ -1234,9 +1134,9 @@ export default function AssetSelectorStore() {
   function upload(payload) {
     StorytellerUtils.assertHasProperty(payload, 'id');
 
-    var crop = getImageComponent(self.getComponentValue()).crop;
-    var hasCrop = crop && crop.x !== 0 && crop.y !== 0 && crop.width !== 100 && crop.height !== 100;
-    var isNotHTMLFragment = _.isEmpty(payload.file) || !self.isHTMLFragment(payload.file.name);
+    const crop = getImageComponent(self.getComponentValue()).crop;
+    const hasCrop = crop && crop.x !== 0 && crop.y !== 0 && crop.width !== 100 && crop.height !== 100;
+    const isNotHTMLFragment = _.isEmpty(payload.file) || !self.isHTMLFragment(payload.file.name);
 
     _state.fileId = payload.id;
     // Clear any erroring that may be lingering.
@@ -1311,7 +1211,7 @@ export default function AssetSelectorStore() {
     }
   }
 
-  fileUploaderStore.addChangeListener(function() {
+  fileUploaderStore.addChangeListener(() => {
     if (self.isUploadingFile()) {
       var id = self.getFileId();
       var file = fileUploaderStore.fileById(id);
@@ -1325,8 +1225,8 @@ export default function AssetSelectorStore() {
   });
 
   function _updateImagePreview(file) {
-    var type = self.getComponentType();
-    var image = {
+    const type = self.getComponentType();
+    const image = {
       documentId: file.resource.id,
       url: file.resource.url,
       crop: _state.componentProperties.crop,
@@ -1346,7 +1246,7 @@ export default function AssetSelectorStore() {
       case 'author':
         _state.componentProperties = _.merge(
           _state.componentProperties,
-          { image: image }
+          { image }
         );
         break;
 
@@ -1369,7 +1269,7 @@ export default function AssetSelectorStore() {
   }
 
   function _updateImageUploadError(payload) {
-    var value = self.getComponentValue();
+    const value = self.getComponentValue();
 
     if (!_.isUndefined(payload.error.reason)) {
       _.set(value, 'reason', payload.error.reason);
@@ -1379,31 +1279,26 @@ export default function AssetSelectorStore() {
   }
 
   function _updateImageAltAttribute(payload) {
-    var value = self.getComponentValue();
-    var altAttribute = payload.altAttribute;
+    const value = self.getComponentValue();
+    const altAttribute = payload.altAttribute;
 
     if (_state.componentType === 'image') {
       value.alt = altAttribute;
     } else {
-      throw new Error(
-        StorytellerUtils.format(
-          'Component type is {0}. Cannot update alt attribute.',
-          _state.componentType
-        )
-      );
+      throw new Error(`Component type is ${_state.componentType}. Cannot update alt attribute.`);
     }
 
     self._emitChange();
   }
 
   function _updateImageUrlWrapper(payload) {
-    var value = self.getComponentValue();
-    var url = payload.url;
+    const value = self.getComponentValue();
+    let url = payload.url;
 
     // If it isn't empty, it should look like an HTTP URI, mailto URI, or plain email address.
-    var urlRegex = /^https?:\/\/.+\../;
-    var emailRegex = /^(mailto:)?.+@./;
-    var urlValidity = _.isString(url) &&
+    const urlRegex = /^https?:\/\/.+\../;
+    const emailRegex = /^(mailto:)?.+@./;
+    const urlValidity = _.isString(url) &&
       (
         url.length === 0 ||
         urlRegex.test(url) ||
@@ -1419,27 +1314,20 @@ export default function AssetSelectorStore() {
       value.link = url;
       value.urlValidity = urlValidity;
     } else {
-      throw new Error(
-        `Component type is ${_state.componentType}. Cannot update URL wrapper.`
-      );
+      throw new Error(`Component type is ${_state.componentType}. Cannot update URL wrapper.`);
     }
 
     self._emitChange();
   }
 
   function _updateFrameTitleAttribute(payload) {
-    var value = self.getComponentValue();
-    var titleAttribute = payload.titleAttribute;
+    const value = self.getComponentValue();
+    const titleAttribute = payload.titleAttribute;
 
     if (_state.componentType === 'youtube.video' || _state.componentType === 'embeddedHtml') {
       value.title = titleAttribute;
     } else {
-      throw new Error(
-        StorytellerUtils.format(
-          'Component type is {0}. Cannot update title attribute.',
-          _state.componentType
-        )
-      );
+      throw new Error(`Component type is ${_state.componentType}. Cannot update title attribute.`);
     }
 
     self._emitChange();
@@ -1448,11 +1336,11 @@ export default function AssetSelectorStore() {
   function _updateStoryUrl(payload) {
     _state.componentType = 'story.tile';
 
-    var openInNewWindow = _.get(_state.componentProperties, 'openInNewWindow', false);
+    const openInNewWindow = _.get(_state.componentProperties, 'openInNewWindow', false);
 
     _state.componentProperties = _.merge(
       _componentPropertiesFromStoryUrl(payload.url),
-      { openInNewWindow: openInNewWindow }
+      { openInNewWindow }
     );
 
     self._emitChange();
@@ -1467,8 +1355,8 @@ export default function AssetSelectorStore() {
   }
 
   function _updateGoalUrl(payload) {
-    var goalDomain = _extractDomainFromGoalUrl(payload.url);
-    var goalUid = _extractGoalUidFromGoalUrl(payload.url);
+    const goalDomain = _extractDomainFromGoalUrl(payload.url);
+    const goalUid = _extractGoalUidFromGoalUrl(payload.url);
 
     _state.componentType = 'goal.tile';
 
@@ -1482,13 +1370,8 @@ export default function AssetSelectorStore() {
   }
 
   function _updateYoutubeUrl(payload) {
-
-    var youtubeId = _extractIdFromYoutubeUrl(payload.url);
-    var youtubeUrl = null;
-
-    if (youtubeId !== null) {
-      youtubeUrl = payload.url;
-    }
+    const youtubeId = _extractIdFromYoutubeUrl(payload.url);
+    const youtubeUrl = youtubeId === null ? null : payload.url;
 
     _state.componentType = 'youtube.video';
 
@@ -1528,19 +1411,12 @@ export default function AssetSelectorStore() {
         _chooseEmbedCode();
         break;
       default:
-        throw new Error(
-          StorytellerUtils.format(
-            'Unsupported provider: {0}',
-            payload.provider
-          )
-        );
+        throw new Error(`Unsupported provider: ${payload.provider}`);
     }
   }
 
   function _closeDialog() {
-
     _state = {};
-
     self._emitChange();
   }
 
@@ -1548,27 +1424,23 @@ export default function AssetSelectorStore() {
     if (url.match(/https?:\/\//)) {
       // Have to build the anchor node this way to work around IE11 behavior
       // where the leading slash was dropped from pathname.
-      return $('<a href="' + url + '">').get(0);
+      return $(`<a href="${url}">`).get(0);
     } else {
       return null;
     }
   }
 
   function _componentPropertiesFromStoryUrl(url) {
-    var parsedUrl = _parseUrl(url);
+    const parsedUrl = _parseUrl(url);
     if (!parsedUrl) { return {}; }
 
     if (parsedUrl.pathname.indexOf(Constants.VIEW_PREFIX_PATH) === 0) {
       // Find the last thing in the url that looks like a uid (4x4).
       // We can't take the first thing because our story title may look
       // like a 4x4, and it comes first.
-      var uid = _(
-        parsedUrl.pathname.substring(Constants.VIEW_PREFIX_PATH.length).split('/')
-      ).
-      compact(). // Removes blank strings.
-      findLast(function(c) {
-        return c.match(Constants.FOUR_BY_FOUR_PATTERN);
-      });
+      const uid = _(parsedUrl.pathname.substring(Constants.VIEW_PREFIX_PATH.length).split('/')).
+        compact(). // Removes blank strings.
+        findLast((c) => c.match(Constants.FOUR_BY_FOUR_PATTERN));
 
       if (uid) {
         return { domain: parsedUrl.hostname, storyUid: uid };
@@ -1579,21 +1451,23 @@ export default function AssetSelectorStore() {
   }
 
   function _extractDomainFromGoalUrl(goalUrl) {
-    var match = goalUrl.match(/^https\:\/\/([a-z0-9\.\-]{3,})\/(?:.*)stat\/goals\/.*$/i);
-    var goalDomain = null;
-
-    if (match !== null) {
-      goalDomain = match[1];
-    }
+    const match = goalUrl.match(/^https\:\/\/([a-z0-9\.\-]{3,})\/(?:.*)stat\/goals\/.*$/i);
+    const goalDomain = match === null ? null : match[1];
 
     return goalDomain;
   }
 
   function _extractGoalUidFromGoalUrl(goalUrl) {
-    var dashboardGoalRegex = /^https:\/\/.+\/stat\/goals\/(?:default|\w{4}-\w{4})\/\w{4}-\w{4}\/(\w{4}-\w{4})$/i;
-    var singleGoalRegex = /^https:\/\/.+\/stat\/goals\/single\/(\w{4}-\w{4})$/i;
-    var goalUid = null;
+    const uidMatcher = '\\w{4}-\\w{4}';
+    const suffixMatcher = '(?:/view|/preview|/edit|/edit-story|/edit-classic)?';
+    const dashboardGoalRegex = new RegExp(
+      `^https://.+/stat/goals/(?:default|${uidMatcher})/${uidMatcher}/(${uidMatcher})${suffixMatcher}/?$`, 'i'
+    );
+    const singleGoalRegex = new RegExp(
+      `^https://.+/stat/goals/single/(${uidMatcher})${suffixMatcher}/?$`, 'i'
+    );
 
+    let goalUid = null;
     if (dashboardGoalRegex.test(goalUrl)) {
       goalUid = goalUrl.match(dashboardGoalRegex)[1];
     } else if (singleGoalRegex.test(goalUrl)) {
@@ -1607,10 +1481,8 @@ export default function AssetSelectorStore() {
    * See: https://github.com/jmorrell/get-youtube-id/
    */
   function _extractIdFromYoutubeUrl(youtubeUrl) {
-
-    var youtubeId = null;
-    var patterns = Constants.YOUTUBE_URL_PATTERNS;
-    var tokens;
+    let youtubeId = null;
+    const patterns = Constants.YOUTUBE_URL_PATTERNS;
 
     if (/youtu\.?be/.test(youtubeUrl)) {
 
@@ -1625,7 +1497,7 @@ export default function AssetSelectorStore() {
       if (!youtubeId) {
         // If that fails, break it apart by certain characters and look
         // for the 11 character key
-        tokens = youtubeUrl.split(/[\/\&\?=#\.\s]/g);
+        const tokens = youtubeUrl.split(/[\/\&\?=#\.\s]/g);
 
         for (i = 0; i < tokens.length; ++i) {
           if (/^[^#\&\?]{11}$/.test(tokens[i])) {
@@ -1653,8 +1525,8 @@ export default function AssetSelectorStore() {
   }
 
   function _updateEmbedCodePreview(resource) {
-    var htmlFragmentUrl = resource.url;
-    var documentId = resource.id;
+    const htmlFragmentUrl = resource.url;
+    const documentId = resource.id;
 
     _state.componentType = 'embeddedHtml';
     _state.componentProperties = {

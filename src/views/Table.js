@@ -283,8 +283,14 @@ module.exports = function Table(element, originalVif) {
       return '';
     }
 
-    let head = data.
-      columns.
+    const filteredColumns = data.columns.filter(function(column) {
+      const flags = column['flags'];
+      const hidden = flags && flags.indexOf('hidden') >= 0;
+
+      return !hidden;
+    });
+
+    let head = filteredColumns.
       map(function(column, i) {
         const resizingClassIfIsResizing = (
           column.fieldName === activeResizeColumnName
@@ -299,7 +305,7 @@ module.exports = function Table(element, originalVif) {
           sortDirection: activeSort.ascending ?
             'arrow-down' :
             'arrow-up',
-          isLastColumn: (i === (data.columns.length - 1)),
+          isLastColumn: (i === (filteredColumns.length - 1)),
           resizingClassIfIsResizing: resizingClassIfIsResizing
         };
 
@@ -325,8 +331,7 @@ module.exports = function Table(element, originalVif) {
           return '<tr class="null-row"><td></td></tr>';
         }
 
-        let rowData = data.
-          columns.
+        let rowData = filteredColumns.
           map(function(column, columnIndex) {
             return templateTableCell(column, row[columnIndex]);
           }).join('');

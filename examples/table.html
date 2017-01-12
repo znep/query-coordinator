@@ -79,6 +79,9 @@
       </table>
     </p>
     <div id="table-10"></div>
+
+    <p>Tests hidden columns. In the example below, all columns in the dataset except for 'name' and 'birthday' have been hidden in the grid view.
+    <div id="table-11"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -300,6 +303,51 @@
     };
     var $table10Element = $('#table-10');
     $table10Element.socrataTable(table10VIF);
+
+    var table11VIF = {
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      },
+      configuration: {
+        order: [{
+          ascending: true,
+          columnName: 'name'
+        }],
+        viewSourceDataLink: false
+      },
+      description: 'Only name and birthday columns should be visible',
+      series: [
+        {
+          color: {
+          },
+          dataSource: {
+            datasetUid: 'eygp-tzh7',
+            dimension: {
+              columnName: null,
+              aggregationFunction: null
+            },
+            domain: 'catastrophiccats.test-socrata.com',
+            measure: {
+              columnName: null,
+              aggregationFunction: 'count'
+            },
+            type: 'socrata.soql',
+            filters: []
+          },
+          label: null,
+          type: 'table',
+          unit: {
+            one: 'case',
+            other: 'cases'
+          }
+        }
+      ],
+      title: 'Table title'
+    };
+
+    var $table11Element = $('#table-11');
+    $table11Element.socrataTable(table11VIF);
 
     var $tables = $('[id^=table-]');
 

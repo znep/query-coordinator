@@ -60,7 +60,7 @@ if (!shouldMigrateGoal) {
 
 (new ErrorReporter());
 
-if (IS_GOAL) {
+if (!IS_GOAL) {
   // TODO: Why is this being called from index? Can the store manage it itself?
   (new CollaboratorsDataProvider()).getCollaborators().
     then((collaborators) => {

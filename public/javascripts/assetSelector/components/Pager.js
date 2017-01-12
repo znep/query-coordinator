@@ -13,7 +13,7 @@ export class Pager extends Component {
   }
 
   static get resultsPerPage() {
-    return 9;
+    return 6;
   }
 
   constructor(props) {

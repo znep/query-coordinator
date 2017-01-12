@@ -1,7 +1,7 @@
 import $ from 'jquery';
 
 export const CETERA_URL = '//api.us.socrata.com/api/catalog/v1'; // TODO: get from domain config?
-export const DEFAULT_LIMIT = 9;
+export const DEFAULT_LIMIT = 6;
 
 const getOffset = (pageNumber, limit) => {
   return (pageNumber - 1) * limit;

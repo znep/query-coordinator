@@ -24,11 +24,16 @@ export class App extends Component {
 
   render() {
     return (
-      <div
-        className={this.state.modalIsOpen ? '' : 'hidden'}>
-        <Header />
-        <BackButton onClick={this.closeModal} />
-        <ResultsContainer />
+      <div className={this.state.modalIsOpen ? '' : 'hidden'}>
+        <div className="overlay">
+          <div className="content">
+            <Header />
+            <div className="centered-content">
+              <BackButton onClick={this.closeModal} />
+              <ResultsContainer />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

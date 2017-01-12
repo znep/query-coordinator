@@ -2,10 +2,6 @@
 
 .asset-selector {
   .results-container {
-    .inline-block {
-      display: inline-block;
-    }
-
     .result-count {
       float: none;
     }
@@ -59,6 +55,8 @@
 
     .results-pagination-controls {
       float: none;
+      overflow: hidden;
+      margin: 0;
 
       .pagination {
         a.pageLink:first-of-type {

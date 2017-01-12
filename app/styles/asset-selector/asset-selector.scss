@@ -4,9 +4,37 @@
 @import "asset-selector/results-container";
 
 .asset-selector {
-  border: 1px solid $black;
 
-  .hidden {
+  &.hidden, .hidden {
     display: none;
+  }
+
+  .inline-block {
+    display: inline-block;
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: 100;
+  }
+
+  .content {
+    border: 1px solid $grey;
+    background: $white;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+
+    .centered-content {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
   }
 }

@@ -12,6 +12,7 @@ import components from 'socrata-components';
 require('socrata-components/dist/css/styleguide.css');
 
 // TODO: setup a11y and airbrake
+window.serverConfig = {};
 // if (window.serverConfig.environment === 'development') {
 //   a11y(React, { ReactDOM: ReactDOM });
 //   middleware.push(createLogger({

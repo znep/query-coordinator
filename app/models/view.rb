@@ -1065,33 +1065,31 @@ class View < Model
     end
   end
 
-  def show_official_badge_in_catalog?
-    FeatureFlags.derive(nil, request)[:show_provenance_badge_in_catalog] && data_lens? && is_official?
-  end
-
   def is_official?
-    # CORE-7419: If enable_data_lens_provenance is false, assume all data lenses are official
-    FeatureFlags.derive(nil, request)[:enable_data_lens_provenance] ?
-      provenance =~ /^official$/i : true
+    match = !!(provenance =~ /^official$/i)
+    if data_lens?
+      # CORE-7419: If enable_data_lens_provenance is false, assume all data lenses are official
+      FeatureFlags.derive.enable_data_lens_provenance ? match : true
+    else
+      match
+    end
   end
 
   def is_community?
-    provenance =~ /^community$/i
+    !!(provenance =~ /^community$/i)
   end
 
   def federated?
-    !domainCName.blank?
+    domainCName.present?
   end
 
   def route_params
-    params =
-      { category: (category || 'dataset').convert_to_url,
-        view_name: (name || 'dataset').convert_to_url,
-        id: id }
-
-    params[:host] = canonical_domain_name
-
-    params
+    {
+      category: (category || 'dataset').convert_to_url,
+      host: canonical_domain_name,
+      id: id,
+      view_name: (name || 'dataset').convert_to_url
+    }
   end
 
   def rss
@@ -1673,6 +1671,7 @@ class View < Model
     return @@display_names[d.name] || d.name
   end
 
+  # TODO Factor out the common logic used here and in #display method and rewrite to not not not use !is_not
   def dataset?
     # 'filtered view' is anything that uses sorting / roll-up / filter / conditional formatting
     #

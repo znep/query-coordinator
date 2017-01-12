@@ -156,6 +156,14 @@
         </span>
       </li>
     <%- end %>
+    <%- if current_user.try(:is_superadmin?) %>
+      <li class="feature_flags">
+        <%= admin_nav_link_to t("#{prefix}.feature_flags"), :controller => '/internal', :action => 'feature_flags', :domain_id => 'localhost' %>
+        <span class="description">
+          <%= t("#{prefix}.feature_flags_description") %>
+        </span>
+      </li>
+    <%- end -%>
   </ul>
 </div>
 

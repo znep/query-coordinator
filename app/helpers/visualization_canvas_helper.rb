@@ -8,7 +8,8 @@ module VisualizationCanvasHelper
   def render_visualization_canvas_server_config
     server_config = {
       :domain => CurrentDomain.cname,
-      :environment => Rails.env
+      :environment => Rails.env,
+      :featureFlags => feature_flags_as_json
     }
 
     javascript_tag("var serverConfig = #{json_escape(server_config.to_json)};")

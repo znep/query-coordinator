@@ -11,7 +11,7 @@ class CustomContentControllerTest < ActionController::TestCase
   def setup
     init_core_session
     init_current_domain
-    init_signaller
+    init_feature_flag_signaller
     stub_site_chrome
 
     stub_request(:get, "http://localhost:8080/pages.json?method=getLightweightRouting").

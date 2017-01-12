@@ -5,7 +5,7 @@ class DataLensControllerTest < ActionController::TestCase
   def setup
     init_core_session
     init_current_domain
-    init_signaller
+    init_feature_flag_signaller
     ::Configuration.stubs(:find_by_type => [])
 
     @controller.stubs(:phidippides => Phidippides.new('localhost', 2401))

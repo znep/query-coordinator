@@ -8,7 +8,7 @@ class BrowseActionsTest < Minitest::Test
     @browse_controller = BrowseController.new
 
     init_current_domain
-    init_signaller
+    init_feature_flag_signaller
 
     Canvas2::Util.reset
 
@@ -112,7 +112,7 @@ class BrowseActionsTest2 < Minitest::Test
     @browse_controller = BrowseController.new
 
     init_current_domain
-    init_signaller
+    init_feature_flag_signaller
 
     Canvas2::Util.reset
 
@@ -227,7 +227,7 @@ class BrowseActionsTest3 < Minitest::Test
     }
 
     init_current_domain
-    init_signaller
+    init_feature_flag_signaller
 
     Canvas2::Util.reset
 
@@ -425,7 +425,7 @@ class BrowseActionsTest4 < Minitest::Test
   def setup
     @browse_controller = BrowseController.new
     init_current_domain
-    init_signaller
+    init_feature_flag_signaller
 
     Canvas2::Util.reset
 

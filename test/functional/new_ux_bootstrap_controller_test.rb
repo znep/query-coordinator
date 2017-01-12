@@ -6,7 +6,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     setup do
       init_core_session
       init_current_domain
-      init_signaller
+      init_feature_flag_signaller
       # noinspection RubyArgCount
       CurrentDomain.stubs(domain: stub(cname: 'localhost'))
       @phidippides = Phidippides.new('localhost', 2401)

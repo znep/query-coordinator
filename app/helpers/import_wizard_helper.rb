@@ -46,6 +46,7 @@ module ImportWizardHelper
   def render_import_wizard_server_config
     server_config = {
       airbrakeKey: ENV['PUBLISHING_AIRBRAKE_API_KEY'] || APP_CONFIG.publishing_airbrake_api_key,
+      feature_flags: feature_flags_as_json,
       environment: Rails.env,
       reduxLogging: params['redux_logging'].nil? ?
         Rails.env == 'development' :              # We want to log when running in development mode

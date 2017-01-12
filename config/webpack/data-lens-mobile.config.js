@@ -43,8 +43,6 @@ module.exports = _.defaultsDeep({
       path.resolve(common.root, 'node_modules')
     ],
     alias: {
-      'socrata-utils': 'socrata-utils/dist/socrata.utils.js',
-      'socrata.utils': 'socrata-utils/dist/socrata.utils.js',
       'jQuery': path.resolve(common.root, 'node_modules/jquery/dist/jquery.js')
     }
   },

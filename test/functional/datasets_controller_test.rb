@@ -5,7 +5,7 @@ class DatasetsControllerTest < ActionController::TestCase
   def setup
     init_core_session
     init_current_domain
-    init_signaller
+    init_feature_flag_signaller
     load_sample_data('test/fixtures/sample-data.json')
     @test_view = View.find('test-data')
     View.any_instance.stubs(

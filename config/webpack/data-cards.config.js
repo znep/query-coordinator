@@ -53,9 +53,7 @@ module.exports = _.defaultsDeep({
     alias: {
       'angular_templates': path.resolve(common.root, 'public/angular_templates'),
       plugins: path.resolve(common.root, 'public/javascripts/plugins'),
-      'jQuery': path.resolve(common.root, 'node_modules/jquery/dist/jquery.js'),
-      'socrata-utils': 'socrata-utils/dist/socrata.utils.js',
-      'socrata.utils': 'socrata-utils/dist/socrata.utils.js'
+      'jQuery': path.resolve(common.root, 'node_modules/jquery/dist/jquery.js')
     }
   },
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))

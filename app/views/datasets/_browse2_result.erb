@@ -8,27 +8,15 @@
         <div class="browse2-result-title">
           <h2 class="browse2-result-name">
             <%= browse2_result_link(result_name, result_link, result_is_federated, result_link_rel_type) %>
-            <%= tag(:meta,
-                    itemprop: 'url',
-                    content: result_link) %>
-            <%= tag(:meta,
-                    itemprop: 'sameAs',
-                    content: result_permalink) %>
-
-            <%= browse2_provenance_tag(result_provenance) %>
+            <%= tag(:meta, itemprop: 'url', content: result_link) %>
+            <%= tag(:meta, itemprop: 'sameAs', content: result_permalink) %>
+            <%= browse2_provenance_tag(result_provenance, result_is_data_lens) %>
           </h2>
 
-          <%- if show_official_badge -%>
-            <div class="browse2-result-provenance browse2-result-header-section">
-              <span class='icon-check'></span>
-              <span class='provenance-title'><%= t('angular.dataCards.lens_type.official') %></span>
-            </div>
-          <%- end -%>
-
           <%-
-          result_categories.each do |category|
-            params_for_url = user_params.merge(category: category)
-            category_url = "#{base_url}?#{params_for_url.to_param}"
+            result_categories.each do |category|
+              params_for_url = user_params.merge(category: category)
+              category_url = "#{base_url}?#{params_for_url.to_param}"
           -%>
             <a class="browse2-result-category browse2-result-header-section"
                href="<%= category_url %>">

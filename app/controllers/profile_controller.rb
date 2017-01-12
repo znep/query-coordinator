@@ -158,7 +158,7 @@ class ProfileController < ApplicationController
       if (params[:user][:screenName].empty?)
         flash.now[:error] = t('screens.profile.edit.validation.no_display_name')
         @user_links = UserLink.find(current_user.id)
-        return (render 'profile/edit')
+        return render 'profile/edit'
       end
     end
 
@@ -204,14 +204,13 @@ class ProfileController < ApplicationController
       format.html do
         if is_error
           flash.now[:error] = error_msg
-          return (render 'shared/error', :status => :forbidden)
+          return render 'shared/error', :status => :forbidden
         else
           flash[:notice] = t('screens.profile.edit.success')
           redirect_to(profile_path(current_user))
         end
       end
-      format.data { render :json => {:error => error_msg,
-        :user => current_user} }
+      format.data { render :json => {:error => error_msg, :user => current_user} }
     end
   end
 
@@ -236,7 +235,7 @@ class ProfileController < ApplicationController
 
   def update_account
     if params[:user].present? ||
-       params[:openid_delete].present? || 
+       params[:openid_delete].present? ||
        params[:auth0id_delete_list].present?
       error_msg = nil
       begin

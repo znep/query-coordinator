@@ -347,39 +347,37 @@
           -%>
 
           <%= render 'datasets/browse2_result',
+               # Pending a way to determine the result's data types, they will be set to nil and ignored
               :base_url => opts[:base_url],
-              :user_params => opts[:user_params].dup,
               :current_sort => opts[:current_sort],
-              :result_id => result.id,
-              :result_name => result.name,
+              :federated_site_title => federated_site_title(result.domainCName),
+              :result_api_link => result_api_link,
+              :result_can_be_deleted => result_can_be_deleted,
+              :result_categories => result_categories,
               :result_classes => result_classes,
+              :result_created_at => result_created_at,
+              :result_data_types => nil,
+              :result_description => view_formatted_description(result),
+              :result_display_title => result_display_title,
               :result_display_type => result.display.type,
               :result_display_type_icon_class => result_display_type_icon_class,
-              :result_display_title => result_display_title,
+              :result_domain_icon_href => result.domain_icon_href,
+              :result_edit_controls => result_edit_controls,
+              :result_federated_origin_url => result_federated_origin_url,
+              :result_id => result.id,
+              :result_is_data_lens => result.data_lens?,
+              :result_is_federated => result.federated?,
+              :result_is_public => result_is_public,
+              :result_last_updated => result_last_updated,
               :result_link => result_link,
               :result_link_rel_type => view_rel_type(result, CurrentDomain, opts),
-              :result_description => view_formatted_description(result),
-              :result_categories => result_categories,
-              :result_last_updated => result_last_updated,
-              :result_created_at => result_created_at,
-              :result_view_count => result_view_count,
-              :result_topics => result_topics,
-               # Pending a way to determine the result's data types, they will be set to nil and ignored
-              :result_data_types => nil,
-              :result_is_federated => result.federated?,
-              :show_official_badge =>
-                result.respond_to?(:show_official_badge_in_catalog?) &&
-                result.show_official_badge_in_catalog?, # not implemented for Cetera results
-              :result_provenance => result.provenance,
-              :federated_site_title => federated_site_title(result.domainCName),
-              :result_federated_origin_url => result_federated_origin_url,
-              :result_domain_icon_href => result.domain_icon_href,
+              :result_name => result.name,
               :result_odn_link => result_odn_link,
-              :result_api_link => result_api_link,
-              :result_edit_controls => result_edit_controls,
-              :result_is_public => result_is_public,
-              :result_can_be_deleted => result_can_be_deleted,
-              :result_permalink => result_permalink
+              :result_permalink => result_permalink,
+              :result_provenance => result.provenance,
+              :result_topics => result_topics,
+              :result_view_count => result_view_count,
+              :user_params => opts[:user_params].dup
           %>
         <%-
           end

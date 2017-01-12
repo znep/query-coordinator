@@ -6,7 +6,7 @@ describe ProfileController do
   before(:each) do
     init_core_session
     init_current_domain
-    init_signaller
+    init_feature_flag_signaller
   end
 
   describe 'GET /profile' do

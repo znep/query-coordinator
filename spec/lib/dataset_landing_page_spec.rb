@@ -137,20 +137,24 @@ describe DatasetLandingPage do
         expect(results).to eq([formatted_view])
       end
 
-      context 'results contain story' do
+      context 'results contain story', :verify_stubs => false do
         let(:story_link) { 'http://example.com/stories/s/good-best' }
-        let(:cetera_result_double) do
-          instance_double(Cetera::Results::ResultRow,
-            :id => 'elep-hant',
-            :get_preview_image_url => 'image',
-            :link => story_link
-          ).as_null_object
+        let(:cetera_result_double) { instance_double(Cetera::Results::ResultRow) }
+        let(:derived_views_double) do
+          [
+            View.new('id' => 'elep-hant').tap do |view|
+              allow(view).to receive_messages(
+                :get_preview_image_url => 'image',
+                :link => story_link
+              )
+            end
+          ]
         end
 
         let(:results) { DatasetLandingPage.fetch_derived_views('data-lens', 'cookie', 'request_id') }
 
         before do
-          allow(Cetera::Utils).to receive(:get_derived_from_views).and_return([cetera_result_double])
+          allow(Cetera::Utils).to receive(:get_derived_from_views).and_return(derived_views_double)
           allow(cetera_result_double).to receive(:story?).and_return(true)
         end
 

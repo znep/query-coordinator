@@ -5,6 +5,9 @@ module TestHelperMethods
   include Signaller::Test::Helpers
   include SocrataSiteChrome::Test::Helpers
 
+  # TODO Change this method name in feature flag signaller gem
+  alias init_feature_flag_signaller init_signaller
+
   def init_current_domain
     # For some reason, Domain and Configuration aren't autoloaded at this point,
     # so force them to load before we read test/fixtures/domain.yml

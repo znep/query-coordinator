@@ -83,8 +83,6 @@ module.exports = function ( karma ) {
       resolve: {
         alias: {
           angular_templates: templateDir,
-          'socrata-utils': 'socrata-utils/dist/socrata.utils.js',
-          'socrata.utils': 'socrata-utils/dist/socrata.utils.js',
           'lodash': path.resolve(projectRootDir, 'node_modules/lodash'),
           'leaflet': path.resolve(projectRootDir, 'node_modules/leaflet')
         },

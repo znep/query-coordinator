@@ -238,25 +238,22 @@ module Browse2Helper
     end
   end
 
-  def browse2_provenance_tag(provenance)
-    return nil unless FeatureFlags.derive.show_provenance_facet_in_catalog
+  def browse2_provenance_tag(provenance, is_data_lens = false)
+    return unless FeatureFlags.derive.show_provenance_badge_in_catalog
 
-    html_key =
-      case provenance.to_s
-        when 'official' then 'official2'
-        when 'community' then 'community'
-        else nil
-      end
+    provenance_key = normalized_provenance(provenance)
 
-    disable_badge = [ 'all', html_key ].include?(FeatureFlags.derive.disable_authority_badge)
-    html_key = nil if disable_badge
+    if is_data_lens
+      # CORE-7419: If enable_data_lens_provenance is false, assume all data lenses are official
+      provenance_key = normalized_provenance('official') unless FeatureFlags.derive.enable_data_lens_provenance
+    end
 
-    <<-HTML.html_safe unless html_key.nil?
-      <span class="tag-provenance tag-#{html_key}">
-        <span class="icon-#{html_key}"></span>
-        #{t("controls.browse.listing.provenance.#{html_key}")}
-      </span>
-    HTML
+    return if provenance_key.blank? || disable_authority_badge?(provenance_key)
+
+    content_tag(:span, :class => "tag-provenance tag-#{provenance_key}") do
+      content_tag(:span, nil, :class => "icon-#{provenance_key}") <<
+      t("controls.browse.listing.provenance.#{provenance_key}")
+    end
   end
 
   # File type name => extension & mime-type dictionary
@@ -287,4 +284,5 @@ module Browse2Helper
       file_format + url
     end
   end
+
 end

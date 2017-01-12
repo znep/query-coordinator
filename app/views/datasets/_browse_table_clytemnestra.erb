@@ -29,8 +29,8 @@
               <span class="hide" itemprop="name"><%= v.name %></span>
               <a itemprop="url" href="<%= view_url %>" class="name"
                 rel="<%= rel_type %>"><%= v.name %></a>
-              <%= render :partial => 'datasets/browse_provenance', :locals => { :v => v } %>
-              <%- if !v.category.blank? -%>
+              <%= render 'datasets/browse_provenance', :v => v %>
+              <%- if v.category.present? -%>
               <span class="category infoItem"><%= v.category_display %></span>
               <%- end -%>
               <%- if v.tags.present? -%>
@@ -60,7 +60,7 @@
         <%- if opts[:grid_items][:largeImage] -%>
           <td class="largeImage">
             <%- img_url = v.preferred_image(opts[:port]) -%>
-            <%- if !img_url.nil? -%>
+            <%- if img_url.present? -%>
               <img itemprop="image" class="datasetImage datasetIcon <%= v.preferred_image_type %>" src="<%= img_url %>" alt="<%= v.name %>" />
               <div class="datasetIcon type type<%= v.display.type.capitalize %>" title="<%= v.display.name.capitalize %>" style="display: none;">
                 <span class="<%= v.display.icon_class %>"></span>
@@ -102,12 +102,22 @@
             <div class="moderateActions">
               <span class="textStatus"><%= v.moderation_status %></span>
               <%- if v.moderationStatus.nil? || !v.moderationStatus -%>
-                <%= form_button({ :action => 'set_view_moderation_status',
-                                 :id => v.id, :approved => 'yes' }, t('controls.browse.actions.moderation.accept')) %>
+                <%= form_button(
+                  {
+                    :action => 'set_view_moderation_status',
+                    :id => v.id,
+                    :approved => 'yes'
+                  },
+                  t('controls.browse.actions.moderation.accept')) %>
               <%- end -%>
               <%- if v.moderationStatus.nil? || v.moderationStatus -%>
-                <%= form_button({ :action => 'set_view_moderation_status',
-                                 :id => v.id, :approved => 'no' }, t('controls.browse.actions.moderation.reject')) %>
+                <%= form_button(
+                  {
+                    :action => 'set_view_moderation_status',
+                    :id => v.id,
+                    :approved => 'no'
+                  },
+                  t('controls.browse.actions.moderation.reject')) %>
               <%- end -%>
             </div>
           </td>

@@ -2359,6 +2359,8 @@ en:
         datasets_description: List the assets on this domain and configure the layout of the dataset page
         dataslate_pages: DataSlate Pages
         dataslate_pages_description: List and manage the DataSlate pages on this domain
+        feature_flags: Feature Flags
+        feature_flags_description: Manage feature flags for this domain
         federation: Federation
         federation_description: Manage connections and data sharing with other sites via Open Data Federation Services
         georegions: Spatial Lens

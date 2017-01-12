@@ -717,29 +717,19 @@ module DatasetsHelper
     ].any?
   end
 
+  #  See browse2_helper for related helper methods
   def dataset_provenance_tag
-    return nil unless FeatureFlags.derive.show_provenance_facet_in_catalog
+    return unless FeatureFlags.derive.show_provenance_facet_in_catalog
 
-    html_key =
-      case @view.provenance
-        when 'official' then 'official2'
-        when 'community' then 'community'
-        else nil
-      end
+    provenance = normalized_provenance(@view.provenance)
+    return if provenance.blank? || disable_authority_badge?(provenance)
 
-    disable_badge = [ 'all', html_key ].include?(FeatureFlags.derive.disable_authority_badge)
-    html_key = nil if disable_badge
+    (@svg_file ||= {})[provenance] ||= File.read(File.expand_path("public/images/#{provenance}.svg"))
 
-    unless html_key.nil?
-      (@svg_file ||= {})[html_key] ||=
-        File.read(File.expand_path("public/images/#{html_key}.svg"))
-
-      <<-HTML.html_safe
-        <span class="tag-provenance tag-#{html_key}">
-          #{@svg_file[html_key]}
-          #{t("controls.browse.listing.provenance.#{html_key}")}
-        </span>
-      HTML
+    content_tag(:span, :class => "tag-provenance tag-#{provenance}") do
+      @svg_file[provenance].html_safe +
+      t("controls.browse.listing.provenance.#{provenance}")
     end
   end
+
 end

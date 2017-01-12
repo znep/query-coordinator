@@ -52,7 +52,7 @@ debug_data_lens:
   defaultValue: false
   category: data lens
 disable_authority_badge:
-  description: HIDE this particular authority badge.
+  description: Do not display (hide) this particular authority badge. AKA provenance badge.
   defaultValue: official2
   disableTrueFalse: true
   expectedValues: all official2 community none
@@ -118,7 +118,7 @@ enable_data_lens_page_metadata_migrations:
   description: Lazily migrate data lens page metadata schemas on each request.
   defaultValue: true
 enable_data_lens_provenance:
-  description: Ability to set data lens views to "Official" or not.
+  description: Ability to set data lens views to "Official" or not. AKA authority badge.
   defaultValue: true
 enable_data_lens_using_derived_view:
   description: Enable creating data lenses from derived views.
@@ -242,10 +242,10 @@ show_newux_page_header:
   defaultValue: true
   category: data lens
 show_provenance_badge_in_catalog:
-  description: Show the provenance "Official" badge for official views in the catalog.
+  description: Show the provenance "Official" badge for official views in the catalog. AKA authority badge.
   defaultValue: false
 show_provenance_facet_in_catalog:
-  description: Show the Authority facet in the catalog page.
+  description: Show the Authority facet in the catalog page. AKA provenance.
   defaultValue: false
 site_appearance_visible:
   description: Display "Site Appearance" link in the /admin panel. Note that it will always be displayed for superadmins. This only toggles it for regular admins and designers.

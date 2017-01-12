@@ -4,7 +4,7 @@ class StylesControllerTest < ActionController::TestCase
 
   def setup
     init_current_domain
-    init_signaller
+    init_feature_flag_signaller
   end
 
   # We shouldn't have to worry about BOMs in individual stylesheets since it only causes a problem when the

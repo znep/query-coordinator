@@ -98,6 +98,10 @@ module Cetera
         domainCName != CurrentDomain.cname
       end
 
+      def data_lens?
+        type == 'datalens'
+      end
+
       # WARN: This is going to change!!!
       # Cetera only returns public objects as of 2015/10/19
       def is_public?

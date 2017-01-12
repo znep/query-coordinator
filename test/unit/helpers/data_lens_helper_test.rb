@@ -5,7 +5,7 @@ class DataLensHelperTest < ActionView::TestCase
 
   def setup
     init_current_domain
-    init_signaller
+    init_feature_flag_signaller
     Configuration.stubs(:find_by_type => [])
     data_lens_helper.stubs(:asset_revision_key => 'asset_revision_key_value')
     data_lens_helper.stubs(:enable_site_chrome? => false)

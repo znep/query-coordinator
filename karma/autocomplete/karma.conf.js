@@ -97,6 +97,10 @@ module.exports = function ( karma ) {
       }
     },
 
+    webpackMiddleware: {
+      noInfo: true
+    },
+
     mochaReporter: {
       showDiff: true
     },

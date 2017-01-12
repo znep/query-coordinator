@@ -36,8 +36,6 @@ module.exports = _.defaultsDeep({
   resolve: {
     alias: {
       'dotdotdot': 'dotdotdot/src/js/jquery.dotdotdot.min.js',
-      'socrata-utils': path.resolve(common.root, 'node_modules/socrata-utils/dist/socrata.utils.js'),
-      'socrata.utils': path.resolve(common.root, 'node_modules/socrata-utils/dist/socrata.utils.js'),
       '_': path.resolve(common.root, 'node_modules/lodash'),
       'jQuery': path.resolve(common.root, 'node_modules/jquery/dist/jquery.js'),
       'jquery': path.resolve(common.root, 'node_modules/jquery/dist/jquery.js'),

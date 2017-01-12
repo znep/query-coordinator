@@ -3,6 +3,7 @@ import 'babel-polyfill';
 import { Provider } from 'react-redux';
 import mockView from 'data/mockView';
 import mockParentView from 'data/mockParentView';
+import { FeatureFlags } from 'socrata-utils';
 
 window.$ = window.jQuery = require('jquery');
 window._ = require('lodash');
@@ -35,6 +36,9 @@ window.renderPureComponentWithStore = function(component, store) {
 function requireAll(context) {
   context.keys().forEach(context);
 }
+
+// Setup mock feature flags
+FeatureFlags.useTestFixture();
 
 // Run all the tests
 requireAll(require.context('./components', true, /\.js$/));

@@ -867,6 +867,9 @@ $data-lens-color: #80acca;
   &.homemgmt #{$subselector} {
     background-position: 0 -130px;
   }
+  &.feature_flags #{$subselector} {
+    background-position: 0 -130px;
+  }
   &.metadata #{$subselector} {
     background-position: 0 -143px;
   }
@@ -920,6 +923,9 @@ $data-lens-color: #80acca;
     background-position: 0 -192px;
   }
   &.homemgmt #{$subselector} {
+    background-position: 0 -224px;
+  }
+  &.feature_flags #{$subselector} {
     background-position: 0 -224px;
   }
   &.metadata #{$subselector} {

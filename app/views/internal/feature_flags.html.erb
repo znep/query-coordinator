@@ -68,11 +68,14 @@
         var $filteredResults = $forms.filter(function() {
           var inputValue = normalizeString($('.feature-flag-filter-input').value());
           var formTitle = normalizeString($(this).find('.flagBox > .title').html());
-          return inputValue && formTitle.indexOf(inputValue) === -1;
+          var formDescription = normalizeString($(this).find('.flagBox > .title + .description').text());
+          return inputValue && formTitle.indexOf(inputValue) === -1 && formDescription.indexOf(inputValue) === -1;
         });
         $forms.removeClass('hidden');
         $filteredResults.addClass('hidden');
       });
+
+      $('.feature-flag-filter-input').focus();
     });
   </script>
 <% end %>

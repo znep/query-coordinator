@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import formatDate from '../lib/formatDate';
 import { emitMixpanelEvent } from '../actions/mixpanel';
-import components from 'socrata-components';
 import InfoPaneButtons from './InfoPaneButtons';
+import InfoPaneComponent from '../../socrataHOC/InfoPaneComponent.js';
 
 function mapStateToProps(state) {
   const { view } = state;
@@ -16,7 +16,7 @@ function mapStateToProps(state) {
     name: view.name,
     description: view.description,
     category: view.category,
-    isOfficial: true,
+    provenance: view.provenance,
     isPrivate: view.isPrivate,
     metadata: {
       first: {
@@ -64,7 +64,7 @@ function mapDispatchToProps(dispatch) {
       var payload = {
         name: 'Expanded Details',
         properties: {
-          'Expanded Target': 'Descripton'
+          'Expanded Target': 'Description'
         }
       };
 
@@ -73,4 +73,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(components.InfoPane);
+export default connect(mapStateToProps, mapDispatchToProps)(InfoPaneComponent);

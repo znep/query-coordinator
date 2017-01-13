@@ -6,7 +6,7 @@ import { updatePageResults } from '../actions/pageResults';
 import { updateResultCount } from '../actions/resultCount';
 import NoResults from './NoResults';
 import ResultCount from './ResultCount';
-import CardContainer from './CardContainer';
+import Card from './Card';
 import Pager from './Pager';
 import ceteraUtils from '../lib/ceteraUtils';
 
@@ -47,7 +47,11 @@ export class ResultsContainer extends Component {
         <div className="results-container">
           <ResultCount count={this.props.resultCount} />
 
-          <CardContainer results={this.props.results} />
+          <div className="card-container">
+            {this.props.results.map((result, i) =>
+              <Card key={i} {...result} />
+            )}
+          </div>
 
           <Pager
             resultCount={this.props.resultCount}

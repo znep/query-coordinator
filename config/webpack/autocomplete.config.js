@@ -51,7 +51,8 @@ module.exports = _.defaultsDeep({
       'node_modules/modularscale-sass/stylesheets',
       'node_modules/normalize.css',
       'node_modules/socrata-components',
-      'node_modules/react-input-range/dist'
+      'node_modules/react-input-range/dist',
+      'node_modules/react-datepicker/dist'
     ]
   },
   resolve: {

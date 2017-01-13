@@ -59,4 +59,5 @@ namespace :lint do
   task :all => ['eslint:all', 'ruby']
 end
 
+desc 'run all the lint tasks'
 task :lint => 'lint:all'

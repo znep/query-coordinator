@@ -54,6 +54,4 @@ export const ColumnStatus = React.createClass({
   }
 });
 
-// socrata-icon-checkmark3
-
 export default ColumnStatus;

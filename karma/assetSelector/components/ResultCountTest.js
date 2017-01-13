@@ -3,7 +3,9 @@ import { ResultCount } from 'components/ResultCount';
 describe('components/ResultCount', function() {
   function defaultProps() {
     return {
-      count: 1
+      currentPage: 1,
+      resultsPerPage: 6,
+      total: 100
     };
   }
 
@@ -12,33 +14,28 @@ describe('components/ResultCount', function() {
   }
 
   it('shows "1 View" when there is only 1 result', function() {
-    var element = renderPureComponent(ResultCount(getProps()));
+    var element = renderPureComponent(ResultCount(getProps({ total: 1 })));
     expect(element).to.exist;
     expect(element.className).to.match(/result-count/);
-    expect(element.textContent).to.eq('1 View');
+    expect(element.textContent).to.eq('1-1 of 1 View');
   });
 
   it('shows "[n] Views" when n is not 1', function() {
     var element = renderPureComponent(ResultCount(getProps({
-      count: 0
+      total: 50
     })));
-    expect(element.textContent).to.eq('0 Views');
-
-    var element = renderPureComponent(ResultCount(getProps({
-      count: 50
-    })));
-    expect(element.textContent).to.eq('50 Views');
+    expect(element.textContent).to.eq('1-6 of 50 Views');
   });
 
   it('uses numerical abbreviations for large counts', function() {
     var element = renderPureComponent(ResultCount(getProps({
-      count: 238430
+      total: 238430
     })));
-    expect(element.textContent).to.eq('238K Views');
+    expect(element.textContent).to.eq('1-6 of 238K Views');
 
     var element = renderPureComponent(ResultCount(getProps({
-      count: 23843000
+      total: 23843000
     })));
-    expect(element.textContent).to.eq('23.8M Views');
+    expect(element.textContent).to.eq('1-6 of 23.8M Views');
   });
 });

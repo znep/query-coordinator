@@ -4,7 +4,8 @@ import _ from 'lodash';
 describe('components/Pager', function() {
   function defaultProps() {
     return {
-      onPageChange: _.noop,
+      currentPage: 1,
+      changePage: _.noop,
       resultCount: 1000,
       resultsPerPage: 6
     };
@@ -12,13 +13,6 @@ describe('components/Pager', function() {
 
   function getProps(props = {}) {
     return Object.assign({}, defaultProps(), props);
-  }
-
-  function goToPage(element, pageNumber) {
-    var input = element.querySelector('.current-page-input input');
-    input.value = pageNumber;
-    TestUtils.Simulate.change(input);
-    TestUtils.Simulate.blur(input);
   }
 
   it('renders', function() {
@@ -32,42 +26,24 @@ describe('components/Pager', function() {
   });
 
   describe('prev link', function() {
-    it('is disabled by default', function() {
+    it('is disabled on the first page', function() {
       var element = renderComponent(Pager, getProps());
       var prevLink = element.querySelector('.prev-link');
       expect(prevLink.className).to.match(/disabled/);
     });
 
     it('is not disabled when you are past first page', function() {
-      var element = renderComponent(Pager, getProps());
+      var element = renderComponent(Pager, getProps({ currentPage: 2 }));
       var prevLink = element.querySelector('.prev-link');
-      var nextLink = element.querySelector('.next-link');
-      TestUtils.Simulate.click(nextLink);
       expect(prevLink.className).to.not.match(/disabled/);
     });
 
-    it('decrements the currentPage', function() {
-      var pager = React.createElement(Pager, getProps());
-      var renderedPager = TestUtils.renderIntoDocument(pager);
-      var element = ReactDOM.findDOMNode(renderedPager);
-      var prevLink = element.querySelector('.prev-link');
-
-      expect(renderedPager.state.currentPage).to.eq(1);
-      goToPage(element, 20);
-      expect(renderedPager.state.currentPage).to.eq(20);
-      TestUtils.Simulate.click(prevLink);
-      expect(renderedPager.state.currentPage).to.eq(19);
-      TestUtils.Simulate.click(prevLink);
-      expect(renderedPager.state.currentPage).to.eq(18);
-    });
-
-    it('calls the onPageChange prop function when clicked', function() {
+    it('calls changePage and decrements the currentPage', function() {
       var spy = sinon.spy();
-      var element = renderComponent(Pager, getProps({ onPageChange: spy }));
+      var element = renderComponent(Pager, getProps({ currentPage: 10, changePage: spy }));
       var prevLink = element.querySelector('.prev-link');
-      goToPage(element, 20);
       TestUtils.Simulate.click(prevLink);
-      expect(spy).to.have.been.called;
+      expect(spy).to.have.been.calledWith(9);
     });
   });
 
@@ -84,46 +60,22 @@ describe('components/Pager', function() {
       expect(nextLink.className).to.match(/disabled/);
     });
 
-    it('increments the currentPage', function() {
-      var pager = React.createElement(Pager, getProps());
-      var renderedPager = TestUtils.renderIntoDocument(pager);
-      var element = ReactDOM.findDOMNode(renderedPager);
-      var nextLink = element.querySelector('.next-link');
-
-      expect(renderedPager.state.currentPage).to.eq(1);
-      TestUtils.Simulate.click(nextLink);
-      expect(renderedPager.state.currentPage).to.eq(2);
-      TestUtils.Simulate.click(nextLink);
-      expect(renderedPager.state.currentPage).to.eq(3);
-    });
-
-    it('calls the onPageChange prop function when clicked', function() {
+    it('calls changePage and increments the currentPage', function() {
       var spy = sinon.spy();
-      var element = renderComponent(Pager, getProps({ onPageChange: spy }));
+      var element = renderComponent(Pager, getProps({ currentPage: 10, changePage: spy }));
       var nextLink = element.querySelector('.next-link');
       TestUtils.Simulate.click(nextLink);
-      expect(spy).to.have.been.called;
+      expect(spy).to.have.been.calledWith(11);
     });
   });
 
   describe('last page link', function() {
-    it('is a link that takes users to the last page', function() {
-      var pager = React.createElement(Pager, getProps({ resultCount: 200, resultsPerPage: 20 }));
-      var renderedPager = TestUtils.renderIntoDocument(pager);
-      var element = ReactDOM.findDOMNode(renderedPager);
-      var lastPageLink = element.querySelector('.last-page-link');
-
-      expect(lastPageLink.textContent).to.eq('10Last page');
-      TestUtils.Simulate.click(lastPageLink);
-      expect(renderedPager.state.currentPage).to.eq(10);
-    });
-
-    it('calls the onPageChange prop function when clicked', function() {
+    it('calls changePage with the last page', function() {
       var spy = sinon.spy();
-      var element = renderComponent(Pager, getProps({ onPageChange: spy }));
+      var element = renderComponent(Pager, getProps({ changePage: spy, resultCount: 200, resultsPerPage: 6 }));
       var lastPageLink = element.querySelector('.last-page-link');
       TestUtils.Simulate.click(lastPageLink);
-      expect(spy).to.have.been.called;
+      expect(spy).to.have.been.calledWith(Math.ceil(200/6));
     });
   });
 
@@ -134,41 +86,48 @@ describe('components/Pager', function() {
       expect(input.value).to.eq('1');
     });
 
-    it('updates the state.currentPage when changed to a valid value', function() {
-      var pager = React.createElement(Pager, getProps());
-      var renderedPager = TestUtils.renderIntoDocument(pager);
-      var element = ReactDOM.findDOMNode(renderedPager);
-      var input = element.querySelector('.current-page-input input');
-
-      expect(renderedPager.state.currentPage).to.eq(1);
-      goToPage(element, 20);
-      expect(renderedPager.state.currentPage).to.eq(20);
-    });
-
-    it('does not update the state.currentPage when changed to an invalid value', function() {
-      var pager = React.createElement(Pager, getProps());
-      var renderedPager = TestUtils.renderIntoDocument(pager);
-      var element = ReactDOM.findDOMNode(renderedPager);
-      var input = element.querySelector('.current-page-input input');
-
-      expect(renderedPager.state.currentPage).to.eq(1);
-      goToPage(element, 999999999); // larger than the last page
-      expect(renderedPager.state.currentPage).to.eq(1);
-      goToPage(element, 'i am batman'); // not a number
-      expect(renderedPager.state.currentPage).to.eq(1);
-      goToPage(element, null);
-      expect(renderedPager.state.currentPage).to.eq(1);
-    });
-
-    it('calls the onPageChange prop function when the page is changed', function() {
+    it('calls changePage with the entered pageNumber when changed to a valid value', function() {
       var spy = sinon.spy();
-      var pager = React.createElement(Pager, getProps({ onPageChange: spy }));
-      var renderedPager = TestUtils.renderIntoDocument(pager);
-      var element = ReactDOM.findDOMNode(renderedPager);
+      var element = renderComponent(Pager, getProps({ changePage: spy }));
       var input = element.querySelector('.current-page-input input');
 
-      goToPage(element, 20);
-      expect(spy).to.have.been.called;
+      input.value = '5';
+      TestUtils.Simulate.change(input);
+      TestUtils.Simulate.blur(input);
+      expect(spy).to.have.been.calledWith(5);
+
+      input.value = '7';
+      TestUtils.Simulate.change(input);
+      TestUtils.Simulate.blur(input);
+      expect(spy).to.have.been.calledWith(7);
+    });
+
+    it('does not call changePage when changed to an invalid value', function() {
+      var spy = sinon.spy();
+      var element = renderComponent(Pager, getProps({ changePage: spy }));
+      var input = element.querySelector('.current-page-input input');
+
+      input.value = '999999999';
+      TestUtils.Simulate.change(input);
+      TestUtils.Simulate.blur(input);
+
+      input.value = '0';
+      TestUtils.Simulate.change(input);
+      TestUtils.Simulate.blur(input);
+
+      input.value = '-5';
+      TestUtils.Simulate.change(input);
+      TestUtils.Simulate.blur(input);
+
+      input.value = 'adsf';
+      TestUtils.Simulate.change(input);
+      TestUtils.Simulate.blur(input);
+
+      input.value = '';
+      TestUtils.Simulate.change(input);
+      TestUtils.Simulate.blur(input);
+
+      expect(spy).not.to.have.been.called;
     });
   });
 });

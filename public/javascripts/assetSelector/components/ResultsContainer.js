@@ -13,13 +13,24 @@ import ceteraUtils from '../lib/ceteraUtils';
 export class ResultsContainer extends Component {
   constructor(props) {
     super(props);
-    _.bindAll(this, ['onPageChange']);
-    this.onPageChange(1, true); // Fetch the first page of results
-    // This may be something we want to make a prop, so one could open the assets at a given page
-    // (based on something like a URL param), useful if this becomes a replacement for the catalog.
+    _.bindAll(this, ['changePage']);
+
+    this.state = {
+      currentPage: 1,
+      pagerKey: 1
+      /*
+        pagerKey only exists so that the defaultValue of the Pager input field updates when the prev/next
+        links are clicked. Otherwise, the input would not update due to how React treats defaultValue.
+        We can't use `value` instead of defaultValue, because then the input wouldn't be controllable.
+      */
+    };
   }
 
-  onPageChange(pageNumber, initialFetch = false) {
+  componentDidMount() {
+    this.changePage(1, true); // Fetch the first page of results
+  }
+
+  changePage(pageNumber, initialFetch = false) {
     const { dispatchUpdatePageResults, dispatchUpdateResultCount } = this.props;
     ceteraUtils.fetch({ pageNumber, limit: this.props.resultsPerPage }).
       success((response) => {
@@ -35,6 +46,12 @@ export class ResultsContainer extends Component {
         // TODO. airbrake, return error message, etc.
         console.error(err);
       });
+
+    this.setState({
+      currentPage: parseInt(pageNumber, 10),
+      /* Increment the key to trigger a re-render of the Pager currentPageInput */
+      pagerKey: this.state.pagerKey + 1
+    });
   }
 
   render() {
@@ -45,7 +62,10 @@ export class ResultsContainer extends Component {
     } else {
       return (
         <div className="results-container">
-          <ResultCount count={this.props.resultCount} />
+          <ResultCount
+            currentPage={this.state.currentPage}
+            resultsPerPage={this.props.resultsPerPage}
+            total={this.props.resultCount} />
 
           <div className="card-container">
             {this.props.results.map((result, i) =>
@@ -54,8 +74,10 @@ export class ResultsContainer extends Component {
           </div>
 
           <Pager
+            key={this.state.pagerKey}
+            currentPage={this.state.currentPage}
+            changePage={this.changePage}
             resultCount={this.props.resultCount}
-            onPageChange={this.onPageChange}
             resultsPerPage={this.props.resultsPerPage} />
         </div>
       );

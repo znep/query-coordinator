@@ -53,7 +53,7 @@ describe('components/ResultsContainer', function() {
 
   it('renders the total result count', function() {
     var element = renderComponent(ResultsContainer, getProps());
-    expect(element.querySelector('.result-count').textContent).to.equal('100 Views');
+    expect(element.querySelector('.result-count').textContent).to.equal('1-6 of 100 Views');
   });
 
   it('renders the correct number of cards', function() {

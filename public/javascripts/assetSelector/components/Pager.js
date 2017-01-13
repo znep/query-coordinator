@@ -1,28 +1,23 @@
 import React, { Component, PropTypes } from 'react';
+import $ from 'jquery';
 import _ from 'lodash';
 
 export class Pager extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      currentPage: 1,
-      pageIsInvalid: false,
-      currentPageInputKey: 1
-      /*
-        currentPageInputKey only exists so that the defaultValue of the input field updates when the prev/next
-        links are clicked. Otherwise, the input would not update due to how React treats defaultValue.
-        We cannot just use "value" instead, because then the input would not be modifiable (controllable).
-      */
-    };
+
     _.bindAll(this, [
       'lastPage',
       'prevLinkClick',
       'nextLinkClick',
       'lastLinkClick',
       'pageInputChange',
-      'pageInputKeyPress',
-      'changePage'
+      'pageInputKeyPress'
     ]);
+
+    this.state = {
+      pageIsInvalid: false
+    };
   }
 
   lastPage() {
@@ -31,28 +26,28 @@ export class Pager extends Component {
 
   prevLinkClick(e) {
     e.preventDefault();
-    if (this.state.currentPage > 1) {
-      this.changePage(this.state.currentPage - 1);
+    if (this.props.currentPage > 1) {
+      this.props.changePage(this.props.currentPage - 1);
     }
   }
 
   nextLinkClick(e) {
     e.preventDefault();
-    if (this.state.currentPage < this.lastPage()) {
-      this.changePage(this.state.currentPage + 1);
+    if (this.props.currentPage < this.lastPage()) {
+      this.props.changePage(this.props.currentPage + 1);
     }
   }
 
   lastLinkClick(e) {
     e.preventDefault();
-    this.changePage(this.lastPage());
+    this.props.changePage(this.lastPage());
   }
 
   pageInputChange(e) {
-    const newPage = e.target.value;
-    if (parseInt(newPage, 10) === this.state.currentPage) return;
-    if (newPage && newPage >= 1 && newPage <= this.lastPage()) {
-      this.changePage(newPage);
+    const newPage = parseInt(e.target.value, 10);
+    if (newPage === this.props.currentPage && !this.state.pageIsInvalid) return;
+    if (newPage >= 1 && newPage <= this.lastPage()) {
+      this.props.changePage(newPage);
       this.setState({ pageIsInvalid: false });
     } else {
       // Invalid page
@@ -66,17 +61,8 @@ export class Pager extends Component {
     }
   }
 
-  changePage(pageNumber) {
-    this.props.onPageChange(pageNumber);
-    this.setState({
-      currentPage: parseInt(pageNumber, 10),
-      currentPageInputKey: this.state.currentPageInputKey + 1
-      /* increment the key to trigger a re-render of the currentPageInput */
-    });
-  }
-
   render() {
-    const prevLinkDisabled = this.state.currentPage === 1;
+    const prevLinkDisabled = this.props.currentPage === 1;
     const prevLinkClasses = [
       'prev-link',
       'inline-block',
@@ -94,7 +80,7 @@ export class Pager extends Component {
       </a>
     );
 
-    const nextLinkDisabled = this.state.currentPage === this.lastPage();
+    const nextLinkDisabled = this.props.currentPage === this.lastPage();
     const nextLinkClasses = [
       'next-link',
       'inline-block',
@@ -121,12 +107,11 @@ export class Pager extends Component {
     const currentPageInput = (
       <div className={currentPageInputClasses}>
         <input
-          key={this.state.currentPageInputKey}
           type="text"
-          defaultValue={this.state.currentPage}
+          defaultValue={this.props.currentPage}
           onBlur={this.pageInputChange}
           onKeyPress={this.pageInputKeyPress} />
-        <span className="accessible">Page {this.state.currentPage}</span>{/* TODO: localization */}
+        <span className="accessible">Page {this.props.currentPage}</span>{/* TODO: localization */}
       </div>
     );
 
@@ -152,13 +137,15 @@ export class Pager extends Component {
 }
 
 Pager.propTypes = {
-  onPageChange: PropTypes.func.isRequired,
+  currentPage: PropTypes.number.isRequired,
+  changePage: PropTypes.func.isRequired,
   resultCount: PropTypes.number.isRequired,
   resultsPerPage: PropTypes.number.isRequired
 };
 
 Pager.defaultProps = {
-  onPageChange: _.noop,
+  currentPage: 1,
+  changePage: _.noop,
   resultCount: 0,
   resultsPerPage: 6
 };

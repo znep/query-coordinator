@@ -1,137 +1,151 @@
 import React, { Component, PropTypes } from 'react';
-import { getPagerStart, getPagerEnd } from 'lib/pagerHelpers';
 import _ from 'lodash';
 
 export class Pager extends Component {
-  static get firstPage() {
-    return 1;
-  }
-
-  // The number of page buttons we show in the pager
-  static get maxPageLinkCount() {
-    return 9;
-  }
-
-  static get resultsPerPage() {
-    return 6;
-  }
-
   constructor(props) {
     super(props);
     this.state = {
-      currentPage: Pager.firstPage
+      currentPage: 1,
+      pageIsInvalid: false,
+      currentPageInputKey: 1
+      /*
+        currentPageInputKey only exists so that the defaultValue of the input field updates when the prev/next
+        links are clicked. Otherwise, the input would not update due to how React treats defaultValue.
+        We cannot just use "value" instead, because then the input would not be modifiable (controllable).
+      */
     };
-    _.bindAll(this, ['pagerStart', 'pagerEnd', 'lastPage', 'pageLinks', 'pageLinkClick']);
-  }
-
-  // First pager link to show
-  pagerStart() {
-    return getPagerStart({
-      firstPage: Pager.firstPage,
-      lastPage: this.lastPage(),
-      maxPageLinkCount: Pager.maxPageLinkCount,
-      currentPage: this.state.currentPage
-    });
-  }
-
-  // Last pager link to show
-  pagerEnd() {
-    return getPagerEnd({
-      lastPage: this.lastPage(),
-      maxPageLinkCount: Pager.maxPageLinkCount,
-      currentPage: this.state.currentPage
-    });
+    _.bindAll(this, [
+      'lastPage',
+      'prevLinkClick',
+      'nextLinkClick',
+      'lastLinkClick',
+      'pageInputChange',
+      'pageInputKeyPress',
+      'changePage'
+    ]);
   }
 
   lastPage() {
-    return Math.ceil(this.props.resultCount / Pager.resultsPerPage, 10);
+    return Math.ceil(this.props.resultCount / this.props.resultsPerPage, 10);
   }
 
-  pageLinks() {
-    const links = [];
-    for (let pageNumber = this.pagerStart(); pageNumber <= this.pagerEnd(); pageNumber++) {
-      const linkClasses = 'pageLink{0}'.format((this.state.currentPage === pageNumber) ? ' active' : '');
-      const pageTranslation = 'Page'; // TODO: localization
-
-      links.push(
-        <a
-          key={pageNumber}
-          href="#"
-          onClick={(e) => this.pageLinkClick(e, pageNumber)}
-          className={linkClasses}
-          title={`${pageTranslation} ${pageNumber}`}>
-          <span className="accessible">{pageTranslation}</span>{pageNumber}
-        </a>
-      );
-    }
-    return links;
-  }
-
-  pageLinkClick(e, pageNumber) {
+  prevLinkClick(e) {
     e.preventDefault();
+    if (this.state.currentPage > 1) {
+      this.changePage(this.state.currentPage - 1);
+    }
+  }
+
+  nextLinkClick(e) {
+    e.preventDefault();
+    if (this.state.currentPage < this.lastPage()) {
+      this.changePage(this.state.currentPage + 1);
+    }
+  }
+
+  lastLinkClick(e) {
+    e.preventDefault();
+    this.changePage(this.lastPage());
+  }
+
+  pageInputChange(e) {
+    const newPage = e.target.value;
+    if (parseInt(newPage, 10) === this.state.currentPage) return;
+    if (newPage && newPage >= 1 && newPage <= this.lastPage()) {
+      this.changePage(newPage);
+      this.setState({ pageIsInvalid: false });
+    } else {
+      // Invalid page
+      this.setState({ pageIsInvalid: true });
+    }
+  }
+
+  pageInputKeyPress(e) {
+    if (e.key === 'Enter') {
+      $(e.target).trigger('blur');
+    }
+  }
+
+  changePage(pageNumber) {
     this.props.onPageChange(pageNumber);
-    this.setState({ currentPage: pageNumber });
+    this.setState({
+      currentPage: parseInt(pageNumber, 10),
+      currentPageInputKey: this.state.currentPageInputKey + 1
+      /* increment the key to trigger a re-render of the currentPageInput */
+    });
   }
 
   render() {
-    const previousAndFirstPageButtons = (
-      <div className="inline-block">
-        <a
-          href="#"
-          className="next lastLink pagination-button"
-          onClick={(e) => this.pageLinkClick(e, Pager.firstPage)}
-          title="First Page">{/* TODO: Localization */}
-          <span className="icon">First</span>
-          <span className="accessible">page</span>
-        </a>
-        <a
-          href="#"
-          className="end nextLink pagination-button"
-          onClick={(e) => this.pageLinkClick(e, this.state.currentPage - 1)}
-          title="Previous Page">
-          <span className="icon">Previous</span>
-          <span className="accessible">page</span>
-        </a>
+    const prevLinkDisabled = this.state.currentPage === 1;
+    const prevLinkClasses = [
+      'prev-link',
+      'inline-block',
+      prevLinkDisabled ? 'disabled' : null
+    ].filter((className) => className).join(' ');
+
+    const prevLink = (
+      <a
+        href="#"
+        className={prevLinkClasses}
+        onClick={(e) => this.prevLinkClick(e)}
+        title="Previous page">{/* TODO: localization */}
+        <span className="socrata-icon-arrow-left"></span>
+        <span className="accessible">Previous page</span>{/* TODO: localization */}
+      </a>
+    );
+
+    const nextLinkDisabled = this.state.currentPage === this.lastPage();
+    const nextLinkClasses = [
+      'next-link',
+      'inline-block',
+      nextLinkDisabled ? 'disabled' : null
+    ].filter((className) => className).join(' ');
+
+    const nextLink = (
+      <a
+        href="#"
+        className={nextLinkClasses}
+        onClick={(e) => this.nextLinkClick(e)}
+        title="Next page">{/* TODO: localization */}
+        <span className="socrata-icon-arrow-right"></span>
+        <span className="accessible">Next page</span>{/* TODO: localization */}
+      </a>
+    );
+
+    const currentPageInputClasses = [
+      'current-page-input',
+      'inline-block',
+      this.state.pageIsInvalid ? 'error' : null
+    ].filter((className) => className).join(' ');
+
+    const currentPageInput = (
+      <div className={currentPageInputClasses}>
+        <input
+          key={this.state.currentPageInputKey}
+          type="text"
+          defaultValue={this.state.currentPage}
+          onBlur={this.pageInputChange}
+          onKeyPress={this.pageInputKeyPress} />
+        <span className="accessible">Page {this.state.currentPage}</span>{/* TODO: localization */}
       </div>
     );
 
-    const nextAndLastPageButtons = (
-      <div className="inline-block">
-        <a
-          href="#"
-          className="next nextLink pagination-button"
-          onClick={(e) => this.pageLinkClick(e, this.state.currentPage + 1)}
-          title="Next Page">{/* TODO: Localization */}
-          <span className="icon">Next</span>
-          <span className="accessible">page</span>
-        </a>
-        <a
-          href="#"
-          className="end lastLink pagination-button"
-          onClick={(e) => this.pageLinkClick(e, this.lastPage())}
-          title="Last Page">
-          <span className="icon">Last</span>
-          <span className="accessible">page</span>
-        </a>
-      </div>
-    );
-
-    const ellipses = (
-      <span className="ellipses">...</span>
+    const lastPageLink = (
+      <a
+        href="#"
+        className="last-page-link"
+        onClick={(e) => this.lastLinkClick(e)}
+        title="Last page">{/* TODO: localization */}
+        {this.lastPage()}
+        <span className="accessible">Last page</span>{/* TODO: localization */}
+      </a>
     );
 
     return (
-      <div className="results-pagination-controls">
-        <div className="pagination">
-          {/* TODO: move the logic to helpers and make tests for them */}
-          {this.state.currentPage !== Pager.firstPage && previousAndFirstPageButtons}
-          {this.pagerStart() !== Pager.firstPage && ellipses}
-
-          {this.pageLinks()}
-
-          {this.pagerEnd() !== this.lastPage() && ellipses}
-          {this.state.currentPage !== this.lastPage() && nextAndLastPageButtons}
-        </div>
+      <div className="pager">
+        {prevLink}
+        {currentPageInput} of {lastPageLink}{/* TODO: localization */}
+        {nextLink}
       </div>
     );
   }
@@ -139,12 +153,14 @@ export class Pager extends Component {
 
 Pager.propTypes = {
   onPageChange: PropTypes.func.isRequired,
-  resultCount: PropTypes.number.isRequired
+  resultCount: PropTypes.number.isRequired,
+  resultsPerPage: PropTypes.number.isRequired
 };
 
 Pager.defaultProps = {
   onPageChange: _.noop,
-  resultCount: 0
+  resultCount: 0,
+  resultsPerPage: 6
 };
 
 export default Pager;

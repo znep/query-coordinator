@@ -49,7 +49,10 @@ export class ResultsContainer extends Component {
 
           <CardContainer results={this.props.results} />
 
-          <Pager resultCount={this.props.resultCount} onPageChange={this.onPageChange} />
+          <Pager
+            resultCount={this.props.resultCount}
+            onPageChange={this.onPageChange}
+            resultsPerPage={this.props.resultsPerPage} />
         </div>
       );
     }

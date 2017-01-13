@@ -10,7 +10,7 @@ The `socrata-utils` package is available in the artifactory npm registry.
 
 To configure `npm` to use the appropriate registry, run the following command:
 
-    npm config set registry https://socrata.artifactoryonline.com/socrata/api/npm/npm-virtual
+    npm config set registry https://repo.socrata.com/artifactory/api/npm/npm-virtual
 
 Then install using npm:
 

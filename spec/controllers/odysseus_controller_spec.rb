@@ -73,6 +73,15 @@ describe OdysseusController do
           end
         end
       end
+      context 'goal narrative is private and user is logged out' do
+        it 'redirects to login' do
+          VCR.use_cassette('odysseus_controller/has_private_story') do
+            expect(subject).to_not receive(:render_odysseus_path)
+            get :classic_single_goal, :goal_id => goal_id
+            subject.should redirect_to(login_url)
+          end
+        end
+      end
       context 'error talking to storyteller' do
         it 'errors' do
           VCR.use_cassette('odysseus_controller/storyteller_500') do
@@ -103,6 +112,15 @@ describe OdysseusController do
             expect(subject).to_not receive(:render_odysseus_path)
             get :classic_goal, :dashboard_id => dashboard_id, :category_id => category_id, :goal_id => goal_id
             subject.should redirect_to(canonical_view_path)
+          end
+        end
+      end
+      context 'goal narrative is private and user is logged out' do
+        it 'redirects to login' do
+          VCR.use_cassette('odysseus_controller/has_private_story') do
+            expect(subject).to_not receive(:render_odysseus_path)
+            get :classic_goal, :dashboard_id => dashboard_id, :category_id => category_id, :goal_id => goal_id
+            subject.should redirect_to(login_url)
           end
         end
       end

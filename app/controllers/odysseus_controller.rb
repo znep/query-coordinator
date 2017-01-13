@@ -9,8 +9,11 @@ class OdysseusController < ApplicationController
   def classic_goal
     # redirect to the normal goal page if the goal
     # has been migrated away from classic narratives.
-    if goal_has_published_narrative?(params[:goal_id])
+    has_narrative = goal_has_published_narrative?(params[:goal_id])
+    if has_narrative
       redirect_to(govstat_goal_path)
+    elsif has_narrative.nil?
+      require_user
     else
       render_odysseus_path(request.path)
     end
@@ -19,8 +22,11 @@ class OdysseusController < ApplicationController
   def classic_single_goal
     # redirect to the normal single goal page if the goal
     # has been migrated away from classic narratives.
-    if goal_has_published_narrative?(params[:goal_id])
+    has_narrative = goal_has_published_narrative?(params[:goal_id])
+    if has_narrative
       redirect_to(govstat_single_goal_path)
+    elsif has_narrative.nil?
+      require_user
     else
       render_odysseus_path(request.path)
     end
@@ -94,6 +100,8 @@ class OdysseusController < ApplicationController
     case response.code
       when 200
         true
+      when 403
+        nil
       when 404
         false
       else

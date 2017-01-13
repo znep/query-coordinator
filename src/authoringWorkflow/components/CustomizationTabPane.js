@@ -1,19 +1,13 @@
 import React from 'react';
 import classNames from 'classnames';
 
-export var CustomizationTabPane = React.createClass({
-  getDefaultProps() {
-    return {
-      show: false
-    };
-  },
-
+export default class CustomizationTabPane extends React.Component {
   render() {
-    var isHidden = !this.props.show;
-    var attributes = {
+    const isHidden = !this.props.show;
+    const attributes = {
       key: this.props.id,
       id: `${this.props.id}-panel`,
-      className: classNames({'customization-tab-pane_hidden': isHidden}),
+      className: classNames({ 'customization-tab-pane_hidden': isHidden }),
       role: 'tabpanel',
       'aria-hidden': isHidden,
       'aria-labelledby': `${this.props.id}-link`
@@ -21,6 +15,8 @@ export var CustomizationTabPane = React.createClass({
 
     return <div {...attributes}>{this.props.children}</div>;
   }
-});
+};
 
-export default CustomizationTabPane;
+CustomizationTabPane.defaultProps = {
+  show: false
+};

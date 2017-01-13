@@ -1,13 +1,16 @@
+import _ from 'lodash';
 import React from 'react';
 import classNames from 'classnames';
-import _ from 'lodash';
+import Scrolls from '../shared/Scrolls';
 
-export default class AccordionPane extends React.Component {
+class AccordionPane extends React.Component {
   constructor(props) {
     super(props);
 
     this.handleOnClickTitle = this.handleOnClickTitle.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
+
+    this.shouldScroll = false;
   }
 
   handleOnClickTitle() {
@@ -18,6 +21,19 @@ export default class AccordionPane extends React.Component {
     if (event.keyCode == 13 || event.keyCode == 32) {
       this.props.onToggle(this.props.paneId);
       event.preventDefault();
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.isOpen && nextProps.isOpen) {
+      this.shouldScroll = true;
+    }
+  }
+
+  componentDidUpdate() {
+    if (this.shouldScroll) {
+      this.props.scroll.toView(this.refs.content);
+      this.shouldScroll = false;
     }
   }
 
@@ -40,7 +56,7 @@ export default class AccordionPane extends React.Component {
           <span>{title}</span>
           <div className="dropdown-caret"></div>
         </div>
-        <div className="socrata-accordion-pane-content">
+        <div className="socrata-accordion-pane-content" ref="content">
           {children}
         </div>
       </div>
@@ -59,3 +75,5 @@ AccordionPane.propTypes = {
   isOpen: React.PropTypes.bool,
   paneId: React.PropTypes.string
 };
+
+export default Scrolls(AccordionPane);

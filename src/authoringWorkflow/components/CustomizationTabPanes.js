@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import CustomizationTabPane from './CustomizationTabPane';
+import ScrollView from './shared/ScrollView';
 
 export var CustomizationTabPanes = React.createClass({
   propTypes: {
@@ -26,9 +27,9 @@ export var CustomizationTabPanes = React.createClass({
 
   render() {
     return (
-      <div className="visualization-tab-panes">
+      <ScrollView className="visualization-tab-panes">
         {_.map(this.props.tabs, tab => { return this.pane(tab); })}
-      </div>
+      </ScrollView>
     );
   }
 });

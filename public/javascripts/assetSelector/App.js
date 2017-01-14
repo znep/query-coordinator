@@ -1,42 +1,35 @@
-import React, { Component } from 'react';
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import BackButton from './components/BackButton';
 import Header from './components/Header';
 import ResultsContainer from './components/ResultsContainer';
 
-export class App extends Component {
-  constructor() {
-    super();
-
-    this.state = {
-      modalIsOpen: true
-    };
-
-    _.bindAll(this, ['openModal', 'closeModal']);
-  }
-
-  openModal() {
-    this.setState({ modalIsOpen: true });
-  }
-
-  closeModal() {
-    this.setState({ modalIsOpen: false });
-  }
-
-  render() {
-    return (
-      <div className={this.state.modalIsOpen ? '' : 'hidden'}>
-        <div className="overlay">
-          <div className="content">
-            <Header />
-            <div className="centered-content">
-              <BackButton onClick={this.closeModal} />
-              <ResultsContainer resultsPerPage={6} />
-            </div>
-          </div>
+export const App = (props) => (
+  <div className={props.modalIsOpen ? '' : 'hidden'}>
+    <div className="asset-selector-overlay">
+      <div className="content">
+        <Header />
+        <div className="centered-content">
+          <BackButton />
+          <ResultsContainer resultsPerPage={6} />
         </div>
       </div>
-    );
-  }
+    </div>
+  </div>
+);
+
+App.propTypes = {
+  modalIsOpen: PropTypes.bool.isRequired
+};
+
+App.defaultProps = {
+  modalIsOpen: true
+};
+
+function mapStateToProps(state) {
+  return {
+    modalIsOpen: _.get(state, 'modal.modalIsOpen')
+  };
 }
 
-export default App;
+export default connect(mapStateToProps)(App);

@@ -40,19 +40,19 @@ describe('components/ResultsContainer', function() {
   });
 
   it('renders the "no results" element if the results array is empty', function() {
-    var element = renderComponent(ResultsContainer, getProps({ results: [] }));
+    var element = renderComponentWithStore(ResultsContainer, getProps({ results: [] }));
     expect(element).to.exist;
     expect(element.className).to.eq('no-results');
   });
 
   it('renders the results container if the results array is present', function() {
-    var element = renderComponent(ResultsContainer, getProps());
+    var element = renderComponentWithStore(ResultsContainer, getProps());
     expect(element).to.exist;
     expect(element.className).to.eq('results-container');
   });
 
   it('renders the total result count', function() {
-    var element = renderComponent(ResultsContainer, getProps());
+    var element = renderComponentWithStore(ResultsContainer, getProps());
     expect(element.querySelector('.result-count').textContent).to.equal('1-6 of 100 Views');
   });
 
@@ -62,7 +62,7 @@ describe('components/ResultsContainer', function() {
     for (var i = 0; i < 8; i++) {
       results.push(originalResult)
     }
-    var element = renderComponent(ResultsContainer, getProps({ results }));
+    var element = renderComponentWithStore(ResultsContainer, getProps({ results }));
     expect(element.querySelectorAll('.result-card').length).to.equal(9);
   });
 });

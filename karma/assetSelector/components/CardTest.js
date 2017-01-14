@@ -24,13 +24,13 @@ describe('components/Card', function() {
   }
 
   it('renders an empty card with no data', function() {
-    var element = renderComponent(Card, {});
+    var element = renderComponentWithStore(Card, {});
     expect(element).to.exist;
     expect(element.className).to.match(/result-card/);
   });
 
   it('renders a card with correct data', function() {
-    var element = renderComponent(Card, getProps());
+    var element = renderComponentWithStore(Card, getProps());
     expect(element).to.exist;
     expect(element.querySelector('.entry-title').textContent).to.eq('david hasselhoff');
     expect(element.querySelector('.entry-description').textContent).to.

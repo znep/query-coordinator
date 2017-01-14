@@ -1,4 +1,7 @@
 import React, { Component, PropTypes } from 'react';
+import _ from 'lodash';
+import { connect } from 'react-redux';
+import { closeModal } from '../actions/modal';
 import { ViewCard } from 'socrata-components';
 import { getIconClassForDisplayType } from 'socrata-components/common/displayTypeMetadata';
 import { getDateLabel, getViewCountLabel, getAriaLabel } from '../../datasetLandingPage/lib/viewCardHelpers';
@@ -6,7 +9,19 @@ import { getDateLabel, getViewCountLabel, getAriaLabel } from '../../datasetLand
 export class Card extends Component {
   constructor(props) {
     super(props);
-    _.bindAll(this, ['viewCardProps']);
+    _.bindAll(this, ['onClick', 'setHovering', 'viewCardProps']);
+    this.state = {
+      hovering: false
+    };
+  }
+
+  onClick(cardProps) {
+    console.log(cardProps);
+    this.props.dispatchCloseModal();
+  }
+
+  setHovering(hoveringState) {
+    this.setState({ hovering: hoveringState });
   }
 
   viewCardProps() {
@@ -27,7 +42,28 @@ export class Card extends Component {
   }
 
   render() {
-    return <ViewCard {...this.viewCardProps()} />;
+    const cardProps = this.viewCardProps();
+    const cardOverlayClasses = [
+      'overlay',
+      this.state.hovering ? '' : 'hidden'
+    ].filter((className) => className).join(' ');
+
+    return (
+      <ViewCard {...cardProps}>
+        <div
+          className="hover-target"
+          onMouseOver={() => this.setHovering(true)}
+          onMouseOut={() => this.setHovering(false)}>
+          <div className={cardOverlayClasses}>
+            <button
+              className="select-button btn btn-primary"
+              onClick={() => this.onClick(cardProps)}>
+              Select{/* TODO: Localization */}
+            </button>
+          </div>
+        </div>
+      </ViewCard>
+    );
   }
 }
 
@@ -45,14 +81,24 @@ Card.propTypes = {
   tags: PropTypes.array,
   type: PropTypes.string.isRequired,
   updatedAt: PropTypes.string,
-  viewCount: PropTypes.number.isRequired
+  viewCount: PropTypes.number.isRequired,
+  dispatchCloseModal: PropTypes.func.isRequired
 };
 
 Card.defaultProps = {
   link: '',
   name: '',
   type: '',
-  viewCount: 0
+  viewCount: 0,
+  dispatchCloseModal: _.noop
 };
 
-export default Card;
+function mapDispatchToProps(dispatch) {
+  return {
+    dispatchCloseModal: function() {
+      dispatch(closeModal());
+    }
+  };
+}
+
+export default connect(null, mapDispatchToProps)(Card);

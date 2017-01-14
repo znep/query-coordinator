@@ -1,17 +1,26 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
+import { openModal } from './actions/modal';
 import BackButton from './components/BackButton';
 import Header from './components/Header';
 import ResultsContainer from './components/ResultsContainer';
 
 export const App = (props) => (
-  <div className={props.modalIsOpen ? '' : 'hidden'}>
-    <div className="asset-selector-overlay">
-      <div className="content">
-        <Header />
-        <div className="centered-content">
-          <BackButton />
-          <ResultsContainer resultsPerPage={6} />
+  <div>
+    <button
+      className="btn btn-primary"
+      onClick={props.dispatchOpenModal}>
+      Open Asset Selector!
+    </button>
+    <div className={props.modalIsOpen ? '' : 'hidden'}>
+      <div className="asset-selector-overlay">
+        <div className="content">
+          <Header />
+          <div className="centered-content">
+            <BackButton />
+            <ResultsContainer resultsPerPage={6} />
+          </div>
         </div>
       </div>
     </div>
@@ -19,11 +28,13 @@ export const App = (props) => (
 );
 
 App.propTypes = {
+  dispatchOpenModal: PropTypes.func.isRequired,
   modalIsOpen: PropTypes.bool.isRequired
 };
 
 App.defaultProps = {
-  modalIsOpen: true
+  dispatchOpenModal: _.noop,
+  modalIsOpen: false
 };
 
 function mapStateToProps(state) {
@@ -32,4 +43,12 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(App);
+function mapDispatchToProps(dispatch) {
+  return {
+    dispatchOpenModal: function() {
+      dispatch(openModal());
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -53,16 +53,17 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps)(Update);
 
-
 function ShowUpsertJobs({ upsertJobs }) {
   return (
     <section className="management-ui-section">
-      <h2>Upsert Jobs</h2>
+      <h2>{I18n.upsert_jobs.title}</h2>
       <div className="alert default manage-section-box">
         <ul>
           {upsertJobs.map((upsertJob) => (
             <li key={`${upsertJob.schema_id}-${upsertJob.id}`}>
-              <Link to={Links.showUpsertJob(upsertJob.id)}>Job {upsertJob.id}</Link>
+              <Link to={Links.showUpsertJob(upsertJob.id)}>
+                {I18n.upsert_jobs.job_id.format(upsertJob.id)}
+              </Link>
             </li>
           ))}
         </ul>

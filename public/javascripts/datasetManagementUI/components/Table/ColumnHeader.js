@@ -17,8 +17,6 @@ const ColumnHeader = React.createClass({
     const { outputSchema, column, updateColumnType } = this.props;
     // TODO: Refactor this to be in an appropriate location!
     const columnTypes = ['SoQLNumber', 'SoQLText'];
-    // TODO: Internationalize!
-    const typeDisplayNames = { 'SoQLText': 'Text', 'SoQLNumber': 'Number' };
 
     return (
       <th key={column.id}>
@@ -33,7 +31,7 @@ const ColumnHeader = React.createClass({
           {
             columnTypes.map((type) =>
               <option key={type} value={type}>
-                {typeDisplayNames[type]}
+                {I18n.show_output_schema.column_header.type_display_names[type]}
               </option>
             )
           }

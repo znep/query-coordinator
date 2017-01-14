@@ -36,10 +36,10 @@ function query(db, uploadId, schemaId, outputSchemaIdStr) {
 
 export function ShowOutputSchema({ db, upload, columns, outputSchema,
                                    goToUpload, updateColumnType, applyUpdate }) {
-  // TODO: I18n
   const uploadProgress = upload.__status__.type === STATUS_UPDATING ?
-    `${Math.round(upload.__status__.percentCompleted)}% Uploaded` :
-    'Upload Done';
+                         I18n.home_pane.percent_uploaded.format(
+                           Math.round(upload.__status__.percentCompleted)) :
+                         I18n.home_pane.upload_done;
 
   const modalProps = {
     fullScreen: true,
@@ -50,7 +50,7 @@ export function ShowOutputSchema({ db, upload, columns, outputSchema,
       <span>
         <Link to={Links.uploads}>{I18n.home_pane.data}</Link> &gt;&nbsp;
         <Link to={Links.showUpload(upload.id)}>{upload.filename}</Link> ({uploadProgress}) &gt;
-        Preview
+        {I18n.home_pane.preview}
       </span>
     ),
     onDismiss: goToUpload
@@ -73,7 +73,7 @@ export function ShowOutputSchema({ db, upload, columns, outputSchema,
           <button
             onClick={applyUpdate}
             className="btn btn-primary">
-            Apply Update
+            {I18n.home_pane.apply_update}
           </button>
         </ModalFooter>
       </Modal>

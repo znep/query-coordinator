@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
 
+import { soqlTypes } from '../../lib/soqlTypes';
+
 const ColumnHeader = React.createClass({
 
   propTypes: {
@@ -15,8 +17,14 @@ const ColumnHeader = React.createClass({
 
   render() {
     const { outputSchema, column, updateColumnType } = this.props;
-    // TODO: Refactor this to be in an appropriate location!
-    const columnTypes = ['SoQLNumber', 'SoQLText', 'SoQLBoolean', 'SoQLFixedTimestamp', 'SoQLFloatingTimestamp'];
+
+    const types = soqlTypes.map((type) =>
+      ({
+        humanName: I18n.show_output_schema.column_header.type_display_names[type],
+        systemName: type
+      })
+    );
+    const orderedTypes = _.sortBy(types, 'humanName');
 
     return (
       <th key={column.id}>
@@ -29,9 +37,9 @@ const ColumnHeader = React.createClass({
           value={column.soql_type}
           onChange={(event) => updateColumnType(outputSchema, column, event.target.value)}>
           {
-            columnTypes.map((type) =>
-              <option key={type} value={type}>
-                {I18n.show_output_schema.column_header.type_display_names[type]}
+            orderedTypes.map((type) =>
+              <option key={type.systemName} value={type.systemName}>
+                {type.humanName}
               </option>
             )
           }

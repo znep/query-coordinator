@@ -52,7 +52,10 @@ export function getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType) 
     'SoQLText': 'text',
     'SoQLNumber': 'number',
     'SoQLBoolean': 'boolean',
-    'SoQLFixedTimestamp': 'fixed_timestamp'
+    'SoQLFixedTimestamp': 'fixed_timestamp',
+    'SoQLFloatingTimestamp': 'floating_timestamp',
+    'SoQLLocation': 'location',
+    'SoQLPoint': 'point'
   };
 
   const newOutputSchema = {
@@ -63,14 +66,15 @@ export function getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType) 
                           map(sc => sc.column_id);
   const oldOutputColumns = oldOutputColIds.map(id => _.find(db.columns, { id: id }));
   const newOutputColumns = oldOutputColumns.map((column) => {
-    const xform = _.find(db.transforms, { output_column_id: column.id }).transform_expr;
+    const xform = _.find(db.transforms, { output_column_id: column.id });
+    const xformExpr = xform.transform_expr;
 
     // Input columns are presently always text.  This will eventually
     // change, and then we'll need the input column here instead of
     // just hardcoding a comparison to text.
-    const transformExpr = (column.id === oldColumn.id && newType !== 'SoQLText') ?
-      `to_${longNameToSoql[newType]}(${column.schema_column_name})` :
-      xform;
+    const transformExpr =
+      (column.id === oldColumn.id) ? `to_${longNameToSoql[newType]}(${column.schema_column_name})`
+                                   : xformExpr;
 
     return {
       schema_column_name: column.schema_column_name,

@@ -16,7 +16,7 @@ const ColumnHeader = React.createClass({
   render() {
     const { outputSchema, column, updateColumnType } = this.props;
     // TODO: Refactor this to be in an appropriate location!
-    const columnTypes = ['SoQLNumber', 'SoQLText', 'SoQLBoolean', 'SoQLFixedTimestamp'];
+    const columnTypes = ['SoQLNumber', 'SoQLText', 'SoQLBoolean', 'SoQLFixedTimestamp', 'SoQLFloatingTimestamp'];
 
     return (
       <th key={column.id}>

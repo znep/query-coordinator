@@ -122,22 +122,13 @@ function SvgBarChart($element, vif) {
       MARGINS.RIGHT
     );
     const d3ClipPathId = `bar-chart-clip-path-${_.uniqueId()}`;
-    const dimensionIndices = dataToRender.map(
-      (series) => series.columns.indexOf('dimension')
+    const dataTableDimensionIndex = dataToRender.columns.indexOf('dimension');
+    const dimensionValues = dataToRender.rows.map(
+      (row) => row[dataTableDimensionIndex]
     );
-    const dimensionValues = _.union(
-      _.flatten(
-        dataToRender.map((series) => {
-          const dimensionIndex = series.columns.indexOf('dimension');
-
-          return series.rows.map((row) => row[dimensionIndex]);
-        })
-      )
+    const measureLabels = dataToRender.columns.slice(
+      dataTableDimensionIndex + 1
     );
-    const measureIndices = dataToRender.map(
-      (series) => series.columns.indexOf('measure')
-    );
-    const measureLabels = self.getVif().series.map((series) => series.label);
 
     let viewportHeight = (
       $chartElement.height() -
@@ -147,8 +138,8 @@ function SvgBarChart($element, vif) {
     let width;
     let height;
     let groupedDataToRender;
-    let maxBarsPerGroup;
     let numberOfGroups;
+    let numberOfItemsPerGroup;
     let minXValue;
     let maxXValue;
     let d3YAxis;
@@ -294,11 +285,7 @@ function SvgBarChart($element, vif) {
         attr('fill', DIMENSION_LABELS_FONT_COLOR).
         attr('stroke', 'none').
         attr('style', 'text-anchor: end').
-        attr('transform', `rotate(${DIMENSION_LABELS_ROTATION_ANGLE})`).
-        attr(
-          'data-row-index',
-          (label, rowIndex) => rowIndex
-        );
+        attr('transform', `rotate(${DIMENSION_LABELS_ROTATION_ANGLE})`);
 
       let baselineValue = 0;
 
@@ -322,130 +309,117 @@ function SvgBarChart($element, vif) {
     // inline in this function below).
     function renderSeries() {
 
-      // Since we annotate each bar-underlay and bar element with its series
-      // index using the 'data-series-index' attribute) on enter() we can rely
-      // on that data attribute instead of having to derive the series index
-      // from the individual datum bound to the element.
-      function getPrimaryColorOrNone() {
-        const seriesIndex = this.getAttribute('data-series-index');
-        const primaryColor = self.getPrimaryColorBySeriesIndex(seriesIndex);
-
-        return (primaryColor !== null) ?
-          primaryColor :
-          'none';
-      }
-
       dimensionGroupSvgs.selectAll('rect.bar-underlay').
-        attr('y', (d) => d3GroupingYScale(d[0])).
+        attr(
+          'y',
+          (d, measureIndex) => {
+            return d3GroupingYScale(measureLabels[measureIndex]);
+          }
+        ).
         attr('x', 0).
         attr('height', d3GroupingYScale.rangeBand() - 1).
         attr('width', width).
         attr('stroke', 'none').
         attr('fill', 'transparent').
-        attr('data-default-fill', getPrimaryColorOrNone);
+        attr(
+          'data-default-fill',
+          (measureValue, measureIndex, dimensionIndex) => {
+            return getColor(dimensionIndex, measureIndex);
+          }
+        );
 
       dimensionGroupSvgs.selectAll('rect.bar').
         attr(
           'x',
           (d) => {
-            const value = _.clamp(
-              d[1],
-              (minXValue) ? minXValue : d[1],
-              (maxXValue) ? maxXValue : d[1]
-            );
+            // Note that _.clamp() will cast non-numeric values to the minimum,
+            // so null values become 0.
+            const value = _.clamp(d, minXValue, maxXValue);
 
             let xAttr;
 
-            // If the value is zero or null we want it to be present at the
-            // baseline for the rest of the bars (on the left of the chart if
-            // the minimum value is 0 or more, on the right of the chart if the
-            // maximum value is less than zero.
-            if (value === null || value === 0) {
+            if (minXValue > 0) {
+              xAttr = d3XScale(minXValue);
+            } else if (maxXValue < 0) {
+              xAttr = d3XScale(maxXValue);
+            } else {
+              xAttr = d3XScale(0);
+            }
 
-              if (minXValue > 0) {
-                xAttr = d3XScale(minXValue) - 0.0001;
-              } else if (maxXValue < 0) {
-                xAttr = d3XScale(maxXValue) + 0.0001;
-              } else {
-                xAttr = d3XScale(0) - 0.0001;
-              }
-            } else if (value > 0) {
-
-              if (minXValue > 0) {
-
-                if (value < minXValue) {
-                  xAttr = d3XScale(minXValue) + 1;
-                } else {
-                  xAttr = Math.min(
-                    d3XScale(value),
-                    d3XScale(minXValue) + 1
-                  );
-                }
-
-              } else {
-
-                xAttr = Math.min(
-                  d3XScale(value),
-                  d3XScale(0) + 1
-                );
-              }
-            } else if (value < 0) {
-
-              if (value < minXValue) {
-                xAttr = d3XScale(minXValue) - 1;
-              } else if (maxXValue <= 0) {
-                xAttr = _.max([d3XScale(value), 1]);
-              } else {
-                xAttr = d3XScale(value);
-              }
-
+            if (value < 0) {
+              xAttr = d3XScale(value);
             }
 
             return xAttr;
           }
         ).
-        attr('y', (d) => d3GroupingYScale(d[0])).
-        attr('width', (d) => {
-
-          if (d[1] === 0 || !_.isFinite(d[1])) {
-            // We want the flyout for null or zero values to appear along
-            // the x axis, rather than at the top of the chart.
-            //
-            // This means that we need to push the container element for
-            // null values down to the x axis, rather than the default
-            // behavior which places it at the top of the visualization
-            // container. This is accomplished by the 'y' attribute, but
-            // that does not have the expected behavior if the element is
-            // not visible (or in this case, has a height of zero).
-            //
-            // Ultimately the way we force the column's container to
-            // actually do the intended layout is to give the element a very
-            // small height which should be more or less indiscernible,
-            // which causes the layout to do the right thing.
-            return 0.0001;
-          } else {
-            // Value of column clamped between min and max possible values.
-            const value = _.clamp(d[1], minXValue, maxXValue);
-
-            // Calculating baseline depending on column value
-            // Value;
-            //   > 0 : Baseline should be 0 or minXValue depending on which is lower.
-            //   < 0 : Baseline should be 0 or maxXValue depending on which is higher.
-            const baselineValue = (value > 0) ? _.max([minXValue, 0]) : _.min([maxXValue, 0]);
-
-            // Height / width calculated based on the difference between value and baseline
-            const length = Math.abs(d3XScale(value) - d3XScale(baselineValue));
-
-            // See comment about setting the y attribute above for the
-            // rationale behind ensuring a minimum height of one pixel for
-            // non-null and non-zero values.
-            return _.max([2, length]);
+        attr(
+          'y',
+          (d, measureIndex) => {
+            return d3GroupingYScale(measureLabels[measureIndex]);
           }
-        }).
+        ).
+        attr(
+          'width',
+          (d) => {
+
+            if (d === 0 || !_.isFinite(d)) {
+              // We want the flyout for null or zero values to appear along
+              // the x axis, rather than at the top of the chart.
+              //
+              // This means that we need to push the container element for
+              // null values down to the x axis, rather than the default
+              // behavior which places it at the top of the visualization
+              // container. This is accomplished by the 'y' attribute, but
+              // that does not have the expected behavior if the element is
+              // not visible (or in this case, has a height of zero).
+              //
+              // Ultimately the way we force the column's container to
+              // actually do the intended layout is to give the element a very
+              // small height which should be more or less indiscernible,
+              // which causes the layout to do the right thing.
+              return 0.0001;
+            } else {
+              // Value of column clamped between min and max possible values.
+              const value = _.clamp(d, minXValue, maxXValue);
+
+              // Calculating baseline depending on column value
+              // Value;
+              //   > 0 : Baseline should be 0 or minXValue depending on which is
+              //         lower.
+              //   < 0 : Baseline should be 0 or maxXValue depending on which is
+              //         higher.
+              const baselineValue = (value > 0) ?
+                Math.max(minXValue, 0) :
+                Math.min(maxXValue, 0);
+
+              const barWidth = Math.abs(
+                d3XScale(value) - d3XScale(baselineValue)
+              );
+
+              // See comment about setting the y attribute above for the
+              // rationale behind ensuring a minimum height of one pixel for
+              // non-null and non-zero values.
+              return Math.max(1, barWidth);
+            }
+          }
+        ).
         attr('height', d3GroupingYScale.rangeBand() - 1).
         attr('stroke', 'none').
-        attr('fill', getPrimaryColorOrNone).
-        attr('data-default-fill', getPrimaryColorOrNone);
+        attr(
+          'fill',
+          (value, measureIndex, dimensionIndex) => {
+
+            return getColor(dimensionIndex, measureIndex);
+          }
+        ).
+        attr(
+          'data-default-fill',
+          (value, measureIndex, dimensionIndex) => {
+
+            return getColor(dimensionIndex, measureIndex);
+          }
+        );
 
       if (self.getShowValueLabels()) {
 
@@ -453,10 +427,16 @@ function SvgBarChart($element, vif) {
           attr(
             'x',
             (d) => {
-              const value = _.clamp(
-                d[1],
-                (minXValue) ? minXValue : d[1],
-                (maxXValue) ? maxXValue : d[1]
+              // Note that _.clamp() will cast non-numeric values to the
+              // minimum, so null values become 0.
+              const value = _.clamp(d, minXValue, maxXValue);
+              const belowMeasureAxisMinValue = (
+                self.getMeasureAxisMinValue() !== null &&
+                self.getMeasureAxisMinValue() >= value
+              );
+              const aboveMeasureAxisMaxValue = (
+                self.getMeasureAxisMaxValue() !== null &&
+                self.getMeasureAxisMaxValue() <= value
               );
               const scaledValue = d3XScale(value);
               const barWidth = (value >= 0) ?
@@ -465,7 +445,14 @@ function SvgBarChart($element, vif) {
 
               let xAttr;
 
-              if (value >= 0) {
+              // We need to override positioning if the measure axis min or max
+              // values are set, since our zero-based logic will produce
+              // incorrect results.
+              if (belowMeasureAxisMinValue) {
+                xAttr = scaledValue + MEASURE_VALUE_TEXT_X_PADDING;
+              } else if (aboveMeasureAxisMaxValue) {
+                xAttr = scaledValue - MEASURE_VALUE_TEXT_X_PADDING;
+              } else if (value >= 0) {
 
                 // If the value is positive and the bar is wide enough to render
                 // the text label inside of itself, then position the text label
@@ -502,7 +489,7 @@ function SvgBarChart($element, vif) {
           ).
           attr(
             'y',
-            (d) => {
+            (d, measureIndex) => {
 
               // We want to position the text label roughly in the center of the
               // bar, so we determine the offset of the top of the bar in a
@@ -513,7 +500,7 @@ function SvgBarChart($element, vif) {
               // peculiarities, we have eyeballed an additional padding value
               // to add to the result of the above calculation which causes the
               // labels to actually appear vertically-centered in a bar.
-              return d3GroupingYScale(d[0]) +
+              return d3GroupingYScale(measureLabels[measureIndex]) +
                 (d3GroupingYScale.rangeBand() / 2) +
                 MEASURE_VALUE_TEXT_Y_PADDING;
             }
@@ -523,7 +510,17 @@ function SvgBarChart($element, vif) {
           attr(
             'fill',
             (d) => {
-              const value = d[1];
+              const value = d;
+              const measureAxisMinValue = self.getMeasureAxisMinValue();
+              const measureAxisMaxValue = self.getMeasureAxisMaxValue();
+              const belowMeasureAxisMinValue = (
+                measureAxisMinValue !== null &&
+                measureAxisMinValue >= value
+              );
+              const aboveMeasureAxisMaxValue = (
+                measureAxisMaxValue !== null &&
+                measureAxisMaxValue <= value
+              );
               const scaledValue = d3XScale(value);
               const barWidth = (value >= 0) ?
                 scaledValue - d3XScale(0) :
@@ -531,10 +528,29 @@ function SvgBarChart($element, vif) {
 
               let fillAttr;
 
+              // We need to override positioning if the measure axis min or max
+              // values are set, since our zero-based logic will produce
+              // incorrect results.
+              if (belowMeasureAxisMinValue) {
+
+                if (measureAxisMinValue <= 0) {
+                  fillAttr = MEASURE_VALUE_TEXT_INSIDE_BAR_COLOR;
+                } else {
+                  fillAttr = MEASURE_VALUE_TEXT_OUTSIDE_BAR_COLOR;
+                }
+              } else if (aboveMeasureAxisMaxValue) {
+
+                if (measureAxisMaxValue >= 0) {
+                  fillAttr = MEASURE_VALUE_TEXT_INSIDE_BAR_COLOR;
+                } else {
+                  fillAttr = MEASURE_VALUE_TEXT_OUTSIDE_BAR_COLOR;
+                }
               // If the bar is wide enough to accommodate the text label inside
               // of itself, then make the text label the 'inside' color
               // (off-white).
-              if (barWidth >= MEASURE_VALUE_TEXT_IN_BAR_MINIMUM_BAR_WIDTH) {
+              } else if (
+                barWidth >= MEASURE_VALUE_TEXT_IN_BAR_MINIMUM_BAR_WIDTH
+              ) {
                 fillAttr = MEASURE_VALUE_TEXT_INSIDE_BAR_COLOR;
               // Otherwise, make the text label the 'outside' color (dark grey).
               } else {
@@ -548,7 +564,15 @@ function SvgBarChart($element, vif) {
           attr(
             'style',
             (d) => {
-              const value = d[1];
+              const value = d;
+              const belowMeasureAxisMinValue = (
+                self.getMeasureAxisMinValue() !== null &&
+                self.getMeasureAxisMinValue() >= value
+              );
+              const aboveMeasureAxisMaxValue = (
+                self.getMeasureAxisMaxValue() !== null &&
+                self.getMeasureAxisMaxValue() <= value
+              );
               const scaledValue = d3XScale(value);
               const barWidth = (value >= 0) ?
                 scaledValue - d3XScale(0) :
@@ -556,7 +580,14 @@ function SvgBarChart($element, vif) {
 
               let styleAttr;
 
-              if (value >= 0) {
+              // We need to override positioning if the measure axis min or max
+              // values are set, since our zero-based logic will produce
+              // incorrect results.
+              if (belowMeasureAxisMinValue) {
+                styleAttr = 'text-anchor:start';
+              } else if (aboveMeasureAxisMaxValue) {
+                styleAttr = 'text-anchor:end';
+              } else if (value >= 0) {
 
                 // If this is a positive value, text inside the bar should be
                 // anchored on the right ('text-anchor: end') so that it ends at
@@ -590,7 +621,9 @@ function SvgBarChart($element, vif) {
               return styleAttr;
             }
           ).
-          text((d) => (_.isNumber(d[1])) ? utils.formatNumber(d[1]) : '');
+          text((d) => {
+            return (_.isNumber(d)) ? utils.formatNumber(d) : '';
+          });
       }
 
       lastRenderedSeriesHeight = yAxisAndSeriesSvg.node().getBBox().height;
@@ -670,32 +703,9 @@ function SvgBarChart($element, vif) {
      *    on the client at the moment).
      */
 
-    groupedDataToRender = dimensionValues.map((dimensionValue) => {
-
-      return [dimensionValue].concat([
-        dataToRender.map((series, seriesIndex) => {
-          const matchingRows = series.rows.filter((row) => {
-            return dimensionValue === row[dimensionIndices[seriesIndex]];
-          });
-
-          return (matchingRows.length > 0) ?
-            [
-              measureLabels[seriesIndex],
-              matchingRows[0][measureIndices[seriesIndex]]
-            ] :
-            [
-              measureLabels[seriesIndex],
-              null
-            ];
-        })
-      ]);
-    });
-
-    maxBarsPerGroup = d3.max(
-      groupedDataToRender,
-      (d) => d[1].length
-    );
+    groupedDataToRender = dataToRender.rows;
     numberOfGroups = groupedDataToRender.length;
+    numberOfItemsPerGroup = dataToRender.rows[0].length - 1;
 
     // TODO: Figure out how we want to handle scaling modes.
     // // Compute height based on the x-axis scaling mode.
@@ -733,7 +743,7 @@ function SvgBarChart($element, vif) {
       // bars at widths that are in line with our expectations, however.
       height = Math.max(
         viewportHeight,
-        barHeight * maxBarsPerGroup * numberOfGroups
+        barHeight * numberOfGroups * numberOfItemsPerGroup
       );
     // See TODO above.
     // }
@@ -752,14 +762,25 @@ function SvgBarChart($element, vif) {
     /**
      * 2. Set up the x-scale and -axis.
      */
-    const dataMinXValue = getMinXValue(groupedDataToRender);
-    const dataMaxXValue = getMaxXValue(groupedDataToRender);
 
     try {
-      const limitMin = self.getMeasureAxisMinValue();
-      const limitMax = self.getMeasureAxisMaxValue();
+      const dataMinXValue = getMinXValue(
+        groupedDataToRender,
+        dataTableDimensionIndex
+      );
+      const dataMaxXValue = getMaxXValue(
+        groupedDataToRender,
+        dataTableDimensionIndex
+      );
+      const measureAxisMinValue = self.getMeasureAxisMinValue();
+      const measureAxisMaxValue = self.getMeasureAxisMaxValue();
 
-      if (limitMin && limitMax && limitMin >= limitMax) {
+      if (
+        measureAxisMinValue &&
+        measureAxisMaxValue &&
+        measureAxisMinValue >= measureAxisMaxValue
+      ) {
+
         self.renderError(
           I18n.translate(
             'visualizations.common.validation.errors.' +
@@ -769,8 +790,8 @@ function SvgBarChart($element, vif) {
         return;
       }
 
-      minXValue = limitMin || _.min([dataMinXValue, 0]);
-      maxXValue = limitMax || _.max([dataMaxXValue, 0]);
+      minXValue = measureAxisMinValue || Math.min(dataMinXValue, 0);
+      maxXValue = measureAxisMaxValue || Math.max(dataMaxXValue, 0);
 
       if (minXValue >= maxXValue) {
         self.renderError(
@@ -791,7 +812,7 @@ function SvgBarChart($element, vif) {
 
       // Normalize min and max values so that we always show 0 if the user
       // has specified that behavior in the Vif.
-      //if (_.isNull(limitMin) && _.isNull(limitMax)) {
+      //if (_.isNull(measureAxisMinValue) && _.isNull(measureAxisMaxValue)) {
       //  minXValue = Math.min(minXValue, 0);
       //  maxXValue = Math.max(0, maxXValue);
       //}
@@ -918,7 +939,7 @@ function SvgBarChart($element, vif) {
     dimensionGroupSvgs.
       attr('class', 'dimension-group').
       attr(
-        'data-group-category',
+        'data-dimension-value',
         (d) => {
 
           return (d[0] === null || typeof d[0] === 'undefined') ?
@@ -929,82 +950,76 @@ function SvgBarChart($element, vif) {
       attr('transform', (d) => `translate(0,${d3DimensionYScale(d[0])})`);
 
     barUnderlaySvgs = dimensionGroupSvgs.selectAll('rect.bar-underlay').
-      data((d) => d[1]).
+      data((d) => d.slice(1)).
       enter().
       append('rect');
 
     barUnderlaySvgs.
       attr('class', 'bar-underlay').
       attr(
-        'data-bar-category',
-        // Not sure if what the second argument actually is, but it is
-        // the third argument that seems to track the row index.
-        (datum, seriesIndex, rowIndex) => groupedDataToRender[rowIndex][0]
+        'data-dimension-value',
+        (datum, measureIndex, dimensionIndex) => {
+          return dimensionValues[dimensionIndex];
+        }
       ).
       attr(
-        'data-series-index',
+        'data-dimension-index',
+        (datum, measureIndex, dimensionIndex) => dimensionIndex
+      ).
+      attr(
+        'data-measure-index',
         /* eslint-disable no-unused-vars */
-        (datum, seriesIndex, rowIndex) => seriesIndex
+        (datum, measureIndex, dimensionIndex) => measureIndex
         /* eslint-enable no-unused-vars */
-      ).
-      attr(
-        'data-row-index',
-        // Not sure if what the second argument actually is, but it is
-        // the third argument that seems to track the row index.
-        (datum, seriesIndex, rowIndex) => rowIndex
       );
 
     barSvgs = dimensionGroupSvgs.selectAll('rect.bar').
-      data((d) => d[1]).
+      data((d) => d.slice(1)).
       enter().
       append('rect');
 
     barSvgs.
       attr('class', 'bar').
       attr(
-        'data-bar-category',
-        // Not sure if what the second argument actually is, but it is
-        // the third argument that seems to track the row index.
-        (datum, seriesIndex, rowIndex) => groupedDataToRender[rowIndex][0]
+        'data-dimension-value',
+        (datum, measureIndex, dimensionIndex) => {
+          return dimensionValues[dimensionIndex];
+        }
       ).
       attr(
-        'data-series-index',
+        'data-dimension-index',
         /* eslint-disable no-unused-vars */
-        (datum, seriesIndex, rowIndex) => seriesIndex
-        /* eslint-enable no-unused-vars */
+        (datum, measureIndex, dimensionIndex) => dimensionIndex
       ).
       attr(
-        'data-row-index',
-        // Not sure if what the second argument actually is, but it is
-        // the third argument that seems to track the row index.
-        (datum, seriesIndex, rowIndex) => rowIndex
+        'data-measure-index',
+        /* eslint-disable no-unused-vars */
+        (datum, measureIndex, dimensionIndex) => measureIndex
       );
 
     if (self.getShowValueLabels()) {
 
       barTextSvgs = dimensionGroupSvgs.selectAll('text').
-        data(function(d) { return d[1]; }).
+        data((d) => d.slice(1)).
         enter().
         append('text');
 
       barTextSvgs.
         attr(
-          'data-bar-category',
-          // Not sure if what the second argument actually is, but it is
-          // the third argument that seems to track the row index.
-          (datum, seriesIndex, rowIndex) => groupedDataToRender[rowIndex][0]
+          'data-dimension-value',
+          (datum, measureIndex, dimensionIndex) => {
+            return dimensionValues[dimensionIndex];
+          }
         ).
         attr(
-          'data-series-index',
+          'data-dimension-index',
           /* eslint-disable no-unused-vars */
-          (datum, seriesIndex, rowIndex) => seriesIndex
-          /* eslint-enable no-unused-vars */
+          (datum, measureIndex, dimensionIndex) => dimensionIndex
         ).
         attr(
-          'data-row-index',
-          // Not sure if what the second argument actually is, but it is
-          // the third argument that seems to track the row index.
-          (datum, seriesIndex, rowIndex) => rowIndex
+          'data-measure-index',
+          /* eslint-disable no-unused-vars */
+          (datum, measureIndex, dimensionIndex) => measureIndex
         );
     }
 
@@ -1074,15 +1089,29 @@ function SvgBarChart($element, vif) {
         function() {
 
           if (!isCurrentlyPanning()) {
-            const seriesIndex = this.getAttribute('data-series-index');
+            const dimensionIndex = parseInt(
+              this.getAttribute('data-dimension-index'),
+              10
+            );
+            const measureIndex = parseInt(
+              this.getAttribute('data-measure-index'),
+              10
+            );
             const dimensionGroup = this.parentNode;
             const siblingBar = d3.select(dimensionGroup).select(
-              `rect.bar[data-series-index="${seriesIndex}"]`
+              `rect.bar[data-measure-index="${measureIndex}"]`
             )[0][0];
-            const datum = d3.select(this.parentNode).datum()[1][seriesIndex];
+            const color = getColor(dimensionIndex, measureIndex);
+            const label = measureLabels[measureIndex];
+            // d3's .datum() method gives us the entire row, whereas everywhere
+            // else measureIndex refers only to measure values. We therefore
+            // add one to measure index to get the actual measure value from
+            // the raw row data provided by d3 (the value at element 0 of the
+            // array returned by .datum() is the dimension value).
+            const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
             showBarHighlight(siblingBar);
-            showBarFlyout(siblingBar, datum);
+            showBarFlyout(siblingBar, color, label, value);
           }
         }
       ).
@@ -1106,11 +1135,25 @@ function SvgBarChart($element, vif) {
         function() {
 
           if (!isCurrentlyPanning()) {
-            const seriesIndex = this.getAttribute('data-series-index');
-            const datum = d3.select(this.parentNode).datum()[1][seriesIndex];
+            const dimensionIndex = parseInt(
+              this.getAttribute('data-dimension-index'),
+              10
+            );
+            const measureIndex = parseInt(
+              this.getAttribute('data-measure-index'),
+              10
+            );
+            const color = getColor(dimensionIndex, measureIndex);
+            const label = measureLabels[measureIndex];
+            // d3's .datum() method gives us the entire row, whereas everywhere
+            // else measureIndex refers only to measure values. We therefore
+            // add one to measure index to get the actual measure value from
+            // the raw row data provided by d3 (the value at element 0 of the
+            // array returned by .datum() is the dimension value).
+            const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
             showBarHighlight(this);
-            showBarFlyout(this, datum);
+            showBarFlyout(this, color, label, value);
           }
         }
       ).
@@ -1134,15 +1177,29 @@ function SvgBarChart($element, vif) {
         function() {
 
           if (!isCurrentlyPanning()) {
-            const seriesIndex = this.getAttribute('data-series-index');
+            const dimensionIndex = parseInt(
+              this.getAttribute('data-dimension-index'),
+              10
+            );
+            const measureIndex = parseInt(
+              this.getAttribute('data-measure-index'),
+              10
+            );
             const dimensionGroup = this.parentNode;
             const siblingBar = d3.select(dimensionGroup).select(
-              `rect.bar[data-series-index="${seriesIndex}"]`
+              `rect.bar[data-measure-index="${measureIndex}"]`
             )[0][0];
-            const datum = d3.select(this.parentNode).datum()[1][seriesIndex];
+            const color = getColor(dimensionIndex, measureIndex);
+            const label = measureLabels[measureIndex];
+            // d3's .datum() method gives us the entire row, whereas everywhere
+            // else measureIndex refers only to measure values. We therefore
+            // add one to measure index to get the actual measure value from
+            // the raw row data provided by d3 (the value at element 0 of the
+            // array returned by .datum() is the dimension value).
+            const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
             showBarHighlight(siblingBar);
-            showBarFlyout(siblingBar, datum);
+            showBarFlyout(siblingBar, color, label, value);
           }
         }
       ).
@@ -1165,15 +1222,15 @@ function SvgBarChart($element, vif) {
           (d) => {
 
             if (!isCurrentlyPanning()) {
-              const groupCategory = (_.isNull(d[0]) || _.isUndefined(d[0])) ?
+              const dimensionValue = (_.isNull(d[0]) || _.isUndefined(d[0])) ?
                 NO_VALUE_SENTINEL :
                 d[0];
               const dimensionGroup = yAxisAndSeriesSvg.select(
-                `g.dimension-group[data-group-category="${groupCategory}"]`
+                `g.dimension-group[data-dimension-value="${dimensionValue}"]`
               );
 
               showGroupHighlight(dimensionGroup);
-              showGroupFlyout(dimensionGroup);
+              showGroupFlyout(dimensionGroup, dimensionValues, measureLabels);
             }
           }
         ).
@@ -1224,6 +1281,41 @@ function SvgBarChart($element, vif) {
       chartSvg.selectAll('text').
         attr('cursor', 'default');
     }
+  }
+
+  function getColor(dimensionIndex, measureIndex) {
+    const isGrouping = !_.isNull(
+      _.get(
+        self.getVif(),
+        'series[0].dataSource.dimension.grouping.columnName',
+        null
+      )
+    );
+    const usingColorPalette = _.get(
+      self.getVif(),
+      `series[${(isGrouping) ? 0 : dimensionIndex}].color.palette`,
+      false
+    );
+
+    function getColorFromPalette() {
+      const palette = self.getColorPaletteBySeriesIndex(0);
+
+      return palette[measureIndex];
+    }
+
+    function getPrimaryColorOrNone() {
+      const primaryColor = (isGrouping) ?
+        self.getPrimaryColorBySeriesIndex(0) :
+        self.getPrimaryColorBySeriesIndex(measureIndex);
+
+      return (primaryColor !== null) ?
+        primaryColor :
+        'none';
+    }
+
+    return (usingColorPalette) ?
+      getColorFromPalette() :
+      getPrimaryColorOrNone();
   }
 
   function conditionallyTruncateLabel(label) {
@@ -1289,27 +1381,25 @@ function SvgBarChart($element, vif) {
       outerTickSize(0);
   }
 
-  function getMinXValue(groupedData) {
+  function getMinXValue(groupedData, dimensionIndex) {
 
     return d3.min(
-      groupedData.map((row) => {
-
-        return d3.min(
-          row[1].map((d) => d[1])
-        );
-      })
+      groupedData.map(
+        (row) => d3.min(
+          row.slice(dimensionIndex + 1)
+        )
+      )
     );
   }
 
-  function getMaxXValue(groupedData) {
+  function getMaxXValue(groupedData, dimensionIndex) {
 
     return d3.max(
-      groupedData.map((row) => {
-
-        return d3.max(
-          row[1].map((d) => d[1])
-        );
-      })
+      groupedData.map(
+        (row) => d3.max(
+          row.slice(dimensionIndex + 1)
+        )
+      )
     );
   }
 
@@ -1325,7 +1415,19 @@ function SvgBarChart($element, vif) {
     return d3.svg.axis().
       scale(xScale).
       orient('top').
-      tickFormat(function(d) { return utils.formatNumber(d); });
+      tickFormat((d) => { return utils.formatNumber(d); });
+  }
+
+  function getSeriesIndexByMeasureIndex(measureIndex) {
+    const isGrouping = !_.isNull(
+      _.get(
+        self.getVif(),
+        'series[0].dataSource.dimension.grouping.columnName',
+        null
+      )
+    );
+
+    return (isGrouping) ? 0 : measureIndex;
   }
 
   function isCurrentlyPanning() {
@@ -1360,7 +1462,9 @@ function SvgBarChart($element, vif) {
         // NOTE: The below function depends on this being set by d3, so it is
         // not possible to use the () => {} syntax here.
         function() {
-          const seriesIndex = this.getAttribute('data-series-index');
+          const seriesIndex = getSeriesIndexByMeasureIndex(
+            parseInt(this.getAttribute('data-measure-index'), 10)
+          );
           const highlightColor = self.getHighlightColorBySeriesIndex(
             seriesIndex
           );
@@ -1381,8 +1485,12 @@ function SvgBarChart($element, vif) {
       // NOTE: The below function depends on this being set by d3, so it is not
       // possible to use the () => {} syntax here.
       function() {
-        const seriesIndex = this.getAttribute('data-series-index');
-        const highlightColor = self.getHighlightColorBySeriesIndex(seriesIndex);
+        const measureIndex = getSeriesIndexByMeasureIndex(
+          parseInt(this.getAttribute('data-measure-index'), 10)
+        );
+        const highlightColor = self.getHighlightColorBySeriesIndex(
+          measureIndex
+        );
 
         return (highlightColor !== null) ?
           highlightColor :
@@ -1395,15 +1503,15 @@ function SvgBarChart($element, vif) {
 
     // NOTE: The below function depends on this being set by d3, so it is not
     // possible to use the () => {} syntax here.
-    d3.selectAll('.bar').each(function() {
+    d3.selectAll('rect.bar').each(function() {
       const selection = d3.select(this);
 
       selection.attr('fill', selection.attr('data-default-fill'));
     });
   }
 
-  function showGroupFlyout(groupElement) {
-    const title = groupElement.attr('data-group-category');
+  function showGroupFlyout(groupElement, dimensionValues, measureLabels) {
+    const title = groupElement.attr('data-dimension-value');
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(
         $('<td>', {'colspan': 2}).text(
@@ -1412,34 +1520,41 @@ function SvgBarChart($element, vif) {
             title
         )
       );
-    const labelValuePairs = groupElement.data()[0][1];
     const $table = $('<table>', {'class': 'socrata-flyout-table'}).
       append($title);
+    const dimensionValue = groupElement.attr('data-dimension-value');
+    const dimensionIndex = dimensionValues.indexOf(dimensionValue);
+    const measureValues = groupElement.data()[0].slice(1);
 
     let $labelValueRows;
     let payload = null;
 
-    $labelValueRows = labelValuePairs.map((datum) => {
-      const label = datum[0];
-      const value = datum[1];
-      const seriesIndex = self.getSeriesIndexByLabel(label);
+    // 0th element of row data is always the dimension, everything after that
+    // is a measure value.
+    $labelValueRows = measureValues.map((value, measureIndex) => {
+      const label = measureLabels[measureIndex];
       const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
         text(label).
-        css('color', self.getPrimaryColorBySeriesIndex(seriesIndex));
+        css('color', getColor(dimensionIndex, measureIndex));
       const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
+      const unitOne = self.getUnitOneBySeriesIndex(
+        getSeriesIndexByMeasureIndex(measureIndex)
+      );
+      const unitOther = self.getUnitOtherBySeriesIndex(
+        getSeriesIndexByMeasureIndex(measureIndex)
+      );
 
       let valueString;
 
       if (value === null) {
         valueString = I18n.translate('visualizations.common.no_value');
       } else {
-
         valueString = utils.formatNumber(value);
 
         if (value === 1) {
-          valueString += ` ${self.getUnitOneBySeriesIndex(seriesIndex)}`;
+          valueString += ` ${unitOne}`;
         } else {
-          valueString += ` ${self.getUnitOtherBySeriesIndex(seriesIndex)}`;
+          valueString += ` ${unitOther}`;
         }
       }
 
@@ -1463,45 +1578,61 @@ function SvgBarChart($element, vif) {
 
     // If there is only one bar in the group then we can position the flyout
     // over the bar itself, not the bar group.
-    if (groupElement.selectAll('.bar')[0].length === 1) {
+    if (groupElement.selectAll('rect.bar')[0].length === 1) {
       _.set(payload, 'element', groupElement[0][0].childNodes[1]);
-    // If there is more than one bar we can measure the widths of each bar in
-    // the group and then calculate a point that is at the right side and
-    // vertically centered on the bars in the group (we can't rely on the
-    // default behavior of the flyout renderer to position the flyout above and
-    // in the center of the element passed to it as a target since, in this
-    // case, the group element will always extend to the full width of the
-    // chart.
     } else {
 
-      // Calculate the offsets from screen (0, 0) to the right edge of the
-      // widest bar in the group and half-way from its top edge to its bottom
-      // edge. If we pass a 'flyoutOffset' property to the flyout renderer, it
-      // will use those values as offsets for the fixed-positioned flyout
-      // instead of deriving its own offsets from the position of the 'element'
-      // property.
+      // Calculate the offsets from screen (0, 0) to the right of the widest
+      // bar (where at least one value in the group is > 0) or 0 on the x-axis
+      // (where all values in the group are <= 0) and the vertical center of
+      // the group in question.
       const flyoutElementBoundingClientRect = groupElement[0][0].
         getBoundingClientRect();
       const flyoutElementHeight = flyoutElementBoundingClientRect.height;
       const flyoutElementTopOffset = flyoutElementBoundingClientRect.top;
       const flyoutElementLeftOffset = flyoutElementBoundingClientRect.left;
-      const flyoutValues = labelValuePairs.map((d) => d[1]);
-      const maxFlyoutValue = Math.max(...flyoutValues);
+      const maxFlyoutValue = d3.max(measureValues);
+      const measureAxisMaxValue = self.getMeasureAxisMaxValue();
 
       let flyoutLeftOffset;
 
-      if (maxFlyoutValue <= 0) {
-        flyoutLeftOffset = flyoutElementLeftOffset + d3XScale(0);
+      if (maxFlyoutValue >= 0) {
+
+        if (
+          measureAxisMaxValue !== null &&
+          measureAxisMaxValue < maxFlyoutValue
+        ) {
+
+          flyoutLeftOffset = (
+            flyoutElementLeftOffset + d3XScale(measureAxisMaxValue)
+          );
+        } else {
+
+          flyoutLeftOffset = (
+            flyoutElementLeftOffset + d3XScale(maxFlyoutValue)
+          );
+        }
       } else {
-        flyoutLeftOffset = flyoutElementLeftOffset + d3XScale(maxFlyoutValue);
+
+        if (measureAxisMaxValue !== null && measureAxisMaxValue < 0) {
+
+          flyoutLeftOffset = (
+            flyoutElementLeftOffset + d3XScale(measureAxisMaxValue)
+          );
+        } else {
+
+          flyoutLeftOffset = (
+            flyoutElementLeftOffset + d3XScale(0)
+          );
+        }
       }
 
       _.set(
         payload,
         'flyoutOffset',
         {
-          left: flyoutLeftOffset,
-          top: flyoutElementTopOffset + (flyoutElementHeight / 2) - 1
+          top: flyoutElementTopOffset + (flyoutElementHeight / 2) - 1,
+          left: flyoutLeftOffset
         }
       );
     }
@@ -1512,14 +1643,13 @@ function SvgBarChart($element, vif) {
     );
   }
 
-  function showBarFlyout(barElement, datum) {
+  function showBarFlyout(barElement, color, label, value) {
     const title = (
-      barElement.getAttribute('data-bar-category') ||
+      barElement.getAttribute('data-dimension-value') ||
       I18n.translate('visualizations.common.no_value')
     );
-    const label = datum[0];
-    const value = datum[1];
-    const seriesIndex = self.getSeriesIndexByLabel(label);
+    const measureIndex = self.getSeriesIndexByLabel(label);
+    const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(
         $('<td>', {'colspan': 2}).text(
@@ -1528,7 +1658,7 @@ function SvgBarChart($element, vif) {
       );
     const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
       text(label).
-      css('color', self.getPrimaryColorBySeriesIndex(seriesIndex));
+      css('color', color);
     const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
     const $valueRow = $('<tr>', {'class': 'socrata-flyout-row'});
     const $table = $('<table>', {'class': 'socrata-flyout-table'});

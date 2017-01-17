@@ -28,8 +28,10 @@ import {
   getBaseLayer,
   getBaseLayerOpacity,
   isBarChart,
+  isGroupedBarChart,
   isRegionMap,
   isColumnChart,
+  isGroupedColumnChart,
   isFeatureMap,
   isHistogram,
   isTimelineChart,
@@ -87,10 +89,52 @@ export var ColorsAndStylePane = React.createClass({
     );
   },
 
+  renderGroupedBarChartControls() {
+    const { vifAuthoring, colorPalettes, onSelectColorPalette } = this.props;
+    const selectedColorPalette = getColorPalette(vifAuthoring);
+    const colorPaletteAttributes = {
+      id: 'color-palette',
+      options: colorPalettes,
+      value: selectedColorPalette,
+      onSelection: onDebouncedEvent(this, onSelectColorPalette, (event) => event.value)
+    };
+
+    return (
+      <AccordionPane title={translate('panes.colors_and_style.subheaders.colors')}>
+        <label className="block-label"
+               htmlFor="color-palette">{translate('panes.colors_and_style.fields.color_palette.title')}</label>
+        <div className="color-scale-dropdown-container">
+          <Styleguide.Dropdown {...colorPaletteAttributes} />
+        </div>
+      </AccordionPane>
+    );
+  },
+
   renderBarChartControls() {
     return (
       <AccordionPane title={translate('panes.colors_and_style.subheaders.colors')}>
         {this.renderPrimaryColor(translate('panes.colors_and_style.fields.bar_color.title'))}
+      </AccordionPane>
+    );
+  },
+
+  renderGroupedColumnChartControls() {
+    const { vifAuthoring, colorPalettes, onSelectColorPalette } = this.props;
+    const selectedColorPalette = getColorPalette(vifAuthoring);
+    const colorPaletteAttributes = {
+      id: 'color-palette',
+      options: colorPalettes,
+      value: selectedColorPalette,
+      onSelection: onDebouncedEvent(this, onSelectColorPalette, (event) => event.value)
+    };
+
+    return (
+      <AccordionPane title={translate('panes.colors_and_style.subheaders.colors')}>
+        <label className="block-label"
+               htmlFor="color-palette">{translate('panes.colors_and_style.fields.color_palette.title')}</label>
+        <div className="color-scale-dropdown-container">
+          <Styleguide.Dropdown {...colorPaletteAttributes} />
+        </div>
       </AccordionPane>
     );
   },
@@ -274,9 +318,19 @@ export var ColorsAndStylePane = React.createClass({
     var vifAuthoring = this.props.vifAuthoring;
 
     if (isBarChart(vifAuthoring)) {
-      configuration = this.renderBarChartControls();
+
+      if (isGroupedBarChart(vifAuthoring)) {
+        configuration = this.renderGroupedBarChartControls();
+      } else {
+        configuration = this.renderBarChartControls();
+      }
     } else if (isColumnChart(vifAuthoring)) {
-      configuration = this.renderColumnChartControls();
+
+      if (isGroupedColumnChart(vifAuthoring)) {
+        configuration = this.renderGroupedColumnChartControls();
+      } else {
+        configuration = this.renderColumnChartControls();
+      }
     } else if (isHistogram(vifAuthoring)) {
       configuration = this.renderHistogramControls();
     } else if (isTimelineChart(vifAuthoring)) {

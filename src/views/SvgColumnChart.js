@@ -24,27 +24,13 @@ const MEASURE_LABELS_FONT_SIZE = 14;
 const MEASURE_LABELS_FONT_COLOR = '#5e5e5e';
 const DEFAULT_DESKTOP_COLUMN_WIDTH = 14;
 const DEFAULT_MOBILE_COLUMN_WIDTH = 50;
+/* eslint-disable no-unused-vars */
 const MAX_COLUMN_COUNT_WITHOUT_PAN = 50;
+/* eslint-enable no-unused-vars */
 const AXIS_DEFAULT_COLOR = '#979797';
 const AXIS_TICK_COLOR = '#adadad';
 const AXIS_GRID_COLOR = '#f1f1f1';
 const NO_VALUE_SENTINEL = '__NO_VALUE__';
-/**
- * Since `_.clamp()` apparently doesn't exist in the version of lodash that we
- * are using. This is called `clampValue` in order to prevent confusion due to
- * d3 also exposing a `.clamp()` method.
- */
-
-function clampValue(value, min, max) {
-
-  if (value < min) {
-    return min;
-  } else if (value > max) {
-    return max;
-  } else {
-    return value;
-  }
-}
 
 function SvgColumnChart($element, vif) {
   const self = this;
@@ -73,6 +59,7 @@ function SvgColumnChart($element, vif) {
     this.clearError();
 
     if (newVif) {
+
       if (!_.isEqual(this.getVif().series, newVif.series)) {
         lastRenderedZoomTranslate = 0;
       }
@@ -96,15 +83,11 @@ function SvgColumnChart($element, vif) {
 
   this.destroy = function() {
 
-    d3.
-      select(self.$element[0]).
-        select('svg').
-          remove();
+    d3.select(self.$element[0]).select('svg').
+      remove();
 
-    self.
-      $element.
-        find('.socrata-visualization-container').
-          remove();
+    self.$element.find('.socrata-visualization-container').
+      remove();
   };
 
   /**
@@ -120,10 +103,8 @@ function SvgColumnChart($element, vif) {
       }
     );
 
-    self.
-      $element.
-        find('.socrata-visualization-container').
-          append($chartElement);
+    self.$element.find('.socrata-visualization-container').
+      append($chartElement);
   }
 
   function renderData() {
@@ -135,54 +116,25 @@ function SvgColumnChart($element, vif) {
       MARGINS.LEFT -
       MARGINS.RIGHT
     );
-    let width;
+    const d3ClipPathId = `column-chart-clip-path-${_.uniqueId()}`;
+    const dataTableDimensionIndex = dataToRender.columns.indexOf('dimension');
+    const dimensionValues = dataToRender.rows.map(
+      (row) => row[dataTableDimensionIndex]
+    );
+    const measureLabels = dataToRender.columns.slice(
+      dataTableDimensionIndex + 1
+    );
+
     let viewportHeight = (
       $chartElement.height() -
       MARGINS.TOP -
       MARGINS.BOTTOM
     );
+    let width;
     let height;
-    const d3ClipPathId = 'column-chart-clip-path-' + _.uniqueId();
-    const dimensionIndices = dataToRender.
-      map(
-        function(series) {
-          return series.columns.indexOf('dimension');
-        }
-      );
-    const dimensionValues = _.union(
-      _.flatten(
-        dataToRender.
-          map(
-            function(series) {
-              const dimensionIndex = series.columns.indexOf('dimension');
-
-              return series.
-                rows.
-                map(
-                  function(row) {
-                    return row[dimensionIndex];
-                  }
-                );
-            }
-          )
-      )
-    );
-    const measureIndices = dataToRender.
-      map(
-        function(series) {
-          return series.columns.indexOf('measure');
-        }
-      );
-    const measureLabels = self.
-      getVif().
-        series.
-          map(
-            function(series) {
-              return series.label;
-            }
-          );
     let groupedDataToRender;
-    let columnCount;
+    let numberOfGroups;
+    let numberOfItemsPerGroup;
     let minYValue;
     let maxYValue;
     let d3XAxis;
@@ -190,13 +142,17 @@ function SvgColumnChart($element, vif) {
     let d3Zoom;
     let chartSvg;
     let viewportSvg;
+    let clipPathSvg;
     let xAxisAndSeriesSvg;
     let seriesSvg;
     let dimensionGroupSvgs;
-    let xAxisPanDistance;
-    let xAxisPanningEnabled;
+    let columnUnderlaySvgs;
+    let columnSvgs;
     let xAxisBound = false;
     let yAxisBound = false;
+    let xAxisPanDistance;
+    let xAxisPanningEnabled;
+
 
     /**
      * Functions defined inside the scope of renderData() are stateful enough
@@ -387,105 +343,65 @@ function SvgColumnChart($element, vif) {
     // inline in this function below).
     function renderSeries() {
 
-      // Since we annotate each column-underlay and column element with its
-      // series index using the 'data-series-index' attribute) on enter() we
-      // can rely on that data attribute instead of having to derive the series
-      // index from the individual datum bound to the element.
-      function getPrimaryColorOrNone() {
-        const seriesIndex = this.getAttribute('data-series-index');
-        const primaryColor = self.getPrimaryColorBySeriesIndex(
-          seriesIndex
+      dimensionGroupSvgs.selectAll('.column-underlay').
+        attr(
+          'x',
+          (d, measureIndex) => {
+            return d3GroupingXScale(measureLabels[measureIndex]);
+          }
+        ).
+        attr('y', 0).
+        attr('width', d3GroupingXScale.rangeBand() - 1).
+        attr('height', height).
+        attr('stroke', 'none').
+        attr('fill', 'transparent').
+        attr(
+          'data-default-fill',
+          (measureValue, measureIndex, dimensionIndex) => {
+            return getColor(dimensionIndex, measureIndex);
+          }
         );
 
-        return (primaryColor !== null) ?
-          primaryColor :
-          'none';
-      }
+      dimensionGroupSvgs.selectAll('.column').
+        attr(
+          'x',
+          (d, measureIndex) => {
+            return d3GroupingXScale(measureLabels[measureIndex]);
+          }
+        ).
+        attr(
+          'y',
+          (d) => {
+            // Note that _.clamp() will cast non-numeric values to the minimum,
+            // so null values become 0.
+            const value = _.clamp(d, minYValue, maxYValue);
 
-      dimensionGroupSvgs.
-        selectAll('.column-underlay').
-          attr(
-            'x',
-            function(d) {
-              return d3GroupingXScale(d[0]);
+            let yAttr;
+
+            if (minYValue > 0) {
+              yAttr = d3YScale(minYValue);
+            } else if (maxYValue < 0) {
+              yAttr = d3YScale(maxYValue);
+            } else {
+              yAttr = d3YScale(0);
             }
-          ).
-          attr('y', 0).
-          attr(
-            'width',
-            d3GroupingXScale.rangeBand() - 1
-          ).
-          attr('height', height).
-          attr('stroke', 'none').
-          attr('fill', 'transparent').
-          attr('data-default-fill', getPrimaryColorOrNone);
 
-      dimensionGroupSvgs.
-        selectAll('.column').
-          attr(
-            'x',
-            function(d) {
-              return d3GroupingXScale(d[0]);
+            if (value > 0) {
+              yAttr = d3YScale(value);
             }
-          ).
-          attr(
-            'y',
-            function(d) {
-              let yAttr;
 
-              const value = maxYValue ? _.min([maxYValue, d[1]]) : d[1];
+            return yAttr;
+          }
+        ).
+        attr(
+          'width',
+          d3GroupingXScale.rangeBand() - 1
+        ).
+        attr(
+          'height',
+          (d) => {
 
-              // If the value is zero or null we want it to be present at the
-              // baseline for the rest of the bars (at the bottom of the chart
-              // if the minimum value is 0 or more, at the top of the chart if
-              // the maximum value is less than zero.
-              if (value === null || value === 0) {
-
-                if (minYValue > 0) {
-                  yAttr = d3YScale(minYValue) - 0.0001;
-                } else if (maxYValue < 0) {
-                  yAttr = d3YScale(maxYValue) + 0.0001;
-                } else {
-                  yAttr = d3YScale(0) - 0.0001;
-                }
-
-              } else if (value > 0) {
-
-                if (minYValue > 0) {
-
-                  yAttr = Math.min(
-                    d3YScale(value),
-                    d3YScale(minYValue) - 1
-                  );
-                } else {
-
-                  yAttr = Math.min(
-                    d3YScale(value),
-                    d3YScale(0) - 1
-                  );
-                }
-
-              } else if (value < 0) {
-
-                if (value < minYValue) {
-                  yAttr = d3YScale(minYValue) + 1;
-                } else if (maxYValue <= 0) {
-                  yAttr = _.max([d3YScale(maxYValue), 1]);
-                } else {
-                  yAttr = d3YScale(0);
-                }
-
-              }
-
-              return yAttr;
-            }
-          ).
-          attr(
-            'width',
-            d3GroupingXScale.rangeBand() - 1
-          ).
-          attr('height', (d) => {
-            if (d[1] === 0 || !_.isFinite(d[1])) {
+            if (d === 0 || !_.isFinite(d)) {
               // We want the flyout for null or zero values to appear along
               // the x axis, rather than at the top of the chart.
               //
@@ -503,42 +419,57 @@ function SvgColumnChart($element, vif) {
               return 0.0001;
             } else {
               // Value of column clamped between min and max possible values.
-              const value = _.clamp(d[1], minYValue, maxYValue);
+              const value = _.clamp(d, minYValue, maxYValue);
 
               // Calculating baseline depending on column value
               // Value;
-              //   > 0 : Baseline should be 0 or minYValue depending on which is lower.
-              //   < 0 : Baseline should be 0 or maxYValue depending on which is higher.
-              const baselineValue = value > 0 ? _.max([minYValue, 0]) : _.min([maxYValue, 0]);
+              //   > 0 : Baseline should be 0 or minYValue depending on which is
+              //         lower.
+              //   < 0 : Baseline should be 0 or maxYValue depending on which is
+              //         higher.
+              const baselineValue = value > 0 ?
+                Math.max(minYValue, 0) :
+                Math.min(maxYValue, 0);
 
-              // Height / width calculated based on the difference between value and baseline
-              const length = Math.abs(d3YScale(value) - d3YScale(baselineValue));
+              const columnHeight = Math.abs(
+                d3YScale(value) - d3YScale(baselineValue)
+              );
 
               // See comment about setting the y attribute above for the
               // rationale behind ensuring a minimum height of one pixel for
               // non-null and non-zero values.
-              return _.max([1, length]);
+              return Math.max(1, columnHeight);
             }
-          }).
-          attr('stroke', 'none').
-          attr('fill', getPrimaryColorOrNone).
-          attr('data-default-fill', getPrimaryColorOrNone);
-
-      lastRenderedSeriesWidth = xAxisAndSeriesSvg.
-        node().
-          getBBox().
-            width;
-
-      xAxisAndSeriesSvg.
+          }
+        ).
+        attr('stroke', 'none').
         attr(
-          'transform',
-          'translate(0,0)'
+          'fill',
+          (value, measureIndex, dimensionIndex) => {
+
+            return getColor(dimensionIndex, measureIndex);
+          }
+        ).
+        attr(
+          'data-default-fill',
+          (value, measureIndex, dimensionIndex) => {
+
+            return getColor(dimensionIndex, measureIndex);
+          }
         );
+
+      lastRenderedSeriesWidth = xAxisAndSeriesSvg.node().getBBox().width;
+
+      // xAxisAndSeriesSvg.
+      //   attr(
+      //     'transform',
+      //     'translate(0,0)'
+      //   );
     }
 
     function handleZoom() {
 
-      lastRenderedZoomTranslate = clampValue(
+      lastRenderedZoomTranslate = _.clamp(
         d3.event.translate[0],
         -1 * xAxisPanDistance,
         0
@@ -578,7 +509,7 @@ function SvgColumnChart($element, vif) {
           getBBox().
             width;
 
-      lastRenderedZoomTranslate = clampValue(
+      lastRenderedZoomTranslate = _.clamp(
         -1 * translateXRatio * currentWidth,
         -1 * xAxisPanDistance,
         0
@@ -606,64 +537,39 @@ function SvgColumnChart($element, vif) {
      *    on the client at the moment).
      */
 
-    groupedDataToRender = dimensionValues.
-      map(function(dimensionValue) {
-
-        return [dimensionValue].concat([
-          dataToRender.
-            map(function(series, seriesIndex) {
-              const matchingRows = series.
-                rows.
-                filter(
-                  function(row) {
-                    return (
-                      dimensionValue === row[dimensionIndices[seriesIndex]]
-                    );
-                  }
-                );
-
-          return (matchingRows.length > 0) ?
-            [
-              measureLabels[seriesIndex],
-              matchingRows[0][measureIndices[seriesIndex]]
-            ] :
-            [
-              measureLabels[seriesIndex],
-              null
-            ];
-        })
-      ]);
-    });
+    groupedDataToRender = dataToRender.rows;
+    numberOfGroups = groupedDataToRender.length;
+    numberOfItemsPerGroup = dataToRender.rows[0].length - 1;
 
     // Compute width based on the x-axis scaling mode.
-    if (self.getXAxisScalingModeBySeriesIndex(0) === 'fit') {
+    // if (self.getXAxisScalingModeBySeriesIndex(0) === 'fit') {
 
-      width = viewportWidth;
+    //   width = viewportWidth;
 
-      // We limit the total column count to 30 when not allowing panning so
-      // that the the labels do not overlap each other.
-      columnCount = (
-        // The first term is the number of groups we are rendering.
-        groupedDataToRender.length *
-        // The second term finds the maximum number of columns per group.
-        d3.max(
-          groupedDataToRender,
-          function(d) {
-            return d[1].length;
-          }
-        )
-      );
+    //   // We limit the total column count to 30 when not allowing panning so
+    //   // that the the labels do not overlap each other.
+    //   columnCount = (
+    //     // The first term is the number of groups we are rendering.
+    //     groupedDataToRender.length *
+    //     // The second term finds the maximum number of columns per group.
+    //     d3.max(
+    //       groupedDataToRender,
+    //       function(d) {
+    //         return d[1].length;
+    //       }
+    //     )
+    //   );
 
-      if (columnCount >= MAX_COLUMN_COUNT_WITHOUT_PAN) {
+    //   if (columnCount >= MAX_COLUMN_COUNT_WITHOUT_PAN) {
 
-        self.renderError(
-          I18n.translate(
-            'visualizations.column_chart.error_exceeded_max_column_count_without_pan'
-          ).format(MAX_COLUMN_COUNT_WITHOUT_PAN)
-        );
-        return;
-      }
-    } else {
+    //     self.renderError(
+    //       I18n.translate(
+    //         'visualizations.column_chart.error_exceeded_max_column_count_without_pan'
+    //       ).format(MAX_COLUMN_COUNT_WITHOUT_PAN)
+    //     );
+    //     return;
+    //   }
+    // } else {
 
       // When we do allow panning we get a little more sophisticated; primarily
       // we will attempt to adjust the width we give to d3 to account for the
@@ -678,21 +584,10 @@ function SvgColumnChart($element, vif) {
       // columns at widths that are in line with our expectations, however.
       width = Math.max(
         viewportWidth,
-        (
-          // The first term is our target column width.
-          columnWidth *
-          // The second term finds the maximum number of columns per group.
-          d3.max(
-            groupedDataToRender,
-            function(d) {
-              return d[1].length;
-            }
-          ) *
-          // The third term is how many groups we want to render in total
-          groupedDataToRender.length
-        )
+        columnWidth * numberOfGroups * numberOfItemsPerGroup
       );
-    }
+    // See TODO above.
+    // }
 
     // Compute height based on the presence or absence of x-axis data labels.
     if (self.getShowDimensionLabels()) {
@@ -720,13 +615,23 @@ function SvgColumnChart($element, vif) {
      */
 
     try {
-      const dataMinYValue = getMinYValue(groupedDataToRender);
-      const dataMaxYValue = getMaxYValue(groupedDataToRender);
+      const dataMinYValue = getMinYValue(
+        groupedDataToRender,
+        dataTableDimensionIndex
+      );
+      const dataMaxYValue = getMaxYValue(
+        groupedDataToRender,
+        dataTableDimensionIndex
+      );
+      const measureAxisMinValue = self.getMeasureAxisMinValue();
+      const measureAxisMaxValue = self.getMeasureAxisMaxValue();
 
-      const limitMin = self.getMeasureAxisMinValue();
-      const limitMax = self.getMeasureAxisMaxValue();
+      if (
+        measureAxisMinValue &&
+        measureAxisMaxValue &&
+        measureAxisMinValue >= measureAxisMaxValue
+      ) {
 
-      if (limitMin && limitMax && limitMin >= limitMax) {
         self.renderError(
           I18n.translate(
             'visualizations.common.validation.errors.' +
@@ -736,18 +641,18 @@ function SvgColumnChart($element, vif) {
         return;
       }
 
-      if (self.getYAxisScalingMode() === 'showZero' && !limitMin) {
-        minYValue = _.min([dataMinYValue, 0]);
-      } else if (limitMin) {
-        minYValue = limitMin;
+      if (self.getYAxisScalingMode() === 'showZero' && !measureAxisMinValue) {
+        minYValue = Math.min(dataMinYValue, 0);
+      } else if (measureAxisMinValue) {
+        minYValue = measureAxisMinValue;
       } else {
         minYValue = dataMinYValue;
       }
 
-      if (self.getYAxisScalingMode() === 'showZero' && !limitMax) {
-        maxYValue = _.max([dataMaxYValue, 0]);
-      } else if (limitMax) {
-        maxYValue = limitMax;
+      if (self.getYAxisScalingMode() === 'showZero' && !measureAxisMaxValue) {
+        maxYValue = Math.max(dataMaxYValue, 0);
+      } else if (measureAxisMaxValue) {
+        maxYValue = measureAxisMaxValue;
       } else {
         maxYValue = dataMaxYValue;
       }
@@ -773,51 +678,32 @@ function SvgColumnChart($element, vif) {
      * 4. Clear out any existing chart.
      */
 
-    d3.
-      select($chartElement[0]).
-        select('svg').
-          remove();
+    d3.select($chartElement[0]).select('svg').
+      remove();
 
     /**
      * 5. Render the chart.
      */
 
     // Create the top-level <svg> element first.
-    chartSvg = d3.
-      select($chartElement[0]).
-        append('svg').
-          attr(
-            'width',
-            (
-              width +
-              MARGINS.LEFT +
-              MARGINS.RIGHT
-            )
-          ).
-          attr(
-            'height',
-            (
-              viewportHeight +
-              MARGINS.TOP +
-              MARGINS.BOTTOM
-            )
-          );
+    chartSvg = d3.select($chartElement[0]).append('svg').
+      attr('width', width + MARGINS.LEFT + MARGINS.RIGHT).
+      attr('height', viewportHeight + MARGINS.TOP + MARGINS.BOTTOM);
 
     // The viewport represents the area within the chart's container that can
     // be used to draw the x-axis, y-axis and chart marks.
-    viewportSvg = chartSvg.
-      append('g').
-        attr('class', 'viewport').
-        attr(
-          'transform',
-          (
-            'translate(' +
-            MARGINS.LEFT +
-            ',' +
-            MARGINS.TOP +
-            ')'
-          )
-        );
+    viewportSvg = chartSvg.append('g').
+      attr('class', 'viewport').
+      attr(
+        'transform',
+        (
+          'translate(' +
+          MARGINS.LEFT +
+          ',' +
+          MARGINS.TOP +
+          ')'
+        )
+      );
 
     // The clip path is used as a mask. It is attached to another svg element,
     // at which time all children of that svg element that would be drawn
@@ -826,136 +712,114 @@ function SvgColumnChart($element, vif) {
     // outside of the viewport when the chart is wider than the viewport.
     //
     // The overall effect is for the chart to appear to pan.
-    chartSvg.
-      append('clipPath').
-        attr('id', d3ClipPathId).
-          append('rect').
-            attr('x', 0).
-            attr('y', 0).
-            attr('width', viewportWidth).
-            attr('height', viewportHeight + MARGINS.TOP + MARGINS.BOTTOM);
+    clipPathSvg = chartSvg.append('clipPath').
+      attr('id', d3ClipPathId);
 
-    viewportSvg.
-      append('g').
-        attr('class', 'y axis');
+    clipPathSvg.append('rect').
+      attr('x', 0).
+      attr('y', 0).
+      attr('width', viewportWidth).
+      attr('height', viewportHeight + MARGINS.TOP + MARGINS.BOTTOM);
 
-    viewportSvg.
-      append('g').
-        attr('class', 'y grid');
+    viewportSvg.append('g').
+      attr('class', 'y axis');
+
+    viewportSvg.append('g').
+      attr('class', 'y grid');
 
     // This <rect> exists to capture mouse actions on the chart, but not
     // directly on the columns or labels, that should result in a pan behavior.
     // If we set stroke and fill to none, the mouse events don't seem to get
     // picked up, so we instead set opacity to 0.
-    viewportSvg.
-      append('rect').
-        attr('class', 'dragger').
-        attr('width', width).
-        attr('height', viewportHeight).
-        attr('opacity', 0);
+    viewportSvg.append('rect').
+      attr('class', 'dragger').
+      attr('width', width).
+      attr('height', viewportHeight).
+      attr('opacity', 0);
 
     // The x-axis and series are groups since they all need to conform to the
     // same clip path for the appearance of panning to be upheld.
-    xAxisAndSeriesSvg = viewportSvg.
-      append('g').
-        attr('class', 'x-axis-and-series').
-        attr('clip-path', 'url(#' + d3ClipPathId + ')');
+    xAxisAndSeriesSvg = viewportSvg.append('g').
+      attr('class', 'x-axis-and-series').
+      attr('clip-path', 'url(#' + d3ClipPathId + ')');
 
-    xAxisAndSeriesSvg.
-      append('g').
-        attr('class', 'series');
+    xAxisAndSeriesSvg.append('g').
+      attr('class', 'series');
 
-    seriesSvg = xAxisAndSeriesSvg.
-      select('.series');
+    seriesSvg = xAxisAndSeriesSvg.select('.series');
 
-    dimensionGroupSvgs = seriesSvg.
-      selectAll('.dimension-group').
-        data(groupedDataToRender).
-          enter().
-            append('g').
-              attr('class', 'dimension-group').
-              attr('data-group-category', function(d) {
-                return (d[0] === null || typeof d[0] === 'undefined') ?
-                  NO_VALUE_SENTINEL :
-                  d[0];
-              }).
-              attr(
-                'transform',
-                function(d) {
-                  return 'translate(' + d3DimensionXScale(d[0]) + ',0)';
-                }
-              );
+    dimensionGroupSvgs = seriesSvg.selectAll('.dimension-group').
+      data(groupedDataToRender).
+      enter().
+      append('g');
 
     dimensionGroupSvgs.
-      selectAll('rect.column-underlay').
-        data(function(d) { return d[1]; }).
-          enter().
-            append('rect').
-              attr('class', 'column-underlay').
-              attr(
-                'data-column-category',
-                // Not sure if what the second argument actually is, but it is
-                // the third argument that seems to track the row index.
-                function(datum, seriesIndex, rowIndex) {
-                  return groupedDataToRender[rowIndex][0];
-                }
-              ).
-              attr(
-                'data-series-index',
-                /* eslint-disable no-unused-vars */
-                function(datum, seriesIndex, rowIndex) {
-                /* eslint-enable no-unused-vars */
-                  return seriesIndex;
-                }
-              ).
-              attr(
-                'data-row-index',
-                // Not sure if what the second argument actually is, but it is
-                // the third argument that seems to track the row index.
-                function(datum, seriesIndex, rowIndex) {
-                  return rowIndex;
-                }
-              );
+      attr('class', 'dimension-group').
+      attr('data-dimension-value', function(d) {
 
-    dimensionGroupSvgs.
-      selectAll('rect.column').
-        data(function(d) { return d[1]; }).
-          enter().
-            append('rect').
-              attr('class', 'column').
-              attr(
-                'data-column-category',
-                // Not sure if what the second argument actually is, but it is
-                // the third argument that seems to track the row index.
-                function(datum, seriesIndex, rowIndex) {
-                  return groupedDataToRender[rowIndex][0];
-                }
-              ).
-              attr(
-                'data-series-index',
-                /* eslint-disable no-unused-vars */
-                function(datum, seriesIndex, rowIndex) {
-                /* eslint-enable no-unused-vars */
-                  return seriesIndex;
-                }
-              ).
-              attr(
-                'data-row-index',
-                // Not sure if what the second argument actually is, but it is
-                // the third argument that seems to track the row index.
-                function(datum, seriesIndex, rowIndex) {
-                  return rowIndex;
-                }
-              );
+        return (d[0] === null || typeof d[0] === 'undefined') ?
+          NO_VALUE_SENTINEL :
+          d[0];
+      }).
+      attr('transform', (d) => `translate(${d3DimensionXScale(d[0])},0)`);
 
-    if (self.getXAxisScalingModeBySeriesIndex(0) === 'fit') {
+    columnUnderlaySvgs = dimensionGroupSvgs.selectAll('rect.column-underlay').
+      data((d) => d.slice(1)).
+      enter().
+      append('rect');
 
-      // If we do not have to support panning then rendering is somewhat more
-      // straightforward.
-      renderXAxis();
-      renderSeries();
-      renderYAxis();
-    } else {
+    columnUnderlaySvgs.
+      attr('class', 'column-underlay').
+      attr(
+        'data-dimension-value',
+        (datum, measureIndex, dimensionIndex) => {
+          return dimensionValues[dimensionIndex];
+        }
+      ).
+      attr(
+        'data-dimension-index',
+        (datum, measureIndex, dimensionIndex) => dimensionIndex
+      ).
+      attr(
+        'data-measure-index',
+        /* eslint-disable no-unused-vars */
+        (datum, measureIndex, dimensionIndex) => measureIndex
+        /* eslint-enable no-unused-vars */
+      );
+
+    columnSvgs = dimensionGroupSvgs.selectAll('rect.column').
+      data((d) => d.slice(1)).
+      enter().
+      append('rect');
+
+    columnSvgs.
+      attr('class', 'column').
+      attr(
+        'data-dimension-value',
+        (datum, measureIndex, dimensionIndex) => {
+          return dimensionValues[dimensionIndex];
+        }
+      ).
+      attr(
+        'data-dimension-index',
+        (datum, measureIndex, dimensionIndex) => dimensionIndex
+      ).
+      attr(
+        'data-measure-index',
+        /* eslint-disable no-unused-vars */
+        (datum, measureIndex, dimensionIndex) => measureIndex
+        /* eslint-enable no-unused-vars */
+      );
+
+    // TODO: Figure out how we want to handle scaling modes.
+    // if (self.getXAxisScalingModeBySeriesIndex(0) === 'fit') {
+
+    //   // If we do not have to support panning then rendering is somewhat more
+    //   // straightforward.
+    //   renderXAxis();
+    //   renderSeries();
+    //   renderYAxis();
+    // } else {
 
       // Unfortunately, we need to render the x-axis and the series before we
       // can measure whether or not the chart will pan. Since showing the
@@ -973,10 +837,7 @@ function SvgColumnChart($element, vif) {
       // This is the actual rendered width (which accounts for the labels
       // extending beyond what d3 considers the right edge of the chart on
       // account of their being rotated 45 degrees.
-      width = xAxisAndSeriesSvg.
-        node().
-          getBBox().
-            width;
+      width = xAxisAndSeriesSvg.node().getBBox().width;
 
       xAxisPanDistance = width - viewportWidth;
 
@@ -1013,85 +874,129 @@ function SvgColumnChart($element, vif) {
       // We only have to render the y-axis once, after we have decided whether
       // we will show or hide the panning notice.
       renderYAxis();
-    }
+    // See TODO above.
+    // }
 
     /**
      * 6. Set up event handlers for mouse interactions.
      */
 
-    dimensionGroupSvgs.
-      selectAll('.column-underlay').
-        on(
-          'mousemove',
-          function() {
-            const seriesIndex = this.getAttribute('data-series-index');
+    dimensionGroupSvgs.selectAll('rect.column-underlay').
+      on(
+        'mousemove',
+        // NOTE: The below function depends on this being set by d3, so it is
+        // not possible to use the () => {} syntax here.
+        function() {
+
+          if (!isCurrentlyPanning()) {
+            const dimensionIndex = parseInt(
+              this.getAttribute('data-dimension-index'),
+              10
+            );
+            const measureIndex = parseInt(
+              this.getAttribute('data-measure-index'),
+              10
+            );
             const dimensionGroup = this.parentNode;
-            const siblingColumn = d3.
-              select(dimensionGroup).
-                select(
-                  '.column[data-series-index="{0}"]'.format(seriesIndex)
-                )[0][0];
-            const datum = d3.select(this.parentNode).datum()[1][seriesIndex];
+            const siblingColumn = d3.select(dimensionGroup).select(
+              `rect.column[data-measure-index="${measureIndex}"]`
+            )[0][0];
+            const color = getColor(dimensionIndex, measureIndex);
+            const label = measureLabels[measureIndex];
+            // d3's .datum() method gives us the entire row, whereas everywhere
+            // else measureIndex refers only to measure values. We therefore
+            // add one to measure index to get the actual measure value from
+            // the raw row data provided by d3 (the value at element 0 of the
+            // array returned by .datum() is the dimension value).
+            const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
             showColumnHighlight(siblingColumn);
-            showColumnFlyout(siblingColumn, datum);
+            showColumnFlyout(siblingColumn, color, label, value);
           }
-        ).
-        on(
-          'mouseleave',
-          function() {
+        }
+      ).
+      on(
+        'mouseleave',
+        () => {
+
+          if (!isCurrentlyPanning()) {
 
             hideHighlight();
             hideFlyout();
           }
-        );
+        }
+      );
 
-    dimensionGroupSvgs.
-      selectAll('.column').
-        on(
-          'mousemove',
-          function() {
-            const seriesIndex = this.getAttribute('data-series-index');
-            const datum = d3.select(this.parentNode).datum()[1][seriesIndex];
+    dimensionGroupSvgs.selectAll('rect.column').
+      on(
+        'mousemove',
+        // NOTE: The below function depends on this being set by d3, so it is
+        // not possible to use the () => {} syntax here.
+        function() {
+
+          if (!isCurrentlyPanning()) {
+            const dimensionIndex = parseInt(
+              this.getAttribute('data-dimension-index'),
+              10
+            );
+            const measureIndex = parseInt(
+              this.getAttribute('data-measure-index'),
+              10
+            );
+            const color = getColor(dimensionIndex, measureIndex);
+            const label = measureLabels[measureIndex];
+            // d3's .datum() method gives us the entire row, whereas everywhere
+            // else measureIndex refers only to measure values. We therefore
+            // add one to measure index to get the actual measure value from
+            // the raw row data provided by d3 (the value at element 0 of the
+            // array returned by .datum() is the dimension value).
+            const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
             showColumnHighlight(this);
-            showColumnFlyout(this, datum);
+            showColumnFlyout(this, color, label, value);
           }
-        ).
-        on(
-          'mouseleave',
-          function() {
+        }
+      ).
+      on(
+        'mouseleave',
+        () => {
+
+          if (!isCurrentlyPanning()) {
 
             hideHighlight();
             hideFlyout();
           }
-        );
+        }
+      );
 
-    chartSvg.
-      selectAll('.x.axis .tick text').
-        on(
-          'mousemove',
-          function(d) {
-            const groupCategory = (d[0] === null || typeof d[0] === 'undefined') ?
+    chartSvg.selectAll('.x.axis .tick text').
+      on(
+        'mousemove',
+        (d) => {
+
+          if (!isCurrentlyPanning()) {
+            const dimensionValue = (_.isNull(d[0]) || _.isUndefined(d[0])) ?
               NO_VALUE_SENTINEL :
               d[0];
-            const dimensionGroup = xAxisAndSeriesSvg.
-              select(
-                '.dimension-group[data-group-category="{0}"]'.format(groupCategory)
-              );
+            const dimensionGroup = xAxisAndSeriesSvg.select(
+              `g.dimension-group[data-dimension-value="${dimensionValue}"]`
+            );
 
             showGroupHighlight(dimensionGroup);
-            showGroupFlyout(dimensionGroup);
+            showGroupFlyout(dimensionGroup, dimensionValues, measureLabels);
           }
-        ).
-        on(
-          'mouseleave',
-          function() {
+        }
+      ).
+      on(
+        'mouseleave',
+        () => {
 
+          if (!isCurrentlyPanning()) {
             hideHighlight();
             hideFlyout();
           }
-        );
+        }
+      );
 
     /**
      * 7. Conditionally set up the zoom behavior, which is actually used for
@@ -1100,10 +1005,8 @@ function SvgColumnChart($element, vif) {
 
     if (xAxisPanningEnabled) {
 
-      d3Zoom = d3.
-        behavior.
-          zoom().
-            on('zoom', handleZoom);
+      d3Zoom = d3.behavior.zoom().
+        on('zoom', handleZoom);
 
       viewportSvg.
         attr('cursor', 'move').
@@ -1124,15 +1027,48 @@ function SvgColumnChart($element, vif) {
 
       restoreLastRenderedZoom();
 
-      chartSvg.
-        selectAll('text').
-          attr('cursor', null);
+      chartSvg.selectAll('text').
+        attr('cursor', null);
     } else {
 
-      chartSvg.
-        selectAll('text').
-          attr('cursor', 'default');
+      chartSvg.selectAll('text').
+        attr('cursor', 'default');
     }
+  }
+
+  function getColor(dimensionIndex, measureIndex) {
+    const isGrouping = !_.isNull(
+      _.get(
+        self.getVif(),
+        'series[0].dataSource.dimension.grouping.columnName',
+        null
+      )
+    );
+    const usingColorPalette = _.get(
+      self.getVif(),
+      `series[${(isGrouping) ? 0 : dimensionIndex}].color.palette`,
+      false
+    );
+
+    function getColorFromPalette() {
+      const palette = self.getColorPaletteBySeriesIndex(0);
+
+      return palette[measureIndex];
+    }
+
+    function getPrimaryColorOrNone() {
+      const primaryColor = (isGrouping) ?
+        self.getPrimaryColorBySeriesIndex(0) :
+        self.getPrimaryColorBySeriesIndex(measureIndex);
+
+      return (primaryColor !== null) ?
+        primaryColor :
+        'none';
+    }
+
+    return (usingColorPalette) ?
+      getColorFromPalette() :
+      getPrimaryColorOrNone();
   }
 
   function conditionallyTruncateLabel(label) {
@@ -1147,307 +1083,358 @@ function SvgColumnChart($element, vif) {
 
   function generateXScale(domain, width) {
 
-    return d3.
-      scale.
-        ordinal().
-          domain(domain).
-          // .rangeRoundBands(<interval>, <padding>, <outer padding>)
-          //
-          // From the documentation:
-          //
-          // ---
-          //
-          // Note that rounding necessarily introduces additional outer padding
-          // which is, on average, proportional to the length of the domain.
-          // For example, for a domain of size 50, an additional 25px of outer
-          // padding on either side may be required. Modifying the range extent
-          // to be closer to a multiple of the domain length may reduce the
-          // additional padding.
-          //
-          // ---
-          // The outer padding looks pretty funny for our use cases, so we
-          // override it to be zero, which looks like what we expect.
-          rangeRoundBands([0, width], 0.1, 0.05);
+    return d3.scale.ordinal().
+      domain(domain).
+      // .rangeRoundBands(<interval>, <padding>, <outer padding>)
+      //
+      // From the documentation:
+      //
+      // ---
+      //
+      // Note that rounding necessarily introduces additional outer padding
+      // which is, on average, proportional to the length of the domain.
+      // For example, for a domain of size 50, an additional 25px of outer
+      // padding on either side may be required. Modifying the range extent to
+      // be closer to a multiple of the domain length may reduce the additional
+      // padding.
+      //
+      // ---
+      // The outer padding looks pretty funny for our use cases, so we
+      // override it to be zero, which looks like what we expect.
+      rangeRoundBands([0, width], 0.1, 0.05);
   }
 
   function generateXGroupScale(domain, xScale) {
 
-    return d3.
-      scale.
-        ordinal().
-          domain(domain).
-          rangeRoundBands([0, xScale.rangeBand()]);
+    return d3.scale.ordinal().
+      domain(domain).
+      rangeRoundBands([0, xScale.rangeBand()]);
   }
 
   function generateXAxis(xScale) {
 
-    return d3.
-      svg.
-        axis().
-          scale(xScale).
-            orient('bottom').
-            tickFormat(
-              function(d, i) {
+    return d3.svg.axis().
+      scale(xScale).
+      orient('bottom').
+      /* eslint-disable no-unused-vars */
+      tickFormat((d, i) => {
+      /* eslint-enable no-unused-vars */
 
-                if (self.getXAxisScalingModeBySeriesIndex(0) === 'fit') {
-                  if (i < 5) {
-                    return conditionallyTruncateLabel(d);
-                  } else {
-                    return '';
-                  }
-                } else {
-                  return conditionallyTruncateLabel(d);
-                }
-              }
-            ).
-            outerTickSize(0);
+        // TODO: Figure out how we want to handle scaling modes.
+        // if (self.getXAxisScalingModeBySeriesIndex(0) === 'fit') {
+        //   if (i < 5) {
+        //     return conditionallyTruncateLabel(d);
+        //   } else {
+        //     return '';
+        //   }
+        // } else {
+          return conditionallyTruncateLabel(d);
+        // See TODO above.
+        // }
+      }).
+      outerTickSize(0);
   }
 
-  function getMinYValue(groupedData) {
+  function getMinYValue(groupedData, dimensionIndex) {
 
-    return d3.
-      min(
-        groupedData.
-          map(
-            function(row) {
-
-              return d3.min(
-                row[1].
-                  map(
-                    function(d) {
-                      // If we wanted to get the minimum x value instead of the
-                      // minimum y value, we could access the item at d[0]
-                      // instead of d[1].
-                      return d[1];
-                    }
-                  )
-              );
-            }
-          )
-      );
+    return d3.min(
+      groupedData.map(
+        (row) => d3.min(
+          row.slice(dimensionIndex + 1)
+        )
+      )
+    );
   }
 
-  function getMaxYValue(groupedData) {
+  function getMaxYValue(groupedData, dimensionIndex) {
 
-    return d3.
-      max(
-        groupedData.
-          map(
-            function(row) {
-
-              return d3.max(
-                row[1].
-                  map(
-                    function(d) {
-                      return d[1];
-                    }
-                  )
-              );
-            }
-          )
-      );
+    return d3.max(
+      groupedData.map(
+        (row) => d3.max(
+          row.slice(dimensionIndex + 1)
+        )
+      )
+    );
   }
 
   function generateYScale(minValue, maxValue, height) {
 
-    return d3.
-      scale.
-        linear().
-          domain([minValue, maxValue]).
-          range([height, 0]);
+    return d3.scale.linear().
+      domain([minValue, maxValue]).
+      range([height, 0]);
   }
 
   function generateYAxis(yScale) {
 
-    return d3.
-      svg.
-        axis().
-          scale(yScale).
-            orient('left').
-            tickFormat(function(d) { return utils.formatNumber(d); });
+    return d3.svg.axis().
+      scale(yScale).
+      orient('left').
+      tickFormat((d) => { return utils.formatNumber(d); });
   }
+
+  function getSeriesIndexByMeasureIndex(measureIndex) {
+    const isGrouping = !_.isNull(
+      _.get(
+        self.getVif(),
+        'series[0].dataSource.dimension.grouping.columnName',
+        null
+      )
+    );
+
+    return (isGrouping) ? 0 : measureIndex;
+  }
+
+  function isCurrentlyPanning() {
+
+    // EN-10810 - Bar Chart flyouts do not appear in Safari
+    //
+    // Internet Explorer will apparently always return a non-zero value for
+    // d3.event.which and even d3.event.button, so we need to check
+    // d3.event.buttons for a non-zero value (which indicates that a button is
+    // being pressed).
+    //
+    // Safari apparently does not support d3.event.buttons, however, so if it
+    // is not a number then we will fall back to d3.event.which to check for a
+    // non-zero value there instead.
+    //
+    // Chrome appears to support both cases, and in the conditional below
+    // Chrome will check d3.event.buttons for a non-zero value.
+    return (_.isNumber(d3.event.buttons)) ?
+      d3.event.buttons !== 0 :
+      d3.event.which !== 0;
+  }
+
 
   function showGroupHighlight(groupElement) {
 
-    groupElement.
-      selectAll('.column').
-        each(
-          function() {
-            const selection = d3.
-              select(this);
+    // NOTE: The below function depends on this being set by d3, so it is not
+    // possible to use the () => {} syntax here.
+    groupElement.selectAll('rect.column').each(function() {
+      const selection = d3.select(this);
 
-            selection.
-              attr(
-                'fill',
-                function() {
-                  const seriesIndex = this.getAttribute('data-series-index');
-                  const highlightColor = self.getHighlightColorBySeriesIndex(
-                    seriesIndex
-                  );
+      selection.attr(
+        'fill',
+        // NOTE: The below function depends on this being set by d3, so it is
+        // not possible to use the () => {} syntax here.
+        function() {
+          const seriesIndex = getSeriesIndexByMeasureIndex(
+            parseInt(this.getAttribute('data-measure-index'), 10)
+          );
+          const highlightColor = self.getHighlightColorBySeriesIndex(
+            seriesIndex
+          );
 
-                  return (highlightColor !== null) ?
-                    highlightColor :
-                    selection.attr('fill');
-                }
-              );
-          }
-        );
+          return (highlightColor !== null) ?
+            highlightColor :
+            selection.attr('fill');
+        }
+      );
+    });
   }
 
   function showColumnHighlight(columnElement) {
+    const selection = d3.select(columnElement);
 
-    const selection = d3.
-      select(columnElement);
-
-      selection.
-        attr(
-          'fill',
-          function() {
-            const seriesIndex = this.getAttribute('data-series-index');
-            const highlightColor = self.getHighlightColorBySeriesIndex(
-              seriesIndex
-            );
-
-            return (highlightColor !== null) ?
-              highlightColor :
-              selection.attr('fill');
-          }
+    selection.attr(
+      'fill',
+      // NOTE: The below function depends on this being set by d3, so it is not
+      // possible to use the () => {} syntax here.
+      function() {
+        const measureIndex = getSeriesIndexByMeasureIndex(
+          parseInt(this.getAttribute('data-measure-index'), 10)
         );
+        const highlightColor = self.getHighlightColorBySeriesIndex(
+          measureIndex
+        );
+
+        return (highlightColor !== null) ?
+          highlightColor :
+          selection.attr('fill');
+      }
+    );
   }
 
   function hideHighlight() {
 
-    d3.
-      selectAll('.column').
-        each(
-          function() {
-            const selection = d3.
-              select(this);
+    // NOTE: The below function depends on this being set by d3, so it is not
+    // possible to use the () => {} syntax here.
+    d3.selectAll('rect.column').each(function() {
+      const selection = d3.select(this);
 
-            selection.
-              attr('fill', selection.attr('data-default-fill'));
-          }
-        );
+      selection.attr('fill', selection.attr('data-default-fill'));
+    });
   }
 
-  function showGroupFlyout(groupElement) {
-    const title = groupElement.attr('data-group-category');
+  function showGroupFlyout(groupElement, dimensionValues, measureLabels) {
+    const title = groupElement.attr('data-dimension-value');
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(
-        $('<td>', {'colspan': 2}).
-          text(
-            (title === NO_VALUE_SENTINEL) ?
-              I18n.translate('visualizations.common.no_value') :
-              title
-          )
-        );
-    const labelValuePairs = groupElement.data()[0][1];
-    let $labelValueRows;
+        $('<td>', {'colspan': 2}).text(
+          (title === NO_VALUE_SENTINEL) ?
+            I18n.translate('visualizations.common.no_value') :
+            title
+        )
+      );
     const $table = $('<table>', {'class': 'socrata-flyout-table'}).
       append($title);
-    let flyoutElement;
+    const dimensionValue = groupElement.data()[0][0];
+    const dimensionIndex = dimensionValues.indexOf(dimensionValue);
+    const measureValues = groupElement.data()[0].slice(1);
+
+    let $labelValueRows;
     let payload = null;
 
-    $labelValueRows = labelValuePairs.
-      map(
-        function(datum) {
-          const label = datum[0];
-          const value = datum[1];
-          const seriesIndex = self.getSeriesIndexByLabel(label);
-          let valueString;
-          const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
-            text(label).
-            css('color', self.getPrimaryColorBySeriesIndex(seriesIndex));
-          const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
-
-          if (value === null) {
-            valueString = I18n.translate('visualizations.common.no_value');
-          } else {
-            valueString = '{0} {1}'.
-              format(
-                utils.formatNumber(value),
-                (value === 1) ?
-                  self.getUnitOneBySeriesIndex(seriesIndex) :
-                  self.getUnitOtherBySeriesIndex(seriesIndex)
-              );
-          }
-
-          $valueCell.
-            text(valueString);
-
-          return $('<tr>', {'class': 'socrata-flyout-row'}).
-            append([
-              $labelCell,
-              $valueCell
-            ]);
-        }
+    // 0th element of row data is always the dimension, everything after that
+    // is a measure value.
+    $labelValueRows = measureValues.map((value, measureIndex) => {
+      const label = measureLabels[measureIndex];
+      const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
+        text(label).
+        css('color', getColor(dimensionIndex, measureIndex));
+      const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
+      const unitOne = self.getUnitOneBySeriesIndex(
+        getSeriesIndexByMeasureIndex(measureIndex)
+      );
+      const unitOther = self.getUnitOtherBySeriesIndex(
+        getSeriesIndexByMeasureIndex(measureIndex)
       );
 
-    $table.
-      append($labelValueRows);
+      let valueString;
 
-    // If there is only one column in the group then we can position the flyout
-    // over the column itself, not the column group.
-    if (groupElement.selectAll('.column')[0].length === 1) {
-      flyoutElement = groupElement[0][0].childNodes[1];
-    // If there is more than one column, however, we don't really know where to
-    // position the flyout so we need to put it at the top of the group.
-    } else {
-      flyoutElement = groupElement[0][0];
-    }
+      if (value === null) {
+        valueString = I18n.translate('visualizations.common.no_value');
+      } else {
+        valueString = utils.formatNumber(value);
+
+        if (value === 1) {
+          valueString += ` ${unitOne}`;
+        } else {
+          valueString += ` ${unitOther}`;
+        }
+      }
+
+      $valueCell.text(valueString);
+
+      return $('<tr>', {'class': 'socrata-flyout-row'}).
+        append([
+          $labelCell,
+          $valueCell
+        ]);
+    });
+
+    $table.append($labelValueRows);
 
     payload = {
-      element: flyoutElement,
       content: $table,
       rightSideHint: false,
       belowTarget: false,
       dark: true
     };
 
+    // If there is only one bar in the group then we can position the flyout
+    // over the bar itself, not the bar group.
+    if (groupElement.selectAll('rect.column')[0].length === 1) {
+      _.set(payload, 'element', groupElement[0][0].childNodes[1]);
+    } else {
+
+      // Calculate the offsets from screen (0, 0) to the top of the tallest
+      // column (where at least one value in the group is > 0) or 0 on the
+      // y-axis (where all values in the group are <= 0) and the horizontal
+      // center of the group in question.
+      const flyoutElementBoundingClientRect = groupElement[0][0].
+        getBoundingClientRect();
+      const flyoutElementWidth = flyoutElementBoundingClientRect.width;
+      const flyoutElementTopOffset = flyoutElementBoundingClientRect.top;
+      const flyoutElementLeftOffset = flyoutElementBoundingClientRect.left;
+      const maxFlyoutValue = d3.max(measureValues);
+      const measureAxisMaxValue = self.getMeasureAxisMaxValue();
+
+      let flyoutTopOffset;
+
+      if (maxFlyoutValue >= 0) {
+
+        if (
+          measureAxisMaxValue !== null &&
+          measureAxisMaxValue < maxFlyoutValue
+        ) {
+
+          flyoutTopOffset = (
+            flyoutElementTopOffset + d3YScale(measureAxisMaxValue)
+          );
+        } else {
+
+          flyoutTopOffset = (
+            flyoutElementTopOffset + d3YScale(maxFlyoutValue)
+          );
+        }
+      } else {
+
+        if (measureAxisMaxValue !== null && measureAxisMaxValue < 0) {
+
+          flyoutTopOffset = (
+            flyoutElementTopOffset + d3YScale(measureAxisMaxValue)
+          );
+        } else {
+
+          flyoutTopOffset = (
+            flyoutElementTopOffset + d3YScale(0)
+          );
+        }
+      }
+
+      _.set(
+        payload,
+        'flyoutOffset',
+        {
+          top: flyoutTopOffset,
+          left: flyoutElementLeftOffset + (flyoutElementWidth / 2) - 1
+        }
+      );
+    }
+
     self.emitEvent(
-      'SOCRATA_VISUALIZATION_FLYOUT',
+      'SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT',
       payload
     );
   }
 
-  function showColumnFlyout(columnElement, datum) {
+  function showColumnFlyout(columnElement, color, label, value) {
     const title = (
-      columnElement.getAttribute('data-column-category') ||
+      columnElement.getAttribute('data-dimension-value') ||
       I18n.translate('visualizations.common.no_value')
     );
-    const label = datum[0];
-    const value = datum[1];
-    const seriesIndex = self.getSeriesIndexByLabel(label);
-    let valueString;
-    let payload = null;
+    const measureIndex = self.getSeriesIndexByLabel(label);
+    const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(
-        $('<td>', {'colspan': 2}).
-          text(
-            (title) ? title : ''
-          )
-        );
+        $('<td>', {'colspan': 2}).text(
+          (title) ? title : ''
+        )
+      );
     const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
       text(label).
-      css('color', self.getPrimaryColorBySeriesIndex(seriesIndex));
+      css('color', color);
     const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
     const $valueRow = $('<tr>', {'class': 'socrata-flyout-row'});
     const $table = $('<table>', {'class': 'socrata-flyout-table'});
 
+    let valueString;
+    let payload = null;
+
     if (value === null) {
       valueString = I18n.translate('visualizations.common.no_value');
     } else {
-      valueString = '{0} {1}'.
-        format(
-          utils.formatNumber(value),
-          (value === 1) ?
-            self.getUnitOneBySeriesIndex(seriesIndex) :
-            self.getUnitOtherBySeriesIndex(seriesIndex)
-        );
+
+      valueString = utils.formatNumber(value);
+
+      if (value === 1) {
+        valueString += ` ${self.getUnitOneBySeriesIndex(seriesIndex)}`;
+      } else {
+        valueString += ` ${self.getUnitOtherBySeriesIndex(seriesIndex)}`;
+      }
     }
 
-    $valueCell.
-      text(valueString);
+    $valueCell.text(valueString);
 
     $valueRow.append([
       $labelCell,
@@ -1468,7 +1455,7 @@ function SvgColumnChart($element, vif) {
     };
 
     self.emitEvent(
-      'SOCRATA_VISUALIZATION_FLYOUT',
+      'SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT',
       payload
     );
   }
@@ -1476,7 +1463,7 @@ function SvgColumnChart($element, vif) {
   function hideFlyout() {
 
     self.emitEvent(
-      'SOCRATA_VISUALIZATION_FLYOUT',
+      'SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT',
       null
     );
   }

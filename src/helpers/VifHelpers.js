@@ -16,18 +16,6 @@ var DEFAULT_VIF = {
     type: 'visualization_interchange_format',
     version: 2
   },
-  scale: {
-    x: {
-      type: null,
-      unit: {
-        one: null,
-        other: null
-      }
-    },
-    y: {
-      type: null
-    }
-  },
   series: [],
   title: null
 };
@@ -63,53 +51,7 @@ function migrateVif1ToVif2(vifToMigrate) {
     other: _.get(vifToMigrate, 'unit.other', null)
   };
 
-  // 1. Assign scales
-  switch (vifToMigrate.type) {
-
-    case 'columnChart':
-    case 'distributionChart':
-    case 'choroplethMap':
-      migratedVif.scale.x = {
-        type: 'ordinal',
-        unit: {
-          one: null,
-          other: null
-        }
-      };
-      migratedVif.scale.y = {
-        type: 'quantitative'
-      };
-      break;
-
-    case 'timelineChart':
-      migratedVif.scale.x = {
-        type: 'time',
-        unit: {
-          one: null,
-          other: null
-        }
-      };
-      migratedVif.scale.y = {
-        type: 'quantitative'
-      };
-      break;
-
-    case 'featureMap':
-    case 'table':
-    default:
-      migratedVif.scale.x = {
-        type: null,
-        unit: {
-          one: null,
-          other: null
-        }
-      };
-      migratedVif.scale.y = {
-        type: null
-      };
-  }
-
-  // 2a. Create a series
+  // 1a. Create a series
   //
   // Note that the legacy AddVisualization workflow in the DataLens app will
   // sometimes not include an aggregation property on VIFs that it exports.
@@ -155,7 +97,7 @@ function migrateVif1ToVif2(vifToMigrate) {
     }
   };
 
-  // 2b. Assign a type and ascending value to the series
+  // 1b. Assign a type and ascending value to the series
   switch (vifToMigrate.type) {
 
     case 'columnChart':
@@ -208,16 +150,16 @@ function migrateVif1ToVif2(vifToMigrate) {
       break;
   }
 
-  // 2c. Add it to the series array on the VIF
+  // 1c. Add it to the series array on the VIF
   migratedVif.series.push(series);
 
-  // 3a. Merge the configuration object
+  // 2a. Merge the configuration object
   migratedVif.configuration = _.merge(
     migratedVif.configuration,
     vifToMigrate.configuration
   );
 
-  // 3c. Explicitly remove deprecated configuration values.
+  // 2c. Explicitly remove deprecated configuration values.
   _.unset(migratedVif, 'configuration.localization');
   _.unset(migratedVif, 'configuration.interactive');
   _.unset(migratedVif, 'configuration.hover');
@@ -226,10 +168,10 @@ function migrateVif1ToVif2(vifToMigrate) {
   _.unset(migratedVif, 'configuration.tileserverHosts');
   _.unset(migratedVif, 'configuration.shapefile.columns');
 
-  // 4. Copy over the createdAt timestamp
+  // 3. Copy over the createdAt timestamp
   migratedVif.createdAt = vifToMigrate.createdAt;
 
-  // 5a. Copy over the format object
+  // 4a. Copy over the format object
   migratedVif.format = _.cloneDeep(
     _.get(
       vifToMigrate,
@@ -241,10 +183,10 @@ function migrateVif1ToVif2(vifToMigrate) {
     )
   );
 
-  // 5b. Update the version number in the format.
+  // 4b. Update the version number in the format.
   migratedVif.format.version = 2;
 
-  // 6. Copy over the origin object
+  // 5. Copy over the origin object
   migratedVif.origin = _.cloneDeep(vifToMigrate.origin);
 
   return migratedVif;

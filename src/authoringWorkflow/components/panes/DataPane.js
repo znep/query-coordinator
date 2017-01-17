@@ -10,7 +10,8 @@ import {
   getShowOtherCategory,
   isBarChart,
   isPieChart,
-  isColumnChart
+  isColumnChart,
+  isTimelineChart
 } from '../../selectors/vifAuthoring';
 import { DEFAULT_LIMIT_FOR_SHOW_OTHER_CATEGORY } from '../../constants';
 import {
@@ -26,6 +27,7 @@ import VisualizationTypeSelector from '../VisualizationTypeSelector';
 import DimensionSelector from '../DimensionSelector';
 import MeasureSelector from '../MeasureSelector';
 import RegionSelector from '../RegionSelector';
+import DimensionGroupingColumnNameSelector from '../DimensionGroupingColumnNameSelector';
 
 export var DataPane = React.createClass({
   propTypes: {
@@ -197,6 +199,20 @@ export var DataPane = React.createClass({
       }
     }
 
+    const dimensionGroupingAvailable = (
+      isBarChart(vifAuthoring) || isColumnChart(vifAuthoring)
+    );
+    const dimensionGroupingColumnNameTitle = translate(
+      'panes.data.fields.dimension_grouping_column_name.title'
+    );
+    const dimensionGroupingColumnNameSelector = (dimensionGroupingAvailable) ?
+      (
+        <AccordionPane title={dimensionGroupingColumnNameTitle}>
+          <DimensionGroupingColumnNameSelector />
+        </AccordionPane>
+      ) :
+      null;
+
     const sections = (
       <Accordion>
         <AccordionPane title={translate('panes.data.subheaders.data_selection')}>
@@ -211,6 +227,7 @@ export var DataPane = React.createClass({
           </div>
         </AccordionPane>
         {limitAndShowOtherCategory}
+        {dimensionGroupingColumnNameSelector}
       </Accordion>
     );
 

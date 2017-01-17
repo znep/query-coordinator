@@ -354,14 +354,33 @@ function SvgVisualization($element, vif) {
   };
 
   this.getPrimaryColorBySeriesIndex = function(seriesIndex) {
-    const primaryColor = _.get(
+    const palette = _.get(
       self.getVif(),
-      `series[${seriesIndex}].color.primary`
+      `series[${seriesIndex}].color.palette`,
+      null
     );
 
-    return (!_.isUndefined(primaryColor)) ?
-      primaryColor :
-      DEFAULT_PRIMARY_COLOR;
+    // If a palette is defined (and is valid) then use the series index as an
+    // index into the palette.
+    if (
+      palette !== null &&
+      COLOR_PALETTES.hasOwnProperty(palette) &&
+      _.isArray(COLOR_PALETTES[palette]) &&
+      COLOR_PALETTES[palette].length >= seriesIndex
+    ) {
+      return COLOR_PALETTES[palette][seriesIndex];
+    // Otherwise, look for an explicit primary color.
+    } else {
+
+      const primaryColor = _.get(
+        self.getVif(),
+        `series[${seriesIndex}].color.primary`
+      );
+
+      return (!_.isUndefined(primaryColor)) ?
+        primaryColor :
+        DEFAULT_PRIMARY_COLOR;
+    }
   };
 
   this.getSecondaryColorBySeriesIndex = function(seriesIndex) {

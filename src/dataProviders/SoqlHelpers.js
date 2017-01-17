@@ -37,7 +37,7 @@ function dimension(vif, seriesIndex) {
 }
 
 /**
- * Returns a safe alias for all dimension SQL references.
+ * Returns a safe alias for all dimension SoQL references.
  */
 function dimensionAlias() {
   return '__dimension_alias__';
@@ -73,7 +73,7 @@ function measure(vif, seriesIndex) {
 }
 
 /**
- * Returns a safe alias for all measure SQL references.
+ * Returns a safe alias for all measure SoQL references.
  */
 function measureAlias() {
   return '__measure_alias__';

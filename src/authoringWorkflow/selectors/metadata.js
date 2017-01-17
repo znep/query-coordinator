@@ -64,7 +64,8 @@ export const getValidDimensions = createSelector(
   (domain, datasetUid, datasetMetadata, phidippidesMetadata) => {
     const datasetMetadataProvider = new MetadataProvider({domain, datasetUid});
 
-    return _.chain(phidippidesMetadata.columns).
+    return _.chain(phidippidesMetadata).
+      get('columns').
       map(injectFieldName).
       filter(isNotSystemColumn).
       filter(isNotComputedColumn).

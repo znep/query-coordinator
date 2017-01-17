@@ -9,21 +9,18 @@ describe('SvgColumnChart', () => {
   const CHART_TITLE = 'Test Title';
   const CHART_DESCRIPTION = 'test description';
 
-  const testData = [
-    {
-      bucketType: 'linear',
-      rows: [
-        [ 0, 10, 5 ],
-        [ 10, 20, 1 ],
-        [ 20, 30, 15 ],
-        [ 30, 40, 20 ],
-        [ 40, 50, 25 ]
-      ],
-      columns: [
-        'bucket_start', 'bucket_end', 'measure'
-      ]
-    }
-  ];
+  const testData = {
+    columns: [
+      'dimension', 'measure'
+    ],
+    rows: [
+      ['10', 10],
+      ['20', 20],
+      ['30', 30],
+      ['40', 40],
+      ['50', 50]
+    ]
+  };
 
   const createColumnChart = (width, overrideVIF)  => {
 
@@ -90,14 +87,6 @@ describe('SvgColumnChart', () => {
       origin: {
         type: 'test_data',
         url: 'localhost'
-      },
-      scale: {
-        x: {
-          type: 'quantitative'
-        },
-        y: {
-          type: 'quantitative'
-        }
       }
     };
 

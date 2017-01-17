@@ -44,7 +44,7 @@ export function ManageUploads({ uploads, createUpload, goHome }) {
 
       <ModalContent>
         <form>
-          <h6>Previous uploads</h6>
+          <h6>{I18n.manage_uploads.previous}</h6> {/* TODO: Check if is really a h6 */}
           <ul>
             {uploads.map((upload, idxInTable) => (
               <li key={idxInTable}>
@@ -53,7 +53,7 @@ export function ManageUploads({ uploads, createUpload, goHome }) {
             ))}
           </ul>
           <p>
-            <label id="upload-label" htmlFor="file">Upload a new file:&nbsp;</label>
+            <label id="upload-label" htmlFor="file">{I18n.manage_uploads.new_file}&nbsp;</label>
             <input
               name="file"
               type="file"
@@ -93,7 +93,16 @@ function UploadListItem({ upload }) {
   if (upload.__status__.type === STATUS_INSERTING) {
     return (<span>{upload.filename}</span>);
   } else if (upload.__status__.type === STATUS_INSERT_FAILED) {
-    return (<span>{upload.filename} (failed: {upload.__status__.error.response.statusText})</span>);
+    return (
+      <span>
+        {
+          I18n.manage_uploads.failed({
+            filename: upload.filename,
+            status: upload.__status__.error.response.statusText
+          })
+        }
+      </span>
+    );
   } else if (upload.schemas.length === 1 && upload.schemas[0].output_schemas.length === 1) {
     return (
       <Link

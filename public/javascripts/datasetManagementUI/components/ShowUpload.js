@@ -27,7 +27,7 @@ function ShowUpload({ upload, latestSchema, goToUploads }) {
   if (_.isUndefined(latestSchema)) {
     body = (
       <div style={{ textAlign: 'center' }}>
-        <p>Uploading {upload.filename}...</p>
+        <p>{I18n.home_pane.uploading.format({ filename: upload.filename })}</p>
         <span className="spinner-default spinner-large"></span>
         {upload.__status__.type === STATUS_UPDATING ?
           <p>{Math.round(upload.__status__.percentCompleted)}%</p> :
@@ -40,7 +40,7 @@ function ShowUpload({ upload, latestSchema, goToUploads }) {
         Layers:
         <ul>
           <li>
-            {latestSchema.name || '(Only Layer)'}
+            {latestSchema.name || I18n.home_pane.only_layer}
             <ul>
               <li>
                 <Link

@@ -1551,6 +1551,10 @@ en:
       ok: Ok
       save: Save
       cancel: Cancel
+    no_match:
+      title: Not Found
+      subtitle: Sorry, couldn't find that!
+      suggestion: Try going back to the update.
     home_pane:
       metadata: Metadata
       metadata_manage_button: Manage Metadata
@@ -1559,7 +1563,17 @@ en:
       data_manage_button: Manage Data
       data_blurb: Add a data file and enable visualizations and mapping.
       required: Required
+      uploading: Uploading {filename}...
+      only_layer: (Only Layer)
+      preview: Preview
+      apply_update: Apply Update
+      percent_uploaded: "{percent}% Uploaded"
+      upload_done: Upload Done
     manage: Manage
+    manage_uploads:
+      previous: Previous uploads
+      new_file: "Upload a new file:"
+      failed: "{filename} (failed: {status})"
     metadata_manage:
       errors:
         missing_name: Dataset name is required.
@@ -1571,6 +1585,9 @@ en:
          errors_exist: Errors total
          errors_exist_scanning: Errors found so far
          no_errors_exist: All cells will import correctly
+         type_display_names:
+           SoQLText: Text
+           SoQLNumber: Number
     show_upsert:
       header:
         title: Finalizing Import
@@ -1586,6 +1603,9 @@ en:
       footer:
         finished: Done
         failed: Failed
+    upsert_jobs:
+      title: Upsert Jobs
+      job_id: Job {0}
   dataslate:
     component:
       edit: Edit this component
@@ -2144,7 +2164,7 @@ en:
           one: 1 asset discovered
           other: "%{count} assets discovered"
         back_to_connector_list: Back to Connector list
-        catalog: External 
+        catalog: External
         catalog_connect_all: Connect all assets as External Datasets
         catalog_option: External Connection
         catalog_option_explanation: Assets will appear in your catalog as External Datasets

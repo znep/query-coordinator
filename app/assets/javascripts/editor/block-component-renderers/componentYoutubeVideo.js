@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import $ from 'jquery';
 
 import '../componentBase';
@@ -5,16 +6,14 @@ import StorytellerUtils from '../../StorytellerUtils';
 
 $.fn.componentYoutubeVideo = componentYoutubeVideo;
 
-export default function componentYoutubeVideo(componentData, theme, options) {
-  var $this = $(this);
+export default function componentYoutubeVideo(props) {
+  const $this = $(this);
+  const { componentData } = props;
 
   StorytellerUtils.assertHasProperties(componentData, 'type');
   StorytellerUtils.assert(
     componentData.type === 'youtube.video',
-    StorytellerUtils.format(
-      'componentYoutubeVideo: Unsupported component type {0}',
-      componentData.type
-    )
+    `componentYoutubeVideo: Unsupported component type ${componentData.type}`
   );
 
   if ($this.children().length === 0) {
@@ -22,7 +21,7 @@ export default function componentYoutubeVideo(componentData, theme, options) {
   }
 
   _updateSrcAndTitle($this, componentData);
-  $this.componentBase(componentData, theme, options);
+  $this.componentBase(props);
 
   return $this;
 }
@@ -30,7 +29,7 @@ export default function componentYoutubeVideo(componentData, theme, options) {
 function _renderYoutube($element, componentData) {
   StorytellerUtils.assertHasProperty(componentData, 'type');
 
-  var $iframeElement = $(
+  const $iframeElement = $(
     '<iframe>',
     {
       'src': 'about:blank',
@@ -38,7 +37,7 @@ function _renderYoutube($element, componentData) {
       'allowfullscreen': true
     }
   );
-  var className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
+  const className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
 
   $element.
     addClass(className).
@@ -49,9 +48,9 @@ function _updateSrcAndTitle($element, componentData) {
   StorytellerUtils.assertHasProperty(componentData, 'value');
   StorytellerUtils.assertHasProperty(componentData.value, 'id');
 
-  var $iframeElement = $element.find('iframe');
-  var title = _.get(componentData.value, 'title');
-  var youtubeSource = StorytellerUtils.generateYoutubeIframeSrc(componentData.value.id);
+  const $iframeElement = $element.find('iframe');
+  const title = _.get(componentData.value, 'title');
+  const youtubeSource = StorytellerUtils.generateYoutubeIframeSrc(componentData.value.id);
 
   $iframeElement.attr('title', title);
 

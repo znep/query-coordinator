@@ -32,6 +32,7 @@ describe('StoryRenderer', function() {
   var storyStore;
   var windowSizeBreakpointStore;
   var dropHintStore;
+  var moveComponentStore;
 
   beforeEach(function() {
     $transient.append([
@@ -56,6 +57,14 @@ describe('StoryRenderer', function() {
     DropHintStoreAPI.__Rewire__('storyStore', storyStore);
     dropHintStore = new DropHintStore();
 
+    moveComponentStore = {
+      isUserChoosingMoveDestination: _.constant(false),
+      isComponentBeingMoved: _.constant(false),
+      isComponentValidMoveDestination: _.constant(false),
+      addChangeListener: _.noop
+    };
+
+    StoryRendererAPI.__Rewire__('moveComponentStore', moveComponentStore);
     StoryRendererAPI.__Rewire__('storyStore', storyStore);
     StoryRendererAPI.__Rewire__('dropHintStore', dropHintStore);
     StoryRendererAPI.__Rewire__('richTextEditorManager', richTextEditorManager);

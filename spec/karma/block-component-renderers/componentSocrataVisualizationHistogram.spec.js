@@ -26,6 +26,15 @@ describe('componentSocrataVisualizationHistogram jQuery plugin', function() {
     }
   };
 
+  var getProps = (props) => {
+    return _.extend({
+      blockId: null,
+      componentData: validComponentData,
+      componentIndex: null,
+      theme: null
+    }, props);
+  };
+
   beforeEach(function() {
     $transient.append('<div>');
     $component = $transient.children('div');
@@ -45,7 +54,9 @@ describe('componentSocrataVisualizationHistogram jQuery plugin', function() {
       var badData = _.cloneDeep(validComponentData);
       badData.type = 'notSocrata.notVisualization.notHistogram';
       assert.throws(function() {
-        $component.componentSocrataVisualizationHistogram(badData);
+        $component.componentSocrataVisualizationHistogram(getProps({
+          componentData: badData
+        }));
       });
     });
   });
@@ -55,7 +66,7 @@ describe('componentSocrataVisualizationHistogram jQuery plugin', function() {
 
     beforeEach(function() {
       socrataHistogramStub = sinon.stub($.fn, 'socrataSvgHistogram');
-      $component = $component.componentSocrataVisualizationHistogram(validComponentData);
+      $component = $component.componentSocrataVisualizationHistogram(getProps());
     });
 
     afterEach(function() {

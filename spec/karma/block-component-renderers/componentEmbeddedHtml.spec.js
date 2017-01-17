@@ -19,6 +19,15 @@ describe('componentEmbeddedHtml jQuery plugin', function() {
     }
   };
 
+  const getProps = (props) => {
+    return _.extend({
+      blockId: null,
+      componentData: validComponentData,
+      componentIndex: null,
+      theme: null
+    }, props);
+  };
+
   beforeEach(function() {
     $transient.append('<div>');
     $component = $transient.children('div');
@@ -35,11 +44,13 @@ describe('componentEmbeddedHtml jQuery plugin', function() {
 
   describe('given a value that does not contain a url', function() {
     it('should throw when setting the iframe source', function() {
-      var badData = _.cloneDeep(validComponentData);
-      delete badData.value.url;
+      var badComponentData = _.cloneDeep(validComponentData);
+      delete badComponentData.value.url;
 
       assert.throws(function() {
-        $component.componentEmbeddedHtml(badData);
+        $component.componentEmbeddedHtml(getProps({
+          componentData: badComponentData
+        }));
       });
     });
   });
@@ -47,7 +58,7 @@ describe('componentEmbeddedHtml jQuery plugin', function() {
   describe('given a valid component type and value', function() {
 
     beforeEach(function() {
-      $component = $component.componentEmbeddedHtml(validComponentData);
+      $component = $component.componentEmbeddedHtml(getProps());
     });
 
     it('should return a jQuery object for chaining', function() {
@@ -63,14 +74,16 @@ describe('componentEmbeddedHtml jQuery plugin', function() {
       });
 
       it('should update', function() {
-        var updatedData = _.cloneDeep(validComponentData);
-        updatedData.value.documentId = '9999';
+        var updatedComponentData = _.cloneDeep(validComponentData);
+        updatedComponentData.value.documentId = '9999';
 
-        $component.componentEmbeddedHtml(updatedData);
+        $component.componentEmbeddedHtml(getProps({
+          componentData: updatedComponentData
+        }));
 
         assert.equal(
           $component.find('iframe').attr('data-document-id'),
-          updatedData.value.documentId
+          updatedComponentData.value.documentId
         );
       });
 
@@ -89,19 +102,21 @@ describe('componentEmbeddedHtml jQuery plugin', function() {
       });
 
       it('should update', function() {
-        var updatedData = _.cloneDeep(validComponentData);
-        updatedData.value.url = 'https://updated.imageuploads.com/embedded_fragment.html';
-        updatedData.value.title = 'new title';
+        var updatedComponentData = _.cloneDeep(validComponentData);
+        updatedComponentData.value.url = 'https://updated.imageuploads.com/embedded_fragment.html';
+        updatedComponentData.value.title = 'new title';
 
-        $component.componentEmbeddedHtml(updatedData);
+        $component.componentEmbeddedHtml(getProps({
+          componentData: updatedComponentData
+        }));
 
         assert.equal(
           $component.find('iframe').attr('src'),
-          updatedData.value.url
+          updatedComponentData.value.url
         );
         assert.equal(
           $component.find('iframe').attr('title'),
-          updatedData.value.title
+          updatedComponentData.value.title
         );
       });
     });

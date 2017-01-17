@@ -16,6 +16,15 @@ describe('componentImage jQuery plugin', function() {
     }
   };
 
+  var getProps = (props) => {
+    return _.extend({
+      blockId: null,
+      componentData: validComponentData,
+      componentIndex: null,
+      theme: null
+    }, props);
+  };
+
   beforeEach(function() {
     $transient.append('<div>');
     $component = $transient.children('div');
@@ -36,7 +45,9 @@ describe('componentImage jQuery plugin', function() {
       delete badData.value.documentId;
 
       assert.throws(function() {
-        $component.componentImage(badData);
+        $component.componentImage(getProps({
+          componentData: badData
+        }));
       });
     });
   });
@@ -47,7 +58,9 @@ describe('componentImage jQuery plugin', function() {
       delete badData.value.url;
 
       assert.throws(function() {
-        $component.componentImage(badData);
+        $component.componentImage(getProps({
+          componentData: badData
+        }));
       });
     });
   });
@@ -55,7 +68,7 @@ describe('componentImage jQuery plugin', function() {
   describe('given a valid component type and value', function() {
 
     beforeEach(function() {
-      $component = $component.componentImage(validComponentData);
+      $component = $component.componentImage(getProps());
     });
 
     it('should return a jQuery object for chaining', function() {
@@ -74,7 +87,9 @@ describe('componentImage jQuery plugin', function() {
         var updatedData = _.cloneDeep(validComponentData);
         updatedData.value.documentId = '4321';
 
-        $component.componentImage(updatedData);
+        $component.componentImage(getProps({
+          componentData: updatedData
+        }));
 
         assert.equal(
           $component.find('img').attr('data-document-id'),
@@ -95,7 +110,9 @@ describe('componentImage jQuery plugin', function() {
         var updatedData = _.cloneDeep(validComponentData);
         updatedData.value.url = 'https://imageuploads.com/new-valid-upload-image.png';
 
-        $component.componentImage(updatedData);
+        $component.componentImage(getProps({
+          componentData: updatedData
+        }));
 
         assert.include(
           $component.find('img').attr('src'),
@@ -116,7 +133,9 @@ describe('componentImage jQuery plugin', function() {
         var updatedData = _.cloneDeep(validComponentData);
         updatedData.value.alt = '';
 
-        $component.componentImage(updatedData);
+        $component.componentImage(getProps({
+          componentData: updatedData
+        }));
 
         assert.equal(
           $component.find('img').attr('alt'),

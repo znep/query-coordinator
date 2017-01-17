@@ -11,48 +11,47 @@ import { flyoutRenderer } from '../FlyoutRenderer';
 
 $.fn.componentSocrataVisualizationTable = componentSocrataVisualizationTable;
 
-export default function componentSocrataVisualizationTable(componentData, theme, options) {
-  var $this = $(this);
+export default function componentSocrataVisualizationTable(props) {
+  props = _.extend({}, props, {
+    resizeSupported: true,
+    resizeOptions: {
+      minHeight: Constants.MINIMUM_COMPONENT_HEIGHTS_PX.VISUALIZATION
+    },
+    defaultHeight: Constants.DEFAULT_TABLE_HEIGHT
+  });
+
+  const $this = $(this);
+  const { componentData } = props;
 
   StorytellerUtils.assertHasProperty(componentData, 'type');
   StorytellerUtils.assert(
     componentData.type === 'socrata.visualization.table',
-    StorytellerUtils.format(
-      'componentSocrataVisualizationTable: Tried to render type: {0}',
-      componentData.type
-    )
+    `componentSocrataVisualizationTable: Unsupported component type ${componentData.type}`
   );
 
   if ($this.children().length === 0) {
-    _renderTemplate($this, componentData, options);
+    _renderTemplate($this, props);
   }
 
   _updateVisualization($this, componentData);
-  $this.componentBase(componentData, theme, _.extend(
-    {
-      resizeSupported: true,
-      resizeOptions: {
-        minHeight: Constants.MINIMUM_COMPONENT_HEIGHTS_PX.VISUALIZATION
-      },
-      defaultHeight: Constants.DEFAULT_TABLE_HEIGHT
-    },
-    options
-  ));
+
+  $this.componentBase(props);
 
   return $this;
 }
 
-function _renderTemplate($element, componentData, options) {
-  var $componentContent = $('<div>', { class: 'component-content' });
+function _renderTemplate($element, props) {
+  const { componentData, editMode } = props;
+  const $componentContent = $('<div>', { class: 'component-content' });
 
   StorytellerUtils.assertHasProperty(componentData, 'type');
 
   $element.
     addClass(StorytellerUtils.typeToClassNameForComponentType(componentData.type)).
     // Pass on the destroy event to plugin.
-    on('destroy', function() { $componentContent.triggerHandler('destroy'); }).
-    on('SOCRATA_VISUALIZATION_FLYOUT', function(event) {
-      var payload = event.originalEvent.detail;
+    on('destroy', () => { $componentContent.triggerHandler('destroy'); }).
+    on('SOCRATA_VISUALIZATION_FLYOUT', (event) => {
+      const payload = event.originalEvent.detail;
 
       if (payload !== null) {
         flyoutRenderer.render(payload);
@@ -61,21 +60,13 @@ function _renderTemplate($element, componentData, options) {
       }
     });
 
-  if (_.get(options, 'editMode')) {
+  if (editMode) {
 
     $element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', function(event) {
-      var newVif = event.originalEvent.detail;
-      var blockId = StorytellerUtils.findClosestAttribute(this, 'data-block-id');
-      var componentIndex = parseInt(
-        StorytellerUtils.findClosestAttribute(this, 'data-component-index'),
-        10
-      );
-      var newValue;
-
-      StorytellerUtils.assertIsOneOfTypes(blockId, 'string');
-      StorytellerUtils.assert(_.isFinite(componentIndex));
-
-      var blockComponent = storyStore.getBlockComponentAtIndex(blockId, componentIndex);
+      let newValue;
+      const newVif = event.originalEvent.detail;
+      const { blockId, componentIndex } = StorytellerUtils.findBlockIdAndComponentIndex(this);
+      const blockComponent = storyStore.getBlockComponentAtIndex(blockId, componentIndex);
 
       newValue = _.cloneDeep(componentData.value);
       newValue.vif = newVif;
@@ -101,13 +92,13 @@ function _renderTemplate($element, componentData, options) {
 }
 
 function _updateVisualization($element, componentData) {
-  var $componentContent = $element.find('.component-content');
-  var renderedVif = JSON.parse($element.attr('data-rendered-vif') || '{}');
-  var vif;
+  let vif;
+  const $componentContent = $element.find('.component-content');
+  const renderedVif = JSON.parse($element.attr('data-rendered-vif') || '{}');
 
   function getVifType(vifToCheck) {
-    var version = _.get(vifToCheck, 'format.version', 1);
-    var type;
+    let type;
+    const version = _.get(vifToCheck, 'format.version', 1);
 
     if (version === 2) {
       type = _.get(vifToCheck, 'series[0].type');

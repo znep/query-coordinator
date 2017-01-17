@@ -146,21 +146,9 @@
   }
 }
 
-.block {
-  &:hover,
-  &.active {
-    .author-image .component-edit-controls {
-      opacity: 1;
-    }
-  }
-}
-
 .component-author {
   background: $author-component-bg-color;
-  margin-left: $author-component-margin;
-  margin-right: $author-component-margin;
   padding: $author-component-padding;
-  border-bottom: $author-component-border-bottom-thickness solid $author-component-border-bottom-color;
   border-radius: 1px;
   overflow: hidden; // Makes background take size of content.
 
@@ -174,6 +162,10 @@
       margin-top: $author-component-profile-image-padding;
       margin-right: $author-component-profile-image-padding;
     }
+  }
+
+  .author-blurb {
+    margin-right: 0;
   }
 }
 

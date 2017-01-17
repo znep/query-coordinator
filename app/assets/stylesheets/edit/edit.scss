@@ -53,6 +53,10 @@ a {
     top: $site-chrome-admin-header-small-height;
   }
 
+  .moving & {
+    display: none;
+  }
+
   .header-right {
     display: inline-block;
     float: right;
@@ -381,6 +385,44 @@ ul.quick-action-menu {
 
   .nav-tabs {
     margin-bottom: 24.27px;
+  }
+}
+
+#site-chrome-admin-header {
+  .moving & {
+    display: none;
+  }
+}
+
+#moving-cancel-header {
+  display: none;
+  height: 60px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: $header-bg-color;
+  cursor: pointer;
+  z-index: $site-header-z-index;
+
+  .moving & {
+    display: inline-flex;
+  }
+
+  span {
+    margin: auto;
+    color: white;
+  }
+
+  .moving-cancel-header-text {
+    margin-left: 4px;
+    font-size: 15px;
+  }
+
+  .moving-cancel-header-icon {
+    display: inline-block;
+    margin-right: 4px;
+    font-size: 15px;
   }
 }
 

@@ -5,38 +5,39 @@ import '../componentBase';
 import I18n from '../I18n';
 import StorytellerUtils from '../../StorytellerUtils';
 
-var WINDOW_RESIZE_RERENDER_DELAY = 200;
+const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 $.fn.componentGoalTile = componentGoalTile;
 
 // Given a domain, returns a promise for an I18n.t style function that respects
 // the domain's string overrides.
 // The response is cached for the lifetime of the page.
-var fetchOpenPerformanceDomainI18n = _.memoize(function(domain) {
-  return StorytellerUtils.fetchDomainStrings('en', domain).then(function(domainStrings) {
+const fetchOpenPerformanceDomainI18n = _.memoize((domain) => {
+  return StorytellerUtils.fetchDomainStrings('en', domain).then((domainStrings) => {
     // Storyteller javascript expects all localization strings to live under `editor`,
     // for historical reasons. See EN-5158.
     domainStrings = {
       editor: domainStrings
     };
 
-    return function(key) {
+    return (key) => {
       // Fetch from domain strings first, then fall back to storyteller strings
       return _.get(domainStrings, key, I18n.t(key));
     };
   });
 });
 
-export default function componentGoalTile(componentData, theme, options) {
-  var $this = $(this);
-  var rerenderOnResizeTimeout;
+export default function componentGoalTile(props) {
+  let rerenderOnResizeTimeout;
+  const $this = $(this);
+  const { componentData } = props;
 
-  function _handleWindowResize() {
+  function handleWindowResize() {
     clearTimeout(rerenderOnResizeTimeout);
 
-    fetchOpenPerformanceDomainI18n(componentData.value.domain).then(function(domainI18n) {
+    fetchOpenPerformanceDomainI18n(componentData.value.domain).then((domainI18n) => {
       rerenderOnResizeTimeout = setTimeout(
-        _renderGoalTile($this, domainI18n, componentData),
+        renderGoalTile($this, domainI18n, componentData),
         // Add some jitter in order to make sure multiple visualizations are
         // unlikely to all attempt to rerender themselves at the exact same
         // moment.
@@ -50,31 +51,25 @@ export default function componentGoalTile(componentData, theme, options) {
   StorytellerUtils.assertHasProperties(componentData, 'type');
   StorytellerUtils.assert(
     componentData.type === 'goal.tile',
-    StorytellerUtils.format(
-      'componentGoalTile: Unsupported component type {0}',
-      componentData.type
-    )
+    `componentGoalTile: Unsupported component type ${componentData.type}`
   );
 
-  $(window).on('resize', _handleWindowResize);
+  $(window).on('resize', handleWindowResize);
 
-  $this.on('destroy', function() {
-    $(window).off('resize', _handleWindowResize);
+  $this.on('destroy', () => {
+    $(window).off('resize', handleWindowResize);
     $this.empty();
   });
 
-  $this.componentBase(componentData, theme, options);
+  $this.componentBase(props);
   $this.addClass(StorytellerUtils.typeToClassNameForComponentType(componentData.type));
 
-  _updateSrc($this, componentData);
+  updateSrc($this, componentData);
 
   return $this;
 }
 
-function _updateSrc($element, componentData) {
-  var goalTileSrc;
-  var renderedGoalTileSrc = $element.attr('data-rendered-goal-tile-url');
-
+function updateSrc($element, componentData) {
   StorytellerUtils.assertHasProperties(
     componentData,
     'value.domain',
@@ -82,7 +77,8 @@ function _updateSrc($element, componentData) {
     'value.goalFullUrl'
   );
 
-  goalTileSrc = StorytellerUtils.generateGoalTileJsonSrc(
+  const renderedGoalTileSrc = $element.attr('data-rendered-goal-tile-url');
+  const goalTileSrc = StorytellerUtils.generateGoalTileJsonSrc(
     componentData.value.domain,
     componentData.value.goalUid
   );
@@ -99,47 +95,33 @@ function _updateSrc($element, componentData) {
       Promise.resolve($.get(goalTileSrc)),
       fetchOpenPerformanceDomainI18n(componentData.value.domain)
     ]).
-      then(
-        function(resolutions) {
-          var goalTileData = resolutions[0];
-          var domainI18n = resolutions[1];
-          _renderGoalTile($element, domainI18n, componentData, goalTileData);
-        }
-      ).
-      catch(
-        function(error) {
-
-          if (window.console && console.error) {
-            console.error(error);
-          }
-
-          _renderGoalTileError($element);
-        }
-      );
+    then((resolutions) => {
+      const [ goalTileData, domainI18n ] = resolutions;
+      renderGoalTile($element, domainI18n, componentData, goalTileData);
+    }).
+    catch(() => {
+      renderGoalTileError($element);
+    });
   }
 }
 
-function _updateTextEllipsification($element) {
-  var renderedResponse = $element.attr('data-rendered-goal-tile-data');
-  var renderedWidth = parseInt($element.attr('data-rendered-goal-tile-width'), 10);
-  var elementWidth = Math.floor($element.outerWidth(true));
-  var goalTileData;
-  var $tileTitle;
-  var $tileMetricUnit;
-  var $tileMetricSubtitle;
+function updateTextEllipsification($element) {
+  const renderedResponse = $element.attr('data-rendered-goal-tile-data');
+  const renderedWidth = parseInt($element.attr('data-rendered-goal-tile-width'), 10);
+  const elementWidth = Math.floor($element.outerWidth(true));
 
   if (renderedResponse && renderedWidth !== elementWidth) {
 
-    goalTileData = JSON.parse(renderedResponse);
+    const goalTileData = JSON.parse(renderedResponse);
     $element.attr('data-rendered-goal-tile-width', elementWidth);
 
-    $tileTitle = $element.find('.goal-tile-title');
-    $tileMetricUnit = $element.find('.goal-tile-metric-unit');
-    $tileMetricSubtitle = $element.find('.goal-tile-metric-subtitle');
+    const $tileTitle = $element.find('.goal-tile-title');
+    const $tileMetricUnit = $element.find('.goal-tile-metric-unit');
+    const $tileMetricSubtitle = $element.find('.goal-tile-metric-subtitle');
 
     $tileTitle.text(_.get(goalTileData, 'name'));
-    $tileMetricUnit.text(_formatMetricUnit(goalTileData));
-    $tileMetricSubtitle.text(_expandSubtitle(goalTileData));
+    $tileMetricUnit.text(formatMetricUnit(goalTileData));
+    $tileMetricSubtitle.text(expandSubtitle(goalTileData));
 
     StorytellerUtils.ellipsifyText($tileTitle, 2);
     StorytellerUtils.ellipsifyText($tileMetricUnit, 3);
@@ -147,8 +129,8 @@ function _updateTextEllipsification($element) {
   }
 }
 
-function _formatMetricValue(goalTileData) {
-  var value = _.get(
+function formatMetricValue(goalTileData) {
+  const value = _.get(
     goalTileData,
     'prevailing_measure.computed_values.metric.current_value'
   );
@@ -156,14 +138,13 @@ function _formatMetricValue(goalTileData) {
   return (_.isNumber(value)) ? StorytellerUtils.formatValueWithoutRounding(value) : '-';
 }
 
-function _formatMetricUnit(goalTileData) {
-
+function formatMetricUnit(goalTileData) {
   return (_.get(goalTileData, 'prevailing_measure.unit') === 'percent') ?
     I18n.t('editor.open_performance.measure.unit_percent') :
     _.get(goalTileData, 'prevailing_measure.unit');
 }
 
-function _expandSubtitle(goalTileData) {
+function expandSubtitle(goalTileData) {
   var customSubtitle = _.get(goalTileData, 'prevailing_measure.summary');
   var defaultSubtitle = StorytellerUtils.format(
     I18n.t('editor.open_performance.measure.subheadline') || '',
@@ -174,7 +155,7 @@ function _expandSubtitle(goalTileData) {
   return customSubtitle || defaultSubtitle;
 }
 
-function _formatEndDate(endDate) {
+function formatEndDate(endDate) {
 
   return StorytellerUtils.format(
     '{0} {1}, {2}',
@@ -184,9 +165,9 @@ function _formatEndDate(endDate) {
   );
 }
 
-function _renderGoalTile($element, domainI18n, componentData, goalTileData) {
+function renderGoalTile($element, domainI18n, componentData, goalTileData) {
   function expandProgress(progress, isEnded) {
-    var expandedProgress = null;
+    let expandedProgress = null;
 
     if (progress != null) {
 
@@ -202,23 +183,23 @@ function _renderGoalTile($element, domainI18n, componentData, goalTileData) {
     return _.isUndefined(expandedProgress) ? progress : expandedProgress;
   }
 
-  var goalProgress;
-  var goalEndDate;
-  var goalIsEnded;
-  var colorPalette;
-  var $tileContainer;
-  var $tileContent;
-  var $tileTitle;
-  var $tileTitleContainer;
-  var $tileMetricValue;
-  var $tileMetricUnit;
-  var $tileMetricSubtitle;
-  var $tileMetricContainer;
-  var $tileProgress;
-  var $tileProgressEndDate;
-  var $tilePublicPrivate;
-  var $tileMetadataContainer;
-  var $tileViewGoal;
+  let goalProgress;
+  let goalEndDate;
+  let goalIsEnded;
+  let colorPalette;
+  let $tileContainer;
+  let $tileContent;
+  let $tileTitle;
+  let $tileTitleContainer;
+  let $tileMetricValue;
+  let $tileMetricUnit;
+  let $tileMetricSubtitle;
+  let $tileMetricContainer;
+  let $tileProgress;
+  let $tileProgressEndDate;
+  let $tilePublicPrivate;
+  let $tileMetadataContainer;
+  let $tileViewGoal;
 
   StorytellerUtils.assertHasProperty(componentData, 'type');
 
@@ -229,7 +210,7 @@ function _renderGoalTile($element, domainI18n, componentData, goalTileData) {
   // performance).
   if (!goalTileData) {
 
-    _updateTextEllipsification($element);
+    updateTextEllipsification($element);
     return;
   }
 
@@ -250,7 +231,7 @@ function _renderGoalTile($element, domainI18n, componentData, goalTileData) {
 
   // Start rendering
 
-  _removeGoalTile($element);
+  removeGoalTile($element);
 
   $element.attr(
     'data-rendered-goal-tile-data',
@@ -301,13 +282,13 @@ function _renderGoalTile($element, domainI18n, componentData, goalTileData) {
     append($tileTitle);
 
   $tileMetricValue = $('<h2>', {'class': 'goal-tile-metric-value'}).
-    text(_formatMetricValue(goalTileData));
+    text(formatMetricValue(goalTileData));
 
   $tileMetricUnit = $('<h3>', {'class': 'goal-tile-metric-unit'}).
-    text(_formatMetricUnit(goalTileData));
+    text(formatMetricUnit(goalTileData));
 
   $tileMetricSubtitle = $('<h4>', {'class': 'goal-tile-metric-subtitle'}).
-    text(_expandSubtitle(goalTileData));
+    text(expandSubtitle(goalTileData));
 
   $tileMetricContainer = $('<div>', {'class': 'goal-tile-metric-container'}).
     append([
@@ -327,7 +308,7 @@ function _renderGoalTile($element, domainI18n, componentData, goalTileData) {
   if (goalIsEnded) {
 
     $tileProgressEndDate = $('<span>', {'class': 'goal-tile-metric-progress-end-date'}).
-      text(_formatEndDate(goalEndDate));
+      text(formatEndDate(goalEndDate));
   }
 
   $tilePublicPrivate = $('<span>', {'class': 'goal-tile-public-private'});
@@ -395,7 +376,7 @@ function _renderGoalTile($element, domainI18n, componentData, goalTileData) {
   // maybe this time we will be more resolute or just find our peace with this
   // frustratingly non-optimal approach.
   setTimeout(
-    function() {
+    () => {
       StorytellerUtils.ellipsifyText($tileTitle, 2);
       StorytellerUtils.ellipsifyText($tileMetricUnit, 3);
       StorytellerUtils.ellipsifyText($tileMetricSubtitle, 2);
@@ -404,7 +385,7 @@ function _renderGoalTile($element, domainI18n, componentData, goalTileData) {
   );
 }
 
-function _removeGoalTile($element) {
+function removeGoalTile($element) {
 
   $element.
     removeClass('component-error').
@@ -415,9 +396,9 @@ function _removeGoalTile($element) {
     remove();
 }
 
-function _renderGoalTileError($element) {
+function renderGoalTileError($element) {
 
-  _removeGoalTile($element);
+  removeGoalTile($element);
 
   $element.
     addClass('component-error').

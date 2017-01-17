@@ -11,9 +11,19 @@ describe('componentSocrataVisualizationRegionMap jQuery plugin', function() {
     type: 'socrata.visualization.regionMap',
     value: {
       vif: {
-        configuration: {}
+        configuration: {},
+        unit: { one: 'record', other: 'records' }
       }
     }
+  };
+
+  var getProps = (props) => {
+    return _.extend({
+      blockId: null,
+      componentData: validComponentData,
+      componentIndex: null,
+      theme: null
+    }, props);
   };
 
   beforeEach(function() {
@@ -34,8 +44,11 @@ describe('componentSocrataVisualizationRegionMap jQuery plugin', function() {
     it('should throw when instantiated', function() {
       var badData = _.cloneDeep(validComponentData);
       badData.type = 'notSocrata.notVisualization.notRegionMap';
+
       assert.throws(function() {
-        $component.componentSocrataVisualizationRegionMap(badData);
+        $component.componentSocrataVisualizationRegionMap(getProps({
+          componentData: badData
+        }));
       });
     });
   });
@@ -45,7 +58,7 @@ describe('componentSocrataVisualizationRegionMap jQuery plugin', function() {
 
     beforeEach(function() {
       socrataSvgRegionMapStub = sinon.stub($.fn, 'socrataSvgRegionMap', function() { return this; });
-      $component = $component.componentSocrataVisualizationRegionMap(validComponentData);
+      $component = $component.componentSocrataVisualizationRegionMap(getProps());
     });
 
     afterEach(function() {
@@ -69,7 +82,8 @@ describe('componentSocrataVisualizationRegionMap jQuery plugin', function() {
       type: 'socrata.visualization.choroplethMap',
       value: {
         vif: {
-          configuration: {}
+          configuration: {},
+          unit: { one: 'record', other: 'records' }
         }
       }
     };
@@ -79,7 +93,7 @@ describe('componentSocrataVisualizationRegionMap jQuery plugin', function() {
 
       beforeEach(function() {
         socrataSvgRegionMapStub = sinon.stub($.fn, 'socrataSvgRegionMap', function() { return this; });
-        $component = $component.componentSocrataVisualizationRegionMap(validChoroplethComponentData);
+        $component = $component.componentSocrataVisualizationRegionMap(getProps());
       });
 
       afterEach(function() {

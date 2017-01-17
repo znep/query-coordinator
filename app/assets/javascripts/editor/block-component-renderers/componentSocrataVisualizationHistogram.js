@@ -8,16 +8,21 @@ import { flyoutRenderer } from '../FlyoutRenderer';
 
 $.fn.componentSocrataVisualizationHistogram = componentSocrataVisualizationHistogram;
 
-export default function componentSocrataVisualizationHistogram(componentData, theme, options) {
-  var $this = $(this);
+export default function componentSocrataVisualizationHistogram(props) {
+  props = _.extend({}, props, {
+    resizeSupported: true,
+    resizeOptions: {
+      minHeight: Constants.MINIMUM_COMPONENT_HEIGHTS_PX.VISUALIZATION
+    }
+  });
+
+  const $this = $(this);
+  const { componentData } = props;
 
   StorytellerUtils.assertHasProperty(componentData, 'type');
   StorytellerUtils.assert(
     componentData.type === 'socrata.visualization.histogram',
-    StorytellerUtils.format(
-      'componentSocrataVisualizationHistogram: Tried to render type: {0}',
-      componentData.type
-    )
+    `componentSocrataVisualizationHistogram: Unsupported component type ${componentData.type}`
   );
 
   if ($this.children().length === 0) {
@@ -25,30 +30,22 @@ export default function componentSocrataVisualizationHistogram(componentData, th
   }
 
   _updateVisualization($this, componentData);
-  $this.componentBase(componentData, theme, _.extend(
-    {
-      resizeSupported: true,
-      resizeOptions: {
-        minHeight: Constants.MINIMUM_COMPONENT_HEIGHTS_PX.VISUALIZATION
-      }
-    },
-    options
-  ));
+  $this.componentBase(props);
 
   return $this;
 }
 
 function _renderTemplate($element, componentData) {
-  var className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
-  var $componentContent = $('<div>', { class: 'component-content' });
-
   StorytellerUtils.assertHasProperty(componentData, 'type');
+
+  const className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
+  const $componentContent = $('<div>', { class: 'component-content' });
 
   $element.
     addClass(className).
-    on('destroy', function() { $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY'); }).
-    on('SOCRATA_VISUALIZATION_FLYOUT', function(event) {
-      var payload = event.originalEvent.detail;
+    on('destroy', () => { $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY'); }).
+    on('SOCRATA_VISUALIZATION_FLYOUT', (event) => {
+      const payload = event.originalEvent.detail;
 
       if (payload !== null) {
         flyoutRenderer.render(payload);
@@ -63,10 +60,10 @@ function _renderTemplate($element, componentData) {
 function _updateVisualization($element, componentData) {
   StorytellerUtils.assertHasProperty(componentData, 'value.vif');
 
-  var $componentContent = $element.find('.component-content');
-  var renderedVif = $element.attr('data-rendered-vif') || '{}';
-  var vif = componentData.value.vif;
-  var areNotEquivalent = !StorytellerUtils.vifsAreEquivalent(JSON.parse(renderedVif), vif);
+  const $componentContent = $element.find('.component-content');
+  const renderedVif = $element.attr('data-rendered-vif') || '{}';
+  const vif = componentData.value.vif;
+  const areNotEquivalent = !StorytellerUtils.vifsAreEquivalent(JSON.parse(renderedVif), vif);
 
   if (areNotEquivalent) {
     $element.attr('data-rendered-vif', JSON.stringify(vif));

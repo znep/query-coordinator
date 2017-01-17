@@ -6,6 +6,16 @@ import 'editor/block-component-renderers/componentSpacer';
 describe('componentSpacer jQuery plugin', function() {
 
   var $component;
+  var validComponentData = { type: 'spacer' };
+
+  var getProps = (props) => {
+    return _.extend({
+      blockId: null,
+      componentData: validComponentData,
+      componentIndex: null,
+      theme: null
+    }, props);
+  };
 
   beforeEach(function() {
     $transient.append('<div>');
@@ -23,15 +33,17 @@ describe('componentSpacer jQuery plugin', function() {
 
   describe('given a type that is not supported', function() {
     it('should throw when instantiated', function() {
-      assert.throws(function() { $component.componentSpacer({type: 'notSpacer'}); });
+      assert.throws(function() {
+        $component.componentSpacer(getProps({
+          componentData: { type: 'notSpacer' }
+        }));
+      });
     });
   });
 
   describe('given a valid component type', function() {
-    var componentData = {type: 'spacer'};
-
     beforeEach(function() {
-      $component = $component.componentSpacer(componentData);
+      $component = $component.componentSpacer(getProps());
     });
 
     it('should return a jQuery object for chaining', function() {

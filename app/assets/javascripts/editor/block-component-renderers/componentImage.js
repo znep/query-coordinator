@@ -30,16 +30,14 @@ import StorytellerUtils from '../../StorytellerUtils';
  */
 $.fn.componentImage = componentImage;
 
-export default function componentImage(componentData, theme, options) {
-  var $this = $(this);
+export default function componentImage(props) {
+  const $this = $(this);
+  const { componentData } = props;
 
   StorytellerUtils.assertHasProperties(componentData, 'type');
   StorytellerUtils.assert(
     componentData.type === 'image',
-    StorytellerUtils.format(
-      'componentImage: Unsupported component type {0}',
-      componentData.type
-    )
+    `componentImage: Unsupported component type ${componentData.type}`
   );
 
   if ($this.children().length === 0) {
@@ -47,7 +45,7 @@ export default function componentImage(componentData, theme, options) {
   }
 
   _updateImageAttributes($this, componentData);
-  $this.componentBase(componentData, theme, options);
+  $this.componentBase(props);
 
   return $this;
 }
@@ -55,7 +53,7 @@ export default function componentImage(componentData, theme, options) {
 function _renderImage($element, componentData) {
   StorytellerUtils.assertHasProperty(componentData, 'type');
 
-  var $imgElement = $(
+  const $imgElement = $(
     '<img>',
     {
       'src': null,
@@ -65,7 +63,7 @@ function _renderImage($element, componentData) {
     }
   );
 
-  var $link = $(
+  const $link = $(
     '<a>',
     {
       'href': null,
@@ -79,26 +77,19 @@ function _renderImage($element, componentData) {
 }
 
 function _updateImageAttributes($element, componentData) {
-  var src;
-  var imgSrc;
-  var documentId;
-  var crop;
-  var documentIdAsStringOrNull;
-  var altAttribute;
-  var link;
-  var $link = $element.find('a');
-  var $imgElement = $element.find('img');
-
   StorytellerUtils.assertHasProperty(componentData, 'value');
   StorytellerUtils.assertHasProperty(componentData.value, 'url');
   StorytellerUtils.assertHasProperty(componentData.value, 'documentId');
 
-  crop = _.get(componentData, 'value.crop', {});
-  imgSrc = componentData.value.url;
-  documentId = componentData.value.documentId; // May be null or undefined.
-  documentIdAsStringOrNull = _.isNull(documentId) || _.isUndefined(documentId) ? null : String(documentId);
-  altAttribute = componentData.value.alt;
-  link = componentData.value.link;
+  let src;
+  const $link = $element.find('a');
+  const $imgElement = $element.find('img');
+  const crop = _.get(componentData, 'value.crop', {});
+  const imgSrc = componentData.value.url;
+  const documentId = componentData.value.documentId; // May be null or undefined.
+  const documentIdAsStringOrNull = _.isNull(documentId) || _.isUndefined(documentId) ? null : String(documentId);
+  const altAttribute = componentData.value.alt;
+  const link = componentData.value.link;
 
   if (
     $imgElement[0].getAttribute('data-src') !== imgSrc ||
@@ -122,7 +113,7 @@ function _updateImageAttributes($element, componentData) {
 function _informHeightChanges($image) {
   StorytellerUtils.assertInstanceOf($image, $);
 
-  $image.one('load', function() {
+  $image.one('load', () => {
     $image[0].dispatchEvent(
       new CustomEvent(
         'component::height-change',
@@ -134,7 +125,7 @@ function _informHeightChanges($image) {
 
 // Utilize this to force an <img> src refresh with the same URL.
 function _appendSaltToSource(src) {
-  var now = Date.now();
+  const now = Date.now();
   return _.includes(src, '?') ?
     src + '&salt=' + now :
     src + '?' + now;

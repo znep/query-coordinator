@@ -99,6 +99,11 @@ en:
     components:
       edit_controls:
         button: 'Edit'
+        cancel: 'Cancel'
+        swap: 'Swap'
+        swap_here: 'Swap Here'
+        groups:
+          actions: 'Actions'
       asset_selector:
         insert_btn: 'Insert'
       hero:

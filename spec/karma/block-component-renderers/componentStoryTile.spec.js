@@ -28,6 +28,15 @@ describe('componentStoryTile jQuery plugin', function() {
 
   validStoryTileDataWithImage.image = 'about:blank';
 
+  var getProps = (props) => {
+    return _.extend({
+      blockId: null,
+      componentData: validComponentData,
+      componentIndex: null,
+      theme: null
+    }, props);
+  };
+
   function stubApiAndCreateComponentWith(statusCode, response, componentData) {
     var server;
 
@@ -47,7 +56,7 @@ describe('componentStoryTile jQuery plugin', function() {
         ]
       );
 
-      $component = $component.componentStoryTile(componentData);
+      $component = $component.componentStoryTile(getProps({ componentData }));
 
       // Need to use a setTimeout to escape the stack and resolve the promise.
       setTimeout(function() { done(); }, 0);
@@ -81,7 +90,7 @@ describe('componentStoryTile jQuery plugin', function() {
       delete badData.value.domain;
 
       assert.throws(function() {
-        $component.componentStoryTile(badData);
+        $component.componentStoryTile(getProps({ componentData: badData }));
       });
     });
   });
@@ -94,7 +103,7 @@ describe('componentStoryTile jQuery plugin', function() {
       delete badData.value.storyUid;
 
       assert.throws(function() {
-        $component.componentStoryTile(badData);
+        $component.componentStoryTile(getProps({ componentData: badData }));
       });
     });
   });

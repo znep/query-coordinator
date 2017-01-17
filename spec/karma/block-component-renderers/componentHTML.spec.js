@@ -7,6 +7,7 @@ describe('componentHTML jQuery plugin', function() {
 
   var $component;
 
+  var validComponentData = { type: 'html', value: 'rawrenstein' };
   var editorMock = function() {
     return {
       setContent: setContentSpy,
@@ -14,12 +15,22 @@ describe('componentHTML jQuery plugin', function() {
       addContentClass: addContentClassSpy
     };
   };
+
   var applyThemeClassSpy = sinon.spy();
   var addContentClassSpy = sinon.spy();
   var deleteEditorSpy = sinon.spy();
   var getEditorSpy = sinon.spy(editorMock);
   var setContentSpy = sinon.spy();
   var createEditorSpy = sinon.spy(editorMock);
+
+  const getProps = (props) => {
+    return _.extend({
+      blockId: null,
+      componentData: validComponentData,
+      componentIndex: null,
+      theme: null
+    }, props);
+  };
 
   beforeEach(function() {
     $transient.append('<div>');
@@ -56,21 +67,39 @@ describe('componentHTML jQuery plugin', function() {
   });
 
   it('should throw when not passed a component type', function() {
-    assert.throws(function() { $component.componentHTML({value: 'any'}); });
+    const badData = _.cloneDeep(validComponentData);
+    delete badData.type;
+
+    assert.throws(function() {
+      $component.componentHTML(getProps({
+        componentData: badData
+      }));
+    });
   });
 
   it('should throw when passed a component type that is not Storyteller.Text', function() {
-    assert.throws(function() { $component.componentHTML({type: 'invalid', value: 'any'}); });
+    const badData = _.cloneDeep(validComponentData);
+    badData.type = 'notHtml';
+
+    assert.throws(function() {
+      $component.componentHTML(getProps({
+        componentData: badData
+      }));
+    });
   });
 
   describe('given a valid component type and value, and no options', function() {
     var editorId;
     var initialValue = 'testing';
-    var componentData = {type: 'html', value: initialValue};
+    var componentData = { type: 'html', value: initialValue };
     var theme = 'classic';
 
     beforeEach(function() {
-      $component = $component.componentHTML(componentData, theme);
+      $component = $component.componentHTML(getProps({
+        componentData,
+        theme
+      }));
+
       editorId = $component.attr('data-editor-id');
     });
 
@@ -110,7 +139,11 @@ describe('componentHTML jQuery plugin', function() {
       it('calls setContent on the correct editor instance', function() {
         var newValue = 'something';
 
-        $component.componentHTML({type: 'html', value: newValue}, theme);
+        $component.componentHTML(getProps({
+          componentData: { type: 'html', value: newValue },
+          theme
+        }));
+
         sinon.assert.calledWith(getEditorSpy, editorId);
         sinon.assert.calledWith(setContentSpy, newValue);
       });
@@ -119,14 +152,16 @@ describe('componentHTML jQuery plugin', function() {
 
   describe('given a valid component type and value, and options containing extraContentClasses', function() {
     var initialValue = 'testing';
-    var componentData = {type: 'html', value: initialValue};
+    var componentData = { type: 'html', value: initialValue };
     var theme = 'classic';
-    var options = {
-      extraContentClasses: [ 'the-extra-content-class' ]
-    };
+    var extraContentClasses = [ 'the-extra-content-class' ];
 
     beforeEach(function() {
-      $component = $component.componentHTML(componentData, theme, options);
+      $component = $component.componentHTML(getProps({
+        componentData,
+        theme,
+        extraContentClasses
+      }));
     });
 
     it('does not call addContentClass during editor creation', function() {

@@ -16,37 +16,45 @@ var DEFAULT_HEIGHT_PX = 300;
 
 $.fn.componentHero = componentHero;
 
-export default function componentHero(componentData, theme, options) {
-  StorytellerUtils.assertHasProperties(componentData, 'type');
-  StorytellerUtils.assert(
-    componentData.type === 'hero',
-    StorytellerUtils.format(
-      'componentHero: Unsupported component type {0}',
-      componentData.type
-    )
-  );
+export default function componentHero(props) {
+  const $this = $(this);
 
-  var $this = $(this);
+  const editor = getEditorOrNull.call($this);
+  const hasComponentData = notEmpty(props.componentData);
 
-  function getOptions(currentComponentData) {
-    var editor = getEditorOrNull.call($this);
-    var defaultOptions = {
-      resizeSupported: notEmpty(currentComponentData),
-      editButtonSupported: notEmpty(currentComponentData),
+  props = _.extend(
+    {
+      resizeSupported: hasComponentData,
+      editButtonSupported: hasComponentData,
       resizeOptions: {
         minHeight: editor && editor.getContentHeight() || 150
       },
-      defaultHeight: DEFAULT_HEIGHT_PX
-    };
+      defaultHeight: DEFAULT_HEIGHT_PX,
+      dataChangedCallback: onDataChanged,
+      firstRenderCallback: onFirstRender
+    },
+    props
+  );
 
-    return _.extend({}, options, defaultOptions);
-  }
+  const {
+    blockId,
+    componentIndex,
+    componentData,
+    theme,
+    editMode,
+    defaultHeight
+  } = props;
 
+  StorytellerUtils.assertHasProperties(componentData, 'type');
+  StorytellerUtils.assert(
+    componentData.type === 'hero',
+    `componentHero: Unsupported component type ${componentData.type}`
+  );
 
   function onDataChanged(newComponentData) {
     updateHeight.call(this);
 
-    if (!getOptions(newComponentData).editMode) { return; }
+    if (!editMode) { return; }
 
     if (empty(newComponentData) && notRendered($this)) {
       renderUnconfiguredHero($this, newComponentData);
@@ -71,15 +79,10 @@ export default function componentHero(componentData, theme, options) {
   }
 
   function computeHeight() {
-    var editorHeight = 0;
-    var buttonHeight = $this.find('.hero-add-controls').outerHeight(true) || 0;
-
-    var editor = getEditorOrNull.call($this);
-    if (editor) {
-      editorHeight = $this.find('.component-html').outerHeight(true);
-    } else {
-      editorHeight = $this.find('.typeset').outerHeight();
-    }
+    const buttonHeight = $this.find('.hero-add-controls').outerHeight(true) || 0;
+    const editorHeight = getEditorOrNull.call($this) ?
+      $this.find('.component-html').outerHeight(true) :
+      $this.find('.typeset').outerHeight();
 
     return Math.max(
       editorHeight + buttonHeight,
@@ -88,36 +91,34 @@ export default function componentHero(componentData, theme, options) {
   }
 
   function updateEditorIframeHeight() {
-    var editor = getEditorOrNull.call($this);
-    if (editor) {
-      $this.find('.component-html iframe').height(editor.getContentHeight());
+    const editorOrNull = getEditorOrNull.call($this);
+
+    if (editorOrNull) {
+      $this.find('.component-html iframe').height(editorOrNull.getContentHeight());
     }
   }
 
   function updateHeight() {
     updateEditorIframeHeight();
 
-    var augmentedComponentData = _.cloneDeep($this.data('component-rendered-data'));
+    const augmentedComponentData = _.cloneDeep($this.data('component-rendered-data'));
     _.set(augmentedComponentData, 'value.layout.height', computeHeight());
+
     $this.data('component-rendered-data', augmentedComponentData);
-    $this.withLayoutHeightFromComponentData(augmentedComponentData, getOptions(augmentedComponentData).defaultHeight);
+    $this.withLayoutHeightFromComponentData(augmentedComponentData, defaultHeight);
   }
 
-  $this.componentBase(
-    componentData,
-    theme,
-    getOptions(componentData),
-    onFirstRender,
-    onDataChanged
-  );
+  $this.componentBase(props);
 
   // Delegate to child components.
-  if (getOptions(componentData).editMode && this.find('.hero-text').length > 0) {
-    this.find('.hero-text').componentHTML(
-      synthesizeRichTextEditorData(componentData),
+  if (editMode && this.find('.hero-text').length > 0) {
+    this.find('.hero-text').componentHTML({
+      blockId,
+      componentIndex,
       theme,
-      _.extend({}, options, { extraContentClasses: [ 'hero-body', 'remove-top-margin' ] })
-    );
+      extraContentClasses: [ 'hero-body', 'remove-top-margin' ],
+      componentData: synthesizeRichTextEditorData(componentData)
+    });
   }
 
   return $this;
@@ -152,12 +153,12 @@ function templateHero() {
 }
 
 function renderUnconfiguredHero($element) {
-  var text = I18n.t('editor.components.hero.set_cover_image');
-  var formatters = {
+  const text = I18n.t('editor.components.hero.set_cover_image');
+  const formatters = {
     coverImage: text,
     coverImageUrl: Environment.IMAGES.COVER_IMAGE_ICON
   };
-  var $template = $(
+  const $template = $(
     StorytellerUtils.format(
       templateUnconfiguredHero(),
       formatters
@@ -185,10 +186,10 @@ function renderUnconfiguredHero($element) {
 function renderHero($element, componentData) {
   assertComponentDataStructure(componentData);
 
-  var url = componentData.value.url;
-  var crop = JSON.stringify(_.get(componentData, 'value.crop', {}));
-  var formatters = {image: url};
-  var $template = $(StorytellerUtils.format(templateHero(), formatters));
+  const url = componentData.value.url;
+  const crop = JSON.stringify(_.get(componentData, 'value.crop', {}));
+  const formatters = {image: url};
+  const $template = $(StorytellerUtils.format(templateHero(), formatters));
 
   $element.
     find('.hero-text').
@@ -199,8 +200,10 @@ function renderHero($element, componentData) {
     remove();
 
   $element.
-    addClass(typeClass()).
-    append($template);
+    addClass(typeClass());
+
+  $template.
+    insertBefore($element.find('.component-edit-move-action-overlay'));
 
   $element.
     find('.hero').
@@ -220,22 +223,18 @@ function renderHero($element, componentData) {
 function updateHero($element, componentData) {
   assertComponentDataStructure(componentData);
 
-  var $hero = $element.find('.hero');
-  var url = $hero.attr('data-url');
-  var crop = JSON.parse($hero.attr('data-crop'));
-  var componentDataCrop = JSON.stringify(_.get(componentData, 'value.crop', {}));
+  const $hero = $element.find('.hero');
+  const url = $hero.attr('data-url');
+  const crop = JSON.parse($hero.attr('data-crop'));
+  const componentDataCrop = JSON.stringify(_.get(componentData, 'value.crop', {}));
 
   if (changedImage(url, componentData) || changedCrop(crop, componentData)) {
 
+    const saltedUrl = appendSaltToSource(componentData.value.url);
+    const backgroundImageStyles = $hero.css('background-image').replace(/url\([^)]+\)\s*,/, '').trim();
+
     // Preserve background-images, such as linear gradients.
-    var backgroundImage = StorytellerUtils.format(
-      'url({0}), {1}',
-      appendSaltToSource(componentData.value.url),
-      $hero.
-        css('background-image').
-        replace(/url\([^)]+\)\s*,/, '').
-        trim()
-    );
+    const backgroundImage = `url(${saltedUrl}), ${backgroundImageStyles}`;
 
     $hero.
       attr('data-url', componentData.value.url).
@@ -247,12 +246,10 @@ function updateHero($element, componentData) {
 function contentChanged(event) {
   event.stopPropagation(); // Otherwise StoryRenderer will attempt to treat this as an HTML component.
 
-  var html = event.originalEvent.detail.content;
+  const { blockId, componentIndex } = StorytellerUtils.findBlockIdAndComponentIndex(event.target);
+  const html = event.originalEvent.detail.content;
 
-  var blockId = StorytellerUtils.findClosestAttribute(event.target, 'data-block-id');
-  var componentIndex = parseInt(StorytellerUtils.findClosestAttribute(event.target, 'data-component-index'), 10);
-
-  var value = storyStore.getBlockComponentAtIndex(blockId, componentIndex).value;
+  const value = storyStore.getBlockComponentAtIndex(blockId, componentIndex).value;
   _.set(value, 'html', html);
 
   dispatcher.dispatch({
@@ -274,27 +271,14 @@ function typeClass() {
   return StorytellerUtils.typeToClassNameForComponentType('hero');
 }
 
-function getComponentMetadata($element) {
-  var blockId = StorytellerUtils.findClosestAttribute($element, 'data-block-id');
-  var componentIndexString = StorytellerUtils.findClosestAttribute($element, 'data-component-index');
-  var componentIndex = parseInt(componentIndexString, 10);
-
-  return {
-    blockId: blockId,
-    componentIndex: componentIndex
-  };
-}
-
 function launchImageSelection() {
-  var componentMetadata = getComponentMetadata(this);
-  var componentProperties = storyStore.
-    getBlockComponentAtIndex(componentMetadata.blockId, componentMetadata.componentIndex).
-    value;
+  const { blockId, componentIndex } = StorytellerUtils.findBlockIdAndComponentIndex(this);
+  const componentProperties = storyStore.getBlockComponentAtIndex(blockId, componentIndex).value;
 
   dispatcher.dispatch({
     action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
-    blockId: componentMetadata.blockId,
-    componentIndex: componentMetadata.componentIndex,
+    blockId,
+    componentIndex,
     initialComponentProperties: componentProperties
   });
 
@@ -336,12 +320,12 @@ function synthesizeRichTextEditorData(componentData) {
 }
 
 function getEditorOrNull() {
-  var editorId = $(this).find('[data-editor-id]').attr('data-editor-id');
+  const editorId = $(this).find('[data-editor-id]').attr('data-editor-id');
   return editorId ? richTextEditorManager.getEditor(editorId) : null;
 }
 
 function appendSaltToSource(src) {
-  var now = Date.now();
+  const now = Date.now();
   return _.includes(src, '?') ?
     src + '&salt=' + now :
     src + '?' + now;

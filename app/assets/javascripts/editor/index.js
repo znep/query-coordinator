@@ -289,4 +289,10 @@ $(document).on('ready', () => {
       return I18n.t('editor.page_close_confirmation');
     }
   });
+
+  $('#moving-cancel-header').click(() => {
+    dispatcher.dispatch({
+      action: Actions.MOVE_COMPONENT_CANCEL
+    });
+  });
 });

@@ -43,6 +43,16 @@ describe('componentSocrataVisualizationTable jQuery plugin', function() {
     }
   };
 
+  var getProps = (props) => {
+    return _.extend({
+      blockId: null,
+      componentData: validComponentData,
+      componentIndex: null,
+      editMode: true,
+      theme: null
+    }, props);
+  };
+
   beforeEach(function() {
     $transient.append(
       StorytellerUtils.format(
@@ -67,7 +77,9 @@ describe('componentSocrataVisualizationTable jQuery plugin', function() {
       var badData = _.cloneDeep(validComponentData);
       badData.type = 'notSocrata.notVisualization.notTable';
       assert.throws(function() {
-        $component.componentSocrataVisualizationTable(badData);
+        $component.componentSocrataVisualizationTable(getProps({
+          componentData: badData
+        }));
       });
     });
   });
@@ -77,7 +89,7 @@ describe('componentSocrataVisualizationTable jQuery plugin', function() {
 
     beforeEach(function() {
       socrataTableStub = sinon.stub($.fn, 'socrataTable');
-      $component = $component.componentSocrataVisualizationTable(validComponentData, {}, { editMode: true });
+      $component = $component.componentSocrataVisualizationTable(getProps());
     });
 
     afterEach(function() {
@@ -106,7 +118,9 @@ describe('componentSocrataVisualizationTable jQuery plugin', function() {
 
           assert.equal(socrataTableStub.callCount, 1);
 
-          $component.componentSocrataVisualizationTable(newData, {}, { editMode: true });
+          $component.componentSocrataVisualizationTable(getProps({
+            componentData: newData
+          }));
 
           assert.equal(socrataTableStub.callCount, 1);
         });
@@ -119,7 +133,9 @@ describe('componentSocrataVisualizationTable jQuery plugin', function() {
           _.set(newData, 'value.vif.series[0].configuration.order', [ { columnName: 'something', ascending: true } ]);
 
           assert.equal(socrataTableStub.callCount, 1);
-          $component.componentSocrataVisualizationTable(newData, {}, { editMode: true });
+          $component.componentSocrataVisualizationTable(getProps({
+            componentData: newData
+          }));
           assert.equal(socrataTableStub.callCount, 1);
         });
       });

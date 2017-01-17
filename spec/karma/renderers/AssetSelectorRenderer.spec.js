@@ -829,7 +829,7 @@ describe('AssetSelectorRenderer', function() {
 
         it('previews the table', function() {
           sinon.assert.called(tableStub);
-          var componentData = tableStub.args[0][0];
+          var componentData = _.get(tableStub, 'args[0][0].componentData', {});
           assert.propertyVal(componentData, 'type', 'socrata.visualization.table');
           assert.propertyVal(componentData.value.vif, 'type', 'table');
           assert.propertyVal(componentData.value.vif, 'domain', 'example.com');

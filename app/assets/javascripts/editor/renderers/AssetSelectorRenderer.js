@@ -1556,13 +1556,11 @@ export default function AssetSelectorRenderer(options) {
     var previewInvalidMessageTitle = $(
       '<div>',
       { 'class': 'asset-selector-invalid-title' }
-    ).html(
-      [
-        I18n.t('editor.asset_selector.story_tile.invalid_message_title_1'),
-        '<br />',
-        I18n.t('editor.asset_selector.story_tile.invalid_message_title_2')
-      ].join('')
-    );
+    ).html([
+      I18n.t('editor.asset_selector.story_tile.invalid_message_title_1'),
+      '<br />',
+      I18n.t('editor.asset_selector.story_tile.invalid_message_title_2')
+    ].join(''));
 
     var previewInvalidMessageDescription = $(
       '<div>',
@@ -1664,7 +1662,12 @@ export default function AssetSelectorRenderer(options) {
         $storyTilePreviewContainer.
           trigger('destroy').
           empty().
-          append($('<div>').componentStoryTile(componentData)).
+          append($('<div>').componentStoryTile({
+            blockId: assetSelectorStore.getBlockId(),
+            componentIndex: assetSelectorStore.getComponentIndex(),
+            componentData,
+            theme: null
+          })).
           attr('data-rendered-story-domain', storyDomain).
           attr('data-rendered-story-uid', storyUid);
 
@@ -1732,13 +1735,11 @@ export default function AssetSelectorRenderer(options) {
     var previewInvalidMessageTitle = $(
       '<div>',
       { 'class': 'asset-selector-invalid-title' }
-    ).html(
-      [
-        I18n.t('editor.asset_selector.goal_tile.invalid_message_title_1'),
-        '<br />',
-        I18n.t('editor.asset_selector.goal_tile.invalid_message_title_2')
-      ].join('')
-    );
+    ).html([
+      I18n.t('editor.asset_selector.goal_tile.invalid_message_title_1'),
+      '<br />',
+      I18n.t('editor.asset_selector.goal_tile.invalid_message_title_2')
+    ].join(''));
 
     var previewInvalidMessageDescription = $(
       '<div>',
@@ -1838,7 +1839,12 @@ export default function AssetSelectorRenderer(options) {
         $goalTilePreviewContainer.
           trigger('destroy').
           empty().
-          append($('<div>').componentGoalTile(componentData)).
+          append($('<div>').componentGoalTile({
+            componentData,
+            theme: null,
+            blockId: assetSelectorStore.getBlockId(),
+            componentIndex: assetSelectorStore.getComponentIndex()
+          })).
           attr('data-rendered-goal-domain', goalDomain).
           attr('data-rendered-goal-uid', goalUid);
 
@@ -1891,13 +1897,11 @@ export default function AssetSelectorRenderer(options) {
     var previewInvalidMessageTitle = $(
       '<div>',
       { 'class': 'asset-selector-invalid-title' }
-    ).html(
-      [
-        I18n.t('editor.asset_selector.youtube.invalid_message_title_1'),
-        '<br />',
-        I18n.t('editor.asset_selector.youtube.invalid_message_title_2')
-      ].join('')
-    );
+    ).html([
+      I18n.t('editor.asset_selector.youtube.invalid_message_title_1'),
+      '<br />',
+      I18n.t('editor.asset_selector.youtube.invalid_message_title_2')
+    ].join(''));
 
     var previewInvalidMessageDescription = $(
       '<div>',
@@ -2376,9 +2380,13 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderTablePreviewData(componentType, componentProperties) {
-    var table = _container.find('.asset-selector-preview-table');
-    table.componentSocrataVisualizationTable(
-      {
+    const table = _container.find('.asset-selector-preview-table');
+
+    const props = {
+      blockId: assetSelectorStore.getBlockId(),
+      componentIndex: assetSelectorStore.getComponentIndex(),
+      theme: null,
+      componentData: {
         type: componentType,
         value: _.extend(
           {},
@@ -2390,7 +2398,9 @@ export default function AssetSelectorRenderer(options) {
           }
         )
       }
-    );
+    };
+
+    table.componentSocrataVisualizationTable(props);
   }
 
 
@@ -2477,16 +2487,18 @@ export default function AssetSelectorRenderer(options) {
           });
       });
 
-      componentContainer.componentSocrataVisualizationClassic(
-        {
+      componentContainer.componentSocrataVisualizationClassic({
+        blockId: assetSelectorStore.getBlockId(),
+        componentIndex: assetSelectorStore.getComponentIndex(),
+        componentData: {
           type: 'socrata.visualization.classic',
           value: {
             visualization: dataset
           }
         },
-        null, {
-          resizeSupported: false
-        });
+        theme: null,
+        resizeSupported: false
+      });
 
       insertButton.prop('disabled', true);
     }
@@ -2551,13 +2563,11 @@ export default function AssetSelectorRenderer(options) {
     var previewInvalidMessageTitle = $(
       '<div>',
       { 'class': 'asset-selector-invalid-title' }
-    ).html(
-      [
-        I18n.t('editor.asset_selector.embed_code.invalid_message_title_1'),
-        '<br />',
-        I18n.t('editor.asset_selector.embed_code.invalid_message_title_2')
-      ].join('')
-    );
+    ).html([
+      I18n.t('editor.asset_selector.embed_code.invalid_message_title_1'),
+      '<br />',
+      I18n.t('editor.asset_selector.embed_code.invalid_message_title_2')
+    ].join(''));
 
     var previewInvalidMessageDescription = $(
       '<div>',

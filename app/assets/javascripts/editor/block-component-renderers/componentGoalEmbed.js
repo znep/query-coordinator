@@ -30,7 +30,7 @@ const ModalState = {
 
 $.fn.componentGoalEmbed = componentGoalEmbed;
 
-export default function componentGoalEmbed(componentData, theme, options) {
+export default function componentGoalEmbed(props) {
   function onFirstRender() {
     // Generate container for the goal edit modal now, so that we have a clear
     // reference to it for both displaying and destroying the modal.
@@ -43,33 +43,31 @@ export default function componentGoalEmbed(componentData, theme, options) {
     });
   }
 
+  props = _.extend({}, props, {
+    editButtonSupported: false,
+    firstRenderCallback: onFirstRender
+  });
+
   const $this = $(this);
+  const { componentData } = props;
 
   StorytellerUtils.assertHasProperties(componentData, 'type');
   StorytellerUtils.assert(
     componentData.type === 'goal.embed',
-    StorytellerUtils.format(
-      'componentGoalEmbed: Unsupported component type {0}',
-      componentData.type
-    )
+    `componentGoalEmbed: Unsupported component type ${componentData.type}`
   );
 
   if ($this.children().length === 0) {
-    _renderGoal($this, componentData, options || {});
+    renderGoal($this, props);
   }
 
-  _updateSrcAndTitle($this, componentData);
-  $this.componentBase(componentData, theme, _.extend(
-    {
-      editButtonSupported: false // we roll our own with special behavior.
-    },
-    options
-  ), onFirstRender);
+  updateSrcAndTitle($this, componentData);
+  $this.componentBase(props);
 
   return $this;
 }
 
-const _debouncedUpdateHeightInComponentData = _.debounce(function($iframeElement, height) {
+const debouncedUpdateHeightInComponentData = _.debounce(function($iframeElement, height) {
   const blockId = StorytellerUtils.findClosestAttribute($iframeElement, 'data-block-id');
   const componentIndex = parseInt(StorytellerUtils.findClosestAttribute($iframeElement, 'data-component-index'), 10);
 
@@ -92,7 +90,9 @@ const _debouncedUpdateHeightInComponentData = _.debounce(function($iframeElement
   }
 }, HEIGHT_SETTLE_TIME);
 
-function _renderGoal($element, componentData, options) {
+function renderGoal($element, props) {
+  const { componentData, editMode } = props;
+
   StorytellerUtils.assertHasProperty(componentData, 'type');
 
   function monitorHeightChanges() {
@@ -113,8 +113,8 @@ function _renderGoal($element, componentData, options) {
             { detail: {}, bubbles: true }
           )
         );
-        if (options.editMode) {
-          _debouncedUpdateHeightInComponentData($iframeElement, newHeight);
+        if (editMode) {
+          debouncedUpdateHeightInComponentData($iframeElement, newHeight);
         }
       }
     }, HEIGHT_POLL_INTERVAL);
@@ -134,16 +134,19 @@ function _renderGoal($element, componentData, options) {
 
   $iframeElement.load(monitorHeightChanges);
 
-  if (options.editMode) {
+  if (editMode) {
 
-    $element.append(
-      $('<div>', { 'class': 'component-edit-controls' }).
-      append(
-        $('<button>', { 'class': 'component-edit-controls-edit-btn' }).
-        click(_handleEditClick).
-        text(I18n.t('editor.components.goal_embed.edit_btn'))
-      )
-    );
+    $element.append(`
+      <div class="component-edit-controls-container">
+        <div class="component-edit-controls">
+          <button class="component-edit-controls-edit-btn">
+            ${I18n.t('editor.components.goal_embed.edit_btn')}
+          </button>
+        </div>
+      </div>
+    `);
+
+    $element.find('.component-edit-controls-edit-btn').click(handleEditClick);
   }
 
   $element.
@@ -151,13 +154,13 @@ function _renderGoal($element, componentData, options) {
     append($iframeElement);
 }
 
-function _handleEditClick() {
+function handleEditClick() {
   const componentClassName = StorytellerUtils.typeToClassNameForComponentType('goal.embed');
   const $element = $(this).closest(`.${componentClassName}`);
-  _renderModal($element, ModalState.LOADING);
+  renderModal($element, ModalState.LOADING);
 }
 
-function _renderModal($element, state) {
+function renderModal($element, state) {
   const { LOADING, IDLE, SAVING } = ModalState;
   const componentData = $element.data('component-rendered-data');
 
@@ -185,7 +188,7 @@ function _renderModal($element, state) {
     $iframe[0].contentWindow.location.reload();
   }
 
-  const onLoad = () => _renderModal($element, IDLE);
+  const onLoad = () => renderModal($element, IDLE);
   const onDismiss = () => {
     const odyApi = getOdyApi();
     if (odyApi && odyApi.isGoalDirty()) {
@@ -206,7 +209,7 @@ function _renderModal($element, state) {
       reloadIframe();
       onDismiss();
     });
-    _renderModal($element, SAVING);
+    renderModal($element, SAVING);
   };
 
   const iframeClasses = classNames({
@@ -261,7 +264,7 @@ function _renderModal($element, state) {
   );
 }
 
-function _updateSrcAndTitle($element, componentData) {
+function updateSrcAndTitle($element, componentData) {
   StorytellerUtils.assertHasProperties(
     componentData,
     'value',

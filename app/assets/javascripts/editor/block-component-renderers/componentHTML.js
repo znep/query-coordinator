@@ -24,35 +24,39 @@ import { windowSizeBreakpointStore } from '../stores/WindowSizeBreakpointStore';
  */
 $.fn.componentHTML = componentHTML;
 
-export default function componentHTML(componentData, theme, options) {
-  var $this = $(this);
+/**
+ * Props:
+ *
+ * In addition to the props listed in componentBase:
+ * extraContentClasses
+ */
+export default function componentHTML(props) {
+  props = _.extend({}, props, { editButtonSupported: false });
+  const { componentData, theme, extraContentClasses } = props;
 
   StorytellerUtils.assertHasProperty(componentData, 'type');
   StorytellerUtils.assert(
     componentData.type === 'html',
-    StorytellerUtils.format(
-      'Cannot render components of type {0} with jQuery.componentHTML.',
-      componentData.type
-    )
+    `componentHTML: Unsupported component type ${componentData.type}`
   );
 
-  var needsEditorSetup = !$this.is('[data-editor-id]');
+  const needsEditorSetup = !this.is('[data-editor-id]');
 
-  $this.data('component-rendered-data', componentData); // Cache the data.
+  this.data('component-rendered-data', componentData); // Cache the data.
 
   if (needsEditorSetup) {
-    _setupRichTextEditor($this, componentData, theme, options);
+    _setupRichTextEditor(this, componentData, theme, extraContentClasses);
   } else {
-    _updateRichTextEditor($this, componentData, theme);
+    _updateRichTextEditor(this, componentData, theme);
   }
 
-  return $this;
+  this.componentBase(props);
+
+  return this;
 }
 
-function _setupRichTextEditor($element, componentData, theme, options) {
-  var editorId = _.uniqueId();
-  var editor;
-  var extraContentClasses = _.get(options, 'extraContentClasses', []);
+function _setupRichTextEditor($element, componentData, theme, extraContentClasses) {
+  const editorId = _.uniqueId();
 
   StorytellerUtils.assertHasProperty(componentData, 'value');
 
@@ -65,7 +69,7 @@ function _setupRichTextEditor($element, componentData, theme, options) {
   $element.addClass(StorytellerUtils.typeToClassNameForComponentType(componentData.type)).
     attr('data-editor-id', editorId);
 
-  editor = richTextEditorManager.createEditor(
+  const editor = richTextEditorManager.createEditor(
     $element,
     editorId,
     componentData.value
@@ -74,7 +78,7 @@ function _setupRichTextEditor($element, componentData, theme, options) {
   _applyThemeFontIfPresent(editor, theme);
   editor.applyThemeClass(theme);
 
-  $element.one('destroy', function() {
+  $element.one('destroy', () => {
     richTextEditorManager.deleteEditor(editorId);
     // Disabling per EN-3593 (see below)
     // $element.off('rich-text-editor::content-change', _filterSpuriousContentChanges);
@@ -101,10 +105,10 @@ function _filterSpuriousContentChanges(event) {
   // Make sure the content actually changed. Squire likes to twiddle <br>s.
   // We want to ignore these.
 
-  var existingValueSignature = _.get($(this).data('component-rendered-data'), 'value', '').
+  const existingValueSignature = _.get($(this).data('component-rendered-data'), 'value', '').
     replace(/<br>/g, '');
 
-  var newValueSignature = event.originalEvent.detail.content.
+  const newValueSignature = event.originalEvent.detail.content.
     replace(/<br>/g, '');
 
   if (existingValueSignature === newValueSignature) {
@@ -122,7 +126,7 @@ function _filterSpuriousContentChanges(event) {
 * @param {Object} theme - The current CSS theme to apply to the HTML content
 */
 function _applyThemeFontIfPresent(editor, theme) {
-  var customTheme = _.find(Environment.CUSTOM_THEMES, { 'id': parseInt(theme.replace('custom-', ''), 10) });
+  const customTheme = _.find(Environment.CUSTOM_THEMES, { 'id': parseInt(theme.replace('custom-', ''), 10) });
 
   if (_.has(customTheme, 'google_font_code')) {
     editor.applyThemeFont(customTheme.google_font_code);
@@ -142,7 +146,7 @@ function _applyThemeFontIfPresent(editor, theme) {
  * @param theme - The current CSS theme to apply to the HTML content.
  */
 function _setupPhantomEditor($element, componentData, theme) {
-  var $phantomContainer = $('<div>', {
+  const $phantomContainer = $('<div>', {
     'class': StorytellerUtils.format(
       'theme-{0} {1}', theme, windowSizeBreakpointStore.getWindowSizeClass()
     ),
@@ -151,7 +155,7 @@ function _setupPhantomEditor($element, componentData, theme) {
     )
   });
 
-  var $phantomContent = $('<div>', {
+  const $phantomContent = $('<div>', {
     'class': 'typeset squire-formatted'
   });
 
@@ -166,24 +170,21 @@ function _setupPhantomEditor($element, componentData, theme) {
   $element.append($phantomContainer);
 
   // Used as a signifier that the editor has loaded.
-  $element.one('rich-text-editor::height-change', function() {
+  $element.one('rich-text-editor::height-change', () => {
     $phantomContainer.remove();
   });
 }
 
 function _updateRichTextEditor($element, componentData, theme) {
-  var editorId = $element.attr('data-editor-id');
-  var editor = richTextEditorManager.getEditor(editorId);
+  const editorId = $element.attr('data-editor-id');
+  const editor = richTextEditorManager.getEditor(editorId);
 
   StorytellerUtils.assertIsOneOfTypes(theme, 'string');
   StorytellerUtils.assertHasProperty(componentData, 'value');
 
   StorytellerUtils.assert(
     editor,
-    StorytellerUtils.format(
-      'Cannot find the rich text editor associated with {0}.',
-      editorId
-    )
+    `Cannot find the rich text editor associated with ${editorId}.`
   );
 
   _applyThemeFontIfPresent(editor, theme);

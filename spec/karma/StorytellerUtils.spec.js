@@ -4,6 +4,27 @@ import { $transient } from './TransientElement';
 import StorytellerUtils from '../../app/assets/javascripts/StorytellerUtils';
 
 describe('StorytellerUtils', function() {
+  describe('.inspectNode()', function() {
+
+    it('should return expected values', function() {
+      function test(expected, element) {
+        assert.equal(expected, StorytellerUtils.inspectNode(element));
+      }
+
+      test('<not a dom node>', null);
+      test('<not a dom node>', undefined);
+      test('<not a dom node>', $([]));
+      test('<div />', $('<div>'));
+      test('<span />', document.createElement('span'));
+      test('<div class="foo" />', $('<div>', { 'class': 'foo' }));
+      test('<div id="bar" class="foo" />', $('<div>', { 'class': 'foo', 'id': 'bar' }));
+
+      var withChildren = $('<div class="foo"><p><span>');
+      var leaf = withChildren.find('span');
+      test('<span /> parents: <p /> <div class="foo" />', leaf);
+    });
+  });
+
   describe('.typeToClassNameForComponentType()', function() {
 
     it('should throw when provided a value that is not a string', function() {

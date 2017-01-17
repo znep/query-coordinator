@@ -13,6 +13,10 @@
   border-bottom: solid 1px #DDDDDD;
   text-align: center;
 
+  .moving & {
+    display: none;
+  }
+
   .story-save-error & {
     top: calc(#{$story-save-error-bar-reserved-height + $rich-text-editor-toolbar-top-offset});
   }

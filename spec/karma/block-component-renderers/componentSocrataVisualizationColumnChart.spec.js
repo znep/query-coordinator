@@ -25,6 +25,15 @@ describe('componentSocrataVisualizationColumnChart jQuery plugin', function() {
     }
   };
 
+  var getProps = (props) => {
+    return _.extend({
+      blockId: null,
+      componentData: validComponentData,
+      componentIndex: null,
+      theme: null
+    }, props);
+  };
+
   beforeEach(function() {
     $transient.append('<div>');
     $component = $transient.children('div');
@@ -44,7 +53,9 @@ describe('componentSocrataVisualizationColumnChart jQuery plugin', function() {
       var badData = _.cloneDeep(validComponentData);
       badData.type = 'notSocrata.notVisualization.notColumnChart';
       assert.throws(function() {
-        $component.componentSocrataVisualizationColumnChart(badData);
+        $component.componentSocrataVisualizationColumnChart(getProps({
+          componentData: badData
+        }));
       });
     });
   });
@@ -54,7 +65,7 @@ describe('componentSocrataVisualizationColumnChart jQuery plugin', function() {
 
     beforeEach(function() {
       socrataColumnChartStub = sinon.stub($.fn, 'socrataSvgColumnChart');
-      $component = $component.componentSocrataVisualizationColumnChart(validComponentData);
+      $component = $component.componentSocrataVisualizationColumnChart(getProps());
     });
 
     afterEach(function() {

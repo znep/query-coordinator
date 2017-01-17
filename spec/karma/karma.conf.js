@@ -6,7 +6,7 @@ module.exports = function(config) { //eslint-disable-line no-undef
   config.set({
     basePath: '../../',
 
-    frameworks: ['mocha', 'chai', 'sinon'],
+    frameworks: ['mocha', 'chai-dom', 'chai', 'sinon'],
 
     files: ['spec/karma/index.js'],
 
@@ -17,6 +17,7 @@ module.exports = function(config) { //eslint-disable-line no-undef
     plugins: [
       require('karma-mocha'),
       require('karma-chai'),
+      require('karma-chai-dom'),
       require('karma-sinon'),
       require('karma-webpack'),
       require('karma-sourcemap-loader'),

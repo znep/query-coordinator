@@ -25,6 +25,15 @@ describe('componentSocrataVisualizationBarChart jQuery plugin', function() {
     }
   };
 
+  var getProps = (props) => {
+    return _.extend({
+      blockId: null,
+      componentData: validComponentData,
+      componentIndex: null,
+      theme: null
+    }, props);
+  };
+
   beforeEach(function() {
     $transient.append('<div>');
     $component = $transient.children('div');
@@ -44,7 +53,7 @@ describe('componentSocrataVisualizationBarChart jQuery plugin', function() {
       var badData = _.cloneDeep(validComponentData);
       badData.type = 'notSocrata.notVisualization.notBarChart';
       assert.throws(function() {
-        $component.componentSocrataVisualizationBarChart(badData);
+        $component.componentSocrataVisualizationBarChart(getProps({ componentData: badData }));
       });
     });
   });
@@ -54,7 +63,9 @@ describe('componentSocrataVisualizationBarChart jQuery plugin', function() {
 
     beforeEach(function() {
       socrataBarChartStub = sinon.stub($.fn, 'socrataSvgBarChart');
-      $component = $component.componentSocrataVisualizationBarChart(validComponentData);
+      $component = $component.componentSocrataVisualizationBarChart(getProps({
+        componentData: validComponentData
+      }));
     });
 
     afterEach(function() {

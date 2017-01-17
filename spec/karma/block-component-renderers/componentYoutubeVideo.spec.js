@@ -16,6 +16,15 @@ describe('componentYoutubeVideo jQuery plugin', function() {
     }
   };
 
+  var getProps = (props) => {
+    return _.extend({
+      blockId: null,
+      componentData: validComponentData,
+      componentIndex: null,
+      theme: null
+    }, props);
+  };
+
   beforeEach(function() {
     $transient.append('<div>');
     $component = $transient.children('div');
@@ -36,7 +45,7 @@ describe('componentYoutubeVideo jQuery plugin', function() {
       delete badData.value.id;
 
       assert.throws(function() {
-        $component.componentYoutubeVideo(badData);
+        $component.componentYoutubeVideo(getProps({ componentData: badData }));
       });
     });
   });
@@ -44,7 +53,7 @@ describe('componentYoutubeVideo jQuery plugin', function() {
   describe('given a valid component type and value', function() {
 
     beforeEach(function() {
-      $component = $component.componentYoutubeVideo(validComponentData);
+      $component = $component.componentYoutubeVideo(getProps());
     });
 
     it('should return a jQuery object for chaining', function() {
@@ -71,7 +80,9 @@ describe('componentYoutubeVideo jQuery plugin', function() {
         updatedData.value.id = '1234';
         updatedData.value.title = 'new title';
 
-        $component.componentYoutubeVideo(updatedData);
+        $component.componentYoutubeVideo(getProps({
+          componentData: updatedData
+        }));
 
         assert.equal(
           $component.find('iframe').attr('src'),

@@ -69,89 +69,81 @@ $(document).on('ready', function() {
 
   // Init visualizations
   $('[data-component-data]').each(function(index, element) {
-    var $element = $(element);
-    var serializedComponentData = element.getAttribute('data-component-data');
-    var componentData;
+    let componentData;
+    let props;
+    const $element = $(element);
+    const serializedComponentData = element.getAttribute('data-component-data');
 
     if (serializedComponentData !== null) {
       componentData = JSON.parse(serializedComponentData);
+      props = {
+        componentData,
+        blockId: null,
+        componentIndex: null,
+        theme: null
+      };
 
       switch (componentData.type) {
 
         case 'hero':
-          $element.
-            componentHero(componentData);
+          $element.componentHero(props);
           break;
 
         case 'story.tile':
         case 'story.widget':
-          $element.
-            componentStoryTile(componentData);
+          $element.componentStoryTile(props);
           break;
 
         case 'goal.embed':
-          $element.
-            componentGoalEmbed(componentData);
+          $element.componentGoalEmbed(props);
           break;
 
         case 'goal.tile':
-          $element.
-            componentGoalTile(componentData);
+          $element.componentGoalTile(props);
           break;
 
         case 'socrata.visualization.classic':
-          $element.
-            componentSocrataVisualizationClassic(componentData);
+          $element.componentSocrataVisualizationClassic(props);
           break;
 
         case 'socrata.visualization.regionMap':
-          $element.
-            componentSocrataVisualizationRegionMap(componentData);
+          $element.componentSocrataVisualizationRegionMap(props);
           break;
 
         case 'socrata.visualization.choroplethMap': // legacy
-          $element.
-            componentSocrataVisualizationRegionMap(componentData);
+          $element.componentSocrataVisualizationRegionMap(props);
           break;
 
         case 'socrata.visualization.barChart':
-          $element.
-            componentSocrataVisualizationBarChart(componentData);
+          $element.componentSocrataVisualizationBarChart(props);
           break;
 
         case 'socrata.visualization.columnChart':
-          $element.
-            componentSocrataVisualizationColumnChart(componentData);
+          $element.componentSocrataVisualizationColumnChart(props);
           break;
 
         case 'socrata.visualization.pieChart':
-          $element.
-            componentSocrataVisualizationPieChart(componentData);
+          $element.componentSocrataVisualizationPieChart(props);
           break;
 
         case 'socrata.visualization.histogram':
-          $element.
-            componentSocrataVisualizationHistogram(componentData);
+          $element.componentSocrataVisualizationHistogram(props);
           break;
 
         case 'socrata.visualization.table':
-          $element.
-            componentSocrataVisualizationTable(componentData);
+          $element.componentSocrataVisualizationTable(props);
           break;
 
         case 'socrata.visualization.featureMap':
-          $element.
-            componentSocrataVisualizationFeatureMap(componentData);
+          $element.componentSocrataVisualizationFeatureMap(props);
           break;
 
         case 'socrata.visualization.timelineChart':
-          $element.
-            componentSocrataVisualizationTimelineChart(componentData);
+          $element.componentSocrataVisualizationTimelineChart(props);
           break;
 
         default:
-          $element.
-            componentBase(componentData);
+          $element.componentBase(props);
           break;
       }
     }

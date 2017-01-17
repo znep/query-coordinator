@@ -299,6 +299,63 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
   },
 
   /**
+   * Given a DOM element, returns a string summarizing this node and its parents.
+   * Useful for debugging.
+   *
+   * @param {HTMLElement | jQuery} subject = The element to inspect.
+   * @return {String}
+   */
+  inspectNode: function(subject) {
+    const toPrettyString = (element) => {
+      element = $(element);
+      const tagName = element.prop('tagName');
+
+      if (!tagName) { return '<not a dom node>'; }
+
+      const id = element.prop('id');
+      const className = element.prop('class');
+
+      return _.compact([
+        `<${tagName}`.toLowerCase(),
+        id ? `id="${id}"` : null,
+        className ? `class="${className}"` : null,
+        '/>'
+      ]).join(' ');
+    };
+
+    const parents = _.map($(subject).parents(), toPrettyString).join(' ');
+
+    return toPrettyString(subject) + (parents.length ? ` parents: ${parents}` : '');
+  },
+
+  /**
+   * When given a DOM element, this function traverses the parent
+   * hierarchy to find both the blockId and componentIndex.
+   *
+   * This function will throw if it cannot find either a blockId
+   * or componentIndex.
+   *
+   * @param {HTMLElement | jQuery} element = The starting point of the search.
+   * @return {Object} - contains a blockId and componentIndex.
+   */
+  findBlockIdAndComponentIndex: function(element) {
+    const blockId = this.findClosestAttribute(element, 'data-block-id');
+    const componentIndex = parseInt(this.findClosestAttribute(element, 'data-component-index'), 10);
+
+    this.assert(
+      _.isString(blockId),
+      `Failed to find attribute data-block-id in the ancestors of: ${this.inspectNode(element)}`
+    );
+
+    this.assert(
+      _.isFinite(componentIndex),
+      `Failed to find an integer-valued data-component-index attribute in the ancestors of: ${this.inspectNode(element)}`
+    );
+
+    return { blockId, componentIndex };
+  },
+
+  /**
    * Walks up the DOM looking for elements with the given attribute.
    * When it finds one, returns the value of the given attribute.
    *

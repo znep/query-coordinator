@@ -5,20 +5,25 @@ import '../componentBase';
 import Constants from '../Constants';
 import StorytellerUtils from '../../StorytellerUtils';
 
-var COMPONENT_VALUE_CACHE_ATTR_NAME = 'classic-visualization-component-value';
+const COMPONENT_VALUE_CACHE_ATTR_NAME = 'classic-visualization-component-value';
 
 $.fn.componentSocrataVisualizationClassic = componentSocrataVisualizationClassic;
 
-export default function componentSocrataVisualizationClassic(componentData, theme, options) {
-  var $this = $(this);
+export default function componentSocrataVisualizationClassic(props) {
+  props = _.extend({}, props, {
+    resizeSupported: true,
+    resizeOptions: {
+      minHeight: Constants.MINIMUM_COMPONENT_HEIGHTS_PX.VISUALIZATION
+    }
+  });
+
+  const $this = $(this);
+  let { componentData } = props;
 
   StorytellerUtils.assertHasProperties(componentData, 'type');
   StorytellerUtils.assert(
     componentData.type === 'socrata.visualization.classic',
-    StorytellerUtils.format(
-      'componentSocrataVisualizationClassic: Unsupported component type {0}',
-      componentData.type
-    )
+    `componentSocrataVisualizationClassic: Unsupported component type ${componentData.type}`
   );
   StorytellerUtils.assertHasProperty(componentData, 'value.visualization');
 
@@ -31,15 +36,7 @@ export default function componentSocrataVisualizationClassic(componentData, them
     _updateVisualization($this, componentData);
   }
 
-  $this.componentBase(componentData, theme, _.extend(
-    {
-      resizeSupported: true,
-      resizeOptions: {
-        minHeight: Constants.MINIMUM_COMPONENT_HEIGHTS_PX.VISUALIZATION
-      }
-    },
-    options
-  ));
+  $this.componentBase(props);
 
   return $this;
 }
@@ -47,8 +44,8 @@ export default function componentSocrataVisualizationClassic(componentData, them
 function _renderVisualization($element, componentData) {
   StorytellerUtils.assertHasProperty(componentData, 'type');
 
-  var className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
-  var $iframeElement = $(
+  const className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
+  const $iframeElement = $(
     '<iframe>',
     {
       'src': '/component/visualization/v0/show',
@@ -57,7 +54,7 @@ function _renderVisualization($element, componentData) {
     }
   );
 
-  $iframeElement.one('load', function() {
+  $iframeElement.one('load', () => {
     _updateVisualization($element, componentData);
 
     $element[0].dispatchEvent(
@@ -75,9 +72,9 @@ function _renderVisualization($element, componentData) {
 
 function _updateVisualization($element, componentData) {
 
-  var $iframe = $element.find('iframe');
-  var oldValue = $iframe.data(COMPONENT_VALUE_CACHE_ATTR_NAME);
-  var newValue = componentData.value.visualization;
+  const $iframe = $element.find('iframe');
+  const oldValue = $iframe.data(COMPONENT_VALUE_CACHE_ATTR_NAME);
+  const newValue = componentData.value.visualization;
 
   StorytellerUtils.assertInstanceOf($iframe, $);
 

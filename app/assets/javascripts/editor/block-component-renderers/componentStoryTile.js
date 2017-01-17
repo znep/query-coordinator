@@ -4,21 +4,19 @@ import '../componentBase';
 import I18n from '../I18n';
 import StorytellerUtils from '../../StorytellerUtils';
 
-var WINDOW_RESIZE_RERENDER_DELAY = 200;
+const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 $.fn.componentStoryTile = componentStoryTile;
 
-export default function componentStoryTile(componentData, theme, options) {
-  var $this = $(this);
-  var rerenderOnResizeTimeout;
+export default function componentStoryTile(props) {
+  let rerenderOnResizeTimeout;
+  const $this = $(this);
+  const { componentData } = props;
 
   StorytellerUtils.assertHasProperties(componentData, 'type');
   StorytellerUtils.assert(
     componentData.type === 'story.tile' || componentData.type === 'story.widget',
-    StorytellerUtils.format(
-      'componentStoryTile: Unsupported component type {0}',
-      componentData.type
-    )
+    `componentStoryTile: Unsupported component type ${componentData.type}`
   );
 
   function _handleWindowResize() {
@@ -36,11 +34,11 @@ export default function componentStoryTile(componentData, theme, options) {
   _updateSrc($this, componentData);
 
   $this.addClass(StorytellerUtils.typeToClassNameForComponentType(componentData.type));
-  $this.componentBase(componentData, theme, options);
+  $this.componentBase(props);
 
   $(window).on('resize', _handleWindowResize);
 
-  $this.on('destroy', function() {
+  $this.on('destroy', () => {
     $(window).off('resize', _handleWindowResize);
     $this.empty();
   });

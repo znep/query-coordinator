@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import $ from 'jquery';
 
 import { $transient } from '../TransientElement';
@@ -6,6 +7,14 @@ import 'editor/block-component-renderers/componentHorizontalRule';
 describe('componentHorizontalRule jQuery plugin', function() {
 
   var $component;
+  var getProps = (props) => {
+    return _.extend({
+      blockId: null,
+      componentData: { type: 'horizontalRule' },
+      componentIndex: null,
+      theme: null
+    }, props);
+  };
 
   beforeEach(function() {
     $transient.append('<div>');
@@ -23,15 +32,17 @@ describe('componentHorizontalRule jQuery plugin', function() {
 
   describe('given a type that is not supported', function() {
     it('should throw when instantiated', function() {
-      assert.throws(function() { $component.componentHorizontalRule({type: 'notHorizontalRule'}); });
+      assert.throws(function() {
+        $component.componentHorizontalRule(getProps({
+          componentData: { type: 'notHorizontalRule' }
+        }));
+      });
     });
   });
 
   describe('given a valid component type', function() {
-    var componentData = {type: 'horizontalRule'};
-
     beforeEach(function() {
-      $component = $component.componentHorizontalRule(componentData);
+      $component = $component.componentHorizontalRule(getProps());
     });
 
     it('should return a jQuery object containing an <hr> for chaining', function() {

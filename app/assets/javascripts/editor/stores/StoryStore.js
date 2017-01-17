@@ -5,6 +5,7 @@ import Actions from '../Actions';
 import Environment from '../../StorytellerEnvironment';
 import Constants from '../Constants';
 import StorytellerUtils from '../../StorytellerUtils';
+import { moveComponentStore } from './MoveComponentStore';
 
 export var storyStore = StorytellerUtils.export(new StoryStore(), 'storyteller.storyStore');
 
@@ -104,6 +105,10 @@ export default function StoryStore() {
 
       case Actions.STORY_UPDATE_THEME:
         _setStoryTheme(payload);
+        break;
+
+      case Actions.MOVE_COMPONENT_DESTINATION_CHOSEN:
+        _finishComponentMove(payload);
         break;
     }
   });
@@ -539,7 +544,7 @@ export default function StoryStore() {
     StorytellerUtils.assertHasProperty(
       _stories,
       storyUid,
-      'Story with uid "' + storyUid + '" does not exist.'
+      `Story with uid ${storyUid} does not exist.`
     );
 
     return _stories[storyUid];
@@ -550,7 +555,7 @@ export default function StoryStore() {
     StorytellerUtils.assertHasProperty(
       _blocks,
       blockId,
-      'Block with id "' + blockId + '" does not exist.'
+      `Block with id ${blockId} does not exist. Existing block IDs: ${_.keys(_blocks)}`
     );
 
     return _blocks[blockId];
@@ -774,6 +779,21 @@ export default function StoryStore() {
       components: _.clone(block.components),
       presentable: block.presentable
     };
+  }
+
+  function _finishComponentMove(payload) {
+    StorytellerUtils.assertHasProperties(payload, 'blockId', 'componentIndex');
+
+    const { blockId, componentIndex } = payload;
+    const destinationBlock = _getBlock(blockId);
+    const sourceComponent = moveComponentStore.getSourceMoveComponent();
+    const sourceComponentData = self.getBlockComponentAtIndex(sourceComponent.blockId, sourceComponent.componentIndex);
+    const sourceBlock = _getBlock(sourceComponent.blockId);
+
+    sourceBlock.components[parseInt(sourceComponent.componentIndex, 10)] = self.getBlockComponentAtIndex(blockId, componentIndex);
+    destinationBlock.components[parseInt(componentIndex, 10)] = sourceComponentData;
+
+    self._emitChange();
   }
 
   this.addChangeListener(function() {

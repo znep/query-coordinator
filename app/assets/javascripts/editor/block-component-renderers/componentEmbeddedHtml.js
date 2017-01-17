@@ -8,41 +8,38 @@ import Environment from '../../StorytellerEnvironment';
 
 $.fn.componentEmbeddedHtml = componentEmbeddedHtml;
 
-export default function componentEmbeddedHtml(componentData, theme, options) {
-  var $this = $(this);
+export default function componentEmbeddedHtml(props) {
+  props = _.extend({}, props, {
+    resizeSupported: true,
+    resizeOptions: {
+      minHeight: Constants.MINIMUM_COMPONENT_HEIGHTS_PX.HTMLEMBED
+    }
+  });
+
+  const { componentData } = props;
 
   StorytellerUtils.assertHasProperties(componentData, 'type');
   StorytellerUtils.assert(
     componentData.type === 'embeddedHtml',
-    StorytellerUtils.format(
-      'componentEmbeddedHtml: Unsupported component type {0}',
-      componentData.type
-    )
+    `componentEmbeddedHtml: Unsupported component type ${componentData.type}`
   );
 
-  if ($this.children().length === 0) {
-    _renderEmbeddedHtml($this, componentData);
+  if (this.children().length === 0) {
+    _renderEmbeddedHtml(this, componentData);
   }
 
-  _updateSrcAndTitle($this, componentData);
-  _updateIframeHeight($this, componentData);
-  $this.componentBase(componentData, theme, _.extend(
-    {
-      resizeSupported: true,
-      resizeOptions: {
-        minHeight: Constants.MINIMUM_COMPONENT_HEIGHTS_PX.HTMLEMBED
-      }
-    },
-    options
-  ));
+  _updateSrcAndTitle(this, componentData);
+  _updateIframeHeight(this, componentData);
 
-  return $this;
+  this.componentBase(props);
+
+  return this;
 }
 
 function _renderEmbeddedHtml($element, componentData) {
   StorytellerUtils.assertHasProperty(componentData, 'type');
 
-  var $iframeElement = $(
+  const $iframeElement = $(
     '<iframe>',
     {
       'src': 'about:blank',
@@ -66,22 +63,19 @@ function _renderEmbeddedHtml($element, componentData) {
 }
 
 function _updateSrcAndTitle($element, componentData) {
-  var embeddedHtmlUrl;
-  var documentId;
-  var $iframeElement = $element.find('iframe');
-
   StorytellerUtils.assertHasProperty(componentData, 'value');
   StorytellerUtils.assertHasProperty(componentData.value, 'url');
+
+  const embeddedHtmlUrl = componentData.value.url;
+  const documentId = componentData.value.documentId;
+  const $iframeElement = $element.find('iframe');
 
   // We want to eventually check for this, but there was a bug where we weren't saving this to the
   // database for embeddedHtml elements. Moving forward we will, and may choose to migrate old
   // data to fix the problem. -SR
   // utils.assertHasProperty(componentData.value, 'documentId');
 
-  embeddedHtmlUrl = componentData.value.url;
-  documentId = componentData.value.documentId;
-
-  var title = _.get(componentData.value, 'title');
+  const title = _.get(componentData.value, 'title');
   $iframeElement.attr('title', title);
 
   if ($iframeElement.attr('src') !== embeddedHtmlUrl || $iframeElement.attr('data-document-id') !== String(documentId)) {
@@ -91,8 +85,8 @@ function _updateSrcAndTitle($element, componentData) {
 }
 
 function _updateIframeHeight($element, componentData) {
-  var $iframeElement = $element.find('iframe');
-  var renderedHeight = parseInt($iframeElement.attr('height'), 10);
+  const $iframeElement = $element.find('iframe');
+  const renderedHeight = parseInt($iframeElement.attr('height'), 10);
 
   StorytellerUtils.assertHasProperty(componentData, 'value');
   StorytellerUtils.assertHasProperty(componentData.value, 'layout');

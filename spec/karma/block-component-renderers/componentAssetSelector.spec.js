@@ -8,9 +8,15 @@ import 'editor/block-component-renderers/componentAssetSelector';
 
 describe('componentAssetSelector jQuery plugin', function() {
 
-  var $component;
-  var validComponentData = {
-    type: 'assetSelector'
+  let $component;
+
+  const getProps = (props) => {
+    return _.extend({
+      blockId: null,
+      componentData: { type: 'assetSelector' },
+      componentIndex: null,
+      theme: null
+    }, props);
   };
 
   beforeEach(function() {
@@ -29,17 +35,17 @@ describe('componentAssetSelector jQuery plugin', function() {
 
   describe('given a type that is not supported', function() {
     it('should throw when instantiated', function() {
-      var badData = _.cloneDeep(validComponentData);
-      badData.type = 'notAssetSelector';
       assert.throws(function() {
-        $component.componentAssetSelector(badData);
+        $component.componentAssetSelector(getProps({
+          componentData: { type: 'notAssetSelector' }
+        }));
       });
     });
   });
 
   describe('given a valid component type', function() {
     beforeEach(function() {
-      $component = $component.componentAssetSelector(validComponentData);
+      $component = $component.componentAssetSelector(getProps());
     });
 
     it('should return a jQuery object for chaining', function() {

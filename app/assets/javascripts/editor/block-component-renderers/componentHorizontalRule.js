@@ -9,16 +9,16 @@ import StorytellerUtils from '../../StorytellerUtils';
  */
 $.fn.componentHorizontalRule = componentHorizontalRule;
 
-export default function componentHorizontalRule(componentData) {
-  var $this = $(this);
+export default function componentHorizontalRule(props) {
+  props = _.extend({}, props, { editButtonSupported: false });
+
+  const $this = $(this);
+  const { componentData } = props;
 
   StorytellerUtils.assertHasProperty(componentData, 'type');
   StorytellerUtils.assert(
     componentData.type === 'horizontalRule',
-    StorytellerUtils.format(
-      'componentHorizontalRule: Unsupported component type {0}',
-      componentData.type
-    )
+    `componentHorizontalRule: Unsupported component type ${componentData.type}`
   );
   StorytellerUtils.assert(
     $this.length === 1,
@@ -27,14 +27,13 @@ export default function componentHorizontalRule(componentData) {
 
   $this.
     empty().
-    append(
-      _renderHorizontalRuleContent(componentData)
-    );
+    componentBase(props).
+    append(renderHorizontalRuleContent(componentData));
 
   return $this;
 }
 
-function _renderHorizontalRuleContent(componentData) {
-  var className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
+function renderHorizontalRuleContent(componentData) {
+  const className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
   return $('<hr>', className);
 }

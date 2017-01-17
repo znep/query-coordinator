@@ -2054,31 +2054,22 @@ describe('HistoryStore', function() {
         });
       });
 
-      describe('given 100 content changes', function() {
+      describe('given three content changes', function() {
 
         beforeEach(function() {
-          for (var i = 0; i < 100; i++) {
-
-            var mod = i % 3;
-
-            if (mod === 0) {
-              dispatch(firstEditAction);
-            } else if (mod === 1) {
-              dispatch(secondEditAction);
-            } else {
-              dispatch(thirdEditAction);
-            }
-          }
+          dispatch(firstEditAction);
+          dispatch(secondEditAction);
+          dispatch(thirdEditAction);
         });
 
-        it('should allow 99 redo actions (but a switch case 1)', function() {
-
-          for (var i = 0; i < 98; i++) {
-            dispatch({ action: Actions.HISTORY_UNDO });
-            assert.isTrue(historyStore.canUndo());
-          }
+        it('should allow three redo actions', function() {
 
           dispatch({ action: Actions.HISTORY_UNDO });
+          assert.isTrue(historyStore.canUndo());
+          dispatch({ action: Actions.HISTORY_UNDO });
+          assert.isTrue(historyStore.canUndo());
+          dispatch({ action: Actions.HISTORY_UNDO });
+
           assert.isFalse(historyStore.canUndo());
         });
       });

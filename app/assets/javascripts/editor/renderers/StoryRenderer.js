@@ -9,8 +9,9 @@ import StoryRendererElementCache from '../StoryRendererElementCache';
 import '../block-component-renderers';
 import { exceptionNotifier } from '../../services/ExceptionNotifier';
 import { dispatcher } from '../Dispatcher';
-import { storyStore } from '../stores/StoryStore';
 import { dropHintStore } from '../stores/DropHintStore';
+import { moveComponentStore } from '../stores/MoveComponentStore';
+import { storyStore } from '../stores/StoryStore';
 import { windowSizeBreakpointStore } from '../stores/WindowSizeBreakpointStore';
 import { blockRemovalConfirmationStore } from '../stores/BlockRemovalConfirmationStore';
 import RichTextEditorManager, { richTextEditorManager } from '../RichTextEditorManager';
@@ -81,9 +82,7 @@ export default function StoryRenderer(options) {
 
   function _listenForChanges() {
 
-    storyStore.addChangeListener(function() {
-      _renderStory();
-    });
+    storyStore.addChangeListener(_renderStory);
 
     dropHintStore.addChangeListener(function() {
       var hintPosition = dropHintStore.getDropHintPosition();
@@ -94,6 +93,8 @@ export default function StoryRenderer(options) {
         _hideInsertionHint();
       }
     });
+
+    moveComponentStore.addChangeListener(_renderStory);
 
     windowSizeBreakpointStore.addChangeListener(_applyWindowSizeClass);
     _applyWindowSizeClass();
@@ -594,9 +595,19 @@ export default function StoryRenderer(options) {
     return blockEditControls;
   }
 
+  function hideBlockEditControls() {
+    $('.block-edit-controls').addClass('hidden').removeClass('active');
+  }
+
   function _applyHoverIntent(event) {
     const targetControls = $(event.currentTarget).children('.block-edit-controls');
     const activeControls = $('.block-edit-controls.active');
+
+    // Don't show the controls if we're in a component movement state.
+    if (event.currentTarget.querySelector('.component.moving')) {
+      hideBlockEditControls();
+      return;
+    }
 
     // Abort when cursor remains on the same editable block.
     if (targetControls.is(activeControls)) {
@@ -626,9 +637,7 @@ export default function StoryRenderer(options) {
     //
     // If the value is too much more than that delay,
     //   the unhover effect seems laggy.
-    setTimeout(() => {
-      $('.block-edit-controls').addClass('hidden').removeClass('active');
-    }, 200);
+    setTimeout(hideBlockEditControls, 200);
   }
 
   function _updateBlockEditControls(blockId, $blockElement, blockIndex, blockCount) {
@@ -742,7 +751,7 @@ export default function StoryRenderer(options) {
    * @param {jQuery} $componentContainer - The DOM subtree to render into.
    * @param {object} componentData - The component's data from the database.
    */
-  function _runComponentRenderer(componentRenderer, $componentContainer, componentData, theme) {
+  function _runComponentRenderer(componentRenderer, $componentContainer, componentData, theme, blockId, componentIndex) {
     var $componentContent = $componentContainer.children().eq(0);
 
     var needToChangeRenderer =
@@ -761,7 +770,17 @@ export default function StoryRenderer(options) {
     }
 
     // Provide the initial or updated data to the renderer.
-    $componentContent[componentRenderer](componentData, theme, { editMode: true });
+    const props = {
+      componentData,
+      theme,
+      editMode: true,
+      blockId,
+      componentIndex,
+      isUserChoosingMoveDestination: moveComponentStore.isUserChoosingMoveDestination(blockId, componentIndex),
+      isComponentBeingMoved: moveComponentStore.isComponentBeingMoved(blockId, componentIndex),
+      isComponentValidMoveDestination: moveComponentStore.isComponentValidMoveDestination(blockId, componentIndex)
+    };
+    $componentContent[componentRenderer](props);
   }
 
   /**
@@ -806,7 +825,7 @@ export default function StoryRenderer(options) {
         var componentRenderer = _findAppropriateComponentRenderer(componentData);
         var $componentContainer = _getComponentContainer(blockId, componentIndex);
 
-        _runComponentRenderer(componentRenderer, $componentContainer, componentData, theme);
+        _runComponentRenderer(componentRenderer, $componentContainer, componentData, theme, blockId, componentIndex);
       } catch (e) {
         if (exceptionNotifier) {
           exceptionNotifier.notify(e);

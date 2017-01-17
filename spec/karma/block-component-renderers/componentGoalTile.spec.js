@@ -45,6 +45,15 @@ describe('componentGoalTile jQuery plugin', function() {
     }
   };
 
+  const getProps = (props) => {
+    return _.extend({
+      blockId: null,
+      componentData: validComponentData,
+      componentIndex: null,
+      theme: null
+    }, props);
+  };
+
   function stubApiAndCreateComponentWith(statusCode, response, componentData) {
     var server;
 
@@ -64,7 +73,9 @@ describe('componentGoalTile jQuery plugin', function() {
         ]
       );
 
-      $component = $component.componentGoalTile(componentData);
+      $component = $component.componentGoalTile(getProps({
+        componentData
+      }));
 
       // Need to use a setTimeout to escape the stack and resolve the promise.
       setTimeout(function() { done(); }, 0);
@@ -110,7 +121,9 @@ describe('componentGoalTile jQuery plugin', function() {
       delete badData.value.domain;
 
       assert.throws(function() {
-        $component.componentGoalTile(badData);
+        $component.componentGoalTile(getProps({
+          componentData: badData
+        }));
       });
     });
   });
@@ -123,7 +136,9 @@ describe('componentGoalTile jQuery plugin', function() {
       delete badData.value.goalUid;
 
       assert.throws(function() {
-        $component.componentGoalTile(badData);
+        $component.componentGoalTile(getProps({
+          componentData: badData
+        }));
       });
     });
   });
@@ -136,7 +151,9 @@ describe('componentGoalTile jQuery plugin', function() {
       delete badData.value.goalFullUrl;
 
       assert.throws(function() {
-        $component.componentGoalTile(badData);
+        $component.componentGoalTile(getProps({
+          componentData: badData
+        }));
       });
     });
   });

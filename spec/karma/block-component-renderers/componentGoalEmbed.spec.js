@@ -15,6 +15,15 @@ describe('componentGoalEmbed jQuery plugin', () => {
     }
   };
 
+  const getProps = (props) => {
+    return _.extend({
+      blockId: null,
+      componentData: validComponentData,
+      componentIndex: null,
+      theme: null
+    }, props);
+  };
+
   beforeEach(() => {
     $transient.append('<div>');
     $component = $transient.children('div');
@@ -40,7 +49,9 @@ describe('componentGoalEmbed jQuery plugin', () => {
       delete badData.value.domain;
 
       assert.throws(() => {
-        $component.componentGoalEmbed(badData);
+        $component.componentGoalEmbed(getProps({
+          componentData: badData
+        }));
       });
     });
   });
@@ -52,7 +63,9 @@ describe('componentGoalEmbed jQuery plugin', () => {
       delete badData.value.uid;
 
       assert.throws(() => {
-        $component.componentGoalEmbed(badData);
+        $component.componentGoalEmbed(getProps({
+          componentData: badData
+        }));
       });
     });
   });
@@ -64,7 +77,9 @@ describe('componentGoalEmbed jQuery plugin', () => {
       delete badData.type;
 
       assert.throws(() => {
-        $component.componentGoalEmbed(badData);
+        $component.componentGoalEmbed(getProps({
+          componentData: badData
+        }));
       });
     });
   });
@@ -72,7 +87,7 @@ describe('componentGoalEmbed jQuery plugin', () => {
   describe('given a valid component type and value', () => {
     let component;
     beforeEach(() => {
-      component = $component.componentGoalEmbed(validComponentData);
+      component = $component.componentGoalEmbed(getProps());
     });
 
     it('renders a jQuery object for chaining', () => {
@@ -87,7 +102,10 @@ describe('componentGoalEmbed jQuery plugin', () => {
   describe('in edit mode', () => {
     let component;
     beforeEach(() => {
-      component = $component.componentGoalEmbed(validComponentData, 'classic', { editMode: true });
+      component = $component.componentGoalEmbed(getProps({
+        theme: 'classic',
+        editMode: true
+      }));
     });
 
     it('renders a button for a modal to edit the goal', () => {

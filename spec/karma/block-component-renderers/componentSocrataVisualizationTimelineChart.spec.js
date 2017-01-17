@@ -23,6 +23,15 @@ describe('componentSocrataVisualizationTimelineChart jQuery plugin', function() 
     }
   };
 
+  var getProps = (props) => {
+    return _.extend({
+      blockId: null,
+      componentData: validComponentData,
+      componentIndex: null,
+      theme: null
+    }, props);
+  };
+
   beforeEach(function() {
     $transient.append('<div>');
     $component = $transient.children('div');
@@ -42,7 +51,9 @@ describe('componentSocrataVisualizationTimelineChart jQuery plugin', function() 
       var badData = _.cloneDeep(validComponentData);
       badData.type = 'notSocrata.notVisualization.notTimelineChart';
       assert.throws(function() {
-        $component.componentSocrataVisualizationTimelineChart(badData);
+        $component.componentSocrataVisualizationTimelineChart(getProps({
+          componentData: badData
+        }));
       });
     });
   });
@@ -52,7 +63,7 @@ describe('componentSocrataVisualizationTimelineChart jQuery plugin', function() 
 
     beforeEach(function() {
       socrataTimelineChartStub = sinon.stub($.fn, 'socrataSvgTimelineChart', function() { return this; });
-      $component = $component.componentSocrataVisualizationTimelineChart(validComponentData);
+      $component = $component.componentSocrataVisualizationTimelineChart(getProps());
     });
 
     afterEach(function() {

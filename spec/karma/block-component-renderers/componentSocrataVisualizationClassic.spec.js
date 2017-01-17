@@ -8,12 +8,20 @@ import 'editor/block-component-renderers/componentSocrataVisualizationClassic';
 describe('componentSocrataVisualizationClassic jQuery plugin', function() {
 
   var $component;
-  var validComponentData;
+  var validComponentData = _.cloneDeep(socrataVisualizationClassicComponentData);
+
+  var getProps = (props) => {
+    return _.extend({
+      blockId: null,
+      componentData: validComponentData,
+      componentIndex: null,
+      theme: null
+    }, props);
+  };
 
   beforeEach(function() {
     $transient.append('<div>');
     $component = $transient.children('div');
-    validComponentData = _.cloneDeep(socrataVisualizationClassicComponentData);
   });
 
   it('should throw when passed invalid arguments', function() {
@@ -31,7 +39,9 @@ describe('componentSocrataVisualizationClassic jQuery plugin', function() {
       delete badData.value.visualization;
 
       assert.throws(function() {
-        $component.componentSocrataVisualizationClassic(badData);
+        $component.componentSocrataVisualizationClassic(getProps({
+          componentData: badData
+        }));
       });
     });
   });
@@ -39,7 +49,7 @@ describe('componentSocrataVisualizationClassic jQuery plugin', function() {
   describe('given a valid component type and value', function() {
 
     beforeEach(function() {
-      $component = $component.componentSocrataVisualizationClassic(validComponentData);
+      $component = $component.componentSocrataVisualizationClassic(getProps());
     });
 
     it('should return a jQuery object for chaining', function() {
@@ -69,8 +79,8 @@ describe('componentSocrataVisualizationClassic jQuery plugin', function() {
       iframe[0].contentWindow.renderVisualization = sinon.spy();
 
       // Try to force another render with the same data.
-      $component.componentSocrataVisualizationClassic(validComponentData);
-      $component.componentSocrataVisualizationClassic(validComponentData);
+      $component.componentSocrataVisualizationClassic(getProps());
+      $component.componentSocrataVisualizationClassic(getProps());
 
       assert(iframe[0].contentWindow.renderVisualization.calledOnce);
     });

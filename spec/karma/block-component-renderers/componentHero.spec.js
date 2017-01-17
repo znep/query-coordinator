@@ -28,7 +28,16 @@ describe('componentHero jQuery plugin', function() {
   var dispatcher;
   var story;
   var storyStore;
-  var options = { editMode: true };
+  var editMode = true;
+
+  var getProps = (props) => {
+    return _.extend({
+      blockId: null,
+      componentData: validComponentData,
+      componentIndex: null,
+      theme: null
+    }, props);
+  };
 
   beforeEach(function() {
     story = DataGenerators.generateStoryData({
@@ -87,7 +96,11 @@ describe('componentHero jQuery plugin', function() {
     describe('given a null value', function() {
       beforeEach(function() {
         var componentData = _.omit(validComponentData, 'value');
-        $component.componentHero(componentData, theme, options);
+        $component.componentHero(getProps({
+          componentData,
+          theme,
+          editMode
+        }));
       });
 
       it('should render the unconfigured hero', function() {
@@ -95,7 +108,7 @@ describe('componentHero jQuery plugin', function() {
       });
 
       it('should render a button to upload an image', function() {
-        assert.lengthOf($component.find('button'), 1);
+        assert.lengthOf($component.find('.btn-primary'), 1);
       });
 
       it('should have a type-class of component-hero', function() {
@@ -132,17 +145,31 @@ describe('componentHero jQuery plugin', function() {
 
   describe('rendered', function() {
     it('should render an "Edit" button', function() {
-      $component.componentHero(validComponentData, theme, options);
+      $component.componentHero(getProps({
+        componentData: validComponentData,
+        theme,
+        editMode
+      }));
+
       assert.lengthOf($component.find('.component-edit-controls-edit-btn'), 1);
     });
 
     it('should render a resize handle', function() {
-      $component.componentHero(validComponentData, theme, options);
+      $component.componentHero(getProps({
+        componentData: validComponentData,
+        theme,
+        editMode
+      }));
+
       assert.lengthOf($component.find('.component-resize-handle'), 1);
     });
 
     it('should span the entire browser window width', function() {
-      $component.componentHero(validComponentData, theme, options);
+      $component.componentHero(getProps({
+        componentData: validComponentData,
+        theme,
+        editMode
+      }));
 
       assert.closeTo(
         $component.find('.hero').width(),
@@ -152,26 +179,33 @@ describe('componentHero jQuery plugin', function() {
     });
 
     it('should render a componentHTML with the correct options', function() {
-      $component.componentHero(validComponentData, 'the theme', { editMode: true, some: 'option' });
+      $component.componentHero(getProps({
+        compnentData: validComponentData,
+        theme: 'the theme',
+        editMode: true
+      }));
+
       sinon.assert.calledOnce(mockComponentHTML);
       var firstCall = mockComponentHTML.getCalls()[0];
       var args = firstCall.args;
-      var htmlComponentDataArg = args[0];
-      var themeArg = args[1];
-      var optionsArg = args[2];
+      var props = args[0];
 
-      assert.propertyVal(htmlComponentDataArg, 'type', 'html');
-      assert.propertyVal(htmlComponentDataArg, 'value', validComponentData.value.html);
-      assert.equal(themeArg, 'the theme');
-      assert.propertyVal(optionsArg, 'some', 'option', 'option not passed through');
-      assert.deepEqual(optionsArg.extraContentClasses, [ 'hero-body', 'remove-top-margin' ]);
+      assert.propertyVal(props.componentData, 'type', 'html');
+      assert.propertyVal(props.componentData, 'value', validComponentData.value.html);
+      assert.equal(props.theme, 'the theme');
+      assert.deepEqual(props.extraContentClasses, [ 'hero-body', 'remove-top-margin' ]);
 
       assert.isTrue(firstCall.thisValue.hasClass('hero-text'));
     });
 
     describe('on rich-text-editor::content-change', function() {
       it('should dispatch BLOCK_UPDATE_COMPONENT', function(done) {
-        $component.componentHero(validComponentData, theme, options);
+        $component.componentHero(getProps({
+          componentData: validComponentData,
+          theme,
+          editMode
+        }));
+
         dispatcher.register(function(payload) {
           if (payload.action === Actions.BLOCK_UPDATE_COMPONENT) {
             assert.propertyVal(payload, 'type', 'hero');
@@ -193,10 +227,20 @@ describe('componentHero jQuery plugin', function() {
     describe('converting from unconfigured to configured', function() {
       beforeEach(function() {
         var componentData = _.omit(validComponentData, 'value');
-        $component.componentHero(componentData, theme, options);
+
+        $component.componentHero(getProps({
+          componentData,
+          theme,
+          editMode
+        }));
 
         componentData = _.cloneDeep(validComponentData);
-        $component.componentHero(componentData, theme, options);
+
+        $component.componentHero(getProps({
+          componentData,
+          theme,
+          editMode
+        }));
       });
 
       it('should not have a button to upload an image', function() {
@@ -216,12 +260,21 @@ describe('componentHero jQuery plugin', function() {
 
       beforeEach(function() {
         var componentData = _.cloneDeep(validComponentData);
-        $component.componentHero(componentData, theme, options);
+
+        $component.componentHero(getProps({
+          componentData,
+          theme,
+          editMode
+        }));
 
         componentData = _.cloneDeep(validComponentData);
         componentData.value.url = url;
 
-        $component.componentHero(componentData, theme, options);
+        $component.componentHero(getProps({
+          componentData,
+          theme,
+          editMode
+        }));
       });
 
       it('should update the image URL', function() {

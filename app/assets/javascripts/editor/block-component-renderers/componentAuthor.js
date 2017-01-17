@@ -38,58 +38,61 @@ import { richTextEditorManager } from '../RichTextEditorManager';
  */
 $.fn.componentAuthor = componentAuthor;
 
-export default function componentAuthor(componentData, theme, options) {
+export default function componentAuthor(props) {
+  props = _.extend({}, props, {
+    dataChangedCallback: onDataChanged,
+    firstRenderCallback: onFirstRender
+  });
+
+  const { componentData, theme, blockId, componentIndex } = props;
 
   StorytellerUtils.assertHasProperties(componentData, 'type');
   StorytellerUtils.assert(
     componentData.type === 'author',
-    StorytellerUtils.format(
-      'componentImage: Unsupported component type {0}',
-      componentData.type
-    )
+    `componentAuthor: Unsupported component type ${componentData.type}`
   );
 
-  function _onDataChanged() {
-    _updateHeight.call(this);
+  function onDataChanged(newComponentData) {
+    updateHeight.call(this);
+    updateImage.call(this, newComponentData);
   }
 
-  function _onFirstRender() {
-    this.append($('<div>', { class: 'author-image col2' }));
-    this.append($('<div>', { class: 'author-blurb col10' }));
+  function onFirstRender() {
+    const blurb = $('<div>', { class: 'author-blurb col10' });
+    const imageData = synthesizeImageData(componentData);
+    const imageContainer = $('<div>', { class: 'author-image col2 component-image' });
+    const image = $('<img>', { src: imageData.value.url });
 
-    this.on('rich-text-editor::content-change', _updateBlurb);
-    this.on('rich-text-editor::height-change component::height-change', _updateHeight);
+    this.
+      attr('data-url', imageData.value.url).
+      append([imageContainer.append(image), blurb]);
+
+    this.on('rich-text-editor::content-change', updateBlurb);
+    this.on('rich-text-editor::height-change component::height-change', updateHeight);
 
     this.one('destroy', function() {
       $(this).find('.author-image, .author-blurb').trigger('destroy');
-      $(this).off('rich-text-editor::content-change', _updateBlurb);
-      $(this).off('rich-text-editor::height-change component::height-change', _updateHeight);
+      $(this).off('rich-text-editor::content-change', updateBlurb);
+      $(this).off('rich-text-editor::height-change component::height-change', updateHeight);
     });
   }
 
-  var myOptions = _.extend({}, options, { editMode: false }); // Delegating edit mode to children.
-  this.componentBase(componentData, theme, myOptions, _onFirstRender, _onDataChanged);
-
-  this.addClass(StorytellerUtils.typeToClassNameForComponentType(componentData.type));
-
-  // Defer to child renderers.
-  this.find('.author-image').componentImage(
-    _synthesizeImageData(componentData),
-    theme,
-    options
-  );
-  this.find('.author-blurb').componentHTML(
-    _synthesizeBlurbData(componentData),
-    theme,
-    _.extend({}, options, { extraContentClasses: ['remove-top-margin'] })
-  );
-
+  this.
+    componentBase(props).
+    addClass(StorytellerUtils.typeToClassNameForComponentType(componentData.type)).
+    find('.author-blurb').componentHTML({
+      blockId,
+      componentIndex,
+      theme,
+      extraContentClasses: ['remove-top-margin'],
+      componentData: synthesizeBlurbData(componentData)
+    });
 
   return this;
 }
 
-function _synthesizeImageData(componentData) {
-  var image = _.get(componentData, 'value.image', {
+function synthesizeImageData(componentData) {
+  const image = _.get(componentData, 'value.image', {
     url: '/images/large-profile.png',
     documentId: null
   });
@@ -100,22 +103,30 @@ function _synthesizeImageData(componentData) {
   };
 }
 
-function _synthesizeBlurbData(componentData) {
+function synthesizeBlurbData(componentData) {
   return {
     type: 'html',
     value: _.get(componentData, 'value.blurb', '')
   };
 }
 
-function _updateBlurb(event) {
+function updateImage(componentData) {
+  const imageData = synthesizeImageData(componentData);
+  const url = $(this).attr('data-url');
+
+  if (imageData.value.url !== url) {
+    $(this).attr('data-url', imageData.value.url);
+    $(this).find('.author-image img').attr('src', imageData.value.url);
+  }
+}
+
+function updateBlurb(event) {
   event.stopPropagation(); // Otherwise StoryRenderer will attempt to treat this as an HTML component.
 
-  var blurbContent = event.originalEvent.detail.content;
+  const { blockId, componentIndex } = StorytellerUtils.findBlockIdAndComponentIndex(event.target);
+  const blurbContent = event.originalEvent.detail.content;
 
-  var blockId = StorytellerUtils.findClosestAttribute(event.target, 'data-block-id');
-  var componentIndex = StorytellerUtils.findClosestAttribute(event.target, 'data-component-index');
-
-  var value = storyStore.getBlockComponentAtIndex(blockId, componentIndex).value;
+  const value = storyStore.getBlockComponentAtIndex(blockId, componentIndex).value;
   _.set(value, 'blurb', blurbContent);
 
   dispatcher.dispatch({
@@ -127,17 +138,18 @@ function _updateBlurb(event) {
   });
 }
 
-function _updateHeight() {
-  var $this = $(this);
-  var editorHeight = 0;
-  var imageHeight = $this.find('.author-image').height();
-  var $blurb = $this.find('.author-blurb');
-  var negativeTextPadding = parseInt($blurb.css('margin-top'), 10);
+function updateHeight() {
+  let editorHeight = 0;
+  const $this = $(this);
+  const imageHeight = $this.find('.author-image').height();
+  const $blurb = $this.find('.author-blurb');
+  const negativeTextPadding = parseInt($blurb.css('margin-top'), 10);
 
-  var editorId = $this.find('[data-editor-id]').
+  const editorId = $this.find('[data-editor-id]').
     attr('data-editor-id');
 
-  var editor = richTextEditorManager.getEditor(editorId);
+  const editor = richTextEditorManager.getEditor(editorId);
+
   if (editor) {
     editorHeight = editor.getContentHeight();
     $this.find('.component-html iframe').height(editorHeight);

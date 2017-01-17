@@ -26,7 +26,7 @@ describe('actions/showOutputSchema', () => {
           schema_column_index: 0,
           schema_column_name: 'arrest',
           transform_to: {
-            transform_expr: 'arrest::number'
+            transform_expr: 'to_number(arrest)'
           }
         },
         {

@@ -1588,6 +1588,11 @@ en:
          type_display_names:
            SoQLText: Text
            SoQLNumber: Number
+           SoQLBoolean: Checkbox
+           SoQLFixedTimestamp: Date & Time (with timezone)
+           SoQLFloatingTimestamp: Date & Time
+           SoQLLocation: Location
+           SoQLPoint: Point
     show_upsert:
       header:
         title: Finalizing Import

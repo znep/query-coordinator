@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import $ from 'jquery';
 import _ from 'lodash';
+import { handleKeyPress } from '../lib/a11yHelpers';
 
 export class Pager extends Component {
   constructor(props) {
@@ -74,6 +75,9 @@ export class Pager extends Component {
         href="#"
         className={prevLinkClasses}
         onClick={(e) => this.prevLinkClick(e)}
+        onKeyDown={handleKeyPress((e) => this.prevLinkClick(e))}
+        role="button"
+        aria-label="Previous page"
         title="Previous page">{/* TODO: localization */}
         <span className="socrata-icon-arrow-left"></span>
         <span className="accessible">Previous page</span>{/* TODO: localization */}
@@ -92,6 +96,9 @@ export class Pager extends Component {
         href="#"
         className={nextLinkClasses}
         onClick={(e) => this.nextLinkClick(e)}
+        onKeyDown={handleKeyPress((e) => this.nextLinkClick(e))}
+        role="button"
+        aria-label="Next page"
         title="Next page">{/* TODO: localization */}
         <span className="socrata-icon-arrow-right"></span>
         <span className="accessible">Next page</span>{/* TODO: localization */}
@@ -108,6 +115,7 @@ export class Pager extends Component {
       <div className={currentPageInputClasses}>
         <input
           type="text"
+          aria-label={`Current page: ${this.props.currentPage}`}
           defaultValue={this.props.currentPage}
           onBlur={this.pageInputChange}
           onKeyPress={this.pageInputKeyPress} />
@@ -120,6 +128,9 @@ export class Pager extends Component {
         href="#"
         className="last-page-link"
         onClick={(e) => this.lastLinkClick(e)}
+        onKeyDown={handleKeyPress((e) => this.lastLinkClick(e))}
+        role="button"
+        aria-label="Last page"
         title="Last page">{/* TODO: localization */}
         {this.lastPage()}
         <span className="accessible">Last page</span>{/* TODO: localization */}

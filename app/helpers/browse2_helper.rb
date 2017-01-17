@@ -1,3 +1,5 @@
+require 'addressable/uri'
+
 # NOTE: Parts of this module duplicate facet logic in lib/browse_actions.rb incompletely
 module Browse2Helper
   DEFAULT_FACET_CUTOFF = 5
@@ -273,7 +275,7 @@ module Browse2Helper
   end
 
   def hidden_download_link(link, uid, type_name, type_info)
-    domain = URI.parse(link)
+    domain = Addressable::URI.parse(link)
 
     file_format = tag(:meta,
                       itemprop: 'fileFormat',

@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import createLogger from 'redux-logger';
 import a11y from 'react-a11y';
 // import airbrake from './lib/airbrake';
-import components from 'socrata-components';
+// import components from 'socrata-components';
 import _ from 'lodash';
 
 import assetSelector from './reducers';
@@ -31,24 +31,26 @@ middleware.push(createLogger({
 const store = createStore(assetSelector, applyMiddleware(...middleware));
 
 _.defer(() => {
-  try {
-    ReactDOM.render(
-      <Provider store={store}>
-        <App />
-      </Provider>,
-      document.querySelector('.asset-selector')
-    );
-  } catch (e) {
-    console.error(`Fatal error when rendering: ${e.stack}`);
+  document.querySelectorAll('.asset-selector').forEach((element) => {
+    try {
+      ReactDOM.render(
+        <Provider store={store}>
+          <App />
+        </Provider>,
+        element
+      );
+    } catch (e) {
+      console.error(`Fatal error when rendering: ${e.stack}`);
 
-    ReactDOM.render(
-      <div className="alert error alert-full-width-top">Error</div>,
-      document.querySelector('.asset-selector')
-    );
+      ReactDOM.render(
+        <div className="alert error alert-full-width-top">Error</div>,
+        element
+      );
 
-    return;
-  }
+      return;
+    }
+  });
 
   // Initialize the javascript components
-  components.attachTo(document.querySelector('.asset-selector'));
+  // components.attachTo(document.querySelector('.asset-selector'));
 });

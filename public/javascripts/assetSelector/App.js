@@ -11,7 +11,7 @@ export const App = (props) => (
     <button
       className="btn btn-primary"
       onClick={props.dispatchOpenModal}>
-      Open Asset Selector!
+      Add...
     </button>
     <div className={props.modalIsOpen ? '' : 'hidden'}>
       <div className="asset-selector-overlay">

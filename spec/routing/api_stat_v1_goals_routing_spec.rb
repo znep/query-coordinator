@@ -11,6 +11,31 @@ RSpec.describe 'goals api v1 routing', type: :routing do
     default_route.merge(:format => 'json')
   end
 
+  describe 'drafts' do
+    describe 'latest endpoint' do
+      let(:verb) { :get }
+      let(:path) { '/api/stat/v1/goals/four-four/narrative/drafts/latest' }
+
+      it 'routes json requests to DraftsController' do
+        expect(explicit_json_route).to route_to(
+          controller: 'api/stat/v1/goals/drafts',
+          action: 'latest',
+          format: 'json',
+          uid: 'four-four'
+        )
+      end
+
+      it 'routes to DraftsController with json by default' do
+        expect(default_route).to route_to(
+          controller: 'api/stat/v1/goals/drafts',
+          action: 'latest',
+          format: 'json',
+          uid: 'four-four'
+        )
+      end
+    end
+  end
+
   describe 'publishing' do
     describe 'create endpoint' do
       let(:verb) { :post }

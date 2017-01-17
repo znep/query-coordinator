@@ -10,20 +10,38 @@ RSpec.describe Api::Stat::V1::Goals::PublishedController, type: :controller do
     let(:goal_uid) { 'goal-goal' }
     let(:get_request) { get action, uid: goal_uid }
     let(:is_goal_accessible) { false }
+    let(:is_goal_unauthorized) { false }
 
     before do
-      stub_goal_accessibility(goal_uid, is_goal_accessible)
+      stub_goal_accessibility(
+        goal_uid,
+        :accessible => is_goal_accessible,
+        :unauthorized => is_goal_unauthorized
+      )
     end
 
     describe '#latest' do
       let(:action) { :latest }
-      describe 'goal not visible' do
+
+      describe 'goal does not exist' do
         let(:is_goal_accessible) { false }
+        let(:is_goal_unauthorized) { false }
+
+        it '404s' do
+          get_request
+          expect(response.status).to be(404)
+        end
+      end
+
+      describe 'odysseus denies access' do
+        let(:is_goal_accessible) { false }
+        let(:is_goal_unauthorized) { true }
         it '403s' do
           get_request
           expect(response.status).to be(403)
         end
       end
+
       describe 'goal visible' do
         let(:is_goal_accessible) { true }
 

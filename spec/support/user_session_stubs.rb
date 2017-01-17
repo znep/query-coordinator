@@ -103,6 +103,15 @@ module UserSessionStubs
     }
   end
 
+  def mock_user_authorization_with_domain_rights(rights)
+    {
+      'viewRole' => 'STUB VIEW ROLE',
+      'viewRights' => [],
+      'domainRole' => 'STUB DOMAIN ROLE',
+      'domainRights' => rights
+    }
+  end
+
   def stub_valid_session
     allow(CoreServer).to receive(:current_user).and_return(mock_valid_user)
     allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(

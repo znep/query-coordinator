@@ -46,8 +46,9 @@ class Stat::GoalsController < StoriesController
   end
 
   def copy
-    uid = params[:uid]
     dashboard_uid = params[:dashboard_uid]
+    category_uid = 'uncategorized' # Always place copy into uncategorized category.
+    uid = params[:uid]
     title = params[:title]
 
     story = DraftStory.find_by_uid(uid)
@@ -77,6 +78,14 @@ class Stat::GoalsController < StoriesController
     copy_uid = odysseus_response.json['new_goal_id']
 
     blocks = copy_attachments(story)
+
+    update_goal_embed(
+      blocks,
+      dashboard_uid,
+      category_uid,
+      copy_uid
+    )
+
     blocks = blocks.map do |block|
       block.as_json.symbolize_keys
     end
@@ -91,10 +100,30 @@ class Stat::GoalsController < StoriesController
 
     @story = story_draft_creator.create
 
-    redirect_to "/stat/goals/#{dashboard_uid}/uncategorized/#{copy_uid}/edit-story"
+    redirect_to "/stat/goals/#{dashboard_uid}/#{category_uid}/#{copy_uid}/edit-story"
   end
 
   private
+
+  # Updates any goal.embed components to have the given:
+  #   goal UID
+  #   category UID
+  #   dashboard UID
+  #
+  # All 3 IDs are set even if the original component does not
+  # have all 3 to begin with.
+  def update_goal_embed(blocks, dashboard_uid, category_uid, goal_uid)
+    blocks.
+      map(&:components).
+      flatten.
+      select { |component| component['type'] == 'goal.embed' }.
+      each do |component|
+        value = component['value']
+        value['uid'] = goal_uid
+        value['category'] = category_uid
+        value['dashboard'] = dashboard_uid
+      end
+  end
 
   def render_migration_500
     @status = 500

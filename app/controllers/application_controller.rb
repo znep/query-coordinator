@@ -94,6 +94,8 @@ class ApplicationController < ActionController::Base
         require_sufficient_rights_for_api_stat_goals_permissions
       when 'api/stat/v1/goals/published'
         require_sufficient_rights_for_api_stat_goals_published
+      when 'api/stat/v1/goals/drafts'
+        require_sufficient_rights_for_api_stat_goals_drafts
       when 'api/v1/documents'
         require_sufficient_rights_for_api_documents
       when 'api/v1/drafts'
@@ -314,11 +316,28 @@ class ApplicationController < ActionController::Base
 
   def require_sufficient_rights_for_api_stat_goals_published
     action = params[:action]
+    uid = params[:uid]
 
     case action
       when 'latest'
-        render nothing: true, status: 403 unless can_view_goal?(params[:uid])
+        return render nothing: true, status: 403 if goal_unauthorized?(uid)
+        return render nothing: true, status: 404 unless can_view_goal?(uid)
       when 'create'
+        render nothing: true, status: 403 unless can_edit_goals?
+      else
+        raise_undefined_authorization_handler_error
+    end
+  end
+
+  def require_sufficient_rights_for_api_stat_goals_drafts
+    action = params[:action]
+    uid = params[:uid]
+
+    return render nothing: true, status: 403 if goal_unauthorized?(uid)
+    return render nothing: true, status: 404 unless can_view_goal?(uid)
+
+    case action
+      when 'latest'
         render nothing: true, status: 403 unless can_edit_goals?
       else
         raise_undefined_authorization_handler_error

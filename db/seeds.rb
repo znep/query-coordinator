@@ -134,6 +134,7 @@ block_11 = Block.create(
   created_by: 'good-doer'
 )
 
+# Fully qualified goal
 block_12 = Block.create(
   layout: '12',
   components: [
@@ -141,9 +142,24 @@ block_12 = Block.create(
       'type': 'goal.embed',
       'value': {
         domain: 'example.com',
-        dashboard: 'four-four',
-        category: 'four-four',
-        uid: 'four-four'
+        dashboard: 'dash-bord',
+        category: 'cate-gory',
+        uid: 'goal-goal'
+      }
+    }
+  ],
+  created_by: 'perf-lord'
+)
+
+# Not fully qualified goal
+block_13 = Block.create(
+  layout: '12',
+  components: [
+    {
+      'type': 'goal.embed',
+      'value': {
+        domain: 'example.com',
+        uid: 'goal-goal'
       }
     }
   ],
@@ -234,5 +250,12 @@ open_performance_story = DraftStory.create(
   uid: 'open-perf',
   block_ids: [block_12.id],
   created_by: 'perf-lord',
+  theme: 'serif'
+)
+
+open_performance_story_2 = DraftStory.create(
+  uid: 'goal-twoo',
+  block_ids: [block_13.id],
+  created_by: 'auni-corn',
   theme: 'serif'
 )

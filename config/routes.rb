@@ -80,6 +80,7 @@ Rails.application.routes.draw do
         namespace :goals do
           post ':uid/narrative/published' => 'published#create'
           get ':uid/narrative/published/latest' => 'published#latest'
+          get ':uid/narrative/drafts/latest' => 'drafts#latest'
 
           put ':uid/narrative/permissions' => 'permissions#update'
         end

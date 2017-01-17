@@ -1,7 +1,8 @@
 module GoalStubs
-  def stub_goal_accessibility(uid, accessible)
+  def stub_goal_accessibility(uid, options)
     goal_double = double('Goal')
-    allow(goal_double).to receive(:accessible?).and_return(accessible)
+    allow(goal_double).to receive(:accessible?).and_return(options[:accessible])
+    allow(goal_double).to receive(:unauthorized?).and_return(options[:unauthorized])
     allow(OpenPerformance::Goal).to(
       receive(:new).
       with(uid).

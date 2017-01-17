@@ -459,18 +459,12 @@ RSpec.describe Stat::GoalsController, type: :controller do
       end
 
       describe 'draft present' do
-        let(:uid) { 'test-test' } # This story exists in the test seed.
+        let(:uid) { 'open-perf' } # This story exists in the test seed.
         let(:copy_uid) { 'copy-copy' }
-        let(:story) { instance_double(DraftStory) }
         let(:odysseus_response) { instance_double(HttpResponse) }
 
         before do
           allow(goal).to receive(:accessible?).and_return(true)
-
-          allow(DraftStory).to receive(:find_by_uid).and_return(story)
-          allow(story).to receive(:blocks).and_return([])
-          allow(story).to receive(:theme).and_return('classic')
-          allow(story).to receive(:digest).and_return(StoriesController::FAKE_DIGEST)
         end
 
         describe 'and Odysseus errors' do
@@ -488,6 +482,11 @@ RSpec.describe Stat::GoalsController, type: :controller do
         end
 
         describe 'under normal operation' do
+          let(:cloned_goal_value) do
+            clone = DraftStory.where(:uid => copy_uid)[0]
+            clone.blocks[0].components[0]['value']
+          end
+
           before do
             allow(OpenPerformance::Odysseus).to receive(:copy_goal).
               with(uid, dashboard, anything).
@@ -500,6 +499,26 @@ RSpec.describe Stat::GoalsController, type: :controller do
           it 'should redirect to the edit mode for the new goal with dashboard' do
             action_lambda.call
             expect(response).to redirect_to "/stat/goals/#{dashboard}/uncategorized/#{copy_uid}/edit-story"
+          end
+
+          shared_examples 'component data updater' do
+            it 'should update the goal IDs in the goal.embed component' do
+              action_lambda.call
+              expect(cloned_goal_value).to match(a_hash_including(
+                'dashboard' => dashboard,
+                'category' => 'uncategorized',
+                'uid' => copy_uid
+              ))
+            end
+          end
+
+          describe 'with a fully-qualified goal' do
+            it_should_behave_like('component data updater')
+          end
+
+          describe 'with a goal specified only by uid' do
+            let(:uid) { 'goal-twoo' }
+            it_should_behave_like('component data updater')
           end
         end
       end

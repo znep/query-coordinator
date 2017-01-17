@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'rails_helper'
 require 'spec_helper'
 
@@ -828,4 +829,15 @@ describe Browse2Helper do
     end
   end
 
+  describe '#hidden_download_link' do
+    it 'parses a non-ascii URI like a champ' do
+      uri = 'https://☃.net'
+      uid = 'jort-jort'
+      type_name = 'JSON'
+      type_info = { :extension => 'json' }
+      download_link = hidden_download_link(uri, uid, type_name, type_info)
+      expect(download_link).to eq('<div id="JSON"><meta itemprop="fileFormat" /><meta itemprop="url" ' \
+                                  'content="https://☃.net/api/views/jort-jort.json?accessType=DOWNLOAD" /></div>')
+    end
+  end
 end

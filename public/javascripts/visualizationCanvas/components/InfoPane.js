@@ -1,8 +1,9 @@
 import _ from 'lodash';
-import { InfoPane as SocrataComponentsInfoPane } from 'socrata-components';
+import React from 'react';
 import { formatDate } from 'socrata-components/common/dates';
 import { t } from '../lib/I18n';
 import { connect } from 'react-redux';
+import InfoPaneComponent from '../../socrataHOC/InfoPaneComponent.js';
 
 function mapStateToProps(state) {
   const { view } = state;
@@ -12,13 +13,15 @@ function mapStateToProps(state) {
     t('info_pane.unsaved');
 
   const basedOnHtml = t('info_pane.based_on').replace('%{name}', state.parentView.name);
-  // TODO can this be JSX?  Need to update InfoPane
-  const footer = `<a href=${state.parentView.url} target="_blank">${basedOnHtml}</a>`;
+
+  const footer = (
+    <a href={state.parentView.url} target="_blank" dangerouslySetInnerHTML={{ __html: basedOnHtml }}></a>
+  );
 
   return {
     name: view.name,
     description: view.description,
-    isOfficial: true,
+    provenance: null, // EN-12840 Remove official badge from vizcan
     category: view.category,
     footer,
     metadata: {
@@ -34,4 +37,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(SocrataComponentsInfoPane);
+export default connect(mapStateToProps)(InfoPaneComponent);

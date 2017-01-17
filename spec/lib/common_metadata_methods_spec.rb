@@ -91,6 +91,7 @@ describe CommonMetadataMethods do
       it 'requests the derived view dataset' do
         test_view = View.new({ 'owner' => { 'id' => 'pota-toes' } })
         expect(View).to receive(:find_derived_view_using_read_from_nbe).and_return(test_view)
+        allow(test_view).to receive(:nbe_view).and_return(View.new({ 'id' => 'four-four' }))
 
         dummy_class_instance.fetch_dataset_metadata('elep-hant', options)
       end
@@ -98,6 +99,7 @@ describe CommonMetadataMethods do
       it 'returns an object resembling Phidippides response' do
         test_view = View.new({ 'owner' => { 'id' => 'pota-toes' } })
         expect(View).to receive(:find_derived_view_using_read_from_nbe).and_return(test_view)
+        allow(test_view).to receive(:nbe_view).and_return(View.new({ 'id' => 'four-four' }))
 
         result = dummy_class_instance.fetch_dataset_metadata('elep-hant', options)
         expect(result.keys).to include('domain', 'locale', 'columns', 'ownerId', 'updatedAt')
@@ -200,6 +202,7 @@ describe CommonMetadataMethods do
       allow(I18n).to receive(:locale).and_return('en')
       allow(Column).to receive(:get_derived_view_columns).and_return({})
       allow(View).to receive(:find_derived_view_using_read_from_nbe).and_return(test_view)
+      allow(test_view).to receive(:nbe_view).and_return(View.new({ 'id' => 'four-four' }))
       allow_any_instance_of(Phidippides).to receive(:mirror_nbe_column_metadata!)
     end
 
@@ -236,6 +239,11 @@ describe CommonMetadataMethods do
     it 'should add updatedAt' do
       result = dummy_class_instance.fetch_dataset_metadata_for_derived_view(test_view.id)
       expect(result[:updatedAt]).to eq(Time.at(12345))
+    end
+
+    it 'should ad defaultId' do
+      result = dummy_class_instance.fetch_dataset_metadata_for_derived_view(test_view.id)
+      expect(result[:defaultId]).to eq('four-four')
     end
 
     it 'should use phidippides data column transformations' do

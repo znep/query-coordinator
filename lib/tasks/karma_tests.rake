@@ -127,16 +127,19 @@ namespace :test do
     end
 
     desc 'all the karma tasks'
-    task :karma, [:watch, :browser, :reporter] => [
+    task :all, [:watch, :browser, :reporter] => [
+      'karma:adminGoals',
+      'karma:autocomplete',
       'karma:dataCards',
       'karma:datasetLandingPage',
+      'karma:datasetManagementUI',
       'karma:importWizard',
       'karma:oldUx',
-      'karma:adminGoals',
-      'karma:datasetManagementUI',
-      'karma:visualizationCanvas',
-      'karma:autocomplete',
-      'karma:signin'
+      'karma:signin',
+      'karma:visualizationCanvas'
     ]
   end
+
+  desc 'run all the karma tests'
+  task :karma => 'test:karma:all'
 end

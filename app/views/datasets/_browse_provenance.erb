@@ -1,3 +1,9 @@
-<%- if v.respond_to?(:is_official?) && v.show_official_badge_in_catalog? -%>
-  <span class="browse-listing-provenance infoItem"><span class='icon-check'></span><%= t('angular.dataCards.lens_type.official') %></span>
+<%- if show_provenance_badge_in_old_catalog?(v) -%>
+  <span class="browse-listing-provenance infoItem <%= v.provenance %>">
+    <%- if v.is_official? && show_official_badge_in_catalog?(v) -%>
+      <span class='icon-official2'></span><%= t('angular.dataCards.lens_type.official') %>
+    <%- elsif v.is_community? && show_community_badge_in_catalog?(v) -%>
+      <span class='icon-community'></span><%= t('angular.dataCards.lens_type.community') %>
+    <%- end -%>
+  </span>
 <%- end -%>

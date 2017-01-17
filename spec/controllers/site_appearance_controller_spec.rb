@@ -6,7 +6,7 @@ describe SiteAppearanceController do
   before :each do
     init_current_domain
     init_core_session
-    init_signaller
+    init_feature_flag_signaller
     @request.host = 'localhost' # VCR tapes were recorded against localhost
   end
 

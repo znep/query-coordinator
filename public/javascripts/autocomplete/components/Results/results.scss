@@ -19,8 +19,9 @@
 .results-container-collapsible {
   @extend .results-container;
 
-  width: 251px;
-  left: -229px;
+  box-sizing: content-box;
+  width: 294px;
+  left: -275px;
   top: 52px;
 }
 

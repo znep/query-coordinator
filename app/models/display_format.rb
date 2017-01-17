@@ -21,7 +21,8 @@ class DisplayFormat < Model
   def default_visualization_canvas_metadata
     {
       :version => 1,
-      :vifs => []
+      :vifs => [],
+      :filters => []
     }
   end
 end

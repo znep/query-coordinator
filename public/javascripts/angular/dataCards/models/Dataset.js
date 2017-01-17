@@ -27,6 +27,7 @@ module.exports = function(
       var self = this;
 
       self.id = datasetMetadata.id;
+      self.defaultId = datasetMetadata.defaultId;
       self.version = 1;
 
       var fields = [

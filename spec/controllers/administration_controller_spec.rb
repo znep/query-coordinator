@@ -6,7 +6,7 @@ describe AdministrationController do
   let(:view) { double(View, :createdAt => 1456530636244, :columns => []) }
 
   before(:each) do
-    init_signaller
+    init_feature_flag_signaller
     stub_site_chrome
   end
 

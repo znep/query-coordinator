@@ -473,6 +473,47 @@ class InternalController < ApplicationController
     end
   end
 
+  def update_feature_flags_on_multiple_domains
+    auth_header = { 'Cookie' => "_core_session_id=#{User.current_user.session_token}" }
+    flag = Signaller.for(flag: params[:flag])
+
+    valid_url_characters = '\w\.\-_'
+    domain_list = params[:domains].presence || params[:domain_list].try do |list|
+      list.split(/[^#{valid_url_characters}]+/).reject(&:blank?) # i.e., dump any commas
+    end
+
+    begin
+      raise 'Both :domains and :domain_list were empty.' if domain_list.blank?
+      case params[:commit]
+        when 'Set'
+          processed_value = FeatureFlags.process_value(params[:multiple_domains][params[:flag]])
+          flag.set_multiple(
+            to_value: processed_value,
+            on_domains: domain_list,
+            authorization: auth_header
+          )
+          domain_list.each do |domain|
+            notices << %Q{#{params[:flag]} was set with value "#{processed_value}" on #{domain}.}
+          end
+        when 'Reset'
+          flag.reset_multiple(
+            on_domains: domain_list,
+            authorization: auth_header
+          )
+          domain_list.each do |domain|
+            notices << %Q{#{params[:flag]} was reset to its default value of "#{FeatureFlags.default_for(params[:flag])}" on #{domain}.}
+          end
+      end
+      flag.clear_cache(Signaller::Endpoint.for(:report, flag: params[:flag]))
+    rescue => e
+      err_msg = "#{params[:flag]} could not be changed."
+      err_msg << " Reason: #{e.message}."
+      errors << err_msg
+    end
+    prepare_to_render_flashes!
+    redirect_to feature_flag_report_path(:for => params[:flag])
+  end
+
   def flush_cache
     CurrentDomain.flag_out_of_date!(params[:domain_id])
 

@@ -75,6 +75,8 @@ html {
     font-family: 'socrata-icons' !important;
     &:before, &:after {
       font-family: 'socrata-icons' !important;
+      position: relative;
+      top: 1px;
     }
   }
 
@@ -1774,6 +1776,7 @@ html {
 
     span.icon-official2 {
       color: #9e5c23;
+      font-size: 14px;
     }
   }
 }

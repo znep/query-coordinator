@@ -1050,7 +1050,7 @@ class View < Model
   end
 
   def is_derived_view?
-    !dataset? && !is_unpublished? && !is_api_geospatial?
+    is_tabular? && [is_blist?, is_arcgis?, is_api_geospatial?].none?
   end
 
   def has_modifying_parent_view?
@@ -1065,33 +1065,31 @@ class View < Model
     end
   end
 
-  def show_official_badge_in_catalog?
-    FeatureFlags.derive(nil, request)[:show_provenance_badge_in_catalog] && data_lens? && is_official?
-  end
-
   def is_official?
-    # CORE-7419: If enable_data_lens_provenance is false, assume all data lenses are official
-    FeatureFlags.derive(nil, request)[:enable_data_lens_provenance] ?
-      provenance =~ /^official$/i : true
+    match = !!(provenance =~ /^official$/i)
+    if data_lens?
+      # CORE-7419: If enable_data_lens_provenance is false, assume all data lenses are official
+      FeatureFlags.derive.enable_data_lens_provenance ? match : true
+    else
+      match
+    end
   end
 
   def is_community?
-    provenance =~ /^community$/i
+    !!(provenance =~ /^community$/i)
   end
 
   def federated?
-    !domainCName.blank?
+    domainCName.present?
   end
 
   def route_params
-    params =
-      { category: (category || 'dataset').convert_to_url,
-        view_name: (name || 'dataset').convert_to_url,
-        id: id }
-
-    params[:host] = canonical_domain_name
-
-    params
+    {
+      category: (category || 'dataset').convert_to_url,
+      host: canonical_domain_name,
+      id: id,
+      view_name: (name || 'dataset').convert_to_url
+    }
   end
 
   def rss
@@ -1429,6 +1427,10 @@ class View < Model
     viewType == 'blobby'
   end
 
+  def is_calendar?
+    displayType == 'calendar'
+  end
+
   def data_lens?
     is_tabular? && displayType == 'data_lens'
   end
@@ -1669,6 +1671,7 @@ class View < Model
     return @@display_names[d.name] || d.name
   end
 
+  # TODO Factor out the common logic used here and in #display method and rewrite to not not not use !is_not
   def dataset?
     # 'filtered view' is anything that uses sorting / roll-up / filter / conditional formatting
     #
@@ -2063,7 +2066,7 @@ class View < Model
         :one => canvas_row_label,
         :other => canvas_row_label.pluralize(2)
       },
-      :sortOrder => sort_order,
+      :sortOrder => first_usable_sort_order,
       :url => Rails.application.routes.url_helpers.view_path(self)
     }
   end
@@ -2078,24 +2081,51 @@ class View < Model
     }
   end
 
-  def sort_order
-    query = self.metadata && self.metadata.json_query
-    order = query.try(:[], 'order')
+  # The table implementation in socrata-visualizations requires a sort order to be defined, but it
+  # cannot handle more than one sort order nor sorting by geospatial columns. This looks for the
+  # first defined sort order, and then for the first valid-looking column. If it can't find anything,
+  # it will return nil for the columnName, which will result in the table rendering an error, but
+  # the page it's being rendered in shouldn't fail to render.
+  def first_usable_sort_order
+    # Find the first defined sort order, if any, looking at query instead of metadata.jsonQuery, as
+    # query is more likely to be accurate. jsonQuery is defined by the frontend and isn't necessarily
+    # updated if a user makes changes to a dataset through something other than the UI. But since
+    # we're using query instead of metadata.jsonQuery, we now need to look up the column names
+    # manually. We also need to filter out sorts on geospatial columns, since those will definitely
+    # cause the table to error.
+    geo_column_type_regex = /(location|point|polygon|line)$/i
+    existing_sort_orders = self.query.orderBys || []
 
-    if order
-      order.map do |rule|
+    valid_sort_orders = existing_sort_orders.map do |order|
+      column = self.column_by_id(order.dig('expression', 'columnId'))
+      has_field_name = column.try(:fieldName).present?
+      is_not_geo_column = !(column.try(:dataTypeName) =~ geo_column_type_regex)
+
+      if has_field_name && is_not_geo_column
         {
-          :ascending => rule['ascending'],
-          :columnName => rule['columnName'] || rule['columnFieldName']
+          :ascending => order['ascending'],
+          :columnName => column.fieldName
         }
+      else
+        nil
       end
+    end.compact
+
+    if valid_sort_orders.any?
+      valid_sort_orders.take(1)
     else
-      # Default to sorting by the first column with a fieldName. The table will render an error,
-      # but we shouldn't break the entire page if we can't find a valid column.
-      column_with_fieldName = self.columns.find { |column| !column.try(:fieldName).nil? }
+      # If we can't find a valid sort order, return our best guess at a default sort order,
+      # filtering out any geospatial columns.
+      valid_column_for_sorting = self.columns.find do |column|
+        has_field_name = column.try(:fieldName).present?
+        is_not_geo_column = !(column.try(:dataTypeName) =~ geo_column_type_regex)
+
+        has_field_name && is_not_geo_column
+      end
+
       [{
         :ascending => true,
-        :columnName => column_with_fieldName.try(:fieldName) # in case column_with_fieldName is nil
+        :columnName => valid_column_for_sorting.try(:fieldName)
       }]
     end
   end

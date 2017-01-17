@@ -391,7 +391,7 @@ module.exports = function CardDataService(
       });
     },
 
-    // This now appears here rather than cardVizualizationChoropleth.js in order to
+    // This now appears here rather than directives/choropleth.js in order to
     // prepare for live GeoJSON data.
     getChoroplethRegions: function(shapefileId) {
       shapefileId = DeveloperOverrides.dataOverrideForDataset(shapefileId) || shapefileId;
@@ -638,6 +638,11 @@ ${JSON.stringify(errors)}`
       var url = $.baseUrl(`/resource/${datasetId}.json`);
       url.searchParams.set('$select', `extent(${datasetSourceColumn})`);
 
+      // These two flags are needed to make queries on the NBE copy of OBE derived views.
+      // They should be noops for any view based on an NBE view (i.e. every other data lens)
+      url.searchParams.set('$$read_from_nbe', true);
+      url.searchParams.set('$$version', 2.1);
+
       return http.get(url.href, config).then(function(response) {
         if (response.status === 200) {
           shapefileId = DeveloperOverrides.dataOverrideForDataset(shapefileId) || shapefileId;
@@ -660,6 +665,11 @@ ${JSON.stringify(errors)}`
             cardinalityUrl.searchParams.set('$select', datasetSourceColumn);
             cardinalityUrl.searchParams.set('$group', datasetSourceColumn);
             cardinalityUrl.searchParams.set('$limit', 2);
+
+            // These two flags are needed to make queries on the NBE copy of OBE derived views.
+            // They should be noops for any view based on an NBE view (i.e. every other data lens)
+            cardinalityUrl.searchParams.set('$$read_from_nbe', true);
+            cardinalityUrl.searchParams.set('$$version', 2.1);
 
             var cardinalityConfig = httpConfig.call(self);
 

@@ -2,7 +2,7 @@
 // NOTE: Translations are generated in the Rake task; see parallel_deps
 // in lib/tasks/karma_tasks.rake for the easy implementation.
 
-var cp = require('child_process');
+var execFile = require('child_process').execFile;
 var fs = require('fs');
 var _ = require('lodash');
 
@@ -41,9 +41,9 @@ function generateArgs(suite) {
 
 // For printing Karma results, with early abort on test failures.
 function report(suite) {
-  return function(err, stdout, stderr) {
-    console.log(suite + ' output:\n' + stdout);
-    if (err) {
+  return function(error, stdout, stderr) {
+    console.log(suite + ' output:\n' + stdout + '\n error:\n' + stderr);
+    if (error) {
       process.exit(1);
     }
   };
@@ -53,6 +53,7 @@ function report(suite) {
 var karmaCommand = './node_modules/karma/bin/karma';
 suites.forEach(function(suite) {
   console.log('Running Karma tests for ' + suite);
-  cp.execFile(karmaCommand, generateArgs(suite), report(suite));
+  execFile(karmaCommand, generateArgs(suite), report(suite));
 });
+
 console.log('');

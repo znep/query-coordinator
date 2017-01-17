@@ -192,36 +192,37 @@ describe View do
   describe '.is_derived_view?' do
     let(:view) { View.new }
 
-    it 'is false if view is a default view' do
-      allow(view).to receive('dataset?').and_return(true)
-      allow(view).to receive('is_api_geospatial?').and_return(false)
-      allow(view).to receive('is_unpublished?').and_return(false)
-
+    it 'is false if the view is not tabular' do
+      allow(view).to receive(:is_tabular?).and_return(false)
       expect(view.is_derived_view?).to be false
     end
 
-    it 'is false if view is a api geospatial view' do
-      allow(view).to receive('dataset?').and_return(false)
-      allow(view).to receive('is_api_geospatial?').and_return(true)
-      allow(view).to receive('is_unpublished?').and_return(false)
+    context 'when the view is tabular' do
+      before(:each) do
+        allow(view).to receive(:is_tabular?).and_return(true)
+        allow(view).to receive(:is_blist?).and_return(false)
+        allow(view).to receive(:is_arcgis?).and_return(false)
+        allow(view).to receive(:is_api_geospatial?).and_return(false)
+      end
 
-      expect(view.is_derived_view?).to be false
-    end
+      it 'is false if the view is a blist' do
+        allow(view).to receive(:is_blist?).and_return(true)
+        expect(view.is_derived_view?).to be false
+      end
 
-    it 'is false if view is unpublished' do
-      allow(view).to receive('dataset?').and_return(false)
-      allow(view).to receive('is_api_geospatial?').and_return(false)
-      allow(view).to receive('is_unpublished?').and_return(true)
+      it 'is false if the view is an ESRI map' do
+        allow(view).to receive(:is_arcgis?).and_return(true)
+        expect(view.is_derived_view?).to be false
+      end
 
-      expect(view.is_derived_view?).to be false
-    end
+      it 'is false if the view is an API-ingressed Mondara map' do
+        allow(view).to receive(:is_api_geospatial?).and_return(true)
+        expect(view.is_derived_view?).to be false
+      end
 
-    it 'is true if view is not default, api geospatial, or unpublished' do
-      allow(view).to receive('dataset?').and_return(false)
-      allow(view).to receive('is_api_geospatial?').and_return(false)
-      allow(view).to receive('is_unpublished?').and_return(false)
-
-      expect(view.is_derived_view?).to be true
+      it 'is true if the view is not a blist, an ESRI map, or an API-ingressed Mondara map' do
+        expect(view.is_derived_view?).to be true
+      end
     end
   end
 
@@ -261,63 +262,103 @@ describe View do
     end
   end
 
-  describe '.sort_order' do
-    it 'defaults to using the fieldName of the first column with a fieldName' do
-      data = {
+  describe '.first_usable_sort_order' do
+    it 'defaults to using the fieldName of the first non-geospatial column with a fieldName' do
+      test_view = View.new({
         'columns' => [
-          { 'foo' => 'elephant' },
-          { 'fieldName' => 'giraffe' }
-        ]
-      }
-      sort_order = View.new(data).sort_order.first
+          { 'id' => 1234, 'foo' => 'elephant', 'dataTypeName' => 'text' },
+          { 'id' => 5678, 'fieldName' => 'location_column', 'dataTypeName' => 'point' },
+          { 'id' => 9123, 'fieldName' => 'giraffe', 'dataTypeName' => 'number' }
+        ],
+        'query' => {}
+      })
+      expected_sort_order = [{
+        :ascending => true,
+        :columnName => 'giraffe'
+      }]
 
-      expect(sort_order[:ascending]).to eq(true)
-      expect(sort_order[:columnName]).to eq('giraffe')
+      expect(test_view.first_usable_sort_order).to eq(expected_sort_order)
     end
 
-    context 'when jsonQuery is present' do
-      it 'returns the columnName for queries if available' do
-        data = {
-          'metadata' => {
-            'jsonQuery' => {
-              'order' => [{ 'columnName' => 'puffins', 'ascending' => false }]
-            }
-          }
-        }
-        sort_order = View.new(data).sort_order.first
-
-        expect(sort_order[:ascending]).to eq(false)
-        expect(sort_order[:columnName]).to eq('puffins')
-      end
-
-      it 'returns the columnFieldName for queries if columnName is not available' do
-        data = {
-          'metadata' => {
-            'jsonQuery' => {
-              'order' => [{ 'columnFieldName' => 'penguins', 'ascending' => true }]
-            }
-          }
-        }
-        sort_order = View.new(data).sort_order.first
-
-        expect(sort_order[:ascending]).to eq(true)
-        expect(sort_order[:columnName]).to eq('penguins')
-      end
-    end
-
-    it 'returns all of the sort order rules' do
-      data = {
-        'metadata' => {
-          'jsonQuery' => {
-            'order' => [
-              { 'columnName' => 'penguins', 'ascending' => true },
-              { 'columnName' => 'puffins', 'ascending' => true }
+    context 'when query.orderBys are present' do
+      it 'returns a sort order based on the first usable orderBy in query' do
+        test_view = View.new({
+          'id' => 'peng-uins',
+          'columns' => [
+            { 'id' => 1234, 'foo' => 'elephant', 'dataTypeName' => 'text' },
+            { 'id' => 5678, 'fieldName' => 'location_column', 'dataTypeName' => 'point' },
+            { 'id' => 9123, 'fieldName' => 'giraffe', 'dataTypeName' => 'number' }
+          ],
+          'query' => {
+            'orderBys' => [
+              {
+                'ascending' => false,
+                'expression' => {
+                  'columnId' => 1234
+                }
+              },
+              {
+                'ascending' => false,
+                'expression' => {
+                  'columnId' => 5678
+                }
+              },
+              {
+                'ascending' => true,
+                'expression' => {
+                  'columnId' => 9123
+                }
+              },
+              {
+                'ascending' => false,
+                'expression' => {
+                  'columnId' => 9123
+                }
+              }
             ]
           }
-        }
-      }
+        })
 
-      expect(View.new(data).sort_order.length).to eq(2)
+        # it does not return a sort order based on:
+        # - the column without a fieldName
+        # - the geospatial column
+        # - the second valid orderBy in query
+        expected_sort_order = [
+          {
+            :ascending => true,
+            :columnName => 'giraffe'
+          }
+        ]
+
+        expect(test_view.first_usable_sort_order).to eq(expected_sort_order)
+      end
+
+      it 'returns an alternate sort order if none of the columns in query.orderBys are valid to use' do
+        test_view = View.new({
+          'id' => 'peng-uins',
+          'columns' => [
+            { 'id' => 1234, 'foo' => 'elephant', 'dataTypeName' => 'text' },
+            { 'id' => 5678, 'fieldName' => 'location_column', 'dataTypeName' => 'point' },
+            { 'id' => 9123, 'fieldName' => 'giraffe', 'dataTypeName' => 'number' }
+          ],
+          'query' => {
+            'orderBys' => [
+              {
+                'ascending' => false,
+                'expression' => {
+                  'columnId' => 1234
+                }
+              }
+            ]
+          }
+        })
+        expected_sort_order = [{
+          :ascending => true,
+          :columnName => 'giraffe'
+        }]
+
+        expect(test_view.first_usable_sort_order).to eq(expected_sort_order)
+      end
     end
   end
 

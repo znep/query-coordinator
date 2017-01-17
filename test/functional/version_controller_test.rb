@@ -5,7 +5,7 @@ class VersionControllerTest < ActionController::TestCase
   def setup
     init_core_session
     init_current_domain
-    init_signaller
+    init_feature_flag_signaller
     stub_site_chrome
   end
 

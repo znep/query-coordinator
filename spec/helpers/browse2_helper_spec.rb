@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'rails_helper'
 require 'spec_helper'
 
@@ -629,7 +630,10 @@ describe Browse2Helper do
       link_parsed = Nokogiri.parse(link).at('a')
       expect(link_parsed[:href]).to eq('/view/abcd-efgh')
       expect(link_parsed[:class]).to eq('browse2-result-name-link')
-      expect(link_parsed.inner_html).to eq('test-result')
+
+      inner = Nokogiri.parse(link_parsed.inner_html).at('span')
+      expect(inner[:itemprop]).to eq('name')
+      expect(inner.inner_html).to eq('test-result')
     end
 
     it 'returns a link with federated icon span for federated results' do
@@ -639,7 +643,10 @@ describe Browse2Helper do
       link_parsed = Nokogiri.parse(link).at('a')
       expect(link_parsed[:href]).to eq('/view/abcd-efgh')
       expect(link_parsed[:class]).to eq('browse2-result-name-link')
-      expect(link_parsed.inner_html).to eq('test-result <span class="icon-external-square"></span>')
+
+      inner = Nokogiri.parse(link_parsed.inner_html).at('span')
+      expect(inner[:itemprop]).to eq('name')
+      expect(inner.inner_html).to eq('test-result <span class="icon-external-square"></span>')
     end
 
     it 'escapes the link result_name in federated results' do
@@ -650,7 +657,10 @@ describe Browse2Helper do
       link_parsed = Nokogiri.parse(link).at('a')
       expect(link_parsed[:href]).to eq('/view/abcd-efgh')
       expect(link_parsed[:class]).to eq('browse2-result-name-link')
-      expect(link_parsed.inner_html).to eq('&lt;img src=x onerror=prompt(1)&gt; <span class="icon-external-square"></span>')
+
+      inner = Nokogiri.parse(link_parsed.inner_html).at('span')
+      expect(inner[:itemprop]).to eq('name')
+      expect(inner.inner_html).to eq('&lt;img src=x onerror=prompt(1)&gt; <span class="icon-external-square"></span>')
     end
   end
 
@@ -675,6 +685,159 @@ describe Browse2Helper do
         @base_url, @user_params, @result_topic, federated_origin_url
       )
       expect(result).to eq('//data.wa.gov/browse?tags=jorts')
+    end
+  end
+
+  describe 'browse2_provenance_tag' do
+    let(:show_provenance_badge_in_catalog) { false }
+    let(:enable_data_lens_provenance) { true }
+    let(:is_data_lens) { true }
+
+    before do
+      rspec_stub_feature_flags_with(
+        :show_provenance_badge_in_catalog => show_provenance_badge_in_catalog,
+        :enable_data_lens_provenance => enable_data_lens_provenance
+      )
+    end
+
+    context 'the show_provenance_badge_in_catalog feature flag is false' do
+      context 'the enable_data_lens_provenance feature flag is true' do
+        context 'the view is a data lens' do
+          it 'should render the official tag when the view is official' do
+            expect(helper.browse2_provenance_tag('official', is_data_lens)).to be_nil
+          end
+          it 'should render the community tag when the view is community' do
+            expect(helper.browse2_provenance_tag('community', is_data_lens)).to be_nil
+          end
+          it 'should render nothing when the provenance is blank' do
+            expect(helper.browse2_provenance_tag(nil, is_data_lens)).to be_nil
+          end
+        end
+        context 'the view is not a data lens' do
+          let(:is_data_lens) { false }
+          it 'should render the official tag when the view is official' do
+            expect(helper.browse2_provenance_tag('official', is_data_lens)).to be_nil
+          end
+          it 'should render the community tag when the view is community' do
+            expect(helper.browse2_provenance_tag('community', is_data_lens)).to be_nil
+          end
+          it 'should render nothing when the provenance is blank' do
+            expect(helper.browse2_provenance_tag(nil, is_data_lens)).to be_nil
+          end
+        end
+      end
+
+      context 'the enable_data_lens_provenance feature flag is false' do
+        let(:enable_data_lens_provenance) { false }
+        context 'the view is a data lens' do
+          it 'should render the official tag when the view is official' do
+            expect(helper.browse2_provenance_tag('official', is_data_lens)).to be_nil
+          end
+          it 'should render the official tag when the view is community' do
+            expect(helper.browse2_provenance_tag('community', is_data_lens)).to be_nil
+          end
+          it 'should render the official tag when the provenance is blank' do
+            expect(helper.browse2_provenance_tag(nil, is_data_lens)).to be_nil
+          end
+        end
+        context 'the view is not a data lens' do
+          let(:is_data_lens) { false }
+          it 'should render the official tag when the view is official' do
+            expect(helper.browse2_provenance_tag('official', is_data_lens)).to be_nil
+          end
+          it 'should render the community tag when the view is community' do
+            expect(helper.browse2_provenance_tag('community', is_data_lens)).to be_nil
+          end
+          it 'should render nothing when the provenance is blank' do
+            expect(helper.browse2_provenance_tag(nil, is_data_lens)).to be_nil
+          end
+        end
+      end
+    end
+
+    context 'the show_provenance_badge_in_catalog feature flag is true' do
+      let(:show_provenance_badge_in_catalog) { true }
+
+      context 'the enable_data_lens_provenance feature flag is true' do
+        context 'the view is a data lens' do
+          it 'should render the official tag when the view is official' do
+            expect(helper.browse2_provenance_tag('official', is_data_lens)).to match(/official/)
+          end
+          it 'should render the community tag when the view is community' do
+            expect(helper.browse2_provenance_tag('community', is_data_lens)).to match(/community/)
+          end
+          it 'should render nothing when the provenance is blank' do
+            expect(helper.browse2_provenance_tag(nil, is_data_lens)).to be_nil
+          end
+          it 'should render nothing when disable_authority_badge? is true' do
+            expect(helper).to receive(:disable_authority_badge?).and_return(true)
+            expect(helper.browse2_provenance_tag('community', is_data_lens)).to be_nil
+          end
+        end
+        context 'the view is not a data lens' do
+          let(:is_data_lens) { false }
+          it 'should render the official tag when the view is official' do
+            expect(helper.browse2_provenance_tag('official', is_data_lens)).to match(/official/)
+          end
+          it 'should render the community tag when the view is community' do
+            expect(helper.browse2_provenance_tag('community', is_data_lens)).to match(/community/)
+          end
+          it 'should render nothing when the provenance is blank' do
+            expect(helper.browse2_provenance_tag(nil, is_data_lens)).to be_nil
+          end
+          it 'should render nothing when disable_authority_badge? is true' do
+            expect(helper).to receive(:disable_authority_badge?).and_return(true)
+            expect(helper.browse2_provenance_tag('community', is_data_lens)).to be_nil
+          end
+        end
+      end
+
+      context 'the enable_data_lens_provenance feature flag is false' do
+        let(:enable_data_lens_provenance) { false }
+        context 'the view is a data lens' do
+          it 'should render the official tag when the view is official' do
+            expect(helper.browse2_provenance_tag('official', is_data_lens)).to match(/official/)
+          end
+          it 'should render the official tag when the view is community' do
+            expect(helper.browse2_provenance_tag('community', is_data_lens)).to match(/official/)
+          end
+          it 'should render the official tag when the provenance is blank' do
+            expect(helper.browse2_provenance_tag(nil, is_data_lens)).to match(/official/)
+          end
+          it 'should render nothing when disable_authority_badge? is true' do
+            expect(helper).to receive(:disable_authority_badge?).and_return(true)
+            expect(helper.browse2_provenance_tag('community', is_data_lens)).to be_nil
+          end
+        end
+        context 'the view is not a data lens' do
+          let(:is_data_lens) { false }
+          it 'should render the official tag when the view is official' do
+            expect(helper.browse2_provenance_tag('official', is_data_lens)).to match(/official/)
+          end
+          it 'should render the community tag when the view is community' do
+            expect(helper.browse2_provenance_tag('community', is_data_lens)).to match(/community/)
+          end
+          it 'should render nothing when the provenance is blank' do
+            expect(helper.browse2_provenance_tag(nil, is_data_lens)).to be_nil
+          end
+          it 'should render nothing when disable_authority_badge? is true' do
+            expect(helper).to receive(:disable_authority_badge?).and_return(true)
+            expect(helper.browse2_provenance_tag('community', is_data_lens)).to be_nil
+          end
+        end
+      end
+    end
+  end
+
+  describe '#hidden_download_link' do
+    it 'parses a non-ascii URI like a champ' do
+      uri = 'https://☃.net'
+      uid = 'jort-jort'
+      type_name = 'JSON'
+      type_info = { :extension => 'json' }
+      download_link = hidden_download_link(uri, uid, type_name, type_info)
+      expect(download_link).to eq('<div id="JSON"><meta itemprop="fileFormat" /><meta itemprop="url" ' \
+                                  'content="https://☃.net/api/views/jort-jort.json?accessType=DOWNLOAD" /></div>')
     end
   end
 end

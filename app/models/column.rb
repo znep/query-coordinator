@@ -284,8 +284,26 @@ class Column < Model
 
   def self.to_core(js)
     col = {}
-    [:id, :name, :fieldName, :position, :description, :width, :dropDownList, :dropDown, :dataTypeName,
-      :renderTypeName, :defaultValues, :metadata, :tableColumnId, :cachedContents, :childColumns].each do |k|
+    columns_to_export = [
+      :id,
+      :name,
+      :fieldName,
+      :position,
+      :description,
+      :width,
+      :dropDownList,
+      :dropDown,
+      :dataTypeName,
+      :renderTypeName,
+      :defaultValues,
+      :metadata,
+      :tableColumnId,
+      :cachedContents,
+      :childColumns,
+      :computationStrategy
+    ]
+
+    columns_to_export.each do |k|
       col[k] = js[k.to_s] if !js[k.to_s].blank?
     end
     col[:format] = js['format']
@@ -426,8 +444,7 @@ class Column < Model
     derived_view.columns.each do |column|
       column_threads << Thread.new do
         # If the column is hidden, don't get it ready to display.
-        # TODO in EN-12731: remove this computed column filter when we add support for choropleths
-        unless column.flag?('hidden') || column.fieldName.match(/:@computed/)
+        unless column.flag?('hidden')
           updated_columns[column.fieldName] = column.as_json.merge({
             :cardinality => column.get_cardinality_for_derived_view_column(derived_view.id),
             :physicalDatatype => column.renderTypeName

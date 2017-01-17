@@ -59,7 +59,7 @@ blist.datasetPage.setTempView = function() {
   $('#sidebarOptions .tabFilter a').addClass('alert');
   datasetPageNS.sidebar.updateEnabledSubPanes();
 
-  if (!blist.feature_flags.enable_inline_login && !blist.currentuserid) {
+  if (!blist.feature_flags.enable_inline_login && !blist.currentUserId) {
     blist.datasetPage.flashTimedNotice($.t('screens.ds.show.unauthenticated_alert'), 10000);
   }
 };

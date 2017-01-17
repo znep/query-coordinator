@@ -3,11 +3,12 @@ import { Link } from 'react-router';
 import * as Links from '../links';
 
 export default function NoMatch() {
+  // TODO: i18n!
   return (
     <div id="no-match">
-      <h1>Not Found</h1>
-      <p>Sorry, couldn't find that!</p>
-      <p>Try going back to <Link to={Links.home}>the update</Link>.</p>
+      <h1>{I18n.no_match.title}</h1>
+      <p>{I18n.no_match.subtitle}</p>
+      <p><Link to={Links.home}>{I18n.no_match.suggestion}</Link></p>
     </div>
   );
 }

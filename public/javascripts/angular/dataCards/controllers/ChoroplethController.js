@@ -265,7 +265,13 @@ module.exports = function ChoroplethController(
     computedColumn$,
     function(currentDataset, fieldName, shapefile, computedColumn) {
       var sourceColumn = fieldName;
-      var computationStrategy = _.get(computedColumn, 'computationStrategy.strategy_type');
+
+      // Phidippides returns strategy_type in its computation strategies, Core returns type in
+      // its computation strategies. As of 1/2017, the only data lenses using the Core
+      // computation strategies are data lenses created from derived views, since they can't use
+      // Phidippides
+      var computationStrategy = _.get(computedColumn, 'computationStrategy.strategy_type') ||
+        _.get(computedColumn, 'computationStrategy.type');
 
       // If we have successfully found a source column and it uses the
       // georegion_match_on_point strategy, make the more specific bounding

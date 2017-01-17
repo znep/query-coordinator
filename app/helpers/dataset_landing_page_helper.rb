@@ -35,24 +35,15 @@ module DatasetLandingPageHelper
   end
 
   def render_dataset_landing_page_server_config
-    # Figure out if we need a locale prefix on links
-    locale_prefix = (I18n.locale.to_sym == CurrentDomain.default_locale.to_sym) ? '' : "/#{I18n.locale}"
-
-    feature_flags = FeatureFlags.derive(nil, request).slice(
-      :enable_dataset_landing_page_tour,
-      :display_dataset_landing_page_preview_images,
-      :stories_enabled
-    ).map { |k, v| [ k.camelize(:lower), v ] }.to_h
-
     server_config = {
       :airbrakeKey => ENV['DATASET_LANDING_PAGE_AIRBRAKE_API_KEY'] || APP_CONFIG.dataset_landing_page_airbrake_api_key,
       :csrfToken => form_authenticity_token.to_s,
       :currentUser => current_user,
       :domain => CurrentDomain.cname,
       :environment => Rails.env,
-      :featureFlags => feature_flags,
+      :featureFlags => feature_flags_as_json,
       :locale => I18n.locale.to_s,
-      :localePrefix => locale_prefix.to_s,
+      :localePrefix => (I18n.locale.to_sym == CurrentDomain.default_locale.to_sym) ? '' : "/#{I18n.locale}",
       :recaptchaKey => RECAPTCHA_2_SITE_KEY
     }
 

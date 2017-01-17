@@ -17,13 +17,9 @@ class DatasetLandingPage
       threads[:migrations].join
 
       # We fetch 4 related views so we know if there are more than 3
-      threads[:related_views] = Thread.new {
-        fetch_derived_views(view, cookies, request_id, 4, 0)
-      }
+      threads[:related_views] = Thread.new { fetch_derived_views(view, cookies, request_id, 4, 0) }
 
-      threads[:featured_content] = Thread.new {
-        fetch_featured_content(view, cookies, request_id)
-      }
+      threads[:featured_content] = Thread.new { fetch_featured_content(view, cookies, request_id) }
 
       # Wait for all requests to complete
       threads.each_value(&:join)
@@ -45,57 +41,58 @@ class DatasetLandingPage
       end
 
       results[:dataset_landing_page_view] = {
-        :id => view.id,
-        :name => view.name,
-        :description => description,
-        :category => view.category,
+        :allAccessPoints => view.allAccessPoints,
+        :apiFoundryUrl => view.api_foundry_url,
+        :attachments => attachments(view),
         :attribution => view.attribution,
-        :rowLabel => row_label(view),
-        :rowLabelMultiple => row_label(view).pluralize(2),
-        :columns => columns,
-        :isPrivate => !view.is_public?,
-        :isUnpublished => view.is_unpublished?,
-        :canPublish => threads[:can_publish].value,
-        :isTabular => view.is_tabular?,
-        :isHref => view.is_href?,
-        :isBlobby => view.is_blobby?,
-        :blobId => view.blobId,
+        :attributionLink => view.attributionLink,
         :blobFilename => view.blobFilename,
+        :blobId => view.blobId,
         :blobMimeType => view.blobMimeType,
         :blobType => view.is_blobby? && view.display.display_type,
-        :gridUrl => data_grid_path(view),
-        :exportFormats => export_formats,
-        :lastUpdatedAt => view.time_last_updated_at,
-        :dataLastUpdatedAt => view.time_data_last_updated_at,
-        :metadataLastUpdatedAt => view.time_metadata_last_updated_at,
-        :createdAt => view.time_created_at,
-        :rowCount => threads[:row_count].value,
-        :resourceUrl => view.resource_url,
-        :namedResourceUrl => view.named_resource_url,
-        :apiFoundryUrl => view.api_foundry_url,
-        :odataUrl => view.odata_url,
-        :facebookShareUrl => share_facebook_url(view),
-        :twitterShareUrl => share_twitter_url(view),
-        :emailShareUrl => share_email_url(view),
+        :bootstrapUrl => bootstrap_url(view, results[:migrations]),
+        :canPublish => threads[:can_publish].value,
+        :category => view.category,
+        :columns => columns,
         :commentUrl => comment_url(view),
-        :viewCount => view.viewCount,
-        :downloadCount => view.downloadCount,
-        :ownerName => view.owner.displayName,
+        :createdAt => view.time_created_at,
         :customMetadataFieldsets => custom_metadata_fieldsets(view),
-        :attachments => attachments(view),
-        :allAccessPoints => view.allAccessPoints,
-        :tags => view.tags,
-        :licenseName => view.license.try(:name),
-        :licenseLink => view.license.try(:termsLink),
-        :licenseLogo => view.license.try(:logoUrl),
-        :attributionLink => view.attributionLink,
-        :statsUrl => stats_url(view, current_user),
+        :dataLastUpdatedAt => view.time_data_last_updated_at,
+        :description => description,
+        :disableContactDatasetOwner => disable_contact_dataset_owner(view),
+        :downloadCount => view.downloadCount,
         :editMetadataUrl => edit_metadata_url(view),
         :editUrl => edit_view_path(view),
-        :sortOrder => view.sort_order,
-        :bootstrapUrl => bootstrap_url(view, results[:migrations]),
+        :emailShareUrl => share_email_url(view),
+        :exportFormats => export_formats,
+        :facebookShareUrl => share_facebook_url(view),
+        :gridUrl => data_grid_path(view),
+        :id => view.id,
+        :isBlobby => view.is_blobby?,
+        :isHref => view.is_href?,
+        :isPrivate => !view.is_public?,
+        :isTabular => view.is_tabular?,
+        :isUnpublished => view.is_unpublished?,
+        :lastUpdatedAt => view.time_last_updated_at,
+        :licenseLink => view.license.try(:termsLink),
+        :licenseLogo => view.license.try(:logoUrl),
+        :licenseName => view.license.try(:name),
         :metadata => view.metadata,
-        :disableContactDatasetOwner => disable_contact_dataset_owner(view)
+        :metadataLastUpdatedAt => view.time_metadata_last_updated_at,
+        :name => view.name,
+        :namedResourceUrl => view.named_resource_url,
+        :odataUrl => view.odata_url,
+        :ownerName => view.owner.displayName,
+        :provenance => view.provenance,
+        :resourceUrl => view.resource_url,
+        :rowCount => threads[:row_count].value,
+        :rowLabel => row_label(view),
+        :rowLabelMultiple => row_label(view).pluralize(2),
+        :sortOrder => view.first_usable_sort_order,
+        :statsUrl => stats_url(view, current_user),
+        :tags => view.tags,
+        :twitterShareUrl => share_twitter_url(view),
+        :viewCount => view.viewCount
       }
 
       results
@@ -269,14 +266,12 @@ class DatasetLandingPage
 
     def format_featured_item(featured_item, image_url = nil)
       if featured_item['contentType'] == 'internal'
-        view = View.setup_model(featured_item['featuredView'])
-
-        return featured_item.merge(
-          :featuredView => format_view_widget(view, image_url)
+        featured_item.merge(
+          :featuredView => format_view_widget(View.setup_model(featured_item['featuredView']), image_url)
         )
+      else
+        featured_item
       end
-
-      featured_item
     end
 
     # TODO: Remove this OBE/NBE juggling once Cetera returns the same results for both 4x4s
@@ -349,7 +344,7 @@ class DatasetLandingPage
     end
 
     def export_formats
-      [ 'csv', 'csv_for_excel', 'json', 'rdf', 'rss', 'tsv_for_excel', 'xml']
+      %w(csv csv_for_excel json rdf rss tsv_for_excel xml)
     end
 
     def custom_metadata_fieldsets(view)

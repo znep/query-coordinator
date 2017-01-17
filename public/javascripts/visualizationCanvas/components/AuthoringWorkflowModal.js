@@ -14,6 +14,7 @@ export const AuthoringWorkflowModal = React.createClass({
       vifIndex: PropTypes.number,
       vif: PropTypes.object
     }).isRequired,
+    filters: PropTypes.array.isRequired,
     onCancel: PropTypes.func,
     onComplete: PropTypes.func
   },
@@ -38,7 +39,7 @@ export const AuthoringWorkflowModal = React.createClass({
   },
 
   createAuthoringWorkflow() {
-    const { config, onCancel, onComplete } = this.props;
+    const { config, filters, onCancel, onComplete } = this.props;
 
     if (!config.isActive || this.authoringWorkflow || _.isEmpty(config.vif)) {
       return;
@@ -48,6 +49,8 @@ export const AuthoringWorkflowModal = React.createClass({
       vif: config.vif,
       onCancel: _.flow(onCancel, this.destroyAuthoringWorkflow),
       onComplete: _.flow(onComplete, this.destroyAuthoringWorkflow),
+      enableFiltering: true,
+      filters,
       useLogger: _.get(window, 'serverConfig.environment') === 'development'
     });
   },
@@ -76,18 +79,16 @@ export const AuthoringWorkflowModal = React.createClass({
 
 function mapStateToProps(state) {
   return {
-    config: state.authoringWorkflow
+    config: state.authoringWorkflow,
+    filters: state.filters
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      onCancel: cancelEditingVisualization,
-      onComplete: updateVisualization
-    },
-    dispatch
-  );
+  return bindActionCreators({
+    onCancel: cancelEditingVisualization,
+    onComplete: updateVisualization
+  }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthoringWorkflowModal);

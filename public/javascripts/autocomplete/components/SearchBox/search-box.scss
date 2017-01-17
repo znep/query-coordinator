@@ -28,6 +28,7 @@ $search-icon-hidden-transform: scaleX(0) translateX(-30px);
   @extend .text-input;
 
   width: 100%;
+  line-height: normal !important;
   margin-bottom: 0 !important;
   padding-left: $search-box-inactive-padding !important;
 }
@@ -70,6 +71,7 @@ $search-icon-hidden-transform: scaleX(0) translateX(-30px);
   width: 250px;
   top: 10px;
   right: 0;
+  box-sizing: content-box;
   animation-name: searchBoxUncollapse;
   animation-duration: $animation-speed;
 }
@@ -121,14 +123,14 @@ $search-icon-hidden-transform: scaleX(0) translateX(-30px);
 
 @keyframes iconUncollapse {
   from { left: 0px; }
-  to{ left: -229px; }
+  to{ left: -275px; }
 }
 
 .icon-container-collapsible {
   @extend .icon-container-base;
 
   z-index: 1000;
-  left: -229px;
+  left: -275px;
   top: -4px;
   animation-name: iconUncollapse;
   animation-duration: $animation-speed;

@@ -69,6 +69,13 @@
                 <%= t("#{connector}.Dataset") %>
               </span>
             </th>
+            <%- if @data_connection_on %>
+              <th class="connection_type" scope="col">
+                <span>
+                  <%= t("#{connector}.connection_type") %>
+                </span>
+              </th>
+            <%- end %>
           </tr>
         </thead>
         <tbody>
@@ -80,6 +87,12 @@
               <td class="dataset" scope="row">
                 <%= link_to(layer['name'], "/dataset/#{layer['fourfour']}", :target => "_blank") %>
               </td>
+              <%- if @data_connection_on %>
+                <td class="connection_type" scope="row">
+                  <span role="presentation" class=<%=sync_type_icon(layer['sync_type'])%> ></span>
+                  <%= t("#{connector}.#{layer['sync_type']}") %>
+                </td>
+              <%- end %>
             </tr>
           <%- end -%>
         </tbody>

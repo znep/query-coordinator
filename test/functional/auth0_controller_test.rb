@@ -8,7 +8,7 @@ class Auth0ControllerTest < ActionController::TestCase
     Rails.application.reload_routes!
     init_core_session
     init_current_domain
-    init_signaller
+    init_feature_flag_signaller
     OmniAuth.config.test_mode = true
     @request.env['HTTPS'] = 'on'
     @user = login

@@ -6,7 +6,7 @@ class DatasetsHelperTest < Minitest::Test
 
   def setup
     init_current_domain
-    init_signaller
+    init_feature_flag_signaller
     @object = Object.new.tap { |object| object.extend(DatasetsHelper) }
     @view = View.new.tap { |view| view.stubs(default_view_state) }
     @object.stubs(:view => @view, :request => nil)
@@ -385,27 +385,32 @@ class DatasetsHelperTest < Minitest::Test
     @object.current_user.stubs(:rights => [])
     assert @object.send(:hide_data_lens_create?), 'hide_data_lens_create expected to be true'
 
-    # dataset is a grouped view and feature flag is turned off
+    # dataset is a derived view and feature flag is turned off
     @object.current_user.stubs(:rights => [:some_right])
     @view.stubs(:dataset? => false)
     FeatureFlags.stubs(:derive => Hashie::Mash.new({ :enable_data_lens_using_derived_view => false }))
-    @view.display.stubs(:type => 'grouped')
+    @view.display.stubs(:is_derived_view? => true)
     assert @object.send(:hide_data_lens_create?), 'hide_data_lens_create expected to be true'
 
-    # dataset is a filtered view and feature flag is turned off
-    @view.display.stubs(:type => 'filter')
-    assert @object.send(:hide_data_lens_create?), 'hide_data_lens_create expected to be true'
-
-    # dataset is a grouped view and feature flag is turned on
+    # dataset is a derived view and feature flag is turned on
     FeatureFlags.stubs(:derive => Hashie::Mash.new({ :enable_data_lens_using_derived_view => true }))
-    @view.stubs(:is_grouped? => true)
-    @view.stubs(:is_filtered? => false)
+    @view.stubs(:is_derived_view? => true)
     refute @object.send(:hide_data_lens_create?), 'hide_data_lens_create expected to be false'
 
-    # dataset is a filtered view and feature flag is turned on
-    @view.stubs(:is_grouped? => false)
-    @view.stubs(:is_filtered? => true)
-    refute @object.send(:hide_data_lens_create?), 'hide_data_lens_create expected to be false'
+    # dataset is a classic visualization and feature flag is turned on
+    FeatureFlags.stubs(:derive => Hashie::Mash.new({ :enable_data_lens_using_derived_view => true }))
+    @view.stubs(:is_derived_view? => true, :classic_visualization? => true)
+    assert @object.send(:hide_data_lens_create?), 'hide_data_lens_create expected to be true'
+
+    # dataset is a calendar and feature flag is turned on
+    FeatureFlags.stubs(:derive => Hashie::Mash.new({ :enable_data_lens_using_derived_view => true }))
+    @view.stubs(:is_derived_view? => true, :is_calendar? => true)
+    assert @object.send(:hide_data_lens_create?), 'hide_data_lens_create expected to be true'
+
+    # dataset is a form and feature flag is turned on
+    FeatureFlags.stubs(:derive => Hashie::Mash.new({ :enable_data_lens_using_derived_view => true }))
+    @view.stubs(:is_derived_view? => true, :is_form? => true)
+    assert @object.send(:hide_data_lens_create?), 'hide_data_lens_create expected to be true'
   end
 
   def test_hide_discuss

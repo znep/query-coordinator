@@ -52,7 +52,7 @@ debug_data_lens:
   defaultValue: false
   category: data lens
 disable_authority_badge:
-  description: HIDE this particular authority badge.
+  description: Do not display (hide) this particular authority badge. AKA provenance badge.
   defaultValue: official2
   disableTrueFalse: true
   expectedValues: all official2 community none
@@ -118,7 +118,7 @@ enable_data_lens_page_metadata_migrations:
   description: Lazily migrate data lens page metadata schemas on each request.
   defaultValue: true
 enable_data_lens_provenance:
-  description: Ability to set data lens views to "Official" or not.
+  description: Ability to set data lens views to "Official" or not. AKA authority badge.
   defaultValue: true
 enable_data_lens_using_derived_view:
   description: Enable creating data lenses from derived views.
@@ -126,10 +126,18 @@ enable_data_lens_using_derived_view:
 enable_catalog_connector:
   description: Turn on the 'Connectors' admin page to create catalog entries for datasets from external sources, like ArcGIS online.
   defaultValue: true
+enable_deprecated_user_search_api:
+  category: storyteller
+  defaultValue: false
+  description: When false, uses Cetera for user searches via CeteraController. When true, falls back to Core's deprecated user search (backed by clytemnestra).
 enable_embed_widget_for_nbe:
   description: Enable embed widget for NBE datasets.
   defaultValue: false
   category: obe deprecation
+enable_getty_images_gallery:
+  category: storyteller
+  defaultValue: true
+  description: Enable access to Getty Images for Storyteller media blocks.
 enable_opendata_ga_tracking:
   description: Controls behavior of Socrata internal Google Analytics. If true or left blank, GA is enabled with a default Socrata-wide token. If a custom value is provided, GA is enabled with the custom GA token. If false, Socrata GA is disabled. NOTE - if enable_standard_ga_tracking is true, it will override any value that this is set to with a default standard ga tracking code specified in the config.
 enable_pulse:
@@ -226,15 +234,18 @@ show_auth0_identifiers:
 show_federated_site_name_instead_of_cname:
   description: EN-2774. Turning this on will cause the current domain's catalog to show its federated sources by the value for their Site Theme "site_title" property. Note that this is simply "Socrata" by default, so double check the federation sources site_title's before turning this on.
   defaultValue: false
+show_new_login_message:
+  description: Show a message above ye olde login/signup forms mentioning that they are getting a facelift
+  defaultValue: false
 show_newux_page_header:
   description: Show the header logo and sign in/up/out links.
   defaultValue: true
   category: data lens
 show_provenance_badge_in_catalog:
-  description: Show the provenance "Official" badge for official views in the catalog.
+  description: Show the provenance "Official" badge for official views in the catalog. AKA authority badge.
   defaultValue: false
 show_provenance_facet_in_catalog:
-  description: Show the Authority facet in the catalog page.
+  description: Show the Authority facet in the catalog page. AKA provenance.
   defaultValue: false
 site_appearance_visible:
   description: Display "Site Appearance" link in the /admin panel. Note that it will always be displayed for superadmins. This only toggles it for regular admins and designers.

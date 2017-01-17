@@ -5,7 +5,7 @@ class ApplicationControllerTest < ActionController::TestCase
   setup do
     init_core_session
     init_current_domain
-    init_signaller
+    init_feature_flag_signaller
     @controller ||= test_case.controller_class.new
     init_current_user(@controller)
   end

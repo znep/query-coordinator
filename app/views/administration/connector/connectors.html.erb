@@ -85,7 +85,7 @@
                           t("#{connector}.assets_connected", count: server.synced_count),
                           { controller: "connector", action: :show_connector, :server_id => server.id }) %>
                 </td>
-                <td class="status" scope="row">
+                <td class="status" scope="row" nowrap>
                   <p class="current-status">
                     <span class="connector-icon connector-icon-<%=server.status_key.dasherize %> icon-<%= connector_icon(server.status_key)%>"></span>
 

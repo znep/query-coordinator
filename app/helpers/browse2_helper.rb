@@ -1,4 +1,6 @@
 # NOTE: Parts of this module duplicate facet logic in lib/browse_actions.rb incompletely
+require 'addressable/uri'
+
 module Browse2Helper
   DEFAULT_FACET_CUTOFF = 5
   MAX_FACET_CUTOFF = 100
@@ -216,12 +218,15 @@ module Browse2Helper
       link_name << ' <span class="icon-external-square"></span>'.html_safe
     end
     link_to(
-      link_name,
+      add_metadata(link_name, :name),
       result_link,
       class: 'browse2-result-name-link',
-      rel: result_link_rel_type,
-      itemprop: 'url'
+      rel: result_link_rel_type
     )
+  end
+
+  def add_metadata(item, itemprop)
+    content_tag(:span, item, itemprop: itemprop)
   end
 
   def browse2_result_topic_url(base_url, user_params, result_topic, federated_origin_url)
@@ -235,24 +240,51 @@ module Browse2Helper
     end
   end
 
-  def browse2_provenance_tag(provenance)
-    return nil unless FeatureFlags.derive.show_provenance_facet_in_catalog
+  def browse2_provenance_tag(provenance, is_data_lens = false)
+    return unless FeatureFlags.derive.show_provenance_badge_in_catalog
 
-    html_key =
-      case provenance.to_s
-        when 'official' then 'official2'
-        when 'community' then 'community'
-        else nil
-      end
+    provenance_key = normalized_provenance(provenance)
 
-    disable_badge = [ 'all', html_key ].include?(FeatureFlags.derive.disable_authority_badge)
-    html_key = nil if disable_badge
+    if is_data_lens
+      # CORE-7419: If enable_data_lens_provenance is false, assume all data lenses are official
+      provenance_key = normalized_provenance('official') unless FeatureFlags.derive.enable_data_lens_provenance
+    end
 
-    <<-HTML.html_safe unless html_key.nil?
-      <span class="tag-provenance tag-#{html_key}">
-        <span class="icon-#{html_key}"></span>
-        #{t("controls.browse.listing.provenance.#{html_key}")}
-      </span>
-    HTML
+    return if provenance_key.blank? || disable_authority_badge?(provenance_key)
+
+    content_tag(:span, :class => "tag-provenance tag-#{provenance_key}") do
+      content_tag(:span, nil, :class => "icon-#{provenance_key}") <<
+      t("controls.browse.listing.provenance.#{provenance_key}")
+    end
   end
+
+  # File type name => extension & mime-type dictionary
+  # This logic is repeated in dataset.js and templates.js...
+  def download_types
+    {'CSV' => { :extension => 'csv', :mime => 'text/csv' },
+     'CSV for Excel' => { :extension => 'csv', :mime => 'text/csv', :params => '&bom=true'},
+     'JSON' => { :extension => 'json', :mime => 'application/json' },
+     'RDF' =>  { :extension => 'rdf', :mime => 'application/rdf+xml' },
+     'RSS' =>  { :extension => 'rss', :mime => 'application/rss+xml' },
+     'TSV for Excel' =>  { :extension => 'tsv', :mime => 'text/tab-separated-values' },
+     'XML' =>  { :extension => 'xml', :mime => 'application/xml' }
+    }
+  end
+
+  def hidden_download_link(link, uid, type_name, type_info)
+    domain = Addressable::URI.parse(link)
+
+    file_format = tag(:meta,
+                      itemprop: 'fileFormat',
+                      content: type_info[:mime])
+    url = tag(:meta,
+              itemprop: 'url',
+              content: "#{domain.scheme}://#{domain.host}/api/views/#{uid}." \
+                       "#{type_info[:extension]}?accessType=DOWNLOAD#{type_info.fetch(:params, '')}".html_safe)
+
+    content_tag :div, :id => type_name do
+      file_format + url
+    end
+  end
+
 end

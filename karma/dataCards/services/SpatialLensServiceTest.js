@@ -195,6 +195,35 @@ describe('SpatialLensService', function() {
       self.$httpBackend.verifyNoOutstandingRequest();
       socrata.utils.getCookie.restore();
     });
+
+    it('uses the defaultId if the data lens is based on a derived view', function() {
+      page = self.Mockumentary.createPage(
+        {
+          isFromDerivedView: true
+        },
+        {
+          columns: self.testColumns,
+          defaultId: 'abcd-1234',
+          id: 'four-four'
+        }
+      );
+      card = self.Mockumentary.createCard(page, 'location', {});
+      card.set('cardType', 'choropleth');
+      card.set('computedColumn', 'i_need_region_coding');
+
+      self.$httpBackend.expectGET(/\/geo\/status.*abcd-1234/).respond({
+        success: true,
+        status: 'completed'
+      });
+
+      self.SpatialLensService.initiateRegionCodingIfNecessaryForCard(card).then(function(response) {
+        expect(response).to.equal(null);
+      });
+
+      self.$httpBackend.flush();
+      self.$httpBackend.verifyNoOutstandingExpectation();
+      self.$httpBackend.verifyNoOutstandingRequest();
+    });
   });
 
   describe('getCuratedRegions', function() {

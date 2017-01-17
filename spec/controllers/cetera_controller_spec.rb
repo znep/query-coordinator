@@ -11,7 +11,7 @@ describe CeteraController do
     before(:each) do
       init_core_session
       init_current_domain
-      init_signaller
+      init_feature_flag_signaller
       allow(CurrentDomain).to receive(:cname).and_return('localhost')
       allow(subject).to receive(:enable_site_chrome?).and_return(false)
     end

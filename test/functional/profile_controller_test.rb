@@ -4,7 +4,7 @@ class ProfileControllerTest < ActionController::TestCase
   def setup
     init_core_session
     init_current_domain
-    init_signaller
+    init_feature_flag_signaller
     @user = login
     stub_site_chrome
 

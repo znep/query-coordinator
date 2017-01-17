@@ -614,4 +614,15 @@ ul.autocomplete {
       background-color: #f1f1f1;
     }
   }
+
+  .domain_selection {
+    width: 100%;
+
+    a.remove {
+      cursor: pointer;
+      display: inline-block;
+      margin-right: 0.5em;
+      color: red;
+    }
+  }
 }

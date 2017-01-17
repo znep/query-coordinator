@@ -24,10 +24,6 @@ class Result extends React.Component {
   }
 
   render() {
-    if (this.props.focused === true && !_.isUndefined(this.domNode)) {
-      this.domNode.focus();
-    }
-
     return (
       <div
         ref={(domNode) => { this.domNode = domNode; }}

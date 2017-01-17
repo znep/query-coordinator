@@ -5,7 +5,7 @@ class UserSessionsControllerTest < ActionController::TestCase
   def setup
     init_core_session
     init_current_domain
-    init_signaller
+    init_feature_flag_signaller
     UserSession.any_instance.stubs(save: Net::HTTPSuccess.new(1.1, 200, 'Success'),
                                    find_token: true)
     User.stubs(current_user: User.new(some_user))

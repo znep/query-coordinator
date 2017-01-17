@@ -1,3 +1,5 @@
+import 'whatwg-fetch';
+
 const defaultFetchOptions = {
   credentials: 'same-origin',
   headers: {

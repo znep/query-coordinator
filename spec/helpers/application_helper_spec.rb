@@ -49,6 +49,92 @@ describe ApplicationHelper do
 
   end
 
+  describe '#apply_custom_css?' do
+    let(:custom_css) { 'body { color: rebeccapurple; }' }
+    let(:govstat_enabled) { false }
+    let(:action_name) { 'anything' }
+    let(:using_dataslate) { false }
+    let(:on_homepage) { false }
+    let(:suppress_govstat) { false }
+
+    before do
+      allow(CurrentDomain)
+        .to receive(:properties)
+        .and_return(double(:custom_css => custom_css))
+
+      allow_any_instance_of(ApplicationHelper)
+        .to receive(:module_enabled?)
+        .with(:govStat)
+        .and_return(govstat_enabled)
+
+      allow_any_instance_of(ApplicationHelper)
+        .to receive(:suppress_govstat?)
+        .and_return(suppress_govstat)
+
+      @using_dataslate = using_dataslate
+      @on_homepage = on_homepage
+    end
+
+    context 'when custom_css is blank' do
+      let(:custom_css) { '' }
+
+      it 'does not apply custom_css' do
+        expect(apply_custom_css?).to eq(false)
+      end
+    end
+
+    context 'when custom_css is not blank' do
+      context 'when govStat is not enabled' do
+        let(:govstat_enabled) { false }
+
+        it 'applies custom_css' do
+          expect(apply_custom_css?).to eq(true)
+        end
+      end
+
+      context 'when govStat is enabled' do
+        let(:govstat_enabled) { true }
+
+        context 'when action is "chromeless"' do
+          let(:action_name) { 'chromeless' }
+
+          it 'does not apply custom_css' do
+            expect(apply_custom_css?).to eq(false)
+          end
+        end
+
+        context 'when action is not "chromeless"' do
+          context 'when using dataslate and we\'re on the homepage' do
+            let(:using_dataslate) { true }
+            let(:on_homepage) { true }
+
+            it 'applies custom_css' do
+              expect(apply_custom_css?).to eq(true)
+            end
+          end
+
+          context 'when not using dataslate or not on the homepage' do
+            context 'when suppressing govstat' do
+              let(:suppress_govstat) { true }
+
+              it 'applies custom css' do
+                expect(apply_custom_css?).to eq(true)
+              end
+            end
+
+            context 'when not suppressing govstat' do
+              let(:suppress_govstat) { false }
+
+              it 'does not apply custom css' do
+                expect(apply_custom_css?).to eq(false)
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+
   describe '#dataset_landing_page_enabled?' do
 
     let(:site_chrome_find_double) do

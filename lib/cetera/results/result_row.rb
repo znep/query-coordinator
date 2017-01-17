@@ -31,13 +31,14 @@ module Cetera
           updatedAt: @resource['updatedAt'],
           createdAt: @resource['createdAt'],
           previewImageUrl: @data['preview_image_url'],
-          provenance: @resource['provenance']
+          provenance: @resource['provenance'],
+          permalink: @data['permalink']
         )
       end
 
       def_delegators :@data_ostruct,
                      :id, :link, :name, :description, :type, :categories, :tags, :viewCount,
-                     :domainCName, :updatedAt, :createdAt, :previewImageUrl, :provenance
+                     :domainCName, :updatedAt, :createdAt, :previewImageUrl, :provenance, :permalink
 
       def airbrake_type_error(type)
         Airbrake.notify(
@@ -95,6 +96,10 @@ module Cetera
 
       def federated?
         domainCName != CurrentDomain.cname
+      end
+
+      def data_lens?
+        type == 'datalens'
       end
 
       # WARN: This is going to change!!!

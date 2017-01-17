@@ -30,29 +30,36 @@ describe('components/ShowOutputSchema', () => {
 
   it('renders a table with data', () => {
     const store = getStoreWithOutputSchema();
-    store.dispatch(batch(['foo', 'bar', 'baz'].map((value, index) => (
-      insertFromServer('column_50', { value, id: index })
-    ))));
+    store.dispatch(insertFromServer('column_50', [
+      { index: 0, ok: 'foo' },
+      { index: 1, error: { message: 'some transform error', inputs: { arrest: { ok: 'bar' } } } },
+      { index: 2, ok: 'baz' }
+    ]));
     store.dispatch(updateFromServer('columns', {
       id: 50,
-      contiguous_rows_processed: 1
+      contiguous_rows_processed: 3
     }));
-    store.dispatch(batch(['bleep', 'bloop', 'blorp'].map((value, index) => (
-      insertFromServer('column_51', { value, id: index })
-    ))));
+
+    store.dispatch(insertFromServer('column_51', [
+      { index: 0, ok: 'bleep' },
+      { index: 1, ok: null },
+      { index: 2, ok: 'blorp' }
+    ]));
     store.dispatch(updateFromServer('columns', {
       id: 51,
-      contiguous_rows_processed: 1
+      contiguous_rows_processed: 3
     }));
     const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
     const rows = element.querySelectorAll('tbody tr');
     expect(_.map(rows[0].querySelectorAll('td'), 'innerText')).to.eql(['foo', 'bleep']);
-    expect(_.map(rows[1].querySelectorAll('td'), 'innerText')).to.eql(['bar', 'bloop']);
+    expect(_.map(rows[1].querySelectorAll('td'), 'innerText')).to.eql(['bar', '']);
     expect(_.map(rows[2].querySelectorAll('td'), 'innerText')).to.eql(['baz', 'blorp']);
     expect(_.map(element.querySelectorAll('.col-errors'), 'innerText')).to.eql([
       I18n.show_output_schema.column_header.no_errors_exist,
       I18n.show_output_schema.column_header.no_errors_exist
     ]);
+    expect(element.querySelectorAll('.error').length).to.equal(1);
+    expect(element.querySelectorAll('.empty').length).to.equal(1);
   });
 
   it('calls `updateColumnType` when a selector is changed', () => {

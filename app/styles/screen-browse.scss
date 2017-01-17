@@ -385,17 +385,19 @@ $data_lens_icon_color: #80acca;
               margin: 0.25em 0;
             }
             &.browse-listing-provenance {
-              padding: 0.2rem 0.3rem;
-              text-transform: capitalize;
-              color: #333;
-              background-color: #eee;
-              .icon-check {
-                @include border-radius(100%);
-                font-size: 0.5rem;
-                padding: 0.15rem;
-                margin-right: 0.5rem;
-                color: white;
-                background-color: #68b0cc;
+              padding: 0.2rem 0.2rem;
+              text-transform: uppercase;
+              &.official {
+                color: #e48424;
+              }
+              &.community {
+                color: #288dc1;
+              }
+              .icon-official2 {
+                color: #9e5c23;
+              }
+              .icon-community {
+                color: #176289;
               }
             }
           }
@@ -711,7 +713,14 @@ $data_lens_icon_color: #80acca;
       };
       text-align: center;
     }
+
+    .icon-official2::before, .socrata-icon-official2::before {
+      content: "\EA48";
+      position: relative;
+      top: 1px;
+    }
   }
+
   &.inContainer {
     padding: 0 {
       top: 3em;

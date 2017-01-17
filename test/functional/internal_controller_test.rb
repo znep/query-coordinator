@@ -6,7 +6,7 @@ class InternalControllerTest < ActionController::TestCase
     stub_site_chrome
     @controller ||= test_case.controller_class.new
     init_current_user(@controller)
-    init_signaller
+    init_feature_flag_signaller
   end
 
   test 'routes to feature flags with or without organization' do

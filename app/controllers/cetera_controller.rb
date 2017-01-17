@@ -27,6 +27,10 @@ class CeteraController < ApplicationController
     cetera_params[:domains] = Federation.federated_domain_cnames('') * ','
     cetera_params[:search_context] = CurrentDomain.cname
 
+    if FeatureFlags.derive.show_provenance_facet_in_catalog
+      cetera_params[:provenance] = 'official' unless cetera_params.key?(:provenance)
+    end
+
     if params[:q]
       begin
         cetera_response = autocomplete_search_client.find_by_title(

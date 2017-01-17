@@ -16,7 +16,7 @@ body {
   min-height: 90vh;
 
   .edit-bar {
-    z-index: 5;
+    z-index: 8;
 
     .edit-bar-child {
       display: flex;
@@ -149,6 +149,24 @@ body {
 
       .socrata-visualization {
         background: $white;
+      }
+    }
+  }
+
+  .filter-bar-container {
+    background: $light-grey-5;
+    border-bottom: 1px solid $light-grey-4;
+
+    .column-container {
+      z-index: 7;
+    }
+  }
+
+  // TODO (EN-13130) Fix these z-index issues upstream in AX
+  .authoring-workflow-modal {
+    .filter-bar-container {
+      .filter-controls, .filter-config {
+        z-index: 60;
       }
     }
   }

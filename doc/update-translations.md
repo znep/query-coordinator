@@ -20,8 +20,10 @@ The LocaleApp includes the following important sections in the main menu:
 
 ## Getting Started
 
-We use the `localeapp` gem to interact with the LocaleApp service. If you've run
-`bundle install`, you should already have the gem installed.
+We use the `localeapp` gem to interact with the LocaleApp service. If you've yet to
+do so, you'll need to run:
+
+      gem install localeapp
 
 In order to use the `localeapp` gem, you need to configure the gem to use the api
 key. The simplest way to do this is to run the `bin/setup_environment.sh` script.

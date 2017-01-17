@@ -16,7 +16,7 @@ export function applyUpdate(outputSchemaId) {
       schema_id: outputSchemaId
     };
     dispatch(insertStarted('upsert_jobs', newUpsertJob));
-    socrataFetch(dsmapiLinks.applyUpdate(routing), {
+    socrataFetch(dsmapiLinks.applyUpdate, {
       method: 'PUT',
       body: JSON.stringify({ schemas: outputSchemaId }) // TODO: change this to `schema` in DSMAPI
     }).
@@ -37,9 +37,8 @@ export function applyUpdate(outputSchemaId) {
 const UPSERT_JOB_PROGRESS_POLL_INTERVAL_MS = 1000;
 
 export function pollForUpsertJobProgress(upsertJobId) {
-  return (dispatch, getState) => {
-    const routing = getState().routing;
-    socrataFetch(dsmapiLinks.updateBase(routing)).
+  return (dispatch) => {
+    socrataFetch(dsmapiLinks.updateBase).
       then(checkStatus).
       then(getJson).
       then((resp) => {

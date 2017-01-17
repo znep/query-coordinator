@@ -91,7 +91,7 @@ Autocomplete.propTypes = {
 Autocomplete.defaultProps = {
   options: {
     numberOfResults: 7,
-    millisecondsBeforeSearch: 125,
+    millisecondsBeforeSearch: 60,
     collapsible: false
   },
   defaultState: {

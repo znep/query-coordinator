@@ -69,7 +69,10 @@ module.exports = function SpatialLensService($q, http, rx, CardVisualizationChor
       return $q.when(null);
     }
 
-    var datasetId = cardModel.page.getCurrentValue('dataset').id;
+    var dataset = cardModel.page.getCurrentValue('dataset');
+    // if this data lens is based on a derived view, we need to trigger the region coding on the
+    // default view, rather than on the derived view.
+    var datasetId = cardModel.page.isFromDerivedView ? dataset.defaultId : dataset.id;
     var computedColumnName = cardModel.getCurrentValue('computedColumn');
     var shapefileId = CardVisualizationChoroplethHelpers.computedColumnNameToShapefileId(computedColumnName);
     var sourceColumn = cardModel.fieldName;

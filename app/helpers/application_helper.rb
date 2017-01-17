@@ -696,7 +696,7 @@ module ApplicationHelper
   end
 
   def feature_flag_input(flag, flag_config, flag_value, options = {})
-    name = "feature_flags[#{flag}]"
+    name = "#{options.fetch(:namespace, 'feature_flags')}[#{flag}]"
     name = "view[metadata[#{name}]]" if options[:edit_metadata]
 
     label_for = name.chop.gsub(/[\[\]]+/, '_')
@@ -757,7 +757,7 @@ module ApplicationHelper
 
     # For the remaining GovStat pages, load custom CSS if we've set the property
     # @suppress_govstat to true in CustomContentController.
-    @suppress_govstat
+    suppress_govstat?
   end
 
   def is_mobile?

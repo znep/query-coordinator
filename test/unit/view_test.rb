@@ -4,7 +4,7 @@ class ViewTest < Minitest::Test
 
   def setup
     init_current_domain
-    init_signaller
+    init_feature_flag_signaller
   end
 
   def test_find_has_valid_custom_headers
@@ -215,12 +215,14 @@ class ViewTest < Minitest::Test
 
   def test_has_grant_for
     stub_core_server_connection
-    mock_user_grant = mock.tap { |mock| mock.stubs(
-      :flag? => false,
-      :type => 'grant_type',
-      :userId => 'aaaa-aaaa',
-      :userEmail => nil
-    )}
+    mock_user_grant = mock.tap do |mock|
+      mock.stubs(
+        :flag? => false,
+        :type => 'grant_type',
+        :userId => 'aaaa-aaaa',
+        :userEmail => nil
+      )
+    end
 
     mock_user_granted = mock.tap { |mock| mock.stubs(:id => 'aaaa-aaaa') }
     mock_user_ungranted = mock.tap { |mock| mock.stubs(:id => 'xxxx-xxxx') }
@@ -262,6 +264,7 @@ class ViewTest < Minitest::Test
     has_view_unpublished_user_right = mock.tap { |mock| mock.stubs(:id => 'yyyy-yyyy', :is_owner? => false) }
     some_random_human = mock.tap { |mock| mock.stubs(:id => 'xxxx-xxxx', :is_owner? => false) }
 
+    # TODO This test is broken because the "return" in the block below exits this method early
     has_view_unpublished_user_right.stubs(:has_right?).with do |right|
       return right == UserRights::VIEW_UNPUBLISHED_STORY
     end
@@ -279,47 +282,23 @@ class ViewTest < Minitest::Test
     view = View.new
     view.stubs(:owner => owner)
 
-    assert(
-      view.can_edit_story?(owner),
-      'owner should be granted edit permission'
-    )
-    assert(
-      view.can_edit_story?(co_owner),
-      'co-owner should be granted edit permission'
-    )
-    assert(
-      view.can_edit_story?(contributor),
-      'contributor should be granted edit permission'
-    )
+    assert(view.can_edit_story?(owner), 'owner should be granted edit permission')
+    assert(view.can_edit_story?(co_owner), 'co-owner should be granted edit permission')
+    assert(view.can_edit_story?(contributor), 'contributor should be granted edit permission')
     refute(
       view.can_edit_story?(has_view_unpublished_user_right),
       'random humans should not be granted edit permission, even if they have VIEW_UNPUBLISHED_STORY rights'
     )
-    refute(
-      view.can_edit_story?(some_random_human),
-      'random humans should not be granted edit permission'
-    )
+    refute(view.can_edit_story?(some_random_human), 'random humans should not be granted edit permission')
 
-    assert(
-      view.can_preview_story?(owner),
-      'owner should be granted preview permission'
-    )
-    assert(
-      view.can_preview_story?(co_owner),
-      'co-owner should be granted preview permission'
-    )
-    assert(
-      view.can_preview_story?(contributor),
-      'contributor should be granted preview permission'
-    )
+    assert(view.can_preview_story?(owner), 'owner should be granted preview permission')
+    assert(view.can_preview_story?(co_owner), 'co-owner should be granted preview permission')
+    assert(view.can_preview_story?(contributor), 'contributor should be granted preview permission')
     assert(
       view.can_preview_story?(has_view_unpublished_user_right),
       'users with VIEW_UNPUBLISHED_STORY rights should be granted preview permission'
     )
-    refute(
-      view.can_preview_story?(some_random_human),
-      'random humans should not be granted preview permission'
-    )
+    refute(view.can_preview_story?(some_random_human), 'random humans should not be granted preview permission')
 
     View.any_instance.stubs(:story? => false)
     assert_raises(RuntimeError) { view.can_edit_story?(owner) }
@@ -335,8 +314,7 @@ class ViewTest < Minitest::Test
       :userEmail => 'bob@valve.com'
     )}
     View.any_instance.stubs(:grants => [mock_user_grant])
-    view = View.new
-    assert_equal ['bob@valve.com'], view.users_with_grant('can'), 'Expected users_with_grant to include mock_user_grant email'
+    assert_equal(['bob@valve.com'], View.new.users_with_grant('can'), 'Expected users_with_grant to include mock_user_grant email')
   end
 
   def test_users_with_grant_returns_user_email_with_nil_grant_type
@@ -348,8 +326,7 @@ class ViewTest < Minitest::Test
       :userEmail => 'bob@valve.com'
     )}
     View.any_instance.stubs(:grants => [mock_user_grant])
-    view = View.new
-    assert_equal ['bob@valve.com'], view.users_with_grant(''), 'Expected users_with_grant to include mock_user_grant email'
+    assert_equal(['bob@valve.com'], View.new.users_with_grant(''), 'Expected users_with_grant to include mock_user_grant email')
   end
 
   def test_users_with_grant_returns_user_id
@@ -361,8 +338,7 @@ class ViewTest < Minitest::Test
       :userEmail => nil
     )}
     View.any_instance.stubs(:grants => [mock_user_grant])
-    view = View.new
-    assert_equal [1], view.users_with_grant('can'), 'Expected users_with_grant to include mock_user_grant id'
+    assert_equal([1], View.new.users_with_grant('can'), 'Expected users_with_grant to include mock_user_grant id')
   end
 
   def test_users_with_grant_returns_user_id_with_empty_grant_type
@@ -374,8 +350,7 @@ class ViewTest < Minitest::Test
       :userEmail => nil
     )}
     View.any_instance.stubs(:grants => [mock_user_grant])
-    view = View.new
-    assert_equal [1], view.users_with_grant(''), 'Expected users_with_grant to include mock_user_grant id'
+    assert_equal([1], View.new.users_with_grant(''), 'Expected users_with_grant to include mock_user_grant id')
   end
 
   def test_users_with_ungranted_right_returns_empty_set
@@ -387,8 +362,7 @@ class ViewTest < Minitest::Test
       :userEmail => nil
     )}
     View.any_instance.stubs(:grants => [mock_user_grant])
-    view = View.new
-    assert_equal [], view.users_with_grant('can'), 'Expected users_with_grant to include mock_user_grant id'
+    assert_equal([], View.new.users_with_grant('can'), 'Expected users_with_grant to include mock_user_grant id')
   end
 
   def test_users_with_public_flag_grant_returns_empty_set
@@ -400,37 +374,35 @@ class ViewTest < Minitest::Test
       :userEmail => nil
     )}
     View.any_instance.stubs(:grants => [mock_user_grant])
-    view = View.new
-    assert_equal [], view.users_with_grant('can'), 'Expected users_with_grant to include mock_user_grant id'
+    assert_equal([], View.new.users_with_grant('can'), 'Expected users_with_grant to include mock_user_grant id')
   end
 
-  def test_is_official_returns_true_by_default_if_provenance_is_disabled
+  def test_is_official_returns_true_by_default_if_provenance_is_disabled_for_data_lenses
     stub_feature_flags_with(:enable_data_lens_provenance => false)
     view = View.new
+    view.stubs(:data_lens? => true)
     refute_nil(view.is_official?)
   end
 
   def test_is_official_returns_false_by_default_if_provenance_is_enabled
     stub_feature_flags_with(:enable_data_lens_provenance => true)
-    view = View.new
-    assert_nil(view.is_official?)
+    refute(View.new.is_official?)
   end
 
   def test_is_official_returns_true
     view = View.new
     view.provenance = 'OFFICIAL'
-    refute_nil(view.is_official?)
+    assert(view.is_official?)
   end
 
   def test_is_community_returns_false_by_default
-    view = View.new
-    assert_nil(view.is_community?)
+    refute(View.new.is_community?)
   end
 
   def test_is_community_returns_true
     view = View.new
     view.provenance = 'COMMUNITY'
-    refute_nil(view.is_community?)
+    assert(view.is_community?)
   end
 
   def test_has_rights_returns_true
@@ -471,8 +443,8 @@ class ViewTest < Minitest::Test
   end
 
   def test_merged_metadata
-    load_sample_data("test/fixtures/sample-data.json")
-    view = View.find("test-data")
+    load_sample_data('test/fixtures/sample-data.json')
+    view = View.find('test-data')
 
     # private metadata field
     CurrentDomain.stubs(property: [
@@ -508,7 +480,8 @@ class ViewTest < Minitest::Test
     load_sample_data('test/fixtures/sample-data.json')
     view = View.find('test-data')
     view.stubs(:new_backend? => true)
-    CoreServer::Base.connection.expects(:get_request).with('/id/test-data?%24query=select+count%28%2A%29+as+COLUMN_ALIAS_GUARD__count').
+    CoreServer::Base.connection.expects(:get_request).
+      with('/id/test-data?%24query=select+count%28%2A%29+as+COLUMN_ALIAS_GUARD__count').
       returns('[{"COLUMN_ALIAS_GUARD__count": 123}]')
     view.expects(:get_total_rows).never
     assert_equal(123, view.row_count)
@@ -520,7 +493,8 @@ class ViewTest < Minitest::Test
   def test_find_related
     view = View.new('tableId' => 1234)
 
-    CoreServer::Base.connection.expects(:get_request).with('/views.json?count=10&method=getByTableId&page=1&sortBy=most_accessed&tableId=1234').
+    CoreServer::Base.connection.expects(:get_request).
+      with('/views.json?count=10&method=getByTableId&page=1&sortBy=most_accessed&tableId=1234').
       returns('[{"id" : "test-data", "name" : "Wombats in Space"}]')
 
     related_views = view.find_related(1)
@@ -675,53 +649,43 @@ class ViewTest < Minitest::Test
 
   def test_visualization_interchange_format_v1
     vif_fixture_string = '{"5": "five"}'
-    view = View.new
-    view.data = {
-      'viewType' => 'tabular',
-      'displayType' => 'data_lens_chart',
-      'displayFormat' => {
-        'visualization_interchange_format_v1' => vif_fixture_string
-      }
-    }
+    view = View.new('viewType' => 'tabular', 'displayType' => 'data_lens_chart', 'displayFormat' => {
+      'visualization_interchange_format_v1' => vif_fixture_string
+    })
 
-    assert_equal(view.visualization_interchange_format_v1, "5" => "five")
+    assert_equal(view.visualization_interchange_format_v1, '5' => 'five')
 
     view.stubs(:standalone_visualization? => false)
 
-    assert_raises(RuntimeError) do
-      view.visualization_interchange_format_v1
-    end
+    assert_raises(RuntimeError) { view.visualization_interchange_format_v1 }
   end
 
   def test_display_format_columns
-    view = View.new
-    view.data = {
+    view = View.new(
       'viewType' => 'tabular',
       'displayType' => 'data_lens_chart',
       'displayFormat' => {
-        'valueColumns' => [{'fieldName' => '1'}],
+        'valueColumns' => ['fieldName' => '1'],
         'fixedColumns' => ['2'],
-        'seriesColumns' => [{'fieldName' => '3'}]
+        'seriesColumns' => ['fieldName' => '3']
       }
-    }
+    )
 
     assert_equal(view.display_format_columns, ['1', '2', '3'])
 
-    view = View.new
-    view.data = {
+    view = View.new(
       'viewType' => 'tabular',
       'displayType' => 'data_lens_chart',
       'displayFormat' => {
-        'valueColumns' => [{'fieldName' => '1'}],
+        'valueColumns' => ['fieldName' => '1'],
         'fixedColumns' => ['2'],
-        'seriesColumns' => [{'fieldName' => '2'}]
+        'seriesColumns' => ['fieldName' => '2']
       }
-    }
+    )
 
     assert_equal(view.display_format_columns, ['1', '2'])
 
-    view = View.new
-    view.data = {
+    view = View.new(
       'viewType' => 'tabular',
       'displayType' => 'data_lens_chart',
       'displayFormat' => {
@@ -729,13 +693,11 @@ class ViewTest < Minitest::Test
         'fixedColumns' => nil,
         'seriesColumns' => nil
       }
-    }
+    )
 
     assert_equal(view.display_format_columns, [])
 
-
-    view = View.new
-    view.data = classic_map_with_multiple_layers
+    view = View.new(classic_map_with_multiple_layers)
 
     assert_equal(view.display_format_columns, [ 'location_1', 'location_2' ])
   end

@@ -1567,7 +1567,7 @@ en:
       only_layer: (Only Layer)
       preview: Preview
       apply_update: Apply Update
-      percent_uploaded: "{percent}% Uploaded"
+      percent_uploaded: "{0}% Uploaded"
       upload_done: Upload Done
     manage: Manage
     manage_uploads:

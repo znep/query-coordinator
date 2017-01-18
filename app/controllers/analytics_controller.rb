@@ -1,3 +1,4 @@
+require 'json'
 require 'open-uri'
 
 class AnalyticsController < ApplicationController
@@ -29,7 +30,16 @@ class AnalyticsController < ApplicationController
       valid, error = add_metric(m['entity'], m['metric'], m['increment'])
       all_valid = all_valid && valid
 
-      Rails.logger.error "Analytics Controller Metric Error: #{error}. Returning 207 with 400 inside." unless valid
+      unless valid
+        Rails.logger.error "Analytics Controller Metric Error: #{error}. Returning 207 with 400 inside."
+        Airbrake.notify(
+          :error_class => 'Javascript Metric Error',
+          :error_message => "Metric: #{m.to_json} Error Message: #{error}",
+          :session => { :domain => CurrentDomain.cname },
+          :request => { :params => params }
+        )
+      end
+
 
       messages.push({
         :status => valid ? "200" : "400",

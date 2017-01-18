@@ -44,7 +44,7 @@ export function ManageUploads({ uploads, createUpload, goHome }) {
 
       <ModalContent>
         <form>
-          <h6>{I18n.manage_uploads.previous}</h6> {/* TODO: Check if is really a h6 */}
+          <h2 className="h6">{I18n.manage_uploads.previous}</h2>
           <ul>
             {uploads.map((upload, idxInTable) => (
               <li key={idxInTable}>
@@ -55,6 +55,7 @@ export function ManageUploads({ uploads, createUpload, goHome }) {
           <p>
             <label id="upload-label" htmlFor="file">{I18n.manage_uploads.new_file}&nbsp;</label>
             <input
+              id="file"
               name="file"
               type="file"
               aria-labelledby="upload-label"

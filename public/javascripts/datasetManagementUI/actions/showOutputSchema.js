@@ -64,8 +64,9 @@ export function getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType) 
     // change, and then we'll need the input column here instead of
     // just hardcoding a comparison to text.
     const transformExpr =
-      (column.id === oldColumn.id) ? `to_${soqlProperties[newType].canonicalName}(${column.schema_column_name})`
-                                   : xformExpr;
+      (column.id === oldColumn.id) ?
+      `to_${soqlProperties[newType].canonicalName}(${column.schema_column_name})` :
+      xformExpr;
 
     return {
       schema_column_name: column.schema_column_name,

@@ -125,15 +125,15 @@
     "redux-thunk": "2.1.0",
     "reselect": "2.5.3",
     "showdown": "git+https://github.com/socrata/showdown.git#openperformance-compat",
-    "socrata-components": "9.0.3",
-    "socrata-utils": "3.1.1",
-    "socrata-visualizations": "20.3.1",
+    "socrata-components": "10.2.1",
+    "socrata-utils": "3.2.0",
+    "socrata-visualizations": "20.14.0",
     "squire-rte": "git+https://github.com/socrata-platform/Squire.git#1.4.2-fixes",
-    "tether": "1.0.1",
+    "tether": "1.0.2",
     "tether-shepherd": "1.2.0",
     "unidragger": "2.1.0",
     "unipointer": "2.1.0",
-    "velocity-animate": "1.2.3",
+    "velocity-animate": "1.3.2",
     "whatwg-fetch": "1.0.0"
   }
 }

@@ -131,9 +131,11 @@ en:
         permissions: 'You must be a story owner to perform this action'
       displaying_section:
         section_title: 'Edit Title and Description'
+        section_title_when_goal: 'Edit Title'
         title_label: 'Title'
         description_label: 'Description'
         save_button_label: 'Update Title and Description'
+        save_button_label_when_goal: 'Update Title'
         errors:
           title_too_long: 'Sorry, this title is too long. Please shorten it.'
       collaborators_section:

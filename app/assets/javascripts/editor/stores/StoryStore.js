@@ -50,6 +50,7 @@ export default function StoryStore() {
         _setStoryDigest(payload);
         break;
 
+      case Actions.GOAL_TITLE_SAVE_FINISH:
       case Actions.STORY_SET_TITLE:
         _setStoryTitle(payload);
         break;

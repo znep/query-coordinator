@@ -26,7 +26,11 @@
       <li id="settings-panel-story-metadata" class="menu-list-item">
         <button class="menu-list-item-header expandable">
           <span class="socrata-icon-edit"></span>
+          <%- if @story_metadata.goal? -%>
+          <span><%= t('editor.settings_panel.displaying_section.section_title_when_goal') %></span>
+          <%- else -%>
           <span><%= t('editor.settings_panel.displaying_section.section_title') %></span>
+          <%- end -%>
         </button>
         <div class="menu-list-item-content settings-panel-displaying collapsed">
           <div>
@@ -40,15 +44,21 @@
             <form>
               <label for="title" class="block-label"><%= t('editor.settings_panel.displaying_section.title_label') %></label>
               <input id="title" class="text-input" name="title" type="text" maxlength="254"<%= ' disabled' unless can_edit_title_and_description? %>>
-              <label for="description" class="block-label"><%= t('editor.settings_panel.displaying_section.description_label') %></label>
-              <textarea id="description" class="text-area" name="description" <%= ' disabled' unless can_edit_title_and_description? %>></textarea>
+              <%- unless @story_metadata.goal? -%>
+                <label for="description" class="block-label"><%= t('editor.settings_panel.displaying_section.description_label') %></label>
+                <textarea id="description" class="text-area" name="description" <%= ' disabled' unless can_edit_title_and_description? %>></textarea>
+              <%- end -%>
             </form>
 
             <div class="settings-save-failure-message alert error">
               <p><%= t('editor.settings_panel.errors.generic_save_failure_message') %></p>
             </div>
             <button class="btn btn-default btn-dark settings-save-btn">
+              <%- if @story_metadata.goal? -%>
+              <span><%= t('editor.settings_panel.displaying_section.save_button_label_when_goal') %></span>
+              <%- else -%>
               <span><%= t('editor.settings_panel.displaying_section.save_button_label') %></span>
+              <%- end -%>
             </button>
           </div>
         </div>

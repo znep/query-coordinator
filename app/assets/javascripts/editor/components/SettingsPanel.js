@@ -6,11 +6,13 @@ import Environment from '../../StorytellerEnvironment';
 import StoryPermissionsRenderer from '../renderers/StoryPermissionsRenderer';
 import StorytellerUtils from '../../StorytellerUtils';
 import { dispatcher } from '../Dispatcher';
+import { goalTitleProvider } from '../GoalTitleProvider';
 import { shareAndEmbedStore } from '../stores/ShareAndEmbedStore';
 import { collaboratorsStore } from '../stores/CollaboratorsStore';
 import { storyCopierStore } from '../stores/StoryCopierStore';
 import { storyStore } from '../stores/StoryStore';
 import { coreSavingStore } from '../stores/CoreSavingStore';
+import { goalTitleStore } from '../stores/GoalTitleStore';
 
 /**
  * Instantiates an SettingsPanel control with the given
@@ -55,6 +57,22 @@ export default function SettingsPanel(toggleButton) {
     saveErrorMessage.toggleClass('active', lastSaveError !== null);
   });
 
+  if (Environment.IS_GOAL) {
+    goalTitleStore.addChangeListener(() => {
+      var isUpdatingGoalTitle = goalTitleStore.isUpdatingGoalTitle();
+      var hasErroredUpdatingGoalTitle = goalTitleStore.hasErroredUpdatingGoalTitle();
+
+      saveButton.toggleClass('busy', isUpdatingGoalTitle);
+      saveButton.toggleClass('btn-busy', isUpdatingGoalTitle);
+
+      saveErrorMessage.toggleClass('active', hasErroredUpdatingGoalTitle);
+
+      if (!isUpdatingGoalTitle && !hasErroredUpdatingGoalTitle) {
+        settingsPanel.trigger('sidebar:close');
+      }
+    });
+  }
+
   function loadCurrentMetadata() {
     metadataStateAtPanelOpenTime = {
       title: storyStore.getStoryTitle(Environment.STORY_UID),
@@ -84,7 +102,7 @@ export default function SettingsPanel(toggleButton) {
     var descriptionAtOpenTime = metadataStateAtPanelOpenTime.description;
     var descriptionInBox = storyDescriptionTextarea.val();
 
-    return descriptionAtOpenTime !== descriptionInBox;
+    return !Environment.IS_GOAL && descriptionAtOpenTime !== descriptionInBox;
   }
 
   function updateSaveButtonEnabledState() {
@@ -106,6 +124,12 @@ export default function SettingsPanel(toggleButton) {
       'disabled',
       !hasChanges && !hasError
     );
+  }
+
+  function saveGoalMetadata() {
+    if (isTitleChanged()) {
+      goalTitleProvider.changeTitle(Environment.STORY_UID, storyTitleInputBox.val());
+    }
   }
 
   function saveMetadata() {
@@ -239,7 +263,11 @@ export default function SettingsPanel(toggleButton) {
     }).
     on('submit', 'form', function() {
       try {
-        saveMetadata();
+        if (Environment.IS_GOAL) {
+          saveGoalMetadata();
+        } else {
+          saveMetadata();
+        }
       } catch (error) {
         // We can't rethrow the error otherwise the form will submit and
         // refresh the page. That could be confusing for our users.
@@ -248,7 +276,7 @@ export default function SettingsPanel(toggleButton) {
         return false;
       }
     }).
-    on('click', '.settings-save-btn', saveMetadata).
+    on('click', '.settings-save-btn', Environment.IS_GOAL ? saveGoalMetadata : saveMetadata).
     on('click', '[data-action]', dispatchActions);
 
   return this;

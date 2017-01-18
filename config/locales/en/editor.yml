@@ -148,13 +148,19 @@ en:
         visibility:
           title: 'Visibility'
           private: 'Private'
+          private_goals: 'Private'
           public: 'Public'
+          public_goals: 'Public'
           make_story_public: 'Make Public'
+          make_story_public_goals: 'Make Public'
           make_story_private: 'Make Private'
+          make_story_private_goals: 'Make Private'
         status:
           title: 'Status'
           published: 'Published'
+          published_goals: 'Published'
           draft: 'Draft'
+          draft_goals: 'Draft'
           update_public_version: 'Update Public Version'
         messages:
           can_be_shared_publicly: 'Stories can be shared publicly. Once they are public, you can continue to make changes to your story and those changes are only visible to you until you update the public version. This way, you can decide when to share your changes with the world.'

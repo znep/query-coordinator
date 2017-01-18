@@ -217,7 +217,9 @@ function blurAdminDropdown(event) {
  * Instead, we need to position it with javascript.
  */
 function verticallyPositionSearchbar() {
-  if (navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') > 0) {
+  var isMSIE = navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') > 0;
+  var isSafari = navigator.userAgent.indexOf('Safari') !== -1;
+  if (isMSIE || isSafari) {
     var $searchbox = $('header#site-chrome-header .collapsible-search .searchbox');
     var $banner = $('#site-chrome-header .banner');
     var positionTop = $banner.height() / 2 - $searchbox.height() / 2;

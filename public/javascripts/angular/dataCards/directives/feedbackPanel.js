@@ -53,8 +53,17 @@ module.exports = function feedbackPanel(ServerConfig, I18n) {
               required: true,
               pos: 1
             }
-          ]
+          ],
+          lang: getLocalizationKey()
         };
+
+        // Get the UserSnap-supported locale key. UserSnap supports approximately 20 locales,
+        // all of which correspond to the locale keys we use, except for German, which has
+        // informal and formal options. If a locale isn't recognized, UserSnap defaults to English.
+        function getLocalizationKey() {
+          var locale = ServerConfig.get('locales').currentLocale;
+          return locale === 'de' ? 'de-informal' : locale;
+        }
 
         var scriptContent = [
           '<script type="text/javascript">',

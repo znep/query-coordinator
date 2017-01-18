@@ -89,7 +89,9 @@ en:
         add_this_aggregation: Add this aggregation
         choose_count: Count
         choose_sum: Choose a column
+        count: count
         function_label: Function
+        sum: sum
         value_label: Value
       card_controls:
         collapse_card: Collapse this card
@@ -364,6 +366,7 @@ en:
         loading: Loading suggestions...
         no_results: Your search returned no results. Check your spelling, or try a different term.
         one_example: 'Example: ''{0}'''
+        placeholder: Search
         prompt_number: Type a number and press Enter to search
         prompt_text: Type some text and press Enter to search
         search_info: Showing {0} of {1} matching results

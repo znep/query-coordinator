@@ -80,12 +80,16 @@ module.exports = function cardAggregationSelector(Constants, I18n, PluralizeServ
           }
         });
 
+      var aggregationFunctionName$ = cardAggregationFunction$.map(function(aggregationFunction) {
+        return I18n.cardAggregationSelector[aggregationFunction];
+      });
+
       // Bind observables to scope
       $scope.$bindObservable('hasNoAggregableColumns', aggregationColumns$.map(_.isEmpty));
       $scope.$bindObservable('pluralRowDisplayUnit', pluralRowDisplayUnit$);
       $scope.$bindObservable('aggregationColumns', aggregationColumns$);
       $scope.$bindObservable('aggregationField', aggregationField$);
-      $scope.$bindObservable('aggregationFunction', cardAggregationFunction$);
+      $scope.$bindObservable('aggregationFunctionName', aggregationFunctionName$);
     }
   };
 };

@@ -509,7 +509,7 @@ describe('TableCardController', function() {
     it('should set it on the card model', function() {
       var table = createTable();
       expect(table.model.getCurrentValue('customTitle')).
-        to.equal('Showing all 1,337 rows');
+        to.equal('Showing 1,337 rows <span class="subtitle">out of 1,337</span>');
       table.$scope.whereClause = 'invalid where clause';
       table.$scope.$digest();
       expect(table.model.getCurrentValue('customTitle')).
@@ -529,7 +529,7 @@ describe('TableCardController', function() {
         rowDisplayUnit: '<img src="http://placehold.it/100x100" />'
       });
       expect(table.model.getCurrentValue('customTitle')).
-        to.equal('Showing all 1,337 &lt;img src=&quot;http://placehold.it/100x100&quot; /&gt;s');
+        to.equal('Showing 1,337 &lt;img src=&quot;http://placehold.it/100x100&quot; /&gt;s <span class="subtitle">out of 1,337</span>');
     });
 
     it('should not update card title if "isEmbedded" is true', function() {

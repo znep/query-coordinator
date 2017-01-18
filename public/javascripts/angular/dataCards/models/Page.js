@@ -1,6 +1,4 @@
-var DEFAULT_ROW_DISPLAY_UNIT = 'row';
-
-module.exports = function PageModelFactory(ServerConfig, Card, Dataset, Model, Filter, $log, rx) {
+module.exports = function PageModelFactory(ServerConfig, Card, Dataset, Model, Filter, I18n, $log, rx) {
   const Rx = rx;
 
   return Model.extend({
@@ -71,7 +69,7 @@ module.exports = function PageModelFactory(ServerConfig, Card, Dataset, Model, F
       var rowDisplayUnit$ = self.observe('dataset.rowDisplayUnit');
 
       self.defineEphemeralObservablePropertyFromSequence('rowDisplayUnit',
-        rowDisplayUnit$.filter(_.isDefined).startWith(DEFAULT_ROW_DISPLAY_UNIT));
+        rowDisplayUnit$.filter(_.isDefined).startWith(I18n.common.row));
 
       var allCardsFilters;
 

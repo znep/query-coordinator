@@ -1,7 +1,10 @@
 <div class="card-form-group">
   <form novalidate>
     <div class="input-group">
-      <clearable-input input-id="search-card-input" placeholder="Search" search="search"></clearable-input>
+      <clearable-input
+        input-id="search-card-input"
+        placeholder="{{::'searchCard.placeholder' | I18n}}"
+        search="search"></clearable-input>
       <span class="input-group-addon">
         <button type="submit" class="action-btn inverted btn-slim r-to-l">
           <div class="icon-search"></div>

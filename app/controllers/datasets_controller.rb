@@ -727,7 +727,13 @@ class DatasetsController < ApplicationController
     return if @view.nil?
 
     if dataset_landing_page_enabled? && view.has_landing_page?
-      result = DatasetLandingPage.fetch_all(view, current_user, forwardable_session_cookies, request_id)
+      result = DatasetLandingPage.fetch_all(
+        view,
+        current_user,
+        forwardable_session_cookies,
+        request_id,
+        request
+      )
 
       @related_views = result[:related_views]
       @featured_content = result[:featured_content]
@@ -1291,7 +1297,13 @@ class DatasetsController < ApplicationController
         return true
       end
 
-      result = DatasetLandingPage.fetch_all(view, current_user, forwardable_session_cookies, request_id)
+      result = DatasetLandingPage.fetch_all(
+        view,
+        current_user,
+        forwardable_session_cookies,
+        request_id,
+        request
+      )
 
       @related_views = result[:related_views]
       @featured_content = result[:featured_content]

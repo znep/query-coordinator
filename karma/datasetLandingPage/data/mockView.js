@@ -33,6 +33,7 @@ export default {
   twitterShareUrl: 'twitterShareUrl',
   emailShareUrl: 'emailShareUrl',
   commentUrl: 'commentUrl',
+  bootstrapUrl: 'bootstrapUrl',
   viewCount: 1,
   downloadCount: 1,
   ownerName: 'Marc Millstone',

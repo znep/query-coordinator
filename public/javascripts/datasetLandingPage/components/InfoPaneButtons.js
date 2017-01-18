@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { isUserAdminOrPublisher } from '../lib/user';
 
 export default React.createClass({
   propTypes: {
@@ -141,7 +142,22 @@ export default React.createClass({
 
   renderMoreActions() {
     const { view } = this.props;
+    const isBlobbyOrHref = view.isBlobby || view.isHref;
+    const { enableVisualizationCanvas } = serverConfig.featureFlags;
+    const canCreateVisualizationCanvas = enableVisualizationCanvas &&
+      isUserAdminOrPublisher() &&
+      _.isString(view.bootstrapUrl);
 
+    let visualizeLink = null;
+    if (!isBlobbyOrHref && canCreateVisualizationCanvas) {
+      visualizeLink = (
+        <li>
+          <a tabIndex="0" role="button" className="option" href={view.bootstrapUrl}>
+            {I18n.action_buttons.visualize}
+          </a>
+        </li>
+      );
+    }
 
     const contactFormLink = !view.disableContactDatasetOwner ? (
       <li>
@@ -171,6 +187,7 @@ export default React.createClass({
       <div className="btn btn-simple btn-sm dropdown more" data-dropdown data-orientation="bottom">
         <span aria-hidden className="icon-waiting"></span>
         <ul className="dropdown-options">
+          {visualizeLink}
           {contactFormLink}
           {commentLink}
           {odataLink}

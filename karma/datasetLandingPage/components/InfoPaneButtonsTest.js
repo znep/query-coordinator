@@ -150,6 +150,39 @@ describe('components/InfoPaneButtons', () => {
   });
 
   describe('more actions dropdown', () => {
+    describe('visualize link', () => {
+      beforeEach(() =>  {
+        window.serverConfig.currentUser = { roleName: 'publisher' };
+        window.serverConfig.featureFlags.enableVisualizationCanvas = true;
+      });
+
+      afterEach(() => {
+        window.serverConfig.currentUser = null;
+        window.serverConfig.featureFlags.enableVisualizationCanvas = false;
+      });
+
+      it('exists if the bootstrapUrl is defined', () => {
+        const element = renderComponent(InfoPaneButtons, getProps());
+        expect(element.querySelector('a[href="bootstrapUrl"]')).to.exist;
+      });
+
+      it('does not exist if the bootstrapUrl is blank', () => {
+        const element = renderComponent(InfoPaneButtons, getProps({
+          view: {
+            bootstrapUrl: null
+          }
+        }));
+
+        expect(element.querySelector('a[href="bootstrapUrl"]')).to.not.exist;
+      });
+
+      it('does not exist if the feature flag is disabled', () => {
+        window.serverConfig.featureFlags.enableVisualizationCanvas = false;
+        const element = renderComponent(InfoPaneButtons, getProps());
+        expect(element.querySelector('a[href="bootstrapUrl"]')).to.not.exist;
+      });
+    });
+
     describe('comment link', () => {
       it('exists if commentUrl is defined', () => {
         const element = renderComponent(InfoPaneButtons, getProps());

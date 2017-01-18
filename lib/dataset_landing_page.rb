@@ -6,7 +6,7 @@ class DatasetLandingPage
     include Socrata::UrlHelpers
     include DatasetsHelper
 
-    def fetch_all(view, current_user, cookies, request_id)
+    def fetch_all(view, current_user, cookies, request_id, request)
       threads = {}
 
       threads[:row_count] = Thread.new { fetch_row_count(view) }
@@ -50,7 +50,7 @@ class DatasetLandingPage
         :blobId => view.blobId,
         :blobMimeType => view.blobMimeType,
         :blobType => view.is_blobby? && view.display.display_type,
-        :bootstrapUrl => bootstrap_url(view, results[:migrations]),
+        :bootstrapUrl => bootstrap_url(view, results[:migrations], request),
         :canPublish => threads[:can_publish].value,
         :category => view.category,
         :columns => columns,
@@ -325,11 +325,15 @@ class DatasetLandingPage
       end
     end
 
-    def bootstrap_url(view, migrations)
-      if view.newBackend?
-        new_data_lens_path(:id => view.id)
+    def bootstrap_url(view, migrations, request)
+      return unless view.newBackend? || migrations.present?
+
+      bootstrap_id = view.newBackend? ? view.id : migrations['nbeId']
+
+      if enable_visualization_canvas?(view, request)
+        create_visualization_canvas_path(id: bootstrap_id)
       else
-        migrations.present? ? new_data_lens_path(:id => migrations['nbeId']) : nil
+        new_data_lens_path(id: bootstrap_id)
       end
     end
 
@@ -380,6 +384,10 @@ class DatasetLandingPage
 
     def disable_contact_dataset_owner(view)
       CurrentDomain.feature?(:disable_contact_dataset_owner)
+    end
+
+    def enable_visualization_canvas?(view, request)
+      enable_visualization_canvas = FeatureFlags.derive(view, request).enable_visualization_canvas
     end
   end
 end

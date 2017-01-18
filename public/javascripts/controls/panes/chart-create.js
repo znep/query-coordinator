@@ -57,6 +57,8 @@
                 'class': ['lineIcon']
               }));
 
+            cpObj._renderVisualizationCanvasButton();
+
             //Repeater add buttons change icon of section
             cpObj.$dom().find('.hasIcon.repeater .addValue').
               hover(
@@ -187,6 +189,51 @@
         var valid = this._super();
         this._updateErrorVisibility();
         return valid;
+      },
+
+      _renderVisualizationCanvasButton: function() {
+        var user = blist.currentUser;
+
+        if (!_.isObject(user)) {
+          return;
+        }
+
+        var isAdminOrPublisher = user.roleName === 'administrator' || user.roleName === 'publisher';
+        var isSuperadmin = _.includes(blist.currentUser.flags, 'admin');
+        var enableVisualizationCanvas = blist.feature_flags.enable_visualization_canvas;
+
+        if (!enableVisualizationCanvas || (!isAdminOrPublisher && !isSuperadmin)) {
+          return;
+        }
+
+        var cpObj = this;
+
+        blist.dataset.getNewBackendMetadata().
+          pipe(function(nbeMetadata) {
+            var localePrefix = blist.locale === blist.defaultLocale ? '' : '/' + blist.locale;
+            var label = cpObj.$dom().find('.chartTypeSelection > label.formHeader');
+            label.after(
+              $.tag({
+                tagName: 'div',
+                'class': 'visualization-canvas-bootstrap',
+                contents: [{
+                  tagName: 'h3',
+                  'class': 'visualization-canvas-title',
+                  contents: $.t('screens.ds.grid_sidebar.visualization_canvas.title')
+                }, {
+                  tagName: 'p',
+                  'class': 'visualization-canvas-message',
+                  contents: $.t('screens.ds.grid_sidebar.visualization_canvas.message')
+                }, {
+                  tagName: 'a',
+                  href: localePrefix + '/d/{0}/visualization'.format(nbeMetadata.id),
+                  'class': 'visualization-canvas-button',
+                  contents: $.t('screens.ds.grid_sidebar.visualization_canvas.button')
+                }]
+              })
+            );
+          }).
+          fail(_.noop);
       },
 
       _updateErrorVisibility: function(valCols) {

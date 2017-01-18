@@ -1310,6 +1310,7 @@ en:
       download: Download
       odata: Access Data via OData
       share: Share
+      visualize: Visualize and Explore
     add: Add
     api_flannel:
       canonical: Canonical ID
@@ -4116,6 +4117,10 @@ en:
           views:
             subtitle: See existing filters, maps, charts and other views on this dataset
             title: Views
+        visualization_canvas:
+          title: Visualization Preview
+          message: Preview the improved Socrata visualization creation and exploration experience.
+          button: Try Visualization Preview
         visualize:
           choose_type: Visualization Type
       new_ux_button: Show Me

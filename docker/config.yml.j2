@@ -56,6 +56,8 @@ default: &default
   metrics_dir: tmp/metriclogs
   {%- endif %}
 
+  atomic_metrics_flush: {{ ATOMIC_METRICS_FLUSH | default('false') }}
+
   odysseus_app_name: {{ ODYSSEUS_APP_NAME }}
 
   {% if POLAROID_HOSTNAME is defined and POLAROID_PORT is defined -%}

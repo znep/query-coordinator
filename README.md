@@ -374,6 +374,7 @@ In the case where the configuration variable is being provided as an ENV variabl
 Variable Name | Type | Source | Description
 --- | :---: | :---: | ---
 `action_controller_perform_caching` | Boolean | Configuration | Rails configuration directive specifying if caching should take place. _Must be set to `true` for Memcached to be used_.
+`atomic_metrics_flush` | Boolean | Configuration | Rails configuration directive specifying if metrics will be accumulated in single file for two minutes or write atomic files for each metrics batch produced. _Must be set to `true` for atomic metrics file to be written_.
 `cache_classes` | Boolean | | Configuration | Rails configuration directive specifying whether classes should be cached. Should be `true` in production.
 `consider_all_requests_local` | Boolean | Configuration | Rails configuration directive specifying if full error reports should be displayed. Should be `false` in production.
 `airbrake_api_key` | String | Configuration | API key used to report errors to the AirBrake service.

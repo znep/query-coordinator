@@ -131,6 +131,7 @@ development: &development
 
   # other behaviors
   metrics_dir: tmp/metriclogs
+  atomic_metrics_flush: true
 
 # Running unit tests; NOT test-socrata.com
 test:

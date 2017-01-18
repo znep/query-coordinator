@@ -59,6 +59,7 @@ class AppConfig < Hashie::Dash
   property :storyteller_uri
 
   # Metrics
+  property :atomic_metrics_flush, default: false
   property :metrics_dir
   property :statsd_enabled
   property :statsd_server

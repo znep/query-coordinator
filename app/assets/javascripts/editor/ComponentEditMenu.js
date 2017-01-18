@@ -30,6 +30,13 @@ class ComponentEditMenu extends Component {
         icon: 'move',
         value: 'swap',
         render: this.renderPicklistOption
+      },
+      {
+        title: I18n.t('editor.components.edit_controls.reset'),
+        group: I18n.t('editor.components.edit_controls.groups.actions'),
+        icon: 'cross2',
+        value: 'reset',
+        render: this.renderPicklistOption
       }
     ];
 
@@ -54,6 +61,13 @@ class ComponentEditMenu extends Component {
     const { blockId, componentIndex } = StorytellerUtils.findBlockIdAndComponentIndex(this.componentEditControls);
 
     switch (option.value) {
+      case 'reset':
+        dispatcher.dispatch({
+          action: Actions.RESET_COMPONENT,
+          blockId,
+          componentIndex
+        });
+        break;
       case 'swap':
         dispatcher.dispatch({
           action: Actions.MOVE_COMPONENT_START,
@@ -113,6 +127,8 @@ class ComponentEditMenu extends Component {
   }
 
   render() {
+    // NOTE: The same criteria apply for a component's ability to be reset, so
+    // the MoveComponentStore check is doing double duty.
     const enabled = moveComponentStore.isComponentValidMoveSource(this.props.componentData.type);
     const kebabButton = enabled ? this.renderKebabButton() : null;
     const picklist = this.state.showPicklist ? this.renderPicklist() : null;

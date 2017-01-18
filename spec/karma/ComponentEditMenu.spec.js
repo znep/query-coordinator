@@ -72,6 +72,8 @@ describe('ComponentEditMenu', () => {
     });
   });
 
+  // NOTE: The same criteria apply for a component's ability to be reset, so
+  // the MoveComponentStore check is doing double duty.
   describe('when component is a valid, swappable source', () => {
     beforeEach(() => {
       componentValidSource = true;
@@ -93,14 +95,28 @@ describe('ComponentEditMenu', () => {
         expect(getPicklist()).to.exist;
       });
 
-      describe('when clicking a picklist option', () => {
+      describe('when clicking the picklist option to move a component', () => {
         it('dispatches an action', () => {
           const { blockId, componentIndex } = blockIdAndComponentIndex;
 
-          Simulate.click(getPicklist().querySelector('.picklist-option'));
+          Simulate.click(getPicklist().querySelector('.picklist-option[id^="swap"]'));
 
           sinon.assert.calledWith(dispatchStub, {
             action: Actions.MOVE_COMPONENT_START,
+            blockId,
+            componentIndex
+          });
+        });
+      });
+
+      describe('when clicking the picklist option to reset a component', () => {
+        it('dispatches an action', () => {
+          const { blockId, componentIndex } = blockIdAndComponentIndex;
+
+          Simulate.click(getPicklist().querySelector('.picklist-option[id^="reset"]'));
+
+          sinon.assert.calledWith(dispatchStub, {
+            action: Actions.RESET_COMPONENT,
             blockId,
             componentIndex
           });

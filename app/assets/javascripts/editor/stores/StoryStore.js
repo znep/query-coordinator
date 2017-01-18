@@ -108,6 +108,12 @@ export default function StoryStore() {
         _setStoryTheme(payload);
         break;
 
+      case Actions.RESET_COMPONENT:
+        payload.type = 'assetSelector';
+        payload.value = {};
+        _updateBlockComponentAtIndex(payload);
+        break;
+
       case Actions.MOVE_COMPONENT_DESTINATION_CHOSEN:
         _finishComponentMove(payload);
         break;

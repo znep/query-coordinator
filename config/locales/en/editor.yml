@@ -100,10 +100,11 @@ en:
       edit_controls:
         button: 'Edit'
         cancel: 'Cancel'
-        swap: 'Swap'
-        swap_here: 'Swap Here'
         groups:
           actions: 'Actions'
+        reset: 'Clear Contents'
+        swap: 'Swap'
+        swap_here: 'Swap Here'
       asset_selector:
         insert_btn: 'Insert'
       hero:

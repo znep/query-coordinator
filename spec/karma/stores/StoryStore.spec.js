@@ -1805,6 +1805,68 @@ describe('StoryStore', function() {
         });
       });
     });
+
+    describe('RESET_COMPONENT', function() {
+      describe('given an invalid block id', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Actions.RESET_COMPONENT,
+              blockId: null,
+              componentIndex: 1
+            });
+          });
+        });
+      });
+
+      describe('given an invalid component index', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Actions.RESET_COMPONENT,
+              blockId: block1Id,
+              componentIndex: null
+            });
+          });
+        });
+      });
+
+      describe('given an out of bounds component index', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Actions.RESET_COMPONENT,
+              blockId: block1Id,
+              componentIndex: 99
+            });
+          });
+        });
+      });
+
+      describe('given valid data', function() {
+
+        it('should reset the specified component', function() {
+
+          dispatch({
+            action: Actions.RESET_COMPONENT,
+            blockId: block1Id,
+            componentIndex: 1
+          });
+
+          assert.deepEqual(
+            storyStore.getBlockComponentAtIndex(block1Id, 1),
+            { type: 'assetSelector', value: {} }
+          );
+        });
+      });
+
+    });
   });
 });
 

@@ -413,6 +413,10 @@ export default {
 
   // {String} blockId
   // {Number} componentIndex
+  RESET_COMPONENT: 'RESET_COMPONENT',
+
+  // {String} blockId
+  // {Number} componentIndex
   MOVE_COMPONENT_START: 'MOVE_COMPONENT_START',
 
   // {String} blockId

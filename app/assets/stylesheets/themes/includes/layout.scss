@@ -1,0 +1,12 @@
+@import '../../lib/variables/layout';
+@import '../../lib/variables/mixin';
+
+&.user-story {
+  @include media-query-property(
+    'width',
+    $main-content-width-small,
+    $main-content-width-medium,
+    if($story-width-mode == 'Normal', $main-content-width-large, $main-content-width-extra-large),
+    if($story-width-mode == 'Normal', $main-content-width-extra-large, $main-content-width-extra-extra-large)
+  );
+}

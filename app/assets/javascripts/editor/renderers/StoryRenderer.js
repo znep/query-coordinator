@@ -276,6 +276,13 @@ export default function StoryRenderer(options) {
 
     rendering = true;
 
+    // Ensure that the current theme class is applied to the user story.
+    // This allows the editor to use "Expanded" page width mode when the theme
+    // has configured it.
+    $container.
+      removeClass(_.find($container[0].classList, (className) => /^theme-/.test(className))).
+      addClass(`theme-${storyStore.getStoryTheme(storyUid)}`);
+
     var blockIds = storyStore.getStoryBlockIds(storyUid);
     var blockIdsToRemove = elementCache.getUnusedBlockIds(blockIds);
     var blockCount = blockIds.length;

@@ -1,4 +1,5 @@
 <% theme_variables ||= [] -%>
+<% field_options ||= [] -%>
 <% help_text ||= '' -%>
 <% collapsible ||= false -%>
 <% collapse_checkbox_title_text ||= section_name -%>
@@ -24,7 +25,11 @@
           <% value = theme.css_variables[var_name] -%>
           <% value = Theme.default_css_variables[var_name] if value.blank? -%>
           <%= label_tag field_name, t(".#{var_name}") %>
-          <%= text_field_tag field_name, value, class: "text-input" %>
+          <%- if field_options.blank? -%>
+            <%= text_field_tag field_name, value, class: "text-input" %>
+          <%- else -%>
+            <%= select_tag field_name, options_for_select(field_options, value), class: "text-input" %>
+          <%- end -%>
         </div>
       <% end %>
     </div>

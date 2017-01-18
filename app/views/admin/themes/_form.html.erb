@@ -51,6 +51,17 @@
                 help_text: 'The heading font weight (i.e: 300, 400, 500, 600, 700, 800)'
               } %>
 
+  <h4 class="border-below">Page Width</h4>
+  <%= render  partial: 'form_section',
+              locals: {
+                field_options: %w( Normal Expanded ),
+                section_name: 'story-width-mode',
+                theme: theme,
+                theme_variables: %w( $story-width-mode ),
+                help_text: 'Selecting Expanded mode will increase the maximum page width for stories using this theme. This setting is useful for pages that contain large embedded media elements.'
+              } %>
+
+
   <h4 class="border-below">Typeface</h4>
   <%= render  partial: 'form_section',
               locals: {

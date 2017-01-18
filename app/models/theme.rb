@@ -155,6 +155,7 @@ class Theme
       '$std-type-size' => '1.1em',
       '$std-line-height' => '1.44',
       '$heading-font-weight' => '700',
+      '$story-width-mode' => 'Normal',
       '$lg-type-size' => '1.18em',
       '$lg-line-height' => '1.54',
       '$heading-font-stack' => 'Helvetica, serif',

@@ -28,7 +28,7 @@
   $std-type-size: 1.1em !default;
   $std-line-height: $ms-ratio-2 !default;
 
-  // Large Screeen Typesize.
+  // Large Screen Typesize.
   $lg-type-size: 1.18em !default;
   $lg-line-height: $ms-ratio-3 !default;
 
@@ -42,6 +42,9 @@
   $body-font-weight: normal !default;
   $heading-font-stack: Helvetica, serif !default;
   $heading-font-weight: bold !default;
+
+  // Rich media block width
+  $story-width-mode: 'Normal';
 
   // Hyperlinks
   $link-color: blue !default;
@@ -67,7 +70,7 @@
   // - Title (Nice big heading for your story)
   $title-font-family: $heading-font-stack !default;
 
-  // - Subtititle
+  // - Subtitle
   $subtitle-font-color: lighten($default-type-color, 30%) !default;
   $subtitle-font-family: $body-font-stack !default;
 
@@ -77,4 +80,5 @@
 <% end -%>
 
   @import "includes/typography";
+  @import "includes/layout";
 }

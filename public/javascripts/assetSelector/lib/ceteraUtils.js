@@ -1,7 +1,8 @@
 import $ from 'jquery';
 
-export const CETERA_URL = '//api.us.socrata.com/api/catalog/v1'; // TODO: get from domain config?
-export const DEFAULT_LIMIT = 6;
+const CETERA_URL = '//api.us.socrata.com/api/catalog/v1'; // TODO: get from domain config?
+const DEFAULT_LIMIT = 6;
+const DEFAULT_ORDER = 'relevance';
 
 const getOffset = (pageNumber, limit) => {
   return (pageNumber - 1) * limit;
@@ -11,12 +12,15 @@ export const ceteraUtils = (() => {
   const domain = window.location.hostname; // TODO: federation?
 
   return {
-    fetch: ({ pageNumber = 1, limit = DEFAULT_LIMIT }) => {
+    fetch: ({ pageNumber = 1, limit = DEFAULT_LIMIT, order = DEFAULT_ORDER }) => {
       const queryString = $.param({
         domains: domain,
         search_context: domain,
-        limit: limit,
+        order,
+        limit,
         offset: getOffset(pageNumber, limit)
+
+        // TODO: add category/tag filtering: http://docs.socratadiscovery.apiary.io/#reference/0/searching-particular-categoriestags/category/tag-search-api
       });
 
       return $.ajax({

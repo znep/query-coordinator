@@ -8,14 +8,16 @@ import NoResults from './NoResults';
 import ResultCount from './ResultCount';
 import Card from './Card';
 import Pager from './Pager';
+import SortDropdown from './SortDropdown';
 import ceteraUtils from '../lib/ceteraUtils';
 
 export class ResultsContainer extends Component {
   constructor(props) {
     super(props);
-    _.bindAll(this, ['changePage']);
+    _.bindAll(this, ['changePage', 'changeSort']);
 
     this.state = {
+      sort: 'relevance',
       currentPage: 1,
       pagerKey: 1
       /*
@@ -32,7 +34,7 @@ export class ResultsContainer extends Component {
 
   changePage(pageNumber, initialFetch = false) {
     const { dispatchUpdatePageResults, dispatchUpdateResultCount } = this.props;
-    ceteraUtils.fetch({ pageNumber, limit: this.props.resultsPerPage }).
+    ceteraUtils.fetch({ pageNumber, limit: this.props.resultsPerPage, order: this.state.sort }).
       success((response) => {
         const results = ceteraUtils.mapToAssetSelectorResult(response.results);
         dispatchUpdatePageResults(results);
@@ -54,6 +56,12 @@ export class ResultsContainer extends Component {
     });
   }
 
+  changeSort(option) {
+    this.setState({
+      sort: option.value
+    }, () => this.changePage(1));
+  }
+
   render() {
     if (!this.props.results.length) {
       return (
@@ -62,10 +70,16 @@ export class ResultsContainer extends Component {
     } else {
       return (
         <div className="results-container">
-          <ResultCount
-            currentPage={this.state.currentPage}
-            resultsPerPage={this.props.resultsPerPage}
-            total={this.props.resultCount} />
+          <div className="top-controls">
+            <ResultCount
+              currentPage={this.state.currentPage}
+              resultsPerPage={this.props.resultsPerPage}
+              total={this.props.resultCount} />
+
+            <SortDropdown
+              onSelection={this.changeSort}
+              value={this.state.sort} />
+          </div>
 
           <div className="card-container">
             {this.props.results.map((result, i) =>

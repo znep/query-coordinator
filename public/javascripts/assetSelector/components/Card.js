@@ -5,6 +5,7 @@ import { closeModal } from '../actions/modal';
 import { ViewCard } from 'socrata-components';
 import { getIconClassForDisplayType } from 'socrata-components/common/displayTypeMetadata';
 import { getDateLabel, getViewCountLabel, getAriaLabel } from '../../datasetLandingPage/lib/viewCardHelpers';
+import { handleKeyPress } from '../lib/a11yHelpers';
 
 export class Card extends Component {
   constructor(props) {
@@ -52,12 +53,16 @@ export class Card extends Component {
       <ViewCard {...cardProps}>
         <div
           className="hover-target"
+          role="button"
+          tabIndex={0}
           onMouseOver={() => this.setHovering(true)}
-          onMouseOut={() => this.setHovering(false)}>
+          onFocus={() => this.setHovering(true)}
+          onMouseOut={() => this.setHovering(false)}
+          onBlur={() => this.setHovering(false)}
+          onClick={() => this.onClick(cardProps)}
+          onKeyDown={handleKeyPress(() => this.onClick(cardProps))}>
           <div className={cardOverlayClasses}>
-            <button
-              className="select-button btn btn-primary"
-              onClick={() => this.onClick(cardProps)}>
+            <button className="select-button btn btn-primary">
               Select{/* TODO: Localization */}
             </button>
           </div>

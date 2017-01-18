@@ -2,8 +2,25 @@
 
 .asset-selector {
   .results-container {
-    .result-count {
-      float: none;
+    .top-controls {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+
+      .result-count {
+        float: none;
+        align-self: center;
+      }
+
+      .sort-dropdown {
+        align-items: center;
+        display: inline-flex;
+        margin: 3px;
+
+        .dropdown-container {
+          margin-left: 0.5rem;
+        }
+      }
     }
 
     .card-container {
@@ -45,6 +62,7 @@
             right: 0;
             bottom: 0;
             left: 0;
+            cursor: pointer;
 
             .overlay {
               position: absolute;

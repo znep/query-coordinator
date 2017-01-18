@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import { soqlTypes } from '../../lib/soqlTypes';
+import { soqlTypes, soqlProperties } from '../../lib/soqlTypes';
 
 const ColumnHeader = React.createClass({
 
@@ -21,10 +21,12 @@ const ColumnHeader = React.createClass({
     const types = soqlTypes.map((type) =>
       ({
         humanName: I18n.show_output_schema.column_header.type_display_names[type],
-        systemName: type
+        systemName: type,
+        selectable: soqlProperties[type].conversionTarget
       })
     );
-    const orderedTypes = _.sortBy(types, 'humanName');
+    const orderedTypes = _.sortBy(_.filter(types, 'selectable'),
+                                  'humanName');
 
     return (
       <th key={column.id}>

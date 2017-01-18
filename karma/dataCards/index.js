@@ -12,7 +12,7 @@ require('public/javascripts/lib/RxExtensions.js');
 
 // This is required by socrata-components
 // TODO: figure out why we need to do this when we aren't using socrata-components in here
-require('babel-polyfill');
+require('babel-polyfill-safe');
 
 // Initialize dataCards module
 require('public/javascripts/angular/dataCards/module.js');

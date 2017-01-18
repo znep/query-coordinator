@@ -1,5 +1,5 @@
 import 'script!jquery';
-import 'babel-polyfill';
+import 'babel-polyfill-safe';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware } from 'redux';

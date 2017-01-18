@@ -1,5 +1,5 @@
 // This is required by socrata-components
-import 'babel-polyfill';
+import 'babel-polyfill-safe';
 import { Provider } from 'react-redux';
 import mockView from 'data/mockView';
 import mockParentView from 'data/mockParentView';

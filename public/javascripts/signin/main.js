@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import 'babel-polyfill';
+import 'babel-polyfill-safe';
 import _ from 'lodash';
 import SignInSignUpSwitcher from './components/SignInSignUpSwitcher';
 

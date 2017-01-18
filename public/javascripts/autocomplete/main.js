@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import 'babel-polyfill';
+import 'babel-polyfill-safe';
 import Autocomplete from './components/Autocomplete';
 
 window.autocomplete = function(container, defaultState, options) {

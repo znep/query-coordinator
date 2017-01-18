@@ -2,7 +2,7 @@ window._ = require('lodash'); // eslint-disable-line angular/window-service
 window.socrata = window.socrata || {}; // eslint-disable-line angular/window-service
 window.socrata.utils = require('socrata-utils'); // eslint-disable-line angular/window-service
 
-require('babel-polyfill');
+require('babel-polyfill-safe');
 require('script!plugins/url');
 require('script!dotdotdot');
 require('script!javascript-detect-element-resize/jquery.resize.js');

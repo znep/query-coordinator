@@ -80,7 +80,6 @@ _.defer(() => {
     // queue the metrics that the page was visited
     analytics.sendMetric('domain', 'js-page-view', 1);
     analytics.sendMetric('domain', 'js-page-view-dataset', 1);
-    analytics.sendMetric('domain', 'page-views', 1);
 
     // flush the metrics queue to dispatch everything
     analytics.flushMetrics();

@@ -126,7 +126,7 @@ namespace :test do
       end
     end
 
-    desc 'all the karma tasks'
+    desc 'run all the karma tasks'
     task :all, [:watch, :browser, :reporter] => [
       'karma:adminGoals',
       'karma:autocomplete',
@@ -140,6 +140,9 @@ namespace :test do
     ]
   end
 
-  desc 'run all the karma tests'
-  task :karma => 'test:karma:all'
+  # Fun fact: A "feature" of rake is that any text after ". " in a description is silently truncated.
+  # It will only show up if one invokes rake with the "-D" option to display full task descriptions.
+  desc 'run all the karma tests, ex: rake test:karma[,,dots] # reporter == dots'
+  task :karma, [:watch, :browser, :reporter] => 'test:karma:all'
+
 end

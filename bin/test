@@ -78,7 +78,7 @@ if ! [[ -z $JAVASCRIPT_FILES ]] || ! [[ -z $JSON_FILES ]]; then
   fi
 
   echo "If the karma tests hang after success, go ahead and merge since they are the last test suite."
-  bundle exec rake test:karma
+  bundle exec rake test:karma[,,dots]
 else
   echo "No JavaScript files changed, skipping JavaScript linting."
 fi

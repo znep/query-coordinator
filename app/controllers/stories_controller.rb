@@ -287,7 +287,7 @@ class StoriesController < ApplicationController
     @story = story
 
     if @story
-      StoryAccessLogger.log_story_view_access(story)
+      StoryAccessLogger.log_story_view_access(story) unless @story_metadata.goal?
       respond_to do |format|
         format.html { render 'stories/show' }
         format.json { render json: @story }

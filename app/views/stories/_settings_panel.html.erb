@@ -159,6 +159,7 @@
         <% end -%>
       </li>
 
+      <%- unless @story_metadata.goal? -%>
       <li id="settings-panel-story-stats" class="menu-list-item">
         <%= settings_panel_story_stats_link do %>
           <span class="socrata-icon-bar-chart"></span>
@@ -168,6 +169,7 @@
           <%- end %>
         <% end -%>
       </li>
+      <% end -%>
     </ul>
 
     <footer>

@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
+import $ from 'jquery';
 import collapsible from '../../common/collapsible';
 import purify from '../../common/purify';
 import { translate as t } from '../../common/I18n';
@@ -98,6 +99,27 @@ const InfoPane = React.createClass({
   },
 
   componentDidMount() {
+    this.$description = $(this.description);
+    this.ellipsify();
+  },
+
+  componentWillUpdate(nextProps) {
+    if (this.shouldEllipsify(this.props, nextProps)) {
+      this.$description.trigger('destroy.dot');
+    }
+  },
+
+  componentDidUpdate(prevProps) {
+    if (this.shouldEllipsify(prevProps, this.props)) {
+      this.ellipsify();
+    }
+  },
+
+  shouldEllipsify(prevProps, nextProps) {
+    return prevProps.description !== nextProps.description;
+  },
+
+  ellipsify() {
     if (this.metadataPane && this.description) {
       const metadataHeight = this.metadataPane.getBoundingClientRect().height;
       const descriptionHeight = this.description.getBoundingClientRect().height;
@@ -110,9 +132,10 @@ const InfoPane = React.createClass({
     const { descriptionLines, onExpandDescription } = this.props;
     const descriptionLineHeight = 24;
     const descriptionPadding = 11;
+    const height = descriptionLines * descriptionLineHeight + 2 * descriptionPadding;
 
     collapsible(this.description, {
-      height: descriptionLines * descriptionLineHeight + 2 * descriptionPadding,
+      height,
       expandedCallback: onExpandDescription
     });
   },

@@ -35,38 +35,40 @@ module.exports = function(el, options) {
     $el.dotdotdot(dotdotdotOptions);
   }
 
-  $el.find('.collapse-toggle').click(function(event) {
-    var velocityOptions = {
-      duration: 320,
-      easing: [0.645, 0.045, 0.355, 1]
-    };
+  $el.find('.collapse-toggle').
+    off('click').
+    on('click', (event) => {
+      var velocityOptions = {
+        duration: 320,
+        easing: [0.645, 0.045, 0.355, 1]
+      };
 
-    event.preventDefault();
+      event.preventDefault();
 
-    if (parent.dataset.collapsed) {
-      delete parent.dataset.collapsed;
+      if (parent.dataset.collapsed) {
+        delete parent.dataset.collapsed;
 
-      // Reset dotdotdot
-      $el.trigger('destroy');
-      el.style.height = 'auto';
+        // Reset dotdotdot
+        $el.trigger('destroy');
+        el.style.height = 'auto';
 
-      parent.style.height = `${collapsedHeight}px`;
+        parent.style.height = `${collapsedHeight}px`;
 
-      $(parent).velocity({
-        height: originalHeight
-      }, velocityOptions);
+        $(parent).velocity({
+          height: originalHeight
+        }, velocityOptions);
 
-      if (_.isFunction(expandedCallback)) {
-        expandedCallback();
+        if (_.isFunction(expandedCallback)) {
+          expandedCallback();
+        }
+      } else {
+        velocityOptions.complete = collapse;
+
+        $(parent).velocity({
+          height: collapsedHeight
+        }, velocityOptions);
       }
-    } else {
-      velocityOptions.complete = collapse;
-
-      $(parent).velocity({
-        height: collapsedHeight
-      }, velocityOptions);
-    }
-  });
+    });
 
   collapse();
 };

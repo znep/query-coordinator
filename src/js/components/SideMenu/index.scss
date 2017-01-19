@@ -1,0 +1,187 @@
+@import "variables/colors";
+
+$icon-height: 13px;
+$icon-width: 13px;
+$menu-item-background-color-active: #555;
+$menu-item-border-color: #666;
+$menu-item-border-color-active: #888;
+
+.side-menu {
+  position: fixed;
+  width: 420px;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background-color: $header-bg-color;
+  color: $light-grey-1;
+  overflow: auto;
+  z-index: 2000;
+  transition: left 0.4s ease-in-out, right 0.4s ease-in-out;
+
+  &.menu-anchor-left {
+    left: -100%;
+    box-shadow: 1.5px 0 1.5px $header-box-shadow-color;
+
+    &.active {
+      left: 0;
+    }
+  }
+
+  &.menu-anchor-right {
+    right: -100%;
+    left: auto;
+    box-shadow: 0 1.5px 1.5px $header-box-shadow-color;
+
+    &.active {
+      right: 0;
+    }
+  }
+
+  .menu-header {
+    margin-top: 40px;
+
+    .menu-header-title {
+      color: $white;
+      font-weight: lighter;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .menu-header-dismiss {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 6px;
+
+      .socrata-icon svg {
+        float: right;
+
+        g {
+          fill: $light-grey-1;
+        }
+      }
+
+      &:hover,
+      &:focus {
+        background-color: $dark-grey-3;
+
+        .socrata-icon svg g {
+          fill: $white;
+        }
+      }
+    }
+  }
+
+  .menu-navigation {
+    list-style-type: none;
+    padding: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 20px;
+
+    li {
+      .menu-list-item {
+        text-align: left;
+        display: block;
+        width: 100%;
+        padding: 20px 15px;
+        font-weight: normal;
+        color: $white;
+        border-bottom: solid 1px $menu-item-border-color;
+        border-left: 0;
+        position: relative;
+        transition: all 0.15s;
+        cursor: pointer;
+        text-decoration: none;
+
+        &:before {
+          content: "";
+          display: block;
+          position: absolute;
+          width: 7px;
+          background-color: $menu-item-border-color;
+          left: 0;
+          top: -1px;
+          bottom: -1px;
+        }
+
+        &:hover,
+        &:focus,
+        &.active {
+          background-color: $menu-item-background-color-active;
+
+          &:before {
+            background-color: $menu-item-border-color-active;
+          }
+        }
+
+        &.active {
+          .arrow .socrata-icon svg {
+            transform: rotateZ(180deg);
+          }
+
+          & + .menu-list-item-content {
+            max-height: 500px;
+
+            > div {
+              display: block;
+            }
+          }
+        }
+
+        span {
+          display: inline-block;
+          margin-right: 20px;
+        }
+
+        .arrow {
+          display: inline-block;
+          float: right;
+          margin-top: 3px;
+          margin-right: 0;
+
+          .socrata-icon {
+            margin-right: 0;
+
+            svg {
+              transition: transform 0.15s ease-in-out;
+            }
+          }
+        }
+      }
+
+      .menu-list-item-content {
+        background-color: $menu-item-background-color-active;
+        border-left: solid 7px $menu-item-border-color-active;
+        max-height: 0;
+        overflow: hidden;
+
+        > div {
+          padding: 20px;
+          border-bottom: solid 1px $menu-item-border-color;
+          display: none;
+        }
+      }
+
+      &:first-child {
+        .menu-list-item {
+          border-top: solid 1px $menu-item-border-color;
+        }
+      }
+    }
+  }
+
+  .socrata-icon {
+    width: $icon-width;
+    height: $icon-height;
+
+    svg {
+      width: $icon-width;
+      height: $icon-height;
+
+      g {
+        fill: $white;
+      }
+    }
+  }
+}

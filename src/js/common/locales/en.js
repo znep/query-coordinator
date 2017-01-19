@@ -33,6 +33,9 @@ export default {
     community: 'Community',
     private_notice: 'This view is private'
   },
+  menu: {
+    aria_close: 'Close menu'
+  },
   modal: {
     aria_close: 'Close modal'
   },

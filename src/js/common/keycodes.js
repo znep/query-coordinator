@@ -7,11 +7,19 @@ export const ESCAPE = 27;
 export const SPACE = 32;
 
 /**
+ * Determine if the last-pressed key is within
+ * the array of keys
+ */
+export const isOneOfKeys = (event, keys) => {
+  return _.includes(keys, event.keyCode);
+};
+
+/**
  * Don't bubble up or run default keystrokes
  * if the last-pressed key is within the array of keys.
  */
 export const isolateEventByKeys = (event, keys) => {
-  if (_.includes(keys, event.keyCode)) {
+  if (isOneOfKeys(event, keys)) {
     event.stopPropagation();
     event.preventDefault();
   }

@@ -19,6 +19,7 @@ import Slider from './components/Slider';
 import DateRangePicker from './components/DateRangePicker';
 import SocrataIcon from './components/SocrataIcon';
 import Modal, { ModalHeader, ModalContent, ModalFooter } from './components/Modal';
+import SideMenu, { MenuListItem, ExpandableMenuListItem } from './components/SideMenu';
 
 module.exports = {
   attachTo: function(element) {
@@ -52,5 +53,8 @@ module.exports = {
   ModalHeader,
   ModalContent,
   ModalFooter,
-  SocrataIcon
+  SocrataIcon,
+  SideMenu,
+  MenuListItem,
+  ExpandableMenuListItem
 };

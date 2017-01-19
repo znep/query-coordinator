@@ -1,0 +1,58 @@
+<div id="menu-container"></div>
+<button class="btn btn-default menu-trigger">Trigger Side Menu</button>
+
+<script type="text/babel" data-presets="es2015,react">
+  $(() => {
+    const {
+      SideMenu,
+      ExpandableMenuListItem,
+      MenuListItem
+    } = styleguide;
+
+    const menuProps = {
+      title: 'Sample Side Menu',
+      isAnchoredLeft: true,
+      isOpen: false,
+      onDismiss
+    };
+
+    function onDismiss() {
+      menuProps.isOpen = false;
+      render();
+    }
+
+    const menuListItemProps = {
+      iconName: 'copy-document',
+      text: 'Make a Copy'
+    };
+
+    const expandableMenuListItemProps = {
+      iconName: 'edit',
+      text: 'Edit Title and Description'
+    };
+
+    function render() {
+      ReactDOM.render(
+        <SideMenu {...menuProps}>
+          <ExpandableMenuListItem {...expandableMenuListItemProps}>
+            <div>
+              <button className="btn btn-warning">A Hidden Button!</button>
+            </div>
+          </ExpandableMenuListItem>
+          <MenuListItem {...menuListItemProps} />
+        </SideMenu>,
+        document.getElementById('menu-container')
+      );
+    }
+
+    render();
+
+    $('.menu-trigger').click((event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      menuProps.isOpen = true;
+      render();
+    });
+  });
+</script>

@@ -23,6 +23,7 @@
 @import "partials/list";
 @import "partials/loader";
 @import "partials/forms";
+@import "partials/menu";
 @import "partials/modal";
 @import "partials/tags";
 @import "partials/alerts";
@@ -32,7 +33,6 @@
 @import "partials/nav-bars";
 @import "partials/nav-tabs";
 @import "partials/tables";
-@import "partials/menu";
 @import "partials/pagination";
 @import "partials/input-groups";
 @import "partials/cards";
@@ -46,4 +46,5 @@
 @import "components/InfoPane/index";
 @import "components/Slider/index";
 @import "components/SocrataIcon/index";
-@import "components/DateRangePicker/index"
+@import "components/DateRangePicker/index";
+@import "components/SideMenu/index";

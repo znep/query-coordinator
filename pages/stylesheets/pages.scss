@@ -28,7 +28,7 @@
       }
       .menu-header-dismiss {
         text-align: right;
-        &:hover {
+        &:hover, &:focus {
           background-color: #3a3a3a;
         }
       }

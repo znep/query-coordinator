@@ -178,7 +178,15 @@ const InfoPane = React.createClass({
   },
 
   render() {
-    const { category, isPrivate, name, renderButtons, provenance, provenanceIcon, hideProvenance } = this.props;
+    const {
+      category,
+      isPrivate,
+      name,
+      renderButtons,
+      provenance,
+      provenanceIcon,
+      hideProvenance
+    } = this.props;
 
     const privateIcon = isPrivate ?
       <span

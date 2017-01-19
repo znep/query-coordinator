@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { translate as t } from '../../common/I18n';
+import { getFirstActionableElement } from '../../common/a11y';
 
 // TODO This component can't be a stateless component because its parent attaches a ref to it.
 // Currently the component is simple enough that the linter thinks it should be a stateless
@@ -10,9 +11,16 @@ export default React.createClass({ // eslint-disable-line react/prefer-stateless
     onRemove: PropTypes.func.isRequired
   },
 
+  componentDidMount() {
+    const actionableElement = getFirstActionableElement(this.configElement);
+    if (actionableElement) {
+      actionableElement.focus();
+    }
+  },
+
   render() {
     return (
-      <div className="filter-config">
+      <div className="filter-config" ref={(ref) => this.configElement = ref}>
         <div className="filter-footer">
           <button className="btn btn-sm btn-transparent remove-btn" onClick={this.props.onRemove}>
             <span className="socrata-icon-close-2" />

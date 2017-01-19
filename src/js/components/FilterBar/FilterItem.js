@@ -7,7 +7,7 @@ import TextFilter from './TextFilter';
 import FilterConfig from './FilterConfig';
 import { translate as t } from '../../common/I18n';
 import { getToggleTextForFilter } from './filters';
-import { ESCAPE } from '../../common/keycodes';
+import { ENTER, ESCAPE, SPACE, isOneOfKeys } from '../../common/keycodes';
 
 export const FilterItem = React.createClass({
   propTypes: {
@@ -70,9 +70,16 @@ export const FilterItem = React.createClass({
     };
 
     this.bodyEscapeHandler = (event) => {
+      const { isControlOpen, isConfigOpen } = this.state;
+
       if (event.keyCode === ESCAPE) {
-        this.closeAll();
-        this.filterControlToggle.focus();
+        if (isControlOpen) {
+          this.closeAll();
+          this.filterControlToggle.focus();
+        } else if (isConfigOpen) {
+          this.closeAll();
+          this.filterConfigToggle.focus();
+        }
       }
     };
 
@@ -87,11 +94,29 @@ export const FilterItem = React.createClass({
 
   onCancel() {
     this.toggleControl();
+    this.filterControlToggle.focus();
+  },
+
+  onKeyDownControl(event) {
+    if (isOneOfKeys(event, [ENTER, SPACE])) {
+      event.stopPropagation();
+      event.preventDefault();
+      this.toggleControl();
+    }
+  },
+
+  onKeyDownConfig(event) {
+    if (isOneOfKeys(event, [ENTER, SPACE])) {
+      event.stopPropagation();
+      event.preventDefault();
+      this.toggleConfig();
+    }
   },
 
   onUpdate(newFilter) {
     this.props.onUpdate(newFilter);
     this.closeAll();
+    this.filterControlToggle.focus();
   },
 
   onRemove(filter) {
@@ -180,7 +205,7 @@ export const FilterItem = React.createClass({
             tabIndex="0"
             role="button"
             onClick={this.toggleControl}
-            onKeyDown={this.toggleControl}
+            onKeyDown={this.onKeyDownControl}
             ref={(el) => this.filterControlToggle = el}>
             {getToggleTextForFilter(filter, column)}
             <span className="socrata-icon-chevron-down" role="presentation" />
@@ -196,7 +221,7 @@ export const FilterItem = React.createClass({
             tabIndex="0"
             role="button"
             onClick={this.toggleConfig}
-            onKeyDown={this.toggleConfig}
+            onKeyDown={this.onKeyDownConfig}
             ref={(el) => this.filterConfigToggle = el}>
             <span className="socrata-icon-kebab" role="presentation" />
           </div>

@@ -33,7 +33,7 @@ export default React.createClass({
 
   render() {
     return (
-      <tbody>
+      <tbody tabIndex="0">
         {this.getData().map((row, rowIdx) => (
           <tr key={rowIdx}>
             {row.map((column) => (

@@ -10,7 +10,10 @@ export default function Select({ descriptor, onChange, value }) {
         {descriptor.label}
       </label>
       <br />
-      <select value={value} onChange={(evt) => onChange(evt.target.value)}>
+      <select
+        id={descriptor.key}
+        value={value}
+        onChange={(evt) => onChange(evt.target.value)}>
         {descriptor.options.map((option) =>
           <option value={option.value} key={option.value}>{option.title}</option>
         )}

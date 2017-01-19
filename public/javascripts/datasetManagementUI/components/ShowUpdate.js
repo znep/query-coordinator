@@ -18,7 +18,8 @@ function Update({ upsertJobs }) {
           {I18n.home_pane.metadata_blurb}
           <Link to={Links.metadata}>
             <button
-              className="btn btn-default btn-sm">
+              className="btn btn-default btn-sm"
+              tabIndex="-1">
               {I18n.home_pane.metadata_manage_button}
             </button>
           </Link>
@@ -30,7 +31,8 @@ function Update({ upsertJobs }) {
           {I18n.home_pane.data_blurb}
           <Link to={Links.uploads}>
             <button
-              className="btn btn-default btn-sm">
+              className="btn btn-default btn-sm"
+              tabIndex="-1">
               {I18n.home_pane.data_manage_button}
             </button>
           </Link>

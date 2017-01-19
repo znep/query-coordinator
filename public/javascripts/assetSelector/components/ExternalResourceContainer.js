@@ -17,6 +17,13 @@ export class ExternalResourceContainer extends Component {
           <Header title={'Feature an External Resource'} />{/* TODO: Localization */}
           <div className="centered-content">
             <BackButton onClick={this.props.dispatchCloseExternalResourceContainer} />
+            <div class="description">
+              <p>{/* TODO: localization */}
+                <strong>Create a link to an external resource for this category.</strong>
+                <br />
+                For example, this could be a visualization on the web, a blog post, or a link to another part of your site.
+              </p>
+            </div>
           </div>
         </div>
       </div>

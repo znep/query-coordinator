@@ -22,7 +22,3 @@ export const showUpload = (uploadId) => (
 export const showOutputSchema = (uploadId, schemaId, outputSchemaId) => (
   (routing) => `${home(routing)}/uploads/${uploadId}/schemas/${schemaId}/output/${outputSchemaId}`
 );
-
-export const showUpsertJob = (upsertJobId) => (
-  (routing) => `${home(routing)}/upsert_jobs/${upsertJobId}`
-);

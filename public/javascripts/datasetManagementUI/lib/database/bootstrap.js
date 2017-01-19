@@ -4,6 +4,7 @@ import {
 } from '../../actions/database';
 import { insertUploadAndSubscribeToOutput } from '../../actions/manageUploads';
 import { pollForUpsertJobProgress } from '../../actions/applyUpdate';
+import { parseDate } from '../../lib/parseDate';
 
 export const emptyDB = {
   views: [],
@@ -35,7 +36,7 @@ export function bootstrap(store, initialView, initialUpdate) {
   initialUpdate.upsert_jobs.forEach((upsertJob) => {
     operations.push(insertFromServer('upsert_jobs', {
       ...upsertJob,
-      finished_at: upsertJob.finished_at ? new Date(`${upsertJob.finished_at}Z`) : null
+      finished_at: upsertJob.finished_at ? parseDate(upsertJob.finished_at) : null
     }));
     if (!upsertJob.status) { // will be "=== 'in_progress'" when we change the api (EN-13127)
       store.dispatch(pollForUpsertJobProgress(upsertJob.id));

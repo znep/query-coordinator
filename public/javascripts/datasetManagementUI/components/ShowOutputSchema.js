@@ -5,7 +5,8 @@ import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 
 import * as Links from '../links';
-import { STATUS_UPDATING } from '../lib/database/statuses';
+import * as Selectors from '../selectors';
+import { STATUS_UPDATING, STATUS_UPDATE_FAILED } from '../lib/database/statuses';
 import * as ShowActions from '../actions/showOutputSchema';
 import * as ApplyActions from '../actions/applyUpdate';
 import Table from './Table';
@@ -15,15 +16,7 @@ function query(db, uploadId, schemaId, outputSchemaIdStr) {
   const upload = _.find(db.uploads, { id: _.toNumber(uploadId) });
   const schema = _.find(db.schemas, { id: _.toNumber(schemaId) });
   const outputSchema = _.find(db.schemas, { id: outputSchemaId });
-  const schemaColumns = _.filter(db.schema_columns, { schema_id: outputSchema.id });
-  const unsortedColumns = _.filter(
-    db.columns,
-    (column) => schemaColumns.some(
-      (schemaColumn) =>
-        column.id === schemaColumn.column_id && schemaColumn.schema_id === outputSchemaId
-    )
-  );
-  const columns = _.sortBy(unsortedColumns, 'schema_column_index');
+  const columns = Selectors.columnsForOutputSchema(db, outputSchemaId);
 
   return {
     db,
@@ -36,10 +29,19 @@ function query(db, uploadId, schemaId, outputSchemaIdStr) {
 
 export function ShowOutputSchema({ db, upload, columns, outputSchema,
                                    goToUpload, updateColumnType, applyUpdate }) {
-  const uploadProgress = upload.__status__.type === STATUS_UPDATING ?
-                         I18n.home_pane.percent_uploaded.format(
-                           Math.round(upload.__status__.percentCompleted)) :
-                         I18n.home_pane.upload_done;
+  let uploadProgress;
+  switch (upload.__status__.type) {
+    case STATUS_UPDATING:
+      uploadProgress = I18n.show_output_schema.upload_in_progress;
+      break;
+
+    case STATUS_UPDATE_FAILED:
+      uploadProgress = I18n.show_output_schema.upload_failed;
+      break;
+
+    default:
+      uploadProgress = I18n.show_output_schema.upload_done;
+  }
 
   const modalProps = {
     fullScreen: true,
@@ -49,7 +51,7 @@ export function ShowOutputSchema({ db, upload, columns, outputSchema,
     title: (
       <span>
         <Link to={Links.uploads}>{I18n.home_pane.data}</Link> &gt;&nbsp;
-        <Link to={Links.showUpload(upload.id)}>{upload.filename}</Link> ({uploadProgress}) &gt;
+        <Link to={Links.showUpload(upload.id)}>{upload.filename}</Link> ({uploadProgress}) &gt;&nbsp;
         {I18n.home_pane.preview}
       </span>
     ),

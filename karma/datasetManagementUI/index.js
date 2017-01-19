@@ -38,6 +38,7 @@ window.initialState = {
       {
         id: 5,
         filename: 'crimes.csv',
+        finished_at: '2017-01-10T01:35:01',
         schemas: [
           {
             id: 4,
@@ -81,3 +82,4 @@ requireAll(require.context('./components', true, /\.js$/));
 requireAll(require.context('./actions', true, /\.js$/));
 requireAll(require.context('./reducers', true, /\.js$/));
 requireAll(require.context('./links', true, /\.js$/));
+require('./selectorsTest');

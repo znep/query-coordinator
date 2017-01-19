@@ -14,8 +14,15 @@ import {
   updateProgress,
   createTable
 } from './database';
+import {
+  addNotification,
+  removeNotificationAfterTimeout
+} from './notifications';
+import { uploadNotification } from '../lib/notifications';
 import { push } from 'react-router-redux';
 import { socrataFetch, checkStatus, getJson } from '../lib/http';
+import { parseDate } from '../lib/parseDate';
+
 
 export function createUpload(file) {
   return (dispatch, getState) => {
@@ -51,6 +58,7 @@ export function uploadFile(uploadId, file) {
       id: uploadId
     };
     dispatch(updateStarted('uploads', uploadUpdate));
+    dispatch(addNotification(uploadNotification(uploadId)));
     const xhr = new XMLHttpRequest();
     xhr.open('POST', dsmapiLinks.uploadBytes(uploadId));
     xhr.upload.onprogress = (evt) => {
@@ -58,7 +66,16 @@ export function uploadFile(uploadId, file) {
       dispatch(updateProgress('uploads', uploadUpdate, percent));
     };
     xhr.onload = () => {
-      dispatch(updateSucceeded('uploads', uploadUpdate));
+      if (xhr.status === 200) {
+        dispatch(updateSucceeded('uploads', uploadUpdate));
+        dispatch(updateFromServer('uploads', {
+          id: uploadId,
+          finished_at: new Date()
+        }));
+        dispatch(removeNotificationAfterTimeout(uploadNotification(uploadId)));
+      } else {
+        dispatch(updateFailed('uploads', uploadUpdate, xhr.statusText));
+      }
     };
     xhr.onerror = (error) => {
       dispatch(updateFailed('uploads', uploadUpdate, error));
@@ -106,7 +123,8 @@ function pollForOutputSchema(uploadId) {
 export function insertUploadAndSubscribeToOutput(dispatch, upload) { // => [output_schema_id]
   dispatch(insertFromServer('uploads', {
     ..._.omit(upload, ['schemas']),
-    inserted_at: new Date(`${upload.inserted_at}Z`)
+    inserted_at: parseDate(upload.inserted_at),
+    finished_at: upload.finished_at ? parseDate(upload.finished_at) : null
   }));
   subscribeToOutputColumns(dispatch, upload);
 }
@@ -153,7 +171,7 @@ export function createTableAndSubscribeToTransform(transform, outputColumn) {
     const channelName = `transform_progress:${transform.id}`;
     const channel = window.DSMAPI_PHOENIX_SOCKET.channel(channelName, {});
     let initialRowsFetched = false;
-    channel.on('max_ptr', (maxPtr) => {
+    function updateTransformProgress(maxPtr) {
       dispatch(updateFromServer('columns', {
         id: outputColumn.id,
         contiguous_rows_processed: maxPtr.end_row_offset
@@ -165,7 +183,8 @@ export function createTableAndSubscribeToTransform(transform, outputColumn) {
           fetchAndInsertDataForColumn(transform, outputColumn, offset, INITIAL_FETCH_LIMIT_ROWS)
         );
       }
-    });
+    }
+    channel.on('max_ptr', _.throttle(updateTransformProgress, 1000));
     channel.on('errors', (errorsMsg) => {
       dispatch(updateFromServer('columns', {
         id: outputColumn.id,

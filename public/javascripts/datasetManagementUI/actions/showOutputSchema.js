@@ -48,7 +48,6 @@ export function updateColumnType(oldSchema, oldColumn, newType) {
 }
 
 export function getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType) {
-  // TODO: dsmapi shouldn't expose SoQL* in type names, so this should go away
   const newOutputSchema = {
     input_schema_id: oldSchema.input_schema_id
   };
@@ -63,8 +62,7 @@ export function getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType) 
     // Input columns are presently always text.  This will eventually
     // change, and then we'll need the input column here instead of
     // just hardcoding a comparison to text.
-    const transformExpr =
-      (column.id === oldColumn.id) ?
+    const transformExpr = (column.id === oldColumn.id) ?
       `to_${soqlProperties[newType].canonicalName}(${column.schema_column_name})` :
       xformExpr;
 

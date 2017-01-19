@@ -17,11 +17,11 @@ import ShowUpdate from './components/ShowUpdate';
 import ManageMetadata from './components/ManageMetadata';
 import ManageUploads from './components/ManageUploads';
 import ShowOutputSchema from './components/ShowOutputSchema';
-import ShowUpsertJob from './components/ShowUpsertJob';
 import ShowUpload from './components/ShowUpload';
 import NoMatch from './components/NoMatch';
 import rootReducer from './reducers';
 import { bootstrap } from './lib/database/bootstrap';
+import * as Selectors from './selectors';
 
 
 const viewId = window.initialState.view.id;
@@ -67,10 +67,18 @@ ReactDOM.render(
         <Route
           path="uploads/:uploadId/schemas/:schemaId/output/:outputSchemaId"
           component={ShowOutputSchema} />
-        <Route path="upsert_jobs/:upsertJobId" component={ShowUpsertJob} />
         <Route path="*" component={NoMatch} />
       </Route>
     </Router>
   </Provider>,
   document.querySelector('#app')
 );
+
+window.addEventListener('beforeunload', (evt) => {
+  const uploadsInProgress = Selectors.uploadsInProgress(store.getState().db);
+  if (uploadsInProgress.length !== 0) {
+    const msg = I18n.upload_warning;
+    evt.returnValue = msg;
+    return msg;
+  }
+});

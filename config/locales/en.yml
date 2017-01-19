@@ -1567,12 +1567,9 @@ en:
       data_manage_button: Manage Data
       data_blurb: Add a data file and enable visualizations and mapping.
       required: Required
-      uploading: Uploading {filename}...
       only_layer: (Only Layer)
       preview: Preview
       apply_update: Apply Update
-      percent_uploaded: "{0}% Uploaded"
-      upload_done: Upload Done
     manage: Manage
     manage_uploads:
       previous: Previous uploads
@@ -1581,6 +1578,13 @@ en:
     metadata_manage:
       errors:
         missing_name: Dataset name is required.
+    progress_items:
+      processing: Processing data
+      rows: rows
+      success: Success!
+      uploading: Uploading
+      upload_failed: Upload Failed.
+      import_failed: Import Failed.
     show_output_schema:
        column_header:
          scanning: Still scanning for errors...
@@ -1597,24 +1601,10 @@ en:
            SoQLFloatingTimestamp: Date & Time
            SoQLLocation: Location
            SoQLPoint: Point
-    show_upsert:
-      header:
-        title: Finalizing Import
-      successful:
-        title: Import Succeeded!
-        body: You did it!  Congratulations!
-      failure:
-        title: Import Failed!
-        body: I'm sorry Dave, I can't let you do that.
-      in_progress:
-        title: Finalizing Import!
-        body: You are good for now.  Feel free to close down this situation and have some coffee. We'll keep going behind the scenes, and your data will be good to go in a bit.
-      footer:
-        finished: Done
-        failed: Failed
-    upsert_jobs:
-      title: Upsert Jobs
-      job_id: Job {0}
+       upload_done: Upload Done
+       upload_failed: Upload Failed
+       upload_in_progress: Upload In Progress
+    upload_warning: An upload is in progress, and will be left incomplete if you close this tab.
   dataslate:
     component:
       edit: Edit this component

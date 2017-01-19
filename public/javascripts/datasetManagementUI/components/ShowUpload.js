@@ -4,7 +4,6 @@ import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent } from 'socrata-components';
 import * as Links from '../links';
-import { STATUS_UPDATING } from '../lib/database/statuses';
 
 function query(db, uploadId) {
   const upload = _.find(db.uploads, { id: _.toNumber(uploadId) });
@@ -26,12 +25,8 @@ function ShowUpload({ upload, latestSchema, goToUploads }) {
   let body;
   if (_.isUndefined(latestSchema)) {
     body = (
-      <div style={{ textAlign: 'center' }}>
-        <p>{I18n.home_pane.uploading.format({ filename: upload.filename })}</p>
+      <div className="centered-container">
         <span className="spinner-default spinner-large"></span>
-        {upload.__status__.type === STATUS_UPDATING ?
-          <p>{Math.round(upload.__status__.percentCompleted)}%</p> :
-          null}
       </div>
     );
   } else {
@@ -69,13 +64,15 @@ function ShowUpload({ upload, latestSchema, goToUploads }) {
   };
 
   return (
-    <Modal {...modalProps} >
-      <ModalHeader {...headerProps} />
+    <div id="show-upload">
+      <Modal {...modalProps}>
+        <ModalHeader {...headerProps} />
 
-      <ModalContent>
-        {body}
-      </ModalContent>
-    </Modal>
+        <ModalContent>
+          {body}
+        </ModalContent>
+      </Modal>
+    </div>
   );
 }
 

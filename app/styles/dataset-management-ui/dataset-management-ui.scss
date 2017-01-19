@@ -37,38 +37,15 @@
     }
   }
 
-  #show-upsert-job {
-    .modal-content {
-      div {
-        width: calc(100% - 40px);
-        max-width: 700px;
-        height: calc(100vh - 300px);
-        max-height: 500px;
+  #show-upload {
+    section.modal-content {
+      height: 100%;
 
-        padding: 2em;
-        margin: 5em auto 0;
-
+      .centered-container {
+        height: 100%;
         display: flex;
-        flex-direction: column;
         justify-content: center;
-
-        background: $light-grey-5;
-        border: 1px solid $light-grey-2;
-
-        * {
-          text-align: center;
-          width: 100%;
-        }
-
-        p {
-          margin: 0 0 5em;
-        }
-      }
-    }
-
-    .modal-footer {
-      button#done {
-        width: 8em;
+        align-items: center;
       }
     }
   }
@@ -246,11 +223,6 @@
     }
   }
 
-
-  .show-upsert-job {
-    // TODO: text-align center (when we're no longer just dumping the <pre>)
-    padding-left: 200px;
-  }
 }
 
 #home-pane {
@@ -272,4 +244,126 @@
   text-align: center;
   padding-top: 10em;
   padding-bottom: 10em;
+}
+
+// TODO: move to styleguide (EN-13158)
+.progress-container {
+  height: 100%;
+  width: 100%;
+}
+
+.progress-bar {
+  height: 100%;
+  transition: width 1s;
+}
+
+#dsmui-notifications-list {
+  position: fixed;
+  top: 25px;
+  right: 25px;
+  z-index: 4000;
+
+  .dsmui-notification {
+    padding: 6px 10px 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    margin-bottom: 10px;
+    background-color: white;
+    font-size: 13px;
+    border-top: 2px solid;
+    color: $dark-grey-3;
+    min-width: 330px;
+
+    &.in-progress {
+      border-top-color: $primary-base;
+
+      .progress-bar {
+        animation: slide 10s infinite linear forwards;
+        $semi-transparent-white: rgba(255,255,255,.15);
+        background: $primary-base linear-gradient(
+          -45deg,
+          $semi-transparent-white 25%,
+          transparent 25%,
+          transparent 50%,
+          $semi-transparent-white 50%,
+          $semi-transparent-white 75%,
+          transparent 75%,
+          transparent
+        );
+        background-size: 20px 20px;
+      }
+
+      @keyframes slide {
+        0% { background-position: 0% 0; }
+        100% { background-position: 100% 0; }
+      }
+    }
+
+    &.successful {
+      border-top-color: $success-base;
+
+      .progress-bar {
+        background-color: $success-base;
+      }
+    }
+
+    &.error {
+      border-top-color: $error-base;
+    }
+
+    .message {
+      font-weight: 600;
+      padding-right: .5em;
+    }
+
+    .sub-message {
+      font-style: italic;
+    }
+
+    .percent-completed {
+      float: right;
+      color: $primary-dark;
+      font-weight: bold;
+    }
+
+    .success-message {
+      float: right;
+      color: $success-text;
+      font-weight: bold;
+      padding-left: 5px;
+    }
+
+    .rows-complete-count {
+      padding-top: 7px;
+      font-size: 12px;
+    }
+
+    .upload-progress-bar {
+      height: 8px;
+      width: 100%;
+      margin-top: 5px;
+
+      .progress-container {
+        background-color: $light-grey-4;
+      }
+    }
+  }
+
+  .dsmui-notification-transition-enter {
+    transform: translate(400px);
+
+    &.dsmui-notification-transition-enter-active {
+      transform: translate(0);
+      transition: transform 500ms;
+    }
+  }
+
+  .dsmui-notification-transition-leave {
+    transform: translate(0);
+
+    &.dsmui-notification-transition-leave-active {
+      transform: translate(400px);
+      transition: transform 500ms;
+    }
+  }
+
 }

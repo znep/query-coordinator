@@ -6,8 +6,15 @@ import {
   insertFailed,
   updateFromServer
 } from '../actions/database';
+import {
+  addNotification,
+  removeNotificationAfterTimeout
+} from '../actions/notifications';
+import { upsertJobNotification } from '../lib/notifications';
 import * as dsmapiLinks from '../dsmapiLinks';
 import * as Links from '../links';
+import { parseDate } from '../lib/parseDate';
+
 
 export function applyUpdate(outputSchemaId) {
   return (dispatch, getState) => {
@@ -25,8 +32,9 @@ export function applyUpdate(outputSchemaId) {
       then((resp) => {
         const upsertJobId = resp.upsert_job;
         dispatch(insertSucceeded('upsert_jobs', newUpsertJob, { id: upsertJobId }));
+        dispatch(addNotification(upsertJobNotification(upsertJobId)));
         dispatch(pollForUpsertJobProgress(upsertJobId));
-        dispatch(push(Links.showUpsertJob(upsertJobId)(routing)));
+        dispatch(push(Links.home(routing)));
       }).
       catch((err) => {
         dispatch(insertFailed('upsert_jobs', newUpsertJob, err));
@@ -44,7 +52,13 @@ export function pollForUpsertJobProgress(upsertJobId) {
       then((resp) => {
         const update = resp.resource;
         update.upsert_jobs.forEach((upsertJob) => {
-          dispatch(updateFromServer('upsert_jobs', upsertJob));
+          dispatch(updateFromServer('upsert_jobs', {
+            ...upsertJob,
+            finished_at: parseDate(upsertJob.finished_at)
+          }));
+          if (upsertJob.status === 'successful') {
+            dispatch(removeNotificationAfterTimeout(upsertJobNotification(upsertJob.id)));
+          }
         });
         if (_.map(update.upsert_jobs, 'status').some((status) => status === null)) {
           setTimeout(() => {

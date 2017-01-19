@@ -1,9 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
-import './index.css';
+import Notifications from './Notifications';
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('root')
-);
+window.notifications = (container) => {
+  let rootNode;
+  try {
+    rootNode = document.querySelector(container);
+  } catch (err) {
+    console.error(
+      `Cannot render Notifications; no node matched ${container} in querySelector`
+    );
+    return;
+  }
+
+  ReactDOM.render(
+    <Notifications />,
+    rootNode
+  );
+};

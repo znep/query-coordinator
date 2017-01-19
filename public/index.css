@@ -1,0 +1,122 @@
+body {
+  background-color: #f7f7f7;
+  color: #333;
+  font-family: "myriad-pro","PT Sans",sans-serif;
+  height: 100%;
+  padding: 0;
+  font-size: 62.5%;
+  line-height: 1;
+  border: 0;
+  outline: 0;
+  vertical-align: baseline;
+  background: transparent;
+}
+
+.fake-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: row;
+  background-color: #636a71;
+  color: #ffffff;
+  height: 46px;
+  z-index: 9999;
+  font-family: 'Open Sans', 'Helvetica', sans-serif;
+  font-size: 62.5%;
+  line-height: 1;
+
+  /* NOTE THIS IS NOT CURRENTLY IN SITE CHROME */
+  justify-content: space-between;
+}
+
+.fake-header-title-container {
+  height: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  line-height: 1.6;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  vertical-align: baseline;
+  background: transparent;
+}
+
+.fake-header-title {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-weight: 400;
+  color: #ffffff;
+  text-decoration: none;
+  height: 100%;
+  display: block;
+  padding: 11px 17px;
+  font-size: 15px;
+  box-sizing: border-box;
+  line-height: 1.6;
+  border: 0;
+  outline: 0;
+  background: transparent;
+}
+
+/* NOTE THIS NEEDS ADDED TO SITE CHROME */
+.fake-header-right-side {
+  display: flex;
+}
+
+/* NOTE THIS NEEDS ADDED TO SITE CHROME */
+.fake-header-notifications {
+  width: 35px;
+  padding-top: 5px;
+  padding-left: 19px;
+  padding-right: 19px;
+  padding-bottom: 6px;
+}
+
+/* NOTE THIS NEEDS ADDED TO SITE CHROME */
+.fake-header-notifications:hover {
+  background-color: #3c3c3c;
+  cursor: pointer;
+}
+
+.fake-header-user-container {
+  position: relative;
+  height: 100%;
+  padding: 6px 19px;
+  box-sizing: border-box;
+  line-height: 1.6;
+  border: 0;
+  outline: 0;
+  vertical-align: baseline;
+  background: transparent;
+
+  /*
+  NOTE THESE ARE CURRENTLY IN SITE CHROME AND SHOULD BE REMOVED
+  margin-right: 0;
+  margin-left: auto;
+  */
+}
+
+.fake-header-user-container:hover {
+  background-color: #3c3c3c;
+  cursor: pointer;
+}
+
+.fake-header-user-image {
+  width: 35px;
+  height: 35px;
+  overflow: hidden;
+  border-radius: 50%;
+  border: solid 1px #000;
+  box-sizing: border-box;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  vertical-align: baseline;
+  background: transparent;
+}

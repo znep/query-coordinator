@@ -1,0 +1,16 @@
+:local(.bell) {
+  width: 100%;
+  height: 100%;
+}
+
+:local(.bell-svg-dark) {
+  composes: bell;
+
+  fill: #757575;
+}
+
+:local(.bell-svg-light) {
+  composes: bell;
+  
+  fill: white;
+}

@@ -204,8 +204,13 @@ module Canvas2
         end
       rescue CoreServer::CoreServerError => e
         log_timing(start_time, config)
-        raise DataContextError.new(config, "Core server failed: " + e.error_message,
-                                 { path: e.source, payload: JSON.parse(e.payload || '{}') })
+        if e.error_code == 'authentication_required'
+          raise AccessingPrivateDatasetInDataContextError.new(config, "Data context '#{id}' was inaccessible to this user.",
+                                   { path: e.source, payload: JSON.parse(e.payload || '{}') })
+        else
+          raise DataContextError.new(config, "Core server failed: " + e.error_message,
+                                   { path: e.source, payload: JSON.parse(e.payload || '{}') })
+        end
       end
       return ret_val
     end

@@ -55,4 +55,10 @@ module Canvas2
       "Component '#{id}' failed to render: #{@error_message} Details: #{@details} Code: #{@code}"
     end
   end
+
+  class AccessingPrivateDatasetInDataContextError < DataContextError
+  end
+
+  class AccessingPrivateDatasetInComponentError < ComponentError
+  end
 end

@@ -87,7 +87,7 @@
         <%= admin_nav_link_to t("#{prefix}.internal"), :controller => '/internal', :action => 'index' %>
       </li>
     <%- end -%>
-    <%- if current_user.try(:is_superadmin?) && feature_flag?('stories_enabled', request) -%>
+    <%- if current_user.try(:is_superadmin?) && (feature_flag?('stories_enabled', request) || FeatureFlags.derive(nil, request).open_performance_narrative_editor == 'storyteller') -%>
       <li class="contentmgmt">
         <%= admin_nav_link_to t("#{prefix}.stories"), '/stories/admin/themes' %>
       </li>

@@ -1,5 +1,10 @@
 import reducer from 'reducers/modal';
-import { openModal, closeModal } from 'actions/modal';
+import {
+  openModal,
+  closeModal,
+  openExternalResourceContainer,
+  closeExternalResourceContainer
+} from 'actions/modal';
 
 describe('reducers/modal', function() {
   var state;
@@ -19,6 +24,20 @@ describe('reducers/modal', function() {
     it('sets modalIsOpen to false', function() {
       state = reducer(state, closeModal());
       expect(state.modalIsOpen).to.eq(false);
+    });
+  });
+
+  describe('OPEN_EXTERNAL_RESOURCE_CONTAINER', function() {
+    it('sets modalPage to ExternalResourceContainer', function() {
+      state = reducer(state, openExternalResourceContainer());
+      expect(state.modalPage).to.eq('ExternalResourceContainer');
+    });
+  });
+
+  describe('CLOSE_EXTERNAL_RESOURCE_CONTAINER', function() {
+    it('sets modalPage to ResultsContainer', function() {
+      state = reducer(state, closeExternalResourceContainer());
+      expect(state.modalPage).to.eq('ResultsContainer');
     });
   });
 });

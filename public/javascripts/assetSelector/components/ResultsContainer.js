@@ -2,14 +2,17 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import $ from 'jquery';
+import ceteraUtils from '../lib/ceteraUtils';
+import { closeModal, openExternalResourceContainer } from '../actions/modal';
 import { updatePageResults } from '../actions/pageResults';
 import { updateResultCount } from '../actions/resultCount';
-import NoResults from './NoResults';
-import ResultCount from './ResultCount';
+import BackButton from './BackButton';
 import Card from './Card';
+import Header from './Header';
+import NoResults from './NoResults';
 import Pager from './Pager';
+import ResultCount from './ResultCount';
 import SortDropdown from './SortDropdown';
-import ceteraUtils from '../lib/ceteraUtils';
 
 export class ResultsContainer extends Component {
   constructor(props) {
@@ -70,29 +73,38 @@ export class ResultsContainer extends Component {
     } else {
       return (
         <div className="results-container">
-          <div className="top-controls">
-            <ResultCount
+          <Header title={'Select Featured Content in [category]'} />{/* TODO: Localization, [category] */}
+          <div className="centered-content">
+            <BackButton onClick={this.props.dispatchCloseModal} />
+            <button
+              className="btn btn-default btn-sm external-resource-button"
+              onClick={this.props.dispatchOpenExternalResourceContainer}>
+              Feature an External Resource{/* TODO: localization */}
+            </button>
+            <div className="top-controls">
+              <ResultCount
+                currentPage={this.state.currentPage}
+                resultsPerPage={this.props.resultsPerPage}
+                total={this.props.resultCount} />
+
+              <SortDropdown
+                onSelection={this.changeSort}
+                value={this.state.sort} />
+            </div>
+
+            <div className="card-container">
+              {this.props.results.map((result, i) =>
+                <Card key={i} {...result} />
+              )}
+            </div>
+
+            <Pager
+              key={this.state.pagerKey}
               currentPage={this.state.currentPage}
-              resultsPerPage={this.props.resultsPerPage}
-              total={this.props.resultCount} />
-
-            <SortDropdown
-              onSelection={this.changeSort}
-              value={this.state.sort} />
+              changePage={this.changePage}
+              resultCount={this.props.resultCount}
+              resultsPerPage={this.props.resultsPerPage} />
           </div>
-
-          <div className="card-container">
-            {this.props.results.map((result, i) =>
-              <Card key={i} {...result} />
-            )}
-          </div>
-
-          <Pager
-            key={this.state.pagerKey}
-            currentPage={this.state.currentPage}
-            changePage={this.changePage}
-            resultCount={this.props.resultCount}
-            resultsPerPage={this.props.resultsPerPage} />
         </div>
       );
     }
@@ -101,6 +113,8 @@ export class ResultsContainer extends Component {
 
 ResultsContainer.propTypes = {
   results: PropTypes.array.isRequired,
+  dispatchCloseModal: PropTypes.func.isRequired,
+  dispatchOpenExternalResourceContainer: PropTypes.func.isRequired,
   dispatchUpdatePageResults: PropTypes.func.isRequired,
   dispatchUpdateResultCount: PropTypes.func.isRequired,
   resultCount: PropTypes.number.isRequired,
@@ -109,6 +123,8 @@ ResultsContainer.propTypes = {
 
 ResultsContainer.defaultProps = {
   results: [],
+  dispatchCloseModal: _.noop,
+  dispatchOpenExternalResourceContainer: _.noop,
   dispatchUpdatePageResults: _.noop,
   dispatchUpdateResultCount: _.noop,
   resultCount: 0,
@@ -124,6 +140,12 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    dispatchCloseModal: function() {
+      dispatch(closeModal());
+    },
+    dispatchOpenExternalResourceContainer: function() {
+      dispatch(openExternalResourceContainer());
+    },
     dispatchUpdatePageResults: function(newPageResults) {
       dispatch(updatePageResults(newPageResults));
     },

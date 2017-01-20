@@ -46,7 +46,6 @@ export default function GoalMigrationRunner(narrativeMigrationMetadata, storyDat
           components: [{
             type: 'goal.embed',
             value: {
-              domain: window.location.hostname,
               category: Environment.OP_CATEGORY_UID,
               dashboard: Environment.OP_DASHBOARD_UID,
               uid: Environment.STORY_UID

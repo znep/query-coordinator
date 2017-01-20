@@ -172,20 +172,4 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
       end
     end
   end
-
-  context 'when editing an Open Performance story' do
-    before do
-      go_to_edit_page('open-perf')
-    end
-
-    describe 'delete' do
-      it 'cannot be deleted' do
-        first_block = @blocks.first
-        hover_block(first_block)
-
-        expect(first_block).to have_selector('.block-edit-controls-without-delete')
-        expect(first_block).to_not have_selector('.block-edit-controls-delete-btn')
-      end
-    end
-  end
 end

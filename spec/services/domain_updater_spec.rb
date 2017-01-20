@@ -66,16 +66,6 @@ RSpec.describe DomainUpdater do
       end
     end
 
-    describe '#migrate_goal_embed' do
-      it 'returns a migrated component' do
-        old_component = goal_embed_component(component_domain)
-        new_component = goal_embed_component(destination_domain)
-
-        migrated_component = DomainUpdater.send(:migrate_goal_embed, old_component, destination_domain)
-        expect(migrated_component).to eq(new_component)
-      end
-    end
-
     describe '#migrate_story_tile' do
       it 'returns a migrated component' do
         old_component = story_tile_component(component_domain)
@@ -139,18 +129,6 @@ RSpec.describe DomainUpdater do
         'domain' => cname,
         'goalUid' => 'test-test',
         'goalFullUrl' => "https://#{cname}/stat/goals/single/test-test"
-      }
-    }
-  end
-
-  def goal_embed_component(cname)
-    {
-      'type' => 'goal.embed',
-      'value' => {
-        'domain' => cname,
-        'uid' => 'test-test',
-        'category' => 'cate-gory',
-        'dashboard' => 'dash-bord'
       }
     }
   end

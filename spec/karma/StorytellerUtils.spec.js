@@ -591,19 +591,13 @@ describe('StorytellerUtils', function() {
           StorytellerUtils.generateGoalEmbedEditSrc();
         });
         assert.throw(function() {
-          StorytellerUtils.generateGoalEmbedEditSrc('example.com');
+          StorytellerUtils.generateGoalEmbedEditSrc(null);
         });
         assert.throw(function() {
-          StorytellerUtils.generateGoalEmbedEditSrc('example.com', null);
+          StorytellerUtils.generateGoalEmbedEditSrc({});
         });
         assert.throw(function() {
-          StorytellerUtils.generateGoalEmbedEditSrc('example.com', {});
-        });
-        assert.throw(function() {
-          StorytellerUtils.generateGoalEmbedEditSrc(null, 'four-four');
-        });
-        assert.throw(function() {
-          StorytellerUtils.generateGoalEmbedEditSrc(null, 5);
+          StorytellerUtils.generateGoalEmbedEditSrc(5);
         });
       });
     });
@@ -612,8 +606,8 @@ describe('StorytellerUtils', function() {
 
       it('should return the correct url', function() {
         assert.equal(
-          StorytellerUtils.generateGoalEmbedEditSrc('example.com', 'four-four'),
-          'https://example.com/stat/goals/single/four-four/embed/edit'
+          StorytellerUtils.generateGoalEmbedEditSrc('four-four'),
+          '/stat/goals/single/four-four/embed/edit'
         );
       });
     });
@@ -628,19 +622,13 @@ describe('StorytellerUtils', function() {
           StorytellerUtils.generateGoalEmbedSrc();
         });
         assert.throw(function() {
-          StorytellerUtils.generateGoalEmbedSrc('example.com');
+          StorytellerUtils.generateGoalEmbedSrc(null);
         });
         assert.throw(function() {
-          StorytellerUtils.generateGoalEmbedSrc('example.com', null);
+          StorytellerUtils.generateGoalEmbedSrc({});
         });
         assert.throw(function() {
-          StorytellerUtils.generateGoalEmbedSrc('example.com', {});
-        });
-        assert.throw(function() {
-          StorytellerUtils.generateGoalEmbedSrc(null, 'four-four');
-        });
-        assert.throw(function() {
-          StorytellerUtils.generateGoalEmbedSrc(null, 5);
+          StorytellerUtils.generateGoalEmbedSrc(5);
         });
       });
     });
@@ -649,8 +637,8 @@ describe('StorytellerUtils', function() {
 
       it('should return the correct url', function() {
         assert.equal(
-          StorytellerUtils.generateGoalEmbedSrc('example.com', 'four-four'),
-          'https://example.com/stat/goals/single/four-four/embed'
+          StorytellerUtils.generateGoalEmbedSrc('four-four'),
+          '/stat/goals/single/four-four/embed'
         );
       });
     });

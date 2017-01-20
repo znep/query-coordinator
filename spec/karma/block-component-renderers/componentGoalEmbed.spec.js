@@ -10,7 +10,6 @@ describe('componentGoalEmbed jQuery plugin', () => {
   const validComponentData = {
     type: 'goal.embed',
     value: {
-      domain: 'example.com',
       uid: 'test-test'
     }
   };
@@ -40,20 +39,6 @@ describe('componentGoalEmbed jQuery plugin', () => {
     assert.throws(() => { $component.componentGoalEmbed(undefined); });
     assert.throws(() => { $component.componentGoalEmbed({}); });
     assert.throws(() => { $component.componentGoalEmbed([]); });
-  });
-
-  describe('given a value that does not contain a domain', () => {
-    it('should throw when attempting to render the goal', () => {
-      const badData = _.cloneDeep(validComponentData);
-
-      delete badData.value.domain;
-
-      assert.throws(() => {
-        $component.componentGoalEmbed(getProps({
-          componentData: badData
-        }));
-      });
-    });
   });
 
   describe('given a value that does not contain a uid', () => {
@@ -95,7 +80,7 @@ describe('componentGoalEmbed jQuery plugin', () => {
     });
 
     it('renders an iframe for the goal embed view', () => {
-      assert.equal(component.find('iframe').attr('src'), 'https://example.com/stat/goals/single/test-test/embed');
+      assert.equal(component.find('iframe').attr('src'), '/stat/goals/single/test-test/embed');
     });
   });
 
@@ -125,7 +110,7 @@ describe('componentGoalEmbed jQuery plugin', () => {
       });
 
       it('renders an iframe for the goal embed edit view', () => {
-        assert.equal(modalTarget.find('iframe').attr('src'), 'https://example.com/stat/goals/single/test-test/embed/edit');
+        assert.equal(modalTarget.find('iframe').attr('src'), '/stat/goals/single/test-test/embed/edit');
       });
 
       it('renders a warning about the publication cycle', () => {

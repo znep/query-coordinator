@@ -165,7 +165,6 @@ function renderModal($element, state) {
   const componentData = $element.data('component-rendered-data');
 
   const goalEditUrl = StorytellerUtils.generateGoalEmbedEditSrc(
-    componentData.value.domain,
     componentData.value.uid
   );
 
@@ -268,14 +267,12 @@ function updateSrcAndTitle($element, componentData) {
   StorytellerUtils.assertHasProperties(
     componentData,
     'value',
-    'value.domain',
     'value.uid'
   );
 
   const $iframeElement = $element.find('iframe');
   const title = _.get(componentData.value, 'title');
   const goalSource = StorytellerUtils.generateGoalEmbedSrc(
-    componentData.value.domain,
     componentData.value.uid
   );
 

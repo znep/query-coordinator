@@ -141,7 +141,6 @@ block_12 = Block.create(
     {
       'type': 'goal.embed',
       'value': {
-        domain: 'example.com',
         dashboard: 'dash-bord',
         category: 'cate-gory',
         uid: 'goal-goal'
@@ -158,7 +157,6 @@ block_13 = Block.create(
     {
       'type': 'goal.embed',
       'value': {
-        domain: 'example.com',
         uid: 'goal-goal'
       }
     }

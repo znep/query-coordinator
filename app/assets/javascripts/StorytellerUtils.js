@@ -262,20 +262,18 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
     return 'https://' + goalDomain + '/api/stat/v1/goals/' + goalUid + '.json';
   },
 
-  generateGoalEmbedEditSrc: function(domain, uid) {
+  generateGoalEmbedEditSrc: function(uid) {
 
-    this.assertIsOneOfTypes(domain, 'string');
     this.assertIsOneOfTypes(uid, 'string');
 
-    return `https://${domain}/stat/goals/single/${uid}/embed/edit`;
+    return `/stat/goals/single/${uid}/embed/edit`;
   },
 
-  generateGoalEmbedSrc: function(domain, uid) {
+  generateGoalEmbedSrc: function(uid) {
 
-    this.assertIsOneOfTypes(domain, 'string');
     this.assertIsOneOfTypes(uid, 'string');
 
-    return `https://${domain}/stat/goals/single/${uid}/embed`;
+    return `/stat/goals/single/${uid}/embed`;
   },
 
   generateYoutubeUrl: function(youtubeId) {

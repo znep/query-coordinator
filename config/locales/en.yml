@@ -2815,6 +2815,7 @@ en:
         ok: OK
         preview: Preview
         preview_changes: Preview Changes
+        preview_failure: Sorry, there was an error saving your Preview data. Please refresh and try again, or notify support if this problem persists.
         remove_link_menu: Remove Link Menu
         remove_link_row: Remove Link
         save: Save

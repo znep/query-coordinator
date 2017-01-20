@@ -194,7 +194,18 @@ $(document).ready(function() {
       }
       $stage.val('draft');
       $siteAppearanceForm.submit();
-      setTimeout(function() { window.location.reload(); }, 500);
+      var intervalCounter = 0;
+      var checkCookieInterval = setInterval(function() {
+        intervalCounter++;
+        if (document.cookie.indexOf('socrata_site_chrome_preview=true') > -1) {
+          clearInterval(checkCookieInterval);
+          window.location.reload();
+        }
+        if (intervalCounter > 20) {
+          clearInterval(checkCookieInterval);
+          alert($.t('screens.admin.site_appearance.preview_failure'));
+        }
+      }, 500);
     }
   });
 

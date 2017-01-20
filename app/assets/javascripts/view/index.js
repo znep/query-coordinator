@@ -155,7 +155,7 @@ $(document).on('ready', function() {
   _moveFooterToBottomOfWindowOrContent();
   $window.on('resize', _moveFooterToBottomOfWindowOrContent);
 
-  if (Environment.IS_STORY_PUBLISHED) {
+  if (Environment.IS_STORY_PUBLISHED && !Environment.IS_GOAL) {
     analytics.sendMetric('domain', 'js-page-view', 1);
     analytics.sendMetric('domain', 'js-page-view-story', 1);
     analytics.sendMetric('domain', 'page-views', 1);

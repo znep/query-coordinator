@@ -6,6 +6,7 @@ describe('EditBar', () => {
       name: 'wombats',
       menuLabel: 'menu',
       onClickPreview: _.noop,
+      onClickMenu: _.noop,
       ...props
     };
   };

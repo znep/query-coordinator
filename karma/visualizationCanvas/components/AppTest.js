@@ -70,6 +70,10 @@ describe('App', function() {
       expect(element.querySelector('.table-contents')).to.exist;
     });
 
+    it('renders an Edit Menu', () => {
+      expect(element.querySelector('.edit-menu')).to.exist;
+    });
+
     it('renders an AuthoringWorkflow', () => {
       const store = getStore({
         mode: 'edit',
@@ -122,6 +126,10 @@ describe('App', function() {
 
     it('renders a Table', () => {
       expect(element.querySelector('.table-contents')).to.exist;
+    });
+
+    it('does not render an Edit Menu', () => {
+      expect(element.querySelector('.edit-menu')).to.not.exist;
     });
   });
 

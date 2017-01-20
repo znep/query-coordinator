@@ -6,6 +6,9 @@ import {
   UPDATE_VISUALIZATION,
   ENTER_PREVIEW_MODE,
   ENTER_EDIT_MODE,
+  OPEN_EDIT_MENU,
+  CLOSE_EDIT_MENU,
+  UPDATE_NAME_AND_DESCRIPTION,
   SET_FILTERS,
   RECEIVED_COLUMN_STATS
 } from 'actions';
@@ -20,6 +23,7 @@ const initialState = () => (
       isActive: false
     },
     mode: 'edit',
+    isEditMenuActive: false,
     columnStats: null
   }
 );
@@ -125,6 +129,29 @@ export default (state = initialState(), action) => {
       return {
         ...state,
         mode: 'preview'
+      };
+
+    case OPEN_EDIT_MENU:
+      return {
+        ...state,
+        isEditMenuActive: true
+      };
+
+    case CLOSE_EDIT_MENU:
+      return {
+        ...state,
+        isEditMenuActive: false
+      };
+
+    case UPDATE_NAME_AND_DESCRIPTION:
+      return {
+        ...state,
+        view: {
+          ...state.view,
+          name: action.data.name,
+          description: action.data.description
+        },
+        isEditMenuActive: false
       };
 
     case SET_FILTERS:

@@ -16,7 +16,8 @@ window.serverConfig = require('./data/mockServerConfig').default;
 window.initialState = {
   view: mockView,
   parentView: mockParentView,
-  vifs: []
+  vifs: [],
+  filters: []
 };
 
 // This needs to happen after setting all of the mock window data.

@@ -32,6 +32,22 @@ export const enterEditMode = () => ({
   type: ENTER_EDIT_MODE
 });
 
+export const OPEN_EDIT_MENU = 'OPEN_EDIT_MENU';
+export const openEditMenu = () => ({
+  type: OPEN_EDIT_MENU
+});
+
+export const CLOSE_EDIT_MENU = 'CLOSE_EDIT_MENU';
+export const closeEditMenu = () => ({
+  type: CLOSE_EDIT_MENU
+});
+
+export const UPDATE_NAME_AND_DESCRIPTION = 'UPDATE_NAME_AND_DESCRIPTION';
+export const updateNameAndDescription = (data) => ({
+  type: UPDATE_NAME_AND_DESCRIPTION,
+  data
+});
+
 export const SET_FILTERS = 'SET_FILTERS';
 export const setFilters = (filters) => ({
   type: SET_FILTERS,

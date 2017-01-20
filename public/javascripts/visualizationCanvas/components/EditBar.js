@@ -4,18 +4,19 @@ import { connect } from 'react-redux';
 
 import { EditBar as SocrataComponentsEditBar } from 'socrata-components';
 import { t } from '../lib/I18n';
-import { enterPreviewMode } from '../actions';
+import { enterPreviewMode, openEditMenu } from '../actions';
 
 // Note that there is a placeholder version of this component in visualization_canvas.html.erb,
 // so be sure to verify the placeholder looks fine if you make significant changes to this
 // component's appearance
 export class EditBar extends PureComponent {
   render() {
-    const { name, menuLabel, onClickPreview } = this.props;
+    const { name, menuLabel, onClickPreview, onClickMenu } = this.props;
 
     const editBarProps = {
       name,
-      menuLabel
+      menuLabel,
+      onClickMenu
     };
 
     return (
@@ -34,7 +35,8 @@ export class EditBar extends PureComponent {
 EditBar.propTypes = {
   name: PropTypes.string.isRequired,
   menuLabel: PropTypes.string.isRequired,
-  onClickPreview: PropTypes.func.isRequired
+  onClickPreview: PropTypes.func.isRequired,
+  onClickMenu: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
@@ -45,7 +47,10 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ onClickPreview: enterPreviewMode }, dispatch);
+  return bindActionCreators({
+    onClickPreview: enterPreviewMode,
+    onClickMenu: openEditMenu
+  }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditBar);

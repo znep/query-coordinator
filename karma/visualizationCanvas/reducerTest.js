@@ -6,6 +6,9 @@ import {
   updateVisualization,
   enterPreviewMode,
   enterEditMode,
+  openEditMenu,
+  updateNameAndDescription,
+  closeEditMenu,
   setFilters
 } from 'actions';
 import mockView from 'data/mockView';
@@ -130,6 +133,42 @@ describe('Reducer', () => {
     it('sets mode to "preview"', () => {
       const state = reducer(state, enterPreviewMode());
       expect(state.mode).to.equal('preview')
+    });
+  });
+
+  describe('OPEN_EDIT_MENU', () => {
+    it('opens the edit menu', () => {
+      const state = reducer(state, openEditMenu());
+      expect(state.isEditMenuActive).to.be.true;
+    });
+  });
+
+  describe('CLOSE_EDIT_MENU', () => {
+    it('closes the edit menu', () => {
+      const state = reducer(state, closeEditMenu());
+      expect(state.isEditMenuActive).to.be.false;
+    });
+  });
+
+  describe('UPDATE_TITLE_AND_DESCRIPTION', () => {
+    before(() => {
+      state = reducer(state, openEditMenu());
+      state = reducer(state, updateNameAndDescription({
+        name: 'some name',
+        description: 'some description'
+      }));
+    });
+
+    it('sets the title to a new value', () => {
+      expect(state.view.name).to.equal('some name');
+    });
+
+    it('sets the description to a new value', () => {
+      expect(state.view.description).to.equal('some description');
+    });
+
+    it('sets isEditMenuActive to false', () => {
+      expect(state.isEditMenuActive).to.be.false;
     });
   });
 

@@ -7,6 +7,7 @@ import PreviewBar from './components/PreviewBar';
 import InfoPane from './components/InfoPane';
 import AddVisualizationButton from './components/AddVisualizationButton';
 import AuthoringWorkflowModal from './components/AuthoringWorkflowModal';
+import EditMenu from './components/EditMenu';
 import EditableVisualizations from './components/EditableVisualizations';
 import Visualizations from './components/Visualizations';
 import Table from './components/Table';
@@ -54,6 +55,7 @@ export const App = React.createClass({
           <Table />
         </div>
         <AuthoringWorkflowModal />
+        <EditMenu />
       </div>
     );
   },

@@ -9,6 +9,7 @@ describe('AuthoringWorkflowModal', () => {
         vif: mockVif,
         isActive: true
       },
+      filters: [],
       onCancel: _.noop,
       onComplete: _.noop,
       ...props

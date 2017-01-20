@@ -1,11 +1,15 @@
 const _ = require('lodash');
 const $ = require('jquery');
 
-const SvgBarChart = require('./views/SvgBarChart');
 const VifHelpers = require('./helpers/VifHelpers');
-const CategoricalDataManager = require('./dataProviders/CategoricalDataManager');
+const SvgBarChart = require('./views/SvgBarChart');
+const CategoricalDataManager = require(
+  './dataProviders/CategoricalDataManager'
+);
 const I18n = require('./I18n');
-const getSoqlVifValidator = require('./dataProviders/SoqlVifValidator.js').getSoqlVifValidator;
+const getSoqlVifValidator = require(
+  './dataProviders/SoqlVifValidator.js'
+).getSoqlVifValidator;
 
 const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
@@ -14,10 +18,7 @@ $.fn.socrataSvgBarChart = function(originalVif) {
   originalVif = VifHelpers.migrateVif(originalVif);
 
   const $element = $(this);
-  const visualization = new SvgBarChart(
-    $element,
-    originalVif
-  );
+  const visualization = new SvgBarChart($element, originalVif);
 
   let rerenderOnResizeTimeout;
 
@@ -124,15 +125,10 @@ $.fn.socrataSvgBarChart = function(originalVif) {
     visualization.showBusyIndicator();
     detachInteractionEvents();
 
-    $.fn.socrataSvgBarChart.validateVif(newVif).then(() => {
-
-      CategoricalDataManager.getData(newVif).
-        then((newData) => {
-          renderVisualization(newVif, newData);
-        }).
-        catch(handleError);
-    }).
-    catch(handleError);
+    $.fn.socrataSvgBarChart.validateVif(newVif).
+      then(() => CategoricalDataManager.getData(newVif)).
+      then((newData) => renderVisualization(newVif, newData)).
+      catch(handleError);
   }
 
   function renderVisualization(vifToRender, dataToRender) {
@@ -143,10 +139,11 @@ $.fn.socrataSvgBarChart = function(originalVif) {
     const allSeriesMeasureValues = dataToRender.rows.map((row) => {
       return row.slice(dimensionIndex + 1);
     });
-    const onlyNullOrZeroValues = _(allSeriesMeasureValues).
+    const onlyNullOrZeroValues = _.chain(allSeriesMeasureValues).
       flatten().
       compact().
-      isEmpty();
+      isEmpty().
+      value();
 
     $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
     visualization.hideBusyIndicator();
@@ -180,19 +177,21 @@ $.fn.socrataSvgBarChart = function(originalVif) {
   return this;
 };
 
-// Checks a VIF for compatibility with this visualization.
-// The intent of this function is to provide feedback while
-// authoring a visualization, not to provide feedback to a developer.
-// As such, messages returned are worded to make sense to a user.
-//
-// Returns a Promise.
-//
-// If the VIF is usable, the promise will resolve.
-// If the VIF is not usable, the promise will reject with an object:
-// {
-//   ok: false,
-//   errorMessages: Array<String>
-// }
+/**
+ * Checks a VIF for compatibility with this visualization. The intent of this
+ * function is to provide feedback while authoring a visualization, not to
+ * provide feedback to a developer. As such, messages returned are worded to
+ * make sense to a user.
+ *
+ * Returns a Promise.
+ *
+ * If the VIF is usable, the promise will resolve.
+ * If the VIF is not usable, the promise will reject with an object:
+ * {
+ *   ok: false,
+ *   errorMessages: Array<String>
+ * }
+ */
 $.fn.socrataSvgBarChart.validateVif = (vif) =>
   getSoqlVifValidator(vif).then(validator =>
     validator.

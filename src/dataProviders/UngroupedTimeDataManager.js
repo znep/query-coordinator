@@ -2,16 +2,37 @@
 const _ = require('lodash');
 // Project Imports
 const I18n = require('../I18n');
-const makeSoqlDataRequest = require('./makeSoqlDataRequest');
+const makeSocrataTimeDataRequest = require('./makeSocrataTimeDataRequest');
 
-function getData(vif, maxRowCount) {
+function getData(vif, options) {
   const dataRequests = vif.series.map((series, seriesIndex) => {
     const type = _.get(series, 'dataSource.type');
 
     switch (type) {
 
       case 'socrata.soql':
-        return makeSoqlDataRequest(vif, seriesIndex, maxRowCount);
+        return options.getPrecisionBySeriesIndex(vif, seriesIndex).
+          then((precision) => {
+            const dateTruncFunction = options.mapPrecisionToDateTruncFunction(
+              precision
+            );
+            const dataRequestOptions = {
+              dateTruncFunction: dateTruncFunction,
+              precision: precision,
+              maxRowCount: options.MAX_ROW_COUNT
+            };
+
+            // Note that we cache this within the scope of getUngroupedData so
+            // that we can have access to each series' precision later on down
+            // the promise chain.
+            precisions.push(precision);
+
+            return makeSocrataTimeDataRequest(
+              vif,
+              seriesIndex,
+              dataRequestOptions
+            );
+          });
 
       default:
         return Promise.reject(
@@ -19,6 +40,11 @@ function getData(vif, maxRowCount) {
         );
     }
   });
+
+  // We accumulate each series' precision so that we can pass the finest-
+  // grained one along to the visualization renderer, which uses a precision
+  // to determine how to draw the dimension scale.
+  let precisions = [];
 
   function mapUngroupedDataResponsesToMultiSeriesTable(dataResponses) {
     const dimensionIndex = 0;
@@ -47,7 +73,6 @@ function getData(vif, maxRowCount) {
         })
       )
     ).sort(comparator);
-
     const dataToRenderColumns = ['dimension'].concat(measureLabels);
     const dataToRenderRows = uniqueDimensionValues.map(
       (uniqueDimensionValue) => {
@@ -71,9 +96,18 @@ function getData(vif, maxRowCount) {
       }
     );
 
+    let finestGrainedPrecision = 'year';
+
+    if (precisions.indexOf('day') >= 0) {
+      finestGrainedPrecision = 'day';
+    } else if (precisions.indexOf('month') >= 0) {
+      finestGrainedPrecision = 'month';
+    }
+
     return {
       columns: dataToRenderColumns,
-      rows: dataToRenderRows
+      rows: dataToRenderRows,
+      precision: finestGrainedPrecision
     };
   }
 
@@ -82,13 +116,11 @@ function getData(vif, maxRowCount) {
     Promise.
       all(dataRequests).
       then(mapUngroupedDataResponsesToMultiSeriesTable).
-      then((dataToRender) => {
-        resolve(dataToRender);
-      }).
+      then(resolve).
       catch(reject);
   });
 }
 
 module.exports = {
-  getData: getData
+  getData
 };

@@ -5,7 +5,7 @@ const SoqlDataProvider = require('./SoqlDataProvider');
 const SoqlHelpers = require('./SoqlHelpers');
 const I18n = require('../I18n');
 
-function makeSoqlDataRequest(vif, seriesIndex, maxRowCount) {
+function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
   const series = vif.series[seriesIndex];
   const soqlDataProvider = new SoqlDataProvider({
     datasetUid: series.dataSource.datasetUid,
@@ -25,7 +25,7 @@ function makeSoqlDataRequest(vif, seriesIndex, maxRowCount) {
     seriesIndex,
     'dimension'
   );
-  const orderClause = SoqlHelpers.orderByClauseFromSeries(
+  const orderByClause = SoqlHelpers.orderByClauseFromSeries(
     vif,
     seriesIndex
   );
@@ -61,7 +61,7 @@ function makeSoqlDataRequest(vif, seriesIndex, maxRowCount) {
         ${dimension} AS ${SoqlHelpers.dimensionAlias()},
         ${measure} AS ${SoqlHelpers.measureAlias()}
       ${whereClause}
-      ORDER BY ${orderClause}
+      ORDER BY ${orderByClause}
       NULL LAST
       LIMIT ${limit + 1}`;
   } else {
@@ -74,7 +74,7 @@ function makeSoqlDataRequest(vif, seriesIndex, maxRowCount) {
         ${measure} AS ${SoqlHelpers.measureAlias()}
       ${whereClause}
       GROUP BY ${groupByClause}
-      ORDER BY ${orderClause}
+      ORDER BY ${orderByClause}
       NULL LAST
       LIMIT ${limit + 1}`;
   }
@@ -613,4 +613,4 @@ function mapQueryResponseToDataTable(queryResponse) {
   return dataTable;
 }
 
-module.exports = makeSoqlDataRequest;
+module.exports = makeSocrataCategoricalDataRequest;

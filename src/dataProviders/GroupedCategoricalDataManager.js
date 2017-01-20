@@ -4,11 +4,11 @@ const _ = require('lodash');
 const SoqlDataProvider = require('./SoqlDataProvider');
 const SoqlHelpers = require('./SoqlHelpers');
 const I18n = require('../I18n');
-const makeSoqlDataRequest = require('./makeSoqlDataRequest');
+const makeSocrataCategoricalDataRequest = require('./makeSocrataCategoricalDataRequest');
 // Constants
 const MAX_GROUP_COUNT = 12;
 
-function getData(vif, maxRowCount) {
+function getData(vif, options) {
 
   function addDimensionValuesToState(state) {
     const whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(
@@ -26,7 +26,7 @@ function getData(vif, maxRowCount) {
     const limitFromVif = _.get(state.vif, 'series[0].dataSource.limit', null);
     const limit = (_.isNumber(limitFromVif)) ?
       parseInt(limitFromVif, 10) :
-      maxRowCount;
+      options.MAX_ROW_COUNT;
     const groupingQueryString = `
       SELECT
         \`${state.columnName}\` AS ${SoqlHelpers.dimensionAlias()},
@@ -179,7 +179,12 @@ function getData(vif, maxRowCount) {
     });
 
     const groupingDataRequests = state.groupingVifs.map((groupingVif) => {
-      return makeSoqlDataRequest(groupingVif, 0, maxRowCount);
+
+      return makeSocrataCategoricalDataRequest(
+        groupingVif,
+        0,
+        options.MAX_ROW_COUNT
+      );
     });
 
     return new Promise((resolve, reject) => {
@@ -265,7 +270,12 @@ function getData(vif, maxRowCount) {
 
       const dimensionValueOtherCategoryDataRequests =
         state.dimensionValueOtherCategoryVifs.map((dimensionValueOtherCategoryVif) => {
-          return makeSoqlDataRequest(dimensionValueOtherCategoryVif, 0, maxRowCount);
+
+          return makeSocrataCategoricalDataRequest(
+            dimensionValueOtherCategoryVif,
+            0,
+            options.MAX_ROW_COUNT
+          );
         });
 
       return new Promise((resolve, reject) => {
@@ -406,6 +416,6 @@ function getData(vif, maxRowCount) {
 }
 
 module.exports = {
-  MAX_GROUP_COUNT: MAX_GROUP_COUNT,
-  getData: getData
+  MAX_GROUP_COUNT,
+  getData
 };

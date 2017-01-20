@@ -1,15 +1,16 @@
-const utils = require('socrata-utils');
-const VifHelpers = require('../helpers/VifHelpers');
+// Vendor Imports
 const $ = require('jquery');
 const _ = require('lodash');
+const utils = require('socrata-utils');
+// Project Imports
+const VifHelpers = require('../helpers/VifHelpers');
 const I18n = require('../I18n');
 const MetadataProvider = require('../dataProviders/MetadataProvider');
-
+// Constants
 const DEFAULT_TYPE_VARIANTS = {
   columnChart: 'column', // others: 'bar'
   timelineChart: 'area' // others: 'line'
 };
-
 const DEFAULT_PRIMARY_COLOR = '#71abd9';
 const DEFAULT_SECONDARY_COLOR = '#71abd9';
 const DEFAULT_HIGHLIGHT_COLOR = '#cccccc';
@@ -207,7 +208,7 @@ function SvgVisualization($element, vif) {
           I18n.translate('visualizations.common.validation.errors.multiple_errors'))
         ).
         append($('<ul>').append(
-          messages.map((text) => $('<li>').text(text))
+          messages.map(function(text) { return $('<li>').text(text); })
         ));
     }
 
@@ -240,7 +241,7 @@ function SvgVisualization($element, vif) {
       const domain = _.get(self.getVif(), 'series[0].dataSource.domain');
       const datasetUid = _.get(self.getVif(), 'series[0].dataSource.datasetUid');
       const metadataProvider = new MetadataProvider({domain, datasetUid});
-      const renderLink = (linkableDatasetUid) => {
+      const renderLink = function(linkableDatasetUid) {
 
         self.
           $container.
@@ -250,10 +251,10 @@ function SvgVisualization($element, vif) {
       };
 
       metadataProvider.getDatasetMigrationMetadata().
-        then((migrationMetadata) => {
+        then(function(migrationMetadata) {
           renderLink(_.get(migrationMetadata, 'nbe_id', datasetUid));
         }).
-        catch(() => {
+        catch(function() {
           renderLink(datasetUid);
         });
 
@@ -320,9 +321,13 @@ function SvgVisualization($element, vif) {
   };
 
   this.getTypeVariantBySeriesIndex = function(seriesIndex) {
+    const actualSeriesIndex = defaultToSeriesIndexZeroIfGroupingIsEnabled(
+      self.getVif(),
+      seriesIndex
+    );
     const typeComponents = _.get(
       self.getVif(),
-      `series[${seriesIndex}].type`,
+      `series[${actualSeriesIndex}].type`,
       ''
     ).split('.');
 
@@ -332,9 +337,13 @@ function SvgVisualization($element, vif) {
   };
 
   this.getUnitOneBySeriesIndex = function(seriesIndex) {
+    const actualSeriesIndex = defaultToSeriesIndexZeroIfGroupingIsEnabled(
+      self.getVif(),
+      seriesIndex
+    );
     const unitOne = _.get(
       self.getVif(),
-      `series[${seriesIndex}].unit.one`
+      `series[${actualSeriesIndex}].unit.one`
     );
 
     return (_.isString(unitOne)) ?
@@ -343,9 +352,13 @@ function SvgVisualization($element, vif) {
   };
 
   this.getUnitOtherBySeriesIndex = function(seriesIndex) {
+    const actualSeriesIndex = defaultToSeriesIndexZeroIfGroupingIsEnabled(
+      self.getVif(),
+      seriesIndex
+    );
     const unitOther = _.get(
       self.getVif(),
-      `series[${seriesIndex}].unit.other`
+      `series[${actualSeriesIndex}].unit.other`
     );
 
     return (_.isString(unitOther)) ?
@@ -354,9 +367,13 @@ function SvgVisualization($element, vif) {
   };
 
   this.getPrimaryColorBySeriesIndex = function(seriesIndex) {
+    const actualSeriesIndex = defaultToSeriesIndexZeroIfGroupingIsEnabled(
+      self.getVif(),
+      seriesIndex
+    );
     const palette = _.get(
       self.getVif(),
-      `series[${seriesIndex}].color.palette`,
+      `series[${actualSeriesIndex}].color.palette`,
       null
     );
 
@@ -384,9 +401,13 @@ function SvgVisualization($element, vif) {
   };
 
   this.getSecondaryColorBySeriesIndex = function(seriesIndex) {
+    const actualSeriesIndex = defaultToSeriesIndexZeroIfGroupingIsEnabled(
+      self.getVif(),
+      seriesIndex
+    );
     const secondaryColor = _.get(
       self.getVif(),
-      `series[${seriesIndex}].color.secondary`
+      `series[${actualSeriesIndex}].color.secondary`
     );
 
     return (!_.isUndefined(secondaryColor)) ?
@@ -395,9 +416,13 @@ function SvgVisualization($element, vif) {
   };
 
   this.getHighlightColorBySeriesIndex = function(seriesIndex) {
+    const actualSeriesIndex = defaultToSeriesIndexZeroIfGroupingIsEnabled(
+      self.getVif(),
+      seriesIndex
+    );
     const highlightColor = _.get(
       self.getVif(),
-      `series[${seriesIndex}].color.highlight`
+      `series[${actualSeriesIndex}].color.highlight`
     );
 
     return (!_.isUndefined(highlightColor)) ?
@@ -409,9 +434,13 @@ function SvgVisualization($element, vif) {
    * Valid options: 'fit', 'pan', 'showZero'
    */
   this.getXAxisScalingModeBySeriesIndex = function(seriesIndex) {
+    const actualSeriesIndex = defaultToSeriesIndexZeroIfGroupingIsEnabled(
+      self.getVif(),
+      seriesIndex
+    );
     const chartType = _.get(
       self.getVif(),
-      `series[${seriesIndex}].type`,
+      `series[${actualSeriesIndex}].type`,
       ''
     );
     const isTimeline = chartType.match(/^timeline/);
@@ -422,6 +451,20 @@ function SvgVisualization($element, vif) {
       'configuration.xAxisScalingMode',
       defaultXAxisScalingModeForChartType
     );
+  };
+
+  this.getColorPaletteBySeriesIndex = function(seriesIndex) {
+    const actualSeriesIndex = defaultToSeriesIndexZeroIfGroupingIsEnabled(
+      self.getVif(),
+      seriesIndex
+    );
+    const colorPalette = _.get(
+      self.getVif(),
+      `series[${actualSeriesIndex}].color.palette`,
+      null
+    );
+
+    return _.get(COLOR_PALETTES, colorPalette, COLOR_PALETTES.categorical);
   };
 
   /**
@@ -436,7 +479,7 @@ function SvgVisualization($element, vif) {
     );
   };
 
-  this.getMeasureAxisMinValue = () => {
+  this.getMeasureAxisMinValue = function() {
     const value = _.get(
       self.getVif(),
       'configuration.measureAxisMinValue',
@@ -456,7 +499,7 @@ function SvgVisualization($element, vif) {
     }
   };
 
-  this.getMeasureAxisMaxValue = () => {
+  this.getMeasureAxisMaxValue = function() {
     const value = _.get(
       self.getVif(),
       'configuration.measureAxisMaxValue',
@@ -499,15 +542,10 @@ function SvgVisualization($element, vif) {
   this.getShowValueLabelsAsPercent = function() {
 
     return _.get(
-    self.getVif(),
-    'configuration.showValueLabelsAsPercent',
-    false
+      self.getVif(),
+      'configuration.showValueLabelsAsPercent',
+      false
     );
-  };
-
-  this.getColorPaletteBySeriesIndex = (index) => {
-    const conf = _.get(self.getVif(), `series[${index}].color.palette`);
-    return _.get(COLOR_PALETTES, conf, COLOR_PALETTES.categorical);
   };
 
   this.emitEvent = function(name, payload) {
@@ -686,6 +724,25 @@ function SvgVisualization($element, vif) {
       ctx.drawImage(img, 0, 0);
       window.open(canvas.toDataURL('image/png'));
     };
+  }
+
+  // If dimension grouping is enabled, there will only be one actual series in
+  // the vif although there will appear to be multiple series in the data table
+  // resulting from it. Many methods on this class return configuration
+  // properties by series index. Accordingly, if dimension grouping is enabled
+  // we want to read these configuration properties off of the only actual
+  // series (at index zero) as opposed to one of the 'virtual' series that
+  // appear to exist based on the data table.
+  function defaultToSeriesIndexZeroIfGroupingIsEnabled(vifToCheck, seriesIndex) {
+    const isGrouping = !_.isNull(
+      _.get(
+        vifToCheck,
+        'series[0].dataSource.dimension.grouping.columnName',
+        null
+      )
+    );
+
+    return (isGrouping) ? 0 : seriesIndex;
   }
 
   /**

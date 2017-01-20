@@ -1,11 +1,11 @@
 // Vendor Imports
 const _ = require('lodash');
 // Project Imports
-const GroupedDataManager = require('./GroupedDataManager');
-const UngroupedDataManager = require('./UngroupedDataManager');
+const GroupedCategoricalDataManager = require('./GroupedCategoricalDataManager');
+const UngroupedCategoricalDataManager = require('./UngroupedCategoricalDataManager');
 // Constants
 const MAX_ROW_COUNT = 1000;
-const MAX_GROUP_COUNT = GroupedDataManager.MAX_GROUP_COUNT;
+const MAX_GROUP_COUNT = GroupedCategoricalDataManager.MAX_GROUP_COUNT;
 
 function getData(vif) {
   const isPieChart = _.some(
@@ -19,19 +19,22 @@ function getData(vif) {
       null
     )
   );
+  const options = {
+    MAX_ROW_COUNT
+  };
 
   // Pie charts explicitly do not support grouping. We do this check here in
   // order to allow Bar, Column and Pie charts to all call this method and rely
   // on the right behavior in all cases.
   if (!isPieChart && isGrouping) {
-    return GroupedDataManager.getData(vif, MAX_ROW_COUNT);
+    return GroupedCategoricalDataManager.getData(vif, options);
   } else {
-    return UngroupedDataManager.getData(vif, MAX_ROW_COUNT);
+    return UngroupedCategoricalDataManager.getData(vif, options);
   }
 }
 
 module.exports = {
-  MAX_ROW_COUNT: MAX_ROW_COUNT,
-  MAX_GROUP_COUNT: MAX_GROUP_COUNT,
-  getData: getData
+  MAX_ROW_COUNT,
+  MAX_GROUP_COUNT,
+  getData
 };

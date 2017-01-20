@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const rewire = require('rewire');
-const GroupedDataManagerAPI = rewire('../../src/dataProviders/GroupedDataManager');
+const GroupedCategoricalDataManagerAPI = rewire('../../src/dataProviders/GroupedCategoricalDataManager');
 
 const VALID_VIF_WITH_DIMENSION_GROUPING = {
   configuration: {
@@ -36,7 +36,7 @@ const VALID_VIF_WITH_DIMENSION_GROUPING = {
 };
 const MAX_ROW_COUNT = 1000;
 
-describe('GroupedDataManager', () => {
+describe('GroupedCategoricalDataManager', () => {
 
   describe('When not showing the "other" category', () => {
     const DIMENSION_VALUES_QUERY = 'SELECT `blood_alcohol_level` AS __dimension_alias__, COUNT(*) AS __measure_alias__ GROUP BY `blood_alcohol_level` ORDER BY __dimension_alias__ ASC NULL LAST LIMIT 5'
@@ -68,7 +68,7 @@ describe('GroupedDataManager', () => {
     };
 
     let groupingQueryVifs;
-    let revertGroupedDataManagerAPI;
+    let revertGroupedCategoricalDataManagerAPI;
 
     beforeEach(() => {
       groupingQueryVifs = {
@@ -203,7 +203,7 @@ describe('GroupedDataManager', () => {
           count: 0
         }
       };
-      revertGroupedDataManagerAPI = GroupedDataManagerAPI.__set__(
+      revertGroupedCategoricalDataManagerAPI = GroupedCategoricalDataManagerAPI.__set__(
         {
           SoqlDataProvider: function() {
 
@@ -222,7 +222,7 @@ describe('GroupedDataManager', () => {
               }
             };
           },
-          makeSoqlDataRequest: function(vif, seriesIndex, maxRowCount) {
+          makeSocrataCategoricalDataRequest: function(vif, seriesIndex, maxRowCount) {
             const vifForQuery = JSON.stringify(vif);
 
             let stringifiedGroupingQueryVif;
@@ -252,15 +252,15 @@ describe('GroupedDataManager', () => {
     });
 
     afterEach(() => {
-      revertGroupedDataManagerAPI();
+      revertGroupedCategoricalDataManagerAPI();
     });
 
     it('returns the expected grouped data.', (done) => {
       const vif = _.cloneDeep(VALID_VIF_WITH_DIMENSION_GROUPING);
 
-      GroupedDataManagerAPI.getData(
+      GroupedCategoricalDataManagerAPI.getData(
         vif,
-        MAX_ROW_COUNT
+        { MAX_ROW_COUNT: MAX_ROW_COUNT }
       ).
         then((response) => {
           const counts = Object.keys(groupingQueryVifs).map((groupingQueryVif) => {
@@ -310,7 +310,7 @@ describe('GroupedDataManager', () => {
     };
 
     let groupingQueryVifs;
-    let revertGroupedDataManagerAPI;
+    let revertGroupedCategoricalDataManagerAPI;
 
     beforeEach(() => {
       groupingQueryVifs = {
@@ -435,7 +435,7 @@ describe('GroupedDataManager', () => {
           count: 0
         }
       };
-      revertGroupedDataManagerAPI = GroupedDataManagerAPI.__set__(
+      revertGroupedCategoricalDataManagerAPI = GroupedCategoricalDataManagerAPI.__set__(
         {
           SoqlDataProvider: function() {
 
@@ -454,7 +454,7 @@ describe('GroupedDataManager', () => {
               }
             };
           },
-          makeSoqlDataRequest: function(vif, seriesIndex, maxRowCount) {
+          makeSocrataCategoricalDataRequest: function(vif, seriesIndex, maxRowCount) {
             const vifForQuery = JSON.stringify(vif);
 
             let stringifiedGroupingQueryVif;
@@ -485,16 +485,16 @@ describe('GroupedDataManager', () => {
     });
 
     afterEach(() => {
-      revertGroupedDataManagerAPI();
+      revertGroupedCategoricalDataManagerAPI();
     });
 
     it('returns the expected grouped data.', (done) => {
       const vif = _.cloneDeep(VALID_VIF_WITH_DIMENSION_GROUPING);
       vif.configuration.showOtherCategory = true;
 
-      GroupedDataManagerAPI.getData(
+      GroupedCategoricalDataManagerAPI.getData(
         vif,
-        MAX_ROW_COUNT
+        { MAX_ROW_COUNT: MAX_ROW_COUNT }
       ).
         then((response) => {
           const counts = Object.keys(groupingQueryVifs).map((groupingQueryVif) => {

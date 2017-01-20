@@ -36,7 +36,10 @@ class AnalyticsController < ApplicationController
           :error_class => 'Javascript Metric Error',
           :error_message => "Metric: #{m.to_json} Error Message: #{error}",
           :session => { :domain => CurrentDomain.cname },
-          :request => { :params => params }
+          :request => {
+            :params => params,
+            :referrer_path => URI(request.referer).path
+          }
         )
       end
 

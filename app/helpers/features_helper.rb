@@ -1,6 +1,10 @@
 module FeaturesHelper
   def open_performance_enabled?
-    SocrataSiteChrome::FeatureSet.new(current_domain['cname']).feature_enabled?('govstat') rescue false
+    feature_enabled?('govstat')
+  end
+
+  def staging_lockdown_enabled?
+    feature_enabled?('staging_lockdown')
   end
 
   def getty_images_enabled?
@@ -21,5 +25,9 @@ module FeaturesHelper
 
   def feature_flag_enabled?(flag)
     Signaller.for(flag: flag).value(on_domain: request.host)
+  end
+
+  def feature_enabled?(name)
+    SocrataSiteChrome::FeatureSet.new(CoreServer.current_domain['cname']).feature_enabled?(name) rescue false
   end
 end

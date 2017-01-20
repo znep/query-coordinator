@@ -16,6 +16,10 @@ module UserAuthorizationHelper
     has_domain_role?('administrator')
   end
 
+  def roled_user?
+    authorization['domainRole'].present? && authorization['domainRole'] != 'unknown'
+  end
+
   def super_admin?
     authorization['superAdmin'] == true
   end

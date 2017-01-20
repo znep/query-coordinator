@@ -103,6 +103,24 @@ RSpec.describe UserAuthorizationHelper, type: :helper do
     end
   end
 
+  describe '#roled_user?' do
+    describe 'when the user has any domain role' do
+      let(:domain_role) { 'designer' }
+
+      it 'returns true' do
+        expect(roled_user?).to be(true)
+      end
+    end
+
+    describe 'when the user lacks a domain role' do
+      let(:domain_role) { 'unknown' }
+
+      it 'returns false' do
+        expect(roled_user?).to be(false)
+      end
+    end
+  end
+
   describe '#super_admin?' do
     describe 'when the user is a super admin' do
       let(:super_admin) { true }

@@ -30,7 +30,7 @@ export default React.createClass({
     } else {
       return (
         <td>
-          <div>{cell.ok}</div>
+          <div>{`${cell.ok}`}</div>
         </td>
       );
     }

@@ -335,3 +335,15 @@ Signaller::Test::Helpers.defaults = {
 def set_feature_flags(flags_hash = {})
   init_signaller(with: flags_hash)
 end
+
+# Set features (modules) to be considered enabled.
+def set_features(feature_list = [])
+  feature_set = instance_double(SocrataSiteChrome::FeatureSet)
+
+  allow(feature_set).to receive(:feature_enabled?).and_return(false)
+  feature_list.each do |name|
+    allow(feature_set).to receive(:feature_enabled?).with(name).and_return(true)
+  end
+
+  allow(SocrataSiteChrome::FeatureSet).to receive(:new).and_return(feature_set)
+end

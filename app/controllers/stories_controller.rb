@@ -9,6 +9,7 @@ class StoriesController < ApplicationController
 
   before_action :setup_site_chrome_prerequisites
   before_action :load_story_metadata
+  before_action :check_lockdown
 
   after_action :allow_iframe, only: :tile
   after_action :allow_origin, only: :tile
@@ -201,6 +202,13 @@ class StoriesController < ApplicationController
   # +before_action+
   def load_story_metadata
     @story_metadata = story_metadata
+  end
+
+  # +before_action+
+  def check_lockdown
+    if staging_lockdown_enabled?
+      render_story_404 unless roled_user? || super_admin?
+    end
   end
 
   # Overridden in GoalsController

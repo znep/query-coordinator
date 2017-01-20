@@ -7,12 +7,8 @@ describe('FeatureFlags', function() {
   });
 
   it('should return the value for feature flag', function() {
+    FeatureFlags.useTestFixture({ useAuth0: false });
     expect(FeatureFlags.value('useAuth0')).to.equal(false);
-  });
-
-  it('should allow override values in the test fixture data', function() {
-    FeatureFlags.useTestFixture({ useAuth0: true });
-    expect(FeatureFlags.value('useAuth0')).to.equal(true);
   });
 
   it('should throw when given an invalid feature flag key', function() {

@@ -343,6 +343,43 @@ describe('StoryRenderer', function() {
       });
     });
 
+    describe('with a story that has blocks including a goal.embed component', () => {
+      let storyGoalEmbed;
+
+      beforeEach(() => {
+        storyGoalEmbed = 'goal-embd';
+
+        dispatcher.dispatch({
+          action: Actions.STORY_CREATE,
+          data: DataGenerators.generateStoryData({
+            uid: storyGoalEmbed,
+            blocks: [
+              DataGenerators.generateBlockData({
+                components: [
+                  { type: 'goal.embed', value: { uid: 'open-perf' } }
+                ]
+              })
+            ]
+          })
+        });
+      });
+
+      it('renders a goal.embed block without delete', () => {
+        options.storyUid = storyGoalEmbed;
+        storyRenderer = new StoryRenderer(options);
+
+        assert.lengthOf(
+          $('.block-edit-controls-without-delete'),
+          1
+        );
+
+        assert.lengthOf(
+          $('.block-edit-controls-delete-btn'),
+          0
+        );
+      });
+    });
+
     describe('with a story that has blocks including an image component', function() {
       var imageOnlyStoryUid = 'with-imge';
 

@@ -33,6 +33,7 @@ const {
 } = Environment;
 
 const shouldMigrateGoal = goalMigrationStore.needsMigration();
+const shouldShowMigrationOverlay = goalMigrationStore.needsOverlay();
 
 dispatcher.register((payload) => {
   if (ENVIRONMENT === 'development' && window.console) {
@@ -107,11 +108,14 @@ $(document).on('ready', () => {
 
   /* Goal migration */
   if (shouldMigrateGoal) {
+    if (shouldShowMigrationOverlay) {
+      new Renderers.GoalMigrationOverlayRenderer();
+    }
+
     // Need to migrate narrative first. Ideally we'd do this server-side,
     // but it's easier in JS (the original renderer and support utilities
     // used to process the narrative in Odysseus are in JS).
     // StoryStore will load the story automatically when migration is complete.
-    new Renderers.GoalMigrationOverlayRenderer();
     (new GoalMigrationRunner(OP_GOAL_NARRATIVE_MIGRATION_METADATA, STORY_DATA)).run();
   }
 

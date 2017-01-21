@@ -3,7 +3,7 @@ import Dispatcher from 'editor/Dispatcher';
 import {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
 import GoalMigrationStore, {__RewireAPI__ as GoalMigrationStoreAPI} from 'editor/stores/GoalMigrationStore';
 
-describe('GoalMigrationStore', function() {
+describe('GoalMigrationStore', () => {
 
   let goalMigrationStore;
   let environment;
@@ -19,7 +19,7 @@ describe('GoalMigrationStore', function() {
     }
   };
 
-  beforeEach(function() {
+  beforeEach(() => {
     environment = {
       STORY_DATA: {
         blocks: 'foo',
@@ -36,7 +36,7 @@ describe('GoalMigrationStore', function() {
     goalMigrationStore = new GoalMigrationStore();
   });
 
-  afterEach(function() {
+  afterEach(() => {
     StoreAPI.__ResetDependency__('dispatcher');
     GoalMigrationStoreAPI.__ResetDependency__('Environment');
     GoalMigrationStoreAPI.__ResetDependency__('StorytellerUtils');
@@ -46,10 +46,23 @@ describe('GoalMigrationStore', function() {
     describe('no story migration data present', fn);
   }
 
-  function withMigrationData(fn) {
-    describe('with story migration data present', function() {
-      beforeEach(function() {
-        environment.OP_GOAL_NARRATIVE_MIGRATION_METADATA = { stu: 'ff' };
+  function withMigrationData(data, fn) {
+    describe('with story migration data present', () => {
+      beforeEach(() => {
+        environment.OP_GOAL_NARRATIVE_MIGRATION_METADATA = data;
+      });
+      fn();
+    });
+  }
+
+  function noConfiguredMeasure(fn) {
+    describe('no configured measure present', fn);
+  }
+
+  function withConfiguredMeasure(fn) {
+    describe('with configured measure present', () => {
+      beforeEach(() => {
+        environment.OP_GOAL_IS_CONFIGURED = true;
       });
       fn();
     });
@@ -60,8 +73,8 @@ describe('GoalMigrationStore', function() {
   }
 
   function withStoryDigest(fn) {
-    describe('with story digest present', function() {
-      beforeEach(function() {
+    describe('with story digest present', () => {
+      beforeEach(() => {
         environment.STORY_DATA.digest = 'digest';
       });
       fn();
@@ -73,69 +86,82 @@ describe('GoalMigrationStore', function() {
   }
 
   function redoMigrationSet(fn) {
-    describe('redoGoalMigration set', function() {
-      beforeEach(function() {
+    describe('redoGoalMigration set', () => {
+      beforeEach(() => {
         redoGoalMigration = true;
       });
       fn();
     });
   }
 
-  describe('needsMigration', function() {
+  describe('needsMigration', () => {
 
     function expectFalse() {
-      it('returns false', function() {
+      it('returns false', () => {
         assert.isNotOk(goalMigrationStore.needsMigration());
       });
     }
 
     function expectTrue() {
-      it('returns true', function() {
+      it('returns true', () => {
         assert.isOk(goalMigrationStore.needsMigration());
       });
     }
 
-    noMigrationData(function() {
-      noStoryDigest(function() {
-        redoMigrationNotSet(function() {
-          expectFalse();
-        });
-        redoMigrationSet(function() {
-          expectFalse();
-        });
+    const migrationData = { narrative: [{ stu: 'ff' }] };
+
+    noMigrationData(() => {
+      noStoryDigest(() => {
+        redoMigrationNotSet(expectFalse);
+        redoMigrationSet(expectFalse);
       });
-      withStoryDigest(function() {
-        redoMigrationNotSet(function() {
-          expectFalse();
-        });
-        redoMigrationSet(function() {
-          expectFalse();
-        });
+      withStoryDigest(() => {
+        redoMigrationNotSet(expectFalse);
+        redoMigrationSet(expectFalse);
       });
     });
 
-    withMigrationData(function() {
-      noStoryDigest(function() {
-        redoMigrationNotSet(function() {
-          expectTrue();
-        });
-        redoMigrationSet(function() {
-          expectTrue();
-        });
+    withMigrationData(migrationData, () => {
+      noStoryDigest(() => {
+        redoMigrationNotSet(expectTrue);
+        redoMigrationSet(expectTrue);
       });
-      withStoryDigest(function() {
-        redoMigrationNotSet(function() {
-          expectFalse();
-        });
-        redoMigrationSet(function() {
-          expectTrue();
-        });
+      withStoryDigest(() => {
+        redoMigrationNotSet(expectFalse);
+        redoMigrationSet(expectTrue);
       });
     });
   });
 
-  describe('isMigrating', function() {
-    it('becomes true while migrating and becomes false on complete', function() {
+  describe('needsOverlay', () => {
+
+    function expectFalse() {
+      it('returns false', () => {
+        assert.isNotOk(goalMigrationStore.needsOverlay());
+      });
+    }
+
+    function expectTrue() {
+      it('returns true', () => {
+        assert.isOk(goalMigrationStore.needsOverlay());
+      });
+    }
+
+    const emptyNarrative = { narrative: [] };
+    const configuredNarrative = { narrative: [{ stu: 'ff' }] };
+
+    withMigrationData(emptyNarrative, () => {
+      noConfiguredMeasure(expectFalse);
+      withConfiguredMeasure(expectTrue);
+    });
+    withMigrationData(configuredNarrative, () => {
+      noConfiguredMeasure(expectTrue);
+      withConfiguredMeasure(expectTrue);
+    });
+  });
+
+  describe('isMigrating', () => {
+    it('becomes true while migrating and becomes false on complete', () => {
       const delayStub = sinon.stub(window._, 'delay', (fn) => fn());
 
       assert.isFalse(goalMigrationStore.isMigrating());
@@ -147,15 +173,15 @@ describe('GoalMigrationStore', function() {
       delayStub.restore();
     });
 
-    it('becomes false on error', function() {
+    it('becomes false on error', () => {
       dispatcher.dispatch({ action: Actions.GOAL_MIGRATION_START });
       dispatcher.dispatch({ action: Actions.GOAL_MIGRATION_ERROR });
       assert.isFalse(goalMigrationStore.isMigrating());
     });
   });
 
-  describe('hasError and error', function() {
-    it('remains false and null during normal migration', function() {
+  describe('hasError and error', () => {
+    it('remains false and null during normal migration', () => {
       assert.isFalse(goalMigrationStore.hasError());
       assert.isNull(goalMigrationStore.error());
       dispatcher.dispatch({ action: Actions.GOAL_MIGRATION_START });
@@ -166,7 +192,7 @@ describe('GoalMigrationStore', function() {
       assert.isNull(goalMigrationStore.error());
     });
 
-    it('reports errors', function() {
+    it('reports errors', () => {
       const theError = new Error('sup');
       dispatcher.dispatch({ action: Actions.GOAL_MIGRATION_START });
       dispatcher.dispatch({ action: Actions.GOAL_MIGRATION_ERROR, error: theError });

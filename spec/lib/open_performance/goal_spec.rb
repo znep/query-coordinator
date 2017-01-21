@@ -81,6 +81,28 @@ describe OpenPerformance::Goal do
     end
   end
 
+  describe '#configured?' do
+    context 'when goal is configured' do
+      let(:odysseus_goal_body) do
+        { 'prevailing_measure' => { 'start' => 'yesterday', 'end' => 'today' } }
+      end
+
+      it 'returns true' do
+        expect(instance.configured?).to eq(true)
+      end
+    end
+
+    context 'when goal is not configured' do
+      let(:odysseus_goal_body) do
+        {}
+      end
+
+      it 'returns false' do
+        expect(instance.configured?).to eq(false)
+      end
+    end
+  end
+
   describe '#title' do
     let(:method) { :title }
     it_behaves_like 'odysseus error forwarder'

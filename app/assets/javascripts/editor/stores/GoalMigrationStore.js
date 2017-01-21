@@ -29,13 +29,17 @@ export default function GoalMigrationStore() {
     }
   });
 
-  // Returns true if the narrative migration needs
-  // to be run.
+  // Returns true if the narrative migration needs to be run.
   self.needsMigration = () =>
     Environment.OP_GOAL_NARRATIVE_MIGRATION_METADATA && (
       StorytellerUtils.queryParameterMatches('redoGoalMigration', true) ||
       Environment.STORY_DATA.digest === null // Never saved
     );
+
+  // Returns true if the narrative migration needs an overlay (should be false
+  // for goals that are brand new).
+  self.needsOverlay = () =>
+    Environment.OP_GOAL_IS_CONFIGURED || !_.isEmpty(_.get(Environment.OP_GOAL_NARRATIVE_MIGRATION_METADATA, 'narrative'));
 
   self.isMigrating = () => state.isMigrating;
   self.hasError = () => state.error !== null;

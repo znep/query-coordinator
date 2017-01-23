@@ -119,8 +119,12 @@
           clearCountdown(this);
         }
         if (!$.isBlank(this.metric)) {
-          $.metrics.stopwatch('domain-intern', 'js-spinner-' + this.metric + '-time',
-            doShow ? 'start' : 'end');
+          var fullMetric = 'js-spinner-' + this.metric + '-time';
+          if (doShow) {
+            $.metrics.stopwatch('domain-intern', fullMetric, 'start');
+          } else if ($.metrics.stopwatches['domain-intern/' + fullMetric].started) {
+            $.metrics.stopwatch('domain-intern', fullMetric, 'end');
+          }
         }
       },
 

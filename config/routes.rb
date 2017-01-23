@@ -78,9 +78,11 @@ Rails.application.routes.draw do
     namespace :stat do
       namespace :v1, defaults: { format: 'json' } do
         namespace :goals do
-          post ':uid/narrative/published' => 'published#create'
           get ':uid/narrative/published/latest' => 'published#latest'
+          post ':uid/narrative/published' => 'published#create'
+
           get ':uid/narrative/drafts/latest' => 'drafts#latest'
+          post ':uid/narrative/drafts' => 'drafts#create'
 
           put ':uid/narrative/permissions' => 'permissions#update'
         end

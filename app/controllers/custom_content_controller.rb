@@ -102,6 +102,7 @@ class CustomContentController < ApplicationController
   def page
     @debug = params['debug'] == 'true'
     @edit_mode = params['_edit_mode'] == 'true'
+    @start_time = Time.now
 
     # Rails routing breaks the :ext param out if it thinks it's a file extension.
     # Old Dataslate Routing checked if it was an xlsx or csv, but since New Dataslate Routing

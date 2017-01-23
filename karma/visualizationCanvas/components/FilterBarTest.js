@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { mapStateToProps, mapDispatchToProps } from 'components/FilterBar';
+import parentView from 'data/mockParentView';
 import view from 'data/mockView';
 import filter from 'data/mockFilter';
 import { setFilters } from 'actions';
@@ -10,7 +11,7 @@ describe('FilterBar', () => {
 
   describe('mapStateToProps', () => {
     before(() => {
-      props = mapStateToProps({ view, filters });
+      props = mapStateToProps({ view, filters, parentView });
     });
 
     it('returns columns', () => {
@@ -22,9 +23,37 @@ describe('FilterBar', () => {
       expect(_.find(props.columns, ['fieldName', 'cnidarian_age'])).to.not.exist;
     });
 
-    it('omits unsupported column types', () => {
+    it('returns calendar_date columns', () => {
+      expect(_.find(view.columns, ['fieldName', 'marsupial_birthday'])).to.exist;
+    });
+
+    it('omits photo column types', () => {
       expect(_.find(view.columns, ['dataTypeName', 'photo'])).to.exist;
       expect(_.find(props.columns, ['dataTypeName', 'photo'])).to.not.exist;
+    });
+
+    it('omits point column types', () => {
+      expect(_.find(view.columns, ['dataTypeName', 'point'])).to.exist;
+      expect(_.find(props.columns, ['dataTypeName', 'point'])).to.not.exist;
+    });
+
+    it('omits location subcolumns', () => {
+      expect(_.find(props.columns, ['fieldName', 'marsupial_location_state'])).to.not.exist;
+      expect(_.find(props.columns, ['fieldName', 'marsupial_location_city'])).to.not.exist;
+      expect(_.find(props.columns, ['fieldName', 'marsupial_location_zip'])).to.not.exist;
+    });
+
+    it('omits url subcolumns', () => {
+      expect(_.find(props.columns, ['fieldName', 'marsupial_website_description'])).to.not.exist;
+    });
+
+    it('omits phone subcolumns', () => {
+      expect(_.find(props.columns, ['fieldName', 'marsupial_phone_type'])).to.not.exist;
+    });
+
+    it('omits internal columns', () => {
+      expect(_.find(view.columns, ['fieldName', ':internal_column'])).to.exist;
+      expect(_.find(props.columns, ['fieldName', ':internal_column'])).to.not.exist;
     });
 
     it('returns filters', () => {

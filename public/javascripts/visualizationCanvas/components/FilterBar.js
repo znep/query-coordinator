@@ -6,14 +6,20 @@ import { dataProviders } from 'socrata-visualizations';
 
 export function mapStateToProps({ view, filters, parentView }) {
 
-  // Filtering is only supported on number columns and text columns.
-  const columns = _.chain(view.columns).
+  // Get displayable columns only, subcolumns and system columns are omitted
+  const displayableColumns = new dataProviders.MetadataProvider({
+    domain: serverConfig.domain,
+    datasetUid: parentView.id
+  }).getDisplayableColumns(view);
+
+  // Filtering is only supported on number columns, text columns, and calendar_date columns.
+  const columns = _.chain(displayableColumns).
     filter((column) => {
       if (column.dataTypeName === 'number') {
         return _.isNumber(column.rangeMin) && _.isNumber(column.rangeMax);
       }
 
-      return column.dataTypeName === 'text';
+      return column.dataTypeName === 'text' || column.dataTypeName === 'calendar_date';
     }).
     value();
 

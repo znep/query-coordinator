@@ -67,10 +67,15 @@ export function uploadFile(uploadId, file) {
     };
     xhr.onload = () => {
       if (xhr.status === 200) {
+        const { resource: inputSchema } = JSON.parse(xhr.responseText);
         dispatch(updateSucceeded('uploads', uploadUpdate));
         dispatch(updateFromServer('uploads', {
           id: uploadId,
           finished_at: new Date()
+        }));
+        dispatch(updateFromServer('schemas', {
+          id: inputSchema.id,
+          total_rows: inputSchema.total_rows
         }));
         dispatch(removeNotificationAfterTimeout(uploadNotification(uploadId)));
       } else {
@@ -134,6 +139,7 @@ function subscribeToOutputColumns(dispatch, upload) {
     dispatch(insertFromServer('schemas', {
       id: inputSchema.id,
       name: inputSchema.name,
+      total_rows: inputSchema.total_rows,
       upload_id: upload.id
     }));
     inputSchema.columns.forEach((column) => {
@@ -184,7 +190,8 @@ export function createTableAndSubscribeToTransform(transform, outputColumn) {
         );
       }
     }
-    channel.on('max_ptr', _.throttle(updateTransformProgress, 1000));
+
+    channel.on('max_ptr', updateTransformProgress);
     channel.on('errors', (errorsMsg) => {
       dispatch(updateFromServer('columns', {
         id: outputColumn.id,

@@ -14,21 +14,27 @@ import Table from './Table';
 function query(db, uploadId, schemaId, outputSchemaIdStr) {
   const outputSchemaId = _.toNumber(outputSchemaIdStr);
   const upload = _.find(db.uploads, { id: _.toNumber(uploadId) });
-  const schema = _.find(db.schemas, { id: _.toNumber(schemaId) });
+  const inputSchema = _.find(db.schemas, { id: _.toNumber(schemaId) });
   const outputSchema = _.find(db.schemas, { id: outputSchemaId });
   const columns = Selectors.columnsForOutputSchema(db, outputSchemaId);
+
+  const canApply = _.every(columns.map(c => c.contiguous_rows_processed), (transformProgress) => {
+    return transformProgress === inputSchema.total_rows;
+  });
 
   return {
     db,
     upload,
-    schema,
+    inputSchema,
     outputSchema,
-    columns
+    columns,
+    canApply
   };
 }
 
 export function ShowOutputSchema({ db, upload, columns, outputSchema,
-                                   goToUpload, updateColumnType, applyUpdate }) {
+                                   goToUpload, updateColumnType, applyUpdate,
+                                   canApply }) {
   let uploadProgress;
   switch (upload.__status__.type) {
     case STATUS_UPDATING:
@@ -74,6 +80,7 @@ export function ShowOutputSchema({ db, upload, columns, outputSchema,
         <ModalFooter>
           <button
             onClick={applyUpdate}
+            disabled={!canApply}
             className="btn btn-primary">
             {I18n.home_pane.apply_update}
           </button>
@@ -90,7 +97,8 @@ ShowOutputSchema.propTypes = {
   outputSchema: PropTypes.object.isRequired,
   goToUpload: PropTypes.func.isRequired,
   updateColumnType: PropTypes.func.isRequired,
-  applyUpdate: PropTypes.func.isRequired
+  applyUpdate: PropTypes.func.isRequired,
+  canApply: PropTypes.bool.isRequired
 };
 
 function mapStateToProps(state, ownProps) {

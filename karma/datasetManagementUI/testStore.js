@@ -3,8 +3,13 @@ import { applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { bootstrap } from 'lib/database/bootstrap';
 
+const actionLoggerMiddleware = store => next => action => {
+  const result = next(action);
+  return result;
+};
+
 export function getDefaultStore() {
-  const store = redux.createStore(rootReducer, applyMiddleware(thunk));
+  const store = redux.createStore(rootReducer, applyMiddleware(thunk, actionLoggerMiddleware));
   // vv this is what react-router-redux dispatches when the page starts up
   // brittle because it's not exposed as something you can call, but I don't know
   // what else to do

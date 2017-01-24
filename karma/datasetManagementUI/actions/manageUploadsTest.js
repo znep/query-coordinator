@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { getDefaultStore } from '../testStore';
 import { createUpload } from 'actions/manageUploads';
+import uploadResponse from '../data/uploadResponse';
 
 describe('actions/manageUploads', () => {
 
@@ -101,55 +102,11 @@ describe('actions/manageUploads', () => {
     }
   };
 
-  const channelOutputs = {
-    'transform_progress:0': [
-      {
-        event: 'max_ptr',
-        payload: {
-          seq_num: 0,
-          row_offset: 0,
-          end_row_offset: 4999
-        }
-      },
-      {
-        event: 'max_ptr',
-        payload: {
-          seq_num: 1,
-          row_offset: 5000,
-          end_row_offset: 9999
-        }
-      }
-    ],
-    'transform_progress:1': [
-      {
-        event: 'max_ptr',
-        payload: {
-          seq_num: 0,
-          row_offset: 0,
-          end_row_offset: 4999
-        }
-      },
-      {
-        event: 'max_ptr',
-        payload: {
-          seq_num: 0,
-          row_offset: 5000,
-          end_row_offset: 9999
-        }
-      }
-    ]
-  };
-
-  it('uploads a file, polls for schema, subscribes to channels, and fetches results', (done) => {
+  function mockFetchAndXhr(status, body) {
     const realFetch = window.fetch;
     const realXMLHttpRequest = window.XMLHttpRequest;
-    function doneUnmock() {
-      window.fetch = realFetch;
-      window.XMLHttpRequest = realXMLHttpRequest;
-      done();
-    }
-    const store = getDefaultStore();
-    // mock fetch
+
+
     window.fetch = (url, options) => {
       return new Promise((resolve) => {
         resolve({
@@ -173,23 +130,49 @@ describe('actions/manageUploads', () => {
         loaded: 50,
         total: 100
       });
+
+      this.status = status
+      this.responseText = JSON.stringify(body);
+
       this.onload();
     };
     window.XMLHttpRequest.prototype.setRequestHeader = function(header, value) {
       this.headers[header] = value;
     };
+
+    return () => {
+      window.fetch = realFetch;
+      window.XMLHttpRequest = realXMLHttpRequest;
+    }
+  }
+
+  function mockPhx(serverEvents, outerDone) {
+    const allChannels = Object.keys(serverEvents);
+    var neverJoinedChannels = Object.keys(serverEvents);
+    const done = _.after(allChannels.length, (e) => {
+      window.DSMAPI_PHOENIX_SOCKET = null;
+      outerDone(e)
+    });
+
+    setTimeout(() => {
+      if(neverJoinedChannels.length > 0) {
+        done(new Error(`Never joined channels ${neverJoinedChannels.join(', ')}`));
+      }
+    }, 1000);
+
     // mock socket
     const sentIndices = {};
+
     window.DSMAPI_PHOENIX_SOCKET = {
       channel: (channelName, joinPayload) => {
-        if (!channelOutputs[channelName]) {
+        if (!serverEvents[channelName]) {
           done(new Error(`no such mock channel: ${channelName}`));
         }
         const callbacks = {};
         const joinCallbacks = {};
         function sendMessages(idx = 0) {
           setTimeout(() => {
-            const messages = channelOutputs[channelName];
+            const messages = serverEvents[channelName];
             if (idx < messages.length) {
               const message = messages[idx];
               const callback = callbacks[message.event];
@@ -200,8 +183,8 @@ describe('actions/manageUploads', () => {
               function allMessagesSent([channelName, messages]) {
                 return messages.length - 1 === sentIndices[channelName];
               }
-              if (_.toPairs(channelOutputs).every(allMessagesSent)) {
-                doneUnmock();
+              if (_.toPairs(serverEvents).every(allMessagesSent)) {
+                done()
               }
             }
           }, 0);
@@ -217,16 +200,79 @@ describe('actions/manageUploads', () => {
             callbacks[eventName] = callback;
           },
           join: () => {
+            neverJoinedChannels = _.without(neverJoinedChannels, channelName);
             sendMessages();
             return joinedChannel;
           }
         };
       }
     };
+  }
+
+  it('uploads a file, polls for schema, subscribes to channels, and fetches results', (done) => {
+    const store = getDefaultStore();
+
+    // mock fetch
+    const unmockFetch = mockFetchAndXhr(200, uploadResponse);
+    const unmockPhx = mockPhx({
+      'transform_progress:0': [
+        {
+          event: 'max_ptr',
+          payload: {
+            seq_num: 0,
+            row_offset: 0,
+            end_row_offset: 4999
+          }
+        },
+        {
+          event: 'max_ptr',
+          payload: {
+            seq_num: 1,
+            row_offset: 5000,
+            end_row_offset: 9999
+          }
+        }
+      ],
+      'transform_progress:1': [
+        {
+          event: 'max_ptr',
+          payload: {
+            seq_num: 0,
+            row_offset: 0,
+            end_row_offset: 4999
+          }
+        },
+        {
+          event: 'max_ptr',
+          payload: {
+            seq_num: 0,
+            row_offset: 5000,
+            end_row_offset: 9999
+          }
+        }
+      ]
+    }, (e) => {
+
+      const db = store.getState().db;
+      const inputSchema = _.find(db.schemas, {id: 4});
+      expect(inputSchema.total_rows).to.equal(999999);
+
+      const transform0 = _.find(db.transforms, {id: 0})
+      const column0 = _.find(db.columns, {id: transform0.output_column_id})
+      expect(column0.contiguous_rows_processed).to.equal(9999)
+
+      const transform1 = _.find(db.transforms, {id: 0})
+      const column1 = _.find(db.columns, {id: transform1.output_column_id})
+      expect(column1.contiguous_rows_processed).to.equal(9999)
+
+      unmockFetch();
+      done(e);
+    })
+
     store.dispatch(createUpload({
       name: 'crimes.csv'
     }));
-    // TODO: assert against database state
+
   });
 
 });

@@ -4497,6 +4497,7 @@ en:
         sign_in_button: Sign In
       headline: Sign In to %{site}
       mismatch: Passwords do not match. Please try again.
+      new_login_message: <strong>Important!</strong> Login and signup will have a new look soon, learn more <a href="https://support.socrata.com/hc/en-us/articles/226005288" target="_blank" style="text-decoration&#58; underline;">here</a>
       prompt_html: Sign in with your <strong>Socrata ID</strong>.
       sign_in_using: Sign in using
       sign_in_with: "<strong>Sign in</strong> with %{provider}"

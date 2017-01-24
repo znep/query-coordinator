@@ -101,22 +101,12 @@ export const ApiFlannel = React.createClass({
   renderEndpoint() {
     const { view, onClickCopy } = this.props;
     const { resourceType } = this.state;
+    const { enableDatasetLandingPageFoundryLinks } = serverConfig.featureFlags;
     const resourceTypes = this.getResourceTypes();
+    let foundryLinks = null;
 
-    const copyButton = isCopyingSupported ?
-      <span className="input-group-btn">
-        <button
-          type="button"
-          className="btn btn-primary btn-sm copy"
-          data-confirmation={I18n.copy_success}
-          onClick={onClickCopy}>
-          {I18n.copy}
-        </button>
-      </span> :
-      null;
-
-    return (
-      <div className="endpoint api-endpoint">
+    if (enableDatasetLandingPageFoundryLinks) {
+      foundryLinks = (
         <section className="flannel-content">
           <a
             className="btn btn-default btn-sm documentation-link"
@@ -133,6 +123,24 @@ export const ApiFlannel = React.createClass({
             {I18n.api_flannel.developer_portal_button}
           </a>
         </section>
+      );
+    }
+
+    const copyButton = isCopyingSupported ?
+      <span className="input-group-btn">
+        <button
+          type="button"
+          className="btn btn-primary btn-sm copy"
+          data-confirmation={I18n.copy_success}
+          onClick={onClickCopy}>
+          {I18n.copy}
+        </button>
+      </span> :
+      null;
+
+    return (
+      <div className="endpoint api-endpoint">
+        {foundryLinks}
 
         <section className="flannel-content">
           <h6 id="api-endpoint" className="endpoint-title">

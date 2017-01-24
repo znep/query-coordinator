@@ -13,6 +13,7 @@ describe('components/ApiFlannel', () => {
   const getDropdownToggle = (el) => el.querySelector('.input-group-btn');
   const getDropdownOptions = (el) => el.querySelectorAll('.input-group-btn .dropdown-options .option');
   const getResourceText = (el) => el.querySelector('input.endpoint-input').getAttribute('value');
+  const getFoundryLinks = (el) => el.querySelectorAll('.documentation-link');
 
   it('renders an element', () => {
     const element = renderComponent(ApiFlannel, getProps());
@@ -49,5 +50,19 @@ describe('components/ApiFlannel', () => {
 
     expect(getResourceText(element)).to.not.contain('ohm');
     expect(getResourceText(element)).to.equal(mockView.resourceUrl);
+  });
+
+  describe('API foundry link', () => {
+    it('is visible if the feature flag is enabled', () => {
+      window.serverConfig.featureFlags.enableDatasetLandingPageFoundryLinks = true;
+      const element = renderComponent(ApiFlannel, getProps());
+      expect(getFoundryLinks(element)).to.have.length(2);
+    });
+
+    it('is not visible if the feature flag is disabled', () => {
+      window.serverConfig.featureFlags.enableDatasetLandingPageFoundryLinks = false;
+      const element = renderComponent(ApiFlannel, getProps());
+      expect(getFoundryLinks(element)).to.have.length(0);
+    });
   });
 });

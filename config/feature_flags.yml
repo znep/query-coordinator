@@ -63,6 +63,9 @@ display_dataset_landing_page_preview_images:
   description: Display view preview images in view widgets on Dataset Landing Page
   defaultValue: false
   category: data lens
+enable_dataset_landing_page_foundry_links:
+  description: Display the API Docs link in the API flannel
+  defaultValue: true
 enable_dataset_landing_page_tour:
   description: Display the tour when visitors first access a dataset landing page.
   defaultValue: true

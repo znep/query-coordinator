@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { closeExternalResourceContainer } from '../actions/modal';
 import BackButton from './BackButton';
-import Header from './Header';
 import ExternalResourceForm from './ExternalResourceForm';
 import { ExternalViewCard } from 'socrata-components';
 
@@ -72,33 +71,30 @@ export class ExternalResourceContainer extends Component {
       null;
 
     return (
-      <div className="external-resource-container">
-        <Header title={'Feature an External Resource'} />{/* TODO: Localization */}
-        <div className="centered-content">
-          <BackButton onClick={this.props.dispatchCloseExternalResourceContainer} />
-          <div className="description">
-            <p>{/* TODO: localization */}
-              <strong>Create a link to an external resource for this category.</strong>
-              <br />
-              For example, this could be a visualization on the web, a blog post,
-              or a link to another part of your site.
-            </p>
-            <div className="external-resource-contents">
-              <ExternalResourceForm
-                title={this.state.title}
-                description={this.state.description}
-                url={this.state.url}
-                previewImage={this.state.previewImage}
-                onChange={this.onChange}
-                isImageInvalid={this.state.isImageInvalid} />
+      <div className="modal-content external-resource-container">
+        <BackButton onClick={this.props.dispatchCloseExternalResourceContainer} />
+        <div className="description">
+          <p>{/* TODO: localization */}
+            <strong>Create a link to an external resource for this category.</strong>
+            <br />
+            For example, this could be a visualization on the web, a blog post,
+            or a link to another part of your site.
+          </p>
+          <div className="external-resource-contents">
+            <ExternalResourceForm
+              title={this.state.title}
+              description={this.state.description}
+              url={this.state.url}
+              previewImage={this.state.previewImage}
+              onChange={this.onChange}
+              isImageInvalid={this.state.isImageInvalid} />
 
-              <div className="external-resource-preview">
-                {this.renderPreview()}
-              </div>
+            <div className="external-resource-preview">
+              {this.renderPreview()}
             </div>
-
-            {saveError}
           </div>
+
+          {saveError}
         </div>
       </div>
     );

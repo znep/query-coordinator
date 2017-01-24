@@ -8,7 +8,6 @@ import { updatePageResults } from '../actions/pageResults';
 import { updateResultCount } from '../actions/resultCount';
 import BackButton from './BackButton';
 import Card from './Card';
-import Header from './Header';
 import NoResults from './NoResults';
 import Pager from './Pager';
 import ResultCount from './ResultCount';
@@ -44,7 +43,7 @@ export class ResultsContainer extends Component {
         dispatchUpdateResultCount(response.resultSetSize);
 
         if (!initialFetch) {
-          $('.asset-selector .content').animate({ scrollTop: 0 });
+          $('.asset-selector .modal-content').animate({ scrollTop: 0 });
         }
       }).
       error((err) => {
@@ -95,17 +94,14 @@ export class ResultsContainer extends Component {
       : <NoResults />;
 
     return (
-      <div className="results-container">
-        <Header title={'Select Featured Content in [category]'} />{/* TODO: Localization, [category] */}
-        <div className="centered-content">
-          <BackButton onClick={this.props.dispatchCloseModal} />
-          <button
-            className="btn btn-default btn-sm external-resource-button"
-            onClick={this.props.dispatchOpenExternalResourceContainer}>
-            Feature an External Resource{/* TODO: localization */}
-          </button>
-          {resultContent}
-        </div>
+      <div className="modal-content results-container">
+        <BackButton onClick={this.props.dispatchCloseModal} />
+        <button
+          className="btn btn-default btn-sm external-resource-button"
+          onClick={this.props.dispatchOpenExternalResourceContainer}>
+          Feature an External Resource{/* TODO: localization */}
+        </button>
+        {resultContent}
       </div>
     );
   }

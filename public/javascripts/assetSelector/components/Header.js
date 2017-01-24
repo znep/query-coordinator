@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 
 export const Header = (props) => (
-  <div className="asset-selector-header">
+  <div className="modal-header">
     <h1>{props.title}</h1>
   </div>
 );

@@ -1,14 +1,29 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import classNames from 'classnames';
 import { openModal } from './actions/modal';
 import ExternalResourceContainer from './components/ExternalResourceContainer';
+import FormFooter from '../datasetLandingPage/components/FeaturedContentModal/FormFooter';
+import Header from './components/Header';
 import ResultsContainer from './components/ResultsContainer';
 
 export const App = (props) => {
-  const modalContent = (props.modalPage === 'ResultsContainer') ?
+  const assetSelectorContent = (props.modalPage === 'ResultsContainer') ?
     <ResultsContainer resultsPerPage={6} /> :
     <ExternalResourceContainer />;
+
+  const assetSelectorModalClassNames = classNames({
+    'asset-selector-modal': true,
+    'modal': true,
+    'modal-full': true,
+    'modal-hidden': !props.modalIsOpen
+  });
+
+  /* TODO: Localization, [category] */
+  const headerTitle = (props.modalPage === 'ResultsContainer') ?
+    'Select Featured Content in [category]' :
+    'Feature an External Resource';
 
   return (
     <div>
@@ -17,11 +32,22 @@ export const App = (props) => {
         onClick={props.dispatchOpenModal}>
         Add...
       </button>
-      <div className={props.modalIsOpen ? '' : 'hidden'}>
-        <div className="asset-selector-overlay">
-          <div className="content">
-            {modalContent}
-          </div>
+      <div
+        className={assetSelectorModalClassNames}
+        data-modal-dismiss>
+        <div className="modal-container">
+          <Header title={headerTitle} />
+          {assetSelectorContent}
+          <FormFooter
+            cancelText={'Cancel'}
+            canSave={true}
+            displaySaveButton={true}
+            isSaved={false}
+            isSaving={false}
+            onClickCancel={_.noop}
+            onClickSave={_.noop}
+            saveText={'Save'}
+            savedText={'Saved!'} />
         </div>
       </div>
     </div>

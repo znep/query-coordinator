@@ -1,6 +1,5 @@
 @import "styleguide-colors";
 @import "asset-selector/breakpoints";
-@import "asset-selector/header";
 @import "asset-selector/results-container";
 @import "asset-selector/external-resource-container";
 
@@ -14,37 +13,15 @@
     display: inline-block;
   }
 
-  .asset-selector-overlay {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.2);
-    z-index: 100;
-  }
+  .asset-selector-modal {
+    background-color: $white;
+    overflow: hidden;
 
-  .content {
-    border: 1px solid $grey;
-    background: $white;
-    width: calc(100% - 4rem);
-    height: calc(100% - 4rem);
-    max-height: 860px;
-    max-width: 1200px;
-    overflow-y: scroll;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    margin: auto;
-
-    .centered-content {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 1rem;
+    .modal-header {
+      h1 {
+        font-size: 19px;
+        font-weight: 400;
+      }
     }
   }
 }

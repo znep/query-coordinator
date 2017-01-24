@@ -120,9 +120,10 @@
         }
         if (!$.isBlank(this.metric)) {
           var fullMetric = 'js-spinner-' + this.metric + '-time';
+          var stopwatch = $.metrics.stopwatches['domain-intern/' + fullMetric];
           if (doShow) {
             $.metrics.stopwatch('domain-intern', fullMetric, 'start');
-          } else if ($.metrics.stopwatches['domain-intern/' + fullMetric].started) {
+          } else if (stopwatch && stopwatch.started) {
             $.metrics.stopwatch('domain-intern', fullMetric, 'end');
           }
         }

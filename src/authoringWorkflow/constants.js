@@ -1,6 +1,7 @@
 import { translate } from '../I18n';
 
 export const INPUT_DEBOUNCE_MILLISECONDS = 700;
+export const MAP_SLIDER_DEBOUNCE_MILLISECONDS = 1000;
 
 export const COLUMN_TYPES = [
   {

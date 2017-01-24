@@ -10,13 +10,14 @@ import {
   BASE_LAYERS,
   COLOR_SCALES,
   COLOR_PALETTES,
-  COLORS
+  COLORS,
+  MAP_SLIDER_DEBOUNCE_MILLISECONDS
 } from '../../constants';
 
-import CustomizationTabPane from '../CustomizationTabPane';
 import EmptyPane from './EmptyPane';
 import Accordion from '../shared/Accordion';
 import AccordionPane from '../shared/AccordionPane';
+import DebouncedSlider from '../shared/DebouncedSlider';
 
 import {
   getPrimaryColor,
@@ -59,7 +60,7 @@ export var ColorsAndStylePane = React.createClass({
   },
 
   onSelectColorScale(event) {
-    var colorScale = _.find(this.props.colorScales, {value: event.target.value}).scale;
+    var colorScale = _.find(this.props.colorScales, { value: event.target.value }).scale;
     this.props.onSelectColorScale(colorScale);
   },
 
@@ -182,7 +183,8 @@ export var ColorsAndStylePane = React.createClass({
       rangeMax: 1,
       step: 0.1,
       value: pointOpacity / 100,
-      onChange: onChangePointOpacity
+      onChange: onChangePointOpacity,
+      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
     };
 
     const pointSizeAttributes = {
@@ -191,25 +193,29 @@ export var ColorsAndStylePane = React.createClass({
       rangeMax: 3.2,
       step: 0.1,
       value: pointSize,
-      onChange: onChangePointSize
+      onChange: onChangePointSize,
+      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
     };
 
     const pointControls = (
       <AccordionPane key="pointControls" title={translate('panes.colors_and_style.subheaders.points')}>
         <div className="authoring-field">
-          <label className="block-label" htmlFor="point-color">{translate('panes.colors_and_style.fields.point_color.title')}</label>
+          <label className="block-label"
+                 htmlFor="point-color">{translate('panes.colors_and_style.fields.point_color.title')}</label>
           <Styleguide.ColorPicker {...pointColorAttributes} />
         </div>
         <div className="authoring-field">
-          <label className="block-label" htmlFor="point-opacity">{translate('panes.colors_and_style.fields.point_opacity.title')}</label>
+          <label className="block-label"
+                 htmlFor="point-opacity">{translate('panes.colors_and_style.fields.point_opacity.title')}</label>
           <div id="point-opacity">
-            <Styleguide.Slider {...pointOpacityAttributes} />
+            <DebouncedSlider {...pointOpacityAttributes} />
           </div>
         </div>
         <div className="authoring-field">
-          <label className="block-label" htmlFor="point-size">{translate('panes.colors_and_style.fields.point_size.title')}</label>
+          <label className="block-label"
+                 htmlFor="point-size">{translate('panes.colors_and_style.fields.point_size.title')}</label>
           <div id="point-size">
-            <Styleguide.Slider {...pointSizeAttributes} />
+            <DebouncedSlider {...pointSizeAttributes} />
           </div>
         </div>
       </AccordionPane>
@@ -239,7 +245,8 @@ export var ColorsAndStylePane = React.createClass({
 
     const colorControls = (
       <AccordionPane key="colorControls" title={translate('panes.colors_and_style.subheaders.colors')}>
-        <label className="block-label" htmlFor="color-scale">{translate('panes.colors_and_style.fields.color_scale.title')}</label>
+        <label className="block-label"
+               htmlFor="color-scale">{translate('panes.colors_and_style.fields.color_scale.title')}</label>
         <div className="color-scale-dropdown-container">
           <Styleguide.Dropdown {...colorScaleAttributes} />
         </div>
@@ -267,21 +274,24 @@ export var ColorsAndStylePane = React.createClass({
       rangeMax: 1,
       step: 0.1,
       value: defaultBaseLayerOpacity / 100,
-      onChange: onChangeBaseLayerOpacity
+      onChange: onChangeBaseLayerOpacity,
+      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
     };
 
     return (
       <AccordionPane key="mapLayerControls" title={translate('panes.colors_and_style.subheaders.map')}>
         <div className="authoring-field">
-          <label className="block-label" htmlFor="base-layer">{translate('panes.colors_and_style.fields.base_layer.title')}</label>
+          <label className="block-label"
+                 htmlFor="base-layer">{translate('panes.colors_and_style.fields.base_layer.title')}</label>
           <div className="base-layer-dropdown-container">
             <Styleguide.Dropdown {...baseLayerAttributes} />
           </div>
         </div>
         <div className="authoring-field">
-          <label className="block-label" htmlFor="base-layer-opacity">{translate('panes.colors_and_style.fields.base_layer_opacity.title')}</label>
+          <label className="block-label"
+                 htmlFor="base-layer-opacity">{translate('panes.colors_and_style.fields.base_layer_opacity.title')}</label>
           <div id="base-layer-opacity">
-            <Styleguide.Slider {...baseLayerOpacityAttributes} />
+            <DebouncedSlider {...baseLayerOpacityAttributes} />
           </div>
         </div>
       </AccordionPane>

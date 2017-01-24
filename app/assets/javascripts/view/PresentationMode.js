@@ -160,11 +160,12 @@ export default function PresentationMode() {
 
     if (isPresenting) {
       // 27 == ESC, 37 == <-, 39 == ->
+      // 33 = PageUp, 34 = PageDn
       if (key === 27) {
         enableLinearMode();
-      } else if (key === 37) {
+      } else if (key === 37 || key === 33) {
         pagePrevious();
-      } else if (key === 39) {
+      } else if (key === 39 || key === 34) {
         pageNext();
       }
     } else {

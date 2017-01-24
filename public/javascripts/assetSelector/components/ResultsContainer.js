@@ -66,48 +66,48 @@ export class ResultsContainer extends Component {
   }
 
   render() {
-    if (!this.props.results.length) {
-      return (
-        <NoResults />
-      );
-    } else {
-      return (
-        <div className="results-container">
-          <Header title={'Select Featured Content in [category]'} />{/* TODO: Localization, [category] */}
-          <div className="centered-content">
-            <BackButton onClick={this.props.dispatchCloseModal} />
-            <button
-              className="btn btn-default btn-sm external-resource-button"
-              onClick={this.props.dispatchOpenExternalResourceContainer}>
-              Feature an External Resource{/* TODO: localization */}
-            </button>
-            <div className="top-controls">
-              <ResultCount
-                currentPage={this.state.currentPage}
-                resultsPerPage={this.props.resultsPerPage}
-                total={this.props.resultCount} />
+    const resultContent = (this.props.results.length > 0) ?
+      (<div>
+        <div className="top-controls">
+          <ResultCount
+            currentPage={this.state.currentPage}
+            resultsPerPage={this.props.resultsPerPage}
+            total={this.props.resultCount} />
 
-              <SortDropdown
-                onSelection={this.changeSort}
-                value={this.state.sort} />
-            </div>
-
-            <div className="card-container">
-              {this.props.results.map((result, i) =>
-                <Card key={i} {...result} />
-              )}
-            </div>
-
-            <Pager
-              key={this.state.pagerKey}
-              currentPage={this.state.currentPage}
-              changePage={this.changePage}
-              resultCount={this.props.resultCount}
-              resultsPerPage={this.props.resultsPerPage} />
-          </div>
+          <SortDropdown
+            onSelection={this.changeSort}
+            value={this.state.sort} />
         </div>
-      );
-    }
+
+        <div className="card-container">
+          {this.props.results.map((result, i) =>
+            <Card key={i} {...result} />
+          )}
+        </div>
+
+        <Pager
+          key={this.state.pagerKey}
+          currentPage={this.state.currentPage}
+          changePage={this.changePage}
+          resultCount={this.props.resultCount}
+          resultsPerPage={this.props.resultsPerPage} />
+      </div>)
+      : <NoResults />;
+
+    return (
+      <div className="results-container">
+        <Header title={'Select Featured Content in [category]'} />{/* TODO: Localization, [category] */}
+        <div className="centered-content">
+          <BackButton onClick={this.props.dispatchCloseModal} />
+          <button
+            className="btn btn-default btn-sm external-resource-button"
+            onClick={this.props.dispatchOpenExternalResourceContainer}>
+            Feature an External Resource{/* TODO: localization */}
+          </button>
+          {resultContent}
+        </div>
+      </div>
+    );
   }
 }
 

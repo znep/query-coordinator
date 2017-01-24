@@ -15,7 +15,6 @@ require('socrata-components/dist/css/styleguide.css');
 const middleware = [];
 
 // TODO: setup a11y and airbrake
-window.serverConfig = {};
 // if (window.serverConfig.environment === 'development') {
 a11y(React, { ReactDOM: ReactDOM });
 middleware.push(createLogger({

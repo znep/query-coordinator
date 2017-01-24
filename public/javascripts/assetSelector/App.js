@@ -9,7 +9,9 @@ import Header from './components/Header';
 import ResultsContainer from './components/ResultsContainer';
 
 export const App = (props) => {
-  const assetSelectorContent = (props.modalPage === 'ResultsContainer') ?
+  const onResultsPage = props.modalPage === 'ResultsContainer';
+
+  const assetSelectorContent = (onResultsPage) ?
     <ResultsContainer resultsPerPage={6} /> :
     <ExternalResourceContainer />;
 
@@ -20,10 +22,28 @@ export const App = (props) => {
     'modal-hidden': !props.modalIsOpen
   });
 
+  const modalContainerClassNames = classNames({
+    'modal-container': true,
+    'no-footer': onResultsPage
+  });
+
   /* TODO: Localization, [category] */
-  const headerTitle = (props.modalPage === 'ResultsContainer') ?
+  const headerTitle = onResultsPage ?
     'Select Featured Content in [category]' :
     'Feature an External Resource';
+
+  const footer = onResultsPage ?
+    null :
+    <FormFooter
+      cancelText={'Cancel'}
+      canSave={true/* TODO */}
+      displaySaveButton={true}
+      isSaved={false}
+      isSaving={false}
+      onClickCancel={_.noop}
+      onClickSave={_.noop}
+      saveText={'Save'}
+      savedText={'Saved!'} />;
 
   return (
     <div>
@@ -35,19 +55,10 @@ export const App = (props) => {
       <div
         className={assetSelectorModalClassNames}
         data-modal-dismiss>
-        <div className="modal-container">
+        <div className={modalContainerClassNames}>
           <Header title={headerTitle} />
           {assetSelectorContent}
-          <FormFooter
-            cancelText={'Cancel'}
-            canSave={true}
-            displaySaveButton={true}
-            isSaved={false}
-            isSaving={false}
-            onClickCancel={_.noop}
-            onClickSave={_.noop}
-            saveText={'Save'}
-            savedText={'Saved!'} />
+          {footer}
         </div>
       </div>
     </div>

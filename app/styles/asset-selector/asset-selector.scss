@@ -17,10 +17,18 @@
     background-color: $white;
     overflow: hidden;
 
-    .modal-header {
-      h1 {
-        font-size: 19px;
-        font-weight: 400;
+    .modal-container {
+      &.no-footer {
+        .modal-content {
+          margin-bottom: 0;
+        }
+      }
+
+      .modal-header {
+        h1 {
+          font-size: 19px;
+          font-weight: 400;
+        }
       }
     }
   }

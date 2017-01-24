@@ -5,6 +5,10 @@ $view-widget-height: 300px;
 
 .asset-selector {
   .external-resource-container {
+    .description {
+      margin-top: 1rem;
+    }
+
     .external-resource-contents {
       display: flex;
 

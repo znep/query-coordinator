@@ -80,22 +80,22 @@ export class ExternalResourceContainer extends Component {
             For example, this could be a visualization on the web, a blog post,
             or a link to another part of your site.
           </p>
-          <div className="external-resource-contents">
-            <ExternalResourceForm
-              title={this.state.title}
-              description={this.state.description}
-              url={this.state.url}
-              previewImage={this.state.previewImage}
-              onChange={this.onChange}
-              isImageInvalid={this.state.isImageInvalid} />
-
-            <div className="external-resource-preview">
-              {this.renderPreview()}
-            </div>
-          </div>
-
-          {saveError}
         </div>
+        <div className="external-resource-contents">
+          <ExternalResourceForm
+            title={this.state.title}
+            description={this.state.description}
+            url={this.state.url}
+            previewImage={this.state.previewImage}
+            onChange={this.onChange}
+            isImageInvalid={this.state.isImageInvalid} />
+
+          <div className="external-resource-preview">
+            {this.renderPreview()}
+          </div>
+        </div>
+
+        {saveError}
       </div>
     );
   }

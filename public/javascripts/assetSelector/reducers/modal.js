@@ -21,7 +21,7 @@ export default (state = initialState(), action = {}) => {
       state.modalIsOpen = true;
       return state;
     case 'CLOSE_MODAL':
-    $('body').css('overflow-y', 'auto');
+      $('body').css('overflow-y', 'auto');
       state.modalIsOpen = false;
       return state;
     case 'OPEN_EXTERNAL_RESOURCE_CONTAINER':

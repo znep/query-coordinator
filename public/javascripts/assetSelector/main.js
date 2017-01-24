@@ -7,8 +7,8 @@ import a11y from 'react-a11y';
 // import airbrake from './lib/airbrake';
 import _ from 'lodash';
 
-import assetSelector from './reducers';
-import App from './App';
+import AssetSelector from './AssetSelector';
+import assetSelectorReducers from './reducers';
 
 require('socrata-components/dist/css/styleguide.css');
 
@@ -26,13 +26,13 @@ middleware.push(createLogger({
 //   airbrake.init();
 // }
 
-const store = createStore(assetSelector, applyMiddleware(...middleware));
+const store = createStore(assetSelectorReducers, applyMiddleware(...middleware));
 
 _.defer(() => {
   try {
     ReactDOM.render(
       <Provider store={store}>
-        <App />
+        <AssetSelector />
       </Provider>,
       document.querySelector('.asset-selector')
     );

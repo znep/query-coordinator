@@ -39,16 +39,21 @@ describe('components/ResultsContainer', function() {
     $.ajax.restore();
   });
 
+  it('renders', function() {
+    var element = renderComponentWithStore(ResultsContainer, getProps());
+    expect(element).to.exist;
+    expect(element.className).to.match(/results-container/);
+  });
+
   it('renders the "no results" element if the results array is empty', function() {
     var element = renderComponentWithStore(ResultsContainer, getProps({ results: [] }));
-    expect(element).to.exist;
-    expect(element.className).to.eq('no-results');
+    expect(element.querySelector('.no-results')).to.exist;
   });
 
   it('renders the results container if the results array is present', function() {
     var element = renderComponentWithStore(ResultsContainer, getProps());
     expect(element).to.exist;
-    expect(element.className).to.eq('results-container');
+    expect(element.querySelector('.card-container')).to.exist;
   });
 
   it('renders the total result count', function() {

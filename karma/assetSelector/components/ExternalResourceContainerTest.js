@@ -14,7 +14,7 @@ describe('components/ExternalResourceContainer', function() {
   it('renders', function() {
     var element = renderComponentWithStore(ExternalResourceContainer, getProps());
     expect(element).to.exist;
-    expect(element.className).to.eq('external-resource-container');
+    expect(element.className).to.match(/external-resource-container/);
   });
 
 });

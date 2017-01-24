@@ -5,7 +5,7 @@ $view-widget-height: 300px;
 
 .asset-selector {
   .external-resource-container {
-    .description {
+    > .description {
       margin-top: 1rem;
     }
 
@@ -22,10 +22,6 @@ $view-widget-height: 300px;
 
         .file-input {
           margin-bottom: 12px;
-        }
-
-        .label-url, .label-preview-image {
-          margin-top: 11px;
         }
 
         .alert {

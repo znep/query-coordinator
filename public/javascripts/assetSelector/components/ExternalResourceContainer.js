@@ -18,7 +18,6 @@ export class ExternalResourceContainer extends Component {
       description: '',
       url: '',
       previewImage: '',
-      hasSaveError: false,
       isImageInvalid: false
     };
   }
@@ -64,12 +63,6 @@ export class ExternalResourceContainer extends Component {
   }
 
   render() {
-    const saveError = this.state.hasSaveError ?
-      <div className="alert error">{/* TODO: localization */}
-        Sorry, there was an error saving your data. Please try again.
-      </div> :
-      null;
-
     return (
       <div className="modal-content external-resource-container">
         <BackButton onClick={this.props.dispatchCloseExternalResourceContainer} />
@@ -94,8 +87,6 @@ export class ExternalResourceContainer extends Component {
             {this.renderPreview()}
           </div>
         </div>
-
-        {saveError}
       </div>
     );
   }

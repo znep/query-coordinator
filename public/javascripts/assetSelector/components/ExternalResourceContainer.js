@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { closeExternalResourceContainer } from '../actions/modal';
+import { updateField } from '../actions/externalResource';
 import BackButton from './BackButton';
 import ExternalResourceForm from './ExternalResourceForm';
 import { ExternalViewCard } from 'socrata-components';
@@ -10,21 +11,17 @@ export class ExternalResourceContainer extends Component {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['onChange', 'renderPreview']);
-
-    // TODO: populate these (componentDidMount? or props?) if values already exist.
     this.state = {
-      title: '',
-      description: '',
-      url: '',
-      previewImage: '',
       isImageInvalid: false
     };
+
+    _.bindAll(this, ['onChange', 'renderPreview']);
   }
 
   // Key is one of 'title', 'description', 'url', or 'previewImage'
   onChange(key, event) {
     if (key === 'previewImage') {
+      // Upload image
       const file = event.target.files[0];
       const isFileImage = file && /\.(jpe?g|png|gif)$/i.test(file.name);
 
@@ -39,19 +36,19 @@ export class ExternalResourceContainer extends Component {
       const fileReader = new FileReader();
 
       fileReader.addEventListener('load', () => {
-        this.setState({ [key]: fileReader.result });
+        this.props.dispatchUpdateField(key, fileReader.result);
       }, false);
 
       if (file) {
         fileReader.readAsDataURL(file);
       }
     } else {
-      this.setState({ [key]: event.target.value });
+      this.props.dispatchUpdateField(key, event.target.value);
     }
   }
 
   renderPreview() {
-    const { description, previewImage, title } = this.state;
+    const { description, previewImage, title } = this.props;
 
     const cardProps = {
       description: _.isEmpty(description) ? null : description,
@@ -65,7 +62,9 @@ export class ExternalResourceContainer extends Component {
   render() {
     return (
       <div className="modal-content external-resource-container">
+
         <BackButton onClick={this.props.dispatchCloseExternalResourceContainer} />
+
         <div className="description">
           <p>{/* TODO: localization */}
             <strong>Create a link to an external resource for this category.</strong>
@@ -74,12 +73,13 @@ export class ExternalResourceContainer extends Component {
             or a link to another part of your site.
           </p>
         </div>
+
         <div className="external-resource-contents">
           <ExternalResourceForm
-            title={this.state.title}
-            description={this.state.description}
-            url={this.state.url}
-            previewImage={this.state.previewImage}
+            title={this.props.title}
+            description={this.props.description}
+            url={this.props.url}
+            previewImage={this.props.previewImage}
             onChange={this.onChange}
             isImageInvalid={this.state.isImageInvalid} />
 
@@ -94,6 +94,7 @@ export class ExternalResourceContainer extends Component {
 
 ExternalResourceContainer.propTypes = {
   dispatchCloseExternalResourceContainer: PropTypes.func.isRequired,
+  dispatchUpdateField: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
@@ -102,20 +103,29 @@ ExternalResourceContainer.propTypes = {
 
 ExternalResourceContainer.defaultProps = {
   dispatchCloseExternalResourceContainer: _.noop,
+  dispatchUpdateField: _.noop,
   title: '',
   description: '',
   url: '',
   previewImage: ''
 };
 
-function mapStateToProps() {
-  return {};
+function mapStateToProps(state) {
+  return {
+    title: _.get(state, 'externalResource.title'),
+    description: _.get(state, 'externalResource.description'),
+    url: _.get(state, 'externalResource.url'),
+    previewImage: _.get(state, 'externalResource.previewImage')
+  };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     dispatchCloseExternalResourceContainer: function() {
       dispatch(closeExternalResourceContainer());
+    },
+    dispatchUpdateField: function(field, value) {
+      dispatch(updateField(field, value));
     }
   };
 }

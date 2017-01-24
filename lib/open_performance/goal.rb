@@ -16,6 +16,10 @@ class OpenPerformance::Goal
     goal_response.unauthorized?
   end
 
+  def configured?
+    goal_metadata['prevailing_measure'].present?
+  end
+
   def title
     goal_metadata['name']
   end

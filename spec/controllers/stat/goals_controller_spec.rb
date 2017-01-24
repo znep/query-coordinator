@@ -258,6 +258,10 @@ RSpec.describe Stat::GoalsController, type: :controller do
     describe 'storyteller editor enabled via feature flag' do
       let(:action_lambda) { -> { get :edit, uid: uid } }
 
+      before do
+        allow(goal).to receive(:configured?).and_return(true)
+      end
+
       it_behaves_like 'action available to goal editors'
 
       describe 'user can edit goal' do

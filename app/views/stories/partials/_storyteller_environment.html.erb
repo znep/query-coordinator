@@ -19,6 +19,7 @@
     window.OP_CATEGORY_UID = <%== @category_uid.to_json %>;
     window.OP_DASHBOARD_LIST = <%== @dashboard_list.to_json %>;
     window.OP_DASHBOARD_UID = <%== @dashboard_uid.to_json %>;
+    window.OP_GOAL_IS_CONFIGURED = <%= @goal.configured? %>;
     window.OP_GOAL_NARRATIVE_MIGRATION_METADATA = <%== @goal.narrative_migration_metadata.to_json %>;
   <%- end %>
   window.PRIMARY_OWNER_UID = '<%== @primary_owner_uid %>'; <%# TODO use .to_json (and other similar instances) %>

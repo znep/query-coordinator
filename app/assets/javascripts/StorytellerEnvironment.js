@@ -33,6 +33,7 @@ const envProperties = [
    * in our GoalMigrationRunner.js.
    */
   'OP_GOAL_DOCUMENT_IDS_BY_ASSET_IDS',
+  'OP_GOAL_IS_CONFIGURED',
   'OP_GOAL_NARRATIVE_MIGRATION_METADATA',
   'PRIMARY_OWNER_UID',
   'PUBLISHED_STORY_DATA',

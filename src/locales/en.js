@@ -392,8 +392,8 @@ export default {
       previous: 'Previous'
     },
     timeline_chart: {
-      error_exceeded_max_point_count: 'For optimal performance and legibility timeline charts are limited to {0} points. Use filters to render a more specific chart.',
-      error_exceeded_max_point_count_without_pan: 'For optimal performance and legibility timeline charts are limited to {0} points. Use filters to render a more specific chart.',
+      error_exceeded_max_row_count: 'For optimal performance and legibility timeline charts are limited to {0} points. Use filters to render a more specific chart.',
+      error_exceeded_max_row_count_without_pan: 'For optimal performance and legibility timeline charts are limited to {0} points. Use filters to render a more specific chart.',
       error_two_or_more_rows_required: 'Two or more rows are required to render a timeline chart. Omit filters to render more rows or choose a different dataset.',
       title: 'Timeline Chart'
     }

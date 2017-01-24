@@ -167,7 +167,7 @@ Required |Optional
 ##### `precision`
 `precision` overrides the automatic bucketing of dates for Timeline Charts. Its type is `<string>`.
 
-Accepted values are `'DAY'`, `'MONTH'` and `'YEAR'`. If present, the Timeline Chart will use the specified precision as opposed to computing a precision based on the distance between the earliest and latest date in the dataset.
+Accepted values are `'day'`, `'month'` and `'year'`. If present, the Timeline Chart will use the specified precision as opposed to computing a precision based on the distance between the earliest and latest date in the dataset.
 
 Required |Optional
 :-------:|:-------------:
@@ -368,7 +368,7 @@ If `type` is `'socrata.soql'`, the following properties are also required:
 
    * `aggregationFunction` specifies the aggregation function to apply to values in the column in question. Its type is `<string>` or `<null>`. If it is of type `<string>`, accepted values are `'sum'` and `'count'`.
 
-   For Bar and Column charts, the `dimension` object may also optionally include the following properties:
+   For Bar, Column and Timeline charts, the `dimension` object may also optionally include the following properties:
 
    * `grouping` property specifies a complex behavior that will decompose dimension values according to the values of a second, potentially orthogonal column, the name of which is the value of the `columnName` property on the `grouping` object. Because this process involves synthesizing multiple series for rendering at runtime, it effectively replaces any series defined in the static VIF with new ones. For this reason, the `grouping` property is only respected on the first series in the VIF (the 0th element of the `series` array), and if this property is present and non-null on the first series, all other series are ignored. Its type is `<string>` or `<null>`. If it is of type `<object>` and it must have the following properties:
 

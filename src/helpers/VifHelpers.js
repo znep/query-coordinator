@@ -36,7 +36,7 @@ function migrateVif(vifToMigrate) {
       return migrateVif1ToVif2(vifToMigrate);
 
     default:
-      return vifToMigrate;
+      return _.cloneDeep(vifToMigrate);
   }
 }
 

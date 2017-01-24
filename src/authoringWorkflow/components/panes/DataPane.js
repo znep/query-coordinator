@@ -200,7 +200,7 @@ export var DataPane = React.createClass({
     }
 
     const dimensionGroupingAvailable = (
-      isBarChart(vifAuthoring) || isColumnChart(vifAuthoring)
+      isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring)
     );
     const dimensionGroupingColumnNameTitle = translate(
       'panes.data.fields.dimension_grouping_column_name.title'

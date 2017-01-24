@@ -36,6 +36,7 @@ import {
   isFeatureMap,
   isHistogram,
   isTimelineChart,
+  isGroupedTimelineChart,
   isPieChart
 } from '../../selectors/vifAuthoring';
 
@@ -161,6 +162,27 @@ export var ColorsAndStylePane = React.createClass({
       <AccordionPane title={translate('panes.colors_and_style.subheaders.colors')}>
         {this.renderPrimaryColor(translate('panes.colors_and_style.fields.line_color.title'))}
         {this.renderSecondaryColor(translate('panes.colors_and_style.fields.area_color.title'))}
+      </AccordionPane>
+    );
+  },
+
+  renderGroupedTimelineChartControls() {
+    const { vifAuthoring, colorPalettes, onSelectColorPalette } = this.props;
+    const selectedColorPalette = getColorPalette(vifAuthoring);
+    const colorPaletteAttributes = {
+      id: 'color-palette',
+      options: colorPalettes,
+      value: selectedColorPalette,
+      onSelection: onDebouncedEvent(this, onSelectColorPalette, (event) => event.value)
+    };
+
+    return (
+      <AccordionPane title={translate('panes.colors_and_style.subheaders.colors')}>
+        <label className="block-label"
+               htmlFor="color-palette">{translate('panes.colors_and_style.fields.color_palette.title')}</label>
+        <div className="color-scale-dropdown-container">
+          <Styleguide.Dropdown {...colorPaletteAttributes} />
+        </div>
       </AccordionPane>
     );
   },
@@ -344,7 +366,12 @@ export var ColorsAndStylePane = React.createClass({
     } else if (isHistogram(vifAuthoring)) {
       configuration = this.renderHistogramControls();
     } else if (isTimelineChart(vifAuthoring)) {
-      configuration = this.renderTimelineChartControls();
+
+      if (isGroupedTimelineChart(vifAuthoring)) {
+        configuration = this.renderGroupedTimelineChartControls();
+      } else {
+        configuration = this.renderTimelineChartControls();
+      }
     } else if (isFeatureMap(vifAuthoring)) {
       configuration = this.renderFeatureMapControls();
     } else if (isRegionMap(vifAuthoring)) {

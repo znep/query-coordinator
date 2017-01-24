@@ -219,15 +219,15 @@ export const TIMELINE_PRECISION = [
   },
   {
     title: translate('panes.axis_and_scale.fields.timeline_precision.year'),
-    value: 'YEAR'
+    value: 'year'
   },
   {
     title: translate('panes.axis_and_scale.fields.timeline_precision.month'),
-    value: 'MONTH'
+    value: 'month'
   },
   {
     title: translate('panes.axis_and_scale.fields.timeline_precision.day'),
-    value: 'DAY'
+    value: 'day'
   }
 ];
 

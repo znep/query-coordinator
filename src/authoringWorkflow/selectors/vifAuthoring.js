@@ -263,10 +263,10 @@ export const isBarChart = createSelector(
 );
 
 export const isGroupedBarChart = createSelector(
-  getVisualizationType,
+  isBarChart,
   getDimensionGroupingColumnName,
-  (type, dimensionGroupingColumnName) => {
-    return type === 'barChart' && _.isString(dimensionGroupingColumnName);
+  (isBarChart, dimensionGroupingColumnName) => {
+    return isBarChart && _.isString(dimensionGroupingColumnName);
   }
 );
 
@@ -290,10 +290,10 @@ export const isColumnChart = createSelector(
 );
 
 export const isGroupedColumnChart = createSelector(
-  getVisualizationType,
+  isColumnChart,
   getDimensionGroupingColumnName,
-  (type, dimensionGroupingColumnName) => {
-    return type === 'columnChart' && _.isString(dimensionGroupingColumnName);
+  (isColumnChart, dimensionGroupingColumnName) => {
+    return isColumnChart && _.isString(dimensionGroupingColumnName);
   }
 );
 
@@ -351,6 +351,14 @@ export const isValidFeatureMapVif = createSelector(
 export const isTimelineChart = createSelector(
   getVisualizationType,
   type => type === 'timelineChart'
+);
+
+export const isGroupedTimelineChart = createSelector(
+  isTimelineChart,
+  getDimensionGroupingColumnName,
+  (isTimelineChart, dimensionGroupingColumnName) => {
+    return isTimelineChart && _.isString(dimensionGroupingColumnName);
+  }
 );
 
 export const isValidTimelineChartVif = createSelector(

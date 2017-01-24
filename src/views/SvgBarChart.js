@@ -1,13 +1,15 @@
-const utils = require('socrata-utils');
+// Vendor Imports
 const d3 = require('d3');
 const _ = require('lodash');
 const $ = require('jquery');
+const utils = require('socrata-utils');
+// Project Imports
 const SvgVisualization = require('./SvgVisualization');
 const I18n = require('../I18n');
-
-// These values have been eyeballed to provide enough space for axis labels
-// that have been observed 'in the wild'. They may need to be adjusted slightly
-// in the future, but the adjustments will likely be small in scale.
+// Constants
+// The MARGINS values have been eyeballed to provide enough space for axis
+// labels that have been observed 'in the wild'. They may need to be adjusted
+// slightly in the future, but the adjustments will likely be small in scale.
 const MARGINS = {
   TOP: 26,
   RIGHT: 16,

@@ -113,7 +113,11 @@ export const onDebouncedEvent = (componentInstance, propertyEventHandler, valueH
 
     componentInstance[debouncedEventHandler] = isAlreadyDebounced ?
       componentInstance[debouncedEventHandler] :
-      _.debounce(propertyEventHandler, INPUT_DEBOUNCE_MILLISECONDS);
+      _.debounce(
+        propertyEventHandler,
+        INPUT_DEBOUNCE_MILLISECONDS,
+        {leading: true, trailing: true}
+      );
 
     componentInstance[debouncedEventHandler](value);
   };

@@ -9,16 +9,16 @@ import Dispatcher from '../../app/assets/javascripts/editor/Dispatcher';
 import StoryStore from '../../app/assets/javascripts/editor/stores/StoryStore';
 import StoryDraftCreator, {__RewireAPI__ as StoryDraftCreatorAPI} from '../../app/assets/javascripts/editor/StoryDraftCreator';
 
-describe('StoryDraftCreator', function() {
+describe('StoryDraftCreator', () => {
 
-  describe('.saveDraft()', function() {
-    var dispatcher;
-    var server;
-    var fakeTokenMeta;
-    var storyStoreStub;
-    var story = {uid: 'four-four'};
+  describe('.saveDraft()', () => {
+    let dispatcher;
+    let server;
+    let fakeTokenMeta;
+    let storyStoreStub;
+    const story = {uid: 'four-four'};
 
-    beforeEach(function() {
+    beforeEach(() => {
       dispatcher = new Dispatcher();
 
       storyStoreStub = sinon.createStubInstance(StoryStore);
@@ -26,7 +26,7 @@ describe('StoryDraftCreator', function() {
       storyStoreStub.serializeStory = _.constant(story);
       storyStoreStub.getStoryDigest = _.constant('digest');
 
-      StoryDraftCreatorAPI.__Rewire__('Environment', EnvironmentMocker);
+      StoryDraftCreatorAPI.__Rewire__('Environment', _.merge(EnvironmentMocker, {IS_GOAL: false}));
       StoryDraftCreatorAPI.__Rewire__('dispatcher', dispatcher);
       StoryDraftCreatorAPI.__Rewire__('storyStore', storyStoreStub);
 
@@ -37,7 +37,7 @@ describe('StoryDraftCreator', function() {
       server = sinon.fakeServer.create();
     });
 
-    afterEach(function() {
+    afterEach(() => {
       server.restore();
       fakeTokenMeta.remove();
 
@@ -46,23 +46,23 @@ describe('StoryDraftCreator', function() {
       StoryDraftCreatorAPI.__ResetDependency__('storyStore');
     });
 
-    it('should throw when passed invalid arguments', function() {
-      assert.throws(function() { StoryDraftCreator.saveDraft(); });
-      assert.throws(function() { StoryDraftCreator.saveDraft({}); });
-      assert.throws(function() { StoryDraftCreator.saveDraft([]); });
-      assert.throws(function() { StoryDraftCreator.saveDraft(5); });
-      assert.throws(function() { StoryDraftCreator.saveDraft(null); });
+    it('should throw when passed invalid arguments', () => {
+      assert.throws(() => { StoryDraftCreator.saveDraft(); });
+      assert.throws(() => { StoryDraftCreator.saveDraft({}); });
+      assert.throws(() => { StoryDraftCreator.saveDraft([]); });
+      assert.throws(() => { StoryDraftCreator.saveDraft(5); });
+      assert.throws(() => { StoryDraftCreator.saveDraft(null); });
     });
 
-    it('should throw when given a non-existent story uid', function() {
+    it('should throw when given a non-existent story uid', () => {
       storyStoreStub.doesStoryExist = _.constant(false);
-      assert.throws(function() { StoryDraftCreator.saveDraft('notastory'); });
+      assert.throws(() => { StoryDraftCreator.saveDraft('notastory'); });
     });
 
-    it('should hit the drafts endpoint with the stories JSON', function(done) {
+    it('should hit the drafts endpoint with the stories JSON', (done) => {
       server.respondImmediately = true;
 
-      server.respondWith(function(request) {
+      server.respondWith((request) => {
         assert.propertyVal(request, 'method', 'POST');
         assert.propertyVal(request, 'url', StorytellerUtils.format('/stories/api/v1/stories/{0}/drafts', StandardMocks.validStoryUid));
         assert.deepPropertyVal(request, 'requestHeaders.X-Socrata-Host', location.host);
@@ -80,12 +80,12 @@ describe('StoryDraftCreator', function() {
       StoryDraftCreator.saveDraft(StandardMocks.validStoryUid);
     });
 
-    describe('on succesful request', function() {
-      var newDigest = 'something new';
-      beforeEach(function() {
+    describe('on succesful request', () => {
+      const newDigest = 'something new';
+      beforeEach(() => {
         server.respondImmediately = true;
 
-        server.respondWith(function(request) {
+        server.respondWith((request) => {
           request.respond(
             200,
             {
@@ -97,8 +97,8 @@ describe('StoryDraftCreator', function() {
         });
       });
 
-      it('should dispatch STORY_SAVED with the new digest', function(done) {
-        dispatcher.register(function(payload) {
+      it('should dispatch STORY_SAVED with the new digest', (done) => {
+        dispatcher.register((payload) => {
           assert.notEqual(payload.action, Actions.STORY_SAVE_FAILED);
           if (payload.action === Actions.STORY_SAVED) {
             assert.equal(payload.storyUid, StandardMocks.validStoryUid);
@@ -110,21 +110,21 @@ describe('StoryDraftCreator', function() {
         StoryDraftCreator.saveDraft(StandardMocks.validStoryUid);
       });
 
-      it('should resolve the promise with the new digest', function(done) {
+      it('should resolve the promise with the new digest', (done) => {
         StoryDraftCreator.saveDraft(StandardMocks.validStoryUid).
-        done(function(digest) {
+        done((digest) => {
           assert.equal(digest, newDigest);
           done();
         });
       });
     });
 
-    describe('when given a response with no X-Story-Digest', function() {
+    describe('when given a response with no X-Story-Digest', () => {
 
-      beforeEach(function() {
+      beforeEach(() => {
         server.respondImmediately = true;
 
-        server.respondWith(function(request) {
+        server.respondWith((request) => {
           request.respond(
             200,
             { 'Content-Type': 'application/json' },
@@ -133,8 +133,8 @@ describe('StoryDraftCreator', function() {
         });
       });
 
-      it('should dispatch STORY_SAVE_FAILED', function(done) {
-        dispatcher.register(function(payload) {
+      it('should dispatch STORY_SAVE_FAILED', (done) => {
+        dispatcher.register((payload) => {
           assert.notEqual(payload.action, Actions.STORY_SAVED);
           if (payload.action === Actions.STORY_SAVE_FAILED) {
             assert.equal(payload.storyUid, StandardMocks.validStoryUid);
@@ -145,19 +145,17 @@ describe('StoryDraftCreator', function() {
         StoryDraftCreator.saveDraft(StandardMocks.validStoryUid);
       });
 
-      it('reject the returned promise', function(done) {
-        StoryDraftCreator.saveDraft(StandardMocks.validStoryUid).fail(function() {
-          done();
-        });
+      it('reject the returned promise', (done) => {
+        StoryDraftCreator.saveDraft(StandardMocks.validStoryUid).fail(() => done());
       });
     });
 
-    describe('when given a non-200 response', function() {
+    describe('when given a non-200 response', () => {
 
-      beforeEach(function() {
+      beforeEach(() => {
         server.respondImmediately = true;
 
-        server.respondWith(function(request) {
+        server.respondWith((request) => {
           request.respond(
             500,
             { 'Content-Type': 'application/json' },
@@ -166,8 +164,8 @@ describe('StoryDraftCreator', function() {
         });
       });
 
-      it('should dispatch STORY_SAVE_FAILED', function(done) {
-        dispatcher.register(function(payload) {
+      it('should dispatch STORY_SAVE_FAILED', (done) => {
+        dispatcher.register((payload) => {
           assert.notEqual(payload.action, Actions.STORY_SAVED);
           if (payload.action === Actions.STORY_SAVE_FAILED) {
             assert.equal(payload.storyUid, StandardMocks.validStoryUid);
@@ -178,10 +176,8 @@ describe('StoryDraftCreator', function() {
         StoryDraftCreator.saveDraft(StandardMocks.validStoryUid);
       });
 
-      it('reject the returned promise', function(done) {
-        StoryDraftCreator.saveDraft(StandardMocks.validStoryUid).fail(function() {
-          done();
-        });
+      it('reject the returned promise', (done) => {
+        StoryDraftCreator.saveDraft(StandardMocks.validStoryUid).fail(() => done());
       });
     });
 

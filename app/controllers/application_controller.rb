@@ -338,7 +338,7 @@ class ApplicationController < ActionController::Base
     return render nothing: true, status: 404 unless can_view_goal?(uid)
 
     case action
-      when 'latest'
+      when 'latest', 'create'
         render nothing: true, status: 403 unless can_edit_goals?
       else
         raise_undefined_authorization_handler_error

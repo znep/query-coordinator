@@ -51,15 +51,19 @@ function _saveDraft(storyUid) {
     headers['If-Match'] = storyDigest;
   }
 
+  const url = Environment.IS_GOAL ?
+    `/stories/api/stat/v1/goals/${storyUid}/narrative/drafts` :
+    `/stories/api/v1/stories/${storyUid}/drafts`;
+
   return $.ajax({
     type: 'POST',
-    url: StorytellerUtils.format('/stories/api/v1/stories/{0}/drafts', storyUid),
+    url: url,
     data: storyJson,
     contentType: 'application/json',
     dataType: 'json',
     headers: headers
   }).
-  then(function(data, status, response) {
+  then((data, status, response) => {
     dispatcher.dispatch({
       action: Actions.STORY_UPDATED,
       updatedAt: data.updatedAt,
@@ -74,14 +78,14 @@ function _saveDraft(storyUid) {
       return new $.Deferred().reject('X-Story-Digest was not provided in save draft response').promise();
     }
   }).
-  done(function(newDigest) {
+  done((newDigest) => {
     dispatcher.dispatch({
       action: Actions.STORY_SAVED,
       storyUid: storyUid,
       digest: newDigest
     });
   }).
-  fail(function(data) {
+  fail((data) => {
     const errorReportingLabel = 'StoryDraftCreator#_saveDraft';
 
     dispatcher.dispatch({
@@ -95,12 +99,7 @@ function _saveDraft(storyUid) {
       // Downstream code needs to handle this case specially, so it is called out as a separate field.
       conflict: data.status === 412,
       errorReporting: {
-        message: StorytellerUtils.format(
-          '{0}: Saving over already saved version (story: {1}, status: {2}).',
-          errorReportingLabel,
-          storyUid,
-          data.status
-        ),
+        message: `${errorReportingLabel}: Saving over already saved version (story: ${storyUid}, status: ${data.status}).`,
         label: errorReportingLabel
       }
     });

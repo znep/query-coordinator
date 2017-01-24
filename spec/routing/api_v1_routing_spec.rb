@@ -224,4 +224,127 @@ RSpec.describe 'api v1 routing', type: :routing do
       end
     end
   end
+
+  describe 'goals' do
+    describe 'drafts' do
+      describe 'create endpoint' do
+        let(:verb) { :post }
+        let(:path) { '/api/stat/v1/goals/four-four/narrative/drafts' }
+
+        it 'routes json requests to DraftsController' do
+          expect(explicit_json_route).to route_to(
+            controller: 'api/stat/v1/goals/drafts',
+            action: 'create',
+            uid: 'four-four',
+            format: 'json'
+          )
+        end
+
+        it 'routes to DraftsController with json by default' do
+          expect(default_route).to route_to(
+            controller: 'api/stat/v1/goals/drafts',
+            action: 'create',
+            uid: 'four-four',
+            format: 'json'
+          )
+        end
+      end
+
+      describe 'latest endpoint' do
+        let(:verb) { :get }
+        let(:path) { '/api/stat/v1/goals/four-four/narrative/drafts/latest' }
+
+        it 'routes json requests to DraftsController' do
+          expect(explicit_json_route).to route_to(
+            controller: 'api/stat/v1/goals/drafts',
+            action: 'latest',
+            uid: 'four-four',
+            format: 'json'
+          )
+        end
+
+        it 'routes to DraftsController with json by default' do
+          expect(default_route).to route_to(
+            controller: 'api/stat/v1/goals/drafts',
+            action: 'latest',
+            uid: 'four-four',
+            format: 'json'
+          )
+        end
+      end
+    end
+
+    describe 'publishing' do
+      describe 'create endpoint' do
+        let(:verb) { :post }
+        let(:path) { '/api/stat/v1/goals/four-four/narrative/published' }
+
+        it 'routes json requests to PublishedController' do
+          expect(explicit_json_route).to route_to(
+            controller: 'api/stat/v1/goals/published',
+            action: 'create',
+            format: 'json',
+            uid: 'four-four'
+          )
+        end
+
+        it 'routes to PublishedController with json by default' do
+          expect(default_route).to route_to(
+            controller: 'api/stat/v1/goals/published',
+            action: 'create',
+            format: 'json',
+            uid: 'four-four'
+          )
+        end
+      end
+
+      describe 'latest endpoint' do
+        let(:verb) { :get }
+        let(:path) { '/api/stat/v1/goals/four-four/narrative/published/latest' }
+
+        it 'routes json requests to PublishedController' do
+          expect(explicit_json_route).to route_to(
+            controller: 'api/stat/v1/goals/published',
+            action: 'latest',
+            uid: 'four-four',
+            format: 'json'
+          )
+        end
+
+        it 'routes to PublishedController with json by default' do
+          expect(default_route).to route_to(
+            controller: 'api/stat/v1/goals/published',
+            action: 'latest',
+            uid: 'four-four',
+            format: 'json'
+          )
+        end
+      end
+    end
+
+    describe 'permissions' do
+      describe 'update endpoint' do
+        let(:verb) { :put }
+        let(:path) { '/api/stat/v1/goals/four-four/narrative/permissions' }
+
+        it 'routes json requests to PermissionsController' do
+          expect(explicit_json_route).to route_to(
+            controller: 'api/stat/v1/goals/permissions',
+            action: 'update',
+            format: 'json',
+            uid: 'four-four'
+          )
+        end
+
+        it 'routes to PermissionsController with json by default' do
+          expect(default_route).to route_to(
+            controller: 'api/stat/v1/goals/permissions',
+            action: 'update',
+            format: 'json',
+            uid: 'four-four'
+          )
+        end
+      end
+    end
+  end
 end

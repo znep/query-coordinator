@@ -5,9 +5,29 @@ class DataslateRouting
       page_for(path, options)
   end
 
+  # Call this method sparingly! User.roles_list fetches information from Core to do their stuff.
   def self.clear_cache_for_current_domain!
-    cache_key = "dataslate_routing:#{CurrentDomain.cname}"
-    Rails.cache.delete(cache_key)
+    (User.roles_list + %w(superadmin anon)).
+      map(&method(:cache_key)). # This _should_ create every possible cache key.
+      each(Rails.cache.method(:delete))
+  end
+
+  # The reason that the cache key includes the user role is to make sure that we don't cache
+  # the routing table according to a lower-permissioned user, causing a 404 for a higher-
+  # permissioned user.
+  #
+  # The choice of using the role list was made for two reasons:
+  # 1) There are fewer roles than users, almost by definition.
+  # 2) There is a finite, discoverable list of roles, enabling us to delete this cache.
+  def self.cache_key(user = User.current_user)
+    prefix = 'dataslate_routing'
+    cname = CurrentDomain.cname
+    user_key = user if user.is_a?(String)
+    user_key ||= user.try(:role_name)
+    user_key ||= 'superadmin' if user.try(:is_superadmin?)
+    user_key ||= 'anon'
+
+    [prefix, cname, user_key].compact.join(':')
   end
 
   # This method is entirely for debugging. Here's how you use it:
@@ -40,8 +60,11 @@ class DataslateRouting
     construct_table_from_external_data!
   end
 
+  def cache_key
+    @cache_key ||= self.class.cache_key
+  end
+
   def construct_table_from_external_data!
-    cache_key = "dataslate_routing:#{CurrentDomain.cname}"
     serialized_hash = Rails.cache.read(cache_key)
 
     if serialized_hash.nil?

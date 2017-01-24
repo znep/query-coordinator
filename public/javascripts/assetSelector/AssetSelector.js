@@ -36,7 +36,7 @@ export const App = (props) => {
     null :
     <FormFooter
       cancelText={'Cancel'}
-      canSave={true/* TODO */}
+      canSave={true}
       displaySaveButton={true}
       isSaved={false}
       isSaving={false}
@@ -45,13 +45,29 @@ export const App = (props) => {
       saveText={'Save'}
       savedText={'Saved!'} />;
 
+  const demoDivStyle = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '200px',
+    width: '300px',
+    border: '1px dashed #999',
+    margin: '1rem'
+  };
+
   return (
     <div>
-      <button
-        className="btn btn-primary"
-        onClick={props.dispatchOpenModal}>
-        Add...
-      </button>
+      {/* TODO: these button should be outside the Asset Selector */}
+      {[...Array(3)].map((x, i) => (
+        <div style={demoDivStyle} key={i}>
+          <button
+            className="btn btn-primary"
+            onClick={props.dispatchOpenModal}>
+            Add...
+          </button>
+        </div>
+      ))}
+
       <div
         className={assetSelectorModalClassNames}
         data-modal-dismiss>

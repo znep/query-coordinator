@@ -1,11 +1,47 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import _ from 'lodash';
+import { updateField } from '../actions/externalResource';
 import { VALID_URL_REGEX } from '../lib/constants';
 
 export class ExternalResourceForm extends Component {
   constructor(props) {
     super(props);
-    _.bindAll(this, ['renderInputField']);
+
+    _.bindAll(this, ['onChange', 'renderInputField']);
+
+    this.state = {
+      isImageInvalid: false
+    };
+  }
+
+  // Key is one of 'title', 'description', 'url', or 'previewImage'
+  onChange(key, event) {
+    if (key === 'previewImage') {
+      // Upload image
+      const file = event.target.files[0];
+      const isFileImage = file && /\.(jpe?g|png|gif)$/i.test(file.name);
+
+      this.setState({
+        isImageInvalid: !isFileImage
+      });
+
+      if (!isFileImage) {
+        return;
+      }
+
+      const fileReader = new FileReader();
+
+      fileReader.addEventListener('load', () => {
+        this.props.dispatchUpdateField(key, fileReader.result);
+      }, false);
+
+      if (file) {
+        fileReader.readAsDataURL(file);
+      }
+    } else {
+      this.props.dispatchUpdateField(key, event.target.value);
+    }
   }
 
   renderInputField(key, inputProps) {
@@ -18,7 +54,7 @@ export class ExternalResourceForm extends Component {
       className: `text-input ${kebabKey}`,
       type: 'text',
       'aria-labelledby': `${prefix}-${kebabKey}-label`,
-      onChange: (event) => { this.props.onChange(key, event); }
+      onChange: (event) => { this.onChange(key, event); }
     });
 
     if (inputProps.type !== 'file') {
@@ -56,7 +92,7 @@ export class ExternalResourceForm extends Component {
       <div className="alert warning">URL is invalid{/* TODO: localization */}</div> :
       null;
 
-    const imageWarning = this.props.isImageInvalid ?
+    const imageWarning = this.state.isImageInvalid ?
       <div className="alert error">Error uploading image{/* TODO: localization */}</div> :
       null;
 
@@ -74,21 +110,27 @@ export class ExternalResourceForm extends Component {
 }
 
 ExternalResourceForm.propTypes = {
+  dispatchUpdateField: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
-  previewImage: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  isImageInvalid: PropTypes.bool.isRequired
+  previewImage: PropTypes.string.isRequired
 };
 
 ExternalResourceForm.defaultProps = {
+  dispatchUpdateField: _.noop,
   title: '',
   description: '',
   url: '',
-  previewImage: '',
-  onChange: _.noop,
-  isImageInvalid: false
+  previewImage: ''
 };
 
-export default ExternalResourceForm;
+function mapDispatchToProps(dispatch) {
+  return {
+    dispatchUpdateField: function(field, value) {
+      dispatch(updateField(field, value));
+    }
+  };
+}
+
+export default connect(null, mapDispatchToProps)(ExternalResourceForm);

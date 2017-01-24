@@ -8,11 +8,11 @@ import FormFooter from '../datasetLandingPage/components/FeaturedContentModal/Fo
 import Header from './components/Header';
 import ResultsContainer from './components/ResultsContainer';
 
-export const App = (props) => {
+export const AssetSelector = (props) => {
   const onResultsPage = props.modalPage === 'ResultsContainer';
 
   const assetSelectorContent = (onResultsPage) ?
-    <ResultsContainer resultsPerPage={6} /> :
+    <ResultsContainer resultsPerPage={props.resultsPerPage} /> :
     <ExternalResourceContainer />;
 
   const assetSelectorModalClassNames = classNames({
@@ -32,18 +32,31 @@ export const App = (props) => {
     'Select Featured Content in [category]' :
     'Feature an External Resource';
 
+  // move to footer component
+  const selectExternalResource = (e) => {
+    console.log(e.target);
+  };
+
   const footer = onResultsPage ?
     null :
-    <FormFooter
-      cancelText={'Cancel'}
-      canSave={true}
-      displaySaveButton={true}
-      isSaved={false}
-      isSaving={false}
-      onClickCancel={_.noop}
-      onClickSave={_.noop}
-      saveText={'Save'}
-      savedText={'Saved!'} />;
+    <footer className="modal-footer">{/* TODO: make footer component */}
+      <div className="modal-footer-actions">
+        <button
+          key="cancel"
+          className="btn btn-default btn-sm cancel-button"
+          onClick={_.noop}>
+          Cancel
+        </button>
+
+        <button
+          key="select"
+          className="btn btn-sm btn-primary select-button"
+          disabled={false/* TODO */}
+          onClick={selectExternalResource}>
+          Select
+        </button>
+      </div>
+    </footer>;
 
   const demoDivStyle = {
     display: 'inline-flex',
@@ -81,16 +94,18 @@ export const App = (props) => {
   );
 };
 
-App.propTypes = {
+AssetSelector.propTypes = {
   dispatchOpenModal: PropTypes.func.isRequired,
   modalIsOpen: PropTypes.bool.isRequired,
-  modalPage: PropTypes.string.isRequired
+  modalPage: PropTypes.string.isRequired,
+  resultsPerPage: PropTypes.number.isRequired
 };
 
-App.defaultProps = {
+AssetSelector.defaultProps = {
   dispatchOpenModal: _.noop,
   modalIsOpen: false,
-  modalPage: 'ResultsContainer'
+  modalPage: 'ResultsContainer',
+  resultsPerPage: 6
 };
 
 function mapStateToProps(state) {
@@ -108,4 +123,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(AssetSelector);

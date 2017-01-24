@@ -35,6 +35,10 @@ window.renderComponentWithStore = function(component, props, store) {
   store = store || getDefaultStore();
   return window.renderComponent(Provider, { store }, React.createElement(component, props));
 }
+window.renderPureComponentWithStore = function(component, store) {
+  store = store || getDefaultStore();
+  return window.renderComponent(Provider, { store }, component);
+};
 
 function requireAll(context) {
   context.keys().forEach(context);

@@ -32,7 +32,7 @@ _.defer(() => {
   try {
     ReactDOM.render(
       <Provider store={store}>
-        <AssetSelector />
+        <AssetSelector resultsPerPage={6} />
       </Provider>,
       document.querySelector('.asset-selector')
     );

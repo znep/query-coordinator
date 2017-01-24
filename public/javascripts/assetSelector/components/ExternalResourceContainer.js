@@ -1,100 +1,51 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { closeExternalResourceContainer } from '../actions/modal';
-import { updateField } from '../actions/externalResource';
 import BackButton from './BackButton';
 import ExternalResourceForm from './ExternalResourceForm';
 import { ExternalViewCard } from 'socrata-components';
 
-export class ExternalResourceContainer extends Component {
-  constructor(props) {
-    super(props);
+export const ExternalResourceContainer = (props) => {
+  const { title, description, url, previewImage } = props;
 
-    this.state = {
-      isImageInvalid: false
-    };
+  const previewCardProps = {
+    name: _.isEmpty(title) ? null : title,
+    description: _.isEmpty(description) ? null : description,
+    imageUrl: _.isEmpty(previewImage) ? null : previewImage
+  };
 
-    _.bindAll(this, ['onChange', 'renderPreview']);
-  }
+  return (
+    <div className="modal-content external-resource-container">
 
-  // Key is one of 'title', 'description', 'url', or 'previewImage'
-  onChange(key, event) {
-    if (key === 'previewImage') {
-      // Upload image
-      const file = event.target.files[0];
-      const isFileImage = file && /\.(jpe?g|png|gif)$/i.test(file.name);
+      <BackButton onClick={props.dispatchCloseExternalResourceContainer} />
 
-      this.setState({
-        isImageInvalid: !isFileImage
-      });
+      <div className="description">
+        <p>{/* TODO: localization */}
+          <strong>Create a link to an external resource for this category.</strong>
+          <br />
+          For example, this could be a visualization on the web, a blog post,
+          or a link to another part of your site.
+        </p>
+      </div>
 
-      if (!isFileImage) {
-        return;
-      }
+      <div className="external-resource-contents">
+        <ExternalResourceForm
+          title={title}
+          description={description}
+          url={url}
+          previewImage={previewImage} />
 
-      const fileReader = new FileReader();
-
-      fileReader.addEventListener('load', () => {
-        this.props.dispatchUpdateField(key, fileReader.result);
-      }, false);
-
-      if (file) {
-        fileReader.readAsDataURL(file);
-      }
-    } else {
-      this.props.dispatchUpdateField(key, event.target.value);
-    }
-  }
-
-  renderPreview() {
-    const { description, previewImage, title } = this.props;
-
-    const cardProps = {
-      description: _.isEmpty(description) ? null : description,
-      imageUrl: _.isEmpty(previewImage) ? null : previewImage,
-      name: _.isEmpty(title) ? null : title
-    };
-
-    return <ExternalViewCard {...cardProps} />;
-  }
-
-  render() {
-    return (
-      <div className="modal-content external-resource-container">
-
-        <BackButton onClick={this.props.dispatchCloseExternalResourceContainer} />
-
-        <div className="description">
-          <p>{/* TODO: localization */}
-            <strong>Create a link to an external resource for this category.</strong>
-            <br />
-            For example, this could be a visualization on the web, a blog post,
-            or a link to another part of your site.
-          </p>
-        </div>
-
-        <div className="external-resource-contents">
-          <ExternalResourceForm
-            title={this.props.title}
-            description={this.props.description}
-            url={this.props.url}
-            previewImage={this.props.previewImage}
-            onChange={this.onChange}
-            isImageInvalid={this.state.isImageInvalid} />
-
-          <div className="external-resource-preview">
-            {this.renderPreview()}
-          </div>
+        <div className="external-resource-preview">
+          <ExternalViewCard {...previewCardProps} />
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 ExternalResourceContainer.propTypes = {
   dispatchCloseExternalResourceContainer: PropTypes.func.isRequired,
-  dispatchUpdateField: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
@@ -103,7 +54,6 @@ ExternalResourceContainer.propTypes = {
 
 ExternalResourceContainer.defaultProps = {
   dispatchCloseExternalResourceContainer: _.noop,
-  dispatchUpdateField: _.noop,
   title: '',
   description: '',
   url: '',
@@ -123,9 +73,6 @@ function mapDispatchToProps(dispatch) {
   return {
     dispatchCloseExternalResourceContainer: function() {
       dispatch(closeExternalResourceContainer());
-    },
-    dispatchUpdateField: function(field, value) {
-      dispatch(updateField(field, value));
     }
   };
 }

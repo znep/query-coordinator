@@ -152,13 +152,16 @@
 </div>
 
 <div class="pager">
-  <% @pager_elements.each do |element| %>
-    <% if element.page? %>
-      <%= link_to(element.index, "/admin/activity_feed?page=#{element.index}&#{element.get_params}",
-                  :class => 'pager-element page ' + (element.selected ? 'pager-page-selected' : '')) %>
-    <% else %>
-      <span class="pager-element ellipsis">…</span>
-    <% end %>
+  <% if @pager_info[:has_prev_page?] %>
+      <%= link_to(t('core.pagination.previous_page'),
+                  "/admin/activity_feed?page=#{@pager_info[:prev_page]}&#{@pager_info[:params].to_query}",
+                  :class => 'pager-element page') %>
+  <% end %>
+
+  <% if @pager_info[:has_next_page?] %>
+      <%= link_to(t('core.pagination.next_page'),
+                  "/admin/activity_feed?page=#{@pager_info[:next_page]}&#{@pager_info[:params].to_query}",
+                  :class => 'pager-element page') %>
   <% end %>
 </div>
 

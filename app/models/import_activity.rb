@@ -4,7 +4,7 @@ class ImportActivity
 
   # throws ISS errors and Core errors
   def self.find_all_by_created_at_descending(params)
-    url = "/v2/activity?#{params.delete_if { |k, v| v.nil? }.to_query}"
+    url = "/v2/activity?#{params.delete_if { |_, v| v.nil? }.to_query}"
 
     response = ImportStatusService::get(url)
     activities = response['activities'].map(&:with_indifferent_access)

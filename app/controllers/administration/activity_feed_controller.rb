@@ -37,26 +37,24 @@ class Administration::ActivityFeedController < AdministrationController
     end
 
     activities_response = ImportActivity.find_all_by_created_at_descending(
+      :includeCount => false,
       :offset => offset,
-      :limit => page_size,
+      :limit => page_size + 1,
       :activityType => activity_type,
       :startDate => start_date,
       :endDate => end_date
     )
     @activities = activities_response[:activities]
-    count = activities_response[:count]
-
-    # preserve URL parameters across pages
-    pager_params = {}
-    if activity_type.present?
-      pager_params[:activity_type] = activity_type
-    end
-
-    if date_string.present?
-      pager_params[:date_range] = date_string
-    end
-
-    @pager_elements = Pager::paginate(count, page_size, page_idx, :all_threshold => all_threshold, :params => pager_params)
+    @pager_info = {
+      :next_page => page_idx + 1,
+      :prev_page => [page_idx - 1, 1].max,
+      :has_next_page? => @activities.size > page_size,
+      :has_prev_page? => page_idx > 1,
+      :params => {
+        :activity_type => activity_type,
+        :date_range => date_string
+      }.select { |_, v| v.present? }
+    }
   end
 
   def show

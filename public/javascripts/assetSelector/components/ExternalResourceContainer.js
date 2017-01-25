@@ -12,7 +12,10 @@ export const ExternalResourceContainer = (props) => {
   const previewCardProps = {
     name: _.isEmpty(title) ? null : title,
     description: _.isEmpty(description) ? null : description,
-    imageUrl: _.isEmpty(previewImage) ? null : previewImage
+    imageUrl: _.isEmpty(previewImage) ? null : previewImage,
+    linkProps: {
+      'aria-label': 'Preview' // TODO: localization
+    }
   };
 
   return (

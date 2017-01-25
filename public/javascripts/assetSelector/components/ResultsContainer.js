@@ -36,7 +36,13 @@ export class ResultsContainer extends Component {
 
   changePage(pageNumber, initialFetch = false) {
     const { dispatchUpdatePageResults, dispatchUpdateResultCount } = this.props;
-    ceteraUtils.fetch({ pageNumber, limit: this.props.resultsPerPage, order: this.state.sort }).
+    ceteraUtils.
+      fetch({
+        category: this.props.category,
+        limit: this.props.resultsPerPage,
+        order: this.state.sort,
+        pageNumber
+      }).
       success((response) => {
         const results = ceteraUtils.mapToAssetSelectorResult(response.results);
         dispatchUpdatePageResults(results);
@@ -108,6 +114,7 @@ export class ResultsContainer extends Component {
 }
 
 ResultsContainer.propTypes = {
+  category: PropTypes.string,
   results: PropTypes.array.isRequired,
   dispatchCloseModal: PropTypes.func.isRequired,
   dispatchOpenExternalResourceContainer: PropTypes.func.isRequired,
@@ -118,6 +125,7 @@ ResultsContainer.propTypes = {
 };
 
 ResultsContainer.defaultProps = {
+  category: null,
   results: [],
   dispatchCloseModal: _.noop,
   dispatchOpenExternalResourceContainer: _.noop,

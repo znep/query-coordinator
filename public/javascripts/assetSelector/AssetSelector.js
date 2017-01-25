@@ -2,17 +2,19 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import classNames from 'classnames';
-import { openModal } from './actions/modal';
+import { openModal, closeModal } from './actions/modal';
 import ExternalResourceContainer from './components/ExternalResourceContainer';
-import FormFooter from '../datasetLandingPage/components/FeaturedContentModal/FormFooter';
 import Header from './components/Header';
+import Footer from './components/Footer';
 import ResultsContainer from './components/ResultsContainer';
 
 export const AssetSelector = (props) => {
   const onResultsPage = props.modalPage === 'ResultsContainer';
 
   const assetSelectorContent = (onResultsPage) ?
-    <ResultsContainer resultsPerPage={props.resultsPerPage} /> :
+    <ResultsContainer
+      category={props.category}
+      resultsPerPage={props.resultsPerPage} /> :
     <ExternalResourceContainer />;
 
   const assetSelectorModalClassNames = classNames({
@@ -32,31 +34,14 @@ export const AssetSelector = (props) => {
     'Select Featured Content in [category]' :
     'Feature an External Resource';
 
-  // move to footer component
-  const selectExternalResource = (e) => {
-    console.log(e.target);
+  const selectExternalResource = () => {
+    const result = {
+      resourceType: 'external',
+      ...props.externalResourceContent
+    };
+    console.log(result); // TODO: provide this for parent component using AssetSelector
+    props.dispatchCloseModal();
   };
-
-  const footer = onResultsPage ?
-    null :
-    <footer className="modal-footer">{/* TODO: make footer component */}
-      <div className="modal-footer-actions">
-        <button
-          key="cancel"
-          className="btn btn-default btn-sm cancel-button"
-          onClick={_.noop}>
-          Cancel
-        </button>
-
-        <button
-          key="select"
-          className="btn btn-sm btn-primary select-button"
-          disabled={false/* TODO */}
-          onClick={selectExternalResource}>
-          Select
-        </button>
-      </div>
-    </footer>;
 
   const demoDivStyle = {
     display: 'inline-flex',
@@ -87,7 +72,9 @@ export const AssetSelector = (props) => {
         <div className={modalContainerClassNames}>
           <Header title={headerTitle} />
           {assetSelectorContent}
-          {footer}
+          <Footer
+            onSelect={selectExternalResource}
+            selectIsDisabled={false} />{/* TODO: should be conditional on if the form has errors */}
         </div>
       </div>
     </div>
@@ -95,14 +82,20 @@ export const AssetSelector = (props) => {
 };
 
 AssetSelector.propTypes = {
+  category: PropTypes.string,
   dispatchOpenModal: PropTypes.func.isRequired,
+  dispatchCloseModal: PropTypes.func.isRequired,
+  externalResourceContent: PropTypes.object.isRequired,
   modalIsOpen: PropTypes.bool.isRequired,
   modalPage: PropTypes.string.isRequired,
   resultsPerPage: PropTypes.number.isRequired
 };
 
 AssetSelector.defaultProps = {
+  category: null,
   dispatchOpenModal: _.noop,
+  dispatchCloseModal: _.noop,
+  externalResourceContent: {},
   modalIsOpen: false,
   modalPage: 'ResultsContainer',
   resultsPerPage: 6
@@ -110,6 +103,7 @@ AssetSelector.defaultProps = {
 
 function mapStateToProps(state) {
   return {
+    externalResourceContent: _.get(state, 'externalResource'),
     modalPage: _.get(state, 'modal.modalPage'),
     modalIsOpen: _.get(state, 'modal.modalIsOpen')
   };
@@ -119,6 +113,9 @@ function mapDispatchToProps(dispatch) {
   return {
     dispatchOpenModal: function() {
       dispatch(openModal());
+    },
+    dispatchCloseModal: function() {
+      dispatch(closeModal());
     }
   };
 }

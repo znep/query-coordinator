@@ -14,7 +14,7 @@ describe('components/BackButton', function() {
   it('renders', function() {
     var element = renderPureComponent(BackButton(getProps()));
     expect(element).to.exist;
-    expect(element.className).to.eq('back-button');
+    expect(element.className).to.match(/back-button/);
   });
 
   it('dispatches the onClick prop on click', function() {

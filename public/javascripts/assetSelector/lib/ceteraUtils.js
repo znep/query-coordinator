@@ -12,15 +12,14 @@ export const ceteraUtils = (() => {
   const domain = window.location.hostname; // TODO: federation?
 
   return {
-    fetch: ({ pageNumber = 1, limit = DEFAULT_LIMIT, order = DEFAULT_ORDER }) => {
+    fetch: ({ category = null, limit = DEFAULT_LIMIT, order = DEFAULT_ORDER, pageNumber = 1 }) => {
       const queryString = $.param({
         domains: domain,
         search_context: domain,
-        order,
+        categories: category,
         limit,
+        order,
         offset: getOffset(pageNumber, limit)
-
-        // TODO: add category/tag filtering: http://docs.socratadiscovery.apiary.io/#reference/0/searching-particular-categoriestags/category/tag-search-api
       });
 
       return $.ajax({

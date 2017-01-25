@@ -4,6 +4,21 @@ import $ from 'jquery';
 describe('components/ExternalResourceContainer', function() {
   function defaultProps() {
     return {
+      dispatchCloseExternalResourceContainer: _.noop,
+      title: {
+        value: '',
+        invalid: true
+      },
+      description: {
+        value: ''
+      },
+      url: {
+        value: '',
+        invalid: true
+      },
+      previewImage: {
+        value: ''
+      }
     };
   }
 

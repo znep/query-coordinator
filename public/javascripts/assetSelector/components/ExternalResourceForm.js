@@ -1,23 +1,28 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { updateField } from '../actions/externalResource';
-import { VALID_URL_REGEX } from '../lib/constants';
+import { updateTitle, updateDescription, updateUrl, updatePreviewImage } from '../actions/externalResource';
 
 export class ExternalResourceForm extends Component {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, ['onChange', 'renderInputField']);
-
     this.state = {
       isImageInvalid: false
     };
+
+    _.bindAll(this, ['onChange', 'renderInputField']);
   }
 
   // Key is one of 'title', 'description', 'url', or 'previewImage'
   onChange(key, event) {
-    if (key === 'previewImage') {
+    if (key === 'title') {
+      this.props.dispatchUpdateTitle(event.target.value);
+    } else if (key === 'description') {
+      this.props.dispatchUpdateDescription(event.target.value);
+    } else if (key === 'url') {
+      this.props.dispatchUpdateUrl(event.target.value);
+    } else if (key === 'previewImage') {
       // Upload image
       const file = event.target.files[0];
       const isFileImage = file && /\.(jpe?g|png|gif)$/i.test(file.name);
@@ -33,20 +38,18 @@ export class ExternalResourceForm extends Component {
       const fileReader = new FileReader();
 
       fileReader.addEventListener('load', () => {
-        this.props.dispatchUpdateField(key, fileReader.result);
+        this.props.dispatchUpdatePreviewImage(fileReader.result);
       }, false);
 
       if (file) {
         fileReader.readAsDataURL(file);
       }
-    } else {
-      this.props.dispatchUpdateField(key, event.target.value);
     }
   }
 
   renderInputField(key, inputProps) {
     const prefix = 'external-resource';
-    const value = this.props[key];
+    const value = this.props[key].value;
     const kebabKey = _.kebabCase(key);
 
     inputProps = _.defaults(inputProps, {
@@ -86,9 +89,11 @@ export class ExternalResourceForm extends Component {
       className: 'file-input preview-image'
     });
 
-    const isUrlInvalid = !_.isEmpty(this.props.url) && !VALID_URL_REGEX.test(this.props.url);
+    const titleWarning = this.props.title.invalid ?
+      <div className="alert warning">Title cannot be blank{/* TODO: localization */}</div> :
+      null;
 
-    const urlWarning = isUrlInvalid ?
+    const urlWarning = this.props.url.invalid ?
       <div className="alert warning">URL is invalid{/* TODO: localization */}</div> :
       null;
 
@@ -99,6 +104,7 @@ export class ExternalResourceForm extends Component {
     return (
       <form className="external-resource-form">
         {titleField}
+        {titleWarning}
         {descriptionField}
         {urlField}
         {urlWarning}
@@ -110,25 +116,50 @@ export class ExternalResourceForm extends Component {
 }
 
 ExternalResourceForm.propTypes = {
-  dispatchUpdateField: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired,
-  previewImage: PropTypes.string.isRequired
+  dispatchUpdateTitle: PropTypes.func.isRequired,
+  dispatchUpdateDescription: PropTypes.func.isRequired,
+  dispatchUpdateUrl: PropTypes.func.isRequired,
+  dispatchUpdatePreviewImage: PropTypes.func.isRequired,
+  title: PropTypes.object.isRequired,
+  description: PropTypes.object.isRequired,
+  url: PropTypes.object.isRequired,
+  previewImage: PropTypes.object.isRequired
 };
 
 ExternalResourceForm.defaultProps = {
-  dispatchUpdateField: _.noop,
-  title: '',
-  description: '',
-  url: '',
-  previewImage: ''
+  dispatchUpdateTitle: _.noop,
+  dispatchUpdateDescription: _.noop,
+  dispatchUpdateUrl: _.noop,
+  dispatchUpdatePreviewImage: _.noop,
+  title: {
+    value: '',
+    invalid: true
+  },
+  description: {
+    value: ''
+  },
+  url: {
+    value: '',
+    invalid: true
+  },
+  previewImage: {
+    value: ''
+  }
 };
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatchUpdateField: function(field, value) {
-      dispatch(updateField(field, value));
+    dispatchUpdateTitle: function(value) {
+      dispatch(updateTitle(value));
+    },
+    dispatchUpdateDescription: function(value) {
+      dispatch(updateDescription(value));
+    },
+    dispatchUpdateUrl: function(value) {
+      dispatch(updateUrl(value));
+    },
+    dispatchUpdatePreviewImage: function(value) {
+      dispatch(updatePreviewImage(value));
     }
   };
 }

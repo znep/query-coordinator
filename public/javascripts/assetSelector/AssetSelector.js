@@ -43,6 +43,14 @@ export const AssetSelector = (props) => {
     props.dispatchCloseModal();
   };
 
+  // Form is invalid if any of its fields are invalid
+  const externalResourceFormIsInvalid = !_.isEmpty(_.find(props.externalResourceContent, { invalid: true }));
+
+  const footer = onResultsPage ? null :
+    <Footer
+      onSelect={selectExternalResource}
+      selectIsDisabled={externalResourceFormIsInvalid} />;
+
   const demoDivStyle = {
     display: 'inline-flex',
     alignItems: 'center',
@@ -72,9 +80,7 @@ export const AssetSelector = (props) => {
         <div className={modalContainerClassNames}>
           <Header title={headerTitle} />
           {assetSelectorContent}
-          <Footer
-            onSelect={selectExternalResource}
-            selectIsDisabled={false} />{/* TODO: should be conditional on if the form has errors */}
+          {footer}
         </div>
       </div>
     </div>
@@ -86,6 +92,7 @@ AssetSelector.propTypes = {
   dispatchOpenModal: PropTypes.func.isRequired,
   dispatchCloseModal: PropTypes.func.isRequired,
   externalResourceContent: PropTypes.object.isRequired,
+  externalResourceTitle: PropTypes.string.isRequired,
   modalIsOpen: PropTypes.bool.isRequired,
   modalPage: PropTypes.string.isRequired,
   resultsPerPage: PropTypes.number.isRequired
@@ -96,6 +103,7 @@ AssetSelector.defaultProps = {
   dispatchOpenModal: _.noop,
   dispatchCloseModal: _.noop,
   externalResourceContent: {},
+  externalResourceTitle: '',
   modalIsOpen: false,
   modalPage: 'ResultsContainer',
   resultsPerPage: 6
@@ -104,6 +112,7 @@ AssetSelector.defaultProps = {
 function mapStateToProps(state) {
   return {
     externalResourceContent: _.get(state, 'externalResource'),
+    externalResourceTitle: _.get(state, 'externalResource.title.value'),
     modalPage: _.get(state, 'modal.modalPage'),
     modalIsOpen: _.get(state, 'modal.modalIsOpen')
   };

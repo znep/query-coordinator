@@ -10,9 +10,9 @@ export const ExternalResourceContainer = (props) => {
   const { title, description, url, previewImage } = props;
 
   const previewCardProps = {
-    name: _.isEmpty(title) ? null : title,
-    description: _.isEmpty(description) ? null : description,
-    imageUrl: _.isEmpty(previewImage) ? null : previewImage,
+    name: _.isEmpty(title.value) ? null : title.value,
+    description: _.isEmpty(description.value) ? null : description.value,
+    imageUrl: _.isEmpty(previewImage.value) ? null : previewImage.value,
     linkProps: {
       'aria-label': 'Preview' // TODO: localization
     }
@@ -49,18 +49,28 @@ export const ExternalResourceContainer = (props) => {
 
 ExternalResourceContainer.propTypes = {
   dispatchCloseExternalResourceContainer: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired,
-  previewImage: PropTypes.string.isRequired
+  title: PropTypes.object.isRequired,
+  description: PropTypes.object.isRequired,
+  url: PropTypes.object.isRequired,
+  previewImage: PropTypes.object.isRequired
 };
 
 ExternalResourceContainer.defaultProps = {
   dispatchCloseExternalResourceContainer: _.noop,
-  title: '',
-  description: '',
-  url: '',
-  previewImage: ''
+  title: {
+    value: '',
+    invalid: true
+  },
+  description: {
+    value: ''
+  },
+  url: {
+    value: '',
+    invalid: true
+  },
+  previewImage: {
+    value: ''
+  }
 };
 
 function mapStateToProps(state) {

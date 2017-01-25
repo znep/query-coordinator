@@ -1,5 +1,5 @@
 import reducer from 'reducers/externalResource';
-import { updateField } from 'actions/externalResource';
+import { updateTitle, updateDescription, updateUrl, updatePreviewImage } from 'actions/externalResource';
 
 describe('reducers/externalResource', function() {
   var state;
@@ -8,42 +8,78 @@ describe('reducers/externalResource', function() {
     state = reducer();
   });
 
-  describe('UPDATE_FIELD', function() {
-    it('sets the specified field to equal the specified value', function() {
-      state = reducer(state, updateField('title', 'Bob Ross'));
-      expect(state).to.deep.equal({
-        title: 'Bob Ross',
-        description: '',
-        url: '',
-        previewImage: ''
+  describe('UPDATE_TITLE', function() {
+    it('sets the title to the specified value', function() {
+      state = reducer(state, updateTitle('Bob Ross'));
+      expect(state.title).to.deep.equal({
+        value: 'Bob Ross',
+        invalid: false
       });
+    });
 
-      state = reducer(state, updateField('url', 'http://bobross.com'));
-      expect(state).to.deep.equal({
-        title: 'Bob Ross',
-        description: '',
-        url: 'http://bobross.com',
-        previewImage: ''
+    it('is invalid with an empty title', function() {
+      state = reducer(state, updateTitle(''));
+      expect(state.title).to.deep.equal({
+        value: '',
+        invalid: true
       });
+    });
+  });
 
-      var bobRossBio = `Known for his fast and easy "wet-on-wet" painting technique, Bob Ross reached
-      millions of art lovers with his popular television program The Joy of Painting. ... He then became an
-      instructor himself, eventually teaching a TV audience of millions on the PBS show The Joy of Painting.`
-
-      state = reducer(state, updateField('description', bobRossBio));
-      expect(state).to.deep.equal({
-        title: 'Bob Ross',
-        description: bobRossBio,
-        url: 'http://bobross.com',
-        previewImage: ''
+  describe('UPDATE_DESCRIPTION', function() {
+    it('sets the description to the specified value', function() {
+      state = reducer(state, updateDescription('Painter'));
+      expect(state.description).to.deep.equal({
+        value: 'Painter'
       });
+    });
 
-      state = reducer(state, updateField('description', 'New description.'));
-      expect(state).to.deep.equal({
-        title: 'Bob Ross',
-        description: 'New description.',
-        url: 'http://bobross.com',
-        previewImage: ''
+    it('is not invalid with an empty description', function() {
+      state = reducer(state, updateDescription(''));
+      expect(state.description).to.deep.equal({
+        value: ''
+      });
+    });
+  });
+
+  describe('UPDATE_URL', function() {
+    it('sets the url to the specified value', function() {
+      state = reducer(state, updateUrl('https://google.com'));
+      expect(state.url).to.deep.equal({
+        value: 'https://google.com',
+        invalid: false
+      });
+    });
+
+    it('is invalid with an empty url', function() {
+      state = reducer(state, updateUrl(''));
+      expect(state.url).to.deep.equal({
+        value: '',
+        invalid: true
+      });
+    });
+
+    it('is invalid without the http scheme', function() {
+      state = reducer(state, updateUrl('www.google.com'));
+      expect(state.url).to.deep.equal({
+        value: 'www.google.com',
+        invalid: true
+      });
+    });
+  });
+
+  describe('UPDATE_PREVIEW_IMAGE', function() {
+    it('sets the previewImage to the specified value', function() {
+      state = reducer(state, updatePreviewImage('data:image/jpeg;base64,/9j/4VGcRXhpZgAASUkqAAgAAAAMAA8BA'));
+      expect(state.previewImage).to.deep.equal({
+        value: 'data:image/jpeg;base64,/9j/4VGcRXhpZgAASUkqAAgAAAAMAA8BA'
+      });
+    });
+
+    it('is not invalid with an empty value', function() {
+      state = reducer(state, updatePreviewImage(''));
+      expect(state.previewImage).to.deep.equal({
+        value: ''
       });
     });
   });

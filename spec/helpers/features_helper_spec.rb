@@ -83,5 +83,25 @@ RSpec.describe FeaturesHelper, type: :helper do
       set_features(%w(staging_lockdown))
       expect(helper.staging_lockdown_enabled?).to eq(true)
     end
+
+    it 'returns false if the corresponding feature is enabled AND staging_lockdown_ignore_hosts includes the current domain' do
+      allow(Rails.application.config).to receive(:staging_lockdown_ignore_hosts).and_return([helper.request.host])
+
+      set_features
+      expect(helper.staging_lockdown_enabled?).to eq(false)
+
+      set_features(%w(staging_lockdown))
+      expect(helper.staging_lockdown_enabled?).to eq(false)
+    end
+
+    it 'returns true if the corresponding feature is enabled AND staging_lockdown_ignore_hosts includes some other domain' do
+      allow(Rails.application.config).to receive(:staging_lockdown_ignore_hosts).and_return(['example.com'])
+
+      set_features
+      expect(helper.staging_lockdown_enabled?).to eq(false)
+
+      set_features(%w(staging_lockdown))
+      expect(helper.staging_lockdown_enabled?).to eq(true)
+    end
   end
 end

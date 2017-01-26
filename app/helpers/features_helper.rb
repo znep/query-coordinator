@@ -4,6 +4,9 @@ module FeaturesHelper
   end
 
   def staging_lockdown_enabled?
+    # Temporary workaround for EN-13486
+    return false if Rails.application.config.staging_lockdown_ignore_hosts.include?(request.host)
+
     feature_enabled?('staging_lockdown')
   end
 

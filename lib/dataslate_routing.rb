@@ -9,7 +9,7 @@ class DataslateRouting
   def self.clear_cache_for_current_domain!
     (User.roles_list + %w(superadmin anon)).
       map(&method(:cache_key)). # This _should_ create every possible cache key.
-      each(Rails.cache.method(:delete))
+      each(&Rails.cache.method(:delete))
   end
 
   # The reason that the cache key includes the user role is to make sure that we don't cache

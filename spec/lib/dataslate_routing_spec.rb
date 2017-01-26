@@ -16,6 +16,22 @@ describe DataslateRouting do
   let(:page_result) { { page: Page.new, from: page_source, vars: page_vars } }
   let(:page_vars) { [ ] }
 
+  describe '.clear_cache_for_current_domain!' do
+    before(:each) do
+      allow(Rails).to receive(:cache).and_return(cache_double)
+      allow(User).to receive(:roles_list).and_return(roles_list)
+    end
+
+    let(:cache_double) { double(:cache) }
+    let(:roles_list) { %w( one two three ) }
+
+    it 'should delete all roles' do
+      # Once per role, then 1 for superadmin and 1 for anon.
+      expect(cache_double).to receive(:delete).exactly(roles_list.size + 2).times
+      DataslateRouting.clear_cache_for_current_domain!
+    end
+  end
+
   describe '.for' do
     context 'if looking up from the Pages Service' do
       before(:each) do

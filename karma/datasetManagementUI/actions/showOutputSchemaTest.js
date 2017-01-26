@@ -12,7 +12,7 @@ describe('actions/showOutputSchema', () => {
       const store = getStoreWithOutputSchema();
 
       const db = store.getState().db;
-      const oldSchema = _.find(db.schemas, { id: 18 });
+      const oldSchema = _.find(db.output_schemas, { id: 18 });
       const oldColumn = _.find(db.columns, { id: 50 });
       const newType = 'SoQLNumber';
 
@@ -48,7 +48,7 @@ describe('actions/showOutputSchema', () => {
       // Inputs.
       const inputSchema = { id: 1, upload_id: 0 };
       const oldSchema = { input_schema_id: inputSchema.id, id: 3 };
-      const schemas = [inputSchema, oldSchema];
+      const inputSchemas = [inputSchema];
       const newSchema = { input_schema_id: inputSchema.id };
 
       const pathname = '/dataset/n/feed-cafe/updates/0/uploads/0/schemas/1/output/3';
@@ -89,23 +89,26 @@ describe('actions/showOutputSchema', () => {
       };
 
       const oldSchemaColumns = oldColIds.map(id =>
-        insertFromServerIfNotExists('schema_columns', {column_id: id, schema_id: newSchemaId})
+        insertFromServerIfNotExists('output_schema_columns', {
+          column_id: id,
+          output_schema_id: newSchemaId
+        })
       );
-      const newSchemaColumn = insertFromServerIfNotExists(
-        'schema_columns',
-        { column_id: newColId, schema_id: newSchemaId }
-      );
+      const newSchemaColumn = insertFromServerIfNotExists('output_schema_columns', {
+        column_id: newColId,
+        output_schema_id: newSchemaId
+      });
 
       // Expected.
       const expected = [
-        insertSucceeded('schemas', {input_schema_id: inputSchema.id}, {id: newSchemaId}),
-        insertFromServerIfNotExists('columns', {id: newColId}),
+        insertSucceeded('output_schemas', { input_schema_id: inputSchema.id }, { id: newSchemaId }),
+        insertFromServerIfNotExists('columns', { id: newColId }),
         batch(_.concat(oldSchemaColumns, newSchemaColumn)),
-        insertFromServerIfNotExists('transforms', {id: transformId, input_column_ids: [13, 17]}),
+        insertFromServerIfNotExists('transforms', { id: transformId, input_column_ids: [13, 17] }),
         push(pathname.replace(/3$/, newSchemaId))
       ];
 
-      const actions = updateActions(schemas, routing, oldSchema, newSchema, oldColIds, resp);
+      const actions = updateActions(inputSchemas, routing, oldSchema, newSchema, oldColIds, resp);
 
       expect(_.filter(actions, act => typeof(act) !== 'function')).to.deep.equal(expected);
     });

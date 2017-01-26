@@ -16,11 +16,11 @@ function query(db) {
     uploads: db.uploads.
       map((upload) => ({
         ...upload,
-        schemas: db.schemas.
+        input_schemas: db.input_schemas.
           filter((schema) => schema.upload_id === upload.id).
           map((schema) => ({
             ...schema,
-            output_schemas: db.schemas.
+            output_schemas: db.output_schemas.
               filter((outputSchema) => outputSchema.input_schema_id === schema.id)
           }))
       }))
@@ -104,13 +104,13 @@ function UploadListItem({ upload }) {
         }
       </span>
     );
-  } else if (upload.schemas.length === 1 && upload.schemas[0].output_schemas.length === 1) {
+  } else if (upload.input_schemas.length === 1 && upload.input_schemas[0].output_schemas.length === 1) {
     return (
       <Link
         to={Links.showOutputSchema(
           upload.id,
-          upload.schemas[0].id,
-          upload.schemas[0].output_schemas[0].id)}>{upload.filename}
+          upload.input_schemas[0].id,
+          upload.input_schemas[0].output_schemas[0].id)}>{upload.filename}
       </Link>
     );
   } else {

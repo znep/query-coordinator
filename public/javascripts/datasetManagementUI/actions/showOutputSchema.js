@@ -23,7 +23,7 @@ export function updateColumnType(oldSchema, oldColumn, newType) {
     const { newOutputSchema, newOutputColumns, oldOutputColIds } =
       getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType);
 
-    dispatch(insertStarted('schemas', newOutputSchema));
+    dispatch(insertStarted('output_schemas', newOutputSchema));
 
     // Make "fetch" happen.
     socrataFetch(dsmapiLinks.updateSchema(oldSchema.input_schema_id), {
@@ -33,8 +33,9 @@ export function updateColumnType(oldSchema, oldColumn, newType) {
       then(checkStatus).
       then(getJson).
       then(resp => {
-        const actions =
-          updateActions(db.schemas, routing, oldSchema, newOutputSchema, oldOutputColIds, resp);
+        const actions = updateActions(
+          db.input_schemas, routing, oldSchema, newOutputSchema, oldOutputColIds, resp
+        );
 
         actions.forEach((action) => {
           dispatch(action);
@@ -42,7 +43,7 @@ export function updateColumnType(oldSchema, oldColumn, newType) {
       }).
       catch((err) => {
         console.error('Failed to update schema!', err);
-        dispatch(insertFailed('schemas', newOutputSchema, err));
+        dispatch(insertFailed('output_schemas', newOutputSchema, err));
       });
   };
 }
@@ -52,7 +53,7 @@ export function getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType) 
     input_schema_id: oldSchema.input_schema_id
   };
 
-  const oldOutputColIds = _.filter(db.schema_columns, { schema_id: oldSchema.id }).
+  const oldOutputColIds = _.filter(db.output_schema_columns, { output_schema_id: oldSchema.id }).
                           map(sc => sc.column_id);
   const oldOutputColumns = oldOutputColIds.map(id => _.find(db.columns, { id: id }));
   const newOutputColumns = oldOutputColumns.map((column) => {
@@ -84,20 +85,20 @@ export function getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType) 
 }
 
 // Helper function to handle responses from the backend.
-export function updateActions(schemas, routing, oldSchema, newSchema, oldColIds, resp) {
+export function updateActions(inputSchemas, routing, oldSchema, newSchema, oldColIds, resp) {
   const actions = [];
 
   const respSchema = resp.resource;
   const newOutputColumn = respSchema.output_columns.find((respOutputCol) => (
     !oldColIds.includes(respOutputCol.id)
   ));
-  actions.push(insertSucceeded('schemas', newSchema, { id: respSchema.id }));
+  actions.push(insertSucceeded('output_schemas', newSchema, { id: respSchema.id }));
   // insert columns
   actions.push(insertFromServerIfNotExists('columns', _.omit(newOutputColumn, ['transform_to'])));
   // insert schema_columns
   const newSchemaColumnInserts = respSchema.output_columns.map((respOutputCol) => (
-    insertFromServerIfNotExists('schema_columns', {
-      schema_id: respSchema.id,
+    insertFromServerIfNotExists('output_schema_columns', {
+      output_schema_id: respSchema.id,
       column_id: respOutputCol.id
     })
   ));
@@ -111,7 +112,7 @@ export function updateActions(schemas, routing, oldSchema, newSchema, oldColIds,
   // start fetching new data
   actions.push(createTableAndSubscribeToTransform(transform, newOutputColumn));
   // redirect to new page
-  const uploadId = _.find(schemas, { id: oldSchema.input_schema_id }).upload_id;
+  const uploadId = _.find(inputSchemas, { id: oldSchema.input_schema_id }).upload_id;
   const newOutputSchemaPath = Links.showOutputSchema(
     uploadId, oldSchema.input_schema_id, respSchema.id
   )(routing);

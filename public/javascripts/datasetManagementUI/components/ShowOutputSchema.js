@@ -14,8 +14,8 @@ import Table from './Table';
 function query(db, uploadId, schemaId, outputSchemaIdStr) {
   const outputSchemaId = _.toNumber(outputSchemaIdStr);
   const upload = _.find(db.uploads, { id: _.toNumber(uploadId) });
-  const inputSchema = _.find(db.schemas, { id: _.toNumber(schemaId) });
-  const outputSchema = _.find(db.schemas, { id: outputSchemaId });
+  const inputSchema = _.find(db.input_schemas, { id: _.toNumber(schemaId) });
+  const outputSchema = _.find(db.output_schemas, { id: outputSchemaId });
   const columns = Selectors.columnsForOutputSchema(db, outputSchemaId);
 
   const canApply = _.every(columns.map(c => c.contiguous_rows_processed), (transformProgress) => {

@@ -254,20 +254,20 @@ describe('actions/manageUploads', () => {
     }, (e) => {
 
       const db = store.getState().db;
-      const inputSchema = _.find(db.schemas, {id: 4});
+      const inputSchema = _.find(db.input_schemas, { id: 4 });
       expect(inputSchema.total_rows).to.equal(999999);
 
-      const transform0 = _.find(db.transforms, {id: 0})
-      const column0 = _.find(db.columns, {id: transform0.output_column_id})
-      expect(column0.contiguous_rows_processed).to.equal(9999)
+      const transform0 = _.find(db.transforms, { id: 0 });
+      const column0 = _.find(db.columns, { id: transform0.output_column_id });
+      expect(column0.contiguous_rows_processed).to.equal(9999);
 
-      const transform1 = _.find(db.transforms, {id: 0})
-      const column1 = _.find(db.columns, {id: transform1.output_column_id})
-      expect(column1.contiguous_rows_processed).to.equal(9999)
+      const transform1 = _.find(db.transforms, { id: 0 });
+      const column1 = _.find(db.columns, { id: transform1.output_column_id });
+      expect(column1.contiguous_rows_processed).to.equal(9999);
 
       unmockFetch();
       done(e);
-    })
+    });
 
     store.dispatch(createUpload({
       name: 'crimes.csv'

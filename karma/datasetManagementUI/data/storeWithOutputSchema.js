@@ -3,7 +3,7 @@ import { getDefaultStore } from '../testStore';
 
 export function getStoreWithOutputSchema() {
   const store = getDefaultStore();
-  store.dispatch(insertFromServer('schemas', {
+  store.dispatch(insertFromServer('output_schemas', {
     id: 18,
     input_schema_id: 4
   }));
@@ -21,14 +21,14 @@ export function getStoreWithOutputSchema() {
     display_name: 'block',
     soql_type: 'SoQLText'
   }));
-  store.dispatch(insertFromServer('schema_columns', {
+  store.dispatch(insertFromServer('output_schema_columns', {
     id: 0,
-    schema_id: 18,
+    output_schema_id: 18,
     column_id: 50
   }));
-  store.dispatch(insertFromServer('schema_columns', {
+  store.dispatch(insertFromServer('output_schema_columns', {
     id: 1,
-    schema_id: 18,
+    output_schema_id: 18,
     column_id: 51
   }));
   store.dispatch(insertFromServer('transforms', {

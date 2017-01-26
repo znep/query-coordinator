@@ -25,7 +25,7 @@ export function applyUpdate(outputSchemaId) {
     dispatch(insertStarted('upsert_jobs', newUpsertJob));
     socrataFetch(dsmapiLinks.applyUpdate, {
       method: 'PUT',
-      body: JSON.stringify({ schemas: outputSchemaId }) // TODO: change this to `schema` in DSMAPI
+      body: JSON.stringify({ output_schema_id: outputSchemaId })
     }).
       then(checkStatus).
       then(getJson).

@@ -73,7 +73,7 @@ export function uploadFile(uploadId, file) {
           id: uploadId,
           finished_at: new Date()
         }));
-        dispatch(updateFromServer('schemas', {
+        dispatch(updateFromServer('input_schemas', {
           id: inputSchema.id,
           total_rows: inputSchema.total_rows
         }));
@@ -136,7 +136,7 @@ export function insertUploadAndSubscribeToOutput(dispatch, upload) { // => [outp
 
 function subscribeToOutputColumns(dispatch, upload) {
   const outputSchemaIds = upload.schemas.map((inputSchema) => {
-    dispatch(insertFromServer('schemas', {
+    dispatch(insertFromServer('input_schemas', {
       id: inputSchema.id,
       name: inputSchema.name,
       total_rows: inputSchema.total_rows,
@@ -146,7 +146,7 @@ function subscribeToOutputColumns(dispatch, upload) {
       dispatch(insertFromServer('columns', column));
     });
     return inputSchema.output_schemas.map((outputSchema) => {
-      dispatch(insertFromServer('schemas', {
+      dispatch(insertFromServer('output_schemas', {
         id: outputSchema.id,
         input_schema_id: inputSchema.id
       }));
@@ -157,8 +157,8 @@ function subscribeToOutputColumns(dispatch, upload) {
           input_column_ids: transform.transform_input_columns.map((inCol) => inCol.column_id)
         }));
         dispatch(insertFromServerIfNotExists('columns', _.omit(outputColumn, ['transform_to'])));
-        dispatch(insertFromServer('schema_columns', {
-          schema_id: outputSchema.id,
+        dispatch(insertFromServer('output_schema_columns', {
+          output_schema_id: outputSchema.id,
           column_id: outputColumn.id
         }));
         dispatch(createTableAndSubscribeToTransform(transform, outputColumn));

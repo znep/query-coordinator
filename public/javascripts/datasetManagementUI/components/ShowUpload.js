@@ -7,23 +7,23 @@ import * as Links from '../links';
 
 function query(db, uploadId) {
   const upload = _.find(db.uploads, { id: _.toNumber(uploadId) });
-  const schemas = _.filter(db.schemas, { upload_id: upload.id });
-  let latestSchema;
+  const inputSchemas = _.filter(db.input_schemas, { upload_id: upload.id });
+  let latestOutputSchema;
 
-  if (schemas.length) {
-    const latestSchemas = _.filter(db.schemas, { input_schema_id: schemas[0].id });
-    latestSchema = _.last(latestSchemas);
+  if (inputSchemas.length) {
+    const latestOutputSchemas = _.filter(db.output_schemas, { input_schema_id: inputSchemas[0].id });
+    latestOutputSchema = _.last(latestOutputSchemas);
   }
 
   return {
     upload,
-    latestSchema
+    latestOutputSchema
   };
 }
 
-function ShowUpload({ upload, latestSchema, goToUploads }) {
+function ShowUpload({ upload, latestOutputSchema, goToUploads }) {
   let body;
-  if (_.isUndefined(latestSchema)) {
+  if (_.isUndefined(latestOutputSchema)) {
     body = (
       <div className="centered-container">
         <span className="spinner-default spinner-large"></span>
@@ -35,12 +35,12 @@ function ShowUpload({ upload, latestSchema, goToUploads }) {
         Layers:
         <ul>
           <li>
-            {latestSchema.name || I18n.home_pane.only_layer}
+            {latestOutputSchema.name || I18n.home_pane.only_layer}
             <ul>
               <li>
                 <Link
-                  to={Links.showOutputSchema(upload.id, latestSchema.id, latestSchema.id)}>
-                  {latestSchema.id}
+                  to={Links.showOutputSchema(upload.id, latestOutputSchema.id, latestOutputSchema.id)}>
+                  {latestOutputSchema.id}
                 </Link>
               </li>
             </ul>
@@ -78,7 +78,7 @@ function ShowUpload({ upload, latestSchema, goToUploads }) {
 
 ShowUpload.propTypes = {
   upload: PropTypes.object.isRequired,
-  latestSchema: PropTypes.object,
+  latestOutputSchema: PropTypes.object,
   goToUploads: PropTypes.func.isRequired
 };
 

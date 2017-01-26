@@ -7,7 +7,7 @@ describe('Selectors', () => {
 
     it('returns the min of all columns with transformed rows', () => {
       const db = {
-        schemas: [
+        output_schemas: [
           { id: 1 },
           { id: 5 },
           { id: 7 }
@@ -19,12 +19,12 @@ describe('Selectors', () => {
           { id: 54, schema_column_index: 2, contiguous_rows_processed: 1000 },
           { id: 55, schema_column_index: 5 }
         ],
-        schema_columns: [
-          { schema_id: 5, column_id: 51 },
-          { schema_id: 1, column_id: 52 },
-          { schema_id: 1, column_id: 53 },
-          { schema_id: 1, column_id: 54 },
-          { schema_id: 7, column_id: 55 }
+        output_schema_columns: [
+          { output_schema_id: 5, column_id: 51 },
+          { output_schema_id: 1, column_id: 52 },
+          { output_schema_id: 1, column_id: 53 },
+          { output_schema_id: 1, column_id: 54 },
+          { output_schema_id: 7, column_id: 55 }
         ]
       };
       expect(Selectors.rowsTransformed(db, 1)).to.eql(500);
@@ -32,7 +32,7 @@ describe('Selectors', () => {
 
     it('returns 0 when one column doesn\'t have any transformed rows yet', () => {
       const db = {
-        schemas: [
+        output_schemas: [
           { id: 1 },
           { id: 5 },
           { id: 7 }
@@ -44,12 +44,12 @@ describe('Selectors', () => {
           { id: 54, schema_column_index: 2, contiguous_rows_processed: 1000 },
           { id: 55, schema_column_index: 5 }
         ],
-        schema_columns: [
-          { schema_id: 5, column_id: 51 },
-          { schema_id: 1, column_id: 52 },
-          { schema_id: 1, column_id: 53 },
-          { schema_id: 1, column_id: 54 },
-          { schema_id: 7, column_id: 55 }
+        output_schema_columns: [
+          { output_schema_id: 5, column_id: 51 },
+          { output_schema_id: 1, column_id: 52 },
+          { output_schema_id: 1, column_id: 53 },
+          { output_schema_id: 1, column_id: 54 },
+          { output_schema_id: 7, column_id: 55 }
         ]
       };
       expect(Selectors.rowsTransformed(db, 1)).to.eql(0);
@@ -115,7 +115,7 @@ describe('Selectors', () => {
 
     it('returns all columns for an output schema', () => {
       const db = {
-        schemas: [
+        output_schemas: [
           { id: 1 },
           { id: 5 },
           { id: 7 }
@@ -127,12 +127,12 @@ describe('Selectors', () => {
           { id: 54, schema_column_index: 2 },
           { id: 55, schema_column_index: 5 }
         ],
-        schema_columns: [
-          { schema_id: 5, column_id: 51 },
-          { schema_id: 1, column_id: 52 },
-          { schema_id: 1, column_id: 53 },
-          { schema_id: 1, column_id: 54 },
-          { schema_id: 7, column_id: 55 }
+        output_schema_columns: [
+          { output_schema_id: 5, column_id: 51 },
+          { output_schema_id: 1, column_id: 52 },
+          { output_schema_id: 1, column_id: 53 },
+          { output_schema_id: 1, column_id: 54 },
+          { output_schema_id: 7, column_id: 55 }
         ]
       };
       expect(Selectors.columnsForOutputSchema(db, 1)).to.eql([

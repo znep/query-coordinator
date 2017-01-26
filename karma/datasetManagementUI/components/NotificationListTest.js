@@ -125,10 +125,10 @@ describe('components/NotificationList', () => {
 
   it('doesn\'t show an upsert job before it has an id', () => {
     const store = getDefaultStore();
-    store.dispatch(insertFromServer('schemas', { id: 1 }));
+    store.dispatch(insertFromServer('output_schemas', { id: 1 }));
     store.dispatch(insertFromServer('columns', { id: 1, contiguous_rows_processed: 5000 }));
-    store.dispatch(insertFromServer('schema_columns', {
-      schema_id: 1,
+    store.dispatch(insertFromServer('output_schema_columns', {
+      output_schema_id: 1,
       column_id: 1
     }));
     store.dispatch(insertStarted('upsert_jobs', {
@@ -141,10 +141,10 @@ describe('components/NotificationList', () => {
 
   it('shows an upsert job in progress which has 0 log entries', () => {
     const store = getDefaultStore();
-    store.dispatch(insertFromServer('schemas', { id: 1 }));
+    store.dispatch(insertFromServer('output_schemas', { id: 1 }));
     store.dispatch(insertFromServer('columns', { id: 1, contiguous_rows_processed: 5000 }));
-    store.dispatch(insertFromServer('schema_columns', {
-      schema_id: 1,
+    store.dispatch(insertFromServer('output_schema_columns', {
+      output_schema_id: 1,
       column_id: 1
     }));
     store.dispatch(insertStarted('upsert_jobs', {
@@ -165,10 +165,10 @@ describe('components/NotificationList', () => {
 
   it('shows an upsert job in progress which has some log entries', () => {
     const store = getDefaultStore();
-    store.dispatch(insertFromServer('schemas', { id: 1 }));
+    store.dispatch(insertFromServer('output_schemas', { id: 1 }));
     store.dispatch(insertFromServer('columns', { id: 1, contiguous_rows_processed: 5000 }));
-    store.dispatch(insertFromServer('schema_columns', {
-      schema_id: 1,
+    store.dispatch(insertFromServer('output_schema_columns', {
+      output_schema_id: 1,
       column_id: 1
     }));
     store.dispatch(insertStarted('upsert_jobs', {
@@ -197,10 +197,10 @@ describe('components/NotificationList', () => {
 
   it('shows a recently completed upsert job', () => {
     const store = getDefaultStore();
-    store.dispatch(insertFromServer('schemas', { id: 1 }));
+    store.dispatch(insertFromServer('output_schemas', { id: 1 }));
     store.dispatch(insertFromServer('columns', { id: 1, contiguous_rows_processed: 5000 }));
-    store.dispatch(insertFromServer('schema_columns', {
-      schema_id: 1,
+    store.dispatch(insertFromServer('output_schema_columns', {
+      output_schema_id: 1,
       column_id: 1
     }));
     store.dispatch(insertStarted('upsert_jobs', {
@@ -224,10 +224,10 @@ describe('components/NotificationList', () => {
 
   it('shows a failed upsert job', () => {
     const store = getDefaultStore();
-    store.dispatch(insertFromServer('schemas', { id: 1 }));
+    store.dispatch(insertFromServer('output_schemas', { id: 1 }));
     store.dispatch(insertFromServer('columns', { id: 1, contiguous_rows_processed: 5000 }));
-    store.dispatch(insertFromServer('schema_columns', {
-      schema_id: 1,
+    store.dispatch(insertFromServer('output_schema_columns', {
+      output_schema_id: 1,
       column_id: 1
     }));
     store.dispatch(insertStarted('upsert_jobs', {

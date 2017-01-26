@@ -46,7 +46,7 @@ if (window.serverConfig.environment === 'development') {
   }));
   middleware.push(windowDBMiddleware);
   console.log(
-    'for convenience, try `console.table(DB.schemas)` (only works when RAILS_ENV==development)'
+    'for convenience, try e.g. `console.table(DB.uploads)` (only works when RAILS_ENV==development)'
   );
 } else {
   // TODO: setup airbrake if not development

@@ -10,9 +10,10 @@ export const emptyDB = {
   views: [],
   updates: [],
   uploads: [],
-  schemas: [],
+  input_schemas: [],
+  output_schemas: [],
   columns: [],
-  schema_columns: [],
+  output_schema_columns: [],
   transforms: [],
   upsert_jobs: []
 };

@@ -23,7 +23,7 @@ export function rowsUpserted(db, upsertJobId) {
 }
 
 export function columnsForOutputSchema(db, outputSchemaId) {
-  const schemaColumns = _.filter(db.schema_columns, { schema_id: outputSchemaId });
+  const schemaColumns = _.filter(db.output_schema_columns, { output_schema_id: outputSchemaId });
   const unsortedColumns = _.filter(
     db.columns,
     (column) => schemaColumns.some(

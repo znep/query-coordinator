@@ -81,6 +81,13 @@ http://www.socrata.com
     <%= site_chrome_javascript_tag %>
   <%- end -%>
 
+  <%- if FeatureFlags.derive(@view, request).browse_autocomplete -%>
+    <%#
+      Note that when this bundle is included it automatically replaces the header/footer search box
+    %>
+    <%= include_webpack_bundle 'autocomplete/main.js' %>
+  <%- end -%>
+
 </head>
 
 <body class="<%= body_classes %>" data-locale="<%= I18n.locale %>" data-defaultlocale="<%= CurrentDomain.default_locale %>">
@@ -103,33 +110,6 @@ http://www.socrata.com
 
       <%- if render_site_chrome? -%>
         <%== site_chrome_header(request, response, :size => site_chrome_size) %>
-
-        <%- if FeatureFlags.derive(@view, request).browse_autocomplete -%>
-          <%= include_webpack_bundle 'autocomplete/main.js' %>
-
-          <script>
-            !function() {
-              // for Evergreen theme
-              var collapsibleSearchSelector = '#site-chrome-header .collapsible-search';
-              // for Rally theme
-              var staticSearchSelector = '#site-chrome-header .searchbox';
-
-              if ($(collapsibleSearchSelector).length > 0) {
-                window.autocomplete(
-                  collapsibleSearchSelector,
-                  { collapsed: true },
-                  { collapsible: true }
-                );
-              } else if ($(staticSearchSelector).length > 0) {
-                window.autocomplete(
-                  staticSearchSelector,
-                  undefined,
-                  { animate: false }
-                );
-              }
-            } ();
-          </script>
-        <%- end -%>
 
         <div id="noticeContainer">
           <%== display_homepage_flashes %>

@@ -19,3 +19,22 @@ window.autocomplete = function(container, defaultState, options) {
     rootNode
   );
 };
+
+// for Evergreen theme
+var collapsibleSearchSelector = '#site-chrome-header .collapsible-search';
+// for Rally theme
+var staticSearchSelector = '#site-chrome-header .searchbox';
+
+if (document.querySelectorAll((collapsibleSearchSelector)).length > 0) {
+  window.autocomplete(
+    collapsibleSearchSelector,
+    { collapsed: true },
+    { collapsible: true }
+  );
+} else if (document.querySelectorAll((staticSearchSelector)).length > 0) {
+  window.autocomplete(
+    staticSearchSelector,
+    undefined,
+    { animate: false }
+  );
+}

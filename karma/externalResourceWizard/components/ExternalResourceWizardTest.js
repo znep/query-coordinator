@@ -1,10 +1,9 @@
-import { ExternalResourceContainer } from 'components/ExternalResourceContainer';
+import { ExternalResourceWizard } from 'components/ExternalResourceWizard';
 import $ from 'jquery';
 
-describe('components/ExternalResourceContainer', function() {
+describe('components/ExternalResourceWizard', function() {
   function defaultProps() {
     return {
-      dispatchCloseExternalResourceContainer: _.noop,
       title: {
         value: '',
         invalid: true
@@ -27,8 +26,8 @@ describe('components/ExternalResourceContainer', function() {
   }
 
   it('renders', function() {
-    var element = renderPureComponentWithStore(ExternalResourceContainer(getProps()));
+    var element = renderComponentWithStore(ExternalResourceWizard, getProps());
     expect(element).to.exist;
-    expect(element.className).to.match(/external-resource-container/);
+    expect(element.className).to.match(/external-resource-wizard/);
   });
 });

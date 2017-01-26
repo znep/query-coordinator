@@ -10,11 +10,11 @@ const initialState = function() {
 export default (state = initialState(), action = {}) => {
   state = _.cloneDeep(state);
   switch (action.type) {
-    case 'OPEN_ASSET_SELECTOR':
+    case 'OPEN_EXTERNAL_RESOURCE_WIZARD':
       $('body').addClass('modal-open');
       state.modalIsOpen = true;
       return state;
-    case 'CLOSE_ASSET_SELECTOR':
+    case 'CLOSE_EXTERNAL_RESOURCE_WIZARD':
       $('body').removeClass('modal-open');
       state.modalIsOpen = false;
       return state;

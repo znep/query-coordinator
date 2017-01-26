@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import $ from 'jquery';
 import ceteraUtils from '../lib/ceteraUtils';
-import { closeModal, openExternalResourceContainer } from '../actions/modal';
+import { closeAssetSelector } from '../actions/modal';
 import { updatePageResults } from '../actions/pageResults';
 import { updateResultCount } from '../actions/resultCount';
 import BackButton from './BackButton';
@@ -101,12 +101,10 @@ export class ResultsContainer extends Component {
 
     return (
       <div className="modal-content results-container">
-        <BackButton onClick={this.props.dispatchCloseModal} />
-        <button
-          className="btn btn-default btn-sm external-resource-button"
-          onClick={this.props.dispatchOpenExternalResourceContainer}>
-          Feature an External Resource{/* TODO: localization */}
-        </button>
+        <div className="results-topbar">
+          <BackButton onClick={this.props.dispatchCloseAssetSelector} />
+          {this.props.additionalTopbarComponents.map((component) => component)}
+        </div>
         {resultContent}
       </div>
     );
@@ -114,10 +112,10 @@ export class ResultsContainer extends Component {
 }
 
 ResultsContainer.propTypes = {
+  additionalTopbarComponents: PropTypes.array,
   category: PropTypes.string,
   results: PropTypes.array.isRequired,
-  dispatchCloseModal: PropTypes.func.isRequired,
-  dispatchOpenExternalResourceContainer: PropTypes.func.isRequired,
+  dispatchCloseAssetSelector: PropTypes.func.isRequired,
   dispatchUpdatePageResults: PropTypes.func.isRequired,
   dispatchUpdateResultCount: PropTypes.func.isRequired,
   resultCount: PropTypes.number.isRequired,
@@ -125,10 +123,10 @@ ResultsContainer.propTypes = {
 };
 
 ResultsContainer.defaultProps = {
+  additionalTopbarComponents: [],
   category: null,
   results: [],
-  dispatchCloseModal: _.noop,
-  dispatchOpenExternalResourceContainer: _.noop,
+  dispatchCloseAssetSelector: _.noop,
   dispatchUpdatePageResults: _.noop,
   dispatchUpdateResultCount: _.noop,
   resultCount: 0,
@@ -137,18 +135,15 @@ ResultsContainer.defaultProps = {
 
 function mapStateToProps(state) {
   return {
-    resultCount: _.get(state, 'resultCount.count'),
-    results: _.get(state, 'pageResults.results')
+    resultCount: _.get(state, 'assetSelector.resultCount.count'),
+    results: _.get(state, 'assetSelector.pageResults.results')
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatchCloseModal: function() {
-      dispatch(closeModal());
-    },
-    dispatchOpenExternalResourceContainer: function() {
-      dispatch(openExternalResourceContainer());
+    dispatchCloseAssetSelector: function() {
+      dispatch(closeAssetSelector());
     },
     dispatchUpdatePageResults: function(newPageResults) {
       dispatch(updatePageResults(newPageResults));

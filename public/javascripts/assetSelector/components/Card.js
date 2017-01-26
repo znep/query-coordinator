@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { closeModal } from '../actions/modal';
+import { closeAssetSelector } from '../actions/modal';
 import { ViewCard } from 'socrata-components';
 import { getIconClassForDisplayType } from 'socrata-components/common/displayTypeMetadata';
 import { getDateLabel, getViewCountLabel, getAriaLabel } from '../../datasetLandingPage/lib/viewCardHelpers';
@@ -10,15 +10,15 @@ import { handleKeyPress } from '../lib/a11yHelpers';
 export class Card extends Component {
   constructor(props) {
     super(props);
-    _.bindAll(this, ['onClick', 'setHovering', 'viewCardProps']);
+    _.bindAll(this, ['onSelect', 'setHovering', 'viewCardProps']);
     this.state = {
       hovering: false
     };
   }
 
-  onClick(cardProps) {
+  onSelect(cardProps) {
     console.log(cardProps);
-    this.props.dispatchCloseModal();
+    this.props.dispatchCloseAssetSelector();
   }
 
   setHovering(hoveringState) {
@@ -59,8 +59,8 @@ export class Card extends Component {
           onFocus={() => this.setHovering(true)}
           onMouseOut={() => this.setHovering(false)}
           onBlur={() => this.setHovering(false)}
-          onClick={() => this.onClick(cardProps)}
-          onKeyDown={handleKeyPress(() => this.onClick(cardProps))}>
+          onClick={() => this.onSelect(cardProps)}
+          onKeyDown={handleKeyPress(() => this.onSelect(cardProps))}>
           <div className={cardOverlayClasses}>
             <button className="select-button btn btn-primary">
               Select{/* TODO: Localization */}
@@ -87,7 +87,7 @@ Card.propTypes = {
   type: PropTypes.string.isRequired,
   updatedAt: PropTypes.string,
   viewCount: PropTypes.number.isRequired,
-  dispatchCloseModal: PropTypes.func.isRequired
+  dispatchCloseAssetSelector: PropTypes.func.isRequired
 };
 
 Card.defaultProps = {
@@ -95,13 +95,13 @@ Card.defaultProps = {
   name: '',
   type: '',
   viewCount: 0,
-  dispatchCloseModal: _.noop
+  dispatchCloseAssetSelector: _.noop
 };
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatchCloseModal: function() {
-      dispatch(closeModal());
+    dispatchCloseAssetSelector: function() {
+      dispatch(closeAssetSelector());
     }
   };
 }

@@ -1,35 +1,27 @@
 @import "styleguide-colors";
 @import "asset-selector/breakpoints";
 @import "asset-selector/results-container";
-@import "asset-selector/external-resource-container";
 
-.asset-selector {
-
-  &.hidden, .hidden {
-    display: none;
-  }
+.asset-selector-modal {
+  background-color: $white;
+  // overflow: hidden
 
   .inline-block {
     display: inline-block;
   }
 
-  .asset-selector-modal {
-    background-color: $white;
-    overflow: hidden;
-
-    .modal-container {
-      &.no-footer {
-        .modal-content {
-          margin-bottom: 0;
-        }
+  .modal-container {
+    &.no-footer {
+      .modal-content {
+        margin-bottom: 0;
       }
+    }
 
-      .modal-header {
-        z-index: 1;
-        h1 {
-          font-size: 19px;
-          font-weight: 400;
-        }
+    .modal-header {
+      z-index: 1;
+      h1 {
+        font-size: 19px;
+        font-weight: 400;
       }
     }
   }

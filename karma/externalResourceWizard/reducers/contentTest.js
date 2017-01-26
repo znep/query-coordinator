@@ -1,7 +1,7 @@
-import reducer from 'reducers/externalResource';
-import { updateTitle, updateDescription, updateUrl, updatePreviewImage } from 'actions/externalResource';
+import reducer from 'reducers/content';
+import { updateTitle, updateDescription, updateUrl, updatePreviewImage } from 'actions/content';
 
-describe('reducers/externalResource', function() {
+describe('reducers/content', function() {
   var state;
 
   beforeEach(function() {

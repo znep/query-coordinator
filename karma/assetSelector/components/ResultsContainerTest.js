@@ -70,4 +70,35 @@ describe('components/ResultsContainer', function() {
     var element = renderComponentWithStore(ResultsContainer, getProps({ results }));
     expect(element.querySelectorAll('.result-card').length).to.equal(9);
   });
+
+  describe('additionalTopbarComponents', function() {
+    it('can be an empty array', function() {
+      var element = renderComponentWithStore(ResultsContainer, getProps({
+        additionalTopbarComponents: []
+      }));
+      expect(element).to.exist;
+    });
+
+    it('renders an additional component in the topbar', function() {
+      var testComponent = React.createElement('div', { className: 'test', key: 0 });
+      var element = renderComponentWithStore(ResultsContainer, getProps({
+        additionalTopbarComponents: [testComponent]
+      }));
+
+      expect(element.querySelector('.results-topbar').querySelector('.test')).to.exist;
+    });
+
+    it('renders multiple additional components in the topbar', function() {
+      var testComponent1 = React.createElement('div', { className: 'test1', key: 0 });
+      var testComponent2 = React.createElement('div', { className: 'test2', key: 1 });
+      var testComponent3 = React.createElement('div', { className: 'test3', key: 2 });
+      var element = renderComponentWithStore(ResultsContainer, getProps({
+        additionalTopbarComponents: [testComponent1, testComponent2, testComponent3]
+      }));
+
+      expect(element.querySelector('.results-topbar').querySelector('.test1')).to.exist;
+      expect(element.querySelector('.results-topbar').querySelector('.test2')).to.exist;
+      expect(element.querySelector('.results-topbar').querySelector('.test3')).to.exist;
+    });
+  });
 });

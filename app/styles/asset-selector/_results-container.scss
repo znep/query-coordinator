@@ -1,142 +1,144 @@
 @import "asset-selector/breakpoints";
 
-.asset-selector {
-  .results-container {
-    .back-button, .external-resource-button {
+.results-container {
+  .results-topbar {
+    > button {
       display: inline-block;
+      margin-right: 0.5rem;
     }
-    .external-resource-button {
-      margin-left: 0.5rem;
+  }
+
+  .no-results {
+    margin-top: 1rem;
+  }
+
+  .top-controls {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+
+    .result-count {
+      float: none;
+      align-self: center;
     }
 
-    .no-results {
-      margin-top: 1rem;
-    }
+    .sort-dropdown {
+      align-items: center;
+      display: inline-flex;
+      margin: 3px;
 
-    .top-controls {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.5rem 0;
-
-      .result-count {
-        float: none;
-        align-self: center;
-      }
-
-      .sort-dropdown {
-        align-items: center;
-        display: inline-flex;
-        margin: 3px;
-
-        .dropdown-container {
-          margin-left: 0.5rem;
-        }
+      .dropdown-container {
+        margin-left: 0.5rem;
       }
     }
+  }
 
-    .card-container {
-      display: flex;
-      justify-content: flex-start;
-      align-content: flex-start;
-      flex-wrap: wrap;
-      overflow: hidden;
-      position: relative;
+  .card-container {
+    display: flex;
+    justify-content: flex-start;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    overflow: hidden;
+    position: relative;
 
-      .result-card {
-        flex: 0 0 auto;
-        width: 31.9%;
-        height: 300px;
-        margin-right: 2%;
+    .result-card {
+      flex: 0 0 auto;
+      width: 31.9%;
+      height: 300px;
+      margin-right: 2%;
 
-        &.loading-card {
-          display: flex;
+      &.loading-card {
+        display: flex;
 
-          .spinner-large {
-            margin: auto;
-          }
+        .spinner-large {
+          margin: auto;
         }
+      }
 
-        @media(max-width: $medium) {
-          flex: 0 0 260px;
+      @media(max-width: $medium) {
+        flex: 0 0 260px;
+      }
+
+      @media(min-width: $medium) {
+        &:nth-child(3n) {
+          margin-right: 0;
         }
+      }
 
-        @media(min-width: $medium) {
-          &:nth-child(3n) {
-            margin-right: 0;
-          }
-        }
+      .view-card-overlay {
+        .hover-target {
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          cursor: pointer;
 
-        .view-card-overlay {
-          .hover-target {
+          .overlay {
             position: absolute;
             top: 0;
             right: 0;
             bottom: 0;
             left: 0;
-            cursor: pointer;
 
-            .overlay {
+            background-color: rgba(40, 141, 193, 0.1); // $primary-base converted to rgb for transparency
+            border: 3px solid $primary-base;
+
+            &.hidden {
+              display: none;
+            }
+
+            .select-button {
               position: absolute;
               top: 0;
               right: 0;
               bottom: 0;
               left: 0;
-
-              background-color: rgba(40, 141, 193, 0.1); // $primary-base converted to rgb for transparency
-              border: 3px solid $primary-base;
-
-              .select-button {
-                position: absolute;
-                top: 0;
-                right: 0;
-                bottom: 0;
-                left: 0;
-                margin: auto;
-                height: 2.5rem;
-                padding: 0;
-              }
+              margin: auto;
+              height: 2.5rem;
+              padding: 0;
             }
           }
         }
       }
+    }
 
-      @media(max-width: $medium) {
-        flex-flow: row nowrap;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        -ms-overflow-style: -ms-autohiding-scrollbar;
+    @media(max-width: $medium) {
+      flex-flow: row nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
+  }
+
+  .pager {
+    margin-bottom: 1rem;
+
+    .prev-link {
+      margin-right: 0.5rem;
+    }
+
+    .next-link {
+      margin-left: 0.5rem;
+    }
+
+    .prev-link, .next-link {
+      cursor: pointer;
+
+      &.disabled {
+        cursor: default;
+        color: $grey;
       }
     }
 
-    .pager {
-      margin-bottom: 1rem;
-
-      .prev-link {
-        margin-right: 0.5rem;
+    .current-page-input {
+      input {
+        width: 40px;
       }
 
-      .next-link {
-        margin-left: 0.5rem;
-      }
-
-      .prev-link, .next-link {
-        cursor: pointer;
-
-        &.disabled {
-          cursor: default;
-          color: $grey;
-        }
-      }
-
-      .current-page-input {
+      &.error {
         input {
-          width: 40px;
-        }
-
-        &.error {
-          input {
-            color: $error-text;
-          }
+          color: $error-text;
         }
       }
     }

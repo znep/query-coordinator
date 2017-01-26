@@ -1,7 +1,7 @@
 import reducer from 'reducers/modal';
 import {
-  openAssetSelector,
-  closeAssetSelector
+  openExternalResourceWizard,
+  closeExternalResourceWizard
 } from 'actions/modal';
 
 describe('reducers/modal', function() {
@@ -11,16 +11,16 @@ describe('reducers/modal', function() {
     state = reducer();
   });
 
-  describe('OPEN_ASSET_SELECTOR', function() {
+  describe('OPEN_EXTERNAL_RESOURCE_WIZARD', function() {
     it('sets modalIsOpen to false', function() {
-      state = reducer(state, openAssetSelector());
+      state = reducer(state, openExternalResourceWizard());
       expect(state.modalIsOpen).to.eq(true);
     });
   });
 
-  describe('CLOSE_ASSET_SELECTOR', function() {
+  describe('CLOSE_EXTERNAL_RESOURCE_WIZARD', function() {
     it('sets modalIsOpen to false', function() {
-      state = reducer(state, closeAssetSelector());
+      state = reducer(state, closeExternalResourceWizard());
       expect(state.modalIsOpen).to.eq(false);
     });
   });

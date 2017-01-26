@@ -2,11 +2,9 @@ import React, { PropTypes } from 'react';
 import _ from 'lodash';
 
 export const BackButton = (props) => (
-  <div className="back-button">
-    <button className="btn btn-default btn-sm close-modal" onClick={props.onClick}>
-      <span className="socrata-icon-arrow-prev"></span> Back{/* TODO: localization */}
-    </button>
-  </div>
+  <button className="btn btn-default btn-sm close-modal back-button" onClick={props.onClick}>
+    <span className="socrata-icon-arrow-prev"></span> Back{/* TODO: localization */}
+  </button>
 );
 
 BackButton.propTypes = {

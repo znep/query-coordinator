@@ -1,14 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import createLogger from 'redux-logger';
 import a11y from 'react-a11y';
 // import airbrake from './lib/airbrake';
 import _ from 'lodash';
 
-import AssetSelector from './AssetSelector';
-import assetSelectorReducers from './reducers';
+import App from './App';
+
+import assetSelector from './reducers';
+import externalResourceWizard from '../externalResourceWizard/reducers';
 
 require('socrata-components/dist/css/styleguide.css');
 
@@ -26,15 +28,18 @@ middleware.push(createLogger({
 //   airbrake.init();
 // }
 
-const store = createStore(assetSelectorReducers, applyMiddleware(...middleware));
+const reducers = combineReducers({
+  assetSelector,
+  externalResourceWizard
+});
+
+const store = createStore(reducers, applyMiddleware(...middleware));
 
 _.defer(() => {
   try {
     ReactDOM.render(
       <Provider store={store}>
-        <AssetSelector
-          category={'Education'}
-          resultsPerPage={6} />
+        <App />
       </Provider>,
       document.querySelector('.asset-selector')
     );

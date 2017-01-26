@@ -41,4 +41,11 @@ describe('components/Card', function() {
       querySelector('a[href="http://davidhasselhoffonline.com/"][aria-label="View david hasselhoff"]')).
       to.exist;
   });
+
+  it('dispatches closeAssetSelector on click', function() {
+    var spy = sinon.spy();
+    var element = renderComponentWithStore(Card, getProps({ dispatchCloseAssetSelector: spy }));
+    TestUtils.Simulate.click(element.querySelector('.hover-target'));
+    expect(spy).to.have.been.called;
+  });
 });

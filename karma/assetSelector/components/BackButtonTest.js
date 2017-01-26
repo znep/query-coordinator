@@ -20,7 +20,7 @@ describe('components/BackButton', function() {
   it('dispatches the onClick prop on click', function() {
     var spy = sinon.spy();
     var element = renderPureComponent(BackButton(getProps({ onClick: spy })));
-    TestUtils.Simulate.click(element.querySelector('.back-button button.close-modal'));
+    TestUtils.Simulate.click(element);
     expect(spy).to.have.been.called;
   });
 });

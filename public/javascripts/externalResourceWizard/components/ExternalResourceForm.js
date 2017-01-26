@@ -1,16 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { updateTitle, updateDescription, updateUrl, updatePreviewImage } from '../actions/externalResource';
+import { updateTitle, updateDescription, updateUrl, updatePreviewImage } from '../actions/content';
 
 export class ExternalResourceForm extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       isImageInvalid: false
     };
-
     _.bindAll(this, ['onChange', 'renderInputField']);
   }
 

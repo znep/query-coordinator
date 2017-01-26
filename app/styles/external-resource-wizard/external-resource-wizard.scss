@@ -1,11 +1,23 @@
-@import "asset-selector/breakpoints";
+@import "styleguide-colors";
 $view-widget-width: 32%;
 $min-view-widget-width: 300px;
 $view-widget-height: 300px;
 
-.asset-selector {
-  .external-resource-container {
-    > .description {
+
+.external-resource-wizard {
+  background-color: $white;
+  // overflow: hidden;
+
+  .modal-header {
+    z-index: 1;
+    h1 {
+      font-size: 19px;
+      font-weight: 400;
+    }
+  }
+
+  .modal-content {
+    > div.description {
       margin-top: 1rem;
     }
 
@@ -41,10 +53,6 @@ $view-widget-height: 300px;
           height: 100%;
           border: 2px $light-grey-1 dashed;
         }
-      }
-
-      @media(max-width: $medium) {
-        flex-wrap: wrap;
       }
     }
   }

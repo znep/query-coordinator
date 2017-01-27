@@ -90,7 +90,6 @@ class SignInContainer extends React.Component {
       return (
         <div
           className="signin-form-message"
-          styleName="form-message"
           dangerouslySetInnerHTML={{ __html: formMessage }} />
       );
     }
@@ -130,16 +129,18 @@ class SignInContainer extends React.Component {
 
         {renderAlerts(flashes)}
 
-        <h2 styleName="header">
-          {
-            translate(
-              'screens.sign_in.headline',
-              { site: options.companyName }
-            )
-          }
-        </h2>
+        <div styleName="header-container">
+          <h2 styleName="header">
+            {
+              translate(
+                'screens.sign_in.headline',
+                { site: options.companyName }
+              )
+            }
+          </h2>
 
-        {this.renderFormMessage()}
+          {this.renderFormMessage()}
+        </div>
         {this.renderChooseConnectionOrSignInForm()}
       </div>
     );

@@ -24,15 +24,17 @@ $default-font-path: "socrata-components/dist/fonts/";
   border: 1px solid $light-grey-3;
   padding-left: 3em;
   padding-right: 3em;
-  padding-bottom: 3em;
+  padding-bottom: 1.5em;
   padding-top: 3em;
+}
+
+.header-container {
+  margin-bottom: 2em;
 }
 
 .header {
   @extend .center;
   @extend .h2;
-
-  margin-bottom: 0.5em;
 }
 
 .inner-container {
@@ -44,12 +46,9 @@ $default-font-path: "socrata-components/dist/fonts/";
   margin: 0 4em;
 }
 
-.form-message {
-  margin-bottom: 1em;
-}
-
 .signup-container {
   color: $grey;
+  padding-top: 2em;
 }
 
 .signup-link {

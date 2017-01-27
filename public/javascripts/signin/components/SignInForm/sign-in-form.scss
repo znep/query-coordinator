@@ -34,6 +34,7 @@ $default-font-path: "socrata-components/dist/fonts/";
   @extend .btn;
   @extend .btn-primary;
   @extend .btn-lg;
+  @include default-font;
 
   width: 100%;
   margin-top: 1.5em;
@@ -82,9 +83,10 @@ $default-font-path: "socrata-components/dist/fonts/";
 
 .sso-enabled-text {
   text-align: left;
-  padding-top: 8px;
+  padding-top: 7px;
   padding-bottom: 9px;
   padding-left: 32px;
+  border-top: 1px solid $light-grey-3;
 }
 
 .remember-me {
@@ -103,6 +105,10 @@ $default-font-path: "socrata-components/dist/fonts/";
 
 .psuedo-checkbox-check {
   @extend .icon-checkmark3;
+}
+
+.real-checkbox {
+  display: none !important;
 }
 
 .login-error {

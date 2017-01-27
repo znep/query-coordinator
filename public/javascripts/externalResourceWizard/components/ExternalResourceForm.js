@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import $ from 'jquery';
 import { updateTitle, updateDescription, updateUrl, updatePreviewImage } from '../actions/content';
 
 export class ExternalResourceForm extends Component {
@@ -45,7 +46,7 @@ export class ExternalResourceForm extends Component {
     }
   }
 
-  renderInputField(key, inputProps) {
+  renderInputField(key, inputProps, button = null) {
     const prefix = 'external-resource';
     const value = this.props[key].value;
     const kebabKey = _.kebabCase(key);
@@ -68,9 +69,10 @@ export class ExternalResourceForm extends Component {
           id={`${prefix}-${kebabKey}-label`}
           htmlFor={`${prefix}-${kebabKey}`}
           className={`block-label label-${kebabKey}`}>
-          {_.snakeCase(key)}{/* TODO: localization */}
+          {_.snakeCase(key)}{/* TODO: localization. lookup `key`s in enyml. */}
         </label>
 
+        {button}
         <input {...inputProps} />
       </div>
     );
@@ -88,10 +90,22 @@ export class ExternalResourceForm extends Component {
     const urlField = this.renderInputField('url', {
       'placeholder': 'https://example.com'
     });
+
+    const previewImageButton = (
+      <button
+        className="btn btn-primary"
+        aria-labelledby="external-resource-preview-image-label"
+        onClick={(e) => {
+          e.preventDefault();
+          $('.preview-image').click();
+        }}>
+        Choose an image
+      </button>
+    );
     const previewImageField = this.renderInputField('previewImage', {
       type: 'file',
-      className: 'file-input preview-image'
-    });
+      className: 'file-input preview-image hidden',
+    }, previewImageButton);
 
     const imageWarning = this.state.isImageInvalid ?
       <div className="alert error">Error uploading image. Acceptable formats are jpg, jpeg, png, or gif.{/* TODO: localization */}</div> :
@@ -103,6 +117,7 @@ export class ExternalResourceForm extends Component {
         {descriptionField}
         {urlField}
         {previewImageField}
+        <br />
         {imageWarning}
       </form>
     );

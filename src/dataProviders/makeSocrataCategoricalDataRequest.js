@@ -352,32 +352,45 @@ function augmentSocrataDataResponseWithOtherCategory(
           case '<=': return '>';
           case '>': return '<=';
           case '<': return '>=';
+          case 'IS NULL': return 'IS NOT NULL';
+          case 'IS NOT NULL': return 'IS NULL';
         }
       };
 
       if (_.isArray(filter.arguments)) {
 
         return filter.arguments.map((filterArgument) => {
+          const operator = filterArgument.operator;
+          const invertedArguments = {
+            operator: invertOperator(operator)
+          };
+
+          if (operator !== 'IS NULL' && operator !== 'IS NOT NULL') {
+            invertedArguments.operand = filterArgument.operand;
+          }
 
           return {
             'function': 'binaryOperator',
             columnName: filter.columnName,
-            arguments: {
-              operator: invertOperator(filterArgument.operator),
-              operand: filterArgument.operand
-            }
+            arguments: invertedArguments
           };
         });
       } else {
+
+        const operator = filter.arguments.operator;
+        const invertedArguments = {
+          operator: invertOperator(filter.arguments.operator)
+        };
+
+        if (operator !== 'IS NULL' && operator !== 'IS NOT NULL') {
+          invertedArguments.operand = filter.arguments.operand;
+        }
 
         return [
           {
             'function': 'binaryOperator',
             columnName: filter.columnName,
-            arguments: {
-              operator: invertOperator(filter.arguments.operator),
-              operand: filter.arguments.operand
-            }
+            arguments: invertedArguments
           }
         ];
       }
@@ -589,6 +602,10 @@ function mapQueryResponseToDataTable(queryResponse) {
   dataTable.rows.forEach((row) => {
 
     try {
+
+      if (_.isUndefined(row[dimensionIndex])) {
+        row[dimensionIndex] = null;
+      }
 
       if (_.isUndefined(row[measureIndex])) {
         valueAsNumber = null;

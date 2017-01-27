@@ -35,174 +35,354 @@ const VALID_VIF_WITH_DIMENSION_GROUPING = {
   ]
 };
 const MAX_ROW_COUNT = 1000;
+const GROUPING_QUERY_VIFS = {
+  '{"configuration":{"showOtherCategory":false},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"10"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"10","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+    columns: ['__dimension_alias__', '__measure_alias__'],
+    rows: [
+      ["0.5", 13],
+      ["0.49", 11],
+      ["0.48", 22],
+      ["0.47", 14],
+      ["0.46", 18]
+    ]
+  },
+  '{"configuration":{"showOtherCategory":false},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"9"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"9","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+    columns: ['__dimension_alias__', '__measure_alias__'],
+    rows: [
+      ["0.5", 13],
+      ["0.49", 11],
+      ["0.48", 22],
+      ["0.47", 14],
+      ["0.46", 18]
+    ]
+  },
+  '{"configuration":{"showOtherCategory":false},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"8"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"8","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+    columns: ['__dimension_alias__', '__measure_alias__'],
+    rows: [
+      ["0.5", 13],
+      ["0.49", 11],
+      ["0.48", 22],
+      ["0.47", 14],
+      ["0.46", 18]
+    ]
+  },
+  '{"configuration":{"showOtherCategory":false},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"7"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"7","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+    columns: ['__dimension_alias__', '__measure_alias__'],
+    rows: [
+      ["0.5", 13],
+      ["0.49", 11],
+      ["0.48", 22],
+      ["0.47", 14],
+      ["0.46", 18]
+    ]
+  },
+  '{"configuration":{"showOtherCategory":false},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"6"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"6","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+    columns: ['__dimension_alias__', '__measure_alias__'],
+    rows: [
+      ["0.5", 13],
+      ["0.49", 11],
+      ["0.48", 22],
+      ["0.47", 14],
+      ["0.46", 18]
+    ]
+  },
+  '{"configuration":{"showOtherCategory":false},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"5"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"5","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+    columns: ['__dimension_alias__', '__measure_alias__'],
+    rows: [
+      ["0.5", 13],
+      ["0.49", 11],
+      ["0.48", 22],
+      ["0.47", 14],
+      ["0.46", 18]
+    ]
+  },
+  '{"configuration":{"showOtherCategory":false},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"4"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"4","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+    columns: ['__dimension_alias__', '__measure_alias__'],
+    rows: [
+      ["0.5", 13],
+      ["0.49", 11],
+      ["0.48", 22],
+      ["0.47", 14],
+      ["0.46", 18]
+    ]
+  },
+  '{"configuration":{"showOtherCategory":false},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"3"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"3","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+    columns: ['__dimension_alias__', '__measure_alias__'],
+    rows: [
+      ["0.5", 13],
+      ["0.49", 11],
+      ["0.48", 22],
+      ["0.47", 14],
+      ["0.46", 18]
+    ]
+  },
+  '{"configuration":{"showOtherCategory":false},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"2"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"2","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+    columns: ['__dimension_alias__', '__measure_alias__'],
+    rows: [
+      ["0.5", 13],
+      ["0.49", 11],
+      ["0.48", 22],
+      ["0.47", 14],
+      ["0.46", 18]
+    ]
+  },
+  '{"configuration":{"showOtherCategory":false},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"1"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"1","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+    columns: ['__dimension_alias__', '__measure_alias__'],
+    rows: [
+      ["0.5", 13],
+      ["0.49", 11],
+      ["0.48", 22],
+      ["0.47", 14],
+      ["0.46", 18]
+    ]
+  },
+  '{"configuration":{"showOtherCategory":true},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"10"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"10","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+    columns: ['__dimension_alias__', '__measure_alias__'],
+    rows: [
+      ["0.5", 13],
+      ["0.49", 11],
+      ["0.48", 22],
+      ["0.47", 14],
+      ["0.46", 18],
+      ["(Other)", 100]
+    ]
+  },
+  '{"configuration":{"showOtherCategory":true},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"9"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"9","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+    columns: ['__dimension_alias__', '__measure_alias__'],
+    rows: [
+      ["0.5", 13],
+      ["0.49", 11],
+      ["0.48", 22],
+      ["0.47", 14],
+      ["0.46", 18],
+      ["(Other)", 100]
+    ]
+  },
+  '{"configuration":{"showOtherCategory":true},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"8"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"8","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+    columns: ['__dimension_alias__', '__measure_alias__'],
+    rows: [
+      ["0.5", 13],
+      ["0.49", 11],
+      ["0.48", 22],
+      ["0.47", 14],
+      ["0.46", 18],
+      ["(Other)", 100]
+    ]
+  },
+  '{"configuration":{"showOtherCategory":true},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"7"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"7","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+    columns: ['__dimension_alias__', '__measure_alias__'],
+    rows: [
+      ["0.5", 13],
+      ["0.49", 11],
+      ["0.48", 22],
+      ["0.47", 14],
+      ["0.46", 18],
+      ["(Other)", 100]
+    ]
+  },
+  '{"configuration":{"showOtherCategory":true},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"6"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"6","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+    columns: ['__dimension_alias__', '__measure_alias__'],
+    rows: [
+      ["0.5", 13],
+      ["0.49", 11],
+      ["0.48", 22],
+      ["0.47", 14],
+      ["0.46", 18],
+      ["(Other)", 100]
+    ]
+  },
+  '{"configuration":{"showOtherCategory":true},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"10"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"9"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"8"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"7"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"6"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.5"}}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"(Other)","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+    columns: ['__dimension_alias__', '__measure_alias__'],
+    rows: [
+      ["0.5", 13],
+      ["(Other)", 100]
+    ]
+  },
+  '{"configuration":{"showOtherCategory":true},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"10"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"9"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"8"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"7"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"6"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.49"}}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"(Other)","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+    columns: ['__dimension_alias__', '__measure_alias__'],
+    rows: [
+      ["0.49", 11],
+      ["(Other)", 100]
+    ]
+  },
+  '{"configuration":{"showOtherCategory":true},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"10"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"9"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"8"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"7"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"6"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.48"}}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"(Other)","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+    columns: ['__dimension_alias__', '__measure_alias__'],
+    rows: [
+      ["0.48", 22],
+      ["(Other)", 100]
+    ]
+  },
+  '{"configuration":{"showOtherCategory":true},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"10"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"9"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"8"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"7"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"6"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.47"}}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"(Other)","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+    columns: ['__dimension_alias__', '__measure_alias__'],
+    rows: [
+      ["0.47", 14],
+      ["(Other)", 100]
+    ]
+  },
+  '{"configuration":{"showOtherCategory":true},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"10"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"9"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"8"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"7"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"6"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.46"}}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"(Other)","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+    columns: ['__dimension_alias__', '__measure_alias__'],
+    rows: [
+      ["0.46", 18],
+      ["(Other)", 100]
+    ]
+  }
+};
+
+const mockMakeSocrataCategoricalDataRequest = function(vif, seriesIndex, maxRowCount) {
+  const vifForQuery = _.cloneDeep(vif);
+  vifForQuery.series[0].dataSource.filters.forEach((filter) => {
+    if (_.isArray(filter.arguments)) {
+      filter.arguments = _.sortBy(
+        filter.arguments,
+        [
+          (filterArgument) => {
+            return filterArgument.operand;
+          }
+        ]
+      );
+    }
+  });
+  vifForQuery.series[0].dataSource.filters = _.sortBy((filter) => {
+    if (_.isArray(filter.arguments)) {
+      return JSON.stringify(filter);
+    }
+
+    return filter.arguments.operand;
+  });
+  _.unset(vifForQuery, 'series[0].dataSource.orderBy');
+
+  let stringifiedGroupingQueryVif;
+  let queryResponse = false;
+
+  for (stringifiedGroupingQueryVif in GROUPING_QUERY_VIFS) {
+    const groupingQueryVif = JSON.parse(stringifiedGroupingQueryVif);
+    // The filters property is an array, which means that a strict
+    // equality comparison will take into account its order. Its order
+    // does not actually matter in this case and makes it harder to
+    // match the the query vif against one of the expected ones.
+    // To simplify things a bit, we will just sort the filters array
+    // on both the query vif and all vifs to which it is compared.
+    // Additionally, where the arguments property of a filter is an
+    // array, we sort this too. This is awful and hacky.
+    groupingQueryVif.series[0].dataSource.filters.forEach((filter) => {
+      if (_.isArray(filter.arguments)) {
+        filter.arguments = _.sortBy(
+          filter.arguments,
+          [
+            (filterArgument) => {
+              return filterArgument.operand;
+            }
+          ]
+        );
+      }
+    });
+    groupingQueryVif.series[0].dataSource.filters = _.sortBy((filter) => {
+      if (_.isArray(filter.arguments)) {
+        return JSON.stringify(filter);
+      }
+
+      return filter.arguments.operand;
+    });
+
+    if (_.isEqual(vifForQuery, groupingQueryVif)) {
+      queryResponse = GROUPING_QUERY_VIFS[stringifiedGroupingQueryVif];
+      break;
+    }
+  }
+  
+  if (queryResponse) {
+    return queryResponse;
+  } else {
+    throw new Error(
+      `Could not match vif against expected vifs for grouping queries: "${JSON.stringify(vif)}"`
+    );
+  }
+};
 
 describe('GroupedCategoricalDataManager', () => {
 
   describe('When not showing the "other" category', () => {
-    const DIMENSION_VALUES_QUERY = 'SELECT `blood_alcohol_level` AS __dimension_alias__, COUNT(*) AS __measure_alias__ GROUP BY `blood_alcohol_level` ORDER BY __dimension_alias__ ASC NULL LAST LIMIT 5'
-    const DIMENSION_VALUES_QUERY_DATA = {
+    const DIMENSION_VALUES_DIMENSION_ASC_QUERY = 'SELECT `blood_alcohol_level` AS __dimension_alias__, COUNT(*) AS __measure_alias__ GROUP BY `blood_alcohol_level` ORDER BY __dimension_alias__ ASC NULL LAST LIMIT 5'
+    const DIMENSION_VALUES_DIMENSION_ASC_DATA = {
       columns: ['__dimension_alias__', '__measure_alias__'],
       rows: [
-        ["0.5", "13"],
-        ["0.49", "11"],
-        ["0.48", "22"],
-        ["0.47", "14"],
-        ["0.46", "18"]
+        ["0.46", 18],
+        ["0.47", 14],
+        ["0.48", 22],
+        ["0.49", 11],
+        ["0.5", 13]
       ]
     };
-    const GROUPING_VALUES_QUERY = 'SELECT `plausibility` AS __dimension_alias__ GROUP BY `plausibility` ORDER BY __dimension_alias__ ASC LIMIT 12';
-    const GROUPING_VALUES_QUERY_DATA = {
+    const DIMENSION_VALUES_DIMENSION_DESC_QUERY = 'SELECT `blood_alcohol_level` AS __dimension_alias__, COUNT(*) AS __measure_alias__ GROUP BY `blood_alcohol_level` ORDER BY __dimension_alias__ DESC NULL LAST LIMIT 5'
+    const DIMENSION_VALUES_DIMENSION_DESC_DATA = {
       columns: ['__dimension_alias__', '__measure_alias__'],
       rows: [
-        ["10", undefined], 
-        ["9", undefined], 
-        ["8", undefined], 
-        ["7", undefined], 
-        ["6", undefined], 
+        ["0.5", 13],
+        ["0.49", 11],
+        ["0.48", 22],
+        ["0.47", 14],
+        ["0.46", 18]
+      ]
+    };
+    const DIMENSION_VALUES_MEASURE_ASC_QUERY = 'SELECT `blood_alcohol_level` AS __dimension_alias__, COUNT(*) AS __measure_alias__ GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ ASC NULL LAST LIMIT 5'
+    const DIMENSION_VALUES_MEASURE_ASC_DATA = {
+      columns: ['__dimension_alias__', '__measure_alias__'],
+      rows: [
+        ["0.49", 11],
+        ["0.5", 13],
+        ["0.47", 14],
+        ["0.46", 18],
+        ["0.48", 22]
+      ]
+    };
+    const DIMENSION_VALUES_MEASURE_DESC_QUERY = 'SELECT `blood_alcohol_level` AS __dimension_alias__, COUNT(*) AS __measure_alias__ GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 5'
+    const DIMENSION_VALUES_MEASURE_DESC_DATA = {
+      columns: ['__dimension_alias__', '__measure_alias__'],
+      rows: [
+        ["0.48", 22],
+        ["0.46", 18],
+        ["0.47", 14],
+        ["0.5", 13],
+        ["0.49", 11]
+      ]
+    };
+    const GROUPING_VALUES_DIMENSION_ASC_QUERY = 'SELECT `plausibility` AS __dimension_alias__ GROUP BY `plausibility` ORDER BY __dimension_alias__ ASC LIMIT 12';
+    const GROUPING_VALUES_DIMENSION_ASC_DATA = {
+      columns: ['__dimension_alias__', '__measure_alias__'],
+      rows: [
+        ["1", undefined],
+        ["2", undefined],
+        ["3", undefined],
+        ["4", undefined],
         ["5", undefined], 
-        ["4", undefined], 
-        ["3", undefined], 
-        ["2", undefined], 
-        ["1", undefined], 
+        ["6", undefined],
+        ["7", undefined],
+        ["8", undefined],
+        ["9", undefined],
+        ["10", undefined],
+      ]
+    };
+    const GROUPING_VALUES_DIMENSION_DESC_QUERY = 'SELECT `plausibility` AS __dimension_alias__ GROUP BY `plausibility` ORDER BY __dimension_alias__ DESC LIMIT 12';
+    const GROUPING_VALUES_DIMENSION_DESC_DATA = {
+      columns: ['__dimension_alias__', '__measure_alias__'],
+      rows: [
+        ["10", undefined],
+        ["9", undefined],
+        ["8", undefined],
+        ["7", undefined],
+        ["6", undefined],
+        ["5", undefined],
+        ["4", undefined],
+        ["3", undefined],
+        ["2", undefined],
+        ["1", undefined],
       ]
     };
 
-    let groupingQueryVifs;
     let revertGroupedCategoricalDataManagerAPI;
 
     beforeEach(() => {
-      groupingQueryVifs = {
-        '{"configuration":{"showOtherCategory":false},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"10"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"10","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-          response: {
-            columns: ['__dimension_alias__', '__measure_alias__'],
-            rows: [
-              ["0.5", "13"],
-              ["0.49", "11"],
-              ["0.48", "22"],
-              ["0.47", "14"],
-              ["0.46", "18"]
-            ]
-          },
-          count: 0
-        },
-        '{"configuration":{"showOtherCategory":false},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"9"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"9","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-          response: {
-            columns: ['__dimension_alias__', '__measure_alias__'],
-            rows: [
-              ["0.5", "13"],
-              ["0.49", "11"],
-              ["0.48", "22"],
-              ["0.47", "14"],
-              ["0.46", "18"]
-            ]
-          },
-          count: 0
-        },
-        '{"configuration":{"showOtherCategory":false},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"8"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"8","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-          response: {
-            columns: ['__dimension_alias__', '__measure_alias__'],
-            rows: [
-              ["0.5", "13"],
-              ["0.49", "11"],
-              ["0.48", "22"],
-              ["0.47", "14"],
-              ["0.46", "18"]
-            ]
-          },
-          count: 0
-        },
-        '{"configuration":{"showOtherCategory":false},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"7"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"7","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-          response: {
-            columns: ['__dimension_alias__', '__measure_alias__'],
-            rows: [
-              ["0.5", "13"],
-              ["0.49", "11"],
-              ["0.48", "22"],
-              ["0.47", "14"],
-              ["0.46", "18"]
-            ]
-          },
-          count: 0
-        },
-        '{"configuration":{"showOtherCategory":false},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"6"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"6","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-          response: {
-            columns: ['__dimension_alias__', '__measure_alias__'],
-            rows: [
-              ["0.5", "13"],
-              ["0.49", "11"],
-              ["0.48", "22"],
-              ["0.47", "14"],
-              ["0.46", "18"]
-            ]
-          },
-          count: 0
-        },
-        '{"configuration":{"showOtherCategory":false},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"5"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"5","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-          response: {
-            columns: ['__dimension_alias__', '__measure_alias__'],
-            rows: [
-              ["0.5", "13"],
-              ["0.49", "11"],
-              ["0.48", "22"],
-              ["0.47", "14"],
-              ["0.46", "18"]
-            ]
-          },
-          count: 0
-        },
-        '{"configuration":{"showOtherCategory":false},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"4"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"4","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-          response: {
-            columns: ['__dimension_alias__', '__measure_alias__'],
-            rows: [
-              ["0.5", "13"],
-              ["0.49", "11"],
-              ["0.48", "22"],
-              ["0.47", "14"],
-              ["0.46", "18"]
-            ]
-          },
-          count: 0
-        },
-        '{"configuration":{"showOtherCategory":false},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"3"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"3","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-          response: {
-            columns: ['__dimension_alias__', '__measure_alias__'],
-            rows: [
-              ["0.5", "13"],
-              ["0.49", "11"],
-              ["0.48", "22"],
-              ["0.47", "14"],
-              ["0.46", "18"]
-            ]
-          },
-          count: 0
-        },
-        '{"configuration":{"showOtherCategory":false},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"2"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"2","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-          response: {
-            columns: ['__dimension_alias__', '__measure_alias__'],
-            rows: [
-              ["0.5", "13"],
-              ["0.49", "11"],
-              ["0.48", "22"],
-              ["0.47", "14"],
-              ["0.46", "18"]
-            ]
-          },
-          count: 0
-        },
-        '{"configuration":{"showOtherCategory":false},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"1"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"1","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-          response: {
-            columns: ['__dimension_alias__', '__measure_alias__'],
-            rows: [
-              ["0.5", "13"],
-              ["0.49", "11"],
-              ["0.48", "22"],
-              ["0.47", "14"],
-              ["0.46", "18"]
-            ]
-          },
-          count: 0
-        }
-      };
+
       revertGroupedCategoricalDataManagerAPI = GroupedCategoricalDataManagerAPI.__set__(
         {
           SoqlDataProvider: function() {
@@ -211,42 +391,30 @@ describe('GroupedCategoricalDataManager', () => {
 
               switch (decodeURIComponent(queryString.trim())) {
 
-                case DIMENSION_VALUES_QUERY:
-                  return Promise.resolve(DIMENSION_VALUES_QUERY_DATA);
+                case DIMENSION_VALUES_DIMENSION_ASC_QUERY:
+                  return Promise.resolve(DIMENSION_VALUES_DIMENSION_ASC_DATA);
 
-                case GROUPING_VALUES_QUERY:
-                  return Promise.resolve(GROUPING_VALUES_QUERY_DATA);
+                case DIMENSION_VALUES_DIMENSION_DESC_QUERY:
+                  return Promise.resolve(DIMENSION_VALUES_DIMENSION_DESC_DATA);
+
+                case DIMENSION_VALUES_MEASURE_ASC_QUERY:
+                  return Promise.resolve(DIMENSION_VALUES_MEASURE_ASC_DATA);
+
+                case DIMENSION_VALUES_MEASURE_DESC_QUERY:
+                  return Promise.resolve(DIMENSION_VALUES_MEASURE_DESC_DATA);
+
+                case GROUPING_VALUES_DIMENSION_ASC_QUERY:
+                  return Promise.resolve(GROUPING_VALUES_DIMENSION_ASC_DATA);
+
+                case GROUPING_VALUES_DIMENSION_DESC_QUERY:
+                  return Promise.resolve(GROUPING_VALUES_DIMENSION_DESC_DATA);
 
                 default:
                   return Promise.reject(`Unrecognized query: "${decodeURIComponent(queryString.trim())}".`);
               }
             };
           },
-          makeSocrataCategoricalDataRequest: function(vif, seriesIndex, maxRowCount) {
-            const vifForQuery = JSON.stringify(vif);
-
-            let stringifiedGroupingQueryVif;
-            let queryResponse = false;
-
-            for (stringifiedGroupingQueryVif in groupingQueryVifs) {
-              const groupingQueryVif = JSON.parse(stringifiedGroupingQueryVif);
-
-              if (_.isEqual(vif, groupingQueryVif)) {
-                groupingQueryVifs[stringifiedGroupingQueryVif].count += 1;
-                queryResponse = groupingQueryVifs[stringifiedGroupingQueryVif].response;
-                break;
-              }
-            }
-            
-            if (queryResponse) {
-              return queryResponse;
-            } else {
-
-              throw new Error(
-                `Could not match vif against expected vifs for grouping queries: "${JSON.stringify(vif)}"`
-              );
-            }
-          }
+          makeSocrataCategoricalDataRequest: mockMakeSocrataCategoricalDataRequest
         }
       );
     });
@@ -255,53 +423,204 @@ describe('GroupedCategoricalDataManager', () => {
       revertGroupedCategoricalDataManagerAPI();
     });
 
-    it('returns the expected grouped data.', (done) => {
-      const vif = _.cloneDeep(VALID_VIF_WITH_DIMENSION_GROUPING);
+    describe('when sorting by dimension, ascending', () => {
 
-      GroupedCategoricalDataManagerAPI.getData(
-        vif,
-        { MAX_ROW_COUNT: MAX_ROW_COUNT }
-      ).
-        then((response) => {
-          const counts = Object.keys(groupingQueryVifs).map((groupingQueryVif) => {
-            return groupingQueryVifs[groupingQueryVif].count;
+      it('returns the expected grouped data.', () => {
+        const vif = _.cloneDeep(VALID_VIF_WITH_DIMENSION_GROUPING);
+        vif.series[0].dataSource.orderBy = {
+          parameter: 'dimension',
+          sort: 'asc'
+        };
+
+        return GroupedCategoricalDataManagerAPI.getData(
+          vif,
+          {MAX_ROW_COUNT: MAX_ROW_COUNT}
+        ).
+          then((response) => {
+            const expectedRows = [
+              ["0.46", 18, 18, 18, 18, 18, 18, 18, 18, 18, 18],
+              ["0.47", 14, 14, 14, 14, 14, 14, 14, 14, 14, 14],
+              ["0.48", 22, 22, 22, 22, 22, 22, 22, 22, 22, 22],
+              ["0.49", 11, 11, 11, 11, 11, 11, 11, 11, 11, 11],
+              ["0.5", 13, 13, 13, 13, 13, 13, 13, 13, 13, 13]
+            ];
+
+            // Make assertions about the 'data' that came back to see if it's in the right shape.
+            assert.deepEqual(response.columns, ['dimension', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10']);
+            assert.deepEqual(response.rows, expectedRows);
+          }).
+          catch((error) => {
+
+            console.error(error);
+            throw error;
           });
+      });
+    });
 
-          // Assert that all vif queries were made exactly once
-          assert.deepEqual(counts, counts.filter((count) => count === 1));
-          // Make assertions about the 'data' that came back to see if it's in the right shape.
-          assert.deepEqual(response.columns, ['dimension', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1']);
-          assert.equal(response.rows.length, 5);
-          assert.deepEqual(response.rows[0], ['0.46', '18', '18', '18', '18', '18', '18', '18', '18', '18', '18']);
-          assert.equal(response.rows[4][0], '0.5');
+    describe('when sorting by dimension, descending', () => {
 
-          done();
-        }).
-        catch((error) => {
+      it('returns the expected grouped data.', () => {
+        const vif = _.cloneDeep(VALID_VIF_WITH_DIMENSION_GROUPING);
+        vif.series[0].dataSource.orderBy = {
+          parameter: 'dimension',
+          sort: 'desc'
+        };
 
-          console.error(error);
-          throw error;
-        });
+        return GroupedCategoricalDataManagerAPI.getData(
+          vif,
+          {MAX_ROW_COUNT: MAX_ROW_COUNT}
+        ).
+          then((response) => {
+            const expectedRows = [
+              ["0.5", 13, 13, 13, 13, 13, 13, 13, 13, 13, 13],
+              ["0.49", 11, 11, 11, 11, 11, 11, 11, 11, 11, 11],
+              ["0.48", 22, 22, 22, 22, 22, 22, 22, 22, 22, 22],
+              ["0.47", 14, 14, 14, 14, 14, 14, 14, 14, 14, 14],
+              ["0.46", 18, 18, 18, 18, 18, 18, 18, 18, 18, 18]
+            ];
+
+            // Make assertions about the 'data' that came back to see if it's in the right shape.
+            assert.deepEqual(response.columns, ['dimension', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1']);
+            assert.deepEqual(response.rows, expectedRows);
+          }).
+          catch((error) => {
+
+            console.error(error);
+            throw error;
+          });
+      });
+    });
+
+    describe('when sorting by measure, ascending', () => {
+
+      it('returns the expected grouped data.', () => {
+        const vif = _.cloneDeep(VALID_VIF_WITH_DIMENSION_GROUPING);
+        vif.series[0].dataSource.orderBy = {
+          parameter: 'measure',
+          sort: 'asc'
+        };
+
+        return GroupedCategoricalDataManagerAPI.getData(
+          vif,
+          {MAX_ROW_COUNT: MAX_ROW_COUNT}
+        ).
+          then((response) => {
+            const expectedRows = [
+              ["0.49", 11, 11, 11, 11, 11, 11, 11, 11, 11, 11],
+              ["0.5", 13, 13, 13, 13, 13, 13, 13, 13, 13, 13],
+              ["0.47", 14, 14, 14, 14, 14, 14, 14, 14, 14, 14],
+              ["0.46", 18, 18, 18, 18, 18, 18, 18, 18, 18, 18],
+              ["0.48", 22, 22, 22, 22, 22, 22, 22, 22, 22, 22]
+            ];
+
+            // Make assertions about the 'data' that came back to see if it's in the right shape.
+            assert.deepEqual(response.columns, ['dimension', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10']);
+            assert.deepEqual(response.rows, expectedRows);
+          }).
+          catch((error) => {
+
+            console.error(error);
+            throw error;
+          });
+      });
+    });
+
+    describe('when sorting by measure, descending', () => {
+
+      it('returns the expected grouped data.', () => {
+        const vif = _.cloneDeep(VALID_VIF_WITH_DIMENSION_GROUPING);
+        vif.series[0].dataSource.orderBy = {
+          parameter: 'measure',
+          sort: 'desc'
+        };
+
+        return GroupedCategoricalDataManagerAPI.getData(
+          vif,
+          {MAX_ROW_COUNT: MAX_ROW_COUNT}
+        ).
+          then((response) => {
+            const expectedRows = [
+              ["0.48", 22, 22, 22, 22, 22, 22, 22, 22, 22, 22],
+              ["0.46", 18, 18, 18, 18, 18, 18, 18, 18, 18, 18],
+              ["0.47", 14, 14, 14, 14, 14, 14, 14, 14, 14, 14],
+              ["0.5", 13, 13, 13, 13, 13, 13, 13, 13, 13, 13],
+              ["0.49", 11, 11, 11, 11, 11, 11, 11, 11, 11, 11]
+            ];
+
+            // Make assertions about the 'data' that came back to see if it's in the right shape.
+            assert.deepEqual(response.columns, ['dimension', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1']);
+            assert.deepEqual(response.rows, expectedRows);
+          }).
+          catch((error) => {
+
+            console.error(error);
+            throw error;
+          });
+      });
     });
   });
 
   describe('when showing the "other" category', () => {
-    const DIMENSION_VALUES_QUERY = 'SELECT `blood_alcohol_level` AS __dimension_alias__, COUNT(*) AS __measure_alias__ GROUP BY `blood_alcohol_level` ORDER BY __dimension_alias__ ASC NULL LAST LIMIT 5'
-    const DIMENSION_VALUES_QUERY_DATA = {
+    const DIMENSION_VALUES_DIMENSION_ASC_QUERY = 'SELECT `blood_alcohol_level` AS __dimension_alias__, COUNT(*) AS __measure_alias__ GROUP BY `blood_alcohol_level` ORDER BY __dimension_alias__ ASC NULL LAST LIMIT 5'
+    const DIMENSION_VALUES_DIMENSION_ASC_DATA = {
       columns: ['__dimension_alias__', '__measure_alias__'],
       rows: [
-        ["0.5", "13"],
-        ["0.49", "11"],
-        ["0.48", "22"],
-        ["0.47", "14"],
-        ["0.46", "18"]
+        ["0.5", 13],
+        ["0.49", 11],
+        ["0.48", 22],
+        ["0.47", 14],
+        ["0.46", 18]
       ]
     };
-    const GROUPING_VALUES_QUERY = 'SELECT `plausibility` AS __dimension_alias__ GROUP BY `plausibility` ORDER BY __dimension_alias__ ASC LIMIT 5';
-    const GROUPING_VALUES_QUERY_DATA = {
+    const DIMENSION_VALUES_DIMENSION_DESC_QUERY = 'SELECT `blood_alcohol_level` AS __dimension_alias__, COUNT(*) AS __measure_alias__ GROUP BY `blood_alcohol_level` ORDER BY __dimension_alias__ DESC NULL LAST LIMIT 5'
+    const DIMENSION_VALUES_DIMENSION_DESC_DATA = {
       columns: ['__dimension_alias__', '__measure_alias__'],
       rows: [
-        ["10", undefined], 
+        ["0.46", 18],
+        ["0.47", 14],
+        ["0.48", 22],
+        ["0.49", 11],
+        ["0.5", 13]
+      ]
+    };
+    const DIMENSION_VALUES_MEASURE_ASC_QUERY = 'SELECT `blood_alcohol_level` AS __dimension_alias__, COUNT(*) AS __measure_alias__ GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ ASC NULL LAST LIMIT 5'
+    const DIMENSION_VALUES_MEASURE_ASC_DATA = {
+      columns: ['__dimension_alias__', '__measure_alias__'],
+      rows: [
+        ["0.49", 11],
+        ["0.5", 13],
+        ["0.47", 14],
+        ["0.46", 18],
+        ["0.48", 22]
+      ]
+    };
+    const DIMENSION_VALUES_MEASURE_DESC_QUERY = 'SELECT `blood_alcohol_level` AS __dimension_alias__, COUNT(*) AS __measure_alias__ GROUP BY `blood_alcohol_level` ORDER BY __measure_alias__ DESC NULL LAST LIMIT 5'
+    const DIMENSION_VALUES_MEASURE_DESC_DATA = {
+      columns: ['__dimension_alias__', '__measure_alias__'],
+      rows: [
+        ["0.48", 22],
+        ["0.46", 18],
+        ["0.47", 14],
+        ["0.5", 13],
+        ["0.49", 11]
+      ]
+    };
+    const GROUPING_VALUES_DIMENSION_ASC_QUERY = 'SELECT `plausibility` AS __dimension_alias__ GROUP BY `plausibility` ORDER BY __dimension_alias__ ASC LIMIT 5';
+    const GROUPING_VALUES_DIMENSION_ASC_DATA = {
+      columns: ['__dimension_alias__', '__measure_alias__'],
+      rows: [
+        ["6", undefined],
+        ["7", undefined],
+        ["8", undefined],
+        ["9", undefined],
+        ["10", undefined]
+      ]
+    };
+    const GROUPING_VALUES_DIMENSION_DESC_QUERY = 'SELECT `plausibility` AS __dimension_alias__ GROUP BY `plausibility` ORDER BY __dimension_alias__ DESC LIMIT 5';
+    const GROUPING_VALUES_DIMENSION_DESC_DATA = {
+      columns: ['__dimension_alias__', '__measure_alias__'],
+      rows: [
+        ["10", undefined],
         ["9", undefined],
         ["8", undefined],
         ["7", undefined],
@@ -309,132 +628,10 @@ describe('GroupedCategoricalDataManager', () => {
       ]
     };
 
-    let groupingQueryVifs;
     let revertGroupedCategoricalDataManagerAPI;
 
     beforeEach(() => {
-      groupingQueryVifs = {
-        '{"configuration":{"showOtherCategory":true},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"10"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"10","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-          response: {
-            columns: ['__dimension_alias__', '__measure_alias__'],
-            rows: [
-              ["0.5", "13"],
-              ["0.49", "11"],
-              ["0.48", "22"],
-              ["0.47", "14"],
-              ["0.46", "18"],
-              ["(Other)", "100"]
-            ]
-          },
-          count: 0
-        },
-        '{"configuration":{"showOtherCategory":true},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"9"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"9","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-          response: {
-            columns: ['__dimension_alias__', '__measure_alias__'],
-            rows: [
-              ["0.5", "13"],
-              ["0.49", "11"],
-              ["0.48", "22"],
-              ["0.47", "14"],
-              ["0.46", "18"],
-              ["(Other)", "100"]
-            ]
-          },
-          count: 0
-        },
-        '{"configuration":{"showOtherCategory":true},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"8"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"8","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-          response: {
-            columns: ['__dimension_alias__', '__measure_alias__'],
-            rows: [
-              ["0.5", "13"],
-              ["0.49", "11"],
-              ["0.48", "22"],
-              ["0.47", "14"],
-              ["0.46", "18"],
-              ["(Other)", "100"]
-            ]
-          },
-          count: 0
-        },
-        '{"configuration":{"showOtherCategory":true},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"7"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"7","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-          response: {
-            columns: ['__dimension_alias__', '__measure_alias__'],
-            rows: [
-              ["0.5", "13"],
-              ["0.49", "11"],
-              ["0.48", "22"],
-              ["0.47", "14"],
-              ["0.46", "18"],
-              ["(Other)", "100"]
-            ]
-          },
-          count: 0
-        },
-        '{"configuration":{"showOtherCategory":true},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"=","operand":"6"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":[{"operator":"=","operand":"0.5"},{"operator":"=","operand":"0.49"},{"operator":"=","operand":"0.48"},{"operator":"=","operand":"0.47"},{"operator":"=","operand":"0.46"}]}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"6","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-          response: {
-            columns: ['__dimension_alias__', '__measure_alias__'],
-            rows: [
-              ["0.5", "13"],
-              ["0.49", "11"],
-              ["0.48", "22"],
-              ["0.47", "14"],
-              ["0.46", "18"],
-              ["(Other)", "100"]
-            ]
-          },
-          count: 0
-        },
-        '{"configuration":{"showOtherCategory":true},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"10"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"9"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"8"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"7"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"6"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.5"}}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"(Other)","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-          response: {
-            columns: ['__dimension_alias__', '__measure_alias__'],
-            rows: [
-              ["0.5", "13"],
-              ["(Other)", "100"]
-            ]
-          },
-          count: 0
-        },
-        '{"configuration":{"showOtherCategory":true},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"10"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"9"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"8"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"7"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"6"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.49"}}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"(Other)","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-          response: {
-            columns: ['__dimension_alias__', '__measure_alias__'],
-            rows: [
-              ["0.49", "11"],
-              ["(Other)", "100"]
-            ]
-          },
-          count: 0
-        },
-        '{"configuration":{"showOtherCategory":true},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"10"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"9"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"8"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"7"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"6"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.48"}}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"(Other)","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-          response: {
-            columns: ['__dimension_alias__', '__measure_alias__'],
-            rows: [
-              ["0.48", "22"],
-              ["(Other)", "100"]
-            ]
-          },
-          count: 0
-        },
-        '{"configuration":{"showOtherCategory":true},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"10"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"9"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"8"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"7"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"6"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.47"}}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"(Other)","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-          response: {
-            columns: ['__dimension_alias__', '__measure_alias__'],
-            rows: [
-              ["0.47", "14"],
-              ["(Other)", "100"]
-            ]
-          },
-          count: 0
-        },
-        '{"configuration":{"showOtherCategory":true},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"blood_alcohol_level","aggregationFunction":null,"grouping":{"columnName":"plausibility"}},"domain":"example.com","filters":[{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"10"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"9"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"8"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"7"}},{"function":"binaryOperator","columnName":"plausibility","arguments":{"operator":"!=","operand":"6"}},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.46"}}],"limit":5,"measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql"},"label":"(Other)","type":"barChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-          response: {
-            columns: ['__dimension_alias__', '__measure_alias__'],
-            rows: [
-              ["0.46", "18"],
-              ["(Other)", "100"]
-            ]
-          },
-          count: 0
-        }
-      };
+
       revertGroupedCategoricalDataManagerAPI = GroupedCategoricalDataManagerAPI.__set__(
         {
           SoqlDataProvider: function() {
@@ -443,42 +640,30 @@ describe('GroupedCategoricalDataManager', () => {
 
               switch (decodeURIComponent(queryString.trim())) {
 
-                case DIMENSION_VALUES_QUERY:
-                  return Promise.resolve(DIMENSION_VALUES_QUERY_DATA);
+                case DIMENSION_VALUES_DIMENSION_ASC_QUERY:
+                  return Promise.resolve(DIMENSION_VALUES_DIMENSION_ASC_DATA);
 
-                case GROUPING_VALUES_QUERY:
-                  return Promise.resolve(GROUPING_VALUES_QUERY_DATA);
+                case DIMENSION_VALUES_DIMENSION_DESC_QUERY:
+                  return Promise.resolve(DIMENSION_VALUES_DIMENSION_DESC_DATA);
+
+                case DIMENSION_VALUES_MEASURE_ASC_QUERY:
+                  return Promise.resolve(DIMENSION_VALUES_MEASURE_ASC_DATA);
+
+                case DIMENSION_VALUES_MEASURE_DESC_QUERY:
+                  return Promise.resolve(DIMENSION_VALUES_MEASURE_DESC_DATA);
+
+                case GROUPING_VALUES_DIMENSION_ASC_QUERY:
+                  return Promise.resolve(GROUPING_VALUES_DIMENSION_ASC_DATA);
+
+                case GROUPING_VALUES_DIMENSION_DESC_QUERY:
+                  return Promise.resolve(GROUPING_VALUES_DIMENSION_DESC_DATA);
 
                 default:
                   return Promise.reject(`Unrecognized query: "${decodeURIComponent(queryString.trim())}".`);
               }
             };
           },
-          makeSocrataCategoricalDataRequest: function(vif, seriesIndex, maxRowCount) {
-            const vifForQuery = JSON.stringify(vif);
-
-            let stringifiedGroupingQueryVif;
-            let queryResponse = false;
-
-            for (stringifiedGroupingQueryVif in groupingQueryVifs) {
-              const groupingQueryVif = JSON.parse(stringifiedGroupingQueryVif);
-
-              if (_.isEqual(vif, groupingQueryVif)) {
-                groupingQueryVifs[stringifiedGroupingQueryVif].count += 1;
-                queryResponse = groupingQueryVifs[stringifiedGroupingQueryVif].response;
-                break;
-              }
-            }
-            
-            if (queryResponse) {
-              return queryResponse;
-            } else {
-
-              throw new Error(
-                `Could not match vif against expected vifs for grouping queries: "${JSON.stringify(vif)}"`
-              );
-            }
-          },
+          makeSocrataCategoricalDataRequest: mockMakeSocrataCategoricalDataRequest,
           MAX_GROUP_COUNT: 5
         }
       );
@@ -488,34 +673,148 @@ describe('GroupedCategoricalDataManager', () => {
       revertGroupedCategoricalDataManagerAPI();
     });
 
-    it('returns the expected grouped data.', (done) => {
-      const vif = _.cloneDeep(VALID_VIF_WITH_DIMENSION_GROUPING);
-      vif.configuration.showOtherCategory = true;
+    describe('when sorting by dimension, ascending', () => {
 
-      GroupedCategoricalDataManagerAPI.getData(
-        vif,
-        { MAX_ROW_COUNT: MAX_ROW_COUNT }
-      ).
-        then((response) => {
-          const counts = Object.keys(groupingQueryVifs).map((groupingQueryVif) => {
-            return groupingQueryVifs[groupingQueryVif].count;
+      it('returns the expected grouped data.', () => {
+        const vif = _.cloneDeep(VALID_VIF_WITH_DIMENSION_GROUPING);
+        vif.series[0].dataSource.orderBy = {
+          parameter: 'dimension',
+          sort: 'asc'
+        };
+        vif.configuration.showOtherCategory = true;
+
+        return GroupedCategoricalDataManagerAPI.getData(
+          vif,
+          {MAX_ROW_COUNT: MAX_ROW_COUNT}
+        ).
+          then((response) => {
+            const expectedRows = [
+              ["0.46", 18, 18, 18, 18, 18, 13],
+              ["0.47", 14, 14, 14, 14, 14, 13],
+              ["0.48", 22, 22, 22, 22, 22, 13],
+              ["0.49", 11, 11, 11, 11, 11, 13],
+              ["0.5", 13, 13, 13, 13, 13, 13],
+              ["(Other)", 100, 100, 100, 100, 100, null]
+            ];
+
+            // Make assertions about the 'data' that came back to see if it's in the right shape.
+            assert.deepEqual(response.columns, ['dimension', '6', '7', '8', '9', '10', '(Other)']);
+            assert.deepEqual(response.rows, expectedRows);
+          }).
+          catch((error) => {
+
+            console.error(error);
+            throw error;
           });
+      });
+    });
 
-          // Assert that all vif queries were made exactly once
-          assert.deepEqual(counts, counts.filter((count) => count === 1));
-          // Make assertions about the 'data' that came back to see if it's in the right shape.
-          assert.deepEqual(response.columns, ['dimension', '10', '9', '8', '7', '6', '(Other)']);
-          assert.equal(response.rows.length, 6);
-          assert.deepEqual(response.rows[0], ['(Other)', '100', '100', '100', '100', '100', null]);
-          assert.equal(response.rows[4][0], '0.49');
+    describe('when sorting by dimension, descending', () => {
 
-          done();
-        }).
-        catch((error) => {
+      it('returns the expected grouped data.', () => {
+        const vif = _.cloneDeep(VALID_VIF_WITH_DIMENSION_GROUPING);
+        vif.series[0].dataSource.orderBy = {
+          parameter: 'dimension',
+          sort: 'desc'
+        };
+        vif.configuration.showOtherCategory = true;
 
-          console.error(error);
-          throw error;
-        });
+        return GroupedCategoricalDataManagerAPI.getData(
+          vif,
+          {MAX_ROW_COUNT: MAX_ROW_COUNT}
+        ).
+          then((response) => {
+            const expectedRows = [
+              ["0.5", 13, 13, 13, 13, 13, 13],
+              ["0.49", 11, 11, 11, 11, 11, 13],
+              ["0.48", 22, 22, 22, 22, 22, 13],
+              ["0.47", 14, 14, 14, 14, 14, 13],
+              ["0.46", 18, 18, 18, 18, 18, 13],
+              ["(Other)", 100, 100, 100, 100, 100, null]
+            ];
+
+            // Make assertions about the 'data' that came back to see if it's in the right shape.
+            assert.deepEqual(response.columns, ['dimension', '10', '9', '8', '7', '6', '(Other)']);
+            assert.deepEqual(response.rows, expectedRows);
+          }).
+          catch((error) => {
+
+            console.error(error);
+            throw error;
+          });
+      });
+    });
+
+    describe('when sorting by measure, ascending', () => {
+
+      it('returns the expected grouped data.', () => {
+        const vif = _.cloneDeep(VALID_VIF_WITH_DIMENSION_GROUPING);
+        vif.series[0].dataSource.orderBy = {
+          parameter: 'measure',
+          sort: 'asc'
+        };
+        vif.configuration.showOtherCategory = true;
+
+        return GroupedCategoricalDataManagerAPI.getData(
+          vif,
+          {MAX_ROW_COUNT: MAX_ROW_COUNT}
+        ).
+          then((response) => {
+            const expectedRows = [
+              ["0.49", 11, 11, 11, 11, 11, 13],
+              ["0.5", 13, 13, 13, 13, 13, 13],
+              ["0.47", 14, 14, 14, 14, 14, 13],
+              ["0.46", 18, 18, 18, 18, 18, 13],
+              ["0.48", 22, 22, 22, 22, 22, 13],
+              ["(Other)", 100, 100, 100, 100, 100, null]
+            ];
+
+            // Make assertions about the 'data' that came back to see if it's in the right shape.
+            assert.deepEqual(response.columns, ['dimension', '6', '7', '8', '9', '10', '(Other)']);
+            assert.deepEqual(response.rows, expectedRows);
+          }).
+          catch((error) => {
+
+            console.error(error);
+            throw error;
+          });
+      });
+    });
+
+    describe('when sorting by measure, descending', () => {
+
+      it('returns the expected grouped data.', () => {
+        const vif = _.cloneDeep(VALID_VIF_WITH_DIMENSION_GROUPING);
+        vif.series[0].dataSource.orderBy = {
+          parameter: 'measure',
+          sort: 'desc'
+        };
+        vif.configuration.showOtherCategory = true;
+
+        return GroupedCategoricalDataManagerAPI.getData(
+          vif,
+          {MAX_ROW_COUNT: MAX_ROW_COUNT}
+        ).
+          then((response) => {
+            const expectedRows = [
+              ["(Other)", 100, 100, 100, 100, 100, null],
+              ["0.48", 22, 22, 22, 22, 22, 13],
+              ["0.46", 18, 18, 18, 18, 18, 13],
+              ["0.47", 14, 14, 14, 14, 14, 13],
+              ["0.5", 13, 13, 13, 13, 13, 13],
+              ["0.49", 11, 11, 11, 11, 11, 13]
+            ];
+
+            // Make assertions about the 'data' that came back to see if it's in the right shape.
+            assert.deepEqual(response.columns, ['dimension', '10', '9', '8', '7', '6', '(Other)']);
+            assert.deepEqual(response.rows, expectedRows);
+          }).
+          catch((error) => {
+
+            console.error(error);
+            throw error;
+          });
+      });
     });
   });
 });

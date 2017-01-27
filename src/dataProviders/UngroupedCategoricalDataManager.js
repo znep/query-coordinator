@@ -27,22 +27,8 @@ function getData(vif, options) {
   function mapUngroupedDataResponsesToMultiSeriesTable(dataResponses) {
     const dimensionIndex = 0;
     const measureIndex = 1;
-    const sortFromVifOrDefault = _.get(
-      vif,
-      'series[0].dataSource.orderBy.sort',
-      'asc'
-    ).toLowerCase();
-    const ascendingComparator = (a, b) => (a >= b) ? 1 : -1;
-    const descendingComparator = (a, b) => (a <= b) ? 1 : -1;
-    const comparator = (sortFromVifOrDefault === 'asc') ?
-      ascendingComparator :
-      descendingComparator;
-    const measureLabels = vif.series.map((series, i) => {
-      const seriesLabel = _.get(series, 'label', '');
-
-      return (_.isEmpty(seriesLabel)) ?
-        (I18n.translate('visualizations.common.unlabeled_measure_prefix') + i) :
-        seriesLabel;
+    const measureLabels = vif.series.map((series) => {
+      return _.get(series, 'label', '');
     });
     const uniqueDimensionValues = _.uniq(
       _.flatMap(
@@ -50,8 +36,7 @@ function getData(vif, options) {
           return dataResponse.rows.map((row) => row[dimensionIndex]);
         })
       )
-    ).sort(comparator);
-
+    );
     const dataToRenderColumns = ['dimension'].concat(measureLabels);
     const dataToRenderRows = uniqueDimensionValues.map(
       (uniqueDimensionValue) => {
@@ -81,11 +66,90 @@ function getData(vif, options) {
     };
   }
 
+  // It appears necessary to do a sort before we return the data table because
+  // we may have been combining rows from multiple independent query responses,
+  // and some dimension values may not be present in all responses if they had
+  // no corresponding measure values.
+  function applyOrderBy(dataTable) {
+    const dimensionIndex = 0;
+    const measureIndex = 1;
+    const otherCategoryName = I18n.translate(
+      'visualizations.common.other_category'
+    );
+    const orderByParameter = _.get(
+      vif,
+      'series[0].dataSource.orderBy.parameter',
+      'measure'
+    ).toLowerCase();
+    const orderBySort = _.get(
+      vif,
+      'series[0].dataSource.orderBy.sort',
+      'desc'
+    ).toLowerCase();
+    const orderingByDimension = (orderByParameter === 'dimension');
+    const sortValueIndex = (orderingByDimension) ?
+      dimensionIndex :
+      measureIndex;
+    const makeComparator = (direction) => {
+      const compareValues = (direction === 'asc') ?
+        (valueA, valueB) => { return valueA >= valueB; } :
+        (valueA, valueB) => { return valueA <= valueB; };
+
+      return (a, b) => {
+        // If we are ordering by the dimension, the order should always be:
+        //
+        // <Non-null dimension values>
+        // <Null dimension value> (if present in the dimension values)
+        // <Other category>
+        //
+        // Since the dimension values will all be unique, we do not have to
+        // handle some comparisons (e.g. if both a and b are '(Other)' or null).
+        //
+        // If we are ordering by the measure, the order should always be:
+        //
+        // <Non-null dimension values and/or other category,
+        //  depending on measure>
+        // <Null measure values>
+        if (orderingByDimension) {
+          if (a[sortValueIndex] === otherCategoryName) {
+            return 1;
+          } else if (b[sortValueIndex] === otherCategoryName) {
+            return -1;
+          } else if (a[sortValueIndex] === null) {
+            return 1;
+          } else if (b[sortValueIndex] === null) {
+            return -1;
+          } else {
+            return (compareValues(a[sortValueIndex], b[sortValueIndex])) ?
+              1 :
+              -1;
+          }
+        } else {
+
+          if (a[sortValueIndex] === null) {
+            return -1;
+          } else if (b[sortValueIndex] === null) {
+            return 1;
+          } else {
+            return (compareValues(a[sortValueIndex], b[sortValueIndex])) ?
+              1 :
+              -1;
+          }
+        }
+      };
+    };
+
+    dataTable.rows.sort(makeComparator(orderBySort));
+
+    return dataTable;
+  }
+
   return new Promise((resolve, reject) => {
 
     Promise.
       all(dataRequests).
       then(mapUngroupedDataResponsesToMultiSeriesTable).
+      then(applyOrderBy).
       then(resolve).
       catch(reject);
   });

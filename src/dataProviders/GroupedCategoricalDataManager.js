@@ -1,5 +1,6 @@
 // Vendor Imports
 const _ = require('lodash');
+var utils = require('socrata-utils');
 // Project Imports
 const SoqlDataProvider = require('./SoqlDataProvider');
 const SoqlHelpers = require('./SoqlHelpers');
@@ -11,6 +12,14 @@ const MAX_GROUP_COUNT = 12;
 function getData(vif, options) {
 
   function addDimensionValuesToState(state) {
+
+    utils.assertHasProperties(
+      state,
+      'vif',
+      'columnName',
+      'soqlDataProvider'
+    );
+
     const whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(
       state.vif,
       0
@@ -18,7 +27,15 @@ function getData(vif, options) {
     const whereClause = (whereClauseComponents.length > 0) ?
       `WHERE ${whereClauseComponents}` :
       '';
-    const sortOrder = _.get(
+    const orderByParameter = _.get(
+      state.vif,
+      'series[0].dataSource.orderBy.parameter',
+      'dimension'
+    );
+    const aliasForOrderByParameter = (orderByParameter === 'dimension') ?
+      SoqlHelpers.dimensionAlias() :
+      SoqlHelpers.measureAlias();
+    const orderBySort = _.get(
       state.vif,
       'series[0].dataSource.orderBy.sort',
       'ASC'
@@ -33,7 +50,7 @@ function getData(vif, options) {
         COUNT(*) AS ${SoqlHelpers.measureAlias()}
       ${whereClause}
       GROUP BY \`${state.columnName}\`
-      ORDER BY ${SoqlHelpers.dimensionAlias()} ${sortOrder}
+      ORDER BY ${aliasForOrderByParameter} ${orderBySort}
       NULL LAST
       LIMIT ${limit}`;
     const uriEncodedQueryString = encodeURIComponent(
@@ -59,6 +76,14 @@ function getData(vif, options) {
   }
 
   function addGroupingValuesToState(state) {
+
+    utils.assertHasProperties(
+      state,
+      'vif',
+      'groupingColumnName',
+      'soqlDataProvider'
+    );
+
     const whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(
       state.vif,
       0
@@ -106,6 +131,15 @@ function getData(vif, options) {
 
   function makeGroupingDataRequests(state) {
 
+    utils.assertHasProperties(
+      state,
+      'groupingValues',
+      'vif',
+      'groupingColumnName',
+      'dimensionValues',
+      'columnName'
+    );
+
     state.groupingVifs = state.groupingValues.map((groupingValue) => {
       const groupingVif = _.cloneDeep(state.vif);
       const firstSeries = groupingVif.series[0];
@@ -149,7 +183,9 @@ function getData(vif, options) {
           map((dimensionValue) => {
 
             if (dimensionValue === null) {
-              return null;
+              return {
+                operator: 'IS NULL'
+              };
             } else {
 
               return {
@@ -207,6 +243,16 @@ function getData(vif, options) {
   }
 
   function makeDimensionValueOtherCategoryRequests(state) {
+
+    utils.assertHasProperties(
+      state,
+      'groupingRequiresOtherCategory',
+      'dimensionValues',
+      'vif',
+      'groupingValues',
+      'groupingColumnName',
+      'columnName'
+    );
 
     // If we need to collapse additional group values into an 'other' category.
     // Note that this is not the same thing as an 'other' category in dimension
@@ -300,26 +346,16 @@ function getData(vif, options) {
   }
 
   function mapGroupedDataResponsesToMultiSeriesTable(state) {
+
+    utils.assertHasProperties(
+      state,
+      'groupingValues',
+      'groupingRequiresOtherCategory',
+      'groupingData'
+    );
+
     const dimensionIndex = 0;
     const measureIndex = 1;
-    const sortFromVifOrDefault = _.get(
-      state.vif,
-      'series[0].dataSource.orderBy.sort',
-      'asc'
-    ).toLowerCase();
-    const ascendingComparator = (a, b) => (a >= b) ? 1 : -1;
-    const descendingComparator = (a, b) => (a <= b) ? 1 : -1;
-    const comparator = (sortFromVifOrDefault === 'asc') ?
-      ascendingComparator :
-      descendingComparator;
-    const uniqueDimensionValues = _.uniq(
-      _.flatMap(
-        state.groupingData.map((groupingData) => {
-          return groupingData.data.rows.map((row) => row[dimensionIndex]);
-        })
-      )
-    ).sort(comparator);
-
     const dataToRenderColumns = ['dimension'].concat(state.groupingValues);
 
     if (state.groupingRequiresOtherCategory) {
@@ -331,25 +367,40 @@ function getData(vif, options) {
       dataToRenderColumns.push(otherCategoryName);
     }
 
-    const dataToRenderRows = uniqueDimensionValues.map((uniqueDimensionValue) => {
-      const row = [uniqueDimensionValue];
+    const uniqueDimensionValues = _.chain(state.groupingData).
+      map('data.rows').
+      flatMap().
+      map((row) => row[dimensionIndex]).
+      uniq().
+      value();
+    const dataToRenderRows = uniqueDimensionValues.map(
+      (uniqueDimensionValue) => {
+        const row = [uniqueDimensionValue];
 
-      state.groupingData.forEach((groupingData) => {
-        const groupingRowForDimension = _.find(
-          groupingData.data.rows,
-          (groupingRow) => groupingRow[dimensionIndex] === uniqueDimensionValue
-        );
-        const measureValue = (groupingRowForDimension) ?
-          groupingRowForDimension[measureIndex] :
-          null;
+        state.groupingData.forEach((groupingData) => {
+          const groupingRowForDimension = _.find(
+            groupingData.data.rows,
+            (groupingRow) => {
+              return groupingRow[dimensionIndex] === uniqueDimensionValue;
+            }
+          );
+          const measureValue = (groupingRowForDimension) ?
+            groupingRowForDimension[measureIndex] :
+            null;
 
-        row.push(measureValue);
-      });
+          row.push(measureValue);
+        });
 
-      return row;
-    });
+        return row;
+      }
+    );
 
     if (state.groupingRequiresOtherCategory) {
+
+      utils.assertHasProperty(
+        state,
+        'dimensionValueOtherCategoryData'
+      );
 
       dataToRenderRows.forEach((dataToRenderRow) => {
         const dimensionValue = dataToRenderRow[dimensionIndex];
@@ -373,6 +424,94 @@ function getData(vif, options) {
       columns: dataToRenderColumns,
       rows: dataToRenderRows
     };
+
+    return state;
+  }
+
+  // It appears necessary to do a sort before we return the data table because
+  // we may have been combining rows from multiple independent query responses,
+  // and some dimension values may not be present in all responses if they had
+  // no corresponding measure values.
+  function applyOrderBy(state) {
+
+    utils.assertHasProperties(
+      state,
+      'vif',
+      'dataToRender'
+    );
+
+    const dimensionIndex = 0;
+    const measureIndex = 1;
+    const otherCategoryName = I18n.translate(
+      'visualizations.common.other_category'
+    );
+    const orderByParameter = _.get(
+      state.vif,
+      'series[0].dataSource.orderBy.parameter',
+      'measure'
+    ).toLowerCase();
+    const orderBySort = _.get(
+      state.vif,
+      'series[0].dataSource.orderBy.sort',
+      'desc'
+    ).toLowerCase();
+    const orderingByDimension = (orderByParameter === 'dimension');
+    const sortValueIndex = (orderingByDimension) ?
+      dimensionIndex :
+      measureIndex;
+    const sumRowMeasureValues = (row) => {
+
+      return _.chain(row.slice(dimensionIndex + 1)).
+        sumBy((value) => _.isFinite(value) ? value : 0).
+        value();
+    };
+    const makeComparator = (direction) => {
+      const compareValues = (direction === 'asc') ?
+        (valueA, valueB) => { return valueA >= valueB; } :
+        (valueA, valueB) => { return valueA <= valueB; };
+      const compareSums = (direction === 'asc') ?
+        (sumOfA, sumOfB) => { return sumOfA >= sumOfB; } :
+        (sumOfA, sumOfB) => { return sumOfA <= sumOfB; };
+
+      return (a, b) => {
+        // If we are ordering by the dimension, the order should always be:
+        //
+        // <Non-null dimension values>
+        // <Null dimension value> (if present in the dimension values)
+        // <Other category>
+        //
+        // Since the dimension values will all be unique, we do not have to
+        // handle some comparisons (e.g. if both a and b are '(Other)' or null).
+        //
+        // If we are ordering by the measure, the order should always be:
+        //
+        // <Non-null dimension values and/or other category,
+        //  depending on measure>
+        // <Null measure values>
+        if (orderingByDimension) {
+          if (a[sortValueIndex] === otherCategoryName) {
+            return 1;
+          } else if (b[sortValueIndex] === otherCategoryName) {
+            return -1;
+          } else if (a[sortValueIndex] === null) {
+            return 1;
+          } else if (b[sortValueIndex] === null) {
+            return -1;
+          } else {
+            return (compareValues(a[sortValueIndex], b[sortValueIndex])) ?
+              1 :
+              -1;
+          }
+        } else {
+          const sumOfA = sumRowMeasureValues(a);
+          const sumOfB = sumRowMeasureValues(b);
+
+          return (compareSums(sumOfA, sumOfB)) ? 1 : -1;
+        }
+      };
+    };
+
+    state.dataToRender.rows.sort(makeComparator(orderBySort));
 
     return state;
   }
@@ -410,6 +549,7 @@ function getData(vif, options) {
     then(makeGroupingDataRequests).
     then(makeDimensionValueOtherCategoryRequests).
     then(mapGroupedDataResponsesToMultiSeriesTable).
+    then(applyOrderBy).
     then((state) => {
       return Promise.resolve(state.dataToRender);
     });

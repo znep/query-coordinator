@@ -24,9 +24,9 @@ describe('components/Footer', function() {
     expect(element.querySelectorAll('button').length).to.equal(2);
   });
 
-  it('calls dispatchCloseAssetSelector on cancel button click', function() {
+  it('calls dispatchCloseExternalResourceWizard on cancel button click', function() {
     var spy = sinon.spy();
-    var element = renderPureComponentWithStore(Footer(getProps({ dispatchCloseAssetSelector: spy })));
+    var element = renderPureComponentWithStore(Footer(getProps({ dispatchCloseExternalResourceWizard: spy })));
     TestUtils.Simulate.click(element.querySelector('button.cancel-button'));
     expect(spy).to.have.been.called;
   });

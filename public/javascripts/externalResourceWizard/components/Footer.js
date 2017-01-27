@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { closeAssetSelector } from '../actions/modal';
+import { closeExternalResourceWizard } from '../actions/modal';
 
 export const Footer = (props) => {
   return (
@@ -10,7 +10,7 @@ export const Footer = (props) => {
         <button
           key="cancel"
           className="btn btn-default btn-sm cancel-button"
-          onClick={props.dispatchCloseAssetSelector}>
+          onClick={props.dispatchCloseExternalResourceWizard}>
           Cancel
         </button>
 
@@ -27,21 +27,21 @@ export const Footer = (props) => {
 };
 
 Footer.propTypes = {
-  dispatchCloseAssetSelector: PropTypes.func.isRequired,
+  dispatchCloseExternalResourceWizard: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
   selectIsDisabled: PropTypes.bool.isRequired
 };
 
 Footer.defaultProps = {
-  dispatchCloseAssetSelector: _.noop,
+  dispatchCloseExternalResourceWizard: _.noop,
   onSelect: _.noop,
   selectIsDisabled: false
 };
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatchCloseAssetSelector: function() {
-      dispatch(closeAssetSelector());
+    dispatchCloseExternalResourceWizard: function() {
+      dispatch(closeExternalResourceWizard());
     }
   };
 }

@@ -5,8 +5,8 @@ import classNames from 'classnames';
 import { closeExternalResourceWizard } from '../actions/modal';
 import BackButton from '../../assetSelector/components/BackButton';
 import Header from '../../assetSelector/components/Header';
-import Footer from '../../assetSelector/components/Footer';
 import ExternalResourceForm from './ExternalResourceForm';
+import Footer from './Footer';
 import { ExternalViewCard } from 'socrata-components';
 
 export class ExternalResourceWizard extends Component {
@@ -46,14 +46,17 @@ export class ExternalResourceWizard extends Component {
       }
     };
 
-    // Form is invalid if any of its fields are invalid
     const formIsInvalid = !_.isEmpty(_.find([title, description, url, previewImage], { invalid: true }));
 
     return (
       <div className={modalClassNames} data-modal-dismiss>
         <Header title={'Feature an External Resource'} />
         <div className="modal-content">
-          <BackButton onClick={this.props.dispatchCloseExternalResourceWizard} />
+          <BackButton
+            onClick={() => {
+              this.props.dispatchCloseExternalResourceWizard();
+              this.props.onDismiss();
+            }} />
 
           <div className="description">
             <p>{/* TODO: localization */}
@@ -87,6 +90,7 @@ export class ExternalResourceWizard extends Component {
 ExternalResourceWizard.propTypes = {
   dispatchCloseExternalResourceWizard: PropTypes.func.isRequired,
   modalIsOpen: PropTypes.bool.isRequired,
+  onDismiss: PropTypes.func,
   title: PropTypes.object.isRequired,
   description: PropTypes.object.isRequired,
   url: PropTypes.object.isRequired,
@@ -96,6 +100,7 @@ ExternalResourceWizard.propTypes = {
 ExternalResourceWizard.defaultProps = {
   dispatchCloseExternalResourceWizard: _.noop,
   modalIsOpen: false,
+  onDismiss: _.noop,
   title: {
     value: '',
     invalid: true

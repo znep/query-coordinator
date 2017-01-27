@@ -7,9 +7,9 @@ import a11y from 'react-a11y';
 // import airbrake from './lib/airbrake';
 import _ from 'lodash';
 
-import App from './App';
+import AssetSelectorWithExternalResourceWizard from './AssetSelectorWithExternalResourceWizard';
 
-import assetSelector from './reducers';
+import assetSelector from '../assetSelector/reducers';
 import externalResourceWizard from '../externalResourceWizard/reducers';
 
 require('socrata-components/dist/css/styleguide.css');
@@ -39,7 +39,9 @@ _.defer(() => {
   try {
     ReactDOM.render(
       <Provider store={store}>
-        <App />
+        <AssetSelectorWithExternalResourceWizard
+          category={'Education'}
+          resultsPerPage={6} />
       </Provider>,
       document.querySelector('.asset-selector')
     );

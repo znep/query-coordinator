@@ -11,12 +11,12 @@ if (!common.isProduction) {
 }
 
 module.exports = _.defaultsDeep({
-  context: path.resolve(common.root, 'public/javascripts/assetSelector'),
+  context: path.resolve(common.root, 'public/javascripts/assetSelectorWithExternalResourceWizard'),
   entry: common.getHotModuleEntries().concat([
     './main'
   ]),
   output: common.getOutput(identifier),
-  eslint: common.getEslintConfig('public/javascripts/assetSelector/.eslintrc.json'),
+  eslint: common.getEslintConfig('public/javascripts/assetSelectorWithExternalResourceWizard/.eslintrc.json'),
   externals: {
     jquery: true
   },
@@ -36,7 +36,7 @@ module.exports = _.defaultsDeep({
   },
   resolve: {
     root: [
-      path.resolve(common.root, 'public/javascripts/assetSelector')
+      path.resolve(common.root, 'public/javascripts/assetSelectorWithExternalResourceWizard')
     ]
   },
   plugins: plugins

@@ -237,6 +237,9 @@ show_auth0_identifiers:
 show_federated_site_name_instead_of_cname:
   description: EN-2774. Turning this on will cause the current domain's catalog to show its federated sources by the value for their Site Theme "site_title" property. Note that this is simply "Socrata" by default, so double check the federation sources site_title's before turning this on.
   defaultValue: false
+show_govstat_header:
+  description: Turn on the grey header that usually only shows up for sites with govstat enabled
+  defaultValue: false
 show_new_login_message:
   description: Show a message above ye olde login/signup forms mentioning that they are getting a facelift
   defaultValue: false

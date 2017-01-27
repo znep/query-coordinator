@@ -90,8 +90,7 @@ module SiteChromeHelper
   def render_site_admin_chrome?
     return false if @suppress_chrome
 
-    # Currently, this is only enabled on OP domains. Expect this to change.
-    enable_govstat_chrome?
+    FeatureFlags.derive(nil, request)[:show_govstat_header] || enable_govstat_chrome?
   end
 
   def site_chrome_preview_mode?

@@ -309,11 +309,17 @@ describe SiteChromeHelper do
     before do
       allow(subject).to receive(:enable_govstat_chrome?).and_return(chrome_enabled)
       subject.instance_variable_set(:@suppress_chrome, chrome_suppressed)
+      allow(FeatureFlags).to receive(:derive).and_return(:show_govstat_header => false)
     end
 
     context 'when GovStat chrome is not enabled' do
       it 'returns false' do
         expect(subject.render_site_admin_chrome?).to eq(false)
+      end
+
+      it 'returns true when feature flag is enabled' do
+        allow(FeatureFlags).to receive(:derive).and_return(:show_govstat_header => true)
+        expect(subject.render_site_admin_chrome?).to eq(true)
       end
     end
 
@@ -324,12 +330,22 @@ describe SiteChromeHelper do
       it 'returns false' do
         expect(subject.render_site_admin_chrome?).to eq(false)
       end
+
+      it 'still returns false even if feature flag is enabled' do
+        allow(FeatureFlags).to receive(:derive).and_return(:show_govstat_header => true)
+        expect(subject.render_site_admin_chrome?).to eq(false)
+      end
     end
 
     context 'when GovStat chrome is enabled and all chrome is not suppressed' do
       let(:chrome_enabled) { true }
 
       it 'returns true' do
+        expect(subject.render_site_admin_chrome?).to eq(true)
+      end
+
+      it 'still returns true even if feature flag is disabled' do
+        allow(FeatureFlags).to receive(:derive).and_return(:show_govstat_header => false)
         expect(subject.render_site_admin_chrome?).to eq(true)
       end
     end

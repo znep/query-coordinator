@@ -67,7 +67,11 @@ class AccountsController < ApplicationController
           format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
         end
       else
-        flash.now[:error] = @signup.errors.values.flatten.join(', ')
+        error = @signup.errors.values.flatten.join(', ')
+        if password_validation_error?(error)
+          error = t('screens.sign_up.password_verification.failed_html')
+        end
+        flash.now[:error] = error
         @user_session = UserSession.new
         format.html { render :action => :new }
         format.data { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }

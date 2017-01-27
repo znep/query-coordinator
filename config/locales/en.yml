@@ -4523,6 +4523,8 @@ en:
       third_party_return: Before using these credentials, you must
       third_party_return_create: create a Socrata account
       third_party_return_link: link it to an existing Socrata ID
+      password_verification:
+        failed_html: "Validation failed: Your password must satisfy three of the following four criteria:<ul class='styled'><li>contain a digit</li><li>contain a lowercase letter</li><li>contain an uppercase letter</li><li>contain a non-alphanumeric symbol</li></ul>"
     stats:
       api: API
       apply: Apply

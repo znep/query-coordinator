@@ -50,38 +50,42 @@ export class ExternalResourceWizard extends Component {
 
     return (
       <div className={modalClassNames} data-modal-dismiss>
-        <Header title={'Feature an External Resource'} />
-        <div className="modal-content">
-          <BackButton
-            onClick={() => {
-              this.props.dispatchCloseExternalResourceWizard();
-              this.props.onDismiss();
-            }} />
+        <div className="modal-container">
+          <Header title={'Feature an External Resource'} />
+          <div className="modal-content">
+            <div className="centered-content">
+              <BackButton
+                onClick={() => {
+                  this.props.dispatchCloseExternalResourceWizard();
+                  this.props.onDismiss();
+                }} />
 
-          <div className="description">
-            <p>{/* TODO: localization */}
-              <strong>Create a link to an external resource for this category.</strong>
-              <br />
-              For example, this could be a visualization on the web, a blog post,
-              or a link to another part of your site.
-            </p>
-          </div>
+              <div className="description">
+                <p>{/* TODO: localization */}
+                  <strong>Create a link to an external resource for this category.</strong>
+                  <br />
+                  For example, this could be a visualization on the web, a blog post,
+                  or a link to another part of your site.
+                </p>
+              </div>
 
-          <div className="external-resource-contents">
-            <ExternalResourceForm
-              title={title}
-              description={description}
-              url={url}
-              previewImage={previewImage} />
+              <div className="external-resource-contents">
+                <ExternalResourceForm
+                  title={title}
+                  description={description}
+                  url={url}
+                  previewImage={previewImage} />
 
-            <div className="external-resource-preview">
-              <ExternalViewCard {...previewCardProps} />
+                <div className="external-resource-preview">
+                  <ExternalViewCard {...previewCardProps} />
+                </div>
+              </div>
             </div>
           </div>
+          <Footer
+            onSelect={this.returnExternalResource}
+            selectIsDisabled={formIsInvalid} />
         </div>
-        <Footer
-          onSelect={this.returnExternalResource}
-          selectIsDisabled={formIsInvalid} />
       </div>
     );
   }

@@ -1,12 +1,11 @@
 @import "styleguide-colors";
-$view-widget-width: 32%;
-$min-view-widget-width: 300px;
-$view-widget-height: 300px;
+$view-card-preview-width: 32%;
+$min-view-card-preview-width: 300px;
+$view-card-preview-height: 300px;
 
 
 .external-resource-wizard {
   background-color: $white;
-  overflow: hidden;
 
   .modal-header {
     z-index: 1;
@@ -17,41 +16,39 @@ $view-widget-height: 300px;
   }
 
   .modal-content {
-    > div.description {
-      margin-top: 1rem;
-    }
-
-    .external-resource-contents {
-      display: flex;
-
-      form.external-resource-form {
-        flex: 1 1 100%;
-        padding-right: 22px;
-
-        input[type="text"] {
-          width: 100%
-        }
-
-        .file-input {
-          margin-bottom: 12px;
-        }
-
-        .alert {
-          margin-top: 0;
-          margin-bottom: 22px;
-        }
+    .centered-content {
+      max-width: 1000px;
+      margin: 0 auto;
+      > div.description {
+        margin-top: 1rem;
       }
 
-      .external-resource-preview {
-        flex: 0 0 $view-widget-width;
-        height: $view-widget-height;
-        overflow: hidden;
-        min-width: $min-view-widget-width;
+      .external-resource-contents {
+        display: flex;
 
-        .view-widget {
-          width: 100%;
-          height: 100%;
-          border: 2px $light-grey-1 dashed;
+        form.external-resource-form {
+          flex: 1 1 100%;
+          padding-right: 22px;
+
+          input[type="text"] {
+            width: 100%
+          }
+
+          .file-input {
+            margin-bottom: 12px;
+          }
+
+          .alert {
+            margin-top: 0;
+            margin-bottom: 22px;
+          }
+        }
+
+        .external-resource-preview {
+          flex: 0 0 $view-card-preview-width;
+          height: $view-card-preview-height;
+          overflow: hidden;
+          min-width: $min-view-card-preview-width;
         }
       }
     }

@@ -77,8 +77,14 @@ export class ExternalResourceForm extends Component {
   }
 
   render() {
-    const titleField = this.renderInputField('title', { maxLength: 80 });
-    const descriptionField = this.renderInputField('description', { maxLength: 160 });
+    const titleField = this.renderInputField('title', {
+      maxLength: 80,
+      'placeholder': 'Add a title'
+    });
+    const descriptionField = this.renderInputField('description', {
+      maxLength: 160,
+      'placeholder': 'Description (optional)'
+    });
     const urlField = this.renderInputField('url', {
       'placeholder': 'https://example.com'
     });
@@ -87,25 +93,15 @@ export class ExternalResourceForm extends Component {
       className: 'file-input preview-image'
     });
 
-    const titleWarning = this.props.title.invalid ?
-      <div className="alert warning">Title cannot be blank{/* TODO: localization */}</div> :
-      null;
-
-    const urlWarning = this.props.url.invalid ?
-      <div className="alert warning">URL is invalid{/* TODO: localization */}</div> :
-      null;
-
     const imageWarning = this.state.isImageInvalid ?
-      <div className="alert error">Error uploading image{/* TODO: localization */}</div> :
+      <div className="alert error">Error uploading image. Acceptable formats are jpg, jpeg, png, or gif.{/* TODO: localization */}</div> :
       null;
 
     return (
       <form className="external-resource-form">
         {titleField}
-        {titleWarning}
         {descriptionField}
         {urlField}
-        {urlWarning}
         {previewImageField}
         {imageWarning}
       </form>

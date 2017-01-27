@@ -4,7 +4,10 @@
 
 .asset-selector-modal {
   background-color: $white;
-  overflow: hidden;
+
+  &.modal.modal-full {
+    overflow-y: hidden; // Why do we have to do this?
+  }
 
   .inline-block {
     display: inline-block;

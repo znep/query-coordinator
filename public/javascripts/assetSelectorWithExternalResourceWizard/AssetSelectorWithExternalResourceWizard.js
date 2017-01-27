@@ -34,7 +34,7 @@ export const AssetSelectorWithExternalResourceWizard = (props) => {
           <button
             className="btn btn-primary"
             onClick={props.dispatchOpenAssetSelector}>
-            Add stuff...
+            Add...
           </button>
         </div>
       ))}

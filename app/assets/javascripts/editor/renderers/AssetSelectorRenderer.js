@@ -1367,7 +1367,7 @@ export default function AssetSelectorRenderer(options) {
       { 'class': 'modal-button-group r-to-l' }
     ).append([
       $('<small>', { 'class': 'image-loading-status hidden' }).append(
-        I18n.t('editor.asset_selector.image_preview.loading.step_one')
+        I18n.t('editor.asset_selector.image_preview.loading.uploading_image')
       ),
       backButton,
       insertButton

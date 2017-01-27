@@ -74,7 +74,7 @@ describe('StoryPermissionsManager', () => {
           let actions;
 
           beforeEach(() => {
-            data = expectedData;
+            data = { data: expectedData };
 
             _.each(expectedActions, (expectedAction) => {
               expectedAction.storyUid = EnvironmentMocker.STORY_UID;

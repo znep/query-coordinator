@@ -35,7 +35,6 @@ export default function StorySaveStatusStore(forStoryUid) {
 
   this.register(function(payload) {
     var action = payload.action;
-    var userUrl;
 
     switch (action) {
 
@@ -57,18 +56,12 @@ export default function StorySaveStatusStore(forStoryUid) {
         self._emitChange();
 
         if (payload.conflict) {
+          var userUrl = StorytellerUtils.format('/api/users/{0}.json', payload.conflictingUserId);
 
-          userUrl = StorytellerUtils.format('/api/users/{0}.json', payload.conflictingUserId);
-
-          httpRequest('GET', userUrl).
-            then(
-              function(userData) {
-
-                _userCausingConflict = userData;
-                self._emitChange();
-              }
-            ).
-            catch(exceptionNotifier.notify);
+          httpRequest('GET', userUrl).then(function({ data }) {
+            _userCausingConflict = data;
+            self._emitChange();
+          }).catch(exceptionNotifier.notify);
         }
         break;
 

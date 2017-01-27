@@ -4,10 +4,8 @@ import I18n from '../I18n';
 import Store from './Store';
 import Actions from '../Actions';
 import Constants from '../Constants';
-import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
-import httpRequest from '../../services/httpRequest';
-import { exceptionNotifier } from '../../services/ExceptionNotifier';
+import httpRequest, { coreHeaders } from '../../services/httpRequest';
 import { storyStore } from './StoryStore';
 
 export var coreSavingStore = new CoreSavingStore();
@@ -152,8 +150,6 @@ export default function CoreSavingStore() {
    * Makes a read/modify/write on all queued story save requests (sequentially).
    */
   function _makeRequests() {
-    var metadataToSave;
-
     if (_.isEmpty(_storyMetadataPendingSave)) {
       _setSaveInProgress(false);
       return;
@@ -161,7 +157,7 @@ export default function CoreSavingStore() {
 
     _setSaveInProgress(true);
 
-    metadataToSave = _storyMetadataPendingSave.shift();
+    var metadataToSave = _storyMetadataPendingSave.shift();
 
     _putViewMetadataToCore(metadataToSave).
       then(function() {
@@ -196,48 +192,22 @@ export default function CoreSavingStore() {
 
     var url = StorytellerUtils.format('/api/views/{0}.json', metadata.storyUid);
 
-    return httpRequest(
-      'GET',
-      url,
-      {
-        headers: _coreRequestHeaders()
-      }
-    ).then(function(response) {
-
+    return httpRequest('GET', url, {
+      headers: coreHeaders()
+    }).then(({ data }) => {
       var payload = {
         name: metadata.storyTitle,
         description: metadata.storyDescription,
         metadata: _.extend(
-          response.metadata || {},
+          data.metadata || {},
           { tileConfig: metadata.storyTileConfig }
         )
       };
 
-      return httpRequest(
-        'PUT',
-        url,
-        {
-          data: JSON.stringify(payload),
-          headers: _coreRequestHeaders()
-        }
-      );
+      return httpRequest('PUT', url, {
+        data: payload,
+        headers: coreHeaders()
+      });
     });
-  }
-
-  function _coreRequestHeaders() {
-    var headers = {};
-
-    if (_.isEmpty(Environment.CORE_SERVICE_APP_TOKEN)) {
-      exceptionNotifier.notify(new Error(
-        '`Environment.CORE_SERVICE_APP_TOKEN` not configured.'
-      ));
-    }
-
-    headers['X-App-Token'] = Environment.CORE_SERVICE_APP_TOKEN;
-    headers['X-CSRF-Token'] = decodeURIComponent(
-      StorytellerUtils.getCookie('socrata-csrf-token')
-    );
-
-    return headers;
   }
 }

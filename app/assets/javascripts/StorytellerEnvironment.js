@@ -5,7 +5,6 @@ import _ from 'lodash';
 const envProperties = [
   'AIRBRAKE',
   'CORE_SERVICE_APP_TOKEN',
-  'CSRF_TOKEN',
   'CURRENT_USER',
   'CURRENT_USER_STORY_AUTHORIZATION',
   'CUSTOM_THEMES',

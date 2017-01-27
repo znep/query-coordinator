@@ -3,7 +3,6 @@ import _ from 'lodash';
 import Airbrake from 'airbrake-js';
 
 import Environment from '../StorytellerEnvironment';
-import StorytellerUtils from '../StorytellerUtils';
 
 /**
  * @class ExceptionNotifier
@@ -18,43 +17,40 @@ import StorytellerUtils from '../StorytellerUtils';
  * @param {String} options.projectKey - A valid Airbrake project key.
  * @param {String} options.projectId - A valid Airbrake project id.
  */
-export var exceptionNotifier = new ExceptionNotifier(Environment.AIRBRAKE);
+export const exceptionNotifier = new ExceptionNotifier(Environment.AIRBRAKE);
 
 export default function ExceptionNotifier(options) {
-  var _self = this;
-  var _airbrake;
-  var _options = options || {};
-  var _environment = _options.ENVIRONMENT_NAME;
-  var _airbrakeOptions = _.omit(_options, 'ENVIRONMENT_NAME');
+  options = options || {};
 
-  setup();
+  const self = this;
+  const environment = options.ENVIRONMENT_NAME;
+  const airbrake = setup();
   attachEvents();
 
   function setup() {
+    const airbrakeOptions = _.omit(options, 'ENVIRONMENT_NAME');
 
-    if (!_.isString(_airbrakeOptions.PROJECT_ID)) {
-      return;
+    if (!_.isString(airbrakeOptions.PROJECT_ID)) {
+      return null;
     }
 
-    _airbrake = new Airbrake({
-      projectId: _airbrakeOptions.PROJECT_ID,
-      projectKey: _airbrakeOptions.API_KEY
+    const instance = new Airbrake({
+      projectId: airbrakeOptions.PROJECT_ID,
+      projectKey: airbrakeOptions.API_KEY
     });
 
-    _airbrake.addFilter(function(notice) {
-      notice.context.environment = _environment;
+    instance.addFilter((notice) => {
+      notice.context.environment = environment;
       return notice;
     });
+
+    return instance;
   }
 
   function attachEvents() {
-
-    $(window).error(
-      function(event) {
-
-        _self.notify(event.originalEvent.error);
-      }
-    );
+    $(window).error((event) => {
+      self.notify(event.originalEvent.error);
+    });
   }
 
   /**
@@ -69,7 +65,8 @@ export default function ExceptionNotifier(options) {
    *
    * @param {Any} error - Anything that should be logged in Airbrake/console.
    */
-  this.notify = function(error) {
+  this.notify = (error) => {
+    const params = {};
 
     // EN-5600 - Tons of Airbrake errors recently
     //
@@ -89,42 +86,34 @@ export default function ExceptionNotifier(options) {
     // object, when both are functions, is used as a proxy test that the object
     // in question is a jQuery XHR object (we can't check instanceof since it's
     // just a plain object).
-    if (
-      _.isFunction(_.get(error, 'error')) &&
-      _.isFunction(_.get(error, 'pipe')) &&
-      _.isFunction(_.get(error, 'getAllResponseHeaders'))
-    ) {
+    if (_.isFunction(_.get(error, 'error'))) {
+      const { responseText, status, statusText } = error; // Really a jqXHR!
+      const headers = error.getAllResponseHeaders();
 
       error = new Error(
-        'Attempted to notify with a function not an error (usually this is ' +
-        'because a jQuery AJAX call has failed). Parent jQuery XHR object: ' +
-        '"{0}"; response headers: "{1}"'.
-          format(
-            JSON.stringify(error),
-            error.getAllResponseHeaders()
-          )
+        `Failed AJAX request (${status} ${statusText}): ${responseText}`
       );
+      params.requestId = headers['X-Request-Id'];
     } else if (_.isPlainObject(error)) {
       error = new Error(JSON.stringify(error));
     } else if (!_.isError(error)) {
       error = new Error(error);
     }
 
-    if (!_.isUndefined(_airbrake)) {
-      _airbrake.notify(error);
+    if (airbrake) {
+      airbrake.notify({
+        err: error,
+        params: params
+      });
     }
 
     console.error(error);
 
     if (_.isFunction(window.ga)) {
-      window.ga(
-        'send',
-        'exception',
-        {
-          'exDescription': StorytellerUtils.format('Airbrake notification: {0}', error.message),
-          'exFatal': false
-        }
-      );
+      window.ga('send', 'exception', {
+        exDescription: `Airbrake notification: ${error.message}`,
+        exFatal: false
+      });
     }
   };
 }

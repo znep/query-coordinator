@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import _ from 'lodash';
 
 import Environment from '../../StorytellerEnvironment';
@@ -9,11 +8,9 @@ import Constants from '../Constants';
 import Store from './Store';
 import { assetSelectorStore } from './AssetSelectorStore';
 import { exceptionNotifier } from '../../services/ExceptionNotifier';
+import httpRequest, { storytellerHeaders } from '../../services/httpRequest';
 
 var MAX_FILE_SIZE_BYTES = Constants.MAX_FILE_SIZE_BYTES || (1024 * 1024 * 5);
-var CODE = {
-  OK: 200
-};
 
 export var STATUS = {
   ACKNOWLEDGED: 'ACKNOWLEDGED',
@@ -59,17 +56,14 @@ export default function FileUploaderStore() {
   };
 
   self.filesByStatus = function(status) {
-    return _.filter(self.files(), {status: status});
+    return _.filter(self.files(), { status });
   };
 
   function cancelFile(payload) {
     StorytellerUtils.assertHasProperty(payload, 'id');
     StorytellerUtils.assert(
       self.fileExistsById(payload.id),
-      StorytellerUtils.format(
-        'Cannot find a file with the id, {0}.',
-        payload.id
-      )
+      StorytellerUtils.format('Cannot find a file with the id {0}', payload.id)
     );
 
     files[payload.id].status = STATUS.CANCELLED;
@@ -91,9 +85,8 @@ export default function FileUploaderStore() {
     self._emitChange();
   }
 
-  function progressFile(id, progress) {
+  function progressFile(id) {
     files[id].status = STATUS.UPLOADING;
-    files[id].progress = progress / files[id].raw.size;
 
     self._emitChange();
   }
@@ -122,10 +115,7 @@ export default function FileUploaderStore() {
 
     StorytellerUtils.assert(
       !self.fileExistsById(payload.id),
-      StorytellerUtils.format(
-        'The file identifier, {0} already exists.',
-        payload.id
-      )
+      StorytellerUtils.format('The file identifier {0} already exists.', payload.id)
     );
 
     files[payload.id] = {
@@ -144,10 +134,7 @@ export default function FileUploaderStore() {
 
     StorytellerUtils.assert(
       !self.fileExistsById(payload.id),
-      StorytellerUtils.format(
-        'The file identifier, {0} already exists.',
-        payload.id
-      )
+      StorytellerUtils.format('The file identifier {0} already exists.', payload.id)
     );
 
     files[payload.id] = {
@@ -228,10 +215,11 @@ export default function FileUploaderStore() {
       upload: { filename: file.raw.name }
     };
 
-    return request('/uploads', 'POST', requestData).
-      then(function(data) {
-        return data.upload;
-      });
+    return httpRequest('POST', `${Constants.API_PREFIX_PATH}/uploads`, {
+      data: requestData,
+      contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+      headers: storytellerHeaders()
+    }).then(({ data }) => data.upload);
   }
 
   function upload(id) {
@@ -247,41 +235,28 @@ export default function FileUploaderStore() {
       return Promise.reject(I18n.t('editor.asset_selector.image_upload.errors.validation_file_type'));
     }
 
-    return new Promise(function(resolve, reject) {
-      var xhr = new XMLHttpRequest();
+    progressFile(id);
 
-      xhr.onload = function() {
-        if (xhr.status === CODE.OK && notCancelled(file.id)) {
-          progressFile(id, file.raw.size);
-          return resolve(file.destination.url.split('?')[0]);
-        } else if (cancelled(file.id)) {
-          return reject(I18n.t('editor.asset_selector.image_upload.errors.cancelled'));
+    return httpRequest('PUT', file.destination.url, {
+      data: file.raw,
+      dataType: null,
+      contentType: file.destination.contentType
+    }).then(
+      () => {
+        if (cancelled(file.id)) {
+          return Promise.reject(I18n.t('editor.asset_selector.image_upload.errors.cancelled'));
         } else {
-          return reject(xhr.onerror());
+          return file.destination.url.split('?')[0];
         }
-      };
-
-      xhr.upload.onprogress = function(event) {
-        if (event.lengthComputable && notCancelled(file.id)) {
-          progressFile(id, event.loaded);
+      },
+      (error) => {
+        if (cancelled(file.id)) {
+          return Promise.reject(I18n.t('editor.asset_selector.image_upload.errors.cancelled'));
+        } else {
+          return Promise.reject(`Failed: ${file.destination.url}, ${error.statusCode}\n${error.response}`);
         }
-      };
-
-      xhr.onabort = xhr.onerror = function() {
-        return new Error(
-          StorytellerUtils.format(
-            'Failed: {0}, {1}\n{2}',
-            file.destination.url,
-            parseInt(xhr.status, 10),
-            xhr.statusText
-          )
-        );
-      };
-
-      xhr.open('PUT', file.destination.url, true);
-      xhr.setRequestHeader('Content-Type', file.destination.contentType);
-      xhr.send(file.raw);
-    });
+      }
+    );
   }
 
   function saveResource(id, url) {
@@ -298,8 +273,8 @@ export default function FileUploaderStore() {
 
       requestData = {
         document: {
-          'story_uid': Environment.STORY_UID,
-          'direct_upload_url': url
+          story_uid: Environment.STORY_UID,
+          direct_upload_url: url
         }
       };
 
@@ -325,19 +300,20 @@ export default function FileUploaderStore() {
     } else {
       requestData = {
         document: {
-          'story_uid': Environment.STORY_UID,
-          'direct_upload_url': url,
-          'upload_file_name': file.raw.name,
-          'upload_content_type': file.raw.type,
-          'upload_file_size': file.raw.size
+          story_uid: Environment.STORY_UID,
+          direct_upload_url: url,
+          upload_file_name: file.raw.name,
+          upload_content_type: file.raw.type,
+          upload_file_size: file.raw.size
         }
       };
     }
 
-    return request('/documents', 'POST', requestData).
-      then(function(data) {
-        return data.document;
-      });
+    return httpRequest('POST', `${Constants.API_PREFIX_PATH}/documents`, {
+      data: requestData,
+      contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+      headers: storytellerHeaders()
+    }).then(({ data }) => data.document);
   }
 
   function waitForResourceToBeProcessed(id, resource) {
@@ -364,9 +340,9 @@ export default function FileUploaderStore() {
             return reject();
           }
 
-          request('/documents/' + resourceId, 'GET').
-            then(function(responseData) {
-              var documentResource = responseData.document;
+          httpRequest('GET', `${Constants.API_PREFIX_PATH}/documents/${resourceId}`).
+            then(function({ data }) {
+              var documentResource = data.document;
 
               if (documentResource.status === 'processed') {
                 completeFile(id, documentResource);
@@ -401,21 +377,5 @@ export default function FileUploaderStore() {
   function cancelled(id) {
     var file = self.fileById(id);
     return file && file.status === STATUS.CANCELLED;
-  }
-
-  // TODO: replace with httpRequest
-  function request(url, method, data) {
-    return Promise.resolve(
-      $.ajax({
-        url: `${Constants.API_PREFIX_PATH}/${url}`,
-        type: method,
-        dataType: 'json',
-        headers: {
-          'X-Socrata-Host': window.location.host,
-          'X-CSRF-Token': Environment.CSRF_TOKEN
-        },
-        data: data
-      })
-    );
   }
 }

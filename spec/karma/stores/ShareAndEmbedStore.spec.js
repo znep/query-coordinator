@@ -100,7 +100,7 @@ describe('ShareAndEmbedStore', function() {
             done();
           });
           resolveTilesPromise({
-            url: NEW_STORY_URL
+            data: { url: NEW_STORY_URL }
           });
         });
       });

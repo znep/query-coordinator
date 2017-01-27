@@ -29,6 +29,11 @@ ol, ul {
   list-style: none;
 }
 
+ul.styled {
+  list-style-type: disc;
+  margin-left: 1.2em;
+}
+
 blockquote, q {
   quotes: none;
   &:before, &:after {

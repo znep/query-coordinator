@@ -17,4 +17,8 @@ module UserSessionsHelper
   def use_auth0?
     AUTH0_CONFIGURED && FeatureFlags.derive(nil, request).use_auth0
   end
+
+  def password_validation_error?(error)
+    /^Your password must satisfy three of the following four criteria/.match(error).nil?
+  end
 end

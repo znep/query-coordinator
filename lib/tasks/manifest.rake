@@ -9,7 +9,7 @@ namespace :manifest do
       from_tag = ENV['FROM_TAG'] || tags[1]
       puts "Default comparison is #{from_tag} .. #{to_tag}"
       
-      if args.auto.present?
+      if args.auto.present? && args.auto == 'true'
         puts 'Automated comparison requested'
       else
         puts "Press <Enter> to continue, or 'n' to choose a previous tag"
@@ -93,9 +93,15 @@ namespace :manifest do
 
 
   desc 'Generates useful information for the current release'
-  task :release_info, [:auto] do |t, args|
-    args.with_defaults(:auto => false)
+  task :release_info, [:auto, :manifest_file] do |t, args|
+    args.with_defaults(:auto => false, :manifest_file => nil)
+  
     manifest_file_path = File.expand_path("manifest_#{Time.now.strftime('%Y%m%d-%H%M%S')}.txt")
+    
+    if args[:manifest_file]
+      manifest_file_path = File.expand_path("#{args[:manifest_file]}")
+    end
+
     puts
     Rake::Task['manifest:release'].invoke(manifest_file_path,args[:auto])
     puts

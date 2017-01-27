@@ -65,7 +65,7 @@ ReactDOM.render(
         <Route path="uploads" component={ManageUploads} />
         <Route path="uploads/:uploadId" component={ShowUpload} />
         <Route
-          path="uploads/:uploadId/schemas/:schemaId/output/:outputSchemaId"
+          path="uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId"
           component={ShowOutputSchema} />
         <Route path="*" component={NoMatch} />
       </Route>

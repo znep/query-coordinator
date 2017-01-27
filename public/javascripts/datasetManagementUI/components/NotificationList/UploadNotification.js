@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import ProgressBar from '../ProgressBar';
-import { STATUS_UPDATE_FAILED } from '../../lib/database/statuses';
+import { STATUS_SAVED, STATUS_UPDATE_FAILED } from '../../lib/database/statuses';
 
 export default function UploadNotification({ upload }) {
-  if (upload.finished_at) {
+  if (upload.__status__.type === STATUS_SAVED) {
     return (
       <div className="dsmui-notification successful">
         <span className="message">{I18n.progress_items.uploading}</span>

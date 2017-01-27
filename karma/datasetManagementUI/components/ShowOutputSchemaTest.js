@@ -11,7 +11,7 @@ describe('components/ShowOutputSchema', () => {
   const defaultProps = {
     params: {
       uploadId: 5,
-      schemaId: 4,
+      inputSchemaId: 4,
       outputSchemaId: 18
     },
     updateColumnType: _.noop
@@ -30,6 +30,10 @@ describe('components/ShowOutputSchema', () => {
 
   it('renders a table with data', () => {
     const store = getStoreWithOutputSchema();
+    store.dispatch(updateFromServer('input_schemas', {
+      id: 4,
+      total_rows: 3
+    }));
     store.dispatch(insertFromServer('column_50', [
       { index: 0, ok: 'foo' },
       { index: 1, error: { message: 'some transform error', inputs: { arrest: { ok: 'bar' } } } },
@@ -72,12 +76,14 @@ describe('components/ShowOutputSchema', () => {
       updateColumnType: spy,
       upload: {
         __status__: statusSavedOnServer,
+        id: 5,
         filename: 'foo.csv'
       },
       columns: [
         { id: 50, display_name: 'arrest', soql_type: 'SoQLText' },
         { id: 51, display_name: 'block', soql_type: 'SoQLText' }
       ],
+      inputSchema: { upload_id: 5 },
       outputSchema: { input_schema_id: 4 },
       goToUpload: _.noop
     };
@@ -93,26 +99,144 @@ describe('components/ShowOutputSchema', () => {
     ]);
   });
 
+  // these overlap a bit with ColumnStatusTest, but that's not a bad thing IMO
 
-  it('properly renders error counts', () => {
-    const store = getStoreWithOutputSchema();
+  describe('error counts', () => {
 
-    store.dispatch(updateFromServer('columns', {
-      id: 50,
-      num_transform_errors: 1
-    }));
+    it('properly render when the upload is done', () => {
+      const store = getStoreWithOutputSchema();
+      store.dispatch(updateFromServer('input_schemas', {
+        id: 4,
+        total_rows: 3
+      }));
+      store.dispatch(updateFromServer('columns', {
+        id: 50,
+        contiguous_rows_processed: 3,
+        num_transform_errors: 1
+      }));
 
-    store.dispatch(updateFromServer('columns', {
-      id: 51,
-      num_transform_errors: 42
-    }));
+      store.dispatch(updateFromServer('columns', {
+        id: 51,
+        contiguous_rows_processed: 3,
+        num_transform_errors: 42
+      }));
 
-    const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-    expect(_.map(element.querySelectorAll('.col-name'), 'innerText')).to.eql(['arrest', 'block']);
-    expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['SoQLText', 'SoQLText']);
-    expect(_.map(element.querySelectorAll('.col-errors'), 'innerText')).to.eql([
-      '1' + I18n.show_output_schema.column_header.error_exists,
-      '42' + I18n.show_output_schema.column_header.errors_exist
-    ]);
+      const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
+      expect(_.map(element.querySelectorAll('.col-name'), 'innerText')).to.eql(['arrest', 'block']);
+      expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['SoQLText', 'SoQLText']);
+      expect(_.map(element.querySelectorAll('.col-errors'), 'innerText')).to.eql([
+        '1' + I18n.show_output_schema.column_header.error_exists,
+        '42' + I18n.show_output_schema.column_header.errors_exist
+      ]);
+    });
+
+    it('properly render when the upload is still in progress', () => {
+      const store = getStoreWithOutputSchema();
+      store.dispatch(updateFromServer('columns', {
+        id: 50,
+        contiguous_rows_processed: 3,
+        num_transform_errors: 1
+      }));
+
+      store.dispatch(updateFromServer('columns', {
+        id: 51,
+        contiguous_rows_processed: 3,
+        num_transform_errors: 42
+      }));
+
+      const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
+      expect(_.map(element.querySelectorAll('.col-name'), 'innerText')).to.eql(['arrest', 'block']);
+      expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['SoQLText', 'SoQLText']);
+      expect(_.map(element.querySelectorAll('.col-errors'), 'innerText')).to.eql([
+        '1' + I18n.show_output_schema.column_header.error_exists_scanning,
+        '42' + I18n.show_output_schema.column_header.errors_exist_scanning
+      ]);
+    });
+
   });
+
+  describe('total row count', () => {
+
+    it('shows the row count before the file has finished uploading', () => {
+      const store = getStoreWithOutputSchema();
+      store.dispatch(updateFromServer('columns', {
+        id: 50,
+        contiguous_rows_processed: 2
+      }));
+      store.dispatch(updateFromServer('columns', {
+        id: 51,
+        contiguous_rows_processed: 3
+      }));
+      const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
+      expect(element.querySelector('.total-row-count').innerText).to.eql('2 rows so far');
+    });
+
+    it('shows the row count before the file has finished uploading', () => {
+      const store = getStoreWithOutputSchema();
+      store.dispatch(updateFromServer('input_schemas', {
+        id: 4,
+        total_rows: 50
+      }));
+      const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
+      expect(element.querySelector('.total-row-count').innerText).to.eql('50 rows total');
+    });
+
+  });
+
+  describe('"apply update" button', () => {
+
+    it('is disabled when the upload is in progress', () => {
+      const store = getStoreWithOutputSchema();
+      store.dispatch(updateFromServer('columns', {
+        id: 50,
+        contiguous_rows_processed: 2
+      }));
+      store.dispatch(updateFromServer('columns', {
+        id: 51,
+        contiguous_rows_processed: 3
+      }));
+      const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
+      expect(element.querySelector('.btn.apply-update').disabled).to.be.true;
+    });
+
+    it('is disabled when the upload is done but not all columns have caught up', () => {
+      const store = getStoreWithOutputSchema();
+      store.dispatch(updateFromServer('input_schemas', {
+        id: 4,
+        total_rows: 50
+      }));
+      store.dispatch(updateFromServer('columns', {
+        id: 50,
+        contiguous_rows_processed: 2
+      }));
+      store.dispatch(updateFromServer('columns', {
+        id: 51,
+        contiguous_rows_processed: 3
+      }));
+      const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
+      expect(element.querySelector('.btn.apply-update').disabled).to.be.true;
+    });
+
+    it('is enabled when the upload is done and all columns have caught up', () => {
+      const store = getStoreWithOutputSchema();
+      store.dispatch(updateFromServer('input_schemas', {
+        id: 4,
+        total_rows: 50
+      }));
+      store.dispatch(updateFromServer('columns', {
+        id: 50,
+        contiguous_rows_processed: 50
+      }));
+      store.dispatch(updateFromServer('columns', {
+        id: 51,
+        contiguous_rows_processed: 50
+      }));
+      const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
+      expect(element.querySelector('.btn.apply-update').disabled).to.be.false;
+    });
+
+  });
+
+  // TODO: test progress bars not showing up during upload.... I thought I did test this!!!
+
 });

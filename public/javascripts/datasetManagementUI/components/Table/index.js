@@ -3,7 +3,7 @@ import ColumnHeader from './ColumnHeader';
 import ColumnStatus from './ColumnStatus';
 import TableBody from './TableBody';
 
-export default function Table({ db, outputSchema, columns, updateColumnType }) {
+export default function Table({ db, totalRows, outputSchema, columns, updateColumnType }) {
   return (
     <table className="table table-condensed">
       <thead>
@@ -20,7 +20,8 @@ export default function Table({ db, outputSchema, columns, updateColumnType }) {
           {columns.map(column =>
             <ColumnStatus
               key={column.id}
-              column={column} />
+              column={column}
+              totalRows={totalRows} />
           )}
         </tr>
       </thead>
@@ -33,6 +34,7 @@ export default function Table({ db, outputSchema, columns, updateColumnType }) {
 
 Table.propTypes = {
   db: PropTypes.object.isRequired,
+  totalRows: PropTypes.number,
   outputSchema: PropTypes.object.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   updateColumnType: PropTypes.func.isRequired

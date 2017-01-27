@@ -48,10 +48,6 @@ const ColumnHeader = React.createClass({
           }
           {column.soql_type}
         </select>
-        <br />
-        <span className="col-processed">
-          {column.contiguous_rows_processed || 0} total
-        </span>
       </th>
     );
   }

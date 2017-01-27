@@ -1601,6 +1601,8 @@ en:
            SoQLFloatingTimestamp: Date & Time
            SoQLLocation: Location
            SoQLPoint: Point
+       rows_so_far: rows so far
+       rows_total: rows total
        upload_done: Upload Done
        upload_failed: Upload Failed
        upload_in_progress: Upload In Progress

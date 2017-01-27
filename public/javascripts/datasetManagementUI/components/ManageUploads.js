@@ -97,7 +97,7 @@ function UploadListItem({ upload }) {
     return (
       <span>
         {
-          I18n.manage_uploads.failed({
+          I18n.manage_uploads.failed.format({
             filename: upload.filename,
             status: upload.__status__.error.response.statusText
           })

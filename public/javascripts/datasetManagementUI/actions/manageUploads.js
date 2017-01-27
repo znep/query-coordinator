@@ -161,7 +161,7 @@ function subscribeToOutputColumns(dispatch, upload) {
           output_schema_id: outputSchema.id,
           column_id: outputColumn.id
         }));
-        dispatch(createTableAndSubscribeToTransform(transform, outputColumn));
+        dispatch(createTableAndSubscribeToTransform(transform, outputColumn, inputSchema));
       });
       return outputSchema.id;
     });
@@ -190,7 +190,6 @@ export function createTableAndSubscribeToTransform(transform, outputColumn) {
         );
       }
     }
-
     channel.on('max_ptr', updateTransformProgress);
     channel.on('errors', (errorsMsg) => {
       dispatch(updateFromServer('columns', {

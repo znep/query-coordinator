@@ -1,55 +1,85 @@
+import _ from 'lodash';
 import React, { PropTypes } from 'react';
+import ProgressBar from '../ProgressBar';
+import classNames from 'classnames';
 
 export const ColumnStatus = React.createClass({
   propTypes: {
-    column: PropTypes.object.isRequired
+    column: PropTypes.object.isRequired,
+    totalRows: PropTypes.number
   },
 
   shouldComponentUpdate(nextProps) {
-    return !_.isEqual(nextProps.column, this.props.column);
+    return !_.isEqual(nextProps, this.props);
   },
 
   render() {
-    const { column } = this.props;
+    const { column, totalRows } = this.props;
+    const SubI18n = I18n.show_output_schema.column_header;
+    const uploadDone = _.isNumber(totalRows);
+    const thisColumnDone = _.isNumber(totalRows) && column.contiguous_rows_processed === totalRows;
+
+    const rowsProcessed = column.contiguous_rows_processed || 0;
+    const percentage = Math.round(rowsProcessed / totalRows * 100);
+
+    const progressBarClassName = classNames(
+      'column-progress-bar',
+      { 'column-progress-bar-done': !uploadDone || thisColumnDone }
+    );
+    const progressBar = (
+      <div className={progressBarClassName}>
+        <ProgressBar percent={percentage} ariaLabel={column.display_name} />
+      </div>
+    );
 
     if (column.num_transform_errors === 1) {
+      const msg = thisColumnDone ?
+        SubI18n.error_exists :
+        SubI18n.error_exists_scanning;
       return (
         <th key={column.id} className="col-errors">
-          <div>
+          {progressBar}
+          <div className="column-status-text">
             <span className="err-info error">{column.num_transform_errors}</span>
-            {I18n.show_output_schema.column_header.error_exists}
+            {msg}
           </div>
         </th>
       );
     } else if (column.num_transform_errors) {
-      // TODO: Have a message for when errors are trickling in.
+      const msg = thisColumnDone ?
+        SubI18n.errors_exist :
+        SubI18n.errors_exist_scanning;
       return (
         <th key={column.id} className="col-errors">
-          <div>
+          {progressBar}
+          <div className="column-status-text">
             <span className="err-info error">{column.num_transform_errors}</span>
-            {I18n.show_output_schema.column_header.errors_exist}
-          </div>
-        </th>
-      );
-    } else if (column.contiguous_rows_processed) {
-      // TODO: Only show this when all rows are good.
-      return (
-        <th key={column.id} className="col-errors">
-          <div>
-            <span className="err-info success socrata-icon-checkmark3" />
-            {I18n.show_output_schema.column_header.no_errors_exist}
+            {msg}
           </div>
         </th>
       );
     } else {
-      return (
-        <th key={column.id} className="col-errors">
-          <div>
-            <span className="err-info spinner-default" />
-            {I18n.show_output_schema.column_header.scanning}
-          </div>
-        </th>
-      );
+      if (thisColumnDone) {
+        return (
+          <th key={column.id} className="col-errors">
+            {progressBar}
+            <div className="column-status-text">
+              <span className="err-info success socrata-icon-checkmark3" />
+              {SubI18n.no_errors_exist}
+            </div>
+          </th>
+        );
+      } else {
+        return (
+          <th key={column.id} className="col-errors">
+            {progressBar}
+            <div className="column-status-text">
+              <span className="err-info spinner-default" />
+              {SubI18n.scanning}
+            </div>
+          </th>
+        );
+      }
     }
   }
 });

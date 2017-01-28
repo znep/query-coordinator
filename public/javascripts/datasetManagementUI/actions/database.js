@@ -28,6 +28,13 @@ export const insertFromServerIfNotExists = (tableName, newRecord) => ({
   newRecord
 });
 
+export const INSERT_FROM_SERVER_WITH_PK = 'INSERT_FROM_SERVER_WITH_PK';
+export const insertFromServerWithPk = (tableName, newRecords) => ({
+  type: INSERT_FROM_SERVER_WITH_PK,
+  tableName,
+  newRecords
+});
+
 export const INSERT_STARTED = 'INSERT_STARTED';
 export const insertStarted = (tableName, newRecord) => ({
   type: INSERT_STARTED,

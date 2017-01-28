@@ -4,6 +4,7 @@ import {
   INSERT_STARTED,
   INSERT_FROM_SERVER,
   INSERT_FROM_SERVER_IF_NOT_EXISTS,
+  INSERT_FROM_SERVER_WITH_PK,
   INSERT_SUCCEEDED,
   INSERT_FAILED,
   UPDATE_STARTED,
@@ -90,6 +91,12 @@ export default function dbReducer(db = emptyDB, action) {
         ]
       };
     }
+
+    case INSERT_FROM_SERVER_WITH_PK:
+      return {
+        ...db,
+        [action.tableName]: _.assign({}, db[action.tableName], action.newRecords)
+      };
 
       // TODO kind of want "new" state to match the "dirty" state updates have
     case INSERT_STARTED:

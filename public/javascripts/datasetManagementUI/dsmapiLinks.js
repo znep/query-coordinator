@@ -16,3 +16,7 @@ export const transformResults = (transformId, limit, offset) => {
 };
 
 export const applyUpdate = `${updateBase}/apply`;
+
+export const errorTable = (inputSchemaId, outputSchemaId, columnId, limit, offset) =>
+  `${updateBase}/schema/${inputSchemaId}/errors/${outputSchemaId}` +
+    `?limit=${limit}&offset=${offset}&column_id=${columnId}`;

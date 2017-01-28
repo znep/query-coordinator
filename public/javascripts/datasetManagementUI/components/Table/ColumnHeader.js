@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-
+import TypeIcon from '../TypeIcon';
 import { soqlTypes, soqlProperties } from '../../lib/soqlTypes';
 
 const ColumnHeader = React.createClass({
@@ -34,6 +34,7 @@ const ColumnHeader = React.createClass({
           {column.display_name}
         </span>
         <br />
+        <TypeIcon type={column.soql_type} />
         <select
           name="col-type"
           value={column.soql_type}

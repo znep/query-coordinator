@@ -1,31 +1,40 @@
+// fyi, there's also public/javascripts/datasetLandingPage/lib/dataTypeMetadata.js
+
 export const soqlProperties = {
-  'SoQLText': {
+  SoQLText: {
     canonicalName: 'text', // The standard SODA2 API name
-    conversionTarget: true // Whether a simple to_$canonicalname function exists
+    conversionTarget: true, // Whether a simple to_$canonicalname function exists
+    icon: 'text'
   },
-  'SoQLNumber': {
+  SoQLNumber: {
     canonicalName: 'number',
-    conversionTarget: true
+    conversionTarget: true,
+    icon: 'number'
   },
-  'SoQLBoolean': {
+  SoQLBoolean: {
     canonicalName: 'boolean',
-    conversionTarget: true
+    conversionTarget: true,
+    icon: 'check'
   },
-  'SoQLFixedTimestamp': {
+  SoQLFixedTimestamp: {
     canonicalName: 'fixed_timestamp',
-    conversionTarget: true
+    conversionTarget: true,
+    icon: 'date'
   },
-  'SoQLFloatingTimestamp': {
+  SoQLFloatingTimestamp: {
     canonicalName: 'floating_timestamp',
-    conversionTarget: true
+    conversionTarget: true,
+    icon: 'date'
   },
-  'SoQLLocation': {
+  SoQLLocation: {
     canonicalName: 'location',
-    conversionTarget: false
+    conversionTarget: false,
+    sodaType: 'location'
   },
-  'SoQLPoint': {
+  SoQLPoint: {
     canonicalName: 'point',
-    conversionTarget: false
+    conversionTarget: false,
+    icon: 'map'
   }
 };
 

@@ -100,8 +100,7 @@ describe('components/ShowOutputSchema', () => {
   });
 
   // these overlap a bit with ColumnStatusTest, but that's not a bad thing IMO
-
-  describe('error counts', () => {
+  describe('error counts and flyouts', () => {
 
     it('properly render when the upload is done', () => {
       const store = getStoreWithOutputSchema();
@@ -124,13 +123,14 @@ describe('components/ShowOutputSchema', () => {
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
       expect(_.map(element.querySelectorAll('.col-name'), 'innerText')).to.eql(['arrest', 'block']);
       expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['SoQLText', 'SoQLText']);
-      expect(_.map(element.querySelectorAll('.col-errors'), 'innerText')).to.eql([
+      expect(_.map(element.querySelectorAll('.column-status-text'), 'innerText')).to.eql([
         '1' + I18n.show_output_schema.column_header.error_exists,
         '42' + I18n.show_output_schema.column_header.errors_exist
       ]);
     });
 
     it('properly render when the upload is still in progress', () => {
+      const SubI18n = I18n.show_output_schema.column_header;
       const store = getStoreWithOutputSchema();
       store.dispatch(updateFromServer('columns', {
         id: 50,
@@ -147,13 +147,25 @@ describe('components/ShowOutputSchema', () => {
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
       expect(_.map(element.querySelectorAll('.col-name'), 'innerText')).to.eql(['arrest', 'block']);
       expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['SoQLText', 'SoQLText']);
-      expect(_.map(element.querySelectorAll('.col-errors'), 'innerText')).to.eql([
-        '1' + I18n.show_output_schema.column_header.error_exists_scanning,
-        '42' + I18n.show_output_schema.column_header.errors_exist_scanning
+      expect(_.map(element.querySelectorAll('.column-status-text'), 'innerText')).to.eql([
+        '1' + SubI18n.error_exists_scanning,
+        '42' + SubI18n.errors_exist_scanning
+      ]);
+      expect(_.map(element.querySelectorAll('.col-errors .flyout'), 'innerText')).to.eql([
+        SubI18n.column_status_flyout.error_msg_singular.format({
+          num_errors: 1,
+          type: 'Text'
+        }) + '\n' + SubI18n.column_status_flyout.click_to_view,
+        SubI18n.column_status_flyout.error_msg_plural.format({
+          num_errors: 42,
+          type: 'Text'
+        }) + '\n' + SubI18n.column_status_flyout.click_to_view
       ]);
     });
 
   });
+
+  // TODO: test error count toggled state (here or column status?)
 
   describe('total row count', () => {
 
@@ -236,7 +248,5 @@ describe('components/ShowOutputSchema', () => {
     });
 
   });
-
-  // TODO: test progress bars not showing up during upload.... I thought I did test this!!!
 
 });

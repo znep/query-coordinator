@@ -39,7 +39,9 @@ function ShowUpload({ upload, latestOutputSchema, goToUploads }) {
             <ul>
               <li>
                 <Link
-                  to={Links.showOutputSchema(upload.id, latestOutputSchema.id, latestOutputSchema.id)}>
+                  to={Links.showOutputSchema(
+                    upload.id, latestOutputSchema.input_schema_id, latestOutputSchema.id
+                  )}>
                   {latestOutputSchema.id}
                 </Link>
               </li>

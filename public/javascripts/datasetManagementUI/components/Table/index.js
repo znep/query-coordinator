@@ -3,7 +3,8 @@ import ColumnHeader from './ColumnHeader';
 import ColumnStatus from './ColumnStatus';
 import TableBody from './TableBody';
 
-export default function Table({ db, totalRows, outputSchema, columns, updateColumnType }) {
+export default function Table({ db, path, outputSchema, totalRows,
+                                columns, errorsColumnId, updateColumnType }) {
   return (
     <table className="table table-condensed">
       <thead>
@@ -20,22 +21,27 @@ export default function Table({ db, totalRows, outputSchema, columns, updateColu
           {columns.map(column =>
             <ColumnStatus
               key={column.id}
+              path={path}
               column={column}
+              errorsColumnId={errorsColumnId}
               totalRows={totalRows} />
           )}
         </tr>
       </thead>
       <TableBody
         db={db}
-        columns={columns} />
+        columns={columns}
+        errorsColumnId={errorsColumnId} />
     </table>
   );
 }
 
 Table.propTypes = {
   db: PropTypes.object.isRequired,
+  path: PropTypes.object.isRequired,
   totalRows: PropTypes.number,
   outputSchema: PropTypes.object.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
-  updateColumnType: PropTypes.func.isRequired
+  updateColumnType: PropTypes.func.isRequired,
+  errorsColumnId: PropTypes.number
 };

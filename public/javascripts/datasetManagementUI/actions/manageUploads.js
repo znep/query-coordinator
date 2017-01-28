@@ -4,6 +4,7 @@ import * as dsmapiLinks from '../dsmapiLinks';
 import {
   insertFromServer,
   insertFromServerIfNotExists,
+  insertFromServerWithPk,
   insertStarted,
   insertSucceeded,
   insertFailed,
@@ -213,11 +214,12 @@ function fetchAndInsertDataForColumn(transform, outputColumn, offset, limit) {
       then(checkStatus).
       then(getJson).
       then((resp) => {
-        const newRecords = resp.resource.map((result, index) => ({
+        const recordsWithIndex = resp.resource.map((result, index) => ({
           index,
           ...result
         }));
-        dispatch(insertFromServer(`column_${outputColumn.id}`, newRecords));
+        const keyedByIndex = _.keyBy(recordsWithIndex, 'index');
+        dispatch(insertFromServerWithPk(`column_${outputColumn.id}`, keyedByIndex));
         // TODO: could just use `db.column_${column_id}.length` instead of this
         const updateFetchedRows = updateFromServer('columns', {
           id: outputColumn.id,

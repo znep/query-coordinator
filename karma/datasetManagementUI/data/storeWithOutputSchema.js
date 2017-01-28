@@ -3,6 +3,9 @@ import { getDefaultStore } from '../testStore';
 
 export function getStoreWithOutputSchema() {
   const store = getDefaultStore();
+  store.dispatch(insertFromServer('input_schemas', {
+    id: 4,
+  }));
   store.dispatch(insertFromServer('output_schemas', {
     id: 18,
     input_schema_id: 4

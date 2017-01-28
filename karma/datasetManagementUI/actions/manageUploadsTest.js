@@ -131,7 +131,7 @@ describe('actions/manageUploads', () => {
         total: 100
       });
 
-      this.status = status
+      this.status = status;
       this.responseText = JSON.stringify(body);
 
       this.onload();

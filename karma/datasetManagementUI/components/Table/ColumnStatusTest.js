@@ -12,11 +12,20 @@ describe('components/Table/ColumnStatus', () => {
     )
   );
 
+  const pathProp = {
+    path: {
+      uploadId: 0,
+      inputSchemaId: 0,
+      outputSchemaId: 0
+    }
+  };
+
   describe('when there are no errors', () => {
 
     it('renders correctly when upload is done and column is done', () => {
       const element = renderInTable(
         <ColumnStatus
+          {...pathProp}
           column={{ contiguous_rows_processed: 5000 }}
           totalRows={5000} />
       );
@@ -28,6 +37,7 @@ describe('components/Table/ColumnStatus', () => {
     it('renders correctly when upload is done and column is in progress', () => {
       const element = renderInTable(
         <ColumnStatus
+          {...pathProp}
           column={{ contiguous_rows_processed: 2500 }}
           totalRows={5000} />
       );
@@ -39,6 +49,7 @@ describe('components/Table/ColumnStatus', () => {
     it('renders correctly when upload is in progress, column is in progress', () => {
       const element = renderInTable(
         <ColumnStatus
+          {...pathProp}
           column={{ contiguous_rows_processed: 2500 }}
           totalRows={undefined} />
       );
@@ -51,6 +62,7 @@ describe('components/Table/ColumnStatus', () => {
     it('renders correctly when neither upload progress nor column progress is known', () => {
       const element = renderInTable(
         <ColumnStatus
+          {...pathProp}
           column={{ id: 5 }}
           totalRows={undefined} />
       );
@@ -67,6 +79,7 @@ describe('components/Table/ColumnStatus', () => {
     it('renders correctly when upload is done and column is done', () => {
       const element = renderInTable(
         <ColumnStatus
+          {...pathProp}
           column={{ contiguous_rows_processed: 5000, num_transform_errors: 5 }}
           totalRows={5000} />
       );
@@ -78,6 +91,7 @@ describe('components/Table/ColumnStatus', () => {
     it('renders correctly when upload is done and column is in progress', () => {
       const element = renderInTable(
         <ColumnStatus
+          {...pathProp}
           column={{ contiguous_rows_processed: 2500, num_transform_errors: 5 }}
           totalRows={5000} />
       );
@@ -89,6 +103,7 @@ describe('components/Table/ColumnStatus', () => {
     it('renders correctly when upload is in progress, column is in progress', () => {
       const element = renderInTable(
         <ColumnStatus
+          {...pathProp}
           column={{ contiguous_rows_processed: 2500, num_transform_errors: 5 }}
           totalRows={undefined} />
       );

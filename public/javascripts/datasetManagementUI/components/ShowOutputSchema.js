@@ -33,9 +33,15 @@ function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
 }
 
 export function ShowOutputSchema({ db, upload, inputSchema, outputSchema,
-                                   columns, canApplyUpdate,
+                                   columns, errorsColumnId, canApplyUpdate,
                                    goToUpload, updateColumnType, applyUpdate }) {
   const SubI18n = I18n.show_output_schema;
+  const path = {
+    uploadId: upload.id,
+    inputSchemaId: inputSchema.id,
+    outputSchemaId: outputSchema.id
+  };
+
   let uploadProgress;
   switch (upload.__status__.type) {
     case STATUS_UPDATING:
@@ -86,9 +92,11 @@ export function ShowOutputSchema({ db, upload, inputSchema, outputSchema,
             <span className="total-row-count">{totalRowCountMsg}</span>
             <Table
               db={db}
+              path={path}
               columns={columns}
               totalRows={inputSchema.total_rows}
               outputSchema={outputSchema}
+              errorsColumnId={errorsColumnId}
               updateColumnType={updateColumnType} />
           </div>
         </ModalContent>
@@ -115,17 +123,22 @@ ShowOutputSchema.propTypes = {
   goToUpload: PropTypes.func.isRequired,
   updateColumnType: PropTypes.func.isRequired,
   applyUpdate: PropTypes.func.isRequired,
+  errorsColumnId: PropTypes.number,
   canApplyUpdate: PropTypes.bool.isRequired
 };
 
 function mapStateToProps(state, ownProps) {
   const params = ownProps.params;
-  return query(
+  const queryResults = query(
     state.db,
     _.toNumber(params.uploadId),
     _.toNumber(params.inputSchemaId),
     _.toNumber(params.outputSchemaId)
   );
+  return {
+    ...queryResults,
+    errorsColumnId: params.errorsColumnId ? _.toNumber(params.errorsColumnId) : null
+  };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {

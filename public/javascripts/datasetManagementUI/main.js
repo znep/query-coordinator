@@ -1,4 +1,3 @@
-import 'script!jquery';
 import 'babel-polyfill-safe';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -17,6 +16,7 @@ import ShowUpdate from './components/ShowUpdate';
 import ManageMetadata from './components/ManageMetadata';
 import ManageUploads from './components/ManageUploads';
 import ShowOutputSchema from './components/ShowOutputSchema';
+import { loadErrorTable } from './actions/showOutputSchema';
 import ShowUpload from './components/ShowUpload';
 import NoMatch from './components/NoMatch';
 import rootReducer from './reducers';
@@ -67,6 +67,10 @@ ReactDOM.render(
         <Route
           path="uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId"
           component={ShowOutputSchema} />
+        <Route
+          path="uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/errors/:errorsColumnId"
+          component={ShowOutputSchema}
+          onEnter={(nextState) => store.dispatch(loadErrorTable(nextState))} />
         <Route path="*" component={NoMatch} />
       </Route>
     </Router>

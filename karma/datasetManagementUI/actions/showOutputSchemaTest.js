@@ -1,8 +1,17 @@
 import { push } from 'react-router-redux';
 import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
+import errorTableResponse from '../data/errorTableResponse';
 
-import { getNewOutputSchemaAndColumns, updateActions } from 'actions/showOutputSchema';
-import { batch, insertSucceeded, insertFromServerIfNotExists } from 'actions/database';
+import {
+  getNewOutputSchemaAndColumns,
+  updateActions,
+  loadErrorTable
+} from 'actions/showOutputSchema';
+import {
+  batch,
+  insertSucceeded,
+  insertFromServerIfNotExists
+} from 'actions/database';
 
 describe('actions/showOutputSchema', () => {
 
@@ -111,6 +120,77 @@ describe('actions/showOutputSchema', () => {
       const actions = updateActions(inputSchemas, routing, oldSchema, newSchema, oldColIds, resp);
 
       expect(_.filter(actions, act => typeof(act) !== 'function')).to.deep.equal(expected);
+    });
+
+  });
+
+  describe('loadErrorTable', () => {
+
+    it('fetches errors, inserts them into column tables, and updates error_indices in columns table', (done) => {
+      const store = getStoreWithOutputSchema();
+      const nextRouterState = {
+        params: {
+          inputSchemaId: 4,
+          outputSchemaId: 18,
+          errorsColumnId: 50
+        }
+      };
+      const oldFetch = window.fetch;
+      window.fetch = (url, params) => {
+        const responses = {
+          '/api/update/hehe-hehe/0/schema/4/errors/18?limit=50&offset=0&column_id=50': errorTableResponse
+        };
+        if (responses[url]) {
+          return new Promise((resolve) => {
+            resolve({
+              status: 200,
+              json: () => (new Promise((resolve) => {
+                resolve(errorTableResponse);
+              }))
+            })
+          });
+        } else {
+          done(new Error(`no mocked url ${url}`));
+        }
+      };
+      store.dispatch(loadErrorTable(nextRouterState));
+      setTimeout(() => {
+        window.fetch = oldFetch;
+        const db = store.getState().db;
+        const column50 = _.find(db.columns, { id: 50 });
+        expect(column50.error_indices).to.deep.equal(['0', '7']);
+        expect(db.column_50).to.deep.equal({
+          '0': {
+            error: {
+              inputs: {
+                arrest: {
+                  ok: "031A"
+                }
+              },
+              message: "Failed to convert \"031A\" to number"
+            }
+          },
+          '7': {
+            error: {
+              inputs: {
+                arrest: {
+                  ok: "031A"
+                }
+              },
+              message: "Failed to convert \"031A\" to number"
+            }
+          }
+        });
+        expect(db.column_51).to.deep.equal({
+          '0': {
+            ok: "foo"
+          },
+          '7': {
+            ok: "bar"
+          }
+        });
+        done();
+      }, 0);
     });
 
   });

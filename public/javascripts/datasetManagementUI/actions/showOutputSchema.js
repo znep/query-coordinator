@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { push } from 'react-router-redux';
 import * as dsmapiLinks from '../dsmapiLinks';
 import * as Links from '../links';
@@ -6,6 +7,8 @@ import {
   insertStarted,
   insertSucceeded,
   insertFailed,
+  updateFromServer,
+  insertFromServerWithPk,
   insertFromServerIfNotExists
 } from './database';
 import { socrataFetch, checkStatus, getJson } from '../lib/http';
@@ -119,4 +122,61 @@ export function updateActions(inputSchemas, routing, oldSchema, newSchema, oldCo
   actions.push(push(newOutputSchemaPath));
 
   return actions;
+}
+
+
+export function loadErrorTable(nextState) {
+  const { inputSchemaId, outputSchemaId, errorsColumnId } = nextState.params;
+  return (dispatch) => {
+    const limit = 50;
+    const fetchOffset = 0;
+    const path = dsmapiLinks.errorTable(
+      inputSchemaId, outputSchemaId, errorsColumnId, limit, fetchOffset
+    );
+    socrataFetch(path).
+      then(checkStatus).
+      then(getJson).
+      then((resp) => {
+        const outputSchema = resp[0];
+        const withoutSchemaRow = resp.slice(1);
+        const newRecordsByColumn = [];
+        _.range(outputSchema.output_columns.length).forEach(() => {
+          newRecordsByColumn.push({});
+        });
+        withoutSchemaRow.forEach(({ row, offset }) => {
+          if (_.isArray(row)) { // as opposed to row errors, which are not
+            row.forEach((colResult, colIdx) => {
+              newRecordsByColumn[colIdx][offset] = colResult;
+            });
+          }
+        });
+        dispatch(batch(newRecordsByColumn.map((newRecords, idx) => {
+          const theColumnId = outputSchema.output_columns[idx].id;
+          return insertFromServerWithPk(`column_${theColumnId}`, newRecords);
+        })));
+        dispatch(batch(newRecordsByColumn.map((newRecords, idx) => {
+          const theColumnId = outputSchema.output_columns[idx].id;
+          const errorIndices = _.map(newRecords,
+            (newRecord, index) => ({
+              ...newRecord,
+              index
+            })).
+            filter((newRecord) => newRecord.error).
+            map((newRecord) => newRecord.index);
+          // TODO: how to make this a set which gets merged when we update?
+          // maybe update should just take a primary key and a function
+          // that would be SQL-like
+          // not supposed to have functions in actions though
+          // boo
+          return updateFromServer('columns', {
+            id: theColumnId,
+            error_indices: errorIndices
+          });
+        })));
+      }).
+      catch((error) => {
+        // TODO: maybe add a notification
+        console.error('failed to load error table', error);
+      });
+  };
 }

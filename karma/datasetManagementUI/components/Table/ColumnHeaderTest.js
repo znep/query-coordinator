@@ -9,7 +9,7 @@ describe('components/Table/ColumnHeader', () => {
       id: 52
     },
     column: {
-      soql_type: 'bar',
+      soql_type: 'SoQLText',
       name: 'foo'
     },
     updateColumnType: _.noop

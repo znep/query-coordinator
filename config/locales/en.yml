@@ -1586,26 +1586,30 @@ en:
       upload_failed: Upload Failed.
       import_failed: Import Failed.
     show_output_schema:
-       column_header:
-         scanning: Still scanning for errors...
-         error_exists: Error total
-         error_exists_scanning: Error found so far
-         errors_exist: Errors total
-         errors_exist_scanning: Errors found so far
-         no_errors_exist: All cells will import correctly
-         type_display_names:
-           SoQLText: Text
-           SoQLNumber: Number
-           SoQLBoolean: Checkbox
-           SoQLFixedTimestamp: Date & Time (with timezone)
-           SoQLFloatingTimestamp: Date & Time
-           SoQLLocation: Location
-           SoQLPoint: Point
-       rows_so_far: rows so far
-       rows_total: rows total
-       upload_done: Upload Done
-       upload_failed: Upload Failed
-       upload_in_progress: Upload In Progress
+      column_header:
+        column_status_flyout:
+          error_msg_plural: "{num_errors} rows didn't match the type {type}"
+          error_msg_singular: "{num_errors} row didn't match the type {type}"
+          click_to_view: Click to view
+        error_exists: Error total
+        error_exists_scanning: Error found so far
+        errors_exist: Errors total
+        errors_exist_scanning: Errors found so far
+        no_errors_exist: All cells will import correctly
+        type_display_names:
+          SoQLText: Text
+          SoQLNumber: Number
+          SoQLBoolean: True/False
+          SoQLFixedTimestamp: Date & Time (with timezone)
+          SoQLFloatingTimestamp: Date & Time
+          SoQLLocation: Location
+          SoQLPoint: Point
+        scanning: Still scanning for errors...
+      rows_so_far: rows so far
+      rows_total: rows total
+      upload_done: Upload Done
+      upload_failed: Upload Failed
+      upload_in_progress: Upload In Progress
     upload_warning: An upload is in progress, and will be left incomplete if you close this tab.
   dataslate:
     component:

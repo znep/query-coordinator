@@ -69,7 +69,7 @@ export class ExternalResourceForm extends Component {
           id={`${prefix}-${kebabKey}-label`}
           htmlFor={`${prefix}-${kebabKey}`}
           className={`block-label label-${kebabKey}`}>
-          {_.snakeCase(key)}{/* TODO: localization. lookup `key`s in enyml. */}
+          {_.get(I18n, `external_resource_wizard.form.fields.${_.snakeCase(key)}.label`, kebabKey)}
         </label>
 
         {button}
@@ -81,14 +81,15 @@ export class ExternalResourceForm extends Component {
   render() {
     const titleField = this.renderInputField('title', {
       maxLength: 80,
-      'placeholder': 'Add a title'
+      'placeholder': _.get(I18n, 'external_resource_wizard.form.fields.title.placeholder', 'Add a title')
     });
     const descriptionField = this.renderInputField('description', {
       maxLength: 160,
-      'placeholder': 'Description (optional)'
+      'placeholder': _.get(I18n, 'external_resource_wizard.form.fields.description.placeholder',
+        'Add a description (optional)')
     });
     const urlField = this.renderInputField('url', {
-      'placeholder': 'https://example.com'
+      'placeholder': _.get(I18n, 'external_resource_wizard.form.fields.url.placeholder', 'https://example.com')
     });
 
     const previewImageButton = (
@@ -99,17 +100,18 @@ export class ExternalResourceForm extends Component {
           e.preventDefault();
           $('.preview-image').click();
         }}>
-        Choose an image
+        {_.get(I18n, 'external_resource_wizard.form.fields.preview_image.button_text', 'Choose an image')}
       </button>
     );
     const previewImageField = this.renderInputField('previewImage', {
       type: 'file',
-      className: 'file-input preview-image hidden',
+      className: 'file-input preview-image hidden'
     }, previewImageButton);
 
     const imageWarning = this.state.isImageInvalid ?
-      <div className="alert error">Error uploading image. Acceptable formats are jpg, jpeg, png, or gif.{/* TODO: localization */}</div> :
-      null;
+      <div className="alert error">
+        {_.get(I18n, 'external_resource_wizard.form.fields.preview_image.error')}
+      </div> : null;
 
     return (
       <form className="external-resource-form">

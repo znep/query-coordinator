@@ -70,6 +70,8 @@ export class Pager extends Component {
       prevLinkDisabled ? 'disabled' : null
     ].filter((className) => className).join(' ');
 
+    const prevPageText = _.get(I18n, 'asset_selector.results_container.pager.previous_page', 'Previous page');
+
     const prevLink = (
       <a
         href="#"
@@ -77,10 +79,12 @@ export class Pager extends Component {
         onClick={(e) => this.prevLinkClick(e)}
         onKeyDown={handleKeyPress((e) => this.prevLinkClick(e))}
         role="button"
-        aria-label="Previous page"
-        title="Previous page">{/* TODO: localization */}
+        aria-label={prevPageText}
+        title={prevPageText}>
         <span className="socrata-icon-arrow-left"></span>
-        <span className="accessible">Previous page</span>{/* TODO: localization */}
+        <span className="accessible">
+          {prevPageText}
+        </span>
       </a>
     );
 
@@ -91,6 +95,8 @@ export class Pager extends Component {
       nextLinkDisabled ? 'disabled' : null
     ].filter((className) => className).join(' ');
 
+    const nextPageText = _.get(I18n, 'asset_selector.results_container.pager.next_page', 'Next page');
+
     const nextLink = (
       <a
         href="#"
@@ -98,10 +104,10 @@ export class Pager extends Component {
         onClick={(e) => this.nextLinkClick(e)}
         onKeyDown={handleKeyPress((e) => this.nextLinkClick(e))}
         role="button"
-        aria-label="Next page"
-        title="Next page">{/* TODO: localization */}
+        aria-label={nextPageText}
+        title={nextPageText}>
         <span className="socrata-icon-arrow-right"></span>
-        <span className="accessible">Next page</span>{/* TODO: localization */}
+        <span className="accessible">{nextPageText}</span>
       </a>
     );
 
@@ -111,17 +117,22 @@ export class Pager extends Component {
       this.state.pageIsInvalid ? 'error' : null
     ].filter((className) => className).join(' ');
 
+    const pageNumberText =
+      `${_.get(I18n, 'asset_selector.results_container.pager.page', 'Page')} ${this.props.currentPage}`;
+
     const currentPageInput = (
       <div className={currentPageInputClasses}>
         <input
           type="text"
-          aria-label={`Current page: ${this.props.currentPage}`}
+          aria-label={pageNumberText}
           defaultValue={this.props.currentPage}
           onBlur={this.pageInputChange}
           onKeyPress={this.pageInputKeyPress} />
-        <span className="accessible">Page {this.props.currentPage}</span>{/* TODO: localization */}
+        <span className="accessible">{pageNumberText}</span>
       </div>
     );
+
+    const lastPageText = _.get(I18n, 'asset_selector.results_container.pager.last_page', 'Last page');
 
     const lastPageLink = (
       <a
@@ -130,17 +141,19 @@ export class Pager extends Component {
         onClick={(e) => this.lastLinkClick(e)}
         onKeyDown={handleKeyPress((e) => this.lastLinkClick(e))}
         role="button"
-        aria-label="Last page"
-        title="Last page">{/* TODO: localization */}
+        aria-label={lastPageText}
+        title={lastPageText}>
         {this.lastPage()}
-        <span className="accessible">Last page</span>{/* TODO: localization */}
+        <span className="accessible">{lastPageText}</span>
       </a>
     );
 
     return (
       <div className="pager">
         {prevLink}
-        {currentPageInput} of {lastPageLink}{/* TODO: localization */}
+        {currentPageInput}
+        {` ${_.get(I18n, 'asset_selector.results_container.of', 'of')} `}
+        {lastPageLink}
         {nextLink}
       </div>
     );

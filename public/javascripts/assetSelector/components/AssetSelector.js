@@ -15,10 +15,15 @@ export const AssetSelector = (props) => {
     'modal-hidden': !props.modalIsOpen
   });
 
+  const headerTitle = _.isEmpty(props.category) ?
+    _.get(I18n, 'asset_selector.header_title_without_category', 'Select Featured Content') :
+    _.get(I18n, 'asset_selector.header_title_with_category',
+      `Select Featured Content in ${props.category}`).replace('%{category}', props.category);
+
   return (
     <div className={modalClassNames} data-modal-dismiss>
       <div className={'modal-container no-footer'}>
-        <Header title={'Select Featured Content in [category]'} />{/* TODO: localization, [category] */}
+        <Header title={headerTitle} />
         <ResultsContainer
           additionalTopbarComponents={props.additionalTopbarComponents}
           category={props.category}

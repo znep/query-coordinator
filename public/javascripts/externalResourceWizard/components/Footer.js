@@ -11,7 +11,7 @@ export const Footer = (props) => {
           key="cancel"
           className="btn btn-default btn-sm cancel-button"
           onClick={props.dispatchCloseExternalResourceWizard}>
-          Cancel
+          {_.get(I18n, 'external_resource_wizard.footer.cancel', 'Cancel')}
         </button>
 
         <button
@@ -19,7 +19,7 @@ export const Footer = (props) => {
           className="btn btn-sm btn-primary select-button"
           disabled={props.selectIsDisabled}
           onClick={props.onSelect}>
-          Select
+          {_.get(I18n, 'external_resource_wizard.footer.select', 'Select')}
         </button>
       </div>
     </footer>

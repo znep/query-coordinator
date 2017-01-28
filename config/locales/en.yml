@@ -451,6 +451,28 @@ en:
             text_one: Create your page using this flexible way to summarize data.
             text_two: Learn more by visiting the <a href="https://support.socrata.com/hc/en-us/articles/216510338">Using the Aggregation Function</a> article on the Socrata Knowledge Base.  As always, we'd love your feedback.
             title: Try it yourself!
+  asset_selector:
+    action_buttons:
+      back: Back
+      select: Select
+    header_title_with_category: Select Featured Content in %{category}
+    header_title_without_category: Select Featured Content
+    results_container:
+      no_results: No results
+      of: of
+      pager:
+        page: Page
+        previous_page: Previous page
+        next_page: Next page
+        last_page: Last page
+      sort:
+        sort_by: Sort by
+        sort_types:
+          most_relevant: Most Relevant
+          most_accessed: Most Accessed
+          alphabetical: Alphabetical
+          recently_added: Recently Added
+          recently_updated: Recently Updated
   catalog_landing_page:
     search:
       hint: Search
@@ -1794,6 +1816,31 @@ en:
       no_permission: Error
       were_sorry: The current user doesn't have access to this resource.
     to_whence_you_came: to where you came from.
+  external_resource_wizard:
+    header_title: Feature an External Resource
+    open_wizard_button: Feature an External Resource
+    preview: Preview
+    footer:
+      cancel: Cancel
+      select: Select
+    form:
+      description:
+        create_a_link: Create a link to an external resource for this category.
+        for_example: For example, this could be a visualization on the web, a blog post, or a link to another part of your site.
+      fields:
+        title:
+          label: Title
+          placeholder: Add a title
+        description:
+          label: Description
+          placeholder: Add a description (optional)
+        url:
+          label: URL
+          placeholder: https://example.com
+        preview_image:
+          label: Preview Image
+          button_text: Choose an image
+          error: Error uploading image. Acceptable formats are jpg, jpeg, png, or gif.
   govstat:
     admin:
       visibility_controls_disabled:

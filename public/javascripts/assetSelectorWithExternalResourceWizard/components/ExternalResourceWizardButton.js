@@ -11,7 +11,7 @@ export const ExternalResourceWizardButton = (props) => {
         props.onClick();
         props.dispatchOpenExternalResourceWizard();
       }}>
-      Feature an External Resource{/* TODO: Localization */}
+      {_.get(I18n, 'external_resource_wizard.open_wizard_button', 'Feature an External Resource')}
     </button>
   );
 };

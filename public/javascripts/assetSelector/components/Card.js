@@ -63,7 +63,7 @@ export class Card extends Component {
           onKeyDown={handleKeyPress(() => this.onSelect(cardProps))}>
           <div className={cardOverlayClasses}>
             <button className="select-button btn btn-primary">
-              Select{/* TODO: Localization */}
+              {_.get(I18n, 'asset_selector.action_buttons.select', 'Select')}
             </button>
           </div>
         </div>

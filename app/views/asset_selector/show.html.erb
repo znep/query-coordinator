@@ -23,21 +23,26 @@
 
 <% content_for :scripts do %>
   <script>
-    // Stub I18n so we can use viewCardHelpers.
-    // TODO remove this once it isn't necessary, when we have a plan for config/translations
-    window.I18n = {
-      view_widget: {
-        views: 'Views',
-        view: 'View'
-      },
-      related_views: {
-        view: 'View'
-      },
-      featured_content_modal: {
-        external_resource_form: {}
-      }
+
+    window.I18n = <%== json_escape(@translations.to_json) %>;
+
+    /* Extra shit for DSLP viewCard Helpers. Shouldn't be needed soon. see comment below. */
+    window.I18n.view_widget = {
+      views: 'Views',
+      view: 'View'
+    };
+    window.I18n.related_views = {
+      view: 'View'
+    };
+    window.I18n.featured_content_modal = {
+      external_resource_form: {}
     };
 
+    /*
+      Need to set serverConfig on window in order to use viewCardHelpers formatDate.
+      Randy is working on moving those helpers to a central location that doesn't have these weird
+      DSLP-specific dependencies. Once that is done, we can get rid of this.
+    */
     window.serverConfig = {};
   </script>
 

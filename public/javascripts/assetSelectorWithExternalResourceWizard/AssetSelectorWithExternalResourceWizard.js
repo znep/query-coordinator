@@ -17,6 +17,7 @@ export const AssetSelectorWithExternalResourceWizard = (props) => {
     $('body').removeClass('modal-open');
   }
 
+  // TODO: remove these dummy divs
   const demoDivStyle = {
     display: 'inline-flex',
     alignItems: 'center',

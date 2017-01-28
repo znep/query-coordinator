@@ -42,7 +42,7 @@ export class ExternalResourceWizard extends Component {
       description: _.isEmpty(description.value) ? null : description.value,
       imageUrl: _.isEmpty(previewImage.value) ? null : previewImage.value,
       linkProps: {
-        'aria-label': 'Preview' // TODO: localization
+        'aria-label': _.get(I18n, 'external_resource_wizard.preview', 'Preview')
       }
     };
 
@@ -51,7 +51,8 @@ export class ExternalResourceWizard extends Component {
     return (
       <div className={modalClassNames} data-modal-dismiss>
         <div className="modal-container">
-          <Header title={'Feature an External Resource'} />
+          <Header
+            title={_.get(I18n, 'external_resource_wizard.header_title', 'Feature an External Resource')} />
           <div className="modal-content">
             <div className="centered-content">
               <BackButton
@@ -61,11 +62,10 @@ export class ExternalResourceWizard extends Component {
                 }} />
 
               <div className="description">
-                <p>{/* TODO: localization */}
-                  <strong>Create a link to an external resource for this category.</strong>
+                <p>
+                  <strong>{_.get(I18n, 'external_resource_wizard.form.description.create_a_link')}</strong>
                   <br />
-                  For example, this could be a visualization on the web, a blog post,
-                  or a link to another part of your site.
+                  {_.get(I18n, 'external_resource_wizard.form.description.for_example')}
                 </p>
               </div>
 

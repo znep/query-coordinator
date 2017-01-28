@@ -3,7 +3,8 @@ import _ from 'lodash';
 
 export const BackButton = (props) => (
   <button className="btn btn-default btn-sm close-modal back-button" onClick={props.onClick}>
-    <span className="socrata-icon-arrow-prev"></span> Back{/* TODO: localization */}
+    <span className="socrata-icon-arrow-prev"></span>
+    {` ${_.get(I18n, 'asset_selector.action_buttons.back', 'Back')}`}
   </button>
 );
 

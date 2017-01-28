@@ -9,7 +9,9 @@ export const ResultCount = (props) => {
 
   return (
     <div className="result-count">
-      {pageResults.first}-{pageResults.last} of {getViewCountLabel(props.total)}
+      {pageResults.first}-{pageResults.last}
+      {` ${_.get(I18n, 'asset_selector.results_container.of', 'of')} `}
+      {getViewCountLabel(props.total)}
     </div>
   );
 };

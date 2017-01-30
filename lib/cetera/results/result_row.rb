@@ -62,6 +62,7 @@ module Cetera
 
           # Cetera is replacing type 'href' with type 'link',
           'href' => ::Cetera::Displays::Link,
+          'federated_href' => ::Cetera::Displays::Link,
           'link' => ::Cetera::Displays::Link,
 
           'file' => ::Cetera::Displays::File,

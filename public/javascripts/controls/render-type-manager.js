@@ -198,6 +198,28 @@
       }
     },
 
+    federated: {
+      name: 'href',
+      domId: 'staticRenderType',
+      stylesheets: [{
+        assets: 'dataset-about-minimal',
+        hasSpecialSelectors: true
+      }, {
+        assets: 'display-blob'
+      }],
+      javascripts: [{
+        assets: 'shared-blob'
+      }],
+      scrollsInline: false,
+      initFunction: function($dom, settings) {
+        $dom.blobDataset($.extend({
+            view: settings.view,
+            editEnabled: settings.editEnabled
+          }, settings.common,
+          settings.href));
+      }
+    },
+
     blob: {
       name: 'blob',
       domId: 'staticRenderType',

@@ -328,7 +328,9 @@ class SiteAppearance
   end
 
   def custom_content_activated?
-    property(SiteAppearance.custom_content_activation_state_property_name).try(:dig, :value, :custom)
+    property(SiteAppearance.custom_content_activation_state_property_name).
+      try(:dig, :value).
+      try(:dig, :custom) == true
   end
 
   private

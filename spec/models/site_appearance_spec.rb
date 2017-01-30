@@ -267,5 +267,49 @@ describe SiteAppearance do
         end
       end
     end
+
+    describe '.custom_content_activated?' do
+      it 'returns false if the property is not an object' do
+        site_appearance = default_site_appearance
+        allow(site_appearance).to receive(:property).and_return(nil)
+        expect(site_appearance.custom_content_activated?).to be(false)
+      end
+
+      it 'returns false if the property value is not an object' do
+        site_appearance = default_site_appearance
+        allow(site_appearance).to receive(:property).and_return({
+          :name => 'activation_state',
+          :value => 'blah'
+        })
+        expect(site_appearance.custom_content_activated?).to be(false)
+      end
+
+      it 'returns false if the property value specifies false' do
+        site_appearance = default_site_appearance
+        allow(site_appearance).to receive(:property).and_return({
+          :name => 'activation_state',
+          :value => {'custom': false}
+        })
+        expect(site_appearance.custom_content_activated?).to be(false)
+      end
+
+      it 'returns false if the property value is not a boolean' do
+        site_appearance = default_site_appearance
+        allow(site_appearance).to receive(:property).and_return({
+          :name => 'activation_state',
+          :value => {'custom': 'true'}
+        })
+        expect(site_appearance.custom_content_activated?).to be(false)
+      end
+
+      it 'returns true if the property value specifies true' do
+        site_appearance = default_site_appearance
+        allow(site_appearance).to receive(:property).and_return({
+          :name => 'activation_state',
+          :value => {'custom': true}
+        })
+        expect(site_appearance.custom_content_activated?).to be(true)
+      end
+    end
   end
 end

@@ -342,17 +342,14 @@ module SocrataSiteChrome
       site_chrome_custom_content.fetch(pub_stage)
     end
 
-    def render_custom_content_html(
-      content: {},
-      section_id: nil,
-      custom_content_class: nil,
-      size: nil)
+    def render_custom_content_html(content: {}, section_id: nil, custom_content_class: nil, size: nil)
       begin
         content_tag(
           :div,
           raw(ERB.new(content[:html].to_s).result),
           :id => section_id.to_s,
-          :class => "#{custom_content_class} #{size}".strip)
+          :class => "#{custom_content_class} #{size}".strip
+        )
       rescue StandardError, SyntaxError => e
         error_msg = "Error parsing custom html: #{e.inspect}"
         Rails.logger.debug(error_msg)

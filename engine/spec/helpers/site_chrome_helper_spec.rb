@@ -770,4 +770,39 @@ describe SocrataSiteChrome::SiteChromeHelper do
       expect(helper.current_version_is_greater_than_or_equal?('0.2')).to eq(true)
     end
   end
+
+  describe '#render_custom_content_html' do
+    def dummy_custom_content
+      {
+        :html => '<div id="test">test html</div>',
+        :css => '#test { color: blue; }',
+        :js => 'console.log("hi");'
+      }
+    end
+
+    it 'uses the specified id and classname in the rendered html' do
+      result = helper.render_custom_content_html(
+        content: dummy_custom_content,
+        section_id: 'test-id',
+        custom_content_class: 'test-class',
+        size: nil
+      )
+
+      expect(result).to match(/id=\"test-id\"/)
+      expect(result).to match(/class=\"test-class\"/)
+      expect(result).to_not match(/small/)
+      expect(result).to match(/test html/)
+    end
+
+    it 'adds the size param to the classnames' do
+      result = helper.render_custom_content_html(
+        content: dummy_custom_content,
+        section_id: 'test-id',
+        custom_content_class: 'test-class',
+        size: 'small'
+      )
+
+      expect(result).to match(/class=\"test-class small\"/)
+    end
+  end
 end

@@ -18,6 +18,9 @@ module.exports = _.defaultsDeep({
   ]),
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/datasetManagementUI/.eslintrc.json'),
+  externals: {
+    jquery: true
+  },
   module: {
     loaders: [
       {

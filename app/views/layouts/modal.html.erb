@@ -8,8 +8,8 @@
   <%= stylesheet_link_tag 'application', media: 'all' %>
   <%= render 'shared/google_analytics_script' %>
 </head>
-<body class="<%= open_performance_enabled? ? 'open-performance-enabled' : '' %>">
-  <%== site_chrome_admin_header(request, response) if open_performance_enabled? %>
+<body class="<%= render_admin_header? ? 'open-performance-enabled' : '' %>">
+  <%== site_chrome_admin_header(request, response) if render_admin_header? %>
   <%= yield %>
   <%= site_chrome_javascript_tag %>
 </body>

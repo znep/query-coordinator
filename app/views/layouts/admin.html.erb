@@ -11,7 +11,7 @@
   <%= render 'shared/google_analytics_script' %>
 </head>
 <body>
-  <%== site_chrome_admin_header(request, response) if open_performance_enabled? %>
+  <%== site_chrome_admin_header(request, response) if render_admin_header? %>
 
   <div class="body-wrapper">
     <% flash.each do |name, msg| -%>

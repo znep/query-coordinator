@@ -75,6 +75,32 @@ RSpec.describe FeaturesHelper, type: :helper do
     end
   end
 
+  describe '#render_admin_header?' do
+    it 'returns false if feature flag and feature are off' do
+      set_features
+      set_feature_flags
+      expect(helper.render_admin_header?).to eq(false)
+    end
+
+    it('returns true if feature flag is on') do
+      set_features
+      set_feature_flags('show_govstat_header' => true)
+      expect(helper.render_admin_header?).to eq(true)
+    end
+
+    it('returns true if govstat feature is on') do
+      set_features(%w(govstat))
+      set_feature_flags
+      expect(helper.render_admin_header?).to eq(true)
+    end
+
+    it('returns true if both govstat and feature flag are on') do
+      set_features(%w(govstat))
+      set_feature_flags('show_govstat_header' => true)
+      expect(helper.render_admin_header?).to eq(true)
+    end
+  end
+
   describe '#staging_lockdown_enabled?' do
     it 'returns true if the corresponding feature is enabled' do
       set_features

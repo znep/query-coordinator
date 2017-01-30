@@ -85,7 +85,7 @@ There is a Jenkins job responsible for PR testing (see styleguide-pull-request-t
 #### Releasing Styleguide
 There are two parts to releasing styleguide:
 
-1. Publish an NPM package to artifactory. This is fully automated (see styleguide-publisher). :tada:
+1. Publish an NPM package to artifactory. This is happens automatically via Jenkins (the "styleguide-publisher" job) when you merge to master. :tada:
 
     If you need to run a manual release:
 

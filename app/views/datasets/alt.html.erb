@@ -173,18 +173,6 @@
 <%- end -%>
 
 <div class="altMeta">
-  <a name="views" tabindex="-1"></a>
-  <h2>Saved Views</h2>
-  <% if @view.filters.size > 0 %>
-    <ul class="metaDataList">
-      <% @view.filters.each do |filter| %>
-        <li><%= link_to filter.name, alt_view_path(filter) %></li>
-      <% end %>
-    </ul>
-  <% else %>
-    <p>No other views on this dataset</p>
-  <% end %>
-
   <% if @view.module_enabled? :allow_comments %>
     <a name="comments" tabindex="-1"></a>
     <h2>Post a Comment</h2>

@@ -7,6 +7,8 @@ const I18n = require('../I18n');
 const makeSocrataTimeDataRequest = require('./makeSocrataTimeDataRequest');
 // Constants
 const MAX_GROUP_COUNT = 12;
+const VALID_SORTS = ['asc', 'desc'];
+const DEFAULT_SORT = 'asc';
 
 function getData(vif, options) {
 
@@ -214,6 +216,10 @@ function getData(vif, options) {
 
   function makeGroupingOtherCategoryRequest(state) {
 
+    if (!state.groupingRequiresOtherCategory) {
+      return state;
+    }
+
     return state.soqlDataProvider.
       query(
         state.groupingOtherCategoryUriEncodedQueryString,
@@ -262,11 +268,12 @@ function getData(vif, options) {
   function mapGroupedDataResponsesToMultiSeriesTable(state) {
     const dimensionIndex = 0;
     const measureIndex = 1;
-    const sortFromVifOrDefault = _.get(
-      state.vif,
-      'series[0].dataSource.orderBy.sort',
-      'asc'
-    ).toLowerCase();
+    const sortFromVif = _.toLower(
+      _.get(state.vif, 'series[0].dataSource.orderBy.sort')
+    );
+    const sortFromVifOrDefault = (_.includes(VALID_SORTS, sortFromVif)) ?
+      sortFromVif :
+      DEFAULT_SORT;
     const ascendingComparator = (a, b) => (a >= b) ? 1 : -1;
     const descendingComparator = (a, b) => (a <= b) ? 1 : -1;
     const comparator = (sortFromVifOrDefault === 'asc') ?

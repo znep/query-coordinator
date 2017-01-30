@@ -440,7 +440,7 @@ $(function() {
   $('.fullscreenButton').click(function(event) {
     event.preventDefault();
 
-    $('#siteHeader, #site-chrome-header, #siteFooter, #site-chrome-header').animate({
+    $('#siteHeader, #site-chrome-header, #siteFooter, #site-chrome-footer').animate({
         opacity: 'toggle'
       },
       datasetPageNS.adjustSize);

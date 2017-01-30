@@ -89,7 +89,8 @@ export class ExternalResourceForm extends Component {
         'Add a description (optional)')
     });
     const urlField = this.renderInputField('url', {
-      'placeholder': _.get(I18n, 'external_resource_wizard.form.fields.url.placeholder', 'https://example.com')
+      'placeholder': _.get(I18n, 'external_resource_wizard.form.fields.url.placeholder',
+        'https://example.com')
     });
 
     const previewImageButton = (

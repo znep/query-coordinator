@@ -24,7 +24,7 @@ export const SortDropdown = (props) => {
     },
     {
       title: _.get(I18n,
-        'asset_selector.results_container.sort.sort_types.recently_created', 'Recently Created'),
+        'asset_selector.results_container.sort.sort_types.recently_updated', 'Recently Updated'),
       value: 'updatedAt'
     }
   ];

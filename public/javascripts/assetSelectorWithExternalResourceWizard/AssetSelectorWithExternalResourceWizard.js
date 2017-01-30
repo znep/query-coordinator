@@ -7,7 +7,7 @@ import ExternalResourceWizard from '../externalResourceWizard/components/Externa
 import ExternalResourceWizardButton from './components/ExternalResourceWizardButton';
 import { openAssetSelector, closeAssetSelector } from '../assetSelector/actions/modal';
 import { openExternalResourceWizard, closeExternalResourceWizard } from
-  '../ExternalResourceWizard/actions/modal';
+  '../externalResourceWizard/actions/modal';
 
 export const AssetSelectorWithExternalResourceWizard = (props) => {
 

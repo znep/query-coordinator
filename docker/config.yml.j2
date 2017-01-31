@@ -178,20 +178,10 @@ default: &default
   cache_dataslate_routing: {{ CACHE_DATASLATE_ROUTING }}
   {%- endif %}
 
-  {% if ZENDESK_ARTICLE_COUNT is defined or ZENDESK_LINK is defined or ZENDESK_SECTION is defined -%}
   zendesk_notifications:
-    {% if ZENDESK_ARTICLE_COUNT is defined -%}
-    article_count: {{ ZENDESK_ARTICLE_COUNT }}
-    {%- endif %}
-
-    {% if ZENDESK_LINK is defined -%}
-    zendesk_link: {{ ZENDESK_LINK }}
-    {%- endif %}
-
-    {% if ZENDESK_SECTION is defined -%}
-    zendesk_section: {{ ZENDESK_SECTION }}
-    {%- endif %}
-  {%- endif %}
+    article_count: {{ ZENDESK_ARTICLE_COUNT | default(4) }}
+    zendesk_link: {{ ZENDESK_LINK | default('https://support.socrata.com/hc/en-us/sections/203977877-Check-out-the-Latest') }}
+    zendesk_section: {{ ZENDESK_SECTION | default(203977877) }}
 
   restore_dataset_days: {{ RESTORE_DATASET_DAYS | default(5) }}
 

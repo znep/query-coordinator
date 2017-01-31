@@ -24,6 +24,7 @@ namespace :test do
     {
       'assetSelector' => 'update_asset_selector_translations',
       'catalogLandingPage' => 'update_catalog_landing_page_translations',
+      'externalResourceWizard' => 'update_external_resource_wizard_translations',
       'dataCards' => 'update_datacards_translations',
       'datasetLandingPage' => 'update_dataset_landing_page_translations',
       'adminGoals' => 'update_admin_goals_translations',
@@ -45,6 +46,7 @@ namespace :test do
     parallel_deps = [
       'test:karma:translations:update_asset_selector_translations',
       'test:karma:translations:update_catalog_landing_page_translations',
+      'test:karma:translations:update_external_resource_wizard_translations',
       'test:karma:translations:update_datacards_translations',
       'test:karma:translations:update_dataset_landing_page_translations',
       'test:karma:translations:update_import_wizard_translations',
@@ -72,6 +74,15 @@ namespace :test do
           :external_resource_wizard => all_translations['external_resource_wizard'],
           :dataset_landing_page => all_translations['dataset_landing_page']
         }
+        File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
+      end
+
+      desc 'Helper task that creates a js file that injects translation into browser'
+      task :update_external_resource_wizard_translations do
+        translations_filename = 'config/locales/en.yml'
+        output_filename = 'karma/externalResourceWizard/mockTranslations.js'
+        all_translations = YAML.load_file(translations_filename)['en']
+        translations = all_translations['external_resource_wizard']
         File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
       end
 
@@ -184,6 +195,7 @@ namespace :test do
       'karma:dataCards',
       'karma:datasetLandingPage',
       'karma:datasetManagementUI',
+      'karma:externalResourceWizard',
       'karma:importWizard',
       'karma:oldUx',
       'karma:signin',

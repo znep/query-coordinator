@@ -1,7 +1,8 @@
 const angular = require('angular');
 const Rx = require('rx');
 
-describe('Polaroid Service', function() {
+// These tests do not work with some versions of PhantomJS due to a missing MouseEvent class.
+xdescribe('Polaroid Service', function() {
   'use strict';
 
   var PolaroidService;

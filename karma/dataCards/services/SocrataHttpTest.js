@@ -17,6 +17,7 @@ describe('Socrata-flavored $http service', function() {
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {
+    document.cookie = 'socrata-csrf-token=[$|2f-70k3n';
     fakeClock = sinon.useFakeTimers(INITIAL_TIME);
 
     angular.mock.module('dataCards', function($provide) {
@@ -26,6 +27,7 @@ describe('Socrata-flavored $http service', function() {
         }
       });
     });
+
     inject(function($injector) {
       $rootScope = $injector.get('$rootScope');
       // Set up the mock http service responses

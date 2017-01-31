@@ -11,20 +11,34 @@ RSpec.describe 'view mode', type: :feature, js: true do
       'enable_getty_images_gallery' => true,
       'enable_deprecated_user_search_api' => false
     )
-
-    visit '/s/magic-thing/kchn-sink'
   end
 
   describe 'when rendering an image block' do
     describe 'without a link' do
       it 'renders only an <img> tag' do
+        visit '/s/magic-thing/kchn-sink'
         expect(page).to have_selector('.component-image > img[alt="image without link"]')
       end
     end
 
     describe 'with a link' do
       it 'renders an <img> tag inside an <a> tag' do
+        visit '/s/magic-thing/kchn-sink'
         expect(page).to have_selector('.component-image a[href="http://example.com"] img[alt="image with link"]')
+      end
+    end
+
+    describe 'with value.openInNewWindow set to false' do
+      it 'renders an <a> tag with target="_self"' do
+        visit '/s/magic-thing/link-self'
+        expect(page).to have_selector('.component-image a[target="_self"]')
+      end
+    end
+
+    describe 'with value.openInNewWindow set to true' do
+      it 'renders an <a> tag with target="_blank"' do
+        visit '/s/magic-thing/link-blnk'
+        expect(page).to have_selector('.component-image a[target="_blank"]')
       end
     end
   end

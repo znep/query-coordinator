@@ -353,6 +353,42 @@ describe('AssetSelectorRenderer', function() {
       });
     });
 
+    it('dispatches `ASSET_SELECTOR_TOGGLE_IMAGE_WINDOW_TARGET` when new window checkbox is clicked', function(done) {
+      sinon.stub(assetSelectorStoreMock, 'getComponentType', _.constant('image'));
+      sinon.stub(assetSelectorStoreMock, 'getComponentValue', _.constant({}));
+
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
+        step: WIZARD_STEP.IMAGE_PREVIEW
+      });
+
+      dispatcher.register(function(payload) {
+        const action = payload.action;
+        assert.equal(action, Actions.ASSET_SELECTOR_TOGGLE_IMAGE_WINDOW_TARGET);
+        done();
+      });
+
+      container.find('#open-image-in-new-window').trigger('change');
+    });
+
+    it('dispatches `ASSET_SELECTOR_TOGGLE_STORY_WINDOW_TARGET` when new window checkbox is clicked', function(done) {
+      sinon.stub(assetSelectorStoreMock, 'getComponentType', _.constant('story.tile'));
+      sinon.stub(assetSelectorStoreMock, 'getComponentValue', _.constant({}));
+
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
+        step: WIZARD_STEP.ENTER_STORY_URL
+      });
+
+      dispatcher.register(function(payload) {
+        const action = payload.action;
+        assert.equal(action, Actions.ASSET_SELECTOR_TOGGLE_STORY_WINDOW_TARGET);
+        done();
+      });
+
+      container.find('#open-story-in-new-window').trigger('change');
+    });
+
     xdescribe('select file in image upload', function() {
       var cancelSpy;
       var uploadSpy;

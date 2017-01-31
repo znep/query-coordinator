@@ -20,7 +20,8 @@ import StorytellerUtils from '../../StorytellerUtils';
  *    value: {
  *      documentId: "1234",
  *      url: "https://bucket-name.s3.amazonaws.com/uploads/random/image.jpg",
- *      link: "http://this-image-is-a-link.example.com"
+ *      link: "http://this-image-is-a-link.example.com",
+ *      openInNewWindow: false
  *    }
  *  }
  *
@@ -63,6 +64,8 @@ function _renderImage($element, componentData) {
     }
   );
 
+  // Always open in new tab when editing. Outside of edit mode, image tiles still utilize
+  // `_component_image.html.erb` which is where we respect the `value.openInNewWindow` boolean
   const $link = $(
     '<a>',
     {

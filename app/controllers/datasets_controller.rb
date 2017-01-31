@@ -22,7 +22,9 @@ class DatasetsController < ApplicationController
       return render_forbidden('You do not have permission to create new datasets')
     end
     @view = nil # the templates expect a @view var (for reentrancy)
-    if FeatureFlags.derive(nil, request).ingress_reenter
+    if FeatureFlags.derive(nil, request).enable_dataset_management_ui && params[:beta]
+      render 'datasets/new-dsmui', layout: 'styleguide'
+    elsif FeatureFlags.derive(nil, request).ingress_reenter
       redirect_to '/profile#create_draft'
     else
       render 'new-old'
@@ -252,14 +254,6 @@ class DatasetsController < ApplicationController
         flash.now[:error] = 'This layer has been dissociated from its parent geospatial dataset.'
         return render 'shared/error', :status => :not_found
       end
-    end
-  end
-
-  def new_update
-    if FeatureFlags.derive(@view, request).enable_dataset_management_ui
-      render 'datasets/new_update', :layout => 'styleguide'
-    else
-      render_404
     end
   end
 

@@ -156,8 +156,13 @@
                       <%- end -%>
 
                       <%- if FeatureFlags.derive(nil, request).enable_dataset_management_ui -%>
-                      <a id="create-tabular-beta" class="button createTabular secondary-button next" href="<%= new_update_datasets_path %>" title="<%= t('controls.browse.actions.create_tabular_beta_short') %>">
-                        <%= opts[:browse_in_container] ? t('controls.browse.actions.create_tabular_beta_short') : t('controls.browse.actions.create_tabular_beta_verb') %>
+                      <a id="create-tabular-beta"
+                          class="button createTabular secondary-button next"
+                          href="<%= new_dataset_path(beta: true) %>"
+                          title="<%= t('controls.browse.actions.create_tabular_beta_short') %>">
+                        <%= opts[:browse_in_container] ?
+                              t('controls.browse.actions.create_tabular_beta_short') :
+                              t('controls.browse.actions.create_tabular_beta_verb') %>
                         <span class="icon"></span>
                       </a>
                       <%- end -%>
@@ -284,8 +289,13 @@
                         <%- end -%>
 
                         <%- if FeatureFlags.derive(nil, request).enable_dataset_management_ui -%>
-                        <a id="create-tabular-beta-footer" class="button createTabular secondary-button next" href="<%= new_update_datasets_path %>" title="<%= t('controls.browse.actions.create_tabular_beta_short') %>">
-                          <%= opts[:browse_in_container] ? t('controls.browse.actions.create_tabular_beta_short') : t('controls.browse.actions.create_tabular_beta_verb') %>
+                        <a id="create-tabular-beta-footer"
+                            class="button createTabular secondary-button next"
+                            href="<%= new_dataset_path(beta: true) %>"
+                            title="<%= t('controls.browse.actions.create_tabular_beta_short') %>">
+                          <%= opts[:browse_in_container] ?
+                                t('controls.browse.actions.create_tabular_beta_short') :
+                                t('controls.browse.actions.create_tabular_beta_verb') %>
                           <span class="icon"></span>
                         </a>
                         <%- end -%>
@@ -341,8 +351,13 @@
                         <%- end -%>
 
                         <%- if FeatureFlags.derive(nil, request).enable_dataset_management_ui -%>
-                        <a id="create-tabular-beta" class="button createTabular secondary-button next" href="<%= new_update_datasets_path %>" title="<%= t('controls.browse.actions.create_tabular_beta_short') %>">
-                          <%= opts[:browse_in_container] ? t('controls.browse.actions.create_tabular_beta_short') : t('controls.browse.actions.create_tabular_beta_verb') %>
+                        <a id="create-tabular-beta"
+                            class="button createTabular secondary-button next"
+                            href="<%= new_dataset_path(beta: true) %>"
+                            title="<%= t('controls.browse.actions.create_tabular_beta_short') %>">
+                          <%= opts[:browse_in_container] ?
+                                t('controls.browse.actions.create_tabular_beta_short') :
+                                t('controls.browse.actions.create_tabular_beta_verb') %>
                           <span class="icon"></span>
                         </a>
                         <%- end -%>

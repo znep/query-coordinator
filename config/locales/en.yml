@@ -1565,10 +1565,13 @@ en:
       ok: Ok
       save: Save
       cancel: Cancel
-    no_match:
-      title: Not Found
-      subtitle: Sorry, couldn't find that!
-      suggestion: Try going back to the update.
+    create:
+      title: Create Dataset
+      header: Create a New Dataset
+      explanation: To get started, choose a name for your dataset
+      placeholder: Untitled Dataset
+      errors:
+        unknown: An error occurred creating your dataset. Make sure you are logged in and have appropriate permissions.  If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
     home_pane:
       metadata: Metadata
       metadata_manage_button: Manage Metadata
@@ -1588,6 +1591,10 @@ en:
     metadata_manage:
       errors:
         missing_name: Dataset name is required.
+    no_match:
+      title: Not Found
+      subtitle: Sorry, couldn't find that!
+      suggestion: Try going back to the update.
     progress_items:
       processing: Processing data
       rows: rows

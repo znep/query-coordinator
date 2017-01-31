@@ -180,6 +180,8 @@ display-chart:
 - charts
 dataset-new:
 - screen-dataset-new
+dataset-new-dsmui:
+- screen-dataset-new-dsmui
 dataset-show:
 - control-pane
 - control-pane-custom

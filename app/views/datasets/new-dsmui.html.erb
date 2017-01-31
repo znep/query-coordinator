@@ -1,0 +1,43 @@
+<% content_for :head do %>
+  <title><%= t('dataset_management_ui.create.title') %></title>
+  <%= render_dataset_management_ui_server_config %>
+  <%= rendered_stylesheet_tag 'dataset-new-dsmui' %>
+<% end %>
+
+<div class="container">
+
+  <div id="generic-modal" class="modal modal-overlay">
+    <div class="modal-container">
+      <div id="error-message" class="alert error"><%= raw(t('dataset_management_ui.create.errors.unknown')) %></div>
+      <header class="modal-header">
+        <h1 class="h1 modal-header-title"><%= t('dataset_management_ui.create.header') %></h1>
+        <div class="modal-header-subtitle"><%= t('dataset_management_ui.create.explanation') %></div>
+      </header>
+
+      <form id="dataset-form" onSubmit="return createDataset();">
+        <section class="modal-content">
+          <input id="dataset-title-input"
+                  class="text-input []"
+                  type="text"
+                  placeholder="<%= t('dataset_management_ui.create.placeholder') %>"
+                  autofocus
+                  required>
+        </section>
+
+        <footer class="modal-actions">
+          <input type="submit"
+                  id="create-text"
+                  class="btn btn-primary btn-lg btn-block"
+                  value="<%= t('dataset_management_ui.create.title') %>" />
+          <button id="create-spinner"
+                  class="btn btn-primary btn-lg btn-block btn-busy"
+                  onClick="return false;">
+            <span class="spinner-default spinner-btn-primary" />
+          </button>
+        </footer>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%= include_webpack_bundle 'open-data/dataset-new-dsmui.js' %>

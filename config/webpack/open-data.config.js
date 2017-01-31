@@ -465,6 +465,9 @@ module.exports = _.defaultsDeep({
       './screens/dataset-new-old.js',
       './screens/edit-license.js'
     ],
+    'dataset-new-dsmui': [
+      './screens/dataset-new-dsmui.js'
+    ],
     'dataset-edit': [
       './util/datasync.js',
       './plugins/ajaxupload.js',

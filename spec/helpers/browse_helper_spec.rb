@@ -203,7 +203,7 @@ describe BrowseHelper do
       end
     end
 
-    context 'data_lens foramtting' do
+    context 'data_lens formatting' do
       let (:description) { %(<div>my rich text description \n http://google.com <b>bold!</b></div>) }
 
       it 'returns the description without simple_format-ing if the display type is data_lens' do

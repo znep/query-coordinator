@@ -93,7 +93,7 @@ export class ResultsContainer extends Component {
 
           <div className="card-container">
             {this.props.results.map((result, i) =>
-              <Card key={i} {...result} />
+              <Card key={i} {...result} onSelect={this.props.onSelect} />
             )}
           </div>
 
@@ -124,10 +124,11 @@ export class ResultsContainer extends Component {
 ResultsContainer.propTypes = {
   additionalTopbarComponents: PropTypes.array,
   category: PropTypes.string,
-  results: PropTypes.array.isRequired,
   dispatchCloseAssetSelector: PropTypes.func.isRequired,
   dispatchUpdatePageResults: PropTypes.func.isRequired,
   dispatchUpdateResultCount: PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired,
+  results: PropTypes.array.isRequired,
   resultCount: PropTypes.number.isRequired,
   resultsPerPage: PropTypes.number.isRequired
 };
@@ -135,10 +136,11 @@ ResultsContainer.propTypes = {
 ResultsContainer.defaultProps = {
   additionalTopbarComponents: [],
   category: null,
-  results: [],
   dispatchCloseAssetSelector: _.noop,
   dispatchUpdatePageResults: _.noop,
   dispatchUpdateResultCount: _.noop,
+  onSelect: _.noop,
+  results: [],
   resultCount: 0,
   resultsPerPage: 6
 };

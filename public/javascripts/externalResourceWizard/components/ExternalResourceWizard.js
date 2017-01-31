@@ -19,12 +19,12 @@ export class ExternalResourceWizard extends Component {
   returnExternalResource() {
     const result = {
       resourceType: 'external',
-      title: this.props.title,
-      description: this.props.description,
-      url: this.props.url,
-      previewImage: this.props.previewImage
+      name: this.props.title.value,
+      description: this.props.description.value,
+      url: this.props.url.value,
+      imageUrl: this.props.previewImage.value
     };
-    console.log(result); // TODO: provide this for parent component
+    this.props.onSelect(result);
     this.props.dispatchCloseExternalResourceWizard();
     this.props.dispatchClearFormValues();
   }
@@ -98,6 +98,7 @@ ExternalResourceWizard.propTypes = {
   dispatchClearFormValues: PropTypes.func.isRequired,
   modalIsOpen: PropTypes.bool.isRequired,
   onDismiss: PropTypes.func,
+  onSelect: PropTypes.func.isRequired,
   title: PropTypes.object.isRequired,
   description: PropTypes.object.isRequired,
   url: PropTypes.object.isRequired,
@@ -109,6 +110,7 @@ ExternalResourceWizard.defaultProps = {
   dispatchClearFormValues: _.noop,
   modalIsOpen: false,
   onDismiss: _.noop,
+  onSelect: _.noop,
   title: {
     value: '',
     invalid: true
@@ -127,11 +129,11 @@ ExternalResourceWizard.defaultProps = {
 
 function mapStateToProps(state) {
   return {
-    modalIsOpen: _.get(state, 'externalResourceWizard.modal.modalIsOpen'),
-    title: _.get(state, 'externalResourceWizard.content.title'),
     description: _.get(state, 'externalResourceWizard.content.description'),
-    url: _.get(state, 'externalResourceWizard.content.url'),
-    previewImage: _.get(state, 'externalResourceWizard.content.previewImage')
+    modalIsOpen: _.get(state, 'externalResourceWizard.modal.modalIsOpen'),
+    previewImage: _.get(state, 'externalResourceWizard.content.previewImage'),
+    title: _.get(state, 'externalResourceWizard.content.title'),
+    url: _.get(state, 'externalResourceWizard.content.url')
   };
 }
 

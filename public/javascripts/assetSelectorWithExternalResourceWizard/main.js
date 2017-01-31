@@ -35,12 +35,17 @@ const reducers = combineReducers({
 
 const store = createStore(reducers, applyMiddleware(...middleware));
 
+const testingOnSelect = (selectedObject) => {
+  console.log(selectedObject);
+};
+
 _.defer(() => {
   try {
     ReactDOM.render(
       <Provider store={store}>
         <AssetSelectorWithExternalResourceWizard
           category={'Education'}
+          onSelect={testingOnSelect}
           resultsPerPage={6} />
       </Provider>,
       document.querySelector('.asset-selector')

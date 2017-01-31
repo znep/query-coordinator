@@ -1830,13 +1830,13 @@ en:
       fields:
         title:
           label: Title
-          placeholder: Add a title
+          placeholder: Add a title (required)
         description:
           label: Description
           placeholder: Add a description (optional)
         url:
           label: URL
-          placeholder: https://example.com
+          placeholder: https://example.com (required)
         preview_image:
           label: Preview Image
           button_text: Choose an image

@@ -39,6 +39,26 @@
 
         .dropdown-container {
           margin-left: 0.5rem;
+
+          &.dropdown-focused {
+            .dropdown-placeholder {
+              border-color: $primary-light;
+              outline-color: $primary-base;
+            }
+            .dropdown-caret {
+              color: $primary-text;
+            }
+          }
+
+          .picklist-option {
+            &:hover {
+              background-color: $primary-light;
+            }
+
+            &.picklist-option-selected {
+              background-color: $primary-base;
+            }
+          }
         }
       }
     }

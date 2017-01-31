@@ -17,7 +17,7 @@ export class Card extends Component {
   }
 
   onSelect(cardProps) {
-    console.log(cardProps);
+    this.props.onSelect(cardProps);
     this.props.dispatchCloseAssetSelector();
   }
 
@@ -76,26 +76,28 @@ Card.propTypes = {
   categories: PropTypes.array,
   createdAt: PropTypes.string,
   description: PropTypes.string,
+  dispatchCloseAssetSelector: PropTypes.func.isRequired,
   id: PropTypes.string,
   isFederated: PropTypes.bool,
   isPublic: PropTypes.bool,
   link: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
+  onSelect: PropTypes.func.isRequired,
   previewImageUrl: PropTypes.string,
   provenance: PropTypes.string,
   tags: PropTypes.array,
   type: PropTypes.string.isRequired,
   updatedAt: PropTypes.string,
-  viewCount: PropTypes.number.isRequired,
-  dispatchCloseAssetSelector: PropTypes.func.isRequired
+  viewCount: PropTypes.number.isRequired
 };
 
 Card.defaultProps = {
+  dispatchCloseAssetSelector: _.noop,
   link: '',
   name: '',
+  onSelect: _.noop,
   type: '',
-  viewCount: 0,
-  dispatchCloseAssetSelector: _.noop
+  viewCount: 0
 };
 
 function mapDispatchToProps(dispatch) {

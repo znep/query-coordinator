@@ -41,39 +41,43 @@ export const AssetSelectorWithExternalResourceWizard = (props) => {
       ))}
 
       <AssetSelector
-        category={props.category}
-        resultsPerPage={props.resultsPerPage}
         additionalTopbarComponents={[
           <ExternalResourceWizardButton
             key={0}
             onClick={props.dispatchCloseAssetSelector} />
-        ]} />
+        ]}
+        category={props.category}
+        onSelect={props.onSelect}
+        resultsPerPage={props.resultsPerPage} />
       <ExternalResourceWizard
-        onDismiss={props.dispatchOpenAssetSelector} />
+        onDismiss={props.dispatchOpenAssetSelector}
+        onSelect={props.onSelect} />
     </div>
   );
 };
 
 AssetSelectorWithExternalResourceWizard.propTypes = {
   assetSelectorIsOpen: PropTypes.bool,
-  externalResourceWizardIsOpen: PropTypes.bool,
   category: PropTypes.string,
-  resultsPerPage: PropTypes.number,
   dispatchOpenAssetSelector: PropTypes.func,
   dispatchCloseAssetSelector: PropTypes.func,
   dispatchOpenExternalResourceWizard: PropTypes.func,
-  dispatchCloseExternalResourceWizard: PropTypes.func
+  dispatchCloseExternalResourceWizard: PropTypes.func,
+  externalResourceWizardIsOpen: PropTypes.bool,
+  onSelect: PropTypes.func.isRequired,
+  resultsPerPage: PropTypes.number
 };
 
 AssetSelectorWithExternalResourceWizard.defaultProps = {
   assetSelectorIsOpen: false,
-  externalResourceWizardIsOpen: false,
   category: null,
-  resultsPerPage: 6,
   dispatchOpenAssetSelector: _.noop,
   dispatchCloseAssetSelector: _.noop,
   dispatchOpenExternalResourceWizard: _.noop,
-  dispatchCloseExternalResourceWizard: _.noop
+  dispatchCloseExternalResourceWizard: _.noop,
+  externalResourceWizardIsOpen: false,
+  onSelect: _.noop,
+  resultsPerPage: 6
 };
 
 function mapStateToProps(state) {

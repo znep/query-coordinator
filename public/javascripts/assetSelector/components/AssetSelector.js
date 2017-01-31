@@ -27,6 +27,7 @@ export const AssetSelector = (props) => {
         <ResultsContainer
           additionalTopbarComponents={props.additionalTopbarComponents}
           category={props.category}
+          onSelect={props.onSelect}
           resultsPerPage={props.resultsPerPage} />
       </div>
     </div>
@@ -39,6 +40,7 @@ AssetSelector.propTypes = {
   dispatchOpenAssetSelector: PropTypes.func.isRequired,
   dispatchCloseAssetSelector: PropTypes.func.isRequired,
   modalIsOpen: PropTypes.bool.isRequired,
+  onSelect: PropTypes.func.isRequired,
   resultsPerPage: PropTypes.number.isRequired
 };
 
@@ -48,6 +50,7 @@ AssetSelector.defaultProps = {
   dispatchOpenAssetSelector: _.noop,
   dispatchCloseAssetSelector: _.noop,
   modalIsOpen: false,
+  onSelect: _.noop,
   resultsPerPage: 6
 };
 

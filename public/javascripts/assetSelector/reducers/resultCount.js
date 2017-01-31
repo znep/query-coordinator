@@ -1,9 +1,7 @@
 import _ from 'lodash';
 
 const initialState = function() {
-  return {
-    count: 0
-  };
+  return { count: 0 };
 };
 
 export default (state = initialState(), action = {}) => {

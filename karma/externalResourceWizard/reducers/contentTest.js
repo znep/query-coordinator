@@ -58,14 +58,6 @@ describe('reducers/content', function() {
         invalid: true
       });
     });
-
-    it('is invalid without the http scheme', function() {
-      state = reducer(state, updateUrl('www.google.com'));
-      expect(state.url).to.deep.equal({
-        value: 'www.google.com',
-        invalid: true
-      });
-    });
   });
 
   describe('UPDATE_PREVIEW_IMAGE', function() {

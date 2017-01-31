@@ -1,9 +1,7 @@
 import _ from 'lodash';
 
 const initialState = function() {
-  return {
-    modalIsOpen: false
-  };
+  return { modalIsOpen: false };
 };
 
 export default (state = initialState(), action = {}) => {

@@ -24,11 +24,14 @@ describe('components/Footer', function() {
     expect(element.querySelectorAll('button').length).to.equal(2);
   });
 
-  it('calls dispatchCloseExternalResourceWizard on cancel button click', function() {
+  it('calls dispatchCloseExternalResourceWizard and dispatchClearFormValues on cancel button click',
+    function() {
     var spy = sinon.spy();
-    var element = renderPureComponentWithStore(Footer(getProps({ dispatchCloseExternalResourceWizard: spy })));
+    var element = renderPureComponentWithStore(Footer(getProps(
+      { dispatchCloseExternalResourceWizard: spy, dispatchClearFormValues: spy }
+    )));
     TestUtils.Simulate.click(element.querySelector('button.cancel-button'));
-    expect(spy).to.have.been.called;
+    expect(spy).to.have.been.calledTwice;
   });
 
   it('calls onSelect on select button click', function() {

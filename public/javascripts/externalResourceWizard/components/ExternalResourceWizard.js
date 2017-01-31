@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import classNames from 'classnames';
 import { closeExternalResourceWizard } from '../actions/modal';
+import { updateTitle, updateDescription, updateUrl, updatePreviewImage } from '../actions/content';
 import BackButton from '../../assetSelector/components/BackButton';
 import Header from '../../assetSelector/components/Header';
 import ExternalResourceForm from './ExternalResourceForm';
@@ -25,6 +26,7 @@ export class ExternalResourceWizard extends Component {
     };
     console.log(result); // TODO: provide this for parent component
     this.props.dispatchCloseExternalResourceWizard();
+    this.props.dispatchClearFormValues();
   }
 
   render() {
@@ -93,6 +95,7 @@ export class ExternalResourceWizard extends Component {
 
 ExternalResourceWizard.propTypes = {
   dispatchCloseExternalResourceWizard: PropTypes.func.isRequired,
+  dispatchClearFormValues: PropTypes.func.isRequired,
   modalIsOpen: PropTypes.bool.isRequired,
   onDismiss: PropTypes.func,
   title: PropTypes.object.isRequired,
@@ -103,6 +106,7 @@ ExternalResourceWizard.propTypes = {
 
 ExternalResourceWizard.defaultProps = {
   dispatchCloseExternalResourceWizard: _.noop,
+  dispatchClearFormValues: _.noop,
   modalIsOpen: false,
   onDismiss: _.noop,
   title: {
@@ -135,6 +139,12 @@ function mapDispatchToProps(dispatch) {
   return {
     dispatchCloseExternalResourceWizard: function() {
       dispatch(closeExternalResourceWizard());
+    },
+    dispatchClearFormValues: function() {
+      dispatch(updateTitle(''));
+      dispatch(updateDescription(''));
+      dispatch(updateUrl(''));
+      dispatch(updatePreviewImage(''));
     }
   };
 }

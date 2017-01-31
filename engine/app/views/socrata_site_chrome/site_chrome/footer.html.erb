@@ -2,7 +2,8 @@
   <% if using_custom_header_footer? %>
     <%= render 'custom_content/custom',
       :section => 'footer',
-      :content => custom_header_footer_content[:footer] %>
+      :content => custom_header_footer_content[:footer],
+      :size => local_assigns[:size] %>
   <% else %>
     <footer id="site-chrome-footer" class="<%= local_assigns[:size] %>" role="contentinfo">
       <div class="footer-content <%= footer_title.present? ? 'title-present' : 'title-absent' %>">

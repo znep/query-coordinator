@@ -3,18 +3,14 @@ import utils from 'socrata-utils';
 import { getIconClassForDisplayType } from 'socrata-components/common/displayTypeMetadata';
 
 export function getDateLabel(updatedAt) {
-  return formatDate(updatedAt);
+  return formatDate(typeof updatedAt === 'object' ? updatedAt : new Date(updatedAt));
 }
 
-export function getViewCountLabel(viewCount) {
-  return _.isNumber(viewCount) ?
-    `${utils.formatNumber(viewCount)} ${I18n.view_widget.views}` :
-    '';
-}
+export const getViewCountLabel = (viewCount) => {
+  return _.isNumber(viewCount) ? `${utils.formatNumber(viewCount)} ${I18n.view_widget.views}` : '';
+};
 
-export function getAriaLabel(view) {
-  return `${I18n.related_views.view} ${view.name}`;
-}
+export const getAriaLabel = (view) => `${I18n.related_views.view} ${view.name}`;
 
 export function getViewCardPropsForView(view) {
   return {

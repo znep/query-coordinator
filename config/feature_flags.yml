@@ -66,6 +66,10 @@ display_dataset_landing_page_preview_images:
 enable_dataset_landing_page_foundry_links:
   description: Display the API Docs link in the API flannel
   defaultValue: true
+enable_catalog_landing_page:
+  description: Display the catalog landing page (aka category landing page)
+  defaultValue: false
+  category: catalog
 enable_dataset_landing_page_tour:
   description: Display the tour when visitors first access a dataset landing page.
   defaultValue: true

@@ -127,8 +127,7 @@ class PhidippidesTest < Minitest::Test
 
   def test_set_default_and_available_card_types_to_columns_succeeds
     connection_stub = stub.tap do |stub|
-      stub.stubs(get_request: '[{"count_0": "34"}]',
-                 reset_counters: {requests: {}, runtime: 0})
+      stub.stubs(get_request: '[{"count_0": "34"}]')
     end
 
     v1_dataset_metadata_response = {

@@ -17,7 +17,7 @@ module DatasetLandingPageHelper
   end
 
   def render_dataset_landing_page_translations
-    javascript_tag("var I18n = #{json_escape(dataset_landing_page_translations.to_json)};")
+    javascript_tag("var I18n = _.extend(I18n, #{json_escape(dataset_landing_page_translations.to_json)});")
   end
 
   def render_dataset_landing_page_session_data

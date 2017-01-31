@@ -4,6 +4,8 @@ import mixpanel from 'mixpanel-browser';
 const sessionData = window.sessionData;
 const config = window.mixpanelConfig;
 
+// TODO Might want to move this up a level the directory tree.
+
 // Mixpanel constants
 // This is duplicated in angular/common/values.js and util/mixpanel-analytics.js
 const MIXPANEL_EVENTS = [
@@ -117,34 +119,36 @@ const staticPageProperties = {
   'View Type': 'DSLP'
 };
 
-// Event name validation
+// Event name validation (return value should be ignored)
 function validateEventName(eventName) {
   const valid = _.includes(MIXPANEL_EVENTS, eventName);
 
   if (!valid) {
-    console.error(`Mixpanel payload validation failed: Unknown event name: "${eventName}"`);
+    console.warn(`Mixpanel payload validation failed: Unknown event name: "${eventName}"`);
   }
 
   return valid;
 }
 
-// Payload property validation
+// Payload property validation (return value should be ignored)
 function validateProperties(properties) {
   let valid = true;
 
-  _.forEach(properties, (value, key) => {
-    if (_.isObject(value)) {
-      validateProperties(value);
-    } else {
-      valid = _.includes(MIXPANEL_PROPERTIES, key);
+  if (_.isObject(properties) && !_.isArray(properties)) {
+    _.forEach(properties, (value, key) => {
+      if (_.isObject(value)) {
+        validateProperties(value);
+      } else {
+        valid = _.includes(MIXPANEL_PROPERTIES, key);
 
-      if (!valid) {
-        console.error(`Mixpanel payload validation failed: Unknown property "${key}"`);
+        if (!valid) {
+          console.warn(`Mixpanel payload validation failed: Unknown property: "${key}"`);
+        }
+
+        return valid;
       }
-
-      return valid;
-    }
-  });
+    });
+  }
 
   return valid;
 }
@@ -212,8 +216,8 @@ function sendPayload(eventName, properties) {
 // Default is no tracking, no cookies and no events saved
 if (!config.disable && !_.isUndefined(mixpanel)) {
   mixpanel.init(config.token, config.options);
+} else {
+  console.warn('Mixpanel has not been loaded or has been disabled.');
 }
 
-module.exports = {
-  sendPayload: config.disable ? _.noop : sendPayload
-};
+export default { sendPayload: config.disable ? _.noop : sendPayload };

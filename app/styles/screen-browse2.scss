@@ -424,9 +424,6 @@ html {
       @include desktop {
         margin-left: 23em;
       }
-      @include wide-desktop {
-        margin-left: 30em;
-      }
 
       position: relative;
       display: block;
@@ -438,7 +435,6 @@ html {
 
         position: relative;
         display: block;
-        width: calc(100% - 220px);
         float: left;
 
         .browse2-results-title {
@@ -1009,9 +1005,6 @@ html {
     @include desktop {
       margin-left: 23em;
       display: block !important;
-    }
-    @include wide-desktop {
-      margin-left: 30em;
     }
     position: relative;
     display: block;

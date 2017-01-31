@@ -1,14 +1,15 @@
 class LocalePart
+
   def self.method_missing(method)
     LocalePart.new(method.to_s)
   end
 
   def self.from_array(parts)
-    return nil if parts.blank?
+    return if parts.blank?
 
     result = nil
     parts.each{ |part| result = LocalePart.new(part, result) }
-    return result
+    result
   end
 
   def method_missing(method, *arguments)
@@ -17,36 +18,38 @@ class LocalePart
 
   # traverse to subhash; nil if anything dies along the way
   def get?(hash)
-    hash = self.parent.get?(hash) if self.parent
-    return hash[self.part] rescue nil
+    hash = parent.get?(hash) if parent
+    return hash[part] rescue nil
   end
 
   # traverse to subhash, creating hashes if necessary
   def get!(hash)
-    hash = self.parent.get!(hash) if self.parent
-    hash[self.part] = {} unless hash.has_key? self.part
-    return hash[self.part]
+    hash = parent.get!(hash) if parent
+    hash[part] = {} unless hash.has_key?(part)
+    return hash[part]
   end
 
   def set!(hash, value)
-    hash = self.parent.get!(hash) if self.parent
-    hash[self.part] = value
+    hash = parent.get!(hash) if parent
+    hash[part] = value
   end
 
   def to_s
-    return @_to_s ||= "#{self.parent.to_s if self.parent}.#{self.part}"
+    @_to_s ||= "#{parent.to_s if parent}.#{part}"
   end
 
   def ==(other)
-    self.to_s == other.to_s
+    to_s == other.to_s
   end
   alias :eql? :== # ruby standard says you're not supposed to do this, but stdlib does it
                   # *all the fucking time*. essentially, this results in set equality.
 
-protected
+  protected
+
   attr_accessor :parent, :part
 
   def initialize(part, parent = nil)
-    self.part, self.parent = part, parent
+    @part, @parent = part, parent
   end
+
 end

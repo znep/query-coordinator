@@ -282,7 +282,7 @@ class StylesController < ApplicationController
         elsif definition[key.to_sym] == 'number'
           result += "$#{path}#{key}: #{value};\n"
         elsif definition[key.to_sym] == 'boolean'
-          result += "$#{path}#{key}: #{value.to_s};\n"
+          result += "$#{path}#{key}: #{value};\n"
         elsif definition[key.to_sym] == 'dimensions'
           result += "$#{path}#{key}: #{value[:value]}#{value[:unit]};\n"
         elsif definition[key.to_sym] == 'image'

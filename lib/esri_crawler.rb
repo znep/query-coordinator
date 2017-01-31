@@ -16,7 +16,7 @@ module EsriCrawler
     attr_reader :body
 
     def initialize(body)
-      super(body["error"])
+      super(body['error'])
       @body = body
     end
   end
@@ -55,7 +55,7 @@ module EsriCrawler
       base_uri "#{hostname}:#{port}"
       default_options.update(headers: {
         'X-Socrata-Host' => CurrentDomain.cname,
-        'X-Socrata-RequestId' => SecureRandom.uuid,
+        'X-Socrata-RequestId' => SecureRandom.uuid, # TODO Should be using request_id
         'X-Socrata-User' => User.current_user.email
       })
       response = yield
@@ -78,7 +78,7 @@ module EsriCrawler
     begin
       JSON.parse(body)
     rescue JSON::ParserError, TypeError
-      {"error" => body.to_s}
+      { 'error' => body.to_s }
     end
   end
 

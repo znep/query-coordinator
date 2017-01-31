@@ -1,0 +1,183 @@
+// Note: on disk, these file names start with "_" i.e. "_search.scss"
+@import "catalog-landing-page/styleguide-colors";
+@import "catalog-landing-page/breakpoints";
+@import "catalog-landing-page/search";
+@import "catalog-landing-page/header";
+@import "catalog-landing-page/category_stats";
+@import "catalog-landing-page/category_stat";
+@import "catalog-landing-page/featured_content";
+
+body {
+  margin: 0;
+  padding: 0;
+  background: $light-grey-6;
+}
+
+#catalog-landing-page-content {
+  margin-left: 230px;
+}
+
+.browse2 .browse2-facet-and-results-header .browse2-results-header {
+  margin-left: 0 !important;
+  float: right;
+  width: 82%;
+}
+
+.container {
+  margin: 0 auto;
+}
+
+.main-spinner {
+  text-align: center;
+}
+
+// Fix styleguide buttons with spinners in them
+.btn.btn-sm.btn-busy {
+  padding: 8px 15px 5px;
+
+  .spinner-default {
+    width: 15px;
+    height: 15px;
+    border-width: 2px;
+  }
+}
+
+.catalog-landing-page {
+  // Styleguide polyfill
+  .spinner-large {
+    width: 64px;
+    height: 64px;
+    border: 7px solid $primary-base;
+    border-right-color: $primary-light;
+  }
+
+  .desktop-spinner {
+    display: flex;
+    width: 100%;
+    height: 287px;
+
+    .spinner-large {
+      margin: auto;
+    }
+  }
+}
+
+section.landing-page-section {
+
+  h2 {
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0;
+    padding: 11px 0;
+    color: $dark-grey-1;
+  }
+
+  .landing-page-header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    .btn-default {
+      margin-bottom: 8px;
+      align-self: center;
+
+      &:hover,
+      &:focus {
+        text-decoration: none;
+      }
+    }
+  }
+
+  .media-results {
+    display: flex;
+    justify-content: flex-start;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    overflow: hidden;
+    position: relative;
+
+    .alert {
+      width: 100%;
+    }
+
+    .second {
+      .date {
+        font-size: 11px;
+      }
+    }
+
+    .result-card {
+      flex: 0 0 auto;
+      width: 31.9%;
+      height: 300px;
+      margin-right: 2%;
+
+      &.loading-card {
+        display: flex;
+
+        .spinner-large {
+          margin: auto;
+        }
+      }
+
+      @media(max-width: $medium) {
+        flex: 0 0 260px;
+      }
+
+      @media(min-width: $medium) {
+        &:nth-child(3n) {
+          margin-right: 0;
+        }
+      }
+    }
+
+    &.related-views {
+      .result-card:not(.loading-card) {
+        opacity: 0;
+      }
+    }
+
+    @media(max-width: $medium) {
+      flex-flow: row nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
+  }
+
+  .alert.error {
+    margin-top: 15px;
+  }
+
+  .section-content {
+    background: $white;
+    border: 1px $light-grey-4 solid;
+    border-bottom-width: 2px;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  hr {
+    margin: 0 15px;
+    border-top: 1px $light-grey-4 solid;
+  }
+}
+
+.modal {
+  h1, h4, h5, h6 {
+    font-weight: 400;
+  }
+
+  .modal-header-title {
+    max-width: 95%;
+  }
+}
+
+#site-chrome-header .mobile-menu {
+  z-index: 1000 !important;
+}
+
+footer#site-chrome-footer {
+  margin-top: 20px;
+  // visibility: hidden;
+}

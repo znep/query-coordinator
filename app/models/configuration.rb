@@ -26,7 +26,7 @@ class Configuration < Model
     parse(CoreServer::Base.connection.get_request("/#{name.pluralize.downcase}/#{id}.json?merge=false"))
   end
 
-  def self.get_or_create(type, opts)
+  def self.find_or_create_by_type(type, opts = {})
     find_by_type(type, true, CurrentDomain.cname).first ||
       create(opts.reverse_merge('type' => type, 'default' => true, 'domainCName' => CurrentDomain.cname))
   end
@@ -59,16 +59,22 @@ class Configuration < Model
     childCount > 0
   end
 
+  # TODO Refactor this confusing method. Is it even necessary? Can't we just Hashie::Mash.new(data['properties'])
   def properties
     props = Hashie::Mash.new
-    return props if data['properties'].nil?
+    return props unless data['properties'].present?
+
+    # TODO: Rewrite to use #bury
+    # data['properties'].each do |property|
+    #   props.bury(*property['name'].split('.'), property['value'])
+    # end
 
     data['properties'].each do |property|
       name_parts = property['name'].split('.')
       property_hash = props
       while name_parts.length > 1 do
         name = name_parts.shift
-        property_hash[name] = Hashie::Mash.new if property_hash[name].nil?
+        property_hash[name] = Hashie::Mash.new if property_hash[name].blank?
         property_hash = property_hash[name]
       end
       property_hash[name_parts[0]] = property['value']
@@ -85,14 +91,14 @@ class Configuration < Model
 
     # TODO: not sure how to safely per-request cache
     result = properties[:strings] || Hashie::Mash.new
-    result.merge!(result[locale] || {}) unless locale.nil?
+    result.merge!(result[locale] || {}) if locale.present?
 
     result
   end
 
   def raw_properties
     props = Hashie::Mash.new
-    return props if data['properties'].nil?
+    return props unless data['properties'].present?
 
     data['properties'].each do |property|
       props[property['name']] = property['value']
@@ -110,32 +116,44 @@ class Configuration < Model
 
     data['properties'] = [] if data['properties'].nil?
     data['properties'].push({'name' => name, 'value' => value})
-    url = "/#{self.class.name.pluralize.downcase}/#{id}/properties.json"
-    CoreServer::Base.connection.
-      create_request(url, {'name' => name, 'value' => value}.to_json, {}, false, batch_id)
+
+    CoreServer::Base.connection.create(
+      path: "/#{self.class.name.pluralize.downcase}/#{id}/properties.json",
+      payload: {'name' => CGI.escape!(name), 'value' => value}.to_json,
+      batch_id: batch_id
+    )
   end
 
   def update_property(name, value, batch_id = nil)
     sanitize_value!(value)
+    result = CoreServer::Base.connection.update(
+      path: "/#{self.class.name.pluralize.downcase}/#{id}/properties/#{CGI.escape!(name)}.json",
+      payload: {'name' => CGI.escape!(name), 'value' => value}.to_json,
+      batch_id: batch_id
+    )
 
-    data['properties'].detect {|p| p['name'] == name}['value'] = value
-    url = "/#{self.class.name.pluralize.downcase}/#{id}/properties/#{CGI.escape(name)}.json"
-    CoreServer::Base.connection.
-      update_request(url, {'name' => name, 'value' => value}.to_json, {}, batch_id)
+    # Only update our cached properties if the update call above succeeds.
+    if result.present?
+      data['properties'].detect { |p| p['name'] == name }['value'] = value
+    end
+
+    result
   end
 
   def delete_property(name, is_internal = false, batch_id = nil)
-    url = "/#{self.class.name.pluralize.downcase}/#{id}/properties/#{CGI.escape(name)}.json"
-    CoreServer::Base.connection.delete_request(url, '', {}, batch_id)
+    CoreServer::Base.connection.delete(
+      path: "/#{self.class.name.pluralize.downcase}/#{id}/properties/#{CGI.escape!(name)}.json",
+      batch_id: batch_id
+    )
   end
 
   def create_or_update_property(name, value, batch_id = nil)
-    unless value.nil?
-      if (!raw_properties.key?(name))
-        create_property(name, value, batch_id)
-      else
-        update_property(name, value, batch_id)
-      end
+    return if value.nil?  # Empty values _are_ valid, so don't use #present?
+
+    if raw_properties.key?(name)
+      update_property(name, value, batch_id)
+    else
+      create_property(name, value, batch_id)
     end
   end
 

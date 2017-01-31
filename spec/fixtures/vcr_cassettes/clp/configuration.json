@@ -1,0 +1,30 @@
+[{
+  "id": 65,
+  "name": "Catalog Landing Page",
+  "childCount": 0,
+  "default": true,
+  "domainCName": "localhost",
+  "type": "catalog_landing_page",
+  "updatedAt": 1484351230,
+  "properties": [{
+    "name": "category%3DFun%26tag%3Dgiraffes",
+    "value": {
+      "summary": "Fun times...",
+      "description": "I am having so much fun!",
+      "headline": "Giraffes are such super fun creatures!"
+    }
+  }, {
+    "name": "category%3DGovernment",
+    "value": {
+      "description": "I am the description",
+      "headline": "I am the headline",
+      "summary": "This is all she wrote!"
+    }
+  }, {
+    "name": "salt-lake-city",
+    "value": {
+      "description": "All about salt lake city",
+      "catalogQuery": "Microsites_Microsites=Salt Lake City"
+    }
+  }]
+}]

@@ -49,7 +49,7 @@ module CoreServer
     end
 
     def create(path:, payload:'{}', batch_id:nil, is_anon:false, timeout:60, use_cache:false, **headers)
-      create_request(path, payload, headers.with_indifferent_access, use_cache, batch_id, is_anon, timeout)
+      create_request(path, payload, headers, use_cache, batch_id, is_anon, timeout)
     end
 
     def create_request(path, *args)
@@ -68,12 +68,20 @@ module CoreServer
       generic_request(Net::HTTP::Post.new(path), payload, custom_headers, is_anon, timeout).body
     end
 
+    def update(path:, payload:'', batch_id:nil, **headers)
+      update_request(path, payload, headers.with_indifferent_access, batch_id)
+    end
+
     def update_request(path, payload = '', custom_headers = {}, batch_id = nil)
       if batch_id
        @batch_queue[batch_id] << {:url => path, :body => payload, :requestType => 'PUT'}
       else
         generic_request(Net::HTTP::Put.new(path), payload, custom_headers).body
       end
+    end
+
+    def delete(path:, payload:'', batch_id:nil, **headers)
+      delete_request(path, payload, headers.with_indifferent_access, batch_id)
     end
 
     def delete_request(path, payload = '', custom_headers = {}, batch_id = nil)

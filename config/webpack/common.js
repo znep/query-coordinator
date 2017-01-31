@@ -58,14 +58,22 @@ function getEslintConfig(configFile) {
   };
 }
 
+function getDefaultIncludePaths(paths) {
+  return (paths || []).concat([
+    path.resolve(root, 'public/javascripts'),
+    path.resolve(root, 'node_modules/socrata-components/common')
+  ]);
+}
+
 module.exports = {
-  root: root,
-  packageJson: packageJson,
+  getDefaultIncludePaths: getDefaultIncludePaths,
   devServerPort: packageJson.config.webpackDevServerPort,
-  isProduction: isProduction,
-  plugins: plugins,
+  getEslintConfig: getEslintConfig,
   getHotModuleEntries: getHotModuleEntries,
-  getOutput: getOutput,
   getManifestPlugin: getManifestPlugin,
-  getEslintConfig: getEslintConfig
+  getOutput: getOutput,
+  isProduction: isProduction,
+  packageJson: packageJson,
+  plugins: plugins,
+  root: root
 };

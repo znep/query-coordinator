@@ -3,7 +3,7 @@ import React from 'react';
 import { formatDate } from 'socrata-components/common/dates';
 import { t } from '../lib/I18n';
 import { connect } from 'react-redux';
-import InfoPaneComponent from '../../socrataHOC/InfoPaneComponent.js';
+import InfoPaneComponent from '../../common/components/InfoPaneComponent.js';
 
 function mapStateToProps(state) {
   const { view } = state;

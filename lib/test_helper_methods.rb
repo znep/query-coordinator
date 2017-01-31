@@ -97,9 +97,8 @@ module TestHelperMethods
 
   def cetera_request_headers
     {
-      'Content-Type'=>'application/json',
+      'Content-Type' => 'application/json',
       'X-Socrata-Host' => 'localhost',
-      'X-Socrata-Requestid'=>'Unavailable'
     }
   end
 

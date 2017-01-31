@@ -156,10 +156,10 @@ module DatasetsHelper
 
   def stars_control(extra_class = '', value = nil)
     ('<div class="starsControl ' + extra_class + '" title="' +
-      t('controls.common.stars.tooltip', { number: (value || 0) }) + '">' +
-      '<span class="accessibleValue">Current value: ' + (value || 0).to_s + ' out of 5</span>' +
+      t('controls.common.stars.tooltip', { number: value.to_i }) + '">' +
+      %Q(<span class="accessibleValue">Current value: #{value.to_i} out of 5</span>) +
       (0..5).map do |i|
-      '<span class="starsLabel value-' + i.to_s + (value.to_i == i || (i == 0 && value.nil?) ? ' currentValue' : '') + '"></span>'
+        %Q(<span class="starsLabel value-#{i} #{'currentValue' if value.to_i == i}"></span>)
       end.join('') +
     '</div>').html_safe
   end
@@ -169,18 +169,17 @@ module DatasetsHelper
     id = 'stars_' + (@@stars_id += 1).to_s
     form_tag(update_rating_dataset_path(view, :id => id), :id => id, :method => :post,
              :class => "starsControl blueStars enabled #{extra_class}",
-             :'data-rating' => (value || 0).to_s,
+             :'data-rating' => value.to_i.to_s,
              :'data-rating-type' => rating_type,
-             :title => t('controls.common.stars.tooltip', { number: (value || 0) })) do
-      content_tag(:div, "Current value: #{(value || 0).to_s}", :class => 'accessibleValue')
+             :title => t('controls.common.stars.tooltip', { number: value.to_i })) do
+      content_tag(:div, "Current value: #{value.to_i}", :class => 'accessibleValue')
       content_tag :div do
         hidden_field_tag('ratingType', rating_type)
         hidden_field_tag('authenticity_token', form_authenticity_token)
         (0..5).each do |i|
-          c_id = id + '_' + i.to_s
-          concat(radio_button_tag('starsRating', i.to_s, value.to_i == i || (i == 0 && value.nil?),
-                           :class => 'noUniform', :id => c_id))
-          concat(label_tag(c_id, "#{i.to_s}/5", :class => 'starsLabel'))
+          c_id = "id_#{i}"
+          concat(radio_button_tag('starsRating', i.to_s, value.to_i == i, :class => 'noUniform', :id => c_id))
+          concat(label_tag(c_id, "#{i}/5", :class => 'starsLabel'))
         end
         submit_tag('Save')
       end

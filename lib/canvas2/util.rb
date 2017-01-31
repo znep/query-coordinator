@@ -315,7 +315,7 @@ module Canvas2
 
         temp = '' if temp.blank?
 
-        temp = temp.map {|k, v| k + ': ' + v.to_s} if temp.is_a?(Hash)
+        temp = temp.map { |k, v| "#{k}: #{v}" } if temp.is_a?(Hash)
         temp = temp.join(', ') if temp.is_a?(Array)
         temp = Util.string_substitute(temp, resolver, helpers) if temp.is_a?(String) && !temp.index('{').nil?
 

@@ -10,7 +10,7 @@
 <% end %>
 
 <div id="analyticsDataContainer" class="datasetMetrics">
-  <div class="contentBox">
+  <div class="contentBox clearfix">
     <div>
       <h1><%= link_to @view.name, view_path(@view) %></h1>
       <%= render :partial => 'shared/metrics_timing' %>
@@ -19,7 +19,7 @@
     <div class="summaryDisplay clearfix container"></div>
 <%- unless FeatureFlags.derive(@view, request).embetter_analytics_page -%>
   </div>
-  <div class="contentBox">
+  <div class="contentBox clearfix">
 <%- end -%>
     <div class="chartsDisplay container">
       <div class="flash error message errorMessage">
@@ -29,7 +29,7 @@
     <div class="detailDisplay clearfix container"></div>
 <%- unless FeatureFlags.derive(@view, request).embetter_analytics_page -%>
   </div>
-  <div class="contentBox">
+  <div class="contentBox clearfix">
 <%- end -%>
     <div class="topDisplay clearfix container">
       <div class="leftColumn"></div>

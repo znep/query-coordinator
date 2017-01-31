@@ -23,12 +23,12 @@ class SodaCanTest < Minitest::Test
     sodacan = ProcessorTestHelper.new({}, nil)
     queries= JSON::parse(File.open("test/fixtures/soda_can/query_pass.json").read)
     queries.each { |q|
-      assert sodacan.public_soda_can?(q), "Should have passed: #{q.to_s}"
+      assert sodacan.public_soda_can?(q), "Should have passed: #{q}"
 
     }
     queries= JSON::parse(File.open("test/fixtures/soda_can/query_fail.json").read)
     queries.each { |q|
-      assert !sodacan.public_soda_can?(q), "Should have failed: #{q.to_s}"
+      assert !sodacan.public_soda_can?(q), "Should have failed: #{q}"
     }
   end
 

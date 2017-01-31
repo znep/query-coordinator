@@ -176,7 +176,7 @@ class DataLensController < ActionController::Base
     rescue UnknownRequestError => error
       error_class = 'PageMetadataRequestFailure'
       error_message = "Could not serve app: encountered unknown error " \
-        "fetching page metadata for page id #{params[:id]}: #{error.to_s}"
+        "fetching page metadata for page id #{params[:id]}: #{error}"
       report_error(error_class, error_message)
       return render_500
     end
@@ -209,7 +209,7 @@ class DataLensController < ActionController::Base
       error_class = 'DatasetMetadataRequestFailure'
       error_message = "Could not serve app: encountered unknown error " \
         "fetching dataset metadata for dataset id " \
-        "#{@page_metadata[:datasetId]}: #{error.to_s}"
+        "#{@page_metadata[:datasetId]}: #{error}"
       report_error(error_class, error_message)
       return render_500
     end
@@ -265,7 +265,7 @@ class DataLensController < ActionController::Base
       error_class = 'DatasetMetadataRequestFailure'
       error_message = "Could not serve app: encountered unknown error " \
         "fetching dataset metadata for dataset id " \
-        "#{@page_metadata[:datasetId]}: #{error.to_s}"
+        "#{@page_metadata[:datasetId]}: #{error}"
       report_error(error_class, error_message)
       return render_500
     end

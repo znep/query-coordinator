@@ -188,23 +188,30 @@ describe BrowseHelper do
   end
 
   describe '#view_formatted_description' do
-    let(:view) { View.new }
+    let(:description) { nil }
+    let(:view) { View.new('description' => description) }
 
     it 'returns if description is nil' do
       expect(helper.view_formatted_description(view)).to eql(nil)
     end
 
-    it 'returns the plain text description formatted with simple_format' do
-      view.description = 'basic plain text description'
-      expect(helper.view_formatted_description(view)).to eql(%(<p>basic plain text description</p>))
+    context 'simple_format description' do
+      let(:description) { 'basic plain text description' }
+
+      it 'returns the plain text description formatted with simple_format' do
+        expect(helper.view_formatted_description(view)).to eql(%(<p>basic plain text description</p>))
+      end
     end
 
-    it 'returns the description without simple_format-ing if the display type is data_lens' do
-      view.description = %(<div>my rich text description \n http://google.com <b>bold!</b></div>)
-      display = double
-      allow(display).to receive('type').and_return('data_lens')
-      allow(view).to receive('display').and_return(display)
-      expect(helper.view_formatted_description(view)).to eql(%(<div>my rich text description \n <a href="http://google.com" rel="nofollow noreferrer external">http://google.com</a> <b>bold!</b></div>))
+    context 'data_lens foramtting' do
+      let (:description) { %(<div>my rich text description \n http://google.com <b>bold!</b></div>) }
+
+      it 'returns the description without simple_format-ing if the display type is data_lens' do
+        display = double
+        allow(display).to receive('type').and_return('data_lens')
+        allow(view).to receive('display').and_return(display)
+        expect(helper.view_formatted_description(view)).to eql(%(<div>my rich text description \n <a href="http://google.com" rel="nofollow noreferrer external">http://google.com</a> <b>bold!</b></div>))
+      end
     end
   end
 

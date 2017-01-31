@@ -35,7 +35,7 @@ class PageMetadataControllerTest < ActionController::TestCase
     }
   end
 
-  def set_up_json_request(body = nil)
+  def setup_json_request(body = nil)
     body = data_lens_page_metadata.to_json unless body.present?
 
     @request.env['RAW_POST_DATA'] = body
@@ -124,7 +124,7 @@ class PageMetadataControllerTest < ActionController::TestCase
     @controller.stubs(can_create_metadata?: true, save_as_enabled?: false, ephemeral_bootstrap_enabled?: false)
 
     json = { datasetId: 'four-four' }.to_json
-    set_up_json_request(json)
+    setup_json_request(json)
 
     post :create, format: :json
     assert_response(401)
@@ -137,7 +137,7 @@ class PageMetadataControllerTest < ActionController::TestCase
     View.stubs(find: view_stub)
 
     json = { datasetId: 'four-four', parentLensId: 'page-lens' }.to_json
-    set_up_json_request(json)
+    setup_json_request(json)
 
     @page_metadata_manager.expects(:create).with do |blob|
       assert_equal(blob['datasetId'], 'four-four')
@@ -152,7 +152,7 @@ class PageMetadataControllerTest < ActionController::TestCase
     @controller.stubs(can_create_metadata?: false, save_as_enabled?: true, current_user: user_stub)
 
     json = { datasetId: 'four-four' }.to_json
-    set_up_json_request(json)
+    setup_json_request(json)
 
     post :create, format: :json
     assert_response(401)
@@ -165,7 +165,7 @@ class PageMetadataControllerTest < ActionController::TestCase
     View.stubs(find: view_stub)
 
     json = { datasetId: 'four-four', parentLensId: 'page-lens' }.to_json
-    set_up_json_request(json)
+    setup_json_request(json)
 
     post :create, format: :json
     assert_response(401)
@@ -175,7 +175,7 @@ class PageMetadataControllerTest < ActionController::TestCase
     @controller.stubs(save_as_enabled?: false, current_user: nil)
 
     json = { datasetId: 'four-four', parentLensId: 'page-lens' }.to_json
-    set_up_json_request(json)
+    setup_json_request(json)
 
     post :create, format: :json
     assert_response(401)

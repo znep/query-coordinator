@@ -49,10 +49,7 @@ class ProfileControllerTest < ActionController::TestCase
     connection_stub = stub.tap do |stub|
       stub.stubs(
         :batch_request => [],
-        :get_request => [],
-        :reset_counters => {
-          :requests => []
-        }
+        :get_request => []
       )
     end
     CoreServer::Base.stubs(:connection => connection_stub)

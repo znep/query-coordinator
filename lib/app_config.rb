@@ -9,14 +9,13 @@ class AppConfig < Hashie::Dash
   as_float = lambda(&:to_f)
 
   # Services and service coordination
+  property :consul_host
   property :coreservice_uri
   property :feature_flag_signaller_uri
-  property :odysseus_uri
   property :odysseus_app_name
-  property :consul_host
-  property :zk_hosts
-
+  property :odysseus_uri
   property :signaller_traffic_throttler, default: 0, transform_with: as_float
+  property :zk_hosts
 
   # App tokens
   property :app_token
@@ -65,36 +64,38 @@ class AppConfig < Hashie::Dash
   property :statsd_server
 
   # Third-party analytics and errors
-  property :opendata_ga_tracking_code
-  property :standard_ga_tracking_code
   property :airbrake_api_key
+  property :catalog_landing_page_airbrake_api_key
   property :dataset_landing_page_airbrake_api_key
-  property :publishing_airbrake_api_key
-  property :recaptcha_2_site_key
-  property :recaptcha_2_secret_token
   property :google_maps_site_key
   property :mixpanel_token
+  property :opendata_ga_tracking_code
+  property :publishing_airbrake_api_key
+  property :recaptcha_2_secret_token
+  property :recaptcha_2_site_key
+  property :standard_ga_tracking_code
 
   # Auth0
-  property :auth0_uri
   property :auth0_id
-  property :auth0_secret
   property :auth0_jwt
+  property :auth0_secret
+  property :auth0_uri
 
   # RPX/JanRain auth
   property :rpx_facebook_url
-  property :rpx_twitter_url
   property :rpx_googleplus_url
-  property :rpx_windowslive_url
   property :rpx_signin_url
+  property :rpx_twitter_url
+  property :rpx_windowslive_url
 
   # Data lens tuning parameters
-  property :feature_map_disable_pan_zoom
-  property :feature_map_zoom_debounce
-  property :feature_map_features_per_tile
-  property :shape_file_region_query_limit
   property :enable_png_download_ui
   property :enable_search_suggestions
+  property :feature_map_disable_pan_zoom
+  property :feature_map_features_per_tile
+  property :feature_map_zoom_debounce
+  property :feature_map_zoom_debounce
+  property :shape_file_region_query_limit
 
   # Third-party survey configuration
   property :qualtrics, default: {}
@@ -109,15 +110,15 @@ class AppConfig < Hashie::Dash
   property :canary, default: false
 
   # Recaptcha keys
-  property :recaptcha_public_key
   property :recaptcha_private_key
+  property :recaptcha_public_key
 
   # Caching
   property :cache_dataslate_routing, default: 1.minute
 
   # Misc
-  property :threadpool_count, default: 0, transform_with: as_int
   property :secondary_group_identifier
+  property :threadpool_count, default: 0, transform_with: as_int
 
   def method_missing(name)
     message = "Attempted to access invalid property '#{name}' in AppConfig!"

@@ -993,7 +993,7 @@ module ApplicationHelper
   end
 
   def request_id(_request = request)
-    return 'Unavailable' unless _request.present?
+    return unless _request.present?
 
     _request.headers['X-Socrata-RequestId'] || _request.headers['action_dispatch.request_id'].to_s.gsub('-', '')
   end

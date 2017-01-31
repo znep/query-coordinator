@@ -1,4 +1,4 @@
-import mixpanel from 'lib/mixpanelTracking';
+import mixpanel from '../../common/helpers/mixpanelTracking';
 
 import { EMIT_MIXPANEL_EVENT } from '../actionTypes';
 

@@ -1,0 +1,15 @@
+.catalog-landing-page-header {
+  h1 {
+    font-size: 2rem;
+    font-weight: normal;
+    color: $primary-base;
+    margin-bottom: 0.5rem;
+  }
+  .description {
+    color: $dark-grey-1;
+    line-height: 1.25rem;
+    margin-bottom: 1.25rem;
+    font-size: 1.5em;
+    width: 64%;
+  }
+}

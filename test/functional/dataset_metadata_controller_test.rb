@@ -23,7 +23,7 @@ class DatasetMetadataControllerTest < ActionController::TestCase
     stub_site_chrome
   end
 
-  def set_up_json_request(body = nil)
+  def setup_json_request(body = nil)
     body = mock_v1_dataset_metadata.to_json unless body.present?
 
     @request.env['RAW_POST_DATA'] = body
@@ -39,7 +39,6 @@ class DatasetMetadataControllerTest < ActionController::TestCase
 
   test 'show gives forbidden error if CoreServer raises an error' do
     connection_stub = mock
-    connection_stub.stubs(reset_counters: { requests: {}, runtime: 0 })
     connection_stub.stubs(:get_request).raises(CoreServer::Error.new)
     CoreServer::Base.stubs(connection: connection_stub)
 
@@ -51,7 +50,6 @@ class DatasetMetadataControllerTest < ActionController::TestCase
 
   test 'show gives forbidden error if CoreServer returns an error object' do
     connection_stub = mock
-    connection_stub.stubs(reset_counters: { requests: {}, runtime: 0 })
     connection_stub.stubs(:get_request).returns('{"error":true}')
     CoreServer::Base.stubs(connection: connection_stub)
 
@@ -63,7 +61,6 @@ class DatasetMetadataControllerTest < ActionController::TestCase
 
   test 'show returns data for a given dataset' do
     connection_stub = mock
-    connection_stub.stubs(reset_counters: { requests: {}, runtime: 0 })
     connection_stub.stubs(:get_request).returns('[{"_0": "0"}]', '')
     CoreServer::Base.stubs(connection: connection_stub)
     @controller.stubs(can_create_metadata?: true)

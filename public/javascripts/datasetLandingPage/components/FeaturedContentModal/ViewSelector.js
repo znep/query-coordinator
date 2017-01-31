@@ -2,7 +2,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import React, { PropTypes } from 'react';
 import { ViewCard } from 'socrata-components';
-import { getViewCardPropsForView } from '../../lib/viewCardHelpers';
+import { getViewCardPropsForView } from '../../../common/helpers/viewCardHelpers';
 
 export const ViewSelector = React.createClass({
   propTypes: {

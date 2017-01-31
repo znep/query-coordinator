@@ -10,8 +10,7 @@ module.exports = function ( karma ) {
     singleRun: true,
 
     files: [
-      'karma/datasetManagementUI/index.js',
-      { pattern: 'karma/datasetManagementUI/data/*.png', watched: false, included: false, served: true }
+      'karma/datasetManagementUI/index.js'
     ],
 
     preprocessors: {

@@ -60,4 +60,28 @@ describe Hash do
     expect(hash_under_test).to eq(expected)
   end
 
+  it 'should camelize Hash keys' do
+    hash = {
+      :abc_def_ghi => 'Camel hair',
+      'this_is_sparta' => 'Caramel in hair',
+      'ok' => 'whatevs'
+    }
+
+    expected_keys = %w(abcDefGhi thisIsSparta ok)
+
+    expect(hash.camelize_keys!.keys).to eq(expected_keys)
+  end
+
+  it 'should camelize Hashie::Mash keys' do
+    mash = Hashie::Mash.new(
+      :abc_def_ghi => 'Camel hair',
+      'this_is_sparta' => 'Caramel in hair',
+      'ok' => 'whatevs'
+    )
+
+    expected_keys = %w(abcDefGhi thisIsSparta ok)
+
+    expect(mash.camelize_keys!.keys).to eq(expected_keys)
+  end
+
 end

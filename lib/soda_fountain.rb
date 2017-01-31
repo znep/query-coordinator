@@ -15,7 +15,7 @@ class SodaFountain
     begin
       ::ZookeeperDiscovery.get_json("/#{zookeeper_path}/#{instance_id}")
     rescue ZK::Exceptions::BadArguments => error
-      Rails.logger.error(error_message = "Unable to determine soda fountain connection details due to error: #{error.to_s}")
+      Rails.logger.error(error_message = "Unable to determine soda fountain connection details due to error: #{error}")
       raise ::SodaFountain::ConnectionError.new(error_message)
     end
   end

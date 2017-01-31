@@ -135,12 +135,12 @@
     <ul>
       <%- 1.upto(@viewable_columns.select{ |column| column.is_sortable? }.size) do |n| -%>
         <li>
-          <%= label_tag("sort_#{n}_field", "Sort field #{n.to_s} column") %>
+          <%= label_tag("sort_#{n}_field", "Sort field #{n} column") %>
           <%= select_tag(
             "sort[#{n}][field]",
             options_for_sort_by(@viewable_columns, params.deep_value_at([:sort, n.to_s.to_sym, :field]).to_i)
           ) %>;
-          <%= label_tag("sort_#{n}_direction", "sort field #{n.to_s} direction") %>
+          <%= label_tag("sort_#{n}_direction", "sort field #{n} direction") %>
           <%= select_tag(
             "sort[#{n}][direction]",
             options_for_select(%w(Ascending Descending), params.deep_value_at([:sort, n.to_s.to_sym, :direction]) || 'Ascending')

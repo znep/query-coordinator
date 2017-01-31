@@ -95,10 +95,10 @@ class AdministrationController < ApplicationController
   end
 
   def modify_sidebar_config
-    config = ::Configuration.get_or_create('sidebar', 'name' => 'Sidebar configuration')
+    config = ::Configuration.find_or_create_by_type('sidebar', 'name' => 'Sidebar configuration')
 
     params[:sidebar].each do |k, v|
-      create_or_update_property(config, k.to_s, v)
+      create_or_update_property(config, k, v)
     end
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
@@ -691,7 +691,7 @@ class AdministrationController < ApplicationController
   #
 
   def metadata
-    config = ::Configuration.get_or_create('metadata', 'name' => 'Metadata configuration')
+    config = ::Configuration.find_or_create_by_type('metadata', 'name' => 'Metadata configuration')
     @metadata = config.properties.fieldsets || []
     @categories = get_configuration('view_categories', true).raw_properties.sort { |a, b| a[0].downcase <=> b[0].downcase }
     @locales = CurrentDomain.available_locales
@@ -1055,7 +1055,7 @@ class AdministrationController < ApplicationController
     end
 
     params[:catalog].each do |k, v|
-      create_or_update_property(config, k.to_s, v)
+      create_or_update_property(config, k, v)
     end
 
     CurrentDomain.flag_out_of_date!(CurrentDomain.cname)
@@ -1071,7 +1071,7 @@ class AdministrationController < ApplicationController
 
     if request.post?
       if params[:terms_accepted].present?
-        actions = ::Configuration.get_or_create('actions', :name => 'Actions')
+        actions = ::Configuration.find_or_create_by_type('actions', :name => 'Actions')
         create_or_update_property(actions, 'tos_accepted',
           :user => current_user,
           :text => @tos,
@@ -1250,7 +1250,7 @@ class AdministrationController < ApplicationController
   end
 
   def create_or_update_property(configuration, name, value)
-    configuration.create_or_update_property(name, value)
+    configuration.create_or_update_property(name.to_s, value)
   end
 
   def clear_homepage_cache

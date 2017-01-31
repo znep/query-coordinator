@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { VelocityComponent } from 'velocity-react';
 import BootstrapAlert from './BootstrapAlert';
 import { ViewCard } from 'socrata-components';
-import { getViewCardPropsForView } from '../lib/viewCardHelpers';
+import { getViewCardPropsForView } from '../../common/helpers/viewCardHelpers';
 import { RELATED_VIEWS_CHUNK_SIZE } from '../lib/constants';
 import { handleKeyPress } from '../lib/a11yHelpers';
 import { isUserAdminOrPublisher } from '../lib/user';

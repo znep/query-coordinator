@@ -35,9 +35,6 @@ _.mixin({
     newObject[key] = value;
     return newObject;
   },
-  negateValue: _.negate(_.identity)
-});
-
-_.mixin({
-  isDefined: _.flowRight(_.negateValue, _.isUndefined)
+  negateValue: _.negate(_.identity),
+  isDefined: _.flowRight(_.negate(_.identity), _.isUndefined)
 });

@@ -12,9 +12,7 @@ class DatasetsControllerTest < ActionController::TestCase
       :find_related => [@test_view],
       :user_granted? => false
     )
-    View.stubs(
-      :find => @test_view
-    )
+    View.stubs(:find => @test_view)
     @view = View.new(
       'resourceName' => 'resource-name',
       'id' => 'four-four',
@@ -52,9 +50,7 @@ class DatasetsControllerTest < ActionController::TestCase
   end
 
   test 'generic dataset paths route here' do
-    test_paths = %w(
-      datasets/four-four
-    )
+    test_paths = %w(datasets/four-four)
 
     test_paths.each do |path|
       assert_routing(path, { controller: 'datasets', action: 'show', id: 'four-four' })
@@ -63,9 +59,7 @@ class DatasetsControllerTest < ActionController::TestCase
 
   test 'seo dataset paths route here' do
     base_path_params = {controller: 'datasets', action: 'show'}
-    test_paths = %w(
-      cats/dogs/four-four
-    )
+    test_paths = %w(cats/dogs/four-four)
 
     test_paths.each do |path|
       segments = path.split('/')
@@ -159,6 +153,10 @@ class DatasetsControllerTest < ActionController::TestCase
     Phidippides.any_instance.stubs(
       fetch_dataset_metadata: { status: '200', body: { defaultPage: 'page-xist' } }
     )
+    mock_metadata = Metadata.new.tap do |metadata|
+      metadata.stubs(:feature_flags => Hashie::Mash.new, :attachments => [], :data => Hashie::Mash.new)
+    end
+    View.any_instance.stubs(:metadata => mock_metadata)
     get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
     notice_matcher = lambda { |element|
       element =~ /#{I18n.t('screens.ds.new_ux_nbe_warning')}/i
@@ -183,6 +181,7 @@ class DatasetsControllerTest < ActionController::TestCase
     setup_nbe_dataset_test(false, true)
     Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '200', body: {} })
     View.any_instance.stubs(:migrations => { 'obeId' => 'olde-four' })
+    Metadata.any_instance.stubs(:feature_flags => Hashie::Mash.new)
     get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
     assert_redirected_to '/d/olde-four'
   end
@@ -190,6 +189,10 @@ class DatasetsControllerTest < ActionController::TestCase
   test 'stops redirection to OBE view page when the feature flag disable_obe_redirection is true' do
     setup_nbe_dataset_test(false, true)
     FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |feature_flags| feature_flags.stubs(disable_obe_redirection: true) })
+    mock_metadata = Metadata.new.tap do |metadata|
+      metadata.stubs(:feature_flags => Hashie::Mash.new, :attachments => [], :data => Hashie::Mash.new)
+    end
+    View.any_instance.stubs(:metadata => mock_metadata)
     get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
     assert_response :success
   end
@@ -197,6 +200,10 @@ class DatasetsControllerTest < ActionController::TestCase
   test 'redirects to home page for NBE datasets without default page for non-admin users' do
     setup_nbe_dataset_test(false, false)
     Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '404', body: {} })
+    mock_metadata = Metadata.new.tap do |metadata|
+      metadata.stubs(:feature_flags => Hashie::Mash.new, :attachments => [], :data => Hashie::Mash.new)
+    end
+    View.any_instance.stubs(:metadata => mock_metadata)
     get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
     assert_redirected_to '/'
     assert_match(@controller.flash[:notice], I18n.t('screens.ds.unable_to_find_dataset_page'))
@@ -215,6 +222,7 @@ class DatasetsControllerTest < ActionController::TestCase
     setup do
       @controller.stubs(:dataset_landing_page_enabled? => true)
       @test_view.stubs(migrations: {'nbeId' => 'test-nbe1'})
+      init_current_user(@controller)
     end
 
     context 'if the view is a dataset' do
@@ -235,12 +243,17 @@ class DatasetsControllerTest < ActionController::TestCase
         end
 
         should 'successfully on the show path' do
+          DatasetLandingPage.stubs(:fetch_all => {})
           get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
           assert_select '#app', 1
           assert_response 200
         end
 
         should 'successfully when /about is appended to the show path' do
+          mock_metadata = Metadata.new.tap do |metadata|
+            metadata.stubs(:feature_flags => Hashie::Mash.new, :attachments => [], :data => Hashie::Mash.new)
+          end
+          View.any_instance.stubs(:metadata => mock_metadata)
           get :about, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
           assert_select '#app', 1
           assert_response 200
@@ -249,6 +262,10 @@ class DatasetsControllerTest < ActionController::TestCase
 
       should 'display the grid view when /data is appended to the show path' do
         setup_nbe_dataset_test
+        mock_metadata = Metadata.new.tap do |metadata|
+          metadata.stubs(:feature_flags => Hashie::Mash.new, :attachments => [], :data => Hashie::Mash.new)
+        end
+        View.any_instance.stubs(:metadata => mock_metadata)
         get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data', :bypass_dslp => true
         assert_select '#app', 0
         assert_response 302 # we know this is not the authoritative path
@@ -263,12 +280,21 @@ class DatasetsControllerTest < ActionController::TestCase
       end
 
       should 'does not show the dslp at /about' do
+        mock_metadata = Metadata.new.tap do |metadata|
+          metadata.stubs(:feature_flags => Hashie::Mash.new, :attachments => [], :data => Hashie::Mash.new)
+        end
+        View.any_instance.stubs(:metadata => mock_metadata)
+        FeatureFlags.stubs(:derive => Hashie::Mash.new.tap { |mash| mash.stubs(:reenable_ui_for_nbe => true)})
         get :about, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
         assert_select '#app', 0
         assert_response 200
       end
 
       should 'show the normal display view at show' do
+        mock_metadata = Metadata.new.tap do |metadata|
+          metadata.stubs(:feature_flags => Hashie::Mash.new, :attachments => [], :data => Hashie::Mash.new)
+        end
+        View.any_instance.stubs(:metadata => mock_metadata)
         get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
         assert_select '#infoBox'
         assert_response 200
@@ -278,6 +304,7 @@ class DatasetsControllerTest < ActionController::TestCase
 
   test 'renders page meta content over https and not http' do
     setup_nbe_dataset_test(true)
+    Metadata.any_instance.stubs(:feature_flags => Hashie::Mash.new, :attachments => [], :data => Hashie::Mash.new)
     @request.env['HTTPS'] = 'on'
     get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
     assert_select 'meta' do |elements|

@@ -5,7 +5,15 @@
   },
   "extends": "./node_modules/eslint-base/.eslintrc.json",
   "parser": "babel-eslint",
-  "plugins": ["react"],
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "import/default": 2,
+    "import/export": 2,
+    "import/prefer-default-export": 0
+  },
   "globals": {
     "$": true,
     "Airbrake": true,

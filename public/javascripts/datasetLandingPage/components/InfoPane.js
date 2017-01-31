@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import formatDate from '../lib/formatDate';
+import formatDate from '../../common/helpers/formatDate';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import InfoPaneButtons from './InfoPaneButtons';
-import InfoPaneComponent from '../../socrataHOC/InfoPaneComponent.js';
+import InfoPaneComponent from '../../common/components/InfoPaneComponent.js';
 
 function mapStateToProps(state) {
   const { view } = state;

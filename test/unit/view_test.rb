@@ -390,8 +390,7 @@ class ViewTest < Minitest::Test
   end
 
   def test_is_official_returns_true
-    view = View.new
-    view.provenance = 'OFFICIAL'
+    view = View.new('provenance' => 'OFFICIAL')
     assert(view.is_official?)
   end
 
@@ -400,8 +399,7 @@ class ViewTest < Minitest::Test
   end
 
   def test_is_community_returns_true
-    view = View.new
-    view.provenance = 'COMMUNITY'
+    view = View.new('provenance' => 'COMMUNITY')
     assert(view.is_community?)
   end
 

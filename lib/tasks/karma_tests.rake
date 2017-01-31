@@ -1,6 +1,8 @@
 namespace :test do
+
   desc 'Run the Karma test suites'
   namespace :karma do
+
     def run_karma(dir, args = {})
       watch = args.watch == 'true'
       browser = args.browser || 'PhantomJS'
@@ -20,6 +22,7 @@ namespace :test do
     end
 
     {
+      'catalogLandingPage' => 'update_catalog_landing_page_translations',
       'dataCards' => 'update_datacards_translations',
       'datasetLandingPage' => 'update_dataset_landing_page_translations',
       'adminGoals' => 'update_admin_goals_translations',
@@ -39,6 +42,7 @@ namespace :test do
 
     # an opinionated JS test runner for a parallelized single run
     parallel_deps = [
+      'test:karma:translations:update_catalog_landing_page_translations',
       'test:karma:translations:update_datacards_translations',
       'test:karma:translations:update_dataset_landing_page_translations',
       'test:karma:translations:update_import_wizard_translations',
@@ -65,13 +69,24 @@ namespace :test do
       end
 
       desc 'Helper task that creates a js file that injects translation into browser'
+      task :update_catalog_landing_page_translations do
+        translations_filename = 'config/locales/en.yml'
+        output_filename = 'karma/catalogLandingPage/mockTranslations.js'
+        all_translations = YAML.load_file(translations_filename)['en']
+        translations = all_translations['catalog_landing_page'].merge(
+          data_types: all_translations['core']['data_types']
+        )
+        File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
+      end
+
+      desc 'Helper task that creates a js file that injects translation into browser'
       task :update_dataset_landing_page_translations do
         translations_filename = 'config/locales/en.yml'
         output_filename = 'karma/datasetLandingPage/mockTranslations.js'
         all_translations = YAML.load_file(translations_filename)['en']
-        translations = all_translations['dataset_landing_page'].merge({
+        translations = all_translations['dataset_landing_page'].merge(
           data_types: all_translations['core']['data_types']
-        })
+        )
         File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
       end
 
@@ -89,10 +104,10 @@ namespace :test do
         output_filename = 'karma/datasetManagementUI/mockTranslations.js'
         all_translations = YAML.load_file(translations_filename)['en']
         translations = all_translations['dataset_management_ui'].
-          merge({
+          merge(
             data_types: all_translations['core']['data_types'],
             edit_metadata: all_translations['screens']['edit_metadata']
-          })
+          )
         File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
       end
 
@@ -130,6 +145,7 @@ namespace :test do
     task :all, [:watch, :browser, :reporter] => [
       'karma:adminGoals',
       'karma:autocomplete',
+      'karma:catalogLandingPage',
       'karma:dataCards',
       'karma:datasetLandingPage',
       'karma:datasetManagementUI',

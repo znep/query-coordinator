@@ -64,6 +64,13 @@ class CustomContentControllerTest < ActionController::TestCase
     test_paths = %w(
       countystat/objective/housing
     )
+    stub_request(:get, 'http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=catalog_landing_page').
+      with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'}).
+      to_return(:status => 200, :body => File.read('test/fixtures/catalog_landing_page_configuration.json'), :headers => {})
+
+    stub_request(:get, 'http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=catalog').
+      with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'}).
+      to_return(:status => 200, :body => '', :headers => {})
 
     test_paths.each do |path|
       assert_routing(path, { controller: 'custom_content', action: 'page', path: path })

@@ -9,7 +9,7 @@ $(document).ready(function() {
 
   var MISSING_PROP_VALUE = 'N/A';
 
-  // This is duplicated in angular/common/values.js and datasetLandingPage/lib/mixpanelTracking.js
+  // This is duplicated in angular/common/values.js and common/helpers/mixpanelTracking.js
   var MIXPANEL_EVENTS = [
     'Changed Render Type Options',
     'Chose Visualization Type',
@@ -50,7 +50,7 @@ $(document).ready(function() {
     'Viewed Dataset Statistics'
   ];
 
-  // This is duplicated in angular/common/values.js and datasetLandingPage/lib/mixpanelTracking.js
+  // This is duplicated in angular/common/values.js and common/helpers/mixpanelTracking.js
   var MIXPANEL_PROPERTIES = [
     'Catalog Version',
     'Chart/Map Type',
@@ -114,7 +114,7 @@ $(document).ready(function() {
     var valid = _.includes(MIXPANEL_EVENTS, eventName);
 
     if (!valid) {
-      console.error('Mixpanel payload validation failed: Unknown event name: "{0}"'.format(eventName));
+      console.warn('Mixpanel payload validation failed: Unknown event name: ', eventName);
     }
 
     return valid;
@@ -124,20 +124,23 @@ $(document).ready(function() {
   var validateProperties = function(properties) {
     var valid = true;
 
-    _.forEach(properties, function(value, key) {
-      if (_.isObject(value) && !_.isArray(properties)) {
-        validateProperties(value);
-      } else {
-        blist.util.enforceLodashFunctions();
-        valid = _.includes(MIXPANEL_PROPERTIES, key);
+    // Sometimes the properties is a simple array, in which case there are no keys to validate.
+    if (_.isObject(properties) && !_.isArray(properties)) {
+      _.forEach(properties, function(value, key) {
+        if (_.isObject(value) && !_.isArray(properties)) {
+          validateProperties(value);
+        } else {
+          blist.util.enforceLodashFunctions();
+          valid = _.includes(MIXPANEL_PROPERTIES, key);
 
-        if (!valid) {
-          console.error('Mixpanel payload validation failed: Unknown property "{0}"'.format(key));
+          if (!valid) {
+            console.warn('Mixpanel payload validation failed: Unknown property: ', key);
+          }
+
+          return valid;
         }
-
-        return valid;
-      }
-    });
+      });
+    }
 
     return valid;
   };

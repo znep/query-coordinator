@@ -32,6 +32,9 @@ dataset-landing-page:
 dataset-management-ui:
 - dataset-management-ui/dataset-management-ui
 
+catalog-landing-page:
+- catalog-landing-page/catalog-landing-page
+
 ie9:
 - dataCards/ie9
 

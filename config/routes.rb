@@ -235,6 +235,11 @@ Rails.application.routes.draw do
 
     get '/translations/*locale_parts' => 'translations#get'
 
+    # Note! The order of matchers in this file is important. Please don't move this line without thorough testing.
+    scope :controller => 'catalog_landing_page', :constraints => Constraints::CatalogLandingPageConstraint.new do
+      get '*path', :action => 'show'
+    end
+
     resource :browse, :controller => 'browse', :except => [ :create ] do
       collection do
         get :embed
@@ -322,6 +327,10 @@ Rails.application.routes.draw do
       member do
         get :show
       end
+    end
+
+    scope :controller => 'catalog_landing_page', :path => '/browse', :constraints => Constraints::CatalogLandingPageConstraint.new do
+      get '/', :action => 'show'
     end
 
     scope :controller => 'dataset_landing_page', :path => '/dataset_landing_page', :constraints => { :id => Frontend::UID_REGEXP } do

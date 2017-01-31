@@ -129,11 +129,15 @@ module BrowseActions
       {:text => tag.name, :value => tag.name, :count => tag.frequency}
     end
     if params[:tags].present? && top_tags.none? { |tag| tag[:text] == params[:tags] }
-      top_tags.push(
-        :text => params[:tags],
-        :value => params[:tags],
-        :count => all_tags.select{ |tag| tag.name == params[:tags] }.first.try(:frequency) || 0
-      )
+      prepend_requested_tag = lambda do |tag|
+        top_tags.push(
+          :text => tag,
+          :value => tag,
+          :count => all_tags.select{ |tag| tag.name == tag }.first.try(:frequency) || 0
+        )
+      end
+
+      Array(params[:tags]).each(&prepend_requested_tag)
     end
     top_tags.sort_by! { |tag| tag[:text] }
 

@@ -1,0 +1,17 @@
+<%- content_for :catalog_landing_page do -%>
+  <div id="app" class="catalog-landing-page">
+    <div class="main-spinner">
+      <div class="spinner-default spinner-large"></div>
+    </div>
+  </div>
+
+<%- end -%>
+
+<% content_for :head do %>
+  <title>Search &amp; Browse | <%= get_site_title %></title>
+<% end %>
+
+<div class="catalog">
+  <div id="search-content"></div>
+  <%= render 'datasets/catalog', :opts => @processed_browse %>
+</div>

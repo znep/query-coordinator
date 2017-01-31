@@ -18,7 +18,7 @@
     <input class="feature-flag-filter-input" type="text" placeholder="Filter" />
   </div>
   <%- @flags.each do |flag, flag_config| %>
-    <%= form_tag("/internal/orgs/#{@domain.organizationId.to_s}/domains/#{@domain.cname}/set_feature_flags") do %>
+    <%= form_tag("/internal/orgs/#{@domain.organizationId}/domains/#{@domain.cname}/set_feature_flags") do %>
       <div class="clearfix" style="clear: both">
         <div class="flagBox">
           <div class="title"><%= flag %></div>

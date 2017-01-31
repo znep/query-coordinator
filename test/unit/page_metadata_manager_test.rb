@@ -33,7 +33,6 @@ class PageMetadataManagerTest < Minitest::Test
 
   def test_show_returns_data_with_public_permissions_from_metadb
     core_stub = mock
-    core_stub.stubs(reset_counters: {requests: {}, runtime: 0})
     core_stub.expects(:get_request).times(2).returns(
       '{"grants": [{"flags": ["public"]}]}', # fetch permissions
       v2_page_metadata.to_json # fetch page metadata
@@ -50,7 +49,6 @@ class PageMetadataManagerTest < Minitest::Test
 
   def test_show_returns_data_with_private_permissions_from_metadb
     core_stub = mock
-    core_stub.stubs(reset_counters: {requests: {}, runtime: 0})
     core_stub.expects(:get_request).times(2).returns(
       '{"grants": []}', # fetch permissions
       v2_page_metadata.to_json # fetch page metadata
@@ -67,7 +65,6 @@ class PageMetadataManagerTest < Minitest::Test
 
   def test_show_raises_error_if_core_needs_authn
     core_stub = mock
-    core_stub.stubs(reset_counters: {requests: {}, runtime: 0})
     core_stub.expects(:get_request).with do |url|
       assert_equal('/views/four-four.json', url)
     end.then.raises(CoreServer::CoreServerError.new(nil, 'authentication_required', nil))
@@ -80,7 +77,6 @@ class PageMetadataManagerTest < Minitest::Test
 
   def test_show_raises_error_if_core_needs_authz
     core_stub = mock
-    core_stub.stubs(reset_counters: {requests: {}, runtime: 0})
     core_stub.expects(:get_request).with do |url|
       assert_equal('/views/four-four.json', url)
     end.then.raises(CoreServer::CoreServerError.new(nil, 'permission_denied', nil))
@@ -262,7 +258,6 @@ class PageMetadataManagerTest < Minitest::Test
     )
 
     core_stub = mock
-    core_stub.stubs(reset_counters: {requests: {}, runtime: 0})
     core_stub.expects(:delete_request).with do |url|
       assert_equal('/views.json?id=four-four&method=delete', url)
     end.then.returns('{ "body": null, "status": "200" }')

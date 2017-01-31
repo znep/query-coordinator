@@ -39,11 +39,7 @@ class BrowseControllerTest < ActionController::TestCase
     connection_stub = stub.tap do |stub|
       stub.stubs(
         :batch_request => [],
-        :get_request => File.open('test/fixtures/catalog_search_results.json').read,
-        :reset_counters => {
-          :runtime => 0,
-          :requests => {}
-        }
+        :get_request => File.open('test/fixtures/catalog_search_results.json').read
       )
     end
     Configuration.stubs(:find_by_type => {})

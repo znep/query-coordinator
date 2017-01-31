@@ -9,7 +9,7 @@ class Manifest
 
   def add_resource(name, mtime)
     if !name.is_a?(String) || !mtime.is_a?(Integer)
-      Rails.logger.info("INVALID MANIFEST for key #{name} mtime #{mtime.to_s}")
+      Rails.logger.info("INVALID MANIFEST for key #{name} mtime #{mtime}")
       return
     end
     @manifest[name] = mtime

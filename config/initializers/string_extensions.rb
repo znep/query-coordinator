@@ -1,4 +1,4 @@
-# Add this method to String
+# Add methods to String class
 
 class String
   def convert_to_url

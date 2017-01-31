@@ -109,4 +109,23 @@ class Hash
       reduce(self) { |memo, layer| memo[layer] ||= self.class.new }.
       store(to_bury.last, value)
   end
+
+  def camelize_keys!
+    keys.each do |key|
+      self[(key.to_s.camelize(:lower) rescue key) || key] = delete(key)
+    end
+    self
+  end
+
+end
+
+module Hashie
+  class Mash
+    def camelize_keys!
+      keys.each do |key|
+        self[(key.to_s.camelize(:lower) rescue key) || key] = delete(key)
+      end
+      self
+    end
+  end
 end

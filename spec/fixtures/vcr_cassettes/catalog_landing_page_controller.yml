@@ -1,0 +1,2538 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:8080/domains/localhost.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 02 Dec 2016 19:05:14 GMT
+      X-Socrata-Requestid:
+      - 2daaufsehvpvh2z1tfus7kngu
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id" : 1,
+          "name" : "Socrata Website",
+          "aliases" : "127.0.0.1,local.dev",
+          "childCount" : 0,
+          "cname" : "localhost",
+          "configUpdatedAt" : 1480617820,
+          "httpsEnforced" : false,
+          "organizationId" : 1,
+          "parentDomainId" : 2,
+          "shortName" : "socrata",
+          "accountModules" : [ {
+            "name" : "geospatial",
+            "description" : "Geospatial datasets and features"
+          }, {
+            "name" : "federations",
+            "description" : "Share datasets across domains"
+          }, {
+            "name" : "routing_approval",
+            "description" : "Enable dataset routing and approval"
+          }, {
+            "name" : "cell_comments",
+            "description" : "Allow commenting on individual cells"
+          }, {
+            "name" : "dataset_nomination",
+            "description" : "Visitors can nominate datasets for inclusion"
+          }, {
+            "name" : "api_foundry",
+            "description" : "Access to API Foundry"
+          }, {
+            "name" : "canvas2",
+            "description" : "Enable DataSlate"
+          }, {
+            "name" : "canvasX",
+            "description" : "Enable pre-release DataSlate editing features"
+          }, {
+            "name" : "allow_comments",
+            "description" : "Allow users to comment on datasets"
+          }, {
+            "name" : "openid_login",
+            "description" : "Allow users to log in via OpenID"
+          }, {
+            "name" : "old_charts",
+            "description" : "Ignore all other chart versioning modules and assert oldcharts."
+          } ],
+          "accountTier" : {
+            "id" : 3,
+            "name" : "Ultimate",
+            "accountModules" : [ {
+              "name" : "sdp_customizer",
+              "description" : "Access is granted to the SDP customizer"
+            }, {
+              "name" : "basic_visualization",
+              "description" : "Bar, Pie, Line Charts, Heat Maps, Point Maps"
+            }, {
+              "name" : "advanced_visualization",
+              "description" : "Combo Charts, Bubble Charts, County-level Heatmaps"
+            }, {
+              "name" : "basic_metrics",
+              "description" : "Aggregate usage counts, web propagation summary, day-old metrics"
+            }, {
+              "name" : "advanced_metrics",
+              "description" : "Detailed usage counts, web prop details, > 30 days, real-time"
+            }, {
+              "name" : "community_comment_moderation",
+              "description" : "Comments can be community moderated"
+            }, {
+              "name" : "dataset_append",
+              "description" : "Datasets can be appended to"
+            }, {
+              "name" : "dataset_refresh",
+              "description" : "Datasets can be refreshed replaced"
+            }, {
+              "name" : "dataset_nomination",
+              "description" : "Visitors can nominate datasets for inclusion"
+            }, {
+              "name" : "dataset_approval",
+              "description" : "Publishers can set up a signoff process for datasets"
+            }, {
+              "name" : "discovery_module",
+              "description" : "The Data tab"
+            }, {
+              "name" : "community_module",
+              "description" : "The Community tab"
+            }, {
+              "name" : "community_creation",
+              "description" : "Allow community members to create datasets"
+            }, {
+              "name" : "openid_login",
+              "description" : "Allow users to log in via OpenID"
+            }, {
+              "name" : "allow_comments",
+              "description" : "Allow users to comment on datasets"
+            }, {
+              "name" : "form_publish",
+              "description" : "Ability to publish forms"
+            }, {
+              "name" : "map_publish",
+              "description" : "Ability to publish maps"
+            }, {
+              "name" : "digital_signatures",
+              "description" : "Create digital signatures for datasets to prove integrity"
+            }, {
+              "name" : "federations",
+              "description" : "Share datasets across domains"
+            }, {
+              "name" : "esri_integration",
+              "description" : "ESRI map layer datasets"
+            }, {
+              "name" : "cell_comments",
+              "description" : "Allow commenting on individual cells"
+            }, {
+              "name" : "use_soda2",
+              "description" : "Force the domain to use SODA2 API"
+            } ],
+            "config" : {
+              "metering.monthly.limit" : 5368709120000,
+              "snapshots" : 20,
+              "administrator_cap" : 10,
+              "account_lockout_minutes" : 30
+            }
+          }
+        }
+    http_version: 
+  recorded_at: Fri, 02 Dec 2016 19:05:14 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/configurations.json?defaultOnly=true&type=site_chrome
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 02 Dec 2016 19:05:14 GMT
+      X-Socrata-Requestid:
+      - 1u8e4a4tme2wxx4fjswwxizx4
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        [ {
+          "id" : 62,
+          "name" : "Site Chrome",
+          "childCount" : 0,
+          "default" : true,
+          "domainCName" : "localhost",
+          "type" : "site_chrome",
+          "updatedAt" : 1480617820,
+          "properties" : [ {
+            "name" : "siteChromeConfigVars",
+            "value" : {
+              "versions" : {
+                "0.3" : {
+                  "draft" : {
+                    "content" : {
+                      "general" : {
+                        "template" : "Evergreen",
+                        "social_shares" : {
+                          "youtube" : {
+                            "url" : ""
+                          },
+                          "yammer" : {
+                            "url" : ""
+                          },
+                          "twitter" : {
+                            "url" : ""
+                          },
+                          "github" : {
+                            "url" : ""
+                          },
+                          "vimeo" : {
+                            "url" : ""
+                          },
+                          "flickr" : {
+                            "url" : ""
+                          },
+                          "facebook" : {
+                            "url" : ""
+                          },
+                          "linked_in" : {
+                            "url" : ""
+                          },
+                          "tumblr" : {
+                            "url" : ""
+                          },
+                          "pinterest" : {
+                            "url" : ""
+                          },
+                          "google_plus" : {
+                            "url" : ""
+                          },
+                          "instagram" : {
+                            "url" : ""
+                          }
+                        },
+                        "window_title_display" : "",
+                        "window_icon" : "/socrata_site_chrome/images/default_favicon.ico",
+                        "show_signup" : "true",
+                        "styles" : {
+                          "max_width" : "",
+                          "font_family" : "Open Sans"
+                        },
+                        "show_signin_signout" : "true",
+                        "show_profile" : "true",
+                        "google_analytics_token" : ""
+                      },
+                      "locales" : {
+                        "en" : {
+                          "footer" : {
+                            "site_name" : "",
+                            "copyright_notice_source" : "",
+                            "links" : {
+                              "link_3" : "Accessibility",
+                              "link_4" : "Contact Us",
+                              "link_1" : "Terms of Service",
+                              "link_2" : "Privacy Policy",
+                              "link_0" : "Home Page"
+                            }
+                          },
+                          "header" : {
+                            "site_name" : "Do A Header!",
+                            "links" : {
+                              "link_3" : "Support",
+                              "link_1" : "Browse",
+                              "link_2" : "Developers",
+                              "link_0" : "Home Page"
+                            }
+                          }
+                        }
+                      },
+                      "footer" : {
+                        "copyright_notice" : "true",
+                        "powered_by" : "true",
+                        "logo" : {
+                          "src" : "/socrata_site_chrome/images/socrata-logo-2c-dark.png",
+                          "alt" : ""
+                        },
+                        "styles" : {
+                          "bg_color" : "#3b3a3c",
+                          "display_name_fg_color" : "#fff",
+                          "fg_color" : "#fff",
+                          "display_name_size" : "14pt",
+                          "logo_height" : "44px",
+                          "logo_width" : ""
+                        },
+                        "links" : [ {
+                          "key" : "link_0",
+                          "url" : "/"
+                        }, {
+                          "key" : "link_1",
+                          "url" : "http://www.socrata.com/terms-of-service"
+                        }, {
+                          "key" : "link_2",
+                          "url" : "http://www.socrata.com/privacy"
+                        }, {
+                          "key" : "link_3",
+                          "url" : "http://www.socrata.com/accessibility"
+                        }, {
+                          "key" : "link_4",
+                          "url" : "http://www.socrata.com/contact-us"
+                        } ]
+                      },
+                      "header" : {
+                        "logo" : {
+                          "src" : "/socrata_site_chrome/images/socrata-logo-2c-dark.png",
+                          "alt" : ""
+                        },
+                        "styles" : {
+                          "bg_color" : "#22b479",
+                          "display_name_fg_color" : "#fff",
+                          "fg_color" : "#fff",
+                          "display_name_size" : "16pt",
+                          "logo_height" : "36px",
+                          "logo_width" : "",
+                          "bg_color_secondary" : ""
+                        },
+                        "links" : [ {
+                          "key" : "link_0",
+                          "url" : "/"
+                        }, {
+                          "key" : "link_1",
+                          "url" : "/browse"
+                        }, {
+                          "key" : "link_2",
+                          "url" : "http://dev.socrata.com"
+                        }, {
+                          "key" : "link_3",
+                          "url" : "http://support.socrata.com"
+                        } ]
+                      }
+                    }
+                  },
+                  "published" : {
+                    "content" : {
+                      "general" : {
+                        "template" : "Evergreen",
+                        "social_shares" : {
+                          "youtube" : {
+                            "url" : ""
+                          },
+                          "yammer" : {
+                            "url" : ""
+                          },
+                          "twitter" : {
+                            "url" : ""
+                          },
+                          "github" : {
+                            "url" : ""
+                          },
+                          "vimeo" : {
+                            "url" : ""
+                          },
+                          "flickr" : {
+                            "url" : ""
+                          },
+                          "facebook" : {
+                            "url" : ""
+                          },
+                          "linked_in" : {
+                            "url" : ""
+                          },
+                          "tumblr" : {
+                            "url" : ""
+                          },
+                          "pinterest" : {
+                            "url" : ""
+                          },
+                          "google_plus" : {
+                            "url" : ""
+                          },
+                          "instagram" : {
+                            "url" : ""
+                          }
+                        },
+                        "window_title_display" : "",
+                        "window_icon" : "/socrata_site_chrome/images/default_favicon.ico",
+                        "show_signup" : "true",
+                        "styles" : {
+                          "max_width" : "",
+                          "font_family" : "Open Sans"
+                        },
+                        "show_signin_signout" : "true",
+                        "show_profile" : "true",
+                        "google_analytics_token" : ""
+                      },
+                      "locales" : {
+                        "en" : {
+                          "footer" : {
+                            "site_name" : "",
+                            "copyright_notice_source" : "",
+                            "links" : {
+                              "link_3" : "Accessibility",
+                              "link_4" : "Contact Us",
+                              "link_1" : "Terms of Service",
+                              "link_2" : "Privacy Policy",
+                              "link_0" : "Home Page"
+                            }
+                          },
+                          "header" : {
+                            "site_name" : "Header Display Name",
+                            "links" : {
+                              "link_3" : "Support",
+                              "link_1" : "Browse",
+                              "link_2" : "Developers",
+                              "link_0" : "Home Page"
+                            }
+                          }
+                        }
+                      },
+                      "footer" : {
+                        "copyright_notice" : "true",
+                        "powered_by" : "true",
+                        "logo" : {
+                          "src" : "/socrata_site_chrome/images/socrata-logo-2c-dark.png",
+                          "alt" : "",
+                          "url" : ""
+                        },
+                        "styles" : {
+                          "bg_color" : "#3b3a3c",
+                          "display_name_fg_color" : "#fff",
+                          "fg_color" : "#fff",
+                          "display_name_size" : "14pt",
+                          "logo_height" : "44px",
+                          "logo_width" : ""
+                        },
+                        "links" : [ {
+                          "key" : "link_0",
+                          "url" : "/"
+                        }, {
+                          "key" : "link_1",
+                          "url" : "http://www.socrata.com/terms-of-service"
+                        }, {
+                          "key" : "link_2",
+                          "url" : "http://www.socrata.com/privacy"
+                        }, {
+                          "key" : "link_3",
+                          "url" : "http://www.socrata.com/accessibility"
+                        }, {
+                          "key" : "link_4",
+                          "url" : "http://www.socrata.com/contact-us"
+                        } ]
+                      },
+                      "header" : {
+                        "logo" : {
+                          "src" : "/socrata_site_chrome/images/socrata-logo-2c-dark.png",
+                          "alt" : "",
+                          "url" : ""
+                        },
+                        "styles" : {
+                          "bg_color" : "#22b479",
+                          "display_name_fg_color" : "#fff",
+                          "fg_color" : "#fff",
+                          "display_name_size" : "16pt",
+                          "logo_height" : "36px",
+                          "logo_width" : "",
+                          "bg_color_secondary" : ""
+                        },
+                        "links" : [ {
+                          "key" : "link_0",
+                          "url" : "/"
+                        }, {
+                          "key" : "link_1",
+                          "url" : "/browse"
+                        }, {
+                          "key" : "link_2",
+                          "url" : "http://dev.socrata.com"
+                        }, {
+                          "key" : "link_3",
+                          "url" : "http://support.socrata.com"
+                        } ]
+                      }
+                    }
+                  }
+                }
+              },
+              "current_version" : "0.3",
+              "activation_state" : {
+                "data_lens" : true,
+                "open_data" : true,
+                "homepage" : true
+              }
+            }
+          } ]
+        } ]
+    http_version: 
+  recorded_at: Fri, 02 Dec 2016 19:05:14 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=catalog
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 02 Dec 2016 19:05:23 GMT
+      X-Socrata-Requestid:
+      - 1s554wtmnwbjiiav7x4xeqxx5
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        [ {
+          "id" : 11,
+          "name" : "Catalog Configuration",
+          "childCount" : 0,
+          "default" : true,
+          "domainCName" : "localhost",
+          "type" : "catalog",
+          "updatedAt" : 1475273678
+        } ]
+    http_version: 
+  recorded_at: Fri, 02 Dec 2016 19:05:23 GMT
+- request:
+    method: get
+    uri: http://localhost:5704/catalog/v1/domain_tags?domains=localhost&offset=0&order=relevance
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 02 Dec 2016 19:05:23 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.2.v20140723)
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "results" :
+            [
+              { "domain_tag" : "data", "count" : 1 },
+              { "domain_tag" : "demo", "count" : 1 },
+              { "domain_tag" : "health", "count" : 1 },
+              { "domain_tag" : "healthcare", "count" : 1 },
+              { "domain_tag" : "location", "count" : 1 },
+              { "domain_tag" : "sample", "count" : 1 }
+            ],
+          "resultSetSize" : 6,
+          "timings" : { "serviceMillis" : 671, "searchMillis" : [ 2, 7 ] }
+        }
+    http_version: 
+  recorded_at: Fri, 02 Dec 2016 19:05:23 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/federations.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 02 Dec 2016 19:05:23 GMT
+      X-Socrata-Requestid:
+      - eb1b4subge45zi5m4xorl0gc5
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        [ {
+          "id" : 1,
+          "lensName" : "",
+          "providerScreenName" : "Randy Antler",
+          "searchBoost" : 0.8,
+          "sourceDomainCName" : "localhost",
+          "sourceDomainId" : 1,
+          "targetDomainCName" : "local.test",
+          "targetDomainId" : 3
+        } ]
+    http_version: 
+  recorded_at: Fri, 02 Dec 2016 19:05:23 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/federations.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 02 Dec 2016 19:05:23 GMT
+      X-Socrata-Requestid:
+      - 2tzyxxlf9fgadsbps59iv9lwq
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        [ {
+          "id" : 1,
+          "lensName" : "",
+          "providerScreenName" : "Randy Antler",
+          "searchBoost" : 0.8,
+          "sourceDomainCName" : "localhost",
+          "sourceDomainId" : 1,
+          "targetDomainCName" : "local.test",
+          "targetDomainId" : 3
+        } ]
+    http_version: 
+  recorded_at: Fri, 02 Dec 2016 19:05:23 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/federations.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 02 Dec 2016 19:05:23 GMT
+      X-Socrata-Requestid:
+      - 1ym1ksyksxu1n1rmchvqb03v7
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        [ {
+          "id" : 1,
+          "lensName" : "",
+          "providerScreenName" : "Randy Antler",
+          "searchBoost" : 0.8,
+          "sourceDomainCName" : "localhost",
+          "sourceDomainId" : 1,
+          "targetDomainCName" : "local.test",
+          "targetDomainId" : 3
+        } ]
+    http_version: 
+  recorded_at: Fri, 02 Dec 2016 19:05:23 GMT
+- request:
+    method: get
+    uri: http://localhost:5704/catalog/v1?categories%5B%5D=fun&domains=localhost&limit=10&offset=0&order=relevance&search_context=localhost
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 02 Dec 2016 19:05:23 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.2.v20140723)
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "results" : [],
+          "resultSetSize" : 0,
+          "timings" : { "serviceMillis" : 30, "searchMillis" : [ 1, 1 ] }
+        }
+    http_version: 
+  recorded_at: Fri, 02 Dec 2016 19:05:23 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/featured_content/category=Government?parentType=catalog_query
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 27 Jan 2017 18:27:58 GMT
+      X-Socrata-Requestid:
+      - 8dveecqhcus5r0u8k8522md7c
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        [ {
+          "id" : 23,
+          "contentType" : "internal",
+          "description" : "",
+          "parentType" : "catalog_query",
+          "position" : 0,
+          "title" : "A Data Lens Appears!",
+          "url" : "https://localhost/Government/A-Data-Lens-Appears-/px7r-ajhh"
+        }, {
+          "id" : 21,
+          "contentType" : "internal",
+          "parentType" : "catalog_query",
+          "position" : 1,
+          "title" : "Cool Story Bro II!",
+          "url" : "https://localhost/stories/s/Cool-Story-Bro-II-/dm6r-n5dn"
+        }, {
+          "id" : 22,
+          "contentType" : "external",
+          "description" : "This is a link to a helpful search engine!",
+          "parentType" : "catalog_query",
+          "position" : 2,
+          "previewImage" : "f2234ba4-2518-4537-b295-1ba815b83457",
+          "title" : "Teh Googels",
+          "url" : "https://www.google.com"
+        } ]
+    http_version: 
+  recorded_at: Fri, 27 Jan 2017 18:27:58 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/views/px7r-ajhh.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      X-Socrata-Federation:
+      - Honey Badger
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 27 Jan 2017 18:27:58 GMT
+      X-Socrata-Requestid:
+      - 41jnzctq8hr5cymqt7gquz7on
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id" : "px7r-ajhh",
+          "name" : "A Data Lens Appears!",
+          "averageRating" : 0,
+          "category" : "Government",
+          "createdAt" : 1482278964,
+          "description" : "",
+          "displayType" : "data_lens",
+          "domainCName" : "localhost",
+          "downloadCount" : 0,
+          "hideFromCatalog" : false,
+          "hideFromDataJson" : false,
+          "moderationStatus" : true,
+          "newBackend" : true,
+          "numberOfComments" : 0,
+          "oid" : 46,
+          "provenance" : "official",
+          "publicationAppendEnabled" : false,
+          "publicationDate" : 1481238917,
+          "publicationGroup" : 97,
+          "publicationStage" : "published",
+          "rowsUpdatedAt" : 1481238917,
+          "rowsUpdatedBy" : "3hpa-tfzy",
+          "tableId" : 97,
+          "totalTimesRated" : 0,
+          "viewCount" : 0,
+          "viewLastModified" : 1483746556,
+          "viewType" : "tabular",
+          "columns" : [ ],
+          "displayFormat" : {
+            "data_lens_page_metadata" : {
+              "cards" : [ {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "facadmin",
+                "cardType" : "search"
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "oshpd_number",
+                "cardType" : "histogram",
+                "cardOptions" : {
+                  "bucketSize" : "logarithmic"
+                }
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "ltc",
+                "cardType" : "column"
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "initial_license_date",
+                "cardType" : "search"
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "county_name",
+                "cardType" : "histogram",
+                "cardOptions" : {
+                  "bucketSize" : 50
+                }
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "fac_fdr",
+                "cardType" : "column"
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "county_code",
+                "cardType" : "search"
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "district_number",
+                "cardType" : "histogram",
+                "cardOptions" : {
+                  "bucketSize" : 5
+                }
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "location",
+                "cardType" : "search"
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "facid",
+                "cardType" : "histogram",
+                "cardOptions" : {
+                  "bucketSize" : "logarithmic"
+                }
+              }, {
+                "cardSize" : 2,
+                "expanded" : false,
+                "fieldName" : "*",
+                "cardType" : "table"
+              } ],
+              "name" : "A Data Lens Appears!",
+              "datasetId" : "jf7f-i9h8",
+              "description" : "",
+              "pageId" : "px7r-ajhh",
+              "version" : 4
+            }
+          },
+          "grants" : [ {
+            "inherited" : true,
+            "type" : "viewer",
+            "flags" : [ "public" ]
+          } ],
+          "metadata" : {
+            "availableDisplayTypes" : [ "data_lens" ]
+          },
+          "owner" : {
+            "id" : "3hpa-tfzy",
+            "displayName" : "Randy Antler",
+            "profileImageUrlLarge" : "/api/users/3hpa-tfzy/profile_images/LARGE",
+            "profileImageUrlMedium" : "/api/users/3hpa-tfzy/profile_images/THUMB",
+            "profileImageUrlSmall" : "/api/users/3hpa-tfzy/profile_images/TINY",
+            "roleName" : "viewer",
+            "screenName" : "Randy Antler",
+            "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story", "use_data_connectors" ],
+            "flags" : [ "admin" ]
+          },
+          "query" : { },
+          "rights" : [ "read" ],
+          "tableAuthor" : {
+            "id" : "3hpa-tfzy",
+            "displayName" : "Randy Antler",
+            "profileImageUrlLarge" : "/api/users/3hpa-tfzy/profile_images/LARGE",
+            "profileImageUrlMedium" : "/api/users/3hpa-tfzy/profile_images/THUMB",
+            "profileImageUrlSmall" : "/api/users/3hpa-tfzy/profile_images/TINY",
+            "roleName" : "viewer",
+            "screenName" : "Randy Antler",
+            "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story", "use_data_connectors" ],
+            "flags" : [ "admin" ]
+          }
+        }
+    http_version: 
+  recorded_at: Fri, 27 Jan 2017 18:27:58 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/views/dm6r-n5dn.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      X-Socrata-Federation:
+      - Honey Badger
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 27 Jan 2017 18:27:58 GMT
+      X-Socrata-Requestid:
+      - 1a3y1f6nnirjcu3w1nbn2zz3q
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id" : "dm6r-n5dn",
+          "name" : "Cool Story Bro II!",
+          "averageRating" : 0,
+          "createdAt" : 1477673366,
+          "displayType" : "story",
+          "domainCName" : "localhost",
+          "downloadCount" : 0,
+          "hideFromCatalog" : false,
+          "hideFromDataJson" : false,
+          "newBackend" : false,
+          "numberOfComments" : 0,
+          "oid" : 34,
+          "publicationAppendEnabled" : false,
+          "publicationDate" : 1477673368,
+          "publicationGroup" : 51,
+          "publicationStage" : "published",
+          "rowsUpdatedAt" : 1477673366,
+          "tableId" : 51,
+          "totalTimesRated" : 0,
+          "viewCount" : 0,
+          "viewLastModified" : 1477675095,
+          "viewType" : "story",
+          "columns" : [ ],
+          "grants" : [ {
+            "inherited" : false,
+            "type" : "viewer",
+            "flags" : [ "public" ]
+          } ],
+          "metadata" : {
+            "isStorytellerAsset" : true,
+            "initialized" : true,
+            "availableDisplayTypes" : [ "story" ],
+            "renderTypeConfig" : {
+              "visible" : {
+                "story" : true
+              }
+            }
+          },
+          "owner" : {
+            "id" : "3hpa-tfzy",
+            "displayName" : "Randy Antler",
+            "profileImageUrlLarge" : "/api/users/3hpa-tfzy/profile_images/LARGE",
+            "profileImageUrlMedium" : "/api/users/3hpa-tfzy/profile_images/THUMB",
+            "profileImageUrlSmall" : "/api/users/3hpa-tfzy/profile_images/TINY",
+            "roleName" : "viewer",
+            "screenName" : "Randy Antler",
+            "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story", "use_data_connectors" ],
+            "flags" : [ "admin" ]
+          },
+          "query" : { },
+          "rights" : [ "read" ],
+          "tableAuthor" : {
+            "id" : "3hpa-tfzy",
+            "displayName" : "Randy Antler",
+            "profileImageUrlLarge" : "/api/users/3hpa-tfzy/profile_images/LARGE",
+            "profileImageUrlMedium" : "/api/users/3hpa-tfzy/profile_images/THUMB",
+            "profileImageUrlSmall" : "/api/users/3hpa-tfzy/profile_images/TINY",
+            "roleName" : "viewer",
+            "screenName" : "Randy Antler",
+            "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story", "use_data_connectors" ],
+            "flags" : [ "admin" ]
+          },
+          "flags" : [ "default" ]
+        }
+    http_version: 
+  recorded_at: Fri, 27 Jan 2017 18:27:58 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=catalog_landing_page
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 27 Jan 2017 18:27:58 GMT
+      X-Socrata-Requestid:
+      - 2q5sn3e3eocw27nxw5m8m4gnk
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        [ {
+          "id" : 65,
+          "name" : "Catalog Landing Page",
+          "childCount" : 0,
+          "default" : true,
+          "domainCName" : "localhost",
+          "type" : "catalog_landing_page",
+          "updatedAt" : 1485398077,
+          "properties" : [ {
+            "name" : "category%3DFun%26tag%3Dgiraffes",
+            "value" : {
+              "summary" : "Fun times...",
+              "description" : "I am having so much fun!",
+              "headline" : "Giraffes are such super fun creatures!"
+            }
+          }, {
+            "name" : "%7B%22category%22%3D%3E%22Government%22%7D",
+            "value" : {
+              "description" : "The City of Evergreen is committed to providing access to as much government data as possible. You can see things like active building permits, growth of technology jobs, information about public safety and information on public parks and spaces.",
+              "headline" : "Land Base"
+            }
+          }, {
+            "name" : "category%3DGovernment",
+            "value" : {
+              "description" : "The City of Evergreen is committed to providing access to as much government data as possible. You can see things like active building permits, growth of technology jobs, information about public safety and information on public parks and spaces.",
+              "headline" : "Land Base"
+            }
+          }, {
+            "name" : "content",
+            "value" : {
+              "description" : "I am the description",
+              "headline" : "I am the headline"
+            }
+          } ]
+        } ]
+    http_version: 
+  recorded_at: Fri, 27 Jan 2017 18:27:58 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=catalog_landing_page
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 27 Jan 2017 18:27:58 GMT
+      X-Socrata-Requestid:
+      - ble1dqxqzy42xwlqsn13pfcsl
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        [ {
+          "id" : 65,
+          "name" : "Catalog Landing Page",
+          "childCount" : 0,
+          "default" : true,
+          "domainCName" : "localhost",
+          "type" : "catalog_landing_page",
+          "updatedAt" : 1485398077,
+          "properties" : [ {
+            "name" : "category%3DFun%26tag%3Dgiraffes",
+            "value" : {
+              "summary" : "Fun times...",
+              "description" : "I am having so much fun!",
+              "headline" : "Giraffes are such super fun creatures!"
+            }
+          }, {
+            "name" : "%7B%22category%22%3D%3E%22Government%22%7D",
+            "value" : {
+              "description" : "The City of Evergreen is committed to providing access to as much government data as possible. You can see things like active building permits, growth of technology jobs, information about public safety and information on public parks and spaces.",
+              "headline" : "Land Base"
+            }
+          }, {
+            "name" : "category%3DGovernment",
+            "value" : {
+              "description" : "The City of Evergreen is committed to providing access to as much government data as possible. You can see things like active building permits, growth of technology jobs, information about public safety and information on public parks and spaces.",
+              "headline" : "Land Base"
+            }
+          }, {
+            "name" : "content",
+            "value" : {
+              "description" : "I am the description",
+              "headline" : "I am the headline"
+            }
+          } ]
+        } ]
+    http_version: 
+  recorded_at: Fri, 27 Jan 2017 18:27:58 GMT
+- request:
+    method: get
+    uri: http://localhost:5704/catalog/v1?categories%5B%5D=Government&domains=localhost&limit=10&offset=0&order=relevance&search_context=localhost
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 27 Jan 2017 18:27:58 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.2.v20140723)
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "results" :
+            [
+              {
+                "resource" :
+                  {
+                    "name" : "Child Care Regulated Programs-2",
+                    "id" : "8hbj-mt5f",
+                    "parent_fxf" : null,
+                    "description" : "",
+                    "attribution" : null,
+                    "type" : "dataset",
+                    "updatedAt" : "2016-10-13T19:33:54.000Z",
+                    "createdAt" : "2016-10-13T19:33:06.000Z",
+                    "view_count" :
+                      {
+                        "page_views_last_week" : 0,
+                        "page_views_last_month" : 0,
+                        "page_views_total" : 2,
+                        "page_views_last_week_log" : 0.0,
+                        "page_views_last_month_log" : 0.0,
+                        "page_views_total_log" : 1.5849625007211563
+                      },
+                    "page_views" :
+                      {
+                        "page_views_last_week" : 0,
+                        "page_views_last_month" : 0,
+                        "page_views_total" : 2,
+                        "page_views_last_week_log" : 0.0,
+                        "page_views_last_month_log" : 0.0,
+                        "page_views_total_log" : 1.5849625007211563
+                      },
+                    "columns_name" :
+                      [
+                        "Additional Information",
+                        "School District Name",
+                        "Provider Name",
+                        "Phone Extension",
+                        "Zip Code",
+                        "Floor",
+                        "Additional Address",
+                        "Street Number",
+                        "License Expiration Date",
+                        "License Issue Date",
+                        "Facility Name",
+                        "Facility Status",
+                        "County",
+                        "Region Code",
+                        "Program Type",
+                        "Facility ID",
+                        "Total Capacity",
+                        "School Age Capacity",
+                        "Preschool Capacity",
+                        "Toddler Capacity",
+                        "Infant Capacity",
+                        "Capacity Description",
+                        "Phone Number",
+                        "Phone Number Omitted",
+                        "Apartment",
+                        "Address Omitted",
+                        "Facility Opened Date"
+                      ],
+                    "columns_field_name" :
+                      [
+                        "additional_information",
+                        "school_district_name",
+                        "provider_name",
+                        "phone_extension",
+                        "zip_code",
+                        "floor",
+                        "additional_address",
+                        "street_number",
+                        "license_expiration_date",
+                        "license_issue_date",
+                        "facility_name",
+                        "facility_status",
+                        "county",
+                        "region_code",
+                        "program_type",
+                        "facility_id",
+                        "total_capacity",
+                        "school_age_capacity",
+                        "preschool_capacity",
+                        "toddler_capacity",
+                        "infant_capacity",
+                        "capacity_description",
+                        "phone_number",
+                        "phone_number_omitted",
+                        "apartment",
+                        "address_omitted",
+                        "facility_opened_date"
+                      ],
+                    "columns_description" :
+                      [
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        ""
+                      ],
+                    "download_count" : 0,
+                    "provenance" : null
+                  },
+                "classification" :
+                  {
+                    "categories" : [],
+                    "tags" : [],
+                    "domain_category" : "Government",
+                    "domain_tags" : [],
+                    "domain_metadata" : []
+                  },
+                "metadata" : { "domain" : "localhost" },
+                "permalink" : "https://localhost/d/8hbj-mt5f",
+                "link" : "https://localhost/Government/Child-Care-Regulated-Programs-2/8hbj-mt5f"
+              },
+              {
+                "resource" :
+                  {
+                    "name" : "Healthcare Facility Locations-7",
+                    "id" : "2jnm-ghyx",
+                    "parent_fxf" : null,
+                    "description" : "",
+                    "attribution" : null,
+                    "type" : "dataset",
+                    "updatedAt" : "2016-12-08T20:56:55.000Z",
+                    "createdAt" : "2016-12-08T20:56:12.000Z",
+                    "view_count" :
+                      {
+                        "page_views_last_week" : 0,
+                        "page_views_last_month" : 0,
+                        "page_views_total" : 1,
+                        "page_views_last_week_log" : 0.0,
+                        "page_views_last_month_log" : 0.0,
+                        "page_views_total_log" : 1.0
+                      },
+                    "page_views" :
+                      {
+                        "page_views_last_week" : 0,
+                        "page_views_last_month" : 0,
+                        "page_views_total" : 1,
+                        "page_views_last_week_log" : 0.0,
+                        "page_views_last_month_log" : 0.0,
+                        "page_views_total_log" : 1.0
+                      },
+                    "columns_name" :
+                      [
+                        "LICENSE_NUMBER",
+                        "DISTRICT_NAME",
+                        "DISTRICT_NUMBER",
+                        "COUNTY_CODE",
+                        "COUNTY_NAME",
+                        "CONTACT_PHONE_NUMBER",
+                        "CONTACT_FAX",
+                        "CONTACT_EMAIL",
+                        "FACADMIN",
+                        "CAPACITY",
+                        "LTC",
+                        "FAC_FDR",
+                        "FACNAME",
+                        "FACID",
+                        "LOCATION",
+                        "OSHPD_NUMBER",
+                        "LICENSE_EFFECTIVE_DATE",
+                        "INITIAL_LICENSE_DATE"
+                      ],
+                    "columns_field_name" :
+                      [
+                        "license_number",
+                        "district_name",
+                        "district_number",
+                        "county_code",
+                        "county_name",
+                        "contact_phone_number",
+                        "contact_fax",
+                        "contact_email",
+                        "facadmin",
+                        "capacity",
+                        "ltc",
+                        "fac_fdr",
+                        "facname",
+                        "facid",
+                        "location",
+                        "oshpd_number",
+                        "license_effective_date",
+                        "initial_license_date"
+                      ],
+                    "columns_description" :
+                      [
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        ""
+                      ],
+                    "download_count" : 0,
+                    "provenance" : "community"
+                  },
+                "classification" :
+                  {
+                    "categories" : [],
+                    "tags" : [],
+                    "domain_category" : "Government",
+                    "domain_tags" : [],
+                    "domain_metadata" : []
+                  },
+                "metadata" : { "domain" : "localhost" },
+                "permalink" : "https://localhost/d/2jnm-ghyx",
+                "link" : "https://localhost/Government/Healthcare-Facility-Locations-7/2jnm-ghyx"
+              },
+              {
+                "resource" :
+                  {
+                    "name" : "Expanded column chart",
+                    "id" : "btev-gxyj",
+                    "parent_fxf" : [ "a83c-up9r", "efcd-jzv3" ],
+                    "description" : "",
+                    "attribution" : null,
+                    "type" : "datalens",
+                    "updatedAt" : "2016-05-17T21:57:37.000Z",
+                    "createdAt" : "2016-05-17T21:57:29.000Z",
+                    "view_count" :
+                      {
+                        "page_views_last_week" : 0,
+                        "page_views_last_month" : 0,
+                        "page_views_total" : 0,
+                        "page_views_last_week_log" : 0.0,
+                        "page_views_last_month_log" : 0.0,
+                        "page_views_total_log" : 0.0
+                      },
+                    "page_views" :
+                      {
+                        "page_views_last_week" : 0,
+                        "page_views_last_month" : 0,
+                        "page_views_total" : 0,
+                        "page_views_last_week_log" : 0.0,
+                        "page_views_last_month_log" : 0.0,
+                        "page_views_total_log" : 0.0
+                      },
+                    "columns_name" :
+                      [
+                        "Usa-counties",
+                        "Location 1 (address)",
+                        "Location 1 (zip)",
+                        "Location 1",
+                        "LOCATION",
+                        "OSHPD_NUMBER",
+                        "LICENSE_EFFECTIVE_DATE",
+                        "INITIAL_LICENSE_DATE",
+                        "LICENSE_NUMBER",
+                        "DISTRICT_NAME",
+                        "DISTRICT_NUMBER",
+                        "COUNTY_CODE",
+                        "COUNTY_NAME",
+                        "CONTACT_PHONE_NUMBER",
+                        "CONTACT_FAX",
+                        "CONTACT_EMAIL",
+                        "FACADMIN",
+                        "CAPACITY",
+                        "LTC",
+                        "FAC_FDR",
+                        "FACNAME",
+                        "FACID",
+                        "Location 1 (state)",
+                        "Location 1 (city)"
+                      ],
+                    "columns_field_name" :
+                      [
+                        ":@computed_region_iq59_vmd8",
+                        "location_1_address",
+                        "location_1_zip",
+                        "location_1",
+                        "location",
+                        "oshpd_number",
+                        "license_effective_date",
+                        "initial_license_date",
+                        "license_number",
+                        "district_name",
+                        "district_number",
+                        "county_code",
+                        "county_name",
+                        "contact_phone_number",
+                        "contact_fax",
+                        "contact_email",
+                        "facadmin",
+                        "capacity",
+                        "ltc",
+                        "fac_fdr",
+                        "facname",
+                        "facid",
+                        "location_1_state",
+                        "location_1_city"
+                      ],
+                    "columns_description" :
+                      [
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        ""
+                      ],
+                    "download_count" : 0,
+                    "provenance" : "official"
+                  },
+                "classification" :
+                  {
+                    "categories" : [],
+                    "tags" : [],
+                    "domain_category" : "Government",
+                    "domain_tags" : [],
+                    "domain_metadata" : []
+                  },
+                "metadata" : { "domain" : "localhost" },
+                "permalink" : "https://localhost/view/btev-gxyj",
+                "link" : "https://localhost/Government/Expanded-column-chart/btev-gxyj"
+              },
+              {
+                "resource" :
+                  {
+                    "name" : "Healthcare Facility Locations-5",
+                    "id" : "eyzy-bs4d",
+                    "parent_fxf" : null,
+                    "description" : "",
+                    "attribution" : null,
+                    "type" : "dataset",
+                    "updatedAt" : "2016-12-08T17:56:09.000Z",
+                    "createdAt" : "2016-12-08T17:55:00.000Z",
+                    "view_count" :
+                      {
+                        "page_views_last_week" : 0,
+                        "page_views_last_month" : 0,
+                        "page_views_total" : 0,
+                        "page_views_last_week_log" : 0.0,
+                        "page_views_last_month_log" : 0.0,
+                        "page_views_total_log" : 0.0
+                      },
+                    "page_views" :
+                      {
+                        "page_views_last_week" : 0,
+                        "page_views_last_month" : 0,
+                        "page_views_total" : 0,
+                        "page_views_last_week_log" : 0.0,
+                        "page_views_last_month_log" : 0.0,
+                        "page_views_total_log" : 0.0
+                      },
+                    "columns_name" :
+                      [
+                        "FACADMIN",
+                        "CAPACITY",
+                        "FAC_FDR",
+                        "FACNAME",
+                        "LOCATION",
+                        "LICENSE_EFFECTIVE_DATE",
+                        "INITIAL_LICENSE_DATE",
+                        "LICENSE_NUMBER",
+                        "COUNTY_CODE",
+                        "COUNTY_NAME",
+                        "CONTACT_PHONE_NUMBER",
+                        "CONTACT_FAX",
+                        "CONTACT_EMAIL",
+                        "OSHPD_NUMBER",
+                        "DISTRICT_NAME",
+                        "DISTRICT_NUMBER",
+                        "LTC",
+                        "FACID"
+                      ],
+                    "columns_field_name" :
+                      [
+                        "facadmin",
+                        "capacity",
+                        "fac_fdr",
+                        "facname",
+                        "location",
+                        "license_effective_date",
+                        "initial_license_date",
+                        "license_number",
+                        "county_code",
+                        "county_name",
+                        "contact_phone_number",
+                        "contact_fax",
+                        "contact_email",
+                        "oshpd_number",
+                        "district_name",
+                        "district_number",
+                        "ltc",
+                        "facid"
+                      ],
+                    "columns_description" :
+                      [
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        ""
+                      ],
+                    "download_count" : 0,
+                    "provenance" : "official"
+                  },
+                "classification" :
+                  {
+                    "categories" : [],
+                    "tags" : [],
+                    "domain_category" : "Government",
+                    "domain_tags" : [],
+                    "domain_metadata" : []
+                  },
+                "metadata" : { "domain" : "localhost" },
+                "permalink" : "https://localhost/d/eyzy-bs4d",
+                "link" : "https://localhost/Government/Healthcare-Facility-Locations-5/eyzy-bs4d"
+              },
+              {
+                "resource" :
+                  {
+                    "name" : "Healthcare Facility Locations-6",
+                    "id" : "vfp5-wmft",
+                    "parent_fxf" : null,
+                    "description" : "",
+                    "attribution" : null,
+                    "type" : "dataset",
+                    "updatedAt" : "2016-12-08T18:45:52.000Z",
+                    "createdAt" : "2016-12-08T18:44:46.000Z",
+                    "view_count" :
+                      {
+                        "page_views_last_week" : 0,
+                        "page_views_last_month" : 0,
+                        "page_views_total" : 0,
+                        "page_views_last_week_log" : 0.0,
+                        "page_views_last_month_log" : 0.0,
+                        "page_views_total_log" : 0.0
+                      },
+                    "page_views" :
+                      {
+                        "page_views_last_week" : 0,
+                        "page_views_last_month" : 0,
+                        "page_views_total" : 0,
+                        "page_views_last_week_log" : 0.0,
+                        "page_views_last_month_log" : 0.0,
+                        "page_views_total_log" : 0.0
+                      },
+                    "columns_name" :
+                      [
+                        "LOCATION",
+                        "OSHPD_NUMBER",
+                        "LICENSE_EFFECTIVE_DATE",
+                        "INITIAL_LICENSE_DATE",
+                        "LICENSE_NUMBER",
+                        "DISTRICT_NAME",
+                        "DISTRICT_NUMBER",
+                        "COUNTY_CODE",
+                        "COUNTY_NAME",
+                        "CONTACT_PHONE_NUMBER",
+                        "CONTACT_FAX",
+                        "CONTACT_EMAIL",
+                        "FACADMIN",
+                        "CAPACITY",
+                        "LTC",
+                        "FAC_FDR",
+                        "FACNAME",
+                        "FACID"
+                      ],
+                    "columns_field_name" :
+                      [
+                        "location",
+                        "oshpd_number",
+                        "license_effective_date",
+                        "initial_license_date",
+                        "license_number",
+                        "district_name",
+                        "district_number",
+                        "county_code",
+                        "county_name",
+                        "contact_phone_number",
+                        "contact_fax",
+                        "contact_email",
+                        "facadmin",
+                        "capacity",
+                        "ltc",
+                        "fac_fdr",
+                        "facname",
+                        "facid"
+                      ],
+                    "columns_description" :
+                      [
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        ""
+                      ],
+                    "download_count" : 0,
+                    "provenance" : "official"
+                  },
+                "classification" :
+                  {
+                    "categories" : [],
+                    "tags" : [],
+                    "domain_category" : "Government",
+                    "domain_tags" : [],
+                    "domain_metadata" : []
+                  },
+                "metadata" : { "domain" : "localhost" },
+                "permalink" : "https://localhost/d/vfp5-wmft",
+                "link" : "https://localhost/Government/Healthcare-Facility-Locations-6/vfp5-wmft"
+              },
+              {
+                "resource" :
+                  {
+                    "name" : "Healthcare Facility Locations-4",
+                    "id" : "iau7-8xjn",
+                    "parent_fxf" : null,
+                    "description" : "",
+                    "attribution" : null,
+                    "type" : "dataset",
+                    "updatedAt" : "2016-10-13T16:29:18.000Z",
+                    "createdAt" : "2016-10-13T16:27:24.000Z",
+                    "view_count" :
+                      {
+                        "page_views_last_week" : 0,
+                        "page_views_last_month" : 0,
+                        "page_views_total" : 0,
+                        "page_views_last_week_log" : 0.0,
+                        "page_views_last_month_log" : 0.0,
+                        "page_views_total_log" : 0.0
+                      },
+                    "page_views" :
+                      {
+                        "page_views_last_week" : 0,
+                        "page_views_last_month" : 0,
+                        "page_views_total" : 0,
+                        "page_views_last_week_log" : 0.0,
+                        "page_views_last_month_log" : 0.0,
+                        "page_views_total_log" : 0.0
+                      },
+                    "columns_name" :
+                      [
+                        "Location 1",
+                        "LOCATION",
+                        "OSHPD_NUMBER",
+                        "LICENSE_EFFECTIVE_DATE",
+                        "INITIAL_LICENSE_DATE",
+                        "LICENSE_NUMBER",
+                        "DISTRICT_NAME",
+                        "DISTRICT_NUMBER",
+                        "COUNTY_CODE",
+                        "COUNTY_NAME",
+                        "CONTACT_PHONE_NUMBER",
+                        "CONTACT_FAX",
+                        "CONTACT_EMAIL",
+                        "FACADMIN",
+                        "FAC_FDR",
+                        "CAPACITY",
+                        "LTC",
+                        "FACNAME",
+                        "FACID"
+                      ],
+                    "columns_field_name" :
+                      [
+                        "location_1",
+                        "location",
+                        "oshpd_number",
+                        "license_effective_date",
+                        "initial_license_date",
+                        "license_number",
+                        "district_name",
+                        "district_number",
+                        "county_code",
+                        "county_name",
+                        "contact_phone_number",
+                        "contact_fax",
+                        "contact_email",
+                        "facadmin",
+                        "fac_fdr",
+                        "capacity",
+                        "ltc",
+                        "facname",
+                        "facid"
+                      ],
+                    "columns_description" :
+                      [
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        ""
+                      ],
+                    "download_count" : 0,
+                    "provenance" : null
+                  },
+                "classification" :
+                  {
+                    "categories" : [],
+                    "tags" : [],
+                    "domain_category" : "Government",
+                    "domain_tags" : [],
+                    "domain_metadata" : []
+                  },
+                "metadata" : { "domain" : "localhost" },
+                "permalink" : "https://localhost/d/iau7-8xjn",
+                "link" : "https://localhost/Government/Healthcare-Facility-Locations-4/iau7-8xjn"
+              },
+              {
+                "resource" :
+                  {
+                    "name" : "Public Assistance  PA  Caseloads And Expenditures  Beginning 2002-2",
+                    "id" : "iryy-8ukh",
+                    "parent_fxf" : null,
+                    "description" : "",
+                    "attribution" : null,
+                    "type" : "dataset",
+                    "updatedAt" : "2016-12-09T18:46:47.000Z",
+                    "createdAt" : "2016-10-13T19:26:06.000Z",
+                    "view_count" :
+                      {
+                        "page_views_last_week" : 0,
+                        "page_views_last_month" : 0,
+                        "page_views_total" : 0,
+                        "page_views_last_week_log" : 0.0,
+                        "page_views_last_month_log" : 0.0,
+                        "page_views_total_log" : 0.0
+                      },
+                    "page_views" :
+                      {
+                        "page_views_last_week" : 0,
+                        "page_views_last_month" : 0,
+                        "page_views_total" : 0,
+                        "page_views_last_week_log" : 0.0,
+                        "page_views_last_month_log" : 0.0,
+                        "page_views_total_log" : 0.0
+                      },
+                    "columns_name" :
+                      [
+                        "Total Temporary Assistance Expenditures",
+                        "Total Temporary Assistance Adults",
+                        "Total Temporary Assistance Children",
+                        "Total Temporary Assistance Cases",
+                        "District",
+                        "District Code",
+                        "Month Code",
+                        "Month",
+                        "Year",
+                        "Non-Maintenance of Effort Expenditures",
+                        "Non-Maintenance of Effort Adults",
+                        "Non-Maintenance of Effort Children",
+                        "Non-Maintenance of Effort Cases",
+                        "Maintenance of Effort Expenditures",
+                        "Maintenance of Effort Adults",
+                        "Maintenance of Effort Recipients",
+                        "Safety Net Federally Non-Participating Expenditures",
+                        "Safety Net Federally Non-Participating Adults",
+                        "Safety Net Federally Non-Participating Children",
+                        "Safety Net Federally Non-Participating Recipients",
+                        "Safety Net Assistance Federally Participating Expenditures",
+                        "Safety Net Assistance Federally Participating Children",
+                        "Safety Net Assistance Federally Participating Cases",
+                        "Federally Non-Participating Expenditures",
+                        "Federally Non-Participating Recipients",
+                        "Federally Participating Temporary Assistance for Needy Families Recipients",
+                        "Federally Participating Temporary Assistance for Needy Families Cases",
+                        "Safety Net Assistance Adults",
+                        "Safety Net Assistance Recipients",
+                        "Non-Maintenance of Effort Recipients",
+                        "Maintenance of Effort Children",
+                        "Maintenance of Effort Cases",
+                        "Safety Net Federally Non-Participating Cases",
+                        "Safety Net Assistance Federally Participating Adults",
+                        "Safety Net Assistance Federally Participating Recipients",
+                        "Federally Non-Participating Cases",
+                        "Federally Participating Temporary Assistance for Needy Families Expenditures",
+                        "Safety Net Assistance Expenditures",
+                        "Safety Net Assistance Children",
+                        " Safety Net Assistance Cases",
+                        "Family Assistance Federally Participating Expenditures",
+                        "Family Assistance Federally Participating Adults",
+                        "Family Assistance Federally Participating Children",
+                        "Family Assistance Federally Participating Recipients",
+                        "Family Assistance Federally Participating Cases",
+                        "Total Temporary Assistance Recipients"
+                      ],
+                    "columns_field_name" :
+                      [
+                        "total_temporary_assistance_expenditures",
+                        "total_temporary_assistance_adults",
+                        "total_temporary_assistance_children",
+                        "total_temporary_assistance_cases",
+                        "district",
+                        "district_code",
+                        "month_code",
+                        "month",
+                        "year",
+                        "non_maintenance_of_effort_expenditures",
+                        "non_maintenance_of_effort_adults",
+                        "non_maintenance_of_effort_children",
+                        "non_maintenance_of_effort_cases",
+                        "maintenance_of_effort_expenditures",
+                        "maintenance_of_effort_adults",
+                        "maintenance_of_effort_recipients",
+                        "safety_net_federally_non_participating_expenditures",
+                        "safety_net_federally_non_participating_adults",
+                        "safety_net_federally_non_participating_children",
+                        "safety_net_federally_non_participating_recipients",
+                        "safety_net_assistance_federally_participating_expenditures",
+                        "safety_net_assistance_federally_participating_children",
+                        "safety_net_assistance_federally_participating_cases",
+                        "federally_non_participating_expenditures",
+                        "federally_non_participating_recipients",
+                        "federally_participating_temporary_assistance_for_needy_families_recipients",
+                        "federally_participating_temporary_assistance_for_needy_families_cases",
+                        "safety_net_assistance_adults",
+                        "safety_net_assistance_recipients",
+                        "non_maintenance_of_effort_recipients",
+                        "maintenance_of_effort_children",
+                        "maintenance_of_effort_cases",
+                        "safety_net_federally_non_participating_cases",
+                        "safety_net_assistance_federally_participating_adults",
+                        "safety_net_assistance_federally_participating_recipients",
+                        "federally_non_participating_cases",
+                        "federally_participating_temporary_assistance_for_needy_families_expenditures",
+                        "safety_net_assistance_expenditures",
+                        "safety_net_assistance_children",
+                        "safety_net_assistance_cases",
+                        "family_assistance_federally_participating_expenditures",
+                        "family_assistance_federally_participating_adults",
+                        "family_assistance_federally_participating_children",
+                        "family_assistance_federally_participating_recipients",
+                        "family_assistance_federally_participating_cases",
+                        "total_temporary_assistance_recipients"
+                      ],
+                    "columns_description" :
+                      [
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        ""
+                      ],
+                    "download_count" : 0,
+                    "provenance" : null
+                  },
+                "classification" :
+                  {
+                    "categories" : [],
+                    "tags" : [],
+                    "domain_category" : "Government",
+                    "domain_tags" : [ "tag one", "tag two", "tag three" ],
+                    "domain_metadata" : []
+                  },
+                "metadata" : { "domain" : "localhost" },
+                "permalink" : "https://localhost/d/iryy-8ukh",
+                "link" : "https://localhost/Government/Public-Assistance-PA-Caseloads-And-Expenditures-Be/iryy-8ukh"
+              },
+              {
+                "resource" :
+                  {
+                    "name" : "Healthcare Facility Locations-2",
+                    "id" : "4ip4-vvre",
+                    "parent_fxf" : null,
+                    "description" : "This is a very brief description. I can assure that it is brief because it does not contain any relevant information aside from the fact that it is a very brief description. See how brief that was? That was so amazingly brief, I can't even believe my eyes!",
+                    "attribution" : null,
+                    "type" : "dataset",
+                    "updatedAt" : "2016-12-20T22:43:11.000Z",
+                    "createdAt" : "2016-07-08T22:52:34.000Z",
+                    "view_count" :
+                      {
+                        "page_views_last_week" : 0,
+                        "page_views_last_month" : 0,
+                        "page_views_total" : 0,
+                        "page_views_last_week_log" : 0.0,
+                        "page_views_last_month_log" : 0.0,
+                        "page_views_total_log" : 0.0
+                      },
+                    "page_views" :
+                      {
+                        "page_views_last_week" : 0,
+                        "page_views_last_month" : 0,
+                        "page_views_total" : 0,
+                        "page_views_last_week_log" : 0.0,
+                        "page_views_last_month_log" : 0.0,
+                        "page_views_total_log" : 0.0
+                      },
+                    "columns_name" :
+                      [
+                        "COUNTY_NAME",
+                        "CONTACT_PHONE_NUMBER",
+                        "CONTACT_FAX",
+                        "FACADMIN",
+                        "CAPACITY",
+                        "LTC",
+                        "FAC_FDR",
+                        "FACNAME",
+                        "FACID",
+                        "Location 1",
+                        "LOCATION",
+                        "OSHPD_NUMBER",
+                        "LICENSE_EFFECTIVE_DATE",
+                        "INITIAL_LICENSE_DATE",
+                        "LICENSE_NUMBER",
+                        "DISTRICT_NAME",
+                        "DISTRICT_NUMBER",
+                        "COUNTY_CODE",
+                        "CONTACT_EMAIL"
+                      ],
+                    "columns_field_name" :
+                      [
+                        "county_name",
+                        "contact_phone_number",
+                        "contact_fax",
+                        "facadmin",
+                        "capacity",
+                        "ltc",
+                        "fac_fdr",
+                        "facname",
+                        "facid",
+                        "location_1",
+                        "location",
+                        "oshpd_number",
+                        "license_effective_date",
+                        "initial_license_date",
+                        "license_number",
+                        "district_name",
+                        "district_number",
+                        "county_code",
+                        "contact_email"
+                      ],
+                    "columns_description" :
+                      [
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        ""
+                      ],
+                    "download_count" : 0,
+                    "provenance" : "community"
+                  },
+                "classification" :
+                  {
+                    "categories" : [],
+                    "tags" : [],
+                    "domain_category" : "Government",
+                    "domain_tags" :
+                      [
+                        "demo",
+                        "sample",
+                        "health",
+                        "location",
+                        "data",
+                        "healthcare",
+                        "a tag"
+                      ],
+                    "domain_metadata" : []
+                  },
+                "metadata" : { "domain" : "localhost" },
+                "permalink" : "https://localhost/d/4ip4-vvre",
+                "link" : "https://localhost/Government/Healthcare-Facility-Locations-2/4ip4-vvre"
+              },
+              {
+                "resource" :
+                  {
+                    "name" : "Healthcare Facility Locations",
+                    "id" : "efcd-jzv3",
+                    "parent_fxf" : null,
+                    "description" : "",
+                    "attribution" : null,
+                    "type" : "dataset",
+                    "updatedAt" : "2016-12-05T20:44:56.000Z",
+                    "createdAt" : "2016-03-15T00:42:18.000Z",
+                    "view_count" :
+                      {
+                        "page_views_last_week" : 0,
+                        "page_views_last_month" : 0,
+                        "page_views_total" : 0,
+                        "page_views_last_week_log" : 0.0,
+                        "page_views_last_month_log" : 0.0,
+                        "page_views_total_log" : 0.0
+                      },
+                    "page_views" :
+                      {
+                        "page_views_last_week" : 0,
+                        "page_views_last_month" : 0,
+                        "page_views_total" : 0,
+                        "page_views_last_week_log" : 0.0,
+                        "page_views_last_month_log" : 0.0,
+                        "page_views_total_log" : 0.0
+                      },
+                    "columns_name" :
+                      [
+                        "LOCATION",
+                        "Location 1",
+                        "LICENSE_EFFECTIVE_DATE",
+                        "OSHPD_NUMBER",
+                        "INITIAL_LICENSE_DATE",
+                        "LICENSE_NUMBER",
+                        "DISTRICT_NUMBER",
+                        "COUNTY_CODE",
+                        "COUNTY_NAME",
+                        "CONTACT_FAX",
+                        "DISTRICT_NAME",
+                        "CONTACT_PHONE_NUMBER",
+                        "CONTACT_EMAIL",
+                        "FACADMIN",
+                        "CAPACITY",
+                        "LTC",
+                        "FAC_FDR",
+                        "FACNAME",
+                        "FACID"
+                      ],
+                    "columns_field_name" :
+                      [
+                        "location",
+                        "location_1",
+                        "license_effective_date",
+                        "oshpd_number",
+                        "initial_license_date",
+                        "license_number",
+                        "district_number",
+                        "county_code",
+                        "county_name",
+                        "contact_fax",
+                        "district_name",
+                        "contact_phone_number",
+                        "contact_email",
+                        "facadmin",
+                        "capacity",
+                        "ltc",
+                        "fac_fdr",
+                        "facname",
+                        "facid"
+                      ],
+                    "columns_description" :
+                      [
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        ""
+                      ],
+                    "download_count" : 0,
+                    "provenance" : null
+                  },
+                "classification" :
+                  {
+                    "categories" : [],
+                    "tags" : [],
+                    "domain_category" : "Government",
+                    "domain_tags" : [ "a tag", "another tag" ],
+                    "domain_metadata" : []
+                  },
+                "metadata" : { "domain" : "localhost" },
+                "permalink" : "https://localhost/d/efcd-jzv3",
+                "link" : "https://localhost/Government/Healthcare-Facility-Locations/efcd-jzv3"
+              },
+              {
+                "resource" :
+                  {
+                    "name" : "A Data Lens Appears!",
+                    "id" : "px7r-ajhh",
+                    "parent_fxf" : [ "jf7f-i9h8", "2jnm-ghyx" ],
+                    "description" : "",
+                    "attribution" : null,
+                    "type" : "datalens",
+                    "updatedAt" : "2016-12-22T23:27:33.000Z",
+                    "createdAt" : "2016-12-21T00:09:24.000Z",
+                    "view_count" :
+                      {
+                        "page_views_last_week" : 0,
+                        "page_views_last_month" : 0,
+                        "page_views_total" : 0,
+                        "page_views_last_week_log" : 0.0,
+                        "page_views_last_month_log" : 0.0,
+                        "page_views_total_log" : 0.0
+                      },
+                    "page_views" :
+                      {
+                        "page_views_last_week" : 0,
+                        "page_views_last_month" : 0,
+                        "page_views_total" : 0,
+                        "page_views_last_week_log" : 0.0,
+                        "page_views_last_month_log" : 0.0,
+                        "page_views_total_log" : 0.0
+                      },
+                    "columns_name" : [],
+                    "columns_field_name" : [],
+                    "columns_description" : [],
+                    "download_count" : 0,
+                    "provenance" : null
+                  },
+                "classification" :
+                  {
+                    "categories" : [],
+                    "tags" : [],
+                    "domain_category" : "Government",
+                    "domain_tags" : [],
+                    "domain_metadata" : []
+                  },
+                "metadata" : { "domain" : "localhost" },
+                "permalink" : "https://localhost/view/px7r-ajhh",
+                "link" : "https://localhost/Government/A-Data-Lens-Appears-/px7r-ajhh"
+              }
+            ],
+          "resultSetSize" : 10,
+          "timings" : { "serviceMillis" : 134, "searchMillis" : [ 19, 33 ] }
+        }
+    http_version: 
+  recorded_at: Fri, 27 Jan 2017 18:27:58 GMT
+- request:
+    method: get
+    uri: http://localhost:5704/catalog/v1?categories=Government&domains=localhost&limit=0&only=charts&search_context=localhost
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 30 Jan 2017 23:13:36 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.2.v20140723)
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "results" : [],
+          "resultSetSize" : 0,
+          "timings" : { "serviceMillis" : 35, "searchMillis" : [ 14, 2 ] }
+        }
+    http_version: 
+  recorded_at: Mon, 30 Jan 2017 23:13:36 GMT
+- request:
+    method: get
+    uri: http://localhost:5704/catalog/v1?categories=Government&domains=localhost&limit=0&only=datasets&search_context=localhost
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 30 Jan 2017 23:13:36 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.2.v20140723)
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "results" : [],
+          "resultSetSize" : 8,
+          "timings" : { "serviceMillis" : 40, "searchMillis" : [ 10, 7 ] }
+        }
+    http_version: 
+  recorded_at: Mon, 30 Jan 2017 23:13:36 GMT
+- request:
+    method: get
+    uri: http://localhost:5704/catalog/v1?categories=Government&domains=localhost&limit=0&only=maps&search_context=localhost
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 30 Jan 2017 23:13:36 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.2.v20140723)
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "results" : [],
+          "resultSetSize" : 0,
+          "timings" : { "serviceMillis" : 48, "searchMillis" : [ 21, 3 ] }
+        }
+    http_version: 
+  recorded_at: Mon, 30 Jan 2017 23:13:36 GMT
+recorded_with: VCR 3.0.3

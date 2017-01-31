@@ -2,6 +2,7 @@ require 'rails_helper'
 require_relative '../../lib/constraints/data_lens_constraint'
 
 RSpec.describe 'routes for Data Lens' do
+  include TestHelperMethods
 
   let(:datalens_matching_datalens_constraint_params) {
     {
@@ -27,6 +28,10 @@ RSpec.describe 'routes for Data Lens' do
       :path => 'dickbutt/manbearpig/notfourbyfour'
     }.with_indifferent_access
   }
+
+  before(:each) do
+    allow_any_instance_of(Constraints::CatalogLandingPageConstraint).to receive(:matches?).and_return(false)
+  end
 
   it 'routes /view/1234-1234 to the angular_controller data_lens action' do
     allow_any_instance_of(ActionDispatch::Request).to receive(:path_parameters).and_return(datalens_matching_datalens_constraint_params)
@@ -197,6 +202,64 @@ RSpec.describe 'routes for Data Lens' do
           goal_id: 'four-four'
         )
       end
+    end
+  end
+
+  describe 'catalog landing page routing' do
+    let(:clp_configuration) do
+      double('clp config', properties: {
+        CGI.escape('category=Fun') => {},
+        '/salt-lake-city' => {}
+      })
+    end
+    let(:custom_facets) { nil }
+
+    before(:each) do
+      init_current_domain
+      init_feature_flag_signaller
+      rspec_stub_feature_flags_with(:enable_catalog_landing_page => true)
+      allow_any_instance_of(Constraints::CatalogLandingPageConstraint).
+        to receive(:matches?).and_call_original
+
+      allow(CurrentDomain).to receive(:configuration).
+        with(:catalog_landing_page).
+        and_return(clp_configuration)
+      allow(CurrentDomain).to receive(:property).
+        with(:custom_facets, :catalog).
+        and_return(custom_facets)
+    end
+
+    it 'routes a browse page with a catalog query to the CLP controller' do
+      expect(get: '/browse?category=Fun').to route_to(
+        controller: 'catalog_landing_page',
+        action: 'show',
+        path: 'browse',
+        category: 'Fun'
+      )
+    end
+
+    it 'routes a vanity url with a catalog query to the CLP controller' do
+      expect(get: '/salt-lake-city').to route_to(
+        controller: 'catalog_landing_page',
+        action: 'show',
+        path: 'salt-lake-city'
+      )
+    end
+
+    it 'routes a browse page without a catalog query to the browse controller' do
+      expect(get: '/browse?foo=bar').to route_to(
+        controller: 'browse',
+        action: 'show',
+        foo: 'bar'
+      )
+    end
+
+    it 'routes a Dataslate page' do
+      expect(get: '/some-dataslate-page').to route_to(
+        controller: 'custom_content',
+        action: 'page',
+        path: 'some-dataslate-page'
+      )
     end
   end
 end

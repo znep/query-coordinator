@@ -1,0 +1,35 @@
+[ {
+  "id" : 65,
+  "name" : "Catalog Landing Page",
+  "childCount" : 0,
+  "default" : true,
+  "domainCName" : "localhost",
+  "type" : "catalog_landing_page",
+  "updatedAt" : 1485398077,
+  "properties" : [ {
+    "name" : "category%3DFun%26tag%3Dgiraffes",
+    "value" : {
+      "summary" : "Fun times...",
+      "description" : "I am having so much fun!",
+      "headline" : "Giraffes are such super fun creatures!"
+    }
+  }, {
+    "name" : "%7B%22category%22%3D%3E%22Government%22%7D",
+    "value" : {
+      "description" : "The City of Evergreen is committed to providing access to as much government data as possible. You can see things like active building permits, growth of technology jobs, information about public safety and information on public parks and spaces.",
+      "headline" : "Land Base"
+    }
+  }, {
+    "name" : "category%3DGovernment",
+    "value" : {
+      "description" : "The City of Evergreen is committed to providing access to as much government data as possible. You can see things like active building permits, growth of technology jobs, information about public safety and information on public parks and spaces.",
+      "headline" : "Land Base"
+    }
+  }, {
+    "name" : "content",
+    "value" : {
+      "description" : "I am the description",
+      "headline" : "I am the headline"
+    }
+  } ]
+} ]

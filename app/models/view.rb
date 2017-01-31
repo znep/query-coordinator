@@ -1526,17 +1526,15 @@ class View < Model
   end
 
   def is_geo?
-    metadata.present? && metadata.data['geo'].present?
+    metadata.try(:data).try(:[], 'geo').present?
   end
 
   def is_arcgis?
-    !metadata.blank? && !metadata.data['custom_fields'].blank? &&
-      !metadata.data['custom_fields']['Basic'].blank? &&
-      !metadata.data['custom_fields']['Basic']['Source'].blank?
+    metadata.try(:data).try(:dig, 'custom_fields', 'Basic', 'Source').present?
   end
 
   def is_insecure_arcgis?
-    is_arcgis? && /^https/.match(metadata.data['custom_fields']['Basic']['Source']).nil?
+    is_arcgis? && /^https/.match(metadata.try(:data).try(:dig, 'custom_fields', 'Basic', 'Source')).nil?
   end
 
   def is_api?

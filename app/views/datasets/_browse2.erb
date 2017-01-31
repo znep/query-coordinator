@@ -113,7 +113,7 @@
 
     <div class="browse2-facet-and-results-header">
 
-      <!-- Results Header -->
+      <!-- Results Title -->
 
       <%=
         browse_container_classes = %w(browse2-results-header)
@@ -159,11 +159,7 @@
     %>
 
     <!-- Results Header -->
-    <%=
-      if opts[:header_config]
-        render 'datasets/browse2_header', :opts => opts
-      end
-    %>
+    <%= render 'datasets/browse2_header', :opts => opts if opts[:header_config] %>
 
     <!-- Results Container -->
 

@@ -44,7 +44,7 @@ class Model
   end
 
   def persisted?
-    !@id.nil?
+    @id.present?
   end
 
   #options - the primary lookup of the model object.  Usually id except for users where it is login
@@ -87,7 +87,7 @@ class Model
       options = Hash.new
     end
     user_id = get_user_id(options)
-    if !options['userId'].nil?
+    unless options['userId'].nil?
       options.delete('userId')
     end
 
@@ -127,7 +127,7 @@ class Model
 
     assign_key = method_name.sub!(/=$/,"")
     if assign_key
-      if self.frozen?
+      if frozen?
         raise TypeError.new("Can't modify frozen object")
       end
       if assign_key == 'flags'
@@ -257,7 +257,7 @@ class Model
 
   def deep_clone(klass = nil)
     # Hack...
-    (klass || self.class).parse(self.to_json)
+    (klass || self.class).parse(to_json)
   end
 
   def as_json(options={})
@@ -265,16 +265,15 @@ class Model
   end
 
   def flag?(flag_name)
-    flags = data['flags']
-    !flags.nil? && flags.include?(flag_name)
+    data['flags'].to_a.include?(flag_name)
   end
 
   def set_flag(flag)
-    if !data['flags'].include?(flag)
+    unless data['flags'].include?(flag)
       @added_flags ||= Array.new
       @added_flags << flag
     end
-    if !@deleted_flags.nil?
+    unless @deleted_flags.nil?
       @deleted_flags.delete(flag)
     end
   end
@@ -284,7 +283,7 @@ class Model
       @deleted_flags ||= Array.new
       @deleted_flags << flag
     end
-    if !@added_flags.nil?
+    unless @added_flags.nil?
       @added_flags.delete(flag)
     end
   end
@@ -296,10 +295,10 @@ class Model
   end
 
   def update_attributes!(attributes)
-    new_model = self.class.update_attributes!(self.id, attributes)
+    new_model = self.class.update_attributes!(id, attributes)
     # Requests should return a copy of the object, but some don't. If they
     # don't, don't break (and go complain to the author!)
-    if !new_model.nil?
+    unless new_model.nil?
       self.data = new_model.data
       update_data.reject! {|key,value| value == data[key]}
     end
@@ -315,11 +314,13 @@ class Model
       end
     end
     # Special parsing for updated tags
-    if !attributes['tags'].nil?
+    unless attributes['tags'].nil?
       attributes['tags'] = parse_tags(attributes['tags'])
     end
-    path = "/#{self.service_name}/#{id}.json"
-    return parse(CoreServer::Base.connection.update_request(path, attributes.fix_key_encoding.to_json))
+    parse(CoreServer::Base.connection.update_request(
+      "/#{service_name}/#{id}.json",
+      attributes.fix_key_encoding.to_json)
+    )
   end
 
   def save!
@@ -331,10 +332,10 @@ class Model
   end
 
   def self.create(attributes, custom_headers = {}, query_params = {})
-    if !attributes['tags'].nil?
+    unless attributes['tags'].nil?
       attributes['tags'] = parse_tags(attributes['tags'])
     end
-    path = "/#{self.service_name}.json"
+    path = "/#{service_name}.json"
     if query_params.length > 0
       path = "#{path}?#{query_params.to_query}"
     end
@@ -354,30 +355,29 @@ class Model
   end
 
   def self.delete(id)
-    path = "/#{self.service_name}/#{id}"
-    return parse(CoreServer::Base.connection.delete_request(path))
+    parse(CoreServer::Base.connection.delete_request("/#{service_name}/#{id}"))
   end
 
   def self.setup_model(json_data)
     return json_data if json_data.is_a?(self)
     if json_data.is_a?(Array)
       model = json_data.collect do | item |
-        m = self.new
+        m = new
         m.data = item
         m.update_data = Hash.new
         m
       end
     else
-      model = self.new
+      model = new
       model.data = json_data
       model.update_data = Hash.new
     end
 
-    return model
+    model
   end
 
   def self.batch(reqs)
-    reqs.each {|r| r['body'] = r['body'].to_json if !r['body'].nil? }
+    reqs.each {|r| r['body'] = r['body'].to_json unless r['body'].nil? }
     resp = JSON.parse(CoreServer::Base.connection.
                  create_request('/batches', {'requests' => reqs}.to_json))
     r_count = 0
@@ -386,11 +386,11 @@ class Model
       r_count += 1
       if r['error']
         Rails.logger.info("Error: #{req['requestType']} " +
-                      "#{CORESERVICE_URI.to_s}#{req['url']}: " +
+                      "#{CORESERVICE_URI}#{req['url']}: " +
                       (r['errorCode'] || '') + " : " +
                         (r['errorMessage'] || ''))
         raise CoreServer::CoreServerError.new(
-          "#{req['requestType']} #{CORESERVICE_URI.to_s}#{req['url']}",
+          "#{req['requestType']} #{CORESERVICE_URI}#{req['url']}",
           r['errorCode'],
           r['errorMessage'])
       else
@@ -402,13 +402,13 @@ class Model
 
   def escape_object(obj)
     if obj.is_a?(String)
-      return CGI.escapeHTML(obj)
+      CGI.escapeHTML(obj)
     elsif obj.is_a?(Array)
-      return obj.map {|v| escape_object(v)}
+      obj.map {|v| escape_object(v)}
     elsif obj.is_a?(Hash)
-      return obj.merge(obj) {|k, v| escape_object(v)}
+      obj.merge(obj) {|k, v| escape_object(v)}
     else
-      return obj
+      obj
     end
   end
 
@@ -416,13 +416,15 @@ class Model
 
   def self.parse_tags(val)
     if val.is_a?(String)
-      return val.split(',').map {|t| t.strip}
+      val.split(',').map(&:strip)
     else
-      return val
+      val
     end
   end
 
   def data_hash
+    return {} unless @data.present?
+
     dcopy = @data.clone
     if dcopy.is_a?(Hash)
       dcopy.merge!(update_data)
@@ -432,14 +434,14 @@ class Model
   end
 
   def combined_flags
-    flags_array = @data['flags'] || Array.new
-    if !@deleted_flags.nil?
+    flags_array = @data.to_h['flags'].to_a
+    unless @deleted_flags.nil?
       flags_array = flags_array - @deleted_flags
     end
-    if !@added_flags.nil?
+    unless @added_flags.nil?
       flags_array = flags_array + @added_flags
     end
-    return flags_array
+    flags_array
   end
 
   def flags_modified?
@@ -449,7 +451,7 @@ class Model
 
   # Turn class name into core server service name
   def self.service_name
-    return self.name.gsub(/[A-Z]/){ |c| "_#{c.downcase}" }.gsub(/^_/, '').pluralize
+    name.gsub(/[A-Z]/){ |c| "_#{c.downcase}" }.gsub(/^_/, '').pluralize
   end
 
   private

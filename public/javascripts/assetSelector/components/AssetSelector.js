@@ -20,7 +20,7 @@ export const AssetSelector = (props) => {
     _.get(I18n, 'asset_selector.header_title_with_category',
       `Select Featured Content in ${props.category}`).replace('%{category}', props.category);
 
-  return (
+  return props.modalIsOpen ? (
     <div className={modalClassNames} data-modal-dismiss>
       <div className={'modal-container no-footer'}>
         <Header title={headerTitle} />
@@ -30,7 +30,7 @@ export const AssetSelector = (props) => {
           resultsPerPage={props.resultsPerPage} />
       </div>
     </div>
-  );
+  ) : null;
 };
 
 AssetSelector.propTypes = {

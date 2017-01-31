@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import $ from 'jquery';
 import ceteraUtils from '../lib/ceteraUtils';
 import { closeAssetSelector } from '../actions/modal';
 import { updatePageResults } from '../actions/pageResults';
@@ -12,6 +11,7 @@ import NoResults from './NoResults';
 import Pager from './Pager';
 import ResultCount from './ResultCount';
 import SortDropdown from './SortDropdown';
+import Spinner from './Spinner';
 
 export class ResultsContainer extends Component {
   constructor(props) {
@@ -21,6 +21,7 @@ export class ResultsContainer extends Component {
     this.state = {
       sort: 'relevance',
       currentPage: 1,
+      fetchingResults: false,
       pagerKey: 1
       /*
         pagerKey only exists so that the defaultValue of the Pager input field updates when the prev/next
@@ -31,11 +32,12 @@ export class ResultsContainer extends Component {
   }
 
   componentDidMount() {
-    this.changePage(1, true); // Fetch the first page of results
+    this.changePage(1); // Fetch the first page of results
   }
 
-  changePage(pageNumber, initialFetch = false) {
+  changePage(pageNumber) {
     const { dispatchUpdatePageResults, dispatchUpdateResultCount } = this.props;
+    this.setState({ fetchingResults: true });
     ceteraUtils.
       fetch({
         category: this.props.category,
@@ -47,14 +49,12 @@ export class ResultsContainer extends Component {
         const results = ceteraUtils.mapToAssetSelectorResult(response.results);
         dispatchUpdatePageResults(results);
         dispatchUpdateResultCount(response.resultSetSize);
-
-        if (!initialFetch) {
-          $('.asset-selector .modal-content').animate({ scrollTop: 0 });
-        }
+        this.setState({ fetchingResults: false });
       }).
       error((err) => {
         // TODO. airbrake, return error message, etc.
         console.error(err);
+        this.setState({ fetchingResults: false });
       });
 
     this.setState({
@@ -71,33 +71,41 @@ export class ResultsContainer extends Component {
   }
 
   render() {
-    const resultContent = (this.props.results.length > 0) ?
-      (<div>
-        <div className="top-controls">
-          <ResultCount
+    let resultContent;
+
+    if (this.state.fetchingResults) {
+      resultContent = <Spinner />;
+    } else if (!this.props.results.length) {
+      resultContent = <NoResults />;
+    } else {
+      resultContent = (
+        <div>
+          <div className="top-controls">
+            <ResultCount
+              currentPage={this.state.currentPage}
+              resultsPerPage={this.props.resultsPerPage}
+              total={this.props.resultCount} />
+
+            <SortDropdown
+              onSelection={this.changeSort}
+              value={this.state.sort} />
+          </div>
+
+          <div className="card-container">
+            {this.props.results.map((result, i) =>
+              <Card key={i} {...result} />
+            )}
+          </div>
+
+          <Pager
+            key={this.state.pagerKey}
             currentPage={this.state.currentPage}
-            resultsPerPage={this.props.resultsPerPage}
-            total={this.props.resultCount} />
-
-          <SortDropdown
-            onSelection={this.changeSort}
-            value={this.state.sort} />
+            changePage={this.changePage}
+            resultCount={this.props.resultCount}
+            resultsPerPage={this.props.resultsPerPage} />
         </div>
-
-        <div className="card-container">
-          {this.props.results.map((result, i) =>
-            <Card key={i} {...result} />
-          )}
-        </div>
-
-        <Pager
-          key={this.state.pagerKey}
-          currentPage={this.state.currentPage}
-          changePage={this.changePage}
-          resultCount={this.props.resultCount}
-          resultsPerPage={this.props.resultsPerPage} />
-      </div>)
-      : <NoResults />;
+      );
+    }
 
     return (
       <div className="modal-content results-container">

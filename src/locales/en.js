@@ -38,7 +38,7 @@ export default {
       },
       uhoh: 'Uh oh!',
       loading_metadata: 'Loading metadata...',
-      loading_metadata_error: 'There was a mishap loading your metadata.',
+      loading_metadata_error: 'This dataset is empty, private or has been deleted. Please check the dataset itself for availability.',
       fields: {
         dimension: {
           title: 'Dimension',

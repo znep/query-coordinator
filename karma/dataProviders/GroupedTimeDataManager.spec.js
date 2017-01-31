@@ -86,246 +86,210 @@ describe('GroupedTimeDataManager', () => {
 
   beforeEach(() => {
     groupingQueryVifs = {
-      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.01"}}],"precision":"month"},"label":"0.01","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-        response: {
-          "columns": ["dimension","measure"],
-          "rows": [
-            ["2001-02-01T00:00:00.000",2],
-            ["2001-03-01T00:00:00.000",null],
-            ["2001-04-01T00:00:00.000",1],
-            ["2001-05-01T00:00:00.000",1],
-            ["2001-06-01T00:00:00.000",null],
-            ["2001-07-01T00:00:00.000",null],
-            ["2001-08-01T00:00:00.000",null],
-            ["2001-09-01T00:00:00.000",null],
-            ["2001-10-01T00:00:00.000",1],
-            ["2001-11-01T00:00:00.000",1],
-            ["2001-12-01T00:00:00.000",null]
-          ]
-        },
-        count: 0
+      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.01"}}]},"label":"0.01","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+        "columns": ["dimension","measure"],
+        "rows": [
+          ["2001-02-01T00:00:00.000",2],
+          ["2001-03-01T00:00:00.000",null],
+          ["2001-04-01T00:00:00.000",1],
+          ["2001-05-01T00:00:00.000",1],
+          ["2001-06-01T00:00:00.000",null],
+          ["2001-07-01T00:00:00.000",null],
+          ["2001-08-01T00:00:00.000",null],
+          ["2001-09-01T00:00:00.000",null],
+          ["2001-10-01T00:00:00.000",1],
+          ["2001-11-01T00:00:00.000",1],
+          ["2001-12-01T00:00:00.000",null]
+        ]
       },
-      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.02"}}],"precision":"month"},"label":"0.02","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-        response: {
-          "columns": ["dimension","measure"],
-          "rows": [
-            ["2001-01-01T00:00:00.000",2],
-            ["2001-02-01T00:00:00.000",1],
-            ["2001-03-01T00:00:00.000",1],
-            ["2001-04-01T00:00:00.000",3],
-            ["2001-05-01T00:00:00.000",1],
-            ["2001-06-01T00:00:00.000",null],
-            ["2001-07-01T00:00:00.000",null],
-            ["2001-08-01T00:00:00.000",4],
-            ["2001-09-01T00:00:00.000",null],
-            ["2001-10-01T00:00:00.000",null],
-            ["2001-11-01T00:00:00.000",1],
-            ["2001-12-01T00:00:00.000",1],
-            ["2002-01-01T00:00:00.000",null]
-          ]
-        },
-        count: 0
+      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.02"}}]},"label":"0.02","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+        "columns": ["dimension","measure"],
+        "rows": [
+          ["2001-01-01T00:00:00.000",2],
+          ["2001-02-01T00:00:00.000",1],
+          ["2001-03-01T00:00:00.000",1],
+          ["2001-04-01T00:00:00.000",3],
+          ["2001-05-01T00:00:00.000",1],
+          ["2001-06-01T00:00:00.000",null],
+          ["2001-07-01T00:00:00.000",null],
+          ["2001-08-01T00:00:00.000",4],
+          ["2001-09-01T00:00:00.000",null],
+          ["2001-10-01T00:00:00.000",null],
+          ["2001-11-01T00:00:00.000",1],
+          ["2001-12-01T00:00:00.000",1],
+          ["2002-01-01T00:00:00.000",null]
+        ]
       },
-      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.03"}}],"precision":"month"},"label":"0.03","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-        response: {
-          "columns": ["dimension","measure"],
-          "rows": [
-            ["2001-01-01T00:00:00.000",1],
-            ["2001-02-01T00:00:00.000",1],
-            ["2001-03-01T00:00:00.000",1],
-            ["2001-04-01T00:00:00.000",2],
-            ["2001-05-01T00:00:00.000",1],
-            ["2001-06-01T00:00:00.000",1],
-            ["2001-07-01T00:00:00.000",1],
-            ["2001-08-01T00:00:00.000",1],
-            ["2001-09-01T00:00:00.000",1],
-            ["2001-10-01T00:00:00.000",1],
-            ["2001-11-01T00:00:00.000",null]
-          ]
-        },
-        count: 0
+      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.03"}}]},"label":"0.03","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+        "columns": ["dimension","measure"],
+        "rows": [
+          ["2001-01-01T00:00:00.000",1],
+          ["2001-02-01T00:00:00.000",1],
+          ["2001-03-01T00:00:00.000",1],
+          ["2001-04-01T00:00:00.000",2],
+          ["2001-05-01T00:00:00.000",1],
+          ["2001-06-01T00:00:00.000",1],
+          ["2001-07-01T00:00:00.000",1],
+          ["2001-08-01T00:00:00.000",1],
+          ["2001-09-01T00:00:00.000",1],
+          ["2001-10-01T00:00:00.000",1],
+          ["2001-11-01T00:00:00.000",null]
+        ]
       },
-      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.04"}}],"precision":"month"},"label":"0.04","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-        response: {
-          "columns": ["dimension","measure"],
-          "rows": [
-            ["2001-01-01T00:00:00.000",2],
-            ["2001-02-01T00:00:00.000",2],
-            ["2001-03-01T00:00:00.000",2],
-            ["2001-04-01T00:00:00.000",1],
-            ["2001-05-01T00:00:00.000",null],
-            ["2001-06-01T00:00:00.000",null],
-            ["2001-07-01T00:00:00.000",1],
-            ["2001-08-01T00:00:00.000",null],
-            ["2001-09-01T00:00:00.000",1],
-            ["2001-10-01T00:00:00.000",null],
-            ["2001-11-01T00:00:00.000",1],
-            ["2001-12-01T00:00:00.000",1],
-            ["2002-01-01T00:00:00.000",null]
-          ]
-        },
-        count: 0
+      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.04"}}]},"label":"0.04","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+        "columns": ["dimension","measure"],
+        "rows": [
+          ["2001-01-01T00:00:00.000",2],
+          ["2001-02-01T00:00:00.000",2],
+          ["2001-03-01T00:00:00.000",2],
+          ["2001-04-01T00:00:00.000",1],
+          ["2001-05-01T00:00:00.000",null],
+          ["2001-06-01T00:00:00.000",null],
+          ["2001-07-01T00:00:00.000",1],
+          ["2001-08-01T00:00:00.000",null],
+          ["2001-09-01T00:00:00.000",1],
+          ["2001-10-01T00:00:00.000",null],
+          ["2001-11-01T00:00:00.000",1],
+          ["2001-12-01T00:00:00.000",1],
+          ["2002-01-01T00:00:00.000",null]
+        ]
       },
-      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.05"}}],"precision":"month"},"label":"0.05","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-        response: {
-          "columns": ["dimension","measure"],
-          "rows": [
-            ["2001-02-01T00:00:00.000",3],
-            ["2001-03-01T00:00:00.000",1],
-            ["2001-04-01T00:00:00.000",null],
-            ["2001-05-01T00:00:00.000",1],
-            ["2001-06-01T00:00:00.000",2],
-            ["2001-07-01T00:00:00.000",2],
-            ["2001-08-01T00:00:00.000",1],
-            ["2001-09-01T00:00:00.000",1],
-            ["2001-10-01T00:00:00.000",1],
-            ["2001-11-01T00:00:00.000",2],
-            ["2001-12-01T00:00:00.000",2],
-            ["2002-01-01T00:00:00.000",null]
-          ]
-        },
-        count: 0
+      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.05"}}]},"label":"0.05","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+        "columns": ["dimension","measure"],
+        "rows": [
+          ["2001-02-01T00:00:00.000",3],
+          ["2001-03-01T00:00:00.000",1],
+          ["2001-04-01T00:00:00.000",null],
+          ["2001-05-01T00:00:00.000",1],
+          ["2001-06-01T00:00:00.000",2],
+          ["2001-07-01T00:00:00.000",2],
+          ["2001-08-01T00:00:00.000",1],
+          ["2001-09-01T00:00:00.000",1],
+          ["2001-10-01T00:00:00.000",1],
+          ["2001-11-01T00:00:00.000",2],
+          ["2001-12-01T00:00:00.000",2],
+          ["2002-01-01T00:00:00.000",null]
+        ]
       },
-      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.06"}}],"precision":"month"},"label":"0.06","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-        response: {
-          "columns": ["dimension","measure"],
-          "rows": [
-            ["2001-01-01T00:00:00.000",3],
-            ["2001-02-01T00:00:00.000",null],
-            ["2001-03-01T00:00:00.000",1],
-            ["2001-04-01T00:00:00.000",null],
-            ["2001-05-01T00:00:00.000",null],
-            ["2001-06-01T00:00:00.000",1],
-            ["2001-07-01T00:00:00.000",null],
-            ["2001-08-01T00:00:00.000",3],
-            ["2001-09-01T00:00:00.000",2],
-            ["2001-10-01T00:00:00.000",1],
-            ["2001-11-01T00:00:00.000",4],
-            ["2001-12-01T00:00:00.000",null]
-          ]
-        },
-        count: 0
+      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.06"}}]},"label":"0.06","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+        "columns": ["dimension","measure"],
+        "rows": [
+          ["2001-01-01T00:00:00.000",3],
+          ["2001-02-01T00:00:00.000",null],
+          ["2001-03-01T00:00:00.000",1],
+          ["2001-04-01T00:00:00.000",null],
+          ["2001-05-01T00:00:00.000",null],
+          ["2001-06-01T00:00:00.000",1],
+          ["2001-07-01T00:00:00.000",null],
+          ["2001-08-01T00:00:00.000",3],
+          ["2001-09-01T00:00:00.000",2],
+          ["2001-10-01T00:00:00.000",1],
+          ["2001-11-01T00:00:00.000",4],
+          ["2001-12-01T00:00:00.000",null]
+        ]
       },
-      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.07"}}],"precision":"month"},"label":"0.07","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-        response: {
-          "columns": ["dimension","measure"],
-          "rows": [
-            ["2001-02-01T00:00:00.000",1],
-            ["2001-03-01T00:00:00.000",2],
-            ["2001-04-01T00:00:00.000",2],
-            ["2001-05-01T00:00:00.000",2],
-            ["2001-06-01T00:00:00.000",1],
-            ["2001-07-01T00:00:00.000",1],
-            ["2001-08-01T00:00:00.000",1],
-            ["2001-09-01T00:00:00.000",2],
-            ["2001-10-01T00:00:00.000",4],
-            ["2001-11-01T00:00:00.000",1],
-            ["2001-12-01T00:00:00.000",1],
-            ["2002-01-01T00:00:00.000",null]
-          ]
-        },
-        count: 0
+      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.07"}}]},"label":"0.07","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+        "columns": ["dimension","measure"],
+        "rows": [
+          ["2001-02-01T00:00:00.000",1],
+          ["2001-03-01T00:00:00.000",2],
+          ["2001-04-01T00:00:00.000",2],
+          ["2001-05-01T00:00:00.000",2],
+          ["2001-06-01T00:00:00.000",1],
+          ["2001-07-01T00:00:00.000",1],
+          ["2001-08-01T00:00:00.000",1],
+          ["2001-09-01T00:00:00.000",2],
+          ["2001-10-01T00:00:00.000",4],
+          ["2001-11-01T00:00:00.000",1],
+          ["2001-12-01T00:00:00.000",1],
+          ["2002-01-01T00:00:00.000",null]
+        ]
       },
-      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.08"}}],"precision":"month"},"label":"0.08","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-        response: {
-          "columns": ["dimension","measure"],
-          "rows": [
-            ["2001-02-01T00:00:00.000",6],
-            ["2001-03-01T00:00:00.000",1],
-            ["2001-04-01T00:00:00.000",null],
-            ["2001-05-01T00:00:00.000",1],
-            ["2001-06-01T00:00:00.000",3],
-            ["2001-07-01T00:00:00.000",2],
-            ["2001-08-01T00:00:00.000",null],
-            ["2001-09-01T00:00:00.000",2],
-            ["2001-10-01T00:00:00.000",1],
-            ["2001-11-01T00:00:00.000",2],
-            ["2001-12-01T00:00:00.000",null]
-          ]
-        },
-        count: 0
+      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.08"}}]},"label":"0.08","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+        "columns": ["dimension","measure"],
+        "rows": [
+          ["2001-02-01T00:00:00.000",6],
+          ["2001-03-01T00:00:00.000",1],
+          ["2001-04-01T00:00:00.000",null],
+          ["2001-05-01T00:00:00.000",1],
+          ["2001-06-01T00:00:00.000",3],
+          ["2001-07-01T00:00:00.000",2],
+          ["2001-08-01T00:00:00.000",null],
+          ["2001-09-01T00:00:00.000",2],
+          ["2001-10-01T00:00:00.000",1],
+          ["2001-11-01T00:00:00.000",2],
+          ["2001-12-01T00:00:00.000",null]
+        ]
       },
-      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.09"}}],"precision":"month"},"label":"0.09","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-        response: {
-          "columns": ["dimension","measure"],
-          "rows": [
-            ["2001-01-01T00:00:00.000",2],
-            ["2001-02-01T00:00:00.000",1],
-            ["2001-03-01T00:00:00.000",1],
-            ["2001-04-01T00:00:00.000",2],
-            ["2001-05-01T00:00:00.000",null],
-            ["2001-06-01T00:00:00.000",2],
-            ["2001-07-01T00:00:00.000",3],
-            ["2001-08-01T00:00:00.000",4],
-            ["2001-09-01T00:00:00.000",1],
-            ["2001-10-01T00:00:00.000",1],
-            ["2001-11-01T00:00:00.000",null],
-            ["2001-12-01T00:00:00.000",1],
-            ["2002-01-01T00:00:00.000",null]
-          ]
-        },
-        count: 0
+      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.09"}}]},"label":"0.09","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+        "columns": ["dimension","measure"],
+        "rows": [
+          ["2001-01-01T00:00:00.000",2],
+          ["2001-02-01T00:00:00.000",1],
+          ["2001-03-01T00:00:00.000",1],
+          ["2001-04-01T00:00:00.000",2],
+          ["2001-05-01T00:00:00.000",null],
+          ["2001-06-01T00:00:00.000",2],
+          ["2001-07-01T00:00:00.000",3],
+          ["2001-08-01T00:00:00.000",4],
+          ["2001-09-01T00:00:00.000",1],
+          ["2001-10-01T00:00:00.000",1],
+          ["2001-11-01T00:00:00.000",null],
+          ["2001-12-01T00:00:00.000",1],
+          ["2002-01-01T00:00:00.000",null]
+        ]
       },
-      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.1"}}],"precision":"month"},"label":"0.1","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-        response: {
-          "columns": ["dimension","measure"],
-          "rows": [
-            ["2001-01-01T00:00:00.000",1],
-            ["2001-02-01T00:00:00.000",2],
-            ["2001-03-01T00:00:00.000",null],
-            ["2001-04-01T00:00:00.000",1],
-            ["2001-05-01T00:00:00.000",1],
-            ["2001-06-01T00:00:00.000",1],
-            ["2001-07-01T00:00:00.000",1],
-            ["2001-08-01T00:00:00.000",2],
-            ["2001-09-01T00:00:00.000",1],
-            ["2001-10-01T00:00:00.000",null],
-            ["2001-11-01T00:00:00.000",1],
-            ["2001-12-01T00:00:00.000",2],
-            ["2002-01-01T00:00:00.000",null]
-          ]
-        },
-        count: 0
+      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.1"}}]},"label":"0.1","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+        "columns": ["dimension","measure"],
+        "rows": [
+          ["2001-01-01T00:00:00.000",1],
+          ["2001-02-01T00:00:00.000",2],
+          ["2001-03-01T00:00:00.000",null],
+          ["2001-04-01T00:00:00.000",1],
+          ["2001-05-01T00:00:00.000",1],
+          ["2001-06-01T00:00:00.000",1],
+          ["2001-07-01T00:00:00.000",1],
+          ["2001-08-01T00:00:00.000",2],
+          ["2001-09-01T00:00:00.000",1],
+          ["2001-10-01T00:00:00.000",null],
+          ["2001-11-01T00:00:00.000",1],
+          ["2001-12-01T00:00:00.000",2],
+          ["2002-01-01T00:00:00.000",null]
+        ]
       },
-      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.11"}}],"precision":"month"},"label":"0.11","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-        response: {
-          "columns": ["dimension","measure"],
-          "rows": [
-            ["2001-01-01T00:00:00.000",1],
-            ["2001-02-01T00:00:00.000",2],
-            ["2001-03-01T00:00:00.000",3],
-            ["2001-04-01T00:00:00.000",1],
-            ["2001-05-01T00:00:00.000",1],
-            ["2001-06-01T00:00:00.000",2],
-            ["2001-07-01T00:00:00.000",1],
-            ["2001-08-01T00:00:00.000",null],
-            ["2001-09-01T00:00:00.000",2],
-            ["2001-10-01T00:00:00.000",1],
-            ["2001-11-01T00:00:00.000",1],
-            ["2001-12-01T00:00:00.000",1],
-            ["2002-01-01T00:00:00.000",null]
-          ]
-        },
-        count: 0
+      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.11"}}]},"label":"0.11","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+        "columns": ["dimension","measure"],
+        "rows": [
+          ["2001-01-01T00:00:00.000",1],
+          ["2001-02-01T00:00:00.000",2],
+          ["2001-03-01T00:00:00.000",3],
+          ["2001-04-01T00:00:00.000",1],
+          ["2001-05-01T00:00:00.000",1],
+          ["2001-06-01T00:00:00.000",2],
+          ["2001-07-01T00:00:00.000",1],
+          ["2001-08-01T00:00:00.000",null],
+          ["2001-09-01T00:00:00.000",2],
+          ["2001-10-01T00:00:00.000",1],
+          ["2001-11-01T00:00:00.000",1],
+          ["2001-12-01T00:00:00.000",1],
+          ["2002-01-01T00:00:00.000",null]
+        ]
       },
-      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.12"}}],"precision":"month"},"label":"0.12","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
-        response: {
-          "columns": ["dimension","measure"],
-          "rows": [
-            ["2001-02-01T00:00:00.000",1],
-            ["2001-03-01T00:00:00.000",1],
-            ["2001-04-01T00:00:00.000",null],
-            ["2001-05-01T00:00:00.000",null],
-            ["2001-06-01T00:00:00.000",2],
-            ["2001-07-01T00:00:00.000",null],
-            ["2001-08-01T00:00:00.000",null],
-            ["2001-09-01T00:00:00.000",1],
-            ["2001-10-01T00:00:00.000",null],
-            ["2001-11-01T00:00:00.000",2],
-            ["2001-12-01T00:00:00.000",null]
-          ]
-        },
-        count: 0
+      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.12"}}]},"label":"0.12","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+        "columns": ["dimension","measure"],
+        "rows": [
+          ["2001-02-01T00:00:00.000",1],
+          ["2001-03-01T00:00:00.000",1],
+          ["2001-04-01T00:00:00.000",null],
+          ["2001-05-01T00:00:00.000",null],
+          ["2001-06-01T00:00:00.000",2],
+          ["2001-07-01T00:00:00.000",null],
+          ["2001-08-01T00:00:00.000",null],
+          ["2001-09-01T00:00:00.000",1],
+          ["2001-10-01T00:00:00.000",null],
+          ["2001-11-01T00:00:00.000",2],
+          ["2001-12-01T00:00:00.000",null]
+        ]
       }
     };
     revertGroupedTimeDataManagerAPI = GroupedTimeDataManagerAPI.__set__(
@@ -348,17 +312,18 @@ describe('GroupedTimeDataManager', () => {
           };
         },
         makeSocrataTimeDataRequest: function(vif, seriesIndex, maxRowCount) {
-          const vifForQuery = JSON.stringify(vif);
+          const vifForQuery = _.cloneDeep(vif);
+          _.unset(vifForQuery, 'series[0].dataSource.precision');
 
           let stringifiedGroupingQueryVif;
           let queryResponse = false;
 
           for (stringifiedGroupingQueryVif in groupingQueryVifs) {
             const groupingQueryVif = JSON.parse(stringifiedGroupingQueryVif);
+            _.unset(groupingQueryVif, 'series[0].dataSource.precision');
 
-            if (_.isEqual(vif, groupingQueryVif)) {
-              groupingQueryVifs[stringifiedGroupingQueryVif].count += 1;
-              queryResponse = groupingQueryVifs[stringifiedGroupingQueryVif].response;
+            if (_.isEqual(vifForQuery, groupingQueryVif)) {
+              queryResponse = groupingQueryVifs[stringifiedGroupingQueryVif];
               break;
             }
           }
@@ -380,10 +345,10 @@ describe('GroupedTimeDataManager', () => {
     revertGroupedTimeDataManagerAPI();
   });
 
-  it('returns the expected grouped data.', (done) => {
+  it('returns the expected grouped data.', () => {
     const vif = _.cloneDeep(VALID_VIF_WITH_DIMENSION_GROUPING);
 
-    GroupedTimeDataManagerAPI.getData(
+    return GroupedTimeDataManagerAPI.getData(
       vif,
       {
         MAX_ROW_COUNT: MAX_ROW_COUNT,
@@ -411,16 +376,9 @@ describe('GroupedTimeDataManager', () => {
           ],
           "precision":"month"
         };
-        const counts = Object.keys(groupingQueryVifs).map((groupingQueryVif) => {
-          return groupingQueryVifs[groupingQueryVif].count;
-        });
 
-        // Assert that all vif queries were made exactly once
-        assert.deepEqual(counts, counts.filter((count) => count === 1));
         // Assert that the data that actually came back is what was expected
         assert.deepEqual(expectedData, actualData);
-
-        done();
       }).
       catch((error) => {
 

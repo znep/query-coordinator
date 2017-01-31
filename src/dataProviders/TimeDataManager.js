@@ -38,13 +38,11 @@ function getData(vif) {
 }
 
 function getPrecisionBySeriesIndex(vif, seriesIndex) {
-  const precisionFromVif = _.get(
-    vif,
-    `series[${seriesIndex}].dataSource.precision`,
-    ''
-  ).toLowerCase();
+  const precisionFromVif = _.toLower(
+    _.get(vif, `series[${seriesIndex}].dataSource.precision`)
+  );
 
-  if (VALID_PRECISION_VALUES.indexOf(precisionFromVif) >= 0) {
+  if (_.includes(VALID_PRECISION_VALUES, precisionFromVif)) {
     return Promise.resolve(precisionFromVif);
   } else {
     const soqlDataProvider = new SoqlDataProvider({

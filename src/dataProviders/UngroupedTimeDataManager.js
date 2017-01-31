@@ -3,6 +3,9 @@ const _ = require('lodash');
 // Project Imports
 const I18n = require('../I18n');
 const makeSocrataTimeDataRequest = require('./makeSocrataTimeDataRequest');
+// Constants
+const VALID_SORTS = ['asc', 'desc'];
+const DEFAULT_SORT = 'asc';
 
 function getData(vif, options) {
   const dataRequests = vif.series.map((series, seriesIndex) => {
@@ -49,11 +52,12 @@ function getData(vif, options) {
   function mapUngroupedDataResponsesToMultiSeriesTable(dataResponses) {
     const dimensionIndex = 0;
     const measureIndex = 1;
-    const sortFromVifOrDefault = _.get(
-      vif,
-      'series[0].dataSource.orderBy.sort',
-      'asc'
-    ).toLowerCase();
+    const sortFromVif = _.toLower(
+      _.get(vif, 'series[0].dataSource.orderBy.sort')
+    );
+    const sortFromVifOrDefault = (_.includes(VALID_SORTS, sortFromVif)) ?
+      sortFromVif :
+      DEFAULT_SORT;
     const ascendingComparator = (a, b) => (a >= b) ? 1 : -1;
     const descendingComparator = (a, b) => (a <= b) ? 1 : -1;
     const comparator = (sortFromVifOrDefault === 'asc') ?

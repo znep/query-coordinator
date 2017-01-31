@@ -512,11 +512,11 @@ Currently, six types of filters are supported for `socrata.soql` data sources:
 ##### `binaryOperator`
 A `binaryOperator` filter performs one or more logical comparisons. It is of type `<object>`. This object must have the following properties:
 
-* The `arguments` property specifies the comparison(s) to be made. It is of type `<object>`. If one comparison should be made, or of type `<array>` if more than one comparison should be made. If it is of type `<array>` it must contain one or more objects identical to the format expected if only one comparison is to be made; specifically, a comparison is specified by an object with two properties:
+* The `arguments` property specifies the comparison(s) to be made. It is of type `<object>`. If one comparison should be made, or of type `<array>` if more than one comparison should be made. If it is of type `<array>` it must contain one or more objects identical to the format expected if only one comparison is to be made; specifically, a comparison is specified by an object with one or two properties:
 
-   * The `operator` property specifies the type of comparison. It is of type `<string>`. Accepted values are: `'='`, `'!='`, `'<'`, `'<='`, `'>'`, `'>='`.
+   * The `operator` property specifies the type of comparison. It is of type `<string>`. Accepted values are: `'='`, `'!='`, `'<'`, `'<='`, `'>'`, `'>='`, `'IS NULL'` and `'IS NOT NULL'`.
 
-   * The `operand` property specifies the value to compare against. It is of type `<string>`, `<number>` or `<boolean>`.
+   * The `operand` property specifies the value to compare against. It is of type `<string>`, `<number>` or `<boolean>`. This property should not be included if the operator is `'IS NULL'` or `'IS NOT NULL'`. In all other cases, this property is required.
 
 * The `columnName` property specifies the column against which the comparison should be made. It is of type `<string>` and it must be a column in the dataset specified by the parent `dataSource` object.
 

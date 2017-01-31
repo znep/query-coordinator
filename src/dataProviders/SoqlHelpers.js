@@ -1,7 +1,7 @@
 var utils = require('socrata-utils');
 var _ = require('lodash');
 
-var VALID_BINARY_OPERATORS = ['=', '!=', '<', '<=', '>', '>='];
+var VALID_BINARY_OPERATORS = ['=', '!=', '<', '<=', '>', '>=', 'IS NULL', 'IS NOT NULL'];
 
 /**
  * 'Public' methods
@@ -390,6 +390,14 @@ function serializeFloatingTimestamp(date) {
   );
 }
 
+function filterArgumentRequiresOperand(filterArgument) {
+
+  return (
+    filterArgument.operator !== 'IS NULL' &&
+    filterArgument.operator !== 'IS NOT NULL'
+  );
+}
+
 function binaryOperatorWhereClauseComponent(filter) {
   utils.assertHasProperties(
     filter,
@@ -403,11 +411,13 @@ function binaryOperatorWhereClauseComponent(filter) {
 
     filter.arguments.forEach(function(argument) {
 
-      utils.assertHasProperties(
-        argument,
-        'operator',
-        'operand'
-      );
+      if (filterArgumentRequiresOperand(argument)) {
+
+        utils.assertHasProperties(
+          argument,
+          'operand'
+        );
+      }
 
       utils.assert(
         VALID_BINARY_OPERATORS.indexOf(argument.operator) > -1,
@@ -419,10 +429,13 @@ function binaryOperatorWhereClauseComponent(filter) {
       filter.
         arguments.
         map(function(argument) {
+
           return '{0} {1} {2}'.format(
             soqlEncodeColumnName(filter.columnName),
             argument.operator,
-            soqlEncodeValue(argument.operand)
+            (filterArgumentRequiresOperand(argument)) ?
+              soqlEncodeValue(argument.operand) :
+              ''
           );
         }).
         join(' OR ')
@@ -432,11 +445,13 @@ function binaryOperatorWhereClauseComponent(filter) {
   // element.
   } else {
 
-    utils.assertHasProperties(
-      filter,
-      'arguments.operator',
-      'arguments.operand'
-    );
+    if (filterArgumentRequiresOperand(filter.arguments)) {
+
+      utils.assertHasProperties(
+        filter,
+        'arguments.operand'
+      );
+    }
 
     utils.assert(
       VALID_BINARY_OPERATORS.indexOf(filter.arguments.operator) > -1,
@@ -446,7 +461,9 @@ function binaryOperatorWhereClauseComponent(filter) {
     return '{0} {1} {2}'.format(
       soqlEncodeColumnName(filter.columnName),
       filter.arguments.operator,
-      soqlEncodeValue(filter.arguments.operand)
+      (filterArgumentRequiresOperand(filter.arguments)) ?
+        soqlEncodeValue(filter.arguments.operand) :
+        ''
     );
   }
 }

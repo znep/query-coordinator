@@ -1,6 +1,9 @@
 import _ from 'lodash';
 import * as actions from '../actions';
 
+/**
+ * Note: These properties are in alphabetical order.
+ */
 const paths = {
   baseLayerOpacity: 'configuration.baseLayerOpacity',
   baseLayerUrl: 'configuration.baseLayerUrl',
@@ -8,39 +11,40 @@ const paths = {
   datasetUid: 'series[0].dataSource.datasetUid',
   description: 'description',
   dimensionColumnName: 'series[0].dataSource.dimension.columnName',
+  dimensionGroupingColumnName: 'series[0].dataSource.dimension.grouping.columnName',
   domain: 'series[0].dataSource.domain',
-  labelTop: 'configuration.axisLabels.top',
   labelBottom: 'configuration.axisLabels.bottom',
   labelLeft: 'configuration.axisLabels.left',
+  labelTop: 'configuration.axisLabels.top',
+  limit: 'series[0].dataSource.limit',
   mapCenterAndZoom: 'configuration.mapCenterAndZoom',
   measureAggregationFunction: 'series[0].dataSource.measure.aggregationFunction',
+  measureAxisMaxValue: 'configuration.measureAxisMaxValue',
+  measureAxisMinValue: 'configuration.measureAxisMinValue',
   measureColumnName: 'series[0].dataSource.measure.columnName',
   negativeColor: 'configuration.legend.negativeColor',
-  positiveColor: 'configuration.legend.positiveColor',
+  orderBy: 'series[0].dataSource.orderBy',
   pointOpacity: 'configuration.pointOpacity',
   pointSize: 'configuration.pointSize',
+  positiveColor: 'configuration.legend.positiveColor',
+  precision: 'series[0].dataSource.precision',
   primaryColor: 'series[0].color.primary',
   rowInspectorTitleColumnName: 'configuration.rowInspectorTitleColumnName',
   secondaryColor: 'series[0].color.secondary',
   shapefileGeometryLabel: 'configuration.shapefile.geometryLabel',
   shapefilePrimaryKey: 'configuration.shapefile.primaryKey',
   shapefileUid: 'configuration.shapefile.uid',
+  showDimensionLabels: 'configuration.showDimensionLabels',
+  showOtherCategory: 'configuration.showOtherCategory',
+  showValueLabels: 'configuration.showValueLabels',
+  showValueLabelsAsPercent: 'configuration.showValueLabelsAsPercent',
   title: 'title',
+  treatNullValuesAsZero: 'configuration.treatNullValuesAsZero',
   unitOne: 'series[0].unit.one',
   unitOther: 'series[0].unit.other',
   viewSourceDataLink: 'configuration.viewSourceDataLink',
   visualizationType: 'series[0].type',
-  showDimensionLabels: 'configuration.showDimensionLabels',
-  showValueLabels: 'configuration.showValueLabels',
-  showValueLabelsAsPercent: 'configuration.showValueLabelsAsPercent',
-  zeroColor: 'configuration.legend.zeroColor',
-  precision: 'series[0].dataSource.precision',
-  treatNullValuesAsZero: 'configuration.treatNullValuesAsZero',
-  measureAxisMinValue: 'configuration.measureAxisMinValue',
-  measureAxisMaxValue: 'configuration.measureAxisMaxValue',
-  orderBy: 'series[0].dataSource.orderBy',
-  limit: 'series[0].dataSource.limit',
-  showOtherCategory: 'configuration.showOtherCategory'
+  zeroColor: 'configuration.legend.zeroColor'
 };
 
 const hasVifPath = (vif) => (path) => _.has(vif, path);
@@ -79,8 +83,8 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setDimension(get(paths.dimensionColumnName)));
   }
 
-  if (has(paths.labelTop)) {
-    dispatch(actions.setLabelTop(get(paths.labelTop)));
+  if (has(paths.dimensionGroupingColumnName)) {
+    dispatch(actions.setDimensionGroupingColumnName(get(paths.dimensionGroupingColumnName)));
   }
 
   if (has(paths.labelBottom)) {
@@ -91,12 +95,34 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setLabelLeft(get(paths.labelLeft)));
   }
 
+  if (has(paths.labelTop)) {
+    dispatch(actions.setLabelTop(get(paths.labelTop)));
+  }
+
+  if (has(paths.limit)) {
+    if (has(paths.showOtherCategory)) {
+      dispatch(actions.setLimitCountAndShowOtherCategory(get(paths.limit), get(paths.showOtherCategory)));
+    } else {
+      dispatch(actions.setLimitCountAndShowOtherCategory(get(paths.limit), false));
+    }
+  } else if (has(paths.showOtherCategory)) {
+    dispatch(actions.setShowOtherCategory(get(paths.showOtherCategory)));
+  }
+
   if (has(paths.mapCenterAndZoom)) {
     dispatch(actions.setCenterAndZoom(get(paths.mapCenterAndZoom)));
   }
 
   if (has(paths.measureAggregationFunction)) {
     dispatch(actions.setMeasureAggregation(get(paths.measureAggregationFunction)));
+  }
+
+  if (has(paths.measureAxisMaxValue)) {
+    dispatch(actions.setMeasureAxisMaxValue(get(paths.measureAxisMaxValue)));
+  }
+
+  if (has(paths.measureAxisMinValue)) {
+    dispatch(actions.setMeasureAxisMinValue(get(paths.measureAxisMinValue)));
   }
 
   if (has(paths.measureColumnName)) {
@@ -123,6 +149,10 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setPositiveColor(get(paths.positiveColor)));
   }
 
+  if (has(paths.precision)) {
+    dispatch(actions.setPrecision(get(paths.precision)));
+  }
+
   if (has(paths.primaryColor)) {
     dispatch(actions.setPrimaryColor(get(paths.primaryColor)));
   }
@@ -135,8 +165,36 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setSecondaryColor(get(paths.secondaryColor)));
   }
 
+  if (has(paths.shapefileGeometryLabel)) {
+    dispatch(actions.setShapefileGeometryLabel(get(paths.shapefileGeometryLabel)));
+  }
+
+  if (has(paths.shapefilePrimaryKey)) {
+    dispatch(actions.setShapefilePrimaryKey(get(paths.shapefilePrimaryKey)));
+  }
+
+  if (has(paths.shapefileUid)) {
+    dispatch(actions.setShapefileUid(get(paths.shapefileUid)));
+  }
+
+  if (has(paths.showDimensionLabels)) {
+    dispatch(actions.setShowDimensionLabels(get(paths.showDimensionLabels)));
+  }
+
+  if (has(paths.showValueLabels)) {
+    dispatch(actions.setShowValueLabels(get(paths.showValueLabels)));
+  }
+
+  if (has(paths.showValueLabelsAsPercent)) {
+    dispatch(actions.setShowValueLabelsAsPercent(get(paths.showValueLabelsAsPercent)));
+  }
+
   if (has(paths.title)) {
     dispatch(actions.setTitle(get(paths.title)));
+  }
+
+  if (has(paths.treatNullValuesAsZero)) {
+    dispatch(actions.setTreatNullValuesAsZero(get(paths.treatNullValuesAsZero)));
   }
 
   if (has(paths.unitOne)) {
@@ -155,58 +213,8 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setVisualizationType(get(paths.visualizationType)));
   }
 
-  if (has(paths.showDimensionLabels)) {
-    dispatch(actions.setShowDimensionLabels(get(paths.showDimensionLabels)));
-  }
-
-  if (has(paths.showValueLabels)) {
-    dispatch(actions.setShowValueLabels(get(paths.showValueLabels)));
-  }
-
-  if (has(paths.showValueLabelsAsPercent)) {
-    dispatch(actions.setShowValueLabelsAsPercent(get(paths.showValueLabelsAsPercent)));
-  }
-
   if (has(paths.zeroColor)) {
     dispatch(actions.setZeroColor(get(paths.zeroColor)));
-  }
-
-  if (has(paths.precision)) {
-    dispatch(actions.setPrecision(get(paths.precision)));
-  }
-
-  if (has(paths.treatNullValuesAsZero)) {
-    dispatch(actions.setTreatNullValuesAsZero(get(paths.treatNullValuesAsZero)));
-  }
-
-  if (has(paths.measureAxisMinValue)) {
-    dispatch(actions.setMeasureAxisMinValue(get(paths.measureAxisMinValue)));
-  }
-
-  if (has(paths.measureAxisMaxValue)) {
-    dispatch(actions.setMeasureAxisMaxValue(get(paths.measureAxisMaxValue)));
-  }
-
-  if (has(paths.limit)) {
-    if (has(paths.showOtherCategory)) {
-      dispatch(actions.setLimitCountAndShowOtherCategory(get(paths.limit), get(paths.showOtherCategory)));
-    } else {
-      dispatch(actions.setLimitCountAndShowOtherCategory(get(paths.limit), false));
-    }
-  } else if (has(paths.showOtherCategory)) {
-    dispatch(actions.setShowOtherCategory(get(paths.showOtherCategory)));
-  }
-
-  if (has(paths.shapefileUid)) {
-    dispatch(actions.setShapefileUid(get(paths.shapefileUid)));
-  }
-
-  if (has(paths.shapefilePrimaryKey)) {
-    dispatch(actions.setShapefilePrimaryKey(get(paths.shapefilePrimaryKey)));
-  }
-
-  if (has(paths.shapefileGeometryLabel)) {
-    dispatch(actions.setShapefileGeometryLabel(get(paths.shapefileGeometryLabel)));
   }
 
   dispatch(actions.setDatasetUid(get(paths.datasetUid)));

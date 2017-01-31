@@ -94,15 +94,20 @@ export class ExternalResourceForm extends Component {
     });
 
     const previewImageButton = (
-      <button
-        className="btn btn-primary"
-        aria-labelledby="external-resource-preview-image-label"
-        onClick={(e) => {
-          e.preventDefault();
-          $('.preview-image').click();
-        }}>
-        {_.get(I18n, 'external_resource_wizard.form.fields.preview_image.button_text', 'Choose an image')}
-      </button>
+      <div>
+        <button
+          className="btn btn-primary"
+          aria-labelledby="external-resource-preview-image-label"
+          onClick={(e) => {
+            e.preventDefault();
+            $('.preview-image').click();
+          }}>
+          {_.get(I18n, 'external_resource_wizard.form.fields.preview_image.button_text', 'Choose an image')}
+        </button>
+        <span> {this.props.previewImage.value ? '' :
+          _.get(I18n, 'external_resource_wizard.form.fields.preview_image.no_file_chosen', 'No file chosen')}
+        </span>
+      </div>
     );
     const previewImageField = this.renderInputField('previewImage', {
       type: 'file',

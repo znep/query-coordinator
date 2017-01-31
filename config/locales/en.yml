@@ -1841,6 +1841,7 @@ en:
           label: Preview Image
           button_text: Choose an image
           error: Error uploading image. Acceptable formats are jpg, jpeg, png, or gif.
+          no_file_chosen: No file chosen
   govstat:
     admin:
       visibility_controls_disabled:

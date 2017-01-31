@@ -1,4 +1,6 @@
 @import "styleguide-colors";
+@import "asset-selector/breakpoints";
+
 $view-card-preview-width: 32%;
 $min-view-card-preview-width: 300px;
 $view-card-preview-height: 300px;
@@ -26,9 +28,17 @@ $view-card-preview-height: 300px;
       .external-resource-contents {
         display: flex;
 
+        @media(max-width: $medium) {
+          display: block;
+        }
+
         form.external-resource-form {
           flex: 1 1 100%;
           padding-right: 22px;
+
+          label {
+            display: inline-block;
+          }
 
           input[type="text"] {
             width: 100%

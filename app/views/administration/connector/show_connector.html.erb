@@ -89,8 +89,14 @@
               </td>
               <%- if @data_connection_on %>
                 <td class="connection_type" scope="row">
-                  <span role="presentation" class=<%=sync_type_icon(layer['sync_type'])%> ></span>
-                  <%= t("#{connector}.#{layer['sync_type']}") %>
+                  <%- if layer['sync_type'] == 'ignored' -%>
+                    <span role="presentation" class="socrata-icon-close-circle"> </span>
+                    <%= t("#{connector}.deleted_pending") %>
+                  <%- else %>
+                    <span role="presentation" class=<%=sync_type_icon(layer['sync_type'])%> ></span>
+                    <%= t("#{connector}.#{layer['sync_type']}") %>
+                  <%- end -%>
+
                 </td>
               <%- end %>
             </tr>

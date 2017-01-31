@@ -2190,6 +2190,7 @@ en:
         data_option_explanation: Assets will appear in your catalog as Maps
         data_connect_all: Connect all assets as Maps
         dataset: Dataset
+        deleted_pending: Deleted (Pending)
         discovered_assets: Discovered assets
         edit: Edit
         edit_connector: 'Edit Connector: %{url}'
@@ -2211,7 +2212,7 @@ en:
           deleted: Your connector has been marked for deletion.
           server_not_found: We could not find that server-- it may have been recently deleted.
           updated: Your connector's settings have been saved.
-        ignore: Ignored
+        ignored: Ignored
         ignored_option: Don't Connect
         last_synced: Last synced
         never: Never

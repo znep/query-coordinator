@@ -473,6 +473,7 @@ Rails.application.routes.draw do
       match  '/profile/:id/update_account', :to => 'profile#update_account', :as => 'update_account_profile',
         :via => [:post, :put], :constraints => { :id => Frontend::UID_REGEXP }
       get '/oauth/authorize' => 'oauth#authorize'
+      get '/notifications' => 'notifications#index'
     end
 
     resource :account

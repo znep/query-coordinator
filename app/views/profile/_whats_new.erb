@@ -26,11 +26,11 @@
           <%- end -%>
       <%- else -%>
           <div class="whats-new--post-list--post">
-              <%= t('screens.profile.whats_new.caught_up', href: APP_CONFIG.whats_new.fetch(:zendesk_link)).html_safe %>
+              <%= t('screens.profile.whats_new.caught_up', href: APP_CONFIG.zendesk_notifications.fetch(:zendesk_link)).html_safe %>
           </div>
       <%- end -%>
       <div>
-          <a class="whats-new--post-list--see-older" target="_blank" href="<%= APP_CONFIG.whats_new.fetch(:zendesk_link).html_safe %>"><%= t('screens.profile.whats_new.older_news') %> <span class="icon-arrow-next"></span></a>
+          <a class="whats-new--post-list--see-older" target="_blank" href="<%= APP_CONFIG.zendesk_notifications.fetch(:zendesk_link).html_safe %>"><%= t('screens.profile.whats_new.older_news') %> <span class="icon-arrow-next"></span></a>
       </div>
   </div>
 </div>

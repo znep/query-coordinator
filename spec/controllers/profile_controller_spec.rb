@@ -17,7 +17,7 @@ describe ProfileController do
     before do
       allow(subject).to receive(:current_user).and_return(current_user)
       # For reasons unknown, VCR isn't trapping this network request
-      allow(subject).to receive(:retrieve_news).and_return(
+      allow(subject).to receive(:retrieve_zendesk_news).and_return(
         YAML.load_file("#{Rails.root}/spec/fixtures/vcr_cassettes/profile_controller/zendesk.yml")
       )
     end

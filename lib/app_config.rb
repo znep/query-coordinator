@@ -99,8 +99,8 @@ class AppConfig < Hashie::Dash
   # Third-party survey configuration
   property :qualtrics, default: {}
 
-  # What's New configuration
-  property :whats_new, default: {}
+  # Zendesk notifications configuration
+  property :zendesk_notifications, default: {}
 
   # Dataset restore configuration
   property :restore_dataset_days, default: 5

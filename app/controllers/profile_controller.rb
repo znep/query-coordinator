@@ -6,7 +6,7 @@ class ProfileController < ApplicationController
   # tl;dr "helper :all" in ApplicationController.
   include ProfileHelper
 
-  include WhatsNewHelper
+  include NotificationsHelper
 
   skip_before_filter :require_user, :only => [:show_app_token]
 
@@ -123,7 +123,7 @@ class ProfileController < ApplicationController
         @profile_search_method = :search_owned_by_user
       end
 
-      @news = retrieve_news
+      @news = retrieve_zendesk_news
       @processed_browse = process_browse(request, browse_options)
     rescue CoreServer::CoreServerError => e
       if e.error_code == 'authentication_required'

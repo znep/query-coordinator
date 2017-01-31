@@ -474,7 +474,7 @@ Variable Name | Type | Source | Description
 `unicorn_worker_processes` | Integer | Configuration | Number of Unicorn worker processes to run at startup.
 `qualtrics_admin_survey_id` | String | Configuration | Qualtrics survey identifier
 `qualtrics_profile_survey_id` | String | Configuration | Qualtrics survey identifier
-`whats_new` | String | Configuration | ZenDesk configuration information for collecting what's new news articles from the API.
+`zendesk_notifications` | String | Configuration | ZenDesk configuration information for collecting what's new news articles from the API.
 `x_socrata_auth` | String | Rails | Used to tell Core that the request is from an anonymous user.
 `zk_hosts` | URI | Configuration | _Comma-separated_ list of URIs identifying ZooKeeper hosts to use.
 `zookeeper_soda_fountain_path` | String | Configuration | `Zookeeper` path to the `SodaFountain` service.

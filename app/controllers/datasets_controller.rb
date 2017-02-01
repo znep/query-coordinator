@@ -257,14 +257,6 @@ class DatasetsController < ApplicationController
     end
   end
 
-  def create_update
-    if FeatureFlags.derive(@view, request).enable_dataset_management_ui
-      redirect_to
-    else
-      render_404
-    end
-  end
-
   def updates
     if FeatureFlags.derive(@view, request).enable_dataset_management_ui
       @view = get_view(params[:id])

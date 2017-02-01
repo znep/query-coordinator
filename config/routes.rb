@@ -303,7 +303,6 @@ Rails.application.routes.draw do
         get :upload
         get :external
         get :external_download
-        get :new_update
       end
       member do
         get :about

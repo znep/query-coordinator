@@ -45,15 +45,13 @@ export class ResultsContainer extends Component {
         order: this.state.sort,
         pageNumber
       }).
-      success((response) => {
+      then((response) => {
         const results = ceteraUtils.mapToAssetSelectorResult(response.results);
         dispatchUpdatePageResults(results);
         dispatchUpdateResultCount(response.resultSetSize);
         this.setState({ fetchingResults: false });
       }).
-      error((err) => {
-        // TODO. airbrake, return error message, etc.
-        console.error(err);
+      catch(() => {
         this.setState({ fetchingResults: false });
       });
 

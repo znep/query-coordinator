@@ -1,5 +1,6 @@
 import { ResultsContainer } from 'components/ResultsContainer';
 import $ from 'jquery';
+import ceteraUtils from 'lib/ceteraUtils';
 
 describe('components/ResultsContainer', function() {
   function defaultProps() {
@@ -23,10 +24,10 @@ describe('components/ResultsContainer', function() {
   }
 
   beforeEach(() => {
-    sinon.stub($, 'ajax', function(options) {
+    sinon.stub(ceteraUtils, 'fetch', function(options) {
       var deferred = $.Deferred();
-      deferred.success = deferred.done;
-      deferred.error = deferred.fail;
+      deferred.then = deferred.done;
+      deferred.catch = deferred.fail;
 
       deferred.resolve({
         results: [],
@@ -38,7 +39,7 @@ describe('components/ResultsContainer', function() {
   });
 
   afterEach(() => {
-    $.ajax.restore();
+    ceteraUtils.fetch.restore();
   });
 
   it('renders', function() {

@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import 'whatwg-fetch';
 
 const CETERA_URL = '//api.us.socrata.com/api/catalog/v1'; // TODO: get from domain config?
 const DEFAULT_LIMIT = 6;
@@ -8,24 +8,52 @@ const getOffset = (pageNumber, limit) => {
   return (pageNumber - 1) * limit;
 };
 
+function checkStatus(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return response;
+  } else {
+    const error = new Error(response.statusText);
+    error.response = response;
+    console.error(error);
+    // TODO: Airbrake
+  }
+}
+
+function parseJSON(response) {
+  return response.json();
+}
+
+function handleError(error) {
+  console.error(error);
+  // TODO: Airbrake
+}
+
 export const ceteraUtils = (() => {
   const domain = window.location.hostname; // TODO: federation?
 
   return {
     fetch: ({ category = null, limit = DEFAULT_LIMIT, order = DEFAULT_ORDER, pageNumber = 1 }) => {
-      const queryString = $.param({
+      const paramObj = {
         domains: domain,
         search_context: domain,
         categories: category,
         limit,
         order,
         offset: getOffset(pageNumber, limit)
-      });
+      };
 
-      return $.ajax({
-        url: `${CETERA_URL}?${queryString}`,
-        dataType: 'json'
-      });
+      const paramString = _.reduce(paramObj, function(result, value, key) {
+        return (key && value) ? result += `${key}=${value}&` : result;
+      }, '').slice(0, -1);
+
+      const fetchUrl = `${CETERA_URL}?${paramString}`;
+
+      const fetchOptions = { credentials: 'same-origin' };
+
+      return fetch(fetchUrl, fetchOptions).
+        then(checkStatus).
+        then(parseJSON).
+        catch(handleError);
     },
 
     mapToAssetSelectorResult: (ceteraResults) => {
@@ -39,23 +67,23 @@ export const ceteraUtils = (() => {
       };
 
       return ceteraResults.map((ceteraResult) => {
-        const crr = ceteraResult.resource;
+        const ceteraResultResource = ceteraResult.resource;
 
         return {
-          id: crr.id,
+          id: ceteraResultResource.id,
           link: ceteraResult.link,
-          name: crr.name,
-          description: crr.description,
-          type: mapResultType(crr.type),
+          name: ceteraResultResource.name,
+          description: ceteraResultResource.description,
+          type: mapResultType(ceteraResultResource.type),
           categories: ceteraResult.classification.categories,
           tags: ceteraResult.classification.tags,
           previewImageUrl: ceteraResult.preview_image_url,
           isPublic: true, // Not implemented yet. See cetera::result_row
           isFederated: resultIsFederated(ceteraResult.metadata.domain),
-          provenance: crr.provenance,
-          createdAt: crr.createdAt,
-          updatedAt: crr.updatedAt,
-          viewCount: parseInt(crr.view_count.page_views_total, 10)
+          provenance: ceteraResultResource.provenance,
+          createdAt: ceteraResultResource.createdAt,
+          updatedAt: ceteraResultResource.updatedAt,
+          viewCount: parseInt(ceteraResultResource.view_count.page_views_total, 10)
         };
       });
     }

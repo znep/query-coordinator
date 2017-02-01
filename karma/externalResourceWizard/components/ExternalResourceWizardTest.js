@@ -4,20 +4,10 @@ import $ from 'jquery';
 describe('components/ExternalResourceWizard', function() {
   function defaultProps() {
     return {
-      title: {
-        value: '',
-        invalid: true
-      },
-      description: {
-        value: ''
-      },
-      url: {
-        value: '',
-        invalid: true
-      },
-      previewImage: {
-        value: ''
-      }
+      title: { value: '', invalid: true },
+      description: { value: '' },
+      url: { value: '', invalid: true },
+      previewImage: { value: '' }
     };
   }
 

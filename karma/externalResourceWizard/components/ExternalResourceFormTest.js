@@ -8,20 +8,10 @@ describe('components/ExternalResourceForm', function() {
       dispatchUpdateDescription: _.noop,
       dispatchUpdateUrl: _.noop,
       dispatchUpdatePreviewImage: _.noop,
-      title: {
-        value: '',
-        invalid: true
-      },
-      description: {
-        value: ''
-      },
-      url: {
-        value: '',
-        invalid: true
-      },
-      previewImage: {
-        value: ''
-      }
+      title: { value: '', invalid: true },
+      description: { value: '' },
+      url: { value: '', invalid: true },
+      previewImage: { value: '' }
     };
   }
 

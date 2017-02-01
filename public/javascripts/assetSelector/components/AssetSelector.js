@@ -8,27 +8,29 @@ import ResultsContainer from '../components/ResultsContainer';
 
 export const AssetSelector = (props) => {
 
+  const { additionalTopbarComponents, category, modalIsOpen, onSelect, resultsPerPage } = props;
+
   const modalClassNames = classNames({
     'asset-selector-modal': true,
     'modal': true,
     'modal-full': true,
-    'modal-hidden': !props.modalIsOpen
+    'modal-hidden': !modalIsOpen
   });
 
-  const headerTitle = _.isEmpty(props.category) ?
+  const headerTitle = _.isEmpty(category) ?
     _.get(I18n, 'asset_selector.header_title_without_category', 'Select Featured Content') :
     _.get(I18n, 'asset_selector.header_title_with_category',
-      `Select Featured Content in ${props.category}`).replace('%{category}', props.category);
+      `Select Featured Content in ${category}`).replace('%{category}', category);
 
-  return props.modalIsOpen ? (
+  return modalIsOpen ? (
     <div className={modalClassNames} data-modal-dismiss>
       <div className={'modal-container no-footer'}>
         <Header title={headerTitle} />
         <ResultsContainer
-          additionalTopbarComponents={props.additionalTopbarComponents}
-          category={props.category}
-          onSelect={props.onSelect}
-          resultsPerPage={props.resultsPerPage} />
+          additionalTopbarComponents={additionalTopbarComponents}
+          category={category}
+          onSelect={onSelect}
+          resultsPerPage={resultsPerPage} />
       </div>
     </div>
   ) : null;

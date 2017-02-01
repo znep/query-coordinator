@@ -33,8 +33,8 @@
   <%= render 'shared/google_analytics_script' %>
   <%= render 'shared/mixpanel_script' %>
 </head>
-<body id="story-edit" class="<%= open_performance_enabled? ? 'open-performance-enabled' : '' %>">
-  <%== site_chrome_admin_header(request, response, size: 'small') if open_performance_enabled? %>
+<body id="story-edit" class="<%= render_admin_header? ? 'open-performance-enabled' : '' %>">
+  <%== site_chrome_admin_header(request, response, size: 'small') if render_admin_header? %>
   <%= yield %>
   <%= site_chrome_javascript_tag %>
 </body>

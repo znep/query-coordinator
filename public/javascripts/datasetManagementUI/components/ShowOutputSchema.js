@@ -19,7 +19,7 @@ function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
   const columns = Selectors.columnsForOutputSchema(db, outputSchemaId);
 
   const canApplyUpdate = columns.every((column) => {
-    return column.contiguous_rows_processed === inputSchema.total_rows;
+    return column.transform.contiguous_rows_processed === inputSchema.total_rows;
   });
 
   return {
@@ -32,9 +32,18 @@ function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
   };
 }
 
-export function ShowOutputSchema({ db, upload, inputSchema, outputSchema,
-                                   columns, errorsColumnId, canApplyUpdate,
-                                   goToUpload, updateColumnType, applyUpdate }) {
+export function ShowOutputSchema({
+  db,
+  upload,
+  inputSchema,
+  outputSchema,
+  columns,
+  errorsTransformId,
+  canApplyUpdate,
+  goToUpload,
+  updateColumnType,
+  applyUpdate }) {
+
   const SubI18n = I18n.show_output_schema;
   const path = {
     uploadId: upload.id,
@@ -73,10 +82,9 @@ export function ShowOutputSchema({ db, upload, inputSchema, outputSchema,
 
   let totalRowCountMsg;
   if (!_.isNumber(inputSchema.total_rows)) {
-    const rowsTransformed = _.get(
-      _.minBy(columns, 'contiguous_rows_processed'),
-      'contiguous_rows_processed', 0
-    );
+    const rowsTransformed = _.min(
+      columns.map((col) => col.transform.contiguous_rows_processed)
+    ) || 0;
     totalRowCountMsg = `${rowsTransformed} ${SubI18n.rows_so_far}`;
   } else {
     totalRowCountMsg = `${inputSchema.total_rows} ${SubI18n.rows_total}`;
@@ -90,13 +98,14 @@ export function ShowOutputSchema({ db, upload, inputSchema, outputSchema,
         <ModalContent>
           <div>
             <span className="total-row-count">{totalRowCountMsg}</span>
+            <br />
             <Table
               db={db}
               path={path}
               columns={columns}
               totalRows={inputSchema.total_rows}
               outputSchema={outputSchema}
-              errorsColumnId={errorsColumnId}
+              errorsTransformId={errorsTransformId}
               updateColumnType={updateColumnType} />
           </div>
         </ModalContent>
@@ -123,7 +132,7 @@ ShowOutputSchema.propTypes = {
   goToUpload: PropTypes.func.isRequired,
   updateColumnType: PropTypes.func.isRequired,
   applyUpdate: PropTypes.func.isRequired,
-  errorsColumnId: PropTypes.number,
+  errorsTransformId: PropTypes.number,
   canApplyUpdate: PropTypes.bool.isRequired
 };
 
@@ -137,7 +146,7 @@ function mapStateToProps(state, ownProps) {
   );
   return {
     ...queryResults,
-    errorsColumnId: params.errorsColumnId ? _.toNumber(params.errorsColumnId) : null
+    errorsTransformId: params.errorsTransformId ? _.toNumber(params.errorsTransformId) : null
   };
 }
 

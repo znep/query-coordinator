@@ -1,10 +1,18 @@
 import React, { PropTypes } from 'react';
 import ColumnHeader from './ColumnHeader';
-import ColumnStatus from './ColumnStatus';
+import TransformStatus from './TransformStatus';
 import TableBody from './TableBody';
 
-export default function Table({ db, path, outputSchema, totalRows,
-                                columns, errorsColumnId, updateColumnType }) {
+export default function Table({
+  db,
+  path,
+  outputSchema,
+  totalRows,
+  columns,
+  errorsTransformId,
+  updateColumnType }) {
+
+  const transforms = _.map(columns, 'transform');
   return (
     <table className="table table-condensed">
       <thead>
@@ -19,19 +27,20 @@ export default function Table({ db, path, outputSchema, totalRows,
         </tr>
         <tr>
           {columns.map(column =>
-            <ColumnStatus
-              key={column.id}
+            <TransformStatus
+              key={column.transform.id}
               path={path}
-              column={column}
-              errorsColumnId={errorsColumnId}
+              transform={column.transform}
+              errorsTransformId={errorsTransformId}
+              columnId={column.id}
               totalRows={totalRows} />
           )}
         </tr>
       </thead>
       <TableBody
         db={db}
-        columns={columns}
-        errorsColumnId={errorsColumnId} />
+        transforms={transforms}
+        errorsTransformId={errorsTransformId} />
     </table>
   );
 }
@@ -43,5 +52,5 @@ Table.propTypes = {
   outputSchema: PropTypes.object.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   updateColumnType: PropTypes.func.isRequired,
-  errorsColumnId: PropTypes.number
+  errorsTransformId: PropTypes.number
 };

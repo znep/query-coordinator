@@ -18,27 +18,28 @@ const ColumnHeader = React.createClass({
   render() {
     const { outputSchema, column, updateColumnType } = this.props;
 
-    const types = soqlTypes.map((type) =>
-      ({
-        humanName: I18n.show_output_schema.column_header.type_display_names[type],
-        systemName: type,
-        selectable: soqlProperties[type].conversionTarget
-      })
+    const types = soqlTypes.map((type) => ({
+      humanName: I18n.show_output_schema.column_header.type_display_names[type],
+      systemName: type,
+      selectable: soqlProperties[type].conversionTarget
+    }));
+    const orderedTypes = _.sortBy(
+      _.filter(types, 'selectable'),
+      'humanName'
     );
-    const orderedTypes = _.sortBy(_.filter(types, 'selectable'),
-                                  'humanName');
+    const columnType = column.transform.output_soql_type;
 
     return (
       <th key={column.id}>
-        <span className="col-name" title={column.display_name}>
+        <span className="col-name" id={`column-display-name-${column.id}`} title={column.display_name}>
           {column.display_name}
         </span>
         <br />
-        <TypeIcon type={column.soql_type} />
+        <TypeIcon type={columnType} />
         <select
           name="col-type"
-          value={column.soql_type}
-          aria-label={`col-type-${column.schema_column_name}`}
+          value={columnType}
+          aria-label={`col-type-${column.field_name}`}
           onChange={(event) => updateColumnType(outputSchema, column, event.target.value)}>
           {
             orderedTypes.map((type) =>

@@ -127,10 +127,10 @@ describe('components/NotificationList', () => {
     const store = getDefaultStore();
     store.dispatch(insertFromServer('input_schemas', { id: 0, total_rows: 5000 }));
     store.dispatch(insertFromServer('output_schemas', { id: 1, input_schema_id: 0 }));
-    store.dispatch(insertFromServer('columns', { id: 1, contiguous_rows_processed: 5000 }));
+    store.dispatch(insertFromServer('output_columns', { id: 1, contiguous_rows_processed: 5000 }));
     store.dispatch(insertFromServer('output_schema_columns', {
       output_schema_id: 1,
-      column_id: 1
+      output_column_id: 1
     }));
     store.dispatch(insertStarted('upsert_jobs', {
       schema_id: 1
@@ -144,10 +144,10 @@ describe('components/NotificationList', () => {
     const store = getDefaultStore();
     store.dispatch(insertFromServer('input_schemas', { id: 0, total_rows: 5000 }));
     store.dispatch(insertFromServer('output_schemas', { id: 1, input_schema_id: 0 }));
-    store.dispatch(insertFromServer('columns', { id: 1, contiguous_rows_processed: 5000 }));
+    store.dispatch(insertFromServer('output_columns', { id: 1, contiguous_rows_processed: 5000 }));
     store.dispatch(insertFromServer('output_schema_columns', {
       output_schema_id: 1,
-      column_id: 1
+      output_column_id: 1
     }));
     store.dispatch(insertStarted('upsert_jobs', {
       schema_id: 1
@@ -169,10 +169,10 @@ describe('components/NotificationList', () => {
     const store = getDefaultStore();
     store.dispatch(insertFromServer('input_schemas', { id: 0, total_rows: 5000 }));
     store.dispatch(insertFromServer('output_schemas', { id: 1, input_schema_id: 0 }));
-    store.dispatch(insertFromServer('columns', { id: 1, contiguous_rows_processed: 5000 }));
+    store.dispatch(insertFromServer('output_columns', { id: 1, contiguous_rows_processed: 5000 }));
     store.dispatch(insertFromServer('output_schema_columns', {
       output_schema_id: 1,
-      column_id: 1
+      output_column_id: 1
     }));
     store.dispatch(insertStarted('upsert_jobs', {
       schema_id: 1
@@ -202,10 +202,10 @@ describe('components/NotificationList', () => {
     const store = getDefaultStore();
     store.dispatch(insertFromServer('input_schemas', { id: 0, total_rows: 5000 }));
     store.dispatch(insertFromServer('output_schemas', { id: 1, input_schema_id: 0 }));
-    store.dispatch(insertFromServer('columns', { id: 1, contiguous_rows_processed: 5000 }));
+    store.dispatch(insertFromServer('output_columns', { id: 1, contiguous_rows_processed: 5000 }));
     store.dispatch(insertFromServer('output_schema_columns', {
       output_schema_id: 6,
-      column_id: 1
+      output_column_id: 1
     }));
     store.dispatch(insertStarted('upsert_jobs', {
       schema_id: 1
@@ -230,10 +230,10 @@ describe('components/NotificationList', () => {
     const store = getDefaultStore();
     store.dispatch(insertFromServer('input_schemas', { id: 0, total_rows: 5000 }));
     store.dispatch(insertFromServer('output_schemas', { id: 1, input_schema_id: 0 }));
-    store.dispatch(insertFromServer('columns', { id: 1, contiguous_rows_processed: 5000 }));
+    store.dispatch(insertFromServer('output_columns', { id: 1, contiguous_rows_processed: 5000 }));
     store.dispatch(insertFromServer('output_schema_columns', {
       output_schema_id: 1,
-      column_id: 1
+      output_column_id: 1
     }));
     store.dispatch(insertStarted('upsert_jobs', {
       schema_id: 1

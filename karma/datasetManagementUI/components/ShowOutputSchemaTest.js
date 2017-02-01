@@ -34,23 +34,23 @@ describe('components/ShowOutputSchema', () => {
       id: 4,
       total_rows: 3
     }));
-    store.dispatch(insertFromServer('column_50', [
+    store.dispatch(insertFromServer('transform_1', [
       { index: 0, ok: 'foo' },
       { index: 1, error: { message: 'some transform error', inputs: { arrest: { ok: 'bar' } } } },
       { index: 2, ok: 'baz' }
     ]));
-    store.dispatch(updateFromServer('columns', {
-      id: 50,
+    store.dispatch(updateFromServer('transforms', {
+      id: 1,
       contiguous_rows_processed: 3
     }));
 
-    store.dispatch(insertFromServer('column_51', [
+    store.dispatch(insertFromServer('transform_2', [
       { index: 0, ok: 'bleep' },
       { index: 1, ok: null },
       { index: 2, ok: 'blorp' }
     ]));
-    store.dispatch(updateFromServer('columns', {
-      id: 51,
+    store.dispatch(updateFromServer('transforms', {
+      id: 2,
       contiguous_rows_processed: 3
     }));
     const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
@@ -70,8 +70,8 @@ describe('components/ShowOutputSchema', () => {
     const spy = sinon.spy();
     const props = {
       db: {
-        column_50: [],
-        column_51: []
+        transform_1: [],
+        transform_2: []
       },
       updateColumnType: spy,
       upload: {
@@ -80,8 +80,8 @@ describe('components/ShowOutputSchema', () => {
         filename: 'foo.csv'
       },
       columns: [
-        { id: 50, display_name: 'arrest', soql_type: 'SoQLText' },
-        { id: 51, display_name: 'block', soql_type: 'SoQLText' }
+        { id: 50, display_name: 'arrest', transform: { id: 1, output_soql_type: 'SoQLText' } },
+        { id: 51, display_name: 'block', transform: { id: 2, output_soql_type: 'SoQLText' } }
       ],
       inputSchema: { upload_id: 5 },
       outputSchema: { input_schema_id: 4 },
@@ -94,7 +94,7 @@ describe('components/ShowOutputSchema', () => {
     expect(spy.callCount).to.eql(1);
     expect(spy.args[0]).to.eql([
       { input_schema_id: 4 },
-      { id: 50, display_name: 'arrest', soql_type: 'SoQLText' },
+      { id: 50, display_name: 'arrest', transform: { id: 1, output_soql_type: 'SoQLText' } },
       'SoQLNumber'
     ]);
   });
@@ -108,14 +108,14 @@ describe('components/ShowOutputSchema', () => {
         id: 4,
         total_rows: 3
       }));
-      store.dispatch(updateFromServer('columns', {
-        id: 50,
+      store.dispatch(updateFromServer('transforms', {
+        id: 1,
         contiguous_rows_processed: 3,
         num_transform_errors: 1
       }));
 
-      store.dispatch(updateFromServer('columns', {
-        id: 51,
+      store.dispatch(updateFromServer('transforms', {
+        id: 2,
         contiguous_rows_processed: 3,
         num_transform_errors: 42
       }));
@@ -132,14 +132,14 @@ describe('components/ShowOutputSchema', () => {
     it('properly render when the upload is still in progress', () => {
       const SubI18n = I18n.show_output_schema.column_header;
       const store = getStoreWithOutputSchema();
-      store.dispatch(updateFromServer('columns', {
-        id: 50,
+      store.dispatch(updateFromServer('transforms', {
+        id: 1,
         contiguous_rows_processed: 3,
         num_transform_errors: 1
       }));
 
-      store.dispatch(updateFromServer('columns', {
-        id: 51,
+      store.dispatch(updateFromServer('transforms', {
+        id: 2,
         contiguous_rows_processed: 3,
         num_transform_errors: 42
       }));
@@ -171,12 +171,12 @@ describe('components/ShowOutputSchema', () => {
 
     it('shows the row count before the file has finished uploading', () => {
       const store = getStoreWithOutputSchema();
-      store.dispatch(updateFromServer('columns', {
-        id: 50,
+      store.dispatch(updateFromServer('transforms', {
+        id: 1,
         contiguous_rows_processed: 2
       }));
-      store.dispatch(updateFromServer('columns', {
-        id: 51,
+      store.dispatch(updateFromServer('transforms', {
+        id: 2,
         contiguous_rows_processed: 3
       }));
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
@@ -199,12 +199,12 @@ describe('components/ShowOutputSchema', () => {
 
     it('is disabled when the upload is in progress', () => {
       const store = getStoreWithOutputSchema();
-      store.dispatch(updateFromServer('columns', {
-        id: 50,
+      store.dispatch(updateFromServer('transforms', {
+        id: 1,
         contiguous_rows_processed: 2
       }));
-      store.dispatch(updateFromServer('columns', {
-        id: 51,
+      store.dispatch(updateFromServer('transforms', {
+        id: 2,
         contiguous_rows_processed: 3
       }));
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
@@ -217,12 +217,12 @@ describe('components/ShowOutputSchema', () => {
         id: 4,
         total_rows: 50
       }));
-      store.dispatch(updateFromServer('columns', {
-        id: 50,
+      store.dispatch(updateFromServer('transforms', {
+        id: 1,
         contiguous_rows_processed: 2
       }));
-      store.dispatch(updateFromServer('columns', {
-        id: 51,
+      store.dispatch(updateFromServer('transforms', {
+        id: 2,
         contiguous_rows_processed: 3
       }));
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
@@ -235,12 +235,12 @@ describe('components/ShowOutputSchema', () => {
         id: 4,
         total_rows: 50
       }));
-      store.dispatch(updateFromServer('columns', {
-        id: 50,
+      store.dispatch(updateFromServer('transforms', {
+        id: 1,
         contiguous_rows_processed: 50
       }));
-      store.dispatch(updateFromServer('columns', {
-        id: 51,
+      store.dispatch(updateFromServer('transforms', {
+        id: 2,
         contiguous_rows_processed: 50
       }));
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);

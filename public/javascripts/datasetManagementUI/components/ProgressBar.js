@@ -1,9 +1,12 @@
 import React, { PropTypes } from 'react';
 
-export default function ProgressBar({ percent, ariaLabel }) {
-  const labelProp = {};
+export default function ProgressBar({ percent, ariaLabel, ariaLabeledBy }) {
+  const ariaLabelProp = {};
   if (ariaLabel) {
-    labelProp['aria-label'] = ariaLabel;
+    ariaLabelProp['aria-label'] = ariaLabel;
+  }
+  if (ariaLabeledBy) {
+    ariaLabelProp['aria-labelledby'] = ariaLabeledBy;
   }
   return (
     <div
@@ -12,7 +15,7 @@ export default function ProgressBar({ percent, ariaLabel }) {
       aria-valuenow={Math.round(percent)}
       aria-valuemin="0"
       aria-valuemax="100"
-      {...labelProp}>
+      {...ariaLabelProp}>
       <div className="progress-bar" style={{ width: `${percent}%` }} />
     </div>
   );
@@ -20,5 +23,6 @@ export default function ProgressBar({ percent, ariaLabel }) {
 
 ProgressBar.propTypes = {
   percent: PropTypes.number.isRequired,
-  ariaLabel: PropTypes.string
+  ariaLabel: PropTypes.string,
+  ariaLabeledBy: PropTypes.string
 };

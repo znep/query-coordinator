@@ -7,40 +7,40 @@ export default React.createClass({
 
   propTypes: {
     db: PropTypes.object.isRequired,
-    columns: PropTypes.array.isRequired,
-    errorsColumnId: PropTypes.number
+    transforms: PropTypes.arrayOf(PropTypes.object).isRequired,
+    errorsTransformId: PropTypes.number
   },
 
   shouldComponentUpdate(nextProps) {
     return !_.isEqual(
       {
-        columns: nextProps.columns.map(c => [c.fetched_rows, c.error_indices]),
-        errorsColumnId: nextProps.errorsColumnId
+        columns: nextProps.transforms.map(t => [t.id, t.fetched_rows, t.error_indices]),
+        errorsTransformId: nextProps.errorsTransformId
       },
       {
-        columns: this.props.columns.map(c => [c.fetched_rows, c.error_indices]),
-        errorsColumnId: this.props.errorsColumnId
+        columns: this.props.transforms.map(t => [t.id, t.fetched_rows, t.error_indices]),
+        errorsTransformId: this.props.errorsTransformId
       }
     );
   },
 
   getData() {
-    const columnTables = this.props.columns.map((column) => (
-      this.props.db[`column_${column.id}`]
+    const transformTables = this.props.transforms.map((transform) => (
+      this.props.db[`transform_${transform.id}`]
     ));
     let rowIndices;
-    if (_.isNumber(this.props.errorsColumnId)) {
-      const errorsColumn = _.find(this.props.db.columns, { id: this.props.errorsColumnId });
-      rowIndices = errorsColumn.error_indices || _.range(50);
+    if (_.isNumber(this.props.errorsTransformId)) {
+      const errorsTransform = _.find(this.props.db.transforms, { id: this.props.errorsTransformId });
+      rowIndices = errorsTransform.error_indices || _.range(RENDER_ROWS);
     } else {
       rowIndices = _.range(0, RENDER_ROWS);
     }
     return rowIndices.map((rowIdx) => ({
       rowIdx,
-      columns: this.props.columns.map((column, colIdx) => {
-        const cell = columnTables[colIdx][rowIdx];
+      transforms: this.props.transforms.map((transform, transformIdx) => {
+        const cell = transformTables[transformIdx][rowIdx];
         return {
-          id: column.id,
+          id: transform.id,
           cell
         };
       })
@@ -51,10 +51,10 @@ export default React.createClass({
     const data = this.getData();
     const rows = data.map((row) => (
       <tr key={row.rowIdx}>
-        {row.columns.map((column) => (
+        {row.transforms.map((transform) => (
           <TableCell
-            key={column.id}
-            cell={column.cell} />
+            key={transform.id}
+            cell={transform.cell} />
         ))}
       </tr>
     ));

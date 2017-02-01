@@ -10,43 +10,43 @@ export function getStoreWithOutputSchema() {
     id: 18,
     input_schema_id: 4
   }));
-  store.dispatch(insertFromServer('columns', {
+  store.dispatch(insertFromServer('output_columns', {
     id: 50,
-    schema_column_index: 0,
-    schema_column_name: 'arrest',
+    position: 0,
+    field_name: 'arrest',
     display_name: 'arrest',
-    soql_type: 'SoQLText'
+    transform_id: 1
   }));
-  store.dispatch(insertFromServer('columns', {
+  store.dispatch(insertFromServer('output_columns', {
     id: 51,
-    schema_column_index: 1,
-    schema_column_name: 'block',
+    position: 1,
+    field_name: 'block',
     display_name: 'block',
-    soql_type: 'SoQLText'
+    transform_id: 2
   }));
   store.dispatch(insertFromServer('output_schema_columns', {
     id: 0,
     output_schema_id: 18,
-    column_id: 50
+    output_column_id: 50
   }));
   store.dispatch(insertFromServer('output_schema_columns', {
     id: 1,
     output_schema_id: 18,
-    column_id: 51
+    output_column_id: 51
   }));
   store.dispatch(insertFromServer('transforms', {
     id: 1,
     transform_expr: 'arrest',
-    input_column_ids: [48],
-    output_column_id: 50
+    output_soql_type: 'SoQLText',
+    input_column_ids: [48]
   }));
   store.dispatch(insertFromServer('transforms', {
     id: 2,
     transform_expr: 'block',
-    input_column_ids: [49],
-    output_column_id: 51
+    output_soql_type: 'SoQLText',
+    input_column_ids: [49]
   }));
-  store.dispatch(createTable('column_50'));
-  store.dispatch(createTable('column_51'));
+  store.dispatch(createTable('transform_1'));
+  store.dispatch(createTable('transform_2'));
   return store;
 }

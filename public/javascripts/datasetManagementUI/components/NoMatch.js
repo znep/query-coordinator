@@ -3,7 +3,6 @@ import { Link } from 'react-router';
 import * as Links from '../links';
 
 export default function NoMatch() {
-  // TODO: i18n!
   return (
     <div id="no-match">
       <h1>{I18n.no_match.title}</h1>

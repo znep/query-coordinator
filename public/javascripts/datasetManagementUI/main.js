@@ -68,7 +68,7 @@ ReactDOM.render(
           path="uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId"
           component={ShowOutputSchema} />
         <Route
-          path="uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/errors/:errorsColumnId"
+          path="uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/errors/:errorsTransformId"
           component={ShowOutputSchema}
           onEnter={(nextState) => store.dispatch(loadErrorTable(nextState))} />
         <Route path="*" component={NoMatch} />

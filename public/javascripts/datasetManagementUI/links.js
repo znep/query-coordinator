@@ -23,8 +23,8 @@ export const showOutputSchema = (uploadId, schemaId, outputSchemaId) => (
   (routing) => `${home(routing)}/uploads/${uploadId}/schemas/${schemaId}/output/${outputSchemaId}`
 );
 
-export const showErrorTableForColumn = (uploadId, schemaId, outputSchemaId, errorsColumnId) => (
+export const showErrorTableForColumn = (uploadId, schemaId, outputSchemaId, errorsTransformId) => (
   (routing) =>
     `${home(routing)}/uploads/${uploadId}/schemas/${schemaId}/output/` +
-      `${outputSchemaId}/errors/${errorsColumnId}`
+      `${outputSchemaId}/errors/${errorsTransformId}`
 );

@@ -1,8 +1,8 @@
 export default [
   {
     output_columns: [
-      { id: 50 },
-      { id: 51 }
+      { id: 50, transform: { id: 1 } },
+      { id: 51, transform: { id: 2 } }
     ]
   },
   {

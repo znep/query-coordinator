@@ -8,12 +8,11 @@ import {
   insertSucceeded,
   insertFailed,
   updateFromServer,
-  insertFromServerWithPk,
-  insertFromServerIfNotExists
+  insertFromServerWithPk
 } from './database';
 import { socrataFetch, checkStatus, getJson } from '../lib/http';
 import {
-  createTableAndSubscribeToTransform
+  insertAndSubscribeToOutputSchema
 } from './manageUploads';
 import { soqlProperties } from '../lib/soqlTypes';
 
@@ -23,12 +22,11 @@ export function updateColumnType(oldSchema, oldColumn, newType) {
     const db = state.db;
     const routing = state.routing;
 
-    const { newOutputSchema, newOutputColumns, oldOutputColIds } =
+    const { newOutputSchema, newOutputColumns } =
       getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType);
 
     dispatch(insertStarted('output_schemas', newOutputSchema));
 
-    // Make "fetch" happen.
     socrataFetch(dsmapiLinks.updateSchema(oldSchema.input_schema_id), {
       method: 'POST',
       body: JSON.stringify({ output_columns: newOutputColumns })
@@ -36,13 +34,14 @@ export function updateColumnType(oldSchema, oldColumn, newType) {
       then(checkStatus).
       then(getJson).
       then(resp => {
-        const actions = updateActions(
-          db.input_schemas, routing, oldSchema, newOutputSchema, oldOutputColIds, resp
-        );
+        dispatch(insertSucceeded('output_schemas', newOutputSchema, { id: resp.resource.id }));
+        insertAndSubscribeToOutputSchema(dispatch, oldSchema.input_schema_id, resp.resource);
 
-        actions.forEach((action) => {
-          dispatch(action);
-        });
+        const inputSchema = _.find(db.input_schemas, { id: oldSchema.input_schema_id });
+        const uploadId = inputSchema.upload_id;
+        dispatch(push(
+          Links.showOutputSchema(uploadId, oldSchema.input_schema_id, resp.resource.id)(routing)
+        ));
       }).
       catch((err) => {
         console.error('Failed to update schema!', err);
@@ -57,24 +56,24 @@ export function getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType) 
   };
 
   const oldOutputColIds = _.filter(db.output_schema_columns, { output_schema_id: oldSchema.id }).
-                          map(sc => sc.column_id);
-  const oldOutputColumns = oldOutputColIds.map(id => _.find(db.columns, { id: id }));
+                          map(sc => sc.output_column_id);
+  const oldOutputColumns = oldOutputColIds.map(id => _.find(db.output_columns, { id: id }));
   const newOutputColumns = oldOutputColumns.map((column) => {
-    const xform = _.find(db.transforms, { output_column_id: column.id });
+    const xform = _.find(db.transforms, { id: column.transform_id });
     const xformExpr = xform.transform_expr;
 
     // Input columns are presently always text.  This will eventually
     // change, and then we'll need the input column here instead of
     // just hardcoding a comparison to text.
     const transformExpr = (column.id === oldColumn.id) ?
-      `to_${soqlProperties[newType].canonicalName}(${column.schema_column_name})` :
+      `to_${soqlProperties[newType].canonicalName}(${column.field_name})` :
       xformExpr;
 
     return {
-      schema_column_name: column.schema_column_name,
-      schema_column_index: column.schema_column_index,
+      field_name: column.field_name,
+      position: column.position,
       display_name: column.display_name,
-      transform_to: {
+      transform: {
         transform_expr: transformExpr
       }
     };
@@ -87,49 +86,13 @@ export function getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType) 
   };
 }
 
-// Helper function to handle responses from the backend.
-export function updateActions(inputSchemas, routing, oldSchema, newSchema, oldColIds, resp) {
-  const actions = [];
-
-  const respSchema = resp.resource;
-  const newOutputColumn = respSchema.output_columns.find((respOutputCol) => (
-    !oldColIds.includes(respOutputCol.id)
-  ));
-  actions.push(insertSucceeded('output_schemas', newSchema, { id: respSchema.id }));
-  // insert columns
-  actions.push(insertFromServerIfNotExists('columns', _.omit(newOutputColumn, ['transform_to'])));
-  // insert schema_columns
-  const newSchemaColumnInserts = respSchema.output_columns.map((respOutputCol) => (
-    insertFromServerIfNotExists('output_schema_columns', {
-      output_schema_id: respSchema.id,
-      column_id: respOutputCol.id
-    })
-  ));
-  actions.push(batch(newSchemaColumnInserts)); // TODO: Replace with a proper batched output.
-  // insert transform and transform input columns
-  const transform = newOutputColumn.transform_to;
-  actions.push(insertFromServerIfNotExists('transforms', {
-    ..._.omit(transform, ['transform_input_columns']),
-    input_column_ids: transform.transform_input_columns.map((inCol) => inCol.column_id)
-  }));
-  // start fetching new data
-  actions.push(createTableAndSubscribeToTransform(transform, newOutputColumn));
-  // redirect to new page
-  const uploadId = _.find(inputSchemas, { id: oldSchema.input_schema_id }).upload_id;
-  const newOutputSchemaPath = Links.showOutputSchema(
-    uploadId, oldSchema.input_schema_id, respSchema.id
-  )(routing);
-  actions.push(push(newOutputSchemaPath));
-
-  return actions;
-}
-
-
 export function loadErrorTable(nextState) {
-  const { inputSchemaId, outputSchemaId, errorsColumnId } = nextState.params;
-  return (dispatch) => {
+  const { inputSchemaId, outputSchemaId, errorsTransformId: errorsTransformIdStr } = nextState.params;
+  const errorsTransformId = _.toNumber(errorsTransformIdStr);
+  return (dispatch, getState) => {
     const limit = 50;
     const fetchOffset = 0;
+    const errorsColumnId = _.find(getState().db.output_columns, { transform_id: errorsTransformId }).id;
     const path = dsmapiLinks.errorTable(
       inputSchemaId, outputSchemaId, errorsColumnId, limit, fetchOffset
     );
@@ -139,23 +102,22 @@ export function loadErrorTable(nextState) {
       then((resp) => {
         const outputSchema = resp[0];
         const withoutSchemaRow = resp.slice(1);
-        const newRecordsByColumn = [];
+        const newRecordsByTransform = [];
         _.range(outputSchema.output_columns.length).forEach(() => {
-          newRecordsByColumn.push({});
+          newRecordsByTransform.push({});
         });
         withoutSchemaRow.forEach(({ row, offset }) => {
           if (_.isArray(row)) { // as opposed to row errors, which are not
             row.forEach((colResult, colIdx) => {
-              newRecordsByColumn[colIdx][offset] = colResult;
+              newRecordsByTransform[colIdx][offset] = colResult;
             });
           }
         });
-        dispatch(batch(newRecordsByColumn.map((newRecords, idx) => {
-          const theColumnId = outputSchema.output_columns[idx].id;
-          return insertFromServerWithPk(`column_${theColumnId}`, newRecords);
+        dispatch(batch(newRecordsByTransform.map((newRecords, idx) => {
+          const theTransformId = outputSchema.output_columns[idx].transform.id;
+          return insertFromServerWithPk(`transform_${theTransformId}`, newRecords);
         })));
-        dispatch(batch(newRecordsByColumn.map((newRecords, idx) => {
-          const theColumnId = outputSchema.output_columns[idx].id;
+        dispatch(batch(newRecordsByTransform.map((newRecords, idx) => {
           const errorIndices = _.map(newRecords,
             (newRecord, index) => ({
               ...newRecord,
@@ -168,8 +130,9 @@ export function loadErrorTable(nextState) {
           // that would be SQL-like
           // not supposed to have functions in actions though
           // boo
-          return updateFromServer('columns', {
-            id: theColumnId,
+          const transform = outputSchema.output_columns[idx].transform;
+          return updateFromServer('transforms', {
+            id: transform.id,
             error_indices: errorIndices
           });
         })));

@@ -9,8 +9,10 @@ describe('components/Table/ColumnHeader', () => {
       id: 52
     },
     column: {
-      soql_type: 'SoQLText',
-      name: 'foo'
+      transform: {
+        output_soql_type: 'SoQLText'
+      },
+      display_name: 'foo'
     },
     updateColumnType: _.noop
   };

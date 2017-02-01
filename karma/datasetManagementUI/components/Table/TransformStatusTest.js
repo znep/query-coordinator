@@ -1,6 +1,6 @@
-import ColumnStatus from 'components/Table/ColumnStatus';
+import TransformStatus from 'components/Table/TransformStatus';
 
-describe('components/Table/ColumnStatus', () => {
+describe('components/Table/TransformStatus', () => {
 
   const renderInTable = (element) => (
     renderPureComponent(
@@ -24,9 +24,10 @@ describe('components/Table/ColumnStatus', () => {
 
     it('renders correctly when upload is done and column is done', () => {
       const element = renderInTable(
-        <ColumnStatus
+        <TransformStatus
           {...pathProp}
-          column={{ contiguous_rows_processed: 5000 }}
+          transform={{ contiguous_rows_processed: 5000 }}
+          columnId={50}
           totalRows={5000} />
       );
       expect(element.querySelector('.err-info.success')).to.not.be.null;
@@ -36,9 +37,10 @@ describe('components/Table/ColumnStatus', () => {
 
     it('renders correctly when upload is done and column is in progress', () => {
       const element = renderInTable(
-        <ColumnStatus
+        <TransformStatus
           {...pathProp}
-          column={{ contiguous_rows_processed: 2500 }}
+          transform={{ contiguous_rows_processed: 2500 }}
+          columnId={50}
           totalRows={5000} />
       );
       expect(element.innerText).to.equal(I18n.show_output_schema.column_header.scanning);
@@ -48,9 +50,10 @@ describe('components/Table/ColumnStatus', () => {
 
     it('renders correctly when upload is in progress, column is in progress', () => {
       const element = renderInTable(
-        <ColumnStatus
+        <TransformStatus
           {...pathProp}
-          column={{ contiguous_rows_processed: 2500 }}
+          transform={{ contiguous_rows_processed: 2500 }}
+          columnId={50}
           totalRows={undefined} />
       );
       expect(element.innerText).to.equal(I18n.show_output_schema.column_header.scanning);
@@ -61,9 +64,10 @@ describe('components/Table/ColumnStatus', () => {
 
     it('renders correctly when neither upload progress nor column progress is known', () => {
       const element = renderInTable(
-        <ColumnStatus
+        <TransformStatus
           {...pathProp}
-          column={{ id: 5 }}
+          transform={{ id: 5 }}
+          columnId={50}
           totalRows={undefined} />
       );
       expect(element.innerText).to.equal(I18n.show_output_schema.column_header.scanning);
@@ -78,9 +82,10 @@ describe('components/Table/ColumnStatus', () => {
 
     it('renders correctly when upload is done and column is done', () => {
       const element = renderInTable(
-        <ColumnStatus
+        <TransformStatus
           {...pathProp}
-          column={{ contiguous_rows_processed: 5000, num_transform_errors: 5 }}
+          transform={{ contiguous_rows_processed: 5000, num_transform_errors: 5 }}
+          columnId={50}
           totalRows={5000} />
       );
       expect(element.querySelector('.err-info.error')).to.not.be.null;
@@ -90,9 +95,10 @@ describe('components/Table/ColumnStatus', () => {
 
     it('renders correctly when upload is done and column is in progress', () => {
       const element = renderInTable(
-        <ColumnStatus
+        <TransformStatus
           {...pathProp}
-          column={{ contiguous_rows_processed: 2500, num_transform_errors: 5 }}
+          transform={{ contiguous_rows_processed: 2500, num_transform_errors: 5 }}
+          columnId={50}
           totalRows={5000} />
       );
       expect(element.innerText).to.equal(`5${I18n.show_output_schema.column_header.errors_exist_scanning}`);
@@ -102,9 +108,10 @@ describe('components/Table/ColumnStatus', () => {
 
     it('renders correctly when upload is in progress, column is in progress', () => {
       const element = renderInTable(
-        <ColumnStatus
+        <TransformStatus
           {...pathProp}
-          column={{ contiguous_rows_processed: 2500, num_transform_errors: 5 }}
+          transform={{ contiguous_rows_processed: 2500, num_transform_errors: 5 }}
+          columnId={50}
           totalRows={undefined} />
       );
       expect(element.innerText).to.equal(`5${I18n.show_output_schema.column_header.errors_exist_scanning}`);

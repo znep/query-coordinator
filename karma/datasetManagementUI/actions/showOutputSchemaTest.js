@@ -22,7 +22,7 @@ describe('actions/showOutputSchema', () => {
 
       const db = store.getState().db;
       const oldSchema = _.find(db.output_schemas, { id: 18 });
-      const oldColumn = _.find(db.columns, { id: 50 });
+      const oldColumn = _.find(db.output_columns, { id: 50 });
       const newType = 'SoQLNumber';
 
       const result = getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType);
@@ -32,94 +32,21 @@ describe('actions/showOutputSchema', () => {
       expect(result.newOutputColumns).to.eql([
         {
           display_name: 'arrest',
-          schema_column_index: 0,
-          schema_column_name: 'arrest',
-          transform_to: {
+          position: 0,
+          field_name: 'arrest',
+          transform: {
             transform_expr: 'to_number(arrest)'
           }
         },
         {
           display_name: 'block',
-          schema_column_index: 1,
-          schema_column_name: 'block',
-          transform_to: {
+          position: 1,
+          field_name: 'block',
+          transform: {
             transform_expr: 'block'
           }
         }
       ]);
-    });
-
-  });
-
-  describe('updateActions', () => {
-
-    it('returns actions which insert a new output schema and redirect to it', () => {
-      // Inputs.
-      const inputSchema = { id: 1, upload_id: 0 };
-      const oldSchema = { input_schema_id: inputSchema.id, id: 3 };
-      const inputSchemas = [inputSchema];
-      const newSchema = { input_schema_id: inputSchema.id };
-
-      const pathname = '/dataset/n/feed-cafe/updates/0/uploads/0/schemas/1/output/3';
-      const routing = {
-        locationBeforeTransitions: {
-          'pathname': pathname,
-          'search': '',
-          'hash': '',
-          'action': 'PUSH',
-          'key': 'abcdef',
-          'query':{}
-        }
-      };
-
-      const oldColIds = [5, 7];
-      const newColId = 11;
-      const newSchemaId = 23;
-      const transformId = 29;
-
-      const resp = {
-        resource: {
-          id: newSchemaId,
-          output_columns: [
-            { id: 5 },
-            { id: 7 },
-            {
-              id: newColId,
-              transform_to: {
-                id: transformId,
-                transform_input_columns: [
-                  { ignored_field: 'these are not the droids you are looking for', column_id: 13 },
-                  { column_id: 17 }
-                ]
-              }
-            }
-          ]
-        }
-      };
-
-      const oldSchemaColumns = oldColIds.map(id =>
-        insertFromServerIfNotExists('output_schema_columns', {
-          column_id: id,
-          output_schema_id: newSchemaId
-        })
-      );
-      const newSchemaColumn = insertFromServerIfNotExists('output_schema_columns', {
-        column_id: newColId,
-        output_schema_id: newSchemaId
-      });
-
-      // Expected.
-      const expected = [
-        insertSucceeded('output_schemas', { input_schema_id: inputSchema.id }, { id: newSchemaId }),
-        insertFromServerIfNotExists('columns', { id: newColId }),
-        batch(_.concat(oldSchemaColumns, newSchemaColumn)),
-        insertFromServerIfNotExists('transforms', { id: transformId, input_column_ids: [13, 17] }),
-        push(pathname.replace(/3$/, newSchemaId))
-      ];
-
-      const actions = updateActions(inputSchemas, routing, oldSchema, newSchema, oldColIds, resp);
-
-      expect(_.filter(actions, act => typeof(act) !== 'function')).to.deep.equal(expected);
     });
 
   });
@@ -132,7 +59,7 @@ describe('actions/showOutputSchema', () => {
         params: {
           inputSchemaId: 4,
           outputSchemaId: 18,
-          errorsColumnId: 50
+          errorsTransformId: 1
         }
       };
       const oldFetch = window.fetch;
@@ -157,9 +84,9 @@ describe('actions/showOutputSchema', () => {
       setTimeout(() => {
         window.fetch = oldFetch;
         const db = store.getState().db;
-        const column50 = _.find(db.columns, { id: 50 });
-        expect(column50.error_indices).to.deep.equal(['0', '7']);
-        expect(db.column_50).to.deep.equal({
+        const transform1 = _.find(db.transforms, { id: 1 });
+        expect(transform1.error_indices).to.deep.equal(['0', '7']);
+        expect(db.transform_1).to.deep.equal({
           '0': {
             error: {
               inputs: {
@@ -181,7 +108,7 @@ describe('actions/showOutputSchema', () => {
             }
           }
         });
-        expect(db.column_51).to.deep.equal({
+        expect(db.transform_2).to.deep.equal({
           '0': {
             ok: "foo"
           },

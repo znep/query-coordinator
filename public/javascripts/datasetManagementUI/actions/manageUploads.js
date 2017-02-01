@@ -112,7 +112,7 @@ function pollForOutputSchema(uploadId) {
         } else {
           const upload = resp.resource;
           if (_.get(upload, 'schemas[0].output_schemas.length') > 0) {
-            const outputSchemaIds = subscribeToOutputColumns(dispatch, upload);
+            const outputSchemaIds = insertAndSubscribeToUpload(dispatch, upload);
             dispatch(push(Links.showOutputSchema(
               uploadId,
               upload.schemas[0].id,
@@ -126,16 +126,12 @@ function pollForOutputSchema(uploadId) {
   };
 }
 
-export function insertUploadAndSubscribeToOutput(dispatch, upload) { // => [output_schema_id]
+export function insertAndSubscribeToUpload(dispatch, upload) {
   dispatch(insertFromServer('uploads', {
     ..._.omit(upload, ['schemas']),
     inserted_at: parseDate(upload.inserted_at),
     finished_at: upload.finished_at ? parseDate(upload.finished_at) : null
   }));
-  subscribeToOutputColumns(dispatch, upload);
-}
-
-function subscribeToOutputColumns(dispatch, upload) {
   const outputSchemaIds = upload.schemas.map((inputSchema) => {
     dispatch(insertFromServer('input_schemas', {
       id: inputSchema.id,
@@ -143,72 +139,86 @@ function subscribeToOutputColumns(dispatch, upload) {
       total_rows: inputSchema.total_rows,
       upload_id: upload.id
     }));
-    inputSchema.columns.forEach((column) => {
-      dispatch(insertFromServer('columns', column));
+    inputSchema.input_columns.forEach((column) => {
+      dispatch(insertFromServer('input_columns', column));
     });
     return inputSchema.output_schemas.map((outputSchema) => {
-      dispatch(insertFromServer('output_schemas', {
-        id: outputSchema.id,
-        input_schema_id: inputSchema.id
-      }));
-      outputSchema.output_columns.forEach((outputColumn) => {
-        const transform = outputColumn.transform_to;
-        dispatch(insertFromServer('transforms', {
-          ..._.omit(transform, ['transform_input_columns']),
-          input_column_ids: transform.transform_input_columns.map((inCol) => inCol.column_id)
-        }));
-        dispatch(insertFromServerIfNotExists('columns', _.omit(outputColumn, ['transform_to'])));
-        dispatch(insertFromServer('output_schema_columns', {
-          output_schema_id: outputSchema.id,
-          column_id: outputColumn.id
-        }));
-        dispatch(createTableAndSubscribeToTransform(transform, outputColumn, inputSchema));
-      });
-      return outputSchema.id;
+      return insertAndSubscribeToOutputSchema(dispatch, inputSchema.id, outputSchema);
     });
   });
   return _.flatten(outputSchemaIds);
 }
 
+export function insertAndSubscribeToOutputSchema(dispatch, inputSchemaId, outputSchema) {
+  dispatch(insertFromServer('output_schemas', {
+    id: outputSchema.id,
+    input_schema_id: inputSchemaId
+  }));
+  outputSchema.output_columns.forEach((outputColumn) => {
+    const transform = outputColumn.transform;
+    dispatch(insertFromServerIfNotExists('transforms', {
+      ..._.omit(transform, ['transform_input_columns']),
+      input_column_ids: transform.transform_input_columns.map((inCol) => inCol.column_id)
+    }));
+    dispatch(insertFromServerIfNotExists('output_columns', {
+      ..._.omit(outputColumn, ['transform']),
+      transform_id: outputColumn.transform.id
+    }));
+    dispatch(insertFromServerIfNotExists('output_schema_columns', {
+      output_schema_id: outputSchema.id,
+      output_column_id: outputColumn.id
+    }));
+    dispatch(createTableAndSubscribeToTransform(transform));
+  });
+  return outputSchema.id;
+}
+
 const INITIAL_FETCH_LIMIT_ROWS = 200;
 
-export function createTableAndSubscribeToTransform(transform, outputColumn) {
-  return (dispatch) => {
-    dispatch(createTable(`column_${outputColumn.id}`));
-    const channelName = `transform_progress:${transform.id}`;
-    const channel = window.DSMAPI_PHOENIX_SOCKET.channel(channelName, {});
-    let initialRowsFetched = false;
-    function updateTransformProgress(maxPtr) {
-      dispatch(updateFromServer('columns', {
-        id: outputColumn.id,
-        contiguous_rows_processed: maxPtr.end_row_offset
+export function createTableAndSubscribeToTransform(transform) {
+  return (dispatch, getState) => {
+    const db = getState().db;
+    const transformInDb = _.find(db.transforms, { id: transform.id });
+    if (!transformInDb.row_fetch_started) {
+      dispatch(updateFromServer('transforms', {
+        id: transform.id,
+        row_fetch_started: true
       }));
-      if (!initialRowsFetched) {
-        initialRowsFetched = true;
-        const offset = 0;
-        dispatch(
-          fetchAndInsertDataForColumn(transform, outputColumn, offset, INITIAL_FETCH_LIMIT_ROWS)
-        );
-      }
-    }
-    channel.on('max_ptr', updateTransformProgress);
-    channel.on('errors', (errorsMsg) => {
-      dispatch(updateFromServer('columns', {
-        id: outputColumn.id,
-        num_transform_errors: errorsMsg.count
-      }));
-    });
-    channel.join().
+      dispatch(createTable(`transform_${transform.id}`));
+      const channelName = `transform_progress:${transform.id}`;
+      const channel = window.DSMAPI_PHOENIX_SOCKET.channel(channelName, {});
+      let initialRowsFetched = false;
+      channel.on('max_ptr', (maxPtr) => {
+        dispatch(updateFromServer('transforms', {
+          id: transform.id,
+          contiguous_rows_processed: maxPtr.end_row_offset
+        }));
+        if (!initialRowsFetched) {
+          initialRowsFetched = true;
+          const offset = 0;
+          dispatch(
+            fetchAndInsertDataForTransform(transform, offset, INITIAL_FETCH_LIMIT_ROWS)
+          );
+        }
+      });
+      channel.on('errors', (errorsMsg) => {
+        dispatch(updateFromServer('transforms', {
+          id: transform.id,
+          num_transform_errors: errorsMsg.count
+        }));
+      });
+      channel.join().
       receive('ok', (response) => {
         console.log(`successfully joined ${channelName}:`, response);
       }).
       receive('error', (error) => {
         console.log(`failed to join ${channelName}:`, error);
       });
+    }
   };
 }
 
-function fetchAndInsertDataForColumn(transform, outputColumn, offset, limit) {
+function fetchAndInsertDataForTransform(transform, offset, limit) {
   return (dispatch) => {
     socrataFetch(dsmapiLinks.transformResults(transform.id, limit, offset)).
       then(checkStatus).
@@ -219,10 +229,9 @@ function fetchAndInsertDataForColumn(transform, outputColumn, offset, limit) {
           ...result
         }));
         const keyedByIndex = _.keyBy(recordsWithIndex, 'index');
-        dispatch(insertFromServerWithPk(`column_${outputColumn.id}`, keyedByIndex));
-        // TODO: could just use `db.column_${column_id}.length` instead of this
-        const updateFetchedRows = updateFromServer('columns', {
-          id: outputColumn.id,
+        dispatch(insertFromServerWithPk(`transform_${transform.id}`, keyedByIndex));
+        const updateFetchedRows = updateFromServer('transforms', {
+          id: transform.id,
           fetched_rows: offset + limit
         });
         dispatch(updateFetchedRows);

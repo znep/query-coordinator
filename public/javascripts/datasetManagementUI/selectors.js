@@ -3,14 +3,6 @@ import { STATUS_UPDATING } from './lib/database/statuses';
 
 // TODO: if perf becomes an issue, use reselect for memoization
 
-export function rowsTransformed(db, outputSchemaId) {
-  const columns = columnsForOutputSchema(db, outputSchemaId);
-  const rowsProcessed = columns.map((column) => (
-    column.contiguous_rows_processed || 0
-  ));
-  return _.min(rowsProcessed);
-}
-
 export function rowsUpserted(db, upsertJobId) {
   const upsertJob = _.find(db.upsert_jobs, { id: upsertJobId });
   if (!upsertJob || !upsertJob.log) {
@@ -24,14 +16,18 @@ export function rowsUpserted(db, upsertJobId) {
 
 export function columnsForOutputSchema(db, outputSchemaId) {
   const schemaColumns = _.filter(db.output_schema_columns, { output_schema_id: outputSchemaId });
-  const unsortedColumns = _.filter(
-    db.columns,
-    (column) => schemaColumns.some(
-      (schemaColumn) =>
-        column.id === schemaColumn.column_id
-    )
-  );
-  return _.sortBy(unsortedColumns, 'schema_column_index');
+  const unsortedColumns = db.output_columns.
+    filter(
+      (column) => schemaColumns.some(
+        (schemaColumn) =>
+          column.id === schemaColumn.output_column_id
+      )
+    ).
+    map((outputColumn) => ({
+      ...outputColumn,
+      transform: _.find(db.transforms, { id: outputColumn.transform_id })
+    }));
+  return _.sortBy(unsortedColumns, 'position');
 }
 
 export function uploadsInProgress(db) {

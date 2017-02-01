@@ -2,7 +2,7 @@ import {
   insertFromServer,
   batch
 } from '../../actions/database';
-import { insertUploadAndSubscribeToOutput } from '../../actions/manageUploads';
+import { insertAndSubscribeToUpload } from '../../actions/manageUploads';
 import { pollForUpsertJobProgress } from '../../actions/applyUpdate';
 import { parseDate } from '../../lib/parseDate';
 
@@ -12,7 +12,8 @@ export const emptyDB = {
   uploads: [],
   input_schemas: [],
   output_schemas: [],
-  columns: [],
+  input_columns: [],
+  output_columns: [],
   output_schema_columns: [],
   transforms: [],
   upsert_jobs: []
@@ -32,7 +33,7 @@ export function bootstrap(store, initialView, initialUpdate) {
     update_seq: _.toNumber(initialUpdate.update_seq)
   }));
   initialUpdate.uploads.forEach((upload) => {
-    insertUploadAndSubscribeToOutput(store.dispatch, upload);
+    insertAndSubscribeToUpload(store.dispatch, upload);
   });
   initialUpdate.upsert_jobs.forEach((upsertJob) => {
     operations.push(insertFromServer('upsert_jobs', {

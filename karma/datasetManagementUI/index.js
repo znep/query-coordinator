@@ -42,7 +42,7 @@ window.initialState = {
         schemas: [
           {
             id: 4,
-            columns: [
+            input_columns: [
               {
                 id: 48,
                 schema_column_index: 0,

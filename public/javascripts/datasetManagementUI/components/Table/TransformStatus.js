@@ -8,10 +8,11 @@ import styleguide from 'socrata-components';
 import ProgressBar from '../ProgressBar';
 import TypeIcon from '../TypeIcon';
 
-export const ColumnStatus = React.createClass({
+const TransformStatus = React.createClass({
   propTypes: {
-    column: PropTypes.object.isRequired,
-    errorsColumnId: PropTypes.number,
+    transform: PropTypes.object.isRequired,
+    columnId: PropTypes.number.isRequired,
+    errorsTransformId: PropTypes.number,
     path: PropTypes.object.isRequired,
     totalRows: PropTypes.number
   },
@@ -29,7 +30,7 @@ export const ColumnStatus = React.createClass({
   },
 
   getFlyoutId() {
-    return `column-status-flyout-${this.props.column.id}`;
+    return `transform-status-flyout-${this.props.transform.id}`;
   },
 
   attachFlyouts() {
@@ -40,17 +41,18 @@ export const ColumnStatus = React.createClass({
   },
 
   render() {
-    const { column, totalRows, path, errorsColumnId } = this.props;
+    const { transform, totalRows, path, errorsTransformId, columnId } = this.props;
     const SubI18n = I18n.show_output_schema.column_header;
     const uploadDone = _.isNumber(totalRows);
-    const thisColumnDone = _.isNumber(totalRows) && column.contiguous_rows_processed === totalRows;
+    const thisColumnDone = _.isNumber(totalRows) &&
+      transform.contiguous_rows_processed === totalRows;
 
-    const inErrorMode = column.id === errorsColumnId;
+    const inErrorMode = transform.id === errorsTransformId;
     const linkPath = inErrorMode ?
       Links.showOutputSchema(path.uploadId, path.inputSchemaId, path.outputSchemaId) :
-      Links.showErrorTableForColumn(path.uploadId, path.inputSchemaId, path.outputSchemaId, column.id);
+      Links.showErrorTableForColumn(path.uploadId, path.inputSchemaId, path.outputSchemaId, transform.id);
 
-    const rowsProcessed = column.contiguous_rows_processed || 0;
+    const rowsProcessed = transform.contiguous_rows_processed || 0;
     const percentage = Math.round(rowsProcessed / totalRows * 100);
 
     const progressBarClassName = classNames(
@@ -59,27 +61,27 @@ export const ColumnStatus = React.createClass({
     );
     const progressBar = (
       <div className={progressBarClassName}>
-        <ProgressBar percent={percentage} ariaLabel={column.display_name} />
+        <ProgressBar percent={percentage} ariaLabeledBy={`column-display-name-${columnId}`} />
       </div>
     );
 
     let errorFlyout = null;
     let flyoutId = null;
-    if (column.num_transform_errors > 0 && !inErrorMode) {
+    if (transform.num_transform_errors > 0 && !inErrorMode) {
       flyoutId = this.getFlyoutId();
       const msgTemplate = singularOrPlural(
-        column.num_transform_errors,
+        transform.num_transform_errors,
         SubI18n.column_status_flyout.error_msg_singular,
         SubI18n.column_status_flyout.error_msg_plural
       );
       errorFlyout = (
-        <div id={flyoutId} className="column-status-flyout flyout flyout-hidden">
+        <div id={flyoutId} className="transform-status-flyout flyout flyout-hidden">
           <section className="flyout-content">
             {msgTemplate.format({
-              num_errors: column.num_transform_errors,
-              type: SubI18n.type_display_names[column.soql_type]
+              num_errors: transform.num_transform_errors,
+              type: SubI18n.type_display_names[transform.output_soql_type]
             })}
-            <TypeIcon type={this.props.column.soql_type} />
+            <TypeIcon type={transform.output_soql_type} />
             <br />
             <span className="click-to-view">{SubI18n.column_status_flyout.click_to_view}</span>
           </section>
@@ -87,19 +89,21 @@ export const ColumnStatus = React.createClass({
       );
     }
 
-    if (column.num_transform_errors > 0) {
+    if (transform.num_transform_errors > 0) {
       const msg = thisColumnDone ?
         singularOrPlural(
-          column.num_transform_errors, SubI18n.error_exists, SubI18n.errors_exist
+          transform.num_transform_errors, SubI18n.error_exists, SubI18n.errors_exist
         ) :
         singularOrPlural(
-          column.num_transform_errors, SubI18n.error_exists_scanning, SubI18n.errors_exist_scanning
+          transform.num_transform_errors, SubI18n.error_exists_scanning, SubI18n.errors_exist_scanning
         );
       return (
-        <th key={column.id} className={classNames('col-errors', { 'col-errors-selected': inErrorMode })}>
+        <th
+          key={transform.id}
+          className={classNames('col-errors', { 'col-errors-selected': inErrorMode })}>
           {progressBar}
           <div className="column-status-text">
-            <span className="err-info error">{column.num_transform_errors}</span>
+            <span className="err-info error">{transform.num_transform_errors}</span>
             <Link to={linkPath} data-flyout={flyoutId}>{msg}</Link>
           </div>
           {errorFlyout}
@@ -108,7 +112,7 @@ export const ColumnStatus = React.createClass({
     } else {
       if (thisColumnDone) {
         return (
-          <th key={column.id} className="col-errors">
+          <th key={transform.id} className="col-errors">
             {progressBar}
             <div className="column-status-text">
               <span className="err-info success socrata-icon-checkmark3" />
@@ -118,7 +122,7 @@ export const ColumnStatus = React.createClass({
         );
       } else {
         return (
-          <th key={column.id} className="col-errors">
+          <th key={transform.id} className="col-errors">
             {progressBar}
             <div className="column-status-text">
               <span className="err-info spinner-default" />
@@ -131,4 +135,4 @@ export const ColumnStatus = React.createClass({
   }
 });
 
-export default ColumnStatus;
+export default TransformStatus;

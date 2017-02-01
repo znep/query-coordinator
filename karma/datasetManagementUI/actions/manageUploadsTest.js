@@ -23,19 +23,21 @@ describe('actions/manageUploads', () => {
           schemas: [
             {
               id: 6,
-              columns: [
+              input_columns: [
                 {
                   id: 1000,
                   schema_id: 6,
-                  schema_column_index: 0,
-                  schema_column_name: 'arrest',
+                  position: 0,
+                  field_name: 'arrest',
+                  display_name: 'arrest',
                   soql_type: 'text',
                 },
                 {
                   id: 1001,
                   schema_id: 6,
-                  schema_column_index: 1,
-                  schema_column_name: 'block',
+                  position: 1,
+                  field_name: 'block',
+                  display_name: 'block',
                   soql_type: 'text',
                 }
               ],
@@ -47,11 +49,12 @@ describe('actions/manageUploads', () => {
                     {
                       id: 2000,
                       schema_id: 7,
-                      schema_column_index: 0,
-                      schema_column_name: 'arrest',
-                      soql_type: 'text',
-                      transform_to: {
+                      position: 0,
+                      field_name: 'arrest',
+                      display_name: 'arrest',
+                      transform: {
                         id: 0,
+                        output_soql_type: 'text',
                         output_column_id: 2000,
                         transform_expr: 'identity',
                         transform_input_columns: [{
@@ -62,11 +65,12 @@ describe('actions/manageUploads', () => {
                     {
                       id: 2001,
                       schema_id: 7,
-                      schema_column_index: 1,
-                      schema_column_name: 'block',
-                      soql_type: 'text',
-                      transform_to: {
+                      position: 1,
+                      field_name: 'block',
+                      display_name: 'block',
+                      transform: {
                         id: 1,
+                        output_soql_type: 'text',
                         output_column_id: 2001,
                         transform_expr: 'identity',
                         transform_input_columns: [{
@@ -207,6 +211,10 @@ describe('actions/manageUploads', () => {
         };
       }
     };
+
+    return () => {
+      delete window.DSMAPI_PHOENIX_SOCKET;
+    }
   }
 
   it('uploads a file, polls for schema, subscribes to channels, and fetches results', (done) => {
@@ -258,13 +266,12 @@ describe('actions/manageUploads', () => {
       expect(inputSchema.total_rows).to.equal(999999);
 
       const transform0 = _.find(db.transforms, { id: 0 });
-      const column0 = _.find(db.columns, { id: transform0.output_column_id });
-      expect(column0.contiguous_rows_processed).to.equal(9999);
+      expect(transform0.contiguous_rows_processed).to.equal(9999);
 
       const transform1 = _.find(db.transforms, { id: 0 });
-      const column1 = _.find(db.columns, { id: transform1.output_column_id });
-      expect(column1.contiguous_rows_processed).to.equal(9999);
+      expect(transform1.contiguous_rows_processed).to.equal(9999);
 
+      unmockPhx();
       unmockFetch();
       done(e);
     });

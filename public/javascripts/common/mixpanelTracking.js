@@ -4,8 +4,6 @@ import mixpanel from 'mixpanel-browser';
 const sessionData = window.sessionData;
 const config = window.mixpanelConfig;
 
-// TODO Might want to move this up a level the directory tree.
-
 // Mixpanel constants
 // This is duplicated in angular/common/values.js and util/mixpanel-analytics.js
 const MIXPANEL_EVENTS = [

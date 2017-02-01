@@ -5,7 +5,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import Linkify from 'react-linkify';
-import formatDate from '../../common/helpers/formatDate';
+import formatDate from '../../common/formatDate';
 import utils from 'socrata-utils';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import { handleKeyPress } from '../lib/a11yHelpers';

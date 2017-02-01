@@ -9,7 +9,7 @@ $(document).ready(function() {
 
   var MISSING_PROP_VALUE = 'N/A';
 
-  // This is duplicated in angular/common/values.js and common/helpers/mixpanelTracking.js
+  // This is duplicated in angular/common/values.js and common/mixpanelTracking.js
   var MIXPANEL_EVENTS = [
     'Changed Render Type Options',
     'Chose Visualization Type',
@@ -50,7 +50,7 @@ $(document).ready(function() {
     'Viewed Dataset Statistics'
   ];
 
-  // This is duplicated in angular/common/values.js and common/helpers/mixpanelTracking.js
+  // This is duplicated in angular/common/values.js and common/mixpanelTracking.js
   var MIXPANEL_PROPERTIES = [
     'Catalog Version',
     'Chart/Map Type',

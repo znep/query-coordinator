@@ -54,7 +54,7 @@ const USER_RIGHTS = [
   'view_unpublished_story'
 ];
 
-// This is duplicated in mixpanel-analytics.js and common/helpers/mixpanelTracking.js
+// This is duplicated in mixpanel-analytics.js and common/mixpanelTracking.js
 const MIXPANEL_EVENTS = [
   'Changed Render Type Options',
   'Chose Visualization Type',
@@ -95,7 +95,7 @@ const MIXPANEL_EVENTS = [
   'Viewed Dataset Statistics'
 ];
 
-// This is duplicated in mixpanel-analytics.js and common/helpers/mixpanelTracking.js
+// This is duplicated in mixpanel-analytics.js and common/mixpanelTracking.js
 const MIXPANEL_PROPERTIES = [
   'Catalog Version',
   'Chart/Map Type',

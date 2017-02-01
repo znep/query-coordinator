@@ -1,4 +1,4 @@
-import formatDate from './formatDate';
+import formatDate from '../formatDate';
 import utils from 'socrata-utils';
 import { getIconClassForDisplayType } from 'socrata-components/common/displayTypeMetadata';
 

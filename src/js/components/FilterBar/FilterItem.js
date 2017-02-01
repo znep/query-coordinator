@@ -15,15 +15,13 @@ export const FilterItem = React.createClass({
       'function': PropTypes.string.isRequired,
       columnName: PropTypes.string.isRequired,
       arguments: PropTypes.object,
-      isLocked: PropTypes.boolean,
-      isHidden: PropTypes.boolean,
-      isRequired: PropTypes.boolean,
-      allowMultiple: PropTypes.boolean
+      isHidden: PropTypes.boolean
     }).isRequired,
     column: PropTypes.shape({
       dataTypeName: PropTypes.oneOf(['calendar_date', 'number', 'text']),
       name: PropTypes.string.isRequired
     }).isRequired,
+    displaySettings: PropTypes.bool.isRequired,
     fetchSuggestions: PropTypes.func,
     onUpdate: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired
@@ -135,7 +133,8 @@ export const FilterItem = React.createClass({
   toggleConfig() {
     this.setState({
       isControlOpen: false,
-      isConfigOpen: !this.state.isConfigOpen
+      isConfigOpen: !this.state.isConfigOpen,
+      isLeftAligned: this.filterConfigToggle.getBoundingClientRect().right < window.innerWidth / 2
     });
   },
 
@@ -172,7 +171,7 @@ export const FilterItem = React.createClass({
   },
 
   renderFilterConfig() {
-    const { filter } = this.props;
+    const { filter, onUpdate } = this.props;
     const { isConfigOpen } = this.state;
 
     if (!isConfigOpen) {
@@ -182,10 +181,35 @@ export const FilterItem = React.createClass({
     const configProps = {
       filter,
       onRemove: this.onRemove,
+      onUpdate,
       ref: _.partial(_.set, this, 'filterConfig')
     };
 
     return <FilterConfig {...configProps} />;
+  },
+
+  renderFilterConfigToggle() {
+    const { displaySettings } = this.props;
+    const { isLeftAligned } = this.state;
+
+    const alignment = isLeftAligned ? 'left' : 'right';
+
+    if (displaySettings) {
+      return (
+        <div
+          className={`filter-config-toggle ${alignment}`}
+          aria-label={t('filter_bar.configure_filter')}
+          tabIndex="0"
+          role="button"
+          onClick={this.toggleConfig}
+          onKeyDown={this.onKeyDownConfig}
+          ref={(el) => this.filterConfigToggle = el}>
+          <span className="socrata-icon-kebab" role="presentation" />
+        </div>
+      );
+    } else {
+      return null;
+    }
   },
 
   render() {
@@ -215,17 +239,7 @@ export const FilterItem = React.createClass({
         </div>
 
         <div className="filter-config-container">
-          <div
-            className={`filter-config-toggle ${alignment}`}
-            aria-label={t('filter_bar.configure_filter')}
-            tabIndex="0"
-            role="button"
-            onClick={this.toggleConfig}
-            onKeyDown={this.onKeyDownConfig}
-            ref={(el) => this.filterConfigToggle = el}>
-            <span className="socrata-icon-kebab" role="presentation" />
-          </div>
-
+          {this.renderFilterConfigToggle()}
           {this.renderFilterConfig()}
         </div>
       </div>

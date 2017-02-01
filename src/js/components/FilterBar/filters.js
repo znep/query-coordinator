@@ -8,10 +8,7 @@ export function getDefaultFilterForColumn(column) {
     'function': 'noop',
     columnName: column.fieldName,
     arguments: null,
-    isLocked: false,
-    isHidden: false,
-    isRequired: false,
-    allowMultiple: false
+    isHidden: true
   };
 }
 

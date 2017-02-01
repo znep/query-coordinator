@@ -35,6 +35,13 @@ export const FilterBar = React.createClass({
     filters: PropTypes.arrayOf(PropTypes.object),
 
     /**
+     * Whether to display the filter bar's settings, including the option to add new filters and
+     * individual filter settings. If this is set to false and none of the provided filters are
+     * visible, the FilterBar will not render anything. Defaults to true.
+     */
+    displaySettings: PropTypes.bool,
+
+    /**
      * The onUpdate prop is an optional function that will be called whenever the set of filters has
      * changed.  This may happen when a filter is added, a filter is removed, or the parameters of a
      * filter have changed.  The function is passed the new set of filters.  The consumer of this
@@ -56,9 +63,10 @@ export const FilterBar = React.createClass({
 
   getDefaultProps() {
     return {
+      filters: [],
+      displaySettings: true,
       onUpdate: _.noop,
-      fetchSuggestions: _.constant(Promise.resolve([])),
-      filters: []
+      fetchSuggestions: _.constant(Promise.resolve([]))
     };
   },
 
@@ -87,7 +95,7 @@ export const FilterBar = React.createClass({
   },
 
   renderAddFilter() {
-    const { columns, filters } = this.props;
+    const { columns, filters, displaySettings } = this.props;
 
     const availableColumns = _.reject(columns, (column) => {
       return _.find(filters, ['columnName', column.fieldName]);
@@ -100,31 +108,42 @@ export const FilterBar = React.createClass({
       }
     };
 
-    return <AddFilter {...props} />;
+    return displaySettings ? <AddFilter {...props} /> : null;
   },
 
   renderFilters() {
-    const { filters, columns, fetchSuggestions } = this.props;
+    const { filters, columns, displaySettings, fetchSuggestions } = this.props;
 
-    return _.map(filters, (filter, i) => {
-      const column = _.find(columns, { fieldName: filter.columnName });
-      const props = {
-        column,
-        filter,
-        fetchSuggestions,
-        onUpdate: _.partialRight(this.onFilterUpdate, i),
-        onRemove: _.partial(this.onFilterRemove, i)
-      };
+    return _.chain(filters).
+      reject((filter) => !displaySettings && filter.isHidden).
+      map((filter, i) => {
+        const column = _.find(columns, { fieldName: filter.columnName });
+        const props = {
+          column,
+          filter,
+          displaySettings,
+          fetchSuggestions,
+          onUpdate: _.partialRight(this.onFilterUpdate, i),
+          onRemove: _.partial(this.onFilterRemove, i)
+        };
 
-      return <FilterItem key={i} {...props} />;
-    });
+        return <FilterItem key={i} {...props} />;
+      }).
+      value();
   },
 
   render() {
+    const addFilter = this.renderAddFilter();
+    const filters = this.renderFilters();
+
+    if (_.isEmpty(addFilter) && _.isEmpty(filters)) {
+      return null;
+    }
+
     return (
       <div className="filter-bar-container">
-        {this.renderAddFilter()}
-        {this.renderFilters()}
+        {addFilter}
+        {filters}
       </div>
     );
   }

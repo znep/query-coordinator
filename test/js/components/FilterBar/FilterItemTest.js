@@ -15,6 +15,7 @@ describe('FilterItem', () => {
     return _.defaultsDeep({}, props, {
       filter: mockValueRangeFilter,
       column: mockNumberColumn,
+      displaySettings: true,
       fetchSuggestions: _.constant(Promise.resolve([])),
       onUpdate: _.noop,
       onRemove: _.noop
@@ -35,6 +36,16 @@ describe('FilterItem', () => {
 
   it('renders a title', () => {
     expect(getTitle(element).textContent).to.equal('Dinosaur Age (approximate)');
+  });
+
+  it('renders if both isHidden and displaySettings are true', () => {
+    element = renderComponent(FilterItem, getProps({
+      filter: _.merge({}, mockValueRangeFilter, {
+        isHidden: true
+      })
+    }));
+
+    expect(element).to.exist;
   });
 
   describe('filter control', () => {
@@ -121,6 +132,28 @@ describe('FilterItem', () => {
       Simulate.click(getControlToggle(element));
       expect(getConfig(element)).to.not.exist;
       expect(getControls(element)).to.exist;
+    });
+  });
+
+  describe('when displaySettings is false', () => {
+    it('renders if isHidden is set to false', () => {
+      element = renderComponent(FilterItem, getProps({
+        filter: _.merge({}, mockValueRangeFilter, {
+          isHidden: false
+        }),
+        displaySettings: false
+      }));
+
+      expect(element).to.exist;
+    });
+
+    it('does not render the config toggle', () => {
+      element = renderComponent(FilterItem, getProps({
+        filter: mockValueRangeFilter,
+        displaySettings: false
+      }));
+
+      expect(getConfigToggle(element)).to.not.exist;
     });
   });
 });

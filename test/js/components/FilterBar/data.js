@@ -5,10 +5,7 @@ export const mockValueRangeFilter = {
     start: 1,
     end: 3
   },
-  isLocked: false,
-  isHidden: false,
-  isRequired: false,
-  allowMultiple: false
+  isHidden: false
 };
 
 export const mockTimeRangeFilter = {
@@ -18,10 +15,7 @@ export const mockTimeRangeFilter = {
     start: '1500-12-01T00:00:00',
     end: '2017-12-01T00:00:00'
   },
-  isLocked: false,
-  isHidden: false,
-  isRequired: false,
-  allowMultiple: false
+  isHidden: false
 };
 
 export const mockBinaryOperatorFilter = {
@@ -31,10 +25,7 @@ export const mockBinaryOperatorFilter = {
     operator: '=',
     operand: 'Timmy'
   },
-  isLocked: false,
-  isHidden: false,
-  isRequired: false,
-  allowMultiple: false
+  isHidden: false
 };
 
 export const mockNumberColumn = {

@@ -1,6 +1,7 @@
 @import "variables/colors";
 @import "partials/alerts";
 @import "partials/input-groups";
+@import "partials/forms";
 @import "./css/add-filter.scss";
 @import "./css/calendar-date-filter.scss";
 @import "./css/filter-footer.scss";
@@ -134,12 +135,25 @@ $filter-z-index: 100;
       .filter-config {
         position: absolute;
         top: 100%;
-        width: 300px;
+        width: 400px;
         margin-top: -1px;
         background: $white;
         border-radius: 1px;
         border: 1px solid $light-grey-3;
         z-index: $filter-z-index;
+
+        .filter-options {
+          margin: 15px;
+          margin-bottom: 30px;
+
+          .option-label {
+            font-weight: 600;
+          }
+
+          .small {
+            margin-left: 30px;
+          }
+        }
       }
     }
 

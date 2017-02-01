@@ -1,6 +1,12 @@
+<h3 class="styleguide-subheader">Editable Filter Bar</h3>
 <div id="filter-bar-container"></div>
-<h3>Output</h3>
+
+<h3 class="styleguide-subheader">Non-Editable Filter Bar <span class="small">(hidden if there are no visible filters)</span></h3>
+<div id="non-editable-filter-bar-container"></div>
+
+<h3 class="styleguide-subheader">Output</h3>
 <pre id="output" style="white-space: pre-wrap;"></pre>
+
 <script type="text/babel" data-presets="es2015,react">
   const output = document.querySelector('#output');
 
@@ -13,10 +19,7 @@
           start: 3,
           end: 7
         },
-        isLocked: false,
-        isHidden: false,
-        isRequired: false,
-        allowMultiple: false
+        isHidden: false
       }
     ];
 
@@ -53,6 +56,15 @@
       ReactDOM.render(
         <styleguide.FilterBar {...props} />,
         document.getElementById('filter-bar-container')
+      );
+
+      const nonEditableProps = _.merge({}, props, {
+        displaySettings: false
+      });
+
+      ReactDOM.render(
+        <styleguide.FilterBar {...nonEditableProps} />,
+        document.getElementById('non-editable-filter-bar-container')
       );
     }
 

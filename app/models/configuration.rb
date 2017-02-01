@@ -119,7 +119,7 @@ class Configuration < Model
 
     CoreServer::Base.connection.create(
       path: "/#{self.class.name.pluralize.downcase}/#{id}/properties.json",
-      payload: {'name' => CGI.escape!(name), 'value' => value}.to_json,
+      payload: {'name' => name, 'value' => value}.to_json,
       batch_id: batch_id
     )
   end
@@ -128,7 +128,7 @@ class Configuration < Model
     sanitize_value!(value)
     result = CoreServer::Base.connection.update(
       path: "/#{self.class.name.pluralize.downcase}/#{id}/properties/#{CGI.escape!(name)}.json",
-      payload: {'name' => CGI.escape!(name), 'value' => value}.to_json,
+      payload: {'name' => name, 'value' => value}.to_json,
       batch_id: batch_id
     )
 

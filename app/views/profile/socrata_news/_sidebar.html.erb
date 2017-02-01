@@ -1,5 +1,9 @@
 <div class="profile-sidebar">
-  <%= render :partial => 'whats_new' %>
+
+  <% unless FeatureFlags.derive(@view, request).enable_header_notifications %>
+    <%= render :partial => 'whats_new' %>
+  <% end %>
+
   <div class="content">
     <%= render :partial => 'friends_list' %>
   </div>

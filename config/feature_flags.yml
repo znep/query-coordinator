@@ -145,6 +145,9 @@ enable_getty_images_gallery:
   category: storyteller
   defaultValue: true
   description: Enable access to Getty Images for Storyteller media blocks.
+enable_header_notifications:
+  description: Whether or not to show the notifications bell in the global header. Also disables the "Latest from Socrata" sidebar on the profile page.
+  defaultValue: false
 enable_opendata_ga_tracking:
   description: Controls behavior of Socrata internal Google Analytics. If true or left blank, GA is enabled with a default Socrata-wide token. If a custom value is provided, GA is enabled with the custom GA token. If false, Socrata GA is disabled. NOTE - if enable_standard_ga_tracking is true, it will override any value that this is set to with a default standard ga tracking code specified in the config.
 enable_pulse:

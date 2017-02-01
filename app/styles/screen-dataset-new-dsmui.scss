@@ -1,0 +1,60 @@
+div.container {
+  text-align: center;
+
+  #generic-modal {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1000;
+  }
+
+  .modal-container {
+    max-width: 600px;
+    padding: 50px;
+    margin-bottom: 200px;
+  }
+
+  .modal-header {
+    margin: 30px;
+  }
+
+  .modal-header-title {
+    font-size: xx-large;
+  }
+
+  .modal-header-subtitle {
+    color: gray;
+    font-size: small;
+  }
+
+  .modal-content {
+    margin: 30px;
+  }
+
+  #dataset-title-input {
+    width: 80%;
+    line-height: 1.75;
+  }
+
+  .modal-actions {
+    .btn {
+      width: 250px;
+      margin-right: 0;
+      height: 62px;
+    }
+    text-align: center;
+    #create-spinner {
+      display: none;
+    }
+  }
+
+  .error {
+    display: none;
+  }
+}
+
+footer#site-chrome-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}

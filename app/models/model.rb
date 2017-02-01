@@ -423,8 +423,6 @@ class Model
   end
 
   def data_hash
-    return {} unless @data.present?
-
     dcopy = @data.clone
     if dcopy.is_a?(Hash)
       dcopy.merge!(update_data)

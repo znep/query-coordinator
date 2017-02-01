@@ -32,6 +32,13 @@ describe Model do
       expect(view_a).to_not eq(view_c)
     end
 
+    it 'returns the model with updated attribute(s)' do
+      view_a = View.new(data)
+      view_a.foo = 'foo'
+      view_a.data = {}
+      expect(view_a.foo).to eq('foo')
+    end
+
   end
 
 end

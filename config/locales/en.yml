@@ -987,6 +987,7 @@ en:
       new: New
       no_result: No Results
       open: Open
+      pending: Pending
       rate_down: I don't like it
       rate_up: I like it
       rating: Rating
@@ -1005,6 +1006,7 @@ en:
       suggestion_updated: Your suggestion has been updated
       title: Title
       title_prompt: Enter a title
+      unmoderated: Unmoderated
       user_removed: a user who was already removed
       user_removed_short: User was removed
     upload_dialog:

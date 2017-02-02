@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { components as SocrataVisualizations } from 'socrata-visualizations';
 
@@ -12,25 +12,27 @@ import { components as SocrataVisualizations } from 'socrata-visualizations';
   Given that visualizations can be in an editable state (with an edit button component),
   we introduced an "EditableVisualizations" component to stick to our design.
 */
-export const Visualizations = (props) => {
-  const { vifs } = props;
+export class Visualizations extends PureComponent {
+  render() {
+    const { vifs } = this.props;
 
-  if (_.isEmpty(vifs)) {
-    return null;
+    if (_.isEmpty(vifs)) {
+      return null;
+    }
+
+    const visualizations = _.map(vifs, (vif, i) => (
+      <div className="visualization-wrapper" key={i}>
+        <SocrataVisualizations.Visualization vif={vif} />
+      </div>
+    ));
+
+    return (
+      <div className="visualizations">
+        {visualizations}
+      </div>
+    );
   }
-
-  const visualizations = _.map(vifs, (vif, i) => (
-    <div className="visualization-wrapper" key={i}>
-      <SocrataVisualizations.Visualization vif={vif} />
-    </div>
-  ));
-
-  return (
-    <div className="visualizations">
-      {visualizations}
-    </div>
-  );
-};
+}
 
 Visualizations.propTypes = {
   vifs: PropTypes.array.isRequired

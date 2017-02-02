@@ -6,14 +6,10 @@ import { connect } from 'react-redux';
 import InfoPaneComponent from '../../common/components/InfoPaneComponent.js';
 
 function mapStateToProps(state) {
-  const { view } = state;
+  const { view, isEphemeral } = state;
 
-  const updatedDate = _.isString(view.lastUpdatedAt) ?
-    formatDate(view.lastUpdatedAt) :
-    t('info_pane.unsaved');
-
+  const updatedDate = isEphemeral ? t('info_pane.unsaved') : formatDate(view.lastUpdatedAt);
   const basedOnHtml = t('info_pane.based_on').replace('%{name}', state.parentView.name);
-
   const footer = (
     <a href={state.parentView.url} target="_blank" dangerouslySetInnerHTML={{ __html: basedOnHtml }}></a>
   );

@@ -12,10 +12,9 @@ class DisplayFormat < Model
   end
 
   def visualization_canvas_metadata
-    data.fetch(
-      'visualizationCanvasMetadata',
-      default_visualization_canvas_metadata
-    ).with_indifferent_access
+    default_visualization_canvas_metadata.
+      merge(data.fetch('visualizationCanvasMetadata', {})).
+      with_indifferent_access
   end
 
   def default_visualization_canvas_metadata

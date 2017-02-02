@@ -1,12 +1,18 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, PureComponent } from 'react';
 import { components as SocrataVisualizations } from 'socrata-visualizations';
 import { connect } from 'react-redux';
 
-export const Table = ({ vif }) => (
-  <div className="table-contents">
-    <SocrataVisualizations.Visualization vif={vif} />
-  </div>
-);
+export class Table extends PureComponent {
+  render() {
+    const { vif } = this.props;
+
+    return (
+      <div className="table-contents">
+        <SocrataVisualizations.Visualization vif={vif} />
+      </div>
+    );
+  }
+}
 
 Table.propTypes = {
   vif: PropTypes.object.isRequired

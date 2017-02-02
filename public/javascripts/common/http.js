@@ -1,7 +1,8 @@
 export const defaultHeaders = {
   'Accept': 'application/json',
   'Content-Type': 'application/json',
-  'X-CSRF-Token': window.serverConfig.csrfToken
+  'X-CSRF-Token': window.serverConfig.csrfToken,
+  'X-App-Token': window.serverConfig.appToken
 };
 
 // Used to throw errors from non-200 responses when using fetch.

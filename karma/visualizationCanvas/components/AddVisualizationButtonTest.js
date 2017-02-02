@@ -11,15 +11,15 @@ describe('AddVisualizationButton', () => {
   };
 
   it('renders an element', () => {
-    const element = renderPureComponent(AddVisualizationButton(getProps()));
+    const element = renderComponent(AddVisualizationButton, getProps());
     expect(element).to.exist;
   });
 
   it('invokes onClickHandler on click', () => {
     const onClickSpy = sinon.spy();
-    const element = renderPureComponent(AddVisualizationButton(getProps({
+    const element = renderComponent(AddVisualizationButton, getProps({
       onClickHandler: onClickSpy
-    })));
+    }));
 
     TestUtils.Simulate.click(element.querySelector('button'));
 
@@ -27,10 +27,10 @@ describe('AddVisualizationButton', () => {
   });
 
   it('does not render a button if vifs exist', () => {
-    const component = AddVisualizationButton(getProps({
+    const element = renderComponent(AddVisualizationButton, getProps({
       vifs: [mockVif]
     }));
 
-    expect(component).to.be.null;
+    expect(element).to.be.null;
   });
 });

@@ -4,7 +4,7 @@ import { FilterBar } from 'socrata-components';
 import { setFilters } from '../actions';
 import { dataProviders } from 'socrata-visualizations';
 
-export function mapStateToProps({ view, filters, parentView }) {
+export function mapStateToProps({ columnStats, view, filters, parentView }) {
 
   // Get displayable columns only, subcolumns and system columns are omitted
   const displayableColumns = new dataProviders.MetadataProvider({
@@ -12,8 +12,9 @@ export function mapStateToProps({ view, filters, parentView }) {
     datasetUid: parentView.id
   }).getDisplayableColumns(view);
 
-  // Filtering is only supported on number columns, text columns, and calendar_date columns.
-  const columns = _.chain(displayableColumns).
+  // Show filters for supported column types.
+  const columns = _.chain([]).
+    merge(columnStats, displayableColumns).
     filter((column) => {
       if (column.dataTypeName === 'number') {
         return _.isNumber(column.rangeMin) && _.isNumber(column.rangeMax);

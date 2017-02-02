@@ -6,7 +6,7 @@ describe('PreviewBar', () => {
 
   beforeEach(() => {
     onClickSpy = sinon.spy();
-    element = renderPureComponent(PreviewBar({ onClickExit: onClickSpy }));
+    element = renderComponent(PreviewBar, { onClickExit: onClickSpy });
   });
 
   it('renders', () => {

@@ -341,6 +341,11 @@ Rails.application.routes.draw do
       get '/:id/derived_views', :action => 'get_derived_views'
     end
 
+    scope :controller => 'visualization_canvas', :path => '/visualization_canvas', :constraints => { :id => Frontend::UID_REGEXP } do
+      post '/', :action => 'create'
+      put '/:id', :action => 'update'
+    end
+
     scope :controller => 'new_ux_bootstrap', :constraints => { :id => Frontend::UID_REGEXP } do
       get '/view/bootstrap/:id', :action => 'bootstrap', :app => 'dataCards', as: 'new_data_lens'
       get '/dataset/:id/lens/new', :action => 'bootstrap', :app => 'dataCards'

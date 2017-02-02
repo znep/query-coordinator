@@ -10,23 +10,29 @@ import {
   CLOSE_EDIT_MENU,
   UPDATE_NAME_AND_DESCRIPTION,
   SET_FILTERS,
-  RECEIVED_COLUMN_STATS
+  RECEIVED_COLUMN_STATS,
+  REQUESTED_SAVE,
+  HANDLE_SAVE_SUCCESS,
+  HANDLE_SAVE_ERROR,
+  CLEAR_SAVE_STATE
 } from 'actions';
+import { SaveStates } from './lib/constants';
 
-const initialState = () => (
-  {
-    parentView: _.get(window.initialState, 'parentView'),
-    view: _.get(window.initialState, 'view'),
-    vifs: _.get(window.initialState, 'vifs', []),
-    filters: _.get(window.initialState, 'filters', []),
+const initialState = () => {
+  const isEphemeral = _.isNil(window.initialState.view.id);
+
+  return _.assign(window.initialState, {
     authoringWorkflow: {
       isActive: false
     },
     mode: 'edit',
     isEditMenuActive: false,
+    isEphemeral,
+    isDirty: isEphemeral,
+    saveState: SaveStates.IDLE,
     columnStats: null
-  }
-);
+  });
+};
 
 const defaultVif = () => (
   {
@@ -116,7 +122,8 @@ export default (state = initialState(), action) => {
           isActive: false
         },
         vifs: updateVifs(state, action.data.vif),
-        filters: action.data.filters
+        filters: action.data.filters,
+        isDirty: true
       };
 
     case ENTER_EDIT_MODE:
@@ -151,6 +158,7 @@ export default (state = initialState(), action) => {
           name: action.data.name,
           description: action.data.description
         },
+        isDirty: true,
         isEditMenuActive: false
       };
 
@@ -158,16 +166,45 @@ export default (state = initialState(), action) => {
       return {
         ...state,
         filters: action.filters,
-        vifs: filterVifs(state.vifs, action.filters)
+        vifs: filterVifs(state.vifs, action.filters),
+        isDirty: true
       };
 
     case RECEIVED_COLUMN_STATS:
       return {
         ...state,
-        view: {
-          ...state.view,
-          columns: _.merge([], action.stats, state.view.columns)
-        }
+        columnStats: action.stats
+      };
+
+    case REQUESTED_SAVE:
+      return {
+        ...state,
+        saveState: SaveStates.SAVING
+      };
+
+    // Redirect if we're saving for the first time
+    case HANDLE_SAVE_SUCCESS:
+      if (state.isEphemeral) {
+        window.location = `/d/${action.response.id}`;
+        return state;
+      }
+
+      return {
+        ...state,
+        isDirty: false,
+        saveState: SaveStates.SAVED
+      };
+
+    case HANDLE_SAVE_ERROR:
+      return {
+        ...state,
+        saveState: SaveStates.ERRORED
+      };
+
+    case CLEAR_SAVE_STATE:
+      return {
+        ...state,
+        saveState: SaveStates.IDLE
       };
 
     default:

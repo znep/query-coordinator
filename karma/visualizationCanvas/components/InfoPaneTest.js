@@ -10,15 +10,19 @@ describe('InfoPane', () => {
   });
 
   describe('updatedDate', () => {
-    it('renders "unsaved" if no date provided', () => {
+    it('renders "unsaved" if the view is ephemeral', () => {
       const element = renderComponentWithStore(InfoPane, {}, getStore({
-        view: _.merge({}, mockView, { lastUpdatedAt: null })
+        isEphemeral: true
       }));
+
       expect(element.querySelector('.entry-meta .date').innerText).to.equal('Unsaved');
     });
 
-    it('renders a timestamp if a date is provided', () => {
-      const element = renderComponentWithStore(InfoPane, {});
+    it('renders the lastUpdatedAt value if the view is not ephemeral', () => {
+      const element = renderComponentWithStore(InfoPane, {}, getStore({
+        isEphemeral: false
+      }));
+
       expect(element.querySelector('.entry-meta .date').innerText).to.equal('November 15, 2016');
     });
   });

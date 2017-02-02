@@ -2075,6 +2075,7 @@ class View < Model
 
   def as_visualization_canvas
     {
+      :id => id,
       :name => name,
       :description => html_description,
       :category => category,

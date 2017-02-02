@@ -1,5 +1,5 @@
 import 'whatwg-fetch';
-import { defaultHeaders, checkStatus } from '../lib/http';
+import { defaultHeaders, checkStatus } from '../../common/http';
 import { TRAILING_UID_REGEX } from '../lib/constants';
 import { getSemanticNameForDisplayType } from '../lib/displayTypeMetadata';
 import { emitMixpanelEvent } from '../actions/mixpanel';

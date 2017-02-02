@@ -1,36 +1,35 @@
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { updateNameAndDescription, closeEditMenu } from '../actions';
 import { t } from '../lib/I18n';
 import { ExpandableMenuListItem, SideMenu } from 'socrata-components';
 
-export const EditMenu = React.createClass({
-  propTypes: {
-    name: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    isActive: PropTypes.bool.isRequired,
-    onClickUpdate: PropTypes.func.isRequired,
-    onClickDismiss: PropTypes.func.isRequired
-  },
+export class EditMenu extends Component {
+  constructor(props) {
+    super(props);
 
-  getInitialState() {
-    const { name, description } = this.props;
+    this.state = _.pick(props, 'name', 'description');
 
-    return {
-      name,
-      description
-    };
-  },
+    _.bindAll(this, [
+      'onNameChange',
+      'onDescriptionChange',
+      'onClickUpdate',
+      'renderTitleField',
+      'renderDescriptionField',
+      'renderMenuItems',
+      'renderUpdateButton'
+    ]);
+  }
 
   onNameChange({ target }) {
     this.setState({ name: target.value });
-  },
+  }
 
   onDescriptionChange({ target }) {
     this.setState({ description: target.value });
-  },
+  }
 
   onClickUpdate(event) {
     const { onClickUpdate } = this.props;
@@ -38,7 +37,7 @@ export const EditMenu = React.createClass({
 
     event.preventDefault();
     onClickUpdate({ name, description });
-  },
+  }
 
   renderTitleField() {
     const { name } = this.state;
@@ -59,7 +58,7 @@ export const EditMenu = React.createClass({
         <input {...props} />
       </div>
     );
-  },
+  }
 
   renderDescriptionField() {
     const { description } = this.state;
@@ -79,7 +78,7 @@ export const EditMenu = React.createClass({
         <textarea {...props} />
       </div>
     );
-  },
+  }
 
   renderMenuItems() {
     const menuItemprops = {
@@ -98,7 +97,7 @@ export const EditMenu = React.createClass({
         </div>
       </ExpandableMenuListItem>
     );
-  },
+  }
 
   renderUpdateButton() {
     const { name } = this.state;
@@ -113,7 +112,7 @@ export const EditMenu = React.createClass({
         {t('edit_menu.update')}
       </button>
     );
-  },
+  }
 
   render() {
     const { isActive, onClickDismiss } = this.props;
@@ -131,7 +130,15 @@ export const EditMenu = React.createClass({
       </div>
     );
   }
-});
+}
+
+EditMenu.propTypes = {
+  name: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  isActive: PropTypes.bool.isRequired,
+  onClickUpdate: PropTypes.func.isRequired,
+  onClickDismiss: PropTypes.func.isRequired
+};
 
 function mapStateToProps(state) {
   return {

@@ -1,21 +1,22 @@
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { editVisualization } from '../actions';
 import { t } from '../lib/I18n';
 
-export const EditVisualizationButton = (props) => {
+export class EditVisualizationButton extends PureComponent {
+  render() {
+    const { onClickHandler, vifIndex } = this.props;
 
-  const { onClickHandler, vifIndex } = props;
-
-  return (
-    <button
-      className="edit-visualization-button btn btn-primary"
-      onClick={onClickHandler(vifIndex)}>
-      {t('edit_visualization')}
-    </button>
-  );
-};
+    return (
+      <button
+        className="edit-visualization-button btn btn-primary"
+        onClick={onClickHandler(vifIndex)}>
+        {t('edit_visualization')}
+      </button>
+    );
+  }
+}
 
 EditVisualizationButton.propTypes = {
   onClickHandler: PropTypes.func.isRequired,

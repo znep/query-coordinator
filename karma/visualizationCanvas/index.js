@@ -24,14 +24,9 @@ window.initialState = {
 var getDefaultStore = require('testStore').getDefaultStore;
 
 window.renderComponent = _.flow(React.createElement, TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
-window.renderPureComponent = _.flow(TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
 window.renderComponentWithStore = function(component, props, store) {
   store = store || getDefaultStore();
   return window.renderComponent(Provider, { store }, React.createElement(component, props));
-};
-window.renderPureComponentWithStore = function(component, store) {
-  store = store || getDefaultStore();
-  return window.renderComponent(Provider, { store }, component);
 };
 
 function requireAll(context) {

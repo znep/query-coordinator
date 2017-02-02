@@ -1,5 +1,5 @@
 import 'whatwg-fetch';
-import { checkStatus } from '../lib/http';
+import { checkStatus } from '../../common/http';
 import { emitMixpanelEvent } from './mixpanel';
 
 import {

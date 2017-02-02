@@ -40,6 +40,102 @@ body {
       width: calc(100% - #{$edit-bar-menu-width + $edit-bar-name-width});
       padding: 0 16px;
 
+      .btn-save {
+        width: 110px;
+        margin-right: 5px;
+        background-color: transparent;
+
+        &:not([disabled]) {
+          &:hover, &:focus {
+            background-color: $dark-grey-2;
+          }
+        }
+
+        .spinner-default {
+          height: 20px;
+          width: 20px;
+        }
+      }
+
+      .save-notification {
+        .alert-overlay {
+          position: fixed;
+          top: $edit-bar-height;
+          bottom: 0;
+          right: 0;
+          left: 0;
+          background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        &.hidden {
+          display: none;
+        }
+
+        .alert {
+          position: fixed;
+          top: 70px;
+          right: 16px;
+
+          button {
+            cursor: pointer;
+            padding: 0;
+          }
+
+          .btn-dismiss {
+            float: right;
+            margin-top: 4px;
+            margin-left: 20px;
+
+            .socrata-icon svg {
+              width: 15px;
+              height: 15px;
+            }
+          }
+
+          &.success {
+            .btn-dismiss {
+              .socrata-icon svg g {
+                fill: $success-dark;
+              }
+
+              &:hover, &:focus {
+                .socrata-icon svg {
+                  g {
+                    fill: $success-base;
+                  }
+                }
+              }
+            }
+          }
+
+          &.error {
+            .btn-dismiss {
+              .socrata-icon svg g {
+                fill: $error-dark;
+              }
+
+              &:hover, &:focus {
+                .socrata-icon svg {
+                  g {
+                    fill: $error-base;
+                  }
+                }
+              }
+            }
+
+            .btn-retry {
+              color: $error-dark;
+              padding-left: 5px;
+              font-weight: bold;
+
+              &:hover, &:focus {
+                text-decoration: underline;
+              }
+            }
+          }
+        }
+      }
+
       .btn-preview {
         color: $edit-bar-font-color;
         text-decoration: none;
@@ -95,12 +191,17 @@ body {
     }
   }
 
-  .container {
+  .visualization-canvas-body {
     margin: 0 auto;
 
     .info-pane {
       padding-top: 15px;
       margin-bottom: 0;
+      margin: 0 auto;
+
+      .container {
+        margin: 0 auto;
+      }
     }
 
     .add-visualization-button-container {
@@ -205,7 +306,7 @@ footer#site-chrome-footer {
     display: none;
   }
 
-  .container {
+  .visualization-canvas-body {
     margin-top: $edit-bar-height;
   }
 }

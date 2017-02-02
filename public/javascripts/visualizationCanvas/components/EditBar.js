@@ -2,6 +2,8 @@ import React, { PropTypes, PureComponent } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+import SaveButton from './SaveButton';
+import SaveNotification from './SaveNotification';
 import { EditBar as SocrataComponentsEditBar } from 'socrata-components';
 import { t } from '../lib/I18n';
 import { enterPreviewMode, openEditMenu } from '../actions';
@@ -16,12 +18,15 @@ export class EditBar extends PureComponent {
     const editBarProps = {
       name,
       menuLabel,
+      menuIcon: 'socrata-icon-stories-menu',
       onClickMenu
     };
 
     return (
       <SocrataComponentsEditBar {...editBarProps}>
         <div className="edit-bar-child">
+          <SaveButton />
+          <SaveNotification />
           <button className="btn btn-transparent btn-preview" onClick={onClickPreview}>
             {t('preview')}
             <span className="socrata-icon-preview" role="presentation" />

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { components as SocrataVisualizations } from 'socrata-visualizations';
 import EditVisualizationButton from './EditVisualizationButton';
@@ -13,25 +13,28 @@ import EditVisualizationButton from './EditVisualizationButton';
   Given that visualizations can be in an editable state (with an edit button component),
   we introduced an "EditableVisualizations" component to stick to our design.
 */
-export const EditableVisualizations = ({ vifs }) => {
+export class EditableVisualizations extends PureComponent {
+  render() {
+    const { vifs } = this.props;
 
-  if (_.isEmpty(vifs)) {
-    return null;
+    if (_.isEmpty(vifs)) {
+      return null;
+    }
+
+    const visualizations = _.map(vifs, (vif, i) => (
+      <div className="visualization-wrapper" key={i}>
+        <EditVisualizationButton vifIndex={i} />
+        <SocrataVisualizations.Visualization vif={vif} />
+      </div>
+    ));
+
+    return (
+      <div className="visualizations">
+        {visualizations}
+      </div>
+    );
   }
-
-  const visualizations = _.map(vifs, (vif, i) => (
-    <div className="visualization-wrapper" key={i}>
-      <EditVisualizationButton vifIndex={i} />
-      <SocrataVisualizations.Visualization vif={vif} />
-    </div>
-  ));
-
-  return (
-    <div className="visualizations">
-      {visualizations}
-    </div>
-  );
-};
+}
 
 EditableVisualizations.propTypes = {
   vifs: PropTypes.array.isRequired

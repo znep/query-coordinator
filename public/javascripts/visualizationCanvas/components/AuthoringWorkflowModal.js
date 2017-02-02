@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { AuthoringWorkflow } from 'socrata-visualizations';
@@ -8,35 +8,27 @@ import {
   updateVisualization
 } from '../actions';
 
-export const AuthoringWorkflowModal = React.createClass({
-  propTypes: {
-    config: PropTypes.shape({
-      vifIndex: PropTypes.number,
-      vif: PropTypes.object
-    }).isRequired,
-    filters: PropTypes.array.isRequired,
-    onCancel: PropTypes.func,
-    onComplete: PropTypes.func
-  },
+export class AuthoringWorkflowModal extends Component {
+  constructor(props) {
+    super(props);
 
-  getDefaultProps() {
-    return {
-      onCancel: _.noop,
-      onComplete: _.noop
-    };
-  },
+    _.bindAll(this, [
+      'createAuthoringWorkflow',
+      'destroyAuthoringWorkflow'
+    ]);
+  }
 
   componentDidMount() {
     this.createAuthoringWorkflow();
-  },
+  }
 
   componentDidUpdate() {
     this.createAuthoringWorkflow();
-  },
+  }
 
   componentWillUnmount() {
     this.destroyAuthoringWorkflow();
-  },
+  }
 
   createAuthoringWorkflow() {
     const { config, filters, onCancel, onComplete } = this.props;
@@ -53,14 +45,14 @@ export const AuthoringWorkflowModal = React.createClass({
       filters,
       useLogger: _.get(window, 'serverConfig.environment') === 'development'
     });
-  },
+  }
 
   destroyAuthoringWorkflow() {
     if (this.authoringWorkflow) {
       this.authoringWorkflow.destroy();
       this.authoringWorkflow = null;
     }
-  },
+  }
 
   render() {
     const { config } = this.props;
@@ -75,7 +67,22 @@ export const AuthoringWorkflowModal = React.createClass({
         ref={(container) => this.authoringWorkflowContainer = container} />
     );
   }
-});
+}
+
+AuthoringWorkflowModal.propTypes = {
+  config: PropTypes.shape({
+    vifIndex: PropTypes.number,
+    vif: PropTypes.object
+  }).isRequired,
+  filters: PropTypes.array.isRequired,
+  onCancel: PropTypes.func,
+  onComplete: PropTypes.func
+};
+
+AuthoringWorkflowModal.defaultProps = {
+  onCancel: _.noop,
+  onComplete: _.noop
+};
 
 function mapStateToProps(state) {
   return {

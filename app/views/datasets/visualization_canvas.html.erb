@@ -27,8 +27,8 @@
     var initialState = {
       parentView: <%= raw @parent_view.as_visualization_canvas_parent.to_json %>,
       view: <%= raw @view.as_visualization_canvas.to_json %>,
-      vifs: <%= raw @view.displayFormat.visualization_canvas_metadata[:vifs] %>,
-      filters: <%= raw @view.displayFormat.visualization_canvas_metadata[:filters] %>
+      vifs: <%= raw @view.displayFormat.visualization_canvas_metadata[:vifs].to_json %>,
+      filters: <%= raw @view.displayFormat.visualization_canvas_metadata[:filters].to_json %>
     };
   </script>
 

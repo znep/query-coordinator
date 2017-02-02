@@ -7,7 +7,9 @@ export function getDefaultStore() {
 export function getStore(state) {
   const preloadedState = _.merge(
     {
+      isDirty: false,
       isEditMenuActive: false,
+      isEphemeral: false,
       mode: 'edit'
     },
     window.initialState,

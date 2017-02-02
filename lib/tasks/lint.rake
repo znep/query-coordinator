@@ -20,6 +20,11 @@ namespace :lint do
       run_eslint('public/javascripts/datasetLandingPage', args[:format])
     end
 
+    desc 'run eslint on the visualizationCanvas files'
+    task :visualizationCanvas, :format do |task, args|
+      run_eslint('public/javascripts/visualizationCanvas', args[:format])
+    end
+
     desc 'run eslint on the admin files'
     task :admin, :format do |task, args|
       run_eslint('public/javascripts/src', args[:format])

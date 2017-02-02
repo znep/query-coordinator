@@ -147,6 +147,7 @@
     "react-router-redux": "4.0.7",
     "recursive-diff": "0.1.2",
     "redux": "3.5.2",
+    "redux-debounced": "0.3.0",
     "redux-logger": "2.6.1",
     "redux-thunk": "2.1.0",
     "rx": "2.5.0",

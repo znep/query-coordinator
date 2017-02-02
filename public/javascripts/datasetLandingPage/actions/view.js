@@ -1,5 +1,5 @@
 import 'whatwg-fetch';
-import { checkStatus, defaultHeaders } from '../lib/http';
+import { checkStatus, defaultHeaders } from '../../common/http';
 
 import {
   REQUESTED_VIEW_PUBLISH,

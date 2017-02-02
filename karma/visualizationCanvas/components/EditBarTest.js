@@ -14,7 +14,7 @@ describe('EditBar', () => {
   let element;
 
   beforeEach(() => {
-    element = renderComponent(EditBar, getProps());
+    element = renderComponentWithStore(EditBar, getProps());
   });
 
   it('renders', () => {
@@ -25,13 +25,17 @@ describe('EditBar', () => {
     expect(element.innerText).to.contain('wombats');
   });
 
+  it('renders a save button', () => {
+    expect(element.querySelector('.btn-save')).to.exist;
+  });
+
   it('renders a preview button', () => {
     expect(element.querySelector('.btn-preview')).to.exist;
   });
 
   it('invokes onClickPreview on preview click', () => {
     const onClickSpy = sinon.spy();
-    const element = renderComponent(EditBar, getProps({
+    const element = renderComponentWithStore(EditBar, getProps({
       onClickPreview: onClickSpy
     }));
 

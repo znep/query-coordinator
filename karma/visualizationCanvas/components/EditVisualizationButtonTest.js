@@ -10,15 +10,15 @@ describe('EditVisualizationButton', () => {
   };
 
   it('renders an element', () => {
-    const element = renderPureComponent(EditVisualizationButton(getProps()));
+    const element = renderComponent(EditVisualizationButton, getProps());
     expect(element).to.exist;
   });
 
   it('invokes openAuthoringWorkflowModal on click', () => {
     const onClickSpy = sinon.spy();
-    const element = renderPureComponent(EditVisualizationButton(getProps({
+    const element = renderComponent(EditVisualizationButton, getProps({
       onClickHandler: onClickSpy
-    })));
+    }));
 
     TestUtils.Simulate.click(element);
 

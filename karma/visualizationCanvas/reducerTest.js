@@ -9,8 +9,14 @@ import {
   openEditMenu,
   updateNameAndDescription,
   closeEditMenu,
-  setFilters
+  setFilters,
+  receivedColumnStats,
+  requestedSave,
+  handleSaveSuccess,
+  handleSaveError,
+  clearSaveState
 } from 'actions';
+import { SaveStates } from 'lib/constants';
 import mockView from 'data/mockView';
 import mockParentView from 'data/mockParentView';
 import mockVif from 'data/mockVif';
@@ -18,6 +24,12 @@ import mockFilter from 'data/mockFilter';
 
 describe('Reducer', () => {
   let state;
+
+  const makeStateDirty = () => {
+    state = reducer(state, updateNameAndDescription({ name: '', description: '' }));
+    expect(state.isDirty).to.equal(true);
+    return state;
+  };
 
   before(() => {
     window.serverConfig = {
@@ -97,6 +109,7 @@ describe('Reducer', () => {
 
     before(() => {
       newVif = { name: 'potato' };
+      state = reducer(state, clearSaveState());
       state = reducer(state, addVisualization());
       state = reducer(state, updateVisualization({
         vif: newVif,
@@ -119,6 +132,10 @@ describe('Reducer', () => {
 
     it('updates the filters', () => {
       expect(state.filters).to.deep.equal([mockFilter, mockFilter, mockFilter]);
+    });
+
+    it('sets isDirty to true', () => {
+      expect(state.isDirty).to.equal(true);
     });
   });
 
@@ -150,8 +167,9 @@ describe('Reducer', () => {
     });
   });
 
-  describe('UPDATE_TITLE_AND_DESCRIPTION', () => {
+  describe('UPDATE_NAME_AND_DESCRIPTION', () => {
     before(() => {
+      state = reducer(state, clearSaveState());
       state = reducer(state, openEditMenu());
       state = reducer(state, updateNameAndDescription({
         name: 'some name',
@@ -159,7 +177,7 @@ describe('Reducer', () => {
       }));
     });
 
-    it('sets the title to a new value', () => {
+    it('sets the name to a new value', () => {
       expect(state.view.name).to.equal('some name');
     });
 
@@ -170,10 +188,15 @@ describe('Reducer', () => {
     it('sets isEditMenuActive to false', () => {
       expect(state.isEditMenuActive).to.be.false;
     });
+
+    it('sets isDirty to true', () => {
+      expect(state.isDirty).to.equal(true);
+    });
   });
 
   describe('SET_FILTERS', () => {
     before(() => {
+      state = reducer(state, clearSaveState());
       state = reducer(state, addVisualization());
       state = reducer(state, updateVisualization({ vif: mockVif }));
       state = reducer(state, setFilters([mockFilter]));
@@ -188,5 +211,76 @@ describe('Reducer', () => {
        const vifHasExpectedFilters = (vif) => _.every(vif.series, seriesHasExpectedFilters);
        expect(_.every(state.vifs, vifHasExpectedFilters)).to.equal(true);
      });
+
+    it('sets isDirty to true', () => {
+      expect(state.isDirty).to.equal(true);
+    });
+  });
+
+  describe('RECEIVED_COLUMN_STATS', () => {
+    before(() => {
+      state = reducer(state, receivedColumnStats('purple'));
+    });
+
+    it('sets columnStats', () => {
+      expect(state.columnStats).to.equal('purple');
+    });
+  });
+
+  describe('REQUESTED_SAVE', () => {
+    before(() => {
+      state = reducer(state, requestedSave());
+    });
+
+    it('sets the save state to saving', () => {
+      expect(state.saveState).to.equal(SaveStates.SAVING);
+    });
+  });
+
+  describe('HANDLE_SAVE_SUCCESS', () => {
+    const response = {
+      id: 'test-view',
+      createdAt: 'today'
+    };
+
+    before(() => {
+      state = makeStateDirty();
+      state = reducer(state, handleSaveSuccess(response));
+    });
+
+    it('sets the save state to saved', () => {
+      expect(state.saveState).to.equal(SaveStates.SAVED);
+    });
+
+    it('sets isDirty to false', () => {
+      expect(state.isDirty).to.equal(false);
+    });
+  });
+
+  describe('HANDLE_SAVE_ERROR', () => {
+    before(() => {
+      state = makeStateDirty();
+      state = reducer(state, handleSaveError());
+    });
+
+    it('does not modify isDirty', () => {
+      expect(state.isDirty).to.equal(true);
+    });
+
+    it('sets save state to errored', () => {
+      expect(state.saveState).to.equal(SaveStates.ERRORED);
+    });
+  });
+
+  describe('CLEAR_SAVE_STATE', () => {
+    before(() => {
+      state = reducer(state, requestedSave());
+      expect(state.saveState).to.equal(SaveStates.SAVING);
+      state = reducer(state, clearSaveState());
+    });
+
+    it('sets save state to idle', () => {
+      expect(state.saveState).to.equal(SaveStates.IDLE);
+    });
   });
 });

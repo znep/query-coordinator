@@ -47,7 +47,7 @@ export const App = React.createClass({
     return (
       <div>
         <EditBar />
-        <div className="container">
+        <div className="visualization-canvas-body">
           <InfoPane />
           <FilterBar />
           <AddVisualizationButton />
@@ -64,7 +64,7 @@ export const App = React.createClass({
     return (
       <div>
         <PreviewBar />
-        <div className="container">
+        <div className="visualization-canvas-body">
           <InfoPane />
           <FilterBar />
           <Visualizations />

@@ -1,4 +1,5 @@
 export default {
+  id: 'test-view',
   name: 'Wombats with Parasols',
   description: 'Something about umbrellas',
   category: 'humor',

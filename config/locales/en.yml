@@ -4666,6 +4666,7 @@ en:
   visualization_canvas:
     add_visualization: Add Visualization
     default_row_label: row
+    dismiss: Dismiss
     edit_menu:
       editTitleAndDescription: Edit Title and Description
       title: Title
@@ -4682,4 +4683,9 @@ en:
       view_count: View Count
     preview: Preview
     render_error: There was a problem rendering this page.
+    save: Save
+    saving: Saving
+    save_error: Oh no! Something went wrong.
+    save_error_retry_prompt: Try saving again.
+    save_success: Success! Your changes were saved!
     visualization_error: There was a problem rendering this visualization.

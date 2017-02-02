@@ -129,7 +129,7 @@ describe('socrata.visualizations.views.SvgFeatureMap', function() {
       vectorTileGetter: mockVectorTileGetter
     };
 
-    map.render(false, renderOptions);
+    map.render(featureMapVIF, renderOptions);
 
     return {
       element: element,

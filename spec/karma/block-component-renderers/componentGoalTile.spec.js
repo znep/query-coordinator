@@ -170,7 +170,7 @@ describe('componentGoalTile jQuery plugin', function() {
       it('should still be attached to the component', function() {
         assert.lengthOf($component.find('.component-edit-controls-container'), 1);
       });
-    })
+    });
   });
 
   describe('given a valid component type and value', function() {
@@ -222,7 +222,7 @@ describe('componentGoalTile jQuery plugin', function() {
       it('should still be attached to the component', function() {
         assert.lengthOf($component.find('.component-edit-controls-container'), 1);
       });
-    })
+    });
   });
 
   describe('when there is not a prevailing measure summary', function() {

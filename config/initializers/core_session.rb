@@ -1,8 +1,7 @@
 module ActionDispatch
   class Request < Rack::Request
     def core_session
-      # TODO - this cannot work! CoreSession constructor requires two args
-      @env['socrata.core-session'] ||= CoreSession.new
+      @env['socrata.core-session']
     end
 
     def core_session=(session)
@@ -10,7 +9,7 @@ module ActionDispatch
     end
 
     def reset_core_session
-      @env['socrata.core-session'].clear! if @env['socrata.core-session']
+      @env['socrata.core-session'].try(:clear!)
     end
   end
 end

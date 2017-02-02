@@ -92,6 +92,9 @@ class DatasetsControllerTest < ActionController::TestCase
   test 'get_view method returns nil when ResourceNotFound' do
     @controller.unstub(:get_view)
     View.stubs(:find).raises(CoreServer::ResourceNotFound.new('response'))
+    # Stubbing core_session here is an ugly hack to deal with test order sometimes causing this test to fail
+    session_double = stub(:valid? => false)
+    UserSession.any_instance.stubs(:core_session => session_double)
     @controller.instance_variable_set('@_response', ActionDispatch::Response.new)
     value = @controller.send(:get_view, 'igno-reme')
     refute(value)

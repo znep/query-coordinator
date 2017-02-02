@@ -35,10 +35,19 @@
 
 ### Working on the styleguide locally
 
-You are working on a feature or fixing a bug and you want to test your changes on your local development machine prior to deploying a new version of the styleguide. Good on you! You can use `npm link` to link the version that you're currently working on with another project that you're using to test it. For example if you're testing `socrata-components` using the `frontend` project, you'd do something like this: TBD
+You are working on a feature or fixing a bug and you want to test your changes on your local development machine prior to deploying a new version of the styleguide. Good on you! You can use `npm link` to link the version that you're currently working on with another project that you're using to test it. For example if you're testing `socrata-components` using the `frontend` project, you'd do something like this:
 
-> Note, When testing with `frontend` one cannot directly symlink the contents of the `dist` folder into the `node_modules` folder to test. This is due to the fact that there is a `tools/postinstall.sh` script invoked by this module that copies and/or symlinks many of `dist` resources into different directories.
- 
+```shell
+cd $SOCRATA_HOME/styleguide;
+NODE_ENV=production npm run gulp;
+cd $SOCATA_HOME/styleguide/packages/socrata-components;
+npm link;
+cd $SOCRATA_HOME/frontend;
+npm link socrata-components;
+```
+
+This will link a current version of `socrata-components`. To see edits made in this repository, the command `NODE_ENV=production npm run gulp` can be used. A `watch` command is also available `NODE_ENV=production npm run watch`.
+
 #### Making a PR
 
 Make sure your branch has a bumped version according to [semver](http://semver.org).

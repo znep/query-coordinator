@@ -1,16 +1,17 @@
 import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
+import { SocrataIcon } from 'socrata-components';
 import { connect } from 'react-redux';
 import { collapseChanged } from '../actions';
 import styles from './autocomplete.scss';
-import searchIcon from 'icons/search.svg';
 
 function CollapsedIcon({ onCollapsedChanged }) {
   return (
     <div
       styleName="collapsed-icon"
-      dangerouslySetInnerHTML={{ __html: searchIcon }}
-      onClick={() => { onCollapsedChanged(false); }} />
+      onClick={() => { onCollapsedChanged(false); }}>
+      <SocrataIcon name="search" />
+    </div>
   );
 }
 

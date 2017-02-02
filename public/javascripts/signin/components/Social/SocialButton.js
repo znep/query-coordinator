@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
+import { SocrataIcon } from 'socrata-components';
 import styles from './social.scss';
 
 class SocialButton extends React.Component {
@@ -16,10 +17,9 @@ class SocialButton extends React.Component {
 
   render() {
     return (
-      <div
-        onClick={this.handleClick}
-        styleName={this.props.style}
-        dangerouslySetInnerHTML={{ __html: this.props.icon }} />
+      <div onClick={this.handleClick} styleName={this.props.style}>
+        <SocrataIcon name={this.props.icon} />
+      </div>
     );
   }
 }

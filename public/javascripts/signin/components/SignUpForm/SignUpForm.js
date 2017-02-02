@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import cssModules from 'react-css-modules';
+import { SocrataIcon } from 'socrata-components';
 import ReCAPTCHA from 'react-google-recaptcha';
 import styles from './sign-up-form.scss';
 import {
@@ -12,7 +13,6 @@ import {
   recaptchaCallback } from '../../actions';
 import OptionsPropType from '../../PropTypes/OptionsPropType';
 import SignUpInput from './SignUpInput';
-import questionMarkIcon from 'icons/info.svg';
 
 class SignUpForm extends React.Component {
   constructor(props) {
@@ -134,7 +134,7 @@ class SignUpForm extends React.Component {
           onBlur={onPasswordBlur}>
           <div className="passwordHint" styleName="password-hint">
             {translate('account.common.form.password_restrictions')}
-            <span styleName="info-icon" dangerouslySetInnerHTML={{ __html: questionMarkIcon }} />
+            <SocrataIcon name="info" />
           </div>
         </SignUpInput>
 

@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import cssModules from 'react-css-modules';
+import { SocrataIcon } from 'socrata-components';
 import _ from 'lodash';
-import { DOWN } from 'socrataCommon/keycodes';
+import { DOWN } from 'socrata-components/common/keycodes';
 import { getSearchUrl } from '../../Util';
 import { queryChanged, resultsChanged, resultVisibilityChanged } from '../../actions';
 import styles from './search-box.scss';
-import searchIcon from 'icons/search.svg';
 
 class SearchBox extends React.Component {
   constructor(props) {
@@ -130,8 +130,9 @@ class SearchBox extends React.Component {
         onSubmit={this.handleFormSubmit}>
         <div
           styleName={this.getIconStyleName()}
-          dangerouslySetInnerHTML={{ __html: searchIcon }}
-          onClick={() => { this.domNode.focus(); }} />
+          onClick={() => { this.domNode.focus(); }}>
+          <SocrataIcon name="search" />
+        </div>
 
         <input
           ref={(domNode) => { this.domNode = domNode; }}

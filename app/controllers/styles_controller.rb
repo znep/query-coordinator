@@ -5,6 +5,7 @@ class StylesController < ApplicationController
   skip_before_filter :require_user, :set_user, :set_meta, :sync_logged_in_cookie, :poll_external_configs
 
   SCSS_LOAD_PATHS = %w(/app/styles /node_modules).map { |path| path.prepend(Rails.root.to_s) }
+  BLIST_STYLE_CACHE = File.join(Dir.tmpdir, 'blist_style_cache')
 
   # Only used in development
   def individual
@@ -176,8 +177,7 @@ class StylesController < ApplicationController
 
   def with_development_cache(stylesheet_filename)
     if use_discrete_assets?
-      tmpdir_path = File.join(Dir.tmpdir, 'blist_style_cache')
-      Dir.mkdir(tmpdir_path) unless Dir.exist? tmpdir_path
+      Dir.mkdir(BLIST_STYLE_CACHE) unless Dir.exist? BLIST_STYLE_CACHE
 
       includes_cache_key = STYLE_PACKAGES['includes'].map do |include|
         File.new(File.join(Rails.root, 'app/styles', "#{include}.scss")).mtime.to_s
@@ -185,7 +185,7 @@ class StylesController < ApplicationController
 
       cache_key = Digest::MD5.hexdigest(stylesheet_filename + includes_cache_key +
                     File.new(stylesheet_filename).mtime.to_s + CurrentDomain.cname)
-      cache_path = File.join(tmpdir_path, cache_key)
+      cache_path = File.join(BLIST_STYLE_CACHE, cache_key)
 
       if stylesheet_or_siblings_newer_than_cache?(stylesheet_filename, cache_path)
         File.unlink(cache_path)

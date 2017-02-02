@@ -1,12 +1,14 @@
 import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
+import { SocrataIcon } from 'socrata-components';
 import PollingInput from './PollingInput';
 import styles from './sign-in-form.scss';
-import emailIcon from 'icons/email.svg';
 
 const EmailInput = ({ onChange, translate }) => (
   <div>
-    <div styleName="icon-container" dangerouslySetInnerHTML={{ __html: emailIcon }} />
+    <div styleName="icon-container">
+      <SocrataIcon name="email" />
+    </div>
     <PollingInput
       focusOnMount
       name="user_session[login]"

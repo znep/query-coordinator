@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var path = require('path');
 var common = require('./common');
 
 module.exports = {
@@ -14,16 +15,21 @@ module.exports = {
     hot: true
   },
   module: {
-    preLoaders: _.compact(common.isProduction ? null : [
-      {
-        test: /\.js$/,
-        loader: 'eslint-loader',
-        exclude: /node_modules/
-      }
+    preLoaders: _.compact([
+      common.isProduction ? null : { test: /\.js$/, loader: 'eslint-loader', exclude: /node_modules/ },
+      ...common.getStyleguidePreLoaders()
     ])
+  },
+  sassLoader: {
+    includePaths: [
+      ...common.getStyleguideIncludePaths()
+    ]
   },
   output: {
     pathinfo: !common.isProduction
+  },
+  resolveLoader: {
+    modulesDirectories: [ path.resolve(common.root, 'node_modules') ]
   },
   resolve: {
     modulesDirectories: [ 'node_modules' ]

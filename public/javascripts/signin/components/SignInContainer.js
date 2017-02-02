@@ -1,12 +1,12 @@
 import React from 'react';
 import Auth0 from 'auth0-js';
 import cssModules from 'react-css-modules';
+import { SocrataIcon } from 'socrata-components';
 import { Translate, renderAlerts } from '../Util';
 import OptionsPropType from '../PropTypes/OptionsPropType';
 import SignIn from './SignIn';
 import ChooseConnection from './ChooseConnection/ChooseConnection';
 import styles from './signin.scss';
-import backIcon from 'icons/arrow-left.svg';
 
 class SignInContainer extends React.Component {
   constructor(props) {
@@ -106,14 +106,10 @@ class SignInContainer extends React.Component {
           className="signin-button-back-to-options"
           styleName="back-to-options"
           onClick={() => this.setLoginFormVisibility(false)} >
-          <span
-            styleName="back-to-options-icon"
-            dangerouslySetInnerHTML={
-              {
-                __html:
-                  `${backIcon} ${translate('screens.sign_in.back_to_sign_in_selection')}`
-              }
-            } />
+          <span styleName="back-to-options-icon">
+            <SocrataIcon name="arrow-left" />
+            {translate('screens.sign_in.back_to_sign_in_selection')}
+          </span>
         </a>
       );
     }

@@ -14,51 +14,22 @@ module.exports = _.defaultsDeep({
     loaders: [
       {
         test: /\.jsx?$/,
-        exclude: /(node_modules|bower_components)/,
+        include: [ path.resolve(common.root, 'public/javascripts/signin') ],
         loader: 'babel',
         query: {
           presets: ['react', 'es2015']
         }
       },
       {
-        test: /\.scss$/,
+        test: /\.(css|scss)$/,
         loaders: [
-          'style',
-          'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
-          'sass'
+          'style-loader',
+          'css-loader?modules&importLoaders=1&localIdentName=[path]_[name]_[local]_[hash:base64:5]',
+          'autoprefixer-loader',
+          'sass-loader'
         ]
-      },
-      {
-        test: /\.svg$/,
-        loader: 'raw-loader',
-        include: path.resolve('node_modules/socrata-components/dist/fonts/svg')
-      },
-      {
-        test: /\.(eot|woff|svg|woff2|ttf)$/,
-        loader: 'url-loader?limit=100000',
-        exclude: path.resolve('node_modules/socrata-components/dist/fonts/svg')
       }
     ]
-  },
-  sassLoader: {
-    includePaths: [
-      'node_modules/bourbon/app/assets/stylesheets',
-      'node_modules/bourbon-neat/app/assets/stylesheets',
-      'node_modules/breakpoint-sass/stylesheets',
-      'node_modules/modularscale-sass/stylesheets',
-      'node_modules/normalize.css',
-      'node_modules/socrata-components',
-      'node_modules/socrata-components/styles',
-      'node_modules/socrata-components/styles/variables',
-      'node_modules/socrata-components/dist/fonts',
-      'node_modules/react-input-range/dist',
-      'node_modules/react-datepicker/dist'
-    ]
-  },
-  resolve: {
-    alias: {
-      icons: path.resolve('node_modules/socrata-components/dist/fonts/svg')
-    }
   },
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))
 }, require('./base'));

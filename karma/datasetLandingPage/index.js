@@ -2,7 +2,6 @@
 import 'babel-polyfill-safe';
 import { Provider } from 'react-redux';
 
-window.$ = window.jQuery = require('jquery');
 window._ = require('lodash');
 window.React = require('react');
 window.ReactDOM = require('react-dom');

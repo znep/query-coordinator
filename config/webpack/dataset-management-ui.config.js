@@ -34,13 +34,6 @@ module.exports = _.defaultsDeep({
     ]
   },
   resolve: {
-    alias: {
-      '_': path.resolve(common.root, 'node_modules/lodash'),
-      'jQuery': path.resolve(common.root, 'node_modules/jquery/dist/jquery.js'),
-      'jquery': path.resolve(common.root, 'node_modules/jquery/dist/jquery.js'),
-      'react': path.resolve(common.root, 'node_modules/react'),
-      'react-dom': path.resolve(common.root, 'node_modules/react-dom')
-    },
     root: [
       path.resolve(common.root, 'public/javascripts/datasetManagementUI')
     ]

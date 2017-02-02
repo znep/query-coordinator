@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
 import { connect } from 'react-redux';
-import { ESCAPE } from 'socrataCommon/keycodes';
+import { ESCAPE } from 'socrata-components/common/keycodes';
 import { resultVisibilityChanged } from '../actions';
 import CollapsedIcon from './CollapsedIcon';
 import SearchBox from './SearchBox/SearchBox';

@@ -1,7 +1,9 @@
+var fs = require('fs');
 var path = require('path');
 
 var root = path.resolve(__dirname, '../..');
 var webpack = require('webpack');
+var common = require(path.resolve(root, 'config/webpack/common'));
 
 module.exports = function ( karma ) {
   karma.set({
@@ -25,12 +27,14 @@ module.exports = function ( karma ) {
       cache: true,
       devtool: 'inline-source-map',
       module: {
+        preLoaders: [
+          ...common.getStyleguidePreLoaders()
+        ],
         loaders: [
           {
             test: /\.jsx?$/,
             include: [
               path.resolve('public/javascripts/autocomplete'),
-              path.resolve('node_modules/socrata-components/common'),
               path.resolve('karma/autocomplete')
             ],
             loader: 'babel',
@@ -45,16 +49,6 @@ module.exports = function ( karma ) {
               'css?modules&importLoaders=1&localIdentName=[path]_[name]_[local]_[hash:base64:5]',
               'sass'
             ]
-          },
-          {
-            test: /\.svg$/,
-            loader: 'raw-loader',
-            include: path.resolve('node_modules/socrata-components/dist/fonts/svg')
-          },
-          {
-            test: /\.(eot|woff|svg|woff2|ttf)$/,
-            loader: 'url-loader?limit=100000',
-            exclude: path.resolve('node_modules/socrata-components/dist/fonts/svg')
           }
         ]
       },
@@ -67,33 +61,27 @@ module.exports = function ( karma ) {
       plugins: [
         new webpack.ProvidePlugin({
           Promise: 'imports?this=>global!exports?global.Promise!es6-promise',
-          fetch: 'imports?this=>global!exports?global.fetch!whatwg-fetch'
+          fetch: 'imports?this=>global!exports?global.fetch!whatwg-fetch',
+          $: 'jquery',
+          jQuery: 'jquery'
         })
       ],
       sassLoader: {
         includePaths: [
-          'node_modules/bourbon/app/assets/stylesheets',
-          'node_modules/bourbon-neat/app/assets/stylesheets',
-          'node_modules/breakpoint-sass/stylesheets',
-          'node_modules/modularscale-sass/stylesheets',
-          'node_modules/normalize.css',
-          'node_modules/socrata-components',
-          'node_modules/socrata-components/styles',
-          'node_modules/socrata-components/styles/variables',
-          'node_modules/socrata-components/dist/fonts',
-          'node_modules/react-input-range/dist',
-          'node_modules/react-datepicker/dist'
+          ...common.getStyleguideIncludePaths()
         ]
       },
+      resolveLoader: {
+        modulesDirectories: [ path.resolve(root, 'node_modules') ]
+      },
       resolve: {
-        alias: {
-          icons: path.resolve('node_modules/socrata-components/dist/fonts/svg'),
-          socrataCommon: path.resolve('node_modules/socrata-components/common')
-        },
         root: [
           path.resolve('.'),
           path.resolve('public/javascripts/autocomplete'),
           path.resolve('karma/autocomplete')
+        ],
+        modulesDirectories: [
+          'node_modules'
         ]
       }
     },

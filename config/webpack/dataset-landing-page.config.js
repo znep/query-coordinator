@@ -25,24 +25,12 @@ module.exports = _.defaultsDeep({
     loaders: [
       {
         test: /\.jsx?$/,
-        include: [
-          path.resolve(common.root, 'public/javascripts'),
-          path.resolve(common.root, 'node_modules/socrata-components/common')
-        ],
+        include: [ path.resolve(common.root, 'public/javascripts') ],
         loaders: (common.isProduction ? ['babel'] : ['react-hot', 'babel'])
       }
     ]
   },
   resolve: {
-    alias: {
-      'dotdotdot': 'dotdotdot/src/js/jquery.dotdotdot.min.js',
-      '_': path.resolve(common.root, 'node_modules/lodash'),
-      'jQuery': path.resolve(common.root, 'node_modules/jquery/dist/jquery.js'),
-      'jquery': path.resolve(common.root, 'node_modules/jquery/dist/jquery.js'),
-      'L': 'leaflet',
-      'react': path.resolve(common.root, 'node_modules/react'),
-      'react-dom': path.resolve(common.root, 'node_modules/react-dom')
-    },
     root: [
       path.resolve(common.root, 'public/javascripts/datasetLandingPage')
     ]

@@ -16,7 +16,6 @@ module.exports = _.defaultsDeep({
         test: /\.js$/,
         exclude: /node_modules/,
         loaders: [
-          'ng-annotate',
           'babel'
         ]
       },

@@ -80,7 +80,6 @@
     "mocha": "3.0.2",
     "modularscale-sass": "2.1.1",
     "moment": "2.14.1",
-    "ng-annotate-loader": "0.0.10",
     "ngtemplate-loader": "WearyMonkey/ngtemplate-loader#63e3461",
     "node-sass": "3.7.0",
     "normalize.css": "4.1.1",

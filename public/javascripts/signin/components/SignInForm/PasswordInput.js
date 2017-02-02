@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
+import { SocrataIcon } from 'socrata-components';
 import _ from 'lodash';
 import PollingInput from './PollingInput';
 import styles from './sign-in-form.scss';
-import passwordIcon from 'icons/private.svg';
 
 class PasswordInput extends React.Component {
   constructor(props) {
@@ -14,7 +14,9 @@ class PasswordInput extends React.Component {
   renderSsoEnabled() {
     return (
       <div>
-        <div styleName="icon-container" dangerouslySetInnerHTML={{ __html: passwordIcon }} />
+        <div styleName="icon-container">
+          <SocrataIcon name="private" />
+        </div>
         <div
           className="signin-password-sso-enabled-text"
           styleName="sso-enabled-text">
@@ -28,7 +30,9 @@ class PasswordInput extends React.Component {
     const { translate, onChange } = this.props;
     return (
       <div>
-        <div styleName="icon-container" dangerouslySetInnerHTML={{ __html: passwordIcon }} />
+        <div styleName="icon-container">
+          <SocrataIcon name="private" />
+        </div>
         <PollingInput
           name="user_session[password]"
           aria-label={translate('screens.sign_in.form.password_placeholder')}

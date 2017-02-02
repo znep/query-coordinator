@@ -6,22 +6,21 @@ rm -rf public/stylesheets/socrata-visualizations
 
 if [ -d node_modules/socrata-components ]; then
   SOCRATA_COMPONENTS='public/stylesheets/socrata-components'
-  mkdir -p $SOCRATA_COMPONENTS/css
-  mkdir -p $SOCRATA_COMPONENTS/fonts
+  rm -rf $SOCRATA_COMPONENTS
+  mkdir -p $SOCRATA_COMPONENTS
 
-  $(
-    cd $SOCRATA_COMPONENTS/css
-    ln -fs ../../../../node_modules/socrata-components/dist/css/* .
-  )
-
-  $(
-    cd $SOCRATA_COMPONENTS/fonts
-    ln -fs ../../../../node_modules/socrata-components/dist/fonts/* .
-  )
+  pushd $SOCRATA_COMPONENTS
+    ln -fs ../../../node_modules/socrata-components/dist/css .
+    ln -fs ../../../node_modules/socrata-components/dist/fonts .
+  popd
 fi
 
-mkdir -p public/stylesheets/socrata-visualizations
-$(
-  cd public/stylesheets/socrata-visualizations
-  ln -fs ../../../node_modules/socrata-visualizations/dist/*.css .
-)
+if [ -d node_modules/socrata-visualizations ]; then
+  SOCRATA_VISUALIZATIONS='public/stylesheets/socrata-visualizations'
+  rm -rf $SOCRATA_VISUALIZATIONS
+  mkdir -p $SOCRATA_VISUALIZATIONS
+
+  pushd $SOCRATA_VISUALIZATIONS
+    ln -fs ../../../node_modules/socrata-visualizations/dist/*.css .
+  popd
+fi

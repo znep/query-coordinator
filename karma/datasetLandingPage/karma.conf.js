@@ -1,7 +1,9 @@
 var path = require('path');
+var webpack = require('webpack');
 var WebpackFailurePlugin = require('../helpers/WebpackFailurePlugin.js');
 
 var root = path.resolve(__dirname, '../..');
+var common = require(path.resolve(root, 'config/webpack/common'));
 
 module.exports = function ( karma ) {
   karma.set({
@@ -10,6 +12,7 @@ module.exports = function ( karma ) {
     singleRun: true,
 
     files: [
+      'public/javascripts/jquery-2.2.4.js',
       'karma/datasetLandingPage/index.js',
       { pattern: 'karma/datasetLandingPage/data/*.png', watched: false, included: false, served: true }
     ],
@@ -30,7 +33,13 @@ module.exports = function ( karma ) {
     webpack: {
       cache: true,
       devtool: 'inline-source-map',
+      externals: {
+        jquery: 'jQuery'
+      },
       module: {
+        preLoaders: [
+          ...common.getStyleguidePreLoaders()
+        ],
         loaders: [
           {
             test: /\.jsx?$/,
@@ -43,7 +52,16 @@ module.exports = function ( karma ) {
           }
         ]
       },
-      plugins: [ new WebpackFailurePlugin() ],
+      plugins: [
+        new WebpackFailurePlugin(),
+        new webpack.ProvidePlugin({
+          $: 'jquery',
+          jQuery: 'jquery'
+        })
+      ],
+      resolveLoader: {
+        modulesDirectories: [ path.resolve(root, 'node_modules') ]
+      },
       resolve: {
         root: [
           path.resolve('.'),

@@ -256,17 +256,6 @@ variables set, which simulates running webpack in production:
 
 WEBPACK_USE_MANIFEST=true WEBPACK_USE_DEV_SERVER=false rails s
 
-#### Webpack Loaders
-
-- `babel-loader` for ES2015 and JSX transpilation
-- `eslint-loader` for linting and reporting issues to the browser
-- `react-hot-loader` for reloading React components in place without a page
-  reload, preserving their state
-- `ng-annotate-loader` for converting the function syntax of angular's dependency
-  injection into something that can be uglified
-- `ngtemplate-loader` for allowing `require`ing angular templates and priming the
-  template cache
-
 ### JSCodeShift
 
 [jscodeshift](https://github.com/facebook/jscodeshift) is a tool for doing AST-to-AST transformations of JS code.

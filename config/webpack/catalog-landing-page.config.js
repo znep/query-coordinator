@@ -25,7 +25,7 @@ module.exports = _.defaultsDeep({
     loaders: [
       {
         test: /\.jsx?$/,
-        include: common.getDefaultIncludePaths(),
+        include: [ path.resolve(common.root, 'public/javascripts') ],
         loaders: (common.isProduction ? ['babel'] : ['react-hot', 'babel'])
       }
     ]

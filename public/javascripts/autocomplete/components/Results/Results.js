@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import cssModules from 'react-css-modules';
-import { DOWN, UP, ENTER } from 'socrataCommon/keycodes';
+import { DOWN, UP, ENTER } from 'socrata-components/common/keycodes';
 import { getSearchUrl } from '../../Util';
 import { resultFocusChanged, resultVisibilityChanged } from '../../actions';
 import Result from './Result';

@@ -1,8 +1,11 @@
+var fs = require('fs');
 var path = require('path');
 var WebpackFailurePlugin = require('../helpers/WebpackFailurePlugin.js');
 
-var projectRootDir = path.resolve(__dirname, '../..');
-var templateDir = path.resolve(projectRootDir, 'public/angular_templates');
+var root = path.resolve(__dirname, '../..');
+var templateDir = path.resolve(root, 'public/angular_templates');
+var common = require(path.resolve(root, 'config/webpack/common'));
+var socrataComponentsPath = fs.realpathSync(path.resolve(root, 'node_modules/socrata-components'));
 
 module.exports = function ( karma ) {
   karma.set({
@@ -47,6 +50,9 @@ module.exports = function ( karma ) {
         jquery: 'jQuery'
       },
       module: {
+        preLoaders: [
+          ...common.getStyleguidePreLoaders()
+        ],
         loaders: [
           {
             test: /\.jsx?$/,
@@ -80,11 +86,14 @@ module.exports = function ( karma ) {
         ]
       },
       plugins: [ new WebpackFailurePlugin() ],
+      resolveLoader: {
+        modulesDirectories: [ path.resolve(root, 'node_modules') ]
+      },
       resolve: {
         alias: {
           angular_templates: templateDir,
-          'lodash': path.resolve(projectRootDir, 'node_modules/lodash'),
-          'leaflet': path.resolve(projectRootDir, 'node_modules/leaflet')
+          'lodash': path.resolve(root, 'node_modules/lodash'),
+          'leaflet': path.resolve(root, 'node_modules/leaflet')
         },
         root: [ path.resolve('.') ],
         modulesDirectories: [ 'node_modules' ]

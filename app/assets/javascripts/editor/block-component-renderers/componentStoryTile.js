@@ -203,13 +203,7 @@ function renderStoryTile($element, componentData, storyTileData) {
   $tileContainer.addClass('rendered');
 }
 
-function sleep (time) {
-  return new Promise((resolve) => setTimeout(resolve, time));
-}
-
 function removeStoryTile($element) {
-  let editControls = $element.find('.component-edit-controls');
-
   $element.
     removeClass('component-error').
     children().

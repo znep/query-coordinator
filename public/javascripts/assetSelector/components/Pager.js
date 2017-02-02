@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import $ from 'jquery';
 import _ from 'lodash';
-import { handleKeyPress } from '../lib/a11yHelpers';
+import { handleKeyPress } from '../../common/helpers/keyPressHelpers';
 
 export class Pager extends Component {
   constructor(props) {

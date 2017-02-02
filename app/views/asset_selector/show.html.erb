@@ -39,12 +39,9 @@
       external_resource_form: {}
     };
 
-    /*
-      Need to set serverConfig on window in order to use viewCardHelpers formatDate.
-      Randy is working on moving those helpers to a central location that doesn't have these weird
-      DSLP-specific dependencies. Once that is done, we can get rid of this.
-    */
-    window.serverConfig = {};
+    window.serverConfig = {
+      locale: 'en'
+    };
   </script>
 
   <%= include_webpack_bundle 'dummy-clp/main.js' %>

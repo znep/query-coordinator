@@ -1583,6 +1583,7 @@ en:
       title: Datasets have a new look!
     view_widget:
       external_content: External Content
+      view: View
       views: Views
   dataset_management_ui:
     common:

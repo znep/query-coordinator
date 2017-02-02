@@ -1,19 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import a11y from 'react-a11y';
-// import airbrake from './lib/airbrake';
+import airbrake from '../common/airbrake';
 import _ from 'lodash';
-
 import DummyCLP from './DummyCLP';
 
 require('socrata-components/dist/css/styleguide.css');
 
-// TODO: setup airbrake. remove a11y?
-// if (window.serverConfig.environment === 'development') {
-a11y(React, { ReactDOM: ReactDOM });
-// } else {
-//   airbrake.init();
-// }
+if (window.serverConfig.environment !== 'development') {
+  airbrake.init();
+}
 
 _.defer(() => {
   try {

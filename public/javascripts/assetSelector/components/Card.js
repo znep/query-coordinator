@@ -2,8 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
 import { ViewCard } from 'socrata-components';
 import { getIconClassForDisplayType } from 'socrata-components/common/displayTypeMetadata';
-import { getDateLabel, getViewCountLabel, getAriaLabel } from '../../datasetLandingPage/lib/viewCardHelpers';
-import { handleKeyPress } from '../lib/a11yHelpers';
+import { getDateLabel, getViewCountLabel, getAriaLabel } from '../../common/helpers/viewCardHelpers';
+import { handleKeyPress } from '../../common/helpers/keyPressHelpers';
 
 export class Card extends Component {
   constructor(props) {

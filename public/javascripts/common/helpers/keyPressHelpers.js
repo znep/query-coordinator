@@ -1,4 +1,4 @@
-import { ENTER_KEY_CODE, SPACE_KEY_CODE } from './constants';
+import { ENTER_KEY_CODE, SPACE_KEY_CODE } from '../../common/constants';
 
 // Checks if event is a space or an enter
 export const handleKeyPress = (handler, preventDefault) => (

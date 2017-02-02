@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { getViewCountLabel } from '../../datasetLandingPage/lib/viewCardHelpers';
+import { getViewCountLabel } from '../../common/helpers/viewCardHelpers';
 
 export class ResultCount extends Component { // eslint-disable-line react/prefer-stateless-function
   render() {

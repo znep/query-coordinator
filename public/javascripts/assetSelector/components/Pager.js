@@ -161,15 +161,15 @@ export class Pager extends Component {
 }
 
 Pager.propTypes = {
-  currentPage: PropTypes.number.isRequired,
   changePage: PropTypes.func.isRequired,
+  currentPage: PropTypes.number.isRequired,
   resultCount: PropTypes.number.isRequired,
   resultsPerPage: PropTypes.number.isRequired
 };
 
 Pager.defaultProps = {
-  currentPage: 1,
   changePage: _.noop,
+  currentPage: 1,
   resultCount: 0,
   resultsPerPage: 6
 };

@@ -8,18 +8,18 @@ describe('components/BackButton', function() {
   }
 
   function getProps(props = {}) {
-    return Object.assign({}, defaultProps(), props);
+    return {...defaultProps(), ...props};
   }
 
   it('renders', function() {
-    var element = renderPureComponent(BackButton(getProps()));
+    var element = renderComponent(BackButton, getProps());
     expect(element).to.exist;
     expect(element.className).to.match(/back-button/);
   });
 
   it('dispatches the onClick prop on click', function() {
     var spy = sinon.spy();
-    var element = renderPureComponent(BackButton(getProps({ onClick: spy })));
+    var element = renderComponent(BackButton, getProps({ onClick: spy }));
     TestUtils.Simulate.click(element);
     expect(spy).to.have.been.called;
   });

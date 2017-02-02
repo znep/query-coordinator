@@ -12,7 +12,7 @@ describe('components/Pager', function() {
   }
 
   function getProps(props = {}) {
-    return Object.assign({}, defaultProps(), props);
+    return {...defaultProps(), ...props};
   }
 
   it('renders', function() {

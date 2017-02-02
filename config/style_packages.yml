@@ -35,6 +35,8 @@ dataset-landing-page:
 
 asset-selector:
 - asset-selector/asset-selector
+
+external-resource-wizard:
 - external-resource-wizard/external-resource-wizard
 
 dataset-management-ui:

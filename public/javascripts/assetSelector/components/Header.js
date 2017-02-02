@@ -1,10 +1,14 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 
-export const Header = (props) => (
-  <div className="modal-header">
-    <h1>{props.title}</h1>
-  </div>
-);
+export class Header extends Component { // eslint-disable-line react/prefer-stateless-function
+  render() {
+    return (
+      <div className="modal-header">
+        <h1>{this.props.title}</h1>
+      </div>
+    );
+  }
+}
 
 Header.propTypes = {
   title: PropTypes.string.isRequired

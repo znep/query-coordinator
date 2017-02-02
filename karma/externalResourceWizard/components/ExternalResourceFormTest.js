@@ -1,27 +1,26 @@
 import { ExternalResourceForm } from 'components/ExternalResourceForm';
-import $ from 'jquery';
+import _ from 'lodash';
 
 describe('components/ExternalResourceForm', function() {
   function defaultProps() {
     return {
-      dispatchUpdateTitle: _.noop,
-      dispatchUpdateDescription: _.noop,
-      dispatchUpdateUrl: _.noop,
-      dispatchUpdatePreviewImage: _.noop,
-      title: { value: '', invalid: true },
-      description: { value: '' },
-      url: { value: '', invalid: true },
-      previewImage: { value: '' }
+      description: '',
+      onFieldChange: _.noop,
+      previewImage: '',
+      title: '',
+      url: ''
     };
   }
 
   function getProps(props = {}) {
-    return Object.assign({}, defaultProps(), props);
+    return {...defaultProps(), ...props};
   }
 
   it('renders', function() {
-    var element = renderComponentWithStore(ExternalResourceForm, getProps());
+    var element = renderComponent(ExternalResourceForm, getProps());
     expect(element).to.exist;
     expect(element.className).to.match(/external-resource-form/);
   });
 });
+
+// TODO: add tests

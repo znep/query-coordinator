@@ -9,7 +9,7 @@ describe('components/Card', function() {
       isFederated: false,
       isPublic: true,
       link: 'http://davidhasselhoffonline.com/',
-      name: 'david hasselhoff',
+      name: 'David Hasselhoff',
       previewImageUrl: '',
       provenance: 'official',
       tags: [],
@@ -20,32 +20,34 @@ describe('components/Card', function() {
   }
 
   function getProps(props = {}) {
-    return Object.assign({}, defaultProps(), props);
+    return {...defaultProps(), ...props};
   }
 
   it('renders an empty card with no data', function() {
-    var element = renderComponentWithStore(Card, {});
+    var element = renderComponent(Card, {});
     expect(element).to.exist;
     expect(element.className).to.match(/result-card/);
   });
 
   it('renders a card with correct data', function() {
-    var element = renderComponentWithStore(Card, getProps());
+    var element = renderComponent(Card, getProps());
     expect(element).to.exist;
-    expect(element.querySelector('.entry-title').textContent).to.eq('david hasselhoff');
+    expect(element.querySelector('.entry-title').textContent).to.eq('David Hasselhoff');
     expect(element.querySelector('.entry-description').textContent).to.
       eq('jorts and other denim articles of clothing');
     expect(element.querySelector('.first').querySelector('.date').textContent).to.eq('December 15, 2016');
     expect(element.querySelector('.entry-view-type').querySelector('.socrata-icon-dataset')).to.exist;
     expect(element.querySelector('.entry-main').
-      querySelector('a[href="http://davidhasselhoffonline.com/"][aria-label="View david hasselhoff"]')).
+      querySelector('a[href="http://davidhasselhoffonline.com/"][aria-label="View David Hasselhoff"]')).
       to.exist;
   });
 
-  it('dispatches closeAssetSelector on click', function() {
-    var spy = sinon.spy();
-    var element = renderComponentWithStore(Card, getProps({ dispatchCloseAssetSelector: spy }));
+  it('calls onSelect and onClose on click', function() {
+    var onCloseSpy = sinon.spy();
+    var onSelectSpy = sinon.spy();
+    var element = renderComponent(Card, getProps({ onClose: onCloseSpy, onSelect: onSelectSpy }));
     TestUtils.Simulate.click(element.querySelector('.hover-target'));
-    expect(spy).to.have.been.called;
+    expect(onCloseSpy).to.have.been.called;
+    expect(onSelectSpy).to.have.been.called;
   });
 });

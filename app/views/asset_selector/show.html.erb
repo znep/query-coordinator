@@ -1,9 +1,10 @@
 <% content_for :head do %>
   <title><%= get_site_title %></title>
   <meta name="description" content="<%= CurrentDomain.cname %> | Socrata Open Data Catalog">
-  <meta name="page_name" content="Asset Selector">
+  <meta name="page_name" content="DummyCLP">
 
   <%= rendered_stylesheet_tag('asset-selector') %>
+  <%= rendered_stylesheet_tag('external-resource-wizard') %>
 <% end %>
 
 <div style="padding: 1.5rem;">
@@ -18,7 +19,7 @@
 
   <p>Lorem ipsum dolor sit amet, partiendo conceptam reprehendunt vim cu. Id alii perfecto his. Fabellas maluisset scribentur per ad. Mea nibh habemus delicatissimi in. Apeirian interesset et eum. Solet laoreet eu vel, et per iriure praesent constituto.</p>
 
-  <div class="asset-selector"></div>
+  <div class="dummy-clp"></div>
 </div>
 
 <% content_for :scripts do %>
@@ -46,5 +47,5 @@
     window.serverConfig = {};
   </script>
 
-  <%= include_webpack_bundle 'asset-selector/main.js' %>
+  <%= include_webpack_bundle 'dummy-clp/main.js' %>
 <% end %>

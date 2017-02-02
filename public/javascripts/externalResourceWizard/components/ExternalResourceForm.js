@@ -1,27 +1,20 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
 import _ from 'lodash';
 import $ from 'jquery';
-import { updateTitle, updateDescription, updateUrl, updatePreviewImage } from '../actions/content';
 
 export class ExternalResourceForm extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       isImageInvalid: false
     };
+
     _.bindAll(this, ['onChange', 'renderInputField']);
   }
 
-  // Key is one of 'title', 'description', 'url', or 'previewImage'
   onChange(key, event) {
-    if (key === 'title') {
-      this.props.dispatchUpdateTitle(event.target.value);
-    } else if (key === 'description') {
-      this.props.dispatchUpdateDescription(event.target.value);
-    } else if (key === 'url') {
-      this.props.dispatchUpdateUrl(event.target.value);
-    } else if (key === 'previewImage') {
+    if (key === 'previewImage') {
       // Upload image
       const file = event.target.files[0];
       const isFileImage = file && /\.(jpe?g|png|gif)$/i.test(file.name);
@@ -37,12 +30,14 @@ export class ExternalResourceForm extends Component {
       const fileReader = new FileReader();
 
       fileReader.addEventListener('load', () => {
-        this.props.dispatchUpdatePreviewImage(fileReader.result);
+        this.props.onFieldChange(key, fileReader.result);
       }, false);
 
       if (file) {
         fileReader.readAsDataURL(file);
       }
+    } else {
+      this.props.onFieldChange(key, event.target.value);
     }
   }
 
@@ -100,7 +95,7 @@ export class ExternalResourceForm extends Component {
           aria-labelledby="external-resource-preview-image-label"
           onClick={(e) => {
             e.preventDefault();
-            $('.preview-image').click();
+            $('.preview-image').click(); // TODO use something else
           }}>
           {_.get(I18n, 'external_resource_wizard.form.fields.preview_image.button_text', 'Choose an image')}
         </button>
@@ -133,52 +128,19 @@ export class ExternalResourceForm extends Component {
 }
 
 ExternalResourceForm.propTypes = {
-  dispatchUpdateTitle: PropTypes.func.isRequired,
-  dispatchUpdateDescription: PropTypes.func.isRequired,
-  dispatchUpdateUrl: PropTypes.func.isRequired,
-  dispatchUpdatePreviewImage: PropTypes.func.isRequired,
-  title: PropTypes.object.isRequired,
-  description: PropTypes.object.isRequired,
-  url: PropTypes.object.isRequired,
-  previewImage: PropTypes.object.isRequired
+  description: PropTypes.string.isRequired,
+  onFieldChange: PropTypes.func.isRequired,
+  previewImage: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired
 };
 
 ExternalResourceForm.defaultProps = {
-  dispatchUpdateTitle: _.noop,
-  dispatchUpdateDescription: _.noop,
-  dispatchUpdateUrl: _.noop,
-  dispatchUpdatePreviewImage: _.noop,
-  title: {
-    value: '',
-    invalid: true
-  },
-  description: {
-    value: ''
-  },
-  url: {
-    value: '',
-    invalid: true
-  },
-  previewImage: {
-    value: ''
-  }
+  description: '',
+  onFieldChange: _.noop,
+  previewImage: '',
+  title: '',
+  url: ''
 };
 
-function mapDispatchToProps(dispatch) {
-  return {
-    dispatchUpdateTitle: function(value) {
-      dispatch(updateTitle(value));
-    },
-    dispatchUpdateDescription: function(value) {
-      dispatch(updateDescription(value));
-    },
-    dispatchUpdateUrl: function(value) {
-      dispatch(updateUrl(value));
-    },
-    dispatchUpdatePreviewImage: function(value) {
-      dispatch(updatePreviewImage(value));
-    }
-  };
-}
-
-export default connect(null, mapDispatchToProps)(ExternalResourceForm);
+export default ExternalResourceForm;

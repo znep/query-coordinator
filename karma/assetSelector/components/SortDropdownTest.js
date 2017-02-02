@@ -10,11 +10,11 @@ describe('components/SortDropdown', function() {
   }
 
   function getProps(props = {}) {
-    return Object.assign({}, defaultProps(), props);
+    return {...defaultProps(), ...props};
   }
 
   it('renders', function() {
-    var element = renderPureComponent(SortDropdown(getProps()));
+    var element = renderComponent(SortDropdown, getProps());
     expect(element).to.exist;
     expect(element.className).to.eq('sort-dropdown');
   });
@@ -28,7 +28,7 @@ describe('components/SortDropdown', function() {
       'Recently Updated'
     ];
 
-    var element = renderPureComponent(SortDropdown(getProps()));
+    var element = renderComponent(SortDropdown, getProps());
     var options = element.querySelectorAll('.picklist-option .picklist-title');
 
     expect(options.length).to.eq(sortTypes.length);
@@ -40,7 +40,7 @@ describe('components/SortDropdown', function() {
 
   it('calls the onSelection function when an option is selected', function() {
     var spy = sinon.spy();
-    var element = renderPureComponent(SortDropdown(getProps({ onSelection: spy })));
+    var element = renderComponent(SortDropdown, getProps({ onSelection: spy }));
     var updatedAtOption = _.filter(element.querySelectorAll('.picklist-option'), (option) => {
       var title = option.querySelector('.picklist-title');
       return title.textContent === 'Recently Updated';

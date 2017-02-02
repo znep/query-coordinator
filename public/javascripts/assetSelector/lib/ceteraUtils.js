@@ -4,9 +4,7 @@ const CETERA_URL = '//api.us.socrata.com/api/catalog/v1'; // TODO: get from doma
 const DEFAULT_LIMIT = 6;
 const DEFAULT_ORDER = 'relevance';
 
-const getOffset = (pageNumber, limit) => {
-  return (pageNumber - 1) * limit;
-};
+const getOffset = (pageNumber, limit) => (pageNumber - 1) * limit;
 
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
@@ -70,19 +68,16 @@ export const ceteraUtils = (() => {
         const ceteraResultResource = ceteraResult.resource;
 
         return {
-          id: ceteraResultResource.id,
+          ..._.pick(
+            ceteraResultResource, 'id', 'name', 'description', 'provenance', 'createdAt', 'updatedAt'
+          ),
           link: ceteraResult.link,
-          name: ceteraResultResource.name,
-          description: ceteraResultResource.description,
           type: mapResultType(ceteraResultResource.type),
           categories: ceteraResult.classification.categories,
           tags: ceteraResult.classification.tags,
           previewImageUrl: ceteraResult.preview_image_url,
           isPublic: true, // Not implemented yet. See cetera::result_row
           isFederated: resultIsFederated(ceteraResult.metadata.domain),
-          provenance: ceteraResultResource.provenance,
-          createdAt: ceteraResultResource.createdAt,
-          updatedAt: ceteraResultResource.updatedAt,
           viewCount: parseInt(ceteraResultResource.view_count.page_views_total, 10)
         };
       });

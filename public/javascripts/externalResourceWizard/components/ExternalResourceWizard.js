@@ -1,9 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
 import _ from 'lodash';
 import classNames from 'classnames';
-import { closeExternalResourceWizard } from '../actions/modal';
-import { updateTitle, updateDescription, updateUrl, updatePreviewImage } from '../actions/content';
 import BackButton from '../../assetSelector/components/BackButton';
 import Header from '../../assetSelector/components/Header';
 import ExternalResourceForm from './ExternalResourceForm';
@@ -13,24 +10,37 @@ import { ExternalViewCard } from 'socrata-components';
 export class ExternalResourceWizard extends Component {
   constructor(props) {
     super(props);
-    _.bindAll(this, ['returnExternalResource']);
+
+    this.state = {
+      title: '',
+      description: '',
+      url: '',
+      previewImage: ''
+    };
+
+    _.bindAll(this, ['returnExternalResource', 'updateField']);
+  }
+
+  updateField(field, value) {
+    this.setState({ [field]: value });
   }
 
   returnExternalResource() {
+    const { title, description, url, previewImage } = this.state;
+
     const result = {
       resourceType: 'external',
-      name: this.props.title.value,
-      description: this.props.description.value,
-      url: this.props.url.value,
-      imageUrl: this.props.previewImage.value
+      name: title,
+      description: description,
+      url: url,
+      imageUrl: previewImage
     };
     this.props.onSelect(result);
-    this.props.dispatchCloseExternalResourceWizard();
-    this.props.dispatchClearFormValues();
+    this.props.onClose();
   }
 
   render() {
-    const { title, description, url, previewImage } = this.props;
+    const { title, description, url, previewImage } = this.state;
 
     const modalClassNames = classNames({
       'external-resource-wizard': true,
@@ -40,15 +50,15 @@ export class ExternalResourceWizard extends Component {
     });
 
     const previewCardProps = {
-      name: _.isEmpty(title.value) ? null : title.value,
-      description: _.isEmpty(description.value) ? null : description.value,
-      imageUrl: _.isEmpty(previewImage.value) ? null : previewImage.value,
+      name: _.isEmpty(title) ? null : title,
+      description: _.isEmpty(description) ? null : description,
+      imageUrl: _.isEmpty(previewImage) ? null : previewImage,
       linkProps: {
         'aria-label': _.get(I18n, 'external_resource_wizard.preview', 'Preview')
       }
     };
 
-    const formIsInvalid = !_.isEmpty(_.find([title, description, url, previewImage], { invalid: true }));
+    const formIsInvalid = _.isEmpty(title) || _.isEmpty(url);
 
     return (
       <div className={modalClassNames} data-modal-dismiss>
@@ -57,11 +67,7 @@ export class ExternalResourceWizard extends Component {
             title={_.get(I18n, 'external_resource_wizard.header_title', 'Feature an External Resource')} />
           <div className="modal-content">
             <div className="centered-content">
-              <BackButton
-                onClick={() => {
-                  this.props.dispatchCloseExternalResourceWizard();
-                  this.props.onDismiss();
-                }} />
+              <BackButton onClick={this.props.onClose} />
 
               <div className="description">
                 <p>
@@ -73,10 +79,11 @@ export class ExternalResourceWizard extends Component {
 
               <div className="external-resource-contents">
                 <ExternalResourceForm
-                  title={title}
                   description={description}
-                  url={url}
-                  previewImage={previewImage} />
+                  onFieldChange={this.updateField}
+                  previewImage={previewImage}
+                  title={title}
+                  url={url} />
 
                 <div className="external-resource-preview">
                   <ExternalViewCard {...previewCardProps} />
@@ -85,6 +92,7 @@ export class ExternalResourceWizard extends Component {
             </div>
           </div>
           <Footer
+            onClose={this.props.onClose}
             onSelect={this.returnExternalResource}
             selectIsDisabled={formIsInvalid} />
         </div>
@@ -94,61 +102,15 @@ export class ExternalResourceWizard extends Component {
 }
 
 ExternalResourceWizard.propTypes = {
-  dispatchCloseExternalResourceWizard: PropTypes.func.isRequired,
-  dispatchClearFormValues: PropTypes.func.isRequired,
   modalIsOpen: PropTypes.bool.isRequired,
-  onDismiss: PropTypes.func,
-  onSelect: PropTypes.func.isRequired,
-  title: PropTypes.object.isRequired,
-  description: PropTypes.object.isRequired,
-  url: PropTypes.object.isRequired,
-  previewImage: PropTypes.object.isRequired
+  onClose: PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired
 };
 
 ExternalResourceWizard.defaultProps = {
-  dispatchCloseExternalResourceWizard: _.noop,
-  dispatchClearFormValues: _.noop,
   modalIsOpen: false,
-  onDismiss: _.noop,
-  onSelect: _.noop,
-  title: {
-    value: '',
-    invalid: true
-  },
-  description: {
-    value: ''
-  },
-  url: {
-    value: '',
-    invalid: true
-  },
-  previewImage: {
-    value: ''
-  }
+  onClose: _.noop,
+  onSelect: _.noop
 };
 
-function mapStateToProps(state) {
-  return {
-    description: _.get(state, 'externalResourceWizard.content.description'),
-    modalIsOpen: _.get(state, 'externalResourceWizard.modal.modalIsOpen'),
-    previewImage: _.get(state, 'externalResourceWizard.content.previewImage'),
-    title: _.get(state, 'externalResourceWizard.content.title'),
-    url: _.get(state, 'externalResourceWizard.content.url')
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    dispatchCloseExternalResourceWizard: function() {
-      dispatch(closeExternalResourceWizard());
-    },
-    dispatchClearFormValues: function() {
-      dispatch(updateTitle(''));
-      dispatch(updateDescription(''));
-      dispatch(updateUrl(''));
-      dispatch(updatePreviewImage(''));
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ExternalResourceWizard);
+export default ExternalResourceWizard;

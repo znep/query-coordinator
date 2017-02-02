@@ -1,82 +1,80 @@
 import { ResultsContainer } from 'components/ResultsContainer';
 import $ from 'jquery';
 import ceteraUtils from 'lib/ceteraUtils';
+import mockCeteraResponse from 'data/mockCeteraResponse';
 
 describe('components/ResultsContainer', function() {
+
   function defaultProps() {
     return {
-      results: [
-        {
-          id: 'abcd-1234',
-          name: 'test view',
-          description: 'test view description',
-          type: 'dataset',
-          link: 'https://localhost/A/B/abcd-1234'
-        }
-      ],
-      resultCount: 100,
+      additionalTopbarComponents: [],
+      category: 'Education',
+      onClose: _.noop,
+      onSelect: _.noop,
       resultsPerPage: 6
     };
   }
 
   function getProps(props = {}) {
-    return Object.assign({}, defaultProps(), props);
+    return {...defaultProps(), ...props};
   }
 
-  beforeEach(() => {
+  function stubFetch(ceteraResponse = { results: [], resultSetSize: 0 }) {
     sinon.stub(ceteraUtils, 'fetch', function(options) {
       var deferred = $.Deferred();
       deferred.then = deferred.done;
       deferred.catch = deferred.fail;
 
       deferred.resolve({
-        results: [],
-        resultSetSize: 0
+        results: ceteraResponse.results,
+        resultSetSize: ceteraResponse.resultSetSize
       });
 
       return deferred;
     });
-  });
+  }
 
-  afterEach(() => {
-    ceteraUtils.fetch.restore();
-  });
+  describe('result cards', function() {
+    afterEach(() => {
+      ceteraUtils.fetch.restore();
+    });
 
-  it('renders', function() {
-    var element = renderComponentWithStore(ResultsContainer, getProps());
-    expect(element).to.exist;
-    expect(element.className).to.match(/results-container/);
-  });
+    it('renders', function() {
+      stubFetch();
+      var element = renderComponent(ResultsContainer);
+      expect(element).to.exist;
+      expect(element.className).to.match(/results-container/);
+    });
 
-  it('renders the "no results" element if the results array is empty', function() {
-    var element = renderComponentWithStore(ResultsContainer, getProps({ results: [] }));
-    expect(element.querySelector('.no-results')).to.exist;
-  });
+    it('renders the "no results" element if the results array is empty', function() {
+      stubFetch({ results: [], resultSetSize: 0 });
+      var element = renderComponent(ResultsContainer);
+      expect(element.querySelector('.no-results')).to.exist;
+    });
 
-  it('renders the results container if the results array is present', function() {
-    var element = renderComponentWithStore(ResultsContainer, getProps());
-    expect(element).to.exist;
-    expect(element.querySelector('.card-container')).to.exist;
-  });
+    it('renders the results container if the results array is present', function() {
+      stubFetch(mockCeteraResponse);
+      var element = renderComponent(ResultsContainer);
+      expect(element).to.exist;
+      expect(element.querySelector('.card-container')).to.exist;
+    });
 
-  it('renders the total result count', function() {
-    var element = renderComponentWithStore(ResultsContainer, getProps());
-    expect(element.querySelector('.result-count').textContent).to.equal('1-6 of 100 Views');
-  });
+    it('renders the total result count', function() {
+      stubFetch(mockCeteraResponse);
+      var element = renderComponent(ResultsContainer);
+      expect(element.querySelector('.result-count').textContent).to.equal('1-6 of 16 Views');
+    });
 
-  it('renders the correct number of cards', function() {
-    const results = defaultProps().results.slice(0);
-    const originalResult = results[0];
-    for (var i = 0; i < 8; i++) {
-      results.push(originalResult)
-    }
-    var element = renderComponentWithStore(ResultsContainer, getProps({ results }));
-    expect(element.querySelectorAll('.result-card').length).to.equal(9);
+    it('renders the correct number of cards', function() {
+      stubFetch(mockCeteraResponse);
+      var element = renderComponent(ResultsContainer);
+      expect(element.querySelectorAll('.result-card').length).to.equal(6);
+    });
   });
 
   describe('additionalTopbarComponents', function() {
     it('can be an empty array', function() {
-      var element = renderComponentWithStore(ResultsContainer, getProps({
+      var element = renderComponent(ResultsContainer, getProps({
         additionalTopbarComponents: []
       }));
       expect(element).to.exist;
@@ -84,7 +82,7 @@ describe('components/ResultsContainer', function() {
 
     it('renders an additional component in the topbar', function() {
       var testComponent = React.createElement('div', { className: 'test', key: 0 });
-      var element = renderComponentWithStore(ResultsContainer, getProps({
+      var element = renderComponent(ResultsContainer, getProps({
         additionalTopbarComponents: [testComponent]
       }));
 
@@ -95,7 +93,7 @@ describe('components/ResultsContainer', function() {
       var testComponent1 = React.createElement('div', { className: 'test1', key: 0 });
       var testComponent2 = React.createElement('div', { className: 'test2', key: 1 });
       var testComponent3 = React.createElement('div', { className: 'test3', key: 2 });
-      var element = renderComponentWithStore(ResultsContainer, getProps({
+      var element = renderComponent(ResultsContainer, getProps({
         additionalTopbarComponents: [testComponent1, testComponent2, testComponent3]
       }));
 

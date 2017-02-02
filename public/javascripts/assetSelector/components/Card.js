@@ -1,7 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
-import { connect } from 'react-redux';
-import { closeAssetSelector } from '../actions/modal';
 import { ViewCard } from 'socrata-components';
 import { getIconClassForDisplayType } from 'socrata-components/common/displayTypeMetadata';
 import { getDateLabel, getViewCountLabel, getAriaLabel } from '../../datasetLandingPage/lib/viewCardHelpers';
@@ -10,15 +8,17 @@ import { handleKeyPress } from '../lib/a11yHelpers';
 export class Card extends Component {
   constructor(props) {
     super(props);
-    _.bindAll(this, ['onSelect', 'setHovering', 'viewCardProps']);
+
     this.state = {
       hovering: false
     };
+
+    _.bindAll(this, ['onSelect', 'setHovering', 'viewCardProps']);
   }
 
   onSelect(cardProps) {
     this.props.onSelect(cardProps);
-    this.props.dispatchCloseAssetSelector();
+    this.props.onClose();
   }
 
   setHovering(hoveringState) {
@@ -26,15 +26,17 @@ export class Card extends Component {
   }
 
   viewCardProps() {
+    const { description, isPublic, link, name, previewImageUrl, type, updatedAt, viewCount } = this.props;
+
     return {
-      name: this.props.name,
-      description: this.props.description,
-      url: this.props.link,
-      icon: getIconClassForDisplayType(this.props.type),
-      metadataLeft: getDateLabel(this.props.updatedAt),
-      metadataRight: getViewCountLabel(this.props.viewCount),
-      imageUrl: this.props.previewImageUrl,
-      isPrivate: !this.props.isPublic,
+      name,
+      description,
+      url: link,
+      icon: getIconClassForDisplayType(type),
+      metadataLeft: getDateLabel(updatedAt),
+      metadataRight: getViewCountLabel(viewCount),
+      imageUrl: previewImageUrl,
+      isPrivate: !isPublic,
       linkProps: {
         target: '_blank',
         'aria-label': getAriaLabel(this.props)
@@ -76,12 +78,12 @@ Card.propTypes = {
   categories: PropTypes.array,
   createdAt: PropTypes.string,
   description: PropTypes.string,
-  dispatchCloseAssetSelector: PropTypes.func.isRequired,
   id: PropTypes.string,
   isFederated: PropTypes.bool,
   isPublic: PropTypes.bool,
   link: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
   previewImageUrl: PropTypes.string,
   provenance: PropTypes.string,
@@ -92,20 +94,12 @@ Card.propTypes = {
 };
 
 Card.defaultProps = {
-  dispatchCloseAssetSelector: _.noop,
   link: '',
   name: '',
+  onClose: _.noop,
   onSelect: _.noop,
   type: '',
   viewCount: 0
 };
 
-function mapDispatchToProps(dispatch) {
-  return {
-    dispatchCloseAssetSelector: function() {
-      dispatch(closeAssetSelector());
-    }
-  };
-}
-
-export default connect(null, mapDispatchToProps)(Card);
+export default Card;

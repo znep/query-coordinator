@@ -33,9 +33,13 @@
 
 ## Everyday musings of a Styleguide developer
 
-### Working on the styleguide locally
+#### Working on the styleguide in an embedded application
 
-You are working on a feature or fixing a bug and you want to test your changes on your local development machine prior to deploying a new version of the styleguide. Good on you! You can use `npm link` to link the version that you're currently working on with another project that you're using to test it. For example if you're testing `socrata-components` using the `frontend` project, you'd do something like this:
+Scenario:
+
+You are working on a feature or fixing a bug and you want to test your changes locally in an embedded app, such as frontend or storyteller, prior to deploying a new version of the styleguide.
+
+Use `npm link` to link the version that you're currently working on with another project that you're using to test it. For example if you're testing `socrata-components` using the `frontend` project, you'd do something like this:
 
 ```shell
 cd $SOCRATA_HOME/styleguide;
@@ -46,7 +50,19 @@ cd $SOCRATA_HOME/frontend;
 npm link socrata-components;
 ```
 
-This will link a current version of `socrata-components`. To see edits made in this repository, the command `NODE_ENV=production npm run gulp` can be used. A `watch` command is also available `NODE_ENV=production npm run watch`.
+This will link a current version of `socrata-components`.
+
+To build edits made in this repository, run the command
+
+```shell
+NODE_ENV=production npm run gulp
+```
+
+A `watch` command is also available to remove the tedium of rebuilding over and over by hand.
+
+```shell
+NODE_ENV=production npm run watch
+```
 
 #### Making a PR
 

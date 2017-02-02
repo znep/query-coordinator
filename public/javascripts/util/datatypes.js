@@ -1200,8 +1200,7 @@ blist.namespace.fetch('blist.datatypes');
         'email',
         'url',
         'checkbox',
-        'flag',
-        'dataset_link'
+        'flag'
       ].concat(numericConvertTypes),
       createable: true,
       deleteable: true,
@@ -1226,7 +1225,7 @@ blist.namespace.fetch('blist.datatypes');
 
       aggregates: nonNumericAggs,
       convertableTypes: ['text', 'calendar_date', 'date', 'phone',
-          'email', 'url', 'checkbox', 'flag', 'dataset_link'
+          'email', 'url', 'checkbox', 'flag'
         ].
         concat(numericConvertTypes),
       createable: true,
@@ -1266,7 +1265,7 @@ blist.namespace.fetch('blist.datatypes');
       aggregates: aggs,
       alignment: numericAlignment,
       cls: 'number',
-      convertableTypes: _.without(numericConvertTypes, 'number').concat('text').concat('dataset_link'),
+      convertableTypes: _.without(numericConvertTypes, 'number').concat('text'),
       createable: true,
       deleteable: true,
       filterConditions: blist.filter.groups.numeric,
@@ -1650,7 +1649,7 @@ blist.namespace.fetch('blist.datatypes');
 
       aggregates: nonNumericAggs,
       alignment: alignment,
-      convertableTypes: ['text', 'dataset_link'],
+      convertableTypes: ['text'],
       createable: true,
       defaultFilterSubColumn: 'description',
       deleteable: true,

@@ -3,7 +3,7 @@ import _ from 'lodash';
 import Environment from '../StorytellerEnvironment';
 import StorytellerUtils from '../StorytellerUtils';
 import { storyStore } from './stores/StoryStore';
-import httpRequest from '../services/httpRequest';
+import httpRequest, { coreHeaders } from '../services/httpRequest';
 import { exceptionNotifier } from '../services/ExceptionNotifier';
 
 /**
@@ -42,14 +42,13 @@ export default function CollaboratorsDataProvider() {
       `/api/search/users.json?q=${email}` : // Core
       `/stories/search/users.json?email=${email}`; // Cetera
 
-    return httpRequest('GET', userUrl).
-      then(
-        (data) => _.get(data, 'results[0]', null),
-        (error) => {
-          exceptionNotifier.notify(error);
-          return null;
-        }
-      );
+    return httpRequest('GET', userUrl).then(
+      ({ data }) => _.get(data, 'results[0]', null),
+      (error) => {
+        exceptionNotifier.notify(error);
+        return null;
+      }
+    );
   };
 
   /**
@@ -60,66 +59,49 @@ export default function CollaboratorsDataProvider() {
    * @returns {Promise} - A promise that resolves with the Array of collaborators.
    */
   this.getCollaborators = function() {
-    return new Promise(function(resolve, reject) {
+    return httpRequest('GET', urls.read).
+      then(({ data }) => {
+        // Add the primary owner to the list of grants.
+        const grants = data.concat({
+          primary: true,
+          userId: storyStore.getStoryPrimaryOwnerUid()
+        });
 
-      httpRequest('GET', urls.read).
-        then(function(grants) {
-          var promises;
+        const promises = _.chain(grants).
+          filter((grant) => {
+            return grant.hasOwnProperty('userEmail') || grant.hasOwnProperty('userId');
+          }).
+          map(getEmailAddress).
+          value();
 
-          // Add the primary owner to the list of grants.
-          grants = grants.concat({
-            primary: true,
-            userId: storyStore.getStoryPrimaryOwnerUid()
-          });
-
-          promises = _.chain(grants).
-            filter(
-              function(grant) {
-                return grant.hasOwnProperty('userEmail') || grant.hasOwnProperty('userId');
-              }
-            ).
-            map(getEmailAddress).
-            value();
-
-          Promise.all(promises).
-            then(
-              function(collaborators) {
-                collaborators = _.map(collaborators, grantToStoreFormat);
-
-                resolve(collaborators);
-              },
-              reject
-            );
-        }).
-        catch(exceptionNotifier.notify);
-    });
+        return Promise.all(promises);
+      }).
+      then((collaborators) => _.map(collaborators, grantToStoreFormat)).
+      catch(exceptionNotifier.notify);
   };
 
   function getEmailAddress(collaborator) {
-    var userUrl;
-
     if (collaborator.userEmail) {
       return Promise.resolve(collaborator);
     } else if (collaborator.userId) {
 
-      userUrl = StorytellerUtils.format('/api/users/{0}.json', collaborator.userId);
+      const userUrl = StorytellerUtils.format('/api/users/{0}.json', collaborator.userId);
 
       return httpRequest('GET', userUrl).
-        then(
-          function(json) {
-            collaborator.userEmail = json.email;
-            collaborator.displayName = json.displayName;
-            collaborator.roleName = json.roleName || 'unknown';
+        then((response) => {
+          const user = response.data;
+          collaborator.userEmail = user.email;
+          collaborator.displayName = user.displayName;
+          collaborator.roleName = user.roleName || 'unknown';
 
-            if (collaborator.primary) {
-              collaborator.type = 'owner';
-            } else if (!_.isString(collaborator.type)) {
-              collaborator.type = 'unknown';
-            }
-
-            return collaborator;
+          if (collaborator.primary) {
+            collaborator.type = 'owner';
+          } else if (!_.isString(collaborator.type)) {
+            collaborator.type = 'unknown';
           }
-        ).
+
+          return collaborator;
+        }).
         catch(exceptionNotifier.notify);
     } else {
       return Promise.reject();
@@ -135,19 +117,13 @@ export default function CollaboratorsDataProvider() {
    */
   this.getCollaborator = function(email) {
     return this.getCollaborators().then(function(collaborators) {
-      return new Promise(function(resolve, reject) {
-        var collaborator = _.find(collaborators, function(originalCollaborator) {
-          return originalCollaborator.email === email;
-        });
+      const collaborator = _.find(collaborators, { email });
 
-        if (collaborator) {
-          resolve(collaborator);
-        } else {
-          reject(
-            StorytellerUtils.format('Could not find a collaborator with {0}', email)
-          );
-        }
-      });
+      if (collaborator) {
+        return collaborator;
+      } else {
+        return Promise.reject(StorytellerUtils.format('Could not find a collaborator with {0}', email));
+      }
     });
   };
 
@@ -180,7 +156,10 @@ export default function CollaboratorsDataProvider() {
    * @returns {Promise} - A promise that resolves when an addition succeeds.
    */
   this.addCollaborator = function(collaborator) {
-    return ajax('post', urls.add, collaborator);
+    return httpRequest('POST', urls.add, {
+      data: storeToGrantFormat(collaborator),
+      headers: coreHeaders()
+    });
   };
 
   /**
@@ -196,29 +175,20 @@ export default function CollaboratorsDataProvider() {
    * @returns {Promise} - A promise that resolves when an addition succeeds.
    */
   this.addCollaborators = function(collaborators) {
-    return new Promise(function(resolve, reject) {
-      var index = 0;
-      var next = function() {
-        if (!collaborators[index]) {
-          return resolve(collaborators);
-        }
+    const collabs = _.cloneDeep(collaborators);
 
-        self.addCollaborator(collaborators[index++]).
-          then(
-            function() {
-              next();
-            }
-          ).
-          catch(
-            function(error) {
+    const addNext = () => {
+      const collab = collabs.shift();
+      if (collab) {
+        return self.addCollaborator(collab).then(addNext);
+      } else {
+        return Promise.resolve(collaborators);
+      }
+    };
 
-              exceptionNotifier.notify(error);
-              reject('Failed to save collaborator.');
-            }
-          );
-      };
-
-      next();
+    return addNext().catch((error) => {
+      exceptionNotifier.notify(error);
+      return Promise.reject('Failed to save collaborator.');
     });
   };
 
@@ -234,7 +204,10 @@ export default function CollaboratorsDataProvider() {
   this.removeCollaborator = function(collaborator) {
     return self.getCollaborator(collaborator.email).
       then(function(originalCollaborator) {
-        return ajax('put', urls.remove, originalCollaborator);
+        return httpRequest('PUT', urls.remove, {
+          data: storeToGrantFormat(originalCollaborator),
+          headers: coreHeaders()
+        });
       });
   };
 
@@ -273,41 +246,5 @@ export default function CollaboratorsDataProvider() {
         type: store.accessLevel
       };
     }
-  }
-
-  function ajax(method, url, data) {
-    return new Promise(function(resolve, reject) {
-      var json = Array.isArray(data) ? data.map(storeToGrantFormat) : storeToGrantFormat(data);
-      var request = new XMLHttpRequest();
-      var csrfToken = decodeURIComponent(
-        StorytellerUtils.getCookie('socrata-csrf-token')
-      );
-
-      json = JSON.stringify(json);
-
-      request.addEventListener('load', function() {
-        var isAString = typeof this.responseText === 'string';
-        var hasALength = this.responseText.length > 0;
-        var isJSON = /application\/json/.test(this.getResponseHeader('Content-Type'));
-
-        if (this.status === 200) {
-          if (isAString && hasALength && isJSON) {
-            resolve(JSON.parse(this.responseText));
-          } else {
-            resolve();
-          }
-        } else {
-          reject(this);
-        }
-      });
-
-      request.open(method, url);
-      request.setRequestHeader('Content-Type', 'application/json');
-      request.setRequestHeader('X-App-Token', Environment.CORE_SERVICE_APP_TOKEN);
-      request.setRequestHeader('X-CSRF-Token', csrfToken);
-      request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-
-      request.send(json);
-    });
   }
 }

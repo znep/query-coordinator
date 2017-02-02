@@ -5,6 +5,7 @@ import StorytellerUtils from 'StorytellerUtils';
 import Actions from 'editor/Actions';
 import Dispatcher from 'editor/Dispatcher';
 import Store, {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
+import {__RewireAPI__ as httpRequestAPI} from 'services/httpRequest';
 import CoreSavingStore, {__RewireAPI__ as CoreSavingStoreAPI} from 'editor/stores/CoreSavingStore';
 
 describe('CoreSavingStore', function() {
@@ -54,7 +55,8 @@ describe('CoreSavingStore', function() {
     CoreSavingStoreAPI.__Rewire__('dispatcher', dispatcher);
     CoreSavingStoreAPI.__Rewire__('storyStore', new StoryStoreMock());
     CoreSavingStoreAPI.__Rewire__('I18n', I18nMocker);
-    CoreSavingStoreAPI.__Rewire__('Environment', {
+
+    httpRequestAPI.__Rewire__('Environment', {
       CORE_SERVICE_APP_TOKEN: 'storyteller_app_token'
     });
 
@@ -126,27 +128,8 @@ describe('CoreSavingStore', function() {
       it('should indicate no save in progress', expectNoSaveInProgress);
     });
 
-    describe('with app token undefined', function() {
-      beforeEach(function() {
-        CoreSavingStoreAPI.__Rewire__('Environment', {
-          CORE_SERVICE_APP_TOKEN: undefined
-        });
-
-        coreSavingStore = new CoreSavingStore();
-      });
-
-      it('immediately reports an error', function() {
-        dispatcher.dispatch({
-          action: Actions.STORY_SAVE_METADATA,
-          storyUid: storyUid
-        });
-
-        assert.isTrue(errorSpy.called);
-      });
-    });
-
     describe('with no validation issues', function() {
-      var viewUrl;
+      var viewUrl = StorytellerUtils.format('/api/views/{0}.json', storyUid);
       var cookie = 'socrata-csrf-token=the_csrf_token%3D;'; // '=' encoded
 
       beforeEach(function(done) {
@@ -156,11 +139,6 @@ describe('CoreSavingStore', function() {
           action: Actions.STORY_SAVE_METADATA,
           storyUid: storyUid
         });
-
-        viewUrl = StorytellerUtils.format(
-          '/api/views/{0}.json',
-          storyUid
-        );
 
         server.respondWith(
           viewUrl,

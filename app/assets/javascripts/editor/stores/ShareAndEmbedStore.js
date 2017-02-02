@@ -22,10 +22,6 @@ export default function ShareAndEmbedStore() {
 
   this.register(function(payload) {
     StorytellerUtils.assertHasProperty(payload, 'action');
-    // Note that we do not assign `_currentOpenState` the value of action
-    // outside of the case statements because ALL events will pass through
-    // this function and we only want to alter `_currentSelectorState` in
-    // response to actions that are actually relevant.
     switch (payload.action) {
 
       case Actions.SHARE_AND_EMBED_MODAL_OPEN:
@@ -45,7 +41,7 @@ export default function ShareAndEmbedStore() {
     );
 
     if (!saveInProgress) {
-      httpRequest('GET', self.getStoryTileApiUrl()).then(function(data) {
+      httpRequest('GET', self.getStoryTileApiUrl()).then(function({ data }) {
         _storyViewUrl = _.get(data, 'url', _storyViewUrl);
         self._emitChange();
       });

@@ -99,8 +99,8 @@ function prefetchDataNeededForMigration(sections) {
     } else if (section.type === 'viz' && section.dataset) {
       // dataset may be blank if unconfigured.
       // also possible to have dataset reference to nonexistent dataset.
-      return httpRequest('GET', `https://${window.location.hostname}/api/views/${section.dataset}.json`).
-        then((data) => section.dataset = data ).
+      return httpRequest('GET', `/api/views/${section.dataset}.json`).
+        then(({ data }) => section.dataset = data).
         catch((error) => {
           const missingResourceStatusCodes = [403, 404];
           if (_.includes(missingResourceStatusCodes, error.statusCode)) {
@@ -143,8 +143,7 @@ function awaitDocumentProcessing(assetUrl) {
   const url = `${Constants.API_PREFIX_PATH}/documents/${documentId}`;
 
   return new Promise((resolve, reject) => {
-    const requestStatus = () => httpRequest('GET', url).then(handleStatus);
-    const handleStatus = (data) => {
+    const requestStatus = () => httpRequest('GET', url).then(({ data }) => {
       const { status } = data.document;
 
       if (status === 'processed') {
@@ -154,7 +153,7 @@ function awaitDocumentProcessing(assetUrl) {
       } else {
         _.delay(requestStatus, Constants.CHECK_DOCUMENT_PROCESSED_RETRY_INTERVAL);
       }
-    };
+    });
 
     requestStatus();
   });

@@ -36,9 +36,10 @@ export default function GoalTitleProvider() {
     });
 
     return httpRequest('GET', getApiUrl(goalId)).
-      then((goal) => {
+      then((response) => {
+        const goal = response.data;
         const options = {
-          data: JSON.stringify({ name: title }),
+          data: { name: title },
           headers: {
             'Content-Type': 'application/json',
             'If-Match': goal.version
@@ -64,8 +65,6 @@ export default function GoalTitleProvider() {
   }
 
   function errored(error) {
-    console.log(error);
-
     dispatcher.dispatch({
       action: Actions.GOAL_TITLE_SAVE_ERROR
     });

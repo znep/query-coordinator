@@ -73,7 +73,7 @@ describe('CollaboratorsDataProvider', () => {
 
     it('returns the user if request returns results', (done) => {
       const user = { id: 'some-user', roleName: 'test_dummy' };
-      mockHttpRequest.returns(Promise.resolve({ results: [ user ] }));
+      mockHttpRequest.returns(Promise.resolve({ data: { results: [ user ] } }));
       subject.lookupUserByEmail('foo').then(
         (resolution) => {
           assert.deepEqual(resolution, user);

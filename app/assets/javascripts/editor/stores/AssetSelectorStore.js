@@ -8,7 +8,7 @@ import Constants from '../Constants';
 import StorytellerUtils from '../../StorytellerUtils';
 import { storyStore } from './StoryStore';
 import { fileUploaderStore, STATUS } from './FileUploaderStore';
-import httpRequest, { storytellerAPIRequestHeaders } from '../../services/httpRequest';
+import httpRequest, { storytellerHeaders } from '../../services/httpRequest';
 import { exceptionNotifier } from '../../services/ExceptionNotifier';
 
 function t(str) {
@@ -500,7 +500,7 @@ export default function AssetSelectorStore() {
     const documentUrl = `${Constants.API_PREFIX_PATH}/documents/${value.documentId}`;
     const documentRequestOptions = {
       dataType: 'json',
-      headers: storytellerAPIRequestHeaders()
+      headers: storytellerHeaders()
     };
 
     _state.cropping = true;
@@ -513,7 +513,7 @@ export default function AssetSelectorStore() {
       catch(cropImageError);
   }
 
-  function cropImage(data) {
+  function cropImage({ data }) {
     const value = getImageComponent(self.getComponentValue());
     const cropUrl = `${Constants.API_PREFIX_PATH}/documents/${value.documentId}/crop`;
     const document = value.crop ? {
@@ -530,8 +530,8 @@ export default function AssetSelectorStore() {
 
     const cropRequestOptions = {
       dataType: 'text',
-      data: JSON.stringify({ document }),
-      headers: storytellerAPIRequestHeaders()
+      data: { document },
+      headers: storytellerHeaders()
     };
 
     httpRequest('put', cropUrl, cropRequestOptions).
@@ -1008,7 +1008,7 @@ export default function AssetSelectorStore() {
     const migrationsUrl = `https://${domain}/api/migrations/${obeUid}.json`;
 
     return httpRequest('GET', migrationsUrl).
-      then((migrationData) => _getView(domain, migrationData.nbeId)).
+      then(({ data }) => _getView(domain, data.nbeId)).
       catch((error) => {
         const noMigrationMatch = error.message.match('Cannot find migration info for view with id');
 
@@ -1037,11 +1037,11 @@ export default function AssetSelectorStore() {
     var viewUrl = `https://${domain}/api/views/${uid}.json`;
 
     return httpRequest('GET', viewUrl).
-      then((viewData) => {
+      then(({ data }) => {
         // Retcon the domain into the view data.
         // We'd have to pass it around like 5 methods otherwise.
-        viewData.domain = domain;
-        return viewData;
+        data.domain = domain;
+        return data;
       }, (error) => {
         const step = self.getStep();
 

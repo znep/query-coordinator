@@ -1,9 +1,13 @@
-import httpRequest, {__RewireAPI__ as httpRequestAPI} from '../../app/assets/javascripts/services/httpRequest';
+import $ from 'jquery';
+
+import httpRequest, {
+  coreHeaders,
+  storytellerHeaders,
+  __RewireAPI__ as httpRequestAPI
+} from '../../app/assets/javascripts/services/httpRequest';
 
 describe('httpRequest', function() {
   var jQueryAjaxStub;
-  var request;
-  var testMethod;
   var testUrl = 'test.json';
 
   beforeEach(function() {
@@ -15,135 +19,123 @@ describe('httpRequest', function() {
     httpRequestAPI.__ResetDependency__('$');
   });
 
-  describe('for GET requests', function() {
-    beforeEach(function() {
-      testMethod = 'GET';
-      request = httpRequest(testMethod, testUrl);
+  function behavesLikeRequestMade(method, url) {
+    describe(`for ${method} requests`, function() {
+      var request;
+
+      beforeEach(function() {
+        request = httpRequest(method, url);
+      });
+
+      it('returns a promise', function() {
+        assert.isTrue(request instanceof Promise);
+      });
+
+      it('makes the AJAX request with the correct options', function() {
+        assert.isTrue(jQueryAjaxStub.called);
+
+        var jQueryAjaxStubOptions = jQueryAjaxStub.getCall(0).args[0];
+        assert.equal(method, jQueryAjaxStubOptions.method);
+        assert.equal(url, jQueryAjaxStubOptions.url);
+      });
     });
+  }
 
-    it('returns a promise', function() {
-      assert.isTrue(request instanceof Promise);
+  function behavesLikeInvalidMethod(method) {
+    it('raises an error on assertion', function() {
+      assert.throws(() => { httpRequest(method, testUrl); }, 'Unsupported HTTP method');
+      assert.isFalse(jQueryAjaxStub.called);
     });
+  }
 
-    it('makes the AJAX request with the correct options', function() {
-      assert.isTrue(jQueryAjaxStub.called);
-
-      var jQueryAjaxStubOptions = jQueryAjaxStub.getCall(0).args[0];
-      assert.equal(testMethod, jQueryAjaxStubOptions.method);
-      assert.equal(testUrl, jQueryAjaxStubOptions.url);
-    });
-  });
-
-  describe('for POST requests', function() {
-    beforeEach(function() {
-      testMethod = 'POST';
-      request = httpRequest(testMethod, testUrl);
-    });
-
-    it('returns a promise', function() {
-      assert.isTrue(request instanceof Promise);
-    });
-
-    it('makes the AJAX request with the correct options', function() {
-      assert.isTrue(jQueryAjaxStub.called);
-
-      var jQueryAjaxStubOptions = jQueryAjaxStub.getCall(0).args[0];
-      assert.equal(testMethod, jQueryAjaxStubOptions.method);
-      assert.equal(testUrl, jQueryAjaxStubOptions.url);
-    });
-  });
-
-  describe('for PUT requests', function() {
-    beforeEach(function() {
-      testMethod = 'PUT';
-      request = httpRequest(testMethod, testUrl);
-    });
-
-    it('returns a promise', function() {
-      assert.isTrue(request instanceof Promise);
-    });
-
-    it('makes the AJAX request with the correct options', function() {
-      assert.isTrue(jQueryAjaxStub.called);
-
-      var jQueryAjaxStubOptions = jQueryAjaxStub.getCall(0).args[0];
-      assert.equal(testMethod, jQueryAjaxStubOptions.method);
-      assert.equal(testUrl, jQueryAjaxStubOptions.url);
-    });
-  });
-
-  describe('for DELETE requests', function() {
-    beforeEach(function() {
-      testMethod = 'DELETE';
-      request = httpRequest(testMethod, testUrl);
-    });
-
-    it('returns a promise', function() {
-      assert.isTrue(request instanceof Promise);
-    });
-
-    it('makes no AJAX request', function() {
+  describe('with invalid URLs', function() {
+    it('raises an error on assertion', function() {
+      assert.throws(() => { httpRequest('GET', null); }, 'Value must be one of');
       assert.isFalse(jQueryAjaxStub.called);
     });
   });
 
-  describe('for HEAD requests', function() {
+  describe('with invalid HTTP methods', function() {
+    behavesLikeInvalidMethod('DELETE');
+    behavesLikeInvalidMethod('HEAD');
+    behavesLikeInvalidMethod('OPTIONS');
+    behavesLikeInvalidMethod('PATCH');
+    behavesLikeInvalidMethod('TRACE');
+  });
+
+  describe('with a valid URL and method', function() {
+    behavesLikeRequestMade('GET', testUrl);
+    behavesLikeRequestMade('PUT', testUrl);
+    behavesLikeRequestMade('POST', testUrl);
+  });
+
+  describe('coreHeaders', function() {
+    var notifyStub;
+
     beforeEach(function() {
-      testMethod = 'HEAD';
-      request = httpRequest(testMethod, testUrl);
+      notifyStub = sinon.stub();
+
+      document.cookie = 'socrata-csrf-token=the_csrf_token%3D;'; // '=' encoded
+
+      httpRequestAPI.__Rewire__('Environment', {CORE_SERVICE_APP_TOKEN: 'foo'});
+      httpRequestAPI.__Rewire__('exceptionNotifier', {notify: notifyStub});
     });
 
-    it('returns a promise', function() {
-      assert.isTrue(request instanceof Promise);
+    afterEach(function() {
+      document.cookie += 'expires=Thu, 01 Jan 1970 00:00:01 GMT';
+
+      httpRequestAPI.__ResetDependency__('Environment');
+      httpRequestAPI.__ResetDependency__('exceptionNotifier');
     });
 
-    it('makes no AJAX request', function() {
-      assert.isFalse(jQueryAjaxStub.called);
+    it('returns a headers object', function() {
+      assert.deepEqual(coreHeaders(), {
+        'X-App-Token': 'foo',
+        'X-CSRF-Token': 'the_csrf_token=',
+        'X-Socrata-Host': 'localhost'
+      });
+    });
+
+    it('does not notify repeatedly if the Core app token is not present', function() {
+      httpRequestAPI.__Rewire__('Environment', {});
+
+      coreHeaders();
+      coreHeaders();
+      sinon.assert.calledOnce(notifyStub);
     });
   });
 
-  describe('for OPTIONS requests', function() {
+  describe('storytellerHeaders', function() {
+    var fakeTokenMeta;
+
     beforeEach(function() {
-      testMethod = 'OPTIONS';
-      request = httpRequest(testMethod, testUrl);
+      fakeTokenMeta = $('<meta>', { name: 'csrf-token', content: 'faketoken' }).appendTo('head');
+
+      httpRequestAPI.__Rewire__('Environment', {CORE_SERVICE_APP_TOKEN: 'foo'});
     });
 
-    it('returns a promise', function() {
-      assert.isTrue(request instanceof Promise);
+    afterEach(function() {
+      fakeTokenMeta.remove();
+
+      httpRequestAPI.__ResetDependency__('Environment');
     });
 
-    it('makes no AJAX request', function() {
-      assert.isFalse(jQueryAjaxStub.called);
-    });
-  });
-
-  describe('for PATCH requests', function() {
-    beforeEach(function() {
-      testMethod = 'PATCH';
-      request = httpRequest(testMethod, testUrl);
+    it('returns a headers object', function() {
+      assert.deepEqual(storytellerHeaders(), {
+        'X-App-Token': 'foo',
+        'X-CSRF-Token': 'faketoken',
+        'X-Socrata-Host': 'localhost'
+      });
     });
 
-    it('returns a promise', function() {
-      assert.isTrue(request instanceof Promise);
-    });
+    it('uses an empty string for the CSRF token if the meta tag is not present', function() {
+      fakeTokenMeta.remove();
 
-    it('makes no AJAX request', function() {
-      assert.isFalse(jQueryAjaxStub.called);
-    });
-  });
-
-  describe('for TRACE requests', function() {
-    beforeEach(function() {
-      testMethod = 'TRACE';
-      request = httpRequest(testMethod, testUrl);
-    });
-
-    it('returns a promise', function() {
-      assert.isTrue(request instanceof Promise);
-    });
-
-    it('makes no AJAX request', function() {
-      assert.isFalse(jQueryAjaxStub.called);
+      assert.deepEqual(storytellerHeaders(), {
+        'X-App-Token': 'foo',
+        'X-CSRF-Token': '',
+        'X-Socrata-Host': 'localhost'
+      });
     });
   });
 });

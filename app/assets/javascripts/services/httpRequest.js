@@ -1,71 +1,109 @@
 import $ from 'jquery';
+import _ from 'lodash';
 
 import Environment from '../StorytellerEnvironment';
 import StorytellerUtils from '../StorytellerUtils';
+import { exceptionNotifier } from './ExceptionNotifier';
 
-var SUPPORTED_REQUEST_METHODS = ['GET', 'PUT', 'POST'];
+const SUPPORTED_REQUEST_METHODS = ['GET', 'PUT', 'POST'];
+const PERMITTED_OPTIONS = ['data', 'dataType', 'contentType', 'headers'];
 
-export var storytellerAPIRequestHeaders = function() {
+export const coreHeaders = () => {
+  if (_.isEmpty(Environment.CORE_SERVICE_APP_TOKEN)) {
+    notifyMissingAppToken();
+  }
+
+  const csrfToken = decodeURIComponent(StorytellerUtils.getCookie('socrata-csrf-token'));
+
   return {
-    'X-CSRF-Token': Environment.CSRF_TOKEN
+    'X-App-Token': Environment.CORE_SERVICE_APP_TOKEN,
+    'X-CSRF-Token': csrfToken,
+    'X-Socrata-Host': window.location.hostname
+  };
+};
+
+export const storytellerHeaders = () => {
+  const csrfToken = _.get(
+    document.querySelector('meta[name="csrf-token"]'), 'content', ''
+  );
+
+  return {
+    'X-App-Token': Environment.CORE_SERVICE_APP_TOKEN,
+    'X-CSRF-Token': csrfToken,
+    'X-Socrata-Host': window.location.hostname
   };
 };
 
 export default function httpRequest(method, url, options) {
 
-  return new Promise(
-    function(resolve, reject) {
+  // Normalize arguments with reasonable defaults.
+  method = _.toUpper(method);
 
-      // A custom rejection handler that munges httpRequest arguments with
-      // jQuery's XHR properties.
-      function handleError(jqXHR) {
+  options = _.defaults(options, {
+    dataType: 'json',
+    contentType: 'application/json',
+    headers: {}
+  });
 
+  // Prepare JSON data if necessary.
+  if (options.data && !_.isString(options.data) && options.contentType === 'application/json') {
+    options.data = JSON.stringify(options.data);
+  }
+
+  // Sanity check for required parameters.
+  StorytellerUtils.assertIsOneOfTypes(url, 'string');
+  StorytellerUtils.assert(
+    _.includes(SUPPORTED_REQUEST_METHODS, method),
+    `Unsupported HTTP method ${method}; supported methods: ${SUPPORTED_REQUEST_METHODS.join(', ')}`
+  );
+
+  return new Promise((resolve, reject) => {
+
+    // A custom rejection handler that munges httpRequest arguments with
+    // jQuery's XHR properties.
+    function handleError(jqXHR, xhrStatus) {
+      const { status, responseText } = jqXHR;
+      const response = JSON.stringify(responseText) || '<No response>';
+
+      if (status === 200 && xhrStatus === 'parsererror') {
+        // Workaround for bad Core behavior - see EN-13538
+        resolve({
+          data: null,
+          status: 'success',
+          jqXHR
+        });
+      } else {
+        // Actually an error condition
         const responseError = new Error(
-          StorytellerUtils.format(
-            'Request "{0} {1}" failed ({2}) {3}',
-            method.toUpperCase(),
-            url,
-            jqXHR.status,
-            JSON.stringify(jqXHR.responseText) || '<No response>'
-          )
+          `Request "${method} ${url}" failed (${status}) ${response}`
         );
-        responseError.statusCode = jqXHR.status;
-        responseError.response = jqXHR.responseText;
+        responseError.statusCode = status;
+        responseError.response = responseText;
+        responseError.jqXHR = jqXHR;
 
         reject(responseError);
       }
-
-      // Reject unsupported HTTP verbs.
-      if (SUPPORTED_REQUEST_METHODS.indexOf(method.toUpperCase()) === -1) {
-
-        reject(
-          new Error(
-            StorytellerUtils.format(
-              'Unsupported method "{0}"; supported methods: {1}',
-              method.toUpperCase(),
-              SUPPORTED_REQUEST_METHODS.join(', ')
-            )
-          )
-        );
-      } else {
-
-        // Normalize options to jQuery's ajax method, with reasonable defaults.
-        options = options || {};
-
-        $.ajax({
-          // Minimal required parameters.
-          url: url,
-          method: method.toUpperCase(),
-          // Callbacks.
-          success: resolve,
-          error: handleError,
-          // Optional parameters.
-          data: options.data,
-          dataType: options.dataType || 'json',
-          contentType: options.contentType || 'application/json',
-          headers: options.headers || {}
-        });
-      }
     }
-  );
+
+    $.ajax(_.extend(
+      // Only allow specified options to be passed through directly.
+      _.pick(options, PERMITTED_OPTIONS),
+      {
+        // Required parameters.
+        url,
+        method,
+        // Callbacks and lifecycle settings.
+        processData: !(options.data instanceof Blob),
+        success: (data, status, jqXHR) => resolve({ data, status, jqXHR }),
+        error: handleError
+      }
+    ));
+  });
 }
+
+// Wrapped with _.once to prevent possible Airbrake spam.
+const notifyMissingAppToken = _.once(() => {
+  exceptionNotifier.notify(new Error(
+    'Environment.CORE_SERVICE_APP_TOKEN not configured.'
+  ));
+});

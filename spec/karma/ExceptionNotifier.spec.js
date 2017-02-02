@@ -69,7 +69,10 @@ describe('ExceptionNotifier', function() {
 
     describe('when airbrake is defined', function() {
       var error = 'hello';
-      var wrappedErrorMatcher = sinon.match(function(arg) {
+      var notifyErrorMatcher = sinon.match((arg) => {
+        return typeof arg === 'object' && arg.err.message === error;
+      });
+      var consoleErrorMatcher = sinon.match((arg) => {
         return typeof arg === 'object' && arg.message === error;
       });
 
@@ -79,17 +82,17 @@ describe('ExceptionNotifier', function() {
       });
 
       it('calls Client.notify with the error', function() {
-        assert.isTrue(notifyStub.calledWithMatch(wrappedErrorMatcher));
+        assert.isTrue(notifyStub.calledWithMatch(notifyErrorMatcher));
       });
 
       it('calls console.error', function() {
-        assert.isTrue(consoleErrorStub.calledWithMatch(wrappedErrorMatcher));
+        assert.isTrue(consoleErrorStub.calledWithMatch(consoleErrorMatcher));
       });
     });
 
     describe('when airbrake is undefined', function() {
       var error = 'from the other side';
-      var wrappedErrorMatcher = sinon.match(function(arg) {
+      var consoleErrorMatcher = sinon.match((arg) => {
         return typeof arg === 'object' && arg.message === error;
       });
 
@@ -99,11 +102,11 @@ describe('ExceptionNotifier', function() {
       });
 
       it('does not call Client.notify with the error', function() {
-        assert.isFalse(notifyStub.calledWithMatch(wrappedErrorMatcher));
+        assert.isFalse(notifyStub.called);
       });
 
       it('calls console.error', function() {
-        assert.isTrue(consoleErrorStub.calledWithMatch(wrappedErrorMatcher));
+        assert.isTrue(consoleErrorStub.calledWithMatch(consoleErrorMatcher));
       });
     });
 
@@ -123,16 +126,10 @@ describe('ExceptionNotifier', function() {
         });
 
         it('sends Google Analytics information', function() {
-          assert.isTrue(
-            gaStub.calledWith(
-              'send',
-              'exception',
-              {
-                'exDescription': 'Airbrake notification: ' + error,
-                'exFatal': false
-              }
-            )
-          );
+          assert.isTrue(gaStub.calledWith('send', 'exception', {
+            exDescription: `Airbrake notification: ${error}`,
+            exFatal: false
+          }));
         });
       });
 

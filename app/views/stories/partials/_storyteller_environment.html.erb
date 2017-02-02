@@ -1,10 +1,7 @@
 <script id="storyteller-environment" type="text/javascript">
-  var meta = document.querySelector('meta[name="csrf-token"]');
-
   // StorytellerEnvironment bindings.
   window.AIRBRAKE = <%= airbrake_config_for_js.to_json.html_safe %>;
   window.CORE_SERVICE_APP_TOKEN = '<%= Rails.application.config.core_service_app_token %>';
-  window.CSRF_TOKEN = (meta && meta.content) || '';
   window.DOWNTIMES = <%== downtimes.to_json %>;
   window.EMBED_CODE_SANDBOX_IFRAME_ALLOWANCES = '<%= embed_code_iframe_sandbox_allowances %>';
   window.ENABLE_DEPRECATED_USER_SEARCH_API = <%= deprecated_user_search_api_enabled? %>;

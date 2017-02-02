@@ -15,11 +15,6 @@ export default function StoryCopierStore() {
     StorytellerUtils.assertHasProperty(payload, 'action');
 
     var action = payload.action;
-
-    // Note that we do not assign `_currentSelectorState` the value of action
-    // outside of the case statements because ALL events will pass through
-    // this function and we only want to alter `_currentSelectorState` in
-    // response to actions that are actually relevant.
     switch (action) {
       case Actions.STORY_MAKE_COPY_MODAL_OPEN:
         _openDialog();

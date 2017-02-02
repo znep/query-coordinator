@@ -24,7 +24,7 @@ export default function CollaboratorsRenderer() {
   var $saveButton;
   var $alreadyAddedWarning;
   var $userHasNoAccountWarning;
-  var collaboratorsDataProvider = new CollaboratorsDataProvider(Environment.STORY_UID);
+  var collaboratorsDataProvider = new CollaboratorsDataProvider();
   var userDetailsCache = {};
 
   compileDOM();
@@ -627,7 +627,7 @@ export default function CollaboratorsRenderer() {
     var promises = [];
 
     var add = collaborators.filter(findByState('added'));
-    var addCollaborators = collaboratorsDataProvider.addCollaborators.bind(collaboratorsDataProvider);
+    var addCollaborators = collaboratorsDataProvider.addCollaborators;
     promises = promises.concat(addCollaborators(add));
 
     var remove = collaborators.filter(findByState('marked'));

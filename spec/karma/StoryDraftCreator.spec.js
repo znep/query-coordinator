@@ -7,6 +7,7 @@ import Actions from '../../app/assets/javascripts/editor/Actions';
 import StorytellerUtils from '../../app/assets/javascripts/StorytellerUtils';
 import Dispatcher from '../../app/assets/javascripts/editor/Dispatcher';
 import StoryStore from '../../app/assets/javascripts/editor/stores/StoryStore';
+import {__RewireAPI__ as httpRequestAPI} from '../../app/assets/javascripts/services/httpRequest';
 import StoryDraftCreator, {__RewireAPI__ as StoryDraftCreatorAPI} from '../../app/assets/javascripts/editor/StoryDraftCreator';
 
 describe('StoryDraftCreator', () => {
@@ -29,6 +30,8 @@ describe('StoryDraftCreator', () => {
       StoryDraftCreatorAPI.__Rewire__('Environment', _.merge(EnvironmentMocker, {IS_GOAL: false}));
       StoryDraftCreatorAPI.__Rewire__('dispatcher', dispatcher);
       StoryDraftCreatorAPI.__Rewire__('storyStore', storyStoreStub);
+
+      httpRequestAPI.__Rewire__('Environment', EnvironmentMocker);
 
       fakeTokenMeta = $('<meta>', { name: 'csrf-token', content: 'faketoken' });
 
@@ -65,7 +68,7 @@ describe('StoryDraftCreator', () => {
       server.respondWith((request) => {
         assert.propertyVal(request, 'method', 'POST');
         assert.propertyVal(request, 'url', StorytellerUtils.format('/stories/api/v1/stories/{0}/drafts', StandardMocks.validStoryUid));
-        assert.deepPropertyVal(request, 'requestHeaders.X-Socrata-Host', location.host);
+        assert.deepPropertyVal(request, 'requestHeaders.X-Socrata-Host', location.hostname);
         assert.deepPropertyVal(request, 'requestHeaders.X-CSRF-Token', 'faketoken');
         assert.deepPropertyVal(request, 'requestHeaders.If-Match', StandardMocks.validStoryDigest);
         assert.deepPropertyVal(request, 'requestHeaders.X-App-Token', EnvironmentMocker.CORE_SERVICE_APP_TOKEN);
@@ -80,7 +83,7 @@ describe('StoryDraftCreator', () => {
       StoryDraftCreator.saveDraft(StandardMocks.validStoryUid);
     });
 
-    describe('on succesful request', () => {
+    describe('on successful request', () => {
       const newDigest = 'something new';
       beforeEach(() => {
         server.respondImmediately = true;
@@ -112,7 +115,7 @@ describe('StoryDraftCreator', () => {
 
       it('should resolve the promise with the new digest', (done) => {
         StoryDraftCreator.saveDraft(StandardMocks.validStoryUid).
-        done((digest) => {
+        then((digest) => {
           assert.equal(digest, newDigest);
           done();
         });
@@ -146,7 +149,7 @@ describe('StoryDraftCreator', () => {
       });
 
       it('reject the returned promise', (done) => {
-        StoryDraftCreator.saveDraft(StandardMocks.validStoryUid).fail(() => done());
+        StoryDraftCreator.saveDraft(StandardMocks.validStoryUid).catch(() => done());
       });
     });
 
@@ -177,7 +180,7 @@ describe('StoryDraftCreator', () => {
       });
 
       it('reject the returned promise', (done) => {
-        StoryDraftCreator.saveDraft(StandardMocks.validStoryUid).fail(() => done());
+        StoryDraftCreator.saveDraft(StandardMocks.validStoryUid).catch(() => done());
       });
     });
 

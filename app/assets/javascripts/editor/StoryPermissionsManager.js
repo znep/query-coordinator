@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import { dispatcher } from './Dispatcher';
 import { storyStore } from './stores/StoryStore';
-import httpRequest, { storytellerAPIRequestHeaders } from '../services/httpRequest';
+import httpRequest, { storytellerHeaders } from '../services/httpRequest';
 import Environment from '../StorytellerEnvironment';
 import StorytellerUtils from '../StorytellerUtils';
 import Actions from './Actions';
@@ -23,7 +23,7 @@ export default function StoryPermissionsManager() {
         dispatcher.dispatch({
           action: Actions.STORY_SET_PUBLISHED_STORY,
           storyUid: STORY_UID,
-          publishedStory: response
+          publishedStory: response.data
         });
 
         return response;
@@ -40,15 +40,15 @@ export default function StoryPermissionsManager() {
       catch(error => handleRequestError(error, errorCallback));
   };
 
-  function handleRequestSuccess(response) {
-    StorytellerUtils.assertIsOneOfTypes(response, 'object');
-    StorytellerUtils.assertHasProperty(response, 'isPublic');
-    StorytellerUtils.assertIsOneOfTypes(response.isPublic, 'boolean');
+  function handleRequestSuccess({ data }) {
+    StorytellerUtils.assertIsOneOfTypes(data, 'object');
+    StorytellerUtils.assertHasProperty(data, 'isPublic');
+    StorytellerUtils.assertIsOneOfTypes(data.isPublic, 'boolean');
 
     dispatcher.dispatch({
       action: Actions.STORY_SET_PERMISSIONS,
       storyUid: STORY_UID,
-      isPublic: response.isPublic
+      isPublic: data.isPublic
     });
 
     return Promise.resolve();
@@ -68,8 +68,8 @@ export default function StoryPermissionsManager() {
       `${Constants.GOALS_API_V1_PREFIX_PATH}/goals/${STORY_UID}/narrative/published` :
       `${Constants.API_PREFIX_PATH}/stories/${STORY_UID}/published`;
     const options = {
-      headers: storytellerAPIRequestHeaders(),
-      data: JSON.stringify({ digest })
+      headers: storytellerHeaders(),
+      data: { digest }
     };
 
     return httpRequest(method, url, options);
@@ -81,8 +81,8 @@ export default function StoryPermissionsManager() {
       `${Constants.GOALS_API_V1_PREFIX_PATH}/goals/${STORY_UID}/narrative/permissions` :
       `${Constants.API_PREFIX_PATH}/stories/${STORY_UID}/permissions`;
     const options = {
-      headers: storytellerAPIRequestHeaders(),
-      data: JSON.stringify({ isPublic: false })
+      headers: storytellerHeaders(),
+      data: { isPublic: false }
     };
 
     return httpRequest(method, url, options);

@@ -111,19 +111,14 @@ function SvgFeatureMap(element, vif) {
     var extent = newData.extent;
     var vectorTileGetter = newData.vectorTileGetter;
 
+    if (!hasMapDimensions) {
+      return;
+    }
+
     emitRenderStart();
     self.showBusyIndicator();
 
-    if (newVif && !_.isEqual(newVif, lastRenderedVif)) {
-      this.updateVif(newVif);
-
-      updateBaseLayer(newVif);
-      updateFeatureLayer(newVif, vectorTileGetter);
-
-      if (!vifsAreEqualIgnoringCenterAndZoom(lastRenderedVif, newVif)) {
-        updateCenterAndZoom(newVif);
-      }
-    } else if (hasMapDimensions && !map) {
+    if (!map) {
 
       // Construct leaflet map
       map = L.map(mapElement[0], mapOptions);
@@ -131,12 +126,21 @@ function SvgFeatureMap(element, vif) {
       // Attach events on first render only
       attachEvents();
 
-      updateBaseLayer(vif);
-      updateFeatureLayer(vif, vectorTileGetter);
-      updateCenterAndZoom(vif);
+      updateBaseLayer(newVif);
+      updateFeatureLayer(newVif, vectorTileGetter);
+      updateCenterAndZoom(newVif);
 
       if (extent) {
         fitBounds(buildBoundsFromExtent(extent));
+      }
+    } else if (newVif && !_.isEqual(newVif, lastRenderedVif)) {
+      this.updateVif(newVif);
+
+      updateBaseLayer(newVif);
+      updateFeatureLayer(newVif, vectorTileGetter);
+
+      if (!vifsAreEqualIgnoringCenterAndZoom(lastRenderedVif, newVif)) {
+        updateCenterAndZoom(newVif);
       }
     } else {
       // If nothing to render again call completion asynchronously
@@ -853,7 +857,9 @@ function SvgFeatureMap(element, vif) {
   }
 
   function updateBaseLayer(newVif) {
+
     if (didBaseLayerChange(newVif)) {
+
       if (baseTileLayer) {
         map.removeLayer(baseTileLayer);
       }

@@ -102,20 +102,23 @@ $.fn.socrataSvgFeatureMap = function(originalVif) {
 
   function handleRenderVif(event) {
     var newVif = event.originalEvent.detail;
-    var rerender = () => {
+    var rerender = (extent) => {
       var vectorTileGetter = buildVectorTileGetter(
         SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif, 0)
       );
 
       visualization.clearError();
-      visualization.render(newVif, { vectorTileGetter });
+      visualization.render(newVif, { extent, vectorTileGetter });
     };
 
     if (didChangeDataSource(newVif, lastRenderedVif)) {
       initializeDataProviders(newVif);
       getDataFromProviders(newVif).then((resolutions) => {
+        var extent = resolutions[1];
+
         datasetMetadata = resolutions[0];
-        rerender();
+
+        rerender(extent);
       }).catch(handleError);
     } else {
       rerender();
@@ -374,7 +377,7 @@ $.fn.socrataSvgFeatureMap = function(originalVif) {
     var columnName = _.get(newVif, COLUMN_NAME_PATH);
 
     visualization = new SvgFeatureMap($element, newVif);
-    lastRenderedVif = newVif;
+    attachEvents();
 
     // Binds all globally-scoped dataProviders.
     initializeDataProviders(newVif);
@@ -382,10 +385,8 @@ $.fn.socrataSvgFeatureMap = function(originalVif) {
       var [metadata, extent] = resolutions;
       datasetMetadata = metadata;
 
-      attachEvents();
-
       visualization.render(
-        false,
+        newVif,
         {
           extent,
           vectorTileGetter: buildVectorTileGetter(
@@ -393,9 +394,12 @@ $.fn.socrataSvgFeatureMap = function(originalVif) {
           )
         }
       );
-    }).catch((e) => {
-      handleError(e);
-      logError(e);
+
+      lastRenderedVif = newVif;
+    }).catch((error) => {
+
+      handleError(error);
+      logError(error);
     });
   }
 

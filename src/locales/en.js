@@ -175,7 +175,7 @@ export default {
       title: 'Axis',
       subheaders: {
         axis_titles: 'Axis Titles',
-        axis_labels: 'Axis labels',
+        axis_labels: 'Axis Labels',
         data_labels: 'Data Labels',
         chart_sorting: 'Chart Sorting',
         grouping_and_display: 'Grouping and Display',

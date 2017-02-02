@@ -50,7 +50,8 @@ describe('componentGoalTile jQuery plugin', function() {
       blockId: null,
       componentData: validComponentData,
       componentIndex: null,
-      theme: null
+      theme: null,
+      editMode: true
     }, props);
   };
 
@@ -164,6 +165,12 @@ describe('componentGoalTile jQuery plugin', function() {
     it('should render an error message', function() {
       assert.isTrue($component.hasClass('component-error'));
     });
+
+    describe('the edit controls', function() {
+      it('should still be attached to the component', function() {
+        assert.lengthOf($component.find('.component-edit-controls-container'), 1);
+      });
+    })
   });
 
   describe('given a valid component type and value', function() {
@@ -210,6 +217,12 @@ describe('componentGoalTile jQuery plugin', function() {
     it('should render the goal prevailing measure summary', function() {
       assert.equal($component.find('.goal-tile-metric-subtitle').text(), validGoalData.prevailing_measure.summary);
     });
+
+    describe('the edit controls', function() {
+      it('should still be attached to the component', function() {
+        assert.lengthOf($component.find('.component-edit-controls-container'), 1);
+      });
+    })
   });
 
   describe('when there is not a prevailing measure summary', function() {

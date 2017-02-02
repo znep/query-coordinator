@@ -392,7 +392,7 @@ function removeGoalTile($element) {
     children().
     // Don't accidentally remove the edit control when trying to clear the
     // component's DOM tree in order to re-render it.
-    not('.component-edit-controls').
+    not('.component-edit-controls-container').
     remove();
 }
 

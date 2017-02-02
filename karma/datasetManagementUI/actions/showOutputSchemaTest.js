@@ -34,6 +34,7 @@ describe('actions/showOutputSchema', () => {
           display_name: 'arrest',
           position: 0,
           field_name: 'arrest',
+          description: null,
           transform: {
             transform_expr: 'to_number(arrest)'
           }
@@ -42,6 +43,7 @@ describe('actions/showOutputSchema', () => {
           display_name: 'block',
           position: 1,
           field_name: 'block',
+          description: null,
           transform: {
             transform_expr: 'block'
           }

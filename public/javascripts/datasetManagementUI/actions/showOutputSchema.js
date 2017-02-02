@@ -73,6 +73,7 @@ export function getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType) 
       field_name: column.field_name,
       position: column.position,
       display_name: column.display_name,
+      description: column.description,
       transform: {
         transform_expr: transformExpr
       }

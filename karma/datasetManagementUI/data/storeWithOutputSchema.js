@@ -14,6 +14,7 @@ export function getStoreWithOutputSchema() {
     id: 50,
     position: 0,
     field_name: 'arrest',
+    description: null,
     display_name: 'arrest',
     transform_id: 1
   }));
@@ -21,6 +22,7 @@ export function getStoreWithOutputSchema() {
     id: 51,
     position: 1,
     field_name: 'block',
+    description: null,
     display_name: 'block',
     transform_id: 2
   }));

@@ -23,6 +23,10 @@ class View < Model
     end
   end
 
+  def metadata
+    Metadata.new(@data['metadata']) if @data.key?('metadata')
+  end
+
   # EN-12365: This method is a hack to allow us to create data lenses from derived views.
   # The `read_from_nbe=true` flag (as of 12/2016) only returns NBE column metadata from the /views
   # endpoint for derived views.

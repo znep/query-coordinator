@@ -1,4 +1,5 @@
 import 'whatwg-fetch';
+import airbrake from '../../common/airbrake';
 
 const CETERA_URL = '//api.us.socrata.com/api/catalog/v1'; // TODO: get from domain config?
 const DEFAULT_LIMIT = 6;
@@ -12,8 +13,11 @@ function checkStatus(response) {
   } else {
     const error = new Error(response.statusText);
     error.response = response;
+    airbrake.notify({
+      error: `Error fetching cetera results: ${error}`,
+      context: { component: 'AssetSelector' }
+    });
     console.error(error);
-    // TODO: Airbrake
   }
 }
 
@@ -22,8 +26,11 @@ function parseJSON(response) {
 }
 
 function handleError(error) {
+  airbrake.notify({
+    error: `Error fetching cetera results: ${error}`,
+    context: { component: 'AssetSelector' }
+  });
   console.error(error);
-  // TODO: Airbrake
 }
 
 export const ceteraUtils = (() => {

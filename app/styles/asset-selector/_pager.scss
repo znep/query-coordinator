@@ -1,31 +1,37 @@
-.pager {
-  margin-bottom: 1rem;
+.asset-selector {
+  .pager {
+    margin-bottom: 1rem;
 
-  .prev-link {
-    margin-right: 0.5rem;
-  }
-
-  .next-link {
-    margin-left: 0.5rem;
-  }
-
-  .prev-link, .next-link {
-    cursor: pointer;
-
-    &.disabled {
-      cursor: default;
-      color: $grey;
-    }
-  }
-
-  .current-page-input {
-    input {
-      width: 40px;
+    .inline-block {
+      display: inline-block;
     }
 
-    &.error {
+    .prev-link {
+      margin-right: 0.5rem;
+    }
+
+    .next-link {
+      margin-left: 0.5rem;
+    }
+
+    .prev-link, .next-link {
+      cursor: pointer;
+
+      &.disabled {
+        cursor: default;
+        color: $grey;
+      }
+    }
+
+    .current-page-input {
       input {
-        color: $error-text;
+        width: 40px;
+      }
+
+      &.error {
+        input {
+          color: $error-text;
+        }
       }
     }
   }

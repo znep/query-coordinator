@@ -68,8 +68,14 @@ export class DummyCLP extends Component {
 
         <ExternalResourceWizard
           modalIsOpen={this.state.externalResourceWizardIsOpen}
-          onClose={this.toggleExternalResourceWizard}
-          onSelect={this.onAssetSelection} />
+          onClose={() => {
+            this.toggleExternalResourceWizard();
+            this.toggleAssetSelector();
+          }}
+          onSelect={() => {
+            this.onAssetSelection();
+            this.toggleAssetSelector();
+          }} />
       </div>
     );
   }

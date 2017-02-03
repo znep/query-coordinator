@@ -43,7 +43,7 @@ export class ExternalResourceForm extends Component {
 
   renderInputField(key, inputProps, button = null) {
     const prefix = 'external-resource';
-    const value = this.props[key].value;
+    const value = this.props[key];
     const kebabKey = _.kebabCase(key);
 
     inputProps = _.defaults(inputProps, {
@@ -99,7 +99,7 @@ export class ExternalResourceForm extends Component {
           }}>
           {_.get(I18n, 'external_resource_wizard.form.fields.preview_image.button_text', 'Choose an image')}
         </button>
-        <span> {this.props.previewImage.value ? '' :
+        <span> {this.props.previewImage ? '' :
           _.get(I18n, 'external_resource_wizard.form.fields.preview_image.no_file_chosen', 'No file chosen')}
         </span>
       </div>

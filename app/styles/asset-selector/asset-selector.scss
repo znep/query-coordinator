@@ -1,31 +1,3 @@
 @import "styleguide-colors";
 @import "asset-selector/breakpoints";
 @import "asset-selector/results-container";
-
-.asset-selector-modal {
-  background-color: $white;
-
-  &.modal.modal-full {
-    overflow-y: hidden; // Why do we have to do this?
-  }
-
-  .inline-block {
-    display: inline-block;
-  }
-
-  .modal-container {
-    &.no-footer {
-      .modal-content {
-        margin-bottom: 0;
-      }
-    }
-
-    .modal-header {
-      z-index: 1;
-      h1 {
-        font-size: 19px;
-        font-weight: 400;
-      }
-    }
-  }
-}

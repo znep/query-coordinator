@@ -1,8 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
-import classNames from 'classnames';
-import Header from '../components/Header';
 import ResultsContainer from '../components/ResultsContainer';
+import { Modal, ModalHeader, ModalContent } from 'socrata-components';
 
 export class AssetSelector extends Component {
   render() {
@@ -15,13 +14,6 @@ export class AssetSelector extends Component {
       resultsPerPage
     } = this.props;
 
-    const modalClassNames = classNames({
-      'asset-selector-modal': true, // TODO use react modal instead
-      'modal': true,
-      'modal-full': true,
-      'modal-hidden': !modalIsOpen
-    });
-
     const headerTitle = _.isEmpty(category) ?
       _.get(I18n, 'asset_selector.header_title_without_category', 'Select Featured Content') :
       _.get(I18n, 'asset_selector.header_title_with_category',
@@ -29,14 +21,22 @@ export class AssetSelector extends Component {
 
     const resultsContainerProps = { additionalTopbarComponents, category, onClose, onSelect, resultsPerPage };
 
-    return modalIsOpen ? (
-      <div className={modalClassNames} data-modal-dismiss>
-        <div className="modal-container no-footer">
-          <Header title={headerTitle} />
-          <ResultsContainer {...resultsContainerProps} />
+    const modalProps = {
+      children: [
+        <div key={0}>
+          <ModalHeader title={headerTitle} onDismiss={onClose} />
+          <ModalContent>
+            <ResultsContainer {...resultsContainerProps} />
+          </ModalContent>
         </div>
-      </div>
-    ) : null;
+      ],
+      className: 'asset-selector',
+      fullScreen: true,
+      onDismiss: onClose,
+      overlay: true
+    };
+
+    return modalIsOpen ? <Modal {...modalProps} /> : null;
   }
 }
 

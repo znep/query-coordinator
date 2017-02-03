@@ -6,63 +6,51 @@ $min-view-card-preview-width: 300px;
 $view-card-preview-height: 300px;
 
 .external-resource-wizard {
-  background-color: $white;
-
-  .modal-header {
-    z-index: 1;
-    h1 {
-      font-size: 19px;
-      font-weight: 400;
+  .centered-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    > div.description {
+      margin-top: 1rem;
     }
-  }
 
-  .modal-content {
-    .centered-content {
-      max-width: 1000px;
-      margin: 0 auto;
-      > div.description {
-        margin-top: 1rem;
+    .external-resource-contents {
+      display: flex;
+
+      @media(max-width: $medium) {
+        display: block;
       }
 
-      .external-resource-contents {
-        display: flex;
+      form.external-resource-form {
+        flex: 1 1 100%;
+        padding-right: 22px;
 
-        @media(max-width: $medium) {
-          display: block;
+        label {
+          display: inline-block;
         }
 
-        form.external-resource-form {
-          flex: 1 1 100%;
-          padding-right: 22px;
-
-          label {
-            display: inline-block;
-          }
-
-          input[type="text"] {
-            width: 100%
-          }
-
-          input.hidden {
-            display: none;
-          }
-
-          .file-input {
-            margin-bottom: 12px;
-          }
-
-          .alert {
-            margin-top: 0;
-            margin-bottom: 22px;
-          }
+        input[type="text"] {
+          width: 100%
         }
 
-        .external-resource-preview {
-          flex: 0 0 $view-card-preview-width;
-          height: $view-card-preview-height;
-          overflow: hidden;
-          min-width: $min-view-card-preview-width;
+        input.hidden {
+          display: none;
         }
+
+        .file-input {
+          margin-bottom: 12px;
+        }
+
+        .alert {
+          margin-top: 0;
+          margin-bottom: 22px;
+        }
+      }
+
+      .external-resource-preview {
+        flex: 0 0 $view-card-preview-width;
+        height: $view-card-preview-height;
+        overflow: hidden;
+        min-width: $min-view-card-preview-width;
       }
     }
   }

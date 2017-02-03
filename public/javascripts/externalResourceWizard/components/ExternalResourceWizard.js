@@ -1,24 +1,16 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
-import classNames from 'classnames';
 import BackButton from '../../assetSelector/components/BackButton';
-import Header from '../../assetSelector/components/Header';
 import ExternalResourceForm from './ExternalResourceForm';
-import Footer from './Footer';
-import { ExternalViewCard } from 'socrata-components';
+import { ExternalViewCard, Modal, ModalHeader, ModalContent, ModalFooter } from 'socrata-components';
 
 export class ExternalResourceWizard extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      title: '',
-      description: '',
-      url: '',
-      previewImage: ''
-    };
+    this.state = { title: '', description: '', url: '', previewImage: '' };
 
-    _.bindAll(this, ['returnExternalResource', 'updateField']);
+    _.bindAll(this, ['updateField', 'returnExternalResource']);
   }
 
   updateField(field, value) {
@@ -41,13 +33,7 @@ export class ExternalResourceWizard extends Component {
 
   render() {
     const { title, description, url, previewImage } = this.state;
-
-    const modalClassNames = classNames({
-      'external-resource-wizard': true,
-      'modal': true,
-      'modal-full': true,
-      'modal-hidden': !this.props.modalIsOpen
-    });
+    const { onClose, modalIsOpen } = this.props;
 
     const previewCardProps = {
       name: _.isEmpty(title) ? null : title,
@@ -59,15 +45,33 @@ export class ExternalResourceWizard extends Component {
     };
 
     const formIsInvalid = _.isEmpty(title) || _.isEmpty(url);
+    const footerChildren = (
+      <div>
+        <button
+          key="cancel"
+          className="btn btn-default btn-sm cancel-button"
+          onClick={onClose}>
+          {_.get(I18n, 'external_resource_wizard.footer.cancel', 'Cancel')}
+        </button>
+        <button
+          key="select"
+          className="btn btn-sm btn-primary select-button"
+          disabled={formIsInvalid}
+          onClick={this.returnExternalResource}>
+          {_.get(I18n, 'external_resource_wizard.footer.select', 'Select')}
+        </button>
+      </div>
+    );
 
-    return (
-      <div className={modalClassNames} data-modal-dismiss>
-        <div className="modal-container">
-          <Header
-            title={_.get(I18n, 'external_resource_wizard.header_title', 'Feature an External Resource')} />
-          <div className="modal-content">
+    const modalProps = {
+      children: [
+        <div key={0}>
+          <ModalHeader
+            title={_.get(I18n, 'external_resource_wizard.header_title', 'Feature an External Resource')}
+            onDismiss={onClose} />
+          <ModalContent>
             <div className="centered-content">
-              <BackButton onClick={this.props.onClose} />
+              <BackButton onClick={onClose} />
 
               <div className="description">
                 <p>
@@ -90,14 +94,17 @@ export class ExternalResourceWizard extends Component {
                 </div>
               </div>
             </div>
-          </div>
-          <Footer
-            onClose={this.props.onClose}
-            onSelect={this.returnExternalResource}
-            selectIsDisabled={formIsInvalid} />
+          </ModalContent>
+          <ModalFooter children={footerChildren} />
         </div>
-      </div>
-    );
+      ],
+      className: 'external-resource-wizard',
+      fullScreen: true,
+      onDismiss: onClose,
+      overlay: true
+    };
+
+    return modalIsOpen ? <Modal {...modalProps} /> : null;
   }
 }
 

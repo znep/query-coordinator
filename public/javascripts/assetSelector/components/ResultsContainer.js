@@ -102,7 +102,7 @@ export class ResultsContainer extends Component {
     }
 
     return (
-      <div className="modal-content results-container">
+      <div className="results-container">
         <div className="centered-content">
           <div className="results-topbar">
             <BackButton onClick={this.props.onClose} />

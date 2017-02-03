@@ -1,6 +1,6 @@
 {
   "name": "socrata-visualizations",
-  "version": "20.16.2",
+  "version": "20.16.3",
   "license": "UNLICENSED",
   "repository": {
     "type": "git",
@@ -77,7 +77,7 @@
     "semver": "5.1.0",
     "shelljs": "0.6.0",
     "sinon": "1.17.5",
-    "socrata-components": "10.3.1",
+    "socrata-components": "11.0.0",
     "socrata-utils": "3.2.0",
     "tether": "1.0.2",
     "tether-shepherd": "1.2.0",

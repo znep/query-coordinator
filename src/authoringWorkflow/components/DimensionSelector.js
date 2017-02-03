@@ -63,6 +63,7 @@ export const DimensionSelector = React.createClass({
     const dimensionAttributes = {
       id: 'dimension-selection',
       options: dimensions,
+      onChange: onSelectDimension,
       onSelection: onSelectDimension,
       value
     };

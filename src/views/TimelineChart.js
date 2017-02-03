@@ -696,7 +696,6 @@ function TimelineChart(element, vif) {
     var chartWidth = el.width();
     var chartHeight = el.height();
     var showAllLabels = options.showAllLabels;
-    var rescaleAxis = options.rescaleAxis;
     var showFiltered = options.showFiltered;
     var precision = options.precision;
     var unit = options.unit;

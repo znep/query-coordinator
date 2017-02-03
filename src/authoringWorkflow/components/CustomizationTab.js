@@ -12,42 +12,25 @@ export var CustomizationTab = React.createClass({
     };
   },
 
-  handleKeyDown (event) {
-    if (event.keyCode == 13) {
-      this.props.onTabNavigation(event);
-      event.preventDefault();
-    }
-  },
-
   linkAttributes() {
     const { id, selected, onTabNavigation, title } = this.props;
 
     return {
       id: `${id}-link`,
       href: `#${id}`,
-      tabIndex: -1,
       onClick: onTabNavigation,
+      role: 'tab',
       'aria-label': title,
-      'aria-controls': `${id}-panel`
+      'aria-controls': `${id}-panel`,
+      'aria-selected': selected
     };
   },
 
   listItemAttributes() {
     return {
       key: this.props.id,
-      className: classNames('tab-link', {'current': this.props.selected}),
-      onKeyDown: this.handleKeyDown,
-      role: 'tab',
-      tabIndex: 0,
-      href: `#${this.props.id}`,
-      'aria-label': this.props.title,
-      'aria-selected': this.props.selected,
-      'aria-controls': `${this.props.id}-panel`
+      className: classNames('tab-link', {'current': this.props.selected})
     };
-  },
-
-  onClick(event) {
-    event.preventDefault();
   },
 
   render() {
@@ -55,7 +38,7 @@ export var CustomizationTab = React.createClass({
 
     return (
       <li {...this.listItemAttributes()}>
-        <a {...this.linkAttributes()} onClick={this.onClick}>
+        <a {...this.linkAttributes()} onClick={(event) => event.preventDefault()}>
           <span className={`icon-${icon}`} role="presentation" />
         </a>
         <span id={id} className="pane-tooltip">{title}</span>

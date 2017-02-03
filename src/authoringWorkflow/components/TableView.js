@@ -36,7 +36,6 @@ export var TableView = React.createClass({
 
     return (
       <span className="authoring-based-on">
-        &nbsp;-&nbsp;
         <a href={getDatasetLink(metadata)} target="_blank">{getDatasetName(metadata)}</a>
       </span>
     );

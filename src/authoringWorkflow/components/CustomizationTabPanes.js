@@ -9,6 +9,34 @@ export var CustomizationTabPanes = React.createClass({
     selection: React.PropTypes.string
   },
 
+  componentWillUpdate(nextProps) {
+    if (this.props.selection !== nextProps.selection) {
+      this.focusFirstTabPaneAccordion();
+    }
+  },
+
+  focusFirstTabPaneAccordion() {
+    const MAX_TIMEOUT = 3000;
+    const accumulator = 100;
+
+    let accumulatedTime = 0;
+    let intervalId = setInterval(() => {
+      const accordion = document.querySelector('.customization-tab-pane:not(.customization-tab-pane_hidden) .socrata-accordion-pane-title');
+      const emptyPane = document.querySelector('.authoring-empty-pane');
+
+      if (accordion) {
+        accordion.focus();
+        clearInterval(intervalId);
+      } else if (emptyPane) {
+        clearInterval(intervalId);
+      } else if (accumulatedTime > MAX_TIMEOUT) {
+        clearInterval(intervalId);
+      } else {
+        accumulatedTime += accumulator;
+      }
+    }, accumulator);
+  },
+
   paneAttributes(tab) {
     return {
       key: tab.id,

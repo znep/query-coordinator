@@ -1,8 +1,15 @@
 import _ from 'lodash';
 import $ from 'jquery';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
+import {
+  Modal,
+  ModalHeader,
+  ModalContent,
+  ModalFooter
+} from 'socrata-components';
 
 import { translate } from '../../I18n';
 import {
@@ -89,8 +96,9 @@ export const AuthoringWorkflow = React.createClass({
   },
 
   componentDidMount() {
+    const modalElement = ReactDOM.findDOMNode(this.modal);
     // Prevents the form from submitting and refreshing the page.
-    $(this.modal).on('submit', _.constant(false));
+    $(modalElement).on('submit', _.constant(false));
   },
 
   onComplete() {
@@ -194,52 +202,40 @@ export const AuthoringWorkflow = React.createClass({
     const { metadata, vifAuthoring, backButtonText } = this.props;
     const isNotInsertable = !isInsertableVisualization(vifAuthoring);
     const scalingMode = null; // This feature is hidden for now.
-    const modalFooterActionsClassNames = classNames('modal-footer-actions', {
+    const modalFooterActionsClassNames = classNames({
       'with-back-button': _.isString(backButtonText)
     });
 
     return (
-      <div role="dialog" aria-label={translate('modal.title')} className="authoring-modal modal modal-full modal-overlay" onKeyUp={this.onKeyUp} ref={(ref) => this.modal = ref}>
-        <div className="modal-container">
+      <Modal className="authoring-modal" fullScreen={true} onDismiss={this.onCancel} ref={(ref) => this.modal = ref}>
+        <ModalHeader title={translate('modal.title')} onDismiss={this.onCancel} />
+        <ModalContent className="authoring-modal-content">
+          {this.renderFilterBar()}
 
-          <header className="modal-header">
-            <h5 className="modal-header-title">{translate('modal.title')}</h5>
-            <button aria-label={`${translate('modal.close')}`} className="btn btn-transparent modal-header-dismiss" onClick={this.onCancel}>
-              <span className="icon-close-2"/>
-            </button>
-          </header>
-
-          <section className="authoring-modal-content modal-content">
-            {this.renderFilterBar()}
-
-            <div className="authoring-controls">
-              <div className="authoring-editor">
-                <CustomizationTabs onTabNavigation={this.onTabNavigation} selection={this.state.currentTabSelection} tabs={this.props.tabs} />
-                <CustomizationTabPanes selection={this.state.currentTabSelection} tabs={this.props.tabs} />
-              </div>
-              <div className="authoring-preview-container">
-                <VisualizationTypeSelector/>
-                <VisualizationPreview />
-                <TableView />
-                {scalingMode}
-              </div>
+          <div className="authoring-controls">
+            <div className="authoring-editor">
+              <CustomizationTabs onTabNavigation={this.onTabNavigation} selection={this.state.currentTabSelection} tabs={this.props.tabs} />
+              <CustomizationTabPanes selection={this.state.currentTabSelection} tabs={this.props.tabs} />
             </div>
-          </section>
-
-          <footer className="modal-footer authoring-modal-footer">
-            <div className={modalFooterActionsClassNames}>
-              <div className="authoring-footer-buttons">
-                {this.renderBackButton()}
-                {this.renderResetButton()}
-              </div>
-              <div className="authoring-actions">
-                <button className="btn btn-sm btn-default cancel" onClick={this.onCancel}>{translate('modal.close')}</button>
-                <button className="btn btn-sm btn-primary done" onClick={this.onComplete} disabled={isNotInsertable}>{translate('modal.insert')}</button>
-              </div>
+            <div className="authoring-preview-container">
+              <VisualizationTypeSelector/>
+              <VisualizationPreview />
+              <TableView />
+              {scalingMode}
             </div>
-          </footer>
-        </div>
-      </div>
+          </div>
+        </ModalContent>
+        <ModalFooter className="authoring-modal-footer">
+          <div className="authoring-footer-buttons">
+            {this.renderBackButton()}
+            {this.renderResetButton()}
+          </div>
+          <div className="authoring-actions">
+            <button className="btn btn-sm btn-default cancel" onClick={this.onCancel}>{translate('modal.close')}</button>
+            <button className="btn btn-sm btn-primary done" onClick={this.onComplete} onKeyUp={this.onInsertKeyup} disabled={isNotInsertable}>{translate('modal.insert')}</button>
+          </div>
+        </ModalFooter>
+      </Modal>
     );
   }
 });

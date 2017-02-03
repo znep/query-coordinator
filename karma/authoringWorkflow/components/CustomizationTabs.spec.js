@@ -43,7 +43,7 @@ describe('CustomizationTabs', function() {
 
     describe('aria', function() {
       it('should add a role', function() {
-        expect(component.querySelector('li')).to.have.attribute('role', 'tab');
+        expect(component.querySelector('li a')).to.have.attribute('role', 'tab');
       });
 
       it('should add aria-controls that refers to the pane that the tab controls', function() {
@@ -53,15 +53,15 @@ describe('CustomizationTabs', function() {
       describe('aria-selected', function() {
         describe('when selected', function() {
           it('should have aria-selected true', function() {
-            var selectedTab = component.querySelector('.current');
-            expect(selectedTab).to.have.attribute('aria-selected', 'true');
+            var selectedTabLink = component.querySelector('.current a');
+            expect(selectedTabLink).to.have.attribute('aria-selected', 'true');
           });
         });
 
         describe('when not selected', function() {
           it('should have aria-selected false', function() {
-            var selectedTab = component.querySelector('li:not(.current)');
-            expect(selectedTab).to.have.attribute('aria-selected', 'false');
+            var selectedTabLink = component.querySelector('li:not(.current) a');
+            expect(selectedTabLink).to.have.attribute('aria-selected', 'false');
           });
         });
       });
@@ -70,16 +70,9 @@ describe('CustomizationTabs', function() {
 
   describe('events', function() {
     it('should invoke onTabNavigation when clicking on a new tab', function() {
-      var listItem = component.querySelector('li');
-
-      TestUtils.Simulate.click(listItem);
-      sinon.assert.calledOnce(props.onTabNavigation);
-    });
-
-    it('should invoke onTabNavigation when user press enter key', function() {
       var listItem = component.querySelector('li a');
 
-      TestUtils.Simulate.keyDown(listItem, {keyCode: 13});
+      TestUtils.Simulate.click(listItem);
       sinon.assert.calledOnce(props.onTabNavigation);
     });
   });

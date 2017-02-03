@@ -269,7 +269,7 @@ export default {
     saving_center_and_zoom: 'Saving zoom level and centering...'
   },
   table_view: {
-    title: 'Table Preview'
+    title: 'Preview of '
   },
   common: {
     reset_confirm: 'Are you sure you want to reset? All changes made during this editing session will be lost.',

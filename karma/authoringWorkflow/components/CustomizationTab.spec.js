@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import $ from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -15,7 +16,8 @@ describe('CustomizationTab', () => {
       title: 'Tooltip',
       onFocus: sinon.spy(),
       'aria-selected': false,
-      'aria-controls': 'id-panel'
+      'aria-controls': 'id-panel',
+      onTabNavigation: _.noop
     };
   });
 
@@ -24,11 +26,12 @@ describe('CustomizationTab', () => {
     let link = component.querySelector('a');
     let tooltip = component.querySelector('.pane-tooltip');
 
-    expect(component).to.have.attribute('role', 'tab');
     expect(component).not.to.have.class('current');
-    expect(component.getAttribute('aria-selected')).to.equal('false');
-    expect(component).to.have.attribute('aria-controls', 'id-panel');
-    expect(component).to.have.attribute('href', '#id');
+
+    expect(link).to.have.attribute('role', 'tab');
+    expect(link).to.have.attribute('aria-selected', 'false');
+    expect(link).to.have.attribute('aria-controls', 'id-panel');
+    expect(link).to.have.attribute('href', '#id');
 
     expect(link).to.have.id('id-link');
     expect(link).to.have.attribute('href', '#id');
@@ -39,7 +42,7 @@ describe('CustomizationTab', () => {
     component = renderComponent(CustomizationTab, props);
     link = component.querySelector('a');
     expect(component).to.have.class('current');
-    expect(component).to.have.attribute('aria-selected', 'true');
+    expect(link).to.have.attribute('aria-selected', 'true');
 
     expect(props.onFocus).not.to.have.called;
   });

@@ -284,7 +284,7 @@ module.exports = function Table(element, originalVif) {
     }
 
     const filteredColumns = data.columns.filter(function(column) {
-      const flags = column['flags'];
+      const flags = column.flags;
       const hidden = flags && flags.indexOf('hidden') >= 0;
 
       return !hidden;

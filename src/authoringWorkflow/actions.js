@@ -40,7 +40,7 @@ export function setDataSource(domain, datasetUid) {
       soqlDataProvider.getColumnStats(datasetMetadata.columns).then((columnStats) => {
         resolutions[0].columns = _.merge([], columnStats, resolutions[0].columns);
         finishMetadataRequests(resolutions, true);
-      }).catch(error => {
+      }).catch(() => {
         finishMetadataRequests(resolutions, false);
       });
     }).catch(error => {

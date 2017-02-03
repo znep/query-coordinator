@@ -146,6 +146,7 @@ export const VisualizationTypeSelector = React.createClass({
 
     return (
       <div  {...attributes}>
+        <div className="visualization-type-gutter" />
         <div className="btn-group">
           {this.renderVisualizationTypeButton('barChart')}
           {this.renderVisualizationTypeButton('columnChart')}
@@ -155,6 +156,7 @@ export const VisualizationTypeSelector = React.createClass({
           {this.renderVisualizationTypeButton('featureMap')}
           {this.renderVisualizationTypeButton('regionMap')}
         </div>
+        <div className="visualization-type-gutter" />
         {this.renderEmptyRegionAlert()}
       </div>
     );

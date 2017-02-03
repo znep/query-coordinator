@@ -138,7 +138,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
     const icon = columnType ? columnType.icon : '';
 
     return (
-      <div className="dataset-column-dropdown-option">
+      <div className="dataset-column-selector-option">
         <span className={icon}></span> {option.title}
       </div>
     );

@@ -7,7 +7,7 @@ export default class CustomizationTabPane extends React.Component {
     const attributes = {
       key: this.props.id,
       id: `${this.props.id}-panel`,
-      className: classNames({ 'customization-tab-pane_hidden': isHidden }),
+      className: classNames('customization-tab-pane', { 'customization-tab-pane_hidden': isHidden }),
       role: 'tabpanel',
       'aria-hidden': isHidden,
       'aria-labelledby': `${this.props.id}-link`

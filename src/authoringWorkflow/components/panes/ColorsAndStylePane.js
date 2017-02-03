@@ -120,6 +120,7 @@ export var ColorsAndStylePane = React.createClass({
     );
   },
 
+
   renderGroupedColumnChartControls() {
     const { vifAuthoring, colorPalettes, onSelectColorPalette } = this.props;
     const selectedColorPalette = getColorPalette(vifAuthoring);

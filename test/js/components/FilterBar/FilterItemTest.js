@@ -15,7 +15,7 @@ describe('FilterItem', () => {
     return _.defaultsDeep({}, props, {
       filter: mockValueRangeFilter,
       column: mockNumberColumn,
-      displaySettings: true,
+      isReadOnly: false,
       fetchSuggestions: _.constant(Promise.resolve([])),
       onUpdate: _.noop,
       onRemove: _.noop
@@ -38,7 +38,7 @@ describe('FilterItem', () => {
     expect(getTitle(element).textContent).to.equal('Dinosaur Age (approximate)');
   });
 
-  it('renders if both isHidden and displaySettings are true', () => {
+  it('renders if isHidden is true and isReadOnly is false', () => {
     element = renderComponent(FilterItem, getProps({
       filter: _.merge({}, mockValueRangeFilter, {
         isHidden: true
@@ -135,13 +135,13 @@ describe('FilterItem', () => {
     });
   });
 
-  describe('when displaySettings is false', () => {
+  describe('when isReadOnly is true', () => {
     it('renders if isHidden is set to false', () => {
       element = renderComponent(FilterItem, getProps({
         filter: _.merge({}, mockValueRangeFilter, {
           isHidden: false
         }),
-        displaySettings: false
+        isReadOnly: true
       }));
 
       expect(element).to.exist;
@@ -150,7 +150,7 @@ describe('FilterItem', () => {
     it('does not render the config toggle', () => {
       element = renderComponent(FilterItem, getProps({
         filter: mockValueRangeFilter,
-        displaySettings: false
+        isReadOnly: true
       }));
 
       expect(getConfigToggle(element)).to.not.exist;

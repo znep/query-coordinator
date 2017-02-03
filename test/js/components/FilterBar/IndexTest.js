@@ -18,6 +18,7 @@ describe('FilterBar', () => {
         }
       ],
       filters: [],
+      isReadOnly: false,
       onUpdate: _.noop
     });
   }
@@ -49,11 +50,11 @@ describe('FilterBar', () => {
     expect(getFilters(element).length).to.eq(1);
   });
 
-  describe('when displaySettings is false', () => {
+  describe('when isReadOnly is true', () => {
     it('does not render the add filter controls', () => {
       element = renderComponent(FilterBar, getProps({
         filters: [ mockValueRangeFilter ],
-        displaySettings: false
+        isReadOnly: true
       }));
 
       expect(getAddFilter(element)).to.not.exist;
@@ -67,7 +68,7 @@ describe('FilterBar', () => {
             isHidden: true
           })
         ],
-        displaySettings: false
+        isReadOnly: true
       }));
 
       expect(getFilters(element).length).to.eq(1);
@@ -80,7 +81,7 @@ describe('FilterBar', () => {
             isHidden: true
           })
         ],
-        displaySettings: false
+        isReadOnly: true
       }));
 
       expect(element).to.not.exist;

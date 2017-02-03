@@ -36,10 +36,13 @@ export const FilterBar = React.createClass({
 
     /**
      * Whether to display the filter bar's settings, including the option to add new filters and
-     * individual filter settings. If this is set to false and none of the provided filters are
+     * individual filter settings. If this is set to true and none of the provided filters are
      * visible, the FilterBar will not render anything. Defaults to true.
+     *
+     * NOTE: Even if 'isReadOnly' is set to true, the parameters of individual, non-hidden filters
+     * will still be changeable by users.
      */
-    displaySettings: PropTypes.bool,
+    isReadOnly: PropTypes.bool,
 
     /**
      * The onUpdate prop is an optional function that will be called whenever the set of filters has
@@ -64,7 +67,7 @@ export const FilterBar = React.createClass({
   getDefaultProps() {
     return {
       filters: [],
-      displaySettings: true,
+      isReadOnly: true,
       onUpdate: _.noop,
       fetchSuggestions: _.constant(Promise.resolve([]))
     };
@@ -95,7 +98,7 @@ export const FilterBar = React.createClass({
   },
 
   renderAddFilter() {
-    const { columns, filters, displaySettings } = this.props;
+    const { columns, filters, isReadOnly } = this.props;
 
     const availableColumns = _.reject(columns, (column) => {
       return _.find(filters, ['columnName', column.fieldName]);
@@ -108,20 +111,20 @@ export const FilterBar = React.createClass({
       }
     };
 
-    return displaySettings ? <AddFilter {...props} /> : null;
+    return isReadOnly ? null : <AddFilter {...props} />;
   },
 
   renderFilters() {
-    const { filters, columns, displaySettings, fetchSuggestions } = this.props;
+    const { filters, columns, isReadOnly, fetchSuggestions } = this.props;
 
     return _.chain(filters).
-      reject((filter) => !displaySettings && filter.isHidden).
+      reject((filter) => isReadOnly && filter.isHidden).
       map((filter, i) => {
         const column = _.find(columns, { fieldName: filter.columnName });
         const props = {
           column,
           filter,
-          displaySettings,
+          isReadOnly,
           fetchSuggestions,
           onUpdate: _.partialRight(this.onFilterUpdate, i),
           onRemove: _.partial(this.onFilterRemove, i)

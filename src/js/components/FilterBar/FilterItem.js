@@ -21,7 +21,7 @@ export const FilterItem = React.createClass({
       dataTypeName: PropTypes.oneOf(['calendar_date', 'number', 'text']),
       name: PropTypes.string.isRequired
     }).isRequired,
-    displaySettings: PropTypes.bool.isRequired,
+    isReadOnly: PropTypes.bool.isRequired,
     fetchSuggestions: PropTypes.func,
     onUpdate: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired
@@ -189,12 +189,14 @@ export const FilterItem = React.createClass({
   },
 
   renderFilterConfigToggle() {
-    const { displaySettings } = this.props;
+    const { isReadOnly } = this.props;
     const { isLeftAligned } = this.state;
 
     const alignment = isLeftAligned ? 'left' : 'right';
 
-    if (displaySettings) {
+    if (isReadOnly) {
+      return null;
+    } else {
       return (
         <div
           className={`filter-config-toggle ${alignment}`}
@@ -207,8 +209,6 @@ export const FilterItem = React.createClass({
           <span className="socrata-icon-kebab" role="presentation" />
         </div>
       );
-    } else {
-      return null;
     }
   },
 

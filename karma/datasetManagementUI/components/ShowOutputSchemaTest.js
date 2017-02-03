@@ -279,6 +279,59 @@ describe('components/ShowOutputSchema', () => {
       expect(paragraphs[1].innerText).to.eql('Rows that will not be imported 3');
     });
 
+    describe('export errors button', () => {
+
+      it('is enabled and has the correct link when there are errors', () => {
+        const store = getStoreWithOutputSchema();
+        store.dispatch(updateFromServer('input_schemas', {
+          id: 4,
+          total_rows: 42
+        }));
+        store.dispatch(updateFromServer('output_schemas', {
+          id: 18,
+          error_count: 3
+        }));
+        store.dispatch(updateFromServer('transforms', {
+          id: 1,
+          contiguous_rows_processed: 42
+        }));
+        store.dispatch(updateFromServer('transforms', {
+          id: 2,
+          contiguous_rows_processed: 42
+        }));
+        const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
+        const exportButton = element.querySelector('.btn.export-errors');
+        expect(exportButton.parentNode.href.endsWith('/api/update/hehe-hehe/0/schema/4/errors/18')).to.be.true;
+        expect(exportButton).to.not.be.null;
+        expect(exportButton.disabled).to.be.false;
+      });
+
+      it('is greyed out when there are no errors', () => {
+        const store = getStoreWithOutputSchema();
+        store.dispatch(updateFromServer('input_schemas', {
+          id: 4,
+          total_rows: 42
+        }));
+        store.dispatch(updateFromServer('output_schemas', {
+          id: 18,
+          error_count: 0
+        }));
+        store.dispatch(updateFromServer('transforms', {
+          id: 1,
+          contiguous_rows_processed: 42
+        }));
+        store.dispatch(updateFromServer('transforms', {
+          id: 2,
+          contiguous_rows_processed: 42
+        }));
+        const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
+        const exportButton = element.querySelector('.btn.export-errors');
+        expect(exportButton).to.not.be.null;
+        expect(exportButton.disabled).to.be.true;
+      });
+
+    });
+
   });
 
 });

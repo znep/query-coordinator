@@ -1574,6 +1574,7 @@ en:
       placeholder: Untitled Dataset
       errors:
         unknown: An error occurred creating your dataset. Make sure you are logged in and have appropriate permissions.  If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
+    export_errors: Export Errors
     home_pane:
       metadata: Metadata
       metadata_manage_button: Manage Metadata

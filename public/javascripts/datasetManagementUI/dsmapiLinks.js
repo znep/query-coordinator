@@ -20,3 +20,6 @@ export const applyUpdate = `${updateBase}/apply`;
 export const errorTable = (inputSchemaId, outputSchemaId, columnId, limit, offset) =>
   `${updateBase}/schema/${inputSchemaId}/errors/${outputSchemaId}` +
     `?limit=${limit}&offset=${offset}&column_id=${columnId}`;
+
+export const errorExport = (inputSchemaId, outputSchemaId) =>
+  `${updateBase}/schema/${inputSchemaId}/errors/${outputSchemaId}`;

@@ -1624,6 +1624,10 @@ en:
           SoQLLocation: Location
           SoQLPoint: Point
         scanning: Still scanning for errors...
+      ready_to_import:
+        ready_to_import: Ready to import
+        rows: rows
+        will_not_be_imported: Rows that will not be imported
       rows_so_far: rows so far
       rows_total: rows total
       upload_done: Upload Done

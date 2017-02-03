@@ -313,6 +313,26 @@
     }
   }
 
+  .modal-footer-actions {
+    display: flex;
+    justify-content: space-between;
+    .ready-to-import {
+      p {
+        display: inline-block;
+        padding-right: 2em;
+        margin: 0.5em 0px;
+
+        span.importable-rows {
+          color: $success-text;
+        }
+        span.error-rows {
+          color: $error-text;
+        }
+
+      }
+    }
+  }
+
 }
 
 .type-icon-date {

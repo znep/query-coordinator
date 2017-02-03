@@ -10,6 +10,7 @@ import { STATUS_UPDATING, STATUS_UPDATE_FAILED } from '../lib/database/statuses'
 import * as ShowActions from '../actions/showOutputSchema';
 import * as ApplyActions from '../actions/applyUpdate';
 import Table from './Table';
+import ReadyToImport from './ReadyToImport';
 
 function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
   const outputSchemaId = _.toNumber(outputSchemaIdStr);
@@ -19,7 +20,8 @@ function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
   const columns = Selectors.columnsForOutputSchema(db, outputSchemaId);
 
   const canApplyUpdate = columns.every((column) => {
-    return column.transform.contiguous_rows_processed === inputSchema.total_rows;
+    return column.transform.contiguous_rows_processed &&
+      column.transform.contiguous_rows_processed === inputSchema.total_rows;
   });
 
   return {
@@ -111,6 +113,12 @@ export function ShowOutputSchema({
         </ModalContent>
 
         <ModalFooter>
+          {canApplyUpdate ?
+            <ReadyToImport
+              db={db}
+              outputSchema={outputSchema} /> :
+            <div />}
+
           <button
             onClick={applyUpdate}
             disabled={!canApplyUpdate}

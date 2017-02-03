@@ -3,8 +3,8 @@ import { Simulate } from 'react-addons-test-utils';
 import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
 import ShowOutputSchema from 'components/ShowOutputSchema';
 import { ShowOutputSchema as ShowOutputSchemaUnConnected } from 'components/ShowOutputSchema';
+import * as Selectors from 'selectors';
 import { insertFromServer, updateFromServer, batch } from 'actions/database';
-import { statusSavedOnServer } from 'lib/database/statuses';
 
 describe('components/ShowOutputSchema', () => {
 
@@ -67,36 +67,33 @@ describe('components/ShowOutputSchema', () => {
   });
 
   it('calls `updateColumnType` when a selector is changed', () => {
+    const store = getStoreWithOutputSchema();
+    const storeDb = store.getState().db;
     const spy = sinon.spy();
+    // rendering unconnected version so we can pass in a spy instead of
+    // going through mapDispatchToProps
     const props = {
-      db: {
-        transform_1: [],
-        transform_2: []
-      },
+      db: storeDb,
+      upload: storeDb.uploads[0],
+      inputSchema: storeDb.input_schemas[0],
+      outputSchema: storeDb.output_schemas[0],
+      columns: Selectors.columnsForOutputSchema(storeDb, storeDb.output_schemas[0].id),
+      canApplyUpdate: false,
       updateColumnType: spy,
-      upload: {
-        __status__: statusSavedOnServer,
-        id: 5,
-        filename: 'foo.csv'
-      },
-      columns: [
-        { id: 50, display_name: 'arrest', transform: { id: 1, output_soql_type: 'SoQLText' } },
-        { id: 51, display_name: 'block', transform: { id: 2, output_soql_type: 'SoQLText' } }
-      ],
-      inputSchema: { upload_id: 5 },
-      outputSchema: { input_schema_id: 4 },
-      goToUpload: _.noop
+      goToUpload: _.noop,
+      applyUpdate: _.noop
     };
     const element = renderPureComponent(ShowOutputSchemaUnConnected(props));
     const firstSelect = element.querySelector('select');
     firstSelect.value = 'SoQLNumber';
     Simulate.change(firstSelect);
     expect(spy.callCount).to.eql(1);
-    expect(spy.args[0]).to.eql([
-      { input_schema_id: 4 },
-      { id: 50, display_name: 'arrest', transform: { id: 1, output_soql_type: 'SoQLText' } },
-      'SoQLNumber'
-    ]);
+
+    const [calledWithOutputSchema, calledWithOutputColumn, calledWithUpdatedType] = spy.args[0];
+
+    expect(calledWithOutputSchema.id).to.eql(storeDb.output_schemas[0].id);
+    expect(calledWithOutputColumn.id).to.eql(storeDb.output_columns[0].id);
+    expect(calledWithUpdatedType).to.eql('SoQLNumber');
   });
 
   // these overlap a bit with ColumnStatusTest, but that's not a bad thing IMO
@@ -245,6 +242,41 @@ describe('components/ShowOutputSchema', () => {
       }));
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
       expect(element.querySelector('.btn.apply-update').disabled).to.be.false;
+    });
+
+  });
+
+  describe('ReadyToImport indicator', () => {
+
+    it('isn\'t shown when the file is still transforming', () => {
+      const store = getStoreWithOutputSchema();
+      const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
+      expect(element.querySelector('.ready-to-import')).to.be.null;
+    });
+
+    it('is shown when the file is done transforming', () => {
+      const store = getStoreWithOutputSchema();
+      store.dispatch(updateFromServer('input_schemas', {
+        id: 4,
+        total_rows: 42
+      }));
+      store.dispatch(updateFromServer('output_schemas', {
+        id: 18,
+        error_count: 3
+      }));
+      store.dispatch(updateFromServer('transforms', {
+        id: 1,
+        contiguous_rows_processed: 42
+      }));
+      store.dispatch(updateFromServer('transforms', {
+        id: 2,
+        contiguous_rows_processed: 42
+      }));
+      const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
+      expect(element.querySelector('.ready-to-import')).to.not.be.null;
+      const paragraphs = element.querySelectorAll('.ready-to-import p');
+      expect(paragraphs[0].innerText).to.eql('Ready to import 39 rows');
+      expect(paragraphs[1].innerText).to.eql('Rows that will not be imported 3');
     });
 
   });

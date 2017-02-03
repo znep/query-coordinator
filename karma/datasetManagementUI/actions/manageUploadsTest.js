@@ -2,10 +2,12 @@ import _ from 'lodash';
 import { getDefaultStore } from '../testStore';
 import { createUpload } from 'actions/manageUploads';
 import uploadResponse from '../data/uploadResponse';
+import mockPhoenixSocket from '../testHelpers/mockPhoenixSocket';
+import { mockFetch, mockXHR } from '../testHelpers/mockHTTP';
 
 describe('actions/manageUploads', () => {
 
-  const responses = {
+  const fetchResponses = {
     '/api/update/hehe-hehe/0/upload': {
       POST: {
         resource: {
@@ -106,123 +108,13 @@ describe('actions/manageUploads', () => {
     }
   };
 
-  function mockFetchAndXhr(status, body) {
-    const realFetch = window.fetch;
-    const realXMLHttpRequest = window.XMLHttpRequest;
-
-
-    window.fetch = (url, options) => {
-      return new Promise((resolve) => {
-        resolve({
-          status: 200,
-          json: () => (new Promise((resolve) => {
-            resolve(responses[url][options.method || 'GET']);
-          }))
-        });
-      });
-    };
-    // mock XHR (for actual upload bytes)
-    window.XMLHttpRequest = function() {};
-    window.XMLHttpRequest.prototype.open = function(method, url) {
-      this.method = method;
-      this.url = url;
-      this.upload = {};
-      this.headers = {};
-    };
-    window.XMLHttpRequest.prototype.send = function(payload) {
-      this.upload.onprogress({
-        loaded: 50,
-        total: 100
-      });
-
-      this.status = status;
-      this.responseText = JSON.stringify(body);
-
-      this.onload();
-    };
-    window.XMLHttpRequest.prototype.setRequestHeader = function(header, value) {
-      this.headers[header] = value;
-    };
-
-    return () => {
-      window.fetch = realFetch;
-      window.XMLHttpRequest = realXMLHttpRequest;
-    }
-  }
-
-  function mockPhx(serverEvents, outerDone) {
-    const allChannels = Object.keys(serverEvents);
-    var neverJoinedChannels = Object.keys(serverEvents);
-    const done = _.after(allChannels.length, (e) => {
-      window.DSMAPI_PHOENIX_SOCKET = null;
-      outerDone(e)
-    });
-
-    setTimeout(() => {
-      if(neverJoinedChannels.length > 0) {
-        done(new Error(`Never joined channels ${neverJoinedChannels.join(', ')}`));
-      }
-    }, 1000);
-
-    // mock socket
-    const sentIndices = {};
-
-    window.DSMAPI_PHOENIX_SOCKET = {
-      channel: (channelName, joinPayload) => {
-        if (!serverEvents[channelName]) {
-          done(new Error(`no such mock channel: ${channelName}`));
-        }
-        const callbacks = {};
-        const joinCallbacks = {};
-        function sendMessages(idx = 0) {
-          setTimeout(() => {
-            const messages = serverEvents[channelName];
-            if (idx < messages.length) {
-              const message = messages[idx];
-              const callback = callbacks[message.event];
-              callback(message.payload);
-              sentIndices[channelName] = idx;
-              sendMessages(idx + 1);
-            } else {
-              function allMessagesSent([channelName, messages]) {
-                return messages.length - 1 === sentIndices[channelName];
-              }
-              if (_.toPairs(serverEvents).every(allMessagesSent)) {
-                done()
-              }
-            }
-          }, 0);
-        }
-        const joinedChannel = {
-          receive: (joinEvent, callback) => {
-            joinCallbacks[joinEvent] = callback;
-            return joinedChannel;
-          }
-        };
-        return {
-          on: (eventName, callback) => {
-            callbacks[eventName] = callback;
-          },
-          join: () => {
-            neverJoinedChannels = _.without(neverJoinedChannels, channelName);
-            sendMessages();
-            return joinedChannel;
-          }
-        };
-      }
-    };
-
-    return () => {
-      delete window.DSMAPI_PHOENIX_SOCKET;
-    }
-  }
-
   it('uploads a file, polls for schema, subscribes to channels, and fetches results', (done) => {
     const store = getDefaultStore();
 
     // mock fetch
-    const unmockFetch = mockFetchAndXhr(200, uploadResponse);
-    const unmockPhx = mockPhx({
+    const unmockXHR = mockXHR(200, uploadResponse);
+    const unmockFetch = mockFetch(fetchResponses);
+    const unmockPhx = mockPhoenixSocket({
       'transform_progress:0': [
         {
           event: 'max_ptr',
@@ -258,9 +150,16 @@ describe('actions/manageUploads', () => {
             end_row_offset: 9999
           }
         }
+      ],
+      'output_schema:7': [
+        {
+          event: 'update',
+          payload: {
+            error_count: 3
+          }
+        }
       ]
     }, (e) => {
-
       const db = store.getState().db;
       const inputSchema = _.find(db.input_schemas, { id: 4 });
       expect(inputSchema.total_rows).to.equal(999999);
@@ -273,6 +172,7 @@ describe('actions/manageUploads', () => {
 
       unmockPhx();
       unmockFetch();
+      unmockXHR();
       done(e);
     });
 

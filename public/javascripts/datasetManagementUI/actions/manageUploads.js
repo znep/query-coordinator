@@ -150,10 +150,8 @@ export function insertAndSubscribeToUpload(dispatch, upload) {
 }
 
 export function insertAndSubscribeToOutputSchema(dispatch, inputSchemaId, outputSchema) {
-  dispatch(insertFromServer('output_schemas', {
-    id: outputSchema.id,
-    input_schema_id: inputSchemaId
-  }));
+  dispatch(insertFromServer('output_schemas', toOutputSchema(outputSchema)));
+  dispatch(subscribeToOutputSchema(outputSchema));
   outputSchema.output_columns.forEach((outputColumn) => {
     const transform = outputColumn.transform;
     dispatch(insertFromServerIfNotExists('transforms', {
@@ -215,6 +213,28 @@ export function createTableAndSubscribeToTransform(transform) {
         console.log(`failed to join ${channelName}:`, error);
       });
     }
+  };
+}
+
+function toOutputSchema(os) {
+  return {
+    id: os.id,
+    input_schema_id: os.input_schema_id,
+    error_count: os.error_count
+  };
+}
+
+function subscribeToOutputSchema(outputSchema) {
+  return (dispatch) => {
+    const channelName = `output_schema:${outputSchema.id}`;
+    const channel = window.DSMAPI_PHOENIX_SOCKET.channel(channelName, {});
+    channel.on('update', (updatedOutputSchema) => {
+      dispatch(updateFromServer('output_schemas', toOutputSchema(updatedOutputSchema)));
+    });
+
+    channel.join().
+      receive('ok', () => console.log(`Joined ${channelName}`)).
+      receive('error', () => console.error(`Failed to join ${channelName}`));
   };
 }
 

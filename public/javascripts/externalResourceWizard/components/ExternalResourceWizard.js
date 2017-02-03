@@ -34,7 +34,7 @@ export class ExternalResourceWizard extends Component {
 
   render() {
     const { title, description, url, previewImage } = this.state;
-    const { onClose, modalIsOpen } = this.props;
+    const { onBack, onClose, modalIsOpen } = this.props;
 
     const modalTitle = _.get(I18n, 'external_resource_wizard.header_title');
 
@@ -49,7 +49,7 @@ export class ExternalResourceWizard extends Component {
 
     const modalContent = (
       <div className="centered-content">
-        <BackButton onClick={onClose} />
+        <BackButton onClick={onBack} />
 
         <div className="description">
           <strong>{_.get(I18n, 'external_resource_wizard.form.description.create_a_link')}</strong>
@@ -109,12 +109,14 @@ export class ExternalResourceWizard extends Component {
 
 ExternalResourceWizard.propTypes = {
   modalIsOpen: PropTypes.bool.isRequired,
+  onBack: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired
 };
 
 ExternalResourceWizard.defaultProps = {
   modalIsOpen: false,
+  onBack: _.noop,
   onClose: _.noop,
   onSelect: _.noop
 };

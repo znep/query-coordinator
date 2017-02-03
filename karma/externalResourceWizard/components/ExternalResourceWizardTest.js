@@ -4,6 +4,7 @@ describe('components/ExternalResourceWizard', function() {
   function defaultProps() {
     return {
       modalIsOpen: true,
+      onBack: _.noop,
       onClose: _.noop,
       onSelect: _.noop
     };
@@ -33,9 +34,9 @@ describe('components/ExternalResourceWizard', function() {
   });
 
   describe('ModalContent', function() {
-    it('calls onClose on back button click', function() {
+    it('calls onBack on back button click', function() {
       var spy = sinon.spy();
-      var element = renderComponent(ExternalResourceWizard, getProps({ onClose: spy }));
+      var element = renderComponent(ExternalResourceWizard, getProps({ onBack: spy }));
       TestUtils.Simulate.click(element.querySelector('.modal-content').querySelector('button.back-button'));
       expect(spy).to.have.been.called;
     });

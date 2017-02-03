@@ -30,8 +30,6 @@ export class DummyCLP extends Component {
   }
 
   render() {
-
-    // TODO: remove these dummy divs
     const demoDivStyle = {
       display: 'inline-flex',
       alignItems: 'center',
@@ -58,7 +56,10 @@ export class DummyCLP extends Component {
           additionalTopbarComponents={[
             <ExternalResourceWizardButton
               key={0}
-              onClick={this.toggleExternalResourceWizard} />
+              onClick={() => {
+                this.toggleAssetSelector();
+                this.toggleExternalResourceWizard();
+              }} />
           ]}
           category={'Education'}
           modalIsOpen={this.state.assetSelectorIsOpen}
@@ -68,14 +69,12 @@ export class DummyCLP extends Component {
 
         <ExternalResourceWizard
           modalIsOpen={this.state.externalResourceWizardIsOpen}
-          onClose={() => {
+          onBack={() => {
             this.toggleExternalResourceWizard();
             this.toggleAssetSelector();
           }}
-          onSelect={(result) => {
-            this.onAssetSelection(result);
-            this.toggleAssetSelector();
-          }} />
+          onClose={this.toggleExternalResourceWizard}
+          onSelect={this.onAssetSelection} />
       </div>
     );
   }

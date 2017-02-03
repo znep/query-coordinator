@@ -34,16 +34,17 @@ describe('components/ResultsContainer', function() {
     });
   }
 
+  it('renders', function() {
+    stubFetch();
+    var element = renderComponent(ResultsContainer);
+    expect(element).to.exist;
+    expect(element.className).to.match(/results-container/);
+    ceteraUtils.fetch.restore();
+  });
+
   describe('result cards', function() {
     afterEach(() => {
       ceteraUtils.fetch.restore();
-    });
-
-    it('renders', function() {
-      stubFetch();
-      var element = renderComponent(ResultsContainer);
-      expect(element).to.exist;
-      expect(element.className).to.match(/results-container/);
     });
 
     it('renders the "no results" element if the results array is empty', function() {

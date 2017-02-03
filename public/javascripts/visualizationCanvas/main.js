@@ -9,6 +9,9 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { t } from 'lib/I18n';
 
+// add styling for socrata-viz maps
+import 'leaflet/dist/leaflet.css';
+
 import visualizationCanvas from './reducer';
 import App from './App';
 

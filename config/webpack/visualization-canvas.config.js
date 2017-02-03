@@ -19,6 +19,14 @@ module.exports = _.defaultsDeep({
         test: /\.jsx?$/,
         include: [ path.resolve(common.root, 'public/javascripts') ],
         loader: 'babel'
+      },
+      {
+        test: /\.scss|\.css$/,
+        loader: 'style!css!autoprefixer-loader!sass'
+      },
+      {
+        test: /\.png$/,
+        loader: 'url-loader?limit=100000'
       }
     ]
   },

@@ -72,8 +72,8 @@ export class DummyCLP extends Component {
             this.toggleExternalResourceWizard();
             this.toggleAssetSelector();
           }}
-          onSelect={() => {
-            this.onAssetSelection();
+          onSelect={(result) => {
+            this.onAssetSelection(result);
             this.toggleAssetSelector();
           }} />
       </div>

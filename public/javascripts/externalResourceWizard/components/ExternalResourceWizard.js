@@ -23,17 +23,20 @@ export class ExternalResourceWizard extends Component {
     const result = {
       resourceType: 'external',
       name: title,
-      description: description,
-      url: url,
+      description,
+      url,
       imageUrl: previewImage
     };
     this.props.onSelect(result);
     this.props.onClose();
+    this.setState({ title: '', description: '', url: '', previewImage: '' });
   }
 
   render() {
     const { title, description, url, previewImage } = this.state;
     const { onClose, modalIsOpen } = this.props;
+
+    const modalTitle = _.get(I18n, 'external_resource_wizard.header_title');
 
     const previewCardProps = {
       name: _.isEmpty(title) ? null : title,
@@ -44,8 +47,32 @@ export class ExternalResourceWizard extends Component {
       }
     };
 
+    const modalContent = (
+      <div className="centered-content">
+        <BackButton onClick={onClose} />
+
+        <div className="description">
+          <strong>{_.get(I18n, 'external_resource_wizard.form.description.create_a_link')}</strong>
+          <div>{_.get(I18n, 'external_resource_wizard.form.description.for_example')}</div>
+        </div>
+
+        <div className="external-resource-contents">
+          <ExternalResourceForm
+            description={description}
+            onFieldChange={this.updateField}
+            previewImage={previewImage}
+            title={title}
+            url={url} />
+
+          <div className="external-resource-preview">
+            <ExternalViewCard {...previewCardProps} />
+          </div>
+        </div>
+      </div>
+    );
+
     const formIsInvalid = _.isEmpty(title) || _.isEmpty(url);
-    const footerChildren = (
+    const footerContent = (
       <div>
         <button
           key="cancel"
@@ -64,47 +91,19 @@ export class ExternalResourceWizard extends Component {
     );
 
     const modalProps = {
-      children: [
-        <div key={0}>
-          <ModalHeader
-            title={_.get(I18n, 'external_resource_wizard.header_title', 'Feature an External Resource')}
-            onDismiss={onClose} />
-          <ModalContent>
-            <div className="centered-content">
-              <BackButton onClick={onClose} />
-
-              <div className="description">
-                <p>
-                  <strong>{_.get(I18n, 'external_resource_wizard.form.description.create_a_link')}</strong>
-                  <br />
-                  {_.get(I18n, 'external_resource_wizard.form.description.for_example')}
-                </p>
-              </div>
-
-              <div className="external-resource-contents">
-                <ExternalResourceForm
-                  description={description}
-                  onFieldChange={this.updateField}
-                  previewImage={previewImage}
-                  title={title}
-                  url={url} />
-
-                <div className="external-resource-preview">
-                  <ExternalViewCard {...previewCardProps} />
-                </div>
-              </div>
-            </div>
-          </ModalContent>
-          <ModalFooter children={footerChildren} />
-        </div>
-      ],
       className: 'external-resource-wizard',
       fullScreen: true,
       onDismiss: onClose,
       overlay: true
     };
 
-    return modalIsOpen ? <Modal {...modalProps} /> : null;
+    return modalIsOpen ?
+      <Modal {...modalProps}>
+        <ModalHeader title={modalTitle} onDismiss={onClose} />
+        <ModalContent>{modalContent}</ModalContent>
+        <ModalFooter>{footerContent}</ModalFooter>
+      </Modal>
+      : null;
   }
 }
 

@@ -22,21 +22,20 @@ export class AssetSelector extends Component {
     const resultsContainerProps = { additionalTopbarComponents, category, onClose, onSelect, resultsPerPage };
 
     const modalProps = {
-      children: [
-        <div key={0}>
-          <ModalHeader title={headerTitle} onDismiss={onClose} />
-          <ModalContent>
-            <ResultsContainer {...resultsContainerProps} />
-          </ModalContent>
-        </div>
-      ],
       className: 'asset-selector',
       fullScreen: true,
       onDismiss: onClose,
       overlay: true
     };
 
-    return modalIsOpen ? <Modal {...modalProps} /> : null;
+    return modalIsOpen ?
+      <Modal {...modalProps}>
+        <ModalHeader title={headerTitle} onDismiss={onClose} />
+        <ModalContent>
+          <ResultsContainer {...resultsContainerProps} />
+        </ModalContent>
+      </Modal>
+      : null;
   }
 }
 

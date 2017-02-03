@@ -1,3 +1,15 @@
 @import "styleguide-colors";
 @import "asset-selector/breakpoints";
 @import "asset-selector/results-container";
+
+.asset-selector.modal {
+  overflow-y: hidden;
+
+  .modal-header {
+    z-index: 1;
+  }
+
+  .modal-content {
+    margin-bottom: 0; // Because no ModalFooter
+  }
+}

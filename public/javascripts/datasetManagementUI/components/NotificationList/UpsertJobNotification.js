@@ -1,14 +1,17 @@
 import React, { PropTypes } from 'react';
 import ProgressBar from '../ProgressBar';
+import { commaify } from '../../../common/formatNumber';
 
 export default function UpsertJobNotification({ upsertJob, totalRows, rowsUpserted }) {
+  const commaifiedRowsUpserted = commaify(rowsUpserted);
+  const commaifiedTotalRows = commaify(totalRows);
   if (!upsertJob.status) {
     const percent = rowsUpserted / totalRows * 100;
     return (
       <div className="dsmui-notification in-progress">
         <span className="message">{I18n.progress_items.processing}</span>
         <span className="sub-message">
-          ({rowsUpserted} / {totalRows} {I18n.progress_items.rows})
+          ({commaifiedRowsUpserted} / {commaifiedTotalRows} {I18n.progress_items.rows})
         </span>
         <span className="percent-completed">{Math.round(percent)}%</span>
         <div className="upload-progress-bar">
@@ -21,7 +24,7 @@ export default function UpsertJobNotification({ upsertJob, totalRows, rowsUpsert
       <div className="dsmui-notification successful">
         <span className="message">{I18n.progress_items.processing}</span>
         <span className="sub-message">
-          ({totalRows} / {totalRows} {I18n.progress_items.rows})
+          ({commaifiedTotalRows} / {commaifiedTotalRows} {I18n.progress_items.rows})
         </span>
         <span className="success-message">
           {I18n.progress_items.success}&nbsp;

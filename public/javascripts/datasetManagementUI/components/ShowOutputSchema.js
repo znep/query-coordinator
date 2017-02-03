@@ -4,6 +4,7 @@ import { Modal, ModalHeader, ModalContent, ModalFooter } from 'socrata-component
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 
+import { commaify } from '../../common/formatNumber';
 import * as Links from '../links';
 import * as Selectors from '../selectors';
 import { STATUS_UPDATING, STATUS_UPDATE_FAILED } from '../lib/database/statuses';
@@ -87,9 +88,9 @@ export function ShowOutputSchema({
     const rowsTransformed = _.min(
       columns.map((col) => col.transform.contiguous_rows_processed)
     ) || 0;
-    totalRowCountMsg = `${rowsTransformed} ${SubI18n.rows_so_far}`;
+    totalRowCountMsg = `${commaify(rowsTransformed)} ${SubI18n.rows_so_far}`;
   } else {
-    totalRowCountMsg = `${inputSchema.total_rows} ${SubI18n.rows_total}`;
+    totalRowCountMsg = `${commaify(inputSchema.total_rows)} ${SubI18n.rows_total}`;
   }
 
   return (

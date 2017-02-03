@@ -323,12 +323,20 @@
         margin: 0.5em 0px;
 
         span.importable-rows {
-          color: $success-text;
+          color: $primary-text;
+          font-weight: 600;
         }
         span.error-rows {
           color: $error-text;
+          font-weight: 600;
         }
 
+      }
+
+      .errors-help {
+        padding-left: 7px;
+        color: $light-grey-1;
+        font-size: 17px;
       }
     }
   }

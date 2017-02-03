@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { commaify } from '../../common/formatNumber';
 
 function query(db, outputSchema) {
   const inputSchema = _.find(db.input_schemas, { id: outputSchema.input_schema_id });
@@ -17,10 +18,13 @@ export default function ReadyToImport({ db, outputSchema }) {
   return (
     <div className="ready-to-import">
       <p>
-        {SubI18n.ready_to_import} <span className="importable-rows">{importableRows}</span> {SubI18n.rows}
+        {SubI18n.ready_to_import}{' '}
+        <span className="importable-rows">{commaify(importableRows)}</span>{' '}
+        {SubI18n.rows}
       </p>
       <p>
-        {SubI18n.will_not_be_imported} <span className="error-rows">{errorRows}</span>
+        {SubI18n.will_not_be_imported} <span className="error-rows">{commaify(errorRows)}</span>
+        <span className="errors-help socrata-icon-question" />
       </p>
     </div>
   );

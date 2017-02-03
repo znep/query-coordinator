@@ -7,6 +7,7 @@ import { singularOrPlural } from '../../lib/util';
 import styleguide from 'socrata-components';
 import ProgressBar from '../ProgressBar';
 import TypeIcon from '../TypeIcon';
+import { commaify } from '../../../common/formatNumber';
 
 const TransformStatus = React.createClass({
   propTypes: {
@@ -78,7 +79,7 @@ const TransformStatus = React.createClass({
         <div id={flyoutId} className="transform-status-flyout flyout flyout-hidden">
           <section className="flyout-content">
             {msgTemplate.format({
-              num_errors: transform.num_transform_errors,
+              num_errors: commaify(transform.num_transform_errors),
               type: SubI18n.type_display_names[transform.output_soql_type]
             })}
             <TypeIcon type={transform.output_soql_type} />
@@ -103,7 +104,7 @@ const TransformStatus = React.createClass({
           className={classNames('col-errors', { 'col-errors-selected': inErrorMode })}>
           {progressBar}
           <div className="column-status-text">
-            <span className="err-info error">{transform.num_transform_errors}</span>
+            <span className="err-info error">{commaify(transform.num_transform_errors)}</span>
             <Link to={linkPath} data-flyout={flyoutId}>{msg}</Link>
           </div>
           {errorFlyout}

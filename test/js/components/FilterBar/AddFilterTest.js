@@ -3,6 +3,7 @@ import React from 'react';
 import { Simulate } from 'react-addons-test-utils';
 import { renderComponent } from '../../helpers';
 import AddFilter from 'components/FilterBar/AddFilter';
+import { SPACE } from 'common/keycodes';
 
 describe('AddFilter', () => {
   let element;
@@ -47,7 +48,7 @@ describe('AddFilter', () => {
 
     it('renders when add filter button is accessed via keyboard', () => {
       const button = element.querySelector('.add-filter-button');
-      Simulate.keyDown(button);
+      Simulate.keyUp(button, { keyCode: SPACE });
       const columnContainer = element.querySelector('.column-container');
 
       expect(columnContainer).to.exist;

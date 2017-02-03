@@ -13,7 +13,8 @@ describe('SearchablePicklist', () => {
       value: '',
       hasSearchError: false,
       onChangeSearchTerm: _.noop,
-      onSelection: _.noop
+      onSelection: _.noop,
+      onBlur: _.noop
     });
   }
 

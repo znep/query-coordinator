@@ -2,12 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import classNames from 'classnames';
 
-import {
-  UP,
-  DOWN,
-  ESCAPE,
-  isolateEventByKeys
-} from '../../common/keycodes';
+import { UP, DOWN, ESCAPE, ENTER, SPACE, isolateEventByKeys } from '../../common/keycodes';
 
 export const Picklist = React.createClass({
   propTypes: {
@@ -33,6 +28,8 @@ export const Picklist = React.createClass({
     ),
     // Calls a function after user selection.
     onSelection: React.PropTypes.func,
+    // Calls a function after user navigation.
+    onChange: React.PropTypes.func,
     onFocus: React.PropTypes.func,
     onBlur: React.PropTypes.func
   },
@@ -42,6 +39,7 @@ export const Picklist = React.createClass({
       disabled: false,
       options: [],
       onSelection: _.noop,
+      onChange: _.noop,
       onFocus: _.noop,
       onBlur: _.noop,
       value: null
@@ -89,7 +87,7 @@ export const Picklist = React.createClass({
   },
 
   onKeyUpSelection(event) {
-    const { disabled } = this.props;
+    const { disabled, onSelection } = this.props;
 
     if (disabled) {
       return;
@@ -101,6 +99,10 @@ export const Picklist = React.createClass({
         break;
       case DOWN:
         this.move('down');
+        break;
+      case ENTER:
+      case SPACE:
+        onSelection(this.state.selectedOption);
         break;
       default:
         break;
@@ -114,14 +116,14 @@ export const Picklist = React.createClass({
   },
 
   onKeyUp(event) {
-    isolateEventByKeys(event, [UP, DOWN, ESCAPE]);
+    isolateEventByKeys(event, [UP, DOWN, ENTER, SPACE]);
 
     this.onKeyUpSelection(event);
     this.onKeyUpBlur(event);
   },
 
   onKeyDown(event) {
-    isolateEventByKeys(event, [UP, DOWN, ESCAPE]);
+    isolateEventByKeys(event, [UP, DOWN, ENTER, SPACE]);
   },
 
   onMouseDownOption(event) {
@@ -155,6 +157,11 @@ export const Picklist = React.createClass({
   setSelectedOption(selectedOption) {
     this.setState({ selectedOption });
     this.props.onSelection(selectedOption);
+  },
+
+  setChangedOption(selectedOption) {
+    this.setState({ selectedOption });
+    this.props.onChange(selectedOption);
   },
 
   setScrollPositionToOption(picklistOptionIndex) {
@@ -197,7 +204,7 @@ export const Picklist = React.createClass({
     }
 
     this.setNavigationPointer(newIndex);
-    this.setSelectedOption(newSelectedOption);
+    this.setChangedOption(newSelectedOption);
     this.setScrollPositionToOption(newIndex);
   },
 
@@ -217,8 +224,7 @@ export const Picklist = React.createClass({
       key: index,
       role: 'option',
       id: `${option.value}-${index}`,
-      'aria-selected': isSelected,
-      tabIndex: 0
+      'aria-selected': isSelected
     };
 
     const content = hasRenderFunction ?

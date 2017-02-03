@@ -94,6 +94,7 @@ export const TextFilter = React.createClass({
     const { value, suggestions, hasSearchError } = this.state;
 
     const picklistProps = {
+      onBlur: _.noop,
       onSelection: this.onSelectSuggestion,
       onChangeSearchTerm: this.onChangeSearchTerm,
       hasSearchError,

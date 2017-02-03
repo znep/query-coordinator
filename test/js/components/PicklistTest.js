@@ -16,7 +16,8 @@ describe('Picklist', () => {
         {title: 'Railroads', value: 'railroads'},
         {title: 'Steel', value: 'steel'}
       ],
-      onSelection: _.noop
+      onSelection: _.noop,
+      onChange: _.noop
     });
   }
 
@@ -157,7 +158,7 @@ describe('Picklist', () => {
     let props;
 
     beforeEach(() => {
-      props = { onSelection: sinon.stub() };
+      props = { onSelection: sinon.stub(), onChange: sinon.stub() };
       element = renderComponent(Picklist, getProps(props));
     });
 
@@ -216,7 +217,7 @@ describe('Picklist', () => {
             Simulate.keyUp(element, event);
 
             expect(lastOption).to.have.class(selectedOptionSelector);
-            expect(props.onSelection.calledOnce).to.be.true;
+            expect(props.onChange.calledOnce).to.be.true;
           });
         });
 
@@ -240,7 +241,8 @@ describe('Picklist', () => {
             Simulate.keyUp(element, event);
 
             expect(options[0]).to.have.class(selectedOptionSelector);
-            expect(props.onSelection.calledTwice).to.be.true;
+            expect(props.onSelection.calledOnce).to.be.true;
+            expect(props.onChange.calledOnce).to.be.true;
           });
         });
       });
@@ -257,7 +259,7 @@ describe('Picklist', () => {
             Simulate.keyUp(element, event);
 
             expect(firstOption).to.have.class(selectedOptionSelector);
-            expect(props.onSelection.calledOnce).to.be.true;
+            expect(props.onChange.calledOnce).to.be.true;
           });
         });
 
@@ -281,7 +283,8 @@ describe('Picklist', () => {
             Simulate.keyUp(element, event);
 
             expect(options[2]).to.have.class(selectedOptionSelector);
-            expect(props.onSelection.calledTwice).to.be.true;
+            expect(props.onSelection.calledOnce).to.be.true;
+            expect(props.onChange.calledOnce).to.be.true;
           });
         });
       });

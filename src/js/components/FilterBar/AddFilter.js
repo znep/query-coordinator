@@ -4,7 +4,7 @@ import SearchablePicklist from './SearchablePicklist';
 import _ from 'lodash';
 import { getIconForDataType } from '../../common/icons';
 import { translate as t } from '../../common/I18n';
-import { ESCAPE } from '../../common/keycodes';
+import { ESCAPE, ENTER, SPACE, isOneOfKeys, isolateEventByKeys } from '../../common/keycodes';
 
 export const AddFilter = React.createClass({
   propTypes: {
@@ -52,6 +52,18 @@ export const AddFilter = React.createClass({
     this.toggleColumnPicklist();
   },
 
+  onKeyDownAddFilterButton(event) {
+    isolateEventByKeys(event, [ENTER, SPACE]);
+  },
+
+  onKeyUpAddFilterButton(event) {
+    isolateEventByKeys(event, [ENTER, SPACE]);
+
+    if (isOneOfKeys(event, [ENTER, SPACE])) {
+      this.toggleColumnPicklist(event);
+    }
+  },
+
   toggleColumnPicklist(event) {
     if (event) {
       event.preventDefault();
@@ -93,6 +105,7 @@ export const AddFilter = React.createClass({
         const column = _.find(columns, ['fieldName', option.value]);
         this.onClickColumn(column);
       },
+      onBlur: () => this.setState({ isChoosingColumn: false }),
       value: searchTerm
     };
 
@@ -109,7 +122,8 @@ export const AddFilter = React.createClass({
         className="add-filter-button"
         ref={(el) => this.addFilterButton = el}
         onClick={this.toggleColumnPicklist}
-        onKeyDown={this.toggleColumnPicklist}
+        onKeyDown={this.onKeyDownAddFilterButton}
+        onKeyUp={this.onKeyUpAddFilterButton}
         role="button"
         tabIndex="0">
         {t('filter_bar.add_filter')}

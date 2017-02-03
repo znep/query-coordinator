@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import React from 'react';
 import SocrataUtils from 'socrata-utils';
 import Picklist from '../Picklist';
-import { ESCAPE, DOWN, ENTER, SPACE, isolateEventByKeys } from '../../common/keycodes';
+import { ESCAPE, DOWN, SPACE, isolateEventByKeys, isOneOfKeys } from '../../common/keycodes';
 
 export default React.createClass({
   propTypes: {
@@ -25,7 +25,7 @@ export default React.createClass({
       disabled: false,
       options: [],
       placeholder: null,
-      onSelection: () => {}
+      onSelection: _.noop
     };
   },
 
@@ -98,16 +98,6 @@ export default React.createClass({
     }
   },
 
-  onKeyUpDropdown(event) {
-    const { keyCode } = event;
-
-    isolateEventByKeys(event, [ENTER, DOWN, SPACE]);
-
-    if (keyCode === ENTER || keyCode === SPACE) {
-      this.setState({ focused: true, opened: false });
-    }
-  },
-
   onMouseUpDropdown() {
     this.setState({ focused: true, opened: false });
   },
@@ -139,17 +129,15 @@ export default React.createClass({
   },
 
   onKeyDownPlaceholder(event) {
-    isolateEventByKeys(event, [ESCAPE, DOWN, SPACE]);
+    isolateEventByKeys(event, [DOWN, SPACE]);
   },
 
   onKeyUpPlaceholder(event) {
-    const { keyCode } = event;
+    isolateEventByKeys(event, [DOWN, SPACE]);
 
-    isolateEventByKeys(event, [ESCAPE, DOWN, SPACE]);
-
-    if (keyCode === ESCAPE) {
+    if (isOneOfKeys(event, [ESCAPE])) {
       this.onBlurPlaceholder();
-    } else if (keyCode === DOWN || keyCode === SPACE) {
+    } else if (isOneOfKeys(event, [DOWN, SPACE])) {
       this.openPicklist();
     }
   },
@@ -165,7 +153,7 @@ export default React.createClass({
 
   onClickOption(selectedOption) {
     this.props.onSelection(selectedOption);
-    this.setState({ selectedOption });
+    this.setState({ selectedOption, focused: true, opened: false });
   },
 
   getSelectedOption(props) {
@@ -291,7 +279,8 @@ export default React.createClass({
       className: classNames({
         'dropdown-placeholder': !placeholderIsFunction,
         'dropdown-selected': !!selectedOption
-      })
+      }),
+      role: 'button'
     };
 
     if (placeholderIsFunction) {
@@ -315,7 +304,6 @@ export default React.createClass({
     const dropdownAttributes = {
       id,
       ref: ref => this.dropdownRef = ref,
-      onKeyUp: this.onKeyUpDropdown,
       onMouseUp: this.onMouseUpDropdown,
       className: classNames('dropdown-container', {
         'dropdown-focused': focused,

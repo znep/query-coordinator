@@ -9,7 +9,8 @@ export const SearchablePicklist = React.createClass({
     value: PropTypes.string,
     hasSearchError: PropTypes.bool,
     onChangeSearchTerm: PropTypes.func.isRequired,
-    onSelection: PropTypes.func.isRequired
+    onSelection: PropTypes.func.isRequired,
+    onBlur: PropTypes.func.isRequired
   },
 
   componentDidMount() {
@@ -23,7 +24,7 @@ export const SearchablePicklist = React.createClass({
   },
 
   renderPicklist() {
-    const { options, value, hasSearchError, onSelection } = this.props;
+    const { options, value, hasSearchError, onSelection, onBlur } = this.props;
 
     if (hasSearchError) {
       return (
@@ -44,7 +45,8 @@ export const SearchablePicklist = React.createClass({
     const picklistProps = {
       options,
       value,
-      onSelection: onSelection
+      onSelection,
+      onBlur
     };
 
     return <Picklist {...picklistProps} />;

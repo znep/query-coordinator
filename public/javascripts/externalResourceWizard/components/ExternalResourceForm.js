@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
-import $ from 'jquery';
 
 export class ExternalResourceForm extends Component {
   constructor(props) {
@@ -88,6 +87,7 @@ export class ExternalResourceForm extends Component {
         'https://example.com')
     });
 
+    // Use a styleguide button and hide the actual previewImage file input button.
     const previewImageButton = (
       <div>
         <button
@@ -95,22 +95,23 @@ export class ExternalResourceForm extends Component {
           aria-labelledby="external-resource-preview-image-label"
           onClick={(e) => {
             e.preventDefault();
-            $('.preview-image').click(); // TODO use something else
+            this.hiddenPreviewImageInput.click();
           }}>
-          {_.get(I18n, 'external_resource_wizard.form.fields.preview_image.button_text', 'Choose an image')}
+          {_.get(I18n, 'external_resource_wizard.form.fields.preview_image.button_text')}
         </button>
         <span> {this.props.previewImage ? '' :
-          _.get(I18n, 'external_resource_wizard.form.fields.preview_image.no_file_chosen', 'No file chosen')}
+          _.get(I18n, 'external_resource_wizard.form.fields.preview_image.no_file_chosen')}
         </span>
       </div>
     );
     const previewImageField = this.renderInputField('previewImage', {
       type: 'file',
-      className: 'file-input preview-image hidden'
+      className: 'file-input preview-image hidden',
+      ref: (input) => { this.hiddenPreviewImageInput = input; }
     }, previewImageButton);
 
     const imageWarning = this.state.isImageInvalid ?
-      <div className="alert error">
+      <div className="alert error image-warning">
         {_.get(I18n, 'external_resource_wizard.form.fields.preview_image.error')}
       </div> : null;
 
@@ -120,7 +121,6 @@ export class ExternalResourceForm extends Component {
         {descriptionField}
         {urlField}
         {previewImageField}
-        <br />
         {imageWarning}
       </form>
     );

@@ -23,7 +23,7 @@ export default function componentStoryTile(props) {
     clearTimeout(rerenderOnResizeTimeout);
 
     rerenderOnResizeTimeout = setTimeout(
-      _renderStoryTile($this, componentData),
+      renderStoryTile($this, componentData),
       // Add some jitter in order to make sure multiple visualizations are
       // unlikely to all attempt to rerender themselves at the exact same
       // moment.
@@ -72,7 +72,7 @@ function _updateSrc($element, componentData) {
     Promise.resolve($.get(storyTileSrc)).
       then(
         function(storyTileData) {
-          _renderStoryTile($element, componentData, storyTileData);
+          renderStoryTile($element, componentData, storyTileData);
         }
       ).
       catch(
@@ -82,7 +82,7 @@ function _updateSrc($element, componentData) {
             console.error(error);
           }
 
-          _renderStoryTileError($element);
+          renderStoryTileError($element);
         }
       );
   }
@@ -116,7 +116,7 @@ function _updateTextEllipsification($element) {
   }
 }
 
-function _renderStoryTile($element, componentData, storyTileData) {
+function renderStoryTile($element, componentData, storyTileData) {
   var $tileContainer;
   var $tileContent;
   var $tileTitle;
@@ -139,7 +139,7 @@ function _renderStoryTile($element, componentData, storyTileData) {
     return;
   }
 
-  _removeStoryTile($element);
+  removeStoryTile($element);
 
   $element.attr(
     'data-rendered-story-tile-data',
@@ -203,21 +203,20 @@ function _renderStoryTile($element, componentData, storyTileData) {
   $tileContainer.addClass('rendered');
 }
 
-function _removeStoryTile($element) {
-
+function removeStoryTile($element) {
   $element.
     removeClass('component-error').
     children().
     // Don't accidentally remove the edit control when trying to clear the
     // component's DOM tree in order to re-render it.
-    not('.component-edit-controls').
+    not('.component-edit-controls-container').
     remove();
 }
 
-function _renderStoryTileError($element) {
-
+function renderStoryTileError($element) {
   $element.
-    children(':not(.component-edit-controls)').
+    children().
+    not('.component-edit-controls-container').
     remove();
 
   $element.

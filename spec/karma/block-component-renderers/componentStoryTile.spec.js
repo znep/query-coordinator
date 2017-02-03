@@ -33,7 +33,8 @@ describe('componentStoryTile jQuery plugin', function() {
       blockId: null,
       componentData: validComponentData,
       componentIndex: null,
-      theme: null
+      theme: null,
+      editMode: true
     }, props);
   };
 
@@ -55,6 +56,7 @@ describe('componentStoryTile jQuery plugin', function() {
           JSON.stringify(response)
         ]
       );
+
 
       $component = $component.componentStoryTile(getProps({ componentData }));
 
@@ -113,6 +115,12 @@ describe('componentStoryTile jQuery plugin', function() {
 
     it('should render an error message', function() {
       assert.isTrue($component.hasClass('component-error'));
+    });
+
+    describe('the edit controls', function() {
+      it('should still be attached to the component', function() {
+        assert.lengthOf($component.find('.component-edit-controls-container'), 1);
+      });
     });
   });
 
@@ -203,6 +211,14 @@ describe('componentStoryTile jQuery plugin', function() {
           $component.find('.story-tile-container').attr('target'),
           '_self'
         );
+      });
+    });
+
+    describe('the edit controls', function() {
+      stubApiAndCreateComponentWith(200, validStoryTileDataWithImage, validComponentData);
+
+      it('should still be attached to the component', function() {
+        assert.lengthOf($component.find('.component-edit-controls-container'), 1);
       });
     });
   });

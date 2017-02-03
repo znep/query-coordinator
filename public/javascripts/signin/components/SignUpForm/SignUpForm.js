@@ -134,7 +134,9 @@ class SignUpForm extends React.Component {
           onBlur={onPasswordBlur}>
           <div className="passwordHint" styleName="password-hint">
             {translate('account.common.form.password_restrictions')}
-            <SocrataIcon name="info" />
+            <div styleName="info-icon">
+              <SocrataIcon name="info" />
+            </div>
           </div>
         </SignUpInput>
 

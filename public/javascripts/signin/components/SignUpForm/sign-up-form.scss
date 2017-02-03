@@ -68,9 +68,12 @@ $error-color: #C4282D;
   font-size: 10px;
   margin-top: 4px;
   margin-left: 4px;
+  display: flex;
 }
 
 .info-icon {
+  margin-left: 5px;
+  
   & svg {
     width: 15px;
     height: 15px;

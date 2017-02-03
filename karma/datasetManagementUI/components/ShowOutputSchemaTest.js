@@ -177,7 +177,7 @@ describe('components/ShowOutputSchema', () => {
         contiguous_rows_processed: 3
       }));
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-      expect(element.querySelector('.total-row-count').innerText).to.eql('2 rows so far');
+      expect(element.querySelector('.total-row-count').innerText).to.eql('2');
     });
 
     it('shows the row count before the file has finished uploading', () => {
@@ -187,7 +187,7 @@ describe('components/ShowOutputSchema', () => {
         total_rows: 50
       }));
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-      expect(element.querySelector('.total-row-count').innerText).to.eql('50 rows total');
+      expect(element.querySelector('.total-row-count').innerText).to.eql('50');
     });
 
   });

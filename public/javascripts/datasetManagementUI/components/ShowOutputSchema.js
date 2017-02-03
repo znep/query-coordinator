@@ -83,15 +83,10 @@ export function ShowOutputSchema({
     onDismiss: goToUpload
   };
 
-  let totalRowCountMsg;
-  if (!_.isNumber(inputSchema.total_rows)) {
-    const rowsTransformed = _.min(
-      columns.map((col) => col.transform.contiguous_rows_processed)
-    ) || 0;
-    totalRowCountMsg = `${commaify(rowsTransformed)} ${SubI18n.rows_so_far}`;
-  } else {
-    totalRowCountMsg = `${commaify(inputSchema.total_rows)} ${SubI18n.rows_total}`;
-  }
+  const rowsTransformed = inputSchema.total_rows || _.min(
+    columns.map((col) => col.transform.contiguous_rows_processed)
+  ) || 0;
+
 
   return (
     <div id="show-output-schema">
@@ -100,17 +95,35 @@ export function ShowOutputSchema({
 
         <ModalContent>
           <div>
-            <span className="total-row-count">{totalRowCountMsg}</span>
-            <br />
-            <Table
-              db={db}
-              path={path}
-              columns={columns}
-              totalRows={inputSchema.total_rows}
-              outputSchema={outputSchema}
-              errorsTransformId={errorsTransformId}
-              updateColumnType={updateColumnType} />
+            <div className="data-preview">
+              <div>
+                <h3>Data Preview</h3>
+              </div>
+              <div className="dataset-attributes">
+                <div className="dataset-attribute">
+                  <p className="attribute-label small">Rows</p>
+                  <p className="attribute total-row-count">{commaify(rowsTransformed)}</p>
+                </div>
+                <div className="dataset-attribute">
+                  <p className="attribute-label small">Columns</p>
+                  <p className="attribute">{columns.length}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="table-wrap">
+              <Table
+                db={db}
+                path={path}
+                columns={columns}
+                totalRows={inputSchema.total_rows}
+                outputSchema={outputSchema}
+                errorsTransformId={errorsTransformId}
+                updateColumnType={updateColumnType} />
+            </div>
           </div>
+
+
         </ModalContent>
 
         <ModalFooter>

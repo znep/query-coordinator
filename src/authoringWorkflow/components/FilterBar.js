@@ -19,6 +19,7 @@ const mapStateToProps = (state) => {
   return {
     columns,
     filters,
+    isReadOnly: false,
     fetchSuggestions
   };
 };

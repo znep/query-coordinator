@@ -73,7 +73,11 @@ module.exports = function(element, configuration) {
   };
 
   this.destroy = () => {
-    return ReactDOM.unmountComponentAtNode(this.element);
+    // We need to clear the React callstack before attempting to unmount in order to avoid a race
+    // condition when calling destroy immediately after it re-renders in React. A way to avoid this
+    // would be to not use this container function and use the React component and Redux store
+    // directly. :(
+    _.defer(() => ReactDOM.unmountComponentAtNode(this.element));
   };
 
   this.render();

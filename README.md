@@ -63,12 +63,14 @@ If you are contributing to this library, run `npm install` to set up your enviro
 
 ### Feature flags
 
-Support for feature flags requires that `window.socrata.featureFlags` or `window.serverConfig.featureFlags`
-be defined at page load time. This is expected to be a simple object
-containing keys for all defined feature flags. The purpose of this module is
-provide validation of requested feature flag keys.
+The purpose of this module is to provide safe access to requested feature flag keys. An error will be thrown
+if the requested feature flag does not exist.
 
-Usage example:
+Support for feature flags requires that `window.socrata.featureFlags` or `window.serverConfig.featureFlags`
+be defined at page load time. This is easily done in frontend via the `render_feature_flags_for_javascript`
+helper. Other projects should adopt similar helpers, please read the frontend version for inspiration.
+
+This is expected to be a simple object containing keys for all defined feature flags. Usage example:
 
 ```javascript
 import { FeatureFlags } from 'socrata-utils';

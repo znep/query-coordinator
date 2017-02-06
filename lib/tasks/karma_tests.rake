@@ -65,7 +65,7 @@ namespace :test do
       desc 'Helper task that creates a js file that injects translation into browser'
       task :update_asset_selector_translations do
         translations_filename = 'config/locales/en.yml'
-        output_filename = 'karma/assetSelector/mockTranslations.js'
+        output_filename = 'karma/common/components/assetSelector/mockTranslations.js'
         all_translations = YAML.load_file(translations_filename)['en']
         translations = {
           :asset_selector => all_translations['asset_selector'],

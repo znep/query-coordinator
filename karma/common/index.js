@@ -1,7 +1,3 @@
-/*** Run all assetSelector tests:
-./node_modules/karma/bin/karma start karma/assetSelector/karma.conf.js --singleRun false --browsers PhantomJS --reporters mocha
-***/
-
 // This is required by socrata-components
 import 'babel-polyfill';
 

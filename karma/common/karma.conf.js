@@ -29,7 +29,7 @@ module.exports = function ( karma ) {
             include: [
               path.resolve(root, 'public/javascripts'),
               path.resolve(root, 'node_modules/socrata-components/common'),
-              path.resolve(root, 'karma/assetSelector')
+              path.resolve(root, 'karma/common/components/assetSelector')
             ],
             loader: 'babel'
           }
@@ -39,8 +39,8 @@ module.exports = function ( karma ) {
       resolve: {
         root: [
           path.resolve('.'),
-          path.resolve('public/javascripts/assetSelector'),
-          path.resolve('karma/assetSelector')
+          path.resolve('public/javascripts/common/components/assetSelector'),
+          path.resolve('karma/common/components/assetSelector')
         ]
       }
     },

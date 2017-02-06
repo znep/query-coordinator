@@ -17,7 +17,7 @@ describe('components/BackButton', function() {
     expect(element.className).to.match(/back-button/);
   });
 
-  it('dispatches the onClick prop on click', function() {
+  it('calls the onClick prop function on click', function() {
     var spy = sinon.spy();
     var element = renderComponent(BackButton, getProps({ onClick: spy }));
     TestUtils.Simulate.click(element);

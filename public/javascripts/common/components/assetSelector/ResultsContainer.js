@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
-import ceteraUtils from '../lib/ceteraUtils';
+import ceteraUtils from '../../ceteraUtils';
 import BackButton from './BackButton';
 import Card from './Card';
 import NoResults from './NoResults';

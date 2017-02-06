@@ -1,6 +1,6 @@
 import { ResultsContainer } from 'components/ResultsContainer';
 import $ from 'jquery';
-import ceteraUtils from 'lib/ceteraUtils';
+import ceteraUtils from '../../ceteraUtils';
 import mockCeteraResponse from 'data/mockCeteraResponse';
 
 describe('components/ResultsContainer', function() {

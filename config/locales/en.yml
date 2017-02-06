@@ -1388,7 +1388,7 @@ en:
       previous: Previous
       title: Table Preview
       unable_to_render: We're having trouble displaying this table.
-      visualize_link: Visualize and Explore
+      visualize_link: Visualize and Explore (preview)
     default_row_label: row
     done: Done
     download:

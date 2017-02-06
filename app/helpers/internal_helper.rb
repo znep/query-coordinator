@@ -228,7 +228,7 @@ module InternalHelper
   end
 
   def list_of_feature_flags_as_options
-    safe_join(FeatureFlags.list.map do |flag|
+    safe_join(FeatureFlags.list.sort.map do |flag|
       content_tag(:option, flag, :selected => params[:for] == flag)
     end.unshift(content_tag(:option, ' -- Choose one -- ')))
   end

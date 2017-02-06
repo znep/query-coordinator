@@ -4,7 +4,7 @@ class Configuration < Model
     fetch_config_from_core = lambda do |*cache_key|
       CoreServer::Base.connection.get_request(
         "/#{name.pluralize.downcase}.json?type=#{type}&defaultOnly=#{default_only}&merge=#{merge}",
-        { 'X-Socrata-Host': cname }.compact
+        { :'X-Socrata-Host' => cname }.compact
       )
     end
 

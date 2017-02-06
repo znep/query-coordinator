@@ -3,6 +3,7 @@ import $ from 'jquery';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
+import { isUserAdminOrPublisher } from '../lib/user';
 
 export const DatasetPreview = React.createClass({
   propTypes: {
@@ -113,9 +114,34 @@ export const DatasetPreview = React.createClass({
     }
   },
 
-  render() {
+  renderActionButton() {
     const { view, onClickGrid } = this.props;
 
+    const { enableVisualizationCanvas } = serverConfig.featureFlags;
+    const canCreateVisualizationCanvas = enableVisualizationCanvas &&
+      isUserAdminOrPublisher() &&
+      _.isString(view.bootstrapUrl);
+
+    if (canCreateVisualizationCanvas) {
+      return (
+        <a href={view.bootstrapUrl} className="btn btn-primary btn-sm btn-visualize">
+          {I18n.dataset_preview.visualize_link}
+        </a>
+      );
+    } else {
+      return (
+        <a
+          href={view.gridUrl}
+          className="btn btn-primary btn-sm btn-grid"
+          onClick={onClickGrid}>
+          {I18n.dataset_preview.grid_view_link}
+          <span className="icon-external" />
+        </a>
+      );
+    }
+  },
+
+  render() {
     if (this.shouldRenderTable()) {
       return (
         <section className="landing-page-section dataset-preview">
@@ -123,13 +149,7 @@ export const DatasetPreview = React.createClass({
             <h2 className="landing-page-section-header">
               {I18n.dataset_preview.title}
             </h2>
-            <a
-              href={view.gridUrl}
-              className="btn btn-primary btn-sm grid"
-              onClick={onClickGrid}>
-              {I18n.dataset_preview.grid_view_link}
-              <span className="icon-external" />
-            </a>
+            {this.renderActionButton()}
           </div>
 
           <div className="table-contents">

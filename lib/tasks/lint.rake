@@ -20,6 +20,11 @@ namespace :lint do
       run_eslint('public/javascripts/datasetLandingPage', args[:format])
     end
 
+    desc 'run eslint on the datasetManagementUI files'
+    task :datasetManagementUI, :format do |task, args|
+      run_eslint('public/javascripts/datasetManagementUI', args[:format])
+    end
+
     desc 'run eslint on the visualizationCanvas files'
     task :visualizationCanvas, :format do |task, args|
       run_eslint('public/javascripts/visualizationCanvas', args[:format])

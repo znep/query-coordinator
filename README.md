@@ -299,14 +299,15 @@ run linters for different parts of the codebase using the following
 rake tasks:
 
 ```sh
-rake lint:js:all                    # Lint the whole javascript codebase
-rake lint:js:oldUx                  # Lint the old ux
-rake lint:js:categoryLandingPage    # Lint category landing page
-rake lint:js:dataCards              # Lint data lens
-rake lint:js:datasetLandingPage     # Lint dataset landing page
-rake lint:js:diff                   # Lint javascript files changed on this branch
-rake lint:ruby                      # Lint ruby code
-rake lint                           # Lint all the things
+rake lint:eslint:all                    # Lint the whole javascript codebase
+rake lint:eslint:oldUx                  # Lint the old ux
+rake lint:eslint:categoryLandingPage    # Lint category landing page
+rake lint:eslint:dataCards              # Lint data lens
+rake lint:eslint:datasetLandingPage     # Lint dataset landing page
+rake lint:eslint:datasetManagementUI    # Lint dataset management UI
+rake lint:eslint:diff                   # Lint javascript files changed on this branch
+rake lint:ruby                          # Lint ruby code
+rake lint                               # Lint all the things
 ```
 
 The lint tasks take an optional argument representing the desired format of the output.

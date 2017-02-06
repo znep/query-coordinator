@@ -2,7 +2,7 @@
   <%- if show_signin_signout? %>
     <%- if logged_in? %>
       <%- profile_link = capture do %>
-        <%= link_to(t('header.view_profile'), site_chrome_massage_url('/profile'), :class => 'profile-link') %>
+        <%= link_to(t('header.my_profile'), site_chrome_massage_url('/profile'), :class => 'profile-link') %>
       <%- end if show_profile? %>
       <%- admin_link = capture do %>
         <%= link_to(t('header.administration'), site_chrome_massage_url('/admin'), :class => 'admin-link') %>

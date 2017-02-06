@@ -1,5 +1,6 @@
 module ApplicationHelper
   include SiteChromeHelper
+  include LocaleHelper
 
   # Build translations to pass into javascript
   # Loads only from the lang/editor
@@ -9,9 +10,12 @@ module ApplicationHelper
       I18n.backend.send(:translations)
     end
 
-    {
-      editor: @translations[I18n.locale][:editor].with_indifferent_access
-    }.with_indifferent_access
+    locale_translations = (@translations[current_locale] || {}).with_indifferent_access
+    default_translations = @translations[I18n.default_locale].with_indifferent_access
+
+    locale_translations.reverse_merge!(default_translations)
+
+    locale_translations.slice(:editor)
   end
 
   def default_meta_tags(tags = [])

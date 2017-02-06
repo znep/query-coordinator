@@ -194,12 +194,6 @@ class StoriesController < ApplicationController
   private
 
   # +before_action+
-  def setup_site_chrome_prerequisites
-    ::RequestStore.store[:current_user] ||= current_user
-    ::RequestStore.store[:current_domain] ||= current_domain['cname']
-  end
-
-  # +before_action+
   def load_story_metadata
     @story_metadata = story_metadata
   end

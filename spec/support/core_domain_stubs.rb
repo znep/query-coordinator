@@ -9,6 +9,10 @@ module CoreDomainStubs
 
   def stub_current_domain
     allow(CoreServer).to receive(:current_domain).and_return(mock_domain)
+
+    # also stub any requests to get the domain's locale
+    allow_any_instance_of(SocrataSiteChrome::LocaleConfig).to receive(:get_locale_config).
+      and_return({ 'default_locale' => :en })
   end
 
   def stub_domains_request

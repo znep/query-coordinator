@@ -10,6 +10,6 @@
   }
 
   .modal-content {
-    margin-bottom: 0; // Because no ModalFooter
+    margin-bottom: 0; // AssetSelector does not have a ModalFooter, remove the margin for it.
   }
 }

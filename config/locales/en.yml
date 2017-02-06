@@ -1817,32 +1817,6 @@ en:
       no_permission: Error
       were_sorry: The current user doesn't have access to this resource.
     to_whence_you_came: to where you came from.
-  external_resource_wizard:
-    header_title: Feature an External Resource
-    open_wizard_button: Feature an External Resource
-    preview: Preview
-    footer:
-      cancel: Cancel
-      select: Select
-    form:
-      description:
-        create_a_link: Create a link to an external resource for this category.
-        for_example: For example, this could be a visualization on the web, a blog post, or a link to another part of your site.
-      fields:
-        title:
-          label: Title
-          placeholder: Add a title (required)
-        description:
-          label: Description
-          placeholder: Add a description (optional)
-        url:
-          label: URL
-          placeholder: https://example.com (required)
-        preview_image:
-          label: Preview Image
-          button_text: Choose an image
-          error: Error uploading image. Acceptable formats are jpg, jpeg, png, or gif.
-          no_file_chosen: No file chosen
   govstat:
     admin:
       visibility_controls_disabled:

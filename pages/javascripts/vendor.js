@@ -11,12 +11,3 @@ window['socrata-utils'] = require('socrata-utils');
 window['tether'] = require('tether');
 window['tether-shepherd'] = require('tether-shepherd');
 window['velocity-animate'] = require('velocity-animate');
-
-// Display a11y warnings about React components
-/*
- TODO: commented out require('react-a11y')(window.react) because
- it broke the DateRangePicker component
- in styleguide documentation
- JIRA ticket: https://socrata.atlassian.net/browse/EN-13043
-*/
-// require('react-a11y')(window.react);

@@ -5,7 +5,6 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
-import a11y from 'react-a11y';
 import airbrake from './lib/airbrake';
 import components from 'socrata-components';
 import utils from 'socrata-utils';
@@ -22,7 +21,6 @@ document.cookie = `socrata-csrf-token=${csrfCookie};secure;path=/`;
 const middleware = [thunk];
 
 if (window.serverConfig.environment === 'development') {
-  a11y(React, { ReactDOM: ReactDOM });
   middleware.push(createLogger({
     duration: true,
     timestamp: false,

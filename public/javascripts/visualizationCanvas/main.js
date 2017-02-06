@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import a11y from 'react-a11y';
 import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
 import createDebounce from 'redux-debounced';
@@ -20,7 +19,6 @@ import { fetchColumnStats } from './actions';
 const middleware = [thunk, createDebounce()];
 
 if (window.serverConfig.environment === 'development') {
-  a11y(React, { ReactDOM: ReactDOM });
   middleware.push(createLogger({
     duration: true,
     timestamp: false,

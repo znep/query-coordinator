@@ -1,7 +1,7 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import _ from 'lodash';
 
-export class BackButton extends Component { // eslint-disable-line react/prefer-stateless-function
+export class BackButton extends React.Component { // eslint-disable-line react/prefer-stateless-function
   render() {
     return (
       <button className="btn btn-default btn-sm close-modal back-button" onClick={this.props.onClick}>

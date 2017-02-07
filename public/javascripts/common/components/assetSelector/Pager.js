@@ -1,9 +1,9 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import $ from 'jquery';
 import _ from 'lodash';
 import { handleKeyPress } from '../../helpers/keyPressHelpers';
 
-export class Pager extends Component {
+export class Pager extends React.Component {
   constructor(props) {
     super(props);
 

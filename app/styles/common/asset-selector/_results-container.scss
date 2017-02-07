@@ -1,6 +1,6 @@
-@import "common/breakpoints";
-@import "asset-selector/card";
-@import "asset-selector/pager";
+@import "../breakpoints";
+@import "./card";
+@import "./pager";
 
 .asset-selector {
   .results-container {

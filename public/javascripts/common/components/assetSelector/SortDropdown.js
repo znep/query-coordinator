@@ -1,10 +1,10 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { Dropdown } from 'socrata-components';
 import _ from 'lodash';
 
 const DEFAULT_SORT = 'relevance';
 
-export class SortDropdown extends Component { // eslint-disable-line react/prefer-stateless-function
+export class SortDropdown extends React.Component { // eslint-disable-line react/prefer-stateless-function
   render() {
     const sortOptions = [
       {

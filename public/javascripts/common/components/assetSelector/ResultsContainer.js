@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import ceteraUtils from '../../ceteraUtils';
 import BackButton from './BackButton';
@@ -9,7 +9,7 @@ import ResultCount from './ResultCount';
 import SortDropdown from './SortDropdown';
 import Spinner from './Spinner';
 
-export class ResultsContainer extends Component {
+export class ResultsContainer extends React.Component {
   constructor(props) {
     super(props);
 

@@ -1,7 +1,7 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { getViewCountLabel } from '../../helpers/viewCardHelpers';
 
-export class ResultCount extends Component { // eslint-disable-line react/prefer-stateless-function
+export class ResultCount extends React.Component { // eslint-disable-line react/prefer-stateless-function
   render() {
     const { currentPage, resultsPerPage, total } = this.props;
     const pageResults = {

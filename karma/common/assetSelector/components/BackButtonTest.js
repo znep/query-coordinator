@@ -1,6 +1,6 @@
-import { BackButton } from 'components/BackButton';
+import { BackButton } from 'BackButton';
 
-describe('components/BackButton', function() {
+describe('BackButton', function() {
   function defaultProps() {
     return {
       onClick: _.noop

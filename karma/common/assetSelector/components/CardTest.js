@@ -1,6 +1,6 @@
-import { Card } from 'components/Card';
+import { Card } from 'Card';
 
-describe('components/Card', function() {
+describe('Card', function() {
   function defaultProps() {
     return {
       categories: ['Fun'],

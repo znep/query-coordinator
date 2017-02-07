@@ -1,7 +1,7 @@
-import { SortDropdown } from 'components/SortDropdown';
+import { SortDropdown } from 'SortDropdown';
 import _ from 'lodash';
 
-describe('components/SortDropdown', function() {
+describe('SortDropdown', function() {
   function defaultProps() {
     return {
       onSelection: undefined,

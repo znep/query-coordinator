@@ -1,6 +1,6 @@
-import { ResultCount } from 'components/ResultCount';
+import { ResultCount } from 'ResultCount';
 
-describe('components/ResultCount', function() {
+describe('ResultCount', function() {
   function defaultProps() {
     return {
       currentPage: 1,

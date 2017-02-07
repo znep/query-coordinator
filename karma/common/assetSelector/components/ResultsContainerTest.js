@@ -1,9 +1,9 @@
-import { ResultsContainer } from 'components/ResultsContainer';
+import { ResultsContainer } from 'ResultsContainer';
 import $ from 'jquery';
-import ceteraUtils from '../../ceteraUtils';
-import mockCeteraResponse from 'data/mockCeteraResponse';
+import ceteraUtils from 'ceteraUtils';
+import mockCeteraResponse from 'assetSelector/data/mockCeteraResponse';
 
-describe('components/ResultsContainer', function() {
+describe('ResultsContainer', function() {
 
   function defaultProps() {
     return {

@@ -22,8 +22,8 @@ namespace :test do
     end
 
     {
-      'assetSelector' => 'update_asset_selector_translations',
       'catalogLandingPage' => 'update_catalog_landing_page_translations',
+      'common' => 'update_common_translations',
       'dataCards' => 'update_datacards_translations',
       'datasetLandingPage' => 'update_dataset_landing_page_translations',
       'adminGoals' => 'update_admin_goals_translations',
@@ -43,7 +43,7 @@ namespace :test do
 
     # an opinionated JS test runner for a parallelized single run
     parallel_deps = [
-      'test:karma:translations:update_asset_selector_translations',
+      'test:karma:translations:update_common_translations',
       'test:karma:translations:update_catalog_landing_page_translations',
       'test:karma:translations:update_datacards_translations',
       'test:karma:translations:update_dataset_landing_page_translations',
@@ -63,9 +63,9 @@ namespace :test do
     desc 'mock translations in support of Karma tests'
     namespace :translations do
       desc 'Helper task that creates a js file that injects translation into browser'
-      task :update_asset_selector_translations do
+      task :update_common_translations do
         translations_filename = 'config/locales/en.yml'
-        output_filename = 'karma/common/components/assetSelector/mockTranslations.js'
+        output_filename = 'karma/common/mockTranslations.js'
         all_translations = YAML.load_file(translations_filename)['en']
         translations = {
           :asset_selector => all_translations['asset_selector'],
@@ -177,9 +177,9 @@ namespace :test do
     desc 'run all the karma tasks'
     task :all, [:watch, :browser, :reporter] => [
       'karma:adminGoals',
-      'karma:assetSelector',
       'karma:autocomplete',
       'karma:catalogLandingPage',
+      'karma:common',
       'karma:dataCards',
       'karma:datasetLandingPage',
       'karma:datasetManagementUI',

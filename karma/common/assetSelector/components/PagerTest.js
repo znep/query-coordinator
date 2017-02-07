@@ -1,7 +1,7 @@
-import { Pager } from 'components/Pager';
+import { Pager } from 'Pager';
 import _ from 'lodash';
 
-describe('components/Pager', function() {
+describe('Pager', function() {
   function defaultProps() {
     return {
       currentPage: 1,

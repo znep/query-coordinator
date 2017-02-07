@@ -1,5 +1,5 @@
 import 'whatwg-fetch';
-import airbrake from '../../common/airbrake';
+import airbrake from './airbrake';
 
 const CETERA_URL = '//api.us.socrata.com/api/catalog/v1'; // TODO: get from domain config?
 const DEFAULT_LIMIT = 6;

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
-import ResultsContainer from '../components/ResultsContainer';
+import ResultsContainer from './ResultsContainer';
 import { Modal, ModalHeader, ModalContent } from 'socrata-components';
 
 export class AssetSelector extends Component {

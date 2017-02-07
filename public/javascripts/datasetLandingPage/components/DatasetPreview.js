@@ -3,7 +3,7 @@ import $ from 'jquery';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
-import { isUserAdminOrPublisher } from '../lib/user';
+import { isUserAdminOrPublisher } from '../../common/user';
 
 export const DatasetPreview = React.createClass({
   propTypes: {

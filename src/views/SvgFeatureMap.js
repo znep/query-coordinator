@@ -6,6 +6,9 @@ const SvgVisualization = require('./SvgVisualization');
 const SoqlHelpers = require('../dataProviders/SoqlHelpers');
 const I18n = require('../I18n');
 
+// Side effect: Load VectorTileManager into Leaflet.
+require('../dataProviders/VectorTileManager');
+
 const FEATURE_MAP_MIN_HOVER_THRESHOLD = 5;
 const FEATURE_MAP_MAX_ZOOM = 18; // same as Leaflet default
 const FEATURE_MAP_MAX_TILE_DENSITY = 256 * 256;

@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import $ from 'jquery';
+import utils from 'socrata-utils';
 
 import { translate } from './I18n';
 import { migrateVif } from './helpers/VifHelpers';
@@ -22,12 +23,20 @@ import { RowInspector, FlyoutRenderer } from './views';
  *
  * @param vif - https://docs.google.com/document/d/15oKmDfv39HrhgCJRTKtYadG8ZQvFUeyfx4kR_NZkBgc
  * @param element - element to render the visualization inside of
+ * @param options - Options hash, optional. Keys:
+ *   - flyoutRenderer: Flyout renderer to use instead of default.
  */
-export const VisualizationRenderer = function(vif, element) {
+export const VisualizationRenderer = function(vif, element, options) {
+  utils.assertInstanceOfAny(element, HTMLElement, $);
+
+  options = _.merge({
+    flyoutRenderer: new FlyoutRenderer()
+  }, options);
+
   const $element = $(element);
   $element.addClass('socrata-visualization-renderer');
 
-  let flyoutRenderer;
+  const flyoutRenderer = options.flyoutRenderer;
 
   this.vif = vif;
 
@@ -93,7 +102,6 @@ export const VisualizationRenderer = function(vif, element) {
     }
 
     // FlyoutRenderer (via onFlyout) is used by all visualizations
-    flyoutRenderer = new FlyoutRenderer();
     $element.on('SOCRATA_VISUALIZATION_FLYOUT', onFlyout);
   };
 

@@ -11,7 +11,6 @@ class VisualizationCanvasController < ApplicationController
     payload = {
       :name => body['view']['name'],
       :description => body['view']['description'],
-      :columns => body['view']['columns'],
       :displayFormat => serialize_display_format(body),
       :displayType => 'data_lens',
       :metadata => {

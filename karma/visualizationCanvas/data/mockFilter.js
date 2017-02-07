@@ -1,6 +1,6 @@
 export default {
   'function': 'valueRange',
-  columnName: 'dinosaurAge',
+  columnName: 'precipitation',
   arguments: {
     start: 1,
     end: 3

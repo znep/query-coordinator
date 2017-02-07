@@ -16,7 +16,7 @@ import {
   handleSaveError,
   clearSaveState
 } from 'actions';
-import { SaveStates } from 'lib/constants';
+import { ModeStates, SaveStates } from 'lib/constants';
 import mockView from 'data/mockView';
 import mockParentView from 'data/mockParentView';
 import mockVif from 'data/mockVif';
@@ -142,14 +142,14 @@ describe('Reducer', () => {
   describe('ENTER_EDIT_MODE', () => {
     it('sets mode to "edit"', () => {
       const state = reducer(state, enterEditMode());
-      expect(state.mode).to.be.equal('edit');
+      expect(state.mode).to.be.equal(ModeStates.EDIT);
     });
   });
 
   describe('ENTER_PREVIEW_MODE', () => {
     it('sets mode to "preview"', () => {
       const state = reducer(state, enterPreviewMode());
-      expect(state.mode).to.equal('preview')
+      expect(state.mode).to.equal(ModeStates.PREVIEW)
     });
   });
 

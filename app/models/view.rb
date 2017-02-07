@@ -2079,7 +2079,11 @@ class View < Model
       :name => name,
       :description => html_description,
       :category => category,
-      :columns => columns,
+      # If the view is ephemeral, we have columns, but if the view has been saved, columns is an
+      # empty array (because Core currently ignores columns for anything that looks like a data lens).
+      # We know a view has been saved if it doesn't have an id, so we need to fetch the parent and
+      # get its columns if the view has an id.
+      :columns => id ? parent_view.columns.map(&:data) : columns,
       :lastUpdatedAt => time_last_updated_at
     }
   end

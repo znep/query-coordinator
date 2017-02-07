@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { isUserAdminOrPublisher } from '../lib/user';
+import { isUserAdminOrPublisher } from '../../common/user';
 
 export default React.createClass({
   propTypes: {

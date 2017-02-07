@@ -7,7 +7,7 @@ import { ViewCard } from 'socrata-components';
 import { getViewCardPropsForView } from '../../common/helpers/viewCardHelpers';
 import { RELATED_VIEWS_CHUNK_SIZE } from '../lib/constants';
 import { handleKeyPress } from '../lib/a11yHelpers';
-import { isUserAdminOrPublisher } from '../lib/user';
+import { isUserAdminOrPublisher } from '../../common/user';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import {
   loadMoreRelatedViews,

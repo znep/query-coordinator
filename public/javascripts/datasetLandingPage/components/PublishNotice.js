@@ -5,7 +5,7 @@ import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { handleKeyPress } from '../lib/a11yHelpers';
-import { isUserAdminOrPublisher } from '../lib/user';
+import { isUserAdminOrPublisher } from '../../common/user';
 import { publishView, clearViewPublishError } from '../actions/view';
 
 export const PublishNotice = React.createClass({

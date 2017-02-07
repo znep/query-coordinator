@@ -16,7 +16,7 @@ import {
   HANDLE_SAVE_ERROR,
   CLEAR_SAVE_STATE
 } from 'actions';
-import { SaveStates } from './lib/constants';
+import { ModeStates, SaveStates } from './lib/constants';
 
 const initialState = () => {
   const isEphemeral = _.isNil(window.initialState.view.id);
@@ -25,7 +25,7 @@ const initialState = () => {
     authoringWorkflow: {
       isActive: false
     },
-    mode: 'edit',
+    mode: isEphemeral ? ModeStates.EDIT : ModeStates.VIEW,
     isEditMenuActive: false,
     isEphemeral,
     isDirty: isEphemeral,
@@ -129,13 +129,13 @@ export default (state = initialState(), action) => {
     case ENTER_EDIT_MODE:
       return {
         ...state,
-        mode: 'edit'
+        mode: ModeStates.EDIT
       };
 
     case ENTER_PREVIEW_MODE:
       return {
         ...state,
-        mode: 'preview'
+        mode: ModeStates.PREVIEW
       };
 
     case OPEN_EDIT_MENU:

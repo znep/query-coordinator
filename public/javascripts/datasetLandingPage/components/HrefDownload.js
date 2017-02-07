@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { isUserAdminOrPublisher } from '../lib/user';
+import { isUserAdminOrPublisher } from '../../common/user';
 
 export const HrefDownload = React.createClass({
   propTypes: {

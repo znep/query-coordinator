@@ -34,6 +34,10 @@ body {
   .edit-bar {
     z-index: 8;
 
+    .page-name {
+      width: 250px;
+    }
+
     .edit-bar-child {
       display: flex;
       justify-content: flex-end;

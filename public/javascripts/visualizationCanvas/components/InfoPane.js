@@ -1,9 +1,10 @@
 import _ from 'lodash';
 import React from 'react';
+import { connect } from 'react-redux';
 import { formatDate } from 'socrata-components/common/dates';
 import { t } from '../lib/I18n';
-import { connect } from 'react-redux';
 import InfoPaneComponent from '../../common/components/InfoPaneComponent.js';
+import InfoPaneButtons from './InfoPaneButtons';
 
 function mapStateToProps(state) {
   const { view, isEphemeral } = state;
@@ -29,6 +30,9 @@ function mapStateToProps(state) {
         label: t('info_pane.view_count'),
         content: _.defaultTo(view.viewCount, 0)
       }
+    },
+    renderButtons() {
+      return <InfoPaneButtons />;
     }
   };
 }

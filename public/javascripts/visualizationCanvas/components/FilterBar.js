@@ -6,23 +6,25 @@ import { dataProviders } from 'socrata-visualizations';
 
 export function mapStateToProps({ columnStats, view, filters, parentView }) {
 
+  // Merge columns with column stats
+  const columnsWithColumnStats = _.merge([], columnStats, view.columns);
+
   // Get displayable columns only, subcolumns and system columns are omitted
   const displayableColumns = new dataProviders.MetadataProvider({
     domain: serverConfig.domain,
     datasetUid: parentView.id
-  }).getDisplayableColumns(view);
+  }).getDisplayableColumns({
+    ...view,
+    columns: columnsWithColumnStats
+  });
 
-  // Show filters for supported column types.
-  const columns = _.chain([]).
-    merge(columnStats, displayableColumns).
-    filter((column) => {
-      if (column.dataTypeName === 'number') {
-        return _.isNumber(column.rangeMin) && _.isNumber(column.rangeMax);
-      }
-
-      return column.dataTypeName === 'text' || column.dataTypeName === 'calendar_date';
-    }).
-    value();
+  // Filter out unsupported column types
+  const columns = _.filter(displayableColumns, (column) => {
+    if (column.dataTypeName === 'number') {
+      return _.isNumber(column.rangeMin) && _.isNumber(column.rangeMax);
+    }
+    return column.dataTypeName === 'text' || column.dataTypeName === 'calendar_date';
+  });
 
   const fetchSuggestions = (column, term) => {
     const spandex = new dataProviders.SpandexDataProvider({

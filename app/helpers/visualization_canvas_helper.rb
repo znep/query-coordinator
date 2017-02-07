@@ -9,6 +9,7 @@ module VisualizationCanvasHelper
     server_config = {
       :appToken => APP_CONFIG.app_token,
       :csrfToken => form_authenticity_token.to_s,
+      :currentUser => current_user,
       :domain => CurrentDomain.cname,
       :environment => Rails.env,
       :featureFlags => feature_flags_as_json

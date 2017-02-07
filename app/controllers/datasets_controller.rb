@@ -6,7 +6,7 @@ class DatasetsController < ApplicationController
   include CommonMetadataMethods
 
   prepend_before_filter :check_chrome, :only => [:show, :alt]
-  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :validate_contact_owner, :contact_dataset_owner, :form_success, :form_error, :external, :external_download, :download, :about, :create_visualization_canvas]
+  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :validate_contact_owner, :contact_dataset_owner, :form_success, :form_error, :external, :external_download, :download, :about]
   skip_before_filter :disable_frame_embedding, :only => [:form_success, :form_error]
   # When CSRF token validation is skipped for this method (see skip_before_filter above), the
   # verify_recaptcha test in the 'create' method is our only protection against abuse.
@@ -1180,6 +1180,12 @@ class DatasetsController < ApplicationController
     # NBE geospatial views ingressed via API (see EN-3889)
     if @view.is_api_geospatial?
       Rails.logger.info("Not redirecting to OBE for API-ingressed geospatial dataset #{@view.id}")
+      return true
+    end
+
+    # Visualization Canvases
+    if @view.visualization_canvas?
+      Rails.logger.info("Not redirecting to OBE for visualization canvas #{@view.id}")
       return true
     end
 

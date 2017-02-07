@@ -7,7 +7,6 @@ describe VisualizationCanvasController do
     {
       :name => 'Test Data',
       :description => 'Consider yourself described',
-      :columns => [],
       :displayFormat => {
         :visualizationCanvasMetadata => {
           :version => 1,
@@ -41,8 +40,7 @@ describe VisualizationCanvasController do
     {
       :view => {
         :name => 'Test Data',
-        :description => 'Consider yourself described',
-        :columns => []
+        :description => 'Consider yourself described'
       },
       :parentView => {
         :id => 'mama-dada'

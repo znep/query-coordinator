@@ -12,11 +12,11 @@
         src="<%= @view.owner.profile_image_path("medium") %>"/>
     </a>
     <a class="aboutAuthorName" href="<%= profile_path(@view.owner) %>"><%= @view.owner.displayName %></a>
-    <p><em><%= t('screens.about.created') %></em> <span class="aboutCreateDate"><%= blist_date(@view.createdAt) %></span></p>
+    <p><em><%= t('screens.about.created') %></em> <span class="aboutCreateDate"><%= short_date_span(@view.createdAt) %></span></p>
     <%- if @view.is_snapshotted? -%>
-    <p><em><%= t('screens.about.snapshotted') %></em> <span class="aboutUpdateDate"><%= blist_date(@view.publicationDate) %></span></p>
+    <p><em><%= t('screens.about.snapshotted') %></em> <span class="aboutUpdateDate"><%= short_date_span(@view.publicationDate) %></span></p>
     <%- else -%>
-    <p><em><%= t('screens.about.updated') %></em> <span class="aboutUpdateDate"><%= blist_date(@view.last_activity) %></span></p>
+    <p><em><%= t('screens.about.updated') %></em> <span class="aboutUpdateDate"><%= short_date_span(@view.last_activity) %></span></p>
     <%- end -%>
   </div>
 
@@ -131,7 +131,7 @@
           'Resubmitted'
         end %> by
         <a href='<%= profile_path(u) %>'><%= u.displayName %></a></div>
-      <span class="date">On <%= blist_date(ah['approvalDate']) %></span>
+      <span class="date">On <%= short_date_span(ah['approvalDate']) %></span>
       <%- if !ah['comment'].blank? -%>
       <span class="reason"><%= ah['comment'] %></span>
       <%- end -%>

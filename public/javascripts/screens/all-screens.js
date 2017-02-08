@@ -211,31 +211,15 @@ $(function() {
   // Timestamp for mixpanel logging
   blist.pageOpened = Math.round(new Date().getTime() / 1000);
 
-  // Fix dates for local timezone
-  $('.dateReplace').each(function() {
-    var $d = $(this);
-    var fmt;
-    switch ($d.data('dateformat')) {
-      case 'date_time':
-        fmt = 'M d, Y g:ia';
-        break;
-      case 'long_date':
-        fmt = 'F d, Y';
-        break;
-      case 'date':
-      default:
-        fmt = 'M d, Y';
-        break;
-    }
-    $d.text(new Date($d.data('rawdatetime') * 1000).format(fmt));
-  });
-  // Newer, better version
+  // Fix dates for local timezone and blist locale
   moment.lang(blist.locale);
   $('.dateLocalize').each(function() {
-    var $d = $(this);
-    // In order to use PDT rather than -07:00, we need the moment-timezone library.
-    $d.text(moment($d.data('rawdatetime') * 1000).format('LLLL UTCZ'));
+    var $dateSpan = $(this);
+    var format = $dateSpan.data('format');
+    var rawdate = $dateSpan.data('rawdatetime') * 1000;
+    $dateSpan.text(moment(rawdate).format(format));
   });
+
   // Special clean-up for maintenance message
   var $mDates = $('.maintenanceNotice .dateLocalize');
   if (moment($mDates.eq(0).data('rawdatetime') * 1000).isSame($mDates.eq(1).data('rawdatetime') * 1000, 'day')) {

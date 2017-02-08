@@ -288,8 +288,8 @@
               result_link = result.link
               result_categories = (result.categories || []).map(&View.method(:category_display)).compact
               result_topics = (result.tags || []).reject(&:empty?)
-              result_last_updated = result.updatedAt.present? ? blist_long_date(Time.iso8601(result.updatedAt).to_i, true) : nil
-              result_created_at = result.createdAt.present? ? blist_long_date(Time.iso8601(result.createdAt).to_i, true) : nil
+              result_last_updated = result.updatedAt.present? ? long_date_span(result.updatedAt) : nil
+              result_created_at = result.createdAt.present? ? long_date_span(result.createdAt) : nil
               result_view_count = result.viewCount.present? ? number_with_delimiter(result.viewCount) : nil
               result_permalink = result.permalink
             else
@@ -301,12 +301,12 @@
               result_last_updated = nil
               # Prefer the 'rowsUpdatedAt' timestamp over the 'viewLastModified' timestamp
               if result.rowsUpdatedAt.present?
-                result_last_updated = Time.at(result.rowsUpdatedAt).to_datetime.strftime('%B %-d, %Y')
+                result_last_updated = long_date_span(result.rowsUpdatedAt)
               elsif result.viewLastModified.present?
-                result_last_updated = Time.at(result.viewLastModified).to_datetime.strftime('%B %-d, %Y')
+                result_last_updated = long_date_span(result.viewLastModified)
               end
 
-              result_created_at = Time.at(result.viewLastModified).to_datetime.strftime('%B %-d, %Y')
+              result_created_at = long_date_span(result.viewLastModified)
 
               result_view_count = result.viewCount.present? ? number_with_delimiter(result.viewCount) : nil
             end

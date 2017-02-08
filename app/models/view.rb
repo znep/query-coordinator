@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'soql_duct_tape'
 
 class View < Model
@@ -1010,7 +1011,7 @@ class View < Model
   def meta_description
     if description.blank?
       desc = 'View this dataset'
-      updated_at = rowsUpdatedAt.nil? ? nil : blist_long_date(rowsUpdatedAt, true)
+      updated_at = rowsUpdatedAt.nil? ? nil : format_time(rowsUpdatedAt, 'long')
       if updated_at
         desc << ", last updated #{updated_at}"
       end

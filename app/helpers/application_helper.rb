@@ -402,28 +402,53 @@ module ApplicationHelper
   end
 
 # DATE HELPERS
+## These are all localized in all-screens.js (if it's included)
 
-  def blist_date(time, no_html = false)
-    date_span(time, 'date', '%b %d, %Y', no_html)
+  def short_date_span(date)
+    epoch = get_epoch(date)
+    date_span(epoch, 'll', format_date(epoch, 'short'))
   end
 
-  def blist_date_time(time, no_html = false)
-    date_span(time, 'date_time', '%b %d, %Y %I:%M%P', no_html)
+  def long_date_span(date)
+    epoch = get_epoch(date)
+    date_span(epoch, 'LL', format_date(epoch, 'long'))
   end
 
-  def blist_long_date(time, no_html = false)
-    date_span(time, 'long_date', '%B %d, %Y', no_html)
+  def date_time_span(date)
+    epoch = get_epoch(date)
+    date_span(epoch, 'LLL', format_date(epoch, 'datetime'))
   end
 
-  def date_span(time, date_format, format_string, no_html)
-    r = nil
-    if time && time != 0
-      r = no_html ? '' :
-        "<span class=\"dateReplace\" data-dateFormat=\"#{date_format}\" data-rawDateTime=\"#{time.to_s}\">"
-      r << Time.at(time).localtime.strftime(format_string)
-      r << '</span>' if !no_html
+  def date_span(epoch, fmt, fallback)
+    content_tag(:span, fallback, :class => 'dateLocalize',
+                :data => { :format => fmt, :rawdatetime => epoch }) unless epoch.nil?
+  end
+
+  def format_date(epoch, format_name)
+    return unless epoch.is_a? Integer
+    timestamp = Time.at(epoch).localtime
+    case format_name
+    when 'short'
+      timestamp.strftime('%b %-d %Y')
+    when 'long'
+      timestamp.strftime('%B %-d %Y')
+    when 'datetime'
+      timestamp.strftime('%B %-d %Y %I:%M %P')
+    else
+      timestamp.strftime('%b %-d %Y')
     end
-    return r.html_safe if r
+  end
+
+  def get_epoch(date)
+    if date.is_a? Integer
+      date
+    elsif date.is_a? Time
+      date.to_i
+    elsif date.is_a? String
+      Time.parse(date).to_i
+    elsif date.is_a? Date
+      date.to_time.to_i
+    end
   end
 
 # HTML HELPERS

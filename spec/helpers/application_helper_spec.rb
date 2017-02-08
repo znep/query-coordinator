@@ -260,6 +260,51 @@ describe ApplicationHelper do
       end
     end
 
+    context 'in date helpers' do
+      let(:timestamp) { 1480410000 }
+      context 'for short_date_span' do
+        it 'returns a span containing the time formatted as %b %-d %Y' do
+          expect(helper.short_date_span(timestamp)).to eq('<span class="dateLocalize" data-format="ll" data-rawdatetime="1480410000">Nov 29 2016</span>')
+        end
+      end
+      context 'for long_date_span' do
+        it 'returns a span containing the time formatted as %B %-d %Y' do
+          expect(helper.long_date_span(timestamp)).to eq('<span class="dateLocalize" data-format="LL" data-rawdatetime="1480410000">November 29 2016</span>')
+        end
+      end
+      context 'for date_time_span' do
+        it 'returns a span containing the time formatted as %B %-d %Y %I:%M %P' do
+          expect(helper.date_time_span(timestamp)).to match(/<span class="dateLocalize" data-format="LLL" data-rawdatetime="1480410000">November 29 2016 \d{2}:\d{2} [ap]m<\/span>/)
+        end
+      end
+      context 'for format_date' do
+        it 'returns the default formatting of %b %-d %Y if an unknown format type is passed in' do
+          expect(helper.format_date(timestamp, 'foo')).to eq('Nov 29 2016')
+        end
+      end
+      context 'for get_epoch' do
+        it 'returns nil if the input type is not Integer, String, Time, or Date' do
+          expect(helper.get_epoch({})).to eq(nil)
+        end
+        it 'returns the correct epoch time if the input type is an Integer' do
+          expect(helper.get_epoch(timestamp)).to eq(timestamp)
+        end
+        it 'returns the correct epoch time if the input type is a String' do
+          expect(helper.get_epoch('2016-11-29 01:00:00 -0800')).to eq(timestamp)
+        end
+        it 'returns the correct epoch time if the input type is a Time object' do
+          expect(helper.get_epoch(Time.parse('2016-11-29 01:00:00 -0800'))).to eq(timestamp)
+        end
+        it 'returns the correct epoch time if the input type is a Date object' do
+          # Returns a slightly different timestamp due to lack of H/M/S
+          # 36000 = 10 hours; Jenkins and localhost are on different timezones
+          expect(helper.get_epoch(Date.new(2016, 11, 29))).to be_within(36000).of(timestamp)
+        end
+        it 'returns the correct epoch time if the input type is a DateTime object' do
+          expect(helper.get_epoch(DateTime.new(2016, 11, 29, 01, 00, 00, Rational(-8, 24)))).to eq(timestamp)
+        end
+      end
+    end
   end
 
 end

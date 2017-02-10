@@ -129,6 +129,7 @@ class AppConfig < Hashie::Dash
       :error_message => message
     )
     Rails.logger.error(message)
+    raise message
   end
 
 end

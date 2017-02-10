@@ -11,6 +11,10 @@ default: &default
   cetera_internal_uri: {{ CETERA_INTERNAL_URI }}
   {%- endif %}
 
+  {% if CETERA_URI is defined -%}
+  cetera_uri: {{ CETERA_URI }}
+  {%- endif %}
+
   {% if SITEMAP_S3_URL is defined -%}
   sitemap_s3_url: {{ SITEMAP_S3_URL }}
   {%- endif %}

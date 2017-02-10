@@ -158,6 +158,7 @@ staging:
   sitemap_s3_url: https://s3-us-west-2.amazonaws.com/sa-socrata-sitemaps-us-west-2-staging/sitemaps
   # third-party app tokens
   mixpanel_token: ce548d5c95f7671fadd0174cc067dc69
+  cetera_uri: https://api.us.test-socrata.com/api
 
 # rc-socrata.com
 rc:

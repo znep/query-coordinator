@@ -482,6 +482,9 @@ class InternalController < ApplicationController
       list.split(/[^#{valid_url_characters}]+/).reject(&:blank?) # i.e., dump any commas
     end
 
+    dry_run = ''
+    dry_run << '[Dry Run] ' if params[:dry_run]
+
     begin
       raise 'Both :domains and :domain_list were empty.' if domain_list.blank?
       case params[:commit]
@@ -491,17 +494,17 @@ class InternalController < ApplicationController
             to_value: processed_value,
             on_domains: domain_list,
             authorization: auth_header
-          )
+          ) unless params[:dry_run]
           domain_list.each do |domain|
-            notices << %Q{#{params[:flag]} was set with value "#{processed_value}" on #{domain}.}
+            notices << %Q{#{dry_run}#{params[:flag]} was set with value "#{processed_value}" on #{domain}.}
           end
         when 'Reset'
           flag.reset_multiple(
             on_domains: domain_list,
             authorization: auth_header
-          )
+          ) unless params[:dry_run]
           domain_list.each do |domain|
-            notices << %Q{#{params[:flag]} was reset to its default value of "#{FeatureFlags.default_for(params[:flag])}" on #{domain}.}
+            notices << %Q{#{dry_run}#{params[:flag]} was reset to its default value of "#{FeatureFlags.default_for(params[:flag])}" on #{domain}.}
           end
       end
       flag.clear_cache(Signaller::Endpoint.for(:report, flag: params[:flag]))

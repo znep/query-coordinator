@@ -98,6 +98,11 @@ default: &default
   # number of days that can pass until a deleted dataset can't be restored
   restore_dataset_days: 5
 
+  # other behaviors
+  metrics_dir: tmp/metriclogs
+  atomic_metrics_flush: true
+  metrics_batch_size: 1
+
 # Local development
 development: &development
   <<: *default
@@ -131,9 +136,6 @@ development: &development
   auth0_secret: rbmrUAUiWZqp3aADhu1aWGy6tp15jKefajxO6qYndAZ6djmF80V2kD_m-ajpS3uI
   auth0_uri: socrata.auth0.com
 
-  # other behaviors
-  metrics_dir: tmp/metriclogs
-  atomic_metrics_flush: true
 
 # Running unit tests; NOT test-socrata.com
 test:
@@ -148,9 +150,6 @@ test:
   auth0_uri: exists
   auth0_id: exists
   auth0_secret: exists
-
-  # other behaviors
-  metrics_dir: tmp/metriclogs
 
 # test-socrata.com
 staging:

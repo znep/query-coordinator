@@ -1,3 +1,5 @@
+# encoding: utf-8
+# frozen_string_literal: true
 require 'json'
 require 'open-uri'
 
@@ -6,12 +8,57 @@ class AnalyticsController < ApplicationController
   skip_before_filter :verify_authenticity_token, :only => [:add, :add_all]
 
   def index
-    if !CurrentDomain.feature? :public_site_metrics
-      return render_404
-    end
+    return render_404 unless CurrentDomain.feature? :public_site_metrics
   end
 
   def add_all
+    begin
+      metrics = parse_metrics_from_request(request)
+    rescue => e
+      return e
+    end
+
+    all_valid = true
+    messages = metrics.map do |metric|
+      valid, message = handle_metric(metric)
+      all_valid &&= valid
+      message
+    end
+
+    return render :json => 'OK'.to_json if all_valid
+
+    render :json => messages.to_json, :status => 207
+  end
+
+  def handle_metric(metric)
+    valid, error = add_metric(metric['entity'], metric['metric'], metric['increment'])
+
+    log_error(error, metric) unless valid
+
+    message = {
+      :status => valid ? '200' : '400',
+      :metric => (metric['metric']).to_s,
+      :message => valid ? 'OK' : error.to_s
+    }
+
+    [valid, message]
+  end
+
+  def log_error(error, metric)
+    Rails.logger.error "Analytics Controller Metric Error: #{error}. Returning 207 with 400 inside."
+    Airbrake.notify(
+      :error_class => 'Javascript Metric Error',
+      :error_message => "Metric: #{metric.to_json} Error Message: #{error}",
+      :session => { :domain => CurrentDomain.cname },
+      :request => {
+        :params => params,
+        :referrer_path => URI(request.referer).path
+      }
+    )
+
+  end
+
+  def parse_metrics_from_request(request)
     # EN-6285 - Address Frontend app Airbrake errors
     #
     # This code was already rescuing JSON::ParserError, but the error that was
@@ -22,79 +69,43 @@ class AnalyticsController < ApplicationController
     rescue MultiJson::ParseError, JSON::ParserError
       nil
     end
-    return render_metric_error("No metrics provided") if data.nil?
-    metrics = data["metrics"]
-    all_valid = true
-    messages = Array.new
-    metrics.each { |m|
-      valid, error = add_metric(m['entity'], m['metric'], m['increment'])
-      all_valid = all_valid && valid
 
-      unless valid
-        Rails.logger.error "Analytics Controller Metric Error: #{error}. Returning 207 with 400 inside."
-        Airbrake.notify(
-          :error_class => 'Javascript Metric Error',
-          :error_message => "Metric: #{m.to_json} Error Message: #{error}",
-          :session => { :domain => CurrentDomain.cname },
-          :request => {
-            :params => params,
-            :referrer_path => URI(request.referer).path
-          }
-        )
-      end
+    raise render_metric_error('No metrics provided') if data.nil? || !data.key?('metrics')
 
-
-      messages.push({
-        :status => valid ? "200" : "400",
-        :metric => "#{m['metric']}",
-        :message => valid ? "OK" : "#{error}"
-      })
-    }
-
-    if all_valid
-      return render :json => "OK".to_json
-    end
-
-    render :json => messages.to_json, :status => 207
+    data['metrics']
   end
 
   def add
     valid, error = add_metric(params[:domain_entity], params[:metric], params[:increment])
     return render_metric_error(error) unless valid
-    render :json => "OK".to_json
+    render :json => 'OK'.to_json
   end
 
   private
 
   def add_metric(entity, metric, raw_increment)
-
-  # metrics and entities must be simple names, optional hyphens
-    if (metric =~ /^[a-z0-9-]+$/ ).nil? || (entity =~ /^[a-z-]+$/ ).nil?
-      return [false, "Entity/Metric not properly formed"]
+    # metrics and entities must be simple names, optional hyphens
+    if (metric =~ /^[a-z0-9-]+$/).nil? || (entity =~ /^[a-z-]+$/).nil?
+      return [false, 'Entity/Metric not properly formed']
     end
 
-    unless ClientAnalyticsHelper.is_allowed?(entity, metric)
+    unless ClientAnalyticsHelper.allowed?(entity, metric)
       return [false, "Entity/Metric not allowed: #{entity}/#{metric}"]
     end
 
     # increment must be a positive integer
     increment = ClientAnalyticsHelper.get_valid_increment(entity, metric, raw_increment)
-    if increment < 0
-      return [false, "Metric Value Invalid"]
-    end
+    return [false, 'Metric Value Invalid'] if increment < 0
 
     # Currently we replace 'domain' with the domain id, but presumably
     # it will be desirable someday to have domain-centric entities outside
     # the main one, such as we have with "referers-[domainId]" - We should
     # do a search and replace at that point then.
-    if entity == 'domain'
-      entity = CurrentDomain.domain.id.to_s
-    end
+    entity = CurrentDomain.domain.id.to_s if entity == 'domain'
 
     if entity == 'domain-intern'
-      entity = CurrentDomain.domain.id.to_s + "-intern"
+      entity = CurrentDomain.domain.id.to_s + '-intern'
     end
-
 
     MetricQueue.instance.push_metric(entity, metric, increment)
 
@@ -107,27 +118,24 @@ class AnalyticsController < ApplicationController
   end
 end
 
-
-
 module ClientAnalyticsHelper
-  FUNCTIONAL_BUCKETS =  %w(homepage
-                           dataset dataset-sort dataset-filter dataset-grouped dataset-complex
-                           dataslate admin profile govstat
-                           browse browse-search
-                           newux
-                           story
-                           other).freeze
+  FUNCTIONAL_BUCKETS = %w(homepage
+                          dataset dataset-sort dataset-filter dataset-grouped dataset-complex
+                          dataslate admin profile govstat
+                          browse browse-search
+                          newux
+                          story
+                          other).freeze
 
-  DYNAMIC_METRIC_TYPES =  %w(js-dom-load-samples js-page-load-samples js-page-load-time js-dom-load-time).freeze
+  DYNAMIC_METRIC_TYPES = %w(js-dom-load-samples js-page-load-samples js-page-load-time js-dom-load-time).freeze
 
-  DYNAMIC_MARK_METRIC_TYPES  =  %w(js-dom-load-samples js-page-load-samples).freeze
+  DYNAMIC_MARK_METRIC_TYPES = %w(js-dom-load-samples js-page-load-samples).freeze
 
   STATIC_MARK_METRICS = %w(domain/js-page-view
                            domain/js-page-view-story
                            domain/page-views
                            domain-intern/js-page-load-samples
                            domain-intern/js-dom-load-samples).freeze
-
 
   STATIC_ALLOWED_METRICS = %w(domain/js-page-view
                               domain/js-page-view-story
@@ -180,8 +188,6 @@ module ClientAnalyticsHelper
                               domain-intern/js-dataslate-lte-64-contexts-page-load-time
                               domain-intern/js-dataslate-lte-128-contexts-page-load-time).freeze
 
-
-
   def self.generateMarkMetrics
     generatePermutations STATIC_MARK_METRICS, DYNAMIC_MARK_METRIC_TYPES
   end
@@ -191,7 +197,6 @@ module ClientAnalyticsHelper
   end
 
   def self.generatePermutations(static_metrics, base_metrics)
-
     ret_val = Array.new(static_metrics)
     FUNCTIONAL_BUCKETS.each do |functional_bucket|
       base_metrics.each do |dynamic_metric|
@@ -204,35 +209,28 @@ module ClientAnalyticsHelper
     ret_val.freeze
   end
 
-
-  MARK_METRICS = self.generateMarkMetrics
-  ALLOWED_METRICS = self.generateMetrics
-
+  MARK_METRICS = generateMarkMetrics
+  ALLOWED_METRICS = generateMetrics
 
   def self.get_valid_increment(entity, metric, input)
     increment = input.to_i
     # ten minute upper bound; to exclude things like
     # a user shutting thier laptop during a page load
-    if increment < 0 || increment > 600000
-      return -1
-    end
-    if is_mark(entity, metric)
-      increment = 1
-    end
+    return -1 if increment < 0 || increment > 600000
+    increment = 1 if mark?(entity, metric)
     increment
   end
 
-  def self.is_mark(entity, metric)
+  def self.mark?(entity, metric)
     allowed = MARK_METRICS.include?(entity + '/' + metric)
     allowed
   end
 
-  def self.is_allowed?(entity, metric)
+  def self.allowed?(entity, metric)
     # Allow statically defined metrics and timezone timing metrics
     # Special handling for browser metrics so we don't have to hard-code a bunch of stuff
     allowed ||= ALLOWED_METRICS.include?(entity + '/' + metric)
-    allowed ||=  !!(/-tz-[-0-9]+-time/ =~ metric)
-    allowed ||= metric.match(/^browser-[a-z]+(-\d+)?\z/)
+    allowed ||= !!(/-tz-[-0-9]+-time/ =~ metric)
+    allowed || metric.match(/^browser-[a-z]+(-\d+)?\z/)
   end
-
 end

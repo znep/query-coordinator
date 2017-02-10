@@ -1,3 +1,5 @@
+# encoding: utf-8
+# frozen_string_literal: true
 require 'singleton'
 require 'fileutils'
 
@@ -6,33 +8,21 @@ class MetricQueue
 
   @@requests = []
 
+  METRICS_BATCH_SIZE = APP_CONFIG.metrics_batch_size
+
+  attr_accessor :batch_size
+
   def initialize
+    @batch_size = METRICS_BATCH_SIZE
+
     at_exit do
-      flush_requests(true)
+      flush(true)
       # Yes, @, not @@, because we're in the class scope now
       @client.close if @client.present?
     end
   end
 
-  def push_metric(entityId, metricName, count = 1)
-    Rails.logger.debug("Pushing client-side metric, #{entityId}/#{metricName} = #{count}")
-    push_request(
-      :timestamp => Time.now.to_i * 1000,
-      :entityId => entityId,
-      :name => metricName,
-      :value => count,
-      :type => :aggregate
-    )
-  end
-
-  def push_request(data)
-    @@requests << data
-    flush_requests if @@requests.size >= BATCH_REQUESTS_BY
-  end
-
-  private
-
-  def flush_requests(synchronous = false)
+  def flush(synchronous = false)
     return if @@requests.blank?
 
     logger = Rails.logger
@@ -50,24 +40,57 @@ class MetricQueue
     end
   end
 
+  def push_metric(entity_id, metric_name, count = 1, time = Time.now)
+    Rails.logger.debug("[#{Process.pid}] [#{Thread.current.object_id}] Pushing client-side metric, " +
+                       "#{entity_id}/#{metric_name} = #{count}")
+    push_request(
+      :timestamp => time.to_i * 1000,
+      :entity_id => entity_id,
+      :name => metric_name,
+      :value => count,
+      :type => :aggregate
+    )
+  end
+
+  def requests
+    @@requests
+  end
+
+  def atomic_metrics_filename(now)
+    now_formatted = now.strftime('%FT%H-%m-%s-%l%z')
+    thread_id = Thread.current.object_id
+    process_id = Process.pid
+    sprintf('/metrics2012.%s.%d.%d.data', now_formatted, thread_id, process_id)
+  end
+
+  def two_minute_bucket_metrics_filename(now)
+    now_int = now.to_i
+    now_int -= now_int % 120
+    now_int *= 1_000
+    sprintf('metrics2012.%016x.data', now_int)
+  end
+
+  private
+
+  def push_request(data)
+    @@requests << data
+    flush if @@requests.size >= @batch_size
+  end
+
   def do_flush_requests(current_requests, logger)
     targetdir = APP_CONFIG.metrics_dir
     FileUtils.mkdir_p(targetdir)
 
     if APP_CONFIG.atomic_metrics_flush
-
-      now = Time.now.strftime('%FT%H-%m-%s-%l%z')
-      thread_id = Thread.current.object_id
-      process_id = Process.pid
-      filename = "#{targetdir}#{sprintf('/metrics2012.%s.%d.%d.data', now, thread_id, process_id )}"
-      logger.debug("Flushing #{current_requests.length} metrics to file #{filename}")
+      filename = "#{targetdir}/#{atomic_metrics_filename(Time.now)}"
+      logger.debug("[#{Process.pid}] [#{Thread.current.object_id}] Flushing #{current_requests.length} metrics to file #{filename}")
 
       metrics_written = 0
       File.open(filename, 'ab') do |metricfile|
         current_requests.each do |request|
           write_start_of_record(metricfile)
           write_field(metricfile, request[:timestamp].to_s)
-          write_field(metricfile, request[:entityId])
+          write_field(metricfile, request[:entity_id])
           write_field(metricfile, request[:name])
           write_field(metricfile, request[:value].to_s)
           write_field(metricfile, request[:type].to_s)
@@ -75,26 +98,24 @@ class MetricQueue
         end
       end
 
-      logger.debug("successfully wrote #{metrics_written} metrics to file #{filename}.")
+      logger.debug("[#{Process.pid}] [#{Thread.current.object_id}] Successfully wrote #{metrics_written} metrics to file #{filename}.")
 
       filename_completed = "#{filename}.COMPLETED"
       FileUtils.mv(filename, filename_completed)
-      logger.debug("successfully renamed file #{filename} to #{filename_completed} to mark as completed.")
+      logger.debug("[#{Process.pid}] [#{Thread.current.object_id}] Successfully renamed file #{filename} to #{filename_completed} to mark as completed.")
     else
       lockfilename = "#{targetdir}/ruby-metrics.lock"
       File.open(lockfilename, 'wb') do |lockfile|
-        logger.debug("About to acquire file lock")
+        logger.debug('About to acquire file lock')
         lockfile.flock(File::LOCK_EX) # Cross-process locking wooo!
-        now = Time.now.to_i
-        now -= now % 120
-        now *= 1_000
-        filename = "#{targetdir}#{sprintf('/metrics2012.%016x.data', now)}"
+        now = Time.now
+        filename = "#{targetdir}/#{two_minute_bucket_metrics_filename(now)}"
         logger.debug("Flushing #{current_requests.length} metrics to file #{filename}")
         File.open(filename, 'ab') do |metricfile|
           current_requests.each do |request|
             write_start_of_record(metricfile)
             write_field(metricfile, request[:timestamp].to_s)
-            write_field(metricfile, request[:entityId])
+            write_field(metricfile, request[:entity_id])
             write_field(metricfile, request[:name])
             write_field(metricfile, request[:value].to_s)
             write_field(metricfile, request[:type].to_s)
@@ -131,5 +152,4 @@ class MetricQueue
 
   START_OF_RECORD = [255].pack('C').force_encoding('iso-8859-1')
   END_OF_FIELD = [254].pack('C').force_encoding('iso-8859-1')
-  BATCH_REQUESTS_BY = Rails.env.development? ? 1 : 100
 end

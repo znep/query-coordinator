@@ -56,6 +56,12 @@ default: &default
   metrics_dir: tmp/metriclogs
   {%- endif %}
 
+  {% if METRICS_BATCH_SIZE is defined -%}
+  metrics_batch_size: {{ METRICS_BATCH_SIZE }}
+  {% else %}
+  metrics_batch_size: 100
+  {%- endif %}
+
   atomic_metrics_flush: {{ ATOMIC_METRICS_FLUSH | default('false') }}
 
   odysseus_app_name: {{ ODYSSEUS_APP_NAME }}

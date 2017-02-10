@@ -60,6 +60,7 @@ class AppConfig < Hashie::Dash
   # Metrics
   property :atomic_metrics_flush, default: false
   property :metrics_dir
+  property :metrics_batch_size, default: 100, transform_with: as_int
   property :statsd_enabled
   property :statsd_server
 

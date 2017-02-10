@@ -1,6 +1,7 @@
 .asset-selector {
   .pager {
     margin-bottom: 1rem;
+    font-size: 15px;
 
     .inline-block {
       display: inline-block;
@@ -26,6 +27,7 @@
     .current-page-input {
       input {
         width: 40px;
+        font-size: 15px;
       }
 
       &.error {

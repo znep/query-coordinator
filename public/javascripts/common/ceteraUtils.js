@@ -1,7 +1,7 @@
 import 'whatwg-fetch';
 import airbrake from './airbrake';
 
-const CETERA_URL = '//api.us.socrata.com/api/catalog/v1'; // TODO: get from domain config?
+const CETERA_URI = `${window.serverConfig.ceteraUri}/catalog/v1`;
 const DEFAULT_LIMIT = 6;
 const DEFAULT_ORDER = 'relevance';
 
@@ -51,7 +51,7 @@ export const ceteraUtils = (() => {
         return (key && value) ? result += `${key}=${value}&` : result;
       }, '').slice(0, -1);
 
-      const fetchUrl = `${CETERA_URL}?${paramString}`;
+      const fetchUrl = `${CETERA_URI}?${paramString}`;
 
       const fetchOptions = { credentials: 'same-origin' };
 

@@ -1,6 +1,6 @@
 @import "styleguide-colors";
-@import "../breakpoints";
-@import "./results-container";
+@import "common/breakpoints";
+@import "common/asset-selector/results-container";
 
 .asset-selector.modal {
   overflow-y: hidden;

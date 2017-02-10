@@ -3,7 +3,9 @@
   <head>
     <title><%= CurrentDomain.strings.site_title %></title>
 
-    <%= rendered_stylesheet_tag("catalog-landing-page") %>
+    <%= rendered_stylesheet_tag('catalog-landing-page') %>
+    <%= rendered_stylesheet_tag('asset-selector') %>
+
     <link rel="stylesheet" href="/stylesheets/socrata-components/css/styleguide.min.css" />
     <link rel="stylesheet" href="/stylesheets/socrata-visualizations/socrata-visualizations.css" />
     <link rel="shortcut icon" href="<%= theme_image_url(CurrentDomain.theme.images.favicon) %>" />

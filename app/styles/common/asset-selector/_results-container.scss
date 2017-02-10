@@ -1,6 +1,6 @@
-@import "../breakpoints";
-@import "./card";
-@import "./pager";
+@import "common/breakpoints";
+@import "common/asset-selector/card";
+@import "common/asset-selector/pager";
 
 .asset-selector {
   .results-container {
@@ -39,9 +39,14 @@
           align-items: center;
           display: inline-flex;
           margin: 3px;
+          font-size: 15px;
 
           .dropdown-container {
             margin-left: 0.5rem;
+
+            .dropdown-caret::after {
+              margin-top: 10px;
+            }
 
             &.dropdown-focused {
               .dropdown-placeholder {

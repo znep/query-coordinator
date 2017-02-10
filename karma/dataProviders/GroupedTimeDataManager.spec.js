@@ -59,10 +59,10 @@ describe('GroupedTimeDataManager', () => {
       ["0.09", undefined],
       ["0.1", undefined],
       ["0.11", undefined],
-      ["0.12", undefined]
+      ["Apostrophe's escaped", undefined]
     ]
   };
-  const OTHER_CATEGORY_QUERY = 'SELECT date_trunc_ym(`incident_occurrence`) AS __dimension_alias__, COUNT(*) AS __measure_alias__ WHERE `incident_occurrence` >= \'2001-01-01T00:00:00.000\' AND `incident_occurrence` < \'2003-06-01T00:00:00.000\' AND ( blood_alcohol_level != \'0.01\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'0.02\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'0.03\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'0.04\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'0.05\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'0.06\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'0.07\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'0.08\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'0.09\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'0.1\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'0.11\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'0.12\' OR blood_alcohol_level IS NULL ) GROUP BY date_trunc_ym(`incident_occurrence`) ORDER BY __measure_alias__ DESC LIMIT 1000';
+  const OTHER_CATEGORY_QUERY = 'SELECT date_trunc_ym(`incident_occurrence`) AS __dimension_alias__, COUNT(*) AS __measure_alias__ WHERE `incident_occurrence` >= \'2001-01-01T00:00:00.000\' AND `incident_occurrence` < \'2003-06-01T00:00:00.000\' AND ( blood_alcohol_level != \'0.01\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'0.02\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'0.03\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'0.04\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'0.05\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'0.06\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'0.07\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'0.08\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'0.09\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'0.1\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'0.11\' OR blood_alcohol_level IS NULL ) AND ( blood_alcohol_level != \'Apostrophe\'\'s escaped\' OR blood_alcohol_level IS NULL ) GROUP BY date_trunc_ym(`incident_occurrence`) ORDER BY __measure_alias__ DESC LIMIT 1000';
   const OTHER_CATEGORY_QUERY_DATA = {
     columns: ['__dimension_alias__', '__measure_alias__'],
     rows: [
@@ -275,7 +275,7 @@ describe('GroupedTimeDataManager', () => {
           ["2002-01-01T00:00:00.000",null]
         ]
       },
-      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.12"}}]},"label":"0.12","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
+      '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"Apostrophe\'s escaped"}}]},"label":"Apostrophe\'s escaped","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
         "columns": ["dimension","measure"],
         "rows": [
           ["2001-02-01T00:00:00.000",1],
@@ -358,7 +358,7 @@ describe('GroupedTimeDataManager', () => {
     ).
       then((actualData) => {
         const expectedData = {
-          "columns": ["dimension","0.01","0.02","0.03","0.04","0.05","0.06","0.07","0.08","0.09","0.1","0.11","0.12","(Other)"],
+          "columns": ["dimension","0.01","0.02","0.03","0.04","0.05","0.06","0.07","0.08","0.09","0.1","0.11","Apostrophe's escaped","(Other)"],
           "rows": [
             ["2001-01-01T00:00:00.000",null,2,1,2,null,3,null,null,2,1,1,null,61],
             ["2001-02-01T00:00:00.000",2,1,1,2,3,null,1,6,1,2,2,1,57],

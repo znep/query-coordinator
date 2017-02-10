@@ -1,5 +1,6 @@
 import 'script!jquery';
 import { Provider } from 'react-redux';
+import { FeatureFlags } from 'socrata-utils';
 
 window._ = require('lodash');
 window.React = require('react');
@@ -8,6 +9,10 @@ window.TestUtils = require('react-addons-test-utils');
 window.redux = require('redux');
 window.serverConfig = { environment: 'development' };
 window.sessionData = { };
+
+FeatureFlags.useTestFixture({
+  open_performance_narrative_editor: 'storyteller'
+});
 
 // This needs to happen after setting all of the mock window data.
 var getDefaultStore = require('testStore').getDefaultStore;

@@ -1077,4 +1077,17 @@ module ApplicationHelper
     end
   end
 
+  # Places feature flags at window.socrata.featureFlags
+  # for consumption by the FeatureFlags module in frontend-utils.
+  def render_feature_flags_for_javascript
+    javascript_tag(
+      "
+        window.socrata = window.socrata || {};
+        window.socrata.featureFlags =
+         #{FeatureFlags.derive(nil, request).to_json};
+      ",
+      :id => 'feature-flags'
+    )
+  end
+
 end

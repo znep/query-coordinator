@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { FeatureFlags } from 'socrata-utils';
 import * as React from 'react';
 import * as ReactRedux from 'react-redux';
 import * as State from '../../state';
@@ -21,6 +22,53 @@ class EditGeneral extends React.Component {
         value: 'private'
       }
     ];
+  }
+
+  renderVisibilityDisabledMessage() {
+    const { translations, goal } = this.props;
+    const goalEditUrl = `/stat/goals/single/${goal.get('id')}/edit`;
+
+    return (
+      <span className="form-message">
+        { translations.getIn(['admin', 'visibility_controls_disabled', 'text']) + ' ' }
+        <a href={ goalEditUrl } target="_blank">
+          { translations.getIn(['admin', 'visibility_controls_disabled', 'link']) }
+        </a>
+      </span>
+    );
+  }
+
+  renderVisibilityDropdown() {
+    return (
+      <Components.Select
+        className="form-select-small"
+        options={ this.visibilityOptions }
+        value={ this.props.formData.get('visibility') }
+        onChange={ _.wrap('visibility', this.props.onSelectChange) }
+        searchable={ false }
+        clearable={ false }/>
+    );
+  }
+
+  renderVisibilitySection() {
+    const { translations } = this.props;
+
+    // If the new editor is enabled, we need to complete EN-12848 before we can support
+    // visibility changes.
+    const disableVisibilityChange =
+      FeatureFlags.value('open_performance_narrative_editor') === 'storyteller';
+
+    return (
+      <div className="form-line">
+        <label className="inline-label">
+          { translations.getIn(['admin', 'quick_edit', 'visibility']) }
+        </label>
+        { disableVisibilityChange ?
+          this.renderVisibilityDisabledMessage() :
+          this.renderVisibilityDropdown()
+        }
+      </div>
+    );
   }
 
   render() {
@@ -46,18 +94,7 @@ class EditGeneral extends React.Component {
           { goalStatusTranslation(translations, ['measure', 'progress', goal.get('status')]) || ' — '}
         </div>
 
-        <div className="form-line">
-          <label className="inline-label">
-            { translations.getIn(['admin', 'quick_edit', 'visibility']) }
-          </label>
-          <Components.Select
-            className="form-select-small"
-            options={ this.visibilityOptions }
-            value={ formData.get('visibility') }
-            onChange={ _.wrap('visibility', this.props.onSelectChange) }
-            searchable={ false }
-            clearable={ false }/>
-        </div>
+        { this.renderVisibilitySection() }
       </div>
     );
   }

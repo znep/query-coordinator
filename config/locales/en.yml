@@ -1785,6 +1785,9 @@ en:
     to_whence_you_came: to where you came from.
   govstat:
     admin:
+      visibility_controls_disabled:
+        text: Publishing and visibility status can be managed in the
+        link: goal editor.
       bulk_edit:
         button_title: Edit Multiple Items...
         cancel: Cancel

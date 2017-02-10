@@ -40,14 +40,24 @@
   }
 
   .goal-quick-edit-form {
+    $form-width: 600px;
+    $label-width: 175px;
+    $label-padding-right: 20px;
+
     float: left;
-    width: 600px;
+    width: $form-width;
 
     label {
       display: inline-block;
-      width: 175px;
+      width: $label-width;
       text-align: right;
-      padding-right: 20px;
+      padding-right: $label-padding-right;
+      vertical-align: top;
+    }
+
+    .form-message {
+      display: inline-block;
+      width: ($form-width - $label-width - $label-padding-right);
     }
 
     .text-input {

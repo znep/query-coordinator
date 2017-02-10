@@ -3,6 +3,32 @@ require 'rails_helper'
 describe ApplicationHelper do
   include TestHelperMethods
 
+  describe 'render_feature_flags_for_javascript' do
+    let(:flags) do
+      {
+        'foo_flag:' => 'bar_value_with_$pecial_chars{}"\\'
+      }
+    end
+
+    before do
+      allow(FeatureFlags).to receive(:derive).and_return(flags)
+    end
+
+    it 'renders feature flags into window.socrata.featureFlags' do
+      rendered_value = render_feature_flags_for_javascript
+      expect(rendered_value).to eq(%q(<script id="feature-flags">
+//<![CDATA[
+
+        window.socrata = window.socrata || {};
+        window.socrata.featureFlags =
+         {"foo_flag:":"bar_value_with_$pecial_chars{}\"\\\\"};
+      
+//]]>
+</script>)
+      )
+    end
+  end
+
   describe '#suppress_govstat?', :verify_stubs => false do
 
     let(:current_user) { double('current_user') }

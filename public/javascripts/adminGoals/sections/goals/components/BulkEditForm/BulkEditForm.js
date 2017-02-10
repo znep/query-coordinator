@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
+import { FeatureFlags } from 'socrata-utils';
 
 import * as React from 'react';
 import * as Redux from 'redux';
@@ -142,6 +143,12 @@ class BulkEditForm extends React.Component {
   }
 
   renderVisibility() {
+    // If the new editor is enabled, we need to complete EN-12848 before we can support
+    // visibility changes.
+    if (FeatureFlags.value('open_performance_narrative_editor') === 'storyteller') {
+      return null;
+    }
+
     const { translations, goal, commonData } = this.props;
 
     const visibility = goal.get('is_public', commonData.get('is_public'));

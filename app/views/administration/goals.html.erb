@@ -1,5 +1,6 @@
 <% content_for :head do %>
   <%= render_dataset_landing_page_server_config %>
+  <%= render_feature_flags_for_javascript %>
   <script type="text/javascript">
     window.strings = <%== CurrentDomain.strings.to_json %>;
     window.translations = <%== LocaleCache.render_translations([LocalePart.from_array(['govstat'])])['govstat'].to_json %>

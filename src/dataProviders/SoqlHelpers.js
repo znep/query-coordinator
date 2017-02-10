@@ -547,5 +547,6 @@ module.exports = {
   aggregationClause,
   orderByClauseFromSeries,
   whereClauseNotFilteringOwnColumn,
-  whereClauseFilteringOwnColumn
+  whereClauseFilteringOwnColumn,
+  soqlEncodeValue
 };

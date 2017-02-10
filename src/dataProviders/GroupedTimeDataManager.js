@@ -176,8 +176,25 @@ function getData(vif, options) {
         if (groupingValue === null) {
           return `(${state.groupingColumnName} IS NOT NULL)`;
         } else {
+          // EN-13772 - Multiseries Timeline Error
+          //
+          // Some categorical values can include single quotes, which causes the
+          // SoQL parser to get confused about what the parameter for the where
+          // clause component is. SoQL allows for these parameters to include
+          // single quotes by treating two consecutive single quotes as an
+          // escaped single quote post-parse. We actually were already doing
+          // this correctly in the code that was mapping filter arrays to where
+          // clauses, but it's not currently flexible enough for us to simply
+          // do that here as well. Ideally, the way we represent queries will at
+          // some point in the future will be flexible enough to accomplish what
+          // we are trying to accomplish here as well, and we can get back to
+          // having a single place to worry about stuff like this.
+          const encodedGroupingValue = SoqlHelpers.soqlEncodeValue(
+            groupingValue
+          );
+
           return `(
-            ${state.groupingColumnName} != '${groupingValue}' OR
+            ${state.groupingColumnName} != ${encodedGroupingValue} OR
             ${state.groupingColumnName} IS NULL
           )`;
         }

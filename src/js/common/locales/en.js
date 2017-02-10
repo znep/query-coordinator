@@ -13,9 +13,9 @@ export default {
     configure_filter: 'Configure Filter',
     config: {
       hidden_label: 'Hidden',
-      hidden_description: 'Viewers can see and change the values of this filter.',
+      hidden_description: 'Viewers can\'t see this filter, even when applied.',
       viewers_can_edit_label: 'Viewers Can Edit',
-      viewers_can_edit_description: 'Viewers can\'t see this filter, even when applied.'
+      viewers_can_edit_description: 'Viewers can see and change the values of this filter.'
     },
     date_range: 'Date Range',
     filter: 'Filter:',

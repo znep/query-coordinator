@@ -66,20 +66,20 @@
       }
     }
 
-     .back-to-profile-btn {
-        position: absolute;
-        left: 0;
-        top: 0px;
-        z-index: 1;
+    .back-to-profile-btn {
+      position: absolute;
+      left: 0;
+      top: 0px;
+      z-index: 1;
 
-        background-color: #565656;
-        font-size: 1.2rem;
+      background-color: #565656;
+      font-size: 1.2rem;
 
-        .back-to-profile-icon {
-          position: relative;
-          top: 1px;
-        }
+      .back-to-profile-icon {
+        position: relative;
+        top: 1px;
       }
+    }
 
     hr {
       @include thin-hr();
@@ -95,11 +95,11 @@
       font-weight: lighter;
     }
 
+    .menu-footer {
+      text-align: center;
+    }
+
     .settings-help-link {
-      position: absolute;
-      bottom: 5rem;
-      left: 50%;
-      transform: translateX(-50%);
       color: $header-text-color;
       font-weight: lighter;
       text-decoration: none;
@@ -148,6 +148,7 @@
 
   .menu-list {
     margin: 2rem -1.5rem;
+    min-height: 80vh;
   }
 
   a:not([href]), a:not([href]):hover {

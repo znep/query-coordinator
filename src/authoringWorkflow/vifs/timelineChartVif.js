@@ -14,7 +14,6 @@ export default {
     {
       color: {
         primary: '#71abd9',
-        secondary: '#71abd9',
         highlight: '#cccccc'
       },
       dataSource: {

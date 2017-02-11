@@ -16,7 +16,6 @@ export default () => ({
     {
       "color": {
         "primary": "#6ac5a3",
-        "secondary": "#067126",
         "highlight": "#cccccc"
       },
       "dataSource": {

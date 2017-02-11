@@ -94,7 +94,7 @@ describe('AuthoringWorkflow reducer', function() {
       shouldSetVif('setMeasureAggregation', 'count', 'series[0].dataSource.measure.aggregationFunction');
 
       shouldSetVif('setPrimaryColor', '#00F', 'series[0].color.primary', ['columnChart', 'timelineChart', 'histogram', 'featureMap']);
-      shouldSetVif('setSecondaryColor', '#00F', 'series[0].color.secondary', ['columnChart', 'timelineChart', 'histogram']);
+      shouldSetVif('setSecondaryColor', '#00F', 'series[0].color.secondary', ['columnChart', 'histogram']);
 
       shouldSetVif('setPointSize', 1.3, 'configuration.pointSize', ['featureMap']);
 

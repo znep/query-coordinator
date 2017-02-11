@@ -162,7 +162,6 @@ export var ColorsAndStylePane = React.createClass({
     return (
       <AccordionPane title={translate('panes.colors_and_style.subheaders.colors')}>
         {this.renderPrimaryColor(translate('panes.colors_and_style.fields.line_color.title'))}
-        {this.renderSecondaryColor(translate('panes.colors_and_style.fields.area_color.title'))}
       </AccordionPane>
     );
   },

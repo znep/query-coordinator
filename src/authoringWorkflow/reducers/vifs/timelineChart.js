@@ -15,7 +15,6 @@ import {
   SET_TITLE,
   SET_DESCRIPTION,
   SET_PRIMARY_COLOR,
-  SET_SECONDARY_COLOR,
   SET_COLOR_PALETTE,
   SET_LABEL_BOTTOM,
   SET_LABEL_LEFT,
@@ -112,7 +111,6 @@ export default function timelineChart(state, action) {
     case SET_MEASURE_AXIS_MAX_VALUE:
     case SET_MEASURE_AXIS_MIN_VALUE:
     case SET_PRIMARY_COLOR:
-    case SET_SECONDARY_COLOR:
     case SET_TITLE:
     case SET_UNIT_ONE:
     case SET_UNIT_OTHER:

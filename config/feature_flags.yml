@@ -82,7 +82,7 @@ enable_filterable_visualizations_in_ax:
   description: Allow filterable visualizations to be built in the Authoring Workflow.
 enable_filtered_tables_in_ax:
   category: storyteller
-  defaultValue: true
+  defaultValue: false
   description: Allow filtered and grouped views to be selected for AX visualizations.
 enable_ingress_geometry_types:
   description: 'Add the types: point, multipoint, line, multiline, polygon, multipolygon. This flag only functions when `ingress_strategy` is delta-importer or nbe.'

@@ -21,6 +21,7 @@ import NoMatch from './components/NoMatch';
 import rootReducer from './reducers';
 import { bootstrap } from './lib/database/bootstrap';
 import * as Selectors from './selectors';
+import Airbrake from './airbrake';
 
 
 const viewId = window.initialState.view.id;
@@ -47,7 +48,7 @@ if (window.serverConfig.environment === 'development') {
     'for convenience, try e.g. `console.table(DB.uploads)` (only works when RAILS_ENV==development)'
   );
 } else {
-  // TODO: setup airbrake if not development
+  Airbrake.init();
 }
 
 const store = createStore(rootReducer, applyMiddleware(...middleware));

@@ -1,10 +1,11 @@
 module DatasetManagementUiHelper
   def dataset_management_ui_server_config(websocket_token)
     {
-      :environment => Rails.env,
-      :csrfToken => form_authenticity_token.to_s,
-      :appToken => APP_CONFIG.app_token,
-      :websocketToken => websocket_token
+      environment: Rails.env,
+      csrfToken: form_authenticity_token.to_s,
+      appToken: APP_CONFIG.app_token,
+      websocketToken: websocket_token,
+      airbrakeKey: ENV['PUBLISHING_AIRBRAKE_API_KEY'] || APP_CONFIG.publishing_airbrake_api_key
     }
   end
 

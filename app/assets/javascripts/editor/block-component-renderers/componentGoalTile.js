@@ -247,7 +247,7 @@ function renderGoalTile($element, domainI18n, componentData, goalTileData) {
     '<a>',
     {
       'href': _.get(componentData, 'value.goalFullUrl', '#'),
-      'target': '_blank',
+      'target': componentData.value.openInNewWindow ? '_blank' : '_self',
       'class': 'goal-tile-container'
     }
   );

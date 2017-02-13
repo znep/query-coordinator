@@ -221,6 +221,16 @@ export default function AssetSelectorRenderer(options) {
     );
 
     _container.on(
+      'change',
+      '#open-goal-in-new-window',
+      function() {
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_TOGGLE_GOAL_WINDOW_TARGET
+        });
+      }
+    );
+
+    _container.on(
       'input',
       '[data-asset-selector-validate-field="goalUrl"]',
       function(event) {
@@ -1797,13 +1807,20 @@ export default function AssetSelectorRenderer(options) {
       previewContainer
     ]);
 
+    const checkboxOptions = {
+      id: 'open-goal-in-new-window',
+      i18nLabel: 'editor.asset_selector.goal_tile.open_in_new_window'
+    };
+
+    const newWindowControl = _renderModalCheckbox(checkboxOptions);
+
     const buttonGroup = $(
       '<div>',
       {
         'class': 'modal-button-group r-to-l'
       }).append([ backButton, _renderModalInsertButton() ]);
 
-    return [ content, buttonGroup ];
+    return [ content, newWindowControl, buttonGroup ];
   }
 
   function _renderChooseGoalData(componentProperties) {
@@ -1811,12 +1828,14 @@ export default function AssetSelectorRenderer(options) {
     const $goalTilePreviewContainer = _container.find('.asset-selector-goal-tile-embed-component');
     const $inputControl = _container.find('[data-asset-selector-validate-field="goalUrl"]');
     const $insertButton = _container.find('.btn-apply');
+    const $newWindowCheckbox = _container.find('#open-goal-in-new-window');
     const renderedGoalDomain = $goalTilePreviewContainer.attr('data-rendered-goal-domain');
     const renderedGoalUid = $goalTilePreviewContainer.attr('data-rendered-goal-uid');
     let goalDomain = null;
     let goalUid = null;
     let goalFullUrl = null;
     let componentData;
+    let openInNewWindow;
 
     function allComponentPropertiesAreNotNull(properties) {
 
@@ -1835,6 +1854,7 @@ export default function AssetSelectorRenderer(options) {
       goalDomain = componentProperties.domain;
       goalUid = componentProperties.goalUid;
       goalFullUrl = componentProperties.goalFullUrl;
+      openInNewWindow = _.get(componentProperties, 'openInNewWindow', false);
 
       if (
         goalDomain !== renderedGoalDomain ||
@@ -1892,6 +1912,8 @@ export default function AssetSelectorRenderer(options) {
 
       $insertButton.prop('disabled', true);
     }
+
+    $newWindowCheckbox.prop('checked', openInNewWindow);
   }
 
   function _renderChooseYoutubeTemplate() {

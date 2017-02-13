@@ -116,6 +116,10 @@ export default function AssetSelectorStore() {
         _updateGoalUrl(payload);
         break;
 
+      case Actions.ASSET_SELECTOR_TOGGLE_GOAL_WINDOW_TARGET:
+        _updateGoalWindowTarget();
+        break;
+
       case Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL:
         _updateYoutubeUrl(payload);
         break;
@@ -1381,6 +1385,15 @@ export default function AssetSelectorStore() {
       goalUid: goalUid,
       goalFullUrl: payload.url
     };
+
+    self._emitChange();
+  }
+
+  function _updateGoalWindowTarget() {
+    StorytellerUtils.assertEqual(self.getComponentType(), 'goal.tile');
+
+    const value = self.getComponentValue();
+    value.openInNewWindow = !value.openInNewWindow;
 
     self._emitChange();
   }

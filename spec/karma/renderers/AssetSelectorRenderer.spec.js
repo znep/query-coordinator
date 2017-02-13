@@ -389,6 +389,24 @@ describe('AssetSelectorRenderer', function() {
       container.find('#open-story-in-new-window').trigger('change');
     });
 
+    it('dispatches `ASSET_SELECTOR_TOGGLE_GOAL_WINDOW_TARGET` when new window checkbox is clicked', function(done) {
+      sinon.stub(assetSelectorStoreMock, 'getComponentType', _.constant('goal.tile'));
+      sinon.stub(assetSelectorStoreMock, 'getComponentValue', _.constant({}));
+
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
+        step: WIZARD_STEP.ENTER_GOAL_URL
+      });
+
+      dispatcher.register(function(payload) {
+        const action = payload.action;
+        assert.equal(action, Actions.ASSET_SELECTOR_TOGGLE_GOAL_WINDOW_TARGET);
+        done();
+      });
+
+      container.find('#open-goal-in-new-window').trigger('change');
+    });
+
     xdescribe('select file in image upload', function() {
       var cancelSpy;
       var uploadSpy;

@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import $ from 'jquery';
 import _ from 'lodash';
 import classNames from 'classnames';
+import { ENTER } from 'socrata-components/common/keycodes';
 import { handleKeyPress } from '../../helpers/keyPressHelpers';
 
 export class Pager extends React.Component {
@@ -14,7 +15,7 @@ export class Pager extends React.Component {
       'nextLinkClick',
       'lastLinkClick',
       'pageInputChange',
-      'pageInputKeyPress'
+      'pageInputKeyDown'
     ]);
 
     this.state = {
@@ -57,8 +58,8 @@ export class Pager extends React.Component {
     }
   }
 
-  pageInputKeyPress(e) {
-    if (e.key === 'Enter') {
+  pageInputKeyDown(e) {
+    if (e.keyCode === ENTER) {
       $(e.target).trigger('blur');
     }
   }
@@ -122,7 +123,7 @@ export class Pager extends React.Component {
           aria-label={pageNumberText}
           defaultValue={this.props.currentPage}
           onBlur={this.pageInputChange}
-          onKeyPress={this.pageInputKeyPress} />
+          onKeyDown={this.pageInputKeyDown} />
         <span className="accessible">{pageNumberText}</span>
       </div>
     );

@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 const DEFAULT_SORT = 'relevance';
 
-export class SortDropdown extends React.Component { // eslint-disable-line react/prefer-stateless-function
+export class SortDropdown extends React.PureComponent {
   render() {
     const sortOptions = [
       {

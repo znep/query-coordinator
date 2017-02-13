@@ -195,6 +195,10 @@ export default function AssetSelectorStore() {
         setPreviewImage(payload);
         break;
 
+      case Actions.ASSET_SELECTOR_TOGGLE_IMAGE_WINDOW_TARGET:
+        _updateImageWindowTarget();
+        break;
+
       case Actions.ASSET_SELECTOR_IMAGE_PREVIEW_BACK:
         backToImageUpload();
         break;
@@ -300,6 +304,8 @@ export default function AssetSelectorStore() {
   this.getPreviewImageData = () => _.get(_state, 'previewImage', null);
 
   this.getPreviewImageUrl = () => _.get(_state, 'previewImageUrl', null);
+
+  this.getImageWindowTarget = () => _.get(_state, 'openInNewWindow', false);
 
   this.hasPreviewImageData = () => _.isObject(this.getPreviewImageData());
 
@@ -451,6 +457,15 @@ export default function AssetSelectorStore() {
     });
   }
 
+  function _updateImageWindowTarget() {
+    StorytellerUtils.assertEqual(self.getComponentType(), 'image');
+
+    const value = self.getComponentValue();
+    value.openInNewWindow = !value.openInNewWindow;
+
+    self._emitChange();
+  }
+
   function _nextImageSearchPage() {
     if (self.canPageImageSearchNext()) {
       _state.imageSearchPage = self.getImageSearchPage() + 1;
@@ -597,7 +612,7 @@ export default function AssetSelectorStore() {
       _state.step = WIZARD_STEP.IMAGE_UPLOAD_ERROR;
       _.set(_state.componentProperties, 'reason', t(message));
     } else {
-      _state.componentProperties = _state.componentProperties || { urlValidity: true };
+      _state.componentProperties = _state.componentProperties || { urlValidity: true, openInNewWindow: false };
 
       if (_state.componentProperties.reason) {
         delete _state.componentProperties.reason;
@@ -789,7 +804,7 @@ export default function AssetSelectorStore() {
 
   function _chooseImageUpload() {
     if (_state.componentType === 'image') {
-      _state.componentProperties = _.merge(_state.componentProperties || {}, { urlValidity: true });
+      _state.componentProperties = _.merge(_state.componentProperties || {}, { urlValidity: true, openInNewWindow: false });
     }
 
     _state.step = WIZARD_STEP.SELECT_IMAGE_TO_UPLOAD;
@@ -1226,12 +1241,12 @@ export default function AssetSelectorStore() {
 
   function _updateImagePreview(file) {
     const type = self.getComponentType();
+    const properties = _state.componentProperties;
+
     const image = {
+      ...properties,
       documentId: file.resource.id,
-      url: file.resource.url,
-      crop: _state.componentProperties.crop,
-      alt: _state.componentProperties.alt,
-      link: _state.componentProperties.link
+      url: file.resource.url
     };
 
     switch (type) {
@@ -1347,9 +1362,10 @@ export default function AssetSelectorStore() {
   }
 
   function _updateStoryWindowTarget() {
-    StorytellerUtils.assertEqual(_state.componentType, 'story.tile');
+    StorytellerUtils.assertEqual(self.getComponentType(), 'story.tile');
 
-    _state.componentProperties.openInNewWindow = !_state.componentProperties.openInNewWindow;
+    const value = self.getComponentValue();
+    value.openInNewWindow = !value.openInNewWindow;
 
     self._emitChange();
   }

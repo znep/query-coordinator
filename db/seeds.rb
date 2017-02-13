@@ -6,7 +6,9 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-block_1 = Block.create(
+# Seed Blocks
+
+h1_presentable_block = Block.create(
   layout: '12',
   components: [
     {type: 'html', value: '<div><i>Block One!</i>&nbsp;Component One!<br></div>'}
@@ -15,7 +17,15 @@ block_1 = Block.create(
   presentable: true
 )
 
-block_2 = Block.create(
+h1_block = Block.create(
+  layout: '12',
+  components: [
+    { type: 'html', value: '<h1 class="align-center" style="text-align:center">Your Great Story Title<br></h1>' }
+  ],
+  created_by: 'good-doer'
+)
+
+two_col_block = Block.create(
   layout: '6-6',
   components: [
     {type: 'html', value: '<div><i>Block Two!</i>&nbsp;Component One!<br></div>'},
@@ -25,7 +35,7 @@ block_2 = Block.create(
   presentable: true
 )
 
-block_3 = Block.create(
+three_col_block = Block.create(
   layout: '4-4-4',
   components: [
     {type: 'html', value: '<div><i>Block Three!</i>&nbsp;Component One!<br></div>'},
@@ -36,7 +46,7 @@ block_3 = Block.create(
   presentable: true
 )
 
-block_4 = Block.create(
+four_col_block = Block.create(
   layout: '3-3-3-3',
   components: [
     {type: 'html', value: '<div><i>Block Four!</i>&nbsp;Component One!<br></div>'},
@@ -48,7 +58,7 @@ block_4 = Block.create(
   presentable: true
 )
 
-block_5 = Block.create(
+horiz_rule_block = Block.create(
   layout: '12',
   components: [
     {type: 'horizontalRule'}
@@ -57,15 +67,7 @@ block_5 = Block.create(
   presentable: false
 )
 
-block_6 = Block.create(
-  layout: '12',
-  components: [
-    { type: 'html', value: '<h1 class="align-center" style="text-align:center">Your Great Story Title<br></h1>' }
-  ],
-  created_by: 'good-doer'
-)
-
-block_7 = Block.create(
+basic_anchor_block = Block.create(
   layout: '12',
   components: [
     { type: 'html', value: '<div><a href="https://opendata.socrata.com" target="_blank" rel="nofollow">Hello, Link!</a></div>' }
@@ -73,7 +75,7 @@ block_7 = Block.create(
   created_by: 'good-doer'
 )
 
-block_8 = Block.create(
+embedded_html_block = Block.create(
   layout: '12',
   components: [
     {
@@ -90,7 +92,7 @@ block_8 = Block.create(
   created_by: 'good-doer'
 )
 
-block_9 = Block.create(
+hero_block = Block.create(
   layout: '12',
   components: [
     {
@@ -103,7 +105,7 @@ block_9 = Block.create(
   created_by: 'good-doer'
 )
 
-block_10 = Block.create(
+image_with_link_block = Block.create(
   layout: '12',
   components: [
     {
@@ -112,14 +114,15 @@ block_10 = Block.create(
         'documentId': '1234',
         'url': 'https://bucket-name.s3.amazonaws.com/uploads/random/image.jpg',
         'link': 'http://example.com',
-        'alt': 'image with link'
+        'alt': 'image with link',
+        'openInNewWindow': false
       }
     }
   ],
   created_by: 'good-doer'
 )
 
-block_11 = Block.create(
+image_block = Block.create(
   layout: '12',
   components: [
     {
@@ -134,8 +137,7 @@ block_11 = Block.create(
   created_by: 'good-doer'
 )
 
-# Fully qualified goal
-block_12 = Block.create(
+qualified_goal_block = Block.create(
   layout: '12',
   components: [
     {
@@ -150,8 +152,7 @@ block_12 = Block.create(
   created_by: 'perf-lord'
 )
 
-# Not fully qualified goal
-block_13 = Block.create(
+unqualified_goal_block = Block.create(
   layout: '12',
   components: [
     {
@@ -164,96 +165,160 @@ block_13 = Block.create(
   created_by: 'perf-lord'
 )
 
-published_story = PublishedStory.create(
+image_new_window_true_block = Block.create(
+  layout: '12',
+  components: [
+    {
+      'type': 'image',
+      'value': {
+        'documentId': '1234',
+        'url': 'https://bucket-name.s3.amazonaws.com/uploads/random/image.jpg',
+        'link': 'http://example.com',
+        'alt': 'image with link and target _blank',
+        'openInNewWindow': true
+      }
+    }
+  ],
+  created_by: 'good-doer'
+)
+
+# Seed Stories
+
+PublishedStory.create(
   uid: 'test-test',
-  block_ids: [block_1.id, block_2.id, block_3.id, block_4.id],
+  block_ids: [
+    h1_presentable_block,
+    two_col_block,
+    three_col_block,
+    four_col_block
+  ].map(&:id),
   created_by: 'good-doer',
   theme: 'serif'
 )
 
-draft_story = DraftStory.create(
+DraftStory.create(
   uid: 'test-test',
   block_ids: [],
   created_by: 'good-doer',
   theme: 'serif'
 )
 
-draft_story = DraftStory.create(
+DraftStory.create(
   uid: 'hasb-lock',
-  block_ids: [block_1.id, block_2.id, block_3.id, block_4.id],
-  created_by: 'good-doer',
-  theme: 'serif'
-)
-
-presentation_story = DraftStory.create(
-  uid: 'pres-ents',
-  block_ids: [block_1.id, block_2.id, block_3.id, block_5.id, block_4.id],
-  created_by: 'good-doer',
-  theme: 'serif'
-)
-
-presentation_published = PublishedStory.create(
-  uid: 'pres-ents',
-  block_ids: [block_1.id, block_2.id, block_3.id, block_5.id, block_4.id],
-  created_by: 'good-doer',
-  theme: 'serif'
-)
-
-view_mode_kitchen_sink = PublishedStory.create(
-  uid: 'kchn-sink',
   block_ids: [
-    block_1, block_2, block_3, block_4, block_5, block_6, block_7, block_8,
-    block_9, block_10, block_11
+    h1_presentable_block,
+    two_col_block,
+    three_col_block,
+    four_col_block
   ].map(&:id),
   created_by: 'good-doer',
   theme: 'serif'
 )
 
-draft_story = DraftStory.create(
+DraftStory.create(
+  uid: 'pres-ents',
+  block_ids: [
+    h1_presentable_block,
+    two_col_block,
+    three_col_block,
+    horiz_rule_block,
+    four_col_block
+  ].map(&:id),
+  created_by: 'good-doer',
+  theme: 'serif'
+)
+
+PublishedStory.create(
+  uid: 'pres-ents',
+  block_ids: [
+    h1_presentable_block,
+    two_col_block,
+    three_col_block,
+    horiz_rule_block,
+    four_col_block
+  ].map(&:id),
+  created_by: 'good-doer',
+  theme: 'serif'
+)
+
+PublishedStory.create(
+  uid: 'kchn-sink',
+  block_ids: [
+    h1_presentable_block,
+    two_col_block,
+    three_col_block,
+    four_col_block,
+    horiz_rule_block,
+    h1_block,
+    basic_anchor_block,
+    embedded_html_block,
+    hero_block,
+    image_with_link_block,
+    image_block
+  ].map(&:id),
+  created_by: 'good-doer',
+  theme: 'serif'
+)
+
+PublishedStory.create(
+  uid: 'link-blnk',
+  block_ids: [image_new_window_true_block.id],
+  created_by: 'good-doer',
+  theme: 'serif'
+)
+
+PublishedStory.create(
+  uid: 'link-self',
+  block_ids: [image_with_link_block.id],
+  created_by: 'good-doer',
+  theme: 'serif'
+)
+
+DraftStory.create(
   uid: 'h1bl-ocks',
-  block_ids: [block_6.id],
+  block_ids: [h1_block.id],
   created_by: 'good-doer',
   theme: 'serif'
 )
 
-draft_story = DraftStory.create(
+DraftStory.create(
   uid: 'href-bloc',
-  block_ids: [block_6.id, block_7.id],
+  block_ids: [h1_block.id, basic_anchor_block.id],
   created_by: 'good-doer',
   theme: 'serif'
 )
 
-embedded_html_story = DraftStory.create(
+DraftStory.create(
   uid: 'embd-html',
-  block_ids: [block_8.id],
+  block_ids: [embedded_html_block.id],
   created_by: 'good-doer',
   theme: 'serif'
 )
 
-hero_image_story = DraftStory.create(
-  uid: 'hero-that',
-  block_ids: [block_9.id],
-  created_by: 'good-doer',
-  theme: 'serif'
-)
-
-unpublished_story = DraftStory.create(
+DraftStory.create(
   uid: 'unpu-blsh',
-  block_ids: [block_8.id],
+  block_ids: [embedded_html_block.id],
   created_by: 'good-doer',
   theme: 'serif'
 )
 
-open_performance_story = DraftStory.create(
+DraftStory.create(
+  uid: 'hero-that',
+  block_ids: [hero_block.id],
+  created_by: 'good-doer',
+  theme: 'serif'
+)
+
+DraftStory.create(
   uid: 'open-perf',
-  block_ids: [block_12.id],
+  block_ids: [qualified_goal_block.id],
   created_by: 'perf-lord',
   theme: 'serif'
 )
 
-open_performance_story_2 = DraftStory.create(
+DraftStory.create(
   uid: 'goal-twoo',
-  block_ids: [block_13.id],
+  block_ids: [unqualified_goal_block.id],
   created_by: 'auni-corn',
   theme: 'serif'
 )

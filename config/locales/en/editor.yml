@@ -257,6 +257,7 @@ en:
         alt_attribute_tooltip: 'An alt attribute (short for alternative) is the text displayed in place of an image in the event that the image cannot be loaded.  It’s also used by screen reader software to describe the image so that users of assistive technology can interact with the elements of the page.'
         url_wrapper_label: 'Hyperlink (optional)'
         url_wrapper_tooltip: 'This field makes your image behave like a link to the URL you provide.'
+        open_in_new_window: 'Open in New Window'
         crop: 'Crop'
         reset_image: 'Reset Image'
         loading:

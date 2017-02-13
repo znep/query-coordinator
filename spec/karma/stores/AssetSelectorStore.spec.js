@@ -77,7 +77,6 @@ describe('AssetSelectorStore static functions', function() {
 });
 
 describe('AssetSelectorStore', function() {
-
   var server;
   var dispatcher;
   var storyStore;
@@ -1676,6 +1675,60 @@ describe('AssetSelectorStore', function() {
     it('sets crop', function() {
       dispatch(crop);
       assert.deepEqual(value.crop, crop);
+    });
+  });
+
+  describe('ASSET_SELECTOR_TOGGLE_IMAGE_WINDOW_TARGET', function() {
+    let getComponentValueStub;
+    let getComponentTypeStub;
+    let value;
+    let compType;
+
+    const dispatch = function() {
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_TOGGLE_IMAGE_WINDOW_TARGET
+      });
+    };
+
+    beforeEach(function() {
+      value = { openInNewWindow: false };
+      compType = 'image';
+
+      getComponentValueStub = sinon.stub(
+        assetSelectorStore,
+        'getComponentValue',
+        _.constant(value)
+      );
+
+      getComponentTypeStub = sinon.stub(
+        assetSelectorStore,
+        'getComponentType',
+        _.constant(compType)
+      );
+    });
+
+    afterEach(function() {
+      getComponentValueStub.restore();
+      getComponentTypeStub.restore();
+    });
+
+    it('toggles the openInNewWindow property', function() {
+      dispatch();
+      assert.isTrue(value.openInNewWindow);
+      dispatch();
+      assert.isFalse(value.openInNewWindow);
+    });
+
+    it('throws an error if the component is not an image', function() {
+      getComponentTypeStub.restore();
+
+      getComponentTypeStub = sinon.stub(
+        assetSelectorStore,
+        'getComponentType',
+        _.constant('not-an-image')
+      );
+
+      assert.throws(() => dispatch());
     });
   });
 });

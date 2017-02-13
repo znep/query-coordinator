@@ -31,10 +31,6 @@ export default function AssetSelectorRenderer(options) {
   _attachEvents();
 
   /**
-   * Public methods
-   */
-
-  /**
    * Private methods
    */
 
@@ -208,9 +204,18 @@ export default function AssetSelectorRenderer(options) {
       'change',
       '#open-story-in-new-window',
       function() {
-
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_TOGGLE_STORY_WINDOW_TARGET
+        });
+      }
+    );
+
+    _container.on(
+      'change',
+      '#open-image-in-new-window',
+      function() {
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_TOGGLE_IMAGE_WINDOW_TARGET
         });
       }
     );
@@ -219,7 +224,6 @@ export default function AssetSelectorRenderer(options) {
       'input',
       '[data-asset-selector-validate-field="goalUrl"]',
       function(event) {
-
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_UPDATE_GOAL_URL,
           url: $(event.target).val()
@@ -271,8 +275,8 @@ export default function AssetSelectorRenderer(options) {
       }
     );
 
-    var debounceForOneSecondThenUploadHtmlFragment = _.debounce(function(event) {
-      var htmlFragment = $(event.target).val();
+    const debounceForOneSecondThenUploadHtmlFragment = _.debounce(function(event) {
+      const htmlFragment = $(event.target).val();
       _warnAboutInsecureHTML = /src=['"]?http:\/\//.test(htmlFragment);
       if (htmlFragment.length === 0) {
         return;
@@ -285,7 +289,7 @@ export default function AssetSelectorRenderer(options) {
         });
       }
 
-      var blobForUpload = new Blob([`<!DOCTYPE html>${htmlFragment}`], {type: 'text/html'});
+      const blobForUpload = new Blob([`<!DOCTYPE html>${htmlFragment}`], {type: 'text/html'});
       blobForUpload.name = Constants.EMBEDDED_FRAGMENT_FILE_NAME;
 
       dispatcher.dispatch({
@@ -302,33 +306,33 @@ export default function AssetSelectorRenderer(options) {
     );
 
     _container.on('click', '[data-provider]', function() {
-      var provider = this.getAttribute('data-provider');
+      const provider = this.getAttribute('data-provider');
       StorytellerUtils.assert(provider, 'provider must be defined');
 
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
         blockId: assetSelectorStore.getBlockId(),
         componentIndex: assetSelectorStore.getComponentIndex(),
-        provider: provider
+        provider
       });
     });
 
     _container.on('click', '[data-visualization-option]', function() {
-      var visualizationOption = this.getAttribute('data-visualization-option');
+      const visualizationOption = this.getAttribute('data-visualization-option');
 
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN,
-        visualizationOption: visualizationOption
+        visualizationOption
       });
     });
 
     _container.on('click', '[data-resume-from-step]', function() {
-      var step = this.getAttribute('data-resume-from-step');
+      const step = this.getAttribute('data-resume-from-step');
       StorytellerUtils.assert(step, 'step must be provided');
 
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
-        step: step
+        step
       });
     });
 
@@ -358,7 +362,6 @@ export default function AssetSelectorRenderer(options) {
   function saveAndClose() {
     // TODO this sequence of steps should likely be its own single action,
     // which both AssetSelectorStore and StoryStore handle.
-
     if (assetSelectorStore.isDirty()) {
       dispatcher.dispatch({
         action: Actions.BLOCK_UPDATE_COMPONENT,
@@ -375,12 +378,12 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderSelector() {
-    var step = assetSelectorStore.getStep();
-    var componentType = assetSelectorStore.getComponentType();
-    var componentValue = assetSelectorStore.getComponentValue();
-    var selectorTitle;
-    var selectorContent;
-    var selectorWideDisplay = false;
+    const step = assetSelectorStore.getStep();
+    const componentType = assetSelectorStore.getComponentType();
+    const componentValue = assetSelectorStore.getComponentValue();
+    let selectorTitle;
+    let selectorContent;
+    let selectorWideDisplay = false;
 
     // See if we need to render a new template, then render a media selector step if
     // necessary.
@@ -534,41 +537,41 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderChooseProvider() {
-    var youtubeHeader = $('<h3>').
+    const youtubeHeader = $('<h3>').
       text(I18n.t('editor.asset_selector.youtube.name'));
-    var youtubeDescription = $('<p>').
+    const youtubeDescription = $('<p>').
       text(I18n.t('editor.asset_selector.youtube.description'));
 
-    var visualizationHeader = $('<h3>').
+    const visualizationHeader = $('<h3>').
       text(I18n.t('editor.asset_selector.visualization.name'));
-    var visualizationDescription = $('<p>').
+    const visualizationDescription = $('<p>').
       text(I18n.t('editor.asset_selector.visualization.description'));
 
-    var imageUploadHeader = $('<h3>').
+    const imageUploadHeader = $('<h3>').
       text(I18n.t('editor.asset_selector.image_upload.name'));
-    var imageUploadDescription = $('<p>').
+    const imageUploadDescription = $('<p>').
       text(
         Environment.ENABLE_GETTY_IMAGES_GALLERY ?
           I18n.t('editor.asset_selector.image_upload.description_with_getty_images') :
           I18n.t('editor.asset_selector.image_upload.description')
       );
 
-    var storyTileHeader = $('<h3>').
+    const storyTileHeader = $('<h3>').
       text(I18n.t('editor.asset_selector.story_tile.name'));
-    var storyTileDescription = $('<p>').
+    const storyTileDescription = $('<p>').
       text(I18n.t('editor.asset_selector.story_tile.description'));
 
-    var goalTileHeader = $('<h3>').
+    const goalTileHeader = $('<h3>').
       text(I18n.t('editor.asset_selector.goal_tile.name'));
-    var goalTileDescription = $('<p>').
+    const goalTileDescription = $('<p>').
       text(I18n.t('editor.asset_selector.goal_tile.description'));
 
-    var embedCodeHeader = $('<h3>').
+    const embedCodeHeader = $('<h3>').
       text(I18n.t('editor.asset_selector.embed_code.name'));
-    var embedCodeDescription = $('<p>').
+    const embedCodeDescription = $('<p>').
       text(I18n.t('editor.asset_selector.embed_code.description'));
 
-    var providers = $('<ul>', {'class': 'asset-selector-button-list'}).append([
+    const providers = $('<ul>', {'class': 'asset-selector-button-list'}).append([
       $('<li>', {
         'data-provider': 'SOCRATA_VISUALIZATION'
       }).append(visualizationHeader, visualizationDescription),
@@ -593,22 +596,22 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderChooseVisualizationOptions() {
-    var insertVisualizationHeader = $('<h3>').
+    const insertVisualizationHeader = $('<h3>').
       text(I18n.t('editor.asset_selector.visualization.choose_insert_visualization_heading'));
-    var insertVisualizationDescription = $('<p>').
+    const insertVisualizationDescription = $('<p>').
       text(I18n.t('editor.asset_selector.visualization.choose_insert_visualization_description'));
 
-    var insertTableHeader = $('<h3>').
+    const insertTableHeader = $('<h3>').
       text(I18n.t('editor.asset_selector.visualization.choose_insert_table_heading'));
-    var insertTableDescription = $('<p>').
+    const insertTableDescription = $('<p>').
       text(I18n.t('editor.asset_selector.visualization.choose_insert_table_description'));
 
-    var authorVisualizationHeader = $('<h3>').
+    const authorVisualizationHeader = $('<h3>').
       text(I18n.t('editor.asset_selector.visualization.choose_create_visualization_heading'));
-    var authorVisualizationDescription = $('<p>').
+    const authorVisualizationDescription = $('<p>').
       text(I18n.t('editor.asset_selector.visualization.choose_create_visualization_description'));
 
-    var visualizationOptions =
+    const visualizationOptions =
       $(
         '<ul>',
         {'class': 'asset-selector-button-list visualization-options'}
@@ -633,9 +636,9 @@ export default function AssetSelectorRenderer(options) {
       ).append(authorVisualizationHeader, authorVisualizationDescription)
     );
 
-    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
+    const backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
 
-    var buttonGroup = $(
+    const buttonGroup = $(
       '<div>',
       { 'class': 'modal-button-group r-to-l' }
     ).append([
@@ -646,17 +649,17 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderChooseImageTemplate() {
-    var tabs = $('<ul>', {
+    const tabs = $('<ul>', {
       class: 'image-tabs tabs'
     }).toggleClass('hidden', !Environment.ENABLE_GETTY_IMAGES_GALLERY);
 
-    var tabUpload = $('<li>', {
+    const tabUpload = $('<li>', {
       class: 'tab active'
     }).append(
       $('<a>', {href: '#page-upload'}).text(I18n.t('editor.asset_selector.image_upload.tab_upload'))
     );
 
-    var tabGetty = $('<li>', {
+    const tabGetty = $('<li>', {
       class: 'tab'
     }).append(
       $('<a>', {href: '#page-getty'}).text(I18n.t('editor.asset_selector.image_upload.tab_getty'))
@@ -667,8 +670,8 @@ export default function AssetSelectorRenderer(options) {
     tabs.on('click', 'a', function(event) {
       event.preventDefault();
 
-      var href = $(event.target).closest('[href]');
-      var id = href.attr('href');
+      const href = $(event.target).closest('[href]');
+      const id = href.attr('href');
 
       tabs.find('.tab').removeClass('active');
       pages.find('.page').removeClass('active');
@@ -677,17 +680,17 @@ export default function AssetSelectorRenderer(options) {
       href.parent().addClass('active');
     });
 
-    var pages = $('<div>', {
+    const pages = $('<div>', {
       class: 'image-pages pages'
     });
 
-    var pageUpload = $('<div>', {
+    const pageUpload = $('<div>', {
       id: 'page-upload',
       class: 'page active',
       'data-tab-default': true
     }).append(_renderChooseImageUploadTemplate());
 
-    var pageGetty = $('<div>', {
+    const pageGetty = $('<div>', {
       id: 'page-getty',
       class: 'page'
     }).append(_renderChooseImageGalleryTemplate());
@@ -698,21 +701,21 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderChooseImageGalleryTemplate() {
-    var searchForm = $('<form>', {
+    const searchForm = $('<form>', {
       class: 'images-search'
     });
 
-    var searchField = $('<input>', {
+    const searchField = $('<input>', {
       class: 'asset-selector-text-input text-input',
       placeholder: I18n.t('editor.asset_selector.image_upload.search_instructions'),
       type: 'text'
     });
 
-    var searchLoadingSpinner = $('<button>', {
+    const searchLoadingSpinner = $('<button>', {
       class: 'btn btn-busy btn-transparent images-search-loading-spinner'
     }).append($('<span>')).hide();
 
-    var searchInputGroup = $('<span>', { class: 'input-group' }).
+    const searchInputGroup = $('<span>', { class: 'input-group' }).
       append([
         searchField,
         searchLoadingSpinner,
@@ -723,7 +726,7 @@ export default function AssetSelectorRenderer(options) {
         })
       ]);
 
-    var searchError = $('<div>', {
+    const searchError = $('<div>', {
       class: 'alert warning-bar hidden images-error'
     }).append(
       $('<p>').append($('<span>', {class: 'socrata-icon-warning'})),
@@ -732,17 +735,17 @@ export default function AssetSelectorRenderer(options) {
 
     searchForm.append(searchInputGroup);
 
-    var galleryResults = $('<div>', {
+    const galleryResults = $('<div>', {
       class: 'gallery-results'
     });
 
-    var showMoreButton = $('<button>', {
+    const showMoreButton = $('<button>', {
       class: 'btn btn-default gallery-show-more'
     }).append(
       $('<span>').text(I18n.t('editor.asset_selector.image_upload.show_more'))
     );
 
-    var thatsEverything = $('<button>', {
+    const thatsEverything = $('<button>', {
       class: 'btn btn-default gallery-thats-everything',
       style: 'display: none;',
       disabled: true
@@ -756,8 +759,8 @@ export default function AssetSelectorRenderer(options) {
       thatsEverything
     );
 
-    var backButton;
-    var componentType = assetSelectorStore.getComponentType();
+    let backButton;
+    const componentType = assetSelectorStore.getComponentType();
 
     if (componentType === 'image') {
       // Paradoxically, we allow image components to be changed into other asset types.
@@ -768,7 +771,7 @@ export default function AssetSelectorRenderer(options) {
       backButton.text(I18n.t('editor.modal.buttons.cancel'));
     }
 
-    var selectButton = $(
+    const selectButton = $(
       '<button>',
       {
         'class': 'btn btn-primary btn-apply',
@@ -776,7 +779,7 @@ export default function AssetSelectorRenderer(options) {
       }
     ).text(I18n.t('editor.asset_selector.select_button_text'));
 
-    var navGroup = $(
+    const navGroup = $(
       '<div>',
       { 'class': 'modal-button-group r-to-l' }
     ).append([
@@ -808,7 +811,7 @@ export default function AssetSelectorRenderer(options) {
     });
 
     backButton.one('click', function() {
-      var action = backButton.attr('data-action');
+      const action = backButton.attr('data-action');
       if (action) {
         dispatcher.dispatch({ action });
       }
@@ -818,13 +821,13 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _getBestColumnForImagePlacement(imageElement) {
-    var columns = $('.gallery-column').map(function() {
-      var $this = $(this);
-      var heights = $this.find('.gallery-result').map(function() {
+    const columns = $('.gallery-column').map(function() {
+      const $this = $(this);
+      const heights = $this.find('.gallery-result').map(function() {
         return $(this).data('height');
       });
 
-      var heightWithNewImage = _.reduce(
+      const heightWithNewImage = _.reduce(
         heights,
         function(previousHeight, nextHeight) {
           return previousHeight + nextHeight;
@@ -838,15 +841,15 @@ export default function AssetSelectorRenderer(options) {
       };
     });
 
-    var smallestEffectiveColumn = _.reduce(columns, function(previousColumn, nextColumn) {
-      var minimum = Math.min(previousColumn.height, nextColumn.height);
+    const smallestEffectiveColumn = _.reduce(columns, function(previousColumn, nextColumn) {
+      const minimum = Math.min(previousColumn.height, nextColumn.height);
 
       return minimum === previousColumn.height ?
         previousColumn :
         nextColumn;
     }, {height: Infinity});
 
-    var width = smallestEffectiveColumn.element.width();
+    const width = smallestEffectiveColumn.element.width();
 
     smallestEffectiveColumn.adjustedImageHeight = width * (
       imageElement.height / imageElement.width
@@ -856,23 +859,23 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderChooseImageGalleryPreviewData() {
-    var results = assetSelectorStore.getImageSearchResults();
-    var hasImages = assetSelectorStore.hasImageSearchResults();
-    var hasError = assetSelectorStore.hasImageSearchError();
-    var isSearching = assetSelectorStore.isImageSearching();
+    const results = assetSelectorStore.getImageSearchResults();
+    const hasImages = assetSelectorStore.hasImageSearchResults();
+    const hasError = assetSelectorStore.hasImageSearchError();
+    const isSearching = assetSelectorStore.isImageSearching();
 
     if (hasImages) {
-      var renderedSources = _.keyBy(_.map(_container.find('.gallery-result img'), 'src'));
-      var promises = results.map(function(image) {
-        var uri = _.find(image.display_sizes, {name: 'preview'}).uri;
-        var alreadyInSources = renderedSources.hasOwnProperty(uri);
+      const renderedSources = _.keyBy(_.map(_container.find('.gallery-result img'), 'src'));
+      const promises = results.map(function(image) {
+        const uri = _.find(image.display_sizes, {name: 'preview'}).uri;
+        const alreadyInSources = renderedSources.hasOwnProperty(uri);
 
         if (alreadyInSources) {
           return Promise.resolve();
         } else {
-          var id = image.id;
-          var promise = new Promise(function(resolve, reject) {
-            var imageElement = new Image();
+          const id = image.id;
+          const promise = new Promise(function(resolve, reject) {
+            const imageElement = new Image();
 
             imageElement.src = uri;
             imageElement.onerror = reject;
@@ -883,7 +886,7 @@ export default function AssetSelectorRenderer(options) {
               });
             };
             imageElement.onload = function() {
-              var column = _getBestColumnForImagePlacement(imageElement);
+              const column = _getBestColumnForImagePlacement(imageElement);
 
               column.element.append(
                 $('<div>', {class: 'gallery-result', 'data-height': column.adjustedImageHeight}).append(
@@ -902,14 +905,14 @@ export default function AssetSelectorRenderer(options) {
       });
 
       Promise.all(promises).then(function() {
-        var galleryResults = _container.find('.gallery-result');
-        var hasMoreImages = assetSelectorStore.canPageImageSearchNext();
-        var outOfImages = !hasMoreImages;
+        const galleryResults = _container.find('.gallery-result');
+        const hasMoreImages = assetSelectorStore.canPageImageSearchNext();
+        const outOfImages = !hasMoreImages;
 
         galleryResults.each(function(i, result) {
-          var $result = $(result);
-          var $image = $result.find('img');
-          var isSelectedImage = $image.attr('src').indexOf(assetSelectorStore.getImageSearchSelected()) >= 0;
+          const $result = $(result);
+          const $image = $result.find('img');
+          const isSelectedImage = $image.attr('src').indexOf(assetSelectorStore.getImageSearchSelected()) >= 0;
 
           $result.toggleClass('active', isSelectedImage);
 
@@ -959,26 +962,26 @@ export default function AssetSelectorRenderer(options) {
 
   function _renderChooseImageUploadTemplate() {
 
-    var dragLabel = $(
+    const dragLabel = $(
       '<h2>',
       { class: 'image-drag-label' }
     ).text(I18n.t('editor.asset_selector.image_upload.drag_label'));
 
-    var inputLabel = $(
+    const inputLabel = $(
       '<h2>',
       { 'class': 'modal-input-label modal-input-label-centered input-label' }
     ).text(I18n.t('editor.asset_selector.image_upload.input_label'));
 
-    var dragInstructionsSpacer = $(
+    const dragInstructionsSpacer = $(
       '<div>',
       { class: 'image-instructions-spacer' }
     );
 
-    var inputButton = $('<button>', {
+    const inputButton = $('<button>', {
       'class': 'image-choose-upload-now btn btn-default'
     }).text(I18n.t('editor.asset_selector.image_upload.input_button_text'));
 
-    var inputControl = $(
+    const inputControl = $(
       '<input>',
       {
         'class': 'asset-selector-text-input hidden',
@@ -988,8 +991,8 @@ export default function AssetSelectorRenderer(options) {
       }
     );
 
-    var backButton;
-    var componentType = assetSelectorStore.getComponentType();
+    let backButton;
+    const componentType = assetSelectorStore.getComponentType();
 
     if (componentType === 'image') {
       // Paradoxically, we allow image components to be changed into other asset types.
@@ -1000,7 +1003,7 @@ export default function AssetSelectorRenderer(options) {
       backButton.text(I18n.t('editor.modal.buttons.cancel'));
     }
 
-    var content = $(
+    const content = $(
       '<div>',
       { 'class': 'asset-selector-input-group asset-selector-input-group-fixed-height' }
     ).append([
@@ -1019,7 +1022,7 @@ export default function AssetSelectorRenderer(options) {
         event.preventDefault();
       }).
       on('drop', function(event) {
-        var files = event.originalEvent.dataTransfer.files;
+        const files = event.originalEvent.dataTransfer.files;
 
         content.removeClass('active');
 
@@ -1041,7 +1044,7 @@ export default function AssetSelectorRenderer(options) {
       on('drop', function() {
       });
 
-    var buttonGroup = $(
+    const buttonGroup = $(
       '<div>',
       { 'class': 'modal-button-group r-to-l' }
     ).append([
@@ -1068,23 +1071,23 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderFileUploadProgressTemplate() {
-    var progress = $(
+    const progress = $(
       '<div>',
       { 'class': 'asset-selector-image-upload-progress' }
     );
 
-    var progressSpinner = $('<button>', {
+    const progressSpinner = $('<button>', {
       'class': 'btn btn-transparent btn-busy',
       'disabled': true
     }).append($('<span>'));
 
-    var uploadProgressMessage = $(
+    const uploadProgressMessage = $(
       '<h3>',
       { 'class': 'asset-selector-input-subtext asset-selector-uploading-message' }
     ).text(I18n.t('editor.asset_selector.image_upload.uploading_message'));
 
-    var cancel = function() {
-      var id = assetSelectorStore.getFileId();
+    const cancel = function() {
+      const id = assetSelectorStore.getFileId();
 
       if (id) {
         dispatcher.dispatch({
@@ -1099,12 +1102,12 @@ export default function AssetSelectorRenderer(options) {
       }
     };
 
-    var tryAgainButton = $(
+    const tryAgainButton = $(
       '<button>',
       { 'class': 'btn btn-default hidden asset-selector-try-again' }
     ).text(I18n.t('editor.asset_selector.try_again_button_text'));
 
-    var uploadCancelButton = $(
+    const uploadCancelButton = $(
       '<button>',
       { 'class': 'btn btn-default asset-selector-cancel-upload' }
     ).text(I18n.t('editor.asset_selector.cancel_button_text'));
@@ -1119,21 +1122,21 @@ export default function AssetSelectorRenderer(options) {
       tryAgainButton
     ]);
 
-    var backButton = $(
+    const backButton = $(
       '<button>',
       { class: 'btn btn-default back-btn' }
     ).text(I18n.t('editor.asset_selector.back_button_text'));
 
     backButton.on('click', cancel);
 
-    var content = $(
+    const content = $(
       '<div>',
       { 'class': 'asset-selector-input-group' }
     ).append([
       progress
     ]);
 
-    var buttonGroup = $(
+    const buttonGroup = $(
       '<div>',
       { 'class': 'modal-button-group r-to-l' }
     ).append([
@@ -1145,11 +1148,11 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderImageUploadErrorData(componentProperties) {
-    var progressContainer = _container.find('.asset-selector-image-upload-progress');
-    var progressSpinner = progressContainer.find('.btn-busy');
-    var progressMessage = progressContainer.find('.asset-selector-uploading-message');
-    var cancelButton = progressContainer.find('.asset-selector-cancel-upload');
-    var tryAgainButton = progressContainer.find('.asset-selector-try-again');
+    const progressContainer = _container.find('.asset-selector-image-upload-progress');
+    const progressSpinner = progressContainer.find('.btn-busy');
+    const progressMessage = progressContainer.find('.asset-selector-uploading-message');
+    const cancelButton = progressContainer.find('.asset-selector-cancel-upload');
+    const tryAgainButton = progressContainer.find('.asset-selector-try-again');
 
     cancelButton.remove();
     progressSpinner.addClass('hidden');
@@ -1171,9 +1174,9 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function cropImage() {
-    var type = assetSelectorStore.getComponentType();
-    var value = assetSelectorStore.getComponentValue();
-    var documentId = type === 'author' ? value.image.documentId : value.documentId;
+    const type = assetSelectorStore.getComponentType();
+    const value = assetSelectorStore.getComponentValue();
+    const documentId = type === 'author' ? value.image.documentId : value.documentId;
 
     if (documentId) {
       dispatcher.dispatch({
@@ -1185,9 +1188,9 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function uploadUrl() {
-    var type = assetSelectorStore.getComponentType();
-    var value = assetSelectorStore.getComponentValue();
-    var url = type === 'author' ? value.image.url : value.url;
+    const type = assetSelectorStore.getComponentType();
+    const value = assetSelectorStore.getComponentValue();
+    const url = type === 'author' ? value.image.url : value.url;
 
     dispatcher.dispatch({
       action: Actions.URL_UPLOAD,
@@ -1197,22 +1200,22 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderImagePreviewTemplate() {
-    var errorMessaging = $(
+    const errorMessaging = $(
       '<div>',
       { 'class': 'alert error asset-selector-error hidden' }
     );
 
-    var previewImageLabel = $(
+    const previewImageLabel = $(
       '<h2>',
       { 'class': 'asset-selector-preview-label' }
     ).text(I18n.t('editor.asset_selector.image_preview.preview_label'));
 
-    var previewSpinner = $(
+    const previewSpinner = $(
       '<button>',
       { 'class': 'btn btn-busy btn-transparent asset-selector-preview-spinner hidden' }
     ).append($('<span>'));
 
-    var cropButton = $('<button>', {
+    const cropButton = $('<button>', {
       'class': 'btn btn-xs btn-default btn-toggle image-crop-btn',
       'data-action': 'ASSET_SELECTOR_IMAGE_CROP_START'
     }).append([
@@ -1220,7 +1223,7 @@ export default function AssetSelectorRenderer(options) {
       I18n.t('editor.asset_selector.image_preview.crop')
     ]);
 
-    var resetImageButton = $('<button>', {
+    const resetImageButton = $('<button>', {
       'class': 'btn btn-xs btn-default image-crop-reset-btn',
       'data-action': 'ASSET_SELECTOR_IMAGE_CROP_RESET'
     }).append([
@@ -1228,7 +1231,7 @@ export default function AssetSelectorRenderer(options) {
       I18n.t('editor.asset_selector.image_preview.reset_image')
     ]);
 
-    var imageActionsContainer = $('<div>', {
+    const imageActionsContainer = $('<div>', {
       'class': 'image-actions-container'
     }).append([
       cropButton,
@@ -1236,12 +1239,12 @@ export default function AssetSelectorRenderer(options) {
       previewSpinner
     ]);
 
-    var previewContainer = $(
+    const previewContainer = $(
       '<div>',
       { 'class': 'asset-selector-preview-container asset-selector-image-preview-container' }
     );
 
-    var gettyImageInfo = $(
+    const gettyImageInfo = $(
       '<div>',
       { class: 'alert info getty-image-info hidden' }
     ).append(
@@ -1255,9 +1258,9 @@ export default function AssetSelectorRenderer(options) {
       )
     );
 
-    var questionIcon = $('<span>', { 'class': 'socrata-icon-question-inverse asset-selector-image-alt-hint' });
+    const questionIcon = $('<span>', { 'class': 'socrata-icon-question-inverse asset-selector-image-alt-hint' });
 
-    var descriptionLabel = $(
+    const descriptionLabel = $(
       '<h2>',
       { 'class': 'asset-selector-image-description-label' }
     ).append(
@@ -1265,7 +1268,7 @@ export default function AssetSelectorRenderer(options) {
       questionIcon
     );
 
-    var altInputField = $('<form>').append($(
+    const altInputField = $('<form>').append($(
       '<input>',
       {
         'class': 'asset-selector-alt-text-input text-input',
@@ -1279,18 +1282,18 @@ export default function AssetSelectorRenderer(options) {
       }
     });
 
-    var descriptionContainer = $(
+    const descriptionContainer = $(
       '<div>',
       { 'class': 'asset-selector-image-description-container' }
     ).append([
       altInputField
     ]);
 
-    var urlWrapperQuestionMark = $('<span>', {
+    const urlWrapperQuestionMark = $('<span>', {
       class: 'socrata-icon-question-inverse asset-selector-image-url-wrapper-hint'
     });
 
-    var urlWrapperLabel = $(
+    const urlWrapperLabel = $(
       '<h2>',
       { 'class': 'asset-selector-image-url-wrapper-label' }
     ).append(
@@ -1298,30 +1301,30 @@ export default function AssetSelectorRenderer(options) {
       urlWrapperQuestionMark
     );
 
-    var urlWrapperField = $('<form>').append(
+    const urlWrapperField = $('<form>').append(
       $('<input>', { class: 'asset-selector-url-wrapper-input text-input', type: 'text' })
     );
 
-    var warningIcon = $('<span>', {
+    const warningIcon = $('<span>', {
       class: 'socrata-icon-warning'
     });
 
-    var urlValidityMessage = $('<p>', {
+    const urlValidityMessage = $('<p>', {
       class: 'asset-selector-url-wrapper-validity'
     }).append(
       warningIcon,
       I18n.t('editor.invalid_link_message')
     );
 
-    var urlWrapperContainer = $('<div>', {
+    const urlWrapperContainer = $('<div>', {
       class: 'asset-selector-image-url-wrapper-container'
     }).append([urlWrapperField, urlValidityMessage]);
 
-    var backButton = $('<button>', {
+    const backButton = $('<button>', {
       'class': 'btn btn-default image-crop-back-btn'
     }).text(I18n.t('editor.asset_selector.back_button_text'));
 
-    var insertButton = $('<button>', {
+    const insertButton = $('<button>', {
       'class': 'btn btn-primary image-crop-upload-btn'
     }).append(
       $('<span>').text(_insertButtonText)
@@ -1362,7 +1365,12 @@ export default function AssetSelectorRenderer(options) {
       }
     });
 
-    var buttonGroup = $(
+    const checkboxOptions = {
+      id: 'open-image-in-new-window',
+      i18nLabel: 'editor.asset_selector.image_preview.open_in_new_window'
+    };
+
+    const buttonGroup = $(
       '<div>',
       { 'class': 'modal-button-group r-to-l' }
     ).append([
@@ -1373,8 +1381,11 @@ export default function AssetSelectorRenderer(options) {
       insertButton
     ]);
 
-    var isImage = assetSelectorStore.getComponentType() === 'image';
-    var content = $(
+    const isImage = assetSelectorStore.getComponentType() === 'image';
+
+    const newWindowControl = isImage ? _renderModalCheckbox(checkboxOptions) : null;
+
+    const content = $(
       '<div>',
       { 'class': 'asset-selector-input-group' }
     ).append([
@@ -1389,7 +1400,7 @@ export default function AssetSelectorRenderer(options) {
       isImage ? urlWrapperContainer : null
     ]);
 
-    return [ content, buttonGroup ];
+    return [ content, newWindowControl, buttonGroup ];
   }
 
   function extractImageAlt(componentProperties) {
@@ -1451,26 +1462,30 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function renderImagePreviewData(componentProperties) {
-    var file = fileUploaderStore.fileById(assetSelectorStore.getFileId());
-    var crop = assetSelectorStore.getComponentType() === 'author' ?
+    const file = fileUploaderStore.fileById(assetSelectorStore.getFileId());
+    const crop = assetSelectorStore.getComponentType() === 'author' ?
       componentProperties.image.crop :
       componentProperties.crop;
 
-    var imageUrl = grabOriginalImage(assetSelectorStore.getPreviewImageUrl());
-    var existingImageUrl = _container.find('img').attr('src');
-    var altAttribute = extractImageAlt(componentProperties);
-    var url = extractImageUrlWrapper(componentProperties);
-    var urlValidity = extractImageUrlValidity(componentProperties);
+    const $newWindowCheckbox = _container.find('#open-image-in-new-window');
 
-    var isUploadingFile = assetSelectorStore.isUploadingFile();
-    var isCropping = assetSelectorStore.isCropping();
-    var isCroppingUiEnabled = assetSelectorStore.isCroppingUiEnabled();
-    var isImage = assetSelectorStore.getComponentType() === 'image';
-    var isGettyImage = Constants.VALID_STORYTELLER_GETTY_IMAGE_URL_API_PATTERN.test(imageUrl);
+    const imageUrl = grabOriginalImage(assetSelectorStore.getPreviewImageUrl());
+    const existingImageUrl = _container.find('img').attr('src');
+    const altAttribute = extractImageAlt(componentProperties);
+    const url = extractImageUrlWrapper(componentProperties);
+    const urlValidity = extractImageUrlValidity(componentProperties);
 
-    var hasCompletedUpload = isUploadingFile && file.status === STATUS.COMPLETED;
-    var doesNotHaveError = !_.has(componentProperties, 'reason');
-    var loadingMessage = '';
+    const openInNewWindow = _.get(componentProperties, 'openInNewWindow', false);
+
+    const isUploadingFile = assetSelectorStore.isUploadingFile();
+    const isCropping = assetSelectorStore.isCropping();
+    const isCroppingUiEnabled = assetSelectorStore.isCroppingUiEnabled();
+    const isImage = assetSelectorStore.getComponentType() === 'image';
+    const isGettyImage = Constants.VALID_STORYTELLER_GETTY_IMAGE_URL_API_PATTERN.test(imageUrl);
+
+    const hasCompletedUpload = isUploadingFile && file.status === STATUS.COMPLETED;
+    const doesNotHaveError = !_.has(componentProperties, 'reason');
+    let loadingMessage = '';
 
     if (file && file.status === STATUS.UPLOADING && file.progress < 1) {
       loadingMessage = 'editor.asset_selector.image_preview.loading.uploading_image';
@@ -1532,6 +1547,8 @@ export default function AssetSelectorRenderer(options) {
       find('.asset-selector-preview-spinner').
       toggleClass('hidden', existingImageUrl === imageUrl);
 
+    $newWindowCheckbox.prop('checked', openInNewWindow);
+
     if (hasCompletedUpload || assetSelectorStore.isCropComplete()) {
       saveAndClose();
     } else if (imageUrl) {
@@ -1540,10 +1557,10 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderChooseStoryTemplate() {
-    var inputLabel = $('<h2>', { 'class': 'modal-input-label input-label' }).
+    const inputLabel = $('<h2>', { 'class': 'modal-input-label input-label' }).
       text(I18n.t('editor.asset_selector.story_tile.input_label'));
 
-    var inputControl = $(
+    const inputControl = $(
       '<input>',
       {
         'class': 'text-input',
@@ -1553,7 +1570,7 @@ export default function AssetSelectorRenderer(options) {
       }
     );
 
-    var previewInvalidMessageTitle = $(
+    const previewInvalidMessageTitle = $(
       '<div>',
       { 'class': 'asset-selector-invalid-title' }
     ).html([
@@ -1562,14 +1579,14 @@ export default function AssetSelectorRenderer(options) {
       I18n.t('editor.asset_selector.story_tile.invalid_message_title_2')
     ].join(''));
 
-    var previewInvalidMessageDescription = $(
+    const previewInvalidMessageDescription = $(
       '<div>',
       { 'class': 'asset-selector-invalid-description' }
     ).text(
       I18n.t('editor.asset_selector.story_tile.invalid_message_description')
     );
 
-    var previewInvalidMessage = $(
+    const previewInvalidMessage = $(
       '<div>',
       {
         'class': 'asset-selector-invalid-message'
@@ -1579,14 +1596,14 @@ export default function AssetSelectorRenderer(options) {
       previewInvalidMessageDescription
     ]);
 
-    var previewTileContainer = $(
+    const previewTileContainer = $(
       '<div>',
       {
         'class': 'asset-selector-story-tile-embed-component'
       }
     );
 
-    var previewContainer = $(
+    const previewContainer = $(
       '<div>',
       {
         'class': 'asset-selector-story-tile-preview-container'
@@ -1596,25 +1613,22 @@ export default function AssetSelectorRenderer(options) {
       previewTileContainer
     ]);
 
-    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
+    const backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
 
-    var content = $('<form>', { 'class': 'asset-selector-input-group asset-selector-story-tile' }).append([
+    const content = $('<form>', { 'class': 'asset-selector-input-group asset-selector-story-tile' }).append([
       inputLabel,
       inputControl,
       previewContainer
     ]);
 
-    var newWindowControl = $(
-      '<div>', { 'class': 'modal-input-group' }
-    ).append([
-      $('<input>', { type: 'checkbox', id: 'open-story-in-new-window', 'class': 'modal-input' }),
-      $('<label>', { 'for': 'open-story-in-new-window', 'class': 'modal-input-label' }).append([
-        $('<span>', { 'class': 'socrata-icon-checkmark3' }),
-        I18n.t('editor.asset_selector.story_tile.open_in_new_window')
-      ])
-    ]);
+    const checkboxOptions = {
+      id: 'open-story-in-new-window',
+      i18nLabel: 'editor.asset_selector.story_tile.open_in_new_window'
+    };
 
-    var buttonGroup = $(
+    const newWindowControl = _renderModalCheckbox(checkboxOptions);
+
+    const buttonGroup = $(
       '<div>',
       {
         'class': 'modal-button-group r-to-l'
@@ -1624,17 +1638,17 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderChooseStoryData(componentProperties) {
-    var $previewContainer = _container.find('.asset-selector-story-tile-preview-container');
-    var $storyTilePreviewContainer = _container.find('.asset-selector-story-tile-embed-component');
-    var $inputControl = _container.find('[data-asset-selector-validate-field="storyUrl"]');
-    var $newWindowCheckbox = _container.find('#open-story-in-new-window');
-    var $insertButton = _container.find('.btn-apply');
-    var storyDomain = null;
-    var storyUid = null;
-    var openInNewWindow = false;
-    var renderedStoryDomain = $storyTilePreviewContainer.attr('data-rendered-story-domain');
-    var renderedStoryUid = $storyTilePreviewContainer.attr('data-rendered-story-uid');
-    var componentData;
+    const $previewContainer = _container.find('.asset-selector-story-tile-preview-container');
+    const $storyTilePreviewContainer = _container.find('.asset-selector-story-tile-embed-component');
+    const $inputControl = _container.find('[data-asset-selector-validate-field="storyUrl"]');
+    const $newWindowCheckbox = _container.find('#open-story-in-new-window');
+    const $insertButton = _container.find('.btn-apply');
+    const renderedStoryDomain = $storyTilePreviewContainer.attr('data-rendered-story-domain');
+    const renderedStoryUid = $storyTilePreviewContainer.attr('data-rendered-story-uid');
+    let storyDomain = null;
+    let storyUid = null;
+    let openInNewWindow = false;
+    let componentData;
 
     if (_.isPlainObject(componentProperties)) {
 
@@ -1716,13 +1730,13 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderChooseGoalTemplate() {
-    var inputLabel = $('<h2>', { 'class': 'modal-input-label input-label' }).
+    const inputLabel = $('<h2>', { 'class': 'modal-input-label input-label' }).
       append([
         $('<span>').text(I18n.t('editor.asset_selector.goal_tile.input_label')),
         $('<span>', {'class': 'socrata-icon-question-inverse asset-selector-goal-url-hint'})
       ]);
 
-    var inputControl = $(
+    const inputControl = $(
       '<input>',
       {
         'class': 'text-input',
@@ -1732,7 +1746,7 @@ export default function AssetSelectorRenderer(options) {
       }
     );
 
-    var previewInvalidMessageTitle = $(
+    const previewInvalidMessageTitle = $(
       '<div>',
       { 'class': 'asset-selector-invalid-title' }
     ).html([
@@ -1741,14 +1755,14 @@ export default function AssetSelectorRenderer(options) {
       I18n.t('editor.asset_selector.goal_tile.invalid_message_title_2')
     ].join(''));
 
-    var previewInvalidMessageDescription = $(
+    const previewInvalidMessageDescription = $(
       '<div>',
       { 'class': 'asset-selector-invalid-description' }
     ).text(
       I18n.t('editor.asset_selector.goal_tile.invalid_message_description')
     );
 
-    var previewInvalidMessage = $(
+    const previewInvalidMessage = $(
       '<div>',
       {
         'class': 'asset-selector-invalid-message'
@@ -1758,14 +1772,14 @@ export default function AssetSelectorRenderer(options) {
       previewInvalidMessageDescription
     ]);
 
-    var previewTileContainer = $(
+    const previewTileContainer = $(
       '<div>',
       {
         'class': 'asset-selector-goal-tile-embed-component'
       }
     );
 
-    var previewContainer = $(
+    const previewContainer = $(
       '<div>',
       {
         'class': 'asset-selector-goal-tile-preview-container'
@@ -1775,15 +1789,15 @@ export default function AssetSelectorRenderer(options) {
       previewTileContainer
     ]);
 
-    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
+    const backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
 
-    var content = $('<form>', { 'class': 'asset-selector-input-group asset-selector-goal-tile' }).append([
+    const content = $('<form>', { 'class': 'asset-selector-input-group asset-selector-goal-tile' }).append([
       inputLabel,
       inputControl,
       previewContainer
     ]);
 
-    var buttonGroup = $(
+    const buttonGroup = $(
       '<div>',
       {
         'class': 'modal-button-group r-to-l'
@@ -1793,16 +1807,16 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderChooseGoalData(componentProperties) {
-    var $previewContainer = _container.find('.asset-selector-goal-tile-preview-container');
-    var $goalTilePreviewContainer = _container.find('.asset-selector-goal-tile-embed-component');
-    var $inputControl = _container.find('[data-asset-selector-validate-field="goalUrl"]');
-    var $insertButton = _container.find('.btn-apply');
-    var goalDomain = null;
-    var goalUid = null;
-    var goalFullUrl = null;
-    var renderedGoalDomain = $goalTilePreviewContainer.attr('data-rendered-goal-domain');
-    var renderedGoalUid = $goalTilePreviewContainer.attr('data-rendered-goal-uid');
-    var componentData;
+    const $previewContainer = _container.find('.asset-selector-goal-tile-preview-container');
+    const $goalTilePreviewContainer = _container.find('.asset-selector-goal-tile-embed-component');
+    const $inputControl = _container.find('[data-asset-selector-validate-field="goalUrl"]');
+    const $insertButton = _container.find('.btn-apply');
+    const renderedGoalDomain = $goalTilePreviewContainer.attr('data-rendered-goal-domain');
+    const renderedGoalUid = $goalTilePreviewContainer.attr('data-rendered-goal-uid');
+    let goalDomain = null;
+    let goalUid = null;
+    let goalFullUrl = null;
+    let componentData;
 
     function allComponentPropertiesAreNotNull(properties) {
 
@@ -1881,10 +1895,10 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderChooseYoutubeTemplate() {
-    var inputLabel = $('<h2>', { 'class': 'modal-input-label input-label' }).
+    const inputLabel = $('<h2>', { 'class': 'modal-input-label input-label' }).
       text(I18n.t('editor.asset_selector.youtube.input_label'));
 
-    var inputControl = $(
+    const inputControl = $(
       '<input>',
       {
         'class': 'text-input',
@@ -1894,7 +1908,7 @@ export default function AssetSelectorRenderer(options) {
       }
     );
 
-    var previewInvalidMessageTitle = $(
+    const previewInvalidMessageTitle = $(
       '<div>',
       { 'class': 'asset-selector-invalid-title' }
     ).html([
@@ -1903,14 +1917,14 @@ export default function AssetSelectorRenderer(options) {
       I18n.t('editor.asset_selector.youtube.invalid_message_title_2')
     ].join(''));
 
-    var previewInvalidMessageDescription = $(
+    const previewInvalidMessageDescription = $(
       '<div>',
       { 'class': 'asset-selector-invalid-description' }
     ).text(
       I18n.t('editor.asset_selector.youtube.invalid_message_description')
     );
 
-    var previewInvalidMessage = $(
+    const previewInvalidMessage = $(
       '<div>',
       {
         'class': 'asset-selector-invalid-message'
@@ -1920,14 +1934,14 @@ export default function AssetSelectorRenderer(options) {
       previewInvalidMessageDescription
     ]);
 
-    var previewIframe = $(
+    const previewIframe = $(
       '<iframe>',
       {
         'class': 'asset-selector-preview-iframe'
       }
     );
 
-    var previewContainer = $(
+    const previewContainer = $(
       '<div>',
       {
         'class': 'asset-selector-preview-container'
@@ -1937,9 +1951,9 @@ export default function AssetSelectorRenderer(options) {
       previewIframe
     ]);
 
-    var questionIcon = $('<span>', { 'class': 'socrata-icon-question-inverse asset-selector-youtube-title-hint' });
+    const questionIcon = $('<span>', { 'class': 'socrata-icon-question-inverse asset-selector-youtube-title-hint' });
 
-    var titleLabel = $(
+    const titleLabel = $(
       '<h2>',
       { 'class': 'asset-selector-youtube-title-label' }
     ).append(
@@ -1947,7 +1961,7 @@ export default function AssetSelectorRenderer(options) {
       questionIcon
     );
 
-    var inputField = $('<form>').append($(
+    const inputField = $('<form>').append($(
       '<input>',
       {
         'class': 'asset-selector-title-input text-input',
@@ -1961,16 +1975,16 @@ export default function AssetSelectorRenderer(options) {
       }
     });
 
-    var titleContainer = $(
+    const titleContainer = $(
       '<div>',
       { 'class': 'asset-selector-youtube-title-container' }
     ).append([
       inputField
     ]);
 
-    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
+    const backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
 
-    var content = $('<form>', { 'class': 'asset-selector-input-group asset-selector-youtube' }).append([
+    const content = $('<form>', { 'class': 'asset-selector-input-group asset-selector-youtube' }).append([
       inputLabel,
       inputControl,
       previewContainer,
@@ -1978,7 +1992,7 @@ export default function AssetSelectorRenderer(options) {
       titleContainer
     ]);
 
-    var buttonGroup = $(
+    const buttonGroup = $(
       '<div>',
       {
         'class': 'modal-button-group r-to-l'
@@ -2000,16 +2014,16 @@ export default function AssetSelectorRenderer(options) {
    * }
    */
   function _renderChooseYoutubeData(componentProperties) {
-    var youtubeId = null;
-    var youtubeUrl = null;
-    var youtubeEmbedUrl;
-    var iframeTitle;
-    var iframeElement = _container.find('.asset-selector-preview-iframe');
-    var iframeSrc = iframeElement.attr('src');
-    var inputControl = _container.find('[data-asset-selector-validate-field="youtubeId"]');
-    var titleControl = _container.find('.asset-selector-title-input');
-    var iframeContainer;
-    var insertButton = _container.find('.btn-apply');
+    const iframeElement = _container.find('.asset-selector-preview-iframe');
+    const iframeSrc = iframeElement.attr('src');
+    const inputControl = _container.find('[data-asset-selector-validate-field="youtubeId"]');
+    const titleControl = _container.find('.asset-selector-title-input');
+    const insertButton = _container.find('.btn-apply');
+    let youtubeId = null;
+    let youtubeUrl = null;
+    let youtubeEmbedUrl;
+    let iframeTitle;
+    let iframeContainer;
 
     if (componentProperties !== null &&
       _.has(componentProperties, 'id') &&
@@ -2074,24 +2088,24 @@ export default function AssetSelectorRenderer(options) {
    * }
    */
   function _renderPreviewEmbedCodeData(componentProperties) {
-    var htmlFragmentUrl = null;
-    var documentId = null;
-    var isUploading = assetSelectorStore.isUploadingFile();
-    var errorReason = null;
-    var iframeTitle;
-    var iframeContainer = _container.find('.asset-selector-preview-container');
-    var iframeElement = _container.find('.asset-selector-preview-iframe');
-    var invalidMessageContainer = _container.find('.asset-selector-invalid-message');
-    var invalidMessageElement = _container.find('.asset-selector-invalid-description');
-    var iframeSrc = iframeElement.attr('src');
-    var loadingButton = _container.find('.btn-busy');
-    var insertButton = _container.find('.btn-apply');
-    var insecureHtmlWarning = _container.find('.asset-selector-insecure-html-warning');
-    var textareaElement = _container.find('.asset-selector-text-input');
-    var titleControl = _container.find('.asset-selector-title-input');
-    var isNotUploadingAndDoesNotHaveSource = !isUploading && _.isUndefined(iframeSrc);
-    var isUploadingAndHasSource = isUploading && _.isString(iframeSrc);
-    var showPlaceholder = isNotUploadingAndDoesNotHaveSource || isUploadingAndHasSource;
+    const isUploading = assetSelectorStore.isUploadingFile();
+    const iframeContainer = _container.find('.asset-selector-preview-container');
+    const iframeElement = _container.find('.asset-selector-preview-iframe');
+    const invalidMessageContainer = _container.find('.asset-selector-invalid-message');
+    const invalidMessageElement = _container.find('.asset-selector-invalid-description');
+    const iframeSrc = iframeElement.attr('src');
+    const loadingButton = _container.find('.btn-busy');
+    const insertButton = _container.find('.btn-apply');
+    const insecureHtmlWarning = _container.find('.asset-selector-insecure-html-warning');
+    const textareaElement = _container.find('.asset-selector-text-input');
+    const titleControl = _container.find('.asset-selector-title-input');
+    const isNotUploadingAndDoesNotHaveSource = !isUploading && _.isUndefined(iframeSrc);
+    const isUploadingAndHasSource = isUploading && _.isString(iframeSrc);
+    const showPlaceholder = isNotUploadingAndDoesNotHaveSource || isUploadingAndHasSource;
+    let htmlFragmentUrl = null;
+    let documentId = null;
+    let errorReason = null;
+    let iframeTitle;
 
     function textareaIsUnedited() {
       return textareaElement.val() === '';
@@ -2172,9 +2186,9 @@ export default function AssetSelectorRenderer(options) {
   // a 'viewSelected' browser event is triggered with
   //
   function _renderViewChooserTemplate(paramString) {
-    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_VISUALIZATION_OPTION);
+    const backButton = _renderModalBackButton(WIZARD_STEP.SELECT_VISUALIZATION_OPTION);
 
-    var viewChooserIframe = $(
+    const viewChooserIframe = $(
       '<iframe>',
       {
         'class': 'asset-selector-dataset-chooser-iframe asset-selector-full-width-iframe',
@@ -2182,12 +2196,12 @@ export default function AssetSelectorRenderer(options) {
       }
     );
 
-    var loadingButton = $('<button>', {
+    const loadingButton = $('<button>', {
       'class': 'btn btn-transparent btn-busy visualization-busy',
       'disabled': true
     }).append($('<span>'));
 
-    var buttonGroup = $('<div>', {
+    const buttonGroup = $('<div>', {
       'class': 'modal-button-group r-to-l'
     }).append([ backButton ]);
 
@@ -2222,9 +2236,9 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderChooseMapOrChartTemplate() {
-    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_VISUALIZATION_OPTION);
+    const backButton = _renderModalBackButton(WIZARD_STEP.SELECT_VISUALIZATION_OPTION);
 
-    var mapOrChartChooserIframe = $(
+    const mapOrChartChooserIframe = $(
       '<iframe>',
       {
         'class': 'asset-selector-mapOrChart-chooser-iframe asset-selector-full-width-iframe',
@@ -2232,12 +2246,12 @@ export default function AssetSelectorRenderer(options) {
       }
     );
 
-    var loadingButton = $('<button>', {
+    const loadingButton = $('<button>', {
       'class': 'btn btn-transparent btn-busy visualization-busy',
       'disabled': true
     }).append($('<span>'));
 
-    var buttonGroup = $('<div>', {
+    const buttonGroup = $('<div>', {
       'class': 'modal-button-group r-to-l'
     }).append([ backButton ]);
 
@@ -2253,12 +2267,12 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderAuthorVisualizationTemplate() {
-    var element = document.getElementById('authoring-workflow');
+    const element = document.getElementById('authoring-workflow');
 
-    var value = assetSelectorStore.getComponentValue();
-    var userChosenDataset = assetSelectorStore.getDatasetUserSelectedFromList();
-    var vifDataset = assetSelectorStore.getDatasetInVif();
-    var vifToEdit;
+    const value = assetSelectorStore.getComponentValue();
+    const userChosenDataset = assetSelectorStore.getDatasetUserSelectedFromList();
+    const vifDataset = assetSelectorStore.getDatasetInVif();
+    let vifToEdit;
 
     // The dataset in `value.dataset.datasetUid` represents the dataset
     // the user chose from the dataset list.
@@ -2289,7 +2303,7 @@ export default function AssetSelectorRenderer(options) {
       };
     }
 
-    var authoringWorkflow = new SocrataVisualizations.AuthoringWorkflow(element, {
+    const authoringWorkflow = new SocrataVisualizations.AuthoringWorkflow(element, {
       vif: vifToEdit,
       filters: _.get(vifToEdit, 'series[0].dataSource.filters', []),
       enableFiltering: Environment.ENABLE_FILTERABLE_VISUALIZATIONS_IN_AX,
@@ -2303,7 +2317,7 @@ export default function AssetSelectorRenderer(options) {
         });
       },
       onComplete: function(state) {
-        var datasetUid = _.get(state.vif, 'series[0].dataSource.datasetUid');
+        const datasetUid = _.get(state.vif, 'series[0].dataSource.datasetUid');
 
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
@@ -2334,30 +2348,30 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderTablePreviewTemplate() {
-    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_TABLE_FROM_CATALOG);
+    const backButton = _renderModalBackButton(WIZARD_STEP.SELECT_TABLE_FROM_CATALOG);
 
-    var buttonGroup = $('<div>', {
+    const buttonGroup = $('<div>', {
       'class': 'modal-button-group r-to-l'
     }).append([ backButton, _renderModalInsertButton() ]);
 
-    var label = $(
+    const label = $(
       '<h2>',
       { 'class': 'asset-selector-preview-label' }
     ).text(I18n.t('editor.asset_selector.visualization.preview_label'));
 
-    var table = $(
+    const table = $(
       '<div>',
       { 'class': 'asset-selector-preview-table' }
     );
 
-    var container = $(
+    const container = $(
       '<div>',
       { 'class': 'asset-selector-preview-container' }
     ).append([
       table
     ]);
 
-    var content = $(
+    const content = $(
       '<div>',
       { 'class': 'asset-selector-input-group' }
     ).append([
@@ -2394,7 +2408,7 @@ export default function AssetSelectorRenderer(options) {
 
 
   function _renderConfigureMapOrChartTemplate() {
-    var configureMapOrChartIframe = $(
+    const configureMapOrChartIframe = $(
       '<iframe>',
       {
         'class': 'asset-selector-configure-mapchart-iframe asset-selector-full-width-iframe',
@@ -2402,14 +2416,14 @@ export default function AssetSelectorRenderer(options) {
       }
     );
 
-    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG);
+    const backButton = _renderModalBackButton(WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG);
 
-    var loadingButton = $('<button>', {
+    const loadingButton = $('<button>', {
       'class': 'btn btn-transparent btn-busy visualization-busy',
       'disabled': true
     }).append($('<span>'));
 
-    var buttonGroup = $('<div>', {
+    const buttonGroup = $('<div>', {
       'class': 'modal-button-group r-to-l'
     }).append([ backButton, _renderModalInsertButton({ disabled: true }) ]);
 
@@ -2417,16 +2431,16 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderConfigureMapOrChartData(componentType, componentProperties) {
-    var dataset;
-    var insertButton = _container.find('.btn-apply');
-    var mapChartIframe = _container.find('.asset-selector-configure-mapchart-iframe');
-    var assetSelectorStoreDataset = assetSelectorStore.getDataset();
-    var savedDatasetMatchesSelectedDataset = (
+    const insertButton = _container.find('.btn-apply');
+    const mapChartIframe = _container.find('.asset-selector-configure-mapchart-iframe');
+    const assetSelectorStoreDataset = assetSelectorStore.getDataset();
+    const savedDatasetMatchesSelectedDataset = (
       assetSelectorStoreDataset &&
       componentProperties.visualization &&
       componentProperties.visualization.id === assetSelectorStoreDataset.id
     );
-    var isEditingWithoutSavedDataset = !assetSelectorStoreDataset && assetSelectorStore.isEditingExisting();
+    const isEditingWithoutSavedDataset = !assetSelectorStoreDataset && assetSelectorStore.isEditingExisting();
+    let dataset;
 
     if (componentProperties.dataset && _container.find('.component-socrata-visualization-classic').length === 0) {
 
@@ -2451,7 +2465,7 @@ export default function AssetSelectorRenderer(options) {
 
       mapChartIframe.hide();
 
-      var componentContainer = $(
+      const componentContainer = $(
         '<div>',
         {
           'class': 'asset-selector-component-container'
@@ -2521,15 +2535,15 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderChooseEmbedCodeTemplate() {
-    var loadingButton = $('<button>', {
+    const loadingButton = $('<button>', {
       'class': 'btn btn-transparent btn-busy hidden',
       disabled: true
     }).append($('<span>'));
 
-    var inputLabel = $('<h2>', { 'class': 'modal-input-label input-label' }).
+    const inputLabel = $('<h2>', { 'class': 'modal-input-label input-label' }).
       text(I18n.t('editor.asset_selector.embed_code.input_label'));
 
-    var inputControl = $(
+    const inputControl = $(
       '<textarea>',
       {
         'class': 'asset-selector-text-input text-area',
@@ -2538,10 +2552,10 @@ export default function AssetSelectorRenderer(options) {
       }
     );
 
-    var previewLabel = $('<h3>', { 'class': 'modal-input-label input-label' }).
+    const previewLabel = $('<h3>', { 'class': 'modal-input-label input-label' }).
       text(I18n.t('editor.asset_selector.embed_code.preview_label'));
 
-    var previewInsecureMessage = $(
+    const previewInsecureMessage = $(
       '<div>',
       { 'class': 'asset-selector-insecure-html-warning warning-bar' }
     ).append(
@@ -2549,7 +2563,7 @@ export default function AssetSelectorRenderer(options) {
       $('<p>').text(I18n.t('editor.asset_selector.embed_code.insecure_html_warning'))
     );
 
-    var previewInvalidMessageTitle = $(
+    const previewInvalidMessageTitle = $(
       '<div>',
       { 'class': 'asset-selector-invalid-title' }
     ).html([
@@ -2558,12 +2572,12 @@ export default function AssetSelectorRenderer(options) {
       I18n.t('editor.asset_selector.embed_code.invalid_message_title_2')
     ].join(''));
 
-    var previewInvalidMessageDescription = $(
+    const previewInvalidMessageDescription = $(
       '<div>',
       { 'class': 'asset-selector-invalid-description' }
     );
 
-    var previewInvalidMessage = $(
+    const previewInvalidMessage = $(
       '<div>',
       {
         'class': 'asset-selector-invalid-message'
@@ -2573,7 +2587,7 @@ export default function AssetSelectorRenderer(options) {
       previewInvalidMessageDescription
     ]);
 
-    var previewIframe = $(
+    const previewIframe = $(
       '<iframe>',
       {
         'class': 'asset-selector-preview-iframe',
@@ -2581,7 +2595,7 @@ export default function AssetSelectorRenderer(options) {
       }
     );
 
-    var previewContainer = $(
+    const previewContainer = $(
       '<div>',
       {
         'class': 'asset-selector-preview-container placeholder'
@@ -2593,9 +2607,9 @@ export default function AssetSelectorRenderer(options) {
       previewIframe
     ]);
 
-    var questionIcon = $('<span>', { 'class': 'socrata-icon-question-inverse asset-selector-embed-code-title-hint' });
+    const questionIcon = $('<span>', { 'class': 'socrata-icon-question-inverse asset-selector-embed-code-title-hint' });
 
-    var titleLabel = $(
+    const titleLabel = $(
       '<h2>',
       { 'class': 'asset-selector-embed-code-title-label' }
     ).append(
@@ -2603,7 +2617,7 @@ export default function AssetSelectorRenderer(options) {
       questionIcon
     );
 
-    var inputField = $('<form>').append($(
+    const inputField = $('<form>').append($(
       '<input>',
       {
         'class': 'asset-selector-title-input text-input',
@@ -2617,14 +2631,14 @@ export default function AssetSelectorRenderer(options) {
       }
     });
 
-    var titleContainer = $(
+    const titleContainer = $(
       '<div>',
       { 'class': 'asset-selector-embed-code-title-container' }
     ).append([
       inputField
     ]);
 
-    var backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
+    const backButton = _renderModalBackButton(WIZARD_STEP.SELECT_ASSET_PROVIDER);
 
     backButton.on('click', function() {
       if (assetSelectorStore.isUploadingFile() && assetSelectorStore.isHTMLFragment()) {
@@ -2635,7 +2649,7 @@ export default function AssetSelectorRenderer(options) {
       }
     });
 
-    var content = $('<form>', { 'class': 'asset-selector-input-group asset-selector-embed-code' }).append([
+    const content = $('<form>', { 'class': 'asset-selector-input-group asset-selector-embed-code' }).append([
       inputLabel,
       inputControl,
       previewLabel,
@@ -2644,7 +2658,7 @@ export default function AssetSelectorRenderer(options) {
       titleContainer
     ]);
 
-    var buttonGroup = $(
+    const buttonGroup = $(
       '<div>',
       {
         'class': 'modal-button-group r-to-l'
@@ -2663,6 +2677,18 @@ export default function AssetSelectorRenderer(options) {
     ).text(
       I18n.t('editor.asset_selector.back_button_text')
     );
+  }
+
+  function _renderModalCheckbox(checkboxOptions) {
+    return $(
+      '<div>', { 'class': 'modal-input-group' }
+    ).append([
+      $('<input>', { type: 'checkbox', id: checkboxOptions.id, 'class': 'modal-input' }),
+      $('<label>', { 'for': checkboxOptions.id, 'class': 'modal-input-label' }).append([
+        $('<span>', { 'class': 'socrata-icon-checkmark3' }),
+        I18n.t(checkboxOptions.i18nLabel)
+      ])
+    ]);
   }
 
   function _showSelectorWith(modalOptions) {
@@ -2688,7 +2714,7 @@ function _renderModalInsertButton(options) {
 }
 
 function _insertButtonText() {
-  var isEditingExisting = assetSelectorStore.isEditingExisting();
+  const isEditingExisting = assetSelectorStore.isEditingExisting();
 
   return I18n.t(
     isEditingExisting ?

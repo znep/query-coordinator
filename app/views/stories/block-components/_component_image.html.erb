@@ -5,7 +5,8 @@ Component format:
   value: {
     documentId: "1234",
     url: "https://bucket-name.s3.amazonaws.com/uploads/random/image.jpg",
-    link: "http://this-image-is-a-link.example.com"
+    link: "http://this-image-is-a-link.example.com",
+    openInNewWindow: false
   }
 }
 %>
@@ -23,7 +24,7 @@ Component format:
       'a',
       image,
       href: component['value']['link'],
-      target: '_blank'
+      target: component['value']['openInNewWindow'] ? '_blank' : '_self'
     ) %>
 
 <% else -%>

@@ -1,7 +1,12 @@
 import 'whatwg-fetch';
 import airbrake from './airbrake';
 
-const CETERA_EXTERNAL_URI = `${window.serverConfig.ceteraExternalUri}/catalog/v1`;
+const CETERA_EXTERNAL_URI = window.serverConfig.ceteraExternalUri;
+if (_.isEmpty(CETERA_EXTERNAL_URI)) {
+  console.error('CETERA_EXTERNAL_URI is empty!');
+}
+
+const CETERA_API = `${CETERA_EXTERNAL_URI}/catalog/v1`;
 const DEFAULT_LIMIT = 6;
 const DEFAULT_ORDER = 'relevance';
 
@@ -51,7 +56,7 @@ export const ceteraUtils = (() => {
         return (key && value) ? result += `${key}=${value}&` : result;
       }, '').slice(0, -1);
 
-      const fetchUrl = `${CETERA_EXTERNAL_URI}?${paramString}`;
+      const fetchUrl = `${CETERA_API}?${paramString}`;
 
       const fetchOptions = { credentials: 'same-origin' };
 

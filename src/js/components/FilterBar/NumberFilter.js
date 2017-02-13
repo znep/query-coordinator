@@ -35,13 +35,9 @@ export const NumberFilter = React.createClass({
   },
 
   onInputChange({ target }) {
-    const { value } = this.state;
-
-    const newValue = _.merge({}, value, {
+    this.updateValueState({
       [target.id]: _.toNumber(target.value)
     });
-
-    this.updateValueState(newValue);
   },
 
   onSliderChange(newValue) {
@@ -54,25 +50,13 @@ export const NumberFilter = React.createClass({
     return _.min(_.map([rangeMin, rangeMax], getPrecision));
   },
 
-  isValidValue(value) {
-    const { rangeMin, rangeMax } = this.props.column;
-
-    return _.isFinite(value) && value >= rangeMin && value <= rangeMax;
-  },
-
-  isValidRange(value) {
-    const isStartValid = this.isValidValue(value.start);
-    const isEndValid = this.isValidValue(value.end);
-
-    return isStartValid && isEndValid && value.start <= value.end;
-  },
-
-  updateValueState(newValue) {
-    if (this.isValidRange(newValue)) {
-      this.setState({
-        value: newValue
-      });
-    }
+  updateValueState(updates) {
+    this.setState({
+      value: {
+        ...this.state.value,
+        ...updates
+      }
+    });
   },
 
   shouldDisableApply() {
@@ -82,8 +66,7 @@ export const NumberFilter = React.createClass({
   },
 
   clearFilter() {
-    const { column } = this.props;
-    const { rangeMin, rangeMax } = column;
+    const { rangeMin, rangeMax } = this.props.column;
 
     this.updateValueState({
       start: rangeMin,
@@ -95,17 +78,25 @@ export const NumberFilter = React.createClass({
     const { column, filter, onUpdate } = this.props;
     const { value } = this.state;
 
+    // Swap the start and end if necessary to ensure the range is valid
+    let { start, end } = value;
+    if (start > end) {
+      [start, end] = [end, start];
+    }
+
+    // Add a small amount to the end of the interval (computed based on precision) to
+    // fake a range that is inclusive on both ends.  The real fix is to generate two
+    // binaryOperator filters from this control (one >=, one <=).
+    end += this.getStepInterval() / 100;
+
     if (_.isEqual(_.at(value, 'start', 'end'), _.at(column, 'rangeMin', 'rangeMax'))) {
       onUpdate(getDefaultFilterForColumn(column));
     } else {
       onUpdate(_.merge({}, filter, {
         'function': 'valueRange',
         arguments: {
-          start: value.start,
-          // We add a small amount to the end of the interval (computed based on precision) to
-          // fake a range that is inclusive on both ends.  The real fix is to generate two
-          // binaryOperator filters from this control (one >=, one <=).
-          end: value.end + this.getStepInterval() / 100
+          start,
+          end
         }
       }));
     }
@@ -146,12 +137,16 @@ export const NumberFilter = React.createClass({
     const { column } = this.props;
     const { rangeMin, rangeMax } = column;
     const { value } = this.state;
+    const { start, end } = value;
     const step = this.getStepInterval();
 
     const sliderProps = {
       rangeMin,
       rangeMax,
-      value,
+      value: {
+        start: _.clamp(start, rangeMin, end),
+        end: _.clamp(end, start, rangeMax)
+      },
       step,
       onChange: this.onSliderChange
     };

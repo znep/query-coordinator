@@ -39,17 +39,23 @@ describe('NumberFilter', () => {
     expect(getFooter(element)).to.exist;
   });
 
-  it('does not update the input if the number would produce an invalid range', () => {
+  it('allows ranges outside the min and max of the column', () => {
     const element = renderComponent(NumberFilter, getProps());
-    const input = getInputs(element)[0];
 
-    input.value = 1000;
-    Simulate.change(input);
+    const start = getInputs(element)[0];
+    const end = getInputs(element)[1];
 
-    expect(input.value).to.equal('1');
+    start.value = -200;
+    Simulate.change(start);
+
+    end.value = 2000;
+    Simulate.change(end);
+
+    expect(start.value).to.equal('-200');
+    expect(end.value).to.equal('2000');
   });
 
-  it('updates the input to reflect the new range if it produces a valid range', () => {
+  it('updates the input to reflect the new range', () => {
     const element = renderComponent(NumberFilter, getProps());
     const input = getInputs(element)[0];
 
@@ -104,5 +110,26 @@ describe('NumberFilter', () => {
     const filter = spy.firstCall.args[0];
     expect(filter.arguments.start).to.equal(1.01);
     expect(filter.arguments.end).to.equal(2.4001);
+  });
+
+  it('swaps the start and end of the range if necessary', () => {
+    const spy = sinon.spy();
+    const element = renderComponent(NumberFilter, getProps({
+      onUpdate: spy
+    }));
+
+    const inputs = getInputs(element);
+
+    inputs[0].value = 10;
+    Simulate.change(inputs[0]);
+
+    inputs[1].value = 1;
+    Simulate.change(inputs[1]);
+
+    Simulate.click(getApplyButton(element));
+
+    const filter = spy.firstCall.args[0];
+    expect(filter.arguments.start).to.equal(1);
+    expect(filter.arguments.end).to.equal(10.0001);
   });
 });

@@ -60,6 +60,22 @@ describe('FilterBar', () => {
       expect(props.filters).to.deep.equal(filters);
     });
 
+    it('omits any undisplayable filters', () => {
+      props = mapStateToProps({
+        view,
+        filters: [
+          filter,
+          {
+            ...filter,
+            columnName: 'cnidarian_age'
+          }
+        ],
+        parentView
+      });
+      expect(props.filters.length).to.equal(1);
+      expect(props.filters[0]).to.deep.equal(filter);
+    });
+
     it('returns a function to fetch suggestions', () => {
       expect(props.fetchSuggestions).to.be.a('function');
     });

@@ -26,6 +26,11 @@ export function mapStateToProps({ columnStats, view, filters, parentView }) {
     return column.dataTypeName === 'text' || column.dataTypeName === 'calendar_date';
   });
 
+  // Filter out any filters that depend on columns that might be missing
+  const displayableFilters = _.filter(filters, (filter) => {
+    return _.find(columns, { fieldName: filter.columnName });
+  });
+
   const fetchSuggestions = (column, term) => {
     const spandex = new dataProviders.SpandexDataProvider({
       domain: serverConfig.domain,
@@ -37,7 +42,7 @@ export function mapStateToProps({ columnStats, view, filters, parentView }) {
 
   return {
     columns,
-    filters,
+    filters: displayableFilters,
     fetchSuggestions
   };
 }

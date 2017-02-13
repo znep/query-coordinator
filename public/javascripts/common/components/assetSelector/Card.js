@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
+import classNames from 'classnames';
 import { ViewCard } from 'socrata-components';
 import { getIconClassForDisplayType } from 'socrata-components/common/displayTypeMetadata';
 import { getDateLabel, getViewCountLabel, getAriaLabel } from '../../helpers/viewCardHelpers';
@@ -46,10 +47,9 @@ export class Card extends React.Component {
 
   render() {
     const cardProps = this.viewCardProps();
-    const cardOverlayClasses = [
-      'overlay',
-      this.state.hovering ? '' : 'hidden'
-    ].filter((className) => className).join(' ');
+    const cardOverlayClasses = classNames('overlay', {
+      hidden: !this.state.hovering
+    });
 
     return (
       <ViewCard {...cardProps}>

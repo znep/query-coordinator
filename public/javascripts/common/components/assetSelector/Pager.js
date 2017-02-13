@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import $ from 'jquery';
 import _ from 'lodash';
+import classNames from 'classnames';
 import { handleKeyPress } from '../../helpers/keyPressHelpers';
 
 export class Pager extends React.Component {
@@ -64,11 +65,9 @@ export class Pager extends React.Component {
 
   render() {
     const prevLinkDisabled = this.props.currentPage === 1;
-    const prevLinkClasses = [
-      'prev-link',
-      'inline-block',
-      prevLinkDisabled ? 'disabled' : null
-    ].filter((className) => className).join(' ');
+    const prevLinkClasses = classNames('prev-link', 'inline-block', {
+      disabled: prevLinkDisabled
+    });
 
     const prevPageText = _.get(I18n, 'asset_selector.results_container.pager.previous_page', 'Previous page');
 
@@ -89,11 +88,9 @@ export class Pager extends React.Component {
     );
 
     const nextLinkDisabled = this.props.currentPage === this.lastPage();
-    const nextLinkClasses = [
-      'next-link',
-      'inline-block',
-      nextLinkDisabled ? 'disabled' : null
-    ].filter((className) => className).join(' ');
+    const nextLinkClasses = classNames('next-link', 'inline-block', {
+      disabled: nextLinkDisabled
+    });
 
     const nextPageText = _.get(I18n, 'asset_selector.results_container.pager.next_page', 'Next page');
 
@@ -111,11 +108,9 @@ export class Pager extends React.Component {
       </a>
     );
 
-    const currentPageInputClasses = [
-      'current-page-input',
-      'inline-block',
-      this.state.pageIsInvalid ? 'error' : null
-    ].filter((className) => className).join(' ');
+    const currentPageInputClasses = classNames('current-page-input', 'inline-block', {
+      error: this.state.pageIsInvalid
+    });
 
     const pageNumberText =
       `${_.get(I18n, 'asset_selector.results_container.pager.page', 'Page')} ${this.props.currentPage}`;

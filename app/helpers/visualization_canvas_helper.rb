@@ -17,4 +17,21 @@ module VisualizationCanvasHelper
 
     javascript_tag("var serverConfig = #{json_escape(server_config.to_json)};")
   end
+
+  def render_visualization_canvas_session_data
+    view = @view.id.nil? ? @parent_view : @view
+
+    session_data = {
+      :userId => current_user.try(:id) || 'N/A',
+      :ownerId => view.try(:owner).try(:id) || 'N/A',
+      :userOwnsDataset => view.owned_by?(current_user),
+      :socrataEmployee => current_user.try(:is_superadmin?) || false,
+      :userRoleName => current_user.try(:roleName) || 'N/A',
+      :viewId => view.try(:id) || 'N/A',
+      :email => current_user.try(:email).to_s
+    }
+
+    javascript_tag("var sessionData = #{json_escape(session_data.to_json)};")
+  end
+
 end

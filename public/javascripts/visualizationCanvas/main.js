@@ -8,6 +8,9 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { t } from 'lib/I18n';
 
+// This has the side effect of initializing mixpanel
+import '../common/mixpanelTracking';
+
 // add styling for socrata-viz maps
 import 'leaflet/dist/leaflet.css';
 

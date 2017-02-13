@@ -46,7 +46,7 @@ module CatalogLandingPageHelper
     server_config = {
       :airbrakeKey => ENV['CATEGORY_LANDING_PAGE_AIRBRAKE_API_KEY'] ||
         APP_CONFIG.catalog_landing_page_airbrake_api_key,
-      :ceteraUri => APP_CONFIG.cetera_uri,
+      :ceteraExternalUri => APP_CONFIG.cetera_external_uri,
       :csrfToken => form_authenticity_token.to_s,
       :currentUser => current_user,
       :domain => CurrentDomain.cname,

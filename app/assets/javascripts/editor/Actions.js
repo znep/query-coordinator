@@ -246,6 +246,9 @@ export default {
   // {String} url
   ASSET_SELECTOR_UPDATE_GOAL_URL: 'ASSET_SELECTOR_UPDATE_GOAL_URL',
 
+  // No payload
+  ASSET_SELECTOR_TOGGLE_GOAL_WINDOW_TARGET: 'ASSET_SELECTOR_TOGGLE_GOAL_WINDOW_TARGET',
+
   /**
    * YouTube embed flow
    */

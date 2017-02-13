@@ -1731,4 +1731,58 @@ describe('AssetSelectorStore', function() {
       assert.throws(() => dispatch());
     });
   });
+
+  describe('ASSET_SELECTOR_TOGGLE_GOAL_WINDOW_TARGET', function() {
+    let getComponentValueStub;
+    let getComponentTypeStub;
+    let value;
+    let compType;
+
+    const dispatch = function() {
+      dispatcher.dispatch({
+        action: Actions.ASSET_SELECTOR_TOGGLE_GOAL_WINDOW_TARGET
+      });
+    };
+
+    beforeEach(function() {
+      value = { openInNewWindow: false };
+      compType = 'goal.tile';
+
+      getComponentValueStub = sinon.stub(
+        assetSelectorStore,
+        'getComponentValue',
+        _.constant(value)
+      );
+
+      getComponentTypeStub = sinon.stub(
+        assetSelectorStore,
+        'getComponentType',
+        _.constant(compType)
+      );
+    });
+
+    afterEach(function() {
+      getComponentValueStub.restore();
+      getComponentTypeStub.restore();
+    });
+
+    it('toggles the openInNewWindow property', function() {
+      dispatch();
+      assert.isTrue(value.openInNewWindow);
+      dispatch();
+      assert.isFalse(value.openInNewWindow);
+    });
+
+    it('throws an error if the component is not a goal', function() {
+      getComponentTypeStub.restore();
+
+      getComponentTypeStub = sinon.stub(
+        assetSelectorStore,
+        'getComponentType',
+        _.constant('not-a-goal')
+      );
+
+      assert.throws(() => dispatch());
+    });
+  });
 });

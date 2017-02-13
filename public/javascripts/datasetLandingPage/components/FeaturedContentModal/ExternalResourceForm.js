@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { VALID_URL_REGEX } from '../../lib/constants';
+import { VALID_URL_REGEX } from '../../../common/constants';
 import { ExternalViewCard } from 'socrata-components';
 import FeaturedContentModalHeader from './FeaturedContentModalHeader';
 import FormFooter from './FormFooter';

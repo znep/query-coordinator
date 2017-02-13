@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { handleKeyPress } from '../lib/a11yHelpers';
+import { handleKeyPress } from '../../common/a11yHelpers';
 import { isUserAdminOrPublisher } from '../../common/user';
 import { publishView, clearViewPublishError } from '../actions/view';
 

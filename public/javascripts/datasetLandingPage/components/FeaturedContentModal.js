@@ -6,7 +6,7 @@ import ExternalResourceForm from './FeaturedContentModal/ExternalResourceForm';
 import FeaturedItemSelector from './FeaturedContentModal/FeaturedItemSelector';
 import StoryForm from './FeaturedContentModal/StoryForm';
 import ViewSelectorModal from './FeaturedContentModal/ViewSelectorModal';
-import { ESCAPE_KEY_CODE } from '../lib/constants';
+import { ESCAPE_KEY_CODE } from '../../common/constants';
 import { cancelFeaturedItemEdit } from '../actions/featuredContent';
 
 export const FeaturedContentModal = React.createClass({

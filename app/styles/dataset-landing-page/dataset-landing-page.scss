@@ -1,5 +1,7 @@
 @import "styleguide-colors";
-@import "dataset-landing-page/breakpoints";
+
+@import "common/breakpoints";
+@import "common/metadata-table";
 
 @import "dataset-landing-page/alerts";
 @import "dataset-landing-page/blob-preview";

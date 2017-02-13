@@ -21,6 +21,7 @@ export default function TextArea({ descriptor, onChange, value }) {
         id={descriptor.key}
         className={classes}
         value={value}
+        aria-label={descriptor.label}
         onChange={(evt) => onChange(evt.target.value)} />
       {errorMsg}
     </div>

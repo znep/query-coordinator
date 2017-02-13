@@ -229,7 +229,10 @@ function subscribeToOutputSchema(outputSchema) {
     const channelName = `output_schema:${outputSchema.id}`;
     const channel = window.DSMAPI_PHOENIX_SOCKET.channel(channelName, {});
     channel.on('update', (updatedOutputSchema) => {
-      dispatch(updateFromServer('output_schemas', toOutputSchema(updatedOutputSchema)));
+      dispatch(updateFromServer('output_schemas', toOutputSchema({
+        ...outputSchema,
+        ...updatedOutputSchema
+      })));
     });
 
     channel.join().

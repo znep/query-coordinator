@@ -1,5 +1,4 @@
 module DatasetManagementUiHelper
-
   def dataset_management_ui_server_config(websocket_token)
     {
       :environment => Rails.env,
@@ -15,12 +14,20 @@ module DatasetManagementUiHelper
   end
 
   def render_dataset_management_ui_translations
-    translations = LocaleCache.render_translations([LocalePart.dataset_management_ui])['dataset_management_ui'].
-      merge({
-        data_types: LocaleCache.render_translations([LocalePart.core.data_types])['core']['data_types'],
-        edit_metadata: LocaleCache.render_translations([LocalePart.screens.edit_metadata])['screens']['edit_metadata']
-      })
+    translations = LocaleCache .render_translations([LocalePart.dataset_management_ui])['dataset_management_ui']
+    translations = translations.merge(
+      data_types: LocaleCache.render_translations([LocalePart.core.data_types])['core']['data_types'],
+      edit_metadata: LocaleCache.render_translations([LocalePart.screens.edit_metadata])['screens']['edit_metadata']
+    )
+
+    common = LocaleCache.render_translations([LocalePart.common])['common']
+
+    if translations.key?('common')
+      translations['common'] = translations['common'].merge(common)
+    else
+      translations = translations.merge(common: common)
+    end
+
     javascript_tag("var I18n = #{json_escape(translations.to_json)};")
   end
-
 end

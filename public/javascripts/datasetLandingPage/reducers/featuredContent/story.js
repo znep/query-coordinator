@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { VALID_STORY_URL_REGEX } from '../../lib/constants';
+import { VALID_STORY_URL_REGEX } from '../../../common/constants';
 import {
   CANCEL_FEATURED_ITEM_EDIT,
   EDIT_FEATURED_ITEM,

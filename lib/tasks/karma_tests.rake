@@ -85,8 +85,17 @@ namespace :test do
         output_filename = 'karma/datasetLandingPage/mockTranslations.js'
         all_translations = YAML.load_file(translations_filename)['en']
         translations = all_translations['dataset_landing_page'].merge(
-          data_types: all_translations['core']['data_types']
+          data_types: all_translations['core']['data_types'],
         )
+
+        common = all_translations['common']
+
+        if translations.key?('common')
+          translations['common'] = translations['common'].merge(common)
+        else
+          translations = translations.merge(common: common)
+        end
+
         File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
       end
 
@@ -103,11 +112,19 @@ namespace :test do
         translations_filename = 'config/locales/en.yml'
         output_filename = 'karma/datasetManagementUI/mockTranslations.js'
         all_translations = YAML.load_file(translations_filename)['en']
-        translations = all_translations['dataset_management_ui'].
-          merge(
-            data_types: all_translations['core']['data_types'],
-            edit_metadata: all_translations['screens']['edit_metadata']
-          )
+        translations = all_translations['dataset_management_ui'].merge(
+          data_types: all_translations['core']['data_types'],
+          edit_metadata: all_translations['screens']['edit_metadata']
+        )
+
+        common = all_translations['common']
+
+        if translations.key?('common')
+          translations['common'] = translations['common'].merge(common)
+        else
+          translations = translations.merge(common: common)
+        end
+
         File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
       end
 

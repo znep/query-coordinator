@@ -2,7 +2,7 @@ import 'script!jquery';
 import 'babel-polyfill-safe';
 // ^^ needed by socrata-components
 import { Provider } from 'react-redux';
-
+window.$ = window.jQuery = require('jquery');
 window._ = require('lodash');
 window.React = require('react');
 window.ReactDOM = require('react-dom');

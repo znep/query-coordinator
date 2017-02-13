@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import { getIconClassForDataType, getDocumentationLinkForDataType } from '../lib/dataTypeMetadata';
-import { handleKeyPress } from '../lib/a11yHelpers';
+import { handleKeyPress } from '../../common/a11yHelpers';
 import Linkify from 'react-linkify';
 
 const SCHEMA_TABLE_COLUMN_COUNT = 7;

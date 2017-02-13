@@ -1,36 +1,75 @@
-import React from 'react';
-import { Link } from 'react-router';
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { InfoPane } from 'socrata-components';
+import MetadataTable from '../../common/components/MetadataTable';
+import MetadataSidebar from './MetadataSidebar';
 import * as Links from '../links';
 
-export default function Update() {
+export function ShowUpdate({ view, routing }) {
+  let metadataSection;
+  const paneProps = {
+    name: view.name,
+    description: view.description,
+    category: view.category
+  };
+
+  const tableProps = {
+    view: {
+      ...view,
+      tags: view.tags,
+      attribution: view.attribution,
+      attributionLink: '',
+      attachments: view.attachments, // MetadataTable transforms this
+      licenseName: view.license.name,
+      licenseLogo: view.license.logoUrl,
+      licenseUrl: view.license.termsLink,
+      editMetadataUrl: Links.metadata(routing),
+      statsUrl: '', // MetadataTable computes this because permission checking
+      disableContactDatasetOwner: true, // looks up a CurrentDomain feature whatever that is
+      lastUpdatedAt: view.lastUpdatedAt,
+      dataLastUpdatedAt: view.dataLastUpdatedAt,
+      metadataLastUpdatedAt: view.metadataLastUpdatedAt,
+      createdAt: view.createdAt,
+      viewCount: view.viewCount,
+      downloadCount: view.downloadCount,
+      ownerName: view.owner.displayName // owner.name
+    }
+  };
+
+  metadataSection = (
+    <div id="metadata-section">
+      <div id="info-pane-container">
+        <InfoPane {...paneProps} />
+      </div>
+      <MetadataTable {...tableProps} />
+    </div>
+  );
+
   return (
     <div id="home-pane">
-      <section className="management-ui-section">
-        <h2>{I18n.home_pane.metadata} <span className="small">{I18n.home_pane.required}</span></h2>
-        <div className="alert default manage-section-box">
-          {I18n.home_pane.metadata_blurb}
-          <Link to={Links.metadata}>
-            <button
-              className="btn btn-default btn-sm"
-              tabIndex="-1">
-              {I18n.home_pane.metadata_manage_button}
-            </button>
-          </Link>
-        </div>
-      </section>
-      <section className="management-ui-section">
-        <h2>{I18n.home_pane.data}</h2>
-        <div className="alert default manage-section-box">
-          {I18n.home_pane.data_blurb}
-          <Link to={Links.uploads}>
-            <button
-              className="btn btn-default btn-sm"
-              tabIndex="-1">
-              {I18n.home_pane.data_manage_button}
-            </button>
-          </Link>
-        </div>
-      </section>
+      <div className="home-content">
+        {metadataSection}
+        <section className="management-ui-section">
+          <h2>{I18n.home_pane.data}</h2>
+          <div className="alert default manage-section-box">
+            {I18n.home_pane.data_blurb}
+          </div>
+        </section>
+      </div>
+
+      <MetadataSidebar />
     </div>
   );
 }
+
+ShowUpdate.propTypes = {
+  view: PropTypes.object.isRequired,
+  routing: PropTypes.object.isRequired
+};
+
+const mapStateToProps = (state) => ({
+  view: state.db.views[0],
+  routing: state.routing
+});
+
+export default connect(mapStateToProps)(ShowUpdate);

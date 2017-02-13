@@ -236,6 +236,10 @@ function updateIf(array, predicateOrMatch, updater) {
 
   const cloned = _.clone(array);
   const idx = _.findIndex(cloned, predicateOrMatch);
+  if (idx < 0) {
+    console.error(JSON.stringify(cloned), predicateOrMatch);
+    throw new Error('updateIf failed to find model to update');
+  }
   cloned[idx] = updater(cloned[idx]);
   return cloned;
 }

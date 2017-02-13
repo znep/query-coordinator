@@ -10,7 +10,10 @@ import {
 
 export function saveMetadata() {
   return (dispatch, getState) => {
-    const metadata = _.omit(getState().db.views[0], '__status__');
+    const metadata = _.pick(
+      getState().db.views[0],
+      'id', 'name', 'description', 'category' // TODO: what else do we want to save?
+    );
     dispatch(updateStarted('views', metadata));
     socrataFetch(`/api/views/${window.initialState.view.id}`, {
       method: 'PUT',

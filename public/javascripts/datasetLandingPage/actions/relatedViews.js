@@ -1,6 +1,7 @@
 import 'whatwg-fetch';
+
 import { checkStatus, defaultHeaders } from '../../common/http';
-import { RELATED_VIEWS_CHUNK_SIZE } from '../lib/constants';
+import { RELATED_VIEWS_CHUNK_SIZE } from '../../common/constants';
 
 import {
   TOGGLE_RELATED_VIEWS,

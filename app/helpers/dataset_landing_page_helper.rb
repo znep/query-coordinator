@@ -10,10 +10,20 @@ module DatasetLandingPageHelper
   end
 
   def dataset_landing_page_translations
-    LocaleCache.render_translations([LocalePart.dataset_landing_page])['dataset_landing_page'].
-      merge({
-        data_types: LocaleCache.render_translations([LocalePart.core.data_types])['core']['data_types']
-      })
+    translations = LocaleCache.render_translations([LocalePart.dataset_landing_page])['dataset_landing_page']
+    translations = translations.merge(
+      data_types: LocaleCache.render_translations([LocalePart.core.data_types])['core']['data_types']
+    )
+
+    common = LocaleCache.render_translations([LocalePart.common])['common']
+
+    if translations.key?('common')
+      translations['common'] = translations['common'].merge(common)
+    else
+      translations = translations.merge(common: common)
+    end
+
+    translations
   end
 
   def render_dataset_landing_page_translations

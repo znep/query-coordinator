@@ -16,7 +16,7 @@ import {
 import ConfirmationMessage from './ContactForm/ConfirmationMessage';
 import TextInput from './ContactForm/TextInput';
 import TextArea from './ContactForm/TextArea';
-import { VALID_EMAIL_REGEX } from '../lib/constants';
+import { VALID_EMAIL_REGEX } from '../../common/constants';
 
 const animationDuration = 300;
 const animationEasing = [0.645, 0.045, 0.355, 1];

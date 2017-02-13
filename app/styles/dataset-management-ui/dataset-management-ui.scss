@@ -1,4 +1,37 @@
 @import "styleguide-colors";
+@import "common/metadata-table";
+
+#info-pane-container {
+  // Needed to override some stuff from _cards.scss
+  .info-pane .container {
+    max-width: none; // this is inconsistent from styleguide's InfoPane, but the mockups want it
+    .entry-main {
+      border: none;
+    }
+  }
+  .info-pane.result-card {
+    border-right: none;
+  }
+  .entry-content {
+    display: flex;
+
+    .entry-main {
+      flex-grow: 5;
+    }
+
+    .entry-meta {
+      flex-grow: 3;
+    }
+  }
+}
+
+#site-chrome-header {
+  min-height: 56px;
+}
+
+#site-chrome-footer {
+  min-height: 164px;
+}
 
 .dataset-management-ui {
   .edit-bar {
@@ -14,6 +47,71 @@
       justify-content: space-between;
     }
   }
+
+  #home-pane {
+    margin: 0 auto;
+    display: flex;
+    background-color: $light-grey-7;
+    .home-content {
+      flex: 1;
+      #metadata-section {
+        .metadata-table-wrapper {
+           // TODO: do we want to refactor the shared
+           // MetadataTable
+          .landing-page-section {
+              padding: 0;
+          }
+        }
+      }
+    }
+    .metadata-sidebar {
+      width: 24em;
+      border-left: 1px solid $light-grey-4;
+      text-align: center;
+      padding-top: 2em;
+
+      p.how-to-publish-blurb {
+        margin-bottom: 2em;
+      }
+      p {
+        margin: 13px; // TODO: wtf where does this come from
+      }
+
+      .next-step {
+        margin: 1em;
+        padding: 1em;
+        border: 1px solid $light-grey-4;
+        background: $white;
+        button {
+          margin: auto;
+        }
+        i {
+          font-size: 200%;
+          color: $primary-base;
+        }
+        i.finished {
+          position: relative;
+          color: $alternate-3-base;
+          font-size: 120%;
+          top: -0.5em;
+          left: -0.5em;
+        }
+      }
+    }
+  }
+
+
+  .management-ui-section, .metadata-table-wrapper {
+    padding: 1em;
+  }
+  .management-ui-section {
+    .manage-section-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
 
   .err-info {
     color: $white;
@@ -391,12 +489,6 @@
 }
 .type-icon-point {
   color: #006A01;
-}
-
-#home-pane {
-  max-width: 68em;
-  margin: 0 auto;
-  padding: 10px 20px 30px;
 }
 
 #no-match {

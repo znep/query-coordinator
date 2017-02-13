@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { handleKeyPress } from '../lib/a11yHelpers';
+import { handleKeyPress } from '../../common/a11yHelpers';
 
 export const PrivateNotice = React.createClass({
   propTypes: {

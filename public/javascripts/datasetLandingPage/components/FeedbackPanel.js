@@ -4,7 +4,7 @@ import velocity from 'velocity-animate';
 
 import usersnap from '../lib/usersnap';
 import zendesk from '../lib/zendesk';
-import { ESCAPE_KEY_CODE } from '../lib/constants';
+import { ESCAPE_KEY_CODE } from '../../common/constants';
 
 function t(key) {
   return I18n.feedback[key];

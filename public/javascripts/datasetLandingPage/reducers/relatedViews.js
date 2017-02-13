@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { RELATED_VIEWS_CHUNK_SIZE } from '../lib/constants';
+import { RELATED_VIEWS_CHUNK_SIZE } from '../../common/constants';
 
 import {
   REQUEST_RELATED_VIEWS,

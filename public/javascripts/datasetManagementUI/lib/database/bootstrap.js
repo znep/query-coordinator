@@ -19,13 +19,26 @@ export const emptyDB = {
   upsert_jobs: []
 };
 
+const millis = 1000;
+
 export function bootstrap(store, initialView, initialUpdate) {
   const operations = [];
   operations.push(insertFromServer('views', {
     id: initialView.id,
     name: initialView.name,
     description: initialView.description,
-    category: initialView.category
+    category: initialView.category,
+    owner: initialView.owner,
+    lastUpdatedAt: new Date(initialView.viewLastModified * millis), // TODO: not sure about this one
+    dataLastUpdatedAt: new Date(initialView.rowsUpdatedAt * millis),
+    metadataLastUpdatedAt: new Date(initialView.viewLastModified * millis),
+    createdAt: new Date(initialView.createdAt * millis),
+    viewCount: initialView.viewCount,
+    downloadCount: initialView.downloadCount,
+    license: initialView.license || {},
+    attribution: initialView.attribution,
+    tags: initialView.tags,
+    attachments: (initialView.metadata && initialView.metadata.attachments) || []
   }));
   operations.push(insertFromServer('updates', {
     id: initialUpdate.id,

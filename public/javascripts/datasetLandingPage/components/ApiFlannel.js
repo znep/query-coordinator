@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import { initClipboardControl, isCopyingSupported } from '../lib/clipboardControl';
-import { handleKeyPress } from '../lib/a11yHelpers';
+import { handleKeyPress } from '../../common/a11yHelpers';
 
 export const ApiFlannel = React.createClass({
   propTypes: {

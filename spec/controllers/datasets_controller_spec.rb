@@ -9,12 +9,26 @@ describe DatasetsController do
       :createdAt => 1456530636244,
       :columns => [],
       :name => 'Test-Data',
-      :meta_description => 'Test-Test-Data'
+      :viewType => 'tabular',
+      :meta_description => 'Test-Test-Data',
+      :flags => ['default']
     }.with_indifferent_access
+  end
+
+  let(:derived_view_data) do
+    {
+      :id => 'data-lens',
+      :createdAt => 1456530636244,
+      :columns => [],
+      :name => 'Data-Lens',
+      :viewType => 'tabular',
+      :displayType => 'data_lens'
+    }
   end
 
   let(:view_json) { view_data.to_json }
   let(:view) { View.new(view_data) }
+  let(:derived_view) { View.new(derived_view_data) }
 
   before do
     stub_request(:get, 'http://localhost:8080/manifest_version.json?uid=test-data').
@@ -188,6 +202,14 @@ describe DatasetsController do
 
       it 'should return a 404 if the feature flag is disabled' do
         allow(subject).to receive(:visualization_canvas_enabled?).and_return(false)
+        get :create_visualization_canvas, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'should return a 404 if the view is not a dataset' do
+        allow(subject).to receive(:visualization_canvas_enabled?).and_return(true)
+        allow(subject).to receive(:get_view).and_return(derived_view)
         get :create_visualization_canvas, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
 
         expect(response).to have_http_status(:not_found)

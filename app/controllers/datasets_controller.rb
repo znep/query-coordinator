@@ -741,10 +741,10 @@ class DatasetsController < ApplicationController
   end
 
   def create_visualization_canvas
-    return render_404 unless visualization_canvas_enabled?
-
     @parent_view = get_view(params[:id])
     return if @parent_view.nil?
+
+    return render_404 unless visualization_canvas_enabled? && @parent_view.dataset?
 
     @view = @parent_view.new_visualization_canvas
 

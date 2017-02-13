@@ -7,8 +7,8 @@ default: &default
    #}
   canary: {{ CANARY | default('false') }}
 
-  {% if CETERA_HOST is defined -%}
-  cetera_host: {{ CETERA_HOST }}
+  {% if CETERA_INTERNAL_URI is defined -%}
+  cetera_internal_uri: {{ CETERA_INTERNAL_URI }}
   {%- endif %}
 
   {% if SITEMAP_S3_URL is defined -%}

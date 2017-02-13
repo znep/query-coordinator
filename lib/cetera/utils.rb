@@ -9,13 +9,13 @@ module Cetera
     class << self
 
       def base_uri
-        APP_CONFIG.cetera_host # cetera_host is misnamed; it is actually a uri.
+        APP_CONFIG.cetera_internal_uri
       end
 
       def client
         return @cetera_client if @cetera_client
 
-        cetera_uri = URI.parse(APP_CONFIG.cetera_host)
+        cetera_uri = URI.parse(APP_CONFIG.cetera_internal_uri)
         @cetera_client = Cetera::Client.new(cetera_uri.host, cetera_uri.port)
       end
 

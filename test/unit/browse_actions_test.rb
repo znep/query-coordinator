@@ -120,11 +120,11 @@ class BrowseActionsTest2 < Minitest::Test
 
     stub_feature_flags_with(:cetera_search => true)
 
-    APP_CONFIG.stubs(cetera_host: 'http://api.us.socrata.com/api')
+    APP_CONFIG.stubs(cetera_internal_uri: 'http://api.us.socrata.com/api')
   end
 
-  def test_do_not_use_cetera_if_cetera_host_not_present
-    APP_CONFIG.stubs(cetera_host: nil)
+  def test_do_not_use_cetera_if_cetera_internal_uri_not_present
+    APP_CONFIG.stubs(cetera_internal_uri: nil)
     refute @browse_controller.send(:using_cetera?)
   end
 
@@ -237,7 +237,7 @@ class BrowseActionsTest3 < Minitest::Test
 
     stub_feature_flags_with(:cetera_search => true)
 
-    APP_CONFIG.stubs(cetera_host: 'http://api.us.socrata.com/api')
+    APP_CONFIG.stubs(cetera_internal_uri: 'http://api.us.socrata.com/api')
 
     I18n.stubs(locale: CurrentDomain.default_locale.to_s)
 

@@ -29,7 +29,7 @@ class AppConfig < Hashie::Dash
   property :tileserver_hosts
 
   # Search
-  property :cetera_host
+  property :cetera_internal_uri
 
   # Sitemap
   property :sitemap_s3_url

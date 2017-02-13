@@ -49,16 +49,16 @@ class BrowseControllerTest < ActionController::TestCase
 
     return_body = %q({"results":[],"resultSetSize":0,"timings":{"serviceMillis":4, "searchMillis":[1, 1]}})
 
-    stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1/domain_tags?domains=data.seattle.gov&offset=0&order=relevance').
+    stub_request(:get, APP_CONFIG.cetera_internal_uri + '/catalog/v1/domain_tags?domains=data.seattle.gov&offset=0&order=relevance').
       with(:headers => {'Content-Type'=>'application/json', 'X-Socrata-Host'=>'data.seattle.gov'}).
       to_return(:status => 200, :body => return_body, :headers => {})
-    stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1/domain_tags?domains=example.com&offset=0&order=relevance').
+    stub_request(:get, APP_CONFIG.cetera_internal_uri + '/catalog/v1/domain_tags?domains=example.com&offset=0&order=relevance').
       with(:headers => {'Content-Type'=>'application/json', 'X-Socrata-Host'=>'example.com'}).
       to_return(:status => 200, :body => return_body, :headers => {})
-    stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1/domain_tags?domains=localhost&offset=0&order=relevance').
+    stub_request(:get, APP_CONFIG.cetera_internal_uri + '/catalog/v1/domain_tags?domains=localhost&offset=0&order=relevance').
       with(:headers => {'Content-Type'=>'application/json', 'Cookie'=>'_core_session_id=this cookie is valid so it goes through', 'X-Socrata-Host'=>'localhost'}).
       to_return(:status => 200, :body => return_body, :headers => {})
-    stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1/domain_tags?domains=localhost&offset=0&order=relevance").
+    stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1/domain_tags?domains=localhost&offset=0&order=relevance").
         with(:headers => {'Content-Type'=>'application/json', 'X-Socrata-Host'=>'localhost'}).
         to_return(:status => 404, :body => nil, :headers => {})
   end
@@ -440,7 +440,7 @@ class BrowseControllerTest < ActionController::TestCase
       CurrentDomain.stubs(:cname).returns('data.seattle.gov') # for Cetera
 
       stub_feature_flags_with(:cetera_search => true)
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1'). # TODO: update when moving to v2
+      stub_request(:get, APP_CONFIG.cetera_internal_uri + '/catalog/v1'). # TODO: update when moving to v2
         with(query: cetera_params).
         to_return(status: 200, body: cetera_payload, headers: {})
 
@@ -458,7 +458,7 @@ class BrowseControllerTest < ActionController::TestCase
       CurrentDomain.stubs(:cname).returns('data.seattle.gov') # for Cetera
 
       stub_feature_flags_with(:cetera_search => true)
-      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
+      stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
         with(query: cetera_params).
         to_return(status: 200, body: cetera_payload, headers: {})
 
@@ -497,7 +497,7 @@ class BrowseControllerTest < ActionController::TestCase
       @request.cookies['this_is_not_a_known_cookie'] = 'so it disappears'
       @request.cookies['_core_session_id'] = 'this cookie is valid so it goes through'
       stub_feature_flags_with(:cetera_search => true)
-      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
+      stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
         with(query: default_cetera_params, headers: cetera_headers).
         to_return(status: 200, body: cetera_payload, headers: {})
 
@@ -512,7 +512,7 @@ class BrowseControllerTest < ActionController::TestCase
       @request.cookies['this_is_not_a_known_cookie'] = 'so it disappears'
       @request.cookies['_core_session_id'] = 'this cookie is valid so it goes through'
       stub_feature_flags_with(:cetera_search => true)
-      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
+      stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
         with(query: default_cetera_params, headers: cetera_headers).
         to_return(status: 200, body: cetera_payload, headers: {})
 
@@ -528,7 +528,7 @@ class BrowseControllerTest < ActionController::TestCase
       @request.cookies['this_is_not_a_known_cookie'] = 'so it disappears'
       @request.cookies['_core_session_id'] = 'this cookie is valid so it goes through'
       stub_feature_flags_with(:cetera_search => false)
-      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
+      stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
         with(query: default_cetera_params, headers: cetera_headers).
         to_return(status: 200, body: cetera_payload, headers: {})
 
@@ -596,7 +596,7 @@ class BrowseControllerTest < ActionController::TestCase
         :order => 'relevance'
       )
 
-      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
+      stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
         with(query: cetera_params).
         to_timeout
 
@@ -618,7 +618,7 @@ class BrowseControllerTest < ActionController::TestCase
         :order => 'relevance'
       )
 
-      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
+      stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
         with(query: cetera_params).
         to_return(status: 500)
 
@@ -639,7 +639,7 @@ class BrowseControllerTest < ActionController::TestCase
         :order => 'relevance'
       )
 
-      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
+      stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
         with(query: cetera_params).
         to_return(status: 200, body: 'oh no they were ready for that!')
 
@@ -715,7 +715,7 @@ class BrowseControllerTest < ActionController::TestCase
     selector = 'div.browse2-result-timestamp > div.browse2-result-timestamp-label'
 
     should 'show created at timestamp when sorting by newest' do
-      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
+      stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
         with(query: query_params.merge(order: 'createdAt')).
         to_return(status: 200, body: cetera_payload)
 
@@ -727,7 +727,7 @@ class BrowseControllerTest < ActionController::TestCase
     end
 
     should 'show updated at timestamp when sorting by default' do
-      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
+      stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
         with(query: query_params.merge(order: 'relevance')).
         to_return(status: 200, body: cetera_payload)
 
@@ -739,7 +739,7 @@ class BrowseControllerTest < ActionController::TestCase
     end
 
     should 'show updated at timestamp when sorting by last updated' do
-      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
+      stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
         with(query: query_params.merge(order: 'updatedAt')).
         to_return(status: 200, body: cetera_payload)
 
@@ -751,7 +751,7 @@ class BrowseControllerTest < ActionController::TestCase
     end
 
     should 'should set the X-Frame-Options header to ALLOWALL' do
-      stub_request(:get, "#{APP_CONFIG.cetera_host}/catalog/v1").
+      stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
         with(query: query_params.merge(order: 'relevance')).
         to_return(status: 200, body: cetera_payload)
 

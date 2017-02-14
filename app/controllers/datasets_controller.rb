@@ -757,6 +757,7 @@ class DatasetsController < ApplicationController
   # Make sure that the url provided actually returns a layer of some kind.
   def verify_layer_url
     response = fetch_layer_info(params[:url])
+
     respond_to do |format|
       format.data { render :json => response.to_json }
     end
@@ -1144,30 +1145,45 @@ class DatasetsController < ApplicationController
 
   def fetch_layer_info(layer_url)
     begin
-      uri = URI.parse(URI.extract(layer_url).first)
+      uri = URI.parse(URI.extract(layer_url, %w{http https}).first)
+
+      # EN-13295: protect against attempts, however unlikely to succeed, to make
+      # anonymous state-modifying GET requests against internal addresses.
+      addrinfo = Addrinfo.ip(uri.hostname)
+      is_disallowed = [
+        addrinfo.ipv4_loopback?,
+        addrinfo.ipv6_loopback?,
+
+        addrinfo.ipv4_private?,
+
+        addrinfo.ipv6_linklocal?,
+        addrinfo.ipv6_sitelocal?,
+        addrinfo.ipv6_unique_local?,
+        addrinfo.ipv6_multicast?
+      ].any?
+      raise URI::InvalidURIError if is_disallowed
+
       uri.query = "f=json"
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if uri.scheme == 'https'
-      layer_info = JSON.parse(http.get(uri.request_uri).body)
+      layer_info = JSON.parse(http.get(uri.request_uri).body) || {}
+
+      raise URI::InvalidURIError if layer_info['error'] || !layer_info['spatialReference']
     rescue SocketError, URI::InvalidURIError, JSON::ParserError
-      error = "url invalid"
+      return { 'error' => 'url invalid' }
     end
-    error = 'url invalid' if layer_info && (layer_info['error'] \
-                                          || !layer_info['spatialReference'])
 
-    if error
-      return { 'error' => error }
-    else
-      title = layer_info['documentInfo']['Title'] if layer_info['documentInfo']
-      title = uri.path.slice(uri.path.index('services')+8..-1) if title.blank?
+    # beyond this point, we assume a valid layer_info response hash
+    title = layer_info.dig('documentInfo', 'Title')
+    title = uri.path.slice(uri.path.index('services')+8..-1) if title.blank?
 
-      layer = {}
-      layer['text']  = "#{title} (#{uri.host})"
-      layer['value'] = uri.to_s.sub /\?.*$/, ''
-      layer['data']  = { 'type' => layer_info['tileInfo'] ? 'tile' : 'dynamic' }
-
-      return layer
-    end
+    {
+      'text' => "#{title} (#{uri.host})",
+      'value' => uri.to_s.sub(/\?.*/, ''),
+      'data' => {
+        'type' => layer_info['tileInfo'] ? 'tile' : 'dynamic'
+      }
+    }
   end
 
   def permitted_nbe_view?

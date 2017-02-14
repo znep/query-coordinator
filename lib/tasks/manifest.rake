@@ -1,14 +1,14 @@
 namespace :manifest do
   %w[staging release].each do |environment|
     desc "Create a changelog between the last two #{environment} releases"
-    task environment.to_sym, [:output_file, :auto] do |task, args|
+    task environment.to_sym, [:output_file, :auto] do |_, args|
       tags = `git tag -l #{environment}/*`.split.sort.reverse.first((ENV['RELEASE_TAGS'] || 10).to_i)
 
       # Find your tags to compare
       to_tag = ENV['TO_TAG'] || tags[0]
       from_tag = ENV['FROM_TAG'] || tags[1]
       puts "Default comparison is #{from_tag} .. #{to_tag}"
-      
+
       if args.auto.present? && args.auto == 'true'
         puts 'Automated comparison requested'
       else
@@ -60,20 +60,22 @@ namespace :manifest do
     end
   end
 
-  # output all commit messages that mention a Jira id or pull request id.  this is useful for prepping the Test Matrix for test pods
-  # this step gets ran after first running ‘FROM_TAG=<tag> TO_TAG=<tag> rake manifest:release[manifest.txt]’
+  # output all commit messages that mention a Jira id or pull request id.  
+  # this is useful for prepping the Test Matrix for test pods
+  # this step gets ran after first running 'FROM_TAG=<tag> TO_TAG=<tag> rake manifest:release[manifest.txt]'
   namespace :commits do
     desc 'Output a distinct list of commit messages that mention a Jira ticket'
-    task :distinct_with_jira, [:manifest_file] do |task, args|
+    task :distinct_with_jira, [:manifest_file] do |_, args|
       fail 'Path to manifest.txt must be provided' if args.manifest_file.blank?
 
       puts
-      get_commits_with_jira(args.manifest_file).map(&:values).each(&method(:puts))
+      get_commits_with_jira(args.manifest_file)
+        .map(&:values).each(&method(:puts))
       puts
     end
 
     desc 'Output a distinct list of commit messages that lack a Jira ticket mention'
-    task :distinct_without_jira, [:manifest_file] do |task, args|
+    task :distinct_without_jira, [:manifest_file] do |_, args|
       fail 'Path to manifest.txt must be provided' if args.manifest_file.blank?
 
       puts
@@ -82,26 +84,25 @@ namespace :manifest do
     end
 
     desc 'Output a link to jira with all the issues in the manifest'
-    task :jira_query, [:git_log_output] do |task, args|
+    task :jira_query, [:git_log_output] do |_, args|
       commit_list = get_commits_with_jira(args.git_log_output)
-      jira_ticket_numbers = commit_list.map{|commit| commit.keys.first.strip.match(jira_ticket_regex) }.uniq
+      jira_ticket_numbers = commit_list.map { |commit| commit.keys.first.strip.match(jira_ticket_regex) }.uniq
       jira_query = "id in (#{jira_ticket_numbers.join(', ')})"
 
       puts URI("https://socrata.atlassian.net/issues/?jql=#{URI.encode(jira_query)}").to_s
     end
   end
 
-
   desc 'Generates useful information for the current release'
   task :release_info, [:auto, :manifest_file] do |_, args|
     args.with_defaults(:auto => false, :manifest_file => nil)
-  
-    manifest_file_path = args[:manifest_file] ? 
-      File.expand_path(args[:manifest_file]) : 
+
+    manifest_file_path = args[:manifest_file] ?
+      File.expand_path(args[:manifest_file]) :
       File.expand_path("manifest_#{Time.now.strftime('%Y%m%d-%H%M%S')}.txt")
 
     puts
-    Rake::Task['manifest:release'].invoke(manifest_file_path,args[:auto])
+    Rake::Task['manifest:release'].invoke(manifest_file_path, args[:auto])
     puts
 
     copy_cmd = "cat #{manifest_file_path} | pbcopy"
@@ -133,8 +134,8 @@ def get_commits_with_jira(git_log_output)
     git_log_output.lines.grep(ticket_regex).inject([]) do |list, line|
       id = line.match(ticket_regex).to_s.strip
       commit = line.strip
-
-      list << { id => commit.gsub(id, "https://socrata.atlassian.net/browse/#{id}") }
+      atlassian = 'http://socrata.atlassian.net/browse/'
+      list << { id => commit.gsub(id, "#{atlassian}#{id}") }
       list.uniq.sort_by(&:keys)
     end
   end
@@ -144,7 +145,7 @@ def get_commits_without_jira(git_log_output)
   commits_without_jira = []
   commits = git_log_output.split(/^commit /)
   commits.each do |commit|
-    unless commit.match(ticket_regex) || commit == ""
+    unless commit.match(ticket_regex) || commit == ''
       sha = commit[0..6] || ''
       author = commit.match(/^Author:(.*)</)[1].strip || ''
       first_line_of_commit = commit.match(/^Date:.*$\n\n^(.*)$/)[1].strip || ''

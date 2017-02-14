@@ -46,8 +46,7 @@ describe Cetera::Utils do
       'filters' => 'filters',
       'href' => 'links',
       'blob' => 'files',
-      'forms' => 'forms',
-      'apis' => 'apis'
+      'forms' => 'forms'
     }
 
     frontend_to_cetera.each do |frontend_type, cetera_type|

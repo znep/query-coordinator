@@ -542,7 +542,6 @@ en:
           form: Form
           href: External Link
           map: Map
-          predeply_api: Pre-deploy API
           pulse: Pulse
           story: Story
           unknown: Unknown
@@ -650,7 +649,6 @@ en:
         topics_singular_title: topic
         topics_title: Topics
         view_types:
-          apis: APIs
           blob: Files and Documents
           calendars: Calendars
           charts: Charts
@@ -1330,7 +1328,6 @@ en:
       table: table
       working_copy: working copy
     view_types_plural:
-      api: APIs
       calendar: Calendars
       chart: Charts
       data_lens: Data Lenses
@@ -3518,15 +3515,6 @@ en:
           reference_html: To start accessing this dataset programmatically, use the API endpoint provided below. For more information and examples on how to use the Socrata Open Data API, reference our <a href="http://dev.socrata.com" rel="external">Developer Documentation</a>.
           subtitle: Access this %{view_type} via SODA
           title: SODA API
-        apis:
-          create_button: Create an API
-          create_button_prompt: Create an Application Programming Interface (API) to grant programmatic access to this data.
-          manage_button: Manage
-          manage_button_prompt: Manage the selected API
-          prompt_existing_html: "<strong>Existing APIs</strong> can be customized. You can control permissions, set request limits, view usage metrics, and edit the documentation."
-          prompt_new_html: "<strong>API Foundry</strong> allows you to create and configure one or more open, standards-based Application Programming Interfaces (API) for this dataset."
-          subtitle: Create and Customize an API
-          title: APIs
         append_replace:
           subtitle:
             immutable: Upload a new data file whose contents will replace your current data.

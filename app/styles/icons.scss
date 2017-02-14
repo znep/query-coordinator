@@ -432,9 +432,6 @@ $data-lens-color: #80acca;
   &.typeSnapshotted #{$subselector} {
     background-position: 0 -510px;
   }
-  &.typeApi-predeploy #{$subselector} {
-    background-position: 0 -540px;
-  }
 }
 
 // icons/type_icons_50.png
@@ -948,34 +945,6 @@ $data-lens-color: #80acca;
   }
   &.connectors #{$subselector} {
     background-position: 0 -448px;
-  }
-}
-
-//API Management icons
-@mixin api-management-icons($subselector: '.apiicon') {
-  #{$subselector} {
-    @include text-hiding;
-    height: 50px;
-    width: 50px;
-    background-position: center;
-  }
-  & .ico-permissions-sharing#{$subselector} {
-    background-image: url(/stylesheets/images/apifoundry/ico-permissions-sharing.png);
-  }
-  & .ico-applications#{$subselector} {
-    background-image: url(/stylesheets/images/apifoundry/ico-applications.png);
-  }
-  & .ico-metrics#{$subselector} {
-    background-image: url(/stylesheets/images/apifoundry/ico-metrics.png);
-  }
-  & .ico-names-descriptions#{$subselector} {
-    background-image: url(/stylesheets/images/apifoundry/ico-names-descriptions.png);
-  }
-  & .ico-transfer-ownership#{$subselector} {
-    background-image: url(/stylesheets/images/apifoundry/ico-transfer-ownership.png);
-  }
-  & .ico-delete#{$subselector} {
-    background-image: url(/stylesheets/images/apifoundry/ico-delete.png);
   }
 }
 

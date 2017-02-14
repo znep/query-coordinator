@@ -2287,21 +2287,6 @@
         callback(ds._unpublishedView);
       }
     },
-    getPredeployApiView: function(successCallback, errorCallback) {
-      var ds = this;
-      ds.makeRequest({
-        url: '/api/views/' + ds.id + '/publication.json',
-        params: {
-          method: 'getOrMakePredeployApiView'
-        },
-        cache: false,
-        type: 'GET',
-        success: function(view) {
-          successCallback(new Dataset(view));
-        },
-        error: errorCallback
-      });
-    },
     isPublicationStageChangeAvailable: function(isPublished, resultCallback) {
       var ds = this;
       var controlsGridStatusKey = 'controls.grid.{0}'.format(isPublished ? 'published' : 'unpublished');
@@ -3725,11 +3710,7 @@
       }
 
       var urlParts;
-      if (ds.displayType === 'api-predeploy') {
-        urlParts = ['api_foundry/forge', ds.id];
-      } else if (ds.displayType === 'api') {
-        urlParts = ['developers/docs', ds.resourceName];
-      } else if (ds.displayType === 'story') {
+      if (ds.displayType === 'story') {
         urlParts = ['stories/s', ds.id];
       } else if (_.isUndefined(ds.name)) {
         urlParts = ['d', ds.id];

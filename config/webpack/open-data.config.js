@@ -482,9 +482,6 @@ module.exports = _.defaultsDeep({
     'dataset-metrics': [
       './screens/dataset-metrics.js'
     ],
-    'api-metrics': [
-      './screens/api-metrics.js'
-    ],
     'dataset-show': [
       './plugins/jquery.colorPicker.js',
       './plugins/jquery.awesomecomplete.js',
@@ -510,7 +507,6 @@ module.exports = _.defaultsDeep({
       './controls/panes/about-dataset.js',
       './controls/panes/add-column.js',
       './controls/panes/api.js',
-      './controls/panes/api-foundry.js',
       './controls/panes/append-replace.js',
       './controls/panes/backups.js',
       './controls/panes/calendar-create.js',
@@ -765,21 +761,6 @@ module.exports = _.defaultsDeep({
     ],
     'awesomecomplete': [
       './plugins/jquery.awesomecomplete.js'
-    ],
-    'api-new': [
-      './controls/wizard.js',
-      './screens/api-new.js'
-    ],
-    'api-manage': [
-      './plugins/jquery.awesomecomplete.js',
-      './controls/dataset-email.js',
-      './controls/user-picker.js',
-      './controls/panes/base-pane.js',
-      './controls/panes/plagiarize-dataset.js',
-      './controls/panes/delete-dataset.js',
-      './controls/panes/permissions.js',
-      './controls/panes/share-dataset.js',
-      './screens/api-manage.js'
     ],
     'columnizer': [
       './plugins/jquery.columnizer.js'

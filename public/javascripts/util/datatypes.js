@@ -1198,7 +1198,6 @@ blist.namespace.fetch('blist.datatypes');
         'date',
         'phone',
         'email',
-        'url',
         'checkbox',
         'flag'
       ].concat(numericConvertTypes),
@@ -1224,8 +1223,14 @@ blist.namespace.fetch('blist.datatypes');
       interfaceType: blist.datatypes.interfaceTypes.html,
 
       aggregates: nonNumericAggs,
-      convertableTypes: ['text', 'calendar_date', 'date', 'phone',
-          'email', 'url', 'checkbox', 'flag'
+      convertableTypes: [
+          'text',
+          'calendar_date',
+          'date',
+          'phone',
+          'email',
+          'checkbox',
+          'flag'
         ].
         concat(numericConvertTypes),
       createable: true,

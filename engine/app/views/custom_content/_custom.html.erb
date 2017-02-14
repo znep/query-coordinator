@@ -14,7 +14,3 @@
   custom_content_class: custom_content_class,
   size: local_assigns[:size]
 ) %>
-
-<%= javascript_tag("window.current_user = #{site_chrome_current_user || {}};") %>
-
-<%= content_tag(:script, raw(content[:js])) %>

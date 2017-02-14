@@ -8,7 +8,6 @@
     <%= stylesheet_link_tag 'application', media: 'all' %>
     <%= site_chrome_stylesheet_tag %>
     <%= javascript_include_tag 'application' %>
-    <%= site_chrome_javascript_tag %>
     <%= csrf_meta_tags %>
   </head>
 
@@ -21,5 +20,7 @@
     <%= yield %>
 
     <%== site_chrome_footer(request, response) %>
+
+    <%= site_chrome_javascript_tag %>
   </body>
 </html>

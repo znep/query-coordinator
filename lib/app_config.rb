@@ -30,6 +30,7 @@ class AppConfig < Hashie::Dash
 
   # Search
   property :cetera_internal_uri
+  property :cetera_external_uri
 
   # Sitemap
   property :sitemap_s3_url

@@ -199,6 +199,7 @@ describe ApplicationHelper do
   describe 'using_cetera? when feature flag is set' do
 
     let(:cetera_internal_uri) { 'http://localhost:1234' }
+    let(:cetera_external_uri) { 'http://api.us.socrata.com/api' }
     let(:controller_name) { 'browse' }
     let(:action_name) { 'show' }
 
@@ -207,12 +208,14 @@ describe ApplicationHelper do
       allow(FeatureFlags).to receive(:using_signaller?).and_return(false)
       allow(FeatureFlags.derive).to receive(:cetera_search?).and_return(true)
       allow(APP_CONFIG).to receive(:cetera_internal_uri).and_return(cetera_internal_uri)
+      allow(APP_CONFIG).to receive(:cetera_external_uri).and_return(cetera_external_uri)
       allow(helper).to receive(:controller_name).and_return(controller_name)
       allow(helper).to receive(:action_name).and_return(action_name)
     end
 
-    context 'cetera_internal_uri is not set' do
+    context 'cetera_internal_uri and cetera_external_uri are not set' do
       let(:cetera_internal_uri) { nil }
+      let(:cetera_external_uri) { nil }
       it 'should be false' do
         expect(helper.using_cetera?).to eq(false)
       end

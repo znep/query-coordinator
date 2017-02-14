@@ -93,14 +93,12 @@ namespace :manifest do
 
 
   desc 'Generates useful information for the current release'
-  task :release_info, [:auto, :manifest_file] do |t, args|
+  task :release_info, [:auto, :manifest_file] do |_, args|
     args.with_defaults(:auto => false, :manifest_file => nil)
   
-    manifest_file_path = File.expand_path("manifest_#{Time.now.strftime('%Y%m%d-%H%M%S')}.txt")
-    
-    if args[:manifest_file]
-      manifest_file_path = File.expand_path("#{args[:manifest_file]}")
-    end
+    manifest_file_path = args[:manifest_file] ? 
+      File.expand_path(args[:manifest_file]) : 
+      File.expand_path("manifest_#{Time.now.strftime('%Y%m%d-%H%M%S')}.txt")
 
     puts
     Rake::Task['manifest:release'].invoke(manifest_file_path,args[:auto])

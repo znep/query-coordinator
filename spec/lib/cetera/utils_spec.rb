@@ -87,7 +87,7 @@ describe Cetera::Utils do
   describe 'search_views' do
     it 'should test_cetera_search_views_raises_timeout_error_on_timeout' do
       query = { domains: ['example.com'] }
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+      stub_request(:get, APP_CONFIG.cetera_internal_uri + '/catalog/v1').
         with(query: Cetera::Utils.cetera_soql_params(query)).
         to_timeout
 
@@ -103,7 +103,7 @@ describe Cetera::Utils do
 
       request_id = 'iAmProbablyUnique'
 
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+      stub_request(:get, APP_CONFIG.cetera_internal_uri + '/catalog/v1').
         with(headers: { 'Cookie' => cookies, 'X-Socrata-RequestId' => request_id },
              query: Cetera::Utils.cetera_soql_params(query)).
         to_return(status: 500, body: 'I cannot be parsed!')
@@ -130,7 +130,7 @@ describe Cetera::Utils do
         'timings' => { 'serviceMillis' => 118, 'searchMillis' => [2, 2] }
       }
 
-      stub_request(:get, APP_CONFIG.cetera_host + '/catalog/v1').
+      stub_request(:get, APP_CONFIG.cetera_internal_uri + '/catalog/v1').
         with(query: cetera_soql_params).
         to_return(status: 200, body: response.to_json)
 

@@ -120,11 +120,13 @@ class BrowseActionsTest2 < Minitest::Test
 
     stub_feature_flags_with(:cetera_search => true)
 
-    APP_CONFIG.stubs(cetera_host: 'http://api.us.socrata.com/api')
+    APP_CONFIG.stubs(cetera_internal_uri: 'http://cetera.app.aws-us-east-1-fedramp-prod.socrata.net')
+    APP_CONFIG.stubs(cetera_external_uri: 'https://api.us.socrata.com/api')
   end
 
-  def test_do_not_use_cetera_if_cetera_host_not_present
-    APP_CONFIG.stubs(cetera_host: nil)
+  def test_do_not_use_cetera_if_cetera_internal_uri_and_cetera_external_uri_not_present
+    APP_CONFIG.stubs(cetera_internal_uri: nil)
+    APP_CONFIG.stubs(cetera_external_uri: nil)
     refute @browse_controller.send(:using_cetera?)
   end
 
@@ -237,7 +239,7 @@ class BrowseActionsTest3 < Minitest::Test
 
     stub_feature_flags_with(:cetera_search => true)
 
-    APP_CONFIG.stubs(cetera_host: 'http://api.us.socrata.com/api')
+    APP_CONFIG.stubs(cetera_internal_uri: 'http://cetera.app.aws-us-east-1-fedramp-prod.socrata.net')
 
     I18n.stubs(locale: CurrentDomain.default_locale.to_s)
 
@@ -261,7 +263,7 @@ class BrowseActionsTest3 < Minitest::Test
   end
 
   def stub_cetera_for_categories(categories)
-    cetera_url = 'http://api.us.socrata.com/api/catalog/v1'
+    cetera_url = 'http://cetera.app.aws-us-east-1-fedramp-prod.socrata.net/catalog/v1'
     cetera_params = {
       categories: categories,
       domains: 'localhost',

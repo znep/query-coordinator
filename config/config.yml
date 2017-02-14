@@ -46,7 +46,7 @@
 
 default: &default
   # service hosts/ports/names et simil
-  cetera_host: http://localhost:5704
+  cetera_internal_uri: http://localhost:5704
   coreservice_uri: http://localhost:8080
   feature_flag_signaller_uri: http://localhost:14567
   polaroid_hostname: polaroid.app.marathon.aws-us-west-2-prod.socrata.net
@@ -107,7 +107,7 @@ default: &default
 development: &development
   <<: *default
   # service hosts/ports/names et simil
-  cetera_host: http://localhost:5704
+  cetera_internal_uri: http://localhost:5704
   curated_region_job_queue_hostname: localhost
   curated_region_job_queue_port: 2030
   http_port: 9292
@@ -141,7 +141,7 @@ development: &development
 test:
   <<: *default
   # service hosts/ports/names et simil
-  cetera_host: http://localhost:5704
+  cetera_internal_uri: http://localhost:5704
   coreservice_uri: http://localhost:8080
   sitemap_s3_url: https://test.amazonaws.com/bucket_dne/sitemaps
   feature_flag_signaller_uri:
@@ -163,7 +163,7 @@ staging:
 rc:
   <<: *default
   # service hosts/ports/names et simil
-  cetera_host: http://cetera.app.marathon.aws-us-west-2-rc.socrata.net
+  cetera_internal_uri: http://cetera.app.marathon.aws-us-west-2-rc.socrata.net
   coreservice_uri: http://lb-vip.aws-us-west-2-rc.socrata.net:8081
   sitemap_s3_url: https://s3-us-west-2.amazonaws.com/sa-socrata-sitemaps-us-west-2-rc/sitemaps
   zk_hosts: '10.112.35.120:2181,10.112.36.163:2181,10.112.41.205:2181'
@@ -181,7 +181,8 @@ fedramp-prod:
 # eu-west-test.socrata.com
 eu-prod:
   <<: *default
-  cetera_host: https://api.eu.socrata.com/api
+  cetera_external_uri: https://api.eu.socrata.com/api
+  cetera_internal_uri: http://cetera.app.marathon.aws-eu-west-1-prod.socrata.net
   # service hosts/ports/names et simil
   sitemap_s3_url: https://s3-eu-west-1.amazonaws.com/sa-socrata-sitemaps-eu-west-1-prod/sitemaps
   # third-party app tokens
@@ -191,7 +192,7 @@ eu-prod:
 production:
   <<: *default
   # service hosts/ports/names et simil
-  cetera_host: http://api.us.socrata.com/api
+  cetera_internal_uri: http://cetera.app.aws-us-east-1-fedramp-prod.socrata.net
   coreservice_uri: http://lb-vip.sea1.socrata.com:8081
   sitemap_s3_url: https://s3-us-west-2.amazonaws.com/sa-socrata-sitemaps-us-west-2-prod/sitemaps
 

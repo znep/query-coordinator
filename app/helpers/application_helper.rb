@@ -970,11 +970,11 @@ module ApplicationHelper
   end
 
   def using_cetera?
-    return false unless APP_CONFIG.cetera_host.present?
+    return false if APP_CONFIG.cetera_internal_uri.blank? && APP_CONFIG.cetera_external_uri.blank?
 
-    uri = URI(APP_CONFIG.cetera_host)
+    uri = URI(APP_CONFIG.cetera_internal_uri)
     unless uri.host.present? && uri.scheme.present?
-      Rails.logger.error('APP_CONFIG.cetera_host is incorrectly defined. Missing host and/or scheme')
+      Rails.logger.error('APP_CONFIG.cetera_internal_uri is incorrectly defined. Missing host and/or scheme')
       return false
     end
 

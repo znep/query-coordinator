@@ -330,14 +330,6 @@ module SocrataSiteChrome
     # EN-6555: Support for entirely custom headers/footers.
     # This will bypass the Site Appearance configuration and pull the custom header/footer content
     # from the Site Chrome configuration properties `custom_[header|footer]_[html|css|js]`
-    def site_chrome_custom_content
-      ::RequestStore.store['site_chrome.custom_content'] ||= SocrataSiteChrome::CustomContent.new(request.host)
-    end
-
-    def using_custom_header_footer?
-      Rails.env.test? ? false : site_chrome_custom_content.activated?
-    end
-
     def custom_header_footer_content
       site_chrome_custom_content.fetch(pub_stage)
     end

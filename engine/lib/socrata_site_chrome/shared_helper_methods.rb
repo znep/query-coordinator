@@ -42,6 +42,14 @@ module SocrataSiteChrome
       end
     end
 
+    def site_chrome_custom_content
+      ::RequestStore.store['site_chrome.custom_content'] ||= SocrataSiteChrome::CustomContent.new(request.host)
+    end
+
+    def using_custom_header_footer?
+      Rails.env.test? ? false : site_chrome_custom_content.activated?
+    end
+
     def site_chrome_instance
       @site_chrome_instance ||=
         request.env[SocrataSiteChrome::Middleware::SOCRATA_SITE_CHROME_ENV_KEY].socrata_site_chrome(request.env)

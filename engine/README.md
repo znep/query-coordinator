@@ -88,14 +88,17 @@ helpers to the bottom of the `<head>` section:
 <%= site_chrome_meta_viewport_tag %>
 <%= site_chrome_google_analytics_tag %>
 <%= site_chrome_stylesheet_tag %>
-<%= site_chrome_javascript_tag %>
 ```
 
 Within the `<body>` section add
 `<%== site_chrome_header(request, response) %>`
 just inside the opening `<body>` section, then add
 `<%== site_chrome_footer(request, response) %>`
+after the main body content. Then add
+`<%= site_chrome_javascript_tag %>`
 just before the closing `</body>` tag.
+It is important that `site_chrome_javascript_tag` is AFTER
+the `site_chrome_header` and `site_chrome_footer` helpers (EN-13762).
 
 There is also an Admin header (currently used for Open Performance) which can be rendered with
 `<%== site_chrome_admin_header(request, response) %>`
@@ -126,13 +129,13 @@ An example layout is shown below:
     <%= site_chrome_meta_viewport_tag %>
     <%= site_chrome_google_analytics_tag %>
     <%= site_chrome_stylesheet_tag %>
-    <%= site_chrome_javascript_tag %>
   </head>
 
   <body>
     <%== site_chrome_header(request, response) %>
     <%= yield %>
     <%== site_chrome_footer(request, response) %>
+    <%= site_chrome_javascript_tag %>
   </body>
 </html>
 ```

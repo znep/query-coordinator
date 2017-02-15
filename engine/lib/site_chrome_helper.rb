@@ -36,9 +36,15 @@ module SiteChromeHelper
   end
 
   def site_chrome_javascript_tag
-    # `socrata_site_chrome` corresponds to the mount point in the hosting app's config/routes.rb
-    # Note: The _lack_ of a leading / is critical to this helper generating the correct digest path
-    javascript_include_tag('socrata_site_chrome/application')
+    if using_custom_header_footer?
+      javascript_tag("window.current_user = #{site_chrome_current_user || {}};") <<
+        javascript_tag(raw(custom_header_footer_content[:header][:js])) <<
+        javascript_tag(raw(custom_header_footer_content[:footer][:js]))
+    else
+      # `socrata_site_chrome` corresponds to the mount point in the hosting app's config/routes.rb
+      # Note: The _lack_ of a leading / is critical to this helper generating the correct digest path
+      javascript_include_tag('socrata_site_chrome/application')
+    end
   end
 
   def site_chrome_favicon_tag

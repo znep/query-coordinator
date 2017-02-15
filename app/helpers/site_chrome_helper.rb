@@ -139,7 +139,7 @@ module SiteChromeHelper
     # single set of rules after a complete roll-out.
     case current_controller
 
-      when BrowseController, UserSessionsController
+      when BrowseController, UserSessionsController, DatasetsController
         # This *should* be the normal case in the future - just show the H/F.
         true
 

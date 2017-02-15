@@ -143,21 +143,18 @@ export function insertAndSubscribeToUpload(dispatch, upload) {
       dispatch(insertFromServer('input_columns', column));
     });
     return inputSchema.output_schemas.map((outputSchema) => {
-      return insertAndSubscribeToOutputSchema(dispatch, inputSchema.id, outputSchema);
+      return insertAndSubscribeToOutputSchema(dispatch, outputSchema);
     });
   });
   return _.flatten(outputSchemaIds);
 }
 
-export function insertAndSubscribeToOutputSchema(dispatch, inputSchemaId, outputSchema) {
+export function insertAndSubscribeToOutputSchema(dispatch, outputSchema) {
   dispatch(insertFromServer('output_schemas', toOutputSchema(outputSchema)));
   dispatch(subscribeToOutputSchema(outputSchema));
   outputSchema.output_columns.forEach((outputColumn) => {
     const transform = outputColumn.transform;
-    dispatch(insertFromServerIfNotExists('transforms', {
-      ..._.omit(transform, ['transform_input_columns']),
-      input_column_ids: transform.transform_input_columns.map((inCol) => inCol.column_id)
-    }));
+    dispatch(insertFromServerIfNotExists('transforms', transform));
     dispatch(insertFromServerIfNotExists('output_columns', {
       ..._.omit(outputColumn, ['transform']),
       transform_id: outputColumn.transform.id

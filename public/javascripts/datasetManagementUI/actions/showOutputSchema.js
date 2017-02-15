@@ -35,7 +35,7 @@ export function updateColumnType(oldSchema, oldColumn, newType) {
       then(getJson).
       then(resp => {
         dispatch(insertSucceeded('output_schemas', newOutputSchema, { id: resp.resource.id }));
-        insertAndSubscribeToOutputSchema(dispatch, oldSchema.input_schema_id, resp.resource);
+        insertAndSubscribeToOutputSchema(dispatch, resp.resource);
 
         const inputSchema = _.find(db.input_schemas, { id: oldSchema.input_schema_id });
         const uploadId = inputSchema.upload_id;

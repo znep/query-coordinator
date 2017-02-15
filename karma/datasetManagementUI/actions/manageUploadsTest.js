@@ -58,10 +58,7 @@ describe('actions/manageUploads', () => {
                         id: 0,
                         output_soql_type: 'text',
                         output_column_id: 2000,
-                        transform_expr: 'identity',
-                        transform_input_columns: [{
-                          column_id: 1000
-                        }]
+                        transform_expr: 'identity'
                       }
                     },
                     {
@@ -74,10 +71,7 @@ describe('actions/manageUploads', () => {
                         id: 1,
                         output_soql_type: 'text',
                         output_column_id: 2001,
-                        transform_expr: 'identity',
-                        transform_input_columns: [{
-                          column_id: 1001
-                        }]
+                        transform_expr: 'identity'
                       }
                     }
                   ]

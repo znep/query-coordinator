@@ -7,11 +7,6 @@ export default {
         "output_columns": [
           {
             "transform": {
-              "transform_input_columns": [
-                {
-                  "column_id": 442
-                }
-              ],
               "transform_expr": "`StationName`",
               "output_column_id": 448,
               "output_soql_type": "SoQLText",
@@ -25,11 +20,6 @@ export default {
           },
           {
             "transform": {
-              "transform_input_columns": [
-                {
-                  "column_id": 443
-                }
-              ],
               "transform_expr": "`StationLocation`",
               "output_column_id": 449,
               "output_soql_type": "SoQLText",
@@ -43,11 +33,6 @@ export default {
           },
           {
             "transform": {
-              "transform_input_columns": [
-                {
-                  "column_id": 444
-                }
-              ],
               "transform_expr": "to_floating_timestamp(`DateTime`)",
               "output_column_id": 450,
               "output_soql_type": "SoQLFloatingTimestamp",
@@ -61,11 +46,6 @@ export default {
           },
           {
             "transform": {
-              "transform_input_columns": [
-                {
-                  "column_id": 445
-                }
-              ],
               "transform_expr": "to_number(`RecordId`)",
               "output_column_id": 451,
               "output_soql_type": "SoQLNumber",
@@ -79,11 +59,6 @@ export default {
           },
           {
             "transform": {
-              "transform_input_columns": [
-                {
-                  "column_id": 446
-                }
-              ],
               "transform_expr": "to_number(`RoadSurfaceTemperature`)",
               "output_column_id": 452,
               "output_soql_type": "SoQLNumber",
@@ -97,11 +72,6 @@ export default {
           },
           {
             "transform": {
-              "transform_input_columns": [
-                {
-                  "column_id": 447
-                }
-              ],
               "transform_expr": "to_number(`AirTemperature`)",
               "output_column_id": 453,
               "output_soql_type": "SoQLNumber",

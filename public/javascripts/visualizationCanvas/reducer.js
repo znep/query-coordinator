@@ -185,6 +185,7 @@ export default (state = initialState(), action) => {
     // Redirect if we're saving for the first time
     case HANDLE_SAVE_SUCCESS:
       if (state.isEphemeral) {
+        window.onbeforeunload = null;
         window.location = `/d/${action.response.id}`;
         return state;
       }

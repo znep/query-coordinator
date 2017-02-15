@@ -7,6 +7,7 @@ import createDebounce from 'redux-debounced';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { t } from 'lib/I18n';
+import confirmUnload from 'lib/confirmUnload';
 
 // This has the side effect of initializing mixpanel
 import '../common/mixpanelTracking';
@@ -31,6 +32,8 @@ if (window.serverConfig.environment === 'development') {
 
 const store = createStore(visualizationCanvas, applyMiddleware(...middleware));
 store.dispatch(fetchColumnStats());
+
+window.onbeforeunload = confirmUnload(store);
 
 // Defer rendering so the spinner in the erb can render.
 _.defer(function() {

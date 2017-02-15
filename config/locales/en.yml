@@ -4701,4 +4701,5 @@ en:
     save_error: Oh no! Something went wrong.
     save_error_retry_prompt: Try saving again.
     save_success: Success! Your changes were saved!
+    unsaved_changes: Are you sure you want to close without saving changes?
     visualization_error: There was a problem rendering this visualization.

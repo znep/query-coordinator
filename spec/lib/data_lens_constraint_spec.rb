@@ -34,18 +34,7 @@ describe Constraints::DataLensConstraint do
 
       it 'is accepted' do
         allow(data_lens).to receive(:data_lens?).and_return(true)
-        allow(data_lens).to receive(:visualization_canvas?).and_return(false)
         expect(constraint.matches?(request_without_query)).to be_truthy
-      end
-
-    end
-
-    context 'when the given ID corresponds to a visualization canvas' do
-
-      it 'is not accepted' do
-        allow(data_lens).to receive(:data_lens?).and_return(true)
-        allow(data_lens).to receive(:visualization_canvas?).and_return(true)
-        expect(constraint.matches?(request_without_query)).to be_falsy
       end
 
     end
@@ -54,7 +43,6 @@ describe Constraints::DataLensConstraint do
 
       it 'is not accepted' do
         allow(data_lens).to receive(:data_lens?).and_return(false)
-        allow(data_lens).to receive(:visualization_canvas?).and_return(false)
         expect(constraint.matches?(request_without_query)).to be_falsy
       end
 

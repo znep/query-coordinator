@@ -14,9 +14,9 @@ describe VisualizationCanvasController do
           :filters => []
         }
       },
-      :displayType => 'data_lens',
+      :displayType => 'visualization',
       :metadata => {
-        :availableDisplayTypes => ['data_lens']
+        :availableDisplayTypes => ['visualization']
       },
       :originalViewId => 'mama-dada'
     }

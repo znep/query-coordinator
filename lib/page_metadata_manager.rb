@@ -564,9 +564,8 @@ class PageMetadataManager
       :aggregationField => vif[:aggregation][:field]
     }.with_indifferent_access
 
-    # histograms will figure out what bucketType it thinks is best, but
-    # we need to pass it in explicity to standalone visualizations if
-    # we want it to respect the saved bucketType
+    # histograms will figure out what bucketType it thinks is best, but we need to pass it in
+    # explicity to polaroid if we want it to respect the saved bucketType
     if vif[:type] == 'histogramChart'
       card[:bucketType] = configuration[:bucketType]
     end

@@ -12,9 +12,9 @@ class VisualizationCanvasController < ApplicationController
       :name => body['view']['name'],
       :description => body['view']['description'],
       :displayFormat => serialize_display_format(body),
-      :displayType => 'data_lens',
+      :displayType => 'visualization',
       :metadata => {
-        :availableDisplayTypes => ['data_lens']
+        :availableDisplayTypes => ['visualization']
       },
       :originalViewId => body['parentView']['id']
     }

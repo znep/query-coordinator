@@ -577,23 +577,6 @@ class ViewTest < Minitest::Test
     assert_equal(view.time_last_updated_at.class, Time)
   end
 
-  def test_visualization?
-    load_sample_data('test/fixtures/sample-data.json')
-    view = View.find('test-data')
-
-    view.stubs(:standalone_visualization? => true, :classic_visualization? => true)
-    assert(view.visualization?)
-
-    view.stubs(:standalone_visualization? => true, :classic_visualization? => false)
-    assert(view.visualization?)
-
-    view.stubs(:standalone_visualization? => false, :classic_visualization? => true)
-    assert(view.visualization?)
-
-    view.stubs(:standalone_visualization? => false, :classic_visualization? => false)
-    assert(view.visualization? == false)
-  end
-
   def test_classic_visualization?
     load_sample_data('test/fixtures/sample-data.json')
     view = View.find('test-data')
@@ -643,19 +626,6 @@ class ViewTest < Minitest::Test
 
     view.stubs(:is_tabular? => false, :displayType => 'notmap')
     refute(view.classic_map?)
-  end
-
-  def test_visualization_interchange_format_v1
-    vif_fixture_string = '{"5": "five"}'
-    view = View.new('viewType' => 'tabular', 'displayType' => 'data_lens_chart', 'displayFormat' => {
-      'visualization_interchange_format_v1' => vif_fixture_string
-    })
-
-    assert_equal(view.visualization_interchange_format_v1, '5' => 'five')
-
-    view.stubs(:standalone_visualization? => false)
-
-    assert_raises(RuntimeError) { view.visualization_interchange_format_v1 }
   end
 
   def test_display_format_columns

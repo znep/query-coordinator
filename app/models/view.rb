@@ -1435,20 +1435,11 @@ class View < Model
   end
 
   def visualization_canvas?
-    data_lens? && !(displayFormat && displayFormat.has_data_lens_metadata?)
+    is_tabular? && displayType == 'visualization'
   end
 
   def has_landing_page?
     dataset? || is_blobby? || is_href?
-  end
-
-  def visualization?
-    standalone_visualization? || classic_visualization?
-  end
-
-  # standalone visualization saved from a data lens (creating these is now deprecated)
-  def standalone_visualization?
-    is_tabular? && (is_data_lens_chart? || is_data_lens_map?)
   end
 
   def classic_visualization?
@@ -1469,14 +1460,6 @@ class View < Model
 
   def is_data_lens_map?
     displayType == 'data_lens_map'
-  end
-
-  def visualization_interchange_format_v1
-    raise 'Only standalone visualizations have VIF representations' unless standalone_visualization?
-
-    JSON::parse(
-      displayFormat.visualization_interchange_format_v1
-    ).with_indifferent_access
   end
 
   # Returns an array of column names that are mentioned in
@@ -1678,7 +1661,7 @@ class View < Model
     # when we throw localization into the mix.
 
     # If it looks like a blist and quacks like a blist, it still might not be a blist...
-    is_not_dataset = [is_blobby?, standalone_visualization?, data_lens?, is_href?, is_api?].any?
+    is_not_dataset = [is_blobby?, data_lens?, is_href?, is_api?].any?
     is_blist? && !is_not_dataset
   end
 

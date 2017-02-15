@@ -19,8 +19,7 @@ RSpec.describe ProfileHelper, type: :helper do
         canonical_domain_name: 'example.com',
         story?: is_story,
         data_lens?: false,
-        is_api?: false,
-        standalone_visualization?: false)
+        is_api?: false)
     end
 
     before do

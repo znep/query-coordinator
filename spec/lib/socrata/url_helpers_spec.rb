@@ -49,7 +49,6 @@ RSpec.describe 'Socrata::UrlHelpers' do
     let(:is_pulse) { false }
     let(:is_story) { false }
     let(:is_data_lens) { false }
-    let(:is_standalone_visualization) { false }
     let(:can_edit_story) { true }
     let(:can_preview_story) { true }
     let(:viewing_others_profile) { false }
@@ -65,8 +64,7 @@ RSpec.describe 'Socrata::UrlHelpers' do
         story?: is_story,
         pulse?: is_pulse,
         data_lens?: is_data_lens,
-        is_api?: false,
-        standalone_visualization?: is_standalone_visualization)
+        is_api?: false)
     end
 
     before do
@@ -83,13 +81,6 @@ RSpec.describe 'Socrata::UrlHelpers' do
 
       describe 'when encountering a data lens' do
         let(:is_data_lens) { true }
-        it 'returns the correct URL' do
-          expect(helpers.view_url(view)).to eq('//example.com/view/four-four')
-        end
-      end
-
-      describe 'when encountering a standalone visualization' do
-        let(:is_standalone_visualization) { true }
         it 'returns the correct URL' do
           expect(helpers.view_url(view)).to eq('//example.com/view/four-four')
         end
@@ -132,13 +123,6 @@ RSpec.describe 'Socrata::UrlHelpers' do
         end
       end
 
-      describe 'when encountering a standalone visualization' do
-        let(:is_standalone_visualization) { true }
-        it 'returns the correct URL' do
-          expect(helpers.short_view_url(view)).to eq('//example.com/view/four-four')
-        end
-      end
-
       describe 'when encountering a Pulse view' do
         let(:is_pulse) { true }
         it 'returns a Pulse url' do
@@ -174,13 +158,6 @@ RSpec.describe 'Socrata::UrlHelpers' do
         end
       end
 
-      describe 'when encountering a standalone visualization' do
-        let(:is_standalone_visualization) { true }
-        it 'raises' do
-          expect { helpers.preview_story_url(view) }.to raise_error('view is not a story')
-        end
-      end
-
       describe 'when encountering a Pulse view' do
         let(:is_pulse) { true }
         it 'raises' do
@@ -211,13 +188,6 @@ RSpec.describe 'Socrata::UrlHelpers' do
 
       describe 'when encountering a data lens' do
         let(:is_data_lens) { true }
-        it 'raises' do
-          expect { helpers.edit_story_url(view) }.to raise_error('view is not a story')
-        end
-      end
-
-      describe 'when encountering a standalone visualization' do
-        let(:is_standalone_visualization) { true }
         it 'raises' do
           expect { helpers.edit_story_url(view) }.to raise_error('view is not a story')
         end

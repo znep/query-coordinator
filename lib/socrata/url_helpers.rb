@@ -12,7 +12,7 @@ module Socrata
         # use the view's federation resolution but throw away the rest for the resource name instead.
         # todo
         developer_docs_url(view.route_params.only( :host ).merge( resource: view.resourceName || '' ))
-      elsif view.data_lens? || view.standalone_visualization?
+      elsif view.data_lens?
         "//#{view.canonical_domain_name}#{locale_url_prefix}/view/#{view.id}"
       elsif view.story?
         story_url(view)
@@ -28,7 +28,7 @@ module Socrata
         raise 'The short_view_url method could not find the super class implementation. Is this module in the right place?'
       end
 
-      if view.is_api? || view.data_lens? || view.standalone_visualization? || view.pulse?
+      if view.is_api? || view.data_lens? || view.pulse?
         view_url(view)
       elsif view.story?
         "//#{view.canonical_domain_name}/stories/s/#{view.id}"

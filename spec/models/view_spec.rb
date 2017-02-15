@@ -227,38 +227,33 @@ describe View do
   end
 
   describe '.visualization_canvas?' do
-    let(:data_lens_data) do
+    let(:visualization_canvas_data) do
       {
         'viewType' => 'tabular',
-        'displayType' => 'data_lens',
+        'displayType' => 'visualization',
         'displayFormat' => {}
       }
     end
 
     context 'view is a visualization canvas' do
-      it 'returns true when it has no data lens metadata in displayFormat' do
-        expect(View.new(data_lens_data).visualization_canvas?).to be true
+      it 'returns true when the displayType is visualization' do
+        expect(View.new(visualization_canvas_data).visualization_canvas?).to be true
       end
 
       it 'returns true when displayFormat is not defined' do
-        data_lens_data.delete('displayFormat')
-        expect(View.new(data_lens_data).visualization_canvas?).to be true
+        visualization_canvas_data.delete('displayFormat')
+        expect(View.new(visualization_canvas_data).visualization_canvas?).to be true
       end
     end
 
     it 'returns false when view type is not tabular' do
-      data_lens_data['viewType'] = 'geospatial'
-      expect(View.new(data_lens_data).visualization_canvas?).to be false
+      visualization_canvas_data['viewType'] = 'geospatial'
+      expect(View.new(visualization_canvas_data).visualization_canvas?).to be false
     end
 
-    it 'returns false when a not a data lens' do
-      data_lens_data['displayType'] = 'map'
-      expect(View.new(data_lens_data).visualization_canvas?).to be false
-    end
-
-    it 'returns false when it has non-visualization canvas data lens metadata' do
-      data_lens_data['displayFormat'] = { 'data_lens_page_metadata' => {} }
-      expect(View.new(data_lens_data).visualization_canvas?).to be false
+    it 'returns false when not a visualization canvas' do
+      visualization_canvas_data['displayType'] = 'data_lens'
+      expect(View.new(visualization_canvas_data).visualization_canvas?).to be false
     end
   end
 

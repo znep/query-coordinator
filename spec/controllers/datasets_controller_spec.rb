@@ -22,7 +22,13 @@ describe DatasetsController do
       :columns => [],
       :name => 'Data-Lens',
       :viewType => 'tabular',
-      :displayType => 'data_lens'
+      :displayType => 'data_lens',
+      :displayFormat => {
+        :data_lens_page_metadata => {
+          :name => 'test name',
+          :description => 'test description'
+        }
+      }
     }
   end
 
@@ -259,6 +265,55 @@ describe DatasetsController do
       expect(response).to have_http_status(:success)
     end
 
+  end
+
+  describe 'edit_metadata' do
+    before(:each) do
+      init_core_session
+      init_current_domain
+      init_feature_flag_signaller
+      init_current_user(controller)
+      login
+      allow(subject).to receive(:get_view).and_return(derived_view)
+      allow(subject).to receive(:using_canonical_url?).and_return(true)
+      subject.instance_variable_set('@meta', {})
+      allow(subject).to receive(:enable_site_chrome?).and_return(false)
+      stub_site_chrome
+    end
+
+    context 'when saving a data lens' do
+      let(:payload) do
+        {
+          :name => 'new name',
+          :description => 'new description'
+        }
+      end
+
+      let(:save_payload) do
+        {
+          :name => 'new name',
+          :description => 'new description',
+          :displayFormat => {
+            :data_lens_page_metadata => {
+              :name => 'new name',
+              :description => 'new description'
+            }
+          }
+        }
+      end
+
+      it 'should write the view name and description through to the display format metadata' do
+        stub_request(:put, 'http://localhost:8080/views/data-lens.json').
+          with(:body => payload).
+          to_return(:status => 200, :body => JSON.dump(payload), :headers => {})
+
+        stub_request(:put, 'http://localhost:8080/views/data-lens.json').
+          with(:body => hash_including(save_payload)).
+          to_return(:status => 200, :body => '')
+
+        get :edit_metadata, :category => 'Personal', :view_name => 'Problems', :id => 'data-lens', :view => payload
+      end
+    end
   end
 
 end

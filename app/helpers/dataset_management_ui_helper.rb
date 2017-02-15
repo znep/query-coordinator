@@ -15,10 +15,11 @@ module DatasetManagementUiHelper
   end
 
   def render_dataset_management_ui_translations
-    translations = LocaleCache .render_translations([LocalePart.dataset_management_ui])['dataset_management_ui']
+    translations = LocaleCache.render_translations([LocalePart.dataset_management_ui])['dataset_management_ui']
     translations = translations.merge(
       data_types: LocaleCache.render_translations([LocalePart.core.data_types])['core']['data_types'],
-      edit_metadata: LocaleCache.render_translations([LocalePart.screens.edit_metadata])['screens']['edit_metadata']
+      edit_metadata: LocaleCache.render_translations([LocalePart.screens.edit_metadata])['screens']['edit_metadata'],
+      schema_preview: LocaleCache.render_translations([LocalePart.dataset_landing_page])['dataset_landing_page']['schema_preview']
     )
 
     common = LocaleCache.render_translations([LocalePart.common])['common']

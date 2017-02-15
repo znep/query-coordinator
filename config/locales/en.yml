@@ -1595,6 +1595,8 @@ en:
       only_layer: (Only Layer)
       preview: Preview
       apply_update: Apply Update
+      schema_preview: Columns in this Dataset
+      schema_preview_blurb: Add a data file to see a schema preview.
       no_description_how_to: No description yet, set one by clicking the 'Edit Metadata' button
     manage: Manage
     manage_uploads:

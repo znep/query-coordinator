@@ -2,6 +2,7 @@
 
 @import "common/breakpoints";
 @import "common/metadata-table";
+@import "common/schema-preview";
 
 @import "dataset-landing-page/alerts";
 @import "dataset-landing-page/blob-preview";
@@ -10,7 +11,6 @@
 @import "dataset-landing-page/download-section";
 @import "dataset-landing-page/featured-content";
 @import "dataset-landing-page/featured-content-modal";
-@import "dataset-landing-page/schema-preview";
 @import "dataset-landing-page/view-widget";
 
 // Miscellaneous colors not in styleguide

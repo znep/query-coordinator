@@ -2,10 +2,11 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { InfoPane } from 'socrata-components';
 import MetadataTable from '../../common/components/MetadataTable';
+import SchemaPreview from './SchemaPreview';
 import MetadataSidebar from './MetadataSidebar';
 import * as Links from '../links';
 
-export function ShowUpdate({ view, routing }) {
+export function ShowUpdate({ view, routing, db }) {
   let metadataSection;
   const paneProps = {
     name: view.name,
@@ -44,11 +45,12 @@ export function ShowUpdate({ view, routing }) {
       <MetadataTable {...tableProps} />
     </div>
   );
-
   return (
     <div id="home-pane">
-      <div className="home-content">
+      <div className="home-content container">
         {metadataSection}
+        <SchemaPreview db={db} />
+
         <section className="management-ui-section">
           <h2>{I18n.home_pane.data}</h2>
           <div className="alert default manage-section-box">
@@ -64,12 +66,14 @@ export function ShowUpdate({ view, routing }) {
 
 ShowUpdate.propTypes = {
   view: PropTypes.object.isRequired,
-  routing: PropTypes.object.isRequired
+  routing: PropTypes.object.isRequired,
+  db: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
   view: state.db.views[0],
-  routing: state.routing
+  routing: state.routing,
+  db: state.db
 });
 
 export default connect(mapStateToProps)(ShowUpdate);

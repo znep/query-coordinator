@@ -1,6 +1,8 @@
 @import "styleguide-colors";
 @import "common/metadata-table";
+@import "common/schema-preview";
 
+// Overrides from DSLP
 #info-pane-container {
   // Needed to override some stuff from _cards.scss
   .info-pane .container {
@@ -25,12 +27,22 @@
   }
 }
 
+// This is copied from site-chrome
 #site-chrome-header {
   min-height: 56px;
 }
 
 #site-chrome-footer {
   min-height: 164px;
+}
+
+// This is copied from DSLP - styleguidify...somehow?
+.container .landing-page-section .section-content {
+  background: $white;
+  border: 1px $light-grey-4 solid;
+  border-bottom-width: 2px;
+  display: flex;
+  align-items: flex-start;
 }
 
 .dataset-management-ui {
@@ -101,7 +113,7 @@
   }
 
 
-  .management-ui-section, .metadata-table-wrapper {
+  .management-ui-section, .metadata-table-wrapper, section {
     padding: 1em;
   }
   .management-ui-section {

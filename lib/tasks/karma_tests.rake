@@ -114,7 +114,9 @@ namespace :test do
         all_translations = YAML.load_file(translations_filename)['en']
         translations = all_translations['dataset_management_ui'].merge(
           data_types: all_translations['core']['data_types'],
-          edit_metadata: all_translations['screens']['edit_metadata']
+          edit_metadata: all_translations['screens']['edit_metadata'],
+          schema_preview: all_translations['dataset_landing_page']['schema_preview']
+
         )
 
         common = all_translations['common']

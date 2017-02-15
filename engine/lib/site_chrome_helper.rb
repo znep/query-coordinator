@@ -37,7 +37,10 @@ module SiteChromeHelper
 
   def site_chrome_javascript_tag
     if using_custom_header_footer?
-      javascript_tag("window.current_user = #{site_chrome_current_user || {}};") <<
+      javascript_tag(File.read(
+        "#{SocrataSiteChrome::Engine.root}/app/assets/javascripts/socrata_site_chrome/disable_preview.js"
+      )) <<
+        javascript_tag("window.current_user = #{site_chrome_current_user || {}};") <<
         javascript_tag(raw(custom_header_footer_content[:header][:js])) <<
         javascript_tag(raw(custom_header_footer_content[:footer][:js]))
     else

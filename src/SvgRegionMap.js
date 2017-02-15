@@ -394,9 +394,7 @@ $.fn.socrataSvgRegionMap = function(originalVif) {
       'configuration.shapefile.uid',
       'series[0].dataSource.dimension.columnName',
       'series[0].dataSource.domain',
-      'series[0].dataSource.datasetUid',
-      'series[0].unit.one',
-      'series[0].unit.other'
+      'series[0].dataSource.datasetUid'
     );
 
     utils.assertIsOneOfTypes(
@@ -426,16 +424,6 @@ $.fn.socrataSvgRegionMap = function(originalVif) {
 
     utils.assertIsOneOfTypes(
       _.get(vifToRender, 'series[0].dataSource.datasetUid'),
-      'string'
-    );
-
-    utils.assertIsOneOfTypes(
-      _.get(vifToRender, 'series[0].unit.one'),
-      'string'
-    );
-
-    utils.assertIsOneOfTypes(
-      _.get(vifToRender, 'series[0].unit.other'),
       'string'
     );
 

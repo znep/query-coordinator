@@ -117,15 +117,6 @@ describe('SvgRegionMap jQuery component', function() {
 
           $container.socrataSvgRegionMap(vif);
         });
-
-        // missing unit
-        assert.throws(function() {
-          var vif = _.cloneDeep(regionMapVif);
-
-          delete vif.unit;
-
-          $container.socrataSvgRegionMap(vif);
-        });
       });
     });
 

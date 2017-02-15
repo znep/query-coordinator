@@ -40,16 +40,12 @@ $.fn.socrataSvgFeatureMap = function(originalVif) {
     originalVif,
     'series[0].dataSource.dimension.columnName',
     'series[0].dataSource.datasetUid',
-    'series[0].dataSource.domain',
-    'series[0].unit.one',
-    'series[0].unit.other'
+    'series[0].dataSource.domain'
   );
 
   utils.assertIsOneOfTypes(originalVif.series[0].dataSource.dimension.columnName, 'string');
   utils.assertIsOneOfTypes(originalVif.series[0].dataSource.domain, 'string');
   utils.assertIsOneOfTypes(originalVif.series[0].dataSource.datasetUid, 'string');
-  utils.assertIsOneOfTypes(originalVif.series[0].unit.one, 'string');
-  utils.assertIsOneOfTypes(originalVif.series[0].unit.other, 'string');
 
   var $element = $(this);
   var datasetMetadata;

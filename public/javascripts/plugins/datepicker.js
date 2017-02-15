@@ -2,9 +2,9 @@
  *
  * Date picker
  * Author: Stefan Petre www.eyecon.ro
- * 
+ *
  * Dual licensed under the MIT and GPL licenses
- * 
+ *
  * Edits made by jeff.scherpelz@socrata.com
  *  + Added ability to fully remove picker when done
  *  + Removed extra border divs
@@ -733,7 +733,7 @@ l : window.pageXOffset || (m ? document.documentElement.scrollLeft : document.bo
                             options.current = new Date();
                         } else {
                             options.current = parseDate(options.current, options.format);
-                        } 
+                        }
                         options.current.setDate(1);
                         options.current.setHours(0,0,0,0);
                         var id = 'datepicker_' + parseInt(Math.random() * 1000), cnt;
@@ -831,9 +831,9 @@ l : window.pageXOffset || (m ? document.documentElement.scrollLeft : document.bo
                     }
                 });
             },
-            getDate: function(formated) {
+            getDate: function(formatted) {
                 if (this.size() > 0) {
-                    return prepareDate($('#' + $(this).data('datepickerId')).data('datepicker'))[formated ? 0 : 1];
+                    return prepareDate($('#' + $(this).data('datepickerId')).data('datepicker'))[formatted ? 0 : 1];
                 }
             },
             clear: function(){

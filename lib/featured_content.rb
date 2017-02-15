@@ -19,7 +19,7 @@ class FeaturedContent
     end
 
     def create_or_update(id, parent_type, featured_item)
-      formated_featured_item(JSON.parse(
+      formatted_featured_item(JSON.parse(
         CoreServer::Base.connection.create_request('/featured_content', featured_item.to_json)
       ))
     end
@@ -39,7 +39,7 @@ class FeaturedContent
 
     private
 
-    def formated_featured_item(featured_item)
+    def formatted_featured_item(featured_item)
       # This contentType is not to be confused with content-type in the context of HTTP requests.
       # contentType can be either 'internal' or 'external'. When it's 'internal' and parentType is
       # 'catalog_query' then the parentUid points to an entry in the catalog_queries table. When the

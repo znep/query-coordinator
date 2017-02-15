@@ -122,7 +122,7 @@ describe FeaturedContent do
 
   context 'reformatting the data' do
     it 'formats the featured item' do
-      formatted_result = FeaturedContent.send(:formated_featured_item, featured_item)
+      formatted_result = FeaturedContent.send(:formatted_featured_item, featured_item)
 
       expect(formatted_result['featuredView']).to eq(formatted_view)
     end
@@ -135,7 +135,7 @@ describe FeaturedContent do
     it 'does not try to format the view of an internal catalog landing page item' do
       expect(FeaturedContent).to receive(:format_view_widget).never
 
-      FeaturedContent.send(:formated_featured_item, clp_featured_item)
+      FeaturedContent.send(:formatted_featured_item, clp_featured_item)
     end
   end
 

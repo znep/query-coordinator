@@ -178,6 +178,7 @@ class CustomContentController < ApplicationController
     # template, instead of the main layout
     @custom_meta = @meta
     @meta = nil
+    @page_title = [ @page.name, get_site_title ].reject(&:blank?).join(' | ')
   end
 
   before_filter :only => [:template] { |c| c.require_right(UserRights::CREATE_PAGES) }

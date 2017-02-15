@@ -129,7 +129,7 @@
     "redux-logger": "2.6.1",
     "redux-thunk": "2.1.0",
     "reselect": "2.5.3",
-    "socrata-components": "11.1.2",
+    "socrata-components": "11.1.4",
     "socrata-utils": "3.2.0",
     "whatwg-fetch": "1.0.0"
   },

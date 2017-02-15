@@ -19,6 +19,6 @@ module UserSessionsHelper
   end
 
   def password_validation_error?(error)
-    /^Your password must satisfy three of the following four criteria/.match(error).nil?
+    /^Your password must satisfy three of the following four criteria/.match(error).present?
   end
 end

@@ -50,12 +50,13 @@
 
     <%= include_webpack_bundle 'data-cards/main.js' %>
 
-    <%= site_chrome_javascript_tag if enable_site_chrome? %>
     <%== site_chrome_header(request, response) if render_site_chrome? %>
 
     <%= yield %>
 
     <%== site_chrome_footer(request, response, :size => 'small') if render_site_chrome? %>
+
+    <%= site_chrome_javascript_tag if enable_site_chrome? || enable_govstat_chrome? %>
   </body>
 
 

@@ -98,10 +98,6 @@ export default React.createClass({
     }
   },
 
-  onMouseUpDropdown() {
-    this.setState({ focused: true, opened: false });
-  },
-
   onClickPlaceholder() {
     this.onAnyScroll();
     this.setState({ opened: !this.state.opened });
@@ -304,7 +300,6 @@ export default React.createClass({
     const dropdownAttributes = {
       id,
       ref: ref => this.dropdownRef = ref,
-      onMouseUp: this.onMouseUpDropdown,
       className: classNames('dropdown-container', {
         'dropdown-focused': focused,
         'dropdown-opened': opened,

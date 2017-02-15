@@ -19,7 +19,17 @@ describe FeaturedContent do
       :position => 2,
       :contentType => 'internal', # Or 'external' -- this is not a MIME type
       :name => 'featured',
+      :parentType => 'data_lens',
       :featuredView => view
+    }.with_indifferent_access
+  end
+
+  let(:clp_featured_item) do
+    {
+      :position =>  0,
+      :contentType => 'internal',
+      :name => 'Catalog Landing Page Internal Featured Content Item',
+      :parentType => 'catalog_query'
     }.with_indifferent_access
   end
 
@@ -120,6 +130,12 @@ describe FeaturedContent do
     it 'formats the view widget' do
       formatted_result = subject.send(:format_view_widget, view)
       expect(formatted_result).to eq(formatted_view)
+    end
+
+    it 'does not try to format the view of an internal catalog landing page item' do
+      expect(FeaturedContent).to receive(:format_view_widget).never
+
+      FeaturedContent.send(:formated_featured_item, clp_featured_item)
     end
   end
 

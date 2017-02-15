@@ -41,7 +41,11 @@ class FeaturedContent
 
     def formated_featured_item(featured_item)
       # This contentType is not to be confused with content-type in the context of HTTP requests.
-      if featured_item.fetch('contentType') == 'internal' # Can also be 'external'
+      # contentType can be either 'internal' or 'external'. When it's 'internal' and parentType is
+      # 'catalog_query' then the parentUid points to an entry in the catalog_queries table. When the
+      # parentType is 'data_lens', then parentUid is the 4x4 of the parent view. Furthermore, the
+      # parentType property is only present on 'internal' featured content items, so we check that last.
+      if featured_item.fetch('contentType') == 'internal' && featured_item.fetch('parentType') != 'catalog_query'
         featuredView = format_view_widget(View.setup_model(featured_item['featuredView'] || featured_item['id']))
       end
       featured_item.merge(:featuredView => featuredView).compact

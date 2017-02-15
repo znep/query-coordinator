@@ -82,9 +82,7 @@ $.fn.socrataTable = function(originalVif) {
       originalVif,
       'configuration.order',
       'series[0].dataSource.datasetUid',
-      'series[0].dataSource.domain',
-      'series[0].unit.one',
-      'series[0].unit.other'
+      'series[0].dataSource.domain'
     );
     utils.assert(
       Array.isArray(_.get(originalVif, 'configuration.order')),

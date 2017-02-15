@@ -62,15 +62,21 @@ export const isNonEmptyString = string => {
 };
 
 export const setUnits = (series, action) => {
-  const rowDisplayUnit = _.get(action, 'phidippidesMetadata.rowDisplayUnit', translate('visualizations.common.unit.one'));
+  const rowDisplayUnit = _.get(action, 'phidippidesMetadata.rowDisplayUnit', null);
   const unitOne = _.get(series, 'unit.one', null);
   const unitOther = _.get(series, 'unit.other', null);
 
-  if (unitOne === null) {
+  // EN-13353 - Error Creating Region Map
+  //
+  // Some customers may have overridden 'rowDisplayUnit' to be an empty string.
+  // The `utils.pluralize` function incorrectly pluralizes an empty string as
+  // 's', so instead we don't want to override the defaults (which are also
+  // empty strings, just for both `unit.one` and `unit.other`) in this case.
+  if (unitOne === null && !_.isEmpty(rowDisplayUnit)) {
     setStringValueOrDefaultValue(series, 'unit.one', rowDisplayUnit);
   }
 
-  if (unitOther === null) {
+  if (unitOther === null && !_.isEmpty(rowDisplayUnit)) {
     setStringValueOrDefaultValue(series, 'unit.other', utils.pluralize(rowDisplayUnit));
   }
 };

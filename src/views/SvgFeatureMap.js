@@ -675,8 +675,8 @@ function SvgFeatureMap(element, vif) {
     var payload;
     var manyRows = flyoutData.count > maxRowInspectorDensity;
     var denseData = flyoutData.totalPoints >= maxTileDensity;
-    var unitOne = _.get(lastRenderedVif, 'series[0].unit.one');
-    var unitOther = _.get(lastRenderedVif, 'series[0].unit.other');
+    var unitOne = self.getUnitOneBySeriesIndex(0);
+    var unitOther = self.getUnitOtherBySeriesIndex(0);
     var rowCountUnit = flyoutData.count === 1 ? unitOne : unitOther;
 
     payload = {

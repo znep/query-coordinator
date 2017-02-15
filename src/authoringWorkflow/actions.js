@@ -259,7 +259,6 @@ export const REQUEST_SHAPEFILE_METADATA = 'REQUEST_SHAPEFILE_METADATA';
 export function requestShapefileMetadata(domain, shapefileUid) {
   return dispatch => {
     const shapefileMetadataProvider = new MetadataProvider({domain, datasetUid: shapefileUid});
-    const handleShapefileMetadataError = (error) => dispatch(handleShapefileMetadataError(error));
     const handleShapefileMetadata = ({ featurePk, geometryLabel }) => {
       dispatch(setShapefile(shapefileUid, featurePk, geometryLabel));
     };
@@ -268,8 +267,7 @@ export function requestShapefileMetadata(domain, shapefileUid) {
 
     return shapefileMetadataProvider.
       getShapefileMetadata(shapefileUid).
-      then(handleShapefileMetadata).
-      catch(handleShapefileMetadataError);
+      then(handleShapefileMetadata);
   };
 }
 

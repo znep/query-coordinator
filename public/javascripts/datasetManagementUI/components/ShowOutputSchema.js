@@ -137,7 +137,7 @@ export function ShowOutputSchema({
             onClick={applyUpdate}
             disabled={!canApplyUpdate}
             className="btn btn-primary apply-update">
-            {I18n.home_pane.apply_update}
+            {I18n.home_pane.process_data}
           </button>
         </ModalFooter>
       </Modal>

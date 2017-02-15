@@ -116,41 +116,6 @@
     });
   });
 
-  // Special validator for handling ESRI Layer URLs
-  $.validator.addMethod('data-custom-validlayerurl', function(value, element, param) {
-    if (this.optional(element)) {
-      return true;
-    }
-    if (param == 'valid') {
-      return true;
-    }
-    if (_.include(['invalid', 'verifying'], param)) {
-      return false;
-    }
-
-    var $element = $(element);
-    var validator = this;
-    $element.attr('data-custom-validlayerurl', 'verifying');
-    $.getJSON('/proxy/verify_layer_url', {
-      'url': value
-    }, function(data) {
-      if (data.value) {
-        $element.val(data.value);
-        $element.attr('data-custom-validlayerurl', 'valid');
-        $element.closest('.inputBlock').
-        find('select option:selected').
-        attr('data-custom-type', data.data.type);
-      } else {
-        $element.attr('data-custom-validlayerurl', 'invalid');
-      }
-      validator.element(element);
-    });
-  }, function(value) {
-    return _.include(['unverified', 'verifying'], value) ?
-      $.t('screens.ds.grid_sidebar.base.validation.verifying_url') :
-      $.t('screens.ds.grid_sidebar.base.validation.invalid_url');
-  });
-
   $.validator.addMethod('data-validateMin', function(value, element, param) {
     value = parseInt(value);
     if (_.isNaN(value)) {

@@ -36,21 +36,6 @@
     }];
   };
 
-  // proxy/verify_layer_url is unavailable when not logged in.
-  if (blist.currentUser) {
-    mapTypes = mapTypes.concat({
-      text: $.t('screens.ds.grid_sidebar.map.layers.custom'),
-      value: 'custom',
-      data: {
-        type: null
-      }
-    });
-  }
-
-  var normalizeLayerUrl = function($control) {
-    $control.attr('data-custom-validlayerurl', 'unverified');
-  };
-
   var heatmapRegionOptions = function(heatmapType) {
     // heatmapType appears to be an object. weird.
     var isInvalid = $.isBlank(heatmapType) ||
@@ -462,20 +447,6 @@
             prompt: $.t('screens.ds.grid_sidebar.map.base_layers.layer_prompt'),
             options: mapTypes,
             defaultValue: 'World Street Map (ESRI)'
-          }, {
-            text: $.t('screens.ds.grid_sidebar.map.base_layers.layer_url'),
-            type: 'text',
-            name: 'custom_url',
-            onlyIf: {
-              field: 'layerKey',
-              value: 'custom'
-            },
-            defaultValue: 'https://',
-            required: true,
-            data: {
-              'validlayerurl': 'unverified'
-            },
-            change: normalizeLayerUrl
           }, {
             text: $.t('screens.ds.grid_sidebar.map.base_layers.alias'),
             type: 'text',

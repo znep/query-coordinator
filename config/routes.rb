@@ -411,7 +411,6 @@ Rails.application.routes.draw do
       get '', :action => 'show', :as => :view
     end
 
-    get 'proxy/verify_layer_url' => 'datasets#verify_layer_url'
     get 'proxy/wkt_to_wkid' => 'datasets#wkt_to_wkid'
 
     scope :controller => 'datasets', :constraints => { :id => Frontend::UID_REGEXP } do

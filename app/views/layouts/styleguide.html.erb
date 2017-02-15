@@ -13,6 +13,10 @@
   </head>
 
   <%= content_tag :body, :class => @body_classes do %>
+    <%- if render_site_admin_chrome? -%>
+      <%== site_chrome_admin_header(request, response) %>
+    <%- end -%>
+
     <%== site_chrome_header(request, response) %>
 
     <div id="noticeContainer">

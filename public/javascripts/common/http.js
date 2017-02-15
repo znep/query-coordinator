@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export const defaultHeaders =  _.omitBy({
+export const defaultHeaders = _.omitBy({
   'Accept': 'application/json',
   'Content-Type': 'application/json',
   'X-CSRF-Token': window.serverConfig.csrfToken,

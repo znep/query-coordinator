@@ -54,7 +54,7 @@ class SiteAppearance
   attr_accessor :cookies, :errors, :request_id
 
   def initialize(attributes = nil)
-    @cookies = nil # Remember to set you cookies if you want to do any posting/putting!
+    @cookies = nil # Remember to set your cookies if you want to do any posting/putting!
     clear_errors
     initial_attributes = SiteAppearance.default_values
     initial_attributes.merge!(attributes) if attributes
@@ -317,9 +317,10 @@ class SiteAppearance
       !FeatureFlags.derive(nil, request).disable_site_chrome_header_footer_on_dataslate_pages
   end
 
-  # If the site chrome header/footer is enabled on ANY page, then we activate the Dataset Landing Page
+  # Enable the Dataset Landing Page if the site chrome header/footer is enabled on ANY page,
+  # or if custom site chrome is enabled.
   def dslp_enabled?
-    activation_state.values.any?
+    activation_state.values.any? || custom_content_activated?
   end
 
   # True only if it has been activated and then reverted

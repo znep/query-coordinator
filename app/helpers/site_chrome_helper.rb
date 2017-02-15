@@ -154,7 +154,7 @@ module SiteChromeHelper
   end
 
   def site_appearance
-    @site_appearance ||= SiteAppearance.find
+    SiteAppearance.find
   end
 
   # Because this helper may be called either by the controller itself or by the

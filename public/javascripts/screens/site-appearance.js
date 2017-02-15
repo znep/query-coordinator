@@ -131,7 +131,7 @@ $(document).ready(function() {
   if ($('.site-appearance').hasClass('custom')) {
     $('button#site_appearance_preview').click(function(e) {
       e.preventDefault();
-      document.cookie = 'socrata_site_chrome_preview=true';
+      document.cookie = 'socrata_site_chrome_preview=true;path=/';
       location.reload();
     });
 
@@ -160,7 +160,7 @@ $(document).ready(function() {
     }
   };
 
-  // Submit the form from the active tab when save button is clicked
+  // Submit the form when save button is clicked
   $('button#site_appearance_save').click(function() {
     if ($siteAppearanceForm.length && $siteAppearanceForm.valid()) {
       preSubmitLinkCleansing();
@@ -181,7 +181,7 @@ $(document).ready(function() {
     }
   });
 
-  // Submit the form from the active tab when save button is clicked
+  // Submit the preview form when preview button is clicked
   $('button#site_appearance_preview').click(function(e) {
     e.preventDefault();
     if ($siteAppearanceForm.length && $siteAppearanceForm.valid()) {

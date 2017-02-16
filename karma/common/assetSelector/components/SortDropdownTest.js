@@ -2,21 +2,19 @@ import { SortDropdown } from 'SortDropdown';
 import _ from 'lodash';
 
 describe('SortDropdown', function() {
-  function defaultProps() {
-    return {
-      onSelection: undefined,
-      value: 'relevance'
-    };
-  }
+  const defaultProps = {
+    onSelection: undefined,
+    value: 'relevance'
+  };
 
   function getProps(props = {}) {
-    return {...defaultProps(), ...props};
+    return {...defaultProps, ...props};
   }
 
   it('renders', function() {
     var element = renderComponent(SortDropdown, getProps());
-    expect(element).to.exist;
-    expect(element.className).to.eq('sort-dropdown');
+    assert.isDefined(element);
+    assert.equal(element.className, 'sort-dropdown');
   });
 
   it('has options for each sort type', function() {
@@ -31,10 +29,10 @@ describe('SortDropdown', function() {
     var element = renderComponent(SortDropdown, getProps());
     var options = element.querySelectorAll('.picklist-option .picklist-title');
 
-    expect(options.length).to.eq(sortTypes.length);
+    assert.equal(options.length, sortTypes.length);
 
     _.forEach(options, (option) => {
-      expect(sortTypes.indexOf(option.textContent) > -1).to.be.true;
+      assert.isTrue(sortTypes.indexOf(option.textContent) > -1);
     });
   });
 
@@ -47,6 +45,6 @@ describe('SortDropdown', function() {
     })[0];
 
     TestUtils.Simulate.click(updatedAtOption);
-    expect(spy).to.have.been.calledWith({ title: 'Recently Updated', value: 'updatedAt' });
+    sinon.assert.calledWith(spy, { title: 'Recently Updated', value: 'updatedAt' });
   });
 });

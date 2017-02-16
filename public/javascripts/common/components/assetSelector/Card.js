@@ -27,10 +27,11 @@ export class Card extends React.Component {
   }
 
   viewCardProps() {
-    const { description, isPublic, link, name, previewImageUrl, type, updatedAt, viewCount } = this.props;
+    const { description, id, isPublic, link, name, previewImageUrl, type, updatedAt, viewCount } = this.props;
 
     return {
       name,
+      id,
       description,
       url: link,
       icon: getIconClassForDisplayType(type),
@@ -94,6 +95,7 @@ Card.propTypes = {
 };
 
 Card.defaultProps = {
+  id: '',
   link: '',
   name: '',
   onClose: _.noop,

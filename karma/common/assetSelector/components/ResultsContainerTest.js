@@ -1,44 +1,36 @@
 import { ResultsContainer } from 'ResultsContainer';
-import $ from 'jquery';
+import 'babel-polyfill';
+import _ from 'lodash';
 import ceteraUtils from 'ceteraUtils';
 import mockCeteraResponse from 'assetSelector/data/mockCeteraResponse';
 
 describe('ResultsContainer', function() {
-
-  function defaultProps() {
-    return {
-      additionalTopbarComponents: [],
-      category: 'Education',
-      onClose: _.noop,
-      onSelect: _.noop,
-      resultsPerPage: 6
-    };
-  }
+  const defaultProps = {
+    additionalTopbarComponents: [],
+    category: 'Education',
+    onClose: _.noop,
+    onSelect: _.noop,
+    resultsPerPage: 6
+  };
 
   function getProps(props = {}) {
-    return {...defaultProps(), ...props};
+    return {...defaultProps, ...props};
   }
 
   function stubFetch(ceteraResponse = { results: [], resultSetSize: 0 }) {
-    sinon.stub(ceteraUtils, 'fetch', function(options) {
-      var deferred = $.Deferred();
-      deferred.then = deferred.done;
-      deferred.catch = deferred.fail;
-
-      deferred.resolve({
+    sinon.stub(ceteraUtils, 'fetch',
+      _.constant(Promise.resolve({
         results: ceteraResponse.results,
         resultSetSize: ceteraResponse.resultSetSize
-      });
-
-      return deferred;
-    });
+      }))
+    );
   }
 
   it('renders', function() {
     stubFetch();
     var element = renderComponent(ResultsContainer);
-    expect(element).to.exist;
-    expect(element.className).to.match(/results-container/);
+    assert.isDefined(element);
+    assert.match(element.className, /results-container/);
     ceteraUtils.fetch.restore();
   });
 
@@ -47,29 +39,45 @@ describe('ResultsContainer', function() {
       ceteraUtils.fetch.restore();
     });
 
-    it('renders the "no results" element if the results array is empty', function() {
+    it('renders the "no results" element if the results array is empty', function(done) {
       stubFetch({ results: [], resultSetSize: 0 });
       var element = renderComponent(ResultsContainer);
-      expect(element.querySelector('.no-results')).to.exist;
+
+      _.defer(() => {
+        assert.isDefined(element.querySelector('.no-results'));
+        done();
+      });
     });
 
-    it('renders the results container if the results array is present', function() {
+    it('renders the results container if the results array is present', function(done) {
       stubFetch(mockCeteraResponse);
       var element = renderComponent(ResultsContainer);
-      expect(element).to.exist;
-      expect(element.querySelector('.card-container')).to.exist;
+
+      _.defer(() => {
+        assert.isDefined(element);
+        assert.isDefined(element.querySelector('.card-container'));
+        done();
+      });
     });
 
-    it('renders the total result count', function() {
+    it('renders the total result count', function(done) {
       stubFetch(mockCeteraResponse);
       var element = renderComponent(ResultsContainer);
-      expect(element.querySelector('.result-count').textContent).to.equal('1-6 of 16 Views');
+
+      _.defer(() => {
+        assert.equal(element.querySelector('.result-count').textContent, '1-6 of 16 Views');
+        done();
+      });
     });
 
-    it('renders the correct number of cards', function() {
+    it('renders the correct number of cards', function(done) {
       stubFetch(mockCeteraResponse);
       var element = renderComponent(ResultsContainer);
-      expect(element.querySelectorAll('.result-card').length).to.equal(6);
+
+      _.defer(() => {
+        assert.equal(element.querySelectorAll('.result-card').length, 6);
+        done();
+      });
     });
   });
 
@@ -78,7 +86,7 @@ describe('ResultsContainer', function() {
       var element = renderComponent(ResultsContainer, getProps({
         additionalTopbarComponents: []
       }));
-      expect(element).to.exist;
+      assert.isDefined(element);
     });
 
     it('renders an additional component in the topbar', function() {
@@ -87,7 +95,7 @@ describe('ResultsContainer', function() {
         additionalTopbarComponents: [testComponent]
       }));
 
-      expect(element.querySelector('.results-topbar').querySelector('.test')).to.exist;
+      assert.isDefined(element.querySelector('.results-topbar').querySelector('.test'));
     });
 
     it('renders multiple additional components in the topbar', function() {
@@ -98,9 +106,9 @@ describe('ResultsContainer', function() {
         additionalTopbarComponents: [testComponent1, testComponent2, testComponent3]
       }));
 
-      expect(element.querySelector('.results-topbar').querySelector('.test1')).to.exist;
-      expect(element.querySelector('.results-topbar').querySelector('.test2')).to.exist;
-      expect(element.querySelector('.results-topbar').querySelector('.test3')).to.exist;
+      assert.isDefined(element.querySelector('.results-topbar').querySelector('.test1'));
+      assert.isDefined(element.querySelector('.results-topbar').querySelector('.test2'));
+      assert.isDefined(element.querySelector('.results-topbar').querySelector('.test3'));
     });
   });
 });

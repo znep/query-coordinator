@@ -81,7 +81,7 @@ export const ceteraUtils = (() => {
 
         return {
           ..._.pick(
-            ceteraResultResource, 'id', 'name', 'description', 'provenance', 'createdAt', 'updatedAt'
+            ceteraResultResource, 'id', 'uid', 'name', 'description', 'provenance', 'createdAt', 'updatedAt'
           ),
           link: ceteraResult.link,
           type: mapResultType(ceteraResultResource.type),

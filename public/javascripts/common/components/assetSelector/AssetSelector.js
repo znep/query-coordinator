@@ -28,14 +28,14 @@ export class AssetSelector extends React.Component {
       overlay: true
     };
 
-    return modalIsOpen ?
+    return (modalIsOpen ?
       <Modal {...modalProps}>
         <ModalHeader title={headerTitle} onDismiss={onClose} />
         <ModalContent>
           <ResultsContainer {...resultsContainerProps} />
         </ModalContent>
-      </Modal>
-      : null;
+      </Modal> : null
+    );
   }
 }
 

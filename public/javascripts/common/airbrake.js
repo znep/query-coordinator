@@ -21,7 +21,7 @@ function init() {
   });
 
   airbrake.addReporter((notice) => {
-    console.log('Airbrake error: ', notice);
+    console.error('Airbrake error: ', notice);
   });
 }
 

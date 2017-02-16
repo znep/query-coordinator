@@ -185,3 +185,14 @@ $menu-item-border-color-active: #888;
     }
   }
 }
+
+@media (max-width: $small) {
+  .side-menu {
+    width: 100%;
+
+    &.menu-anchor-right,
+    &.menu-anchor-left {
+      box-shadow: none;
+    }
+  }
+}

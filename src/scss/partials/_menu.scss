@@ -112,3 +112,16 @@
     }
   }
 }
+
+@media (max-width: $small) {
+  .menu {
+    width: 100%;
+
+    &.menu-offscreen {
+      &.menu-anchor-right,
+      &.menu-anchor-left {
+        box-shadow: none;
+      }
+    }
+  }
+}

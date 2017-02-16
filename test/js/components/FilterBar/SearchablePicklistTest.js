@@ -20,7 +20,7 @@ describe('SearchablePicklist', () => {
 
   const getSearchInput = (element) => element.querySelector('.searchable-picklist-input');
   const getPicklist = (element) => element.querySelector('.picklist');
-  const getSelectedValues = (element) => element.querySelector('.picklist-selected-values');
+  const getSelectedOptions = (element) => element.querySelector('.picklist-selected-options');
 
   it('renders an element', () => {
     const element = renderComponent(SearchablePicklist, getProps());
@@ -105,33 +105,42 @@ describe('SearchablePicklist', () => {
     it('renders', () => {
       const stub = sinon.stub();
       const element = renderComponent(SearchablePicklist, getProps({
-        selectedValues: ['Pesto']
+        selectedOptions: [{title: 'Pesto', value: 'Pesto'}]
       }));
 
-      expect(getSelectedValues(element)).to.exist;
+      expect(getSelectedOptions(element)).to.exist;
     });
 
-    it('does not render if selectedValues is empty', () => {
+    it('does not render if selectedOptions is empty', () => {
       const stub = sinon.stub();
       const element = renderComponent(SearchablePicklist, getProps());
 
-      expect(getSelectedValues(element)).to.not.exist;
+      expect(getSelectedOptions(element)).to.not.exist;
     });
 
-    it('calls onClickSelectedValue when a selectedValues item is clicked', () => {
+    it('calls onClickSelectedOption when a selectedOptions item is clicked', () => {
       const stub = sinon.stub();
       const element = renderComponent(SearchablePicklist, getProps({
-        onClickSelectedValue: stub,
-        selectedValues: ['Pesto']
+        onClickSelectedOption: stub,
+        selectedOptions: [{
+          title: 'Pesto',
+          value: 'Pesto'
+        }]
       }));
 
-      const selectedValues = getSelectedValues(element);
+      const selectedOptions = getSelectedOptions(element);
 
-      const option = selectedValues.querySelectorAll('.picklist-option');
+      const option = selectedOptions.querySelectorAll('.picklist-option');
 
       Simulate.click(option[0]);
 
-      expect(stub).to.have.been.calledWith('Pesto');
+      expect(stub).to.have.been.calledWith({
+        displayCloseIcon: true,
+        group: "Selected Values",
+        iconName: "filter",
+        title: 'Pesto',
+        value: 'Pesto'
+      });
     });
   })
 });

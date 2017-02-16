@@ -48,7 +48,7 @@
       filters,
       isReadOnly: false,
       onUpdate,
-      fetchSuggestions: (column, searchTerm) => Promise.resolve(_.shuffle([ 'purple', 'pesto', 'russian', 'cheese', 'pasta', 'spinach', 'rainbow', 'robot', 'mauve', 'violet', 'malheureusement', 'chouette', 'truc', 'supercalifragilisticexpialidocsupercalifragilisticexpialidocsupercalifragilisticexpialidoc']))
+      fetchSuggestions: (column, searchTerm) => Promise.resolve(['purple', 'pesto', 'russian', 'cheese'])
     };
 
     function render() {

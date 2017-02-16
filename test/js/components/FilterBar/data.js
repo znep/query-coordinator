@@ -30,10 +30,13 @@ export const mockBinaryOperatorFilter = {
       operator: '=',
       operand: 'Tommy'
     },
+    {
+      operator: 'IS NULL'
+    }
   ],
-  isHidden: false
+  isHidden: false,
+  joinOn: 'OR'
 };
-
 
 export const mockNumberColumn = {
   dataTypeName: 'number',

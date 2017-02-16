@@ -12,6 +12,31 @@ export function getDefaultFilterForColumn(column) {
   };
 }
 
+export function getTextFilter(column, filter, values, isNegated) {
+  if (_.isEmpty(values)) {
+    return getDefaultFilterForColumn(column);
+  } else {
+    const toArgument = (value) => {
+      if (_.isNull(value)) {
+        return {
+          operator: isNegated ? 'IS NOT NULL' : 'IS NULL'
+        };
+      } else {
+        return {
+          operator: isNegated ? '!=' : '=',
+          operand: value
+        };
+      }
+    };
+
+    return _.merge({}, filter, {
+      'function': 'binaryOperator',
+      joinOn: isNegated ? 'AND' : 'OR',
+      arguments: _.map(values, toArgument)
+    });
+  }
+}
+
 export function getToggleTextForFilter(filter, column) {
   switch (column.dataTypeName) {
 
@@ -57,12 +82,14 @@ export function getToggleTextForFilter(filter, column) {
     case 'text': {
       const selectedValues = _.map(filter.arguments, 'operand', '');
       const selectedValuesLength = selectedValues.length;
+
       if (_.inRange(selectedValuesLength, 2, 5)) {
         return t('filter_bar.text_filter.n_values').format(selectedValuesLength);
       } else if (_.gte(selectedValuesLength, 5)) {
         return t('filter_bar.text_filter.n_plus_values');
       } else if (selectedValuesLength === 1) {
-        return selectedValues[0];
+        const value = _.first(selectedValues);
+        return _.isNil(value) ? t('filter_bar.text_filter.no_value') : value;
       } else {
         return t('filter_bar.all');
       }

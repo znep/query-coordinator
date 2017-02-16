@@ -1,8 +1,9 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
+import Dropdown from '../Dropdown';
 import SearchablePicklist from './SearchablePicklist';
 import FilterFooter from './FilterFooter';
-import { getDefaultFilterForColumn } from './filters';
+import { getTextFilter } from './filters';
 import { translate as t } from '../../common/I18n';
 
 export const TextFilter = React.createClass({
@@ -17,20 +18,27 @@ export const TextFilter = React.createClass({
 
   getInitialState() {
     const { filter } = this.props;
+
+    const selectedValues = _.map(filter.arguments, (argument) => {
+      if (_.includes(['IS NULL', 'IS NOT NULL'], argument.operator)) {
+        return null;
+      }
+
+      return argument.operand;
+    });
+
     return {
       value: '',
       suggestions: [],
+      selectedValues,
       hasSearchError: false,
-      // It's conceivable that _.map(), when used with the string key getter,
-      // might return [undefined], which is just odd enough of a shape that it
-      // might cause rendering to get messed up downstream. Calling _.compact()
-      // on it should make it less conceivable.
-      selectedValues: _.uniq(_.compact(_.map(filter.arguments, 'operand')))
+      isNegated: _.toLower(filter.joinOn) === 'and'
     };
   },
 
   componentDidMount() {
     this.isMounted = true;
+
     this.updateSuggestions = _.debounce(() => {
       const { column } = this.props;
       const { value } = this.state;
@@ -66,24 +74,12 @@ export const TextFilter = React.createClass({
     }, this.updateSuggestions);
   },
 
-  onSelectSuggestion(suggestion) {
-    const { selectedValues } = this.state;
-
-    // add new value to selectedValues
-    if (!_.includes(selectedValues, suggestion)) {
-      selectedValues.push(suggestion.value);
-    }
-
-    this.updateSelectedValues(selectedValues);
+  onSelectOption(option) {
+    this.updateSelectedValues(_.union(this.state.selectedValues, [option.value]));
   },
 
-  onClickSelectedValue(selectedValue) {
-    const { selectedValues } = this.state;
-
-    // remove value from selected values
-    const nextSelectedValues = _.without(selectedValues, selectedValue);
-
-    this.updateSelectedValues(nextSelectedValues);
+  onUnselectOption(option) {
+    this.updateSelectedValues(_.without(this.state.selectedValues, option.value));
   },
 
   updateSelectedValues(nextSelectedValues) {
@@ -92,11 +88,8 @@ export const TextFilter = React.createClass({
     });
   },
 
+  // Remove existing selected values, clear the search term, and refetch suggestions if needed.
   clearFilter() {
-    // If we clear the filter
-    // - existing selected values are removed
-    // - the current search term should be set to empty
-    // - and spandex refetches suggestions (this will have to change if we use top-n values)
     this.updateSelectedValues([]);
 
     if (this.state.value !== '') {
@@ -106,58 +99,87 @@ export const TextFilter = React.createClass({
     }
   },
 
-  makeBinaryOperatorFilter() {
-    const { column, filter } = this.props;
-    const { selectedValues } = this.state;
+  updateFilter() {
+    const { column, filter, onUpdate } = this.props;
+    const { selectedValues, isNegated } = this.state;
 
-    if (_.isEmpty(selectedValues)) {
-      return getDefaultFilterForColumn(column);
-    } else {
-      return (
-        _.assign(filter, {
-          'function': 'binaryOperator',
-          arguments: _.map(selectedValues, (selectedValue) => {
-            return {
-              operator: '=',
-              operand: selectedValue
-            };
-          })
-        })
-      );
-    }
+    onUpdate(getTextFilter(column, filter, selectedValues, isNegated));
   },
 
-  updateFilter() {
-    const { onUpdate } = this.props;
-    onUpdate(this.makeBinaryOperatorFilter());
+  isDirty() {
+    const { column, filter } = this.props;
+    const { isNegated, selectedValues } = this.state;
+
+    return !_.isEqual(getTextFilter(column, filter, selectedValues, isNegated), filter);
+  },
+
+  renderHeader() {
+    const { column } = this.props;
+
+    const dropdownProps = {
+      onSelection: (option) => {
+        this.setState({ isNegated: option.value === 'true' });
+      },
+      placeholder: this.state.isNegated ?
+        t('filter_bar.text_filter.is_not') :
+        t('filter_bar.text_filter.is'),
+      options: [
+        { title: t('filter_bar.text_filter.is'), value: 'false' },
+        { title: t('filter_bar.text_filter.is_not'), value: 'true' }
+      ]
+    };
+
+    return (
+      <div className="text-filter-header">
+        <h3>{column.name}</h3>
+        <Dropdown {...dropdownProps} />
+      </div>
+    );
   },
 
   render() {
-    const { filter, onCancel } = this.props;
+    const { onCancel } = this.props;
     const { value, suggestions, hasSearchError, selectedValues } = this.state;
+
+    // Create the "null" suggestion to allow filtering on empty values.
+    const nullOption = {
+      title: t('filter_bar.text_filter.no_value'),
+      value: null,
+      group: t('filter_bar.text_filter.suggested_values')
+    };
+
+    const options = _.map(suggestions, (suggestion) => {
+      return {
+        title: suggestion,
+        value: suggestion,
+        group: t('filter_bar.text_filter.suggested_values')
+      };
+    });
+
+    const selectedOptions = _.map(selectedValues, (selectedValue) => {
+      return {
+        title: _.isNull(selectedValue) ?
+          t('filter_bar.text_filter.no_value') :
+          selectedValue,
+        value: selectedValue
+      };
+    });
 
     const picklistProps = {
       onBlur: _.noop,
-      onSelection: this.onSelectSuggestion,
+      onSelection: this.onSelectOption,
       onChangeSearchTerm: this.onChangeSearchTerm,
       hasSearchError,
-      options: _.map(suggestions, (suggestion) => {
-        return {
-          title: suggestion,
-          value: suggestion,
-          group: t('filter_bar.text_filter.suggested_values')
-        };
+      options: _.concat(nullOption, options).filter((option) => {
+        return !_.includes(selectedValues, option.value);
       }),
       value,
-      selectedValues,
-      onClickSelectedValue: this.onClickSelectedValue
+      selectedOptions,
+      onClickSelectedOption: this.onUnselectOption
     };
 
-    // When selected values are changed, we do want to enable apply
-    const disableApplyFilter = _.isEqual(selectedValues, _.map(filter.arguments, 'operand'));
-
     const filterFooterProps = {
-      disableApplyFilter,
+      disableApplyFilter: !this.isDirty(),
       onClickApply: this.updateFilter,
       onClickCancel: onCancel,
       onClickClear: this.clearFilter
@@ -166,6 +188,7 @@ export const TextFilter = React.createClass({
     return (
       <div className="filter-controls text-filter">
         <div className="column-container">
+          {this.renderHeader()}
           <SearchablePicklist {...picklistProps} />
         </div>
 

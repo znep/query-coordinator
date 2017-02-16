@@ -406,7 +406,6 @@ Rails.application.routes.draw do
       get '/thumbnail', :action => 'thumbnail', :as => :view_thumbnail
       get '/stats', :action => 'stats', :as => :view_stats
       get '/form_success', :action => 'form_success', :as => :view_form_success
-      get '/form_error', :action => 'form_error', :as => :view_form_error
       get '/about', :action => 'about', :as => :about_view
       get '/updates/:update_seq(*rest_of_path)', :action => 'updates'
       get '/visualization', :action => 'create_visualization_canvas'

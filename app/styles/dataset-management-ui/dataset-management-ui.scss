@@ -2,6 +2,19 @@
 @import "common/metadata-table";
 @import "common/schema-preview";
 
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#app {
+  display: flex;
+  flex-grow: 1;
+  flex-basis: fill;
+  flex-direction: column;
+}
+
 // Overrides from DSLP
 #info-pane-container {
   // Needed to override some stuff from _cards.scss
@@ -27,15 +40,6 @@
   }
 }
 
-// This is copied from site-chrome
-#site-chrome-header {
-  min-height: 56px;
-}
-
-#site-chrome-footer {
-  min-height: 164px;
-}
-
 // This is copied from DSLP - styleguidify...somehow?
 .container .landing-page-section .section-content {
   background: $white;
@@ -46,8 +50,14 @@
 }
 
 .dataset-management-ui {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+
   .edit-bar {
     position: static;
+    width: 100%;
+    z-index: auto;
   }
 
   .management-ui-section {
@@ -61,11 +71,15 @@
   }
 
   #home-pane {
-    margin: 0 auto;
+    flex-grow: 1;
+
+    margin: 0;
     display: flex;
     background-color: $light-grey-7;
+    
     .home-content {
       flex: 1;
+      
       #metadata-section {
         .metadata-table-wrapper {
            // TODO: do we want to refactor the shared
@@ -76,6 +90,7 @@
         }
       }
     }
+    
     .metadata-sidebar {
       width: 24em;
       border-left: 1px solid $light-grey-4;
@@ -111,7 +126,6 @@
       }
     }
   }
-
 
   .management-ui-section, .metadata-table-wrapper, section {
     padding: 1em;

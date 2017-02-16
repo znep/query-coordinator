@@ -44,7 +44,7 @@ const VALID_VIF_WITH_DIMENSION_GROUPING = {
 const MAX_ROW_COUNT = 1000;
 
 describe('GroupedTimeDataManager', () => {
-  const GROUPING_VALUES_QUERY = 'SELECT `blood_alcohol_level` AS __dimension_alias__ WHERE `incident_occurrence` >= \'2001-01-01T00:00:00.000\' AND `incident_occurrence` < \'2003-06-01T00:00:00.000\' GROUP BY __dimension_alias__ ORDER BY __dimension_alias__ ASC LIMIT 12';
+  const GROUPING_VALUES_QUERY = 'SELECT `blood_alcohol_level` AS __dimension_alias__ WHERE `incident_occurrence` >= \'2001-01-01T00:00:00.000\' AND `incident_occurrence` < \'2003-06-01T00:00:00.000\' GROUP BY `blood_alcohol_level` ORDER BY __dimension_alias__ ASC LIMIT 12';
   const GROUPING_VALUES_QUERY_DATA = {
     columns: ['__dimension_alias__', '__measure_alias__'],
     rows: [

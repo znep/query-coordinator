@@ -451,6 +451,28 @@ en:
             text_one: Create your page using this flexible way to summarize data.
             text_two: Learn more by visiting the <a href="https://support.socrata.com/hc/en-us/articles/216510338">Using the Aggregation Function</a> article on the Socrata Knowledge Base.  As always, we'd love your feedback.
             title: Try it yourself!
+  asset_selector:
+    action_buttons:
+      back: Back
+      select: Select
+    header_title_with_category: Select Featured Content in %{category}
+    header_title_without_category: Select Featured Content
+    results_container:
+      no_results: No results
+      of: of
+      pager:
+        page: Page
+        previous_page: Previous page
+        next_page: Next page
+        last_page: Last page
+      sort:
+        sort_by: Sort by
+        sort_types:
+          most_relevant: Most Relevant
+          most_accessed: Most Accessed
+          alphabetical: Alphabetical
+          recently_added: Recently Added
+          recently_updated: Recently Updated
   catalog_landing_page:
     search:
       hint: Search
@@ -1561,6 +1583,7 @@ en:
       title: Datasets have a new look!
     view_widget:
       external_content: External Content
+      view: View
       views: Views
   dataset_management_ui:
     common:

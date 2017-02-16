@@ -23,6 +23,7 @@ namespace :test do
 
     {
       'catalogLandingPage' => 'update_catalog_landing_page_translations',
+      'common' => 'update_common_translations',
       'dataCards' => 'update_datacards_translations',
       'datasetLandingPage' => 'update_dataset_landing_page_translations',
       'adminGoals' => 'update_admin_goals_translations',
@@ -42,6 +43,7 @@ namespace :test do
 
     # an opinionated JS test runner for a parallelized single run
     parallel_deps = [
+      'test:karma:translations:update_common_translations',
       'test:karma:translations:update_catalog_landing_page_translations',
       'test:karma:translations:update_datacards_translations',
       'test:karma:translations:update_dataset_landing_page_translations',
@@ -60,6 +62,18 @@ namespace :test do
 
     desc 'mock translations in support of Karma tests'
     namespace :translations do
+      desc 'Helper task that creates a js file that injects translation into browser'
+      task :update_common_translations do
+        translations_filename = 'config/locales/en.yml'
+        output_filename = 'karma/common/mockTranslations.js'
+        all_translations = YAML.load_file(translations_filename)['en']
+        translations = {
+          :asset_selector => all_translations['asset_selector'],
+          :dataset_landing_page => all_translations['dataset_landing_page']
+        }
+        File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
+      end
+
       desc 'Helper task that creates a js file that injects translation into browser'
       task :update_datacards_translations do
         translations_filename = 'config/locales/en.yml'
@@ -165,6 +179,7 @@ namespace :test do
       'karma:adminGoals',
       'karma:autocomplete',
       'karma:catalogLandingPage',
+      'karma:common',
       'karma:dataCards',
       'karma:datasetLandingPage',
       'karma:datasetManagementUI',

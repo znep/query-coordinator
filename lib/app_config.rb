@@ -29,8 +29,8 @@ class AppConfig < Hashie::Dash
   property :tileserver_hosts
 
   # Search
-  property :cetera_internal_uri
   property :cetera_external_uri
+  property :cetera_internal_uri
 
   # Sitemap
   property :sitemap_s3_url
@@ -129,6 +129,7 @@ class AppConfig < Hashie::Dash
       :error_message => message
     )
     Rails.logger.error(message)
+    raise message
   end
 
 end

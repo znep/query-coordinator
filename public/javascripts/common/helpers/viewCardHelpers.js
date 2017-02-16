@@ -7,7 +7,8 @@ export function getDateLabel(updatedAt) {
 }
 
 export const getViewCountLabel = (viewCount) => {
-  return _.isNumber(viewCount) ? `${utils.formatNumber(viewCount)} ${I18n.view_widget.views}` : '';
+  const viewLabelTranslation = viewCount === 1 ? I18n.view_widget.view : I18n.view_widget.views;
+  return _.isNumber(viewCount) ? `${utils.formatNumber(viewCount)} ${viewLabelTranslation}` : '';
 };
 
 export const getAriaLabel = (view) => `${I18n.related_views.view} ${view.name}`;

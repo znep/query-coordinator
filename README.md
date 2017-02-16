@@ -398,7 +398,8 @@ Variable Name | Type | Source | Description
 `bundle_gemfile` | String | Configuration | Path to the `Gemfile` used by the Bundler gem. Programmatically determined to be the base directory of the frontend, but can be overridden by setting this ENV variable.
 `canary` | Boolean | Configuration | If set to true the host will visually identify itself as the Canary.
 `category_landing_page_airbrake_api_key` | String | Configuration | AirBrake API token used to track CHUB errors.
-`cetera_internal_uri` | URI | Configuration | API endpoint that provides the internal cetera catalog search service.
+`cetera_external_uri` | URI | Configuration | External API endpoint that provides the cetera catalog search service.
+`cetera_internal_uri` | URI | Configuration | Internal API endpoint that provides the cetera catalog search service.
 `clortho_bucket` | String | Configuration | Bucket identifier in AWS-KMS used to access secret values defined in the Clortho service.
 `consul_host` | URI | Configuration | API endpoint _URI_, **not "host"**, used to access the Consul service. Used primarily to access maintenance / downtime notices displayed in the frontend.
 `coreservice_uri` | URI | Configuration | API endpoint to which all Core requests are directed, both by the Rails application as well as JavaScript running client side.

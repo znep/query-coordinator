@@ -10,6 +10,11 @@ namespace :lint do
       run_eslint('public/javascripts', args[:format])
     end
 
+    desc 'run eslint on the common files'
+    task :common, :format do |task, args|
+      run_eslint('public/javascripts/common', args[:format])
+    end
+
     desc 'run eslint on the dataCards files'
     task :dataCards, :format do |task, args|
       run_eslint('public/javascripts/angular', args[:format])

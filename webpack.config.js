@@ -1,5 +1,11 @@
 var fs = require('fs');
 var path = require('path');
+var webpack = require('webpack');
+var distPath = __dirname + '/dist'
+
+var libraryVersionPlugin = new webpack.DefinePlugin({
+  LIBRARY_VERSION: JSON.stringify(require('./package.json').version)
+});
 
 module.exports = [
   {
@@ -37,9 +43,11 @@ module.exports = [
       modulesDirectories: [ 'node_modules' ]
     }
   },
+
   {
     context: __dirname,
     entry: ['whatwg-fetch', './src/index.js'],
+    plugins: [ libraryVersionPlugin ],
     externals: {
       'jquery': true,
       'socrata-utils': true,
@@ -56,7 +64,7 @@ module.exports = [
       'redux-thunk': true
     },
     output: {
-      path: __dirname + '/dist',
+      path: distPath,
       filename: 'socrata-visualizations.js',
       libraryTarget: 'umd',
       library: ['socrata', 'visualizations']
@@ -74,5 +82,59 @@ module.exports = [
       modulesDirectories: [ 'node_modules' ]
     },
     devtool: 'source-map'
+  },
+
+  {
+    context: __dirname,
+    entry: ['whatwg-fetch', './src/embed/index.js'],
+    plugins: [ libraryVersionPlugin ],
+    output: {
+      path: distPath,
+      filename: 'socrata-visualizations-embed.js',
+      libraryTarget: 'umd',
+      library: ['socrata', 'visualizations']
+    },
+    module: {
+      loaders: [
+        {
+          // Prevent lodash from putting itself on window.
+          // See: https://github.com/lodash/lodash/issues/2671
+          test: /node_modules\/lodash/,
+          loader: "imports?define=>undefined"
+        },
+        {
+          test: /\.js$/,
+          loader: 'babel-loader',
+          include: [ path.resolve('src'), path.resolve('karma') ]
+        },
+        {
+          test: /\.s?css$/,
+          // Process styles but don't inline images. We don't use them.
+          loader: 'style-loader!css-loader?url=false!sass-loader'
+        }
+      ]
+    },
+    resolve: {
+      modulesDirectories: [ 'node_modules' ]
+    },
+    devtool: 'source-map'
+  },
+  {
+    context: __dirname,
+    entry: './src/embed/loader.js',
+    output: {
+      path: distPath,
+      filename: 'socrata-visualizations-loader.js'
+    },
+    module: {
+      loaders: [
+        {
+          test: /\.js$/,
+          loader: 'babel-loader',
+          include: [ path.resolve('src') ]
+        }
+      ]
+    }
   }
+
 ];

@@ -68,3 +68,28 @@ Here are the versions we use for externals, which are not included in the webpac
 ## Examples
 
 The `examples` directory contains demos that show how each supported visualization can be consumed.
+
+## Embeds
+
+In addition to building library code, this project also generates standalone artifacts used for embedding
+visualizations on non-socrata sites. See this [design document](https://docs.google.com/document/d/1-YbnPvT3HOPM_bLytye2-UDz6hOJcT7taLa39pDP4to/edit#)
+for full details or read the summary below.
+
+Users wishing to embed a Socrata visualization will be given an “embed code”, which consists of the visualization’s VIF and script tag pointing to a bootstrap script. The bootstrap script will load the full visualization library package from a remote server and call into it. The viz package will then replace the embed code with a full visualization.
+
+The visualization itself will be rendered natively on the page instead of using an iframe-based approach. The advantages afforded by this strategy were found to outweigh the risks and disadvantages (see technical details section).
+
+Note that since the customer’s page only hosts minimal bootstrap code and not the full library, we retain full control of the rendering strategy. If we find some visualizations are better suited to iframe rendering, we can deploy a new revision of the package that makes the requisite changes.
+
+There are two artifacts that are used in the embed process:
+
+- `dist/socrata-visualizations-loader.js`:
+  Minimal loader. This is directly referenced by the customer's site. Its job is to
+  select the correct assets to pull in and load them in an idempotent way.
+- `dist/socrata-visualizations-embed.js`:
+  Main bundle. When loaded, this will render visualizations into the DOM tree based
+  on where the customer placed the embed code.
+  This package is self-contained - it provides all the markup, styles, and javascript
+  necessary for visualizations to work correctly.
+
+Embed codes are generated via a helper in `embedCodeGenerator.js`.

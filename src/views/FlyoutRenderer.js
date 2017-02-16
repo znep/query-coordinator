@@ -1,6 +1,17 @@
-var $ = require('jquery');
+const $ = require('jquery');
+const _ = require('lodash');
 
-function FlyoutRenderer() {
+/**
+ * Common flyout renderer.
+ * constructorOptions - Options hash, optional.
+ *   Keys:
+ *     * inheritTextStyle:
+ *       If false, applies uniform styling to text. Otherwise, it inherits text styling
+ *       from page CSS (usually Styleguide).
+ *       Default: true.
+ *
+ */
+function FlyoutRenderer(constructorOptions) {
 
   var FLYOUT_WINDOW_PADDING = 22;
   var FLYOUT_BOTTOM_PADDING = 1;
@@ -11,8 +22,14 @@ function FlyoutRenderer() {
   var _flyoutContent;
   var _flyoutHint;
 
-  // Don't attempt to add yourself to the DOM unless
-  // it actually exists.
+  constructorOptions = _.merge(
+    {
+      inheritTextStyle: true
+    },
+    constructorOptions
+  );
+
+  // Defer render until the document is ready.
   $(function() {
     _renderFlyoutTemplate();
     _hideFlyout();
@@ -53,7 +70,8 @@ function FlyoutRenderer() {
       var flyout = $(
         '<div>',
         {
-          id: 'socrata-flyout'
+          id: 'socrata-flyout',
+          'class': constructorOptions.inheritTextStyle ? '' : 'built-in-text-style'
         }
       ).append([
         flyoutContent,

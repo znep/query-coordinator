@@ -1,0 +1,28 @@
+// These styles should apply only to visualizations embedded via embed code.
+// N.B.: For the moment, styleguide is NOT loaded for embeds.
+// This will ultimately be fixed, but for now we duplicate the parts
+// of styleguide we need here. As you can see, these duplicate parts
+// are not too numerous.
+// See also similar workarounds in flyoutRenderer.scss.
+.socrata-visualization-embed {
+  background-image: none;
+  background: #fff;
+  text-shadow: none;
+  color: black;
+  font-size: 15px;
+  width: 100%;
+  height: 100%;
+
+  // Begin Styleguide duplication
+  line-height: 1.25;
+  font-family: "Open Sans", "Helvetica", sans-serif; // TODO how to load Open Sans? Do we care?
+  a {
+    color: #2279a6;
+    &:hover {
+      text-decoration: none;
+    }
+  }
+  // End Styleguide duplication.
+}
+
+//TODO map flyouts.

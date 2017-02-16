@@ -346,6 +346,9 @@ export default {
       error_exceeded_max_column_count_without_pan: 'For optimal performance and legibility column charts are limited to {0} columns. Use filters to render a more specific chart.',
       title: 'Column Chart'
     },
+    embed: {
+      explore_data_link: 'Explore the data'
+    },
     pie_chart: {
       title: 'Pie Chart',
       error_limit_out_of_bounds: 'Please choose a value between {0} and {1}.'

@@ -12,6 +12,10 @@ $axis-font-size: 14px;
 $axis-offset: 21px;
 $axis-padding: 42px;
 
+// N.B.: These styles can be used both within and outside the Socrata platform
+// (and, for the time being, with or without styleguide due to overagressive resets).
+// Be mindful of the possibility that external styles will accidentally override
+// or otherwise affect the visualizations.
 .socrata-visualization {
   position: relative;
   width: 100%;

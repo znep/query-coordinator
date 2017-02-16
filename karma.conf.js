@@ -11,7 +11,7 @@ delete webpackConfig[1].externals;
 webpackConfig[1].resolve = webpackConfig[0].resolve;
 webpackConfig[1].resolve.root = [ __dirname ];
 webpackConfig[1].devtool = 'inline-source-map';
-webpackConfig[1].plugins = [new Rewire()];
+webpackConfig[1].plugins.push(new Rewire());
 
 module.exports = function(config) {
   config.set({
@@ -105,7 +105,7 @@ module.exports = function(config) {
     // if true, Karma captures browsers, runs the tests and exits
     singleRun: false,
 
-    webpack: webpackConfig[1], // TODO: make a dev version of this confic with source maps; specify that one
+    webpack: webpackConfig[1], // TODO: make a dev version of this config with source maps; specify that one
     webpackMiddleware: {
       noInfo: true
     }

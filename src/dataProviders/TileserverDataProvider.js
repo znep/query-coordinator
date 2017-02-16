@@ -27,7 +27,8 @@ const FALLBACK_TILESERVER_HOSTS = [
  *
  * 1. Map being embedded is in a different environment than the page being viewed (i.e, a
  *    map from us-west-2 being embedded in eu-west-1).
- * 2. Map is being embedded on a non-socrata page.
+ * 2. Map is being embedded on a non-socrata page. TODO: This is no longer true (we have
+ *    since added the ability to create embeds in 3rd party sites).
  *
  * Neither of these scenarios are possible today in storyteller or datalens.
  *

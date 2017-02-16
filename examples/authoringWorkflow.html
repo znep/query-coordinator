@@ -20,7 +20,7 @@
         height: 490px;
       }
 
-      #outputs p {
+      #outputs .text-output pre {
         background: #ddd;
         width: 100%;
         word-wrap: break-word;
@@ -40,13 +40,21 @@
       <div id="chart"></div>
 
       <strong>Vif:</strong>
-      <p>
-        <button class="select">Select</button><br>
-        <code id="vif-output" style="white-space: pre-wrap;"></code>
-      </p>
+      <div class="text-output">
+        <button class="select">Select</button>
+        <pre id="vif-output"></pre>
+      </div>
+
+      <strong>Embed code:</strong>
+      <div class="text-output">
+        <button class="select">Select</button>
+        <pre id="embed-code-output"></pre>
+      </div>
 
       <strong>Filters:</strong>
-      <p><code id="filter-output" style="white-space: pre-wrap;"></code></p>
+      <div class="text-output">
+        <pre id="filter-output"></pre>
+      </div>
     </section>
   </body>
 
@@ -66,6 +74,7 @@
     var VisualizationRenderer = socrata.visualizations.VisualizationRenderer;
     var container = document.querySelector('#authoring-workflow');
     var vifOutput = document.querySelector('#vif-output');
+    var embedCodeOutput = document.querySelector('#embed-code-output');
     var filterOutput = document.querySelector('#filter-output');
     var chart = document.querySelector('#chart');
     var visualization;
@@ -88,7 +97,10 @@
       vifOutput.innerHTML = JSON.stringify(vif, null, 2);
       filterOutput.innerHTML = JSON.stringify(filters, null, 2);
 
-      chart.innerHTML = '';
+      $(embedCodeOutput).text(socrata.visualizations.generateEmbedCode(vif, {
+        height: 500,
+        width: 400
+      }));
 
       if (visualization) {
         visualization.destroy();
@@ -135,8 +147,9 @@
     });
     $('#edit').click(function() { launchAx(vif); });
     $('button.select').click(function(evt) {
+      document.getSelection().removeAllRanges();
       var range = document.createRange();
-      range.selectNode($(evt.target).nextAll('code')[0]);
+      range.selectNode($(evt.target).nextAll('pre, code')[0]);
       window.getSelection().addRange(range);
     });
   </script>

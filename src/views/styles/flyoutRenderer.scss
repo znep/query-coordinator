@@ -11,6 +11,7 @@ $flyout-background-color-dark: #2f2f2f;
   word-wrap: break-word;
   white-space: normal;
   visibility: hidden;
+  background-image: none;
   background-color: #f1eeee;
   border: 1px solid #ccc;
   pointer-events: none;
@@ -21,6 +22,17 @@ $flyout-background-color-dark: #2f2f2f;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+// N.B.: For the moment, styleguide is NOT loaded for embeds.
+// This will ultimately be fixed, but for now we duplicate the parts
+// of styleguide we need here. As you can see, these duplicate parts
+// are not too numerous.
+// See also similar workarounds in embed.scss.
+
+#socrata-flyout.built-in-text-style {
+  line-height: 1.25;
+  font-family: "Open Sans", "Helvetica", sans-serif; // TODO how to load Open Sans? Do we care?
 }
 
 #socrata-flyout.visible {

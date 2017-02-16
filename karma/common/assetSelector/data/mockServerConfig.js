@@ -4,5 +4,6 @@ export default {
   domain: 'localhost',
   featureFlags: {},
   locale: 'en',
-  localePrefix: ''
+  localePrefix: '',
+  usersnapProjectID: 'abcd1234-acbd-1234-abcd-abcd1234abcd'
 };

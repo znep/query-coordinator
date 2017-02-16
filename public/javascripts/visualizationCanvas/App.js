@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { VelocityComponent } from 'velocity-react';
+import FeedbackPanel from '../common/components/FeedbackPanel';
 import { ModeStates } from './lib/constants';
 import EditBar from './components/EditBar';
 import PreviewBar from './components/PreviewBar';
@@ -65,6 +66,7 @@ export const App = React.createClass({
         </div>
         <AuthoringWorkflowModal />
         <EditMenu />
+        <FeedbackPanel {...window.serverConfig} />
       </div>
     );
   },
@@ -78,6 +80,7 @@ export const App = React.createClass({
           <FilterBar />
           <Visualizations />
           <Table />
+          <FeedbackPanel {...window.serverConfig} />
         </div>
       </div>
     );
@@ -90,6 +93,7 @@ export const App = React.createClass({
         <FilterBar />
         <Visualizations />
         <Table />
+        <FeedbackPanel {...window.serverConfig} />
       </div>
     );
   },

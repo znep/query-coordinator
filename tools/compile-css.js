@@ -5,31 +5,16 @@ var chokidar = require('chokidar');
 var autoprefixer = require('autoprefixer');
 var postcss = require('postcss');
 
-var styleDir = __dirname + '/../src/views/styles/';
-
-function prependStyleDir(filename) {
-  return styleDir + filename;
-}
-
-function isScss(filename) {
-  return /\.scss$/.test(filename);
-}
-
-function readFile(filename) {
-  return fs.readFileSync(filename, 'utf8');
-}
+var stylesheetDirectory = __dirname + '/../src/views/styles/';
+var rootStylesheetPath = stylesheetDirectory + 'socrata-visualizations.scss';
 
 function compileCSS() {
-  var scss = fs.readdirSync(styleDir).
-    map(prependStyleDir).
-    filter(isScss).
-    map(readFile).
-    join('');
+  var rootStylesheet = fs.readFileSync(rootStylesheetPath, 'utf8');
 
   var result = sass.renderSync({
-    data: scss,
+    data: rootStylesheet,
     outputStyle: 'compressed',
-    includePaths: [__dirname + '/../node_modules']
+    includePaths: [stylesheetDirectory, __dirname + '/../node_modules']
   });
 
   postcss([autoprefixer]).process(result.css).then(function(result) {

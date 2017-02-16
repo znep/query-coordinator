@@ -30,8 +30,11 @@ export default {
     text_filter: {
       n_values: '{0} selected',
       n_plus_values: '5+ selected',
+      no_value: '(No value)',
       selected_values: 'Selected Values',
-      suggested_values: 'Top Values'
+      suggested_values: 'Top Values',
+      is: 'is',
+      is_not: 'is not'
     },
     range: 'Range',
     remove_filter: 'Remove Filter',

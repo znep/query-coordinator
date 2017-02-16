@@ -7,19 +7,13 @@ import Picklist from '../Picklist';
 export const SearchablePicklist = React.createClass({
   propTypes: {
     options: PropTypes.arrayOf(PropTypes.object),
-    value: PropTypes.string,
-    selectedValues: PropTypes.arrayOf(PropTypes.string),
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    selectedOptions: PropTypes.arrayOf(PropTypes.object),
     hasSearchError: PropTypes.bool,
     onChangeSearchTerm: PropTypes.func.isRequired,
     onSelection: PropTypes.func.isRequired,
     onBlur: PropTypes.func.isRequired,
-    onClickSelectedValue: PropTypes.func
-  },
-
-  getInitialState() {
-    return {
-      selectedValuesPickListItem: null
-    };
+    onClickSelectedOption: PropTypes.func
   },
 
   componentDidMount() {
@@ -32,9 +26,8 @@ export const SearchablePicklist = React.createClass({
     this.props.onChangeSearchTerm(event.target.value);
   },
 
-  onClickValue(selectedValue) {
-    this.setState({ selectedValuesPickListItem: selectedValue.value });
-    this.props.onClickSelectedValue(selectedValue.value);
+  onClickSelectedOption(selectedOption) {
+    this.props.onClickSelectedOption(selectedOption);
   },
 
   renderSearch() {
@@ -54,32 +47,31 @@ export const SearchablePicklist = React.createClass({
     );
   },
 
-  renderSelectedValuesPicklist() {
-    const { selectedValues } = this.props;
+  renderSelectedOptionsPicklist() {
+    const { selectedOptions, onBlur } = this.props;
 
-    if (!_.isEmpty(selectedValues)) {
-      const { onBlur } = this.props;
-
-      const picklistProps = {
-        options: selectedValues.map((selectedValue) => {
-          return {
-            title: selectedValue,
-            value: selectedValue,
-            group: t('filter_bar.text_filter.selected_values'),
-            displayCloseIcon: true,
-            iconName: 'filter'
-          };
-        }),
-        onSelection: this.onClickValue,
-        onBlur
-      };
-
-      return (
-        <div className="picklist-selected-values">
-          <Picklist {...picklistProps} />
-        </div>
-      );
+    if (_.isEmpty(selectedOptions)) {
+      return;
     }
+
+    const picklistProps = {
+      options: selectedOptions.map((selectedOption) => {
+        return {
+          group: t('filter_bar.text_filter.selected_values'),
+          displayCloseIcon: true,
+          iconName: 'filter',
+          ...selectedOption
+        };
+      }),
+      onSelection: this.onClickSelectedOption,
+      onBlur
+    };
+
+    return (
+      <div className="picklist-selected-options">
+        <Picklist {...picklistProps} />
+      </div>
+    );
   },
 
   renderPicklist() {
@@ -108,14 +100,18 @@ export const SearchablePicklist = React.createClass({
       onBlur
     };
 
-    return <Picklist {...picklistProps} />;
+    return (
+      <div className="picklist-suggested-options">
+        <Picklist {...picklistProps} />
+      </div>
+    );
   },
 
   render() {
     return (
       <div className="searchable-picklist">
         {this.renderSearch()}
-        {this.renderSelectedValuesPicklist()}
+        {this.renderSelectedOptionsPicklist()}
         {this.renderPicklist()}
       </div>
     );

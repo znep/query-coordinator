@@ -2,6 +2,59 @@
 
 .filter-bar-filter {
   .text-filter {
+    .text-filter-header {
+      margin: 8px;
+
+      h3 {
+        display: inline-block;
+        margin: 5px 8px 3px 2px;
+        font-size: 16px;
+        font-weight: normal;
+        vertical-align: text-bottom;
+      }
+
+      .dropdown-container {
+        .dropdown-placeholder {
+          padding: 0 40px 0 10px;
+          font-size: 14px;
+          text-transform: uppercase;
+          color: $primary-text;
+          border-color: transparent;
+          border-bottom-color: $light-grey-2;
+          min-width: 80px;
+
+          .dropdown-caret {
+            font-size: 14px;
+            right: 2px;
+
+            &::after {
+              font-size: 16px;
+              margin-top: 1px;
+            }
+          }
+        }
+
+        .dropdown-options-list {
+          .picklist-option {
+            padding: 0 10px;
+            text-transform: uppercase;
+            font-size: 14px;
+            color: $primary-text;
+
+            &.picklist-option-selected, &:active {
+              color: $white;
+            }
+          }
+        }
+
+        &.dropdown-focused {
+          .dropdown-placeholder {
+            border-bottom-color: transparent;
+          }
+        }
+      }
+    }
+
     .searchable-picklist {
       max-height: 400px;
 

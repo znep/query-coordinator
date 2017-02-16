@@ -1,11 +1,19 @@
 class ClassicVisualizationController < ApplicationController
   include ApplicationHelper
   skip_before_filter :require_user
-  layout false
+  layout 'classic_visualization'
   helper_method :render_inline_setup_js
 
   def show
     render
+  end
+
+  def show_by_id
+    begin
+      @view_cache = { params[:id] => View.find(params[:id]) }
+    rescue CoreServer::ResourceNotFound
+      render 'shared/error', :status => :not_found
+    end
   end
 
   # Render inline javascript to be included in the body *before* the bulk of javascript initializes.  Called by view

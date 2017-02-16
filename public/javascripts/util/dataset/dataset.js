@@ -118,7 +118,7 @@
 
       // Set up Polaroid image capturing
       if (window._phantom) {
-        console.log('Running in phantomjs');
+        console.log('Running in PhantomJS.');
         if (_.isFunction(window.callPhantom)) {
           this._setupPolaroidImageCapturing();
         } else {
@@ -3906,21 +3906,10 @@
     },
 
     _setupPolaroidImageCapturing: function(timeout) {
-      this.bind('request_finish', function() {
-        var ds = this;
-        console.log('request_finish event received, waiting for rendering to complete.');
-        // if there was already a return call, e.g. aggregates
-        if (!$.isBlank(ds._polaroidTimer)) {
-          clearTimeout(ds._polaroidTimer);
-        }
-
-        ds._polaroidTimer = setTimeout(function() {
-          _.defer(function() {
-            console.log('Render complete.');
-            window.callPhantom('snapshotReady');
-          });
-        }, timeout || 5000);
-      });
+      this.bind('request_finish', _.debounce(function() {
+        console.log('Render complete.');
+        window.callPhantom('snapshotReady');
+      }, timeout || 5000));
     },
 
     _getThumbNameOrDefault: function(name) {

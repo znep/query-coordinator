@@ -357,10 +357,23 @@ Rails.application.routes.draw do
         :app => 'dataCards',
         :via => [:get, :post, :put]
       }
+
+      # Used by Storyteller to visualize classic visualizations
+      # as embeds.
       get '/component/visualization/v0/show', {
         :controller => 'classic_visualization',
         :action => 'show',
         :via => [:get, :post]
+      }
+
+      # Used by Polaroid and ImP to snap pictures of classic
+      # visualizations.
+      #
+      # TODO: Use this endpoint and deprecate the Storyteller-specific
+      # one above.
+      get '/component/visualization/v0/:id', {
+        :controller => 'classic_visualization',
+        :action => 'show_by_id'
       }
     end
 

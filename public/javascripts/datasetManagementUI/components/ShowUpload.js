@@ -56,11 +56,19 @@ function ShowUpload({ upload, latestOutputSchema, goToUploads }) {
     fullScreen: true,
     onDismiss: goToUploads
   };
+  // Not going to style these breadcrumbs because this page is going to go away.
   const headerProps = {
     title: (
-      <span>
-        <Link to={Links.uploads}>{I18n.home_pane.data}</Link> &gt; {upload.filename}
-      </span>
+      <ol>
+        <li className="active socrata-icon-arrow-right">
+          <Link to={Links.uploads}>
+            {I18n.home_pane.data}
+          </Link>
+        </li>
+        <li>
+          {I18n.home_pane.preview}
+        </li>
+      </ol>
     ),
     onDismiss: goToUploads
   };

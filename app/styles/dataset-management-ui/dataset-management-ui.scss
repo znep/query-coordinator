@@ -50,6 +50,55 @@
     position: static;
   }
 
+  .modal-header-title {
+    counter-reset: crumbs;
+
+    .socrata-icon-arrow-right {
+      margin: 0 0.4em;
+    }
+
+    ol {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: inline-block;
+    }
+
+    li.active {
+      color: $dark-grey-1;
+
+      a, a:visited, a:hover, a:active {
+        color: $dark-grey-1;
+      }
+    }
+
+    li {
+      display: inline-block;
+      color: $light-grey-2;
+      font-weight: 600;
+      font-size: 13pt;
+      counter-increment: crumbs;
+
+      &::before {
+        content: counter(crumbs, decimal) ". ";
+      }
+
+      a, a:visited, a:hover, a:active {
+        color: $light-grey-2;
+        font-weight: 600;
+      }
+
+      a, a:visited {
+        text-decoration: none;
+      }
+
+      a:hover, a:active {
+        text-decoration: underline;
+      }
+
+    }
+  }
+
   .management-ui-section {
     padding-top: 1em;
 
@@ -68,10 +117,10 @@
       flex: 1;
       #metadata-section {
         .metadata-table-wrapper {
-           // TODO: do we want to refactor the shared
-           // MetadataTable
+          // TODO: do we want to refactor the shared
+          // MetadataTable
           .landing-page-section {
-              padding: 0;
+            padding: 0;
           }
         }
       }

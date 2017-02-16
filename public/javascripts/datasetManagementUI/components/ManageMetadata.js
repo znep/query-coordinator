@@ -20,7 +20,13 @@ export function ManageMetadata({ onDismiss, onEdit, onSave, view }) {
   };
 
   const headerProps = {
-    title: I18n.home_pane.metadata,
+    title: (
+      <ol>
+        <li className="active">
+          {I18n.home_pane.metadata}
+        </li>
+      </ol>
+    ),
     onDismiss
   };
 

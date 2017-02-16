@@ -74,11 +74,17 @@ export function ShowOutputSchema({
   };
   const headerProps = {
     title: (
-      <span>
-        <Link to={Links.uploads}>{I18n.home_pane.data}</Link> &gt;&nbsp;
-        <Link to={Links.showUpload(upload.id)}>{upload.filename}</Link> ({uploadProgress}) &gt;&nbsp;
-        {I18n.home_pane.preview}
-      </span>
+      <ol>
+        <li>
+          <Link to={Links.uploads}>
+            {I18n.home_pane.data}
+          </Link>
+          <span className="socrata-icon-arrow-right"></span>
+        </li>
+        <li className="active">
+          {I18n.home_pane.preview}
+        </li>
+      </ol>
     ),
     onDismiss: goToUpload
   };

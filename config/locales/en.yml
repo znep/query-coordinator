@@ -1611,7 +1611,7 @@ en:
       add_column_metadata: Add Column Metadata
       add_column_metadata_blurb: Column metadata will help people understand what the column means.
       column_metadata_manage_button: Manage Column Metadata
-      data: Data
+      data: Choose Data Source
       data_manage_button: Manage Data
       data_blurb: Add a data file and enable visualizations and mapping.
       required: Required

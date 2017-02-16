@@ -54,8 +54,19 @@ export function getToggleTextForFilter(filter, column) {
       }
     }
 
-    case 'text':
-      return _.get(filter, 'arguments.operand', t('filter_bar.all'));
+    case 'text': {
+      const selectedValues = _.map(filter.arguments, 'operand', '');
+      const selectedValuesLength = selectedValues.length;
+      if (_.inRange(selectedValuesLength, 2, 5)) {
+        return t('filter_bar.text_filter.n_values').format(selectedValuesLength);
+      } else if (_.gte(selectedValuesLength, 5)) {
+        return t('filter_bar.text_filter.n_plus_values');
+      } else if (selectedValuesLength === 1) {
+        return selectedValues[0];
+      } else {
+        return t('filter_bar.all');
+      }
+    }
 
     default:
       return '';

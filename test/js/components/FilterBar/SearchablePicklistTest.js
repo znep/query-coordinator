@@ -20,6 +20,7 @@ describe('SearchablePicklist', () => {
 
   const getSearchInput = (element) => element.querySelector('.searchable-picklist-input');
   const getPicklist = (element) => element.querySelector('.picklist');
+  const getSelectedValues = (element) => element.querySelector('.picklist-selected-values');
 
   it('renders an element', () => {
     const element = renderComponent(SearchablePicklist, getProps());
@@ -99,4 +100,38 @@ describe('SearchablePicklist', () => {
       });
     });
   });
+
+  describe('selected values', () => {
+    it('renders', () => {
+      const stub = sinon.stub();
+      const element = renderComponent(SearchablePicklist, getProps({
+        selectedValues: ['Pesto']
+      }));
+
+      expect(getSelectedValues(element)).to.exist;
+    });
+
+    it('does not render if selectedValues is empty', () => {
+      const stub = sinon.stub();
+      const element = renderComponent(SearchablePicklist, getProps());
+
+      expect(getSelectedValues(element)).to.not.exist;
+    });
+
+    it('calls onClickSelectedValue when a selectedValues item is clicked', () => {
+      const stub = sinon.stub();
+      const element = renderComponent(SearchablePicklist, getProps({
+        onClickSelectedValue: stub,
+        selectedValues: ['Pesto']
+      }));
+
+      const selectedValues = getSelectedValues(element);
+
+      const option = selectedValues.querySelectorAll('.picklist-option');
+
+      Simulate.click(option[0]);
+
+      expect(stub).to.have.been.calledWith('Pesto');
+    });
+  })
 });

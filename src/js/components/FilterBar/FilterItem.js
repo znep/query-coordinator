@@ -14,7 +14,10 @@ export const FilterItem = React.createClass({
     filter: PropTypes.shape({
       'function': PropTypes.string.isRequired,
       columnName: PropTypes.string.isRequired,
-      arguments: PropTypes.object,
+      arguments: PropTypes.oneOfType([
+        PropTypes.object,
+        PropTypes.arrayOf(PropTypes.object)
+      ]),
       isHidden: PropTypes.boolean
     }).isRequired,
     column: PropTypes.shape({

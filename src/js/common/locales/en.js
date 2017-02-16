@@ -27,6 +27,12 @@ export default {
       greater_label: 'Greater than {0}',
       less_label: 'Less than {0}'
     },
+    text_filter: {
+      n_values: '{0} selected',
+      n_plus_values: '5+ selected',
+      selected_values: 'Selected Values',
+      suggested_values: 'Top Values'
+    },
     range: 'Range',
     remove_filter: 'Remove Filter',
     search: 'Search options',

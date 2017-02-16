@@ -3,6 +3,7 @@ import React from 'react';
 import { renderIntoDocument, Simulate } from 'react-addons-test-utils';
 import { renderComponent } from '../../helpers';
 import TextFilter from 'components/FilterBar/TextFilter';
+import { mockBinaryOperatorFilter, mockTextColumn } from './data';
 
 describe('TextFilter', () => {
   function getProps(props) {
@@ -69,7 +70,7 @@ describe('TextFilter', () => {
     });
   });
 
-  it('renders a searchable picklist when results returned', (done) => {
+  it('renders a searchable picklist when results are returned', (done) => {
     const results = ['suggestion1', 'suggestion2'];
     const element = renderComponent(TextFilter, getProps({
       fetchSuggestions: sinon.stub().returns(Promise.resolve(results))
@@ -83,6 +84,23 @@ describe('TextFilter', () => {
       });
       done();
     });
+  });
+
+  it('removes a selected value from selectedValues when it is selected', () => {
+    const stub = sinon.stub().returns(Promise.resolve([]));
+    const element = renderComponent(TextFilter, getProps({
+      fetchSuggestions: stub,
+      column: mockTextColumn,
+      filter: mockBinaryOperatorFilter
+    }));
+
+    const selectedValuesLength = element.querySelectorAll('.picklist-title').length;
+
+    Simulate.click(element.querySelector('.picklist-title'));
+
+    const selectedValuesNewLength = element.querySelectorAll('.picklist-title').length;
+
+    assert(selectedValuesNewLength < selectedValuesLength, 'Expected selectedValues to be smaller');
   });
 
   it('invokes fetchSuggestions when the search term changes', () => {
@@ -129,6 +147,48 @@ describe('TextFilter', () => {
       clock.restore();
     });
 
+    it('clears selectedValues when the clear button is clicked', (done) => {
+      const filter = {
+        'function': 'noop',
+        columnName: mockTextColumn.fieldName,
+        arguments: [
+          {
+            operator: "=",
+            operand: "penguin"
+          }
+        ],
+        isHidden: false
+      };
+
+      const onUpdateStub = sinon.stub();
+      const onClickClear = sinon.stub();
+      const fetchSuggestionsStub = sinon.stub().returns(Promise.resolve([]));
+      const element = renderComponent(TextFilter, getProps({
+        filter,
+        onClickClear: onClickClear,
+        onUpdate: onUpdateStub,
+        fetchSuggestions: fetchSuggestionsStub,
+        column: mockTextColumn
+      }));
+
+      _.defer(() => {
+        const clearButton = element.querySelector('.clear-btn');
+        Simulate.click(clearButton);
+
+        const updateButton = element.querySelector('.apply-btn');
+        Simulate.click(updateButton);
+
+        expect(onUpdateStub).to.have.been.calledWith({
+          'function': 'noop',
+          columnName: mockTextColumn.fieldName,
+          arguments: null,
+          isHidden: true
+        });
+
+        done();
+      });
+    });
+
     it('calls onCancel when cancel button is clicked', () => {
       const stub = sinon.stub();
       const element = renderComponent(TextFilter, getProps({
@@ -141,11 +201,12 @@ describe('TextFilter', () => {
       expect(stub).to.have.been.called;
     });
 
-    it('calls onUpdate with the new filter when apply button used', (done) => {
+    it('calls onUpdate with the new filter when the apply button is used', (done) => {
       const filter = {
         'function': 'noop',
         columnName: 'some_word',
-        arguments: null
+        arguments: null,
+        isHidden: false
       };
       const results = ['penguin'];
       const fetchSuggestionsStub = sinon.stub().returns(Promise.resolve(results));
@@ -166,10 +227,53 @@ describe('TextFilter', () => {
         expect(onUpdateStub).to.have.been.calledWith({
           'function': 'binaryOperator',
           columnName: 'some_word',
-          arguments: {
-            operator: '=',
-            operand: 'penguin'
+          arguments: [
+            {
+              operator: "=",
+              operand: "penguin"
+            }
+          ],
+          isHidden: false
+        });
+
+        done();
+      });
+    });
+
+    it('calls onUpdate with noop filter when the apply button with an empty array of selectedValues', (done) => {
+      const filter = {
+        'function': 'noop',
+        columnName: mockTextColumn.fieldName,
+        arguments: [
+          {
+            operator: "=",
+            operand: "penguin"
           }
+        ],
+        isHidden: false
+      };
+
+      const onUpdateStub = sinon.stub();
+      const fetchSuggestionsStub = sinon.stub().returns(Promise.resolve([]));
+      const element = renderComponent(TextFilter, getProps({
+        filter,
+        onUpdate: onUpdateStub,
+        fetchSuggestions: fetchSuggestionsStub,
+        column: mockTextColumn
+      }));
+
+      _.defer(() => {
+        const picklistOption = element.querySelector('.picklist-option');
+        Simulate.click(picklistOption);
+
+        const button = element.querySelector('.apply-btn');
+        Simulate.click(button);
+
+        expect(onUpdateStub).to.have.been.calledWith({
+          'function': 'noop',
+          columnName: mockTextColumn.fieldName,
+          arguments: null,
+          isHidden: true
         });
 
         done();

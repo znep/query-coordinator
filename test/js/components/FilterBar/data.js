@@ -21,12 +21,19 @@ export const mockTimeRangeFilter = {
 export const mockBinaryOperatorFilter = {
   'function': 'binaryOperator',
   columnName: 'dinosaurName',
-  arguments: {
-    operator: '=',
-    operand: 'Timmy'
-  },
+  arguments: [
+    {
+      operator: '=',
+      operand: 'Timmy'
+    },
+    {
+      operator: '=',
+      operand: 'Tommy'
+    },
+  ],
   isHidden: false
 };
+
 
 export const mockNumberColumn = {
   dataTypeName: 'number',

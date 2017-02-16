@@ -31,12 +31,17 @@
 }
 
 .picklist-option {
+  position: relative;
   padding: 10px;
   user-select: none;
   cursor: default;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  .picklist-with-icon {
+    padding-left: 20px;
+  }
 
   &:hover {
     background-color: $alternate-3-light;
@@ -52,6 +57,43 @@
     &:active:not(.picklist-option-selected) {
       color: tint($white, 30%);
       background-color: tint($alternate-3, 30%);
+    }
+  }
+
+  .option-icon,
+  .close-icon {
+    position: absolute;
+  }
+
+  .option-icon {
+    left: 8px;
+    padding-top: 2px;
+    .socrata-icon {
+
+      svg {
+        width: 16px;
+        height: 16px;
+
+        g {
+          fill: $light-grey-4;
+        }
+      }
+    }
+  }
+
+  .close-icon {
+    right: 8px;
+
+    .socrata-icon {
+
+      svg {
+        width: 14px;
+        height: 14px;
+
+        g {
+          fill: $light-grey-1;
+        }
+      }
     }
   }
 }

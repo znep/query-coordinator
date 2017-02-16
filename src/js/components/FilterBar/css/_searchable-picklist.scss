@@ -1,6 +1,11 @@
 @import "variables/colors.scss";
 
 .searchable-picklist {
+  font-size: 12px;
+  max-height: 432px;
+  overflow-x: hidden;
+  overflow-y: auto;
+
   .searchable-picklist-input-container {
     position: relative;
     margin-bottom: 8px;
@@ -9,7 +14,7 @@
       width: 100%;
       border: 1px solid $light-grey-3;
       padding: 8px;
-      padding-left: 35px;
+      padding-left: 28px;
 
       &:focus {
         border-color: $alternate-3-light;
@@ -17,16 +22,29 @@
       }
     }
 
-    .socrata-icon-search {
+    .socrata-icon {
       position: absolute;
-      left: 8px;
-      top: 2px;
-      color: $light-grey-3;
-      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      left: 6px;
+      top: 6px;
+
+      svg {
+        width: 20px;
+        height: 20px;
+
+        g path {
+          fill: $light-grey-4;
+        }
+      }
     }
   }
 
   .picklist-option {
     cursor: pointer;
+  }
+
+  .picklist {
+    margin: 1px;
   }
 }

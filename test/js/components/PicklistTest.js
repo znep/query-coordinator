@@ -38,6 +38,25 @@ describe('Picklist', () => {
       expect(element.querySelectorAll('.picklist-option')).to.have.lengthOf(3);
     });
 
+    describe('with icons', () => {
+      beforeEach(() => {
+        const options = [
+          {displayCloseIcon: true, iconName: 'filter'},
+          {displayCloseIcon: true}
+        ];
+
+        element = renderComponent(Picklist, getProps({ options }));
+      });
+
+      it('renders option icons', () => {
+        expect(element.querySelectorAll('.option-icon')).to.have.lengthOf(1);
+      });
+
+      it('renders close icons', () => {
+        expect(element.querySelectorAll('.close-icon')).to.have.lengthOf(2);
+      });
+    });
+
     describe('with a value set', () => {
       beforeEach(() => {
         element = renderComponent(Picklist, getProps({

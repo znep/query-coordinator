@@ -12,8 +12,9 @@ class InternalController < ApplicationController
     { name: 'fullMixpanelTracking', description: 'UX metrics gathering using persistent cookies; prefer over mixpanelTracking unless customer explicitly asks for session cookies.' },
     { name: 'mixpanelTracking', description: 'UX metrics gathering using session cookies; prefer using fullMixpanelTracking when possible.' },
     { name: 'socrata_emails_bypass_auth0', description: "Don't automatically login users with @socrata.com email addresses through auth0" },
-    { name: 'disable_contact_dataset_owner', description: 'Disable contacting dataset owners in the DSLP/Primer.'},
-    { name: 'disable_owner_contact', description: 'Disables showing the Contact Dataset Owner section in the About pane.' }
+    { name: 'disable_contact_dataset_owner', description: 'Disable contacting dataset owners in the DSLP/Primer.' },
+    { name: 'disable_owner_contact', description: 'Disables showing the Contact Dataset Owner section in the About pane.' },
+    { name: 'fedramp', description: 'Enables security restrictions on this domain for fedramp compliance.' }
   ]
 
   def index

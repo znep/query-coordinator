@@ -147,8 +147,14 @@ module Auth0Helper
     flags.use_auth0 && flags.use_auth0_component
   end
 
-  # these options are passed to the login screen
+  # these options are passed to the login/signup screen
   def generate_auth0_options
+    params =
+      (request.params[:signup] || {})
+      .only('email', 'screenName')
+      .map { |k, v| [k, sanitize(v)] }
+      .to_h
+
     {
       auth0ClientId: AUTH0_ID,
       auth0Uri: AUTH0_URI,
@@ -166,7 +172,8 @@ module Auth0Helper
       flashes: formatted_flashes,
       companyName: CurrentDomain.strings.company,
       signUpDisclaimer: CurrentDomain.strings.disclaimer,
-      params: request.params
+      params: params,
+      disableSignInAutocomplete: feature?('fedramp')
     }.to_json.html_safe
   end
 end

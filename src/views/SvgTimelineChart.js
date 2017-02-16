@@ -841,15 +841,8 @@ function SvgTimelineChart($element, vif) {
         null
       )
     );
-    const actualSeriesIndex = (isGrouping) ? 0 : seriesIndex;
-    const usingColorPalette = _.get(
-      self.getVif(),
-      `series[${(isGrouping) ? 0 : seriesIndex}].color.palette`,
-      false
-    );
-
     function getColorFromPalette() {
-      const palette = self.getColorPaletteBySeriesIndex(actualSeriesIndex);
+      const palette = self.getColorPaletteBySeriesIndex(seriesIndex);
 
       return palette[seriesIndex];
     }
@@ -859,10 +852,10 @@ function SvgTimelineChart($element, vif) {
       switch (colorVariant) {
 
         case 'primary':
-          return self.getPrimaryColorBySeriesIndex(actualSeriesIndex);
+          return self.getPrimaryColorBySeriesIndex(seriesIndex);
 
         case 'secondary':
-          return self.getSecondaryColorBySeriesIndex(actualSeriesIndex);
+          return self.getSecondaryColorBySeriesIndex(seriesIndex);
 
         default:
           throw new Error(
@@ -871,7 +864,7 @@ function SvgTimelineChart($element, vif) {
       }
     }
 
-    return (isGrouping && usingColorPalette) ?
+    return (isGrouping) ?
       getColorFromPalette() :
       getColorFromVif();
   }

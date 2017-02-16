@@ -216,6 +216,11 @@ function incrementDateByPrecision(startDate, precision) {
 // rather interpolated over, which misrepresents the data.
 function forceDimensionMonotonicity(vif, seriesIndex, precision, dataTable) {
   const rows = dataTable.rows;
+
+  if (rows.length === 0) {
+    return rows;
+  }
+
   const dimensionIndex = dataTable.columns.indexOf('dimension');
   const startDate = rows[0][dimensionIndex];
   const endDate = rows[rows.length - 1][dimensionIndex];

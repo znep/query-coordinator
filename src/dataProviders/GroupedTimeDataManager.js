@@ -47,11 +47,19 @@ function getData(vif, options) {
       'series[0].dataSource.orderBy.sort',
       'ASC'
     ).toUpperCase();
+    // EN-13888 - Multi-series timeline chart errors when adding grouping
+    //
+    // While it seems like it should work, using the GROUP BY with a columm
+    // alias and not the column name results in a 500 response from the backend.
+    //
+    // EN-13909 has been filed to investigate whether or not this is expected
+    // and, if not, if it can be fixed, but in the meantime we are explicitly
+    // repeating the grouping column name in the GROUP BY clause.
     const queryString = `
       SELECT
         \`${state.groupingColumnName}\` AS ${SoqlHelpers.dimensionAlias()}
       ${whereClause}
-      GROUP BY ${SoqlHelpers.dimensionAlias()}
+      GROUP BY \`${state.groupingColumnName}\`
       ORDER BY ${SoqlHelpers.dimensionAlias()} ${sortOrder}
       LIMIT ${MAX_GROUP_COUNT}`;
     const uriEncodedQueryString = encodeURIComponent(

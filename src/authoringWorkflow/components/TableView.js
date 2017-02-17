@@ -9,6 +9,7 @@ import {
   hasData
 } from '../selectors/metadata';
 import '../../Table';
+import VisualizationRenderer from '../../VisualizationRenderer';
 
 export var TableView = React.createClass({
   propTypes: {
@@ -42,24 +43,12 @@ export var TableView = React.createClass({
   },
 
   renderTableView() {
-    var { metadata, vif } = this.props;
-    var $tableView = $(this.tableView);
-    var alreadyRendered = $tableView.find('.socrata-visualization').length === 1;
+    var { vif } = this.props;
 
-    if (alreadyRendered) {
-
-      $tableView[0].dispatchEvent(
-        new CustomEvent(
-          'SOCRATA_VISUALIZATION_RENDER_VIF',
-          {
-            detail: this.props.vif,
-            bubbles: true
-          }
-        )
-      );
+    if (this.tableView.querySelector('.socrata-visualization')) {
+      this.tableRenderer.update(vif);
     } else {
-
-      $tableView.socrataTable(vif);
+      this.tableRenderer = new VisualizationRenderer(vif, this.tableView);
     }
   },
 

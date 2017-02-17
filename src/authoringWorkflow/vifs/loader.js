@@ -24,6 +24,7 @@ const paths = {
   measureColumnName: 'series[0].dataSource.measure.columnName',
   negativeColor: 'configuration.legend.negativeColor',
   orderBy: 'series[0].dataSource.orderBy',
+  paletteColor: 'series[0].color.palette',
   pointOpacity: 'configuration.pointOpacity',
   pointSize: 'configuration.pointSize',
   positiveColor: 'configuration.legend.positiveColor',
@@ -135,6 +136,10 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.orderBy)) {
     dispatch(actions.setOrderBy(get(paths.orderBy)));
+  }
+
+  if (has(paths.paletteColor)) {
+    dispatch(actions.setColorPalette(get(paths.paletteColor)));
   }
 
   if (has(paths.pointOpacity)) {

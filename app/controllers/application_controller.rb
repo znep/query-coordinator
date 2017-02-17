@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   include UserAuthorizationHelper
   include FeaturesHelper
+  include LocaleHelper
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -46,11 +47,15 @@ class ApplicationController < ActionController::Base
     @current_user_story_authorization ||= CoreServer.current_user_story_authorization
   end
 
-  # site_chrome expects current_user and current_domain to be in place
-  # to identify proper render states.
   def setup_site_chrome_prerequisites
+    # site_chrome expects current_user and current_domain to be in place
+    # to identify proper render states.
     ::RequestStore.store[:current_user] ||= current_user
     ::RequestStore.store[:current_domain] ||= current_domain['cname']
+
+    # site_chrome also expects I18n.locale to be correct, using the path param
+    # if provided or else the domain default
+    I18n.locale = current_locale
   end
 
   def downtimes

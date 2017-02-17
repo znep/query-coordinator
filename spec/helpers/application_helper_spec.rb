@@ -55,4 +55,27 @@ RSpec.describe ApplicationHelper, type: :helper do
       end
     end
   end
+
+  describe '#current_editor_translations' do
+    around do |example|
+      locale = example.metadata[:locale]
+      I18n.with_locale(locale) { example.run }
+    end
+
+    it 'loads editor translations in English', locale: :en do |example|
+      helper.params[:locale] = example.metadata[:locale]
+      translations = current_editor_translations
+
+      expect(translations.keys).to eq(%w{editor})
+      expect(translations[:editor][:story_save_error_try_again]).to eq('Try again.')
+    end
+
+    it 'falls back to English when using non-English languages', locale: :fr do |example|
+      helper.params[:locale] = example.metadata[:locale]
+      translations = current_editor_translations
+
+      expect(translations.keys).to eq(%w{editor})
+      expect(translations[:editor][:story_save_error_try_again]).to eq('Try again.')
+    end
+  end
 end

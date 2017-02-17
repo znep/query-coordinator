@@ -41,7 +41,7 @@ describe('App', function() {
 
     it('renders an editable filter bar', () => {
       expect(element.querySelector('.filter-bar-container')).to.exist;
-      expect(element.querySelector('.add-filter-button')).to.exist;
+      expect(element.querySelector('.btn-add-filter')).to.exist;
     });
 
     it('renders an AddVisualizationButton', () => {

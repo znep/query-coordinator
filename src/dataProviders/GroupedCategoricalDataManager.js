@@ -294,14 +294,28 @@ function getData(vif, options) {
             return filter;
           });
 
-          const baseFilter = {
-            'function': 'binaryOperator',
-            columnName: state.columnName,
-            arguments: {
-              operator: '=',
-              operand: dimensionValue
-            }
-          };
+          let baseFilter;
+
+          if (dimensionValue === null) {
+
+            baseFilter = {
+              'function': 'isNull',
+              columnName: state.columnName,
+              arguments: {
+                isNull: true
+              }
+            };
+          } else {
+
+            baseFilter = {
+              'function': 'binaryOperator',
+              columnName: state.columnName,
+              arguments: {
+                operator: '=',
+                operand: dimensionValue
+              }
+            };
+          }
 
           filters.push(baseFilter);
 

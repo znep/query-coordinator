@@ -16,14 +16,15 @@ export default {
     red_yellow: 'Red Yellow'
   },
   color_palettes: {
-    categorical: 'Categorical',
+    categorical: 'Categorical 1',
+    categorical2: 'Categorical 2',
     alternate1: 'Alternate 1',
     alternate2: 'Alternate 2',
     accent: 'Accent',
     dark: 'Dark'
   },
   modal: {
-    title: 'Create A Visualization',
+    title: 'Edit Visualization',
     based_on: 'Based on ',
     close: 'Close',
     insert: 'Insert',

@@ -160,6 +160,10 @@ export const COLOR_PALETTES = [
     value: 'categorical'
   },
   {
+    title: translate('color_palettes.categorical2'),
+    value: 'categorical2'
+  },
+  {
     title: translate('color_palettes.alternate1'),
     value: 'alternate1'
   },

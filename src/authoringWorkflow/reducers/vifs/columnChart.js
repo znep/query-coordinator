@@ -111,20 +111,7 @@ export default function columnChart(state, action) {
       break;
 
     case SET_COLOR_PALETTE:
-      const groupingColumnName = _.get(
-        state,
-        'series[0].dataSource.dimension.grouping.columnName',
-        null
-      );
-
-      // Note that the 'dimension.grouping.columnName' property is only valid on
-      // the first series of a vif, so we only check the first series to
-      // determine if the vif is using the dimension grouping functionality.
-      //
-      // In this context, 'state' is the vif itself.
-      if (!_.isNull(groupingColumnName)) {
-        _.set(state, 'series[0].color.palette', action.colorPalette);
-      }
+      _.set(state, 'series[0].color.palette', action.colorPalette);
       break;
 
     case RECEIVE_METADATA:

@@ -62,36 +62,6 @@ describe SocrataSiteChrome::DomainConfig do
     end
   end
 
-  describe '#cache_key' do
-    describe 'should return a different cache key for different domains' do
-      before do
-        allow(Time).to receive(:now).and_return('1477076931')
-      end
-
-      context 'as data.michigan.gov' do
-        let(:domain) { 'data.michigan.gov' }
-
-        it 'returns the data.michigan.gov cache key' do
-          stub_domains
-          domain_config_1 = helper.new(domain)
-          cache_key_1 = domain_config_1.cache_key
-
-          expect(cache_key_1).to eq('frontend:deadbeef:domain:data.michigan.gov:1477076931:configurations:site_chrome')
-        end
-      end
-      context 'as data.wa.gov' do
-        let(:domain) { 'data.wa.gov' }
-
-        it 'returns the data.wa.gov cache key' do
-          stub_domains
-          domain_config_2 = helper.new(domain)
-          cache_key_2 = domain_config_2.cache_key
-          expect(cache_key_2).to eq('frontend:deadbeef:domain:data.wa.gov:1477076931:configurations:site_chrome')
-        end
-      end
-    end
-  end
-
   describe 'config_updated_at' do
     it 'returns the expected timestamp' do
       allow(Time).to receive(:now).and_return(Time.at(1477332900))

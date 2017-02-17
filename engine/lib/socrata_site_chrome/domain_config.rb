@@ -1,4 +1,4 @@
-#Making this explicit so it works outside of a Rails app
+# Making this explicit so it works outside of a Rails app
 require 'active_support/all'
 require 'airbrake'
 require 'httparty'
@@ -14,9 +14,12 @@ module SocrataSiteChrome
 
     def initialize(domain_name, config: Hash.new, logger: nil, cache: nil)
       @request_config = {
-        :cache_key_prefix => (defined?(Rails) && !config.has_key?(:cache_key_prefix)) ? Rails.application.config.cache_key_prefix : config[:cache_key_prefix],
-        :coreservice_uri => (defined?(Rails) && !config.has_key?(:coreservice_uri)) ? Rails.application.config.coreservice_uri : config[:coreservice_uri],
-        :application => (defined?(Rails) && !config.has_key?(:application)) ? 'frontend' : config[:application],
+        :cache_key_prefix => (defined?(Rails) && !config.has_key?(:cache_key_prefix)) ?
+          Rails.application.config.cache_key_prefix : config[:cache_key_prefix],
+        :coreservice_uri => (defined?(Rails) && !config.has_key?(:coreservice_uri)) ?
+          Rails.application.config.coreservice_uri : config[:coreservice_uri],
+        :application => (defined?(Rails) && !config.has_key?(:application)) ?
+          'frontend' : config[:application],
       }
 
       @logger = logger
@@ -75,22 +78,6 @@ module SocrataSiteChrome
         updated_at: site_chrome_config[:updatedAt],
         current_version: current_version
       }
-    end
-
-    # NOTE!! It is critical that the composition this cache key structurally match the corresponding
-    # cache_key method in consuming applications. For example in the frontend, this is defined in the
-    # frontend/app/models/configuration.rb class.
-    def cache_key
-      "domain:#{cname}:#{config_updated_at}:configurations:#{CONFIGURATION_TYPE}"
-      [
-        @request_config[:application],
-        @request_config[:cache_key_prefix],
-        'domain',
-        cname,
-        config_updated_at,
-        'configurations',
-        CONFIGURATION_TYPE,
-      ].join(':')
     end
 
     def fetch_domain(domain_name)
@@ -167,7 +154,7 @@ module SocrataSiteChrome
         raise error_msg
       end
 
-      body = @cache.fetch(cache_key) do
+      body = @cache.fetch(SocrataSiteChrome::CacheKey.cache_key_string(self, CONFIGURATION_TYPE)) do
         begin
           response = HTTParty.get(
             domain_config_uri,

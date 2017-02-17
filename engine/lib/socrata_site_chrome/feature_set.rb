@@ -4,6 +4,8 @@ require 'httparty'
 module SocrataSiteChrome
   class FeatureSet
 
+    CONFIGURATION_TYPE = 'feature_set'
+
     attr_reader :domain
 
     def initialize(domain)
@@ -30,14 +32,14 @@ module SocrataSiteChrome
       "#{Rails.application.config.coreservice_uri}/configurations.json?type=feature_set&defaultOnly=true"
     end
 
-    def cache_key
-      "#{domain}_site_chrome_feature_set"
-    end
-
     private
 
+    def domain_config
+      ::RequestStore.store['site_chrome.domain_config'] ||= SocrataSiteChrome::DomainConfig.new(domain)
+    end
+
     def get_feature_set
-      body = Rails.cache.fetch(cache_key) do
+      body = Rails.cache.fetch(SocrataSiteChrome::CacheKey.cache_key_string(domain_config, CONFIGURATION_TYPE)) do
         begin
           response = HTTParty.get(
             self.class.feature_set_uri,

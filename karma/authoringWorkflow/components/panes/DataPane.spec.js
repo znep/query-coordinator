@@ -77,6 +77,10 @@ describe('DataPane', function() {
 
           it('renders a limit none radio button', function() {
             expect(component.querySelector('#limit-none')).to.exist;
+
+            if (chartType === 'pieChart') {
+              expect(component.querySelector('#limit-none').hasAttribute('disabled')).to.equal(true);
+            }
           });
 
           it('renders a limit count radio button', function() {

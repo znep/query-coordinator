@@ -64,14 +64,6 @@ export default function pieChart(state, action) {
       });
       break;
 
-    case SET_LIMIT_NONE_AND_SHOW_OTHER_CATEGORY:
-      setBooleanValueOrDeleteProperty(state, 'configuration.showOtherCategory', action.showOtherCategory);
-
-      forEachSeries(state, series => {
-        _.unset(series, 'dataSource.limit');
-      });
-      break;
-
     case SET_LIMIT_COUNT_AND_SHOW_OTHER_CATEGORY:
       setBooleanValueOrDefaultValue(state, 'configuration.showOtherCategory', action.showOtherCategory, true);
 
@@ -98,6 +90,7 @@ export default function pieChart(state, action) {
     case SET_VIEW_SOURCE_DATA_LINK:
       return baseVifReducer(state, action);
 
+    case SET_LIMIT_NONE_AND_SHOW_OTHER_CATEGORY:
     default:
       break;
   }

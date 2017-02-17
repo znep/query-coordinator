@@ -71,6 +71,7 @@ export var DataPane = React.createClass({
       id: 'limit-none',
       type: 'radio',
       name: 'limit-radio',
+      disabled: isPieChart(vifAuthoring),
       onChange: this.props.onSelectLimitNone,
       defaultChecked: limitCountDisabled
     };

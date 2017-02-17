@@ -164,7 +164,7 @@ module Auth0Helper
       rememberMe: feature?('remember_me'),
       showSocial: feature?('openid_login'),
       hideSocrataId: FeatureFlags.derive(nil, request).hide_socrata_id,
-      socrataEmailsBypassAuth0: feature?('socrata_emails_bypass_auth0'),
+      socrataEmailsBypassAuth0: feature?('socrata_emails_bypass_auth0') && !feature?('fedramp'),
       connections: @auth0_connections,
       forcedConnections: @auth0_forced_connections,
       chooseConnectionMessage: @auth0_message || t('screens.sign_in.auth0_intro'),

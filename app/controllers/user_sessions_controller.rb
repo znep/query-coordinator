@@ -62,15 +62,22 @@ class UserSessionsController < ApplicationController
   def create
     @body_id = 'login'
 
-    # we allow @socrata.com superadmins to bypass auth0 if a certain module is turned on
-    # this is enforced in the javascript but we have to enforce it here as well
+    # We allow @socrata.com users to bypass auth0 if a module is turned on, but only when the fedramp module is off.
+    # The purpose of this is to restrict superadmin logins to ensure MFA through Okta, and "@socrata.com users" is a
+    # superset of superadmins.
+    # This is enforced in the javascript but we have to enforce it here as well.
     if use_auth0? &&
-       !feature?('socrata_emails_bypass_auth0') &&
        params.key?(:user_session) &&
        params[:user_session].key?(:login) &&
        params[:user_session][:login].include?('@socrata.com')
-      flash[:error] = 'Attempted to login with an @socrata.com email but "socrata_emails_bypass_auth0" module is not on'
-      redirect_to login_url and return
+      if feature?('fedramp')
+        flash[:error] = 'Password logins with an @socrata.com email are disabled because the "fedramp" module is on'
+        redirect_to login_url and return
+      end
+      if !feature?('socrata_emails_bypass_auth0')
+        flash[:error] = 'To enable password logins with an @socrata.com email, the "socrata_emails_bypass_auth0" module must be on'
+        redirect_to login_url and return
+      end
     end
 
     if current_user_session

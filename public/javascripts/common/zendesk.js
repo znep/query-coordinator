@@ -14,31 +14,32 @@ function loadAsyncScript() {
 }
 
 // Export the locked-down loader.
-module.exports = {
-  activate() {
-    if (!loaded) {
-      console.error('Attempted to open Zendesk without initialization!');
-    } else {
-      zE.identify(user);
-      zE.activate({
-        hideOnClose: true
-      });
-    }
-  },
-  init(options) {
-    if (!loaded) {
-      options = options || {};
-      locale = options.locale;
-
-      if (_.isPlainObject(options.user)) {
-        user = _.pick(options.user, ['id', 'email', 'name', 'displayName', 'screenName']);
-        user.name = user.name || user.displayName || user.screenName;
-        delete user.displayName;
-        delete user.screenName;
-      }
-
-      loadAsyncScript();
-      loaded = true;
-    }
+function activate() {
+  if (!loaded) {
+    console.error('Attempted to open Zendesk without initialization!');
+  } else {
+    zE.identify(user);
+    zE.activate({
+      hideOnClose: true
+    });
   }
-};
+}
+
+function init(options) {
+  if (!loaded) {
+    options = options || {};
+    locale = options.locale;
+
+    if (_.isPlainObject(options.user)) {
+      user = _.pick(options.user, ['id', 'email', 'name', 'displayName', 'screenName']);
+      user.name = user.name || user.displayName || user.screenName;
+      delete user.displayName;
+      delete user.screenName;
+    }
+
+    loadAsyncScript();
+    loaded = true;
+  }
+}
+
+export default { activate, init };

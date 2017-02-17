@@ -1,5 +1,4 @@
-import * as Usersnap from './usersnap';
-import * as Zendesk from './zendesk';
+import Usersnap from '../../../../common/usersnap';
+import Zendesk from '../../../../common/zendesk';
 
-export { Usersnap };
-export { Zendesk };
+export { Usersnap, Zendesk };

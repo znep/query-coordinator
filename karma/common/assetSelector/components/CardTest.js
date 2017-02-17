@@ -1,4 +1,4 @@
-import { Card } from 'Card';
+import { Card } from 'components/assetSelector/Card';
 
 describe('Card', function() {
   const defaultProps = {

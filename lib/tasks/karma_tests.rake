@@ -69,6 +69,7 @@ namespace :test do
         all_translations = YAML.load_file(translations_filename)['en']
         translations = {
           :asset_selector => all_translations['asset_selector'],
+          :common => all_translations['common'],
           :dataset_landing_page => all_translations['dataset_landing_page']
         }
         File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")

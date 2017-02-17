@@ -16,7 +16,7 @@ class FeedbackFlannel extends React.Component {
 
   componentDidMount() {
     // Initialize UserSnap.
-    Providers.Usersnap.init({
+    Providers.Usersnap.init(window.serverConfig.usersnapProjectID, {
       // Inject locale to localize the popup
       locale: _.get(window.serverConfig, 'locale', 'en'),
       // Inject the user so we can auto-fill some information.

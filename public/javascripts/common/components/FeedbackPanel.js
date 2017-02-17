@@ -1,23 +1,28 @@
 import _ from 'lodash';
-import React from 'react';
+import React, { PropTypes } from 'react';
 import velocity from 'velocity-animate';
 
-import usersnap from '../lib/usersnap';
-import zendesk from '../lib/zendesk';
-import { ESCAPE_KEY_CODE } from '../../common/constants';
+import usersnap from '../usersnap';
+import zendesk from '../zendesk';
+import { ESCAPE_KEY_CODE } from '../constants';
 
 function t(key) {
-  return I18n.feedback[key];
+  return I18n.common.feedback[key];
 }
 
 export const FeedbackPanel = React.createClass({
+  propTypes: {
+    currentUser: PropTypes.object,
+    locale: PropTypes.string,
+    usersnapProjectID: PropTypes.string.isRequired
+  },
+
   componentDidMount() {
     // Copy some of the close behavior of socrata-components flannels because they don't
     // support the behavior we want for the feedback panel yet.
     document.body.addEventListener('keyup', (event) => {
       const key = event.which || event.keyCode;
 
-      // ESC
       if (key === ESCAPE_KEY_CODE) {
         this.onDismissFeedback();
       }
@@ -26,25 +31,24 @@ export const FeedbackPanel = React.createClass({
 
   // Bring up the feedback panel when the button is clicked.
   onClickFeedback() {
+    const { currentUser, usersnapProjectID } = this.props;
+    const locale = this.props.locale || 'en';
+
     this.hideButton(this.showContent);
 
     // Initialize UserSnap.
-    usersnap.init({
-      // Inject locale to localize the popup
-      locale: _.get(window.serverConfig, 'locale', 'en'),
+    usersnap.init(usersnapProjectID, {
+      locale: locale,
       // Restore the feedback button after the user quits UserSnap.
       // UserSnap politely exposes event listeners.
       onClose: _.partial(this.showButton, this.resetButtonHover),
-      // Inject the user so we can auto-fill some information.
-      user: window.serverConfig.currentUser
+      user: currentUser
     });
 
     // Initialize Zendesk.
     zendesk.init({
-      // Inject locale to localize the popup
-      locale: _.get(window.serverConfig, 'locale', 'en'),
-      // Inject the user so we can auto-fill some information.
-      user: window.serverConfig.currentUser
+      locale: locale,
+      user: currentUser
     });
   },
 
@@ -111,7 +115,7 @@ export const FeedbackPanel = React.createClass({
 
   render() {
     // Feedback panel is not available unless user is logged in.
-    if (!window.serverConfig.currentUser) {
+    if (!this.props.currentUser) {
       return null;
     }
 

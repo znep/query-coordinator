@@ -1,4 +1,4 @@
-import { ResultCount } from 'ResultCount';
+import { ResultCount } from 'components/assetSelector/ResultCount';
 
 describe('ResultCount', function() {
   const defaultProps = {

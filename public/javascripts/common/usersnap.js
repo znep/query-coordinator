@@ -1,15 +1,12 @@
 import _ from 'lodash';
 
 // Control to load UserSnap only once.
-var loaded = false;
+let loaded = false;
 
 // One-time setup options.
-var locale = null;
-var user = {};
-var onClose = _.noop;
-
-let runAfterLoad = [];
-let scriptAdded = false;
+let locale = null;
+let user = {};
+let onClose = _.noop;
 
 // Configuration for UserSnap, which will be bound to window.
 function generateConfig() {
@@ -23,9 +20,9 @@ function generateConfig() {
     commentRequired: true,
     tools: ['note', 'pen', 'arrow'],
     lang: getLocalizationKey(),
-    loadHandler: function() {
+    loadHandler: () => {
       // Fill in some additional info which we can't expose via the widget.
-      UserSnap.on('beforeSend', function(message) {
+      UserSnap.on('beforeSend', (message) => {
         message.addInfo = user;
       });
 
@@ -35,10 +32,6 @@ function generateConfig() {
       UserSnap.on('afterSend', onClose);
       UserSnap.on('cancel', onClose);
       UserSnap.on('error', onClose);
-
-      loaded = true;
-
-      runAfterLoad.forEach(fn => fn());
     }
   };
 }
@@ -51,27 +44,31 @@ function getLocalizationKey() {
 }
 
 // Script loader provided by UserSnap.
-function loadAsyncScript() {
-  var s = document.createElement('script');
+function loadAsyncScript(projectID) {
+  const s = document.createElement('script');
   s.type = 'text/javascript';
   s.async = true;
-  s.src = '//api.usersnap.com/load/' +
-          'b1f3034e-4a2c-4e96-8680-83ffea446194.js';
-  var x = document.getElementsByTagName('script')[0];
+  s.src = `//api.usersnap.com/load/${projectID}.js`;
+  const x = document.getElementsByTagName('script')[0];
   x.parentNode.insertBefore(s, x);
 }
 
 // Export the locked-down loader.
-export const activate = () => {
+function activate() {
   if (!loaded) {
-    runAfterLoad.push(() => UserSnap.openReportWindow());
+    console.error('Attempted to open UserSnap without initialization!');
   } else {
     UserSnap.openReportWindow();
   }
-};
+}
 
-export const init = options => {
-  if (!scriptAdded) {
+function init(projectID, options) {
+  if (!/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/.test(projectID)) {
+    console.error('Must provide a valid project ID to initialize UserSnap!');
+    return;
+  }
+
+  if (!loaded) {
     options = options || {};
     locale = options.locale;
 
@@ -87,8 +84,9 @@ export const init = options => {
     }
 
     window._usersnapconfig = generateConfig(options);
-    loadAsyncScript();
-
-    scriptAdded = true;
+    loadAsyncScript(projectID);
+    loaded = true;
   }
-};
+}
+
+export default { activate, init };

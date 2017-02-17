@@ -1,4 +1,4 @@
-import { SortDropdown } from 'SortDropdown';
+import { SortDropdown } from 'components/assetSelector/SortDropdown';
 import _ from 'lodash';
 
 describe('SortDropdown', function() {

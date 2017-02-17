@@ -79,6 +79,79 @@ describe('reducers/database', () => {
     });
   });
 
+  it('handles EDIT_IMMUTABLE', () => {
+    const oldRecord = {
+      id: 0,
+      ego: 0,
+      super_ego: 0,
+      __status__: {
+        savedAt: 'ON_SERVER',
+        type: 'SAVED'
+      }
+    };
+
+    const initialDB = {
+      my_table: [oldRecord]
+    };
+
+    const updates = {id: 0, ego: 3, super_ego: 7};
+
+    const beforeUpdate = new Date();
+    const database = dbReducer(initialDB, Actions.editImmutable('my_table', updates));
+
+    const editedRecord = database.my_table[0];
+    const dirtiedAt = editedRecord.__status__.dirtiedAt;
+    expect(dirtiedAt).to.be.at.least(beforeUpdate);
+
+    expect(database).to.deep.equal({
+      my_table: [{
+        __status__: {
+          type: 'DIRTY_IMMUTABLE',
+          dirtiedAt,
+          oldRecord
+        },
+        id: 0,
+        ego: 3,
+        super_ego: 7
+      }]
+    });
+  });
+
+  it('handles REVERT_EDITS', () => {
+    const initialDB = {
+      my_table: [
+        {
+          __status__: {
+            type: 'DIRTY_IMMUTABLE',
+            dirtiedAt: new Date,
+            oldRecord: {
+              id: 0,
+              ego: 0,
+              super_ego: 0
+            }
+          },
+          id: 0,
+          ego: 3,
+          super_ego: 7
+        }
+      ]
+    };
+
+    const database = dbReducer(initialDB, Actions.revertEdits('my_table', 0));
+
+    expect(database).to.deep.equal({
+      my_table: [{
+        __status__: {
+          type: 'SAVED',
+          savedAt: 'ON_SERVER'
+        },
+        id: 0,
+        ego: 0,
+        super_ego: 0
+      }]
+    });
+  });
+
   it('handles INSERT_FROM_SERVER', () => {
     const initialDB = {
       my_table: []

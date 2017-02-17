@@ -10,7 +10,7 @@ div.container {
   .modal {
     z-index: auto;
   }
-  
+
   .modal-overlay {
     position: static;
     height: 100%;
@@ -57,9 +57,9 @@ div.container {
       margin: 0;
       height: 62px;
     }
-    
+
     text-align: center;
-    
+
     #create-spinner {
       display: none;
       margin: 0 auto;
@@ -69,4 +69,10 @@ div.container {
   .error {
     display: none;
   }
+}
+
+footer#site-chrome-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }

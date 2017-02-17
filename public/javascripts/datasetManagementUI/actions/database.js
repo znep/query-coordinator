@@ -4,11 +4,27 @@ export const batch = (operations) => ({
   operations
 });
 
+// for when the user is editing an existing record which, when they hit save, will be saved
+// as a new record, leaving the original one alone
+export const EDIT_IMMUTABLE = 'EDIT_IMMUTABLE';
+export const editImmutable = (tableName, updates) => ({
+  type: EDIT_IMMUTABLE,
+  tableName,
+  updates
+});
+
 export const EDIT = 'EDIT';
 export const edit = (tableName, updates) => ({
   type: EDIT,
   tableName,
   updates
+});
+
+export const REVERT_EDITS = 'REVERT_EDITS';
+export const revertEdits = (tableName, oldRecordId) => ({
+  type: REVERT_EDITS,
+  tableName,
+  oldRecordId
 });
 
 // used when the server pushes new info to us (e.g. over a web socket)
@@ -70,6 +86,13 @@ export const updateStarted = (tableName, updates) => ({
   type: UPDATE_STARTED,
   tableName,
   updates
+});
+
+export const UPDATE_IMMUTABLE_STARTED = 'UPDATE_IMMUTABLE_STARTED';
+export const updateImmutableStarted = (tableName, recordId) => ({
+  type: UPDATE_IMMUTABLE_STARTED,
+  tableName,
+  recordId
 });
 
 export const UPDATE_PROGRESS = 'UPDATE_PROGRESS';

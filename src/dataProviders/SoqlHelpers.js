@@ -409,6 +409,13 @@ function binaryOperatorWhereClauseComponent(filter) {
   // operators to be joined with an 'OR'.
   if (_.isArray(filter.arguments)) {
 
+    const joinOperator = _.get(filter, 'joinOn', 'OR');
+
+    utils.assert(
+      joinOperator === 'OR' || joinOperator === 'AND',
+      `Invalid binary operator: joinOn property must be either "OR" or "AND", was: ${joinOperator}`
+    );
+
     filter.arguments.forEach(function(argument) {
 
       if (filterArgumentRequiresOperand(argument)) {
@@ -438,7 +445,8 @@ function binaryOperatorWhereClauseComponent(filter) {
               ''
           );
         }).
-        join(' OR ')
+        // Note the whitespace on either side of joinOperator!
+        join(` ${joinOperator} `)
       );
   // If `arguments` is an object, that means that we want this binary
   // operator to exist on its own (as if arguments were an array with one

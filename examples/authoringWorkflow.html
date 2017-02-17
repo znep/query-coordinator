@@ -123,6 +123,7 @@
     function launchAx(vifToLoad) {
       authoringWorkflow = new AuthoringWorkflow(container, {
         vif: vifToLoad,
+        filters: filters,
         backButtonText: 'Back to Dataset Selection',
         enableFiltering: true,
         onComplete: onComplete,

@@ -62,8 +62,8 @@ export const Slider = React.createClass({
     this.props.onChange(newValue);
   },
 
-  formatAccessibleLabel(label) {
-    return <span id={this.labelId} className="hidden">{label}</span>;
+  formatLabel(label) {
+    return <span id={this.labelId}>{_.round(label, 1)}</span>;
   },
 
   render() {
@@ -88,7 +88,7 @@ export const Slider = React.createClass({
       value: displayableValue,
       onChange: this.onChange,
       ariaLabelledby: this.labelId,
-      formatLabel: this.formatAccessibleLabel
+      formatLabel: this.formatLabel
     };
 
     return (

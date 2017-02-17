@@ -1,16 +1,11 @@
 .add-filter {
-  align-self: center;
   margin-right: 20px;
+  display: inline-block;
+  vertical-align: top;
 
-  .add-filter-button {
-    color: $alternate-2-text;
-    font-weight: 500;
-    cursor: pointer;
-    user-select: none;
-
-    .socrata-icon-add {
-      margin-left: 4px;
-    }
+  .btn-add-filter {
+    font-size: 12px;
+    padding: 7px 18px;
   }
 
   .column-container {

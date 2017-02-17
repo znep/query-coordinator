@@ -3,19 +3,20 @@
 @import "partials/input-groups";
 @import "partials/forms";
 @import "./css/add-filter.scss";
+@import "./css/filter-item.scss";
 @import "./css/calendar-date-filter.scss";
 @import "./css/filter-footer.scss";
 @import "./css/number-filter.scss";
 @import "./css/searchable-picklist.scss";
 @import "./css/text-filter.scss";
 
-$filter-z-index: 100;
+$filter-bar-container-padding: 20px;
 
 .filter-bar-container {
-  height: 83px;
+  font-size: 12px;
   background: $light-grey-7;
-  padding: 8px 20px;
-  display: flex;
+  padding: 6px $filter-bar-container-padding;
+  position: relative;
 
   // from http://webaim.org/techniques/css/invisiblecontent
   .hidden {
@@ -27,142 +28,71 @@ $filter-z-index: 100;
     overflow: hidden;
   }
 
-  .filter-bar-filter {
-    margin-right: 8px;
-    color: $dark-grey-2;
+  .filter-icon {
+    display: inline-block;
+    vertical-align: top;
 
-    .filter-title {
-      font-size: 12px;
-    }
+    .socrata-icon svg {
+      width: 20px;
+      height: 20px;
+      margin-right: 20px;
+      margin-top: 5px;
 
-    .filter-control-container {
-      display: inline-block;
-      position: relative;
-
-      .filter-control-toggle {
-        padding: 8px;
-        padding-right: 32px;
-        background: $white;
-        border: 1px solid $light-grey-3;
-        position: relative;
-        cursor: pointer;
-        min-width: 100px;
-        border-top-left-radius: 1px;
-        border-bottom-left-radius: 1px;
-        user-select: none;
-        max-width: 300px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-
-        .socrata-icon-chevron-down {
-          color: $light-grey-0;
-          position: absolute;
-          right: 8px;
-        }
-
-        &.left + .filter-controls {
-          left: 0;
-        }
-
-        &.right + .filter-controls {
-          right: 0;
-        }
-      }
-
-      .filter-controls {
-        position: absolute;
-        top: 100%;
-        width: 300px;
-        margin-top: -1px;
-        background: $white;
-        border-radius: 1px;
-        border: 1px solid $light-grey-3;
-        z-index: $filter-z-index;
-
-        .filter-control-title {
-          margin: 8px;
-        }
-
-        .range-filter-container {
-          padding: 8px;
-
-          .filter-control-title {
-            margin: 0;
-            margin-bottom: 8px;
-          }
-
-          .range-text-inputs-container {
-            justify-content: space-between;
-
-            .range-input {
-              max-width: 150px;
-              padding-left: 10px;
-              padding-right: 10px;
-            }
-
-            .range-separator {
-              margin: 8px;
-            }
-          }
-        }
+      g {
+        fill: $light-grey-1;
       }
     }
+  }
 
-    .filter-config-container {
-      display: inline-block;
-      position: relative;
-      vertical-align: top;
+  .add-filter-container {
+    display: inline-block;
+  }
 
-      .filter-config-toggle {
-        background: $white;
-        border: 1px solid $light-grey-3;
-        margin-left: -1px;
-        padding: 8px;
-        cursor: pointer;
-        border-top-right-radius: 1px;
-        border-bottom-right-radius: 1px;
+  .btn-expand-control {
+    font-size: 12px;
+    color: $light-grey-1;
+    text-decoration: underline;
+    float: right;
+    padding: 0;
+    margin-top: 6px;
 
-        &.left + .filter-config {
-          left: 0;
-        }
-
-        &.right + .filter-config {
-          right: 0;
-        }
-      }
-
-      .filter-config {
-        position: absolute;
-        top: 100%;
-        width: 400px;
-        margin-top: -1px;
-        background: $white;
-        border-radius: 1px;
-        border: 1px solid $light-grey-3;
-        z-index: $filter-z-index;
-
-        .filter-options {
-          margin: 15px;
-          margin-bottom: 30px;
-
-          .option-label {
-            font-weight: 600;
-          }
-
-          .small {
-            margin-left: 30px;
-          }
-        }
-      }
+    &.is-hidden {
+      visibility: hidden;
     }
 
-    .filter-control-toggle:focus, .filter-config-toggle:focus {
-      z-index: 1;
+    &:hover, &:focus {
+      color: $dark-grey-2;
+    }
+  }
+
+  .visible-filters-container {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  .collapsed-filters-container {
+    position: absolute;
+    width: 100%;
+    margin-left: -$filter-bar-container-padding;
+    margin-top: 6px;
+    padding-top: 2px;
+    background: $light-grey-7;
+    visibility: hidden;
+
+    .filter-bar-filter {
+      margin-bottom: 10px;
+    }
+  }
+
+  &.filter-bar-expanded {
+    .collapsed-filters-container {
+      visibility: visible;
     }
   }
 
   .filter-bar-column-option {
+    font-size: 12px;
+
     [class^="socrata-icon-"] {
       margin-right: 8px;
     }

@@ -118,17 +118,14 @@ export const AddFilter = React.createClass({
 
   render() {
     const button = (
-      <div
-        className="add-filter-button"
+      <button
+        className="btn btn-sm btn-alternate-2 btn-inverse btn-add-filter"
         ref={(el) => this.addFilterButton = el}
         onClick={this.toggleColumnPicklist}
         onKeyDown={this.onKeyDownAddFilterButton}
-        onKeyUp={this.onKeyUpAddFilterButton}
-        role="button"
-        tabIndex="0">
+        onKeyUp={this.onKeyUpAddFilterButton}>
         {t('filter_bar.add_filter')}
-        <span className="socrata-icon-add" role="presentation" />
-      </div>
+      </button>
     );
 
     return (

@@ -1,6 +1,6 @@
 {
   "name": "socrata-styleguide",
-  "version": "11.3.0",
+  "version": "11.4.0",
   "description": "Socrata's Product Styleguide",
   "main": "styleguide.js",
   "private": true,
@@ -11,6 +11,7 @@
     "deploy": "NODE_ENV=production ./deploy.sh",
     "release": "./tools/publish.sh",
     "test": "karma start karma.conf.js --singleRun true",
+    "test-browser": "karma start karma.conf.js --singleRun false --browsers Chrome",
     "watch": "gulp watch",
     "gulp": "gulp dist",
     "lint": "gulp lint",

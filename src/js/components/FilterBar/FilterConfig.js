@@ -44,7 +44,7 @@ export default React.createClass({
               <label htmlFor="hidden">
                 <span className="fake-radiobutton" />
                 <span className="option-label">{t('filter_bar.config.hidden_label')}</span>
-                <div className="small">{t('filter_bar.config.hidden_description')}</div>
+                <div className="setting-description">{t('filter_bar.config.hidden_description')}</div>
               </label>
             </div>
             <div>
@@ -56,7 +56,9 @@ export default React.createClass({
               <label htmlFor="viewers-can-edit">
                 <span className="fake-radiobutton" />
                 <span className="option-label">{t('filter_bar.config.viewers_can_edit_label')}</span>
-                <div className="small">{t('filter_bar.config.viewers_can_edit_description')}</div>
+                <div className="setting-description">
+                  {t('filter_bar.config.viewers_can_edit_description')}
+                </div>
               </label>
             </div>
           </div>

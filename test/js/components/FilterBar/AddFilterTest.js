@@ -16,7 +16,7 @@ describe('AddFilter', () => {
   }
 
   function clickAddFilter(element) {
-    const button = element.querySelector('.add-filter-button');
+    const button = element.querySelector('.btn-add-filter');
     Simulate.click(button);
   }
 
@@ -30,7 +30,7 @@ describe('AddFilter', () => {
 
   describe('add filter button', () => {
     it('renders the add filter button', () => {
-      const button = element.querySelector('.add-filter-button');
+      const button = element.querySelector('.btn-add-filter');
       expect(button).to.exist;
     });
 
@@ -47,7 +47,7 @@ describe('AddFilter', () => {
     });
 
     it('renders when add filter button is accessed via keyboard', () => {
-      const button = element.querySelector('.add-filter-button');
+      const button = element.querySelector('.btn-add-filter');
       Simulate.keyUp(button, { keyCode: SPACE });
       const columnContainer = element.querySelector('.column-container');
 

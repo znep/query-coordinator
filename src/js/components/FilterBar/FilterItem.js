@@ -6,7 +6,6 @@ import NumberFilter from './NumberFilter';
 import TextFilter from './TextFilter';
 import FilterConfig from './FilterConfig';
 import { translate as t } from '../../common/I18n';
-import { getToggleTextForFilter } from './filters';
 import { ENTER, ESCAPE, SPACE, isOneOfKeys } from '../../common/keycodes';
 
 export const FilterItem = React.createClass({
@@ -216,15 +215,13 @@ export const FilterItem = React.createClass({
   },
 
   render() {
-    const { filter, column } = this.props;
+    const { column } = this.props;
     const { isLeftAligned } = this.state;
 
     const alignment = isLeftAligned ? 'left' : 'right';
 
     return (
       <div className="filter-bar-filter">
-        <div className="filter-title">{column.name}</div>
-
         <div className="filter-control-container">
           <div
             className={`filter-control-toggle ${alignment}`}
@@ -234,8 +231,8 @@ export const FilterItem = React.createClass({
             onClick={this.toggleControl}
             onKeyDown={this.onKeyDownControl}
             ref={(el) => this.filterControlToggle = el}>
-            {getToggleTextForFilter(filter, column)}
-            <span className="socrata-icon-chevron-down" role="presentation" />
+            {column.name}
+            <span className="dropdown-caret" role="presentation" />
           </div>
 
           {this.renderFilterControl()}

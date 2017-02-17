@@ -1,0 +1,144 @@
+$filter-z-index: 100;
+$max-filter-width: 130px;
+
+.filter-bar-filter {
+  margin-right: 8px;
+  height: 31px;
+  color: $dark-grey-2;
+  display: inline-block;
+  vertical-align: top;
+
+  .filter-control-container {
+    display: inline-block;
+    position: relative;
+
+    .filter-control-toggle {
+      padding: 5px 10px;
+      padding-right: 20px;
+      background: $white;
+      border: 1px solid $light-grey-3;
+      position: relative;
+      cursor: pointer;
+      width: $max-filter-width;
+      max-width: $max-filter-width;
+      border-top-left-radius: 1px;
+      border-bottom-left-radius: 1px;
+      user-select: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      .dropdown-caret {
+        color: $light-grey-0;
+        position: absolute;
+        right: 0;
+        top: 3px;
+        font-size: 15px;
+        z-index: 0;
+
+        &:after {
+          margin: 0;
+        }
+      }
+
+      &.left + .filter-controls {
+        left: 0;
+      }
+
+      &.right + .filter-controls {
+        right: 0;
+      }
+    }
+
+    .filter-controls {
+      position: absolute;
+      top: 100%;
+      width: 300px;
+      margin-top: -1px;
+      background: $white;
+      border-radius: 1px;
+      border: 1px solid $light-grey-3;
+      z-index: $filter-z-index;
+
+      .filter-control-title {
+        margin: 8px;
+      }
+
+      .range-filter-container {
+        padding: 8px;
+        margin-bottom: 10px;
+
+        .filter-control-title {
+          margin: 0;
+          margin-bottom: 8px;
+        }
+
+        .range-text-inputs-container {
+          justify-content: space-between;
+
+          .range-input {
+            max-width: 150px;
+            padding-left: 10px;
+            padding-right: 10px;
+          }
+
+          .range-separator {
+            margin: 8px;
+          }
+        }
+      }
+    }
+  }
+
+  .filter-config-container {
+    display: inline-block;
+    position: relative;
+    vertical-align: top;
+
+    .filter-config-toggle {
+      background: $white;
+      border: 1px solid $light-grey-3;
+      margin-left: -1px;
+      padding: 5px;
+      cursor: pointer;
+      border-top-right-radius: 1px;
+      border-bottom-right-radius: 1px;
+
+      &.left + .filter-config {
+        left: 0;
+      }
+
+      &.right + .filter-config {
+        right: 0;
+      }
+    }
+
+    .filter-config {
+      position: absolute;
+      top: 100%;
+      width: 400px;
+      margin-top: -1px;
+      background: $white;
+      border-radius: 1px;
+      border: 1px solid $light-grey-3;
+      z-index: $filter-z-index;
+
+      .filter-options {
+        margin: 15px;
+        margin-bottom: 30px;
+
+        .option-label {
+          font-weight: 600;
+        }
+
+        .setting-description {
+          margin-left: 30px;
+        }
+      }
+    }
+  }
+
+  .filter-control-toggle:focus, .filter-config-toggle:focus {
+    z-index: 1;
+  }
+}

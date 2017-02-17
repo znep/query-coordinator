@@ -28,15 +28,10 @@ describe('FilterItem', () => {
     element = renderComponent(FilterItem, getProps());
   });
 
-  const getTitle = (element) => element.querySelector('.filter-title');
   const getControlToggle = (element) => element.querySelector('.filter-control-toggle');
   const getConfigToggle = (element) => element.querySelector('.filter-config-toggle');
   const getControls = (element) => element.querySelector('.filter-controls');
   const getConfig = (element) => element.querySelector('.filter-config');
-
-  it('renders a title', () => {
-    expect(getTitle(element).textContent).to.equal('Dinosaur Age (approximate)');
-  });
 
   it('renders if isHidden is true and isReadOnly is false', () => {
     element = renderComponent(FilterItem, getProps({
@@ -51,6 +46,10 @@ describe('FilterItem', () => {
   describe('filter control', () => {
     it('renders a control toggle', () => {
       expect(getControlToggle(element)).to.exist;
+    });
+
+    it('renders the column name in the toggle', () => {
+      expect(getControlToggle(element).textContent).to.equal('Dinosaur Age (approximate)');
     });
 
     it('toggles visibility of filter controls when the toggle is clicked', () => {

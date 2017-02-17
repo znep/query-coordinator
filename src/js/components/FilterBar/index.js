@@ -1,8 +1,15 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
+import classNames from 'classnames';
+import { translate as t } from '../../common/I18n';
+import SocrataIcon from '../SocrataIcon';
 import AddFilter from './AddFilter';
 import FilterItem from './FilterItem';
 import { getDefaultFilterForColumn } from './filters';
+
+// These are approximately the dimensions set by our CSS
+const MAX_FILTER_WIDTH = 140;
+const FILTER_CONFIG_TOGGLE_WIDTH = 30;
 
 /**
  * FilterBar
@@ -73,6 +80,53 @@ export const FilterBar = React.createClass({
     };
   },
 
+  getInitialState() {
+    return {
+      isExpanded: false,
+      hasCollapsedFilters: false
+    };
+  },
+
+  componentDidMount() {
+    if (this.shouldCollapseFilters()) {
+      // We're disabling this because we need to know the size of everything in order to determine
+      // how many filters we can fit and how many we need to collapse.
+      /* eslint-disable react/no-did-mount-set-state */
+      this.setState({
+        hasCollapsedFilters: true
+      });
+      /* eslint-enable react/no-did-mount-set-state */
+    }
+
+    window.addEventListener('resize', this.onWindowResize);
+  },
+
+  componentWillReceiveProps(nextProps) {
+    const renderableFilters = this.getRenderableFilters(this.props);
+    const nextRenderableFilters = this.getRenderableFilters(nextProps);
+
+    if (this.shouldCollapseFilters(nextRenderableFilters)) {
+      if (renderableFilters.length < nextRenderableFilters.length) {
+        this.setState({
+          hasCollapsedFilters: true,
+          isExpanded: true
+        });
+      } else {
+        this.setState({
+          hasCollapsedFilters: true
+        });
+      }
+    } else {
+      this.setState({
+        hasCollapsedFilters: false
+      });
+    }
+  },
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onWindowResize);
+  },
+
   onFilterAdd(filter) {
     const { filters, onUpdate } = this.props;
     const newFilters = _.cloneDeep(filters);
@@ -97,6 +151,84 @@ export const FilterBar = React.createClass({
     onUpdate(filters);
   },
 
+  onToggleCollapsedFilters() {
+    this.setState({
+      isExpanded: !this.state.isExpanded
+    });
+  },
+
+  onWindowResize() {
+    if (this.shouldCollapseFilters()) {
+      this.setState({
+        hasCollapsedFilters: true
+      });
+    } else {
+      this.setState({
+        hasCollapsedFilters: false
+      });
+    }
+  },
+
+  getContainerPaddingLeft() {
+    const styles = window.getComputedStyle(this.container);
+    return _.parseInt(styles.paddingLeft);
+  },
+
+  getContainerPaddingRight() {
+    const styles = window.getComputedStyle(this.container);
+    return _.parseInt(styles.paddingRight);
+  },
+
+  getContainerWidth() {
+    const containerPadding = this.getContainerPaddingLeft() + this.getContainerPaddingRight();
+
+    // Note that clientWidth does not include borders or margin. The FilterBar currently doesn't
+    // have borders, but this could potentially throw our calculations off in the future if a
+    // border is added.
+    return this.container.clientWidth - containerPadding;
+  },
+
+  getAddFilterOrFilterIconWidth() {
+    const addFilterWidth = this.addFilter ? this.addFilter.offsetWidth : 0;
+    const filterIconWidth = this.filterIcon ? this.filterIcon.offsetWidth : 0;
+
+    return addFilterWidth + filterIconWidth;
+  },
+
+  getControlsWidth() {
+    const collapsedFiltersToggleWidth = this.expandControl.offsetWidth;
+    return this.getAddFilterOrFilterIconWidth() + collapsedFiltersToggleWidth;
+  },
+
+  getFilterWidth() {
+    const { isReadOnly } = this.props;
+    return isReadOnly ? MAX_FILTER_WIDTH : (MAX_FILTER_WIDTH + FILTER_CONFIG_TOGGLE_WIDTH);
+  },
+
+  getRenderableFilters({ isReadOnly, filters }) {
+    return _.reject(filters, (filter) => isReadOnly && filter.isHidden);
+  },
+
+  getVisibleFiltersCount() {
+    const spaceLeftForFilters = this.getContainerWidth() - this.getControlsWidth();
+    return _.floor(spaceLeftForFilters / this.getFilterWidth());
+  },
+
+  shouldCollapseFilters(
+    renderableFilters = this.getRenderableFilters(this.props)
+  ) {
+    if (!this.container) {
+      return;
+    }
+
+    // Calculate the likely size of all the things
+    const containerWidth = this.getContainerWidth();
+    const filterBarControlsWidth = this.getControlsWidth();
+    const filterWidths = renderableFilters.length * this.getFilterWidth();
+
+    return containerWidth < (filterWidths + filterBarControlsWidth);
+  },
+
   renderAddFilter() {
     const { columns, filters, isReadOnly } = this.props;
 
@@ -111,42 +243,123 @@ export const FilterBar = React.createClass({
       }
     };
 
-    return isReadOnly ? null : <AddFilter {...props} />;
+    return isReadOnly ?
+      null :
+      <div className="add-filter-container" ref={(ref) => this.addFilter = ref}>
+        <AddFilter {...props} />
+      </div>;
   },
 
-  renderFilters() {
-    const { filters, columns, isReadOnly, fetchSuggestions } = this.props;
+  renderFilterIcon() {
+    const { isReadOnly } = this.props;
 
-    return _.chain(filters).
-      reject((filter) => isReadOnly && filter.isHidden).
-      map((filter, i) => {
-        const column = _.find(columns, { fieldName: filter.columnName });
-        const props = {
-          column,
-          filter,
-          isReadOnly,
-          fetchSuggestions,
-          onUpdate: _.partialRight(this.onFilterUpdate, i),
-          onRemove: _.partial(this.onFilterRemove, i)
-        };
+    const icon = (
+      <div className="filter-icon" ref={(ref) => this.filterIcon = ref}>
+        <SocrataIcon name="filter" />
+      </div>
+    );
 
-        return <FilterItem key={i} {...props} />;
-      }).
-      value();
+    return isReadOnly ? icon : null;
   },
 
-  render() {
-    const addFilter = this.renderAddFilter();
-    const filters = this.renderFilters();
+  renderVisibleFilters(filters) {
+    const { hasCollapsedFilters } = this.state;
 
-    if (_.isEmpty(addFilter) && _.isEmpty(filters)) {
+    const visibleFilters = hasCollapsedFilters ?
+      filters.slice(0, this.getVisibleFiltersCount()) :
+      filters;
+
+    return (
+      <div className="visible-filters-container">
+        {visibleFilters}
+      </div>
+    );
+  },
+
+  renderCollapsedFilters(filters) {
+    const { hasCollapsedFilters } = this.state;
+
+    if (!hasCollapsedFilters) {
       return null;
     }
 
+    const visibleFiltersCount = this.getVisibleFiltersCount();
+    const collapsedFilters = filters.slice(visibleFiltersCount);
+
+    const paddingLeft = visibleFiltersCount > 0 ?
+      this.getAddFilterOrFilterIconWidth() + this.getContainerPaddingLeft() :
+      this.getContainerPaddingLeft();
+
+    const props = {
+      style: { paddingLeft },
+      className: 'collapsed-filters-container'
+    };
+
     return (
-      <div className="filter-bar-container">
-        {addFilter}
-        {filters}
+      <div {...props}>
+        {collapsedFilters}
+      </div>
+    );
+  },
+
+  renderExpandControl() {
+    const { isExpanded, hasCollapsedFilters } = this.state;
+
+    const text = isExpanded ? t('filter_bar.less') : t('filter_bar.more');
+    const classes = classNames('btn btn-transparent btn-expand-control', {
+      'is-hidden': !hasCollapsedFilters
+    });
+
+    return (
+      <button
+        className={classes}
+        onClick={this.onToggleCollapsedFilters}
+        ref={(ref) => this.expandControl = ref}>
+        {text}
+      </button>
+    );
+  },
+
+  render() {
+    const { columns, isReadOnly, fetchSuggestions } = this.props;
+    const { isExpanded } = this.state;
+    const renderableFilters = this.getRenderableFilters(this.props);
+
+    if (isReadOnly && _.isEmpty(renderableFilters)) {
+      return null;
+    }
+
+    const filterItems = _.map(renderableFilters, (filter, index) => {
+      const column = _.find(columns, { fieldName: filter.columnName });
+      const props = {
+        column,
+        filter,
+        isReadOnly,
+        fetchSuggestions,
+        onUpdate: _.partialRight(this.onFilterUpdate, index),
+        onRemove: _.partial(this.onFilterRemove, index)
+      };
+
+      return <FilterItem key={index} {...props} />;
+    });
+
+    const visibleFilters = this.renderVisibleFilters(filterItems);
+    const collapsedFilters = this.renderCollapsedFilters(filterItems);
+
+    const containerProps = {
+      className: classNames('filter-bar-container', {
+        'filter-bar-expanded': isExpanded
+      }),
+      ref: (ref) => this.container = ref
+    };
+
+    return (
+      <div {...containerProps}>
+        {this.renderFilterIcon()}
+        {this.renderAddFilter()}
+        {visibleFilters}
+        {collapsedFilters}
+        {this.renderExpandControl()}
       </div>
     );
   }

@@ -15,7 +15,7 @@ export default function FilterFooter(props) {
           {t('filter_bar.cancel')}
         </button>
         <button
-          className="btn btn-sm btn-default apply-btn"
+          className="btn btn-sm btn-alternate-2 apply-btn"
           onClick={onClickApply}
           disabled={disableApplyFilter}>
           {t('filter_bar.apply')}

@@ -22,32 +22,34 @@ describe('SoqlHelpers', function() {
 
   function vifWithNoFilters() {
     return {
-      'aggregation': {
-        'field': null,
-        'function': 'count'
+      configuration: {},
+      description: null,
+      series: [
+        {
+          dataSource: {
+            datasetUid: 'test-test',
+            dimension: {
+              columnName: TEST_OWN_COLUMN_NAME,
+              aggregationFunction: null
+            },
+            domain: 'example.com',
+            measure: {
+              columnName: null,
+              aggregationFunction: 'count'
+            },
+            type: 'socrata.soql',
+            filters: []
+          },
+          label: null,
+          type: 'timelineChart'
+        }
+      ],
+      createdAt: '2015-09-11T10:17:18',
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
       },
-      'columnName': TEST_OWN_COLUMN_NAME,
-      'configuration': {
-      },
-      'createdAt': '2015-09-11T10:17:18',
-      'datasetUid': 'test-test',
-      'description': 'Test description',
-      'domain': 'dataspace.demo.socrata.com',
-      'filters': [],
-      'format': {
-        'type': 'visualization_interchange_format',
-        'version': 1
-      },
-      'origin': {
-        'type': 'data_lens_export',
-        'url': 'https://dataspace.demo.socrata.com/view/four-four'
-      },
-      'title': 'Test title',
-      'type': 'columnChart',
-      'unit': {
-        'one': 'case',
-        'other': 'cases'
-      }
+      title: null
     };
   }
 
@@ -116,6 +118,16 @@ describe('SoqlHelpers', function() {
         'start': 0,
         'end': 100
       }
+    };
+  }
+
+  function testNoopFilter(filterOwnColumn) {
+    return {
+      'columnName': (filterOwnColumn) ?
+        TEST_OWN_COLUMN_NAME :
+        TEST_OTHER_COLUMN_NAME,
+      'function': 'noop',
+      'arguments': null
     };
   }
 
@@ -195,12 +207,12 @@ describe('SoqlHelpers', function() {
     filterSets.forEach(function(filterSet, i) {
       var matchSet = matchSets[i];
 
-      vif.filters = filterSet;
+      vif.series[0].dataSource.filters = filterSet;
 
       if (filterOwnColumn) {
-        whereClause = SoqlHelpers.whereClauseFilteringOwnColumn(vif);
+        whereClause = SoqlHelpers.whereClauseFilteringOwnColumn(vif, 0);
       } else {
-        whereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif);
+        whereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0);
       }
 
       matchSet.forEach(function(match) {
@@ -228,18 +240,19 @@ describe('SoqlHelpers', function() {
   }
 
   describe('aggregationClause', function() {
-    it('returns a count aggregation clause when `aggregation.function` is `count`', function() {
+
+    it('returns a count aggregation clause when the measure aggregation function is `count`', function() {
       var vif = vifWithNoFilters();
 
-      assert.equal(SoqlHelpers.aggregationClause(vif), 'COUNT(*)');
+      assert.equal(SoqlHelpers.aggregationClause(vif, 0, 'measure'), 'COUNT(*)');
     });
 
-    it('returns a sum aggregation clause when `aggregation.function` is `sum`', function() {
+    it('returns a sum aggregation clause when the measure aggregation function is `sum`', function() {
       var vif = vifWithNoFilters();
-      vif.aggregation.field = 'aggregated_column';
-      vif.aggregation['function'] = 'sum';
+      vif.series[0].dataSource.measure.columnName = 'aggregation_column';
+      vif.series[0].dataSource.measure.aggregationFunction = 'sum';
 
-      assert.equal(SoqlHelpers.aggregationClause(vif), 'SUM(`aggregated_column`)');
+      assert.equal(SoqlHelpers.aggregationClause(vif, 0, 'measure'), 'SUM(`aggregation_column`)');
     });
   });
 
@@ -259,8 +272,9 @@ describe('SoqlHelpers', function() {
 
       filterSets.forEach(function(filterSet) {
 
-        vif.filters = filterSet;
-        whereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif);
+        vif.series[0].filters = filterSet;
+        whereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0);
+
         assert.equal(whereClause, '');
       });
     });
@@ -364,7 +378,7 @@ describe('SoqlHelpers', function() {
             pattern: VALUE_RANGE_PATTERN,
             column: TEST_OTHER_COLUMN_NAME
           }
-        ],
+        ]
       ];
 
       testFilterAndMatchSets(filterSets, matchSets, false);
@@ -473,8 +487,103 @@ describe('SoqlHelpers', function() {
 
     it('ignores noop filters', function() {
       var vif = vifWithNoFilters();
-      var whereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif);
+
+      vif.series[0].filters = [testNoopFilter(true), testNoopFilter(false)];
+
+      var whereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0);
+
       expect(whereClause).to.equal('');
+    });
+
+    describe('when a binaryOperatorFilter has a joinOn property', function() {
+      it('throws with an invalid joinOn property', function() {
+        var vif = vifWithNoFilters();
+
+        vif.series[0].dataSource.filters = [{
+          'function': 'binaryOperator',
+          'columnName': TEST_OTHER_COLUMN_NAME,
+          'arguments': [
+            {
+              'operator': '=',
+              'operand': 'test'
+            },
+            {
+              'operator': 'IS NULL'
+            }
+          ],
+          'joinOn': 'BROKEN'
+        }];
+
+        assert.throws(() => { SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0); });;
+      });
+
+      it('joins binaryOperatorFilters using OR when joinOn is not set', function() {
+        var vif = vifWithNoFilters();
+
+        vif.series[0].dataSource.filters = [{
+          'function': 'binaryOperator',
+          'columnName': TEST_OTHER_COLUMN_NAME,
+          'arguments': [
+            {
+              'operator': '=',
+              'operand': 'test'
+            },
+            {
+              'operator': 'IS NULL'
+            }
+          ]
+        }];
+
+        var whereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0);
+
+        assert.equal(whereClause, `(\`${TEST_OTHER_COLUMN_NAME}\` = 'test' OR \`${TEST_OTHER_COLUMN_NAME}\` IS NULL )`);
+      });
+
+      it('joins binaryOperatorFilters using OR when joinOn = "OR"', function() {
+        var vif = vifWithNoFilters();
+
+        vif.series[0].dataSource.filters = [{
+          'function': 'binaryOperator',
+          'columnName': TEST_OTHER_COLUMN_NAME,
+          'arguments': [
+            {
+              'operator': '=',
+              'operand': 'test'
+            },
+            {
+              'operator': 'IS NULL'
+            }
+          ],
+          'joinOn': 'OR'
+        }];
+
+        var whereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0);
+
+        assert.equal(whereClause, `(\`${TEST_OTHER_COLUMN_NAME}\` = 'test' OR \`${TEST_OTHER_COLUMN_NAME}\` IS NULL )`);
+      });
+
+      it('joins binaryOperatorFilters using AND when joinOn = "AND"', function() {
+        var vif = vifWithNoFilters();
+
+        vif.series[0].dataSource.filters = [{
+          'function': 'binaryOperator',
+          'columnName': TEST_OTHER_COLUMN_NAME,
+          'arguments': [
+            {
+              'operator': '=',
+              'operand': 'test'
+            },
+            {
+              'operator': 'IS NULL'
+            }
+          ],
+          'joinOn': 'AND'
+        }];
+
+        var whereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0);
+
+        assert.equal(whereClause, `(\`${TEST_OTHER_COLUMN_NAME}\` = 'test' AND \`${TEST_OTHER_COLUMN_NAME}\` IS NULL )`);
+      });
     });
   });
 
@@ -781,8 +890,103 @@ describe('SoqlHelpers', function() {
 
     it('ignores noop filters', function() {
       var vif = vifWithNoFilters();
-      var whereClause = SoqlHelpers.whereClauseFilteringOwnColumn(vif);
+
+      vif.series[0].filters = [testNoopFilter(true), testNoopFilter(false)];
+
+      var whereClause = SoqlHelpers.whereClauseFilteringOwnColumn(vif, 0);
+
       expect(whereClause).to.equal('');
+    });
+
+    describe('when a binaryOperatorFilter has a joinOn property', function() {
+      it('throws with an invalid joinOn property', function() {
+        var vif = vifWithNoFilters();
+
+        vif.series[0].dataSource.filters = [{
+          'function': 'binaryOperator',
+          'columnName': TEST_OTHER_COLUMN_NAME,
+          'arguments': [
+            {
+              'operator': '=',
+              'operand': 'test'
+            },
+            {
+              'operator': 'IS NULL'
+            }
+          ],
+          'joinOn': 'BROKEN'
+        }];
+
+        assert.throws(() => { SoqlHelpers.whereClauseFilteringOwnColumn(vif, 0); });
+      });
+
+      it('joins binaryOperatorFilters using OR when joinOn is not set', function() {
+        var vif = vifWithNoFilters();
+
+        vif.series[0].dataSource.filters = [{
+          'function': 'binaryOperator',
+          'columnName': TEST_OWN_COLUMN_NAME,
+          'arguments': [
+            {
+              'operator': '=',
+              'operand': 'test'
+            },
+            {
+              'operator': 'IS NULL'
+            }
+          ]
+        }];
+
+        var whereClause = SoqlHelpers.whereClauseFilteringOwnColumn(vif, 0);
+
+        assert.equal(whereClause, `(\`${TEST_OWN_COLUMN_NAME}\` = 'test' OR \`${TEST_OWN_COLUMN_NAME}\` IS NULL )`);
+      });
+
+      it('joins binaryOperatorFilters using OR when joinOn = "OR"', function() {
+        var vif = vifWithNoFilters();
+
+        vif.series[0].dataSource.filters = [{
+          'function': 'binaryOperator',
+          'columnName': TEST_OWN_COLUMN_NAME,
+          'arguments': [
+            {
+              'operator': '=',
+              'operand': 'test'
+            },
+            {
+              'operator': 'IS NULL'
+            }
+          ],
+          'joinOn': 'OR'
+        }];
+
+        var whereClause = SoqlHelpers.whereClauseFilteringOwnColumn(vif, 0);
+
+        assert.equal(whereClause, `(\`${TEST_OWN_COLUMN_NAME}\` = 'test' OR \`${TEST_OWN_COLUMN_NAME}\` IS NULL )`);
+      });
+
+      it('joins binaryOperatorFilters using AND when joinOn = "AND"', function() {
+        var vif = vifWithNoFilters();
+
+        vif.series[0].dataSource.filters = [{
+          'function': 'binaryOperator',
+          'columnName': TEST_OWN_COLUMN_NAME,
+          'arguments': [
+            {
+              'operator': '=',
+              'operand': 'test'
+            },
+            {
+              'operator': 'IS NULL'
+            }
+          ],
+          'joinOn': 'AND'
+        }];
+
+        var whereClause = SoqlHelpers.whereClauseFilteringOwnColumn(vif, 0);
+
+        assert.equal(whereClause, `(\`${TEST_OWN_COLUMN_NAME}\` = 'test' AND \`${TEST_OWN_COLUMN_NAME}\` IS NULL )`);
+      });
     });
   });
 

@@ -522,6 +522,8 @@ A `binaryOperator` filter performs one or more logical comparisons. It is of typ
 
 * The `function` property specifies the desired filtering function. Its type is `<string>` and it must be `binaryOperator`.
 
+* The `joinOn` property specifies whether multiple arguments passed to the binaryOperator filter should be joined with `'OR'` or `'AND'`. Its type is `<string>` and it must be `'OR'` or `'AND'`. It is optional; if not provided, the default of `'OR'` will be assumed.
+
 The following example would result in the where clause...
 ```
 WHERE

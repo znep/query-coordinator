@@ -23,13 +23,9 @@ bundle exec rake assets:precompile
 # We want to push our latest en.yml up to LocaleApp and then pull down
 # additional translations in other locales.
 bin/push_base_locale -y
-if [ ${SKIP_PULL_TRANSLATIONS} = "true" ]; then
-  echo "skipping pulling translations"
-else
-  set +e
-  bin/pull_translations
-  set -e
-fi
+set +e
+bin/pull_translations
+set -e
 
 if [ ! -f ${WORKSPACE}/config/locales/es.yml ]; then
   echo "Did not successfully download locales"

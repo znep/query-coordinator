@@ -7,6 +7,7 @@ import * as actions from '../actions';
 const paths = {
   baseLayerOpacity: 'configuration.baseLayerOpacity',
   baseLayerUrl: 'configuration.baseLayerUrl',
+  colorPalette: 'series[0].color.palette',
   computedColumnName: 'configuration.computedColumnName',
   datasetUid: 'series[0].dataSource.datasetUid',
   description: 'description',
@@ -70,6 +71,10 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.baseLayerUrl)) {
     dispatch(actions.setBaseLayer(get(paths.baseLayerUrl)));
+  }
+
+  if (has(paths.colorPalette)) {
+    dispatch(actions.setColorPalette(get(paths.colorPalette)));
   }
 
   if (has(paths.computedColumnName)) {

@@ -830,7 +830,11 @@ function SvgBarChart($element, vif) {
      */
 
     // This scale is used for dimension categories.
-    d3DimensionYScale = generateYScale(dimensionValues, height);
+    d3DimensionYScale = generateYScale(
+      dimensionValues,
+      height,
+      self.isMultiSeries()
+    );
     // This scale is used for groupings of bars under a single dimension
     // category.
     d3GroupingYScale = generateYGroupScale(measureLabels, d3DimensionYScale);
@@ -1328,7 +1332,10 @@ function SvgBarChart($element, vif) {
       label;
   }
 
-  function generateYScale(domain, height) {
+  function generateYScale(domain, height, isMultiSeries) {
+    const padding = (isMultiSeries) ?
+      0.3 :
+      0.1;
 
     return d3.scale.ordinal().
       domain(domain).
@@ -1348,7 +1355,7 @@ function SvgBarChart($element, vif) {
       // ---
       // The outer padding looks pretty funny for our use cases, so we
       // override it to be 0.05, which looks like what we expect.
-      rangeRoundBands([0, height], 0.1, 0.05);
+      rangeRoundBands([0, height], padding, 0.05);
   }
 
   function generateYGroupScale(domain, yScale) {

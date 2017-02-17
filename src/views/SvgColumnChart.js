@@ -606,7 +606,11 @@ function SvgColumnChart($element, vif) {
      */
 
     // This scale is used for dimension categories.
-    d3DimensionXScale = generateXScale(dimensionValues, width);
+    d3DimensionXScale = generateXScale(
+      dimensionValues,
+      width,
+      self.isMultiSeries()
+    );
     // This scale is used for groupings of columns under a single dimension
     // category.
     d3GroupingXScale = generateXGroupScale(measureLabels, d3DimensionXScale);
@@ -1083,7 +1087,10 @@ function SvgColumnChart($element, vif) {
       label;
   }
 
-  function generateXScale(domain, width) {
+  function generateXScale(domain, width, isMultiSeries) {
+    const padding = (isMultiSeries) ?
+      0.3 :
+      0.1;
 
     return d3.scale.ordinal().
       domain(domain).
@@ -1103,7 +1110,7 @@ function SvgColumnChart($element, vif) {
       // ---
       // The outer padding looks pretty funny for our use cases, so we
       // override it to be zero, which looks like what we expect.
-      rangeRoundBands([0, width], 0.1, 0.05);
+      rangeRoundBands([0, width], padding, 0.05);
   }
 
   function generateXGroupScale(domain, xScale) {

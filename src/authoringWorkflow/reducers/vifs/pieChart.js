@@ -45,9 +45,7 @@ export default function pieChart(state, action) {
       break;
 
     case SET_COLOR_PALETTE:
-      forEachSeries(state, series => {
-        setStringValueOrDeleteProperty(series, 'color.palette', action.colorPalette, null);
-      });
+      _.set(state, 'series[0].color.palette', action.colorPalette);
       break;
 
     case SET_SHOW_VALUE_LABELS:

@@ -49,7 +49,7 @@ describe('FilterFooter', () => {
       })));
       button = element.querySelector('.apply-btn');
 
-      expect(button.disabled).to.eq(true);
+      expect(button).to.have.attribute('disabled');
     });
   });
 

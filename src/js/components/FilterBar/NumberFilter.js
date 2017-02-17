@@ -90,7 +90,8 @@ export const NumberFilter = React.createClass({
     end += this.getStepInterval() / 100;
 
     if (_.isEqual(_.at(value, 'start', 'end'), _.at(column, 'rangeMin', 'rangeMax'))) {
-      onUpdate(getDefaultFilterForColumn(column));
+      const { isHidden } = filter;
+      onUpdate(_.merge({}, getDefaultFilterForColumn(column), { isHidden }));
     } else {
       onUpdate(_.merge({}, filter, {
         'function': 'valueRange',

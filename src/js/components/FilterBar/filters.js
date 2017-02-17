@@ -11,7 +11,8 @@ export function getDefaultFilterForColumn(column) {
 
 export function getTextFilter(column, filter, values, isNegated) {
   if (_.isEmpty(values)) {
-    return getDefaultFilterForColumn(column);
+    const { isHidden } = filter;
+    return _.merge({}, getDefaultFilterForColumn(column), { isHidden });
   } else {
     const toArgument = (value) => {
       if (_.isNull(value)) {

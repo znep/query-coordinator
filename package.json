@@ -10,9 +10,10 @@
     "registry": "https://repo.socrata.com/artifactory/api/npm/npm-local"
   },
   "scripts": {
-    "release": "sh tools/release.sh",
+    "release": "bash tools/release.sh",
     "postinstall": "npm rebuild node-sass",
     "build": "webpack && npm run compile-css",
+    "webpack-minified": "webpack -p",
     "webpack": "webpack",
     "prebuild": "rimraf dist",
     "prepublish": "npm run build",

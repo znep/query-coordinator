@@ -375,6 +375,17 @@ Rails.application.routes.draw do
         :controller => 'classic_visualization',
         :action => 'show_by_id'
       }
+
+      get '/component/visualization/v1/socrata-visualizations-loader.js', {
+        :controller => 'visualization_embed_v1',
+        :action => 'loader'
+      }
+
+      get '/component/visualization/v1/socrata-visualizations-embed.js', {
+        :controller => 'visualization_embed_v1',
+        :action => 'embed'
+      }
+
     end
 
     # Dataset SEO URLs (only add here if the action has a view with it;

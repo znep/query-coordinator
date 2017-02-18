@@ -19,6 +19,14 @@ default: &default
   sitemap_s3_url: {{ SITEMAP_S3_URL }}
   {%- endif %}
 
+  {% if SOCRATA_VISUALIZATIONS_V1_EMBED_URL is defined -%}
+  socrata_visualizations_v1_embed_url: {{ SOCRATA_VISUALIZATIONS_V1_EMBED_URL }}
+  {%- endif %}
+
+  {% if SOCRATA_VISUALIZATIONS_V1_LOADER_URL is defined -%}
+  socrata_visualizations_v1_loader_url: {{ SOCRATA_VISUALIZATIONS_V1_LOADER_URL }}
+  {%- endif %}
+
   {% if CONSUL_HOST is defined -%}
   consul_host: {{ CONSUL_HOST }}
   {%- endif %}

@@ -83,3 +83,4 @@ requireAll(require.context('./actions', true, /\.js$/));
 requireAll(require.context('./reducers', true, /\.js$/));
 requireAll(require.context('./links', true, /\.js$/));
 require('./selectorsTest');
+require('./bootstrapTest');

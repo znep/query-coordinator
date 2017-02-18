@@ -107,7 +107,7 @@ describe('actions/manageUploads', () => {
 
     // mock fetch
     const unmockXHR = mockXHR(200, uploadResponse);
-    const unmockFetch = mockFetch(fetchResponses);
+    const { unmockFetch } = mockFetch(fetchResponses);
     const unmockPhx = mockPhoenixSocket({
       'transform_progress:0': [
         {

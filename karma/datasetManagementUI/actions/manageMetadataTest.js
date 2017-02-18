@@ -1,4 +1,3 @@
-import { getDefaultStore } from '../testStore';
 import { saveMetadata } from 'actions/manageMetadata';
 import { STATUS_DIRTY, STATUS_DIRTY_IMMUTABLE, STATUS_SAVED } from 'lib/database/statuses';
 import { edit, editImmutable } from 'actions/database';
@@ -18,7 +17,7 @@ describe('actions/manageMetadata', () => {
   };
 
   it('saves metadata when there are no output schemas', (done) => {
-    const unmockFetch = mockFetch(responses);
+    const { unmockFetch } = mockFetch(responses);
     const store = getStoreWithOutputSchema();
     store.dispatch(edit('views', {
       id: 'hehe-hehe',
@@ -36,7 +35,7 @@ describe('actions/manageMetadata', () => {
   });
 
   it('saves metadata when there is an output schema', (done) => {
-    const unmockFetch = mockFetch(responses);
+    const { unmockFetch } = mockFetch(responses);
     const store = getStoreWithOutputSchema();
     store.dispatch(editImmutable('output_columns', {
       id: 51,

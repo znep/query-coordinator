@@ -11,9 +11,9 @@ import windowDBMiddleware from './lib/database/middleware';
 import * as Phoenix from 'phoenix';
 
 import rootReducer from './reducers';
-import { bootstrap } from './lib/database/bootstrap';
+import { bootstrap } from './bootstrap';
 import * as Selectors from './selectors';
-import Airbrake from './airbrake';
+import Airbrake from './lib/airbrake';
 import rootRoute from './routes';
 
 const viewId = window.initialState.view.id;

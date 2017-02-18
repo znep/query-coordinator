@@ -133,7 +133,7 @@ describe('components/NotificationList', () => {
       output_column_id: 1
     }));
     store.dispatch(insertStarted('upsert_jobs', {
-      schema_id: 1
+      output_schema_id: 1
     }));
     const element = renderComponentWithStore(NotificationList, {}, store);
     expect(element).to.not.be.null;
@@ -150,10 +150,10 @@ describe('components/NotificationList', () => {
       output_column_id: 1
     }));
     store.dispatch(insertStarted('upsert_jobs', {
-      schema_id: 1
+      output_schema_id: 1
     }));
     store.dispatch(insertSucceeded('upsert_jobs',
-      { schema_id: 1 },
+      { output_schema_id: 1 },
       { id: 52 }
     ));
     store.dispatch(addNotification(upsertJobNotification(52)));
@@ -175,10 +175,10 @@ describe('components/NotificationList', () => {
       output_column_id: 1
     }));
     store.dispatch(insertStarted('upsert_jobs', {
-      schema_id: 1
+      output_schema_id: 1
     }));
     store.dispatch(insertSucceeded('upsert_jobs',
-      { schema_id: 1 },
+      { output_schema_id: 1 },
       { id: 52 }
     ));
     store.dispatch(updateFromServer('upsert_jobs',
@@ -208,10 +208,10 @@ describe('components/NotificationList', () => {
       output_column_id: 1
     }));
     store.dispatch(insertStarted('upsert_jobs', {
-      schema_id: 1
+      output_schema_id: 1
     }));
     store.dispatch(insertSucceeded('upsert_jobs',
-      { schema_id: 1 },
+      { output_schema_id: 1 },
       { id: 52 }
     ));
     store.dispatch(addNotification(upsertJobNotification(52)));
@@ -236,10 +236,10 @@ describe('components/NotificationList', () => {
       output_column_id: 1
     }));
     store.dispatch(insertStarted('upsert_jobs', {
-      schema_id: 1
+      output_schema_id: 1
     }));
     store.dispatch(insertSucceeded('upsert_jobs',
-      { schema_id: 1 },
+      { output_schema_id: 1 },
       { id: 52 }
     ));
     store.dispatch(addNotification(upsertJobNotification(52)));

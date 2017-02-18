@@ -32,7 +32,7 @@ import {
   statusUpdatingImmutable,
   statusUpdateFailed
 } from '../lib/database/statuses';
-import { emptyDB } from '../lib/database/bootstrap';
+import { emptyDB } from '../bootstrap';
 
 
 // TODO: use ImmutableJS instead of Object Spread? It may shorten repetitive code here & improve speed

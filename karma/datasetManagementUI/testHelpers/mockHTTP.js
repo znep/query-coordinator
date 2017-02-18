@@ -31,19 +31,31 @@ export function mockXHR(status, body) {
 
 export function mockFetch(responses) {
   const realFetch = window.fetch;
+  const calls = {};
+  _.forEach(responses, (responsesForUrl, responseUrl) => {
+    calls[responseUrl] = {};
+    _.forEach(responsesForUrl, (_response, responseMethod) => {
+      calls[responseUrl][responseMethod] = 0;
+    });
+  });
 
   window.fetch = (url, options) => {
     return new Promise((resolve) => {
       resolve({
         status: 200,
         json: () => (new Promise((resolve) => {
-          resolve(responses[url][options.method || 'GET']);
+          const method = options.method || 'GET';
+          resolve(responses[url][method]);
+          calls[url][method]++;
         }))
       });
     });
   };
 
-  return () => {
-    window.fetch = realFetch;
+  return {
+    unmockFetch: () => {
+      window.fetch = realFetch;
+    },
+    calls: calls
   }
 }

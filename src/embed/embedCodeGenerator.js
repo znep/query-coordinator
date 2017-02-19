@@ -3,8 +3,6 @@ import $ from 'jquery';
 import { translate } from '../I18n';
 import { loaderLibrarySrc } from './paths';
 
-const scriptTag = `<script type="text/javascript" charset="UTF-8" src="${loaderLibrarySrc}"></script>`;
-
 /**
  * Generates an embed code given a vif and some embed options.
  *
@@ -26,6 +24,9 @@ export default function generateEmbedCode(vif, options) {
   const datasetUid = _.get(vif, 'series[0].dataSource.datasetUid');
   const defaultSourceHref = (domain && datasetUid) ? `https://${domain}/d/${datasetUid}` : null;
   const fallbackSourceLinkText = options.fallbackSourceLinkText || translate('visualizations.embed.explore_data_link');
+  const domainAttr = domain ? `data-socrata-domain="${domain}" ` : '';
+
+  const scriptTag = `<script type="text/javascript" charset="UTF-8" ${domainAttr}src="${loaderLibrarySrc(domain)}"></script>`;
 
   // Some of these fields will resolve to null or undefined.
   // This is fine - jQuery will not set those particular

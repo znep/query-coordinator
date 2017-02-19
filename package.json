@@ -23,7 +23,8 @@
     "version-bump-check": "node tools/version-bump-check.js",
     "watch": "karma start karma.conf.js -v --singleRun false",
     "compile-css": "node tools/compile-css.js",
-    "compile-css-watch": "node tools/compile-css.js --watch"
+    "compile-css-watch": "node tools/compile-css.js --watch",
+    "test-http-server": "http-server -S -c-1 -C tools/test-cert.pem -K tools/test-key.pem -p 9874 dist/"
   },
   "homepage": "https://github.com/socrata/frontend-visualizations",
   "main": "dist/socrata-visualizations.js",
@@ -44,6 +45,7 @@
     "dotdotdot": "1.7.0",
     "eslint": "2.3.0",
     "eslint-base": "0.2.3",
+    "http-server": "0.9.0",
     "imports-loader": "0.6.5",
     "jquery": "2.2.4",
     "karma": "0.13.22",

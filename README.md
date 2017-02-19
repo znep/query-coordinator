@@ -93,3 +93,54 @@ There are two artifacts that are used in the embed process:
   necessary for visualizations to work correctly.
 
 Embed codes are generated via a helper in `embedCodeGenerator.js`.
+
+### Debugging Embeds
+
+If you need to debug or work on embeds on a 3rd party site, you can cause the embeds to be sourced from your local stack by following these steps:
+
+Your first order of business is to prevent the non-dev version of socrata-visualizations from loading.
+
+  1. Visit the site in need of work and enable "break on script first statement". For chrome dev tools:
+
+    1. In the Sources pane, expand `Event Listener Breakpoints`, then `Script`.
+    2. Check `Script First Statement`
+
+  2. Reload the page.
+  3. When the breakpoint is hit, run this script to disable the loader, then continue loading the page (disable the breakpoint too). You shouldn't see any visualizations load.
+```javascript
+// Purposefully inject a 404-ing script tag. This will cause
+// the existing loaders to think the embeds have already loaded.
+var scriptTag = document.createElement('script');
+scriptTag.type = 'text/javascript';
+scriptTag.async = true;
+scriptTag.src = 'https://localhost/doesnt-exist/socrata-visualizations-embed.js';
+document.head.appendChild(scriptTag);
+```
+
+Your next step depends on what you're needing to debug.
+
+*Debugging the loader*
+
+This one's easy.
+  1. Compile your sources (`npm run webpack`).
+  2. Remove all loaders from the page so you can load your own stuff:
+    `Array.from(document.querySelectorAll('script[src*=socrata-visualizations')).map(function(e) { e.remove(); })`
+  3. Copy-and-paste the contents of `dist/socrata-visualizations-loader.js` into the console.
+
+*Debugging the visualizations themselves*
+
+1. Compile (`npm install && npm run webpack`). Run `npm run test-http-server` and wait for the server to come up.
+2. In the browser you'll be using, visit [this page](https://localhost:9874/) in another tab and accept the SSL cert warning.
+3. Run this in the console:
+```javascript
+var scriptTag = document.createElement('script');
+scriptTag.type = 'text/javascript';
+scriptTag.async = true;
+scriptTag.src = 'https://localhost:9874/socrata-visualizations-embed.js';
+document.head.appendChild(scriptTag);
+```
+
+*Both at once*
+
+Follow the steps for "Debugging the visualizations themselves", but stop short of creating the script tag. You'll now need to modify `mainLibrarySrc` in `src/embed/paths.js` to always return `https://localhost:9874/socrata-visualizations-embed.js`. Compile, then follow the steps above in "Debugging the loader".
+

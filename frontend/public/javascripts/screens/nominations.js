@@ -75,7 +75,7 @@ $(function() {
       },
       '.details .title': 'title!',
       '.details .submitTime .fullTime': function(nomination) {
-        return new Date(nomination.context.createdAt * 1000).format('F d, Y');
+        return moment(nomination.context.createdAt * 1000).format('LL');
       },
       '.details .submitTime .relativeTime': function(nomination) {
         return blist.util.humaneDate.getFromDate(nomination.context.createdAt * 1000);
@@ -121,14 +121,14 @@ $(function() {
           phrase.push($.tag({
             tagName: 'strong',
             contents: [
-              $.pluralize(officialComments.length, 'official response')
+              $.t('controls.nominate.official_response_count', { count: officialComments.length })
             ]
           }, true));
         }
 
         var nonOfficialCommentsLength = flattenedComments.length - officialComments.length;
         if (nonOfficialCommentsLength > 0) {
-          phrase.push($.pluralize(nonOfficialCommentsLength, 'comment'));
+          phrase.push($.t('controls.nominate.comment', { count: nonOfficialCommentsLength }));
         }
 
         $commentsSection.append($.tag({
@@ -139,8 +139,8 @@ $(function() {
               tagName: 'span',
               'class': 'icon'
             },
-            $.arrayToSentence(_.compact(phrase), 'and', ','),
-            ' on this suggestion'
+            $.arrayToSentence(_.compact(phrase), $.t('controls.nominate.and'), ','),
+            ` ${$.t('controls.nominate.on_this_suggestion')}`
           ]
         }));
       }

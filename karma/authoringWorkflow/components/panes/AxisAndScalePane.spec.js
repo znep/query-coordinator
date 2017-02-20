@@ -11,15 +11,7 @@ function render(type) {
   var props = defaultProps({
     vifAuthoring: { authoring: { selectedVisualizationType: type } },
     measureAxisScaleControl: 'custom',
-    onChangeLabelTop: sinon.spy(),
-    onChangeLabelBottom: sinon.spy(),
-    onChangeLabelLeft: sinon.spy(),
-    onChangeShowDimensionLabels: sinon.spy(),
-    onChangeShowValueLabels: sinon.spy(),
-    onChangeShowValueLabelsAsPercent: sinon.spy(),
     onSelectChartSorting: sinon.spy(),
-    onSelectTimelinePrecision: sinon.spy(),
-    onChangeTreatNullValuesAsZero: sinon.spy(),
     onMeasureAxisMinValueChange: sinon.spy(),
     onMeasureAxisMaxValueChange: sinon.spy()
   });
@@ -53,92 +45,6 @@ describe('AxisAndScalePane', function() {
     });
   }
 
-  function rendersTopAndLeftLabelsAndEmitsEvents() {
-    describe('rendering', function() {
-      it('renders a top label input', function() {
-        expect(component.querySelector('#label-top')).to.exist;
-      });
-
-      it('renders a left label input', function() {
-        expect(component.querySelector('#label-left')).to.exist;
-      });
-    });
-
-    describe('events', function() {
-      describe('when changing the top label', function() {
-        emitsEvent('#label-top', 'onChangeLabelTop');
-      });
-
-      describe('when changing the left label', function() {
-        emitsEvent('#label-left', 'onChangeLabelLeft');
-      });
-    });
-  }
-
-  function rendersBottomAndLeftLabelsAndEmitsEvents() {
-    describe('rendering', function() {
-      it('renders a bottom label input', function() {
-        expect(component.querySelector('#label-bottom')).to.exist;
-      });
-
-      it('renders a left label input', function() {
-        expect(component.querySelector('#label-left')).to.exist;
-      });
-    });
-
-    describe('events', function() {
-      describe('when changing the bottom label', function() {
-        emitsEvent('#label-bottom', 'onChangeLabelBottom');
-      });
-
-      describe('when changing the left label', function() {
-        emitsEvent('#label-left', 'onChangeLabelLeft');
-      });
-    });
-  }
-
-  function rendersShowDimensionLabelsAndEmitsEvents() {
-    describe('rendering', function() {
-      it('renders a show dimension labels checkbox', function() {
-        expect(component.querySelector('#show-dimension-labels')).to.exist;
-      });
-    });
-
-    describe('events', function() {
-      describe('when changing the show dimension labels checkbox', function() {
-        emitsEvent('#show-dimension-labels', 'onChangeShowDimensionLabels');
-      });
-    });
-  }
-
-  function rendersShowValueLabelsAndEmitsEvents() {
-    describe('rendering', function() {
-      it('renders a show value labels checkbox', function() {
-        expect(component.querySelector('#show-value-labels')).to.exist;
-      });
-    });
-
-    describe('events', function() {
-      describe('when changing the show value labels checkbox', function() {
-        emitsEvent('#show-value-labels', 'onChangeShowValueLabels');
-      });
-    });
-  }
-
-  function rendersShowValueLabelsAsPercentAndEmitEvents() {
-    describe('rendering', function() {
-      it('renders a show value labels as percentage checkbox', function() {
-        expect(component.querySelector('#show-value-labels-as-percent')).to.exist;
-      });
-    });
-
-    describe('events', function () {
-      describe('when changing the show value labels as percent checkbox', function () {
-        emitsEvent('#show-value-labels-as-percent', 'onChangeShowValueLabelsAsPercent');
-      })
-    });
-  }
-
   function rendersChartSortingAndEmitsEvents() {
     describe('rendering', function() {
       it('renders a dropdown with chart sorting options', function() {
@@ -149,34 +55,6 @@ describe('AxisAndScalePane', function() {
     describe('events', function() {
       describe('when changing the chart sorting order', function() {
         emitsEvent('#chart-sorting-selection .picklist-option', 'onSelectChartSorting', 'click');
-      });
-    });
-  }
-
-  function rendersTimelinePrecision() {
-    describe('rendering', function() {
-      it('renders a dropdown with timeline precision options', function() {
-        expect(component.querySelector('#timeline-precision-selection')).to.exist;
-      });
-    });
-
-    describe('events', function() {
-      describe('when changing the timeline precision order', function() {
-        emitsEvent('#timeline-precision-selection .picklist-option', 'onSelectTimelinePrecision', 'click');
-      });
-    });
-  }
-
-  function rendersTreatNullValuesAsZeroAndEmitsEvents() {
-    describe('rendering', function() {
-      it('renders a treat null values as zero checkbox', function() {
-        expect(component.querySelector('#treat-null-values-as-zero')).to.exist;
-      });
-    });
-
-    describe('events', function() {
-      describe('when changing the treat null values as zero checkbox', function() {
-        emitsEvent('#treat-null-values-as-zero', 'onChangeTreatNullValuesAsZero');
       });
     });
   }
@@ -231,9 +109,6 @@ describe('AxisAndScalePane', function() {
 
     beforeEach(setUpVisualization('barChart'));
 
-    rendersTopAndLeftLabelsAndEmitsEvents();
-    rendersShowDimensionLabelsAndEmitsEvents();
-    rendersShowValueLabelsAndEmitsEvents();
     // TODO: EN-9281 rendersScaleAndEmitsEvents();
     rendersChartSortingAndEmitsEvents();
   });
@@ -242,8 +117,6 @@ describe('AxisAndScalePane', function() {
 
     beforeEach(setUpVisualization('columnChart'));
 
-    rendersBottomAndLeftLabelsAndEmitsEvents();
-    rendersShowDimensionLabelsAndEmitsEvents();
     rendersChartSortingAndEmitsEvents();
     // TODO: EN-9281 rendersScaleAndEmitsEvents();
   });
@@ -252,7 +125,6 @@ describe('AxisAndScalePane', function() {
 
     beforeEach(setUpVisualization('histogram'));
 
-    rendersBottomAndLeftLabelsAndEmitsEvents();
     // TODO: EN-9281 rendersScaleAndEmitsEvents();
   });
 
@@ -260,17 +132,12 @@ describe('AxisAndScalePane', function() {
 
     beforeEach(setUpVisualization('timelineChart'));
 
-    rendersBottomAndLeftLabelsAndEmitsEvents();
-    rendersTimelinePrecision();
-    rendersTreatNullValuesAsZeroAndEmitsEvents();
     // TODO: EN-9281 rendersScaleAndEmitsEvents();
   });
 
   describe('pieChart', () => {
     beforeEach(setUpVisualization('pieChart'));
 
-    rendersShowValueLabelsAndEmitsEvents();
-    rendersShowValueLabelsAsPercentAndEmitEvents();
     rendersChartSortingAndEmitsEvents();
   });
 });

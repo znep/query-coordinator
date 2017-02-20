@@ -3,7 +3,6 @@ import TestUtils from 'react-addons-test-utils';
 
 import defaultProps from '../../defaultProps';
 import renderComponent from '../../renderComponent';
-import vifs from 'src/authoringWorkflow/vifs';
 import { DataPane } from 'src/authoringWorkflow/components/panes/DataPane';
 import { INPUT_DEBOUNCE_MILLISECONDS } from 'src/authoringWorkflow/constants';
 
@@ -13,7 +12,9 @@ function render(type) {
     onSelectLimitNone: sinon.spy(),
     onSelectLimitCount: sinon.spy(),
     onChangeLimitCount: sinon.spy(),
-    onChangeShowOtherCategory: sinon.spy()
+    onChangeShowOtherCategory: sinon.spy(),
+    onSelectTimelinePrecision: sinon.spy(),
+    onChangeTreatNullValuesAsZero: sinon.spy()
   });
 
   return {
@@ -43,6 +44,34 @@ describe('DataPane', function() {
         sinon.assert.calledOnce(props[eventName]);
         done();
       }, INPUT_DEBOUNCE_MILLISECONDS);
+    });
+  }
+
+  function rendersTimelinePrecision() {
+    describe('rendering', function() {
+      it('renders a dropdown with timeline precision options', function() {
+        expect(component.querySelector('#timeline-precision-selection')).to.exist;
+      });
+    });
+
+    describe('events', function() {
+      describe('when changing the timeline precision order', function() {
+        emitsEvent('#timeline-precision-selection .picklist-option', 'onSelectTimelinePrecision', 'click');
+      });
+    });
+  }
+
+  function rendersTreatNullValuesAsZeroAndEmitsEvents() {
+    describe('rendering', function() {
+      it('renders a treat null values as zero checkbox', function() {
+        expect(component.querySelector('#treat-null-values-as-zero')).to.exist;
+      });
+    });
+
+    describe('events', function() {
+      describe('when changing the treat null values as zero checkbox', function() {
+        emitsEvent('#treat-null-values-as-zero', 'onChangeTreatNullValuesAsZero');
+      });
     });
   }
 
@@ -125,5 +154,14 @@ describe('DataPane', function() {
         });
       });
     });
+  });
+
+  describe('timelineChart', function() {
+
+    beforeEach(setUpVisualization('timelineChart'));
+
+    rendersTimelinePrecision();
+    rendersTreatNullValuesAsZeroAndEmitsEvents();
+    // TODO: EN-9281 rendersScaleAndEmitsEvents();
   });
 });

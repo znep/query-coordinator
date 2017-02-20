@@ -294,51 +294,6 @@ $axis-padding: 42px;
     height: 100%;
     border: none;
     box-sizing: border-box;
-
-    /**
-     * Axis titles
-     */
-
-    .socrata-visualization-top-axis-title,
-    .socrata-visualization-right-axis-title,
-    .socrata-visualization-bottom-axis-title,
-    .socrata-visualization-left-axis-title {
-      position: absolute;
-      font-size: $axis-font-size;
-      color: #767676;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      visibility: hidden;
-    }
-
-    .socrata-visualization-top-axis-title {
-      left: 50%;
-      top: $axis-font-size;
-      transform-origin: left top 0;
-      transform: translate(-50%, 0);
-    }
-
-    .socrata-visualization-right-axis-title {
-      right: 2 * $axis-font-size;
-      top: 50%;
-      transform-origin: right top 0;
-      transform: rotate(-90deg) translate(50%, 0);
-    }
-
-    .socrata-visualization-bottom-axis-title {
-      left: 50%;
-      bottom: $axis-font-size;
-      transform-origin: left top 0;
-      transform: translate(-50%, 0);
-    }
-
-    .socrata-visualization-left-axis-title {
-      left: $axis-font-size;
-      top: 50%;
-      transform-origin: left top 0;
-      transform: rotate(-90deg) translate(-50%, 0);
-    }
   }
 
   &.socrata-visualization-top-axis-title {

@@ -327,6 +327,14 @@ Required |Optional
 :-------:|:---------------------------:
     -    |Bar Chart, Pie Chart, Column Chart
 
+##### `showLegend`
+`showLegend` controls whether to show or hide legend for grouped charts. `showLegend` is true by default
+for grouped charts.
+
+Required |Optional
+:-------:|:---------------------------:
+    -    |Column Chart
+
 ### The `format` Object
 The format object specifies the format and version of the vif. It is of type `<object>`. This object must have the following properties:
 

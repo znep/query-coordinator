@@ -36,7 +36,8 @@ import {
   SET_MEASURE_AXIS_MAX_VALUE,
   SET_LIMIT_NONE_AND_SHOW_OTHER_CATEGORY,
   SET_LIMIT_COUNT_AND_SHOW_OTHER_CATEGORY,
-  SET_SHOW_OTHER_CATEGORY
+  SET_SHOW_OTHER_CATEGORY,
+  SET_SHOW_LEGEND
 } from '../../actions';
 
 export default function columnChart(state, action) {
@@ -74,12 +75,16 @@ export default function columnChart(state, action) {
         // If the dimension grouping functionality is being disabled, then we
         // also want to remove any color palette that has been set.
         _.unset(state, 'series[0].color.palette');
+        _.set(state, 'configuration.showLegend', false);
       } else {
-
         // Otherwise, if the color palette has not yet been set, then assign
         // the default palette.
         if (_.get(state, 'series[0].color.palette', null) === null) {
           _.set(state, 'series[0].color.palette', 'categorical');
+        }
+
+        if (_.get(state, 'configuration.showLegend', null) === null) {
+          _.set(state, 'configuration.showLegend', true);
         }
       }
       break;
@@ -112,6 +117,10 @@ export default function columnChart(state, action) {
 
     case SET_COLOR_PALETTE:
       _.set(state, 'series[0].color.palette', action.colorPalette);
+      break;
+
+    case SET_SHOW_LEGEND:
+      _.set(state, 'configuration.showLegend', action.showLegend);
       break;
 
     case RECEIVE_METADATA:

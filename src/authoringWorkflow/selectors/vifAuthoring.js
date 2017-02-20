@@ -166,6 +166,11 @@ export const getShowValueLabelsAsPercent = createSelector(
   vif => _.get(vif, 'configuration.showValueLabelsAsPercent', false)
 );
 
+export const getShowLegend = createSelector(
+  getCurrentVif,
+  vif => _.get(vif, 'configuration.showLegend', false)
+);
+
 export const getXAxisScalingMode = createSelector(
   getCurrentVif,
   vif => _.get(vif, 'configuration.xAxisScalingMode')

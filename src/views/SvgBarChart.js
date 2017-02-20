@@ -7,6 +7,10 @@ const utils = require('socrata-utils');
 const SvgVisualization = require('./SvgVisualization');
 const I18n = require('../I18n');
 // Constants
+import {
+  AXIS_LABEL_MARGIN
+} from './SvgStyleConstants';
+
 // The MARGINS values have been eyeballed to provide enough space for axis
 // labels that have been observed 'in the wild'. They may need to be adjusted
 // slightly in the future, but the adjustments will likely be small in scale.
@@ -118,11 +122,18 @@ function SvgBarChart($element, vif) {
     const barHeight = (self.isMobile()) ?
       DEFAULT_MOBILE_BAR_HEIGHT :
       DEFAULT_DESKTOP_BAR_HEIGHT;
-    const viewportWidth = (
-      $chartElement.width() -
-      MARGINS.LEFT -
-      MARGINS.RIGHT
-    );
+
+    const dimensionLabelsWidth = (self.getShowDimensionLabels() ? DIMENSION_LABELS_FIXED_WIDTH : 0);
+
+    const axisLabels = self.getAxisLabels();
+    const leftMargin = MARGINS.LEFT + (axisLabels.left ? AXIS_LABEL_MARGIN : 0) + dimensionLabelsWidth;
+    const rightMargin = MARGINS.RIGHT + (axisLabels.right ? AXIS_LABEL_MARGIN : 0);
+    const topMargin = MARGINS.TOP + (axisLabels.top ? AXIS_LABEL_MARGIN : 0);
+    const bottomMargin = MARGINS.BOTTOM + (axisLabels.bottom ? AXIS_LABEL_MARGIN : 0);
+
+    const viewportWidth = Math.max(0, $chartElement.width() - leftMargin - rightMargin);
+    let viewportHeight = Math.max(0, $chartElement.height() - topMargin - bottomMargin);
+
     const d3ClipPathId = `bar-chart-clip-path-${_.uniqueId()}`;
     const dataTableDimensionIndex = dataToRender.columns.indexOf('dimension');
     const dimensionValues = dataToRender.rows.map(
@@ -132,11 +143,6 @@ function SvgBarChart($element, vif) {
       dataTableDimensionIndex + 1
     );
 
-    let viewportHeight = (
-      $chartElement.height() -
-      MARGINS.TOP -
-      MARGINS.BOTTOM
-    );
     let width;
     let height;
     let groupedDataToRender;
@@ -750,16 +756,7 @@ function SvgBarChart($element, vif) {
     // See TODO above.
     // }
 
-    // Compute width based on the presence or absence of y-axis data labels.
-    if (self.getShowDimensionLabels()) {
-      width = viewportWidth - DIMENSION_LABELS_FIXED_WIDTH;
-    } else {
-
-      // In this case we want to mirror the right margin on the bottom so
-      // that the chart is visually centered (bar charts have no bottom
-      // margin by default).
-      width = viewportWidth;
-    }
+    width = viewportWidth;
 
     /**
      * 2. Set up the x-scale and -axis.
@@ -853,27 +850,15 @@ function SvgBarChart($element, vif) {
 
     // Create the top-level <svg> element first.
     chartSvg = d3.select($chartElement[0]).append('svg').
-      attr('width', viewportWidth + MARGINS.RIGHT + MARGINS.LEFT).
-      attr('height', height + MARGINS.TOP + MARGINS.BOTTOM);
+      attr('width', viewportWidth + rightMargin + leftMargin).
+      attr('height', height + topMargin + bottomMargin);
 
     // The viewport represents the area within the chart's container that can
     // be used to draw the x-axis, y-axis and chart marks.
-    const viewportXTranslation = (self.getShowDimensionLabels()) ?
-      DIMENSION_LABELS_FIXED_WIDTH + MARGINS.LEFT :
-      MARGINS.LEFT;
 
     viewportSvg = chartSvg.append('g').
       attr('class', 'viewport').
-      attr(
-        'transform',
-        (
-          'translate(' +
-          viewportXTranslation +
-          ',' +
-          MARGINS.TOP +
-          ')'
-        )
-      );
+      attr('transform', `translate(${leftMargin}, ${topMargin})`);
 
     // The clip path is used as a mask. It is attached to another svg element,
     // at which time all children of that svg element that would be drawn
@@ -891,14 +876,10 @@ function SvgBarChart($element, vif) {
       attr(
         'width',
         () => {
-          const defaultWidth = viewportWidth + MARGINS.RIGHT + MARGINS.LEFT;
-
-          return (self.getShowDimensionLabels()) ?
-            defaultWidth + DIMENSION_LABELS_FIXED_WIDTH :
-            defaultWidth;
+          return viewportWidth + leftMargin + rightMargin;
         }
       ).
-      attr('height', viewportHeight + MARGINS.TOP + MARGINS.BOTTOM).
+      attr('height', viewportHeight + topMargin + bottomMargin).
       attr(
         'transform',
         () => {
@@ -1049,7 +1030,7 @@ function SvgBarChart($element, vif) {
 
       yAxisPanDistance = height - viewportHeight;
 
-      yAxisPanningEnabled = (yAxisPanDistance > 0) ? true : false;
+      yAxisPanningEnabled = yAxisPanDistance > 0;
 
       if (yAxisPanningEnabled) {
 
@@ -1063,11 +1044,7 @@ function SvgBarChart($element, vif) {
         // from the viewport height and using the stale value will cause the
         // panning behavior to be incorrect (it will become impossible to pan
         // the bottom-most edge of the chart into view).
-        viewportHeight = (
-          $chartElement.height() -
-          MARGINS.TOP -
-          MARGINS.BOTTOM
-        );
+        viewportHeight = Math.max(0, $chartElement.height() - topMargin - bottomMargin);
 
         yAxisPanDistance = height - viewportHeight;
       } else {
@@ -1287,6 +1264,13 @@ function SvgBarChart($element, vif) {
       chartSvg.selectAll('text').
         attr('cursor', 'default');
     }
+
+    self.renderAxisLabels(chartSvg, {
+      x: leftMargin,
+      y: topMargin,
+      width: viewportWidth,
+      height: viewportHeight -  viewportSvg.select('.x.axis').node().getBBox().height
+    });
   }
 
   function getColor(dimensionIndex, measureIndex) {

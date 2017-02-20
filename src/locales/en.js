@@ -241,6 +241,9 @@ export default {
           title: 'Flyout Unit Label',
           description: 'Unit label displayed in flyouts describing chart values.'
         },
+        legends: {
+          title: 'Legends'
+        },
         row_inspector_title: 'Point Inspector Title'
       },
       fields: {
@@ -254,6 +257,9 @@ export default {
         },
         row_inspector_title: {
           no_value: 'No Point Inspector Title'
+        },
+        show_legends: {
+          title: 'Show Legends'
         }
       }
     }

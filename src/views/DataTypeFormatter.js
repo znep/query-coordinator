@@ -304,11 +304,24 @@ function renderNumberCell(input, column) {
  * properties).
  */
 function renderObeLocation(cellContent) {
-  if (cellContent.hasOwnProperty('latitude') && cellContent.hasOwnProperty('longitude')) {
-    return `(${cellContent.latitude}°, ${cellContent.longitude}°)`;
+  let humanAddress = null;
+  if (cellContent.human_address) {
+    try {
+      const addressData = JSON.parse(cellContent.human_address);
+      const addressParts = [addressData.address, addressData.city, addressData.state, addressData.zip];
+      humanAddress = addressParts.filter(_.identity).join(' ');
+    } catch (e) {
+      humanAddress = null;
+    }
   }
 
-  return '';
+  if (cellContent.hasOwnProperty('latitude') && cellContent.hasOwnProperty('longitude')) {
+    return `${humanAddress ? (humanAddress + ' ') : ''}(${cellContent.latitude}°, ${cellContent.longitude}°)`;
+  } else if (humanAddress) {
+    return humanAddress;
+  } else {
+    return '';
+  }
 }
 
 /**

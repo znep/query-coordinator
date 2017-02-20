@@ -82,6 +82,9 @@
 
     <p>Tests hidden columns. In the example below, all columns in the dataset except for 'name' and 'birthday' have been hidden in the grid view.
     <div id="table-11"></div>
+
+    <p>Tests human readable location columns. In the example below, Location column should show address fields as well as latitude longitude data.
+    <div id="table-12"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -348,6 +351,51 @@
 
     var $table11Element = $('#table-11');
     $table11Element.socrataTable(table11VIF);
+
+    var table12VIF = {
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      },
+      configuration: {
+        order: [{
+          ascending: true,
+          columnName: 'url'
+        }],
+        viewSourceDataLink: false
+      },
+      description: 'Human readable location fields should be present in location field',
+      series: [
+        {
+          color: {
+          },
+          dataSource: {
+            datasetUid: 'h4eh-xutb',
+            dimension: {
+              columnName: null,
+              aggregationFunction: null
+            },
+            domain: 'dataspace.demo.socrata.com',
+            measure: {
+              columnName: null,
+              aggregationFunction: 'count'
+            },
+            type: 'socrata.soql',
+            filters: []
+          },
+          label: null,
+          type: 'table',
+          unit: {
+            one: 'case',
+            other: 'cases'
+          }
+        }
+      ],
+      title: 'Human Readable Location'
+    };
+
+    var $table12Element = $('#table-12');
+    $table12Element.socrataTable(table12VIF);
 
     var $tables = $('[id^=table-]');
 

@@ -106,6 +106,7 @@ const InfoPane = React.createClass({
   componentWillUpdate(nextProps) {
     if (this.shouldEllipsify(this.props, nextProps)) {
       this.$description.trigger('destroy.dot');
+      this.resetParentHeight();
     }
   },
 
@@ -113,6 +114,10 @@ const InfoPane = React.createClass({
     if (this.shouldEllipsify(prevProps, this.props)) {
       this.ellipsify();
     }
+  },
+
+  resetParentHeight() {
+    this.description.parentElement.style.height = 'auto';
   },
 
   shouldEllipsify(prevProps, nextProps) {

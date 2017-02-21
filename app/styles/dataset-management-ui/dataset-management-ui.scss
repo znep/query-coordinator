@@ -139,10 +139,10 @@ body {
     margin: 0;
     display: flex;
     background-color: $light-grey-7;
-    
+
     .home-content {
       flex: 1;
-      
+
       #metadata-section {
         .metadata-table-wrapper {
           // TODO: do we want to refactor the shared
@@ -153,7 +153,7 @@ body {
         }
       }
     }
-    
+
     .metadata-sidebar {
       width: 24em;
       border-left: 1px solid $light-grey-4;
@@ -770,7 +770,7 @@ body {
         div {
           width: 250px;
           min-height: 29px;
-          padding: 5px 7px;
+          padding: 5px 7px 4px;
           display: block;
           position: relative;
 

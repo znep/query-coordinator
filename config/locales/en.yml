@@ -1615,7 +1615,7 @@ en:
       add_column_metadata: Add Column Metadata
       add_column_metadata_blurb: Column metadata will help people understand what the column means.
       column_metadata_manage_button: Manage Column Metadata
-      data: Data
+      data: Choose Data Source
       data_manage_button: Manage Data
       data_blurb: Add a data file and enable visualizations and mapping.
       required: Required
@@ -1642,7 +1642,7 @@ en:
     metadata_manage:
       errors:
         missing_name: Dataset name is required.
-      title: Manage Metadata — {0}
+      title: Manage Metadata
       dataset_tab:
         title: Title and Description
         subtitle: Make your title and description as clear and simple as possible.
@@ -1698,9 +1698,6 @@ en:
         will_not_be_imported: Rows that will not be imported
       rows_so_far: rows so far
       rows_total: rows total
-      upload_done: Upload Done
-      upload_failed: Upload Failed
-      upload_in_progress: Upload In Progress
     upload_warning: An upload is in progress, and will be left incomplete if you close this tab.
   dataslate:
     component:

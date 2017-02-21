@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { commaify } from '../../common/formatNumber';
 import * as Links from '../links';
 import * as Selectors from '../selectors';
-import { STATUS_UPDATING, STATUS_UPDATE_FAILED } from '../lib/database/statuses';
 import * as ShowActions from '../actions/showOutputSchema';
 import * as ApplyActions from '../actions/applyUpdate';
 import Table from './Table';
@@ -43,44 +42,35 @@ export function ShowOutputSchema({
   columns,
   errorsTransformId,
   canApplyUpdate,
-  goToUpload,
+  goHome,
   updateColumnType,
   applyUpdate }) {
 
-  const SubI18n = I18n.show_output_schema;
   const path = {
     uploadId: upload.id,
     inputSchemaId: inputSchema.id,
     outputSchemaId: outputSchema.id
   };
 
-  let uploadProgress;
-  switch (upload.__status__.type) {
-    case STATUS_UPDATING:
-      uploadProgress = SubI18n.upload_in_progress;
-      break;
-
-    case STATUS_UPDATE_FAILED:
-      uploadProgress = SubI18n.upload_failed;
-      break;
-
-    default:
-      uploadProgress = SubI18n.upload_done;
-  }
-
   const modalProps = {
     fullScreen: true,
-    onDismiss: goToUpload
+    onDismiss: goHome
   };
   const headerProps = {
     title: (
-      <span>
-        <Link to={Links.uploads}>{I18n.home_pane.data}</Link> &gt;&nbsp;
-        <Link to={Links.showUpload(upload.id)}>{upload.filename}</Link> ({uploadProgress}) &gt;&nbsp;
-        {I18n.home_pane.preview}
-      </span>
+      <ol>
+        <li>
+          <Link to={Links.uploads}>
+            {I18n.home_pane.data}
+          </Link>
+          <span className="socrata-icon-arrow-right"></span>
+        </li>
+        <li className="active">
+          {I18n.home_pane.preview}
+        </li>
+      </ol>
     ),
-    onDismiss: goToUpload
+    onDismiss: goHome
   };
 
   const rowsTransformed = inputSchema.total_rows || _.min(
@@ -160,7 +150,7 @@ ShowOutputSchema.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   inputSchema: PropTypes.object.isRequired,
   outputSchema: PropTypes.object.isRequired,
-  goToUpload: PropTypes.func.isRequired,
+  goHome: PropTypes.func.isRequired,
   updateColumnType: PropTypes.func.isRequired,
   applyUpdate: PropTypes.func.isRequired,
   errorsTransformId: PropTypes.number,
@@ -186,9 +176,9 @@ function mapDispatchToProps(dispatch, ownProps) {
     updateColumnType: (oldSchema, oldColumn, newType) => {
       dispatch(ShowActions.updateColumnType(oldSchema, oldColumn, newType));
     },
-    goToUpload: () => (
-      dispatch(push(Links.showUpload(_.toNumber(ownProps.params.uploadId))(ownProps.location)))
-    ),
+    goHome: () => {
+      dispatch(push(Links.home(ownProps.location)));
+    },
     applyUpdate: () => (
       dispatch(ApplyActions.applyUpdate(_.toNumber(ownProps.params.outputSchemaId)))
     )

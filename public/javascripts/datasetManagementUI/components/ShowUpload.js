@@ -21,7 +21,7 @@ function query(db, uploadId) {
   };
 }
 
-function ShowUpload({ upload, latestOutputSchema, goToUploads }) {
+function ShowUpload({ upload, latestOutputSchema, goHome }) {
   let body;
   if (_.isUndefined(latestOutputSchema)) {
     body = (
@@ -54,15 +54,23 @@ function ShowUpload({ upload, latestOutputSchema, goToUploads }) {
 
   const modalProps = {
     fullScreen: true,
-    onDismiss: goToUploads
+    onDismiss: goHome
   };
+  // Not going to style these breadcrumbs because this page is going to go away.
   const headerProps = {
     title: (
-      <span>
-        <Link to={Links.uploads}>{I18n.home_pane.data}</Link> &gt; {upload.filename}
-      </span>
+      <ol>
+        <li className="active socrata-icon-arrow-right">
+          <Link to={Links.uploads}>
+            {I18n.home_pane.data}
+          </Link>
+        </li>
+        <li>
+          {I18n.home_pane.preview}
+        </li>
+      </ol>
     ),
-    onDismiss: goToUploads
+    onDismiss: goHome
   };
 
   return (
@@ -81,7 +89,7 @@ function ShowUpload({ upload, latestOutputSchema, goToUploads }) {
 ShowUpload.propTypes = {
   upload: PropTypes.object.isRequired,
   latestOutputSchema: PropTypes.object,
-  goToUploads: PropTypes.func.isRequired
+  goHome: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state, ownProps) {
@@ -91,8 +99,8 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   return {
-    goToUploads: () => {
-      dispatch(push(Links.uploads(ownProps.location)));
+    goHome: () => {
+      dispatch(push(Links.home(ownProps.location)));
     }
   };
 }

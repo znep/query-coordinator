@@ -33,8 +33,38 @@ export function ManageUploads({ uploads, createUpload, goHome }) {
     onDismiss: goHome
   };
 
+  const lastUpload = _.last(uploads);
+
+  let nextCrumb;
+  if (lastUpload &&
+      _.get(lastUpload, 'id') &&
+      _.get(lastUpload, 'input_schemas[0].id') &&
+      _.get(lastUpload, 'input_schemas[0].output_schemas[0].id')) {
+    nextCrumb = (
+      <Link
+        to={Links.showOutputSchema(
+            lastUpload.id,
+            lastUpload.input_schemas[0].id,
+            lastUpload.input_schemas[0].output_schemas[0].id)}>
+        {I18n.home_pane.preview}
+      </Link>
+    );
+  } else {
+    nextCrumb = I18n.home_pane.preview;
+  }
+
   const headerProps = {
-    title: I18n.home_pane.data,
+    title: (
+      <ol>
+        <li className="active">
+          {I18n.home_pane.data}
+          <span className="socrata-icon-arrow-right"></span>
+        </li>
+        <li>
+          {nextCrumb}
+        </li>
+      </ol>
+    ),
     onDismiss: goHome
   };
 

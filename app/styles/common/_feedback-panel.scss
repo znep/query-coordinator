@@ -21,15 +21,16 @@
     color: $alternate-1-dark;
     padding: 0.5rem 1rem 1rem 1rem;
     position: fixed;
-    bottom: -0.35rem;
-    right: 1rem;
+    bottom: 12rem;
+    right: -2.2rem;
     font-size: 1rem;
     cursor: pointer;
+    @include prefixer(transform, rotate(-90deg));
     @include prefixer(transition, '0.25s');
 
     &:hover,
     &:focus {
-      bottom: 0;
+      right: -1.85rem;
     }
   }
 

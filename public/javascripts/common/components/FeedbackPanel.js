@@ -94,11 +94,11 @@ export const FeedbackPanel = React.createClass({
   resetButtonHover() {
     // Velocity doesn't allow animation to initial state, so everything is an
     // inline style override — hence the need to forcibly reset for hover style.
-    this.refs.button.style.bottom = null;
+    this.refs.button.style.right = null;
   },
 
   showButton(cb) {
-    velocity(this.refs.button, { bottom: '-0.35rem' }, _.iteratee(cb));
+    velocity(this.refs.button, { right: '-2.2rem' }, _.iteratee(cb));
   },
 
   showContent(cb) {
@@ -106,7 +106,7 @@ export const FeedbackPanel = React.createClass({
   },
 
   hideButton(cb) {
-    velocity(this.refs.button, { bottom: '-10rem' }, _.iteratee(cb));
+    velocity(this.refs.button, { right: '-12rem' }, _.iteratee(cb));
   },
 
   hideContent(cb) {

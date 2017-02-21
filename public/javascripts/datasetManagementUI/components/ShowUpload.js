@@ -11,8 +11,8 @@ function query(db, uploadId) {
   let latestOutputSchema;
 
   if (inputSchemas.length) {
-    const latestOutputSchemas = _.filter(db.output_schemas, { input_schema_id: inputSchemas[0].id });
-    latestOutputSchema = _.last(latestOutputSchemas);
+    const outputSchemas = _.filter(db.output_schemas, { input_schema_id: inputSchemas[0].id });
+    latestOutputSchema = _.maxBy(outputSchemas, 'id');
   }
 
   return {

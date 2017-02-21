@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import {
   EDIT,
+  EDIT_IMMUTABLE,
+  REVERT_EDITS,
   INSERT_STARTED,
   INSERT_FROM_SERVER,
   INSERT_FROM_SERVER_IF_NOT_EXISTS,
@@ -8,6 +10,7 @@ import {
   INSERT_SUCCEEDED,
   INSERT_FAILED,
   UPDATE_STARTED,
+  UPDATE_IMMUTABLE_STARTED,
   UPDATE_PROGRESS,
   UPDATE_SUCCEEDED,
   UPDATE_FROM_SERVER,
@@ -18,15 +21,18 @@ import {
 import {
   STATUS_DIRTY,
   statusDirty,
+  STATUS_DIRTY_IMMUTABLE,
+  statusDirtyImmutable,
   statusSaved,
   statusSavedOnServer,
   STATUS_INSERTING,
   statusInserting,
   statusInsertFailed,
   statusUpdating,
+  statusUpdatingImmutable,
   statusUpdateFailed
 } from '../lib/database/statuses';
-import { emptyDB } from '../lib/database/bootstrap';
+import { emptyDB } from '../bootstrap';
 
 
 // TODO: use ImmutableJS instead of Object Spread? It may shorten repetitive code here & improve speed
@@ -42,19 +48,22 @@ export default function dbReducer(db = emptyDB, action) {
       ), db);
 
     case EDIT:
+      return editRecord(db, action, false);
+
+    case EDIT_IMMUTABLE:
+      return editRecord(db, action, true);
+
+    case REVERT_EDITS:
       return {
         ...db,
         [action.tableName]: updateIf(
           db[action.tableName],
-          (record) => (record.id === action.updates.id),
+          (record) => record.id === action.oldRecordId,
           (record) => {
-            const withUpdatedStatus = {
-              ...record,
-              __status__: record.__status__.type !== STATUS_DIRTY ?
-                statusDirty(record) :
-                record.__status__
+            return {
+              ...record.__status__.oldRecord,
+              __status__: statusSavedOnServer
             };
-            return _.merge({}, withUpdatedStatus, action.updates);
           }
         )
       };
@@ -159,6 +168,19 @@ export default function dbReducer(db = emptyDB, action) {
         )
       };
 
+    case UPDATE_IMMUTABLE_STARTED:
+      return {
+        ...db,
+        [action.tableName]: updateIf(
+          db[action.tableName],
+          (record) => (record.id === action.recordId),
+          (record) => ({
+            ...record,
+            __status__: statusUpdatingImmutable()
+          })
+        )
+      };
+
     case UPDATE_SUCCEEDED:
       return {
         ...db,
@@ -237,9 +259,44 @@ function updateIf(array, predicateOrMatch, updater) {
   const cloned = _.clone(array);
   const idx = _.findIndex(cloned, predicateOrMatch);
   if (idx < 0) {
-    console.error(JSON.stringify(cloned), predicateOrMatch);
-    throw new Error('updateIf failed to find model to update');
+    throw new Error('updateIf failed to find model to update', JSON.stringify(cloned), predicateOrMatch);
   }
   cloned[idx] = updater(cloned[idx]);
   return cloned;
+}
+
+function editRecord(db, action, isImmutable) {
+  return {
+    ...db,
+    [action.tableName]: updateIf(
+      db[action.tableName],
+      (record) => (record.id === action.updates.id),
+      (record) => {
+        const updated = _.merge({}, record, action.updates);
+        if (record.__status__.type === STATUS_DIRTY ||
+            record.__status__.type === STATUS_DIRTY_IMMUTABLE) {
+          const editedBackToOriginal = _.isEqual(
+            _.omit(updated, '__status__'),
+            _.omit(record.__status__.oldRecord, '__status__')
+          );
+          if (editedBackToOriginal) {
+            return {
+              ...record.__status__.oldRecord,
+              __status__: statusSavedOnServer
+            };
+          } else {
+            return {
+              ...updated,
+              __status__: record.__status__
+            };
+          }
+        } else {
+          return {
+            ...updated,
+            __status__: isImmutable ? statusDirtyImmutable(record) : statusDirty(record)
+          };
+        }
+      }
+    )
+  };
 }

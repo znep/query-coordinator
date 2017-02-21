@@ -9,19 +9,23 @@ export default function TextArea({ descriptor, onChange, value }) {
     null :
     <span className="metadata-validation-error">{descriptor.errorMsg}</span>;
 
+  const labelClasses = descriptor.required ?
+    classNames('inline-label', 'required') :
+    classNames('inline-label');
   return (
-    <div>
+    <div className={descriptor.divClassName}>
       <label
         htmlFor={descriptor.key}
-        className="inline-label">
+        className={labelClasses}>
         {descriptor.label}
       </label>
-      <br />
       <textarea
+        rows={descriptor.rows}
         id={descriptor.key}
         className={classes}
         value={value}
         aria-label={descriptor.label}
+        aria-required={descriptor.required}
         onChange={(evt) => onChange(evt.target.value)} />
       {errorMsg}
     </div>

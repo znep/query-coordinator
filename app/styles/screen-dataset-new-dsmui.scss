@@ -1,17 +1,31 @@
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 div.container {
   text-align: center;
 
-  #generic-modal {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    z-index: -1000;
+  .modal {
+    z-index: auto;
   }
+
+  .modal-overlay {
+    position: static;
+    height: 100%;
+    flex-grow: 1;
+    align-items: stretch;
+  }
+
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
 
   .modal-container {
     max-width: 600px;
     padding: 50px;
-    margin-bottom: 200px;
+    margin: 100px auto;
   }
 
   .modal-header {
@@ -33,18 +47,22 @@ div.container {
 
   #dataset-title-input {
     width: 80%;
-    line-height: 1.75;
+    line-height: 1.75em;
+    margin: 3px 0 10px;
   }
 
   .modal-actions {
     .btn {
       width: 250px;
-      margin-right: 0;
+      margin: 0;
       height: 62px;
     }
+
     text-align: center;
+
     #create-spinner {
       display: none;
+      margin: 0 auto;
     }
   }
 

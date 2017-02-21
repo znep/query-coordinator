@@ -7,6 +7,15 @@ export function statusDirty(oldRecord) {
   };
 }
 
+export const STATUS_DIRTY_IMMUTABLE = 'DIRTY_IMMUTABLE';
+export function statusDirtyImmutable(oldRecord) {
+  return {
+    type: STATUS_DIRTY_IMMUTABLE,
+    dirtiedAt: new Date(),
+    oldRecord
+  };
+}
+
 export const STATUS_SAVED = 'SAVED';
 export function statusSaved() {
   return {
@@ -46,6 +55,14 @@ export function statusUpdating(updates) {
     updates,
     startedAt: new Date(),
     percentCompleted: 0
+  };
+}
+
+export const STATUS_UPDATING_IMMUTABLE = 'UPDATING_IMMUTABLE';
+export function statusUpdatingImmutable() {
+  return {
+    type: STATUS_UPDATING_IMMUTABLE,
+    startedAt: new Date()
   };
 }
 

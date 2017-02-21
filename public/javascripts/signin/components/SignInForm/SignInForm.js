@@ -153,13 +153,15 @@ class SignInForm extends React.Component {
   render() {
     const { options, translate } = this.props;
     const { connectionName } = this.state;
+    const { authenticityToken, disableSignInAutocomplete } = options;
 
     return (
       <form
         styleName="form"
         ref={(formDomNode) => { this.formDomNode = formDomNode; }}
         action="/user_sessions"
-        method="post">
+        method="post"
+        autoComplete={disableSignInAutocomplete ? 'off' : 'on'}>
         {this.renderErrorOrSpinner()}
 
         { /* These are for submitting straight to rails */ }
@@ -167,14 +169,14 @@ class SignInForm extends React.Component {
         <input
           name="authenticity_token"
           type="hidden"
-          value={options.authenticityToken} />
+          value={authenticityToken} />
 
         <EmailInput
           onChange={this.onEmailChange}
           translate={translate} />
         <PasswordInput
           onChange={this.onPasswordChange}
-          translate={this.props.translate}
+          translate={translate}
           connectionName={connectionName} />
 
         {this.renderRememberMe(options, translate)}

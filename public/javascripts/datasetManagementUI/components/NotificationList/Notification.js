@@ -18,7 +18,7 @@ function Notification({ db, notification }) {
 
     case UPSERT_JOB_NOTIFICATION: {
       const upsertJob = _.find(db.upsert_jobs, { id: notification.upsertJobId });
-      const outputSchema = _.find(db.output_schemas, { id: upsertJob.schema_id });
+      const outputSchema = _.find(db.output_schemas, { id: upsertJob.output_schema_id });
       const inputSchema = _.find(db.input_schemas, { id: outputSchema.input_schema_id });
       const props = {
         upsertJob,

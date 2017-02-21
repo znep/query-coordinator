@@ -12,8 +12,9 @@ class InternalController < ApplicationController
     { name: 'fullMixpanelTracking', description: 'UX metrics gathering using persistent cookies; prefer over mixpanelTracking unless customer explicitly asks for session cookies.' },
     { name: 'mixpanelTracking', description: 'UX metrics gathering using session cookies; prefer using fullMixpanelTracking when possible.' },
     { name: 'socrata_emails_bypass_auth0', description: "Don't automatically login users with @socrata.com email addresses through auth0" },
-    { name: 'disable_contact_dataset_owner', description: 'Disable contacting dataset owners in the DSLP/Primer.'},
-    { name: 'disable_owner_contact', description: 'Disables showing the Contact Dataset Owner section in the About pane.' }
+    { name: 'disable_contact_dataset_owner', description: 'Disable contacting dataset owners in the DSLP/Primer.' },
+    { name: 'disable_owner_contact', description: 'Disables showing the Contact Dataset Owner section in the About pane.' },
+    { name: 'fedramp', description: 'Enables security restrictions on this domain for fedramp compliance.' }
   ]
 
   def index
@@ -483,6 +484,9 @@ class InternalController < ApplicationController
       list.split(/[^#{valid_url_characters}]+/).reject(&:blank?) # i.e., dump any commas
     end
 
+    dry_run = ''
+    dry_run << '[Dry Run] ' if params[:dry_run]
+
     begin
       raise 'Both :domains and :domain_list were empty.' if domain_list.blank?
       case params[:commit]
@@ -492,17 +496,17 @@ class InternalController < ApplicationController
             to_value: processed_value,
             on_domains: domain_list,
             authorization: auth_header
-          )
+          ) unless params[:dry_run]
           domain_list.each do |domain|
-            notices << %Q{#{params[:flag]} was set with value "#{processed_value}" on #{domain}.}
+            notices << %Q{#{dry_run}#{params[:flag]} was set with value "#{processed_value}" on #{domain}.}
           end
         when 'Reset'
           flag.reset_multiple(
             on_domains: domain_list,
             authorization: auth_header
-          )
+          ) unless params[:dry_run]
           domain_list.each do |domain|
-            notices << %Q{#{params[:flag]} was reset to its default value of "#{FeatureFlags.default_for(params[:flag])}" on #{domain}.}
+            notices << %Q{#{dry_run}#{params[:flag]} was reset to its default value of "#{FeatureFlags.default_for(params[:flag])}" on #{domain}.}
           end
       end
       flag.clear_cache(Signaller::Endpoint.for(:report, flag: params[:flag]))

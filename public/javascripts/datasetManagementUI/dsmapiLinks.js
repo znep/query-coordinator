@@ -8,7 +8,7 @@ export const uploadBytes = (uploadId) => `${updateBase}/upload/${uploadId}`;
 export const uploadShow = uploadBytes;
 
 // TODO: find names controller uses!
-export const updateSchema = (inputSchemaId) => `${updateBase}/schema/${inputSchemaId}`;
+export const newOutputSchema = (inputSchemaId) => `${updateBase}/schema/${inputSchemaId}`;
 
 export const transformResults = (transformId, limit, offset) => {
   return `/api/update/${window.initialState.view.id}/transform/${transformId}` +

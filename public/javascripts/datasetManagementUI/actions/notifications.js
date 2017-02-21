@@ -19,4 +19,3 @@ export function removeNotificationAfterTimeout(notification) {
     }, NOTIFICATION_TIMEOUT_MS);
   };
 }
-

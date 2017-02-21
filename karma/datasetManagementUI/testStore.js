@@ -1,7 +1,7 @@
 import rootReducer from 'reducers';
 import { applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import { bootstrap } from 'lib/database/bootstrap';
+import { bootstrap } from 'bootstrap';
 
 export function getDefaultStore() {
   const store = getEmptyStore();

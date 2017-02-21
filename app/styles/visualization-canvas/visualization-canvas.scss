@@ -1,5 +1,7 @@
 @import "styleguide-colors";
 
+@import "common/feedback-panel";
+
 $edit-bar-height: 60px;
 $edit-bar-font-color: #e4e4e4;
 $edit-bar-name-width: 280px;
@@ -281,6 +283,12 @@ body {
     .column-container {
       z-index: 7;
     }
+
+    .collapsed-filters-container {
+      z-index: 5;
+      background: $light-grey-5;
+      border-bottom: 1px solid $light-grey-4;
+    }
   }
 
   // TODO (EN-13130) Fix these z-index issues upstream in AX
@@ -288,6 +296,10 @@ body {
     .filter-bar-container {
       .filter-controls, .filter-config {
         z-index: 60;
+      }
+
+      .collapsed-filters-container {
+        z-index: 53;
       }
     }
   }

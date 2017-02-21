@@ -3,26 +3,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-import { Router, Route, IndexRoute, browserHistory } from 'react-router';
+import { Router, browserHistory } from 'react-router';
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux';
 import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
 import windowDBMiddleware from './lib/database/middleware';
 import * as Phoenix from 'phoenix';
 
-import App from './components/App';
-import ShowUpdate from './components/ShowUpdate';
-import ManageMetadata from './components/ManageMetadata';
-import ManageUploads from './components/ManageUploads';
-import ShowOutputSchema from './components/ShowOutputSchema';
-import { loadErrorTable } from './actions/showOutputSchema';
-import ShowUpload from './components/ShowUpload';
-import NoMatch from './components/NoMatch';
 import rootReducer from './reducers';
-import { bootstrap } from './lib/database/bootstrap';
+import { bootstrap } from './bootstrap';
 import * as Selectors from './selectors';
-import Airbrake from './airbrake';
-
+import Airbrake from './lib/airbrake';
+import rootRoute from './routes';
 
 const viewId = window.initialState.view.id;
 window.DSMAPI_PHOENIX_SOCKET = new Phoenix.Socket('/api/update/socket', {
@@ -58,20 +50,7 @@ const history = syncHistoryWithStore(browserHistory, store);
 ReactDOM.render(
   <Provider store={store}>
     <Router history={history}>
-      <Route path="/:category/:name/:fourfour/updates/:updateSeq" component={App}>
-        <IndexRoute component={ShowUpdate} />
-        <Route path="metadata" component={ManageMetadata} />
-        <Route path="uploads" component={ManageUploads} />
-        <Route path="uploads/:uploadId" component={ShowUpload} />
-        <Route
-          path="uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId"
-          component={ShowOutputSchema} />
-        <Route
-          path="uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/errors/:errorsTransformId"
-          component={ShowOutputSchema}
-          onEnter={(nextState) => store.dispatch(loadErrorTable(nextState))} />
-        <Route path="*" component={NoMatch} />
-      </Route>
+      {rootRoute(store)}
     </Router>
   </Provider>,
   document.querySelector('#app')

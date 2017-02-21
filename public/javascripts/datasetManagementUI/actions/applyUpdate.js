@@ -20,7 +20,7 @@ export function applyUpdate(outputSchemaId) {
   return (dispatch, getState) => {
     const routing = getState().routing;
     const newUpsertJob = {
-      schema_id: outputSchemaId
+      output_schema_id: outputSchemaId
     };
     dispatch(insertStarted('upsert_jobs', newUpsertJob));
     socrataFetch(dsmapiLinks.applyUpdate, {
@@ -67,6 +67,7 @@ export function pollForUpsertJobProgress(upsertJobId) {
         }
       }).
       catch((err) => {
+        console.log(JSON.stringify(err));
         console.error('polling for upsert job progress failed', err);
       });
   };

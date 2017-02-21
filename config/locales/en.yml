@@ -1,6 +1,12 @@
 en:
   common:
     contact_dataset_owner: Contact Dataset Owner
+    feedback:
+      panel_details_html: With a screenshot you can show us exactly what you have feedback on. We’re using <a href="https://usersnap.com">Usersnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy">privacy policy</a>.
+      panel_title: Do you want to include an annotated screenshot of the current page?
+      screenshot_no: No thanks
+      screenshot_yes: Yes, include a screenshot
+      title: Feedback
     less: Show Less
     metadata:
       attachments: Attachments
@@ -44,7 +50,7 @@ en:
         sign_up_prompt: Sign up now
       inline_auth:
         sign_in_headline: Sign in using your Socrata ID
-        sign_up_headline: We're glad you want to join %{site}
+        sign_up_headline: "We're glad you want to join %{site}!"
       rpx:
         description: Take advantage of additional features these accounts provide and sign in with one click.
         prompt:
@@ -1487,12 +1493,6 @@ en:
       no_content_alert_html: "<b>Hmm...</b> Looks like there is no public content using this data."
       title: Popular Content Using this Data
       view: View
-    feedback:
-      panel_details_html: With a screenshot you can show us exactly what you have feedback on. We’re using <a href="https://usersnap.com">Usersnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy">privacy policy</a>.
-      panel_title: Do you want to include an annotated screenshot of the current page?
-      screenshot_no: No thanks
-      screenshot_yes: Yes, include a screenshot
-      title: Feedback
     href_download:
       data_dictionary: Data Dictionary
       edit_prompt_button: Edit Links
@@ -1590,6 +1590,10 @@ en:
       ok: Ok
       save: Save
       cancel: Cancel
+    no_match:
+      title: Not Found
+      subtitle: "Sorry, couldn't find that!"
+      suggestion: Try going back to the update.
     create:
       title: Create Dataset
       header: Create a New Dataset
@@ -1629,6 +1633,25 @@ en:
     metadata_manage:
       errors:
         missing_name: Dataset name is required.
+      title: Manage Metadata — {0}
+      dataset_tab:
+        title: Title and Description
+        subtitle: Make your title and description as clear and simple as possible.
+        errors:
+          missing_name: Dataset name is required.
+      column_tab:
+        title: Column Metadata
+        subtitle: Describe your columns so people understand how the data should be interpreted.
+        empty: No columns yet.
+        upload_a_file: Upload a file
+        name: Column Name
+        description: Column Description
+        field_name: API Field Name
+        errors:
+          missing_name: Column Name is required.
+      required_note: Required field
+      dataset_metadata_label: Dataset Metadata
+      column_metadata_label: Column Descriptions
     no_match:
       title: Not Found
       subtitle: Sorry, couldn't find that!

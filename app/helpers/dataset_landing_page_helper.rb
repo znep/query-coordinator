@@ -11,19 +11,10 @@ module DatasetLandingPageHelper
 
   def dataset_landing_page_translations
     translations = LocaleCache.render_translations([LocalePart.dataset_landing_page])['dataset_landing_page']
-    translations = translations.merge(
-      data_types: LocaleCache.render_translations([LocalePart.core.data_types])['core']['data_types']
+    translations.deep_merge(
+      'common' => LocaleCache.render_translations([LocalePart.common])['common'],
+      'data_types' => LocaleCache.render_translations([LocalePart.core.data_types])['core']['data_types']
     )
-
-    common = LocaleCache.render_translations([LocalePart.common])['common']
-
-    if translations.key?('common')
-      translations['common'] = translations['common'].merge(common)
-    else
-      translations = translations.merge(common: common)
-    end
-
-    translations
   end
 
   def render_dataset_landing_page_translations
@@ -54,7 +45,8 @@ module DatasetLandingPageHelper
       :featureFlags => feature_flags_as_json,
       :locale => I18n.locale.to_s,
       :localePrefix => (I18n.locale.to_sym == CurrentDomain.default_locale.to_sym) ? '' : "/#{I18n.locale}",
-      :recaptchaKey => RECAPTCHA_2_SITE_KEY
+      :recaptchaKey => RECAPTCHA_2_SITE_KEY,
+      :usersnapProjectID => 'db69b856-0f89-42cb-aec0-83c78ba79c03'
     }
 
     javascript_tag("var serverConfig = #{json_escape(server_config.to_json)};")

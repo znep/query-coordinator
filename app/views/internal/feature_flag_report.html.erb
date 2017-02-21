@@ -52,6 +52,7 @@
         <div>
           <%= form_tag update_feature_flags_on_multiple_domains_path, :class => 'oneButtonForm' do %>
             <input type="hidden" name="flag" value="<%= params[:for] %>" />
+            <div><input type="checkbox" id="dry_run" name="dry_run"><label for="dry_run">Dry Run</label></div>
             <div class="domain_selection">
               <label>Choose domains to affect:</label>
               <input type="text" name="domain_list" />

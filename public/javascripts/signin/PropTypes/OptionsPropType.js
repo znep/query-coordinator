@@ -60,5 +60,8 @@ export default
 
     // Any params that come in from the request to load the page; used i.e. to grab the entered userName and emails
     // if the sign up form submission fails (so user doesn't have to re-type them)
-    params: PropTypes.object
+    params: PropTypes.object,
+
+    // Whether or not to add "autocomplete=false" to the signin form
+    disableSignInAutocomplete: PropTypes.bool
   });

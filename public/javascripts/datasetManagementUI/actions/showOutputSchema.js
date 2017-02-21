@@ -8,11 +8,13 @@ import {
   insertSucceeded,
   insertFailed,
   updateFromServer,
-  insertFromServerWithPk
+  insertFromServerWithPk,
+  updateImmutableStarted,
+  revertEdits
 } from './database';
 import { socrataFetch, checkStatus, getJson } from '../lib/http';
 import {
-  insertAndSubscribeToOutputSchema
+  insertChildrenAndSubscribeToOutputSchema
 } from './manageUploads';
 import { soqlProperties } from '../lib/soqlTypes';
 
@@ -25,17 +27,23 @@ export function updateColumnType(oldSchema, oldColumn, newType) {
     const { newOutputSchema, newOutputColumns } =
       getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType);
 
-    dispatch(insertStarted('output_schemas', newOutputSchema));
+    dispatch(batch([
+      insertStarted('output_schemas', newOutputSchema),
+      updateImmutableStarted('output_columns', oldColumn.id)
+    ]));
 
-    socrataFetch(dsmapiLinks.updateSchema(oldSchema.input_schema_id), {
+    socrataFetch(dsmapiLinks.newOutputSchema(oldSchema.input_schema_id), {
       method: 'POST',
       body: JSON.stringify({ output_columns: newOutputColumns })
     }).
       then(checkStatus).
       then(getJson).
       then(resp => {
-        dispatch(insertSucceeded('output_schemas', newOutputSchema, { id: resp.resource.id }));
-        insertAndSubscribeToOutputSchema(dispatch, resp.resource);
+        dispatch(batch([
+          insertSucceeded('output_schemas', newOutputSchema, { id: resp.resource.id }),
+          revertEdits('output_columns', oldColumn.id)
+        ]));
+        insertChildrenAndSubscribeToOutputSchema(dispatch, resp.resource);
 
         const inputSchema = _.find(db.input_schemas, { id: oldSchema.input_schema_id });
         const uploadId = inputSchema.upload_id;

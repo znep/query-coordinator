@@ -22,8 +22,8 @@ class SignUp extends React.Component {
 
     // if an email comes in from the query string, we want to use that,
     // otherwise grab it from params, otherwise empty
-    const email = _.get(parsedUrl, 'query.email', _.get(params, 'signup.email', ''));
-    const screenName = _.get(params, 'signup.screenName', '');
+    const email = _.get(parsedUrl, 'query.email', _.get(params, 'email', ''));
+    const screenName = _.get(params, 'screenName', '');
 
     const translate = new Translate(translations);
 

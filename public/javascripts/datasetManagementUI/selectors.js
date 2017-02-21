@@ -35,3 +35,7 @@ export function uploadsInProgress(db) {
     upload.__status__.type === STATUS_UPDATING
   ));
 }
+
+export function currentOutputSchema(db) {
+  return _.maxBy(db.output_schemas, 'inserted_at');
+}

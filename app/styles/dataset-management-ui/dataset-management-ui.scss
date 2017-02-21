@@ -2,6 +2,19 @@
 @import "common/metadata-table";
 @import "common/schema-preview";
 
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#app {
+  display: flex;
+  flex-grow: 1;
+  flex-basis: fill;
+  flex-direction: column;
+}
+
 // Overrides from DSLP
 #info-pane-container {
   // Needed to override some stuff from _cards.scss
@@ -27,15 +40,6 @@
   }
 }
 
-// This is copied from site-chrome
-#site-chrome-header {
-  min-height: 56px;
-}
-
-#site-chrome-footer {
-  min-height: 164px;
-}
-
 // This is copied from DSLP - styleguidify...somehow?
 .container .landing-page-section .section-content {
   background: $white;
@@ -45,9 +49,29 @@
   align-items: flex-start;
 }
 
+// TODO: Move below into styleguide!
+.modal-footer {
+  min-height: 67px;
+}
+
+.modal-content {
+  .modal-full & {
+    max-height: 100vh;
+    height: calc(100vh - 119px);
+    margin: 0;
+  }
+}
+// TODO: Move above into styleguide!
+
 .dataset-management-ui {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+
   .edit-bar {
     position: static;
+    width: 100%;
+    z-index: auto;
   }
 
   .modal-header-title {
@@ -110,11 +134,15 @@
   }
 
   #home-pane {
-    margin: 0 auto;
+    flex-grow: 1;
+
+    margin: 0;
     display: flex;
     background-color: $light-grey-7;
+    
     .home-content {
       flex: 1;
+      
       #metadata-section {
         .metadata-table-wrapper {
           // TODO: do we want to refactor the shared
@@ -125,6 +153,7 @@
         }
       }
     }
+    
     .metadata-sidebar {
       width: 24em;
       border-left: 1px solid $light-grey-4;
@@ -161,7 +190,6 @@
     }
   }
 
-
   .management-ui-section, .metadata-table-wrapper, section {
     padding: 1em;
   }
@@ -181,7 +209,268 @@
     margin-right: 0.5em;
   }
 
+  .modal-footer {
+    button {
+      min-width: 120px;
+      margin-left: 12px;
+    }
+  }
+
+  #manage-metadata {
+    section.modal-content {
+      margin: 0;
+      padding: 0;
+    }
+
+    textarea {
+      display: block;
+      resize: vertical;
+    }
+
+    #tab-title {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 23px;
+      margin-top: 0.5em;
+    }
+
+    #tab-subtitle {
+      display: inline-block;
+      font-size: 13px;
+      color: $grey;
+      padding-bottom: 1em;
+    }
+
+    #required-note {
+      float: right;
+      text-transform: uppercase;
+      font-size: 10px;
+      color: $dark-grey-1;
+      position: relative;
+      top: -23px;
+
+      @media (max-width: 750px) {
+        position: static;
+      }
+
+      &::before {
+        content: "*";
+        color: $alternate-1-base;
+        padding: 0.25em;
+        font-size: 14px;
+      }
+    }
+
+    .required {
+      &::after {
+        content: "*";
+        color: $alternate-1-base;
+        padding: 0.25em;
+        font-size: 14px;
+      }
+    }
+
+    .modal-content {
+      overflow-y: scroll;
+
+      div {
+        height: 100%;
+      }
+    }
+
+    #metadata-sidebar {
+      display: block;
+      float: left;
+      padding-left: 0;
+      margin: 4px 0 0;
+      position: fixed;
+
+      @media (max-width: 750px) {
+        position: static;
+        width: 100%;
+      }
+
+      li {
+        list-style: none;
+        display: block;
+
+        height: 48px;
+        width: 250px;
+
+        @media (max-width: 750px) {
+          width: 100%;
+        }
+
+        padding: 13px 0 0 11px;
+        font-size: 13px;
+        background: $white;
+
+        border-left: 7px solid $white;
+        border-bottom: 1px solid $light-grey-4;
+      }
+
+      li.selected {
+        padding-left: 10px;
+        font-weight: 600;
+        border-left-color: $primary-base;
+        background: $light-grey-5;
+      }
+
+      a, a:visited, a:hover {
+        text-decoration: none;
+        color: $black;
+      }
+    }
+
+    #metadata-content {
+      padding: 1.3em 1.3em 0.25em;
+      float: right;
+      width: calc(100% - 250px);
+      min-width: 250px;
+
+      min-height: 100%;
+      height: auto;
+      border-left: 1px solid $light-grey-4;
+
+      @media (max-width: 750px) {
+        border-left-style: none;
+        width: 100%;
+      }
+
+      #dataset-metadata-editor {
+        input {
+          width: 100%;
+          min-width: 250px;
+          max-width: 700px;
+
+          @media (max-width: 1000px) {
+            width: 100%;
+          }
+        }
+
+        .text-area {
+          width: 100%;
+          min-width: 250px;
+          max-width: 700px;
+
+          min-height: 6em;
+          height: auto;
+          resize: vertical;
+
+          p {
+            margin-bottom: 0;
+          }
+        }
+      }
+
+      #column-metadata-editor {
+        #metadata-header {
+          @media (max-width: 1100px) {
+            display: none;
+          }
+        }
+
+        .column-name, .column-field-name {
+          width: 250px;
+          float: left;
+
+          label {
+            display: none;
+          }
+
+          @media (max-width: 750px) {
+            width: 100%;
+            max-width: none;
+          }
+        }
+
+        .column-description {
+          margin: 0 1em;
+          width: calc(100% - 500px - 2em);
+          min-width: 250px;
+          max-width: 700px;
+          float: left;
+
+          label {
+            display: none;
+          }
+        }
+
+        @media (max-width: 1100px) {
+          .column-name, .column-field-name, .column-description {
+            width: 100%;
+            max-width: 500px;
+            float: left;
+            clear: left;
+            margin: 0;
+
+            label {
+              display: inline;
+            }
+          }
+        }
+
+        .metadata-row {
+          clear: both;
+
+          margin-bottom: 27px;
+
+          &::after {
+            visibility: hidden;
+            display: block;
+            font-size: 0;
+            content: " ";
+            clear: both;
+            height: 0;
+          }
+        }
+
+        input, .text-area {
+          width: 100%;
+          font-size: 12px;
+          line-height: 20px;
+          padding: 5px 10px;
+          margin-bottom: 0px;
+          min-height: 32px;
+        }
+
+        textarea {
+          overflow-x: hidden;
+        }
+      }
+    }
+  }
+
   #show-output-schema {
+
+    .modal-footer-actions {
+      display: flex;
+      justify-content: space-between;
+      .ready-to-import {
+        p {
+          display: inline-block;
+          padding-right: 2em;
+          margin: 0.5em 0px;
+
+          span.importable-rows {
+            color: $primary-text;
+            font-weight: 600;
+          }
+          span.error-rows {
+            color: $error-text;
+            font-weight: 600;
+          }
+
+        }
+
+        .errors-help {
+          padding-left: 7px;
+          color: $light-grey-1;
+          font-size: 17px;
+        }
+      }
+    }
+
     section.modal-content {
       padding: 0;
     }
@@ -286,6 +575,23 @@
         tr {
           border-top-width: 0;
           border-bottom-width: 0;
+
+          th.column-header {
+            a {
+              text-decoration: none;
+            }
+
+            .socrata-icon-edit {
+              padding-left: 5px;
+              display: none;
+            }
+          }
+
+          th.column-header:hover {
+            .socrata-icon-edit {
+              display: inline;
+            }
+          }
 
           &:last-child {
             th {
@@ -493,34 +799,6 @@
             z-index: 99;
           }
         }
-      }
-    }
-  }
-
-  .modal-footer-actions {
-    display: flex;
-    justify-content: space-between;
-    .ready-to-import {
-      p {
-        display: inline-block;
-        padding-right: 2em;
-        margin: 0.5em 0px;
-
-        span.importable-rows {
-          color: $primary-text;
-          font-weight: 600;
-        }
-        span.error-rows {
-          color: $error-text;
-          font-weight: 600;
-        }
-
-      }
-
-      .errors-help {
-        padding-left: 7px;
-        color: $light-grey-1;
-        font-size: 17px;
       }
     }
   }

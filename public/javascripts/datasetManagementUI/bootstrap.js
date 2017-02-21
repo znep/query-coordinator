@@ -1,10 +1,12 @@
 import {
   insertFromServer,
   batch
-} from '../../actions/database';
-import { insertAndSubscribeToUpload } from '../../actions/manageUploads';
-import { pollForUpsertJobProgress } from '../../actions/applyUpdate';
-import { parseDate } from '../../lib/parseDate';
+} from './actions/database';
+import { addNotification, removeNotificationAfterTimeout } from './actions/notifications';
+import { upsertJobNotification } from './lib/notifications';
+import { insertAndSubscribeToUpload } from './actions/manageUploads';
+import { pollForUpsertJobProgress } from './actions/applyUpdate';
+import { parseDate } from './lib/parseDate';
 
 export const emptyDB = {
   views: [],
@@ -58,4 +60,12 @@ export function bootstrap(store, initialView, initialUpdate) {
     }
   });
   store.dispatch(batch(operations));
+  // notifications
+  initialUpdate.upsert_jobs.forEach((upsertJob) => {
+    const notification = upsertJobNotification(upsertJob.id);
+    store.dispatch(addNotification(notification));
+    if (upsertJob.status === 'successful') {
+      store.dispatch(removeNotificationAfterTimeout(notification));
+    }
+  });
 }

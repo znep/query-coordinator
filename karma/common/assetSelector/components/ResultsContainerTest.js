@@ -1,6 +1,7 @@
-import { ResultsContainer } from 'ResultsContainer';
 import 'babel-polyfill';
 import _ from 'lodash';
+import { ResultsContainer } from 'components/assetSelector/ResultsContainer';
+
 import ceteraUtils from 'ceteraUtils';
 import mockCeteraResponse from 'assetSelector/data/mockCeteraResponse';
 

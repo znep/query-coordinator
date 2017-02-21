@@ -12,6 +12,10 @@ export const home = (routing) => {
 };
 
 export const metadata = (routing) => `${home(routing)}/metadata`;
+export const datasetMetadataEditor = (routing) => `${home(routing)}/metadata/dataset`;
+export const columnMetadataEditor = (columnId) => (
+  (routing) => `${home(routing)}/metadata/columns${columnId ? `#${columnId}` : ''}`
+);
 export const uploads = (routing) => `${home(routing)}/uploads`;
 
 
@@ -19,12 +23,12 @@ export const showUpload = (uploadId) => (
   (routing) => `${home(routing)}/uploads/${uploadId}`
 );
 
-export const showOutputSchema = (uploadId, schemaId, outputSchemaId) => (
-  (routing) => `${home(routing)}/uploads/${uploadId}/schemas/${schemaId}/output/${outputSchemaId}`
+export const showOutputSchema = (uploadId, inputSchemaId, outputSchemaId) => (
+  (routing) => `${home(routing)}/uploads/${uploadId}/schemas/${inputSchemaId}/output/${outputSchemaId}`
 );
 
-export const showErrorTableForColumn = (uploadId, schemaId, outputSchemaId, errorsTransformId) => (
+export const showErrorTableForColumn = (uploadId, inputSchemaId, outputSchemaId, errorsTransformId) => (
   (routing) =>
-    `${home(routing)}/uploads/${uploadId}/schemas/${schemaId}/output/` +
+    `${home(routing)}/uploads/${uploadId}/schemas/${inputSchemaId}/output/` +
       `${outputSchemaId}/errors/${errorsTransformId}`
 );

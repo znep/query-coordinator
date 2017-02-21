@@ -1,5 +1,4 @@
 <% content_for :head do %>
-  <%= render_dataset_landing_page_server_config %>
   <%= render_feature_flags_for_javascript %>
   <script type="text/javascript">
     window.strings = <%== CurrentDomain.strings.to_json %>;
@@ -13,6 +12,7 @@
 <div id="app"></div>
 
 <%= render_admin_goals_session_data %>
+<%= render_admin_goals_server_config %>
 <%= render_mixpanel_config %>
 
 <%= include_webpack_bundle 'admin-goals/main.js' %>

@@ -13,7 +13,8 @@ import {
   updateSucceeded,
   updateFailed,
   updateProgress,
-  createTable
+  createTable,
+  batch
 } from './database';
 import {
   addNotification,
@@ -149,23 +150,31 @@ export function insertAndSubscribeToUpload(dispatch, upload) {
   return _.flatten(outputSchemaIds);
 }
 
-export function insertAndSubscribeToOutputSchema(dispatch, outputSchema) {
-  dispatch(insertFromServer('output_schemas', toOutputSchema(outputSchema)));
-  dispatch(subscribeToOutputSchema(outputSchema));
-  outputSchema.output_columns.forEach((outputColumn) => {
+function insertAndSubscribeToOutputSchema(dispatch, outputSchemaResponse) {
+  dispatch(insertFromServer('output_schemas', toOutputSchema(outputSchemaResponse)));
+  insertChildrenAndSubscribeToOutputSchema(dispatch, outputSchemaResponse);
+  return outputSchemaResponse.id;
+}
+
+export function insertChildrenAndSubscribeToOutputSchema(dispatch, outputSchemaResponse) {
+  dispatch(subscribeToOutputSchema(outputSchemaResponse));
+  const actions = [];
+  outputSchemaResponse.output_columns.forEach((outputColumn) => {
     const transform = outputColumn.transform;
-    dispatch(insertFromServerIfNotExists('transforms', transform));
-    dispatch(insertFromServerIfNotExists('output_columns', {
+    actions.push(insertFromServerIfNotExists('transforms', transform));
+    actions.push(insertFromServerIfNotExists('output_columns', {
       ..._.omit(outputColumn, ['transform']),
       transform_id: outputColumn.transform.id
     }));
-    dispatch(insertFromServerIfNotExists('output_schema_columns', {
-      output_schema_id: outputSchema.id,
+    actions.push(insertFromServerIfNotExists('output_schema_columns', {
+      output_schema_id: outputSchemaResponse.id,
       output_column_id: outputColumn.id
     }));
-    dispatch(createTableAndSubscribeToTransform(transform));
   });
-  return outputSchema.id;
+  dispatch(batch(actions));
+  outputSchemaResponse.output_columns.forEach((outputColumn) => {
+    dispatch(createTableAndSubscribeToTransform(outputColumn.transform));
+  });
 }
 
 const INITIAL_FETCH_LIMIT_ROWS = 200;
@@ -217,7 +226,8 @@ function toOutputSchema(os) {
   return {
     id: os.id,
     input_schema_id: os.input_schema_id,
-    error_count: os.error_count
+    error_count: os.error_count,
+    inserted_at: os.inserted_at ? parseDate(os.inserted_at) : null
   };
 }
 

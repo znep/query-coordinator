@@ -40,13 +40,11 @@ export function getStoreWithOutputSchema() {
     id: 1,
     transform_expr: 'arrest',
     output_soql_type: 'SoQLText',
-    input_column_ids: [48]
   }));
   store.dispatch(insertFromServer('transforms', {
     id: 2,
     transform_expr: 'block',
     output_soql_type: 'SoQLText',
-    input_column_ids: [49]
   }));
   store.dispatch(createTable('transform_1'));
   store.dispatch(createTable('transform_2'));

@@ -1,8 +1,8 @@
 import React from 'react';
+import FeedbackPanel from '../common/components/FeedbackPanel';
 import ApiFlannel from './components/ApiFlannel';
 import ContactForm from './components/ContactForm';
 import FeaturedContentModal from './components/FeaturedContentModal';
-import FeedbackPanel from './components/FeedbackPanel';
 import ODataModal from './components/ODataModal';
 import ShareModal from './components/ShareModal';
 import Tour from './components/Tour';
@@ -12,7 +12,7 @@ const DynamicContent = () => (
     <ApiFlannel />
     <ContactForm />
     <FeaturedContentModal />
-    <FeedbackPanel />
+    <FeedbackPanel {...window.serverConfig} />
     <ODataModal />
     <ShareModal />
     <Tour />

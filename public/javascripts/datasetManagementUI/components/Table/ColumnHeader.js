@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
+import { Link } from 'react-router';
 import TypeIcon from '../TypeIcon';
 import { soqlTypes, soqlProperties } from '../../lib/soqlTypes';
+import * as Links from '../../links';
 
 const ColumnHeader = React.createClass({
 
@@ -30,10 +32,13 @@ const ColumnHeader = React.createClass({
     const columnType = column.transform.output_soql_type;
 
     return (
-      <th key={column.id}>
-        <span className="col-name" id={`column-display-name-${column.id}`} title={column.display_name}>
-          {column.display_name}
-        </span>
+      <th key={column.id} className="column-header">
+        <Link to={Links.columnMetadataEditor(column.id)}>
+          <span className="col-name" id={`column-display-name-${column.id}`} title={column.display_name}>
+            {column.display_name}
+            <span className="socrata-icon socrata-icon-edit" />
+          </span>
+        </Link>
         <br />
         <TypeIcon type={columnType} />
         <select

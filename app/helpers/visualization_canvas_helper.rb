@@ -1,8 +1,13 @@
 module VisualizationCanvasHelper
-  def render_visualization_canvas_translations
+  def visualization_canvas_translations
     translations = LocaleCache.render_translations([LocalePart.visualization_canvas])['visualization_canvas']
+    translations.deep_merge(
+      'common' => LocaleCache.render_translations([LocalePart.common])['common']
+    )
+  end
 
-    javascript_tag("var I18n = #{json_escape(translations.to_json)};")
+  def render_visualization_canvas_translations
+    javascript_tag("var I18n = #{json_escape(visualization_canvas_translations.to_json)};")
   end
 
   def render_visualization_canvas_server_config
@@ -12,7 +17,8 @@ module VisualizationCanvasHelper
       :currentUser => current_user,
       :domain => CurrentDomain.cname,
       :environment => Rails.env,
-      :featureFlags => feature_flags_as_json
+      :featureFlags => feature_flags_as_json,
+      :usersnapProjectID => 'e4969b77-3ec6-4628-a022-6c12ba02cbea'
     }
 
     javascript_tag("var serverConfig = #{json_escape(server_config.to_json)};")

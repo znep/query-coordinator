@@ -1,5 +1,5 @@
 import { ShowUpdate } from 'components/ShowUpdate';
-import { getEmptyStore } from '../testStore';
+import { getDefaultStore } from '../testStore';
 import {
   insertFromServer
 } from 'actions/database';
@@ -56,9 +56,9 @@ describe('components/ShowUpdate', () => {
       }
     };
 
-    const store = getEmptyStore();
-    store.dispatch(insertFromServer('output_schemas', {id: 1}))
-    store.dispatch(insertFromServer('output_schema_columns', {output_schema_id: 1, output_column_id: 1}))
+    const store = getDefaultStore();
+    store.dispatch(insertFromServer('output_schemas', {id: 1}));
+    store.dispatch(insertFromServer('output_schema_columns', {output_schema_id: 1, output_column_id: 1}));
     store.dispatch(insertFromServer('output_columns', {
       "position": 0,
       "id": 1,
@@ -70,18 +70,18 @@ describe('components/ShowUpdate', () => {
         "type": "SAVED",
         "savedAt": "ON_SERVER"
       }
-    }))
+    }));
     store.dispatch(insertFromServer('transforms', {
       "id": 620,
       "output_soql_type": "SoQLText"
-    }))
+    }));
 
     const element = renderComponentWithStore(ShowUpdate, props, store);
     expect(element).to.exist;
 
-    expect(element.querySelectorAll('.column-summary').length).to.equal(1)
-    expect(element.querySelectorAll('.column-summary .column-name')[0].innerText).to.equal('Address')
-    expect(element.querySelectorAll('.column-summary .type-name')[0].innerText).to.equal('Plain Text')
+    expect(element.querySelectorAll('.column-summary').length).to.equal(1);
+    expect(element.querySelectorAll('.column-summary .column-name')[0].innerText).to.equal('Address');
+    expect(element.querySelectorAll('.column-summary .type-name')[0].innerText).to.equal('Plain Text');
 
   });
 });

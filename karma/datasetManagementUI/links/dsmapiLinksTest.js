@@ -14,8 +14,8 @@ describe('dsmapi links', () => {
     expect(dsmapiLinks.uploadBytes(1)).to.eq('/api/update/hehe-hehe/0/upload/1');
   });
 
-  it('creates an updateSchema link', () => {
-    expect(dsmapiLinks.updateSchema(1)).to.eq('/api/update/hehe-hehe/0/schema/1');
+  it('creates a newOutputSchema link', () => {
+    expect(dsmapiLinks.newOutputSchema(1)).to.eq('/api/update/hehe-hehe/0/schema/1');
   });
 
   it('creates a transformResults link', () => {

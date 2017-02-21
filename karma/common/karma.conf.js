@@ -40,7 +40,6 @@ module.exports = function ( karma ) {
         root: [
           path.resolve('.'),
           path.resolve(root, 'public/javascripts/common'),
-          path.resolve(root, 'public/javascripts/common/components/assetSelector'),
           path.resolve(root, 'karma/common')
         ]
       }

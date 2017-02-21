@@ -133,7 +133,7 @@
     "json-loader": "0.5.4",
     "leaflet": "0.7.7",
     "lodash": "4.14.2",
-    "mixpanel-browser": "2.7.2",
+    "mixpanel-browser": "2.11.0",
     "phoenix": "1.2.1",
     "react-addons-css-transition-group": "15.3.2",
     "react-css-modules": "3.7.10",

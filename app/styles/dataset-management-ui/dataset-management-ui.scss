@@ -75,8 +75,6 @@ body {
   }
 
   .modal-header-title {
-    counter-reset: crumbs;
-
     .socrata-icon-arrow-right {
       margin: 0 0.4em;
     }
@@ -101,11 +99,6 @@ body {
       color: $light-grey-2;
       font-weight: 600;
       font-size: 13pt;
-      counter-increment: crumbs;
-
-      &::before {
-        content: counter(crumbs, decimal) ". ";
-      }
 
       a, a:visited, a:hover, a:active {
         color: $light-grey-2;

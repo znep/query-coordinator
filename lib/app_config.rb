@@ -68,7 +68,9 @@ class AppConfig < Hashie::Dash
   # Third-party analytics and errors
   property :airbrake_api_key
   property :catalog_landing_page_airbrake_api_key
+  property :catalog_landing_page_airbrake_project_id
   property :dataset_landing_page_airbrake_api_key
+  property :dataset_landing_page_airbrake_project_id
   property :google_maps_site_key
   property :mixpanel_token
   property :opendata_ga_tracking_code
@@ -76,6 +78,8 @@ class AppConfig < Hashie::Dash
   property :recaptcha_2_secret_token
   property :recaptcha_2_site_key
   property :standard_ga_tracking_code
+  property :visualization_canvas_airbrake_api_key
+  property :visualization_canvas_airbrake_project_id
 
   # Auth0
   property :auth0_id

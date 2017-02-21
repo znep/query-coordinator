@@ -173,7 +173,7 @@ Test suites:
 
 1. Data Lens and Angular common components: `karma/dataCards`
 2. Dataset Landing Page: `karma/datasetLandingPage`
-3. Category Landing Page: `karma/categoryLandingPage`
+3. Category Landing Page: `karma/catalogLandingPage`
 4. Old UX tests: `karma/oldUx`
 
 #### Setup
@@ -223,7 +223,7 @@ documentation.
 
 ### Webpack
 
-Assets for data lens, dataset landing page, category landing page, and some old UX pages are packaged
+Assets for data lens, dataset landing page, catalog landing page, and some old UX pages are packaged
 using [webpack](http://webpack.io).
 
 Webpack provides ES2015 w/ JSX transpilation through [Babel](http://babeljs.io),
@@ -302,15 +302,15 @@ run linters for different parts of the codebase using the following
 rake tasks:
 
 ```sh
-rake lint:eslint:all                    # Lint the whole javascript codebase
-rake lint:eslint:oldUx                  # Lint the old ux
-rake lint:eslint:categoryLandingPage    # Lint category landing page
-rake lint:eslint:dataCards              # Lint data lens
-rake lint:eslint:datasetLandingPage     # Lint dataset landing page
-rake lint:eslint:datasetManagementUI    # Lint dataset management UI
-rake lint:eslint:diff                   # Lint javascript files changed on this branch
-rake lint:ruby                          # Lint ruby code
-rake lint                               # Lint all the things
+rake lint:eslint:all                   # Lint the whole javascript codebase
+rake lint:eslint:oldUx                 # Lint the old ux
+rake lint:eslint:catalogLandingPage    # Lint catalog landing page
+rake lint:eslint:dataCards             # Lint data lens
+rake lint:eslint:datasetLandingPage    # Lint dataset landing page
+rake lint:eslint:datasetManagementUI   # Lint dataset management UI
+rake lint:eslint:diff                  # Lint javascript files changed on this branch
+rake lint:ruby                         # Lint ruby code
+rake lint                              # Lint all the things
 ```
 
 The lint tasks take an optional argument representing the desired format of the output.
@@ -397,7 +397,7 @@ Variable Name | Type | Source | Description
 `auth0_jwt` | String | Configuration | Javascript Web Token used to authenticate with the Auth0 service.
 `bundle_gemfile` | String | Configuration | Path to the `Gemfile` used by the Bundler gem. Programmatically determined to be the base directory of the frontend, but can be overridden by setting this ENV variable.
 `canary` | Boolean | Configuration | If set to true the host will visually identify itself as the Canary.
-`category_landing_page_airbrake_api_key` | String | Configuration | AirBrake API token used to track CHUB errors.
+`catalog_landing_page_airbrake_api_key` | String | Configuration | AirBrake API token used to track CLP errors.
 `cetera_external_uri` | URI | Configuration | External API endpoint that provides the cetera catalog search service.
 `cetera_internal_uri` | URI | Configuration | Internal API endpoint that provides the cetera catalog search service.
 `clortho_bucket` | String | Configuration | Bucket identifier in AWS-KMS used to access secret values defined in the Clortho service.
@@ -485,6 +485,7 @@ Variable Name | Type | Source | Description
 `unicorn_listen_port` | Integer | Configuration | Port that Unicorn will listen on to service incoming requests.
 `unicorn_timeout` | Integer | Configuration | Number of milliseconds a Unicorn worker will wait for a request to be serviced by Rails before giving up.
 `unicorn_worker_processes` | Integer | Configuration | Number of Unicorn worker processes to run at startup.
+`visualization_canvas_airbrake_api_key` | String | Configuration | AirBrake API token used specifically to track vizcan errors.
 `qualtrics_admin_survey_id` | String | Configuration | Qualtrics survey identifier
 `qualtrics_profile_survey_id` | String | Configuration | Qualtrics survey identifier
 `zendesk_notifications` | String | Configuration | ZenDesk configuration information for collecting what's new news articles from the API.

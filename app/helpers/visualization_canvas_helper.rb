@@ -12,6 +12,10 @@ module VisualizationCanvasHelper
 
   def render_visualization_canvas_server_config
     server_config = {
+      :airbrakeKey => ENV['VISUALIZATION_CANVAS_AIRBRAKE_API_KEY'] ||
+        APP_CONFIG.visualization_canvas_airbrake_api_key,
+      :airbrakeProjectId => ENV['VISUALIZATION_CANVAS_AIRBRAKE_PROJECT_ID'] ||
+        APP_CONFIG.visualization_canvas_airbrake_project_id,
       :appToken => APP_CONFIG.app_token,
       :csrfToken => form_authenticity_token.to_s,
       :currentUser => current_user,

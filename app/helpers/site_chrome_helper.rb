@@ -57,7 +57,7 @@ module SiteChromeHelper
   # GovStat (OP) chrome is somewhat orthogonal to the other logic, but it ends
   # up having important interactions with site chrome.
   def enable_govstat_chrome?
-    module_enabled?(:govStat) && !suppress_govstat?
+    (FeatureFlags.derive(nil, request)[:show_govstat_header] || module_enabled?(:govStat)) && !suppress_govstat?
   end
 
   # The site chrome may act as a vehicle for custom chrome.
@@ -90,7 +90,7 @@ module SiteChromeHelper
   def render_site_admin_chrome?
     return false if @suppress_chrome
 
-    FeatureFlags.derive(nil, request)[:show_govstat_header] || enable_govstat_chrome?
+    enable_govstat_chrome?
   end
 
   def site_chrome_preview_mode?

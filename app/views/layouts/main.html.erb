@@ -42,14 +42,16 @@ http://www.socrata.com
   <![endif]-->
   <%= rendered_stylesheet_tag 'base' %>
 
-  <%- if module_enabled?(:govStat) -%>
-    <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-pika.css?<%= asset_revision_key %>"/>
-    <%- if suppress_govstat? -%>
-      <%= rendered_stylesheet_tag 'govstat-base' %>
-    <%- else -%>
-      <%= rendered_stylesheet_tag 'govstat-layout' %>
+    <%- if module_enabled?(:govStat) -%>
+      <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-pika.css?<%= asset_revision_key %>"/>
+    
+
+      <%- if suppress_govstat? -%>
+        <%= rendered_stylesheet_tag 'govstat-base' %>
+      <%- else -%>
+        <%= rendered_stylesheet_tag 'govstat-layout' %>
+      <%- end -%>
     <%- end -%>
-  <%- end -%>
 
   <%= rendered_stylesheet_tag 'print', 'print' %>
 
@@ -101,7 +103,7 @@ http://www.socrata.com
   <%= yield :body_top %>
 
   <div class="siteOuterWrapper">
-    <div class="siteInnerWrapper">
+    <div class="siteInnerWrapper <%= if FeatureFlags.derive(@view, request).show_govstat_header && enable_govstat_chrome? then "with-govstat-header" else "" end %> ">
 
       <%- if render_site_admin_chrome? -%>
         <%== site_chrome_admin_header(request, response) %>

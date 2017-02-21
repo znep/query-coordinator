@@ -9,15 +9,21 @@ import SaveButton from './SaveButton';
 import MetadataContent from './MetadataContent';
 import * as Selectors from '../../selectors';
 
-export function ManageMetadata({ view, outputSchema, outputColumns, path,
-                                 onDismiss, onEditDatasetMetadata, onEditColumnMetadata, onSave }) {
+export function ManageMetadata({ view,
+                                 outputSchema,
+                                 outputColumns,
+                                 path,
+                                 onDismiss,
+                                 onEditDatasetMetadata,
+                                 onEditColumnMetadata,
+                                 onSave }) {
   const modalProps = {
     fullScreen: true,
     onDismiss
   };
 
   const headerProps = {
-    title: I18n.metadata_manage.title.format(view.name),
+    title: I18n.metadata_manage.title,
     onDismiss
   };
 

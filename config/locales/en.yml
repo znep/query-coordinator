@@ -1633,7 +1633,7 @@ en:
     metadata_manage:
       errors:
         missing_name: Dataset name is required.
-      title: Manage Metadata — {0}
+      title: Manage Metadata
       dataset_tab:
         title: Title and Description
         subtitle: Make your title and description as clear and simple as possible.

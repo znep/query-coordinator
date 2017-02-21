@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { commaify } from '../../common/formatNumber';
 import * as Links from '../links';
 import * as Selectors from '../selectors';
-import { STATUS_UPDATING, STATUS_UPDATE_FAILED } from '../lib/database/statuses';
 import * as ShowActions from '../actions/showOutputSchema';
 import * as ApplyActions from '../actions/applyUpdate';
 import Table from './Table';
@@ -47,26 +46,11 @@ export function ShowOutputSchema({
   updateColumnType,
   applyUpdate }) {
 
-  const SubI18n = I18n.show_output_schema;
   const path = {
     uploadId: upload.id,
     inputSchemaId: inputSchema.id,
     outputSchemaId: outputSchema.id
   };
-
-  let uploadProgress;
-  switch (upload.__status__.type) {
-    case STATUS_UPDATING:
-      uploadProgress = SubI18n.upload_in_progress;
-      break;
-
-    case STATUS_UPDATE_FAILED:
-      uploadProgress = SubI18n.upload_failed;
-      break;
-
-    default:
-      uploadProgress = SubI18n.upload_done;
-  }
 
   const modalProps = {
     fullScreen: true,

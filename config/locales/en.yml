@@ -1689,9 +1689,6 @@ en:
         will_not_be_imported: Rows that will not be imported
       rows_so_far: rows so far
       rows_total: rows total
-      upload_done: Upload Done
-      upload_failed: Upload Failed
-      upload_in_progress: Upload In Progress
     upload_warning: An upload is in progress, and will be left incomplete if you close this tab.
   dataslate:
     component:

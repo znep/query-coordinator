@@ -14,6 +14,10 @@ export function rowsUpserted(db, upsertJobId) {
   return _.max(rowItems) || 0;
 }
 
+export function latestOutputSchema(db) {
+  return _.maxBy(db.output_schemas, (os) => os.id);
+}
+
 export function columnsForOutputSchema(db, outputSchemaId) {
   const schemaColumns = _.filter(db.output_schema_columns, { output_schema_id: outputSchemaId });
   const unsortedColumns = db.output_columns.

@@ -84,6 +84,35 @@ body {
     }
   }
 
+  .table-preview {
+    .table-contents {
+      // this is a nice round number...
+      // because the table height needs to be divisible by
+      // the number of rows...plus...some
+      height: 494px;
+      border: 1px solid $light-grey-4;
+
+      .socrata-paginated-table {
+        background-color: $white; // why do i have to do this?
+      }
+    }
+
+    .entry-header {
+      height: 3em;
+      background-color: $light-grey-5;
+    }
+
+    .table-info {
+      text-align: center;
+      padding: 4em 0em;
+      margin: 0px auto;
+      max-width: 64em;
+    }
+    p, button.no-data-yet-btn {
+      margin: 0em 0em 1em 0em;
+    }
+  }
+
   #home-pane {
     flex-grow: 1;
 
@@ -92,6 +121,7 @@ body {
     background-color: $light-grey-7;
     
     .home-content {
+      overflow: auto;
       flex: 1;
       
       #metadata-section {

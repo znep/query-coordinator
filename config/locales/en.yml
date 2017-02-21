@@ -1626,6 +1626,14 @@ en:
       schema_preview: Columns in this Dataset
       schema_preview_blurb: Add a data file to see a schema preview.
       no_description_how_to: No description yet, set one by clicking the 'Edit Metadata' button
+      table_preview: Table Preview
+      no_data_yet: No data has been added yet!
+      adding_data_is_easy_and_fun: Don't worry. Adding some is easy peasy. Just choose a data file to upload.
+      supported_uploads: Supported file types .csv, .tsv, .xls, .xlsx
+      data_uploaded: Your data has been uploaded.
+      being_processed: Your data is being processed!
+      done_processing: Your data is done being processed!
+      review_data: Review Data
     manage: Manage
     manage_uploads:
       previous: Previous uploads

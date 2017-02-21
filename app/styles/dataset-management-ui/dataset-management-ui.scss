@@ -393,10 +393,14 @@ body {
   }
 
   #show-output-schema {
-
     .modal-footer-actions {
       display: flex;
       justify-content: space-between;
+      .output-schema-actions {
+        button {
+          margin: 0px 0px 0px 1em;
+        }
+      }
       .ready-to-import {
         p {
           display: inline-block;
@@ -753,7 +757,6 @@ body {
       }
     }
   }
-
 }
 
 .type-icon-date {

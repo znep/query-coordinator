@@ -1622,6 +1622,7 @@ en:
       only_layer: (Only Layer)
       preview: Preview
       process_data: Process Data
+      save_for_later: Save for Later
       schema_preview: Columns in this Dataset
       schema_preview_blurb: Add a data file to see a schema preview.
       no_description_how_to: No description yet, set one by clicking the 'Edit Metadata' button

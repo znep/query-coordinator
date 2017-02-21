@@ -133,12 +133,21 @@ export function ShowOutputSchema({
               outputSchema={outputSchema} /> :
             <div />}
 
-          <button
-            onClick={applyUpdate}
-            disabled={!canApplyUpdate}
-            className="btn btn-primary apply-update">
-            {I18n.home_pane.process_data}
-          </button>
+          <div className="output-schema-actions">
+            <Link to={Links.home}>
+              <button
+                className="btn">
+                {I18n.home_pane.save_for_later}
+              </button>
+            </Link>
+
+            <button
+              onClick={applyUpdate}
+              disabled={!canApplyUpdate}
+              className="btn btn-primary apply-update">
+              {I18n.home_pane.process_data}
+            </button>
+          </div>
         </ModalFooter>
       </Modal>
     </div>

@@ -42,7 +42,7 @@ export function ShowOutputSchema({
   columns,
   errorsTransformId,
   canApplyUpdate,
-  goToUpload,
+  goHome,
   updateColumnType,
   applyUpdate }) {
 
@@ -54,7 +54,7 @@ export function ShowOutputSchema({
 
   const modalProps = {
     fullScreen: true,
-    onDismiss: goToUpload
+    onDismiss: goHome
   };
   const headerProps = {
     title: (
@@ -70,7 +70,7 @@ export function ShowOutputSchema({
         </li>
       </ol>
     ),
-    onDismiss: goToUpload
+    onDismiss: goHome
   };
 
   const rowsTransformed = inputSchema.total_rows || _.min(
@@ -141,7 +141,7 @@ ShowOutputSchema.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   inputSchema: PropTypes.object.isRequired,
   outputSchema: PropTypes.object.isRequired,
-  goToUpload: PropTypes.func.isRequired,
+  goHome: PropTypes.func.isRequired,
   updateColumnType: PropTypes.func.isRequired,
   applyUpdate: PropTypes.func.isRequired,
   errorsTransformId: PropTypes.number,
@@ -167,9 +167,9 @@ function mapDispatchToProps(dispatch, ownProps) {
     updateColumnType: (oldSchema, oldColumn, newType) => {
       dispatch(ShowActions.updateColumnType(oldSchema, oldColumn, newType));
     },
-    goToUpload: () => (
-      dispatch(push(Links.showUpload(_.toNumber(ownProps.params.uploadId))(ownProps.location)))
-    ),
+    goHome: () => {
+      dispatch(push(Links.home(ownProps.location)));
+    },
     applyUpdate: () => (
       dispatch(ApplyActions.applyUpdate(_.toNumber(ownProps.params.outputSchemaId)))
     )

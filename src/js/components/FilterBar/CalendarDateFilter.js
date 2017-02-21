@@ -75,7 +75,8 @@ export const CalendarDateFilter = React.createClass({
     const { value } = this.state;
 
     if (_.isEqual(_.at(value, 'start', 'end'), _.at(column, 'rangeMin', 'rangeMax'))) {
-      onUpdate(getDefaultFilterForColumn(column));
+      const { isHidden } = filter;
+      onUpdate(_.merge({}, getDefaultFilterForColumn(column), { isHidden }));
     } else {
       onUpdate(_.merge({}, filter, {
         'function': 'timeRange',

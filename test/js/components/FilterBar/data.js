@@ -12,8 +12,8 @@ export const mockTimeRangeFilter = {
   'function': 'timeRange',
   columnName: 'dinosaurTime',
   arguments: {
-    start: '1500-12-01T00:00:00',
-    end: '2017-12-01T00:00:00'
+    start: '1400-01-01T00:00:00',
+    end: '1500-01-01T23:59:59'
   },
   isHidden: false
 };
@@ -49,7 +49,9 @@ export const mockNumberColumn = {
 export const mockCalendarDateColumn = {
   dataTypeName: 'calendar_date',
   fieldName: 'dinosaurTime',
-  name: 'Dinosaur Time (approximate)'
+  name: 'Dinosaur Time (approximate)',
+  rangeMin: '1400-12-01T00:00:00',
+  rangeMax: '1600-12-01T00:00:00'
 };
 
 export const mockTextColumn = {

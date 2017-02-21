@@ -308,7 +308,7 @@ describe('TextFilter', () => {
           'function': 'noop',
           columnName: mockTextColumn.fieldName,
           arguments: null,
-          isHidden: true
+          isHidden: false // visibility should NOT be reset when values are reset!
         });
 
         done();
@@ -360,7 +360,7 @@ describe('TextFilter', () => {
           'function': 'noop',
           columnName: mockTextColumn.fieldName,
           arguments: null,
-          isHidden: true
+          isHidden: false // visibility should NOT be reset when values are reset!
         });
 
         done();

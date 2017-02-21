@@ -11,17 +11,19 @@ describe('I18n', function() {
 
   beforeEach(function() {
     angular.mock.module('dataCards');
+  });
+
+  function injectWith(locales) {
     inject(function($injector) {
       ServerConfig = $injector.get('ServerConfig');
       localeStub = sinon.stub(ServerConfig, 'get');
-      localeStub.withArgs('locales').returns({
-        currentLocale: 'ru',
-        defaultLocale: 'en'
-      });
+      localeStub.withArgs('locales').returns(
+        locales || { currentLocale: 'ru', defaultLocale: 'en' }
+      );
 
       I18n = $injector.get('I18n');
     });
-  });
+  }
 
   afterEach(function() {
     localeStub.restore();
@@ -29,6 +31,8 @@ describe('I18n', function() {
 
   describe('t', function() {
     it('returns an empty string if its input is not a string', function() {
+      injectWith();
+
       expect(I18n.t(3)).to.equal('');
       expect(I18n.t(null)).to.equal('');
       expect(I18n.t(undefined)).to.equal('');
@@ -36,6 +40,8 @@ describe('I18n', function() {
     });
 
     it('indexes into itself if the key is a string', function() {
+      injectWith();
+
       I18n.__someDunderKey = 'dunderooney';
       expect(I18n.t('__someDunderKey')).to.equal('dunderooney');
     });
@@ -43,19 +49,13 @@ describe('I18n', function() {
 
   describe('a', function() {
     it('produces the link unchanged if the currentLocale equals the defaultLocale', function() {
-      localeStub.withArgs('locales').returns({
-        currentLocale: 'en',
-        defaultLocale: 'en'
-      });
+      injectWith({ currentLocale: 'en', defaultLocale: 'en' });
 
       expect(I18n.a('/some/path')).to.equal('/some/path');
     });
 
     it('appends the locale to the URL if the currentLocale is different from the defaultLocale', function() {
-      localeStub.withArgs('locales').returns({
-        currentLocale: 'nyan',
-        defaultLocale: 'en'
-      });
+      injectWith({ currentLocale: 'nyan', defaultLocale: 'en' });
 
       expect(I18n.a('/some/path')).to.equal('/nyan/some/path');
     });

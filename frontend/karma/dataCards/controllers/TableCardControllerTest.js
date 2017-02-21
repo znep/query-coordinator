@@ -510,19 +510,19 @@ describe('TableCardController', function() {
     it('should set it on the card model', function() {
       var table = createTable();
       expect(table.model.getCurrentValue('customTitle')).
-        to.equal('Showing 1,337 rows <span class="subtitle">out of 1,337</span>');
+        to.equal('Showing 1,337 <span class="subtitle">out of 1,337</span> rows');
       table.$scope.whereClause = 'invalid where clause';
       table.$scope.$digest();
       expect(table.model.getCurrentValue('customTitle')).
-        to.equal('Showing 42 rows <span class="subtitle">out of 1,337</span>');
+        to.equal('Showing 42 <span class="subtitle">out of 1,337</span> rows');
       table.$scope.whereClause = 'empty';
       table.$scope.$digest();
       expect(table.model.getCurrentValue('customTitle')).
-        to.equal('Showing 0 rows <span class="subtitle">out of 1,337</span>');
+        to.equal('Showing 0 <span class="subtitle">out of 1,337</span> rows');
       table.$scope.whereClause = 'one';
       table.$scope.$digest();
       expect(table.model.getCurrentValue('customTitle')).
-        to.equal('Showing 1 row <span class="subtitle">out of 1,337</span>');
+        to.equal('Showing 1 <span class="subtitle">out of 1,337</span> rows');
     });
 
     it('should not allow 1337 haxxorz', function() {
@@ -530,7 +530,7 @@ describe('TableCardController', function() {
         rowDisplayUnit: '<img src="http://placehold.it/100x100" />'
       });
       expect(table.model.getCurrentValue('customTitle')).
-        to.equal('Showing 1,337 &lt;img src=&quot;http://placehold.it/100x100&quot; /&gt;s <span class="subtitle">out of 1,337</span>');
+        to.equal('Showing 1,337 <span class="subtitle">out of 1,337</span> &lt;img src=&quot;http://placehold.it/100x100&quot; /&gt;s');
     });
 
     it('should not update card title if "isEmbedded" is true', function() {

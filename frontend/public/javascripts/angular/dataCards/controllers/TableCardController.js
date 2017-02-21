@@ -195,12 +195,15 @@ module.exports = function TableCardController(
     rowCount$,
     rowDisplayUnit$,
     function(filteredRowCount, rowCount, rowDisplayUnit) {
-      var pluralRowDisplayUnit = PluralizeService.pluralize(rowDisplayUnit, filteredRowCount);
+      var pluralRowDisplayUnit = PluralizeService.pluralize(
+        rowDisplayUnit,
+        $window.socrata.utils.commaify(filteredRowCount)
+      );
       var rowCountWithCommas = $window.socrata.utils.commaify(rowCount);
       var customTitle = I18n.t('table.rangeLabelSubtitle',
         $window.socrata.utils.commaify(filteredRowCount),
-        _.escape(pluralRowDisplayUnit),
-        rowCountWithCommas
+        rowCountWithCommas,
+        _.escape(pluralRowDisplayUnit)
       );
       if (!$scope.isEmbedded) {
         $scope.model.set('customTitle', customTitle);

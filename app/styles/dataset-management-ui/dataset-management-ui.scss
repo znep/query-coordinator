@@ -242,6 +242,11 @@ body {
           color: $primary-dark;
         }
 
+        .finished {
+          // TODO: figure out how to signal "doneness" most effectively to the user.
+          display: none;
+        }
+
         button {
           min-width: 150px;
         }

@@ -17,10 +17,10 @@ describe('components/HomePaneSidebar', () => {
       description: ''
     }));
     const element = renderComponentWithStore(HomePaneSidebar, {}, store);
-    expect(element.querySelectorAll('i.finished').length).to.equal(0);
+    expect(element.querySelectorAll('span.finished').length).to.equal(0);
   });
 
-  it('shows one checkmark when there is an upload', () => {
+  it('shows one checkmark when there is column metadata', () => {
     const store = getEmptyStore();
     store.dispatch(insertFromServer('views', {
       license: {},
@@ -29,47 +29,16 @@ describe('components/HomePaneSidebar', () => {
       downloadCount: 0,
       ownerName: 'foo',
       tags: [],
-      description: ''
+      description: 'bar'
     }));
-    store.dispatch(insertFromServer('uploads', { id: 'dummy' }));
-    const element = renderComponentWithStore(HomePaneSidebar, {}, store);
-    expect(element.querySelectorAll('i.finished').length).to.equal(1);
-  });
-
-  it('shows one checkmark when dataset has a description', () => {
-    const store = getEmptyStore();
-    store.dispatch(insertFromServer('views', {
-      license: {},
-      owner: {},
-      viewCount: 0,
-      downloadCount: 0,
-      ownerName: 'foo',
-      tags: [],
-      description: 'durp'
-    }));
-    const element = renderComponentWithStore(HomePaneSidebar, {}, store);
-    expect(element.querySelectorAll('i.finished').length).to.equal(1);
-  });
-
-  it('shows three checkmarks when there\'s dataset metadata, an upload, & column metadata', () => {
-    const store = getEmptyStore();
-    store.dispatch(insertFromServer('views', {
-      license: {},
-      owner: {},
-      viewCount: 0,
-      downloadCount: 0,
-      ownerName: 'foo',
-      tags: [],
-      description: 'durp'
-    }));
-    store.dispatch(insertFromServer('uploads', { id: 'dummy' }));
-    store.dispatch(insertFromServer('output_schemas', { id: 'dummy', inserted_at: new Date() }));
-    store.dispatch(insertFromServer('output_columns', { id: 'dummy', description: 'blurp' }));
+    store.dispatch(insertFromServer('uploads', { id: 'baz' }));
+    store.dispatch(insertFromServer('output_schemas', { id: 'baz', inserted_at: new Date() }));
+    store.dispatch(insertFromServer('output_columns', { id: 'baz', description: 'xkcd' }));
     store.dispatch(insertFromServer('output_schema_columns', {
-      output_schema_id: 'dummy',
-      output_column_id: 'dummy'
+      output_schema_id: 'baz',
+      output_column_id: 'baz'
     }));
     const element = renderComponentWithStore(HomePaneSidebar, {}, store);
-    expect(element.querySelectorAll('i.finished').length).to.equal(3);
+    expect(element.querySelectorAll('span.finished').length).to.equal(1);
   });
 });

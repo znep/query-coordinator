@@ -60,10 +60,11 @@ function ShowUpload({ upload, latestOutputSchema, goHome }) {
   const headerProps = {
     title: (
       <ol>
-        <li className="active socrata-icon-arrow-right">
+        <li className="active">
           <Link to={Links.uploads}>
             {I18n.home_pane.data}
           </Link>
+          <span className="socrata-icon-arrow-right" />
         </li>
         <li>
           {I18n.home_pane.preview}

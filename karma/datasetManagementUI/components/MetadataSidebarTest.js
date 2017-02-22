@@ -4,6 +4,10 @@ import {
   insertFromServer
 } from 'actions/database';
 
+const PROPS = {
+  urlParams: {}
+}
+
 describe('components/MetadataSidebar', () => {
   it('shows 0 checkmarks when nothing is done', () => {
     const store = getEmptyStore();
@@ -16,8 +20,29 @@ describe('components/MetadataSidebar', () => {
       tags: [],
       description: ''
     }));
-    const element = renderComponentWithStore(MetadataSidebar, {}, store);
+    const element = renderComponentWithStore(MetadataSidebar, PROPS, store);
     expect(element.querySelectorAll('i.finished').length).to.equal(0);
+  });
+
+  it('shows the activity feed when the url says to', () => {
+    const store = getEmptyStore();
+    store.dispatch(insertFromServer('views', {
+      license: {},
+      owner: {},
+      viewCount: 0,
+      downloadCount: 0,
+      ownerName: 'foo',
+      tags: [],
+      description: ''
+    }));
+
+    const props = {
+      urlParams: {
+        sidebarSelection: 'log'
+      }
+    }
+    const element = renderComponentWithStore(MetadataSidebar, props, store);
+    expect(element.querySelectorAll('.activity-feed')).to.exist;
   });
 
   it('shows one checkmark when there is an upload', () => {
@@ -32,7 +57,7 @@ describe('components/MetadataSidebar', () => {
       description: ''
     }));
     store.dispatch(insertFromServer('uploads', { id: 'dummy' }));
-    const element = renderComponentWithStore(MetadataSidebar, {}, store);
+    const element = renderComponentWithStore(MetadataSidebar, PROPS, store);
     expect(element.querySelectorAll('i.finished').length).to.equal(1);
   });
 
@@ -47,7 +72,7 @@ describe('components/MetadataSidebar', () => {
       tags: [],
       description: 'durp'
     }));
-    const element = renderComponentWithStore(MetadataSidebar, {}, store);
+    const element = renderComponentWithStore(MetadataSidebar, PROPS, store);
     expect(element.querySelectorAll('i.finished').length).to.equal(1);
   });
 
@@ -69,7 +94,7 @@ describe('components/MetadataSidebar', () => {
       output_schema_id: 'dummy',
       output_column_id: 'dummy'
     }));
-    const element = renderComponentWithStore(MetadataSidebar, {}, store);
+    const element = renderComponentWithStore(MetadataSidebar, PROPS, store);
     expect(element.querySelectorAll('i.finished').length).to.equal(3);
   });
 });

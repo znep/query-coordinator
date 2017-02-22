@@ -3,6 +3,8 @@ import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import * as Links from '../links';
 import * as Selectors from '../selectors';
+import classNames from 'classnames';
+import ActivityFeed from './ActivityFeed';
 
 function query(db) {
   const currentOutputSchema = Selectors.currentOutputSchema(db);
@@ -16,7 +18,9 @@ function query(db) {
   };
 }
 
-function MetadataSidebar({ db }) {
+function manageData(state) { // can't destructure in the function head because the linter explodes???
+  const { db } = state;
+
   const { hasMetadata, hasData, anyColumnHasDescription } = query(db);
 
   const doneCheckmark = <i className="finished socrata-icon-checkmark-alt" />;
@@ -25,7 +29,7 @@ function MetadataSidebar({ db }) {
   const columnMetadataDoneCheckmark = anyColumnHasDescription ? doneCheckmark : null;
 
   return (
-    <div className="metadata-sidebar">
+    <div className="manage-data">
       <h4>{I18n.home_pane.getting_started}</h4>
       <p className="small how-to-publish-blurb"> {I18n.home_pane.publishing_data_is_easy_and_fun} </p>
 
@@ -77,10 +81,39 @@ function MetadataSidebar({ db }) {
   );
 }
 
+function MetadataSidebar(state) {
+  const { urlParams } = state;
+  const showLog = urlParams.sidebarSelection === 'log';
+  const contents = showLog ? (<ActivityFeed />) : manageData(state);
+
+
+  return (
+    <div className="metadata-sidebar">
+      <div className="sidebar-chooser">
+        <Link to={Links.home}>
+          <button className={classNames('btn', 'chooser-btn', { 'enabled': !showLog })}>
+            Manage Data
+          </button>
+        </Link>
+        <Link to={Links.activityLog}>
+          <button className={classNames('btn', 'chooser-btn', { 'enabled': showLog })}>
+            Activity Log
+          </button>
+        </Link>
+      </div>
+      {contents}
+    </div>
+  );
+}
+
 MetadataSidebar.propTypes = {
-  db: PropTypes.object.isRequired
+  routing: PropTypes.object.isRequired,
+  db: PropTypes.object.isRequired,
+  urlParams: PropTypes.object.isRequired
 };
 
-const mapStateToProps = ({ db }) => ({ db });
+const mapStateToProps = ({ db, routing }, { urlParams }) => {
+  return { routing, db, urlParams };
+};
 
 export default connect(mapStateToProps)(MetadataSidebar);

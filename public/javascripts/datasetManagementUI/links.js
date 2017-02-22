@@ -11,6 +11,7 @@ export const home = (routing) => {
   return matches[0];
 };
 
+export const activityLog = (routing) => `${home(routing)}/log`;
 export const metadata = (routing) => `${home(routing)}/metadata`;
 export const datasetMetadataEditor = (routing) => `${home(routing)}/metadata/dataset`;
 export const columnMetadataEditor = (columnId) => (

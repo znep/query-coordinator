@@ -24,9 +24,9 @@ export const FilterItem = React.createClass({
       name: PropTypes.string.isRequired
     }).isRequired,
     isReadOnly: PropTypes.bool.isRequired,
-    fetchSuggestions: PropTypes.func,
     onUpdate: PropTypes.func.isRequired,
-    onRemove: PropTypes.func.isRequired
+    onRemove: PropTypes.func.isRequired,
+    isValidTextFilterColumnValue: PropTypes.func
   },
 
   getInitialState() {
@@ -148,7 +148,7 @@ export const FilterItem = React.createClass({
   },
 
   renderFilterControl() {
-    const { filter, column, fetchSuggestions } = this.props;
+    const { filter, column, isValidTextFilterColumnValue } = this.props;
     const { isControlOpen } = this.state;
 
     if (!isControlOpen) {
@@ -158,9 +158,9 @@ export const FilterItem = React.createClass({
     const filterProps = {
       filter,
       column,
-      fetchSuggestions,
       onCancel: this.onCancel,
       onUpdate: this.onUpdate,
+      isValidTextFilterColumnValue,
       ref: _.partial(_.set, this, 'filterControl')
     };
 

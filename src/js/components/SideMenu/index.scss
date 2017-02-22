@@ -53,20 +53,17 @@ $menu-item-border-color-active: #888;
       right: 0;
       padding: 6px;
 
-      .socrata-icon svg {
+      .socrata-icon {
         float: right;
-
-        g {
-          fill: $light-grey-1;
-        }
+        color: $light-grey-1;
       }
 
       &:hover,
       &:focus {
         background-color: $dark-grey-3;
 
-        .socrata-icon svg g {
-          fill: $white;
+        .socrata-icon {
+          color: $white;
         }
       }
     }
@@ -116,7 +113,7 @@ $menu-item-border-color-active: #888;
         }
 
         &.active {
-          .arrow .socrata-icon svg {
+          .arrow .socrata-icon {
             transform: rotateZ(180deg);
           }
 
@@ -142,10 +139,7 @@ $menu-item-border-color-active: #888;
 
           .socrata-icon {
             margin-right: 0;
-
-            svg {
-              transition: transform 0.15s ease-in-out;
-            }
+            transition: transform 0.15s ease-in-out;
           }
         }
       }
@@ -174,15 +168,7 @@ $menu-item-border-color-active: #888;
   .socrata-icon {
     width: $icon-width;
     height: $icon-height;
-
-    svg {
-      width: $icon-width;
-      height: $icon-height;
-
-      g {
-        fill: $white;
-      }
-    }
+    color: $white;
   }
 }
 

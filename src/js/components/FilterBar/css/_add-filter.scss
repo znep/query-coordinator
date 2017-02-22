@@ -12,13 +12,16 @@
     border: 1px solid $light-grey-3;
     position: absolute;
     background: $white;
-    padding: 8px;
-    margin-top: 5px;
-    min-width: 350px;
+    margin-top: -1px;
+    min-width: 300px;
     z-index: 10;
 
     .alert.info {
       margin-top: 8px;
+    }
+
+    .searchable-picklist-options {
+      border-top: 1px solid $light-grey-3;
     }
   }
 }

@@ -57,7 +57,14 @@ export const mockCalendarDateColumn = {
 export const mockTextColumn = {
   dataTypeName: 'text',
   fieldName: 'dinosaurName',
-  name: 'Dinosaur Name (approximate)'
+  name: 'Dinosaur Name (approximate)',
+  top: [
+    { item: 'tyrannosaurus', count: 100 },
+    { item: 'chaoyangsaurus', count: 78 },
+    { item: 'europasaurus', count: 45 },
+    { item: 'gigantoraptor', count: 22 },
+    { item: 'minmi', count: 10 }
+  ]
 };
 
 export const mockPicklistOptions = [

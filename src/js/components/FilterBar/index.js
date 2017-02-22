@@ -62,21 +62,24 @@ export const FilterBar = React.createClass({
     onUpdate: PropTypes.func,
 
     /**
-     * The fetchSuggestions prop is an optional function that is expected to return an array of
-     * suggestions for a search term.  The function is passed the column to be searched on, which
-     * is identical to one of the column objects in the "columns" prop, and a string representing
-     * the current user input.  The function should return a Promise that resolves an array of
-     * suggestions as strings.
+     * This function is supplied a column and a String value.
+     *
+     * The downstream supplier decides whether or not the value is
+     * valid and returns a promise which eventually resolves with the response.
+     *
+     * If the value is not valid, the promise should be rejected. This will
+     * show an error to the user and request a retyping.
+     *
+     * If a function is not supplied, the UI will not allow arbitrary values.
      */
-    fetchSuggestions: PropTypes.func
+    isValidTextFilterColumnValue: PropTypes.func
   },
 
   getDefaultProps() {
     return {
       filters: [],
       isReadOnly: true,
-      onUpdate: _.noop,
-      fetchSuggestions: _.constant(Promise.resolve([]))
+      onUpdate: _.noop
     };
   },
 
@@ -321,7 +324,7 @@ export const FilterBar = React.createClass({
   },
 
   render() {
-    const { columns, isReadOnly, fetchSuggestions } = this.props;
+    const { columns, isReadOnly, isValidTextFilterColumnValue } = this.props;
     const { isExpanded } = this.state;
     const renderableFilters = this.getRenderableFilters(this.props);
 
@@ -335,9 +338,9 @@ export const FilterBar = React.createClass({
         column,
         filter,
         isReadOnly,
-        fetchSuggestions,
         onUpdate: _.partialRight(this.onFilterUpdate, index),
-        onRemove: _.partial(this.onFilterRemove, index)
+        onRemove: _.partial(this.onFilterRemove, index),
+        isValidTextFilterColumnValue
       };
 
       return <FilterItem key={index} {...props} />;

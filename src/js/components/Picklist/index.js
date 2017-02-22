@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
 import classNames from 'classnames';
-import SocrataIcon from '../SocrataIcon';
 
 import { UP, DOWN, ESCAPE, ENTER, SPACE, isolateEventByKeys } from '../../common/keycodes';
 
@@ -24,12 +23,7 @@ export const Picklist = React.createClass({
         group: React.PropTypes.string,
         // Receives the relevant option and
         // must return a DOM-renderable value.
-        render: React.PropTypes.func,
-        // Used to display an icon on an option
-        // The value is used in the SocratIcon component
-        iconName: React.PropTypes.string,
-        // Enables displaying a close icon on an option
-        displayCloseIcon: React.PropTypes.bool
+        render: React.PropTypes.func
       })
     ),
     // Calls a function after user selection.
@@ -235,27 +229,13 @@ export const Picklist = React.createClass({
       'aria-selected': isSelected
     };
 
-    const setOptionIcon = _.isString(option.iconName);
-    const optionTitleClasses = classNames('picklist-title', {
-      'picklist-with-icon': setOptionIcon
-    });
-    const optionIcon = setOptionIcon ?
-      <span className="option-icon"><SocrataIcon name={option.iconName} /></span> :
-      null;
-
     const content = hasRenderFunction ?
       option.render(option) :
-      <span className={optionTitleClasses} key={index}>{option.title}</span>;
-
-    const closeIcon = option.displayCloseIcon ?
-      <span className="close-icon"><SocrataIcon name="close" /></span> :
-      null;
+      <span className="picklist-title" key={index}>{option.title}</span>;
 
     return (
       <div {...attributes}>
-        {optionIcon}
         {content}
-        {closeIcon}
       </div>
     );
   },

@@ -10,7 +10,6 @@ describe('TextFilter', () => {
     return _.defaultsDeep({}, props, {
       filter: {},
       column: {},
-      fetchSuggestions: _.constant(Promise.resolve([])),
       onCancel: _.noop,
       onUpdate: _.noop
     });
@@ -22,85 +21,20 @@ describe('TextFilter', () => {
     expect(element).to.exist;
   });
 
-  it('invokes fetchSuggestions on load', () => {
-    const stub = sinon.stub().returns(Promise.resolve([]));
-    const element = renderComponent(TextFilter, getProps({
-      fetchSuggestions: stub
-    }));
-
-    expect(stub).to.have.been.called;
-  });
-
-  it('sets hasSearchError to false when request succeeds', (done) => {
-    const fetchSuggestions = _.constant(Promise.resolve([]));
-    const instance = React.createElement(TextFilter, getProps({
-      fetchSuggestions
-    }));
-    const component = renderIntoDocument(instance);
-
-    _.defer(() => {
-      expect(component.state.hasSearchError).to.eq(false);
-      done();
-    });
-  });
-
-  it('sets hasSearchError to true when request errors', (done) => {
-    const fetchSuggestions = _.constant(Promise.reject());
-    const instance = React.createElement(TextFilter, getProps({
-      fetchSuggestions
-    }));
-    const component = renderIntoDocument(instance);
-
-    _.defer(() => {
-      expect(component.state.hasSearchError).to.eq(true);
-      done();
-    });
-  });
-
-  it('sets hasSearchError to true when request is not an array', (done) => {
-    const fetchSuggestions = _.constant(Promise.resolve({}));
-    const instance = React.createElement(TextFilter, getProps({
-      fetchSuggestions
-    }));
-    const component = renderIntoDocument(instance);
-
-    _.defer(() => {
-      expect(component.state.hasSearchError).to.eq(true);
-      done();
-    });
-  });
-
-  it('renders a searchable picklist when results are returned', (done) => {
-    const results = ['suggestion1', 'suggestion2'];
-    const element = renderComponent(TextFilter, getProps({
-      fetchSuggestions: sinon.stub().returns(Promise.resolve(results))
-    }));
-
-    _.defer(() => {
-      const picklistOptions = element.querySelectorAll('.picklist-suggested-options .picklist-option');
-      // We prepend a 'No Value' option to the picklist outside the context of
-      // the suggestions, so two suggestions from fetchSuggestions will result
-      // in three picklist options.
-      assert.equal(picklistOptions.length, 3);
-      assert.deepEqual(_.map(picklistOptions, 'innerText'), ['(No value)', results[0], results[1]]);
-      done();
-    });
-  });
 
   it('removes a suggested option from suggestedOptions when it is selected', (done) => {
-    const results = ['suggestion1', 'suggestion2'];
     const element = renderComponent(TextFilter, getProps({
-      fetchSuggestions: sinon.stub().returns(Promise.resolve(results)),
       column: mockTextColumn,
       filter: mockBinaryOperatorFilter
     }));
 
     _.defer(() => {
-      const suggestedOptionsLength = element.querySelectorAll('.picklist-suggested-options .picklist-option').length;
+      const selector = '.searchable-picklist-suggested-options .picklist-option';
+      const suggestedOptionsLength = element.querySelectorAll(selector).length;
 
-      Simulate.click(element.querySelector('.picklist-suggested-options .picklist-option'));
+      Simulate.click(element.querySelector(selector));
 
-      const suggestedOptionsNewLength = element.querySelectorAll('.picklist-suggested-options .picklist-option').length;
+      const suggestedOptionsNewLength = element.querySelectorAll(selector).length;
 
       assert.isBelow(suggestedOptionsNewLength, suggestedOptionsLength, 'Expected suggestedOptions to be smaller');
 
@@ -109,19 +43,18 @@ describe('TextFilter', () => {
   });
 
   it('removes a selected value from selectedOptions when it is selected', (done) => {
-    const results = [];
     const element = renderComponent(TextFilter, getProps({
-      fetchSuggestions: sinon.stub().returns(Promise.resolve(results)),
       column: mockTextColumn,
       filter: mockBinaryOperatorFilter
     }));
 
     _.defer(() => {
-      const selectedOptionsLength = element.querySelectorAll('.picklist-selected-options .picklist-option').length;
+      const selector = '.searchable-picklist-selected-options .picklist-option';
+      const selectedOptionsLength = element.querySelectorAll(selector).length;
 
-      Simulate.click(element.querySelector('.picklist-selected-options .picklist-option'));
+      Simulate.click(element.querySelector(selector));
 
-      const selectedOptionsNewLength = element.querySelectorAll('.picklist-selected-options .picklist-option').length;
+      const selectedOptionsNewLength = element.querySelectorAll(selector).length;
 
       assert.isBelow(selectedOptionsNewLength, selectedOptionsLength, 'Expected selectedOptions to be smaller');
 
@@ -137,33 +70,31 @@ describe('TextFilter', () => {
       arguments: null,
       isHidden: false
     };
-    const results = ['penguin'];
 
-    let fetchSuggestionsStub;
     let onUpdateStub;
     let element;
 
     beforeEach(() => {
-      fetchSuggestionsStub = sinon.stub().returns(Promise.resolve(results));
       onUpdateStub = sinon.stub();
       element = renderComponent(TextFilter, getProps({
+        column: mockTextColumn,
         filter,
-        onUpdate: onUpdateStub,
-        fetchSuggestions: fetchSuggestionsStub
+        onUpdate: onUpdateStub
       }));
     });
 
     it('creates a binaryOperator filter when the negation control is set to IS', (done) => {
 
       _.defer(() => {
+        const selector = '.searchable-picklist-suggested-options .picklist-option';
         // Since clicking on picklist options mutates the picklist, we should select all the options we
         // want to click before we start clicking on them.
-        const picklistOption1 = element.querySelector('.picklist-suggested-options .picklist-option');
+        const picklistOption1 = element.querySelector(selector);
         Simulate.click(picklistOption1);
 
-        // Note that clicking on picklistOption1 mutated .picklist-suggested-options, so the second
+        // Note that clicking on picklistOption1 mutated .searchable-picklist-suggested-options, so the second
         // option from before is now the first.
-        const picklistOption2 = element.querySelector('.picklist-suggested-options .picklist-option');
+        const picklistOption2 = element.querySelector(selector);
         Simulate.click(picklistOption2);
 
         const applyButton = element.querySelector('.apply-btn');
@@ -178,7 +109,7 @@ describe('TextFilter', () => {
             },
             {
               operator: '=',
-              operand: 'penguin'
+              operand: 'tyrannosaurus'
             }
           ],
           joinOn: 'OR',
@@ -192,17 +123,18 @@ describe('TextFilter', () => {
     it('creates a negated binaryOperator filter when the negation control is set to IS', (done) => {
 
       _.defer(() => {
+        const selector = '.searchable-picklist-suggested-options .picklist-option';
         // Since clicking on picklist options mutates the picklist, we should select all the options we
         // want to click before we start clicking on them.
         const negationDropdownIsNotOption = element.querySelector('.text-filter-header .picklist-option[id="true-1"]');
         Simulate.click(negationDropdownIsNotOption);
 
-        const picklistOption1 = element.querySelector('.picklist-suggested-options .picklist-option');
+        const picklistOption1 = element.querySelector(selector);
         Simulate.click(picklistOption1);
 
-        // Note that clicking on picklistOption1 mutated .picklist-suggested-options, so the second
+        // Note that clicking on picklistOption1 mutated .searchable-picklist-suggested-options, so the second
         // option from before is now the first.
-        const picklistOption2 = element.querySelector('.picklist-suggested-options .picklist-option');
+        const picklistOption2 = element.querySelector(selector);
         Simulate.click(picklistOption2);
 
         const applyButton = element.querySelector('.apply-btn');
@@ -217,7 +149,7 @@ describe('TextFilter', () => {
             },
             {
               operator: '!=',
-              operand: 'penguin'
+              operand: 'tyrannosaurus'
             }
           ],
           joinOn: 'AND',
@@ -229,48 +161,11 @@ describe('TextFilter', () => {
     });
   });
 
-  it('invokes fetchSuggestions when the search term changes', () => {
-    const clock = sinon.useFakeTimers();
-    const stub = sinon.stub().returns(Promise.resolve([]));
-    const element = renderComponent(TextFilter, getProps({
-      fetchSuggestions: stub
-    }));
-
-    const search = element.querySelector('input');
-    search.value = 'corgi palace';
-    Simulate.change(search);
-
-    clock.tick(650);
-
-    sinon.assert.calledTwice(stub);
-
-    clock.restore();
-  });
-
   describe('footer', () => {
     it('renders', () => {
       const element = renderComponent(TextFilter, getProps());
 
       expect(element.querySelector('.filter-footer')).to.exist;
-    });
-
-    it('invokes fetchSuggestions when the clear button is clicked', () => {
-      const clock = sinon.useFakeTimers();
-      const stub = sinon.stub().returns(Promise.resolve([]));
-      const element = renderComponent(TextFilter, getProps({
-        fetchSuggestions: stub
-      }));
-
-      const search = element.querySelector('input');
-      search.value = 'corgi disaster';
-      Simulate.change(search);
-      clock.tick(500);
-      Simulate.click(element.querySelector('.clear-btn'));
-      clock.tick(500);
-
-      sinon.assert.calledThrice(stub); // once on load, once on search, once on clear
-
-      clock.restore();
     });
 
     it('clears selectedOptions when the clear button is clicked', (done) => {
@@ -280,7 +175,7 @@ describe('TextFilter', () => {
         arguments: [
           {
             operator: '=',
-            operand: 'penguin'
+            operand: 'tyrannosaurus'
           }
         ],
         isHidden: false
@@ -288,12 +183,10 @@ describe('TextFilter', () => {
 
       const onUpdateStub = sinon.stub();
       const onClickClear = sinon.stub();
-      const fetchSuggestionsStub = sinon.stub().returns(Promise.resolve([]));
       const element = renderComponent(TextFilter, getProps({
         filter,
         onClickClear: onClickClear,
         onUpdate: onUpdateStub,
-        fetchSuggestions: fetchSuggestionsStub,
         column: mockTextColumn
       }));
 
@@ -334,23 +227,21 @@ describe('TextFilter', () => {
         arguments: [
           {
             operator: '=',
-            operand: 'penguin'
+            operand: 'tyrannosaurus'
           }
         ],
         isHidden: false
       };
 
       const onUpdateStub = sinon.stub();
-      const fetchSuggestionsStub = sinon.stub().returns(Promise.resolve([]));
       const element = renderComponent(TextFilter, getProps({
         filter,
         onUpdate: onUpdateStub,
-        fetchSuggestions: fetchSuggestionsStub,
         column: mockTextColumn
       }));
 
       _.defer(() => {
-        const picklistOption = element.querySelector('.picklist-selected-options .picklist-option');
+        const picklistOption = element.querySelector('.searchable-picklist-selected-options .picklist-option');
         Simulate.click(picklistOption);
 
         const button = element.querySelector('.apply-btn');

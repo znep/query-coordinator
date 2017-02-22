@@ -35,7 +35,17 @@
         {
           name: 'Some Word',
           fieldName: 'some_word',
-          dataTypeName: 'text'
+          dataTypeName: 'text',
+          top: [
+            { item: 'purple', count: 23 },
+            { item: 'pesto', count: 11 },
+            { item: 'russian', count: 8 },
+            { item: 'cheese', count: 3 },
+            { item: 'cherry', count: 2 },
+            { item: 'mango', count: 2 },
+            { item: 'raspberry', count: 2 },
+            { item: 'apple', count: 1 }
+          ]
         },
         {
           name: 'Some Calendar Date',
@@ -48,7 +58,9 @@
       filters,
       isReadOnly: false,
       onUpdate,
-      fetchSuggestions: (column, searchTerm) => Promise.resolve(['purple', 'pesto', 'russian', 'cheese'])
+      isValidTextFilterColumnValue: (column, value) => {
+        return new Promise((resolve, reject) => setTimeout(resolve, 3000));
+      }
     };
 
     function render() {

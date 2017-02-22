@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 export function SocrataIcon({ name }) {
   const attributes = {
-    className: 'socrata-icon',
+    className: `socrata-icon socrata-icon-${name}`,
     dangerouslySetInnerHTML: {
       __html: require(`src/fonts/svg/${name}.svg`) // eslint-disable-line global-require
     }

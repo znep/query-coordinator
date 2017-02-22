@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import Dropdown from '../Dropdown';
+import SocrataIcon from '../SocrataIcon';
 import SearchablePicklist from './SearchablePicklist';
 import FilterFooter from './FilterFooter';
 import { getTextFilter } from './filters';
@@ -10,10 +11,16 @@ export const TextFilter = React.createClass({
   propTypes: {
     filter: PropTypes.object.isRequired,
     column: PropTypes.object.isRequired,
-    fetchSuggestions: PropTypes.func,
     onCancel: PropTypes.func.isRequired,
     onUpdate: PropTypes.func.isRequired,
+    isValidTextFilterColumnValue: PropTypes.func,
     value: PropTypes.string
+  },
+
+  getDefaultProps() {
+    return {
+      isValidTextFilterColumnValue: (column, value) => Promise.reject(value)
+    };
   },
 
   getInitialState() {
@@ -29,38 +36,14 @@ export const TextFilter = React.createClass({
 
     return {
       value: '',
-      suggestions: [],
       selectedValues,
-      hasSearchError: false,
-      isNegated: _.toLower(filter.joinOn) === 'and'
+      isNegated: _.toLower(filter.joinOn) === 'and',
+      isValidating: false
     };
   },
 
   componentDidMount() {
     this.isMounted = true;
-
-    this.updateSuggestions = _.debounce(() => {
-      const { column } = this.props;
-      const { value } = this.state;
-
-      this.props.fetchSuggestions(column, _.defaultTo(value, '')).then((suggestions) => {
-        if (!_.isArray(suggestions)) {
-          throw new Error(`Invalid response from suggestion provider: ${suggestions}`);
-        } else if (this.isMounted) {
-          this.setState({
-            suggestions,
-            hasSearchError: false
-          });
-        }
-      }).catch(() => {
-        this.setState({
-          suggestions: [],
-          hasSearchError: true
-        });
-      });
-    }, 350, { leading: true, maxWait: 500 });
-
-    this.updateSuggestions();
   },
 
   componentWillUnmount() {
@@ -68,10 +51,7 @@ export const TextFilter = React.createClass({
   },
 
   onChangeSearchTerm(searchTerm) {
-    this.setState({
-      loading: true,
-      value: searchTerm
-    }, this.updateSuggestions);
+    this.setState({ value: searchTerm });
   },
 
   onSelectOption(option) {
@@ -88,14 +68,12 @@ export const TextFilter = React.createClass({
     });
   },
 
-  // Remove existing selected values, clear the search term, and refetch suggestions if needed.
+  // Remove existing selected values and clear the search term.
   clearFilter() {
     this.updateSelectedValues([]);
 
     if (this.state.value !== '') {
-      this.setState({
-        value: ''
-      }, this.updateSuggestions);
+      this.setState({ value: '' });
     }
   },
 
@@ -113,8 +91,35 @@ export const TextFilter = React.createClass({
     return !_.isEqual(getTextFilter(column, filter, selectedValues, isNegated), filter);
   },
 
+  canAddSearchTerm(term) {
+    const { column, isValidTextFilterColumnValue } = this.props;
+    const trimmedTerm = term.trim();
+
+    if (trimmedTerm.length === 0) {
+      return Promise.reject();
+    }
+
+    this.setState({ isValidating: true });
+
+    return isValidTextFilterColumnValue(column, trimmedTerm).
+      then(() => {
+        if (this.isMounted) {
+          this.setState({ isValidating: false, value: '' });
+          this.onSelectOption({ name: trimmedTerm, value: trimmedTerm });
+        }
+      }).
+      catch(() => {
+        if (this.isMounted) {
+          this.setState({ isValidating: false });
+        }
+
+        return Promise.reject();
+      });
+  },
+
   renderHeader() {
     const { column } = this.props;
+    const { isValidating } = this.state;
 
     const dropdownProps = {
       onSelection: (option) => {
@@ -126,7 +131,8 @@ export const TextFilter = React.createClass({
       options: [
         { title: t('filter_bar.text_filter.is'), value: 'false' },
         { title: t('filter_bar.text_filter.is_not'), value: 'true' }
-      ]
+      ],
+      disabled: isValidating
     };
 
     return (
@@ -137,31 +143,59 @@ export const TextFilter = React.createClass({
     );
   },
 
+  renderSelectedOption(option) {
+    const title = _.isNull(option.value) ? <em>{option.title}</em> : option.title;
+
+    return (
+      <div className="searchable-picklist-selected-option">
+        <SocrataIcon name="filter" />
+        <span className="searchable-picklist-selected-option-title">{title}</span>
+        <SocrataIcon name="close-2" />
+      </div>
+    );
+  },
+
+  renderSuggestedOption(option) {
+    const title = _.isNull(option.value) ? <em>{option.title}</em> : option.title;
+
+    return (
+      <div className="searchable-picklist-option">
+        {title}
+      </div>
+    );
+  },
+
   render() {
-    const { onCancel } = this.props;
-    const { value, suggestions, hasSearchError, selectedValues } = this.state;
+    const { column, onCancel } = this.props;
+    const { value, selectedValues, isValidating } = this.state;
 
     // Create the "null" suggestion to allow filtering on empty values.
     const nullOption = {
       title: t('filter_bar.text_filter.no_value'),
       value: null,
-      group: t('filter_bar.text_filter.suggested_values')
+      group: t('filter_bar.text_filter.suggested_values'),
+      render: this.renderSuggestedOption
     };
 
-    const options = _.map(suggestions, (suggestion) => {
-      return {
-        title: suggestion,
-        value: suggestion,
-        group: t('filter_bar.text_filter.suggested_values')
-      };
-    });
+    const options = _.chain(column.top).
+      filter((text) => _.toLower(text.item).match(_.toLower(value))).
+      map((text) => {
+        return {
+          title: text.item,
+          value: text.item,
+          group: t('filter_bar.text_filter.suggested_values'),
+          render: this.renderSuggestedOption
+        };
+      }).
+      value();
 
     const selectedOptions = _.map(selectedValues, (selectedValue) => {
       return {
         title: _.isNull(selectedValue) ?
           t('filter_bar.text_filter.no_value') :
           selectedValue,
-        value: selectedValue
+        value: selectedValue,
+        render: this.renderSelectedOption
       };
     });
 
@@ -169,17 +203,17 @@ export const TextFilter = React.createClass({
       onBlur: _.noop,
       onSelection: this.onSelectOption,
       onChangeSearchTerm: this.onChangeSearchTerm,
-      hasSearchError,
       options: _.concat(nullOption, options).filter((option) => {
         return !_.includes(selectedValues, option.value);
       }),
       value,
       selectedOptions,
-      onClickSelectedOption: this.onUnselectOption
+      onClickSelectedOption: this.onUnselectOption,
+      canAddSearchTerm: this.canAddSearchTerm
     };
 
     const filterFooterProps = {
-      disableApplyFilter: !this.isDirty(),
+      disableApplyFilter: !this.isDirty() || isValidating,
       onClickApply: this.updateFilter,
       onClickCancel: onCancel,
       onClickClear: this.clearFilter

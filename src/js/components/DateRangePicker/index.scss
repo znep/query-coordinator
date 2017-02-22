@@ -8,6 +8,8 @@
 
   .date-range-picker-start,
   .date-range-picker-end {
+    position: relative;
+
     .date-picker-input {
       height: 40px;
       max-width: 145px;
@@ -20,14 +22,8 @@
       z-index: 1;
       width: 15px;
       height: 15px;
-
-      & svg {
-        width: 15px;
-        height: 15px;
-        left: 20px;
-        margin-left: 14px;
-        margin-top: 13px;
-      }
+      left: 11px;
+      top: 11px;
     }
   }
 

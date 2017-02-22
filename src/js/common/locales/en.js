@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 export default {
   color_picker: {
     open_color_picker: 'Open Color Picker',
@@ -21,17 +23,17 @@ export default {
     from: 'From',
     less: 'Less',
     more: 'More',
-    no_options_found: 'No options found',
+    no_options_found: 'No top values match your input',
     range: 'Range',
     remove_filter: 'Remove Filter',
     search: 'Search options',
-    search_error: 'Error getting filter suggestions. Try typing an exact value to filter on this column.',
     text_filter: {
       no_value: '(No value)',
       selected_values: 'Selected Values',
       suggested_values: 'Top Values',
       is: 'is',
-      is_not: 'is not'
+      is_not: 'is not',
+      keyword_not_found: "Your input wasn't found in this column's data. Please try again with the exact value including case."
     },
     to: 'To'
   },

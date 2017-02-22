@@ -27,7 +27,7 @@ export function getTextFilter(column, filter, values, isNegated) {
       }
     };
 
-    return _.merge({}, filter, {
+    return _.assign({}, filter, {
       'function': 'binaryOperator',
       joinOn: isNegated ? 'AND' : 'OR',
       arguments: _.map(values, toArgument)

@@ -32,15 +32,12 @@ $filter-bar-container-padding: 20px;
     display: inline-block;
     vertical-align: top;
 
-    .socrata-icon svg {
+    .socrata-icon {
       width: 20px;
       height: 20px;
       margin-right: 20px;
       margin-top: 5px;
-
-      g {
-        fill: $light-grey-1;
-      }
+      color: $light-grey-1;
     }
   }
 

@@ -3,6 +3,7 @@ import React from 'react';
 import { Simulate } from 'react-addons-test-utils';
 import { renderComponent } from '../../helpers';
 import SearchablePicklist from 'components/FilterBar/SearchablePicklist';
+import { ENTER } from 'common/keycodes';
 import { mockPicklistOptions } from './data';
 
 describe('SearchablePicklist', () => {
@@ -20,7 +21,9 @@ describe('SearchablePicklist', () => {
 
   const getSearchInput = (element) => element.querySelector('.searchable-picklist-input');
   const getPicklist = (element) => element.querySelector('.picklist');
-  const getSelectedOptions = (element) => element.querySelector('.picklist-selected-options');
+  const getSelectedOptions = (element) => element.querySelector('.searchable-picklist-selected-options');
+  const getSearchInputSpinner = (element) => element.querySelector('.spinner-default');
+  const getSearchWarning = (element) => element.querySelector('.alert.warning');
 
   it('renders an element', () => {
     const element = renderComponent(SearchablePicklist, getProps());
@@ -52,6 +55,66 @@ describe('SearchablePicklist', () => {
 
       expect(stub).to.have.been.calledWith('Pizza');
     });
+
+    describe('when adding an arbitrary value using <ENTER>', () => {
+      it('invokes canAddSearch with the value', (done) => {
+        const searchTerm = 'fuzzy bunnies';
+        const element = renderComponent(SearchablePicklist, getProps({
+          canAddSearchTerm: (term) => done()
+        }));
+        const searchInput = getSearchInput(element);
+
+        searchInput.value = searchTerm;
+        Simulate.keyUp(getSearchInput(element), { keyCode: ENTER });
+      });
+
+      it('adds a loading spinner', (done) => {
+        const element = renderComponent(SearchablePicklist, getProps({
+          canAddSearchTerm: (term) => {
+            return new Promise((resolve, reject) => {
+              _.defer(() => {
+                expect(getSearchInputSpinner(element)).to.not.eq(null);
+                done();
+              });
+            });
+          }
+        }));
+
+        Simulate.keyUp(getSearchInput(element), { keyCode: ENTER });
+      });
+
+      it('hides the loading spinner after canAddSearchTerm resolves', (done) => {
+        const element = renderComponent(SearchablePicklist, getProps({
+          canAddSearchTerm: (term) => {
+            return new Promise((resolve, reject) => {
+              _.delay(resolve, 10);
+              _.delay(() => expect(getSearchInputSpinner(element)).to.not.eq(null), 5);
+              _.delay(() => {
+                expect(getSearchInputSpinner(element)).to.eq(null);
+                done();
+              }, 15)
+            });
+          }
+        }));
+
+        Simulate.keyUp(getSearchInput(element), { keyCode: ENTER });
+      });
+
+      it('shows an error if the search term cannot be added', (done) => {
+        const element = renderComponent(SearchablePicklist, getProps({
+          canAddSearchTerm: (term) => {
+            return Promise.reject();
+          }
+        }));
+
+        Simulate.keyUp(getSearchInput(element), { keyCode: ENTER });
+
+        _.delay(() => {
+          expect(getSearchWarning(element)).to.not.eq(null);
+          done();
+        }, 10);
+      });
+    });
   });
 
   describe('picklist', () => {
@@ -65,13 +128,6 @@ describe('SearchablePicklist', () => {
         options: []
       }));
       expect(element.querySelector('.alert')).to.have.class('warning');
-    });
-
-    it('displays the search provider error message if search error encountered', () => {
-      const element = renderComponent(SearchablePicklist, getProps({
-        hasSearchError: true
-      }));
-      expect(element.querySelector('.alert')).to.have.class('error');
     });
 
     it('highlights the value in the picklist if provided and available', () => {
@@ -135,9 +191,7 @@ describe('SearchablePicklist', () => {
       Simulate.click(option[0]);
 
       expect(stub).to.have.been.calledWith({
-        displayCloseIcon: true,
         group: "Selected Values",
-        iconName: "filter",
         title: 'Pesto',
         value: 'Pesto'
       });

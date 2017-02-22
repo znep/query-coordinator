@@ -2,23 +2,24 @@
 
 .searchable-picklist {
   font-size: 12px;
-  max-height: 432px;
-  overflow-x: hidden;
-  overflow-y: auto;
 
   .searchable-picklist-input-container {
     position: relative;
-    margin-bottom: 8px;
+    margin: 8px;
 
     .searchable-picklist-input {
       width: 100%;
       border: 1px solid $light-grey-3;
-      padding: 8px;
-      padding-left: 28px;
+      padding: 8px 28px;
 
       &:focus {
         border-color: $alternate-3-light;
         outline: solid 2px $alternate-3;
+      }
+
+      &:disabled {
+        color: $light-grey-1;
+        background-color: $light-grey-6;
       }
     }
 
@@ -28,15 +29,66 @@
       height: 20px;
       left: 6px;
       top: 6px;
+      color: $light-grey-4;
+    }
 
-      svg {
-        width: 20px;
-        height: 20px;
+    .spinner-default {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      animation-duration: 0.5s;
+      border-width: 1px;
+      border-color: $alternate-3;
+      border-right-color: $alternate-3-light;
+    }
+  }
 
-        g path {
-          fill: $light-grey-4;
+  .searchable-picklist-options {
+    max-height: 350px;
+    overflow-y: auto;
+
+    .picklist {
+      border: none;
+
+      .picklist-group-header {
+        border-left: solid 3px transparent;
+      }
+
+      &:focus {
+        border: none;
+        outline: none;
+
+        .picklist-group-header {
+          border-left: solid 3px $alternate-3;
         }
       }
+    }
+  }
+
+  .searchable-picklist-selected-option {
+    display: flex;
+    width: 100%;
+
+    > * {
+      margin: auto;
+    }
+
+    .socrata-icon {
+      width: 12px;
+      height: 12px;
+      color: $light-grey-4;
+    }
+
+    .socrata-icon-close-2 {
+      color: $light-grey-1;
+    }
+
+    .searchable-picklist-selected-option-title {
+      flex-grow: 2;
+      margin-left: 8px;
+      padding-right: 8px;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 

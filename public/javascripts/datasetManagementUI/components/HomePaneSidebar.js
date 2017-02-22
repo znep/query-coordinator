@@ -39,7 +39,7 @@ function HomePaneSidebar({ db }) {
         <p> {I18n.home_pane.sidebar.column_descriptions_blurb} </p>
         <Link to={Links.columnMetadataEditor()}>
           <button
-            className="btn btn-sm btn-alternate-2"
+            className="btn btn-sm btn-default"
             tabIndex="-1">
             {I18n.home_pane.sidebar.column_descriptions_button}
           </button>
@@ -54,7 +54,7 @@ function HomePaneSidebar({ db }) {
           {I18n.home_pane.sidebar.visualize_blurb}
         </p>
         <button
-          className="btn btn-sm btn-alternate-2"
+          className="btn btn-sm btn-default"
           disabled
           tabIndex="-1">
           {I18n.home_pane.sidebar.visualize_button}
@@ -70,7 +70,7 @@ function HomePaneSidebar({ db }) {
         </p>
 
         <button
-          className="btn btn-sm btn-alternate-2"
+          className="btn btn-sm btn-default"
           disabled
           tabIndex="-1">
           {I18n.home_pane.sidebar.feature_button}

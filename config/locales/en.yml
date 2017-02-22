@@ -1616,7 +1616,7 @@ en:
         visualize_blurb: Visualize your data to derive new insights.
         visualize_button: Create New...
         feature: Feature
-        feature_blurb: Feature this dataset on your home page!
+        feature_blurb: Feature assets or external resources that best represent your data.
         feature_button: Feature
       column_metadata_manage_button: Manage Column Metadata
       data: Choose Data Source

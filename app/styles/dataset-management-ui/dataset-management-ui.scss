@@ -76,6 +76,7 @@ body {
 
   .modal-header-title {
     .socrata-icon-arrow-right {
+      color: $dark-grey-1;
       margin: 0 0.4em;
     }
 
@@ -228,29 +229,9 @@ body {
       }
 
       p {
-        margin: 13px; // TODO: wtf where does this come from
+        margin: 10px 13px 13px;
+        color: $dark-grey-1;
       }
-
-      /* .next-step { */
-      /*   margin: 1em; */
-      /*   padding: 1em; */
-      /*   border: 1px solid $light-grey-4; */
-      /*   background: $white; */
-      /*   button { */
-      /*     margin: auto; */
-      /*   } */
-      /*   i { */
-      /*     font-size: 200%; */
-      /*     color: $primary-base; */
-      /*   } */
-      /*   i.finished { */
-      /*     position: relative; */
-      /*     color: $alternate-3-base; */
-      /*     font-size: 120%; */
-      /*     top: -0.5em; */
-      /*     left: -0.5em; */
-      /*   } */
-      /* } */
     }
   }
 

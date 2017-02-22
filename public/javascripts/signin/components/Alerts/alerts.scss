@@ -1,5 +1,4 @@
-$default-font-path: "socrata-components/dist/fonts/";
-@import "styleguide-no-tag-level.scss";
+@import "../../common";
 
 .alert-base {
   @extend .alert;

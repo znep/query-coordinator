@@ -108,7 +108,7 @@ class SignInContainer extends React.Component {
           onClick={() => this.setLoginFormVisibility(false)} >
           <span styleName="back-to-options-icon">
             <SocrataIcon name="arrow-left" />
-            {translate('screens.sign_in.back_to_sign_in_selection')}
+            <div dangerouslySetInnerHTML={{ __html: translate('screens.sign_in.back_to_sign_in_selection') }} />
           </span>
         </a>
       );

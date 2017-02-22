@@ -1,7 +1,4 @@
-$default-font-path: "socrata-components/dist/fonts/";
-
-@import "styleguide-no-tag-level.scss";
-@import "_colors.scss";
+@import "../../common";
 
 .container {
   max-width: 500px;
@@ -20,6 +17,12 @@ $default-font-path: "socrata-components/dist/fonts/";
   margin-left: auto !important;
   display: flex;
   padding: 0;
+  
+  /* If the screen is big enough, take up less of it */
+  @media screen and (max-width: $break-large) {
+    max-width: 65%;
+    flex-direction: column;
+  }
 }
 
 .button-text {
@@ -36,7 +39,10 @@ $default-font-path: "socrata-components/dist/fonts/";
 
 .button-image-container {
   padding: 0.5em;
-  border-right: 1px solid $light-grey-2;
+
+  @media screen and (min-width: $break-large) {
+    border-right: 1px solid $light-grey-2;
+  }
 }
 
 .button-image {

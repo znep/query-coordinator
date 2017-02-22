@@ -16,7 +16,7 @@ module SocrataSiteChrome
     end
 
     def site_chrome_theme_cache_key
-      SocrataSiteChrome::CacheKey.cache_key_string(domain_config, 'site_chrome:custom.css')
+      SocrataSiteChrome::CacheKey.new(domain_config, 'site_chrome:custom.css').to_s
     end
 
     # theme_section is one of 'general', 'header', or 'footer'

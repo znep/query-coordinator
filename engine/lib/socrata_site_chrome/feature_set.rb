@@ -39,7 +39,7 @@ module SocrataSiteChrome
     end
 
     def get_feature_set
-      body = Rails.cache.fetch(SocrataSiteChrome::CacheKey.cache_key_string(domain_config, CONFIGURATION_TYPE)) do
+      body = Rails.cache.fetch(SocrataSiteChrome::CacheKey.new(domain_config, CONFIGURATION_TYPE).to_s) do
         begin
           response = HTTParty.get(
             self.class.feature_set_uri,

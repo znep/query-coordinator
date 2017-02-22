@@ -154,7 +154,7 @@ module SocrataSiteChrome
         raise error_msg
       end
 
-      body = @cache.fetch(SocrataSiteChrome::CacheKey.cache_key_string(self, CONFIGURATION_TYPE)) do
+      body = @cache.fetch(SocrataSiteChrome::CacheKey.new(self, CONFIGURATION_TYPE).to_s) do
         begin
           response = HTTParty.get(
             domain_config_uri,

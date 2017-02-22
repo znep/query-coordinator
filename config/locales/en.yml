@@ -4785,7 +4785,7 @@ en:
       web_link: Web Link
       embed_code: Embed Code
       preview: Preview
-      fallback_visualization_text: View the visualization
+      fallback_link_text: View the data
       size_options: Size
       no_web_link_available: This visualization has not been saved. To generate a web link for this visualization, save and then try again.
       sizes:

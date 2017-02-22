@@ -131,7 +131,7 @@ function ShowUpdate({ view, routing, db }) {
     map(uj => uj.status === 'successful').
     reduce((acc, success) => success || acc, false);
 
-  var dataTable;
+  let dataTable;
   if (isUpsertComplete) {
     dataTable = upsertCompleteView(view, outputSchema);
   } else if (doesUpsertExist) {
@@ -150,6 +150,15 @@ function ShowUpdate({ view, routing, db }) {
 
         <section className="management-ui-section table-preview">
           <h2>{I18n.home_pane.table_preview}</h2>
+
+          <Link to={Links.uploads}>
+            <button
+              className="manage-data-btn btn btn-sm btn-alternate-2"
+              tabIndex="-1">
+              {I18n.home_pane.data_manage_button}
+            </button>
+          </Link>
+
           {dataTable}
         </section>
       </div>

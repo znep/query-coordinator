@@ -127,13 +127,28 @@ body {
     }
   }
 
+  .table-preview > a {
+    float: right;
+    height: 17px;
+    margin-top: -11px;
+
+    button {
+      float: right;
+    }
+  }
+
   .table-preview {
+    h2 {
+      float: left;
+    }
+
     .table-contents {
       // this is a nice round number...
       // because the table height needs to be divisible by
       // the number of rows...plus...some
       height: 543px;
 
+      clear: both;
       border: none;
       background: transparent;
 

@@ -184,13 +184,14 @@ export const FilterBar = React.createClass({
   setMaxVisibleFilters() {
     const { isReadOnly } = this.props;
     const { maxVisibleFilters } = this.state;
-    const spaceLeftForFilters = this.getContainerWidth() - this.getControlsWidth();
+    const containerWidth = this.getContainerWidth();
+    const spaceLeftForFilters = containerWidth - this.getControlsWidth();
     const filterWidth = isReadOnly ?
       MAX_FILTER_WIDTH :
       (MAX_FILTER_WIDTH + FILTER_CONFIG_TOGGLE_WIDTH);
     const newMaxVisibleFilters = _.floor(spaceLeftForFilters / filterWidth);
 
-    if (maxVisibleFilters !== newMaxVisibleFilters) {
+    if (containerWidth > 0 && maxVisibleFilters !== newMaxVisibleFilters) {
       this.setState({
         maxVisibleFilters: newMaxVisibleFilters
       });

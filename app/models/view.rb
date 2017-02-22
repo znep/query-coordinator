@@ -1052,6 +1052,10 @@ class View < Model
     is_tabular? && [is_blist?, is_arcgis?, is_api_geospatial?].none?
   end
 
+  def blist_or_derived_view_but_not_data_lens?
+    (is_blist? || is_derived_view?) && !data_lens?
+  end
+
   def has_modifying_parent_view?
     !modifyingViewUid.nil?
   end

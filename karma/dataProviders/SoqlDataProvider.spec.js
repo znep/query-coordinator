@@ -870,28 +870,34 @@ describe('SoqlDataProvider', function() {
   });
 
   describe('getColumnStats()', function() {
-    var soqlDataProvider;
-    var soqlDataProviderOptions = {
-      domain: VALID_DOMAIN,
-      datasetUid: VALID_DATASET_UID
-    };
-    var numberColumn = {
+    let soqlDataProvider;
+
+    const numberColumn = {
       fieldName: 'numberColumn',
       dataTypeName: 'number'
     };
-    var textColumn = {
+
+    const textColumn = {
       fieldName: 'textColumn',
       dataTypeName: 'text'
     };
 
-    var calendarDateColumn = {
+    const fakeColumn = {
+      fieldName: 'soFakeYouDontEvenKnow',
+      dataTypeName: 'elusive'
+    };
+
+    const calendarDateColumn = {
       fieldName: 'calendarDateColumn',
       dataTypeName: 'calendar_date'
     };
 
     beforeEach(() => {
       server = sinon.fakeServer.create();
-      soqlDataProvider = new SoqlDataProvider(soqlDataProviderOptions);
+      soqlDataProvider = new SoqlDataProvider({
+        domain: VALID_DOMAIN,
+        datasetUid: VALID_DATASET_UID
+      });
     });
 
     afterEach(() => {
@@ -903,7 +909,7 @@ describe('SoqlDataProvider', function() {
       expect(() => soqlDataProvider.getColumnStats({})).to.throw();
     });
 
-    it('queries', () => {
+    it('fetches stats for number columns', () => {
       soqlDataProvider.getColumnStats([numberColumn]);
       var url = server.requests[0].url;
       expect(server.requests).to.have.length(1);
@@ -911,12 +917,24 @@ describe('SoqlDataProvider', function() {
       expect(url).to.match(/select.+max/);
     });
 
-    it('only fetches stats for number and calendar_type columns', () => {
-      var promise = soqlDataProvider.getColumnStats([textColumn, numberColumn, textColumn, calendarDateColumn]);
+    it('fetches stats for calendar_type columns', () => {
+      soqlDataProvider.getColumnStats([calendarDateColumn]);
       var url = server.requests[0].url;
-      expect(server.requests).to.have.length(2);
+      expect(server.requests).to.have.length(1);
       expect(url).to.match(/select.+min/);
       expect(url).to.match(/select.+max/);
+    });
+
+    it('fetches stats for text columns', () => {
+      soqlDataProvider.getColumnStats([textColumn]);
+      var url = server.requests[0].url;
+      expect(server.requests).to.have.length(1);
+      expect(url).to.match(/select.+count/);
+    });
+
+    it('only fetches stats for number, calendar_type, and text columns', () => {
+      soqlDataProvider.getColumnStats([textColumn, numberColumn, textColumn, calendarDateColumn, fakeColumn]);
+      expect(server.requests).to.have.length(4);
     });
 
     it('passes through errors', (done) => {
@@ -925,6 +943,39 @@ describe('SoqlDataProvider', function() {
       }).catch(() => done());
 
       _respondWithError('');
+    });
+  });
+
+  describe('match()', function() {
+    let soqlDataProvider;
+
+    beforeEach(() => {
+      server = sinon.fakeServer.create();
+      soqlDataProvider = new SoqlDataProvider({
+        domain: VALID_DOMAIN,
+        datasetUid: VALID_DATASET_UID
+      });
+    });
+
+    it('fetches a limit 1 query', () => {
+      soqlDataProvider.match('columnName', 'something');
+      expect(server.requests).to.have.length(1);
+    });
+
+    it('rejects when term is not found', (done) => {
+      soqlDataProvider.match('columnName', 'something').
+        then(done).
+        catch(() => done());
+
+      server.respond([200, {'Content-Type': 'application/json'}, '[]']);
+    });
+
+    it('resolves when term is found', (done) => {
+      soqlDataProvider.match('columnName', 'something').
+        then(() => done()).
+        catch(done);
+
+      server.respond([200, {'Content-Type': 'application/json'}, '[{"columnName": "value"}]']);
     });
   });
 });

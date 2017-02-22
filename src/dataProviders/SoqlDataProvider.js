@@ -216,12 +216,39 @@ function SoqlDataProvider(config) {
               };
           }
         });
+      } else if (dataTypeName === 'text') {
+        const escapedFieldName = escapeColumnName(fieldName);
+        const select = `${escapedFieldName}+as+item,count(${escapedFieldName})+as+count`;
+        const orderBy = `count(${escapedFieldName})+DESC`;
+        const queryString = `$select=${select}&$order=${orderBy}&$group=${escapedFieldName}&$limit=25`;
+        const url = urlForQuery(queryString);
+
+        return makeSoqlGetRequest(url).then((result) => {
+          return {
+            top: result
+          };
+        });
       } else {
         return Promise.resolve(null);
       }
     });
 
     return Promise.all(promises);
+  };
+
+  this.match = function(columnName, term) {
+    const escapedColumnName = escapeColumnName(columnName);
+    const select = `${escapedColumnName}`;
+    const where = `${escapedColumnName}="${term}"`;
+    const queryString = `$select=${select}&$where=${where}&$limit=1`;
+    const url = urlForQuery(queryString);
+
+    return makeSoqlGetRequest(url).then((result) => {
+      return new Promise((resolve, reject) => {
+        return _.isArray(result) && result.length === 1 ?
+          resolve() : reject();
+      });
+    });
   };
 
   /**

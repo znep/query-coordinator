@@ -131,11 +131,26 @@ body {
       // this is a nice round number...
       // because the table height needs to be divisible by
       // the number of rows...plus...some
-      height: 494px;
-      border: 1px solid $light-grey-4;
+      height: 543px;
 
-      .socrata-paginated-table {
+      border: none;
+      background: transparent;
+
+      .socrata-visualization {
+        border: none;
+      }
+
+      table {
         background-color: $white; // why do i have to do this?
+      }
+
+      .socrata-table {
+        border: 1px solid $light-grey-4;
+        width: calc(100% - 2px); // Compensate for table border.
+      }
+
+      .socrata-pager,  {
+        border: 1px solid $light-grey-4;
       }
     }
 

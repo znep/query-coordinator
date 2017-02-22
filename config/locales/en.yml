@@ -4718,6 +4718,32 @@ en:
       no_changes_to_be_saved: No changes to be saved.
       previous: Previous
       save: Save
+    videos:
+      title: Video guides
+      intro_html: Welcome to %{company_name}! We're glad that you're excited about open data. To help you get started with our tools, we've created a series of videos designed to teach you the basics about interacting with this data site. If you have any further questions, feel free to visit our <a href="http://support.socrata.com" rel="external">support page</a>.
+      no_results: There are no videos in this category just yet. We're working on adding more, so check back often
+      related_videos:
+        title: Related Videos
+        see_more_link: see more
+      filters:
+        tell_me_about:
+          title: Tell me about
+          everything: Everything
+          maps: Maps
+          charts: Charts
+          analyzing: Analyzing
+          sharing: Sharing
+          publishing: Publishing
+        i_am_a_data:
+          title: I am a data
+          consumer: Consumer
+          publisher: Publisher
+          everything: Everything
+        sort_on:
+          title: Sort on
+          basics_first: Basics First
+          alphabetical: Alphabetical
+          most_recent: Most Recent
   support:
     array:
       last_word_connector: ", and "

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { InfoPane } from 'socrata-components';
 import MetadataTable from '../../common/components/MetadataTable';
 import SchemaPreview from './SchemaPreview';
-import MetadataSidebar from './MetadataSidebar';
+import HomePaneSidebar from './HomePaneSidebar';
 import DatasetPreview from './DatasetPreview';
 import * as Links from '../links';
 import { Link } from 'react-router';
@@ -153,7 +153,7 @@ function ShowUpdate({ view, routing, db }) {
           {dataTable}
         </section>
       </div>
-      <MetadataSidebar />
+      <HomePaneSidebar />
     </div>
   );
 }

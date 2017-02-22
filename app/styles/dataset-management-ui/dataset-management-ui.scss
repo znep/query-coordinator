@@ -192,39 +192,65 @@ body {
       }
     }
 
-    .metadata-sidebar {
+    #home-pane-sidebar {
       width: 24em;
       border-left: 1px solid $light-grey-4;
       text-align: center;
       padding-top: 2em;
 
-      p.how-to-publish-blurb {
-        margin-bottom: 2em;
+      h3 {
+        font-size: 17px;
       }
+
+      p.sidebar-blurb {
+        font-style: italic;
+        font-size: 14px;
+        color: $grey;
+        margin-top: 0;
+        margin-bottom: 1.5em;
+      }
+
+      div {
+        background: $white;
+        border: 1px solid $light-grey-3;
+        margin: 0 2rem 2rem;
+        padding-top: 1rem;
+        padding-bottom: 2rem;
+
+        .icon {
+          font-size: 200%;
+          color: $primary-dark;
+        }
+
+        button {
+          min-width: 150px;
+        }
+      }
+
       p {
         margin: 13px; // TODO: wtf where does this come from
       }
 
-      .next-step {
-        margin: 1em;
-        padding: 1em;
-        border: 1px solid $light-grey-4;
-        background: $white;
-        button {
-          margin: auto;
-        }
-        i {
-          font-size: 200%;
-          color: $primary-base;
-        }
-        i.finished {
-          position: relative;
-          color: $alternate-3-base;
-          font-size: 120%;
-          top: -0.5em;
-          left: -0.5em;
-        }
-      }
+      /* .next-step { */
+      /*   margin: 1em; */
+      /*   padding: 1em; */
+      /*   border: 1px solid $light-grey-4; */
+      /*   background: $white; */
+      /*   button { */
+      /*     margin: auto; */
+      /*   } */
+      /*   i { */
+      /*     font-size: 200%; */
+      /*     color: $primary-base; */
+      /*   } */
+      /*   i.finished { */
+      /*     position: relative; */
+      /*     color: $alternate-3-base; */
+      /*     font-size: 120%; */
+      /*     top: -0.5em; */
+      /*     left: -0.5em; */
+      /*   } */
+      /* } */
     }
   }
 

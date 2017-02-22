@@ -1606,14 +1606,18 @@ en:
       metadata: Metadata
       metadata_manage_button: Manage Metadata
       metadata_blurb: Tell people about this dataset.
-      getting_started: Getting Started
-      publishing_data_is_easy_and_fun: You'll be publishing data in no time.
-      adding_data_blurb: Adding data will enable visualizations and API access.
-      adding_data: Adding Data
-      adding_metadata_blurb: Metadata is crucial to give your end users context.
-      adding_metadata: Adding Metadata
-      add_column_metadata: Add Column Metadata
-      add_column_metadata_blurb: Column metadata will help people understand what the column means.
+      sidebar:
+        title: Beyond the Basics
+        blurb: Make your data even better
+        column_descriptions: Column Descriptions
+        column_descriptions_blurb: Describing each column is a huge help for people.
+        column_descriptions_button: Describe
+        visualize: Visualize
+        visualize_blurb: Visualize your data to derive new insights.
+        visualize_button: Create New...
+        feature: Feature
+        feature_blurb: Feature this dataset on your home page!
+        feature_button: Feature
       column_metadata_manage_button: Manage Column Metadata
       data: Choose Data Source
       data_manage_button: Manage Data

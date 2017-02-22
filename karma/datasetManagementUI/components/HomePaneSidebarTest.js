@@ -1,10 +1,10 @@
-import MetadataSidebar from 'components/MetadataSidebar';
+import HomePaneSidebar from 'components/HomePaneSidebar';
 import { getEmptyStore } from '../testStore';
 import {
   insertFromServer
 } from 'actions/database';
 
-describe('components/MetadataSidebar', () => {
+describe('components/HomePaneSidebar', () => {
   it('shows 0 checkmarks when nothing is done', () => {
     const store = getEmptyStore();
     store.dispatch(insertFromServer('views', {
@@ -16,7 +16,7 @@ describe('components/MetadataSidebar', () => {
       tags: [],
       description: ''
     }));
-    const element = renderComponentWithStore(MetadataSidebar, {}, store);
+    const element = renderComponentWithStore(HomePaneSidebar, {}, store);
     expect(element.querySelectorAll('i.finished').length).to.equal(0);
   });
 
@@ -32,7 +32,7 @@ describe('components/MetadataSidebar', () => {
       description: ''
     }));
     store.dispatch(insertFromServer('uploads', { id: 'dummy' }));
-    const element = renderComponentWithStore(MetadataSidebar, {}, store);
+    const element = renderComponentWithStore(HomePaneSidebar, {}, store);
     expect(element.querySelectorAll('i.finished').length).to.equal(1);
   });
 
@@ -47,7 +47,7 @@ describe('components/MetadataSidebar', () => {
       tags: [],
       description: 'durp'
     }));
-    const element = renderComponentWithStore(MetadataSidebar, {}, store);
+    const element = renderComponentWithStore(HomePaneSidebar, {}, store);
     expect(element.querySelectorAll('i.finished').length).to.equal(1);
   });
 
@@ -69,7 +69,7 @@ describe('components/MetadataSidebar', () => {
       output_schema_id: 'dummy',
       output_column_id: 'dummy'
     }));
-    const element = renderComponentWithStore(MetadataSidebar, {}, store);
+    const element = renderComponentWithStore(HomePaneSidebar, {}, store);
     expect(element.querySelectorAll('i.finished').length).to.equal(3);
   });
 });

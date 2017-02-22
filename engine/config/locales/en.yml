@@ -27,3 +27,7 @@ en:
   preview:
     disable: Disable Preview Mode
     warning: This is a PREVIEW version of your site.
+  notifications:
+    product_updates: Product Updates
+    view_older: View Older News
+    error_text_html: <strong>Sorry!</strong> We can't fetch notifications right now.

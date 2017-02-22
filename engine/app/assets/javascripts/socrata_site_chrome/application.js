@@ -11,3 +11,4 @@
 // about supported directives.
 //
 //= require_tree .
+//= require socrata-notifications/js/main.js

@@ -12,11 +12,11 @@ See [engine/README.md](file:///engine/README.md)
 
 ## Development
 
-After checking out the repo, run `bundle install`.
+After checking out the repo, run `bundle install && npm install`.
 
 Then `cd engine && npm install`
 
-To run on your local development machine:
+To run on your local development machine, in the root of the repo run:
 
     sh rails s -p 4000
 

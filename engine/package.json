@@ -7,7 +7,9 @@
   },
   "author": "Socrata Engineering <engineering@socrata.com>",
   "license": "UNLICENSED",
-  "dependencies": {},
+  "dependencies": {
+    "socrata-notifications": "^1.0.1"
+  },
   "devDependencies": {
     "eslint": "^3.0.1"
   }

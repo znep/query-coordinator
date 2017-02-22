@@ -33,6 +33,10 @@ module SocrataSiteChrome
       SocrataSiteChrome::FeatureSet.new(request.host).feature_enabled?('govstat') rescue false
     end
 
+    def get_feature_flag(flag)
+      Signaller.for(flag: flag).value(on_domain: request.host)
+    end
+
     def header_title
       localized('header.site_name', site_chrome_instance.locales)
     end

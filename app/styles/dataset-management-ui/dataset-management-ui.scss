@@ -129,17 +129,16 @@ body {
 
   .table-preview > a {
     float: right;
-    height: 17px;
-    margin-top: -11px;
-
-    button {
-      float: right;
-    }
+    margin-top: 2px;
   }
 
   .table-preview {
     h2 {
       float: left;
+    }
+
+    .result-card {
+      clear: both;
     }
 
     .table-contents {
@@ -187,6 +186,11 @@ body {
   }
 
   #home-pane {
+    h2 {
+      font-weight: 500;
+      padding: 11px 0;
+    }
+
     flex-grow: 1;
 
     margin: 0;

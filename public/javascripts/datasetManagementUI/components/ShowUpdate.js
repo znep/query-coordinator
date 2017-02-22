@@ -12,7 +12,6 @@ import { latestOutputSchema } from '../selectors';
 function wrapEmpty(result) {
   return (
     <div className="result-card">
-      <div className="entry-header"></div>
       <div className="entry-main data-table">
         {result}
       </div>
@@ -23,9 +22,9 @@ function wrapEmpty(result) {
 function noDataYetView() {
   return wrapEmpty(
     <div className="entry-description table-info">
-      <h6>
+      <h3 className="h6">
         {I18n.home_pane.no_data_yet}
-      </h6>
+      </h3>
       <p>
         {I18n.home_pane.adding_data_is_easy_and_fun}
       </p>
@@ -48,7 +47,7 @@ function outputSchemaView(db, outputSchema) {
   if (!inputSchema) return;
   return wrapEmpty(
     <div className="entry-description table-info view-output-schema">
-      <h6>{I18n.home_pane.data_uploaded}</h6>
+      <h3 className="h6">{I18n.home_pane.data_uploaded}</h3>
       <p>
         {I18n.home_pane.data_uploaded_blurb}
       </p>
@@ -68,7 +67,7 @@ function outputSchemaView(db, outputSchema) {
 function upsertInProgressView() {
   return wrapEmpty(
     <div className="entry-description table-info upsert-in-progress">
-      <h6>{I18n.home_pane.being_processed}</h6>
+      <h3 className="h6">{I18n.home_pane.being_processed}</h3>
       <p>
         There will be a notify me button here at some point
       </p>
@@ -149,7 +148,7 @@ function ShowUpdate({ view, routing, db }) {
         <SchemaPreview db={db} />
 
         <section className="management-ui-section table-preview">
-          <h2>{I18n.home_pane.table_preview}</h2>
+          <h2 className="landing-page-section-header">{I18n.home_pane.table_preview}</h2>
 
           <Link to={Links.uploads}>
             <button

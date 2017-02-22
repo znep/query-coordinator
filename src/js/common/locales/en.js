@@ -18,13 +18,11 @@ export default {
       viewers_can_edit_description: 'Viewers can see and change the values of this filter.'
     },
     configure_filter: 'Configure Filter',
-    date_range: 'Date Range',
     filter: 'Filter:',
     from: 'From',
     less: 'Less',
     more: 'More',
     no_options_found: 'No top values match your input',
-    range: 'Range',
     remove_filter: 'Remove Filter',
     search: 'Search options',
     text_filter: {

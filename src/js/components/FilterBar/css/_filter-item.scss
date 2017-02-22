@@ -8,6 +8,14 @@ $max-filter-width: 130px;
   display: inline-block;
   vertical-align: top;
 
+  .socrata-icon {
+    color: $light-grey-0;
+
+    svg {
+      vertical-align: inherit;
+    }
+  }
+
   .filter-control-container {
     display: inline-block;
     position: relative;
@@ -15,7 +23,6 @@ $max-filter-width: 130px;
     .filter-control-toggle {
       padding: 5px 10px;
       padding-right: 20px;
-      background: $white;
       border: 1px solid $light-grey-3;
       position: relative;
       cursor: pointer;
@@ -28,16 +35,15 @@ $max-filter-width: 130px;
       text-overflow: ellipsis;
       white-space: nowrap;
 
-      .dropdown-caret {
-        color: $light-grey-0;
+      .arrow-down-icon {
         position: absolute;
-        right: 0;
-        top: 3px;
-        font-size: 15px;
+        right: 6px;
+        top: 8px;
         z-index: 0;
 
-        &:after {
-          margin: 0;
+        .socrata-icon svg {
+          height: 15px;
+          width: 15px;
         }
       }
 
@@ -62,6 +68,12 @@ $max-filter-width: 130px;
 
       .filter-control-title {
         margin: 8px;
+
+        h3 {
+          font-size: 12px;
+          font-weight: normal;
+          letter-spacing: 0;
+        }
       }
 
       .range-filter-container {
@@ -86,6 +98,10 @@ $max-filter-width: 130px;
             margin: 8px;
           }
         }
+
+        .date-range-picker {
+          margin-top: 15px;
+        }
       }
     }
   }
@@ -96,13 +112,17 @@ $max-filter-width: 130px;
     vertical-align: top;
 
     .filter-config-toggle {
-      background: $white;
       border: 1px solid $light-grey-3;
       margin-left: -1px;
-      padding: 5px;
+      padding: 7px 2px 3px 5px;
       cursor: pointer;
       border-top-right-radius: 1px;
       border-bottom-right-radius: 1px;
+
+      .kebab-icon .socrata-icon svg {
+        height: 12px;
+        width: 12px;
+      }
 
       &.left + .filter-config {
         left: 0;

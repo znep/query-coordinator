@@ -1,10 +1,12 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import classNames from 'classnames';
 import CalendarDateFilter from './CalendarDateFilter';
 import NumberFilter from './NumberFilter';
 import TextFilter from './TextFilter';
 import FilterConfig from './FilterConfig';
+import SocrataIcon from '../SocrataIcon';
 import { translate as t } from '../../common/I18n';
 import { ENTER, ESCAPE, SPACE, isOneOfKeys } from '../../common/keycodes';
 
@@ -147,31 +149,6 @@ export const FilterItem = React.createClass({
     });
   },
 
-  renderFilterControl() {
-    const { filter, column, isValidTextFilterColumnValue } = this.props;
-    const { isControlOpen } = this.state;
-
-    if (!isControlOpen) {
-      return null;
-    }
-
-    const filterProps = {
-      filter,
-      column,
-      onCancel: this.onCancel,
-      onUpdate: this.onUpdate,
-      isValidTextFilterColumnValue,
-      ref: _.partial(_.set, this, 'filterControl')
-    };
-
-    switch (column.dataTypeName) {
-      case 'calendar_date': return <CalendarDateFilter {...filterProps} />;
-      case 'number': return <NumberFilter {...filterProps} />;
-      case 'text': return <TextFilter {...filterProps} />;
-      default: return null;
-    }
-  },
-
   renderFilterConfig() {
     const { filter, onUpdate } = this.props;
     const { isConfigOpen } = this.state;
@@ -192,49 +169,93 @@ export const FilterItem = React.createClass({
 
   renderFilterConfigToggle() {
     const { isReadOnly } = this.props;
-    const { isLeftAligned } = this.state;
-
-    const alignment = isLeftAligned ? 'left' : 'right';
+    const { isLeftAligned, isConfigOpen } = this.state;
 
     if (isReadOnly) {
       return null;
-    } else {
-      return (
-        <div
-          className={`filter-config-toggle ${alignment}`}
-          aria-label={t('filter_bar.configure_filter')}
-          tabIndex="0"
-          role="button"
-          onClick={this.toggleConfig}
-          onKeyDown={this.onKeyDownConfig}
-          ref={(el) => this.filterConfigToggle = el}>
-          <span className="socrata-icon-kebab" role="presentation" />
-        </div>
-      );
+    }
+
+    const toggleProps = {
+      className: classNames('filter-config-toggle btn-default', {
+        left: isLeftAligned,
+        right: !isLeftAligned,
+        active: isConfigOpen
+      }),
+      'aria-label': t('filter_bar.configure_filter'),
+      tabIndex: '0',
+      role: 'button',
+      onClick: this.toggleConfig,
+      onKeyDown: this.onKeyDownConfig,
+      ref: _.partial(_.set, this, 'filterConfigToggle')
+    };
+
+    return (
+      <div {...toggleProps}>
+        <span className="kebab-icon">
+          <SocrataIcon name="kebab" />
+        </span>
+      </div>
+    );
+  },
+
+  renderFilterControl() {
+    const { filter, column, isValidTextFilterColumnValue } = this.props;
+    const { isControlOpen } = this.state;
+
+    if (!isControlOpen) {
+      return null;
+    }
+
+    const filterProps = {
+      filter,
+      column,
+      isValidTextFilterColumnValue,
+      onCancel: this.onCancel,
+      onUpdate: this.onUpdate,
+      ref: _.partial(_.set, this, 'filterControl')
+    };
+
+    switch (column.dataTypeName) {
+      case 'calendar_date': return <CalendarDateFilter {...filterProps} />;
+      case 'number': return <NumberFilter {...filterProps} />;
+      case 'text': return <TextFilter {...filterProps} />;
+      default: return null;
     }
   },
 
-  render() {
+  renderFilterControlToggle() {
     const { column } = this.props;
-    const { isLeftAligned } = this.state;
+    const { isLeftAligned, isControlOpen } = this.state;
 
-    const alignment = isLeftAligned ? 'left' : 'right';
+    const toggleProps = {
+      className: classNames('filter-control-toggle btn-default', {
+        left: isLeftAligned,
+        right: !isLeftAligned,
+        active: isControlOpen
+      }),
+      'aria-label': `${t('filter_bar.filter')} ${column.name}`,
+      tabIndex: '0',
+      role: 'button',
+      onClick: this.toggleControl,
+      onKeyDown: this.onKeyDownControl,
+      ref: _.partial(_.set, this, 'filterControlToggle')
+    };
 
+    return (
+      <div {...toggleProps}>
+        {column.name}
+        <span className="arrow-down-icon">
+          <SocrataIcon name="arrow-down" />
+        </span>
+      </div>
+    );
+  },
+
+  render() {
     return (
       <div className="filter-bar-filter">
         <div className="filter-control-container">
-          <div
-            className={`filter-control-toggle ${alignment}`}
-            aria-label={`${t('filter_bar.filter')} ${column.name}`}
-            tabIndex="0"
-            role="button"
-            onClick={this.toggleControl}
-            onKeyDown={this.onKeyDownControl}
-            ref={(el) => this.filterControlToggle = el}>
-            {column.name}
-            <span className="dropdown-caret" role="presentation" />
-          </div>
-
+          {this.renderFilterControlToggle()}
           {this.renderFilterControl()}
         </div>
 

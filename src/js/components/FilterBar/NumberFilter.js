@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import Slider from '../Slider';
+import FilterHeader from './FilterHeader';
 import FilterFooter from './FilterFooter';
 import { translate as t } from '../../common/I18n';
 import { getPrecision, roundToPrecision } from '../../common/numbers';
@@ -156,7 +157,7 @@ export const NumberFilter = React.createClass({
   },
 
   render() {
-    const { onCancel } = this.props;
+    const { column, onCancel } = this.props;
 
     const filterFooterProps = {
       disableApplyFilter: this.shouldDisableApply(),
@@ -168,7 +169,7 @@ export const NumberFilter = React.createClass({
     return (
       <div className="filter-controls number-filter">
         <div className="range-filter-container">
-          <div className="filter-control-title">{t('filter_bar.range')}</div>
+          <FilterHeader name={column.name} />
           {this.renderSlider()}
           {this.renderInputFields()}
         </div>

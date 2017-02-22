@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
-import { translate as t } from '../../common/I18n';
 import DateRangePicker from '../DateRangePicker';
+import FilterHeader from './FilterHeader';
 import FilterFooter from './FilterFooter';
 import { getDefaultFilterForColumn } from './filters';
 import moment from 'moment';
@@ -107,10 +107,12 @@ export const CalendarDateFilter = React.createClass({
   },
 
   render() {
+    const { column } = this.props;
+
     return (
       <div className="filter-controls calendar-date-filter">
         <div className="range-filter-container">
-          <div className="filter-control-title">{t('filter_bar.date_range')}</div>
+          <FilterHeader name={column.name} />
           {this.renderDateRangePicker()}
         </div>
         {this.renderFilterFooter()}

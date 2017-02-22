@@ -13,6 +13,7 @@ import {
 
 describe('FilterBar', () => {
   let element;
+  let container;
 
   function getProps(props) {
     return _.defaultsDeep({}, props, {
@@ -37,8 +38,25 @@ describe('FilterBar', () => {
   const getCollapsedFilters = (element) => element.querySelectorAll('.collapsed-filters-container .filter-bar-filter');
   const getExpandControl = (element) => element.querySelector('.btn-expand-control');
 
+  const getWrappedComponent = (component) => <div style={{ width: '450px' }}>{component}</div>;
+  const getContainer = (element) => element.querySelector('.filter-bar-container');
+
+  const render = (props) => {
+    const component = React.createElement(FilterBar, getProps(props));
+
+    container = document.createElement('div');
+    document.body.appendChild(container);
+
+    return ReactDOM.render(getWrappedComponent(component), container);
+  };
+
   beforeEach(() => {
-    element = renderComponent(FilterBar, getProps());
+    element = render();
+  });
+
+  afterEach(() => {
+    ReactDOM.unmountComponentAtNode(container);
+    document.body.removeChild(container);
   });
 
   it('renders an element', () => {
@@ -54,33 +72,33 @@ describe('FilterBar', () => {
   });
 
   it('renders filters if provided', () => {
-    element = renderComponent(FilterBar, getProps({
+    element = render({
       filters: [ mockValueRangeFilter ]
-    }));
+    });
 
     expect(getFilters(element).length).to.eq(1);
   });
 
   it('renders a hidden expand control', () => {
-    element = renderComponent(FilterBar, getProps({
+    element = render({
       filters: [ mockValueRangeFilter ]
-    }));
+    });
 
     expect(getExpandControl(element).classList.contains('is-hidden')).to.eq(true);
   });
 
   describe('when isReadOnly is true', () => {
     it('does not render the add filter controls', () => {
-      element = renderComponent(FilterBar, getProps({
+      element = render({
         filters: [ mockValueRangeFilter ],
         isReadOnly: true
-      }));
+      });
 
       expect(getAddFilter(element)).to.not.exist;
     });
 
     it('does not render filters that have isHidden set to true', () => {
-      element = renderComponent(FilterBar, getProps({
+      element = render({
         filters: [
           mockValueRangeFilter,
           _.merge({}, mockValueRangeFilter, {
@@ -88,32 +106,32 @@ describe('FilterBar', () => {
           })
         ],
         isReadOnly: true
-      }));
+      });
 
       expect(getFilters(element).length).to.eq(1);
     });
 
     it('does not render if none of the filters are visible', () => {
-      element = renderComponent(FilterBar, getProps({
+      element = render({
         filters: [
           _.merge({}, mockValueRangeFilter, {
             isHidden: true
           })
         ],
         isReadOnly: true
-      }));
+      });
 
-      expect(element).to.not.exist;
+      expect(element.children.length).to.equal(0);
     });
 
     describe('when at least one filter is visible', () => {
       beforeEach(() => {
-        element = renderComponent(FilterBar, getProps({
+        element = render({
           filters: [
             mockValueRangeFilter
           ],
           isReadOnly: true
-        }));
+        });
       });
 
       it('renders', () => {
@@ -131,41 +149,16 @@ describe('FilterBar', () => {
   });
 
   describe('when there is not enough space for all the filters', () => {
-    let container;
-    const getWrappedComponent = (component) => <div style={{ width: '450px' }}>{component}</div>;
-    const getContainer = (element) => element.querySelector('.filter-bar-container');
-
     beforeEach(() => {
-      const component = React.createElement(FilterBar, getProps({
-        filters: [ mockValueRangeFilter, mockBinaryOperatorFilter ]
-      }));
-
-      container = document.createElement('div');
-      document.body.appendChild(container);
-
-      element = ReactDOM.render(getWrappedComponent(component), container);
+      element = render({ filters: [mockValueRangeFilter, mockBinaryOperatorFilter, mockValueRangeFilter] });
     });
 
-    afterEach(() => {
-      ReactDOM.unmountComponentAtNode(container);
-      document.body.removeChild(container);
-    });
-
-    it('renders only the filters that will fit', () => {
-      expect(getVisibleFilters(element).length).to.eq(1);
+    it('renders just the filters that will fit', () => {
+      expect(getVisibleFilters(element).length).to.eq(2);
     });
 
     it('renders the hidden collapsed filters', () => {
       expect(getCollapsedFilters(element).length).to.eq(1);
-    });
-
-    it('expands the collapsed filters when a new filter is added', () => {
-      const component = React.createElement(FilterBar, getProps({
-        filters: [ mockValueRangeFilter, mockBinaryOperatorFilter, mockBinaryOperatorFilter ]
-      }));
-      element = ReactDOM.render(getWrappedComponent(component), container);
-
-      expect(getContainer(element).classList.contains('filter-bar-expanded')).to.eq(true);
     });
 
     describe('expand control', () => {

@@ -79,7 +79,7 @@ export const ExpandableMenuListItem = React.createClass({
           {icon}
           {text}
           <span className="arrow">
-            <SocrataIcon name="chevron-down" />
+            <SocrataIcon name="arrow-down" />
           </span>
         </button>
         {content}

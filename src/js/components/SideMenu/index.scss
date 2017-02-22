@@ -1,10 +1,10 @@
 @import "variables/colors";
 
-$icon-height: 13px;
-$icon-width: 13px;
 $menu-item-background-color-active: #555;
 $menu-item-border-color: #666;
 $menu-item-border-color-active: #888;
+$menu-dismiss-bar-hover-color: #333;
+$menu-dismiss-icon-color: #aaa;
 
 .side-menu {
   position: fixed;
@@ -37,6 +37,17 @@ $menu-item-border-color-active: #888;
     }
   }
 
+  .socrata-icon {
+    width: 15px;
+    height: 15px;
+    color: $white;
+
+    svg {
+      width: 15px;
+      height: 15px;
+    }
+  }
+
   .menu-header {
     margin-top: 40px;
 
@@ -44,23 +55,25 @@ $menu-item-border-color-active: #888;
       color: $white;
       font-weight: lighter;
       text-align: center;
-      padding: 20px 0;
+      padding: 20px 0 1px 0;
     }
 
     .menu-header-dismiss {
       position: absolute;
       top: 0;
       right: 0;
-      padding: 6px;
+      padding: 8px 12px 6px 12px;
 
       .socrata-icon {
         float: right;
-        color: $light-grey-1;
+        color: $menu-dismiss-icon-color;
+        width: 12px;
+        height: 12px;
       }
 
       &:hover,
       &:focus {
-        background-color: $dark-grey-3;
+        background-color: $menu-dismiss-bar-hover-color;
 
         .socrata-icon {
           color: $white;
@@ -106,6 +119,7 @@ $menu-item-border-color-active: #888;
         &:focus,
         &.active {
           background-color: $menu-item-background-color-active;
+          color: $header-accent-color;
 
           &:before {
             background-color: $menu-item-border-color-active;
@@ -128,16 +142,18 @@ $menu-item-border-color-active: #888;
 
         span {
           display: inline-block;
-          margin-right: 20px;
+          vertical-align: middle;
+          margin-right: 25px;
         }
 
         .arrow {
           display: inline-block;
           float: right;
-          margin-top: 3px;
           margin-right: 0;
 
           .socrata-icon {
+            height: 17px;
+            width: 17px;
             margin-right: 0;
             transition: transform 0.15s ease-in-out;
           }
@@ -146,7 +162,7 @@ $menu-item-border-color-active: #888;
 
       .menu-list-item-content {
         background-color: $menu-item-background-color-active;
-        border-left: solid 7px $menu-item-border-color-active;
+        border-left: solid 7px $menu-item-border-color;
         max-height: 0;
         overflow: hidden;
 
@@ -154,6 +170,31 @@ $menu-item-border-color-active: #888;
           padding: 20px;
           border-bottom: solid 1px $menu-item-border-color;
           display: none;
+        }
+
+        .block-label {
+          color: $white;
+          line-height: 15px;
+        }
+
+        .text-input {
+          width: 100%;
+        }
+
+        .text-area {
+          width: 100%;
+          height: 80px;
+          max-width: 100%;
+          padding: 8px;
+          margin-bottom: 7px;
+        }
+
+        .btn {
+          width: 100%;
+        }
+
+        form {
+          margin-bottom: 0;
         }
       }
 
@@ -163,12 +204,6 @@ $menu-item-border-color-active: #888;
         }
       }
     }
-  }
-
-  .socrata-icon {
-    width: $icon-width;
-    height: $icon-height;
-    color: $white;
   }
 }
 

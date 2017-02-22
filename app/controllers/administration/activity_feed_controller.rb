@@ -17,6 +17,8 @@ class Administration::ActivityFeedController < AdministrationController
     activity_type = params[:activity_type]
     activity_type = activity_type == 'All' ? nil : activity_type
 
+    activity_status = params[:activity_status] == 'All' ? nil : params[:activity_status]
+
     # parse start/end date from params
     date_string = params[:date_range]
     start_date = nil
@@ -41,6 +43,7 @@ class Administration::ActivityFeedController < AdministrationController
       :offset => offset,
       :limit => page_size + 1,
       :activityType => activity_type,
+      :status => activity_status,
       :startDate => start_date,
       :endDate => end_date
     )
@@ -52,6 +55,7 @@ class Administration::ActivityFeedController < AdministrationController
       :has_prev_page? => page_idx > 1,
       :params => {
         :activity_type => activity_type,
+        :activity_status => activity_status,
         :date_range => date_string
       }.select { |_, v| v.present? }
     }

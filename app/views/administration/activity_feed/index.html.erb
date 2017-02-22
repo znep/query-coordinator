@@ -60,6 +60,21 @@
         params[:activity_type]
       )) %>
 
+      <label for="activity_status"><%= t("#{activity_feed_prefix}.index_page.status") %>:</label>
+      <%= select_tag(
+        :activity_status,
+        options_for_select(
+        [
+          [t("#{activity_feed_prefix}.filters.all"), 'All'],
+          [t("#{activity_feed_prefix}.statuses.in_progress"), 'InProgress'],
+          [t("#{activity_feed_prefix}.statuses.success"), 'Success'],
+          [t("#{activity_feed_prefix}.statuses.success_with_data_errors"), 'SuccessWithDataErrors'],
+          [t("#{activity_feed_prefix}.statuses.failure"), 'Failure']
+
+        ],
+        params[:activity_status]
+      )) %>
+
       <label for="time-control-input">Date:</label>
       <input name="date_range" type="text" id="time-control-input" class="currentTimeSlice" readonly="readonly" value='<%= if params[:date_range].present? then CGI.unescapeHTML params[:date_range] end %>' />
 
@@ -135,7 +150,6 @@
               <%= t("#{activity_feed_prefix}.statuses.#{activity.status}") %>
             <% end %>
 
-            
           </td>
           <td>
             <%= restore_button(activity) %>

@@ -10,7 +10,7 @@ export class EditVisualizationButton extends PureComponent {
 
     return (
       <button
-        className="edit-visualization-button btn btn-primary"
+        className="edit-visualization-button btn btn-alternate-2"
         onClick={onClickHandler(vifIndex)}>
         {t('edit_visualization')}
       </button>

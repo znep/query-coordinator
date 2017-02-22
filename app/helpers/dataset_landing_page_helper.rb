@@ -37,7 +37,10 @@ module DatasetLandingPageHelper
 
   def render_dataset_landing_page_server_config
     server_config = {
-      :airbrakeKey => ENV['DATASET_LANDING_PAGE_AIRBRAKE_API_KEY'] || APP_CONFIG.dataset_landing_page_airbrake_api_key,
+      :airbrakeKey => ENV['DATASET_LANDING_PAGE_AIRBRAKE_API_KEY'] ||
+        APP_CONFIG.dataset_landing_page_airbrake_api_key,
+      :airbrakeProjectId => ENV['DATASET_LANDING_PAGE_AIRBRAKE_PROJECT_ID'] ||
+        APP_CONFIG.dataset_landing_page_airbrake_project_id,
       :csrfToken => form_authenticity_token.to_s,
       :currentUser => current_user,
       :domain => CurrentDomain.cname,

@@ -1,22 +1,11 @@
-$default-font-path: "socrata-components/dist/fonts/";
-
-@import "styleguide-no-tag-level.scss";
-@import "_colors.scss";
+@import "../../common";
+@import "_loader.scss";
 
 $error-color: #C4282D;
 
 .form {
   @include form;
   margin-bottom: 0;
-}
-
-.spinner {
-  @extend .spinner-default;
-  @extend .spinner-large;
-
-  position: absolute;
-  left: calc(50% - 32px);
-  top: calc(50% - 32px);
 }
 
 .label {

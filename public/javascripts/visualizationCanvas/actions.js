@@ -101,6 +101,40 @@ export const handleSaveError = () => ({
   type: HANDLE_SAVE_ERROR
 });
 
+/*
+ * Opens the share modal.
+ *
+ * Expected payload:
+ * {
+ *   vifIndex (int): Index of viz being shared.
+ * }
+ */
+export const OPEN_SHARE_MODAL = 'OPEN_SHARE_MODAL';
+export const openShareModal = (data) => ({
+  type: OPEN_SHARE_MODAL,
+  data
+});
+
+/**
+ * Closes the share modal.
+ */
+export const CLOSE_SHARE_MODAL = 'CLOSE_SHARE_MODAL';
+export const closeShareModal = () => ({
+  type: CLOSE_SHARE_MODAL
+});
+
+/**
+ * Sets embed size of the visualization being shared.
+ *
+ * Expected parameter:
+ * size (String): Size name. See ShareVisualizationModal for set of sizes allowed.
+ */
+export const SET_EMBED_SIZE = 'SET_EMBED_SIZE';
+export const setEmbedSize = (size) => ({
+  type: SET_EMBED_SIZE,
+  size
+});
+
 export const save = () => {
   return (dispatch, getState) => {
     const state = getState();

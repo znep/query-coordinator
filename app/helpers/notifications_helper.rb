@@ -59,6 +59,7 @@ module NotificationsHelper
 
   def zendesk_article_to_notification(article, last_seen)
     {
+      id: article['id'].to_s,
       title: article['title'],
       titleLink: article['html_url'],
       body: ActionView::Base.full_sanitizer.sanitize(article['body'])[0..149],

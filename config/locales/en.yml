@@ -4722,6 +4722,32 @@ en:
       no_changes_to_be_saved: No changes to be saved.
       previous: Previous
       save: Save
+    videos:
+      title: Video guides
+      intro_html: Welcome to %{company_name}! We're glad that you're excited about open data. To help you get started with our tools, we've created a series of videos designed to teach you the basics about interacting with this data site. If you have any further questions, feel free to visit our <a href="http://support.socrata.com" rel="external">support page</a>.
+      no_results: There are no videos in this category just yet. We're working on adding more, so check back often
+      related_videos:
+        title: Related Videos
+        see_more_link: see more
+      filters:
+        tell_me_about:
+          title: Tell me about
+          everything: Everything
+          maps: Maps
+          charts: Charts
+          analyzing: Analyzing
+          sharing: Sharing
+          publishing: Publishing
+        i_am_a_data:
+          title: I am a data
+          consumer: Consumer
+          publisher: Publisher
+          everything: Everything
+        sort_on:
+          title: Sort on
+          basics_first: Basics First
+          alphabetical: Alphabetical
+          most_recent: Most Recent
   support:
     array:
       last_word_connector: ", and "
@@ -4740,7 +4766,7 @@ en:
       editTitleAndDescription: Edit Title and Description
       title: Title
       description: Description
-      update: Update
+      update: Update Title and Description
     edit_menu_label: Menu
     edit_visualization: Edit
     exit_preview_mode: Exit Preview Mode
@@ -4757,5 +4783,18 @@ en:
     save_error: Oh no! Something went wrong.
     save_error_retry_prompt: Try saving again.
     save_success: Success! Your changes were saved!
+    share_modal:
+      title: Share and Embed
+      close: Close
+      web_link: Web Link
+      embed_code: Embed Code
+      preview: Preview
+      fallback_visualization_text: View the visualization
+      size_options: Size
+      sizes:
+        small: Small
+        medium: Medium
+        large: Large
+        wide: Wide
     unsaved_changes: Are you sure you want to close without saving changes?
     visualization_error: There was a problem rendering this visualization.

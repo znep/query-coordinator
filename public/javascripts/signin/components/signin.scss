@@ -1,31 +1,27 @@
-$default-font-path: "socrata-components/dist/fonts/";
-
-@import "styleguide-no-tag-level.scss";
-@import "_colors.scss";
-
-.center {
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-}
+@import "../common.scss";
 
 .container {
   @extend .center;
   @include base;
 
+  text-align: center;
   position: relative;
   display: flex;
   flex-direction: column;
   margin-top: 1.5em;
   margin-bottom: 1.5em;
-  max-width: 650px;
-  min-width: 445px;
   background: $white;
   border: 1px solid $light-grey-3;
   padding-left: 3em;
   padding-right: 3em;
   padding-bottom: 1.5em;
   padding-top: 3em;
+  min-width: 225px;
+
+  /* If the screen is big enough, take up less of it */
+  @media screen and (min-width: $break-large) {
+    max-width: 650px;
+  }
 }
 
 .header-container {
@@ -35,6 +31,8 @@ $default-font-path: "socrata-components/dist/fonts/";
 .header {
   @extend .center;
   @extend .h2;
+
+  text-align: center;
 }
 
 .inner-container {
@@ -43,7 +41,9 @@ $default-font-path: "socrata-components/dist/fonts/";
 }
 
 .form-container {
-  margin: 0 4em;
+  @media screen and (min-width: $break-large) {
+    margin: 0 4em;
+  }
 }
 
 .signup-container {
@@ -68,6 +68,7 @@ $default-font-path: "socrata-components/dist/fonts/";
 
 .back-to-options-icon {
   margin-right: 3px;
+  display: flex;
 
   & svg {
     width: 9px;

@@ -89,6 +89,7 @@ function getStyleguideIncludePaths() {
     socrataComponentsPath,
     path.join(socrataComponentsPath, 'styles'),
     path.join(socrataComponentsPath, 'styles/variables'),
+    path.join(socrataComponentsPath, 'styles/partials'),
     path.join(socrataComponentsPath, 'dist/fonts'),
     'node_modules/react-input-range/dist',
     'node_modules/react-datepicker/dist'

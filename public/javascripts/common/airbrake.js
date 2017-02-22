@@ -3,10 +3,10 @@ import AirbrakeJs from 'airbrake-js';
 
 let airbrake;
 
-function init() {
+function init(projectId, projectKey) {
   airbrake = new AirbrakeJs({
-    projectId: 126027,
-    projectKey: window.serverConfig.airbrakeKey
+    projectId,
+    projectKey
   });
 
   airbrake.addFilter((notice) => {
@@ -21,7 +21,7 @@ function init() {
   });
 
   airbrake.addReporter((notice) => {
-    console.error('Airbrake error: ', notice);
+    console.log('Airbrake error: ', notice);
   });
 }
 

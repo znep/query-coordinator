@@ -3,10 +3,11 @@ import React, { PropTypes, PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { components as SocrataVisualizations } from 'socrata-visualizations';
 import EditVisualizationButton from './EditVisualizationButton';
+import ShareVisualizationButton from './ShareVisualizationButton';
 
 export class Visualizations extends PureComponent {
   render() {
-    const { vifs, displayEditButtons } = this.props;
+    const { vifs, displayEditButtons, displayShareButtons } = this.props;
 
     if (_.isEmpty(vifs)) {
       return null;
@@ -18,9 +19,18 @@ export class Visualizations extends PureComponent {
         null;
     };
 
+    const renderShareButton = (index) => {
+      return displayShareButtons ?
+        <ShareVisualizationButton vifIndex={index} /> :
+        null;
+    };
+
     const visualizations = _.map(vifs, (vif, i) => (
       <div className="visualization-wrapper" key={i}>
-        {renderEditButton(i)}
+        <div className="action-btns">
+          {renderEditButton(i)}
+          {renderShareButton(i)}
+        </div>
         <SocrataVisualizations.Visualization vif={vif} />
       </div>
     ));

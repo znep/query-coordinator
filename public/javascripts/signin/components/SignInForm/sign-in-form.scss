@@ -1,24 +1,15 @@
-$default-font-path: "socrata-components/dist/fonts/";
-
-@import "styleguide-no-tag-level.scss";
-@import "_colors.scss";
+@import "../../common";
 
 .form {
   @include form;
 
   position: relative;
-  max-width: 350px;
   margin-left: auto;
   margin-right: auto;
-}
 
-.spinner {
-  @extend .spinner-default;
-  @extend .spinner-large;
-
-  position: absolute;
-  left: calc(50% - 32px);
-  top: calc(50% - 32px);
+  @media screen and (min-width: $break-large) {
+    max-width: 350px;
+  }
 }
 
 .reset-password {

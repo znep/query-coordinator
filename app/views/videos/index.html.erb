@@ -10,46 +10,44 @@
 <div class="topLevelVideoContainer"></div>
 
 <div class="contentBox filterBox">
-  <h3>Tell me about</h3>
+  <h3><%= t('screens.videos.filters.tell_me_about.title') %></h3>
   <ul class="filterCriteria">
-    <li><a href="#all" data-filter="all" class="selected">Everything</a></li>
-    <li><a href="#maps" data-filter="maps">Maps</a></li>
-    <li><a href="#charts" data-filter="charts">Charts</a></li>
-    <li><a href="#analyzing" data-filter="analyzing">Analyzing</a></li>
-    <li><a href="#sharing" data-filter="sharing">Sharing</a></li>
-    <li><a href="#publishing" data-filter="publishing">Publishing</a></li>
+    <li><a href="#all" data-filter="all" class="selected"><%= t('screens.videos.filters.tell_me_about.everything') %></a></li>
+    <li><a href="#maps" data-filter="maps"><%= t('screens.videos.filters.tell_me_about.maps') %></a></li>
+    <li><a href="#charts" data-filter="charts"><%= t('screens.videos.filters.tell_me_about.charts') %></a></li>
+    <li><a href="#analyzing" data-filter="analyzing"><%= t('screens.videos.filters.tell_me_about.analyzing') %></a></li>
+    <li><a href="#sharing" data-filter="sharing"><%= t('screens.videos.filters.tell_me_about.sharing') %></a></li>
+    <li><a href="#publishing" data-filter="publishing"><%= t('screens.videos.filters.tell_me_about.publishing') %></a></li>
   </ul>
 
-  <h3>I am a data</h3>
+    <h3><%= t('screens.videos.filters.i_am_a_data.title') %></h3>
   <ul class="audienceCriteria">
-    <li><a href="#consumer" data-audience="consumer">Consumer</a></li>
-    <li><a href="#publisher" data-audience="publisher">Publisher</a></li>
-    <li><a href="#all" data-audience="all" class="selected">Everything</a></li>
+    <li><a href="#consumer" data-audience="consumer"><%= t('screens.videos.filters.i_am_a_data.consumer') %></a></li>
+    <li><a href="#publisher" data-audience="publisher"><%= t('screens.videos.filters.i_am_a_data.publisher') %></a></li>
+    <li><a href="#all" data-audience="all" class="selected"><%= t('screens.videos.filters.i_am_a_data.everything') %></a></li>
   </ul>
 
-  <h3>Sort on</h3>
+  <h3><%= t('screens.videos.filters.sort_on.title') %></h3>
   <ul class="sortCriteria">
-    <li><a href="#basics" data-sort="basics" class="selected">Basics First</a></li>
-    <li><a href="#alphabetical" data-sort="alphabetical">Alphabetical</a></li>
-    <li><a href="#date-added" data-sort="date">Most Recent</a></li>
+    <li><a href="#basics" data-sort="basics" class="selected"><%= t('screens.videos.filters.sort_on.basics_first') %></a></li>
+    <li><a href="#alphabetical" data-sort="alphabetical"><%= t('screens.videos.filters.sort_on.alphabetical') %></a></li>
+    <li><a href="#date-added" data-sort="date"><%= t('screens.videos.filters.sort_on.most_recent') %></a></li>
   </ul>
 </div>
 
 <div class="contentBox withLeftNavigation videoListBox">
-  <h1>Video Guides</h1>
+  <h1><%= t('screens.videos.title') %></h1>
 
-  <p class="intro">Welcome to <%= CurrentDomain.strings.indirect_object_company || CurrentDomain.strings.company %>! We're glad that
-    you're excited about open data. To help you get started with our tools, we've
-    created a series of videos designed to teach you the basics about interacting
-    with this data site. If you have any further questions, feel free to visit our
-    <a href="http://support.socrata.com" rel="external">support page</a>.</p>
+  <p class="intro">
+    <%= t('screens.videos.intro_html', company_name: CurrentDomain.strings.indirect_object_company || CurrentDomain.strings.company) %>
+  </p>
 
-  <p class="noResultsText">There are no videos in this category just yet. We're working
-    on adding more, so check back often.</p>
+
+  <p class="noResultsText"><%= t('screens.videos.no_results') %></p>
 
   <h2 class="relatedVideosHeader">
-    Related Videos
-    <a href="<%= videos_path %>" rel="external" class="seeMoreLink rightArrow">see more<span class="icon"></span></a>
+    <%= t('screens.videos.related_videos.title') %>
+    <a href="<%= videos_path %>" rel="external" class="seeMoreLink rightArrow"><%= t('screens.videos.related_videos.see_more_link') %><span class="icon"></span></a>
   </h2>
 
   <ul class="videoList clearfix">

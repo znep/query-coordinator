@@ -14,9 +14,16 @@ import {
   REQUESTED_SAVE,
   HANDLE_SAVE_SUCCESS,
   HANDLE_SAVE_ERROR,
-  CLEAR_SAVE_STATE
+  CLEAR_SAVE_STATE,
+  OPEN_SHARE_MODAL,
+  CLOSE_SHARE_MODAL,
+  SET_EMBED_SIZE
 } from 'actions';
 import { ModeStates, SaveStates } from './lib/constants';
+
+const SHARE_MODAL_INITIAL_STATE = {
+  isActive: false
+};
 
 const initialState = () => {
   const isEphemeral = _.isNil(window.initialState.view.id);
@@ -25,6 +32,7 @@ const initialState = () => {
     authoringWorkflow: {
       isActive: false
     },
+    shareModal: SHARE_MODAL_INITIAL_STATE,
     mode: isEphemeral ? ModeStates.EDIT : ModeStates.VIEW,
     isEditMenuActive: false,
     isEphemeral,
@@ -206,6 +214,32 @@ export default (state = initialState(), action) => {
       return {
         ...state,
         saveState: SaveStates.IDLE
+      };
+
+    case OPEN_SHARE_MODAL:
+      return {
+        ...state,
+        shareModal: {
+          isActive: true,
+          vifIndex: action.data.vifIndex,
+          vif: getVif(state, action.data.vifIndex),
+          embedSize: 'medium'
+        }
+      };
+
+    case CLOSE_SHARE_MODAL:
+      return {
+        ...state,
+        shareModal: SHARE_MODAL_INITIAL_STATE
+      };
+
+    case SET_EMBED_SIZE:
+      return {
+        ...state,
+        shareModal: {
+          ...state.shareModal,
+          embedSize: action.size
+        }
       };
 
     default:

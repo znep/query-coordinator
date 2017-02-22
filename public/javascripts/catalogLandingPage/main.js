@@ -4,7 +4,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
-import airbrake from './lib/airbrake';
+import airbrake from '../common/airbrake';
 import reducer from './reducers';
 import App from './App';
 import Search from './components/Search';
@@ -18,7 +18,7 @@ if (window.serverConfig.environment === 'development') {
     collapsed: true
   }));
 } else {
-  airbrake.init();
+  airbrake.init(window.serverConfig.airbrakeProjectId, window.serverConfig.airbrakeKey);
 }
 
 // var store = createStore(catalogLandingPage, applyMiddleware(...middleware));

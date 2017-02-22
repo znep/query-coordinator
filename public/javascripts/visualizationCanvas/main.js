@@ -9,8 +9,8 @@ import { Provider } from 'react-redux';
 import { t } from 'lib/I18n';
 import confirmUnload from 'lib/confirmUnload';
 
-// This has the side effect of initializing mixpanel
-import '../common/mixpanelTracking';
+import airbrake from '../common/airbrake';
+import '../common/mixpanel'; // This initializes mixpanel
 
 // add styling for socrata-viz maps
 import 'leaflet/dist/leaflet.css';
@@ -28,6 +28,8 @@ if (window.serverConfig.environment === 'development') {
     timestamp: false,
     collapsed: true
   }));
+} else {
+  airbrake.init(window.serverConfig.airbrakeProjectId, window.serverConfig.airbrakeKey);
 }
 
 const store = createStore(visualizationCanvas, applyMiddleware(...middleware));

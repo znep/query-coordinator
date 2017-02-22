@@ -31,19 +31,19 @@ export function mapStateToProps({ columnStats, view, filters, parentView }) {
     return _.find(columns, { fieldName: filter.columnName });
   });
 
-  const fetchSuggestions = (column, term) => {
-    const spandex = new dataProviders.SpandexDataProvider({
+  const isValidTextFilterColumnValue = (column, term) => {
+    const soqlDataProvider = new dataProviders.SoqlDataProvider({
       domain: serverConfig.domain,
       datasetUid: parentView.id
     });
 
-    return spandex.getSuggestions(column.fieldName, term, 10);
+    return soqlDataProvider.match(column.fieldName, term);
   };
 
   return {
     columns,
     filters: displayableFilters,
-    fetchSuggestions
+    isValidTextFilterColumnValue
   };
 }
 

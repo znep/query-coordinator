@@ -76,8 +76,8 @@ describe('FilterBar', () => {
       expect(props.filters[0]).to.deep.equal(filter);
     });
 
-    it('returns a function to fetch suggestions', () => {
-      expect(props.fetchSuggestions).to.be.a('function');
+    it('returns a function to valid text filter values', () => {
+      expect(props.isValidTextFilterColumnValue).to.be.a('function');
     });
   });
 

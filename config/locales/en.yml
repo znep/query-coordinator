@@ -4762,7 +4762,7 @@ en:
       editTitleAndDescription: Edit Title and Description
       title: Title
       description: Description
-      update: Update
+      update: Update Title and Description
     edit_menu_label: Menu
     edit_visualization: Edit
     exit_preview_mode: Exit Preview Mode

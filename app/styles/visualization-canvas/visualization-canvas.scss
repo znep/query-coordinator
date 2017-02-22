@@ -3,10 +3,12 @@
 @import "common/feedback-panel";
 
 $edit-bar-height: 60px;
-$edit-bar-font-color: #e4e4e4;
+$edit-bar-font-color: #dbdbdb;
 $edit-bar-name-width: 280px;
 $edit-bar-menu-width: 60px;
-$preview-bar-height: 26px;
+$preview-bar-height: 34px;
+$preview-bar-color: #4a4747;
+$preview-bar-dismiss-hover: #333;
 
 body {
   margin: 0;
@@ -77,15 +79,18 @@ body {
       justify-content: flex-end;
       width: calc(100% - #{$edit-bar-menu-width + $edit-bar-name-width});
       padding: 0 16px;
+      font-weight: lighter;
 
       .btn-save {
         width: 110px;
         margin-right: 5px;
         background-color: transparent;
+        color: $edit-bar-font-color;
 
         &:not([disabled]) {
           &:hover, &:focus {
             background-color: $dark-grey-2;
+            color: $white;
           }
         }
 
@@ -178,9 +183,10 @@ body {
         color: $edit-bar-font-color;
         text-decoration: none;
         text-align: right;
+        padding: 11px 18px;
 
         &:hover, &:focus {
-          text-decoration: underline;
+          color: $white;
         }
 
         .socrata-icon-preview {
@@ -193,30 +199,34 @@ body {
 
   .preview-bar {
     width: 100%;
-    background: $dark-grey-1;
+    background: $preview-bar-color;
     height: $preview-bar-height;
     color: $white;
     display: flex;
     justify-content: space-between;
-    padding: 0 16px;
     position: fixed;
     top: 0;
     z-index: 5;
 
+    span {
+      margin-top: 4px;
+    }
+
     .btn-transparent {
       color: $white;
-      padding: 0;
+      padding: 0 20px;
 
       &:hover,
       &:focus,
       &:active {
-        color: $light-grey-2;
+        color: $light-grey-4;
+        background-color: $preview-bar-dismiss-hover;
       }
     }
 
     .socrata-icon-close-2 {
       font-size: 12px;
-      padding-left: 7px;
+      line-height: 15px;
     }
   }
 
@@ -277,12 +287,13 @@ body {
 
         .action-btns {
           $btn-z-index: 5;
-          $btn-height: 30;
 
           position: absolute;
           top: 35px;
           right: 35px;
           z-index: $btn-z-index;
+          font-size: 12px;
+          padding: 6px 12px;
 
           .btn {
             vertical-align: top;
@@ -301,11 +312,12 @@ body {
             margin-left: -1px; // Make the margins fuse.
             position: relative;
             width: $share-btn-width;
+            padding: 0;
+
             .socrata-icon svg {
-              $size: 16px;
               position: absolute;
-              top: $btn-height / 2 - $size / 2;
-              left: $share-btn-width / 2 - $size / 2;
+              top: 2px;
+              left: 0;
               width: 15px;
               height: 15px;
             }
@@ -385,5 +397,9 @@ footer#site-chrome-footer {
 
   .visualization-canvas-body {
     margin-top: $edit-bar-height;
+  }
+
+  footer#site-chrome-footer {
+    display: none;
   }
 }

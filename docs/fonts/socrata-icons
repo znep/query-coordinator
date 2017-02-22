@@ -10,6 +10,7 @@
 .icon-bar-chart-horz::before, .socrata-icon-bar-chart-horz::before,
 .icon-bar-chart::before, .socrata-icon-bar-chart::before,
 .icon-bold2::before, .socrata-icon-bold2::before,
+.icon-boolean::before, .socrata-icon-boolean::before,
 .icon-cards::before, .socrata-icon-cards::before,
 .icon-chart::before, .socrata-icon-chart::before,
 .icon-check-2::before, .socrata-icon-check-2::before,
@@ -24,6 +25,7 @@
 .icon-close::before, .socrata-icon-close::before,
 .icon-collapse::before, .socrata-icon-collapse::before,
 .icon-color::before, .socrata-icon-color::before,
+.icon-column-info::before, .socrata-icon-column-info::before,
 .icon-community::before, .socrata-icon-community::before,
 .icon-copy-document::before, .socrata-icon-copy-document::before,
 .icon-crop::before, .socrata-icon-crop::before,
@@ -44,6 +46,7 @@
 .icon-eye::before, .socrata-icon-eye::before,
 .icon-facebook::before, .socrata-icon-facebook::before,
 .icon-failed::before, .socrata-icon-failed::before,
+.icon-featured::before, .socrata-icon-featured::before,
 .icon-filter::before, .socrata-icon-filter::before,
 .icon-flyout-options::before, .socrata-icon-flyout-options::before,
 .icon-geo::before, .socrata-icon-geo::before,
@@ -56,6 +59,8 @@
 .icon-info::before, .socrata-icon-info::before,
 .icon-italic2::before, .socrata-icon-italic2::before,
 .icon-kebab::before, .socrata-icon-kebab::before,
+.icon-layout-inline::before, .socrata-icon-layout-inline::before,
+.icon-layout-pop-out::before, .socrata-icon-layout-pop-out::before,
 .icon-line-chart::before, .socrata-icon-line-chart::before,
 .icon-link::before, .socrata-icon-link::before,
 .icon-linked::before, .socrata-icon-linked::before,
@@ -182,308 +187,323 @@
 .icon-bold2::before, .socrata-icon-bold2::before {
   content: "\EA0C"; }
 
-.icon-cards::before, .socrata-icon-cards::before {
+.icon-boolean::before, .socrata-icon-boolean::before {
   content: "\EA0D"; }
 
-.icon-chart::before, .socrata-icon-chart::before {
+.icon-cards::before, .socrata-icon-cards::before {
   content: "\EA0E"; }
 
-.icon-check-2::before, .socrata-icon-check-2::before {
+.icon-chart::before, .socrata-icon-chart::before {
   content: "\EA0F"; }
 
-.icon-check::before, .socrata-icon-check::before {
+.icon-check-2::before, .socrata-icon-check-2::before {
   content: "\EA10"; }
 
-.icon-checkmark-alt::before, .socrata-icon-checkmark-alt::before {
+.icon-check::before, .socrata-icon-check::before {
   content: "\EA11"; }
 
-.icon-checkmark3::before, .socrata-icon-checkmark3::before {
+.icon-checkmark-alt::before, .socrata-icon-checkmark-alt::before {
   content: "\EA12"; }
 
-.icon-chevron-down::before, .socrata-icon-chevron-down::before {
+.icon-checkmark3::before, .socrata-icon-checkmark3::before {
   content: "\EA13"; }
 
-.icon-chevron-up::before, .socrata-icon-chevron-up::before {
+.icon-chevron-down::before, .socrata-icon-chevron-down::before {
   content: "\EA14"; }
 
-.icon-clear-formatting::before, .socrata-icon-clear-formatting::before {
+.icon-chevron-up::before, .socrata-icon-chevron-up::before {
   content: "\EA15"; }
 
-.icon-close-2::before, .socrata-icon-close-2::before {
+.icon-clear-formatting::before, .socrata-icon-clear-formatting::before {
   content: "\EA16"; }
 
-.icon-close-circle::before, .socrata-icon-close-circle::before {
+.icon-close-2::before, .socrata-icon-close-2::before {
   content: "\EA17"; }
 
-.icon-close::before, .socrata-icon-close::before {
+.icon-close-circle::before, .socrata-icon-close-circle::before {
   content: "\EA18"; }
 
-.icon-collapse::before, .socrata-icon-collapse::before {
+.icon-close::before, .socrata-icon-close::before {
   content: "\EA19"; }
 
-.icon-color::before, .socrata-icon-color::before {
+.icon-collapse::before, .socrata-icon-collapse::before {
   content: "\EA1A"; }
 
-.icon-community::before, .socrata-icon-community::before {
+.icon-color::before, .socrata-icon-color::before {
   content: "\EA1B"; }
 
-.icon-copy-document::before, .socrata-icon-copy-document::before {
+.icon-column-info::before, .socrata-icon-column-info::before {
   content: "\EA1C"; }
 
-.icon-crop::before, .socrata-icon-crop::before {
+.icon-community::before, .socrata-icon-community::before {
   content: "\EA1D"; }
 
-.icon-cross2::before, .socrata-icon-cross2::before {
+.icon-copy-document::before, .socrata-icon-copy-document::before {
   content: "\EA1E"; }
 
-.icon-data::before, .socrata-icon-data::before {
+.icon-crop::before, .socrata-icon-crop::before {
   content: "\EA1F"; }
 
-.icon-dataset::before, .socrata-icon-dataset::before {
+.icon-cross2::before, .socrata-icon-cross2::before {
   content: "\EA20"; }
 
-.icon-date::before, .socrata-icon-date::before {
+.icon-data::before, .socrata-icon-data::before {
   content: "\EA21"; }
 
-.icon-distribution::before, .socrata-icon-distribution::before {
+.icon-dataset::before, .socrata-icon-dataset::before {
   content: "\EA22"; }
 
-.icon-download::before, .socrata-icon-download::before {
+.icon-date::before, .socrata-icon-date::before {
   content: "\EA23"; }
 
-.icon-droplet::before, .socrata-icon-droplet::before {
+.icon-distribution::before, .socrata-icon-distribution::before {
   content: "\EA24"; }
 
-.icon-edit::before, .socrata-icon-edit::before {
+.icon-download::before, .socrata-icon-download::before {
   content: "\EA25"; }
 
-.icon-email::before, .socrata-icon-email::before {
+.icon-droplet::before, .socrata-icon-droplet::before {
   content: "\EA26"; }
 
-.icon-embed::before, .socrata-icon-embed::before {
+.icon-edit::before, .socrata-icon-edit::before {
   content: "\EA27"; }
 
-.icon-expand::before, .socrata-icon-expand::before {
+.icon-email::before, .socrata-icon-email::before {
   content: "\EA28"; }
 
-.icon-external-square::before, .socrata-icon-external-square::before {
+.icon-embed::before, .socrata-icon-embed::before {
   content: "\EA29"; }
 
-.icon-external::before, .socrata-icon-external::before {
+.icon-expand::before, .socrata-icon-expand::before {
   content: "\EA2A"; }
 
-.icon-eye-blocked::before, .socrata-icon-eye-blocked::before {
+.icon-external-square::before, .socrata-icon-external-square::before {
   content: "\EA2B"; }
 
-.icon-eye::before, .socrata-icon-eye::before {
+.icon-external::before, .socrata-icon-external::before {
   content: "\EA2C"; }
 
-.icon-facebook::before, .socrata-icon-facebook::before {
+.icon-eye-blocked::before, .socrata-icon-eye-blocked::before {
   content: "\EA2D"; }
 
-.icon-failed::before, .socrata-icon-failed::before {
+.icon-eye::before, .socrata-icon-eye::before {
   content: "\EA2E"; }
 
-.icon-filter::before, .socrata-icon-filter::before {
+.icon-facebook::before, .socrata-icon-facebook::before {
   content: "\EA2F"; }
 
-.icon-flyout-options::before, .socrata-icon-flyout-options::before {
+.icon-failed::before, .socrata-icon-failed::before {
   content: "\EA30"; }
 
-.icon-geo::before, .socrata-icon-geo::before {
+.icon-featured::before, .socrata-icon-featured::before {
   content: "\EA31"; }
 
-.icon-goal::before, .socrata-icon-goal::before {
+.icon-filter::before, .socrata-icon-filter::before {
   content: "\EA32"; }
 
-.icon-google::before, .socrata-icon-google::before {
+.icon-flyout-options::before, .socrata-icon-flyout-options::before {
   content: "\EA33"; }
 
-.icon-gte::before, .socrata-icon-gte::before {
+.icon-geo::before, .socrata-icon-geo::before {
   content: "\EA34"; }
 
-.icon-hamburger::before, .socrata-icon-hamburger::before {
+.icon-goal::before, .socrata-icon-goal::before {
   content: "\EA35"; }
 
-.icon-image::before, .socrata-icon-image::before {
+.icon-google::before, .socrata-icon-google::before {
   content: "\EA36"; }
 
-.icon-info-inverse::before, .socrata-icon-info-inverse::before {
+.icon-gte::before, .socrata-icon-gte::before {
   content: "\EA37"; }
 
-.icon-info::before, .socrata-icon-info::before {
+.icon-hamburger::before, .socrata-icon-hamburger::before {
   content: "\EA38"; }
 
-.icon-italic2::before, .socrata-icon-italic2::before {
+.icon-image::before, .socrata-icon-image::before {
   content: "\EA39"; }
 
-.icon-kebab::before, .socrata-icon-kebab::before {
+.icon-info-inverse::before, .socrata-icon-info-inverse::before {
   content: "\EA3A"; }
 
-.icon-line-chart::before, .socrata-icon-line-chart::before {
+.icon-info::before, .socrata-icon-info::before {
   content: "\EA3B"; }
 
-.icon-link::before, .socrata-icon-link::before {
+.icon-italic2::before, .socrata-icon-italic2::before {
   content: "\EA3C"; }
 
-.icon-linked::before, .socrata-icon-linked::before {
+.icon-kebab::before, .socrata-icon-kebab::before {
   content: "\EA3D"; }
 
-.icon-list-numbered::before, .socrata-icon-list-numbered::before {
+.icon-layout-inline::before, .socrata-icon-layout-inline::before {
   content: "\EA3E"; }
 
-.icon-list2::before, .socrata-icon-list2::before {
+.icon-layout-pop-out::before, .socrata-icon-layout-pop-out::before {
   content: "\EA3F"; }
 
-.icon-lte::before, .socrata-icon-lte::before {
+.icon-line-chart::before, .socrata-icon-line-chart::before {
   content: "\EA40"; }
 
-.icon-map::before, .socrata-icon-map::before {
+.icon-link::before, .socrata-icon-link::before {
   content: "\EA41"; }
 
-.icon-move-vertical::before, .socrata-icon-move-vertical::before {
+.icon-linked::before, .socrata-icon-linked::before {
   content: "\EA42"; }
 
-.icon-move::before, .socrata-icon-move::before {
+.icon-list-numbered::before, .socrata-icon-list-numbered::before {
   content: "\EA43"; }
 
-.icon-number::before, .socrata-icon-number::before {
+.icon-list2::before, .socrata-icon-list2::before {
   content: "\EA44"; }
 
-.icon-official::before, .socrata-icon-official::before {
+.icon-lte::before, .socrata-icon-lte::before {
   content: "\EA45"; }
 
-.icon-official2::before, .socrata-icon-official2::before {
+.icon-map::before, .socrata-icon-map::before {
   content: "\EA46"; }
 
-.icon-paragraph-center3::before, .socrata-icon-paragraph-center3::before {
+.icon-move-vertical::before, .socrata-icon-move-vertical::before {
   content: "\EA47"; }
 
-.icon-paragraph-left::before, .socrata-icon-paragraph-left::before {
+.icon-move::before, .socrata-icon-move::before {
   content: "\EA48"; }
 
-.icon-paragraph-left3::before, .socrata-icon-paragraph-left3::before {
+.icon-number::before, .socrata-icon-number::before {
   content: "\EA49"; }
 
-.icon-paragraph-right3::before, .socrata-icon-paragraph-right3::before {
+.icon-official::before, .socrata-icon-official::before {
   content: "\EA4A"; }
 
-.icon-pause::before, .socrata-icon-pause::before {
+.icon-official2::before, .socrata-icon-official2::before {
   content: "\EA4B"; }
 
-.icon-pie-chart::before, .socrata-icon-pie-chart::before {
+.icon-paragraph-center3::before, .socrata-icon-paragraph-center3::before {
   content: "\EA4C"; }
 
-.icon-play::before, .socrata-icon-play::before {
+.icon-paragraph-left::before, .socrata-icon-paragraph-left::before {
   content: "\EA4D"; }
 
-.icon-plus2::before, .socrata-icon-plus2::before {
+.icon-paragraph-left3::before, .socrata-icon-paragraph-left3::before {
   content: "\EA4E"; }
 
-.icon-plus3::before, .socrata-icon-plus3::before {
+.icon-paragraph-right3::before, .socrata-icon-paragraph-right3::before {
   content: "\EA4F"; }
 
-.icon-presentation::before, .socrata-icon-presentation::before {
+.icon-pause::before, .socrata-icon-pause::before {
   content: "\EA50"; }
 
-.icon-preview::before, .socrata-icon-preview::before {
+.icon-pie-chart::before, .socrata-icon-pie-chart::before {
   content: "\EA51"; }
 
-.icon-print::before, .socrata-icon-print::before {
+.icon-play::before, .socrata-icon-play::before {
   content: "\EA52"; }
 
-.icon-private::before, .socrata-icon-private::before {
+.icon-plus2::before, .socrata-icon-plus2::before {
   content: "\EA53"; }
 
-.icon-processing::before, .socrata-icon-processing::before {
+.icon-plus3::before, .socrata-icon-plus3::before {
   content: "\EA54"; }
 
-.icon-pulse::before, .socrata-icon-pulse::before {
+.icon-presentation::before, .socrata-icon-presentation::before {
   content: "\EA55"; }
 
-.icon-puzzle::before, .socrata-icon-puzzle::before {
+.icon-preview::before, .socrata-icon-preview::before {
   content: "\EA56"; }
 
-.icon-question-inverse::before, .socrata-icon-question-inverse::before {
+.icon-print::before, .socrata-icon-print::before {
   content: "\EA57"; }
 
-.icon-question::before, .socrata-icon-question::before {
+.icon-private::before, .socrata-icon-private::before {
   content: "\EA58"; }
 
-.icon-quotes-left::before, .socrata-icon-quotes-left::before {
+.icon-processing::before, .socrata-icon-processing::before {
   content: "\EA59"; }
 
-.icon-redo::before, .socrata-icon-redo::before {
+.icon-pulse::before, .socrata-icon-pulse::before {
   content: "\EA5A"; }
 
-.icon-region::before, .socrata-icon-region::before {
+.icon-puzzle::before, .socrata-icon-puzzle::before {
   content: "\EA5B"; }
 
-.icon-search::before, .socrata-icon-search::before {
+.icon-question-inverse::before, .socrata-icon-question-inverse::before {
   content: "\EA5C"; }
 
-.icon-settings::before, .socrata-icon-settings::before {
+.icon-question::before, .socrata-icon-question::before {
   content: "\EA5D"; }
 
-.icon-share::before, .socrata-icon-share::before {
+.icon-quotes-left::before, .socrata-icon-quotes-left::before {
   content: "\EA5E"; }
 
-.icon-sign-out::before, .socrata-icon-sign-out::before {
+.icon-redo::before, .socrata-icon-redo::before {
   content: "\EA5F"; }
 
-.icon-sort-asc::before, .socrata-icon-sort-asc::before {
+.icon-region::before, .socrata-icon-region::before {
   content: "\EA60"; }
 
-.icon-sort-az::before, .socrata-icon-sort-az::before {
+.icon-search::before, .socrata-icon-search::before {
   content: "\EA61"; }
 
-.icon-sort-desc::before, .socrata-icon-sort-desc::before {
+.icon-settings::before, .socrata-icon-settings::before {
   content: "\EA62"; }
 
-.icon-sort-za::before, .socrata-icon-sort-za::before {
+.icon-share::before, .socrata-icon-share::before {
   content: "\EA63"; }
 
-.icon-stories-icon::before, .socrata-icon-stories-icon::before {
+.icon-sign-out::before, .socrata-icon-sign-out::before {
   content: "\EA64"; }
 
-.icon-stories-menu::before, .socrata-icon-stories-menu::before {
+.icon-sort-asc::before, .socrata-icon-sort-asc::before {
   content: "\EA65"; }
 
-.icon-story::before, .socrata-icon-story::before {
+.icon-sort-az::before, .socrata-icon-sort-az::before {
   content: "\EA66"; }
 
-.icon-table::before, .socrata-icon-table::before {
+.icon-sort-desc::before, .socrata-icon-sort-desc::before {
   content: "\EA67"; }
 
-.icon-tag::before, .socrata-icon-tag::before {
+.icon-sort-za::before, .socrata-icon-sort-za::before {
   content: "\EA68"; }
 
-.icon-text::before, .socrata-icon-text::before {
+.icon-stories-icon::before, .socrata-icon-stories-icon::before {
   content: "\EA69"; }
 
-.icon-twitter::before, .socrata-icon-twitter::before {
+.icon-stories-menu::before, .socrata-icon-stories-menu::before {
   content: "\EA6A"; }
 
-.icon-undo::before, .socrata-icon-undo::before {
+.icon-story::before, .socrata-icon-story::before {
   content: "\EA6B"; }
 
-.icon-user::before, .socrata-icon-user::before {
+.icon-table::before, .socrata-icon-table::before {
   content: "\EA6C"; }
 
-.icon-waiting::before, .socrata-icon-waiting::before {
+.icon-tag::before, .socrata-icon-tag::before {
   content: "\EA6D"; }
 
-.icon-warning-alt::before, .socrata-icon-warning-alt::before {
+.icon-text::before, .socrata-icon-text::before {
   content: "\EA6E"; }
 
-.icon-warning-alt2::before, .socrata-icon-warning-alt2::before {
+.icon-twitter::before, .socrata-icon-twitter::before {
   content: "\EA6F"; }
 
-.icon-warning::before, .socrata-icon-warning::before {
+.icon-undo::before, .socrata-icon-undo::before {
   content: "\EA70"; }
 
-.icon-windows::before, .socrata-icon-windows::before {
+.icon-user::before, .socrata-icon-user::before {
   content: "\EA71"; }
 
-.icon-yahoo::before, .socrata-icon-yahoo::before {
+.icon-waiting::before, .socrata-icon-waiting::before {
   content: "\EA72"; }
+
+.icon-warning-alt::before, .socrata-icon-warning-alt::before {
+  content: "\EA73"; }
+
+.icon-warning-alt2::before, .socrata-icon-warning-alt2::before {
+  content: "\EA74"; }
+
+.icon-warning::before, .socrata-icon-warning::before {
+  content: "\EA75"; }
+
+.icon-windows::before, .socrata-icon-windows::before {
+  content: "\EA76"; }
+
+.icon-yahoo::before, .socrata-icon-yahoo::before {
+  content: "\EA77"; }

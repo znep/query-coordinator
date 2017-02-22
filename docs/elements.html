@@ -8,8 +8,8 @@
     <title>Socrata Styleguide</title>
 
     <link rel="stylesheet" href="stylesheets/vendor/prism-2ae3b88e.css">
-    <link rel="stylesheet" href="css/styleguide-09c08e9b.css">
-    <link rel="stylesheet" href="stylesheets/pages-52af5227.css">
+    <link rel="stylesheet" href="css/styleguide-2bc936fe.css">
+    <link rel="stylesheet" href="stylesheets/pages-9a740b59.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic' rel='stylesheet' type='text/css'>
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
@@ -42,7 +42,7 @@
     <li class="menu-section-title"><a href="index.html">Guide Home</a></li>
 
     <li class="menu-section-title"><a href="elements.html">Elements</a>
-      <ul>
+      <ul class="menu-navigation">
         <li><a href="elements.html#typography">Typography</a></li>
         <li><a href="elements.html#colors">Colors</a></li>
         <li><a href="elements.html#branding">Branding</a></li>
@@ -62,7 +62,7 @@
       </ul>
     </li>
 
-    <li class="menu-section-title"><a href="components.html">Components</a>
+    <li class="menu-section-title"><a href="components.html">React Components</a>
       <ul class="menu-navigation">
         <li><a href="components.html#picklist">Picklist</a></li>
         <li><a href="components.html#dropdowns">Dropdowns</a></li>
@@ -71,13 +71,16 @@
         <li><a href="components.html#filter-bar">Filter Bar</a></li>
         <li><a href="components.html#info-pane">Info Pane</a></li>
         <li><a href="components.html#slider">Slider</a></li>
+        <li><a href="components.html#date-range-picker">Date Range Picker</a></li>
         <li><a href="components.html#modal">Modal</a></li>
         <li><a href="components.html#edit-bar">Edit Bar</a></li>
+        <li><a href="components.html#socrata-icon">Socrata Icon</a></li>
+        <li><a href="components.html#side-menu">Side Menu</a></li>
         <!-- TEMPLATE_TOKEN (Don't remove this. Like seriously.) -->
       </ul>
     </li>
 
-    <li class="menu-section-title"><a href="legacy.html">Legacy JavaScript</a>
+    <li class="menu-section-title"><a href="legacy.html">Legacy JavaScript Components</a>
       <ul class="menu-navigation">
         <li><a href="legacy.html#modals">Modals</a></li>
         <li><a href="legacy.html#flannels">Flannels</a></li>
@@ -752,6 +755,7 @@
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-bar-chart-horz" class="socrata-icon-bar-chart-horz"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-bar-chart-horz" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-bar-chart" class="socrata-icon-bar-chart"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-bar-chart" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-bold2" class="socrata-icon-bold2"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-bold2" /></div></li>
+  <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-boolean" class="socrata-icon-boolean"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-boolean" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-cards" class="socrata-icon-cards"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-cards" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-chart" class="socrata-icon-chart"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-chart" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-check-2" class="socrata-icon-check-2"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-check-2" /></div></li>
@@ -766,6 +770,7 @@
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-close" class="socrata-icon-close"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-close" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-collapse" class="socrata-icon-collapse"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-collapse" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-color" class="socrata-icon-color"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-color" /></div></li>
+  <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-column-info" class="socrata-icon-column-info"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-column-info" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-community" class="socrata-icon-community"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-community" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-copy-document" class="socrata-icon-copy-document"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-copy-document" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-crop" class="socrata-icon-crop"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-crop" /></div></li>
@@ -786,6 +791,7 @@
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-eye" class="socrata-icon-eye"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-eye" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-facebook" class="socrata-icon-facebook"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-facebook" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-failed" class="socrata-icon-failed"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-failed" /></div></li>
+  <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-featured" class="socrata-icon-featured"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-featured" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-filter" class="socrata-icon-filter"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-filter" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-flyout-options" class="socrata-icon-flyout-options"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-flyout-options" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-geo" class="socrata-icon-geo"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-geo" /></div></li>
@@ -798,6 +804,8 @@
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-info" class="socrata-icon-info"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-info" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-italic2" class="socrata-icon-italic2"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-italic2" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-kebab" class="socrata-icon-kebab"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-kebab" /></div></li>
+  <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-layout-inline" class="socrata-icon-layout-inline"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-layout-inline" /></div></li>
+  <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-layout-pop-out" class="socrata-icon-layout-pop-out"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-layout-pop-out" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-line-chart" class="socrata-icon-line-chart"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-line-chart" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-link" class="socrata-icon-link"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-link" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-linked" class="socrata-icon-linked"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-linked" /></div></li>
@@ -976,7 +984,7 @@
 &lt;button class=&quot;btn btn-alternate-2 btn-inverse&quot;&gt;Secondary Inverse Button&lt;&#x2F;button&gt;
 
 </code>
-</pre> 
+</pre>
 
 <p>
 <button class="btn btn-simple">Simple Button</button>
@@ -1090,6 +1098,25 @@
 &lt;button class=&quot;btn btn-primary btn-dark&quot;&gt;Primary Button&lt;&#x2F;button&gt;
 
 &lt;button class=&quot;btn btn-alternate btn-dark&quot;&gt;Secondary Button&lt;&#x2F;button&gt;
+
+</code>
+</pre>
+
+<h3 class="h6 styleguide-subheader">Unstyled Buttons</h3>
+<p>Note that these buttons have no hover, focus, or active state. Don't forget to add these when using these.</p>
+<p>
+  <button class="btn btn-transparent">Doesn't look like button</button>
+
+</p>
+<p>
+  <button class="btn btn-transparent" disabled>Disabled transparent button</button>
+
+</p>
+<pre class="usage">
+<code class="language-markup">
+&lt;button class=&quot;btn btn-transparent&quot;&gt;Doesn&#x27;t look like a button&lt;&#x2F;button&gt;
+
+&lt;button class=&quot;btn btn-transparent&quot; disabled&gt;Disabled transparent button&lt;&#x2F;button&gt;
 
 </code>
 </pre>
@@ -1705,11 +1732,11 @@
 <div class="radiobutton">
   <div>
     <input type="radio" id="Radiobutton 1" name="radio" checked>
-    <label for="Radiobutton 1"><span></span>Radiobutton 1</label>
+    <label for="Radiobutton 1"><span class="fake-radiobutton"></span>Radiobutton 1</label>
   </div>
   <div>
     <input type="radio" id="Radiobutton 2" name="radio">
-    <label for="Radiobutton 2"><span></span>Radiobutton 2</label>
+    <label for="Radiobutton 2"><span class="fake-radiobutton"></span>Radiobutton 2</label>
   </div>
 </div>
 
@@ -1719,11 +1746,11 @@
 &lt;div class=&quot;radiobutton&quot;&gt;
   &lt;div&gt;
     &lt;input type=&quot;radio&quot; id=&quot;Radiobutton 1&quot; name=&quot;radio&quot; checked&gt;
-    &lt;label for=&quot;Radiobutton 1&quot;&gt;&lt;span&gt;&lt;&#x2F;span&gt;Radiobutton 1&lt;&#x2F;label&gt;
+    &lt;label for=&quot;Radiobutton 1&quot;&gt;&lt;span class=&quot;fake-radiobutton&quot;&gt;&lt;&#x2F;span&gt;Radiobutton 1&lt;&#x2F;label&gt;
   &lt;&#x2F;div&gt;
   &lt;div&gt;
     &lt;input type=&quot;radio&quot; id=&quot;Radiobutton 2&quot; name=&quot;radio&quot;&gt;
-    &lt;label for=&quot;Radiobutton 2&quot;&gt;&lt;span&gt;&lt;&#x2F;span&gt;Radiobutton 2&lt;&#x2F;label&gt;
+    &lt;label for=&quot;Radiobutton 2&quot;&gt;&lt;span class=&quot;fake-radiobutton&quot;&gt;&lt;&#x2F;span&gt;Radiobutton 2&lt;&#x2F;label&gt;
   &lt;&#x2F;div&gt;
 &lt;&#x2F;div&gt;
 
@@ -2751,9 +2778,9 @@
 
 
     <!-- NPM peerDependencies and Webpack externals -->
-    <script type="text/javascript" src="js/vendor-bf248325.js"></script>
+    <script type="text/javascript" src="js/vendor-db95ecea.js"></script>
 
-    <script type="text/javascript" src="js/socrata-components-0e72670b.js"></script>
+    <script type="text/javascript" src="js/socrata-components-e61759a9.js"></script>
     <script type="text/javascript" src="javascripts/all-df92dbb1.js"></script>
   </body>
 </html>

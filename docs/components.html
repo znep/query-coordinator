@@ -8,8 +8,8 @@
     <title>Socrata Styleguide</title>
 
     <link rel="stylesheet" href="stylesheets/vendor/prism-2ae3b88e.css">
-    <link rel="stylesheet" href="css/styleguide-09c08e9b.css">
-    <link rel="stylesheet" href="stylesheets/pages-52af5227.css">
+    <link rel="stylesheet" href="css/styleguide-2bc936fe.css">
+    <link rel="stylesheet" href="stylesheets/pages-9a740b59.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic' rel='stylesheet' type='text/css'>
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
@@ -42,7 +42,7 @@
     <li class="menu-section-title"><a href="index.html">Guide Home</a></li>
 
     <li class="menu-section-title"><a href="elements.html">Elements</a>
-      <ul>
+      <ul class="menu-navigation">
         <li><a href="elements.html#typography">Typography</a></li>
         <li><a href="elements.html#colors">Colors</a></li>
         <li><a href="elements.html#branding">Branding</a></li>
@@ -62,7 +62,7 @@
       </ul>
     </li>
 
-    <li class="menu-section-title"><a href="components.html">Components</a>
+    <li class="menu-section-title"><a href="components.html">React Components</a>
       <ul class="menu-navigation">
         <li><a href="components.html#picklist">Picklist</a></li>
         <li><a href="components.html#dropdowns">Dropdowns</a></li>
@@ -71,13 +71,16 @@
         <li><a href="components.html#filter-bar">Filter Bar</a></li>
         <li><a href="components.html#info-pane">Info Pane</a></li>
         <li><a href="components.html#slider">Slider</a></li>
+        <li><a href="components.html#date-range-picker">Date Range Picker</a></li>
         <li><a href="components.html#modal">Modal</a></li>
         <li><a href="components.html#edit-bar">Edit Bar</a></li>
+        <li><a href="components.html#socrata-icon">Socrata Icon</a></li>
+        <li><a href="components.html#side-menu">Side Menu</a></li>
         <!-- TEMPLATE_TOKEN (Don't remove this. Like seriously.) -->
       </ul>
     </li>
 
-    <li class="menu-section-title"><a href="legacy.html">Legacy JavaScript</a>
+    <li class="menu-section-title"><a href="legacy.html">Legacy JavaScript Components</a>
       <ul class="menu-navigation">
         <li><a href="legacy.html#modals">Modals</a></li>
         <li><a href="legacy.html#flannels">Flannels</a></li>
@@ -725,27 +728,28 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
       </div>
       <div class="example">
         
+<h3 class="styleguide-subheader">Editable Filter Bar</h3>
 <div id="filter-bar-container"></div>
-<h3>Output</h3>
+
+<h3 class="styleguide-subheader">Non-Editable Filter Bar <span class="small">(hidden if there are no visible filters)</span></h3>
+<div id="non-editable-filter-bar-container"></div>
+
+<h3 class="styleguide-subheader">Output</h3>
 <pre id="output" style="white-space: pre-wrap;"></pre>
+
 <script type="text/babel" data-presets="es2015,react">
   const output = document.querySelector('#output');
 
   $(() => {
     const filters = [
       {
-        parameters: {
-          function: 'valueRange',
-          columnName: 'some_number',
-          arguments: {
-            start: 3,
-            end: 3000
-          }
+        function: 'valueRange',
+        columnName: 'some_number',
+        arguments: {
+          start: 3,
+          end: 7
         },
-        isLocked: false,
-        isHidden: false,
-        isRequired: false,
-        allowMultiple: false
+        isHidden: false
       }
     ];
 
@@ -755,18 +759,38 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
           name: 'Some Number',
           fieldName: 'some_number',
           dataTypeName: 'number',
-          rangeMin: 0.01,
-          rangeMax: 30000.1
+          rangeMin: 1,
+          rangeMax: 10
         },
         {
           name: 'Some Word',
           fieldName: 'some_word',
-          dataTypeName: 'text'
+          dataTypeName: 'text',
+          top: [
+            { item: 'purple', count: 23 },
+            { item: 'pesto', count: 11 },
+            { item: 'russian', count: 8 },
+            { item: 'cheese', count: 3 },
+            { item: 'cherry', count: 2 },
+            { item: 'mango', count: 2 },
+            { item: 'raspberry', count: 2 },
+            { item: 'apple', count: 1 }
+          ]
+        },
+        {
+          name: 'Some Calendar Date',
+          fieldName: 'some_calendar_date',
+          dataTypeName: 'calendar_date',
+          rangeMin: '2014-06-10T00:00:00',
+          rangeMax: '2016-06-10T23:59:59'
         }
       ],
       filters,
+      isReadOnly: false,
       onUpdate,
-      fetchSuggestions: (column, searchTerm) => Promise.resolve(_.shuffle([ 'purple', 'pesto', 'russian' ]))
+      isValidTextFilterColumnValue: (column, value) => {
+        return new Promise((resolve, reject) => setTimeout(resolve, 3000));
+      }
     };
 
     function render() {
@@ -775,6 +799,15 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
       ReactDOM.render(
         <styleguide.FilterBar {...props} />,
         document.getElementById('filter-bar-container')
+      );
+
+      const nonEditableProps = _.merge({}, props, {
+        isReadOnly: true
+      });
+
+      ReactDOM.render(
+        <styleguide.FilterBar {...nonEditableProps} />,
+        document.getElementById('non-editable-filter-bar-container')
       );
     }
 
@@ -790,27 +823,28 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
 
 <pre class="usage">
 <code class="language-markup">
+&lt;h3 class=&quot;styleguide-subheader&quot;&gt;Editable Filter Bar&lt;&#x2F;h3&gt;
 &lt;div id=&quot;filter-bar-container&quot;&gt;&lt;&#x2F;div&gt;
-&lt;h3&gt;Output&lt;&#x2F;h3&gt;
+
+&lt;h3 class=&quot;styleguide-subheader&quot;&gt;Non-Editable Filter Bar &lt;span class=&quot;small&quot;&gt;(hidden if there are no visible filters)&lt;&#x2F;span&gt;&lt;&#x2F;h3&gt;
+&lt;div id=&quot;non-editable-filter-bar-container&quot;&gt;&lt;&#x2F;div&gt;
+
+&lt;h3 class=&quot;styleguide-subheader&quot;&gt;Output&lt;&#x2F;h3&gt;
 &lt;pre id=&quot;output&quot; style=&quot;white-space: pre-wrap;&quot;&gt;&lt;&#x2F;pre&gt;
+
 &lt;script type=&quot;text&#x2F;babel&quot; data-presets=&quot;es2015,react&quot;&gt;
   const output = document.querySelector(&#x27;#output&#x27;);
 
   $(() =&gt; {
     const filters = [
       {
-        parameters: {
-          function: &#x27;valueRange&#x27;,
-          columnName: &#x27;some_number&#x27;,
-          arguments: {
-            start: 3,
-            end: 3000
-          }
+        function: &#x27;valueRange&#x27;,
+        columnName: &#x27;some_number&#x27;,
+        arguments: {
+          start: 3,
+          end: 7
         },
-        isLocked: false,
-        isHidden: false,
-        isRequired: false,
-        allowMultiple: false
+        isHidden: false
       }
     ];
 
@@ -820,18 +854,38 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
           name: &#x27;Some Number&#x27;,
           fieldName: &#x27;some_number&#x27;,
           dataTypeName: &#x27;number&#x27;,
-          rangeMin: 0.01,
-          rangeMax: 30000.1
+          rangeMin: 1,
+          rangeMax: 10
         },
         {
           name: &#x27;Some Word&#x27;,
           fieldName: &#x27;some_word&#x27;,
-          dataTypeName: &#x27;text&#x27;
+          dataTypeName: &#x27;text&#x27;,
+          top: [
+            { item: &#x27;purple&#x27;, count: 23 },
+            { item: &#x27;pesto&#x27;, count: 11 },
+            { item: &#x27;russian&#x27;, count: 8 },
+            { item: &#x27;cheese&#x27;, count: 3 },
+            { item: &#x27;cherry&#x27;, count: 2 },
+            { item: &#x27;mango&#x27;, count: 2 },
+            { item: &#x27;raspberry&#x27;, count: 2 },
+            { item: &#x27;apple&#x27;, count: 1 }
+          ]
+        },
+        {
+          name: &#x27;Some Calendar Date&#x27;,
+          fieldName: &#x27;some_calendar_date&#x27;,
+          dataTypeName: &#x27;calendar_date&#x27;,
+          rangeMin: &#x27;2014-06-10T00:00:00&#x27;,
+          rangeMax: &#x27;2016-06-10T23:59:59&#x27;
         }
       ],
       filters,
+      isReadOnly: false,
       onUpdate,
-      fetchSuggestions: (column, searchTerm) =&gt; Promise.resolve(_.shuffle([ &#x27;purple&#x27;, &#x27;pesto&#x27;, &#x27;russian&#x27; ]))
+      isValidTextFilterColumnValue: (column, value) =&gt; {
+        return new Promise((resolve, reject) =&gt; setTimeout(resolve, 3000));
+      }
     };
 
     function render() {
@@ -840,6 +894,15 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
       ReactDOM.render(
         &lt;styleguide.FilterBar {...props} &#x2F;&gt;,
         document.getElementById(&#x27;filter-bar-container&#x27;)
+      );
+
+      const nonEditableProps = _.merge({}, props, {
+        isReadOnly: true
+      });
+
+      ReactDOM.render(
+        &lt;styleguide.FilterBar {...nonEditableProps} &#x2F;&gt;,
+        document.getElementById(&#x27;non-editable-filter-bar-container&#x27;)
       );
     }
 
@@ -978,12 +1041,12 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
 
 <script type="text/babel" data-presets="es2015,react">
   $(() => {
-    let value = 10;
+    let value = 1;
 
     const props = {
-      rangeMin: 0,
-      rangeMax: 20,
-      step: 2,
+      rangeMin: 1,
+      rangeMax: 3.2,
+      step: 0.1,
       value,
       onChange: (newValue) => {
         props.value = newValue;
@@ -1009,12 +1072,12 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
 
 &lt;script type=&quot;text&#x2F;babel&quot; data-presets=&quot;es2015,react&quot;&gt;
   $(() =&gt; {
-    let value = 10;
+    let value = 1;
 
     const props = {
-      rangeMin: 0,
-      rangeMax: 20,
-      step: 2,
+      rangeMin: 1,
+      rangeMax: 3.2,
+      step: 0.1,
       value,
       onChange: (newValue) =&gt; {
         props.value = newValue;
@@ -1115,6 +1178,76 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
 </code>
 </pre>
 
+
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="date-range-picker">
+      <div class="meta">
+        <h2 class="styleguide-header">Date Range Picker</h2>
+      </div>
+      <div class="example">
+        <h2>Date Range Picker</h2>
+
+<div id="date-range-picker-container"></div>
+
+<script type="text/babel" data-presets="es2015,react">
+  $(() => {
+
+    const props = {
+      value: {
+        start: '2014-06-10T00:00:00',
+        end: '2016-06-06T00:00:00'
+      },
+      onChange: (newValue) => {
+        props.value = newValue;
+        render();
+      }
+    };
+
+    function render() {
+      ReactDOM.render(
+        <styleguide.DateRangePicker {...props} />,
+        document.getElementById('date-range-picker-container')
+      );
+    }
+
+    render();
+  });
+</script>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;date-range-picker-container&quot;&gt;&lt;&#x2F;div&gt;
+
+&lt;script type=&quot;text&#x2F;babel&quot; data-presets=&quot;es2015,react&quot;&gt;
+  $(() =&gt; {
+
+    const props = {
+      value: {
+        start: &#x27;2014-06-10T00:00:00&#x27;,
+        end: &#x27;2016-06-06T00:00:00&#x27;
+      },
+      onChange: (newValue) =&gt; {
+        props.value = newValue;
+        render();
+      }
+    };
+
+    function render() {
+      ReactDOM.render(
+        &lt;styleguide.DateRangePicker {...props} &#x2F;&gt;,
+        document.getElementById(&#x27;date-range-picker-container&#x27;)
+      );
+    }
+
+    render();
+  });
+&lt;&#x2F;script&gt;
+
+</code>
+</pre>
 
       </div>
     </section>
@@ -1345,15 +1478,227 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
       </div>
     </section>
 
+    <section class="styleguide-section" id="socrata-icon">
+      <div class="meta">
+        <h2 class="styleguide-header">SocrataIcon</h2>
+      </div>
+      <div class="example">
+        
+<div id="socrata-icon-container"></div>
+
+<script type="text/babel" data-presets="es2015,react">
+  $(() => {
+    const props = {
+      name: 'data'
+    };
+
+    ReactDOM.render(
+      <styleguide.SocrataIcon {...props} />,
+      document.getElementById('socrata-icon-container')
+    );
+  });
+</script>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;socrata-icon-container&quot;&gt;&lt;&#x2F;div&gt;
+
+&lt;script type=&quot;text&#x2F;babel&quot; data-presets=&quot;es2015,react&quot;&gt;
+  $(() =&gt; {
+    const props = {
+      name: &#x27;data&#x27;
+    };
+
+    ReactDOM.render(
+      &lt;styleguide.SocrataIcon {...props} &#x2F;&gt;,
+      document.getElementById(&#x27;socrata-icon-container&#x27;)
+    );
+  });
+&lt;&#x2F;script&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
+    <section class="styleguide-section" id="side-menu">
+      <div class="meta">
+        <h2 class="styleguide-header">Side Menu</h2>
+      </div>
+      <div class="example">
+        
+<div id="menu-container"></div>
+<button class="btn btn-default menu-trigger">Trigger Side Menu</button>
+
+<script type="text/babel" data-presets="es2015,react">
+  $(() => {
+    const {
+      SideMenu,
+      ExpandableMenuListItem,
+      MenuListItem
+    } = styleguide;
+
+    const menuProps = {
+      title: 'Sample Side Menu',
+      isAnchoredLeft: true,
+      isOpen: false,
+      onDismiss
+    };
+
+    function onDismiss() {
+      menuProps.isOpen = false;
+      render();
+    }
+
+    const menuListItemProps = {
+      iconName: 'copy-document',
+      text: 'Make a Copy'
+    };
+
+    const expandableMenuListItemProps = {
+      iconName: 'edit',
+      text: 'Edit Title and Description'
+    };
+
+    function render() {
+      ReactDOM.render(
+        <SideMenu {...menuProps}>
+          <ExpandableMenuListItem {...expandableMenuListItemProps}>
+            <div>
+              <form>
+                <div>
+                  <label htmlFor="edit-title-field" className="block-label">
+                    Title
+                  </label>
+                  <input id="edit-title-field" className="text-input" />
+                </div>
+                <div>
+                  <label htmlFor="edit-description-field" className="block-label">
+                    Title
+                  </label>
+                  <textarea id="edit-description-field" className="text-input text-area" />
+                </div>
+                <button className="btn btn-dark btn-default update-button" disabled>
+                  Update Title and Description
+                </button>
+              </form>
+            </div>
+          </ExpandableMenuListItem>
+          <MenuListItem {...menuListItemProps} />
+        </SideMenu>,
+        document.getElementById('menu-container')
+      );
+    }
+
+    render();
+
+    $('.menu-trigger').click((event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      menuProps.isOpen = true;
+      render();
+    });
+  });
+</script>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;menu-container&quot;&gt;&lt;&#x2F;div&gt;
+&lt;button class=&quot;btn btn-default menu-trigger&quot;&gt;Trigger Side Menu&lt;&#x2F;button&gt;
+
+&lt;script type=&quot;text&#x2F;babel&quot; data-presets=&quot;es2015,react&quot;&gt;
+  $(() =&gt; {
+    const {
+      SideMenu,
+      ExpandableMenuListItem,
+      MenuListItem
+    } = styleguide;
+
+    const menuProps = {
+      title: &#x27;Sample Side Menu&#x27;,
+      isAnchoredLeft: true,
+      isOpen: false,
+      onDismiss
+    };
+
+    function onDismiss() {
+      menuProps.isOpen = false;
+      render();
+    }
+
+    const menuListItemProps = {
+      iconName: &#x27;copy-document&#x27;,
+      text: &#x27;Make a Copy&#x27;
+    };
+
+    const expandableMenuListItemProps = {
+      iconName: &#x27;edit&#x27;,
+      text: &#x27;Edit Title and Description&#x27;
+    };
+
+    function render() {
+      ReactDOM.render(
+        &lt;SideMenu {...menuProps}&gt;
+          &lt;ExpandableMenuListItem {...expandableMenuListItemProps}&gt;
+            &lt;div&gt;
+              &lt;form&gt;
+                &lt;div&gt;
+                  &lt;label htmlFor=&quot;edit-title-field&quot; className=&quot;block-label&quot;&gt;
+                    Title
+                  &lt;&#x2F;label&gt;
+                  &lt;input id=&quot;edit-title-field&quot; className=&quot;text-input&quot; &#x2F;&gt;
+                &lt;&#x2F;div&gt;
+                &lt;div&gt;
+                  &lt;label htmlFor=&quot;edit-description-field&quot; className=&quot;block-label&quot;&gt;
+                    Title
+                  &lt;&#x2F;label&gt;
+                  &lt;textarea id=&quot;edit-description-field&quot; className=&quot;text-input text-area&quot; &#x2F;&gt;
+                &lt;&#x2F;div&gt;
+                &lt;button className=&quot;btn btn-dark btn-default update-button&quot; disabled&gt;
+                  Update Title and Description
+                &lt;&#x2F;button&gt;
+              &lt;&#x2F;form&gt;
+            &lt;&#x2F;div&gt;
+          &lt;&#x2F;ExpandableMenuListItem&gt;
+          &lt;MenuListItem {...menuListItemProps} &#x2F;&gt;
+        &lt;&#x2F;SideMenu&gt;,
+        document.getElementById(&#x27;menu-container&#x27;)
+      );
+    }
+
+    render();
+
+    $(&#x27;.menu-trigger&#x27;).click((event) =&gt; {
+      event.preventDefault();
+      event.stopPropagation();
+
+      menuProps.isOpen = true;
+      render();
+    });
+  });
+&lt;&#x2F;script&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
     <!-- TEMPLATE_TOKEN (Don't remove this. Like seriously.) -->
   </div>
 </div>
 
 
     <!-- NPM peerDependencies and Webpack externals -->
-    <script type="text/javascript" src="js/vendor-bf248325.js"></script>
+    <script type="text/javascript" src="js/vendor-db95ecea.js"></script>
 
-    <script type="text/javascript" src="js/socrata-components-0e72670b.js"></script>
+    <script type="text/javascript" src="js/socrata-components-e61759a9.js"></script>
     <script type="text/javascript" src="javascripts/all-df92dbb1.js"></script>
   </body>
 </html>

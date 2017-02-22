@@ -1,6 +1,6 @@
 /*!
- * Socrata Styleguide v9.0.2
- * Copyright 2015-2016 undefined
+ * Socrata Styleguide v11.7.1
+ * Copyright 2015-2017 undefined
  * Licensed under undefined
  */
 
@@ -54,7 +54,7 @@ html {
       margin-top: 3rem; }
     .container > .menu .menu-header .menu-header-dismiss {
       text-align: right; }
-      .container > .menu .menu-header .menu-header-dismiss:hover {
+      .container > .menu .menu-header .menu-header-dismiss:hover, .container > .menu .menu-header .menu-header-dismiss:focus {
         background-color: #3a3a3a; }
   .container > .content {
     float: left;
@@ -358,4 +358,4 @@ img {
 .special-dropdown-option span {
   margin-right: 10px; }
 
-/*# sourceMappingURL=pages.css-ed2c660e.map */
+/*# sourceMappingURL=pages.css-68578c2d.map */

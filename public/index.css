@@ -63,24 +63,19 @@ body {
   background: transparent;
 }
 
-/* NOTE THIS NEEDS ADDED TO SITE CHROME */
+.fake-header-separator {
+  margin: auto 5px;
+  width: 1px;
+  height: 32px;
+  background-color: #777777;
+}
+
 .fake-header-right-side {
   display: flex;
 }
 
-/* NOTE THIS NEEDS ADDED TO SITE CHROME */
 .fake-header-notifications {
-  width: 35px;
-  padding-top: 5px;
-  padding-left: 19px;
-  padding-right: 19px;
-  padding-bottom: 6px;
-}
-
-/* NOTE THIS NEEDS ADDED TO SITE CHROME */
-.fake-header-notifications:hover {
-  background-color: #3c3c3c;
-  cursor: pointer;
+  width: 45px;
 }
 
 .fake-header-user-container {
@@ -93,12 +88,6 @@ body {
   outline: 0;
   vertical-align: baseline;
   background: transparent;
-
-  /*
-  NOTE THESE ARE CURRENTLY IN SITE CHROME AND SHOULD BE REMOVED
-  margin-right: 0;
-  margin-left: auto;
-  */
 }
 
 .fake-header-user-container:hover {

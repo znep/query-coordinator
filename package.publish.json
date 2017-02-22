@@ -1,0 +1,24 @@
+{
+  "name": "socrata-notifications",
+  "version": "0.2.0",
+  "description": "Displays notifications on the Socrata platform",
+  "publishConfig": {
+    "registry": "https://repo.socrata.com/artifactory/api/npm/npm-local"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/socrata/socrata-notifications.git"
+  },
+  "keywords": [
+    "Socrata",
+    "react",
+    "components",
+    "notifications"
+  ],
+  "author": "Socrata, Inc.",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/socrata/socrata-notifications/issues"
+  },
+  "main": "js/main.js"
+}

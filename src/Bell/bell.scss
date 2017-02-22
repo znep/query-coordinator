@@ -1,0 +1,57 @@
+@import "../common.scss";
+
+$hover-color: #3c3c3c;
+$bell-dark: #757575;
+$bell-light: #FFFFFF;
+
+.container {
+  cursor: pointer;
+  padding-top: 6px;
+  padding-left: 5px;
+
+  /*
+   * Note that these next three lines don't actually do anything,
+   * but are needed to get proper sizing in the dev environment.
+   */
+  line-height: 1.6;
+  box-sizing: border-box;
+  font-size: 15px;
+}
+
+.container:hover {
+  background-color: $hover-color;
+}
+
+:global(.site-chrome-small) .container {
+  padding-top: 2px;
+  padding-right: 10px;
+  padding-bottom: 3px;
+  padding-left: 8px;
+  height: 31px;
+  margin-top: 1px;
+}
+
+.bell {
+  width: 32px;
+  height: 100%;
+}
+
+:global(.site-chrome-small) .bell {
+  width: 24px;
+}
+
+.svg-dark {
+  @extend .bell;
+
+  fill: $bell-dark;
+}
+
+.svg-light {
+  @extend .bell;
+  
+  fill: $bell-light;
+}
+
+.unread-icon {
+  fill: $alternate-1;
+}

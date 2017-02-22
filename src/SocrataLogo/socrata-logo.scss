@@ -1,0 +1,16 @@
+@import '../common.scss';
+
+.logo {
+  width: 20px;
+  height: auto;
+  margin-right: 10px;
+  margin-bottom: -4px;
+}
+
+.blue {
+  fill: $primary;
+}
+
+.orange {
+  fill: $alternate-1;
+}

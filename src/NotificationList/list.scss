@@ -1,0 +1,89 @@
+@import '../common.scss';
+
+$background-color: #ffffff;
+
+.container {
+  @include base;
+  width: 375px;
+  background-color: $background-color;
+  
+  position: absolute;
+  right: -34px;
+  top: 60px;
+  filter: drop-shadow(0 3px 5px #888888);
+}
+
+.container * {
+  line-height: 1.618 !important;
+}
+
+:global(.site-chrome-small) .container {
+  top: 47px;
+}
+
+/* Weird triangle nonsense... (why, designers, why!) */
+.container::before {
+  content: "";
+  position: absolute;
+  left: 340px;
+
+  /* this ACTUALLY controls how big the triangle is... */
+  border: 13px solid $background-color;
+
+  transform-origin: 0 0;
+  transform: rotate(135deg);
+}
+
+.divider {
+  background-color: $alternate-4-light;
+  height: 2px;
+  width: 100%;
+}
+
+.header {
+  text-align: center;
+  font-size: 15px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.view-older {
+  text-align: center;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  background-color: $alternate-4-light;
+}
+
+.view-older-link {
+  @extend .unstyled-link;
+
+  color: $primary-text !important;
+  font-size: 13px !important;
+  padding: 0 !important;
+  font-weight: normal !important;
+
+  &:hover {
+    text-decoration: underline !important;
+  }
+}
+
+.error-message {
+  @extend .alert;
+  @extend .error;
+  
+  text-align: center;
+  font-size: 12px;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  margin-bottom: 525px;
+}
+
+.spinner {
+  @extend .spinner-default;
+  @extend .spinner-large;
+
+  margin-left: calc(50% - 32px);
+  margin-top: 50%;
+  margin-bottom: 295px;
+}

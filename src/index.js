@@ -1,8 +1,10 @@
+/* eslint-disable */
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Notifications from './Notifications';
 
-window.notifications = (container) => {
+window.notifications = (container, options) => {
   let rootNode;
   try {
     rootNode = document.querySelector(container);
@@ -14,7 +16,7 @@ window.notifications = (container) => {
   }
 
   ReactDOM.render(
-    <Notifications />,
+    <Notifications options={options} />,
     rootNode
   );
 };

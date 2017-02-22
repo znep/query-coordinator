@@ -44,8 +44,30 @@ describe('ShareVisualizationModal', () => {
       assert.equal($element.find('#share-embed-code-field').text(), 'some script')
     });
 
-    it('renders the link', function() {
-      assert.equal($element.find('#share-link-field').val(), 'a link');
+    describe('copyableLinkUrl is set', () => {
+      it('renders the link', function() {
+        assert.equal($element.find('#share-link-field').val(), 'a link');
+      });
+
+      it('does not render an info message', function() {
+        assert.lengthOf($element.find('.alert.info'), 0);
+      });
+    });
+
+    describe('copyableLinkUrl not set', () => {
+      beforeEach(() => {
+        $element = $(renderComponent(ShareVisualizationModal, getProps({
+          copyableLinkUrl: null
+        })));
+      });
+
+      it('does not render the link', function() {
+        assert.lengthOf($element.find('#share-link-field'), 0);
+      });
+
+      it('renders an info message', function() {
+        assert.lengthOf($element.find('.alert.info'), 1);
+      });
     });
 
     it('chooses the given size', function() {

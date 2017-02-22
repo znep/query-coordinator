@@ -12,7 +12,7 @@ function mapStateToProps(state) {
   const updatedDate = isEphemeral ? t('info_pane.unsaved') : formatDate(view.lastUpdatedAt);
   const basedOnHtml = t('info_pane.based_on').replace('%{name}', state.parentView.name);
   const footer = (
-    <a href={state.parentView.url} target="_blank" dangerouslySetInnerHTML={{ __html: basedOnHtml }}></a>
+    <a href={state.parentView.path} target="_blank" dangerouslySetInnerHTML={{ __html: basedOnHtml }}></a>
   );
 
   return {

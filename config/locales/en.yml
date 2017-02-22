@@ -4787,6 +4787,7 @@ en:
       preview: Preview
       fallback_visualization_text: View the visualization
       size_options: Size
+      no_web_link_available: This visualization has not been saved. To generate a web link for this visualization, save and then try again.
       sizes:
         small: Small
         medium: Medium

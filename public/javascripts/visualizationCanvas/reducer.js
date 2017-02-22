@@ -25,10 +25,27 @@ const SHARE_MODAL_INITIAL_STATE = {
   isActive: false
 };
 
-const initialState = () => {
-  const isEphemeral = _.isNil(window.initialState.view.id);
+const applyVifOrigin = (state, vif) => {
+  const origin = {
+    type: 'visualization_canvas'
+  };
 
-  return _.assign(window.initialState, {
+  if (state && state.visualizationUrl) {
+    origin.url = state.visualizationUrl;
+  }
+
+  return _.extend(
+    {},
+    vif,
+    { origin }
+  );
+};
+
+const initialState = () => {
+  const state = window.initialState;
+  const isEphemeral = _.isNil(state.view.id);
+
+  _.assign(state, {
     authoringWorkflow: {
       isActive: false
     },
@@ -38,8 +55,17 @@ const initialState = () => {
     isEphemeral,
     isDirty: isEphemeral,
     saveState: SaveStates.IDLE,
-    columnStats: null
+    columnStats: null,
+    visualizationUrl: isEphemeral ? null : `https://${window.location.host}/d/${state.view.id}`,
+    dataSourceUrl: `https://${window.location.host}${state.parentView.path}`
   });
+
+  // If this view was just saved, its vifs won't contain the origin
+  // URL (because those vifs were created while the view was ephemeral).
+  // So, refresh the origin.
+  state.vifs = _.map(state.vifs, (vif) => applyVifOrigin(state, vif));
+
+  return state;
 };
 
 const defaultVif = () => (
@@ -62,7 +88,7 @@ const defaultVif = () => (
 // Update the vif at the position currently being edited.
 const updateVifs = (state, newVif) => {
   const updatedVifs = _.clone(state.vifs);
-  updatedVifs[state.authoringWorkflow.vifIndex] = newVif;
+  updatedVifs[state.authoringWorkflow.vifIndex] = applyVifOrigin(state, newVif);
 
   return updatedVifs;
 };

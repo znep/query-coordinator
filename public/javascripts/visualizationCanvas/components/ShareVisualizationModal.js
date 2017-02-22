@@ -33,12 +33,20 @@ export class ShareVisualizationModal extends Component {
       readOnly: true
     };
 
+    const field = <input {...props} />;
+
+    const notAvailableMessage = (
+      <div className="alert info">
+        {t('share_modal.no_web_link_available')}
+      </div>
+    );
+
     return (
       <div>
         <label htmlFor="share-link-field" className="block-label">
           {t('share_modal.web_link')}
         </label>
-        <input {...props} />
+        {copyableLinkUrl ? field : notAvailableMessage}
       </div>
     );
   }
@@ -136,7 +144,9 @@ ShareVisualizationModal.propTypes = {
   embedCode: PropTypes.string.isRequired,
 
   // Link to display in the "Web Link" box.
-  copyableLinkUrl: PropTypes.string.isRequired,
+  // If not provided, explanatory info text
+  // will be rendered.
+  copyableLinkUrl: PropTypes.string,
 
   // Size name to select in the dropdown. See EMBED_SIZES.
   embedSize: PropTypes.oneOf(_.map(EMBED_SIZES, 'name')),
@@ -153,7 +163,6 @@ ShareVisualizationModal.propTypes = {
 
 function mapStateToProps(state) {
   const { isActive, embedSize, vif } = state.shareModal;
-  const copyableLinkUrl = `https://${window.location.host}/d/${state.view.id}`;
   const sourceHref = `https://${window.location.host}/d/${state.view.id}?referrer=embed`;
 
   const { width, height } = _.find(EMBED_SIZES, { name: embedSize }) || {};
@@ -172,7 +181,7 @@ function mapStateToProps(state) {
     embedCode,
     embedSize,
     isActive,
-    copyableLinkUrl,
+    copyableLinkUrl: state.visualizationUrl,
     vif
   };
 }

@@ -666,6 +666,7 @@ class DatasetsController < ApplicationController
   end
 
   def form_success
+    @suppress_chrome = true
     begin
       @view = ::View.find(params[:id])
     rescue
@@ -678,6 +679,7 @@ class DatasetsController < ApplicationController
   end
 
   def form_error
+    @suppress_chrome = true
     @view = ::View.find(params[:id])
     respond_to do |format|
       format.html { render(:layout => 'plain') }

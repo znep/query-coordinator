@@ -738,7 +738,7 @@ class DatasetsController < ApplicationController
     @parent_view = get_view(params[:id])
     return if @parent_view.nil?
 
-    return render_404 unless visualization_canvas_enabled? && @parent_view.dataset?
+    return render_404 unless visualization_canvas_enabled? && @parent_view.blist_or_derived_view_but_not_data_lens?
 
     @view = @parent_view.new_visualization_canvas
 

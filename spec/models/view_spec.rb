@@ -226,6 +226,39 @@ describe View do
     end
   end
 
+  describe '.blist_or_derived_view_but_not_data_lens?' do
+    let(:view) { View.new }
+
+    before(:each) do
+      allow(view).to receive(:is_blist?).and_return(false)
+      allow(view).to receive(:is_derived_view?).and_return(false)
+      allow(view).to receive(:data_lens?).and_return(false)
+    end
+
+    it 'returns true when view.is_blist? is true' do
+      allow(view).to receive(:is_blist?).and_return(true)
+
+      expect(view.blist_or_derived_view_but_not_data_lens?).to eq(true)
+    end
+
+    it 'returns true when view.is_derived_view? is true' do
+      allow(view).to receive(:is_derived_view?).and_return(true)
+
+      expect(view.blist_or_derived_view_but_not_data_lens?).to eq(true)
+    end
+
+    it 'returns false when view.data_lens? is true' do
+      allow(view).to receive(:is_derived_view?).and_return(true)
+      allow(view).to receive(:data_lens?).and_return(true)
+
+      expect(view.blist_or_derived_view_but_not_data_lens?).to eq(false)
+    end
+
+    it 'returns false when nothing is true' do
+      expect(view.blist_or_derived_view_but_not_data_lens?).to eq(false)
+    end
+  end
+
   describe '.visualization_canvas?' do
     let(:visualization_canvas_data) do
       {

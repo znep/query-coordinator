@@ -9,10 +9,18 @@ import PreviewBar from './components/PreviewBar';
 import InfoPane from './components/InfoPane';
 import AddVisualizationButton from './components/AddVisualizationButton';
 import AuthoringWorkflowModal from './components/AuthoringWorkflowModal';
+import ShareVisualizationModal from './components/ShareVisualizationModal';
 import EditMenu from './components/EditMenu';
 import Visualizations from './components/Visualizations';
 import Table from './components/Table';
 import FilterBar from './components/FilterBar';
+import { FeatureFlags } from 'socrata-utils';
+
+const SHARE_BUTTON_ENABLED = {
+  view: FeatureFlags.value('visualizationCanvasEmbedButton') === 'always',
+  preview: FeatureFlags.value('visualizationCanvasEmbedButton') === 'always',
+  edit: true
+};
 
 export const App = React.createClass({
   propTypes: {
@@ -61,10 +69,11 @@ export const App = React.createClass({
           <InfoPane />
           <FilterBar isReadOnly={false} />
           <AddVisualizationButton />
-          <Visualizations displayEditButtons />
+          <Visualizations displayEditButtons displayShareButtons={SHARE_BUTTON_ENABLED.edit} />
           <Table />
         </div>
         <AuthoringWorkflowModal />
+        <ShareVisualizationModal />
         <EditMenu />
         <FeedbackPanel {...window.serverConfig} />
       </div>
@@ -78,22 +87,26 @@ export const App = React.createClass({
         <div className="visualization-canvas-body">
           <InfoPane />
           <FilterBar />
-          <Visualizations />
+          <Visualizations displayShareButtons={SHARE_BUTTON_ENABLED.preview} />
           <Table />
           <FeedbackPanel {...window.serverConfig} />
         </div>
+        <ShareVisualizationModal />
       </div>
     );
   },
 
   renderViewMode() {
     return (
-      <div className="visualization-canvas-body">
-        <InfoPane />
-        <FilterBar />
-        <Visualizations />
-        <Table />
-        <FeedbackPanel {...window.serverConfig} />
+      <div>
+        <div className="visualization-canvas-body">
+          <InfoPane />
+          <FilterBar />
+          <Visualizations displayShareButtons={SHARE_BUTTON_ENABLED.view} />
+          <Table />
+          <FeedbackPanel {...window.serverConfig} />
+        </div>
+        <ShareVisualizationModal />
       </div>
     );
   },

@@ -33,6 +33,38 @@ body {
     }
   }
 
+  .share-modal {
+    .modal-container {
+      max-width: 80%;
+    }
+
+    .modal-content {
+      max-height: 70%;
+    }
+
+    .dropdown-container {
+      // This corrects for the dropdown border
+      // spilling outside the container bounds
+      // (looks bad visually).
+      $shrinkage: 2px;
+      margin-left: $shrinkage;
+      width: calc(100% - #{2 * $shrinkage});
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+    }
+
+    textarea {
+      height: 80px;
+      max-width: 100%;
+      font-family: monospace;
+      word-wrap: break-all;
+    }
+  }
+
   .edit-bar {
     z-index: 8;
 
@@ -237,21 +269,50 @@ body {
         position: relative;
         z-index: 4;
 
-        &:hover {
-          .edit-visualization-button {
+        &:hover, &:focus {
+          .action-btns .btn {
             opacity: 1;
           }
         }
 
-        .edit-visualization-button {
-          opacity: 0;
-          position: absolute;
-          top: 30px;
-          right: 30px;
-          z-index: 1;
+        .action-btns {
+          $btn-z-index: 5;
+          $btn-height: 30;
 
-          &:focus {
-            opacity: 1;
+          position: absolute;
+          top: 35px;
+          right: 35px;
+          z-index: $btn-z-index;
+
+          .btn {
+            vertical-align: top;
+            font-size: 12px;
+            height: 30px;
+            opacity: 0;
+
+            &:hover, &:focus {
+              opacity: 1;
+            }
+          }
+
+          .share-visualization-button {
+            $share-btn-width: 30px;
+
+            margin-left: -1px; // Make the margins fuse.
+            position: relative;
+            width: $share-btn-width;
+            .socrata-icon svg {
+              $size: 16px;
+              position: absolute;
+              top: $btn-height / 2 - $size / 2;
+              left: $share-btn-width / 2 - $size / 2;
+              width: 15px;
+              height: 15px;
+            }
+          }
+
+          .edit-visualization-button {
+            padding: 6px 12px;
           }
         }
 

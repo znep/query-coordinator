@@ -4779,5 +4779,18 @@ en:
     save_error: Oh no! Something went wrong.
     save_error_retry_prompt: Try saving again.
     save_success: Success! Your changes were saved!
+    share_modal:
+      title: Share and Embed
+      close: Close
+      web_link: Web Link
+      embed_code: Embed Code
+      preview: Preview
+      fallback_visualization_text: View the visualization
+      size_options: Size
+      sizes:
+        small: Small
+        medium: Medium
+        large: Large
+        wide: Wide
     unsaved_changes: Are you sure you want to close without saving changes?
     visualization_error: There was a problem rendering this visualization.

@@ -34,7 +34,9 @@ function requireAll(context) {
 }
 
 // Setup mock feature flags
-FeatureFlags.useTestFixture();
+FeatureFlags.useTestFixture({
+  visualizationCanvasEmbedButton: 'embed-only'
+});
 
 // Run all the tests
 requireAll(require.context('./components', true, /\.js$/));

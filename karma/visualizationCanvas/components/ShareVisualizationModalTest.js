@@ -1,0 +1,55 @@
+import { ShareVisualizationModal } from 'components/ShareVisualizationModal';
+import mockVif from 'data/mockVif';
+
+describe('ShareVisualizationModal', () => {
+  const getProps = (props) => {
+    return {
+      vifIndex: 0,
+      vif: mockVif,
+      isActive: true,
+      copyableLinkUrl: 'a link',
+      embedCode: 'some script',
+      embedSize: 'medium',
+      onDismiss: () => {},
+      onChooseEmbedSize: () => {},
+      ...props
+    };
+  };
+
+  describe('when isActive is false', () => {
+    let element;
+
+    beforeEach(() => {
+      element = renderComponent(ShareVisualizationModal, getProps({
+        isActive: false
+      }));
+    });
+
+    it('does not render when isActive is false', () => {
+      expect(element).to.not.exist;
+    });
+  });
+
+  describe('when isActive is true', () => {
+    let $element;
+    beforeEach(() => {
+      $element = $(renderComponent(ShareVisualizationModal, getProps()));
+    });
+
+    it('renders', () => {
+      assert.isObject($element[0]);
+    });
+
+    it('renders the script', function() {
+      assert.equal($element.find('#share-embed-code-field').text(), 'some script')
+    });
+
+    it('renders the link', function() {
+      assert.equal($element.find('#share-link-field').val(), 'a link');
+    });
+
+    it('chooses the given size', function() {
+      assert.equal($element.find('.dropdown-placeholder').text(), 'Medium (400x300)');
+    });
+  });
+});

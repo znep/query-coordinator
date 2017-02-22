@@ -14,8 +14,12 @@ import {
   requestedSave,
   handleSaveSuccess,
   handleSaveError,
-  clearSaveState
+  clearSaveState,
+  openShareModal,
+  closeShareModal,
+  setEmbedSize
 } from 'actions';
+
 import { ModeStates, SaveStates } from 'lib/constants';
 import mockView from 'data/mockView';
 import mockParentView from 'data/mockParentView';
@@ -281,6 +285,45 @@ describe('Reducer', () => {
 
     it('sets save state to idle', () => {
       expect(state.saveState).to.equal(SaveStates.IDLE);
+    });
+  });
+
+  describe('OPEN_SHARE_MODAL', () => {
+    let state;
+    beforeEach(() => {
+      state = reducer(undefined, openShareModal({
+        vifIndex: 0
+      }));
+    });
+
+    it('sets up vif, vifIndex, isActive, and embedSize in state', () => {
+      assert.deepEqual(state.shareModal, {
+        vif: mockVif,
+        vifIndex: 0,
+        isActive: true,
+        embedSize: 'medium'
+      });
+    });
+
+    describe('then SET_EMBED_SIZE', () => {
+      const newSize = 'large';
+
+      it('sets just shareModal.embedSize', () => {
+        const stateAfterSetEmbedSize = reducer(state, setEmbedSize(newSize));
+        assert.deepEqual(stateAfterSetEmbedSize.shareModal, {
+          vif: mockVif,
+          vifIndex: 0,
+          isActive: true,
+          embedSize: newSize
+        });
+      });
+    });
+
+    describe('then CLOSE_SHARE_MODAL', () => {
+      it('clears isActive', () => {
+        const stateAfterClose = reducer(state, closeShareModal());
+        assert.isFalse(stateAfterClose.shareModal.isActive);
+      });
     });
   });
 });

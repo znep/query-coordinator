@@ -174,7 +174,8 @@ Test suites:
 1. Data Lens and Angular common components: `karma/dataCards`
 2. Dataset Landing Page: `karma/datasetLandingPage`
 3. Category Landing Page: `karma/catalogLandingPage`
-4. Old UX tests: `karma/oldUx`
+4. Visualization Canvas: `karma/visualizationCanvas`
+5. Old UX tests: `karma/oldUx`
 
 #### Setup
 
@@ -184,12 +185,13 @@ Ensure that you are using Ruby version 2.3.0 or greater.
 
 ```sh
 bundle exec rake test:karma
+bundle exec rake test:karma:adminGoals
 bundle exec rake test:karma:dataCards
 bundle exec rake test:karma:datasetLandingPage
 bundle exec rake test:karma:datasetManagementUI
 bundle exec rake test:karma:importWizard
 bundle exec rake test:karma:oldUx
-bundle exec rake test:karma:adminGoals
+bundle exec rake test:karma:visualizationCanvas
 ```
 
 Each rake task accepts three arguments:

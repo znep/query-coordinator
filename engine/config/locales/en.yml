@@ -1,5 +1,7 @@
 en:
   admin:
+    data_catalog:
+      title: Data Catalog
     open_performance:
       data: Data
       goal_inventory: Goal Inventory

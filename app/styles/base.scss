@@ -137,3 +137,8 @@ textarea {
 .ruler {
   visibility: hidden;
 }
+
+/* TODO: Remove this once socrata icons are SVG only. */
+.socrata-icon::before {
+  display: none !important;
+}

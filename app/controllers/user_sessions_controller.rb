@@ -71,11 +71,11 @@ class UserSessionsController < ApplicationController
        params[:user_session].key?(:login) &&
        params[:user_session][:login].include?('@socrata.com')
       if feature?('fedramp')
-        flash[:error] = 'Password logins with an @socrata.com email are disabled because the "fedramp" module is on'
+        flash[:error] = 'This domain is configured for FedRAMP security. Access is permitted only via single sign-on.'
         redirect_to login_url and return
       end
       if !feature?('socrata_emails_bypass_auth0')
-        flash[:error] = 'To enable password logins with an @socrata.com email, the "socrata_emails_bypass_auth0" module must be on'
+        flash[:error] = 'This domain is configured to disallow password-based logins with @socrata.com emails.'
         redirect_to login_url and return
       end
     end

@@ -3,7 +3,6 @@ const $ = require('jquery');
 const utils = require('socrata-utils');
 const DistributionChartHelpers = require('./views/DistributionChartHelpers');
 const SvgHistogram = require('./views/SvgHistogram');
-const SvgVisualization = require('./views/SvgVisualization');
 const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 const VifHelpers = require('./helpers/VifHelpers');
 const SoqlHelpers = require('./dataProviders/SoqlHelpers');

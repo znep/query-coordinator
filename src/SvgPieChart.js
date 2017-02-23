@@ -2,7 +2,6 @@ const _ = require('lodash');
 const $ = require('jquery');
 const utils = require('socrata-utils');
 const SvgPieChart = require('./views/SvgPieChart');
-const SvgVisualization = require('./views/SvgVisualization');
 const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 const VifHelpers = require('./helpers/VifHelpers');
 const SoqlHelpers = require('./dataProviders/SoqlHelpers');

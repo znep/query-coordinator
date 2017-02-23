@@ -180,6 +180,10 @@ class User < Model
     view.owner.id == id
   end
 
+  def is_roled_user?
+    role_name.present?
+  end
+
   # Recently renamed from is_admin? to avoid confusion. Renamed in the Javascript code as well.
   def is_superadmin?
     flag?('admin')
@@ -204,6 +208,10 @@ class User < Model
 
   def can_approve?
     has_right?(UserRights::MANAGE_APPROVAL) || (Approval.find()[0] || Approval.new).is_approver?(self)
+  end
+
+  def can_create_or_edit_visualization_canvas?
+    is_roled_user? || is_superadmin?
   end
 
   def can_use_site_appearance?

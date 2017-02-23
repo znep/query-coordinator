@@ -2,6 +2,10 @@ class VisualizationCanvasController < ApplicationController
   include ApplicationHelper
 
   def create
+    unless current_user.try(:can_create_or_edit_visualization_canvas?)
+      return render :json => { :body => I18n.t('core.auth.need_permission') }, :status => :unauthorized
+    end
+
     begin
       body = parse_body
     rescue
@@ -31,6 +35,10 @@ class VisualizationCanvasController < ApplicationController
   end
 
   def update
+    unless current_user.try(:can_create_or_edit_visualization_canvas?)
+      return render :json => { :body => I18n.t('core.auth.need_permission') }, :status => :unauthorized
+    end
+
     begin
       body = parse_body
     rescue

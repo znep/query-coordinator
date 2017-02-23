@@ -18,7 +18,12 @@ Gem::Specification.new do |s|
     s.metadata['allowed_push_host'] = 'https://repo.socrata.com/artifactory/api/gems/ruby-local'
   end
 
-  s.files = Dir['{app,config,db,public,lib}/**/*', 'lib/*.rb', 'MIT-LICENSE', 'Rakefile', 'README.rdoc']
+  s.files = Dir[
+    '{app,config,db,public,lib,node_modules}/**/*',
+    'lib/*.rb',
+    'MIT-LICENSE',
+    'Rakefile',
+    'README.rdoc']
   s.test_files = Dir['test/**/*']
 
   s.add_dependency 'airbrake', '>= 4.3.0'

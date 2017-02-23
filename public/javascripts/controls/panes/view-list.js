@@ -10,7 +10,11 @@
     var items = cpObj._viewList;
     if (!$.isBlank(cpObj._currentShow) && cpObj._currentShow != 'all') {
       items = _.select(items, function(v) {
-        return v.type == cpObj._currentShow;
+        if (cpObj._currentShow === 'data_lens') {
+          return v.type === 'data_lens' || v.type === 'visualization';
+        } else {
+          return v.type === cpObj._currentShow;
+        }
       });
     }
 
@@ -64,10 +68,14 @@
             return a.context.view.displayName.capitalize();
           },
           '.viewIcon@class+': function(a) {
-            return 'type' + a.context.view.styleClass;
+            var styleClass = a.context.view.styleClass;
+            styleClass = styleClass.replace('Visualization', 'Data_lens');
+            return 'type' + styleClass;
           },
           '.icon@class+': function(a) {
-            if (a.context.view.styleClass === 'Data_lens') {
+            var styleClass = a.context.view.styleClass;
+            styleClass = styleClass.replace('Visualization', 'Data_lens');
+            if (styleClass === 'Data_lens') {
               return 'icon-cards';
             } else {
               return '';

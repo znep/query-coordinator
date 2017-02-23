@@ -1354,6 +1354,7 @@ en:
       pulse: pulse
       story: story
       table: table
+      visualization: Data Lens page
       working_copy: working copy
     view_types_plural:
       calendar: Calendars

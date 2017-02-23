@@ -127,6 +127,10 @@ body {
   }
 
   .table-preview {
+    #file {
+      display: none;
+    }
+
     .table-contents {
       // this is a nice round number...
       // because the table height needs to be divisible by

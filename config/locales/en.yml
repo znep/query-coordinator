@@ -1638,7 +1638,7 @@ en:
     manage: Manage
     manage_uploads:
       previous: Previous uploads
-      new_file: "Upload a new file:"
+      new_file: Upload a new file
       failed: "{filename} (failed: {status})"
     metadata_manage:
       errors:

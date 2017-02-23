@@ -8,6 +8,7 @@ import DatasetPreview from './DatasetPreview';
 import * as Links from '../links';
 import { Link } from 'react-router';
 import { latestOutputSchema } from '../selectors';
+import * as Actions from '../actions/manageUploads';
 
 function wrapEmpty(result) {
   return (
@@ -20,7 +21,7 @@ function wrapEmpty(result) {
   );
 }
 
-function noDataYetView() {
+function noDataYetView(createUpload) {
   return wrapEmpty(
     <div className="entry-description table-info">
       <h6>
@@ -30,13 +31,18 @@ function noDataYetView() {
         {I18n.home_pane.adding_data_is_easy_and_fun}
       </p>
 
-      <Link to={Links.uploads}>
-        <button
-          className="no-data-yet-btn btn btn-sm btn-alternate-2"
-          tabIndex="-1">
-          {I18n.home_pane.data_manage_button}
-        </button>
-      </Link>
+      <label
+        id="upload-label"
+        className="btn btn-alternate-2"
+        htmlFor="file">
+        {I18n.manage_uploads.new_file}&nbsp;
+      </label>
+      <input
+        id="file"
+        name="file"
+        type="file"
+        aria-labelledby="upload-label"
+        onChange={(evt) => (createUpload(evt.target.files[0]))} />
 
       <p className="small">{I18n.home_pane.supported_uploads}</p>
     </div>
@@ -84,7 +90,7 @@ function upsertCompleteView(view, outputSchema) {
   );
 }
 
-function ShowUpdate({ view, routing, db, urlParams }) {
+function ShowUpdate({ view, routing, db, urlParams, createUpload }) {
   let metadataSection;
   const paneProps = {
     name: view.name,
@@ -139,7 +145,7 @@ function ShowUpdate({ view, routing, db, urlParams }) {
   } else if (outputSchema) {
     dataTable = outputSchemaView(db, outputSchema);
   } else {
-    dataTable = noDataYetView();
+    dataTable = noDataYetView(createUpload);
   }
 
   return (
@@ -162,16 +168,25 @@ ShowUpdate.propTypes = {
   view: PropTypes.object.isRequired,
   routing: PropTypes.object.isRequired,
   db: PropTypes.object.isRequired,
-  urlParams: PropTypes.object.isRequired
+  urlParams: PropTypes.object.isRequired,
+  createUpload: PropTypes.func.isRequired
 };
 
-const mapStateToProps = (state, ownProps) => {
-  return ({
+function mapDispatchToProps(dispatch) {
+  return {
+    createUpload: (file) => {
+      dispatch(Actions.createUpload(file));
+    }
+  };
+}
+
+function mapStateToProps(state, ownProps) {
+  return {
     view: state.db.views[0],
     routing: state.routing,
     db: state.db,
     urlParams: ownProps.params
-  });
-};
+  };
+}
 
-export default connect(mapStateToProps)(ShowUpdate);
+export default connect(mapStateToProps, mapDispatchToProps)(ShowUpdate);

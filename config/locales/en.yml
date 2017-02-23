@@ -1598,7 +1598,7 @@ en:
       title: Create Dataset
       header: Create a New Dataset
       explanation: To get started, choose a name for your dataset
-      placeholder: Untitled Dataset
+      placeholder: Dataset Name
       errors:
         unknown: An error occurred creating your dataset. Make sure you are logged in and have appropriate permissions.  If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
     export_errors: Export Errors

@@ -1,17 +1,40 @@
+window.$ = window.jQuery = require('jquery');
+
+var inProgress = false;
+
+function updateButtonDisplay() {
+  const busyBtn = $('#create-spinner');
+  const disabledBtn = $('#create-text-disabled');
+  const readyBtn = $('#create-text');
+  const errorMessage = $('#error-message');
+  const datasetTitle = document.getElementById('dataset-title-input').value;
+
+  busyBtn.hide(); disabledBtn.hide(); readyBtn.hide();
+
+  if (inProgress) {
+    busyBtn.show();
+    errorMessage.hide();
+  } else if (datasetTitle != '') {
+    readyBtn.show();
+  } else {
+    disabledBtn.show();
+  }
+}
+
 function handleError(xhr, textStatus, errorThrown, fromApi) {
   // TODO: airbrake this
   console.error('An error occurred while making a request to ' + fromApi + '.', xhr, textStatus, errorThrown);
   var message = $('#error-message');
   message.show();
-  $('#create-text').show();
-  $('#create-spinner').hide();
+  inProgress = false;
+  updateButtonDisplay();
 }
 
 function createDataset() {
-  $('#error-message').hide();
-  $('#create-text').hide();
-  $('#create-spinner').show();
   var datasetTitle = document.getElementById('dataset-title-input').value;
+  if (inProgress || datasetTitle == '') return false;
+  inProgress = true;
+  updateButtonDisplay();
   var headers = {
     'X-CSRF-Token': window.serverConfig.csrfToken,
     'X-App-Token': window.serverConfig.appToken
@@ -48,5 +71,10 @@ function createDataset() {
   return false;
 }
 
-const form = document.getElementById('dataset-form');
-form.onsubmit = createDataset;
+const form = $('#dataset-form');
+form.on('submit', createDataset);
+
+const titleTextBox = $('#dataset-title-input');
+titleTextBox.on('input', updateButtonDisplay);
+
+updateButtonDisplay();

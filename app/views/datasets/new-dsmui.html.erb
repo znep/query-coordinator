@@ -14,14 +14,14 @@
         <div class="modal-header-subtitle"><%= t('dataset_management_ui.create.explanation') %></div>
       </header>
 
-      <form id="dataset-form" onSubmit="return createDataset();">
+      <form id="dataset-form">
         <section class="modal-content">
           <input id="dataset-title-input"
                   class="text-input []"
                   type="text"
                   placeholder="<%= t('dataset_management_ui.create.placeholder') %>"
                   autofocus
-                  required>
+                  >
         </section>
 
         <footer class="modal-actions">
@@ -29,6 +29,11 @@
                   id="create-text"
                   class="btn btn-primary btn-lg btn-block"
                   value="<%= t('dataset_management_ui.create.title') %>" />
+          <button id="create-text-disabled"
+                  class="btn btn-primary btn-lg btn-block"
+                  disabled />
+            <%= t('dataset_management_ui.create.title') %>
+          </button>
           <button id="create-spinner"
                   class="btn btn-primary btn-lg btn-block btn-busy"
                   onClick="return false;">

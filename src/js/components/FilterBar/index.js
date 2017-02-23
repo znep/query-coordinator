@@ -120,7 +120,7 @@ export const FilterBar = React.createClass({
     newFilters.unshift(filter);
     onUpdate(newFilters);
 
-    if (newFilters.length > maxVisibleFilters) {
+    if (_.size(newFilters) > maxVisibleFilters) {
       this.setState({
         isExpanded: true
       });
@@ -175,12 +175,6 @@ export const FilterBar = React.createClass({
     return addFilterWidth + filterIconWidth + collapsedFiltersToggleWidth;
   },
 
-  getRenderableFilters() {
-    const { isReadOnly, filters } = this.props;
-
-    return _.reject(filters, (filter) => isReadOnly && filter.isHidden);
-  },
-
   setMaxVisibleFilters() {
     const { isReadOnly } = this.props;
     const { maxVisibleFilters } = this.state;
@@ -233,8 +227,10 @@ export const FilterBar = React.createClass({
   },
 
   renderExpandControl() {
+    const { isReadOnly, filters } = this.props;
     const { isExpanded, maxVisibleFilters } = this.state;
-    const renderableFilters = this.getRenderableFilters();
+
+    const renderableFilters = _.reject(filters, (filter) => isReadOnly && filter.isHidden);
 
     const text = isExpanded ? t('filter_bar.less') : t('filter_bar.more');
     const classes = classNames('btn btn-transparent btn-expand-control', {
@@ -274,27 +270,36 @@ export const FilterBar = React.createClass({
   },
 
   render() {
-    const { columns, isReadOnly, isValidTextFilterColumnValue } = this.props;
+    const { columns, filters, isReadOnly, isValidTextFilterColumnValue } = this.props;
     const { isExpanded } = this.state;
-    const renderableFilters = this.getRenderableFilters();
 
-    if (isReadOnly && _.isEmpty(renderableFilters)) {
+    // We are mapping and then compacting here, instead of first filtering out the filters we
+    // wouldn't be rendering, because we need to keep track of the filter's actual index in the
+    // filters array in order to properly update the filters.
+    const filterItems = _.chain(filters).
+      map((filter, index) => {
+        if (isReadOnly && filter.isHidden) {
+          return null;
+        }
+
+        const column = _.find(columns, { fieldName: filter.columnName });
+        const props = {
+          column,
+          filter,
+          isReadOnly,
+          onUpdate: _.partialRight(this.onFilterUpdate, index),
+          onRemove: _.partial(this.onFilterRemove, index),
+          isValidTextFilterColumnValue
+        };
+
+        return <FilterItem key={index} {...props} />;
+      }).
+      compact().
+      value();
+
+    if (isReadOnly && _.isEmpty(filterItems)) {
       return null;
     }
-
-    const filterItems = _.map(renderableFilters, (filter, index) => {
-      const column = _.find(columns, { fieldName: filter.columnName });
-      const props = {
-        column,
-        filter,
-        isReadOnly,
-        onUpdate: _.partialRight(this.onFilterUpdate, index),
-        onRemove: _.partial(this.onFilterRemove, index),
-        isValidTextFilterColumnValue
-      };
-
-      return <FilterItem key={index} {...props} />;
-    });
 
     const containerProps = {
       className: classNames('filter-bar-container', {

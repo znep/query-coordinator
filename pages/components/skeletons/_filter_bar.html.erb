@@ -1,4 +1,7 @@
-<h3 class="styleguide-subheader">Editable Filter Bar</h3>
+<h3 class="styleguide-subheader">
+  Editable Filter Bar
+  <button id="toggle" class="btn btn-xs btn-default">Toggle isReadOnly</button>
+</h3>
 <div id="filter-bar-container"></div>
 
 <h3 class="styleguide-subheader">Non-Editable Filter Bar <span class="small">(hidden if there are no visible filters)</span></h3>
@@ -85,6 +88,11 @@
       props.filters = newFilters;
       render();
     }
+
+    $('#toggle').click(() => {
+      props.isReadOnly = !props.isReadOnly
+      render();
+    });
 
     render();
   });

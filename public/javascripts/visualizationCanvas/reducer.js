@@ -249,7 +249,7 @@ export default (state = initialState(), action) => {
           isActive: true,
           vifIndex: action.data.vifIndex,
           vif: getVif(state, action.data.vifIndex),
-          embedSize: 'medium'
+          embedSize: 'large'
         }
       };
 

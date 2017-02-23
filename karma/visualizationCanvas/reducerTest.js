@@ -129,7 +129,7 @@ describe('Reducer', () => {
           vif: mockVifWithOrigin,
           vifIndex: 0,
           isActive: true,
-          embedSize: 'medium'
+          embedSize: 'large'
         });
       });
     });
@@ -423,12 +423,12 @@ describe('Reducer', () => {
           vif: mockVifWithOrigin,
           vifIndex: 0,
           isActive: true,
-          embedSize: 'medium'
+          embedSize: 'large'
         });
       });
 
       describe('then SET_EMBED_SIZE', () => {
-        const newSize = 'large';
+        const newSize = 'medium';
 
         it('sets just shareModal.embedSize', () => {
           const stateAfterSetEmbedSize = reducer(state, setEmbedSize(newSize));

@@ -45,12 +45,10 @@ body {
     }
 
     .dropdown-container {
-      // This corrects for the dropdown border
-      // spilling outside the container bounds
-      // (looks bad visually).
-      $shrinkage: 2px;
-      margin-left: $shrinkage;
-      width: calc(100% - #{2 * $shrinkage});
+      // This corrects for the dropdown border spilling outside the container
+      // bounds (looks bad visually).
+      margin-left: 2px;
+      width: 12rem;
     }
 
     input, textarea {
@@ -316,10 +314,10 @@ body {
 
             .socrata-icon svg {
               position: absolute;
-              top: 2px;
-              left: 0;
-              width: 15px;
-              height: 15px;
+              top: 1px;
+              left: -1px;
+              width: 16px;
+              height: 16px;
             }
           }
 

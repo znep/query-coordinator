@@ -16,7 +16,14 @@ describe('components/HomePaneSidebar', () => {
       tags: [],
       description: ''
     }));
-    const element = renderComponentWithStore(HomePaneSidebar, {}, store);
+
+    const props = {
+      urlParams: {
+        sidebarSelection: null
+      }
+    };
+
+    const element = renderComponentWithStore(HomePaneSidebar, props, store);
     expect(element.querySelectorAll('span.finished').length).to.equal(0);
   });
 
@@ -38,7 +45,36 @@ describe('components/HomePaneSidebar', () => {
       output_schema_id: 'baz',
       output_column_id: 'baz'
     }));
-    const element = renderComponentWithStore(HomePaneSidebar, {}, store);
+
+    const props = {
+      urlParams: {
+        sidebarSelection: null
+      }
+    };
+
+    const element = renderComponentWithStore(HomePaneSidebar, props, store);
     expect(element.querySelectorAll('span.finished').length).to.equal(1);
+  });
+
+  it('shows the activity feed when the url says to', () => {
+    const store = getEmptyStore();
+    store.dispatch(insertFromServer('views', {
+      license: {},
+      owner: {},
+      viewCount: 0,
+      downloadCount: 0,
+      ownerName: 'foo',
+      tags: [],
+      description: ''
+    }));
+
+    const props = {
+      urlParams: {
+        sidebarSelection: 'log'
+      }
+    };
+
+    const element = renderComponentWithStore(HomePaneSidebar, props, store);
+    expect(element.querySelectorAll('.activity-feed')).to.exist;
   });
 });

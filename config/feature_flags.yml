@@ -299,7 +299,7 @@ useSoda2:
 visualization_canvas_embed_button:
   description: When to show the embed button on visualizations.
   defaultValue: edit-only
-  expectedValues: edit-only always
+  expectedValues: edit-only always never
   disableTrueFalse: true
 zealous_dataslate_cache_expiry:
   category: data slate

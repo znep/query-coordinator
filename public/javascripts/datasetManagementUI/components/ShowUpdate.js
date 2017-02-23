@@ -83,7 +83,7 @@ function upsertCompleteView(view, outputSchema) {
   );
 }
 
-function ShowUpdate({ view, routing, db }) {
+function ShowUpdate({ view, routing, db, urlParams }) {
   let metadataSection;
   const paneProps = {
     name: view.name,
@@ -161,7 +161,7 @@ function ShowUpdate({ view, routing, db }) {
           {dataTable}
         </section>
       </div>
-      <HomePaneSidebar />
+      <HomePaneSidebar urlParams={urlParams} />
     </div>
   );
 }
@@ -169,14 +169,16 @@ function ShowUpdate({ view, routing, db }) {
 ShowUpdate.propTypes = {
   view: PropTypes.object.isRequired,
   routing: PropTypes.object.isRequired,
-  db: PropTypes.object.isRequired
+  db: PropTypes.object.isRequired,
+  urlParams: PropTypes.object.isRequired
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   return ({
     view: state.db.views[0],
     routing: state.routing,
-    db: state.db
+    db: state.db,
+    urlParams: ownProps.params
   });
 };
 

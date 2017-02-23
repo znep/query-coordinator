@@ -30,8 +30,8 @@ export function applyUpdate(outputSchemaId) {
       then(checkStatus).
       then(getJson).
       then((resp) => {
-        const upsertJobId = resp.upsert_job;
-        dispatch(insertSucceeded('upsert_jobs', newUpsertJob, { id: upsertJobId }));
+        dispatch(insertSucceeded('upsert_jobs', newUpsertJob, resp.resource));
+        const upsertJobId = resp.resource.id;
         dispatch(addNotification(upsertJobNotification(upsertJobId)));
         dispatch(pollForUpsertJobProgress(upsertJobId));
         dispatch(push(Links.home(routing)));

@@ -369,6 +369,10 @@ module BrowseActions
 
     if browse_options[:limitTo].present?
       case browse_options[:limitTo]
+        when 'new_view'
+          if visualization_canvas_enabled? && using_cetera?
+            search_options[:limitTo] = ['new_view', 'visualization']
+          end
         when 'unpublished'
           if draft_dataset_entries_enabled?
             search_options[:limitTo] = ['draft', 'tables']

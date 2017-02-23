@@ -21,6 +21,7 @@ export default function rootRoute(store) {
         component={ManageMetadata}
         onEnter={(nextState) => store.dispatch(focusColumnEditor(nextState))} />
       <Route path="uploads" component={ManageUploads} />
+      <Route path=":sidebarSelection" component={ShowUpdate} />
       <Route path="uploads/:uploadId" component={ShowUpload} />
       <Route
         path="uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId"

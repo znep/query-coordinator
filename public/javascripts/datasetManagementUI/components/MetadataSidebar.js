@@ -30,7 +30,7 @@ function manageData(state) { // can't destructure in the function head because t
   const featuredDoneCheckmark = null;
 
   return (
-    <div id="home-pane-sidebar-data">
+    <div id="home-pane-sidebar">
       <h3>{I18n.home_pane.sidebar.title}</h3>
       <p className="small sidebar-blurb"> {I18n.home_pane.sidebar.blurb} </p>
 
@@ -90,7 +90,7 @@ function HomePaneSidebar(state) {
 
 
   return (
-    <div id="home-pane-sidebar">
+    <div className="metadata-sidebar">
       <div className="sidebar-chooser">
         <Link to={Links.home}>
           <button className={classNames('btn', 'chooser-btn', { 'enabled': !showLog })}>

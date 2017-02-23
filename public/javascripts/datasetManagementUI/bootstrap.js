@@ -45,7 +45,9 @@ export function bootstrap(store, initialView, initialUpdate) {
   operations.push(insertFromServer('updates', {
     id: initialUpdate.id,
     fourfour: initialView.id,
-    update_seq: _.toNumber(initialUpdate.update_seq)
+    update_seq: _.toNumber(initialUpdate.update_seq),
+    inserted_at: parseDate(initialUpdate.inserted_at),
+    created_by: initialUpdate.created_by
   }));
   initialUpdate.uploads.forEach((upload) => {
     insertAndSubscribeToUpload(store.dispatch, upload);
@@ -53,7 +55,9 @@ export function bootstrap(store, initialView, initialUpdate) {
   initialUpdate.upsert_jobs.forEach((upsertJob) => {
     operations.push(insertFromServer('upsert_jobs', {
       ...upsertJob,
-      finished_at: upsertJob.finished_at ? parseDate(upsertJob.finished_at) : null
+      inserted_at: parseDate(upsertJob.inserted_at),
+      finished_at: upsertJob.finished_at ? parseDate(upsertJob.finished_at) : null,
+      created_by: upsertJob.created_by
     }));
     if (!upsertJob.status) { // will be "=== 'in_progress'" when we change the api (EN-13127)
       store.dispatch(pollForUpsertJobProgress(upsertJob.id));

@@ -50,6 +50,7 @@ module Cetera
       def display_map
         {
           'datalens' => ::Cetera::Displays::DataLens,
+          'visualization' => ::Cetera::Displays::DataLens,
           'pulse' => ::Cetera::Displays::Pulse,
           'draft' => ::Cetera::Displays::Draft,
           'story' => ::Cetera::Displays::Story,

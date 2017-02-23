@@ -4,6 +4,30 @@ import {
   insertFromServer
 } from 'actions/database';
 
+const PROPS = {
+  view: {
+    license: {},
+    owner: {},
+    viewCount: 0,
+    downloadCount: 0,
+    ownerName: 'foo',
+    tags: []
+  },
+  routing: {
+    locationBeforeTransitions: {
+      pathname: "/dataset/qq/bjp2-6cwn/updates/0",
+      search: "",
+      hash: "",
+      action: "POP",
+      key: null,
+      query: {}
+    }
+  },
+  db: {
+  },
+  params: {}
+};
+
 function insertView(store) {
   store.dispatch(insertFromServer('views', {
     id: "hehe-hehe",
@@ -26,57 +50,13 @@ function insertView(store) {
 
 describe('components/ShowUpdate', () => {
   it('renders without errors', () => {
-    const props = {
-      view: {
-        license: {},
-        owner: {},
-        viewCount: 0,
-        downloadCount: 0,
-        ownerName: 'foo',
-        tags: []
-      },
-      routing: {
-        locationBeforeTransitions: {
-          pathname: "/dataset/qq/bjp2-6cwn/updates/0",
-          search: "",
-          hash: "",
-          action: "POP",
-          key: null,
-          query: {}
-        }
-      },
-      db: {}
-    };
     const store = getEmptyStore();
     insertView(store);
-    const element = renderComponentWithStore(ShowUpdate, props, store);
+    const element = renderComponentWithStore(ShowUpdate, PROPS, store);
     expect(element).to.exist;
   });
 
   it('renders the column component', () => {
-    const props = {
-      view: {
-        license: {},
-        owner: {},
-        viewCount: 0,
-        downloadCount: 0,
-        ownerName: 'foo',
-        tags: []
-      },
-      routing: {
-        locationBeforeTransitions: {
-          pathname: "/dataset/qq/bjp2-6cwn/updates/0",
-          search: "",
-          hash: "",
-          action: "POP",
-          key: null,
-          query: {}
-        }
-      },
-      db: {
-      }
-    };
-
     const store = getEmptyStore();
     insertView(store);
     store.dispatch(insertFromServer('uploads', {id: 1}))
@@ -101,7 +81,7 @@ describe('components/ShowUpdate', () => {
       "output_soql_type": "SoQLText"
     }));
 
-    const element = renderComponentWithStore(ShowUpdate, props, store);
+    const element = renderComponentWithStore(ShowUpdate, PROPS, store);
     expect(element).to.exist;
 
     expect(element.querySelectorAll('.column-summary').length).to.equal(1)
@@ -134,7 +114,7 @@ describe('components/ShowUpdate', () => {
       "output_soql_type": "SoQLText"
     }))
 
-    const element = renderComponentWithStore(ShowUpdate, {}, store);
+    const element = renderComponentWithStore(ShowUpdate, PROPS, store);
     expect(element).to.exist;
     expect(element.querySelector('.view-output-schema')).to.exist;
   });
@@ -168,7 +148,7 @@ describe('components/ShowUpdate', () => {
       "status": "in_progress"
     }))
 
-    const element = renderComponentWithStore(ShowUpdate, {}, store);
+    const element = renderComponentWithStore(ShowUpdate, PROPS, store);
     expect(element).to.exist;
     expect(element.querySelector('.upsert-in-progress')).to.exist;
   });
@@ -202,7 +182,7 @@ describe('components/ShowUpdate', () => {
       "status": "successful"
     }))
 
-    const element = renderComponentWithStore(ShowUpdate, {}, store);
+    const element = renderComponentWithStore(ShowUpdate, PROPS, store);
     expect(element).to.exist;
     expect(element.querySelector('.socrata-paginated-table')).to.exist;
   });

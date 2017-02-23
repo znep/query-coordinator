@@ -131,7 +131,8 @@ export function insertAndSubscribeToUpload(dispatch, upload) {
   dispatch(insertFromServer('uploads', {
     ..._.omit(upload, ['schemas']),
     inserted_at: parseDate(upload.inserted_at),
-    finished_at: upload.finished_at ? parseDate(upload.finished_at) : null
+    finished_at: upload.finished_at ? parseDate(upload.finished_at) : null,
+    created_by: upload.created_by
   }));
   const outputSchemaIds = upload.schemas.map((inputSchema) => {
     dispatch(insertFromServer('input_schemas', {
@@ -227,7 +228,8 @@ function toOutputSchema(os) {
     id: os.id,
     input_schema_id: os.input_schema_id,
     error_count: os.error_count,
-    inserted_at: os.inserted_at ? parseDate(os.inserted_at) : null
+    inserted_at: os.inserted_at ? parseDate(os.inserted_at) : null,
+    created_by: os.created_by
   };
 }
 

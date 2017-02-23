@@ -184,7 +184,9 @@ module Cetera
       # Translate FE 'display_type' to Cetera 'type' (as used in limitTo/only)
       # NOTE: the camelCase mirrors the FE params
       def translate_display_type(limitTo, datasetView)
-        if limitTo == 'tables' && datasetView == 'view'
+        if limitTo.respond_to?(:to_ary)
+          limitTo.to_ary.map { |t| translate_display_type(t, datasetView) }
+        elsif limitTo == 'tables' && datasetView == 'view'
           'filters'
         else
           {

@@ -106,11 +106,13 @@ const filterVifs = (vifs, filters) => {
   return _.map(vifs, (vif) => ({
     ...vif,
     series: _.map(vif.series, (series) => {
-      return _.merge(series, {
+      return {
+        ...series,
         dataSource: {
+          ...series.dataSource,
           filters
         }
-      });
+      };
     })
   }));
 };

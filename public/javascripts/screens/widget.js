@@ -184,6 +184,12 @@ blist.widget.paneHandlers = {
       // data lens icon, we add the necessary class to trigger the icon font
       $('.widgetContent_views td.typeData_lens .icon').addClass('icon-cards');
 
+      // hackery continues for visualizations
+      $('.widgetContent_views td.typeVisualization').
+        removeClass('typeVisualization').
+        addClass('typeData_lens').
+        find('.icon').addClass('icon-cards');
+
       $('.widgetContent_views .name a').each(function() {
         var $this = $(this);
         if ($this.attr('title') === '') {

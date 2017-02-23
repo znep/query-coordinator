@@ -3857,7 +3857,7 @@
 
     _onlyDataLenses: function(views) {
       var dataLens = _.filter(views, function(view) {
-        return view.displayType === 'data_lens';
+        return view.displayType === 'data_lens' || view.displayType === 'visualization';
       });
 
       return $.when(dataLens);

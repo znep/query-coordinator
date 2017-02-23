@@ -36,7 +36,7 @@ const ColumnHeader = React.createClass({
         <Link to={Links.columnMetadataEditor(column.id)}>
           <span className="col-name" id={`column-display-name-${column.id}`} title={column.display_name}>
             {column.display_name}
-            <span className="socrata-icon socrata-icon-edit" />
+            <span className="socrata-icon-edit" />
           </span>
         </Link>
         <br />

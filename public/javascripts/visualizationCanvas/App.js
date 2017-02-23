@@ -19,7 +19,7 @@ import { FeatureFlags } from 'socrata-utils';
 const SHARE_BUTTON_ENABLED = {
   view: FeatureFlags.value('visualizationCanvasEmbedButton') === 'always',
   preview: FeatureFlags.value('visualizationCanvasEmbedButton') === 'always',
-  edit: true
+  edit: FeatureFlags.value('visualizationCanvasEmbedButton') !== 'never'
 };
 
 export const App = React.createClass({

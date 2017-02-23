@@ -9,5 +9,5 @@ export default {
     ascending: true,
     columnName: 'penguin'
   }],
-  url: '/d/four-four'
+  path: '/mock-parent-view-path'
 };

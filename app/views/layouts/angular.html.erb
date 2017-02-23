@@ -50,6 +50,8 @@
 
     <%= include_webpack_bundle 'data-cards/main.js' %>
 
+    <%== site_chrome_admin_header(request, response) if render_site_admin_chrome? %>
+
     <%== site_chrome_header(request, response) if render_site_chrome? %>
 
     <%= yield %>

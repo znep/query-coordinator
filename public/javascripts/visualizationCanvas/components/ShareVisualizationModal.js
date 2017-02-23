@@ -25,7 +25,7 @@ export class ShareVisualizationModal extends Component {
   renderLinkField() {
     const { copyableLinkUrl } = this.props;
 
-    const props = {
+    const linkProps = {
       id: 'share-link-field',
       type: 'text',
       value: copyableLinkUrl,
@@ -33,12 +33,20 @@ export class ShareVisualizationModal extends Component {
       readOnly: true
     };
 
+    const field = <input {...linkProps} />;
+
+    const notAvailableMessage = (
+      <div className="alert info">
+        {t('share_modal.no_web_link_available')}
+      </div>
+    );
+
     return (
       <div>
         <label htmlFor="share-link-field" className="block-label">
           {t('share_modal.web_link')}
         </label>
-        <input {...props} />
+        {copyableLinkUrl ? field : notAvailableMessage}
       </div>
     );
   }
@@ -46,7 +54,7 @@ export class ShareVisualizationModal extends Component {
   renderEmbedCodeField() {
     const { embedCode } = this.props;
 
-    const props = {
+    const textareaProps = {
       id: 'share-embed-code-field',
       value: embedCode,
       onFocus: selectOnFocus,
@@ -58,7 +66,7 @@ export class ShareVisualizationModal extends Component {
         <label htmlFor="share-embed-code-field" className="block-label">
           {t('share_modal.embed_code')}
         </label>
-        <textarea {...props} />
+        <textarea {...textareaProps} />
       </div>
     );
   }
@@ -71,7 +79,7 @@ export class ShareVisualizationModal extends Component {
       }
     ));
 
-    const props = {
+    const dropdownProps = {
       onSelection: this.props.onChooseEmbedSize,
       options,
       value: this.props.embedSize
@@ -80,7 +88,7 @@ export class ShareVisualizationModal extends Component {
     return (
       <div>
         <div>{t('share_modal.size_options')}</div>
-        <Dropdown {...props} />
+        <Dropdown {...dropdownProps} />
       </div>
     );
   }
@@ -135,8 +143,9 @@ ShareVisualizationModal.propTypes = {
   // Embed code to display to the user.
   embedCode: PropTypes.string.isRequired,
 
-  // Link to display in the "Web Link" box.
-  copyableLinkUrl: PropTypes.string.isRequired,
+  // Link to display in the "Web Link" box. If not provided, explanatory info
+  // text will be rendered.
+  copyableLinkUrl: PropTypes.string,
 
   // Size name to select in the dropdown. See EMBED_SIZES.
   embedSize: PropTypes.oneOf(_.map(EMBED_SIZES, 'name')),
@@ -153,18 +162,15 @@ ShareVisualizationModal.propTypes = {
 
 function mapStateToProps(state) {
   const { isActive, embedSize, vif } = state.shareModal;
-  const copyableLinkUrl = `https://${window.location.host}/d/${state.view.id}`;
-  const sourceHref = `https://${window.location.host}/d/${state.view.id}?referrer=embed`;
-
   const { width, height } = _.find(EMBED_SIZES, { name: embedSize }) || {};
 
   const embedCode = generateEmbedCode(
     vif,
     {
-      sourceHref,
       width,
       height,
-      fallbackSourceLinkText: t('share_modal.fallback_visualization_text')
+      sourceHref: `${state.dataSourceUrl}?referrer=embed`,
+      fallbackSourceLinkText: t('share_modal.fallback_link_text')
     }
   );
 
@@ -172,7 +178,7 @@ function mapStateToProps(state) {
     embedCode,
     embedSize,
     isActive,
-    copyableLinkUrl,
+    copyableLinkUrl: state.visualizationUrl,
     vif
   };
 }

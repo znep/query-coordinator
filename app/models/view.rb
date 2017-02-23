@@ -2051,7 +2051,7 @@ class View < Model
         :other => canvas_row_label.pluralize(2)
       },
       :sortOrder => first_usable_sort_order,
-      :url => Rails.application.routes.url_helpers.view_path(self)
+      :path => Rails.application.routes.url_helpers.view_path(self)
     }
   end
 

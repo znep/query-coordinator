@@ -32,6 +32,6 @@ describe('InfoPane', () => {
     const footer = element.querySelector('.entry-meta.first a');
 
     expect(footer.innerText).to.equal('Based on ' + mockParentView.name);
-    expect(footer.href).to.have.string(mockParentView.url);
+    expect(footer.href).to.have.string(mockParentView.path);
   });
 });

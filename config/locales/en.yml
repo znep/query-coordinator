@@ -1354,6 +1354,7 @@ en:
       pulse: pulse
       story: story
       table: table
+      visualization: Data Lens page
       working_copy: working copy
     view_types_plural:
       calendar: Calendars
@@ -1598,7 +1599,7 @@ en:
       title: Create Dataset
       header: Create a New Dataset
       explanation: To get started, choose a name for your dataset
-      placeholder: Untitled Dataset
+      placeholder: Dataset Name
       errors:
         unknown: An error occurred creating your dataset. Make sure you are logged in and have appropriate permissions.  If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
     export_errors: Export Errors
@@ -1641,7 +1642,7 @@ en:
     manage: Manage
     manage_uploads:
       previous: Previous uploads
-      new_file: "Upload a new file:"
+      new_file: Upload a new file
       failed: "{filename} (failed: {status})"
     metadata_manage:
       errors:
@@ -4789,8 +4790,9 @@ en:
       web_link: Web Link
       embed_code: Embed Code
       preview: Preview
-      fallback_visualization_text: View the visualization
+      fallback_link_text: View the data
       size_options: Size
+      no_web_link_available: This visualization has not been saved. To generate a web link for this visualization, save and then try again.
       sizes:
         small: Small
         medium: Medium

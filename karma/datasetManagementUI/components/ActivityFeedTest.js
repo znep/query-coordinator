@@ -103,7 +103,7 @@ function insertUpsertFailed(store) {
   }));
 }
 
-describe.only('components/ActivityFeed', () => {
+describe('components/ActivityFeed', () => {
   it('renders nothing when there is nothing', () => {
     const store = getEmptyStore();
     insertView(store);

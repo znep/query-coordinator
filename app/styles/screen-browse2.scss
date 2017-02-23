@@ -75,8 +75,6 @@ html {
     font-family: 'socrata-icons' !important;
     &:before, &:after {
       font-family: 'socrata-icons' !important;
-      position: relative;
-      top: 1px;
     }
   }
 
@@ -389,6 +387,8 @@ html {
           font-weight: 300;
           z-index: 0;
           color: $link-color;
+          position: relative;
+          top: -1px;
         }
       }
     }
@@ -571,7 +571,7 @@ html {
               .browse2-results-sort-control-icon {
                 position: absolute;
                 right: 0.5em;
-                top: 0.5em;
+                top: 9px;
                 font-size: 1.25em;
                 font-weight: 300;
                 color: #666;
@@ -813,7 +813,7 @@ html {
           .browse2-facet-section-expand-contract-icon {
             position: absolute;
             right: 14px;
-            top: 21px;
+            top: 17px;
             font-size: 12px;
             font-weight: 700;
             color: #666;
@@ -1765,11 +1765,13 @@ html {
   }
 
   .tag-official2 {
-    color: #e48424;
+    color: #9e5c23;
 
     span.icon-official2 {
-      color: #9e5c23;
+      color: #e48424;
       font-size: 14px;
+      position: relative;
+      top: 2px;
     }
   }
 }

@@ -125,9 +125,9 @@ const InfoPane = React.createClass({
   },
 
   ellipsify() {
-    if (this.metadataPane && this.description) {
+    if (this.metadataPane && this.description && this.description.firstChild) {
       const metadataHeight = this.metadataPane.getBoundingClientRect().height;
-      const descriptionHeight = this.description.getBoundingClientRect().height;
+      const descriptionHeight = this.description.firstChild.getBoundingClientRect().height;
 
       if (descriptionHeight < metadataHeight) {
         this.description.style.height = `${metadataHeight}px`;

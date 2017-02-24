@@ -31,14 +31,14 @@ function manageData(state) { // can't destructure in the function head because t
 
   return (
     <div id="home-pane-sidebar-data">
-      <h3>{I18n.home_pane.sidebar.title}</h3>
+      <h4>{I18n.home_pane.sidebar.title}</h4>
       <p className="small sidebar-blurb"> {I18n.home_pane.sidebar.blurb} </p>
 
       <div>
         <span className="icon socrata-icon-column-info" />
         {columnDescriptionCheckmark}
 
-        <h4>{I18n.home_pane.sidebar.column_descriptions}</h4>
+        <h3>{I18n.home_pane.sidebar.column_descriptions}</h3>
         <p> {I18n.home_pane.sidebar.column_descriptions_blurb} </p>
         <Link to={Links.columnMetadataEditor()}>
           <button
@@ -57,7 +57,7 @@ function manageData(state) { // can't destructure in the function head because t
           {I18n.home_pane.sidebar.visualize_blurb}
         </p>
         <button
-          className="btn btn-sm btn-default"
+          className="btn btn-sm btn-default btn-disabled-lite"
           disabled
           tabIndex="-1">
           {I18n.home_pane.sidebar.visualize_button}
@@ -73,7 +73,7 @@ function manageData(state) { // can't destructure in the function head because t
         </p>
 
         <button
-          className="btn btn-sm btn-default"
+          className="btn btn-sm btn-default btn-disabled-lite"
           disabled
           tabIndex="-1">
           {I18n.home_pane.sidebar.feature_button}

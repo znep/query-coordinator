@@ -32,17 +32,6 @@ body {
   margin: 0 auto;
 }
 
-// Fix styleguide buttons with spinners in them
-.btn.btn-sm.btn-busy {
-  padding: 8px 15px 5px;
-
-  .spinner-default {
-    width: 15px;
-    height: 15px;
-    border-width: 2px;
-  }
-}
-
 .info-pane {
   background: $white;
   width: 100%;

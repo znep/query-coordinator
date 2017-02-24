@@ -12,7 +12,7 @@ import * as Actions from '../actions/manageUploads';
 import * as ApplyUpdate from '../actions/applyUpdate';
 import { STATUS_INSERTING, STATUS_SAVED } from '../lib/database/statuses';
 
-function wrapEmpty(result) {
+function wrapDataTablePlaceholder(result) {
   return (
     <div className="result-card">
       <div className="entry-main data-table">
@@ -23,9 +23,9 @@ function wrapEmpty(result) {
 }
 
 function noDataYetView(createUpload) {
-  return wrapEmpty(
-    <div className="entry-description table-info">
-      <h3 className="h6">
+  return wrapDataTablePlaceholder(
+    <div className="entry-description table-info no-data-yet">
+      <h3 className="h5">
         {I18n.home_pane.no_data_yet}
       </h3>
       <p>
@@ -45,7 +45,9 @@ function noDataYetView(createUpload) {
         aria-labelledby="upload-label"
         onChange={(evt) => (createUpload(evt.target.files[0]))} />
 
-      <p className="small">{I18n.home_pane.supported_uploads}</p>
+      <p className="small supported-file-types">
+        {I18n.home_pane.supported_uploads}
+      </p>
     </div>
   );
 }
@@ -53,9 +55,9 @@ function noDataYetView(createUpload) {
 function outputSchemaView(db, outputSchema) {
   const inputSchema = _.find(db.input_schemas, { id: outputSchema.input_schema_id });
   if (!inputSchema) return;
-  return wrapEmpty(
+  return wrapDataTablePlaceholder(
     <div className="entry-description table-info view-output-schema">
-      <h3 className="h6">{I18n.home_pane.data_uploaded}</h3>
+      <h3 className="h5">{I18n.home_pane.data_uploaded}</h3>
       <p>
         {I18n.home_pane.data_uploaded_blurb}
       </p>
@@ -110,7 +112,7 @@ function upsertInProgressView(db, addEmailInterest) {
     );
   }
 
-  return wrapEmpty(
+  return wrapDataTablePlaceholder(
     <div className="entry-description table-info upsert-in-progress">
       <h3 className="h6">{I18n.home_pane.being_processed}</h3>
       <p>{I18n.home_pane.being_processed_detail}</p>

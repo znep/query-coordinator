@@ -44,10 +44,8 @@ export default function SaveButton({ onSave, view, outputSchema, outputColumns }
       return (
         <button
           id="save"
-          className="btn btn-primary"
-          disabled="true">
+          className="btn btn-primary btn-busy btn-sm">
           <span className="spinner-default spinner-btn-primary" />
-          {I18n.common.save}
         </button>
       );
 

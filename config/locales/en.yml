@@ -1635,7 +1635,8 @@ en:
       no_data_yet: No data has been added yet!
       adding_data_is_easy_and_fun: Don't worry. Adding some is easy peasy. Just choose a data file to upload.
       supported_uploads: Supported file types .csv, .tsv, .xls, .xlsx
-      data_uploaded: Your data has been uploaded.
+      data_uploaded: Almost there!
+      data_uploaded_blurb: Your data has been uploaded. All that's left is to review it and make sure it looks good.
       being_processed: Your data is being processed!
       being_processed_detail: It'll show here as soon as it is done. No need to wait around, we can let you know when it's ready
       email_me: Email Me

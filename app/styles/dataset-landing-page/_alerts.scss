@@ -33,6 +33,10 @@
     .btn {
       margin-left: auto;
       min-width: 70px;
+
+      &.btn-busy {
+        padding: 9px 13px 8px;
+      }
     }
   }
 

@@ -78,7 +78,6 @@ describe('components/ManageMetadata/SaveButton', () => {
         __status__: statusUpdating({})
       }
     }));
-    expect(element.disabled).to.be.true;
     expect(element.querySelector('.spinner-default')).to.not.be.null;
   });
 
@@ -92,7 +91,6 @@ describe('components/ManageMetadata/SaveButton', () => {
         }
       ]
     }));
-    expect(element.disabled).to.be.true;
     expect(element.querySelector('.spinner-default')).to.not.be.null;
   });
 
@@ -110,7 +108,6 @@ describe('components/ManageMetadata/SaveButton', () => {
         }
       ]
     }));
-    expect(element.disabled).to.be.true;
     expect(element.querySelector('.spinner-default')).to.not.be.null;
   });
 

@@ -168,7 +168,7 @@ body {
         width: calc(100% - 2px); // Compensate for table border.
       }
 
-      .socrata-pager,  {
+      .socrata-pager {
         border: 1px solid $light-grey-4;
       }
     }
@@ -183,6 +183,32 @@ body {
       padding: 4em 0em;
       margin: 0px auto;
       max-width: 64em;
+      height: 543px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .entry-main.data-table {
+        max-width: 270px;
+        display: flex;
+        justify-content: center;
+      }
+
+      p {
+        color: $dark-grey-1;
+      }
+
+      h3 {
+        font-style: italic;
+        color: $dark-grey-1;
+      }
+
+      &.no-data-yet {
+        .supported-file-types {
+          padding-top: 15px;
+        }
+      }
 
       button.email-interest-btn {
         width: 250px;
@@ -658,11 +684,10 @@ body {
     }
 
     .data-preview {
-      margin: 0px 1em;
-      padding: 0.5em 0px 0px 0.5em;
+      height: 44px;
+      padding: 0.5em 0.7em 0 0.7em;
       display: flex;
       justify-content: space-between;
-      border-left: 1px solid $light-grey-4;
 
       .dataset-attribute {
         display: inline-block;
@@ -695,8 +720,10 @@ body {
   }
 
   .table-wrap {
-    overflow-y: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
     width: 100%;
+    height: calc(100vh - 163px);
 
     table.table {
       overflow: visible;
@@ -704,9 +731,9 @@ body {
       table-layout: fixed;
       min-width: auto;
       white-space: nowrap;
-      height: calc(100vh - 160px);
+      height: 100%;
       border-left: 1px solid $light-grey-4;
-      margin: 0px 1em;             // TODO: Remove once sidebar is added.
+      margin: 0;
 
       tr {
         display: block;
@@ -833,7 +860,7 @@ body {
         overflow-x: hidden;
         overflow-y: auto;
         width: 100%;
-        height: calc(100% - 103px);
+        height: calc(100% - 88px);
         border-bottom: 1px solid $light-grey-4;
 
         tr {
@@ -1067,6 +1094,12 @@ body {
 
     .sub-message {
       font-style: italic;
+      max-width: 200px;
+      text-overflow: ellipsis;
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      vertical-align: top;
     }
 
     .percent-completed {

@@ -178,8 +178,9 @@ function ShowUpdate({ view, routing, db, urlParams, addEmailInterest, createUplo
 
   let dataTable;
   if (isUpsertComplete) {
+    const inputSchema = _.find(db.input_schemas, { id: outputSchema.input_schema_id });
     dataTable = [(
-      <Link to={Links.uploads}>
+      <Link to={Links.showOutputSchema(inputSchema.upload_id, inputSchema.id, outputSchema.id)}>
         <button
           className="manage-data-btn btn btn-sm btn-alternate-2"
           tabIndex="-1">

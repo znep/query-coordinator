@@ -18,6 +18,7 @@ module SocrataSiteChrome
   require_relative '../app/models/socrata_site_chrome/find_extensions'
   require_relative '../app/models/socrata_site_chrome/user'
 
+  require 'socrata_site_chrome/cache_key'
   require 'socrata_site_chrome/custom_content'
   require 'socrata_site_chrome/domain_config'
   require 'socrata_site_chrome/feature_set'

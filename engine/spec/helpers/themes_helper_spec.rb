@@ -6,7 +6,7 @@ describe SocrataSiteChrome::ThemesHelper do
   let(:domains_uri) { "#{coreservice_uri}/domains/#{domain}.json" }
   let(:coreservice_uri) { Rails.application.config_for(:config)['coreservice_uri'] }
 
-  describe '#cache_key_for_site_chrome' do
+  describe '#site_chrome_theme_cache_key' do
 
     let(:domain) { 'test.host' }
 
@@ -16,7 +16,7 @@ describe SocrataSiteChrome::ThemesHelper do
     end
 
     it 'returns a cache key with the cache_key_prefix and site_chrome updated_at timestamp' do
-      expect(helper.cache_key_for_site_chrome).to eq("frontend:deadbeef:domain:#{domain}:1477415059:configurations:site_chrome:custom.css")
+      expect(helper.site_chrome_theme_cache_key).to eq("frontend:deadbeef:domain:#{domain}:1477415059:configurations:site_chrome:custom.css")
     end
 
   end

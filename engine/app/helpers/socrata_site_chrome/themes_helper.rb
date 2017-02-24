@@ -15,20 +15,8 @@ module SocrataSiteChrome
       }
     end
 
-    # NOTE!! It is critical that the composition this cache key structurally match the corresponding
-    # cache_key method in consuming applications. For example in the frontend, this is defined in the
-    # frontend/app/models/configuration.rb class.
-    def cache_key_for_site_chrome
-      [
-        'frontend',
-        Rails.application.config.cache_key_prefix,
-        'domain',
-        domain_config.cname,
-        domain_config.config_updated_at,
-        'configurations',
-        'site_chrome',
-        'custom.css'
-      ].join(':')
+    def site_chrome_theme_cache_key
+      SocrataSiteChrome::CacheKey.new(domain_config, 'site_chrome:custom.css').to_s
     end
 
     # theme_section is one of 'general', 'header', or 'footer'

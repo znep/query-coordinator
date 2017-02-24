@@ -40,12 +40,12 @@ export function mockFetch(responses) {
   });
 
   window.fetch = (url, options) => {
+    const method = options.method || 'GET';
     return new Promise((resolve) => {
       resolve({
-        status: 200,
+        status: responses[url][method]['status'] || 200,
         json: () => (new Promise((resolve) => {
-          const method = options.method || 'GET';
-          resolve(responses[url][method]);
+          resolve(responses[url][method]['response']);
           calls[url][method]++;
         }))
       });

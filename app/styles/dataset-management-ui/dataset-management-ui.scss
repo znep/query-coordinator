@@ -183,6 +183,20 @@ body {
       padding: 4em 0em;
       margin: 0px auto;
       max-width: 64em;
+
+      button.email-interest-btn {
+        width: 250px;
+        height: 50px;
+
+        span.email-success-check {
+          margin-right: 0.5em;
+        }
+
+        span.email-interest-spinner {
+          width: 1.5rem;
+          height: 1.5rem;
+        }
+      }
     }
     p, button.no-data-yet-btn {
       margin: 0em 0em 1em 0em;

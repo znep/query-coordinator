@@ -11,7 +11,8 @@ window.redux = require('redux');
 window.I18n = require('mockTranslations');
 window.serverConfig = {
   csrfToken: 'abcdefgh1234',
-  appToken: 'global-frontend-token'
+  appToken: 'global-frontend-token',
+  currentUserId: 'asdf-1234'
 };
 window.initialState = {
   view: {

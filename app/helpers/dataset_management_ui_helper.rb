@@ -5,7 +5,8 @@ module DatasetManagementUiHelper
       csrfToken: form_authenticity_token.to_s,
       appToken: APP_CONFIG.app_token,
       websocketToken: websocket_token,
-      airbrakeKey: ENV['PUBLISHING_AIRBRAKE_API_KEY'] || APP_CONFIG.publishing_airbrake_api_key
+      airbrakeKey: ENV['PUBLISHING_AIRBRAKE_API_KEY'] || APP_CONFIG.publishing_airbrake_api_key,
+      currentUserId: User.current_user.id
     }
   end
 

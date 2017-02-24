@@ -8,13 +8,15 @@ describe('bootstrap', () => {
     const { unmockFetch, calls: fetchCalls } = mockFetch({
       '/api/update/hehe-hehe/0': {
         GET: {
-          resource: {
-            upsert_jobs: [
-              {
-                id: 5,
-                status: 'successful'
-              }
-            ]
+          response: {
+            resource: {
+              upsert_jobs: [
+                {
+                  id: 5,
+                  status: 'successful'
+                }
+              ]
+            }
           }
         }
       }
@@ -48,13 +50,15 @@ describe('bootstrap', () => {
     const { unmockFetch, calls: fetchCalls } = mockFetch({
       '/api/update/hehe-hehe/0': {
         GET: {
-          resource: {
-            upsert_jobs: [
-              {
-                id: 5,
-                status: 'successful'
-              }
-            ]
+          response: {
+            resource: {
+              upsert_jobs: [
+                {
+                  id: 5,
+                  status: 'successful'
+                }
+              ]
+            }
           }
         }
       }

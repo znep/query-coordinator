@@ -1,8 +1,7 @@
 import { insertFromServer, createTable } from 'actions/database';
 import { getDefaultStore } from '../testStore';
 
-export function getStoreWithOutputSchema() {
-  const store = getDefaultStore();
+export function getStoreWithOutputSchema(store = getDefaultStore()) {
   store.dispatch(insertFromServer('input_schemas', {
     id: 4,
   }));

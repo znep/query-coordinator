@@ -72,3 +72,24 @@ export function pollForUpsertJobProgress(upsertJobId) {
       });
   };
 }
+
+export function addEmailInterest(upsertJobUuid) {
+  return (dispatch) => {
+    dispatch(insertStarted('email_interests', { job_uuid: upsertJobUuid }));
+    socrataFetch(`/users/${serverConfig.currentUserId}/email_interests.json`, {
+      method: 'POST',
+      body: JSON.stringify({
+        eventTag: 'MAIL.IMPORT_ACTIVITY_COMPLETE',
+        extraInfo: upsertJobUuid
+      })
+    }).
+      then(checkStatus).
+      catch((err) => {
+        console.error('adding email interest failed', err);
+        dispatch(insertFailed('email_interests', { job_uuid: upsertJobUuid }));
+      }).
+      then(() => {
+        dispatch(insertSucceeded('email_interests', { job_uuid: upsertJobUuid }));
+      });
+  };
+}

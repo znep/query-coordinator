@@ -1637,6 +1637,10 @@ en:
       supported_uploads: Supported file types .csv, .tsv, .xls, .xlsx
       data_uploaded: Your data has been uploaded.
       being_processed: Your data is being processed!
+      being_processed_detail: It'll show here as soon as it is done. No need to wait around, we can let you know when it's ready
+      email_me: Email Me
+      email_me_success: We'll send you an email!
+      email_me_error: An error has occurred.
       done_processing: Your data is done being processed!
       review_data: Review Data
     manage: Manage

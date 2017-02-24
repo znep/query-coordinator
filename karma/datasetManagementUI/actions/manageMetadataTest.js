@@ -8,10 +8,13 @@ describe('actions/manageMetadata', () => {
 
   const responses = {
     '/api/views/hehe-hehe': {
-      POST: {
-        name: 'New Name',
-        description: 'New description',
-        category: 'New Category'
+      PUT: {
+        status: 200,
+        response: {
+          name: 'New Name',
+          description: 'New description',
+          category: 'New Category'
+        }
       }
     }
   };

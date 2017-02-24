@@ -9,6 +9,8 @@ import * as Links from '../links';
 import { Link } from 'react-router';
 import { latestOutputSchema } from '../selectors';
 import * as Actions from '../actions/manageUploads';
+import * as ApplyUpdate from '../actions/applyUpdate';
+import { STATUS_INSERTING, STATUS_SAVED } from '../lib/database/statuses';
 
 function wrapEmpty(result) {
   return (
@@ -70,13 +72,49 @@ function outputSchemaView(db, outputSchema) {
   );
 }
 
-function upsertInProgressView() {
+function upsertInProgressView(db, addEmailInterest) {
+  const upsertJobUuid = _.find(db.upsert_jobs, { status: null }).job_uuid;
+  const emailInterest = _.find(db.email_interests, { job_uuid: upsertJobUuid });
+
+  let notifyButton;
+  if (emailInterest) {
+    if (emailInterest.__status__.type === STATUS_INSERTING) {
+      notifyButton = (
+        <button className="btn btn-primary btn-busy email-interest-btn">
+          <span className="spinner-default spinner-btn-primary email-interest-spinner"></span>
+        </button>
+      );
+    } else if (emailInterest.__status__.type === STATUS_SAVED) {
+      notifyButton = (
+        <button
+          className="btn btn-success email-interest-btn">
+          <span className="socrata-icon-checkmark3 email-success-check" />
+          {I18n.home_pane.email_me_success}
+        </button>
+      );
+    } else {
+      notifyButton = (
+        <button
+          className="btn btn-error email-interest-btn">
+          {I18n.home_pane.email_me_error}
+        </button>
+      );
+    }
+  } else {
+    notifyButton = (
+      <button
+        className="btn btn-primary btn-inverse email-interest-btn"
+        onClick={() => { addEmailInterest(upsertJobUuid); }}>
+        {I18n.home_pane.email_me}
+      </button>
+    );
+  }
+
   return wrapEmpty(
     <div className="entry-description table-info upsert-in-progress">
       <h3 className="h6">{I18n.home_pane.being_processed}</h3>
-      <p>
-        There will be a notify me button here at some point
-      </p>
+      <p>{I18n.home_pane.being_processed_detail}</p>
+      <div>{notifyButton}</div>
     </div>
   );
 }
@@ -89,7 +127,7 @@ function upsertCompleteView(view, outputSchema) {
   );
 }
 
-function ShowUpdate({ view, routing, db, urlParams, createUpload }) {
+function ShowUpdate({ view, routing, db, urlParams, addEmailInterest, createUpload }) {
   let metadataSection;
   const paneProps = {
     name: view.name,
@@ -148,7 +186,7 @@ function ShowUpdate({ view, routing, db, urlParams, createUpload }) {
       </Link>),
       upsertCompleteView(view, outputSchema)];
   } else if (doesUpsertExist) {
-    dataTable = upsertInProgressView();
+    dataTable = upsertInProgressView(db, addEmailInterest);
   } else if (outputSchema) {
     dataTable = outputSchemaView(db, outputSchema);
   } else {
@@ -177,11 +215,15 @@ ShowUpdate.propTypes = {
   routing: PropTypes.object.isRequired,
   db: PropTypes.object.isRequired,
   urlParams: PropTypes.object.isRequired,
+  addEmailInterest: PropTypes.func.isRequired,
   createUpload: PropTypes.func.isRequired
 };
 
 function mapDispatchToProps(dispatch) {
   return {
+    addEmailInterest: (jobUuid) => {
+      dispatch(ApplyUpdate.addEmailInterest(jobUuid));
+    },
     createUpload: (file) => {
       dispatch(Actions.createUpload(file));
     }

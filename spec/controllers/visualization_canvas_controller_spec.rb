@@ -70,40 +70,74 @@ describe VisualizationCanvasController do
   end
 
   describe 'POST /visualization_canvas' do
-    it 'makes a post request to core with the expected payload' do
-      stub_request(:post, 'http://localhost:8080/views.json?accessType=WEBSITE').
-        with(:body => JSON.dump(create_payload)).
-        to_return(:status => 200, :body => JSON.dump(store), :headers => {})
+    describe 'as a roled user' do
+      before do
+        allow(subject).to receive(:current_user).and_return(double({:can_create_or_edit_visualization_canvas? => true}))
+      end
 
-      post :create, JSON.dump(store)
-      expect(response).to have_http_status(:success)
+      it 'makes a post request to core with the expected payload' do
+        stub_request(:post, 'http://localhost:8080/views.json?accessType=WEBSITE').
+          with(:body => JSON.dump(create_payload)).
+          to_return(:status => 200, :body => JSON.dump(store), :headers => {})
+
+        post :create, JSON.dump(store)
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'returns an error message when core throws an error' do
+        stub_request(:post, 'http://localhost:8080/views.json?accessType=WEBSITE').
+          to_return(:status => 500, :body => '{}', :headers => {})
+
+        post :create, JSON.dump(store)
+        expect(response).to have_http_status(:error)
+      end
     end
 
-    it 'returns an error message when core throws an error' do
-      stub_request(:post, 'http://localhost:8080/views.json?accessType=WEBSITE').
-        to_return(:status => 500, :body => '{}', :headers => {})
+    describe 'as an anonymous user' do
+      before do
+        allow(subject).to receive(:current_user).and_return(double({:can_create_or_edit_visualization_canvas? => false}))
+      end
 
-      post :create, JSON.dump(store)
-      expect(response).to have_http_status(:error)
+      it 'returns a 404' do
+        post :create, JSON.dump(store)
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
   end
 
   describe 'PUT /visualization_canvas/:id' do
-    it 'makes a put request to core with the expected payload' do
-      stub_request(:put, 'http://localhost:8080/views/test-view.json?accessType=WEBSITE').
-        with(:body => JSON.dump(update_payload)).
-        to_return(:status => 200, :body => JSON.dump(store_with_id), :headers => {})
+    describe 'as a roled user' do
+      before do
+        allow(subject).to receive(:current_user).and_return(double({:can_create_or_edit_visualization_canvas? => true}))
+      end
 
-      put :update, JSON.dump(store_with_id), { :format => 'json', :id => 'test-view' }
-      expect(response).to have_http_status(:success)
+      it 'makes a put request to core with the expected payload' do
+        stub_request(:put, 'http://localhost:8080/views/test-view.json?accessType=WEBSITE').
+          with(:body => JSON.dump(update_payload)).
+          to_return(:status => 200, :body => JSON.dump(store_with_id), :headers => {})
+
+        put :update, JSON.dump(store_with_id), { :format => 'json', :id => 'test-view' }
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'returns an error message when core throws an error' do
+        stub_request(:put, 'http://localhost:8080/views/test-view.json?accessType=WEBSITE').
+          to_return(:status => 500, :body => '{}', :headers => {})
+
+        put :update, JSON.dump(store_with_id), { :format => 'json', :id => 'test-view' }
+        expect(response).to have_http_status(:error)
+      end
     end
 
-    it 'returns an error message when core throws an error' do
-      stub_request(:put, 'http://localhost:8080/views/test-view.json?accessType=WEBSITE').
-        to_return(:status => 500, :body => '{}', :headers => {})
+    describe 'as an anonymous user' do
+      before do
+        allow(subject).to receive(:current_user).and_return(double({:can_create_or_edit_visualization_canvas? => false}))
+      end
 
-      put :update, JSON.dump(store_with_id), { :format => 'json', :id => 'test-view' }
-      expect(response).to have_http_status(:error)
+      it 'returns a 404' do
+        put :update, JSON.dump(store_with_id), { :format => 'json', :id => 'test-view' }
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
   end
 

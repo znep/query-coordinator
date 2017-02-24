@@ -735,10 +735,13 @@ class DatasetsController < ApplicationController
   end
 
   def create_visualization_canvas
-    @parent_view = get_view(params[:id])
-    return if @parent_view.nil?
+    return render_404 unless current_user.try(:can_create_or_edit_visualization_canvas?)
+    return render_404 unless visualization_canvas_enabled?
 
-    return render_404 unless visualization_canvas_enabled? && @parent_view.blist_or_derived_view_but_not_data_lens?
+    @parent_view = get_view(params[:id])
+
+    return if @parent_view.nil? # this will do an implicit render, apparently :(
+    return render_404 unless @parent_view.blist_or_derived_view_but_not_data_lens?
 
     @view = @parent_view.new_visualization_canvas
 

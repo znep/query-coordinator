@@ -752,7 +752,11 @@ describe('AssetSelectorRenderer', function() {
       });
 
       describe('an `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action is fired', function() {
+        var confirmStub;
+
         beforeEach(function(done) {
+          confirmStub = sinon.stub(window, 'confirm').returns(true);
+
           dispatcher.dispatch({
             action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
             datasetUid: StandardMocks.validStoryUid,
@@ -778,29 +782,32 @@ describe('AssetSelectorRenderer', function() {
           });
         });
 
+        afterEach(function() {
+          confirmStub.restore();
+        });
+
         it('should render the AuthoringWorkflow', function() {
           assert.isAbove($('#authoring-workflow *').length, 0);
         });
 
         describe('when canceling', function() {
-          it('should close the modal and asset selection', function() {
-            sinon.stub(window, 'confirm').returns(true);
-
+          it('should close the modal and asset selection', function(done) {
             $('#authoring-workflow .cancel').click();
-            assert.equal($('#authoring-workflow *').length, 0);
-
-            window.confirm.restore();
+            setTimeout(function() {
+              assert.equal($('#authoring-workflow *').length, 0);
+              done();
+            }, 1);
           });
         });
 
         describe('when jumping back a step', function() {
-          it('should render dataset selection', function() {
-            sinon.stub(window, 'confirm').returns(true);
+          it('should render dataset selection', function(done) {
             $('#authoring-workflow .authoring-back-button').click();
-
-            assert.equal($('#authoring-workflow *').length, 0);
-            assert.isAbove($('.asset-selector-dataset-chooser-iframe').length, 0);
-            window.confirm.restore();
+            setTimeout(function() {
+              assert.equal($('#authoring-workflow *').length, 0);
+              assert.isAbove($('.asset-selector-dataset-chooser-iframe').length, 0);
+              done();
+            }, 1);
           });
         });
       });

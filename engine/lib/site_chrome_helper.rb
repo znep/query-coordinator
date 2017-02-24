@@ -32,8 +32,7 @@ module SiteChromeHelper
   def site_chrome_stylesheet_tag
     # `socrata_site_chrome` corresponds to the mount point in the hosting app's config/routes.rb
     # Note: The _inclusion_ of the leading / is critcial to the helper generating the correct digest path
-    stylesheet_link_tag('/socrata_site_chrome/themes/custom.css', media: 'all') +
-    stylesheet_link_tag('socrata_site_chrome/application', media: 'all')
+    stylesheet_link_tag('/socrata_site_chrome/themes/custom.css', media: 'all')
   end
 
   def site_chrome_javascript_tag

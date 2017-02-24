@@ -4,5 +4,4 @@ Rails.application.routes.draw do
   mount SocrataSiteChrome::Engine => 'socrata_site_chrome'
 
   root 'demo#index'
-  get '/notifications', :to => 'notifications#index'
 end

@@ -386,6 +386,11 @@ ul.quick-action-menu {
   .nav-tabs {
     margin-bottom: 24.27px;
   }
+
+  // Styleguide - expected for AX controls
+  button, input, keygen, select, textarea {
+    line-height: 1.25;
+  }
 }
 
 #site-chrome-admin-header {

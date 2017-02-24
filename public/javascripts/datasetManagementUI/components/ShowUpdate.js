@@ -138,7 +138,15 @@ function ShowUpdate({ view, routing, db, urlParams, createUpload }) {
 
   let dataTable;
   if (isUpsertComplete) {
-    dataTable = upsertCompleteView(view, outputSchema);
+    dataTable = [(
+      <Link to={Links.uploads}>
+        <button
+          className="manage-data-btn btn btn-sm btn-alternate-2"
+          tabIndex="-1">
+          {I18n.home_pane.data_manage_button}
+        </button>
+      </Link>),
+      upsertCompleteView(view, outputSchema)];
   } else if (doesUpsertExist) {
     dataTable = upsertInProgressView();
   } else if (outputSchema) {
@@ -155,14 +163,6 @@ function ShowUpdate({ view, routing, db, urlParams, createUpload }) {
 
         <section className="management-ui-section table-preview">
           <h2 className="landing-page-section-header">{I18n.home_pane.table_preview}</h2>
-
-          <Link to={Links.uploads}>
-            <button
-              className="manage-data-btn btn btn-sm btn-alternate-2"
-              tabIndex="-1">
-              {I18n.home_pane.data_manage_button}
-            </button>
-          </Link>
 
           {dataTable}
         </section>

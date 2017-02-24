@@ -44,8 +44,8 @@ function mapStateToProps(state, { view, outputSchema }) {
           },
           type: 'table',
           unit: {
-            one: 'item',
-            other: 'items'
+            one: 'Row',
+            other: 'Rows'
           }
         }
       ]

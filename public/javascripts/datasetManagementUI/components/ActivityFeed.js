@@ -33,7 +33,7 @@ const updateActivity = (update, at) => {
     <div className="activity-info">
       <p>
         <span className="created-by">{creator(update)}</span>&nbsp;
-        opened an update
+        opened a revision
       </p>
       <ActivityFeedTimestamp date={at} />
     </div>
@@ -85,7 +85,7 @@ const upsertActivity = (upsert, at) => {
     <div className="activity-info">
       <p>
         <span className="created-by">{creator(upsert)}</span>&nbsp;
-        started an upsert
+        started data processing
       </p>
       <ActivityFeedTimestamp date={at} />
     </div>

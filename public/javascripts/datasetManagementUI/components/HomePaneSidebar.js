@@ -31,9 +31,6 @@ function manageData(state) { // can't destructure in the function head because t
 
   return (
     <div id="home-pane-sidebar-data">
-      <h4>{I18n.home_pane.sidebar.title}</h4>
-      <p className="small sidebar-blurb"> {I18n.home_pane.sidebar.blurb} </p>
-
       <div>
         <span className="icon socrata-icon-column-info" />
         {columnDescriptionCheckmark}
@@ -99,7 +96,7 @@ function HomePaneSidebar(state) {
         </Link>
         <Link to={Links.activityLog}>
           <button className={classNames('btn', 'chooser-btn', { 'enabled': showLog })}>
-            Activity Log
+            Recent Actions
           </button>
         </Link>
       </div>

@@ -1608,13 +1608,11 @@ en:
       metadata_manage_button: Manage Metadata
       metadata_blurb: Tell people about this dataset.
       sidebar:
-        title: Beyond the Basics
-        blurb: Make your data even better
-        column_descriptions: Column Descriptions
-        column_descriptions_blurb: Describing each column is a huge help for people.
+        column_descriptions: Describe
+        column_descriptions_blurb: Describing each column helps users understand your data better.
         column_descriptions_button: Describe
         visualize: Visualize
-        visualize_blurb: Visualize your data to derive new insights.
+        visualize_blurb: Visualize your data and explore relationships.
         visualize_button: Create New...
         feature: Feature
         feature_blurb: Feature assets or external resources that best represent your data.
@@ -1634,11 +1632,11 @@ en:
       table_preview: Table Preview
       no_data_yet: No data has been added yet!
       adding_data_is_easy_and_fun: Don't worry. Adding some is easy peasy. Just choose a data file to upload.
-      supported_uploads: Supported file types .csv, .tsv, .xls, .xlsx
-      data_uploaded: Almost there!
-      data_uploaded_blurb: Your data has been uploaded. All that's left is to review it and make sure it looks good.
+      supported_uploads: "Supported file types: .csv, .tsv, .xls, .xlsx"
+      data_uploaded: Your data has been uploaded.
+      data_uploaded_blurb: Almost there! Just review your data and then hit Process Data.
       being_processed: Your data is being processed!
-      being_processed_detail: It'll show here as soon as it is done. No need to wait around, we can let you know when it's ready
+      being_processed_detail: It'll show here as soon as it is done. No need to wait around, we can let you know when it's ready.
       email_me: Email Me
       email_me_success: We'll send you an email!
       email_me_error: An error has occurred.
@@ -1647,7 +1645,7 @@ en:
     manage: Manage
     manage_uploads:
       previous: Previous uploads
-      new_file: Upload a new file
+      new_file: Upload a New File
       failed: "{filename} (failed: {status})"
     metadata_manage:
       errors:

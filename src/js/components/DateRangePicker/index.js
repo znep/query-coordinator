@@ -45,6 +45,7 @@ export const DateRangePicker = React.createClass({
 
   renderDatePickerStart(startDate, endDate) {
     const props = {
+      fixedHeight: true,
       className: 'text-input date-picker-input start',
       selected: startDate,
       dateFormatCalendar: 'MM-DD-YYYY',
@@ -64,6 +65,7 @@ export const DateRangePicker = React.createClass({
 
   renderDatePickerEnd(startDate, endDate) {
     const props = {
+      fixedHeight: true,
       className: 'text-input date-picker-input end',
       selected: endDate,
       dateFormatCalendar: 'MM-DD-YYYY',

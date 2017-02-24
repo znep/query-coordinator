@@ -1,12 +1,11 @@
 var _ = require('lodash');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
+var DistributionChart = require('src/views/DistributionChart');
+var helpers = require('src/views/DistributionChartHelpers');
 
-describe('DistributionChart renderer', function() {
-  var React = require('react');
-  var ReactDOM = require('react-dom');
-  var TestUtils = require('react-addons-test-utils');
-  var DistributionChart = require('../../src/views/DistributionChart');
-  var helpers = require('../../src/views/DistributionChartHelpers');
-
+describe('DistributionChart', function() {
   var testData = {
     unfiltered: [
       { start: -10, end: 0, value: -20 },

@@ -1,8 +1,8 @@
 var _ = require('lodash');
 var $ = require('jquery');
 var rewire = require('rewire');
-var SocrataSvgRegionMapAPI = rewire('../../src/SvgRegionMap');
-var SoqlVifValidator = rewire('../../src/dataProviders/SoqlVifValidator');
+var SocrataSvgRegionMapAPI = rewire('src/SvgRegionMap');
+var SoqlVifValidator = rewire('src/dataProviders/SoqlVifValidator');
 
 describe('SvgRegionMap jQuery component', function() {
 

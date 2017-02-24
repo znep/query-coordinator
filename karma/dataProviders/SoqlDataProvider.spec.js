@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var $ = require('jquery');
 var rewire = require('rewire');
-var SoqlDataProvider = rewire('../../src/dataProviders/SoqlDataProvider');
+var SoqlDataProvider = rewire('src/dataProviders/SoqlDataProvider');
 
 describe('SoqlDataProvider', function() {
 

@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var $ = require('jquery');
 var rewire = require('rewire');
-var SocrataChoroplethMap = rewire('../../src/ChoroplethMap');
+var SocrataChoroplethMap = rewire('src/ChoroplethMap');
 
 describe('ChoroplethMap jQuery component', function() {
 

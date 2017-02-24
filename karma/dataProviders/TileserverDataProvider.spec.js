@@ -1,4 +1,4 @@
-var TileserverDataProvider = require('../../src/dataProviders/TileserverDataProvider');
+var TileserverDataProvider = require('src/dataProviders/TileserverDataProvider');
 
 describe('TileserverDataProvider', function() {
 

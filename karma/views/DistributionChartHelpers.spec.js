@@ -1,7 +1,8 @@
 var _ = require('lodash');
 
+var helpers = require('src/views/DistributionChartHelpers');
+
 describe('DistributionChartHelpers', function() {
-  var helpers = require('../../src/views/DistributionChartHelpers');
 
   var fakeProps = {
     margin: {

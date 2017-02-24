@@ -1,10 +1,10 @@
 var _ = require('lodash');
 var $ = require('jquery');
-var SvgFeatureMap = require('../../src/views/SvgFeatureMap');
+var SvgFeatureMap = require('src/views/SvgFeatureMap');
 
-require('../../src/dataProviders/VectorTileManager');
+require('src/dataProviders/VectorTileManager');
 
-describe('socrata.visualizations.views.SvgFeatureMap', function() {
+describe('SvgFeatureMap', function() {
 
   'use strict';
 

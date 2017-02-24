@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var $ = require('jquery');
 var rewire = require('rewire');
-var Table = rewire('../../src/Table');
+var Table = rewire('src/Table');
 
 describe('Table', function() {
 

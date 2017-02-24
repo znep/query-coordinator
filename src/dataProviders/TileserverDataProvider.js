@@ -5,63 +5,15 @@ var _ = require('lodash');
 var MAX_FEATURES_PER_TILE = 256 * 256;
 var DEFAULT_FEATURES_PER_TILE = 50000;
 
-// These should be discovered, but see comment in
-// fetchTileserverHostsForDomain. This is only
-// used to enable testing on example pages.
-const FALLBACK_TILESERVER_HOSTS = [
-  'https://tileserver1.api.us.socrata.com',
-  'https://tileserver2.api.us.socrata.com',
-  'https://tileserver3.api.us.socrata.com',
-  'https://tileserver4.api.us.socrata.com'
-];
-
-/* Given a domain, fetch the tileserver hosts appropriate to that domain.
- * NOTE: Currently a stub, as we lack the API to get this information (EN-8643).
- * Tileserver doesn't currently support cross-domain requests (EN-8638), but the
- * sharded (tileserver?.api.us.socrata.com) endpoints do support cross-domain
- * requests. However, we can't know for sure if it's safe to use the sharded
- * endpoints (the correct set needs to be picked on a per-domain basis, EN-8643).
- * Given this, we need to use our only remaining option, and that is to use the domain
- * the page is hosted on as the tileserver host. This will theoretically fail for a couple
- * reasons:
- *
- * 1. Map being embedded is in a different environment than the page being viewed (i.e, a
- *    map from us-west-2 being embedded in eu-west-1).
- * 2. Map is being embedded on a non-socrata page. TODO: This is no longer true (we have
- *    since added the ability to create embeds in 3rd party sites).
- *
- * Neither of these scenarios are possible today in storyteller or datalens.
- *
- * However, this will block a common and useful testing tool: the pages found in
- * examples/. We special-case these to use the sharded US tileserver hosts, which
- * are the only hosts that will work in this case. That will get testing unblocked
- * until one of the two tickets listed below are addressed in tileserver itself.
- *
- * See:
- *     https://socrata.atlassian.net/browse/EN-8638 and
- *     https://socrata.atlassian.net/browse/EN-8643
- */
-const fetchTileserverHostsForDomain = _.memoize((domain) => {
-  utils.assertIsOneOfTypes(domain, 'string');
-  const currentWindowLocationAsTileserver = `${window.location.protocol}//${window.location.host}`;
-  if (window.location.protocol === 'file:') {
-    console.warn('Attempting to load tiles from disk will fail (window.location.protocol is file:). Falling back to us-west-2 tileserver hosts; these may fail.');
-    return Promise.resolve(FALLBACK_TILESERVER_HOSTS);
-  } else {
-    return Promise.resolve([currentWindowLocationAsTileserver]);
-  }
-});
-
 /**
  * @param {Object} config
- *   @property {String[]} tileserverHosts - An array of tileserver hostnames
- *     against which to make requests. Hostnames in this array must include
- *     a protocol (e.g. 'https://tileserver.example.com').
+ *   @property {String} [datasetUid] - The dataset to read.
+ *   @property {String} [columnName] - The column to read in the dataset.
+ *   @property {String} domain - The domain the dataset resides on. This value
+ *     will be provided as the 'X-Socrata-Host' header in tile data requests.
  *   @property {Number} [featuresPerTile] - The maximum number of features
  *     expected per tile. This defaults to (256 * 256). This value will be
  *     provided as the `LIMIT` parameter in the query string.
- *   @property {String} cname - The CNAME of the current domain. This value
- *     will be provided as the 'X-Socrata-Host' header in tile data requests.
  */
 function TileserverDataProvider(config) {
 
@@ -154,6 +106,23 @@ function TileserverDataProvider(config) {
   /**
    * Private methods
    */
+
+  /* Given a domain, fetch the tileserver hosts appropriate to that domain.
+   * NOTE: Currently a stub, as we lack the API to get this information (EN-8643).
+   * We can't know for sure if it's safe to use the sharded endpoints (the correct
+   * set needs to be picked on a per-domain basis, EN-8643).
+   *
+   * In absence of this API, we must use the domain the dataset is on as the tileserver
+   * host. This is not ideal, as the browser will limit the number of concurrent requests
+   * to a single domain (the sharded hosts get around this by having many domains).
+   *
+   * See:
+   *     https://socrata.atlassian.net/browse/EN-8643
+   */
+  const fetchTileserverHostsForDomain = (domain) => {
+    utils.assertIsOneOfTypes(domain, 'string');
+    return Promise.resolve([`https://${domain}`]);
+  };
 
   function _randomNChars(n) {
     var text = '';

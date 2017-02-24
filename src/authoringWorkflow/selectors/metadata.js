@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import MetadataProvider from '../../dataProviders/MetadataProvider';
-import SpandexDataProvider from '../../dataProviders/SpandexDataProvider';
+import SoqlDataProvider from '../../dataProviders/SoqlDataProvider';
 
 import { createSelector } from 'reselect';
 
@@ -164,10 +164,10 @@ export const getAnyLocationColumn = createSelector(
   (datasetMetadata) => _.find(datasetMetadata.columns, {renderTypeName: 'point'})
 );
 
-export const getSpandexDataProvider = createSelector(
+export const getSoqlDataProvider = createSelector(
   getDomain,
   getDatasetUid,
-  (domain, datasetUid) => new SpandexDataProvider({ domain, datasetUid })
+  (domain, datasetUid) => new SoqlDataProvider({ domain, datasetUid })
 );
 
 const toDatasetMetadata = (metadata) => (column) => _.find(metadata.columns, {fieldName: column.fieldName});

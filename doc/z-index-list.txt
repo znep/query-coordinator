@@ -58,6 +58,9 @@ DATASLATE:
 20000 IE drag image
 
 
+Visualization Canvas:
+1001 Share modal size dropdown
+
 DataCards:
 1 Cards area
 1 Cards themselves, except when dragged

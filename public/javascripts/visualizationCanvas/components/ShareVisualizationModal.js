@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import React, { PropTypes, Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -21,6 +22,10 @@ const selectOnFocus = (event) => {
 
 export class ShareVisualizationModal extends Component {
 
+  componentDidUpdate() {
+    $(this.visualizationContainer).find('.socrata-visualization').
+      trigger('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');
+  }
 
   renderLinkField() {
     const { copyableLinkUrl } = this.props;
@@ -100,7 +105,7 @@ export class ShareVisualizationModal extends Component {
     return (
       <div>
         {t('share_modal.preview')}
-        <div style={{ width, height }}>
+        <div style={{ width, height }} ref={(vis) => this.visualizationContainer = vis}>
           <SocrataVisualizations.Visualization vif={vif} />
         </div>
       </div>

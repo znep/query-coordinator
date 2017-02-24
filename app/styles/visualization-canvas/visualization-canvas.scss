@@ -51,6 +51,10 @@ body {
       // bounds (looks bad visually).
       margin-left: 2px;
       width: 12rem;
+
+      .dropdown-options-list {
+        z-index: 1001; // Map zoom controls :(
+      }
     }
 
     input, textarea {

@@ -1,3 +1,5 @@
+@import 'animations';
+
 $title-height: 44px;
 $description-height: 26px;
 $title-description-padding: 6px;
@@ -148,19 +150,13 @@ $axis-padding: 42px;
     z-index: 5;
 
     .socrata-visualization-busy-indicator {
-      @keyframes(spin) {
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-
       display: inline-block;
       width: $busy-indicator-width-height;
       height: $busy-indicator-width-height;
       border: 3px solid $busy-indicator-primary-color;
       border-right-color: $busy-indicator-secondary-color;
       border-radius: 50%;
-      animation: spin 0.9s linear infinite;
+      @include spin;
     }
   }
 

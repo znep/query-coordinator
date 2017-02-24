@@ -1,3 +1,4 @@
+$socrata-pager-height: 42px;
 $header-background-color: #f6f6f6;
 $row-background-color: transparent;
 $highlighted-row-color: #2f2f2f;
@@ -24,6 +25,8 @@ $highlighted-row-background-color: #f6f6f6;
   $null-row-height: 45px;
 
   width: 100%;
+  // We subtract the pager height and then 1px to merge borders.
+  height: calc(100% - #{$socrata-pager-height} + 1px);
   overflow-x: scroll;
   font-family: 'Open Sans', sans-serif;
   transition: opacity 0.25s;
@@ -206,7 +209,11 @@ $highlighted-row-background-color: #f6f6f6;
 
 .socrata-pager {
   display: flex;
-  height: 42px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: $socrata-pager-height;
   padding: 4px;
   background: #f8f8f8;
   border: solid 1px #e4e4e4;

@@ -3,28 +3,7 @@ import _ from 'lodash';
 import vifs from '../../vifs';
 import baseVifReducer from './base';
 
-import {
-  RESET_STATE,
-  RECEIVE_METADATA,
-  SET_DIMENSION,
-  SET_FILTERS,
-  SET_MEASURE,
-  SET_MEASURE_AGGREGATION,
-  SET_TITLE,
-  SET_DESCRIPTION,
-  SET_PRIMARY_COLOR,
-  SET_SECONDARY_COLOR,
-  SET_LABEL_BOTTOM,
-  SET_LABEL_LEFT,
-  SET_X_AXIS_SCALING_MODE,
-  SET_MEASURE_AXIS_MIN_VALUE,
-  SET_MEASURE_AXIS_MAX_VALUE,
-  SET_UNIT_ONE,
-  SET_UNIT_OTHER,
-  SET_DOMAIN,
-  SET_DATASET_UID,
-  SET_VIEW_SOURCE_DATA_LINK
-} from '../../actions';
+import * as actions from '../../actions';
 
 export default function histogram(state, action) {
   if (_.isUndefined(state)) {
@@ -34,29 +13,29 @@ export default function histogram(state, action) {
   state = _.cloneDeep(state);
 
   switch (action.type) {
-    case RESET_STATE:
+    case actions.RESET_STATE:
       state = vifs().histogram;
       break;
 
-    case RECEIVE_METADATA:
-    case SET_DATASET_UID:
-    case SET_DESCRIPTION:
-    case SET_DIMENSION:
-    case SET_DOMAIN:
-    case SET_FILTERS:
-    case SET_LABEL_BOTTOM:
-    case SET_LABEL_LEFT:
-    case SET_MEASURE:
-    case SET_MEASURE_AGGREGATION:
-    case SET_MEASURE_AXIS_MAX_VALUE:
-    case SET_MEASURE_AXIS_MIN_VALUE:
-    case SET_PRIMARY_COLOR:
-    case SET_SECONDARY_COLOR:
-    case SET_TITLE:
-    case SET_UNIT_ONE:
-    case SET_UNIT_OTHER:
-    case SET_VIEW_SOURCE_DATA_LINK:
-    case SET_X_AXIS_SCALING_MODE:
+    case actions.RECEIVE_METADATA:
+    case actions.SET_DATASET_UID:
+    case actions.SET_DESCRIPTION:
+    case actions.SET_DIMENSION:
+    case actions.SET_DOMAIN:
+    case actions.SET_FILTERS:
+    case actions.SET_LABEL_BOTTOM:
+    case actions.SET_LABEL_LEFT:
+    case actions.SET_MEASURE:
+    case actions.SET_MEASURE_AGGREGATION:
+    case actions.SET_MEASURE_AXIS_MAX_VALUE:
+    case actions.SET_MEASURE_AXIS_MIN_VALUE:
+    case actions.SET_PRIMARY_COLOR:
+    case actions.SET_SECONDARY_COLOR:
+    case actions.SET_TITLE:
+    case actions.SET_UNIT_ONE:
+    case actions.SET_UNIT_OTHER:
+    case actions.SET_VIEW_SOURCE_DATA_LINK:
+    case actions.SET_X_AXIS_SCALING_MODE:
       return baseVifReducer(state, action);
 
     default:

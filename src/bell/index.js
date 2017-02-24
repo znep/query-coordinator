@@ -7,15 +7,14 @@ import styles from './bell.scss';
 class Bell extends React.Component {
   renderUnreadIcon() {
     const {
-      hasUnread,
-      unreadCircleX,
-      unreadCircleY,
-      unreadCircleRadius
+      hasUnread
     } = this.props;
 
     if (hasUnread === true) {
       return (
-        <circle cx={unreadCircleX} cy={unreadCircleY} r={unreadCircleRadius} styleName="unread-icon" />
+        <svg styleName="unread-icon" viewBox="0 0 2 2">
+          <circle cx="1" cy="1" r="1" />
+        </svg>
       );
     }
 
@@ -32,15 +31,10 @@ class Bell extends React.Component {
     return (
       // eslint-disable-next-line
       <div styleName="container" onClick={onClick}>
-        <svg styleName={`svg-${theme}`} width={width} height={height} viewBox="0 0 32 32">
-          <g>
-            {/* Top part of bell */}
-            <path d="m 22,16.811427 0,-3.400853 c 0,-3.225564 -2.7,-5.160577 -6,-5.160577 -3.3,0 -6,1.935013 -6,5.160577 l 0,3.400853 c 0,2.204042 -1.3,3.461126 -3,3.461126 l 0,0.977444 18,0 0,-0.977444 c -1.7,0 -3,-1.257084 -3,-3.461126 z" />
-
-            {/* The clapper */}
-            <path d="m 18.5,21.95 a 2.6286557,2.6049843 0 0 1 -2.5,1.8 2.6286557,2.6049843 0 0 1 -2.5,-1.8" />
-            {this.renderUnreadIcon()}
-          </g>
+        {this.renderUnreadIcon()}
+        <svg styleName={`svg-${theme}`} viewBox="0 0 16 16" height={height} width={width}>
+          <path
+            d="M 6.5417672,13.541663 C 6.5417672,14.35185 7.1899706,15 8.0002275,15 8.8104843,15 9.4586877,14.35185 9.4586877,13.541663 l -2.9169205,0 z m 8.4428158,-1.344911 c 0.032,-0.113426 0.016,-0.243056 -0.06501,-0.324075 l -2.54421,-2.527784 0,-3.9699184 c 0,-2.414358 -1.960761,-4.3750119 -4.3753406,-4.3750119 -2.4145591,0 -4.3753708,1.9606539 -4.3753708,4.3750119 l 0,3.9699184 -2.5441999,2.527784 c -0.0810067,0.08102 -0.097208,0.210649 -0.064805,0.324075 0.048604,0.113426 0.1620533,0.178241 0.2754927,0.178241 l 13.4178166,0 c 0.113409,0 0.226818,-0.06481 0.275422,-0.178241 z" />
         </svg>
       </div>
     );
@@ -52,18 +46,15 @@ Bell.propTypes = {
   onClick: PropTypes.func,
   hasUnread: PropTypes.bool,
   width: PropTypes.number,
-  height: PropTypes.number,
-  unreadCircleX: PropTypes.number,
-  unreadCircleY: PropTypes.number,
-  unreadCircleRadius: PropTypes.number
+  height: PropTypes.number
 };
 
 Bell.defaultProps = {
   theme: 'dark',
   onClick: () => { },
   hasUnread: false,
-  width: 32,
-  height: 32,
+  width: 22,
+  height: 22,
   unreadCircleX: 21,
   unreadCircleY: 8,
   unreadCircleRadius: 5

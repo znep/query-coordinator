@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
-import _ from 'lodash';
 import styles from './list.scss';
 import Notification from './Notification';
 import SocrataLogo from '../SocrataLogo';
@@ -39,7 +38,7 @@ Header.propTypes = {
 const StylizedHeader = cssModules(Header, styles);
 
 function ViewMore({ link, text }) {
-  if (_.isEmpty(link) || _.isEmpty(text)) {
+  if (!link || !text) {
     return null;
   } else {
     return (
@@ -88,7 +87,7 @@ function Spinner() {
 const StylizedSpinner = cssModules(Spinner, styles);
 
 function errorOrList(notifications, hasError, errorText) {
-  if (_.isEmpty(notifications) && !hasError) {
+  if (!notifications && !hasError) {
     return (<StylizedSpinner />);
   } else if (hasError) {
     return (

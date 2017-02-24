@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import cssModules from 'react-css-modules';
-import _ from 'lodash';
 import { getNotifications, updateNotificationLastSeen } from './Util';
 import Bell from './Bell';
 import NotificationList from './NotificationList';
@@ -17,18 +16,16 @@ class Notifications extends Component {
       hasError: false
     };
 
-    _.bindAll(this, [
-      'hasUnread',
-      'hideOnOutsideClick',
-      'markAllAsRead',
-      'renderNotificationsList',
-      'toggleList'
-    ]);
+    this.hasUnread = this.hasUnread.bind(this);
+    this.hideOnOutsideClick = this.hideOnOutsideClick.bind(this);
+    this.markAllAsRead = this.markAllAsRead.bind(this);
+    this.renderNotificationsList = this.renderNotificationsList.bind(this);
+    this.toggleList = this.toggleList.bind(this);
   }
 
   componentDidMount() {
     getNotifications((response) => {
-      if (_.isEmpty(response)) {
+      if (!response.length) {
         this.setState({ hasError: true });
       } else {
         this.setState({
@@ -62,7 +59,17 @@ class Notifications extends Component {
   }
 
   hasUnread() {
-    return _.some(this.state.notifications, { isUnread: true });
+    const { notifications } = this.state;
+
+    if (!notifications) {
+      return false;
+    }
+
+    for (let i = 0; i < notifications.length; i += 1) {
+      if (notifications[i].isUnread) {
+        return true;
+      }
+    }
   }
 
   markAllAsRead() {

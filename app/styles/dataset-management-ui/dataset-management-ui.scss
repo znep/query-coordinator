@@ -76,6 +76,7 @@ body {
 
   .modal-header-title {
     .socrata-icon-arrow-right {
+      color: $dark-grey-1;
       margin: 0 0.4em;
     }
 
@@ -126,7 +127,20 @@ body {
     }
   }
 
+  .table-preview > a {
+    float: right;
+    margin-top: 2px;
+  }
+
   .table-preview {
+    h2 {
+      float: left;
+    }
+
+    .result-card {
+      clear: both;
+    }
+
     #file {
       display: none;
     }
@@ -135,11 +149,27 @@ body {
       // this is a nice round number...
       // because the table height needs to be divisible by
       // the number of rows...plus...some
-      height: 494px;
-      border: 1px solid $light-grey-4;
+      height: 543px;
 
-      .socrata-paginated-table {
+      clear: both;
+      border: none;
+      background: transparent;
+
+      .socrata-visualization {
+        border: none;
+      }
+
+      table {
         background-color: $white; // why do i have to do this?
+      }
+
+      .socrata-table {
+        border: 1px solid $light-grey-4;
+        width: calc(100% - 2px); // Compensate for table border.
+      }
+
+      .socrata-pager,  {
+        border: 1px solid $light-grey-4;
       }
     }
 
@@ -160,6 +190,11 @@ body {
   }
 
   #home-pane {
+    h2 {
+      font-weight: 500;
+      padding: 11px 0;
+    }
+
     flex-grow: 1;
 
     margin: 0;
@@ -181,36 +216,49 @@ body {
       }
     }
 
-    .metadata-sidebar {
+    #home-pane-sidebar {
       width: 24em;
       border-left: 1px solid $light-grey-4;
       text-align: center;
 
-      p.how-to-publish-blurb {
-        margin-bottom: 2em;
-      }
-      p {
-        margin: 13px; // TODO: wtf where does this come from
-      }
+      #home-pane-sidebar-data {
+        h3 {
+          font-size: 17px;
+        }
 
-      .next-step {
-        margin: 1em;
-        padding: 1em;
-        border: 1px solid $light-grey-4;
-        background: $white;
-        button {
-          margin: auto;
+        p.sidebar-blurb {
+          font-style: italic;
+          font-size: 14px;
+          color: $grey;
+          margin-top: 0;
+          margin-bottom: 1.5em;
         }
-        i {
-          font-size: 200%;
-          color: $primary-base;
+
+        div {
+          background: $white;
+          border: 1px solid $light-grey-3;
+          margin: 0 2rem 2rem;
+          padding-top: 1rem;
+          padding-bottom: 2rem;
+
+          .icon {
+            font-size: 200%;
+            color: $primary-dark;
+          }
+
+          .finished {
+            // TODO: figure out how to signal "doneness" most effectively to the user.
+            display: none;
+          }
+
+          button {
+            min-width: 150px;
+          }
         }
-        i.finished {
-          position: relative;
-          color: $alternate-3-base;
-          font-size: 120%;
-          top: -0.5em;
-          left: -0.5em;
+
+        p {
+          margin: 10px 13px 13px;
+          color: $dark-grey-1;
         }
       }
 

@@ -126,7 +126,7 @@ export function ShowOutputSchema({
           <div className="output-schema-actions">
             <Link to={Links.home}>
               <button
-                className="btn">
+                className="btn btn-default">
                 {I18n.home_pane.save_for_later}
               </button>
             </Link>

@@ -75,41 +75,44 @@ function outputSchemaView(db, outputSchema) {
 }
 
 function upsertInProgressView(db, addEmailInterest) {
-  const upsertJobUuid = _.find(db.upsert_jobs, { status: null }).job_uuid;
-  const emailInterest = _.find(db.email_interests, { job_uuid: upsertJobUuid });
+  const upsertJob = _.find(db.upsert_jobs, { status: null });
 
   let notifyButton;
-  if (emailInterest) {
-    if (emailInterest.__status__.type === STATUS_INSERTING) {
-      notifyButton = (
-        <button className="btn btn-primary btn-busy email-interest-btn">
-          <span className="spinner-default spinner-btn-primary email-interest-spinner"></span>
-        </button>
-      );
-    } else if (emailInterest.__status__.type === STATUS_SAVED) {
-      notifyButton = (
-        <button
-          className="btn btn-success email-interest-btn">
-          <span className="socrata-icon-checkmark3 email-success-check" />
-          {I18n.home_pane.email_me_success}
-        </button>
-      );
+  if (upsertJob) {
+    const upsertJobUuid = upsertJob.job_uuid;
+    const emailInterest = _.find(db.email_interests, { job_uuid: upsertJobUuid });
+    if (emailInterest) {
+      if (emailInterest.__status__.type === STATUS_INSERTING) {
+        notifyButton = (
+          <button className="btn btn-primary btn-busy email-interest-btn">
+            <span className="spinner-default spinner-btn-primary email-interest-spinner"></span>
+          </button>
+        );
+      } else if (emailInterest.__status__.type === STATUS_SAVED) {
+        notifyButton = (
+          <button
+            className="btn btn-success email-interest-btn">
+            <span className="socrata-icon-checkmark3 email-success-check" />
+            {I18n.home_pane.email_me_success}
+          </button>
+        );
+      } else {
+        notifyButton = (
+          <button
+            className="btn btn-error email-interest-btn">
+            {I18n.home_pane.email_me_error}
+          </button>
+        );
+      }
     } else {
       notifyButton = (
         <button
-          className="btn btn-error email-interest-btn">
-          {I18n.home_pane.email_me_error}
+          className="btn btn-primary btn-inverse email-interest-btn"
+          onClick={() => { addEmailInterest(upsertJobUuid); }}>
+          {I18n.home_pane.email_me}
         </button>
       );
     }
-  } else {
-    notifyButton = (
-      <button
-        className="btn btn-primary btn-inverse email-interest-btn"
-        onClick={() => { addEmailInterest(upsertJobUuid); }}>
-        {I18n.home_pane.email_me}
-      </button>
-    );
   }
 
   return wrapDataTablePlaceholder(

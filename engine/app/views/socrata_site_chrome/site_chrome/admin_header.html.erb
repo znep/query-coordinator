@@ -4,61 +4,34 @@
     role="navigation"
     class="<%= local_assigns.has_key?(:size) ? "site-chrome-#{size}" : '' %>">
 
-    <div class="site-chrome-admin-header-section">
-      <div class="site-chrome-admin-title">
-        <a href="/"><%= admin_title %></a>
-      </div>
+    <div class="site-chrome-admin-title">
+      <a href="/"><%= admin_title %></a>
+    </div>
 
-      <div class="site-chrome-admin-separator"></div>
+    <div class="site-chrome-admin-separator"></div>
 
-      <div class="site-chrome-admin-menus" role="menubar">
-        <%- if open_performance_enabled? %>
-          <%= render 'site_chrome/admin/open_performance' %>
-        <%- end %>
+    <div class="site-chrome-admin-menus" role="menubar">
+      <%- if open_performance_enabled? %>
+        <%= render 'site_chrome/admin/open_performance' %>
+      <%- end %>
 
-        <div
-          id="site-chrome-data-catalog"
-          class="site-chrome-admin-menu"
-          tabIndex="0"
-          role="menuitem">
-          <a href="/browse"><%= t('admin.data_catalog.title') %></a>
-        </div>
+      <div		
+        id="site-chrome-data-catalog"		
+        class="site-chrome-admin-menu"		
+        tabIndex="0"		
+        role="menuitem">		
+        <a href="/browse"><%= t('admin.data_catalog.title') %></a>		
       </div>
     </div>
 
-    <div class="site-chrome-admin-header-section">
-      <div id="site-chrome-header-notifications"></div>
-
-      <div class="site-chrome-admin-separator"></div>
-
-      <div
-        class="site-chrome-admin-user"
-        tabIndex="0"
-        role="button"
-        aria-haspopup="true"
-        aria-label="<%= t('header.profile') %>"
-        onClick="toggleAdminDropdown(this);">
-          <%= render 'site_chrome/admin/user' %>
-      </div>
+    <div
+      class="site-chrome-admin-user"
+      tabIndex="0"
+      role="button"
+      aria-haspopup="true"
+      aria-label="<%= t('header.profile') %>"
+      onClick="toggleAdminDropdown(this);">
+        <%= render 'site_chrome/admin/user' %>
     </div>
-
-    <% if get_feature_flag('enable_header_notifications') %>
-      <script>
-        document.addEventListener(
-          'DOMContentLoaded',
-          function() {
-            if (window.notifications && $('#site-chrome-header-notifications').length > 0) {
-              var options = {
-                productUpdatesText: "<%= t('notifications.product_updates') %>",
-                viewOlderText: "<%= t('notifications.view_older') %>",
-                errorText: "<%= t('notifications.error_text_html') %>"
-              }
-              window.notifications('#site-chrome-header-notifications', options);
-            }
-          },
-          false
-        );
-      </script>
-    <% end %>
   </section>
 <%- end %>

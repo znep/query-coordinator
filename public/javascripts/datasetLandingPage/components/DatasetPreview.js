@@ -3,7 +3,7 @@ import $ from 'jquery';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
-import { isUserAdminOrPublisher } from '../../common/user';
+import { isUserRoled } from '../../common/user';
 
 export const DatasetPreview = React.createClass({
   propTypes: {
@@ -119,7 +119,7 @@ export const DatasetPreview = React.createClass({
 
     const { enableVisualizationCanvas } = serverConfig.featureFlags;
     const canCreateVisualizationCanvas = enableVisualizationCanvas &&
-      isUserAdminOrPublisher() &&
+      isUserRoled() &&
       _.isString(view.bootstrapUrl);
 
     if (canCreateVisualizationCanvas) {

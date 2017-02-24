@@ -30,8 +30,7 @@ import CustomizationTabPanes from './CustomizationTabPanes';
 import VisualizationPreview from './VisualizationPreview';
 import TableView from './TableView';
 import DataPane from './panes/DataPane';
-import TitleAndDescriptionPane from './panes/TitleAndDescriptionPane';
-import ColorsAndStylePane from './panes/ColorsAndStylePane';
+import PresentationPane from './panes/PresentationPane';
 import AxisAndScalePane from './panes/AxisAndScalePane';
 import LegendsAndFlyoutsPane from './panes/LegendsAndFlyoutsPane';
 import VisualizationTypeSelector from './VisualizationTypeSelector';
@@ -74,15 +73,9 @@ export const AuthoringWorkflow = React.createClass({
           icon: 'axis-scale',
         },
         {
-          id: 'authoring-title-and-description',
-          title: translate('panes.title_and_description.title'),
-          paneComponent: TitleAndDescriptionPane,
-          icon: 'text'
-        },
-        {
           id: 'authoring-colors-and-style',
-          title: translate('panes.colors_and_style.title'),
-          paneComponent: ColorsAndStylePane,
+          title: translate('panes.presentation.title'),
+          paneComponent: PresentationPane,
           icon: 'color'
         },
         {

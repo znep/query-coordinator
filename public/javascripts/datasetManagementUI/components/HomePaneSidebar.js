@@ -91,7 +91,7 @@ function HomePaneSidebar(state) {
       <div className="sidebar-chooser">
         <Link to={Links.home}>
           <button className={classNames('btn', 'chooser-btn', { 'enabled': !showLog })}>
-            Manage Data
+            Manage
           </button>
         </Link>
         <Link to={Links.activityLog}>

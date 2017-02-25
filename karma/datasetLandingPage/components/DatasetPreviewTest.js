@@ -54,7 +54,7 @@ describe('components/DatasetPreview', function() {
   describe('action button', () => {
     describe('when enableVisualizationCanvas is set to true', () => {
       beforeEach(() =>  {
-        window.serverConfig.currentUser = { roleName: 'publisher' };
+        window.serverConfig.currentUser = { roleName: 'anything' };
         window.serverConfig.featureFlags.enableVisualizationCanvas = true;
       });
 
@@ -97,7 +97,25 @@ describe('components/DatasetPreview', function() {
 
     describe('when enableVisualizationCanvas is set to false', () => {
       beforeEach(() => {
+        window.serverConfig.currentUser = { roleName: 'anything' };
         window.serverConfig.featureFlags.enableVisualizationCanvas = false;
+      });
+
+      it('renders the grid view link', function() {
+        const element = renderComponent(DatasetPreview, getProps());
+        expect(element.querySelector('a.btn-grid')).to.exist;
+      });
+
+      it('does not render the visualize link', () => {
+        const element = renderComponent(DatasetPreview, getProps());
+        expect(element.querySelector('a[href="bootstrapUrl"]')).to.not.exist;
+      });
+    });
+
+    describe('when the user lacks a role', () => {
+      beforeEach(() => {
+        window.serverConfig.currentUser = {};
+        window.serverConfig.featureFlags.enableVisualizationCanvas = true;
       });
 
       it('renders the grid view link', function() {

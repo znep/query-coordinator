@@ -3,7 +3,7 @@ import React, { PropTypes, PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { t } from '../lib/I18n';
-import { isUserAdminOrPublisher } from '../../common/user';
+import { isUserRoled } from '../../common/user';
 import { enterEditMode } from '../actions';
 import { ModeStates } from '../lib/constants';
 
@@ -12,7 +12,7 @@ export class InfoPaneButtons extends PureComponent {
     const { mode, onClickEdit } = this.props;
 
     const renderEditButton = () => {
-      if (mode === ModeStates.VIEW && isUserAdminOrPublisher()) {
+      if (mode === ModeStates.VIEW && isUserRoled()) {
         return (
           <button className="btn btn-simple btn-sm btn-edit" onClick={onClickEdit}>
             {t('edit_visualization')}

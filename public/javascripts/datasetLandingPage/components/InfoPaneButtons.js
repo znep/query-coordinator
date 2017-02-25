@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { isUserAdminOrPublisher } from '../../common/user';
+import { isUserRoled } from '../../common/user';
 
 export default React.createClass({
   propTypes: {
@@ -145,7 +145,7 @@ export default React.createClass({
     const isBlobbyOrHref = view.isBlobby || view.isHref;
     const { enableVisualizationCanvas } = serverConfig.featureFlags;
     const canCreateVisualizationCanvas = enableVisualizationCanvas &&
-      isUserAdminOrPublisher() &&
+      isUserRoled() &&
       _.isString(view.bootstrapUrl);
 
     let visualizeLink = null;

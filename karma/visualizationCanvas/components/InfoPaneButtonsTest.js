@@ -34,21 +34,19 @@ describe('InfoPaneButtons', () => {
     });
 
     describe('view mode', () => {
-      it('does not render when user is not admin or publisher', () => {
+      it('does not render when user lacks a role', () => {
         window.serverConfig = {
-          currentUser: {
-            roleName: 'user'
-          }
+          currentUser: {}
         };
         const element = renderComponent(InfoPaneButtons, getProps());
 
         expect(element.querySelector('.btn-edit')).to.not.exist;
       });
 
-      it('renders for when user is admin or publisher', () => {
+      it('renders for when user has a role', () => {
         window.serverConfig = {
           currentUser: {
-            roleName: 'administrator'
+            roleName: 'anything'
           }
         };
         const element = renderComponent(InfoPaneButtons, getProps());

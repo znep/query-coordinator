@@ -198,11 +198,12 @@
           return;
         }
 
-        var isAdminOrPublisher = user.roleName === 'administrator' || user.roleName === 'publisher';
+        var isRoledUser = _.trim(user.roleName).length > 0;
         var isSuperadmin = _.includes(blist.currentUser.flags, 'admin');
         var enableVisualizationCanvas = blist.feature_flags.enable_visualization_canvas;
+        var canAccessVisualizationCanvas = enableVisualizationCanvas && (isRoledUser || isSuperadmin);
 
-        if (!enableVisualizationCanvas || (!isAdminOrPublisher && !isSuperadmin)) {
+        if (!canAccessVisualizationCanvas) {
           return;
         }
 

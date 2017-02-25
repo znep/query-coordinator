@@ -152,7 +152,7 @@ describe('components/InfoPaneButtons', () => {
   describe('more actions dropdown', () => {
     describe('visualize link', () => {
       beforeEach(() =>  {
-        window.serverConfig.currentUser = { roleName: 'publisher' };
+        window.serverConfig.currentUser = { roleName: 'anything' };
         window.serverConfig.featureFlags.enableVisualizationCanvas = true;
       });
 
@@ -178,6 +178,12 @@ describe('components/InfoPaneButtons', () => {
 
       it('does not exist if the feature flag is disabled', () => {
         window.serverConfig.featureFlags.enableVisualizationCanvas = false;
+        const element = renderComponent(InfoPaneButtons, getProps());
+        expect(element.querySelector('a[href="bootstrapUrl"]')).to.not.exist;
+      });
+
+      it('does not exist if the user lacks a role', () => {
+        window.serverConfig.currentUser = {};
         const element = renderComponent(InfoPaneButtons, getProps());
         expect(element.querySelector('a[href="bootstrapUrl"]')).to.not.exist;
       });

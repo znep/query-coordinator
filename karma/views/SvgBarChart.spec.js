@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const $ = require('jquery');
 const I18n = require('src/I18n');
-const SvgBarChart = require('../../src/views/SvgBarChart');
+const SvgBarChart = require('src/views/SvgBarChart');
 
 describe('SvgBarChart', () => {
   const CHART_WIDTH = 640;

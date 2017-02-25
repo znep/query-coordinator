@@ -1,8 +1,8 @@
 var _ = require('lodash');
 var $ = require('jquery');
-var Table = require('../../src/views/Table');
+var Table = require('src/views/Table');
 
-describe('views/Table', function() {
+describe('Table', function() {
 
   function createTable(overrideVIF) {
     var element = $( '<div>', {'id': 'table'});

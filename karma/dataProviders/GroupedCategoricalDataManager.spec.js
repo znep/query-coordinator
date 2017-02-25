@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const rewire = require('rewire');
-const GroupedCategoricalDataManagerAPI = rewire('../../src/dataProviders/GroupedCategoricalDataManager');
+const GroupedCategoricalDataManagerAPI = rewire('src/dataProviders/GroupedCategoricalDataManager');
 
 const VALID_VIF_WITH_DIMENSION_GROUPING = {
   configuration: {
@@ -289,7 +289,7 @@ const mockMakeSocrataCategoricalDataRequest = function(vif, seriesIndex, maxRowC
       break;
     }
   }
-  
+
   if (queryResponse) {
     return queryResponse;
   } else {
@@ -354,7 +354,7 @@ describe('GroupedCategoricalDataManager', () => {
         ["2", undefined],
         ["3", undefined],
         ["4", undefined],
-        ["5", undefined], 
+        ["5", undefined],
         ["6", undefined],
         ["7", undefined],
         ["8", undefined],

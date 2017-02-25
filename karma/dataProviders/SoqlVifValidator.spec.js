@@ -1,5 +1,5 @@
 const rewire = require('rewire');
-const SoqlVifValidator = rewire('../../src/dataProviders/SoqlVifValidator');
+const SoqlVifValidator = rewire('src/dataProviders/SoqlVifValidator');
 
 function validatePasses(testCaseFnName, vif, datasetMetadataPerSeries) {
   describe(testCaseFnName, function() {

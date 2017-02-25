@@ -22,7 +22,7 @@ export default function generateEmbedCode(vif, options) {
 
   const domain = _.get(vif, 'series[0].dataSource.domain');
   const datasetUid = _.get(vif, 'series[0].dataSource.datasetUid');
-  const defaultSourceHref = (domain && datasetUid) ? `https://${domain}/d/${datasetUid}` : null;
+  const defaultSourceHref = (domain && datasetUid) ? `https://${domain}/d/${datasetUid}?referrer=embed` : null;
   const fallbackSourceLinkText = options.fallbackSourceLinkText || translate('visualizations.embed.explore_data_link');
   const domainAttr = domain ? `data-socrata-domain="${domain}" ` : '';
 

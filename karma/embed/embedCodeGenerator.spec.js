@@ -5,7 +5,7 @@ import mockVif from 'karma/mockVif';
 const mockVifDomain = 'vertex-stories.test-socrata.com';
 const loaderSrc = 'https://vertex-stories.test-socrata.com/component/visualization/v1/socrata-visualizations-loader.js';
 const vifSerialized = JSON.stringify(mockVif).replace(/"/g, '&quot;');
-const defaultHref = 'https://vertex-stories.test-socrata.com/d/k6cs-ww27';
+const defaultHref = 'https://vertex-stories.test-socrata.com/d/k6cs-ww27?referrer=embed';
 
 describe('embedCodeGenerator', function() {
   const testCase = (caseName, vif, options, expectedValue) => {

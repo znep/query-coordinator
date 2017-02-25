@@ -1,9 +1,9 @@
 var _ = require('lodash');
 var $ = require('jquery');
-var FeatureMap = require('../../src/views/FeatureMap');
-require('../../src/dataProviders/VectorTileManager');
+var FeatureMap = require('src/views/FeatureMap');
+require('src/dataProviders/VectorTileManager');
 
-describe('socrata.visualizations.views.FeatureMap', function() {
+describe('FeatureMap', function() {
 
   'use strict';
 

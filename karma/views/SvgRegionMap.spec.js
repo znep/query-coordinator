@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var $ = require('jquery');
 var chroma = require('chroma-js');
-var SvgRegionMap = require('../../src/views/SvgRegionMap.js');
+var SvgRegionMap = require('src/views/SvgRegionMap.js');
 
 describe('SvgRegionMap', function() {
 

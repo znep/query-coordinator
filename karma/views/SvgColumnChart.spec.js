@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const $ = require('jquery');
 const I18n = require('src/I18n');
-const SvgColumnChart = require('../../src/views/SvgColumnChart');
+const SvgColumnChart = require('src/views/SvgColumnChart');
 
 describe('SvgColumnChart', () => {
   const CHART_WIDTH = 640;

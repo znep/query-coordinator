@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const rewire = require('rewire');
-const GroupedTimeDataManagerAPI = rewire('../../src/dataProviders/GroupedTimeDataManager');
+const GroupedTimeDataManagerAPI = rewire('src/dataProviders/GroupedTimeDataManager');
 
 const VALID_VIF_WITH_DIMENSION_GROUPING = {
   configuration: {},
@@ -327,7 +327,7 @@ describe('GroupedTimeDataManager', () => {
               break;
             }
           }
-          
+
           if (queryResponse) {
             return queryResponse;
           } else {

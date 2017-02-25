@@ -72,6 +72,21 @@ body {
     position: static;
     width: 100%;
     z-index: auto;
+    span.page-name {
+      width: 100%;
+    }
+
+    a.primer-preview {
+      text-decoration: none;
+      width: 100%;
+      text-align: right;
+      margin-right: 3em;
+      color: white;
+
+      span.socrata-icon-preview {
+        margin-left: 0.5em;
+      }
+    }
   }
 
   .modal-header-title {

@@ -13,15 +13,15 @@
     <div class="site-chrome-admin-menus" role="menubar">
       <%- if open_performance_enabled? %>
         <%= render 'site_chrome/admin/open_performance' %>
+      <%- else %>
+        <div		
+          id="site-chrome-data-catalog"		
+          class="site-chrome-admin-menu"		
+          tabIndex="0"		
+          role="menuitem">		
+          <a href="/browse"><%= t('admin.data_catalog.title') %></a>		
+        </div>
       <%- end %>
-
-      <div		
-        id="site-chrome-data-catalog"		
-        class="site-chrome-admin-menu"		
-        tabIndex="0"		
-        role="menuitem">		
-        <a href="/browse"><%= t('admin.data_catalog.title') %></a>		
-      </div>
     </div>
 
     <div

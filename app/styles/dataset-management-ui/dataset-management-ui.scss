@@ -76,13 +76,14 @@ body {
       width: 100%;
     }
 
-    a.primer-preview {
-      text-decoration: none;
+    div.primer-preview {
       width: 100%;
       text-align: right;
       margin-right: 3em;
-      color: white;
-
+      a {
+        color: white;
+        text-decoration: none;
+      }
       span.socrata-icon-preview {
         margin-left: 0.5em;
       }

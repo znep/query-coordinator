@@ -4,12 +4,13 @@ import { EditBar } from 'socrata-components';
 
 function AppBar({ name, showPreviewLink }) {
   const previewLink = (
-    <a
-      href={`/d/${window.initialState.view.id}`}
-      target="_blank"
-      className="primer-preview">
-      Preview Primer<span className="socrata-icon-preview" />
-    </a>
+    <div className="primer-preview">
+      <a
+        href={`/d/${window.initialState.view.id}`}
+        target="_blank">
+        Preview Primer<span className="socrata-icon-preview" />
+      </a>
+    </div>
   );
 
   return (

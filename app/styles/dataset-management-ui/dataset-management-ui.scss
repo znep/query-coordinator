@@ -1176,3 +1176,14 @@ body {
   }
 
 }
+
+
+// this is in new version of styleguide but we don't want to pull that in before the summit
+// see https://github.com/socrata/frontend/pull/4156
+.btn-default {
+  &.btn-disabled-light {
+    background-color: $light-grey-6;
+    color: $light-grey-3;
+    border-color: $light-grey-4;
+  }
+}

@@ -54,7 +54,7 @@ function manageData(state) { // can't destructure in the function head because t
           {I18n.home_pane.sidebar.visualize_blurb}
         </p>
         <button
-          className="btn btn-sm btn-default btn-disabled-lite"
+          className="btn btn-sm btn-default btn-disabled-light"
           disabled
           tabIndex="-1">
           {I18n.home_pane.sidebar.visualize_button}
@@ -70,7 +70,7 @@ function manageData(state) { // can't destructure in the function head because t
         </p>
 
         <button
-          className="btn btn-sm btn-default btn-disabled-lite"
+          className="btn btn-sm btn-default btn-disabled-light"
           disabled
           tabIndex="-1">
           {I18n.home_pane.sidebar.feature_button}

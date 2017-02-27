@@ -13,7 +13,7 @@ export const SchemaPreview = React.createClass({
     columns: PropTypes.array.isRequired,
     onExpandColumn: PropTypes.func.isRequired,
     onExpandSchemaTable: PropTypes.func.isRequired,
-    headerButton: PropTypes.object
+    headerButton: PropTypes.element
   },
 
   toggleTable() {

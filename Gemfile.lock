@@ -1,7 +1,7 @@
 PATH
   remote: engine
   specs:
-    socrata_site_chrome (2.3.4)
+    socrata_site_chrome (2.3.5)
       airbrake (>= 4.3.0)
       chroma
       dalli
@@ -161,6 +161,11 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
+    semver2 (3.4.2)
+    signaller-ruby (0.0.4)
+      activesupport (~> 4.2)
+      httparty (~> 0.13)
+      semver2 (~> 3.4)
     spring (2.0.0)
       activesupport (>= 4.2)
     sprockets (3.7.0)
@@ -205,6 +210,7 @@ DEPENDENCIES
   request_store
   rspec-rails
   sass-rails (~> 5.0)
+  signaller-ruby
   socrata_site_chrome!
   spring
   sqlite3

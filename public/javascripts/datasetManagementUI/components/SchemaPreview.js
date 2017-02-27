@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
+import * as Links from '../links';
 import CommonSchemaPreview from '../../common/components/SchemaPreview';
 import { columnsForOutputSchema } from '../selectors';
 import _ from 'lodash';
-
 
 function soqlToCoreType(soqlType) {
   return {
@@ -46,7 +47,16 @@ function mapStateToProps({ db }) {
     });
 
     return {
-      columns
+      columns,
+      headerButton: (
+        <Link className="header-btn-wrapper" to={Links.columnMetadataEditor()}>
+          <button
+            className="btn btn-sm btn-alternate-2"
+            tabIndex="-1">
+            {I18n.home_pane.column_metadata_manage_button}
+          </button>
+        </Link>
+      )
     };
   }
 

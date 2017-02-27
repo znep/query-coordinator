@@ -143,9 +143,19 @@ body {
     }
   }
 
-  .table-preview > a {
+  .header-btn-wrapper {
     float: right;
     margin-top: 2px;
+  }
+
+  .schema-preview {
+    h2 {
+      float: left;
+    }
+
+    .section-content {
+      clear: both;
+    }
   }
 
   .table-preview {

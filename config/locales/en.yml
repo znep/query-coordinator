@@ -1617,7 +1617,7 @@ en:
         feature: Feature
         feature_blurb: Feature assets or external resources that best represent your data.
         feature_button: Feature
-      column_metadata_manage_button: Manage Column Metadata
+      column_metadata_manage_button: Describe Columns
       data: Choose Data Source
       data_manage_button: Manage Data
       data_blurb: Add a data file and enable visualizations and mapping.

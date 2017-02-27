@@ -25,13 +25,13 @@ class Notifications extends Component {
 
   componentDidMount() {
     getNotifications((response) => {
-      if (!response.length) {
-        this.setState({ hasError: true });
-      } else {
+      if (response.notifications && response.viewOlderLink) {
         this.setState({
           notifications: response.notifications,
           viewOlderLink: response.viewOlderLink
         });
+      } else {
+        this.setState({ hasError: true });
       }
     });
   }
@@ -89,7 +89,7 @@ class Notifications extends Component {
 
   renderNotificationsList() {
     const { showNotifications, notifications, viewOlderLink, hasError } = this.state;
-    const { errorText, productUpdatesText, viewOlderText } = this.props.options;
+    const { errorText, productUpdatesText, viewOlderText } = this.props.translations;
 
     if (showNotifications) {
       return (
@@ -117,7 +117,7 @@ class Notifications extends Component {
 }
 
 Notifications.propTypes = {
-  options: PropTypes.shape({
+  translations: PropTypes.shape({
     errorText: PropTypes.string.isRequired,
     productUpdatesText: PropTypes.string.isRequired,
     viewOlderText: PropTypes.string.isRequired

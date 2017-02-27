@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Notifications from './Notifications';
 
-window.notifications = (container, options) => {
+window.notifications = (container, translations) => {
   let rootNode;
   try {
     rootNode = document.querySelector(container);
@@ -16,7 +16,7 @@ window.notifications = (container, options) => {
   }
 
   ReactDOM.render(
-    <Notifications options={options} />,
+    <Notifications translations={translations} />,
     rootNode
   );
 };

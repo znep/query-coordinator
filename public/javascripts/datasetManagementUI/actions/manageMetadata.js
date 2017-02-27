@@ -103,6 +103,7 @@ function saveColumnMetadata(dispatch, db) {
       }));
       revertDirtyOutputColumns(dispatch, currentColumns);
       insertChildrenAndSubscribeToOutputSchema(dispatch, resp.resource);
+      dispatch(redirectAfterInterval());
     });
 }
 

@@ -1608,9 +1608,9 @@ en:
       metadata_manage_button: Manage Metadata
       metadata_blurb: Tell people about this dataset.
       sidebar:
-        column_descriptions: Describe
+        column_descriptions: Describe Columns
         column_descriptions_blurb: Describing each column helps users understand your data better.
-        column_descriptions_button: Describe
+        column_descriptions_button: Describe Columns
         visualize: Visualize
         visualize_blurb: Visualize your data and explore relationships.
         visualize_button: Create New...

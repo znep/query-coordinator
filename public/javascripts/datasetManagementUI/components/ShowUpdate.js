@@ -183,9 +183,11 @@ function ShowUpdate({ view, routing, db, urlParams, addEmailInterest, createUplo
   if (isUpsertComplete) {
     const inputSchema = _.find(db.input_schemas, { id: outputSchema.input_schema_id });
     dataTable = [(
-      <Link to={Links.showOutputSchema(inputSchema.upload_id, inputSchema.id, outputSchema.id)}>
+      <Link
+        to={Links.showOutputSchema(inputSchema.upload_id, inputSchema.id, outputSchema.id)}
+        className="header-btn-wrapper" >
         <button
-          className="manage-data-btn btn btn-sm btn-alternate-2"
+          className="btn btn-sm btn-alternate-2"
           tabIndex="-1">
           {I18n.home_pane.data_manage_button}
         </button>

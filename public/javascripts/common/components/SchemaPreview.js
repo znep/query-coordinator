@@ -12,7 +12,8 @@ export const SchemaPreview = React.createClass({
   propTypes: {
     columns: PropTypes.array.isRequired,
     onExpandColumn: PropTypes.func.isRequired,
-    onExpandSchemaTable: PropTypes.func.isRequired
+    onExpandSchemaTable: PropTypes.func.isRequired,
+    headerButton: PropTypes.element
   },
 
   toggleTable() {
@@ -148,7 +149,7 @@ export const SchemaPreview = React.createClass({
   },
 
   render() {
-    const { columns } = this.props;
+    const { columns, headerButton } = this.props;
     const toggleColumn = this.toggleColumn;
 
     let toggles;
@@ -270,6 +271,8 @@ export const SchemaPreview = React.createClass({
         <h2 className="landing-page-section-header">
           {I18n.schema_preview.title}
         </h2>
+
+        {headerButton}
 
         <div className="section-content collapsed">
           <div className="table-wrapper">

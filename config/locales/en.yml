@@ -1608,16 +1608,16 @@ en:
       metadata_manage_button: Manage Metadata
       metadata_blurb: Tell people about this dataset.
       sidebar:
-        column_descriptions: Describe
+        column_descriptions: Describe Columns
         column_descriptions_blurb: Describing each column helps users understand your data better.
-        column_descriptions_button: Describe
+        column_descriptions_button: Describe Columns
         visualize: Visualize
         visualize_blurb: Visualize your data and explore relationships.
         visualize_button: Create New...
         feature: Feature
         feature_blurb: Feature assets or external resources that best represent your data.
         feature_button: Feature
-      column_metadata_manage_button: Manage Column Metadata
+      column_metadata_manage_button: Describe Columns
       data: Choose Data Source
       data_manage_button: Manage Data
       data_blurb: Add a data file and enable visualizations and mapping.

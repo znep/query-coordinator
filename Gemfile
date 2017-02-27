@@ -12,6 +12,7 @@ gem 'rails', '4.2.6'
 gem 'request_store'
 gem 'sass-rails', '~> 5.0'
 gem 'socrata_site_chrome', :path => 'engine'
+gem 'signaller-ruby', :require => 'signaller'
 
 group :test do
   gem 'sqlite3'

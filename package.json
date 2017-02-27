@@ -128,7 +128,7 @@
     "showdown": "git+https://github.com/socrata/showdown.git#openperformance-compat",
     "socrata-components": "11.7.5",
     "socrata-utils": "3.2.0",
-    "socrata-visualizations": "20.19.8",
+    "socrata-visualizations": "20.19.12",
     "squire-rte": "git+https://github.com/socrata-platform/Squire.git#1.4.2-fixes",
     "tether": "1.0.2",
     "tether-shepherd": "1.2.0",

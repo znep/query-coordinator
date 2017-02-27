@@ -1,6 +1,6 @@
 {
   "name": "socrata-visualizations",
-  "version": "20.19.9",
+  "version": "20.19.10",
   "license": "UNLICENSED",
   "repository": {
     "type": "git",
@@ -21,7 +21,8 @@
     "test": "karma start karma.conf.js --singleRun true",
     "test-chrome": "karma start karma.conf.js --singleRun false --browsers Chrome",
     "version-bump-check": "node tools/version-bump-check.js",
-    "watch": "karma start karma.conf.js -v --singleRun false",
+    "test-watch": "karma start karma.conf.js -v --singleRun false",
+    "watch": "webpack --watch",
     "compile-css": "node tools/compile-css.js",
     "compile-css-watch": "node tools/compile-css.js --watch",
     "test-http-server": "http-server -S -c-1 -C tools/test-cert.pem -K tools/test-key.pem -p 9874 dist/"

@@ -80,8 +80,11 @@
     </p>
     <div id="table-10"></div>
 
-    <p>Tests hidden columns. In the example below, all columns in the dataset except for 'name' and 'birthday' have been hidden in the grid view.
+    <p>Tests hidden columns. In the example below, all columns in the dataset except for 'name' and 'birthday' have been hidden in the grid view.</p>
     <div id="table-11"></div>
+
+    <p>Nothing here should alert on page load or user interaction. If it does, that's an XSS vulnerability which needs to be fixed immediately.</p>
+    <div id="table-xss"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -92,7 +95,7 @@
 
   <script type="text/javascript">
 
-    var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
+    // begin table VIF definitions
 
     var COLUMN_NAME = 'block';
     var DATASET_UID = '6zsd-86xi';
@@ -349,7 +352,52 @@
     var $table11Element = $('#table-11');
     $table11Element.socrataTable(table11VIF);
 
+    var tableXSSVIF = {
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      },
+      configuration: {
+        order: [{
+          ascending: true,
+          columnName: 'stuff'
+        }]
+      },
+      description: 'If anything causes an alert, you done goofed',
+      series: [
+        {
+          dataSource: {
+            datasetUid: 'iws2-sdyk',
+            dimension: {
+              columnName: null,
+              aggregationFunction: null
+            },
+            domain: 'stories.rc-socrata.com',
+            measure: {
+              columnName: null,
+              aggregationFunction: 'count'
+            },
+            type: 'socrata.soql',
+            filters: []
+          },
+          label: null,
+          type: 'table',
+          unit: {
+            one: 'vulnerability',
+            other: 'vulnerabilities'
+          }
+        }
+      ],
+      title: 'XSS test'
+    };
+
+    var $tableXSSElement = $('#table-xss');
+    $tableXSSElement.socrataTable(tableXSSVIF);
+
+    // Begin table event handling
+
     var $tables = $('[id^=table-]');
+    var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
 
     $(window).resize(function() {
       $tables.trigger('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');

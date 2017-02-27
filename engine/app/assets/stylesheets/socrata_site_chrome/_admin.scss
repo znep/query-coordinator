@@ -10,6 +10,7 @@
   height: 46px;
   z-index: 9999;
   font-family: 'Open Sans', 'Helvetica', sans-serif;
+  justify-content: space-between;
 
   &.site-chrome-small {
     height: 32px;
@@ -52,10 +53,6 @@
   * {
     box-sizing: border-box;
     line-height: 1.6;
-  }
-
-  > div {
-    margin: auto;
   }
 
   a {
@@ -169,6 +166,10 @@
     }
   }
 
+  .site-chrome-admin-header-section {
+    display: flex;
+  }
+
   .site-chrome-admin-user {
     position: relative;
     margin-right: 0;
@@ -256,5 +257,9 @@
       width: 35px;
       height: 35px;
     }
+  }
+
+  #site-chrome-header-notifications {
+    width: 40px;
   }
 }

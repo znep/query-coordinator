@@ -123,6 +123,12 @@
     @include btn-disabled;
   }
 
+  &.btn-disabled-light {
+    background-color: $light-grey-6;
+    color: $light-grey-3;
+    border-color: $light-grey-4;
+  }
+
   &.active {
     box-shadow: inset 0 0 10px -2px #888;
   }

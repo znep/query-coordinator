@@ -5,6 +5,7 @@
 /.sass-cache
 /.cache
 .DS_Store
+.idea/
 /pages/fonts
 /node_modules
 .fontcustom-manifest.json

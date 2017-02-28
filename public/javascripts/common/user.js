@@ -7,7 +7,8 @@ function isUserRoled() {
     return false;
   }
 
-  return _.trim(currentUser.roleName).length > 0;
+  return isUserSuperadmin() ||
+    _.trim(currentUser.roleName).length > 0;
 }
 
 function isUserAdminOrPublisher() {
@@ -17,12 +18,23 @@ function isUserAdminOrPublisher() {
     return false;
   }
 
-  return _.includes(currentUser.flags, 'admin') ||
+  return isUserSuperadmin() ||
     currentUser.roleName === 'administrator' ||
     currentUser.roleName === 'publisher';
 }
 
+function isUserSuperadmin() {
+  const { currentUser } = window.serverConfig;
+
+  if (_.isEmpty(currentUser)) {
+    return false;
+  }
+
+  return _.includes(currentUser.flags, 'admin');
+}
+
 export {
   isUserRoled,
-  isUserAdminOrPublisher
+  isUserAdminOrPublisher,
+  isUserSuperadmin
 };

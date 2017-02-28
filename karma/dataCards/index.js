@@ -32,10 +32,4 @@ function requireAll(context) {
 }
 
 // Require/run all the tests
-requireAll(require.context('./controllers', true, /\.js$/));
-requireAll(require.context('./decorators', true, /\.js$/));
-requireAll(require.context('./directives', true, /\.js$/));
-requireAll(require.context('./filters', true, /\.js$/));
-requireAll(require.context('./models', true, /\.js$/));
-requireAll(require.context('./services', true, /\.js$/));
-requireAll(require.context('./util', true, /\.js$/));
+requireAll(require.context('.', true, /Test\.js$/));

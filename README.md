@@ -186,6 +186,7 @@ Ensure that you are using Ruby version 2.3.0 or greater.
 ```sh
 bundle exec rake test:karma
 bundle exec rake test:karma:adminGoals
+bundle exec rake test:karma:common
 bundle exec rake test:karma:dataCards
 bundle exec rake test:karma:datasetLandingPage
 bundle exec rake test:karma:datasetManagementUI

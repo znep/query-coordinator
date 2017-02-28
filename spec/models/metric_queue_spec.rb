@@ -72,7 +72,7 @@ describe MetricQueue do
         end
       end
 
-      describe 'high volume' do
+      describe 'high volume', slow: true do
         before(:each) do
           MetricQueue.instance.batch_size = 100
           allow(Thread).to receive(:new).and_yield.and_call_original
@@ -276,7 +276,7 @@ describe MetricQueue do
         end
       end
 
-      describe 'high volume' do
+      describe 'high volume', slow: true do
         before(:each) do
           MetricQueue.instance.batch_size = 100
           allow(Thread).to receive(:new).and_yield.and_call_original

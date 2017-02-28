@@ -586,6 +586,7 @@ class DatasetsController < ApplicationController
     @customization_id = params[:customization_id]
     @customization_id = CurrentDomain.default_widget_customization_id if @customization_id.blank?
 
+    @suppress_chrome = true
     render :layout => 'plain'
   end
 

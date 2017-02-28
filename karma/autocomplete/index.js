@@ -3,7 +3,4 @@ function requireAll(context) {
 }
 
 require('babel-polyfill');
-requireAll(require.context('./components', true, /\.js$/));
-requireAll(require.context('./reducers', true, /\.js$/));
-requireAll(require.context('./actions', true, /\.js$/));
-require('./UtilTest.js');
+requireAll(require.context('.', true, /Test\.js$/));

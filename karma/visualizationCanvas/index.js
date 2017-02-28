@@ -39,5 +39,4 @@ FeatureFlags.useTestFixture({
 });
 
 // Run all the tests
-requireAll(require.context('./components', true, /\.js$/));
-require('./reducerTest');
+requireAll(require.context('.', true, /Test\.js$/));

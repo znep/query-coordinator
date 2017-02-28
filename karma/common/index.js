@@ -30,5 +30,4 @@ function requireAll(context) {
 }
 
 // Run all the tests
-requireAll(require.context('./assetSelector/components', true, /\.js$/));
-requireAll(require.context('./feedbackPanel/components', true, /\.js$/));
+requireAll(require.context('.', true, /Test\.js$/));

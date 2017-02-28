@@ -431,6 +431,8 @@ class InternalController < ApplicationController
       @default = report['default']
       @environment = FeatureFlags.process_value(report['environment'])
       @domains = report['domains'] || []
+    else
+      @version_information = Signaller.full_version_information
     end
   end
 
@@ -456,6 +458,10 @@ class InternalController < ApplicationController
       format.data { render :json => @flags.to_json }
       format.json { render :json => @flags.to_json }
     end
+  end
+
+  def signaller_version
+    render :json => Signaller.read_from(Signaller::Endpoint.for(:version))
   end
 
   def set_feature_flags

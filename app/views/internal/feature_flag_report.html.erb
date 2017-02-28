@@ -74,6 +74,13 @@
     </div>
   <%- else %>
     <p>Select a feature flag from the options above.</p>
+    <p>&nbsp;</p>
+    <%- if defined? @version_information %>
+      <%- @version_information.each do |key, value| %>
+        <p><b><%= key.titleize %>:</b> <%= value %></p>
+      <%- end %>
+      <p>(<%= link_to 'Machine Readable Version', :signaller_version %>)</p>
+    <%- end %>
   <%- end %>
 </div>
 

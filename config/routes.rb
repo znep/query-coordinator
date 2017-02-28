@@ -71,6 +71,7 @@ Rails.application.routes.draw do
       get :domains_summary
       get :organization_list
       get :feature_flag_report
+      get :signaller_version
       post :update_feature_flags_on_multiple_domains
       post :set_environment_feature_flag
 

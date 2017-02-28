@@ -14,6 +14,11 @@
     overflow-y: hidden;
 
     .filter-bar-container {
+      position: absolute;
+      left: 0;
+      right: 0;
+      z-index: 53;
+
       .column-container {
         z-index: 100;
       }
@@ -177,13 +182,6 @@
   &:last-child {
     margin-right: 0;
   }
-}
-
-.filter-bar-container {
-  position: absolute;
-  left: 0;
-  right: 0;
-  z-index: 53;
 }
 
 .authoring-controls {

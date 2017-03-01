@@ -1,3 +1,5 @@
+require('babel-polyfill');
+
 window['jquery'] = window['jQuery'] = window['$'] = require('jquery');
 window['classnames'] = require('classnames');
 window['dompurify'] = require('dompurify');

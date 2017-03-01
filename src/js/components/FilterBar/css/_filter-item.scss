@@ -86,16 +86,17 @@ $max-filter-width: 130px;
         }
 
         .range-text-inputs-container {
-          justify-content: space-between;
-
           .range-input {
+            flex-grow: 4;
             max-width: 150px;
             padding-left: 10px;
             padding-right: 10px;
           }
 
           .range-separator {
+            flex-grow: 1;
             margin: 8px;
+            text-align: center;
           }
         }
 

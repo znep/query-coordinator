@@ -17,9 +17,23 @@ class DatasetLandingPage
       threads[:migrations].join
 
       # We fetch 4 related views so we know if there are more than 3
-      threads[:related_views] = Thread.new { fetch_derived_views(view, cookies, request_id, 4, 0) }
+      threads[:related_views] = Thread.new {
+        begin
+          fetch_derived_views(view, cookies, request_id, 4, 0)
+        rescue RuntimeError => e
+          Rails.logger.error("Error fetching derived views for #{view.id}: " + e.message)
+          []
+        end
+      }
 
-      threads[:featured_content] = Thread.new { fetch_featured_content(view, cookies, request_id) }
+      threads[:featured_content] = Thread.new {
+        begin
+          fetch_featured_content(view, cookies, request_id)
+        rescue RuntimeError
+          Rails.logger.error("Error fetching featured content for #{view.id}: " + e.message)
+          []
+        end
+      }
 
       # Wait for all requests to complete
       threads.each_value(&:join)

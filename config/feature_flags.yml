@@ -78,7 +78,7 @@ enable_dataset_management_ui:
   defaultValue: false
 enable_filterable_visualizations_in_ax:
   category: storyteller
-  defaultValue: false
+  defaultValue: true
   description: Allow filterable visualizations to be built in the Authoring Workflow.
 enable_filtered_tables_in_ax:
   category: storyteller

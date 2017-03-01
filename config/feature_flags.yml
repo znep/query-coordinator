@@ -70,9 +70,6 @@ enable_catalog_landing_page:
   description: Display the catalog landing page (aka category landing page)
   defaultValue: false
   category: catalog
-enable_dataset_landing_page_tour:
-  description: Display the tour when visitors first access a dataset landing page.
-  defaultValue: true
 enable_dataset_management_ui:
   description: New management page for datasets
   defaultValue: false

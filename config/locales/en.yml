@@ -1578,10 +1578,6 @@ en:
       title: Share
       twitter: Share via Twitter
       visibility_alert_html: "<b>Heads up!</b> This dataset is private and might not be accessible to the people you share it with."
-    tour:
-      description: We call it Primer. But in case you ever want to explore the tabular view of the data, you can access it from here.
-      done: OK
-      title: Datasets have a new look!
     view_widget:
       external_content: External Content
       view: View

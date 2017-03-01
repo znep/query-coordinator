@@ -5,7 +5,6 @@ import ContactForm from './components/ContactForm';
 import FeaturedContentModal from './components/FeaturedContentModal';
 import ODataModal from './components/ODataModal';
 import ShareModal from './components/ShareModal';
-import Tour from './components/Tour';
 
 const DynamicContent = () => (
   <div>
@@ -15,7 +14,6 @@ const DynamicContent = () => (
     <FeedbackPanel {...window.serverConfig} />
     <ODataModal />
     <ShareModal />
-    <Tour />
   </div>
 );
 

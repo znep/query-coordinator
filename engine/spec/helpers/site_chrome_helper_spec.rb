@@ -236,6 +236,14 @@ describe SocrataSiteChrome::SiteChromeHelper do
       end
     end
 
+    context 'for publishers with Perspectives licenses' do
+      let(:user) { SocrataSiteChrome::User.new('roleName' => 'publisher_stories') }
+
+      it 'returns true' do
+        expect(helper.current_user_can_see_admin_link?).to eq(true)
+      end
+    end
+
     context 'for designers' do
       let(:user) { SocrataSiteChrome::User.new('roleName' => 'designer') }
 
@@ -246,6 +254,14 @@ describe SocrataSiteChrome::SiteChromeHelper do
 
     context 'for editors' do
       let(:user) { SocrataSiteChrome::User.new('roleName' => 'editor') }
+
+      it 'returns true' do
+        expect(helper.current_user_can_see_admin_link?).to eq(true)
+      end
+    end
+
+    context 'for editors with Perspectives licenses' do
+      let(:user) { SocrataSiteChrome::User.new('roleName' => 'editor_stories') }
 
       it 'returns true' do
         expect(helper.current_user_can_see_admin_link?).to eq(true)

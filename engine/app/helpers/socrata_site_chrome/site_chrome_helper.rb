@@ -96,7 +96,7 @@ module SocrataSiteChrome
     def current_user_can_see_admin_link?
       return false unless site_chrome_current_user
       site_chrome_current_user.is_superadmin? ||
-        %w(administrator publisher designer editor viewer).
+        %w(administrator publisher publisher_stories designer editor editor_stories viewer).
           include?(site_chrome_current_user.role_name.to_s.downcase)
     end
 

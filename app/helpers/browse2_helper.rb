@@ -6,7 +6,7 @@ module Browse2Helper
   MAX_FACET_CUTOFF = 100
 
   def facet_option_is_active?(opts, facet_param, facet_option)
-    opts[facet_param] == facet_option[:value]
+    opts[facet_param].to_s == facet_option[:value].to_s
   end
 
   def facet_option_classnames(opts, facet_param, facet_option, is_child_option, has_child_options)
@@ -169,6 +169,7 @@ module Browse2Helper
         end
       end
     end
+
     clear_facet_options
   end
 

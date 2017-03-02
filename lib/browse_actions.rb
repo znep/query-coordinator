@@ -91,8 +91,7 @@ module BrowseActions
       :param => :provenance,
       :options => [
         { text: t('controls.browse.facets.authority.official'), value: 'official' },
-        { text: t('controls.browse.facets.authority.community'), value: 'community' },
-        { text: t('controls.browse.facets.authority.none') }
+        { text: t('controls.browse.facets.authority.community'), value: 'community' }
       ],
       :sort_facet_options => false
     }
@@ -307,10 +306,6 @@ module BrowseActions
       merge(configured_params).  # gives the domain a chance to override the call
       merge(user_params)         # anything from the queryparam is most important
 
-    if FeatureFlags.derive.show_provenance_facet_in_catalog
-      browse_options[:provenance] = 'official' unless browse_options.key?(:provenance)
-    end
-
     # munge params to types we expect
     @@numeric_options.each do |option|
       browse_options[option] = browse_options[option].to_i if browse_options[option].present?
@@ -409,14 +404,14 @@ module BrowseActions
     end
 
     # Categories should be at the top in browse2, otherwise in the 3rd slot
-    categories_index = using_cetera? ? 0 : 2
     browse_options[:facets] ||= [
+      authority_facet,
+      categories_facet,
       view_types_facet,
       cfs,
-      authority_facet,
       topics_facet,
       federated_facet
-    ].insert(categories_index, categories_facet)
+    ]
 
     browse_options[:facets] = browse_options[:facets].compact.flatten.reject { |f| f[:hidden] }
 

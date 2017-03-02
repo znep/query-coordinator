@@ -3,6 +3,7 @@ require 'rails_helper'
 require 'spec_helper'
 
 describe Browse2Helper do
+  include TestHelperMethods
 
   def setup(overrides = {})
     {
@@ -467,6 +468,8 @@ describe Browse2Helper do
   describe '#get_clear_facet_options' do
     before(:each) do
       @opts = json_fixture('browse_options.json')
+      init_current_domain
+      init_feature_flag_signaller
     end
 
     it 'returns an empty array if there are no active facet options' do

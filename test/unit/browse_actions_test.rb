@@ -559,11 +559,11 @@ class BrowseActionsTest4 < Minitest::Test
     browse_options = @browse_controller.send(:process_browse, request)
     facet_titles = browse_options[:facets].pluck(:title)
     expected_titles = [
+      'Categories',
       'View Types',
       'Custom Superheroes',
       'Custom Tomatoes',
       'Custom Follies',
-      'Categories',
       'Topics',
       'Federated'
     ]

@@ -18,8 +18,6 @@ class CatalogLandingPageController < ApplicationController
 
   def browse_options
     {
-      browse_in_container: true,
-      embedded_browse_iframe_hack: true,
       suppress_dataset_creation: true,
       rel_type: 'external',
       hide_search: true
@@ -34,9 +32,10 @@ class CatalogLandingPageController < ApplicationController
       params.except!(:defaults, :suppressed_facets)
 
       options[:facets] = [
+        authority_facet,
+        categories_facet(params),
         view_types_facet,
         custom_facets,
-        categories_facet(params),
         topics_facet(params),
         federated_facet
       ].compact.flatten.reject { |f| f[:hidden] }

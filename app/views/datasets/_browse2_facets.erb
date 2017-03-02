@@ -21,14 +21,13 @@
         facets.each do |facet|
           active_option = opts[facet[:param]]
           active_filter = active_facet_option(active_option, facet)
-
           if active_filter.present?
-            concat render(
+            concat(render(
               'datasets/browse2_mobile_facet_active_filters',
               :title => facet[:title],
               :facet_param => facet[:param],
               :facet_option => active_filter
-            )
+            ))
           end
         end
       -%>

@@ -84,7 +84,7 @@ class DataLensManagerTest < Minitest::Test
         assert_equal('my title', payload[:displayFormat][:data_lens_page_metadata][:name])
         assert_equal('my description', payload[:displayFormat][:data_lens_page_metadata][:description])
         # Assert that the pageId is nil at this point
-        assert_equal(nil, payload[:displayFormat][:data_lens_page_metadata][:pageId])
+        refute(payload[:displayFormat][:data_lens_page_metadata][:pageId])
         assert_equal('data_lens', payload[:displayType])
       end
     end.returns(response)

@@ -377,10 +377,9 @@ class BrowseActionsTest3 < Minitest::Test
   def test_no_category_results_in_no_category_passed_to_cetera
     no_category = nil
 
-    expected_categories = nil
-    stub_cetera_for_categories(expected_categories)
+    stub_cetera_for_categories(expected_categories = nil)
 
-    assert_equal expected_categories, search_and_return_cetera_categories_param(no_category)
+    refute(search_and_return_cetera_categories_param(no_category))
   end
 
   def test_non_existent_category_gets_magically_injected
@@ -576,15 +575,13 @@ class BrowseActionsTest4 < Minitest::Test
   end
 
   def test_categories_facet_works_nil_extra_options
-    request = OpenStruct.new(
-      params: { category: 'Some Random Category' }.with_indifferent_access
-    )
+    request = OpenStruct.new(params: { category: 'Some Random Category' }.with_indifferent_access)
 
     # Let's have nil for extra options
     @browse_controller.stubs(categories_facet: facet('categories').merge(extra_options: nil))
     browse_options = @browse_controller.send(:process_browse, request)
     cat_facet = browse_options[:facets].find { |f| f[:title] == 'Categories' }
-    assert_equal nil, cat_facet[:extra_options] # make sure the test setup worked
+    refute(cat_facet[:extra_options]) # make sure the test setup worked
 
     # This used to raise a TypeError as per EN-760
     res = @browse_controller.send(:selected_category_and_any_children, browse_options)

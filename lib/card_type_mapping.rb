@@ -7,11 +7,7 @@ module CardTypeMapping
   # to compute default and available card types, not the old way.
   CARDINALITY_THRESHOLD = 35
 
-  def card_type_for(column, dataset_size=nil, is_derived_view=false)
-    default_card_type_for(column, dataset_size, is_derived_view)
-  end
-
-  def default_card_type_for(column, dataset_size, is_derived_view=false)
+  def default_card_type_for(column, dataset_size = nil, is_derived_view = false)
     physical_datatype = column.try(:[], :physicalDatatype)
 
     unless physical_datatype.present?
@@ -33,26 +29,16 @@ module CardTypeMapping
     end
 
     case physical_datatype
-      when 'boolean'
-        card_type = 'column'
-      when 'calendar_date'
-        card_type = 'timeline'
-      when 'fixed_timestamp'
-        card_type = 'timeline'
-      when 'floating_timestamp'
-        card_type = 'timeline'
-      when 'geo_entity'
-        card_type = 'feature'
-      when 'money'
-        card_type = 'histogram'
-      when 'number'
-        if has_georegion_computation_strategy?(column)
-          card_type = 'choropleth'
-        else
-          card_type = 'histogram'
-        end
-      when 'point'
-        card_type = 'feature'
+      when 'boolean' then card_type = 'column'
+      when 'calendar_date' then card_type = 'timeline'
+      when 'fixed_timestamp' then card_type = 'timeline'
+      when 'floating_timestamp' then card_type = 'timeline'
+      when 'geo_entity' then card_type = 'feature'
+      when 'money' then card_type = 'histogram'
+      when 'number' then card_type = has_georegion_computation_strategy?(column) ? 'choropleth' : 'histogram'
+      when 'point' then card_type = 'feature'
+      when 'multiline' then card_type = 'invalid'
+      when 'multipolygon' then card_type = 'invalid'
       when 'text'
         if has_georegion_computation_strategy?(column)
           card_type = 'choropleth'
@@ -64,12 +50,9 @@ module CardTypeMapping
         elsif is_derived_view
           card_type = 'column'
         else
-          card_type = 'search'
+          card_type = 'invalid' # EN-13836 Formerly 'search' but we no longer want search cards by default
         end
-      when 'multiline'
-        card_type = 'invalid'
-      when 'multipolygon'
-        card_type = 'invalid'
+
       else
         error_message = "Could not determine card type: invalid " \
           "physicalDatatype '#{physical_datatype.inspect}' on column #{column.inspect}."
@@ -78,7 +61,7 @@ module CardTypeMapping
           :error_message => error_message
         )
         Rails.logger.error(error_message)
-        return 'invalid'
+        card_type = 'invalid'
     end
 
     card_type

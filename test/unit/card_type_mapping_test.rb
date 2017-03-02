@@ -137,7 +137,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_boolean_column
     dataset_size = 2500
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('boolean', nil, 15),
       dataset_size
     )
@@ -149,7 +149,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_calendar_date_column
     dataset_size = 2500
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('calendar_date', nil, 15),
       dataset_size
     )
@@ -161,7 +161,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_fixed_timestamp_column
     dataset_size = 2500
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('fixed_timestamp', nil, 15),
       dataset_size
     )
@@ -173,7 +173,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_floating_timestamp_column
     dataset_size = 2500
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('floating_timestamp', nil, 15),
       dataset_size
     )
@@ -185,7 +185,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_geo_entity_column
     dataset_size = 2500
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('geo_entity', nil, 15),
       dataset_size
     )
@@ -197,7 +197,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_money_column_with_one_row
     dataset_size = 1
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('money', nil, 1),
       dataset_size
     )
@@ -208,7 +208,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_low_cardinality_money_column
     dataset_size = 2500
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('money', nil, 15),
       dataset_size
     )
@@ -219,7 +219,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_low_cardinality_and_globally_unique_money_column
     dataset_size = 15
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('money', nil, 15),
       dataset_size
     )
@@ -230,7 +230,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_cardinality_equal_to_threshold_money_column
     dataset_size = 2500
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('money', nil, 35),
       dataset_size
     )
@@ -241,7 +241,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_cardinality_equal_to_threshold_and_globally_unique_money_column
     dataset_size = 35
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('money', nil, 35),
       dataset_size
     )
@@ -252,7 +252,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_high_cardinality_money_column
     dataset_size = 2500
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('money', nil, 500),
       dataset_size
     )
@@ -263,7 +263,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_high_cardinality_and_globally_unique_money_column
     dataset_size = 2500
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('money', nil, 2500),
       dataset_size
     )
@@ -285,7 +285,7 @@ class CardTypeMappingTest < Minitest::Test
       'strategy_type' => 'georegion_match_on_string'
     }.with_indifferent_access
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       computed_column,
       dataset_size
     )
@@ -305,7 +305,7 @@ class CardTypeMappingTest < Minitest::Test
       'type' => 'georegion_match_on_string'
     }.with_indifferent_access
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       computed_column,
       dataset_size,
       is_derived_view
@@ -318,7 +318,7 @@ class CardTypeMappingTest < Minitest::Test
     is_derived_view = true
     computed_column = fake_column('number', nil, 1)
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       computed_column,
       dataset_size,
       is_derived_view
@@ -338,7 +338,7 @@ class CardTypeMappingTest < Minitest::Test
       'strategy_type' => 'georegion_match_on_point'
     }.with_indifferent_access
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       computed_column,
       dataset_size
     )
@@ -358,7 +358,7 @@ class CardTypeMappingTest < Minitest::Test
       'type' => 'georegion_match_on_point'
     }.with_indifferent_access
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       computed_column,
       dataset_size,
       is_derived_view
@@ -371,7 +371,7 @@ class CardTypeMappingTest < Minitest::Test
     is_derived_view = true
     computed_column = fake_column('number', nil, 1)
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       computed_column,
       dataset_size,
       is_derived_view
@@ -383,7 +383,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_number_column_with_one_row
     dataset_size = 1
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('number', nil, 1),
       dataset_size
     )
@@ -394,7 +394,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_low_cardinality_number_column
     dataset_size = 2500
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('number', nil, 15),
       dataset_size
     )
@@ -405,7 +405,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_low_cardinality_and_globally_unique_number_column
     dataset_size = 15
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('number', nil, 15),
       dataset_size
     )
@@ -416,7 +416,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_cardinality_equal_to_threshold_number_column
     dataset_size = 2500
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('number', nil, 35),
       dataset_size
     )
@@ -427,7 +427,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_cardinality_equal_to_threshold_and_globally_unique_number_column
     dataset_size = 35
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('number', nil, 35),
       dataset_size
     )
@@ -438,7 +438,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_high_cardinality_number_column
     dataset_size = 2500
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('number', nil, 500),
       dataset_size
     )
@@ -449,7 +449,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_high_cardinality_and_globally_unique_number_column
     dataset_size = 2500
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('number', nil, 2500),
       dataset_size
     )
@@ -462,7 +462,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_point_column
     dataset_size = 2500
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('point', nil, 2500),
       dataset_size
     )
@@ -474,7 +474,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_multipolygon_column
     dataset_size = 2500
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('multipolygon', nil, 2500),
       dataset_size
     )
@@ -486,7 +486,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_multiline_column
     dataset_size = 2500
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('multiline', nil, 2500),
       dataset_size
     )
@@ -498,7 +498,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_text_column_with_one_row
     dataset_size = 1
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('text', nil, 1),
       dataset_size
     )
@@ -508,7 +508,7 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_low_cardinality_text_column
     dataset_size = 2500
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('text', nil, 15),
       dataset_size
     )
@@ -518,51 +518,51 @@ class CardTypeMappingTest < Minitest::Test
   def test_card_type_mapping_returns_expected_value_for_low_cardinality_and_globally_unique_text_column
     dataset_size = 15
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('text', nil, 15),
       dataset_size
     )
-    assert_equal('search', computed_card_type)
+    assert_equal('invalid', computed_card_type)
   end
 
   def test_card_type_mapping_returns_expected_value_for_cardinality_equal_to_threshold_text_column
     dataset_size = 2500
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('text', nil, 35),
       dataset_size
     )
-    assert_equal('search', computed_card_type)
+    assert_equal('invalid', computed_card_type)
   end
 
   def test_card_type_mapping_returns_expected_value_for_cardinality_equal_to_threshold_and_globally_unique_text_column
     dataset_size = 35
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('text', nil, 35),
       dataset_size
     )
-    assert_equal('search', computed_card_type)
+    assert_equal('invalid', computed_card_type)
   end
 
   def test_card_type_mapping_returns_expected_value_for_high_cardinality_text_column
     dataset_size = 2500
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('text', nil, 500),
       dataset_size
     )
-    assert_equal('search', computed_card_type)
+    assert_equal('invalid', computed_card_type)
   end
 
   def test_card_type_mapping_returns_expected_value_for_high_cardinality_and_globally_unique_text_column
     dataset_size = 2500
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column('text', nil, 2500),
       dataset_size
     )
-    assert_equal('search', computed_card_type)
+    assert_equal('invalid', computed_card_type)
   end
 
   def test_card_type_mapping_returns_expected_value_for_text_column_with_computation_strategy_match_on_string
@@ -578,7 +578,7 @@ class CardTypeMappingTest < Minitest::Test
       'strategy_type' => 'georegion_match_on_string'
     }.with_indifferent_access
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       computed_column,
       dataset_size
     )
@@ -599,7 +599,7 @@ class CardTypeMappingTest < Minitest::Test
       'type' => 'georegion_match_on_string'
     }.with_indifferent_access
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       computed_column,
       dataset_size,
       is_derived_view
@@ -612,7 +612,7 @@ class CardTypeMappingTest < Minitest::Test
     is_derived_view = true
     computed_column = fake_column('text', nil, 1)
 
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       computed_column,
       dataset_size,
       is_derived_view
@@ -633,7 +633,7 @@ class CardTypeMappingTest < Minitest::Test
         airbrake[:error_message]
       )
     end
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       fake_column(physical_datatype, nil, 2500),
       dataset_size
     )
@@ -651,7 +651,7 @@ class CardTypeMappingTest < Minitest::Test
         airbrake[:error_message]
       )
     end
-    computed_card_type = card_type_for(
+    computed_card_type = default_card_type_for(
       broken_column,
       dataset_size
     )

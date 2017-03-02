@@ -452,7 +452,7 @@ class ViewTest < Minitest::Test
     view.stubs(can_see_private_meta?: true) # Signed user.
     assert_equal 'some private custom metadata', view.merged_metadata.fetch('custom_fields', {}).fetch('fieldset_foo', {}).fetch('field_bar', nil), 'Signed user should see private metadata'
     view.stubs(can_see_private_meta?: false) # Unsigned user.
-    assert_equal nil, view.merged_metadata.fetch('custom_fields', {}).fetch('fieldset_foo', {}).fetch('field_bar', nil), 'Unsigned user should not see private metadata'
+    refute(view.merged_metadata.fetch('custom_fields', {}).fetch('fieldset_foo', {}).fetch('field_bar', nil), 'Unsigned user should not see private metadata')
 
     # public metadata field
     CurrentDomain.stubs(property: [
@@ -546,7 +546,7 @@ class ViewTest < Minitest::Test
 
   def test_time_created_at
     view = View.new
-    assert_equal(view.time_created_at, nil)
+    refute(view.time_created_at)
 
     view.stubs(:createdAt => 1445460290)
     assert_equal(view.time_created_at.class, Time)
@@ -554,7 +554,7 @@ class ViewTest < Minitest::Test
 
   def test_time_data_last_updated_at
     view = View.new
-    assert_equal(view.time_data_last_updated_at, nil)
+    refute(view.time_data_last_updated_at)
 
     view.stubs(:rowsUpdatedAt => 1445460290)
     assert_equal(view.time_data_last_updated_at.class, Time)
@@ -562,7 +562,7 @@ class ViewTest < Minitest::Test
 
   def test_time_metadata_last_updated_at
     view = View.new
-    assert_equal(view.time_metadata_last_updated_at, nil)
+    refute(view.time_metadata_last_updated_at)
 
     view.stubs(:viewLastModified => 1445460290)
     assert_equal(view.time_metadata_last_updated_at.class, Time)
@@ -571,7 +571,7 @@ class ViewTest < Minitest::Test
   def test_time_last_updated_at
     view = View.new
     view.stubs(:last_activity => nil)
-    assert_equal(view.time_last_updated_at, nil)
+    refute(view.time_last_updated_at)
 
     view.stubs(:last_activity => 1445460290)
     assert_equal(view.time_last_updated_at.class, Time)

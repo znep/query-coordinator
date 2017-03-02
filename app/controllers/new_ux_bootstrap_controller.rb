@@ -25,6 +25,7 @@ class NewUxBootstrapController < ActionController::Base
     @added_card_types = Set.new
     @skipped_cards_by_type = Hash.new { |h, k| h[k] = [] }
     @page_metadata_manager = PageMetadataManager.new
+
     super
   end
 
@@ -137,7 +138,7 @@ class NewUxBootstrapController < ActionController::Base
     )
 
     has_publisher_pages = pages_response.try(:[], :body).present? &&
-                          pages_response[:body].try(:[], :publisher).present?
+      pages_response[:body].try(:[], :publisher).present?
 
     request_successful_and_has_publisher_pages =
       has_publisher_pages && pages_response[:status] == '200'
@@ -167,6 +168,7 @@ class NewUxBootstrapController < ActionController::Base
           unless I18n.locale.to_s == CurrentDomain.default_locale
             redirect_args[:locale] = I18n.locale
           end
+
           return redirect_to redirect_args
         else
           # Otherwise, generate a new default page and redirect to it.
@@ -189,6 +191,7 @@ class NewUxBootstrapController < ActionController::Base
           unless I18n.locale.to_s == CurrentDomain.default_locale
             redirect_args[:locale] = I18n.locale
           end
+
           return redirect_to redirect_args
         else
           # If no qualifying pages exist, then generate a new page and redirect
@@ -199,7 +202,6 @@ class NewUxBootstrapController < ActionController::Base
 
     # 6b. If there are no pages, we will need to create a default 'New UX' page.
     elsif request_successful_but_no_pages
-
       generate_and_redirect_to_new_page(dataset_metadata_response_body)
 
     # This is a server error so we should notify Airbrake.
@@ -215,8 +217,8 @@ class NewUxBootstrapController < ActionController::Base
         "Response: #{pages_response.inspect}"
       )
       flash[:error] = I18n.t('screens.ds.new_ux_error')
-      return redirect_to action: 'show', controller: 'datasets'
 
+      return redirect_to action: 'show', controller: 'datasets'
     end
   end
 
@@ -416,17 +418,15 @@ class NewUxBootstrapController < ActionController::Base
     columns = columns.reject do |field_name, column|
       non_bootstrappable_column?(field_name, column)
     end
+
     filter_out_subcolumns(columns)
   end
 
   def generate_cards_from_dataset_metadata_columns(columns)
     interesting_columns(columns).map do |field_name, column|
-      card_type = card_type_for(column, dataset_size, is_from_derived_view)
+      card_type = default_card_type_for(column, dataset_size, is_from_derived_view)
       if card_type
-        card = page_metadata_manager.merge_new_card_data_with_default(
-          field_name,
-          card_type
-        )
+        card = page_metadata_manager.merge_new_card_data_with_default(field_name, card_type)
 
         if added_card_types.add?(card_type)
           card
@@ -452,6 +452,7 @@ class NewUxBootstrapController < ActionController::Base
     unless I18n.locale.to_s == CurrentDomain.default_locale
       redirect_args[:locale] = I18n.locale
     end
+
     redirect_to redirect_args
   end
 
@@ -552,4 +553,5 @@ class NewUxBootstrapController < ActionController::Base
   def set_locale
     I18n.locale = 'en'
   end
+
 end

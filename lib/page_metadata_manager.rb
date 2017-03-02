@@ -30,13 +30,14 @@ class PageMetadataManager
     merge_new_card_data_with_default('*', 'table').merge('cardSize' => 2)
   end
 
-  def merge_new_card_data_with_default(field_name, card_type, cardinality=nil)
+  def merge_new_card_data_with_default(field_name, card_type, cardinality = nil)
     V1_CARD_TEMPLATE.deep_dup.merge(
       'fieldName' => field_name,
       'cardType' => card_type
     )
   end
 
+  # This is where we poke spandex to index the dataset so search cards can autocomplete
   def request_soda_fountain_secondary_index(dataset_id, options = {})
     secondary_group_identifier = APP_CONFIG.secondary_group_identifier
     unless secondary_group_identifier.blank?
@@ -94,39 +95,38 @@ class PageMetadataManager
 
   # Creates a new page
   def create(page_metadata, options = {})
-    unless page_metadata.key?('datasetId')
+    metadata = page_metadata.with_indifferent_access
+
+    unless metadata.key?('datasetId')
       raise Phidippides::NoDatasetIdException.new('cannot create page with no dataset id')
     end
 
-    unless page_metadata.key?('cards')
+    unless metadata.key?('cards')
       raise Phidippides::NoCardsException.new('no cards entry on page metadata')
     end
-
-    page_metadata = ActiveSupport::HashWithIndifferentAccess.new(page_metadata)
 
     initialize_metadata_key_names
 
     # Make sure that there is a table card
-    has_table_card = page_metadata['cards'].any? do |card|
+    has_table_card = metadata['cards'].any? do |card|
       card['fieldName'] == '*' || card['cardType'] == 'table'
     end
 
-    page_metadata['cards'] << table_card unless has_table_card
+    metadata['cards'] << table_card unless has_table_card
 
     # The core lens id for this page is the same one we use to refer to it in phidippides
-    new_page_id = data_lens_manager.create(
-      dataset_category(page_metadata['datasetId']),
-      page_metadata
-    )
+    new_page_id = data_lens_manager.create(dataset_category(metadata['datasetId']), metadata)
 
-    page_metadata['pageId'] = new_page_id
+    metadata['pageId'] = new_page_id
 
-    unless page_metadata['isFromDerivedView']
-      update_metadata_rollup_table(page_metadata, options)
-      request_soda_fountain_secondary_index(page_metadata['datasetId'], options)
+    unless metadata['isFromDerivedView']
+      update_metadata_rollup_table(metadata, options)
+      if contains_search_cards?(metadata)
+        request_soda_fountain_secondary_index(metadata['datasetId'], options)
+      end
     end
 
-    { :body => page_metadata, :status => 200 }
+    { :body => metadata, :status => 200 }
   end
 
   # Updates an existing page - if the page is using metadb for its metadata, update metadb.
@@ -134,8 +134,12 @@ class PageMetadataManager
   # Note that the update will simply overwrite the existing value with the
   # given value, so any missing keys will become missing in the datastore.
   def update(page_metadata, options = {})
-    raise Phidippides::NoDatasetIdException.new('cannot create page with no dataset id') unless page_metadata['datasetId'].present?
-    raise Phidippides::NoPageIdException.new('cannot create page with no page id') unless page_metadata['pageId'].present?
+    if page_metadata['datasetId'].blank?
+      raise Phidippides::NoDatasetIdException.new('cannot create page with no dataset id')
+    end
+    if page_metadata['pageId'].blank?
+      raise Phidippides::NoPageIdException.new('cannot create page with no page id')
+    end
 
     initialize_metadata_key_names
 
@@ -155,12 +159,13 @@ class PageMetadataManager
       :name => page_metadata['name'],
       :description => page_metadata['description']
     )
-
+    if contains_search_cards?(page_metadata)
+      request_soda_fountain_secondary_index(page_metadata['datasetId'], options)
+    end
     update_metadb_page_metadata(page_metadata, metadb_metadata, options)
   end
 
   def delete(id, options = {})
-
     begin
       metadb_metadata = data_lens_manager.fetch(id)
     rescue CoreServer::TimeoutError => error
@@ -211,7 +216,6 @@ class PageMetadataManager
   end
 
   def build_rollup_soql(page_metadata, columns, cards)
-
     normalized_columns = transformed_columns(columns)
 
     # Get cards info, specifically the field names
@@ -252,6 +256,7 @@ class PageMetadataManager
         "could not fetch dataset metadata for id: #{dataset_id}"
       )
     end
+
     dataset_metadata_result.fetch(:body).fetch('columns')
   end
 
@@ -339,7 +344,6 @@ class PageMetadataManager
     end
   end
 
-  # Updates a metadb backed page.
   # NOTE - currently this is "last write wins", meaning that if multiple users are editing the
   # metadata at the same time, the last one to save will obliterate any changes other users
   # may have made. This should be fixed with versioning within the metadata.
@@ -351,11 +355,7 @@ class PageMetadataManager
     end
 
     url = "/views/#{CGI::escape(metadb_metadata['id'])}.json"
-    payload = {
-      :displayFormat => {
-        :data_lens_page_metadata => page_metadata
-      }
-    }
+    payload = { :displayFormat => { :data_lens_page_metadata => page_metadata } }
 
     # We have to fake the status code 200 because the consumer of page_metadata_manager expects
     # a response with a body and a status (because we previously forwarded the status code from
@@ -365,7 +365,6 @@ class PageMetadataManager
       :body => CoreServer::Base.connection.update_request(url, JSON.dump(payload)),
       :status => 200
     }
-
   end
 
   def update_metadata_rollup_table(page_metadata, options = {})
@@ -489,7 +488,6 @@ class PageMetadataManager
   end
 
   def cards_aggregation_clause(page_metadata)
-
     result = page_metadata[:cards].map do |card|
       func = card['aggregationFunction']
       field = card['aggregationField']
@@ -512,6 +510,7 @@ class PageMetadataManager
     if result.blank?
       result = "count(*) as value"
     end
+
     result
   end
 
@@ -522,6 +521,7 @@ class PageMetadataManager
         "unable to fetch min and max from dataset_id: #{dataset_id}, field_name: #{field_name}"
       )
     end
+
     (Date.parse(result['max']) - Date.parse(result['min'])).to_i.abs
   end
 
@@ -575,18 +575,12 @@ class PageMetadataManager
 
   def card_type_from_vif(vif)
     case vif[:type]
-      when 'columnChart'
-        'column'
-      when 'histogramChart'
-        'histogram'
-      when 'timelineChart'
-        'timeline'
-      when 'choroplethMap'
-        'choropleth'
-      when 'featureMap'
-        'feature'
-      else
-        raise ArgumentError.new "unrecognized vif[:type]: #{vif[:type]}"
+      when 'columnChart' then 'column'
+      when 'histogramChart' then 'histogram'
+      when 'timelineChart' then 'timeline'
+      when 'choroplethMap' then 'choropleth'
+      when 'featureMap' then 'feature'
+      else raise ArgumentError.new "unrecognized vif[:type]: #{vif[:type]}"
     end
   end
 
@@ -599,6 +593,7 @@ class PageMetadataManager
       )
     )
     Rails.logger.error(error_message)
+
     nil
   end
 
@@ -648,19 +643,24 @@ class PageMetadataManager
 
   # NOTE; Current method of tracking view counts for catalog search and site analytics page.
   def log_datalens_access(fxf_id)
-      # DataLens pages are unusual in that the metadata is not requested
-      # from core on load; which bypasses the common ViewService metrics accounting. We need to track
-      # several things in balboa for DataLens.
-      #  1. Access by domain and 4x4
-      #  2. Total access for domain for all views, datalens included
-      #  3. Access by 4x4
-      # These are used in different ways to populate and sort catalog entries. The following corresponds to
-      # the logAction method within core server. We add a new metric, "datalens-loaded" to make these requests
-      # distinct w/in the domain entity
-      domainId = CurrentDomain.domain.id.to_s
-      MetricQueue.instance.push_metric(fxf_id.to_s, "view-loaded", 1)
-      MetricQueue.instance.push_metric(domainId, "view-loaded", 1)
-      MetricQueue.instance.push_metric(domainId, "datalens-loaded", 1)
-      MetricQueue.instance.push_metric("views-loaded-" + domainId, "view-" + fxf_id.to_s, 1)
+    # DataLens pages are unusual in that the metadata is not requested
+    # from core on load; which bypasses the common ViewService metrics accounting. We need to track
+    # several things in balboa for DataLens.
+    #  1. Access by domain and 4x4
+    #  2. Total access for domain for all views, datalens included
+    #  3. Access by 4x4
+    # These are used in different ways to populate and sort catalog entries. The following corresponds to
+    # the logAction method within core server. We add a new metric, "datalens-loaded" to make these requests
+    # distinct w/in the domain entity
+    domainId = CurrentDomain.domain.id.to_s
+    MetricQueue.instance.push_metric(fxf_id.to_s, "view-loaded", 1)
+    MetricQueue.instance.push_metric(domainId, "view-loaded", 1)
+    MetricQueue.instance.push_metric(domainId, "datalens-loaded", 1)
+    MetricQueue.instance.push_metric("views-loaded-" + domainId, "view-" + fxf_id.to_s, 1)
   end
+
+  def contains_search_cards?(page_metadata)
+    page_metadata['cards'].any? { |card| card['cardType'] == 'search' }
+  end
+
 end

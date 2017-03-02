@@ -136,7 +136,7 @@ class PageMetadataManagerTest < Minitest::Test
       end.returns('fdsa-fdsa')
 
       SodaFountain.any_instance.expects(:create_or_update_rollup_table).returns({status: 204})
-      SodaFountain.any_instance.expects(:issue_request).returns({status: 200})
+      SodaFountain.any_instance.expects(:issue_request).never
 
       manager.create(data_lens_page_metadata)
     ensure
@@ -171,7 +171,7 @@ class PageMetadataManagerTest < Minitest::Test
       end.returns('fdsa-fdsa')
 
       SodaFountain.any_instance.expects(:create_or_update_rollup_table).returns({status: 204})
-      SodaFountain.any_instance.expects(:issue_request).returns({status: 200})
+      SodaFountain.any_instance.expects(:issue_request).never
 
       manager.create(data_lens_page_metadata)
     rescue
@@ -186,9 +186,7 @@ class PageMetadataManagerTest < Minitest::Test
       'max' => '1987-08-15T00:00:00.000'
     )
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(1)
-    PageMetadataManager.any_instance.expects(:request_soda_fountain_secondary_index).with do |args|
-      assert_equal('thw2-8btq', args)
-    end.then.returns({ status: '200' })
+    PageMetadataManager.any_instance.expects(:request_soda_fountain_secondary_index).never
     DataLensManager.any_instance.expects(:create).times(1).with do |category, metadata|
       assert_equal(metadata['name'], data_lens_page_metadata['name'])
       assert_equal(metadata['description'], data_lens_page_metadata['description'])

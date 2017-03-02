@@ -1,0 +1,2155 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://localhost:8080/views.json?accessType=WEBSITE
+    body:
+      encoding: UTF-8
+      string: '{"name":"Expanded column chart","description":"","metadata":{"availableDisplayTypes":["data_lens"],"jsonQuery":{}},"displayType":"data_lens","displayFormat":{"data_lens_page_metadata":{"cards":[{"aggregationField":null,"aggregationFunction":null,"cardOptions":{"mapExtent":{"northeast":[44.08758502824518,-84.462890625],"southwest":[31.05293398570514,-122.34374999999999]}},"cardSize":1,"cardType":"feature","expanded":false,"fieldName":"location_1"},{"aggregationField":null,"aggregationFunction":null,"cardOptions":{"bucketSize":"logarithmic"},"cardSize":1,"cardType":"histogram","expanded":false,"fieldName":"oshpd_number"},{"aggregationField":null,"aggregationFunction":null,"cardSize":1,"cardType":"column","expanded":false,"fieldName":"ltc"},{"aggregationField":null,"aggregationFunction":null,"cardOptions":{"bucketSize":50},"cardSize":1,"cardType":"histogram","expanded":false,"fieldName":"county_name"},{"aggregationField":null,"aggregationFunction":null,"cardSize":1,"cardType":"column","expanded":true,"fieldName":"fac_fdr"},{"aggregationField":null,"aggregationFunction":null,"cardOptions":{"bucketSize":5},"cardSize":1,"cardType":"histogram","expanded":false,"fieldName":"district_number"},{"aggregationField":null,"aggregationFunction":null,"cardSize":2,"cardType":"table","expanded":false,"fieldName":"*"}],"datasetId":"a83c-up9r","description":"","name":"Expanded
+        column chart","ownerDisplayName":"Randy Antler","pageId":"btev-gxyj","primaryAggregation":null,"primaryAmountField":null,"version":4}},"query":{},"flags":["default"],"id":"a83c-up9r","originalViewId":"a83c-up9r","category":null,"provenance":"official"}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - ''
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Date:
+      - Fri, 17 Feb 2017 19:50:45 GMT
+      X-Socrata-Requestid:
+      - eqr5sh92j4pqqvzqdez5kg33e
+      Access-Control-Allow-Origin:
+      - "*"
+      X-Error-Code:
+      - not_found
+      X-Error-Message:
+      - Cannot find web property with name
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "code" : "not_found",
+          "error" : true,
+          "message" : "Cannot find web property with name "
+        }
+    http_version: 
+  recorded_at: Fri, 17 Feb 2017 19:50:45 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/views/a83c-up9r.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      X-Socrata-Federation:
+      - Honey Badger
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 17 Feb 2017 19:51:38 GMT
+      X-Socrata-Requestid:
+      - cqku41smxbjdgyyg7d7rqa9fj
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id" : "a83c-up9r",
+          "name" : "Healthcare Facility Locations",
+          "averageRating" : 0,
+          "createdAt" : 1458002576,
+          "displayType" : "table",
+          "domainCName" : "localhost",
+          "downloadCount" : 0,
+          "hideFromCatalog" : false,
+          "hideFromDataJson" : false,
+          "indexUpdatedAt" : 1458149659,
+          "newBackend" : true,
+          "numberOfComments" : 0,
+          "oid" : 11,
+          "publicationAppendEnabled" : false,
+          "publicationDate" : 1458149659,
+          "publicationGroup" : 2,
+          "publicationStage" : "published",
+          "rowsUpdatedAt" : 1458002576,
+          "tableId" : 9,
+          "totalTimesRated" : 0,
+          "viewCount" : 0,
+          "viewLastModified" : 1458149659,
+          "viewType" : "tabular",
+          "columns" : [ {
+            "id" : 128,
+            "name" : "FACID",
+            "dataTypeName" : "number",
+            "fieldName" : "facid",
+            "position" : 1,
+            "renderTypeName" : "number",
+            "tableColumnId" : 20,
+            "width" : 160,
+            "format" : { }
+          }, {
+            "id" : 129,
+            "name" : "FACNAME",
+            "dataTypeName" : "text",
+            "fieldName" : "facname",
+            "position" : 2,
+            "renderTypeName" : "text",
+            "tableColumnId" : 21,
+            "width" : 184,
+            "format" : { }
+          }, {
+            "id" : 130,
+            "name" : "FAC_FDR",
+            "dataTypeName" : "text",
+            "fieldName" : "fac_fdr",
+            "position" : 3,
+            "renderTypeName" : "text",
+            "tableColumnId" : 22,
+            "width" : 184,
+            "format" : { }
+          }, {
+            "id" : 131,
+            "name" : "LTC",
+            "dataTypeName" : "text",
+            "fieldName" : "ltc",
+            "position" : 4,
+            "renderTypeName" : "text",
+            "tableColumnId" : 23,
+            "width" : 136,
+            "format" : { }
+          }, {
+            "id" : 132,
+            "name" : "CAPACITY",
+            "dataTypeName" : "number",
+            "fieldName" : "capacity",
+            "position" : 5,
+            "renderTypeName" : "number",
+            "tableColumnId" : 24,
+            "width" : 196,
+            "format" : { }
+          }, {
+            "id" : 133,
+            "name" : "FACADMIN",
+            "dataTypeName" : "text",
+            "fieldName" : "facadmin",
+            "position" : 6,
+            "renderTypeName" : "text",
+            "tableColumnId" : 25,
+            "width" : 196,
+            "format" : { }
+          }, {
+            "id" : 134,
+            "name" : "CONTACT_EMAIL",
+            "dataTypeName" : "text",
+            "fieldName" : "contact_email",
+            "position" : 7,
+            "renderTypeName" : "text",
+            "tableColumnId" : 26,
+            "width" : 256,
+            "format" : { }
+          }, {
+            "id" : 135,
+            "name" : "CONTACT_FAX",
+            "dataTypeName" : "text",
+            "fieldName" : "contact_fax",
+            "position" : 8,
+            "renderTypeName" : "text",
+            "tableColumnId" : 27,
+            "width" : 232,
+            "format" : { }
+          }, {
+            "id" : 136,
+            "name" : "CONTACT_PHONE_NUMBER",
+            "dataTypeName" : "text",
+            "fieldName" : "contact_phone_number",
+            "position" : 9,
+            "renderTypeName" : "text",
+            "tableColumnId" : 28,
+            "width" : 340,
+            "format" : { }
+          }, {
+            "id" : 137,
+            "name" : "COUNTY_NAME",
+            "dataTypeName" : "number",
+            "fieldName" : "county_name",
+            "position" : 10,
+            "renderTypeName" : "number",
+            "tableColumnId" : 29,
+            "width" : 232,
+            "format" : { }
+          }, {
+            "id" : 138,
+            "name" : "COUNTY_CODE",
+            "dataTypeName" : "text",
+            "fieldName" : "county_code",
+            "position" : 11,
+            "renderTypeName" : "text",
+            "tableColumnId" : 30,
+            "width" : 232,
+            "format" : { }
+          }, {
+            "id" : 139,
+            "name" : "DISTRICT_NUMBER",
+            "dataTypeName" : "number",
+            "fieldName" : "district_number",
+            "position" : 12,
+            "renderTypeName" : "number",
+            "tableColumnId" : 31,
+            "width" : 280,
+            "format" : { }
+          }, {
+            "id" : 140,
+            "name" : "DISTRICT_NAME",
+            "dataTypeName" : "text",
+            "fieldName" : "district_name",
+            "position" : 13,
+            "renderTypeName" : "text",
+            "tableColumnId" : 32,
+            "width" : 256,
+            "format" : { }
+          }, {
+            "id" : 141,
+            "name" : "LICENSE_NUMBER",
+            "dataTypeName" : "number",
+            "fieldName" : "license_number",
+            "position" : 14,
+            "renderTypeName" : "number",
+            "tableColumnId" : 33,
+            "width" : 268,
+            "format" : { }
+          }, {
+            "id" : 142,
+            "name" : "INITIAL_LICENSE_DATE",
+            "dataTypeName" : "text",
+            "fieldName" : "initial_license_date",
+            "position" : 15,
+            "renderTypeName" : "text",
+            "tableColumnId" : 34,
+            "width" : 340,
+            "format" : { }
+          }, {
+            "id" : 143,
+            "name" : "LICENSE_EFFECTIVE_DATE",
+            "dataTypeName" : "text",
+            "fieldName" : "license_effective_date",
+            "position" : 16,
+            "renderTypeName" : "text",
+            "tableColumnId" : 35,
+            "width" : 364,
+            "format" : { }
+          }, {
+            "id" : 144,
+            "name" : "OSHPD_NUMBER",
+            "dataTypeName" : "number",
+            "fieldName" : "oshpd_number",
+            "position" : 17,
+            "renderTypeName" : "number",
+            "tableColumnId" : 36,
+            "width" : 244,
+            "format" : { }
+          }, {
+            "id" : 145,
+            "name" : "LOCATION",
+            "dataTypeName" : "text",
+            "fieldName" : "location",
+            "position" : 18,
+            "renderTypeName" : "text",
+            "tableColumnId" : 37,
+            "width" : 196,
+            "format" : { }
+          }, {
+            "id" : 146,
+            "name" : "Location 1",
+            "dataTypeName" : "point",
+            "fieldName" : "location_1",
+            "position" : 19,
+            "renderTypeName" : "point",
+            "tableColumnId" : 38,
+            "format" : { }
+          }, {
+            "id" : 147,
+            "name" : "Location 1 (zip)",
+            "dataTypeName" : "text",
+            "fieldName" : "location_1_zip",
+            "position" : 20,
+            "renderTypeName" : "text",
+            "tableColumnId" : 39,
+            "format" : { }
+          }, {
+            "id" : 148,
+            "name" : "Location 1 (city)",
+            "dataTypeName" : "text",
+            "fieldName" : "location_1_city",
+            "position" : 21,
+            "renderTypeName" : "text",
+            "tableColumnId" : 40,
+            "format" : { }
+          }, {
+            "id" : 149,
+            "name" : "Location 1 (state)",
+            "dataTypeName" : "text",
+            "fieldName" : "location_1_state",
+            "position" : 22,
+            "renderTypeName" : "text",
+            "tableColumnId" : 41,
+            "format" : { }
+          }, {
+            "id" : 150,
+            "name" : "Location 1 (address)",
+            "dataTypeName" : "text",
+            "fieldName" : "location_1_address",
+            "position" : 23,
+            "renderTypeName" : "text",
+            "tableColumnId" : 42,
+            "format" : { }
+          }, {
+            "id" : 151,
+            "name" : "Usa-counties",
+            "dataTypeName" : "number",
+            "fieldName" : ":@computed_region_iq59_vmd8",
+            "position" : 24,
+            "renderTypeName" : "number",
+            "tableColumnId" : 105,
+            "format" : { }
+          } ],
+          "grants" : [ {
+            "inherited" : false,
+            "type" : "viewer",
+            "flags" : [ "public" ]
+          } ],
+          "metadata" : {
+            "renderTypeConfig" : {
+              "visible" : {
+                "table" : true
+              }
+            },
+            "rowLabel" : "Row",
+            "availableDisplayTypes" : [ "table", "fatrow", "page" ]
+          },
+          "owner" : {
+            "id" : "3hpa-tfzy",
+            "displayName" : "Randy Antler",
+            "profileImageUrlLarge" : "/api/users/3hpa-tfzy/profile_images/LARGE",
+            "profileImageUrlMedium" : "/api/users/3hpa-tfzy/profile_images/THUMB",
+            "profileImageUrlSmall" : "/api/users/3hpa-tfzy/profile_images/TINY",
+            "roleName" : "viewer",
+            "screenName" : "Randy Antler",
+            "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story", "use_data_connectors" ],
+            "flags" : [ "admin" ]
+          },
+          "query" : { },
+          "rights" : [ "read" ],
+          "tableAuthor" : {
+            "id" : "3hpa-tfzy",
+            "displayName" : "Randy Antler",
+            "profileImageUrlLarge" : "/api/users/3hpa-tfzy/profile_images/LARGE",
+            "profileImageUrlMedium" : "/api/users/3hpa-tfzy/profile_images/THUMB",
+            "profileImageUrlSmall" : "/api/users/3hpa-tfzy/profile_images/TINY",
+            "roleName" : "viewer",
+            "screenName" : "Randy Antler",
+            "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story", "use_data_connectors" ],
+            "flags" : [ "admin" ]
+          },
+          "flags" : [ "default", "restorable", "restorePossibleForType" ]
+        }
+    http_version: 
+  recorded_at: Fri, 17 Feb 2017 19:51:38 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/views/efcd-jzv3.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      X-Socrata-Federation:
+      - Honey Badger
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 17 Feb 2017 19:51:38 GMT
+      X-Socrata-Requestid:
+      - clrrag5i4rl0ehxc58xzccgls
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id" : "efcd-jzv3",
+          "name" : "Healthcare Facility Locations",
+          "averageRating" : 0,
+          "category" : "Government",
+          "createdAt" : 1458002538,
+          "displayType" : "table",
+          "domainCName" : "localhost",
+          "downloadCount" : 0,
+          "hideFromCatalog" : false,
+          "hideFromDataJson" : false,
+          "indexUpdatedAt" : 1458058608,
+          "licenseId" : "PUBLIC_DOMAIN",
+          "newBackend" : false,
+          "numberOfComments" : 0,
+          "oid" : 1,
+          "publicationAppendEnabled" : false,
+          "publicationDate" : 1458002574,
+          "publicationGroup" : 1,
+          "publicationStage" : "published",
+          "rowClass" : "",
+          "rowsUpdatedAt" : 1458002550,
+          "rowsUpdatedBy" : "3hpa-tfzy",
+          "tableId" : 1,
+          "totalTimesRated" : 0,
+          "viewCount" : 0,
+          "viewLastModified" : 1480970696,
+          "viewType" : "tabular",
+          "columns" : [ {
+            "id" : 1,
+            "name" : "FACID",
+            "dataTypeName" : "number",
+            "fieldName" : "facid",
+            "position" : 2,
+            "renderTypeName" : "number",
+            "tableColumnId" : 1,
+            "width" : 160,
+            "cachedContents" : {
+              "non_null" : 9146,
+              "average" : "446012861.8365406",
+              "largest" : "980002551",
+              "null" : 0,
+              "top" : [ {
+                "item" : "980002547",
+                "count" : 20
+              }, {
+                "item" : "980002548",
+                "count" : 19
+              }, {
+                "item" : "980002551",
+                "count" : 18
+              } ],
+              "smallest" : "10000001",
+              "sum" : "4079233634357"
+            },
+            "format" : { }
+          }, {
+            "id" : 2,
+            "name" : "FACNAME",
+            "dataTypeName" : "text",
+            "fieldName" : "facname",
+            "position" : 3,
+            "renderTypeName" : "text",
+            "tableColumnId" : 2,
+            "width" : 184,
+            "cachedContents" : {
+              "non_null" : 9146,
+              "largest" : "ZIBA HOSPICE",
+              "null" : 0,
+              "top" : [ {
+                "item" : "NOVA SKILLED HOME HEALTH, INC.",
+                "count" : 20
+              }, {
+                "item" : "PARADISE HOME HEALTH CARE SERVICES, INC.",
+                "count" : 19
+              }, {
+                "item" : "PACIFIC HEALTH SERVICES, INC.",
+                "count" : 18
+              } ],
+              "smallest" : "1 & 1 Home Health, Inc."
+            },
+            "format" : { }
+          }, {
+            "id" : 3,
+            "name" : "FAC_FDR",
+            "dataTypeName" : "text",
+            "fieldName" : "fac_fdr",
+            "position" : 4,
+            "renderTypeName" : "text",
+            "tableColumnId" : 3,
+            "width" : 184,
+            "cachedContents" : {
+              "non_null" : 9146,
+              "largest" : "Surgical Clinic \t",
+              "null" : 0,
+              "top" : [ {
+                "item" : "Skilled Nursing Facility",
+                "count" : 20
+              }, {
+                "item" : "Intermediate Care Facility-DD/H/N",
+                "count" : 19
+              }, {
+                "item" : "Home Health Agency\t\t",
+                "count" : 18
+              }, {
+                "item" : "Congregated Living Health Facility",
+                "count" : 17
+              }, {
+                "item" : "Intermediate Care Facility",
+                "count" : 16
+              }, {
+                "item" : "Hospice Facility\t",
+                "count" : 15
+              }, {
+                "item" : "General Acute Care Hospital",
+                "count" : 14
+              }, {
+                "item" : "Community Clinic \t",
+                "count" : 13
+              }, {
+                "item" : "Surgical Clinic \t",
+                "count" : 12
+              }, {
+                "item" : "Acute Psychiatric Hospital\t\t",
+                "count" : 11
+              }, {
+                "item" : "Rehabilitation Clinic \t",
+                "count" : 10
+              }, {
+                "item" : "Alternative Birthing Center\t",
+                "count" : 9
+              }, {
+                "item" : "Chronic Dialysis Clinic\t",
+                "count" : 8
+              }, {
+                "item" : "Psychology Clinic\t",
+                "count" : 7
+              }, {
+                "item" : "Hospice\t",
+                "count" : 6
+              }, {
+                "item" : "Adult Day Health Care\t\t",
+                "count" : 5
+              }, {
+                "item" : "Pediatric Care Health and Respite Care Facility",
+                "count" : 4
+              }, {
+                "item" : "Chemical Dependency Recovery Hospital\t",
+                "count" : 3
+              }, {
+                "item" : "Correctional Treatment Center",
+                "count" : 2
+              }, {
+                "item" : "Referral Agency \t",
+                "count" : 1
+              } ],
+              "smallest" : "Acute Psychiatric Hospital\t\t"
+            },
+            "format" : { }
+          }, {
+            "id" : 4,
+            "name" : "LTC",
+            "dataTypeName" : "text",
+            "fieldName" : "ltc",
+            "position" : 5,
+            "renderTypeName" : "text",
+            "tableColumnId" : 4,
+            "width" : 136,
+            "cachedContents" : {
+              "non_null" : 9146,
+              "largest" : "Non-LTC",
+              "null" : 0,
+              "top" : [ {
+                "item" : "LTC",
+                "count" : 20
+              }, {
+                "item" : "Non-LTC",
+                "count" : 19
+              } ],
+              "smallest" : "LTC"
+            },
+            "format" : { }
+          }, {
+            "id" : 5,
+            "name" : "CAPACITY",
+            "dataTypeName" : "number",
+            "fieldName" : "capacity",
+            "position" : 6,
+            "renderTypeName" : "number",
+            "tableColumnId" : 5,
+            "width" : 196,
+            "cachedContents" : {
+              "non_null" : 9146,
+              "average" : "25.78821342663459",
+              "largest" : "1450",
+              "null" : 0,
+              "top" : [ {
+                "item" : "99",
+                "count" : 20
+              }, {
+                "item" : "6",
+                "count" : 19
+              }, {
+                "item" : "0",
+                "count" : 18
+              }, {
+                "item" : "59",
+                "count" : 17
+              }, {
+                "item" : "21",
+                "count" : 16
+              }, {
+                "item" : "24",
+                "count" : 15
+              }, {
+                "item" : "20",
+                "count" : 14
+              }, {
+                "item" : "12",
+                "count" : 13
+              }, {
+                "item" : "25",
+                "count" : 12
+              }, {
+                "item" : "22",
+                "count" : 11
+              }, {
+                "item" : "15",
+                "count" : 10
+              }, {
+                "item" : "5",
+                "count" : 9
+              }, {
+                "item" : "49",
+                "count" : 8
+              }, {
+                "item" : "124",
+                "count" : 7
+              }, {
+                "item" : "80",
+                "count" : 6
+              }, {
+                "item" : "96",
+                "count" : 5
+              }, {
+                "item" : "50",
+                "count" : 4
+              }, {
+                "item" : "54",
+                "count" : 3
+              }, {
+                "item" : "40",
+                "count" : 2
+              }, {
+                "item" : "89",
+                "count" : 1
+              } ],
+              "smallest" : "0",
+              "sum" : "235859"
+            },
+            "format" : { }
+          }, {
+            "id" : 6,
+            "name" : "FACADMIN",
+            "dataTypeName" : "text",
+            "fieldName" : "facadmin",
+            "position" : 7,
+            "renderTypeName" : "text",
+            "tableColumnId" : 6,
+            "width" : 196,
+            "cachedContents" : {
+              "non_null" : 8185,
+              "largest" : "Zurgani, Hisham",
+              "null" : 961,
+              "top" : [ {
+                "item" : "Mestas-Fischer, Erlinda  P",
+                "count" : 20
+              }, {
+                "item" : "Wang, Liya",
+                "count" : 19
+              }, {
+                "item" : "Flores, Josefina C",
+                "count" : 18
+              }, {
+                "item" : "Brown, Craig",
+                "count" : 17
+              }, {
+                "item" : "Corral, Olivia T",
+                "count" : 16
+              }, {
+                "item" : "Chambers, Russell C",
+                "count" : 15
+              }, {
+                "item" : "LECTURA, MARILOU",
+                "count" : 14
+              }, {
+                "item" : "Berger, Barry",
+                "count" : 13
+              }, {
+                "item" : "Radant, Jeff",
+                "count" : 12
+              }, {
+                "item" : "Runyan, James",
+                "count" : 11
+              }, {
+                "item" : "Legaspi, Glenn",
+                "count" : 10
+              }, {
+                "item" : "Grigorian, Mara",
+                "count" : 9
+              }, {
+                "item" : "Payuran, Vilma",
+                "count" : 8
+              }, {
+                "item" : "Azariah, Emmanuel",
+                "count" : 7
+              }, {
+                "item" : "Cavallaro, Cynthia B",
+                "count" : 6
+              }, {
+                "item" : "Lee Yu, Karen",
+                "count" : 5
+              }, {
+                "item" : "Ommi, Nassrien",
+                "count" : 4
+              }, {
+                "item" : "Ingel, Sofia",
+                "count" : 3
+              }, {
+                "item" : "Konovalova, Yelena",
+                "count" : 2
+              }, {
+                "item" : "Bray, Patricia",
+                "count" : 1
+              } ],
+              "smallest" : ","
+            },
+            "format" : { }
+          }, {
+            "id" : 7,
+            "name" : "CONTACT_EMAIL",
+            "dataTypeName" : "text",
+            "fieldName" : "contact_email",
+            "position" : 8,
+            "renderTypeName" : "text",
+            "tableColumnId" : 7,
+            "width" : 256,
+            "cachedContents" : {
+              "non_null" : 5571,
+              "largest" : "zvunderman@gmail.com",
+              "null" : 3575,
+              "top" : [ {
+                "item" : "none@dhs.ca.gov",
+                "count" : 20
+              }, {
+                "item" : "NONE@DHS.CA.GOV",
+                "count" : 19
+              }, {
+                "item" : "sunrisemp@excite.com",
+                "count" : 18
+              } ],
+              "smallest" : "@drmc.com"
+            },
+            "format" : { }
+          }, {
+            "id" : 8,
+            "name" : "CONTACT_FAX",
+            "dataTypeName" : "text",
+            "fieldName" : "contact_fax",
+            "position" : 9,
+            "renderTypeName" : "text",
+            "tableColumnId" : 8,
+            "width" : 232,
+            "cachedContents" : {
+              "non_null" : 7402,
+              "largest" : "7149575510",
+              "null" : 1744,
+              "top" : [ {
+                "item" : "(818) 244-5078",
+                "count" : 20
+              }, {
+                "item" : "(818) 882-1187",
+                "count" : 19
+              }, {
+                "item" : "(818) 892-4488",
+                "count" : 18
+              }, {
+                "item" : "(818) 986-2624",
+                "count" : 17
+              }, {
+                "item" : "(310) 589-9201",
+                "count" : 16
+              }, {
+                "item" : "(562) 698-8815",
+                "count" : 15
+              }, {
+                "item" : "(213) 252-8214",
+                "count" : 14
+              }, {
+                "item" : "(818) 557-7741",
+                "count" : 13
+              }, {
+                "item" : "(323) 954-8114",
+                "count" : 12
+              }, {
+                "item" : "(626) 858-4668",
+                "count" : 11
+              }, {
+                "item" : "(626) 462-0707",
+                "count" : 10
+              }, {
+                "item" : "(818) 994-2225",
+                "count" : 9
+              }, {
+                "item" : "(714) 994-5213",
+                "count" : 8
+              }, {
+                "item" : "(818) 704-8729",
+                "count" : 7
+              }, {
+                "item" : "(213) 385-5418",
+                "count" : 6
+              }, {
+                "item" : "(562) 902-7787",
+                "count" : 5
+              }, {
+                "item" : "(951) 686-5500",
+                "count" : 4
+              }, {
+                "item" : "(909) 860-3988",
+                "count" : 3
+              }, {
+                "item" : "(323) 663-3063",
+                "count" : 2
+              }, {
+                "item" : "(323) 658-6406",
+                "count" : 1
+              } ],
+              "smallest" : "(205)262-3130"
+            },
+            "format" : { }
+          }, {
+            "id" : 9,
+            "name" : "CONTACT_PHONE_NUMBER",
+            "dataTypeName" : "text",
+            "fieldName" : "contact_phone_number",
+            "position" : 10,
+            "renderTypeName" : "text",
+            "tableColumnId" : 9,
+            "width" : 340,
+            "cachedContents" : {
+              "non_null" : 8825,
+              "largest" : "7149575000",
+              "null" : 321,
+              "top" : [ {
+                "item" : "(562) 622-1083",
+                "count" : 20
+              }, {
+                "item" : "(818) 704-8733",
+                "count" : 19
+              }, {
+                "item" : "(213) 385-1848",
+                "count" : 18
+              }, {
+                "item" : "(562) 947-3668",
+                "count" : 17
+              }, {
+                "item" : "(951) 686-8100",
+                "count" : 16
+              }, {
+                "item" : "(909) 860-3388",
+                "count" : 15
+              }, {
+                "item" : "(213) 761-9308",
+                "count" : 14
+              }, {
+                "item" : "(323) 658-6232",
+                "count" : 13
+              }, {
+                "item" : "(818) 506-0471",
+                "count" : 12
+              }, {
+                "item" : "(213) 387-9552",
+                "count" : 11
+              } ],
+              "smallest" : "()"
+            },
+            "format" : { }
+          }, {
+            "id" : 10,
+            "name" : "COUNTY_NAME",
+            "dataTypeName" : "number",
+            "fieldName" : "county_name",
+            "position" : 11,
+            "renderTypeName" : "number",
+            "tableColumnId" : 10,
+            "width" : 232,
+            "cachedContents" : {
+              "non_null" : 9139,
+              "average" : "328.5326622168727",
+              "largest" : "680",
+              "null" : 7,
+              "top" : [ {
+                "item" : "590",
+                "count" : 20
+              }, {
+                "item" : "110",
+                "count" : 19
+              }, {
+                "item" : "330",
+                "count" : 18
+              }, {
+                "item" : "580",
+                "count" : 17
+              }, {
+                "item" : "310",
+                "count" : 16
+              }, {
+                "item" : "0",
+                "count" : 15
+              }, {
+                "item" : "60",
+                "count" : 14
+              }, {
+                "item" : "530",
+                "count" : 13
+              }, {
+                "item" : "440",
+                "count" : 12
+              }, {
+                "item" : "410",
+                "count" : 11
+              }, {
+                "item" : "600",
+                "count" : 10
+              }, {
+                "item" : "490",
+                "count" : 9
+              }, {
+                "item" : "90",
+                "count" : 8
+              }, {
+                "item" : "340",
+                "count" : 7
+              }, {
+                "item" : "150",
+                "count" : 6
+              }, {
+                "item" : "660",
+                "count" : 5
+              }, {
+                "item" : "500",
+                "count" : 4
+              }, {
+                "item" : "520",
+                "count" : 3
+              }, {
+                "item" : "200",
+                "count" : 2
+              }, {
+                "item" : "400",
+                "count" : 1
+              } ],
+              "smallest" : "0",
+              "sum" : "3002460"
+            },
+            "format" : { }
+          }, {
+            "id" : 11,
+            "name" : "COUNTY_CODE",
+            "dataTypeName" : "text",
+            "fieldName" : "county_code",
+            "position" : 12,
+            "renderTypeName" : "text",
+            "tableColumnId" : 11,
+            "width" : 232,
+            "cachedContents" : {
+              "non_null" : 9139,
+              "largest" : "YUBA",
+              "null" : 7,
+              "top" : [ {
+                "item" : "SONOMA",
+                "count" : 20
+              }, {
+                "item" : "HUMBOLDT",
+                "count" : 19
+              }, {
+                "item" : "MENDOCINO",
+                "count" : 18
+              }, {
+                "item" : "SOLANO",
+                "count" : 17
+              }, {
+                "item" : "MARIN",
+                "count" : 16
+              }, {
+                "item" : "ALAMEDA",
+                "count" : 15
+              }, {
+                "item" : "CONTRA COSTA",
+                "count" : 14
+              }, {
+                "item" : "SANTA CLARA",
+                "count" : 13
+              }, {
+                "item" : "SACRAMENTO",
+                "count" : 12
+              }, {
+                "item" : "PLACER",
+                "count" : 11
+              }, {
+                "item" : "STANISLAUS",
+                "count" : 10
+              }, {
+                "item" : "SAN JOAQUIN",
+                "count" : 9
+              }, {
+                "item" : "FRESNO",
+                "count" : 8
+              }, {
+                "item" : "MERCED",
+                "count" : 7
+              }, {
+                "item" : "KINGS",
+                "count" : 6
+              }, {
+                "item" : "VENTURA",
+                "count" : 5
+              }, {
+                "item" : "SAN LUIS OBISPO",
+                "count" : 4
+              }, {
+                "item" : "SANTA BARBARA",
+                "count" : 3
+              }, {
+                "item" : "LOS ANGELES",
+                "count" : 2
+              }, {
+                "item" : "ORANGE",
+                "count" : 1
+              } ],
+              "smallest" : "ALAMEDA"
+            },
+            "format" : { }
+          }, {
+            "id" : 12,
+            "name" : "DISTRICT_NUMBER",
+            "dataTypeName" : "number",
+            "fieldName" : "district_number",
+            "position" : 13,
+            "renderTypeName" : "number",
+            "tableColumnId" : 12,
+            "width" : 280,
+            "cachedContents" : {
+              "non_null" : 9146,
+              "average" : "37.97572709381150",
+              "largest" : "98",
+              "null" : 0,
+              "top" : [ {
+                "item" : "11",
+                "count" : 20
+              }, {
+                "item" : "2",
+                "count" : 19
+              }, {
+                "item" : "22",
+                "count" : 18
+              }, {
+                "item" : "7",
+                "count" : 17
+              }, {
+                "item" : "3",
+                "count" : 16
+              }, {
+                "item" : "4",
+                "count" : 15
+              }, {
+                "item" : "12",
+                "count" : 14
+              }, {
+                "item" : "5",
+                "count" : 13
+              }, {
+                "item" : "98",
+                "count" : 12
+              }, {
+                "item" : "6",
+                "count" : 11
+              }, {
+                "item" : "96",
+                "count" : 10
+              }, {
+                "item" : "8",
+                "count" : 9
+              }, {
+                "item" : "24",
+                "count" : 8
+              }, {
+                "item" : "25",
+                "count" : 7
+              }, {
+                "item" : "9",
+                "count" : 6
+              }, {
+                "item" : "23",
+                "count" : 5
+              }, {
+                "item" : "15",
+                "count" : 4
+              }, {
+                "item" : "17",
+                "count" : 3
+              }, {
+                "item" : "93",
+                "count" : 2
+              }, {
+                "item" : "97",
+                "count" : 1
+              } ],
+              "smallest" : "2",
+              "sum" : "347326"
+            },
+            "format" : { }
+          }, {
+            "id" : 13,
+            "name" : "DISTRICT_NAME",
+            "dataTypeName" : "text",
+            "fieldName" : "district_name",
+            "position" : 14,
+            "renderTypeName" : "text",
+            "tableColumnId" : 13,
+            "width" : 256,
+            "cachedContents" : {
+              "non_null" : 0,
+              "null" : 9146
+            },
+            "format" : { }
+          }, {
+            "id" : 14,
+            "name" : "LICENSE_NUMBER",
+            "dataTypeName" : "number",
+            "fieldName" : "license_number",
+            "position" : 15,
+            "renderTypeName" : "number",
+            "tableColumnId" : 14,
+            "width" : 268,
+            "cachedContents" : {
+              "non_null" : 7056,
+              "average" : "432016157.6057256",
+              "largest" : "980001637",
+              "null" : 2090,
+              "top" : [ {
+                "item" : "980001630",
+                "count" : 20
+              }, {
+                "item" : "980001635",
+                "count" : 19
+              }, {
+                "item" : "980001636",
+                "count" : 18
+              }, {
+                "item" : "980001637",
+                "count" : 17
+              } ],
+              "smallest" : "10000008",
+              "sum" : "3048306008066"
+            },
+            "format" : { }
+          }, {
+            "id" : 15,
+            "name" : "INITIAL_LICENSE_DATE",
+            "dataTypeName" : "text",
+            "fieldName" : "initial_license_date",
+            "position" : 16,
+            "renderTypeName" : "text",
+            "tableColumnId" : 15,
+            "width" : 340,
+            "cachedContents" : {
+              "non_null" : 7056,
+              "largest" : "31Oct2013",
+              "null" : 2090,
+              "top" : [ {
+                "item" : "09May2003",
+                "count" : 20
+              }, {
+                "item" : "14Mar2003",
+                "count" : 19
+              }, {
+                "item" : "28May2003",
+                "count" : 18
+              }, {
+                "item" : "09Jul2006",
+                "count" : 17
+              } ],
+              "smallest" : "01Apr1952"
+            },
+            "format" : { }
+          }, {
+            "id" : 16,
+            "name" : "LICENSE_EFFECTIVE_DATE",
+            "dataTypeName" : "text",
+            "fieldName" : "license_effective_date",
+            "position" : 17,
+            "renderTypeName" : "text",
+            "tableColumnId" : 16,
+            "width" : 364,
+            "cachedContents" : {
+              "non_null" : 8295,
+              "largest" : "31May2014",
+              "null" : 851,
+              "top" : [ {
+                "item" : "01Nov2014",
+                "count" : 20
+              }, {
+                "item" : "01Dec2014",
+                "count" : 19
+              }, {
+                "item" : "01Jan2014",
+                "count" : 18
+              }, {
+                "item" : "14Jun2014",
+                "count" : 17
+              }, {
+                "item" : "28May2014",
+                "count" : 16
+              }, {
+                "item" : "07Nov2014",
+                "count" : 15
+              }, {
+                "item" : "05Nov2013",
+                "count" : 14
+              }, {
+                "item" : "23Feb2014",
+                "count" : 13
+              }, {
+                "item" : "07Apr2014",
+                "count" : 12
+              }, {
+                "item" : "14Jun2013",
+                "count" : 11
+              }, {
+                "item" : "09Jan2014",
+                "count" : 10
+              }, {
+                "item" : "01Nov2013",
+                "count" : 9
+              }, {
+                "item" : "25Jun2014",
+                "count" : 8
+              }, {
+                "item" : "15May2014",
+                "count" : 7
+              }, {
+                "item" : "24Feb2014",
+                "count" : 6
+              } ],
+              "smallest" : "01Apr2007"
+            },
+            "format" : { }
+          }, {
+            "id" : 17,
+            "name" : "OSHPD_NUMBER",
+            "dataTypeName" : "number",
+            "fieldName" : "oshpd_number",
+            "position" : 18,
+            "renderTypeName" : "number",
+            "tableColumnId" : 17,
+            "width" : 244,
+            "cachedContents" : {
+              "non_null" : 1600,
+              "average" : "173800688.058125",
+              "largest" : "306494088",
+              "null" : 7546,
+              "top" : [ {
+                "item" : "206190713",
+                "count" : 20
+              } ],
+              "smallest" : "51094",
+              "sum" : "278081100893"
+            },
+            "format" : { }
+          }, {
+            "id" : 18,
+            "name" : "LOCATION",
+            "dataTypeName" : "text",
+            "fieldName" : "location",
+            "position" : 19,
+            "renderTypeName" : "text",
+            "tableColumnId" : 18,
+            "width" : 196,
+            "cachedContents" : {
+              "non_null" : 9146,
+              "largest" : "(42.926692861, -82.48931689)",
+              "null" : 0,
+              "top" : [ {
+                "item" : "(34.076104079, -118.3666804)",
+                "count" : 20
+              }, {
+                "item" : "(34.179439503, -118.4056119)",
+                "count" : 19
+              }, {
+                "item" : "(34.063614605, -118.2958391)",
+                "count" : 18
+              } ],
+              "smallest" : "(32.55829477, -117.0474802)"
+            },
+            "format" : { }
+          }, {
+            "id" : 19,
+            "name" : "Location 1",
+            "dataTypeName" : "location",
+            "fieldName" : "location_1",
+            "position" : 20,
+            "renderTypeName" : "location",
+            "tableColumnId" : 19,
+            "width" : 220,
+            "cachedContents" : {
+              "non_null" : 9146,
+              "largest" : {
+                "latitude" : "34.063614605",
+                "longitude" : "-118.2958391"
+              },
+              "null" : 0,
+              "top" : [ {
+                "item" : {
+                  "latitude" : "34.076104079",
+                  "longitude" : "-118.3666804"
+                },
+                "count" : 20
+              }, {
+                "item" : {
+                  "latitude" : "34.179439503",
+                  "longitude" : "-118.4056119"
+                },
+                "count" : 19
+              }, {
+                "item" : {
+                  "latitude" : "34.063614605",
+                  "longitude" : "-118.2958391"
+                },
+                "count" : 18
+              } ],
+              "smallest" : {
+                "latitude" : "38.25630383",
+                "longitude" : "-122.6275722"
+              }
+            },
+            "format" : { },
+            "subColumnTypes" : [ "human_address", "latitude", "longitude", "machine_address", "needs_recoding" ]
+          } ],
+          "grants" : [ {
+            "inherited" : false,
+            "type" : "viewer",
+            "flags" : [ "public" ]
+          } ],
+          "license" : {
+            "name" : "Public Domain"
+          },
+          "metadata" : {
+            "rdfSubject" : "0",
+            "rdfClass" : "",
+            "rowIdentifier" : "0",
+            "rowLabel" : "Row",
+            "availableDisplayTypes" : [ "table", "fatrow", "page" ],
+            "renderTypeConfig" : {
+              "visible" : {
+                "table" : true
+              }
+            }
+          },
+          "owner" : {
+            "id" : "3hpa-tfzy",
+            "displayName" : "Randy Antler",
+            "profileImageUrlLarge" : "/api/users/3hpa-tfzy/profile_images/LARGE",
+            "profileImageUrlMedium" : "/api/users/3hpa-tfzy/profile_images/THUMB",
+            "profileImageUrlSmall" : "/api/users/3hpa-tfzy/profile_images/TINY",
+            "roleName" : "viewer",
+            "screenName" : "Randy Antler",
+            "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story", "use_data_connectors" ],
+            "flags" : [ "admin" ]
+          },
+          "query" : { },
+          "rights" : [ "read" ],
+          "tableAuthor" : {
+            "id" : "3hpa-tfzy",
+            "displayName" : "Randy Antler",
+            "profileImageUrlLarge" : "/api/users/3hpa-tfzy/profile_images/LARGE",
+            "profileImageUrlMedium" : "/api/users/3hpa-tfzy/profile_images/THUMB",
+            "profileImageUrlSmall" : "/api/users/3hpa-tfzy/profile_images/TINY",
+            "roleName" : "viewer",
+            "screenName" : "Randy Antler",
+            "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story", "use_data_connectors" ],
+            "flags" : [ "admin" ]
+          },
+          "tags" : [ "a tag", "another tag" ],
+          "flags" : [ "default", "restorable", "restorePossibleForType" ]
+        }
+    http_version: 
+  recorded_at: Fri, 17 Feb 2017 19:51:39 GMT
+- request:
+    method: put
+    uri: http://172.19.13.220:6010/dataset-rollup/_a83c-up9r
+    body:
+      encoding: UTF-8
+      string: '{"soql":"select ltc, fac_fdr, oshpd_number, signed_magnitude_10(oshpd_number),
+        county_name, signed_magnitude_linear(county_name, 50), district_number, signed_magnitude_linear(district_number,
+        5), count(*) as value group by ltc, fac_fdr, oshpd_number, signed_magnitude_10(oshpd_number),
+        county_name, signed_magnitude_linear(county_name, 50), district_number, signed_magnitude_linear(district_number,
+        5)"}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      X-Socrata-Federation:
+      - Honey Badger
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Date:
+      - Fri, 17 Feb 2017 19:52:49 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: '{"message":"Path not found: /dataset-rollup/_a83c-up9r","errorCode":"not-found","data":{"path":"/dataset-rollup/_a83c-up9r"}}'
+    http_version: 
+  recorded_at: Fri, 17 Feb 2017 19:52:49 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/migrations/a83c-up9r
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 17 Feb 2017 19:52:49 GMT
+      X-Socrata-Requestid:
+      - cd254oktiiqjl0som60xph9cl
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "controlMapping" : "{\"flatten\":{\"location_1\":{\"Location 1\":{\"fieldname\":\"location_1\",\"template\":\"${point}\"},\"Location 1 (zip)\":{\"fieldname\":\"location_1_zip\",\"template\":\"${zip}\"},\"Location 1 (city)\":{\"fieldname\":\"location_1_city\",\"template\":\"${city}\"},\"Location 1 (state)\":{\"fieldname\":\"location_1_state\",\"template\":\"${state}\"},\"Location 1 (address)\":{\"fieldname\":\"location_1_address\",\"template\":\"${address}\"}}},\"nameShortening\":{\"location_1_address\":\"location_1_address\",\"facadmin\":\"facadmin\",\"initial_license_date\":\"initial_license_date\",\"county_code\":\"county_code\",\"location_1\":\"location_1\",\"location\":\"location\",\"oshpd_number\":\"oshpd_number\",\"county_name\":\"county_name\",\"ltc\":\"ltc\",\"location_1_city\":\"location_1_city\",\"contact_fax\":\"contact_fax\",\"location_1_state\":\"location_1_state\",\"district_number\":\"district_number\",\"facname\":\"facname\",\"contact_phone_number\":\"contact_phone_number\",\"district_name\":\"district_name\",\"facid\":\"facid\",\"fac_fdr\":\"fac_fdr\",\"location_1_zip\":\"location_1_zip\",\"license_effective_date\":\"license_effective_date\",\"license_number\":\"license_number\",\"contact_email\":\"contact_email\",\"capacity\":\"capacity\"},\"geoResourceIds\":[]}",
+          "migrationPhase" : "prep",
+          "migrationPhaseUpdated" : 1458002588,
+          "nbeId" : "a83c-up9r",
+          "nbePublicationGroup" : 2,
+          "obeId" : "efcd-jzv3",
+          "syncedAt" : 1458002588
+        }
+    http_version: 
+  recorded_at: Fri, 17 Feb 2017 19:52:49 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/views/btev-gxyj.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      X-Socrata-Federation:
+      - Honey Badger
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 17 Feb 2017 19:52:55 GMT
+      X-Socrata-Requestid:
+      - h8igl2taalk9rsrp8i0zxhw6
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id" : "btev-gxyj",
+          "name" : "Expanded column chart",
+          "averageRating" : 0,
+          "category" : "Government",
+          "createdAt" : 1463522249,
+          "description" : "",
+          "displayType" : "data_lens",
+          "domainCName" : "localhost",
+          "downloadCount" : 0,
+          "hideFromCatalog" : false,
+          "hideFromDataJson" : false,
+          "moderationStatus" : true,
+          "newBackend" : true,
+          "numberOfComments" : 0,
+          "oid" : 15,
+          "provenance" : "official",
+          "publicationAppendEnabled" : false,
+          "publicationDate" : 1458149659,
+          "publicationGroup" : 2,
+          "publicationStage" : "published",
+          "rowsUpdatedAt" : 1458002576,
+          "tableId" : 9,
+          "totalTimesRated" : 0,
+          "viewCount" : 0,
+          "viewLastModified" : 1463522257,
+          "viewType" : "tabular",
+          "columns" : [ {
+            "id" : 200,
+            "name" : "FACID",
+            "dataTypeName" : "number",
+            "fieldName" : "facid",
+            "position" : 1,
+            "renderTypeName" : "number",
+            "tableColumnId" : 20,
+            "width" : 160,
+            "format" : { }
+          }, {
+            "id" : 201,
+            "name" : "FACNAME",
+            "dataTypeName" : "text",
+            "fieldName" : "facname",
+            "position" : 2,
+            "renderTypeName" : "text",
+            "tableColumnId" : 21,
+            "width" : 184,
+            "format" : { }
+          }, {
+            "id" : 202,
+            "name" : "FAC_FDR",
+            "dataTypeName" : "text",
+            "fieldName" : "fac_fdr",
+            "position" : 3,
+            "renderTypeName" : "text",
+            "tableColumnId" : 22,
+            "width" : 184,
+            "format" : { }
+          }, {
+            "id" : 203,
+            "name" : "LTC",
+            "dataTypeName" : "text",
+            "fieldName" : "ltc",
+            "position" : 4,
+            "renderTypeName" : "text",
+            "tableColumnId" : 23,
+            "width" : 136,
+            "format" : { }
+          }, {
+            "id" : 204,
+            "name" : "CAPACITY",
+            "dataTypeName" : "number",
+            "fieldName" : "capacity",
+            "position" : 5,
+            "renderTypeName" : "number",
+            "tableColumnId" : 24,
+            "width" : 196,
+            "format" : { }
+          }, {
+            "id" : 205,
+            "name" : "FACADMIN",
+            "dataTypeName" : "text",
+            "fieldName" : "facadmin",
+            "position" : 6,
+            "renderTypeName" : "text",
+            "tableColumnId" : 25,
+            "width" : 196,
+            "format" : { }
+          }, {
+            "id" : 206,
+            "name" : "CONTACT_EMAIL",
+            "dataTypeName" : "text",
+            "fieldName" : "contact_email",
+            "position" : 7,
+            "renderTypeName" : "text",
+            "tableColumnId" : 26,
+            "width" : 256,
+            "format" : { }
+          }, {
+            "id" : 207,
+            "name" : "CONTACT_FAX",
+            "dataTypeName" : "text",
+            "fieldName" : "contact_fax",
+            "position" : 8,
+            "renderTypeName" : "text",
+            "tableColumnId" : 27,
+            "width" : 232,
+            "format" : { }
+          }, {
+            "id" : 208,
+            "name" : "CONTACT_PHONE_NUMBER",
+            "dataTypeName" : "text",
+            "fieldName" : "contact_phone_number",
+            "position" : 9,
+            "renderTypeName" : "text",
+            "tableColumnId" : 28,
+            "width" : 340,
+            "format" : { }
+          }, {
+            "id" : 209,
+            "name" : "COUNTY_NAME",
+            "dataTypeName" : "number",
+            "fieldName" : "county_name",
+            "position" : 10,
+            "renderTypeName" : "number",
+            "tableColumnId" : 29,
+            "width" : 232,
+            "format" : { }
+          }, {
+            "id" : 210,
+            "name" : "COUNTY_CODE",
+            "dataTypeName" : "text",
+            "fieldName" : "county_code",
+            "position" : 11,
+            "renderTypeName" : "text",
+            "tableColumnId" : 30,
+            "width" : 232,
+            "format" : { }
+          }, {
+            "id" : 211,
+            "name" : "DISTRICT_NUMBER",
+            "dataTypeName" : "number",
+            "fieldName" : "district_number",
+            "position" : 12,
+            "renderTypeName" : "number",
+            "tableColumnId" : 31,
+            "width" : 280,
+            "format" : { }
+          }, {
+            "id" : 212,
+            "name" : "DISTRICT_NAME",
+            "dataTypeName" : "text",
+            "fieldName" : "district_name",
+            "position" : 13,
+            "renderTypeName" : "text",
+            "tableColumnId" : 32,
+            "width" : 256,
+            "format" : { }
+          }, {
+            "id" : 213,
+            "name" : "LICENSE_NUMBER",
+            "dataTypeName" : "number",
+            "fieldName" : "license_number",
+            "position" : 14,
+            "renderTypeName" : "number",
+            "tableColumnId" : 33,
+            "width" : 268,
+            "format" : { }
+          }, {
+            "id" : 214,
+            "name" : "INITIAL_LICENSE_DATE",
+            "dataTypeName" : "text",
+            "fieldName" : "initial_license_date",
+            "position" : 15,
+            "renderTypeName" : "text",
+            "tableColumnId" : 34,
+            "width" : 340,
+            "format" : { }
+          }, {
+            "id" : 215,
+            "name" : "LICENSE_EFFECTIVE_DATE",
+            "dataTypeName" : "text",
+            "fieldName" : "license_effective_date",
+            "position" : 16,
+            "renderTypeName" : "text",
+            "tableColumnId" : 35,
+            "width" : 364,
+            "format" : { }
+          }, {
+            "id" : 216,
+            "name" : "OSHPD_NUMBER",
+            "dataTypeName" : "number",
+            "fieldName" : "oshpd_number",
+            "position" : 17,
+            "renderTypeName" : "number",
+            "tableColumnId" : 36,
+            "width" : 244,
+            "format" : { }
+          }, {
+            "id" : 217,
+            "name" : "LOCATION",
+            "dataTypeName" : "text",
+            "fieldName" : "location",
+            "position" : 18,
+            "renderTypeName" : "text",
+            "tableColumnId" : 37,
+            "width" : 196,
+            "format" : { }
+          }, {
+            "id" : 218,
+            "name" : "Location 1",
+            "dataTypeName" : "point",
+            "fieldName" : "location_1",
+            "position" : 19,
+            "renderTypeName" : "point",
+            "tableColumnId" : 38,
+            "format" : { }
+          }, {
+            "id" : 219,
+            "name" : "Location 1 (zip)",
+            "dataTypeName" : "text",
+            "fieldName" : "location_1_zip",
+            "position" : 20,
+            "renderTypeName" : "text",
+            "tableColumnId" : 39,
+            "format" : { }
+          }, {
+            "id" : 220,
+            "name" : "Location 1 (city)",
+            "dataTypeName" : "text",
+            "fieldName" : "location_1_city",
+            "position" : 21,
+            "renderTypeName" : "text",
+            "tableColumnId" : 40,
+            "format" : { }
+          }, {
+            "id" : 221,
+            "name" : "Location 1 (state)",
+            "dataTypeName" : "text",
+            "fieldName" : "location_1_state",
+            "position" : 22,
+            "renderTypeName" : "text",
+            "tableColumnId" : 41,
+            "format" : { }
+          }, {
+            "id" : 222,
+            "name" : "Location 1 (address)",
+            "dataTypeName" : "text",
+            "fieldName" : "location_1_address",
+            "position" : 23,
+            "renderTypeName" : "text",
+            "tableColumnId" : 42,
+            "format" : { }
+          }, {
+            "id" : 223,
+            "name" : "Usa-counties",
+            "dataTypeName" : "number",
+            "fieldName" : ":@computed_region_iq59_vmd8",
+            "position" : 24,
+            "renderTypeName" : "number",
+            "tableColumnId" : 105,
+            "format" : { }
+          } ],
+          "displayFormat" : {
+            "data_lens_page_metadata" : {
+              "cards" : [ {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "facadmin",
+                "cardType" : "search"
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "location_1",
+                "cardType" : "feature",
+                "cardOptions" : {
+                  "mapExtent" : {
+                    "southwest" : [ 31.05293398570514, -122.34374999999999 ],
+                    "northeast" : [ 44.08758502824518, -84.462890625 ]
+                  }
+                }
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "oshpd_number",
+                "cardType" : "histogram",
+                "cardOptions" : {
+                  "bucketSize" : "logarithmic"
+                }
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "ltc",
+                "cardType" : "column"
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "initial_license_date",
+                "cardType" : "search"
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "county_name",
+                "cardType" : "histogram",
+                "cardOptions" : {
+                  "bucketSize" : 50
+                }
+              }, {
+                "cardSize" : 1,
+                "expanded" : true,
+                "fieldName" : "fac_fdr",
+                "cardType" : "column"
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "county_code",
+                "cardType" : "search"
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "district_number",
+                "cardType" : "histogram",
+                "cardOptions" : {
+                  "bucketSize" : 5
+                }
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "location",
+                "cardType" : "search"
+              }, {
+                "cardSize" : 2,
+                "expanded" : false,
+                "fieldName" : "*",
+                "cardType" : "table"
+              } ],
+              "name" : "Expanded column chart",
+              "description" : "",
+              "datasetId" : "a83c-up9r",
+              "pageId" : "btev-gxyj",
+              "version" : 4
+            }
+          },
+          "grants" : [ {
+            "inherited" : true,
+            "type" : "viewer",
+            "flags" : [ "public" ]
+          } ],
+          "metadata" : {
+            "availableDisplayTypes" : [ "data_lens" ]
+          },
+          "owner" : {
+            "id" : "3hpa-tfzy",
+            "displayName" : "Randy Antler",
+            "profileImageUrlLarge" : "/api/users/3hpa-tfzy/profile_images/LARGE",
+            "profileImageUrlMedium" : "/api/users/3hpa-tfzy/profile_images/THUMB",
+            "profileImageUrlSmall" : "/api/users/3hpa-tfzy/profile_images/TINY",
+            "roleName" : "viewer",
+            "screenName" : "Randy Antler",
+            "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story", "use_data_connectors" ],
+            "flags" : [ "admin" ]
+          },
+          "query" : { },
+          "rights" : [ "read" ],
+          "tableAuthor" : {
+            "id" : "3hpa-tfzy",
+            "displayName" : "Randy Antler",
+            "profileImageUrlLarge" : "/api/users/3hpa-tfzy/profile_images/LARGE",
+            "profileImageUrlMedium" : "/api/users/3hpa-tfzy/profile_images/THUMB",
+            "profileImageUrlSmall" : "/api/users/3hpa-tfzy/profile_images/TINY",
+            "roleName" : "viewer",
+            "screenName" : "Randy Antler",
+            "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story", "use_data_connectors" ],
+            "flags" : [ "admin" ]
+          }
+        }
+    http_version: 
+  recorded_at: Fri, 17 Feb 2017 19:52:55 GMT
+- request:
+    method: put
+    uri: http://localhost:8080/views/btev-gxyj.json
+    body:
+      encoding: UTF-8
+      string: '{"name":"Expanded column chart","description":""}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Date:
+      - Fri, 17 Feb 2017 19:52:55 GMT
+      X-Socrata-Requestid:
+      - d4v99fqdonj9m4rbfu75e6ilq
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Www-Authenticate:
+      - Basic realm="Socrata API Server"
+      X-Error-Code:
+      - authentication_required
+      X-Error-Message:
+      - You must be logged in to access this resource
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "code" : "authentication_required",
+          "error" : true,
+          "message" : "You must be logged in to access this resource"
+        }
+    http_version: 
+  recorded_at: Fri, 17 Feb 2017 19:52:55 GMT
+- request:
+    method: get
+    uri: http://127.0.0.1:2401/v1/id/a83c-up9r/dataset
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Content-Type:
+      - application/json
+      X-Socrata-Wink:
+      - iAmASocrataEmployee
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 17 Feb 2017 19:52:55 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Vary:
+      - Accept-Encoding, User-Agent
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.z-SNAPSHOT)
+    body:
+      encoding: ASCII-8BIT
+      string: '{"name":"Healthcare Facility Locations","updatedAt":"2016-03-16T17:34:19.000Z","description":"","domain":"localhost","locale":"en_US","id":"a83c-up9r","columns":{"location_1_address":{"name":"Location
+        1 (address)","fred":"text","description":"","cardinality":1,"physicalDatatype":"text"},"facadmin":{"name":"FACADMIN","fred":"text","description":"","cardinality":6216,"physicalDatatype":"text"},"initial_license_date":{"name":"INITIAL_LICENSE_DATE","fred":"text","description":"","cardinality":4800,"physicalDatatype":"text"},"county_code":{"name":"COUNTY_CODE","fred":"text","description":"","cardinality":58,"physicalDatatype":"text"},"location_1":{"name":"Location
+        1","fred":"point","description":"","cardinality":7642,"physicalDatatype":"point"},"location":{"name":"LOCATION","fred":"text","description":"","cardinality":7895,"physicalDatatype":"text"},"oshpd_number":{"name":"OSHPD_NUMBER","fred":"number","description":"","cardinality":1620,"physicalDatatype":"number"},"county_name":{"name":"COUNTY_NAME","fred":"number","description":"","cardinality":55,"physicalDatatype":"number"},"ltc":{"name":"LTC","fred":"text","description":"","cardinality":2,"physicalDatatype":"text"},":@computed_region_iq59_vmd8":{"name":"Usa-counties","fred":"number","description":"","computationStrategy":{"strategy_type":"georegion_match_on_point","source_columns":["location_1"],"parameters":{"region":"_iq59-vmd8","primary_key":"_feature_id"}},"physicalDatatype":"number"},"location_1_city":{"name":"Location
+        1 (city)","fred":"text","description":"","cardinality":1,"physicalDatatype":"text"},"contact_fax":{"name":"CONTACT_FAX","fred":"text","description":"","cardinality":5938,"physicalDatatype":"text"},"location_1_state":{"name":"Location
+        1 (state)","fred":"text","description":"","cardinality":1,"physicalDatatype":"text"},"district_number":{"name":"DISTRICT_NUMBER","fred":"number","description":"","cardinality":24,"physicalDatatype":"number"},"facname":{"name":"FACNAME","fred":"text","description":"","cardinality":8756,"physicalDatatype":"text"},"contact_phone_number":{"name":"CONTACT_PHONE_NUMBER","fred":"text","description":"","cardinality":8330,"physicalDatatype":"text"},"district_name":{"name":"DISTRICT_NAME","fred":"text","description":"","cardinality":1,"physicalDatatype":"text"},"facid":{"name":"FACID","fred":"number","description":"","cardinality":9194,"physicalDatatype":"number"},"fac_fdr":{"name":"FAC_FDR","fred":"text","description":"","cardinality":20,"physicalDatatype":"text"},"location_1_zip":{"name":"Location
+        1 (zip)","fred":"text","description":"","cardinality":1,"physicalDatatype":"text"},"license_effective_date":{"name":"LICENSE_EFFECTIVE_DATE","fred":"text","description":"","cardinality":827,"physicalDatatype":"text"},"license_number":{"name":"LICENSE_NUMBER","fred":"number","description":"","cardinality":7104,"physicalDatatype":"number"},"contact_email":{"name":"CONTACT_EMAIL","fred":"text","description":"","cardinality":4290,"physicalDatatype":"text"},"capacity":{"name":"CAPACITY","fred":"number","description":"","cardinality":349,"physicalDatatype":"number"}},"ownerId":"3hpa-tfzy"}'
+    http_version: 
+  recorded_at: Fri, 17 Feb 2017 19:52:56 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/migrations/a83c-up9r
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 17 Feb 2017 19:52:56 GMT
+      X-Socrata-Requestid:
+      - 9bkb1qzh1ttm8a5559h9ph23r
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "controlMapping" : "{\"flatten\":{\"location_1\":{\"Location 1\":{\"fieldname\":\"location_1\",\"template\":\"${point}\"},\"Location 1 (zip)\":{\"fieldname\":\"location_1_zip\",\"template\":\"${zip}\"},\"Location 1 (city)\":{\"fieldname\":\"location_1_city\",\"template\":\"${city}\"},\"Location 1 (state)\":{\"fieldname\":\"location_1_state\",\"template\":\"${state}\"},\"Location 1 (address)\":{\"fieldname\":\"location_1_address\",\"template\":\"${address}\"}}},\"nameShortening\":{\"location_1_address\":\"location_1_address\",\"facadmin\":\"facadmin\",\"initial_license_date\":\"initial_license_date\",\"county_code\":\"county_code\",\"location_1\":\"location_1\",\"location\":\"location\",\"oshpd_number\":\"oshpd_number\",\"county_name\":\"county_name\",\"ltc\":\"ltc\",\"location_1_city\":\"location_1_city\",\"contact_fax\":\"contact_fax\",\"location_1_state\":\"location_1_state\",\"district_number\":\"district_number\",\"facname\":\"facname\",\"contact_phone_number\":\"contact_phone_number\",\"district_name\":\"district_name\",\"facid\":\"facid\",\"fac_fdr\":\"fac_fdr\",\"location_1_zip\":\"location_1_zip\",\"license_effective_date\":\"license_effective_date\",\"license_number\":\"license_number\",\"contact_email\":\"contact_email\",\"capacity\":\"capacity\"},\"geoResourceIds\":[]}",
+          "migrationPhase" : "prep",
+          "migrationPhaseUpdated" : 1458002588,
+          "nbeId" : "a83c-up9r",
+          "nbePublicationGroup" : 2,
+          "obeId" : "efcd-jzv3",
+          "syncedAt" : 1458002588
+        }
+    http_version: 
+  recorded_at: Fri, 17 Feb 2017 19:52:56 GMT
+- request:
+    method: put
+    uri: http://172.19.13.220:6010/dataset-rollup/_a83c-up9r/btev-gxyj
+    body:
+      encoding: UTF-8
+      string: '{"soql":"select ltc, fac_fdr, oshpd_number, signed_magnitude_10(oshpd_number),
+        county_name, signed_magnitude_linear(county_name, 50), district_number, signed_magnitude_linear(district_number,
+        5), count(*) as value group by ltc, fac_fdr, oshpd_number, signed_magnitude_10(oshpd_number),
+        county_name, signed_magnitude_linear(county_name, 50), district_number, signed_magnitude_linear(district_number,
+        5)"}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      X-Socrata-Federation:
+      - Honey Badger
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      Date:
+      - Fri, 17 Feb 2017 19:52:56 GMT
+      Server:
+      - Jetty(9.2.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Fri, 17 Feb 2017 19:52:56 GMT
+- request:
+    method: put
+    uri: http://localhost:8080/views/btev-gxyj.json
+    body:
+      encoding: UTF-8
+      string: '{"displayFormat":{"data_lens_page_metadata":{"cards":[{"aggregationField":null,"aggregationFunction":null,"cardOptions":{"mapExtent":{"northeast":[44.08758502824518,-84.462890625],"southwest":[31.05293398570514,-122.34374999999999]}},"cardSize":1,"cardType":"feature","expanded":false,"fieldName":"location_1"},{"aggregationField":null,"aggregationFunction":null,"cardOptions":{"bucketSize":"logarithmic"},"cardSize":1,"cardType":"histogram","expanded":false,"fieldName":"oshpd_number"},{"aggregationField":null,"aggregationFunction":null,"cardSize":1,"cardType":"column","expanded":false,"fieldName":"ltc"},{"aggregationField":null,"aggregationFunction":null,"cardOptions":{"bucketSize":50},"cardSize":1,"cardType":"histogram","expanded":false,"fieldName":"county_name"},{"aggregationField":null,"aggregationFunction":null,"cardSize":1,"cardType":"column","expanded":true,"fieldName":"fac_fdr"},{"aggregationField":null,"aggregationFunction":null,"cardOptions":{"bucketSize":5},"cardSize":1,"cardType":"histogram","expanded":false,"fieldName":"district_number"},{"aggregationField":null,"aggregationFunction":null,"cardSize":2,"cardType":"table","expanded":false,"fieldName":"*"}],"datasetId":"a83c-up9r","description":"","name":"Expanded
+        column chart","ownerDisplayName":"Randy Antler","pageId":"btev-gxyj","primaryAggregation":null,"primaryAmountField":null,"version":4}}}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Date:
+      - Fri, 17 Feb 2017 19:52:56 GMT
+      X-Socrata-Requestid:
+      - 9oczghc6yxa8zhtz8pxp5whx2
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Www-Authenticate:
+      - Basic realm="Socrata API Server"
+      X-Error-Code:
+      - authentication_required
+      X-Error-Message:
+      - You must be logged in to access this resource
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "code" : "authentication_required",
+          "error" : true,
+          "message" : "You must be logged in to access this resource"
+        }
+    http_version: 
+  recorded_at: Fri, 17 Feb 2017 19:52:56 GMT
+recorded_with: VCR 3.0.3

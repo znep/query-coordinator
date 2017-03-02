@@ -3,12 +3,23 @@
 }
 
 .collapsed-icon {
-  margin-top: 5px;
+  margin-top: -4px;
+  margin-left: -6px;
   cursor: pointer;
+
+  & > :global(.socrata-icon) {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    position: relative;
+  }
 
   & svg {
     width: 22px;
     height: 22px;
+    position: absolute;
+    top: 0;
+    left: 0;
 
     & path {
       fill: white;

@@ -47,7 +47,9 @@ class SearchBox extends React.Component {
     const { collapsible, animate } = this.props;
     const { focused } = this.state;
 
-    if (_.isUndefined(focused) || animate === false) {
+    if (animate === false) {
+      return 'icon-container-static';
+    } else if (_.isUndefined(focused)) {
       return 'icon-container-base';
     } else if (collapsible) {
       return 'icon-container-collapsible';

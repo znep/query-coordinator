@@ -81,9 +81,19 @@ $search-icon-hidden-transform: scaleX(0) translateX(-30px);
   margin-top: 11px;
   margin-left: 9px;
 
+  & > :global(.socrata-icon) {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    position: relative;
+  }
+
   & svg {
     width: 20px;
     height: 20px;
+    position: absolute;
+    top: 0;
+    left: 0;
 
     & path {
       fill: $light-grey-1;
@@ -130,8 +140,15 @@ $search-icon-hidden-transform: scaleX(0) translateX(-30px);
   @extend .icon-container-base;
 
   z-index: 1000;
-  left: -275px;
-  top: -4px;
+  left: -277px;
+  top: -11px;
   animation-name: iconUncollapse;
   animation-duration: $animation-speed;
+}
+
+.icon-container-static {
+  @extend .icon-container-base;
+
+  margin-top: 6px;
+  margin-left: 0;
 }

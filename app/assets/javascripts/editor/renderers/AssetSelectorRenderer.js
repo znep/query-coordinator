@@ -2534,26 +2534,22 @@ export default function AssetSelectorRenderer(options) {
    */
 
   function _viewChooserUrl(paramString) {
-    return encodeURI(
-      StorytellerUtils.format(
-        '{0}/browse/select_dataset?{1}',
-        window.location.protocol + '//' + window.location.hostname,
-        paramString
-      )
-    );
+    return encodeURI(`https://${window.location.hostname}/browse/select_dataset?${paramString}`);
   }
 
   function _mapOrChartChooserUrl() {
-    // remove suppressed_facets param upon frontend release to show 'view types' menu
-    //
-    // cetera_search must be set to false until multiple limitTo parameters are enabled for cetera
-    // limitTo array parameter currently only works with clytemnestra
-    return encodeURI(
-      StorytellerUtils.format(
-        '{0}/browse/select_dataset?filtered_types[]=maps&filtered_types[]=charts&limitTo[]=charts&limitTo[]=maps&limitTo[]=blob&cetera_search=false',
-        window.location.protocol + '//' + window.location.hostname
-      )
-    );
+    return _viewChooserUrl([
+      'filtered_types[]=maps',
+      'filtered_types[]=charts',
+      'filtered_types[]=visualization',
+      'limitTo[]=charts',
+      'limitTo[]=maps',
+      'limitTo[]=blob',
+      'limitTo[]=visualization',
+      // limitTo array parameter currently only works with clytemnestra, so
+      // cetera_search must be set to false until cetera catches up
+      'cetera_search=false'
+    ].join('&'));
   }
 
   function _renderChooseEmbedCodeTemplate() {

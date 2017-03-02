@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import 'whatwg-fetch';
+import { get as getCookie } from 'browser-cookies';
 
-// eslint-disable-next-line
 export function getNotifications(callback) {
   fetch('/notifications', { credentials: 'same-origin' })
     .then(response => response.json())
@@ -17,10 +17,15 @@ export function getNotifications(callback) {
     });
 }
 
-export function updateNotificationLastSeen(dateTime) {
+export function updateNotificationLastSeen() {
+  // eslint-disable-next-line
+  const headers = new Headers();
+  headers.append('X-CSRF-Token', getCookie('socrata-csrf-token'));
+
   fetch(
-    `/api/notifications?method=setLastNotificationSeenAt&dateTime=${dateTime.getTime()}`, {
-      method: 'PATCH',
-      credentials: 'same-origin'
+    '/notifications/setLastNotificationSeenAt', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: headers
     });
 }

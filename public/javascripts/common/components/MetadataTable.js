@@ -120,16 +120,17 @@ const MetadataTable = React.createClass({
     const onClickEditMetadata = this.props.onClickEditMetadata || _.noop;
     const onClickStats = this.props.onClickStats || _.noop;
 
-    let attachments;
     let attribution;
-    let attributionLink;
-    let category;
     let customMetadataFieldsets;
-    let license;
+    let attachments;
+    let category;
     let tags;
+    let license;
+    let attributionLink;
     let statsSection;
     let editMetadata;
     let contactDatasetOwner;
+    let dataLastUpdated;
 
     if (view.attribution) {
       attribution = (
@@ -296,6 +297,20 @@ const MetadataTable = React.createClass({
       );
     }
 
+    if (!view.isBlobby && !view.isHref) {
+      dataLastUpdated = (
+        <div className="metadata-detail-group">
+          <dt className="metadata-detail-group-title">
+            {I18n.common.metadata.data_last_updated}
+          </dt>
+
+          <dd className="metadata-detail-group-value">
+            {formatDate(view.dataLastUpdatedAt)}
+          </dd>
+        </div>
+      );
+    }
+
     return (
       <div className="metadata-table-wrapper">
         <section className="landing-page-section">
@@ -322,15 +337,7 @@ const MetadataTable = React.createClass({
                 </div>
 
                 <div className="metadata-row middle metadata-flex metadata-detail-groups">
-                  <div className="metadata-detail-group">
-                    <dt className="metadata-detail-group-title">
-                      {I18n.common.metadata.data_last_updated}
-                    </dt>
-
-                    <dd className="metadata-detail-group-value">
-                      {formatDate(view.dataLastUpdatedAt)}
-                    </dd>
-                  </div>
+                  {dataLastUpdated}
 
                   <div className="metadata-detail-group">
                     <dt className="metadata-detail-group-title">

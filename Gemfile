@@ -32,7 +32,7 @@ gem 'sanitize' # Note that this is in addition to the default Rails implementati
 gem 'sass-rails', '~> 5.0'
 gem 'semver2'
 gem 'signaller-ruby', :require => 'signaller'
-gem 'socrata_site_chrome', '2.3.5'
+gem 'socrata_site_chrome', '2.3.6'
 gem 'snappy'
 gem 'statsd-ruby', '~>1.3.0'
 gem 'therubyracer'

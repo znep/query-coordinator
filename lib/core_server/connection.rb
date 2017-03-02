@@ -80,6 +80,18 @@ module CoreServer
       end
     end
 
+    def patch(path:, payload:'', batch_id:nil, **headers)
+      patch_request(path, payload, headers.with_indifferent_access, batch_id)
+    end
+
+    def patch_request(path, payload = '', custom_headers = {}, batch_id = nil)
+      if batch_id
+       @batch_queue[batch_id] << {:url => path, :body => payload, :requestType => 'PATCH'}
+      else
+        generic_request(Net::HTTP::Patch.new(path), payload, custom_headers).body
+      end
+    end
+
     def delete(path:, payload:'', batch_id:nil, **headers)
       delete_request(path, payload, headers.with_indifferent_access, batch_id)
     end

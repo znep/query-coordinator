@@ -493,6 +493,7 @@ Rails.application.routes.draw do
         :via => [:post, :put], :constraints => { :id => Frontend::UID_REGEXP }
       get '/oauth/authorize' => 'oauth#authorize'
       get '/notifications' => 'notifications#index'
+      post '/notifications/setLastNotificationSeenAt' => 'notifications#set_last_notification_seen_at'
     end
 
     resource :account

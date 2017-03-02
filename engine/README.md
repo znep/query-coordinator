@@ -48,7 +48,7 @@ menu in the header. It relies on general functions such as `$()`, `ready()`, `cs
 ### SSL Certificate Validation
 
 When connecting to localhost, or other domains without valid SSL certificates, the OpenSSL library
-will complain. One must disable certficate validation with the code shown below. In an ideal world,
+will complain. One must disable certificate validation with the code shown below. In an ideal world,
 we would only do this when the domain in question is known to be a development host; i.e. IP address
 `127.0.0.1`.
 
@@ -171,9 +171,9 @@ TODO: Once this is done in Frontend, document the steps here.
 
 #### `current_user_json`
 
-The host app must provide an ApplicationController method called 
+The host app must provide an ApplicationController method called
 `current_user_json` which should return a json representation of the current
-user. If this is not set, and exception will be raised.
+user. If this is not set, an exception will be raised.
 
 #### `coreservice_uri`
 
@@ -184,10 +184,10 @@ It is expected to be a full URI, for example: `http://some.host.com:8080`.
 
 #### `cache_key_prefix`
 
-The host app must also provide a cache key prefix used to generate the same memcached key that the 
-hosting application uses to cache the underyling configuration data. The configuration property must
+The host app must also provide a cache key prefix used to generate the same memcached key that the
+hosting application uses to cache the underlying configuration data. The configuration property must
 be called `Rails.application.config.cache_key_prefix` and usually consists of the first 8 characters
-of the `REVISION` file which contains the `SHA1` representing the current release. For example: 
+of the `REVISION` file which contains the `SHA1` representing the current release. For example:
 `c597c5c5`.
 
 ## Site Configuration & Styling
@@ -337,9 +337,9 @@ Site Chrome has a requirement that the hosting app provide the Socrata Styleguid
 ## What it does
 
 The engine provides a basic header Rails template that includes the logo, colors, and other styling
-configured for the domain. The include the navigation section and the links that appear therein can
-be controled using the configuration. The engine also provides a basic footer Rails template that
-include a collection of configurable links, copyright notice, social media links, etc.
+configured for the domain. The navigation section and the links that appear therein can
+be controlled using the configuration. The engine also provides a basic footer Rails template that
+includes a collection of configurable links, copyright notice, social media links, etc.
 
 Both the header and footer respond to mobile screen sizes and will change how the links in the
 header menu behave when in mobile mode. In order to do this, it uses a small amount of Javascript

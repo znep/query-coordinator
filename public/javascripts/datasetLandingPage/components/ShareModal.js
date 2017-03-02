@@ -1,20 +1,25 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
+import { isUserAdminOrPublisher } from '../../common/user';
 
 export const ShareModal = (props) => {
   const { view, onClickOption } = props;
 
   let privateNotice = null;
   if (view.isPrivate) {
+    const manageLink = isUserAdminOrPublisher() ?
+      <a href={`${view.gridUrl}?pane=manage`}>
+        {I18n.manage_prompt}
+      </a> :
+      null;
+
     privateNotice = (
       <section className="modal-content">
         <div className="alert info">
           <span dangerouslySetInnerHTML={{ __html: I18n.share.visibility_alert_html }} />
           {' '}
-          <a href={`${view.gridUrl}?pane=manage`}>
-            {I18n.manage_prompt}
-          </a>
+          {manageLink}
         </div>
       </section>
     );

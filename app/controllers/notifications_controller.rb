@@ -9,4 +9,14 @@ class NotificationsController < ApplicationController
       viewOlderLink: APP_CONFIG.zendesk_notifications.fetch(:zendesk_link).html_safe
     }
   end
+
+  def set_last_notification_seen_at
+    CoreServer::Base.connection.patch_request('/notifications?method=setLastNotificationSeenAt')
+
+    # Note that, if the above call fails, a notification gets sent to airbrake and
+    # the call will silently fail in the browser (print an error message)
+    # If it succeeds, it returns an empty string, but rails wants us to render _something_ here
+    # regardless, hence this empty JSON render...
+    render json: {}
+  end
 end

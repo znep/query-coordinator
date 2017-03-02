@@ -59,8 +59,9 @@
 }
 
 .videoList {
+  display: flex;
+  flex-wrap: wrap;
   li {
-    float: left;
     margin: 1em;
     width: 15em;
     img {

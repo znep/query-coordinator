@@ -1,4 +1,4 @@
-import { BackButton } from 'components/assetSelector/BackButton';
+import { BackButton } from 'components/BackButton';
 
 describe('BackButton', function() {
   const defaultProps = {

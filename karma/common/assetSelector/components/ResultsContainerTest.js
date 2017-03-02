@@ -45,7 +45,7 @@ describe('ResultsContainer', function() {
       var element = renderComponent(ResultsContainer);
 
       _.defer(() => {
-        assert.isDefined(element.querySelector('.no-results'));
+        assert.isNotNull(element.querySelector('.no-results'));
         done();
       });
     });
@@ -56,7 +56,7 @@ describe('ResultsContainer', function() {
 
       _.defer(() => {
         assert.isDefined(element);
-        assert.isDefined(element.querySelector('.card-container'));
+        assert.isNotNull(element.querySelector('.card-container'));
         done();
       });
     });
@@ -96,7 +96,7 @@ describe('ResultsContainer', function() {
         additionalTopbarComponents: [testComponent]
       }));
 
-      assert.isDefined(element.querySelector('.results-topbar').querySelector('.test'));
+      assert.isNotNull(element.querySelector('.results-topbar').querySelector('.test'));
     });
 
     it('renders multiple additional components in the topbar', function() {
@@ -107,9 +107,9 @@ describe('ResultsContainer', function() {
         additionalTopbarComponents: [testComponent1, testComponent2, testComponent3]
       }));
 
-      assert.isDefined(element.querySelector('.results-topbar').querySelector('.test1'));
-      assert.isDefined(element.querySelector('.results-topbar').querySelector('.test2'));
-      assert.isDefined(element.querySelector('.results-topbar').querySelector('.test3'));
+      assert.isNotNull(element.querySelector('.results-topbar').querySelector('.test1'));
+      assert.isNotNull(element.querySelector('.results-topbar').querySelector('.test2'));
+      assert.isNotNull(element.querySelector('.results-topbar').querySelector('.test3'));
     });
   });
 });

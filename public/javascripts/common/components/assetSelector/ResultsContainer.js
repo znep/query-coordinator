@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import ceteraUtils from '../../ceteraUtils';
-import BackButton from './BackButton';
+import BackButton from '../BackButton';
 import Card from './Card';
 import NoResults from './NoResults';
 import Pager from './Pager';

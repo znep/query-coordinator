@@ -1,7 +1,10 @@
 module CatalogLandingPageHelper
 
   def catalog_landing_page_translations
-    LocaleCache.render_translations([LocalePart.catalog_landing_page])['catalog_landing_page']
+    translations = LocaleCache.render_translations([LocalePart.catalog_landing_page])['catalog_landing_page']
+    translations.deep_merge(
+      common: LocaleCache.render_translations([LocalePart.common])['common']
+    )
   end
 
   def render_catalog_landing_page_translations

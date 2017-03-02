@@ -1,0 +1,81 @@
+@import "styleguide-colors";
+@import "common/breakpoints";
+
+$view-card-preview-width: 32%;
+$min-view-card-preview-width: 300px;
+$view-card-preview-height: 300px;
+
+.external-resource-editor {
+  .modal-header {
+    z-index: 1;
+    display: flex;
+
+    .modal-header-title {
+      display: inline-flex;
+      align-self: center;
+    }
+  }
+
+  .centered-content {
+    max-width: 1000px;
+    margin: 0 auto;
+
+    > div.description {
+      margin: 1rem 0;
+      font-size: 15px;
+      line-height: 1.3;
+    }
+
+    .external-resource-contents {
+      display: flex;
+      font-size: 1rem;
+
+
+      @media(max-width: $medium) {
+        display: block;
+      }
+
+      form.external-resource-form {
+        flex: 1 1 100%;
+        padding-right: 22px;
+
+        label {
+          font-size: 16px;
+          line-height: 1.4;
+          display: inline-block;
+        }
+
+        input[type="text"] {
+          width: 100%;
+          font-size: 14px;
+          padding: 8px;
+          font-family: 'Open Sans';
+        }
+
+        input.hidden {
+          display: none;
+        }
+
+        .file-input {
+          margin-bottom: 12px;
+        }
+
+        .alert {
+          margin-top: 0;
+          margin-bottom: 22px;
+        }
+
+        .image-warning {
+          margin-top: 1rem;
+        }
+      }
+
+      .external-resource-preview {
+        flex: 0 0 $view-card-preview-width;
+        height: $view-card-preview-height;
+        overflow: hidden;
+        min-width: $min-view-card-preview-width;
+      }
+    }
+  }
+}

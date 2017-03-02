@@ -20,7 +20,7 @@ window.I18n.featured_content_modal = {
   external_resource_form: {}
 };
 
-window.serverConfig = require('assetSelector/data/mockServerConfig').default;
+window.serverConfig = require('mockServerConfig').default;
 
 window.renderComponent = _.flow(React.createElement, TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
 window.renderPureComponent = _.flow(TestUtils.renderIntoDocument, ReactDOM.findDOMNode);

@@ -68,7 +68,6 @@ namespace :test do
         output_filename = 'karma/common/mockTranslations.js'
         all_translations = YAML.load_file(translations_filename)['en']
         translations = {
-          :asset_selector => all_translations['asset_selector'],
           :common => all_translations['common'],
           :dataset_landing_page => all_translations['dataset_landing_page']
         }

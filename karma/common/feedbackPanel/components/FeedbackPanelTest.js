@@ -1,6 +1,6 @@
 import { FeedbackPanel } from 'components/FeedbackPanel';
 
-import mockServerConfig from 'assetSelector/data/mockServerConfig';
+import mockServerConfig from 'mockServerConfig';
 
 describe('FeedbackPanel', () => {
   it('renders nothing when a user is not logged in', () => {

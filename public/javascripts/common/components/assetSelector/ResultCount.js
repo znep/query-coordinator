@@ -12,7 +12,7 @@ export class ResultCount extends React.PureComponent {
     return (
       <div className="result-count">
         {pageResults.first}-{pageResults.last}
-        {` ${_.get(I18n, 'asset_selector.results_container.of', 'of')} `}
+        {` ${_.get(I18n, 'common.asset_selector.results_container.of')} `}
         {getViewCountLabel(total)}
       </div>
     );

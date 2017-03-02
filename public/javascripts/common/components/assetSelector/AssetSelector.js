@@ -15,9 +15,10 @@ export class AssetSelector extends React.Component {
     } = this.props;
 
     const headerTitle = _.isEmpty(category) ?
-      _.get(I18n, 'asset_selector.header_title_without_category', 'Select Featured Content') :
-      _.get(I18n, 'asset_selector.header_title_with_category',
-        `Select Featured Content in ${category}`).replace('%{category}', category);
+      _.get(I18n, 'common.asset_selector.header_title_without_category') :
+      _.get(I18n, 'common.asset_selector.header_title_with_category',
+        'Select Featured Content in %{category}'
+      ).replace('%{category}', category);
 
     const resultsContainerProps = { additionalTopbarComponents, category, onClose, onSelect, resultsPerPage };
 

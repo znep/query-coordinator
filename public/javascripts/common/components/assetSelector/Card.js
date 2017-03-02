@@ -66,7 +66,7 @@ export class Card extends React.Component {
           onKeyDown={handleKeyPress(() => this.onSelect(cardProps))}>
           <div className={cardOverlayClasses}>
             <button className="select-button btn btn-primary">
-              {_.get(I18n, 'asset_selector.action_buttons.select', 'Select')}
+              {_.get(I18n, 'common.asset_selector.action_buttons.select')}
             </button>
           </div>
         </div>

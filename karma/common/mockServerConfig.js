@@ -1,5 +1,6 @@
 export default {
   environment: 'production',
+  ceteraExternalUri: 'https://localhost/api/cetera',
   currentUser: null,
   domain: 'localhost',
   featureFlags: {},

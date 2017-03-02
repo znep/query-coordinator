@@ -35,8 +35,8 @@ describe('Card', function() {
       'jorts and other denim articles of clothing');
     assert.equal(element.querySelector('.first').querySelector('.date').textContent,
       'December 15, 2016');
-    assert.isDefined(element.querySelector('.entry-view-type').querySelector('.socrata-icon-dataset'));
-    assert.isDefined(element.querySelector('.entry-main').
+    assert.isNotNull(element.querySelector('.entry-view-type').querySelector('.socrata-icon-dataset'));
+    assert.isNotNull(element.querySelector('.entry-main').
       querySelector('a[href="http://davidhasselhoffonline.com/"][aria-label="View David Hasselhoff"]'));
   });
 

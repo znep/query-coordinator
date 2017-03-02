@@ -7,6 +7,12 @@
 
   .modal-header {
     z-index: 1;
+    display: flex;
+
+    .modal-header-title {
+      display: inline-flex;
+      align-self: center;
+    }
   }
 
   .modal-content {

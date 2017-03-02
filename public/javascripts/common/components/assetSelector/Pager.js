@@ -70,7 +70,7 @@ export class Pager extends React.Component {
       disabled: prevLinkDisabled
     });
 
-    const prevPageText = _.get(I18n, 'asset_selector.results_container.pager.previous_page', 'Previous page');
+    const prevPageText = _.get(I18n, 'common.asset_selector.results_container.pager.previous_page');
 
     const prevLink = (
       <a
@@ -93,7 +93,7 @@ export class Pager extends React.Component {
       disabled: nextLinkDisabled
     });
 
-    const nextPageText = _.get(I18n, 'asset_selector.results_container.pager.next_page', 'Next page');
+    const nextPageText = _.get(I18n, 'common.asset_selector.results_container.pager.next_page');
 
     const nextLink = (
       <a
@@ -114,7 +114,7 @@ export class Pager extends React.Component {
     });
 
     const pageNumberText =
-      `${_.get(I18n, 'asset_selector.results_container.pager.page', 'Page')} ${this.props.currentPage}`;
+      `${_.get(I18n, 'common.asset_selector.results_container.pager.page')} ${this.props.currentPage}`;
 
     const currentPageInput = (
       <div className={currentPageInputClasses}>
@@ -128,7 +128,7 @@ export class Pager extends React.Component {
       </div>
     );
 
-    const lastPageText = _.get(I18n, 'asset_selector.results_container.pager.last_page', 'Last page');
+    const lastPageText = _.get(I18n, 'common.asset_selector.results_container.pager.last_page');
 
     const lastPageLink = (
       <a
@@ -148,7 +148,7 @@ export class Pager extends React.Component {
       <div className="pager">
         {prevLink}
         {currentPageInput}
-        {` ${_.get(I18n, 'asset_selector.results_container.of', 'of')} `}
+        {` ${_.get(I18n, 'common.asset_selector.results_container.of')} `}
         {lastPageLink}
         {nextLink}
       </div>

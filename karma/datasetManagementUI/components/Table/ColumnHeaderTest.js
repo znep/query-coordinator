@@ -66,7 +66,20 @@ describe('components/Table/ColumnHeader', () => {
       newProps.outputSchema,
       defaultProps.column,
       'SoQLNumber'
-    ])
+    ]);
+  });
+
+  it('renders correct list of types', () => {
+    const container = document.createElement('tr');
+    const element = ReactDOM.render(<ColumnHeader {...defaultProps} />, container);
+    const options = container.querySelectorAll('select option');
+    const values = [...options].map(option => option.value)
+    expect(values).to.deep.equal([
+      'SoQLFloatingTimestamp',
+      'SoQLNumber',
+      'SoQLText',
+      'SoQLBoolean'
+    ]);
   });
 
 });

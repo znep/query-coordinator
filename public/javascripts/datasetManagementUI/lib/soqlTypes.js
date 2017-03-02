@@ -16,11 +16,6 @@ export const soqlProperties = {
     conversionTarget: true,
     icon: 'check'
   },
-  SoQLFixedTimestamp: {
-    canonicalName: 'fixed_timestamp',
-    conversionTarget: true,
-    icon: 'date'
-  },
   SoQLFloatingTimestamp: {
     canonicalName: 'floating_timestamp',
     conversionTarget: true,

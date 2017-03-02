@@ -361,10 +361,6 @@ $data_lens_icon_color: #80acca;
           }
         }
         .nameDesc {
-          div.titleLine {
-            //white-space: nowrap
-            //overflow: hidden
-          }
           padding: {
             bottom: 0;
             left: 0.1em;
@@ -388,16 +384,25 @@ $data_lens_icon_color: #80acca;
               padding: 0.2rem 0.2rem;
               text-transform: uppercase;
               &.official {
-                color: #e48424;
-              }
-              &.community {
-                color: #288dc1;
-              }
-              .icon-official2 {
                 color: #9e5c23;
               }
-              .icon-community {
+              &.community {
                 color: #176289;
+              }
+              .icon-official2 {
+                color: #e48424;
+              }
+              .icon-community {
+                color: #288dc1;
+              }
+              .icon-community:before, .icon-official2:before {
+                font-size: 16px;
+                margin-right: 3px;
+                position: relative;
+                top: 2px;
+              }
+              .icon-official2:before {
+                top: 3px;
               }
             }
           }
@@ -712,12 +717,6 @@ $data_lens_icon_color: #80acca;
         bottom: 0;
       };
       text-align: center;
-    }
-
-    .icon-official2::before, .socrata-icon-official2::before {
-      content: "\EA48";
-      position: relative;
-      top: 1px;
     }
   }
 

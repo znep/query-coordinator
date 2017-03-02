@@ -69,34 +69,32 @@ html, body {
       padding: 0;
 
       .tag-provenance {
-        font-size: 13px;
+        font-size: 16px;
         margin-left: 10px;
         text-transform: uppercase;
         white-space: nowrap;
 
         svg {
-          width: 14px;
-          height: 14px;
+          width: 23px;
+          height: 23px;
           position: relative;
+          top: 5px;
+          left: -3px;
         }
       }
-
       .tag-community {
         color: #176289;
 
         svg {
-          top: 2px;
           path {
             fill: #288dc1;
           }
         }
       }
-
       .tag-official2 {
         color: #935c23;
 
         svg {
-          top: 2px;
           path {
             fill: #e48424;
           }

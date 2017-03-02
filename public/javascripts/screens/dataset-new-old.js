@@ -87,18 +87,22 @@ $(function() {
       // track step load in mixpanel
       // track started
       var pageName = $pane.data('wizardpanename');
-      mixpanelNS.trackIngressWizardEvent(mixpanelEvents.started, {
-        'Wizard Page': pageName,
-        'Wizard Page Visit Number': incrTimesVisited(pageName)
-      });
 
-      // track left
-      if (lastPageName != null) {
-        mixpanelNS.trackIngressWizardEvent(mixpanelEvents.left, {
-          'Wizard Page': lastPageName,
-          'Next Action': pageName
+      if (mixpanelNS && mixpanelNS.trackIngressWizardEvent) {
+        mixpanelNS.trackIngressWizardEvent(mixpanelEvents.started, {
+          'Wizard Page': pageName,
+          'Wizard Page Visit Number': incrTimesVisited(pageName)
         });
+
+        // track left
+        if (lastPageName != null) {
+          mixpanelNS.trackIngressWizardEvent(mixpanelEvents.left, {
+            'Wizard Page': lastPageName,
+            'Next Action': pageName
+          });
+        }
       }
+
       lastPageName = pageName;
     },
     paneConfig: {

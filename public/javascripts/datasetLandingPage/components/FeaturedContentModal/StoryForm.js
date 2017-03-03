@@ -85,7 +85,7 @@ export const StoryForm = React.createClass({
       null;
 
     return (
-      <form className="story-form">
+      <form className="story-form" action="#">
         <label id="story-url-label" htmlFor="story-url" className="block-label label-url">
           {this.I18n.url}
         </label>

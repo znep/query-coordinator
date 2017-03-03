@@ -1,20 +1,18 @@
 import classNames from 'classnames';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 
-const FormFooter = (props) => {
-  const {
-    cancelText,
-    canSave,
-    displaySaveButton,
-    isSaved,
-    isSaving,
-    onClickCancel,
-    onClickSave,
-    saveText,
-    savedText
-  } = props;
+class FormFooter extends Component {
+  renderSaveButton() {
+    const {
+      canSave,
+      displaySaveButton,
+      isSaved,
+      isSaving,
+      onClickSave,
+      saveText,
+      savedText
+    } = this.props;
 
-  const renderSaveButton = () => {
     if (!displaySaveButton) { return null; }
 
     const saveButtonClassName = classNames({
@@ -47,23 +45,30 @@ const FormFooter = (props) => {
         {saveButtonContents}
       </button>
     );
-  };
+  }
 
-  return (
-    <footer className="modal-footer">
-      <div className="modal-footer-actions">
-        <button
-          key="cancel"
-          className="btn btn-default btn-sm cancel-button"
-          onClick={onClickCancel}>
-          {cancelText}
-        </button>
+  render() {
+    const {
+      cancelText,
+      onClickCancel
+    } = this.props;
 
-        {renderSaveButton()}
-      </div>
-    </footer>
-  );
-};
+    return (
+      <footer className="modal-footer">
+        <div className="modal-footer-actions">
+          <button
+            key="cancel"
+            className="btn btn-default btn-sm cancel-button"
+            onClick={onClickCancel}>
+            {cancelText}
+          </button>
+
+          {this.renderSaveButton()}
+        </div>
+      </footer>
+    );
+  }
+}
 
 FormFooter.propTypes = {
   cancelText: PropTypes.string,

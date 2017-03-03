@@ -1,19 +1,17 @@
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { handleKeyPress } from '../../common/a11yHelpers';
 import { isUserAdminOrPublisher } from '../../common/user';
 
-export const PrivateNotice = React.createClass({
-  propTypes: {
-    view: PropTypes.object.isRequired
-  },
+export class PrivateNotice extends Component {
+  constructor(props) {
+    super(props);
 
-  getInitialState() {
-    return {
-      isHidden: true
-    };
-  },
+    this.state = { isHidden: true };
+
+    _.bindAll(this, 'onClickDismiss');
+  }
 
   componentWillMount() {
     let hasDismissedPrivateNotice = true;
@@ -30,7 +28,7 @@ export const PrivateNotice = React.createClass({
     this.setState({
       isHidden: hasDismissedPrivateNotice
     });
-  },
+  }
 
   onClickDismiss() {
     try {
@@ -48,7 +46,7 @@ export const PrivateNotice = React.createClass({
         isHidden: true
       });
     }
-  },
+  }
 
   render() {
     const { view } = this.props;
@@ -80,7 +78,11 @@ export const PrivateNotice = React.createClass({
       </div>
     );
   }
-});
+}
+
+PrivateNotice.propTypes = {
+  view: PropTypes.object.isRequired
+};
 
 function mapStateToProps(state) {
   return _.pick(state, 'view');

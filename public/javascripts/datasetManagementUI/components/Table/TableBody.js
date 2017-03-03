@@ -1,15 +1,9 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import TableCell from './TableCell';
 
 const RENDER_ROWS = 50;
 
-export default React.createClass({
-
-  propTypes: {
-    db: PropTypes.object.isRequired,
-    transforms: PropTypes.arrayOf(PropTypes.object).isRequired,
-    errorsTransformId: PropTypes.number
-  },
+class TableBody extends Component {
 
   shouldComponentUpdate(nextProps) {
     return !_.isEqual(
@@ -22,7 +16,7 @@ export default React.createClass({
         errorsTransformId: this.props.errorsTransformId
       }
     );
-  },
+  }
 
   getData() {
     const transformTables = this.props.transforms.map((transform) => (
@@ -45,7 +39,7 @@ export default React.createClass({
         };
       })
     }));
-  },
+  }
 
   render() {
     const data = this.getData();
@@ -65,4 +59,12 @@ export default React.createClass({
     );
   }
 
-});
+}
+
+TableBody.propTypes = {
+  db: PropTypes.object.isRequired,
+  transforms: PropTypes.arrayOf(PropTypes.object).isRequired,
+  errorsTransformId: PropTypes.number
+};
+
+export default TableBody;

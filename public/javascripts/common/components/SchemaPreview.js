@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import velocity from 'velocity-animate';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import { getIconClassForDataType, getDocumentationLinkForDataType } from '../dataTypeMetadata';
 import { handleKeyPress } from '../a11yHelpers';
@@ -8,13 +8,12 @@ import Linkify from 'react-linkify';  // eslint-disable-line no-unused-vars
 
 const SCHEMA_TABLE_COLUMN_COUNT = 7;
 
-export const SchemaPreview = React.createClass({
-  propTypes: {
-    columns: PropTypes.array.isRequired,
-    onExpandColumn: PropTypes.func.isRequired,
-    onExpandSchemaTable: PropTypes.func.isRequired,
-    headerButton: PropTypes.element
-  },
+export class SchemaPreview extends Component {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, 'toggleTable', 'toggleColumn');
+  }
 
   toggleTable() {
     const { onExpandSchemaTable } = this.props;
@@ -55,7 +54,7 @@ export const SchemaPreview = React.createClass({
         el.classList.add('collapsed');
       }
     });
-  },
+  }
 
   toggleColumn(event) {
     if (event.target.tagName === 'A') {
@@ -146,7 +145,7 @@ export const SchemaPreview = React.createClass({
         });
       }
     }
-  },
+  }
 
   render() {
     const { columns, headerButton } = this.props;
@@ -304,6 +303,13 @@ export const SchemaPreview = React.createClass({
       </section>
     );
   }
-});
+}
+
+SchemaPreview.propTypes = {
+  columns: PropTypes.array.isRequired,
+  onExpandColumn: PropTypes.func.isRequired,
+  onExpandSchemaTable: PropTypes.func.isRequired,
+  headerButton: PropTypes.element
+};
 
 export default SchemaPreview;

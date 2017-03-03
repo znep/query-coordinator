@@ -1,26 +1,16 @@
 import LoadingButton from './loading-button';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 
-const FormButton = React.createClass({
-  propTypes: {
-    action: PropTypes.string.isRequired,
-    authenticityToken: PropTypes.string.isRequired,
-    disabled: PropTypes.bool,
-    method: PropTypes.string.isRequired,
-    onSuccess: PropTypes.func,
-    value: PropTypes.string.isRequired
-  },
-  getDefaultProps() {
-    return {
-      disabled: false,
-      onSuccess: _.noop
-    };
-  },
-  getInitialState() {
-    return {
+class FormButton extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
       isLoading: false
     };
-  },
+
+    _.bindAll(this, 'handleSubmit');
+  }
   handleSubmit(event) {
     const {
       action,
@@ -46,7 +36,7 @@ const FormButton = React.createClass({
       complete: stopLoading,
       success: onSuccess
     });
-  },
+  }
   render() {
     const { value, ...buttonProps } = this.props;
     const { isLoading } = this.state;
@@ -61,6 +51,20 @@ const FormButton = React.createClass({
       </form>
     );
   }
-});
+}
+
+FormButton.propTypes = {
+  action: PropTypes.string.isRequired,
+  authenticityToken: PropTypes.string.isRequired,
+  disabled: PropTypes.bool,
+  method: PropTypes.string.isRequired,
+  onSuccess: PropTypes.func,
+  value: PropTypes.string.isRequired
+};
+
+FormButton.defaultProps = {
+  disabled: false,
+  onSuccess: _.noop
+};
 
 export default FormButton;

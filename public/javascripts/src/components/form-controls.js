@@ -1,20 +1,7 @@
 import { classNames } from './utils';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 
-const FormControls = React.createClass({
-  propTypes: {
-    cancelLabel: PropTypes.string,
-    onCancel: PropTypes.func,
-    onSave: PropTypes.func,
-    onBack: PropTypes.func,
-    saveDisabled: PropTypes.bool,
-    saveLabel: PropTypes.string
-  },
-  getDefaultProps() {
-    return {
-      saveDisabled: false
-    };
-  },
+class FormControls extends Component {
   renderButton(handlerName, label, disabled) {
     if (!_.isUndefined(this.props[handlerName])) {
       const className = classNames('button', { disabled });
@@ -28,7 +15,7 @@ const FormControls = React.createClass({
         </button>
       );
     }
-  },
+  }
   render() {
     const {
       cancelLabel,
@@ -43,6 +30,19 @@ const FormControls = React.createClass({
       </div>
     );
   }
-});
+}
+
+FormControls.propTypes = {
+  cancelLabel: PropTypes.string,
+  onCancel: PropTypes.func,
+  onSave: PropTypes.func,
+  onBack: PropTypes.func,
+  saveDisabled: PropTypes.bool,
+  saveLabel: PropTypes.string
+};
+
+FormControls.defaultProps = {
+  saveDisabled: false
+};
 
 export default FormControls;

@@ -1,21 +1,14 @@
 import _ from 'lodash';
 import classNames from 'classnames';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { ViewCard } from 'socrata-components';
 import { getViewCardPropsForView } from '../../../common/helpers/viewCardHelpers';
 
-export const ViewSelector = React.createClass({
-  propTypes: {
-    hasSaveError: PropTypes.bool,
-    isSaved: PropTypes.bool,
-    isSaving: PropTypes.bool,
-    isSavingViewUid: PropTypes.string,
-    onClickChoose: PropTypes.func,
-    renderNoViews: PropTypes.func,
-    viewList: PropTypes.array.isRequired
-  },
-
-  I18n: I18n.featured_content_modal.internal_resource_selector,
+export class ViewSelector extends Component {
+  constructor(props) {
+    super(props);
+    this.I18n = I18n.featured_content_modal.internal_resource_selector;
+  }
 
   renderChooseButton(viewUid) {
     const { onClickChoose, isSaving, isSaved, isSavingViewUid, hasSaveError } = this.props;
@@ -53,11 +46,10 @@ export const ViewSelector = React.createClass({
         {chooseButtonContents}
       </button>
     );
-  },
+  }
 
   render() {
     const { viewList, renderNoViews } = this.props;
-    const renderChooseButton = this.renderChooseButton;
     let viewContent;
 
     if (viewList.length === 0) {
@@ -65,7 +57,7 @@ export const ViewSelector = React.createClass({
     } else {
       viewContent = _.map(viewList, (relatedView, i) => (
         <ViewCard {...getViewCardPropsForView(relatedView)} key={i}>
-          {renderChooseButton(relatedView.id)}
+          {this.renderChooseButton(relatedView.id)}
         </ViewCard>
       ));
     }
@@ -76,6 +68,16 @@ export const ViewSelector = React.createClass({
       </div>
     );
   }
-});
+}
+
+ViewSelector.propTypes = {
+  hasSaveError: PropTypes.bool,
+  isSaved: PropTypes.bool,
+  isSaving: PropTypes.bool,
+  isSavingViewUid: PropTypes.string,
+  onClickChoose: PropTypes.func,
+  renderNoViews: PropTypes.func,
+  viewList: PropTypes.array.isRequired
+};
 
 export default ViewSelector;

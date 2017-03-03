@@ -1,42 +1,43 @@
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import * as search from '../actions/search';
 
-export var Search = React.createClass({
-  propTypes: {
-    term: PropTypes.string,
-    performSearch: PropTypes.func.isRequired,
-    updateSearchTerm: PropTypes.func.isRequired,
-    clearSearch: PropTypes.func.isRequired
-  },
+export class Search extends Component {
+  constructor(props) {
+    super(props);
 
-  componentDidMount: function() {
+    _.bindAll(this, 'onChange', 'onPerformSearch', 'onClearSearch');
+  }
+
+  componentDidMount() {
     if (this.refs.searchElement) {
       this.refs.searchElement.focus();
     } else {
       console.warn('this.refs.searchElement is undefined.');
     }
-  },
+  }
 
-  onChange: (event) => this.props.updateSearchTerm(event.target.value),
+  onChange(event) {
+    this.props.updateSearchTerm(event.target.value);
+  }
 
-  onPerformSearch: function(term) {
+  onPerformSearch(term) {
     return function(event) {
       event.preventDefault();
       this.props.performSearch(term);
     }.bind(this);
-  },
+  }
 
-  onClearSearch: function(term) {
+  onClearSearch(term) {
     return function(event) {
       event.preventDefault();
       this.props.clearSearch(term);
     }.bind(this);
-  },
+  }
 
-  render: function() {
+  render() {
     var { term } = this.props;
 
     // var { defaultToCatalogLandingPage } = window.serverConfig.featureFlags;
@@ -69,7 +70,14 @@ export var Search = React.createClass({
       </div>
     );
   }
-});
+}
+
+Search.propTypes = {
+  term: PropTypes.string,
+  performSearch: PropTypes.func.isRequired,
+  updateSearchTerm: PropTypes.func.isRequired,
+  clearSearch: PropTypes.func.isRequired
+};
 
 const mapStateToProps = (state) => state.search;
 

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { VelocityComponent } from 'velocity-react';
 import BootstrapAlert from './BootstrapAlert';
@@ -15,20 +15,12 @@ import {
   toggleRelatedViews
 } from '../actions/relatedViews';
 
-export const RelatedViewList = React.createClass({
-  propTypes: {
-    bootstrapUrl: PropTypes.string,
-    dismissError: PropTypes.func.isRequired,
-    hasError: PropTypes.bool.isRequired,
-    hasMore: PropTypes.bool.isRequired,
-    isCollapsed: PropTypes.bool.isRequired,
-    isDesktop: PropTypes.bool.isRequired,
-    isLoading: PropTypes.bool.isRequired,
-    loadMore: PropTypes.func.isRequired,
-    onClickWidget: PropTypes.func.isRequired,
-    toggleList: PropTypes.func.isRequired,
-    viewList: PropTypes.arrayOf(PropTypes.object).isRequired
-  },
+export class RelatedViewList extends Component {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, 'onScrollList');
+  }
 
   onScrollList(event) {
     const { isDesktop, hasMore, isLoading, loadMore } = this.props;
@@ -43,7 +35,7 @@ export const RelatedViewList = React.createClass({
     if (isAtRightEdge) {
       loadMore();
     }
-  },
+  }
 
   getAnimation() {
     const { viewList, isCollapsed, isDesktop, isLoading } = this.props;
@@ -72,13 +64,13 @@ export const RelatedViewList = React.createClass({
     return {
       height: (relatedViewHeight + relatedViewMargin) * rowCount - 1
     };
-  },
+  }
 
   renderEmptyListAlert() {
     const { bootstrapUrl } = this.props;
 
     return <BootstrapAlert bootstrapUrl={bootstrapUrl} />;
-  },
+  }
 
   renderContents() {
     const {
@@ -131,7 +123,7 @@ export const RelatedViewList = React.createClass({
         {relatedViews}
       </div>
     );
-  },
+  }
 
   renderLoadMoreLink() {
     const { hasMore, isLoading, loadMore, isDesktop } = this.props;
@@ -152,7 +144,7 @@ export const RelatedViewList = React.createClass({
         {I18n.more}
       </a>
     );
-  },
+  }
 
   renderError() {
     const { hasError, dismissError } = this.props;
@@ -167,7 +159,7 @@ export const RelatedViewList = React.createClass({
         <span role="button" className="icon-close-2 alert-dismiss" onClick={dismissError}></span>
       </div>
     );
-  },
+  }
 
   renderCollapseLink() {
     const { viewList, hasMore, isCollapsed, toggleList, isDesktop } = this.props;
@@ -186,7 +178,7 @@ export const RelatedViewList = React.createClass({
         {isCollapsed ? I18n.more : I18n.less}
       </a>
     );
-  },
+  }
 
   render() {
     const { viewList } = this.props;
@@ -211,7 +203,21 @@ export const RelatedViewList = React.createClass({
       </section>
     );
   }
-});
+}
+
+RelatedViewList.propTypes = {
+  bootstrapUrl: PropTypes.string,
+  dismissError: PropTypes.func.isRequired,
+  hasError: PropTypes.bool.isRequired,
+  hasMore: PropTypes.bool.isRequired,
+  isCollapsed: PropTypes.bool.isRequired,
+  isDesktop: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  loadMore: PropTypes.func.isRequired,
+  onClickWidget: PropTypes.func.isRequired,
+  toggleList: PropTypes.func.isRequired,
+  viewList: PropTypes.arrayOf(PropTypes.object).isRequired
+};
 
 function mapStateToProps(state) {
   return {

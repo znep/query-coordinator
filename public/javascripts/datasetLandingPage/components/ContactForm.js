@@ -3,7 +3,7 @@ import velocity from 'velocity-animate';
 import recaptcha from '../lib/recaptcha';
 import classNames from 'classnames';
 import breakpoints from '../lib/breakpoints';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import {
@@ -21,28 +21,24 @@ import { VALID_EMAIL_REGEX } from '../../common/constants';
 const animationDuration = 300;
 const animationEasing = [0.645, 0.045, 0.355, 1];
 
-export const ContactForm = React.createClass({
-  propTypes: {
-    fields: PropTypes.object.isRequired,
-    onRecaptchaReset: PropTypes.func,
-    recaptchaLoaded: PropTypes.bool.isRequired,
-    resetForm: PropTypes.func.isRequired,
-    resetRecaptcha: PropTypes.bool.isRequired,
-    onClickSend: PropTypes.func.isRequired,
-    onChangeFormField: PropTypes.func.isRequired,
-    onRecaptchaLoaded: PropTypes.func.isRequired,
-    status: PropTypes.string.isRequired
-  },
+export class ContactForm extends Component {
+  constructor(props) {
+    super(props);
 
-  getInitialState() {
-    return {
+    this.state = {
       errors: []
     };
-  },
+
+    _.bindAll(this,
+      'onClickSend',
+      'onFieldChange',
+      'cleanUpAfterClose'
+    );
+  }
 
   componentDidMount() {
     this.initializeRecaptcha();
-  },
+  }
 
   componentDidUpdate() {
     const { onRecaptchaReset, resetRecaptcha, status } = this.props;
@@ -55,7 +51,7 @@ export const ContactForm = React.createClass({
     if (_.isEqual(status, 'success') || _.isEqual(status, 'failure')) {
       this.closeModal();
     }
-  },
+  }
 
   onClickSend(event) {
     event.preventDefault();
@@ -72,7 +68,7 @@ export const ContactForm = React.createClass({
     } else {
       onClickSend();
     }
-  },
+  }
 
   onFieldChange(event) {
     const { id, value } = event.target;
@@ -83,7 +79,7 @@ export const ContactForm = React.createClass({
       value,
       invalid: isInvalid
     });
-  },
+  }
 
   initializeRecaptcha() {
     const { onRecaptchaLoaded } = this.props;
@@ -92,7 +88,7 @@ export const ContactForm = React.createClass({
       onRecaptchaLoaded(true);
       this.recaptchaId = id;
     }.bind(this));
-  },
+  }
 
   validateForm() {
     const { fields } = this.props;
@@ -110,7 +106,7 @@ export const ContactForm = React.createClass({
 
       return result;
     }, []);
-  },
+  }
 
   // We can't store the Recaptcha response token until we fetch it explicitly, so
   // our state might not accurately reflect whether the user has completed the
@@ -127,7 +123,7 @@ export const ContactForm = React.createClass({
     onChangeFormField('recaptchaResponseToken', responseToken);
 
     return _.isEmpty(responseToken);
-  },
+  }
 
   cleanUpAfterClose() {
     const { resetForm } = this.props;
@@ -146,7 +142,7 @@ export const ContactForm = React.createClass({
     resetForm();
     this.setState({ errors: [] });
     this.initializeRecaptcha();
-  },
+  }
 
   closeModal() {
     const element = ReactDOM.findDOMNode(this).querySelector('.modal-container');
@@ -169,7 +165,7 @@ export const ContactForm = React.createClass({
         });
       }
     }, 1000);
-  },
+  }
 
   renderContactForm() {
     const { fields, status, recaptchaLoaded } = this.props;
@@ -250,7 +246,7 @@ export const ContactForm = React.createClass({
         </footer>
       </div>
     );
-  },
+  }
 
   renderConfirmationMessage() {
     const success = this.props.status === 'success';
@@ -260,7 +256,7 @@ export const ContactForm = React.createClass({
       I18n.contact_dataset_owner_modal.failure_html;
 
     return <ConfirmationMessage success={success} text={text} />;
-  },
+  }
 
   renderErrorMessages() {
     const { errors } = this.state;
@@ -276,7 +272,7 @@ export const ContactForm = React.createClass({
         </section>
       );
     }
-  },
+  }
 
   render() {
     const { status } = this.props;
@@ -296,7 +292,19 @@ export const ContactForm = React.createClass({
       </div>
     );
   }
-});
+}
+
+ContactForm.propTypes = {
+  fields: PropTypes.object.isRequired,
+  onRecaptchaReset: PropTypes.func,
+  recaptchaLoaded: PropTypes.bool.isRequired,
+  resetForm: PropTypes.func.isRequired,
+  resetRecaptcha: PropTypes.bool.isRequired,
+  onClickSend: PropTypes.func.isRequired,
+  onChangeFormField: PropTypes.func.isRequired,
+  onRecaptchaLoaded: PropTypes.func.isRequired,
+  status: PropTypes.string.isRequired
+};
 
 function mapStateToProps(state) {
   return state.contactForm;

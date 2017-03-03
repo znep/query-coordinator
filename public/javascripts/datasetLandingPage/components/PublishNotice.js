@@ -1,20 +1,14 @@
 import 'socrata-utils';
 import _ from 'lodash';
 import classNames from 'classnames';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { handleKeyPress } from '../../common/a11yHelpers';
 import { isUserAdminOrPublisher } from '../../common/user';
 import { publishView, clearViewPublishError } from '../actions/view';
 
-export const PublishNotice = React.createClass({
-  propTypes: {
-    onClickPublish: PropTypes.func,
-    onDismissError: PropTypes.func,
-    view: PropTypes.object.isRequired
-  },
-
+export class PublishNotice extends Component {
   renderPublishErrorAlert() {
     const { view, onDismissError } = this.props;
 
@@ -36,7 +30,7 @@ export const PublishNotice = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   renderPublishAlert() {
     const { view, onClickPublish } = this.props;
@@ -85,7 +79,7 @@ export const PublishNotice = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   render() {
     const { view } = this.props;
@@ -101,7 +95,13 @@ export const PublishNotice = React.createClass({
       </div>
     );
   }
-});
+}
+
+PublishNotice.propTypes = {
+  onClickPublish: PropTypes.func,
+  onDismissError: PropTypes.func,
+  view: PropTypes.object.isRequired
+};
 
 function mapStateToProps(state) {
   return _.pick(state, 'view');

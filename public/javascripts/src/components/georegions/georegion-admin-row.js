@@ -1,32 +1,13 @@
 import Status from './georegion-status';
 import RowStatusWidget from './row-status-widget';
 import RowDefaultWidget from './row-default-widget';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 
 function t(str, props) {
   return $.t('screens.admin.georegions.' + str, props);
 }
 
-const GeoregionAdminRow = React.createClass({
-  propTypes: {
-    action: PropTypes.string.isRequired,
-    allowDefaulting: PropTypes.bool,
-    authenticityToken: PropTypes.string.isRequired,
-    dateAdded: PropTypes.number,
-    status: PropTypes.oneOf(_.values(Status)).isRequired,
-    defaultLimit: PropTypes.number.isRequired,
-    defaultStatus: PropTypes.bool.isRequired,
-    name: PropTypes.string.isRequired,
-    onEdit: PropTypes.func.isRequired,
-    onDefaultSuccess: PropTypes.func.isRequired,
-    onEnableSuccess: PropTypes.func.isRequired,
-    renderActions: PropTypes.bool.isRequired
-  },
-  getDefaultProps() {
-    return {
-      allowDefaulting: true
-    };
-  },
+class GeoregionAdminRow extends Component {
   renderRowStatusWidget() {
     const {
       status,
@@ -40,7 +21,7 @@ const GeoregionAdminRow = React.createClass({
         onSuccess={onEnableSuccess}
         {...props} />
     );
-  },
+  }
   renderRowDefaultWidget() {
     const {
       onDefaultSuccess,
@@ -63,7 +44,7 @@ const GeoregionAdminRow = React.createClass({
       case Status.FAILED:
         return null;
     }
-  },
+  }
   renderDateAddedCell() {
     const { dateAdded, status } = this.props;
 
@@ -79,7 +60,7 @@ const GeoregionAdminRow = React.createClass({
       case Status.FAILED:
         return null;
     }
-  },
+  }
   renderEditCell() {
     const {
       onEdit,
@@ -100,7 +81,7 @@ const GeoregionAdminRow = React.createClass({
       case Status.FAILED:
         return null;
     }
-  },
+  }
   render() {
     const { renderActions, status } = this.props;
     const shouldRowExtend = _.includes([Status.PROGRESS, Status.FAILED], status) && renderActions;
@@ -118,6 +99,25 @@ const GeoregionAdminRow = React.createClass({
       </tr>
     );
   }
-});
+}
+
+GeoregionAdminRow.propTypes = {
+  action: PropTypes.string.isRequired,
+  allowDefaulting: PropTypes.bool,
+  authenticityToken: PropTypes.string.isRequired,
+  dateAdded: PropTypes.number,
+  status: PropTypes.oneOf(_.values(Status)).isRequired,
+  defaultLimit: PropTypes.number.isRequired,
+  defaultStatus: PropTypes.bool.isRequired,
+  name: PropTypes.string.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onDefaultSuccess: PropTypes.func.isRequired,
+  onEnableSuccess: PropTypes.func.isRequired,
+  renderActions: PropTypes.bool.isRequired
+};
+
+GeoregionAdminRow.defaultProps = {
+  allowDefaulting: true
+};
 
 export default GeoregionAdminRow;

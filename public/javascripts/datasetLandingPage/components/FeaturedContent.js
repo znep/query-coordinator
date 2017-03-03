@@ -1,15 +1,10 @@
-import React, { PropTypes } from 'react';
+import _ from 'lodash';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import FeaturedViewCard from './FeaturedViewCard';
 import { isUserAdminOrPublisher } from '../../common/user';
 
-export const FeaturedContent = React.createClass({
-  propTypes: {
-    contentList: PropTypes.array.isRequired,
-    isBlobby: PropTypes.bool,
-    isHref: PropTypes.bool
-  },
-
+export class FeaturedContent extends Component {
   renderManagePrompt() {
     const { isBlobby, isHref } = this.props;
 
@@ -33,7 +28,7 @@ export const FeaturedContent = React.createClass({
         </button>
       </div>
     );
-  },
+  }
 
   renderFeaturedContent() {
     const { contentList } = this.props;
@@ -47,7 +42,7 @@ export const FeaturedContent = React.createClass({
     );
 
     return <div className="media-results">{cards}</div>;
-  },
+  }
 
   render() {
     const { contentList } = this.props;
@@ -67,7 +62,13 @@ export const FeaturedContent = React.createClass({
       </section>
     );
   }
-});
+}
+
+FeaturedContent.propTypes = {
+  contentList: PropTypes.array.isRequired,
+  isBlobby: PropTypes.bool,
+  isHref: PropTypes.bool
+};
 
 function mapStateToProps(state) {
   return {

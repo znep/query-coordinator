@@ -1,6 +1,6 @@
 import Status from './georegion-status';
 import GeoregionAdminRow from './georegion-admin-row';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 
 function t(str, props) {
   return $.t('screens.admin.georegions.' + str, props);
@@ -15,25 +15,7 @@ const GeoregionPropType = PropTypes.shape({
   name: PropTypes.string.isRequired
 });
 
-const GeoregionAdminTable = React.createClass({
-  propTypes: {
-    allowDefaulting: PropTypes.bool,
-    authenticityToken: PropTypes.string.isRequired,
-    baseUrlPath: PropTypes.string.isRequired,
-    defaultCount: PropTypes.number.isRequired,
-    defaultLimit: PropTypes.number.isRequired,
-    onDefaultSuccess: PropTypes.func.isRequired,
-    onEdit: PropTypes.func,
-    onEnableSuccess: PropTypes.func.isRequired,
-    rows: PropTypes.arrayOf(GeoregionPropType).isRequired
-  },
-  getDefaultProps() {
-    return {
-      allowDefaulting: true,
-      onEdit: _.noop,
-      rows: []
-    };
-  },
+class GeoregionAdminTable extends Component {
   renderRows(rows) {
     const {
       allowDefaulting,
@@ -101,7 +83,7 @@ const GeoregionAdminTable = React.createClass({
         <GeoregionAdminRow {...rowProps} />
       );
     });
-  },
+  }
   render() {
     const {
       authenticityToken,
@@ -144,6 +126,24 @@ const GeoregionAdminTable = React.createClass({
       </table>
     );
   }
-});
+}
+
+GeoregionAdminTable.propTypes = {
+  allowDefaulting: PropTypes.bool,
+  authenticityToken: PropTypes.string.isRequired,
+  baseUrlPath: PropTypes.string.isRequired,
+  defaultCount: PropTypes.number.isRequired,
+  defaultLimit: PropTypes.number.isRequired,
+  onDefaultSuccess: PropTypes.func.isRequired,
+  onEdit: PropTypes.func,
+  onEnableSuccess: PropTypes.func.isRequired,
+  rows: PropTypes.arrayOf(GeoregionPropType).isRequired
+};
+
+GeoregionAdminTable.defaultProps = {
+  allowDefaulting: true,
+  onEdit: _.noop,
+  rows: []
+};
 
 export default GeoregionAdminTable;

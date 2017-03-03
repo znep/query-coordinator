@@ -1,23 +1,21 @@
-import React, { PropTypes } from 'react';
+import _ from 'lodash';
+import React, { PropTypes, Component } from 'react';
 import classNames from 'classnames';
 
-const TextArea = React.createClass({
-  propTypes: {
-    field: PropTypes.object.isRequired,
-    label: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    onChange: PropTypes.func
-  },
+class TextArea extends Component {
+  constructor(props) {
+    super(props);
 
-  getInitialState() {
-    return {
+    this.state = {
       dirty: false
     };
-  },
+
+    _.bindAll(this, 'onBlur');
+  }
 
   onBlur() {
     this.setState({ dirty: true });
-  },
+  }
 
   render() {
     const { field, label, name, onChange } = this.props;
@@ -45,6 +43,13 @@ const TextArea = React.createClass({
       </div>
     );
   }
-});
+}
+
+TextArea.propTypes = {
+  field: PropTypes.object.isRequired,
+  label: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  onChange: PropTypes.func
+};
 
 export default TextArea;

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router';
 import * as Links from '../../links';
@@ -9,37 +9,29 @@ import ProgressBar from '../ProgressBar';
 import TypeIcon from '../TypeIcon';
 import { commaify } from '../../../common/formatNumber';
 
-const TransformStatus = React.createClass({
-  propTypes: {
-    transform: PropTypes.object.isRequired,
-    columnId: PropTypes.number.isRequired,
-    errorsTransformId: PropTypes.number,
-    path: PropTypes.object.isRequired,
-    totalRows: PropTypes.number
-  },
-
+class TransformStatus extends Component {
   componentDidMount() {
     this.attachFlyouts();
-  },
+  }
 
   shouldComponentUpdate(nextProps) {
     return !_.isEqual(nextProps, this.props);
-  },
+  }
 
   componentDidUpdate() {
     this.attachFlyouts();
-  },
+  }
 
   getFlyoutId() {
     return `transform-status-flyout-${this.props.transform.id}`;
-  },
+  }
 
   attachFlyouts() {
     const element = document.getElementById(this.getFlyoutId());
     if (element) {
       styleguide.attachTo(element.parentNode);
     }
-  },
+  }
 
   render() {
     const { transform, totalRows, path, errorsTransformId, columnId } = this.props;
@@ -134,6 +126,14 @@ const TransformStatus = React.createClass({
       }
     }
   }
-});
+}
+
+TransformStatus.propTypes = {
+  transform: PropTypes.object.isRequired,
+  columnId: PropTypes.number.isRequired,
+  errorsTransformId: PropTypes.number,
+  path: PropTypes.object.isRequired,
+  totalRows: PropTypes.number
+};
 
 export default TransformStatus;

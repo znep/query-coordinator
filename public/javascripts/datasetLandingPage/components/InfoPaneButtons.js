@@ -1,13 +1,7 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { isUserRoled } from '../../common/user';
 
-export default React.createClass({
-  propTypes: {
-    view: PropTypes.object.isRequired,
-    onDownloadData: PropTypes.func,
-    onClickGrid: PropTypes.func
-  },
-
+export default class InfoPaneButtons extends Component {
   renderViewDataButton() {
     const { view, onClickGrid } = this.props;
 
@@ -24,7 +18,7 @@ export default React.createClass({
         </a>
       );
     }
-  },
+  }
 
   renderManageButton() {
     const { view } = this.props;
@@ -40,7 +34,7 @@ export default React.createClass({
     } else {
       return null;
     }
-  },
+  }
 
   renderDownloadLink(format, callback) {
     const { view } = this.props;
@@ -74,7 +68,7 @@ export default React.createClass({
         </a>
       </li>
     );
-  },
+  }
 
   renderDownloadDropdown() {
     const { onDownloadData, view } = this.props;
@@ -115,7 +109,7 @@ export default React.createClass({
         </div>
       );
     }
-  },
+  }
 
   renderApiButton() {
     const { view } = this.props;
@@ -129,7 +123,7 @@ export default React.createClass({
         </button>
       );
     }
-  },
+  }
 
   renderShareButton() {
     return (
@@ -137,7 +131,7 @@ export default React.createClass({
         {I18n.action_buttons.share}
       </button>
     );
-  },
+  }
 
   renderMoreActions() {
     const { view } = this.props;
@@ -193,7 +187,7 @@ export default React.createClass({
         </ul>
       </div>
     );
-  },
+  }
 
   render() {
     return (
@@ -207,4 +201,10 @@ export default React.createClass({
       </div>
     );
   }
-});
+}
+
+InfoPaneButtons.propTypes = {
+  view: PropTypes.object.isRequired,
+  onDownloadData: PropTypes.func,
+  onClickGrid: PropTypes.func
+};

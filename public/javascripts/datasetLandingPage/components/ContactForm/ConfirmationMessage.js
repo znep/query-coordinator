@@ -1,20 +1,22 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, PureComponent } from 'react';
 import classNames from 'classnames';
 
-const ConfirmationMessage = (props) => {
-  const { success, text } = props;
+class ConfirmationMessage extends PureComponent {
+  render() {
+    const { success, text } = this.props;
 
-  const alertClasses = classNames('alert', {
-    success: success,
-    error: !success
-  });
+    const alertClasses = classNames('alert', {
+      success: success,
+      error: !success
+    });
 
-  return (
-    <section className="modal-content">
-      <div className={alertClasses} dangerouslySetInnerHTML={{ __html: text }} />
-    </section>
-  );
-};
+    return (
+      <section className="modal-content">
+        <div className={alertClasses} dangerouslySetInnerHTML={{ __html: text }} />
+      </section>
+    );
+  }
+}
 
 ConfirmationMessage.propTypes = {
   success: PropTypes.bool.isRequired,

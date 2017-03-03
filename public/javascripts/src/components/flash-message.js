@@ -1,20 +1,12 @@
 import { classNames } from './utils';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, PureComponent } from 'react';
 
 const FlashMessagePropType = PropTypes.shape({
   message: PropTypes.string.isRequired,
   type: PropTypes.oneOf(['notice', 'error', 'warning']).isRequired
 });
 
-const FlashMessage = React.createClass({
-  propTypes: {
-    messages: PropTypes.arrayOf(FlashMessagePropType)
-  },
-  getDefaultProps() {
-    return {
-      messages: []
-    };
-  },
+class FlashMessage extends PureComponent {
   render() {
     const messages = _.map(this.props.messages, ({ message, type }, index) => {
       const className = classNames('flash', type);
@@ -27,6 +19,14 @@ const FlashMessage = React.createClass({
       <div>{messages}</div>
     );
   }
-});
+}
+
+FlashMessage.propTypes = {
+  messages: PropTypes.arrayOf(FlashMessagePropType)
+};
+
+FlashMessage.defaultProps = {
+  messages: []
+};
 
 export default FlashMessage;

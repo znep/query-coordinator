@@ -1,22 +1,22 @@
-import React, { Children, PropTypes } from 'react';
+import React, { Children, PropTypes, Component } from 'react';
 import breakpoints from './breakpoints';
 
-const Responsive = React.createClass({
-  propTypes: {
-    children: PropTypes.object.isRequired
-  },
+class Responsive extends Component {
+  constructor(props) {
+    super(props);
 
-  getInitialState() {
-    return this.getState();
-  },
+    this.state = this.getState();
+
+    _.bindAll(this, 'updateState');
+  }
 
   componentDidMount() {
     window.addEventListener('resize', this.updateState);
-  },
+  }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateState);
-  },
+  }
 
   getState() {
     if (window.matchMedia(`(max-width: ${breakpoints.mobile}px)`).matches) {
@@ -40,14 +40,14 @@ const Responsive = React.createClass({
       isTablet: false,
       isMobile: false
     };
-  },
+  }
 
   updateState() {
     const newState = this.getState();
     if (!_.isEqual(newState, this.state)) {
       this.setState(newState);
     }
-  },
+  }
 
   render() {
     const state = this.state;
@@ -56,6 +56,10 @@ const Responsive = React.createClass({
 
     return <div>{children}</div>;
   }
-});
+}
+
+Responsive.propTypes = {
+  children: PropTypes.object.isRequired
+};
 
 export default Responsive;

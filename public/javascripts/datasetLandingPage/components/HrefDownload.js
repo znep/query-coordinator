@@ -1,12 +1,8 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { isUserAdminOrPublisher } from '../../common/user';
 
-export const HrefDownload = React.createClass({
-  propTypes: {
-    view: PropTypes.object.isRequired
-  },
-
+export class HrefDownload extends Component {
   renderManagePrompt() {
     const { view } = this.props;
 
@@ -25,7 +21,7 @@ export const HrefDownload = React.createClass({
         </a>
       </div>
     );
-  },
+  }
 
   renderContent() {
     const { allAccessPoints } = this.props.view;
@@ -79,7 +75,7 @@ export const HrefDownload = React.createClass({
         {content}
       </div>
     );
-  },
+  }
 
   render() {
     const { view } = this.props;
@@ -100,7 +96,11 @@ export const HrefDownload = React.createClass({
       </section>
     );
   }
-});
+}
+
+HrefDownload.propTypes = {
+  view: PropTypes.object.isRequired
+};
 
 function mapStateToProps(state) {
   return _.pick(state, 'view');

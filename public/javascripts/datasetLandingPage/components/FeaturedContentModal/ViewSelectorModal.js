@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import {
@@ -11,31 +11,19 @@ import FeaturedContentModalHeader from './FeaturedContentModalHeader';
 import FormFooter from './FormFooter';
 import ViewSelector from './ViewSelector';
 
-export const ViewSelectorModal = React.createClass({
-  propTypes: {
-    bootstrapUrl: PropTypes.string,
-    hasSaveError: PropTypes.bool,
-    hasViewFetchError: PropTypes.bool,
-    isLoading: PropTypes.bool,
-    isSaving: PropTypes.bool,
-    isSavingViewUid: PropTypes.string,
-    isSaved: PropTypes.bool,
-    onClickCancel: PropTypes.func,
-    onClickChoose: PropTypes.func,
-    onClickClose: PropTypes.func,
-    fetchViews: PropTypes.func,
-    viewList: PropTypes.array.isRequired
-  },
+export class ViewSelectorModal extends Component {
+  constructor(props) {
+    super(props);
+    this.I18n = I18n.featured_content_modal.view_selector_modal;
+  }
 
   componentWillMount() {
     this.props.fetchViews();
-  },
+  }
 
   componentDidMount() {
     ReactDOM.findDOMNode(this).querySelector('h2').focus();
-  },
-
-  I18n: I18n.featured_content_modal.view_selector_modal,
+  }
 
   renderBackButton() {
     const { onClickCancel } = this.props;
@@ -45,7 +33,7 @@ export const ViewSelectorModal = React.createClass({
         {I18n.back}
       </button>
     );
-  },
+  }
 
   renderContent() {
     const {
@@ -84,13 +72,13 @@ export const ViewSelectorModal = React.createClass({
         <ViewSelector {...viewSelectorProps} />
       );
     }
-  },
+  }
 
   renderNoViews() {
     const { bootstrapUrl } = this.props;
 
     return <BootstrapAlert bootstrapUrl={bootstrapUrl} />;
-  },
+  }
 
   renderFooter() {
     const { onClickCancel } = this.props;
@@ -100,7 +88,7 @@ export const ViewSelectorModal = React.createClass({
     };
 
     return <FormFooter {...footerProps} />;
-  },
+  }
 
   renderSaveError() {
     const { hasSaveError } = this.props;
@@ -109,7 +97,7 @@ export const ViewSelectorModal = React.createClass({
         <div className="alert error">{I18n.featured_content_modal.save_error_message}</div>
       );
     }
-  },
+  }
 
   render() {
     const { onClickClose } = this.props;
@@ -132,7 +120,22 @@ export const ViewSelectorModal = React.createClass({
       </div>
     );
   }
-});
+}
+
+ViewSelectorModal.propTypes = {
+  bootstrapUrl: PropTypes.string,
+  hasSaveError: PropTypes.bool,
+  hasViewFetchError: PropTypes.bool,
+  isLoading: PropTypes.bool,
+  isSaving: PropTypes.bool,
+  isSavingViewUid: PropTypes.string,
+  isSaved: PropTypes.bool,
+  onClickCancel: PropTypes.func,
+  onClickChoose: PropTypes.func,
+  onClickClose: PropTypes.func,
+  fetchViews: PropTypes.func,
+  viewList: PropTypes.array.isRequired
+};
 
 // Merge state.featuredContent.externalResource to top-level for convenience.
 function mapStateToProps(state) {

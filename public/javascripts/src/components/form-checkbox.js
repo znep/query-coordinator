@@ -1,23 +1,10 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 
-const FormCheckbox = React.createClass({
-  propTypes: {
-    action: PropTypes.string,
-    authenticityToken: PropTypes.string.isRequired,
-    checked: PropTypes.bool.isRequired,
-    disabled: PropTypes.bool,
-    method: PropTypes.string.isRequired,
-    onSuccess: PropTypes.func,
-    title: PropTypes.string
-  },
-  getDefaultProps() {
-    return {
-      action: '',
-      disabled: false,
-      onSuccess: _.noop,
-      title: null
-    };
-  },
+class FormCheckbox extends Component {
+  constructor(props) {
+    super(props);
+    _.bindAll(this, 'handleKeyPressSelect', 'handleSelect');
+  }
   handleKeyPressSelect(event) {
     const keyCode = event.nativeEvent.keyCode;
 
@@ -25,7 +12,7 @@ const FormCheckbox = React.createClass({
     if (keyCode === 13 || keyCode === 32) {
       this.handleSelect();
     }
-  },
+  }
   handleSelect() {
     const {
       action,
@@ -45,7 +32,7 @@ const FormCheckbox = React.createClass({
       dataType: 'json',
       success: onSuccess
     });
-  },
+  }
   render() {
     const {
       checked,
@@ -73,6 +60,23 @@ const FormCheckbox = React.createClass({
       </form>
     );
   }
-});
+}
+
+FormCheckbox.propTypes = {
+  action: PropTypes.string,
+  authenticityToken: PropTypes.string.isRequired,
+  checked: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool,
+  method: PropTypes.string.isRequired,
+  onSuccess: PropTypes.func,
+  title: PropTypes.string
+};
+
+FormCheckbox.defaultProps = {
+  action: '',
+  disabled: false,
+  onSuccess: _.noop,
+  title: null
+};
 
 export default FormCheckbox;

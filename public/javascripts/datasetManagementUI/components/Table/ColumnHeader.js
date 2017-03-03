@@ -1,21 +1,15 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { Link } from 'react-router';
 import TypeIcon from '../TypeIcon';
 import { soqlTypes, soqlProperties } from '../../lib/soqlTypes';
 import * as Links from '../../links';
 
-const ColumnHeader = React.createClass({
-
-  propTypes: {
-    outputSchema: PropTypes.object.isRequired,
-    column: PropTypes.object.isRequired,
-    updateColumnType: PropTypes.func.isRequired
-  },
+class ColumnHeader extends Component {
 
   shouldComponentUpdate(nextProps) {
     return !_.isEqual(nextProps.column, this.props.column) ||
       nextProps.outputSchema.id !== this.props.outputSchema.id;
-  },
+  }
 
   render() {
     const { outputSchema, column, updateColumnType } = this.props;
@@ -59,6 +53,12 @@ const ColumnHeader = React.createClass({
     );
   }
 
-});
+}
+
+ColumnHeader.propTypes = {
+  outputSchema: PropTypes.object.isRequired,
+  column: PropTypes.object.isRequired,
+  updateColumnType: PropTypes.func.isRequired
+};
 
 export default ColumnHeader;

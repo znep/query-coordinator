@@ -1,15 +1,11 @@
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 
-export default React.createClass({
-
-  propTypes: {
-    cell: PropTypes.object
-  },
+class TableCell extends Component {
 
   shouldComponentUpdate(nextProps) {
     return this.props.cell !== nextProps.cell;
-  },
+  }
 
   render() {
     const cell = this.props.cell;
@@ -36,4 +32,10 @@ export default React.createClass({
     }
   }
 
-});
+}
+
+TableCell.propTypes = {
+  cell: PropTypes.object
+};
+
+export default TableCell;

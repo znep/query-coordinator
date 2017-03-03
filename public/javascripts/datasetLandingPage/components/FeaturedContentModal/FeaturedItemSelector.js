@@ -1,5 +1,6 @@
+import _ from 'lodash';
 import classNames from 'classnames';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import FeaturedViewCard from '../FeaturedViewCard';
@@ -15,40 +16,20 @@ import {
   removeFeaturedItem
 } from '../../actions/featuredContent';
 
-export const FeaturedItemSelector = React.createClass({
-  propTypes: {
-    contentList: PropTypes.array.isRequired,
-    hasRemoveError: PropTypes.bool,
-    isBlobby: PropTypes.bool,
-    isHref: PropTypes.bool,
-    isRemoving: PropTypes.bool,
-    onClickAdd: PropTypes.func,
-    onClickClose: PropTypes.func,
-    onClickDone: PropTypes.func,
-    onClickEdit: PropTypes.func,
-    onClickRemove: PropTypes.func,
-    removePosition: PropTypes.number,
-    renderHeader: PropTypes.func
-  },
+export class FeaturedItemSelector extends Component {
+  constructor(props) {
+    super(props);
 
-  getDefaultProps() {
-    return {
-      onClickAdd: _.noop,
-      onClickDone: _.noop,
-      onClickEdit: _.noop,
-      onClickRemove: _.noop
-    };
-  },
-
-  getInitialState() {
-    return {
+    this.state = {
       showPlaceholderDetails: [false, false, false]
     };
-  },
+
+    _.bindAll(this, 'onClickPreAdd');
+  }
 
   componentDidMount() {
     ReactDOM.findDOMNode(this).querySelector('h2').focus();
-  },
+  }
 
   // When we click the add button that shows more add buttons.
   onClickPreAdd(position) {
@@ -62,7 +43,7 @@ export const FeaturedItemSelector = React.createClass({
     }
 
     this.setState({ showPlaceholderDetails });
-  },
+  }
 
   renderAddButton(index, type, text) {
     const { onClickAdd } = this.props;
@@ -75,7 +56,7 @@ export const FeaturedItemSelector = React.createClass({
         {text}
       </button>
     );
-  },
+  }
 
   renderEditButton(index) {
     const { contentList, onClickEdit } = this.props;
@@ -89,7 +70,7 @@ export const FeaturedItemSelector = React.createClass({
         {I18n.change}
       </button>
     );
-  },
+  }
 
   renderRemoveButton(index) {
     const { contentList, isRemoving, removePosition, onClickRemove } = this.props;
@@ -117,7 +98,7 @@ export const FeaturedItemSelector = React.createClass({
         {contents}
       </button>
     );
-  },
+  }
 
   renderActionButtons(index) {
     const { contentList } = this.props;
@@ -149,7 +130,7 @@ export const FeaturedItemSelector = React.createClass({
     } else {
       return [this.renderEditButton(index), this.renderRemoveButton(index)];
     }
-  },
+  }
 
   renderFooter() {
     const { onClickDone } = this.props;
@@ -167,7 +148,7 @@ export const FeaturedItemSelector = React.createClass({
         </div>
       </footer>
     );
-  },
+  }
 
   renderContent() {
     const { contentList, isRemoving, removePosition, isBlobby, isHref } = this.props;
@@ -217,7 +198,7 @@ export const FeaturedItemSelector = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   renderRemoveError() {
     const { hasRemoveError } = this.props;
@@ -231,7 +212,7 @@ export const FeaturedItemSelector = React.createClass({
         {I18n.featured_content_modal.remove_error}
       </div>
     );
-  },
+  }
 
   render() {
     const { onClickClose } = this.props;
@@ -244,7 +225,7 @@ export const FeaturedItemSelector = React.createClass({
       </div>
     );
   }
-});
+}
 
 function mapStateToProps(state) {
   return {
@@ -324,5 +305,27 @@ function mapDispatchToProps(dispatch) {
     }
   };
 }
+
+FeaturedItemSelector.propTypes = {
+  contentList: PropTypes.array.isRequired,
+  hasRemoveError: PropTypes.bool,
+  isBlobby: PropTypes.bool,
+  isHref: PropTypes.bool,
+  isRemoving: PropTypes.bool,
+  onClickAdd: PropTypes.func,
+  onClickClose: PropTypes.func,
+  onClickDone: PropTypes.func,
+  onClickEdit: PropTypes.func,
+  onClickRemove: PropTypes.func,
+  removePosition: PropTypes.number,
+  renderHeader: PropTypes.func
+};
+
+FeaturedItemSelector.defaultProps = {
+  onClickAdd: _.noop,
+  onClickDone: _.noop,
+  onClickEdit: _.noop,
+  onClickRemove: _.noop
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(FeaturedItemSelector);

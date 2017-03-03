@@ -1,30 +1,26 @@
 import _ from 'lodash';
-import collapsible from '../collapsible'; // eslint-disable-line
+import collapsible from '../collapsible';
 import velocity from 'velocity-animate';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import formatDate from '../formatDate';
 import utils from 'socrata-utils';
 import { handleKeyPress } from '../a11yHelpers';
 import { localizeLink } from '../locale';
+import Linkify from 'react-linkify';
 
-// ...For some reason eslint thinks this is unused.
-import Linkify from 'react-linkify'; // eslint-disable-line no-unused-vars
+class MetadataTable extends Component {
+  constructor(props) {
+    super(props);
 
-const MetadataTable = React.createClass({
-  propTypes: {
-    onClickEditMetadata: PropTypes.func,
-    onClickStats: PropTypes.func,
-    onExpandMetadataTable: PropTypes.func,
-    onExpandTags: PropTypes.func,
-    view: PropTypes.object.isRequired
-  },
+    _.bindAll(this, 'toggleTable');
+  }
 
   componentDidMount() {
     this.collapseTags();
     this.collapseTable();
     this.patchFirefoxWordBreakBug();
-  },
+  }
 
   // Legendary firefox hack, see https://bugzilla.mozilla.org/show_bug.cgi?id=1266901
   patchFirefoxWordBreakBug() {
@@ -34,7 +30,7 @@ const MetadataTable = React.createClass({
       link.offsetHeight; // eslint-disable-line no-unused-expressions
       link.style.display = '';
     });
-  },
+  }
 
   collapseTags() {
     if (_.isEmpty(this.props.view.tags)) {
@@ -50,7 +46,7 @@ const MetadataTable = React.createClass({
       },
       expandedCallback: this.props.onExpandTags || _.noop
     });
-  },
+  }
 
   collapseTable() {
     const el = ReactDOM.findDOMNode(this);
@@ -79,7 +75,7 @@ const MetadataTable = React.createClass({
 
       return;
     }
-  },
+  }
 
   toggleTable(event) {
     event.preventDefault();
@@ -113,7 +109,7 @@ const MetadataTable = React.createClass({
         tableColumn.classList.add('collapsed');
       });
     }
-  },
+  }
 
   render() {
     const view = this.props.view;
@@ -502,6 +498,14 @@ const MetadataTable = React.createClass({
       </div>
     );
   }
-});
+}
+
+MetadataTable.propTypes = {
+  onClickEditMetadata: PropTypes.func,
+  onClickStats: PropTypes.func,
+  onExpandMetadataTable: PropTypes.func,
+  onExpandTags: PropTypes.func,
+  view: PropTypes.object.isRequired
+};
 
 export default MetadataTable;

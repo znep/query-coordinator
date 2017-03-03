@@ -1,24 +1,21 @@
-import React, { PropTypes } from 'react';
+import _ from 'lodash';
+import React, { PropTypes, Component } from 'react';
 import classNames from 'classnames';
 
-const TextInput = React.createClass({
-  propTypes: {
-    description: PropTypes.string,
-    field: PropTypes.object.isRequired,
-    label: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    onChange: PropTypes.func
-  },
+class TextInput extends Component {
+  constructor(props) {
+    super(props);
 
-  getInitialState() {
-    return {
+    this.state = {
       dirty: false
     };
-  },
+
+    _.bindAll(this, 'onBlur');
+  }
 
   onBlur() {
     this.setState({ dirty: true });
-  },
+  }
 
   render() {
     const { description, field, label, name, onChange } = this.props;
@@ -54,6 +51,14 @@ const TextInput = React.createClass({
       </div>
     );
   }
-});
+}
+
+TextInput.propTypes = {
+  description: PropTypes.string,
+  field: PropTypes.object.isRequired,
+  label: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  onChange: PropTypes.func
+};
 
 export default TextInput;

@@ -3,7 +3,7 @@ import FormControls from '../form-controls';
 import FormSelectInput from '../form-select-input';
 import FormTextInput from '../form-text-input';
 import Spinner from '../spinner';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 
 const georegionsNS = blist.namespace.fetch('blist.georegions');
 
@@ -11,30 +11,11 @@ function t(str, props) {
   return $.t('screens.admin.georegions.' + str, props);
 }
 
-const ConfigureBoundaryForm = React.createClass({
-  propTypes: {
-    cancelLabel: PropTypes.string,
-    fetchInitialState: PropTypes.func.isRequired,
-    id: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number]).isRequired,
-    initialState: PropTypes.object,
-    onCancel: PropTypes.func,
-    onClose: PropTypes.func,
-    onSave: PropTypes.func.isRequired,
-    requiredFields: PropTypes.arrayOf(PropTypes.string),
-    saveLabel: PropTypes.string,
-    shouldConfirm: PropTypes.bool,
-    title: PropTypes.string.isRequired
-  },
-  getDefaultProps() {
-    return {
-      requiredFields: [],
-      shouldConfirm: false
-    };
-  },
-  getInitialState() {
-    return _.extend({
+class ConfigureBoundaryForm extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = _.extend({
       backActions: [],
       geometryLabel: '',
       geometryLabelColumns: [],
@@ -42,7 +23,9 @@ const ConfigureBoundaryForm = React.createClass({
       isConfigured: false,
       name: ''
     }, this.props.initialState);
-  },
+
+    _.bindAll(this, 'handleCancel', 'handleSave', 'handleSubmit');
+  }
   componentDidMount() {
     if (!_.isEmpty(this.props.initialState)) {
       return;
@@ -58,13 +41,13 @@ const ConfigureBoundaryForm = React.createClass({
     };
     const error = (message) => this.setState({ errorMessage: message });
     this.props.fetchInitialState(complete, success, error);
-  },
+  }
   handleCancel() {
     const { backActions } = this.state;
     const action = backActions.pop();
     this.setState({backActions});
     action();
-  },
+  }
   handleSave() {
     const { onSave } = this.props;
 
@@ -97,14 +80,14 @@ const ConfigureBoundaryForm = React.createClass({
       this.setState({backActions, isConfigured: true});
     }
 
-  },
+  }
 
   handleSubmit(event) {
     event.preventDefault();
     if (this.validateForm()) {
       this.handleSave();
     }
-  },
+  }
 
   makeFormSelectInputOptions(geometryLabelColumns) {
     return _.map(geometryLabelColumns, ({ id, fieldName, name}) => {
@@ -114,13 +97,13 @@ const ConfigureBoundaryForm = React.createClass({
         value: fieldName
       };
     });
-  },
+  }
 
   validateRequiredFields() {
     const { requiredFields } = this.props;
 
     return !_.any(requiredFields, (fieldName) => (_.isEmpty(this.state[fieldName])));
-  },
+  }
 
   validateUniqueName() {
     const existingGeoregions = _.get(georegionsNS, 'georegions', []);
@@ -133,11 +116,11 @@ const ConfigureBoundaryForm = React.createClass({
       value();
 
     return !_.contains(unavailableGeoregionNames, this.state.name);
-  },
+  }
 
   validateForm() {
     return this.validateRequiredFields() && this.validateUniqueName();
-  },
+  }
 
   renderBoundaryNameField() {
     const { name } = this.state;
@@ -164,7 +147,7 @@ const ConfigureBoundaryForm = React.createClass({
         requiredFieldValidationError={t('configure_boundary.boundary_name_required_field_error')}
         contentValidator={contentValidator} />
     );
-  },
+  }
 
   renderFlashMessage() {
     const { errorMessage } = this.state;
@@ -174,7 +157,7 @@ const ConfigureBoundaryForm = React.createClass({
         <FlashMessage messages={[{ type: 'error', message: errorMessage }]} />
       );
     }
-  },
+  }
 
   renderFormControls() {
     const { shouldConfirm } = this.props;
@@ -195,7 +178,7 @@ const ConfigureBoundaryForm = React.createClass({
         saveDisabled={!this.validateForm()}
         saveLabel={saveLabel} />
     );
-  },
+  }
 
   renderShapeLabelField() {
     const {
@@ -219,7 +202,7 @@ const ConfigureBoundaryForm = React.createClass({
         required
         validationError={t('configure_boundary.boundary_geometry_label_field_error')} />
     );
-  },
+  }
 
   render() {
     const { shouldConfirm, title } = this.props;
@@ -257,6 +240,27 @@ const ConfigureBoundaryForm = React.createClass({
       );
     }
   }
-});
+}
+
+ConfigureBoundaryForm.propTypes = {
+  cancelLabel: PropTypes.string,
+  fetchInitialState: PropTypes.func.isRequired,
+  id: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number]).isRequired,
+  initialState: PropTypes.object,
+  onCancel: PropTypes.func,
+  onClose: PropTypes.func,
+  onSave: PropTypes.func.isRequired,
+  requiredFields: PropTypes.arrayOf(PropTypes.string),
+  saveLabel: PropTypes.string,
+  shouldConfirm: PropTypes.bool,
+  title: PropTypes.string.isRequired
+};
+
+ConfigureBoundaryForm.defaultProps = {
+  requiredFields: [],
+  shouldConfirm: false
+};
 
 export default ConfigureBoundaryForm;

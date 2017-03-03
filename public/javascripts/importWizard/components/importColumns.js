@@ -1,5 +1,5 @@
 /* global importSource */
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import format from 'stringformat';
 import 'jquery.awesomereorder';
 import _ from 'lodash';
@@ -328,19 +328,14 @@ export const EMPTY_COMPOSITE_COLUMN = {
   locationComponents: LC.emptyLocationSource()
 };
 
-const ViewColumns = React.createClass({
-  propTypes: {
-    columns: PropTypes.arrayOf(PropTypes.object).isRequired,
-    sourceColumns: PropTypes.arrayOf(PropTypes.object).isRequired,
-    dispatch: PropTypes.func.isRequired
-  },
-  componentDidMount: function() {
+class ViewColumns extends Component {
+  componentDidMount() {
     this.installJQueryStuff();
-  },
-  componentDidUpdate: function() {
+  }
+  componentDidUpdate() {
     this.installJQueryStuff();
-  },
-  installJQueryStuff: function() {
+  }
+  installJQueryStuff() {
     // awesome reorder (makes ResultColumns drag/droppable)
     const listElSelector = 'ul.columnsList.importList';
     $(listElSelector).awesomereorder({
@@ -364,8 +359,8 @@ const ViewColumns = React.createClass({
       messageModal.jqmShow();
       messageModal.find('.jqmClose').focus();
     });
-  },
-  render: function() {
+  }
+  render() {
     const {columns, dispatch, sourceColumns} = this.props;
 
     const sourceOptions = [
@@ -418,7 +413,13 @@ const ViewColumns = React.createClass({
       </div>
     );
   }
-});
+}
+
+ViewColumns.propTypes = {
+  columns: PropTypes.arrayOf(PropTypes.object).isRequired,
+  sourceColumns: PropTypes.arrayOf(PropTypes.object).isRequired,
+  dispatch: PropTypes.func.isRequired
+};
 
 function ViewToolbar({dispatch, sourceColumns}) {
   return (

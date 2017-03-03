@@ -3,10 +3,10 @@ import mockView from 'data/mockView';
 
 describe('components/ShareModal', function() {
   it('renders an element', function() {
-    var element = renderPureComponent(ShareModal({
+    var element = renderComponent(ShareModal, {
       onClickOption: _.noop,
       view: mockView
-    }));
+    });
 
     expect(element).to.exist;
   });

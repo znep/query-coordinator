@@ -1,21 +1,8 @@
 import socrataTitleTipWrapper from './socrata-title-tip-wrapper';
 import { classNames } from './utils';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, PureComponent } from 'react';
 
-const LoadingButton = socrataTitleTipWrapper(React.createClass({
-  propTypes: {
-    children: PropTypes.string,
-    disabled: PropTypes.bool,
-    isLoading: PropTypes.bool,
-    type: PropTypes.oneOf(['button', 'submit', 'reset'])
-  },
-  getDefaultProps() {
-    return {
-      disabled: false,
-      isLoading: false,
-      type: 'button'
-    };
-  },
+class LoadingButton extends PureComponent {
   render() {
     const { isLoading, children, disabled } = this.props;
     const className = classNames(
@@ -38,6 +25,19 @@ const LoadingButton = socrataTitleTipWrapper(React.createClass({
       </button>
     );
   }
-}));
+}
 
-export default LoadingButton;
+LoadingButton.propTypes = {
+  children: PropTypes.string,
+  disabled: PropTypes.bool,
+  isLoading: PropTypes.bool,
+  type: PropTypes.oneOf(['button', 'submit', 'reset'])
+};
+
+LoadingButton.defaultProps = {
+  disabled: false,
+  isLoading: false,
+  type: 'button'
+};
+
+export default socrataTitleTipWrapper(LoadingButton);

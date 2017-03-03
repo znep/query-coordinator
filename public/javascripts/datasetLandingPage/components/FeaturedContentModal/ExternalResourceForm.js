@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { VALID_URL_REGEX } from '../../../common/constants';
@@ -12,48 +12,31 @@ import {
   setExternalResourceField
 } from '../../actions/featuredContent';
 
-export const ExternalResourceForm = React.createClass({
-  propTypes: {
-    canSave: PropTypes.bool,
-    description: PropTypes.string,
-    hasSaveError: PropTypes.bool,
-    previewImage: PropTypes.string,
-    isSaved: PropTypes.bool,
-    isSaving: PropTypes.bool,
-    onChangeDescription: PropTypes.func,
-    onChangePreviewImage: PropTypes.func,
-    onChangeTitle: PropTypes.func,
-    onChangeUrl: PropTypes.func,
-    onClickCancel: PropTypes.func,
-    onClickClose: PropTypes.func,
-    onClickSave: PropTypes.func,
-    title: PropTypes.string,
-    url: PropTypes.string
-  },
+export class ExternalResourceForm extends Component {
+  constructor(props) {
+    super(props);
 
-  // These are defaulted to reduce ceremony in onChange* functions.
-  getDefaultProps() {
-    return {
-      onChangeDescription: _.noop,
-      onChangePreviewImage: _.noop,
-      onChangeTitle: _.noop,
-      onChangeUrl: _.noop
-    };
-  },
-
-  getInitialState() {
-    return {
+    this.state = {
       isImageInvalid: false
     };
-  },
+
+    this.I18n = I18n.featured_content_modal.external_resource_form;
+
+    _.bindAll(this,
+      'onChangeDescription',
+      'onChangePreviewImage',
+      'onChangeTitle',
+      'onChangeUrl'
+    );
+  }
 
   componentDidMount() {
     ReactDOM.findDOMNode(this).querySelector('h2').focus();
-  },
+  }
 
   onChangeDescription(event) {
     this.props.onChangeDescription(event.target.value);
-  },
+  }
 
   onChangePreviewImage(event) {
     const { onChangePreviewImage } = this.props;
@@ -79,17 +62,15 @@ export const ExternalResourceForm = React.createClass({
     if (file) {
       fileReader.readAsDataURL(file);
     }
-  },
+  }
 
   onChangeTitle(event) {
     this.props.onChangeTitle(event.target.value);
-  },
+  }
 
   onChangeUrl(event) {
     this.props.onChangeUrl(event.target.value);
-  },
-
-  I18n: I18n.featured_content_modal.external_resource_form,
+  }
 
   renderInputField(key, inputProps) {
     const prefix = 'external-resource';
@@ -121,7 +102,7 @@ export const ExternalResourceForm = React.createClass({
         <input {...inputProps} />
       </div>
     );
-  },
+  }
 
   renderPreview() {
     const { description, previewImage, title } = this.props;
@@ -133,7 +114,7 @@ export const ExternalResourceForm = React.createClass({
     };
 
     return <ExternalViewCard {...cardProps} />;
-  },
+  }
 
   renderContent() {
     const { url, hasSaveError, onClickCancel } = this.props;
@@ -199,7 +180,7 @@ export const ExternalResourceForm = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   renderFooter() {
     const { canSave, isSaved, isSaving, onClickCancel, onClickSave } = this.props;
@@ -218,7 +199,7 @@ export const ExternalResourceForm = React.createClass({
     };
 
     return <FormFooter {...footerProps} />;
-  },
+  }
 
   render() {
     const { onClickClose } = this.props;
@@ -231,7 +212,33 @@ export const ExternalResourceForm = React.createClass({
       </div>
     );
   }
-});
+}
+
+ExternalResourceForm.propTypes = {
+  canSave: PropTypes.bool,
+  description: PropTypes.string,
+  hasSaveError: PropTypes.bool,
+  previewImage: PropTypes.string,
+  isSaved: PropTypes.bool,
+  isSaving: PropTypes.bool,
+  onChangeDescription: PropTypes.func,
+  onChangePreviewImage: PropTypes.func,
+  onChangeTitle: PropTypes.func,
+  onChangeUrl: PropTypes.func,
+  onClickCancel: PropTypes.func,
+  onClickClose: PropTypes.func,
+  onClickSave: PropTypes.func,
+  title: PropTypes.string,
+  url: PropTypes.string
+};
+
+// These are defaulted to reduce ceremony in onChange* functions.
+ExternalResourceForm.defaultProps = {
+  onChangeDescription: _.noop,
+  onChangePreviewImage: _.noop,
+  onChangeTitle: _.noop,
+  onChangeUrl: _.noop
+};
 
 // Merge state.featuredContent.externalResource to top-level for convenience.
 function mapStateToProps(state) {

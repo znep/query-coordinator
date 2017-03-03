@@ -1,11 +1,7 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 
-export const BlobPreview = React.createClass({
-  propTypes: {
-    view: PropTypes.object.isRequired
-  },
-
+export class BlobPreview extends Component {
   renderPreview() {
     const { view } = this.props;
 
@@ -24,7 +20,7 @@ export const BlobPreview = React.createClass({
       default:
         return null;
     }
-  },
+  }
 
   render() {
     const { isBlobby, blobType } = this.props.view;
@@ -43,7 +39,11 @@ export const BlobPreview = React.createClass({
       </section>
     );
   }
-});
+}
+
+BlobPreview.propTypes = {
+  view: PropTypes.object.isRequired
+};
 
 function mapStateToProps(state) {
   return _.pick(state, 'view');

@@ -1,23 +1,8 @@
 import Status from './georegion-status';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, PureComponent } from 'react';
 import FormCheckbox from '../form-checkbox';
 
-const RowDefaultWidget = React.createClass({
-  propTypes: {
-    action: PropTypes.string.isRequired,
-    allowDefaulting: PropTypes.bool.isRequired,
-    authenticityToken: PropTypes.string.isRequired,
-    defaultLimit: PropTypes.number.isRequired,
-    defaultStatus: PropTypes.bool.isRequired,
-    enabledStatus: PropTypes.oneOf(_.values(Status)).isRequired,
-    id: PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]).isRequired,
-    onSuccess: PropTypes.func
-  },
-  getDefaultProps() {
-    return {
-      onSuccess: _.noop
-    };
-  },
+class RowDefaultWidget extends PureComponent {
   render() {
     const {
       action,
@@ -72,6 +57,21 @@ const RowDefaultWidget = React.createClass({
       );
     }
   }
-});
+}
+
+RowDefaultWidget.propTypes = {
+  action: PropTypes.string.isRequired,
+  allowDefaulting: PropTypes.bool.isRequired,
+  authenticityToken: PropTypes.string.isRequired,
+  defaultLimit: PropTypes.number.isRequired,
+  defaultStatus: PropTypes.bool.isRequired,
+  enabledStatus: PropTypes.oneOf(_.values(Status)).isRequired,
+  id: PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]).isRequired,
+  onSuccess: PropTypes.func
+};
+
+RowDefaultWidget.defaultProps = {
+  onSuccess: _.noop
+};
 
 export default RowDefaultWidget;

@@ -1,22 +1,7 @@
 import { classNames } from './utils';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, PureComponent } from 'react';
 
-const FormInput = React.createClass({
-  propTypes: {
-    children: PropTypes.any.isRequired,
-    description: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired,
-    id: PropTypes.string.isRequired,
-    required: PropTypes.bool,
-    showValidationError: PropTypes.bool,
-    validationError: PropTypes.string
-  },
-  getDefaultProps() {
-    return {
-      required: false,
-      showValidationError: false
-    };
-  },
+class FormInput extends PureComponent {
   render() {
     const {
       children,
@@ -45,6 +30,21 @@ const FormInput = React.createClass({
       </div>
     );
   }
-});
+}
+
+FormInput.propTypes = {
+  children: PropTypes.any.isRequired,
+  description: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  required: PropTypes.bool,
+  showValidationError: PropTypes.bool,
+  validationError: PropTypes.string
+};
+
+FormInput.defaultProps = {
+  required: false,
+  showValidationError: false
+};
 
 export default FormInput;

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import FeaturedContentModalHeader from './FeaturedContentModalHeader';
@@ -13,42 +13,21 @@ import {
   setStoryUrlField
 } from '../../actions/featuredContent';
 
-export const StoryForm = React.createClass({
-  propTypes: {
-    canSave: PropTypes.bool,
-    createdAt: PropTypes.string,
-    description: PropTypes.string,
-    hasSaveError: PropTypes.bool,
-    hasValidationError: PropTypes.bool,
-    imageUrl: PropTypes.string,
-    isLoadingStory: PropTypes.bool,
-    isPrivate: PropTypes.bool,
-    isSaved: PropTypes.bool,
-    isSaving: PropTypes.bool,
-    loadRequestedStory: PropTypes.func,
-    onChangeUrl: PropTypes.func,
-    onClickCancel: PropTypes.func,
-    onClickClose: PropTypes.func,
-    onClickSave: PropTypes.func,
-    shouldLoadStory: PropTypes.bool,
-    title: PropTypes.string,
-    url: PropTypes.string,
-    viewCount: PropTypes.number
-  },
+export class StoryForm extends Component {
+  constructor(props) {
+    super(props);
 
-  getDefaultProps() {
-    return {
-      loadRequestedStory: _.noop,
-      onChangeUrl: _.noop
-    };
-  },
+    this.I18n = I18n.featured_content_modal.story_form;
+
+    _.bindAll(this, 'onChangeUrl');
+  }
 
   componentDidMount() {
     ReactDOM.findDOMNode(this).querySelector('h2').focus();
 
     this.loadRequestedStory = _.debounce(this.loadRequestedStory, 500, { leading: true });
     this.loadStoryIfNeeded();
-  },
+  }
 
   componentDidUpdate() {
     this.loadStoryIfNeeded();
@@ -59,23 +38,21 @@ export const StoryForm = React.createClass({
         invalidField.focus();
       }
     }
-  },
+  }
 
   onChangeUrl(event) {
     this.props.onChangeUrl(event.target.value);
-  },
+  }
 
   loadRequestedStory() {
     this.props.loadRequestedStory();
-  },
+  }
 
   loadStoryIfNeeded() {
     if (this.props.shouldLoadStory) {
       this.loadRequestedStory();
     }
-  },
-
-  I18n: I18n.featured_content_modal.story_form,
+  }
 
   renderForm() {
     const { url, hasSaveError, hasValidationError } = this.props;
@@ -103,7 +80,7 @@ export const StoryForm = React.createClass({
         {validationWarning}
       </form>
     );
-  },
+  }
 
   renderPreview() {
     let contents;
@@ -145,7 +122,7 @@ export const StoryForm = React.createClass({
         {contents}
       </div>
     );
-  },
+  }
 
   renderContent() {
     const { hasSaveError, onClickCancel } = this.props;
@@ -179,7 +156,7 @@ export const StoryForm = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   renderFooter() {
     const { canSave, isSaved, isSaving, onClickCancel, onClickSave } = this.props;
@@ -197,7 +174,7 @@ export const StoryForm = React.createClass({
     };
 
     return <FormFooter {...footerProps} />;
-  },
+  }
 
   render() {
     const { onClickClose } = this.props;
@@ -210,7 +187,34 @@ export const StoryForm = React.createClass({
       </div>
     );
   }
-});
+}
+
+StoryForm.propTypes = {
+  canSave: PropTypes.bool,
+  createdAt: PropTypes.string,
+  description: PropTypes.string,
+  hasSaveError: PropTypes.bool,
+  hasValidationError: PropTypes.bool,
+  imageUrl: PropTypes.string,
+  isLoadingStory: PropTypes.bool,
+  isPrivate: PropTypes.bool,
+  isSaved: PropTypes.bool,
+  isSaving: PropTypes.bool,
+  loadRequestedStory: PropTypes.func,
+  onChangeUrl: PropTypes.func,
+  onClickCancel: PropTypes.func,
+  onClickClose: PropTypes.func,
+  onClickSave: PropTypes.func,
+  shouldLoadStory: PropTypes.bool,
+  title: PropTypes.string,
+  url: PropTypes.string,
+  viewCount: PropTypes.number
+};
+
+StoryForm.defaultProps = {
+  loadRequestedStory: _.noop,
+  onChangeUrl: _.noop
+};
 
 function mapStateToProps(state) {
   return {

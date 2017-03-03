@@ -1,12 +1,8 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { isUserAdminOrPublisher } from '../../common/user';
 
-export const BlobDownload = React.createClass({
-  propTypes: {
-    view: PropTypes.object.isRequired
-  },
-
+export class BlobDownload extends Component {
   renderManagePrompt() {
     const { view } = this.props;
 
@@ -25,7 +21,7 @@ export const BlobDownload = React.createClass({
         </a>
       </div>
     );
-  },
+  }
 
   render() {
     const { view } = this.props;
@@ -62,7 +58,11 @@ export const BlobDownload = React.createClass({
       </section>
     );
   }
-});
+}
+
+BlobDownload.propTypes = {
+  view: PropTypes.object.isRequired
+};
 
 function mapStateToProps(state) {
   return _.pick(state, 'view');

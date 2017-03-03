@@ -1,37 +1,39 @@
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import { initClipboardControl, isCopyingSupported } from '../lib/clipboardControl';
 import { handleKeyPress } from '../../common/a11yHelpers';
 
-export const ApiFlannel = React.createClass({
-  propTypes: {
-    onClickCopy: PropTypes.func.isRequired,
-    view: PropTypes.object.isRequired
-  },
+export class ApiFlannel extends Component {
+  constructor(props) {
+    super(props);
 
-  getInitialState() {
-    return {
+    this.state = {
       resourceType: this.props.view.namedResourceUrl ? 'name' : 'canonical'
     };
-  },
+
+    _.bindAll(this,
+      'onFocusInput',
+      'onMouseUpInput'
+    );
+  }
 
   componentDidMount() {
     if (isCopyingSupported) {
       const el = ReactDOM.findDOMNode(this);
       initClipboardControl(el.querySelectorAll('.btn.copy'));
     }
-  },
+  }
 
   onFocusInput(event) {
     event.target.select();
-  },
+  }
 
   onMouseUpInput(event) {
     event.preventDefault();
-  },
+  }
 
   getResourceTypes() {
     const { view } = this.props;
@@ -50,7 +52,7 @@ export const ApiFlannel = React.createClass({
     }
 
     return resourceTypes;
-  },
+  }
 
   renderResourceToggle() {
     const { resourceType } = this.state;
@@ -96,7 +98,7 @@ export const ApiFlannel = React.createClass({
         </div>
       </span>
     );
-  },
+  }
 
   renderEndpoint() {
     const { view, onClickCopy } = this.props;
@@ -163,7 +165,7 @@ export const ApiFlannel = React.createClass({
         </section>
       </div>
     );
-  },
+  }
 
   render() {
     return (
@@ -190,7 +192,12 @@ export const ApiFlannel = React.createClass({
       </div>
     );
   }
-});
+}
+
+ApiFlannel.propTypes = {
+  onClickCopy: PropTypes.func.isRequired,
+  view: PropTypes.object.isRequired
+};
 
 function mapStateToProps(state) {
   return _.pick(state, 'view');

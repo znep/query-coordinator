@@ -1,26 +1,21 @@
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import components from 'socrata-components';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 
-export const BootstrapAlert = React.createClass({
-  propTypes: {
-    bootstrapUrl: PropTypes.string,
-    onClickBootstrap: PropTypes.func
-  },
-
+export class BootstrapAlert extends Component {
   componentWillMount() {
     this.uniqueId = _.uniqueId();
-  },
+  }
 
   // Using components.attachTo here isn't possible.  Until socrata-components is able to handle
   // multiple attachTo's and scope them properly, we must use the factory manually.
   componentDidMount() {
     components.factories.FlyoutFactory(ReactDOM.findDOMNode(this)); // eslint-disable-line
-  },
+  }
 
   render() {
     const { bootstrapUrl, onClickBootstrap } = this.props;
@@ -61,7 +56,12 @@ export const BootstrapAlert = React.createClass({
       </div>
     );
   }
-});
+}
+
+BootstrapAlert.propTypes = {
+  bootstrapUrl: PropTypes.string,
+  onClickBootstrap: PropTypes.func
+};
 
 function mapDispatchToProps(dispatch) {
   return {

@@ -1,33 +1,32 @@
 import _ from 'lodash';
 import $ from 'jquery';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import { isUserRoled } from '../../common/user';
 
-export const DatasetPreview = React.createClass({
-  propTypes: {
-    onClickGrid: PropTypes.func,
-    view: PropTypes.object.isRequired
-  },
+export class DatasetPreview extends Component {
+  constructor(props) {
+    super(props);
 
-  getInitialState() {
-    return {
+    this.state = {
       isLoading: true
     };
-  },
+
+    _.bindAll(this, 'triggerInvalidateSize');
+  }
 
   componentDidMount() {
     if (this.shouldRenderTable()) {
       this.initializeTable();
     }
-  },
+  }
 
   componentWillUnmount() {
     if (this.shouldRenderTable()) {
       this.removeTable();
     }
-  },
+  }
 
   getVif() {
     const { view } = this.props;
@@ -50,7 +49,7 @@ export const DatasetPreview = React.createClass({
         other: view.rowLabelMultiple
       }
     };
-  },
+  }
 
   shouldRenderTable() {
     const { view } = this.props;
@@ -58,7 +57,7 @@ export const DatasetPreview = React.createClass({
     return view.isTabular &&
       !_.isEmpty(view.columns) &&
       view.rowCount > 0;
-  },
+  }
 
   initializeTable() {
     const $table = $(this.table);
@@ -86,7 +85,7 @@ export const DatasetPreview = React.createClass({
       // Store the table so we can clean up when unmounting
       this.$table = $table;
     }, 'socrata-visualizations');
-  },
+  }
 
   removeTable() {
     const { $table } = this;
@@ -98,11 +97,11 @@ export const DatasetPreview = React.createClass({
     $table.off('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
     $table.off('SOCRATA_VISUALIZATION_TABLE_FLYOUT');
     $(window).off('resize', this.triggerInvalidateSize);
-  },
+  }
 
   triggerInvalidateSize() {
     this.$table.trigger('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');
-  },
+  }
 
   renderLoadingSpinner() {
     if (this.state.isLoading) {
@@ -112,7 +111,7 @@ export const DatasetPreview = React.createClass({
         </div>
       );
     }
-  },
+  }
 
   renderActionButton() {
     const { view, onClickGrid } = this.props;
@@ -139,7 +138,7 @@ export const DatasetPreview = React.createClass({
         </a>
       );
     }
-  },
+  }
 
   render() {
     if (this.shouldRenderTable()) {
@@ -163,7 +162,12 @@ export const DatasetPreview = React.createClass({
       return null;
     }
   }
-});
+}
+
+DatasetPreview.propTypes = {
+  onClickGrid: PropTypes.func,
+  view: PropTypes.object.isRequired
+};
 
 function mapStateToProps(state) {
   return _.pick(state, 'view');

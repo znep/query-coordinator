@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import Responsive from './lib/Responsive';
 import PrivateNotice from './components/PrivateNotice';
@@ -14,11 +14,7 @@ import SchemaPreview from './components/SchemaPreview';
 import DatasetPreview from './components/DatasetPreview';
 import RelatedViewList from './components/RelatedViewList';
 
-export const App = React.createClass({
-  propTypes: {
-    view: PropTypes.object
-  },
-
+export class App extends Component {
   renderDatasetContainer() {
     return (
       <div>
@@ -39,7 +35,7 @@ export const App = React.createClass({
         </main>
       </div>
     );
-  },
+  }
 
   renderBlobContainer() {
     return (
@@ -56,7 +52,7 @@ export const App = React.createClass({
         </main>
       </div>
     );
-  },
+  }
 
   renderHrefContainer() {
     return (
@@ -72,7 +68,7 @@ export const App = React.createClass({
         </main>
       </div>
     );
-  },
+  }
 
   render() {
     const { view } = this.props;
@@ -85,7 +81,11 @@ export const App = React.createClass({
       return this.renderDatasetContainer();
     }
   }
-});
+}
+
+App.propTypes = {
+  view: PropTypes.object
+};
 
 function mapStateToProps(state) {
   return _.pick(state, 'view');

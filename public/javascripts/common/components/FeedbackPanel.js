@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import velocity from 'velocity-animate';
 
 import usersnap from '../usersnap';
@@ -10,12 +10,17 @@ function t(key) {
   return I18n.common.feedback[key];
 }
 
-export const FeedbackPanel = React.createClass({
-  propTypes: {
-    currentUser: PropTypes.object,
-    locale: PropTypes.string,
-    usersnapProjectID: PropTypes.string.isRequired
-  },
+export class FeedbackPanel extends Component {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this,
+      'onDismissFeedback',
+      'onClickFeedback',
+      'onClickUsersnap',
+      'onClickZendesk'
+    );
+  }
 
   componentDidMount() {
     // Copy some of the close behavior of socrata-components flannels because they don't
@@ -27,7 +32,7 @@ export const FeedbackPanel = React.createClass({
         this.onDismissFeedback();
       }
     });
-  },
+  }
 
   // Bring up the feedback panel when the button is clicked.
   onClickFeedback() {
@@ -50,17 +55,17 @@ export const FeedbackPanel = React.createClass({
       locale: locale,
       user: currentUser
     });
-  },
+  }
 
   // Dismiss the feedback panel as if this were a true flannel.
   onDismissFeedback() {
     this.hideContent(this.showButton(this.resetButtonHover));
-  },
+  }
 
   // Load the UserSnap widget when the user wants to include a screenshot.
   onClickUsersnap() {
     this.hideContent(usersnap.activate);
-  },
+  }
 
   // Load the Zendesk widget when the user doesn't want to include a screenshot.
   onClickZendesk() {
@@ -88,30 +93,30 @@ export const FeedbackPanel = React.createClass({
     };
 
     onActivate();
-  },
+  }
 
   // Various helpers to manage fancy UI transitions.
   resetButtonHover() {
     // Velocity doesn't allow animation to initial state, so everything is an
     // inline style override — hence the need to forcibly reset for hover style.
     this.refs.button.style.right = null;
-  },
+  }
 
   showButton(cb) {
     velocity(this.refs.button, { right: '-2.2rem' }, _.iteratee(cb));
-  },
+  }
 
   showContent(cb) {
     velocity(this.refs.content, { bottom: 0 }, _.iteratee(cb));
-  },
+  }
 
   hideButton(cb) {
     velocity(this.refs.button, { right: '-12rem' }, _.iteratee(cb));
-  },
+  }
 
   hideContent(cb) {
     velocity(this.refs.content, { bottom: '-22rem' }, _.iteratee(cb));
-  },
+  }
 
   render() {
     // Feedback panel is not available unless user is logged in.
@@ -157,6 +162,12 @@ export const FeedbackPanel = React.createClass({
       </div>
     );
   }
-});
+}
+
+FeedbackPanel.propTypes = {
+  currentUser: PropTypes.object,
+  locale: PropTypes.string,
+  usersnapProjectID: PropTypes.string.isRequired
+};
 
 export default FeedbackPanel;

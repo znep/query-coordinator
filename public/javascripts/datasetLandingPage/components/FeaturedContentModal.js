@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -9,20 +9,14 @@ import ViewSelectorModal from './FeaturedContentModal/ViewSelectorModal';
 import { ESCAPE_KEY_CODE } from '../../common/constants';
 import { cancelFeaturedItemEdit } from '../actions/featuredContent';
 
-export const FeaturedContentModal = React.createClass({
-  propTypes: {
-    isEditing: PropTypes.bool,
-    editType: PropTypes.string,
-    onPressEscape: PropTypes.func
-  },
-
+export class FeaturedContentModal extends Component {
   componentWillMount() {
     document.addEventListener('keyup', this.onKeyUp);
-  },
+  }
 
   componentWillUnmount() {
     document.removeEventListener('keyup', this.onKeyUp);
-  },
+  }
 
   onKeyUp(event) {
     const isModalHidden = ReactDOM.findDOMNode(this).classList.contains('modal-hidden');
@@ -31,7 +25,7 @@ export const FeaturedContentModal = React.createClass({
     if (!isModalHidden && isKeyEscape) {
       this.props.onPressEscape();
     }
-  },
+  }
 
   renderContent() {
     const { isEditing, editType } = this.props;
@@ -45,7 +39,7 @@ export const FeaturedContentModal = React.createClass({
     } else if (editType === 'visualization') {
       return <ViewSelectorModal />;
     }
-  },
+  }
 
   render() {
     return (
@@ -57,7 +51,13 @@ export const FeaturedContentModal = React.createClass({
       </div>
     );
   }
-});
+}
+
+FeaturedContentModal.propTypes = {
+  isEditing: PropTypes.bool,
+  editType: PropTypes.string,
+  onPressEscape: PropTypes.func
+};
 
 function mapStateToProps(state) {
   return state.featuredContent;

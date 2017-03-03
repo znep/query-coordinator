@@ -1,26 +1,21 @@
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import { initClipboardControl, isCopyingSupported } from '../lib/clipboardControl';
 
-export const ODataModal = React.createClass({
-  propTypes: {
-    onClickCopy: PropTypes.func.isRequired,
-    view: PropTypes.object.isRequired
-  },
-
+export class ODataModal extends Component {
   componentDidMount() {
     if (isCopyingSupported) {
       const el = ReactDOM.findDOMNode(this);
       initClipboardControl(el.querySelectorAll('.btn.copy'));
     }
-  },
+  }
 
   onFocusInput(event) {
     event.target.select();
-  },
+  }
 
   renderEndpoint() {
     const { view, onClickCopy } = this.props;
@@ -59,7 +54,7 @@ export const ODataModal = React.createClass({
         </section>
       </div>
     );
-  },
+  }
 
   render() {
     return (
@@ -100,7 +95,12 @@ export const ODataModal = React.createClass({
       </div>
     );
   }
-});
+}
+
+ODataModal.propTypes = {
+  onClickCopy: PropTypes.func.isRequired,
+  view: PropTypes.object.isRequired
+};
 
 function mapStateToProps(state) {
   return _.pick(state, 'view');

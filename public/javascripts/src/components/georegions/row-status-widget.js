@@ -1,7 +1,7 @@
 import Status from './georegion-status';
 import FormButton from '../form-button';
 import { classNames } from '../utils';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 
 const georegionsNS = blist.namespace.fetch('blist.georegions');
 
@@ -9,21 +9,7 @@ function t(str, props) {
   return $.t('screens.admin.georegions.' + str, props);
 }
 
-const RowStatusWidget = React.createClass({
-  propTypes: {
-    action: PropTypes.string.isRequired,
-    authenticityToken: PropTypes.string.isRequired,
-    disabledTitle: PropTypes.string.isRequired,
-    id: PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]).isRequired,
-    status: PropTypes.oneOf(_.values(Status)).isRequired,
-    onSuccess: PropTypes.func
-  },
-  getDefaultProps() {
-    return {
-      disabledTitle: t('enabled_georegions_limit', { limit: georegionsNS.maximumEnabledCount }),
-      onSuccess: _.noop
-    };
-  },
+class RowStatusWidget extends Component {
   render() {
     const {
       action,
@@ -123,6 +109,20 @@ const RowStatusWidget = React.createClass({
         return null;
     }
   }
-});
+}
+
+RowStatusWidget.propTypes = {
+  action: PropTypes.string.isRequired,
+  authenticityToken: PropTypes.string.isRequired,
+  disabledTitle: PropTypes.string.isRequired,
+  id: PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]).isRequired,
+  status: PropTypes.oneOf(_.values(Status)).isRequired,
+  onSuccess: PropTypes.func
+};
+
+RowStatusWidget.defaultProps = {
+  disabledTitle: t('enabled_georegions_limit', { limit: georegionsNS.maximumEnabledCount }),
+  onSuccess: _.noop
+};
 
 export default RowStatusWidget;

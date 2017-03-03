@@ -515,7 +515,6 @@ class InternalController < ApplicationController
             notices << %Q{#{dry_run}#{params[:flag]} was reset to its default value of "#{FeatureFlags.default_for(params[:flag])}" on #{domain}.}
           end
       end
-      flag.clear_cache(Signaller::Endpoint.for(:report, flag: params[:flag]))
     rescue => e
       err_msg = "#{params[:flag]} could not be changed."
       err_msg << " Reason: #{e.message}."

@@ -16,11 +16,11 @@ module CoreDomainStubs
   end
 
   def stub_domains_request
-    stub_request(:get, 'http://localhost:8080/domains/test.host.json').
-      with(:headers => {'X-Socrata-Host'=>'test.host'}).
+    stub_request(:get, 'http://localhost:8080/domains/example.com.json').
+      with(:headers => {'X-Socrata-Host'=>'example.com'}).
       to_return(
         :status => 200,
-        :body => '{"id": "four-four", "cname": "test.host", "configUpdatedAt": 1477332982}',
+        :body => '{"id": "four-four", "cname": "example.com", "configUpdatedAt": 1477332982}',
         :headers => {}
       )
   end

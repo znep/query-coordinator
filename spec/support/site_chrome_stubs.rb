@@ -5,7 +5,7 @@ module SiteChromeStubs
     stub_site_chrome_instance # SocrataSiteChrome::Test::Helpers
 
     stub_request(:get, 'http://localhost:8080/configurations.json?defaultOnly=true&type=site_chrome').
-      with(:headers => {'X-Socrata-Host'=>'test.host'}).
+      with(:headers => {'X-Socrata-Host'=>'example.com'}).
       to_return(:status => 200, :body => '[{}]', :headers => {})
   end
 end
@@ -13,4 +13,3 @@ end
 RSpec.configure do |config|
   config.include SiteChromeStubs
 end
-

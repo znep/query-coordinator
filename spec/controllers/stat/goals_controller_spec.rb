@@ -70,6 +70,7 @@ RSpec.describe Stat::GoalsController, type: :controller do
 
   before do
     stub_configurations_request
+    stub_domains_request
     stub_site_chrome
     stub_current_domain
     allow(CoreServer).to receive(:story_themes).and_return([])

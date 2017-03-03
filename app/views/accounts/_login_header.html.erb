@@ -17,11 +17,3 @@
     <div class="signupExplanation explanation"><%= simple_format CurrentDomain.strings.signup_explanation %></div>
   <%- end -%>
 </div>
-
-<%# REMOVE THIS AFTER AUTH0 ROLLOUT See EN-13001 %>
-<% if FeatureFlags.derive(@view, request).show_new_login_message %>
-  <div style="text-align:center;font-size:15px;margin-top:15px;margin-bottom:0;background-color:#eaf4f9;border-color:#288dc1;color:#1c6387;padding:12px;border-radius:1px;border:1px solid #c8c8c8;">
-    <%== t('screens.sign_in.new_login_message') %>
-  </div>
-<% end %>
-<%# REMOVE THIS AFTER AUTH0 ROLLOUT See EN-13001 %>

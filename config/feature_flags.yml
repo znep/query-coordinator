@@ -241,9 +241,6 @@ show_federated_site_name_instead_of_cname:
 show_govstat_header:
   description: Turn on the grey header that usually only shows up for sites with govstat enabled
   defaultValue: false
-show_new_login_message:
-  description: Show a message above ye olde login/signup forms mentioning that they are getting a facelift
-  defaultValue: false
 show_newux_page_header:
   description: Show the header logo and sign in/up/out links.
   defaultValue: true

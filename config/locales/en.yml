@@ -722,6 +722,8 @@ en:
           story: Stories
           story_help: New
           unpublished: Working Copies
+          visualization: Data Lens pages
+          visualization_help: New
         view_types_singular_title: type
         view_types_title: View Types
       listing:

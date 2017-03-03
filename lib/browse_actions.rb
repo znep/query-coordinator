@@ -403,11 +403,19 @@ module BrowseActions
       browse_options[:sortBy] = 'relevance'
     end
 
-    # Categories should be at the top in browse2, otherwise in the 3rd slot
+    # TEMPORARY TERRIBLENESS: to get a visualizations-only facet showing up in
+    # storyteller's asset selector for rich media blocks, we have to add it here
+    # instead of doing it the same way we add other conditional facets, because
+    # we have to key off the presence of limitTo[]=visualizations.
+    actual_view_types_facet = view_types_facet
+    if browse_options[:limitTo].try(:include?, 'visualization') && visualization_canvas_enabled?
+      actual_view_types_facet[:options] << visualization_view_type
+    end
+
     browse_options[:facets] ||= [
       authority_facet,
       categories_facet,
-      view_types_facet,
+      actual_view_types_facet,
       cfs,
       topics_facet,
       federated_facet
@@ -766,6 +774,19 @@ module BrowseActions
       datasets_index = view_type_list.pluck(:value).index('datasets') || 0
       view_type_list.insert(datasets_index, stories_view_type)
     end
+  end
+
+  def visualization_view_type
+    {
+      :text => ::I18n.t('controls.browse.facets.view_types.visualization'),
+      :value => 'visualization', # sets the limitTo param for this facet
+      :class => 'typeDataLens', # sets a CSS class which affects icon color
+      :icon_font_class => 'icon-cards', # sets the facet icon
+      :help_link => {
+        :href => 'https://socrata.zendesk.com/knowledge/articles/115000813847',
+        :text => ::I18n.t('controls.browse.facets.view_types.visualization_help')
+      }
+    }
   end
 
   # This is only needed by Cetera; Core can add children on the server side

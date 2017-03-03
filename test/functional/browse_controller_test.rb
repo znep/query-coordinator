@@ -396,7 +396,7 @@ class BrowseControllerTest < ActionController::TestCase
       CurrentDomain.expects(:property).with(:custom_facets, :catalog).returns(custom_facets).at_most(2)
       CurrentDomain.expects(:property).with(:facet_cutoffs, :catalog).
         returns('custom' => stubbed_custom_cutoff).at_least(1)
-      CurrentDomain.expects(:property).with(:view_types_facet, :catalog).returns(nil)
+      CurrentDomain.expects(:property).with(:view_types_facet, :catalog).returns(nil).at_least(1)
       stub_feature_flags_with(:cetera_search => false)
       CurrentDomain.expects(:property).with(:sortBy, :catalog).returns('relevance')
     end

@@ -50,7 +50,7 @@ function getData(vif, options) {
     const limit = (_.isNumber(limitFromVif)) ?
       parseInt(limitFromVif, 10) :
       options.MAX_ROW_COUNT;
-    const groupingQueryString = `
+    const dimensionQueryString = `
       SELECT
         \`${state.columnName}\` AS ${SoqlHelpers.dimensionAlias()},
         COUNT(*) AS ${SoqlHelpers.measureAlias()}
@@ -59,12 +59,9 @@ function getData(vif, options) {
       ORDER BY ${aliasForOrderByParameter} ${orderBySort}
       NULL LAST
       LIMIT ${limit + 1}`;
-    const uriEncodedQueryString = encodeURIComponent(
-      groupingQueryString.replace(/[\n\s]+/g, ' ').trim()
-    );
 
     return state.soqlDataProvider.query(
-      uriEncodedQueryString,
+      dimensionQueryString,
       SoqlHelpers.dimensionAlias(),
       SoqlHelpers.measureAlias()
     ).
@@ -130,12 +127,9 @@ function getData(vif, options) {
       GROUP BY \`${state.groupingColumnName}\`
       ORDER BY ${SoqlHelpers.dimensionAlias()} ${sortOrder}
       LIMIT ${MAX_GROUP_COUNT + 1}`;
-    const uriEncodedQueryString = encodeURIComponent(
-      groupingQueryString.replace(/[\n\s]+/g, ' ').trim()
-    );
 
     return state.soqlDataProvider.query(
-      uriEncodedQueryString,
+      groupingQueryString,
       SoqlHelpers.dimensionAlias(),
       SoqlHelpers.measureAlias()
     ).

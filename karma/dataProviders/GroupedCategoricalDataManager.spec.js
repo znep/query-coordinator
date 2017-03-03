@@ -45,12 +45,26 @@ const MAX_ROW_COUNT = 1000;
 const SoqlDataProviderStub = function() {
 
   this.query = function(queryString) {
-    const trimmedAndDecodedQueryString = decodeURIComponent(queryString.trim());
+    // SoqlDataProvider.query() performs a string transformation to reduce
+    // unnecessary whitespace before it URI encodes the query string; in order
+    // to match the one-line, reformatted queries in SOQL_QUERY_RESPONSES we
+    // must here do the same string transformation (but not the URI encoding).
+    const trimmedAndReformattedQueryString = queryString.
+      replace(/[\n\s]+/g, ' ').
+      trim();
 
-    if (SOQL_QUERY_RESPONSES.hasOwnProperty(trimmedAndDecodedQueryString)) {
-      return Promise.resolve(SOQL_QUERY_RESPONSES[trimmedAndDecodedQueryString]);
+    if (
+      SOQL_QUERY_RESPONSES.hasOwnProperty(trimmedAndReformattedQueryString)
+    ) {
+
+      return Promise.resolve(
+        SOQL_QUERY_RESPONSES[trimmedAndReformattedQueryString]
+      );
     } else {
-      return Promise.reject(`Unrecognized query: "${trimmedAndDecodedQueryString}".`);
+
+      return Promise.reject(
+        `Unrecognized query: "${trimmedAndReformattedQueryString}".`
+      );
     }
   };
 };

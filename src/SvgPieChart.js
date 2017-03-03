@@ -283,7 +283,7 @@ $.fn.socrataSvgPieChart = function(originalVif) {
 
     return soqlDataProvider.
       query(
-        queryString.replace(/[\n\s]+/g, ' '),
+        queryString,
         dimensionAlias,
         measureAlias
       ).
@@ -406,7 +406,7 @@ $.fn.socrataSvgPieChart = function(originalVif) {
 
           return soqlDataProvider.
             query(
-              otherCategoryQueryString.replace(/[\n\s]+/g, ' '),
+              otherCategoryQueryString,
               SoqlHelpers.dimensionAlias(),
               SoqlHelpers.measureAlias()
             ).

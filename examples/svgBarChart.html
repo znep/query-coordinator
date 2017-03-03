@@ -71,6 +71,8 @@
     <div id="bar-chart-16"></div>
     <p>Other category enabled and noop filter, should not cause invalid other category query and values should sum to <span class="ufo-sightings-total-row-count">(FETCHING COUNT...)</span>, '(Other)' category should be on top</p>
     <div id="bar-chart-17"></div>
+    <p>Grouping values including percent symbols, should not cause an error</p>
+    <div id="bar-chart-18"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -741,6 +743,61 @@
         title: 'UFO Sightings'
       };
 
+      var barChart18Vif = {
+        configuration: {
+          viewSourceDataLink: true,
+          axisLabels: {
+            top: null,
+            right: null,
+            bottom: null,
+            left: null
+          },
+          showOtherCategory: true
+        },
+        description: null,
+        series: [
+          {
+            color: {
+              palette: 'categorical2'
+            },
+            dataSource: {
+              datasetUid: 'vc2c-3mst',
+              dimension: {
+                columnName: 'topic',
+                aggregationFunction: null,
+                grouping: {
+                  columnName: 'proficient_category'
+                }
+              },
+              domain: 'stories.test-socrata.com',
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              type: 'socrata.soql',
+              filters: [
+              ]
+            },
+            label: 'Proficient',
+            type: 'barChart',
+            unit: {
+              one: 'percent of students',
+              other: 'percent of students'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        title: 'Reading and Math Proficiencies'
+      };
+
       /**
        * Instantiate the plugins
        */
@@ -773,6 +830,7 @@
       $('#bar-chart-15').socrataSvgBarChart(barChart15Vif);
       $('#bar-chart-16').socrataSvgBarChart(barChart16Vif);
       $('#bar-chart-17').socrataSvgBarChart(barChart17Vif);
+      $('#bar-chart-18').socrataSvgBarChart(barChart18Vif);
 
       fillInExpectedValues();
 

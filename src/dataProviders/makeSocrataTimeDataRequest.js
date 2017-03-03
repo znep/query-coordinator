@@ -61,12 +61,8 @@ function makeSocrataTimeDataRequest(vif, seriesIndex, options) {
       LIMIT ${limit}`;
   }
 
-  const uriEncodedQueryString = encodeURIComponent(
-    queryString.replace(/[\n\s]+/g, ' ').trim()
-  );
-
   return soqlDataProvider.query(
-    uriEncodedQueryString,
+    queryString,
     SoqlHelpers.dimensionAlias(),
     SoqlHelpers.measureAlias()
   ).

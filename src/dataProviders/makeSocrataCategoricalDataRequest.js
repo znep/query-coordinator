@@ -81,7 +81,7 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
 
   return soqlDataProvider.
     query(
-      queryString.replace(/[\n\s]+/g, ' '),
+      queryString,
       SoqlHelpers.dimensionAlias(),
       SoqlHelpers.measureAlias()
     ).
@@ -319,11 +319,6 @@ function augmentSocrataDataResponseWithOtherCategory(
       LIMIT ${maxRowCount}`;
   }
 
-  // Since we're using values from first query as filters, we have to url
-  // encode query string. Characters like `&` come with surprises.
-  const uriEncodedOtherCategoryQueryString = encodeURIComponent(
-    otherCategoryQueryString.replace(/[\n\s]+/g, ' ')
-  );
   const soqlDataProvider = new SoqlDataProvider({
     datasetUid: series.dataSource.datasetUid,
     domain: series.dataSource.domain
@@ -331,7 +326,7 @@ function augmentSocrataDataResponseWithOtherCategory(
 
   return soqlDataProvider.
     query(
-      uriEncodedOtherCategoryQueryString,
+      otherCategoryQueryString,
       SoqlHelpers.dimensionAlias(),
       SoqlHelpers.measureAlias()
     ).

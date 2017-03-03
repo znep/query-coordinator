@@ -297,8 +297,16 @@ describe('GroupedTimeDataManager', () => {
         SoqlDataProvider: function() {
 
           this.query = function(queryString) {
+            // SoqlDataProvider.query() performs a string transformation to
+            // reduce unnecessary whitespace before it URI encodes the query
+            // string; in order to match the one-line, reformatted queries here
+            // we must here do the same string transformation (but not the URI
+            // encoding).
+            const trimmedAndReformattedQueryString = queryString.
+              replace(/[\n\s]+/g, ' ').
+              trim();
 
-            switch (decodeURIComponent(queryString.trim())) {
+            switch (trimmedAndReformattedQueryString) {
 
               case GROUPING_VALUES_QUERY:
                 return Promise.resolve(GROUPING_VALUES_QUERY_DATA);
@@ -307,7 +315,9 @@ describe('GroupedTimeDataManager', () => {
                 return Promise.resolve(OTHER_CATEGORY_QUERY_DATA);
 
               default:
-                return Promise.reject(`Unrecognized query: "${decodeURIComponent(queryString.trim())}".`);
+                return Promise.reject(
+                  `Unrecognized query: "${trimmedAndReformattedQueryString}".`
+                );
             }
           };
         },

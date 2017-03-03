@@ -50,21 +50,21 @@ function SoqlDataProvider(config) {
    *   These aliases are set by the caller and will also be used as column
    *   names in the resulting 'table' object returned by the request.
    *
-   * @param {String} queryString - A valid SoQL query.
+   * @param {String} queryString - A valid, non-URI-encoded SoQL query.
    * @param {String} nameAlias - The alias used for the 'name' column.
    * @param {String} valueAlias - The alias used for the 'value' column.
    *
    * @return {Promise}
    */
   this.query = function(queryString, nameAlias, valueAlias) {
-    var url = urlForQuery('$query={0}'.format(queryString));
+    const uriEncodedAndTrimmedQueryString = encodeURIComponent(
+      queryString.replace(/[\n\s]+/g, ' ').trim()
+    );
+    const url = urlForQuery(`$query=${uriEncodedAndTrimmedQueryString}`);
 
-    return makeSoqlGetRequest(url).
-      then(
-        function(data) {
-          return mapRowsResponseToTable([ nameAlias, valueAlias ], data);
-        }
-      );
+    return makeSoqlGetRequest(url).then((data) => {
+      return mapRowsResponseToTable([ nameAlias, valueAlias ], data);
+    });
   };
 
   this.getRowCount = function(whereClauseComponents) {

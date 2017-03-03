@@ -24,6 +24,7 @@ http {
 
   proxy_buffers 8 16k;
   proxy_buffer_size 32k;
+  proxy_read_timeout {{NGINX_PROXY_READ_TIMEOUT_MINUTES | default(5)}}m;
 
   server {
     listen 3000 default deferred;

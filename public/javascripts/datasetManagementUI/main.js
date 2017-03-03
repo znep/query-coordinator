@@ -1,7 +1,7 @@
 import 'babel-polyfill-safe';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux';
@@ -43,7 +43,10 @@ if (window.serverConfig.environment === 'development') {
   Airbrake.init();
 }
 
-const store = createStore(rootReducer, applyMiddleware(...middleware));
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(rootReducer, composeEnhancers(
+  applyMiddleware(...middleware)
+));
 bootstrap(store, window.initialState.view, window.initialState.update);
 const history = syncHistoryWithStore(browserHistory, store);
 

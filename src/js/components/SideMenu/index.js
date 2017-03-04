@@ -3,7 +3,11 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { translate as t } from '../../common/I18n';
 import { ESCAPE } from '../../common/keycodes';
-import { getFirstActionableElement } from '../../common/a11y';
+import {
+  focusFirstActionableElement,
+  makeElementAndChildrenAccessible,
+  makeElementAndChildrenInaccessible
+} from '../../common/a11y';
 import SocrataIcon from '../SocrataIcon';
 
 export const SideMenu = React.createClass({
@@ -87,20 +91,26 @@ export const SideMenu = React.createClass({
     document.body.removeEventListener('keyup', this.bodyEscapeHandler);
   },
 
-  focusFirstActionableElement() {
-    const element = getFirstActionableElement(this.menuElement, '.menu-header-dismiss');
-
-    return element ? element.focus() : this.dismissButton.focus();
-  },
-
   toggleVisibility() {
     const { isOpen } = this.props;
 
     if (isOpen) {
+      // display menu
       this.menuElement.classList.add('active');
-      this.focusFirstActionableElement();
+      makeElementAndChildrenAccessible(this.menuElement);
+
+      // manage focus
+      this.previouslyFocusedElement = document.activeElement;
+      focusFirstActionableElement(this.menuElement, '.menu-header-dismiss');
     } else {
+      // hide menu
       this.menuElement.classList.remove('active');
+      makeElementAndChildrenInaccessible(this.menuElement);
+
+      // manage focus
+      if (this.previouslyFocusedElement) {
+        this.previouslyFocusedElement.focus();
+      }
     }
   },
 
@@ -122,8 +132,7 @@ export const SideMenu = React.createClass({
     const dismissProps = {
       className: 'btn btn-block btn-transparent menu-header-dismiss',
       'aria-label': t('menu.aria_close'),
-      onClick: onDismiss,
-      ref: (ref) => this.dismissButton = ref
+      onClick: onDismiss
     };
 
     return (

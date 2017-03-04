@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { Simulate } from 'react-addons-test-utils';
 import { renderComponent  } from '../../helpers';
 import SideMenu from 'components/SideMenu';
@@ -39,16 +40,78 @@ describe('SideMenu', () => {
   });
 
   describe('isOpen', () => {
-    it('adds the active class if true', () => {
-      const element = renderComponent(SideMenu, getProps());
-      expect(element.classList.contains('active')).to.be.true;
+    describe('when true', () => {
+      let element;
+
+      beforeEach(() => {
+        element = renderComponent(SideMenu, getProps());
+      });
+
+      it('adds the active class', () => {
+        expect(element.classList.contains('active')).to.be.true;
+      });
+
+      it('does not hide menu from screenreaders', () => {
+        expect(element.getAttribute('aria-hidden')).to.eq(null);
+      });
+
+      it('does not make the menu untabbable', () => {
+        expect(element.getAttribute('tabindex')).to.eq(null);
+      });
     });
 
-    it('does not add the active class if false', () => {
-      const element = renderComponent(SideMenu, getProps({
-        isOpen: false
-      }));
-      expect(element.classList.contains('active')).to.be.false;
+    describe('when false', () => {
+      let element;
+
+      beforeEach(() => {
+        element = renderComponent(SideMenu, getProps({
+          isOpen: false
+        }));
+      });
+
+      it('does not add the active class', () => {
+        expect(element.classList.contains('active')).to.be.false;
+      });
+
+      it('hides the menu from screenreaders', () => {
+        expect(element.getAttribute('aria-hidden')).to.eq('true');
+      });
+
+      it('makes the menu untabbable', () => {
+        expect(element.getAttribute('tabindex')).to.eq('-1');
+      });
+    });
+
+    describe('when toggling after first render', () => {
+      let node;
+
+      beforeEach(() => {
+        node = document.createElement('div');
+      });
+
+      afterEach(() => {
+        node.remove();
+      });
+
+      it('hides the menu when isOpen is changed from true to false', () => {
+        ReactDOM.render(React.createElement(SideMenu, getProps({ isOpen: true })), node);
+        ReactDOM.render(React.createElement(SideMenu, getProps({ isOpen: false })), node);
+        const element = node.querySelector('.side-menu');
+
+        expect(element.classList.contains('active')).to.be.false;
+        expect(element.getAttribute('aria-hidden')).to.eq('true');
+        expect(element.getAttribute('tabindex')).to.eq('-1');
+      });
+
+      it('shows the menu when isOpen is changed from false to true', () => {
+        ReactDOM.render(React.createElement(SideMenu, getProps({ isOpen: false })), node);
+        ReactDOM.render(React.createElement(SideMenu, getProps({ isOpen: true })), node);
+        const element = node.querySelector('.side-menu');
+
+        expect(element.classList.contains('active')).to.be.true;
+        expect(element.getAttribute('aria-hidden')).to.eq(null);
+        expect(element.getAttribute('tabindex')).to.eq(null);
+      });
     });
   });
 

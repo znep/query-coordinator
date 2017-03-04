@@ -54,10 +54,6 @@ export const AddFilter = React.createClass({
 
   onKeyDownAddFilterButton(event) {
     isolateEventByKeys(event, [ENTER, SPACE]);
-  },
-
-  onKeyUpAddFilterButton(event) {
-    isolateEventByKeys(event, [ENTER, SPACE]);
 
     if (isOneOfKeys(event, [ENTER, SPACE])) {
       this.toggleColumnPicklist(event);
@@ -122,8 +118,7 @@ export const AddFilter = React.createClass({
         className="btn btn-sm btn-alternate-2 btn-inverse btn-add-filter"
         ref={(el) => this.addFilterButton = el}
         onClick={this.toggleColumnPicklist}
-        onKeyDown={this.onKeyDownAddFilterButton}
-        onKeyUp={this.onKeyUpAddFilterButton}>
+        onKeyDown={this.onKeyDownAddFilterButton}>
         {t('filter_bar.add_filter')}
       </button>
     );

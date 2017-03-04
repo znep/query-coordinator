@@ -48,7 +48,7 @@ describe('AddFilter', () => {
 
     it('renders when add filter button is accessed via keyboard', () => {
       const button = element.querySelector('.btn-add-filter');
-      Simulate.keyUp(button, { keyCode: SPACE });
+      Simulate.keyDown(button, { keyCode: SPACE });
       const columnContainer = element.querySelector('.column-container');
 
       expect(columnContainer).to.exist;

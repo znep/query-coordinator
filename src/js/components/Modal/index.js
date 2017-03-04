@@ -1,7 +1,12 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
-import { ESCAPE, isolateEventByKeys } from '../../common/keycodes';
+import { ESCAPE, TAB, isolateEventByKeys, isOneOfKeys } from '../../common/keycodes';
+import {
+  focusFirstActionableElement,
+  getFirstActionableElement,
+  getLastActionableElement
+} from '../../common/a11y';
 
 const MOBILE_BREAKPOINT = 420;
 
@@ -29,11 +34,20 @@ export const Modal = React.createClass({
   componentDidMount() {
     window.addEventListener('resize', this.checkDimensions);
     document.documentElement.classList.add('modal-open');
+
+    // Handle a11y focusing concerns
+    this.previouslyFocusedElement = document.activeElement;
+    focusFirstActionableElement(this.modalContainer, '.modal-header-dismiss');
   },
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.checkDimensions);
     document.documentElement.classList.remove('modal-open');
+
+    // Handle a11y focusing concerns
+    if (this.previouslyFocusedElement) {
+      this.previouslyFocusedElement.focus();
+    }
   },
 
   computeState() {
@@ -46,11 +60,28 @@ export const Modal = React.createClass({
     this.setState(this.computeState());
   },
 
+  tryFocusTrap(event) {
+    if (isOneOfKeys(event, [TAB])) {
+      const firstActionableElement = getFirstActionableElement(this.modalContainer);
+      const lastActionableElement = getLastActionableElement(this.modalContainer);
+
+      // tab + shift means the user is tabbing to the previous focusable element
+      if (event.target === firstActionableElement && event.shiftKey && lastActionableElement) {
+        isolateEventByKeys(event, [TAB]);
+        lastActionableElement.focus();
+      // be careful to let users to tab + shift to the element before the last one
+      } else if (event.target === lastActionableElement && !event.shiftKey && firstActionableElement) {
+        isolateEventByKeys(event, [TAB]);
+        firstActionableElement.focus();
+      }
+    }
+  },
+
   tryEscDismiss(event) {
     const { onDismiss } = this.props;
     isolateEventByKeys(event, [ESCAPE]);
 
-    if (event.keyCode === ESCAPE) {
+    if (isOneOfKeys(event, [ESCAPE])) {
       onDismiss();
     }
   },
@@ -79,9 +110,10 @@ export const Modal = React.createClass({
         ref={(ref) => this.modalElement = ref}
         className={modalClasses}
         role="dialog"
+        onKeyDown={this.tryFocusTrap}
         onKeyUp={this.tryEscDismiss}
         onClick={this.tryOverlayClickDismiss}>
-        <div className="modal-container">
+        <div className="modal-container" ref={(ref) => this.modalContainer = ref}>
           {children}
         </div>
       </div>

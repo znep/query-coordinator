@@ -25,7 +25,6 @@
 
     &:hover,
     &:focus {
-      outline: none;
       color: lighten($header-bg-color, 10%);
     }
 

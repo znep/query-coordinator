@@ -5,6 +5,7 @@ export const DOWN = 40;
 export const ENTER = 13;
 export const ESCAPE = 27;
 export const SPACE = 32;
+export const TAB = 9;
 
 /**
  * Determine if the last-pressed key is within

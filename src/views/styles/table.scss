@@ -258,7 +258,7 @@ $highlighted-row-background-color: #f6f6f6;
         margin-right: 15px;
       }
 
-      &:hover {
+      &:hover, &:focus {
         background: transparent;
         border: solid 1px #d4d4d4;
         border-radius: 2px;

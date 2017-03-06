@@ -11,13 +11,28 @@ RSpec.describe Api::Stat::V1::Goals::PublishedController, type: :controller do
     let(:get_request) { get action, uid: goal_uid }
     let(:is_goal_accessible) { false }
     let(:is_goal_unauthorized) { false }
+    let(:govstat_module_enabled) { true }
+
 
     before do
+      stub_current_domain
+      set_features(govstat_module_enabled ? ['govstat'] : [])
       stub_goal_accessibility(
         goal_uid,
         :accessible => is_goal_accessible,
         :unauthorized => is_goal_unauthorized
       )
+    end
+
+    shared_examples 'respects govstat module' do
+      describe 'open performance disabled' do
+        let(:govstat_module_enabled) { false }
+
+        it '404s' do
+          get_request
+          expect(response).to have_http_status(404)
+        end
+      end
     end
 
     describe '#latest' do
@@ -36,6 +51,7 @@ RSpec.describe Api::Stat::V1::Goals::PublishedController, type: :controller do
       describe 'odysseus denies access' do
         let(:is_goal_accessible) { false }
         let(:is_goal_unauthorized) { true }
+
         it '403s' do
           get_request
           expect(response.status).to be(403)
@@ -51,6 +67,8 @@ RSpec.describe Api::Stat::V1::Goals::PublishedController, type: :controller do
         describe 'no published narrative' do
           let(:narrative) { nil }
 
+          it_behaves_like 'respects govstat module'
+
           it '404s' do
             get_request
             expect(response.status).to be(404)
@@ -58,6 +76,8 @@ RSpec.describe Api::Stat::V1::Goals::PublishedController, type: :controller do
         end
         describe 'has published narrative' do
           let(:narrative) { double('PublishedStory') }
+
+          it_behaves_like 'respects govstat module'
 
           it '200s' do
             get_request

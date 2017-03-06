@@ -1,9 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::DocumentsController, type: :controller do
+  let(:govstat_module_enabled) { false }
 
   before do
     request.env['HTTPS'] = 'on'
+    stub_current_domain
+    set_features(govstat_module_enabled ? ['govstat'] : [])
   end
 
   describe '#create' do
@@ -39,9 +42,20 @@ RSpec.describe Api::V1::DocumentsController, type: :controller do
         stub_invalid_session
       end
 
-      it 'renders unauthorized' do
-        post :create, params
-        expect(response.status).to eq(403)
+      context 'open performance enabled' do
+        let(:govstat_module_enabled) { true }
+
+        it 'renders unauthorized' do
+          post :create, params
+          expect(response.status).to eq(403)
+        end
+      end
+
+      context 'open performance disabled' do
+        it 'renders unauthorized' do
+          post :create, params
+          expect(response.status).to eq(403)
+        end
       end
     end
 
@@ -50,22 +64,45 @@ RSpec.describe Api::V1::DocumentsController, type: :controller do
         stub_valid_session
       end
 
-      describe 'user story authorizations' do
+      context 'user story authorizations' do
         before do
           allow_any_instance_of(ApplicationController).to receive(:can_edit_story?).and_return(can_edit_story)
+          allow_any_instance_of(ApplicationController).to receive(:can_edit_goals?).and_return(can_edit_goal)
         end
 
-        describe 'when the user can edit the story' do
+        context 'when the user can edit stories and goals' do
           let(:can_edit_story) { true }
+          let(:can_edit_goal) { true }
 
-          it 'does not 403' do
+          it '201s' do
             post :create, params
-            expect(response.status).to_not be(403)
+            expect(response.status).to be(201)
           end
         end
 
-        describe 'when the user cannot edit the story' do
+        context 'when the user can edit the story but not goals' do
+          let(:can_edit_story) { true }
+          let(:can_edit_goal) { false }
+
+          it '201s' do
+            post :create, params
+            expect(response.status).to be(201)
+          end
+        end
+
+        context 'when the user can edit goals but not stories' do
           let(:can_edit_story) { false }
+          let(:can_edit_goal) { true }
+
+          it '201s' do
+            post :create, params
+            expect(response.status).to be(201)
+          end
+        end
+
+        context 'when the user cannot edit neither stories nor goals' do
+          let(:can_edit_story) { false }
+          let(:can_edit_goal) { false }
 
           it '403s' do
             post :create, params
@@ -74,7 +111,7 @@ RSpec.describe Api::V1::DocumentsController, type: :controller do
         end
       end
 
-      describe 'after successful authorization' do
+      context 'after successful authorization' do
         before do
           stub_sufficient_rights
         end
@@ -271,22 +308,45 @@ RSpec.describe Api::V1::DocumentsController, type: :controller do
         stub_valid_session
       end
 
-      describe 'user story authorizations' do
+      context 'user story authorizations' do
         before do
           allow_any_instance_of(ApplicationController).to receive(:can_edit_story?).and_return(can_edit_story)
+          allow_any_instance_of(ApplicationController).to receive(:can_edit_goals?).and_return(can_edit_goal)
         end
 
-        describe 'when the user can edit the story' do
+        context 'when the user can edit stories and goals' do
           let(:can_edit_story) { true }
+          let(:can_edit_goal) { true }
 
-          it 'does not 403' do
+          it '200s' do
             post :crop, id: document.id, document: document_params
-            expect(response.status).to_not be(403)
+            expect(response.status).to be(200)
           end
         end
 
-        describe 'when the user cannot edit the story' do
+        context 'when the user can edit the story but not goals' do
+          let(:can_edit_story) { true }
+          let(:can_edit_goal) { false }
+
+          it '200s' do
+            post :crop, id: document.id, document: document_params
+            expect(response.status).to be(200)
+          end
+        end
+
+        context 'when the user can edit goals but not stories' do
           let(:can_edit_story) { false }
+          let(:can_edit_goal) { true }
+
+          it '200s' do
+            post :crop, id: document.id, document: document_params
+            expect(response.status).to be(200)
+          end
+        end
+
+        context 'when the user cannot edit neither stories nor goals' do
+          let(:can_edit_story) { false }
+          let(:can_edit_goal) { false }
 
           it '403s' do
             post :crop, id: document.id, document: document_params
@@ -295,7 +355,7 @@ RSpec.describe Api::V1::DocumentsController, type: :controller do
         end
       end
 
-      describe 'after successful authorization' do
+      context 'after successful authorization' do
         before do
           stub_sufficient_rights
         end

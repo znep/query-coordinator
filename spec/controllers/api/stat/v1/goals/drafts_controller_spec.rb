@@ -12,6 +12,8 @@ RSpec.describe Api::Stat::V1::Goals::DraftsController, type: :controller do
   let(:is_goal_unauthorized) { false }
 
   before do
+    stub_current_domain
+    set_features(['govstat'])
     stub_goal_accessibility(
       goal_uid,
       :accessible => is_goal_accessible,

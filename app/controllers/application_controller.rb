@@ -155,6 +155,10 @@ class ApplicationController < ActionController::Base
     render nothing: true, status: 403 unless can_edit_story?
   end
 
+  def assert_can_write_documents
+    render nothing: true, status: 403 unless can_write_documents?
+  end
+
   def require_logged_in_user
     # If no current_user:
     # - for JSON requests, respond with 401.
@@ -221,9 +225,9 @@ class ApplicationController < ActionController::Base
       when 'show'
         require_logged_in_user
       when 'create'
-        assert_can_edit_story
+        assert_can_write_documents
       when 'crop'
-        assert_can_edit_story
+        assert_can_write_documents
       else
         raise_undefined_authorization_handler_error
     end

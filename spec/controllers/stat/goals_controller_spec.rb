@@ -68,11 +68,14 @@ RSpec.describe Stat::GoalsController, type: :controller do
     )
   end
 
+  let(:govstat_module_enabled) { true }
+
   before do
     stub_configurations_request
     stub_domains_request
     stub_site_chrome
     stub_current_domain
+    set_features(govstat_module_enabled ? ['govstat'] : [])
     allow(CoreServer).to receive(:story_themes).and_return([])
 
     allow(CreateDocumentFromCoreAsset).
@@ -82,6 +85,8 @@ RSpec.describe Stat::GoalsController, type: :controller do
 
     allow(OpenPerformance::Goal).to receive(:new).and_return(goal)
     set_feature_flags(feature_flags)
+
+    allow_any_instance_of(FeaturesHelper).to receive(:render_admin_header?).and_return(false)
   end
 
   describe '#show' do
@@ -124,6 +129,15 @@ RSpec.describe Stat::GoalsController, type: :controller do
         describe 'goal accessible' do
           let(:accessible) { true }
 
+          describe 'open performance disabled' do
+            let(:govstat_module_enabled) { false }
+
+            it '404s' do
+              get :show, dashboard: dashboard , category: category , uid: uid
+              expect(response).to have_http_status(404)
+            end
+          end
+
           it '200s' do
             get :show, dashboard: dashboard , category: category , uid: uid
             expect(response).to have_http_status(:ok)
@@ -164,6 +178,15 @@ RSpec.describe Stat::GoalsController, type: :controller do
       end
 
       describe 'goal not present' do
+        describe 'open performance disabled' do
+          let(:govstat_module_enabled) { false }
+
+          it '404s' do
+            action_lambda.call
+            expect(response).to have_http_status(404)
+          end
+        end
+
         it '404s' do
           action_lambda.call
           expect(response).to have_http_status(404)
@@ -180,6 +203,15 @@ RSpec.describe Stat::GoalsController, type: :controller do
 
       describe 'public goal' do
         let(:accessible) { true }
+
+        describe 'open performance disabled' do
+          let(:govstat_module_enabled) { false }
+
+          it '404s' do
+            action_lambda.call
+            expect(response).to have_http_status(404)
+          end
+        end
 
         it 'redirects to login' do
           action_lambda.call
@@ -278,6 +310,18 @@ RSpec.describe Stat::GoalsController, type: :controller do
         end
 
         shared_examples 'goal narrative editor' do
+          describe 'open performance disabled' do
+            let(:govstat_module_enabled) { false }
+
+            it '404s' do
+              expect(response).to have_http_status(404)
+            end
+          end
+
+          it '200s' do
+            expect(response).to have_http_status(200)
+          end
+
           it 'should set @goal' do
             expect(assigns(:goal)).to eq(goal)
           end

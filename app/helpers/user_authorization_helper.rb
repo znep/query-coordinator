@@ -1,4 +1,6 @@
 module UserAuthorizationHelper
+  include FeaturesHelper
+
   def contributor?
     has_view_role?('contributor')
   end
@@ -73,7 +75,7 @@ module UserAuthorizationHelper
   end
 
   def can_view_goal?(goal_uid)
-    OpenPerformance::Goal.new(goal_uid).accessible?
+    open_performance_enabled? && OpenPerformance::Goal.new(goal_uid).accessible?
   end
 
   def goal_unauthorized?(goal_uid)
@@ -81,7 +83,12 @@ module UserAuthorizationHelper
   end
 
   def can_edit_goals?
-    admin? || has_domain_right?('edit_goals')
+    open_performance_enabled? && (admin? || has_domain_right?('edit_goals'))
+  end
+
+  # Can the user upload or crop images/documents?
+  def can_write_documents?
+    can_edit_story? || can_edit_goals?
   end
 
   private

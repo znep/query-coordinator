@@ -13,6 +13,8 @@ RSpec.describe OdysseusPermissionsUpdater do
 
     allow(goal).to receive(:accessible?).and_return(true)
     allow(OpenPerformance::Goal).to receive(:new).and_return(goal)
+    stub_current_domain
+    set_features(['govstat'])
   end
 
   subject { OdysseusPermissionsUpdater.new(story_uid) }

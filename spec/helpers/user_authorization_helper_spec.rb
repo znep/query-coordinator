@@ -14,9 +14,12 @@ RSpec.describe UserAuthorizationHelper, type: :helper do
       auth['superAdmin'] = true if super_admin
     end
   end
+  let(:govstat_module_enabled) { false }
 
   before do
     allow(CoreServer).to receive(:current_user_story_authorization).and_return(user_authorization)
+    set_features(govstat_module_enabled ? ['govstat'] : [])
+    stub_current_domain
   end
 
   describe '#contributor?' do
@@ -416,30 +419,48 @@ RSpec.describe UserAuthorizationHelper, type: :helper do
     let(:goal_uid) { 'asdf-fdsa' }
     let(:isAccessible) { false }
 
+    shared_examples 'false if open performance disabled' do
+      describe 'open performance is disabled' do
+        let(:govstat_module_enabled) { false }
+
+        it 'returns false' do
+          expect(can_view_goal?('asdf-fdsa')).to be(false)
+        end
+      end
+    end
+
     before do
       allow_any_instance_of(OpenPerformance::Goal).to(
         receive(:accessible?).and_return(isAccessible)
       )
     end
 
-    it 'passes argument to Goal.new' do
-      expect(OpenPerformance::Goal).to receive(:new).with(goal_uid).and_call_original
-      can_view_goal?('asdf-fdsa')
-    end
+    describe 'open performance is enabled' do
+      let(:govstat_module_enabled) { true }
 
-    describe 'goal is not accessible' do
-      let(:isAccessible) { false }
-
-      it 'returns false' do
-        expect(can_view_goal?('asdf-fdsa')).to be(isAccessible)
+      it 'passes argument to Goal.new' do
+        expect(OpenPerformance::Goal).to receive(:new).with(goal_uid).and_call_original
+        can_view_goal?('asdf-fdsa')
       end
-    end
 
-    describe 'goal is accessible' do
-      let(:isAccessible) { true }
+      describe 'goal is not accessible' do
+        let(:isAccessible) { false }
 
-      it 'returns true' do
-        expect(can_view_goal?('asdf-fdsa')).to be(isAccessible)
+        it_behaves_like 'false if open performance disabled'
+
+        it 'returns false' do
+          expect(can_view_goal?('asdf-fdsa')).to be(isAccessible)
+        end
+      end
+
+      describe 'goal is accessible' do
+        let(:isAccessible) { true }
+
+        it_behaves_like 'false if open performance disabled'
+
+        it 'returns true' do
+          expect(can_view_goal?('asdf-fdsa')).to be(isAccessible)
+        end
       end
     end
   end

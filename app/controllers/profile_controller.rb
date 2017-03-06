@@ -269,7 +269,7 @@ class ProfileController < ApplicationController
 
         if params[:auth0id_delete_list].present?
           if current_user.flag?('nopassword') &&
-            params[:auth0id_delete_list].size >= current_user.auth0id_identifiers.size
+            params[:auth0id_delete_list].size >= current_user.auth0_identifiers.size
             error_msg = t('screens.profile.edit.validation.no_password_no_auth0id')
           else
             CoreServer::Base.connection.batch_request do |batch_id|

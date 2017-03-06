@@ -64,6 +64,10 @@ class Auth0Controller < ApplicationController
     end
   end
 
+  # Links an auth0 identifier for a social account to a user
+  # The user is presented with the signup/signin screen
+  # If they create an account, it will be passwordless and can only be logged in to with the identifier
+  # If they link an existing account, using that idenfitier in the future will log them in
   def link
     auth0_token = session[:auth0_link_token]
     auth0_identifier = auth0_token[:socrata_user_id]

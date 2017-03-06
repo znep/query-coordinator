@@ -18,20 +18,20 @@ export class FeedbackPanel extends Component {
       'onDismissFeedback',
       'onClickFeedback',
       'onClickUsersnap',
-      'onClickZendesk'
+      'onClickZendesk',
+      'hideButton',
+      'hideContent',
+      'resetButtonHover',
+      'showButton',
+      'showContent',
+      'tryEscDismiss'
     );
   }
 
   componentDidMount() {
-    // Copy some of the close behavior of socrata-components flannels because they don't
-    // support the behavior we want for the feedback panel yet.
-    document.body.addEventListener('keyup', (event) => {
-      const key = event.which || event.keyCode;
-
-      if (key === ESCAPE_KEY_CODE) {
-        this.onDismissFeedback();
-      }
-    });
+    if (this.content) {
+      this.makeElementAndChildrenInaccessible(this.content);
+    }
   }
 
   // Bring up the feedback panel when the button is clicked.
@@ -99,23 +99,61 @@ export class FeedbackPanel extends Component {
   resetButtonHover() {
     // Velocity doesn't allow animation to initial state, so everything is an
     // inline style override — hence the need to forcibly reset for hover style.
-    this.refs.button.style.right = null;
+    this.button.style.right = null;
   }
 
   showButton(cb) {
-    velocity(this.refs.button, { right: '-2.2rem' }, _.iteratee(cb));
+    velocity(this.button, { right: '-2.2rem' }, _.iteratee(cb));
+
+    this.makeElementAndChildrenAccessible(this.button);
+    this.button.focus();
   }
 
   showContent(cb) {
-    velocity(this.refs.content, { bottom: 0 }, _.iteratee(cb));
+    velocity(this.content, { bottom: 0 }, _.iteratee(cb));
+
+    this.makeElementAndChildrenAccessible(this.content);
+    this.dismiss.focus();
   }
 
   hideButton(cb) {
-    velocity(this.refs.button, { right: '-12rem' }, _.iteratee(cb));
+    velocity(this.button, { right: '-12rem' }, _.iteratee(cb));
+    this.makeElementAndChildrenInaccessible(this.button);
   }
 
   hideContent(cb) {
-    velocity(this.refs.content, { bottom: '-22rem' }, _.iteratee(cb));
+    velocity(this.content, { bottom: '-22rem' }, _.iteratee(cb));
+    this.makeElementAndChildrenInaccessible(this.content);
+  }
+
+  // TODO: Update this to use the helper function from styleguide once available (see EN-11381)
+  makeElementAndChildrenAccessible(element) {
+    element.removeAttribute('aria-hidden');
+    element.removeAttribute('tabindex');
+
+    // reset tabindex on the focusable children
+    _.each(element.querySelectorAll('a, button'), (child) => {
+      child.removeAttribute('tabindex');
+    });
+  }
+
+  // TODO: Update this to use the helper function from styleguide once available (see EN-11381)
+  makeElementAndChildrenInaccessible(element) {
+    element.setAttribute('aria-hidden', 'true');
+    element.setAttribute('tabindex', '-1');
+
+    // set tabindex on the focusable children
+    _.each(element.querySelectorAll('a, button'), (child) => {
+      child.setAttribute('tabindex', '-1');
+    });
+  }
+
+  tryEscDismiss(event) {
+    // Copy some of the close behavior of socrata-components flannels because they don't
+    // support the behavior we want for the feedback panel yet.
+    if (event.keyCode === ESCAPE_KEY_CODE) {
+      this.onDismissFeedback();
+    }
   }
 
   render() {
@@ -125,14 +163,15 @@ export class FeedbackPanel extends Component {
     }
 
     return (
-      <div className="feedback-panel">
-        <div className="feedback-panel-content flannel" ref="content">
+      <div className="feedback-panel" onKeyUp={this.tryEscDismiss}>
+        <div className="feedback-panel-content flannel" ref={(ref) => this.content = ref}>
           <header className="flannel-header">
             <h5>{t('panel_title')}</h5>
             <button
               aria-label={I18n.close}
               className="btn btn-transparent flannel-header-dismiss"
-              onClick={this.onDismissFeedback}>
+              onClick={this.onDismissFeedback}
+              ref={(ref) => this.dismiss = ref}>
               <span className="icon-close-2" />
             </button>
           </header>
@@ -156,7 +195,10 @@ export class FeedbackPanel extends Component {
             </div>
           </section>
         </div>
-        <button className="btn feedback-panel-button" onClick={this.onClickFeedback} ref="button">
+        <button
+          className="btn feedback-panel-button"
+          onClick={this.onClickFeedback}
+          ref={(ref) => this.button = ref}>
           {t('title')}
         </button>
       </div>

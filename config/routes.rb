@@ -115,6 +115,7 @@ Rails.application.routes.draw do
       get :comment_moderation
       get :sdp_templates
       get :datasets
+      post :initialize_asset_inventory
       get :data_slate, :as => 'canvas_admin', :action => 'canvas_pages'
       get 'data_slate/create', :as => 'canvas_create', :action => 'create_canvas_page'
       post 'data_slate/create', :action => 'post_canvas_page'

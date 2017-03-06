@@ -6,6 +6,7 @@ gem 'dotenv-rails', :groups => [ :development, :test ]
 gem 'actionpack-page_caching'
 gem 'addressable'
 gem 'airbrake', '4.3.0'
+gem 'asset-inventory', '~> 1.0.0'
 gem 'awesome_print'
 gem 'axlsx', '~> 1.3.4'
 gem 'cetera-ruby', '0.3.0', :require => 'cetera'

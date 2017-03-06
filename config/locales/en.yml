@@ -2348,7 +2348,10 @@ en:
         title: Manage Connectors
       datasets:
         asset_inventory:
-          tooltip: This option is not available due to a processing delay. If the problem persists after 24 hours, please contact support.
+          initialize: Initialize Asset Inventory
+          initialize_failure: "There was a problem initializing an Asset Inventory dataset for this domain. Please contact the Administration Experience team."
+          initialize_success: "An Asset Inventory dataset has been initialized and is being populated for this domain. Please wait a few minutes before accessing the dataset."
+          tooltip: This option is not available due to a processing delay. If the problem persists after 24 hours, please contact Socrata Support.
         description: List the assets on this domain and configure the layout of the dataset page
         layout_config: Layout Configuration
         left: Left

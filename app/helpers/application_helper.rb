@@ -1040,10 +1040,10 @@ module ApplicationHelper
 
     url = url_options.is_a?(String) ? url_options : url_for(url_options)
 
-    form_options = html_options.delete('form').merge(
+    form_options = {
       :method => 'get',
       :action => url
-    )
+    }.merge(html_options.delete('form'))
 
     html_options['type'] = 'submit'
     html_options['class'] = [html_options['class'], 'button'].compact.join(' ')
@@ -1052,9 +1052,10 @@ module ApplicationHelper
       html_options['class'] = [html_options['class'], 'disabled'].compact.join(' ')
     end
 
-    button = content_tag('button', t(translation_string), html_options)
+    form_contents = content_tag('button', t(translation_string), html_options) <<
+        hidden_field_tag('authenticity_token', form_authenticity_token)
 
-    content_tag('form', button, form_options)
+    content_tag('form', form_contents, form_options)
   end
 
   # Stolen from https://github.com/rails/rails/blob/b6c1ee0dfcb7ea8bfcac9daff0162876990665a3/actionview/lib/action_view/helpers/form_tag_helper.rb#L908-L910

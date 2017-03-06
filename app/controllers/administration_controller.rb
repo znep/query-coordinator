@@ -42,13 +42,22 @@ class AdministrationController < ApplicationController
   before_filter :only => [:jobs, :show_job] { |request| request.check_feature_flag(:show_admin_processes) && request.check_auth_level(UserRights::VIEW_ALL_DATASET_STATUS_LOGS) }
   before_filter :only => [:home, :save_featured_views] { |request| request.check_auth_levels_any([UserRights::MANAGE_STORIES, UserRights::FEATURE_ITEMS, UserRights::EDIT_SITE_THEME]) }
   before_filter :only => [:delete_story, :new_story, :create_story, :move_story, :edit_story, :stories_appearance, :update_stories_appearance] { |request| request.check_auth_level(UserRights::MANAGE_STORIES) }
+  before_filter :is_superadmin?, :only => [:initialize_asset_inventory]
 
   def index
   end
 
   def datasets
     @meta[:page_name] = 'Admin Catalog'
-    unless AssetInventory.find.present?
+    asset_inventory = AssetInventoryService.find(!is_superadmin?)
+    button_disabled = asset_inventory.blank?
+    @view_model = {
+        :asset_inventory => {
+            :button_disabled => button_disabled,
+            :show_initialize_button => button_disabled && AssetInventoryService.api_configured? && is_superadmin?
+        }
+    }
+    if asset_inventory.blank?
       Airbrake.notify(:error_class => 'Asset Inventory missing for domain',
         :error_message => 'Asset Inventory feature flag is enabled but no dataset of display type assetinventory is found.',
         :session => { :domain => CurrentDomain.cname },
@@ -79,6 +88,15 @@ class AdministrationController < ApplicationController
       view_type: 'table',
       a11y_table_description: t('screens.admin.datasets.table_description')
     ))
+  end
+
+  def initialize_asset_inventory
+    if AssetInventoryService.create_asset_inventory
+      flash[:notice] = t('screens.admin.datasets.asset_inventory.initialize_success')
+    else
+      flash[:error] = t('screens.admin.datasets.asset_inventory.initialize_failure')
+    end
+    redirect_to :action => :datasets
   end
 
   #In the /admin/datasets endpoint ...

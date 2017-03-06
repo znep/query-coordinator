@@ -18,13 +18,17 @@ export default () => ({
       "color": {
         "primary": "#ec3001",
         "secondary": "#71abd9",
-        "highlight": "#cccccc"
+        "highlight": "#cccccc",
+        "palette": "accent"
       },
       "dataSource": {
         "datasetUid": "k6cs-ww27",
         "dimension": {
           "columnName": "blood_alcohol_level",
-          "aggregationFunction": null
+          "aggregationFunction": null,
+          "grouping": {
+            "columnName": "plausibility"
+          }
         },
         "domain": "vertex-stories.test-socrata.com",
         "measure": {

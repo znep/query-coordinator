@@ -4,25 +4,25 @@ export default () => ({
     "version": 2
   },
   "configuration": {
-    "xAxisScalingMode": "fit",
-    "axisLabels": {
-      "bottom": "Trucking",
-      "left": "Keep"
-    },
-    "viewSourceDataLink": true
+    "viewSourceDataLink": true,
+    "xAxisScalingMode": "fit"
   },
-  "description": "Description",
+  "description": null,
   "series": [
     {
       "color": {
-        "primary": "#6ac5a3",
-        "highlight": "#cccccc"
+        "primary": "#71abd9",
+        "highlight": "#cccccc",
+        "palette": "accent"
       },
       "dataSource": {
         "datasetUid": "k6cs-ww27",
         "dimension": {
           "columnName": "incident_occurrence",
-          "aggregationFunction": null
+          "aggregationFunction": null,
+          "grouping": {
+            "columnName": "plausibility"
+          }
         },
         "domain": "vertex-stories.test-socrata.com",
         "measure": {
@@ -36,10 +36,10 @@ export default () => ({
       "label": null,
       "type": "timelineChart",
       "unit": {
-        "one": "Where",
-        "other": "Wheres"
+        "one": "Row",
+        "other": "Rows"
       }
     }
   ],
-  "title": "Title"
+  "title": null
 });

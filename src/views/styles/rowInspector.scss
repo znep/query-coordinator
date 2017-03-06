@@ -1,3 +1,5 @@
+@import 'animations';
+
 $icon-size: 1.3rem;
 $base-font-size: 1rem;
 $small-font-size: $base-font-size * 0.75;
@@ -50,26 +52,6 @@ $action-btn-disabled-font-color: #c6c1bf;
   color: $fg-color;
 }
 
-@-webkit-keyframes socrata-visualizations-spin {
-  100% {
-    -webkit-transform: rotate(360deg);
-  }
-}
-@-moz-keyframes socrata-visualizations-spin {
-  100% {
-    -moz-transform: rotate(360deg);
-  }
-}
-@keyframes socrata-visualizations-spin {
-  100% {
-    -webkit-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -ms-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-
 @mixin loading-spinner($body-color, $slice-color, $diameter: 17px, $thickness: 3px) {
   position: relative;
 
@@ -88,9 +70,7 @@ $action-btn-disabled-font-color: #c6c1bf;
     border-right-color: $slice-color;
     border-radius: 60%;
     display: inline-block;
-    -webkit-animation: socrata-visualizations-spin 0.9s linear infinite;
-    -moz-animation: socrata-visualizations-spin 0.9s linear infinite;
-    animation: socrata-visualizations-spin 0.9s linear infinite;
+    @include spin;
   }
 }
 

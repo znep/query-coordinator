@@ -62,12 +62,9 @@ function getData(vif, options) {
       GROUP BY \`${state.groupingColumnName}\`
       ORDER BY ${SoqlHelpers.dimensionAlias()} ${sortOrder}
       LIMIT ${MAX_GROUP_COUNT}`;
-    const uriEncodedQueryString = encodeURIComponent(
-      queryString.replace(/[\n\s]+/g, ' ').trim()
-    );
 
     return state.soqlDataProvider.query(
-      uriEncodedQueryString,
+      queryString,
       SoqlHelpers.dimensionAlias(),
       SoqlHelpers.measureAlias()
     ).
@@ -232,9 +229,7 @@ function getData(vif, options) {
       ORDER BY ${orderByClause}
       LIMIT ${options.MAX_ROW_COUNT}`;
 
-    state.groupingOtherCategoryUriEncodedQueryString = encodeURIComponent(
-      queryString.replace(/[\n\s]+/g, ' ').trim()
-    );
+    state.groupingOtherCategoryQueryString = queryString;
 
     return state;
   }
@@ -247,7 +242,7 @@ function getData(vif, options) {
 
     return state.soqlDataProvider.
       query(
-        state.groupingOtherCategoryUriEncodedQueryString,
+        state.groupingOtherCategoryQueryString,
         SoqlHelpers.dimensionAlias(),
         SoqlHelpers.measureAlias()
       ).

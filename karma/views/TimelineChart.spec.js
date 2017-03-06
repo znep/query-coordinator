@@ -1,9 +1,9 @@
 var _ = require('lodash');
 var $ = require('jquery');
 var moment = require('moment');
-var TimelineChart = require('../../src/views/TimelineChart');
+var TimelineChart = require('src/views/TimelineChart');
 
-describe('socrata.visualizations.views.TimelineChart', function() {
+describe('TimelineChart', function() {
   'use strict';
 
   var CHART_WIDTH = 640;

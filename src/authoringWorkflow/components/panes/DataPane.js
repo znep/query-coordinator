@@ -1,6 +1,8 @@
+import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 
+import Styleguide from 'socrata-components';
 import { translate } from '../../../I18n';
 import { onDebouncedEvent } from '../../helpers';
 import { isLoading, hasData, hasError } from '../../selectors/metadata';
@@ -8,22 +10,25 @@ import {
   getVisualizationType,
   getLimitCount,
   getShowOtherCategory,
+  getPrecision,
+  getTreatNullValuesAsZero,
   isBarChart,
   isPieChart,
   isColumnChart,
   isTimelineChart
 } from '../../selectors/vifAuthoring';
-import { DEFAULT_LIMIT_FOR_SHOW_OTHER_CATEGORY } from '../../constants';
+import { DEFAULT_LIMIT_FOR_SHOW_OTHER_CATEGORY, TIMELINE_PRECISION } from '../../constants';
 import {
   setLimitNoneAndShowOtherCategory,
   setLimitCountAndShowOtherCategory,
-  setShowOtherCategory
+  setShowOtherCategory,
+  setPrecision,
+  setTreatNullValuesAsZero
 } from '../../actions';
 
 import Accordion from '../shared/Accordion';
 import AccordionPane from '../shared/AccordionPane';
 
-import VisualizationTypeSelector from '../VisualizationTypeSelector';
 import DimensionSelector from '../DimensionSelector';
 import MeasureSelector from '../MeasureSelector';
 import RegionSelector from '../RegionSelector';
@@ -33,6 +38,12 @@ export var DataPane = React.createClass({
   propTypes: {
     metadata: React.PropTypes.object,
     vifAuthoring: React.PropTypes.object
+  },
+
+  getDefaultProps() {
+    return {
+      timelinePrecision: _.cloneDeep(TIMELINE_PRECISION)
+    };
   },
 
   renderMetadataLoading() {
@@ -80,7 +91,7 @@ export var DataPane = React.createClass({
       <div id="limit-none-container">
         <input {...limitNoneInputAttributes} />
         <label htmlFor="limit-none">
-          <span className="fake-radiobutton" />
+          <span className="fake-radiobutton"/>
         </label>
         {translate(`panes.data.fields.${translationKey}.none`)}
       </div>
@@ -139,7 +150,7 @@ export var DataPane = React.createClass({
           <input {...showOtherCategoryInputAttributes}/>
           <label className="inline-label" htmlFor="show-other-category">
             <span className="fake-checkbox">
-              <span className="icon-checkmark3" />
+              <span className="icon-checkmark3"/>
             </span>
             {translate('panes.data.fields.show_other_category.title')}
           </label>
@@ -151,7 +162,7 @@ export var DataPane = React.createClass({
       <div id="limit-count-container">
         <input {...limitCountInputAttributes} />
         <label htmlFor="limit-count">
-          <span className="fake-radiobutton" />
+          <span className="fake-radiobutton"/>
         </label>
         {translate(`panes.data.fields.${translationKey}.count`)}
         {limitCountValueContainer}
@@ -175,6 +186,69 @@ export var DataPane = React.createClass({
           </div>
         </div>
         {descriptionForPieChart}
+      </AccordionPane>
+    );
+  },
+
+  renderTimelinePrecision() {
+    const { onSelectTimelinePrecision, timelinePrecision, vifAuthoring } = this.props;
+    const defaultPrecision = getPrecision(vifAuthoring) || null;
+    const options = _.map(timelinePrecision, (option) => {
+
+      option.render = this.renderTimelinePrecisionOption;
+
+      return option;
+    });
+
+    const attributes = {
+      options,
+      onSelection: onSelectTimelinePrecision,
+      id: 'timeline-precision-selection',
+      value: defaultPrecision
+    };
+
+    return (
+      <div className="authoring-field">
+        <label className="block-label" htmlFor="timeline-precision">
+          {translate('panes.data.fields.timeline_precision.title')}
+        </label>
+        <div id="timeline-precision" className="authoring-field">
+          <Styleguide.Dropdown {...attributes} />
+        </div>
+      </div>
+    );
+  },
+
+  renderTreatNullValuesAsZero() {
+    const { vifAuthoring } = this.props;
+    const inputAttributes = {
+      id: 'treat-null-values-as-zero',
+      type: 'checkbox',
+      onChange: this.props.onChangeTreatNullValuesAsZero,
+      defaultChecked: getTreatNullValuesAsZero(vifAuthoring)
+    };
+
+    return (
+      <div className="authoring-field checkbox">
+        <input {...inputAttributes} />
+        <label className="inline-label" htmlFor="treat-null-values-as-zero">
+          <span className="fake-checkbox">
+            <span className="icon-checkmark3"></span>
+          </span>
+          {translate('panes.data.fields.treat_null_values_as_zero.title')}
+        </label>
+      </div>
+    );
+  },
+
+  renderTimelineOptions() {
+    const timelinePrecision = this.renderTimelinePrecision();
+    const treatNullValuesAsZero = this.renderTreatNullValuesAsZero();
+
+    return (
+      <AccordionPane title={translate('panes.data.subheaders.timeline_options')}>
+        {timelinePrecision}
+        {treatNullValuesAsZero}
       </AccordionPane>
     );
   },
@@ -214,6 +288,8 @@ export var DataPane = React.createClass({
       ) :
       null;
 
+    const timelineOptions = isTimelineChart(vifAuthoring) ? this.renderTimelineOptions() : null;
+
     const sections = (
       <Accordion>
         <AccordionPane title={translate('panes.data.subheaders.data_selection')}>
@@ -227,8 +303,9 @@ export var DataPane = React.createClass({
             <RegionSelector/>
           </div>
         </AccordionPane>
-        {limitAndShowOtherCategory}
         {dimensionGroupingColumnNameSelector}
+        {timelineOptions}
+        {limitAndShowOtherCategory}
       </Accordion>
     );
 
@@ -266,7 +343,17 @@ function mapDispatchToProps(dispatch) {
     onChangeShowOtherCategory: (event) => {
       const showOtherCategory = event.target.checked;
       dispatch(setShowOtherCategory(showOtherCategory));
-    }
+    },
+
+    onSelectTimelinePrecision: (timelinePrecision) => {
+      dispatch(setPrecision(timelinePrecision.value));
+    },
+
+    onChangeTreatNullValuesAsZero: (event) => {
+      const treatNullValuesAsZero = event.target.checked;
+
+      dispatch(setTreatNullValuesAsZero(treatNullValuesAsZero));
+    },
   };
 }
 export default connect(mapStateToProps, mapDispatchToProps)(DataPane);

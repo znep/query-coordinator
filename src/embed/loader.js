@@ -4,19 +4,22 @@
 //
 // PLEASE NOTE that this script will be included multiple times
 // in a single page if there is more than one embedded visualization.
+// Payload size issues will be multiplied accordingly.
 // The script MUST be idempotent.
 
-import { mainLibrarySrc } from './paths';
+import { mainLibrarySrc, mainLibraryFilename } from './paths';
 
 window.socrata = window.socrata || {};
 
 // Load the main package if needed.
-if (!document.querySelector(`script[src="${mainLibrarySrc}"]`)) {
+if (!document.querySelector(`script[src*="${mainLibraryFilename}"]`)) {
+  var loaderScriptTag = document.querySelector('script[data-socrata-domain]');
+  var socrataDomain = loaderScriptTag ? loaderScriptTag.getAttribute('data-socrata-domain') : null;
   var scriptTag = document.createElement('script');
   scriptTag.type = 'text/javascript';
   scriptTag.async = true;
   scriptTag.charset = 'UTF-8'; // Important, non-UTF8 sites won't autodetect encoding properly.
-  scriptTag.src = mainLibrarySrc;
+  scriptTag.src = mainLibrarySrc(socrataDomain);
   document.head.appendChild(scriptTag);
   // Once the script loads, it will automatically call hydrateEmbeds.
 } else {

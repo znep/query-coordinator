@@ -6,15 +6,7 @@ import baseVifReducer from './base';
 import { getDisplayableColumns } from '../../selectors/metadata';
 import { setStringValueOrDefaultValue } from '../../helpers';
 
-import {
-  RESET_STATE,
-  RECEIVE_METADATA,
-  SET_DOMAIN,
-  SET_DATASET_UID,
-  SET_FILTERS,
-  SET_UNIT_ONE,
-  SET_UNIT_OTHER
-} from '../../actions';
+import * as actions from '../../actions';
 
 export default function table(state, action) {
   if (_.isUndefined(state)) {
@@ -24,11 +16,11 @@ export default function table(state, action) {
   state = _.cloneDeep(state);
 
   switch (action.type) {
-    case RESET_STATE:
+    case actions.RESET_STATE:
       state = vifs().table;
       break;
 
-    case RECEIVE_METADATA:
+    case actions.RECEIVE_METADATA:
       let metadata = {
         datasetUid: '',
         domain: '',
@@ -48,11 +40,11 @@ export default function table(state, action) {
       state = baseVifReducer(state, action);
       break;
 
-    case SET_DOMAIN:
-    case SET_DATASET_UID:
-    case SET_FILTERS:
-    case SET_UNIT_ONE:
-    case SET_UNIT_OTHER:
+    case actions.SET_DOMAIN:
+    case actions.SET_DATASET_UID:
+    case actions.SET_FILTERS:
+    case actions.SET_UNIT_ONE:
+    case actions.SET_UNIT_OTHER:
       return baseVifReducer(state, action);
 
     default:

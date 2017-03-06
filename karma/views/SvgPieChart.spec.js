@@ -4,7 +4,7 @@ const d3 = require('d3');
 const $ = require('jquery');
 const chroma = require('chroma-js');
 const I18n = require('src/I18n');
-const SvgPieChart = require('../../src/views/SvgPieChart');
+const SvgPieChart = require('src/views/SvgPieChart');
 
 const COLOR_PALETTES = {
   categorical: ["#a6cee3", "#5b9ec9", "#2d82af", "#7eba98", "#98d277", "#52af43", "#6f9e4c", "#dc9a88", "#f16666", "#e42022", "#f06c45", "#fdbb69", "#fe982c", "#f78620", "#d9a295", "#b294c7", "#7d54a6", "#9e8099", "#f0eb99", "#dbb466"],

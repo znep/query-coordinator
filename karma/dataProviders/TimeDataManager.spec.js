@@ -1,5 +1,5 @@
 const rewire = require('rewire');
-const TimeDataManagerAPI = rewire('../../src/dataProviders/TimeDataManager');
+const TimeDataManagerAPI = rewire('src/dataProviders/TimeDataManager');
 
 const VALID_VIF = {
   configuration: {},

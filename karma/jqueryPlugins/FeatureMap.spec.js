@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var $ = require('jquery');
 var rewire = require('rewire');
-var SocrataFeatureMap = rewire('../../src/FeatureMap');
+var SocrataFeatureMap = rewire('src/FeatureMap');
 
 describe('FeatureMap jQuery component', function() {
 

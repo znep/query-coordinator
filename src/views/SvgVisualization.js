@@ -346,11 +346,17 @@ function SvgVisualization($element, vif) {
       const metadataProvider = new MetadataProvider({domain, datasetUid});
       const renderLink = function(linkableDatasetUid) {
 
+        let href = `https://${domain}/d/${linkableDatasetUid}`;
+
+        if (self.$container.closest('.socrata-visualization-embed').length) {
+          href += '?referrer=embed';
+        }
+
         self.
           $container.
           addClass('socrata-visualization-view-source-data').
           find('.socrata-visualization-view-source-data a').
-          attr('href', `https://${domain}/d/${linkableDatasetUid}`);
+          attr('href', href);
       };
 
       metadataProvider.getDatasetMigrationMetadata().

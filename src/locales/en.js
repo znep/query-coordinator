@@ -35,7 +35,8 @@ export default {
     data: {
       title: 'Data',
       subheaders: {
-        data_selection: 'Data Selection'
+        data_selection: 'Data Selection',
+        timeline_options: 'Timeline Options'
       },
       uhoh: 'Uh oh!',
       loading_metadata: 'Loading metadata...',
@@ -112,12 +113,28 @@ export default {
           subtitle: 'Group Dimension Values By',
           no_value: 'No Dimension Grouping',
           description: 'Grouping dimension values breaks out your data into multiple segments based on the selected column.'
+        },
+        timeline_precision: {
+          automatic: 'Automatic',
+          year: 'Group by Year',
+          month: 'Group by Month',
+          day: 'Group by Day',
+          title: 'Grouping'
+        },
+        treat_null_values_as_zero: {
+          title: 'Display Missing or Null Values as Zero'
         }
       }
     },
-    title_and_description: {
-      title: 'Title and Description',
+    presentation: {
+      title: 'Presentation',
       subheaders: {
+        colors: 'Color',
+        points: 'Points',
+        map: 'Map',
+        axis_titles: 'Axis Titles',
+        labels: 'Labels',
+        data_labels: 'Data Labels',
         general: 'General'
       },
       fields: {
@@ -129,17 +146,7 @@ export default {
         },
         show_source_data_link: {
           title: 'Show "View Source Data" link'
-        }
-      }
-    },
-    colors_and_style: {
-      title: 'Presentation',
-      subheaders: {
-        colors: 'Color',
-        points: 'Points',
-        map: 'Map'
-      },
-      fields: {
+        },
         bar_color: {
           title: 'Bar Color'
         },
@@ -169,20 +176,7 @@ export default {
         },
         base_layer_opacity: {
           title: 'Opacity'
-        }
-      }
-    },
-    axis_and_scale: {
-      title: 'Axis',
-      subheaders: {
-        axis_titles: 'Axis Titles',
-        axis_labels: 'Axis Labels',
-        data_labels: 'Data Labels',
-        chart_sorting: 'Chart Sorting',
-        grouping_and_display: 'Grouping and Display',
-        scale: 'Scale'
-      },
-      fields: {
+        },
         top_axis_title: {
           title: 'Top Axis Title'
         },
@@ -195,9 +189,6 @@ export default {
         right_axis_title: {
           title: 'Right Axis Title'
         },
-        x_axis_scaling_mode: {
-          title: 'Auto-fit X-Axis'
-        },
         show_dimension_labels: {
           title: 'Show Dimension Labels'
         },
@@ -206,6 +197,18 @@ export default {
         },
         show_value_labels_as_percent: {
           title: 'Label chart slices as %'
+        }
+      }
+    },
+    axis_and_scale: {
+      title: 'Axis',
+      subheaders: {
+        chart_sorting: 'Chart Sorting',
+        scale: 'Scale'
+      },
+      fields: {
+        x_axis_scaling_mode: {
+          title: 'Auto-fit X-Axis'
         },
         chart_sorting: {
           large_to_small: 'Largest to smallest by value',
@@ -214,16 +217,6 @@ export default {
           descending: 'Descending by label',
           sort_by_value: 'Value',
           sort_by_label: 'Label'
-        },
-        timeline_precision: {
-          automatic: 'Automatic',
-          year: 'Group by Year',
-          month: 'Group by Month',
-          day: 'Group by Day',
-          title: 'Grouping'
-        },
-        treat_null_values_as_zero: {
-          title: 'Display Missing or Null Values as Zero'
         },
         scale: {
           title: 'Measure Axis Bounds',

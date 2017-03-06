@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var $ = require('jquery');
 var rewire = require('rewire');
-var SocrataColumnChart = rewire('../../src/ColumnChart');
+var SocrataColumnChart = rewire('src/ColumnChart');
 
 describe('ColumnChart jQuery component', function() {
 

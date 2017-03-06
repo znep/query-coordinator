@@ -1,5 +1,5 @@
 var $ = require('jquery');
-var Pager = require('../../src/views/Pager');
+var Pager = require('src/views/Pager');
 var COLUMN_NAME = 'column_name';
 var DATASET_UID = 'asdf-fdsa';
 var DOMAIN = 'localhost';
@@ -164,6 +164,17 @@ describe('Pager', function() {
         element.on('SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS', function() { done(); });
         previousButton.click();
       });
+
+      it('should retain focus when clicked', function() {
+        // In order to verify focus, we have to actually render it into the document
+        $('body').append(element);
+
+        previousButton.click();
+        pager.render({unit: {one: 'case', other: 'cases'}});
+        assert.equal(document.activeElement.className, previousButton[0].className);
+
+        element.remove();
+      });
     });
   }
 
@@ -184,6 +195,17 @@ describe('Pager', function() {
       it('should emit SOCRATA_VISUALIZATION_PAGINATION_NEXT when clicked', function(done) {
         element.on('SOCRATA_VISUALIZATION_PAGINATION_NEXT', function() { done(); });
         nextButton.click();
+      });
+
+      it('should retain focus when clicked', function() {
+        // In order to verify focus, we have to actually render it into the document
+        $('body').append(element);
+
+        nextButton.click();
+        pager.render({unit: {one: 'case', other: 'cases'}});
+        assert.equal(document.activeElement.className, nextButton[0].className);
+
+        element.remove();
       });
     });
   }

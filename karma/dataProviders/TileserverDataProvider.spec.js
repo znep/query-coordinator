@@ -1,4 +1,4 @@
-var TileserverDataProvider = require('../../src/dataProviders/TileserverDataProvider');
+var TileserverDataProvider = require('src/dataProviders/TileserverDataProvider');
 
 describe('TileserverDataProvider', function() {
 
@@ -19,7 +19,7 @@ describe('TileserverDataProvider', function() {
   var VALID_X = 1;
   var VALID_Y = 1;
 
-  var TILESERVER_HOST_PATTERN = window.location.host; // TODO: See extensive comments in fetchTileserverHostsForDomain.
+  var TILESERVER_HOST_PATTERN = VALID_DOMAIN;
   var TILE_PATTERN = 'tiles\\/{0}\\/{1}\\/{2}\\/{3}\\/{4}\\.pbf'.format(
     VALID_DATASET_UID.split('-').join('\\-'),
     VALID_COLUMN_NAME,

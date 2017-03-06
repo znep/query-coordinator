@@ -1,4 +1,4 @@
-var GeospaceDataProvider = require('../../src/dataProviders/GeospaceDataProvider');
+var GeospaceDataProvider = require('src/dataProviders/GeospaceDataProvider');
 
 describe('GeospaceDataProvider', function() {
   var SOUTHWEST_EXTENT_LNG = -122.513300926011;

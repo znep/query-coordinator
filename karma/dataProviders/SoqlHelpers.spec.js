@@ -1,5 +1,5 @@
 var rewire = require('rewire');
-var SoqlHelpers = rewire('../../src/dataProviders/SoqlHelpers');
+var SoqlHelpers = rewire('src/dataProviders/SoqlHelpers');
 
 describe('SoqlHelpers', function() {
 

@@ -284,7 +284,9 @@ $.fn.socrataSvgFeatureMap = function(originalVif) {
   function handleRowInspectorQuerySuccess(data) {
     var rowInspectorTitleColumnName = _.get(lastRenderedVif, 'configuration.rowInspectorTitleColumnName');
     var getPageTitle = function(page) {
-      return _.find(page, {column: rowInspectorTitleColumnName}).value;
+      var title = _.find(page, {column: rowInspectorTitleColumnName});
+      // In case the column name cannot be found in 'page' to locate the title value
+      return title ? title.value : null;
     };
     var formattedData = formatRowInspectorData(datasetMetadata, data);
     var titles = rowInspectorTitleColumnName ? _.map(formattedData, getPageTitle) : [];

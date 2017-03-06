@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var $ = require('jquery');
 var rewire = require('rewire');
-var socrataTimelineChart = rewire('../../src/TimelineChart');
+var socrataTimelineChart = rewire('src/TimelineChart');
 
 describe('TimelineChart jQuery component', function() {
 

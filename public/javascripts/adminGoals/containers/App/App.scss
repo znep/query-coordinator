@@ -194,6 +194,10 @@ a.btn {
 .goals-page {
   width: 98%;
   margin: 0 auto;
+
+  .modal-full {
+    z-index: 10100;
+  }
 }
 
 .hidden {

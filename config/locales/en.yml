@@ -1708,6 +1708,10 @@ en:
       uploading: Uploading
       upload_failed: Upload Failed.
       import_failed: Import Failed.
+      hide_details: Hide Details
+      show_details: View Details
+      connection_error_title: Lost Connection
+      connection_error_body: Something went wrong with your connection. Make sure you are connected to the internet.
     show_output_schema:
       column_header:
         column_status_flyout:

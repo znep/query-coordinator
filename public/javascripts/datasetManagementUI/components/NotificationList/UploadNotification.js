@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import ProgressBar from '../ProgressBar';
+import UploadNotificationError from './UploadNotificationError';
 import { STATUS_SAVED, STATUS_UPDATE_FAILED } from '../../lib/database/statuses';
 
-export default function UploadNotification({ upload }) {
+function UploadNotification({ upload, notification, dispatch }) {
   if (upload.__status__.type === STATUS_SAVED) {
     return (
       <div className="dsmui-notification successful">
@@ -18,11 +20,7 @@ export default function UploadNotification({ upload }) {
       </div>
     );
   } else if (upload.__status__.type === STATUS_UPDATE_FAILED) {
-    return (
-      <div className="dsmui-notification error">
-        {I18n.progress_items.upload_failed}
-      </div>
-    );
+    return <UploadNotificationError upload={upload} notification={notification} dispatch={dispatch} />;
   } else {
     return (
       <div className="dsmui-notification in-progress">
@@ -38,5 +36,9 @@ export default function UploadNotification({ upload }) {
 }
 
 UploadNotification.propTypes = {
-  upload: PropTypes.object.isRequired
+  upload: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  notification: PropTypes.object
 };
+
+export default connect()(UploadNotification);

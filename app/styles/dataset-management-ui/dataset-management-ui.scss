@@ -1111,6 +1111,45 @@ body {
 
     &.error {
       border-top-color: $error-base;
+
+      .progress-bar {
+        background-color: $error-base;
+      }
+
+      .btn-container {
+        display: flex;
+        margin-top: 10px;
+      }
+
+      .btn-container > * {
+        flex: 1 1 50%;
+        text-align: center;
+      }
+
+      .btn-container button {
+        margin-right: 10px;
+      }
+
+      .msg-container {
+        max-width: 310px;
+        text-align: center;
+      }
+
+      .details-toggle {
+        vertical-align: top;
+      }
+
+      .icon {
+        color: $error-base;
+        line-height: 1;
+        font-size: 150%;
+        margin-left: 10px;
+        vertical-align: top;
+      }
+
+      .error-details {
+        float: right;
+      }
     }
 
     .message {

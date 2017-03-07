@@ -234,7 +234,7 @@ export default function dbReducer(db = emptyDB, action) {
           (record) => (record.id === action.updates.id),
           (record) => ({
             ...record,
-            __status__: statusUpdateFailed(action.updates, action.error)
+            __status__: statusUpdateFailed(action.updates, action.error, action.percentCompleted)
           })
         )
       };

@@ -1,5 +1,6 @@
 import dbReducer from 'reducers/database';
 import * as Actions from 'actions/database';
+import { makeErrorMsg } from 'lib/notifications';
 
 describe('reducers/database', () => {
 
@@ -410,11 +411,12 @@ describe('reducers/database', () => {
       }]
     };
 
-    const error = 'The cigar is just a cigar';
+    const error = 502;
     const updates = {id: 0, super_ego: 7};
+    const percentCompleted = 55.555;
 
     const beforeUpdate = new Date();
-    const database = dbReducer(initialDB, Actions.updateFailed('my_table', updates, error));
+    const database = dbReducer(initialDB, Actions.updateFailed('my_table', updates, error, percentCompleted));
     const failedAt = database.my_table[0].__status__.failedAt;
 
     expect(failedAt).to.be.at.least(beforeUpdate);
@@ -424,7 +426,8 @@ describe('reducers/database', () => {
         __status__: {
           type: 'UPDATE_FAILED',
           updates,
-          error,
+          error: makeErrorMsg(error),
+          percentCompleted,
           failedAt
         },
         id: 0,

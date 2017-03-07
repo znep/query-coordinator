@@ -59,12 +59,13 @@ export function uploadFile(uploadId, file) {
     const uploadUpdate = {
       id: uploadId
     };
+    let percent;
     dispatch(updateStarted('uploads', uploadUpdate));
     dispatch(addNotification(uploadNotification(uploadId)));
     const xhr = new XMLHttpRequest();
     xhr.open('POST', dsmapiLinks.uploadBytes(uploadId));
     xhr.upload.onprogress = (evt) => {
-      const percent = evt.loaded / evt.total * 100;
+      percent = evt.loaded / evt.total * 100;
       dispatch(updateProgress('uploads', uploadUpdate, percent));
     };
     xhr.onload = () => {
@@ -81,11 +82,11 @@ export function uploadFile(uploadId, file) {
         }));
         dispatch(removeNotificationAfterTimeout(uploadNotification(uploadId)));
       } else {
-        dispatch(updateFailed('uploads', uploadUpdate, xhr.statusText));
+        dispatch(updateFailed('uploads', uploadUpdate, xhr.status, percent));
       }
     };
-    xhr.onerror = (error) => {
-      dispatch(updateFailed('uploads', uploadUpdate, error));
+    xhr.onerror = () => {
+      dispatch(updateFailed('uploads', uploadUpdate, xhr.status, percent));
     };
     xhr.setRequestHeader('Content-type', file.type);
     xhr.send(file);

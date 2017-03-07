@@ -13,7 +13,7 @@ function Notification({ db, notification }) {
   switch (notification.type) {
     case UPLOAD_NOTIFICATION: {
       const upload = _.find(db.uploads, { id: notification.uploadId });
-      return <UploadNotification upload={upload} />;
+      return <UploadNotification upload={upload} notification={notification} />;
     }
 
     case UPSERT_JOB_NOTIFICATION: {

@@ -1,3 +1,5 @@
+import { makeErrorMsg } from '../lib/notifications';
+
 export const BATCH = 'BATCH';
 export const batch = (operations) => ({
   type: BATCH,
@@ -111,11 +113,12 @@ export const updateSucceeded = (tableName, updatedRecord) => ({
 });
 
 export const UPDATE_FAILED = 'UPDATE_FAILED';
-export const updateFailed = (tableName, updates, error) => ({
+export const updateFailed = (tableName, updates, error, percentCompleted) => ({
   type: UPDATE_FAILED,
   tableName,
   updates,
-  error
+  error: makeErrorMsg(error),
+  percentCompleted
 });
 
 export const CREATE_TABLE = 'CREATE_TABLE';

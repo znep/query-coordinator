@@ -67,11 +67,12 @@ export function statusUpdatingImmutable() {
 }
 
 export const STATUS_UPDATE_FAILED = 'UPDATE_FAILED';
-export function statusUpdateFailed(updates, error) {
+export function statusUpdateFailed(updates, error, percentCompleted) {
   return {
     type: STATUS_UPDATE_FAILED,
     updates,
     error,
+    percentCompleted,
     failedAt: new Date()
   };
 }

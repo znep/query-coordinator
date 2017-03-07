@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import { bindActionCreators } from 'redux';
@@ -10,6 +11,12 @@ import { ESCAPE_KEY_CODE } from '../../common/constants';
 import { cancelFeaturedItemEdit } from '../actions/featuredContent';
 
 export class FeaturedContentModal extends Component {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, 'onKeyUp');
+  }
+
   componentWillMount() {
     document.addEventListener('keyup', this.onKeyUp);
   }

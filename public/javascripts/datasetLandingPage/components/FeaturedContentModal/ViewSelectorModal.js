@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
@@ -14,7 +15,12 @@ import ViewSelector from './ViewSelector';
 export class ViewSelectorModal extends Component {
   constructor(props) {
     super(props);
+
     this.I18n = I18n.featured_content_modal.view_selector_modal;
+
+    // This needs to be bound because it's invoked in the context of another component, which means
+    // super(props) does not work for binding this.
+    _.bindAll(this, 'renderNoViews');
   }
 
   componentWillMount() {

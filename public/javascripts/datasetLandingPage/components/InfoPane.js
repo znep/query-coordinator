@@ -20,7 +20,7 @@ function mapStateToProps(state) {
     isPrivate: view.isPrivate,
     metadata: {
       first: {
-        label: I18n.updated,
+        label: I18n.common.updated,
         content: formatDate(view.lastUpdatedAt)
       },
       second: attribution

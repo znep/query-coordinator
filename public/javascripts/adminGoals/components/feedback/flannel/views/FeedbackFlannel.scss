@@ -1,5 +1,7 @@
+$admin-header-z-index: 10000;
+
 .feedback-flannel {
-  z-index: 10200;
+  z-index: $admin-header-z-index + 200;
   width: 500px;
 
   .header h1 {

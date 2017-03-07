@@ -1,3 +1,5 @@
+$admin-header-z-index: 10000;
+
 .clearfix:before,
 .clearfix:after {
   content: " "; /* 1 */
@@ -196,7 +198,7 @@ a.btn {
   margin: 0 auto;
 
   .modal-full {
-    z-index: 10100;
+    z-index: $admin-header-z-index + 100;
   }
 }
 

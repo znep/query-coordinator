@@ -225,4 +225,5 @@ export const load = (dispatch, vif) => {
   dispatch(actions.setDatasetUid(get(paths.datasetUid)));
   dispatch(actions.setDomain(get(paths.domain)));
   dispatch(actions.setDataSource(get(paths.domain), get(paths.datasetUid)));
+  dispatch(actions.setCuratedRegions(get(paths.domain), get(paths.datasetUid)));
 };

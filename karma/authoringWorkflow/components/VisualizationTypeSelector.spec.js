@@ -27,7 +27,7 @@ describe('VisualizationTypeSelector', function() {
       });
 
       it('renders visualization type selection', function() {
-        expect(component.id).to.equal('visualization-type-selection');
+        expect(component.querySelector('#visualization-type-selection')).to.exist;
       });
 
       describe('with a visualization selected', function() {

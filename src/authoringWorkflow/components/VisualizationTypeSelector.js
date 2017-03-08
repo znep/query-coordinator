@@ -157,7 +157,6 @@ export const VisualizationTypeSelector = React.createClass({
           {this.renderVisualizationTypeButton('regionMap')}
         </div>
         <div className="visualization-type-gutter" />
-        {this.renderEmptyRegionAlert()}
       </div>
     );
   },
@@ -165,9 +164,16 @@ export const VisualizationTypeSelector = React.createClass({
   render() {
     const { metadata } = this.props;
 
-    return hasData(metadata) ?
-      this.renderVisualizationTypeSelector() :
-      null;
+    if (hasData(metadata)) {
+      return (
+        <div>
+          {this.renderVisualizationTypeSelector()}
+          {this.renderEmptyRegionAlert()}
+        </div>
+      );
+    } else {
+      return null;
+    }
   }
 });
 

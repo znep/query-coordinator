@@ -16,6 +16,10 @@ describe('FeatureMapController', function() {
     "southwest": [41.681944, -87.827778],
     "northeast": [42.081944, -87.427778]
   };
+  var INVALID_EXTENT = {
+    "southwest": [441.87537684702812, -887.6587963104248],
+    "northeast": [41.89026600256849, -87.5951099395752]
+  };
   var COLUMNS = {
     'test_number': {
       'name': 'number title',
@@ -552,6 +556,7 @@ describe('FeatureMapController', function() {
       $scope.$apply(function() {
         deferred.reject();
       });
+
       expect(elementInfo.scope.featureExtent).to.equal(defaultExtent);
     });
 
@@ -573,6 +578,42 @@ describe('FeatureMapController', function() {
     it('should use the bounds of the world if both the default and server extent are missing', function() {
       var deferred = $q.defer();
       CardDataService.getFeatureExtent.returns(deferred.promise);
+      CardDataService.getDefaultFeatureExtent.returns(undefined);
+      var elementInfo = buildElement({
+        dataset: dataset
+      });
+      var $scope = elementInfo.scope;
+      $scope.$apply(function() {
+        deferred.resolve(undefined);
+      });
+      expect(elementInfo.scope.featureExtent).to.deep.equal({
+        southwest: [ -85, -180 ],
+        northeast: [ 85, 180 ]
+      });
+    });
+
+    it('should use the bounds of the world if the existing default extent is invalid', function() {
+      var deferred = $q.defer();
+      var defaultExtent = INVALID_EXTENT;
+      CardDataService.getFeatureExtent.returns(deferred.promise);
+      CardDataService.getDefaultFeatureExtent.returns(defaultExtent);
+      var elementInfo = buildElement({
+        dataset: dataset
+      });
+      var $scope = elementInfo.scope;
+      $scope.$apply(function() {
+        deferred.resolve(undefined);
+      });
+      expect(elementInfo.scope.featureExtent).to.deep.equal({
+        southwest: [ -85, -180 ],
+        northeast: [ 85, 180 ]
+      });
+    });
+
+    it('should use the bounds of the world if the server extent is invalid', function() {
+      var deferred = $q.defer();
+      var serverExtent = INVALID_EXTENT;
+      CardDataService.getFeatureExtent.returns(serverExtent);
       CardDataService.getDefaultFeatureExtent.returns(undefined);
       var elementInfo = buildElement({
         dataset: dataset

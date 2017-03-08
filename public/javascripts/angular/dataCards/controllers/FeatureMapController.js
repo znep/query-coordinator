@@ -1,5 +1,3 @@
-const L = require('leaflet');
-
 module.exports = function FeatureMapController(
   $scope,
   $q,
@@ -355,44 +353,11 @@ module.exports = function FeatureMapController(
     onErrorResumeNext(Rx.Observable.returnValue(undefined)); // Promise error returns undefined
 
   // TODO - Fix synchronization here - not getting saved value
-  var synchronizedFeatureExtentData$ = serverExtent$.
-    combineLatest(
+  var synchronizedFeatureExtentData$ = serverExtent$.combineLatest(
     defaultExtent$,
     savedExtent$,
     function(serverExtent, defaultExtent, savedExtent) {
-      if (_.isPresent(savedExtent)) {
-        return savedExtent;
-      } else if (defaultExtent) {
-        var defaultBounds;
-        var featureBounds;
-        try {
-          defaultBounds = LeafletHelpersService.buildBounds(defaultExtent);
-        } catch (error) {
-          $log.warn(`Unable to build bounds from defaultExtent: ${defaultExtent}`);
-          return serverExtent;
-        }
-        try {
-          featureBounds = LeafletHelpersService.buildBounds(serverExtent);
-        } catch (error) {
-          $log.warn(`Unable to build bounds from serverExtent: ${serverExtent}`);
-          return defaultExtent;
-        }
-        if (defaultBounds.contains(featureBounds)) {
-          return serverExtent;
-        } else {
-          return defaultExtent;
-        }
-      } else if (serverExtent) {
-        return serverExtent;
-      } else {
-
-        // If the saved extent, default extent, and server extent are all missing,
-        // fall back to using the bounds of the world.
-        return LeafletHelpersService.buildExtents(L.latLngBounds(
-          L.latLng(85, -180),
-          L.latLng(-85, 180)
-        ));
-      }
+      return LeafletHelpersService.getExtent(serverExtent, defaultExtent, savedExtent);
     });
 
   /****************************************

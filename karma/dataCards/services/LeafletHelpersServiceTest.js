@@ -33,4 +33,30 @@ describe('LeafletHelpersService', function() {
     });
 
   });
+
+  describe('#validateExtent', function() {
+    it('should return true for a valid extent', function() {
+      var extent = {
+        "southwest":[41.681944,-87.827778],
+        "northeast":[42.081944,-87.427778]
+      };
+      expect(LeafletHelpersService.validateExtent(extent)).to.equal(true);
+    });
+
+    it('should return false on an extent with invalid southwest values', function() {
+      var extent = {
+        "southwest":[441.681944,-887.827778],
+        "northeast":[42.081944,-87.427778]
+      };
+      expect(LeafletHelpersService.validateExtent(extent)).to.equal(false);
+    });
+
+    it('should return false on an extent with invalid northeast values', function() {
+      var extent = {
+        "southwest":[41.681944,-87.827778],
+        "northeast":[442.081944,-87.427778]
+      };
+      expect(LeafletHelpersService.validateExtent(extent)).to.equal(false);
+    });
+  });
 });

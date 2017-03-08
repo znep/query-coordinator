@@ -1,3 +1,5 @@
+$admin-header-z-index: 10000;
+
 .clearfix:before,
 .clearfix:after {
   content: " "; /* 1 */
@@ -194,6 +196,10 @@ a.btn {
 .goals-page {
   width: 98%;
   margin: 0 auto;
+
+  .modal-full {
+    z-index: $admin-header-z-index + 100;
+  }
 }
 
 .hidden {

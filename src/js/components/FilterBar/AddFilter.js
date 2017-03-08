@@ -68,6 +68,15 @@ export const AddFilter = React.createClass({
     this.setState({ isChoosingColumn: !this.state.isChoosingColumn });
   },
 
+  renderColumnOption(column) {
+    return (option) => (
+      <div className="filter-bar-column-option">
+        <span className={getIconForDataType(column.dataTypeName)} role="presentation" />
+        {option.title}
+      </div>
+    );
+  },
+
   renderColumnContainer() {
     const { columns } = this.props;
     const { isChoosingColumn, searchTerm } = this.state;
@@ -78,20 +87,11 @@ export const AddFilter = React.createClass({
 
     const picklistOptions = _.chain(columns).
       filter((column) => _.toLower(column.name).match(_.toLower(searchTerm))).
-      map((column) => {
-        return {
-          value: column.fieldName,
-          title: column.name,
-          render: (option) => {
-            return (
-              <div className="filter-bar-column-option">
-                <span className={getIconForDataType(column.dataTypeName)} role="presentation" />
-                {option.title}
-              </div>
-            );
-          }
-        };
-      }).
+      map((column) => ({
+        value: column.fieldName,
+        title: column.name,
+        render: this.renderColumnOption(column)
+      })).
       value();
 
     const picklistProps = {

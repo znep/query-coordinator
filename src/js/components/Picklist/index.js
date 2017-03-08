@@ -81,7 +81,17 @@ export const Picklist = React.createClass({
 
     event.stopPropagation();
 
-    this.picklist.focus();
+    // If a consumer wants to focus something immediately after a selection
+    // occurs, we shouldn't hijack its focus. To let the consumer have a
+    // moment to focus whatever it wants, we delay the default focus a
+    // handful of milliseconds. Do note, this will steal focus if
+    // the picklist is left viewable on the page after a click.
+    _.delay(() => {
+      if (this.picklist) {
+        this.picklist.focus();
+      }
+    }, 1);
+
     this.setNavigationPointer(index);
     this.setSelectedOption(selectedOption);
   },

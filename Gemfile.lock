@@ -183,7 +183,7 @@ GEM
     mixlib-shellout (2.2.6)
     mrdialog (1.0.1)
     multi_json (1.12.1)
-    multi_xml (0.5.5)
+    multi_xml (0.6.0)
     multipart-post (2.0.0)
     neat (1.7.2)
       bourbon (>= 4.0)
@@ -294,7 +294,7 @@ GEM
       rubyzip (~> 1.0)
       websocket (~> 1.0)
     semver2 (3.4.2)
-    signaller-ruby (0.2.1)
+    signaller-ruby (0.3.3)
       activesupport (~> 4.2)
       httparty (~> 0.13)
       semver2 (~> 3.4)
@@ -408,7 +408,7 @@ DEPENDENCIES
   sdoc (~> 0.4.0)
   selenium-webdriver
   semver2
-  signaller-ruby
+  signaller-ruby (~> 0)
   simplecov
   simplecov-cobertura
   socrata_site_chrome (= 2.3.6)
@@ -425,4 +425,4 @@ RUBY VERSION
    ruby 2.3.3p222
 
 BUNDLED WITH
-   1.14.5
+   1.13.7

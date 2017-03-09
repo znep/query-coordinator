@@ -92,7 +92,7 @@ gem 'stomp', '1.4.3'
 gem 'rspec-rails', '~> 3.4'
 
 # Feature flag operations.
-gem 'signaller-ruby', :require => 'signaller'
+gem 'signaller-ruby', '~> 0', :require => 'signaller'
 
 group :production do
   # Reaps unicorn worker processes under predefined conditions

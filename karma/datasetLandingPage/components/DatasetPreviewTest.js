@@ -1,29 +1,15 @@
 import { DatasetPreview } from 'components/DatasetPreview';
 import mockView from 'data/mockView';
 import { Simulate } from 'react-addons-test-utils';
-import $ from 'jquery';
 
 describe('components/DatasetPreview', function() {
-  let originalSocrataTable;
-  let socrataTableStub;
-
   function getProps(props) {
     return _.defaults({}, props, {
       onClickGrid: _.noop,
-      view: mockView
+      view: mockView,
+      vif: {}
     });
   }
-
-  beforeEach(function() {
-    originalSocrataTable = $.fn.socrataTable;
-    socrataTableStub = sinon.stub();
-
-    $.fn.socrataTable = socrataTableStub;
-  });
-
-  afterEach(function() {
-    $.fn.socrataTable = originalSocrataTable;
-  });
 
   it('does not render an element if the view has no columns', function() {
     const element = renderComponent(DatasetPreview, getProps({
@@ -139,24 +125,5 @@ describe('components/DatasetPreview', function() {
     Simulate.click(element.querySelector('a.btn-grid'));
 
     expect(spy).to.have.been.called;
-  });
-
-  it('shows a spinner on first load', function() {
-    const element = renderComponent(DatasetPreview, getProps());
-    expect(element.querySelector('.spinner-default')).to.exist;
-  });
-
-  it('invokes $.fn.socrataTable', function() {
-    const element = renderComponent(DatasetPreview, getProps());
-    expect(socrataTableStub).to.have.been.called;
-  });
-
-  it('hides the spinner once the table is loaded', function() {
-    const $element = $(renderComponent(DatasetPreview, getProps()));
-    const $table = $element.find('#table-container');
-
-    $table.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
-
-    expect($element.find('.spinner-default').length).to.eq(0);
   });
 });

@@ -1,118 +1,11 @@
 import _ from 'lodash';
-import $ from 'jquery';
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
+import { components as SocrataVisualizations } from 'socrata-visualizations';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import { isUserRoled } from '../../common/user';
 
 export class DatasetPreview extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isLoading: true
-    };
-
-    _.bindAll(this, 'triggerInvalidateSize');
-  }
-
-  componentDidMount() {
-    if (this.shouldRenderTable()) {
-      this.initializeTable();
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.shouldRenderTable()) {
-      this.removeTable();
-    }
-  }
-
-  getVif() {
-    const { view } = this.props;
-
-    return {
-      configuration: {
-        order: view.sortOrder,
-        viewSourceDataLink: false
-      },
-      datasetUid: view.id,
-      domain: window.serverConfig.domain,
-      filters: [],
-      format: {
-        type: 'visualization_interchange_format',
-        version: 1
-      },
-      type: 'table',
-      unit: {
-        one: view.rowLabel,
-        other: view.rowLabelMultiple
-      }
-    };
-  }
-
-  shouldRenderTable() {
-    const { view } = this.props;
-
-    return view.isTabular &&
-      !_.isEmpty(view.columns) &&
-      view.rowCount > 0;
-  }
-
-  initializeTable() {
-    const $table = $(this.table);
-
-    require.ensure(['socrata-visualizations'], (require) => {
-      const SocrataVisualizations = require('socrata-visualizations');
-      const flyoutRenderer = new SocrataVisualizations.views.FlyoutRenderer();
-
-      // Initialize the table
-      $table.socrataTable(this.getVif());
-
-      // Set up the relevant event listeners
-      $table.on('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE', () => {
-        this.setState({ isLoading: false });
-      });
-      $table.on('SOCRATA_VISUALIZATION_TABLE_FLYOUT', (event) => {
-        if (event.originalEvent.detail) {
-          flyoutRenderer.render(event.originalEvent.detail);
-        } else {
-          flyoutRenderer.clear();
-        }
-      });
-      $(window).resize(this.triggerInvalidateSize);
-
-      // Store the table so we can clean up when unmounting
-      this.$table = $table;
-    }, 'socrata-visualizations');
-  }
-
-  removeTable() {
-    const { $table } = this;
-
-    // Tell the table to self-destruct
-    $table.trigger('SOCRATA_VISUALIZATION_DESTROY');
-
-    // Remove the relevant event listeners
-    $table.off('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
-    $table.off('SOCRATA_VISUALIZATION_TABLE_FLYOUT');
-    $(window).off('resize', this.triggerInvalidateSize);
-  }
-
-  triggerInvalidateSize() {
-    this.$table.trigger('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');
-  }
-
-  renderLoadingSpinner() {
-    if (this.state.isLoading) {
-      return (
-        <div className="table-spinner">
-          <span className="spinner-default spinner-large" />
-        </div>
-      );
-    }
-  }
-
   renderActionButton() {
     const { view, onClickGrid } = this.props;
 
@@ -140,8 +33,24 @@ export class DatasetPreview extends Component {
     }
   }
 
+  renderTable() {
+    const { vif } = this.props;
+
+    return (
+      <div className="table-contents">
+        <SocrataVisualizations.Visualization vif={vif} />
+      </div>
+    );
+  }
+
   render() {
-    if (this.shouldRenderTable()) {
+    const { view } = this.props;
+
+    const shouldRenderTable = view.isTabular &&
+      !_.isEmpty(view.columns) &&
+      view.rowCount > 0;
+
+    if (shouldRenderTable) {
       return (
         <section className="landing-page-section dataset-preview">
           <div className="landing-page-header-wrapper">
@@ -150,12 +59,7 @@ export class DatasetPreview extends Component {
             </h2>
             {this.renderActionButton()}
           </div>
-
-          <div className="table-contents">
-            {this.renderLoadingSpinner()}
-
-            <div id="table-container" ref={(ref) => this.table = ref} />
-          </div>
+          {this.renderTable()}
         </section>
       );
     } else {
@@ -166,11 +70,40 @@ export class DatasetPreview extends Component {
 
 DatasetPreview.propTypes = {
   onClickGrid: PropTypes.func,
-  view: PropTypes.object.isRequired
+  view: PropTypes.object.isRequired,
+  vif: PropTypes.object.isRequired
 };
 
-function mapStateToProps(state) {
-  return _.pick(state, 'view');
+function mapStateToProps({ view }) {
+  return {
+    view,
+    vif: {
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      },
+      configuration: {
+        order: view.sortOrder,
+        viewSourceDataLink: false
+      },
+      series: [
+        {
+          dataSource: {
+            datasetUid: view.id,
+            dimension: {},
+            domain: window.serverConfig.domain,
+            type: 'socrata.soql',
+            filters: []
+          },
+          type: 'table',
+          unit: {
+            one: view.rowLabel,
+            other: view.rowLabelMultiple
+          }
+        }
+      ]
+    }
+  };
 }
 
 function mapDispatchToProps(dispatch) {

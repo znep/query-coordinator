@@ -1138,7 +1138,7 @@ class AdministrationController < ApplicationController
   end
 
   def asset_inventory
-    asset_inventory = AssetInventory.find
+    asset_inventory = AssetInventoryService.find
 
     if asset_inventory.present?
       redirect_to :controller => 'datasets', :action => 'show', :id => asset_inventory.id, :bypass_dslp => true

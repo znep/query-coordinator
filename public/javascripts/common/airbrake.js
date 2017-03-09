@@ -17,6 +17,10 @@ function init(projectId, projectKey) {
       return null;
     }
 
+    if (_.has(window.serverConfig, 'airbrakeEnvironment')) {
+      notice.context.environment = window.serverConfig.airbrakeEnvironment;
+    }
+
     return notice;
   });
 

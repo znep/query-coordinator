@@ -47,6 +47,7 @@ module CatalogLandingPageHelper
     ).camelize_keys!
 
     server_config = {
+      :airbrakeEnvironment => ENV['AIRBRAKE_ENVIRONMENT_NAME'] || Rails.env,
       :airbrakeKey => ENV['CATEGORY_LANDING_PAGE_AIRBRAKE_API_KEY'] ||
         APP_CONFIG.catalog_landing_page_airbrake_api_key,
       :airbrakeProjectId => ENV['CATEGORY_LANDING_PAGE_AIRBRAKE_PROJECT_ID'] ||

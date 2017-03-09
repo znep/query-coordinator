@@ -12,6 +12,7 @@ module VisualizationCanvasHelper
 
   def render_visualization_canvas_server_config
     server_config = {
+      :airbrakeEnvironment => ENV['AIRBRAKE_ENVIRONMENT_NAME'] || Rails.env,
       :airbrakeKey => ENV['VISUALIZATION_CANVAS_AIRBRAKE_API_KEY'] ||
         APP_CONFIG.visualization_canvas_airbrake_api_key,
       :airbrakeProjectId => ENV['VISUALIZATION_CANVAS_AIRBRAKE_PROJECT_ID'] ||

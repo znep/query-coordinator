@@ -42,9 +42,7 @@ module ConditionalRequestHandler
   # headers which would allow us to return a 304
   def self.check_conditional_request?(request, manifest)
     return false if manifest.nil?
-    # check manifest hash
-    return true if etag_matches_hash?(request, manifest.hash)
-    return modified_since_matches?(request, manifest)
+    etag_matches_hash?(request, manifest.hash) || modified_since_matches?(request, manifest)
   end
 
   private
@@ -59,26 +57,24 @@ module ConditionalRequestHandler
     !request.if_none_match.nil?
   end
 
-  def self.modified_since_matches?(request, manifest)
-    # if the etag check failed we can check the last modified
-    return false if etag_exists?(request)
-    if !request.if_modified_since.nil?
-      Rails.logger.info("  Last-Modified-Since found: #{request.if_modified_since}")
-      return true if request.if_modified_since > manifest.last_mtime
-    end
-    false
+  def self.modified_since_exists?(request)
+    !request.if_modified_since.nil?
   end
 
-  #
-  # Current version of rails doesn't have multiple etag tracking; so this will help
-  #
+  def self.modified_since_matches?(request, manifest)
+    return false if etag_exists?(request)
+    return false unless modified_since_exists?(request)
+
+    Rails.logger.info("  Last-Modified-Since found: #{request.if_modified_since}")
+    request.if_modified_since > manifest.last_mtime
+  end
+
   def self.etag_matches_hash?(request, manifest_hash)
-    if !request.if_none_match.nil?
-      Rails.logger.info("  ETag found: #{request.if_none_match}")
-      request.if_none_match.split(/\s*,\s*/).each { |etag|
-        return true if etag.gsub(/^\"|\"$/, "") == manifest_hash
-      }
+    return false unless etag_exists?(request)
+
+    Rails.logger.info("  ETag found: #{request.if_none_match}")
+    request.if_none_match.split(/\s*,\s*/).any? do |etag|
+      etag.gsub(/^"|"$/, '') == manifest_hash
     end
-    false
   end
 end

@@ -469,7 +469,6 @@ class InternalController < ApplicationController
     CurrentDomain.flag_out_of_date!(params[:domain_id])
 
     prepare_to_render_flashes!
-
     respond_to do |format|
       format.html do
         redirect_to feature_flags_config_path(domain_id: params[:domain_id], category: params[:category])
@@ -553,6 +552,14 @@ class InternalController < ApplicationController
   private
 
   def check_auth
+    # This doesn't seem to work the way the original author expected it to work.
+    # The require_user filter (ApplicationController) is already executed before
+    # the check_auth filter, so current_user is always present and therefore
+    # this line has no effect.
+    #
+    # However, I'm not removing this line just yet because the solution to a
+    # piecemeal authorization system is not a proliferation of piecemeal edits,
+    # especially involving formerly untested code.
     return require_user(true) unless current_user.present?
 
     unless current_user.is_superadmin?

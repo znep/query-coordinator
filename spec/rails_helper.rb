@@ -6,10 +6,12 @@ require 'rspec/rails'
 
 require 'factory_girl'
 FactoryGirl.find_definitions
-# Add additional requires below this line. Rails is not loaded until this point!
+
+require 'timecop'
 
 require 'vcr'
 VCR.configure do |config|
+  config.default_cassette_options = { :record => :new_episodes }
   config.cassette_library_dir = 'spec/fixtures/vcr_cassettes'
   config.hook_into :webmock
 #  config.debug_logger = STDOUT

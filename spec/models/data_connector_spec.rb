@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe DataConnector do
+  include TestHelperMethods
+
   let(:fixture_prefix) { "#{Rails.root}/spec/fixtures/data_connector" }
   let(:check_params) do
     {
@@ -65,6 +67,7 @@ describe DataConnector do
   end
 
   before(:each) do
+    init_current_domain
     allow(EsriCrawler).to receive(:hostname).and_return(host)
     allow(EsriCrawler).to receive(:port).and_return(port)
     allow(EsriCrawler).to receive(:patch_request) { |path, body| body }

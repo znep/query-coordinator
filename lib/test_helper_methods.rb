@@ -12,7 +12,7 @@ module TestHelperMethods
     # For some reason, Domain and Configuration aren't autoloaded at this point,
     # so force them to load before we read test/fixtures/domain.yml
     Domain && Configuration
-    @domain = YAML::load(File.open('test/fixtures/domain.yml'))
+    @domain = YAML::load(File.open('spec/fixtures/domain.yml'))
     CurrentDomain.set_domain(@domain)
   end
 

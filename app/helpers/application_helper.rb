@@ -535,8 +535,8 @@ module ApplicationHelper
     link_to name, "#{APP_CONFIG.rpx_signin_url}?token_url=#{return_url}", options
   end
 
-  def render_license
-    licenseId = @view.property_or_default(['licenseId'])
+  def render_license(view = @view)
+    licenseId = view.property_or_default(['licenseId'])
     return t('screens.about.none') if licenseId.nil?
 
     license = ExternalConfig.for(:license).find_by_id licenseId
@@ -956,8 +956,13 @@ module ApplicationHelper
   # I am not sure when `.has_right?(ViewRights::GRANT)` is expected to return non-nil: it is nil even
   # on a public dataset as a superadmin on my local machine. I am leaving it in place because
   # I can't understand its behavior.
+
+  # Note! This code was changed when the MiniTest tests were ported to RSpec because those tests
+  # revealed some incorrect behavior in the original code, which was calling has_right? on the View
+  # class, when it should've been calling has_rights?. The correct behavior _should_ have been preserved
+  # but it is untested beyond the RSpec tests at the time of this writing. (11/8/2016)
   def user_has_domain_role_or_unauthenticated_share_by_email_enabled?(view)
-    view.has_right?(ViewRights::GRANT) ||
+    view.has_rights?(ViewRights::GRANT) ||
     current_user_is_domain_member_and_has_create_datasets_right? ||
     view.is_public?
   end
@@ -1081,13 +1086,11 @@ module ApplicationHelper
   # Places feature flags at window.socrata.featureFlags
   # for consumption by the FeatureFlags module in frontend-utils.
   def render_feature_flags_for_javascript
-    javascript_tag(
-      "
-        window.socrata = window.socrata || {};
-        window.socrata.featureFlags =
-         #{FeatureFlags.derive(nil, request).to_json};
-      ",
-      :id => 'feature-flags'
+    javascript_tag(<<~OUT, :id => 'feature-flags'
+      window.socrata = window.socrata || {};
+      window.socrata.featureFlags =
+        #{FeatureFlags.derive(nil, request).to_json};
+    OUT
     )
   end
 

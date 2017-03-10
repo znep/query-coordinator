@@ -49,7 +49,7 @@ With ES2015 modules:
 
 ```js
 import React from 'react';
-import ColorPicker from 'socrata-components/components/ColorPicker';
+import { ColorPicker } from 'socrata-components';
 
 const Component = React.createClass({
   render() {

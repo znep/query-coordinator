@@ -65,7 +65,7 @@ Run all three processes in the same terminal window with foreman.
 
 To start the Rails app:
 
-    bin/start
+    bin/start_rails
 
 To start the webpack-dev-server:
 

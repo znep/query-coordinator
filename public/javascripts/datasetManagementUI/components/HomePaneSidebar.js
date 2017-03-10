@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
@@ -7,12 +8,12 @@ import classNames from 'classnames';
 import ActivityFeed from './ActivityFeed';
 
 function query(db) {
-  const currentOutputSchema = Selectors.currentOutputSchema(db);
+  const currentOutputSchema = Selectors.latestOutputSchema(db);
   const outputColumns = currentOutputSchema ?
     Selectors.columnsForOutputSchema(db, currentOutputSchema.id) :
     [];
   return {
-    hasMetadata: !!(db.views[0].description), // TODO: do we want to have this be more strict?
+    hasMetadata: !!(_.values(db.views)[0].description), // TODO: do we want to have this be more strict?
     hasData: db.uploads.length > 0,
     anyColumnHasDescription: outputColumns.some((outputColumn) => (outputColumn.description))
   };

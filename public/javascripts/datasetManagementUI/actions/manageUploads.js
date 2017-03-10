@@ -3,8 +3,8 @@ import * as Links from '../links';
 import * as dsmapiLinks from '../dsmapiLinks';
 import {
   insertFromServer,
+  insertMultipleFromServer,
   insertFromServerIfNotExists,
-  insertFromServerWithPk,
   insertStarted,
   insertSucceeded,
   insertFailed,
@@ -114,7 +114,7 @@ function pollForOutputSchema(uploadId) {
         } else {
           const upload = resp.resource;
           if (_.get(upload, 'schemas[0].output_schemas.length') > 0) {
-            const outputSchemaIds = insertAndSubscribeToUpload(dispatch, upload);
+            const outputSchemaIds = subscribeToUpload(dispatch, upload);
             dispatch(push(Links.showOutputSchema(
               uploadId,
               upload.schemas[0].id,
@@ -135,8 +135,12 @@ export function insertAndSubscribeToUpload(dispatch, upload) {
     finished_at: upload.finished_at ? parseDate(upload.finished_at) : null,
     created_by: upload.created_by
   }));
+  subscribeToUpload(dispatch, upload);
+}
+
+function subscribeToUpload(dispatch, upload) {
   const outputSchemaIds = upload.schemas.map((inputSchema) => {
-    dispatch(insertFromServer('input_schemas', {
+    dispatch(insertFromServerIfNotExists('input_schemas', {
       id: inputSchema.id,
       name: inputSchema.name,
       total_rows: inputSchema.total_rows,
@@ -168,7 +172,8 @@ export function insertChildrenAndSubscribeToOutputSchema(dispatch, outputSchemaR
       ..._.omit(outputColumn, ['transform']),
       transform_id: outputColumn.transform.id
     }));
-    actions.push(insertFromServerIfNotExists('output_schema_columns', {
+    dispatch(insertFromServerIfNotExists('output_schema_columns', {
+      id: `${outputSchemaResponse.id}-${outputColumn.id}`,
       output_schema_id: outputSchemaResponse.id,
       output_column_id: outputColumn.id
     }));
@@ -184,7 +189,7 @@ const INITIAL_FETCH_LIMIT_ROWS = 200;
 export function createTableAndSubscribeToTransform(transform) {
   return (dispatch, getState) => {
     const db = getState().db;
-    const transformInDb = _.find(db.transforms, { id: transform.id });
+    const transformInDb = db.transforms[transform.id];
     if (!transformInDb.row_fetch_started) {
       dispatch(updateFromServer('transforms', {
         id: transform.id,
@@ -256,21 +261,20 @@ function fetchAndInsertDataForTransform(transform, offset, limit) {
     socrataFetch(dsmapiLinks.transformResults(transform.id, limit, offset)).
       then(checkStatus).
       then(getJson).
-      then((resp) => {
-        const recordsWithIndex = resp.resource.map((result, index) => ({
-          index,
-          ...result
-        }));
-        const keyedByIndex = _.keyBy(recordsWithIndex, 'index');
-        dispatch(insertFromServerWithPk(`transform_${transform.id}`, keyedByIndex));
-        const updateFetchedRows = updateFromServer('transforms', {
-          id: transform.id,
-          fetched_rows: offset + limit
-        });
-        dispatch(updateFetchedRows);
-      }).
       catch((error) => {
         console.error('failed to get transform results', error);
+      }).
+      then((resp) => {
+        const recordsWithIndex = resp.resource.map((result, id) => ({
+          id,
+          ...result
+        }));
+        const keyedById = _.keyBy(recordsWithIndex, 'id');
+        dispatch(insertMultipleFromServer(`transform_${transform.id}`, keyedById));
+        dispatch(updateFromServer('transforms', {
+          id: transform.id,
+          fetched_rows: offset + limit
+        }));
       });
   };
 }

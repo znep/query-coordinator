@@ -23,35 +23,33 @@ export const edit = (tableName, updates) => ({
 });
 
 export const REVERT_EDITS = 'REVERT_EDITS';
-export const revertEdits = (tableName, oldRecordId) => ({
+export const revertEdits = (tableName, recordId) => ({
   type: REVERT_EDITS,
   tableName,
-  oldRecordId
+  recordId
 });
 
 // used when the server pushes new info to us (e.g. over a web socket)
 // and on initial page load
 export const INSERT_FROM_SERVER = 'INSERT_FROM_SERVER';
-export const insertFromServer = (tableName, newRecordOrRecords) => ({
+export const insertFromServer = (tableName, newRecord, options = {}) => ({
   type: INSERT_FROM_SERVER,
   tableName,
-  newRecordOrRecords
+  newRecord,
+  options: _.defaults(options, { ifNotExists: false })
+});
+
+export const INSERT_MULTIPLE_FROM_SERVER = 'INSERT_MULTIPLE_FROM_SERVER';
+export const insertMultipleFromServer = (tableName, newRecords, options = {}) => ({
+  type: INSERT_MULTIPLE_FROM_SERVER,
+  tableName,
+  newRecords,
+  options: _.defaults(options, { ifNotExists: false })
 });
 
 // Idempotent version of INSERT_FROM_SERVER.
-export const INSERT_FROM_SERVER_IF_NOT_EXISTS = 'INSERT_FROM_SERVER_IF_NOT_EXISTS';
-export const insertFromServerIfNotExists = (tableName, newRecord) => ({
-  type: INSERT_FROM_SERVER_IF_NOT_EXISTS,
-  tableName,
-  newRecord
-});
-
-export const INSERT_FROM_SERVER_WITH_PK = 'INSERT_FROM_SERVER_WITH_PK';
-export const insertFromServerWithPk = (tableName, newRecords) => ({
-  type: INSERT_FROM_SERVER_WITH_PK,
-  tableName,
-  newRecords
-});
+export const insertFromServerIfNotExists = (tableName, newRecord) =>
+  insertFromServer(tableName, newRecord, { ifNotExists: true });
 
 export const INSERT_STARTED = 'INSERT_STARTED';
 export const insertStarted = (tableName, newRecord) => ({

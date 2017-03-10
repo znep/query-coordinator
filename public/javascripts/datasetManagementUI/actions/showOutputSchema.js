@@ -4,13 +4,13 @@ import * as dsmapiLinks from '../dsmapiLinks';
 import * as Links from '../links';
 import {
   batch,
+  revertEdits,
   insertStarted,
   insertSucceeded,
   insertFailed,
   updateFromServer,
-  insertFromServerWithPk,
   updateImmutableStarted,
-  revertEdits
+  insertMultipleFromServer
 } from './database';
 import { socrataFetch, checkStatus, getJson } from '../lib/http';
 import {
@@ -45,7 +45,7 @@ export function updateColumnType(oldSchema, oldColumn, newType) {
         ]));
         insertChildrenAndSubscribeToOutputSchema(dispatch, resp.resource);
 
-        const inputSchema = _.find(db.input_schemas, { id: oldSchema.input_schema_id });
+        const inputSchema = db.input_schemas[oldSchema.input_schema_id];
         const uploadId = inputSchema.upload_id;
         dispatch(push(
           Links.showOutputSchema(uploadId, oldSchema.input_schema_id, resp.resource.id)(routing)
@@ -65,9 +65,9 @@ export function getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType) 
 
   const oldOutputColIds = _.filter(db.output_schema_columns, { output_schema_id: oldSchema.id }).
                           map(sc => sc.output_column_id);
-  const oldOutputColumns = oldOutputColIds.map(id => _.find(db.output_columns, { id: id }));
+  const oldOutputColumns = oldOutputColIds.map(id => db.output_columns[id]);
   const newOutputColumns = oldOutputColumns.map((column) => {
-    const xform = _.find(db.transforms, { id: column.transform_id });
+    const xform = db.transforms[column.transform_id];
     const xformExpr = xform.transform_expr;
 
     // Input columns are presently always text.  This will eventually
@@ -124,7 +124,9 @@ export function loadErrorTable(nextState) {
         });
         dispatch(batch(newRecordsByTransform.map((newRecords, idx) => {
           const theTransformId = outputSchema.output_columns[idx].transform.id;
-          return insertFromServerWithPk(`transform_${theTransformId}`, newRecords);
+          return insertMultipleFromServer(`transform_${theTransformId}`, newRecords, {
+            ifNotExists: true
+          });
         })));
         dispatch(batch(newRecordsByTransform.map((newRecords, idx) => {
           const errorIndices = _.map(newRecords,

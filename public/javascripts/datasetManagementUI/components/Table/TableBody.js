@@ -24,7 +24,7 @@ class TableBody extends Component {
     ));
     let rowIndices;
     if (_.isNumber(this.props.errorsTransformId)) {
-      const errorsTransform = _.find(this.props.db.transforms, { id: this.props.errorsTransformId });
+      const errorsTransform = this.props.db.transforms[this.props.errorsTransformId];
       rowIndices = errorsTransform.error_indices || _.range(RENDER_ROWS);
     } else {
       rowIndices = _.range(0, RENDER_ROWS);

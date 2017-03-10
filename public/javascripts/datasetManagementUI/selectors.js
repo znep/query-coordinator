@@ -4,7 +4,7 @@ import { STATUS_UPDATING } from './lib/database/statuses';
 // TODO: if perf becomes an issue, use reselect for memoization
 
 export function rowsUpserted(db, upsertJobId) {
-  const upsertJob = _.find(db.upsert_jobs, { id: upsertJobId });
+  const upsertJob = db.upsert_jobs[upsertJobId];
   if (!upsertJob || !upsertJob.log) {
     return 0;
   }
@@ -15,31 +15,29 @@ export function rowsUpserted(db, upsertJobId) {
 }
 
 export function latestOutputSchema(db) {
-  return _.maxBy(db.output_schemas, (os) => os.id);
+  return _.maxBy(_.values(db.output_schemas), 'id');
 }
 
 export function columnsForOutputSchema(db, outputSchemaId) {
   const schemaColumns = _.filter(db.output_schema_columns, { output_schema_id: outputSchemaId });
-  const unsortedColumns = db.output_columns.
-    filter(
-      (column) => schemaColumns.some(
-        (schemaColumn) =>
+  const unsortedColumns = _.chain(db.output_columns).
+    filter((column) =>
+      schemaColumns.some(
+        (schemaColumn) => (
           column.id === schemaColumn.output_column_id
+        )
       )
     ).
     map((outputColumn) => ({
       ...outputColumn,
-      transform: _.find(db.transforms, { id: outputColumn.transform_id })
-    }));
+      transform: db.transforms[outputColumn.transform_id]
+    })).
+    value();
   return _.sortBy(unsortedColumns, 'position');
 }
 
 export function uploadsInProgress(db) {
-  return db.uploads.filter((upload) => (
+  return _.filter(db.uploads, (upload) => (
     upload.__status__.type === STATUS_UPDATING
   ));
-}
-
-export function currentOutputSchema(db) {
-  return _.maxBy(db.output_schemas, 'inserted_at');
 }

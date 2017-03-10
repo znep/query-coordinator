@@ -28,16 +28,15 @@ function mapStateToProps({ db }) {
   // how do we know which is the correct output schema to show?
 
   // TODO: this is awfully slow because the DB is arrays not keyed by id
-  const latestOutputSchema = (db.output_schemas || []).
-    reduce((acc, os) => {
-      if (!acc) return os;
-      if (os.id > acc.id) return os;
-      return acc;
-    }, null);
+  const latestOutputSchema = _.reduce(db.output_schemas || [], (acc, os) => {
+    if (!acc) return os;
+    if (os.id > acc.id) return os;
+    return acc;
+  }, null);
 
   if (latestOutputSchema) {
     const columns = columnsForOutputSchema(db, latestOutputSchema.id).map((column) => {
-      const transform = _.find(db.transforms, { id: column.transform_id });
+      const transform = db.transforms[column.transform_id];
       return {
         dataTypeName: transform && soqlToCoreType(transform.output_soql_type),
         description: column.description,

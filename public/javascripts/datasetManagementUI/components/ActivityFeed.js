@@ -1,9 +1,9 @@
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import * as Links from '../links';
 import moment from 'moment';
-import _ from 'lodash';
 
 function ActivityFeedTimestamp({ date }) {
   return (
@@ -131,12 +131,12 @@ function activitiesOf(db) {
     value: updateModel,
     at: updateModel.inserted_at
   };
-  const uploads = db.uploads.map((upload) => ({
+  const uploads = _.map(db.uploads, (upload) => ({
     type: 'upload',
     value: upload,
     at: upload.inserted_at
   }));
-  const outputSchemas = (db.output_schemas || []).map((outputSchema) => {
+  const outputSchemas = _.map(db.output_schemas, (outputSchema) => {
     const inputSchema = _.find(db.input_schemas, { id: outputSchema.input_schema_id });
     const upload = _.find(db.uploads, { id: inputSchema.upload_id });
     return {
@@ -149,14 +149,14 @@ function activitiesOf(db) {
       }
     };
   });
-  const upserts = db.upsert_jobs.map((upsertJob) => ({
+  const upserts = _.map(db.upsert_jobs, (upsertJob) => ({
     type: 'upsert',
     value: upsertJob,
     at: upsertJob.inserted_at
   }));
 
   // TODO: Encapsulate upsert job statuses ARGHGHGHghghghghghgGhghg
-  const finishedUpserts = db.upsert_jobs.
+  const finishedUpserts = _.chain(db.upsert_jobs).
     filter((upsertJob) => !!upsertJob.finished_at).
     filter((upsertJob) => upsertJob.status === 'successful').
     map((upsertJob) => ({
@@ -166,7 +166,7 @@ function activitiesOf(db) {
     })
   );
 
-  const failedUpserts = db.upsert_jobs.
+  const failedUpserts = _.chain(db.upsert_jobs).
     filter((upsertJob) => !!upsertJob.finished_at).
     filter((upsertJob) => upsertJob.status === 'failure').
     map((upsertJob) => ({

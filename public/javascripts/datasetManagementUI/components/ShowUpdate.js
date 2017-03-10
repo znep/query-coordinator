@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { InfoPane } from 'socrata-components';
@@ -126,7 +127,7 @@ function upsertInProgressView(db, addEmailInterest) {
 
 function upsertCompleteView(view, outputSchema) {
   return (
-    <div className="table-preview">
+    <div className="table-preview" key="upsert-complete-view">
       <DatasetPreview view={view} outputSchema={outputSchema} />
     </div>
   );
@@ -173,10 +174,10 @@ function ShowUpdate({ view, routing, db, urlParams, addEmailInterest, createUplo
   );
 
   const outputSchema = latestOutputSchema(db);
-  const doesUpsertExist = db.upsert_jobs && db.upsert_jobs.length > 0;
+  const doesUpsertExist = _.size(db.upsert_jobs);
   // TODO: hardcoded status here is nasty - this should be encapsulated in the upsert job itself
-  const isUpsertComplete = doesUpsertExist && db.upsert_jobs.
-    map(uj => uj.status === 'successful').
+  const isUpsertComplete = doesUpsertExist &&
+    _.map(db.upsert_jobs, (uj) => uj.status === 'successful').
     reduce((acc, success) => success || acc, false);
 
   let dataTable;
@@ -185,6 +186,7 @@ function ShowUpdate({ view, routing, db, urlParams, addEmailInterest, createUplo
     dataTable = [(
       <Link
         to={Links.showOutputSchema(inputSchema.upload_id, inputSchema.id, outputSchema.id)}
+        key={'manage-data-button'}
         className="header-btn-wrapper" >
         <button
           className="btn btn-sm btn-alternate-2"
@@ -240,7 +242,7 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state, ownProps) {
   return {
-    view: state.db.views[0],
+    view: _.values(state.db.views)[0],
     routing: state.routing,
     db: state.db,
     urlParams: ownProps.params

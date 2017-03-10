@@ -56,6 +56,7 @@ function insertView(store) {
 }
 
 describe('components/ShowUpdate', () => {
+
   it('renders without errors', () => {
     const store = getEmptyStore();
     insertView(store);
@@ -66,60 +67,60 @@ describe('components/ShowUpdate', () => {
   it('renders the column component', () => {
     const store = getEmptyStore();
     insertView(store);
-    store.dispatch(insertFromServer('uploads', {id: 1}))
-    store.dispatch(insertFromServer('input_schemas', {id: 1, upload_id: 1}))
-    store.dispatch(insertFromServer('output_schemas', {id: 1, input_schema_id: 1}))
-    store.dispatch(insertFromServer('output_schema_columns', {output_schema_id: 1, output_column_id: 1}))
+    store.dispatch(insertFromServer('uploads', { id: 1 }));
+    store.dispatch(insertFromServer('input_schemas', { id: 1, upload_id: 1 }));
+    store.dispatch(insertFromServer('output_schemas', { id: 1, input_schema_id: 1 }));
+    store.dispatch(insertFromServer('output_schema_columns', { output_schema_id: 1, output_column_id: 1 }));
 
     store.dispatch(insertFromServer('output_columns', {
-      "position": 0,
-      "id": 1,
-      "field_name": "Address",
-      "display_name": "Address",
-      "description": null,
-      "transform_id": 620,
-      "__status__": {
-        "type": "SAVED",
-        "savedAt": "ON_SERVER"
+      position: 0,
+      id: 1,
+      field_name: "Address",
+      display_name: "Address",
+      description: null,
+      transform_id: 620,
+      __status__: {
+        type: "SAVED",
+        savedAt: "ON_SERVER"
       }
     }));
     store.dispatch(insertFromServer('transforms', {
-      "id": 620,
-      "output_soql_type": "SoQLText"
+      id: 620,
+      output_soql_type: "SoQLText"
     }));
 
     const element = renderComponentWithStore(ShowUpdate, PROPS, store);
     expect(element).to.exist;
 
-    expect(element.querySelectorAll('.column-summary').length).to.equal(1)
-    expect(element.querySelectorAll('.column-summary .column-name')[0].innerText).to.equal('Address')
-    expect(element.querySelectorAll('.column-summary .type-name')[0].innerText).to.equal('Plain Text')
+    expect(element.querySelectorAll('.column-summary').length).to.equal(1);
+    expect(element.querySelectorAll('.column-summary .column-name')[0].innerText).to.equal('Address');
+    expect(element.querySelectorAll('.column-summary .type-name')[0].innerText).to.equal('Plain Text');
   });
 
   it('renders preview data when there is an output schema', () => {
     const store = getEmptyStore();
     insertView(store);
-    store.dispatch(insertFromServer('uploads', {id: 1}))
-    store.dispatch(insertFromServer('input_schemas', {id: 1, upload_id: 1}))
-    store.dispatch(insertFromServer('output_schemas', {id: 1, input_schema_id: 1}))
+    store.dispatch(insertFromServer('uploads', { id: 1 }));
+    store.dispatch(insertFromServer('input_schemas', { id: 1, upload_id: 1 }));
+    store.dispatch(insertFromServer('output_schemas', { id: 1, input_schema_id: 1 }));
 
-    store.dispatch(insertFromServer('output_schema_columns', {output_schema_id: 1, output_column_id: 1}))
+    store.dispatch(insertFromServer('output_schema_columns', { output_schema_id: 1, output_column_id: 1 }));
     store.dispatch(insertFromServer('output_columns', {
-      "position": 0,
-      "id": 1,
-      "field_name": "Address",
-      "display_name": "Address",
-      "description": null,
-      "transform_id": 620,
-      "__status__": {
-        "type": "SAVED",
-        "savedAt": "ON_SERVER"
+      position: 0,
+      id: 1,
+      field_name: "Address",
+      display_name: "Address",
+      description: null,
+      transform_id: 620,
+      __status__: {
+        type: "SAVED",
+        savedAt: "ON_SERVER"
       }
-    }))
+    }));
     store.dispatch(insertFromServer('transforms', {
-      "id": 620,
-      "output_soql_type": "SoQLText"
-    }))
+      id: 620,
+      output_soql_type: "SoQLText"
+    }));
 
     const element = renderComponentWithStore(ShowUpdate, PROPS, store);
     expect(element).to.exist;
@@ -132,7 +133,7 @@ describe('components/ShowUpdate', () => {
     store.dispatch(insertFromServer('upsert_jobs', {
       id: 620,
       status: null
-    }))
+    }));
 
     const element = renderComponentWithStore(ShowUpdate, PROPS, store);
     expect(element).to.exist;
@@ -166,6 +167,7 @@ describe('components/ShowUpdate', () => {
     expect(element.querySelector('.btn.btn-primary.btn-busy.email-interest-btn')).to.exist;
     setTimeout(() => {
       expect(element.querySelector('.btn.btn-primary.btn-inverse.email-interest-btn')).to.not.exist;
+
       expect(element.querySelector('.btn.btn-success.email-interest-btn')).to.exist;
       unmockFetch();
       done();
@@ -207,31 +209,31 @@ describe('components/ShowUpdate', () => {
   it('renders the table when the upsert is complete', () => {
     const store = getEmptyStore();
     insertView(store);
-    store.dispatch(insertFromServer('uploads', {id: 1}))
-    store.dispatch(insertFromServer('input_schemas', {id: 1, upload_id: 1}))
-    store.dispatch(insertFromServer('output_schemas', {id: 1, input_schema_id: 1}))
+    store.dispatch(insertFromServer('uploads', {id: 1}));
+    store.dispatch(insertFromServer('input_schemas', {id: 1, upload_id: 1}));
+    store.dispatch(insertFromServer('output_schemas', {id: 1, input_schema_id: 1}));
 
-    store.dispatch(insertFromServer('output_schema_columns', {output_schema_id: 1, output_column_id: 1}))
+    store.dispatch(insertFromServer('output_schema_columns', {output_schema_id: 1, output_column_id: 1}));
     store.dispatch(insertFromServer('output_columns', {
-      "position": 0,
-      "id": 1,
-      "field_name": "Address",
-      "display_name": "Address",
-      "description": null,
-      "transform_id": 620,
-      "__status__": {
-        "type": "SAVED",
-        "savedAt": "ON_SERVER"
+      position: 0,
+      id: 1,
+      field_name: "Address",
+      display_name: "Address",
+      description: null,
+      transform_id: 620,
+      __status__: {
+        type: "SAVED",
+        savedAt: "ON_SERVER"
       }
-    }))
+    }));
     store.dispatch(insertFromServer('transforms', {
-      "id": 620,
-      "output_soql_type": "SoQLText"
-    }))
+      id: 620,
+      output_soql_type: "SoQLText"
+    }));
     store.dispatch(insertFromServer('upsert_jobs', {
-      "id": 620,
-      "status": "successful"
-    }))
+      id: 620,
+      status: "successful"
+    }));
 
     const element = renderComponentWithStore(ShowUpdate, PROPS, store);
     expect(element).to.exist;

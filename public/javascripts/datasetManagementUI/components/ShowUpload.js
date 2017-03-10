@@ -4,26 +4,23 @@ import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent } from 'socrata-components';
 import * as Links from '../links';
+import * as Selectors from '../selectors';
 
 function query(db, uploadId) {
-  const upload = _.find(db.uploads, { id: _.toNumber(uploadId) });
+  const upload = db.uploads[_.toNumber(uploadId)];
   const inputSchemas = _.filter(db.input_schemas, { upload_id: upload.id });
-  let latestOutputSchema;
-
-  if (inputSchemas.length) {
-    const outputSchemas = _.filter(db.output_schemas, { input_schema_id: inputSchemas[0].id });
-    latestOutputSchema = _.maxBy(outputSchemas, 'id');
-  }
 
   return {
     upload,
-    latestOutputSchema
+    latestOutputSchema: inputSchemas.length ?
+      Selectors.latestOutputSchema(db) :
+      null
   };
 }
 
 function ShowUpload({ upload, latestOutputSchema, goHome }) {
   let body;
-  if (_.isUndefined(latestOutputSchema)) {
+  if (!latestOutputSchema) {
     body = (
       <div className="centered-container">
         <span className="spinner-default spinner-large"></span>

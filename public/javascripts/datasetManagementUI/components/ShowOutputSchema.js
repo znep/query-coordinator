@@ -14,9 +14,9 @@ import ReadyToImport from './ReadyToImport';
 
 function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
   const outputSchemaId = _.toNumber(outputSchemaIdStr);
-  const upload = _.find(db.uploads, { id: _.toNumber(uploadId) });
-  const inputSchema = _.find(db.input_schemas, { id: _.toNumber(inputSchemaId) });
-  const outputSchema = _.find(db.output_schemas, { id: outputSchemaId });
+  const upload = db.uploads[_.toNumber(uploadId)];
+  const inputSchema = db.input_schemas[_.toNumber(inputSchemaId)];
+  const outputSchema = db.output_schemas[outputSchemaId];
   const columns = Selectors.columnsForOutputSchema(db, outputSchemaId);
 
   const canApplyUpdate = columns.every((column) => {

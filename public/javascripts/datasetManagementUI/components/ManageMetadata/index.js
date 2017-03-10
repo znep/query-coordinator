@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
@@ -73,9 +74,9 @@ function mapDispatchToProps(dispatch, ownProps) {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const currentOutputSchema = Selectors.currentOutputSchema(state.db);
+  const currentOutputSchema = Selectors.latestOutputSchema(state.db);
   return {
-    view: state.db.views[0],
+    view: _.values(state.db.views)[0],
     outputSchema: currentOutputSchema,
     outputColumns: currentOutputSchema ?
       Selectors.columnsForOutputSchema(state.db, currentOutputSchema.id) :

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { EditBar } from 'socrata-components';
@@ -30,7 +31,7 @@ function mapStateToProps(state) {
   const showPreviewLink = !!_.find(state.db.upsert_jobs, { status: 'successful' });
 
   return {
-    name: state.db.views[0].name,
+    name: _.values(state.db.views)[0].name,
     showPreviewLink
   };
 }

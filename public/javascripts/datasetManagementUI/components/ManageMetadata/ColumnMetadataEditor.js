@@ -7,7 +7,7 @@ import * as Selectors from '../../selectors';
 import * as Links from '../../links';
 
 function ColumnMetadataEditor({ db, onEdit }) {
-  const currentSchema = Selectors.currentOutputSchema(db);
+  const currentSchema = Selectors.latestOutputSchema(db);
   const currentColumns = currentSchema ?
     Selectors.columnsForOutputSchema(db, currentSchema.id) :
     [];

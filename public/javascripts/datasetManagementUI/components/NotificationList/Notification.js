@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
@@ -12,14 +11,14 @@ import UpsertJobNotification from './UpsertJobNotification';
 function Notification({ db, notification }) {
   switch (notification.type) {
     case UPLOAD_NOTIFICATION: {
-      const upload = _.find(db.uploads, { id: notification.uploadId });
+      const upload = db.uploads[notification.uploadId];
       return <UploadNotification upload={upload} notification={notification} />;
     }
 
     case UPSERT_JOB_NOTIFICATION: {
-      const upsertJob = _.find(db.upsert_jobs, { id: notification.upsertJobId });
-      const outputSchema = _.find(db.output_schemas, { id: upsertJob.output_schema_id });
-      const inputSchema = _.find(db.input_schemas, { id: outputSchema.input_schema_id });
+      const upsertJob = db.upsert_jobs[notification.upsertJobId];
+      const outputSchema = db.output_schemas[upsertJob.output_schema_id];
+      const inputSchema = db.input_schemas[outputSchema.input_schema_id];
       const props = {
         upsertJob,
         totalRows: inputSchema.total_rows,

@@ -29,7 +29,7 @@ export function mockXHR(status, body) {
   }
 }
 
-export function mockFetch(responses) {
+export function mockFetch(responses, done) {
   const realFetch = window.fetch;
   const calls = {};
   _.forEach(responses, (responsesForUrl, responseUrl) => {
@@ -42,6 +42,15 @@ export function mockFetch(responses) {
   window.fetch = (url, options) => {
     const method = options.method || 'GET';
     return new Promise((resolve) => {
+      if (!_.has(responses, [url, method])) {
+        const error = new Error(`test requested unmocked URL/method: ${method} ${url}`);
+        if (done) {
+          done(error);
+          return;
+        } else {
+          throw error;
+        }
+      }
       resolve({
         status: responses[url][method]['status'] || 200,
         json: () => (new Promise((resolve) => {

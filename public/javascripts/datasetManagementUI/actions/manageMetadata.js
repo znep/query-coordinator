@@ -32,11 +32,11 @@ export function saveMetadata() {
 }
 
 function saveDatasetMetadata(dispatch, db) {
-  const viewStatus = db.views[0].__status__.type;
+  const viewStatus = _.values(db.views)[0].__status__.type;
 
   if (viewStatus !== STATUS_SAVED) {
     const datasetMetadata = _.pick(
-      db.views[0],
+      _.values(db.views)[0],
       'id', 'name', 'description', 'category' // TODO: what else do we want to save?
     );
     dispatch(updateStarted('views', datasetMetadata));
@@ -56,7 +56,7 @@ function saveDatasetMetadata(dispatch, db) {
 }
 
 function saveColumnMetadata(dispatch, db) {
-  const currentOutputSchema = _.maxBy(db.output_schemas, 'inserted_at');
+  const currentOutputSchema = Selectors.latestOutputSchema(db);
   if (!currentOutputSchema) {
     return;
   }

@@ -1,7 +1,7 @@
-import { push } from 'react-router-redux';
+import _ from 'lodash';
+import { mockFetch } from '../testHelpers/mockHTTP';
 import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
 import errorTableResponse from '../data/errorTableResponse';
-
 import {
   getNewOutputSchemaAndColumns,
   updateActions,
@@ -12,6 +12,7 @@ import {
   insertSucceeded,
   insertFromServerIfNotExists
 } from 'actions/database';
+import { statusSavedOnServer } from 'lib/database/statuses';
 
 describe('actions/showOutputSchema', () => {
 
@@ -64,58 +65,53 @@ describe('actions/showOutputSchema', () => {
           errorsTransformId: 1
         }
       };
-      const oldFetch = window.fetch;
-      window.fetch = (url, params) => {
-        const responses = {
-          '/api/update/hehe-hehe/0/schema/4/errors/18?limit=50&offset=0&column_id=50': errorTableResponse
-        };
-        if (responses[url]) {
-          return new Promise((resolve) => {
-            resolve({
-              status: 200,
-              json: () => (new Promise((resolve) => {
-                resolve(errorTableResponse);
-              }))
-            })
-          });
-        } else {
-          done(new Error(`no mocked url ${url}`));
+      const { unmockFetch } = mockFetch({
+        '/api/update/hehe-hehe/0/schema/4/errors/18?limit=50&offset=0&column_id=50': {
+          GET: {
+            status: 200,
+            response: errorTableResponse
+          }
         }
-      };
+      });
       store.dispatch(loadErrorTable(nextRouterState));
       setTimeout(() => {
-        window.fetch = oldFetch;
+        unmockFetch();
         const db = store.getState().db;
         const transform1 = _.find(db.transforms, { id: 1 });
         expect(transform1.error_indices).to.deep.equal(['0', '7']);
-        expect(db.transform_1).to.deep.equal({
-          '0': {
-            error: {
-              inputs: {
-                arrest: {
-                  ok: "031A"
-                }
-              },
-              message: "Failed to convert \"031A\" to number"
-            }
-          },
-          '7': {
-            error: {
-              inputs: {
-                arrest: {
-                  ok: "031A"
-                }
-              },
-              message: "Failed to convert \"031A\" to number"
-            }
+        expect(_.sortBy(_.keys(db.transform_1))).to.deep.equal(['0', '7']);
+        // bizarrely, asserting against the whole object fails, but asserting against the
+        // individual keys succeeds
+        expect(db.transform_1['0']).to.deep.equal({
+          __status__: statusSavedOnServer,
+          error: {
+            inputs: {
+              arrest: {
+                ok: "031A"
+              }
+            },
+            message: "Failed to convert \"031A\" to number"
+          }
+        });
+        expect(db.transform_1['7']).to.deep.equal({
+          __status__: statusSavedOnServer,
+          error: {
+            inputs: {
+              arrest: {
+                ok: "031A"
+              }
+            },
+            message: "Failed to convert \"031A\" to number"
           }
         });
         expect(db.transform_2).to.deep.equal({
           '0': {
-            ok: "foo"
+            ok: "foo",
+            __status__: statusSavedOnServer
           },
           '7': {
-            ok: "bar"
+            ok: "bar",
+            __status__: statusSavedOnServer
           }
         });
         done();

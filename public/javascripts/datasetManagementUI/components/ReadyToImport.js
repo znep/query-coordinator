@@ -3,7 +3,7 @@ import { commaify } from '../../common/formatNumber';
 import * as dsmapiLinks from '../dsmapiLinks';
 
 function query(db, outputSchema) {
-  const inputSchema = _.find(db.input_schemas, { id: outputSchema.input_schema_id });
+  const inputSchema = db.input_schemas[outputSchema.input_schema_id];
   const errorRows = outputSchema.error_count || 0;
   const importableRows = Math.max(0, inputSchema.total_rows - errorRows);
 

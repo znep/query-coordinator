@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
@@ -13,17 +14,20 @@ import {
 
 function query(db) {
   return {
-    uploads: db.uploads.
-      map((upload) => ({
+    uploads: _.map(db.uploads,
+      (upload) => ({
         ...upload,
-        input_schemas: db.input_schemas.
-          filter((schema) => schema.upload_id === upload.id).
+        input_schemas: _.filter(db.input_schemas,
+            (schema) => schema.upload_id === upload.id
+          ).
           map((schema) => ({
             ...schema,
-            output_schemas: db.output_schemas.
-              filter((outputSchema) => outputSchema.input_schema_id === schema.id)
+            output_schemas: _.filter(db.output_schemas,
+              (outputSchema) => outputSchema.input_schema_id === schema.id
+            )
           }))
-      }))
+      })
+    )
   };
 }
 

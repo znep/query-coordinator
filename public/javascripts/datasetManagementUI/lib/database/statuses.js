@@ -30,11 +30,10 @@ export const statusSavedOnServer = {
 };
 
 export const STATUS_INSERTING = 'INSERTING';
-export function statusInserting(newRecord) {
+export function statusInserting() {
   return {
     type: STATUS_INSERTING,
-    startedAt: new Date(),
-    newRecord
+    startedAt: new Date()
   };
 }
 
@@ -59,10 +58,11 @@ export function statusUpdating(updates) {
 }
 
 export const STATUS_UPDATING_IMMUTABLE = 'UPDATING_IMMUTABLE';
-export function statusUpdatingImmutable() {
+export function statusUpdatingImmutable(oldRecord) {
   return {
     type: STATUS_UPDATING_IMMUTABLE,
-    startedAt: new Date()
+    startedAt: new Date(),
+    oldRecord
   };
 }
 

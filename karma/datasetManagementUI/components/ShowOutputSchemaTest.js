@@ -4,7 +4,9 @@ import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
 import ShowOutputSchema from 'components/ShowOutputSchema';
 import { ShowOutputSchema as ShowOutputSchemaUnConnected } from 'components/ShowOutputSchema';
 import * as Selectors from 'selectors';
-import { insertFromServer, updateFromServer, batch } from 'actions/database';
+import {
+  insertFromServer, insertMultipleFromServer, updateFromServer, batch
+} from 'actions/database';
 
 describe('components/ShowOutputSchema', () => {
 
@@ -34,20 +36,20 @@ describe('components/ShowOutputSchema', () => {
       id: 4,
       total_rows: 3
     }));
-    store.dispatch(insertFromServer('transform_1', [
-      { index: 0, ok: 'foo' },
-      { index: 1, error: { message: 'some transform error', inputs: { arrest: { ok: 'bar' } } } },
-      { index: 2, ok: 'baz' }
+    store.dispatch(insertMultipleFromServer('transform_1', [
+      { id: 0, ok: 'foo' },
+      { id: 1, error: { message: 'some transform error', inputs: { arrest: { ok: 'bar' } } } },
+      { id: 2, ok: 'baz' }
     ]));
     store.dispatch(updateFromServer('transforms', {
       id: 1,
       contiguous_rows_processed: 3
     }));
 
-    store.dispatch(insertFromServer('transform_2', [
-      { index: 0, ok: 'bleep' },
-      { index: 1, ok: null },
-      { index: 2, ok: 'blorp' }
+    store.dispatch(insertMultipleFromServer('transform_2', [
+      { id: 0, ok: 'bleep' },
+      { id: 1, ok: null },
+      { id: 2, ok: 'blorp' }
     ]));
     store.dispatch(updateFromServer('transforms', {
       id: 2,
@@ -74,12 +76,13 @@ describe('components/ShowOutputSchema', () => {
     // going through mapDispatchToProps
     const props = {
       db: storeDb,
-      upload: storeDb.uploads[0],
-      inputSchema: storeDb.input_schemas[0],
-      outputSchema: storeDb.output_schemas[0],
-      columns: Selectors.columnsForOutputSchema(storeDb, storeDb.output_schemas[0].id),
+      upload: _.values(storeDb.uploads)[0],
+      inputSchema: _.values(storeDb.input_schemas)[0],
+      outputSchema: _.values(storeDb.output_schemas)[0],
+      columns: Selectors.columnsForOutputSchema(storeDb, _.values(storeDb.output_schemas)[0].id),
       canApplyUpdate: false,
       updateColumnType: spy,
+      goHome: _.noop,
       goToUpload: _.noop,
       applyUpdate: _.noop
     };
@@ -91,8 +94,8 @@ describe('components/ShowOutputSchema', () => {
 
     const [calledWithOutputSchema, calledWithOutputColumn, calledWithUpdatedType] = spy.args[0];
 
-    expect(calledWithOutputSchema.id).to.eql(storeDb.output_schemas[0].id);
-    expect(calledWithOutputColumn.id).to.eql(storeDb.output_columns[0].id);
+    expect(calledWithOutputSchema.id).to.eql(_.values(storeDb.output_schemas)[0].id);
+    expect(calledWithOutputColumn.id).to.eql(_.values(storeDb.output_columns)[0].id);
     expect(calledWithUpdatedType).to.eql('SoQLNumber');
   });
 

@@ -22,8 +22,8 @@ export default function SaveButton({ onSave, view, outputSchema, outputColumns }
   if (_.some(metadataRecordStatuses,
       (status) => status === STATUS_DIRTY_IMMUTABLE || status === STATUS_DIRTY)) {
     overallStatus = STATUS_DIRTY;
-  } else if (_.some(metadataRecordStatuses,
-             (status) => status === STATUS_UPDATING_IMMUTABLE || status === STATUS_UPDATING)) {
+  } else if (_.some(metadataRecordStatuses, (status) =>
+        status === STATUS_UPDATING_IMMUTABLE || status === STATUS_UPDATING)) {
     overallStatus = STATUS_UPDATING;
   } else {
     overallStatus = STATUS_SAVED;

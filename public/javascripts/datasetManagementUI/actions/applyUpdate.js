@@ -75,7 +75,8 @@ export function pollForUpsertJobProgress(upsertJobId) {
 
 export function addEmailInterest(upsertJobUuid) {
   return (dispatch) => {
-    dispatch(insertStarted('email_interests', { job_uuid: upsertJobUuid }));
+    const newRecord = { job_uuid: upsertJobUuid };
+    dispatch(insertStarted('email_interests', newRecord));
     socrataFetch(`/users/${serverConfig.currentUserId}/email_interests.json`, {
       method: 'POST',
       body: JSON.stringify({
@@ -84,12 +85,13 @@ export function addEmailInterest(upsertJobUuid) {
       })
     }).
       then(checkStatus).
-      catch((err) => {
-        console.error('adding email interest failed', err);
-        dispatch(insertFailed('email_interests', { job_uuid: upsertJobUuid }));
-      }).
-      then(() => {
-        dispatch(insertSucceeded('email_interests', { job_uuid: upsertJobUuid }));
-      });
+      then(
+        () => {
+          dispatch(insertSucceeded('email_interests', newRecord, { id: upsertJobUuid }));
+        },
+        (err) => {
+          dispatch(insertFailed('email_interests', newRecord, err));
+        }
+      );
   };
 }

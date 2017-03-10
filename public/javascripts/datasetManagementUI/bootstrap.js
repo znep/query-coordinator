@@ -9,17 +9,17 @@ import { pollForUpsertJobProgress } from './actions/applyUpdate';
 import { parseDate } from './lib/parseDate';
 
 export const emptyDB = {
-  views: [],
-  updates: [],
-  uploads: [],
-  input_schemas: [],
-  output_schemas: [],
-  input_columns: [],
-  output_columns: [],
-  output_schema_columns: [],
-  transforms: [],
-  upsert_jobs: [],
-  email_interests: []
+  views: {},
+  updates: {},
+  uploads: {},
+  input_schemas: {},
+  output_schemas: {},
+  input_columns: {},
+  output_columns: {},
+  output_schema_columns: {},
+  transforms: {},
+  upsert_jobs: {},
+  email_interests: {}
 };
 
 const millis = 1000;

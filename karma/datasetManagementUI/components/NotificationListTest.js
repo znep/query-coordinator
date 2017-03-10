@@ -116,7 +116,7 @@ describe('components/NotificationList', () => {
     }, 50));
     store.dispatch(updateFailed('uploads', {
       id: 57
-    }, 'some error'));
+    }, 'some error', 50));
     const element = renderComponentWithStore(NotificationList, {}, store);
     expect(element).to.not.be.null;
     expect(element.querySelectorAll('.dsmui-notification').length).to.equal(1);

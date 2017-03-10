@@ -1,5 +1,4 @@
 class DatasetsController < ApplicationController
-
   include ApplicationHelper
   include DatasetsHelper
   include DataLensHelper

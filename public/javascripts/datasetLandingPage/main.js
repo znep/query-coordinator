@@ -7,7 +7,6 @@ import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 import airbrake from '../common/airbrake';
 import components from 'socrata-components';
-import utils from 'socrata-utils';
 
 import datasetLandingPage from './reducers';
 import App from './App';
@@ -71,15 +70,5 @@ _.defer(() => {
 
     // Initialize the javascript components
     components.attachTo(document.querySelector('.dataset-landing-page'));
-
-    // initialize internal analytics
-    const analytics = new utils.Analytics();
-
-    // queue the metrics that the page was visited
-    analytics.sendMetric('domain', 'js-page-view', 1);
-    analytics.sendMetric('domain', 'js-page-view-dataset', 1);
-
-    // flush the metrics queue to dispatch everything
-    analytics.flushMetrics();
   });
 });

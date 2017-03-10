@@ -20,6 +20,8 @@ class MetricQueue
       # Yes, @, not @@, because we're in the class scope now
       @client.close if @client.present?
     end
+
+    @random = Random.new
   end
 
   def flush(synchronous = false)
@@ -41,7 +43,7 @@ class MetricQueue
   end
 
   def push_metric(entity_id, metric_name, count = 1, time = Time.now)
-    Rails.logger.debug("[#{Process.pid}] [#{Thread.current.object_id}] Pushing client-side metric, " +
+    Rails.logger.debug("[#{Process.pid}] [#{Thread.current.object_id}] Pushing metric, " +
                        "#{entity_id}/#{metric_name} = #{count}")
     push_request(
       :timestamp => time.to_i * 1000,
@@ -60,7 +62,7 @@ class MetricQueue
     now_formatted = now.strftime('%FT%H-%m-%s-%l%z')
     thread_id = Thread.current.object_id
     process_id = Process.pid
-    sprintf('/metrics2012.%s.%d.%d.data', now_formatted, thread_id, process_id)
+    sprintf('/metrics2012.%s.%d.%d.%d.data', now_formatted, thread_id, process_id, @random.rand(32000))
   end
 
   def two_minute_bucket_metrics_filename(now)

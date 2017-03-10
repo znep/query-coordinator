@@ -1,6 +1,9 @@
 # I'm middleware that logs HTTP_REFERER's to domains to a file based metrics store on the localhost.
 # All y'all jive turkeys be careful: I know where you've been.
 class LogRefererMiddleware
+  include BrowserTypeHelper
+  include PageTypeHelper
+
   def initialize(app)
     @app = app
     @queue = MetricQueue.instance
@@ -9,7 +12,7 @@ class LogRefererMiddleware
   def call(env)
     # First we need to figure out what the domain is so that we know which
     # site to log the metrics too...
-    request = Rack::Request.new(env)
+    request = ActionDispatch::Request.new(env)
     unless env['HTTP_X_FORWARDED_HOST'].blank?
       request_based_domain = env['HTTP_X_FORWARDED_HOST'].gsub(/:\d+\z/, '')
     end
@@ -27,7 +30,7 @@ class LogRefererMiddleware
 
       if env['HTTP_ACCEPT'] && env['HTTP_ACCEPT'].include?("text/html")
         # If the request is for an html page, then log a pageview event.
-        @queue.push_metric(domain_id, 'page-views')
+        push_page_view_metrics(request, domain_id)
       end
 
       if ref.blank?
@@ -64,7 +67,32 @@ class LogRefererMiddleware
       end
     end
 
-    return @app.call(env)
+    @app.call(env)
+  end
+
+  def push_page_view_metrics(request, domain_id)
+    @queue.push_metric(domain_id, 'page-views')
+    @queue.push_metric(domain_id, 'js-page-view')
+
+    page_type = page_type_with_conditional_embed(request)
+
+    browser = browser_from_user_agent(request.user_agent)
+
+    #New Style Metrics
+    @queue.push_metric(domain_id, "page-views-#{page_type}")
+
+    #Old Style Previously from Javascript Metrics
+    @queue.push_metric(domain_id, "js-page-view-#{page_type}")
+
+    @queue.push_metric(domain_id, "browser-#{browser[:family]}")
+    @queue.push_metric("#{domain_id}-intern", "browser-#{browser[:family]}")
+    @queue.push_metric("#{domain_id}-intern", "browser-#{browser[:family]}-mobile") if browser[:mobile]
+
+    unless browser[:version].nil?
+      @queue.push_metric(domain_id, "browser-#{browser[:family]}-#{browser[:version]}")
+      @queue.push_metric("#{domain_id}-intern", "browser-#{browser[:family]}-#{browser[:version]}")
+      @queue.push_metric("#{domain_id}-intern", "browser-#{browser[:family]}-#{browser[:version]}-mobile") if browser[:mobile]
+    end
   end
 
 private

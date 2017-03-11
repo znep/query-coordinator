@@ -69,6 +69,7 @@ module PageTypeHelper
     ::View.find(id)
   rescue CoreServer::ResourceNotFound
     logger.debug('This dataset or view cannot be found, or has been deleted.')
+    nil
   rescue CoreServer::CoreServerError => e
     if e.error_code == 'authentication_required'
       logger.debug('Authentication required to access this dataset')
@@ -77,6 +78,7 @@ module PageTypeHelper
     else
       logger.debug("Error getting view from core: #{e.error_message}")
     end
+    nil
   end
 
   def path_info(request)

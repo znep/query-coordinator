@@ -47,6 +47,8 @@ module PageTypeHelper
 
         return 'other' if view.nil?
 
+        return 'dataset' if view.metadata.nil?
+
         json_query = view.metadata.json_query
 
         return 'dataset' if json_query.nil? || json_query.empty?

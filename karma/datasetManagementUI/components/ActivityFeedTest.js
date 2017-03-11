@@ -19,7 +19,7 @@ function insertView(store) {
 
 function insertUpdate(store) {
   store.dispatch(insertFromServer('updates', {
-    id: 0,
+    id: 5,
     fourfour: 'hehe-hehe',
     update_seq: 0,
     inserted_at: new Date(),
@@ -118,6 +118,9 @@ describe('components/ActivityFeed', () => {
     insertUpdate(store);
 
     const element = renderComponentWithStore(ActivityFeed, {}, store);
+
+    console.log('ELEMENT', element);
+
     expect(element.querySelectorAll('.activity').length).to.equal(1);
     expect(element.querySelector('.activity.update .created-by').innerText).to.eql('rozap');
   });

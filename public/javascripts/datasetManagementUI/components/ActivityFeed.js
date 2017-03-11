@@ -124,7 +124,7 @@ const upsertFailedActivity = (upsert, at) => {
 };
 
 function activitiesOf(db) {
-  const updateModel = db.updates[0];
+  const updateModel = _.values(db.updates)[0];
   if (!updateModel) return [];
   const update = {
     type: 'update',

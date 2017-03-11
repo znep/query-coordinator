@@ -119,8 +119,6 @@ describe('components/ActivityFeed', () => {
 
     const element = renderComponentWithStore(ActivityFeed, {}, store);
 
-    console.log('ELEMENT', element);
-
     expect(element.querySelectorAll('.activity').length).to.equal(1);
     expect(element.querySelector('.activity.update .created-by').innerText).to.eql('rozap');
   });

@@ -661,8 +661,8 @@ describe('AssetSelectorRenderer', function() {
         it('has the correct source', function() {
           var iframeSrc = decodeURI(container.find('iframe').attr('src'));
           assert.include(iframeSrc, 'browse/select_dataset');
-          assert.include(iframeSrc, 'filtered_types[]=maps&filtered_types[]=charts&filtered_types[]=visualization');
-          assert.include(iframeSrc, 'limitTo[]=charts&limitTo[]=maps&limitTo[]=blob&limitTo[]=visualization');
+          assert.include(iframeSrc, 'filtered_types[]=maps&filtered_types[]=charts');
+          assert.include(iframeSrc, 'limitTo[]=charts&limitTo[]=maps&limitTo[]=blob');
         });
       });
 

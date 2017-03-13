@@ -2,6 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import { removeNotification } from '../../actions/notifications';
 import ProgressBar from '../ProgressBar';
 import _ from 'lodash';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class UploadNotificationError extends Component { //  eslint-disable-line react/prefer-es6-class
   constructor() {
@@ -38,24 +39,29 @@ class UploadNotificationError extends Component { //  eslint-disable-line react/
         <div className="upload-progress-bar">
           <ProgressBar percent={upload.__status__.percentCompleted} />
         </div>
-        {detailsOpen &&
-          <div>
-            <div className="msg-container">
-              <h5>{upload.__status__.error.title}</h5>
-              {upload.__status__.error.body}
-            </div>
-            <div className="btn-container">
-              <button
-                className="btn btn-default"
-                onClick={() => dispatch(removeNotification(notification))}>
+        <ReactCSSTransitionGroup
+          transitionName="dsmui-error-notification-transition"
+          transitionEnterTimeout={500}
+          transitionLeaveTimeout={500}>
+          {detailsOpen &&
+            <div key={upload.__status__.error.title}>
+              <div className="msg-container">
+                <h6>{upload.__status__.error.title}</h6>
+                {upload.__status__.error.body}
+              </div>
+              <div className="btn-container">
+                <button
+                  className="btn btn-default"
+                  onClick={() => dispatch(removeNotification(notification))}>
                   Dismiss
-              </button>
-              <a target="_blank" href="https://support.socrata.com" className="btn btn-alternate-2">
-                Contact Support
-              </a>
+                </button>
+                <a target="_blank" href="https://support.socrata.com" className="btn btn-primary">
+                  Contact Support
+                </a>
+              </div>
             </div>
-          </div>
-        }
+          }
+        </ReactCSSTransitionGroup>
       </div>
     );
   }

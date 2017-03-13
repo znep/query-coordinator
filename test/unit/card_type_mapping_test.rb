@@ -522,7 +522,7 @@ class CardTypeMappingTest < Minitest::Test
       fake_column('text', nil, 15),
       dataset_size
     )
-    assert_equal('invalid', computed_card_type)
+    assert_equal('search', computed_card_type)
   end
 
   def test_card_type_mapping_returns_expected_value_for_cardinality_equal_to_threshold_text_column
@@ -532,7 +532,7 @@ class CardTypeMappingTest < Minitest::Test
       fake_column('text', nil, 35),
       dataset_size
     )
-    assert_equal('invalid', computed_card_type)
+    assert_equal('search', computed_card_type)
   end
 
   def test_card_type_mapping_returns_expected_value_for_cardinality_equal_to_threshold_and_globally_unique_text_column
@@ -542,7 +542,7 @@ class CardTypeMappingTest < Minitest::Test
       fake_column('text', nil, 35),
       dataset_size
     )
-    assert_equal('invalid', computed_card_type)
+    assert_equal('search', computed_card_type)
   end
 
   def test_card_type_mapping_returns_expected_value_for_high_cardinality_text_column
@@ -552,7 +552,7 @@ class CardTypeMappingTest < Minitest::Test
       fake_column('text', nil, 500),
       dataset_size
     )
-    assert_equal('invalid', computed_card_type)
+    assert_equal('search', computed_card_type)
   end
 
   def test_card_type_mapping_returns_expected_value_for_high_cardinality_and_globally_unique_text_column
@@ -562,7 +562,7 @@ class CardTypeMappingTest < Minitest::Test
       fake_column('text', nil, 2500),
       dataset_size
     )
-    assert_equal('invalid', computed_card_type)
+    assert_equal('search', computed_card_type)
   end
 
   def test_card_type_mapping_returns_expected_value_for_text_column_with_computation_strategy_match_on_string

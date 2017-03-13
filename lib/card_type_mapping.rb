@@ -50,7 +50,7 @@ module CardTypeMapping
         elsif is_derived_view
           card_type = 'column'
         else
-          card_type = 'invalid' # EN-13836 Formerly 'search' but we no longer want search cards by default
+          card_type = 'search'
         end
 
       else

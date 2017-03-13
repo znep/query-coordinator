@@ -301,7 +301,7 @@ GEM
     semver2 (3.4.2)
     shellany (0.0.1)
     shoulda-context (1.2.1)
-    signaller-ruby (0.3.5)
+    signaller-ruby (0.3.6)
       activesupport (~> 4.2)
       httparty (~> 0.13)
       semver2 (~> 3.4)

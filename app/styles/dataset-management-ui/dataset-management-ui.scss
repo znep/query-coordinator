@@ -1068,7 +1068,7 @@ body {
   position: fixed;
   top: 10px;
   right: 35px;
-  z-index: 4000;
+  z-index: 10001; // site header is 9999, modal is now 10000
 
   .dsmui-notification {
     padding: 6px 10px 10px;

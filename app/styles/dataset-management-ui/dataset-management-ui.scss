@@ -68,6 +68,10 @@ body {
   flex-grow: 1;
   flex-direction: column;
 
+  .modal {
+    z-index: 10000; // Site-chrome uses 9999 for its header.
+  }
+
   .edit-bar {
     position: static;
     width: 100%;

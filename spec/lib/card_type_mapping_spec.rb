@@ -442,7 +442,7 @@ describe CardTypeMapping do
       end
 
       describe 'with high cardinality' do
-        it_behaves_like 'a column that maps to card type', 'invalid' do
+        it_behaves_like 'a column that maps to card type', 'search' do
           let(:cardinality) { 500 }
         end
       end
@@ -470,7 +470,7 @@ describe CardTypeMapping do
     end
 
     describe 'with cardinality at threshold' do
-      it_behaves_like 'a column that maps to card type', 'invalid' do
+      it_behaves_like 'a column that maps to card type', 'search' do
         let(:cardinality) { 35 }
         let(:dataset_size) { 35 }
       end

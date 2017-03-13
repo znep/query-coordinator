@@ -310,11 +310,20 @@ class NewUxBootstrapController < ActionController::Base
         # Fill out the rest of the cards for the page
         cards = cards.concat(interleaved_cards.first(MAX_NUMBER_OF_CARDS - cards.length))
       else
+        # This is a NOOP. wtf
         cards
       end
     else
       cards = cards.first(MAX_NUMBER_OF_CARDS)
     end
+
+
+    # EN-13836 logic was originally attempted by changing the default_card_type_for method, however code in
+    # the AngularJS implementation examines the default_card_type property rather than available_card_types
+    # when determining if a card can be added for a given column. The change in EN-13836 resulted in making
+    # the default_card_type 'invalid' when it would have been a search card, but available_card_types still
+    # included 'search' among the other valid choices. So we perform the elision here instead. EN-14579
+    cards.reject! { |card| card['cardType'] == 'search' } # Beware this key is 'card_type' elsewhere here
 
     unmigrated_metadata = {
       'cards' => cards,
@@ -425,6 +434,7 @@ class NewUxBootstrapController < ActionController::Base
   def generate_cards_from_dataset_metadata_columns(columns)
     interesting_columns(columns).map do |field_name, column|
       card_type = default_card_type_for(column, dataset_size, is_from_derived_view)
+
       if card_type
         card = page_metadata_manager.merge_new_card_data_with_default(field_name, card_type)
 

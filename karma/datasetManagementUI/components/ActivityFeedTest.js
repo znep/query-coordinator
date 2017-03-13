@@ -19,7 +19,7 @@ function insertView(store) {
 
 function insertUpdate(store) {
   store.dispatch(insertFromServer('updates', {
-    id: 0,
+    id: 5,
     fourfour: 'hehe-hehe',
     update_seq: 0,
     inserted_at: new Date(),
@@ -48,7 +48,7 @@ function insertOutputSchema(store) {
   store.dispatch(insertFromServer('input_schemas', {
     upload_id: 0,
     id: 0
-  }))
+  }));
   store.dispatch(insertFromServer('output_schemas', {
     id: 0,
     input_schema_id: 0,

@@ -21,6 +21,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       Airbrake.stubs(notify: nil)
       load_sample_data('test/fixtures/sample-data.json')
       test_view = View.find('test-data')
+      # TODO Refactor all of this... Both the controller and tests are a hot mess.
+      # This doesn't work. #find is not an instance method
       View.any_instance.stubs(:find => test_view)
       # TODO determine why 23 tests fail or break when :use_ephemeral_bootstrap is set to true
       stub_feature_flags_with(:use_ephemeral_bootstrap => false)
@@ -187,6 +189,34 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         should 'set the isFromDerivedView property in page metadata to true' do
           get :bootstrap, id: 'data-iden', app: 'dataCards'
           assert(@controller.instance_variable_get(:@page_metadata)['isFromDerivedView'])
+        end
+      end
+
+      context 'cards included by default during bootstrapping' do
+        setup do
+          stub_feature_flags_with(:use_ephemeral_bootstrap => true)
+          load_sample_data('test/fixtures/somewhat_realistic_view_data.json')
+          test_view = View.find('vdj8-z7h2')
+          View.stubs(:find => test_view, :find_under_user => test_view)
+          @controller.stubs(:render => nil)
+        end
+
+        should 'not include search cards by default' do
+          result = 'histogram'
+          # Stupid fscking hack because I can't be bothered to find working fixture data right now.
+          @controller.stubs(:default_card_type_for => 'search')
+          @controller.send(:instantiate_ephemeral_view,
+            JSON.parse(File.read(
+              "#{Rails.root}/test/fixtures/somewhat_realistic_dataset_metadata.json"
+            )).with_indifferent_access
+          )
+          assert(assigns(:page_metadata))
+          refute(assigns(:page_metadata)['cards'].pluck('cardType').any? do |type|
+            type == 'search'
+          end)
+          assert(assigns(:dataset_metadata)[:columns].map { |_, v| v[:defaultCardType] }.any? do |type|
+            type == 'search'
+          end)
         end
       end
 
@@ -672,7 +702,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
             # Make sure the page we're creating fits certain criteria
             @page_metadata_manager.expects(:create).with do |page, _|
-              assert_equal(10, page['cards'].length, 'Should create 10 cards')
+              assert_equal(7, page['cards'].length, 'Should create 7 cards')
               point_columns = lambda { |fieldName| fieldName =~ /computed/ }
 
               assert(

@@ -1,0 +1,9 @@
+@keyframes socrata-visualizations-spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@mixin spin() {
+  animation: socrata-visualizations-spin 0.9s linear infinite;
+}

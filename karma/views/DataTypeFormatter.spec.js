@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var DataTypeFormatter = require('../../src/views/DataTypeFormatter');
+var DataTypeFormatter = require('src/views/DataTypeFormatter');
 
 // 123% | -12,345.678%
 var PERCENT_FORMAT_REGEX = /^-?\d{1,3}(,\d{3})*(\.\d+)?%$/;
@@ -63,7 +63,7 @@ var TIMESTAMP_WITH_USER_FORMAT_REGEX = /^\w{3}\s[0-3][0-9],\s\d{4}\s[01][0-9]:[0
 // 2014 Jun 28
 var TIMESTAMP_NO_HR_MIN_SEC_REGEX = /^\d{4}\s\w{3}\s[0-3][0-9]$/;
 
-describe('socrata.visualizations.views.DataTypeFormatter', function() {
+describe('DataTypeFormatter', function() {
   'use strict';
 
   var columnMetadata;

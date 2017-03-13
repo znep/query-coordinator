@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var $ = require('jquery');
 const I18n = require('src/I18n');
-var SvgHistogram = require('../../src/views/SvgHistogram');
+var SvgHistogram = require('src/views/SvgHistogram');
 
 describe('SvgHistogram', function() {
 

@@ -1,7 +1,7 @@
 var $ = require('jquery');
-var FlyoutRenderer = require('../../src/views/FlyoutRenderer');
+var FlyoutRenderer = require('src/views/FlyoutRenderer');
 
-describe('socrata.visualizations.views.FlyoutRenderer', function() {
+describe('FlyoutRenderer', function() {
 
   var flyoutRenderer;
   var $targetElement;

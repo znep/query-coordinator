@@ -2,8 +2,8 @@ var _ = require('lodash');
 var $ = require('jquery');
 
 describe('DistributionChart jQuery component', function() {
-  var DistributionChart = require('../../src/DistributionChart');
-  var helpers = require('../../src/views/DistributionChartHelpers');
+  var DistributionChart = require('src/DistributionChart');
+  var helpers = require('src/views/DistributionChartHelpers');
 
   var vif = {
     aggregation: {

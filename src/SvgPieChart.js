@@ -2,7 +2,6 @@ const _ = require('lodash');
 const $ = require('jquery');
 const utils = require('socrata-utils');
 const SvgPieChart = require('./views/SvgPieChart');
-const SvgVisualization = require('./views/SvgVisualization');
 const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 const VifHelpers = require('./helpers/VifHelpers');
 const SoqlHelpers = require('./dataProviders/SoqlHelpers');
@@ -284,7 +283,7 @@ $.fn.socrataSvgPieChart = function(originalVif) {
 
     return soqlDataProvider.
       query(
-        queryString.replace(/[\n\s]+/g, ' '),
+        queryString,
         dimensionAlias,
         measureAlias
       ).
@@ -407,7 +406,7 @@ $.fn.socrataSvgPieChart = function(originalVif) {
 
           return soqlDataProvider.
             query(
-              otherCategoryQueryString.replace(/[\n\s]+/g, ' '),
+              otherCategoryQueryString,
               SoqlHelpers.dimensionAlias(),
               SoqlHelpers.measureAlias()
             ).

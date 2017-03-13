@@ -1,6 +1,6 @@
 var d3 = require('d3');
 var _ = require('lodash');
-var MetadataProvider = require('../../src/dataProviders/MetadataProvider');
+var MetadataProvider = require('src/dataProviders/MetadataProvider');
 
 describe('MetadataProvider', function() {
 

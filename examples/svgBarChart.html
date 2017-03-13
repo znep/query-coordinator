@@ -14,22 +14,25 @@
         font-family: sans-serif;
       }
 
-      #bar-chart-1,
-      #bar-chart-2,
-      #bar-chart-3,
-      #bar-chart-4,
-      #bar-chart-5,
-      #bar-chart-6,
-      #bar-chart-7,
-      #bar-chart-8,
-      #bar-chart-9,
-      #bar-chart-10,
-      #bar-chart-11 {
+      p {
+        margin: 50px 0 20px 0;
+        font-size: 15px;
+      }
+
+      [id^="bar-chart"] {
         display: block;
         position: relative;
         width: 640px;
         height: 480px;
-        margin: 100px auto 0 auto;
+        margin: 0 auto;
+      }
+
+      .school-district-proficiency,
+      .wright-county-final-payments,
+      .ufo-sightings-total-row-count,
+      .pet-escapes-total-row-count {
+        font-weight: bold;
+        text-decoration: underline;
       }
     </style>
   </head>
@@ -38,7 +41,7 @@
     <div id="bar-chart-1"></div>
     <p>Unaggregated data with limit = 10</p>
     <div id="bar-chart-2"></div>
-    <p>Unaggregated data with limit = 10 and 'showOtherCategory'</p>
+    <p>Unaggregated data with limit = 10 and 'showOtherCategory' = true, values should sum to <span class="school-district-proficiency">(FETCHING COUNT...)</span></p>
     <div id="bar-chart-3"></div>
     <p>Aggregated data with dimension sorted ascending alphabetically</p>
     <div id="bar-chart-4"></div>
@@ -50,12 +53,26 @@
     <div id="bar-chart-7"></div>
     <p>Multi-series unaggregated data with measure axis min and max values</p>
     <div id="bar-chart-8"></div>
-    <p>Multi-series aggregated data configured through a dimension grouping on text columns</p>
+    <p>Multi-series aggregated data configured through a dimension grouping on text columns, 'Wright' should sum to <span class="wright-county-final-payments">(FETCHING COUNT...)</span></p>
     <div id="bar-chart-9"></div>
-    <p>Multi-series aggregated data configured through a dimension grouping on number columns</p>
+    <p>Multi-series aggregated data configured through a dimension grouping on number columns, 'showOtherCategory' = true, order by dimension ascending, values should sum to <span class="ufo-sightings-total-row-count">(FETCHING COUNT...)</span>, '(Other)' category should be on bottom</p>
     <div id="bar-chart-10"></div>
-    <p>Multiple defined series and data grouping configured simultaneously should show an error</p>
+    <p>Multi-series aggregated data configured through a dimension grouping on number columns, 'showOtherCategory' = true, order by dimension descending, values should sum to <span class="ufo-sightings-total-row-count">(FETCHING COUNT...)</span>, '(Other)' category should be on bottom</p>
     <div id="bar-chart-11"></div>
+    <p>Multi-series aggregated data configured through a dimension grouping on number columns, 'showOtherCategory' = true, order by measure ascending, values should sum to <span class="ufo-sightings-total-row-count">(FETCHING COUNT...)</span>, '(Other)' category should be on bottom</p>
+    <div id="bar-chart-12"></div>
+    <p>Multi-series aggregated data configured through a dimension grouping on number columns, 'showOtherCategory' = true, order by measure descending, values should sum to <span class="ufo-sightings-total-row-count">(FETCHING COUNT...)</span>, '(Other)' category should be on top</p>
+    <div id="bar-chart-13"></div>
+    <p>Multiple defined series and data grouping configured simultaneously should show an error</p>
+    <div id="bar-chart-14"></div>
+    <p>Other category enabled and noop filter, should not cause invalid other category query and values should sum to <span class="pet-escapes-total-row-count">(FETCHING COUNT...)</span></p>
+    <div id="bar-chart-15"></div>
+    <p>Other category enabled and binaryOperator filter, should not cause invalid other category query and values should sum to <span class="pet-escapes-total-row-count">(FETCHING COUNT...)</span></p>
+    <div id="bar-chart-16"></div>
+    <p>Other category enabled and noop filter, should not cause invalid other category query and values should sum to <span class="ufo-sightings-total-row-count">(FETCHING COUNT...)</span>, '(Other)' category should be on top</p>
+    <div id="bar-chart-17"></div>
+    <p>Grouping values including percent symbols, should not cause an error</p>
+    <div id="bar-chart-18"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -67,6 +84,41 @@
   <script type="text/javascript">
 
     $(document).ready(function() {
+
+      function fillInExpectedValues() {
+
+        // Fetch the current sum of `proficient_2` for the iowa schools dataset where `topic` = 'Math' and `grade` = '3' and `school_year` = '2014'
+        $.ajax({
+          url: 'https://data.iowa.gov/api/id/mu6e-brbz.json?$query=SELECT SUM(`proficient_2`) WHERE `topic` = \'Math\' AND `grade` = \'3\' AND `school_year` =\'2014\'',
+          success: function(result) {
+            $('.school-district-proficiency').text(_.get(result, '[0].SUM_proficient_2'));
+          }
+        });
+
+        // Fetch the current sum of `final_payments` for the iowa payments dataset where `county_name` = 'Wright'
+        $.ajax({
+          url: 'https://data.iowa.gov/api/id/yhbr-3t8a.json?$query=SELECT SUM(`final_payments`) WHERE `county_name` = \'Wright\'',
+          success: function(result) {
+            $('.wright-county-final-payments').text(_.get(result, '[0].sum_final_payments'));
+          }
+        });
+
+        // Fetch the current total row count for the pet escapes dataset
+        $.ajax({
+          url: 'https://vertex-stories.test-socrata.com/api/id/k6cs-ww27.json?$query=SELECT COUNT(*)',
+          success: function(result) {
+            $('.ufo-sightings-total-row-count').text(_.get(result, '[0].COUNT'));
+          }
+        });
+
+        // Fetch the current total row count for the pet escapes dataset
+        $.ajax({
+          url: 'https://stories.rc-socrata.com/api/id/hw9q-ds2z.json?$query=SELECT COUNT(*)',
+          success: function(result) {
+            $('.pet-escapes-total-row-count').text(_.get(result, '[0].COUNT'));
+          }
+        });
+      }
 
       /**
        * Set up VIFs
@@ -327,7 +379,7 @@
             bottom: 'Grouped by county names',
             left: 'Final Payments'
           },
-          showOtherCategory: true,
+          showOtherCategory: false,
           measureAxisMaxValue: 100
         },
         description: 'This dataset contains Iowa unemployment insurance benefit payments and number of benefit recipients by county. County data is based on the recipient’s place of residence. (Annual)',
@@ -479,9 +531,7 @@
         series: [
           {
             color: {
-              secondary: null,
-              highlight: '#44ffaa',
-              palette: 'categorical'
+              palette: 'categorical2'
             },
             dataSource: {
               datasetUid: 'k6cs-ww27',
@@ -494,14 +544,14 @@
               },
               domain: 'vertex-stories.test-socrata.com',
               filters: [],
-              limit: 5,
+              limit: 2,
               measure: {
                 columnName: null,
                 aggregationFunction: 'count'
               },
               orderBy: {
-                parameter: 'measure',
-                sort: 'desc'
+                parameter: 'dimension',
+                sort: 'asc'
               },
               type: 'socrata.soql'
             },
@@ -526,9 +576,227 @@
       };
 
       var barChart11Vif = _.cloneDeep(barChart10Vif);
-      barChart11VifSecondSeries = _.cloneDeep(barChart11Vif.series[0]);
-      barChart11VifSecondSeries.dataSource.dimension.grouping = null;
-      barChart11Vif.series.push(barChart11VifSecondSeries);
+      barChart11Vif.series[0].dataSource.orderBy = {
+        parameter: 'dimension',
+        sort: 'desc'
+      };
+
+      var barChart12Vif = _.cloneDeep(barChart10Vif);
+      barChart12Vif.series[0].dataSource.orderBy = {
+        parameter: 'measure',
+        sort: 'asc'
+      };
+
+      var barChart13Vif = _.cloneDeep(barChart10Vif);
+      barChart13Vif.series[0].dataSource.orderBy = {
+        parameter: 'measure',
+        sort: 'desc'
+      };
+
+      var barChart14Vif = _.cloneDeep(barChart10Vif);
+      barChart14VifSecondSeries = _.cloneDeep(barChart14Vif.series[0]);
+      barChart14VifSecondSeries.dataSource.dimension.grouping = null;
+      barChart14Vif.series.push(barChart14VifSecondSeries);
+
+      var barChart15Vif = {
+        configuration: {
+          viewSourceDataLink: true,
+          axisLabels: {
+            top: null,
+            right: null,
+            bottom: null,
+            left: null
+          },
+          showOtherCategory: true
+        },
+        description: null,
+        series: [
+          {
+            color: {
+              secondary: null,
+              highlight: '#44ffaa'
+            },
+            dataSource: {
+              datasetUid: 'hw9q-ds2z',
+              dimension: {
+                columnName: 'type',
+                aggregationFunction: null
+              },
+              domain: 'stories.rc-socrata.com',
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              type: 'socrata.soql',
+              filters: [
+                {
+                  'function': 'noop',
+                  columnName: 'type',
+                  arguments: null,
+                  joinOn: 'AND',
+                  isHidden: false
+                }
+              ],
+              orderBy: {
+                parameter: 'measure',
+                sort: 'desc'
+              },
+              limit: 2
+            },
+            label: 'Proficient',
+            type: 'barChart',
+            unit: {
+              one: 'percent of students',
+              other: 'percent of students'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        title: 'Seattle Pet Escapes'
+      };
+
+      var barChart16Vif = _.cloneDeep(barChart15Vif);
+      barChart16Vif.series[0].dataSource.filters = [
+        {
+          'function': 'binaryOperator',
+          columnName: 'type',
+          arguments: [
+            {
+              operator: '=',
+              operand: 'dogs'
+            }
+          ],
+          joinOn: 'OR',
+          isHidden: false
+        }
+      ];
+
+      var barChart17Vif = {
+        configuration: {
+          viewSourceDataLink: true,
+          axisLabels: {
+            top: null,
+            right: null,
+            bottom: null,
+            left: null
+          },
+          showOtherCategory: true
+        },
+        description: null,
+        series: [
+          {
+            color: {
+              palette: 'categorical2'
+            },
+            dataSource: {
+              datasetUid: 'k6cs-ww27',
+              dimension: {
+                columnName: 'blood_alcohol_level',
+                aggregationFunction: null
+              },
+              domain: 'vertex-stories.test-socrata.com',
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              type: 'socrata.soql',
+              filters: [
+                {
+                  'function': 'noop',
+                  columnName: 'type',
+                  arguments: null,
+                  joinOn: 'AND',
+                  isHidden: false
+                }
+              ],
+              orderBy: {
+                parameter: 'measure',
+                sort: 'desc'
+              },
+              limit: 2
+            },
+            label: 'Proficient',
+            type: 'barChart',
+            unit: {
+              one: 'percent of students',
+              other: 'percent of students'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        title: 'UFO Sightings'
+      };
+
+      var barChart18Vif = {
+        configuration: {
+          viewSourceDataLink: true,
+          axisLabels: {
+            top: null,
+            right: null,
+            bottom: null,
+            left: null
+          },
+          showOtherCategory: true
+        },
+        description: null,
+        series: [
+          {
+            color: {
+              palette: 'categorical2'
+            },
+            dataSource: {
+              datasetUid: 'vc2c-3mst',
+              dimension: {
+                columnName: 'topic',
+                aggregationFunction: null,
+                grouping: {
+                  columnName: 'proficient_category'
+                }
+              },
+              domain: 'stories.test-socrata.com',
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              type: 'socrata.soql',
+              filters: [
+              ]
+            },
+            label: 'Proficient',
+            type: 'barChart',
+            unit: {
+              one: 'percent of students',
+              other: 'percent of students'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        title: 'Reading and Math Proficiencies'
+      };
 
       /**
        * Instantiate the plugins
@@ -536,93 +804,35 @@
 
       var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
 
-      var $barChart1Element = $('#bar-chart-1');
-      $barChart1Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
-      $barChart1Element.on(
+      $('[id^=bar-chart-]').on(
+        'SOCRATA_VISUALIZATION_FLYOUT',
+        handleFlyout
+      );
+      $('[id^=bar-chart-]').on(
         'SOCRATA_VISUALIZATION_VIF_UPDATED',
         handleVifUpdated
       );
-      $barChart1Element.socrataSvgBarChart(barChart1Vif);
 
-      var $barChart2Element = $('#bar-chart-2');
-      $barChart2Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
-      $barChart2Element.on(
-        'SOCRATA_VISUALIZATION_VIF_UPDATED',
-        handleVifUpdated
-      );
-      $barChart2Element.socrataSvgBarChart(barChart2Vif);
+      $('#bar-chart-1').socrataSvgBarChart(barChart1Vif);
+      $('#bar-chart-2').socrataSvgBarChart(barChart2Vif);
+      $('#bar-chart-3').socrataSvgBarChart(barChart3Vif);
+      $('#bar-chart-4').socrataSvgBarChart(barChart4Vif);
+      $('#bar-chart-5').socrataSvgBarChart(barChart5Vif);
+      $('#bar-chart-6').socrataSvgBarChart(barChart6Vif);
+      $('#bar-chart-7').socrataSvgBarChart(barChart7Vif);
+      $('#bar-chart-8').socrataSvgBarChart(barChart8Vif);
+      $('#bar-chart-9').socrataSvgBarChart(barChart9Vif);
+      $('#bar-chart-10').socrataSvgBarChart(barChart10Vif);
+      $('#bar-chart-11').socrataSvgBarChart(barChart11Vif);
+      $('#bar-chart-12').socrataSvgBarChart(barChart12Vif);
+      $('#bar-chart-13').socrataSvgBarChart(barChart13Vif);
+      $('#bar-chart-14').socrataSvgBarChart(barChart14Vif);
+      $('#bar-chart-15').socrataSvgBarChart(barChart15Vif);
+      $('#bar-chart-16').socrataSvgBarChart(barChart16Vif);
+      $('#bar-chart-17').socrataSvgBarChart(barChart17Vif);
+      $('#bar-chart-18').socrataSvgBarChart(barChart18Vif);
 
-      var $barChart3Element = $('#bar-chart-3');
-      $barChart3Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
-      $barChart3Element.on(
-        'SOCRATA_VISUALIZATION_VIF_UPDATED',
-        handleVifUpdated
-      );
-      $barChart3Element.socrataSvgBarChart(barChart3Vif);
-
-      var $barChart4Element = $('#bar-chart-4');
-      $barChart4Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
-      $barChart4Element.on(
-        'SOCRATA_VISUALIZATION_VIF_UPDATED',
-        handleVifUpdated
-      );
-      $barChart4Element.socrataSvgBarChart(barChart4Vif);
-
-      var $barChart5Element = $('#bar-chart-5');
-      $barChart5Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
-      $barChart5Element.on(
-        'SOCRATA_VISUALIZATION_VIF_UPDATED',
-        handleVifUpdated
-      );
-      $barChart5Element.socrataSvgBarChart(barChart5Vif);
-
-      var $barChart6Element = $('#bar-chart-6');
-      $barChart6Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
-      $barChart6Element.on(
-        'SOCRATA_VISUALIZATION_VIF_UPDATED',
-        handleVifUpdated
-      );
-      $barChart6Element.socrataSvgBarChart(barChart6Vif);
-
-      var $barChart7Element = $('#bar-chart-7');
-      $barChart7Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
-      $barChart7Element.on(
-        'SOCRATA_VISUALIZATION_VIF_UPDATED',
-        handleVifUpdated
-      );
-      $barChart7Element.socrataSvgBarChart(barChart7Vif);
-
-      var $barChart8Element = $('#bar-chart-8');
-      $barChart8Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
-      $barChart8Element.on(
-        'SOCRATA_VISUALIZATION_VIF_UPDATED',
-        handleVifUpdated
-      );
-      $barChart8Element.socrataSvgBarChart(barChart8Vif);
-
-      var $barChart9Element = $('#bar-chart-9');
-      $barChart9Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
-      $barChart9Element.on(
-        'SOCRATA_VISUALIZATION_VIF_UPDATED',
-        handleVifUpdated
-      );
-      $barChart9Element.socrataSvgBarChart(barChart9Vif);
-
-      var $barChart10Element = $('#bar-chart-10');
-      $barChart10Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
-      $barChart10Element.on(
-        'SOCRATA_VISUALIZATION_VIF_UPDATED',
-        handleVifUpdated
-      );
-      $barChart10Element.socrataSvgBarChart(barChart10Vif);
-
-      var $barChart11Element = $('#bar-chart-11');
-      $barChart11Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
-      $barChart11Element.on(
-        'SOCRATA_VISUALIZATION_VIF_UPDATED',
-        handleVifUpdated
-      );
-      $barChart11Element.socrataSvgBarChart(barChart11Vif);
+      fillInExpectedValues();
 
       /**
        * Handle plugin events
@@ -633,11 +843,8 @@
 
         // Render/hide a flyout
         if (payload !== null) {
-
           flyoutRenderer.render(payload);
-
         } else {
-
           flyoutRenderer.clear();
         }
       }
@@ -657,9 +864,9 @@
        * How to destroy the plugin:
        */
 
-      // $barChart1Element.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
-      // $barChart1Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
-      // $barChart1Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
+      // $('#bar-chart-1').off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      // $('#bar-chart-1').off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $('#bar-chart-1').trigger('SOCRATA_VISUALIZATION_DESTROY');
     });
   </script>
 </html>

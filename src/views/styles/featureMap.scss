@@ -1,3 +1,5 @@
+@import 'animations';
+
 .feature-map-container {
   position: relative;
   width: 100%;
@@ -54,10 +56,17 @@
 
 .leaflet-container {
   background-color: #fff !important;
-}
 
-.leaflet-container ~ .feature-map-locate-user-btn {
-  display: block;
+  img {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    box-shadow: none;
+  }
+
+  ~ .feature-map-locate-user-btn {
+    display: block;
+  }
 }
 
 .feature-map-locate-user-btn .feature-map-locate-user-icon,
@@ -108,28 +117,6 @@
  * Busy spinner
  */
 
-@-webkit-keyframes socrata-visualizations-spin {
-  100% {
-    -webkit-transform: rotate(360deg);
-  }
-}
-
-@-moz-keyframes socrata-visualizations-spin {
-  100% {
-    -moz-transform: rotate(360deg);
-  }
-}
-
-@keyframes socrata-visualizations-spin {
-  100% {
-    -webkit-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -ms-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-
 .feature-map-locate-user-btn .feature-map-locate-user-busy-spinner {
   position: relative;
   display: none;
@@ -150,9 +137,7 @@
   border-right-color: #000;
   border-radius: 60%;
   display: inline-block;
-  -webkit-animation: socrata-visualizations-spin 0.9s linear infinite;
-  -moz-animation: socrata-visualizations-spin 0.9s linear infinite;
-  animation: socrata-visualizations-spin 0.9s linear infinite;
+  @include spin;
 }
 
 .feature-map-locate-user-btn:hover .feature-map-locate-user-busy-spinner::after {

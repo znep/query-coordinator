@@ -172,6 +172,63 @@ function whereClauseFilteringOwnColumn(vif, seriesIndex) {
 }
 
 /**
+ * @param {object} filter
+ *
+ * Returns a where clause component representing the individual vif filter.
+ */
+function filterToWhereClauseComponent(filter) {
+  utils.assertHasProperties(
+    filter,
+    'columnName',
+    'function',
+    'arguments'
+  );
+
+  switch (filter.function) {
+    case 'binaryOperator':
+      return binaryOperatorWhereClauseComponent(filter);
+    case 'binaryComputedGeoregionOperator':
+      return binaryComputedGeoregionOperatorWhereClauseComponent(filter);
+    case 'isNull':
+      return isNullWhereClauseComponent(filter);
+    case 'timeRange':
+      return timeRangeWhereClauseComponent(filter);
+    case 'valueRange':
+      return valueRangeWhereClauseComponent(filter);
+    case 'noop':
+      return noopWhereClauseComponent(filter);
+    default:
+      throw new Error(
+        'Invalid filter function: `{0}`.'.format(filter.function)
+      );
+  }
+}
+
+/**
+ * @param {object} value
+ *
+ * Encodes a value in a format suitable for SoQL queries
+ */
+function soqlEncodeValue(value) {
+  // Note: These conditionals will fall through.
+  if (_.isString(value)) {
+    return soqlEncodeString(value);
+  }
+
+  if (_.isDate(value)) {
+    return soqlEncodeDate(value);
+  }
+
+  if (_.isNumber(value) || _.isBoolean(value)) {
+    return value;
+  }
+
+  throw new Error(
+    'Cannot soql-encode value of type: {0}'.format(typeof value)
+  );
+}
+
+/**
  * 'Private' methods
  */
 
@@ -303,58 +360,11 @@ function orderByClauseFromSeries(vif, seriesIndex) {
   return `${parameter} ${sort}`;
 }
 
-function filterToWhereClauseComponent(filter) {
-  utils.assertHasProperties(
-    filter,
-    'columnName',
-    'function',
-    'arguments'
-  );
-
-  switch (filter.function) {
-    case 'binaryOperator':
-      return binaryOperatorWhereClauseComponent(filter);
-    case 'binaryComputedGeoregionOperator':
-      return binaryComputedGeoregionOperatorWhereClauseComponent(filter);
-    case 'isNull':
-      return isNullWhereClauseComponent(filter);
-    case 'timeRange':
-      return timeRangeWhereClauseComponent(filter);
-    case 'valueRange':
-      return valueRangeWhereClauseComponent(filter);
-    case 'noop':
-      return noopWhereClauseComponent(filter);
-    default:
-      throw new Error(
-        'Invalid filter function: `{0}`.'.format(filter.function)
-      );
-  }
-}
-
 function soqlEncodeColumnName(columnName) {
   utils.assertIsOneOfTypes(columnName, 'string');
 
   return '`{0}`'.format(
     columnName.replace(/\-/g, '_')
-  );
-}
-
-function soqlEncodeValue(value) {
-  // Note: These conditionals will fall through.
-  if (_.isString(value)) {
-    return soqlEncodeString(value);
-  }
-
-  if (_.isDate(value)) {
-    return soqlEncodeDate(value);
-  }
-
-  if (_.isNumber(value) || _.isBoolean(value)) {
-    return value;
-  }
-
-  throw new Error(
-    'Cannot soql-encode value of type: {0}'.format(typeof value)
   );
 }
 
@@ -556,5 +566,6 @@ module.exports = {
   orderByClauseFromSeries,
   whereClauseNotFilteringOwnColumn,
   whereClauseFilteringOwnColumn,
+  filterToWhereClauseComponent,
   soqlEncodeValue
 };

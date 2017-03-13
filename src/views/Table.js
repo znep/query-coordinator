@@ -299,9 +299,9 @@ module.exports = function Table(element, originalVif) {
           '';
         const templateOptions = {
           columnName: column.fieldName,
-          columnTitle: (column && column.name) || column.fieldName,
-          columnDescription: (column && column.description) || '',
-          renderTypeName: (column && column.renderTypeName) || '',
+          columnTitle: _.escape(_.get(column, 'name', column.fieldName)),
+          columnDescription: _.escape(_.get(column, 'description', '')),
+          renderTypeName: _.get(column, 'renderTypeName', ''),
           sortDirection: activeSort.ascending ?
             'arrow-down' :
             'arrow-up',
@@ -532,13 +532,10 @@ module.exports = function Table(element, originalVif) {
 
   function showDescriptionFlyout(event) {
     const $target = $(event.currentTarget).find('.column-header-content');
-    const title = $target.find('.column-header-content-column-name').text();
-    const noColumnDescription = `
-      <em>${I18n.translate('visualizations.table.no_column_description')}</em>
-    `;
-    const description = (
-      $target.attr('data-column-description') || noColumnDescription
-    );
+    const title = _.escape($target.find('.column-header-content-column-name').text());
+    const description =
+      _.escape($target.attr('data-column-description')) ||
+      `<em>${I18n.translate('visualizations.table.no_column_description')}</em>`;
     const content = `
       <span>${title}</span><br>
       <span>${description}</span>
@@ -577,7 +574,7 @@ module.exports = function Table(element, originalVif) {
     const isOverflowing = (!_.isUndefined($target[0])) ?
       $target[0].clientWidth < $target[0].scrollWidth :
       false;
-    const data = $target.text();
+    const data = _.escape($target.text());
 
     // IE will incorrectly set isOverflowing to true for empty cells.
     if (isOverflowing && String(data).length > 0) {

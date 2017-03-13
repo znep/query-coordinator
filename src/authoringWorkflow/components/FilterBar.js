@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { FilterBar } from 'socrata-components';
 import { setFilters } from '../actions';
-import { getFilterableColumns, getSpandexDataProvider } from '../selectors/metadata';
+import { getFilterableColumns, getSoqlDataProvider } from '../selectors/metadata';
 
 const mapStateToProps = (state) => {
   const { metadata, vifAuthoring } = state;
@@ -12,15 +12,15 @@ const mapStateToProps = (state) => {
   const filters = _.filter(vifAuthoring.authoring.filters, (filter) => {
     return _.isString(filter.columnName) && _.find(columns, ['fieldName', filter.columnName]);
   });
-  const fetchSuggestions = (column, searchTerm) => {
-    return getSpandexDataProvider(metadata).getSuggestions(column.fieldName, searchTerm, 10);
+  const isValidTextFilterColumnValue = (column, searchTerm) => {
+    return getSoqlDataProvider(metadata).match(column.fieldName, searchTerm);
   };
 
   return {
     columns,
     filters,
     isReadOnly: false,
-    fetchSuggestions
+    isValidTextFilterColumnValue
   };
 };
 

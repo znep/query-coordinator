@@ -4,8 +4,9 @@ const utils = require('socrata-utils');
 const I18n = require('../I18n');
 
 module.exports = function Pager(element) {
-  var self = this;
-  var lastRenderOptions;
+  const self = this;
+  let lastRenderOptions;
+  let lastButtonFocusedSelector = null;
 
   this.$element = $(element);
 
@@ -36,8 +37,8 @@ module.exports = function Pager(element) {
    */
 
   function templatePagerLabel(options) {
-    var message;
-    var endIndex = Math.min(options.datasetRowCount, options.endIndex);
+    let message;
+    const endIndex = Math.min(options.datasetRowCount, options.endIndex);
 
     if (options.datasetRowCount === 0) {
       message = I18n.translate('visualizations.table.no_rows');
@@ -63,7 +64,7 @@ module.exports = function Pager(element) {
   }
 
   function templatePagerButtons(options) {
-    var template = [
+    const template = [
       '<span class="pager-buttons">',
         '<button{previousDisabled} class="pager-button-previous"><span class="icon-arrow-left"></span> {previous}</button>',
         '<button{nextDisabled} class="pager-button-next">{next} <span class="icon-arrow-right"></span></button>',
@@ -97,6 +98,21 @@ module.exports = function Pager(element) {
     self.$element.find('.socrata-pager').remove();
 
     self.$element.append($template);
+
+    if (lastButtonFocusedSelector) {
+      const button = self.$element.find(lastButtonFocusedSelector);
+
+      if (button.attr('disabled') === 'disabled') {
+        const otherButtonSelector = lastButtonFocusedSelector === '.pager-button-next' ?
+          '.pager-button-previous' :
+          '.pager-button-next';
+        self.$element.find(otherButtonSelector).focus();
+      } else {
+        button.focus();
+      }
+
+      lastButtonFocusedSelector = null;
+    }
   }
 
   function attachEvents() {
@@ -110,16 +126,18 @@ module.exports = function Pager(element) {
   }
 
   function handleNext() {
+    lastButtonFocusedSelector = '.pager-button-next';
     emitEvent('SOCRATA_VISUALIZATION_PAGINATION_NEXT');
   }
 
   function handlePrevious() {
+    lastButtonFocusedSelector = '.pager-button-previous';
     emitEvent('SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS');
   }
 
   function hasOnlyOnePage(options) {
-    var atTheStart = options.startIndex === 0;
-    var atTheEnd = options.endIndex === options.datasetRowCount;
+    const atTheStart = options.startIndex === 0;
+    const atTheEnd = options.endIndex === options.datasetRowCount;
 
     return atTheStart && atTheEnd;
   }

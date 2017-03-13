@@ -1,5 +1,5 @@
 const rewire = require('rewire');
-const Hydrator = rewire('../../src/embed/hydrator');
+const Hydrator = rewire('src/embed/hydrator');
 const { hydrateEmbed } = Hydrator;
 
 import $ from 'jquery';

@@ -9,6 +9,7 @@ describe CatalogLandingPageController do
     init_current_domain
     init_current_user(controller)
     init_signaller
+    rspec_stub_feature_flags_with(cetera_search: true)
     login
     allow(subject).to receive(:get_site_title).and_return('site title')
   end

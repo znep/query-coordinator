@@ -218,7 +218,9 @@ window.socrata.featureFlags =
     before do
       init_current_domain
       allow(FeatureFlags).to receive(:using_signaller?).and_return(false)
-      allow(FeatureFlags.derive).to receive(:cetera_search?).and_return(true)
+      allow(FeatureFlags).to receive(:derive).and_return(double(:flags).tap do |flags|
+        allow(flags).to receive(:cetera_search?).and_return(true)
+      end)
       allow(APP_CONFIG).to receive(:cetera_internal_uri).and_return(cetera_internal_uri)
       allow(APP_CONFIG).to receive(:cetera_external_uri).and_return(cetera_external_uri)
       allow(helper).to receive(:controller_name).and_return(controller_name)
@@ -635,9 +637,7 @@ window.socrata.featureFlags =
 
       before do
         allow(Signaller).to receive(:healthy?).and_return(true)
-        allow(CurrentDomain).to receive(:feature_flags).and_return(
-          'stories_enabled' => stories_enabled
-        )
+        rspec_stub_feature_flags_with(stories_enabled: stories_enabled)
         allow(helper).to receive(:current_user).and_return(current_user)
       end
 

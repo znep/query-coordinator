@@ -53,21 +53,6 @@ describe('PageDataService', function() {
     v1FakeRequestHandler.respond(fakePageData);
   }));
 
-  describe('getPageMetadata', function() {
-    it('should throw on bad parameters', function() {
-      expect(function() { PageDataService.getPageMetadata(); }).to.throw();
-    });
-
-    it('should access the correct page metadata', function(done) {
-      var response = PageDataService.getPageMetadata(fake4x4);
-      response.then(function(data) {
-        expect(data).to.eql(fakePageData);
-        done();
-      });
-      $httpBackend.flush();
-    });
-  });
-
   describe('save', function() {
 
     it('should throw on bad parameters', function() {

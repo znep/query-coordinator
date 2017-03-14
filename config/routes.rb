@@ -526,7 +526,6 @@ Rails.application.routes.draw do
 
     # V1 page metadata endpoints
     scope :controller => 'page_metadata' do
-      get '/metadata/v1/page/:id', :to => 'page_metadata#show', :constraints => { :id => Frontend::UID_REGEXP }
       post '/metadata/v1/page', :to => 'page_metadata#create'
       put '/metadata/v1/page/:id', :to => 'page_metadata#update', :constraints => { :id => Frontend::UID_REGEXP }
       delete '/metadata/v1/page/:id', :to => 'page_metadata#destroy', :constraints => { :id => Frontend::UID_REGEXP }

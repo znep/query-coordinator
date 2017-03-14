@@ -6,23 +6,23 @@ describe('FeatureFlags', function() {
     FeatureFlags.useTestFixture();
   });
 
-  it('should return the value for feature flag', function() {
+  it('returns the feature flag value', function() {
     FeatureFlags.useTestFixture({ useAuth0: false });
-    expect(FeatureFlags.value('useAuth0')).to.equal(false);
+    assert.isFalse(FeatureFlags.value('useAuth0'));
   });
 
-  it('should throw when given an invalid feature flag key', function() {
-    expect(function() { FeatureFlags.value('foo'); }).to.throw();
+  it('throws when given an invalid feature flag key', function() {
+    assert.throws(function() { FeatureFlags.value('foo'); });
   });
 
-  it('should throw when featureFlags data source is not on the window', function() {
+  it('throws when featureFlags data source is not on the window', function() {
     delete(window.socrata);
-    expect(function() { FeatureFlags.value('timeline'); }).to.throw();
+    assert.throws(function() { FeatureFlags.value('timeline'); });
   });
 
-  it('should throw when featureFlags data source cannot be found', function() {
+  it('throws when featureFlags data source cannot be found', function() {
     window.socrata = {};
-    expect(function() { FeatureFlags.value('enablePulse'); }).to.throw();
+    assert.throws(function() { FeatureFlags.value('enablePulse'); });
   });
 
 });

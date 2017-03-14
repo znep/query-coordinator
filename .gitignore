@@ -6,3 +6,4 @@ dist
 REVISION
 marathon.properties
 npm-debug.log
+*.sw?

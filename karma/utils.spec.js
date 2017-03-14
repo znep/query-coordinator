@@ -10,17 +10,26 @@ describe('utils.js', function() {
 
     describe('when the first argument is not an object', function() {
 
-      it('should correctly inteprolate values by index', function() {
-        expect('{0}, {1}, {2}, {3}, {4}'.format(1, '2', 3, 4, 'five')).to.equal('1, 2, 3, 4, five');
+      it('correctly inteprolates values by index', function() {
+        assert.equal(
+          '{0}, {1}, {2}, {3}, {4}'.format(1, '2', 3, 4, 'five'),
+          '1, 2, 3, 4, five'
+        );
       });
     });
 
     describe('when the first argument is an object', function() {
 
-      it('should correctly interpolate values by name', function() {
+      it('correctly interpolates values by name', function() {
 
-        expect('test {first} test'.format({ first: 'TEST' })).to.equal('test TEST test');
-        expect('{0} TEST {third} {second}'.format({ '0': 'one', second: 'two', third: 'three' })).to.equal('one TEST three two');
+        assert.equal(
+          'test {first} test'.format({ first: 'TEST' }),
+          'test TEST test'
+        );
+        assert.equal(
+          '{0} TEST {third} {second}'.format({ '0': 'one', second: 'two', third: 'three' }),
+          'one TEST three two'
+        );
       });
     });
   });
@@ -31,28 +40,40 @@ describe('utils.js', function() {
 
       var stringWithSpaces = 'Hello,\u0020world!';
 
-      expect(stringWithSpaces.escapeSpaces().match(/\u00A0/).length).to.equal(1);
+      assert.lengthOf(
+        stringWithSpaces.escapeSpaces().match(/\u00A0/),
+        1
+      );
     });
 
     it('escapes non-breaking spaces', function() {
 
       var stringWithSpaces = 'Hello,\u00A0world!';
 
-      expect(stringWithSpaces.escapeSpaces().match(/\u00A0/).length).to.equal(1);
+      assert.lengthOf(
+        stringWithSpaces.escapeSpaces().match(/\u00A0/),
+        1
+      );
     });
 
     it('escapes zero-width non-breaking spaces', function() {
 
       var stringWithSpaces = 'Hello,\uFEFFworld!';
 
-      expect(stringWithSpaces.escapeSpaces().match(/\u00A0/).length).to.equal(1);
+      assert.lengthOf(
+        stringWithSpaces.escapeSpaces().match(/\u00A0/),
+        1
+      );
     });
 
     it('escapes tabs', function() {
 
       var stringWithSpaces = 'Hello,\u0009world!';
 
-      expect(stringWithSpaces.escapeSpaces().match(/\u00A0/).length).to.equal(1);
+      assert.lengthOf(
+        stringWithSpaces.escapeSpaces().match(/\u00A0/),
+        1
+      );
     });
   });
 
@@ -326,25 +347,25 @@ describe('utils.js', function() {
 
     describe('when the input is undefined', function() {
 
-      it('should return true', function() {
+      it('returns true', function() {
 
-        expect(utils.valueIsBlank(undefined)).to.equal(true);
+        assert.isTrue(utils.valueIsBlank(undefined));
       });
     });
 
     describe('when the input is null', function() {
 
-      it('should return true', function() {
+      it('returns true', function() {
 
-        expect(utils.valueIsBlank(null)).to.equal(true);
+        assert.isTrue(utils.valueIsBlank(null));
       });
     });
 
     describe('when the input is an empty string', function() {
 
-      it('should return true', function() {
+      it('returns true', function() {
 
-        expect(utils.valueIsBlank('')).to.equal(true);
+        assert.isTrue(utils.valueIsBlank(''));
       });
     });
 
@@ -352,7 +373,7 @@ describe('utils.js', function() {
 
       it('should return false', function() {
 
-        expect(utils.valueIsBlank(false)).to.equal(false);
+        assert.isFalse(utils.valueIsBlank(false));
       });
     });
 
@@ -360,7 +381,7 @@ describe('utils.js', function() {
 
       it('should return false', function() {
 
-        expect(utils.valueIsBlank([])).to.equal(false);
+        assert.isFalse(utils.valueIsBlank([]));
       });
     });
 
@@ -368,7 +389,7 @@ describe('utils.js', function() {
 
       it('should return false', function() {
 
-        expect(utils.valueIsBlank('Hello, world!')).to.equal(false);
+        assert.isFalse(utils.valueIsBlank('Hello, world!'));
       });
     });
 
@@ -376,7 +397,7 @@ describe('utils.js', function() {
 
       it('should return false', function() {
 
-        expect(utils.valueIsBlank('   ')).to.equal(false);
+        assert.isFalse(utils.valueIsBlank('   '));
       });
     });
   });
@@ -390,17 +411,26 @@ describe('utils.js', function() {
       var result = utils.formatNumber(input, options);
       var negativeResult = utils.formatNumber(-input, options);
 
-      expect(result).to.equal(output);
-      expect(result).to.match(VALID_FORMATTED_NUMBER);
-      expect(negativeResult).to.equal('-' + output);
-      expect(negativeResult).to.match(VALID_FORMATTED_NUMBER);
+      assert.equal(
+        result,
+        output
+      );
+      assert.match(result, VALID_FORMATTED_NUMBER);
+      assert.equal(
+        negativeResult,
+        '-' + output
+      );
+      assert.match(negativeResult, VALID_FORMATTED_NUMBER);
     }
 
     describe('with the default options', function() {
 
       it('should leave zero alone', function() {
 
-        expect(utils.formatNumber(0)).to.equal('0');
+        assert.equal(
+          utils.formatNumber(0),
+          '0'
+        );
       });
 
       it('should not change numbers between -999 and 999', function() {
@@ -425,10 +455,22 @@ describe('utils.js', function() {
 
       it('should not return zero for very small decimals', function() {
 
-        expect(utils.formatNumber(.0012)).to.equal('0.001');
-        expect(utils.formatNumber(.0002)).to.equal('0.0002');
-        expect(utils.formatNumber(.0005)).to.equal('0.0005');
-        expect(utils.formatNumber(.0004999)).to.equal('0.0004999');
+        assert.equal(
+          utils.formatNumber(.0012),
+          '0.001'
+        );
+        assert.equal(
+          utils.formatNumber(.0002),
+          '0.0002'
+        );
+        assert.equal(
+          utils.formatNumber(.0005),
+          '0.0005'
+        );
+        assert.equal(
+          utils.formatNumber(.0004999),
+          '0.0004999'
+        );
       });
 
       it('should commaify numbers with absolute value between 1000 and 9999', function() {
@@ -478,19 +520,31 @@ describe('utils.js', function() {
         testValue(99999999999999999999999999, '100Y');
         testValue(100000000000000000000000000, '100Y');
 
-        expect(utils.formatNumber(1000000000000000000000000000)).to.equal('1e+27');
+        assert.equal(
+          utils.formatNumber(1000000000000000000000000000),
+          '1e+27'
+        );
       });
     });
 
     it('with the group separator option', function() {
 
-      expect(utils.formatNumber(12.34, { groupCharacter: '|' })).to.equal('12.34');
-      expect(utils.formatNumber(1234, { groupCharacter: '|' })).to.equal('1|234');
+      assert.equal(
+        utils.formatNumber(12.34, { groupCharacter: '|' }),
+        '12.34'
+      );
+      assert.equal(
+        utils.formatNumber(1234, { groupCharacter: '|' }),
+        '1|234'
+      );
     });
 
     it('with the decimal separator option', function() {
 
-      expect(utils.formatNumber(12.34, { decimalCharacter: ',' })).to.equal('12,34');
+      assert.equal(
+        utils.formatNumber(12.34, { decimalCharacter: ',' }),
+        '12,34'
+      );
     });
   });
 
@@ -498,69 +552,132 @@ describe('utils.js', function() {
 
     it('should leave zero alone', function() {
 
-      expect(utils.commaify(0)).to.equal('0');
+      assert.equal(
+        utils.commaify(0),
+        '0'
+      );
     });
 
     it('should preserve the negative sign', function() {
 
-      expect(utils.commaify(-1000)).to.equal('-1,000');
+      assert.equal(
+        utils.commaify(-1000),
+        '-1,000'
+      );
     });
 
     it('should convert integers correctly using the default separator', function() {
 
-      expect(utils.commaify(20000)).to.equal('20,000');
-      expect(utils.commaify(2000000)).to.equal('2,000,000');
+      assert.equal(
+        utils.commaify(20000),
+        '20,000'
+      );
+      assert.equal(
+        utils.commaify(2000000),
+        '2,000,000'
+      );
     });
 
     it('should convert integers correctly using a custom separator', function() {
 
-      expect(utils.commaify(20000, { groupCharacter: '.' })).to.equal('20.000');
-      expect(utils.commaify(2000000, { groupCharacter: '.' })).to.equal('2.000.000');
+      assert.equal(
+        utils.commaify(20000, { groupCharacter: '.' }),
+        '20.000'
+      );
+      assert.equal(
+        utils.commaify(2000000, { groupCharacter: '.' }),
+        '2.000.000'
+      );
     });
 
     it('should deal with decimals correctly using the default separator', function() {
 
-      expect(utils.commaify(20000.1234)).to.equal('20,000.1234');
-      expect(utils.commaify(20000.1234, { groupCharacter: ',' })).to.equal('20,000.1234');
+      assert.equal(
+        utils.commaify(20000.1234),
+        '20,000.1234'
+      );
+      assert.equal(
+        utils.commaify(20000.1234, { groupCharacter: ',' }),
+        '20,000.1234'
+      );
     });
 
     it('should convert decimals correctly using a custom separator', function() {
 
-      expect(utils.commaify(20000.1234, { groupCharacter: '.', decimalCharacter: ',' })).to.equal('20.000,1234');
+      assert.equal(
+        utils.commaify(20000.1234, { groupCharacter: '.', decimalCharacter: ',' }),
+        '20.000,1234'
+      );
     });
 
     it('should convert string numbers correctly', function() {
 
-      expect(utils.commaify('20000.1234')).to.equal('20,000.1234');
+      assert.equal(
+        utils.commaify('20000.1234'),
+        '20,000.1234'
+      );
     });
   });
 
   describe('pluralize', function() {
 
     it('should trim whitespace', function() {
-      expect(utils.pluralize('foo ')).to.equal('foos');
+      assert.equal(
+        utils.pluralize('foo '),
+        'foos'
+      );
     });
 
     it('should pluralize octopus', function() {
-      expect(utils.pluralize('octopus')).to.equal('octopi');
+      assert.equal(
+        utils.pluralize('octopus'),
+        'octopi'
+      );
     });
 
     it('should not pluralize money', function() {
-      expect(utils.pluralize('money')).to.equal('money');
+      assert.equal(
+        utils.pluralize('money'),
+        'money'
+      );
     });
 
     it('should not pluralize money if it has other words before it', function() {
-      expect(utils.pluralize('cash money')).to.equal('cash money');
+      assert.equal(
+        utils.pluralize('cash money'),
+        'cash money'
+      );
     });
 
     it('should not modify the string if the second parameter is 1', function() {
-      expect(utils.pluralize('cat')).to.equal('cats');
-      expect(utils.pluralize('cat', 0)).to.equal('cats');
-      expect(utils.pluralize('cat', 1)).to.equal('cat');
-      expect(utils.pluralize('cat', 2)).to.equal('cats');
-      expect(utils.pluralize('cat', '1')).to.equal('cats');
-      expect(utils.pluralize('cat', null)).to.equal('cats');
-      expect(utils.pluralize('cat', 'dog')).to.equal('cats');
+      assert.equal(
+        utils.pluralize('cat'),
+        'cats'
+      );
+      assert.equal(
+        utils.pluralize('cat', 0),
+        'cats'
+      );
+      assert.equal(
+        utils.pluralize('cat', 1),
+        'cat'
+      );
+      assert.equal(
+        utils.pluralize('cat', 2),
+        'cats'
+      );
+      assert.equal(
+        utils.pluralize('cat', '1'),
+        'cats'
+      );
+      assert.equal(
+        utils.pluralize('cat', null),
+        'cats'
+      );
+      assert.equal(
+        utils.pluralize('cat', 'dog'),
+        'cats'
+      );
     });
   });
 
@@ -653,7 +770,7 @@ describe('utils.js', function() {
         utils.isolateScrolling(scrollingDiv, true);
 
         scrollingDiv.trigger(testEvent);
-        expect(preventDefaultSpy.called).to.be.true;
+        sinon.assert.calledOnce(preventDefaultSpy);
       });
 
       it('should prevent page scrolling if at bottom of current scrollable div', function() {
@@ -665,7 +782,7 @@ describe('utils.js', function() {
         utils.isolateScrolling(scrollingDiv, true);
 
         scrollingDiv.trigger(testEvent);
-        expect(preventDefaultSpy.called).to.be.true;
+        sinon.assert.calledOnce(preventDefaultSpy);
       });
 
       it('should not prevent page scrolling up if initiated outside of scrolling div', function() {
@@ -675,7 +792,7 @@ describe('utils.js', function() {
         utils.isolateScrolling(scrollingDiv, true);
 
         staticDiv.trigger(testEvent);
-        expect(preventDefaultSpy.called).to.be.false;
+        sinon.assert.notCalled(preventDefaultSpy);
       });
 
       it('should not prevent page scrolling down if initiated outside of scrolling div', function() {
@@ -685,7 +802,7 @@ describe('utils.js', function() {
         utils.isolateScrolling(scrollingDiv, true);
 
         staticDiv.trigger(testEvent);
-        expect(preventDefaultSpy.called).to.be.false;
+        sinon.assert.notCalled(preventDefaultSpy);
       });
 
       it('when isolateScrolling is called twice with enabled=true, and then again with enabled=false, page scrolling is no longer disabled', function() {
@@ -697,7 +814,7 @@ describe('utils.js', function() {
         utils.isolateScrolling(scrollingDiv, true); // intentional
 
         scrollingDiv.trigger(testEvent);
-        expect(preventDefaultSpy.called).to.be.true;
+        sinon.assert.calledOnce(preventDefaultSpy);
 
         // Disable isolateScrolling to the scrollingDiv and renable page scrolling
         utils.isolateScrolling(scrollingDiv, false);
@@ -706,7 +823,7 @@ describe('utils.js', function() {
         preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
 
         scrollingDiv.trigger(testEvent);
-        expect(preventDefaultSpy.called).to.be.false;
+        sinon.assert.notCalled(preventDefaultSpy);
       });
     });
 
@@ -718,7 +835,7 @@ describe('utils.js', function() {
         utils.isolateScrolling(scrollingDiv, true);
 
         scrollingDiv.trigger(testEvent);
-        expect(preventDefaultSpy.called).to.be.true;
+        sinon.assert.calledOnce(preventDefaultSpy);
       });
 
       it('should prevent page scrolling if at bottom of current scrollable div', function() {
@@ -730,7 +847,7 @@ describe('utils.js', function() {
         utils.isolateScrolling(scrollingDiv, true);
 
         scrollingDiv.trigger(testEvent);
-        expect(preventDefaultSpy.called).to.be.true;
+        sinon.assert.calledOnce(preventDefaultSpy);
       });
 
       it('should not prevent page scrolling up if initiated outside of scrolling div', function() {
@@ -740,7 +857,7 @@ describe('utils.js', function() {
         utils.isolateScrolling(scrollingDiv, true);
 
         staticDiv.trigger(testEvent);
-        expect(preventDefaultSpy.called).to.be.false;
+        sinon.assert.notCalled(preventDefaultSpy);
       });
 
       it('should allow page scrolling if not over scrollable div', function() {
@@ -750,7 +867,7 @@ describe('utils.js', function() {
         utils.isolateScrolling(scrollingDiv, true);
 
         staticDiv.trigger(testEvent);
-        expect(preventDefaultSpy.called).to.be.false;
+        sinon.assert.notCalled(preventDefaultSpy);
       });
 
       it('when isolateScrolling is called with enabled=true, and then again with enabled=false, page scrolling is no longer disabled', function() {
@@ -761,7 +878,7 @@ describe('utils.js', function() {
         utils.isolateScrolling(scrollingDiv, true);
 
         scrollingDiv.trigger(testEvent);
-        expect(preventDefaultSpy.called).to.be.true;
+        sinon.assert.calledOnce(preventDefaultSpy);
 
         // Disable isolateScrolling to the scrollingDiv and renable page scrolling
         utils.isolateScrolling(scrollingDiv, false);
@@ -770,7 +887,7 @@ describe('utils.js', function() {
         preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
 
         scrollingDiv.trigger(testEvent);
-        expect(preventDefaultSpy.called).to.be.false;
+        sinon.assert.notCalled(preventDefaultSpy);
       });
     });
 
@@ -782,7 +899,7 @@ describe('utils.js', function() {
         utils.isolateScrolling(scrollingDiv, true);
 
         scrollingDiv.trigger(testEvent);
-        expect(preventDefaultSpy.called).to.be.true;
+        sinon.assert.calledOnce(preventDefaultSpy);
       });
 
       it('should prevent page scrolling if at bottom of current scrollable div', function() {
@@ -794,7 +911,7 @@ describe('utils.js', function() {
         utils.isolateScrolling(scrollingDiv, true);
 
         scrollingDiv.trigger(testEvent);
-        expect(preventDefaultSpy.called).to.be.true;
+        sinon.assert.calledOnce(preventDefaultSpy);
       });
 
       it('should not prevent page scrolling up if initiated outside of scrolling div', function() {
@@ -804,7 +921,7 @@ describe('utils.js', function() {
         utils.isolateScrolling(scrollingDiv, true);
 
         staticDiv.trigger(testEvent);
-        expect(preventDefaultSpy.called).to.be.false;
+        sinon.assert.notCalled(preventDefaultSpy);
       });
 
       it('should allow page scrolling if not over scrollable div', function() {
@@ -814,7 +931,7 @@ describe('utils.js', function() {
         utils.isolateScrolling(scrollingDiv, true);
 
         staticDiv.trigger(testEvent);
-        expect(preventDefaultSpy.called).to.be.false;
+        sinon.assert.notCalled(preventDefaultSpy);
       });
 
       it('when isolateScrolling is called with enabled=true, and then again with enabled=false, page scrolling is no longer disabled', function() {
@@ -825,7 +942,7 @@ describe('utils.js', function() {
         utils.isolateScrolling(scrollingDiv, true);
 
         scrollingDiv.trigger(testEvent);
-        expect(preventDefaultSpy.called).to.be.true;
+        sinon.assert.calledOnce(preventDefaultSpy);
 
         // Disable isolateScrolling to the scrollingDiv and renable page scrolling
         utils.isolateScrolling(scrollingDiv, false);
@@ -834,7 +951,7 @@ describe('utils.js', function() {
         preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
 
         scrollingDiv.trigger(testEvent);
-        expect(preventDefaultSpy.called).to.be.false;
+        sinon.assert.notCalled(preventDefaultSpy);
       });
     });
   });

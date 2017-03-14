@@ -11,7 +11,7 @@ delete webpackConfig.externals;
 
 webpackConfig.devtool = 'inline-source-map';
 webpackConfig.resolve = {
-  modulesDirectories: ['node_modules'],
+  modules: ['node_modules'],
   alias: {
     'lodash': path.join(__dirname, '.', 'node_modules/lodash/index.js'),
     'jquery': path.join(__dirname, '.', 'node_modules/jquery/dist/jquery.js')

@@ -339,17 +339,6 @@ class Phidippides < SocrataHttp
     end
   end
 
-  def create_dataset_metadata(data, options = {})
-    raise ArgumentError.new('id is required') unless data.key?('id')
-    issue_request(
-      :verb => :post,
-      :path => 'datasets',
-      :data => data,
-      :request_id => options[:request_id],
-      :cookies => options[:cookies]
-    )
-  end
-
   def fetch_pages_for_dataset(dataset_or_id, options = {})
     dataset_id = nil
 

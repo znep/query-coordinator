@@ -146,6 +146,21 @@ function subscribeToUpload(dispatch, upload) {
       total_rows: inputSchema.total_rows,
       upload_id: upload.id
     }));
+    // TODO: factor channel joining out into a function
+    const channelName = `row_errors:${inputSchema.id}`;
+    const channel = window.DSMAPI_PHOENIX_SOCKET.channel(channelName);
+    channel.on('errors', (event) => {
+      event.errors.forEach((error) => {
+        dispatch(insertFromServer('row_errors', error));
+      });
+    });
+    channel.join().
+      receive('ok', (response) => {
+        console.log(`successfully joined ${channelName}:`, response);
+      }).
+      receive('error', (error) => {
+        console.log(`failed to join ${channelName}:`, error);
+      });
     inputSchema.input_columns.forEach((column) => {
       dispatch(insertFromServer('input_columns', column));
     });
@@ -219,12 +234,12 @@ export function createTableAndSubscribeToTransform(transform) {
         }));
       });
       channel.join().
-      receive('ok', (response) => {
-        console.log(`successfully joined ${channelName}:`, response);
-      }).
-      receive('error', (error) => {
-        console.log(`failed to join ${channelName}:`, error);
-      });
+        receive('ok', (response) => {
+          console.log(`successfully joined ${channelName}:`, response);
+        }).
+        receive('error', (error) => {
+          console.log(`failed to join ${channelName}:`, error);
+        });
     }
   };
 }

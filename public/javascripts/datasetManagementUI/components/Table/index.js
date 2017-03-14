@@ -36,6 +36,11 @@ export default function Table({
               totalRows={totalRows} />
           )}
         </tr>
+        <tr>
+          <th colSpan={columns.length}>
+            Derp
+          </th>
+        </tr>
       </thead>
       <TableBody
         db={db}

@@ -575,7 +575,6 @@ describe('DataTypeFormatter', function() {
         expect(matchLng[1]).to.equal('Longitude');
       });
     });
-
   });
 
   describe('currency formatting', function() {
@@ -791,6 +790,56 @@ describe('DataTypeFormatter', function() {
     it('should render an empty string if no data', function() {
       var cellContent = DataTypeFormatter.renderMultipleChoiceCell('', {});
       expect(cellContent).to.equal('');
+    });
+  });
+
+  describe('location cell formatting', function() {
+    const LOCATION_WITH_HUMAN_ADDESS = {
+      human_address: "{\"address\": \"1111 e pine st\",\"city\":\"seattle,\",\"state\":\"wa,\",\"zip\":\"98122\"}",
+      latitude: "47.615267",
+      longitude: "-122.317664"
+    };
+
+    const LOCATION_WITH_PARTIAL_HUMAN_ADDRESS = {
+      human_address: "{\"address\": \"1111 e pine st\",\"zip\":\"98122\"}",
+      latitude: "47.615267",
+      longitude: "-122.317664"
+    };
+
+    const LOCATION_WITH_HUMAN_ADDRESS_ERROR = {
+      human_address: "...",  // invalid json on purpose
+      latitude: "47.615267",
+      longitude: "-122.317664"
+    };
+
+    const LOCATION = {
+      latitude: "47.615267",
+      longitude: "-122.317664"
+    };
+
+    it('should render location as latitude and longitude', function() {
+      const locationOutput = DataTypeFormatter.renderCell(LOCATION, { renderTypeName: 'location' });
+      expect(locationOutput).to.equal('(47.615267°, -122.317664°)');
+    });
+
+    it('should render location with human address', function() {
+      const locationOutput = DataTypeFormatter.renderCell(LOCATION_WITH_HUMAN_ADDESS, { renderTypeName: 'location' });
+      const address = JSON.parse(LOCATION_WITH_HUMAN_ADDESS.human_address);
+      const point = `(${LOCATION_WITH_HUMAN_ADDESS.latitude}°, ${LOCATION_WITH_HUMAN_ADDESS.longitude}°)`;
+      expect(locationOutput).to.equal(`${address.address} ${address.city} ${address.state} ${address.zip} ${point}`);
+    });
+
+    it('should render only the parts of given human address', function() {
+      const locationOutput = DataTypeFormatter.renderCell(LOCATION_WITH_PARTIAL_HUMAN_ADDRESS, { renderTypeName: 'location' });
+      const address = JSON.parse(LOCATION_WITH_PARTIAL_HUMAN_ADDRESS.human_address);
+      const point = `(${LOCATION_WITH_PARTIAL_HUMAN_ADDRESS.latitude}°, ${LOCATION_WITH_PARTIAL_HUMAN_ADDRESS.longitude}°)`;
+      expect(locationOutput).to.equal(`${address.address} ${address.zip} ${point}`);
+    });
+
+    it('should render only the latitude and longitude if human address is not a valid json', function () {
+      const locationOutput = DataTypeFormatter.renderCell(LOCATION_WITH_HUMAN_ADDRESS_ERROR, { renderTypeName: 'location' });
+      const point = `(${LOCATION_WITH_HUMAN_ADDRESS_ERROR.latitude}°, ${LOCATION_WITH_HUMAN_ADDRESS_ERROR.longitude}°)`;
+      expect(locationOutput).to.equal(`${point}`);
     });
   });
 });

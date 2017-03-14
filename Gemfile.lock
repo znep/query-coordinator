@@ -211,7 +211,7 @@ GEM
     omniauth-oauth2 (1.4.0)
       oauth2 (~> 1.0)
       omniauth (~> 1.2)
-    parser (2.3.1.4)
+    parser (2.3.3.1)
       ast (~> 2.2)
     power_assert (0.3.1)
     procto (0.0.3)
@@ -420,7 +420,7 @@ DEPENDENCIES
   net-ping
   omniauth (~> 1.2)
   omniauth-auth0 (~> 1.1)
-  parser (~> 2.3, >= 2.3.0.6)
+  parser (~> 2.3.3, >= 2.3.3.1)
   rack
   rails (~> 4.2.8)
   rails-dom-testing

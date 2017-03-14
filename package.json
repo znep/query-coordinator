@@ -1,6 +1,6 @@
 {
   "name": "socrata-utils",
-  "version": "3.2.1",
+  "version": "4.0.0",
   "license": "UNLICENSED",
   "repository": {
     "type": "git",
@@ -46,7 +46,7 @@
     "semver": "5.1.0",
     "shelljs": "0.6.0",
     "sinon": "1.17.4",
-    "webpack": "1.13.1"
+    "webpack": "2.2.1"
   },
   "peerDependencies": {
     "lodash": "4.14.2",

@@ -14,7 +14,7 @@ module.exports = {
     library: ['socrata', 'utils']
   },
   resolve: {
-    modulesDirectories: ['node_modules']
+    modules: ['node_modules']
   },
   devtool: 'source-map'
 };

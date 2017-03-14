@@ -54,32 +54,11 @@ class FeatureFlags
     end
 
     def using_signaller?
-      Signaller.healthy? && APP_CONFIG.signaller_traffic_throttler == 1
+      Signaller.healthy?
     end
 
     def on_domain(domain_or_cname)
-      via_signaller = lambda do
-        Signaller::FeatureFlags.on_domain(domain_or_cname)
-      end
-
-      via_core = lambda do
-        domain = domain_or_cname
-        conf = domain.default_configuration('feature_flags')
-        merge({}, conf.try(:properties) || {})
-      end
-
-      if using_signaller?
-        via_signaller.call
-      else
-        if Signaller.available? && APP_CONFIG.signaller_traffic_throttler > rand
-          begin
-            via_signaller.call
-          rescue => e
-            Rails.logger.error("FFSignaller error; suppressing: #{e.inspect}")
-          end
-        end
-        via_core.call
-      end
+      Signaller::FeatureFlags.on_domain(domain_or_cname)
     end
 
     def get_value(flag_name, options = {})

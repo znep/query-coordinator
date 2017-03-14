@@ -52,7 +52,8 @@ class StylesController < ApplicationController
   def merged
     if STYLE_PACKAGES[params[:stylesheet]].present?
       headers['Content-Type'] = 'text/css'
-      headers['Cache-Control'] = "public, max-age=604800"
+      # EN-14674: We've had trouble with assets cached after deploys. For now, cache for an hour.
+      headers['Cache-Control'] = "public, max-age=3600"
 
       cache_key = generate_cache_key(params[:stylesheet])
       cached = Rails.cache.read(cache_key)

@@ -57,7 +57,7 @@ describe('Anatlyics.js', function() {
       analytics.setServerUploadEnabled(false);
       analytics.sendMetric('some_fake_metric', 'fake_as_hell', 1);
       analytics.flushMetrics();
-      expect(server.requests).to.be.empty;
+      assert.lengthOf(server.requests, 0);
     });
   });
 
@@ -65,7 +65,7 @@ describe('Anatlyics.js', function() {
     it('sends metric to analytics endpoint', function() {
       analytics.sendMetric('some_fake_metric', 'fake_as_hell', 1);
       analytics.flushMetrics();
-      expect(server.requests.length).to.equal(1);
+      assert.lengthOf(server.requests, 1);
     });
   });
 
@@ -76,17 +76,17 @@ describe('Anatlyics.js', function() {
 
     it('does not send metrics until queue capacity is reached', function() {
       analytics.sendMetric('first_metrics', 'not_ready_to_send', 1);
-      expect(server.requests.length).to.equal(0);
+      assert.lengthOf(server.requests, 0);
       analytics.sendMetric('hold', 'HOLD!', 1);
-      expect(server.requests.length).to.equal(0);
+      assert.lengthOf(server.requests, 0);
       analytics.sendMetric('the_straw', 'that_broke_the_camels_queue', 1);
-      expect(server.requests.length).to.equal(1);
+      assert.lengthOf(server.requests, 1);
     });
 
     it('sends queued metrics', function() {
       analytics.sendMetric('some_fake_metric', 'fake_as_hell', 1);
       analytics.flushMetrics();
-      expect(server.requests.length).to.equal(1);
+      assert.lengthOf(server.requests, 1);
     });
 
     describe('outgoing requests', function() {
@@ -99,19 +99,25 @@ describe('Anatlyics.js', function() {
       });
 
       it('sets content type', function() {
-        expect(analytics_request.requestHeaders['Content-Type']).to.match(/application\/text/);
+        assert.match(analytics_request.requestHeaders['Content-Type'], /application\/text/);
       });
 
       it('sets X-Socrata-Auth header', function() {
-        expect(analytics_request.requestHeaders['X-Socrata-Auth']).to.equal('unauthenticated');
+        assert.equal(
+          analytics_request.requestHeaders['X-Socrata-Auth'],
+          'unauthenticated'
+        );
       });
 
       it('sends metrics data', function() {
-        expect(analytics_request.requestBody).to.equal('{"metrics":[{"entity":"booyah","metric":"things","increment":666}]}');
+        assert.equal(
+          analytics_request.requestBody,
+          '{"metrics":[{"entity":"booyah","metric":"things","increment":666}]}'
+        );
       });
 
       it('sends metrics asynchronously by default', function() {
-        expect(analytics_request.async).to.equal(true);
+        assert.isTrue(analytics_request.async);
       });
     });
   });
@@ -129,8 +135,8 @@ describe('Anatlyics.js', function() {
       $(window).trigger('onbeforeunload');
 
       setTimeout(function() {
-        expect(server.requests.length).to.equal(1);
-        expect(server.requests[0].async).to.equal(false);
+        assert.lengthOf(server.requests, 1);
+        assert.isFalse(server.requests[0].async);
       }, 10);
     });
   });

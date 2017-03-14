@@ -35,6 +35,10 @@ export class ApiFlannel extends Component {
     event.preventDefault();
   }
 
+  onSubmit(event) {
+    event.preventDefault();
+  }
+
   getResourceTypes() {
     const { view } = this.props;
     const resourceTypes = {};
@@ -148,7 +152,7 @@ export class ApiFlannel extends Component {
           <h6 id="api-endpoint" className="endpoint-title">
             {I18n.api_flannel.endpoint_title}
           </h6>
-          <form>
+          <form onSubmit={this.onSubmit}>
             <span className="input-group">
               <input
                 aria-labelledby="api-endpoint"

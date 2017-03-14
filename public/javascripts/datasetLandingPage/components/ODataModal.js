@@ -17,6 +17,10 @@ export class ODataModal extends Component {
     event.target.select();
   }
 
+  onSubmit(event) {
+    event.preventDefault();
+  }
+
   renderEndpoint() {
     const { view, onClickCopy } = this.props;
 
@@ -39,7 +43,7 @@ export class ODataModal extends Component {
             {I18n.odata_modal.endpoint_title}
           </h6>
 
-          <form>
+          <form onSubmit={this.onSubmit}>
             <span className="input-group">
               <input
                 aria-labelledby="odata-endpoint"

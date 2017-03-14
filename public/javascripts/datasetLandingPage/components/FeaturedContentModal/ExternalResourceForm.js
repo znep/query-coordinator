@@ -72,6 +72,10 @@ export class ExternalResourceForm extends Component {
     this.props.onChangeUrl(event.target.value);
   }
 
+  onSubmit(event) {
+    event.preventDefault();
+  }
+
   renderInputField(key, inputProps) {
     const prefix = 'external-resource';
     const value = this.props[key];
@@ -162,7 +166,7 @@ export class ExternalResourceForm extends Component {
           <p>{this.I18n.message}</p>
 
           <div className="external-resource-contents">
-            <form className="external-resource-form">
+            <form className="external-resource-form" onSubmit={this.onSubmit}>
               {titleField}
               {descriptionField}
               {urlField}

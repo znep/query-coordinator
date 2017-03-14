@@ -44,6 +44,10 @@ export class StoryForm extends Component {
     this.props.onChangeUrl(event.target.value);
   }
 
+  onSubmit(event) {
+    event.preventDefault();
+  }
+
   loadRequestedStory() {
     this.props.loadRequestedStory();
   }
@@ -62,7 +66,7 @@ export class StoryForm extends Component {
       null;
 
     return (
-      <form className="story-form" action="#">
+      <form className="story-form" onSubmit={this.onSubmit}>
         <label id="story-url-label" htmlFor="story-url" className="block-label label-url">
           {this.I18n.url}
         </label>

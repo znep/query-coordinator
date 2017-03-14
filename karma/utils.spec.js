@@ -10,7 +10,7 @@ describe('utils.js', function() {
 
     describe('when the first argument is not an object', function() {
 
-      it('should correctly inteprolate values by index', function() {
+      it('correctly inteprolates values by index', function() {
         assert.equal(
           '{0}, {1}, {2}, {3}, {4}'.format(1, '2', 3, 4, 'five'),
           '1, 2, 3, 4, five'
@@ -20,7 +20,7 @@ describe('utils.js', function() {
 
     describe('when the first argument is an object', function() {
 
-      it('should correctly interpolate values by name', function() {
+      it('correctly interpolates values by name', function() {
 
         assert.equal(
           'test {first} test'.format({ first: 'TEST' }),
@@ -347,7 +347,7 @@ describe('utils.js', function() {
 
     describe('when the input is undefined', function() {
 
-      it('should return true', function() {
+      it('returns true', function() {
 
         assert.isTrue(utils.valueIsBlank(undefined));
       });
@@ -355,7 +355,7 @@ describe('utils.js', function() {
 
     describe('when the input is null', function() {
 
-      it('should return true', function() {
+      it('returns true', function() {
 
         assert.isTrue(utils.valueIsBlank(null));
       });
@@ -363,7 +363,7 @@ describe('utils.js', function() {
 
     describe('when the input is an empty string', function() {
 
-      it('should return true', function() {
+      it('returns true', function() {
 
         assert.isTrue(utils.valueIsBlank(''));
       });

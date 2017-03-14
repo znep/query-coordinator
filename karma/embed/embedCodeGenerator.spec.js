@@ -11,7 +11,7 @@ describe('embedCodeGenerator', function() {
   const testCase = (caseName, vif, options, expectedValue) => {
     describe(caseName, () => {
       it('should return the expected embed code', () => {
-        assert.equal(expectedValue, generateEmbedCode(vif, options),);
+        assert.equal(expectedValue, generateEmbedCode(vif, options));
       });
     });
   };

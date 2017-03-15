@@ -1,37 +1,27 @@
 {
-  "name": "socrata-utils",
-  "version": "4.0.0",
+  "name": "common-code-tests",
+  "description": "Tests for code in common",
+  "version": "0.0.0",
   "license": "UNLICENSED",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/socrata/frontend-utils.git"
-  },
-  "publishConfig": {
-    "registry": "https://repo.socrata.com/artifactory/api/npm/npm-local"
-  },
   "scripts": {
-    "release": "tools/release.sh",
     "build": "webpack",
     "prebuild": "rimraf dist",
-    "prepublish": "webpack",
-    "lint": "eslint -c package.json src/*.js",
+    "check-dependencies": "check-dependencies",
+    "lint": "eslint -c package.json ../**/*.js",
     "test": "karma start karma.conf.js --singleRun true",
-    "version-bump-check": "node tools/version-bump-check.js",
     "watch": "karma start karma.conf.js -v --singleRun false"
   },
-  "homepage": "https://github.com/socrata/frontend-utils",
   "dependencies": {
     "es6-promise-polyfill": "1.2.0"
   },
-  "main": "dist/socrata-utils.js",
   "devDependencies": {
     "chai": "3.5.0",
+    "check-dependencies": "^1.0.1",
     "eslint": "2.3.0",
     "eslint-base": "0.2.3",
     "jquery": "2.2.4",
     "karma": "0.13.22",
     "karma-chai": "0.1.0",
-    "karma-chrome-launcher": "0.2.3",
     "karma-coverage": "0.5.5",
     "karma-mocha": "0.2.2",
     "karma-phantomjs-launcher": "0.2.3",
@@ -54,6 +44,15 @@
   },
   "eslintConfig": {
     "extends": "./node_modules/eslint-base/.eslintrc.json",
+    "rules": {
+      "dot-notation": [
+        1,
+        {
+          "allowKeywords": true,
+          "allowPattern": "^[a-z]+(_[a-z]+)+$"
+        }
+      ]
+    },
     "globals": {
       "$": true,
       "_": true,
@@ -66,8 +65,5 @@
       "require": true,
       "module": true
     }
-  },
-  "files": [
-    "dist"
-  ]
+  }
 }

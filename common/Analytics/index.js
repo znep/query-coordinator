@@ -85,4 +85,6 @@ var Analytics = function() {
   window.onbeforeunload = this.flushMetrics(false);
 };
 
-module.exports = Analytics;
+module.exports = {
+  Analytics: Analytics
+};

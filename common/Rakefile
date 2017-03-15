@@ -1,0 +1,33 @@
+desc 'Run lint and  tests'
+task default: %w[lint test]
+
+namespace 'karma' do
+  task :checkdep do
+    npm 'run check-dependencies'
+  end
+  task :runonce do
+    npm 'test'
+  end
+  task :watch do
+    npm 'run watch'
+  end
+end
+
+desc 'Run all JavaScript tests (check prereqs)'
+task karma: %w[karma:checkdep karma:runonce]
+
+desc 'Run all tests and re-run on file change'
+task watch: %w[karma:checkdep karma:watch]
+
+desc 'Run linter'
+task :lint do
+  npm 'run lint'
+end
+
+desc 'Run all tests'
+task test: :karma
+
+def npm(command)
+  sh "cd karma_config && npm #{command}"
+end
+

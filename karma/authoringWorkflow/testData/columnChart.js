@@ -7,6 +7,7 @@ export default () => ({
     "showDimensionLabels": true,
     "xAxisScalingMode": "pan",
     "viewSourceDataLink": true,
+    "showLegend": true,
     "axisLabels": {
       "bottom": "All The Time",
       "left": "Love You"

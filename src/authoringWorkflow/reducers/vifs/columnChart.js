@@ -54,6 +54,7 @@ export default function columnChart(state, action) {
           _.set(state, 'series[0].color.palette', 'categorical');
         }
 
+        // If legend visibility has not yet been set, then set it to visible
         if (_.get(state, 'configuration.showLegend', null) === null) {
           _.set(state, 'configuration.showLegend', true);
         }

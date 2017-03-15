@@ -39,6 +39,7 @@ const paths = {
   showOtherCategory: 'configuration.showOtherCategory',
   showValueLabels: 'configuration.showValueLabels',
   showValueLabelsAsPercent: 'configuration.showValueLabelsAsPercent',
+  showLegend: 'configuration.showLegend',
   title: 'title',
   treatNullValuesAsZero: 'configuration.treatNullValuesAsZero',
   unitOne: 'series[0].unit.one',
@@ -192,6 +193,11 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.showValueLabelsAsPercent)) {
     dispatch(actions.setShowValueLabelsAsPercent(get(paths.showValueLabelsAsPercent)));
+  }
+
+
+  if (has(paths.showLegend)) {
+    dispatch(actions.setShowLegend(get(paths.showLegend)));
   }
 
   if (has(paths.title)) {

@@ -141,11 +141,6 @@ class User < Model
     User.parse(CoreServer::Base.connection.get_request(path))
   end
 
-  def openid_identifiers
-    path = "/users/#{id}/open_id_identifiers.json"
-    OpenIdIdentifier.parse(CoreServer::Base.connection.get_request(path))
-  end
-
   def auth0_identifiers
     path = '/auth0_identifiers.json'
     Auth0Identifier.parse(CoreServer::Base.connection.get_request(path))

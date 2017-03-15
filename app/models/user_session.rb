@@ -24,11 +24,6 @@ class UserSession
       session if session.find_token
     end
 
-    def rpx(token)
-      session = new
-      session if session.find_rpx_token(token)
-    end
-
     def auth0(token)
       session = new
       session if session.find_auth0_token(token)
@@ -152,14 +147,6 @@ class UserSession
     expiration = UserSession.expiration_from_core_cookie(new_core_cookie)
     create_core_session_credentials(user, expiration) if expiration > 0
     core_response
-  end
-
-
-  # Obtain a UserSession based on an RpxAuthentication object
-  # If the RpxAuthentication has a valid user associated with it, log in
-  # that user.
-  def find_rpx_token(rpx_authentication)
-    find_user(rpx_authentication.user) if rpx_authentication.existing_account?
   end
 
   def find_auth0_token(auth0_authentication)

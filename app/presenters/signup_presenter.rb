@@ -1,8 +1,8 @@
 class SignupPresenter < Presenter
   include ActionView::Helpers::TranslationHelper
 
-  def_delegators :user,  :firstName,  :lastName,  :email,  :screenName,  :login,  :password,  :company,  :title,  :openIdIdentifierId,  :auth0Identifier,
-                 :user=, :firstName=, :lastName=, :email=, :screenName=, :login=, :password=, :company=, :title=, :openIdIdentifierId=, :auth0Identifier=
+  def_delegators :user,  :firstName,  :lastName,  :email,  :screenName,  :login,  :password,  :company,  :title, :auth0Identifier,
+                 :user=, :firstName=, :lastName=, :email=, :screenName=, :login=, :password=, :company=, :title=, :auth0Identifier=
 
   attr_accessor :user
   attr_accessor :inviteToken

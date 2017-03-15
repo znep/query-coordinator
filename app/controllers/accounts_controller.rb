@@ -6,7 +6,7 @@ class AccountsController < ApplicationController
   skip_before_filter :require_user, :only => [:new, :create, :forgot_password, :reset_password, :verify_email]
   skip_before_filter :adjust_format, :only => [:update]
 
-  protect_from_forgery :except => [:add_rpx_token]
+  protect_from_forgery
 
   # NOTE: This skip_before_filter must come _after_ the protect_from_forgery call above
   # When CSRF token validation is skipped for this method (see skip_before_filter above), the
@@ -149,14 +149,5 @@ class AccountsController < ApplicationController
         return redirect_to(forgot_password_path)
       end
     end
-  end
-
-  def add_rpx_token
-    OpenIdIdentifier.create(User.current_user.id, params[:token]) if params[:token]
-    flash[:notice] = t('screens.link_account.success')
-  rescue CoreServer::CoreServerError => e
-    flash[:error] = e.error_message
-  ensure
-    redirect_to login_redirect_url
   end
 end

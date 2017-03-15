@@ -530,11 +530,6 @@ module ApplicationHelper
       return link_to url, url, *args
   end
 
-  def link_to_rpx(name, return_url = rpx_return_login_url, html_options = {})
-    options = {:class => 'rpxnow', :onclick => 'return false;'}.merge(html_options)
-    link_to name, "#{APP_CONFIG.rpx_signin_url}?token_url=#{return_url}", options
-  end
-
   def render_license(view = @view)
     licenseId = view.property_or_default(['licenseId'])
     return t('screens.about.none') if licenseId.nil?

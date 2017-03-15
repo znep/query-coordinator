@@ -4969,7 +4969,7 @@ en:
           image_format: Please select a valid image type (PNG, JPG, or GIF)
           invalid_links: There was a problem updating your links. %{message}
           no_display_name: 'Error: ''Display Name'' is required'
-          no_password_no_auth0id: You cannot remove all your Auth0 identifiers before you set a password
+          no_password_no_auth0id: You cannot remove all your Single Sign-On identifiers before you set a password
           no_password_no_openid: You cannot remove all your OpenID identifiers before you set a password
           password_mismatch: New passwords do not match
           user_missing: This user cannot be found, or has been deleted.

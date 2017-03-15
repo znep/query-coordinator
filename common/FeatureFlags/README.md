@@ -45,7 +45,7 @@ describe('FeatureFlags', function() {
 featureFlags: {
     "allowDataLensOwnerChange": true,
     "auth0Social": false,
-   ... Removed for brevity. See FeatureFlags.js for more.
+   ... Removed for brevity. See common/FeatureFlags/index.js for more.
 }
 ```
 

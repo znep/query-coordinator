@@ -1,14 +1,16 @@
 desc 'Run lint and  tests'
 task default: %w[lint test]
 
-namespace 'karma' do
-  task :deps do
-    npm 'run check-dependencies' do |ok, res|
-      unless ok
-        npm 'install'
-      end
+desc 'Ensures dependencies are installed'
+task :deps do
+  npm 'run check-dependencies' do |ok, res|
+    unless ok
+      npm 'install'
     end
   end
+end
+
+namespace 'karma' do
   task :runonce do
     npm 'test'
   end
@@ -18,13 +20,13 @@ namespace 'karma' do
 end
 
 desc 'Run all JavaScript tests (check prereqs)'
-task karma: %w[karma:deps karma:runonce]
+task karma: %w[deps karma:runonce]
 
 desc 'Run all tests and re-run on file change'
-task watch: %w[karma:deps karma:watch]
+task watch: %w[deps karma:watch]
 
 desc 'Run linter'
-task :lint do
+task lint: :deps do
   npm 'run lint'
 end
 

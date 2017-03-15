@@ -2,13 +2,6 @@
 
 ## Quick Links
 
-./packages/socrata-utils/README.md
-./common/jsUtils/README.md
-./common/karma_config/README.md
-./common/Analytics/README.md
-./common/FeatureFlags/README.md
-./common/README.md
-
 [jsUtils](https://github.com/socrata/frontend/blob/master/common/jsUtils/README.md)
 [Analytics](https://github.com/socrata/frontend/blob/master/common/Analytics/README.md)
 [FeatureFlags](https://github.com/socrata/frontend/blob/master/common/FeatureFlags/README.md)

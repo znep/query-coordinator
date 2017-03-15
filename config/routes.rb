@@ -412,7 +412,6 @@ Rails.application.routes.draw do
       # Overloaded route matcher for SEO purposes.
       # The route structure is identical in each case; the handler for the route
       # is determined by the constraint that is satisfied.
-      get '/mobile', :to => 'data_lens#show_mobile', :app => 'dataCards', :constraints => Constraints::DataLensConstraint.new
       get '', :to => 'data_lens#data_lens', :app => 'dataCards', :constraints => Constraints::DataLensConstraint.new
 
       # Fallback: let DatasetsController#show handle it, since it was the original
@@ -534,7 +533,6 @@ Rails.application.routes.draw do
     scope :controller => 'data_lens' do
       post '/geo/initiate', :to => 'data_lens#initiate_region_coding'
       get '/geo/status', :to => 'data_lens#region_coding_status'
-      get 'view/:id/mobile', :action => 'show_mobile'
     end
 
     # Custom pages, catalogs, facets

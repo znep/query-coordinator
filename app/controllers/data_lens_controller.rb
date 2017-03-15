@@ -10,7 +10,6 @@ class DataLensController < ActionController::Base
   skip_before_filter :disable_frame_embedding, :only => :data_lens
 
   before_filter :hook_auth_controller
-  before_filter :preload_metadata, :only => :show_mobile
   before_filter :allow_frame_embedding, :only => :data_lens
 
   helper_method :current_user
@@ -130,10 +129,6 @@ class DataLensController < ActionController::Base
     render :json => result, :status => status
   end
 
-  def show_mobile
-    render 'mobile/datalens/show', :layout => 'layouts/mobile'
-  end
-
   def region_coder
     @region_coder ||= Services::DataLens::RegionCoder.new
   end
@@ -149,10 +144,9 @@ class DataLensController < ActionController::Base
       begin
         view = View.find(params[:id])
         href = Proc.new { |params| view_path(view, params || {}) }
-        unless request.path.gsub(/\/mobile$/, '') == href.call(locale: nil)
+        unless request.path == href.call(locale: nil)
           locale = CurrentDomain.default_locale == I18n.locale.to_s ? nil : I18n.locale
           canonical_path = href.call(locale: locale)
-          canonical_path += '/mobile' if request.path =~ %r'/mobile$'
           canonical_path += "?#{request.query_string}" unless request.query_string.empty?
           return redirect_to canonical_path
         end

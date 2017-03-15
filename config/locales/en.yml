@@ -5025,6 +5025,8 @@ en:
       sign_up: Sign Up
       sso_enabled: SSO Enabled
       sso_required: The administrator for this site requires that privileged users log in with an account other than a Socrata ID. Please log in using a different method.
+      sso_required_for_superadmins_by_fedramp: This domain is configured for FedRAMP security. Access is permitted only via single sign-on.
+      sso_required_for_superadmins_by_default: This domain is configured to disallow password-based logins with @socrata.com emails.
       tips_html: Use your Email and Password to sign in to all <strong>Socrata powered</strong> sites.
     sign_up:
       already_have_account: Already have an account?

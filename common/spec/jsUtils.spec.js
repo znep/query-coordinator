@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var $ = jQuery = require('jquery');
-var utils = require('../src/utils');
+var utils = require('common/jsUtils');
 
 describe('utils.js', function() {
 
@@ -148,7 +148,7 @@ describe('utils.js', function() {
 
       it('throws an error', function() {
 
-        assert.throw(function() {
+        assert.throws(function() {
           utils.assertEqual(1, 2);
         });
       });
@@ -185,7 +185,7 @@ describe('utils.js', function() {
     describe('given an object without the desired property', function() {
 
       it('throws', function() {
-        assert.throw(function() {
+        assert.throws(function() {
           utils.assertHasProperty(testObject, 'oops');
         });
       });
@@ -214,7 +214,7 @@ describe('utils.js', function() {
     describe('given an object without the desired property', function() {
 
       it('throws', function() {
-        assert.throw(function() {
+        assert.throws(function() {
           utils.assertHasProperties(testObject, 'propA', 'propOops');
         });
       });
@@ -225,23 +225,23 @@ describe('utils.js', function() {
 
     describe('given a value of type not in the specified array', function() {
 
-      assert.throw(function() {
+      assert.throws(function() {
         utils.assertIsOneOfTypes(1, 'boolean', 'string');
       });
 
-      assert.throw(function() {
+      assert.throws(function() {
         utils.assertIsOneOfTypes(1, 'string', 'boolean');
       });
 
-      assert.throw(function() {
+      assert.throws(function() {
         utils.assertIsOneOfTypes('1', 'number', 'object');
       });
 
-      assert.throw(function() {
+      assert.throws(function() {
         utils.assertIsOneOfTypes(1, 'object', 'function');
       });
 
-      assert.throw(function() {
+      assert.throws(function() {
         utils.assertIsOneOfTypes(1, 'function', 'boolean');
       });
     });
@@ -264,19 +264,19 @@ describe('utils.js', function() {
     describe('given a value without a length property', function() {
 
       it('throws', function() {
-        assert.throw(function() {
+        assert.throws(function() {
           utils.assertLengthIs(1, 10);
         });
-        assert.throw(function() {
+        assert.throws(function() {
           utils.assertLengthIs({}, 10);
         });
-        assert.throw(function() {
+        assert.throws(function() {
           utils.assertLengthIs(null, 10);
         });
-        assert.throw(function() {
+        assert.throws(function() {
           utils.assertLengthIs(undefined, 10);
         });
-        assert.throw(function() {
+        assert.throws(function() {
           utils.assertLengthIs(/asd/, 10);
         });
       });
@@ -284,25 +284,25 @@ describe('utils.js', function() {
 
     describe('given a non-number expected length', function() {
       it('throws', function() {
-        assert.throw(function() {
+        assert.throws(function() {
           utils.assertLengthIs([]);
         });
-        assert.throw(function() {
+        assert.throws(function() {
           utils.assertLengthIs([], '');
         });
-        assert.throw(function() {
+        assert.throws(function() {
           utils.assertLengthIs([], {});
         });
-        assert.throw(function() {
+        assert.throws(function() {
           utils.assertLengthIs([], []);
         });
-        assert.throw(function() {
+        assert.throws(function() {
           utils.assertLengthIs([], null);
         });
-        assert.throw(function() {
+        assert.throws(function() {
           utils.assertLengthIs([], undefined);
         });
-        assert.throw(function() {
+        assert.throws(function() {
           utils.assertLengthIs([], /asd/);
         });
       });
@@ -310,22 +310,22 @@ describe('utils.js', function() {
 
     describe('given a mismatch in length', function() {
       it('throws', function() {
-        assert.throw(function() {
+        assert.throws(function() {
           utils.assertLengthIs([], 1);
         });
-        assert.throw(function() {
+        assert.throws(function() {
           utils.assertLengthIs([ 'a' ], 0);
         });
-        assert.throw(function() {
+        assert.throws(function() {
           utils.assertLengthIs([ 'a', 'b' ], 3);
         });
-        assert.throw(function() {
+        assert.throws(function() {
           utils.assertLengthIs('', 1);
         });
-        assert.throw(function() {
+        assert.throws(function() {
           utils.assertLengthIs('a', 0);
         });
-        assert.throw(function() {
+        assert.throws(function() {
           utils.assertLengthIs('ab', 3);
         });
       });
@@ -740,7 +740,7 @@ describe('utils.js', function() {
     // Construct a scroll event of the given name and direction (up or down)
     function buildTestEvent(eventName, scrollDirection) {
       var testDeltaY;
-      switch(eventName) {
+      switch (eventName) {
         case 'mousewheel':
           // scrolling up is positive, down is negative
           testDeltaY = (scrollDirection === 'up') ? 200 : -400;
@@ -759,7 +759,7 @@ describe('utils.js', function() {
       var originalEventData = { preventDefault: _.noop };
       originalEventData[propertyName] = testDeltaY;
 
-      return jQuery.Event(eventName, {originalEvent: originalEventData});
+      return jQuery.Event(eventName, {originalEvent: originalEventData}); //eslint-disable-line new-cap
     }
 
     describe('mousewheel (IE, Safari, Chrome)', function() {
@@ -819,7 +819,7 @@ describe('utils.js', function() {
         // Disable isolateScrolling to the scrollingDiv and renable page scrolling
         utils.isolateScrolling(scrollingDiv, false);
 
-        var testEvent = buildTestEvent('mousewheel', 'up');
+        testEvent = buildTestEvent('mousewheel', 'up');
         preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
 
         scrollingDiv.trigger(testEvent);
@@ -883,7 +883,7 @@ describe('utils.js', function() {
         // Disable isolateScrolling to the scrollingDiv and renable page scrolling
         utils.isolateScrolling(scrollingDiv, false);
 
-        var testEvent = buildTestEvent('DOMMouseScroll', 'up');
+        testEvent = buildTestEvent('DOMMouseScroll', 'up');
         preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
 
         scrollingDiv.trigger(testEvent);
@@ -947,7 +947,7 @@ describe('utils.js', function() {
         // Disable isolateScrolling to the scrollingDiv and renable page scrolling
         utils.isolateScrolling(scrollingDiv, false);
 
-        var testEvent = buildTestEvent('MozMousePixelScroll', 'up');
+        testEvent = buildTestEvent('MozMousePixelScroll', 'up');
         preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
 
         scrollingDiv.trigger(testEvent);

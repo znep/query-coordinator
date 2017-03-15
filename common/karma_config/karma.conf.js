@@ -1,21 +1,26 @@
-// Karma configuration
-// Generated on Wed Jul 29 2015 12:58:51 GMT-0700 (PDT)
+/* eslint-env node */
 
+// Karma configuration for common code.
 var path = require('path');
 
-var webpackConfig = require('./webpack.config');
+// TODO When this gets into the monorepo, consolidate
+// with other test projects webpack configs.
+var webpackConfig = {
+  context: __dirname,
+  resolve: {
+    modules: [
+      // Let tests import modules (i.e, import FeatureFlags from 'common/FeatureFlags')
+      path.resolve('../../'),
 
-delete webpackConfig.entry;
-delete webpackConfig.output;
-delete webpackConfig.externals;
-
-webpackConfig.devtool = 'inline-source-map';
-webpackConfig.resolve = {
-  modules: ['node_modules'],
-  alias: {
-    'lodash': path.join(__dirname, '.', 'node_modules/lodash/index.js'),
-    'jquery': path.join(__dirname, '.', 'node_modules/jquery/dist/jquery.js')
-  }
+      // Allow code under test to require dependencies in karma_config's package.json.
+      '../karma_config/node_modules'
+    ],
+    alias: {
+      'lodash': path.join(__dirname, '.', 'node_modules/lodash/index.js'),
+      'jquery': path.join(__dirname, '.', 'node_modules/jquery/dist/jquery.js')
+    }
+  },
+  devtool: 'inline-source-map'
 };
 
 module.exports = function(config) {
@@ -31,38 +36,23 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'node_modules/sinon/pkg/sinon.js',
-      'karma/**/*spec.js'
+      '../spec/**/*.spec.js'
     ],
 
     // list of files to exclude
-    exclude: [
-    ],
+    exclude: [],
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'karma/**/*spec.js': ['webpack', 'sourcemap'],
-      'socrata-utils.js': ['coverage']
+      // Load specs through webpack.
+      '../spec/**/*.spec.js': ['webpack', 'sourcemap']
     },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['progress'],
-
-    coverageReporter: {
-      reporters: [
-        {
-          type: 'html',
-          dir: 'coverage/'
-        },
-        {
-          type: 'cobertura',
-          dir: 'coverage/',
-          file: 'coverage.xml' // To match simplecov
-        }
-      ]
-    },
 
     // web server port
     port: 9876,
@@ -85,9 +75,9 @@ module.exports = function(config) {
     // if true, Karma captures browsers, runs the tests and exits
     singleRun: false,
 
-    webpack: webpackConfig, // TODO: make a dev version of this confic with source maps; specify that one
+    webpack: webpackConfig,
     webpackMiddleware: {
       noInfo: true
     }
-  })
-}
+  });
+};

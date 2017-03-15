@@ -3,7 +3,7 @@
 var _ = require('lodash');
 
 var FeatureFlags = {
-  source: function(key) {
+  source: function(/*key*/) {
     throw new Error('Reserved for future use (FFS).');
   },
 
@@ -33,4 +33,6 @@ var FeatureFlags = {
   }
 };
 
-module.exports = FeatureFlags;
+module.exports = {
+  FeatureFlags: FeatureFlags
+};

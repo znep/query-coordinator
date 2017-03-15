@@ -2,7 +2,7 @@ var path = require('path');
 
 module.exports = {
   context: __dirname,
-  entry: './src/index.js',
+  entry: './index.js',
   externals: {
     'jquery': true,
     'lodash': true
@@ -14,7 +14,10 @@ module.exports = {
     library: ['socrata', 'utils']
   },
   resolve: {
-    modules: ['node_modules']
+    modules: [
+      path.resolve('../../'),
+      'packages/socrata-utils/node_modules'
+    ]
   },
   devtool: 'source-map'
 };

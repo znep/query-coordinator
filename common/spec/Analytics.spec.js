@@ -1,34 +1,10 @@
-var _ = require('lodash');
 var $ = require('jquery');
-var Analytics = require('../src/Analytics');
+var Analytics = require('common/Analytics').Analytics;
 
 describe('Anatlyics.js', function() {
 
   var analytics;
   var server;
-  var INITIAL_NAVIGATION_START_TIME = 222;
-  var INITIAL_MOMENT_TIME = 1234;
-  var DOM_READY_TIME = 4119;
-  var fakeClock;
-
-  var mockWindowPerformance = {
-    timing: {
-      navigationStart: INITIAL_NAVIGATION_START_TIME,
-      domComplete: INITIAL_NAVIGATION_START_TIME + DOM_READY_TIME
-    }
-  };
-
-  var mockWindowService = {
-    performance: mockWindowPerformance,
-    document: {
-      readyState: 'loading',
-      addEventListener: _.noop,
-      removeEventListener: _.noop
-    },
-    navigator: {
-      userAgent: 'other'
-    }
-  };
 
   beforeEach(function() {
     // setup http request stub for post to analytics url
@@ -70,7 +46,7 @@ describe('Anatlyics.js', function() {
   });
 
   describe('flushMetrics', function() {
-    beforeEach(function(){
+    beforeEach(function() {
       analytics.setMetricsQueueCapacity(3);
     });
 
@@ -90,34 +66,34 @@ describe('Anatlyics.js', function() {
     });
 
     describe('outgoing requests', function() {
-      var analytics_request;
+      var analyticsRequest;
 
       beforeEach(function() {
         analytics.sendMetric('booyah', 'things', 666);
         analytics.flushMetrics();
-        analytics_request = server.requests[0];
+        analyticsRequest = server.requests[0];
       });
 
       it('sets content type', function() {
-        assert.match(analytics_request.requestHeaders['Content-Type'], /application\/text/);
+        assert.match(analyticsRequest.requestHeaders['Content-Type'], /application\/text/);
       });
 
       it('sets X-Socrata-Auth header', function() {
         assert.equal(
-          analytics_request.requestHeaders['X-Socrata-Auth'],
+          analyticsRequest.requestHeaders['X-Socrata-Auth'],
           'unauthenticated'
         );
       });
 
       it('sends metrics data', function() {
         assert.equal(
-          analytics_request.requestBody,
+          analyticsRequest.requestBody,
           '{"metrics":[{"entity":"booyah","metric":"things","increment":666}]}'
         );
       });
 
       it('sends metrics asynchronously by default', function() {
-        assert.isTrue(analytics_request.async);
+        assert.isTrue(analyticsRequest.async);
       });
     });
   });

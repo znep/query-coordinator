@@ -31,15 +31,16 @@ namespace :manifest do
       puts "Diff Command: `git log --no-color --right-only --cherry-pick --no-merges --reverse #{from_tag}...#{to_tag}`"
       git_log_output = `git log --no-color --right-only --cherry-pick --no-merges --reverse #{from_tag}...#{to_tag}`
 
-      manifest_output << "\n\nCommits with JIRA tickets:\n"
+      manifest_output << "\n\n----Commits with JIRA tickets:----\n"
       manifest_output << get_commits_with_jira(git_log_output).map(&:values).join("\n")
 
       commits_without_jira_tickets = get_commits_without_jira(git_log_output).join("\n")
       if commits_without_jira_tickets.present?
-        manifest_output << "\n\nCommits without JIRA tickets:\n"
+        manifest_output << "\n\n----Commits without JIRA tickets:----\n"
         manifest_output << commits_without_jira_tickets
       end
 
+      manifest_output << "\n\n----Git log:----\n" << git_log_output
       puts manifest_output
       puts
 
@@ -51,8 +52,6 @@ namespace :manifest do
         puts "\nWriting manifest file to... #{File.expand_path(args.output_file)}"
         File.open(args.output_file, 'w') do |f|
           f << manifest_output
-          f << "\n\n"
-          f << git_log_output
         end
       else
         puts manifest_output

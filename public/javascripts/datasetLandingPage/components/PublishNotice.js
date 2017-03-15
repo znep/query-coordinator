@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { handleKeyPress } from '../../common/a11yHelpers';
 import { isUserAdminOrPublisher } from '../../common/user';
 import { publishView, clearViewPublishError } from '../actions/view';
+import { localizeLink } from '../../common/locale';
 
 export class PublishNotice extends Component {
   renderPublishErrorAlert() {
@@ -34,7 +35,7 @@ export class PublishNotice extends Component {
 
   renderPublishAlert() {
     const { view, onClickPublish } = this.props;
-    const message = I18n.publish_notice.format({ url: view.gridUrl });
+    const message = I18n.publish_notice.format({ url: localizeLink(view.gridUrl) });
     let flyout = null;
     let buttonContents = I18n.publish;
     const buttonProps = {

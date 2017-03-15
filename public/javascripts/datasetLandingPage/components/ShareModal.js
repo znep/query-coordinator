@@ -2,6 +2,7 @@ import React, { PropTypes, PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import { isUserAdminOrPublisher } from '../../common/user';
+import { localizeLink } from '../../common/locale';
 
 export class ShareModal extends PureComponent {
   render() {
@@ -10,7 +11,7 @@ export class ShareModal extends PureComponent {
     let privateNotice = null;
     if (view.isPrivate) {
       const manageLink = isUserAdminOrPublisher() ?
-        <a href={`${view.gridUrl}?pane=manage`}>
+        <a href={`${localizeLink(view.gridUrl)}?pane=manage`}>
           {I18n.manage_prompt}
         </a> :
         null;

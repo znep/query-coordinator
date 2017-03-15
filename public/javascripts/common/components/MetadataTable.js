@@ -265,7 +265,10 @@ class MetadataTable extends Component {
     if (view.statsUrl) {
       statsSection = (
         <div className="metadata-row middle">
-          <a className="metadata-detail-group-value" href={view.statsUrl} onClick={onClickStats}>
+          <a
+            className="metadata-detail-group-value"
+            href={localizeLink(view.statsUrl)}
+            onClick={onClickStats}>
             {I18n.common.metadata.view_statistics}
           </a>
         </div>
@@ -275,7 +278,7 @@ class MetadataTable extends Component {
     if (view.editMetadataUrl) {
       editMetadata = (
         <a
-          href={view.editMetadataUrl}
+          href={localizeLink(view.editMetadataUrl)}
           className="btn btn-sm btn-default btn-alternate-2"
           onClick={onClickEditMetadata}>
           {I18n.common.metadata.edit_metadata}

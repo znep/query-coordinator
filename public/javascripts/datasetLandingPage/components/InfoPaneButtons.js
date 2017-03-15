@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { isUserRoled } from '../../common/user';
+import { localizeLink } from '../../common/locale';
 
 export default class InfoPaneButtons extends Component {
   renderViewDataButton() {
@@ -10,7 +11,7 @@ export default class InfoPaneButtons extends Component {
     } else {
       return (
         <a
-          href={view.gridUrl}
+          href={localizeLink(view.gridUrl)}
           className="btn btn-simple btn-sm unstyled-link grid"
           onClick={onClickGrid}>
           {I18n.action_buttons.data}
@@ -26,7 +27,7 @@ export default class InfoPaneButtons extends Component {
     if (view.isBlobby || view.isHref) {
       return (
         <a
-          href={`${view.gridUrl}?pane=manage`}
+          href={`${localizeLink(view.gridUrl)}?pane=manage`}
           className="btn btn-simple btn-sm unstyled-link manage">
           {I18n.manage_dataset}
         </a>
@@ -145,7 +146,7 @@ export default class InfoPaneButtons extends Component {
     if (!isBlobbyOrHref && canCreateVisualizationCanvas) {
       visualizeLink = (
         <li>
-          <a tabIndex="0" role="button" className="option" href={view.bootstrapUrl}>
+          <a tabIndex="0" role="button" className="option" href={localizeLink(view.bootstrapUrl)}>
             {I18n.action_buttons.visualize}
           </a>
         </li>
@@ -162,7 +163,7 @@ export default class InfoPaneButtons extends Component {
 
     const commentLink = view.commentUrl ? (
       <li>
-        <a className="option" href={view.commentUrl}>
+        <a className="option" href={localizeLink(view.commentUrl)}>
           {I18n.action_buttons.comment}
         </a>
       </li>

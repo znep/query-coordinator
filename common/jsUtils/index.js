@@ -4,7 +4,7 @@ var _ = require('lodash');
 var $ = require('jquery');
 
 if (typeof window.Promise !== 'function') {
-//  window.Promise = require('es6-promise-polyfill').Promise;
+  window.Promise = require('es6-promise-polyfill').Promise;
 }
 
 var NUMBER_FORMATTER_MAGNITUDE_SYMBOLS = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];

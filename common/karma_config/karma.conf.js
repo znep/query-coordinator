@@ -10,7 +10,10 @@ var webpackConfig = {
   resolve: {
     modules: [
       // Let tests import modules (i.e, import FeatureFlags from 'common/FeatureFlags')
-      path.resolve('../../')
+      path.resolve('../../'),
+
+      // Allow code under test to require dependencies in karma_config's package.json.
+      '../karma_config/node_modules'
     ],
     alias: {
       'lodash': path.join(__dirname, '.', 'node_modules/lodash/index.js'),

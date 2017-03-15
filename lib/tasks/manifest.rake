@@ -7,11 +7,11 @@ namespace :manifest do
       # Find your tags to compare
       to_tag = ENV['TO_TAG'] || tags[0]
       from_tag = ENV['FROM_TAG'] || tags[1]
-      puts "Default comparison is #{from_tag} .. #{to_tag}"
 
       if args.auto.present? && args.auto == 'true'
-        puts 'Automated comparison requested'
+        puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>EMAIL BEGIN<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n"
       else
+        puts "Default comparison is #{from_tag} .. #{to_tag}"
         puts "Press <Enter> to continue, or 'n' to choose a previous tag"
         answer = STDIN.gets.downcase.chomp
       end
@@ -25,12 +25,14 @@ namespace :manifest do
       end
 
       # Generate the manifest info
-      manifest_output = ("= FRONTEND = (from #{from_tag} to #{to_tag})")
+      manifest_output = ("\n\n= FRONTEND = (from #{from_tag} to #{to_tag})")
       manifest_output << "\n\nGit diff: https://github.com/socrata/frontend/compare/#{from_tag}...#{to_tag}"
 
-      puts "Diff Command: `git log --no-color --right-only --cherry-pick --no-merges --reverse #{from_tag}...#{to_tag}`"
+      manifest_output << "\nDiff Command: `git log --no-color --right-only --cherry-pick --no-merges --reverse #{from_tag}...#{to_tag}`\n"
       git_log_output = `git log --no-color --right-only --cherry-pick --no-merges --reverse #{from_tag}...#{to_tag}`
 
+      manifest_output << "\n\nLink to Jira query for current issues...\n"
+      manifest_output << jira_query(git_log_output)
       manifest_output << "\n\n----Commits with JIRA tickets:----\n"
       manifest_output << get_commits_with_jira(git_log_output).map(&:values).join("\n")
 
@@ -42,12 +44,10 @@ namespace :manifest do
 
       manifest_output << "\n\n----Git log:----\n" << git_log_output
       puts manifest_output
+      puts "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>EMAIL END<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n" if (args.auto.present? && args.auto == 'true')
       puts
 
-      puts 'Link to Jira query for current issues...'
-      Rake::Task['manifest:commits:jira_query'].invoke(git_log_output)
-
-      # Write the manifest to a file
+     # Write the manifest to a file
       if args.output_file.present?
         puts "\nWriting manifest file to... #{File.expand_path(args.output_file)}"
         File.open(args.output_file, 'w') do |f|
@@ -81,15 +81,6 @@ namespace :manifest do
       get_commits_without_jira(args.manifest_file).each(&method(:puts))
       puts
     end
-
-    desc 'Output a link to jira with all the issues in the manifest'
-    task :jira_query, [:git_log_output] do |_, args|
-      commit_list = get_commits_with_jira(args.git_log_output)
-      jira_ticket_numbers = commit_list.map { |commit| commit.keys.first.strip.match(jira_ticket_regex) }.uniq
-      jira_query = "id in (#{jira_ticket_numbers.join(', ')})"
-
-      puts URI("https://socrata.atlassian.net/issues/?jql=#{URI.encode(jira_query)}").to_s
-    end
   end
 
   desc 'Generates useful information for the current release'
@@ -111,6 +102,14 @@ namespace :manifest do
 
     system(copy_cmd)
   end
+end
+
+def jira_query(git_log_output)
+  commit_list = get_commits_with_jira(git_log_output)
+  jira_ticket_numbers = commit_list.map { |commit| commit.keys.first.strip.match(jira_ticket_regex) }.uniq
+  jira_query = "id in (#{jira_ticket_numbers.join(', ')}) "
+
+  URI("https://socrata.atlassian.net/issues/?jql=#{URI.encode(jira_query)}").to_s
 end
 
 def jira_ticket_regex

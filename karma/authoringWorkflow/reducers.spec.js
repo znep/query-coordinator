@@ -203,6 +203,9 @@ describe('AuthoringWorkflow reducer', function() {
       expect(metadata.isLoading).to.equal(false);
       expect(metadata.data).to.equal(null);
       expect(metadata.error).to.equal(null);
+      expect(metadata.isCuratedRegionsLoading).to.equal(false);
+      expect(metadata.hasCuratedRegionsError).to.equal(false);
+      expect(metadata.curatedRegions).to.equal(null);
     });
 
     describe('REQUEST_METADATA', function() {
@@ -228,10 +231,6 @@ describe('AuthoringWorkflow reducer', function() {
         expect(newState.metadata.phidippidesMetadata).to.equal(null);
       });
 
-      it('clears the curatedRegions key', function() {
-        expect(newState.metadata.curatedRegions).to.equal(null);
-      });
-
       it('sets the domain', function() {
         expect(newState.metadata.domain).to.equal(domain);
       });
@@ -253,8 +252,7 @@ describe('AuthoringWorkflow reducer', function() {
 
         action = actions.receiveMetadata([
           { id: 'data-sets', columns: [] },
-          { id: 'phid-miss', columns: {} },
-          { id: 'regi-ons0' }
+          { id: 'phid-miss', columns: {} }
         ]);
 
         newState = reducer(state, action);
@@ -267,7 +265,6 @@ describe('AuthoringWorkflow reducer', function() {
       it('sets the data key', function() {
         expect(newState.metadata.data).to.deep.equal({ id: 'data-sets', columns: [] });
         expect(newState.metadata.phidippidesMetadata).to.deep.equal({ id: 'phid-miss', columns: {} });
-        expect(newState.metadata.curatedRegions).to.deep.equal({ id: 'regi-ons0' });
       });
     });
 
@@ -299,6 +296,85 @@ describe('AuthoringWorkflow reducer', function() {
 
       it('clears datasetUid', function() {
         expect(newState.metadata.datasetUid).to.be.null;
+      });
+    });
+
+    describe('REQUEST_CURATED_REGIONS', function() {
+      var state, action, newState;
+      var domain = 'https://example.com';
+      var datasetUid = 'asdf-qwer';
+
+      beforeEach(function() {
+        state = getDefaultState();
+        action = actions.requestCuratedRegions();
+        newState = reducer(state, action);
+      });
+
+      it('sets isCuratedRegionsLoading to true', function() {
+        expect(newState.metadata.isCuratedRegionsLoading).to.equal(true);
+      });
+
+      it('clears the hasCuratedRegionsError key', function() {
+        expect(newState.metadata.hasCuratedRegionsError).to.equal(false);
+      });
+
+      it('clears the curatedRegions key', function() {
+        expect(newState.metadata.curatedRegions).to.equal(null);
+      });
+    });
+
+    describe('RECEIVE_CURATED_REGIONS', function() {
+      var state, action, newState;
+
+      beforeEach(function() {
+        state = _.merge(getDefaultState(), {
+          metadata: {
+            isCuratedRegionsLoading: true
+          }
+        });
+
+        action = actions.receiveCuratedRegions({ id: 'regi-ons0' });
+
+        newState = reducer(state, action);
+      });
+
+      it('sets isCuratedRegionsLoading to false', function() {
+        expect(newState.metadata.isCuratedRegionsLoading).to.equal(false);
+      });
+
+      it('clears the hasCuratedRegionsError key', function() {
+        expect(newState.metadata.hasCuratedRegionsError).to.equal(false);
+      });
+
+      it('sets the curatedRegions key', function() {
+        expect(newState.metadata.curatedRegions).to.deep.equal({ id: 'regi-ons0' });
+      });
+    });
+
+    describe('HANDLE_CURATED_REGIONS_ERROR', function() {
+      var state, action, newState;
+
+      beforeEach(function() {
+        state = _.merge(getDefaultState(), {
+          metadata: {
+            isCuratedRegionsLoading: true
+          }
+        });
+
+        action = actions.handleCuratedRegionsError();
+        newState = reducer(state, action);
+      });
+
+      it('sets isCuratedRegionsLoading to false', function() {
+        expect(newState.metadata.isCuratedRegionsLoading).to.equal(false);
+      });
+
+      it('sets the hasCuratedRegionsError key', function() {
+        expect(newState.metadata.hasCuratedRegionsError).to.equal(true);
+      });
+
+      it('clears the curatedRegions key', function() {
+        expect(newState.metadata.curatedRegions).to.be.null;
       });
     });
 
@@ -341,4 +417,3 @@ describe('AuthoringWorkflow reducer', function() {
     });
   });
 });
-

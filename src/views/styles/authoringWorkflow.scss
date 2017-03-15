@@ -500,18 +500,18 @@
           background-color: #1da751;
         }
       }
+    }
+    
+    .empty-region-selection-alert {
+      display: flex;
+      margin: 20px;
 
-      .empty-region-selection-alert {
-        display: flex;
-        margin-top: 8px;
+      > div:first-child {
+        margin-right: 8px;
+      }
 
-        > div:first-child {
-          margin-right: 8px;
-        }
-
-        p {
-          margin-bottom: 0;
-        }
+      p {
+        margin-bottom: 0;
       }
     }
   }

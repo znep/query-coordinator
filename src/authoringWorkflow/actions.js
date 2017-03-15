@@ -33,9 +33,8 @@ export function setDataSource(domain, datasetUid) {
 
     return Promise.all([
       datasetMetadataProvider.getDatasetMetadata(),
-      datasetMetadataProvider.getPhidippidesMetadata(),
-      datasetMetadataProvider.getCuratedRegions()
-    ]).then(resolutions => {
+      datasetMetadataProvider.getPhidippidesMetadata()
+    ]).then((resolutions) => {
       const datasetMetadata = resolutions[0];
       soqlDataProvider.getColumnStats(datasetMetadata.columns).then((columnStats) => {
         resolutions[0].columns = _.merge([], columnStats, resolutions[0].columns);
@@ -43,7 +42,7 @@ export function setDataSource(domain, datasetUid) {
       }).catch(() => {
         finishMetadataRequests(resolutions, false);
       });
-    }).catch(error => {
+    }).catch((error) => {
       console.error(error);
       dispatch(handleMetadataError());
     });
@@ -65,7 +64,6 @@ export function receiveMetadata(resolutions, hasColumnStats) {
     type: RECEIVE_METADATA,
     datasetMetadata: resolutions[0],
     phidippidesMetadata: resolutions[1],
-    curatedRegions: resolutions[2],
     hasColumnStats
   };
 }
@@ -75,6 +73,47 @@ export function handleMetadataError(error) {
   return {
     type: HANDLE_METADATA_ERROR,
     error
+  };
+}
+
+export function setCuratedRegions(domain, datasetUid) {
+  return (dispatch) => {
+    if (!/\w{4}\-\w{4}/.test(datasetUid)) {
+      return;
+    }
+
+    const datasetMetadataProvider = new MetadataProvider({ domain, datasetUid });
+
+    dispatch(requestCuratedRegions());
+
+    return datasetMetadataProvider.getCuratedRegions().then((curatedRegions) => {
+      dispatch(receiveCuratedRegions(curatedRegions));
+    }).catch((error) => {
+      console.error(error);
+      dispatch(handleCuratedRegionsError());
+    });
+  };
+}
+
+export const REQUEST_CURATED_REGIONS = 'REQUEST_CURATED_REGIONS';
+export function requestCuratedRegions() {
+  return {
+    type: REQUEST_CURATED_REGIONS
+  };
+}
+
+export const RECEIVE_CURATED_REGIONS = 'RECEIVE_CURATED_REGIONS';
+export function receiveCuratedRegions(curatedRegions) {
+  return {
+    type: RECEIVE_CURATED_REGIONS,
+    curatedRegions
+  };
+}
+
+export const HANDLE_CURATED_REGIONS_ERROR = 'HANDLE_CURATED_REGIONS_ERROR';
+export function handleCuratedRegionsError() {
+  return {
+    type: HANDLE_CURATED_REGIONS_ERROR
   };
 }
 
@@ -144,23 +183,23 @@ export function setVisualizationType(visualizationType) {
 
 export const INITIATE_REGION_CODING = 'INITIATE_REGION_CODING';
 export function initiateRegionCoding(domain, datasetUid, sourceColumn, curatedRegion) {
-  return dispatch => {
+  return (dispatch) => {
     const providerOptions = { domain, datasetUid };
     const datasetMetadataProvider = new MetadataProvider(providerOptions);
     const regionCodingProvider = new RegionCodingProvider(providerOptions);
-    const handleError = error => {
+    const handleError = (error) => {
       dispatch(handleRegionCodingError(error));
     };
     const handleCompletion = () => {
       datasetMetadataProvider.
         getPhidippidesMetadata().
-        then(metadata => {
+        then((metadata) => {
           const columns = _.map(metadata.columns, (column, key) => {
             column.fieldName = key;
             return column;
           });
 
-          const computedColumn = _.find(columns, column => {
+          const computedColumn = _.find(columns, (column) => {
             return _.get(column, 'computationStrategy.parameters.region', '').slice(1) === curatedRegion.uid;
           });
 
@@ -171,7 +210,7 @@ export function initiateRegionCoding(domain, datasetUid, sourceColumn, curatedRe
         catch(handleError);
     };
 
-    const handleInitiation = response => {
+    const handleInitiation = (response) => {
       if (response.success) {
         dispatch(setComputedColumn(null));
         dispatch(setShapefile(curatedRegion.uid, curatedRegion.featurePk, curatedRegion.geometryLabel));
@@ -185,7 +224,7 @@ export function initiateRegionCoding(domain, datasetUid, sourceColumn, curatedRe
       }
     };
 
-    const handleStatus = response => {
+    const handleStatus = (response) => {
       switch (response.status) {
         case 'unknown':
           regionCodingProvider.
@@ -257,7 +296,7 @@ export function setComputedColumn(computedColumn) {
 
 export const REQUEST_SHAPEFILE_METADATA = 'REQUEST_SHAPEFILE_METADATA';
 export function requestShapefileMetadata(domain, shapefileUid) {
-  return dispatch => {
+  return (dispatch) => {
     const shapefileMetadataProvider = new MetadataProvider({domain, datasetUid: shapefileUid});
     const handleShapefileMetadata = ({ featurePk, geometryLabel }) => {
       dispatch(setShapefile(shapefileUid, featurePk, geometryLabel));

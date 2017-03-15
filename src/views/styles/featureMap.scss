@@ -56,10 +56,17 @@
 
 .leaflet-container {
   background-color: #fff !important;
-}
 
-.leaflet-container ~ .feature-map-locate-user-btn {
-  display: block;
+  img {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    box-shadow: none;
+  }
+
+  ~ .feature-map-locate-user-btn {
+    display: block;
+  }
 }
 
 .feature-map-locate-user-btn .feature-map-locate-user-icon,

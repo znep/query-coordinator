@@ -46,7 +46,7 @@ gem 'xray', :require => 'xray/thread_dump_signal_handler'
 gem 'zip'
 gem 'zk', '~> 1.9.2'
 gem 'zookeeper', '~> 1.4.9'
-gem 'zendesk2', '~> 1.8.1'
+gem 'zendesk2', '~> 1.12'
 
 # For Ops rake tasks
 gem 'net-ping'

@@ -62,7 +62,7 @@ GEM
       addressable (~> 2.3)
       httparty (~> 0.13)
     chroma (0.1.0)
-    cistern (2.7.1)
+    cistern (2.7.2)
     clipboard (1.1.1)
     coderay (1.1.1)
     concord (0.1.5)
@@ -95,8 +95,8 @@ GEM
       activesupport (>= 3.0.0)
     faraday (0.9.2)
       multipart-post (>= 1.2, < 3)
-    faraday_middleware (0.10.0)
-      faraday (>= 0.7.4, < 0.10)
+    faraday_middleware (0.11.0.1)
+      faraday (>= 0.7.4, < 1.0)
     ffi (1.9.18)
     formatador (0.2.5)
     get_process_mem (0.2.1)
@@ -372,10 +372,11 @@ GEM
       crack (>= 0.3.2)
       hashdiff
     xray (1.1)
-    zendesk2 (1.8.1)
+    zendesk2 (1.12.0)
       cistern (~> 2.3)
       faraday (~> 0.9)
       faraday_middleware (~> 0.9)
+      json (> 1.7, < 3.0)
       jwt (~> 1.0)
     zip (2.0.2)
     zk (1.9.6)
@@ -454,7 +455,7 @@ DEPENDENCIES
   vcr
   webmock
   xray
-  zendesk2 (~> 1.8.1)
+  zendesk2 (~> 1.12)
   zip
   zk (~> 1.9.2)
   zookeeper (~> 1.4.9)

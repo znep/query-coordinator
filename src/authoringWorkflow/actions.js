@@ -659,3 +659,17 @@ export function resetState() {
     load(dispatch, state.vifAuthoring.vifs.initialVif);
   };
 }
+
+export const SET_USER_ACTIVE = 'SET_USER_ACTIVE';
+export function setUserActive() {
+  return {
+    type: SET_USER_ACTIVE
+  };
+}
+
+export const SET_USER_IDLE = 'SET_USER_IDLE';
+export function setUserIdle() {
+  return {
+    type: SET_USER_IDLE
+  };
+}

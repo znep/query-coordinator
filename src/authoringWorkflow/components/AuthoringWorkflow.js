@@ -22,7 +22,8 @@ import {
   getXAxisScalingMode,
   isTimelineChart,
   isInsertableVisualization,
-  hasMadeChangesToVifs
+  hasMadeChangesToVifs,
+  isUserCurrentlyActive
 } from '../selectors/vifAuthoring';
 
 import CustomizationTabs from './CustomizationTabs';
@@ -193,7 +194,7 @@ export const AuthoringWorkflow = React.createClass({
 
   render() {
     const { metadata, vifAuthoring, backButtonText } = this.props;
-    const isNotInsertable = !isInsertableVisualization(vifAuthoring);
+    const isNotInsertable = !isInsertableVisualization(vifAuthoring) || isUserCurrentlyActive(vifAuthoring);
     const scalingMode = null; // This feature is hidden for now.
     const modalFooterActionsClassNames = classNames({
       'with-back-button': _.isString(backButtonText)

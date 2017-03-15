@@ -12,16 +12,16 @@ An explanation of the version 2 vif format follows.
 {
   configuration: <configuration object (see below)>,
   createdAt: <ISO-8601 timestamp as string>,
-  description: <string> or <null>,
+  description: <string> or <empty string>,
   format: <format object (see below)>,
   series: <series array (see below)>,
-  title: <string> or <null>
+  title: <string> or <empty string>
 }
 ```
 
 The `createdAt` field should be filled out with the datetime of the artifact's creation. If it is already set in a persisted vif, it should not be updated; if changes are made to the vif at runtime it should be considered the creation of a new vif, not the update of an existing one.
 
-If the `description` or `title` properties are strings, they will be rendered automatically by the `SvgVisualization` base class; if they are null they will not be rendered. The `SvgVisualization` base class will furthermore automatically adjust the size of the container provided to the visualization implementation based on the presence or absence of a description or title.
+If the `description` or `title` properties are non-empty strings, they will be rendered automatically by the `SvgVisualization` base class; if they are empty they will not be rendered. The `SvgVisualization` base class will furthermore automatically adjust the size of the container provided to the visualization implementation based on the presence or absence of a description or title.
 
 ### The `configuration` Object
 The configuration object is used as an unstructured key-value store with the exception of the required `axisLabels` field.

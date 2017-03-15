@@ -7,7 +7,7 @@ export default () => ({
     "viewSourceDataLink": true,
     "xAxisScalingMode": "fit"
   },
-  "description": null,
+  "description": '',
   "series": [
     {
       "color": {
@@ -41,5 +41,5 @@ export default () => ({
       }
     }
   ],
-  "title": null
+  "title": ''
 });

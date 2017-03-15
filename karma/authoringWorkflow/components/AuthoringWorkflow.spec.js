@@ -37,6 +37,18 @@ describe('AuthoringWorkflow', function() {
     };
   }
 
+  function makeVisualizationValid(props) {
+    _.set(props.vifAuthoring.vifs.columnChart, 'series[0].dataSource.domain', 'something');
+    _.set(props.vifAuthoring.vifs.columnChart, 'series[0].dataSource.datasetUid', 'something');
+    _.set(props.vifAuthoring.vifs.columnChart, 'series[0].dataSource.dimension.columnName', 'something');
+    _.set(props, 'vifAuthoring.authoring.filters', [{
+      parameters: {
+        columnName: 'test'
+      }
+    }]);
+    return props;
+  }
+
   function emitsEvent(id, eventName) {
     it(`should emit an ${eventName} event`, function() {
       TestUtils.Simulate.change(component.querySelector(id));
@@ -89,6 +101,26 @@ describe('AuthoringWorkflow', function() {
     it('renders a reset button', () => {
       expect(component).to.contain('.authoring-reset-button');
     });
+
+    describe('done button', () => {
+      it('is disabled if a valid visualization is not selected', () => {
+        var component = renderComponent(AuthoringWorkflow, props);
+        expect(component.querySelector('button.done')).to.have.attribute('disabled');
+      });
+
+      it('is not disabled if a valid visualization is selected', () => {
+        var validVifProps = makeVisualizationValid(props);
+        var component = renderComponent(AuthoringWorkflow, validVifProps);
+        expect(component.querySelector('button.done')).to.not.have.attribute('disabled');
+      });
+
+      it('is disabled if a valid visualization is selected but a user is interacting with a debounced component', () => {
+        var validVifProps = makeVisualizationValid(props);
+        validVifProps.vifAuthoring.authoring.userCurrentlyActive = true;
+        var component = renderComponent(AuthoringWorkflow, validVifProps);
+        expect(component.querySelector('button.done')).to.have.attribute('disabled');
+      });
+    });
   });
 
   describe('events', function() {
@@ -100,25 +132,16 @@ describe('AuthoringWorkflow', function() {
     });
 
     it('calls the onComplete callback when the done button is clicked', function() {
-      // Make a valid visualization
-      _.set(props.vifAuthoring.vifs.columnChart, 'series[0].dataSource.domain', 'something');
-      _.set(props.vifAuthoring.vifs.columnChart, 'series[0].dataSource.datasetUid', 'something');
-      _.set(props.vifAuthoring.vifs.columnChart, 'series[0].dataSource.dimension.columnName', 'something');
-      _.set(props, 'vifAuthoring.authoring.filters', [{
-        parameters: {
-          columnName: 'test'
-        }
-      }]);
+      var validVifProps = makeVisualizationValid(props);
+      var component = renderComponent(AuthoringWorkflow, validVifProps);
 
-      var component = renderComponent(AuthoringWorkflow, props);
-
-      sinon.assert.notCalled(props.onComplete);
+      sinon.assert.notCalled(validVifProps.onComplete);
       TestUtils.Simulate.click(component.querySelector('button.done'));
 
-      sinon.assert.calledOnce(props.onComplete);
-      sinon.assert.calledWithExactly(props.onComplete, {
-        vif: props.vif,
-        filters: props.vifAuthoring.authoring.filters
+      sinon.assert.calledOnce(validVifProps.onComplete);
+      sinon.assert.calledWithExactly(validVifProps.onComplete, {
+        vif: validVifProps.vif,
+        filters: validVifProps.vifAuthoring.authoring.filters
       });
     });
 

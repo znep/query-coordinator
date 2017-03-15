@@ -10,6 +10,7 @@ export const getFilters = state => _.get(state, 'filters', []);
 
 export const getSelectedVisualizationType = state => _.get(state, 'authoring.selectedVisualizationType', null)
 export const getShowCenteringAndZoomingSaveMessage = state => _.get(state, 'authoring.showCenteringAndZoomingSaveMessage', null);
+export const isUserCurrentlyActive = state => _.get(state, 'authoring.userCurrentlyActive', false);
 
 export const getCurrentVif = createSelector(
   getVifs,

@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import Styleguide from 'socrata-components';
 
 import { translate } from '../../../I18n';
-import { onDebouncedEvent } from '../../helpers';
 import { COLUMN_TYPES } from '../../constants';
 import { getDisplayableColumns, hasData } from '../../selectors/metadata';
 import {
@@ -30,6 +29,7 @@ import CustomizationTabPane from '../CustomizationTabPane';
 import EmptyPane from './EmptyPane';
 import Accordion from '../shared/Accordion';
 import AccordionPane from '../shared/AccordionPane';
+import DebouncedInput from '../shared/DebouncedInput';
 
 export const LegendsAndFlyoutsPane = React.createClass({
   propTypes: {
@@ -45,9 +45,9 @@ export const LegendsAndFlyoutsPane = React.createClass({
       id: 'units-one',
       className: 'text-input',
       type: 'text',
-      onChange: onDebouncedEvent(this, onChangeUnitOne),
+      onChange: onChangeUnitOne,
       placeholder: translate('panes.legends_and_flyouts.fields.units_one.placeholder'),
-      defaultValue: unitOne
+      value: unitOne
     };
 
     const unitOther = getUnitOther(vifAuthoring);
@@ -55,9 +55,9 @@ export const LegendsAndFlyoutsPane = React.createClass({
       id: 'units-other',
       className: 'text-input',
       type: 'text',
-      onChange: onDebouncedEvent(this, onChangeUnitOther),
+      onChange: onChangeUnitOther,
       placeholder: translate('panes.legends_and_flyouts.fields.units_other.placeholder'),
-      defaultValue: unitOther
+      value: unitOther
     };
 
     return (
@@ -68,12 +68,12 @@ export const LegendsAndFlyoutsPane = React.createClass({
         <div className="authoring-field">
           <label className="block-label"
                  htmlFor="units-one">{translate('panes.legends_and_flyouts.fields.units_one.title')}</label>
-          <input {...unitOneAttributes} />
+          <DebouncedInput {...unitOneAttributes} />
         </div>
         <div className="authoring-field">
           <label className="block-label"
                  htmlFor="units-other">{translate('panes.legends_and_flyouts.fields.units_other.title')}</label>
-          <input {...unitOtherAttributes} />
+          <DebouncedInput {...unitOtherAttributes} />
         </div>
       </AccordionPane>
     );
@@ -193,12 +193,12 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onChangeUnitOne: (one) => {
-      dispatch(setUnitsOne(one));
+    onChangeUnitOne: (event) => {
+      dispatch(setUnitsOne(event.target.value));
     },
 
-    onChangeUnitOther: (other) => {
-      dispatch(setUnitsOther(other));
+    onChangeUnitOther: (event) => {
+      dispatch(setUnitsOther(event.target.value));
     },
 
     onSelectRowInspectorTitle: flyoutTitle => {

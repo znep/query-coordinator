@@ -58,11 +58,11 @@ export default function(state, action) {
       break;
 
     case actions.SET_TITLE:
-      setStringValueOrDefaultValue(state, 'title', action.title, null);
+      setStringValueOrDefaultValue(state, 'title', action.title, '');
       break;
 
     case actions.SET_DESCRIPTION:
-      setStringValueOrDefaultValue(state, 'description', action.description, null);
+      setStringValueOrDefaultValue(state, 'description', action.description, '');
       break;
 
     case actions.SET_VIEW_SOURCE_DATA_LINK:

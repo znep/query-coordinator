@@ -446,12 +446,12 @@
 
 /* Visualization chooser */
 .asset-selector-full-width-iframe,
-#asset-selector-container .component-socrata-visualization-classic {
+#asset-selector-container .asset-selector-component-container {
   width: 100%;
   height: 560px;
 }
 
-#asset-selector-container .component-socrata-visualization-classic {
+#asset-selector-container .asset-selector-component-container {
   border: dashed 1px #aaa;
 }
 

@@ -2176,7 +2176,7 @@ export default function AssetSelectorRenderer(options) {
               // Here we show it as plain text.
               textareaElement.val(htmlFragment);
             }
-          }, exceptionNotifier.error);
+          }, exceptionNotifier.notify);
         }
       }
 
@@ -2462,10 +2462,24 @@ export default function AssetSelectorRenderer(options) {
       componentProperties.visualization.id === assetSelectorStoreDataset.id
     );
     const isEditingWithoutSavedDataset = !assetSelectorStoreDataset && assetSelectorStore.isEditingExisting();
-    let dataset;
 
-    if (componentProperties.dataset && _container.find('.component-socrata-visualization-classic').length === 0) {
+    if (componentType === 'socrata.visualization.classic') {
+      // Legacy assets
 
+      if (!componentProperties.dataset) {
+        return exceptionNotifier.notify(
+          'componentProperties.dataset was unexpectedly null'
+        );
+      }
+
+      if (_container.find('.component-socrata-visualization-classic').length > 0) {
+        // Without this clause, the visualization will be inserted into the modal
+        // an infinite number of times. If you are reading this and know why such
+        // behavior occurs, please change this sentence.
+        return;
+      }
+
+      let dataset;
       if (savedDatasetMatchesSelectedDataset || isEditingWithoutSavedDataset) {
         dataset = componentProperties.visualization;
         if (dataset === null) {
@@ -2516,7 +2530,7 @@ export default function AssetSelectorRenderer(options) {
         blockId: assetSelectorStore.getBlockId(),
         componentIndex: assetSelectorStore.getComponentIndex(),
         componentData: {
-          type: 'socrata.visualization.classic',
+          type: componentType,
           value: {
             visualization: dataset
           }
@@ -2526,6 +2540,69 @@ export default function AssetSelectorRenderer(options) {
       });
 
       insertButton.prop('disabled', true);
+    } else if (/^socrata\.visualization\./.test(componentType)) {
+      // Viz library assets
+
+      if (!componentProperties.vif) {
+        exceptionNotifier.notify(
+          'componentProperties.vif was unexpectedly null'
+        );
+      }
+
+      const componentContainer = $(
+        '<div>',
+        {
+          'class': 'asset-selector-component-container'
+        }
+      );
+
+      _container.
+        find('.modal-content').
+        prepend(componentContainer);
+
+      // HACK: Backfill things that frontend-viz expects to exist but which Core
+      // infuriatingly omits from the API response.
+      //
+      // See EN-14621 for details on how we can get out of this hack.
+
+      const vif = componentProperties.vif;
+      _.each(vif.series, (series) => {
+        // when a VIF has no filters at all, Core drops the empty array
+        _.defaultsDeep(series, {
+          dataSource: {
+            filters: []
+          }
+        });
+
+        // when a VIF has no-op filters, Core drops the null argument
+        _.each(series.dataSource.filters, (filter) => {
+          if (filter.function === 'noop') {
+            filter.argument = null;
+          }
+        });
+      });
+
+      const componentRendererName = StorytellerUtils.typeToComponentRendererName(componentType);
+      componentContainer[componentRendererName]({
+        blockId: assetSelectorStore.getBlockId(),
+        componentIndex: assetSelectorStore.getComponentIndex(),
+        componentData: {
+          type: componentType,
+          value: {
+            vif: vif
+          }
+        },
+        theme: null,
+        resizeSupported: false
+      });
+
+      mapChartIframe.hide();
+      $('.btn-busy').addClass('hidden');
+      insertButton.prop('disabled', false);
+    } else {
+      exceptionNotifier.notify(
+        `Unexpected component type ${componentType} encountered in _renderConfigureMapOrChartData`
+      );
     }
   }
 
@@ -2534,26 +2611,22 @@ export default function AssetSelectorRenderer(options) {
    */
 
   function _viewChooserUrl(paramString) {
-    return encodeURI(
-      StorytellerUtils.format(
-        '{0}/browse/select_dataset?{1}',
-        window.location.protocol + '//' + window.location.hostname,
-        paramString
-      )
-    );
+    return encodeURI(`https://${window.location.hostname}/browse/select_dataset?${paramString}`);
   }
 
   function _mapOrChartChooserUrl() {
-    // remove suppressed_facets param upon frontend release to show 'view types' menu
-    //
-    // cetera_search must be set to false until multiple limitTo parameters are enabled for cetera
-    // limitTo array parameter currently only works with clytemnestra
-    return encodeURI(
-      StorytellerUtils.format(
-        '{0}/browse/select_dataset?filtered_types[]=maps&filtered_types[]=charts&limitTo[]=charts&limitTo[]=maps&limitTo[]=blob&cetera_search=false',
-        window.location.protocol + '//' + window.location.hostname
-      )
-    );
+    return _viewChooserUrl([
+      'filtered_types[]=maps',
+      'filtered_types[]=charts',
+      'filtered_types[]=visualization',
+      'limitTo[]=charts',
+      'limitTo[]=maps',
+      'limitTo[]=blob',
+      'limitTo[]=visualization',
+      // limitTo array parameter currently only works with clytemnestra, so
+      // cetera_search must be set to false until cetera catches up
+      'cetera_search=false'
+    ].join('&'));
   }
 
   function _renderChooseEmbedCodeTemplate() {

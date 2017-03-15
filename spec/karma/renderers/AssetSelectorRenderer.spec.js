@@ -628,6 +628,7 @@ describe('AssetSelectorRenderer', function() {
       it('renders visualization options', function() {
         assert.lengthOf(container.find('.visualization-options'), 1);
         assert.lengthOf(container.find('[data-visualization-option="INSERT_VISUALIZATION"]'), 1);
+        assert.lengthOf(container.find('[data-visualization-option="INSERT_TABLE"]'), 1);
         assert.lengthOf(container.find('[data-visualization-option="AUTHOR_VISUALIZATION"]'), 1);
       });
 
@@ -661,8 +662,8 @@ describe('AssetSelectorRenderer', function() {
         it('has the correct source', function() {
           var iframeSrc = decodeURI(container.find('iframe').attr('src'));
           assert.include(iframeSrc, 'browse/select_dataset');
-          assert.include(iframeSrc, 'filtered_types[]=maps&filtered_types[]=charts');
-          assert.include(iframeSrc, 'limitTo[]=charts&limitTo[]=maps&limitTo[]=blob');
+          assert.include(iframeSrc, 'filtered_types[]=maps&filtered_types[]=charts&filtered_types[]=visualization');
+          assert.include(iframeSrc, 'limitTo[]=charts&limitTo[]=maps&limitTo[]=blob&limitTo[]=visualization');
         });
       });
 
@@ -684,6 +685,107 @@ describe('AssetSelectorRenderer', function() {
             container.find('[data-resume-from-step="SELECT_VISUALIZATION_OPTION"]'),
             1
           );
+        });
+      });
+
+      describe('an `ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART` action is fired', function() {
+        xdescribe('and a classic chart or map has been selected', function() {
+          // TODO
+        });
+
+        describe('and an empty visualization canvas has been selected', function() {
+          var alertStub;
+          beforeEach(function(done) {
+            alertStub = sinon.stub(window, 'alert', _.noop);
+            dispatcher.dispatch({
+              action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART,
+              mapOrChartUid: 'fooo-baar',
+              domain: 'example.com'
+            });
+
+            server.respond([
+              200,
+              { 'Content-Type': 'application/json' },
+              JSON.stringify({
+                id: 'fooo-baar',
+                displayType: 'visualization',
+                displayFormat: {
+                  visualizationCanvasMetadata: {
+                    vifs: []
+                  }
+                }
+              })
+            ]);
+
+            setTimeout(function() {
+              done();
+            });
+          });
+
+          it('should alert and not proceed', function() {
+            sinon.assert.called(alertStub);
+            assert.isAbove($('.asset-selector-mapOrChart-chooser-iframe').length, 0);
+          });
+        });
+
+        describe('and a non-empty visualization canvas has been selected', function() {
+          var vizStub;
+          beforeEach(function(done) {
+            vizStub = sinon.stub($.fn, 'componentSocrataVisualizationColumnChart', _.noop);
+            dispatcher.dispatch({
+              action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART,
+              mapOrChartUid: 'fooo-baar',
+              domain: 'example.com'
+            });
+
+            server.respond([
+              200,
+              { 'Content-Type': 'application/json' },
+              JSON.stringify({
+                id: 'fooo-baar',
+                displayType: 'visualization',
+                displayFormat: {
+                  visualizationCanvasMetadata: {
+                    vifs: [{
+                      series: [{
+                        type: 'columnChart'
+                      }]
+                    }]
+                  }
+                }
+              })
+            ]);
+
+            setTimeout(function() {
+              done();
+            });
+          });
+
+          afterEach(function() {
+            vizStub.restore();
+          });
+
+          it('should render the first visualization from the canvas', function() {
+            sinon.assert.called(vizStub);
+            var componentData = _.get(vizStub, 'args[0][0].componentData', {});
+            assert.propertyVal(componentData, 'type', 'socrata.visualization.columnChart');
+          });
+
+          it('has an enabled insert button', function() {
+            assert.isFalse(
+              container.find('.btn-apply').prop('disabled')
+            );
+          });
+
+          describe('when jumping back a step', function() {
+            it('should render dataset selection', function(done) {
+              $('.back-btn').click();
+              setTimeout(function() {
+                assert.isAbove($('.asset-selector-mapOrChart-chooser-iframe').length, 0);
+                done();
+              }, 1);
+            });
+          });
         });
       });
     });

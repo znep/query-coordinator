@@ -829,7 +829,7 @@ export default function StoryRenderer(options) {
 
     components.forEach(function(componentData, componentIndex) {
       try {
-        var componentRenderer = _findAppropriateComponentRenderer(componentData);
+        var componentRenderer = StorytellerUtils.typeToComponentRendererName(componentData.type);
         var $componentContainer = _getComponentContainer(blockId, componentIndex);
 
         _runComponentRenderer(componentRenderer, $componentContainer, componentData, theme, blockId, componentIndex);
@@ -867,67 +867,5 @@ export default function StoryRenderer(options) {
     $blockElement.css('transform', translation);
 
     return $blockElement.outerHeight(true);
-  }
-
-  // Component renderers are implemented as jQuery plugins.
-  // This function maps component data (type, value) to
-  // a jQuery plugin name ('storytellerComponentText').
-  function _findAppropriateComponentRenderer(componentData) {
-    StorytellerUtils.assertHasProperties(componentData, 'type');
-
-    switch (componentData.type) {
-      case 'html':
-        return 'componentHTML';
-      case 'spacer':
-        return 'componentSpacer';
-      case 'horizontalRule':
-        return 'componentHorizontalRule';
-      case 'assetSelector':
-        return 'componentAssetSelector';
-      case 'author':
-        return 'componentAuthor';
-      case 'image':
-        return 'componentImage';
-      case 'hero':
-        return 'componentHero';
-      case 'story.tile':
-      case 'story.widget':
-        return 'componentStoryTile';
-      case 'goal.tile':
-        return 'componentGoalTile';
-      case 'goal.embed':
-        return 'componentGoalEmbed';
-      case 'youtube.video':
-        return 'componentYoutubeVideo';
-      case 'socrata.visualization.classic':
-        return 'componentSocrataVisualizationClassic';
-      case 'socrata.visualization.regionMap':
-        return 'componentSocrataVisualizationRegionMap';
-      case 'socrata.visualization.choroplethMap': // legacy
-        return 'componentSocrataVisualizationRegionMap';
-      case 'socrata.visualization.columnChart':
-        return 'componentSocrataVisualizationColumnChart';
-      case 'socrata.visualization.barChart':
-        return 'componentSocrataVisualizationBarChart';
-      case 'socrata.visualization.pieChart':
-        return 'componentSocrataVisualizationPieChart';
-      case 'socrata.visualization.timelineChart':
-        return 'componentSocrataVisualizationTimelineChart';
-      case 'socrata.visualization.histogram':
-        return 'componentSocrataVisualizationHistogram';
-      case 'socrata.visualization.table':
-        return 'componentSocrataVisualizationTable';
-      case 'socrata.visualization.featureMap':
-        return 'componentSocrataVisualizationFeatureMap';
-      case 'embeddedHtml':
-        return 'componentEmbeddedHtml';
-      default:
-        throw new Error(
-          StorytellerUtils.format(
-            'No component renderer found for component: {0}',
-            JSON.stringify(componentData)
-          )
-        );
-    }
   }
 }

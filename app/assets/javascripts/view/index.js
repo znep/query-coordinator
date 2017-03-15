@@ -23,37 +23,55 @@ import PresentationMode from './PresentationMode';
 
 import { windowSizeBreakpointStore } from '../editor/stores/WindowSizeBreakpointStore';
 
-$(document).on('ready', function() {
+const renderersRequiringJS = [
+  'hero',
+  'story.tile',
+  'story.widget',
+  'goal.embed',
+  'goal.tile',
+  'socrata.visualization.classic',
+  'socrata.visualization.regionMap',
+  'socrata.visualization.choroplethMap' ,
+  'socrata.visualization.barChart',
+  'socrata.visualization.columnChart',
+  'socrata.visualization.pieChart',
+  'socrata.visualization.histogram',
+  'socrata.visualization.table',
+  'socrata.visualization.featureMap',
+  'socrata.visualization.timelineChart'
+];
 
-  var analytics = new StorytellerUtils.Analytics();
+$(document).on('ready', () => {
+
+  const analytics = new StorytellerUtils.Analytics();
   (new PresentationMode());
 
   SocrataVisualizations.views.RowInspector.setup();
 
-  windowSizeBreakpointStore.addChangeListener(_applyWindowSizeClass);
+  windowSizeBreakpointStore.addChangeListener(applyWindowSizeClass);
 
-  var $window = $(window);
+  const $window = $(window);
 
-  var $userStoryContainer = $('.user-story-container');
-  var $userStory = $('.user-story');
-  var $adminHeader = $('#site-chrome-admin-header');
-  var $header = $('#site-chrome-header');
-  var $footer = $('#site-chrome-footer');
+  const $userStoryContainer = $('.user-story-container');
+  const $userStory = $('.user-story');
+  const $adminHeader = $('#site-chrome-admin-header');
+  const $header = $('#site-chrome-header');
+  const $footer = $('#site-chrome-footer');
 
-  function _applyWindowSizeClass() {
-    var windowSizeClass = windowSizeBreakpointStore.getWindowSizeClass();
-    var unusedWindowSizeClasses = windowSizeBreakpointStore.getUnusedWindowSizeClasses();
+  function applyWindowSizeClass() {
+    const windowSizeClass = windowSizeBreakpointStore.getWindowSizeClass();
+    const unusedWindowSizeClasses = windowSizeBreakpointStore.getUnusedWindowSizeClasses().join(' ');
 
     $userStoryContainer.
-      removeClass(unusedWindowSizeClasses.join(' ')).
+      removeClass(unusedWindowSizeClasses).
       addClass(windowSizeClass);
 
     $userStory.
-      removeClass(unusedWindowSizeClasses.join(' ')).
+      removeClass(unusedWindowSizeClasses).
       addClass(windowSizeClass);
   }
 
-  function _moveFooterToBottomOfWindowOrContent() {
+  function moveFooterToBottomOfWindowOrContent() {
     const viewportHeight = $window.height();
     const headerHeight = $header.outerHeight();
     const adminHeaderHeight = $adminHeader.outerHeight() || 0;
@@ -68,92 +86,35 @@ $(document).on('ready', function() {
   }
 
   // Init visualizations
-  $('[data-component-data]').each(function(index, element) {
-    let componentData;
-    let props;
+  $('[data-component-data]').each((index, element) => {
     const $element = $(element);
     const serializedComponentData = element.getAttribute('data-component-data');
 
-    if (serializedComponentData !== null) {
-      componentData = JSON.parse(serializedComponentData);
-      props = {
-        componentData,
-        blockId: null,
-        componentIndex: null,
-        theme: null
-      };
+    if (serializedComponentData === null) {
+      return;
+    }
 
-      switch (componentData.type) {
+    const componentData = JSON.parse(serializedComponentData);
+    const props = {
+      componentData,
+      blockId: null,
+      componentIndex: null,
+      theme: null
+    };
 
-        case 'hero':
-          $element.componentHero(props);
-          break;
-
-        case 'story.tile':
-        case 'story.widget':
-          $element.componentStoryTile(props);
-          break;
-
-        case 'goal.embed':
-          $element.componentGoalEmbed(props);
-          break;
-
-        case 'goal.tile':
-          $element.componentGoalTile(props);
-          break;
-
-        case 'socrata.visualization.classic':
-          $element.componentSocrataVisualizationClassic(props);
-          break;
-
-        case 'socrata.visualization.regionMap':
-          $element.componentSocrataVisualizationRegionMap(props);
-          break;
-
-        case 'socrata.visualization.choroplethMap': // legacy
-          $element.componentSocrataVisualizationRegionMap(props);
-          break;
-
-        case 'socrata.visualization.barChart':
-          $element.componentSocrataVisualizationBarChart(props);
-          break;
-
-        case 'socrata.visualization.columnChart':
-          $element.componentSocrataVisualizationColumnChart(props);
-          break;
-
-        case 'socrata.visualization.pieChart':
-          $element.componentSocrataVisualizationPieChart(props);
-          break;
-
-        case 'socrata.visualization.histogram':
-          $element.componentSocrataVisualizationHistogram(props);
-          break;
-
-        case 'socrata.visualization.table':
-          $element.componentSocrataVisualizationTable(props);
-          break;
-
-        case 'socrata.visualization.featureMap':
-          $element.componentSocrataVisualizationFeatureMap(props);
-          break;
-
-        case 'socrata.visualization.timelineChart':
-          $element.componentSocrataVisualizationTimelineChart(props);
-          break;
-
-        default:
-          $element.componentBase(props);
-          break;
-      }
+    if (renderersRequiringJS.includes(componentData.type)) {
+      const componentRendererName = StorytellerUtils.typeToComponentRendererName(componentData.type);
+      $element[componentRendererName](props);
+    } else {
+      $element.componentBase(props);
     }
   });
 
   // Init window size
-  _applyWindowSizeClass();
+  applyWindowSizeClass();
 
-  _moveFooterToBottomOfWindowOrContent();
-  $window.on('resize', _moveFooterToBottomOfWindowOrContent);
+  moveFooterToBottomOfWindowOrContent();
+  $window.on('resize', moveFooterToBottomOfWindowOrContent);
 
   if (Environment.IS_STORY_PUBLISHED && !Environment.IS_GOAL) {
     analytics.sendMetric('domain', 'js-page-view', 1);

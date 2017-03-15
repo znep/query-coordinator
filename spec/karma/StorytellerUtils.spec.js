@@ -3,10 +3,10 @@ import $ from 'jquery';
 import { $transient } from './TransientElement';
 import StorytellerUtils from '../../app/assets/javascripts/StorytellerUtils';
 
-describe('StorytellerUtils', function() {
-  describe('.inspectNode()', function() {
+describe('StorytellerUtils', () => {
+  describe('.inspectNode()', () => {
 
-    it('should return expected values', function() {
+    it('should return expected values', () => {
       function test(expected, element) {
         assert.equal(expected, StorytellerUtils.inspectNode(element));
       }
@@ -25,15 +25,15 @@ describe('StorytellerUtils', function() {
     });
   });
 
-  describe('.typeToClassNameForComponentType()', function() {
+  describe('.typeToClassNameForComponentType()', () => {
 
-    it('should throw when provided a value that is not a string', function() {
-      assert.throws(function() {
+    it('should throw when provided a value that is not a string', () => {
+      assert.throws(() => {
         StorytellerUtils.typeToClassNameForComponentType({});
       });
     });
 
-    it('should return a "component-", hyphenated word string when provided a valid string', function() {
+    it('should return a "component-", hyphenated word string when provided a valid string', () => {
       assert.equal(
         StorytellerUtils.typeToClassNameForComponentType('helloWorld'),
         'component-hello-world'
@@ -41,52 +41,88 @@ describe('StorytellerUtils', function() {
     });
   });
 
-  describe('queryParameterMatches', function() {
+  describe('.typeToComponentRendererName', () => {
+    it('should throw when provided a value that is not a string', () => {
+      assert.throws(() => {
+        StorytellerUtils.typeToComponentRendererName({});
+      });
+    });
+
+    it('should return a camel-cased string starting with "component"', () => {
+      assert.equal(
+        StorytellerUtils.typeToComponentRendererName('socrata.visualization.columnChart'),
+        'componentSocrataVisualizationColumnChart'
+      );
+    });
+
+    it('should provide a tweaked result for "html"', () => {
+      assert.equal(
+        StorytellerUtils.typeToComponentRendererName('html'),
+        'componentHTML'
+      );
+    });
+
+    it('should provide a tweaked result for "socrata.visualization.choroplethMap"', () => {
+      assert.equal(
+        StorytellerUtils.typeToComponentRendererName('socrata.visualization.choroplethMap'),
+        'componentSocrataVisualizationRegionMap'
+      );
+    });
+
+    it('should provide a tweaked result for "story.widget"', () => {
+      assert.equal(
+        StorytellerUtils.typeToComponentRendererName('story.widget'),
+        'componentStoryTile'
+      );
+    });
+  });
+
+  describe('queryParameterMatches', () => {
     const paramName = 'bob';
 
     let originalQueryParameters;
-    before(function() {
+    before(() => {
       originalQueryParameters = StorytellerUtils.queryParameters;
       StorytellerUtils.queryParameters = _.constant([[paramName, 'false']]);
     });
-    after(function() {
+    after(() => {
       StorytellerUtils.queryParameters = originalQueryParameters;
     });
 
     function expectTrue(conditionDescription, key, value) {
-      it('should return true', function() {
+      it('should return true', () => {
         assert.isTrue(StorytellerUtils.queryParameterMatches(key, value));
       });
     }
 
     function expectFalse(conditionDescription, key, value) {
-      it('should return false', function() {
+      it('should return false', () => {
         assert.isFalse(StorytellerUtils.queryParameterMatches(key, value));
       });
     }
 
-    describe('given a parameter value to match', function() {
+    describe('given a parameter value to match', () => {
       expectTrue('when a matching key/value pair exists', 'bob', false);
       expectFalse('when a matching value does not exist', 'bob', true);
       expectFalse('when a matching key does not exist', 'frank', false);
     });
 
-    describe('without a parameter value to match', function() {
+    describe('without a parameter value to match', () => {
       expectTrue('when a matching key exists', 'bob');
       expectFalse('when a matching key does not exist', 'frank');
     });
   });
 
-  describe('event binding functions', function() {
+  describe('event binding functions', () => {
     var spy;
-    beforeEach(function() {
+    beforeEach(() => {
       spy = sinon.spy();
       $transient.append('<input class="child-1">');
       $transient.append('<input class="child-2">');
     });
 
-    describe('bindEvents', function() {
-      it('should bind a handler for a non-delegated event', function() {
+    describe('bindEvents', () => {
+      it('should bind a handler for a non-delegated event', () => {
         var events = {
           'custom-event': [
             [spy]
@@ -99,7 +135,7 @@ describe('StorytellerUtils', function() {
         sinon.assert.calledOnce(spy);
       });
 
-      it('should bind a handler for a delegated event', function() {
+      it('should bind a handler for a delegated event', () => {
         var events = {
           'custom-event': [
             ['.child-1', spy]
@@ -112,7 +148,7 @@ describe('StorytellerUtils', function() {
         sinon.assert.calledOnce(spy);
       });
 
-      it('should bind multiple handlers for multiple events', function() {
+      it('should bind multiple handlers for multiple events', () => {
         var events = {
           'custom-event': [
             ['.child-1', spy],
@@ -132,8 +168,8 @@ describe('StorytellerUtils', function() {
       });
     });
 
-    describe('unbindEvents', function() {
-      beforeEach(function() {
+    describe('unbindEvents', () => {
+      beforeEach(() => {
         var events = {
           'custom-event': [
             ['.child-1', spy],
@@ -147,7 +183,7 @@ describe('StorytellerUtils', function() {
         StorytellerUtils.bindEvents($transient, events);
       });
 
-      it('should unbind a handler for a non-delegated event', function() {
+      it('should unbind a handler for a non-delegated event', () => {
         var events = {
           'other-custom-event': [
             [spy]
@@ -160,7 +196,7 @@ describe('StorytellerUtils', function() {
         sinon.assert.notCalled(spy);
       });
 
-      it('should unbind a handler for a delegated event', function() {
+      it('should unbind a handler for a delegated event', () => {
         var events = {
           'custom-event': [
             ['.child-1', spy]
@@ -178,7 +214,7 @@ describe('StorytellerUtils', function() {
         sinon.assert.calledOnce(spy);
       });
 
-      it('should unbind multiple handlers for multiple events', function() {
+      it('should unbind multiple handlers for multiple events', () => {
         var events = {
           'custom-event': [
             ['.child-1', spy],
@@ -199,7 +235,7 @@ describe('StorytellerUtils', function() {
     });
   });
 
-  describe('DOM traversal functions', function() {
+  describe('DOM traversal functions', () => {
 
     var validElement;
     var validChild1;
@@ -208,7 +244,7 @@ describe('StorytellerUtils', function() {
     var validChild4;
     var validChild5;
 
-    beforeEach(function() {
+    beforeEach(() => {
 
       validElement = document.createDocumentFragment();
       validChild1 = document.createElement('div');
@@ -224,11 +260,11 @@ describe('StorytellerUtils', function() {
       validElement.appendChild(validChild1);
     });
 
-    describe('mapDOMFragmentDescending()', function() {
+    describe('mapDOMFragmentDescending()', () => {
 
-      var validApplyFn = function(el) { return el; };
-      var validShouldTerminateFn = function() { return false; };
-      var convertNonDivsToDivs = function(el) {
+      var validApplyFn = (el) => { return el; };
+      var validShouldTerminateFn = () => { return false; };
+      var convertNonDivsToDivs = (el) => {
         if (el.nodeName.toLowerCase() === 'div') {
           return el;
         } else if (el.nodeType === 1) {
@@ -239,11 +275,11 @@ describe('StorytellerUtils', function() {
         }
       };
 
-      describe('when called with an initial element that is not a DOM node', function() {
+      describe('when called with an initial element that is not a DOM node', () => {
 
-        it('throws an error', function() {
+        it('throws an error', () => {
 
-          assert.throw(function() {
+          assert.throw(() => {
             StorytellerUtils.mapDOMFragmentDescending(
               null,
               validApplyFn,
@@ -253,11 +289,11 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when called with an applyFn that is not a function', function() {
+      describe('when called with an applyFn that is not a function', () => {
 
-        it('throws an error', function() {
+        it('throws an error', () => {
 
-          assert.throw(function() {
+          assert.throw(() => {
             StorytellerUtils.mapDOMFragmentDescending(
               validElement,
               null,
@@ -267,11 +303,11 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when called with a shouldTerminateFn that is not a function', function() {
+      describe('when called with a shouldTerminateFn that is not a function', () => {
 
-        it('throws an error', function() {
+        it('throws an error', () => {
 
-          assert.throw(function() {
+          assert.throw(() => {
             StorytellerUtils.mapDOMFragmentDescending(
               validElement,
               validApplyFn,
@@ -281,9 +317,9 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when called with a pass-through applyFn', function() {
+      describe('when called with a pass-through applyFn', () => {
 
-        it('should not change the fragment', function() {
+        it('should not change the fragment', () => {
 
           var newFragment = StorytellerUtils.mapDOMFragmentDescending(
             validElement,
@@ -295,9 +331,9 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when called with a applyFn that changes non-div elements to divs', function() {
+      describe('when called with a applyFn that changes non-div elements to divs', () => {
 
-        it('should convert non-div elements to div elements', function() {
+        it('should convert non-div elements to div elements', () => {
 
           var newFragment = StorytellerUtils.mapDOMFragmentDescending(
             validElement,
@@ -313,27 +349,27 @@ describe('StorytellerUtils', function() {
       });
     });
 
-    describe('reduceDOMFragmentAscending()', function() {
+    describe('reduceDOMFragmentAscending()', () => {
 
-      var validApplyFn = function(el, acc) { acc.push(el.nodeName.toLowerCase()); };
-      var validShouldTerminateFn = function() { return false; };
+      var validApplyFn = (el, acc) => { acc.push(el.nodeName.toLowerCase()); };
+      var validShouldTerminateFn = () => { return false; };
       var validAccumulator = [];
-      var collectElementNodes = function(el, acc) {
+      var collectElementNodes = (el, acc) => {
         if (el.nodeType === 1) {
           acc.push(el.nodeName.toLowerCase());
         }
       };
-      var collectDivs = function(el, acc) {
+      var collectDivs = (el, acc) => {
         if (el.nodeName.toLowerCase() === 'div') {
           acc.push(el.nodeName.toLowerCase());
         }
       };
 
-      describe('when called with an initial element that is not a DOM node', function() {
+      describe('when called with an initial element that is not a DOM node', () => {
 
-        it('throws an error', function() {
+        it('throws an error', () => {
 
-          assert.throw(function() {
+          assert.throw(() => {
             StorytellerUtils.reduceDOMFragmentAscending(
               null,
               validApplyFn,
@@ -344,11 +380,11 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when called with an applyFn that is not a function', function() {
+      describe('when called with an applyFn that is not a function', () => {
 
-        it('throws an error', function() {
+        it('throws an error', () => {
 
-          assert.throw(function() {
+          assert.throw(() => {
             StorytellerUtils.reduceDOMFragmentAscending(
               validChild5,
               null,
@@ -359,11 +395,11 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when called with a shouldTerminateFn that is not a function', function() {
+      describe('when called with a shouldTerminateFn that is not a function', () => {
 
-        it('throws an error', function() {
+        it('throws an error', () => {
 
-          assert.throw(function() {
+          assert.throw(() => {
             StorytellerUtils.reduceDOMFragmentAscending(
               validChild5,
               validApplyFn,
@@ -374,11 +410,11 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when called with a shouldTerminateFn that is not a function', function() {
+      describe('when called with a shouldTerminateFn that is not a function', () => {
 
-        it('throws an error', function() {
+        it('throws an error', () => {
 
-          assert.throw(function() {
+          assert.throw(() => {
             StorytellerUtils.reduceDOMFragmentAscending(
               validChild5,
               validApplyFn,
@@ -389,9 +425,9 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when called with a pass-through applyFn', function() {
+      describe('when called with a pass-through applyFn', () => {
 
-        it('should accumulate all node names', function() {
+        it('should accumulate all node names', () => {
 
           var accumulated = StorytellerUtils.reduceDOMFragmentAscending(
             validChild5,
@@ -404,9 +440,9 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when called with a applyFn that only collects element node names', function() {
+      describe('when called with a applyFn that only collects element node names', () => {
 
-        it('should accumulate only element node names', function() {
+        it('should accumulate only element node names', () => {
 
           var accumulated = StorytellerUtils.reduceDOMFragmentAscending(
             validChild5,
@@ -419,9 +455,9 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when called with a applyFn that only collects div node names', function() {
+      describe('when called with a applyFn that only collects div node names', () => {
 
-        it('should accumulate only div node names', function() {
+        it('should accumulate only div node names', () => {
 
           var accumulated = StorytellerUtils.reduceDOMFragmentAscending(
             validChild5,
@@ -435,27 +471,27 @@ describe('StorytellerUtils', function() {
       });
     });
 
-    describe('reduceDOMFragmentDescending()', function() {
+    describe('reduceDOMFragmentDescending()', () => {
 
-      var validApplyFn = function(el, acc) { acc.push(el.nodeName.toLowerCase()); };
-      var validShouldTerminateFn = function() { return false; };
+      var validApplyFn = (el, acc) => { acc.push(el.nodeName.toLowerCase()); };
+      var validShouldTerminateFn = () => { return false; };
       var validAccumulator = [];
-      var collectElementNodes = function(el, acc) {
+      var collectElementNodes = (el, acc) => {
         if (el.nodeType === 1) {
           acc.push(el.nodeName.toLowerCase());
         }
       };
-      var collectDivs = function(el, acc) {
+      var collectDivs = (el, acc) => {
         if (el.nodeName.toLowerCase() === 'div') {
           acc.push(el.nodeName.toLowerCase());
         }
       };
 
-      describe('when called with an initial element that is not a DOM node', function() {
+      describe('when called with an initial element that is not a DOM node', () => {
 
-        it('throws an error', function() {
+        it('throws an error', () => {
 
-          assert.throw(function() {
+          assert.throw(() => {
             StorytellerUtils.reduceDOMFragmentDescending(
               null,
               validApplyFn,
@@ -466,11 +502,11 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when called with an applyFn that is not a function', function() {
+      describe('when called with an applyFn that is not a function', () => {
 
-        it('throws an error', function() {
+        it('throws an error', () => {
 
-          assert.throw(function() {
+          assert.throw(() => {
             StorytellerUtils.reduceDOMFragmentDescending(
               validElement,
               null,
@@ -481,11 +517,11 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when called with a shouldTerminateFn that is not a function', function() {
+      describe('when called with a shouldTerminateFn that is not a function', () => {
 
-        it('throws an error', function() {
+        it('throws an error', () => {
 
-          assert.throw(function() {
+          assert.throw(() => {
             StorytellerUtils.reduceDOMFragmentDescending(
               validElement,
               validApplyFn,
@@ -496,11 +532,11 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when called with a shouldTerminateFn that is not a function', function() {
+      describe('when called with a shouldTerminateFn that is not a function', () => {
 
-        it('throws an error', function() {
+        it('throws an error', () => {
 
-          assert.throw(function() {
+          assert.throw(() => {
             StorytellerUtils.reduceDOMFragmentDescending(
               validElement,
               validApplyFn,
@@ -511,9 +547,9 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when called with a pass-through applyFn', function() {
+      describe('when called with a pass-through applyFn', () => {
 
-        it('should accumulate all node names', function() {
+        it('should accumulate all node names', () => {
 
           var accumulated = StorytellerUtils.reduceDOMFragmentDescending(
             validElement,
@@ -526,9 +562,9 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when called with a applyFn that only collects element node names', function() {
+      describe('when called with a applyFn that only collects element node names', () => {
 
-        it('should accumulate only element node names', function() {
+        it('should accumulate only element node names', () => {
 
           var accumulated = StorytellerUtils.reduceDOMFragmentDescending(
             validElement,
@@ -541,9 +577,9 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when called with a applyFn that only collects div node names', function() {
+      describe('when called with a applyFn that only collects div node names', () => {
 
-        it('should accumulate only div node names', function() {
+        it('should accumulate only div node names', () => {
 
           var accumulated = StorytellerUtils.reduceDOMFragmentDescending(
             validElement,
@@ -558,21 +594,21 @@ describe('StorytellerUtils', function() {
     });
   });
 
-  describe('.generateYoutubeUrl()', function() {
+  describe('.generateYoutubeUrl()', () => {
 
-    describe('not given an id', function() {
+    describe('not given an id', () => {
 
-      it('should throw an error', function() {
+      it('should throw an error', () => {
 
-        assert.throw(function() {
+        assert.throw(() => {
           StorytellerUtils.generateYoutubeUrl();
         });
       });
     });
 
-    describe('given an id', function() {
+    describe('given an id', () => {
 
-      it('should generate the expected url', function() {
+      it('should generate the expected url', () => {
 
         var youtubeId = 'ABCDEFGHIJK';
         var expectedUrl = 'https://www.youtube.com/embed/' + youtubeId;
@@ -582,29 +618,29 @@ describe('StorytellerUtils', function() {
     });
   });
 
-  describe('.generateGoalEmbedEditSrc()', function() {
+  describe('.generateGoalEmbedEditSrc()', () => {
 
-    describe('missing or invalid arguments', function() {
+    describe('missing or invalid arguments', () => {
 
-      it('should throw', function() {
-        assert.throw(function() {
+      it('should throw', () => {
+        assert.throw(() => {
           StorytellerUtils.generateGoalEmbedEditSrc();
         });
-        assert.throw(function() {
+        assert.throw(() => {
           StorytellerUtils.generateGoalEmbedEditSrc(null);
         });
-        assert.throw(function() {
+        assert.throw(() => {
           StorytellerUtils.generateGoalEmbedEditSrc({});
         });
-        assert.throw(function() {
+        assert.throw(() => {
           StorytellerUtils.generateGoalEmbedEditSrc(5);
         });
       });
     });
 
-    describe('given valid arguments', function() {
+    describe('given valid arguments', () => {
 
-      it('should return the correct url', function() {
+      it('should return the correct url', () => {
         assert.equal(
           StorytellerUtils.generateGoalEmbedEditSrc('four-four'),
           '/stat/goals/single/four-four/embed/edit'
@@ -613,29 +649,29 @@ describe('StorytellerUtils', function() {
     });
   });
 
-  describe('.generateGoalEmbedSrc()', function() {
+  describe('.generateGoalEmbedSrc()', () => {
 
-    describe('missing or invalid arguments', function() {
+    describe('missing or invalid arguments', () => {
 
-      it('should throw', function() {
-        assert.throw(function() {
+      it('should throw', () => {
+        assert.throw(() => {
           StorytellerUtils.generateGoalEmbedSrc();
         });
-        assert.throw(function() {
+        assert.throw(() => {
           StorytellerUtils.generateGoalEmbedSrc(null);
         });
-        assert.throw(function() {
+        assert.throw(() => {
           StorytellerUtils.generateGoalEmbedSrc({});
         });
-        assert.throw(function() {
+        assert.throw(() => {
           StorytellerUtils.generateGoalEmbedSrc(5);
         });
       });
     });
 
-    describe('given valid arguments', function() {
+    describe('given valid arguments', () => {
 
-      it('should return the correct url', function() {
+      it('should return the correct url', () => {
         assert.equal(
           StorytellerUtils.generateGoalEmbedSrc('four-four'),
           '/stat/goals/single/four-four/embed'
@@ -644,23 +680,23 @@ describe('StorytellerUtils', function() {
     });
   });
 
-  describe('.generateYoutubeIframeSrc()', function() {
+  describe('.generateYoutubeIframeSrc()', () => {
 
-    describe('not given an id', function() {
+    describe('not given an id', () => {
 
-      it('should throw an error', function() {
+      it('should throw an error', () => {
 
-        assert.throw(function() {
+        assert.throw(() => {
           StorytellerUtils.generateYoutubeUrl();
         });
       });
     });
 
-    describe('given an id', function() {
+    describe('given an id', () => {
 
-      describe('when the autoplay argument is undefined', function() {
+      describe('when the autoplay argument is undefined', () => {
 
-        it('should generate the expected url', function() {
+        it('should generate the expected url', () => {
 
           var youtubeId = 'ABCDEFGHIJK';
           var expectedUrl = 'https://www.youtube.com/embed/' + youtubeId + '?rel=0&showinfo=0';
@@ -669,9 +705,9 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when the autoplay argument is false', function() {
+      describe('when the autoplay argument is false', () => {
 
-        it('should generate the expected url', function() {
+        it('should generate the expected url', () => {
 
           var youtubeId = 'ABCDEFGHIJK';
           var expectedUrl = 'https://www.youtube.com/embed/' + youtubeId + '?rel=0&showinfo=0';
@@ -680,9 +716,9 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when the autoplay argument is true', function() {
+      describe('when the autoplay argument is true', () => {
 
-        it('should generate the expected url', function() {
+        it('should generate the expected url', () => {
 
           var youtubeId = 'ABCDEFGHIJK';
           var expectedUrl = 'https://www.youtube.com/embed/' + youtubeId + '?rel=0&showinfo=0&autoplay=true';
@@ -693,22 +729,22 @@ describe('StorytellerUtils', function() {
     });
   });
 
-  describe('.findClosestAttribute', function() {
-    describe('when given invalid arguments', function() {
-      it('should throw', function() {
-        assert.throws(function() { StorytellerUtils.findClosestAttribute(); });
-        assert.throws(function() { StorytellerUtils.findClosestAttribute(4, 4); });
-        assert.throws(function() { StorytellerUtils.findClosestAttribute($('<div>'), 3); });
-        assert.throws(function() { StorytellerUtils.findClosestAttribute(4, 'a string'); });
-        assert.throws(function() { StorytellerUtils.findClosestAttribute($('<div>')); });
-        assert.throws(function() { StorytellerUtils.findClosestAttribute({}, 'a string'); });
+  describe('.findClosestAttribute', () => {
+    describe('when given invalid arguments', () => {
+      it('should throw', () => {
+        assert.throws(() => { StorytellerUtils.findClosestAttribute(); });
+        assert.throws(() => { StorytellerUtils.findClosestAttribute(4, 4); });
+        assert.throws(() => { StorytellerUtils.findClosestAttribute($('<div>'), 3); });
+        assert.throws(() => { StorytellerUtils.findClosestAttribute(4, 'a string'); });
+        assert.throws(() => { StorytellerUtils.findClosestAttribute($('<div>')); });
+        assert.throws(() => { StorytellerUtils.findClosestAttribute({}, 'a string'); });
       });
     });
 
-    describe('when given an attribute', function() {
+    describe('when given an attribute', () => {
       var element;
 
-      beforeEach(function() {
+      beforeEach(() => {
         /* eslint-disable indent */
         var html = [
           '<div data-on-one-ancestor="1" data-on-multiple-ancestors="2">',
@@ -723,80 +759,80 @@ describe('StorytellerUtils', function() {
         element = $transient.find('#element');
       });
 
-      describe('that does not exist in the DOM', function() {
-        it('should return undefined', function() {
+      describe('that does not exist in the DOM', () => {
+        it('should return undefined', () => {
           assert.equal(StorytellerUtils.findClosestAttribute(element, 'not-there'), undefined);
         });
       });
-      describe('that exists on the given element itself', function() {
-        it('should return the value of the attribute', function() {
+      describe('that exists on the given element itself', () => {
+        it('should return the value of the attribute', () => {
           assert.equal(StorytellerUtils.findClosestAttribute(element, 'data-on-self'), '4');
         });
       });
-      describe('that exists on one ancestor of the given element', function() {
-        it('should return the value of the attribute on that ancestor', function() {
+      describe('that exists on one ancestor of the given element', () => {
+        it('should return the value of the attribute on that ancestor', () => {
           assert.equal(StorytellerUtils.findClosestAttribute(element, 'data-on-one-ancestor'), '1');
         });
       });
-      describe('that exists on multiple ancestors of the given element', function() {
-        it('should return the value of the attribute on the closest ancestor', function() {
+      describe('that exists on multiple ancestors of the given element', () => {
+        it('should return the value of the attribute on the closest ancestor', () => {
           assert.equal(StorytellerUtils.findClosestAttribute(element, 'data-on-multiple-ancestors'), '3');
         });
       });
     });
   });
 
-  describe('assertInstanceOf', function() {
-    var SomeClass = function() {};
-    var SomeOtherClass = function() {};
+  describe('assertInstanceOf', () => {
+    var SomeClass = () => {};
+    var SomeOtherClass = () => {};
 
-    describe('given zero or one arguments', function() {
-      it('should throw', function() {
-        assert.throws(function() { StorytellerUtils.assertInstanceOf(); });
-        assert.throws(function() { StorytellerUtils.assertInstanceOf({}); });
+    describe('given zero or one arguments', () => {
+      it('should throw', () => {
+        assert.throws(() => { StorytellerUtils.assertInstanceOf(); });
+        assert.throws(() => { StorytellerUtils.assertInstanceOf({}); });
       });
     });
 
-    describe('given an object that is not an instance of the given instantiator', function() {
-      it('should throw', function() {
-        assert.throws(function() { StorytellerUtils.assertInstanceOf(4, SomeClass); });
-        assert.throws(function() { StorytellerUtils.assertInstanceOf('', SomeClass); });
-        assert.throws(function() { StorytellerUtils.assertInstanceOf([], SomeClass); });
-        assert.throws(function() { StorytellerUtils.assertInstanceOf({}, SomeClass); });
-        assert.throws(function() { StorytellerUtils.assertInstanceOf(new SomeClass(), SomeOtherClass); });
+    describe('given an object that is not an instance of the given instantiator', () => {
+      it('should throw', () => {
+        assert.throws(() => { StorytellerUtils.assertInstanceOf(4, SomeClass); });
+        assert.throws(() => { StorytellerUtils.assertInstanceOf('', SomeClass); });
+        assert.throws(() => { StorytellerUtils.assertInstanceOf([], SomeClass); });
+        assert.throws(() => { StorytellerUtils.assertInstanceOf({}, SomeClass); });
+        assert.throws(() => { StorytellerUtils.assertInstanceOf(new SomeClass(), SomeOtherClass); });
       });
     });
 
-    describe('given an object that is an instance of the instantiator', function() {
-      it('should not throw', function() {
+    describe('given an object that is an instance of the instantiator', () => {
+      it('should not throw', () => {
         StorytellerUtils.assertInstanceOf(new SomeClass(), SomeClass);
       });
     });
   });
 
-  describe('assertInstanceOfAny', function() {
-    var SomeClass = function() {};
-    var SomeOtherClass = function() {};
+  describe('assertInstanceOfAny', () => {
+    var SomeClass = () => {};
+    var SomeOtherClass = () => {};
 
-    describe('given zero or one arguments', function() {
-      it('should throw', function() {
-        assert.throws(function() { StorytellerUtils.assertInstanceOfAny(); });
-        assert.throws(function() { StorytellerUtils.assertInstanceOfAny({}); });
+    describe('given zero or one arguments', () => {
+      it('should throw', () => {
+        assert.throws(() => { StorytellerUtils.assertInstanceOfAny(); });
+        assert.throws(() => { StorytellerUtils.assertInstanceOfAny({}); });
       });
     });
 
-    describe('given an object that is not an instance of the given instantiators', function() {
-      it('should throw', function() {
-        assert.throws(function() { StorytellerUtils.assertInstanceOfAny(4, SomeClass); });
-        assert.throws(function() { StorytellerUtils.assertInstanceOfAny('', SomeClass); });
-        assert.throws(function() { StorytellerUtils.assertInstanceOfAny([], SomeClass); });
-        assert.throws(function() { StorytellerUtils.assertInstanceOfAny({}, SomeClass); });
-        assert.throws(function() { StorytellerUtils.assertInstanceOfAny(new SomeClass(), SomeOtherClass); });
+    describe('given an object that is not an instance of the given instantiators', () => {
+      it('should throw', () => {
+        assert.throws(() => { StorytellerUtils.assertInstanceOfAny(4, SomeClass); });
+        assert.throws(() => { StorytellerUtils.assertInstanceOfAny('', SomeClass); });
+        assert.throws(() => { StorytellerUtils.assertInstanceOfAny([], SomeClass); });
+        assert.throws(() => { StorytellerUtils.assertInstanceOfAny({}, SomeClass); });
+        assert.throws(() => { StorytellerUtils.assertInstanceOfAny(new SomeClass(), SomeOtherClass); });
       });
     });
 
-    describe('given an object that is an instance of at least one of the given instantiators', function() {
-      it('should not throw', function() {
+    describe('given an object that is an instance of at least one of the given instantiators', () => {
+      it('should not throw', () => {
         StorytellerUtils.assertInstanceOfAny(new SomeClass(), SomeClass);
         StorytellerUtils.assertInstanceOfAny(new SomeClass(), SomeClass, SomeOtherClass);
         StorytellerUtils.assertInstanceOfAny(new SomeClass(), SomeOtherClass, SomeClass);
@@ -804,11 +840,11 @@ describe('StorytellerUtils', function() {
     });
   });
 
-  describe('.formatValueWithoutRounding()', function() {
+  describe('.formatValueWithoutRounding()', () => {
 
-    describe('when given non-numeric input', function() {
+    describe('when given non-numeric input', () => {
 
-      it('returns the input value', function() {
+      it('returns the input value', () => {
 
         assert.equal(StorytellerUtils.formatValueWithoutRounding(undefined), undefined);
         assert.equal(StorytellerUtils.formatValueWithoutRounding(null), null);
@@ -817,11 +853,11 @@ describe('StorytellerUtils', function() {
       });
     });
 
-    describe('when given numeric input', function() {
+    describe('when given numeric input', () => {
 
-      describe('when given a value (-1000, 1000)', function() {
+      describe('when given a value (-1000, 1000)', () => {
 
-        it('does not change the unit but rounds to the tenths place (except with nines)', function() {
+        it('does not change the unit but rounds to the tenths place (except with nines)', () => {
 
           assert.equal(StorytellerUtils.formatValueWithoutRounding(-999.999), '-999.9');
           assert.equal(StorytellerUtils.formatValueWithoutRounding(-999.599), '-999.6');
@@ -834,9 +870,9 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when given a value (-1,000,000, -1000] or [1000, 1,000,000)', function() {
+      describe('when given a value (-1,000,000, -1000] or [1000, 1,000,000)', () => {
 
-        it('changes the unit to thousands and rounds to the hundreds place (except with nines)', function() {
+        it('changes the unit to thousands and rounds to the hundreds place (except with nines)', () => {
 
           assert.equal(StorytellerUtils.formatValueWithoutRounding(-999999.999), '-999.9K');
           assert.equal(StorytellerUtils.formatValueWithoutRounding(-999599.599), '-999.6K');
@@ -855,9 +891,9 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when given a value (-1,000,000,000, -1,000,000] or [1,000,000, 1,000,000,000)', function() {
+      describe('when given a value (-1,000,000,000, -1,000,000] or [1,000,000, 1,000,000,000)', () => {
 
-        it('changes the unit to millions and rounds to the hundred-thousands place (except with nines)', function() {
+        it('changes the unit to millions and rounds to the hundred-thousands place (except with nines)', () => {
 
           assert.equal(StorytellerUtils.formatValueWithoutRounding(-999999999.999), '-999.9M');
           assert.equal(StorytellerUtils.formatValueWithoutRounding(-999599999.599), '-999.6M');
@@ -876,9 +912,9 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when given a value (-1,000,000,000,000, -1,000,000,000] or [1,000,000,000, 1,000,000,000,000)', function() {
+      describe('when given a value (-1,000,000,000,000, -1,000,000,000] or [1,000,000,000, 1,000,000,000,000)', () => {
 
-        it('changes the unit to billions and rounds to the hundred-millions place (except with nines)', function() {
+        it('changes the unit to billions and rounds to the hundred-millions place (except with nines)', () => {
 
           assert.equal(StorytellerUtils.formatValueWithoutRounding(-999999999999.999), '-999.9B');
           assert.equal(StorytellerUtils.formatValueWithoutRounding(-999599999999.599), '-999.6B');
@@ -897,9 +933,9 @@ describe('StorytellerUtils', function() {
         });
       });
 
-      describe('when given a value (-infinity, -1,000,000,000,000] or [1,000,000,000,000, +infinity)', function() {
+      describe('when given a value (-infinity, -1,000,000,000,000] or [1,000,000,000,000, +infinity)', () => {
 
-        it('changes the unit to trillions and behaves erratically', function() {
+        it('changes the unit to trillions and behaves erratically', () => {
 
           // Note: PhantomJS appears to implement `.toLocaleString()` as an alias of `.toString(),
           // so we expect it to format the thousands-values like `1000`. In actual browsers, it may
@@ -931,25 +967,25 @@ describe('StorytellerUtils', function() {
     });
   });
 
-  describe('fetchDomainConfigurationHash', function() {
+  describe('fetchDomainConfigurationHash', () => {
     var fakeDomainConfigurationsResponse = [
       { id: 'one', name: 'some config', type: 'awesome', properties: [ { name: 'foo.bar', value: 'baz' } ] },
       { id: 'two', name: 'some other config', type: 'awesomer', properties: [ { name: 'meep', value: 'beep' } ] }
     ];
 
-    beforeEach(function() {
-      sinon.stub(StorytellerUtils, 'fetchDomainConfigurations', function() {
+    beforeEach(() => {
+      sinon.stub(StorytellerUtils, 'fetchDomainConfigurations', () => {
         return Promise.resolve(_.cloneDeep(fakeDomainConfigurationsResponse));
       });
     });
 
-    it('should pass domain and options to fetchDomainConfigurations', function() {
+    it('should pass domain and options to fetchDomainConfigurations', () => {
       StorytellerUtils.fetchDomainConfigurationHash('theDomain', { options: 'hash' });
       sinon.assert.calledWithExactly(StorytellerUtils.fetchDomainConfigurations, 'theDomain', { options: 'hash' });
     });
 
-    it('should flatten property values', function(done) {
-      StorytellerUtils.fetchDomainConfigurationHash('foo', {}).then(function(response) {
+    it('should flatten property values', (done) => {
+      StorytellerUtils.fetchDomainConfigurationHash('foo', {}).then((response) => {
         assert.deepEqual(_.map(response, 'properties'), [
           { foo: { bar: 'baz' } },
           { meep: 'beep' }
@@ -958,8 +994,8 @@ describe('StorytellerUtils', function() {
       });
     });
 
-    it('should preserve the rest of the config metadata', function(done) {
-      StorytellerUtils.fetchDomainConfigurationHash('foo', {}).then(function(response) {
+    it('should preserve the rest of the config metadata', (done) => {
+      StorytellerUtils.fetchDomainConfigurationHash('foo', {}).then((response) => {
         assert.propertyVal(response[0], 'id', 'one');
         assert.propertyVal(response[1], 'id', 'two');
         assert.propertyVal(response[0], 'type', 'awesome');
@@ -968,15 +1004,15 @@ describe('StorytellerUtils', function() {
       });
     });
 
-    afterEach(function() { StorytellerUtils.fetchDomainConfigurations.restore(); });
+    afterEach(() => { StorytellerUtils.fetchDomainConfigurations.restore(); });
   });
 
-  describe('keyByPath', function() {
+  describe('keyByPath', () => {
     function test(subject, expected) {
       assert.deepEqual(StorytellerUtils.keyByPath(subject, 'name', 'value'), expected);
     }
 
-    it('keys by path', function() {
+    it('keys by path', () => {
       test([], {});
       test([ { name: 'foo', value: 'bar' } ], { foo: 'bar' });
       test([

@@ -20,36 +20,6 @@ class PageMetadataController < ApplicationController
     render :nothing => true, :status => '403'
   end
 
-  def show
-    return render :nothing => true, :status => '400' unless params[:id].present?
-
-    begin
-      page_metadata = page_metadata_manager.show(
-        params[:id],
-        :request_id => request_id,
-        :cookies => forwardable_session_cookies
-      )
-      render :json => page_metadata, :status => '200'
-    rescue DataLensManager::ViewNotFound
-      return render :nothing => true, :status => '404'
-    rescue DataLensManager::ViewAuthenticationRequired => error
-      return render :json => { error: error.message }, :status => '401'
-    rescue DataLensManager::ViewAccessDenied => error
-      return render :json => { error: error.message }, :status => '403'
-    rescue Phidippides::ConnectionError
-      render :json => { :body => 'Phidippides connection error' }, :status => '500'
-    rescue => error
-      message = "Unknown error while fetching permissions for pageId #{params[:id]}: #{error}"
-      Rails.logger.error(message)
-      Airbrake.notify(
-        error,
-        :error_class => 'PermissionRetrieval',
-        :error_message => message
-      )
-      return render :nothing => true, :status => '500'
-    end
-  end
-
   def create
     begin
       page_metadata = json_parameter(:pageMetadata)

@@ -244,8 +244,6 @@ describe SiteAppearanceController do
   end
 
   def make_site_appearance_visible
-    allow(CurrentDomain).to receive(:feature_flags).and_return(
-      Hashie::Mash.new.tap { |mash| mash.site_appearance_visible = true }
-    )
+    rspec_stub_feature_flags_with(site_appearance_visible: true)
   end
 end

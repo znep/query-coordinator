@@ -43,6 +43,7 @@ function getOutput(identifier) {
   return {
     path: isProduction ? path.resolve(build, identifier) : build,
     filename: isProduction ? '[name].js' : identifier + '/[name].js',
+    chunkFilename: isProduction ? '[name].js?[chunkhash]' : identifier + '/[name].js?[chunkhash]',
     publicPath: isProduction ? '/javascripts/build/' + identifier + '/' : '/javascripts/webpack/'
   };
 }

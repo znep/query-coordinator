@@ -22,8 +22,6 @@ Bottom-up
       - `data_lens_controller#preload_metadata`
         - `/view/:id`
         - `/:category/:view_name/:id`
-        - `/view/:id/mobile`
-        - `/:category/:view_name/:id/mobile`
       - `data_lens_controller#view_vif`
         - `/view/vif`
     - `region_coder#get_job_id`
@@ -51,8 +49,6 @@ Bottom-up
   - Bootstrapping Data Lens
 - `/view/:id`
   - Rendering Data Lens
-- `/view/:id/mobile`
-  - Rendering Data Lens mobile
 - `/view/vif`
   - Rendering Data Lens Polaroid page
 - `/metadata/v1/dataset/:id`

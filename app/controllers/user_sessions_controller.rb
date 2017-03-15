@@ -5,7 +5,6 @@ class UserSessionsController < ApplicationController
   include UserSessionsHelper
 
   skip_before_filter :require_user
-  protect_from_forgery :except => [:rpx]
 
   # NOTE: This skip_before_filter must come _after_ the protect_from_forgery call above
   skip_before_filter :verify_authenticity_token,
@@ -71,11 +70,11 @@ class UserSessionsController < ApplicationController
        params[:user_session].key?(:login) &&
        params[:user_session][:login].include?('@socrata.com')
       if feature?('fedramp')
-        flash[:error] = 'Password logins with an @socrata.com email are disabled because the "fedramp" module is on'
+        flash[:error] = t('screens.sign_in.sso_required_for_superadmins_by_fedramp')
         redirect_to login_url and return
       end
       if !feature?('socrata_emails_bypass_auth0')
-        flash[:error] = 'To enable password logins with an @socrata.com email, the "socrata_emails_bypass_auth0" module must be on'
+        flash[:error] = t('screens.sign_in.sso_required_for_superadmins_by_default')
         redirect_to login_url and return
       end
     end

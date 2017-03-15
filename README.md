@@ -461,11 +461,6 @@ Variable Name | Type | Source | Description
 `request_method` |String | Rails | Used by `RequestLoggerMiddleware` in composing the log message.
 `request_uri` | URI | Rails | URI of the incoming request. Used to identify whether or not the request is for the `version.json` endpoint. See `VersionMiddleware`.
 `restore_dataset_days` | Integer | Configuration | Maximum number of days within which a dataset may be restored after deletion.
-`rpx_facebook_url` | URI | Configuration | API endpoint used for OAuth with Facebook.
-`rpx_googleplus_url` | URI | Configuration | API endpoint used for OAuth with Google+.
-`rpx_signin_url` | URI | Configuration | API endpoint used for OAuth with OpenId.
-`rpx_twitter_url` | URI | Configuration | API endpoint used for OAuth with Twitter.
-`rpx_windowslive_url` | URI | Configuration | API endpoint used for OAuth with WindowsLive.
 `secondary_group_identifier` | String | Configuration | Identifier of the Spandex secondary store used by the auto-suggest service.
 `secret_key_base` | String | Configuration | Secret key value used to initialize sessions in Rails. _Must be set or the app cannot start_.
 `server_software` | String | NGINX | Used by `RequestLoggerMiddleware` to identify when running under Apache. Used to selectively log to `STDERR` if using Apache. _Citation needed_

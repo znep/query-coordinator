@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import components from 'socrata-components';
 import { emitMixpanelEvent } from '../actions/mixpanel';
+import { localizeLink } from '../../common/locale';
 
 export class BootstrapAlert extends Component {
   componentWillMount() {
@@ -44,7 +45,7 @@ export class BootstrapAlert extends Component {
         </div>
 
         <a
-          href={bootstrapUrl}
+          href={localizeLink(bootstrapUrl)}
           className={className}
           data-flyout={flyoutId}
           onClick={onClickBootstrap}

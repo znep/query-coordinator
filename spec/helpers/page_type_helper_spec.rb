@@ -154,6 +154,20 @@ describe PageTypeHelper do
           expect(page_type).to eq('dataset-complex')
         end
       end
+
+      it 'with ResourceNotFound exception on find returns other' do
+        ::View.should_receive(:find).exactly(1).times.and_raise(CoreServer::ResourceNotFound.new(nil))
+        request = mock_request("/d/#{view_id}")
+        page_type = page_type(request)
+        expect(page_type).to eq('other')
+      end
+
+      it 'with CoreServerException exception on find returns other' do
+        ::View.should_receive(:find).exactly(1).times.and_raise(CoreServer::CoreServerError.new('source','authentication_required', 'something is wrong'))
+        request = mock_request("/d/#{view_id}")
+        page_type = page_type(request)
+        expect(page_type).to eq('other')
+      end
     end
   end
 end

@@ -398,6 +398,11 @@
       if (!_.isEqual(origCopy, updCopy)) {
         this._markTemporary(minorUpdate);
       }
+
+      // EN-12888 - Don't Copy Parent Filters Into Child Grouped View
+      //
+      // See comment above the implementation of this function for details.
+      maybeShowIncorrectGridPreviewNotice(origCopy, updCopy);
     },
 
     reload: function(reloadFromServer) {
@@ -4572,6 +4577,226 @@
     }
   }
 
+  /**
+   * EN-12888 - Don't Copy Parent Filters Into Child Grouped View
+   *
+   * Possibly in an attempt to be clever or fix 'performance', the platform will
+   * behave differently when creating a grouped view based on a filtered view
+   * depending on whether or not the current user has write acces to both the
+   * parent and the new child views.
+   *
+   * When the user has write access to both, instead of relying on the chaining
+   * or inheritance behavior of derived views (wherein filters present in a
+   * parent view are applied before groupings and filters present in the child
+   * view) the frontend will merge the filters from the parent view into the new
+   * filters and groupings of the child view and post the resulting composite.
+   *
+   * This has the effect of creating a derived view that still counts as being
+   * derived from the forebearing default view, but that does not have the
+   * filters chained/applied according to that lineage but rather all at once
+   * when the child view is queried.
+   *
+   * When the user does not have write access to both, the inheritance/chaining
+   * behavior is applied.
+   *
+   * This becomes problematic because the order in which filters and groupings
+   * are applied changes based on which properties are coming from the parent
+   * and which from the child:
+   *
+   * Case 1: parent(grouping), child(filtering) -> [grouping then filtering]
+   * Case 2: parent(filtering), child(grouping) -> [filtering then grouping]
+   * Case 3: parent(none), child(both)          -> [grouping then filtering]
+   * Case 4: parent(both), child(none)          -> [grouping then filtering]
+   *
+   * Note that cases 1, 3 an 4 are essentially a HAVING clause, whereas the
+   * second is a WHERE clause. This function aspires to prevent what should be
+   * the second case from being turned into the third case becasue of the
+   * merging behavior, which is accomplished by removing the filters from the
+   * parent view that get copied into the child view which is eventually POSTed
+   * to the backend to create the new child view.
+   *
+   * See EN-12454 for information on the accompanying fix in Core Server which
+   * will interpret the lack of filters in the child view that are present in
+   * the parent view as an indication that the modifyingLensId-based inheritance
+   * should be used for the view in question as opposed to the derived-but-self-
+   * sufficient type of behavior that ordinarily obtains when the user has write
+   * access to both the parent and the child views.
+   */
+  function forceUseOfModifyingLensIdInNewChildViewIfGroupingWasAdded(
+    originalDataset,
+    newDataset
+  ) {
+    // We need to compare the filters that were present on the original view
+    // object from which the live dataset was constructed against the serialized
+    // dataset as it exists at the time the user attempts to save. Somewhere in
+    // the long string of mutations the live dataset undergoes after page load,
+    // filter value literals (e.g. the '1' if the filter is 'col_a != 1') are
+    // cast from strings (as they are sent by Core Server) to numbers (as they
+    // get serialized when we send the updated view to Core Server).
+    //
+    // This method mutates an object tree to cast all filter value literals
+    // (defined as the value of the 'value' key of an object that also has a
+    // 'type' key, the value of which 'type' key is 'literal') to numbers so
+    // that we can use _.isEqual() to compare the filters present in the
+    // serialized form of the 'original' dataset against the filters in the
+    // serialized form of the 'new' dataset in a reliable way.
+    var convertStringifiedNumberLiteralsToNumbers = function(val, key) {
+
+      if (key === 'children' && _.isArray(val)) {
+        _.each(val, function(child) {
+
+          if (_.isObject(child)) {
+            if (
+              child.hasOwnProperty('type') &&
+              child.hasOwnProperty('value') &&
+              child.type === 'literal'
+            ) {
+
+              if (String(Number(child.value)) === child.value) {
+                child.value = Number(child.value);
+              }
+            }
+
+            _.forIn(child, convertStringifiedNumberLiteralsToNumbers);
+          }
+        });
+      }
+    };
+    var originalDatasetGrouping = _.get(
+      originalDataset,
+      'query.groupBys',
+      null
+    );
+    var newDatasetGrouping = _.get(
+      newDataset,
+      'query.groupBys',
+      null
+    );
+    var groupingAddedToNewChildView = (
+      _.isNull(originalDatasetGrouping) && !_.isNull(newDatasetGrouping)
+    );
+    var shouldModifyQueryFilterCondition = (
+      _.has(originalDataset, 'query.filterCondition') &&
+      _.has(newDataset, 'query.filterCondition')
+    );
+    var shouldModifyJsonQueryWhere = (
+      _.has(originalDataset, 'metadata.jsonQuery.where') &&
+      _.has(newDataset, 'metadata.jsonQuery.where')
+    );
+
+    // Just return the new dataset if no grouping is applied, or if the parent
+    // had the same grouping as the child, since we don't need to take any
+    // additional action in this case.
+    if (!groupingAddedToNewChildView) {
+      return newDataset;
+    }
+
+    // Otherwise, we need to remove any filters that are present in both the
+    // original and the new dataset, which will cause the backend to create a
+    // non-default view using modifyingLensId to inherit the parent's filters,
+    // as opposed to the frontend copying the parent's filters into the new view
+    // and then creating a non-default, but also not-inheriting, view.
+    if (shouldModifyQueryFilterCondition) {
+      var modifiedOriginalFilterCondition = blist.filter.generateSODA1(
+        originalDataset.metadata.jsonQuery.where,
+        originalDataset.metadata.jsonQuery.having,
+        originalDataset.metadata.defaultFilters
+      );
+      var newQueryFilterCondition = newDataset.query.filterCondition;
+
+      // Recursively apply convertStringifiedNumberLiteralsToNumbers to all
+      // values of modifiedOriginalFilterCondition (_.forIn does not recurse,
+      // but convertStringifiedNumberLiteralsToNumbers calls _.forIn recursively
+      // as it descends).
+      _.forIn(
+        modifiedOriginalFilterCondition,
+        convertStringifiedNumberLiteralsToNumbers
+      );
+
+      var newFiltersForQuery = newQueryFilterCondition.children.
+        filter(function(newFilter) {
+          var matchingOldFilter = modifiedOriginalFilterCondition.children.
+            filter(function(oldFilter) {
+              return _.isEqual(newFilter, oldFilter);
+            });
+
+          return matchingOldFilter.length === 0;
+        });
+
+      newDataset.query.filterCondition.children = newFiltersForQuery;
+    }
+
+    // We also need to remove any filters that are present in the other place
+    // we store filters in a view object (metadata.jsonQuery.where v.s.
+    // query.filterCondition, which is checked above) In comparison, however,
+    // the representation of the current filters located at
+    // metadata.jsonQuery.where does not differ between the original and new
+    // copies of the dataset, so we can compare them directly without having to
+    // mutate the original dataset.
+    if (shouldModifyJsonQueryWhere) {
+      var newJsonQueryWhere = newDataset.metadata.jsonQuery.where;
+      var originalJsonQueryWhere = originalDataset.metadata.jsonQuery.where;
+      var newFiltersForJsonQuery = newJsonQueryWhere.children.
+        filter(function(newFilter) {
+            var matchingOldFilter = originalJsonQueryWhere.children.
+              filter(function(oldFilter) {
+                return _.isEqual(newFilter, oldFilter);
+              });
+
+            return matchingOldFilter.length === 0;
+          });
+
+      newDataset.metadata.jsonQuery.where.children = newFiltersForJsonQuery;
+    }
+
+    return newDataset;
+  }
+
+  /**
+   * EN-12888 - Don't Copy Parent Filters Into Child Grouped View
+   *
+   * If a grouping has been added to a previously-filtered view and the
+   * relevant feature flag is enabled, then we need to display a notice to
+   * the user that the grid preview may not reflect the actual computed
+   * values, and that they'll need to 'Save As...' in order to see the
+   * correct data.
+   *
+   * This is only the case when the 'old' view has filters but no grouping
+   * and is then updated to have grouping as well.
+   */
+  function maybeShowIncorrectGridPreviewNotice(originalDataset, newDataset) {
+    var shouldForceUseOfModifyingLensIdInGroupedChildView = _.get(
+      blist,
+      'feature_flags.force_use_of_modifying_lens_id_in_grouped_child_view',
+      false
+    );
+    var originalDatasetHasGroupBys = _.has(
+      originalDataset,
+      'query.groupBys'
+    );
+    var originalDatasetHasFilterCondition = _.has(
+      originalDataset,
+      'query.filterCondition'
+    );
+    var newDatasetHasGroupBys = _.has(
+      newDataset,
+      'query.groupBys'
+    );
+
+    if (
+      shouldForceUseOfModifyingLensIdInGroupedChildView &&
+      !originalDatasetHasGroupBys &&
+      originalDatasetHasFilterCondition &&
+      newDatasetHasGroupBys
+    ) {
+
+      blist.datasetPage.flashTimedNotice(
+        $.t('controls.grid.group_bys_preview_potentially_invalid'),
+        20000
+      );
+    }
+  }
+
   function cleanViewForSave(ds, allowedKeys) {
     var dsCopy = ds.cleanCopy(allowedKeys);
     if (ds.oldColumns) {
@@ -4620,6 +4845,23 @@
 
     if (dsCopy.displayType == 'assetinventory') {
       delete dsCopy.displayType;
+    }
+
+    var shouldForceUseOfModifyingLensIdInGroupedChildView = _.get(
+      blist,
+      'feature_flags.force_use_of_modifying_lens_id_in_grouped_child_view',
+      false
+    );
+
+    // See comment above implementation of forceUseOfModifyingLensId... for an
+    // explanation of what this does and why we do it (spoiler: this is a
+    // consequence of the inconsistent behavior of derived views).
+    if (shouldForceUseOfModifyingLensIdInGroupedChildView) {
+
+      forceUseOfModifyingLensIdInNewChildViewIfGroupingWasAdded(
+        ds._origObj,
+        dsCopy
+      );
     }
 
     return dsCopy;

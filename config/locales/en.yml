@@ -1000,6 +1000,7 @@ en:
         timeout_on_bootstrap: A timeout occurred, but we're still generating your Data Lens in the background. Please try again in a few minutes.
       filter_this_column: Filter This Column
       geocodes_pending: Rows in the location column are still geocoding. Please wait until they are finished to publish this dataset
+      group_bys_preview_potentially_invalid: Grouping or roll-ups are being applied to a previously-filtered view. This may cause the live preview to display inaccurate or incorrect information. Correct information will be displayed after choosing ‘Save As…’ and being redirected to the new view.
       hide_column: Hide Column
       menu: Menu
       must_enter_name: You must enter a name for this column
@@ -1797,7 +1798,7 @@ en:
       rows: rows
       show_details: View Details
       success: Success!
-      upload_failed: Upload Failed.
+      upload_failed: Upload Failed
       uploading: Uploading
     show_output_schema:
       column_header:
@@ -1940,7 +1941,7 @@ en:
       title: Page Settings
   date:
     abbr_month_names:
-    - 
+    -
     - Jan
     - Feb
     - Mar
@@ -1954,7 +1955,7 @@ en:
     - Nov
     - Dec
     month_names:
-    - 
+    -
     - January
     - February
     - March
@@ -4968,7 +4969,7 @@ en:
           image_format: Please select a valid image type (PNG, JPG, or GIF)
           invalid_links: There was a problem updating your links. %{message}
           no_display_name: 'Error: ''Display Name'' is required'
-          no_password_no_auth0id: You cannot remove all your Auth0 identifiers before you set a password
+          no_password_no_auth0id: You cannot remove all your Single Sign-On identifiers before you set a password
           no_password_no_openid: You cannot remove all your OpenID identifiers before you set a password
           password_mismatch: New passwords do not match
           user_missing: This user cannot be found, or has been deleted.
@@ -5025,6 +5026,8 @@ en:
       sign_up: Sign Up
       sso_enabled: SSO Enabled
       sso_required: The administrator for this site requires that privileged users log in with an account other than a Socrata ID. Please log in using a different method.
+      sso_required_for_superadmins_by_fedramp: This domain is configured for FedRAMP security. Access is permitted only via single sign-on.
+      sso_required_for_superadmins_by_default: This domain is configured to disallow password-based logins with @socrata.com emails.
       tips_html: Use your Email and Password to sign in to all <strong>Socrata powered</strong> sites.
     sign_up:
       already_have_account: Already have an account?

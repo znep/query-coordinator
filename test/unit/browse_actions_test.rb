@@ -532,6 +532,7 @@ class BrowseActionsTest4 < Minitest::Test
   end
 
   def test_categories_come_first_in_new_catalog
+    stub_feature_flags_with('cetera_search' => true)
     request = OpenStruct.new(params: { cetera_search: 'true' }.with_indifferent_access)
     @browse_controller.unstub(:topics_facet)
     browse_options = @browse_controller.send(:process_browse, request)

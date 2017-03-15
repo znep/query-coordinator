@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { components as SocrataVisualizations } from 'socrata-visualizations';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import { isUserRoled } from '../../common/user';
+import { localizeLink } from '../../common/locale';
 
 export class DatasetPreview extends Component {
   renderActionButton() {
@@ -16,14 +17,14 @@ export class DatasetPreview extends Component {
 
     if (canCreateVisualizationCanvas) {
       return (
-        <a href={view.bootstrapUrl} className="btn btn-primary btn-sm btn-visualize">
+        <a href={localizeLink(view.bootstrapUrl)} className="btn btn-primary btn-sm btn-visualize">
           {I18n.dataset_preview.visualize_link}
         </a>
       );
     } else {
       return (
         <a
-          href={view.gridUrl}
+          href={localizeLink(view.gridUrl)}
           className="btn btn-primary btn-sm btn-grid"
           onClick={onClickGrid}>
           {I18n.dataset_preview.grid_view_link}

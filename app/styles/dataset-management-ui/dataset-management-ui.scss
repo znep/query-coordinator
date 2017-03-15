@@ -1068,7 +1068,7 @@ body {
   position: fixed;
   top: 10px;
   right: 35px;
-  z-index: 4000;
+  z-index: 10001; // site header is 9999, modal is now 10000
 
   .dsmui-notification {
     padding: 6px 10px 10px;
@@ -1123,11 +1123,16 @@ body {
       .btn-container {
         display: flex;
         margin-top: 10px;
+
+        .btn-primary {
+          background-color: $primary-base;
+        }
       }
 
       .btn-container > * {
         flex: 1 1 50%;
         text-align: center;
+        padding: 5px 15px;
       }
 
       .btn-container button {
@@ -1135,12 +1140,19 @@ body {
       }
 
       .msg-container {
+        margin-top: 1rem;
         max-width: 310px;
         text-align: center;
+        color: $dark-grey-1;
+
+        h6 {
+          color: $dark-grey-2;
+        }
       }
 
       .details-toggle {
         vertical-align: top;
+        font-size: 11px;
       }
 
       .icon {
@@ -1159,6 +1171,7 @@ body {
     .message {
       font-weight: 600;
       padding-right: .5em;
+      color: $dark-grey-2;
     }
 
     .sub-message {
@@ -1215,6 +1228,26 @@ body {
     &.dsmui-notification-transition-leave-active {
       transform: translate(400px);
       transition: transform 500ms;
+    }
+  }
+
+  .dsmui-error-notification-transition-enter {
+    max-height: 0;
+    overflow: hidden;
+
+    &.dsmui-error-notification-transition-enter-active {
+      max-height: 350px;
+      transition: max-height 500ms ease-in;
+    }
+  }
+
+  .dsmui-error-notification-transition-leave {
+    max-height: 350px;
+    overflow: hidden;
+
+    &.dsmui-error-notification-transition-leave-active {
+      max-height: 0;
+      transition: max-height 500ms ease-out;
     }
   }
 

@@ -1,25 +1,6 @@
 module.exports = function PageDataService(http, Schemas, $window) {
   var schemas = Schemas.regarding('page_metadata');
 
-  function fetch(id) {
-    var url = $.baseUrl(`/metadata/v1/page/${id}.json`);
-    var config = {
-      cache: true,
-      requester: this
-    };
-
-    return http.get(url.href, config).
-      then(function(response) {
-        return response.data;
-      }
-    );
-  }
-
-  this.getPageMetadata = function(id) {
-    $window.socrata.utils.assert(_.isString(id), 'id should be a string');
-    return fetch.call(this, id);
-  };
-
   /**
    * @throws {Error} on validation error. The thrown object has a 'validation' property, that
    * contains the validation errors from JJV.

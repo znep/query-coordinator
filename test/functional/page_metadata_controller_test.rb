@@ -42,35 +42,6 @@ class PageMetadataControllerTest < ActionController::TestCase
     @request.env['CONTENT_TYPE'] = 'application/json'
   end
 
-  test 'show returns data for a given page' do
-    @controller.stubs(can_create_metadata?: true)
-    @page_metadata_manager.stubs(
-      show: data_lens_page_metadata.merge(core_permissions_public)
-    )
-    get :show, id: 'four-four', format: 'json'
-    assert_response(:success)
-    result = JSON.parse(@response.body)
-    assert((%w(
-      cards datasetId description name pageId version permissions
-    ) - result.keys).empty?)
-  end
-
-  test 'show returns 401 if the Core view requires authn' do
-    @controller.stubs(can_create_metadata?: true)
-    @page_metadata_manager.stubs(:show).raises(DataLensManager::ViewAuthenticationRequired)
-
-    get :show, id: 'four-four', format: 'json'
-    assert_response(401)
-  end
-
-  test 'show returns 403 if the Core view requires authz' do
-    @controller.stubs(can_create_metadata?: true)
-    @page_metadata_manager.stubs(:show).raises(DataLensManager::ViewAccessDenied)
-
-    get :show, id: 'four-four', format: 'json'
-    assert_response(403)
-  end
-
   test 'delete returns 401 for unauthorized users' do
     dataset_stub = mock
     dataset_stub.stubs(can_edit?: false)

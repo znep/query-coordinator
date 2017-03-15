@@ -901,11 +901,20 @@ module.exports = function HistogramVisualizationService(
       selectAll('.histogram-filter-icon').
       data([0]);
 
+    // Because these elements are SVG tspans, our usual approach for applying icon styles
+    // (pseudoelements) doesn't work properly.  Instead, we create a dummy element with the icon
+    // class name, retrieve its content property and use that for the text content of the tspan.
+    var filterIcon = $window.document.createElement('div');
+    filterIcon.classList.add('socrata-icon-filter');
+    $window.document.body.appendChild(filterIcon);
+    var filterText = getComputedStyle(filterIcon, ':before').content.slice(1, -1);
+    filterIcon.remove();
+
     brushClearFilter.
       enter().
       append('tspan').
       classed('histogram-filter-icon', true).
-      text(Constants.FILTER_ICON_UNICODE_GLYPH);
+      text(filterText);
 
     var brushClearLabel = brushClearText.
       selectAll('.histogram-brush-clear-label').
@@ -920,6 +929,15 @@ module.exports = function HistogramVisualizationService(
       attr('dx', Constants.HISTOGRAM_TSPAN_OFFSET).
       text(_.property('labelString'));
 
+    // Because these elements are SVG tspans, our usual approach for applying icon styles
+    // (pseudoelements) doesn't work properly.  Instead, we create a dummy element with the icon
+    // class name, retrieve its content property and use that for the text content of the tspan.
+    var closeIcon = $window.document.createElement('div');
+    closeIcon.classList.add('socrata-icon-close-2');
+    $window.document.body.appendChild(closeIcon);
+    var closeText = getComputedStyle(closeIcon, ':before').content.slice(1, -1);
+    closeIcon.remove();
+
     brushClearText.
       selectAll('.histogram-brush-clear-x').
       data([0]).
@@ -927,7 +945,7 @@ module.exports = function HistogramVisualizationService(
       append('tspan').
       classed('histogram-brush-clear-x', true).
       attr('dx', Constants.HISTOGRAM_TSPAN_OFFSET).
-      text(Constants.CLOSE_ICON_UNICODE_GLYPH);
+      text(closeText);
 
     brushClearText.
       attr('dy', '1em').

@@ -52,7 +52,7 @@
 .contentBoxInner {
   font-size: 1.2em;
   padding: 2em;
-  &.rpxReturnLogin {
+  &.auth0ReturnLogin {
     padding-top: 0;
   }
   .column {
@@ -217,30 +217,6 @@
       img {
         vertical-align: middle;
         height: 18px;
-      }
-    }
-  }
-  .rpxLoginPane {
-    float: right;
-    margin-top: 0.5em;
-    .thirdPartyLinks {
-      .button {
-        font-size: 1em;
-        font-weight: normal;
-        margin-top: 1em;
-        padding: 0;
-        width: 28em;
-        .iconContainer {
-          border-right: 1px solid $color_chrome_box_border;
-        }
-      }
-      .simpleLoginButton {
-        font-size: 1.4em;
-        font-weight: normal;
-        height: 2.4em;
-        padding-left: 3.2em;
-        text-align: left;
-        width: 20em;
       }
     }
   }

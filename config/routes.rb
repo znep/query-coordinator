@@ -412,7 +412,6 @@ Rails.application.routes.draw do
       # Overloaded route matcher for SEO purposes.
       # The route structure is identical in each case; the handler for the route
       # is determined by the constraint that is satisfied.
-      get '/mobile', :to => 'data_lens#show_mobile', :app => 'dataCards', :constraints => Constraints::DataLensConstraint.new
       get '', :to => 'data_lens#data_lens', :app => 'dataCards', :constraints => Constraints::DataLensConstraint.new
 
       # Fallback: let DatasetsController#show handle it, since it was the original
@@ -486,11 +485,6 @@ Rails.application.routes.draw do
       get '/signup', :to => 'accounts#new', :as => 'signup'
       post '/signup', :to => 'accounts#create', :as => 'signup_submit'
       post '/accounts.json', :to => 'accounts#update', :format => 'json', :as => 'accounts_json'
-      post '/login/rpx_return_login', :to => 'rpx#return_login', :as => 'rpx_return_login'
-      get '/login/rpx_return_signup', :to => 'rpx#return_signup', :as => 'rpx_return_signup'
-      post '/login/rpx_login', :to => 'rpx#login', :as => 'rpx_login'
-      post '/login/rpx_signup', :to => 'rpx#signup', :as => 'rpx_signup'
-      post '/account/add_rpx_token', :to => 'accounts#add_rpx_token', :as => 'add_rpx_token'
       match  '/profile/:id/update_account', :to => 'profile#update_account', :as => 'update_account_profile',
         :via => [:post, :put], :constraints => { :id => Frontend::UID_REGEXP }
       get '/oauth/authorize' => 'oauth#authorize'
@@ -526,7 +520,6 @@ Rails.application.routes.draw do
 
     # V1 page metadata endpoints
     scope :controller => 'page_metadata' do
-      get '/metadata/v1/page/:id', :to => 'page_metadata#show', :constraints => { :id => Frontend::UID_REGEXP }
       post '/metadata/v1/page', :to => 'page_metadata#create'
       put '/metadata/v1/page/:id', :to => 'page_metadata#update', :constraints => { :id => Frontend::UID_REGEXP }
       delete '/metadata/v1/page/:id', :to => 'page_metadata#destroy', :constraints => { :id => Frontend::UID_REGEXP }
@@ -535,7 +528,6 @@ Rails.application.routes.draw do
     scope :controller => 'data_lens' do
       post '/geo/initiate', :to => 'data_lens#initiate_region_coding'
       get '/geo/status', :to => 'data_lens#region_coding_status'
-      get 'view/:id/mobile', :action => 'show_mobile'
     end
 
     # Custom pages, catalogs, facets

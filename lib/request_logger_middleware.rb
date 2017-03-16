@@ -8,14 +8,13 @@ require 'rack'
 
 class RequestLoggerMiddleware
 
-  # Common Log Format: http://httpd.apache.org/docs/1.3/logs.html#common
+  # This is vaguely based on the old Common Log Format (http://httpd.apache.org/docs/1.3/logs.html#common),
+  # but reshuffled a bit to have date and server host / request id fields more consistent with
+  # other frontend logs and removes fields like content-length, which we can't get.
   #
-  #   lilith.local - - [07/Aug/2006 23:58:02 -0400] "GET / HTTP/1.1" 500 -
-  #
-  #   %{%s - %s [%s] "%s %s%s %s" %d %s\n} %
-  FORMAT = %{%s - %s [%s] "%s %s%s %s" %d %s %0.4f\n}
-  DATETIME_FORMAT = " %Y-%m-%d %H:%M:%S,%L "
-  CONTENT_LENGTH = "Content-Length"
+  # eg. '2017-03-16 00:03:43,496 [localhost] [67c9ccd2201b43f4bb57551788bb0a04] [PID-71874] [HTTP ] - 127.0.0.1 - "GET /styles/individual/print.css?joe HTTP/1.1" 200 0.3473'
+  FORMAT = %{%s [%s] [%s] [%s] [HTTP ] - %s %s "%s %s%s %s" %d %0.4f\n}
+  DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S,%L"
 
   def initialize(app, datetime_format = nil)
     @app = app
@@ -39,18 +38,19 @@ class RequestLoggerMiddleware
 
   def log(env, status, header, began_at)
     now = Time.now.utc
-    length = extract_content_length(header)
 
     msg = FORMAT % [
+      now.strftime(@datetime_format),
+      env['HTTP_X_SOCRATA_HOST'] || env['HTTP_HOST'] || '',
+      header['X-Request-Id'].to_s.gsub('-', ''),
+      'PID-%.5d' % Process.pid,
       env['HTTP_X_FORWARDED_FOR'] || env['REMOTE_ADDR'] || '-',
       env['REMOTE_USER'] || '-',
-      now.strftime(@datetime_format),
       env['REQUEST_METHOD'],
       env['PATH_INFO'],
-      env['QUERY_STRING'] ? '' : "?#{env['QUERY_STRING']}",
+      env['QUERY_STRING'] ? "?#{env['QUERY_STRING']}" : '',
       env['HTTP_VERSION'],
       status.to_s[0..3],
-      length,
       now - began_at ]
 
     # We define the logger ab initio
@@ -60,9 +60,5 @@ class RequestLoggerMiddleware
     else
       logger << msg
     end
-  end
-
-  def extract_content_length(headers)
-    (value = headers[CONTENT_LENGTH].to_i) == 0 ? '-' : value
   end
 end

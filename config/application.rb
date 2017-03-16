@@ -107,10 +107,6 @@ module Frontend
 
     config.coreservice_uri = Rails.application.config_for(:config)['coreservice_uri']
 
-    # Set up logging
-    config.lograge.enabled = true
-    config.lograge.formatter = Lograge::Formatters::KeyValue.new
-
     config.action_view.sanitized_allowed_attributes = Set.new(%w(href src width height alt cite datetime title class name xml:lang abbr rel))
 
     # See also config/initializers/webpack.rb

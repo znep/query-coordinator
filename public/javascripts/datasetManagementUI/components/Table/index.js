@@ -58,7 +58,8 @@ export default function Table({
       <TableBody
         db={db}
         transforms={transforms}
-        displayState={displayState} />
+        displayState={displayState}
+        inputSchemaId={inputSchema.id} />
     </table>
   );
 }

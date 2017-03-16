@@ -583,7 +583,7 @@ function renderTimestampCell(cellContent, column) {
       cellContent = (cellContent * 1000);
     }
 
-    const time = moment(new Date(cellContent));
+    const time = moment(cellContent);
     const fallbackFormat = timeFormattings.date_time;
     if (time.isValid()) {
       if (column.format && column.format.formatString) {

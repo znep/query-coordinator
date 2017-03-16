@@ -1,1 +1,10 @@
+<p>Renders an icon as an inlined SVG rather than using the icon font.
+Any icon from <a href="/elements.html#icons" target="_blank">the icon list</a> can be used.</p>
+<p>"name" here refers to the actual SVG file name</p>
+
 <%= partial "code_sample", locals: { component: "components/skeletons/socrata_icon" } %>
+
+<p>The Socrata logo can be rendered as all black, all white, with color, or all white with an orange "pie" (for dark backgrounds).</p>
+<p>As per the brand guidelines, the logo is rendered at the minimum size of 18px, but all other icons are rendered at 15px by default.</p>
+
+<%= partial "code_sample", locals: { component: "components/skeletons/socrata_icon_logo" } %>

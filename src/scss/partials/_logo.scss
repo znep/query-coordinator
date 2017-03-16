@@ -1,0 +1,24 @@
+.socrata-icon.socrata-icon-logo {
+  .socrata-icon-logo-ring { color: $black; }
+  .socrata-icon-logo-pie { color: $black; }
+
+  /* Brand guidelines say minimum logo size is 18px */
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+
+  &.socrata-icon-logo-white {
+    .socrata-icon-logo-ring { color: $white; }
+    .socrata-icon-logo-pie { color: $white; }
+  }
+
+  &.socrata-icon-logo-color {
+    .socrata-icon-logo-ring { color: $primary; }
+    .socrata-icon-logo-pie { color: $alternate-1; }
+  }
+
+  &.socrata-icon-logo-dark {
+    .socrata-icon-logo-ring { color: $white; }
+    .socrata-icon-logo-pie { color: $alternate-1; }
+  }
+}

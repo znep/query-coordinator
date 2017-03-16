@@ -2,12 +2,14 @@ import React, { PropTypes } from 'react';
 import ColumnHeader from './ColumnHeader';
 import TransformStatus from './TransformStatus';
 import TableBody from './TableBody';
+import { commaify } from '../../../common/formatNumber';
 
 export default function Table({
   db,
   path,
+  inputSchema,
   outputSchema,
-  totalRows,
+  rowErrors,
   columns,
   errorsTransformId,
   updateColumnType }) {
@@ -25,7 +27,7 @@ export default function Table({
               updateColumnType={updateColumnType} />
           )}
         </tr>
-        <tr>
+        <tr className="column-statuses">
           {columns.map(column =>
             <TransformStatus
               key={column.transform.id}
@@ -33,14 +35,18 @@ export default function Table({
               transform={column.transform}
               errorsTransformId={errorsTransformId}
               columnId={column.id}
-              totalRows={totalRows} />
+              totalRows={inputSchema.total_rows} />
           )}
         </tr>
-        <tr>
-          <th colSpan={columns.length}>
-            Derp
-          </th>
-        </tr>
+        {(rowErrors.length > 0) &&
+          <tr className="row-errors-count">
+            <th className="row-errors-count"> {/* TODO: different class name */}
+              <div className="column-status-text">
+                <span className="err-info error">{commaify(rowErrors.length)}</span>
+                Malformed rows
+              </div>
+            </th>
+          </tr>}
       </thead>
       <TableBody
         db={db}
@@ -53,7 +59,8 @@ export default function Table({
 Table.propTypes = {
   db: PropTypes.object.isRequired,
   path: PropTypes.object.isRequired,
-  totalRows: PropTypes.number,
+  inputSchema: PropTypes.object.isRequired,
+  rowErrors: PropTypes.arrayOf(PropTypes.object).isRequired,
   outputSchema: PropTypes.object.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   updateColumnType: PropTypes.func.isRequired,

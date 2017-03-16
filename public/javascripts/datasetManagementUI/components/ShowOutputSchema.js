@@ -106,7 +106,8 @@ export function ShowOutputSchema({
                 db={db}
                 path={path}
                 columns={columns}
-                totalRows={inputSchema.total_rows}
+                inputSchema={inputSchema}
+                rowErrors={_.filter(db.row_errors, { input_schema_id: inputSchema.id })} // TODO: move to a mapStateToProps
                 outputSchema={outputSchema}
                 errorsTransformId={errorsTransformId}
                 updateColumnType={updateColumnType} />

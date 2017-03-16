@@ -52,8 +52,28 @@ class TableBody extends Component {
         ))}
       </tr>
     ));
+
+    const rowError = {
+      'wanted': 22,
+      'type': 'too_short',
+      'index': 3523,
+      'got': 5,
+      'contents': ['9649055', 'HX299475', '06/11/2014 08:30:00 AM', '014XX W WALTON ST', '0'],
+      'id': '288-3523',
+      'input_schema_id': 288,
+      '__status__': {'type': 'SAVED', 'savedAt': 'ON_SERVER'}
+    };
+
     return (
       <tbody tabIndex="0">
+        <tr key={'guuuuuuuuh'} className="malformed-row">
+          <td>
+            <span className="malformed-row-tag">!</span>
+            <span className="malformed-row-location">Malformed row at row {rowError.index}</span>
+            <span className="malformed-row-error">Expected {rowError.wanted} columns, found {rowError.got}</span>
+            <span className="malformed-row-contents">Row content: {rowError.contents.map((cell) => `"${cell.replace('"', '\\"')}"`).join(',')}</span>
+          </td>
+        </tr>
         {rows}
       </tbody>
     );

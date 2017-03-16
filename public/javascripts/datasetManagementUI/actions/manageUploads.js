@@ -150,8 +150,12 @@ function subscribeToUpload(dispatch, upload) {
     const channelName = `row_errors:${inputSchema.id}`;
     const channel = window.DSMAPI_PHOENIX_SOCKET.channel(channelName);
     channel.on('errors', (event) => {
-      event.errors.forEach((error) => {
-        dispatch(insertFromServer('row_errors', error));
+      event.errors.forEach((rowError) => {
+        dispatch(insertFromServer('row_errors', {
+          ...rowError,
+          id: `${inputSchema.id}-${rowError.index}`,
+          input_schema_id: inputSchema.id
+        }));
       });
     });
     channel.join().

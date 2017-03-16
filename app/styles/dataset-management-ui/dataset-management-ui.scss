@@ -774,9 +774,9 @@ body {
       }
 
       thead {
-        height: 89px; // TODO: not sure if this is the exact right number
         display: block;
         border-top: 1px solid $light-grey-4;
+        border-bottom: 2px solid $light-grey-4;
         box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
         position: relative;
         z-index: 100;
@@ -802,7 +802,7 @@ body {
             }
           }
 
-          &:last-child {
+          &.column-statuses {
             th {
               padding: 0;
               background-color: $white;
@@ -814,11 +814,22 @@ body {
 
               div.column-status-text {
                 padding: 5px 5px;
-                border-bottom: 2px solid $light-grey-3;
 
                 display: relative;
                 z-index: 100;
               }
+            }
+          }
+
+          &.row-errors-count {
+            border-top: 2px solid $light-grey-4;
+
+            th {
+              font-size: 10px;
+              background-color: $white;
+              font-weight: normal;
+              display: block;
+              width: 100%;
             }
           }
         }
@@ -922,6 +933,39 @@ body {
           }
         }
 
+        tr.malformed-row {
+          td {
+            display: block;
+            width: 100%;
+            background-color: $error-light;
+            color: $error-text;
+            padding: 5px 7px 4px;
+
+            .malformed-row-tag {
+              color: $white;
+              background-color: $error-text;
+              border-radius: 1.1em;
+              padding: 0 0.6em 1px;
+              font-size: 9px;
+              content: "!"; // this doesn't seem to work...
+            }
+
+            .malformed-row-location {
+              padding-left: 5px;
+            }
+
+            .malformed-row-error {
+              color: $grey;
+              padding-left: 20px;
+            }
+
+            .malformed-row-contents {
+              color: $grey;
+              padding-left: 20px;
+            }
+          }
+        }
+
         tr {
           &:first-child {
             border-top-width: 1px;
@@ -936,7 +980,7 @@ body {
         }
       }
 
-      th, td {
+      th:not(.row-errors-count), td {
         min-height: 29px;
         display: inline-block;
         width: 250px;

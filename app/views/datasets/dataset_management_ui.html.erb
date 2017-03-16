@@ -4,7 +4,7 @@
   <%= rendered_stylesheet_tag('dataset-management-ui') %>
 <% end %>
 
-<% @use_small_admin_header = true %>
+<% @site_chrome_admin_header_options = {size: 'small'} %>
 <% @suppress_site_chrome = render_site_admin_chrome? %>
 
 <%- if @suppress_site_chrome -%>

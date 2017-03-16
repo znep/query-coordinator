@@ -259,8 +259,7 @@ export default {
       title: 'Select data or a chart type to get started',
       description: 'There are two ways to get started. Select a chart type to see recommended dimensions and measures or select a dimension or measure to see recommended chart types.'
     },
-    center_and_zoom: 'Your current zoom level and centering will be preserved on insertion.',
-    saving_center_and_zoom: 'Saving zoom level and centering...'
+    center_and_zoom: 'Current zoom level and positioning will be preserved on insertion.'
   },
   table_view: {
     title: 'Preview of '

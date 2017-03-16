@@ -89,6 +89,10 @@ function SvgRegionMap(element, vif) {
     self.clearError();
 
     if (firstRender) {
+      initializeMap();
+    }
+
+    if (newVif) {
       // If the VIF has the center and zoom level of the map specified we can
       // just use that. Otherwise we'll need to derive a bounding box from the
       // shapefile and tell Leaflet to attempt to show that bounding box
@@ -98,8 +102,6 @@ function SvgRegionMap(element, vif) {
       let zoom = _.get(newVif, 'configuration.mapCenterAndZoom.zoom');
       let centerAndZoomDefined = _.every([lat, lng, zoom], _.isNumber);
 
-      initializeMap();
-
       // Note that we prefer center and zoom over extents, since we intend to
       // deprecate the latter and the former will be set by the new authoring
       // experience.
@@ -108,19 +110,16 @@ function SvgRegionMap(element, vif) {
       } else if (newData) {
         updateMapBoundsFromGeoJSONData(newData);
       }
-    }
-
-    if (newVif) {
 
       self.updateVif(newVif);
       updateBaseLayer();
     }
 
     if (newData) {
-
       updateColorScale(newData);
       updateRegionLayer(newData);
     }
+
 
     renderLegend();
   };

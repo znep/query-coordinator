@@ -576,17 +576,12 @@ export function setCenterAndZoom(centerAndZoom) {
   };
 }
 
-export const REQUEST_CENTER_AND_ZOOM = 'REQUEST_CENTER_AND_ZOOM';
-export function requestCenterAndZoom(centerAndZoom) {
-  return (dispatch) => {
-    dispatch({ type: REQUEST_CENTER_AND_ZOOM });
-
-    setTimeout(() => {
-      dispatch(setCenterAndZoom(centerAndZoom));
-    }, 3000);
+export const SET_MAP_INFO_DISMISSED = 'SET_MAP_INFO_DISMISSED';
+export function setMapInfoDismissed() {
+  return {
+    type: SET_MAP_INFO_DISMISSED
   };
 }
-
 
 export const SET_DIMENSION_GROUPING_COLUMN_NAME = 'SET_DIMENSION_GROUPING_COLUMN_NAME';
 export function setDimensionGroupingColumnName(dimensionGroupingColumnName) {

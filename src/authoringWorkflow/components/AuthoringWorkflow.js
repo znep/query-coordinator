@@ -28,7 +28,7 @@ import {
 
 import CustomizationTabs from './CustomizationTabs';
 import CustomizationTabPanes from './CustomizationTabPanes';
-import VisualizationPreview from './VisualizationPreview';
+import VisualizationPreviewContainer from './VisualizationPreviewContainer';
 import TableView from './TableView';
 import DataPane from './panes/DataPane';
 import PresentationPane from './panes/PresentationPane';
@@ -213,7 +213,7 @@ export const AuthoringWorkflow = React.createClass({
             </div>
             <div className="authoring-preview-container">
               <VisualizationTypeSelector/>
-              <VisualizationPreview />
+              <VisualizationPreviewContainer />
               <TableView />
               {scalingMode}
             </div>

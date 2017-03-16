@@ -141,10 +141,7 @@ function SvgFeatureMap(element, vif) {
 
       updateBaseLayer(newVif);
       updateFeatureLayer(newVif, vectorTileGetter);
-
-      if (!vifsAreEqualIgnoringCenterAndZoom(lastRenderedVif, newVif)) {
-        updateCenterAndZoom(newVif);
-      }
+      updateCenterAndZoom(newVif);
     } else {
       // If nothing to render again call completion asynchronously
       _.defer(handleVectorTileRenderComplete);
@@ -176,13 +173,6 @@ function SvgFeatureMap(element, vif) {
   /**
    * Private methods
    */
-
-  function vifsAreEqualIgnoringCenterAndZoom(vifOne, vifTwo) {
-    var vifs = [vifOne, vifTwo].map(_.cloneDeep);
-    vifs.forEach((item) => _.unset(item, 'configuration.mapCenterAndZoom'));
-
-    return _.isEqual(vifs[0], vifs[1]);
-  }
 
   function didBaseLayerChange(newVif) {
     var baseLayerPath = 'configuration.baseLayerUrl';

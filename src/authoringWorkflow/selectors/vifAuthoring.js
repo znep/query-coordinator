@@ -228,6 +228,11 @@ export const hasVisualizationType = createSelector(
   type => _.isString(type)
 );
 
+export const hasVisualizationDimension = createSelector(
+  getDimension,
+  dimension => dimension !== null
+);
+
 export const isRegionMap = createSelector(
   getVisualizationType,
   type => type === 'regionMap'

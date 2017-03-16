@@ -2,18 +2,14 @@ import $ from 'jquery';
 import _ from 'lodash';
 import classNames from 'classnames';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 
 import Visualization from '../../components/Visualization';
 
-import { translate } from '../../I18n';
-import { requestCenterAndZoom } from '../actions';
+import { setCenterAndZoom } from '../actions';
 import {
   hasVisualizationType,
-  getDimension,
-  getMeasure,
-  isInsertableVisualization,
+  hasVisualizationDimension,
   isTimelineChart,
   isValidTimelineChartVif,
   isFeatureMap,
@@ -29,7 +25,7 @@ import {
   isRegionMap,
   isValidRegionMapVif,
   getCurrentVif,
-  isRenderableMap
+  isInsertableVisualization
 } from '../selectors/vifAuthoring';
 
 export var VisualizationPreview = React.createClass({
@@ -39,31 +35,32 @@ export var VisualizationPreview = React.createClass({
   },
 
   componentDidMount() {
-    $(this.visualizationPreview()).
+    $(this.visualizationPreview).
       on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
   },
 
   componentWillUnMount() {
-    $(this.visualizationPreview()).
+    $(this.visualizationPreview).
       off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
   },
 
   shouldComponentUpdate(nextProps) {
-    const { vif, vifAuthoring } = this.props;
-    const { showCenteringAndZoomingSaveMessage } = nextProps.vifAuthoring.authoring;
+    const { vif } = this.props;
     const vifChanged = !_.isEqual(vif, nextProps.vif);
 
-    return vifChanged || vifAuthoring.authoring.showCenteringAndZoomingSaveMessage !== showCenteringAndZoomingSaveMessage;
+    // Our SVG maps mutate VIFs run internal state for map center and zoom which is
+    // intercepted through an event. We're interested in saving this data, but we
+    // don't have to re-render when it happens because the visualization code takes
+    // care of that for us.
+    const nextMapCenterAndZoom = _.get(nextProps.vif, 'configuration.mapCenterAndZoom');
+    const mapCenterAndZoom = _.get(vif, 'configuration.mapCenterAndZoom');
+
+    return vifChanged && _.isEqual(mapCenterAndZoom, nextMapCenterAndZoom);
   },
 
   onCenterAndZoomChanged(event) {
     const centerAndZoom = _.get(event, 'originalEvent.detail');
-
     this.props.onCenterAndZoomChanged(centerAndZoom);
-  },
-
-  visualizationPreview() {
-    return ReactDOM.findDOMNode(this).querySelector('.visualization-preview');
   },
 
   isVifValid() {
@@ -89,92 +86,21 @@ export var VisualizationPreview = React.createClass({
   renderVisualization() {
     const { vif, vifAuthoring } = this.props;
     const hasType = hasVisualizationType(vifAuthoring);
-    const hasDimension = !_.isNull(
-      _.get(
-        getDimension(vifAuthoring),
-        'columnName',
-        null
-      )
-    );
+    const hasDimension = hasVisualizationDimension(vifAuthoring);
 
-    if (hasType && hasDimension && this.isVifValid()) {
-      return <Visualization vif={vif} />;
-    }
-
-    return null;
-  },
-
-  renderMapInfo() {
-    const { vifAuthoring } = this.props;
-    const { hasPannedOrZoomed } = vifAuthoring.authoring;
-
-    if (!hasPannedOrZoomed && isRenderableMap(vifAuthoring)) {
-      return (
-        <div className="visualization-preview-map-message alert info">
-          <span className="visualization-preview-map-icon icon-info" />
-          <small className="visualization-preview-map-text">{translate('preview.center_and_zoom')}</small>
-        </div>
-      );
-    }
-  },
-
-  renderMapSaving() {
-    const { vifAuthoring } = this.props;
-    const { showCenteringAndZoomingSaveMessage } = vifAuthoring.authoring;
-
-    if (showCenteringAndZoomingSaveMessage && isRenderableMap(vifAuthoring)) {
-      return (
-        <div className="visualization-preview-map-saving alert success">
-          <span className="visualization-preview-map-saving-icon icon-checkmark3" />
-          <small className="visualization-preview-map-saving-text">{translate('preview.saving_center_and_zoom')}</small>
-        </div>
-      );
-    }
-  },
-
-  renderGetStartedMessage() {
-    const { vifAuthoring } = this.props;
-    const hasType = hasVisualizationType(vifAuthoring);
-    const hasDimension = !_.isNull(
-      _.get(
-        getDimension(vifAuthoring),
-        'columnName',
-        null
-      )
-    );
-
-    if (hasType && hasDimension) {
-      return null;
-    } else {
-
-      return (
-        <div className="get-started-container">
-          <h5 className="get-started-title">{translate('preview.get_started.title')}</h5>
-          <p className="get-started-description">{translate('preview.get_started.description')}</p>
-        </div>
-      );
-    }
+    return hasType && hasDimension && this.isVifValid() ?
+      <Visualization vif={vif} /> :
+      null;
   },
 
   render() {
-    const { vifAuthoring } = this.props;
-    const previewClasses = classNames(
-      'visualization-preview',
-      {
-        'visualization-preview-rendered': isInsertableVisualization(vifAuthoring)
-      }
-    );
+    const previewClasses = classNames('visualization-preview', {
+      'visualization-preview-rendered': isInsertableVisualization(this.props.vifAuthoring)
+    });
 
     return (
-      <div className="visualization-preview-container">
-        <div className={previewClasses} ref={(ref) => this.preview = ref}>
-          {this.renderGetStartedMessage()}
-          {this.renderVisualization()}
-        </div>
-        <div className="visualization-preview-map-info-container">
-          {this.renderMapSaving()}
-          {this.renderMapInfo()}
-        </div>
+      <div className={previewClasses} ref={(ref) => this.visualizationPreview = ref}>
+        {this.renderVisualization()}
       </div>
     );
   }
@@ -190,7 +116,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onCenterAndZoomChanged(centerAndZoom) {
-      dispatch(requestCenterAndZoom(centerAndZoom));
+      dispatch(setCenterAndZoom(centerAndZoom));
     }
   };
 }

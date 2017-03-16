@@ -14,7 +14,7 @@ export const soqlProperties = {
   SoQLBoolean: {
     canonicalName: 'boolean',
     conversionTarget: true,
-    icon: 'check'
+    icon: 'boolean'
   },
   SoQLFloatingTimestamp: {
     canonicalName: 'floating_timestamp',

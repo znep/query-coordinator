@@ -4,7 +4,14 @@
   <%= rendered_stylesheet_tag('dataset-management-ui') %>
 <% end %>
 
+<% @use_small_admin_header = true %>
+<% @suppress_site_chrome = render_site_admin_chrome? %>
+
+<%- if @suppress_site_chrome -%>
+<div id="app" class="no-chrome-header">
+<%- else -%>
 <div id="app">
+<%- end -%>
   <div id="initial-spinner-container">
     <span class="spinner-default spinner-large"></span>
   </div>

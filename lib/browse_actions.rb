@@ -107,8 +107,7 @@ module BrowseActions
       _request = (defined?(request) && request) || Canvas::Environment.request || Canvas2::Util.request
       cookies = _request.cookies unless defined?(cookies)
 
-      all_tags = Cetera::Utils.get_tags(forwardable_session_cookies(cookies),
-                                        request_id(_request)).results
+      all_tags = Cetera::Utils.get_tags(request_id(_request)).results
       title = t('controls.browse.facets.tags_title')
       singular_description = t('controls.browse.facets.tags_singular_title')
     else
@@ -473,7 +472,6 @@ module BrowseActions
 
             browse_options[:search_options][:domain_boosts] = Federation.federated_search_boosts
             browse_options[:search_options][:categories] = selected_category_and_any_children(browse_options)
-            browse_options[:search_options][:search_context] = ENV['CETERA_SPOOF_HOST'] || CurrentDomain.cname
             browse_options[:search_options][:default_sort] = CurrentDomain.property(:sortBy, :catalog)
 
             # localize catalog links if locale is present
@@ -481,22 +479,12 @@ module BrowseActions
 
             # @profile_search_method is set in the profile controller
             if @profile_search_method
-              if using_cetera_profile_search?
-                Cetera::Utils.public_send(
-                  @profile_search_method,
-                  browse_options[:search_options],
-                  forwardable_session_cookies(request.cookies),
-                  request_id(request) # See app/helpers/application_helper.rb#request_id
-                )
-              else
-                Clytemnestra.search_views(browse_options[:search_options])
-              end
+              Clytemnestra.search_views(browse_options[:search_options])
             else
               Cetera::Utils.public_send(
                 :search_views,
-                browse_options[:search_options],
-                forwardable_session_cookies(request.cookies),
-                request_id(request) # See app/helpers/application_helper.rb#request_id
+                request_id(request),
+                browse_options[:search_options]
               )
             end
           else

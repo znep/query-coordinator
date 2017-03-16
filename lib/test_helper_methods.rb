@@ -95,13 +95,6 @@ module TestHelperMethods
     }
   end
 
-  def cetera_request_headers
-    {
-      'Content-Type' => 'application/json',
-      'X-Socrata-Host' => 'localhost',
-    }
-  end
-
   def stub_site_chrome(body = SocrataSiteChrome::DomainConfig.default_configuration.first)
     stub_site_chrome_instance # SocrataSiteChrome::Test::Helpers
 

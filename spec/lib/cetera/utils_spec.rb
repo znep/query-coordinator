@@ -56,14 +56,6 @@ describe Cetera::Utils do
     expect(Cetera::Utils.translate_display_type('tables', 'view')).to eq('filters')
   end
 
-  it 'should test_cetera_show_hidden_translator with show_hidden string' do
-    expect(Cetera::Utils.translate_show_hidden(['show_hidden', 'monkeys'])).to eq(true)
-  end
-
-  it 'should test_cetera_show_hidden_translator without show_hidden string' do
-    expect(Cetera::Utils.translate_show_hidden(['monkeys'])).to eq(false)
-  end
-
   it 'should test_cetera_sort_order_translator' do
     frontend_to_cetera = {
       nil => 'relevance',
@@ -85,31 +77,45 @@ describe Cetera::Utils do
   end
 
   describe 'search_views' do
+    before(:all) { VCR.turn_off! }
+    after(:all) { VCR.turn_on! }
+
+    path = APP_CONFIG.cetera_internal_uri + '/catalog/v1'
+    viz_params = {
+      :public => true,
+      :published => true,
+      :approval_status => 'approved',
+      :explicitly_hidden => false
+    }
+
     it 'should test_cetera_search_views_raises_timeout_error_on_timeout' do
-      query = { domains: ['example.com'] }
+      domain = 'data.redmond.gov'
+      init_current_domain
+      allow(CurrentDomain).to receive(:cname).and_return(domain)
+
       stub_request(:get, APP_CONFIG.cetera_internal_uri + '/catalog/v1').
-        with(query: Cetera::Utils.cetera_soql_params(query)).
+        with(headers: { 'X-Socrata-RequestId' => 'uh-oh-timeout'},
+             query: Cetera::Utils.cetera_soql_params(:search_context => domain).merge(viz_params)).
         to_timeout
 
-      expect { Cetera::Utils.search_views(query, nil, 'Unvailable') }.to raise_error(Timeout::Error)
+      expect { Cetera::Utils.search_views('uh-oh-timeout') }.to raise_error(Timeout::Error)
     end
 
-    it 'should test_cookies_and_request_id_get_passed_along_to_cetera' do
-      query = { domains: ['example.com'] }
-      cookies = {
-        'i am a cookie' => 'of oatmeal and raisins',
-        'i am also a cookie' => 'of chocolate chips'
-      }.map { |key, value| "#{key}=#{value}" }.join('; ')
-
+    it 'should test_request_id_gets_passed_along_to_cetera' do
+      domain = 'example.com'
+      allow(CurrentDomain).to receive(:cname).and_return(domain)
+      query = { domains: [domain], search_context: domain}
       request_id = 'iAmProbablyUnique'
 
-      stub_request(:get, APP_CONFIG.cetera_internal_uri + '/catalog/v1').
-        with(headers: { 'Cookie' => cookies, 'X-Socrata-RequestId' => request_id },
-             query: Cetera::Utils.cetera_soql_params(query)).
-        to_return(status: 500, body: 'I cannot be parsed!')
+      stub_request(:get, path).
+        with(headers: { 'X-Socrata-RequestId' => request_id, 'Content-Type' => 'application/json' },
+             query: Cetera::Utils.cetera_soql_params(query).merge(viz_params)).
+        to_return(status: 200, body: {}.to_json, headers: { 'Content-Type' => 'application/json' } )
 
-      # Unsuccessful response returns false, just sayin'
-      expect(Cetera::Utils.search_views(query, cookies, request_id)).to eq(false)
+      Cetera::Utils.search_views(request_id, query)
+      expect(WebMock).to have_requested(:get, path).
+        with(query: Cetera::Utils.cetera_soql_params(query).merge(viz_params),
+             headers: { 'X-Socrata-RequestId' => request_id, 'Content-Type' => 'application/json' } )
     end
 
     it 'should test_for_user_param_gets_passed_along_to_cetera' do
@@ -118,31 +124,24 @@ describe Cetera::Utils do
       allow(CurrentDomain).to receive(:cname).and_return(domain)
       query = {
         domains: [domain],
+        search_context: domain,
         for_user: '7kqh-9s5a'
       }
 
-      cetera_soql_params = Cetera::Utils.cetera_soql_params(query)
-      expect(cetera_soql_params).to include(:for_user)
+      params = Cetera::Utils.cetera_soql_params(query).merge(viz_params)
+      expect(params).to include(:for_user)
 
-      response = {
-        'results' => [],
-        'resultSetSize' => 0,
-        'timings' => { 'serviceMillis' => 118, 'searchMillis' => [2, 2] }
-      }
+      stub_request(:get, path).
+        with(query: params).
+        to_return(status: 200, body: {}.to_json, headers: { 'Content-Type' => 'application/json' })
 
-      stub_request(:get, APP_CONFIG.cetera_internal_uri + '/catalog/v1').
-        with(query: cetera_soql_params).
-        to_return(status: 200, body: response.to_json)
+      Cetera::Utils.search_views(nil, query)
 
-      res = Cetera::Utils.search_views(query, nil, 'funnyId')
-
-      expect(res.data.to_hash).to eq(response)
-      expect(res.results).to be_empty
+      expect(WebMock).to have_requested(:get, path).with(query: params)
     end
   end
 
   describe 'get_derived_from_views' do
-    let(:cookies) { 'i am a cookie' }
     let(:request_id) { 'iAmProbablyUnique' }
 
     let(:cetera_results) do
@@ -156,7 +155,7 @@ describe Cetera::Utils do
 
     it 'returns CeteraResultRow objects' do
       allow(Cetera::Utils).to receive(:search_views).and_return(cetera_results)
-      result = Cetera::Utils.get_derived_from_views('data-lens', {})
+      result = Cetera::Utils.get_derived_from_views('data-lens', request_id)
 
       expect(result.first.class).to eq(Cetera::Results::ResultRow)
     end
@@ -164,130 +163,54 @@ describe Cetera::Utils do
     it 'invokes Cetera with limit and offset parameters' do
       expect(Cetera::Utils).to receive(:search_views).
         with(
+          request_id,
           {
-            search_context: 'unicorns',
             domains: ['unicorns'],
             derived_from: 'data-lens',
             offset: 20,
             limit: 30
-          },
-          cookies,
-          request_id
+          }
         ).
         and_return(cetera_results)
 
-      options = { offset: 20, limit: 30, cookie_string: cookies, request_id: request_id }
-      Cetera::Utils.get_derived_from_views('data-lens', options)
+      options = { offset: 20, limit: 30 }
+      Cetera::Utils.get_derived_from_views('data-lens', request_id, options)
     end
 
     it 'invokes Cetera with boost parameters' do
       expect(Cetera::Utils).to receive(:search_views).
         with(
+          request_id,
           {
-            search_context: 'unicorns',
             domains: ['unicorns'],
             derived_from: 'data-lens',
             boostCalendars: 100.0
-          },
-          cookies,
-          request_id
+          }
         ).
         and_return(cetera_results)
 
-      options = { boostCalendars: 100.0, cookie_string: cookies, request_id: request_id }
-      Cetera::Utils.get_derived_from_views('data-lens', options)
+      options = { boostCalendars: 100.0 }
+      Cetera::Utils.get_derived_from_views('data-lens', request_id, options)
     end
 
     it 'returns an empty array when Cetera returns a bad response' do
       allow(Cetera::Utils).to receive(:search_views).and_return(nil)
-      options = { offset: nil, limit: 'purple', cookie_string: cookies, request_id: request_id }
-      result = Cetera::Utils.get_derived_from_views('data-lens', options)
+      options = { offset: nil, limit: 'purple' }
+      result = Cetera::Utils.get_derived_from_views('data-lens', request_id, options)
 
       expect(result).to be_a Array
       expect(result.length).to eq(0)
     end
   end
 
-  describe 'search_profile_views' do
-    context 'when logged in' do
-      # NOTE: If you re-record the cassette, you'll need to replace this with whatever is getting
-      # passed to Cetera & Core. Check the Cetera debug logs or puts forwardable_session_cookies.
-      let(:cookies) { 'logged_in=true; _ga=GA1.1.764567635.1461627094; socrata-csrf-token=kuyEyHvf3%2FFzn8QU97z3ply5dlDzzClmsC7EsdPaeqYVVb39v8wyxs76Zg54mzXkkt48GAWN0%2FnrM4nv8%2FbnDA%3D%3D; _core_session_id=dzV1NS1zNnd5IDE0NzAxODQ0MjAgZDA3MDkyOWM5ZGVlIDRlYzI3MzIyZTFlN2Q5Y2E2ODc4OTMwYWE2N2Q4ODMyYzViMTA3ZjQ%3D; _socrata_session_id=BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJTJkYmEzMWJhMTExN2ZlZGJjYjY2M2YyMDQyMmU5ZWE1BjsARkkiCXVzZXIGOwBGMEkiEF9jc3JmX3Rva2VuBjsARkkiMWg3azVOY1FUN1RlOVphSWFqeWZDUXM1blNrajJRZnFmV3gxTlhpQXNuYW89BjsARkkiCWluaXQGOwBUVEkiDnJldHVybl90bwY7AEYw--ef71c46553c8d78542f93e72a89094651e4b2178; mp_mixpanel__c=73' }
-      let(:user_4x4) { 'w5u5-s6wy' }
-      let(:domain) { 'localhost' }
-      let(:basic_opts) { { :limit=>10, :page=>1, :for_user=>user_4x4, :nofederate=>true, :sortBy=>"newest", :publication_stage=>["published", "unpublished"], :id=>user_4x4, :domains=>[domain], :domain_boosts=>{}, :categories=>nil, :search_context=>domain } }
-
-      before(:each) do
-        CurrentDomain.set_domain(Domain.new('cname' => domain))
-      end
-
-      it 'returns correct results when searching for assets owned by user' do
-        VCR.use_cassette('cetera/search_profile_views_owned') do
-          search_result = Cetera::Utils.search_owned_by_user(basic_opts, cookies)
-          expect(search_result).to be_a(Cetera::Results::SearchResult)
-
-          results = search_result.results
-          expect(results.size).to eq(1) # Currently 1 results for localhost Ricky
-          expect(results[0]).to be_a(Cetera::Results::ResultRow)
-          expect(results[0].id).to eq('em7z-qeb7') # Current result for localhost Ricky
-        end
-      end
-
-      it 'returns correct results when searching for assets shared to user' do
-        VCR.use_cassette('cetera/search_profile_views_shared') do
-          search_result = Cetera::Utils.search_shared_to_user(basic_opts.merge(:shared_to => user_4x4), cookies)
-          expect(search_result).to be_a(Cetera::Results::SearchResult)
-
-          results = search_result.results
-          expect(results.size).to eq(2) # Currently 2 results shared to localhost Ricky
-          expect(results[0]).to be_a(Cetera::Results::ResultRow)
-          expect(results[0].id).to eq('ij2u-iwtx')
-          expect(results[1]).to be_a(Cetera::Results::ResultRow)
-          expect(results[1].id).to eq('vkji-3zrf')
-        end
-      end
-
-      it 'searching owned should not return results when authentication fails' do
-        VCR.use_cassette('cetera/search_profile_views_bad_auth_owned') do
-          owned_search_result = Cetera::Utils.search_owned_by_user(basic_opts, nil)
-          expect(owned_search_result.results).to be_empty
-        end
-      end
-
-      it 'searching shared should not return results when authentication fails' do
-        VCR.use_cassette('cetera/search_profile_views_bad_auth_shared') do
-          owned_search_result = Cetera::Utils.search_shared_to_user(basic_opts.merge(:shared_to => user_4x4), nil)
-          expect(owned_search_result.results).to be_empty
-        end
-      end
-    end
-
-    context 'when not logged in' do
-      it 'returns empty result set when Cetera returns a bad response, searching owned' do
-        VCR.use_cassette('cetera/search_profile_views_owned_failed') do
-          owned_search_result = Cetera::Utils.search_owned_by_user({}, nil, nil)
-          expect(owned_search_result.results).to be_empty
-        end
-      end
-
-      it 'returns empty result set when Cetera returns a bad response, searching shared' do
-        VCR.use_cassette('cetera/search_profile_views_shared_failed') do
-          owned_search_result = Cetera::Utils.search_shared_to_user({}, nil, nil)
-          expect(owned_search_result.results).to be_empty
-        end
-      end
-    end
-  end
-
   describe 'get_tags' do
-    let(:cookies) { 'i am a cookie' }
     let(:request_id) { 'iAmProbablyUnique' }
 
     it 'returns a TagCountResult with expected properties' do
       VCR.use_cassette('cetera/get_tags') do
         CurrentDomain.stub(:cname) { 'localhost' }
 
-        results = Cetera::Utils.get_tags(cookies, request_id)
+        results = Cetera::Utils.get_tags(request_id)
 
         expect(results.class).to eq(Cetera::Results::TagCountResult)
         expect(results.results[0].name).to eq('biz')
@@ -302,7 +225,7 @@ describe Cetera::Utils do
         CurrentDomain.stub(:cname) { 'opendata.rc-socrata.com' }
 
         # fails because opendata.rc-socrata.com is not indexed on localhost
-        results = Cetera::Utils.get_tags(cookies, request_id)
+        results = Cetera::Utils.get_tags(request_id)
 
         expect(results.results).to eq([])
       end

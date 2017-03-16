@@ -9,7 +9,7 @@ gem 'airbrake', '4.3.0'
 gem 'asset-inventory', '~> 1.1.1'
 gem 'awesome_print'
 gem 'axlsx', '~> 1.3.4'
-gem 'cetera-ruby', '0.3.0', :require => 'cetera'
+gem 'cetera-ruby', '0.4.2', :require => 'cetera'
 gem 'dalli', '~> 2.7', '>= 2.7.6' # Doesn't work with nutcracker / twemproxy
 gem 'diplomat' # Used by downtime / mainenance window notices
 gem 'hashie', '2.1.2'

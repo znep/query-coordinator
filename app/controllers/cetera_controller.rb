@@ -10,7 +10,7 @@ class CeteraController < ApplicationController
     cetera_params = params.slice(:limit, :flags, :domain).symbolize_keys
     if params[:q]
       begin
-        cetera_response = user_search_client.find_all_by_query(params[:q], cetera_params)
+        cetera_response = user_search_client.find_all_by_query(params[:q], request_id, forwardable_session_cookies, cetera_params)
         users = Cetera::Results::UserSearchResult.new(cetera_response).results
         render :json => users.map(&:data)
       rescue RuntimeError
@@ -25,12 +25,11 @@ class CeteraController < ApplicationController
     params[:limit] = (params[:limit] || 30).to_i
     cetera_params = params.slice(:limit, :flags, :domain, :categories).symbolize_keys
     cetera_params[:domains] = Federation.federated_domain_cnames('') * ','
-    cetera_params[:search_context] = CurrentDomain.cname
 
     if params[:q]
       begin
-        cetera_response = autocomplete_search_client.find_by_title(
-          params[:q], cetera_params
+        cetera_response = autocomplete_search_client.get_titles_of_anonymously_viewable_views(
+          params[:q], request_id, cetera_params
         )
         render :json => cetera_response
       rescue StandardError => e
@@ -45,10 +44,10 @@ class CeteraController < ApplicationController
   private
 
   def user_search_client
-    @user_search_client ||= Cetera::Utils.user_search_client(forwardable_session_cookies)
+    @user_search_client ||= Cetera::Utils.user_search_client
   end
 
   def autocomplete_search_client
-    @autocomplete_search_client ||= Cetera::Utils.autocomplete_search_client(forwardable_session_cookies)
+    @autocomplete_search_client ||= Cetera::Utils.autocomplete_search_client
   end
 end

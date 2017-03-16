@@ -235,6 +235,20 @@ class InternalController < ApplicationController
     redirect_to show_org_path(org_id: domain.organizationId)
   end
 
+  def undelete_domain
+    domain = Domain.find(params[:domain_id])
+    if domain.present?
+      Domain.undelete(domain.id)
+      notices << "Un-deleted domain `#{params[:domain_id]}` successfully."
+      CurrentDomain.flag_out_of_date!(params[:domain_id])
+    else
+      errors << "Could not find domain with cname `#{params[:domain_id]}`."
+    end
+    prepare_to_render_flashes!
+
+    redirect_to show_domain_path(domain_id: params[:domain_id])
+  end
+
   def create_site_config
     if params[:config][:type].blank?
       flash[:error] = 'Cannot add a configuration set with no type.'

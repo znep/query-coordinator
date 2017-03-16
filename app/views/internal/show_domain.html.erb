@@ -143,12 +143,19 @@
             <%- end %>
             <p>This informs frontend that it should re-fetch domain data (including configurations) from core.</p>
           </dd>
-          <%- unless @deleted %>
+          <%- if @deleted %>
+            <dt>Un-delete Domain</dt>
+            <dd>
+              <p><%= one_button_form(url: undelete_domain_path, text: 'Mark Domain as NOT deleted') %></p>
+              <br/>
+              <p>This will remove deleted_at for the domain in metadb.</p>
+            </dd>
+          <%- else %>
             <dt>Delete Domain</dt>
             <dd>
               <p><%= one_button_form(url: delete_domain_path, text: 'Mark Domain as Deleted') %></p>
               <br/>
-              <p>This will set deleted_at for the domain in metadb (soft-delete). This removes the domain from the organization list, and from the api results for allCustomerDomains. This means we can stop monitoring the domain, and stop indexing the domain for  search, but we will not delete the data.</p>
+              <p>This will set deleted_at for the domain in metadb (soft-delete). This removes the domain from the api results for allCustomerDomains. This means we can stop monitoring the domain, and stop indexing the domain for search, but we will not delete the data.</p>
             </dd>
           <%- end %>
         </dl>

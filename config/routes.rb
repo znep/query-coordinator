@@ -87,6 +87,7 @@ Rails.application.routes.draw do
         get '/data', :action => 'show_domain', :format => :json, :as => 'show_domain_data'
         post '/default_site_config', :action => 'set_default_site_config'
         post '/delete_domain', :action => 'delete_domain'
+        post '/undelete_domain', :action => 'undelete_domain'
         post '/delete_config/:config_id', :action => 'delete_site_config', :as => 'delete_site_config'
         post '/rename_config/:config_id', :action => 'rename_site_config', :as => 'rename_config'
         post '/feature', :action => 'set_features', :as => 'set_features'

@@ -1,42 +1,63 @@
 /*eslint no-unused-vars:0*/
 
+var siteChromeTemplate;
+var $siteChromeHeader;
+var $siteChromeHeaderDesktopNav;
+var $siteChromeHeaderMobileNav;
+var $siteChromeMobileMenu;
+var navLinkFullWidth;
+var navbarRightWidth;
 var initialBodyOverflowY;
 
 $(document).ready(function() {
-  initialBodyOverflowY = $('body').css('overflow-y');
-  addAriaHiddenAttributeToUnusedNavVariant();
+  $siteChromeHeader = $('#site-chrome-header');
+  $siteChromeHeaderDesktopNav = $siteChromeHeader.find('nav.desktop');
+  $siteChromeHeaderMobileNav = $siteChromeHeader.find('nav.mobile');
+  $siteChromeMobileMenu = $siteChromeHeader.find('.mobile-menu');
+  siteChromeTemplate = $siteChromeHeader.attr('template');
+  navLinkFullWidth = $siteChromeHeaderDesktopNav.find('.site-chrome-nav-links').width();
+
+  if (siteChromeTemplate === 'evergreen')
+    navbarRightWidth = $siteChromeHeader.find('.evergreen-link-cluster').width();
+  else if (siteChromeTemplate === 'rally')
+    navbarRightWidth = $siteChromeHeader.find('.navbar-right').width();
+
+  initialBodyOverflowY = $('body').css('overflow-y') || 'visible';
+
   addAriaExpandedAttributeToSearchBox();
   verticallyPositionSearchbar();
+  checkMobileBreakpoint();
+
+  // Show header nav. It has opacity set to 0 initially to prevent a flash of desktop styling on mobile.
+  $siteChromeHeader.find('nav').css('opacity', 1);
 });
 
-function addAriaHiddenAttributeToUnusedNavVariant() {
-  var $desktopNav = $('#site-chrome-header nav.desktop');
-  var $mobileNav = $('#site-chrome-header nav.mobile');
-
-  if ($desktopNav.css('display') === 'block') {
-    $mobileNav.attr('aria-hidden', 'true');
-    $('#site-chrome-header .mobile-menu').attr('aria-hidden', 'true');
-  } else {
-    $desktopNav.attr('aria-hidden', 'true');
-  }
-}
+$(window).resize(checkMobileBreakpoint);
 
 function addAriaExpandedAttributeToSearchBox() {
   $('.searchbox').attr('aria-expanded', 'false');
 }
 
 function mobileMenuToggle() {
-  var $menu = $('#site-chrome-header .mobile-menu');
-  $menu.toggleClass('active');
-  if ($menu.hasClass('active')) {
-    $menu.attr('aria-expanded', 'true');
-    // Disable body from scrolling while menu is open
-    $('body').css('overflow-y', 'hidden');
-    mobileLanguageSwitcher($('.mobile-language-dropdown'));
+  if ($siteChromeMobileMenu.hasClass('active')) {
+    closeMobileMenu();
   } else {
-    $menu.attr('aria-expanded', 'false');
-    $('body').css('overflow-y', initialBodyOverflowY || 'visible');
+    openMobileMenu();
   }
+}
+
+function openMobileMenu() {
+  $siteChromeMobileMenu.addClass('active');
+  $siteChromeMobileMenu.attr('aria-expanded', 'true');
+  // Disable body from scrolling while menu is open
+  $('body').css('overflow-y', 'hidden');
+  mobileLanguageSwitcher($('.mobile-language-dropdown'));
+}
+
+function closeMobileMenu() {
+  $siteChromeMobileMenu.removeClass('active');
+  $siteChromeMobileMenu.attr('aria-expanded', 'false');
+  $('body').css('overflow-y', initialBodyOverflowY);
 }
 
 function mobileLanguageSwitcher($div) {
@@ -95,9 +116,58 @@ function verticallyPositionSearchbar() {
   var isSafari = navigator.userAgent.indexOf('Safari') !== -1;
   if (isMSIE || isSafari) {
     var $searchbox = $('header#site-chrome-header .collapsible-search .searchbox');
-    var $banner = $('#site-chrome-header .banner');
+    var $banner = $siteChromeHeader.find('.banner');
     var positionTop = $banner.height() / 2 - $searchbox.height() / 2;
 
     $searchbox.css('top', positionTop);
   }
+}
+
+/**
+ * Check if the header should enter mobile mode based on the width of the navLinks
+ * and the available width of the navbar based on the user's window size.
+ */
+function checkMobileBreakpoint() {
+  var roomForNavLinks;
+  if (siteChromeTemplate === 'evergreen') {
+    var logoWidth = $siteChromeHeader.find('a.logo').width();
+    var headerContentWidth = $siteChromeHeader.find('.header-content').width();
+    var headerPadding = 26; // px
+    roomForNavLinks = headerContentWidth - logoWidth - navbarRightWidth - headerPadding;
+  } else if (siteChromeTemplate === 'rally') {
+    var rallyBottomWidth = $siteChromeHeader.find('.rally-bottom').width();
+    roomForNavLinks = rallyBottomWidth - navbarRightWidth;
+  }
+
+  if (navLinkFullWidth > roomForNavLinks) {
+    showMobileHeaderNav();
+  } else {
+    showDesktopHeaderNav();
+  }
+}
+
+function showDesktopHeaderNav() {
+  // Hide mobile nav
+  $siteChromeHeaderMobileNav.css('display', 'none');
+  $siteChromeHeaderMobileNav.attr('aria-hidden', 'true');
+  $siteChromeHeader.find('.mobile-menu').attr('aria-hidden', 'true');
+  // Close mobile menu if it is open
+  if ($siteChromeHeader.find('.mobile-menu').hasClass('active')) {
+    closeMobileMenu();
+  }
+  // Show desktop nav
+  $siteChromeHeaderDesktopNav.css('display', 'block');
+  $siteChromeHeader.find('.rally-top .searchbox').show();
+  $siteChromeHeaderDesktopNav.attr('aria-hidden', 'false');
+}
+
+function showMobileHeaderNav() {
+  // Hide desktop nav
+  $siteChromeHeaderDesktopNav.css('display', 'none');
+  $siteChromeHeaderDesktopNav.attr('aria-hidden', 'true');
+  // Show mobile nav
+  $siteChromeHeaderMobileNav.css('display', 'block');
+  $siteChromeHeader.find('.rally-top .searchbox').hide();
+  $siteChromeHeaderMobileNav.attr('aria-hidden', 'false');
+  $siteChromeHeader.find('.mobile-menu').attr('aria-hidden', 'false');
 }

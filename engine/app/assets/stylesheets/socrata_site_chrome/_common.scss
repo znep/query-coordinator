@@ -134,10 +134,6 @@ header#site-chrome-header, footer#site-chrome-footer {
     float: right;
     min-height: 32px;
 
-    @include mobile-med {
-      display: none;
-    }
-
     form {
       line-height: $header_logo_height;
       position: relative;

@@ -11,6 +11,7 @@ import * as ShowActions from '../actions/showOutputSchema';
 import * as ApplyActions from '../actions/applyUpdate';
 import Table from './Table';
 import ReadyToImport from './ReadyToImport';
+import * as DisplayState from './Table/displayState';
 
 function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
   const outputSchemaId = _.toNumber(outputSchemaIdStr);
@@ -40,7 +41,7 @@ export function ShowOutputSchema({
   inputSchema,
   outputSchema,
   columns,
-  errorsTransformId,
+  displayState,
   canApplyUpdate,
   goHome,
   updateColumnType,
@@ -77,7 +78,6 @@ export function ShowOutputSchema({
     columns.map((col) => col.transform.contiguous_rows_processed)
   ) || 0;
 
-
   return (
     <div id="show-output-schema">
       <Modal {...modalProps}>
@@ -109,7 +109,7 @@ export function ShowOutputSchema({
                 inputSchema={inputSchema}
                 rowErrors={_.filter(db.row_errors, { input_schema_id: inputSchema.id })} // TODO: move to a mapStateToProps
                 outputSchema={outputSchema}
-                errorsTransformId={errorsTransformId}
+                displayState={displayState}
                 updateColumnType={updateColumnType} />
             </div>
           </div>
@@ -154,7 +154,7 @@ ShowOutputSchema.propTypes = {
   goHome: PropTypes.func.isRequired,
   updateColumnType: PropTypes.func.isRequired,
   applyUpdate: PropTypes.func.isRequired,
-  errorsTransformId: PropTypes.number,
+  displayState: PropTypes.object.isRequired,
   canApplyUpdate: PropTypes.bool.isRequired
 };
 
@@ -166,9 +166,17 @@ function mapStateToProps(state, ownProps) {
     _.toNumber(params.inputSchemaId),
     _.toNumber(params.outputSchemaId)
   );
+  let displayState;
+  if (params.errorsTransformId) {
+    displayState = DisplayState.columnErrors(_.toNumber(params.errorsTransformId));
+  } else if (ownProps.route.path.indexOf('row_errors') > 0) {
+    displayState = DisplayState.rowErrors();
+  } else {
+    displayState = DisplayState.normal();
+  }
   return {
     ...queryResults,
-    errorsTransformId: params.errorsTransformId ? _.toNumber(params.errorsTransformId) : null
+    displayState
   };
 }
 

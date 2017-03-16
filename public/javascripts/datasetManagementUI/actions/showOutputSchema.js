@@ -95,7 +95,7 @@ export function getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType) 
   };
 }
 
-export function loadErrorTable(nextState) {
+export function loadColumnErrors(nextState) {
   const { inputSchemaId, outputSchemaId, errorsTransformId: errorsTransformIdStr } = nextState.params;
   const errorsTransformId = _.toNumber(errorsTransformIdStr);
   return (dispatch, getState) => {
@@ -152,5 +152,12 @@ export function loadErrorTable(nextState) {
         // TODO: maybe add a notification
         console.error('failed to load error table', error);
       });
+  };
+}
+
+
+export function loadRowErrors() {
+  return () => {
+    console.log('TODO: actually load row errors');
   };
 }

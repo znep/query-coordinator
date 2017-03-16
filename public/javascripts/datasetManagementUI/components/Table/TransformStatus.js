@@ -3,6 +3,7 @@ import React, { PropTypes, Component } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router';
 import * as Links from '../../links';
+import * as DisplayState from './displayState';
 import { singularOrPlural } from '../../lib/util';
 import styleguide from 'socrata-components';
 import ProgressBar from '../ProgressBar';
@@ -34,16 +35,18 @@ class TransformStatus extends Component {
   }
 
   render() {
-    const { transform, totalRows, path, errorsTransformId, columnId } = this.props;
+    const { transform, totalRows, path, displayState, columnId } = this.props;
     const SubI18n = I18n.show_output_schema.column_header;
     const uploadDone = _.isNumber(totalRows);
     const thisColumnDone = _.isNumber(totalRows) &&
       transform.contiguous_rows_processed === totalRows;
 
-    const inErrorMode = transform.id === errorsTransformId;
+    const inErrorMode = displayState.type === DisplayState.COLUMN_ERRORS &&
+      transform.id === displayState.transformId;
+
     const linkPath = inErrorMode ?
       Links.showOutputSchema(path.uploadId, path.inputSchemaId, path.outputSchemaId) :
-      Links.showErrorTableForColumn(path.uploadId, path.inputSchemaId, path.outputSchemaId, transform.id);
+      Links.showColumnErrors(path.uploadId, path.inputSchemaId, path.outputSchemaId, transform.id);
 
     const rowsProcessed = transform.contiguous_rows_processed || 0;
     const percentage = Math.round(rowsProcessed / totalRows * 100);
@@ -131,7 +134,7 @@ class TransformStatus extends Component {
 TransformStatus.propTypes = {
   transform: PropTypes.object.isRequired,
   columnId: PropTypes.number.isRequired,
-  errorsTransformId: PropTypes.number,
+  displayState: PropTypes.object.isRequired,
   path: PropTypes.object.isRequired,
   totalRows: PropTypes.number
 };

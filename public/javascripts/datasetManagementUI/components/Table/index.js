@@ -2,7 +2,9 @@ import React, { PropTypes } from 'react';
 import ColumnHeader from './ColumnHeader';
 import TransformStatus from './TransformStatus';
 import TableBody from './TableBody';
-import { commaify } from '../../../common/formatNumber';
+import RowErrorsLink from './RowErrorsLink';
+import classNames from 'classnames';
+import * as DisplayState from './displayState';
 
 export default function Table({
   db,
@@ -11,9 +13,10 @@ export default function Table({
   outputSchema,
   rowErrors,
   columns,
-  errorsTransformId,
+  displayState,
   updateColumnType }) {
 
+  const inRowErrorMode = displayState.type === DisplayState.ROW_ERRORS;
   const transforms = _.map(columns, 'transform');
   return (
     <table className="table table-condensed">
@@ -33,25 +36,29 @@ export default function Table({
               key={column.transform.id}
               path={path}
               transform={column.transform}
-              errorsTransformId={errorsTransformId}
+              displayState={displayState}
               columnId={column.id}
               totalRows={inputSchema.total_rows} />
           )}
         </tr>
         {(rowErrors.length > 0) &&
           <tr className="row-errors-count">
-            <th className="row-errors-count"> {/* TODO: different class name */}
-              <div className="column-status-text">
-                <span className="err-info error">{commaify(rowErrors.length)}</span>
-                Malformed rows
-              </div>
+            <th
+              className={classNames(
+                'row-errors-count',
+                { 'row-errors-count-selected': inRowErrorMode }
+              )}>
+              <RowErrorsLink
+                path={path}
+                displayState={displayState}
+                numRowErrors={rowErrors.length} />
             </th>
           </tr>}
       </thead>
       <TableBody
         db={db}
         transforms={transforms}
-        errorsTransformId={errorsTransformId} />
+        displayState={displayState} />
     </table>
   );
 }
@@ -64,5 +71,5 @@ Table.propTypes = {
   outputSchema: PropTypes.object.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   updateColumnType: PropTypes.func.isRequired,
-  errorsTransformId: PropTypes.number
+  displayState: PropTypes.object.isRequired
 };

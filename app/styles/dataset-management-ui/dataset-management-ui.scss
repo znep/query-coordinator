@@ -830,6 +830,15 @@ body {
               font-weight: normal;
               display: block;
               width: 100%;
+
+              a {
+                color: $grey;
+                text-decoration: none;
+              }
+
+              &.row-errors-count-selected {
+                box-shadow: inset 0 0 10px -2px $black;
+              }
             }
           }
         }
@@ -943,7 +952,6 @@ body {
 
             .malformed-row-tag {
               color: $white;
-              background-color: $error-text;
               border-radius: 1.1em;
               padding: 0 0.6em 1px;
               font-size: 9px;

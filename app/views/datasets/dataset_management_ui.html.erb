@@ -5,9 +5,9 @@
 <% end %>
 
 <% @site_chrome_admin_header_options = {size: 'small'} %>
-<% @suppress_site_chrome = render_site_admin_chrome? %>
+<% @suppress_site_chrome_header = render_site_admin_chrome? %>
 
-<%- if @suppress_site_chrome -%>
+<%- if @suppress_site_chrome_header -%>
 <div id="app" class="no-chrome-header">
 <%- else -%>
 <div id="app">

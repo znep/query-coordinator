@@ -69,7 +69,7 @@ module SiteChromeHelper
   # considered to be enabled; in certain situations, we override the rendering
   # with a @suppress_chrome property.
   def render_site_chrome?
-    return false if @suppress_chrome || @suppress_site_chrome
+    return false if @suppress_chrome
 
     enable_site_chrome?
   end

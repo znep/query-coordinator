@@ -2133,7 +2133,7 @@
       scroll(_.throttle(function() {
         onScroll();
         renderRows();
-      }, 200)).
+      }, 50)).
       bind('touchstart', onTouchStart).
       bind('touchmove', onTouchMove);
 

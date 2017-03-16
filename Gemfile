@@ -22,7 +22,7 @@ gem 'money', '~> 3.7.1'
 gem 'multipart-post', '>= 1.0.1', :require => 'net/http/post/multipart'
 gem 'omniauth', '~> 1.2'
 gem 'omniauth-auth0', '~> 1.1'
-gem 'parser', '~> 2.3', '>= 2.3.0.6'
+gem 'parser', '~> 2.3.3', '>= 2.3.3.1'
 gem 'rack'
 gem 'rails', '~> 4.2.8', :require => nil
 gem 'recaptcha', '0.3.5', :require => 'recaptcha/rails'

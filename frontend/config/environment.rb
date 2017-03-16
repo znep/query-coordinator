@@ -1,5 +1,6 @@
 # Load the Rails application.
 require File.expand_path('../application', __FILE__)
+require 'socrata_tagged_log_formatter'
 
 module Frontend
   class Application < Rails::Application
@@ -22,6 +23,7 @@ module Frontend
       FileUtils.touch(config.log_file)
     end
     config.logger = ActiveSupport::TaggedLogging.new(Logger.new(config.log_file))
+    config.logger.formatter = SocrataTaggedLogFormatter.new
     config.logger.level = Logger::DEBUG
   end
 end

@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
 import velocity from 'velocity-animate';
+import classNames from 'classnames';
 
 import usersnap from '../usersnap';
 import zendesk from '../zendesk';
@@ -13,6 +14,10 @@ function t(key) {
 export class FeedbackPanel extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      isLoadingUsersnap: false
+    };
 
     _.bindAll(this,
       'onDismissFeedback',
@@ -64,7 +69,12 @@ export class FeedbackPanel extends Component {
 
   // Load the UserSnap widget when the user wants to include a screenshot.
   onClickUsersnap() {
-    this.hideContent(usersnap.activate);
+    this.setState({ isLoadingUsersnap: true });
+
+    usersnap.activate().then(() => {
+      this.setState({ isLoadingUsersnap: false });
+      this.hideContent();
+    });
   }
 
   // Load the Zendesk widget when the user doesn't want to include a screenshot.
@@ -156,6 +166,23 @@ export class FeedbackPanel extends Component {
     }
   }
 
+  renderUsersnapButton(isMobile) {
+    const { isLoadingUsersnap } = this.state;
+
+    const classes = classNames('btn btn-primary', {
+      'btn-busy': isLoadingUsersnap,
+      'btn-block': isMobile
+    });
+
+    const content = isLoadingUsersnap ?
+      <div className="spinner spinner-default" /> :
+      t('screenshot_yes');
+
+    const onClick = isLoadingUsersnap ? null : this.onClickUsersnap;
+
+    return <button className={classes} onClick={onClick}>{content}</button>;
+  }
+
   render() {
     // Feedback panel is not available unless user is logged in.
     if (!this.props.currentUser) {
@@ -175,20 +202,17 @@ export class FeedbackPanel extends Component {
               <span className="icon-close-2" />
             </button>
           </header>
+
           <section className="flannel-content">
             <p className="small" dangerouslySetInnerHTML={{ __html: t('panel_details_html') }} />
             <div className="desktop">
-              <button className="btn btn-primary" onClick={this.onClickUsersnap}>
-                {t('screenshot_yes')}
-              </button>
+              {this.renderUsersnapButton(false)}
               <button className="btn btn-default" onClick={this.onClickZendesk}>
                 {t('screenshot_no')}
               </button>
             </div>
             <div className="mobile">
-              <button className="btn btn-primary btn-block" onClick={this.onClickUsersnap}>
-                {t('screenshot_yes')}
-              </button>
+              {this.renderUsersnapButton(true)}
               <button className="btn btn-default btn-block" onClick={this.onClickZendesk}>
                 {t('screenshot_no')}
               </button>

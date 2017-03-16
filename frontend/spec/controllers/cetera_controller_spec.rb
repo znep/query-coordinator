@@ -19,7 +19,7 @@ describe CeteraController do
     context 'when query is provided' do
       it 'fetches users by query' do
         expect_any_instance_of(Cetera::UserSearch).to receive(:find_all_by_query).
-          with('pink dinosaurs', :limit => 25).
+          with('pink dinosaurs', '', nil,  :limit => 25).
           and_return(empty_results)
 
         get :fuzzy_user_search, :q => 'pink dinosaurs'
@@ -41,7 +41,7 @@ describe CeteraController do
     context 'when limit is provided' do
       it 'limits the results accordingly' do
         expect_any_instance_of(Cetera::UserSearch).to receive(:find_all_by_query).
-          with('pink dinosaurs', :limit => 2).
+          with('pink dinosaurs', '', nil, :limit => 2).
           and_return(two_results)
 
         get :fuzzy_user_search, :q => 'pink dinosaurs', :limit => 2
@@ -54,7 +54,7 @@ describe CeteraController do
     context 'when limit is not provided' do
       it 'the default limit is used' do
         expect_any_instance_of(Cetera::UserSearch).to receive(:find_all_by_query).
-          with('bear', :limit => 25).
+          with('bear', '', nil, :limit => 25).
           and_return(all_results)
 
         get :fuzzy_user_search, :q => 'bear', :limit => 25
@@ -67,7 +67,7 @@ describe CeteraController do
     context 'when flags are provided' do
       it 'passes the flags to Cetera\'s find_all_by_query method' do
         expect_any_instance_of(Cetera::UserSearch).to receive(:find_all_by_query).
-          with('pink dinosaurs', :limit => 25, :flags => 'admin').
+          with('pink dinosaurs', '', nil,  {:limit => 25, :flags => 'admin'}).
           and_return(two_results)
 
         get :fuzzy_user_search, :q => 'pink dinosaurs', :flags => 'admin'
@@ -79,7 +79,7 @@ describe CeteraController do
     context 'when domain is provided' do
       it "passes the domain to Cetera's find_all_by_query method" do
         expect_any_instance_of(Cetera::UserSearch).to receive(:find_all_by_query).
-          with('pink dinosaurs', :limit => 25, :domain => 'land.of.oz').
+          with('pink dinosaurs', '', nil, :limit => 25, :domain => 'land.of.oz').
           and_return(two_results)
 
         get :fuzzy_user_search, :q => 'pink dinosaurs', :domain => 'land.of.oz'

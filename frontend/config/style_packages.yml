@@ -294,12 +294,5 @@ dataset-about-full:
 - screen-dataset
 - screen-blob
 - screen-dataset-about
-mobile:
-- mobile/base
-- mobile/fonts
-- mobile/layout
-- mobile/states
-- mobile/components/navbar
-- mobile/components/meta
 socrata-icons:
 - socrata-icons

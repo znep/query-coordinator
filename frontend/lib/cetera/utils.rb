@@ -19,134 +19,70 @@ module Cetera
         @cetera_client = Cetera::Client.new(cetera_uri.host, cetera_uri.port)
       end
 
-      def user_search_client(cookie_string)
-        Cetera::UserSearch.new(
-          client,
-          CurrentDomain.cname,
-          cookie_string
-        )
+      def user_search_client
+        Cetera::UserSearch.new(client, CurrentDomain.cname)
       end
 
-      def autocomplete_search_client(cookie_string)
-        Cetera::AutocompleteSearch.new(
-          client,
-          CurrentDomain.cname,
-          cookie_string
-        )
+      def autocomplete_search_client
+        Cetera::AutocompleteSearch.new(client, CurrentDomain.cname)
       end
 
-      def catalog_search_client(cookie_string)
-        Cetera::CatalogSearch.new(
-          client,
-          CurrentDomain.cname,
-          cookie_string
-        )
+      def catalog_search_client
+        Cetera::CatalogSearch.new(client, CurrentDomain.cname)
       end
 
-      def get(path, options)
-        uri = File.join(base_uri, path)
-        Rails.logger.info("Cetera request to #{path} with query: #{options[:query].inspect}")
-
-        response = HTTParty.get(uri, options)
-        Rails.logger.error("FAILED Cetera request: #{response.body}") unless response.success?
-
-        response
+      def facet_search_client
+        Cetera::FacetSearch.new(client, CurrentDomain.cname)
       end
 
-      def get_tags(cookie_string, request_id)
-        path = '/catalog/v1/domain_tags'
+      def log_request(purpose, options)
+        Rails.logger.info("Cetera request to #{purpose} with options: #{options.inspect}")
+      end
+
+      def get_tags(req_id)
         opts = { domains: [CurrentDomain.cname] }
-        query = cetera_soql_params(opts)
-        options = request_options(query, cookie_string, request_id)
-
-        response = get(path, options)
-        response.success? ?
-          ::Cetera::Results::TagCountResult.new(response) :
-          ::Cetera::Results::TagCountResult.new('results' => [])
-      end
-
-      def search_owned_by_user(search_query, cookie_string, request_id = nil)
-        cleaned_query = cetera_soql_params(search_query)
-        # Cetera requires only shared_to param be passed, not for_user
-        query = cleaned_query.except(:shared_to)
-
-        response = get(personal_catalog_path, request_options(query, cookie_string, request_id))
-        response.success? ?
-          ::Cetera::Results::CatalogSearchResult.new(response) :
-          ::Cetera::Results::CatalogSearchResult.new('results' => [])
-      end
-
-      def search_shared_to_user(search_query, cookie_string, request_id = nil)
-        cleaned_query = cetera_soql_params(search_query)
-        # Cetera requires only shared_to param be passed, not for_user
-        cleaned_query[:shared_to] = cleaned_query[:for_user]
-        query = cleaned_query.except(:for_user)
-
-        response = get(personal_catalog_path, request_options(query, cookie_string, request_id))
-        response.success? ?
-          ::Cetera::Results::CatalogSearchResult.new(response) :
-          ::Cetera::Results::CatalogSearchResult.new('results' => [])
+        params = cetera_soql_params(opts)
+        log_request('get tags', params)
+        begin
+          response = facet_search_client.get_tags_of_anonymously_viewable_views(req_id, params)
+          ::Cetera::Results::TagCountResult.new(response)
+        rescue Exception => e
+          ::Cetera::Results::TagCountResult.new({'results' => []})
+        end
       end
 
       # 90%+ of search queries go through here so try not to break anything
-      # TODO: Do we want this to match the signature of search_users?
-      def search_views(opts = {}, cookie_string = nil, request_id = nil)
-        path = '/catalog/v1'
-        query = cetera_soql_params(opts)
-        options = request_options(query, cookie_string, request_id)
-
-        response = get(path, options)
-        response.success? && ::Cetera::Results::CatalogSearchResult.new(response)
+      def search_views(req_id, opts = {})
+        params = cetera_soql_params(opts)
+        log_request('get anonymously viewable views', params)
+        response = catalog_search_client.find_anonymously_viewable_views(req_id, params)
+        ::Cetera::Results::CatalogSearchResult.new(response)
       end
 
-      def get_derived_from_views(uid, options = {})
-        cookie_string = options.delete(:cookie_string)
-        request_id = options.delete(:request_id)
-        locale_string = options.delete(:locale)
-        search_options = options.merge({
-          search_context: CurrentDomain.cname,
+      def get_derived_from_views(uid, req_id, opts = {})
+        locale_string = opts.delete(:locale)
+        params = opts.merge({
           domains: [CurrentDomain.cname],
           derived_from: uid,
           locale: locale_string
         }).compact
 
-        response = search_views(search_options, cookie_string, request_id)
+        response = search_views(req_id, params)
 
         response ? response.results : []
       end
 
-      def get_lens_counts_for_category(category, options = {})
+      def get_lens_counts_for_category(category, req_id, options = {})
         {}.tap do |counts|
           %w(datasets maps charts).map do |facet|
             Thread.new do
-              counts[facet] = catalog_search_client(options[:cookie_string]).
-                find_anonymously_viewable_views_for_domain(
-                  CurrentDomain.cname, [], :limit => 0, :categories => category, :only => facet
+              counts[facet] = catalog_search_client.
+                find_anonymously_viewable_views(
+                  req_id, :limit => 0, :categories => category, :only => facet, domains: CurrentDomain.cname
                 ).fetch('resultSetSize')
             end
           end.each(&:join)
         end
-      end
-
-      #########
-      # Helpers
-
-      def request_options(query, cookie_string, request_id)
-        {
-          format: :json,
-          headers: {
-            'Content-Type' => 'application/json',
-            'Cookie' => cookie_string,
-            'X-Socrata-Host' => CurrentDomain.cname,
-            'X-Socrata-RequestId' => request_id.present? ? request_id : nil
-          }.compact,
-          query: query.to_query,
-          timeout: 5 # seconds, >10x Cetera's median round trip time
-        }.compact
-      end
-
-      def personal_catalog_path
-        'personal_catalog/v1'
       end
 
       #############
@@ -168,13 +104,8 @@ module Cetera
           domains: translate_domains(opts[:domains]),
           offset: translate_offset(opts[:offset], opts[:page], opts[:limit]),
           only: translate_display_type(opts[:limitTo], opts[:datasetView]),
-          order: translate_sort_by(opts[:sortBy] || opts[:default_sort]),
-          show_hidden: translate_show_hidden(opts[:options])
+          order: translate_sort_by(opts[:sortBy] || opts[:default_sort])
         }.compact
-      end
-
-      def translate_show_hidden(options)
-        options.present? && options.include?('show_hidden')
       end
 
       def translate_domains(domains)
@@ -243,7 +174,7 @@ module Cetera
         Set.new(%i(boostCalendars boostCharts boostDatalenses boostDatasets boostDomains boostFiles
                    boostFilters boostForms boostHrefs boostMaps boostPulses boostStories categories
                    derived_from domains for_user limit locale offset only order q search_context tags
-                   shared_to show_hidden provenance))
+                   shared_to provenance))
       end
     end
   end

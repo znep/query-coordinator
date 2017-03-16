@@ -377,10 +377,10 @@ class AdministrationController < ApplicationController
   # TODO: page user results (EN-10520)
   def users
     begin
-      user_search_client = Cetera::Utils.user_search_client(forwardable_session_cookies)
+      user_search_client = Cetera::Utils.user_search_client
       if params[:username].present?
         @search = params[:username]
-        users = user_search_client.find_all_by_query(@search, :limit => 100)
+        users = user_search_client.find_all_by_query(@search, request_id, forwardable_session_cookies, :limit => 100)
         @users_list = Cetera::Results::UserSearchResult.new(users).results
         @futures = FutureAccount.find.select { |f| f.email.downcase.include? params[:username].downcase }
         if @users_list.empty?
@@ -390,7 +390,7 @@ class AdministrationController < ApplicationController
         end
         @existing_user_actions = false
       else
-        roled_users = user_search_client.find_all_by_domain(CurrentDomain.cname)
+        roled_users = user_search_client.find_all_with_roles(request_id, forwardable_session_cookies)
         user_results = Cetera::Results::UserSearchResult.new(roled_users).results
         @users_list = user_results.sort_by(&:sort_key)
         @futures = FutureAccount.find

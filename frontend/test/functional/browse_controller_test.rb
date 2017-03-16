@@ -49,18 +49,19 @@ class BrowseControllerTest < ActionController::TestCase
 
     return_body = %q({"results":[],"resultSetSize":0,"timings":{"serviceMillis":4, "searchMillis":[1, 1]}})
 
-    stub_request(:get, APP_CONFIG.cetera_internal_uri + '/catalog/v1/domain_tags?domains=data.seattle.gov&offset=0&order=relevance').
-      with(:headers => {'Content-Type'=>'application/json', 'X-Socrata-Host'=>'data.seattle.gov'}).
-      to_return(:status => 200, :body => return_body, :headers => {})
-    stub_request(:get, APP_CONFIG.cetera_internal_uri + '/catalog/v1/domain_tags?domains=example.com&offset=0&order=relevance').
-      with(:headers => {'Content-Type'=>'application/json', 'X-Socrata-Host'=>'example.com'}).
-      to_return(:status => 200, :body => return_body, :headers => {})
-    stub_request(:get, APP_CONFIG.cetera_internal_uri + '/catalog/v1/domain_tags?domains=localhost&offset=0&order=relevance').
-      with(:headers => {'Content-Type'=>'application/json', 'Cookie'=>'_core_session_id=this cookie is valid so it goes through', 'X-Socrata-Host'=>'localhost'}).
-      to_return(:status => 200, :body => return_body, :headers => {})
-    stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1/domain_tags?domains=localhost&offset=0&order=relevance").
-        with(:headers => {'Content-Type'=>'application/json', 'X-Socrata-Host'=>'localhost'}).
-        to_return(:status => 404, :body => nil, :headers => {})
+    viz_params = {:public => true, :published => true, :approval_status => 'approved', :explicitly_hidden => false}
+    stub_request(:get, APP_CONFIG.cetera_internal_uri + '/catalog/v1/domain_tags').
+      with(:query => {:search_context => 'data.seattle.gov', :domains => 'data.seattle.gov', :offset => 0, :order => 'relevance'}.merge(viz_params),
+           :headers => { 'Content-Type' => 'application/json', 'X-Socrata-Requestid' => ''} ).
+      to_return(:status => 200, :body => return_body, :headers => { 'Content-Type': 'application/json' })
+    stub_request(:get, APP_CONFIG.cetera_internal_uri + '/catalog/v1/domain_tags').
+      with(:query => {:search_context => 'example.com',:domains => 'example.com', :offset => 0, :order => 'relevance'}.merge(viz_params),
+           :headers => { 'Content-Type' => 'application/json', 'X-Socrata-Requestid' => ''} ).
+      to_return(:status => 200, :body => return_body, :headers => { 'Content-Type': 'application/json' })
+    stub_request(:get, APP_CONFIG.cetera_internal_uri + '/catalog/v1/domain_tags').
+      with(:query => {:search_context => 'localhost',:domains => 'localhost', :offset => 0, :order => 'relevance'}.merge(viz_params),
+           :headers => { 'Content-Type' => 'application/json', 'X-Socrata-Requestid' => ''} ).
+      to_return(:status => 200, :body => return_body, :headers => { 'Content-Type': 'application/json' })
   end
 
   test 'it should render page meta content over https and not http' do
@@ -281,8 +282,7 @@ class BrowseControllerTest < ActionController::TestCase
       'q' => 'pale%20moonlight', # q space can be %20 or + depending on when it was entered
       'sortBy' => 'relevance',
       'tags' => 'crime',
-      'utf8' => '%E2%9C%93',
-      'show_hidden' => 'true'
+      'utf8' => '%E2%9C%93'
     }
 
     # The FE params should be translated like so when being sent to Core/Cly
@@ -297,7 +297,7 @@ class BrowseControllerTest < ActionController::TestCase
       'q' => 'pale%20moonlight', # q space can be %20 or + depending on when it was entered
       'sortBy' => 'relevance',
       'tags' => 'crime',
-      'options' => ['show_hidden']
+      'options' => []
     }.symbolize_keys
 
     default_core_cly_params = {
@@ -306,6 +306,12 @@ class BrowseControllerTest < ActionController::TestCase
     }
 
     # The FE params should be translated like so when being sent to Cetera
+    viz_params = {
+      :public => true,
+      :published => true,
+      :approval_status => 'approved',
+      :explicitly_hidden => false
+    }
     cetera_params = {
       'Dataset-Information_Superhero' => 'Batman',
       :boostDomains => { 'performance.seattle.gov' => 0.8 },
@@ -317,9 +323,8 @@ class BrowseControllerTest < ActionController::TestCase
       :order => 'relevance',
       :q => 'pale%20moonlight', # q space can be %20 or + depending on when it was entered
       :search_context => 'data.seattle.gov',
-      :tags => 'crime',
-      :show_hidden => 'true'
-    }
+      :tags => 'crime'
+    }.merge(viz_params)
 
     default_cetera_params = {
       domains: 'localhost',
@@ -327,12 +332,11 @@ class BrowseControllerTest < ActionController::TestCase
       offset: 0,
       order: 'relevance',
       search_context: 'localhost'
-    }
+    }.merge(viz_params)
 
     cetera_headers = {
       'Content-Type' => 'application/json',
-      'Cookie' => '_core_session_id=this cookie is valid so it goes through',
-      'X-Socrata-Host' => 'localhost'
+      'X-Socrata-Requestid' => ''
     }
 
     # NOTE: this is an Array of Hashie::Mash, unlike other facets
@@ -441,8 +445,8 @@ class BrowseControllerTest < ActionController::TestCase
 
       stub_feature_flags_with(:cetera_search => true)
       stub_request(:get, APP_CONFIG.cetera_internal_uri + '/catalog/v1'). # TODO: update when moving to v2
-        with(query: cetera_params).
-        to_return(status: 200, body: cetera_payload, headers: {})
+        with(query: cetera_params, headers: { 'Content-Type' => 'application/json', 'X-Socrata-Requestid' => ''} ).
+        to_return(status: 200, body: cetera_payload, headers: { 'Content-Type': 'application/json' })
 
       get(:show, front_end_url_params)
       assert_response(:success)
@@ -459,8 +463,8 @@ class BrowseControllerTest < ActionController::TestCase
 
       stub_feature_flags_with(:cetera_search => true)
       stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
-        with(query: cetera_params).
-        to_return(status: 200, body: cetera_payload, headers: {})
+        with(query: cetera_params, headers: { 'Content-Type' => 'application/json', 'X-Socrata-Requestid' => ''} ).
+        to_return(status: 200, body: cetera_payload, headers: { 'Content-Type': 'application/json' })
 
       get(:embed, front_end_url_params)
       assert_response(:success)
@@ -494,12 +498,10 @@ class BrowseControllerTest < ActionController::TestCase
     end
 
     should 'send default params to Cetera with embed' do
-      @request.cookies['this_is_not_a_known_cookie'] = 'so it disappears'
-      @request.cookies['_core_session_id'] = 'this cookie is valid so it goes through'
       stub_feature_flags_with(:cetera_search => true)
       stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
         with(query: default_cetera_params, headers: cetera_headers).
-        to_return(status: 200, body: cetera_payload, headers: {})
+        to_return(status: 200, body: cetera_payload, headers: { 'Content-Type': 'application/json' })
 
       get(:embed)
       assert_response(:success)
@@ -509,12 +511,10 @@ class BrowseControllerTest < ActionController::TestCase
     end
 
     should 'send default params to Cetera with browse' do
-      @request.cookies['this_is_not_a_known_cookie'] = 'so it disappears'
-      @request.cookies['_core_session_id'] = 'this cookie is valid so it goes through'
       stub_feature_flags_with(:cetera_search => true)
       stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
         with(query: default_cetera_params, headers: cetera_headers).
-        to_return(status: 200, body: cetera_payload, headers: {})
+        to_return(status: 200, body: cetera_payload, headers: { 'Content-Type': 'application/json' })
 
       get(:show, {})
       assert_response(:success)
@@ -525,12 +525,10 @@ class BrowseControllerTest < ActionController::TestCase
 
     # See EN-3383
     should 'truncate custom cutoffs as configured' do
-      @request.cookies['this_is_not_a_known_cookie'] = 'so it disappears'
-      @request.cookies['_core_session_id'] = 'this cookie is valid so it goes through'
       stub_feature_flags_with(:cetera_search => false)
       stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
         with(query: default_cetera_params, headers: cetera_headers).
-        to_return(status: 200, body: cetera_payload, headers: {})
+        to_return(status: 200, body: cetera_payload, headers: { 'Content-Type': 'application/json' })
 
       @controller.stubs(:get_facet_cutoff => stubbed_custom_cutoff)
 
@@ -585,6 +583,13 @@ class BrowseControllerTest < ActionController::TestCase
     search_failure_message =
       %q(We're sorry. Results could not be retrieved at this time. Please try again later.)
 
+    viz_params = {
+      :public => true,
+      :published => true,
+      :approval_status => 'approved',
+      :explicitly_hidden => false
+    }
+
     should 'fail gracefully on Cetera timeout' do
       stub_feature_flags_with(:cetera_search => true)
 
@@ -594,10 +599,10 @@ class BrowseControllerTest < ActionController::TestCase
         :limit => 10,
         :offset => 0,
         :order => 'relevance'
-      )
+      ).merge(viz_params)
 
       stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
-        with(query: cetera_params).
+        with(query: cetera_params, :headers => { 'Content-Type' => 'application/json', 'X-Socrata-Requestid' => ''} ).
         to_timeout
 
       # Cetera should be paired with new catalog
@@ -616,10 +621,10 @@ class BrowseControllerTest < ActionController::TestCase
         :limit => 10,
         :offset => 0,
         :order => 'relevance'
-      )
+      ).merge(viz_params)
 
       stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
-        with(query: cetera_params).
+        with(query: cetera_params, :headers => { 'Content-Type' => 'application/json', 'X-Socrata-Requestid' => ''} ).
         to_return(status: 500)
 
       get(:show)
@@ -637,7 +642,7 @@ class BrowseControllerTest < ActionController::TestCase
         :limit => 10,
         :offset => 0,
         :order => 'relevance'
-      )
+      ).merge(viz_params)
 
       stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
         with(query: cetera_params).
@@ -705,19 +710,26 @@ class BrowseControllerTest < ActionController::TestCase
       CurrentDomain.stubs(:cname).returns('data.seattle.gov')
     end
 
+    viz_params = {
+      :public => true,
+      :published => true,
+      :approval_status => 'approved',
+      :explicitly_hidden => false
+    }
+
     query_params = {
       domains: 'data.seattle.gov',
       limit: 10,
       offset: 0,
       search_context: 'data.seattle.gov'
-    }
+    }.merge(viz_params)
 
     selector = 'div.browse2-result-timestamp > div.browse2-result-timestamp-label'
 
     should 'show created at timestamp when sorting by newest' do
       stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
-        with(query: query_params.merge(order: 'createdAt')).
-        to_return(status: 200, body: cetera_payload)
+        with(query: query_params.merge(viz_params).merge(order: 'createdAt')).
+        to_return(status: 200, body: cetera_payload, headers: { 'Content-Type': 'application/json' })
 
       get(:embed, sortBy: 'newest')
       assert_response(:success)
@@ -729,7 +741,7 @@ class BrowseControllerTest < ActionController::TestCase
     should 'show updated at timestamp when sorting by default' do
       stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
         with(query: query_params.merge(order: 'relevance')).
-        to_return(status: 200, body: cetera_payload)
+        to_return(status: 200, body: cetera_payload, headers: { 'Content-Type': 'application/json' })
 
       get(:embed) # default sort should be relevance
       assert_response(:success)
@@ -741,7 +753,7 @@ class BrowseControllerTest < ActionController::TestCase
     should 'show updated at timestamp when sorting by last updated' do
       stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
         with(query: query_params.merge(order: 'updatedAt')).
-        to_return(status: 200, body: cetera_payload)
+        to_return(status: 200, body: cetera_payload, headers: { 'Content-Type': 'application/json' })
 
       get(:embed, sortBy: 'last_modified')
       assert_response(:success)
@@ -753,7 +765,7 @@ class BrowseControllerTest < ActionController::TestCase
     should 'should set the X-Frame-Options header to ALLOWALL' do
       stub_request(:get, "#{APP_CONFIG.cetera_internal_uri}/catalog/v1").
         with(query: query_params.merge(order: 'relevance')).
-        to_return(status: 200, body: cetera_payload)
+        to_return(status: 200, body: cetera_payload, headers: { 'Content-Type': 'application/json' })
 
       get :show, id: 'four-four', customization_id: 'default'
       assert_response :success

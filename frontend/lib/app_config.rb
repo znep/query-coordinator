@@ -87,13 +87,6 @@ class AppConfig < Hashie::Dash
   property :auth0_secret
   property :auth0_uri
 
-  # RPX/JanRain auth
-  property :rpx_facebook_url
-  property :rpx_googleplus_url
-  property :rpx_signin_url
-  property :rpx_twitter_url
-  property :rpx_windowslive_url
-
   # Data lens tuning parameters
   property :enable_png_download_ui
   property :enable_search_suggestions

@@ -33,11 +33,11 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "[ ]\n"
-    http_version: 
+    http_version:
   recorded_at: Wed, 13 Jul 2016 22:29:18 GMT
 - request:
     method: get
-    uri: http://localhost:5704/catalog/v1/domain_tags?domains=localhost&offset=0&order=relevance
+    uri: http://localhost:5704/catalog/v1/domain_tags?approval_status=approved&domains=localhost&explicitly_hidden=false&offset=0&order=relevance&public=true&published=true
     body:
       encoding: US-ASCII
       string: ''
@@ -48,8 +48,6 @@ http_interactions:
       - "*/*"
       User-Agent:
       - Ruby
-      X-Socrata-Host:
-      - localhost
   response:
     status:
       code: 200
@@ -74,7 +72,7 @@ http_interactions:
             { "domain_tag" : "ngda", "count" : 19333 }
           ]
         }
-    http_version: 
+    http_version:
   recorded_at: Wed, 13 Jul 2016 22:29:18 GMT
 - request:
     method: get
@@ -109,7 +107,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "[ ]\n"
-    http_version: 
+    http_version:
   recorded_at: Wed, 13 Jul 2016 22:29:18 GMT
 - request:
     method: get
@@ -474,7 +472,7 @@ http_interactions:
             }
           } ]
         }
-    http_version: 
+    http_version:
   recorded_at: Wed, 13 Jul 2016 22:29:18 GMT
 - request:
     method: get
@@ -521,7 +519,7 @@ http_interactions:
           "targetDomainCName" : "localhost",
           "targetDomainId" : 1
         } ]
-    http_version: 
+    http_version:
   recorded_at: Thu, 03 Nov 2016 19:42:26 GMT
 - request:
     method: get
@@ -568,19 +566,17 @@ http_interactions:
           "targetDomainCName" : "localhost",
           "targetDomainId" : 1
         } ]
-    http_version: 
+    http_version:
   recorded_at: Thu, 03 Nov 2016 19:42:26 GMT
 - request:
     method: get
-    uri: http://localhost:5704/catalog/v1?boostDomains%5Blocal.dev%5D=0.8&domains=localhost,local.dev&limit=10&offset=0&order=relevance&search_context=localhost
+    uri: http://localhost:5704/catalog/v1?approval_status=approved&boostDomains%5Blocal.dev%5D=0.8&domains=localhost,local.dev&explicitly_hidden=false&limit=10&offset=0&order=relevance&public=true&published=true&search_context=localhost
     body:
       encoding: US-ASCII
       string: ''
     headers:
       Content-Type:
       - application/json
-      X-Socrata-Host:
-      - localhost
   response:
     status:
       code: 200
@@ -604,6 +600,6 @@ http_interactions:
           "resultSetSize" : 0,
           "timings" : { "serviceMillis" : 14, "searchMillis" : [ 7, 1 ] }
         }
-    http_version: 
+    http_version:
   recorded_at: Thu, 03 Nov 2016 19:42:26 GMT
 recorded_with: VCR 3.0.3

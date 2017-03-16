@@ -122,10 +122,6 @@ module.exports = function Constants() {
     // Table card visualization parameters.
     TABLE_UNSORTABLE_PHYSICAL_DATATYPES: ['geo_entity', 'point'],
 
-    // Icon Font
-    FILTER_ICON_UNICODE_GLYPH: '\uea2f',
-    CLOSE_ICON_UNICODE_GLYPH: '\uea18',
-
     // Flyout parameters
     FLYOUT_WINDOW_PADDING: 22,
     FLYOUT_BOTTOM_PADDING: 1,

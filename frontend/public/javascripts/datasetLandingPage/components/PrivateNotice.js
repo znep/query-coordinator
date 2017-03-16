@@ -3,6 +3,7 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { handleKeyPress } from '../../common/a11yHelpers';
 import { isUserAdminOrPublisher } from '../../common/user';
+import { localizeLink } from '../../common/locale';
 
 export class PrivateNotice extends Component {
   constructor(props) {
@@ -56,7 +57,7 @@ export class PrivateNotice extends Component {
     }
 
     const manageLink = isUserAdminOrPublisher() ?
-      <a href={`${view.gridUrl}?pane=manage`}>
+      <a href={`${localizeLink(view.gridUrl)}?pane=manage`}>
         {I18n.manage_prompt}
       </a> :
       null;

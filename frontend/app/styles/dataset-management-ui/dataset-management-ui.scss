@@ -15,6 +15,10 @@ body {
   flex-direction: column;
 }
 
+#app.no-chrome-header {
+  margin-top: 32px;
+}
+
 // Overrides from DSLP
 #info-pane-container {
   // Needed to override some stuff from _cards.scss
@@ -1023,7 +1027,7 @@ body {
   color: #0098C8;
 }
 .type-icon-boolean {
-  color: #9B2D52;
+  color: #894BAA;
 }
 .type-icon-fixed_timestamp {
   color: #B26B00;

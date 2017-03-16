@@ -2,17 +2,13 @@
 http_interactions:
 - request:
     method: get
-    uri: http://localhost:5704/catalog/v1/domain_tags?domains=localhost&offset=0&order=relevance
+    uri: http://localhost:5704/catalog/v1/domain_tags?approval_status=approved&domains=localhost&explicitly_hidden=false&offset=0&order=relevance&public=true&published=true&search_context=localhost
     body:
       encoding: US-ASCII
       string: ''
     headers:
       Content-Type:
       - application/json
-      Cookie:
-      - i am a cookie
-      X-Socrata-Host:
-      - localhost
       X-Socrata-Requestid:
       - iAmProbablyUnique
   response:
@@ -47,6 +43,6 @@ http_interactions:
           "resultSetSize" : 7,
           "timings" : { "serviceMillis" : 3, "searchMillis" : [ 1, 1 ] }
         }
-    http_version: 
+    http_version:
   recorded_at: Fri, 01 Jul 2016 21:10:29 GMT
 recorded_with: VCR 3.0.3

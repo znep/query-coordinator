@@ -33,9 +33,6 @@
     <dt>Dataset Metadata</dt>
     <dd><%= link_to nil, "/metadata/v1/dataset/#{@view.id}" %></dd>
 
-    <dt>Page Metadata</dt>
-    <dd><%= link_to nil, "/metadata/v1/page/#{@view.id}" %></dd>
-
     <dt title="Hover on the grid icon to see if rollups are being used">View with data_lens_debug</dt>
     <dd><%= link_to nil, "#{view_url(@view)}?debug_data_lens=true" %></dd>
   <% end -%>

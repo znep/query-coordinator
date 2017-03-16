@@ -7,6 +7,9 @@ module Cetera
       class << self; attr_accessor :klass; end
 
       def initialize(data = {})
+        unless data.is_a?(Hash)
+          raise ArgumentError.new("The cetera results were not a Hash")
+        end
         @data = data
       end
 

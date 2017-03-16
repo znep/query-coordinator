@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { isUserAdminOrPublisher } from '../../common/user';
+import { localizeLink } from '../../common/locale';
 
 export class BlobDownload extends Component {
   renderManagePrompt() {
@@ -16,7 +17,7 @@ export class BlobDownload extends Component {
           {I18n.blob_download.edit_prompt_message}
         </span>
 
-        <a href={view.editUrl} className="btn btn-sm btn-default edit-prompt-button">
+        <a href={localizeLink(view.editUrl)} className="btn btn-sm btn-default edit-prompt-button">
           {I18n.blob_download.edit_prompt_button}
         </a>
       </div>

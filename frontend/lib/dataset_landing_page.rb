@@ -139,8 +139,6 @@ class DatasetLandingPage
       # TODO use the asset_selector endpoint instead of calling two different services
       if view.is_public?
         options = {
-          :cookie_string => cookie_string,
-          :request_id => request_id,
           :limit => limit,
           :offset => offset,
           :locale => locale,
@@ -149,7 +147,7 @@ class DatasetLandingPage
           :boostDatalenses => 1.15
         }.compact
 
-        derived_views = Cetera::Utils.get_derived_from_views(cetera_uid(view), options)
+        derived_views = Cetera::Utils.get_derived_from_views(cetera_uid(view), request_id, options)
       else
         derived_views = view.find_dataset_landing_page_related_content(sort_by) || []
         limit = limit || derived_views.length

@@ -64,15 +64,13 @@ class ProfileController < ApplicationController
         # pass this to browse_actions so it knows we're fetching shared assets
         @profile_search_method = :search_shared_to_user
 
-        unless using_cetera? && using_cetera_profile_search?
-          view_results = View.find_shared_to_user(
-            @user.id,
-            offset: (browse_options[:page].to_i - 1) * browse_options[:limit].to_i,
-            limit: browse_options[:limit]
-          )
-          browse_options[:view_results] = view_results['results']
-          browse_options[:view_count] = view_results['count']
-        end
+        view_results = View.find_shared_to_user(
+          @user.id,
+          offset: (browse_options[:page].to_i - 1) * browse_options[:limit].to_i,
+          limit: browse_options[:limit]
+        )
+        browse_options[:view_results] = view_results['results']
+        browse_options[:view_count] = view_results['count']
       else
         if @is_user_current
           browse_options[:publication_stage] = [ 'published', 'unpublished' ]
@@ -235,7 +233,6 @@ class ProfileController < ApplicationController
 
   def update_account
     if params[:user].present? ||
-       params[:openid_delete].present? ||
        params[:auth0id_delete_list].present?
       error_msg = nil
       begin
@@ -246,24 +243,6 @@ class ProfileController < ApplicationController
             @current_user = current_user.update_password(
               {:newPassword => params[:user][:password_new],
                :password => params[:user][:password_old]})
-          end
-        end
-
-        if params[:openid_delete].present?
-          if current_user.flag?('nopassword') &&
-            params[:openid_delete].size >= current_user.openid_identifiers.size
-            error_msg = t('screens.profile.edit.validation.no_password_no_openid')
-          else
-            CoreServer::Base.connection.batch_request do |batch_id|
-              params[:openid_delete].each do |k, v|
-                delete_path = params[:openid_delete_paths][k]
-                if delete_path.nil?
-                  Rails.logger.warn("Received request to delete OpenID identifier for user #{current_user.id}, identifier: #{k}")
-                else
-                  CoreServer::Base.connection.delete_request(delete_path, '', {}, batch_id)
-                end
-              end
-            end
           end
         end
 

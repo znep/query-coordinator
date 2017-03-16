@@ -571,6 +571,7 @@ describe AdministrationController do
         context 'as an administrator' do
           it 'should return true' do
             stub_administrator_user
+            rspec_stub_feature_flags_with(site_appearance_visible: true)
             VCR.use_cassette('administration_controller_administrator') do
               expect(subject.show_site_appearance_admin_panel?).to eq(true)
             end
@@ -580,6 +581,7 @@ describe AdministrationController do
         context 'as a designer' do
           it 'should return true' do
             stub_designer_user
+            rspec_stub_feature_flags_with(site_appearance_visible: true)
             VCR.use_cassette('administration_controller_designer') do
               expect(subject.show_site_appearance_admin_panel?).to eq(true)
             end

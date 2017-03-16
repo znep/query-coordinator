@@ -72,13 +72,6 @@ default: &default
     profile:
       survey_id: SI_0PAYWZDLfzLgNTf
 
-  # auth alternatives
-  rpx_facebook_url: https://socrata-test.rpxnow.com/facebook/start
-  rpx_googleplus_url: https://socrata-test.rpxnow.com/googleplus/start
-  rpx_signin_url: https://socrata-test.rpxnow.com/openid/v2/signin
-  rpx_twitter_url: https://socrata-test.rpxnow.com/twitter/start
-  rpx_windowslive_url: https://socrata-test.rpxnow.com/liveid/start
-
   # data lens behaviors
   enable_png_download_ui: true
   enable_search_suggestions: true
@@ -121,6 +114,7 @@ development: &development
   polaroid_port: 1337
   sitemap_s3_url: https://localhost.amazonaws.com/bucket_dne/sitemaps
   ssl_port: 443
+  signaller_traffic_throttler: 1
 
   # third-party app tokens
   mixpanel_token: 59b0b54697603105463834afdf20accf
@@ -206,10 +200,3 @@ production:
 
   # third-party app tokens
   mixpanel_token: 1d804068e1d3694468823f3c7f74567d
-
-  # auth alternatives
-  rpx_facebook_url: https://socrata.rpxnow.com/facebook/start
-  rpx_googleplus_url: https://socrata.rpxnow.com/googleplus/start
-  rpx_twitter_url: https://socrata.rpxnow.com/twitter/start
-  rpx_signin_url: https://socrata.rpxnow.com/openid/v2/signin
-  rpx_windowslive_url: https://socrata.rpxnow.com/liveid/start

@@ -11,7 +11,7 @@ class CatalogLandingPageController < ApplicationController
     clp = CatalogLandingPage.new(current_domain, request.params)
     @featured_content = clp.featured_content
     @header = clp.metadata
-    @category_stats = clp.category_stats(request.params[:category])
+    @category_stats = clp.category_stats(request.params[:category], request_id)
     @processed_browse = process_browse(request, browse_options)
     @processed_browse[:sidebar_config] = OpenStruct.new(:search => false)
   end

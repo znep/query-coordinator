@@ -41,6 +41,7 @@ class InternalController < ApplicationController
     @domain = Domain.find(params[:domain_id])
     @aliases = @domain.aliases.try(:split, ',') || []
     @modules = AccountModule.find
+    @deleted = @domain.deletedAt.present?
     @configs = ::Configuration.find_by_type(nil, false, params[:domain_id], false)
     # Show the Feature Flag link on all pages even if it doesn't exist, because we
     # lazily create it when you make a change anyways.

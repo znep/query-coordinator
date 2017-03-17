@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -ex
 
+cd $WORKPACE/frontend
+
 # NOTE: Using set -e as we've done above, means that ANY expression that returns a non-zero result
 # will terminate this script. For example in the CHANGED_FILES expression, we short-circuit the
 # return value to true in the event that grep returns a non-zero response (i.e. no matches). We

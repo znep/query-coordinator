@@ -1,3 +1,4 @@
+import 'babel-polyfill-safe';
 import 'script!jquery';
 import { Provider } from 'react-redux';
 

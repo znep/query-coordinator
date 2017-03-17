@@ -9,32 +9,40 @@
 @import "catalog-landing-page/category_stat";
 @import "catalog-landing-page/featured_content";
 
+$browse2_max_width: 1280px;
+$facet_sidebar_width: 230px;
+
 body {
   margin: 0;
   padding: 0;
   background: $light-grey-6;
 }
 
-#catalog-landing-page-content {
-  margin-left: 230px;
+#catalog-landing-page {
+  margin-left: $facet_sidebar_width;
 }
 
-.browse2-facet-and-results-header {
-  min-height: 3rem;
-}
-
-.browse2 .browse2-facet-and-results-header .browse2-results-header {
-  margin-left: 0 !important;
-  float: right;
-  width: 82%;
-}
-
-.container {
+.catalog {
+  padding: 1rem;
+  max-width: $browse2_max_width;
   margin: 0 auto;
-}
 
-.main-spinner {
-  text-align: center;
+  .browse2 {
+    .browse2-facet-and-results-header {
+      overflow: hidden;
+
+      .browse2-results-header {
+        margin-left: 0;
+        padding: 1rem 0 0;
+
+        .browse2-results-clear-controls-container {
+          .browse2-results-title, .browse2-results-clear-control, .browse2-results-clear-all-button {
+            margin-bottom: 0 !important;
+          }
+        }
+      }
+    }
+  }
 }
 
 // Fix styleguide buttons with spinners in them
@@ -69,7 +77,6 @@ body {
 }
 
 section.landing-page-section {
-
   h2 {
     font-size: 20px;
     font-weight: 500;
@@ -115,8 +122,9 @@ section.landing-page-section {
     .result-card {
       flex: 0 0 auto;
       width: 31.9%;
+      max-width: 350px;
       height: 300px;
-      margin-right: 2%;
+      margin-right: 1rem;
 
       &.loading-card {
         display: flex;

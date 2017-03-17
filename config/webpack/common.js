@@ -30,6 +30,24 @@ var plugins = _.compact([
   })
 ]);
 
+function withHotModuleEntries(entry) {
+  var hotModuleEntries = getHotModuleEntries();
+
+  var entryPoints = {};
+  // Assume name is main because:
+  // https://github.com/webpack/webpack/blob/951a7603d279c93c936e4b8b801a355dc3e26292/bin/convert-argv.js#L498-L502
+  if (_.isString(entry)) {
+    entryPoints.main = [entry].concat(hotModuleEntries);
+  } else if (_.isArray(entry)) {
+    entryPoints.main = entry.concat(hotModuleEntries);
+  } else {
+    entryPoints = _.mapValues(entry, function(v) {
+      return _.castArray(v).concat(hotModuleEntries);
+    });
+  }
+  return entryPoints;
+}
+
 function getHotModuleEntries() {
   return isProduction ? [] : [
     'webpack-dev-server/client?https://0.0.0.0:' + packageJson.config.webpackDevServerPort,
@@ -100,6 +118,7 @@ function getStyleguideIncludePaths() {
 module.exports = {
   devServerPort: packageJson.config.webpackDevServerPort,
   getEslintConfig: getEslintConfig,
+  withHotModuleEntries: withHotModuleEntries,
   getHotModuleEntries: getHotModuleEntries,
   getManifestPlugin: getManifestPlugin,
   getOutput: getOutput,

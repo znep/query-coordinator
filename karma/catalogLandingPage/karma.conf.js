@@ -24,6 +24,9 @@ module.exports = function ( karma ) {
     webpack: {
       cache: true,
       devtool: 'inline-source-map',
+      externals: {
+        jquery: 'jQuery'
+      },
       module: {
         loaders: [
           {
@@ -38,6 +41,9 @@ module.exports = function ( karma ) {
         ]
       },
       plugins: [ new WebpackFailurePlugin() ],
+      resolveLoader: {
+        modulesDirectories: [ path.resolve(root, 'node_modules') ]
+      },
       resolve: {
         root: [
           path.resolve('.'),

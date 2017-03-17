@@ -14,13 +14,21 @@ export class AssetSelector extends React.Component {
       resultsPerPage
     } = this.props;
 
+    if (!modalIsOpen) return null;
+
     const headerTitle = _.isEmpty(category) ?
       _.get(I18n, 'common.asset_selector.header_title_without_category') :
       _.get(I18n, 'common.asset_selector.header_title_with_category',
         'Select Featured Content in %{category}'
       ).replace('%{category}', category);
 
-    const resultsContainerProps = { additionalTopbarComponents, category, onClose, onSelect, resultsPerPage };
+    const resultsContainerProps = {
+      additionalTopbarComponents,
+      category,
+      onClose,
+      onSelect,
+      resultsPerPage
+    };
 
     const modalProps = {
       className: 'asset-selector',
@@ -29,13 +37,13 @@ export class AssetSelector extends React.Component {
       overlay: true
     };
 
-    return (modalIsOpen ?
+    return (
       <Modal {...modalProps}>
         <ModalHeader title={headerTitle} onDismiss={onClose} />
         <ModalContent>
           <ResultsContainer {...resultsContainerProps} />
         </ModalContent>
-      </Modal> : null
+      </Modal>
     );
   }
 }

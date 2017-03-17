@@ -1,0 +1,29 @@
+<%- translation = lambda { |key, *args| t("catalog_landing_page.activation.#{key}", *args) } %>
+<div class="alert info browse2-manage-catalog-landing-page">
+  <%- activation_link = link_to(capture do %>
+    <button class="btn btn-primary">
+      <%= translation.call('action') %>
+      <i id="socrata-icon-arrow-right" class="socrata-icon-arrow-right"></i>
+    </button>
+  <%- end, controller: :catalog_landing_page, action: :manage, category: params[:category]) %>
+
+  <div class="browse2-manage-clp-header">
+    <%= activation_link %>
+    <h3><%= translation.call('header') %></h3>
+  </div>
+
+  <div class="browse2-manage-clp-info">
+
+    <div class="manage-clp-activate-action">
+      <%= activation_link %>
+    </div>
+    <div class="manage-clp-hide-action">
+      <button class="btn btn-simple"><%= translation.call('dismiss') %> <i id="socrata-icon-arrow-up" class="socrata-icon-arrow-up"></i></button>
+    </div>
+
+    <%- 3.times do |i| %>
+      <div class="info-header"><%= translation.call("explanation_#{i}.header") %></div>
+      <div class="info-description"><%= translation.call("explanation_#{i}.description") %></div>
+    <%- end %>
+  </div>
+</div>

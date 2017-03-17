@@ -602,4 +602,40 @@ http_interactions:
         }
     http_version:
   recorded_at: Thu, 03 Nov 2016 19:42:26 GMT
+- request:
+    method: get
+    uri: http://localhost:5704/catalog/v1/domain_tags?approval_status=approved&domains=localhost&explicitly_hidden=false&offset=0&order=relevance&public=true&published=true&search_context=localhost
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      X-Socrata-Requestid:
+      - ''
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 16 Mar 2017 22:30:17 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.2.v20140723)
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "results" : [],
+          "resultSetSize" : 0,
+          "timings" : { "serviceMillis" : 33, "searchMillis" : [ 6, 3 ] }
+        }
+    http_version: 
+  recorded_at: Thu, 16 Mar 2017 22:30:17 GMT
 recorded_with: VCR 3.0.3

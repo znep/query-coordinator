@@ -4,6 +4,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
+import _ from 'lodash';
 import airbrake from '../common/airbrake';
 import reducer from './reducers';
 import App from './App';
@@ -11,17 +12,16 @@ import Search from './components/Search';
 
 var middleware = [thunk];
 
-if (window.serverConfig.environment === 'development') {
+if (_.get(window, 'serverConfig.environment') === 'development') {
   middleware.push(createLogger({
     duration: true,
     timestamp: false,
     collapsed: true
   }));
 } else {
-  airbrake.init(window.serverConfig.airbrakeProjectId, window.serverConfig.airbrakeKey);
+  airbrake.init(_.get(window, 'serverConfig.airbrakeProjectId'), _.get(window, 'serverConfig.airbrakeKey'));
 }
 
-// var store = createStore(catalogLandingPage, applyMiddleware(...middleware));
 var store = createStore(reducer, applyMiddleware(...middleware));
 
 // Render the search bar
@@ -36,8 +36,5 @@ ReactDOM.render(
   <Provider store={store}>
     <App />
   </Provider>,
-  document.querySelector('#catalog-landing-page-content')
+  document.querySelector('#catalog-landing-page')
 );
-
-// Hide the spinner that is displayed at page load once everything above has rendered.
-document.querySelector('.catalog-landing-page .main-spinner').style.display = 'none';

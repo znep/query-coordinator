@@ -46,13 +46,14 @@ module CatalogLandingPageHelper
 
     server_config = {
       :airbrakeEnvironment => ENV['AIRBRAKE_ENVIRONMENT_NAME'] || Rails.env,
-      :airbrakeKey => ENV['CATEGORY_LANDING_PAGE_AIRBRAKE_API_KEY'] ||
+      :airbrakeKey => ENV['CATALOG_LANDING_PAGE_AIRBRAKE_API_KEY'] ||
         APP_CONFIG.catalog_landing_page_airbrake_api_key,
-      :airbrakeProjectId => ENV['CATEGORY_LANDING_PAGE_AIRBRAKE_PROJECT_ID'] ||
+      :airbrakeProjectId => ENV['CATALOG_LANDING_PAGE_AIRBRAKE_PROJECT_ID'] ||
         APP_CONFIG.catalog_landing_page_airbrake_project_id,
       :ceteraExternalUri => APP_CONFIG.cetera_external_uri,
       :csrfToken => form_authenticity_token.to_s,
       :currentUser => current_user,
+      :currentUserMayManage => can_manage_catalog_landing_page?,
       :domain => CurrentDomain.cname,
       :environment => Rails.env,
       :featureFlags => feature_flags,
@@ -67,12 +68,21 @@ module CatalogLandingPageHelper
   def render_catalog_landing_page_initial_state
     javascript_tag(%Q(
       var initialState = {
-        search: '',
-        header: #{@header.to_json},
+        category: #{@category.to_json},
         categoryStats: #{@category_stats.to_json},
-        featuredContent: #{@featured_content.to_a.to_json}
+        featuredContent: #{@featured_content.to_json},
+        header: #{@metadata.camelize_keys.to_json},
+        search: ''
       };
     ))
+  end
+
+  def should_render_catalog_landing_page?
+    params[:category].present? && can_manage_catalog_landing_page?
+  end
+
+  def can_manage_catalog_landing_page?
+    current_user.try(:is_administrator?) || current_user.try(:is_superadmin?)
   end
 
 end

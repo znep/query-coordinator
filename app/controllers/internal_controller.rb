@@ -41,6 +41,7 @@ class InternalController < ApplicationController
     @domain = Domain.find(params[:domain_id])
     @aliases = @domain.aliases.try(:split, ',') || []
     @modules = AccountModule.find
+    @deleted = @domain.deletedAt.present?
     @configs = ::Configuration.find_by_type(nil, false, params[:domain_id], false)
     # Show the Feature Flag link on all pages even if it doesn't exist, because we
     # lazily create it when you make a change anyways.
@@ -217,6 +218,34 @@ class InternalController < ApplicationController
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
     prepare_to_render_flashes!
+    redirect_to show_domain_path(domain_id: params[:domain_id])
+  end
+
+  def delete_domain
+    domain = Domain.find(params[:domain_id])
+    if domain.present?
+      Domain.delete(domain.id)
+      notices << "Soft-deleted domain `#{params[:domain_id]}` successfully."
+      CurrentDomain.flag_out_of_date!(params[:domain_id])
+    else
+      errors << "Could not find domain with cname `#{params[:domain_id]}`."
+    end
+    prepare_to_render_flashes!
+
+    redirect_to show_org_path(org_id: domain.organizationId)
+  end
+
+  def undelete_domain
+    domain = Domain.find(params[:domain_id])
+    if domain.present?
+      Domain.undelete(domain.id)
+      notices << "Un-deleted domain `#{params[:domain_id]}` successfully."
+      CurrentDomain.flag_out_of_date!(params[:domain_id])
+    else
+      errors << "Could not find domain with cname `#{params[:domain_id]}`."
+    end
+    prepare_to_render_flashes!
+
     redirect_to show_domain_path(domain_id: params[:domain_id])
   end
 

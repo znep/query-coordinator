@@ -820,7 +820,6 @@ body {
               div.column-status-text {
                 padding: 5px 5px;
 
-                display: relative;
                 z-index: 100;
               }
             }
@@ -828,6 +827,10 @@ body {
 
           &.row-errors-count {
             border-top: 2px solid $light-grey-4;
+
+            .malformed-rows-status-text {
+              max-width: 300px;
+            }
 
             th {
               font-size: 10px;
@@ -839,6 +842,7 @@ body {
               a {
                 color: $grey;
                 text-decoration: none;
+                display: block;
               }
 
               &.row-errors-count-selected {
@@ -886,12 +890,13 @@ body {
           }
         }
 
-        .transform-status-flyout {
+        .transform-status-flyout, .malformed-rows-flyout {
           font-size: 13px;
           line-height: 20px;
           white-space: normal;
           color: $dark-grey-2;
           max-width: 190px;
+          z-index: 10; // lol idk
 
           .flyout-content {
             padding: 0.9rem;

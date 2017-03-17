@@ -79,7 +79,7 @@ class TransformStatus extends Component {
             })}
             <TypeIcon type={transform.output_soql_type} />
             <br />
-            <span className="click-to-view">{SubI18n.column_status_flyout.click_to_view}</span>
+            <span className="click-to-view">{I18n.show_output_schema.click_to_view}</span>
           </section>
         </div>
       );
@@ -98,10 +98,12 @@ class TransformStatus extends Component {
           key={transform.id}
           className={classNames('col-errors', { 'col-errors-selected': inErrorMode })}>
           {progressBar}
-          <div className="column-status-text">
-            <span className="err-info error">{commaify(transform.num_transform_errors)}</span>
-            <Link to={linkPath} data-flyout={flyoutId}>{msg}</Link>
-          </div>
+          <Link to={linkPath} data-flyout={flyoutId}>
+            <div className="column-status-text">
+              <span className="err-info error">{commaify(transform.num_transform_errors)}</span>
+              {msg}
+            </div>
+          </Link>
           {errorFlyout}
         </th>
       );

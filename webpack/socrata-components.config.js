@@ -1,49 +1,84 @@
+const _ = require('lodash');
 const path = require('path');
 const root = path.resolve(__dirname, '..');
+const CommonsChunkPlugin = require('webpack').optimize.CommonsChunkPlugin;
+const isProduction = process.env.NODE_ENV === 'production';
+
+const devtool = isProduction ? 'source-map' : 'cheap-eval-source-map';
 
 module.exports = {
   context: root,
-  devtool: 'source-map',
+  devtool,
   entry: `${root}/src/js/index.js`,
-  externals: {
-    'classnames': true,
-    'dompurify': true,
-    'dotdotdot': true,
-    'jquery': true,
-    'lodash': true,
-    'moment': true,
-    'react': true,
-    'react-dom': true,
-    'socrata-utils': true,
-    'tether': true,
-    'tether-shepherd': true,
-    'velocity-animate': true
-  },
   output: {
     path: `${root}/dist/js`,
-    filename: 'styleguide.js',
+    filename: 'socrata-components.js',
     libraryTarget: 'umd',
     library: 'styleguide'
   },
   resolve: {
-    modulesDirectories: ['node_modules'],
-    root: [ path.resolve(root) ]
+    modules: [path.resolve(root), 'node_modules']
   },
   module: {
-    preLoaders: [
+    rules: [
       {
-        loader: 'raw-loader',
         test: /\.svg$/,
-        include: `${root}/src/fonts/svg`
-      }
-    ],
-    loaders: [
+        include: `${root}/src/fonts/svg`,
+        loader: 'raw-loader',
+        enforce: 'pre'
+      },
       {
-        loader: 'babel-loader?cacheDirectory',
         test: /\.js$/,
-        exclude: /node_modules/
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        options: {
+          cacheDirectory: true
+        }
+      },
+
+      /* Non-distributed loaders */
+
+      {
+        test: require.resolve('velocity-animate'),
+        loader: 'imports-loader',
+        options: {
+          'jQuery': 'jquery'
+        }
+      },
+      {
+        test: require.resolve('dotdotdot'),
+        loader: 'imports-loader',
+        options: {
+          'jQuery': 'jquery'
+        }
+      },
+      {
+        test: require.resolve('jquery'),
+        use: [{
+          loader: 'expose-loader',
+          options: 'jQuery',
+        }, {
+          loader: 'expose-loader',
+          options: '$'
+        }]
+      },
+      {
+        test: require.resolve('react'),
+        loader: 'expose-loader',
+        options: 'React'
+      },
+      {
+        test: require.resolve('react-dom'),
+        loader: 'expose-loader',
+        options: 'ReactDOM'
       }
     ]
   },
-  plugins: []
+  plugins: [
+    new CommonsChunkPlugin({
+      name: 'vendor',
+      filename: 'vendor.js',
+      minChunks: (module) => _.includes(module.resource, 'node_modules')
+    })
+  ]
 };

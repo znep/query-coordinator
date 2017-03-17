@@ -6,8 +6,9 @@ var socrataComponentsConfig = require('./webpack/socrata-components.config');
 delete socrataComponentsConfig.entry;
 delete socrataComponentsConfig.output;
 delete socrataComponentsConfig.externals;
+delete socrataComponentsConfig.plugins;
 
-socrataComponentsConfig.resolve = { root: [ __dirname, `${__dirname}/src/js` ] };
+socrataComponentsConfig.resolve = { modules: [ __dirname, `${__dirname}/src/js`, 'node_modules' ] };
 socrataComponentsConfig.devtool = 'inline-source-map';
 
 module.exports = function(config) {

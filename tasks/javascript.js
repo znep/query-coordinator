@@ -1,53 +1,14 @@
-const async = require('async');
 const gulp = require('gulp');
-const _ = require('lodash');
-const UglifyJsPlugin = require('webpack').optimize.UglifyJsPlugin;
+const webpack = require('webpack');
+const webpackStream = require('webpack-stream');
 
-const webpack = require('webpack-stream');
 const socrataComponentsConfig = require('../webpack/socrata-components.config');
-const vendorConfig = require('../webpack/vendor.config');
-
-function configuration(filename, minify) {
-  const isProduction = process.env.NODE_ENV === 'production';
-  const devtool = isProduction ? 'source-map' : 'eval';
-
-  return _.merge({}, socrataComponentsConfig, {
-    devtool,
-    output: {
-      filename
-    },
-    plugins: minify ? [new UglifyJsPlugin({ compress: { warnings: false } })] : []
-  });
-}
-
-function stream(filename, minify) {
-  return gulp.src('src/js/index.js').
-    pipe(webpack(configuration(filename, minify)));
-}
 
 function compileJS(callback) {
-  stream('socrata-components.js', false).
+  gulp.src('src/js/index.js').
+    pipe(webpackStream(socrataComponentsConfig, webpack)).
     pipe(gulp.dest('dist/js')).
     on('finish', callback);
 }
 
-function compileMinifiedJS(callback) {
-  stream('socrata-components.min.js', true).
-    pipe(gulp.dest('dist/js')).
-    on('finish', callback);
-}
-
-function compileVendor(callback) {
-  gulp.src('pages/javascripts/vendor.js').
-    pipe(webpack(vendorConfig)).
-    pipe(gulp.dest('dist/js')).
-    on('finish', callback);
-}
-
-module.exports = (done) => {
-  async.parallel([
-    compileJS,
-    compileMinifiedJS,
-    compileVendor
-  ], done);
-};
+module.exports = compileJS;

@@ -6,7 +6,6 @@ var watch = require('gulp-watch');
 module.exports = () => {
   [
     { path: 'src/js/**/*.js', task: 'javascript' },
-    { path: 'pages/javascripts/vendor.js', task: 'javascript' },
     { path: 'src/js/**/*.scss', task: 'sass' },
     { path: 'src/scss/**/*.scss', task: 'sass' },
     { path: 'src/fonts/**/*.svg', task: 'font' },

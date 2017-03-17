@@ -481,6 +481,12 @@ en:
             recently_added: Recently Added
             recently_updated: Recently Updated
     contact_dataset_owner: Contact Dataset Owner
+    dataset_contents:
+      columns: Columns
+      row_display_unit: Each row is a
+      rows: Rows
+      title: What's in this Dataset?
+    default_row_label: row
     external_resource_editor:
       action_buttons:
         back: Back
@@ -539,6 +545,47 @@ en:
       view_statistics: View all statistics for this Dataset
       views: Views
     more: Show More
+    schema_preview:
+      api_field_name: API Field Name
+      column_name: Column Name
+      data_type: Data Type
+      data_types:
+        blob: Blob
+        calendar_date: Floating Timestamp
+        checkbox: Checkbox
+        dataset_link: Dataset Link
+        date: Fixed Timestamp
+        document: Document
+        drop_down_list: Text
+        email: Text
+        flag: Text
+        geospatial: Geospatial
+        html: Text
+        line: Line
+        link: Text
+        list: List
+        location: Location
+        money: Money
+        multiline: Line
+        multipoint: Point
+        multipolygon: Polygon
+        nested_table: Nested Table
+        number: Number
+        object: Object
+        percent: Number
+        phone: Text
+        photo: Photo
+        point: Point
+        polygon: Polygon
+        stars: Number
+        text: Text
+        url: Text
+      description: Description
+      geospatial_layer_title: Columns in this Layer
+      show_all: Show All
+      show_less: Show Less
+      title: Columns in this Dataset
+      type: Type
     updated: Updated
   controls:
     browse:
@@ -1497,11 +1544,6 @@ en:
       title: Send a Message to the Owner of this Dataset
     copy: Copy
     copy_success: Copied!
-    dataset_contents:
-      columns: Columns
-      row_display_unit: Each row is a
-      rows: Rows
-      title: What's in this Dataset?
     dataset_preview:
       all_rows: Showing all rows
       grid_view_link: Explore Data
@@ -1517,7 +1559,6 @@ en:
       title: Table Preview
       unable_to_render: We're having trouble displaying this table.
       visualize_link: Visualize and Explore (preview)
-    default_row_label: row
     done: Done
     download:
       csv_for_excel: CSV for Excel
@@ -1634,47 +1675,6 @@ en:
     save: Save
     saved: Saved
     saving: Saving
-    schema_preview:
-      api_field_name: API Field Name
-      column_name: Column Name
-      data_type: Data Type
-      data_types:
-        blob: Blob
-        calendar_date: Floating Timestamp
-        checkbox: Checkbox
-        dataset_link: Dataset Link
-        date: Fixed Timestamp
-        document: Document
-        drop_down_list: Text
-        email: Text
-        flag: Text
-        geospatial: Geospatial
-        html: Text
-        line: Line
-        link: Text
-        list: List
-        location: Location
-        money: Money
-        multiline: Line
-        multipoint: Point
-        multipolygon: Polygon
-        nested_table: Nested Table
-        number: Number
-        object: Object
-        percent: Number
-        phone: Text
-        photo: Photo
-        point: Point
-        polygon: Polygon
-        stars: Number
-        text: Text
-        url: Text
-      description: Description
-      geospatial_layer_title: Columns in this Layer
-      show_all: Show All
-      show_less: Show Less
-      title: Columns in this Dataset
-      type: Type
     share:
       cancel: Cancel
       email: Share via Email

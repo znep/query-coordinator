@@ -41,3 +41,9 @@ export function uploadsInProgress(db) {
     upload.__status__.type === STATUS_UPDATING
   ));
 }
+
+export function rowsTransformed(outputColumns) {
+  return _.min(
+    outputColumns.map((col) => col.transform.contiguous_rows_processed)
+  ) || 0;
+}

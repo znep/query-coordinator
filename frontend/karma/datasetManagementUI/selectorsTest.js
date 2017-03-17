@@ -33,7 +33,7 @@ describe('Selectors', () => {
           }
         }
       };
-      expect(Selectors.rowsUpserted(db, 52)).to.eql(15000);
+      assert.equal(Selectors.rowsUpserted(db, 52), 15000);
     });
 
     it('returns 0 if we haven\'t created any columns yet', () => {
@@ -52,7 +52,7 @@ describe('Selectors', () => {
           }
         }
       };
-      expect(Selectors.rowsUpserted(db, 52)).to.eql(0);
+      assert.equal(Selectors.rowsUpserted(db, 52), 0);
     });
 
   });
@@ -88,7 +88,7 @@ describe('Selectors', () => {
           '7-55': { output_schema_id: 7, output_column_id: 55 }
         }
       };
-      expect(Selectors.columnsForOutputSchema(db, 1)).to.eql([
+      assert.deepEqual(Selectors.columnsForOutputSchema(db, 1), [
         { id: 52, schema_column_index: 0, transform_id: 2, transform: { id: 2 } },
         { id: 53, schema_column_index: 1, transform_id: 3, transform: { id: 3 } },
         { id: 54, schema_column_index: 2, transform_id: 4, transform: { id: 4 } }
@@ -114,13 +114,34 @@ describe('Selectors', () => {
           },
         }
       };
-      expect(Selectors.uploadsInProgress(db)).to.eql([
+      assert.deepEqual(Selectors.uploadsInProgress(db), [
         {
           __status__: { type: STATUS_UPDATING },
           id: 55,
           finished_at: null
         }
       ]);
+    });
+
+  });
+
+  describe('latestOutputSchema', () => {
+
+    it('returns schema with the highest id', () => {
+      const db = {
+        output_schemas: {
+          1: { id: 1 },
+          2: { id: 2 }
+        }
+      };
+      assert.deepEqual(Selectors.latestOutputSchema(db), { id: 2 });
+    });
+
+    it('returns undefined if there are no output schemas', () => {
+      const db = {
+        output_schemas: {}
+      };
+      assert.deepEqual(Selectors.latestOutputSchema(db), undefined);
     });
 
   });

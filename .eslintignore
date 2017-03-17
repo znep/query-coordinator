@@ -1,4 +1,5 @@
 build/
 scripts/
 config/
-*.test.js
+test/
+karma.conf.js

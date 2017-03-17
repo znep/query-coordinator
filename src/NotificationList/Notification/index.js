@@ -5,13 +5,13 @@ import NotificationPropTypes from '../../PropTypes/NotificationPropTypes';
 
 class Notification extends React.Component {
   renderUnreadIcon() {
-    if (this.props.isUnread === true) {
-      return (
-        <div styleName="unread-dot" />
-      );
+    if (this.props.isUnread === false) {
+      return null;
     }
 
-    return null;
+    return (
+      <div className="socrata-notifications-unread-indicator" styleName="unread-dot" />
+    );
   }
 
   render() {
@@ -22,7 +22,7 @@ class Notification extends React.Component {
     } = this.props;
 
     return (
-      <div styleName="container">
+      <div className="socrata-notification" styleName="container">
         {this.renderUnreadIcon()}
         <a styleName="title" href={titleLink} target="_blank" rel="noopener noreferrer">{title}</a>
         <div styleName="body">

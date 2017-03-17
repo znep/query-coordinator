@@ -1,16 +1,24 @@
 @import '../common.scss';
 
 .logo {
-  width: 20px;
-  height: auto;
   margin-right: 10px;
-  margin-bottom: -4px;
-}
 
-.blue {
-  fill: $primary;
-}
+  & :global(.socrata-icon) {
+    width: 18px;
+    height: 18px;
 
-.orange {
-  fill: $alternate-1;
+    & :global(.socrata-icon-logo-ring) {
+      fill: $primary !important;
+    }
+
+    & :global(.socrata-icon-logo-pie) {
+      fill: $alternate-1 !important;
+    }
+
+    & > svg {
+      width: 18px;
+      height: 18px;
+      margin-top: 3px;
+    }
+  }
 }

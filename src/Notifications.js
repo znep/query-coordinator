@@ -78,7 +78,7 @@ class Notifications extends Component {
         notification => ({
           ...notification,
           isUnread: false
-        }),
+        })
       );
 
       this.setState({ notifications: readNotifications });

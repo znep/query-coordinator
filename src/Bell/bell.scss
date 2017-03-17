@@ -1,14 +1,17 @@
 @import "../common.scss";
 
 $hover-color: #3c3c3c;
-$bell-dark: #757575;
 $bell-light: #FFFFFF;
 
-.container {
+.button {
   cursor: pointer;
-  padding-top: 11px;
-  padding-left: 4px;
-  padding-bottom: 6px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 12px;
+  padding-bottom: 9px;
+  cursor: pointer;
+  background: none;
+  border: none;
 
   /*
    * Note that these next three lines don't actually do anything,
@@ -17,38 +20,18 @@ $bell-light: #FFFFFF;
   line-height: 1.6;
   box-sizing: border-box;
   font-size: 15px;
-}
 
-.container:hover {
-  background-color: $hover-color;
-}
+  & :global(.socrata-icon) {
+    width: 19px;
+    height: 19px;
+    fill: $bell-light;
+    color: $bell-light;
 
-:global(.site-chrome-small) .container {
-  padding-top: 4px;
-  padding-right: 10px;
-  padding-bottom: 3px;
-  padding-left: 8px;
-  height: 32px;
-}
-
-.bell {
-  width: 32px;
-}
-
-:global(.site-chrome-small) .bell {
-  width: 24px;
-}
-
-.svg-dark {
-  @extend .bell;
-
-  fill: $bell-dark;
-}
-
-.svg-light {
-  @extend .bell;
-  
-  fill: $bell-light;
+    & svg {
+      width: 19px;
+      height: 19px;
+    }
+  }
 }
 
 .unread-icon {
@@ -59,6 +42,31 @@ $bell-light: #FFFFFF;
   left: 21px;
 }
 
+:global(.site-chrome-small) {
+  & .button {
+    padding-left: 11px;
+    padding-right: 11px;
+    padding-top: 6px;
+    padding-bottom: 1px;
+
+    & :global(.socrata-icon) {
+      width: 16px;
+      height: 16px;
+
+      & svg {
+        fill: $bell-light;
+        color: $bell-light;
+      }
+    }
+  }
+}
+
 :global(.site-chrome-small) .unread-icon {
-  top: 1px;
+  width: 9px;
+  top: 3px;
+  left: 20px;
+}
+
+.button:hover {
+  background-color: $hover-color;
 }

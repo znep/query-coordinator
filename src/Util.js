@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import 'whatwg-fetch';
 import { get as getCookie } from 'browser-cookies';
 
@@ -7,25 +6,22 @@ export function getNotifications(callback) {
     .then(response => response.json())
     .then(
       callback,
-      (error) => {
-        console.error('Failed to fetch data', error);
+      () => {
         callback(null);
-      },
-    ).catch((ex) => {
-      console.error('Error parsing JSON', ex);
+      }
+    ).catch(() => {
       callback(null);
     });
 }
 
 export function updateNotificationLastSeen() {
-  // eslint-disable-next-line
+  /* eslint-disable-next-line no-undef */
   const headers = new Headers();
   headers.append('X-CSRF-Token', getCookie('socrata-csrf-token'));
 
-  fetch(
-    '/notifications/setLastNotificationSeenAt', {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: headers
-    });
+  fetch('/notifications/setLastNotificationSeenAt', {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: headers
+  });
 }

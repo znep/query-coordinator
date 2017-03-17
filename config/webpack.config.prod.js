@@ -1,14 +1,13 @@
 var autoprefixer = require('autoprefixer');
 var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var ManifestPlugin = require('webpack-manifest-plugin');
 var InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 var url = require('url');
-var paths = require('./paths');
 var getClientEnvironment = require('./env');
-
-
+const path = require('path');
+var paths = require('./paths');
+const root = path.resolve(__dirname, '..');
 
 function ensureSlash(path, needsSlash) {
   var hasSlash = path.endsWith('/');
@@ -38,139 +37,45 @@ var publicUrl = ensureSlash(homepagePathname, false);
 // Get environment variables to inject into our app.
 var env = getClientEnvironment(publicUrl);
 
-// Assert this just to be safe.
-// Development builds of React are slow and not intended for production.
-if (env['process.env'].NODE_ENV !== '"production"') {
-  throw new Error('Production builds must have NODE_ENV=production.');
-}
-
-// This is the production configuration.
-// It compiles slowly and is focused on producing a fast and minimal bundle.
-// The development configuration is different and lives in a separate file.
 module.exports = {
-  // Don't attempt to continue if there are any errors.
-  bail: true,
-  // We generate sourcemaps in production. This is slow but gives good results.
-  // You can exclude the *.map files from the build during deployment.
+  context: root,
   devtool: 'source-map',
-  // In production, we only want to load the polyfills and the app code.
-  entry: [
-    require.resolve('./polyfills'),
-    paths.appIndexJs
-  ],
+  entry: `${root}/src/window.js`,
   output: {
-    // The build folder.
-    path: paths.appBuild,
-    // Generated JS file names (with nested folders).
-    // There will be one main bundle, and one file per asynchronous chunk.
-    // We don't currently advertise code splitting but Webpack supports it.
-    filename: 'js/[name].js',
-    chunkFilename: 'js/[name].chunk.js',
-    // We inferred the "public path" (such as / or /my-project) from homepage.
-    publicPath: publicPath
+    path: `${root}/build`,
+    filename: 'socrata-notifications.js',
+    libraryTarget: 'umd',
+    library: 'socrata-notifications'
   },
   resolve: {
-    // This allows you to set a fallback for where Webpack should look for modules.
-    // We read `NODE_PATH` environment variable in `paths.js` and pass paths here.
-    // We use `fallback` instead of `root` because we want `node_modules` to "win"
-    // if there any conflicts. This matches Node resolution mechanism.
-    // https://github.com/facebookincubator/create-react-app/issues/253
-    fallback: paths.nodePaths,
-    // These are the reasonable defaults supported by the Node ecosystem.
-    // We also include JSX as a common component filename extension to support
-    // some tools, although we do not recommend using it, see:
-    // https://github.com/facebookincubator/create-react-app/issues/290
-    extensions: ['.js', '.json', '.jsx', ''],
-    alias: {
-      // Support React Native Web
-      // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
-      'react-native': 'react-native-web'
-    }
+    modulesDirectories: ['node_modules'],
+    root: [ path.resolve(root) ]
   },
-  
   module: {
-    // First, run the linter.
-    // It's important to do this before Babel processes the JS.
     preLoaders: [
       {
-        test: /\.(js|jsx)$/,
-        loader: 'eslint',
-        include: paths.appSrc
-      }
-    ],
-    loaders: [
-      // Default loader: load all assets that are not handled
-      // by other loaders with the url loader.
-      // Note: This list needs to be updated with every change of extensions
-      // the other loaders match.
-      // E.g., when adding a loader for a new supported file extension,
-      // we need to add the supported extension to this loader too.
-      // Add one new line in `exclude` for each loader.
-      //
-      // "file" loader makes sure those assets end up in the `build` folder.
-      // When you `import` an asset, you get its filename.
-      // "url" loader works just like "file" loader but it also embeds
-      // assets smaller than specified size as data URLs to avoid requests.
-      {
-        exclude: [
-          /\.html$/,
-          /\.(js|jsx)$/,
-          /\.(css|scss)$/,
-          /\.json$/,
-          /\.svg$/
-        ],
-        loader: 'url',
-        query: {
-          limit: 10000,
-          name: 'static/media/[name].[ext]'
-        }
+        loader: 'raw-loader',
+        test: /\.svg$/,
+        include: `${root}/src/fonts/svg`
       },
-      // Process JS with Babel.
       {
-        test: /\.(js|jsx)$/,
-        include: paths.appSrc,
-        loader: 'babel'
-      },
-      // The notation here is somewhat confusing.
-      // "postcss" loader applies autoprefixer to our CSS.
-      // "css" loader resolves paths in CSS and adds assets as dependencies.
-      // "style" loader normally turns CSS into JS modules injecting <style>,
-      // but unlike in development configuration, we do something different.
-      // `ExtractTextPlugin` first applies the "postcss" and "css" loaders
-      // (second argument), then grabs the result CSS and puts it into a
-      // separate file in our build process. This way we actually ship
-      // a single CSS file in production instead of JS code injecting <style>
-      // tags. If you use code splitting, however, any async bundles will still
-      // use the "style" loader inside the async code so CSS from them won't be
-      // in the main CSS file.
-      {
-        test: /\.(css|scss)$/,
+        test: /\.scss$/,
         loaders: [
           'style-loader',
           'css-loader?modules&importLoaders=1&localIdentName=[path]_[name]_[local]_[hash:base64:5]',
           'autoprefixer-loader',
           'sass-loader'
         ]
-        //loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=1&&localIdentName=[name]__[local]___[hash:base64:5]!postcss')
-        // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
-      },
-      // JSON is not enabled by default in Webpack but both Node and Browserify
-      // allow it implicitly so we also enable it.
+      }
+    ],
+    loaders: [
       {
-        test: /\.json$/,
-        loader: 'json'
-      },
-      // "file" loader for svg
-      {
-        test: /\.svg$/,
-        loader: 'file',
-        query: {
-          name: 'static/media/[name].[ext]'
-        }
+        loader: 'babel-loader?cacheDirectory',
+        test: /\.js$/,
+        exclude: /node_modules/
       }
     ]
   },
-  
   // We use PostCSS for autoprefixing only.
   postcss: function() {
     return [
@@ -184,14 +89,16 @@ module.exports = {
       }),
     ];
   },
+  sassLoader: {
+    includePaths: [
+      `${root}/node_modules/bourbon/app/assets/stylesheets`,
+      `${root}/node_modules/bourbon-neat/app/assets/stylesheets`,
+      `${root}/node_modules/breakpoint-sass/stylesheets`,
+      `${root}/node_modules/modularscale-sass/stylesheets`,
+      `${root}/node_modules/normalize.css`
+    ]
+  },
   plugins: [
-    // Makes the public URL available as %PUBLIC_URL% in index.html, e.g.:
-    // <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
-    // In production, it will be an empty string unless you specify "homepage"
-    // in `package.json`, in which case it will be the pathname of that URL.
-    new InterpolateHtmlPlugin({
-      PUBLIC_URL: publicUrl
-    }),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'production') { ... }. See `./env.js`.
     // It is absolutely essential that NODE_ENV was set to production here.
@@ -216,19 +123,6 @@ module.exports = {
       }
     }),
     // Note: this won't work without ExtractTextPlugin.extract(..) in `loaders`.
-    new ExtractTextPlugin('css/[name].css'),
-    // Generate a manifest file which contains a mapping of all asset filenames
-    // to their corresponding output file so that tools can pick it up without
-    // having to parse `index.html`.
-    new ManifestPlugin({
-      fileName: 'asset-manifest.json'
-    })
-  ],
-  // Some libraries import Node modules but don't use them in the browser.
-  // Tell Webpack to provide empty mocks for them so importing them works.
-  node: {
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty'
-  }
+    new ExtractTextPlugin('css/[name].css')
+  ]
 };

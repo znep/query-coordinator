@@ -1,6 +1,8 @@
 @import '../common.scss';
 
-$background-color: #ffffff;
+$background-color: $white;
+$triangle-size: 13px;
+$triangle-position: 340px;
 
 .container {
   @include base;
@@ -21,14 +23,14 @@ $background-color: #ffffff;
   top: 47px;
 }
 
-/* Weird triangle nonsense... (why, designers, why!) */
+/* the :before here actually sets up the triangle above the container */
 .container::before {
   content: "";
   position: absolute;
-  left: 340px;
+  left: $triangle-position;
 
   /* this ACTUALLY controls how big the triangle is... */
-  border: 13px solid $background-color;
+  border: $triangle-size solid $background-color;
 
   transform-origin: 0 0;
   transform: rotate(135deg);
@@ -58,6 +60,7 @@ $background-color: #ffffff;
 .view-older-link {
   @extend .unstyled-link;
 
+  /* lots of !important here because we have a lot of global rules that look like `a { text-decoration: none; }` */
   color: $primary-text !important;
   font-size: 13px !important;
   padding: 0 !important;

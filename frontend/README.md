@@ -401,6 +401,7 @@ Variable Name | Type | Source | Description
 `bundle_gemfile` | String | Configuration | Path to the `Gemfile` used by the Bundler gem. Programmatically determined to be the base directory of the frontend, but can be overridden by setting this ENV variable.
 `canary` | Boolean | Configuration | If set to true the host will visually identify itself as the Canary.
 `catalog_landing_page_airbrake_api_key` | String | Configuration | AirBrake API token used to track CLP errors.
+`catalog_landing_page_airbrake_project_id` | String | Configuration | AirBrake Project ID used to track CLP errors.
 `cetera_external_uri` | URI | Configuration | External API endpoint that provides the cetera catalog search service.
 `cetera_internal_uri` | URI | Configuration | Internal API endpoint that provides the cetera catalog search service.
 `clortho_bucket` | String | Configuration | Bucket identifier in AWS-KMS used to access secret values defined in the Clortho service.
@@ -410,6 +411,7 @@ Variable Name | Type | Source | Description
 `curated_region_job_queue_port` | Integer | Configuration | Port to connect to on `curated_region_job_queue_hostname`.
 `data_cards_app_token` | String | Configuration | Defines the Socrata API token used by Data Lens when making requests to Core. It is used by both the Rails app and in client side JS. See also `app_token`.
 `dataset_landing_page_airbrake_api_key` | String | Configuration | AirBrake API token used specifically to track DSLP errors.
+`dataset_landing_page_airbrake_project_id` | String | Configuration | AirBrake Project ID used specifically to track DSLP errors.
 `disable_zookeeper` | String | Configuration | Used by the `zookeeper_discovery.rb` initializer to selectively initialize the `ZookeeperDiscovery` class.
 `enable_png_download_ui` | Boolean | Configuration | Enables the PNG download feature in Data Lens. It should should be deprecated in favor of Feature Flags.
 `enable_search_suggestions` | Boolean | Configuration | Enables the Spandex auto-suggestion search feature in Data Lens. It should be deprecated in favor of Feature Flags.

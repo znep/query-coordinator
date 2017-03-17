@@ -16,6 +16,7 @@ export class ResultsContainer extends React.Component {
     this.state = {
       currentPage: 1,
       fetchingResults: false,
+      isMounted: true,
       pagerKey: 1,
       /*
         pagerKey exists so that the defaultValue of the Pager input field updates when the prev/next
@@ -34,28 +35,34 @@ export class ResultsContainer extends React.Component {
     this.changePage(1); // Fetch the first page of results
   }
 
-  changePage(pageNumber) {
-    this.setState({ fetchingResults: true });
-    ceteraUtils.
-      fetch({
-        category: this.props.category,
-        limit: this.props.resultsPerPage,
-        order: this.state.sort,
-        pageNumber
-      }).
-      then((response) => {
-        const results = ceteraUtils.mapToAssetSelectorResult(response.results);
-        this.setState({ fetchingResults: false, results, resultCount: response.resultSetSize });
-      }).
-      catch(() => {
-        this.setState({ fetchingResults: false });
-      });
+  componentWillUnmount() {
+    this.setState({ isMounted: false });
+  }
 
-    this.setState({
-      currentPage: parseInt(pageNumber, 10),
-      /* Increment the key to trigger a re-render of the Pager currentPageInput */
-      pagerKey: this.state.pagerKey + 1
-    });
+  changePage(pageNumber) {
+    if (this.state.isMounted) {
+      this.setState({ fetchingResults: true });
+      ceteraUtils.
+        fetch({
+          category: this.props.category,
+          limit: this.props.resultsPerPage,
+          order: this.state.sort,
+          pageNumber
+        }).
+        then((response) => {
+          const results = ceteraUtils.mapToAssetSelectorResult(response.results);
+          this.setState({ fetchingResults: false, results, resultCount: response.resultSetSize });
+        }).
+        catch(() => {
+          this.setState({ fetchingResults: false });
+        });
+
+      this.setState({
+        currentPage: parseInt(pageNumber, 10),
+        /* Increment the key to trigger a re-render of the Pager currentPageInput */
+        pagerKey: this.state.pagerKey + 1
+      });
+    }
   }
 
   changeSort(option) {

@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { ManageMetadata } from 'components/ManageMetadata';
 import { statusSavedOnServer, STATUS_SAVED_ON_SERVER, statusDirty } from 'lib/database/statuses';
 
+
 describe('components/ManageMetadata', () => {
   const datasetPath = 'metadata/dataset';
   const columnPath = 'metadata/columns';
@@ -10,6 +11,7 @@ describe('components/ManageMetadata', () => {
   const defaultProps = {
     view: {
       __status__: statusSavedOnServer,
+      id: 'hehe-hehe',
       name: 'a name',
       description: 'a description',
       category: 'category',
@@ -38,8 +40,8 @@ describe('components/ManageMetadata', () => {
   };
 
   it('renders dataset metadata tab without errors', () => {
-    const datasetMeta = renderPureComponent(ManageMetadata(defaultDatasetProps));
-    expect(datasetMeta).to.exist;
+    const component = renderComponentWithStore(ManageMetadata, defaultDatasetProps);
+    expect(component).to.exist;
   });
 
   it('renders column metadata tab without errors', () => {
@@ -48,7 +50,7 @@ describe('components/ManageMetadata', () => {
   });
 
   it('renders a title', () => {
-    const datasetMeta = renderPureComponent(ManageMetadata(defaultDatasetProps));
+    const datasetMeta = renderComponentWithStore(ManageMetadata, defaultDatasetProps);
     expect(datasetMeta.innerText).to.contain(I18n.home_pane.metadata);
 
     const columnMeta = renderComponentWithStore(ManageMetadata, defaultColumnProps);
@@ -63,10 +65,10 @@ describe('components/ManageMetadata', () => {
 
     beforeEach(() => {
       datasetStub = sinon.stub();
-      datasetMeta = renderPureComponent(ManageMetadata({
+      datasetMeta = renderComponentWithStore(ManageMetadata, {
         ...defaultDatasetProps,
         onDismiss: datasetStub
-      }));
+      });
 
       columnStub = sinon.stub();
       columnMeta = renderComponentWithStore(ManageMetadata, {
@@ -95,10 +97,10 @@ describe('components/ManageMetadata', () => {
   describe('onSave handling', () => {
     it('isn\'t invoked when you click save if the view isn\'t dirty', () => {
       const datasetStub = sinon.stub();
-      const datasetMeta = renderPureComponent(ManageMetadata({
-        ...defaultDatasetProps,
+      const datasetMeta = renderComponentWithStore(ManageMetadata, {
+        ...defaultColumnProps,
         onSave: datasetStub
-      }));
+      });
 
       TestUtils.Simulate.click(datasetMeta.querySelector('#save'));
       expect(datasetStub.called).to.eq(false);
@@ -126,10 +128,10 @@ describe('components/ManageMetadata', () => {
         view: dirtyView
       };
 
-      const element = renderPureComponent(ManageMetadata({
+      const element = renderComponentWithStore(ManageMetadata, {
         ...propsWithDirtyView,
         onSave: stub
-      }));
+      });
 
       TestUtils.Simulate.click(element.querySelector('#save'));
       expect(stub.called).to.eq(true);

@@ -14,6 +14,7 @@
 
       <%- else -%>
         <h1>Organization: <%= @org.name %></h1>
+        <%= display_standard_flashes %>
 
         <h2>Domains:</h2>
         <%- if @org.domains.nil? || @org.domains.size <= 0 -%>

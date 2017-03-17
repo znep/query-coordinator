@@ -35,10 +35,25 @@ function saveDatasetMetadata(dispatch, db) {
   const viewStatus = _.values(db.views)[0].__status__.type;
 
   if (viewStatus !== STATUS_SAVED) {
-    const datasetMetadata = _.pick(
+    const nonprivateMetadata = _.pick(
       _.values(db.views)[0],
-      'id', 'name', 'description', 'category' // TODO: what else do we want to save?
+      [
+        'id',
+        'name',
+        'description',
+        'category',
+        'licenseId',
+        'attribution',
+        'attributionLink',
+        'tags'
+      ]
     );
+
+    // TODO: don't like this, can improve when we revise form dataflow hopefully
+    const privateMetadata = _.pick(_.values(db.views)[0], ['email']);
+
+    const datasetMetadata = _.assign({}, nonprivateMetadata, { privateMetadata });
+
     dispatch(updateStarted('views', datasetMetadata));
     socrataFetch(`/api/views/${window.initialState.view.id}`, {
       method: 'PUT',

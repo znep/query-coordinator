@@ -40,8 +40,10 @@ export function bootstrap(store, initialView, initialUpdate) {
     viewCount: initialView.viewCount,
     downloadCount: initialView.downloadCount,
     license: initialView.license || {},
+    licenseId: initialView.licenseId,
     attribution: initialView.attribution,
     tags: initialView.tags,
+    email: initialView.privateMetadata ? initialView.privateMetadata.email : '',
     attachments: _.get(initialView, 'metadata.attachments', []),
     metadata: initialView.metadata || {}
   }));

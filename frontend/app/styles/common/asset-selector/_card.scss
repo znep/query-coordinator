@@ -42,7 +42,7 @@
             bottom: 0;
             left: 0;
 
-            background-color: rgba(40, 141, 193, 0.1); // $primary-base converted to rgb for transparency
+            background-color: rgba($primary-base, 0.1);
             border: 3px solid $primary-base;
 
             &.hidden {

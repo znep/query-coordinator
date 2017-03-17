@@ -8,6 +8,7 @@ export class ExternalResourceEditor extends React.Component {
   constructor(props) {
     super(props);
 
+    this.initialState = null;
     this.state = { title: '', description: '', url: '', previewImage: '' };
 
     _.bindAll(this, [
@@ -18,8 +19,22 @@ export class ExternalResourceEditor extends React.Component {
     ]);
   }
 
+  componentWillReceiveProps(newProps) {
+    if (newProps.featuredContentItem) {
+      const { name, description, url, imageUrl } = newProps.featuredContentItem;
+      if (!this.initialState) {
+        this.initialState = { title: name, description, url, previewImage: imageUrl };
+      }
+      this.setState({ description, previewImage: imageUrl, title: name, url });
+    }
+  }
+
   updateField(field, value) {
     this.setState({ [field]: value });
+  }
+
+  isDirty() {
+    return !_.isEqual(this.initialState, this.state);
   }
 
   returnExternalResource() {
@@ -27,7 +42,7 @@ export class ExternalResourceEditor extends React.Component {
     const { onClose, onSelect } = this.props;
 
     const result = {
-      resourceType: 'external',
+      contentType: 'external',
       name: title,
       description,
       url,
@@ -35,7 +50,6 @@ export class ExternalResourceEditor extends React.Component {
     };
     onSelect(result);
     onClose();
-    this.setState({ title: '', description: '', url: '', previewImage: '' });
   }
 
   renderModalContent() {
@@ -54,6 +68,7 @@ export class ExternalResourceEditor extends React.Component {
       name: title,
       description,
       imageUrl: previewImage,
+      previewImage,
       linkProps: {
         'aria-label': _.get(I18n, 'common.external_resource_editor.preview')
       }
@@ -95,7 +110,7 @@ export class ExternalResourceEditor extends React.Component {
         <button
           key="select"
           className="btn btn-sm btn-primary select-button"
-          disabled={formIsInvalid}
+          disabled={!this.isDirty() || formIsInvalid}
           onClick={this.returnExternalResource}>
           {_.get(I18n, 'common.external_resource_editor.footer.select')}
         </button>
@@ -130,6 +145,7 @@ export class ExternalResourceEditor extends React.Component {
 }
 
 ExternalResourceEditor.propTypes = {
+  featuredContentItem: PropTypes.object,
   modalIsOpen: PropTypes.bool.isRequired,
   onBack: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,

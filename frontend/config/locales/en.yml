@@ -423,29 +423,20 @@ en:
             text_one: Create your page using this flexible way to summarize data.
             text_two: Learn more by visiting the <a href="https://support.socrata.com/hc/en-us/articles/216510338">Using the Aggregation Function</a> article on the Socrata Knowledge Base.  As always, we'd love your feedback.
             title: Try it yourself!
-  asset_selector:
-    action_buttons:
-      back: Back
-      select: Select
-    header_title_with_category: Select Featured Content in %{category}
-    header_title_without_category: Select Featured Content
-    results_container:
-      no_results: No results
-      of: of
-      pager:
-        last_page: Last page
-        next_page: Next page
-        page: Page
-        previous_page: Previous page
-      sort:
-        sort_by: Sort by
-        sort_types:
-          alphabetical: Alphabetical
-          most_accessed: Most Accessed
-          most_relevant: Most Relevant
-          recently_added: Recently Added
-          recently_updated: Recently Updated
   catalog_landing_page:
+    activation:
+      action: Manage This Category
+      dismiss: Not now, hide this info
+      header: Highlight the best content within this category
+      explanation_0:
+        header: Create a Headline and Introduction
+        description: Introduce the category with a headline, introduction and optional statistics.
+      explanation_1:
+        header: Share stats in 'About this Category'
+        description: Show summary level category stats for exploration.
+      explanation_2:
+        header: Display Featured Content
+        description: Choose up to 3 Socrata or External assets to feature for this category.
     category_stats:
       calendars: Calendars
       charts: Charts
@@ -453,8 +444,33 @@ en:
       forms: Forms
       maps: Maps
       tables: Tables
+    featured_content:
+      label: Featured Content in this Category
+    manager:
+      cancel: Cancel
+      change: Change
+      manage_this_category: Manage This Category
+      unexpected_error: An unexpected error has occurred. Please reload and try again.
+      you_must_login_first: You must login first in order to save your changes.
+      remove: Remove
+      save: Save
+      title: Manage %{category}
+      headline:
+        label: Headline
+        placeholder: Create a headline
+      description:
+        label: Description
+        placeholder: Write a description for your {category} content
+      show_stats:
+        label: Show {category} Stats
+        label: Show Stats
+        explanation: Choose to show some basic statistics around this category, such as how many datasets, visualizations and stories it contains.
+      featured_content:
+        label: Featured Content in {category}
+        explanation: Promote up to 3 assets for this category.
     search:
       hint: Search
+    title: Search & Browse | %{category}
   common:
     action_buttons:
       back: Back
@@ -588,6 +604,10 @@ en:
       title: Columns in this Dataset
       type: Type
     updated: Updated
+    view_widget:
+      external_content: External Content
+      view: View
+      views: Views
   controls:
     browse:
       actions:
@@ -1793,8 +1813,17 @@ en:
       dataset_tab:
         errors:
           missing_name: Dataset name is required.
-        subtitle: Make your title and description as clear and simple as possible.
-        title: Title and Description
+          invalid_url: Please enter a valid url.
+          invalid_email: Please enter a valid email address.
+        titles:
+          dataset_title: Title and Description
+          tags_title: Categories and Tags
+          licenses_title: Licensing & Attribution
+          contact_title: Contact Email
+        subtitles:
+          dataset_subtitle: Make your title and description as clear and simple as possible.
+          tags_subtitle: Categorize your dataset to make it easier to find.
+          contact_subtitle: Private Field -  only logged in users will see this value
       errors:
         missing_name: Dataset name is required.
       required_note: Required field
@@ -5102,6 +5131,8 @@ en:
       attachments: Attachments
       attachmentsDisabledMessagePart1: To upload attachments, first finish publishing this dataset. Then, click
       attachmentsDisabledMessagePart2: in the toolbar, and click Edit Metadata. You will then be able to upload attachments.
+      attribution: Data Provided By
+      attribution_link: Source Link
       blob_uploaded: 'Excellent: we''ve saved your file. All that’s left is to describe your file''s metadata.'
       brief_description: Brief Description
       brief_description_prompt: Enter a description
@@ -5119,6 +5150,10 @@ en:
       dataset_title_prompt: Enter a title
       dataset_url: Dataset URL
       dataset_url_prompt: Enter the location of your external dataset
+      dataset_tags: Enter tag name
+      dataset_email: example@socrata.com
+      dataset_url: Enter web address
+      dataset_attribution: Individual or organization
       default_row_label: Row
       delete: Delete
       described_by: Data Dictionary

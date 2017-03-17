@@ -38,6 +38,12 @@ module DatasetsHelper
     options_for_select(licenses.sort_by(&:first), selected_license)
   end
 
+  def licenses()
+    licenses = ExternalConfig.for(:license).merged_licenses
+    licenses["-- #{t 'core.no_license'} --"] = ''
+    licenses.to_a.sort_by(&:first)
+  end
+
   def socialize_menu_options(view)
     {
      :facebook => { 'href' => "http://www.facebook.com/share.php?u=#{h(short_view_url(view))}"},

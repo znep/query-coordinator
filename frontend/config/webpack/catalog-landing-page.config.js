@@ -13,9 +13,11 @@ if (!common.isProduction) {
 
 module.exports = _.defaultsDeep({
   context: path.resolve(common.root, 'public/javascripts/catalogLandingPage'),
-  entry: common.getHotModuleEntries().concat([
-    './main'
-  ]),
+  entry: common.withHotModuleEntries({
+    'main': './main',
+    'manage': './manage',
+    'catalog': './catalog'
+  }),
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/catalogLandingPage/.eslintrc.json'),
   externals: {
@@ -25,7 +27,10 @@ module.exports = _.defaultsDeep({
     loaders: [
       {
         test: /\.jsx?$/,
-        include: [ path.resolve(common.root, 'public/javascripts') ],
+        include: [
+          path.resolve(common.root, 'public/javascripts'),
+          path.resolve(common.root, 'node_modules/socrata-components/common')
+        ],
         loaders: (common.isProduction ? ['babel'] : ['react-hot', 'babel'])
       }
     ]
@@ -33,8 +38,7 @@ module.exports = _.defaultsDeep({
   resolve: {
     alias: {
       'dotdotdot': 'dotdotdot/src/js/jquery.dotdotdot.min.js',
-      'jQuery': path.resolve(common.root, 'node_modules/jquery/dist/jquery.js'),
-      'jquery': path.resolve(common.root, 'node_modules/jquery/dist/jquery.js')
+      'jquery': 'jQuery'
     },
     root: [
       path.resolve(common.root, 'public/javascripts/catalogLandingPage')

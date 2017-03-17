@@ -110,6 +110,10 @@ class Hash
       store(to_bury.last, value)
   end
 
+  def camelize_keys
+    Hash[self.map { |key, value| [(key.to_s.camelize(:lower) rescue key) || key, value]}]
+  end
+
   def camelize_keys!
     keys.each do |key|
       self[(key.to_s.camelize(:lower) rescue key) || key] = delete(key)

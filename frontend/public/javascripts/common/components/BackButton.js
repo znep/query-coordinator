@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
 
-export class BackButton extends React.PureComponent {
+export class BackButton extends React.Component {
   render() {
     return (
       <button className="btn btn-default btn-sm close-modal back-button" onClick={this.props.onClick}>

@@ -80,6 +80,7 @@ export const ceteraUtils = (() => {
         const ceteraResultResource = ceteraResult.resource;
 
         return {
+          _resource: ceteraResultResource,
           ..._.pick(
             ceteraResultResource, 'id', 'uid', 'name', 'description', 'provenance', 'createdAt', 'updatedAt'
           ),

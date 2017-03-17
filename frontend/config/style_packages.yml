@@ -45,6 +45,9 @@ dataset-management-ui:
 catalog-landing-page:
 - catalog-landing-page/catalog-landing-page
 
+catalog-landing-page-manage:
+- catalog-landing-page/manage
+
 ie9:
 - dataCards/ie9
 

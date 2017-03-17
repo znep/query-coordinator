@@ -22,15 +22,18 @@
   <%= render_dataset_management_ui_translations %>
 
   <script>
+    var arrayToObject = function(titleAndValue) {
+      return {
+        title: titleAndValue[0],
+        value: titleAndValue[1]
+      };
+    };
+
     var initialState = {
       view: <%== @view.to_json %>,
       update: <%== @update.to_json %>,
-      datasetCategories: <%== flatten_category_tree.to_json %>.map(function(titleAndValue) {
-        return {
-          title: titleAndValue[0],
-          value: titleAndValue[1]
-        };
-      })
+      datasetCategories: <%== flatten_category_tree.to_json %>.map(arrayToObject),
+      datasetLicenses: <%== licenses.to_json %>.map(arrayToObject)
     };
   </script>
 

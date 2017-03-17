@@ -48,4 +48,15 @@ module CoreServer
   end
 
   class ResourceNotFound < ConnectionError; end
+
+  class Unauthorized < Error
+    attr_reader :status_code, :message
+    def initialize
+      super
+
+      @status_code = 401
+      @message = 'Authentication required'
+    end
+  end
+
 end

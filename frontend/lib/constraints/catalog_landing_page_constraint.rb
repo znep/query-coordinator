@@ -12,6 +12,7 @@ module Constraints
 
       return true if clp_config.properties.keys.include?(request.path)
 
+      # TODO: I have no idea why this is here, instead of inside catalog_query.
       CurrentDomain.property(:custom_facets, :catalog).tap do |custom_facets|
         PARAM_WHITELIST.concat(custom_facets.map(&:param)) if custom_facets.present?
       end
@@ -27,7 +28,8 @@ module Constraints
           else "#{key}=#{value}"
         end
       end
-      CGI.escape!(params.to_h.slice(*PARAM_WHITELIST).map(&to_param).flatten.sort.join('&'))
+
+      CGI.escape!(params.slice(*PARAM_WHITELIST).map(&to_param).flatten.sort.join('&'))
     end
 
   end

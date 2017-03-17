@@ -86,6 +86,8 @@ Rails.application.routes.draw do
         post '', :action => 'update_domain', :as => 'update_domain'
         get '/data', :action => 'show_domain', :format => :json, :as => 'show_domain_data'
         post '/default_site_config', :action => 'set_default_site_config'
+        post '/delete_domain', :action => 'delete_domain'
+        post '/undelete_domain', :action => 'undelete_domain'
         post '/delete_config/:config_id', :action => 'delete_site_config', :as => 'delete_site_config'
         post '/rename_config/:config_id', :action => 'rename_site_config', :as => 'rename_config'
         post '/feature', :action => 'set_features', :as => 'set_features'
@@ -154,7 +156,6 @@ Rails.application.routes.draw do
         post '/view/:id/set/:approval_type', :action => 'approve_view', :constraints => {:id => Frontend::UID_REGEXP}
         get '/manage', :action => 'manage'
         post '/manage', :action => 'manage_save'
-
       end
 
       scope :controller => 'administration/connector', :path => '/connectors' do
@@ -221,8 +222,12 @@ Rails.application.routes.draw do
     get '/translations/*locale_parts' => 'translations#get'
 
     # Note! The order of matchers in this file is important. Please don't move this line without thorough testing.
-    scope :controller => 'catalog_landing_page', :constraints => Constraints::CatalogLandingPageConstraint.new do
-      get '*path', :action => 'show'
+    scope :controller => 'catalog_landing_page' do
+      scope :path => '/catalog_landing_page' do
+        get '/manage', :action => :manage
+        put '/manage', :action => :manage_write
+      end
+      get '*path', :action => 'show', :constraints => Constraints::CatalogLandingPageConstraint.new
     end
 
     resource :browse, :controller => 'browse', :except => [ :create ] do

@@ -3,24 +3,59 @@ import { FieldDescriptor } from '../lib/sharedPropTypes';
 import TextInput from './MetadataFields/TextInput';
 import TextArea from './MetadataFields/TextArea';
 import Select from './MetadataFields/Select';
+import TagsInput from 'components/MetadataFields/TagsInput';
 
-export default function MetadataField(props) {
-  const { descriptor } = props;
+const MetadataField = (props) => {
+  let element = null;
 
-  switch (descriptor.type) {
+  const isValid = props.isPristine || !props.descriptor.required
+    ? true
+    : props.descriptor.validator(props.value);
+
+  const errorMsg = isValid ? [] : [props.descriptor.errorMsg];
+
+  const newProps = Object.assign({}, props, { tags: props.descriptor.tags }, { isValid: isValid });
+
+  const labelClassNames = ['block-label'];
+
+  props.descriptor.required && labelClassNames.push('required'); // eslint-disable-line
+
+  switch (props.descriptor.type) {
     case 'text':
-      return <TextInput {...props} />;
+      element = <TextInput {...newProps} />;
+      break;
     case 'textarea':
-      return <TextArea {...props} />;
+      element = <TextArea {...newProps} />;
+      break;
     case 'select':
-      return <Select {...props} />;
+      element = <Select {...newProps} />;
+      break;
+    case 'tagsinput':
+      element = <TagsInput {...newProps} />;
+      break;
     default:
-      throw new Error(`unexpected field descriptor type: ${descriptor.type}`);
+      throw new Error(`unexpected field descriptor type: ${props.descriptor.type}`);
   }
-}
+
+  return (
+    <div className={props.descriptor.className}>
+      <label
+        htmlFor={props.descriptor.key}
+        className={labelClassNames.join(' ')}>
+        {props.descriptor.label}
+      </label>
+      {element}
+      {errorMsg && <span className="metadata-validation-error">{errorMsg}</span>}
+    </div>
+  );
+};
 
 MetadataField.propTypes = {
   descriptor: FieldDescriptor,
-  onChange: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired
+  value: PropTypes.string,
+  onChange: PropTypes.func,
+  className: PropTypes.string,
+  isPristine: PropTypes.bool
 };
+
+export default MetadataField;

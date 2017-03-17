@@ -41,8 +41,7 @@ module TestHelperMethods
     )
   end
 
-  def login(user = nil)
-    user ||= default_user
+  def login(user = default_user)
     UserSession.controller = @controller
     @controller.current_user_session = UserSession.new(:login => user.login, :password => user.password)
     user

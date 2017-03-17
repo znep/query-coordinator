@@ -1,7 +1,7 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-routing-approval' %>
-  <title>Dataset Routing &amp; Approval | <%= get_site_title %></title>
+  <title><%= t('screens.admin.routing_approval.title') %> | <%= get_site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -20,21 +20,24 @@
     <%- if !@approval_template.nil? -%>
     <%- if @appr_count > 0 -%>
     <div class="banner clearfix">
-      <a href="<%= queue_path %>" class="button">Take Action</a>
-      <p>You have <strong><%= @appr_count %></strong> <%= @appr_count > 1 ?
-        'datasets' : 'dataset' %> that require<%= @appr_count == 1 ? 's' : '' %> action.</p>
+      <a href="<%= queue_path %>" class="button"><%= t('screens.admin.routing_approval.take_action') %></a>
+      <p>
+        <%= raw @appr_count > 1 ?
+                t('screens.admin.routing_approval.require_action.other', count: @appr_count) :
+                t('screens.admin.routing_approval.require_action.one') %>
+      </p>
     </div>
     <%- end -%>
 
     <div class="pipeline report loading hide">
-      <h3>Pipeline Report</h3>
+      <h3><%= t('screens.admin.routing_approval.pipeline_report') %></h3>
       <ul class="content">
       </ul>
       <span class="spinner"></span>
     </div>
 
     <div class="ageReport report loading hide">
-      <h3>Age by Stage Report</h3>
+      <h3><%= t('screens.admin.routing_approval.age_by_stage_report') %></h3>
       <table class="gridList content">
         <colgroup>
           <col class="stage" />
@@ -43,9 +46,9 @@
         </colgroup>
         <thead>
           <tr>
-            <th class="stage" scope="col">Stage</th>
-            <th class="count" scope="col">Count</th>
-            <th class="average" scope="col">Average Age</th>
+            <th class="stage" scope="col"><%= t('screens.admin.routing_approval.stage') %></th>
+            <th class="count" scope="col"><%= t('screens.admin.routing_approval.count') %></th>
+            <th class="average" scope="col"><%= t('screens.admin.routing_approval.average_age') %></th>
           </tr>
         </thead>
         <tbody>
@@ -55,14 +58,14 @@
     </div>
 
     <div class="agingReport report loading hide">
-      <h3>Stage Breakdown Report</h3>
+      <h3><%= t('screens.admin.routing_approval.stage_breakdown_report') %></h3>
       <table class="gridList content">
         <colgroup>
           <col class="stage" />
         </colgroup>
         <thead>
           <tr>
-            <th class="stage">Stage</th>
+            <th class="stage"><%= t('screens.admin.routing_approval.stage') %></th>
           </tr>
         </thead>
         <tbody>
@@ -72,7 +75,7 @@
     </div>
 
     <div class="stuckReport report">
-      <h3>Stuck Datasets</h3>
+      <h3><%= t('screens.admin.routing_approval.stuck_datasets') %></h3>
       <table class="gridList">
         <colgroup>
           <col class="name" />
@@ -81,9 +84,9 @@
         </colgroup>
         <thead>
           <tr>
-            <th class="name">Dataset</th>
-            <th class="stage">Stage</th>
-            <th class="inactive">Inactive</th>
+            <th class="name"><%= t('screens.admin.routing_approval.dataset') %></th>
+            <th class="stage"><%= t('screens.admin.routing_approval.stage') %></th>
+            <th class="inactive"><%= t('screens.admin.routing_approval.inactive') %></th>
           </tr>
         </thead>
         <tbody>
@@ -97,19 +100,19 @@
                 :locals => {:view => v, :approval => @approval_template} %>
             </td>
             <td class="inactive">
-              <%= pluralize(((Time.now - Time.at(v.last_approval_date)) / 1.day).to_i, 'day') %>
+              <%= t('screens.admin.routing_approval.day', :count => ((Time.now - Time.at(v.last_approval_date)) / 1.day).to_i) %>
             </td>
           </tr>
           <%- end -%>
         </tbody>
       </table>
       <%- if @stuck_count > 5 -%>
-        <a href="<%= queue_path(show_stuck: true) %>" class="moreStuck">Show More</a>
+        <a href="<%= queue_path(show_stuck: true) %>" class="moreStuck"><%= t('screens.admin.routing_approval.show_more') %></a>
       <%- end -%>
     </div>
 
     <%- else -%>
-    <h3 class="unconfiguredMessage">Dataset Routing &amp; Approval is not configured</h3>
+    <h3 class="unconfiguredMessage"><%= t('screens.admin.routing_approval.unconfigured_message') %></h3>
     <%- end -%>
 
   </div>
@@ -161,3 +164,8 @@
     <%= include_webpack_bundle 'open-data/admin-routing-approval.js' %>
   <%- end -%>
 <%- end -%>
+
+<% content_for :translations do %>
+  <%= render_translations LocalePart.screens.ds %>
+  <%= render_translations LocalePart.screens.admin.routing_approval %>
+<% end %>

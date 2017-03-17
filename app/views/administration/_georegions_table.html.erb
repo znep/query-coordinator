@@ -100,7 +100,7 @@
           <%- end -%>
         </td>
         <td class="date-added">
-          <span><%= georegion.datetime_added.strftime('%B %-d %Y') %></span>
+          <span><%= long_date_span(georegion.datetime_added) %></span>
         </td>
         <td class="edit-action">
           <%= form_button(

@@ -3,6 +3,10 @@
 (function() {
   'use strict';
 
+  function t(str, props) {
+    return $.t('screens.admin.routing_approval.' + str, props);
+  }
+
   /******* Approval dashboard section ******/
   $(function() {
     var $dashboard = $('#routingApprovalDashboard');
@@ -42,23 +46,25 @@
       var totalCount = Math.max(1, _.reduce(ageInfo, function(memo, ai) {
         return memo + ai.count;
       }, 0));
+
       _.each(apprTmpl.stages, function(s) {
         var ai = s.visible ? {
-          count: allViewsCount
-        } : _.detect(ageInfo, function(a) {
-          return a.approval_stage_id == s.id;
-        }) || {
-          count: 0
-        };
+            count: allViewsCount
+          } : _.detect(ageInfo, function(a) {
+            return a.approval_stage_id == s.id;
+          }) || {
+            count: 0
+          };
         $pipeline.append($.renderTemplate('pipelineItem', {
           ageInfo: ai,
           stage: s
         }, {
           '.label@title': 'stage.name!',
           '.label span': function(d) {
-            var stage = d.context.stage;
-            return $.htmlEscape(stage.visible ?
-              'Publicly available (' + stage.name + ')' : stage.name);
+            const stage = d.context.stage;
+            return $.htmlEscape(
+              stage.visible ? t('publicly_available', {stage: stage.name}) : stage.name
+            );
           },
           '.barContainer .bar@style': function(d) {
             return 'width:' +
@@ -94,11 +100,11 @@
         }
 
         var ai = _.detect(ageInfo, function(a) {
-          return a.approval_stage_id == s.id;
-        }) || {
-          count: 0,
-          average_age: 0
-        };
+            return a.approval_stage_id == s.id;
+          }) || {
+            count: 0,
+            average_age: 0
+          };
         ai.average_age = Math.round(ai.average_age);
         $ageByStage.append($.renderTemplate('ageItem', {
           stage: s,
@@ -112,9 +118,9 @@
             return $.commaify(d.context.ageInfo.count);
           },
           '.average': function(d) {
-            return d.context.ageInfo.count < 1 ? 'N/A' :
-              $.commaify(d.context.ageInfo.average_age) +
-              ' day' + (d.context.ageInfo.average_age != 1 ? 's' : '');
+            return (d.context.ageInfo.count < 1) ?
+              t('not_available') :
+              t('day', { count: $.commaify(d.context.ageInfo.average_age) });
           }
         }).find('tr'));
       });
@@ -142,12 +148,19 @@
 
       var ths = [];
       _.times(numGroups, function(i) {
+        var contents;
+        if (i == 0) {
+          contents = t('today');
+        } else if (i == numGroups - 1) {
+          contents = t('older');
+        } else {
+          contents = t('day_old', { count: i });
+        }
+
         ths.push({
           tagName: 'th',
           'class': 'unitCount',
-          contents: i == 0 ?
-            'Today' : i == numGroups - 1 ?
-            'Older' : i + ' day' + (i == 1 ? '' : 's') + ' old'
+          contents
         });
       });
       $stageBreakdown.find('thead tr').append($.tag(ths));
@@ -236,19 +249,31 @@
           return new Date(v.context.dataset.createdAt * 1000).
           toString('d MMMM yyyy');
         },
-        '.lastApproved .user .type': function(v) {
+        '.lastApproved .user .title': function(v) {
           var la = v.context.dataset.lastApproval(true);
-          return la.approvalTypeName == 'R' ? 'Rejected' :
-            la.approvalTypeName == 'A' ? 'Approved' : 'Resubmitted';
+          switch (la.approvalTypeName) {
+            case 'R':
+              return t('last_rejected_by') + ' :';
+            case 'A':
+              return t('last_approved_by') + ' :';
+            default:
+              return t('last_resubmitted_by') + ' :';
+          }
         },
         '.lastApproved .user .value@data-userId': function(v) {
           return v.context.dataset.lastApproval(true).
-          approverUserUid || '';
+              approverUserUid || '';
         },
-        '.lastApproved .date .type': function(v) {
+        '.lastApproved .date .title': function(v) {
           var la = v.context.dataset.lastApproval(true);
-          return la.approvalTypeName == 'R' ? 'Rejection' :
-            la.approvalTypeName == 'A' ? 'Approval' : 'Resubmission';
+          switch (la.approvalTypeName) {
+            case 'R':
+              return t('date_of_last_rejected') + ' :';
+            case 'A':
+              return t('date_of_last_approved') + ' :';
+            default:
+              return t('date_of_last_resubmitted_by') + ' :';
+          }
         },
         '.lastApproved .date .value': function(v) {
           return new Date((v.context.dataset.lastApproval(true).approvalDate || 0) * 1000).toString('d MMMM yyyy');
@@ -257,18 +282,23 @@
           return _.isEmpty(v.context.dataset.approvalHistory) ?
             'hide' : '';
         },
-        '.reason .title .type': function(v) {
+        '.reason .title': function(v) {
           var la = v.context.dataset.lastApproval(true);
-          return la.approvalTypeName == 'R' ? 'Rejection' :
-            la.approvalTypeName == 'A' ? 'Approval' : 'Resubmission';
+          switch (la.approvalTypeName) {
+            case 'R':
+              return t('rejection_reason') + ' :';
+            case 'A':
+              return t('approval_reason') + ' :';
+            default:
+              return t('resubmission_reason') + ' :';
+          }
         },
         '.reason .value': function(v) {
-          return v.context.dataset.lastApproval(true).comment ||
-            'No reason provided';
+          return v.context.dataset.lastApproval(true).comment || t('no_reason_provided');
         },
         '.reason@class+': function(v) {
           return v.context.dataset.lastApproval(true).
-          approvalTypeName == 'A' ? 'hide' : '';
+            approvalTypeName == 'A' ? 'hide' : '';
         },
         '.nextApprover .user li': {
           'userId<-nextStage.approverUids': {
@@ -421,7 +451,7 @@
       $stage.prepend($.tag({
         tagName: 'a',
         href: '#Remove',
-        title: 'Remove Stage',
+        title: t('remove_stage'),
         'class': 'remove',
         contents: {
           tagName: 'span',
@@ -445,7 +475,7 @@
       $li.append($.tag({
         tagName: 'a',
         href: '#Remove',
-        title: 'Remove Approver',
+        title: t('remove_approver'),
         'class': 'remove',
         contents: {
           tagName: 'span',

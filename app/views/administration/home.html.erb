@@ -1,8 +1,7 @@
-<%- prefix = 'screens.admin.home' %>
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-home' %>
-  <title><%= t("#{prefix}.title") %> | <%= get_site_title %></title>
+  <title><%= t('screens.admin.home.title') %> | <%= get_site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -14,14 +13,14 @@
 <div class="contentBox withLeftNavigation homeManagement">
   <div class="adminHeader homemgmt">
     <span class="icon"></span>
-    <h1><%= t("#{prefix}.title") %></h1>
+    <h1><%= t('screens.admin.home.title') %></h1>
   </div>
 </div>
 
 <%- if CurrentDomain.user_can?(current_user, UserRights::MANAGE_STORIES) -%>
 <div class="contentBox withLeftNavigation">
-  <a href="<%= url_for :action => :new_story %>" class="button newButton newStoryButton rightArrow"><%= t("#{prefix}.create_new_story") %><span class="icon"></span></a>
-  <h2><%= t("#{prefix}.manage_story_content") %></h2>
+  <a href="<%= url_for :action => :new_story %>" class="button newButton newStoryButton rightArrow"><%= t('screens.admin.home.create_new_story') %><span class="icon"></span></a>
+  <h2><%= t('screens.admin.home.manage_story_content') %></h2>
 
   <%= display_standard_flashes %>
 
@@ -35,9 +34,9 @@
       </colgroup>
       <thead>
         <tr>
-          <th class="image" scope="col"><div><%= t("#{prefix}.image") %></div></th>
-          <th class="contents" scope="col"><div><%= t("#{prefix}.contents") %></div><span class="icon"></span></th>
-          <th class="date" scope="col"><div><%= t("#{prefix}.date_published") %></div><span class="icon"></span></th>
+          <th class="image" scope="col"><div><%= t('screens.admin.home.image') %></div></th>
+          <th class="contents" scope="col"><div><%= t('screens.admin.home.contents') %></div><span class="icon"></span></th>
+          <th class="date" scope="col"><div><%= t('screens.admin.home.date_published') %></div><span class="icon"></span></th>
           <th class="actions" scope="col"><div></div></th>
         </tr>
       </thead>
@@ -54,23 +53,23 @@
               <p class="storyBody"><%= raw story.story %></p>
             </td>
             <td class="date">
-              <span class="cellDisplay"><%= Time.at(story.createdAt).strftime('%Y/%m/%d %I:%M%p') %></span>
+              <span class="cellDisplay"><%= date_time_span(story.createdAt) %></span>
               <span class="cellInner"><%= story.createdAt %></span>
             </td>
             <td class="actions">
               <span class="loading"></span>
               <a href="<%= url_for :action => :edit_story, :id => story.id %>" class="editStoryButton button">
-                <span class="icon"></span><%= t("#{prefix}.edit") %>
+                <span class="icon"></span><%= t('screens.admin.home.edit') %>
               </a>
               <%- if index > 0 -%>
                 <%= form_button({:action => 'move_story', :id => story.id, :other => @stories[index-1].id},
-                               t("#{prefix}.up"), {:method => :put}) %>
+                               t('screens.admin.home.up'), {:method => :put}) %>
               <%- end -%>
               <%- if index < @stories.length-1 %>
                 <%= form_button({:action => 'move_story', :id => @stories[index+1].id, :other => story.id},
-                               t("#{prefix}.down"), {:method => :put}) %>
+                               t('screens.admin.home.down'), {:method => :put}) %>
               <%- end -%>
-              <%= form_button({:action => 'delete_story', :id => story.id}, t("#{prefix}.delete"),
+              <%= form_button({:action => 'delete_story', :id => story.id}, t('screens.admin.home.delete'),
                              {:method => :delete}, {:class => 'deleteStoryButton button'}) %>
             </td>
           </tr>
@@ -81,17 +80,17 @@
 </div>
 
 <div class="contentBox withLeftNavigation">
-  <a href="<%= url_for :action => :update_stories_appearance %>" class="button newButton storyAppearanceButton rightArrow"><%= t("#{prefix}.customize_now") %><span class="icon"></span></a>
-  <h2><%= t("#{prefix}.customize_story_appearance") %></h2>
+  <a href="<%= url_for :action => :update_stories_appearance %>" class="button newButton storyAppearanceButton rightArrow"><%= t('screens.admin.home.customize_now') %><span class="icon"></span></a>
+  <h2><%= t('screens.admin.home.customize_story_appearance') %></h2>
 </div>
 <%- end -%>
 
 <%- if CurrentDomain.user_can?(current_user, UserRights::FEATURE_ITEMS) -%>
   <div class="contentBox withLeftNavigation">
-    <a href="#saveFeatures" class="button newButton saveFeaturesButton rightArrow"><%= t("#{prefix}.save_now") %><span class="icon"></span></a>
-    <a href="#newFeature" class="button newButton newFeatureButton add"><%= t("#{prefix}.add_featured_dataset") %><span class="icon"></span></a>
-    <span class="newFeatureMessage"><%= t("#{prefix}.dataset_display_limit") %></span>
-    <h2><%= t("#{prefix}.manage_featured_datasets") %></h2>
+    <a href="#saveFeatures" class="button newButton saveFeaturesButton rightArrow"><%= t('screens.admin.home.save_now') %><span class="icon"></span></a>
+    <a href="#newFeature" class="button newButton newFeatureButton add"><%= t('screens.admin.home.add_featured_dataset') %><span class="icon"></span></a>
+    <span class="newFeatureMessage"><%= t('screens.admin.home.dataset_display_limit') %></span>
+    <h2><%= t('screens.admin.home.manage_featured_dataset') %></h2>
     <div class="featuresWorkspace clearfix"></div>
   </div>
 
@@ -109,29 +108,29 @@
   <%- # Disable these options for browse2 / new catalog, because they overwrite the view_type -%>
   <%- unless using_cetera? -%>
     <div class="contentBox withLeftNavigation layoutConfig">
-      <h2><%= t("#{prefix}.catalog_layout_configuration") %></h2>
+      <h2><%= t('screens.admin.home.catalog_layout_configuration') %></h2>
       <%= form_tag({:action => 'modify_catalog_config'}, {:method => 'post', :class => 'commonForm'}) %>
         <fieldset class="line">
-          <span class="mainLabel"><%= t("#{prefix}.default_catalog_layout") %></span>
+          <span class="mainLabel"><%= t('screens.admin.home.default_catalog_layout') %></span>
           <div class="valueBox">
             <input type="radio" id="catalogViewType_table"
                                 name="catalog[view_type]" value="table"
                                 <%= view_type == 'table' ? 'checked="checked"' : '' %> />
-            <label for="catalogViewType_table"><%= t("#{prefix}.compact_list") %></label>
+            <label for="catalogViewType_table"><%= t('screens.admin.home.compact_list') %></label>
           </div>
           <div class="valueBox">
             <input type="radio" id="catalogViewType_rich"
                                 name="catalog[view_type]" value="rich"
                                 <%= view_type == 'rich' ? 'checked="checked"' : '' %> />
-            <label for="catalogViewType_rich"><%= t("#{prefix}.rich_list") %></label>
+            <label for="catalogViewType_rich"><%= t('screens.admin.home.rich_list') %></label>
           </div>
           <div class="statusTextWrapper">
             <span class="saving">
               <span class="icon"></span>
-              <span class="statusText"><%= t("#{prefix}.saving") %></span>
+              <span class="statusText"><%= t('screens.admin.home.saving') %></span>
             </span>
             <span class="saved">
-              <span class="statusText"><%= t("#{prefix}.saved") %></span>
+              <span class="statusText"><%= t('screens.admin.home.saved') %></span>
             </span>
           </div>
         </fieldset>
@@ -146,10 +145,10 @@
 <%- content_for :templates do -%>
   <div class="feature">
     <div class="featureWrapper">
-      <a href="#left" class="featureSwapButton leftArrow" title="<%= t("#{prefix}.move_left") %>"><span class="icon"><%= t("#{prefix}.left") %></span></a>
-      <a href="#right" class="featureSwapButton rightArrow" title="<%= t("#{prefix}.move_right") %>"><span class="icon"><%= t("#{prefix}.right") %></span></a>
+      <a href="#left" class="featureSwapButton leftArrow" title="<%= t('screens.admin.home.move_left') %>"><span class="icon"><%= t('screens.admin.home.left') %></span></a>
+      <a href="#right" class="featureSwapButton rightArrow" title="<%= t('screens.admin.home.move_right') %>"><span class="icon"><%= t('screens.admin.home.right') %></span></a>
       <div class="featureBox">
-        <a href="#remove" class="featureRemoveButton close" title="<%= t("#{prefix}.remove") %>"><span class="icon"><%= t("#{prefix}.remove") %></span></a>
+        <a href="#remove" class="featureRemoveButton close" title="<%= t('screens.admin.home.remove') %>"><span class="icon"><%= t('screens.admin.home.remove') %></span></a>
         <div class="featureInnerWrapper">
           <input type="text" class="featureHeadline"/>
 
@@ -157,13 +156,13 @@
             <div class="line">
               <input type="radio" name="featureContent"
                      class="featureContentRadio" value="thumbnail" />
-              <label for="featureContentThumbnail"><%= t("#{prefix}.thumbnail") %></label>
+              <label for="featureContentThumbnail"><%= t('screens.admin.home.thumbnail') %></label>
             </div>
             <div class="featureContentThumbnailSection featureContentType">
               <div class="showIfThumbnail">
-                <img src="" alt="<%= t("#{prefix}.feature_image") %>"/>
+                <img src="" alt="<%= t('screens.admin.home.feature_image') %>"/>
                 <div>
-                  <a class="editThumbnailButton editImageButton button disabled"><%= t("#{prefix}.edit") %></a>
+                  <a class="editThumbnailButton editImageButton button disabled"><%= t('screens.admin.home.edit') %></a>
                 </div>
               </div>
               <div class="thumbnailDisabledMessage">
@@ -174,24 +173,24 @@
             <div class="line">
               <input type="radio" name="featureContent"
                      class="featureContentRadio" value="custom" />
-              <label for="featureContentCustom"><%= t("#{prefix}.custom_image") %></label>
+              <label for="featureContentCustom"><%= t('screens.admin.home.custom_image') %></label>
             </div>
             <div class="featureContentCustomSection featureContentType">
               <input type="hidden" class="featureContentImageSha" />
               <div class="customImageContainer">
                 <div class="ajaxImage">
-                  <img src="" alt="<%= t("#{prefix}.custom_image") %>" />
+                  <img src="" alt="<%= t('screens.admin.home.custom_image') %>" />
                 </div>
                 <a class="editCustomImageButton editImageButton" href="#editCustomImage" data-endpoint="/api/assets">Edit</a>
               <span class="throbber"></span>
               </div>
-              <div class="customImageError flash error"><%= t("#{prefix}.filetype_error") %></div>
+              <div class="customImageError flash error"><%= t('screens.admin.home.filetype_error') %></div>
             </div>
 
             <div class="line">
               <input type="radio" name="featureContent"
                      class="featureContentRadio" value="text" />
-              <label for="featureContentText"><%= t("#{prefix}.text") %></label>
+              <label for="featureContentText"><%= t('screens.admin.home.text') %></label>
             </div>
             <div class="featureContentTextSection featureContentType">
               <input type="text" class="featureContentTextHeadline"/>
@@ -207,10 +206,10 @@
 <%- end -%>
 
 <%- content_for :modals do -%>
-  <%= render :partial => 'modals/select_dataset', :locals => { :title => t("#{prefix}.choose_a_dataset") } %>
+  <%= render :partial => 'modals/select_dataset', :locals => { :title => t('screens.admin.home.choose_a_dataset') } %>
 
   <%= modal :id => 'setThumbnail' do %>
-    <h2><%= t("#{prefix}.set_a_thumbnail") %></h2>
+    <h2><%= t('screens.admin.home.set_a_thumbnail') %></h2>
     <iframe frameBorder="0"></iframe>
   <%- end -%>
 <%- end -%>

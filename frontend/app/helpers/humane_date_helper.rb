@@ -3,11 +3,14 @@ module HumaneDateHelper
 
   def self.humane_date(epoch_secs)
     if epoch_secs.nil? || epoch_secs == 0
-      return 'None'
+      return I18n.t('common.none')
     end
     other = Time.at(epoch_secs)
-    token = Time.now > other ? 'ago' : 'from now'
+    distance_in_words = time_ago_in_words(other)
 
-    "#{time_ago_in_words(other)} #{token}"
+    Time.now > other ?
+      I18n.t('date.time_in_distance.ago', :distance => distance_in_words) :
+      I18n.t('date.time_in_distance.from_now', :distance => distance_in_words)
+
   end
 end

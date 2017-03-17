@@ -2,7 +2,7 @@
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'browse-control' %>
   <%= rendered_stylesheet_tag 'administration-routing-approval' %>
-  <title>Dataset Routing &amp; Approval | <%= get_site_title %></title>
+  <title><%= t('screens.admin.routing_approval.title') %> | <%= get_site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -25,7 +25,7 @@
           @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' || p.to_s == 'stage_id'}.to_param -%>">
           <div class="searchSection">
             <span class="icon"></span>
-            <input type="text" name="q" title="Search"
+            <input type="text" name="q" title="<%= t('screens.admin.routing_approval.search') %>"
               class="textPrompt searchBox" value="<%= @params[:q] %>" />
             <%- if !@params[:q].blank? -%>
             <%- cp = @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' } -%>
@@ -38,16 +38,16 @@
           <%= select_tag("stage_id", options_for_select([['All', '']].concat(filter_stages
             .map {|s| [s['name'], s['id'].to_s]}), @params[:stage_id].to_s)) %>
           <%- end -%>
-          <input type="submit" value="Go" />
+          <input type="submit" value="<%= t('screens.admin.routing_approval.go') %>" />
         </form>
 
-        <h2>Approval Queue</h2>
+        <h2><%= t('screens.admin.routing_approval.approval_queue') %></h2>
       </div>
 
       <div class="results">
         <%- if @view_count == 0 -%>
         <div class="noResults">
-          <span class="message">Nothing to approve</span>
+          <span class="message"><%= t('screens.admin.routing_approval.nothing_to_approve') %></span>
         </div>
 
         <%- else -%>
@@ -67,7 +67,7 @@
               <%- if @use_federations -%>
               <th class="domainIcon" scope="col"></th>
               <%- end -%>
-              <th class="nameDesc" scope="col">Dataset</th>
+              <th class="nameDesc" scope="col"><%= t('screens.admin.routing_approval.dataset') %></th>
               <th class="stage" scope="col"></th>
               <th class="actions" scope="col"></th>
             </tr>
@@ -78,7 +78,7 @@
               'stuck' : ''%>"
               data-viewId="<%= v.id %>">
               <td class="index" scope="row">
-                <a class="expander" title="Click to expand" href="#Expand">
+                <a class="expander" title="<%= t('screens.admin.routing_approval.click_to_expand') %>" href="#Expand">
                   <span class="icon"></span>
                 </a>
               </td>
@@ -89,14 +89,15 @@
               <td class="domainIcon">
                 <a href="<%= view_url(v) %>" rel="<%= rel_type %>">
                   <img src="<%= v.domain_icon_href %>" alt="<%= v.federated? ?
-                    'Federated from ' + v.domainCName : CurrentDomain.cname %>" />
+                    t('screens.admin.routing_approval.federated_from', :name => v.domainCName) : CurrentDomain.cname %>" />
                 </a>
               </td>
               <%- end -%>
               <td class="nameDesc">
-                <a href="<%= view_url(v) %>" class="name alert"
-                  rel="<%= rel_type %>"><span class="icon"
-                    title="This dataset has been inactive for more than <%= pluralize(@approval_template.maxInactivityInterval, "day") %>"></span><%= v.name %></a>
+                <a href="<%= view_url(v) %>" class="name alert" rel="<%= rel_type %>">
+                  <span class="icon" title="<%= t('screens.admin.routing_approval.inactive_warning', :count => @approval_template.maxInactivityInterval) %>"></span>
+                  <%= v.name %>
+                </a>
                 <div class="description" title="<%= v.description %>">
                   <%= raw(auto_link(h(v.description), :html => { :rel => 'nofollow noreferrer external' })) %>
                 </div>
@@ -110,7 +111,8 @@
               <td class="stage">
                 <%= render :partial => 'datasets/stage_icon',
                   :locals => {:approval => @approval_template, :view => v} %>
-                <%= @approval_template.stage((v.last_approval || {})['approvalStageId'])['name'] %>
+                <%- stage_name = @approval_template.stage((v.last_approval || {})['approvalStageId'])['name'] %>
+                <%= t('screens.admin.routing_approval.not_ready_yet') || stage_name %>
               </td>
               <td class="actions">
                 <%= render :partial => 'administration/routing_approval_actions',
@@ -130,7 +132,7 @@
     </div>
 
     <%- else -%>
-    <h3 class="unconfiguredMessage">Dataset Routing &amp; Approval is not configured</h3>
+    <h3 class="unconfiguredMessage"><%= t('screens.admin.routing_approval.unconfigured_message') %></h3>
     <%- end -%>
   </div>
 </div>
@@ -140,7 +142,7 @@
 <% content_for :templates do %>
 <div class="expandedInfo">
   <div class="stage line">
-    <span class="title">Stage:</span>
+    <span class="title"><%= t('screens.admin.routing_approval.stage') %>:</span>
     <div class="value">
       <div class="icon"></div>
       <span class="description"></span>
@@ -148,31 +150,31 @@
   </div>
   <div class="created line">
     <div class="user leftColumn">
-      <span class="title">Created by:</span>
+      <span class="title"><%= t('screens.admin.routing_approval.created_by') %>:</span>
       <a class="value" href="#"></a>
     </div>
     <div class="date rightColumn">
-      <span class="title">Date Created:</span>
+      <span class="title"><%= t('screens.admin.routing_approval.date_created') %>:</span>
       <span class="value"></span>
     </div>
   </div>
   <div class="lastApproved line">
     <div class="user leftColumn">
-      <div class="title">Last <span class="type"></span>&nbsp;by:</div>
+      <div class="title"></div>
       <a class="value userLoad" href="#"></a>
     </div>
     <div class="date rightColumn">
-      <div class="title">Date of Last <span class="type"></span>:</div>
+      <div class="title"></div>
       <span class="value"></span>
     </div>
   </div>
   <div class="reason line">
-    <div class="title"><span class="type"></span> Reason:</div>
+    <div class="title"></div>
     <span class="value"></span>
   </div>
   <div class="nextApprover line">
     <div class="user">
-      <span class="title">Next Approver:</span>
+      <span class="title"><%= t('screens.admin.routing_approval.next_approver') %>:</span>
       <ul>
         <li><a class="value userLoad" href="#"></a></li>
       </ul>
@@ -199,3 +201,8 @@
     <%= include_webpack_bundle 'open-data/admin-routing-approval.js' %>
   <%- end -%>
 <%- end -%>
+
+<% content_for :translations do %>
+  <%= render_translations LocalePart.screens.ds %>
+  <%= render_translations LocalePart.screens.admin.routing_approval %>
+<% end %>

@@ -1868,7 +1868,17 @@
     var itemAttrs = commonAttrs(cpObj, args.item, args.context);
 
     var items = _.map(args.item.options, function(opt) {
-      var id = itemAttrs.id + '-' + opt;
+      var value;
+      var label;
+
+      if (typeof opt == 'object') {
+        value = opt.value;
+        label = opt.label;
+      } else {
+        value = label = opt;
+      }
+
+      var id = itemAttrs.id + '-' + value;
       return {
         tagName: 'div',
         'class': 'radioLine',
@@ -1876,12 +1886,12 @@
           tagName: 'input',
           type: 'radio',
           id: id,
-          'data-dataValue': opt,
+          'data-dataValue': value,
           checked: opt === v
         }), {
           tagName: 'label',
           'for': id,
-          contents: opt
+          contents: label
         }]
       };
     });

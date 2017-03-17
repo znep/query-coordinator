@@ -1,8 +1,7 @@
-<%- prefix = 'screens.admin.users' %>
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-users' %>
-  <title><%= t("#{prefix}.title") %> | <%= get_site_title %></title>
+  <title><%= t('screens.admin.users.title') %> | <%= get_site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -15,21 +14,21 @@
 <div class="contentBox withLeftNavigation usersScreen">
   <div class="adminHeader floating users">
     <div class="usersTopPageButtonArea">
-      <%= link_to t("#{prefix}.export_as_csv"), {:action => 'users', :format => :csv}, {:class => 'button'} %>
+      <%= link_to t('screens.admin.users.export_as_csv'), {:action => 'users', :format => :csv}, {:class => 'button'} %>
       <%- unless no_js -%>
-        <%= link_to t("#{prefix}.create_users"), {:anchor => 'BulkCreate'}, {:class => ['button','showBulkCreateForm']} =%>
+        <%= link_to t('screens.admin.users.create_users'), {:anchor => 'BulkCreate'}, {:class => ['button','showBulkCreateForm']} =%>
       <%- end -%>
     </div>
     <span class="icon"></span>
-    <h1><%= t("#{prefix}.title") %></h1>
+    <h1><%= t('screens.admin.users.title') %></h1>
   </div>
 
   <div class="bulkUserCreateSection clearfix<%= ' hide' unless no_js %>">
     <%= form_tag({:action => 'bulk_create_users'}, {:method => 'post', :class => 'commonForm'}) %>
       <div class="line">
-        <label for="users"><%= t("#{prefix}.emails") %></label>
+        <label for="users"><%= t('screens.admin.users.emails') %></label>
         <%= text_area_tag('users', nil,
-          :class => 'textPrompt', :title => t("#{prefix}.email_prompt") ) %>
+          :class => 'textPrompt', :title => t('screens.admin.users.email_prompt') ) %>
       </div>
       <div class="line">
         <%= raw(select_for_role(
@@ -41,7 +40,7 @@
       </div>
       <div class="line">
         <label>&nbsp;</label>
-        <input type="submit" class="bulkCreateButton button default" value="<%= t("#{prefix}.create_accounts") %>" />
+        <input type="submit" class="bulkCreateButton button default" value="<%= t('screens.admin.users.create_accounts') %>" />
         <%- unless no_js -%>
           <a href="#Cancel" class="cancelBulkCreate button"><%= t('core.dialogs.cancel') %></a>
         <%- end -%>
@@ -53,11 +52,11 @@
 <div class="contentBox withLeftNavigation usersScreen" id="adminContent">
   <%- unless @users_list.blank? %>
     <div class="userRoleSelectFilter">
-      <label for="userRoleFilterDropdown"><%= t("#{prefix}.filter_by") %></label>
+      <label for="userRoleFilterDropdown"><%= t('screens.admin.users.filter_by') %></label>
       <select id="userRoleFilterDropdown">
-        <option value="all"><%= t("#{prefix}.all") %></option>
+        <option value="all"><%= t('screens.admin.users.all') %></option>
         <%- User.roles_list.each do |role| -%>
-          <option value="<%= role =%>"><%= t("#{prefix}.roles.#{role}").titleize %></option>
+          <option value="<%= role =%>"><%= t("screens.admin.users.roles.#{role}").titleize %></option>
         <%- end -%>
       </select>
     </div>
@@ -67,16 +66,16 @@
 
   <%- unless @user_search_results.nil? -%>
     <p class="information">
-      <%= link_to t("#{prefix}.return_to_overview"), :action => 'users' %>
+      <%= link_to t('screens.admin.users.return_to_overview'), :action => 'users' %>
     </p>
   <%- end -%>
 
   <form class="search usersFind" action="<%= url_for :action => 'users' %>" method="get">
-    <label for="username"><%= t("#{prefix}.search_for_users") %></label>
+    <label for="username"><%= t('screens.admin.users.search_for_users') %></label>
     <input type="text" class="textPrompt searchField<%= ' prompt' if @search.nil? %>" name="username" id="username"
-      title="<%= t("#{prefix}.search_for_users") %>" value="<%= @search %>" />
+      title="<%= t('screens.admin.users.search_for_users') %>" value="<%= @search %>" />
 
-    <input type="submit" class="submit" alt="<%= t("#{prefix}.search") %>" value="<%= t("#{prefix}.search") %>" />
+    <input type="submit" class="submit" alt="<%= t('screens.admin.users.search') %>" value="<%= t('screens.admin.users.search') %>" />
   </form>
 
   <div class="adminUsersTableContainer tableContainer">
@@ -90,10 +89,10 @@
         summary="<%= a11y_users_summary(
                  @users_list,
                  [
-                   t("#{prefix}.name"),
-                   t("#{prefix}.email"),
-                   t("#{prefix}.role"),
-                   @existing_user_actions ? t("#{prefix}.actions") : nil
+                   t('screens.admin.users.name'),
+                   t('screens.admin.users.email'),
+                   t('screens.admin.users.role'),
+                   @existing_user_actions ? t('screens.admin.users.actions') : nil
                  ]) %>"
       >
         <colgroup>
@@ -114,11 +113,11 @@
             <%- if @existing_user_actions && false -%>
               <th class="select" scope="col"></th>
             <%- end -%>
-            <th class="user" scope="col"><div><%= t("#{prefix}.name") %></div><span class="icon"></span></th>
-            <th class="email" scope="col"><div><%= t("#{prefix}.email") %></div><span class="icon"></span></th>
-            <th class="role" scope="col"><div><%= t("#{prefix}.role") %></div><span class="icon"></span></th>
+            <th class="user" scope="col"><div><%= t('screens.admin.users.name') %></div><span class="icon"></span></th>
+            <th class="email" scope="col"><div><%= t('screens.admin.users.email') %></div><span class="icon"></span></th>
+            <th class="role" scope="col"><div><%= t('screens.admin.users.role') %></div><span class="icon"></span></th>
             <%- if @existing_user_actions -%>
-              <th class="actions"><%= t("#{prefix}.actions") %></th>
+              <th class="actions"><%= t('screens.admin.users.actions') %></th>
             <%- end -%>
           </tr>
         </thead>
@@ -173,12 +172,12 @@
                   <%- unless user.id == current_user.id -%>
                     <span class="loading"></span>
                     <%= form_button({ :action => 'set_user_role' },
-                                    t("#{prefix}.remove"), {:user_id => user.id}, {:class => 'button removeButton'}) %>
+                                    t('screens.admin.users.remove'), {:user_id => user.id}, {:class => 'button removeButton'}) %>
                     <%= form_button({ :action => 'reset_user_password', :user_id => user.id },
-                                    t("#{prefix}.reset_password"), {}, {:class => 'button resetPasswordButton'}) %>
+                                    t('screens.admin.users.reset_password'), {}, {:class => 'button resetPasswordButton'}) %>
                     <span class="enableAccount">
                       <%= form_button({ :action => 're_enable_user', :user_id => user.id },
-                                      t("#{prefix}.reenable_privileges"), {}, {:class => 'button enableAccountButton'}) %>
+                                      t('screens.admin.users.reenable_privileges'), {}, {:class => 'button enableAccountButton'}) %>
                     </span>
                   <%- end -%>
                 </td>
@@ -188,13 +187,13 @@
         </tbody>
       </table>
     </div>
-    <p class="noResultsMessage<%= ' noHide' if @users_list && @users_list.length == 0 %>"><%= t("#{prefix}.no_users_match") %></p>
+    <p class="noResultsMessage<%= ' noHide' if @users_list && @users_list.length == 0 %>"><%= t('screens.admin.users.no_users_match') %></p>
   <%- end -%>
 
   <%- unless @futures.blank? -%>
     <div class="futureUsersContainer tableContainer">
       <p class="unregisteredExplanation">
-        <%= t("#{prefix}.pending_users") %>
+        <%= t('screens.admin.users.pending_users') %>
       </p>
       <div class="gridListWrapper">
         <table
@@ -203,10 +202,10 @@
           summary="<%= a11y_pending_users_summary(
                          @futures,
                          [
-                           t("#{prefix}.email"),
-                           t("#{prefix}.role"),
-                           t("#{prefix}.invited"),
-                           t("#{prefix}.actions")
+                           t('screens.admin.users.email'),
+                           t('screens.admin.users.role'),
+                           t('screens.admin.users.invited'),
+                           t('screens.admin.users.actions')
                          ]) %>"
         >
           <colgroup>
@@ -217,10 +216,10 @@
           </colgroup>
           <thead>
             <tr>
-              <th class="email"><div><%= t("#{prefix}.email") %></div><span class="icon"></span></th>
-              <th class="role"><div><%= t("#{prefix}.role") %></div><span class="icon"></span></th>
-              <th class="createdAt"><div><%= t("#{prefix}.invited") %></div><span class="icon"></span></th>
-              <th class="actions"><%= t("#{prefix}.actions") %></th>
+              <th class="email"><div><%= t('screens.admin.users.email') %></div><span class="icon"></span></th>
+              <th class="role"><div><%= t('screens.admin.users.role') %></div><span class="icon"></span></th>
+              <th class="createdAt"><div><%= t('screens.admin.users.invited') %></div><span class="icon"></span></th>
+              <th class="actions"><%= t('screens.admin.users.actions') %></th>
             </tr>
           </thead>
           <tbody>
@@ -243,7 +242,7 @@
                 </td>
                 <td class="actions">
                   <span class="loading"></span>
-                  <%= form_button({ :action => 'delete_future_user', :id => user.id }, t("#{prefix}.remove"),
+                  <%= form_button({ :action => 'delete_future_user', :id => user.id }, t('screens.admin.users.remove'),
                        {:method => :delete}, {:class => 'button removeButton'}) %>
                 </td>
               </tr>
@@ -251,7 +250,7 @@
           </tbody>
         </table>
       </div>
-      <p class="noResultsMessage"><%= t("#{prefix}.no_pending_users") %></p>
+      <p class="noResultsMessage"><%= t('screens.admin.users.no_pending_users') %></p>
     </div>
   <%- end -%>
 

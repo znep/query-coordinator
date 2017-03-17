@@ -6,6 +6,9 @@ export default {
     pickable_color: 'Pickable color',
     with_currently_selected_color: 'with currently selected color'
   },
+  flannel: {
+    close_popup: 'Close popup'
+  },
   filter_bar: {
     add_filter: 'Add Filter',
     apply: 'Apply',

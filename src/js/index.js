@@ -20,6 +20,7 @@ import DateRangePicker from './components/DateRangePicker';
 import SocrataIcon from './components/SocrataIcon';
 import Modal, { ModalHeader, ModalContent, ModalFooter } from './components/Modal';
 import SideMenu, { MenuListItem, ExpandableMenuListItem } from './components/SideMenu';
+import { Flannel, FlannelHeader, FlannelContent, FlannelFooter } from './components/Flannel';
 
 module.exports = {
   attachTo: function(element) {
@@ -56,5 +57,9 @@ module.exports = {
   SocrataIcon,
   SideMenu,
   MenuListItem,
-  ExpandableMenuListItem
+  ExpandableMenuListItem,
+  Flannel,
+  FlannelHeader,
+  FlannelContent,
+  FlannelFooter
 };

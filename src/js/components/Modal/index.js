@@ -37,7 +37,7 @@ export const Modal = React.createClass({
 
     // Handle a11y focusing concerns
     this.previouslyFocusedElement = document.activeElement;
-    focusFirstActionableElement(this.modalContainer, '.modal-header-dismiss');
+    focusFirstActionableElement(this.modalContainer);
   },
 
   componentWillUnmount() {

@@ -6,6 +6,7 @@ import MetadataTable from '../../common/components/MetadataTable';
 import SchemaPreview from './SchemaPreview';
 import HomePaneSidebar from './HomePaneSidebar';
 import DatasetPreview from './DatasetPreview';
+import RowDetails from '../components/RowDetails';
 import * as Links from '../links';
 import { Link } from 'react-router';
 import { latestOutputSchema } from '../selectors';
@@ -208,6 +209,8 @@ function ShowUpdate({ view, routing, db, urlParams, addEmailInterest, createUplo
       <div className="home-content container">
         {metadataSection}
         <SchemaPreview db={db} />
+
+        <RowDetails />
 
         <section className="management-ui-section table-preview">
           <h2 className="landing-page-section-header">{I18n.home_pane.table_preview}</h2>

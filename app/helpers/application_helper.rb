@@ -210,6 +210,10 @@ module ApplicationHelper
     end
   end
 
+  def locale_prefix
+    (I18n.locale.to_sym == CurrentDomain.default_locale.to_sym) ? '' : "/#{I18n.locale}"
+  end
+
   # For altering jquery-ui's regionality because the "correct" way is dumb.
   def render_jquery_ui_translations
     content_tag :script, :type => 'text/javascript' do

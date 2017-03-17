@@ -12,7 +12,8 @@ window.I18n = require('mockTranslations');
 window.serverConfig = {
   csrfToken: 'abcdefgh1234',
   appToken: 'global-frontend-token',
-  currentUserId: 'asdf-1234'
+  currentUserId: 'asdf-1234',
+  localePrefix: 'en'
 };
 window.initialState = {
   view: {

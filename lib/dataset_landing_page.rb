@@ -391,7 +391,7 @@ class DatasetLandingPage
     end
 
     def row_label(view)
-      view.row_label || I18n.t('dataset_landing_page.default_row_label').capitalize
+      view.row_label || I18n.t('common.default_row_label').capitalize
     end
 
     def disable_contact_dataset_owner(view)

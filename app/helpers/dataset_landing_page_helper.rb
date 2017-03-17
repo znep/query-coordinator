@@ -49,7 +49,7 @@ module DatasetLandingPageHelper
       :environment => Rails.env,
       :featureFlags => feature_flags_as_json,
       :locale => I18n.locale.to_s,
-      :localePrefix => (I18n.locale.to_sym == CurrentDomain.default_locale.to_sym) ? '' : "/#{I18n.locale}",
+      :localePrefix => locale_prefix,
       :recaptchaKey => RECAPTCHA_2_SITE_KEY,
       :usersnapProjectID => 'db69b856-0f89-42cb-aec0-83c78ba79c03'
     }

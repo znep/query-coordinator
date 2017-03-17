@@ -10,12 +10,13 @@ export default function RowErrorsLink({ path, displayState, numRowErrors }) {
   const linkPath = inRowErrorState ?
     Links.showOutputSchema(path.uploadId, path.inputSchemaId, path.outputSchemaId) :
     Links.showRowErrors(path.uploadId, path.inputSchemaId, path.outputSchemaId);
+  const SubI18n = I18n.show_output_schema.row_errors;
 
   return (
     <Link to={linkPath}>
       <div className="column-status-text">
         <span className="err-info error">{commaify(numRowErrors)}</span>
-        {singularOrPlural(numRowErrors, 'Malformed row', 'Malformed rows')}{/* TODO: I18n */}
+        {singularOrPlural(numRowErrors, SubI18n.malformed_row, SubI18n.malformed_rows)}
       </div>
     </Link>
   );

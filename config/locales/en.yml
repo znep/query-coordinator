@@ -1838,6 +1838,13 @@ en:
         ready_to_import: Ready to import
         rows: rows
         will_not_be_imported: Rows that will not be imported
+      row_errors:
+        row: Row
+        malformed_row: Malformed row
+        malformed_rows: Malformed rows
+        expected: Expected
+        columns_found: columns, found
+        row_content: Row content
       rows_so_far: rows so far
       rows_total: rows total
       upload_done: Upload Done

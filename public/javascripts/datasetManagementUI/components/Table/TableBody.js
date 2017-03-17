@@ -52,17 +52,18 @@ class TableBody extends Component {
   }
 
   renderRowError(rowError) {
-    // TODO: I18n
+    const SubI18n = I18n.show_output_schema.row_errors;
     return (
       <td>
         <span className="malformed-row-tag error">!</span>
-        <span className="malformed-row-location">Row {rowError.offset}:</span>
+        <span className="malformed-row-location">{SubI18n.row} {rowError.offset}:</span>
         <span className="malformed-row-error">
-          Expected <span className="row-error-number">{rowError.error.wanted}</span> columns,
-          found <span className="row-error-number">{rowError.error.got}</span>
+          {SubI18n.expected} <span className="row-error-number">{rowError.error.wanted}</span>&nbsp;
+          {SubI18n.columns_found}&nbsp;
+          <span className="row-error-number">{rowError.error.got}</span>
         </span>
         <span className="malformed-row-contents">
-          <span className="row-content-label">Row content:</span>&nbsp;
+          <span className="row-content-label">{SubI18n.row_content}:</span>&nbsp;
           {rowError.error.contents.map((cell) => `"${cell.replace('"', '\\"')}"`).join(',')}
         </span>
       </td>

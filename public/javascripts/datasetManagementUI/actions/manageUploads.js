@@ -24,7 +24,7 @@ import { uploadNotification } from '../lib/notifications';
 import { push } from 'react-router-redux';
 import { socrataFetch, checkStatus, getJson } from '../lib/http';
 import { parseDate } from '../lib/parseDate';
-
+import { loadRowErrors } from './showOutputSchema';
 
 export function createUpload(file) {
   return (dispatch, getState) => {
@@ -149,14 +149,14 @@ function subscribeToUpload(dispatch, upload) {
     // TODO: factor channel joining out into a function
     const channelName = `row_errors:${inputSchema.id}`;
     const channel = window.DSMAPI_PHOENIX_SOCKET.channel(channelName);
+    let rowErrorsSoFar = 0;
     channel.on('errors', (event) => {
-      event.errors.forEach((rowError) => {
-        dispatch(insertFromServer('row_errors', {
-          ...rowError,
-          id: `${inputSchema.id}-${rowError.index}`,
-          input_schema_id: inputSchema.id
-        }));
-      });
+      dispatch(updateFromServer('input_schemas', {
+        id: inputSchema.id,
+        num_row_errors: event.errors
+      }));
+      dispatch(loadRowErrors(inputSchema.id, rowErrorsSoFar, 100));
+      rowErrorsSoFar = event.errors;
     });
     channel.join().
       receive('ok', (response) => {

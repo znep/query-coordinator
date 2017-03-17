@@ -952,10 +952,10 @@ body {
 
             .malformed-row-tag {
               color: $white;
-              border-radius: 1.1em;
-              padding: 0 0.6em 1px;
-              font-size: 9px;
-              content: "!"; // this doesn't seem to work...
+              border-radius: 0.7em;
+              padding: 0 0.7em 0;
+              font-size: 7px;
+              vertical-align: middle;
             }
 
             .malformed-row-location {
@@ -963,13 +963,21 @@ body {
             }
 
             .malformed-row-error {
-              color: $grey;
               padding-left: 20px;
             }
 
             .malformed-row-contents {
-              color: $grey;
+              color: darken(#767676, 10%);
               padding-left: 20px;
+              font-size: 10px;
+            }
+
+            .row-error-number {
+              font-weight: bold;
+            }
+
+            .row-content-label {
+              font-weight: bold;
             }
           }
         }

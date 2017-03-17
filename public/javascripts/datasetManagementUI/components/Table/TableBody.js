@@ -12,11 +12,13 @@ class TableBody extends Component {
     return !_.isEqual(
       {
         columns: nextProps.transforms.map(t => [t.id, t.fetched_rows, t.error_indices]),
-        displayState: nextProps.displayState
+        displayState: nextProps.displayState,
+        numRowErrors: _.size(nextProps.db.row_errors)
       },
       {
         columns: this.props.transforms.map(t => [t.id, t.fetched_rows, t.error_indices]),
-        displayState: this.props.displayState
+        displayState: this.props.displayState,
+        numRowErrors: _.size(this.props.db.row_errors)
       }
     );
   }
@@ -32,7 +34,7 @@ class TableBody extends Component {
       rowIndices = errorsTransform.error_indices || _.range(RENDER_ROWS);
     } else if (props.displayState.type === DisplayState.ROW_ERRORS) {
       rowIndices = _.filter(props.db.row_errors, { input_schema_id: props.inputSchemaId }).
-        map((rowError) => rowError.index);
+        map((rowError) => rowError.offset);
     } else {
       rowIndices = _.range(0, RENDER_ROWS);
     }
@@ -54,13 +56,14 @@ class TableBody extends Component {
     return (
       <td>
         <span className="malformed-row-tag error">!</span>
-        <span className="malformed-row-location">Malformed row at row {rowError.index}</span>
+        <span className="malformed-row-location">Row {rowError.offset}:</span>
         <span className="malformed-row-error">
-          Expected {rowError.wanted} columns, found {rowError.got}
+          Expected <span className="row-error-number">{rowError.error.wanted}</span> columns,
+          found <span className="row-error-number">{rowError.error.got}</span>
         </span>
         <span className="malformed-row-contents">
-          Row content:&nbsp;
-          {rowError.contents.map((cell) => `"${cell.replace('"', '\\"')}"`).join(',')}
+          <span className="row-content-label">Row content:</span>&nbsp;
+          {rowError.error.contents.map((cell) => `"${cell.replace('"', '\\"')}"`).join(',')}
         </span>
       </td>
     );
@@ -77,7 +80,7 @@ class TableBody extends Component {
   render() {
     const data = this.getData();
     const rows = data.map((row) => (
-      <tr key={row.rowIdx} className={classNames({'malformed-row': !!row.rowError})}>
+      <tr key={row.rowIdx} className={classNames({ 'malformed-row': !!row.rowError })}>
         {row.rowError ?
           this.renderRowError(row.rowError) :
           this.renderNormalRow(row)}

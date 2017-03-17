@@ -34,7 +34,7 @@ export default function rootRoute(store) {
       <Route
         path="uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors"
         component={ShowOutputSchema}
-        onEnter={(nextState) => store.dispatch(loadRowErrors(nextState))} />
+        onEnter={(nextState) => store.dispatch(loadRowErrors(_.toNumber(nextState.params.inputSchemaId), 0, 100))} />
       <Route path="*" component={NoMatch} />
     </Route>
   );

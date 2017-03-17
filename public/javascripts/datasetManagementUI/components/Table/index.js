@@ -11,12 +11,12 @@ export default function Table({
   path,
   inputSchema,
   outputSchema,
-  rowErrors,
   columns,
   displayState,
   updateColumnType }) {
 
   const inRowErrorMode = displayState.type === DisplayState.ROW_ERRORS;
+  const numRowErrors = inputSchema.num_row_errors;
   const transforms = _.map(columns, 'transform');
   return (
     <table className="table table-condensed">
@@ -41,7 +41,7 @@ export default function Table({
               totalRows={inputSchema.total_rows} />
           )}
         </tr>
-        {(rowErrors.length > 0) &&
+        {(numRowErrors > 0) &&
           <tr className="row-errors-count">
             <th
               className={classNames(
@@ -51,7 +51,7 @@ export default function Table({
               <RowErrorsLink
                 path={path}
                 displayState={displayState}
-                numRowErrors={rowErrors.length} />
+                numRowErrors={numRowErrors} />
             </th>
           </tr>}
       </thead>
@@ -68,7 +68,6 @@ Table.propTypes = {
   db: PropTypes.object.isRequired,
   path: PropTypes.object.isRequired,
   inputSchema: PropTypes.object.isRequired,
-  rowErrors: PropTypes.arrayOf(PropTypes.object).isRequired,
   outputSchema: PropTypes.object.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   updateColumnType: PropTypes.func.isRequired,

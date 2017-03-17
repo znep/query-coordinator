@@ -95,14 +95,18 @@ export function getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType) 
   };
 }
 
-export function loadColumnErrors(nextState) {
-  const { inputSchemaId, outputSchemaId, errorsTransformId: errorsTransformIdStr } = nextState.params;
+export function loadColumnErrors(nextRouterState) {
+  const {
+    inputSchemaId,
+    outputSchemaId,
+    errorsTransformId: errorsTransformIdStr
+  } = nextRouterState.params;
   const errorsTransformId = _.toNumber(errorsTransformIdStr);
   return (dispatch, getState) => {
     const limit = 50;
     const fetchOffset = 0;
     const errorsColumnId = _.find(getState().db.output_columns, { transform_id: errorsTransformId }).id;
-    const path = dsmapiLinks.errorTable(
+    const path = dsmapiLinks.columnErrors(
       inputSchemaId, outputSchemaId, errorsColumnId, limit, fetchOffset
     );
     socrataFetch(path).
@@ -150,14 +154,29 @@ export function loadColumnErrors(nextState) {
       }).
       catch((error) => {
         // TODO: maybe add a notification
-        console.error('failed to load error table', error);
+        console.error('failed to load column errors', error);
       });
   };
 }
 
 
-export function loadRowErrors() {
-  return () => {
-    console.log('TODO: actually load row errors');
+export function loadRowErrors(inputSchemaId, offset, limit) {
+  return (dispatch) => {
+    socrataFetch(dsmapiLinks.rowErrors(inputSchemaId, offset, limit)).
+      then(checkStatus).
+      then(getJson).
+      then((rowErrors) => {
+        const rowErrorsWithId = rowErrors.map((rowError) => ({
+          ...rowError,
+          input_schema_id: inputSchemaId,
+          id: `${inputSchemaId}-${rowError.offset}`
+        }));
+        const rowErrorsKeyedById = _.keyBy(rowErrorsWithId, 'id');
+        dispatch(insertMultipleFromServer('row_errors', rowErrorsKeyedById, { ifNotExists: true }));
+      }).
+      catch((error) => {
+        // TODO: maybe add a notification
+        console.error('failed to load row errors', error);
+      });
   };
 }

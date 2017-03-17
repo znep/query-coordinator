@@ -481,6 +481,12 @@ en:
             recently_added: Recently Added
             recently_updated: Recently Updated
     contact_dataset_owner: Contact Dataset Owner
+    dataset_contents:
+      columns: Columns
+      row_display_unit: Each row is a
+      rows: Rows
+      title: What's in this Dataset?
+    default_row_label: row
     external_resource_editor:
       action_buttons:
         back: Back
@@ -539,6 +545,48 @@ en:
       view_statistics: View all statistics for this Dataset
       views: Views
     more: Show More
+    none: None
+    schema_preview:
+      api_field_name: API Field Name
+      column_name: Column Name
+      data_type: Data Type
+      data_types:
+        blob: Blob
+        calendar_date: Floating Timestamp
+        checkbox: Checkbox
+        dataset_link: Dataset Link
+        date: Fixed Timestamp
+        document: Document
+        drop_down_list: Text
+        email: Text
+        flag: Text
+        geospatial: Geospatial
+        html: Text
+        line: Line
+        link: Text
+        list: List
+        location: Location
+        money: Money
+        multiline: Line
+        multipoint: Point
+        multipolygon: Polygon
+        nested_table: Nested Table
+        number: Number
+        object: Object
+        percent: Number
+        phone: Text
+        photo: Photo
+        point: Point
+        polygon: Polygon
+        stars: Number
+        text: Text
+        url: Text
+      description: Description
+      geospatial_layer_title: Columns in this Layer
+      show_all: Show All
+      show_less: Show Less
+      title: Columns in this Dataset
+      type: Type
     updated: Updated
   controls:
     browse:
@@ -1265,6 +1313,7 @@ en:
       done: Done
       dont_save: Don't Save
       logout: You have been logged out.
+      revert_changes: Revert Changes
       save: Save
       session_timeout:
         notice: You have been logged out for your security. Please sign back in to continue.
@@ -1497,11 +1546,6 @@ en:
       title: Send a Message to the Owner of this Dataset
     copy: Copy
     copy_success: Copied!
-    dataset_contents:
-      columns: Columns
-      row_display_unit: Each row is a
-      rows: Rows
-      title: What's in this Dataset?
     dataset_preview:
       all_rows: Showing all rows
       grid_view_link: Explore Data
@@ -1517,7 +1561,6 @@ en:
       title: Table Preview
       unable_to_render: We're having trouble displaying this table.
       visualize_link: Visualize and Explore (preview)
-    default_row_label: row
     done: Done
     download:
       csv_for_excel: CSV for Excel
@@ -1634,47 +1677,6 @@ en:
     save: Save
     saved: Saved
     saving: Saving
-    schema_preview:
-      api_field_name: API Field Name
-      column_name: Column Name
-      data_type: Data Type
-      data_types:
-        blob: Blob
-        calendar_date: Floating Timestamp
-        checkbox: Checkbox
-        dataset_link: Dataset Link
-        date: Fixed Timestamp
-        document: Document
-        drop_down_list: Text
-        email: Text
-        flag: Text
-        geospatial: Geospatial
-        html: Text
-        line: Line
-        link: Text
-        list: List
-        location: Location
-        money: Money
-        multiline: Line
-        multipoint: Point
-        multipolygon: Polygon
-        nested_table: Nested Table
-        number: Number
-        object: Object
-        percent: Number
-        phone: Text
-        photo: Photo
-        point: Point
-        polygon: Polygon
-        stars: Number
-        text: Text
-        url: Text
-      description: Description
-      geospatial_layer_title: Columns in this Layer
-      show_all: Show All
-      show_less: Show Less
-      title: Columns in this Dataset
-      type: Type
     share:
       cancel: Cancel
       email: Share via Email
@@ -1697,6 +1699,12 @@ en:
       cancel: Cancel
       ok: Ok
       save: Save
+      errors:
+        unknown: An error occurred creating your dataset. Make sure you are logged in and have appropriate permissions.  If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
+      explanation: To get started, choose a name for your dataset
+      header: Create a New Dataset
+      placeholder: Dataset Name
+      title: Create Dataset
     create:
       errors:
         unknown: An error occurred creating your dataset. Make sure you are logged in and have appropriate permissions.  If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
@@ -1716,7 +1724,7 @@ en:
       apply_update: Apply Update
       being_processed: Your data is being processed!
       being_processed_detail: It'll show here as soon as it is done. No need to wait around, we can let you know when it's ready.
-      column_metadata_manage_button: Describe Columns
+      column_metadata_manage_button: Manage Column Metadata
       data: Choose Data Source
       data_blurb: Add a data file and enable visualizations and mapping.
       data_manage_button: Manage Data
@@ -1762,6 +1770,12 @@ en:
     manage_uploads:
       failed: "{filename} (failed: {status})"
       new_file: Upload a New File
+      supported_uploads: Supported file types .csv, .tsv, .xls, .xlsx
+      table_preview: Table Preview
+    manage: Manage
+    manage_uploads:
+      failed: "{filename} (failed: {status})"
+      new_file: "Upload a new file:"
       previous: Previous uploads
     metadata_manage:
       column_metadata_label: Column Descriptions
@@ -1940,6 +1954,14 @@ en:
       save: Save
       title: Page Settings
   date:
+    time_in_distance:
+      ago: "%{distance} ago"
+      from_now: "%{distance} from now"
+    formats:
+      short: '%d %b %Y'
+      long: '%B %d, %Y'
+      short_with_time: '%Y/%m/%d %I:%M%p'
+      long_with_time: '%d %b %Y at %H:%M:%S %Z'
     abbr_month_names:
     -
     - Jan
@@ -1968,6 +1990,55 @@ en:
     - October
     - November
     - December
+  datetime:
+    distance_in_words:
+      about_x_hours:
+        one: about 1 hour
+        other: about %{count} hours
+      about_x_months:
+        one: about 1 month
+        other: about %{count} months
+      about_x_years:
+        one: about 1 year
+        other: about %{count} years
+      almost_x_years:
+        one: almost 1 year
+        other: almost %{count} years
+      half_a_minute: half a minute
+      less_than_x_minutes:
+        one: less than a minute
+        other: less than %{count} minutes
+      less_than_x_seconds:
+        one: less than 1 second
+        other: less than %{count} seconds
+      over_x_years:
+        one: over 1 year
+        other: over %{count} years
+      x_days:
+        one: 1 day
+        other: "%{count} days"
+      x_minutes:
+        one: 1 minute
+        other: "%{count} minutes"
+      x_months:
+        one: 1 month
+        other: "%{count} months"
+      x_years:
+        one: 1 year
+        other: "%{count} years"
+      x_seconds:
+        one: 1 second
+        other: "%{count} seconds"
+    prompts:
+      day: Day
+      hour: Hour
+      minute: Minute
+      month: Month
+      second: Seconds
+      year: Year
+  time:
+    formats:
+      short: '%H:%M:%S'
   error:
     back: Back
     error_400:
@@ -2673,6 +2744,7 @@ en:
           append: Append
           apply_filters: Go
           data_workflow: Data Workflow
+          date: Date
           delete: Delete
           filter_by: Filter By
           import: Import
@@ -3041,12 +3113,262 @@ en:
         title: Manage Metadata
         'true': true
         up: Up
+      new_story:
+        background_color: Background Color
+        background_image: Background Image
+        contents: Contents
+        existing_image: Existing image
+        heading: Create a New Story
+        headline: Headline
+        image_preview: Image Preview
+        six_char_hex: 6-character hex
+        story_link_description: URL of the webpage you would like this story to link to when clicked
+        story_link_url: Story Link URL
+        title: Manage Home Page
+      routing_approval:
+        age_by_stage_report: Age by Stage Report
+        approval_management: Approval Management
+        approval_queue: Approval Queue
+        approval_reason: Approval Reason
+        approval_types:
+          approved: The dataset has been approved. Please allow a few minutes for the changes to be reflected on your home page.
+          rejected: The dataset has been rejected. Please allow a few minutes for the changes to be reflected on your home page.
+          resubmitted: The dataset has been resubmitted for approval. Please allow a few minutes for the changes to be reflected on your home page.
+        approve: Approve
+        approve_only_new_datasets: Approve only new datasets
+        approve_only_new_datasets_info: Check this option to allow new versions of an approved dataset through automatically
+        approvers: Approvers
+        average_age: Average Age
+        clear_stage_name_to_delete: Clear a stage name to delete that stage
+        click_to_expand: Click to expand
+        count: Count
+        created_by: Created By
+        dashboard: Dashboard
+        data_saved: Your data has been saved!
+        dataset: Dataset
+        dataset: Dataset
+        dataset_not_found: This dataset or view cannot be found, or has been deleted.
+        date_created: Date Created
+        date_of_last_approved: Date of Last Approved
+        date_of_last_rejected: Date of Last Rejected
+        date_of_last_resubmitted_by: Date of Last Resubmitted
+        day:
+          one: 1 day
+          other: "%{count} days"
+        day_old:
+          one: 1 day old
+          other: "%{count} days old"
+        days: day(s)
+        enter_profile: (Enter a user ID or URL of their profile page)
+        everyone_at_once: Everyone at once
+        federated_from: Federated from %{name}
+        fill_required_fields: Please fill in all required fields
+        go: Go
+        hour:
+          one: 1 hour
+          other: "%{count} hours"
+        inactive: Inactive
+        inactive_warning:
+          one: This dataset has been inactive for more than 1 day
+          other: This dataset has been inactive for more than %{count} days
+        keep_datasets_visible: Keep current datasets visible in the catalog
+        keep_datasets_visible_info: If not checked, all existing datasets must go through this approval process before they are visible to users
+        last_approved_by: Last Approved By
+        last_rejected_by: Last Rejected By
+        last_resubmitted_by: Last Resubmitted By
+        manage_approval_process: Manage Routing and Approval Process
+        mark_stuck: Mark as stuck after no activity for
+        name: Name
+        next_approver: Next Approver
+        no_reason_provided: No reason provided
+        not_available: N/A
+        not_ready_yet: Not Ready Yet
+        nothing_to_approve: Nothing To Approve
+        notification_interval: Notification Interval
+        notification_interval: Notification Interval
+        notification_method: Notification Method
+        old: Old
+        older: Older
+        one_at_a_time: One at a time
+        one_stage_required: At least one stage is required
+        pipeline_report: Pipeline Report
+        publicly_available: Publicly available (%{stage})
+        reject: Reject
+        rejection_reason: Rejection Reason
+        remove_approver: Remove Approver
+        remove_stage: Remove Stage
+        require_action:
+          one: "You have <strong>1</strong> dataset that requires action."
+          other: "You have <strong>%{count}</strong> datasets that require action."
+        resubmission_reason: Resubmission Reason
+        resubmit: Resubmit
+        search: Search
+        show_more: Show More
+        stage: Stage
+        stage_breakdown_report: Stage Breakdown Report
+        stage_requires_approver: Every stage requires at least one approver
+        stages: stages
+        stuck_datasets: Stuck Datasets
+        take_action: Take Action
+        title: Dataset Routing & Approval
+        today: Today
+        unconfigured_message: Dataset Routing & Approval is not configured
       sdp:
         cannot_delete_default_template: Cannot delete the default template. Please choose a new default first.
         could_not_delete_template: 'Cannot set template as default: template not found.'
         could_not_find_template_customization: This template customization cannot be found.
         could_not_set_default_template: 'Cannot set template as default: template not found.'
+        edit:
+          choose_logo: Choose logo
+          convert_now_button_label: Convert it now
+          default_socrata_logo: Default Socrata Logo
+          default_title: Social Data Player Templates
+          editing: "Editing %{title}"
+          embed: Embed
+          loading_message: Loading your Data Player Customization...
+          logo_link_url: Logo Link URL
+          make_public_button_label: Make ite public
+          none: (none)
+          old_version_warning: The customization you are trying to edit is our old design, which is no longer supported. If you want to make changes to it, you'll have to convert it over to our new design first. You can preview how it will look before committing to using it.
+          panes:
+            advanced:
+              label: Advanced
+              sections:
+                google_analytics:
+                  fields:
+                    description:
+                      value: If you use Google Analytics you can embed your tracking code into your Social Data Player
+                    ga_code:
+                      text: GA Code
+                  label: Google Analytics
+              subtitle: Edit some advanced features of this Social Data Player Template
+              title: Advanced
+            appearance:
+              label: Appearance
+              sections:
+                colors:
+                  fields:
+                    border_color:
+                      text: Border Color
+                    border_width:
+                      text: Border Width
+                    button_color:
+                      text: Button Color
+                    find_field_color:
+                      text: Find Field Color
+                    frame_color:
+                      text: Frame Color
+                    toolbar_color:
+                      text: Toolbar Color
+                  label: Color and Style
+                columns:
+                  fields:
+                    bold:
+                      text: Bold Titles
+                    font:
+                      text: Font Size
+                    wrap:
+                      text: Wrap Column Titles
+                  label: Column Headers
+                exterior:
+                  fields:
+                    height:
+                      text: Height
+                    powered_by:
+                      text: Powered By Text
+                    width:
+                      text: Width
+                  label: Exterior
+                logo:
+                  label: Logo
+                rows:
+                  fields:
+                    font_size:
+                      text: Font Size
+                    row_numbers:
+                      text: Row Numbers
+                    stripe_color:
+                      text: Stripe Color
+                    stripe_rows:
+                      text: Stripe Rows
+                  label: Rows
+                toolbars:
+                  fields:
+                    orientation:
+                      option_downwards: Downwards
+                      option_upwards: Upwards
+                      text: Orientation
+                    title:
+                      text: Dataset Title
+                  label: Toolbars
+              subtitle: Edit the appearance of this Social Data Player Template
+              title: Template Appearance
+            behavior:
+              label: Behavior
+              sections:
+                general:
+                  fields:
+                    full_screen:
+                      text: Full Screen
+                    redirect_alert:
+                      value: Shows an alert notifying viewers that they are being redirected to another site when clicking external links
+                    share_menu:
+                      text: Share Menu
+                    warn_leaving:
+                      text: Warn When Leaving
+                  label: General
+                menu:
+                  fields:
+                    about:
+                      text: About The SDP
+                    api:
+                      text: API
+                    discuss:
+                      text: Discuss
+                    downloads:
+                      text: Downloads
+                    embed:
+                      text: Embed
+                    move_views:
+                      text: Move Views
+                    print:
+                      text: Print
+                  label: Menu
+              subtitle: Edit the behavior of this Social Data Player Template
+              title: Behavior
+            metadata:
+              label: Metadata
+              sections:
+                information:
+                  fields:
+                    description:
+                      prompt: Record notes about this template here
+                      text: Description
+                    name:
+                      prompt: Name this Template
+                      text: Name
+                  label: Information
+              subtitle: Edit basic information about this Social Data Player Template
+              title: Template Metadata
+          private_dataset_warning: The dataset you are trying to publish is currently marked as private. You will need to make it public before you can publish it. This will mean that anyone can view the data.
+          revert_changes: Revert Changes
+          upload_new: Upload New
+          warning: Warning
+          working: Working
         error_on_creation: 'An error occurred during your request: ''%{error_message}'''
+        listing:
+          create_new_template: Create a New Template
+          current_default: Current Default
+          default_title: Social Data Player Templates
+          delete: Delete
+          edit: Edit
+          errors:
+            no_templates: You don't appear to have any templates yet.
+            outdated_template: This template is outdated and cannot be displayed.
+          loading: Loading...
+          make_default: Make Default
+          name: Name
+          preview: Preview
         preview_could_not_be_found: A dataset with which to preview could not be found.
         requires_published_dataset: Please create a dataset you can publish first.
         template_name_cannot_be_blank: Template name is required.
@@ -3590,6 +3912,102 @@ en:
         you_are_about: You are about to activate your header, footer and Dataset Landing Pages for your datasets.
         you_are_about_html: "<p>You are about to activate your header, footer, and Primer for your datasets. Your users are going to love the new look!</p> <p>To see Primer and your header/footer in action, click 'Ok' below and then navigate to one of your datasets.</p>\n"
         you_have_activated: You have activated your new header/footer and Dataset Landing Page.
+      story_appearance:
+        panes:
+          other:
+            label: Other
+            sections:
+              background:
+                fields:
+                  description:
+                    value: How long to pause on each slide before automatically advancing to the next. Set to zero to disable it entirely.
+                  height:
+                    text: Height
+                  slide_advance:
+                    prompt: Length of time to wait (in seconds)
+                    text: Slide Advance
+                label: Background
+            subtitle: Other customizable options on stories
+            title: Other
+          pager:
+            label: Pager
+            sections:
+              layout:
+                fields:
+                  disposition:
+                    option_dark: Dark
+                    option_light: Light
+                    prompt: Pager background and glyph color
+                    text: Disposition
+                  position:
+                    option_box: Box
+                    option_center: Center
+                    prompt: Where the pager should be located
+                    text: Position
+                  type:
+                    option_bullets: Bullets
+                    option_numbers: Numbers
+                    prompt: Type of glyph the pager should use
+                    text: Pager Type
+                label: Appearance and Layout
+            subtitle: Customize the appearance of the story pager
+            title: Pager
+          text_box:
+            label: Text Box
+            sections:
+              body_text:
+                fields:
+                  font_color:
+                    prompt: The color of the body text
+                    text: Font Color
+                  font_family:
+                    prompt: Choose a font
+                    text: Font Family
+                  font_size:
+                    text: Font Size
+                  shadow_alpha:
+                    prompt: Drop shadow strength on the body text
+                    text: Shadow
+                label: Body Text
+              headline:
+                fields:
+                  font_color:
+                    prompt: The color of the headline text
+                    text: Font Color
+                  font_family:
+                    prompt: Choose a font
+                    text: Font Family
+                  font_size:
+                    text: Font Size
+                  shadow_alpha:
+                    prompt: Drop shadow strength on the headline text
+                    text: Shadow
+                label: Headline
+              layout:
+                fields:
+                  alpha:
+                    prompt: The background opacity of the box
+                    text: Box Opacity
+                  bg_color:
+                    prompt: The background color of the box
+                    text: Background Color
+                  margin:
+                    text: Margin
+                  orientation:
+                    option_left: Left
+                    option_right: Right
+                    prompt: Where the content should be positioned
+                    text: Position
+                  width:
+                    text: Width
+                label: Layout and Appearance
+            subtitle: Customize the appearance of the text-based content area
+            title: Text Box
+        social_data_player_templates: Social Data Player Templates
+        test_story_1: This is a Test Story
+        test_story_2: Test Story Number Two
+        title: Story Appearance
+        working: Working...
       tos:
         accepted: Thank you for accepting the terms of service.
         must_agree: You must agree to the provided terms to continue.
@@ -3651,6 +4069,7 @@ en:
         could_not_find_view: Could not find view to modify moderation status
         set_moderation_status: The view '%{view_name}' has been %{moderation_status}. Please allow a few minutes for the changes to be reflected on your home page
         table_description: Moderated Datasets
+        view_moderation: View Moderation
     dataset_edit:
       append: Append
       append_and_replace: Append and Replace data
@@ -5040,7 +5459,7 @@ en:
         have_account_link: I already have an account
       headline: We're glad you want to join %{site}
       password_verification:
-        failed_html: 'Validation failed: Your password must satisfy three of the following four criteria:<ul class=''styled''><li>contain a digit</li><li>contain a lowercase letter</li><li>contain an uppercase letter</li><li>contain a non-alphanumeric symbol</li></ul>'
+        failed_html: "Validation failed: Your password must satisfy three of the following four criteria:<ul class='styled'><li>contain a digit</li><li>contain a lowercase letter</li><li>contain an uppercase letter</li><li>contain a non-alphanumeric symbol</li></ul>"
       prompt_html: Create a new <strong>Socrata ID</strong>.
       terms_html: By clicking on "Create My Account" below, you are agreeing to our <a href="http://www.socrata.com/terms-of-service" rel="external">Terms of Service</a> and <a href="http://www.socrata.com/privacy" rel="external">Privacy Policy.</a>
       third_party: After signing in, your 3rd-party credentials will be associated with this account.
@@ -5048,17 +5467,40 @@ en:
       third_party_return_create: create a Socrata account
       third_party_return_link: link it to an existing Socrata ID
     stats:
+      admin: Admin
       api: API
       apply: Apply
       browser_page_views: Browser Page Views
+      browsers: Browsers
       bytes_out: Bytes Out
+      catalog: Catalog
       chart_created: chart created
       charts: Charts
+      charts_added: Charts Added
       charts_created: charts created
+      charts_lowercase: charts
       comment_created: comment created
       comments: Comments
       comments_created: comments created
+      count: Count
       daily: Daily
+      dashbard_created: dashboard created
+      dashbards_created: dashboards created
+      dashboard_requests: Dashboard Requests
+      dashboard_views: Dashboard Views
+      data_lens: Data Lens
+      data_lens_page_created: Data Lens Page Created
+      data_lens_pages: Data Lens Pages
+      data_lens_pages_added: Data Lens Pages Added
+      data_lens_pages_created: Data Lens Pages Created
+      dataset: Dataset
+      dataset_created: Dataset Created
+      dataset_created_lowercase: dataset created
+      datasets_added: Datasets Added
+      datasets_created: Datasets Created
+      datasets_created_lowercase: datasets created
+      datasets_lowercase: datasets
+      dataslate: Dataslate
       date_range: Date Range
       deleted_application: deleted application
       delta_decrease: The number of {0} decreased by {1} during {2}
@@ -5066,41 +5508,107 @@ en:
       delta_increase: The number of {0} increased by {1} during {2}
       delta_increase_compared: The number of {0} increased by {1} during {2} compared to {3}
       dependent_metrics: Dependent Metrics
+      disk_usage: Disk Usage
       download: download
+      downloadable_file_created: downloadable file created
+      downloadable_files: Downloadable Files
+      downloadable_files_added: Downloadable Files Added
+      downloadable_files_created: downloadable files created
+      downloadable_files_lowercase: downloadable files
       downloads: downloads
       during_time_period: during this time period
       embed: embed
-      embeds: embeds
+      embed_views: Embed Views
+      embeds: Embeds
+      embeds_lowercase: embeds
       error_loading: An error occurred loading the metrics data. Please try again later
+      error_loading_metrics: An error occurred loading the metrics data. Please try again later.
+      export: Export
+      external_dataset_added: external dataset Created
+      external_dataset_created: external dataset created
+      external_datasets: External Datasets
+      external_datasets_created: external datasets created
+      external_datasets_lowercase: external datasets
       filter_created: filter created
       filters: Filters
+      filters_added: Filters Added
       filters_created: filters created
+      filters_lowercase: filters
+      goal_created: goal created
+      goal_requests: Goal Requests
+      goal_views: Goal Views
+      goals_created: goals created
+      goals_with_related_measures: Goals With Related Measures
+      goals_without_related_measures: Goals Without Related Measures
       govstat_hits: GovStat Hits
       hit_served: hit served
       hits_served: hits served
+      homepage: Homepage
       hourly: Hourly
       map_created: map created
       maps: Maps
+      maps: Maps
+      maps_added: Maps Added
       maps_created: maps created
+      maps_lowercase: maps
       metric_backed: metric backed
       metrics_backed: metrics backed
       monthly: Monthly
       name: Name
       no_data_time_period: No data for this time period
+      op: OP
+      other: other
+      page_requests: Page Requests
+      page_types: Page Types
       page_viewed: page viewed
+      page_views: Page Views
+      page_views_lowercase: Page Views
       pages_viewed: pages viewed
       preceding_period: the preceding period
+      private_goals: Private Goals
+      profile: Profile
+      public_goals: Public Goals
       referrals: Referrals
+      referrals: Referrals
+      requests: Requests
+      row_created: row created
+      rows_created: rows created
+      rows_created_lowercase: rows created
       rows_loaded: Rows Loaded
+      rows_lowercase: rows
       sdp: SDP
       select_chart_type: Select a chart type to display from the menu
       show_more: Show More
+      site_analytics: Site Analytics
+      snapshot_created: snapshot created
+      snapshots: Snapshots
+      snapshots_added: Snapshots Added
+      snapshots_created: snapshots created
+      snapshots_lowercase: snapshots
+      stories: Stories
+      stories_created: stories created
+      stories_lowercase: stories
+      story_created: story created
       time_period_unavailable: Metric data is unavailable for this time period
       title: Dataset Analytics
+      top_applications: Top Applications
+      top_datasets: Top Datasets
+      top_datasets_referrers: Top Datasets Referrers
+      top_downloads: Top Downloads
       top_embeds: Top Embeds
       top_referrers: Top Referrers
+      top_search_terms: Top Search Terms
+      top_stories: Top Stories
+      top_story_referrers: Top Story Referrers
       total: total
+      total_dashboards: Total Dashboards
+      total_datasets: Total Datasets
+      total_goals: Total Goals
       total_govstat_hits: Total GovStat Hits
+      total_rows: Total Rows
+      total_stories: Total Stories
+      view: View
+      view_granularity: View Granularity
       views: Views
       views_loaded: Views Loaded
       website: Website

@@ -1,0 +1,40 @@
+.metadata-row {
+  margin: 0;
+
+  &.middle {
+    margin: 15px 0;
+  }
+}
+
+.metadata-section {
+  margin: 15px;
+}
+
+.metadata-flex {
+  display: flex;
+}
+
+.metadata-pair {
+  display: inline-block;
+  max-width: 160px;
+  margin: 0 45px 0 0;
+
+  &:last-child {
+    margin-right: 0;
+    max-width: none;
+  }
+
+  .metadata-pair-key {
+    font-size: 15px;
+  }
+
+  .metadata-pair-value {
+    font-size: 24px;
+    line-height: 27px;
+    color: $primary-dark;
+    letter-spacing: -0.5px;
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
+  }
+}

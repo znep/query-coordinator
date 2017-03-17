@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {
   insertFromServer,
   batch
@@ -42,7 +43,8 @@ export function bootstrap(store, initialView, initialUpdate) {
     license: initialView.license || {},
     attribution: initialView.attribution,
     tags: initialView.tags,
-    attachments: (initialView.metadata && initialView.metadata.attachments) || []
+    attachments: _.get(initialView, 'metadata.attachments', []),
+    metadata: initialView.metadata || {}
   }));
   operations.push(insertFromServer('updates', {
     id: initialUpdate.id,

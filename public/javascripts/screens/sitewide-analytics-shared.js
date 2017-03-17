@@ -1,12 +1,16 @@
 blist.namespace.fetch('blist.metrics');
 
 $(function() {
+  function t(str, props) {
+    return $.t('screens.stats.' + str, props);
+  }
+
   var storiesEnabled = !!blist.feature_flags.stories_enabled;
   var storiesMetricName = 'lense-story-published-v1';
   var datasetsMetricName = 'datasets-published-v2';
-  var pageViewsName = 'Browser Page Views';
+  var pageViewsName = t('browser_page_views');
   var datasetsListHeader = blist.feature_flags.embetter_analytics_browser_views_only ?
-    'Browser Page Views' : '';
+    pageViewsName : '';
 
   blist.metrics.sitewideShared = {
     urlBase: '/api/site_metrics.json',
@@ -17,184 +21,184 @@ $(function() {
         text: pageViewsName,
         series: [{
           method: 'js-page-view',
-          label: 'Browser Page Views',
+          label: pageViewsName,
           options: {
             stacking: null
           }
         }]
       }, {
-        text: 'Rows Loaded',
+        text: t('rows_loaded'),
         series: [{
           method: 'rows-loaded-api',
-          label: 'API'
+          label: t('api')
         }, {
           method: 'rows-loaded-website',
-          label: 'Website'
+          label: t('website')
         }, {
           method: 'rows-loaded-widget',
-          label: 'SDP'
+          label: t('sdp')
         }]
       }]
     }],
     detailSections: _.filter([{
       id: 'detailLenses',
-      displayName: 'Data Lens Pages Added',
+      displayName: t('data_lens_pages_added'),
       summary: {
         plus: 'lense-data_lens-published-v1',
-        verbPhrase: 'Data Lens pages created',
-        verbPhraseSingular: 'Data Lens page created',
-        deltaPhrase: 'Data Lens pages'
+        verbPhrase: t('data_lens_pages_created'),
+        verbPhraseSingular: t('data_lens_page_created'),
+        deltaPhrase: t('data_lens_pages')
       },
       enabled: blist.feature_flags.embetter_analytics_page || false
     }, {
       id: 'detailDatasets',
-      displayName: 'Datasets Added',
+      displayName: t('datasets_added'),
       summary: {
         plus: datasetsMetricName,
         range: true,
-        verbPhrase: 'datasets created',
-        verbPhraseSingular: 'dataset created',
-        deltaPhrase: 'datasets'
+        verbPhrase: t('datasets_created_lowercase'),
+        verbPhraseSingular: t('dataset_created_lowercase'),
+        deltaPhrase: t('datasets_lowercase')
       },
       enabled: blist.feature_flags.embetter_analytics_page || false
     }, {
       id: 'detailPublicGoals',
-      displayName: 'Public Goals',
+      displayName: t('public_goals'),
       summary: {
         plus: ['govstat-goal-isPublic-true'],
-        verbPhrase: 'goals created',
-        verbPhraseSingular: 'goal created'
+        verbPhrase: t('goals_created'),
+        verbPhraseSingular: t('goal_created')
       },
       enabled: blist.configuration.govStatMetricsEnabled || false
     }, {
       id: 'detailPrivateGoals',
-      displayName: 'Private Goals',
+      displayName: t('private_goals'),
       summary: {
         plus: 'govstat-goal-isPublic-false',
-        verbPhrase: 'goals created',
-        verbPhraseSingular: 'goal created'
+        verbPhrase: t('goals_created'),
+        verbPhraseSingular: t('goal_created')
       },
       enabled: blist.configuration.govStatMetricsEnabled || false
     }, {
       id: 'detailWithRelatedMeasures',
-      displayName: 'Goals With Related Measures',
+      displayName: t('goals_with_related_measures'),
       summary: {
         plus: 'govstat-goal-hasRelatedMeasures-true',
-        verbPhrase: 'goals created',
-        verbPhraseSingular: 'goal created'
+        verbPhrase: t('goals_created'),
+        verbPhraseSingular: t('goal_created')
       },
       enabled: blist.configuration.govStatMetricsEnabled || false
     }, {
       id: 'detailWithoutRelatedMeasures',
-      displayName: 'Goals Without Related Measures',
+      displayName: t('goals_without_related_measures'),
       summary: {
         plus: 'govstat-goal-hasRelatedMeasures-false',
-        verbPhrase: 'goals created',
-        verbPhraseSingular: 'goal created'
+        verbPhrase: t('goals_created'),
+        verbPhraseSingular: t('goal_created')
       },
       enabled: blist.configuration.govStatMetricsEnabled || false
     }, {
       id: 'detailBlobs',
-      displayName: 'Downloadable Files',
+      displayName: t('downloadable_files'),
       summary: {
         plus: ['lense-blob-published-v1'],
-        verbPhrase: 'downloadable files created',
-        verbPhraseSingular: 'downloadable file created',
-        deltaPhrase: 'downloadable files'
+        verbPhrase: t('downloadable_files_created'),
+        verbPhraseSingular:t('downloadable_file_created'),
+        deltaPhrase: t('downloadable_files_lowercase')
       },
       enabled: !blist.feature_flags.embetter_analytics_page
     }, {
       id: 'detailBlobs',
-      displayName: 'Downloadable Files Added',
+      displayName: t('downloadable_files_added'),
       summary: {
         plus: ['lense-blob-published-v1'],
-        verbPhrase: 'downloadable files created',
-        verbPhraseSingular: 'downloadable file created',
-        deltaPhrase: 'downloadable files'
+        verbPhrase: t('downloadable_files_created'),
+        verbPhraseSingular: t('downloadable_file_created'),
+        deltaPhrase: t('downloadable_files_lowercase')
       },
       enabled: blist.feature_flags.embetter_analytics_page || false
     }, {
       id: 'detailCharts',
-      displayName: 'Charts',
+      displayName: t('charts'),
       summary: {
         plus: ['lense-chart-published-v1'],
-        verbPhrase: 'charts created',
-        verbPhraseSingular: 'chart created'
+        verbPhrase: t('charts_created'),
+        verbPhraseSingular: t('chart_created')
       },
       enabled: !blist.feature_flags.embetter_analytics_page
     }, {
       id: 'detailCharts',
-      displayName: 'Charts Added',
+      displayName: t('charts_added'),
       summary: {
         plus: 'lense-chart-published-v1',
-        verbPhrase: 'charts created',
-        verbPhraseSingular: 'chart created',
-        deltaPhrase: 'charts'
+        verbPhrase: t('charts_created'),
+        verbPhraseSingular: t('chart_created'),
+        deltaPhrase: t('charts_lowerccase')
       },
       enabled: blist.feature_flags.embetter_analytics_page || false
     }, {
       id: 'detailFilters',
-      displayName: 'Filters',
+      displayName: t('filters'),
       summary: {
         plus: ['filters-created'],
         minus: ['filters-deleted'],
-        verbPhrase: 'filters created',
-        verbPhraseSingular: 'filter created'
+        verbPhrase: t('filters_created'),
+        verbPhraseSingular: t('filter_created')
       },
       enabled: !blist.feature_flags.embetter_analytics_page
     }, {
       id: 'detailFilters',
-      displayName: 'Filters Added',
+      displayName: t('filters_added'),
       summary: {
         plus: ['filters-created'],
         minus: ['filters-deleted'],
-        verbPhrase: 'filters created',
-        verbPhraseSingular: 'filter created',
-        deltaPhrase: 'filters'
+        verbPhrase: t('filters_created'),
+        verbPhraseSingular: t('filter_created'),
+        deltaPhrase: t('filters_lowercase')
       },
       enabled: blist.feature_flags.embetter_analytics_page || false
     }, {
       id: 'detailHref',
-      displayName: 'External Datasets',
+      displayName: t('external_datasets'),
       summary: {
         plus: ['lense-href-published-v1'],
-        verbPhrase: 'external datasets created',
-        verbPhraseSingular: 'external dataset created',
-        deltaPhrase: 'external datasets'
+        verbPhrase: t('external_datasets_created'),
+        verbPhraseSingular: t('external_dataset_created'),
+        deltaPhrase: t('external_datasets_lowercase')
       },
       enabled: !blist.feature_flags.embetter_analytics_page
     }, {
       id: 'detailHref',
-      displayName: 'External Datasets Added',
+      displayName: t('external_dataset_added'),
       summary: {
         plus: ['lense-href-published-v1'],
-        verbPhrase: 'external datasets created',
-        verbPhraseSingular: 'external dataset created',
-        deltaPhrase: 'external datasets'
+        verbPhrase: t('external_datasets_created'),
+        verbPhraseSingular: t('external_dataset_created'),
+        deltaPhrase: t('external_datasets_lowercase')
       },
       enabled: blist.feature_flags.embetter_analytics_page || false
     }, {
       id: 'detailMaps',
-      displayName: 'Maps',
+      displayName: t('maps'),
       summary: {
         plus: ['lense-map-published-v1'],
-        verbPhrase: 'maps created',
-        verbPhraseSingular: 'map created'
+        verbPhrase: t('maps_created'),
+        verbPhraseSingular: t('map_created')
       },
       enabled: !blist.feature_flags.embetter_analytics_page
     }, {
       id: 'detailMaps',
-      displayName: 'Maps Added',
+      displayName: t('maps_added'),
       summary: {
         plus: 'lense-map-published-v1',
-        verbPhrase: 'maps created',
-        verbPhraseSingular: 'map created',
-        deltaPhrase: 'maps'
+        verbPhrase: t('maps_created'),
+        verbPhraseSingular: t('map_created'),
+        deltaPhrase: t('maps_lowercase')
       },
       enabled: blist.feature_flags.embetter_analytics_page || false
     }, {
       id: 'detailRows',
-      displayName: 'Rows Added',
+      displayName: t('rows_created'),
       summary: {
         plus: 'rows-created',
         minus: 'rows-deleted',
@@ -205,23 +209,23 @@ $(function() {
       enabled: blist.feature_flags.embetter_analytics_page || false
     }, {
       id: 'detailSnapshots',
-      displayName: 'Snapshots',
+      displayName: t('snapshots'),
       summary: {
         plus: ['datasets-created-snapshot'],
         minus: ['datasets-deleted-snapshot'],
-        verbPhrase: 'snapshots created',
-        verbPhraseSingular: 'snapshot created'
+        verbPhrase: t('snapshots_created'),
+        verbPhraseSingular: t('snapshot_created')
       },
       enabled: !blist.feature_flags.embetter_analytics_page
     }, {
       id: 'detailSnapshots',
-      displayName: 'Snapshots Added',
+      displayName: t('snapshots_added'),
       summary: {
         plus: ['datasets-created-snapshot'],
         minus: ['datasets-deleted-snapshot'],
-        verbPhrase: 'snapshots created',
-        verbPhraseSingular: 'snapshot created',
-        deltaPhrase: 'snapshots'
+        verbPhrase: t('snapshots_created'),
+        verbPhraseSingular: t('snapshot_created'),
+        deltaPhrase: t('snapshots_lowercase')
       },
       enabled: blist.feature_flags.embetter_analytics_page || false
     }], function(section) {
@@ -233,9 +237,9 @@ $(function() {
       summary: {
         plus: 'js-page-view',
         total: false,
-        verbPhrase: 'pages viewed',
-        verbPhraseSingular: 'page viewed',
-        deltaPhrase: 'page views'
+        verbPhrase: t('pages_viewed'),
+        verbPhraseSingular: t('page_viewed'),
+        deltaPhrase: t('page_views_lowercase')
       },
       enabled: blist.feature_flags.embetter_analytics_page || false
     }, {
@@ -246,80 +250,80 @@ $(function() {
           delta: 'js-page-view'
         },
         plus: 'page-views',
-        verbPhrase: 'pages viewed',
-        verbPhraseSingular: 'page viewed'
+        verbPhrase: t('pages_viewed'),
+        verbPhraseSingular: t('page_viewed')
       },
       enabled: !blist.feature_flags.embetter_analytics_page || false
     }, {
       id: 'summaryDash',
-      displayName: 'Total Dashboards',
+      displayName: t('total_dashboards'),
       summary: {
         plus: 'govstat-total-dash',
-        verbPhrase: 'dashboards created',
-        verbPhraseSingular: 'dashboards created'
+        verbPhrase: t('dashbards_created'),
+        verbPhraseSingular: t('dashbard_created')
       },
       enabled: blist.configuration.govStatMetricsEnabled || false
     }, {
       id: 'summaryGoals',
-      displayName: 'Total Goals',
+      displayName: t('total_goals'),
       summary: {
         plus: 'govstat-total-goals',
-        verbPhrase: 'goals created',
-        verbPhraseSingular: 'goal created'
+        verbPhrase: t('goals_created'),
+        verbPhraseSingular: t('goal_created')
       },
       enabled: blist.configuration.govStatMetricsEnabled || false
     }, {
       id: 'summaryDatasets',
-      displayName: 'Total Datasets',
+      displayName: t('total_datasets'),
       summary: {
         plus: datasetsMetricName,
         range: false,
-        verbPhrase: 'datasets created',
-        verbPhraseSingular: 'dataset created',
-        deltaPhrase: 'datasets'
+        verbPhrase: t('datasets_created_lowercase'),
+        verbPhraseSingular: t('dataset_created_lowercase'),
+        deltaPhrase: t('datasets_lowercase')
       },
       enabled: !blist.feature_flags.embetter_analytics_page
     }, {
       id: 'summaryStories',
-      displayName: 'Total Stories',
+      displayName: t('total_stories'),
       summary: {
         plus: storiesMetricName,
         range: false,
-        verbPhrase: 'stories created',
-        verbPhraseSingular: 'story created',
-        deltaPhrase: 'stories'
+        verbPhrase: t('stories_created'),
+        verbPhraseSingular: t('story_created'),
+        deltaPhrase: t('stories_lowercase')
       },
       enabled: (!blist.feature_flags.embetter_analytics_page && storiesEnabled)
     }, {
       id: 'summaryRows',
-      displayName: 'Total Rows',
+      displayName: t('total_rows'),
       summary: {
         plus: 'rows-created',
         minus: 'rows-deleted',
-        verbPhrase: 'rows created',
-        verbPhraseSingular: 'row created',
-        deltaPhrase: 'rows'
+        verbPhrase: t('rows_created'),
+        verbPhraseSingular: t('row_created'),
+        deltaPhrase: t('rows_lowercase')
       },
       enabled: !blist.feature_flags.embetter_analytics_page
     }, {
       id: 'summaryEmbeds',
-      displayName: 'Embeds',
+      displayName: t('embeds'),
       summary: {
         plus: 'embeds',
-        verbPhrase: 'embeds',
-        verbPhraseSingular: 'embed',
-        deltaPhrase: 'embeds',
+        verbPhrase: t('embeds_lowercase'),
+        verbPhraseSingular: t('embed'),
+        deltaPhrase: t('embeds_lowercase'),
         total: true
       },
       enabled: !blist.feature_flags.embetter_analytics_page
     }, {
       id: 'summaryEmbeds',
-      displayName: 'Embed Views',
+      displayName: t('embed_views'),
       summary: {
         plus: 'embeds',
-        verbPhrase: 'embeds',
-        verbPhraseSingular: 'embed',
-        deltaPhrase: 'embeds',
+        verbPhrase: t('embeds_lowercase'),
+        verbPhraseSingular: t('embed'),
+        deltaPhrase: t('embeds_lowercase'),
         total: false
       },
       enabled: blist.feature_flags.embetter_analytics_page || false
@@ -327,41 +331,41 @@ $(function() {
       return section.enabled !== false;
     }),
     topListSections: _.compact([{
-        id: 'topDatasets',
-        displayName: 'Top Datasets',
-        heading: datasetsListHeader,
-        renderTo: 'leftColumn',
-        callback: blist.metrics.topDatasetsCallback,
-        top: 'DATASETS'
-      }, {
-        id: 'topReferrers',
-        displayName: 'Top Dataset Referrers',
-        heading: 'Referrals',
-        className: 'expanding',
-        renderTo: 'rightColumn',
-        callback: blist.metrics.urlMapCallback,
-        top: 'REFERRERS'
-      },
+      id: 'topDatasets',
+      displayName: t('top_datasets'),
+      heading: datasetsListHeader,
+      renderTo: 'leftColumn',
+      callback: blist.metrics.topDatasetsCallback,
+      top: 'DATASETS'
+    }, {
+      id: 'topReferrers',
+      displayName: t('top_datasets_referrers'),
+      heading: t('referrals'),
+      className: 'expanding',
+      renderTo: 'rightColumn',
+      callback: blist.metrics.urlMapCallback,
+      top: 'REFERRERS'
+    },
       storiesEnabled ? {
-        id: 'topStories',
-        displayName: 'Top Stories',
-        heading: datasetsListHeader,
-        renderTo: 'leftColumn',
-        callback: blist.metrics.topStoriesCallback,
-        top: 'STORIES'
-      } : null,
+          id: 'topStories',
+          displayName: t('top_stories'),
+          heading: datasetsListHeader,
+          renderTo: 'leftColumn',
+          callback: blist.metrics.topStoriesCallback,
+          top: 'STORIES'
+        } : null,
       storiesEnabled ? {
-        id: 'topStoryReferrers',
-        displayName: 'Top Story Referrers',
-        heading: 'Referrals',
-        className: 'expanding',
-        renderTo: 'rightColumn',
-        callback: blist.metrics.urlMapCallback,
-        top: 'STORY_REFERRERS'
-      } : null, {
+          id: 'topStoryReferrers',
+          displayName: t('top_story_referrers'),
+          heading: t('referrals'),
+          className: 'expanding',
+          renderTo: 'rightColumn',
+          callback: blist.metrics.urlMapCallback,
+          top: 'STORY_REFERRERS'
+        } : null, {
         id: 'topSearches',
-        displayName: 'Top Search Terms',
-        heading: 'Count',
+        displayName: t('top_search_terms'),
+        heading: t('count'),
         renderTo: 'leftColumn',
         callback: function($context) {
           blist.metrics.updateTopSearchesCallback($context, 'top-dataset-searches');
@@ -369,8 +373,8 @@ $(function() {
         top: 'SEARCHES'
       }, {
         id: 'topEmbeds',
-        displayName: 'Top Embeds',
-        heading: 'Embeds',
+        displayName: t('top_embeds'),
+        heading: t('embeds'),
         className: 'expanding',
         renderTo: 'rightColumn',
         callback: blist.metrics.urlMapCallback,

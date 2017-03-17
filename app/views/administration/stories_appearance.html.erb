@@ -3,29 +3,29 @@
   <%= rendered_stylesheet_tag 'administration-stories-appearance' %>
   <%= rendered_stylesheet_tag 'colorpicker' %>
   <%= rendered_stylesheet_tag 'base-control-third-party' %>
-  <title>Story Appearance | Social Data Player Templates | <%= get_site_title %></title>
+  <title><%= t('screens.admin.story_appearance.title') %> | <%= t('screens.admin.story_appearance.social_data_player_templates') %> | <%= get_site_title %></title>
 <% end %>
 
 <%= render :partial => 'left_nav' %>
 
 <div class="contentBox withLeftNavigation">
   <div class="publisherHeader clearfix">
-    <h1>Story Appearance</h1>
+    <h1><%= t('screens.admin.story_appearance.title') %></h1>
 
     <div class="publisherActions">
-      <a href="#save" class="saveButton button">Save</a>
-      <a href="#save" class="revertButton button">Revert Changes</a>
-      <span class="loadingIcon">Working...</span>
+      <a href="#save" class="saveButton button"><%= t('core.dialogs.save') %></a>
+      <a href="#save" class="revertButton button"><%= t('core.dialogs.revert_changes') %></a>
+      <span class="loadingIcon"><%= t('screens.admin.story_appearance.working') %></span>
     </div>
 
     <div class="sidebarOptionsContainer clearfix">
       <ul id="sidebarOptions" class="clearfix">
         <li><a href="#textbox" class="textbox" data-panename="textbox">
-          <span class="icon"></span>Text Box</a></li>
+          <span class="icon"></span><%= t('screens.admin.story_appearance.panes.text_box.label') %></a></li>
         <li><a href="#pager" class="pager" data-panename="pager">
-          <span class="icon"></span>Pager</a></li>
+          <span class="icon"></span><%= t('screens.admin.story_appearance.panes.pager.label') %></a></li>
         <li><a href="#other" class="other" data-panename="other">
-          <span class="icon"></span>Other</a></li>
+          <span class="icon"></span><%= t('screens.admin.story_appearance.panes.other.label') %></a></li>
       </ul>
     </div>
   </div>
@@ -41,7 +41,7 @@
               <ul class="storyTexts">
                 <li data-storyid="1" data-storycustomization="{'backgroundColor':'#000000'}">
                   <div class="storyBox">
-                    <h2>This is a Test Story</h2>
+                    <h2><%= t('screens.admin.story_appearance.test_story_1') %></h2>
                     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
                        ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
                        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
@@ -50,7 +50,7 @@
                 </li>
                 <li data-storyid="2" data-storycustomization="{'backgroundColor':'#000000'}">
                   <div class="storyBox">
-                    <h2>Test Story Number Two</h2>
+                    <h2><%= t('screens.admin.story_appearance.test_story_2') %></h2>
                     <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
                        pariatur. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
                        ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed dolga
@@ -61,10 +61,10 @@
               <div class="storyTextbox"></div>
               <ul class="storyImages">
                 <li style="background-color:#000000">
-                  <img src="/stylesheets/images/content/sample_story_2.jpg" alt="This is a Test Story" class="storyImage"/>
+                  <img src="/stylesheets/images/content/sample_story_2.jpg" alt="<%= t('screens.admin.story_appearance.test_story_1') %>" class="storyImage"/>
                 </li>
                 <li style="background-color:#000000">
-                  <img src="/stylesheets/images/content/sample_story_1.jpg" alt="Test Story Number Two" class="storyImage"/>
+                  <img src="/stylesheets/images/content/sample_story_1.jpg" alt="<%= t('screens.admin.story_appearance.test_story_2') %>" class="storyImage"/>
                 </li>
               </ul>
             </div>
@@ -91,4 +91,9 @@
   </script>
 
   <%= include_webpack_bundle 'open-data/admin-stories-appearance.js' %>
+<% end %>
+
+<% content_for :translations do %>
+  <%= render_translations LocalePart.screens.ds %>
+  <%= render_translations LocalePart.screens.admin.story_appearance %>
 <% end %>

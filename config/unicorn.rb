@@ -11,7 +11,7 @@ def get_logger
   logger.level = Logger.const_get((ENV['LOG_LEVEL'] || 'INFO').upcase)
   logger.formatter = proc do |severity, datetime, progname, msg|
     date_format = datetime.utc.strftime("%Y-%m-%d %H:%M:%S,%L")
-    puts "#{severity}, [ #{date_format} ] -- #{progname}: #{msg}"
+    puts "#{date_format} [] [] [#{'PID-%.5d' % Process.pid}] [#{'%-5s' % severity}] -- #{progname}: #{msg}"
   end
   logger
 end

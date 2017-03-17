@@ -223,14 +223,14 @@
     }
   };
 
-  $.Control.extend('pane_storiesTextbox', {
-    getTitle: function() {
-      return 'Text Box';
-    },
+  function t(str, props) {
+    return $.t('screens.admin.story_appearance.' + str, props);
+  }
 
-    getSubtitle: function() {
-      return 'Customize the appearance of the text-based content area';
-    },
+  $.Control.extend('pane_storiesTextbox', {
+    getTitle: () => t('panes.text_box.title'),
+
+    getSubtitle: () => t('panes.text_box.subtitle'),
 
     _getCurrentData: function() {
       return this._super() || publishNS.resolveWorkingTheme();
@@ -239,144 +239,185 @@
     _changeHandler: publishNS.handleValueChanged,
 
     _getSections: function() {
-      return [{
-        title: 'Layout and Appearance',
-        name: 'overall',
-        fields: [{
-            text: 'Position',
-            name: 'orientation',
-            prompt: 'Where the content should be positioned',
-            type: 'radioSelect',
-            options: ['left', 'right']
-          }, {
-            type: 'group',
-            text: 'Width',
-            includeLabel: true,
-            lineClass: 'dimensions',
-            options: [{
-              type: 'text',
-              name: 'box.width.value',
-              inputOnly: true
-            }, {
+      const sectionPrefix = 'panes.text_box.sections';
+      return [
+        {
+          title: t(`${sectionPrefix}.layout.label`),
+          name: 'overall',
+          fields: [
+            {
+              text: t(`${sectionPrefix}.layout.fields.orientation.text`),
+              name: 'orientation',
+              prompt: t(`${sectionPrefix}.layout.fields.orientation.prompt`),
+              type: 'radioSelect',
+              options: [
+                {
+                  value: 'left',
+                  label: t(`${sectionPrefix}.layout.fields.orientation.option_left`)
+                },
+                {
+                  value: 'right',
+                  label: t(`${sectionPrefix}.layout.fields.orientation.option_right`)
+                }
+              ]
+            },
+            {
+              type: 'group',
+              text: t(`${sectionPrefix}.layout.fields.width.text`),
+              includeLabel: true,
+              lineClass: 'dimensions',
+              options: [
+                {
+                  type: 'text',
+                  name: 'box.width.value',
+                  inputOnly: true
+                },
+                {
+                  type: 'select',
+                  name: 'box.width.unit',
+                  inputOnly: true,
+                  options: publishNS.dimensionOptions
+                }
+              ]
+            },
+            {
+              type: 'group',
+              text: t(`${sectionPrefix}.layout.fields.margin.text`),
+              includeLabel: true,
+              lineClass: 'dimensions',
+              options: [
+                {
+                  type: 'text',
+                  name: 'box.margin.value',
+                  inputOnly: true
+                },
+                {
+                  type: 'static',
+                  name: 'box.margin.unit',
+                  inputOnly: true,
+                  value: 'em'
+                }
+              ]
+            },
+            {
+              text: t(`${sectionPrefix}.layout.fields.bg_color.text`),
+              name: 'box.color',
+              prompt: t(`${sectionPrefix}.fields.bg_color.prompt`),
+              type: 'color',
+              advanced: true,
+              showLabel: true
+            },
+            {
+              text: t(`${sectionPrefix}.layout.fields.alpha.text`),
+              name: 'box.alpha',
+              prompt: t(`${sectionPrefix}.layout.fields.prompt.text`),
+              type: 'slider',
+              minimum: 0,
+              maximum: 1
+            }
+            /*,
+             {   text: 'Shadow', name: 'box.shadow',
+             prompt: 'Drop shadow strength around the box',
+             type: 'slider', minimum: 0, maximum: 1 }*/
+          ]
+        },
+        {
+          title: t(`${sectionPrefix}.headline.label`),
+          name: 'text',
+          fields: [
+            {
+              text: t(`${sectionPrefix}.headline.fields.font_family.text`),
+              name: 'box.headline.font_family',
+              prompt: t(`${sectionPrefix}.headline.fields.font_family.prompt`),
               type: 'select',
-              name: 'box.width.unit',
-              inputOnly: true,
-              options: publishNS.dimensionOptions
-            }]
-          }, {
-            type: 'group',
-            text: 'Margin',
-            includeLabel: true,
-            lineClass: 'dimensions',
-            options: [{
-              type: 'text',
-              name: 'box.margin.value',
-              inputOnly: true
-            }, {
-              type: 'static',
-              name: 'box.margin.unit',
-              inputOnly: true,
-              value: 'em'
-            }]
-          }, {
-            text: 'Background Color',
-            name: 'box.color',
-            prompt: 'The background color of the box',
-            type: 'color',
-            advanced: true,
-            showLabel: true
-          }, {
-            text: 'Box Opacity',
-            name: 'box.alpha',
-            prompt: 'The background opacity of the box',
-            type: 'slider',
-            minimum: 0,
-            maximum: 1
-          }
-          /*,
-                      {   text: 'Shadow', name: 'box.shadow',
-                          prompt: 'Drop shadow strength around the box',
-                          type: 'slider', minimum: 0, maximum: 1 }*/
-        ]
-      }, {
-        title: 'Headline',
-        name: 'text',
-        fields: [{
-          text: 'Font Family',
-          name: 'box.headline.font_family',
-          prompt: 'Choose a font',
-          type: 'select',
-          options: publishNS.fontOptions
-        }, {
-          text: 'Font Color',
-          name: 'box.headline.color',
-          prompt: 'The color of the headline text',
-          type: 'color',
-          advanced: true,
-          showLabel: true
-        }, {
-          type: 'group',
-          text: 'Font Size',
-          includeLabel: true,
-          lineClass: 'dimensions',
-          options: [{
-            type: 'text',
-            name: 'box.headline.font_size.value',
-            inputOnly: true
-          }, {
-            type: 'select',
-            name: 'box.headline.font_size.unit',
-            inputOnly: true,
-            options: publishNS.dimensionOptions
-          }]
-        }, {
-          text: 'Shadow',
-          name: 'box.headline.shadow.alpha',
-          prompt: 'Drop shadow strength on the headline text',
-          type: 'slider',
-          minimum: 0,
-          maximum: 1
-        }]
-      }, {
-        title: 'Body Text',
-        name: 'text',
-        fields: [{
-          text: 'Font Family',
-          name: 'box.body.font_family',
-          prompt: 'Choose a font',
-          type: 'select',
-          options: publishNS.fontOptions
-        }, {
-          text: 'Font Color',
-          name: 'box.body.color',
-          prompt: 'The color of the body text',
-          type: 'color',
-          advanced: true,
-          showLabel: true
-        }, {
-          type: 'group',
-          text: 'Font Size',
-          includeLabel: true,
-          lineClass: 'dimensions',
-          options: [{
-            type: 'text',
-            name: 'box.body.font_size.value',
-            inputOnly: true
-          }, {
-            type: 'select',
-            name: 'box.body.font_size.unit',
-            inputOnly: true,
-            options: publishNS.dimensionOptions
-          }]
-        }, {
-          text: 'Shadow',
-          name: 'box.body.shadow.alpha',
-          prompt: 'Drop shadow strength on the body text',
-          type: 'slider',
-          minimum: 0,
-          maximum: 1
-        }]
-      }];
+              options: publishNS.fontOptions
+            },
+            {
+              text: t(`${sectionPrefix}.headline.fields.font_color.text`),
+              name: 'box.headline.color',
+              prompt: t(`${sectionPrefix}.headline.fields.font_color.prompt`),
+              type: 'color',
+              advanced: true,
+              showLabel: true
+            },
+            {
+              type: 'group',
+              text: t(`${sectionPrefix}.headline.fields.font_size.text`),
+              includeLabel: true,
+              lineClass: 'dimensions',
+              options: [
+                {
+                  type: 'text',
+                  name: 'box.headline.font_size.value',
+                  inputOnly: true
+                },
+                {
+                  type: 'select',
+                  name: 'box.headline.font_size.unit',
+                  inputOnly: true,
+                  options: publishNS.dimensionOptions
+                }
+              ]
+            },
+            {
+              text: t(`${sectionPrefix}.headline.fields.shadow_alpha.text`),
+              name: 'box.headline.shadow.alpha',
+              prompt: t(`${sectionPrefix}.headline.fields.shadow_alpha.prompt`),
+              type: 'slider',
+              minimum: 0,
+              maximum: 1
+            }
+          ]
+        },
+        {
+          title: t(`${sectionPrefix}.body_text.label`),
+          name: 'text',
+          fields: [
+            {
+              text: t(`${sectionPrefix}.body_text.fields.font_family.text`),
+              name: 'box.body.font_family',
+              prompt: t(`${sectionPrefix}.body_text.fields.font_family.subtitle`),
+              type: 'select',
+              options: publishNS.fontOptions
+            },
+            {
+              text: t(`${sectionPrefix}.body_text.fields.font_color.text`),
+              name: 'box.body.color',
+              prompt: t(`${sectionPrefix}.body_text.fields.font_color.prompt`),
+              type: 'color',
+              advanced: true,
+              showLabel: true
+            },
+            {
+              type: 'group',
+              text: t(`${sectionPrefix}.body_text.fields.font_size.text`),
+              includeLabel: true,
+              lineClass: 'dimensions',
+              options: [
+                {
+                  type: 'text',
+                  name: 'box.body.font_size.value',
+                  inputOnly: true
+                },
+                {
+                  type: 'select',
+                  name: 'box.body.font_size.unit',
+                  inputOnly: true,
+                  options: publishNS.dimensionOptions
+                }
+              ]
+            },
+            {
+              text: t(`${sectionPrefix}.body_text.fields.shadow_alpha.text`),
+              name: 'box.body.shadow.alpha',
+              prompt: t(`${sectionPrefix}.body_text.fields.shadow_alpha.prompt`),
+              type: 'slider',
+              minimum: 0,
+              maximum: 1
+            }
+          ]
+        }
+      ];
     }
   }, {
     name: 'textbox',
@@ -385,13 +426,9 @@
   $.gridSidebar.registerConfig('textbox', 'pane_storiesTextbox');
 
   $.Control.extend('pane_storiesPager', {
-    getTitle: function() {
-      return 'Pager';
-    },
+    getTitle: () => t('panes.pager.title'),
 
-    getSubtitle: function() {
-      return 'Customize the appearance of the story pager';
-    },
+    getSubtitle: () => t('panes.pager.subtitle'),
 
     _getCurrentData: function() {
       return this._super() || publishNS.resolveWorkingTheme();
@@ -400,29 +437,63 @@
     _changeHandler: publishNS.handleValueChanged,
 
     _getSections: function() {
-      return [{
-        title: 'Appearance and Layout',
-        name: 'pager',
-        fields: [{
-          text: 'Position',
-          name: 'pager.position',
-          prompt: 'Where the pager should be located',
-          type: 'radioSelect',
-          options: ['center', 'box']
-        }, {
-          text: 'Pager Type',
-          name: 'pager.type',
-          prompt: 'Type of glyph the pager should use',
-          type: 'radioSelect',
-          options: ['bullets', 'numbers']
-        }, {
-          text: 'Disposition',
-          name: 'pager.disposition',
-          prompt: 'Pager background and glyph color',
-          type: 'radioSelect',
-          options: ['light', 'dark']
-        }]
-      }];
+      const sectionPrefix = 'panes.pager.sections';
+      return [
+        {
+          title: t(`${sectionPrefix}.layout.label`),
+          name: 'pager',
+          fields: [
+            {
+              text: t(`${sectionPrefix}.layout.fields.position.text`),
+              name: 'pager.position',
+              prompt: t(`${sectionPrefix}.layout.fields.position.prompt`),
+              type: 'radioSelect',
+              options: [
+                {
+                  value: 'center',
+                  label: t(`${sectionPrefix}.layout.fields.position.option_center`)
+                },
+                {
+                  value: 'box',
+                  label: t(`${sectionPrefix}.layout.fields.position.option_box`)
+                }
+              ]
+            },
+            {
+              text: t(`${sectionPrefix}.layout.fields.type.text`),
+              name: 'pager.type',
+              prompt: t(`${sectionPrefix}.layout.fields.type.prompt`),
+              type: 'radioSelect',
+              options: [
+                {
+                  value: 'bullets',
+                  label: t(`${sectionPrefix}.layout.fields.type.option_bullets`)
+                },
+                {
+                  value: 'numbers',
+                  label: t(`${sectionPrefix}.layout.fields.type.option_numbers`)
+                }
+              ]
+            },
+            {
+              text: t(`${sectionPrefix}.layout.fields.disposition.text`),
+              name: 'pager.disposition',
+              prompt: t(`${sectionPrefix}.layout.fields.disposition.subtitle`),
+              type: 'radioSelect',
+              options: [
+                {
+                  value: 'light',
+                  label: t(`${sectionPrefix}.layout.fields.disposition.option_light`)
+                },
+                {
+                  value: 'dark',
+                  label: t(`${sectionPrefix}.layout.fields.disposition.option_dark`)
+                }
+              ]
+            }
+          ]
+        }
+      ];
     }
   }, {
     name: 'pager',
@@ -431,13 +502,9 @@
   $.gridSidebar.registerConfig('pager', 'pane_storiesPager');
 
   $.Control.extend('pane_storiesOther', {
-    getTitle: function() {
-      return 'Other';
-    },
+    getTitle:  () => t('panes.other.title'),
 
-    getSubtitle: function() {
-      return 'Other customizable options on stories';
-    },
+    getSubtitle: () =>  t('panes.other.subtitle'),
 
     _getCurrentData: function() {
       return this._super() || publishNS.resolveWorkingTheme();
@@ -446,37 +513,46 @@
     _changeHandler: publishNS.handleValueChanged,
 
     _getSections: function() {
-      return [{
-        title: 'Background',
-        name: 'background',
-        fields: [{
-          type: 'group',
-          text: 'Height',
-          includeLabel: true,
-          lineClass: 'dimensions',
-          options: [{
-            type: 'text',
-            name: 'height.value',
-            inputOnly: true
-          }, {
-            type: 'static',
-            name: 'height.unit',
-            inputOnly: true,
-            value: 'em'
-          }]
-        }, {
-          text: 'Slide Advance',
-          name: 'autoAdvance',
-          prompt: 'Length of time to wait (in seconds)',
-          type: 'slider',
-          minimum: 0,
-          maximum: 20
-        }, {
-          value: 'How long to pause on each slide before automatically ' +
-            'advancing to the next. Set to zero to disable it entirely.',
-          type: 'static'
-        }]
-      }];
+      const sectionPrefix = 'panes.other.sections';
+      return [
+        {
+          title: t(`${sectionPrefix}.background.label`),
+          name: 'background',
+          fields: [
+            {
+              type: 'group',
+              text: t(`${sectionPrefix}.background.fields.height.text`),
+              includeLabel: true,
+              lineClass: 'dimensions',
+              options: [
+                {
+                  type: 'text',
+                  name: 'height.value',
+                  inputOnly: true
+                },
+                {
+                  type: 'static',
+                  name: 'height.unit',
+                  inputOnly: true,
+                  value: 'em'
+                }
+              ]
+            },
+            {
+              text: t(`${sectionPrefix}.background.fields.slide_advance.text`),
+              name: 'autoAdvance',
+              prompt: t(`${sectionPrefix}.background.fields.slide_advance.prompt`),
+              type: 'slider',
+              minimum: 0,
+              maximum: 20
+            },
+            {
+              value: t(`${sectionPrefix}.background.fields.description.value`),
+              type: 'static'
+            }
+          ]
+        }
+      ];
     }
   }, {
     name: 'other',

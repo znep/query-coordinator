@@ -38,8 +38,6 @@ module CatalogLandingPageHelper
 
   def render_catalog_landing_page_server_config
     # Figure out if we need a locale prefix on links
-    locale_prefix = (I18n.locale.to_sym == CurrentDomain.default_locale.to_sym) ? '' : "/#{I18n.locale}"
-
     feature_flags = FeatureFlags.derive(nil, request).slice(
       :enable_catalog_landing_page,
       :default_to_catalog_landing_page,

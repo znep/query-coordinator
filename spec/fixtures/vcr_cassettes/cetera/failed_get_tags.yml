@@ -2,17 +2,13 @@
 http_interactions:
 - request:
     method: get
-    uri: http://localhost:5704/catalog/v1/domain_tags?domains=opendata.rc-socrata.com&offset=0&order=relevance
+    uri: http://localhost:5704/catalog/v1/domain_tags?approval_status=approved&domains=opendata.rc-socrata.com&explicitly_hidden=false&offset=0&order=relevance&public=true&published=true
     body:
       encoding: US-ASCII
       string: ''
     headers:
       Content-Type:
       - application/json
-      Cookie:
-      - i am a cookie
-      X-Socrata-Host:
-      - opendata.rc-socrata.com
       X-Socrata-Requestid:
       - iAmProbablyUnique
   response:
@@ -33,6 +29,6 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"error":"Domain not found: opendata.rc-socrata.com"}'
-    http_version: 
+    http_version:
   recorded_at: Fri, 01 Jul 2016 21:15:50 GMT
 recorded_with: VCR 3.0.3

@@ -3,35 +3,35 @@
   <%= rendered_stylesheet_tag 'administration-sdp-template' %>
   <%= rendered_stylesheet_tag 'colorpicker' %>
   <%= rendered_stylesheet_tag 'base-control-third-party' %>
-  <title>Editing <%= @widget_customization.name %> | Social Data Player Templates | <%= get_site_title %></title>
+  <title><%= t('screens.admin.sdp.edit.editing', :title => @widget_customization.name) %> | <%= t('screens.admin.sdp.edit.default_title') %> | <%= get_site_title %></title>
 <% end %>
 
 <%= render :partial => 'left_nav' %>
 
 <div class="contentBox withLeftNavigation">
   <div class="publisherHeader clearfix">
-    <h1>Editing <%= @widget_customization.name %></h1>
+    <h1><%= t('screens.admin.sdp.edit.editing', :title => @widget_customization.name) %></h1>
 
     <div class="publisherActions">
-      <a href="#save" class="saveButton button">Save</a>
+      <a href="#save" class="saveButton button"><%= t('core.dialogs.save') %></a>
       <!-- <a href="#save" class="saveAsButton button">Save As...</a> -->
-      <a href="#save" class="revertButton button">Revert Changes</a>
-      <span class="loadingIcon">Working...</span>
+      <a href="#save" class="revertButton button"><%= t('core.dialogs.revert_changes') %></a>
+      <span class="loadingIcon"><%= t('screens.admin.sdp.edit.working') %></span>
     </div>
 
     <div class="sidebarOptionsContainer clearfix">
       <ul id="sidebarOptions" class="clearfix">
         <li><a href="#metadata" class="metadata" data-panename="metadata">
-          <span class="icon"></span>Metadata</a></li>
+          <span class="icon"></span><%= t('screens.admin.sdp.edit.panes.metadata.label') %></a></li>
         <li><a href="#appearance" class="appearance" data-panename="appearance">
-          <span class="icon"></span>Appearance</a></li>
+          <span class="icon"></span><%= t('screens.admin.sdp.edit.panes.appearance.label') %></a></li>
         <li><a href="#behavior" class="behavior" data-panename="behavior">
-          <span class="icon"></span>Behavior</a></li>
+          <span class="icon"></span><%= t('screens.admin.sdp.edit.panes.behavior.label') %></a></li>
         <li><a href="#advanced" class="advanced" data-panename="advanced">
-          <span class="icon"></span>Advanced</a></li>
+          <span class="icon"></span><%= t('screens.admin.sdp.edit.panes.advanced.label') %></a></li>
         <%- if params[:view_id].present? -%>
           <li><a href="#embed" class="embed" data-panename="embed">
-            <span class="icon"></span>Embed</a></li>
+            <span class="icon"></span><% t('screens.admin.sdp.edit.embed') %></a></li>
         <%- end -%>
       </ul>
     </div>
@@ -46,24 +46,19 @@
           </div>
         </div>
         <div class="infoMessage loadingMessage">
-          <h2>Loading your Data Player Customization...</h2>
+          <h2><%= t('screens.admin.sdp.edit.loading_message') %></h2>
         </div>
       <%- else -%>
         <div class="errorMessage privateDatasetMessage">
-          <h2>Warning</h2>
-          <p>The dataset you are trying to publish is currently marked as private.
-             You will need to make it public before you can publish it. This will
-             mean that anyone can view the data.</p>
-          <a href="#public" class="makePublicButton button">Make it public</a>
+          <h2><%= t('screens.admin.sdp.edit.warning') %></h2>
+          <p><%= t('screens.admin.sdp.edit.private_dataset_warning') %></p>
+          <a href="#public" class="makePublicButton button"><%= t('screens.admin.sdp.edit.make_public_button_label') %></a>
         </div>
       <%- end -%>
       <div class="errorMessage versionMessage">
-        <h2>Warning</h2>
-        <p>The customization you are trying to edit is our old design, which is no
-           longer supported. If you want to make changes to it, you'll have to
-           convert it over to our new design first. You can preview how it will
-           look before committing to using it.</p>
-        <a href="#convert" class="convertButton button">Convert it now</a>
+        <h2><%= t('screens.admin.sdp.edit.warning') %></h2>
+        <p><%= t('screens.admin.sdp.edit.old_version_warning') %></p>
+        <a href="#convert" class="convertButton button"><%= t('screens.admin.sdp.edit.convert_now_button_label') %></a>
       </div>
     </div>
     <div id="gridSidebar">
@@ -75,12 +70,12 @@
 <%= render(:partial => 'templates/grid_sidebar') %>
 <div class="logoEdit">
   <div class="line clearfix logoEdit">
-    <label for="gridSidebar_appearance_logo:_logoSelect">Choose logo</label>
+    <label for="gridSidebar_appearance_logo:_logoSelect"><%= t('screens.admin.sdp.edit.choose_logo') %></label>
     <div class="inputWrapper">
       <select id="gridSidebar_appearance_logo:_logoSelect" data-origname="_logoSelect"
             name="gridSidebar_appearance_logo:_logoSelect">
-        <option value="none">(none)</option>
-        <option value="socrata">Default Socrata Logo</option>
+        <option value="none"><%= t('screens.admin.sdp.edit.none') %></option>
+        <option value="socrata"><%= t('screens.admin.sdp.edit.default_socrata_logo') %></option>
         <option disabled="disabled">&nbsp;</option>
         <%= options_for_select Asset.find(:type => "WIDGET_CUSTOMIZATION_LOGO").
                                           map{ |image| [image.nameForOutput, image.id] } %>
@@ -88,10 +83,10 @@
     </div>
   </div>
   <div class="line clearfix">
-    <a href="#upload" class="uploadNewLogoButton button">Upload New</a>
+    <a href="#upload" class="uploadNewLogoButton button"><%= t('screens.admin.sdp.edit.upload_new') %></a>
   </div>
   <div class="line clearfix text">
-    <label for="gridSidebar_appearance_logo:logo.href">Logo Link URL</label>
+    <label for="gridSidebar_appearance_logo:logo.href"><%= t('screens.admin.sdp.edit.logo_link_url') %></label>
     <div class="inputWrapper textWrapper">
       <input id="gridSidebar_appearance_logo:logo.href" name="gridSidebar_appearance_logo:logo.href" type="text"
         data-origname="logo.href" />
@@ -146,4 +141,9 @@
 
   <%= include_webpack_bundle 'open-data/admin-sdp-template.js' %>
 <% end %>
-<%= render_translations LocalePart.controls.upload_dialog %>
+
+<% content_for :translations do %>
+  <%= render_translations LocalePart.controls.upload_dialog %>
+  <%= render_translations LocalePart.screens.ds %>
+  <%= render_translations LocalePart.screens.admin.sdp %>
+<% end %>

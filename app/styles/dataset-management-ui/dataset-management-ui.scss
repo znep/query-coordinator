@@ -1,6 +1,7 @@
 @import "styleguide-colors";
 @import "common/metadata-table";
 @import "common/schema-preview";
+@import "common/row-details";
 
 body {
   min-height: 100vh;
@@ -13,6 +14,10 @@ body {
   flex-grow: 1;
   flex-basis: fill;
   flex-direction: column;
+}
+
+#app.no-chrome-header {
+  margin-top: 32px;
 }
 
 // Overrides from DSLP
@@ -1083,7 +1088,7 @@ body {
   color: #0098C8;
 }
 .type-icon-boolean {
-  color: #9B2D52;
+  color: #894BAA;
 }
 .type-icon-fixed_timestamp {
   color: #B26B00;

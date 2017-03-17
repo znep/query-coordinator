@@ -360,9 +360,6 @@ blist.publish.updateCustomUI = function() {
   $('#gridSidebar_appearance_rows\\:grid\\.zebra').
     closest('.line').toggleClass('disabled', !publishNS.workingTheme._zebraStriping);
 
-  // update page title
-  $('.publisherHeader h1').text('Editing ' + publishNS.workingThemeMeta.name);
-
   // update logoSelect to appropriate value
   var $select = $('#gridSidebar_appearance_logo\\:_logoSelect').val(publishNS.workingTheme._logoSelect);
   if (!_.isUndefined($.uniform.update)) {
@@ -393,18 +390,18 @@ blist.publish.generateEmbedCode = function(hash) {
 };
 
 // Register the SDP sidebars !
+function t(str, props) {
+  return $.t('screens.admin.sdp.edit.' + str, props);
+}
+
 $.Control.extend('pane_sdpTmplMetadata', {
-  getTitle: function() {
-    return 'Template Metadata';
-  },
+  getTitle: () => t('panes.metadata.title'),
 
   getTemplateName: function() {
     return 'sidebarPaneWithFieldset';
   },
 
-  getSubtitle: function() {
-    return 'Edit basic information about this Social Data Player Template';
-  },
+  getSubtitle: () => t('panes.metadata.subtitle'),
 
   _getCurrentData: function() {
     return this._super() || publishNS.resolveCurrentThemeMeta();
@@ -419,18 +416,18 @@ $.Control.extend('pane_sdpTmplMetadata', {
 
   _getSections: function() {
     return [{
-      title: 'Information',
+      title: t('panes.metadata.sections.information.label'),
       name: 'metadata',
       fields: [{
-        text: 'Name',
+        text: t('panes.metadata.sections.information.fields.name.text'),
         name: '_name',
-        prompt: 'Name this Template',
+        prompt: t('panes.metadata.sections.information.fields.name.prompt'),
         type: 'text',
         required: true
       }, {
-        text: 'Description',
+        text: t('panes.metadata.sections.information.fields.description.text'),
         name: 'description',
-        prompt: 'Record notes about this template here',
+        prompt: t('panes.metadata.sections.information.fields.description.prompt'),
         type: 'textarea'
       }]
     }];
@@ -443,7 +440,7 @@ $.gridSidebar.registerConfig('metadata', 'pane_sdpTmplMetadata');
 
 $.Control.extend('pane_sdpTmplAppearance', {
   getTitle: function() {
-    return 'Template Appearance';
+    return t('panes.appearance.title');
   },
 
   getTemplateName: function() {
@@ -451,7 +448,7 @@ $.Control.extend('pane_sdpTmplAppearance', {
   },
 
   getSubtitle: function() {
-    return 'Edit the appearance of this Social Data Player Template';
+    return t('panes.appearance.subtitle');
   },
 
   _getCurrentData: function() {
@@ -466,167 +463,217 @@ $.Control.extend('pane_sdpTmplAppearance', {
   _changeHandler: publishNS.handleValueChanged,
 
   _getSections: function() {
-    return [{
-      title: 'Exterior',
-      name: 'exterior',
-      fields: [{
-        text: 'Width',
-        name: 'publish.dimensions.width',
-        type: 'text',
-        required: true,
-        validateMin: 425
-      }, {
-        text: 'Height',
-        name: 'publish.dimensions.height',
-        type: 'text',
-        required: true,
-        validateMin: 425
-      }, {
-        text: 'Powered By Text',
-        name: 'publish.show_powered_by',
-        type: 'checkbox'
-      }]
-    }, {
-      title: 'Logo',
-      name: 'logo',
-      customContent: {
-        template: 'logoEdit',
-        directive: {},
-        callback: publishNS.wireLogoEditor
+    return [
+      {
+        title: t('panes.appearance.sections.exterior.label'),
+        name: 'exterior',
+        fields: [
+          {
+            text: t('panes.appearance.sections.exterior.fields.width.text'),
+            name: 'publish.dimensions.width',
+            type: 'text',
+            required: true,
+            validateMin: 425
+          },
+          {
+            text: t('panes.appearance.sections.exterior.fields.height.text'),
+            name: 'publish.dimensions.height',
+            type: 'text',
+            required: true,
+            validateMin: 425
+          },
+          {
+            text: t('panes.appearance.sections.exterior.fields.powered_by.text'),
+            name: 'publish.show_powered_by',
+            type: 'checkbox'
+          }
+        ]
+      },
+      {
+        title: t('panes.appearance.sections.logo.label'),
+        name: 'logo',
+        customContent: {
+          template: 'logoEdit',
+          directive: {},
+          callback: publishNS.wireLogoEditor
+        }
+      },
+      {
+        title: t('panes.appearance.sections.colors.label'),
+        name: 'colors',
+        fields: [
+          {
+            text: t('panes.appearance.sections.colors.fields.frame_color.text'),
+            name: 'frame.color',
+            type: 'color',
+            advanced: true,
+            showLabel: true
+          },
+          {
+            text: t('panes.appearance.sections.colors.fields.border_color.text'),
+            name: 'frame.border.color',
+            type: 'color',
+            advanced: true,
+            showLabel: true
+          },
+          {
+            text: t('panes.appearance.sections.colors.fields.button_color.text'),
+            name: '_menuButtonColor',
+            type: 'color',
+            advanced: true,
+            showLabel: true
+          },
+          {
+            text: t('panes.appearance.sections.colors.fields.toolbar_color.text'),
+            name: 'toolbar.color',
+            type: 'color',
+            advanced: true,
+            showLabel: true
+          },
+          {
+            text: t('panes.appearance.sections.colors.fields.find_field_color.text'),
+            name: 'toolbar.input_color',
+            type: 'color',
+            advanced: true,
+            showLabel: true
+          },
+          {
+            type: 'group',
+            text: t('panes.appearance.sections.colors.fields.border_width.text'),
+            includeLabel: true,
+            lineClass: 'dimensions',
+            options: [
+              {
+                type: 'text',
+                name: 'frame.border.width.value',
+                inputOnly: true
+              },
+              {
+                type: 'select',
+                name: 'frame.border.width.unit',
+                inputOnly: true,
+                options: publishNS.dimensionOptions
+              }
+            ]
+          }
+        ]
+      },
+      {
+        title: t('panes.appearance.sections.columns.label'),
+        name: 'columns',
+        onlyIf: {
+          func: function() {
+            return publishNS.viewIsGrid;
+          }
+        },
+        fields: [
+          {
+            text: t('panes.appearance.sections.columns.fields.wrap.text'),
+            name: 'grid.wrap_header_text',
+            type: 'checkbox'
+          },
+          {
+            text: t('panes.appearance.sections.columns.fields.bold.text'),
+            name: 'grid.title_bold',
+            type: 'checkbox'
+          },
+          {
+            type: 'group',
+            text: t('panes.appearance.sections.columns.fields.font.text'),
+            includeLabel: true,
+            lineClass: 'dimensions',
+            options: [
+              {
+                type: 'text',
+                name: 'grid.font.header_size.value',
+                inputOnly: true
+              },
+              {
+                type: 'select',
+                name: 'grid.font.header_size.unit',
+                inputOnly: true,
+                options: publishNS.dimensionOptions
+              }
+            ]
+          }
+        ]
+      },
+      {
+        title: t('panes.appearance.sections.rows.label'),
+        name: 'rows',
+        onlyIf: {
+          func: function() {
+            return publishNS.viewIsGrid;
+          }
+        },
+        fields: [
+          {
+            text: t('panes.appearance.sections.rows.fields.row_numbers.text'),
+            name: 'grid.row_numbers',
+            type: 'checkbox'
+          },
+          {
+            type: 'group',
+            text: t('panes.appearance.sections.rows.fields.font_size.text'),
+            includeLabel: true,
+            lineClass: 'dimensions',
+            options: [
+              {
+                type: 'text',
+                name: 'grid.font.data_size.value',
+                inputOnly: true
+              },
+              {
+                type: 'select',
+                name: 'grid.font.data_size.unit',
+                inputOnly: true,
+                options: publishNS.dimensionOptions
+              }
+            ]
+          },
+          {
+            text: t('panes.appearance.sections.rows.fields.stripe_rows.text'),
+            name: '_zebraStriping',
+            type: 'checkbox'
+          },
+          {
+            text: t('panes.appearance.sections.rows.fields.stripe_color.text'),
+            name: 'grid.zebra',
+            type: 'color',
+            advanced: true,
+            showLabel: true
+          }
+        ]
+      },
+      {
+        title: t('panes.appearance.sections.toolbars.label'),
+        name: 'toolbars',
+        fields: [
+          {
+            text: t('panes.appearance.sections.toolbars.fields.title.text'),
+            name: 'frame.show_title',
+            type: 'checkbox'
+          },
+          {
+            text: t('panes.appearance.sections.toolbars.fields.orientation.text'),
+            name: 'frame.orientation',
+            type: 'radioSelect',
+            options: [
+              {
+                value: 'downwards',
+                label: t('panes.appearance.sections.toolbars.fields.' +
+                  'orientation.option_downwards')
+              },
+              {
+                value: 'upwards',
+                label: t('panes.appearance.sections.toolbars.fields.' +
+                  'orientation.option_upwards')
+              }
+            ]
+          }
+        ]
       }
-    }, {
-      title: 'Color and Style',
-      name: 'colors',
-      fields: [{
-        text: 'Frame Color',
-        name: 'frame.color',
-        type: 'color',
-        advanced: true,
-        showLabel: true
-      }, {
-        text: 'Border Color',
-        name: 'frame.border.color',
-        type: 'color',
-        advanced: true,
-        showLabel: true
-      }, {
-        text: 'Button Color',
-        name: '_menuButtonColor',
-        type: 'color',
-        advanced: true,
-        showLabel: true
-      }, {
-        text: 'Toolbar Color',
-        name: 'toolbar.color',
-        type: 'color',
-        advanced: true,
-        showLabel: true
-      }, {
-        text: 'Find Field Color',
-        name: 'toolbar.input_color',
-        type: 'color',
-        advanced: true,
-        showLabel: true
-      }, {
-        type: 'group',
-        text: 'Border Width',
-        includeLabel: true,
-        lineClass: 'dimensions',
-        options: [{
-          type: 'text',
-          name: 'frame.border.width.value',
-          inputOnly: true
-        }, {
-          type: 'select',
-          name: 'frame.border.width.unit',
-          inputOnly: true,
-          options: publishNS.dimensionOptions
-        }]
-      }]
-    }, {
-      title: 'Column Headers',
-      name: 'columns',
-      onlyIf: {
-        func: function() {
-          return publishNS.viewIsGrid;
-        }
-      },
-      fields: [{
-        text: 'Wrap Column Titles',
-        name: 'grid.wrap_header_text',
-        type: 'checkbox'
-      }, {
-        text: 'Bold Titles',
-        name: 'grid.title_bold',
-        type: 'checkbox'
-      }, {
-        type: 'group',
-        text: 'Font Size',
-        includeLabel: true,
-        lineClass: 'dimensions',
-        options: [{
-          type: 'text',
-          name: 'grid.font.header_size.value',
-          inputOnly: true
-        }, {
-          type: 'select',
-          name: 'grid.font.header_size.unit',
-          inputOnly: true,
-          options: publishNS.dimensionOptions
-        }]
-      }]
-    }, {
-      title: 'Rows',
-      name: 'rows',
-      onlyIf: {
-        func: function() {
-          return publishNS.viewIsGrid;
-        }
-      },
-      fields: [{
-        text: 'Row Numbers',
-        name: 'grid.row_numbers',
-        type: 'checkbox'
-      }, {
-        type: 'group',
-        text: 'Font Size',
-        includeLabel: true,
-        lineClass: 'dimensions',
-        options: [{
-          type: 'text',
-          name: 'grid.font.data_size.value',
-          inputOnly: true
-        }, {
-          type: 'select',
-          name: 'grid.font.data_size.unit',
-          inputOnly: true,
-          options: publishNS.dimensionOptions
-        }]
-      }, {
-        text: 'Stripe Rows',
-        name: '_zebraStriping',
-        type: 'checkbox'
-      }, {
-        text: 'Stripe Color',
-        name: 'grid.zebra',
-        type: 'color',
-        advanced: true,
-        showLabel: true
-      }]
-    }, {
-      title: 'Toolbars',
-      name: 'toolbars',
-      fields: [{
-        text: 'Dataset Title',
-        name: 'frame.show_title',
-        type: 'checkbox'
-      }, {
-        text: 'Orientation',
-        name: 'frame.orientation',
-        type: 'radioSelect',
-        options: ['downwards', 'upwards']
-      }]
-    }];
+    ];
   }
 }, {
   name: 'appearance',
@@ -636,7 +683,7 @@ $.gridSidebar.registerConfig('appearance', 'pane_sdpTmplAppearance');
 
 $.Control.extend('pane_sdpTmplBehavior', {
   getTitle: function() {
-    return 'Behavior';
+    return t('panes.behavior.title');
   },
 
   getTemplateName: function() {
@@ -644,7 +691,7 @@ $.Control.extend('pane_sdpTmplBehavior', {
   },
 
   getSubtitle: function() {
-    return 'Edit the behavior of this Social Data Player Template';
+    return t('panes.behavior.subtitle');
   },
 
   _getCurrentData: function() {
@@ -659,60 +706,72 @@ $.Control.extend('pane_sdpTmplBehavior', {
   _changeHandler: publishNS.handleValueChanged,
 
   _getSections: function() {
-    return [{
-      title: 'Menu',
-      name: 'sdp_menu',
-      fields: [{
-        text: 'More Views',
-        name: 'menu.options.more_views',
-        type: 'checkbox'
-      }, {
-        text: 'Discuss',
-        name: 'menu.options.comments',
-        type: 'checkbox'
-      }, {
-        text: 'Downloads',
-        name: 'menu.options.downloads',
-        type: 'checkbox'
-      }, {
-        text: 'Embed',
-        name: 'menu.options.embed',
-        type: 'checkbox'
-      }, {
-        text: 'API',
-        name: 'menu.options.api',
-        type: 'checkbox'
-      }, {
-        text: 'Print',
-        name: 'menu.options.print',
-        type: 'checkbox',
-        onlyIf: publishNS.viewIsGrid
-      }, {
-        text: 'About the SDP',
-        name: 'menu.options.about_sdp',
-        type: 'checkbox'
-      }]
-    }, {
-      title: 'General',
-      name: 'general',
-      fields: [{
-        text: 'Share Menu',
-        name: 'menu.share',
-        type: 'checkbox'
-      }, {
-        text: 'Full Screen',
-        name: 'menu.fullscreen',
-        type: 'checkbox'
-      }, {
-        text: 'Warn When Leaving',
-        name: 'behavior.interstitial',
-        type: 'checkbox'
-      }, {
-        value: 'Shows an alert notifying viewers that they are being ' +
-          'redirected to another site when clicking external links',
-        type: 'static'
-      }]
-    }];
+    return [
+      {
+        title: t('panes.behavior.sections.menu.label'),
+        name: 'sdp_menu',
+        fields: [
+          {
+            text: t('panes.behavior.sections.menu.fields.move_views.text'),
+            name: 'menu.options.more_views',
+            type: 'checkbox'
+          },
+          {
+            text: t('panes.behavior.sections.menu.fields.discuss.text'),
+            name: 'menu.options.comments',
+            type: 'checkbox'
+          },
+          {
+            text: t('panes.behavior.sections.menu.fields.downloads.text'),
+            name: 'menu.options.downloads',
+            type: 'checkbox'
+          },
+          {
+            text: t('panes.behavior.sections.menu.fields.embed.text'),
+            name: 'menu.options.embed',
+            type: 'checkbox'
+          },
+          {
+            text: t('panes.behavior.sections.menu.fields.api.text'),
+            name: 'menu.options.api',
+            type: 'checkbox'
+          },
+          {
+            text: t('panes.behavior.sections.menu.fields.print.text'),
+            name: 'menu.options.print',
+            type: 'checkbox',
+            onlyIf: publishNS.viewIsGrid
+          },
+          {
+            text: t('panes.behavior.sections.menu.fields.about.text'),
+            name: 'menu.options.about_sdp',
+            type: 'checkbox'
+          }
+        ]
+      },
+      {
+        title: t('panes.behavior.sections.general.label'),
+        name: 'general',
+        fields: [
+          {
+            text: t('panes.behavior.sections.general.fields.share_menu.text'),
+            name: 'menu.share',
+            type: 'checkbox'
+          }, {
+            text: t('panes.behavior.sections.general.fields.full_screen.text'),
+            name: 'menu.fullscreen',
+            type: 'checkbox'
+          }, {
+            text: t('panes.behavior.sections.general.fields.warn_leaving.text'),
+            name: 'behavior.interstitial',
+            type: 'checkbox'
+          }, {
+            value: t('panes.behavior.sections.general.fields.redirect_alert.value'),
+            type: 'static'
+          }
+        ]
+      }
+    ];
   }
 }, {
   name: 'behavior',
@@ -722,7 +781,7 @@ $.gridSidebar.registerConfig('behavior', 'pane_sdpTmplBehavior');
 
 $.Control.extend('pane_sdpTmplAdvanced', {
   getTitle: function() {
-    return 'Advanced';
+    return t('panes.advanced.title');
   },
 
   getTemplateName: function() {
@@ -730,7 +789,7 @@ $.Control.extend('pane_sdpTmplAdvanced', {
   },
 
   getSubtitle: function() {
-    return 'Edit some advanced features of this Social Data Player Template';
+    return t('panes.advanced.subtitle');
   },
 
   _getCurrentData: function() {
@@ -745,19 +804,25 @@ $.Control.extend('pane_sdpTmplAdvanced', {
   _changeHandler: publishNS.handleValueChanged,
 
   _getSections: function() {
-    return [{
-      title: 'Google Analytics',
-      name: 'analytics',
-      fields: [{
-        text: 'GA Code',
-        name: 'behavior.ga_code',
-        type: 'text'
-      }, {
-        value: 'If you use Google Analytics you can embed your tracking ' +
-          'code into your Social Data Player',
-        type: 'static'
-      }]
-    }];
+    return [
+      {
+        title: t('panes.advanced.sections.google_analytics.label'),
+        name: 'analytics',
+        fields: [
+          {
+            text: t('panes.advanced.sections.google_analytics.fields.' +
+              'ga_code.text'),
+            name: 'behavior.ga_code',
+            type: 'text'
+          },
+          {
+            value: t('panes.advanced.sections.google_analytics.fields.' +
+              'description.value'),
+            type: 'static'
+          }
+        ]
+      }
+    ];
   }
 }, {
   name: 'advanced',
@@ -776,8 +841,8 @@ $.Control.extend('pane_sdpTmplEmbed', {
 
   _getCurrentData: function() {
     return this._super() || {
-      code: publishNS.generateEmbedCode()
-    };
+        code: publishNS.generateEmbedCode()
+      };
   },
 
   shown: function() {
@@ -797,8 +862,8 @@ $.Control.extend('pane_sdpTmplEmbed', {
         type: 'textarea'
       }, {
         value: 'You have made changes to this template that have ' +
-          'not yet been saved. They will not reflect in published ' +
-          'until you save the template.',
+        'not yet been saved. They will not reflect in published ' +
+        'until you save the template.',
         type: 'static',
         lineClass: 'changesWarning'
       }]
@@ -809,7 +874,6 @@ $.Control.extend('pane_sdpTmplEmbed', {
   noReset: true
 }, 'controlPane');
 $.gridSidebar.registerConfig('embed', 'pane_sdpTmplEmbed');
-
 
 ////////////////////////////////////////////
 // SECTION: Render methods

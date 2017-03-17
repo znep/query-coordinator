@@ -1,7 +1,7 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-sdp-templates' %>
-  <title>Social Data Player Templates | <%= get_site_title %></title>
+  <title><%= t('screens.admin.sdp.listing.default_title') %> | <%= get_site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -12,9 +12,9 @@
 
 <div class="contentBox withLeftNavigation">
   <div class="adminHeader appearance">
-    <a href="#new" class="newTemplateButton button">Create a New Template</a>
+    <a href="#new" class="newTemplateButton button"><%= t('screens.admin.sdp.listing.create_new_template') %></a>
     <span class="icon"></span>
-    <h1>Social Data Player Templates</h1>
+    <h1><%= t('screens.admin.sdp.listing.default_title') %></h1>
   </div>
 
   <%= display_standard_flashes %>
@@ -28,8 +28,8 @@
       </colgroup>
       <thead>
         <tr>
-          <th class="name" scope="col"><div>Name</div><span class="icon"></span></th>
-          <th class="preview" scope="col"><div>Preview</div></th>
+          <th class="name" scope="col"><div><%= t('screens.admin.sdp.listing.name') %></div><span class="icon"></span></th>
+          <th class="preview" scope="col"><div><%= t('screens.admin.sdp.listing.preview') %></div></th>
           <th class="actions" scope="col"></th>
         </tr>
       </thead>
@@ -41,7 +41,7 @@
               <div class="previewOuter">
                 <div class="loadingOverlay">
                   <div class="loadingBackground"></div>
-                  <div class="loadingMessage"><span class="icon"></span>Loading...</div>
+                  <div class="loadingMessage"><span class="icon"></span><%= t('screens.admin.sdp.listing.loading') %></div>
                 </div>
                 <div class="previewLogo"></div>
                 <div class="previewSubheader"></div>
@@ -49,22 +49,22 @@
                   <div class="previewGridZebra"></div>
                 </div>
                 <div class="previewNotAvailable">
-                  <p>This template is outdated and cannot be displayed.</p>
+                  <p><%= t('screens.admin.sdp.listing.errors.outdated_template') %></p>
                 </div>
               </div>
             </td>
             <td class="actions<%= ' isDefault' if (template.uid == @default_template_id) %>">
-              <span class="defaultText">Current Default</span>
+              <span class="defaultText"><%= t('screens.admin.sdp.listing.current_default') %></span>
               <span class="loading"></span>
-              <%= form_button({ :action => 'sdp_set_default_template', :id => template.uid}, 'Make Default',
+              <%= form_button({ :action => 'sdp_set_default_template', :id => template.uid}, t('screens.admin.sdp.listing.make_default'),
                    {:method => :put}, {:class => 'button makeDefaultButton'}) %>
               <!-- The disabled class makes the button grey. The disabled attribute takes the button out of tab order. -->
-              <%= form_button({ :action => 'sdp_delete_template', :id => template.uid}, 'Delete',
+              <%= form_button({ :action => 'sdp_delete_template', :id => template.uid}, t('screens.admin.sdp.listing.delete'),
                              {:method => :delete}, {:class => 'button deleteTemplateButton' +
                                                     (template.uid == @default_template_id ? ' disabled' : '')}
                                                    .merge(template.uid == @default_template_id ? {disabled: ''} : {})) %>
               <a href="sdp_templates/<%= template.uid %>" class="button">
-                <span class="icon"></span>Edit
+                <span class="icon"></span><%= t('screens.admin.sdp.listing.edit') %>
               </a>
             </td>
           </tr>
@@ -74,7 +74,7 @@
   </div>
 
   <%- if @templates.empty? -%>
-    <p class="noResultsMessage">You don't appear to have any templates yet.</p>
+    <p class="noResultsMessage"><%= t('screens.admin.sdp.listing.errors.no_templates') %></p>
   <%- end -%>
 </div>
 
@@ -94,4 +94,9 @@
 
     <%= include_webpack_bundle 'open-data/admin-sdp-templates.js' %>
   <%- end -%>
+<% end %>
+
+<% content_for :translations do %>
+  <%= render_translations LocalePart.screens.ds %>
+  <%= render_translations LocalePart.screens.admin.sdp %>
 <% end %>

@@ -42,7 +42,7 @@ http_interactions:
           "error" : true,
           "message" : "Not found"
         }
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 16:43:26 GMT
 - request:
     method: get
@@ -86,7 +86,7 @@ http_interactions:
           "error" : true,
           "message" : "Parameter 'limit' is required"
         }
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 16:47:47 GMT
 - request:
     method: get
@@ -130,7 +130,7 @@ http_interactions:
           "error" : true,
           "message" : "Parameter 'page' is required"
         }
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 16:48:06 GMT
 - request:
     method: get
@@ -171,7 +171,7 @@ http_interactions:
           "code" : "invalid_request",
           "error" : true
         }
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 16:51:25 GMT
 - request:
     method: get
@@ -219,7 +219,7 @@ http_interactions:
           "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story", "use_data_connectors" ],
           "flags" : [ "admin" ]
         }
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 17:00:52 GMT
 - request:
     method: get
@@ -4688,980 +4688,8 @@ http_interactions:
             "totalRows" : 0
           } ]
         }
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 17:00:54 GMT
-- request:
-    method: get
-    uri: http://localhost:5704/catalog/v1/domain_tags?domains=localhost&offset=0&order=relevance
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Content-Type:
-      - application/json
-      X-Socrata-Host:
-      - localhost
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Fri, 23 Sep 2016 17:15:47 GMT
-      Access-Control-Allow-Origin:
-      - "*"
-      Content-Type:
-      - application/json; charset=UTF-8
-      Transfer-Encoding:
-      - chunked
-      Server:
-      - Jetty(9.2.2.v20140723)
-    body:
-      encoding: UTF-8
-      string: |-
-        {
-          "results" :
-            [
-              { "domain_tag" : "demo", "count" : 2 },
-              { "domain_tag" : "health", "count" : 2 },
-              { "domain_tag" : "healthcare", "count" : 2 },
-              { "domain_tag" : "sample", "count" : 2 },
-              { "domain_tag" : "data", "count" : 1 },
-              { "domain_tag" : "keyword", "count" : 1 },
-              { "domain_tag" : "location", "count" : 1 },
-              { "domain_tag" : "other", "count" : 1 },
-              { "domain_tag" : "tag", "count" : 1 }
-            ],
-          "resultSetSize" : 9,
-          "timings" : { "serviceMillis" : 160, "searchMillis" : [ 80, 34 ] }
-        }
-    http_version: 
-  recorded_at: Fri, 23 Sep 2016 17:15:47 GMT
-- request:
-    method: get
-    uri: http://localhost:5704/catalog/v1?domains=localhost&limit=10&offset=0&order=relevance&search_context=localhost
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Content-Type:
-      - application/json
-      X-Socrata-Host:
-      - localhost
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Fri, 23 Sep 2016 17:15:47 GMT
-      Access-Control-Allow-Origin:
-      - "*"
-      Content-Type:
-      - application/json; charset=UTF-8
-      Transfer-Encoding:
-      - chunked
-      Server:
-      - Jetty(9.2.2.v20140723)
-    body:
-      encoding: UTF-8
-      string: |-
-        {
-          "results" :
-            [
-              {
-                "resource" :
-                  {
-                    "name" : "Healthcare Facilities",
-                    "id" : "dipu-maqp",
-                    "parent_fxf" : [ "a83c-up9r", "efcd-jzv3" ],
-                    "description" : "",
-                    "attribution" : null,
-                    "type" : "datalens",
-                    "updatedAt" : "2016-03-16T17:34:48.000Z",
-                    "createdAt" : "2016-03-15T21:28:47.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
-                    "page_views" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
-                    "columns_name" :
-                      [
-                        "FACID",
-                        "FACNAME",
-                        "FAC_FDR",
-                        "LTC",
-                        "CAPACITY",
-                        "FACADMIN",
-                        "CONTACT_EMAIL",
-                        "CONTACT_FAX",
-                        "CONTACT_PHONE_NUMBER",
-                        "COUNTY_NAME",
-                        "COUNTY_CODE",
-                        "DISTRICT_NUMBER",
-                        "DISTRICT_NAME",
-                        "LICENSE_NUMBER",
-                        "INITIAL_LICENSE_DATE",
-                        "LICENSE_EFFECTIVE_DATE",
-                        "OSHPD_NUMBER",
-                        "LOCATION",
-                        "Location 1",
-                        "Location 1 (zip)",
-                        "Location 1 (city)",
-                        "Location 1 (state)",
-                        "Location 1 (address)"
-                      ],
-                    "columns_field_name" :
-                      [
-                        "facid",
-                        "facname",
-                        "fac_fdr",
-                        "ltc",
-                        "capacity",
-                        "facadmin",
-                        "contact_email",
-                        "contact_fax",
-                        "contact_phone_number",
-                        "county_name",
-                        "county_code",
-                        "district_number",
-                        "district_name",
-                        "license_number",
-                        "initial_license_date",
-                        "license_effective_date",
-                        "oshpd_number",
-                        "location",
-                        "location_1",
-                        "location_1_zip",
-                        "location_1_city",
-                        "location_1_state",
-                        "location_1_address"
-                      ],
-                    "columns_description" :
-                      [
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        ""
-                      ],
-                    "download_count" : 0
-                  },
-                "classification" :
-                  {
-                    "categories" : [],
-                    "tags" : [],
-                    "domain_category" : "",
-                    "domain_tags" : [],
-                    "domain_metadata" : []
-                  },
-                "metadata" : { "domain" : "localhost" },
-                "permalink" : "https://localhost/view/dipu-maqp",
-                "link" : "https://localhost/dataset/Healthcare-Facilities/dipu-maqp"
-              },
-              {
-                "resource" :
-                  {
-                    "name" : "Cool Story Bro!",
-                    "id" : "fs99-3etg",
-                    "parent_fxf" : null,
-                    "description" : "I am a banana!",
-                    "attribution" : null,
-                    "type" : "story",
-                    "updatedAt" : "2016-08-31T16:29:41.746Z",
-                    "createdAt" : "2016-08-31T16:05:15.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
-                    "page_views" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
-                    "columns_name" : [],
-                    "columns_field_name" : [],
-                    "columns_description" : [],
-                    "download_count" : 0
-                  },
-                "classification" :
-                  {
-                    "categories" : [],
-                    "tags" : [],
-                    "domain_category" : "",
-                    "domain_tags" : [],
-                    "domain_metadata" : []
-                  },
-                "metadata" : { "domain" : "localhost" },
-                "permalink" : "https://localhost/stories/s/fs99-3etg",
-                "link" : "https://localhost/stories/s/fs99-3etg"
-              },
-              {
-                "resource" :
-                  {
-                    "name" : "Usa-zipcodes",
-                    "id" : "4b6b-4cep",
-                    "parent_fxf" : null,
-                    "description" : "",
-                    "attribution" : null,
-                    "type" : "map",
-                    "updatedAt" : "2016-03-16T16:48:49.000Z",
-                    "createdAt" : "2016-03-16T16:44:28.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
-                    "page_views" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
-                    "columns_name" : [],
-                    "columns_field_name" : [],
-                    "columns_description" : [],
-                    "download_count" : 0
-                  },
-                "classification" :
-                  {
-                    "categories" : [],
-                    "tags" : [],
-                    "domain_category" : "",
-                    "domain_tags" : [],
-                    "domain_metadata" : []
-                  },
-                "metadata" : { "domain" : "localhost" },
-                "permalink" : "https://localhost/d/4b6b-4cep",
-                "link" : "https://localhost/dataset/Usa-zipcodes/4b6b-4cep"
-              },
-              {
-                "resource" :
-                  {
-                    "name" : "Healthcare Facility Locations-2",
-                    "id" : "4ip4-vvre",
-                    "parent_fxf" : null,
-                    "description" : "This is a very brief description. I can assure that it is brief because it does not contain any relevant information aside from the fact that it is a very brief description. See how brief that was? That was so amazingly brief, I can't even believe my eyes!",
-                    "attribution" : null,
-                    "type" : "dataset",
-                    "updatedAt" : "2016-08-02T22:15:45.000Z",
-                    "createdAt" : "2016-07-08T22:52:34.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
-                    "page_views" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
-                    "columns_name" :
-                      [
-                        "CAPACITY",
-                        "LTC",
-                        "Location 1",
-                        "OSHPD_NUMBER",
-                        "LOCATION",
-                        "DISTRICT_NAME",
-                        "CONTACT_PHONE_NUMBER",
-                        "LICENSE_EFFECTIVE_DATE",
-                        "INITIAL_LICENSE_DATE",
-                        "COUNTY_CODE",
-                        "COUNTY_NAME",
-                        "CONTACT_EMAIL",
-                        "FACADMIN",
-                        "LICENSE_NUMBER",
-                        "DISTRICT_NUMBER",
-                        "CONTACT_FAX",
-                        "FAC_FDR",
-                        "FACNAME",
-                        "FACID"
-                      ],
-                    "columns_field_name" :
-                      [
-                        "capacity",
-                        "ltc",
-                        "location_1",
-                        "oshpd_number",
-                        "location",
-                        "district_name",
-                        "contact_phone_number",
-                        "license_effective_date",
-                        "initial_license_date",
-                        "county_code",
-                        "county_name",
-                        "contact_email",
-                        "facadmin",
-                        "license_number",
-                        "district_number",
-                        "contact_fax",
-                        "fac_fdr",
-                        "facname",
-                        "facid"
-                      ],
-                    "columns_description" :
-                      [
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        ""
-                      ],
-                    "download_count" : 0
-                  },
-                "classification" :
-                  {
-                    "categories" : [],
-                    "tags" : [],
-                    "domain_category" : "Government",
-                    "domain_tags" :
-                      [ "healthcare", "data", "location", "health", "sample", "demo" ],
-                    "domain_metadata" : []
-                  },
-                "metadata" : { "domain" : "localhost" },
-                "permalink" : "https://localhost/d/4ip4-vvre",
-                "link" : "https://localhost/Government/Healthcare-Facility-Locations-2/4ip4-vvre"
-              },
-              {
-                "resource" :
-                  {
-                    "name" : "Healthcare Facilities",
-                    "id" : "8ax7-5xf3",
-                    "parent_fxf" : [ "a83c-up9r", "efcd-jzv3" ],
-                    "description" : "",
-                    "attribution" : null,
-                    "type" : "datalens",
-                    "updatedAt" : "2016-03-15T20:26:10.000Z",
-                    "createdAt" : "2016-03-15T20:21:43.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
-                    "page_views" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
-                    "columns_name" :
-                      [
-                        "FACID",
-                        "FACNAME",
-                        "FAC_FDR",
-                        "LTC",
-                        "CAPACITY",
-                        "FACADMIN",
-                        "CONTACT_EMAIL",
-                        "CONTACT_FAX",
-                        "CONTACT_PHONE_NUMBER",
-                        "COUNTY_NAME",
-                        "COUNTY_CODE",
-                        "DISTRICT_NUMBER",
-                        "DISTRICT_NAME",
-                        "LICENSE_NUMBER",
-                        "INITIAL_LICENSE_DATE",
-                        "LICENSE_EFFECTIVE_DATE",
-                        "OSHPD_NUMBER",
-                        "LOCATION",
-                        "Location 1",
-                        "Location 1 (zip)",
-                        "Location 1 (city)",
-                        "Location 1 (state)",
-                        "Location 1 (address)"
-                      ],
-                    "columns_field_name" :
-                      [
-                        "facid",
-                        "facname",
-                        "fac_fdr",
-                        "ltc",
-                        "capacity",
-                        "facadmin",
-                        "contact_email",
-                        "contact_fax",
-                        "contact_phone_number",
-                        "county_name",
-                        "county_code",
-                        "district_number",
-                        "district_name",
-                        "license_number",
-                        "initial_license_date",
-                        "license_effective_date",
-                        "oshpd_number",
-                        "location",
-                        "location_1",
-                        "location_1_zip",
-                        "location_1_city",
-                        "location_1_state",
-                        "location_1_address"
-                      ],
-                    "columns_description" :
-                      [
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        ""
-                      ],
-                    "download_count" : 0
-                  },
-                "classification" :
-                  {
-                    "categories" : [],
-                    "tags" : [],
-                    "domain_category" : "",
-                    "domain_tags" : [],
-                    "domain_metadata" : []
-                  },
-                "metadata" : { "domain" : "localhost" },
-                "permalink" : "https://localhost/view/8ax7-5xf3",
-                "link" : "https://localhost/dataset/Healthcare-Facilities/8ax7-5xf3"
-              },
-              {
-                "resource" :
-                  {
-                    "name" : "Expanded column chart",
-                    "id" : "btev-gxyj",
-                    "parent_fxf" : [ "a83c-up9r", "efcd-jzv3" ],
-                    "description" : "",
-                    "attribution" : null,
-                    "type" : "datalens",
-                    "updatedAt" : "2016-05-17T21:57:37.000Z",
-                    "createdAt" : "2016-05-17T21:57:29.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
-                    "page_views" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
-                    "columns_name" :
-                      [
-                        "FACID",
-                        "FACNAME",
-                        "FAC_FDR",
-                        "LTC",
-                        "CAPACITY",
-                        "FACADMIN",
-                        "CONTACT_EMAIL",
-                        "CONTACT_FAX",
-                        "CONTACT_PHONE_NUMBER",
-                        "COUNTY_NAME",
-                        "COUNTY_CODE",
-                        "DISTRICT_NUMBER",
-                        "DISTRICT_NAME",
-                        "LICENSE_NUMBER",
-                        "INITIAL_LICENSE_DATE",
-                        "LICENSE_EFFECTIVE_DATE",
-                        "OSHPD_NUMBER",
-                        "LOCATION",
-                        "Location 1",
-                        "Location 1 (zip)",
-                        "Location 1 (city)",
-                        "Location 1 (state)",
-                        "Location 1 (address)",
-                        "Usa-counties"
-                      ],
-                    "columns_field_name" :
-                      [
-                        "facid",
-                        "facname",
-                        "fac_fdr",
-                        "ltc",
-                        "capacity",
-                        "facadmin",
-                        "contact_email",
-                        "contact_fax",
-                        "contact_phone_number",
-                        "county_name",
-                        "county_code",
-                        "district_number",
-                        "district_name",
-                        "license_number",
-                        "initial_license_date",
-                        "license_effective_date",
-                        "oshpd_number",
-                        "location",
-                        "location_1",
-                        "location_1_zip",
-                        "location_1_city",
-                        "location_1_state",
-                        "location_1_address",
-                        ":@computed_region_iq59_vmd8"
-                      ],
-                    "columns_description" :
-                      [
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        ""
-                      ],
-                    "download_count" : 0
-                  },
-                "classification" :
-                  {
-                    "categories" : [],
-                    "tags" : [],
-                    "domain_category" : "Government",
-                    "domain_tags" : [],
-                    "domain_metadata" : []
-                  },
-                "metadata" : { "domain" : "localhost" },
-                "permalink" : "https://localhost/view/btev-gxyj",
-                "link" : "https://localhost/Government/Expanded-column-chart/btev-gxyj"
-              },
-              {
-                "resource" :
-                  {
-                    "name" : "Healthcare Facility Capacity Pie Chart With an Extremely Very Long Name",
-                    "id" : "w59q-92eb",
-                    "parent_fxf" : [ "4ip4-vvre" ],
-                    "description" : "This is a very brief description. I can assure that it is brief because it does not contain any relevant information aside from the fact that it is a very brief description. See how brief that was? That was so amazingly brief, I can't even believe my eyes!",
-                    "attribution" : null,
-                    "type" : "chart",
-                    "updatedAt" : "2016-08-02T22:33:19.000Z",
-                    "createdAt" : "2016-07-14T18:28:53.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
-                    "page_views" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
-                    "columns_name" :
-                      [
-                        "LICENSE_NUMBER",
-                        "FACADMIN",
-                        "Location 1",
-                        "CONTACT_EMAIL",
-                        "CONTACT_PHONE_NUMBER",
-                        "LTC",
-                        "FACNAME",
-                        "FACID",
-                        "LICENSE_EFFECTIVE_DATE",
-                        "OSHPD_NUMBER",
-                        "DISTRICT_NAME",
-                        "INITIAL_LICENSE_DATE",
-                        "COUNTY_NAME",
-                        "COUNTY_CODE",
-                        "CONTACT_FAX",
-                        "LOCATION",
-                        "CAPACITY",
-                        "DISTRICT_NUMBER",
-                        "FAC_FDR"
-                      ],
-                    "columns_field_name" :
-                      [
-                        "license_number",
-                        "facadmin",
-                        "location_1",
-                        "contact_email",
-                        "contact_phone_number",
-                        "ltc",
-                        "facname",
-                        "facid",
-                        "license_effective_date",
-                        "oshpd_number",
-                        "district_name",
-                        "initial_license_date",
-                        "county_name",
-                        "county_code",
-                        "contact_fax",
-                        "location",
-                        "capacity",
-                        "district_number",
-                        "fac_fdr"
-                      ],
-                    "columns_description" :
-                      [
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        ""
-                      ],
-                    "download_count" : 0
-                  },
-                "classification" :
-                  {
-                    "categories" : [],
-                    "tags" : [],
-                    "domain_category" : "Government",
-                    "domain_tags" :
-                      [
-                        "healthcare",
-                        "health",
-                        "sample",
-                        "demo",
-                        "other",
-                        "keyword",
-                        "tag"
-                      ],
-                    "domain_metadata" : []
-                  },
-                "metadata" : { "domain" : "localhost" },
-                "permalink" : "https://localhost/d/w59q-92eb",
-                "link" : "https://localhost/Government/Healthcare-Facility-Capacity-Pie-Chart-With-an-Ext/w59q-92eb"
-              },
-              {
-                "resource" :
-                  {
-                    "name" : "Healthcare Facility Locations",
-                    "id" : "efcd-jzv3",
-                    "parent_fxf" : null,
-                    "description" : "",
-                    "attribution" : null,
-                    "type" : "dataset",
-                    "updatedAt" : "2016-03-29T19:00:59.000Z",
-                    "createdAt" : "2016-03-15T00:42:18.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
-                    "page_views" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
-                    "columns_name" :
-                      [
-                        "FACID",
-                        "FACNAME",
-                        "FAC_FDR",
-                        "LTC",
-                        "CAPACITY",
-                        "FACADMIN",
-                        "CONTACT_EMAIL",
-                        "CONTACT_PHONE_NUMBER",
-                        "DISTRICT_NAME",
-                        "CONTACT_FAX",
-                        "COUNTY_NAME",
-                        "DISTRICT_NUMBER",
-                        "LICENSE_NUMBER",
-                        "INITIAL_LICENSE_DATE",
-                        "OSHPD_NUMBER",
-                        "Location 1",
-                        "COUNTY_CODE",
-                        "LICENSE_EFFECTIVE_DATE",
-                        "LOCATION"
-                      ],
-                    "columns_field_name" :
-                      [
-                        "facid",
-                        "facname",
-                        "fac_fdr",
-                        "ltc",
-                        "capacity",
-                        "facadmin",
-                        "contact_email",
-                        "contact_phone_number",
-                        "district_name",
-                        "contact_fax",
-                        "county_name",
-                        "district_number",
-                        "license_number",
-                        "initial_license_date",
-                        "oshpd_number",
-                        "location_1",
-                        "county_code",
-                        "license_effective_date",
-                        "location"
-                      ],
-                    "columns_description" :
-                      [
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        ""
-                      ],
-                    "download_count" : 0
-                  },
-                "classification" :
-                  {
-                    "categories" : [],
-                    "tags" : [],
-                    "domain_category" : "Government",
-                    "domain_tags" : [],
-                    "domain_metadata" : []
-                  },
-                "metadata" : { "domain" : "localhost" },
-                "permalink" : "https://localhost/d/efcd-jzv3",
-                "link" : "https://localhost/Government/Healthcare-Facility-Locations/efcd-jzv3"
-              },
-              {
-                "resource" :
-                  {
-                    "name" : "Untitled Story - 05-12-2016",
-                    "id" : "mkpy-u45q",
-                    "parent_fxf" : null,
-                    "description" : "",
-                    "attribution" : null,
-                    "type" : "story",
-                    "updatedAt" : "2016-05-12T21:19:07.000Z",
-                    "createdAt" : "2016-05-12T16:23:02.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
-                    "page_views" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
-                    "columns_name" : [],
-                    "columns_field_name" : [],
-                    "columns_description" : [],
-                    "download_count" : 0
-                  },
-                "classification" :
-                  {
-                    "categories" : [],
-                    "tags" : [],
-                    "domain_category" : "",
-                    "domain_tags" : [],
-                    "domain_metadata" : []
-                  },
-                "metadata" : { "domain" : "localhost" },
-                "permalink" : "https://localhost/stories/s/mkpy-u45q",
-                "link" : "https://localhost/stories/s/mkpy-u45q"
-              },
-              {
-                "resource" :
-                  {
-                    "name" : "Usa-counties",
-                    "id" : "j53p-gp7q",
-                    "parent_fxf" : null,
-                    "description" : "",
-                    "attribution" : null,
-                    "type" : "map",
-                    "updatedAt" : "2016-05-26T22:54:54.000Z",
-                    "createdAt" : "2016-03-16T17:27:27.000Z",
-                    "view_count" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
-                    "page_views" :
-                      {
-                        "page_views_last_week" : 0,
-                        "page_views_last_month" : 0,
-                        "page_views_total" : 0,
-                        "page_views_last_week_log" : 0.0,
-                        "page_views_last_month_log" : 0.0,
-                        "page_views_total_log" : 0.0
-                      },
-                    "columns_name" : [],
-                    "columns_field_name" : [],
-                    "columns_description" : [],
-                    "download_count" : 0
-                  },
-                "classification" :
-                  {
-                    "categories" : [],
-                    "tags" : [],
-                    "domain_category" : "",
-                    "domain_tags" : [],
-                    "domain_metadata" : []
-                  },
-                "metadata" : { "domain" : "localhost" },
-                "permalink" : "https://localhost/d/j53p-gp7q",
-                "link" : "https://localhost/dataset/Usa-counties/j53p-gp7q"
-              }
-            ],
-          "resultSetSize" : 10,
-          "timings" : { "serviceMillis" : 217, "searchMillis" : [ 53, 59 ] }
-        }
-    http_version: 
-  recorded_at: Fri, 23 Sep 2016 17:15:47 GMT
 - request:
     method: get
     uri: http://localhost:8080/federations.json
@@ -5695,7 +4723,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "[ ]\n"
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 17:30:48 GMT
 - request:
     method: get
@@ -10164,7 +9192,7 @@ http_interactions:
             "totalRows" : 0
           } ]
         }
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 17:30:48 GMT
 - request:
     method: get
@@ -10199,7 +9227,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "[ ]\n"
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 17:31:07 GMT
 - request:
     method: get
@@ -10265,7 +9293,7 @@ http_interactions:
           "name" : "tag",
           "frequency" : 1
         } ]
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 17:31:55 GMT
 - request:
     method: get
@@ -10300,7 +9328,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "[ ]\n"
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 17:31:55 GMT
 - request:
     method: get
@@ -15669,7 +14697,7 @@ http_interactions:
             "totalRows" : 0
           } ]
         }
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 17:31:55 GMT
 - request:
     method: get
@@ -15945,7 +14973,7 @@ http_interactions:
             }
           } ]
         } ]
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 20:00:12 GMT
 - request:
     method: get
@@ -16221,7 +15249,7 @@ http_interactions:
             }
           } ]
         } ]
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 20:00:12 GMT
 - request:
     method: get
@@ -16268,7 +15296,7 @@ http_interactions:
             "value" : "browse2"
           } ]
         } ]
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 20:00:13 GMT
 - request:
     method: get
@@ -16315,7 +15343,7 @@ http_interactions:
           "sample" : 2,
           "healthcare" : 3
         }
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 20:00:13 GMT
 - request:
     method: get
@@ -16673,7 +15701,7 @@ http_interactions:
         MjAzOTc3ODc3L2FydGljbGVzLmpzb24/cGFnZT0yXHUwMDI2cGVyX3BhZ2U9
         MyIsInBlcl9wYWdlIjozLCJwYWdlX2NvdW50IjozLCJjb3VudCI6OCwic29y
         dF9ieSI6InBvc2l0aW9uIiwic29ydF9vcmRlciI6ImFzYyJ9
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 20:00:14 GMT
 - request:
     method: get
@@ -21142,7 +20170,7 @@ http_interactions:
             "totalRows" : 0
           } ]
         }
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 20:00:14 GMT
 - request:
     method: get
@@ -21418,7 +20446,7 @@ http_interactions:
             }
           } ]
         } ]
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 20:00:14 GMT
 - request:
     method: get
@@ -21694,7 +20722,7 @@ http_interactions:
             }
           } ]
         } ]
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 20:00:14 GMT
 - request:
     method: get
@@ -21970,7 +20998,7 @@ http_interactions:
             }
           } ]
         } ]
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 20:00:14 GMT
 - request:
     method: get
@@ -22246,7 +21274,7 @@ http_interactions:
             }
           } ]
         } ]
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 20:00:14 GMT
 - request:
     method: get
@@ -22522,7 +21550,7 @@ http_interactions:
             }
           } ]
         } ]
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 20:00:14 GMT
 - request:
     method: get
@@ -22798,7 +21826,7 @@ http_interactions:
             }
           } ]
         } ]
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 20:00:14 GMT
 - request:
     method: get
@@ -23074,7 +22102,7 @@ http_interactions:
             }
           } ]
         } ]
-    http_version: 
+    http_version:
   recorded_at: Fri, 23 Sep 2016 20:00:14 GMT
 - request:
     method: get
@@ -23109,7 +22137,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "[ ]\n"
-    http_version: 
+    http_version:
   recorded_at: Mon, 24 Oct 2016 21:11:34 GMT
 - request:
     method: get
@@ -23144,7 +22172,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "[ ]\n"
-    http_version: 
+    http_version:
   recorded_at: Mon, 24 Oct 2016 21:11:34 GMT
 - request:
     method: post
@@ -23212,7 +22240,7 @@ http_interactions:
           "response" : "{\n  \"count\" : 0,\n  \"searchType\" : \"views\"\n}\n",
           "status" : 200
         } ]
-    http_version: 
+    http_version:
   recorded_at: Mon, 24 Oct 2016 21:11:35 GMT
 - request:
     method: get
@@ -23247,6 +22275,6 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "[ ]\n"
-    http_version: 
+    http_version:
   recorded_at: Mon, 24 Oct 2016 21:11:35 GMT
 recorded_with: VCR 3.0.3

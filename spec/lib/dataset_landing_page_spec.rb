@@ -65,9 +65,8 @@ describe DatasetLandingPage do
         expect(Cetera::Utils).to receive(:get_derived_from_views).
           with(
             uid_to_query,
+            'request_id',
             {
-              :cookie_string => 'cookie',
-              :request_id => 'request_id',
               :sortBy => 'most_accessed',
               :boostDatalenses => 1.15,
               :boostStories => 1.3
@@ -112,9 +111,8 @@ describe DatasetLandingPage do
         expect(Cetera::Utils).to receive(:get_derived_from_views).
           with(
             'peng-uins',
+            'request_id',
             {
-              :cookie_string => 'cookie',
-              :request_id => 'request_id',
               :sortBy => 'most_accessed',
               :limit => 19,
               :offset => 31,

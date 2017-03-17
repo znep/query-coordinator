@@ -276,14 +276,6 @@ class BrowseActionsTest3 < Minitest::Test
     stub_request(:get, url).to_return(status: 200, body: '', headers: {})
   end
 
-  def test_process_browse_show_hidden_cetera_false
-    request = OpenStruct.new
-    request.params = { 'show_hidden' => 'true', 'cetera_search' => 'false' }
-    result = @browse_controller.send(:process_browse, request)
-
-    assert_equal result[:search_options][:options], ['show_hidden']
-  end
-
   # backward compatibility with core/clytemnestra
   def search_and_return_category_param(category)
     request = OpenStruct.new(:params => { category: category }.reject { |_, v| v.blank? })
@@ -465,8 +457,9 @@ class BrowseActionsTest4 < Minitest::Test
     stub_request(:get, "http://localhost:8080/tags?method=viewsTags").with(:headers => request_headers).
       to_return(:status => 200, :body => %q([{"frequency":2,"name":"other","flags":[]},{"frequency":2,"name":"tag","flags":[]},{"frequency":1,"name":"crazy","flags":[]},{"frequency":1,"name":"keyword","flags":[]},{"frequency":1,"name":"neato","flags":[]},{"frequency":1,"name":"ufo","flags":[]},{"frequency":1,"name":"weird","flags":[]}]), :headers => {})
 
-    stub_request(:get, "http://localhost:5704/catalog/v1/domain_tags?domains=localhost&offset=0&order=relevance").with(:headers => cetera_request_headers).
-      to_return(:status => 200, :body => %q({"results":[{"domain_tag":"crazy", "count":1},{"domain_tag":"other", "count":2},{"domain_tag":"tag", "count":2},{"domain_tag":"keyword", "count":1},{"domain_tag":"neato", "count":1},{"domain_tag":"ufo", "count":1},{"domain_tag":"weird", "count":1}],"resultSetSize":7,"timings":{"serviceMillis":4, "searchMillis":[1, 1]}}), :headers => {})
+    stub_request(:get, "http://localhost:5704/catalog/v1/domain_tags?approval_status=approved&domains=localhost&explicitly_hidden=false&offset=0&order=relevance&public=true&published=true&search_context=localhost").
+      with(:headers => {'Content-Type' => 'application/json'}).
+      to_return(:status => 200, :body => %q({"results":[{"domain_tag":"crazy", "count":1},{"domain_tag":"other", "count":2},{"domain_tag":"tag", "count":2},{"domain_tag":"keyword", "count":1},{"domain_tag":"neato", "count":1},{"domain_tag":"ufo", "count":1},{"domain_tag":"weird", "count":1}],"resultSetSize":7,"timings":{"serviceMillis":4, "searchMillis":[1, 1]}}), :headers => { 'Content-Type': 'application/json' })
   end
 
   def test_cly_topics_facet_without_param

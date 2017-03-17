@@ -18,7 +18,7 @@ class ImportActivityEvent
   end
 
   def type
-    @data[:event_type].gsub('-', '_')
+    (@data[:event_type] || '').gsub('-', '_')
   end
 
   def info

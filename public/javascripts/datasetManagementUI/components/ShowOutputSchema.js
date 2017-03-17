@@ -74,9 +74,7 @@ export function ShowOutputSchema({
     onDismiss: goHome
   };
 
-  const rowsTransformed = inputSchema.total_rows || _.min(
-    columns.map((col) => col.transform.contiguous_rows_processed)
-  ) || 0;
+  const rowsTransformed = inputSchema.total_rows || Selectors.rowsTransformed(columns);
 
   return (
     <div id="show-output-schema">

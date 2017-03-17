@@ -42,6 +42,9 @@ function insertView(store) {
       id: "abba-cafe",
       displayName: "me"
     },
+    metadata: {
+      rowLabel: 'row'
+    },
     lastUpdatedAt: new Date(),
     dataLastUpdatedAt: new Date(),
     metadataLastUpdatedAt: new Date(),

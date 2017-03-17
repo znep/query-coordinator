@@ -746,6 +746,7 @@ class DatasetsController < ApplicationController
     @view = @parent_view.new_visualization_canvas
 
     @body_classes = 'hide-site-chrome'
+    @site_chrome_admin_header_options = {size: 'small'}
     @display_placeholder_edit_bar = true
 
     render 'visualization_canvas', :layout => 'styleguide'

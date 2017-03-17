@@ -3,18 +3,18 @@
 
   blist.namespace.fetch('blist.metrics');
 
-  var t = function(str, props) {
+  function t(str, props) {
     return $.t('screens.stats.' + str, props);
-  };
+  }
 
   var pageViewsSection;
   if (blist.feature_flags['embetter_analytics_browser_views_only']) {
     pageViewsSection = {
-      text: 'Browser Page Views',
-      title: 'Browser Page Views',
+      text: t('browser_page_views'),
+      title: t('browser_page_views'),
       series: [{
         method: 'js-page-view',
-        label: 'Browser Page Views',
+        label: t('browser_page_views'),
         options: {
           stacking: null
         }
@@ -22,11 +22,11 @@
     };
   } else {
     pageViewsSection = {
-      text: 'Page Views',
-      title: 'Page Views',
+      text: t('page_views'),
+      title: t('page_views'),
       series: [{
         method: 'page-views',
-        label: 'Page Requests',
+        label: t('page_requests'),
         options: {
           stacking: null,
           type: 'line'
@@ -52,8 +52,8 @@
           loading: blist.metrics.chartLoading,
           children: _.filter([
             pageViewsSection, {
-              text: 'Browsers',
-              title: 'Browsers',
+              text: t('browsers'),
+              title: t('browsers'),
               series: [{
                 method: 'browser-chrome',
                 label: 'Chrome',
@@ -84,82 +84,82 @@
                 }
               }, {
                 method: 'browser-other',
-                label: 'Other',
+                label: t('other'),
                 options: {
                   stacking: null,
                   type: 'line'
                 }
               }]
             }, {
-              text: 'Page Types',
-              title: 'Page Types',
+              text: t('page_types'),
+              title: t('page_types'),
               series: _.compact([{
-                  method: 'js-page-view-homepage',
-                  label: 'Homepage',
-                  options: {
-                    stacking: null,
-                    type: 'line'
-                  }
-                }, {
-                  method: 'js-page-view-dataset',
-                  label: 'Dataset',
-                  options: {
-                    stacking: null,
-                    type: 'line'
-                  }
-                }, {
-                  method: 'js-page-view-dataslate',
-                  label: 'Dataslate',
-                  options: {
-                    stacking: null,
-                    type: 'line'
-                  }
-                }, {
-                  method: 'js-page-view-admin',
-                  label: 'Admin',
-                  options: {
-                    stacking: null,
-                    type: 'line'
-                  }
-                }, {
-                  method: 'js-page-view-profile',
-                  label: 'Profile',
-                  options: {
-                    stacking: null,
-                    type: 'line'
-                  }
-                }, {
-                  method: 'js-page-view-govstat',
-                  label: 'OP',
-                  options: {
-                    stacking: null,
-                    type: 'line'
-                  }
-                }, {
-                  method: 'js-page-view-browse',
-                  label: 'Catalog',
-                  options: {
-                    stacking: null,
-                    type: 'line'
-                  }
-                }, {
-                  method: 'js-page-view-newux',
-                  label: 'Data Lens',
-                  options: {
-                    stacking: null,
-                    type: 'line'
-                  }
-                },
+                method: 'js-page-view-homepage',
+                label: t('homepage'),
+                options: {
+                  stacking: null,
+                  type: 'line'
+                }
+              }, {
+                method: 'js-page-view-dataset',
+                label: t('dataset'),
+                options: {
+                  stacking: null,
+                  type: 'line'
+                }
+              }, {
+                method: 'js-page-view-dataslate',
+                label: t('dataslate'),
+                options: {
+                  stacking: null,
+                  type: 'line'
+                }
+              }, {
+                method: 'js-page-view-admin',
+                label: t('admin'),
+                options: {
+                  stacking: null,
+                  type: 'line'
+                }
+              }, {
+                method: 'js-page-view-profile',
+                label: t('profile'),
+                options: {
+                  stacking: null,
+                  type: 'line'
+                }
+              }, {
+                method: 'js-page-view-govstat',
+                label: t('op'),
+                options: {
+                  stacking: null,
+                  type: 'line'
+                }
+              }, {
+                method: 'js-page-view-browse',
+                label: t('catalog'),
+                options: {
+                  stacking: null,
+                  type: 'line'
+                }
+              }, {
+                method: 'js-page-view-newux',
+                label: t('data_lens'),
+                options: {
+                  stacking: null,
+                  type: 'line'
+                }
+              },
                 storiesEnabled ? {
-                  method: 'js-page-view-story',
-                  label: 'Stories',
-                  options: {
-                    stacking: null,
-                    type: 'line'
-                  }
-                } : null, {
+                    method: 'js-page-view-story',
+                    label: t('stories'),
+                    options: {
+                      stacking: null,
+                      type: 'line'
+                    }
+                  } : null, {
                   method: 'js-page-view-other',
-                  label: 'Other',
+                  label: t('other'),
                   options: {
                     stacking: null,
                     type: 'line'
@@ -167,52 +167,52 @@
                 }
               ])
             }, {
-              text: 'Dashboard Views',
-              title: 'Dashboard Views',
+              text: t('dashboard_views'),
+              title: t('dashboard_views'),
               series: [{
                 method: 'govstat-dash-gets',
-                label: 'Dashboard Requests'
+                label: t('dashboard_requests')
               }],
               enabled: blist.configuration.govStatMetricsEnabled || false
             }, {
-              text: 'Goal Views',
-              title: 'Goal Views',
+              text: t('goal_views'),
+              title: t('goal_views'),
               series: [{
                 method: 'govstat-goal-gets',
-                label: 'Goal Requests'
+                label: t('goal_requests')
               }],
               enabled: blist.configuration.govStatMetricsEnabled || false
             }, {
-              text: 'Disk Usage',
+              text: t('disk_usage'),
               series: [{
                 method: 'disk-usage'
               }],
-              title: 'Disk Usage',
+              title: t('disk_usage'),
               transform: 'smooth'
             }, {
-              text: 'Bytes Out',
-              title: 'Bytes Out',
+              text: t('bytes_out'),
+              title: t('bytes_out'),
               series: [{
                 method: 'bytes-out'
               }]
             }, {
-              text: 'Views Loaded',
-              title: 'Views Loaded',
+              text: t('views_loaded'),
+              title: t('views_loaded'),
               series: [{
                 method: 'view-loaded'
               }]
             }, {
-              text: 'Rows Loaded',
-              title: 'Rows Loaded',
+              text: t('rows_loaded'),
+              title: t('rows_loaded'),
               series: [{
                 method: 'rows-loaded-api',
-                label: 'API'
+                label: t('api')
               }, {
                 method: 'rows-loaded-website',
-                label: 'Website'
+                label: t('website')
               }, {
                 method: 'rows-loaded-widget',
-                label: 'SDP'
+                label: t('sdp')
               }]
             }
           ], function(section) {
@@ -221,15 +221,15 @@
         }],
         topListSections: blist.metrics.sitewideShared.topListSections.concat({
           id: 'topApps',
-          displayName: 'Top Applications',
-          heading: 'Requests',
+          displayName: t('top_applications'),
+          heading: t('requests'),
           renderTo: 'leftColumn',
           callback: blist.metrics.topAppTokensCallback,
           top: 'APPLICATIONS'
         }, {
           id: 'topDownloads',
-          displayName: 'Top Downloads',
-          heading: 'Downloads',
+          displayName: t('top_downloads'),
+          heading: t('downloads'),
           renderTo: 'rightColumn',
           callback: blist.metrics.topViewsCallbackNoFilter,
           top: 'DOWNLOADS'

@@ -80,8 +80,8 @@ describe CatalogLandingPage do
   context 'category stats' do
 
     it 'returns the counts for the given category' do
-      VCR.use_cassette('catalog landing page category counts') do
-        counts = subject.category_stats('Government')
+      VCR.use_cassette('catalog_landing_page_category_counts') do
+        counts = subject.category_stats('Government', 'req_id')
         expect(counts['datasets']).to eq(8)
       end
     end

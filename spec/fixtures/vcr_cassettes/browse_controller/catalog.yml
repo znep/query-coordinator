@@ -61,7 +61,7 @@ http_interactions:
           "frequency" : 1,
           "name" : "tag"
         } ]
-    http_version: 
+    http_version:
   recorded_at: Wed, 14 Sep 2016 17:55:58 GMT
 - request:
     method: get
@@ -4528,7 +4528,7 @@ http_interactions:
             }
           } ]
         }
-    http_version: 
+    http_version:
   recorded_at: Wed, 14 Sep 2016 17:55:59 GMT
 - request:
     method: get
@@ -4778,7 +4778,7 @@ http_interactions:
             }
           } ]
         } ]
-    http_version: 
+    http_version:
   recorded_at: Wed, 14 Sep 2016 17:55:59 GMT
 - request:
     method: get
@@ -5028,7 +5028,7 @@ http_interactions:
             }
           } ]
         } ]
-    http_version: 
+    http_version:
   recorded_at: Wed, 14 Sep 2016 17:55:59 GMT
 - request:
     method: get
@@ -5278,7 +5278,7 @@ http_interactions:
             }
           } ]
         } ]
-    http_version: 
+    http_version:
   recorded_at: Wed, 14 Sep 2016 17:55:59 GMT
 - request:
     method: get
@@ -5528,7 +5528,7 @@ http_interactions:
             }
           } ]
         } ]
-    http_version: 
+    http_version:
   recorded_at: Wed, 14 Sep 2016 17:55:59 GMT
 - request:
     method: get
@@ -5778,7 +5778,7 @@ http_interactions:
             }
           } ]
         } ]
-    http_version: 
+    http_version:
   recorded_at: Wed, 14 Sep 2016 17:55:59 GMT
 - request:
     method: get
@@ -5825,19 +5825,17 @@ http_interactions:
             "value" : "browse2"
           } ]
         } ]
-    http_version: 
+    http_version:
   recorded_at: Tue, 20 Sep 2016 00:46:56 GMT
 - request:
     method: get
-    uri: http://localhost:5704/catalog/v1/domain_tags?domains=localhost&offset=0&order=relevance
+    uri: http://localhost:5704/catalog/v1/domain_tags?approval_status=approved&domains=localhost&explicitly_hidden=false&offset=0&order=relevance&public=true&published=true
     body:
       encoding: US-ASCII
       string: ''
     headers:
       Content-Type:
       - application/json
-      X-Socrata-Host:
-      - localhost
   response:
     status:
       code: 404
@@ -5854,7 +5852,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"error":"not found"}'
-    http_version: 
+    http_version:
   recorded_at: Tue, 20 Sep 2016 00:46:56 GMT
 - request:
     method: get
@@ -5889,7 +5887,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "[ ]\n"
-    http_version: 
+    http_version:
   recorded_at: Tue, 20 Sep 2016 00:46:56 GMT
 - request:
     method: get
@@ -5924,7 +5922,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "[ ]\n"
-    http_version: 
+    http_version:
   recorded_at: Tue, 20 Sep 2016 00:46:56 GMT
 - request:
     method: get
@@ -5959,19 +5957,17 @@ http_interactions:
     body:
       encoding: UTF-8
       string: "[ ]\n"
-    http_version: 
+    http_version:
   recorded_at: Tue, 20 Sep 2016 00:46:56 GMT
 - request:
     method: get
-    uri: http://localhost:5704/catalog/v1?domains=localhost&limit=0&offset=0&order=relevance&search_context=localhost
+    uri: http://localhost:5704/catalog/v1?approval_status=approved&domains=localhost&explicitly_hidden=false&limit=0&offset=0&order=relevance&public=true&published=true&search_context=localhost
     body:
       encoding: US-ASCII
       string: ''
     headers:
       Content-Type:
       - application/json
-      X-Socrata-Host:
-      - localhost
   response:
     status:
       code: 404
@@ -5988,6 +5984,6 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"error":"not found"}'
-    http_version: 
+    http_version:
   recorded_at: Tue, 20 Sep 2016 00:46:56 GMT
 recorded_with: VCR 3.0.3

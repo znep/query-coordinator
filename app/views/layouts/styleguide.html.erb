@@ -14,10 +14,12 @@
 
   <%= content_tag :body, :class => @body_classes do %>
     <%- if render_site_admin_chrome? -%>
-      <%== site_chrome_admin_header(request, response) %>
+      <%== site_chrome_admin_header(request, response, @site_chrome_admin_header_options || {}) %>
     <%- end -%>
 
-    <%== site_chrome_header(request, response) %>
+    <%- unless @suppress_site_chrome_header -%>
+      <%== site_chrome_header(request, response) %>
+    <%- end -%>
 
     <div id="noticeContainer">
       <%= display_styleguide_flashes %>

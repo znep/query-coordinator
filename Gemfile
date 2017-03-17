@@ -9,7 +9,7 @@ gem 'airbrake', '4.3.0'
 gem 'asset-inventory', '~> 1.1.1'
 gem 'awesome_print'
 gem 'axlsx', '~> 1.3.4'
-gem 'cetera-ruby', '0.3.0', :require => 'cetera'
+gem 'cetera-ruby', '0.4.2', :require => 'cetera'
 gem 'dalli', '~> 2.7', '>= 2.7.6' # Doesn't work with nutcracker / twemproxy
 gem 'diplomat' # Used by downtime / mainenance window notices
 gem 'hashie', '2.1.2'
@@ -22,7 +22,7 @@ gem 'money', '~> 3.7.1'
 gem 'multipart-post', '>= 1.0.1', :require => 'net/http/post/multipart'
 gem 'omniauth', '~> 1.2'
 gem 'omniauth-auth0', '~> 1.1'
-gem 'parser', '~> 2.3', '>= 2.3.0.6'
+gem 'parser', '~> 2.3.3', '>= 2.3.3.1'
 gem 'rack'
 gem 'rails', '~> 4.2.8', :require => nil
 gem 'recaptcha', '0.3.5', :require => 'recaptcha/rails'
@@ -46,7 +46,7 @@ gem 'xray', :require => 'xray/thread_dump_signal_handler'
 gem 'zip'
 gem 'zk', '~> 1.9.2'
 gem 'zookeeper', '~> 1.4.9'
-gem 'zendesk2', '~> 1.8.1'
+gem 'zendesk2', '~> 1.12'
 
 # For Ops rake tasks
 gem 'net-ping'

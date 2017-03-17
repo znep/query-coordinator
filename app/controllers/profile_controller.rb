@@ -64,15 +64,13 @@ class ProfileController < ApplicationController
         # pass this to browse_actions so it knows we're fetching shared assets
         @profile_search_method = :search_shared_to_user
 
-        unless using_cetera? && using_cetera_profile_search?
-          view_results = View.find_shared_to_user(
-            @user.id,
-            offset: (browse_options[:page].to_i - 1) * browse_options[:limit].to_i,
-            limit: browse_options[:limit]
-          )
-          browse_options[:view_results] = view_results['results']
-          browse_options[:view_count] = view_results['count']
-        end
+        view_results = View.find_shared_to_user(
+          @user.id,
+          offset: (browse_options[:page].to_i - 1) * browse_options[:limit].to_i,
+          limit: browse_options[:limit]
+        )
+        browse_options[:view_results] = view_results['results']
+        browse_options[:view_count] = view_results['count']
       else
         if @is_user_current
           browse_options[:publication_stage] = [ 'published', 'unpublished' ]

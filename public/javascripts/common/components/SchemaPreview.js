@@ -167,7 +167,7 @@ export class SchemaPreview extends Component {
             role="button"
             onClick={this.toggleTable}
             onKeyDown={handleKeyPress(this.toggleTable)}>
-            {I18n.schema_preview.show_all} ({columns.length})
+            {I18n.common.schema_preview.show_all} ({columns.length})
           </a>
 
           <a
@@ -176,7 +176,7 @@ export class SchemaPreview extends Component {
             role="button"
             onClick={this.toggleTable}
             onKeyDown={handleKeyPress(this.toggleTable)}>
-            {I18n.schema_preview.show_less}
+            {I18n.common.schema_preview.show_less}
           </a>
         </div>
       );
@@ -197,7 +197,7 @@ export class SchemaPreview extends Component {
       }
 
       const documentationUrl = getDocumentationLinkForDataType(column.dataTypeName);
-      const documentationText = I18n.schema_preview.data_types[column.dataTypeName];
+      const documentationText = I18n.common.schema_preview.data_types[column.dataTypeName];
       let documentationLink;
 
       if (documentationUrl) {
@@ -242,7 +242,7 @@ export class SchemaPreview extends Component {
             <dl className="contents schema-detail-groups">
               <div className="schema-detail-group">
                 <dt className="schema-detail-group-title">
-                  {I18n.schema_preview.data_type}
+                  {I18n.common.schema_preview.data_type}
                 </dt>
 
                 <dd className="schema-detail-group-value">
@@ -252,7 +252,7 @@ export class SchemaPreview extends Component {
 
               <div className="schema-detail-group">
                 <dt className="schema-detail-group-title">
-                  {I18n.schema_preview.api_field_name}
+                  {I18n.common.schema_preview.api_field_name}
                 </dt>
 
                 <dd className="schema-detail-group-value">
@@ -268,7 +268,7 @@ export class SchemaPreview extends Component {
     return (
       <section className="landing-page-section schema-preview">
         <h2 className="landing-page-section-header">
-          {I18n.schema_preview.title}
+          {I18n.common.schema_preview.title}
         </h2>
 
         {headerButton}
@@ -279,15 +279,15 @@ export class SchemaPreview extends Component {
               <thead>
                 <tr>
                   <th scope="col" className="column-name">
-                    {I18n.schema_preview.column_name}
+                    {I18n.common.schema_preview.column_name}
                   </th>
 
                   <th scope="col" className="column-description">
-                    {I18n.schema_preview.description}
+                    {I18n.common.schema_preview.description}
                   </th>
 
                   <th scope="col" className="column-type">
-                    {I18n.schema_preview.type}
+                    {I18n.common.schema_preview.type}
                   </th>
                 </tr>
               </thead>

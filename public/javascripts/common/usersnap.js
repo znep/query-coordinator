@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
-// Control to load UserSnap only once.
-let loaded = false;
+// Promise for loading library
+let usersnapPromise = null;
 
 // One-time setup options.
 let locale = null;
@@ -55,10 +55,12 @@ function loadAsyncScript(projectID) {
 
 // Export the locked-down loader.
 function activate() {
-  if (!loaded) {
+  if (!usersnapPromise) {
     console.error('Attempted to open UserSnap without initialization!');
   } else {
-    UserSnap.openReportWindow();
+    return usersnapPromise.then(() => {
+      window.UserSnap.openReportWindow();
+    });
   }
 }
 
@@ -68,25 +70,35 @@ function init(projectID, options) {
     return;
   }
 
-  if (!loaded) {
-    options = options || {};
-    locale = options.locale;
+  if (!usersnapPromise) {
+    usersnapPromise = new Promise((resolve) => {
+      options = options || {};
+      locale = options.locale;
 
-    if (_.isPlainObject(options.user)) {
-      user = _.pick(options.user, ['id', 'email', 'name', 'displayName', 'screenName']);
-      user.name = user.name || user.displayName || user.screenName;
-      delete user.displayName;
-      delete user.screenName;
-    }
+      if (_.isPlainObject(options.user)) {
+        user = _.pick(options.user, ['id', 'email', 'name', 'displayName', 'screenName']);
+        user.name = user.name || user.displayName || user.screenName;
+        delete user.displayName;
+        delete user.screenName;
+      }
 
-    if (_.isFunction(options.onClose)) {
-      onClose = options.onClose;
-    }
+      if (_.isFunction(options.onClose)) {
+        onClose = options.onClose;
+      }
 
-    window._usersnapconfig = generateConfig(options);
-    loadAsyncScript(projectID);
-    loaded = true;
+      window._usersnapconfig = generateConfig(options);
+      loadAsyncScript(projectID);
+
+      const interval = setInterval(() => {
+        if (window.UserSnap) {
+          resolve();
+          clearInterval(interval);
+        }
+      }, 50);
+    });
   }
+
+  return usersnapPromise;
 }
 
 export default { activate, init };

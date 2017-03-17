@@ -32,8 +32,8 @@ class CatalogLandingPage
     JSON.parse(configuration.create_or_update_property(id, metadata.merge(new_metadata)))
   end
 
-  def category_stats(category)
-    Cetera::Utils.get_lens_counts_for_category(category)
+  def category_stats(category, req_id)
+    Cetera::Utils.get_lens_counts_for_category(category, req_id)
   end
 
   # See spec/fixtures/vcr_cassettes/clp/featured_content.json

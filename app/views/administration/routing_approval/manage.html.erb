@@ -1,7 +1,8 @@
+<%- prefix = 'screens.admin.routing_approval' %>
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-routing-approval' %>
-  <title>Dataset Routing &amp; Approval | <%= get_site_title %></title>
+  <title><%= t('screens.admin.routing_approval.title') %> | <%= get_site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -17,20 +18,20 @@
   <%= display_standard_flashes %>
 
   <div id="routingApprovalManagement">
-    <h2>Manage Routing and Approval Process</h2>
+    <h2><%= t('screens.admin.routing_approval.manage_approval_process') %></h2>
     <%= form_tag({:action => 'manage_save'},
       {:class => 'commonForm'}) do %>
       <div class="line">
-        <label for="template_name" class="required">Name</label>
+        <label for="template_name" class="required"><%= t('screens.admin.routing_approval.name') %></label>
         <input type="text" id="template_name" name="template[name]" class="required"
           value="<%= @approval_template.nil? ? '' : @approval_template.name %>" />
       </div>
       <div class="line">
-        <label for="template_maxInactivityInterval">Mark as stuck after no activity for</label>
+        <label for="template_maxInactivityInterval"><%= t('screens.admin.routing_approval.mark_stuck') %></label>
         <input type="text" id="template_maxInactivityInterval"
           name="template[maxInactivityInterval]" class="number"
           value="<%= @approval_template.nil? ? 5 : @approval_template.maxInactivityInterval %>" />
-        <label for="template_maxInactivityInterval">day(s)</label>
+        <label for="template_maxInactivityInterval"><%= t('screens.admin.routing_approval.days') %></label>
       </div>
       <div class="line checkbox-line">
         <%= check_box_tag(
@@ -39,39 +40,42 @@
                 !(@approval_template.nil? || @approval_template.reapproveOnPublish),
                 :id => 'template_approveOnlyNew'
             ) %>
-        <label for="template_approveOnlyNew">Approve only new datasets</label>
-        <span class="info">Check this option to allow new versions of an approved dataset through automatically</span>
+        <label for="template_approveOnlyNew"><%= t('screens.admin.routing_approval.approve_only_new_datasets') %></label>
+        <span class="info"><%= t('screens.admin.routing_approval.approve_only_new_datasets_info') %></span>
       </div>
 
-      <h3>Stages</h3>
-      <p class="info deleteInfo">Clear a stage name to delete that stage</p>
+      <h3><%= t('screens.admin.routing_approval.stages') %></h3>
+      <p class="info deleteInfo"><%= t('screens.admin.routing_approval.clear_stage_name_to_delete') %></p>
       <ul class="stageList">
         <%- (@approval_template.nil? ? [] : (@approval_template.stages || [])).clone.push({'id' => 'new-0'}).
           each do |stage| -%>
         <li class="stageItem clearfix">
           <div class="line">
-            <label for="template_stages_<%= stage['id'] %>_name">Name</label>
+            <label for="template_stages_<%= stage['id'] %>_name"><%= t('screens.admin.routing_approval.name') %></label>
             <input type="text" id="template_stages_<%= stage['id'] %>_name"
               name="template[stages][<%= stage['id'] %>][name]" class="stageName"
               value="<%= stage['name'] %>" />
           </div>
           <div class="line">
             <label for="template_stages_<%= stage['id'] %>_notificationMode">
-              Notification Method
+              <%= t('screens.admin.routing_approval.notification_method') %>
             </label>
             <%= select_tag("template[stages][#{stage['id']}][notificationMode]",
-            options_for_select({'S' => 'One at a time', 'P' => 'Everyone at once'}.invert,
+            options_for_select({
+                'S' => t('screens.admin.routing_approval.one_at_a_time'),
+                'P' => t('screens.admin.routing_approval.everyone_at_once')
+            }.invert,
             stage['notificationMode'])) %>
           </div>
           <div class="line">
             <label for="template_stages_<%= stage['id'] %>_notificationInterval">
-              Notification Interval
+              <%= t('screens.admin.routing_approval.notification_interval') %>
             </label>
             <%= select_tag("template[stages][#{stage['id']}][notificationInterval]",
             notification_interval_select_options(stage['notificationInterval'])) %>
           </div>
           <div class="line">
-            <label>Approvers</label>
+            <label><%= t('screens.admin.routing_approval.approvers') %></label>
             <ul class="userList">
               <%- (stage['approverUids'] || []).each do |userId| -%>
               <%- user = @users[userId] -%>
@@ -86,7 +90,7 @@
               <li class="userItem newItem">
               <input type="text" class="userId"
                 name="template[stages][<%= stage['id'] %>][approverUids][]" />
-              <span>(Enter a user ID or URL of their profile page)</span>
+              <span><%= t('screens.admin.routing_approval.enter_profile') %></span>
               </li>
             </ul>
           </div>
@@ -96,20 +100,20 @@
 
       <%- if @approval_template.nil? -%>
       <div class='line'>
-        <label for="grandfatherDatasets">Keep current datasets visible in the catalog</label>
+        <label for="grandfatherDatasets"><%= t('screens.admin.routing_approval.keep_datasets_visible') %></label>
         <input type="checkbox" id="grandfatherDatasets"
           name="grandfatherDatasets" value="true" checked="checked" />
-        <span class="info">If not checked, all existing datasets must go through this approval process before they are visible to users</span>
+        <span class="info"><%= t('screens.admin.routing_approval.keep_datasets_visible_info') %></span>
       </div>
       <%- end -%>
 
       <ul class="finishButtons clearfix">
         <li>
           <input class="button templateSave" type="submit"
-            value="<%= @approval_template.nil? ? 'Create' : 'Save' %>" />
+            value="<%= @approval_template.nil? ? t('core.dialogs.create') : t('core.dialogs.save') %>" />
         </li>
         <li>
-          <input class="button close" type="reset" value="Cancel" />
+          <input class="button close" type="reset" value="<%= t('core.dialogs.cancel') %>" />
         </li>
       </ul>
     <% end %>
@@ -123,3 +127,8 @@
     <%= include_webpack_bundle 'open-data/admin-routing-approval.js' %>
   <%- end -%>
 <%- end -%>
+
+<% content_for :translations do %>
+  <%= render_translations LocalePart.screens.ds %>
+  <%= render_translations LocalePart.screens.admin.routing_approval %>
+<% end %>

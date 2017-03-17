@@ -2,7 +2,7 @@
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-home' %>
   <%= rendered_stylesheet_tag 'colorpicker' %>
-  <title>Manage Home Page | <%= get_site_title %></title>
+  <title><%= t('screens.admin.new_story.title') %> | <%= get_site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -14,7 +14,7 @@
 <div class="contentBox withLeftNavigation editStory">
   <div class="adminHeader homemgmt">
     <span class="icon"></span>
-    <h1>Create a New Story</h1>
+    <h1><%= t('screens.admin.new_story.heading') %></h1>
     <%= form_tag({:action => 'create_story'}, :method => :post, :multipart => true, :class => 'commonForm') do -%>
       <%= render :partial => 'story_form' %>
     <%- end -%>

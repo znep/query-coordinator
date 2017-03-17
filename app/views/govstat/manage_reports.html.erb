@@ -1,5 +1,4 @@
 <%-
-  prefix = 'govstat.reports.manage'
   locale_link = lambda { |url|
     if I18n.locale.to_s != CurrentDomain.default_locale
       "/#{I18n.locale}#{url}"
@@ -10,7 +9,7 @@
 %>
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'screen-govstat-manage' %>
-  <title><%= t("#{prefix}.title") %> | <%= get_site_title %></title>
+  <title><%= t('govstat.reports.manage.title') %> | <%= get_site_title %></title>
 <% end %>
 
 <div id="manageReportsPage">
@@ -18,17 +17,17 @@
     <ul class="breadcrumb">
       <li class="root"><%= localized_link_to 'Home', '/stat', :class => "ss-icon" %></li>
       <li><span class="ss-icon">navigateright</span></li>
-      <li class="main"><%= localized_link_to t("#{prefix}.reports"), '/manage/reports' %></a></li>
+      <li class="main"><%= localized_link_to t('govstat.reports.manage.reports'), '/manage/reports' %></a></li>
     </ul>
   </div>
 
   <div class="gridFlowLayout nonDS clearfix">
     <div class="categoryItem ownerReports">
-      <div class="categoryTitle"><h2><%= t("#{prefix}.your_reports") %></h2></div>
+      <div class="categoryTitle"><h2><%= t('govstat.reports.manage.your_reports') %></h2></div>
       <div class="clearfix">
         <div class="singleItem addNewItem">
           <a class="primaryAction" href="<%= canvas_create_path %>">
-            <span class="actionDetails ss-compose"><%= t("#{prefix}.create_new_report") %></span></a>
+            <span class="actionDetails ss-compose"><%= t('govstat.reports.manage.create_new_report') %></span></a>
         </div>
         <%- @own_reports.each do |report| -%>
           <div class="singleItem">
@@ -36,18 +35,18 @@
               <div class="title"><h2><%= report.name %></h2></div>
               <div class="secondaryAction">
                 <a href="<%= locale_link[report.path] %>?_edit_mode=true" class="button edit">
-                  <span class="actionDetails ss-write"><%= t("#{prefix}.edit") %></span></a>
+                  <span class="actionDetails ss-write"><%= t('govstat.reports.manage.edit') %></span></a>
                 <a href="#delete" class="button delete" data-id="<%= report.uid %>"
                   data-oldid="<%= report.path %>">
-                  <span class="actionDetails ss-trash"><%= t("#{prefix}.delete") %></span></a>
+                  <span class="actionDetails ss-trash"><%= t('govstat.reports.manage.delete') %></span></a>
                 <a href="#copy" class="button copy" data-id="<%= report.uid %>"
                   data-oldid="<%= report.path %>">
-                  <span class="actionDetails ss-fork"><%= t("#{prefix}.copy") %></span></a>
+                  <span class="actionDetails ss-fork"><%= t('govstat.reports.manage.copy') %></span></a>
               </div>
               <div class="primaryAction">
                 <a href="<%= locale_link[report.path] %>"><span class="actionDetails ss-right"></span></a>
               </div>
-              <div class="secondaryMetadata"><%= t("#{prefix}.updated") %>: <%= l(Time.at(report.updated_at).to_date, :format => '%b %d, %Y') %></div>
+              <div class="secondaryMetadata"><%= t('govstat.reports.manage.updated') %>: <%= long_date_span(report.updated_at) %></div>
             </div>
           </div>
         <%- end -%>
@@ -55,7 +54,7 @@
     </div>
 
     <div class="categoryItem otherReports">
-      <div class="categoryTitle"><h2><%= t("#{prefix}.other_reports") %></h2></div>
+      <div class="categoryTitle"><h2><%= t('govstat.reports.manage.other_reports') %></h2></div>
       <div class="clearfix">
         <%- @other_reports.each do |report| -%>
           <div class="singleItem">
@@ -67,21 +66,21 @@
               <div class="secondaryAction">
                 <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_PAGES) -%>
                 <a href="<%= locale_link[report.path] %>?_edit_mode=true" class="button edit">
-                  <span class="actionDetails ss-write"><%= t("#{prefix}.edit") %></span></a>
+                  <span class="actionDetails ss-write"><%= t('govstat.reports.manage.edit') %></span></a>
                 <a href="#delete" class="button delete" data-id="<%= report.uid %>"
                   data-oldid="<%= report.path %>">
-                  <span class="actionDetails ss-trash"><%= t("#{prefix}.delete") %></span></a>
+                  <span class="actionDetails ss-trash"><%= t('govstat.reports.manage.delete') %></span></a>
                 <%- end -%>
                 <a href="#copy" class="button copy" data-id="<%= report.uid %>"
                   data-oldid="<%= report.path %>">
-                  <span class="actionDetails ss-fork"><%= t("#{prefix}.copy") %></span></a>
+                  <span class="actionDetails ss-fork"><%= t('govstat.reports.manage.copy') %></span></a>
               </div>
               <div class="secondaryMetadata">
                 <%- o = report.owner_user
                     if !o.nil? -%>
-                <span class="mdLine"><%= t("#{prefix}.owner") %>: <%= o.displayName %></span>
+                <span class="mdLine"><%= t('govstat.reports.manage.owner') %>: <%= o.displayName %></span>
                 <%- end -%>
-                <span class="mdLine"><%= t("#{prefix}.updated") %>: <%= l(Time.at(report.updated_at).to_date, :format => '%b %d, %Y') %></span>
+                <span class="mdLine"><%= t('govstat.reports.manage.updated') %>: <%= long_date_span(report.updated_at) %></span>
               </div>
             </div>
           </div>

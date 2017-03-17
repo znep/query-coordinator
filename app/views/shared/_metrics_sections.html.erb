@@ -1,4 +1,3 @@
-<%- prefix = 'screens.stats' -%>
 <div class="metricsSummaryItem">
   <div class="summaryContainer">
     <div class="summaryInnerContent">
@@ -63,10 +62,10 @@
     <div class="chartArea">
       <div class="chartContent"></div>
       <div class="flash notice message noDataNotice">
-        <h3><%= t("#{prefix}.time_period_unavailable") %></h3>
+        <h3><%= t('screens.stats.time_period_unavailable') %></h3>
       </div>
       <div class="flash notice message emptyHint">
-        <h3><%= t("#{prefix}.select_chart_type") %></h3>
+        <h3><%= t('screens.stats.select_chart_type') %></h3>
       </div>
     </div>
   </div>
@@ -75,23 +74,23 @@
 <div class="metricsChartsV1">
   <div class="chartContainer">
     <div class="chartMenuContainer sliceDepthMenuContainer">
-      <label for="sliceDepth" class="chartMenuLabel">View Granularity:</label>
+      <label for="sliceDepth" class="chartMenuLabel"><%= t('screens.stats.view_granularity') %>:</label>
       <select class="sliceDepth" id="sliceDepth">
         <%= options_for_select(['hourly', 'daily', 'weekly', 'monthly'].
           map { |slice| [ t("screens.stats.#{slice}"), slice.capitalize ] }) %>
       </select>
     </div>
     <div class="chartMenuContainer chartSeriesMenuContainer">
-      <label class="chartMenuLabel" for="chartSeries">View:</label>
+      <label class="chartMenuLabel" for="chartSeries"><%= t('screens.stats.view') %>:</label>
       <select class="chartSeries" id="chartSeries"></select>
     </div>
     <div class="chartArea">
       <div class="chartContent"></div>
       <div class="flash notice message noDataNotice">
-        <h3><%= t("#{prefix}.time_period_unavailable") %></h3>
+        <h3><%= t('screens.stats.time_period_unavailable') %></h3>
       </div>
       <div class="flash notice message emptyHint">
-        <h3><%= t("#{prefix}.select_chart_type") %></h3>
+        <h3><%= t('screens.stats.select_chart_type') %></h3>
       </div>
     </div>
   </div>
@@ -101,7 +100,7 @@
   <div class="metricsTopContainer">
     <h2 class="sectionTitle"></h2>
     <div class="flash notice message noDataNotice">
-      <h3><%= t("#{prefix}.no_data_time_period") %></h3>
+      <h3><%= t('screens.stats.no_data_time_period') %></h3>
     </div>
     <table class="gridList metricsList" cellspacing="0">
       <colgroup>
@@ -112,7 +111,7 @@
         <tr>
           <th class="description row-header" scope="col">
             <span class="icon"></span>
-            <div><%= t("#{prefix}.name") %></div>
+            <div><%= t('screens.stats.name') %></div>
           </th>
           <th class="value" scope="col">
             <span class="icon"></span>
@@ -122,7 +121,7 @@
       </thead>
     </table>
     <div class="showMore">
-      <a class="showMoreLink" href="#More"><%= t("#{prefix}.show_more") %></a>
+      <a class="showMoreLink" href="#More"><%= t('screens.stats.show_more') %></a>
       <span class="icon"></span>
     </div>
   </div>

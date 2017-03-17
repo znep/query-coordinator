@@ -71,7 +71,7 @@ class Administration::RoutingApprovalController < AdministrationController
     begin
       v.set_approval(approval_template, params[:approval_type], params[:comment])
     rescue CoreServer::ResourceNotFound
-      flash.now[:error] = 'This dataset or view cannot be found, or has been deleted.'
+      flash.now[:error] = t('screens.admin.routing_approval.dataset_not_found')
       render 'shared/error', :status => :not_found
       return nil
     rescue CoreServer::CoreServerError => e
@@ -88,16 +88,14 @@ class Administration::RoutingApprovalController < AdministrationController
       end
     end
 
-    type = case params[:approval_type]
+    flash[:notice] = case params[:approval_type]
            when 'A'
-             'approved'
+             t('screens.admin.routing_approval.approval_types.approved')
            when 'R'
-             'rejected'
+             t('screens.admin.routing_approval.approval_types.rejected')
            when 'M'
-             'resubmitted for approval'
+             t('screens.admin.routing_approval.approval_types.resubmitted')
            end
-    flash[:notice] = "The dataset has been #{type}. " +
-      'Please allow a few minutes for the changes to be reflected on your home page.'
 
     return(redirect_to (request.referer || {:action => 'queue'}))
   end
@@ -123,7 +121,7 @@ class Administration::RoutingApprovalController < AdministrationController
 
   def manage_save
     if params[:template][:name].empty?
-      flash[:error] = 'Please fill in all required fields'
+      flash[:error] = t('screens.admin.routing_approval.fill_required_fields')
       return(redirect_to :action => 'manage')
     end
 
@@ -179,12 +177,12 @@ class Administration::RoutingApprovalController < AdministrationController
     if attrs[:stages].length > 0
       attrs[:stages].each {|s| s['visible'] = false}.last['visible'] = true
     else
-      flash[:error] = "At least one stage is required"
+      flash[:error] = t('screens.admin.routing_approval.one_stage_required')
       return(redirect_to :action => 'manage')
     end
 
     if attrs[:stages].any? {|s| s['approverUids'].empty?}
-      flash[:error] = "Every stage requires at least one approver"
+      flash[:error] = t('screens.admin.routing_approval.stage_requires_approver')
       return(redirect_to :action => 'manage')
     end
 
@@ -205,7 +203,7 @@ class Administration::RoutingApprovalController < AdministrationController
       app.update_attributes!(attrs)
     end
 
-    flash[:notice] = "Your data has been saved!"
+    flash[:notice] = t('screens.admin.routing_approval.data_saved')
 
     return(redirect_to (request.referer || {:action => 'manage'}))
   end

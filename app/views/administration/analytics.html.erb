@@ -16,9 +16,11 @@
     <div>
       <div class="adminHeader floating analytics clearfix">
         <span class="icon"></span>
-        <h1 class="floating">Site Analytics</h1>
+        <h1 class="floating"><%= t('screens.stats.site_analytics') %></h1>
         <%= render :partial => 'shared/metrics_timing' %>
-        <a href="#Export" rel="external" class="exportMetricsLink" data-exportbase="/api/site_metrics.csv?method=export&">Export</a>
+        <a href="#Export" rel="external" class="exportMetricsLink" data-exportbase="/api/site_metrics.csv?method=export&">
+          <%= t('screens.stats.export') %>
+        </a>
       </div>
     </div>
     <div class="summaryDisplay clearfix container"></div>
@@ -28,7 +30,7 @@
 <%- end -%>
     <div class="chartsDisplay container">
       <div class="flash error message errorMessage">
-        <h3>An error occurred loading the metrics data. Please try again later.</h3>
+        <h3><%= t('screens.stats.error_loading_metrics') %></h3>
       </div>
     </div>
 <%- unless FeatureFlags.derive(@view, request).embetter_analytics_page -%>
@@ -65,6 +67,7 @@
 <% end %>
 
 <% content_for :translations do %>
+  <%= render_translations LocalePart.screens.ds %>
   <%= render_translations LocalePart.screens.stats %>
   <%= render_translations LocalePart.plugins.daterangepicker %>
   <%= render_translations LocalePart.table %>

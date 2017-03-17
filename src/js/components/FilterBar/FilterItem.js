@@ -20,7 +20,7 @@ export const FilterItem = React.createClass({
         PropTypes.object,
         PropTypes.arrayOf(PropTypes.object)
       ]),
-      isHidden: PropTypes.boolean
+      isHidden: PropTypes.bool
     }).isRequired,
     column: PropTypes.shape({
       dataTypeName: PropTypes.oneOf(['calendar_date', 'number', 'text']),
@@ -95,11 +95,6 @@ export const FilterItem = React.createClass({
     document.body.removeEventListener('keyup', this.bodyEscapeHandler);
   },
 
-  onCancel() {
-    this.toggleControl();
-    this.filterControlToggle.focus();
-  },
-
   onKeyDownControl(event) {
     if (isOneOfKeys(event, [ENTER, SPACE])) {
       event.stopPropagation();
@@ -160,7 +155,6 @@ export const FilterItem = React.createClass({
 
     const configProps = {
       filter,
-      onRemove: this.onRemove,
       onUpdate,
       ref: _.partial(_.set, this, 'filterConfig')
     };
@@ -200,7 +194,7 @@ export const FilterItem = React.createClass({
   },
 
   renderFilterControl() {
-    const { filter, column, isValidTextFilterColumnValue } = this.props;
+    const { filter, column, isReadOnly, isValidTextFilterColumnValue } = this.props;
     const { isControlOpen } = this.state;
 
     if (!isControlOpen) {
@@ -210,8 +204,10 @@ export const FilterItem = React.createClass({
     const filterProps = {
       filter,
       column,
+      isReadOnly,
       isValidTextFilterColumnValue,
-      onCancel: this.onCancel,
+      onClickConfig: this.toggleConfig,
+      onRemove: this.onRemove,
       onUpdate: this.onUpdate,
       ref: _.partial(_.set, this, 'filterControl')
     };

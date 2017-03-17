@@ -10,10 +10,15 @@ describe('TextFilter', () => {
     return _.defaultsDeep({}, props, {
       filter: {},
       column: {},
-      onCancel: _.noop,
+      onClickConfig: _.noop,
+      onRemove: _.noop,
       onUpdate: _.noop
     });
   }
+
+  const getFirstOption = (el) => el.querySelector('.searchable-picklist-suggested-options .picklist-option');
+  const getApplyButton = (el) => el.querySelector('.apply-btn');
+  const getResetButton = (el) => el.querySelector('.reset-btn');
 
   it('renders an element', () => {
     const element = renderComponent(TextFilter, getProps());
@@ -62,8 +67,7 @@ describe('TextFilter', () => {
     });
   });
 
-
-  describe('calls onUpdate with the new filter', () => {
+  describe('filter generation', () => {
     const filter = {
       function: 'noop',
       columnName: 'some_word',
@@ -84,21 +88,14 @@ describe('TextFilter', () => {
     });
 
     it('creates a binaryOperator filter when the negation control is set to IS', (done) => {
-
       _.defer(() => {
-        const selector = '.searchable-picklist-suggested-options .picklist-option';
-        // Since clicking on picklist options mutates the picklist, we should select all the options we
-        // want to click before we start clicking on them.
-        const picklistOption1 = element.querySelector(selector);
-        Simulate.click(picklistOption1);
 
-        // Note that clicking on picklistOption1 mutated .searchable-picklist-suggested-options, so the second
-        // option from before is now the first.
-        const picklistOption2 = element.querySelector(selector);
-        Simulate.click(picklistOption2);
+        // Selecting an option removes it from the list, so clicking the first option twice will
+        // select two options.
+        Simulate.click(getFirstOption(element));
+        Simulate.click(getFirstOption(element));
 
-        const applyButton = element.querySelector('.apply-btn');
-        Simulate.click(applyButton);
+        Simulate.click(getApplyButton(element));
 
         expect(onUpdateStub).to.have.been.calledWith({
           function: 'binaryOperator',
@@ -120,25 +117,20 @@ describe('TextFilter', () => {
       });
     });
 
-    it('creates a negated binaryOperator filter when the negation control is set to IS', (done) => {
-
+    it('creates a negated binaryOperator filter when the negation control is set to IS NOT', (done) => {
       _.defer(() => {
-        const selector = '.searchable-picklist-suggested-options .picklist-option';
+
         // Since clicking on picklist options mutates the picklist, we should select all the options we
         // want to click before we start clicking on them.
-        const negationDropdownIsNotOption = element.querySelector('.text-filter-header .picklist-option[id="true-1"]');
+        const negationDropdownIsNotOption = element.querySelector('.filter-control-title .picklist-option[id="true-1"]');
         Simulate.click(negationDropdownIsNotOption);
 
-        const picklistOption1 = element.querySelector(selector);
-        Simulate.click(picklistOption1);
+        // Selecting an option removes it from the list, so clicking the first option twice will
+        // select two options.
+        Simulate.click(getFirstOption(element));
+        Simulate.click(getFirstOption(element));
 
-        // Note that clicking on picklistOption1 mutated .searchable-picklist-suggested-options, so the second
-        // option from before is now the first.
-        const picklistOption2 = element.querySelector(selector);
-        Simulate.click(picklistOption2);
-
-        const applyButton = element.querySelector('.apply-btn');
-        Simulate.click(applyButton);
+        Simulate.click(getApplyButton(element));
 
         expect(onUpdateStub).to.have.been.calledWith({
           function: 'binaryOperator',
@@ -168,7 +160,7 @@ describe('TextFilter', () => {
       expect(element.querySelector('.filter-footer')).to.exist;
     });
 
-    it('clears selectedOptions when the clear button is clicked', (done) => {
+    it('resets the filter when the reset button is clicked', (done) => {
       const filter = {
         function: 'noop',
         columnName: mockTextColumn.fieldName,
@@ -182,20 +174,17 @@ describe('TextFilter', () => {
       };
 
       const onUpdateStub = sinon.stub();
-      const onClickClear = sinon.stub();
+      const onClickReset = sinon.stub();
       const element = renderComponent(TextFilter, getProps({
         filter,
-        onClickClear: onClickClear,
+        onClickReset: onClickReset,
         onUpdate: onUpdateStub,
         column: mockTextColumn
       }));
 
       _.defer(() => {
-        const clearButton = element.querySelector('.clear-btn');
-        Simulate.click(clearButton);
-
-        const updateButton = element.querySelector('.apply-btn');
-        Simulate.click(updateButton);
+        Simulate.click(getResetButton(element));
+        Simulate.click(getApplyButton(element));
 
         expect(onUpdateStub).to.have.been.calledWith({
           function: 'noop',
@@ -206,18 +195,6 @@ describe('TextFilter', () => {
 
         done();
       });
-    });
-
-    it('calls onCancel when cancel button is clicked', () => {
-      const stub = sinon.stub();
-      const element = renderComponent(TextFilter, getProps({
-        onCancel: stub
-      }));
-
-      const button = element.querySelector('.cancel-btn');
-      Simulate.click(button);
-
-      expect(stub).to.have.been.called;
     });
 
     it('calls onUpdate with noop filter when the apply button with an empty array of selectedOptions', (done) => {
@@ -244,8 +221,7 @@ describe('TextFilter', () => {
         const picklistOption = element.querySelector('.searchable-picklist-selected-options .picklist-option');
         Simulate.click(picklistOption);
 
-        const button = element.querySelector('.apply-btn');
-        Simulate.click(button);
+        Simulate.click(getApplyButton(element));
 
         expect(onUpdateStub).to.have.been.calledWith({
           function: 'noop',

@@ -14,7 +14,9 @@ export const NumberFilter = React.createClass({
       rangeMin: PropTypes.number.isRequired,
       rangeMax: PropTypes.number.isRequired
     }),
-    onCancel: PropTypes.func.isRequired,
+    isReadOnly: PropTypes.bool,
+    onClickConfig: PropTypes.func.isRequired,
+    onRemove: PropTypes.func.isRequired,
     onUpdate: PropTypes.func.isRequired
   },
 
@@ -66,7 +68,7 @@ export const NumberFilter = React.createClass({
     return _.isEqual(value, this.getInitialState().value);
   },
 
-  clearFilter() {
+  resetFilter() {
     const { rangeMin, rangeMax } = this.props.column;
 
     this.updateValueState({
@@ -157,23 +159,30 @@ export const NumberFilter = React.createClass({
   },
 
   render() {
-    const { column, onCancel } = this.props;
+    const { column, isReadOnly, onClickConfig, onRemove } = this.props;
 
-    const filterFooterProps = {
+    const headerProps = {
+      name: column.name,
+      isReadOnly,
+      onClickConfig
+    };
+
+    const footerProps = {
       disableApplyFilter: this.shouldDisableApply(),
+      isReadOnly,
       onClickApply: this.updateFilter,
-      onClickCancel: onCancel,
-      onClickClear: this.clearFilter
+      onClickRemove: onRemove,
+      onClickReset: this.resetFilter
     };
 
     return (
       <div className="filter-controls number-filter">
         <div className="range-filter-container">
-          <FilterHeader name={column.name} />
+          <FilterHeader {...headerProps} />
           {this.renderSlider()}
           {this.renderInputFields()}
         </div>
-        <FilterFooter {...filterFooterProps} />
+        <FilterFooter {...footerProps} />
       </div>
     );
   }

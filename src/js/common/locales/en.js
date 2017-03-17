@@ -12,8 +12,6 @@ export default {
   filter_bar: {
     add_filter: 'Add Filter',
     apply: 'Apply',
-    cancel: 'Cancel',
-    clear: 'Clear',
     config: {
       hidden_label: 'Hidden',
       hidden_description: 'Viewers can\'t see this filter, even when applied.',
@@ -31,7 +29,8 @@ export default {
       greater_label: 'Greater than {0}',
       less_label: 'Less than {0}'
     },
-    remove_filter: 'Remove Filter',
+    remove: 'Remove',
+    reset: 'Reset',
     search: 'Search options',
     text_filter: {
       n_values: '{0} selected',

@@ -7,8 +7,7 @@ describe('FilterConfig', () => {
   function getProps(props) {
     return _.defaultsDeep({}, props, {
       filter: mockTextColumn,
-      onUpdate: _.noop,
-      onRemove: _.noop
+      onUpdate: _.noop
     });
   }
 
@@ -42,18 +41,5 @@ describe('FilterConfig', () => {
     expect(onUpdate.called).to.equal(false);
     Simulate.change(getViewersCanEditOption(element), { target: { checked: true } });
     expect(onUpdate.calledWith(expectedPayload)).to.equal(true);
-  });
-
-  it('renders a remove button', () => {
-    const element = renderComponent(FilterConfig, getProps());
-    expect(getRemoveButton(element)).to.exist;
-  });
-
-  it('calls the onRemove prop when the remove button is clicked', () => {
-    const onRemove = sinon.spy();
-    const element = renderComponent(FilterConfig, getProps({ onRemove }));
-    expect(onRemove.called).to.equal(false);
-    Simulate.click(getRemoveButton(element));
-    expect(onRemove.called).to.equal(true);
   });
 });

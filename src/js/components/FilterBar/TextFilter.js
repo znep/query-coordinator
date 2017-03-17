@@ -4,6 +4,7 @@ import Dropdown from '../Dropdown';
 import SocrataIcon from '../SocrataIcon';
 import SearchablePicklist from './SearchablePicklist';
 import FilterFooter from './FilterFooter';
+import FilterHeader from './FilterHeader';
 import { getTextFilter } from './filters';
 import { translate as t } from '../../common/I18n';
 
@@ -11,9 +12,11 @@ export const TextFilter = React.createClass({
   propTypes: {
     filter: PropTypes.object.isRequired,
     column: PropTypes.object.isRequired,
-    onCancel: PropTypes.func.isRequired,
-    onUpdate: PropTypes.func.isRequired,
+    isReadOnly: PropTypes.bool,
     isValidTextFilterColumnValue: PropTypes.func,
+    onClickConfig: PropTypes.func.isRequired,
+    onRemove: PropTypes.func.isRequired,
+    onUpdate: PropTypes.func.isRequired,
     value: PropTypes.string
   },
 
@@ -69,7 +72,7 @@ export const TextFilter = React.createClass({
   },
 
   // Remove existing selected values and clear the search term.
-  clearFilter() {
+  resetFilter() {
     this.updateSelectedValues([]);
 
     if (this.state.value !== '') {
@@ -118,8 +121,14 @@ export const TextFilter = React.createClass({
   },
 
   renderHeader() {
-    const { column } = this.props;
+    const { column, isReadOnly, onClickConfig } = this.props;
     const { isValidating } = this.state;
+
+    const headerProps = {
+      name: column.name,
+      isReadOnly,
+      onClickConfig
+    };
 
     const dropdownProps = {
       onSelection: (option) => {
@@ -136,10 +145,9 @@ export const TextFilter = React.createClass({
     };
 
     return (
-      <div className="text-filter-header">
-        <h3>{column.name}</h3>
+      <FilterHeader {...headerProps}>
         <Dropdown {...dropdownProps} />
-      </div>
+      </FilterHeader>
     );
   },
 
@@ -166,7 +174,7 @@ export const TextFilter = React.createClass({
   },
 
   render() {
-    const { column, onCancel } = this.props;
+    const { column, isReadOnly, onRemove } = this.props;
     const { value, selectedValues, isValidating } = this.state;
 
     // Create the "null" suggestion to allow filtering on empty values.
@@ -212,11 +220,12 @@ export const TextFilter = React.createClass({
       canAddSearchTerm: this.canAddSearchTerm
     };
 
-    const filterFooterProps = {
+    const footerProps = {
       disableApplyFilter: !this.isDirty() || isValidating,
+      isReadOnly,
       onClickApply: this.updateFilter,
-      onClickCancel: onCancel,
-      onClickClear: this.clearFilter
+      onClickRemove: onRemove,
+      onClickReset: this.resetFilter
     };
 
     return (
@@ -226,7 +235,7 @@ export const TextFilter = React.createClass({
           <SearchablePicklist {...picklistProps} />
         </div>
 
-        <FilterFooter {...filterFooterProps} />
+        <FilterFooter {...footerProps} />
       </div>
     );
   }

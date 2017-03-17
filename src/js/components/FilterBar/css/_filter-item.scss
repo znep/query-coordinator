@@ -67,12 +67,29 @@ $max-filter-width: 130px;
       z-index: $filter-z-index;
 
       .filter-control-title {
+        position: relative;
         margin: 8px;
 
         h3 {
           font-size: 12px;
           font-weight: normal;
           letter-spacing: 0;
+        }
+
+        .config-btn {
+          position: absolute;
+          padding: 0;
+          top: 1px;
+          right: 0;
+
+          &:hover {
+            color: $grey;
+          }
+
+          .socrata-icon-settings {
+            width: 20px;
+            height: 20px;
+          }
         }
       }
 

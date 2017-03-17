@@ -13,8 +13,8 @@ describe('FilterFooter', () => {
     return _.defaultsDeep({}, props, {
       disableApplyFilter: false,
       onClickApply: _.noop,
-      onClickCancel: _.noop,
-      onClickClear: _.noop
+      onClickRemove: _.noop,
+      onClickReset: _.noop
     });
   }
 
@@ -53,13 +53,13 @@ describe('FilterFooter', () => {
     });
   });
 
-  describe('clear', () => {
+  describe('remove', () => {
     beforeEach(() => {
       handlerStub = sinon.stub();
       element = renderPureComponent(FilterFooter(getProps({
-        onClickClear: handlerStub
+        onClickRemove: handlerStub
       })));
-      button = element.querySelector('.clear-btn');
+      button = element.querySelector('.remove-btn');
     });
 
     it('renders a button', () => {
@@ -73,13 +73,13 @@ describe('FilterFooter', () => {
     });
   });
 
-  describe('cancel', () => {
+  describe('reset', () => {
     beforeEach(() => {
       handlerStub = sinon.stub();
       element = renderPureComponent(FilterFooter(getProps({
-        onClickCancel: handlerStub
+        onClickReset: handlerStub
       })));
-      button = element.querySelector('.cancel-btn');
+      button = element.querySelector('.reset-btn');
     });
 
     it('renders a button', () => {

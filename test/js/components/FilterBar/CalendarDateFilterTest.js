@@ -8,7 +8,8 @@ describe('CalendarDateFilter', () => {
     return _.defaultsDeep({}, props, {
       filter: mockTimeRangeFilter,
       column: mockCalendarDateColumn,
-      onCancel: _.noop,
+      onClickConfig: _.noop,
+      onRemove: _.noop,
       onUpdate: _.noop
     });
   }
@@ -18,7 +19,7 @@ describe('CalendarDateFilter', () => {
   const getDatePickerInputs = (element) => element.querySelectorAll('.date-picker-input');
   const getFooter = (element) => element.querySelector('.filter-footer');
   const getApplyButton = (element) => element.querySelector('.apply-btn');
-  const getClearButton = (element) => element.querySelector('.clear-btn');
+  const getResetButton = (element) => element.querySelector('.reset-btn');
 
   it('renders a title', () => {
     const element = renderComponent(CalendarDateFilter, getProps());
@@ -122,7 +123,7 @@ describe('CalendarDateFilter', () => {
       // mockTimeRangeFilter is set with isHidden: false
       // the "default" filter specifies isHidden: true
 
-      Simulate.click(getClearButton(element));
+      Simulate.click(getResetButton(element));
       Simulate.click(getApplyButton(element));
 
       const filter = spy.firstCall.args[0];

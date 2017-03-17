@@ -7,11 +7,12 @@ import { getDefaultFilterForColumn } from './filters';
 import moment from 'moment';
 
 export const CalendarDateFilter = React.createClass({
-
   propTypes: {
     filter: PropTypes.object.isRequired,
     column: PropTypes.object.isRequired,
-    onCancel: PropTypes.func.isRequired,
+    isReadOnly: PropTypes.bool,
+    onClickConfig: PropTypes.func.isRequired,
+    onRemove: PropTypes.func.isRequired,
     onUpdate: PropTypes.func.isRequired
   },
 
@@ -60,7 +61,7 @@ export const CalendarDateFilter = React.createClass({
     return _.isEqual(initialValue, value);
   },
 
-  clearFilter() {
+  resetFilter() {
     const { column } = this.props;
     const { rangeMin, rangeMax } = column;
 
@@ -93,29 +94,30 @@ export const CalendarDateFilter = React.createClass({
     return <DateRangePicker {...calendarDatePickerProps} />;
   },
 
-  renderFilterFooter() {
-    const { onCancel } = this.props;
+  render() {
+    const { column, isReadOnly, onClickConfig, onRemove } = this.props;
 
-    const filterFooterProps = {
-      disableApplyFilter: this.shouldDisableApply(),
-      onClickApply: this.updateFilter,
-      onClickCancel: onCancel,
-      onClickClear: this.clearFilter
+    const headerProps = {
+      name: column.name,
+      isReadOnly,
+      onClickConfig
     };
 
-    return <FilterFooter {...filterFooterProps} />;
-  },
-
-  render() {
-    const { column } = this.props;
+    const footerProps = {
+      disableApplyFilter: this.shouldDisableApply(),
+      isReadOnly,
+      onClickApply: this.updateFilter,
+      onClickRemove: onRemove,
+      onClickReset: this.resetFilter
+    };
 
     return (
       <div className="filter-controls calendar-date-filter">
         <div className="range-filter-container">
-          <FilterHeader name={column.name} />
+          <FilterHeader {...headerProps} />
           {this.renderDateRangePicker()}
         </div>
-        {this.renderFilterFooter()}
+        <FilterFooter {...footerProps} />
       </div>
     );
   }

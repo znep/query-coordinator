@@ -6,7 +6,6 @@ import { getFirstActionableElement } from '../../common/a11y';
 export default React.createClass({
   propTypes: {
     filter: PropTypes.object.isRequired,
-    onRemove: PropTypes.func.isRequired,
     onUpdate: PropTypes.func.isRequired
   },
 
@@ -63,12 +62,6 @@ export default React.createClass({
             </div>
           </div>
         </form>
-        <div className="filter-footer">
-          <button className="btn btn-sm btn-transparent remove-btn" onClick={this.props.onRemove}>
-            <span className="socrata-icon-close-2" />
-            {t('filter_bar.remove_filter')}
-          </button>
-        </div>
       </div>
     );
   }

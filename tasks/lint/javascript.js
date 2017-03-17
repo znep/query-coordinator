@@ -20,6 +20,9 @@ var configuration = {
       jsx: true,
       experimentalObjectRestSpread: true
     }
+  },
+  rules: {
+    'quote-props': ['error', 'as-needed', { keywords: false, unnecessary: false }]
   }
 };
 

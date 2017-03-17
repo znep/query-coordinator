@@ -9,11 +9,12 @@ import FilterConfig from './FilterConfig';
 import SocrataIcon from '../SocrataIcon';
 import { translate as t } from '../../common/I18n';
 import { ENTER, ESCAPE, SPACE, isOneOfKeys } from '../../common/keycodes';
+import { getFilterToggleText } from './filters';
 
 export const FilterItem = React.createClass({
   propTypes: {
     filter: PropTypes.shape({
-      'function': PropTypes.string.isRequired,
+      function: PropTypes.string.isRequired,
       columnName: PropTypes.string.isRequired,
       arguments: PropTypes.oneOfType([
         PropTypes.object,
@@ -224,7 +225,7 @@ export const FilterItem = React.createClass({
   },
 
   renderFilterControlToggle() {
-    const { column } = this.props;
+    const { filter, column } = this.props;
     const { isLeftAligned, isControlOpen } = this.state;
 
     const toggleProps = {
@@ -243,7 +244,7 @@ export const FilterItem = React.createClass({
 
     return (
       <div {...toggleProps}>
-        {column.name}
+        {getFilterToggleText(filter, column)}
         <span className="arrow-down-icon">
           <SocrataIcon name="arrow-down" />
         </span>

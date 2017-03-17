@@ -48,8 +48,8 @@ describe('FilterItem', () => {
       expect(getControlToggle(element)).to.exist;
     });
 
-    it('renders the column name in the toggle', () => {
-      expect(getControlToggle(element).textContent).to.contain('Dinosaur Age (approximate)');
+    it('renders the filter title in the toggle', () => {
+      expect(getControlToggle(element).textContent).to.contain('From 1 to 3');
     });
 
     it('toggles visibility of filter controls when the toggle is clicked', () => {

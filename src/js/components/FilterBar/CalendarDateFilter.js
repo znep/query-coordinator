@@ -79,7 +79,7 @@ export const CalendarDateFilter = React.createClass({
       onUpdate(_.merge({}, getDefaultFilterForColumn(column), { isHidden }));
     } else {
       onUpdate(_.merge({}, filter, {
-        'function': 'timeRange',
+        function: 'timeRange',
         arguments: value
       }));
     }

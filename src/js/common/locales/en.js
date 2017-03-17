@@ -23,15 +23,24 @@ export default {
     less: 'Less',
     more: 'More',
     no_options_found: 'No top values match your input',
+    range_filter: {
+      range_label: 'From {0} to {1}',
+      greater_label: 'Greater than {0}',
+      less_label: 'Less than {0}'
+    },
     remove_filter: 'Remove Filter',
     search: 'Search options',
     text_filter: {
+      n_values: '{0} selected',
+      n_values_negated: '{0} excluded',
       no_value: '(No value)',
+      no_value_negated: 'Excluded (No value)',
       selected_values: 'Selected Values',
       suggested_values: 'Top Values',
       is: 'is',
       is_not: 'is not',
-      keyword_not_found: "Your input wasn't found in this column's data. Please try again with the exact value including case."
+      keyword_not_found: "Your input wasn't found in this column's data. Please try again with the exact value including case.",
+      single_value_negated: 'Excluded {0}'
     },
     to: 'To'
   },

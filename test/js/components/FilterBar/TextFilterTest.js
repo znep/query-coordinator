@@ -65,7 +65,7 @@ describe('TextFilter', () => {
 
   describe('calls onUpdate with the new filter', () => {
     const filter = {
-      'function': 'noop',
+      function: 'noop',
       columnName: 'some_word',
       arguments: null,
       isHidden: false
@@ -101,7 +101,7 @@ describe('TextFilter', () => {
         Simulate.click(applyButton);
 
         expect(onUpdateStub).to.have.been.calledWith({
-          'function': 'binaryOperator',
+          function: 'binaryOperator',
           columnName: 'some_word',
           arguments: [
             {
@@ -141,7 +141,7 @@ describe('TextFilter', () => {
         Simulate.click(applyButton);
 
         expect(onUpdateStub).to.have.been.calledWith({
-          'function': 'binaryOperator',
+          function: 'binaryOperator',
           columnName: 'some_word',
           arguments: [
             {
@@ -170,7 +170,7 @@ describe('TextFilter', () => {
 
     it('clears selectedOptions when the clear button is clicked', (done) => {
       const filter = {
-        'function': 'noop',
+        function: 'noop',
         columnName: mockTextColumn.fieldName,
         arguments: [
           {
@@ -198,7 +198,7 @@ describe('TextFilter', () => {
         Simulate.click(updateButton);
 
         expect(onUpdateStub).to.have.been.calledWith({
-          'function': 'noop',
+          function: 'noop',
           columnName: mockTextColumn.fieldName,
           arguments: null,
           isHidden: false // visibility should NOT be reset when values are reset!
@@ -222,7 +222,7 @@ describe('TextFilter', () => {
 
     it('calls onUpdate with noop filter when the apply button with an empty array of selectedOptions', (done) => {
       const filter = {
-        'function': 'noop',
+        function: 'noop',
         columnName: mockTextColumn.fieldName,
         arguments: [
           {
@@ -248,7 +248,7 @@ describe('TextFilter', () => {
         Simulate.click(button);
 
         expect(onUpdateStub).to.have.been.calledWith({
-          'function': 'noop',
+          function: 'noop',
           columnName: mockTextColumn.fieldName,
           arguments: null,
           isHidden: false // visibility should NOT be reset when values are reset!

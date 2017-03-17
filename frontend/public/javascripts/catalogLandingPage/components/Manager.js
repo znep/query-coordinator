@@ -26,7 +26,7 @@ export class Manager extends React.Component {
 
   onDismiss() {
     this.setState({ isDismissing: true });
-    window.location.href = `/browse?category=${this.props.category}`;
+    window.location.href = this.props.catalogPath;
   }
 
   metadataForSave() {
@@ -62,9 +62,7 @@ export class Manager extends React.Component {
     this.setState({ isSaving: true });
 
     const payloadBody = {
-      catalog_query: {
-        category: this.props.category
-      },
+      catalog_query: this.props.catalogQuery,
       metadata: this.metadataForSave(),
       featured_content: this.featuredContentForSave()
     };
@@ -135,9 +133,9 @@ export class Manager extends React.Component {
       return <h6 className="h6 styleguide-subheader">{text}</h6>;
     };
 
-    const formatWithCategory = (translationKey) => {
+    const formatWithCategory = (translationKey, translationKeyNoCategory = translationKey) => {
       return format(
-        _.get(I18n, translationKey),
+        _.get(I18n, this.props.category ? translationKey : translationKeyNoCategory),
         { category: this.props.category }
       );
     };
@@ -218,7 +216,8 @@ export class Manager extends React.Component {
               type="text"
               aria-label={formatWithCategory('manager.description.placeholder')}
               maxLength="320"
-              placeholder={formatWithCategory('manager.description.placeholder')}
+              placeholder={formatWithCategory('manager.description.placeholder',
+                  'manager.description.placeholder_no_category')}
               onChange={this.handleInputChange}
               value={this.props.header.description} />
 
@@ -229,7 +228,8 @@ export class Manager extends React.Component {
             {renderShowStatsCheckbox()}
             {renderCategoryStats()}
 
-            {headingHtml(formatWithCategory('manager.featured_content.label'))}
+            {headingHtml(formatWithCategory('manager.featured_content.label',
+                  'manager.featured_content.label_no_category'))}
             <p className="small explanation">
               {_.get(I18n, 'manager.featured_content.explanation')}
             </p>
@@ -254,7 +254,9 @@ export class Manager extends React.Component {
 }
 
 Manager.propTypes = {
-  category: PropTypes.string.isRequired,
+  category: PropTypes.string,
+  catalogPath: PropTypes.string.isRequired,
+  catalogQuery: PropTypes.object,
   categoryStats: PropTypes.object,
   featuredContent: PropTypes.object,
   header: PropTypes.shape({
@@ -268,6 +270,10 @@ Manager.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  catalogPath: state.catalog.path,
+  catalogQuery: _.isString(state.catalog.query) ?
+    { custom_path: state.catalog.query } :
+    state.catalog.query,
   category: state.category,
   categoryStats: state.categoryStats,
   featuredContent: state.featuredContent,

@@ -118,8 +118,8 @@
       end
     %>
 
-    <%- if FeatureFlags.value_for(:enable_catalog_landing_page, request: request) %>
-      <%= render 'datasets/browse2_manage_catalog_landing_page' if should_render_catalog_landing_page? %>
+    <%- if should_render_catalog_landing_page_activator? %>
+      <%= render 'datasets/browse2_manage_catalog_landing_page' %>
     <%- end %>
 
     <div class="skip-links">

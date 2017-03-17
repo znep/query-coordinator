@@ -171,6 +171,10 @@ class User < Model
     CoreServer::Base.connection.multipart_post_file("/users/#{id}/profile_images", file)
   end
 
+  def is_any?(*properties)
+    properties.any? { |property| try(:"is_#{property}?") }
+  end
+
   def is_owner?(view)
     view.owner.id == id
   end
@@ -186,6 +190,10 @@ class User < Model
 
   def is_administrator?
     role_name == 'administrator'
+  end
+
+  def is_publisher?
+    role_name == 'publisher'
   end
 
   def has_right_to_publish?(view)

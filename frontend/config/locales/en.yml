@@ -461,12 +461,13 @@ en:
       description:
         label: Description
         placeholder: Write a description for your {category} content
+        placeholder_no_category: Write a description for your content
       show_stats:
-        label: Show {category} Stats
         label: Show Stats
         explanation: Choose to show some basic statistics around this category, such as how many datasets, visualizations and stories it contains.
       featured_content:
         label: Featured Content in {category}
+        label_no_category: Featured Content
         explanation: Promote up to 3 assets for this category.
     search:
       hint: Search

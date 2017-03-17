@@ -305,6 +305,10 @@ class CurrentDomain
     end
     alias :configUpdatedAt :config_updated_at
 
+    def custom_facets
+      property(:custom_facets, :catalog).try(:map, &:param) || []
+    end
+
     private
 
     def current_theme

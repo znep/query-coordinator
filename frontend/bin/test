@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
-cd $WORKPACE/frontend
+cd $WORKSPACE/frontend
 
 # NOTE: Using set -e as we've done above, means that ANY expression that returns a non-zero result
 # will terminate this script. For example in the CHANGED_FILES expression, we short-circuit the

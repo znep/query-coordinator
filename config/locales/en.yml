@@ -1793,8 +1793,17 @@ en:
       dataset_tab:
         errors:
           missing_name: Dataset name is required.
-        subtitle: Make your title and description as clear and simple as possible.
-        title: Title and Description
+          invalid_url: Please enter a valid url.
+          invalid_email: Please enter a valid email address.
+        titles:
+          dataset_title: Title and Description
+          tags_title: Categories and Tags
+          licenses_title: Licensing & Attribution
+          contact_title: Contact Email
+        subtitles:
+          dataset_subtitle: Make your title and description as clear and simple as possible.
+          tags_subtitle: Categorize your dataset to make it easier to find.
+          contact_subtitle: Private Field -  only logged in users will see this value
       errors:
         missing_name: Dataset name is required.
       required_note: Required field
@@ -5102,6 +5111,8 @@ en:
       attachments: Attachments
       attachmentsDisabledMessagePart1: To upload attachments, first finish publishing this dataset. Then, click
       attachmentsDisabledMessagePart2: in the toolbar, and click Edit Metadata. You will then be able to upload attachments.
+      attribution: Data Provided By
+      attribution_link: Source Link
       blob_uploaded: 'Excellent: we''ve saved your file. All that’s left is to describe your file''s metadata.'
       brief_description: Brief Description
       brief_description_prompt: Enter a description
@@ -5119,6 +5130,10 @@ en:
       dataset_title_prompt: Enter a title
       dataset_url: Dataset URL
       dataset_url_prompt: Enter the location of your external dataset
+      dataset_tags: Enter tag name
+      dataset_email: example@socrata.com
+      dataset_url: Enter web address
+      dataset_attribution: Individual or organization
       default_row_label: Row
       delete: Delete
       described_by: Data Dictionary

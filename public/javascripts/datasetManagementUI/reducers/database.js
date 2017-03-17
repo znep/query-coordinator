@@ -225,7 +225,7 @@ function editRecord(db, action, isImmutable) {
     action.tableName,
     action.updates.id,
     (record) => {
-      const updated = _.merge({}, record, action.updates);
+      const updated = _.assign({}, record, action.updates);
       if (record.__status__.type === STATUS_DIRTY ||
           record.__status__.type === STATUS_DIRTY_IMMUTABLE) {
         const editedBackToOriginal = _.isEqual(

@@ -2,6 +2,12 @@ import Select from 'components/MetadataFields/Select';
 import genericFieldDescriptor from 'data/fieldDescriptor';
 
 describe('Select', function() {
+  let shallow;
+
+  beforeEach(() => {
+    shallow = TestUtils.createRenderer();
+  });
+
   const defaultProps = {
     descriptor: {
       ...genericFieldDescriptor,
@@ -12,29 +18,26 @@ describe('Select', function() {
       ]
     },
     onChange: _.noop,
-    value: 'bar'
+    value: 'bar',
+    isValid: true
   };
 
   it('renders an element', function() {
-    const element = renderPureComponent(Select(defaultProps));
+    const element = shallow.render(<Select {...defaultProps}/>);
 
-    expect(element).to.exist;
-    expect(element.querySelector('select')).to.exist;
-    expect(element.querySelector('label')).to.exist;
+    expect(element.type).to.eq('select');
   });
 
   it('renders the provided value', function() {
-    const element = renderPureComponent(Select(defaultProps));
+    const element = renderStatelessComponent(<Select {...defaultProps}/>);
 
     expect(element.querySelector('select').value).to.eq(defaultProps.value);
   });
 
   it('invokes the onChange handler', function() {
     const spy = sinon.spy();
-    const element = renderPureComponent(Select({
-      ...defaultProps,
-      onChange: spy
-    }));
+    const newProps = {...defaultProps, onChange: spy};
+    const element = renderStatelessComponent(<Select {...newProps}/>);
 
     const input = element.querySelector('select');
     input.value = 'foo';

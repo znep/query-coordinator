@@ -22,7 +22,7 @@ function ColumnMetadataEditor({ db, onEdit }) {
       },
       descriptor: {
         type: 'text',
-        divClassName: 'column-name',
+        className: 'column-name',
         key: idForColumnNameField(column.id),
         required: true,
         validator: (name) => _.trim(name).length > 0,
@@ -44,7 +44,7 @@ function ColumnMetadataEditor({ db, onEdit }) {
       descriptor: {
         type: 'textarea',
         rows: 1,
-        divClassName: 'column-description',
+        className: 'column-description',
         key: `col-desc-${column.id}`,
         required: false,
         validator: () => true,
@@ -63,7 +63,7 @@ function ColumnMetadataEditor({ db, onEdit }) {
         });
       },
       descriptor: {
-        divClassName: 'column-field-name',
+        className: 'column-field-name',
         type: 'text',
         key: `field-name-${column.id}`,
         required: false,

@@ -20,18 +20,29 @@ echo "Change committed by: $(git log HEAD -1 --pretty=format:"%an (%ae)")"
 # Find commit where this pull request branched from
 MERGE_BASE=$(git merge-base HEAD origin/master)
 
-CHANGED_FILES=$(git diff --name-status ${MERGE_BASE} | grep '^\(A\|M\)') || true
+# Extract the (possibly new) name of all changed/renamed/added files.
+# Example git output:
+#
+#R100    .rspec  frontend/.rspec
+#A       frontend/Gemfile
+#M       .gitignore
+
+
+CHANGED_FILES=$(git diff --name-status ${MERGE_BASE} |
+grep '^\(A\|M\|R\)' | # Only care about add/modify/rename
+rev | cut -f1 | rev # Get the last field per line. It's the (possibly post-rename) filename.
+) || true
 
 # Find all javascript files that have changed on this PR
-JAVASCRIPT_FILES=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*\.jsx\?$' | cut -c3-)
-JSON_FILES=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*\.json$' | cut -c3-)
+JAVASCRIPT_FILES=$(echo "$CHANGED_FILES" | grep '\.jsx\?$')
+JSON_FILES=$(echo "$CHANGED_FILES" | grep '\.json$')
 
 # Find all ruby files that have changed on this PR
-RUBY_FILES=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*\.e\?rb$' | cut -c3-)
-YAML_FILES=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*\.ya\?ml$' | cut -c3-)
+RUBY_FILES=$(echo "$CHANGED_FILES" | grep '\.e\?rb$')
+YAML_FILES=$(echo "$CHANGED_FILES" | grep '\.ya\?ml$')
 
 # Find if the Gemfile has changed on this PR
-GEMFILE=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*Gemfile\(\.lock\)\?$' | cut -c3-)
+GEMFILE=$(echo "$CHANGED_FILES" | grep 'Gemfile\(\.lock\)\?$')
 
 if [[ -z $JAVASCRIPT_FILES ]] && [[ -z $RUBY_FILES ]] && [[ -z $JSON_FILES ]] && [[ -z $YAML_FILES ]] && [[ -z $GEMFILE ]]; then
   echo "Nothing to do!"

@@ -5,7 +5,7 @@ import ShowUpdate from './components/ShowUpdate';
 import ManageMetadata from './components/ManageMetadata';
 import ManageUploads from './components/ManageUploads';
 import ShowOutputSchema from './components/ShowOutputSchema';
-import { loadColumnErrors, loadRowErrors } from './actions/showOutputSchema';
+import { loadColumnErrors } from './actions/showOutputSchema';
 import { focusColumnEditor } from './actions/manageMetadata';
 import ShowUpload from './components/ShowUpload';
 import NoMatch from './components/NoMatch';
@@ -33,8 +33,7 @@ export default function rootRoute(store) {
         onEnter={(nextState) => store.dispatch(loadColumnErrors(nextState))} />
       <Route
         path="uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors"
-        component={ShowOutputSchema}
-        onEnter={(nextState) => store.dispatch(loadRowErrors(_.toNumber(nextState.params.inputSchemaId), 0, 100))} />
+        component={ShowOutputSchema} />
       <Route path="*" component={NoMatch} />
     </Route>
   );

@@ -24,6 +24,7 @@ import { uploadNotification } from '../lib/notifications';
 import { push } from 'react-router-redux';
 import { socrataFetch, checkStatus, getJson } from '../lib/http';
 import { parseDate } from '../lib/parseDate';
+import { joinChannel } from '../lib/channels';
 import { loadRowErrors } from './showOutputSchema';
 
 export function createUpload(file) {
@@ -146,25 +147,7 @@ function subscribeToUpload(dispatch, upload) {
       total_rows: inputSchema.total_rows,
       upload_id: upload.id
     }));
-    // TODO: factor channel joining out into a function
-    const channelName = `row_errors:${inputSchema.id}`;
-    const channel = window.DSMAPI_PHOENIX_SOCKET.channel(channelName);
-    let rowErrorsSoFar = 0;
-    channel.on('errors', (event) => {
-      dispatch(updateFromServer('input_schemas', {
-        id: inputSchema.id,
-        num_row_errors: event.errors
-      }));
-      dispatch(loadRowErrors(inputSchema.id, rowErrorsSoFar, 100));
-      rowErrorsSoFar = event.errors;
-    });
-    channel.join().
-      receive('ok', (response) => {
-        console.log(`successfully joined ${channelName}:`, response);
-      }).
-      receive('error', (error) => {
-        console.log(`failed to join ${channelName}:`, error);
-      });
+    dispatch(subscribeToRowErrors(inputSchema.id));
     inputSchema.input_columns.forEach((column) => {
       dispatch(insertFromServer('input_columns', column));
     });
@@ -173,6 +156,23 @@ function subscribeToUpload(dispatch, upload) {
     });
   });
   return _.flatten(outputSchemaIds);
+}
+
+function subscribeToRowErrors(inputSchemaId) {
+  return (dispatch) => {
+    const channelName = `row_errors:${inputSchemaId}`;
+    let rowErrorsSoFar = 0;
+    joinChannel(channelName, {
+      error: (event) => {
+        dispatch(updateFromServer('input_schemas', {
+          id: inputSchemaId,
+          num_row_errors: event.errors
+        }));
+        dispatch(loadRowErrors(inputSchemaId, rowErrorsSoFar, event.errors - rowErrorsSoFar));
+        rowErrorsSoFar = event.errors;
+      }
+    });
+  };
 }
 
 function insertAndSubscribeToOutputSchema(dispatch, outputSchemaResponse) {
@@ -215,35 +215,29 @@ export function createTableAndSubscribeToTransform(transform) {
         row_fetch_started: true
       }));
       dispatch(createTable(`transform_${transform.id}`));
-      const channelName = `transform_progress:${transform.id}`;
-      const channel = window.DSMAPI_PHOENIX_SOCKET.channel(channelName, {});
       let initialRowsFetched = false;
-      channel.on('max_ptr', (maxPtr) => {
-        dispatch(updateFromServer('transforms', {
-          id: transform.id,
-          contiguous_rows_processed: maxPtr.end_row_offset
-        }));
-        if (!initialRowsFetched) {
-          initialRowsFetched = true;
-          const offset = 0;
-          dispatch(
-            fetchAndInsertDataForTransform(transform, offset, INITIAL_FETCH_LIMIT_ROWS)
-          );
+      const channelName = `transform_progress:${transform.id}`;
+      joinChannel(channelName, {
+        max_ptr: (maxPtr) => {
+          dispatch(updateFromServer('transforms', {
+            id: transform.id,
+            contiguous_rows_processed: maxPtr.end_row_offset
+          }));
+          if (!initialRowsFetched) {
+            initialRowsFetched = true;
+            const offset = 0;
+            dispatch(
+              fetchAndInsertDataForTransform(transform, offset, INITIAL_FETCH_LIMIT_ROWS)
+            );
+          }
+        },
+        errors: (errorsMsg) => {
+          dispatch(updateFromServer('transforms', {
+            id: transform.id,
+            num_transform_errors: errorsMsg.count
+          }));
         }
       });
-      channel.on('errors', (errorsMsg) => {
-        dispatch(updateFromServer('transforms', {
-          id: transform.id,
-          num_transform_errors: errorsMsg.count
-        }));
-      });
-      channel.join().
-        receive('ok', (response) => {
-          console.log(`successfully joined ${channelName}:`, response);
-        }).
-        receive('error', (error) => {
-          console.log(`failed to join ${channelName}:`, error);
-        });
     }
   };
 }
@@ -261,17 +255,14 @@ function toOutputSchema(os) {
 function subscribeToOutputSchema(outputSchema) {
   return (dispatch) => {
     const channelName = `output_schema:${outputSchema.id}`;
-    const channel = window.DSMAPI_PHOENIX_SOCKET.channel(channelName, {});
-    channel.on('update', (updatedOutputSchema) => {
-      dispatch(updateFromServer('output_schemas', toOutputSchema({
-        ...outputSchema,
-        ...updatedOutputSchema
-      })));
+    joinChannel(channelName, {
+      update: (updatedOutputSchema) => {
+        dispatch(updateFromServer('output_schemas', toOutputSchema({
+          ...outputSchema,
+          ...updatedOutputSchema
+        })));
+      }
     });
-
-    channel.join().
-      receive('ok', () => console.log(`Joined ${channelName}`)).
-      receive('error', () => console.error(`Failed to join ${channelName}`));
   };
 }
 

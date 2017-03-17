@@ -49,6 +49,7 @@ header#site-chrome-header[template="evergreen"] {
         top: 0;
         right: 16px;
         z-index: 3;
+        opacity: 0;
 
         &.desktop {
           max-height: $banner_height;
@@ -105,6 +106,7 @@ header#site-chrome-header[template="evergreen"] {
             float: none;
             display: inline-block;
             text-align: right;
+            white-space: nowrap;
 
             .site-chrome-nav-link, .site-chrome-nav-menu, div.dropdown {
               max-height: $banner_height;
@@ -198,15 +200,6 @@ header#site-chrome-header[template="evergreen"] {
           .menu-toggle {
             font-size: 12px;
           }
-        }
-
-        @include desktop {
-          &.desktop { display: block; }
-          &.mobile { display: none; }
-        }
-        @include mobile-med {
-          &.desktop { display: none; }
-          &.mobile { display: block; }
         }
       }
     }

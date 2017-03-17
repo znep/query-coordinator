@@ -163,7 +163,7 @@ function subscribeToRowErrors(inputSchemaId) {
     const channelName = `row_errors:${inputSchemaId}`;
     let rowErrorsSoFar = 0;
     joinChannel(channelName, {
-      error: (event) => {
+      errors: (event) => {
         dispatch(updateFromServer('input_schemas', {
           id: inputSchemaId,
           num_row_errors: event.errors

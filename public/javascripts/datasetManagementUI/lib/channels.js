@@ -2,6 +2,7 @@ import _ from 'lodash';
 
 export function joinChannel(channelName, handlers) {
   const channel = window.DSMAPI_PHOENIX_SOCKET.channel(channelName);
+  console.log('adding handlers for', channelName, handlers);
   _.forEach(handlers, (handler, eventName) => {
     channel.on(eventName, handler);
   });

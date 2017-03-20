@@ -62,13 +62,14 @@
           directive: {},
           data: {},
           callback: function($elem) {
+            var cpObj = this;
             var canEditFilters = false;
+
             if (!_.isEmpty(blist.currentUser)) {
               canEditFilters = blist.currentUser.isSuperadmin() ||
-              blist.dataset.hasRight(blist.rights.view.UPDATE_VIEW);
+                blist.dataset.hasRight(blist.rights.view.UPDATE_VIEW);
             }
 
-            var cpObj = this;
             var columns = cpObj._view.columnsForType(
               cpObj._view.newBackend ? nbeFilterableTypes : filterableTypes,
               canEditFilters

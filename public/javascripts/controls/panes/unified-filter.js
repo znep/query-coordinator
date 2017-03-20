@@ -548,7 +548,6 @@
       // update filters and remove ones that no longer apply
       $pane.find('.filterConditions .filterLink.columnName').each(function() {
         var $this = $(this);
-
         if (!_.include(filterableColumns, $this.popupSelect_selectedItems()[0])) {
           removeFilter($this.closest('.filterCondition'), true);
         } else {
@@ -703,12 +702,10 @@
       if (!_.isUndefined(firstChildColumnId)) {
         return dataset.columnForID(firstChildColumnId);
       }
-
     };
 
     var renderBaseCondition = function(condition) {
       var metadata = condition.metadata || {};
-
       // If we don't have metadata, then something we can't handle slipped in among
       // our valid items. Ignore it for now...
       if (_.isEmpty(metadata)) {
@@ -815,7 +812,6 @@
     var renderCondition = function(condition) {
       var column;
       var metadata = condition.metadata || {};
-
       // If we don't have metadata, then something we can't handle slipped in among
       // our valid items. Ignore it for now...
       if (_.isEmpty(metadata)) {
@@ -829,9 +825,9 @@
 
       // EN-13300: In some instances, the queryBase doesn't have the columnId information
       // With the check below, we try again to get the column data by looking at the condition itself
-      // if (_.isUndefined(column)) {
-      //   column = getColumnData(condition);
-      // }
+      if (_.isUndefined(column)) {
+        column = getColumnData(condition);
+      }
 
       // If the fallback strategy fails, then abort
       if (_.isUndefined(column)) {

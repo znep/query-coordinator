@@ -3,6 +3,8 @@
 $background-color: $white;
 
 $container-right-offset: 50px;
+$container-right-offset-small: 30px;
+
 $container-top: 60px;
 $container-top-small: 47px;
 
@@ -37,6 +39,7 @@ $spinner-margin-bottom: 295px;
 
 :global(.site-chrome-small) .container {
   top: $container-top-small;
+  right: $container-right-offset-small;
 }
 
 /* the :before here actually sets up the triangle above the container */

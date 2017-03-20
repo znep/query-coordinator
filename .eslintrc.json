@@ -1,0 +1,18 @@
+{
+  "extends": "./node_modules/eslint-base/.eslintrc-airbnb.json",
+  "plugins": [
+    // Your project-specific plugins.
+  ],
+  "rules": {
+    // Your project-specific rules.
+    "react/prefer-es6-class": [2, "always"]
+  },
+  "globals": {
+    // Your project-specific globals.
+  },
+  "parserOptions":{
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
+  }
+}

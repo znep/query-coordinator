@@ -27,8 +27,8 @@ class Bell extends React.Component {
 
     return (
       <button styleName="button" className="socrata-notifications-bell" onClick={onClick}>
-        {this.renderUnreadIcon()}
         <SocrataIcon name="bell" />
+        {this.renderUnreadIcon()}
       </button>
     );
   }

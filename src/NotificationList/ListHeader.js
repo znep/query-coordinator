@@ -10,9 +10,7 @@ class ListHeader extends PureComponent {
     return (
       <div styleName="header">
         <SocrataLogo />
-        <span>
-          {text}
-        </span>
+        {text}
       </div>
     );
   }

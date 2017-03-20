@@ -1,8 +1,24 @@
 @import '../common.scss';
 
 $background-color: $white;
+
+$container-right-offset: 50px;
+$container-top: 60px;
+$container-top-small: 47px;
+
 $triangle-size: 13px;
 $triangle-position: 340px;
+
+// the actual width of the spinner, since styleguide doesn't have it as a variable...
+$spinner-width: 64px;
+
+/*
+ * This is how much margin to add to the bottom of the error message/spinner
+ * so that the list is *close* to its usual size
+ * (note that we don't actually have a set "usual size" since the items in the list vary)
+ */
+$error-message-margin-bottom: 525px;
+$spinner-margin-bottom: 295px;
 
 .container {
   @include base;
@@ -10,8 +26,8 @@ $triangle-position: 340px;
   background-color: $background-color;
   
   position: absolute;
-  right: -34px;
-  top: 60px;
+  right: $container-right-offset;
+  top: $container-top;
   filter: drop-shadow(0 3px 5px #888888);
 }
 
@@ -20,7 +36,7 @@ $triangle-position: 340px;
 }
 
 :global(.site-chrome-small) .container {
-  top: 47px;
+  top: $container-top-small;
 }
 
 /* the :before here actually sets up the triangle above the container */
@@ -44,10 +60,11 @@ $triangle-position: 340px;
 
 .header {
   height: 24px;
-  text-align: center;
   font-size: 15px;
   margin-top: 12px;
   margin-bottom: 12px;
+  display: flex;
+  justify-content: center;
 }
 
 .view-older {
@@ -80,14 +97,14 @@ $triangle-position: 340px;
   border-left: 0;
   border-right: 0;
   border-top: 0;
-  margin-bottom: 525px;
+  margin-bottom: $error-message-margin-bottom;
 }
 
 .spinner {
   @extend .spinner-default;
   @extend .spinner-large;
 
-  margin-left: calc(50% - 32px);
+  margin-left: calc(50% - ($spinner-width / 2));
   margin-top: 50%;
-  margin-bottom: 295px;
+  margin-bottom: $spinner-margin-bottom;
 }

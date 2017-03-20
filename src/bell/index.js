@@ -22,11 +22,18 @@ class Bell extends React.Component {
 
   render() {
     const {
-      onClick
+      onClick,
+      label
     } = this.props;
 
     return (
-      <button styleName="button" className="socrata-notifications-bell" onClick={onClick}>
+      <button
+        styleName="button"
+        className="socrata-notifications-bell" 
+        onClick={onClick}
+        tabIndex="0"
+        aria-haspopup="true"
+        aria-label={label}>
         <SocrataIcon name="bell" />
         {this.renderUnreadIcon()}
       </button>
@@ -36,17 +43,14 @@ class Bell extends React.Component {
 
 Bell.propTypes = {
   onClick: PropTypes.func,
-  hasUnread: PropTypes.bool
+  hasUnread: PropTypes.bool,
+  label: PropTypes.string
 };
 
 Bell.defaultProps = {
   onClick: () => { },
   hasUnread: false,
-  width: 22,
-  height: 22,
-  unreadCircleX: 21,
-  unreadCircleY: 8,
-  unreadCircleRadius: 5
+  label: "Product Updates"
 };
 
 export default cssModules(Bell, styles);

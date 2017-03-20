@@ -17,6 +17,7 @@ class Notifications extends Component {
     };
 
     this.hasUnread = this.hasUnread.bind(this);
+    this.hideOnEscapeKeypress = this.hideOnEscapeKeypress.bind(this);
     this.hideOnOutsideClick = this.hideOnOutsideClick.bind(this);
     this.markAllAsRead = this.markAllAsRead.bind(this);
     this.renderNotificationsList = this.renderNotificationsList.bind(this);
@@ -37,7 +38,13 @@ class Notifications extends Component {
   }
 
   hideOnOutsideClick(event) {
-    if (!event.target.closest('#socrata-notifications-list')) {
+    if (!event.target.closest('#socrata-notifications-container')) {
+      this.toggleList();
+    }
+  }
+
+  hideOnEscapeKeypress(event) {
+    if(event.keyCode == 27) {
       this.toggleList();
     }
   }
@@ -50,9 +57,13 @@ class Notifications extends Component {
     if (!showNotifications) {
       this.markAllAsRead();
       window.removeEventListener('mouseup', this.hideOnOutsideClick);
+      window.removeEventListener('keyup', this.hideOnEscapeKeypress);
     } else {
       // add an event listener to hide when clicking somewhere
       window.addEventListener('mouseup', this.hideOnOutsideClick);
+
+      // add an event listened to hide when ESC is pressed
+      window.addEventListener('keyup', this.hideOnEscapeKeypress);
     }
 
     this.setState({ showNotifications });
@@ -107,9 +118,13 @@ class Notifications extends Component {
   }
 
   render() {
+    const { productUpdatesText } = this.props.translations;
     return (
-      <div id="socrata-notifications-list" styleName="container">
-        <Bell theme="light" onClick={this.toggleList} hasUnread={this.hasUnread()} />
+      <div id="socrata-notifications-container" styleName="container">
+        <Bell
+          onClick={this.toggleList}
+          hasUnread={this.hasUnread()}
+          label={productUpdatesText} />
         {this.renderNotificationsList()}
       </div>
     );

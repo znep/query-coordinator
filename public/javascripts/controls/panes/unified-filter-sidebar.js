@@ -62,28 +62,19 @@
           directive: {},
           data: {},
           callback: function($elem) {
-            var canEditFilters = false;
-            if (!_.isEmpty(blist.currentUser)) {
-              canEditFilters = blist.currentUser.isSuperadmin() ||
-              blist.dataset.hasRight(blist.rights.view.UPDATE_VIEW);
-            }
-
             var cpObj = this;
-            var columns = cpObj._view.columnsForType(
-              cpObj._view.newBackend ? nbeFilterableTypes : filterableTypes,
-              canEditFilters
-            );
-
             $elem.unifiedFilter({
               datasets: cpObj.settings.datasets || [cpObj._view],
               rootCondition: cpObj.settings.rootCondition,
-              filterableColumns: columns
+              filterableColumns: cpObj._view.columnsForType(
+                cpObj._view.newBackend ? nbeFilterableTypes : filterableTypes)
             });
 
             cpObj._view.unbind(null, null, cpObj);
             cpObj._view.bind('columns_changed', function() {
               $elem.trigger('columns_changed', {
-                columns: columns
+                columns: cpObj._view.columnsForType(
+                  cpObj._view.newBackend ? nbeFilterableTypes : filterableTypes)
               });
             }, cpObj);
 

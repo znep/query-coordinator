@@ -548,7 +548,6 @@
       // update filters and remove ones that no longer apply
       $pane.find('.filterConditions .filterLink.columnName').each(function() {
         var $this = $(this);
-
         if (!_.include(filterableColumns, $this.popupSelect_selectedItems()[0])) {
           removeFilter($this.closest('.filterCondition'), true);
         } else {
@@ -682,33 +681,8 @@
       }
     };
 
-    var getColumnData = function(condition) {
-      // EN-13300 - Fallback strategy for getting column metadata
-      // We have to do this secondary check because in some cases the filter conditions
-      // passed to this render function do not have tableColumnId properties assigned to
-      // them. We can instead try to get the column in question by looking at the columnId
-      // of any child filter condition. We arbitrarily take the first one.
-
-      // if there are no children, fail
-      if (_.isUndefined(condition.children)) {
-        return;
-      }
-
-      var firstChildColumnId = _.chain(condition.children).
-        map(function(conditionChild) { return conditionChild.columnId; }).
-        reject(function(columnId) { return _.isUndefined(columnId); }).
-        first().
-        value();
-
-      if (!_.isUndefined(firstChildColumnId)) {
-        return dataset.columnForID(firstChildColumnId);
-      }
-
-    };
-
     var renderBaseCondition = function(condition) {
       var metadata = condition.metadata || {};
-
       // If we don't have metadata, then something we can't handle slipped in among
       // our valid items. Ignore it for now...
       if (_.isEmpty(metadata)) {
@@ -718,13 +692,6 @@
       var column = dataset._queryBase.columnForTCID(
         metadata.tableColumnId[dataset._queryBase.publicationGroup]);
 
-      // EN-13300: In some instances, the queryBase doesn't have the columnId information
-      // With the check below, we try again to get the column data by looking at the condition itself
-      if (_.isUndefined(column)) {
-        column = getColumnData(condition);
-      }
-
-      // If the fallback strategy fails, then abort
       if (_.isUndefined(column)) {
         // someone must have changed the type on this or something. abort mission.
         return;
@@ -815,7 +782,6 @@
     var renderCondition = function(condition) {
       var column;
       var metadata = condition.metadata || {};
-
       // If we don't have metadata, then something we can't handle slipped in among
       // our valid items. Ignore it for now...
       if (_.isEmpty(metadata)) {
@@ -827,13 +793,6 @@
         column = dataset.columnForTCID(metadata.tableColumnId[dataset.publicationGroup]);
       }
 
-      // EN-13300: In some instances, the queryBase doesn't have the columnId information
-      // With the check below, we try again to get the column data by looking at the condition itself
-      // if (_.isUndefined(column)) {
-      //   column = getColumnData(condition);
-      // }
-
-      // If the fallback strategy fails, then abort
       if (_.isUndefined(column)) {
         // someone must have changed the type on this or something. abort mission.
         return;

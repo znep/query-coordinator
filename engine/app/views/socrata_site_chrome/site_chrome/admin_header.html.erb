@@ -17,9 +17,7 @@
         <%- else %>
           <div		
             id="site-chrome-data-catalog"		
-            class="site-chrome-admin-menu"		
-            tabIndex="0"		
-            role="menuitem">		
+            class="site-chrome-admin-menu">		
             <a href="/browse"><%= t('admin.data_catalog.title') %></a>		
           </div>
         <%- end %>
@@ -27,7 +25,9 @@
     </div>
 
     <div class="site-chrome-admin-header-section">
-      <div id="site-chrome-header-notifications"></div>
+      <div id="site-chrome-header-notifications" tabIndex="-1">
+        <%# This gets filled in by notifications JS %>
+      </div>
 
       <div class="site-chrome-admin-separator"></div>
 
@@ -47,13 +47,13 @@
         document.addEventListener(
           'DOMContentLoaded',
           function() {
-            if (window.notifications && $('#site-chrome-header-notifications').length > 0) {
+            if (window.headerNotifications && $('#site-chrome-header-notifications').length > 0) {
               var options = {
                 productUpdatesText: "<%= t('notifications.product_updates') %>",
                 viewOlderText: "<%= t('notifications.view_older') %>",
                 errorText: "<%= t('notifications.error_text_html') %>"
               }
-              window.notifications('#site-chrome-header-notifications', options);
+              window.headerNotifications('#site-chrome-header-notifications', options);
             }
           },
           false

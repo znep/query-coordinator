@@ -14,6 +14,8 @@
   <body>
     <% if params[:admin_header] %>
       <%== site_chrome_admin_header(request, response) %>
+    <% elsif params[:admin_header_small] %>
+      <%== site_chrome_admin_header(request, response, :size => 'small') %>
     <% end %>
     <%== site_chrome_header(request, response) %>
 

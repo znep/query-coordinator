@@ -9,9 +9,10 @@ module ThemesHelper
 
   def cache_key_for_custom_themes(themes)
     return if themes.empty?
+    theme_cache_key_prefix = Rails.application.config.theme_cache_key_prefix
 
     domain = themes.first.try(:domain_cname) || 'no-domain'
-    "#{domain}/themes/custom-#{themes.map(&:updated_at).reduce(:+)}"
+    "#{domain}/themes/custom-#{theme_cache_key_prefix}-#{themes.map(&:updated_at).reduce(:+)}"
   end
 
   # For inline styling of theme sample in the style panel

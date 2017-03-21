@@ -10,3 +10,23 @@
     if($story-width-mode == 'Normal', $main-content-width-extra-large, $main-content-width-extra-extra-large)
   );
 }
+
+.component-goal-embed {
+  iframe {
+    @include media-query-property(
+      'width',
+      $goal-tile-iframe-scale-small,
+      $goal-tile-iframe-scale-medium,
+      if($story-width-mode == 'Normal', $goal-tile-iframe-scale-large, 123%),
+      if($story-width-mode == 'Normal', $goal-tile-iframe-scale-extra-large, 140%)
+    );
+
+    @include media-query-property(
+      'left',
+      $goal-tile-iframe-offset-small,
+      $goal-tile-iframe-offset-medium,
+      if($story-width-mode == 'Normal', $goal-tile-iframe-offset-large, -11%),
+      $goal-tile-iframe-offset-extra-large
+    );
+  }
+}

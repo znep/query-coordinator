@@ -36,21 +36,26 @@ RSpec.describe ThemesHelper, type: :helper do
 
   describe '#cache_key_for_custom_themes' do
     let(:themes) { [] }
-    let(:cache_key) { helper.cache_key_for_custom_themes(themes) }
+    let(:env_cache_key) { 'foobar' }
+    let(:result) { helper.cache_key_for_custom_themes(themes) }
+
+    before do
+      allow(Rails.application.config).to receive(:theme_cache_key_prefix).and_return(env_cache_key)
+    end
 
     context 'when no themes' do
       let(:themes) { [] }
 
       it 'is nil' do
-        expect(cache_key).to be_nil
+        expect(result).to be_nil
       end
     end
 
     context 'when one theme' do
       let(:themes) { [double('theme', updated_at: 12345, domain_cname: 'thedomain.gov')] }
 
-      it 'is based on updated_at and domain' do
-        expect(cache_key).to eq('thedomain.gov/themes/custom-12345')
+      it 'is based on updated_at, domain, and THEME_CACHE_KEY environment variable' do
+        expect(result).to eq("thedomain.gov/themes/custom-#{env_cache_key}-12345")
       end
     end
 
@@ -62,9 +67,9 @@ RSpec.describe ThemesHelper, type: :helper do
         ]
       end
 
-      it 'is based on updated_at and domain' do
+      it 'is based on updated_at and domain, and THEME_CACHE_KEY environment variable' do
         expected_cache_key_updated_at_part = 54321 + 12345
-        expect(cache_key).to eq("thedomain.gov/themes/custom-#{expected_cache_key_updated_at_part}")
+        expect(result).to eq("thedomain.gov/themes/custom-#{env_cache_key}-#{expected_cache_key_updated_at_part}")
       end
     end
   end

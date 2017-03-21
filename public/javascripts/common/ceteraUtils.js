@@ -42,14 +42,21 @@ export const ceteraUtils = (() => {
   const domain = window.location.hostname; // TODO: federation?
 
   return {
-    fetch: ({ category = null, limit = DEFAULT_LIMIT, order = DEFAULT_ORDER, pageNumber = 1 }) => {
+    fetch: ({
+      category = null,
+      limit = DEFAULT_LIMIT,
+      order = DEFAULT_ORDER,
+      pageNumber = 1,
+      q = null
+    }) => {
       const paramObj = {
         domains: domain,
         search_context: domain,
         categories: category,
         limit,
         order,
-        offset: getOffset(pageNumber, limit)
+        offset: getOffset(pageNumber, limit),
+        q
       };
 
       const paramString = _.reduce(paramObj, function(result, value, key) {

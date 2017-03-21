@@ -1,6 +1,7 @@
 @import "common/breakpoints";
 @import "common/asset-selector/card";
 @import "common/asset-selector/pager";
+@import "../public/javascripts/common/components/searchbox/searchbox";
 
 .asset-selector {
   .results-container {
@@ -9,9 +10,16 @@
       margin: 0 auto;
 
       .results-topbar {
+        display: flex;
+        margin-bottom: 1rem;
+
         > button {
-          display: inline-block;
           margin-right: 0.5rem;
+        }
+
+        .searchbox {
+          margin-left: auto;
+          width: 50%;
         }
       }
 

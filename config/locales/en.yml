@@ -488,6 +488,7 @@ en:
           next_page: Next page
           page: Page
           previous_page: Previous page
+        search_this_category: Search this category
         sort:
           sort_by: Sort by
           sort_types:
@@ -603,6 +604,9 @@ en:
       show_less: Show Less
       title: Columns in this Dataset
       type: Type
+    searchbox:
+      clear: Clear search query
+      placeholder: Search
     updated: Updated
     view_widget:
       external_content: External Content

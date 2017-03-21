@@ -13,7 +13,7 @@ describe('Searchbox', () => {
   it('renders', () => {
     const element = renderComponent(Searchbox, getProps());
     assert.isDefined(element);
-    assert.equal(element.className, 'searchbox');
+    assert.match(element.className, /common-searchbox/);
   });
 
   it('calls the onSearch prop on "Enter" keypress', () => {

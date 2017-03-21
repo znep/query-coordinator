@@ -1,9 +1,9 @@
 @import "styleguide-colors";
 
-.searchbox {
+.common-searchbox {
   position: relative;
 
-  input {
+  input.text-input {
     margin: 0;
     height: 100%;
     padding-left: 32px;

@@ -51,7 +51,7 @@ export class Searchbox extends React.Component {
     };
 
     return (
-      <div className="searchbox">
+      <div className="searchbox common-searchbox">
         <span className="socrata-icon-search"></span>
         <input {...inputProps} />
         {clearSearchButton}

@@ -14,11 +14,13 @@ export class Searchbox extends React.Component {
 
   clearQuery(event) {
     event.preventDefault();
+    this.props.onClear(this.state.query);
     this.setState({ query: '' }, this.handleSearch());
   }
 
-  handleChange(event) {
-    this.setState({ query: event.target.value });
+  handleChange(query) {
+    this.props.onChange(query);
+    this.setState({ query });
   }
 
   handleSearch(query = '') {
@@ -26,7 +28,10 @@ export class Searchbox extends React.Component {
   }
 
   render() {
-    const clearSearchButton = (this.state.query ?
+    const { autoFocus, placeholder } = this.props;
+    const { query } = this.state;
+
+    const clearSearchButton = (query ?
       <button
         aria-label={_.get(I18n, 'common.searchbox.clear')}
         className="clear-search socrata-icon-close-2"
@@ -35,13 +40,14 @@ export class Searchbox extends React.Component {
     );
 
     const inputProps = {
-      'aria-label': this.props.placeholder,
-      className: 'text-input []',
-      onChange: this.handleChange,
+      'aria-label': placeholder,
+      autoFocus,
+      className: 'text-input',
+      onChange: (event) => this.handleChange(event.target.value),
       onKeyDown: handleKeyPress((event) => this.handleSearch(event.target.value)),
-      placeholder: this.props.placeholder,
+      placeholder,
       type: 'text',
-      value: this.state.query
+      value: query
     };
 
     return (
@@ -55,13 +61,19 @@ export class Searchbox extends React.Component {
 }
 
 Searchbox.propTypes = {
+  autoFocus: PropTypes.bool,
   defaultQuery: PropTypes.string,
+  onChange: PropTypes.func,
+  onClear: PropTypes.func,
   onSearch: PropTypes.func.isRequired,
   placeholder: PropTypes.string
 };
 
 Searchbox.defaultProps = {
+  autoFocus: true,
   defaultQuery: '',
+  onChange: _.noop,
+  onClear: _.noop,
   placeholder: _.get(I18n, 'common.searchbox.placeholder')
 };
 

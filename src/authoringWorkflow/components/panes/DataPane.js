@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 
 import Styleguide from 'socrata-components';
 import { translate } from '../../../I18n';
-import { onDebouncedEvent } from '../../helpers';
 import { isLoading, hasData, hasError } from '../../selectors/metadata';
 import {
   getVisualizationType,
@@ -17,7 +16,7 @@ import {
   isColumnChart,
   isTimelineChart
 } from '../../selectors/vifAuthoring';
-import { DEFAULT_LIMIT_FOR_SHOW_OTHER_CATEGORY, TIMELINE_PRECISION } from '../../constants';
+import { TIMELINE_PRECISION } from '../../constants';
 import {
   setLimitNoneAndShowOtherCategory,
   setLimitCountAndShowOtherCategory,
@@ -28,6 +27,7 @@ import {
 
 import Accordion from '../shared/Accordion';
 import AccordionPane from '../shared/AccordionPane';
+import DebouncedInput from '../shared/DebouncedInput';
 
 import DimensionSelector from '../DimensionSelector';
 import MeasureSelector from '../MeasureSelector';
@@ -102,41 +102,42 @@ export var DataPane = React.createClass({
       id: 'limit-count',
       type: 'radio',
       name: 'limit-radio',
-      onChange: onDebouncedEvent(this, onSelectLimitCount, (event) => {
-        return {
-          limitCount: parseInt(this.refs.limitCountValueInput.value, 10),
-          showOtherCategory: this.refs.showOtherCategoryCheckbox.checked
-        };
-      }),
+      onChange: (event) => {
+        const limitCountValueInput = this.limitCountValueContainerRef.querySelector('#limit-count-value');
+        onSelectLimitCount({
+          limitCount: parseInt(limitCountValueInput.value, 10),
+          showOtherCategory: this.showOtherCategoryCheckbox.checked
+        });
+      },
       defaultChecked: !limitCountDisabled
     };
 
     // 'Limit results to' number input and other category group checkbox
     const limitCountValueContainerAttributes = {
       id: 'limit-count-value-container',
+      ref: (ref) => this.limitCountValueContainerRef = ref,
       className: `authoring-field${(limitCountDisabled) ? ' disabled' : ''}`
     };
 
     const limitCountValueInputAttributes = {
       className: 'text-input',
       id: 'limit-count-value',
-      ref: 'limitCountValueInput',
       type: 'number',
       min: 1,
       step: 1,
-      onChange: onDebouncedEvent(this, onChangeLimitCount, (event) => {
-        return {
+      onChange: (event) => {
+        onChangeLimitCount({
           limitCount: parseInt(event.target.value, 10),
-          showOtherCategory: this.refs.showOtherCategoryCheckbox.checked
-        };
-      }),
-      defaultValue: DEFAULT_LIMIT_FOR_SHOW_OTHER_CATEGORY[visualizationType] || 10,
+          showOtherCategory: this.showOtherCategoryCheckbox.checked
+        });
+      },
+      value: _.isNumber(limitCount) ? limitCount : 10,
       disabled: limitCountDisabled
     };
 
     const showOtherCategoryInputAttributes = {
       id: 'show-other-category',
-      ref: 'showOtherCategoryCheckbox',
+      ref: (ref) => this.showOtherCategoryCheckbox = ref,
       type: 'checkbox',
       onChange: this.props.onChangeShowOtherCategory,
       defaultChecked: showOtherCategory,
@@ -145,7 +146,7 @@ export var DataPane = React.createClass({
 
     const limitCountValueContainer = (
       <div {...limitCountValueContainerAttributes}>
-        <input {...limitCountValueInputAttributes} />
+        <DebouncedInput {...limitCountValueInputAttributes} />
         <div id="show-other-category-container" className="checkbox">
           <input {...showOtherCategoryInputAttributes}/>
           <label className="inline-label" htmlFor="show-other-category">

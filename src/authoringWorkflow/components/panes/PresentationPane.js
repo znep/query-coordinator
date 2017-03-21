@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import { translate } from '../../../I18n';
-import { onDebouncedEvent } from '../../helpers';
 
 import {
   BASE_LAYERS,
@@ -20,6 +19,7 @@ import Accordion from '../shared/Accordion';
 import AccordionPane from '../shared/AccordionPane';
 import DebouncedSlider from '../shared/DebouncedSlider';
 import DebouncedInput from '../shared/DebouncedInput';
+import DebouncedTextArea from '../shared/DebouncedTextArea';
 
 import {
   getPrimaryColor,
@@ -86,12 +86,11 @@ export var PresentationPane = React.createClass({
   renderPrimaryColor(labelText) {
     var { vifAuthoring, onChangePrimaryColor } = this.props;
     var primaryColor = getPrimaryColor(vifAuthoring);
-    var handleColorChange = onDebouncedEvent(this, onChangePrimaryColor, (color) => color);
 
     return (
       <div>
         <label className="block-label" htmlFor="primary-color">{labelText}</label>
-        <Styleguide.ColorPicker handleColorChange={handleColorChange} value={primaryColor} palette={COLORS}/>
+        <Styleguide.ColorPicker handleColorChange={onChangePrimaryColor} value={primaryColor} palette={COLORS}/>
       </div>
     );
   },
@@ -99,12 +98,11 @@ export var PresentationPane = React.createClass({
   renderSecondaryColor(labelText) {
     var { vifAuthoring, onChangeSecondaryColor } = this.props;
     var secondaryColor = getSecondaryColor(vifAuthoring);
-    var handleColorChange = onDebouncedEvent(this, onChangeSecondaryColor, (color) => color);
 
     return (
       <div>
         <label className="block-label" htmlFor="secondary-color">{labelText}</label>
-        <Styleguide.ColorPicker handleColorChange={handleColorChange} value={secondaryColor} palette={COLORS}/>
+        <Styleguide.ColorPicker handleColorChange={onChangeSecondaryColor} value={secondaryColor} palette={COLORS}/>
       </div>
     );
   },
@@ -281,12 +279,11 @@ export var PresentationPane = React.createClass({
   renderTitleField() {
     const { vifAuthoring, onChangeTitle } = this.props;
     const title = getTitle(vifAuthoring);
-    const onChange = onDebouncedEvent(this, onChangeTitle);
 
     return (
       <div className="authoring-field">
         <label className="block-label" htmlFor="title">{translate('panes.presentation.fields.title.title')}</label>
-        <input id="title" className="text-input" type="text" onChange={onChange} defaultValue={title} />
+        <DebouncedInput id="title" className="text-input" type="text" onChange={onChangeTitle} value={title} />
       </div>
     );
   },
@@ -294,12 +291,11 @@ export var PresentationPane = React.createClass({
   renderDescriptionField() {
     const { vifAuthoring, onChangeDescription } = this.props;
     const description = getDescription(vifAuthoring);
-    const onChange = onDebouncedEvent(this, onChangeDescription);
 
     return (
       <div className="authoring-field">
         <label className="block-label" htmlFor="description">{translate('panes.presentation.fields.description.title')}</label>
-        <textarea id="description" className="text-input text-area" onChange={onChange} defaultValue={description} />
+        <DebouncedTextArea id="description" className="text-input text-area" onChange={onChangeDescription} value={description} />
       </div>
     );
   },
@@ -321,7 +317,7 @@ export var PresentationPane = React.createClass({
       id: 'color-palette',
       options: colorPalettes,
       value: selectedColorPalette,
-      onSelection: onDebouncedEvent(this, onSelectColorPalette, (event) => event.value)
+      onSelection: onSelectColorPalette
     };
 
     return [
@@ -354,7 +350,7 @@ export var PresentationPane = React.createClass({
       id: 'color-palette',
       options: colorPalettes,
       value: selectedColorPalette,
-      onSelection: onDebouncedEvent(this, onSelectColorPalette, (event) => event.value)
+      onSelection: onSelectColorPalette
     };
 
     return [
@@ -405,7 +401,7 @@ export var PresentationPane = React.createClass({
       id: 'color-palette',
       options: colorPalettes,
       value: selectedColorPalette,
-      onSelection: onDebouncedEvent(this, onSelectColorPalette, (event) => event.value)
+      onSelection: onSelectColorPalette
     };
 
     return (
@@ -559,7 +555,7 @@ export var PresentationPane = React.createClass({
       id: 'color-palette',
       options: colorPalettes,
       value: selectedColorPalette,
-      onSelection: onDebouncedEvent(this, onSelectColorPalette, (event) => event.value)
+      onSelection: onSelectColorPalette
     };
 
     return [
@@ -697,16 +693,16 @@ function mapDispatchToProps(dispatch) {
       dispatch(setColorScale(...colorScale.scale));
     },
 
-    onSelectColorPalette: palette => {
-      dispatch(setColorPalette(palette));
+    onSelectColorPalette: (event) => {
+      dispatch(setColorPalette(event.value));
     },
 
-    onChangeTitle: title => {
-      dispatch(setTitle(title));
+    onChangeTitle: (event) => {
+      dispatch(setTitle(event.target.value));
     },
 
-    onChangeDescription: description => {
-      dispatch(setDescription(description));
+    onChangeDescription: (event) => {
+      dispatch(setDescription(event.target.value));
     },
 
     onChangeShowSourceDataLink: event => {

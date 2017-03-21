@@ -22,12 +22,13 @@ import {
   getXAxisScalingMode,
   isTimelineChart,
   isInsertableVisualization,
-  hasMadeChangesToVifs
+  hasMadeChangesToVifs,
+  isUserCurrentlyActive
 } from '../selectors/vifAuthoring';
 
 import CustomizationTabs from './CustomizationTabs';
 import CustomizationTabPanes from './CustomizationTabPanes';
-import VisualizationPreview from './VisualizationPreview';
+import VisualizationPreviewContainer from './VisualizationPreviewContainer';
 import TableView from './TableView';
 import DataPane from './panes/DataPane';
 import PresentationPane from './panes/PresentationPane';
@@ -193,7 +194,7 @@ export const AuthoringWorkflow = React.createClass({
 
   render() {
     const { metadata, vifAuthoring, backButtonText } = this.props;
-    const isNotInsertable = !isInsertableVisualization(vifAuthoring);
+    const isNotInsertable = !isInsertableVisualization(vifAuthoring) || isUserCurrentlyActive(vifAuthoring);
     const scalingMode = null; // This feature is hidden for now.
     const modalFooterActionsClassNames = classNames({
       'with-back-button': _.isString(backButtonText)
@@ -212,7 +213,7 @@ export const AuthoringWorkflow = React.createClass({
             </div>
             <div className="authoring-preview-container">
               <VisualizationTypeSelector/>
-              <VisualizationPreview />
+              <VisualizationPreviewContainer />
               <TableView />
               {scalingMode}
             </div>

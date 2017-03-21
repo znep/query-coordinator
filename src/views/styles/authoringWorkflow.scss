@@ -501,7 +501,7 @@
         }
       }
     }
-    
+
     .empty-region-selection-alert {
       display: flex;
       margin: 20px;
@@ -521,31 +521,34 @@
     border: 1px solid #E4E4E4;
     margin: 20px;
     z-index: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f2f2f2;
+    height: 490px;
+
+    .get-started-container {
+      margin-top: 0;
+      max-width: 558px;
+      padding: 0 20px;
+
+      .get-started-title {
+        font-size: 26px;
+      }
+    }
 
     .visualization-preview {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #f2f2f2;
+      display: none;
+      height: 100%;
       width: 100%;
-      height: 490px;
 
       .socrata-visualization {
         border-width: 0;
       }
 
-      .get-started-container {
-        margin-top: 0;
-        max-width: 558px;
-        padding: 0 20px;
-
-        .get-started-title {
-          font-size: 26px;
-        }
-      }
-
       &.visualization-preview-rendered {
-        background-color: transparent;
+        display: block;
+        background-color: #fff;
       }
     }
 
@@ -559,37 +562,33 @@
       z-index: 100;
     }
 
-    .visualization-preview-map-saving,
     .visualization-preview-map-message {
       display: inline-flex;
       line-height: normal;
       opacity: 0.9;
-
-      .visualization-preview-map-text,
-      .visualization-preview-map-icon,
-      .visualization-preview-map-saving-text,
-      .visualization-preview-map-saving-icon {
-        margin: auto;
-      }
-
-      .visualization-preview-map-icon,
-      .visualization-preview-map-saving-icon {
-        margin: auto;
-        margin-top: 0;
-        margin-right: 5px;
-      }
-    }
-
-    .visualization-preview-map-saving {
-      width: 250px;
-      margin: auto;
-      margin-right: 5px;
-    }
-
-    .visualization-preview-map-message {
+      padding: 0;
       margin: auto;
       margin-top: 5px;
       margin-right: 5px;
+
+      .visualization-preview-map-text {
+        margin: auto;
+        margin-left: 11px;
+      }
+
+      .visualization-preview-map-text-dismiss {
+        margin: auto;
+        color: #1c6387;
+
+        &:hover {
+          color: darken(#1c6387, 30%);
+        }
+
+        .socrata-icon-close-2 {
+          width: 13px;
+          height: 13px;
+        }
+      }
     }
   }
 

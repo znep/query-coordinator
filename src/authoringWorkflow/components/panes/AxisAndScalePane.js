@@ -4,7 +4,6 @@ import Styleguide from 'socrata-components';
 import { connect } from 'react-redux';
 
 import { translate } from '../../../I18n';
-import { onDebouncedEvent } from '../../helpers';
 import { CHART_SORTING } from '../../constants';
 import {
   setOrderBy,
@@ -87,7 +86,7 @@ export var AxisAndScalePane = React.createClass({
     });
 
     if (event.target.value == 'automatic') {
-      onDebouncedEvent(this, this.props.onMeasureAxisControlAuto)();
+      this.props.onMeasureAxisControlAuto();
     }
   },
 
@@ -117,13 +116,13 @@ export var AxisAndScalePane = React.createClass({
           <label className="block-label" htmlFor="measure-axis-scale-custom-min">
             {translate('panes.axis_and_scale.fields.scale.minimum')}
           </label>
-          <DebouncedInput value={limitMin} onChange={onMeasureAxisMinValueChange} className="text-input" id="measure-axis-scale-custom-min" />
+          <DebouncedInput type="number" value={limitMin} onChange={onMeasureAxisMinValueChange} className="text-input" id="measure-axis-scale-custom-min" />
         </div>
         <div>
           <label className="block-label" htmlFor="measure-axis-scale-custom-max">
             {translate('panes.axis_and_scale.fields.scale.maximum')}
           </label>
-          <DebouncedInput value={limitMax} onChange={onMeasureAxisMaxValueChange} className="text-input" id="measure-axis-scale-custom-max" />
+          <DebouncedInput type="number" value={limitMax} onChange={onMeasureAxisMaxValueChange} className="text-input" id="measure-axis-scale-custom-max" />
         </div>
       </div>
     );

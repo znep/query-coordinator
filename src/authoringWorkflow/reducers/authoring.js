@@ -6,22 +6,24 @@ import {
   AWAIT_REGION_CODING,
   FINISH_REGION_CODING,
   HANDLE_REGION_CODING_ERROR,
-  REQUEST_CENTER_AND_ZOOM,
   REQUEST_REGION_CODING,
-  SET_CENTER_AND_ZOOM,
   SET_COMPUTED_COLUMN,
   SET_VIF_CHECKPOINT,
-  SET_VISUALIZATION_TYPE
+  SET_VISUALIZATION_TYPE,
+  SET_USER_ACTIVE,
+  SET_USER_IDLE,
+  SET_MAP_INFO_DISMISSED
 } from '../actions';
 
 export var defaultState = {
   selectedVisualizationType: null,
-  showCenteringAndZoomingSaveMessage: false,
+  mapInfoDismissed: false,
   showRegionCodingProcessingMessage: false,
   regionCodingError: null,
   regionCodingLastChecked: null,
   hasPannedOrZoomed: false,
-  filters: []
+  filters: [],
+  userCurrentlyActive: false,
 };
 
 export default function authoring(state, action) {
@@ -49,13 +51,8 @@ export default function authoring(state, action) {
       state.hasPannedOrZoomed = false;
       break;
 
-    case REQUEST_CENTER_AND_ZOOM:
-      state.showCenteringAndZoomingSaveMessage = true;
-      break;
-
-    case SET_CENTER_AND_ZOOM:
-      state.showCenteringAndZoomingSaveMessage = false;
-      state.hasPannedOrZoomed = true;
+    case SET_MAP_INFO_DISMISSED:
+      state.mapInfoDismissed = true;
       break;
 
     case REQUEST_REGION_CODING:
@@ -76,6 +73,14 @@ export default function authoring(state, action) {
 
     case AWAIT_REGION_CODING:
       state.regionCodingLastChecked = action.updatedAt;
+      break;
+
+    case SET_USER_ACTIVE:
+      state.userCurrentlyActive = true;
+      break;
+
+    case SET_USER_IDLE:
+      state.userCurrentlyActive = false;
       break;
   }
 

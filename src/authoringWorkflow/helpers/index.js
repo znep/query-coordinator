@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import utils from 'socrata-utils';
 import { translate } from '../../I18n';
-import { INPUT_DEBOUNCE_MILLISECONDS } from '../constants';
 
 export const setStringValueOrDefaultValue = (object, path, value, defaultValue) => {
   const hasPath = _.has(object, path);
@@ -80,51 +79,3 @@ export const setUnits = (series, action) => {
     setStringValueOrDefaultValue(series, 'unit.other', utils.pluralize(rowDisplayUnit));
   }
 };
-
-/**
- * Adds a debounce of some constant time (defined in constants.js)
- * to an arbitrary function that will be passed event.target.value
- * or use the specified valueHandler function's return value.
- *
- * onDebouncedEvent is a workaround for React synthentic event
- * pooling. We can't asynchronously access the event that is
- * passed to a React event handler because of its reuse (React
- * immediately nulls the value).
- *
- * Usage:
- * <input onChange={onDebouncedEvent(this, this.props.onChangeText)} />
- * <input onChange={onDebouncedEvent(this, this.props.onChangeOtherText, () => 'always')} />
- * ...
- * this.props.onChangeText = (text) => dispatch(changeText(text));
- * this.props.onChangeOtherText = (text) => {
- *   assert(text === 'always');
- *   dispatch(changeOtherText(text));
- * });
- *
- * // What happens under the hood?
- * this['onChangeText9290df02'] ||= _.debounce(this.props.onChangeText, INPUT_DEBOUNCE_MILLISECONDS);
- * this['onChangeText9290df02'](event.target.value);
- *
- * Caveats:
- * - Only use in a React component.
- * - Only use synchronous computations in the valueHandler.
- */
-export const onDebouncedEvent = (componentInstance, propertyEventHandler, valueHandler) => {
-  return (event) => {
-    const value = _.isFunction(valueHandler) ?
-      valueHandler(event) : _.get(event, 'target.value');
-    const fingerprint = btoa(propertyEventHandler);
-    const debouncedEventHandler = `onDebouncedEvent${fingerprint}`;
-    const isAlreadyDebounced = _.isFunction(componentInstance[debouncedEventHandler]);
-
-    componentInstance[debouncedEventHandler] = isAlreadyDebounced ?
-      componentInstance[debouncedEventHandler] :
-      _.debounce(
-        propertyEventHandler,
-        INPUT_DEBOUNCE_MILLISECONDS,
-        {leading: true, trailing: true}
-      );
-
-    componentInstance[debouncedEventHandler](value);
-  };
-}

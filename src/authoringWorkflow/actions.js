@@ -584,17 +584,12 @@ export function setCenterAndZoom(centerAndZoom) {
   };
 }
 
-export const REQUEST_CENTER_AND_ZOOM = 'REQUEST_CENTER_AND_ZOOM';
-export function requestCenterAndZoom(centerAndZoom) {
-  return (dispatch) => {
-    dispatch({ type: REQUEST_CENTER_AND_ZOOM });
-
-    setTimeout(() => {
-      dispatch(setCenterAndZoom(centerAndZoom));
-    }, 3000);
+export const SET_MAP_INFO_DISMISSED = 'SET_MAP_INFO_DISMISSED';
+export function setMapInfoDismissed() {
+  return {
+    type: SET_MAP_INFO_DISMISSED
   };
 }
-
 
 export const SET_DIMENSION_GROUPING_COLUMN_NAME = 'SET_DIMENSION_GROUPING_COLUMN_NAME';
 export function setDimensionGroupingColumnName(dimensionGroupingColumnName) {
@@ -665,5 +660,19 @@ export function resetState() {
 
     // Trigger load on initial VIF
     load(dispatch, state.vifAuthoring.vifs.initialVif);
+  };
+}
+
+export const SET_USER_ACTIVE = 'SET_USER_ACTIVE';
+export function setUserActive() {
+  return {
+    type: SET_USER_ACTIVE
+  };
+}
+
+export const SET_USER_IDLE = 'SET_USER_IDLE';
+export function setUserIdle() {
+  return {
+    type: SET_USER_IDLE
   };
 }

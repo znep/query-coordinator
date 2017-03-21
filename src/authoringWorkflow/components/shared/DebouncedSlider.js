@@ -1,11 +1,18 @@
 import _ from 'lodash';
 import React from 'react';
+import { connect } from 'react-redux';
 import Styleguide from 'socrata-components';
 import {
   INPUT_DEBOUNCE_MILLISECONDS
 } from '../../constants';
+import {
+  setUserActive,
+  setUserIdle
+} from '../../actions';
+import { isUserCurrentlyActive } from '../../selectors/vifAuthoring';
 
-export default class DebouncedSlider extends React.Component {
+
+export class DebouncedSlider extends React.Component {
   constructor(props) {
     super(props);
 
@@ -14,16 +21,10 @@ export default class DebouncedSlider extends React.Component {
     };
 
     this.timeoutId = null;
-    this.handleSliderChange = this.handleSliderChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.value !== this.props.value) {
-      this.setState({ value: nextProps.value });
-    }
-  }
-
-  handleSliderChange(value) {
+  handleChange(value) {
     this.setState(
       { value },
       () => {
@@ -31,22 +32,44 @@ export default class DebouncedSlider extends React.Component {
           clearTimeout(this.timeoutId);
         }
 
-        this.timeoutId = setTimeout(() => this.props.onChange(this.state.value), this.props.delay);
+        if (!isUserCurrentlyActive(this.props.vifAuthoring)) {
+          this.props.onDebouncedInputStart();
+        }
+
+        this.timeoutId = setTimeout(() => {
+          this.props.onDebouncedInputStop();
+          return this.props.onChange(this.state.value);
+        }, INPUT_DEBOUNCE_MILLISECONDS);
       }
     );
   }
 
   render() {
-    const props = _.omit(this.props, ['value', 'onChange']);
-    return <Styleguide.Slider {...props} value={this.state.value} onChange={this.handleSliderChange}/>;
+    const props = _.omit(this.props, ['value', 'onChange', 'onDebouncedInputStart', 'onDebouncedInputStop', 'vifAuthoring']);
+    return <Styleguide.Slider {...props} value={this.state.value} onChange={this.handleChange}/>;
   }
 }
 
-DebouncedSlider.defaultProps = {
-  delay: INPUT_DEBOUNCE_MILLISECONDS
-};
-
 DebouncedSlider.propTypes = {
-  delay: React.PropTypes.number,
   onChange: React.PropTypes.func.isRequired
 };
+
+function mapStateToProps(state) {
+  return {
+    vifAuthoring: state.vifAuthoring
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    onDebouncedInputStart: () => {
+      dispatch(setUserActive());
+    },
+
+    onDebouncedInputStop: () => {
+      dispatch(setUserIdle());
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DebouncedSlider);

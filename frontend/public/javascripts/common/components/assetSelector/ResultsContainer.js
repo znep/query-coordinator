@@ -6,6 +6,7 @@ import Card from './Card';
 import NoResults from './NoResults';
 import Pager from './Pager';
 import ResultCount from './ResultCount';
+import Searchbox from '../searchbox/Searchbox';
 import SortDropdown from './SortDropdown';
 import Spinner from './Spinner';
 
@@ -25,10 +26,11 @@ export class ResultsContainer extends React.Component {
       */
       resultCount: 0,
       results: [],
-      sort: 'relevance'
+      sort: 'relevance',
+      query: ''
     };
 
-    _.bindAll(this, ['changePage', 'changeSort']);
+    _.bindAll(this, ['changePage', 'changeSort', 'changeQuery']);
   }
 
   componentDidMount() {
@@ -47,7 +49,8 @@ export class ResultsContainer extends React.Component {
           category: this.props.category,
           limit: this.props.resultsPerPage,
           order: this.state.sort,
-          pageNumber
+          pageNumber,
+          q: this.state.query
         }).
         then((response) => {
           const results = ceteraUtils.mapToAssetSelectorResult(response.results);
@@ -69,6 +72,10 @@ export class ResultsContainer extends React.Component {
     this.setState({
       sort: option.value
     }, () => this.changePage(1));
+  }
+
+  changeQuery(query) {
+    this.setState({ query }, () => this.changePage(1));
   }
 
   render() {
@@ -114,6 +121,9 @@ export class ResultsContainer extends React.Component {
           <div className="results-topbar">
             <BackButton onClick={this.props.onClose} />
             {this.props.additionalTopbarComponents.map((component) => component)}
+            <Searchbox
+              onSearch={this.changeQuery}
+              placeholder={_.get(I18n, 'common.asset_selector.results_container.search_this_category')} />
           </div>
           {resultContent}
         </div>

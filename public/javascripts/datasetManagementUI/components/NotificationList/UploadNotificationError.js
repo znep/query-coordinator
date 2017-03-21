@@ -1,9 +1,18 @@
 import React, { PropTypes, Component } from 'react';
 import { removeNotification } from '../../actions/notifications';
-import { makeErrorMsg } from '../../lib/notifications';
 import ProgressBar from '../ProgressBar';
 import _ from 'lodash';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+
+export function makeErrorMsg(filename) {
+  return {
+    title: I18n.progress_items.connection_error_title,
+    body: [
+      { __html: I18n.progress_items.connection_error_body_0.format(filename) },
+      { __html: I18n.progress_items.connection_error_body_1 }
+    ]
+  };
+}
 
 class UploadNotificationError extends Component { //  eslint-disable-line react/prefer-es6-class
   constructor() {
@@ -25,7 +34,7 @@ class UploadNotificationError extends Component { //  eslint-disable-line react/
   render() {
     const { upload, notification, dispatch } = this.props;
     const { detailsOpen } = this.state;
-    const error = makeErrorMsg(upload);
+    const errorMsg = makeErrorMsg(`<span class="filename">${upload.filename}</span>`);
 
     return (
       <div className="dsmui-notification error">
@@ -47,18 +56,18 @@ class UploadNotificationError extends Component { //  eslint-disable-line react/
           transitionEnterTimeout={500}
           transitionLeaveTimeout={500}>
           {detailsOpen &&
-            <div key={error.title}>
+            <div key={errorMsg.title}>
               <div className="msg-container">
-                <h6>{error.title}</h6>
-                {error.body}
+                <h6>{errorMsg.title}</h6>
+                {errorMsg.body.map((par, idx) => <p key={idx} dangerouslySetInnerHTML={par}></p>)}
               </div>
               <div className="btn-container">
                 <button
-                  className="btn btn-default"
+                  className="btn btn-default btn-xs"
                   onClick={() => dispatch(removeNotification(notification))}>
                   Dismiss
                 </button>
-                <a target="_blank" href="https://support.socrata.com" className="btn btn-primary">
+                <a className="btn btn-primary btn-xs" target="_blank" href="https://support.socrata.com">
                   Contact Support
                 </a>
               </div>

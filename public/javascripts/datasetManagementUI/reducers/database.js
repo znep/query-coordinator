@@ -5,7 +5,6 @@ import {
   REVERT_EDITS,
   INSERT_STARTED,
   INSERT_FROM_SERVER,
-  FAILED_FROM_SERVER,
   INSERT_MULTIPLE_FROM_SERVER,
   INSERT_SUCCEEDED,
   INSERT_FAILED,
@@ -24,7 +23,6 @@ import {
   STATUS_DIRTY_IMMUTABLE,
   statusDirtyImmutable,
   statusSaved,
-  statusFailedOnServer,
   statusSavedOnServer,
   STATUS_INSERTING,
   statusInserting,
@@ -78,30 +76,6 @@ export default function dbReducer(db = emptyDB, action) {
             [action.newRecord.id]: {
               ...action.newRecord,
               __status__: statusSavedOnServer
-            }
-          }
-        };
-      }
-    }
-
-    case FAILED_FROM_SERVER: {
-      if (db[action.tableName][action.newRecord.id]) {
-        if (action.options.ifNotExists) {
-          return db;
-        } else {
-          throw new ReferenceError(
-            `failedFromServer: record in table "${action.tableName}" ` +
-            `with id ${action.newRecord.id} already exists`
-          );
-        }
-      } else {
-        return {
-          ...db,
-          [action.tableName]: {
-            ...db[action.tableName],
-            [action.newRecord.id]: {
-              ...action.newRecord,
-              __status__: statusFailedOnServer(action.newRecord, action.error)
             }
           }
         };

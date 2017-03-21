@@ -10,19 +10,13 @@ export const upsertJobNotification = (upsertJobId) => ({
   upsertJobId
 });
 
-export const makeErrorMsg = code => {
-  const badConnection = {
+export const makeErrorMsg = upload => {
+  console.log("********************************************************************************")
+  console.log(upload)
+  console.log("********************************************************************************")
+
+  return {
     title: I18n.progress_items.connection_error_title,
-    body: I18n.progress_items.connection_error_body
+    body: I18n.progress_items.connection_error_body.format(upload.filename)
   };
-
-  switch (code) {
-    case 0:
-      return badConnection;
-    case 502:
-      return badConnection;
-    default:
-      return badConnection;
-  }
-
 };

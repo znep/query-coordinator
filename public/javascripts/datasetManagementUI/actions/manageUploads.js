@@ -3,7 +3,6 @@ import * as Links from '../links';
 import * as dsmapiLinks from '../dsmapiLinks';
 import {
   insertFromServer,
-  failedFromServer,
   insertMultipleFromServer,
   insertFromServerIfNotExists,
   insertStarted,
@@ -21,7 +20,7 @@ import {
   addNotification,
   removeNotificationAfterTimeout
 } from './notifications';
-import { uploadNotification, makeErrorMsg } from '../lib/notifications';
+import { uploadNotification } from '../lib/notifications';
 import { push } from 'react-router-redux';
 import { socrataFetch, checkStatus, getJson } from '../lib/http';
 import { parseDate } from '../lib/parseDate';
@@ -130,22 +129,17 @@ function pollForOutputSchema(uploadId) {
 }
 
 export function insertAndSubscribeToUpload(dispatch, upload) {
-  const dbUpload = {
+  dispatch(insertFromServer('uploads', {
     ..._.omit(upload, ['schemas']),
     inserted_at: parseDate(upload.inserted_at),
     finished_at: upload.finished_at ? parseDate(upload.finished_at) : null,
     failed_at: upload.failed_at ? parseDate(upload.failed_at) : null,
     created_by: upload.created_by
-  };
+  }));
 
   if (upload.failed_at) {
-    dispatch(failedFromServer('uploads', dbUpload, makeErrorMsg()));
-
-    const notification = uploadNotification(upload.id);
-    dispatch(addNotification(notification));
+    dispatch(addNotification(uploadNotification(upload.id)));
   } else {
-    dispatch(insertFromServer('uploads', dbUpload));
-
     subscribeToUpload(dispatch, upload);
   }
 }

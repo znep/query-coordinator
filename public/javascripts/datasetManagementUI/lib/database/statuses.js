@@ -29,16 +29,6 @@ export const statusSavedOnServer = {
   savedAt: 'ON_SERVER' // TODO: if record has updated_at, just get that
 };
 
-export const STATUS_FAILED_SAVED = 'FAILED_SAVED';
-export function statusFailedOnServer(newRecord, error) {
-  return {
-    type: STATUS_FAILED_SAVED,
-    newRecord,
-    error,
-    savedAt: newRecord.failed_at || 'ON_SERVER'
-  };
-}
-
 export const STATUS_INSERTING = 'INSERTING';
 export function statusInserting() {
   return {

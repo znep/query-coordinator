@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { removeNotification } from '../../actions/notifications';
+import { makeErrorMsg } from '../../lib/notifications';
 import ProgressBar from '../ProgressBar';
 import _ from 'lodash';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
@@ -24,6 +25,8 @@ class UploadNotificationError extends Component { //  eslint-disable-line react/
   render() {
     const { upload, notification, dispatch } = this.props;
     const { detailsOpen } = this.state;
+    const error = makeErrorMsg(upload);
+
     return (
       <div className="dsmui-notification error">
         <span className="message">{I18n.progress_items.upload_failed}</span>
@@ -44,10 +47,10 @@ class UploadNotificationError extends Component { //  eslint-disable-line react/
           transitionEnterTimeout={500}
           transitionLeaveTimeout={500}>
           {detailsOpen &&
-            <div key={upload.__status__.error.title}>
+            <div key={error.title}>
               <div className="msg-container">
-                <h6>{upload.__status__.error.title}</h6>
-                {upload.__status__.error.body}
+                <h6>{error.title}</h6>
+                {error.body}
               </div>
               <div className="btn-container">
                 <button

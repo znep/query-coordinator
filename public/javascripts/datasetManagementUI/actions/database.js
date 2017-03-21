@@ -1,5 +1,3 @@
-import { makeErrorMsg } from '../lib/notifications';
-
 export const BATCH = 'BATCH';
 export const batch = (operations) => ({
   type: BATCH,
@@ -37,16 +35,6 @@ export const insertFromServer = (tableName, newRecord, options = {}) => ({
   tableName,
   newRecord,
   options: _.defaults(options, { ifNotExists: false })
-});
-
-// used when the server pushes new info to us (e.g. over a web socket)
-// and on initial page load
-export const FAILED_FROM_SERVER = 'FAILED_FROM_SERVER';
-export const failedFromServer = (tableName, newRecord, error) => ({
-  type: FAILED_FROM_SERVER,
-  tableName,
-  newRecord,
-  error
 });
 
 export const INSERT_MULTIPLE_FROM_SERVER = 'INSERT_MULTIPLE_FROM_SERVER';
@@ -125,7 +113,7 @@ export const updateFailed = (tableName, updates, error, percentCompleted) => ({
   type: UPDATE_FAILED,
   tableName,
   updates,
-  error: makeErrorMsg(error),
+  error,
   percentCompleted
 });
 

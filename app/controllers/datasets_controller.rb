@@ -743,6 +743,14 @@ class DatasetsController < ApplicationController
     return if @parent_view.nil? # this will do an implicit render, apparently :(
     return render_404 unless @parent_view.blist_or_derived_view_but_not_data_lens?
 
+    # EN-13491: If users reach endpoint OBE-4x4/visualization
+    # they need to be re-routed to the NBE 4x4
+    # because visualization_canvas is only applicable on NBE datasets
+    if (@parent_view.newBackend === false)
+      nbe_url = create_visualization_canvas_path(id: @parent_view.migrations['nbeId'])
+      return redirect_to nbe_url
+    end
+
     @view = @parent_view.new_visualization_canvas
 
     @body_classes = 'hide-site-chrome'

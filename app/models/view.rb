@@ -2033,9 +2033,9 @@ class View < Model
       :name => I18n.t('visualization_canvas.info_pane.bootstrap_title', name: name),
       :description => html_description,
       :category => category,
-      :columns => nbe_view.columns.map(&:data),
+      :columns => columns.map(&:data),
       :displayType => 'data_lens',
-      :originalViewId => nbe_view.id,
+      :originalViewId => id,
       :displayFormat => {}
     }.with_indifferent_access)
   end

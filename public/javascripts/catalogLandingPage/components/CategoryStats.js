@@ -6,7 +6,7 @@ import CategoryStat from './CategoryStat';
 const CategoryStats = (props) => {
   var { categoryStats, showStats } = props;
 
-  if (!showStats || _.isEmpty(categoryStats)) { return null; }
+  if (!showStats || _.isEmpty(categoryStats) || _.every(_.map(categoryStats, _.isEmpty))) { return null; }
 
   const sortedStats = () => (_(categoryStats).toPairs().sortBy(0).fromPairs().value());
   const filteredStats = () => (_(sortedStats()).toPairs().reject([1, 0]).fromPairs().value());

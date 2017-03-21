@@ -37,7 +37,7 @@ class UploadNotificationError extends Component { //  eslint-disable-line react/
           <span className="icon socrata-icon-warning"></span>
         </span>
         <div className="upload-progress-bar">
-          <ProgressBar percent={upload.__status__.percentCompleted} />
+          <ProgressBar percent={upload.__status__.percentCompleted || 0} />
         </div>
         <ReactCSSTransitionGroup
           transitionName="dsmui-error-notification-transition"

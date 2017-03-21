@@ -39,6 +39,16 @@ export const insertFromServer = (tableName, newRecord, options = {}) => ({
   options: _.defaults(options, { ifNotExists: false })
 });
 
+// used when the server pushes new info to us (e.g. over a web socket)
+// and on initial page load
+export const FAILED_FROM_SERVER = 'FAILED_FROM_SERVER';
+export const failedFromServer = (tableName, newRecord, error) => ({
+  type: FAILED_FROM_SERVER,
+  tableName,
+  newRecord,
+  error
+});
+
 export const INSERT_MULTIPLE_FROM_SERVER = 'INSERT_MULTIPLE_FROM_SERVER';
 export const insertMultipleFromServer = (tableName, newRecords, options = {}) => ({
   type: INSERT_MULTIPLE_FROM_SERVER,

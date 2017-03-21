@@ -1792,11 +1792,8 @@ en:
       new_file: Upload a New File
       supported_uploads: Supported file types .csv, .tsv, .xls, .xlsx
       table_preview: Table Preview
-    manage: Manage
-    manage_uploads:
-      failed: "{filename} (failed: {status})"
-      new_file: "Upload a new file:"
       previous: Previous uploads
+    manage: Manage
     metadata_manage:
       column_metadata_label: Column Descriptions
       column_tab:

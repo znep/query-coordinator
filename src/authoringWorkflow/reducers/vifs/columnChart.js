@@ -11,6 +11,8 @@ import {
 
 import * as actions from '../../actions';
 
+import { FeatureFlags } from 'socrata-utils';
+
 export default function columnChart(state, action) {
   if (_.isUndefined(state)) {
     return vifs().columnChart;
@@ -54,9 +56,11 @@ export default function columnChart(state, action) {
           _.set(state, 'series[0].color.palette', 'categorical');
         }
 
-        // If legend visibility has not yet been set, then set it to visible
-        if (_.get(state, 'configuration.showLegend', null) === null) {
-          _.set(state, 'configuration.showLegend', true);
+        if (FeatureFlags.value('visualization_authoring_enable_column_chart_legend')) {
+          // If legend visibility has not yet been set, then set it to visible
+          if (_.get(state, 'configuration.showLegend', null) === null) {
+            _.set(state, 'configuration.showLegend', true);
+          }
         }
       }
       break;

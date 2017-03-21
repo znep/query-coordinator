@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import Styleguide from 'socrata-components';
+import { FeatureFlags } from 'socrata-utils';
 
 import { translate } from '../../../I18n';
 import { COLUMN_TYPES } from '../../constants';
@@ -84,6 +85,10 @@ export const LegendsAndFlyoutsPane = React.createClass({
 
   renderLegends() {
     const { vifAuthoring, onChangeShowLegend } = this.props;
+
+    if (!FeatureFlags.value('visualization_authoring_enable_column_chart_legend')) {
+      return null;
+    }
 
     // Currently legends are only available for grouping visualizations
     const isGrouping = getDimensionGroupingColumnName(vifAuthoring);

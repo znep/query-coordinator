@@ -36,6 +36,10 @@
     <div id="vif-selections"></div>
     <div id="authoring-workflow"></div>
 
+    <strong>Feature Flags:</strong>
+    <button id="edit-feature-flags">Set</button>
+    <pre id="feature-flags"></pre>
+
     <section id='outputs'>
       <div id="chart"></div>
 
@@ -81,6 +85,27 @@
 
     $('#edit, #outputs').hide();
 
+    function printFeatureFlags() {
+      $('#feature-flags').text(JSON.stringify(window.socrata.featureFlags, null, '  '));
+    }
+
+    printFeatureFlags();
+
+    $('#edit-feature-flags').click(function() {
+      var flag = prompt('Flag name');
+      if (!flag) { return; }
+      var value = prompt('Flag value');
+      if (!value) { return; }
+      if (value === 'true') {
+        value = true;
+      }
+      if (value === 'false') {
+        value = false;
+      }
+      window.socrata.featureFlags[flag] = value;
+      printFeatureFlags();
+    });
+
     function addVifButton(vif, vifName, extraClass) {
       return $('#vif-selections').append(
         $('<button class="launch btn btn-primary">'+vifName+'</button>').
@@ -89,7 +114,7 @@
       );
     }
 
-    _.each(window.socrata.sampleVifs, addVifButton)
+    _.each(window.socrata.sampleVifs, addVifButton);
 
     var onComplete = function(result) {
       vif = result.vif;

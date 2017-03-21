@@ -136,7 +136,7 @@ class Manager extends React.Component {
       );
     };
 
-    const showStatsCheckbox = () => {
+    const renderShowStatsCheckbox = () => {
       const name = 'showStats';
       const label = _.get(I18n, 'manager.show_stats.label');
 
@@ -158,13 +158,14 @@ class Manager extends React.Component {
         </div>);
     };
 
-    const categoryStats = () => {
+    const renderCategoryStats = () => {
+      const { categoryStats } = this.props;
       // Yes, this code is copy and pasted from the CategoryStats component,
       // except without the header.
-      const sortedStats = () => (_(this.props.categoryStats).toPairs().sortBy(0).fromPairs().value());
+      const sortedStats = () => (_(categoryStats).toPairs().sortBy(0).fromPairs().value());
       const filteredStats = () => (_(sortedStats()).toPairs().reject([1, 0]).fromPairs().value());
 
-      if (_.sum(this.props.categoryStats) === 0) { return null; }
+      if (_.isEmpty(filteredStats())) { return null; }
 
       return (
         <div className="catalog-landing-page-stats">
@@ -215,8 +216,8 @@ class Manager extends React.Component {
             <p className="small explanation">
               {_.get(I18n, 'manager.show_stats.explanation')}
             </p>
-            {showStatsCheckbox()}
-            {categoryStats()}
+            {renderShowStatsCheckbox()}
+            {renderCategoryStats()}
 
             {headingHtml(formatWithCategory('manager.featured_content.label'))}
             <p className="small explanation">
@@ -258,6 +259,7 @@ Manager.propTypes = {
 
 const mapStateToProps = state => ({
   category: state.category,
+  categoryStats: state.categoryStats,
   featuredContent: state.featuredContent,
   header: state.header
 });

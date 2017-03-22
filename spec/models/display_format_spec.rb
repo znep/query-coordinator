@@ -41,6 +41,38 @@ describe DisplayFormat do
         expect { DisplayFormat.new(data).visualization_canvas_metadata }.to raise_error(ArgumentError)
       end
 
+      it 'restores a missing series.label in VIFs' do
+        data = {
+          'visualizationCanvasMetadata' => {
+            'vifs' => [
+              {
+                'format' => {
+                  'type' => 'visualization_interchange_format',
+                  'version' => 2
+                },
+                'title' => 'Outer Orbit Adventures',
+                'description' => 'Elephants in Space',
+                'series' => [
+                  {
+                    'dataSource' => {
+                      'datasetUid' => 'elep-hant',
+                      'dimension' => {
+                        'columnName' => 'dreamers'
+                      },
+                      'domain' => 'vertex-stories.test-socrata.com',
+                      'type' => 'socrata.soql'
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+        metadata = DisplayFormat.new(data).visualization_canvas_metadata
+
+        expect(metadata[:vifs][0][:series][0]).to have_key(:label)
+      end
+
       it 'restores a missing filter array in VIFs' do
         data = {
           'visualizationCanvasMetadata' => {

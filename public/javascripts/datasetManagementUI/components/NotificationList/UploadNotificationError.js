@@ -5,14 +5,16 @@ import _ from 'lodash';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 export function InnerErrorMessage({ upload, children }) {
+  const badConnectionBodyDescription = {
+    __html: I18n.progress_items.connection_error_body_description.format(
+      `<span class="filename">${upload.filename}</span>`)
+  };
+
   const badConnection = (
     <div key={I18n.progress_items.connection_error_title}>
       <div className="msg-container">
         <h6>{I18n.progress_items.connection_error_title}</h6>
-        <p>{I18n.progress_items.connection_error_body_description}{' '}
-          <span className="filename">{upload.filename}</span>
-          .
-        </p>
+        <p dangerouslySetInnerHTML={badConnectionBodyDescription}></p>
         <p>{I18n.progress_items.connection_error_body_advice}</p>
       </div>
       {children}

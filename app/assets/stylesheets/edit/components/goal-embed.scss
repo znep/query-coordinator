@@ -9,29 +9,31 @@
 
   iframe {
     display: block;
-    width: 100%;
+    position: relative;
     height: 100%;
     z-index: 1;
     margin: 0 auto;
     padding: 1rem 0;
+
+    @include media-query-property(
+      'width',
+      $goal-tile-iframe-scale-small,
+      $goal-tile-iframe-scale-medium,
+      $goal-tile-iframe-scale-large,
+      $goal-tile-iframe-scale-extra-large
+    );
+
+    @include media-query-property(
+      'left',
+      $goal-tile-iframe-offset-small,
+      $goal-tile-iframe-offset-medium,
+      $goal-tile-iframe-offset-large,
+      $goal-tile-iframe-offset-extra-large
+    );
   }
 
   .component-edit-controls > button {
     margin-right: 5rem;
-  }
-}
-
-@media #{$media-query-width-xlarge} {
-  .component-goal-embed {
-    width: $media-large;
-    margin-left: calc(-#{$media-large} / 2 + 50%);
-  }
-}
-
-@media #{$media-query-width-large} {
-  .component-goal-embed {
-    width: $media-medium;
-    margin-left: calc(-#{$media-medium} / 2 + 50%);
   }
 }
 

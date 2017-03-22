@@ -8,4 +8,7 @@ rescue
   Storyteller::BUILD_TIMESTAMP = Time.now.to_i
 end
 
+# `cache_key_prefix` used for socrata_site_chrome gem
 Rails.application.config.cache_key_prefix = Storyteller::REVISION_NUMBER.to_s[0..7]
+Rails.application.config.theme_cache_key_prefix = ENV['THEME_CACHE_KEY_PREFIX'] || Rails.application.config.cache_key_prefix
+

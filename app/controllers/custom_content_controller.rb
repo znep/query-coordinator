@@ -141,6 +141,8 @@ class CustomContentController < ApplicationController
     Canvas2::Util.reset
     Canvas2::Util.set_params(params)
     Canvas2::Util.set_request(request)
+    Canvas2::Util.set_cookies(Socrata::CookieHelper.current_cookies)
+    Canvas2::Util.set_request_id(Socrata::RequestIdHelper.current_request_id)
     Canvas2::Util.set_debug(@debug || @edit_mode)
     Canvas2::Util.set_no_cache(@page.max_age.try(:<=, 0) || false)
     Canvas2::Util.set_path(full_path)
@@ -250,6 +252,8 @@ class CustomContentController < ApplicationController
     Canvas::Environment.params = params
     Canvas::Environment.page_config = Hashie::Mash.new(page_config.reject { |key| key == 'contents' })
     Canvas::Environment.request = request
+    Canvas::Environment.cookies = Socrata::CookieHelper.current_cookies
+    Canvas::Environment.request_id = Socrata::RequestIdHelper.current_request_id
     Canvas::Environment.locale_config = I18n.config
 
     # ready whatever we might need

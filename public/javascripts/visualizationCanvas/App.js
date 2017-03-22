@@ -17,9 +17,9 @@ import FilterBar from './components/FilterBar';
 import { FeatureFlags } from 'socrata-utils';
 
 const SHARE_BUTTON_ENABLED = {
-  view: FeatureFlags.value('visualizationCanvasEmbedButton') === 'always',
-  preview: FeatureFlags.value('visualizationCanvasEmbedButton') === 'always',
-  edit: FeatureFlags.value('visualizationCanvasEmbedButton') !== 'never'
+  view: FeatureFlags.value('visualization_canvas_embed_button') === 'always',
+  preview: FeatureFlags.value('visualization_canvas_embed_button') === 'always',
+  edit: FeatureFlags.value('visualization_canvas_embed_button') !== 'never'
 };
 
 export const App = React.createClass({

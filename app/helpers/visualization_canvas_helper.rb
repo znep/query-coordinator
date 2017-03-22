@@ -22,7 +22,6 @@ module VisualizationCanvasHelper
       :currentUser => current_user,
       :domain => CurrentDomain.cname,
       :environment => Rails.env,
-      :featureFlags => feature_flags_as_json,
       :usersnapProjectID => 'e4969b77-3ec6-4628-a022-6c12ba02cbea'
     }
 

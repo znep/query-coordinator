@@ -8,8 +8,8 @@ export function makeErrorMsg(filename) {
   return {
     title: I18n.progress_items.connection_error_title,
     body: [
-      { __html: I18n.progress_items.connection_error_body_0.format(filename) },
-      { __html: I18n.progress_items.connection_error_body_1 }
+      I18n.progress_items.connection_error_body_0.format(filename),
+      I18n.progress_items.connection_error_body_1
     ]
   };
 }
@@ -59,7 +59,12 @@ class UploadNotificationError extends Component { //  eslint-disable-line react/
             <div key={errorMsg.title}>
               <div className="msg-container">
                 <h6>{errorMsg.title}</h6>
-                {errorMsg.body.map((par, idx) => <p key={idx} dangerouslySetInnerHTML={par}></p>)}
+                {
+                  errorMsg.body.map((line, idx) => {
+                    const par = { __html: line };
+                    return <p key={idx} dangerouslySetInnerHTML={par}></p>;
+                  })
+                }
               </div>
               <div className="btn-container">
                 <button

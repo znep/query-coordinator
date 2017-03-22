@@ -573,7 +573,7 @@ describe('reducers/database', () => {
           __status__: {
             type: 'UPDATE_FAILED',
             updates,
-            error: error,
+            error,
             percentCompleted,
             failedAt
           },

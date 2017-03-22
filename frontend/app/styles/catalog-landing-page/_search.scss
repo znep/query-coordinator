@@ -5,8 +5,15 @@ $link-color: #2279a6;
 $link-hover-color: #2379b2;
 
 .catalog-landing-page-search .searchbox {
-  width: 85%;
-  margin: 1rem auto 0;
+  @include desktop {
+    width: 85%;
+    margin: 1rem auto 0;
+  }
+
+  @include mobile {
+    margin: 0.5rem;
+  }
+
   overflow: hidden;
   position: relative;
   background-color: #fff;

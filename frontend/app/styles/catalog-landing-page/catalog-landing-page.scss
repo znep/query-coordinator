@@ -1,8 +1,7 @@
 // Note: on disk, these file names start with "_" i.e. "_search.scss"
 @import "styleguide-colors";
-
 @import "common/breakpoints";
-
+@import "common/mixins";
 @import "catalog-landing-page/search";
 @import "catalog-landing-page/header";
 @import "catalog-landing-page/category_stats";
@@ -19,11 +18,16 @@ body {
 }
 
 #catalog-landing-page {
-  margin-left: $facet_sidebar_width;
+  @include desktop {
+    margin-left: $facet_sidebar_width;
+  }
 }
 
 .catalog {
-  padding: 1rem;
+  @include desktop {
+    padding: 1rem;
+  }
+
   max-width: $browse2_max_width;
   margin: 0 auto;
 

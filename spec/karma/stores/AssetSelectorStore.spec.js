@@ -727,7 +727,6 @@ describe('AssetSelectorStore', function() {
         assert.deepEqual(
           assetSelectorStore.getComponentValue(),
           {
-            isCatalogAsset: false,
             vif: payload.data,
             dataset: {
               datasetUid: 'what-what',
@@ -760,7 +759,6 @@ describe('AssetSelectorStore', function() {
         assert.deepEqual(
           assetSelectorStore.getComponentValue(),
           {
-            isCatalogAsset: false,
             vif: payload.data,
             dataset: {
               datasetUid: 'what-what',
@@ -1053,16 +1051,6 @@ describe('AssetSelectorStore', function() {
             });
 
             verifyStepIs('AUTHOR_VISUALIZATION');
-            verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
-          });
-
-          describe('as a catalog asset', function() {
-            beforeEach(function() {
-              bootstrap();
-              editComponent(StandardMocks.vifBlockId, 'socrata.visualization.columnChart', {isCatalogAsset: true});
-            });
-
-            verifyStepIs('CONFIGURE_MAP_OR_CHART');
             verifyComponentDataInAssetSelectorStoreMatchesStoryStore();
           });
         });

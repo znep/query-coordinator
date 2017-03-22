@@ -4,15 +4,32 @@ import ProgressBar from '../ProgressBar';
 import _ from 'lodash';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
-export function makeErrorMsg(filename) {
-  return {
-    title: I18n.progress_items.connection_error_title,
-    body: [
-      I18n.progress_items.connection_error_body_0.format(filename),
-      I18n.progress_items.connection_error_body_1
-    ]
-  };
+export function InnerErrorMessage({ upload, children }) {
+  const badConnection = (
+    <div key={I18n.progress_items.connection_error_title}>
+      <div className="msg-container">
+        <h6>{I18n.progress_items.connection_error_title}</h6>
+        <p>{I18n.progress_items.connection_error_body_description}{' '}
+          <span className="filename">{upload.filename}</span>
+          .
+        </p>
+        <p>{I18n.progress_items.connection_error_body_advice}</p>
+      </div>
+      {children}
+    </div>
+  );
+
+  switch (upload.__status__.error) {
+    case 502:
+      return badConnection;
+    default:
+      return badConnection;
+  }
 }
+
+InnerErrorMessage.propTypes = {
+  upload: PropTypes.object.isRequired
+};
 
 class UploadNotificationError extends Component { //  eslint-disable-line react/prefer-es6-class
   constructor() {
@@ -34,7 +51,6 @@ class UploadNotificationError extends Component { //  eslint-disable-line react/
   render() {
     const { upload, notification, dispatch } = this.props;
     const { detailsOpen } = this.state;
-    const errorMsg = makeErrorMsg(`<span class="filename">${upload.filename}</span>`);
 
     return (
       <div className="dsmui-notification error">
@@ -56,16 +72,7 @@ class UploadNotificationError extends Component { //  eslint-disable-line react/
           transitionEnterTimeout={500}
           transitionLeaveTimeout={500}>
           {detailsOpen &&
-            <div key={errorMsg.title}>
-              <div className="msg-container">
-                <h6>{errorMsg.title}</h6>
-                {
-                  errorMsg.body.map((line, idx) => {
-                    const par = { __html: line };
-                    return <p key={idx} dangerouslySetInnerHTML={par}></p>;
-                  })
-                }
-              </div>
+            <InnerErrorMessage upload={upload}>
               <div className="btn-container">
                 <button
                   className="btn btn-default btn-xs"
@@ -76,7 +83,7 @@ class UploadNotificationError extends Component { //  eslint-disable-line react/
                   Contact Support
                 </a>
               </div>
-            </div>
+            </InnerErrorMessage>
           }
         </ReactCSSTransitionGroup>
       </div>

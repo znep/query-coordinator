@@ -1,5 +1,6 @@
 @import "styleguide-colors";
-@import "catalog-landing-page/breakpoints";
+@import "common/breakpoints";
+@import "common/mixins";
 @import "catalog-landing-page/search";
 @import "catalog-landing-page/header";
 @import "catalog-landing-page/category_stats";

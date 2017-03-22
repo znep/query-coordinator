@@ -38,3 +38,5 @@ ReactDOM.render(
   </Provider>,
   document.querySelector('#catalog-landing-page')
 );
+
+require('./catalog');

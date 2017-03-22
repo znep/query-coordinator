@@ -1,4 +1,7 @@
 @import "styleguide-colors";
+@import "common/breakpoints";
+@import "common/mixins";
+
 $panel-border-color: $light-grey-3;
 $panel-internal-border-color: $light-grey-4;
 $result-description-preview-height: 48px;
@@ -12,21 +15,10 @@ $loading-spinner-size: 28px;
 $loading-spinner-color-1: $white;
 $loading-spinner-color-2: $light-grey-2;
 
-$min-desktop-width: 885px;
 $wide-desktop-width: 1450px;
 
 @mixin wide-desktop {
   @media screen and (min-width: #{$wide-desktop-width}) {
-    @content;
-  }
-}
-@mixin desktop {
-  @media screen and (min-width: #{$min-desktop-width}) {
-    @content;
-  }
-}
-@mixin mobile {
-  @media screen and (max-width: #{$min-desktop-width}) {
     @content;
   }
 }
@@ -224,9 +216,12 @@ html {
   #browse2-search-container {
     @include desktop {
       width: 85%;
+      margin: 1rem auto 0;
     }
 
-    margin: 1rem auto 0;
+    @include mobile {
+      margin: 0.5rem;
+    }
   }
 
   .browse2-search {
@@ -361,6 +356,7 @@ html {
     }
     cursor: pointer;
     position: relative;
+    border-top: 1px solid $light-grey-3;
 
     .browse2-mobile-filter-header {
       overflow: hidden;
@@ -404,7 +400,7 @@ html {
     }
     border: none;
     height: 1px;
-    background: #ddd;
+    background: $light-grey-3;
     position: relative;
   }
 
@@ -419,7 +415,10 @@ html {
   }
 
   .browse2-manage-catalog-landing-page {
-    margin-left: 15em;
+    @include desktop {
+      margin-left: 15em;
+    }
+
     margin-bottom: 1em;
     padding: 0.5em;
 
@@ -448,39 +447,59 @@ html {
     }
 
     .browse2-manage-clp-info {
-      margin-left: 1em;
+      display: flex;
+      justify-content: space-between;
       padding: 0.2em;
       padding-bottom: 0.5em;
-      position: relative;
 
-      .info-header {
-        font-size: 120%;
-        padding: 0.5rem 0;
+      @include desktop {
+        margin-left: 1em;
       }
 
-      .info-description {
-        padding-bottom: 0.5rem;
+      @include mobile {
+        flex-direction: column;
       }
 
-      .manage-clp-activate-action {
-        margin-top: 1em;
-        position: absolute;
-        top: 0;
-        right: 0;
+      .manage-clp-info-text {
+
+        .info-header {
+          font-size: 120%;
+          padding: 0.5rem 0;
+        }
+
+        .info-description {
+          padding-bottom: 0.5rem;
+        }
       }
 
-      .manage-clp-hide-action {
-        position: absolute;
-        bottom: 0;
-        right: 0;
+      .manage-clp-action-buttons {
+        position: relative;
+        min-width: 225px;
+
+        .manage-clp-activate-action {
+          margin-top: 1em;
+          position: absolute;
+          top: 0;
+          right: 0;
+        }
+
+        .manage-clp-hide-action {
+          position: absolute;
+          bottom: 0;
+          right: 0;
+        }
+
+        @include mobile {
+          .manage-clp-activate-action, .manage-clp-hide-action {
+            position: relative;
+            display: inline-block;
+          }
+        }
       }
     }
   }
 
   .browse2-facets-pane {
-    @include desktop {
-      display: block !important;
-    }
     @include mobile {
       display: none;
       position: absolute;
@@ -592,14 +611,17 @@ html {
     }
 
     @include desktop {
+      display: block;
       position: relative;
       float: left;
       width: 21em;
 
       .browse2-facets-mobile-active-filters,
       .browse2-facets-pane-mobile-back-button,
-      .browse2-facets-pane-mobile-clear-all-button {
-        display: none;
+      .browse2-facets-pane-mobile-clear-all-div,
+      .browse2-facets-pane-mobile-header,
+      .browse2-mobile-filter-icon {
+        display: none !important;
       }
     }
 
@@ -609,9 +631,11 @@ html {
       border-color: $panel-internal-border-color;
 
       .browse2-mobile-facets-header {
-        display: none;
         @include mobile {
           display: block;
+        }
+        @include desktop {
+          display: none;
         }
         font-weight: 300;
         font-size: 15px;
@@ -679,7 +703,7 @@ html {
           padding: 1em 1em 1em 0.5em;
           color: #474747;
           border-top: none;
-          border-left: 5px solid #ddd;
+          border-left: 5px solid $light-grey-3;
           border-bottom: none;
           font-size: 15px;
           font-weight: 600;
@@ -856,6 +880,10 @@ html {
       background: $white;
       z-index: 100;
       border-top: 1px solid $light-grey-4;
+
+      @include desktop {
+        display: none;
+      }
 
       .browse2-mobile-facets-filter-button {
         display: none;

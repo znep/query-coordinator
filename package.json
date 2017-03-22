@@ -129,6 +129,7 @@
     "form-urlencoded": "1.4.0",
     "javascript-detect-element-resize": "sdecima/javascript-detect-element-resize",
     "jjv": "1.0.2",
+    "jquery-ui-bundle": "1.12.1",
     "js-polyfills": "0.1.22",
     "json-loader": "0.5.4",
     "leaflet": "0.7.7",

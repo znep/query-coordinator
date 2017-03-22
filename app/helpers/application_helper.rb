@@ -63,7 +63,7 @@ module ApplicationHelper
     javascript_tag(<<~OUT, :id => 'feature-flags'
       window.socrata = window.socrata || {};
       window.socrata.featureFlags =
-       #{Signaller::FeatureFlags.on_domain(request.host).to_json};
+        #{Signaller::FeatureFlags.on_domain(request.host).to_json};
     OUT
     )
   end

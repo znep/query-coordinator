@@ -28,7 +28,12 @@
 
     const expandableMenuListItemProps = {
       iconName: 'edit',
-      text: 'Edit Title and Description'
+      text: 'Edit Title and Description',
+      isOpen: true,
+      onClick() {
+        expandableMenuListItemProps.isOpen = !expandableMenuListItemProps.isOpen;
+        render();
+      }
     };
 
     function render() {

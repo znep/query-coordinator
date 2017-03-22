@@ -7,56 +7,42 @@ import { getFirstActionableElement } from '../../common/a11y';
 export const ExpandableMenuListItem = React.createClass({
   propTypes: {
     iconName: PropTypes.string,
-    text: PropTypes.string.isRequired,
+    isOpen: PropTypes.bool,
     onClick: PropTypes.func,
+    text: PropTypes.string.isRequired,
     children: PropTypes.node
   },
 
   getDefaultProps() {
     return {
-      onClick: _.noop
-    };
-  },
-
-  getInitialState() {
-    return {
+      onClick: _.noop,
       isOpen: false
     };
   },
 
-  componentDidUpdate(oldProps, oldState) {
-    const { children } = this.props;
-    const { isOpen } = this.state;
+  componentDidUpdate(oldProps) {
+    const { children, isOpen } = this.props;
 
     // Sets focus on the first actionable item inside of the children
-    if (oldState.isOpen !== isOpen && children) {
+    if (oldProps.isOpen !== isOpen && children && this.contentElement) {
       const actionableElement = getFirstActionableElement(this.contentElement);
 
       if (isOpen && actionableElement) {
         actionableElement.focus();
-      } else {
+      } else if (this.buttonElement) {
         this.buttonElement.focus();
       }
     }
   },
 
-  onClick() {
-    const { onClick } = this.props;
-    const { isOpen } = this.state;
-
-    this.setState({ isOpen: !isOpen });
-    onClick();
-  },
-
   render() {
-    const { iconName, text, children } = this.props;
-    const { isOpen } = this.state;
+    const { iconName, isOpen, onClick, text, children } = this.props;
 
     const buttonProps = {
       className: classNames('btn btn-transparent menu-list-item', {
         'active': isOpen
       }),
-      onClick: this.onClick,
+      onClick,
       ref: (ref) => this.buttonElement = ref
     };
 

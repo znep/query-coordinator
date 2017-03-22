@@ -34,7 +34,7 @@
   }
 
   .page-name {
-    max-width: 250px;
+    max-width: 300px;
     margin: 0 15px;
     font-weight: 600;
     font-size: 15px;
@@ -42,5 +42,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+
+    &.page-name-clickable {
+      cursor: pointer;
+
+      &:hover {
+        color: $header-story-title-hover-color;
+      }
+    }
   }
 }

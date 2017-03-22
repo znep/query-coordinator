@@ -6,7 +6,7 @@ describe('filters', () => {
   describe('getFilterToggleText', () => {
     describe('calendar_date columns', () => {
       const column = mockCalendarDateColumn;
-      const { min, max } = column;
+      const { rangeMin, rangeMax } = column;
 
       it('returns the name of the column when the filter is a noop filter', () => {
         expect(getFilterToggleText(noopFilter, column)).to.equal(column.name);
@@ -15,21 +15,21 @@ describe('filters', () => {
       it('returns a range of dates otherwise', () => {
         const filter = {
           arguments: {
-            start: min,
+            start: rangeMin,
             end: '1500-11-01T23:59:59'
           }
         };
 
         const text = getFilterToggleText(filter, column);
 
-        expect(text).to.contain('From December');
-        expect(text).to.contain('to November');
+        expect(text).to.contain('From 12/1');
+        expect(text).to.contain('to 11/1');
       });
     });
 
     describe('number columns', () => {
       const column = mockNumberColumn;
-      const { min, max } = column;
+      const { rangeMin, rangeMax } = column;
 
       it('returns the name of the column when the filter is a noop filter', () => {
         expect(getFilterToggleText(noopFilter, column)).to.equal(column.name);
@@ -39,7 +39,7 @@ describe('filters', () => {
         const filter = {
           arguments: {
             start: 5,
-            end: max
+            end: rangeMax
           }
         };
 
@@ -49,7 +49,7 @@ describe('filters', () => {
       it('returns a "less than" range when the start of the range is the min of the column', () => {
         const filter = {
           arguments: {
-            start: min,
+            start: rangeMin,
             end: 19
           }
         };

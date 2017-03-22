@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import EditBar from 'components/EditBar';
 import Picklist from 'components/Picklist';
@@ -5,7 +6,8 @@ import { Simulate } from 'react-addons-test-utils';
 import { renderPureComponent } from '../helpers';
 
 describe('EditBar', () => {
-  const getMenu = (element) => element.querySelector('.btn-menu');
+  const getMenu = (el) => el.querySelector('.btn-menu');
+  const getName = (el) => el.querySelector('.page-name');
 
   it('renders', () => {
     const element = renderPureComponent(EditBar({}));
@@ -33,20 +35,37 @@ describe('EditBar', () => {
       const element = renderPureComponent(EditBar({ onClickMenu: stub }));
 
       Simulate.click(getMenu(element));
-
-      expect(stub.called).to.eq(true);
+      expect(stub.called).to.equal(true);
     });
   });
 
   describe('page name', () => {
     it('renders if provided', () => {
       const element = renderPureComponent(EditBar({ name: 'Elephants Frolicking' }));
-      expect(element.querySelector('.page-name').innerText).to.eq('Elephants Frolicking');
+      expect(getName(element).innerText).to.eq('Elephants Frolicking');
     });
 
     it('does not render if not provided', () => {
       const element = renderPureComponent(EditBar({}));
-      expect(element.querySelector('.page-name')).to.not.exist;
+      expect(getName(element)).to.not.exist;
+    });
+
+    it('calls onClickName when clicked', () => {
+      const stub = sinon.stub();
+      const element = renderPureComponent(EditBar({ name: 'oh', onClickName: stub }));
+
+      Simulate.click(getName(element));
+      expect(stub.called).to.equal(true);
+    });
+
+    it('does not add the page-name-clickable class when onClickName is absent', () => {
+      const element = renderPureComponent(EditBar({ name: 'oh' }));
+      expect(getName(element).classList.contains('page-name-clickable')).to.equal(false);
+    });
+
+    it('adds the page-name-clickable class when onClickName is present', () => {
+      const element = renderPureComponent(EditBar({ name: 'oh', onClickName: _.noop }));
+      expect(getName(element).classList.contains('page-name-clickable')).to.equal(true);
     });
   });
 

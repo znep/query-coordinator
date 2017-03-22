@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 
 /**
  * The EditBar is a component designed to render a basic Edit Bar. It renders a simple black bar
@@ -11,11 +12,21 @@ export const EditBar = (props) => {
     menuIcon,
     menuLabel,
     onClickMenu,
+    onClickName,
     children
   } = props;
 
   const menuClasses = `btn-menu ${menuIcon || 'socrata-icon-cards'}`;
-  const pageName = name ? <span className="page-name">{name}</span> : null;
+
+  let pageName = null;
+
+  if (name) {
+    const classes = classNames('page-name', {
+      'page-name-clickable': onClickName
+    });
+
+    pageName = <span className={classes} onClick={onClickName}>{name}</span>;
+  }
 
   return (
     <nav className="edit-bar">
@@ -46,6 +57,11 @@ EditBar.propTypes = {
    * The click handler for the menu button.
    */
   onClickMenu: PropTypes.func,
+
+  /**
+   * The click handler for the title.  If set, the title will have hover styles applied.
+   */
+  onClickName: PropTypes.func,
 
   /**
    * Any children elements you'd like to render. Accessible as a prop or like this:

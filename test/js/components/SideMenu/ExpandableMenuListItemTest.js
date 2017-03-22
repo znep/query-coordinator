@@ -13,6 +13,9 @@ describe('ExpandableMenuListItem', () => {
     });
   }
 
+  const getButton = (el) => el.querySelector('button');
+  const getIcons = (el) => el.querySelectorAll('.socrata-icon');
+
   it('renders', () => {
     const element = renderComponent(ExpandableMenuListItem, getProps());
     expect(element).to.exist;
@@ -22,7 +25,7 @@ describe('ExpandableMenuListItem', () => {
     it('renders if provided', () => {
       const element = renderComponent(ExpandableMenuListItem, getProps());
       // one for the icon, one for the chevron
-      expect(element.querySelectorAll('.socrata-icon').length).to.eq(2);
+      expect(getIcons(element).length).to.eq(2);
     });
 
     it('does not render if not provided', () => {
@@ -30,7 +33,7 @@ describe('ExpandableMenuListItem', () => {
         iconName: null
       }));
       // none for the icon, one for the chevron
-      expect(element.querySelectorAll('.socrata-icon').length).to.eq(1);
+      expect(getIcons(element).length).to.eq(1);
     });
   });
 
@@ -39,20 +42,20 @@ describe('ExpandableMenuListItem', () => {
     expect(element.innerText).to.contain('Menu Item');
   });
 
-  it('does not display the contents on initial load', () => {
+  it('does not display the contents if isOpen is false', () => {
     const element = renderComponent(ExpandableMenuListItem, getProps({
-      children: <div className="test-child" />
+      children: <div className="test-child" />,
+      isOpen: false
     }));
-    expect(element.querySelector('.test-child')).to.not.be.visible;
+    expect(getButton(element).classList.contains('active')).to.equal(false);
   });
 
-  it('does displays the contents on click', () => {
+  it('displays the contents if isOpen is true', () => {
     const element = renderComponent(ExpandableMenuListItem, getProps({
-      children: <div className="test-child" />
+      children: <div className="test-child" />,
+      isOpen: true
     }));
-    Simulate.click(element.querySelector('button'));
-
-    expect(element.querySelector('.test-child')).to.be.visible;
+    expect(getButton(element).classList.contains('active')).to.equal(true);
   });
 
   it('invokes onClick when clicked', () => {
@@ -60,7 +63,7 @@ describe('ExpandableMenuListItem', () => {
     const element = renderComponent(ExpandableMenuListItem, getProps({
       onClick: stub
     }));
-    Simulate.click(element.querySelector('button'));
+    Simulate.click(getButton(element));
 
     expect(stub.calledOnce).to.be.true;
   });

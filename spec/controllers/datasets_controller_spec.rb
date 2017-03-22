@@ -237,20 +237,19 @@ describe DatasetsController do
       it 'should return reroute to the NBE 4x4 if the page is accessed with an OBE 4x4' do
         allow(subject).to receive(:current_user).and_return(double({:can_create_or_edit_visualization_canvas? => true}))
         allow(subject).to receive(:visualization_canvas_enabled?).and_return(true)
-        allow(view).to receive(:new_backend?).and_return(true)
-        allow(view).to receive(:migrations).and_return({'nbeId' => '1234-abcd'})
+        allow(view).to receive(:new_backend?).and_return(false)
+        allow(view).to receive(:nbe_view).and_return(View.new({ 'id' => '1234-abcd' }))
 
         get :create_visualization_canvas, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
 
-        expect(response).to have_http_status(:success)
-        expect(response).to render_template(:visualization_canvas)
+        expect(response).to have_http_status(:redirect)
       end
 
       it 'should throw a 500 error if the page is accessed with an OBE 4x4 without OBE-NBE migrations' do
         allow(subject).to receive(:current_user).and_return(double({:can_create_or_edit_visualization_canvas? => true}))
         allow(subject).to receive(:visualization_canvas_enabled?).and_return(true)
         allow(view).to receive(:new_backend?).and_return(false)
-        allow(view).to receive(:migrations).and_return(nil)
+        allow(view).to receive(:nbe_view).and_return(nil)
 
         get :create_visualization_canvas, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
 

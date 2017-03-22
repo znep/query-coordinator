@@ -746,9 +746,14 @@ class DatasetsController < ApplicationController
     # EN-13491: If users reach endpoint OBE-4x4/visualization
     # they need to be re-routed to the NBE 4x4
     # because visualization_canvas is only applicable on NBE datasets
-    if (@parent_view.newBackend === false)
-      nbe_url = create_visualization_canvas_path(id: @parent_view.migrations['nbeId'])
-      return redirect_to nbe_url
+    if (!@parent_view.new_backend?)
+      begin
+        nbe_id = @parent_view.migrations['nbeId']
+      rescue => error
+      end
+      # if there is no nbe_id, throw a 404
+      return render_404 unless nbe_id.present?
+      return redirect_to create_visualization_canvas_path(id: nbe_id)
     end
 
     @view = @parent_view.new_visualization_canvas

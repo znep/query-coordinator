@@ -675,7 +675,7 @@ export default function AssetSelectorStore() {
    * a component.
    */
   function _stepForUpdate(component) {
-    const { type, value } = component;
+    const type = component.type;
 
     switch (type) {
       case 'hero': return WIZARD_STEP.IMAGE_PREVIEW;
@@ -693,11 +693,7 @@ export default function AssetSelectorStore() {
     }
 
     if (type.indexOf('socrata.visualization.') === 0) {
-      // NOTE: Older visualizations created inline using AX within Storyteller
-      // will not have the isCatalogAsset property.
-      return value.isCatalogAsset ?
-        WIZARD_STEP.CONFIGURE_MAP_OR_CHART :
-        WIZARD_STEP.AUTHOR_VISUALIZATION ;
+      return WIZARD_STEP.AUTHOR_VISUALIZATION;
     }
 
     // Something went wrong and we don't know where to pick up from (new embed type?),
@@ -929,27 +925,13 @@ export default function AssetSelectorStore() {
         const isChartOrMapView = (
           _.isPlainObject(viewData) &&
           (
-            viewData.displayType === 'visualization' ||
             viewData.displayType === 'chart' ||
             viewData.displayType === 'map'
           )
         );
 
         if (isChartOrMapView) {
-          if (viewData.displayType === 'visualization') {
-            const chartType = _.get(viewData, 'displayFormat.visualizationCanvasMetadata.vifs[0].series[0].type');
-            if (chartType) {
-              _setComponentType(`socrata.visualization.${chartType}`);
-              _setComponentPropertiesForVisualization(viewData);
-            } else {
-              mapChartError();
-              _state.step = WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG;
-            }
-          } else {
-            _setComponentType('socrata.visualization.classic');
-            _setComponentPropertiesFromViewData(viewData);
-          }
-
+          _setComponentPropertiesFromViewData(viewData);
           self._emitChange();
         } else {
           mapChartError();
@@ -1041,16 +1023,6 @@ export default function AssetSelectorStore() {
     _state.dataset = _.cloneDeep(viewData);
   }
 
-  function _setComponentPropertiesForVisualization(viewData) {
-    StorytellerUtils.assertIsOneOfTypes(viewData, 'object');
-
-    _state.componentProperties = _state.componentProperties || {};
-    _.extend(_state.componentProperties, {
-      isCatalogAsset: true,
-      vif: _.get(viewData, 'displayFormat.visualizationCanvasMetadata.vifs[0]')
-    });
-  }
-
   function _getNbeView(domain, obeUid) {
     const migrationsUrl = `https://${domain}/api/migrations/${obeUid}.json`;
 
@@ -1137,7 +1109,6 @@ export default function AssetSelectorStore() {
 
       _state.componentType = `socrata.visualization.${visualization.type}`;
       _state.componentProperties = {
-        isCatalogAsset: false,
         vif: visualization,
         dataset: _state.componentProperties.dataset,
         originalUid: payload.visualization.originalUid
@@ -1153,7 +1124,6 @@ export default function AssetSelectorStore() {
 
       _state.componentType = `socrata.visualization.${visualization.series[0].type}`;
       _state.componentProperties = {
-        isCatalogAsset: false,
         vif: visualization,
         dataset: _state.componentProperties.dataset,
         originalUid: payload.visualization.originalUid

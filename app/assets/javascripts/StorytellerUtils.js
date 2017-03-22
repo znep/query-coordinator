@@ -33,28 +33,6 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
   },
 
   /**
-   * @function typeToComponentRenderer
-   * @description
-   * Transforms something.something to componentSomethingSomething
-   * @param  {String} type — A dot-delimited Storyteller component type.
-   * @return {String} — the name of the corresponding component renderer.
-   */
-  typeToComponentRendererName: function(type) {
-    this.assertIsOneOfTypes(type, 'string');
-
-    // handle legacy cases and corner cases
-    if (type === 'html') {
-      type = 'HTML';
-    } else if (type === 'socrata.visualization.choroplethMap') {
-      type = 'socrata.visualization.regionMap';
-    } else if (type === 'story.widget') {
-      type = 'story.tile';
-    }
-
-    return `component${_.startCase(type).replace(/ /g, '')}`;
-  },
-
-  /**
    * @function queryParameters
    * @description
    * Build URL query parameters into a consumable data structure.

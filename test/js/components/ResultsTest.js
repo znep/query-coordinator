@@ -17,8 +17,9 @@ describe('<Results />', () => {
       <ResultsClass
         results={results}
         visible={false}
-        onResultVisibilityChanged={() => {}}
-        onResultFocusChanged={() => {}} />
+        onResultsVisibilityChanged={() => {}}
+        onResultFocusChanged={() => {}}
+        onQueryChanged={() => {}} />
     );
     
     expect(wrapper.find(Result)).to.have.length(0);
@@ -29,8 +30,9 @@ describe('<Results />', () => {
       <ResultsClass
         results={results}
         visible={true}
-        onResultVisibilityChanged={() => {}}
-        onResultFocusChanged={() => {}} />
+        onResultsVisibilityChanged={() => {}}
+        onResultFocusChanged={() => {}}
+        onQueryChanged={() => {}} />
     );
 
     expect(wrapper.find(Result)).to.have.length(3);

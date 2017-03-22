@@ -1,8 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Autocomplete from './components/Autocomplete';
+import _ from 'lodash';
+import 'babel-polyfill-safe';
+import StatefulAutocomplete from './components/StatefulAutocomplete';
 
+/**
+ * This throws the autocomplete function on window,
+ * so that external consumers can create autocomplete components
+ */
 window.autocomplete = function(container, defaultState, options) {
+  _.noConflict();
+
   let rootNode;
   try {
     rootNode = document.querySelector(container);
@@ -14,7 +22,7 @@ window.autocomplete = function(container, defaultState, options) {
   }
 
   ReactDOM.render(
-    <Autocomplete defaultState={defaultState} options={options} />,
+    <StatefulAutocomplete defaultState={defaultState} options={options} />,
     rootNode
   );
 };

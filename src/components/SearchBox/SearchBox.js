@@ -23,7 +23,7 @@ class SearchBox extends React.Component {
 
       // debounce getting results so it doesn't happen with EVERY keypress
       debouncedGetResults: _.debounce(
-        props.getResults,
+        props.getSearchResults,
         props.millisecondsBeforeSearch
       )
     };
@@ -63,7 +63,9 @@ class SearchBox extends React.Component {
     const { collapsible, animate } = this.props;
     const { focused } = this.state;
 
-    if (_.isUndefined(focused) || animate === false) {
+    if (animate === false) {
+      return 'search-box-static';
+    } else if (_.isUndefined(focused)) {
       return 'search-box-base';
     } else if (collapsible) {
       return 'search-box-collapsible';
@@ -107,7 +109,7 @@ class SearchBox extends React.Component {
   }
 
   handleFocusChanged(focused) {
-    const { currentQuery, getResults, onResultsReceived } = this.props;
+    const { currentQuery, onResultsReceived, getSearchResults } = this.props;
 
     // keep "focused" state if the current search isn't empty...
     if (!_.isEmpty(currentQuery)) {
@@ -115,7 +117,7 @@ class SearchBox extends React.Component {
 
       // also get results if we're gaining focus and have a query
       if (focused === true) {
-        getResults(currentQuery, onResultsReceived);
+        getSearchResults(currentQuery, onResultsReceived);
       }
     } else {
       this.setState({ focused });
@@ -136,6 +138,7 @@ class SearchBox extends React.Component {
         </div>
 
         <input
+          type="search"
           ref={(domNode) => { this.domNode = domNode; }}
           styleName={this.getInputStyleName()}
           onChange={this.handleChange}
@@ -149,11 +152,16 @@ class SearchBox extends React.Component {
 }
 
 SearchBox.propTypes = {
+  /* Redux actions */
   onSearchBoxChanged: PropTypes.func.isRequired,
   onResultsReceived: PropTypes.func.isRequired,
   onResultVisibilityChanged: PropTypes.func.isRequired,
-  getResults: PropTypes.func.isRequired,
+
+  /* Search config*/
   millisecondsBeforeSearch: PropTypes.number.isRequired,
+  getSearchResults: PropTypes.func.isRequired,
+
+  /* State */
   currentQuery: PropTypes.string,
   collapsible: PropTypes.bool,
   animate: PropTypes.bool,

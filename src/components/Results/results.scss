@@ -14,6 +14,12 @@
 
   display: flex;
   flex-direction: column;
+
+  // add a margin for our "mobile layout"
+  @media screen and (max-width: $break-large) {
+    margin-left: 10px;
+    width: calc(100% - 20px);
+  }
 }
 
 .results-container-collapsible {

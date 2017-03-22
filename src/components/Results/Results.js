@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import cssModules from 'react-css-modules';
 import { getSearchUrl } from '../../Util';
-import { resultFocusChanged, resultVisibilityChanged } from '../../actions';
+import { resultFocusChanged, resultVisibilityChanged, queryChanged } from '../../actions';
 import Result from './Result';
 import styles from './results.scss';
 
@@ -28,7 +28,9 @@ class Results extends React.Component {
       visible,
       focusedResult,
       results,
-      onResultFocusChanged
+      onResultFocusChanged,
+      onQueryChanged,
+      onResultsVisibilityChanged
     } = this.props;
 
 
@@ -62,6 +64,9 @@ class Results extends React.Component {
       // goto search if we have a result
       const result = results[focusedResult];
       if (!_.isUndefined(result)) {
+        // set the textbox to be what was clicked and close the results
+        onQueryChanged(result.title);
+        onResultsVisibilityChanged(false);
         window.location.href = getSearchUrl(result.title);
       }
     }
@@ -97,8 +102,9 @@ class Results extends React.Component {
 }
 
 Results.propTypes = {
-  onResultVisibilityChanged: PropTypes.func.isRequired,
+  onResultsVisibilityChanged: PropTypes.func.isRequired,
   onResultFocusChanged: PropTypes.func.isRequired,
+  onQueryChanged: PropTypes.func.isRequired,
   results: PropTypes.array,
   visible: PropTypes.bool,
   focusedResult: PropTypes.number,
@@ -117,7 +123,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   onResultFocusChanged: (newFocus) => { dispatch(resultFocusChanged(newFocus)); },
-  onResultVisibilityChanged: (visible) => { dispatch(resultVisibilityChanged(visible)); }
+  onResultsVisibilityChanged: (visible) => { dispatch(resultVisibilityChanged(visible)); },
+  onQueryChanged: (query) => { dispatch(queryChanged(query)); }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(cssModules(Results, styles));

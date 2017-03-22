@@ -294,7 +294,7 @@ GEM
       rubyzip (~> 1.0)
       websocket (~> 1.0)
     semver2 (3.4.2)
-    signaller-ruby (0.3.3)
+    signaller-ruby (0.3.9)
       activesupport (~> 4.2)
       httparty (~> 0.13)
       semver2 (~> 3.4)

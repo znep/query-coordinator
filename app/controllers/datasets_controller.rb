@@ -747,7 +747,7 @@ class DatasetsController < ApplicationController
     # because visualization_canvas is only applicable on NBE datasets
     if !@parent_view.new_backend?
       @parent_view = @parent_view.nbe_view rescue nil
-      # if there is no nbe view, throw a 404
+      # if there is no nbe view, throw an internal error
       return render_500 if @parent_view.nil?
       return redirect_to create_visualization_canvas_path(id: @parent_view.id)
     end

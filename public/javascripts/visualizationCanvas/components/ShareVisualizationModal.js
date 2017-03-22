@@ -133,7 +133,9 @@ export class ShareVisualizationModal extends Component {
         </ModalContent>
 
         <ModalFooter>
-          <button className="btn" onClick={onDismiss}>{t('share_modal.close')}</button>
+          <button className="btn btn-sm btn-default" onClick={onDismiss}>
+            {t('share_modal.close')}
+          </button>
         </ModalFooter>
       </Modal>
     );

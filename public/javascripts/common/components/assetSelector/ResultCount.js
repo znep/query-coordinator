@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { getViewCountLabel } from '../../helpers/viewCardHelpers';
 
-export class ResultCount extends React.PureComponent {
+export class ResultCount extends React.Component {
   render() {
     const { currentPage, resultsPerPage, total } = this.props;
     const pageResults = {

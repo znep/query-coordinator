@@ -48,8 +48,6 @@ describe DatasetsHelper do
       end
 
       it 'is not disabled when new_backend? is false' do
-        puts view.inspect
-        allow(view).to receive(:new_backend?).and_return(false)
         expect(helper.row_identifier_select_tag).to_not match(/disabled/)
       end
 

@@ -1,6 +1,8 @@
 @import "common/breakpoints";
+@import "common/mixins";
 @import "common/asset-selector/card";
 @import "common/asset-selector/pager";
+@import "../public/javascripts/common/components/searchbox/searchbox";
 
 .asset-selector {
   .results-container {
@@ -9,9 +11,25 @@
       margin: 0 auto;
 
       .results-topbar {
+        display: flex;
+        margin-bottom: 1rem;
+
+        @include mobile {
+          display: block;
+        }
+
         > button {
-          display: inline-block;
           margin-right: 0.5rem;
+        }
+
+        .searchbox {
+          margin-left: auto;
+          width: 50%;
+
+          @include mobile {
+            width: 100%;
+            margin-top: 0.5rem;
+          }
         }
       }
 

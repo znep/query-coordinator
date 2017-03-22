@@ -1,15 +1,37 @@
 .catalog-landing-page-header {
+  overflow: hidden;
+
   h1 {
     font-size: 2rem;
     font-weight: normal;
     color: $primary-base;
     margin-bottom: 0.5rem;
   }
+
   .description {
     color: $dark-grey-1;
     line-height: 1.25rem;
     margin-bottom: 1.25rem;
     font-size: 1.5em;
-    width: 64%;
+
+    @include desktop {
+      width: 64%;
+    }
+  }
+
+  .management-button {
+    float: right;
+
+    .throbber-icon {
+      @include throbber-icon;
+      position: relative;
+      top: 2px;
+      left: 7px;
+      content: '';
+      display: none;
+      float: right;
+      border: 2px solid #eaf4f9;
+      border-right-color: #2279a6;
+    }
   }
 }

@@ -622,6 +622,10 @@ $(function() {
     return ($(window).width() < MIN_DESKTOP_WIDTH);
   }
 
+  function hideCLPManager() {
+    $('.browse2-manage-catalog-landing-page').addClass('hidden');
+  }
+
   var $browse = $('.browse2');
   // alias this method so external scripts can get at it
   var getDS = blist.browse.getDS = function($item) {
@@ -776,4 +780,6 @@ $(function() {
   $('.browse2-result-make-public-button').on('click', makeResultPublic);
   $('.browse2-result-make-private-button').on('click', makeResultPrivate);
   $('.browse2-result-delete-button').on('click', deleteResult);
+  $('.browse2-result-delete-button').on('click', deleteResult);
+  $('.browse2-manage-clp-info .manage-clp-hide-action button').on('click', hideCLPManager);
 });

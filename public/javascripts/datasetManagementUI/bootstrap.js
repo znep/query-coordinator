@@ -6,8 +6,8 @@ import {
 import { addNotification, removeNotificationAfterTimeout } from './actions/notifications';
 import { upsertJobNotification } from './lib/notifications';
 import { insertAndSubscribeToUpload } from './actions/manageUploads';
-import { pollForUpsertJobProgress } from './actions/applyUpdate';
 import { parseDate } from './lib/parseDate';
+import * as ApplyUpdate from './actions/applyUpdate';
 
 export const emptyDB = {
   views: {},
@@ -41,8 +41,10 @@ export function bootstrap(store, initialView, initialUpdate) {
     viewCount: initialView.viewCount,
     downloadCount: initialView.downloadCount,
     license: initialView.license || {},
+    licenseId: initialView.licenseId,
     attribution: initialView.attribution,
     tags: initialView.tags,
+    email: initialView.privateMetadata ? initialView.privateMetadata.email : '',
     attachments: _.get(initialView, 'metadata.attachments', []),
     metadata: initialView.metadata || {}
   }));
@@ -63,8 +65,8 @@ export function bootstrap(store, initialView, initialUpdate) {
       finished_at: upsertJob.finished_at ? parseDate(upsertJob.finished_at) : null,
       created_by: upsertJob.created_by
     }));
-    if (!upsertJob.status) { // will be "=== 'in_progress'" when we change the api (EN-13127)
-      store.dispatch(pollForUpsertJobProgress(upsertJob.id));
+    if (upsertJob.status === ApplyUpdate.UPSERT_JOB_IN_PROGRESS) {
+      store.dispatch(ApplyUpdate.pollForUpsertJobProgress(upsertJob.id));
     }
   });
   store.dispatch(batch(operations));
@@ -72,7 +74,7 @@ export function bootstrap(store, initialView, initialUpdate) {
   initialUpdate.upsert_jobs.forEach((upsertJob) => {
     const notification = upsertJobNotification(upsertJob.id);
     store.dispatch(addNotification(notification));
-    if (upsertJob.status === 'successful') {
+    if (upsertJob.status === ApplyUpdate.UPSERT_JOB_SUCCESSFUL) {
       store.dispatch(removeNotificationAfterTimeout(notification));
     }
   });

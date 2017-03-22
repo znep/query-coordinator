@@ -6,6 +6,8 @@ module BrowseActions
   include ActionView::Helpers::TranslationHelper
   include ApplicationHelper
   include CommonSocrataMethods # forwardable_session_cookies
+  include Socrata::RequestIdHelper
+  include Socrata::CookieHelper
 
   protected
 
@@ -104,10 +106,13 @@ module BrowseActions
 
     if using_cetera?
       # TODO: Fix this line when we stop using globals in DataSlate server-rendering.
-      _request = (defined?(request) && request) || Canvas::Environment.request || Canvas2::Util.request
-      cookies = _request.cookies unless defined?(cookies)
+      dl_request = defined?(request) ? nil : Canvas::Environment.request || Canvas2::Util.request
+      req_id = (defined?(dl_request) && request_id(dl_request)) || current_request_id
+      cookies =
+        (defined?(dl_request) && defined?(dl_request.cookies) &&
+          forwardable_session_cookies(dl_request.cookies)) || current_cookies
 
-      all_tags = Cetera::Utils.get_tags(request_id(_request)).results
+      all_tags = Cetera::Utils.get_tags(req_id, cookies).results
       title = t('controls.browse.facets.tags_title')
       singular_description = t('controls.browse.facets.tags_singular_title')
     else
@@ -481,9 +486,19 @@ module BrowseActions
             if @profile_search_method
               Clytemnestra.search_views(browse_options[:search_options])
             else
+              # So, this is necessary because CookieHelper and RequestIdHelper are
+              # thread-dependent and Dataslate's rendering strategy uses a multi-threaded
+              # approach, hiding them from the main thread's state.
+              dataslate_hackery = lambda do |method_name|
+                send(:"current_#{method_name}") ||
+                  Canvas::Environment.send(method_name) ||
+                  Canvas2::Util.send(method_name)
+              end
+
               Cetera::Utils.public_send(
                 :search_views,
-                request_id(request),
+                dataslate_hackery.call(:request_id),
+                dataslate_hackery.call(:cookies),
                 browse_options[:search_options]
               )
             end

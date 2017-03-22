@@ -5,9 +5,7 @@ export class ExternalResourceForm extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      isImageInvalid: false
-    };
+    this.state = { isImageValid: true, initialProps: props };
 
     _.bindAll(this, ['onChange', 'renderInputField']);
   }
@@ -16,13 +14,13 @@ export class ExternalResourceForm extends React.Component {
     if (inputName === 'previewImage') {
       // Upload image
       const file = event.target.files[0];
-      const isFileImage = file && /\.(jpe?g|png|gif)$/i.test(file.name);
+      const isFileValidImageType = file && /\.(jpe?g|png|gif)$/i.test(file.name);
 
       this.setState({
-        isImageInvalid: !isFileImage
+        isImageValid: isFileValidImageType
       });
 
-      if (!isFileImage) {
+      if (!isFileValidImageType) {
         return;
       }
 
@@ -33,9 +31,7 @@ export class ExternalResourceForm extends React.Component {
       }, false);
 
       fileReader.addEventListener('error', () => {
-        this.setState({
-          isImageInvalid: true
-        });
+        this.setState({ isImageValid: false });
       });
 
       if (file) {
@@ -119,10 +115,10 @@ export class ExternalResourceForm extends React.Component {
       ref: (input) => { this.hiddenPreviewImageInput = input; }
     }, previewImageButton);
 
-    const imageWarning = this.state.isImageInvalid ?
+    const imageWarning = this.state.isImageValid ? null :
       <div className="alert error image-warning">
         {_.get(I18n, 'common.external_resource_editor.form.fields.preview_image.error')}
-      </div> : null;
+      </div>;
 
     return (
       <form className="external-resource-form">

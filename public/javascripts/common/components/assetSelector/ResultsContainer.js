@@ -6,6 +6,7 @@ import Card from './Card';
 import NoResults from './NoResults';
 import Pager from './Pager';
 import ResultCount from './ResultCount';
+import Searchbox from '../searchbox/Searchbox';
 import SortDropdown from './SortDropdown';
 import Spinner from './Spinner';
 
@@ -16,6 +17,7 @@ export class ResultsContainer extends React.Component {
     this.state = {
       currentPage: 1,
       fetchingResults: false,
+      isMounted: true,
       pagerKey: 1,
       /*
         pagerKey exists so that the defaultValue of the Pager input field updates when the prev/next
@@ -24,44 +26,56 @@ export class ResultsContainer extends React.Component {
       */
       resultCount: 0,
       results: [],
-      sort: 'relevance'
+      sort: 'relevance',
+      query: ''
     };
 
-    _.bindAll(this, ['changePage', 'changeSort']);
+    _.bindAll(this, ['changePage', 'changeSort', 'changeQuery']);
   }
 
   componentDidMount() {
     this.changePage(1); // Fetch the first page of results
   }
 
-  changePage(pageNumber) {
-    this.setState({ fetchingResults: true });
-    ceteraUtils.
-      fetch({
-        category: this.props.category,
-        limit: this.props.resultsPerPage,
-        order: this.state.sort,
-        pageNumber
-      }).
-      then((response) => {
-        const results = ceteraUtils.mapToAssetSelectorResult(response.results);
-        this.setState({ fetchingResults: false, results, resultCount: response.resultSetSize });
-      }).
-      catch(() => {
-        this.setState({ fetchingResults: false });
-      });
+  componentWillUnmount() {
+    this.setState({ isMounted: false });
+  }
 
-    this.setState({
-      currentPage: parseInt(pageNumber, 10),
-      /* Increment the key to trigger a re-render of the Pager currentPageInput */
-      pagerKey: this.state.pagerKey + 1
-    });
+  changePage(pageNumber) {
+    if (this.state.isMounted) {
+      this.setState({ fetchingResults: true });
+      ceteraUtils.
+        fetch({
+          category: this.props.category,
+          limit: this.props.resultsPerPage,
+          order: this.state.sort,
+          pageNumber,
+          q: this.state.query
+        }).
+        then((response) => {
+          const results = ceteraUtils.mapToAssetSelectorResult(response.results);
+          this.setState({ fetchingResults: false, results, resultCount: response.resultSetSize });
+        }).
+        catch(() => {
+          this.setState({ fetchingResults: false });
+        });
+
+      this.setState({
+        currentPage: parseInt(pageNumber, 10),
+        /* Increment the key to trigger a re-render of the Pager currentPageInput */
+        pagerKey: this.state.pagerKey + 1
+      });
+    }
   }
 
   changeSort(option) {
     this.setState({
       sort: option.value
     }, () => this.changePage(1));
+  }
+
+  changeQuery(query) {
+    this.setState({ query }, () => this.changePage(1));
   }
 
   render() {
@@ -107,6 +121,9 @@ export class ResultsContainer extends React.Component {
           <div className="results-topbar">
             <BackButton onClick={this.props.onClose} />
             {this.props.additionalTopbarComponents.map((component) => component)}
+            <Searchbox
+              onSearch={this.changeQuery}
+              placeholder={_.get(I18n, 'common.asset_selector.results_container.search_this_category')} />
           </div>
           {resultContent}
         </div>

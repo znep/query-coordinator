@@ -63,18 +63,28 @@
           data: {},
           callback: function($elem) {
             var cpObj = this;
+            var canEditFilters = false;
+
+            if (!_.isEmpty(blist.currentUser)) {
+              canEditFilters = blist.currentUser.isSuperadmin() ||
+                blist.dataset.hasRight(blist.rights.view.UPDATE_VIEW);
+            }
+
+            var columns = cpObj._view.columnsForType(
+              cpObj._view.newBackend ? nbeFilterableTypes : filterableTypes,
+              canEditFilters
+            );
+
             $elem.unifiedFilter({
               datasets: cpObj.settings.datasets || [cpObj._view],
               rootCondition: cpObj.settings.rootCondition,
-              filterableColumns: cpObj._view.columnsForType(
-                cpObj._view.newBackend ? nbeFilterableTypes : filterableTypes)
+              filterableColumns: columns
             });
 
             cpObj._view.unbind(null, null, cpObj);
             cpObj._view.bind('columns_changed', function() {
               $elem.trigger('columns_changed', {
-                columns: cpObj._view.columnsForType(
-                  cpObj._view.newBackend ? nbeFilterableTypes : filterableTypes)
+                columns: columns
               });
             }, cpObj);
 

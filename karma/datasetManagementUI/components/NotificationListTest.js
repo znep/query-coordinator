@@ -154,7 +154,7 @@ describe('components/NotificationList', () => {
     }));
     store.dispatch(insertSucceeded('upsert_jobs',
       { output_schema_id: 1 },
-      { id: 52 }
+      { id: 52, status: 'in_progress' }
     ));
     store.dispatch(addNotification(upsertJobNotification(52)));
     const element = renderComponentWithStore(NotificationList, {}, store);
@@ -179,7 +179,7 @@ describe('components/NotificationList', () => {
     }));
     store.dispatch(insertSucceeded('upsert_jobs',
       { output_schema_id: 1 },
-      { id: 52 }
+      { id: 52, status: 'in_progress' }
     ));
     store.dispatch(updateFromServer('upsert_jobs',
       {
@@ -212,7 +212,7 @@ describe('components/NotificationList', () => {
     }));
     store.dispatch(insertSucceeded('upsert_jobs',
       { output_schema_id: 1 },
-      { id: 52 }
+      { id: 52, status: 'in_progress' }
     ));
     store.dispatch(addNotification(upsertJobNotification(52)));
     store.dispatch(updateFromServer('upsert_jobs', {

@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
 export default function(state, action) {
-
   const clearSearchAndRedirect = () => document.location.search = '';
 
   if (_.isUndefined(state)) {

@@ -77,11 +77,30 @@ describe CatalogLandingPage do
 
   end
 
+  context '#update_featured_content' do
+
+    it 'updates new or existing featured content' do
+      expect(subject).to receive(:create_or_update_featured_content).once
+      subject.update_featured_content(:removed => false)
+    end
+
+    it 'deletes existing featured content' do
+      expect(subject).to receive(:delete_featured_content).once
+      subject.update_featured_content(:removed => true, :resource_id => 123)
+    end
+
+    it 'does not try to delete ephemeral deleted featured content' do
+      expect(subject).to receive(:delete_featured_content).never
+      subject.update_featured_content(:removed => true)
+    end
+
+  end
+
   context 'category stats' do
 
     it 'returns the counts for the given category' do
       VCR.use_cassette('catalog_landing_page_category_counts') do
-        counts = subject.category_stats('Government', 'req_id')
+        counts = subject.category_stats('Government', 'req_id', '_cookie=nomNom')
         expect(counts['datasets']).to eq(8)
       end
     end

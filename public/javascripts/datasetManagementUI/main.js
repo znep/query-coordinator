@@ -13,7 +13,7 @@ import * as Phoenix from 'phoenix';
 import rootReducer from './reducers';
 import { bootstrap } from './bootstrap';
 import * as Selectors from './selectors';
-import Airbrake from './lib/airbrake';
+import Airbrake from '../common/airbrake';
 import rootRoute from './routes';
 
 const viewId = window.initialState.view.id;

@@ -84,6 +84,44 @@ describe('reducers/database', () => {
     });
   });
 
+  it('handles nested datastructure EDIT', () => {
+    const oldRecord = {
+      id: 0,
+      tags: [{id: 1, name: 'one'}, {id: 2, name: 'two'}],
+      __status__: {
+        savedAt: 'ON_SERVER',
+        type: 'SAVED'
+      }
+    };
+
+    const initialDB = {
+      my_table: { 0: oldRecord }
+    };
+
+    const updates = {id:0, tags: [{id: 1, name: 'one'}]};
+
+    const beforeUpdate = new Date();
+    const database = dbReducer(initialDB, Actions.edit('my_table', updates));
+
+    const editedRecord = database.my_table[0];
+    const dirtiedAt = editedRecord.__status__.dirtiedAt;
+    expect(dirtiedAt).to.be.at.least(beforeUpdate);
+
+    expect(database).to.deep.equal({
+      my_table: {
+        0: {
+          __status__: {
+            type: 'DIRTY',
+            dirtiedAt,
+            oldRecord
+          },
+          tags: [{id: 1, name: 'one'}],
+          id: 0
+        }
+      }
+    });
+  });
+
   it('handles EDIT_IMMUTABLE', () => {
     const oldRecord = {
       id: 0,

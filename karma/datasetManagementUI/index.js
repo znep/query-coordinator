@@ -19,8 +19,14 @@ window.initialState = {
   view: {
     id: 'hehe-hehe',
     name: 'Initial Name',
-    description: 'initial description'
+    description: 'initial description',
   },
+  datasetLicenses: [
+    {
+      title: 'A thing',
+      value: 'THING'
+    }
+  ],
   datasetCategories: [
     {
       title: 'Important Cats',
@@ -68,7 +74,8 @@ window.initialState = {
 
 // This needs to happen after setting all of the mock window data.
 var getDefaultStore = require('testStore').getDefaultStore;
-
+const curriedCreateElement = _.curry(React.createElement);
+window.renderStatelessComponent = _.flow(curriedCreateElement('div', null), TestUtils.renderIntoDocument)
 window.renderPureComponent = _.flow(TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
 window.renderComponent = _.flow(React.createElement, TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
 window.renderComponentWithStore = function(component, props, store) {

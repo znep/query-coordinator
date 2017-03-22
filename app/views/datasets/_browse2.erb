@@ -111,46 +111,6 @@
 
   <div class="browse2-content">
 
-    <div class="browse2-facet-and-results-header">
-
-      <!-- Results Title -->
-
-      <%=
-        browse_container_classes = %w(browse2-results-header)
-        browse_container_classes << 'clearfix' unless opts[:browse_in_container]
-        browse_container_classes << 'browse2-results-header-no-title' if opts[:browse_in_container]
-
-        content_tag(:div, nil, :class => browse_container_classes) do
-
-          # Results Title
-          if !opts[:browse_in_container]
-            concat render 'datasets/browse2_results_title', :opts => opts,
-              :clear_facet_options => get_clear_facet_options(opts)
-          end
-
-          # Results Sort Controls
-          if opts[:show_catalog_sort_dropdown]
-            sort_control_options = {
-              :opts => opts,
-              :sort_opts => sort_opts,
-              :time_options => [
-                { :value => 'week', :name => t('controls.browse.browse2.sort.periods.week') },
-                { :value => 'month', :name => t('controls.browse.browse2.sort.periods.month') },
-                { :value => 'year', :name => t('controls.browse.browse2.sort.periods.year') }
-              ]
-            }
-            sort_control_options.except!(:time_options) if using_cetera?
-            concat render 'datasets/browse2_results_sort_controls', sort_control_options
-          end
-        end
-      -%>
-
-    </div>
-
-    <div class="skip-links">
-      <a href="#browse2-results"><%= t('controls.browse.browse2.skiplinks.results') %></a>
-    </div>
-
     <%=
       if opts[:facets].length > 0
         render 'datasets/browse2_facets', :opts => opts, :sort_opts => sort_opts,
@@ -158,12 +118,55 @@
       end
     %>
 
+    <%- if FeatureFlags.value_for(:enable_catalog_landing_page, request: request) %>
+      <%= render 'datasets/browse2_manage_catalog_landing_page' if should_render_catalog_landing_page? %>
+    <%- end %>
+
+    <div class="skip-links">
+      <a href="#browse2-results"><%= t('controls.browse.browse2.skiplinks.results') %></a>
+    </div>
+
     <!-- Results Header -->
     <%= render 'datasets/browse2_header', :opts => opts if opts[:header_config] %>
 
     <!-- Results Container -->
 
     <div class="browse2-results-pane clearfix">
+
+      <div class="browse2-facet-and-results-header">
+
+        <!-- Results Title -->
+
+        <%=
+          browse_container_classes = %w(browse2-results-header)
+          browse_container_classes << 'browse2-results-header-no-title' if opts[:browse_in_container]
+
+          content_tag(:div, nil, :class => browse_container_classes) do
+
+            # Results Title
+            if !opts[:browse_in_container]
+              concat render 'datasets/browse2_results_title', :opts => opts,
+                :clear_facet_options => get_clear_facet_options(opts)
+            end
+
+            # Results Sort Controls
+            if opts[:show_catalog_sort_dropdown]
+              sort_control_options = {
+                :opts => opts,
+                :sort_opts => sort_opts,
+                :time_options => [
+                  { :value => 'week', :name => t('controls.browse.browse2.sort.periods.week') },
+                  { :value => 'month', :name => t('controls.browse.browse2.sort.periods.month') },
+                  { :value => 'year', :name => t('controls.browse.browse2.sort.periods.year') }
+                ]
+              }
+              sort_control_options.except!(:time_options) if using_cetera?
+              concat render 'datasets/browse2_results_sort_controls', sort_control_options
+            end
+          end
+        -%>
+
+      </div>
 
       <!-- Results -->
 

@@ -1,64 +1,51 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { ExternalViewCard, ViewCard } from 'socrata-components';
+import FeaturedContentViewCard from './FeaturedContentViewCard';
+import { getViewCardPropsForCLPFeaturedItem } from '../../common/helpers/viewCardHelpers';
 
-import { getIconClassForDisplayType } from 'socrata-components/common/displayTypeMetadata';
-import { getDateLabel, getViewCountLabel, getAriaLabel } from '../../common/helpers/viewCardHelpers';
+export class FeaturedContent extends React.Component {
+  render() {
+    const { featuredContent } = this.props;
 
-const FeaturedContent = (props) => {
-  var { featuredContent } = props;
+    const featuredContentViewCards = _(featuredContent).
+      sortBy('position').
+      map(getViewCardPropsForCLPFeaturedItem).
+      map((props, index) => (<FeaturedContentViewCard key={index} {...props} />)).
+      value();
 
-  const viewCardProps = (item) => {
-    if (item.contentType === 'external') {
-      return {
-        name: item.title,
-        description: item.description,
-        url: item.url,
-        metadataLeft: _.get(I18n, 'view_card.external_content', 'External Content'),
-        metadataRight: getViewCountLabel(item.viewCount),
-        imageUrl: item.previewImageUrl,
-        linkProps: {
-          'aria-label': getAriaLabel(item)
-        }
-      };
-    } else {
-      return {
-        name: item.title,
-        description: item.description,
-        url: item.url,
-        icon: getIconClassForDisplayType(item.displayType),
-        metadataLeft: getDateLabel(item.rowsUpdatedAt),
-        metadataRight: getViewCountLabel(item.viewCount),
-        imageUrl: item.previewImageUrl,
-        isPrivate: item.isPrivate,
-        linkProps: {
-          target: '_blank',
-          'aria-label': getAriaLabel(item)
-        }
-      };
-    }
-  };
-
-  const viewCard = (item) => {
-    if (item.contentType === 'internal') {
-      return <ViewCard key={item.id} {...viewCardProps(item)} />;
-    } else {
-      return <ExternalViewCard key={item.id} {...viewCardProps(item)} />;
-    }
-  };
-
-  return (
-    <section className="landing-page-section featured-content">
-      <h2 className="landing-page-section-header">Featured Content in this Category</h2>
-      <div className="media-results">
-        {_.map(featuredContent, (item) => viewCard(item))}
-      </div>
-    </section>
-  );
-};
+    return (featuredContentViewCards.length === 0) ? null : (
+      <section className="landing-page-section featured-content">
+        <h2 className="landing-page-section-header">
+          {_.get(I18n, 'featured_content.label')}
+        </h2>
+        <div className="media-results">
+          {featuredContentViewCards}
+        </div>
+      </section>
+    );
+  }
+}
 
 FeaturedContent.propTypes = {
-  featuredContent: PropTypes.array.isRequired
+  featuredContent: PropTypes.shape({
+    item0: PropTypes.shape({
+      contentType: PropTypes.string,
+      createdAt: PropTypes.number,
+      description: PropTypes.string,
+      displayType: PropTypes.string,
+      id: PropTypes.number,
+      isPrivate: PropTypes.bool,
+      name: PropTypes.string,
+      position: PropTypes.number,
+      rowsUpdatedAt: PropTypes.number,
+      uid: PropTypes.string,
+      updatedAt: PropTypes.string,
+      url: PropTypes.string,
+      viewCount: PropTypes.number
+    }),
+    item1: PropTypes.object,
+    item2: PropTypes.object
+  }).isRequired
 };
 
 const mapStateToProps = (state) => ({ featuredContent: state.featuredContent });

@@ -11,27 +11,10 @@ describe FeaturedContent do
 
   subject { FeaturedContent }
 
-  let(:id) { 'fun' }
-  let(:parent_type) { 'catalog_query' }
-
-  let(:featured_item) do
-    {
-      :position => 2,
-      :contentType => 'internal', # Or 'external' -- this is not a MIME type
-      :name => 'featured',
-      :parentType => 'data_lens',
-      :featuredView => view
-    }.with_indifferent_access
-  end
-
-  let(:clp_featured_item) do
-    {
-      :position =>  0,
-      :contentType => 'internal',
-      :name => 'Catalog Landing Page Internal Featured Content Item',
-      :parentType => 'catalog_query'
-    }.with_indifferent_access
-  end
+  let(:clp_parent_uid) { 'category%3DGovernment' }
+  let(:clp_parent_type) { 'catalog_query' }
+  let(:dslp_parent_uid) { '1234-abcd' }
+  let(:dslp_parent_type) { 'view' }
 
   let(:view) do
     View.new(
@@ -61,59 +44,98 @@ describe FeaturedContent do
     }.with_indifferent_access
   end
 
+  let(:new_external_view_featured_item) do
+    {
+      'parentUid' => dslp_parent_uid,
+      'parentType' => dslp_parent_type,
+      'contentType' => 'external',
+      'description' => 'I am a banana!',
+      'previewImageBase64' => 'iVBORw0KGgoAAAA=',
+      'position': 1,
+      'url' => 'https://food.for.thought.org'
+    }
+  end
+
+  let(:new_external_featured_item) do
+    {
+      'parentUid' => clp_parent_uid,
+      'parentType' => clp_parent_type,
+      'contentType' => 'external',
+      'description' => 'I am a banana!',
+      'previewImageBase64' => 'iVBORw0KGgoAAAA=',
+      'position': 1,
+      'url' => 'https://food.for.thought.org'
+    }
+  end
+
   context 'featured_content' do
 
+    context 'when parent_type is "view"' do
+      it 'should make a create request with the new_external_view_featured_item' do
+        json = new_external_view_featured_item.to_json
+        expect(CoreServer::Base.connection).to receive(:create_request).with('/featured_content', json).
+          and_return(json)
+        result = subject.create_or_update(dslp_parent_uid, dslp_parent_type, new_external_view_featured_item)
+      end
+    end
+
     context 'when parent_type is "catalog_query"' do
-      let(:new_featured_item) do
+      let(:existing_internal_featured_content) do
         {
-          'contentType' => 'external',
-          'description' => 'I am a banana!',
-          'previewImageBase64' => '12345678-1234-1234-1234-123456789012',
-          'position': position,
-          'url' => 'https://food.for.thought.org'
+          'id' => 1,
+          'contentType' => 'internal',
+          'description' => '',
+          'featuredfeaturedLensUid' => 'vkji-3zrf',
+          'parentType' => 'catalog_query',
+          'position' => 0,
+          'title' => 'Healthcare Facility Locations',
+          'url' => 'https://localhost/Government/Healthcare-Facility-Locations/vkji-3zrf'
         }
       end
 
-      let(:existing_featured_item) do
+      let(:existing_external_featured_content) do
         {
-          'id': id
-        }.to_json
+          'id' => 2,
+          'contentType' => 'external',
+          'description' => 'THIS IS SPARTA!!!',
+          'parentType' => 'catalog_query',
+          'position' => 1,
+          'previewImage' => 'c3ea70bc-4068-43a7-ad1f-8d8102d3d35a',
+          'title' => 'This is sparta!',
+          'url' => 'http://www.sparta.com'
+        }
       end
-
-      let(:position) { 0 }
 
       let(:featured_content) do
         File.read("#{Rails.root}/spec/fixtures/vcr_cassettes/clp/featured_content.json")
       end
 
       it 'should have some featured_content' do
-        stub_request(:get, "http://localhost:8080/featured_content/#{id}?parentType=#{parent_type}").
-          with(:headers => request_headers).to_return(:status => 200, :body => featured_content, :headers => {})
+        VCR.use_cassette('existing_featured_content') do
+          featured_content = subject.fetch(clp_parent_uid, clp_parent_type)
 
-        featured_content = subject.fetch(id, parent_type)
+          expect(featured_content.length).to eq(2)
 
-        expect(featured_content.length).to eq(3)
+          expect(featured_content[0]['contentType']).to eq('internal')
+          expect(featured_content[0]['uid']).to eq('vkji-3zrf')
 
-        expect(featured_content[2]['contentType']).to eq('external')
-        expect(featured_content[2]['previewImage']).to eq('f2234ba4-2518-4537-b295-1ba815b83457')
-
-        expect(featured_content[1]['contentType']).to eq('internal')
-        expect(featured_content[1]['lensUid']).to eq('2jnm-ghyx')
+          expect(featured_content[1]['contentType']).to eq('external')
+          expect(featured_content[1]['imageUrl']).to eq('https://localhost/api/file_data/c3ea70bc-4068-43a7-ad1f-8d8102d3d35a')
+        end
       end
 
-      it 'should make a create request with the new_featured_item' do
-        expect(CoreServer::Base.connection).to receive(:create_request).with(
-          '/featured_content',
-          new_featured_item.to_json
-        ).and_return(new_featured_item.to_json)
-        subject.create_or_update(id, parent_type, new_featured_item)
+      it 'should make a create request with the new_external_featured_item' do
+        json = new_external_featured_item.to_json
+        expect(CoreServer::Base.connection).to receive(:create_request).with('/featured_content', json).
+          and_return(json)
+        subject.create_or_update(clp_parent_uid, clp_parent_type, new_external_featured_item)
       end
 
       it 'should make a delete request with the existing_featured_item' do
         expect(CoreServer::Base.connection).to receive(:delete_request).with(
-          "/featured_content/#{id}?parentType=#{parent_type}&position=#{position}"
-        ).and_return(existing_featured_item)
-        subject.destroy(id, parent_type, position)
+          "/featured_content/#{existing_internal_featured_content['id']}"
+        ).and_return(existing_internal_featured_content)
+        subject.destroy(existing_internal_featured_content['id'])
       end
 
     end
@@ -121,8 +143,28 @@ describe FeaturedContent do
   end
 
   context 'reformatting the data' do
+    let(:dslp_featured_item) do
+      {
+        :id => 3,
+        :position => 2,
+        :contentType => 'internal', # Or 'external' -- this is not a MIME type
+        :name => 'featured',
+        :parentType => 'data_lens',
+        :featuredView => view
+      }.with_indifferent_access
+    end
+
+    let(:featured_item) do
+      {
+        :position =>  0,
+        :contentType => 'internal',
+        :name => 'Catalog Landing Page Internal Featured Content Item',
+        :parentType => 'catalog_query'
+      }.with_indifferent_access
+    end
+
     it 'formats the featured item' do
-      formatted_result = FeaturedContent.send(:formatted_featured_item, featured_item)
+      formatted_result = FeaturedContent.send(:formatted_featured_item, dslp_featured_item)
 
       expect(formatted_result['featuredView']).to eq(formatted_view)
     end
@@ -135,7 +177,7 @@ describe FeaturedContent do
     it 'does not try to format the view of an internal catalog landing page item' do
       expect(FeaturedContent).to receive(:format_view_widget).never
 
-      FeaturedContent.send(:formatted_featured_item, clp_featured_item)
+      FeaturedContent.send(:formatted_featured_item, featured_item)
     end
   end
 

@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 const DEFAULT_SORT = 'relevance';
 
-export class SortDropdown extends React.PureComponent {
+export class SortDropdown extends React.Component {
   render() {
     const sortOptions = [
       {

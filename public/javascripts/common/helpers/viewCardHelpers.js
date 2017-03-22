@@ -7,15 +7,17 @@ export function getDateLabel(updatedAt) {
 }
 
 export const getViewCountLabel = (viewCount) => {
-  const viewLabelTranslation = viewCount === 1 ? I18n.view_widget.view : I18n.view_widget.views;
+  const viewLabelTranslation = viewCount === 1 ?
+    _.get(I18n, 'common.view_widget.view') : _.get(I18n, 'common.view_widget.views');
   return _.isNumber(viewCount) ? `${utils.formatNumber(viewCount)} ${viewLabelTranslation}` : '';
 };
 
-export const getAriaLabel = (view) => `${I18n.related_views.view} ${view.name}`;
+export const getAriaLabel = (view) => `${_.get(I18n, 'related_views.view')} ${view.name}`;
 
 export function getViewCardPropsForView(view) {
   return {
     ...view,
+    contentType: 'internal',
     metadataLeft: formatDate(view.updatedAt),
     metadataRight: getViewCountLabel(_.get(view, 'viewCount', 0)),
     icon: getIconClassForDisplayType(view.displayType),
@@ -33,6 +35,7 @@ export function getViewCardPropsForExternalContent(externalContent) {
   }
 
   return {
+    contentType: 'external',
     name: externalContent.title,
     description: externalContent.description,
     imageUrl: imageUrl,
@@ -48,5 +51,26 @@ export function getViewCardPropsForFeaturedItem(item) {
     return getViewCardPropsForView(item.featuredView);
   } else {
     return getViewCardPropsForExternalContent(item);
+  }
+}
+
+export function getViewCardPropsForCLPExternalContent(externalContent) {
+  return {
+    contentType: 'external',
+    name: externalContent.name,
+    description: externalContent.description,
+    imageUrl: externalContent.imageUrl,
+    url: externalContent.url,
+    linkProps: {
+      'aria-label': getAriaLabel(externalContent)
+    }
+  };
+}
+
+export function getViewCardPropsForCLPFeaturedItem(item = {}) {
+  if (item.contentType === 'external') {
+    return getViewCardPropsForCLPExternalContent(item);
+  } else {
+    return getViewCardPropsForView(item);
   }
 }

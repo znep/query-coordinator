@@ -49,6 +49,7 @@ class DisplayFormat < Model
     restored_metadata[:vifs].each do |vif|
       vif[:series] ||= []
       vif[:series].each do |series|
+        series[:label] ||= nil
         series[:dataSource] ||= {}
         series[:dataSource][:filters] ||= []
 

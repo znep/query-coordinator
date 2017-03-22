@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import CategoryStat from './CategoryStat';
 
 const CategoryStats = (props) => {
-  var { categoryStats } = props;
+  var { categoryStats, showStats } = props;
+
+  if (!showStats || _.isEmpty(categoryStats) || !_.some(_.values(categoryStats))) { return null; }
 
   const sortedStats = () => (_(categoryStats).toPairs().sortBy(0).fromPairs().value());
   const filteredStats = () => (_(sortedStats()).toPairs().reject([1, 0]).fromPairs().value());
-
-  if (_.keys(categoryStats).length <= 0) { return null; }
 
   return (
     <div className="catalog-landing-page-stats">
@@ -23,11 +23,13 @@ const CategoryStats = (props) => {
 };
 
 CategoryStats.propTypes = {
-  categoryStats: PropTypes.object
+  categoryStats: PropTypes.object,
+  showStats: PropTypes.bool
 };
 
-function mapStateToProps(state) {
-  return state; // We directly access the categoryStats prop in the component
-}
+const mapStateToProps = (state) => ({
+  categoryStats: state.categoryStats,
+  showStats: state.header.showStats
+});
 
 export default connect(mapStateToProps)(CategoryStats);

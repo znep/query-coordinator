@@ -5,6 +5,10 @@ module ActionControllerExtensions
     render_error(400)
   end
 
+  def render_401
+    render_error(401)
+  end
+
   def render_403
     render_error(403)
   end

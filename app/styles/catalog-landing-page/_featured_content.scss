@@ -1,9 +1,12 @@
 section.landing-page-section.featured-content {
-  margin-bottom: 1rem;
+  margin: 1rem 0;
+
+  .modal {
+    padding-top: 46px; // For admin-header in asset-selector and external-resource-editor modals
+  }
 
   .manage-prompt {
     display: none;
-    // display: flex;
 
     &:not(:last-child) {
       margin-bottom: 22px;

@@ -133,9 +133,15 @@ export function insertAndSubscribeToUpload(dispatch, upload) {
     ..._.omit(upload, ['schemas']),
     inserted_at: parseDate(upload.inserted_at),
     finished_at: upload.finished_at ? parseDate(upload.finished_at) : null,
+    failed_at: upload.failed_at ? parseDate(upload.failed_at) : null,
     created_by: upload.created_by
   }));
-  subscribeToUpload(dispatch, upload);
+
+  if (upload.failed_at) {
+    dispatch(addNotification(uploadNotification(upload.id)));
+  } else {
+    subscribeToUpload(dispatch, upload);
+  }
 }
 
 function subscribeToUpload(dispatch, upload) {

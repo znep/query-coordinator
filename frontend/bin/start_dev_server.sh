@@ -1,8 +1,7 @@
 #!/bin/bash
 set -e
 
-REALPATH=$(python -c "import os; print(os.path.realpath('$0'))")
-BASEDIR="$(dirname "${REALPATH}")/.."
+GIT_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)/$1"
 
 CONFIG_DIRECTIVES='error_log /dev/stderr info;'
 if [[ $OSTYPE == darwin* ]]; then
@@ -12,4 +11,4 @@ if [[ $OSTYPE == darwin* ]]; then
 fi
 
 echo "Running on port 443 requires sudo, using 'sudo' to start nginx." >&2
-sudo nginx -c "${BASEDIR}/dev-server/nginx.conf" -g "$CONFIG_DIRECTIVES"
+sudo nginx -c "${GIT_ROOT}/dev-server/nginx.conf" -g "$CONFIG_DIRECTIVES"

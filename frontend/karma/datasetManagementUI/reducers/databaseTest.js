@@ -2,7 +2,6 @@ import _ from 'lodash';
 import dbReducer from 'reducers/database';
 import * as Actions from 'actions/database';
 import { statusSavedOnServer } from 'lib/database/statuses';
-import { makeErrorMsg } from 'lib/notifications';
 
 describe('reducers/database', () => {
 
@@ -574,7 +573,7 @@ describe('reducers/database', () => {
           __status__: {
             type: 'UPDATE_FAILED',
             updates,
-            error: makeErrorMsg(error),
+            error,
             percentCompleted,
             failedAt
           },

@@ -4,6 +4,35 @@ import ProgressBar from '../ProgressBar';
 import _ from 'lodash';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
+export function InnerErrorMessage({ upload, children }) {
+  const badConnectionBodyDescription = {
+    __html: I18n.progress_items.connection_error_body_description.format(
+      `<span class="filename">${upload.filename}</span>`)
+  };
+
+  const badConnection = (
+    <div key={I18n.progress_items.connection_error_title}>
+      <div className="msg-container">
+        <h6>{I18n.progress_items.connection_error_title}</h6>
+        <p dangerouslySetInnerHTML={badConnectionBodyDescription}></p>
+        <p>{I18n.progress_items.connection_error_body_advice}</p>
+      </div>
+      {children}
+    </div>
+  );
+
+  switch (upload.__status__.error) {
+    case 502:
+      return badConnection;
+    default:
+      return badConnection;
+  }
+}
+
+InnerErrorMessage.propTypes = {
+  upload: PropTypes.object.isRequired
+};
+
 class UploadNotificationError extends Component { //  eslint-disable-line react/prefer-es6-class
   constructor() {
     super();
@@ -24,6 +53,7 @@ class UploadNotificationError extends Component { //  eslint-disable-line react/
   render() {
     const { upload, notification, dispatch } = this.props;
     const { detailsOpen } = this.state;
+
     return (
       <div className="dsmui-notification error">
         <span className="message">{I18n.progress_items.upload_failed}</span>
@@ -37,29 +67,25 @@ class UploadNotificationError extends Component { //  eslint-disable-line react/
           <span className="icon socrata-icon-warning"></span>
         </span>
         <div className="upload-progress-bar">
-          <ProgressBar percent={upload.__status__.percentCompleted} />
+          <ProgressBar percent={upload.__status__.percentCompleted || 0} />
         </div>
         <ReactCSSTransitionGroup
           transitionName="dsmui-error-notification-transition"
           transitionEnterTimeout={500}
           transitionLeaveTimeout={500}>
           {detailsOpen &&
-            <div key={upload.__status__.error.title}>
-              <div className="msg-container">
-                <h6>{upload.__status__.error.title}</h6>
-                {upload.__status__.error.body}
-              </div>
+            <InnerErrorMessage upload={upload}>
               <div className="btn-container">
                 <button
-                  className="btn btn-default"
+                  className="btn btn-default btn-xs"
                   onClick={() => dispatch(removeNotification(notification))}>
                   Dismiss
                 </button>
-                <a target="_blank" href="https://support.socrata.com" className="btn btn-primary">
+                <a className="btn btn-primary btn-xs" target="_blank" href="https://support.socrata.com">
                   Contact Support
                 </a>
               </div>
-            </div>
+            </InnerErrorMessage>
           }
         </ReactCSSTransitionGroup>
       </div>

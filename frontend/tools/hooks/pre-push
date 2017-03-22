@@ -3,11 +3,11 @@
 errors=0
 
 CATCH_METHOD_INSTANCES=`grep --include='*.js' -RE '\.catch\(' \
-                        public/javascripts/component \
-                        public/javascripts/controls \
-                        public/javascripts/plugins \
-                        public/javascripts/screens \
-                        public/javascripts/util | \
+                        frontend/public/javascripts/component \
+                        frontend/public/javascripts/controls \
+                        frontend/public/javascripts/plugins \
+                        frontend/public/javascripts/screens \
+                        frontend/public/javascripts/util | \
                         grep -vE '\s*//\s*' | \
                         cut -d \: -f 1`
 if [ -n "$CATCH_METHOD_INSTANCES" ]; then

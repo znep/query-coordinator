@@ -3,6 +3,9 @@ set -ex
 
 # Called by Jenkins to build and package frontend in preparation for a deploy
 # Note that dependencies should be installed before running this script.
+
+cd $WORKSPACE/frontend
+
 echo "Configuring bundle to connect to repo.socrata.com with credentials..."
 set +x
 bundle config repo.socrata.com ${ARTIFACTORY_USER}:${ARTIFACTORY_PASSWORD}
@@ -14,7 +17,7 @@ bundle check || bundle install
 gem install localeapp
 
 # Write REVISION file
-git rev-parse HEAD > "${WORKSPACE}/REVISION"
+git rev-parse HEAD > "${WORKSPACE}/frontend/REVISION"
 
 # Package assets
 npm run build:prod
@@ -27,9 +30,9 @@ set +e
 bin/pull_translations
 set -e
 
-if [ ! -f ${WORKSPACE}/config/locales/es.yml ]; then
+if [ ! -f ${WORKSPACE}/frontend/config/locales/es.yml ]; then
   echo "Did not successfully download locales"
-  echo `ls -l ${WORKSPACE}/config/locales/`
+  echo `ls -l ${WORKSPACE}/frontend/config/locales/`
   exit 1
 fi
 

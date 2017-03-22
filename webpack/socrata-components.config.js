@@ -1,23 +1,35 @@
 const _ = require('lodash');
 const path = require('path');
+const { peerDependencies } = require('../package.json');
+const { CommonsChunkPlugin } = require('webpack').optimize;
+
 const root = path.resolve(__dirname, '..');
-const CommonsChunkPlugin = require('webpack').optimize.CommonsChunkPlugin;
 const isProduction = process.env.NODE_ENV === 'production';
 
 const devtool = isProduction ? 'source-map' : 'cheap-eval-source-map';
+const externals = isProduction
+  ? _.mapValues(peerDependencies, _.stubTrue)
+  : {};
+const plugins = isProduction
+  ? []
+  : [
+      new CommonsChunkPlugin({
+        name: 'vendor',
+        filename: 'vendor.js',
+        minChunks: (module) => _.includes(module.resource, 'node_modules')
+      })
+    ];
 
 module.exports = {
   context: root,
   devtool,
   entry: `${root}/src/js/index.js`,
+  externals,
   output: {
-    path: `${root}/dist/js`,
     filename: 'socrata-components.js',
+    library: 'styleguide',
     libraryTarget: 'umd',
-    library: 'styleguide'
-  },
-  resolve: {
-    modules: [path.resolve(root), 'node_modules']
+    path: `${root}/dist/js`
   },
   module: {
     rules: [
@@ -74,11 +86,8 @@ module.exports = {
       }
     ]
   },
-  plugins: [
-    new CommonsChunkPlugin({
-      name: 'vendor',
-      filename: 'vendor.js',
-      minChunks: (module) => _.includes(module.resource, 'node_modules')
-    })
-  ]
+  plugins,
+  resolve: {
+    modules: [path.resolve(root), 'node_modules']
+  }
 };

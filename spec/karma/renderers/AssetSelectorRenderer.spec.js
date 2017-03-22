@@ -1,6 +1,8 @@
 import $ from 'jquery';
 import _ from 'lodash';
 
+import { FeatureFlags } from 'socrata-utils';
+
 import { $transient } from '../TransientElement';
 import StandardMocks from '../StandardMocks';
 import story from '../fixtures/Story';
@@ -29,6 +31,12 @@ describe('AssetSelectorRenderer', function() {
   var dispatcher;
 
   beforeEach(function() {
+    FeatureFlags.useTestFixture({
+      enable_getty_images_gallery: true,
+      enable_filtered_tables_in_ax: false,
+      enable_filterable_visualizations_in_ax: true
+    });
+
     server = sinon.fakeServer.create();
 
     container = $('<div>', { 'class': 'asset-selector-container' });

@@ -4,6 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactCrop from 'react-image-crop';
 import SocrataVisualizations from 'socrata-visualizations';
+import { FeatureFlags } from 'socrata-utils';
 
 import '../components/Modal';
 import I18n from '../I18n';
@@ -18,6 +19,8 @@ import { STATUS, fileUploaderStore } from '../stores/FileUploaderStore';
 import { flyoutRenderer } from '../FlyoutRenderer';
 
 export default function AssetSelectorRenderer(options) {
+  const ENABLE_GETTY_IMAGES_GALLERY = FeatureFlags.value('enable_getty_images_gallery');
+
 
   var _container = options.assetSelectorContainerElement || null;
   var _lastRenderedStep = null;
@@ -561,7 +564,7 @@ export default function AssetSelectorRenderer(options) {
       text(I18n.t('editor.asset_selector.image_upload.name'));
     const imageUploadDescription = $('<p>').
       text(
-        Environment.ENABLE_GETTY_IMAGES_GALLERY ?
+        ENABLE_GETTY_IMAGES_GALLERY ?
           I18n.t('editor.asset_selector.image_upload.description_with_getty_images') :
           I18n.t('editor.asset_selector.image_upload.description')
       );
@@ -661,7 +664,7 @@ export default function AssetSelectorRenderer(options) {
   function _renderChooseImageTemplate() {
     const tabs = $('<ul>', {
       class: 'image-tabs tabs'
-    }).toggleClass('hidden', !Environment.ENABLE_GETTY_IMAGES_GALLERY);
+    }).toggleClass('hidden', !ENABLE_GETTY_IMAGES_GALLERY);
 
     const tabUpload = $('<li>', {
       class: 'tab active'
@@ -2240,7 +2243,7 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _renderChooseDatasetTemplate() {
-    if (Environment.ENABLE_FILTERED_TABLES_IN_AX) {
+    if (FeatureFlags.value('enable_filtered_tables_in_ax')) {
       return _renderViewChooserTemplate('suppressed_facets[]=type&limitTo=tables');
     } else {
       return _renderViewChooserTemplate('suppressed_facets[]=type&limitTo=datasets');
@@ -2328,7 +2331,7 @@ export default function AssetSelectorRenderer(options) {
     const authoringWorkflow = new SocrataVisualizations.AuthoringWorkflow(element, {
       vif: vifToEdit,
       filters: _.get(vifToEdit, 'series[0].dataSource.filters', []),
-      enableFiltering: Environment.ENABLE_FILTERABLE_VISUALIZATIONS_IN_AX,
+      enableFiltering: FeatureFlags.value('enable_filterable_visualizations_in_ax'),
       backButtonText: I18n.t('editor.asset_selector.visualization.authoring_visualization_back_button'),
       onBack: () => {
         authoringWorkflow.destroy();

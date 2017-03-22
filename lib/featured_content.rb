@@ -5,6 +5,7 @@ class FeaturedContent
     include Rails.application.routes.url_helpers
     include Socrata::UrlHelpers
     include Socrata::RequestIdHelper
+    include Socrata::CookieHelper
 
     # TODOS: Deal with Core errors
     #  If the permissions of the view have changed, then we might need an Auth Required (401)
@@ -90,6 +91,7 @@ class FeaturedContent
 
       result = Cetera::Utils.search_views(
         current_request_id,
+        current_cookies,
         :domains => [CurrentDomain.cname],
         :ids => featured_item['featuredLensUid']
       ).results.first

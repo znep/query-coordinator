@@ -39,12 +39,12 @@ module Cetera
         Rails.logger.info("Cetera request to #{purpose} with options: #{options.inspect}")
       end
 
-      def get_tags(req_id)
+      def get_tags(req_id, cookies = nil)
         opts = { domains: [CurrentDomain.cname] }
         params = cetera_soql_params(opts)
         log_request('get tags', params)
         begin
-          response = facet_search_client.get_tags_of_anonymously_viewable_views(req_id, params)
+          response = facet_search_client.get_tags_of_anonymously_viewable_views(req_id, cookies, params)
           ::Cetera::Results::TagCountResult.new(response)
         rescue Exception => e
           ::Cetera::Results::TagCountResult.new({'results' => []})
@@ -52,14 +52,14 @@ module Cetera
       end
 
       # 90%+ of search queries go through here so try not to break anything
-      def search_views(req_id, opts = {})
+      def search_views(req_id, cookies = nil, opts = {})
         params = cetera_soql_params(opts)
         log_request('get anonymously viewable views', params)
-        response = catalog_search_client.find_anonymously_viewable_views(req_id, params)
+        response = catalog_search_client.find_anonymously_viewable_views(req_id, cookies, params)
         ::Cetera::Results::CatalogSearchResult.new(response)
       end
 
-      def get_derived_from_views(uid, req_id, opts = {})
+      def get_derived_from_views(uid, req_id, cookies = nil, opts = {})
         locale_string = opts.delete(:locale)
         params = opts.merge({
           domains: [CurrentDomain.cname],
@@ -67,18 +67,18 @@ module Cetera
           locale: locale_string
         }).compact
 
-        response = search_views(req_id, params)
+        response = search_views(req_id, cookies, params)
 
         response ? response.results : []
       end
 
-      def get_lens_counts_for_category(category, req_id, options = {})
+      def get_lens_counts_for_category(category, req_id, cookies = nil, options = {})
         {}.tap do |counts|
           %w(datasets maps charts).map do |facet|
             Thread.new do
               counts[facet] = catalog_search_client.
                 find_anonymously_viewable_views(
-                  req_id, :limit => 0, :categories => category, :only => facet, domains: CurrentDomain.cname
+                  req_id, cookies, :limit => 0, :categories => category, :only => facet, domains: CurrentDomain.cname
                 ).fetch('resultSetSize')
             end
           end.each(&:join)
@@ -174,7 +174,7 @@ module Cetera
         Set.new(%i(boostCalendars boostCharts boostDatalenses boostDatasets boostDomains boostFiles
                    boostFilters boostForms boostHrefs boostMaps boostPulses boostStories categories
                    derived_from domains for_user limit locale offset only order q search_context tags
-                   shared_to provenance))
+                   shared_to provenance public published approval_status explicitly_hidden))
       end
     end
   end

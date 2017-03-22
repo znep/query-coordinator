@@ -112,7 +112,7 @@ describe Cetera::Utils do
              query: Cetera::Utils.cetera_soql_params(query).merge(viz_params)).
         to_return(status: 200, body: {}.to_json, headers: { 'Content-Type' => 'application/json' } )
 
-      Cetera::Utils.search_views(request_id, query)
+      Cetera::Utils.search_views(request_id, nil, query)
       expect(WebMock).to have_requested(:get, path).
         with(query: Cetera::Utils.cetera_soql_params(query).merge(viz_params),
              headers: { 'X-Socrata-RequestId' => request_id, 'Content-Type' => 'application/json' } )
@@ -135,7 +135,7 @@ describe Cetera::Utils do
         with(query: params).
         to_return(status: 200, body: {}.to_json, headers: { 'Content-Type' => 'application/json' })
 
-      Cetera::Utils.search_views(nil, query)
+      Cetera::Utils.search_views(nil, nil, query)
 
       expect(WebMock).to have_requested(:get, path).with(query: params)
     end
@@ -143,6 +143,7 @@ describe Cetera::Utils do
 
   describe 'get_derived_from_views' do
     let(:request_id) { 'iAmProbablyUnique' }
+    let(:cookie) { '_cookie=nomNom' }
 
     let(:cetera_results) do
       cetera_payload = JSON.parse(File.read("#{Rails.root}/test/fixtures/cetera_search_results.json"))
@@ -155,7 +156,7 @@ describe Cetera::Utils do
 
     it 'returns CeteraResultRow objects' do
       allow(Cetera::Utils).to receive(:search_views).and_return(cetera_results)
-      result = Cetera::Utils.get_derived_from_views('data-lens', request_id)
+      result = Cetera::Utils.get_derived_from_views('data-lens', request_id, cookie)
 
       expect(result.first.class).to eq(Cetera::Results::ResultRow)
     end
@@ -164,6 +165,7 @@ describe Cetera::Utils do
       expect(Cetera::Utils).to receive(:search_views).
         with(
           request_id,
+          cookie,
           {
             domains: ['unicorns'],
             derived_from: 'data-lens',
@@ -174,13 +176,14 @@ describe Cetera::Utils do
         and_return(cetera_results)
 
       options = { offset: 20, limit: 30 }
-      Cetera::Utils.get_derived_from_views('data-lens', request_id, options)
+      Cetera::Utils.get_derived_from_views('data-lens', request_id, cookie, options)
     end
 
     it 'invokes Cetera with boost parameters' do
       expect(Cetera::Utils).to receive(:search_views).
         with(
           request_id,
+          cookie,
           {
             domains: ['unicorns'],
             derived_from: 'data-lens',
@@ -190,13 +193,13 @@ describe Cetera::Utils do
         and_return(cetera_results)
 
       options = { boostCalendars: 100.0 }
-      Cetera::Utils.get_derived_from_views('data-lens', request_id, options)
+      Cetera::Utils.get_derived_from_views('data-lens', request_id, cookie, options)
     end
 
     it 'returns an empty array when Cetera returns a bad response' do
       allow(Cetera::Utils).to receive(:search_views).and_return(nil)
       options = { offset: nil, limit: 'purple' }
-      result = Cetera::Utils.get_derived_from_views('data-lens', request_id, options)
+      result = Cetera::Utils.get_derived_from_views('data-lens', request_id, cookie, options)
 
       expect(result).to be_a Array
       expect(result.length).to eq(0)
@@ -205,12 +208,13 @@ describe Cetera::Utils do
 
   describe 'get_tags' do
     let(:request_id) { 'iAmProbablyUnique' }
+    let(:cookie) { '_cookie=nomNom' }
 
     it 'returns a TagCountResult with expected properties' do
       VCR.use_cassette('cetera/get_tags') do
         CurrentDomain.stub(:cname) { 'localhost' }
 
-        results = Cetera::Utils.get_tags(request_id)
+        results = Cetera::Utils.get_tags(request_id, cookie)
 
         expect(results.class).to eq(Cetera::Results::TagCountResult)
         expect(results.results[0].name).to eq('biz')
@@ -225,7 +229,7 @@ describe Cetera::Utils do
         CurrentDomain.stub(:cname) { 'opendata.rc-socrata.com' }
 
         # fails because opendata.rc-socrata.com is not indexed on localhost
-        results = Cetera::Utils.get_tags(request_id)
+        results = Cetera::Utils.get_tags(request_id, cookie)
 
         expect(results.results).to eq([])
       end

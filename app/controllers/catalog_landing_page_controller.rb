@@ -3,6 +3,8 @@ class CatalogLandingPageController < ApplicationController
   include CatalogLandingPageHelper
   include ApplicationHelper
   include BrowseActions
+  include Socrata::RequestIdHelper
+  include Socrata::CookieHelper
 
   before_action :require_administrator, :except => [:show]
   skip_before_action :require_user, :only => [:show]
@@ -93,7 +95,7 @@ end
     @category = params[:category]
     @featured_content = catalog_landing_page.try(:featured_content)
     @metadata = catalog_landing_page.try(:metadata).to_h
-    @category_stats = catalog_landing_page.try(:category_stats, @category, request_id).to_h
+    @category_stats = catalog_landing_page.try(:category_stats, @category, current_request_id, current_cookies).to_h
   end
 
 end

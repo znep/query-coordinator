@@ -1,7 +1,9 @@
 require 'cetera'
 
 class CeteraController < ApplicationController
-  include CommonSocrataMethods
+
+  include Socrata::RequestIdHelper
+  include Socrata::CookieHelper
 
   skip_before_filter :require_user
 
@@ -10,7 +12,7 @@ class CeteraController < ApplicationController
     cetera_params = params.slice(:limit, :flags, :domain).symbolize_keys
     if params[:q]
       begin
-        cetera_response = user_search_client.find_all_by_query(params[:q], request_id, forwardable_session_cookies, cetera_params)
+        cetera_response = user_search_client.find_all_by_query(params[:q], current_request_id, current_cookies, cetera_params)
         users = Cetera::Results::UserSearchResult.new(cetera_response).results
         render :json => users.map(&:data)
       rescue RuntimeError
@@ -29,7 +31,7 @@ class CeteraController < ApplicationController
     if params[:q]
       begin
         cetera_response = autocomplete_search_client.get_titles_of_anonymously_viewable_views(
-          params[:q], request_id, cetera_params
+          params[:q], current_request_id, current_cookies, cetera_params
         )
         render :json => cetera_response
       rescue StandardError => e

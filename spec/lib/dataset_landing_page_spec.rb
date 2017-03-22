@@ -66,6 +66,7 @@ describe DatasetLandingPage do
           with(
             uid_to_query,
             'request_id',
+            'cookie',
             {
               :sortBy => 'most_accessed',
               :boostDatalenses => 1.15,
@@ -112,6 +113,7 @@ describe DatasetLandingPage do
           with(
             'peng-uins',
             'request_id',
+            'cookie',
             {
               :sortBy => 'most_accessed',
               :limit => 19,

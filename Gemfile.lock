@@ -41,7 +41,8 @@ GEM
     adamantium (0.2.0)
       ice_nine (~> 0.11.0)
       memoizable (~> 0.4.0)
-    addressable (2.4.0)
+    addressable (2.5.0)
+      public_suffix (~> 2.0, >= 2.0.2)
     airbrake (4.3.0)
       builder
       multi_json
@@ -58,7 +59,7 @@ GEM
       rubyzip (>= 0.9.5)
     builder (3.2.3)
     byebug (9.0.6)
-    cetera-ruby (0.4.2)
+    cetera-ruby (0.4.4)
       addressable (~> 2.3)
       httparty (~> 0.13)
     chroma (0.1.0)
@@ -219,6 +220,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    public_suffix (2.0.5)
     rack (1.6.5)
     rack-test (0.6.3)
       rack (>= 1.0)

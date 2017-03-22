@@ -19,7 +19,8 @@ class ApplicationController < ActionController::Base
   before_filter :hook_auth_controller, :create_core_server_connection,
     :disable_frame_embedding, :adjust_format, :patch_microsoft_office,
     :sync_logged_in_cookie, :require_user, :set_user, :set_meta,
-    :force_utf8_params, :poll_external_configs, :set_request_id
+    :force_utf8_params, :poll_external_configs, :set_request_id,
+    :set_cookies
 
   helper :all # include all helpers, all the time
 
@@ -167,6 +168,11 @@ class ApplicationController < ActionController::Base
   # +before_filter+
   def set_request_id
     Socrata::RequestIdHelper.current_request_id = request_id
+  end
+
+  # +before_filter+
+  def set_cookies
+    Socrata::CookieHelper.current_cookies = forwardable_session_cookies
   end
 
   private

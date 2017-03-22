@@ -11,6 +11,8 @@ http_interactions:
       - req_id
       Content-Type:
       - application/json
+      Cookie:
+      - cookie
   response:
     status:
       code: 200
@@ -47,6 +49,8 @@ http_interactions:
       - req_id
       Content-Type:
       - application/json
+      Cookie:
+      - cookie
   response:
     status:
       code: 200
@@ -83,6 +87,8 @@ http_interactions:
       - req_id
       Content-Type:
       - application/json
+      Cookie:
+      - cookie
   response:
     status:
       code: 200

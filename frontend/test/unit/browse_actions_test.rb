@@ -239,8 +239,6 @@ class BrowseActionsTest3 < Minitest::Test
 
     stub_feature_flags_with(:cetera_search => true)
 
-    APP_CONFIG.stubs(cetera_internal_uri: 'http://cetera.app.aws-us-east-1-fedramp-prod.socrata.net')
-
     I18n.stubs(locale: CurrentDomain.default_locale.to_s)
 
     @browse_controller = BrowseController.new
@@ -259,21 +257,32 @@ class BrowseActionsTest3 < Minitest::Test
       page: 1
     }.reject { |_, v| v.blank? }
     url = core_views_url + '?' + core_views_params.to_query
-    stub_request(:get, url).to_return(status: 200, body: '', headers: {})
+    stub_request(:get, url).to_return(status: 200, body: '', headers: {'Content-Type'=>'application/json', 'X-Socrata-Host'=>'localhost', 'X-Socrata-Requestid'=>''})
   end
 
-  def stub_cetera_for_categories(categories)
-    cetera_url = 'http://cetera.app.aws-us-east-1-fedramp-prod.socrata.net/catalog/v1'
+  def stub_cetera_for_categories_and_browse(categories, datatypes = nil)
+    cetera_url = 'localhost:5704/catalog/v1'
     cetera_params = {
       categories: categories,
+      only: datatypes,
       domains: 'localhost',
       limit: 10,
       offset: 0,
       order: 'relevance',
-      search_context: 'localhost'
-    }.reject { |_, v| v.blank? }
+      search_context: 'localhost',
+      approval_status: 'approved',
+      public: true,
+      published: true,
+      explicitly_hidden: false
+    }.reject { |_, v| v.nil? }
     url = cetera_url + '?' + cetera_params.to_query
-    stub_request(:get, url).to_return(status: 200, body: '', headers: {})
+    stub_request(:get, url).to_return(status: 200, body: '', headers: {'Content-Type'=>'application/json', 'X-Socrata-Host'=>'localhost', 'X-Socrata-Requestid'=>''})
+  end
+
+  def category_4_categories
+    parent_category = 'Test Category 4'
+    child_categories = ['Test Category 4a', 'Test Category 4b']
+    [parent_category] | child_categories
   end
 
   # backward compatibility with core/clytemnestra
@@ -296,6 +305,7 @@ class BrowseActionsTest3 < Minitest::Test
     @browse_controller.stubs(:using_cetera? => true)
     request = OpenStruct.new(:params => { category: 'Test Category 4' })
     options = {limitTo: 'unpublished'}
+    stub_cetera_for_categories_and_browse(category_4_categories, ['datasets', 'drafts'])
     browse_options = @browse_controller.send(:process_browse, request, options)
     assert_equal ['draft', 'tables'], browse_options[:search_options][:limitTo]
   end
@@ -305,6 +315,7 @@ class BrowseActionsTest3 < Minitest::Test
     stub_feature_flags_with(:ingress_reenter => false)
     request = OpenStruct.new(:params => { category: 'Test Category 4' })
     options = {limitTo: 'unpublished'}
+    stub_cetera_for_categories_and_browse(category_4_categories, 'datasets')
     browse_options = @browse_controller.send(:process_browse, request, options)
     assert_equal 'tables', browse_options[:search_options][:limitTo]
   end
@@ -337,21 +348,17 @@ class BrowseActionsTest3 < Minitest::Test
   end
 
   def test_parent_category_includes_its_children_in_query_to_cetera
-    parent_category = 'Test Category 4'
-    child_categories = ['Test Category 4a', 'Test Category 4b']
-
-    expected_categories = [parent_category] | child_categories
-    stub_cetera_for_categories(expected_categories)
+    stub_cetera_for_categories_and_browse(category_4_categories)
     @browse_controller.stubs(:using_cetera? => true)
 
-    assert_equal expected_categories, search_and_return_cetera_categories_param(parent_category)
+    assert_equal category_4_categories, search_and_return_cetera_categories_param('Test Category 4')
   end
 
   def test_child_category_includes_only_itself_in_query_to_cetera
     child_category = 'Test Category 4a'
 
     expected_categories = [child_category]
-    stub_cetera_for_categories(expected_categories)
+    stub_cetera_for_categories_and_browse(expected_categories)
     @browse_controller.stubs(:using_cetera? => true)
 
     assert_equal expected_categories, search_and_return_cetera_categories_param(child_category)
@@ -361,7 +368,7 @@ class BrowseActionsTest3 < Minitest::Test
     childless_category = 'Business'
 
     expected_categories = [childless_category]
-    stub_cetera_for_categories(expected_categories)
+    stub_cetera_for_categories_and_browse(expected_categories)
 
     assert_equal expected_categories, search_and_return_cetera_categories_param(childless_category)
   end
@@ -369,7 +376,7 @@ class BrowseActionsTest3 < Minitest::Test
   def test_no_category_results_in_no_category_passed_to_cetera
     no_category = nil
 
-    stub_cetera_for_categories(expected_categories = nil)
+    stub_cetera_for_categories_and_browse(expected_categories = nil)
 
     refute(search_and_return_cetera_categories_param(no_category))
   end
@@ -386,7 +393,7 @@ class BrowseActionsTest3 < Minitest::Test
 
     # And it will show up in the FE's list of displayed categories
     expected_categories = [imaginary_category]
-    stub_cetera_for_categories(expected_categories)
+    stub_cetera_for_categories_and_browse(expected_categories)
     @browse_controller.stubs(:using_cetera? => true)
 
     assert_equal expected_categories, search_and_return_cetera_categories_param(imaginary_category)
@@ -458,8 +465,13 @@ class BrowseActionsTest4 < Minitest::Test
       to_return(:status => 200, :body => %q([{"frequency":2,"name":"other","flags":[]},{"frequency":2,"name":"tag","flags":[]},{"frequency":1,"name":"crazy","flags":[]},{"frequency":1,"name":"keyword","flags":[]},{"frequency":1,"name":"neato","flags":[]},{"frequency":1,"name":"ufo","flags":[]},{"frequency":1,"name":"weird","flags":[]}]), :headers => {})
 
     stub_request(:get, "http://localhost:5704/catalog/v1/domain_tags?approval_status=approved&domains=localhost&explicitly_hidden=false&offset=0&order=relevance&public=true&published=true&search_context=localhost").
-      with(:headers => {'Content-Type' => 'application/json'}).
+      with(:headers => {'Content-Type' => 'application/json', 'X-Socrata-Host' => 'localhost'}).
       to_return(:status => 200, :body => %q({"results":[{"domain_tag":"crazy", "count":1},{"domain_tag":"other", "count":2},{"domain_tag":"tag", "count":2},{"domain_tag":"keyword", "count":1},{"domain_tag":"neato", "count":1},{"domain_tag":"ufo", "count":1},{"domain_tag":"weird", "count":1}],"resultSetSize":7,"timings":{"serviceMillis":4, "searchMillis":[1, 1]}}), :headers => { 'Content-Type': 'application/json' })
+
+    stub_request(:get, "http://localhost:5704/catalog/v1?approval_status=approved&domains=localhost&explicitly_hidden=false&limit=10&offset=0&order=relevance&public=true&published=true&search_context=localhost").
+      with(:headers => {'Content-Type'=>'application/json', 'X-Socrata-Host'=>'localhost'}).
+      to_return(:status => 200, :body => "", :headers => {})
+
   end
 
   def test_cly_topics_facet_without_param

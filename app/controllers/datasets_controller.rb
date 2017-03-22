@@ -752,7 +752,7 @@ class DatasetsController < ApplicationController
       rescue => error
       end
       # if there is no nbe_id, throw a 404
-      return render_404 unless nbe_id.present?
+      return render_500 unless nbe_id.present?
       return redirect_to create_visualization_canvas_path(id: nbe_id)
     end
 

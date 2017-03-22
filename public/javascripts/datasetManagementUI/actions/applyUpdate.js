@@ -15,6 +15,11 @@ import * as dsmapiLinks from '../dsmapiLinks';
 import * as Links from '../links';
 import { parseDate } from '../lib/parseDate';
 
+// from https://github.com/socrata/dsmapi/blob/0071c4cdf5128698e6ae9ad2ed1c307e884bb386/web/models/upsert_job.ex#L32-L34
+// TODO: put these in some kind of model class?
+export const UPSERT_JOB_IN_PROGRESS = 'in_progress';
+export const UPSERT_JOB_SUCCESSFUL = 'successful';
+export const UPSERT_JOB_FAILURE = 'failure';
 
 export function applyUpdate(outputSchemaId) {
   return (dispatch, getState) => {
@@ -56,11 +61,11 @@ export function pollForUpsertJobProgress(upsertJobId) {
             ...upsertJob,
             finished_at: parseDate(upsertJob.finished_at)
           }));
-          if (upsertJob.status === 'successful') {
+          if (upsertJob.status === UPSERT_JOB_SUCCESSFUL) {
             dispatch(removeNotificationAfterTimeout(upsertJobNotification(upsertJob.id)));
           }
         });
-        if (_.map(update.upsert_jobs, 'status').some((status) => status === null)) {
+        if (_.map(update.upsert_jobs, 'status').some((status) => status === UPSERT_JOB_IN_PROGRESS)) {
           setTimeout(() => {
             dispatch(pollForUpsertJobProgress(upsertJobId));
           }, UPSERT_JOB_PROGRESS_POLL_INTERVAL_MS);

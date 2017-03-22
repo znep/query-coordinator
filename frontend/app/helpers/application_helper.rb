@@ -1005,6 +1005,10 @@ module ApplicationHelper
     FeatureFlags.derive(nil, request, nil)[:cetera_profile_search]
   end
 
+  def boost_official_views?
+    FeatureFlags.derive(nil, request, nil)[:cetera_search_boost_official_assets]
+  end
+
   def sprite_icon(opts)
     content_tag(:div, :class => opts[:class_name] || 'icon') do
       if opts[:alt_text].present?

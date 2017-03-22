@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { EditBar } from 'socrata-components';
+import * as ApplyUpdate from '../actions/applyUpdate';
 
 function AppBar({ name, showPreviewLink }) {
   const previewLink = (
@@ -28,7 +29,9 @@ AppBar.propTypes = {
 
 function mapStateToProps(state) {
   // only show the preview link when an upsert job has successfully completed
-  const showPreviewLink = !!_.find(state.db.upsert_jobs, { status: 'successful' });
+  const showPreviewLink = !!_.find(state.db.upsert_jobs, {
+    status: ApplyUpdate.UPSERT_JOB_SUCCESSFUL
+  });
 
   return {
     name: _.values(state.db.views)[0].name,

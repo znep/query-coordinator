@@ -4,6 +4,7 @@ import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import * as Links from '../links';
 import moment from 'moment';
+import * as ApplyUpdate from '../actions/applyUpdate';
 
 function ActivityFeedTimestamp({ date }) {
   return (
@@ -155,10 +156,9 @@ function activitiesOf(db) {
     at: upsertJob.inserted_at
   }));
 
-  // TODO: Encapsulate upsert job statuses ARGHGHGHghghghghghgGhghg
   const finishedUpserts = _.chain(db.upsert_jobs).
     filter((upsertJob) => !!upsertJob.finished_at).
-    filter((upsertJob) => upsertJob.status === 'successful').
+    filter((upsertJob) => upsertJob.status === ApplyUpdate.UPSERT_JOB_SUCCESSFUL).
     map((upsertJob) => ({
       type: 'upsertCompleted',
       value: upsertJob,
@@ -168,7 +168,7 @@ function activitiesOf(db) {
 
   const failedUpserts = _.chain(db.upsert_jobs).
     filter((upsertJob) => !!upsertJob.finished_at).
-    filter((upsertJob) => upsertJob.status === 'failure').
+    filter((upsertJob) => upsertJob.status === ApplyUpdate.UPSERT_JOB_FAILURE).
     map((upsertJob) => ({
       type: 'upsertFailed',
       value: upsertJob,

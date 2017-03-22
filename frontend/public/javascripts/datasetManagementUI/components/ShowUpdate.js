@@ -176,9 +176,8 @@ function ShowUpdate({ view, routing, db, urlParams, addEmailInterest, createUplo
 
   const outputSchema = latestOutputSchema(db);
   const doesUpsertExist = _.size(db.upsert_jobs);
-  // TODO: hardcoded status here is nasty - this should be encapsulated in the upsert job itself
   const isUpsertComplete = doesUpsertExist &&
-    _.map(db.upsert_jobs, (uj) => uj.status === 'successful').
+    _.map(db.upsert_jobs, (uj) => uj.status === ApplyUpdate.UPSERT_JOB_SUCCESSFUL).
     reduce((acc, success) => success || acc, false);
 
   let dataTable;

@@ -29,6 +29,7 @@ export const FilterItem = React.createClass({
     isReadOnly: PropTypes.bool.isRequired,
     onUpdate: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,
+    onClear: PropTypes.func,
     isValidTextFilterColumnValue: PropTypes.func
   },
 
@@ -209,6 +210,7 @@ export const FilterItem = React.createClass({
       onClickConfig: this.toggleConfig,
       onRemove: this.onRemove,
       onUpdate: this.onUpdate,
+      onClear: this.props.onClear,
       ref: _.partial(_.set, this, 'filterControl')
     };
 

@@ -17,6 +17,8 @@ module Canvas
       attr_accessor :facet_value
       attr_accessor :page_config
       attr_accessor :params
+      attr_accessor :cookies
+      attr_accessor :request_id
       attr_accessor :request
       attr_accessor :bindings
       attr_accessor :locale_config

@@ -486,10 +486,19 @@ module BrowseActions
             if @profile_search_method
               Clytemnestra.search_views(browse_options[:search_options])
             else
+              # So, this is necessary because CookieHelper and RequestIdHelper are
+              # thread-dependent and Dataslate's rendering strategy uses a multi-threaded
+              # approach, hiding them from the main thread's state.
+              dataslate_hackery = lambda do |method_name|
+                send(:"current_#{method_name}") ||
+                  Canvas::Environment.send(method_name) ||
+                  Canvas2::Util.send(method_name)
+              end
+
               Cetera::Utils.public_send(
                 :search_views,
-                current_request_id,
-                current_cookies,
+                dataslate_hackery.call(:request_id),
+                dataslate_hackery.call(:cookies),
                 browse_options[:search_options]
               )
             end

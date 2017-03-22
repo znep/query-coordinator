@@ -52,6 +52,24 @@ module Canvas2
       @@env = nil
       @@is_private = nil
       @@next_auto_id = 0
+      @@cookies = nil
+      @@request_id = nil
+    end
+
+    def self.set_request_id(request_id)
+      @@request_id = request_id
+    end
+
+    def self.request_id
+      @@request_id if defined?(@@request_id)
+    end
+
+    def self.set_cookies(cookies)
+      @@cookies = cookies
+    end
+
+    def self.cookies
+      @@cookies if defined?(@@cookies)
     end
 
     def self.errors

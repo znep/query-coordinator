@@ -241,6 +241,7 @@ describe DatasetsController do
         get :create_visualization_canvas, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
 
         expect(response).to have_http_status(:redirect)
+        expect(response).to redirect_to('http://test.host/d/1234-abcd/visualization')
       end
 
       it 'should throw a 500 error if the page is accessed with an OBE 4x4 without OBE-NBE migrations' do

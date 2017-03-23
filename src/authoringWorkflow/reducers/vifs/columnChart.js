@@ -11,6 +11,8 @@ import {
 
 import * as actions from '../../actions';
 
+import { FeatureFlags } from 'socrata-utils';
+
 export default function columnChart(state, action) {
   if (_.isUndefined(state)) {
     return vifs().columnChart;
@@ -44,14 +46,21 @@ export default function columnChart(state, action) {
 
       if (dimensionGroupingColumnName === null) {
         // If the dimension grouping functionality is being disabled, then we
-        // also want to remove any color palette that has been set.
+        // also want to remove any color palette and legend visibility that has been set.
         _.unset(state, 'series[0].color.palette');
+        _.unset(state, 'configuration.showLegend');
       } else {
-
         // Otherwise, if the color palette has not yet been set, then assign
         // the default palette.
         if (_.get(state, 'series[0].color.palette', null) === null) {
           _.set(state, 'series[0].color.palette', 'categorical');
+        }
+
+        if (FeatureFlags.value('visualization_authoring_enable_column_chart_legend')) {
+          // If legend visibility has not yet been set, then set it to visible
+          if (_.get(state, 'configuration.showLegend', null) === null) {
+            _.set(state, 'configuration.showLegend', true);
+          }
         }
       }
       break;
@@ -84,6 +93,10 @@ export default function columnChart(state, action) {
 
     case actions.SET_COLOR_PALETTE:
       _.set(state, 'series[0].color.palette', action.colorPalette);
+      break;
+
+    case actions.SET_SHOW_LEGEND:
+      _.set(state, 'configuration.showLegend', action.showLegend);
       break;
 
     case actions.RECEIVE_METADATA:

@@ -5,8 +5,14 @@ const $ = require('jquery');
 const utils = require('socrata-utils');
 // Project Imports
 const SvgVisualization = require('./SvgVisualization');
+const SvgHelpers = require('../helpers/SvgHelpers');
 const I18n = require('../I18n');
 // Constants
+import {
+  AXIS_LABEL_MARGIN,
+  LEGEND_CONTAINER_OUTER_MARGIN_BOTTOM
+} from './SvgStyleConstants';
+
 // The MARGINS values have been eyeballed to provide enough space for axis
 // labels that have been observed 'in the wild'. They may need to be adjusted
 // slightly in the future, but the adjustments will likely be small in scale.
@@ -113,11 +119,16 @@ function SvgColumnChart($element, vif) {
     const columnWidth = (self.isMobile()) ?
       DEFAULT_MOBILE_COLUMN_WIDTH :
       DEFAULT_DESKTOP_COLUMN_WIDTH;
-    const viewportWidth = (
-      $chartElement.width() -
-      MARGINS.LEFT -
-      MARGINS.RIGHT
-    );
+
+    const axisLabels = self.getAxisLabels();
+    const leftMargin = MARGINS.LEFT + (axisLabels.left ? AXIS_LABEL_MARGIN : 0);
+    const rightMargin = MARGINS.RIGHT + (axisLabels.right ? AXIS_LABEL_MARGIN : 0);
+    const topMargin = MARGINS.TOP + (axisLabels.top ? AXIS_LABEL_MARGIN : 0);
+    const bottomMargin = MARGINS.BOTTOM + (axisLabels.bottom ? AXIS_LABEL_MARGIN : 0);
+
+    const viewportWidth = Math.max(0, $chartElement.width() - leftMargin - rightMargin);
+    let viewportHeight = Math.max(0, $chartElement.height() - topMargin - bottomMargin);
+
     const d3ClipPathId = `column-chart-clip-path-${_.uniqueId()}`;
     const dataTableDimensionIndex = dataToRender.columns.indexOf('dimension');
     const dimensionValues = dataToRender.rows.map(
@@ -127,11 +138,6 @@ function SvgColumnChart($element, vif) {
       dataTableDimensionIndex + 1
     );
 
-    let viewportHeight = (
-      $chartElement.height() -
-      MARGINS.TOP -
-      MARGINS.BOTTOM
-    );
     let width;
     let height;
     let groupedDataToRender;
@@ -154,7 +160,10 @@ function SvgColumnChart($element, vif) {
     let yAxisBound = false;
     let xAxisPanDistance;
     let xAxisPanningEnabled;
-
+    let legendSvg;
+    let legendSize = { width: 0, height: 0 };
+    let showLegend = self.getShowLegend();
+    let legendLayout = null;
 
     /**
      * Functions defined inside the scope of renderData() are stateful enough
@@ -534,6 +543,34 @@ function SvgColumnChart($element, vif) {
         );
     }
 
+    function renderLegend() {
+      legendSvg = d3.select(SvgHelpers.createSvgElement('g')).
+        attr('class', 'legend');
+
+      legendLayout = self.renderLegend(
+        legendSvg,
+        viewportWidth,
+        measureLabels,
+        (i) => getColor(dataTableDimensionIndex, i)
+      );
+
+      legendSize = SvgHelpers.calculateElementSize(legendSvg.node());
+      legendSize.height += LEGEND_CONTAINER_OUTER_MARGIN_BOTTOM;
+    }
+
+    function positionLegend() {
+      const axisLabelMarginTop = (axisLabels.top ? AXIS_LABEL_MARGIN : 0) + (axisLabels.bottom ? AXIS_LABEL_MARGIN : 0);
+      const seriesHeight = xAxisAndSeriesSvg.node().getBBox().height;
+      const legendTranslate = `translate(0, ${seriesHeight + legendLayout.margin().top + axisLabelMarginTop})`;
+      legendSvg.attr('transform', legendTranslate);
+      viewportSvg.node().appendChild(legendSvg.node());
+    }
+
+    if (showLegend) {
+      renderLegend();
+      viewportHeight -= legendSize.height;
+    }
+
     /**
      * 1. Prepare the data for rendering (unfortunately we need to do grouping
      *    on the client at the moment).
@@ -593,12 +630,12 @@ function SvgColumnChart($element, vif) {
 
     // Compute height based on the presence or absence of x-axis data labels.
     if (self.getShowDimensionLabels()) {
-      height = viewportHeight - DIMENSION_LABELS_FIXED_HEIGHT;
+      height = Math.max(0, viewportHeight - DIMENSION_LABELS_FIXED_HEIGHT);
     } else {
       // In this case we want to mirror the top margin on the bottom so
       // that the chart is visually centered (column charts have no bottom
       // margin by default).
-      height = viewportHeight - MARGINS.TOP;
+      height = Math.max(0, viewportHeight - MARGINS.TOP);
     }
 
     /**
@@ -693,23 +730,14 @@ function SvgColumnChart($element, vif) {
 
     // Create the top-level <svg> element first.
     chartSvg = d3.select($chartElement[0]).append('svg').
-      attr('width', width + MARGINS.LEFT + MARGINS.RIGHT).
-      attr('height', viewportHeight + MARGINS.TOP + MARGINS.BOTTOM);
+      attr('width', width + leftMargin + rightMargin).
+      attr('height', viewportHeight + topMargin + bottomMargin + legendSize.height);
 
     // The viewport represents the area within the chart's container that can
     // be used to draw the x-axis, y-axis and chart marks.
     viewportSvg = chartSvg.append('g').
       attr('class', 'viewport').
-      attr(
-        'transform',
-        (
-          'translate(' +
-          MARGINS.LEFT +
-          ',' +
-          MARGINS.TOP +
-          ')'
-        )
-      );
+      attr('transform', `translate(${leftMargin}, ${topMargin})`) ;
 
     // The clip path is used as a mask. It is attached to another svg element,
     // at which time all children of that svg element that would be drawn
@@ -724,8 +752,8 @@ function SvgColumnChart($element, vif) {
     clipPathSvg.append('rect').
       attr('x', 0).
       attr('y', 0).
-      attr('width', viewportWidth).
-      attr('height', viewportHeight + MARGINS.TOP + MARGINS.BOTTOM);
+      attr('width', viewportWidth + leftMargin + rightMargin).
+      attr('height', viewportHeight + topMargin + bottomMargin);
 
     viewportSvg.append('g').
       attr('class', 'y axis');
@@ -847,25 +875,21 @@ function SvgColumnChart($element, vif) {
 
       xAxisPanDistance = width - viewportWidth;
 
-      xAxisPanningEnabled = (xAxisPanDistance > 0) ? true : false;
+      xAxisPanningEnabled = xAxisPanDistance > 0;
 
       if (xAxisPanningEnabled) {
 
         self.showPanningNotice();
 
-        viewportHeight = (
-          $chartElement.height() -
-          MARGINS.TOP -
-          MARGINS.BOTTOM
-        );
+        viewportHeight = Math.max(0, $chartElement.height() - topMargin - bottomMargin - legendSize.height);
 
         if (self.getShowDimensionLabels()) {
           // Note that we need to recompute height here since
           // $chartElement.height() may have changed when we showed the panning
           // notice.
-          height = viewportHeight - DIMENSION_LABELS_FIXED_HEIGHT;
+          height = Math.max(0, viewportHeight - DIMENSION_LABELS_FIXED_HEIGHT);
         } else {
-          height = viewportHeight - MARGINS.TOP;
+          height = Math.max(0, viewportHeight - MARGINS.TOP);
         }
 
         d3YScale = generateYScale(minYValue, maxYValue, height);
@@ -1040,6 +1064,17 @@ function SvgColumnChart($element, vif) {
       chartSvg.selectAll('text').
         attr('cursor', 'default');
     }
+
+    if (showLegend) {
+      positionLegend();
+    }
+
+    self.renderAxisLabels(chartSvg, {
+      x: leftMargin,
+      y: topMargin,
+      width: viewportWidth,
+      height: viewportHeight -  xAxisAndSeriesSvg.select('.x.axis').node().getBBox().height
+    });
   }
 
   function getColor(dimensionIndex, measureIndex) {

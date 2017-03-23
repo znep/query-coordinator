@@ -16,3 +16,8 @@ window['reselect'] = require('reselect');
 window['socrata-components'] = require('socrata-components');
 window['socrata-utils'] = require('socrata-utils');
 window['whatwg-fetch'] = require('whatwg-fetch');
+
+window.socrata = window.socrata || {};
+window.socrata.featureFlags = {
+  visualization_authoring_enable_column_chart_legend: true
+};

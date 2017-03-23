@@ -2,28 +2,43 @@
 const $ = require('jquery');
 const _ = require('lodash');
 const utils = require('socrata-utils');
+
 // Project Imports
 const VifHelpers = require('../helpers/VifHelpers');
+const SvgHelpers = require('../helpers/SvgHelpers');
 const I18n = require('../I18n');
 const MetadataProvider = require('../dataProviders/MetadataProvider');
+
 // Constants
+import {
+  DEFAULT_PRIMARY_COLOR,
+  DEFAULT_SECONDARY_COLOR,
+  DEFAULT_HIGHLIGHT_COLOR,
+  DEFAULT_LEGEND_TEXT_ATTRIBUTES,
+  COLOR_PALETTES,
+  LEGEND_RECT_SIZE,
+  LEGEND_RECT_LABEL_GAP,
+  LEGEND_SEPARATOR_COLOR,
+  LEGEND_SEPARATOR_WIDTH,
+  LEGEND_CONTAINER_MARGIN,
+  LEGEND_COLUMN_GAP,
+  LEGEND_COLUMN_PADDING,
+  LEGEND_MINIMUM_TEXT_WIDTH,
+  MAX_LEGEND_COLUMNS,
+  AXIS_LABEL_FONT_FAMILY,
+  AXIS_LABEL_FONT_SIZE,
+  AXIS_LABEL_COLOR,
+  AXIS_LABEL_MARGIN,
+  AXIS_LABEL_TEXT_MARGIN
+} from './SvgStyleConstants';
+
+
 const DEFAULT_TYPE_VARIANTS = {
   columnChart: 'column', // others: 'bar'
   timelineChart: 'area' // others: 'line'
 };
-const DEFAULT_PRIMARY_COLOR = '#71abd9';
-const DEFAULT_SECONDARY_COLOR = '#71abd9';
-const DEFAULT_HIGHLIGHT_COLOR = '#cccccc';
 const DEFAULT_UNIT_ONE = '';
 const DEFAULT_UNIT_OTHER = '';
-const COLOR_PALETTES = {
-  categorical: ['#a6cee3', '#5b9ec9', '#2d82af', '#7eba98', '#98d277', '#52af43', '#6f9e4c', '#dc9a88', '#f16666', '#e42022', '#f06c45', '#fdbb69', '#fe982c', '#f78620', '#d9a295', '#b294c7', '#7d54a6', '#9e8099', '#f0eb99', '#dbb466'],
-  categorical2: ['#5b9ec9', '#98d277', '#f16666', '#fdbb69', '#b294c7', '#f0eb99', '#2d82af', '#52af43', '#dc9a88', '#fe982c', '#7d54a6', '#dbb466', '#a6cee3', '#6f9e4c', '#f06c45', '#9e8099', '#7eba98', '#e42022', '#d9a295', '#f78620'],
-  alternate1: ['#e41a1c', '#9e425a', '#596a98', '#3b87a2', '#449b75', '#4daf4a', '#6b886d', '#896191', '#ac5782', '#d56b41', '#ff7f00', '#ffb214', '#ffe528', '#eddd30', '#c9992c', '#a65628', '#c66764', '#e678a0', '#e485b7', '#be8fa8'],
-  alternate2: ['#66c2a5', '#9aaf8d', '#cf9c76', '#f68d67', '#cf948c', '#a89bb0', '#969dca', '#b596c7', '#d58ec4', '#dd95b2', '#c6b18b', '#afcc64', '#b7d84c', '#d6d83f', '#f6d832', '#f8d348', '#efcc6b', '#e6c58e', '#d5be9d', '#c4b8a8'],
-  accent: ['#7fc97f', '#96bf9e', '#adb5bd', '#c4afcb', '#dbb6af', '#f3bd92', '#fdcd8a', '#fee491', '#fefb98', '#c0d0a0', '#769aa8', '#4166ad', '#853f9b', '#c91889', '#e8106e', '#d63048', '#c45121', '#a75d2b', '#866148', '#666666'],
-  dark: ['#1b9e77', '#5d874e', '#a07125', '#d45f0a', '#b16548', '#8e6b86', '#8068ae', '#a850a0', '#d03792', '#d33b79', '#a66753', '#79932e', '#7fa718', '#aca80e', '#d9aa04', '#d69d08', '#bf8b12', '#a9781b', '#927132', '#7c6b4c']
-};
 
 function SvgVisualization($element, vif) {
   const self = this;
@@ -59,7 +74,6 @@ function SvgVisualization($element, vif) {
 
     self.renderTitle();
     self.renderDescription();
-    self.renderAxisLabels();
     self.hidePanningNotice();
 
     if (shouldRenderViewSourceDataLink) {
@@ -107,94 +121,114 @@ function SvgVisualization($element, vif) {
     }
   };
 
-  this.renderAxisLabels = function() {
-    const $topAxisTitle = self.$container.find('.socrata-visualization-top-axis-title');
-    const $rightAxisTitle = self.$container.find('.socrata-visualization-right-axis-title');
-    const $bottomAxisTitle = self.$container.find('.socrata-visualization-bottom-axis-title');
-    const $leftAxisTitle = self.$container.find('.socrata-visualization-left-axis-title');
-    const axisLabels = _.get(
-      self.getVif(),
-      'configuration.axisLabels',
-      {}
+  let topAxisLabelElement = null;
+  let rightAxisLabelElement = null;
+  let bottomAxisLabelElement = null;
+  let leftAxisLabelElement = null;
+
+  /**
+   * Render axis labels positioned according to given bounding  box
+   *
+   * @param containerSvg D3 wrapped container svg element
+   * @param {{x: Number, y: Number, width: Number, height: Number}} viewportRect
+   */
+  this.renderAxisLabels = function(containerSvg, viewportRect) {
+    const axisLabels = self.getAxisLabels();
+
+    const axisLabelTextSizes = _.mapValues(
+      axisLabels,
+      (axisLabelText) => SvgHelpers.calculateTextSize(AXIS_LABEL_FONT_FAMILY, AXIS_LABEL_FONT_SIZE, axisLabelText)
     );
-    const outerHeight = self.
-      $container.
-      find('.socrata-visualization-container').
-      outerHeight(true);
-    const maxWidth = outerHeight * 0.9;
 
-    if (axisLabels.top) {
+    const xAxisBox = containerSvg.select('.x.axis').node();
+    const yAxisBox = containerSvg.select('.y.axis').node();
 
-      $topAxisTitle.
-        attr('data-full-text', axisLabels.top).
-        text(axisLabels.top).
-        css('max-width', maxWidth);
+    const xAxisHeight = xAxisBox ? xAxisBox.getBBox().height : 0;
+    const yAxisWidth = yAxisBox ? yAxisBox.getBBox().width : 0;
 
-      self.$container.addClass('socrata-visualization-top-axis-title');
-    } else {
+    const chartMidY = viewportRect.y + (viewportRect.height - xAxisHeight) / 2.0;
+    const chartMidX = viewportRect.x + (viewportRect.width - yAxisWidth) / 2.0;
+    const chartMaxX = viewportRect.x + viewportRect.width;
+    const chartMaxY = viewportRect.y + viewportRect.height + xAxisHeight;
 
-      $topAxisTitle.
-        removeAttr('data-full-text').
-        text('').
-        css('max-width', maxWidth);
+    // Render/Remove left axis title
+    leftAxisLabelElement = updateAxisLabel(
+      containerSvg,
+      leftAxisLabelElement,
+      axisLabels.left,
+      (element) => {
+        const left = axisLabelTextSizes.left.height + AXIS_LABEL_TEXT_MARGIN;
+        element.attr('transform', `translate(${left}, ${chartMidY}) rotate(-90)`);
+      }
+    );
 
-      self.$container.removeClass('socrata-visualization-top-axis-title');
-    }
+    // Render/Remove bottom axis title
+    bottomAxisLabelElement = updateAxisLabel(
+      containerSvg,
+      bottomAxisLabelElement,
+      axisLabels.bottom,
+      (element) => {
+        const top = chartMaxY + AXIS_LABEL_MARGIN - AXIS_LABEL_TEXT_MARGIN;
+        element.attr('transform', `translate(${chartMidX}, ${top})`);
+      }
+    );
 
-    if (axisLabels.right) {
+    // Render/Remove top axis title
+    topAxisLabelElement = updateAxisLabel(
+      containerSvg,
+      topAxisLabelElement,
+      axisLabels.top,
+      (element) => {
+        const top = axisLabelTextSizes.top.height + AXIS_LABEL_TEXT_MARGIN;
+        element.attr('transform', `translate(${chartMidX}, ${top})`);
+      }
+    );
 
-      $rightAxisTitle.
-        attr('data-full-text', axisLabels.right).
-        text(axisLabels.right).
-        css('max-width', maxWidth);
-
-      self.$container.addClass('socrata-visualization-right-axis-title');
-    } else {
-
-      $rightAxisTitle.
-        removeAttr('data-full-text').
-        text('').
-        css('max-width', maxWidth);
-
-      self.$container.removeClass('socrata-visualization-right-axis-title');
-    }
-
-    if (axisLabels.bottom) {
-
-      $bottomAxisTitle.
-        attr('data-full-text', axisLabels.bottom).
-        text(axisLabels.bottom).
-        css('max-width', maxWidth);
-
-      self.$container.addClass('socrata-visualization-bottom-axis-title');
-    } else {
-
-      $bottomAxisTitle.
-        removeAttr('data-full-text').
-        text('').
-        css('max-width', maxWidth);
-
-      self.$container.removeClass('socrata-visualization-bottom-axis-title');
-    }
-
-    if (axisLabels.left) {
-
-      $leftAxisTitle.
-        attr('data-full-text', axisLabels.left).
-        text(axisLabels.left).
-        css('max-width', maxWidth);
-
-      self.$container.addClass('socrata-visualization-left-axis-title');
-    } else {
-
-      $leftAxisTitle.
-        removeAttr('data-full-text').
-        text('').
-        css('max-width', maxWidth);
-
-      self.$container.removeClass('socrata-visualization-left-axis-title');
-    }
+    // Render/Remove right axis title
+    rightAxisLabelElement = updateAxisLabel(
+      containerSvg,
+      rightAxisLabelElement,
+      axisLabels.right,
+      (element) => {
+        const left = chartMaxX - (AXIS_LABEL_MARGIN - AXIS_LABEL_TEXT_MARGIN);
+        element.attr('transform', `translate(${left}, ${chartMidY}) rotate(90)`);
+      }
+    );
   };
+
+  function createAxisLabelGroup(containerSvg) {
+    const group = containerSvg.append('g');
+
+    group.
+      append('text').
+      attr('text-anchor', 'middle').
+      attr('font-family', AXIS_LABEL_FONT_FAMILY).
+      attr('font-size', AXIS_LABEL_FONT_SIZE).
+      attr('fill', AXIS_LABEL_COLOR);
+
+    return group;
+  }
+
+  function updateAxisLabel(parentElement, axisLabelElement, title, nodeUpdateFn) {
+    let element = axisLabelElement;
+
+    if (title) {
+      if (element === null) {
+        element = createAxisLabelGroup(parentElement);
+      }
+
+      nodeUpdateFn(element);
+      element.select('text').text(title);
+
+      if (!element.parentElement) {
+        parentElement.node().appendChild(element.node());
+      }
+    } else if (element && element.parentElement) {
+      element.remove();
+    }
+
+    return element;
+  }
 
   this.renderError = function(messages) {
     const $message = self.$container.find('.socrata-visualization-error-message');
@@ -218,6 +252,74 @@ function SvgVisualization($element, vif) {
       removeClass('socrata-visualization-busy').
       addClass('socrata-visualization-error');
   };
+
+  let legendLayout = null;
+
+  this.renderLegend = function(svgElement, containerWidth, legendData, colorSelector, textAttributes) {
+    textAttributes = textAttributes || DEFAULT_LEGEND_TEXT_ATTRIBUTES;
+
+    if (legendLayout === null) {
+      legendLayout = SvgHelpers.textBasedColumnLayout(textAttributes).
+        margin(LEGEND_CONTAINER_MARGIN).
+        columnPadding(LEGEND_COLUMN_PADDING).
+        columnGap(LEGEND_COLUMN_GAP).
+        maxColumns(MAX_LEGEND_COLUMNS).
+        minimumTextWidth(LEGEND_MINIMUM_TEXT_WIDTH);
+    }
+
+    const columnsData = legendLayout(containerWidth, legendData);
+    const columns = svgElement.selectAll('g').data(columnsData);
+
+    renderLegendColumn(columns, colorSelector, textAttributes);
+    renderLegendColumn(columns.enter().append('g'), colorSelector, textAttributes, true);
+    columns.exit().remove();
+
+    // Render separators
+    const size = SvgHelpers.calculateElementSize(svgElement.node());
+    const margin = legendLayout.margin();
+
+    renderLegendSeparator(svgElement, 0, 0, containerWidth);
+    renderLegendSeparator(svgElement, 0, size.height + margin.top + margin.bottom, containerWidth);
+
+    return legendLayout;
+  };
+
+  function renderLegendColumn(group, colorSelector, textAttributes, append) {
+    group.attr('transform', (d) => `translate(${d.x}, ${d.y})`);
+
+    if (append) {
+      group.append('rect').
+        attr('x', 0).
+        attr('y', 0).
+        attr('width', LEGEND_RECT_SIZE).
+        attr('height', LEGEND_RECT_SIZE).
+        attr('fill', (d, i) => colorSelector(i));
+    }
+
+    const textRows = group.selectAll('text').data((d) => d.wrappedText);
+    renderLegendColumnText(textRows, textAttributes);
+    renderLegendColumnText(textRows.enter().append('text'), textAttributes);
+    textRows.exit().remove();
+  }
+
+  function renderLegendColumnText(text, attributes) {
+    text.
+      attr('x', (d) => d.x + LEGEND_RECT_SIZE + LEGEND_RECT_LABEL_GAP).
+      attr('y', (d) => d.y - 1).
+      text((d) => d.text);
+
+    _.forEach(attributes, (value, attr) => text.attr(_.kebabCase(attr), value));
+  }
+
+  function renderLegendSeparator(container, x, y, width) {
+    container.append('line').
+      attr('x1', x).
+      attr('y1', y).
+      attr('x2', width).
+      attr('y2', y).
+      style('stroke', LEGEND_SEPARATOR_COLOR).
+      style('stroke-width', LEGEND_SEPARATOR_WIDTH);
+  }
 
   this.clearError = function() {
 
@@ -565,6 +667,22 @@ function SvgVisualization($element, vif) {
       self.getVif(),
       'configuration.showValueLabelsAsPercent',
       false
+    );
+  };
+
+  this.getShowLegend = function() {
+    return _.get(
+      self.getVif(),
+      'configuration.showLegend',
+      false
+    );
+  };
+
+  this.getAxisLabels = () => {
+    return _.get(
+      self.getVif(),
+      'configuration.axisLabels',
+      {}
     );
   };
 

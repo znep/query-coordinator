@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import Styleguide from 'socrata-components';
+import { FeatureFlags } from 'socrata-utils';
 
 import { translate } from '../../../I18n';
 import { COLUMN_TYPES } from '../../constants';
@@ -10,6 +11,8 @@ import {
   getRowInspectorTitleColumnName,
   getUnitOne,
   getUnitOther,
+  getDimensionGroupingColumnName,
+  getShowLegend,
   isBarChart,
   isPieChart,
   isRegionMap,
@@ -21,6 +24,7 @@ import {
 
 import {
   setRowInspectorTitleColumnName,
+  setShowLegend,
   setUnitsOne,
   setUnitsOther
 } from '../../actions';
@@ -79,6 +83,36 @@ export const LegendsAndFlyoutsPane = React.createClass({
     );
   },
 
+  renderLegends() {
+    const { vifAuthoring, onChangeShowLegend } = this.props;
+
+    if (!FeatureFlags.value('visualization_authoring_enable_column_chart_legend')) {
+      return null;
+    }
+
+    // Currently legends are only available for grouping visualizations
+    const isGrouping = getDimensionGroupingColumnName(vifAuthoring);
+    if (!isGrouping) {
+      return null;
+    }
+
+    const showLegend = getShowLegend(vifAuthoring);
+
+    return (
+      <AccordionPane key="legends" title={translate('panes.legends_and_flyouts.subheaders.legends.title')}>
+        <div className="authoring-field checkbox">
+          <input id="show-legends" type="checkbox" onChange={onChangeShowLegend} defaultChecked={showLegend} />
+          <label className="inline-label" htmlFor="show-legends">
+            <span className="fake-checkbox">
+              <span className="icon-checkmark3"></span>
+            </span>
+            {translate('panes.legends_and_flyouts.fields.show_legends.title')}
+          </label>
+        </div>
+      </AccordionPane>
+    );
+  },
+
   renderRegionMapControls() {
     return this.renderUnits();
   },
@@ -88,7 +122,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
   },
 
   renderColumnChartControls() {
-    return this.renderUnits();
+    return [this.renderUnits(), this.renderLegends()];
   },
 
   renderPieChartControls() {
@@ -204,6 +238,10 @@ function mapDispatchToProps(dispatch) {
     onSelectRowInspectorTitle: flyoutTitle => {
       const columnName = flyoutTitle.value;
       dispatch(setRowInspectorTitleColumnName(columnName));
+    },
+
+    onChangeShowLegend: (e) => {
+      dispatch(setShowLegend(e.target.checked));
     }
   };
 }

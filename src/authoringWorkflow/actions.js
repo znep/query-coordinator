@@ -520,6 +520,14 @@ export function setShowValueLabelsAsPercent(showValueLabelsAsPercent) {
   };
 }
 
+export const SET_SHOW_LEGEND = 'SET_SHOW_LEGEND';
+export function setShowLegend(showLegend) {
+  return {
+    type: SET_SHOW_LEGEND,
+    showLegend
+  };
+}
+
 export const SET_X_AXIS_SCALING_MODE = 'SET_X_AXIS_SCALING_MODE';
 export function setXAxisScalingMode(shouldFit) {
   return {

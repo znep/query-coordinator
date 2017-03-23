@@ -7,6 +7,10 @@ const utils = require('socrata-utils');
 const SvgVisualization = require('./SvgVisualization');
 const I18n = require('../I18n');
 // Constants
+import {
+  AXIS_LABEL_MARGIN
+} from './SvgStyleConstants';
+
 // The MARGINS values have been eyeballed to provide enough space for axis
 // labels that have been observed 'in the wild'. They may need to be adjusted
 // slightly in the future, but the adjustments will likely be small in scale.
@@ -169,11 +173,16 @@ function SvgTimelineChart($element, vif) {
     const minimumDatumWidth = (self.isMobile()) ?
       MINIMUM_MOBILE_DATUM_WIDTH :
       MINIMUM_DESKTOP_DATUM_WIDTH;
-    const viewportWidth = (
-      $chartElement.width() -
-      MARGINS.LEFT -
-      MARGINS.RIGHT
-    );
+
+    const axisLabels = self.getAxisLabels();
+    const leftMargin = MARGINS.LEFT + (axisLabels.left ? AXIS_LABEL_MARGIN : 0);
+    const rightMargin = MARGINS.RIGHT + (axisLabels.right ? AXIS_LABEL_MARGIN : 0);
+    const topMargin = MARGINS.TOP + (axisLabels.top ? AXIS_LABEL_MARGIN : 0);
+    const bottomMargin = MARGINS.BOTTOM + (axisLabels.bottom ? AXIS_LABEL_MARGIN : 0);
+
+    const viewportWidth = Math.max(0, $chartElement.width() - leftMargin - rightMargin);
+    let viewportHeight = Math.max(0, $chartElement.height() - topMargin - bottomMargin);
+
     const d3ClipPathId = `timeline-chart-clip-path-${_.uniqueId()}`;
     const dataTableDimensionIndex = dataToRender.columns.indexOf('dimension');
     const seriesDimensionIndex = 0;
@@ -181,7 +190,6 @@ function SvgTimelineChart($element, vif) {
 
     let width;
     let xAxisPanningEnabled;
-    let viewportHeight;
     let height;
     let startDate;
     let endDate;
@@ -472,11 +480,6 @@ function SvgTimelineChart($element, vif) {
     // We only calculate the height after we have shown or hidden the panning
     // notice, since its presence or absence affects the total height of the
     // viewport.
-    viewportHeight = (
-      $chartElement.height() -
-      MARGINS.TOP -
-      MARGINS.BOTTOM
-    );
     height = viewportHeight;
 
     // Next we can set up some data that we only want to compute once.
@@ -689,14 +692,14 @@ function SvgTimelineChart($element, vif) {
     // Render a new root svg element.
     chartSvg = rootElement.append('svg');
     chartSvg.
-      attr('width', width + MARGINS.LEFT + MARGINS.RIGHT).
-      attr('height', height + MARGINS.TOP + MARGINS.BOTTOM);
+      attr('width', width + leftMargin + rightMargin).
+      attr('height', height + topMargin + bottomMargin);
 
     // Render the viewport group.
     viewportSvg = chartSvg.append('g');
     viewportSvg.
       attr('class', 'viewport').
-      attr('transform', `translate(${MARGINS.LEFT},${MARGINS.TOP})`);
+      attr('transform', `translate(${leftMargin},${topMargin})`);
 
     // Render the clip path.
     const clipPathSvg = chartSvg.append('clipPath');
@@ -804,6 +807,13 @@ function SvgTimelineChart($element, vif) {
         restoreLastRenderedZoom();
       }
     }
+
+    self.renderAxisLabels(chartSvg, {
+      x: leftMargin,
+      y: topMargin,
+      width: viewportWidth,
+      height: viewportHeight
+    });
 
     lastRenderedStartDate = startDate;
     lastRenderedEndDate = endDate;

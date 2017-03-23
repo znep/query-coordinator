@@ -8,6 +8,10 @@ const I18n = require('../I18n');
 // These values have been eyeballed to provide enough space for axis labels
 // that have been observed 'in the wild'. They may need to be adjusted slightly
 // in the future, but the adjustments will likely be small in scale.
+import {
+  AXIS_LABEL_MARGIN
+} from './SvgStyleConstants';
+
 const MARGINS = {
   TOP: 16,
   RIGHT: 24,
@@ -182,17 +186,16 @@ function SvgHistogram($element, vif) {
 
     const xScaleType = determineXScaleType(dataToRender);
 
-    var viewportWidth = (
-      $chartElement.width() -
-      MARGINS.LEFT -
-      MARGINS.RIGHT
-    );
+    const axisLabels = self.getAxisLabels();
+    const leftMargin = MARGINS.LEFT + (axisLabels.left ? AXIS_LABEL_MARGIN : 0);
+    const rightMargin = MARGINS.RIGHT + (axisLabels.right ? AXIS_LABEL_MARGIN : 0);
+    const topMargin = MARGINS.TOP + (axisLabels.top ? AXIS_LABEL_MARGIN : 0);
+    const bottomMargin = MARGINS.BOTTOM + (axisLabels.bottom ? AXIS_LABEL_MARGIN : 0);
+
+    const viewportWidth = Math.max(0, $chartElement.width() - leftMargin - rightMargin);
+    let viewportHeight = Math.max(0, $chartElement.height() - topMargin - bottomMargin);
+
     var chartWidth;
-    var viewportHeight = (
-      $chartElement.height() -
-      MARGINS.TOP -
-      MARGINS.BOTTOM
-    );
     var chartHeight;
     // TODO: If we end up supporting multiple series,
     // we'll have to figure out how to merge bucket ranges.
@@ -627,37 +630,14 @@ function SvgHistogram($element, vif) {
 
     // Create the top-level <svg> element first.
     chartSvg = d3.select($chartElement[0]).append('svg').
-      attr(
-        'width',
-        (
-          chartWidth +
-          MARGINS.LEFT +
-          MARGINS.RIGHT
-        )
-      ).
-      attr(
-        'height',
-        (
-          viewportHeight +
-          MARGINS.TOP +
-          MARGINS.BOTTOM
-        )
-      );
+      attr('width', viewportWidth + leftMargin + rightMargin).
+      attr('height', viewportHeight + topMargin + bottomMargin);
 
     // The viewport represents the area within the chart's container that can
     // be used to draw the x-axis, y-axis and chart marks.
     viewportSvg = chartSvg.append('g').
       attr('class', 'viewport').
-      attr(
-        'transform',
-        (
-          'translate(' +
-          MARGINS.LEFT +
-          ',' +
-          MARGINS.TOP +
-          ')'
-        )
-      );
+      attr('transform', `translate(${leftMargin}, ${topMargin})`);
 
     viewportSvg.append('g').
       attr('class', 'y axis');
@@ -781,6 +761,13 @@ function SvgHistogram($element, vif) {
 
     chartSvg.selectAll('text').
       attr('cursor', 'default');
+
+    self.renderAxisLabels(chartSvg, {
+      x: leftMargin,
+      y: topMargin,
+      width: viewportWidth,
+      height: viewportHeight - DIMENSION_LABELS_HEIGHT
+    });
   }
 
   function showColumnHighlight(columnElement) {

@@ -1,0 +1,36 @@
+@import "styleguide-colors";
+
+.common-searchbox {
+  position: relative;
+
+  input.text-input {
+    margin: 0;
+    height: 100%;
+    padding-left: 32px;
+    padding-right: 32px;
+    position: relative;
+    background: transparent;
+  }
+
+  .socrata-icon-search {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 8px;
+    height: 100%;
+    font-size: 18px;
+    color: $light-grey-1;
+  }
+
+  .clear-search {
+    height: 100%;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 2px;
+    background: none;
+    border: none;
+    color: $light-grey-1;
+    z-index: 2;
+  }
+}

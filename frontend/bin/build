@@ -1,0 +1,67 @@
+#!/bin/bash
+set -ex
+
+# Called by Jenkins to build and package frontend in preparation for a deploy
+# Note that dependencies should be installed before running this script.
+
+cd $WORKSPACE/frontend
+
+echo "Configuring bundle to connect to repo.socrata.com with credentials..."
+set +x
+bundle config repo.socrata.com ${ARTIFACTORY_USER}:${ARTIFACTORY_PASSWORD}
+set -x
+bundle check || bundle install
+
+# install build dependencies. Hate to have to do this manually, but it's not working
+# well in our build process.
+gem install localeapp
+
+# Write REVISION file
+git rev-parse HEAD > "${WORKSPACE}/frontend/REVISION"
+
+# Package assets
+npm run build:prod
+bundle exec rake assets:precompile
+
+# We want to push our latest en.yml up to LocaleApp and then pull down
+# additional translations in other locales.
+bin/push_base_locale -y
+set +e
+bin/pull_translations
+set -e
+
+if [ ! -f ${WORKSPACE}/frontend/config/locales/es.yml ]; then
+  echo "Did not successfully download locales"
+  echo `ls -l ${WORKSPACE}/frontend/config/locales/`
+  exit 1
+fi
+
+# Run tests (just running rake _should_ run all the tests, but this often fails)
+bundle exec rake test:units
+bundle exec rake test:functionals
+bundle exec rspec --no-color
+bundle exec rake test:karma:parallel
+
+# Remove certain javascript files from public/javascripts (BUT WHY)
+if [ ! ${COMPRESS_ASSETS} = "true" ] ; then
+  bundle exec rake deploy:move_resources
+fi
+
+# Make the tartifact thing
+tar cpzfX ${SERVICE_ARTIFACT} .package-ignore * .bundle .semver
+
+# Get build info for Decima
+echo "---" > build_info.yml
+echo "service: ${SERVICE_NAME}" >> build_info.yml
+echo "version: ${SERVICE_VERSION}" >> build_info.yml
+echo "service_sha: ${SERVICE_SHA}" >> build_info.yml
+echo "configuration: ${BUILD_URL}" >> build_info.yml
+
+# Static analysis
+if ${RUN_STATIC_ANALYSIS}; then
+  # FIXME for some reason this works but the commented rake task below does not.
+  ./node_modules/.bin/eslint --ignore-path .eslintignore -c package.json -f checkstyle public/javascripts/angular > eslint-results.xml || true
+  # bundle exec rake "lint:js:dataCards[checkstyle]" > eslint-results.xml
+
+  bundle exec rake "lint:ruby[xml]" > reek-results.xml
+fi

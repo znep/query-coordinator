@@ -1,0 +1,117 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:5704/catalog/v1?approval_status=approved&categories=Government&domains=localhost&explicitly_hidden=false&limit=0&only=datasets&public=true&published=true&search_context=localhost
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      X-Socrata-Requestid:
+      - req_id
+      Content-Type:
+      - application/json
+      Cookie:
+      - cookie
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 30 Jan 2017 23:35:18 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.2.v20140723)
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "results" : [],
+          "resultSetSize" : 8,
+          "timings" : { "serviceMillis" : 105, "searchMillis" : [ 29, 23 ] }
+        }
+    http_version:
+  recorded_at: Mon, 30 Jan 2017 23:35:18 GMT
+- request:
+    method: get
+    uri: http://localhost:5704/catalog/v1?approval_status=approved&categories=Government&domains=localhost&explicitly_hidden=false&limit=0&only=maps&public=true&published=true&search_context=localhost
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      X-Socrata-Requestid:
+      - req_id
+      Content-Type:
+      - application/json
+      Cookie:
+      - cookie
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 30 Jan 2017 23:35:18 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.2.v20140723)
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "results" : [],
+          "resultSetSize" : 0,
+          "timings" : { "serviceMillis" : 121, "searchMillis" : [ 29, 39 ] }
+        }
+    http_version:
+  recorded_at: Mon, 30 Jan 2017 23:35:18 GMT
+- request:
+    method: get
+    uri: http://localhost:5704/catalog/v1?approval_status=approved&categories=Government&domains=localhost&explicitly_hidden=false&limit=0&only=charts&public=true&published=true&search_context=localhost
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      X-Socrata-Requestid:
+      - req_id
+      Content-Type:
+      - application/json
+      Cookie:
+      - cookie
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 30 Jan 2017 23:35:18 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.2.v20140723)
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "results" : [],
+          "resultSetSize" : 0,
+          "timings" : { "serviceMillis" : 131, "searchMillis" : [ 29, 43 ] }
+        }
+    http_version:
+  recorded_at: Mon, 30 Jan 2017 23:35:18 GMT
+recorded_with: VCR 3.0.3

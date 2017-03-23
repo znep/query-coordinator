@@ -4,6 +4,9 @@
   <%= link_to(site_chrome_massage_url(social_share[:url]),
     :class => nav_link_classnames(social_link: true, is_mobile: local_assigns[:is_mobile]),
     :target => '_blank') do %>
-    <%= content_tag(:span, social_link_icon(social_share[:type]), :class => 'monosocial', :title => label) -%>
+    <%= content_tag(:span,
+      social_link_icon(social_share[:type]).html_safe,
+      :class => 'monosocial',
+      :title => label) -%>
   <% end -%>
 <% end %>

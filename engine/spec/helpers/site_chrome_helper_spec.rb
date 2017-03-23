@@ -400,12 +400,12 @@ describe SocrataSiteChrome::SiteChromeHelper do
       result = helper.social_link_icon('FacEboOk')
       result2 = helper.social_link_icon(:facebook)
       expect(result).to eq(result2)
-      expect(result).to eq('facebook')
+      expect(result).to eq('&#xe027;')
     end
 
     it 'returns the Mono Social icon name for an icon' do
-      expect(helper.social_link_icon('google_plus')).to eq('googleplus')
-      expect(helper.social_link_icon('linked_in')).to eq('linkedin')
+      expect(helper.social_link_icon('google_plus')).to eq('&#xe039;')
+      expect(helper.social_link_icon('linked_in')).to eq('&#xe052;')
     end
   end
 

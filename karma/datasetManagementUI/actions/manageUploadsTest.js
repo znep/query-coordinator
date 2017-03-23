@@ -160,7 +160,8 @@ describe('actions/manageUploads', () => {
             error_count: 3
           }
         }
-      ]
+      ],
+      'row_errors:6': []
     }, (e) => {
       const db = store.getState().db;
       const inputSchema = _.find(db.input_schemas, { id: 4 });

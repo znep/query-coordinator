@@ -7,6 +7,7 @@ import * as Selectors from 'selectors';
 import {
   insertFromServer, insertMultipleFromServer, updateFromServer, batch
 } from 'actions/database';
+import { normal } from 'components/Table/displayState';
 
 describe('components/ShowOutputSchema', () => {
 
@@ -16,7 +17,10 @@ describe('components/ShowOutputSchema', () => {
       inputSchemaId: 4,
       outputSchemaId: 18
     },
-    updateColumnType: _.noop
+    route: {
+      path: '' // just used by mapStateToProps to determine whether we're in a "viewing row errors" state
+    },
+    updateColumnType: _.noop,
   };
 
   it('renders a table without data', () => {
@@ -80,6 +84,7 @@ describe('components/ShowOutputSchema', () => {
       inputSchema: _.values(storeDb.input_schemas)[0],
       outputSchema: _.values(storeDb.output_schemas)[0],
       columns: Selectors.columnsForOutputSchema(storeDb, _.values(storeDb.output_schemas)[0].id),
+      displayState: normal(),
       canApplyUpdate: false,
       updateColumnType: spy,
       goHome: _.noop,
@@ -155,11 +160,11 @@ describe('components/ShowOutputSchema', () => {
         SubI18n.column_status_flyout.error_msg_singular.format({
           num_errors: 1,
           type: 'Text'
-        }) + '\n' + SubI18n.column_status_flyout.click_to_view,
+        }) + '\nClick to view',
         SubI18n.column_status_flyout.error_msg_plural.format({
           num_errors: 42,
           type: 'Text'
-        }) + '\n' + SubI18n.column_status_flyout.click_to_view
+        }) + '\nClick to view'
       ]);
     });
 

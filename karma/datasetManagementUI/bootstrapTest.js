@@ -1,10 +1,16 @@
 import { getEmptyStore } from './testStore';
 import { bootstrap } from 'bootstrap';
 import { mockFetch } from './testHelpers/mockHTTP';
+import mockPhx from './testHelpers/mockPhoenixSocket';
 
 describe('bootstrap', () => {
 
+  const mockChannelMessages = {
+    'row_errors:4': []
+  };
+
   it('adds notification for in-progress upsert job and starts polling if they\'re not done', (done) => {
+    const unmockPhx = mockPhx(mockChannelMessages, done);
     const { unmockFetch, calls: fetchCalls } = mockFetch({
       '/api/update/hehe-hehe/0': {
         GET: {
@@ -43,11 +49,13 @@ describe('bootstrap', () => {
     setTimeout(() => {
       expect(fetchCalls['/api/update/hehe-hehe/0'].GET).to.equal(1);
       unmockFetch();
+      unmockPhx();
       done();
     }, 0);
   });
 
   it('adds notification for successful upsert job and doesn\'t poll', (done) => {
+    const unmockPhx = mockPhx(mockChannelMessages, done);
     const { unmockFetch, calls: fetchCalls } = mockFetch({
       '/api/update/hehe-hehe/0': {
         GET: {
@@ -86,6 +94,7 @@ describe('bootstrap', () => {
     setTimeout(() => {
       expect(fetchCalls['/api/update/hehe-hehe/0'].GET).to.equal(0);
       unmockFetch();
+      unmockPhx();
       done();
     }, 0);
   });

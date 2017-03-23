@@ -52,10 +52,10 @@ describe('actions/manageMetadata', () => {
 
   it('saves metadata when there is an output schema', (done) => {
     const { unmockFetch } = mockFetch(responses, done);
+    const store = getStoreWithOutputSchema();
     const unmockPhx = mockPhx({
       'output_schema:57': []
     }, done);
-    const store = getStoreWithOutputSchema();
     store.dispatch(editImmutable('output_columns', {
       id: 51,
       description: 'my column description'

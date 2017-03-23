@@ -3945,7 +3945,7 @@ en:
         you_have_activated: You have activated your new header/footer and Dataset Landing Page.
       story_appearance:
         panes:
-          other:
+          pane_other:
             label: Other
             sections:
               background:
@@ -5508,6 +5508,7 @@ en:
       api: API
       apply: Apply
       browser_page_views: Browser Page Views
+      browser_other: other
       browsers: Browsers
       bytes_out: Bytes Out
       catalog: Catalog
@@ -5594,7 +5595,6 @@ en:
       name: Name
       no_data_time_period: No data for this time period
       op: OP
-      other: other
       page_requests: Page Requests
       page_types: Page Types
       page_viewed: page viewed

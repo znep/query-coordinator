@@ -114,7 +114,6 @@ development: &development
   polaroid_port: 1337
   sitemap_s3_url: https://localhost.amazonaws.com/bucket_dne/sitemaps
   ssl_port: 443
-  signaller_traffic_throttler: 1
 
   # third-party app tokens
   mixpanel_token: 59b0b54697603105463834afdf20accf

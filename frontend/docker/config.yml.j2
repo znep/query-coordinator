@@ -182,10 +182,6 @@ default: &default
   shape_file_region_query_limit: 5000
   {%- endif %}
 
-  {% if SIGNALLER_TRAFFIC_THROTTLER is defined -%}
-  signaller_traffic_throttler: {{ SIGNALLER_TRAFFIC_THROTTLER }}
-  {%- endif %}
-
   {% if CACHE_DATASLATE_ROUTING is defined -%}
   cache_dataslate_routing: {{ CACHE_DATASLATE_ROUTING }}
   {%- endif %}

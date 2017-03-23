@@ -72,6 +72,106 @@ describe('components/ShowOutputSchema', () => {
     expect(element.querySelectorAll('.empty').length).to.equal(1);
   });
 
+  describe.only('row errors', () => {
+
+    describe('link', () => {
+
+      it('shows up when there are row errors, and links to row errors mode', () => {
+        const store = getStoreWithOutputSchema();
+        store.dispatch(updateFromServer('input_schemas', {
+          id: 4,
+          num_row_errors: 3
+        }));
+        const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
+        assert.equal(element.querySelector('malformed-rows-status-text', '3Malformed rows'));
+      });
+
+      it('doesn\'t show up when there are no row errors', () => {
+        const store = getStoreWithOutputSchema();
+        const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
+        assert.isNull(element.querySelector('malformed-rows-status-text'));
+      });
+
+    });
+
+    it('renders row errors inline with data in normal display state', () => {
+      const store = getStoreWithOutputSchema();
+      store.dispatch(updateFromServer('input_schemas', {
+        id: 4,
+        num_row_errors: 1
+      }));
+      store.dispatch(insertMultipleFromServer('transform_1', [
+        { id: 0, ok: 'foo' },
+        { id: 1, error: { message: 'some transform error', inputs: { arrest: { ok: 'bar' } } } },
+        { id: 2, ok: 'baz' }
+      ]));
+      store.dispatch(insertMultipleFromServer('transform_2', [
+        { id: 0, ok: 'bleep' },
+        { id: 1, ok: null },
+        { id: 2, ok: 'blorp' }
+      ]));
+      store.dispatch(insertFromServer('row_errors', {
+        id: '4-1',
+        offset: 1,
+        error: {
+          wanted: 3,
+          got: 2,
+          contents: ['boop', 'zoop']
+        }
+      }));
+      const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
+      assert.equal(element.querySelector('malformed-rows-status-text', '3Malformed row'));
+      assert.deepEqual(
+        _.map(element.querySelectorAll('table tbody tr'), (tr) => tr.getAttribute('class')).slice(0, 3),
+        ['', 'malformed-row', '']
+      );
+    });
+
+    it('renders only row errors when in the /row_errors display state', () => {
+      const store = getStoreWithOutputSchema();
+      store.dispatch(updateFromServer('input_schemas', {
+        id: 4,
+        num_row_errors: 1
+      }));
+      store.dispatch(insertMultipleFromServer('transform_1', [
+        { id: 0, ok: 'foo' },
+        { id: 1, error: { message: 'some transform error', inputs: { arrest: { ok: 'bar' } } } },
+        { id: 2, ok: 'baz' }
+      ]));
+      store.dispatch(insertMultipleFromServer('transform_2', [
+        { id: 0, ok: 'bleep' },
+        { id: 1, ok: null },
+        { id: 2, ok: 'blorp' }
+      ]));
+      store.dispatch(insertFromServer('row_errors', {
+        id: '4-0',
+        offset: 0,
+        input_schema_id: 4,
+        error: {
+          wanted: 3,
+          got: 2,
+          contents: ['boop', 'zoop']
+        }
+      }));
+      const element = renderComponentWithStore(ShowOutputSchema, {
+        ...defaultProps,
+        route: {
+          path: '/row_errors'
+        }
+      }, store);
+      assert.equal(element.querySelector('malformed-rows-status-text', '1Malformed row'));
+      assert.deepEqual(
+        _.map(element.querySelectorAll('table tbody tr'), (tr) => tr.getAttribute('class')),
+        ['malformed-row']
+      );
+      assert.equal(
+        element.querySelector('.malformed-row').innerText,
+        '!Row 0:Expected 3 columns, found 2Row content: "boop","zoop"'
+      );
+    });
+
+  });
+
   it('calls `updateColumnType` when a selector is changed', () => {
     const store = getStoreWithOutputSchema();
     const storeDb = store.getState().db;

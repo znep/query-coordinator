@@ -13,6 +13,7 @@
   <style id="custom"><%== @bootstrap_styles[:custom] %></style>
 
   <%= render partial: 'stories/partials/storyteller_environment' %>
+  <%= render_feature_flags_for_javascript %>
   <script id="storyteller-editor-environment" type="text/javascript">
 
     window.CURRENT_USER = <%== current_user.to_json %>;

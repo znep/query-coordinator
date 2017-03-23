@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+import { FeatureFlags } from 'socrata-utils';
+
 import Environment from '../StorytellerEnvironment';
 import StorytellerUtils from '../StorytellerUtils';
 import { storyStore } from './stores/StoryStore';
@@ -38,7 +40,7 @@ export default function CollaboratorsDataProvider() {
    * error.
    */
   this.lookupUserByEmail = function(email) {
-    const userUrl = Environment.ENABLE_DEPRECATED_USER_SEARCH_API ?
+    const userUrl = FeatureFlags.value('enable_deprecated_user_search_api') ?
       `/api/search/users.json?q=${email}` : // Core
       `/stories/search/users.json?email=${email}`; // Cetera
 

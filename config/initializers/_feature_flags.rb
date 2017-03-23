@@ -9,4 +9,6 @@ Signaller.configure do |config|
   config.cache = Rails.cache
   config.logger = Rails.logger
   config.mute_cache_logs = Rails.env.production?
+  config.expiry_of(endpoint_type: :get, has_duration: 5.seconds)
+  config.expiry_of(endpoint_type: :domain, has_duration: 5.seconds)
 end

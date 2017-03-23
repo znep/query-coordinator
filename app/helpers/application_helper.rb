@@ -53,4 +53,19 @@ module ApplicationHelper
     location = Rails.root.join('webpack-assets.json')
     @manifest ||= JSON.parse(File.read(location)) if File.exists?(location)
   end
+
+  # TODO this functionality is duplicated in frontend. Since the monorepo is
+  # impending, we'll tackle sharing the code once we're in the same repo.
+  #
+  # Places feature flags at window.socrata.featureFlags
+  # for consumption by the FeatureFlags module in frontend-utils.
+  def render_feature_flags_for_javascript
+    javascript_tag(<<~OUT, :id => 'feature-flags'
+      window.socrata = window.socrata || {};
+      window.socrata.featureFlags =
+        #{Signaller::FeatureFlags.on_domain(request.host).to_json};
+    OUT
+    )
+  end
+
 end

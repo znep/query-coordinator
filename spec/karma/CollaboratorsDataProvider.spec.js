@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+import { FeatureFlags } from 'socrata-utils';
 import CollaboratorsDataProvider, { __RewireAPI__ as CollaboratorsDataProviderApi } from 'editor/CollaboratorsDataProvider';
 
 describe('CollaboratorsDataProvider', () => {
@@ -11,6 +12,10 @@ describe('CollaboratorsDataProvider', () => {
     environment = {
       STORY_UID: 'exam-ples'
     };
+    FeatureFlags.useTestFixture({
+      enable_deprecated_user_search_api: false
+    });
+
     mockHttpRequest = sinon.stub().returns(new Promise(_.noop));
     CollaboratorsDataProviderApi.__Rewire__('httpRequest', mockHttpRequest);
     CollaboratorsDataProviderApi.__Rewire__('Environment', environment);
@@ -23,9 +28,11 @@ describe('CollaboratorsDataProvider', () => {
   });
 
   describe('lookupUserByEmail', () => {
-    describe('ENABLE_DEPRECATED_USER_SEARCH_API = true', () => {
+    describe('enable_deprecated_user_search_api = true', () => {
       it('queries core', () => {
-        environment.ENABLE_DEPRECATED_USER_SEARCH_API = true;
+        FeatureFlags.useTestFixture({
+          enable_deprecated_user_search_api: true
+        });
 
         subject.lookupUserByEmail('foo');
         sinon.assert.calledWithExactly(
@@ -36,10 +43,8 @@ describe('CollaboratorsDataProvider', () => {
       });
     });
 
-    describe('ENABLE_DEPRECATED_USER_SEARCH_API = false', () => {
+    describe('enable_deprecated_user_search_api = false', () => {
       it('queries cetera', () => {
-        environment.ENABLE_DEPRECATED_USER_SEARCH_API = false;
-
         subject.lookupUserByEmail('foo');
         sinon.assert.calledWithExactly(
           mockHttpRequest,

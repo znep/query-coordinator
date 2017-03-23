@@ -35,7 +35,7 @@ function requireAll(context) {
 
 // Setup mock feature flags
 FeatureFlags.useTestFixture({
-  visualizationCanvasEmbedButton: 'embed-only'
+  visualization_canvas_embed_button: 'embed-only'
 });
 
 // Run all the tests

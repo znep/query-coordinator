@@ -72,7 +72,7 @@ describe('components/ShowOutputSchema', () => {
     expect(element.querySelectorAll('.empty').length).to.equal(1);
   });
 
-  describe.only('row errors', () => {
+  describe('row errors', () => {
 
     describe('link', () => {
 

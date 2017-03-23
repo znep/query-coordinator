@@ -438,12 +438,25 @@ en:
         header: Display Featured Content
         description: Choose up to 3 Socrata or External assets to feature for this category.
     category_stats:
-      calendars: Calendars
-      charts: Charts
-      datasets: Datasets
-      forms: Forms
-      maps: Maps
-      tables: Tables
+      about: About this Category
+      calendars:
+        singular: Calendar
+        plural: Calendars
+      charts:
+        singular: Chart
+        plural: Charts
+      datasets:
+        singular: Dataset
+        plural: Datasets
+      forms:
+        singular: Form
+        plural: Forms
+      maps:
+        singular: Map
+        plural: Maps
+      tables:
+        singular: Table
+        plural: Tables
     featured_content:
       label: Featured Content in this Category
     manager:
@@ -746,6 +759,7 @@ en:
           prompt: Find Data Like This
         results:
           cetera_count: Showing %{start}-%{end} of %{total} results
+          cetera_count_singular: Showing 1 result
           count: Showing %{this} of %{total} results
         search:
           clear:

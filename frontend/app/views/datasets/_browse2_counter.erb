@@ -6,12 +6,16 @@
       endIndex = [startIndex + opts[:limit] - 1, total].min
     -%>
     <%=
-      t(
-        'controls.browse.browse2.results.cetera_count',
-        :start => startIndex,
-        :end => endIndex,
-        :total => total
-      )
+      if total == 1
+        t('controls.browse.browse2.results.cetera_count_singular')
+      else
+        t(
+          'controls.browse.browse2.results.cetera_count',
+          :start => startIndex,
+          :end => endIndex,
+          :total => total
+        )
+      end
     %>
   <%- else -%>
     <%=

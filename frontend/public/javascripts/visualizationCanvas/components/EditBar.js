@@ -13,13 +13,14 @@ import { enterPreviewMode, openEditMenu } from '../actions';
 // component's appearance
 export class EditBar extends PureComponent {
   render() {
-    const { name, menuLabel, onClickPreview, onClickMenu } = this.props;
+    const { name, onClickPreview, onClickMenu, onClickName } = this.props;
 
     const editBarProps = {
       name,
-      menuLabel,
+      menuLabel: t('edit_menu_label'),
       menuIcon: 'socrata-icon-stories-menu',
-      onClickMenu
+      onClickMenu,
+      onClickName
     };
 
     return (
@@ -39,22 +40,20 @@ export class EditBar extends PureComponent {
 
 EditBar.propTypes = {
   name: PropTypes.string.isRequired,
-  menuLabel: PropTypes.string.isRequired,
-  onClickPreview: PropTypes.func.isRequired,
-  onClickMenu: PropTypes.func.isRequired
+  onClickMenu: PropTypes.func.isRequired,
+  onClickName: PropTypes.func.isRequired,
+  onClickPreview: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
-  return {
-    name: state.view.name,
-    menuLabel: t('edit_menu_label')
-  };
+  return _.pick(state.view, 'name');
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    onClickPreview: enterPreviewMode,
-    onClickMenu: openEditMenu
+    onClickMenu: openEditMenu,
+    onClickName: openEditMenu,
+    onClickPreview: enterPreviewMode
   }, dispatch);
 }
 

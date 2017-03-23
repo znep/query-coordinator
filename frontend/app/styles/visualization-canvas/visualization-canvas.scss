@@ -5,7 +5,7 @@
 $admin-header-height: 32px;
 $edit-bar-height: 60px;
 $edit-bar-font-color: #dbdbdb;
-$edit-bar-name-width: 280px;
+$edit-bar-name-width: 330px;
 $edit-bar-menu-width: 60px;
 $edit-bar-z-index: 8;
 $preview-bar-height: 34px;
@@ -76,7 +76,7 @@ body {
     z-index: $edit-bar-z-index;
 
     .page-name {
-      width: 250px;
+      width: 300px;
     }
 
     .edit-bar-child {

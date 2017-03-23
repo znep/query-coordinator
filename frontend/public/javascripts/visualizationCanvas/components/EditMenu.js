@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
+import { findDOMNode } from 'react-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { updateNameAndDescription, closeEditMenu } from '../actions';
@@ -10,17 +11,35 @@ export class EditMenu extends Component {
   constructor(props) {
     super(props);
 
-    this.state = _.pick(props, 'name', 'description');
+    this.state = {
+      name: props.name,
+      description: props.description,
+      isMetadataMenuOpen: props.isActive
+    };
 
     _.bindAll(this, [
       'onNameChange',
       'onDescriptionChange',
       'onClickUpdate',
+      'toggleMetadataMenu',
       'renderTitleField',
       'renderDescriptionField',
       'renderMenuItems',
       'renderUpdateButton'
     ]);
+  }
+
+  // Select the title field when the menu is opened
+  componentDidUpdate(oldProps) {
+    const { isActive } = this.props;
+
+    if (!oldProps.isActive && isActive) {
+      findDOMNode(this).querySelector('#edit-title-field').select();
+
+      this.setState({
+        isMetadataMenuOpen: true
+      });
+    }
   }
 
   onNameChange({ target }) {
@@ -37,6 +56,14 @@ export class EditMenu extends Component {
 
     event.preventDefault();
     onClickUpdate({ name, description });
+  }
+
+  toggleMetadataMenu() {
+    const { isMetadataMenuOpen } = this.state;
+
+    this.setState({
+      isMetadataMenuOpen: !isMetadataMenuOpen
+    });
   }
 
   renderTitleField() {
@@ -81,9 +108,13 @@ export class EditMenu extends Component {
   }
 
   renderMenuItems() {
+    const { isMetadataMenuOpen } = this.state;
+
     const menuItemprops = {
       iconName: 'edit',
-      text: t('edit_menu.editTitleAndDescription')
+      text: t('edit_menu.editTitleAndDescription'),
+      isOpen: isMetadataMenuOpen,
+      onClick: this.toggleMetadataMenu
     };
 
     return (

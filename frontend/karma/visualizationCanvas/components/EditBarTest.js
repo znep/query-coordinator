@@ -7,6 +7,7 @@ describe('EditBar', () => {
       menuLabel: 'menu',
       onClickPreview: _.noop,
       onClickMenu: _.noop,
+      onClickName: _.noop,
       ...props
     };
   };

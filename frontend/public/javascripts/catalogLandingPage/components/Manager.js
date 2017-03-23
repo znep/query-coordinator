@@ -183,10 +183,14 @@ class Manager extends React.Component {
 
     const isDirty = !_.isEqual(this.state.initialProps, this.props);
 
+    const errorMessageDiv = this.state.errorMessage ?
+      (<div className="alert error">{this.state.errorMessage}</div>) : null;
+
+
     return (
       <div className="clp-manager">
         <h1 className="header">{_.get(I18n, 'manager.manage_this_category')}</h1>
-        <h2 className="error-message">{this.state.errorMessage}</h2>
+        {errorMessageDiv}
         <div>
           <form>
             {headingHtml(_.get(I18n, 'manager.headline.label'))}

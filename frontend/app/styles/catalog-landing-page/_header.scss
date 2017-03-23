@@ -2,17 +2,17 @@
   overflow: hidden;
 
   h1 {
-    font-size: 2rem;
+    font-size: 20pt;
     font-weight: normal;
     color: $primary-base;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0;
   }
 
   .description {
     color: $dark-grey-1;
     line-height: 1.25rem;
     margin-bottom: 1.25rem;
-    font-size: 1.5em;
+    font-size: 0.9rem;
 
     @include desktop {
       width: 64%;

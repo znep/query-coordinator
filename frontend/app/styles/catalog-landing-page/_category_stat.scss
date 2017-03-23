@@ -5,13 +5,14 @@
 
     .stat-count {
       font-size: 2rem;
+      line-height: 1;
       color: $primary-base;
       margin-bottom: 0.25rem;
     }
 
     .stat-name {
       color: $light-grey-1;
-      font-size: 1.1rem;
+      font-size: 0.9rem;
     }
   }
 }

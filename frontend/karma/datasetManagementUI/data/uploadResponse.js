@@ -156,6 +156,6 @@ export default {
     ]
   },
   "links": {
-    "show": "/api/update/s396-jk8m/0/schema/38"
+    "show": "/api/publishing/v1/revision/s396-jk8m/0/schema/38"
   }
 }

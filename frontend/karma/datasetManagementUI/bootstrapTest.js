@@ -6,7 +6,7 @@ describe('bootstrap', () => {
 
   it('adds notification for in-progress upsert job and starts polling if they\'re not done', (done) => {
     const { unmockFetch, calls: fetchCalls } = mockFetch({
-      '/api/update/hehe-hehe/0': {
+      '/api/publishing/v1/revision/hehe-hehe/0': {
         GET: {
           response: {
             resource: {
@@ -41,7 +41,7 @@ describe('bootstrap', () => {
       }
     ]);
     setTimeout(() => {
-      expect(fetchCalls['/api/update/hehe-hehe/0'].GET).to.equal(1);
+      expect(fetchCalls['/api/publishing/v1/revision/hehe-hehe/0'].GET).to.equal(1);
       unmockFetch();
       done();
     }, 0);
@@ -49,7 +49,7 @@ describe('bootstrap', () => {
 
   it('adds notification for successful upsert job and doesn\'t poll', (done) => {
     const { unmockFetch, calls: fetchCalls } = mockFetch({
-      '/api/update/hehe-hehe/0': {
+      '/api/publishing/v1/revision/hehe-hehe/0': {
         GET: {
           response: {
             resource: {
@@ -84,7 +84,7 @@ describe('bootstrap', () => {
       }
     ]);
     setTimeout(() => {
-      expect(fetchCalls['/api/update/hehe-hehe/0'].GET).to.equal(0);
+      expect(fetchCalls['/api/publishing/v1/revision/hehe-hehe/0'].GET).to.equal(0);
       unmockFetch();
       done();
     }, 0);

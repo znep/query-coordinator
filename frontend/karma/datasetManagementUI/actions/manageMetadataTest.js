@@ -19,7 +19,7 @@ describe('actions/manageMetadata', () => {
         }
       },
     },
-    '/api/update/hehe-hehe/0/schema/4': {
+    '/api/publishing/v1/upload/5/schema/4': {
       POST: {
         status: 200,
         response: {

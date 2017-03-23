@@ -260,15 +260,15 @@ class DatasetsController < ApplicationController
     if FeatureFlags.derive(@view, request).enable_dataset_management_ui
       @view = get_view(params[:id])
       unless request.path.starts_with?(canonical_path_proc.call)
-        canonical_url = "#{canonical_path_proc.call}/updates/#{params[:update_seq]}#{params[:rest_of_path]}"
+        canonical_url = "#{canonical_path_proc.call}/updates/#{params[:revision_seq]}#{params[:rest_of_path]}"
         return redirect_to(canonical_url)
       end
       # TODO: would be more efficient to make fewer api calls to DSMAPI
-      @update = DatasetManagementAPI.get_update(@view.id, params[:update_seq], cookies)
-      uploads = DatasetManagementAPI.get_uploads_index(@view.id, params[:update_seq], cookies)
+      @update = DatasetManagementAPI.get_update(@view.id, params[:revision_seq], cookies)
+      uploads = DatasetManagementAPI.get_uploads_index(@view.id, params[:revision_seq], cookies)
       full_uploads = uploads.map do |upload|
         upload_id = upload['resource']['id']
-        DatasetManagementAPI.get_upload(@view.id, params[:update_seq], upload_id, cookies)
+        DatasetManagementAPI.get_upload(@view.id, params[:revision_seq], upload_id, cookies)
       end
       @update[:uploads] = full_uploads
       @websocket_token = DatasetManagementAPI.get_websocket_token(@view.id, cookies)

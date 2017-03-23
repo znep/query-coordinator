@@ -156,19 +156,19 @@ function subscribeToUpload(dispatch, upload) {
       dispatch(insertFromServer('input_columns', column));
     });
     return inputSchema.output_schemas.map((outputSchema) => {
-      return insertAndSubscribeToOutputSchema(dispatch, outputSchema);
+      return insertAndSubscribeToOutputSchema(dispatch, upload, outputSchema);
     });
   });
   return _.flatten(outputSchemaIds);
 }
 
-function insertAndSubscribeToOutputSchema(dispatch, outputSchemaResponse) {
+function insertAndSubscribeToOutputSchema(dispatch, upload, outputSchemaResponse) {
   dispatch(insertFromServer('output_schemas', toOutputSchema(outputSchemaResponse)));
-  insertChildrenAndSubscribeToOutputSchema(dispatch, outputSchemaResponse);
+  insertChildrenAndSubscribeToOutputSchema(dispatch, upload, outputSchemaResponse);
   return outputSchemaResponse.id;
 }
 
-export function insertChildrenAndSubscribeToOutputSchema(dispatch, outputSchemaResponse) {
+export function insertChildrenAndSubscribeToOutputSchema(dispatch, upload, outputSchemaResponse) {
   dispatch(subscribeToOutputSchema(outputSchemaResponse));
   const actions = [];
   outputSchemaResponse.output_columns.forEach((outputColumn) => {
@@ -186,13 +186,13 @@ export function insertChildrenAndSubscribeToOutputSchema(dispatch, outputSchemaR
   });
   dispatch(batch(actions));
   outputSchemaResponse.output_columns.forEach((outputColumn) => {
-    dispatch(createTableAndSubscribeToTransform(outputColumn.transform));
+    dispatch(createTableAndSubscribeToTransform(upload, outputColumn.transform));
   });
 }
 
 const INITIAL_FETCH_LIMIT_ROWS = 200;
 
-export function createTableAndSubscribeToTransform(transform) {
+function createTableAndSubscribeToTransform(upload, transform) {
   return (dispatch, getState) => {
     const db = getState().db;
     const transformInDb = db.transforms[transform.id];
@@ -214,7 +214,7 @@ export function createTableAndSubscribeToTransform(transform) {
           initialRowsFetched = true;
           const offset = 0;
           dispatch(
-            fetchAndInsertDataForTransform(transform, offset, INITIAL_FETCH_LIMIT_ROWS)
+            fetchAndInsertDataForTransform(upload, transform, offset, INITIAL_FETCH_LIMIT_ROWS)
           );
         }
       });
@@ -262,9 +262,9 @@ function subscribeToOutputSchema(outputSchema) {
   };
 }
 
-function fetchAndInsertDataForTransform(transform, offset, limit) {
+function fetchAndInsertDataForTransform(upload, transform, offset, limit) {
   return (dispatch) => {
-    socrataFetch(dsmapiLinks.transformResults(transform.id, limit, offset)).
+    socrataFetch(dsmapiLinks.transformResults(upload.id, transform.id, limit, offset)).
       then(checkStatus).
       then(getJson).
       catch((error) => {

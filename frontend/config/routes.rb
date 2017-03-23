@@ -408,7 +408,7 @@ Rails.application.routes.draw do
       get '/form_success', :action => 'form_success', :as => :view_form_success
       get '/form_error', :action => 'form_error', :as => :view_form_error
       get '/about', :action => 'about', :as => :about_view
-      get '/updates/:update_seq(*rest_of_path)', :action => 'updates'
+      get '/updates/:revision_seq(*rest_of_path)', :action => 'updates'
       get '/visualization', :action => 'create_visualization_canvas'
       match '/alt', :action => 'alt', :via => [:get, :post], :as => :alt_view
       match '/flags', :action => 'flag_check', :via => [:get, :post], :as => :flag_check
@@ -443,7 +443,7 @@ Rails.application.routes.draw do
       get 'd/:id/data', :action => 'show', :bypass_dslp => true
       get 'd/:id/visualization', :action => 'create_visualization_canvas', :as => :create_visualization_canvas
 
-      get 'd/:id/updates/:update_seq(*rest_of_path)', :action => 'updates'
+      get 'd/:id/updates/:revision_seq(*rest_of_path)', :action => 'updates'
 
       get 'd/:id/:row_id', :action => 'show', :constraints => {:row_id => /\d+/}
     end

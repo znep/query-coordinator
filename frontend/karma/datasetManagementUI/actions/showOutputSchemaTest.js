@@ -62,11 +62,12 @@ describe('actions/showOutputSchema', () => {
         params: {
           inputSchemaId: 4,
           outputSchemaId: 18,
-          errorsTransformId: 1
+          errorsTransformId: 1,
+          uploadId: 5
         }
       };
       const { unmockFetch } = mockFetch({
-        '/api/update/hehe-hehe/0/schema/4/errors/18?limit=50&offset=0&column_id=50': {
+        '/api/publishing/v1/upload/5/schema/4/errors/18?limit=50&offset=0&column_id=50': {
           GET: {
             status: 200,
             response: errorTableResponse

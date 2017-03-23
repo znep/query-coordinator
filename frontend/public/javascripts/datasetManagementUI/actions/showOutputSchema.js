@@ -23,6 +23,9 @@ export function updateColumnType(oldSchema, oldColumn, newType) {
     const state = getState();
     const db = state.db;
     const routing = state.routing;
+    const inputSchema = db.input_schemas[oldSchema.input_schema_id];
+    const uploadId = inputSchema.upload_id;
+    const upload = db.uploads[uploadId];
 
     const { newOutputSchema, newOutputColumns } =
       getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType);
@@ -32,7 +35,7 @@ export function updateColumnType(oldSchema, oldColumn, newType) {
       updateImmutableStarted('output_columns', oldColumn.id)
     ]));
 
-    socrataFetch(dsmapiLinks.newOutputSchema(oldSchema.input_schema_id), {
+    socrataFetch(dsmapiLinks.newOutputSchema(uploadId, oldSchema.input_schema_id), {
       method: 'POST',
       body: JSON.stringify({ output_columns: newOutputColumns })
     }).
@@ -43,10 +46,8 @@ export function updateColumnType(oldSchema, oldColumn, newType) {
           insertSucceeded('output_schemas', newOutputSchema, { id: resp.resource.id }),
           revertEdits('output_columns', oldColumn.id)
         ]));
-        insertChildrenAndSubscribeToOutputSchema(dispatch, resp.resource);
+        insertChildrenAndSubscribeToOutputSchema(dispatch, upload, resp.resource);
 
-        const inputSchema = db.input_schemas[oldSchema.input_schema_id];
-        const uploadId = inputSchema.upload_id;
         dispatch(push(
           Links.showOutputSchema(uploadId, oldSchema.input_schema_id, resp.resource.id)(routing)
         ));
@@ -96,14 +97,19 @@ export function getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType) 
 }
 
 export function loadErrorTable(nextState) {
-  const { inputSchemaId, outputSchemaId, errorsTransformId: errorsTransformIdStr } = nextState.params;
+  const {
+    uploadId,
+    inputSchemaId,
+    outputSchemaId,
+    errorsTransformId: errorsTransformIdStr
+  } = nextState.params;
   const errorsTransformId = _.toNumber(errorsTransformIdStr);
   return (dispatch, getState) => {
     const limit = 50;
     const fetchOffset = 0;
     const errorsColumnId = _.find(getState().db.output_columns, { transform_id: errorsTransformId }).id;
     const path = dsmapiLinks.errorTable(
-      inputSchemaId, outputSchemaId, errorsColumnId, limit, fetchOffset
+      uploadId, inputSchemaId, outputSchemaId, errorsColumnId, limit, fetchOffset
     );
     socrataFetch(path).
       then(checkStatus).

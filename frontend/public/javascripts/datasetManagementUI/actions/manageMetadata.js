@@ -91,9 +91,10 @@ function saveColumnMetadata(dispatch, db) {
       };
     })
   };
-
+  const inputSchema = db.input_schemas[currentOutputSchema.input_schema_id];
+  const upload = db.uploads[inputSchema.upload_id];
   const newOutputSchema = {
-    input_schema_id: currentOutputSchema.input_schema_id
+    input_schema_id: inputSchema.id
   };
   dispatch(insertStarted('output_schemas', newOutputSchema));
   currentColumns.forEach((column) => {
@@ -101,7 +102,7 @@ function saveColumnMetadata(dispatch, db) {
       dispatch(updateImmutableStarted('output_columns', column.id));
     }
   });
-  socrataFetch(dsmapiLinks.newOutputSchema(currentOutputSchema.input_schema_id), {
+  socrataFetch(dsmapiLinks.newOutputSchema(upload.id, currentOutputSchema.input_schema_id), {
     method: 'POST',
     body: JSON.stringify(payload)
   }).
@@ -117,7 +118,7 @@ function saveColumnMetadata(dispatch, db) {
         inserted_at: parseDate(resp.resource.inserted_at)
       }));
       revertDirtyOutputColumns(dispatch, currentColumns);
-      insertChildrenAndSubscribeToOutputSchema(dispatch, resp.resource);
+      insertChildrenAndSubscribeToOutputSchema(dispatch, upload, resp.resource);
       dispatch(redirectAfterInterval());
     });
 }

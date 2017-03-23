@@ -21,7 +21,7 @@ function insertUpdate(store) {
   store.dispatch(insertFromServer('updates', {
     id: 5,
     fourfour: 'hehe-hehe',
-    update_seq: 0,
+    revision_seq: 0,
     inserted_at: new Date(),
     created_by: {
       display_name: 'rozap',

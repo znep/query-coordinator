@@ -17,7 +17,7 @@ import Airbrake from '../common/airbrake';
 import rootRoute from './routes';
 
 const viewId = window.initialState.view.id;
-window.DSMAPI_PHOENIX_SOCKET = new Phoenix.Socket('/api/update/socket', {
+window.DSMAPI_PHOENIX_SOCKET = new Phoenix.Socket('/api/publishing/v1/socket', {
   params: {
     fourfour: viewId,
     token: window.serverConfig.websocketToken

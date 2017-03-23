@@ -8,7 +8,7 @@ import { mockFetch, mockXHR } from '../testHelpers/mockHTTP';
 describe('actions/manageUploads', () => {
 
   const fetchResponses = {
-    '/api/update/hehe-hehe/0/upload': {
+    '/api/publishing/v1/revision/hehe-hehe/0/upload': {
       POST: {
         response: {
           resource: {
@@ -19,7 +19,7 @@ describe('actions/manageUploads', () => {
         }
       }
     },
-    '/api/update/hehe-hehe/0/upload/6': {
+    '/api/publishing/v1/upload/6': {
       GET: {
         response: {
           resource: {
@@ -86,7 +86,7 @@ describe('actions/manageUploads', () => {
         }
       }
     },
-    '/api/update/hehe-hehe/transform/0/results?limit=200&offset=0': {
+    '/api/publishing/v1/upload/6/transform/0/results?limit=200&offset=0': {
       GET: {
         response: {
           resource: [
@@ -97,7 +97,7 @@ describe('actions/manageUploads', () => {
         }
       }
     },
-    '/api/update/hehe-hehe/transform/1/results?limit=200&offset=0': {
+    '/api/publishing/v1/upload/6/transform/1/results?limit=200&offset=0': {
       GET: {
         response: {
           resource: [

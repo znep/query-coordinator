@@ -50,7 +50,7 @@ export function bootstrap(store, initialView, initialUpdate) {
   operations.push(insertFromServer('updates', {
     id: initialUpdate.id,
     fourfour: initialView.id,
-    update_seq: _.toNumber(initialUpdate.update_seq),
+    revision_seq: _.toNumber(initialUpdate.revision_seq),
     inserted_at: parseDate(initialUpdate.inserted_at),
     created_by: initialUpdate.created_by
   }));

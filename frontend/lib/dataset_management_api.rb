@@ -3,21 +3,21 @@ module DatasetManagementAPI
 
   class ServerError < StandardError; end
 
-  def self.get_update(view_uid, update_seq, cookies)
-    get("/api/update/#{view_uid}/#{update_seq}", cookies)['resource']
+  def self.get_update(view_uid, revision_seq, cookies)
+    get("/api/publishing/v1/revision/#{view_uid}/#{revision_seq}", cookies)['resource']
   end
 
-  def self.get_uploads_index(view_uid, update_seq, cookies)
-    get("/api/update/#{view_uid}/#{update_seq}/upload", cookies)
+  def self.get_uploads_index(view_uid, revision_seq, cookies)
+    get("/api/publishing/v1/revision/#{view_uid}/#{revision_seq}/upload", cookies)
   end
 
-  def self.get_upload(view_uid, update_seq, upload_id, cookies)
-    path = "/api/update/#{view_uid}/#{update_seq}/upload/#{upload_id}"
+  def self.get_upload(view_uid, revision_seq, upload_id, cookies)
+    path = "/api/publishing/v1/upload/#{upload_id}"
     get(path, cookies)['resource']
   end
 
   def self.get_websocket_token(view_uid, cookies)
-    get("/api/update/#{view_uid}/token", cookies)['token']
+    get("/api/publishing/v1/revision/#{view_uid}/token", cookies)['token']
   end
 
   private

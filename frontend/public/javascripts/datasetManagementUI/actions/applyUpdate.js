@@ -51,7 +51,7 @@ const UPSERT_JOB_PROGRESS_POLL_INTERVAL_MS = 1000;
 
 export function pollForUpsertJobProgress(upsertJobId) {
   return (dispatch) => {
-    socrataFetch(dsmapiLinks.updateBase).
+    socrataFetch(dsmapiLinks.revisionBase).
       then(checkStatus).
       then(getJson).
       then((resp) => {

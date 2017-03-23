@@ -304,7 +304,7 @@ describe('components/ShowOutputSchema', () => {
         }));
         const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
         const exportButton = element.querySelector('.btn.export-errors');
-        expect(exportButton.parentNode.href.endsWith('/api/update/hehe-hehe/0/schema/4/errors/18')).to.be.true;
+        expect(exportButton.parentNode.href.endsWith('/api/publishing/v1/upload/5/schema/4/errors/18')).to.be.true;
         expect(exportButton).to.not.be.null;
         expect(exportButton.disabled).to.be.false;
       });

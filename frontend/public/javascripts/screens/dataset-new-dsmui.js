@@ -52,7 +52,7 @@ function createDataset() {
     success: function(newView) {
       $.ajax({
         type: 'POST',
-        url: '/api/update/' + newView.id,
+        url: '/api/publishing/v1/revision/' + newView.id,
         headers: headers,
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',

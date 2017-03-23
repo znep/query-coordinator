@@ -40,7 +40,7 @@ window.initialState = {
   update: {
     id: 42,
     fourfour: 'hehe-hehe',
-    update_seq: 0,
+    revision_seq: 0,
     upsert_jobs: [],
     uploads: [
       {

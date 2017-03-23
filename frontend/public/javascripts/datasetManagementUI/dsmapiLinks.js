@@ -1,25 +1,29 @@
-export const updateBase =
-  `/api/update/${window.initialState.view.id}/${window.initialState.update.update_seq}`;
+const base = '/api/publishing/v1';
 
-export const uploadIndex = `${updateBase}/upload`;
+export const revisionBase =
+  `${base}/revision/${window.initialState.view.id}/${window.initialState.update.revision_seq}`;
+
+export const uploadIndex = `${revisionBase}/upload`;
 export const uploadCreate = uploadIndex;
 
-export const uploadBytes = (uploadId) => `${updateBase}/upload/${uploadId}`;
+export const uploadBytes = (uploadId) => `${base}/upload/${uploadId}`;
 export const uploadShow = uploadBytes;
 
 // TODO: find names controller uses!
-export const newOutputSchema = (inputSchemaId) => `${updateBase}/schema/${inputSchemaId}`;
+export const newOutputSchema = (uploadId, inputSchemaId) => {
+  return `${base}/upload/${uploadId}/schema/${inputSchemaId}`;
+};
 
-export const transformResults = (transformId, limit, offset) => {
-  return `/api/update/${window.initialState.view.id}/transform/${transformId}` +
+export const transformResults = (uploadId, transformId, limit, offset) => {
+  return `${base}/upload/${uploadId}/transform/${transformId}` +
          `/results?limit=${limit}&offset=${offset}`;
 };
 
-export const applyUpdate = `${updateBase}/apply`;
+export const applyUpdate = `${revisionBase}/apply`;
 
-export const errorTable = (inputSchemaId, outputSchemaId, columnId, limit, offset) =>
-  `${updateBase}/schema/${inputSchemaId}/errors/${outputSchemaId}` +
+export const errorTable = (uploadId, inputSchemaId, outputSchemaId, columnId, limit, offset) =>
+  `${base}/upload/${uploadId}/schema/${inputSchemaId}/errors/${outputSchemaId}` +
     `?limit=${limit}&offset=${offset}&column_id=${columnId}`;
 
-export const errorExport = (inputSchemaId, outputSchemaId) =>
-  `${updateBase}/schema/${inputSchemaId}/errors/${outputSchemaId}`;
+export const errorExport = (uploadId, inputSchemaId, outputSchemaId) =>
+  `${base}/upload/${uploadId}/schema/${inputSchemaId}/errors/${outputSchemaId}`;

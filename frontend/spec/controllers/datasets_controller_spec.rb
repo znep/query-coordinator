@@ -201,6 +201,7 @@ describe DatasetsController do
       it 'should render the visualization canvas page if the feature flag is enabled' do
         allow(subject).to receive(:current_user).and_return(double({:can_create_or_edit_visualization_canvas? => true}))
         allow(subject).to receive(:visualization_canvas_enabled?).and_return(true)
+        allow(view).to receive(:new_backend?).and_return(true)
         get :create_visualization_canvas, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
 
         expect(response).to have_http_status(:success)
@@ -232,6 +233,26 @@ describe DatasetsController do
         expect(response).to have_http_status(:not_found)
       end
 
+      it 'should return reroute to the NBE 4x4 if the page is accessed with an OBE 4x4' do
+        allow(subject).to receive(:current_user).and_return(double({:can_create_or_edit_visualization_canvas? => true}))
+        allow(subject).to receive(:visualization_canvas_enabled?).and_return(true)
+        allow(view).to receive(:new_backend?).and_return(false)
+        allow(view).to receive(:nbe_view).and_return(View.new({ 'id' => '1234-abcd' }))
+        get :create_visualization_canvas, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+
+        expect(response).to have_http_status(:redirect)
+        expect(response).to redirect_to('http://test.host/d/1234-abcd/visualization')
+      end
+
+      it 'should throw a 500 error if the page is accessed with an OBE 4x4 without OBE-NBE migrations' do
+        allow(subject).to receive(:current_user).and_return(double({:can_create_or_edit_visualization_canvas? => true}))
+        allow(subject).to receive(:visualization_canvas_enabled?).and_return(true)
+        allow(view).to receive(:new_backend?).and_return(false)
+        allow(view).to receive(:nbe_view).and_return(nil)
+        get :create_visualization_canvas, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+
+        expect(response).to have_http_status(:internal_server_error)
+      end
     end
 
   end

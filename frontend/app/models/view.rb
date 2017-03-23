@@ -90,10 +90,6 @@ class View < Model
     parse(CoreServer::Base.connection.get_request("/users/#{id}/views.json"))
   end
 
-  def self.find_favorites()
-    parse(CoreServer::Base.connection.get_request('/favorite_views.json'))
-  end
-
   def self.find_shared_to_user(id, options)
     options[:method] = 'getShared'
     result = JSON.parse(CoreServer::Base.connection.get_request("/users/#{id}/views.json?#{options.to_param}"))
@@ -827,15 +823,6 @@ class View < Model
     ))
   end
 
-  def self.create_favorite(id)
-    parse(CoreServer::Base.connection.create_request("/favorite_views?#{{'id' => id}.to_param}"))
-  end
-
-  def create_favorite
-    data['flags'] << 'favorite'
-    self.class.create_favorite(id)
-  end
-
   def self.create(attributes)
     nbe = attributes.fetch(:nbe, false)
     attributes.delete(:nbe)
@@ -861,10 +848,6 @@ class View < Model
     ))
   end
 
-  def self.delete_favorite(id)
-    parse(CoreServer::Base.connection.delete_request("/favorite_views/#{id}"))
-  end
-
   def self.featured_image(featured_view)
     case featured_view['display']
       when 'thumbnail' then
@@ -881,11 +864,6 @@ class View < Model
 
   def delete
     self.class.delete(id)
-  end
-
-  def delete_favorite
-    data['flags'].delete('favorite')
-    self.class.delete_favorite(id)
   end
 
   def register_opening(referrer)

@@ -240,11 +240,7 @@
         var curVal = parser.format($cell.text(), table, $cell[0]);
         var sortGroupingVal = curVal;
 
-        // For favorites we leave off the headers since there are only two
-        //  values, and they are obvious visually
-        if ($cell.hasClass('favorite')) {
-          return '';
-        } else if ($cell.hasClass('type')) {
+        if ($cell.hasClass('type')) {
           // Type is special in a similar manner to favorites
           sortGroupingVal = curVal + 's';
         } else if (parser.type == 'text') {

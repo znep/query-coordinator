@@ -28,7 +28,7 @@ RSpec.describe 'settings panel', type: :feature, js: true do
     visit '/s/magic-thing/hasb-lock/edit'
   end
 
-  it 'opens and closes on click' do
+  it 'closes on overlay click' do
     first_toggle = page.all(data_toggle_selector).first()
     # Expect initial state
     expect_settings_panel_to_be_closed
@@ -44,17 +44,30 @@ RSpec.describe 'settings panel', type: :feature, js: true do
     # Close with overlay
     page.find("#{settings_overlay_selector}.active").click()
     expect_settings_panel_to_be_closed
+  end
 
-    # Open again
+  it 'closes on X button click' do
+    first_toggle = page.all(data_toggle_selector).first()
+    # Expect initial state
+    expect_settings_panel_to_be_closed
+    expect(page.find('header')).to have_selector(data_toggle_selector, count: 2)
+
+    # Open the panel
     first_toggle.click()
 
     # Close with close button
     page.find("#{settings_panel_selector} .close-side-panel-btn").click()
     expect_settings_panel_to_be_closed
+  end
 
-    # Regular click is horribly unreliable here for some unknown reason.
-    # Probably because of some JS animation.
-    javascript_click(first_toggle)
+  it 'closes on ESC' do
+    first_toggle = page.all(data_toggle_selector).first()
+    # Expect initial state
+    expect_settings_panel_to_be_closed
+    expect(page.find('header')).to have_selector(data_toggle_selector, count: 2)
+
+    # Open the panel
+    first_toggle.click()
 
     # Close with the esc key
     page.find('body').native.send_keys(:escape)

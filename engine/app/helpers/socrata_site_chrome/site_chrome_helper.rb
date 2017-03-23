@@ -136,18 +136,18 @@ module SocrataSiteChrome
 
     def social_link_icon(type)
       {
-        'facebook' => 'facebook',
-        'twitter' => 'twitterbird',
-        'youtube' => 'youtube',
-        'linked_in' => 'linkedin',
-        'flickr' => 'flickr',
-        'instagram' => 'instagram',
-        'pinterest' => 'pinterest',
-        'tumblr' => 'tumblr',
+        'facebook' => '&#xe027;',
+        'twitter' => '&#xe086;',
+        'youtube' => '&#xe099;',
+        'linked_in' => '&#xe052;',
+        'flickr' => '&#xe029;',
+        'instagram' => '&#xe100;',
+        'pinterest' => '&#xe064;',
+        'tumblr' => '&#xe085;',
         'yammer' => 'y', # Doesn't exist for yammer. Just show a "y" because y not
-        'google_plus' => 'googleplus',
-        'vimeo' => 'vimeo',
-        'github' => 'githubalt'
+        'google_plus' => '&#xe039;',
+        'vimeo' => '&#xe089;',
+        'github' => '&#xe037;'
       }[type.to_s.downcase]
     end
 

@@ -21,7 +21,6 @@ var plugins = _.compact([
   isProduction && new webpack.optimize.UglifyJsPlugin({
     mangle: false,
     compress: {
-      drop_console: true,
       warnings: false
     },
     output: {

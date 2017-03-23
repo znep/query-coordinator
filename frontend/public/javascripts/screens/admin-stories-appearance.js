@@ -502,9 +502,9 @@
   $.gridSidebar.registerConfig('pager', 'pane_storiesPager');
 
   $.Control.extend('pane_storiesOther', {
-    getTitle:  () => t('panes.other.title'),
+    getTitle:  () => t('panes.pane_other.title'),
 
-    getSubtitle: () =>  t('panes.other.subtitle'),
+    getSubtitle: () =>  t('panes.pane_other.subtitle'),
 
     _getCurrentData: function() {
       return this._super() || publishNS.resolveWorkingTheme();
@@ -513,7 +513,7 @@
     _changeHandler: publishNS.handleValueChanged,
 
     _getSections: function() {
-      const sectionPrefix = 'panes.other.sections';
+      const sectionPrefix = 'panes.pane_other.sections';
       return [
         {
           title: t(`${sectionPrefix}.background.label`),

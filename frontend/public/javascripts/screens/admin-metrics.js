@@ -84,7 +84,7 @@
                 }
               }, {
                 method: 'browser-other',
-                label: t('other'),
+                label: t('browser_other'),
                 options: {
                   stacking: null,
                   type: 'line'

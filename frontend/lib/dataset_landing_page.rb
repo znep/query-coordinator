@@ -20,7 +20,7 @@ class DatasetLandingPage
       threads[:related_views] = Thread.new {
         begin
           fetch_derived_views(view, cookies, request_id, 4, 0)
-        rescue RuntimeError => e
+        rescue Exception => e
           Rails.logger.error("Error fetching derived views for #{view.id}: " + e.message)
           []
         end
@@ -29,7 +29,7 @@ class DatasetLandingPage
       threads[:featured_content] = Thread.new {
         begin
           fetch_featured_content(view, cookies, request_id)
-        rescue RuntimeError
+        rescue Exception => e
           Rails.logger.error("Error fetching featured content for #{view.id}: " + e.message)
           []
         end

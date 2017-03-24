@@ -238,6 +238,21 @@ body {
   .main-spinner {
     display: flex;
     height: 400px;
+    opacity: 0;
+    animation-name: fadeIn;
+    animation-duration: .5s;
+    animation-delay: 1s;
+    animation-fill-mode: forwards;
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
 
     .spinner-large {
       margin: auto;

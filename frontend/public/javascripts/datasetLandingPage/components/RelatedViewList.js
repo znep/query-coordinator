@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { connect } from 'react-redux';
-import { VelocityComponent } from 'velocity-react';
 import BootstrapAlert from './BootstrapAlert';
 import { ViewCard } from 'socrata-components';
 import { getViewCardPropsForView } from '../../common/helpers/viewCardHelpers';
@@ -37,7 +37,7 @@ export class RelatedViewList extends Component {
     }
   }
 
-  getAnimation() {
+  getHeight() {
     const { viewList, isCollapsed, isDesktop, isLoading } = this.props;
 
     if (_.isEmpty(viewList)) {
@@ -61,9 +61,7 @@ export class RelatedViewList extends Component {
       rowCount += 1;
     }
 
-    return {
-      height: (relatedViewHeight + relatedViewMargin) * rowCount - 1
-    };
+    return (relatedViewHeight + relatedViewMargin) * rowCount - 1;
   }
 
   renderEmptyListAlert() {
@@ -76,7 +74,6 @@ export class RelatedViewList extends Component {
     const {
       viewList,
       hasMore,
-      isCollapsed,
       onClickWidget,
       isDesktop,
       isLoading
@@ -87,19 +84,7 @@ export class RelatedViewList extends Component {
     }
 
     const relatedViews = _.map(viewList, (relatedView, i) => {
-      let opacity;
-
-      if (isDesktop) {
-        opacity = (i > 2 && isCollapsed) ? 0 : 1;
-      } else {
-        opacity = 1;
-      }
-
-      return (
-        <VelocityComponent key={i} animation={{ opacity }} runOnMount={i > 2} duration={400}>
-          <ViewCard {...getViewCardPropsForView(relatedView)} onClick={onClickWidget} />
-        </VelocityComponent>
-      );
+      return <ViewCard key={i} {...getViewCardPropsForView(relatedView)} onClick={onClickWidget} />;
     });
 
     if (!isDesktop && hasMore) {
@@ -118,10 +103,21 @@ export class RelatedViewList extends Component {
       );
     }
 
+    const style = {
+      height: this.getHeight()
+    };
+
     return (
-      <div className="media-results related-views" onScroll={this.onScrollList}>
+      <ReactCSSTransitionGroup
+        component="div"
+        className="media-results related-views"
+        style={style}
+        onScroll={this.onScrollList}
+        transitionName="related-views"
+        transitionEnterTimeout={400}
+        transitionLeaveTimeout={400}>
         {relatedViews}
-      </div>
+      </ReactCSSTransitionGroup>
     );
   }
 
@@ -193,10 +189,7 @@ export class RelatedViewList extends Component {
           {I18n.related_views.title}
         </h2>
 
-        <VelocityComponent animation={this.getAnimation()}>
-          {this.renderContents()}
-        </VelocityComponent>
-
+        {this.renderContents()}
         {this.renderLoadMoreLink()}
         {this.renderCollapseLink()}
         {this.renderError()}

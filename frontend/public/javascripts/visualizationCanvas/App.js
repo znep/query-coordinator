@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { VelocityComponent } from 'velocity-react';
 import FeedbackPanel from '../common/components/FeedbackPanel';
 import { ModeStates } from './lib/constants';
 import EditBar from './components/EditBar';
@@ -113,32 +112,15 @@ export const App = React.createClass({
 
   render() {
     const { mode } = this.props;
-    let contents;
 
     switch (mode) {
-      case ModeStates.EDIT:
-        contents = this.renderEditMode();
-        break;
-
-      case ModeStates.PREVIEW:
-        contents = this.renderPreviewMode();
-        break;
-
-      case ModeStates.VIEW:
-        contents = this.renderViewMode();
-        break;
+      case ModeStates.EDIT: return this.renderEditMode();
+      case ModeStates.PREVIEW: return this.renderPreviewMode();
+      case ModeStates.VIEW: return this.renderViewMode();
 
       default:
         throw new Error(`invalid mode: ${mode}`);
     }
-
-    return (
-      <VelocityComponent animation={{ opacity: 1 }} runOnMount duration={275}>
-        <div style={{ opacity: 0 }}>
-          {contents}
-        </div>
-      </VelocityComponent>
-    );
   }
 });
 

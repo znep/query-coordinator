@@ -40,8 +40,6 @@ export default function dbReducer(db = emptyDB, action) {
     throw new ReferenceError(`Table "${action.tableName}" does not exist!`);
   }
 
-  // console.log('ACTION', action);
-
   switch (action.type) {
     case BATCH:
       return action.operations.reduce((dbSoFar, operation) => (

@@ -107,6 +107,21 @@ describe('actions/manageUploads', () => {
           ]
         }
       }
+    },
+    '/api/update/hehe-hehe/0/schema/6/errors?limit=1&offset=0': {
+      GET: {
+        response: [
+          {
+            offset: 1,
+            error: {
+              wanted: 3,
+              got: 2,
+              type: 'too_long',
+              contents: ['foo', 'bar']
+            }
+          }
+        ]
+      }
     }
   };
 
@@ -161,11 +176,40 @@ describe('actions/manageUploads', () => {
           }
         }
       ],
-      'row_errors:6': []
+      'row_errors:6': [
+        {
+          event: 'errors',
+          payload: {
+            errors: 1
+          }
+        }
+      ]
     }, (e) => {
       const db = store.getState().db;
-      const inputSchema = _.find(db.input_schemas, { id: 4 });
+      const inputSchema = _.find(db.input_schemas, { id: 6 });
       expect(inputSchema.total_rows).to.equal(999999);
+      expect(inputSchema.num_row_errors).to.equal(1);
+
+      expect(db.row_errors).to.deep.equal({
+        '6-1': {
+          offset: 1,
+          error: {
+            wanted: 3,
+            got: 2,
+            type: 'too_long',
+            contents: [
+              'foo',
+              'bar'
+            ]
+          },
+          input_schema_id: 6,
+          id: '6-1',
+          __status__: {
+            type: 'SAVED',
+            savedAt: 'ON_SERVER'
+          }
+        }
+      });
 
       const transform0 = _.find(db.transforms, { id: 0 });
       expect(transform0.contiguous_rows_processed).to.equal(9999);

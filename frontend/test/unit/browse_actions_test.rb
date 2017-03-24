@@ -52,11 +52,11 @@ class BrowseActionsTest < Minitest::Test
       'enable stories feature flag is true, but we do not have a stories link in the catalog')
   end
 
-  def test_does_add_data_lens_if_data_lens_phase_is_post_beta
-    stub_feature_flags_with(:data_lens_transition_state => 'post_beta')
+  def test_contains_data_lens_regardless_of_feature_flags
+    stub_feature_flags_with(:data_lens_transition_state => 'pre_beta')
     view_types_list = @browse_controller.send(:view_types_facet)
     assert(view_types_list[:options].any? { |link_item| link_item[:value] == 'new_view'},
-      'data lens transition state is post_beta but we do not have a data lens link in the catalog')
+      'we should always have a Datalens link but it is missing!')
   end
 
   def test_does_not_add_api_if_using_cetera_search

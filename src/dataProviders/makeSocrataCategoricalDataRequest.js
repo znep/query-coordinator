@@ -56,27 +56,29 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
 
     // Note that we add one to the limit before making the query so that we can
     // identify when an additional 'other' category query may be necessary.
-    queryString = `
-      SELECT
-        ${dimension} AS ${SoqlHelpers.dimensionAlias()},
-        ${measure} AS ${SoqlHelpers.measureAlias()}
-      ${whereClause}
-      ORDER BY ${orderByClause}
-      NULL LAST
-      LIMIT ${limit + 1}`;
+    queryString = [
+      'SELECT',
+        `${dimension} AS ${SoqlHelpers.dimensionAlias()},`,
+        `${measure} AS ${SoqlHelpers.measureAlias()}`,
+      whereClause,
+      `ORDER BY ${orderByClause}`,
+      'NULL LAST',
+      `LIMIT ${limit + 1}`
+    ].join(' ');
   } else {
 
     // Note that we add one to the limit before making the query so that we can
     // identify when an additional 'other' category query may be necessary.
-    queryString = `
-      SELECT
-        ${dimension} AS ${SoqlHelpers.dimensionAlias()},
-        ${measure} AS ${SoqlHelpers.measureAlias()}
-      ${whereClause}
-      GROUP BY ${groupByClause}
-      ORDER BY ${orderByClause}
-      NULL LAST
-      LIMIT ${limit + 1}`;
+    queryString = [
+      'SELECT',
+        `${dimension} AS ${SoqlHelpers.dimensionAlias()},`,
+        `${measure} AS ${SoqlHelpers.measureAlias()}`,
+      whereClause,
+      `GROUP BY ${groupByClause}`,
+      `ORDER BY ${orderByClause}`,
+      'NULL LAST',
+      `LIMIT ${limit + 1}`
+    ].join(' ');
   }
 
   return soqlDataProvider.
@@ -303,20 +305,22 @@ function augmentSocrataDataResponseWithOtherCategory(
       'COUNT(*)' :
       `SUM(\`${measureColumnName}\`)`;
 
-    otherCategoryQueryString = `
-      SELECT
-        '${otherCategoryLabel}' AS ${SoqlHelpers.dimensionAlias()},
-        ${measureClause} AS ${SoqlHelpers.measureAlias()}
-      ${otherCategoryWhereClause}
-      LIMIT ${maxRowCount}`;
+    otherCategoryQueryString = [
+      'SELECT',
+        `'${otherCategoryLabel}' AS ${SoqlHelpers.dimensionAlias()},`,
+        `${measureClause} AS ${SoqlHelpers.measureAlias()}`,
+      otherCategoryWhereClause,
+      `LIMIT ${maxRowCount}`
+    ].join(' ');
   } else {
 
-    otherCategoryQueryString = `
-      SELECT
-        '${otherCategoryLabel}' AS ${SoqlHelpers.dimensionAlias()},
-        ${otherCategoryAggregationClause} AS ${SoqlHelpers.measureAlias()}
-      ${otherCategoryWhereClause}
-      LIMIT ${maxRowCount}`;
+    otherCategoryQueryString = [
+      'SELECT',
+        `'${otherCategoryLabel}' AS ${SoqlHelpers.dimensionAlias()},`,
+        `${otherCategoryAggregationClause} AS ${SoqlHelpers.measureAlias()}`,
+      otherCategoryWhereClause,
+      `LIMIT ${maxRowCount}`
+    ].join(' ');
   }
 
   const soqlDataProvider = new SoqlDataProvider({

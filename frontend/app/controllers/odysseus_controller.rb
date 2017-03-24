@@ -140,6 +140,7 @@ class OdysseusController < ApplicationController
     req['X-Socrata-Host'] = req['Host'] = CurrentDomain.cname
     req['X-Socrata-Locale'] = I18n.locale
     req['X-Socrata-Default-Locale'] = CurrentDomain.default_locale
+    req['X-Socrata-RequestId'] = request_id
     req['Cookie'] = request.headers['Cookie']
 
     begin

@@ -50,15 +50,16 @@ function getData(vif, options) {
     const limit = (_.isNumber(limitFromVif)) ?
       parseInt(limitFromVif, 10) :
       options.MAX_ROW_COUNT;
-    const dimensionQueryString = `
-      SELECT
-        \`${state.columnName}\` AS ${SoqlHelpers.dimensionAlias()},
-        COUNT(*) AS ${SoqlHelpers.measureAlias()}
-      ${whereClause}
-      GROUP BY \`${state.columnName}\`
-      ORDER BY ${aliasForOrderByParameter} ${orderBySort}
-      NULL LAST
-      LIMIT ${limit + 1}`;
+    const dimensionQueryString = [
+      'SELECT',
+        `\`${state.columnName}\` AS ${SoqlHelpers.dimensionAlias()},`,
+        `COUNT(*) AS ${SoqlHelpers.measureAlias()}`,
+      whereClause,
+      `GROUP BY \`${state.columnName}\``,
+      `ORDER BY ${aliasForOrderByParameter} ${orderBySort}`,
+      `NULL LAST`,
+      `LIMIT ${limit + 1}`
+    ].join(' ');
 
     return state.soqlDataProvider.query(
       dimensionQueryString,

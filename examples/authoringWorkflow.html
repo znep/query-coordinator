@@ -29,11 +29,14 @@
   </head>
 
   <body>
-    Select a VIF to launch AX, or
-    <button id="custom-vif" class="btn">Paste one in</button>
-    <button id="edit" class="btn">Edit Current</button>
+    Select a preloaded VIF to launch AX:
+    <p id="vif-selections"></p>
+    <p>Or:
+      <button id="custom-vif" class="btn">Paste a VIF</button>
+      <button id="custom-dataset-uid" class="btn">Use a localhost dataset UID</button>
+      <button id="edit" class="btn btn-secondary">Edit Current</button>
+    </p>
 
-    <div id="vif-selections"></div>
     <div id="authoring-workflow"></div>
 
     <strong>Feature Flags:</strong>
@@ -161,8 +164,36 @@
     $('#custom-vif').click(function() {
       var customVif = prompt('Paste yer vif here.');
       try {
-        customVif = JSON.parse(customVif);
-        addVifButton(customVif, _.uniqueId('Custom VIF '), 'custom-vif');
+        if (customVif) {
+          customVif = JSON.parse(customVif);
+          addVifButton(customVif, _.uniqueId('Custom VIF '), 'custom-vif');
+        }
+      } catch (e) {
+        alert(e);
+      }
+    });
+
+    $('#custom-dataset-uid').click(function() {
+      var customDatasetUid = prompt('Paste your localhost four-by-four here.');
+      try {
+        if (customDatasetUid) {
+          var localhostVIF = {
+            format: {
+              type: 'visualization_interchange_format',
+              version: 2
+            },
+            series: [
+              {
+                dataSource: {
+                  domain: 'localhost',
+                  datasetUid: customDatasetUid
+                }
+              }
+            ]
+          };
+
+          addVifButton(localhostVIF, _.uniqueId('Custom Dataset UID '), 'custom-dataset-uid');
+        }
       } catch (e) {
         alert(e);
       }

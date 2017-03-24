@@ -57,10 +57,7 @@ function SoqlDataProvider(config) {
    * @return {Promise}
    */
   this.query = function(queryString, nameAlias, valueAlias) {
-    const uriEncodedAndTrimmedQueryString = encodeURIComponent(
-      queryString.replace(/[\n\s]+/g, ' ').trim()
-    );
-    const url = urlForQuery(`$query=${uriEncodedAndTrimmedQueryString}`);
+    const url = urlForQuery(`$query=${encodeURIComponent(queryString)}`);
 
     return makeSoqlGetRequest(url).then((data) => {
       return mapRowsResponseToTable([ nameAlias, valueAlias ], data);

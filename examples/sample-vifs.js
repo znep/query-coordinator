@@ -137,21 +137,6 @@ socrata.sampleVifs = {
     }
   },
 
-  localhost: {
-    format: {
-      type: 'visualization_interchange_format',
-      version: 2
-    },
-    series: [
-      {
-        dataSource: {
-          domain: 'localhost',
-          datasetUid: '2k23-drn3'
-        }
-      }
-    ]
-  },
-
   whiteHouseStaffStaging: {
     format: {
       type: 'visualization_interchange_format',

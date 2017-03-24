@@ -55,13 +55,14 @@ function getData(vif, options) {
     // EN-13909 has been filed to investigate whether or not this is expected
     // and, if not, if it can be fixed, but in the meantime we are explicitly
     // repeating the grouping column name in the GROUP BY clause.
-    const queryString = `
-      SELECT
-        \`${state.groupingColumnName}\` AS ${SoqlHelpers.dimensionAlias()}
-      ${whereClause}
-      GROUP BY \`${state.groupingColumnName}\`
-      ORDER BY ${SoqlHelpers.dimensionAlias()} ${sortOrder}
-      LIMIT ${MAX_GROUP_COUNT}`;
+    const queryString = [
+      'SELECT',
+        `\`${state.groupingColumnName}\` AS ${SoqlHelpers.dimensionAlias()}`,
+      whereClause,
+      `GROUP BY \`${state.groupingColumnName}\``,
+      `ORDER BY ${SoqlHelpers.dimensionAlias()} ${sortOrder}`,
+      `LIMIT ${MAX_GROUP_COUNT}`
+    ].join(' ');
 
     return state.soqlDataProvider.query(
       queryString,
@@ -219,15 +220,15 @@ function getData(vif, options) {
       state.vif,
       0
     );
-    const queryString = `
-      SELECT
-        ${state.dateTruncFunction}(${dimension}) AS
-          ${SoqlHelpers.dimensionAlias()},
-        ${measure} AS ${SoqlHelpers.measureAlias()}
-      ${whereClause}
-      GROUP BY ${state.dateTruncFunction}(${groupByClause})
-      ORDER BY ${orderByClause}
-      LIMIT ${options.MAX_ROW_COUNT}`;
+    const queryString = [
+      'SELECT',
+        `${state.dateTruncFunction}(${dimension}) AS ${SoqlHelpers.dimensionAlias()},`,
+        `${measure} AS ${SoqlHelpers.measureAlias()}`,
+      whereClause,
+      `GROUP BY ${state.dateTruncFunction}(${groupByClause})`,
+      `ORDER BY ${orderByClause}`,
+      `LIMIT ${options.MAX_ROW_COUNT}`
+    ].join(' ');
 
     state.groupingOtherCategoryQueryString = queryString;
 

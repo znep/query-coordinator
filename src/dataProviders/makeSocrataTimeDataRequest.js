@@ -19,10 +19,11 @@ function makeSocrataTimeDataRequest(vif, seriesIndex, options) {
     vif,
     seriesIndex
   );
-  const dateGuardClauseComponent = `
-    ${dimension} IS NOT NULL AND
-    ${dimension} < '${MAX_LEGAL_JAVASCRIPT_DATE_STRING}' AND
-    (1=1)`;
+  const dateGuardClauseComponent = [
+    `${dimension} IS NOT NULL AND`,
+    `${dimension} < '${MAX_LEGAL_JAVASCRIPT_DATE_STRING}' AND`,
+    '(1=1)'
+  ].join(' ');
   const whereClause = (whereClauseComponents.length > 0) ?
     `WHERE ${whereClauseComponents} AND ${dateGuardClauseComponent}` :
     `WHERE ${dateGuardClauseComponent}`;
@@ -42,23 +43,22 @@ function makeSocrataTimeDataRequest(vif, seriesIndex, options) {
   // If there is no aggregation, we do not select the dimension with a
   // `date_trunc` function, but rather just ask for the actual values.
   if (isUnaggregatedQuery) {
-
-    queryString = `
-      SELECT
-        ${dimension} AS ${SoqlHelpers.dimensionAlias()},
-        ${measure} AS ${SoqlHelpers.measureAlias()}
-      ${whereClause}
-      LIMIT ${limit}`;
+    queryString = [
+      'SELECT',
+        `${dimension} AS ${SoqlHelpers.dimensionAlias()},`,
+        `${measure} AS ${SoqlHelpers.measureAlias()}`,
+      whereClause,
+      `LIMIT ${limit}`
+    ].join(' ');
   } else {
-
-    queryString = `
-      SELECT
-        ${options.dateTruncFunction}(${dimension}) AS
-          ${SoqlHelpers.dimensionAlias()},
-        ${measure} AS ${SoqlHelpers.measureAlias()}
-      ${whereClause}
-      GROUP BY ${options.dateTruncFunction}(${groupByClause})
-      LIMIT ${limit}`;
+    queryString = [
+      'SELECT',
+        `${options.dateTruncFunction}(${dimension}) AS ${SoqlHelpers.dimensionAlias()},`,
+        `${measure} AS ${SoqlHelpers.measureAlias()}`,
+      whereClause,
+      `GROUP BY ${options.dateTruncFunction}(${groupByClause})`,
+      `LIMIT ${limit}`
+    ].join(' ');
   }
 
   return soqlDataProvider.query(

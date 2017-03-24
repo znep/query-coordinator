@@ -44,7 +44,7 @@ class Notifications extends Component {
   }
 
   hideOnEscapeKeypress(event) {
-    if(event.keyCode == 27) {
+    if (event.keyCode === 27) {
       this.toggleList();
     }
   }

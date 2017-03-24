@@ -29,7 +29,7 @@ class Bell extends React.Component {
     return (
       <button
         styleName="button"
-        className="socrata-notifications-bell" 
+        className="socrata-notifications-bell"
         onClick={onClick}
         tabIndex="0"
         aria-haspopup="true"
@@ -50,7 +50,7 @@ Bell.propTypes = {
 Bell.defaultProps = {
   onClick: () => { },
   hasUnread: false,
-  label: "Product Updates"
+  label: 'Product Updates'
 };
 
 export default cssModules(Bell, styles);

@@ -70,6 +70,12 @@ module.exports = {
     ],
     loaders: [
       {
+        // Prevent lodash from putting itself on window.
+        // See: https://github.com/lodash/lodash/issues/2671
+        test: /node_modules\/lodash/,
+        loader: "imports?define=>undefined"
+      },
+      {
         loader: 'babel-loader?cacheDirectory',
         test: /\.js$/,
         exclude: /node_modules/

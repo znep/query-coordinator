@@ -1,0 +1,51 @@
+<%- grantable = @view.has_rights?(ViewRights::GRANT) -%>
+<div class="sharingForm commonForm">
+  <div class="formSection">
+    <%- if grantable -%>
+      <p>
+        <a class="button shareDatasetButton add" href="#share">
+          <span class="icon"></span>
+          <%= t('screens.ds.grid_sidebar.share.share_button_html') %>
+        </a>
+      </p>
+    <%- end -%>
+    <p class="formHeader">
+      <%= t('screens.ds.grid_sidebar.share.prompt_html', visibility: (@view.is_public? ? t('core.visibility.public') : t('core.visibility.private')), hide: ('hide' unless @view.is_shared?)) %>
+    </p>
+    <div class="sectionContent">
+      <ul class="itemsList">
+        <li class="loadingShares"><%= t('screens.ds.grid_sidebar.share.loading_shares') %>
+          <span class="loadingSharesIndicator"></span>
+        </li>
+      </ul>
+      <div class="noShares">
+        <p><%= t('screens.ds.grid_sidebar.share.no_shares_html') %></p>
+      </div>
+    </div>
+    <%- if @view.can_email? -%>
+      <p class="shareNotifyArea">
+        <a class="button shareNotifyLink" href="#notify">
+          <%= t('screens.ds.grid_sidebar.share.notify_button') %>
+        </a>
+        <span class="flash notice shareNoticeSent">
+          <%= t('screens.ds.grid_sidebar.share.notify_success') %>
+        </span>
+      </p>
+    <%- end -%>
+  </div>
+  <div class="flash sharingFlash"></div>
+</div>
+
+<ul class="sharesList">
+  <li class="line clearfix<%= ' noGrant' unless grantable %>">
+    <a href="#removeShare" class="removeShareLink remove" title="Remove">
+      <span class="icon"></span>
+    </a>
+    <span class="profileImage"></span>
+    <div class="nameWrapper"><span class="name"></span></div>
+    <%- if grantable -%>
+      <%= select_tag 'type', options_for_select(Share.types.map{ |type| [ t("core.share_types.#{type.downcase}"), type ] }), :class => 'type' %>
+    <%- end -%>
+    <span class="type readOnlyType"></span>
+  </li>
+</ul>

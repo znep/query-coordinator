@@ -1,0 +1,39 @@
+#
+# SCHEDULED DOWNTIME NOTIFICATIONS NO LONGER GO HERE!
+#
+# The way this file works is thus:
+# 1. frontend deploys, determining the location of this file.
+# 2. On every request, the before_filter ApplicationController#poll_downtime_config runs, testing mtime.
+# 3. Make a modification to metachef (see below).
+# 4. Every 20 minutes, metachef runs and updates the config/downtime.yml file.
+# 5. Step #2 catches this modification and updates its Downtime settings accordingly, displaying the message.
+#
+# The location of the downtime configuration is in metachef/environments.
+#  Pick the environment that needs a downtime notification.
+#  Look for a property under webapp.downtime_config.
+# As of this writing, all production environments (sea1 and azure) have such a config.
+#
+# message_start and message_end determine when to display the notification.
+# downtime_start and downtime_end determine the actual time of the downtime.
+# by convention we display messaging 48 hours in advance of the downtime and
+# turn off the messaging at the conclusion of the downtime.
+#
+# Example:
+#
+# production:
+#     message_start:  2014-01-23t17:00-08:00
+#     message_end:    2014-01-25t21:00:00-08:00
+#     downtime_start: 2014-01-25t17:00:00-08:00
+#     downtime_end:   2014-01-25t21:00:00-08:00
+#
+# Supports multiple notifications in an array:
+#
+# development:
+#     - message_start:  2014-08-06t00:00:00-08:00
+#       message_end:    2014-08-07t23:00:00-08:00
+#       downtime_start: 2014-08-07t00:00:00-08:00
+#       downtime_end:   2014-08-09t00:00:00-08:00
+#     - message_start:  2014-08-08t00:00:00-08:00
+#       message_end:    2014-08-10t23:00:00-08:00
+#       downtime_start: 2014-08-06t10:00:00-08:00
+#       downtime_end:   2014-08-10t12:00:00-08:00

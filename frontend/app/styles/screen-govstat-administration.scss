@@ -1,0 +1,36 @@
+// Overrides to make admin look a bit better in GovStat
+.leftNavBox {
+  display: none;
+}
+
+.contentBox {
+  background-color: transparent;
+  border: none;
+  &.withLeftNavigation {
+    margin-left: 0;
+  }
+  .adminHeader h1:before {
+    font-size: 2em;
+    margin-right: 0.3em;
+  }
+}
+
+.modalDialog {
+  border-color: $color_chrome_box_border;
+  @include box-shadow-none;
+  h2 {
+    color: $govstat_color_action;
+  }
+}
+
+#createCanvasPageContent .configuratorSettings {
+  .line.pageUrl {
+    display: none;
+  }
+  .createAction {
+    padding: {
+      bottom: 0.5em;
+      top: 0.5em;
+    };
+  }
+}

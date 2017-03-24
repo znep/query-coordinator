@@ -1,0 +1,18 @@
+<div id="catalog-landing-page-manage"></div>
+
+<%= content_for :head do %>
+  <%= rendered_stylesheet_tag('catalog-landing-page-manage') %>
+  <%= rendered_stylesheet_tag('asset-selector') %>
+  <%= rendered_stylesheet_tag('external-resource-editor') %>
+  <title><%= I18n.t('catalog_landing_page.manager.title', :category => @category) %> | <%= get_site_title %></title>
+<%- end %>
+
+<%= content_for :scripts do %>
+  <script src="/javascripts/plugins/lodash.js"></script>
+  <script>var I18n = I18n || {};</script>
+  <%= render_catalog_landing_page_translations %>
+  <%= render_catalog_landing_page_session_data %>
+  <%= render_catalog_landing_page_server_config %>
+  <%= render_catalog_landing_page_initial_state %>
+  <%= include_webpack_bundle 'catalog-landing-page/manage.js' %>
+<%- end %>

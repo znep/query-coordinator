@@ -1,0 +1,153 @@
+<div class="metricsSummaryItem">
+  <div class="summaryContainer">
+    <div class="summaryInnerContent">
+      <p class="summaryTitle"></p>
+      <div class="dynamicContent"></div>
+    </div>
+  </div>
+</div>
+
+<div class="metricsSummaryData">
+  <div class="deltaBox">
+    <span class="deltaCharacter"></span>
+    <span class="icon"></span>
+    <span class="deltaValue"></span>
+  </div>
+  <div class="totalValue"></div>
+</div>
+
+<div class="metricsSummaryDataV1">
+  <div class="percentBox">
+    <span class="icon"></span>
+    <span class="percentValue"></span>
+  </div>
+  <span class="deltaValue"></span>
+  <span class="totalWrapper">
+    <span class="totalValueWrapper">
+      of
+      <span class="totalValueV1"></span>
+    </span>
+    total
+  </span>
+</div>
+
+<div class="metricsSimpleSummaryData">
+  <div class="totalValue"></div>
+</div>
+
+<div class="metricsSimpleSummaryDataV1">
+  <span class="summaryValue">
+    <span class="deltaValue"></span>
+    total
+  </span>
+</div>
+
+<div class="metricsDeltaData">
+  <div class="percentBox">
+    <span class="icon"></span>
+    <span class="percentValue"></span>
+  </div>
+  <span class="summaryValue">
+    <span class="deltaValue"></span>
+  </span>
+</div>
+
+<div class="metricsCharts">
+  <div class="chartContainer">
+    <select class="sliceDepth" id="sliceDepth">
+      <%= options_for_select(['hourly', 'daily', 'weekly', 'monthly'].
+        map { |slice| [ t("screens.stats.#{slice}"), slice.capitalize ] }) %>
+    </select>
+    <div class="chartMenu menu"></div>
+    <div class="chartArea">
+      <div class="chartContent"></div>
+      <div class="flash notice message noDataNotice">
+        <h3><%= t('screens.stats.time_period_unavailable') %></h3>
+      </div>
+      <div class="flash notice message emptyHint">
+        <h3><%= t('screens.stats.select_chart_type') %></h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="metricsChartsV1">
+  <div class="chartContainer">
+    <div class="chartMenuContainer sliceDepthMenuContainer">
+      <label for="sliceDepth" class="chartMenuLabel"><%= t('screens.stats.view_granularity') %>:</label>
+      <select class="sliceDepth" id="sliceDepth">
+        <%= options_for_select(['hourly', 'daily', 'weekly', 'monthly'].
+          map { |slice| [ t("screens.stats.#{slice}"), slice.capitalize ] }) %>
+      </select>
+    </div>
+    <div class="chartMenuContainer chartSeriesMenuContainer">
+      <label class="chartMenuLabel" for="chartSeries"><%= t('screens.stats.view') %>:</label>
+      <select class="chartSeries" id="chartSeries"></select>
+    </div>
+    <div class="chartArea">
+      <div class="chartContent"></div>
+      <div class="flash notice message noDataNotice">
+        <h3><%= t('screens.stats.time_period_unavailable') %></h3>
+      </div>
+      <div class="flash notice message emptyHint">
+        <h3><%= t('screens.stats.select_chart_type') %></h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="metricsTopList">
+  <div class="metricsTopContainer">
+    <h2 class="sectionTitle"></h2>
+    <div class="flash notice message noDataNotice">
+      <h3><%= t('screens.stats.no_data_time_period') %></h3>
+    </div>
+    <table class="gridList metricsList" cellspacing="0">
+      <colgroup>
+        <col class="description" />
+        <col class="value" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="description row-header" scope="col">
+            <span class="icon"></span>
+            <div><%= t('screens.stats.name') %></div>
+          </th>
+          <th class="value" scope="col">
+            <span class="icon"></span>
+            <span class="valueHeading"></span>
+          </th>
+        </tr>
+      </thead>
+    </table>
+    <div class="showMore">
+      <a class="showMoreLink" href="#More"><%= t('screens.stats.show_more') %></a>
+      <span class="icon"></span>
+    </div>
+  </div>
+</div>
+
+<table class="metricsTopItem">
+  <tr class="item">
+    <th class="description row-header" scope="row">
+      <div class="primary">
+        <img class="thumbnail" alt="" />
+        <a href="#" class="titleLink" rel="external"><span class="titleText primaryValue"></span></a>
+      </div>
+      <div class="subLinksContainer subContainer">
+        <div class="subLinks subItemBox">
+          <a href="#" class="subLink" rel="external"></a>
+        </div>
+      </div>
+    </th>
+    <td class="value">
+      <div class="primary"></div>
+      <span class="primaryValue"></span>
+      <div class="subValuesContainer subContainer">
+        <div class="subValues subItemBox">
+          <span class="subValue"></span>
+        </div>
+      </div>
+    </td>
+  </tr>
+</table>

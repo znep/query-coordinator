@@ -1,0 +1,3 @@
+{
+  "extends": "../../../node_modules/eslint-base/.eslintrc-airbnb.json"
+}

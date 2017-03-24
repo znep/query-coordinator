@@ -1,0 +1,59 @@
+<% content_for :head do %>
+  <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
+  <%- if @view -%>
+    <link rel="canonical" href="<%= view_path(@view) %>"/>
+  <%- end -%>
+
+  <title><%= @view.name %> | <%= get_site_title %></title>
+
+  <%# This is always a form, so hard-code the stylesheet %>
+  <%= rendered_stylesheet_tag 'display-form' %>
+<% end %>
+
+<%- if @view.display.valid? -%>
+  <%- if @display.can_publish? -%>
+    <%= render(:partial => @display.render_partial) if @display.render_partial %>
+  <%- end -%>
+<%- else -%>
+  <div class="viewErrorContainer content">
+    <%- if current_user && current_user.id == @view.owner.id -%>
+    <div class="viewError"><%= @view.message %></div>
+    <ul class="actionButtons clearfix">
+      <li><a href="<%= view_path(@view) %>" rel="external"
+        class="arrowButton">Edit View</a></li>
+    </ul>
+    <%- else -%>
+    <div class="viewError">Unable to display this view.</div>
+    <%- end -%>
+  </div>
+<%- end -%>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    $(function()
+    {
+      $('select, input:checkbox, input:radio, input:file').uniform();
+
+      $('input[type=submit]').replaceWith(
+        $.tag({ tagName: 'a', 'class': 'submit button', href: '#submit', contents:[
+                { tagName: 'span', 'class': 'left' },
+                { tagName: 'span', 'class': 'icon' },
+                'Submit' ] })
+      );
+
+      $.live('a.submit', 'click', function(event)
+      {
+        event.preventDefault();
+        $(this).closest('form').submit();
+      });
+    });
+  </script>
+
+  <%- unless @theme[:behavior][:ga_code].empty? -%>
+    <script type="text/javascript">
+    try {
+    var pageTracker2 = _gat._getTracker("<%= @theme[:behavior][:ga_code] %>");
+    pageTracker2._trackPageview();
+    } catch(err) {}</script>
+  <%- end -%>
+<% end %>

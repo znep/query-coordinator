@@ -1,0 +1,85 @@
+<%- prefix = 'screens.thumbnail' %>
+<% content_for :head do %>
+  <%- if params[:strip_chrome].present? -%>
+    <%= rendered_stylesheet_tag 'strip-chrome' %>
+  <%- end -%>
+  <%= rendered_stylesheet_tag 'dataset-thumbnail' %>
+  <title><%= t("#{prefix}.title") %> | <%= get_site_title %></title>
+<% end %>
+
+<div class="contentBox fixedWidth" id="datasetThumbnail">
+  <div class="thumbnailEditContainer clearfix">
+    <%- unless params[:strip_chrome].present? -%>
+      <h1><%= t("#{prefix}.edit_thumbnail", :name => @view.name) %></h1>
+      <a href="<%= view_path(@view) %>" class="returnLink"><%= t("#{prefix}.return_to_dataset") %></a>
+    <%- end -%>
+
+    <%= display_standard_flashes %>
+
+    <div class="invalidMessage flash">
+    </div>
+    <div id="fullThumbnail" class="loading">
+
+      <form class="commonForm actionsForm">
+        <div class="line">
+          <div class="saveStatus">
+            <span class="saving"></span>
+            <span class="flash saveMessage"></span>
+          </div>
+          <%= link_to t("#{prefix}.save_thumbnail"), '#save', {:class => 'button default disabled savePreviewButton'} %>
+          <%- unless params[:strip_chrome].present? -%>
+            <%= link_to t("#{prefix}.discard_changes"), view_path(@view), {:class => 'button'} %>
+          <%- end -%>
+        </div>
+      </form>
+      <div class="refreshThumbnail">
+        <a href="#refresh" class="button refresh"><%= t("#{prefix}.refresh_thumbnail") %></a>
+        <span class="throbber"></span>
+      </div>
+
+      <div class="flash error mainError">
+        <%= t("#{prefix}.error_processing") %>
+      </div>
+
+      <div class="thumbnailPresent">
+        <div id="previewContainer">
+
+          <h2><%= t("#{prefix}.preview") %></h2>
+          <div id="previewThumbnailWrapper">
+            <div id="previewThumbnail">
+            </div>
+            <div class="datasetDescription">
+              <h4><%= @view.name %></h4>
+            </div>
+          </div>
+
+          <div class="flash warning unsavedWarning"><%= t("#{prefix}.unsaved") %></div>
+
+        </div>
+
+        <h2><%= t("#{prefix}.full_image") %></h2>
+        <div class="fullThumbContainer">
+          <div class="loading"></div>
+          <div class="image"></div>
+        </div>
+
+
+      </div>
+
+      <div class="noThumbnail">
+        <div class="flash warning pleaseWait">
+          <%= t("#{prefix}.please_wait") %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    <%# So we have the blist.dataset object %>
+    <%= raw @view.display.render_dataset_setup_js %>
+  </script>
+  <%= include_webpack_bundle 'open-data/screen-dataset-thumbnail.js' %>
+<% end %>
+<%= render_translations LocalePart.screens.thumbnail %>

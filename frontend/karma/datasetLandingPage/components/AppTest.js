@@ -1,0 +1,103 @@
+import App from 'App';
+import $ from 'jquery';
+import mockView from 'data/mockView';
+import mockFeaturedItem from 'data/mockFeaturedItem';
+import mockRelatedView from 'data/mockRelatedView';
+import { getDefaultStore } from 'testStore';
+import datasetLandingPage from 'reducers';
+import { createStore } from 'redux';
+import { FeatureFlags } from 'socrata-utils';
+
+describe('App', function() {
+  before(function() {
+    FeatureFlags.useTestFixture();
+  });
+
+  function getProps(props) {
+    return _.defaultsDeep({}, props, {
+      view: mockView
+    });
+  }
+
+  function getStore(state) {
+    window.initialState = _.defaultsDeep({}, state, {
+      view: mockView,
+      relatedViews: [mockRelatedView],
+      featuredContent: [mockFeaturedItem]
+    });
+
+    return createStore(datasetLandingPage);
+  }
+
+  describe('when rendering a dataset', function() {
+    var originalSocrataTable;
+
+    beforeEach(function() {
+      originalSocrataTable = $.fn.socrataTable;
+      $.fn.socrataTable = sinon.stub();
+    });
+
+    afterEach(function() {
+      $.fn.socrataTable = originalSocrataTable;
+    });
+
+    var element;
+
+    beforeEach(function() {
+      element = renderComponentWithStore(App, {}, getStore());
+    });
+
+    it('does not render BlobPreview', function() {
+      expect(element.querySelector('.blob-preview')).to.not.exist;
+    });
+
+    it('does not render BlobDownload', function() {
+      expect(element.querySelector('.blob-download')).to.not.exist;
+    });
+
+    it('renders RowDetails', function() {
+      expect(element.querySelector('.dataset-contents')).to.exist;
+    });
+
+    it('renders SchemaPreview', function() {
+      expect(element.querySelector('.schema-preview')).to.exist;
+    });
+  });
+
+  describe('when rendering a blob', function() {
+    var element;
+
+    beforeEach(function() {
+      var storeState = {
+        view: {
+          isBlobby: true,
+          blobType: 'image',
+          blobId: 'guid',
+          blobFilename: 'kitten.tiff'
+        }
+      };
+
+      element = renderComponentWithStore(App, {}, getStore(storeState));
+    });
+
+    it('renders BlobPreview', function() {
+      expect(element.querySelector('.blob-preview')).to.exist;
+    });
+
+    it('renders BlobDownload', function() {
+      expect(element.querySelector('.blob-download')).to.exist;
+    });
+
+    it('does not render RowDetails', function() {
+      expect(element.querySelector('.dataset-contents')).to.not.exist;
+    });
+
+    it('does not render SchemaPreview', function() {
+      expect(element.querySelector('.schema-preview')).to.not.exist;
+    });
+
+    it('does not render DatasetPreview', function() {
+      expect(element.querySelector('.dataset-preview')).to.not.exist;
+    });
+  });
+});

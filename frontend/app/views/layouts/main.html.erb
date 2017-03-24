@@ -1,0 +1,339 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<!--[if IE 8]>
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%= I18n.locale %>" lang="<%= I18n.locale %>"
+        xmlns:v="urn:schemas-microsoft-com:vml"
+        xmlns:og="http://opengraphprotocol.org/schema/" class="ie ie8 noBorderRadius noLinearGradient noCss3"><![endif]-->
+<!--[if gte IE 9]>
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%= I18n.locale %>"
+        xmlns:v="urn:schemas-microsoft-com:vml"
+        xmlns:og="http://opengraphprotocol.org/schema/" lang="<%= I18n.locale %>" class="ie"><![endif]-->
+<!--[if !IE]>-->
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%= I18n.locale %>" lang="<%= I18n.locale %>"
+        xmlns:og="http://opengraphprotocol.org/schema/"><!--<![endif]-->
+
+<!--
+Powered by the Socrata Open Data Platform
+http://www.socrata.com
+-->
+
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <%= meta_tags @meta unless @meta.blank? %>
+  <%= csrf_meta_tags %>
+  <%= canary_warning %>
+  <%- if is_mobile? -%>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <%- end -%>
+
+  <%- unless @link_image_src.blank? -%>
+    <link rel="image_src" href="<%= @link_image_src %>" />
+  <%- end -%>
+  <link rel="apple-touch-icon-precomposed" media="screen" href="/stylesheets/images/icons/retina_display_icon.png?<%= asset_revision_key %>"/>
+  <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="<%= get_site_title %>" />
+  <%= auto_discovery_link_tag(:rss, '/catalog.rss', :title => 'Subscribe to Datasets') %>
+
+  <!--[if IE]>
+  <style type="text/css">
+    v\:vmlframe{behavior:url(#default#VML);display:inline-block;}
+  </style>
+  <![endif]-->
+  <%= rendered_stylesheet_tag 'base' %>
+
+    <%- if module_enabled?(:govStat) -%>
+      <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-pika.css?<%= asset_revision_key %>"/>
+    
+
+      <%- if suppress_govstat? -%>
+        <%= rendered_stylesheet_tag 'govstat-base' %>
+      <%- else -%>
+        <%= rendered_stylesheet_tag 'govstat-layout' %>
+      <%- end -%>
+    <%- end -%>
+
+  <%= rendered_stylesheet_tag 'print', 'print' %>
+
+  <%= jquery_include %>
+  <%= javascript_error_helper_tag %>
+
+  <%= yield :head %>
+
+  <%= font_tags %>
+
+  <%- if apply_custom_css? -%>
+    <link type="text/css" media="all" rel="stylesheet" href="/styles/current_site.css?<%= asset_revision_key %>"/>
+  <%- end -%>
+
+  <%- if !CurrentDomain.properties.govstat_css.blank? && module_enabled?(:govStat) -%>
+    <link type="text/css" media="all" rel="stylesheet" href="/styles/govstat_site.css?<%= asset_revision_key %>"/>
+  <%- end -%>
+
+  <%= render_ga_tracking %>
+
+  <%= render :partial => 'templates/mixpanel_tracking' %>
+
+  <%= get_favicon_tag %>
+
+  <%- if enable_site_chrome? || enable_govstat_chrome? -%>
+    <%= site_chrome_meta_viewport_tag %>
+    <%= site_chrome_google_analytics_tag %>
+    <%= site_chrome_stylesheet_tag %>
+  <%- end -%>
+
+  <%- if FeatureFlags.derive(@view, request).browse_autocomplete -%>
+    <%#
+      Note that when this bundle is included it automatically replaces the header/footer search box
+    %>
+    <%= include_webpack_bundle 'autocomplete/main.js' %>
+  <%- end -%>
+
+</head>
+
+<body class="<%= body_classes %>" data-locale="<%= I18n.locale %>" data-defaultlocale="<%= CurrentDomain.default_locale %>">
+  <div class="skip-links">
+    <% skiplink_content = render_text_template('{{urls.skiplinks}}') %>
+    <% if skiplink_content.present? %><ul><%= skiplink_content %></ul><% end %>
+    <a href="#content">Skip to main content</a>
+    <a href="#footerLinks">Skip to footer links</a>
+    <%= yield :skip_links %>
+  </div>
+
+  <%= yield :body_top %>
+
+  <div class="siteOuterWrapper">
+    <div class="siteInnerWrapper <%= if FeatureFlags.derive(@view, request).show_govstat_header && enable_govstat_chrome? then "with-govstat-header" else "" end %> ">
+
+      <%- if render_site_admin_chrome? -%>
+        <%== site_chrome_admin_header(request, response) %>
+      <%- end -%>
+
+      <%- if render_site_chrome? -%>
+        <%== site_chrome_header(request, response, :size => site_chrome_size) %>
+
+        <div id="noticeContainer">
+          <%== display_homepage_flashes %>
+        </div>
+      <%- end -%>
+
+      <%- if render_legacy_chrome? -%>
+        <div id="siteHeader" class="clearfix" role="banner">
+          <%= render_domain_template(@page_custom_header || 'header_full') %>
+        </div>
+
+        <div id="noticeContainer">
+          <%== display_homepage_flashes %>
+        </div>
+      <%- end -%>
+
+      <%- if content_for?(:relocated_content) -%>
+        <%- yield :relocated_content -%>
+      <%- else -%>
+        <a name="content" tabindex="-1"></a>
+      <%- end -%>
+
+      <%- unless enable_govstat_chrome? -%>
+        <%= render_domain_template(@page_custom_chrome || 'content_chrome') %>
+      <%- end -%>
+
+      <%- if @suppress_content_wrapper -%>
+        <%= yield :layout %>
+      <%- else -%>
+        <div class="siteContentWrapper" role="main">
+          <%= yield :layout %>
+        </div>
+      <%- end -%>
+    </div>
+  </div>
+
+  <%- if render_site_chrome? -%>
+    <%== site_chrome_footer(request, response, :size => site_chrome_size) %>
+  <%- end -%>
+
+  <%- if render_legacy_chrome? -%>
+    <div id="siteFooter" role="contentinfo">
+      <a name="footerLinks" tabindex="-1"></a>
+      <%= render_domain_template(@page_custom_footer || 'footer_full') %>
+    </div>
+  <%- end -%>
+
+  <%# socrata modal fragment to supercede jqm %>
+  <div class="socrataModal"><div class="socrataModalWrapper"></div></div>
+
+  <%#
+  Better to load JS at the bottom:
+  http://developer.yahoo.com/performance/rules.html#js_bottom
+  %>
+
+  <script type="text/template" id="templates">
+    <%= render :partial => 'shared/control_templates' %>
+    <%= yield :templates %>
+
+    <%= modal :id => 'jqmAlert' do %>
+      <h2>Alert</h2>
+      <p class="alertMessage"></p>
+      <ul class="actions clearfix">
+        <li><a href="#close" class="button jqmClose">Close</a></li>
+      </ul>
+    <%- end -%>
+    <%= modal :id => 'jqmConfirm' do %>
+      <h2>Alert</h2>
+      <p class="confirmMessage"></p>
+      <ul class="actions clearfix">
+        <li><a href="#close" class="button jqmClose default yes">Yes</a></li>
+        <li><a href="#close" class="button jqmClose no">No</a></li>
+      </ul>
+    <%- end -%>
+  </script>
+  <div id="js-appended-templates" style="display: none" aria-hidden="true"></div>
+  <%= render_translations %>
+  <%= yield :translations %>
+
+  <%# Libraries for use with BeautyTip %>
+  <!--[if IE]>
+  <%= include_webpack_bundle 'open-data/excanvas.js' %>
+  <![endif]-->
+  <!--[if lt IE 9]>
+  <%= include_webpack_bundle 'open-data/oldie.js' %>
+  <![endif]-->
+
+  <%# Inject the download types, filtered via feature flag, before the templates.js file is loaded %>
+  <script type="text/javascript">
+    var blist = blist || {};
+    blist.configuration = blist.configuration || {};
+    blist.configuration.normalDownloadTypes = <%= raw json_escape(normal_download_types.to_json) %>;
+    blist.configuration.dataset_landing_page_enabled = <%= dataset_landing_page_enabled? %>;
+    blist.configuration.webpackManifest = <%= raw Rails.configuration.webpack[:asset_manifest].to_json %>;
+    blist.configuration.assetRevisionKey = '<%= asset_revision_key %>';
+    blist.configuration.development = <%= Rails.env.development? %>;
+  </script>
+
+  <%= include_webpack_bundle 'open-data/base.js' %>
+  <%- if module_enabled?(:govStat) -%>
+  <%= include_webpack_bundle 'open-data/new-base.js' %>
+  <%- end -%>
+
+  <%= render_view_js %>
+
+  <%- if !Rails.env.end_with?('production') -%>
+    <%= include_webpack_bundle 'open-data/debug.js' %>
+  <%- else -%>
+    <script type="text/javascript">
+      $.debug = function() {};
+    </script>
+  <%- end -%>
+
+  <%= render 'shared/current_user_blist_js' %>
+
+  <script type="text/javascript">//<![CDATA[
+    blist.rights = { user: <%= raw UserRights.to_h.to_json %>, view: <%= raw ViewRights.to_h.to_json %> };
+    blist.feature_flags = <%= raw json_escape(FeatureFlags.derive(@view, request).to_json) %>;
+    blist.namespace.fetch('blist.configuration');
+    blist.configuration.strings = <%= safe_json(CurrentDomain.strings) %>;
+    blist.configuration.logging = <%= ENV.fetch('JS_LOGGING', false) %>;
+    blist.requestId = '<%= request_id %>';
+    blist.sessionId = '<%= safe_session_id %>';
+    blist.requestIp = '<%= request_ip_address %>';
+
+
+    blist.configuration.maintenance_messages = _.map(<%== Downtime.map(&:to_json) %>,
+        function(item) {
+          var data = JSON.parse(item);
+          var cookieName = 'maintenance_ack';
+          var dataHash = data.display_start || data.display_finish;
+          return $.extend(data, {
+            acknowledge: function() {
+              var ackList = JSON.parse($.cookies.get(cookieName) || '[]');
+              ackList.push(dataHash);
+              $.cookies.set(cookieName, JSON.stringify(ackList));
+            },
+            htmlClasses: [ 'notice' ],
+            shouldDisplay: function() {
+              var ackList = JSON.parse($.cookies.get(cookieName) || '[]');
+              if (_.include(ackList, dataHash)) {
+                return false;
+              }
+              var rightNow = moment();
+              // Yes, there is an isBetween, but it's moment-2.9.0+.
+              var shouldDisplay = moment(data.display_start * 1000).isBefore(rightNow)
+                               && moment(data.display_finish * 1000).isAfter(rightNow);
+              return shouldDisplay;
+            }
+          });
+        });
+
+    <%- unless @suppress_chrome -%>
+    try {
+      if ((self !== top) && (self.location.hostname !== top.location.hostname))
+        top.location = self.document.location;
+    } catch(ex) {
+      top.location = self.document.location;
+    }
+    <%- end -%>
+
+    blist.configuration.googleMapsApiKey = '<%= GOOGLE_MAPS_SITE_KEY %>';
+
+    <%- if module_enabled?(:govStat) -%>
+      // Setup GovStat Account Link setup to run after the current user has been loaded
+      // using a callback which is checked in all-screens.js.
+      blist.configuration.govstat_links_cb = function(user)
+      {
+      <%- unless suppress_govstat? -%>
+        var $siteLinks = $('#siteHeader .siteUserNav');
+        var contents = [];
+        $siteLinks.find('li a:visible').each(function()
+        {
+          var $a = $(this);
+          contents.push({ className: $a[0].className, text: $a.text(), href: $a.attr('href'),
+            rel: $a.attr('rel'), title: $a.attr('title') });
+        });
+        $siteLinks.remove();
+        $siteLinks = $.tag2({_: 'div', className: ['siteUserNav', 'menu']});
+        $('#siteHeader').append($siteLinks);
+        var menu_style = user === undefined ? 'user' : 'list';
+        $siteLinks.menu({ menuButtonClass: 'accountButton ss-user',
+          menuButtonContents: user === undefined ? $.t('govstat.chrome.header.links.account') : user.displayName,
+          menuButtonTitle: $.t('govstat.chrome.header.links.account_options'), contents: contents });
+      <%- end -%>
+      };
+      // We can generally count that main js is evaled before all-screens, but
+      // just in case:
+      if (blist.configuration.onCurrentUserComplete !== undefined)
+      {
+        // The user loading code was loaded before main; make sure this is properly
+        // called.
+        blist.configuration.onCurrentUserComplete(blist.configuration.govstat_links_cb)
+      }
+    <%- end -%>
+  //]]></script>
+
+  <%- if enable_site_chrome? || enable_govstat_chrome? -%>
+    <%= site_chrome_javascript_tag %>
+  <%- end -%>
+
+  <div id="modals">
+    <%= yield :modals %>
+  </div>
+  <div id="newModals">
+    <%= yield :new_modals %>
+  </div>
+
+  <%= yield :js_footer %>
+  <%= render_jquery_ui_translations %>
+
+  <%- unless CurrentDomain.theme.js.nil? -%>
+    <%- if CurrentDomain.theme.js[:type].to_s == 'static' -%>
+      <script type="text/javascript" src="<%= CurrentDomain.theme.js.source %>?<%= asset_revision_key %>"></script>
+    <%- elsif CurrentDomain.theme.js[:type].to_s == 'hosted' -%>
+      <script type="text/javascript" src="/assets/<%= CurrentDomain.theme.js.source %>?<%= asset_revision_key %>"></script>
+    <%- end -%>
+  <%- end -%>
+
+  <%# we don't trust custom tracking code to be nonblocking like the async
+      GA, so put it down here. %>
+  <% unless CurrentDomain.custom_tracking_code.blank? %>
+    <%= raw CurrentDomain.custom_tracking_code %>
+  <% end %>
+</body>
+</html>

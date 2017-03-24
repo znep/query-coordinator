@@ -1,0 +1,114 @@
+{
+  "title": "",
+  "default_homepage": true,
+  "default_styles": true,
+  "contents": [{
+    "data": {
+      "type": "data_splash"
+    },
+    "id_prefix": "Canvas1",
+    "elem_id": "Canvas1_DataSplash",
+    "properties": {}
+  }, {
+    "data": {
+      "type": "stories",
+      "properties": {
+        "fromDomainConfig": true
+      }
+    },
+    "id_prefix": "Canvas2",
+    "elem_id": "Canvas2_Stories",
+    "properties": {
+      "pager": {
+        "position": "center",
+        "type": "bullets",
+        "disposition": "light"
+      },
+      "orientation": "left",
+      "height": {
+        "value": 25,
+        "unit": "em"
+      },
+      "box": {
+        "headline": {
+          "color": "f7f7f7",
+          "font_family": "Georgia",
+          "shadow": {
+            "alpha": 0.6,
+            "radius": {
+              "value": 3,
+              "unit": "px"
+            }
+          },
+          "font_size": {
+            "value": 1.8,
+            "unit": "em"
+          }
+        },
+        "body": {
+          "color": "dddddd",
+          "font_family": "Helvetica Neue",
+          "shadow": {
+            "alpha": 0.3,
+            "radius": {
+              "value": 2,
+              "unit": "px"
+            }
+          },
+          "font_size": {
+            "value": 1.4,
+            "unit": "em"
+          }
+        },
+        "color": "000000",
+        "shadow": 0,
+        "width": {
+          "value": 35,
+          "unit": "em"
+        },
+        "alpha": 0.8,
+        "margin": {
+          "value": 1,
+          "unit": "em"
+        }
+      },
+      "autoAdvance": 7,
+      "fromDomainConfig": true
+    }
+  }, {
+    "_routes": null,
+    "data": {
+      "type": "featured_views",
+      "properties": {
+        "fromDomainConfig": true
+      }
+    },
+    "id_prefix": "Canvas3",
+    "elem_id": "Canvas3_FeaturedViews",
+    "properties": {
+      "featured_views": [],
+      "fromDomainConfig": true
+    }
+  }, {
+    "data": {
+      "type": "catalog",
+      "properties": {
+        "browseOptions": {
+          "base_url": "/browse",
+          "suppress_dataset_creation": true
+        }
+      }
+    },
+    "id_prefix": "Canvas4",
+    "elem_id": "Canvas4_Catalog",
+    "properties": {
+      "browseOptions": {
+        "ignore_params": ["page_name", "facet_name", "facet_value"],
+        "base_url": "/browse",
+        "suppress_dataset_creation": true
+      },
+      "facetStyle": "metadata",
+      "respectFacet": true
+    }
+  }]
+}

@@ -1,0 +1,75 @@
+daemon on;
+
+error_log /mnt/mesos/sandbox/nginx-error.log warn;
+
+# Should be 2 x CPUs
+worker_processes {{NGINX_WORKER_PROCESSES | default(14)}};
+
+# Should be somewhat more (how much?) than the number of Unicorn workers
+events {
+  worker_connections {{NGINX_WORKER_CONNECTIONS | default(512)}};
+}
+
+# Should be similar to the number of worker connections but should be no more than 0.5 * ulimit -n
+worker_rlimit_nofile {{NGINX_WORKER_RLIMIT_NOFILE | default(512)}};
+
+http {
+  client_body_temp_path /tmp/;
+  access_log /mnt/mesos/sandbox/nginx-access.log;
+  sendfile on;
+  sendfile_max_chunk 1m;
+  tcp_nopush on;
+  tcp_nodelay on;
+  include /opt/frontend/config/mime.types;
+
+  proxy_buffers 8 16k;
+  proxy_buffer_size 32k;
+  proxy_read_timeout {{NGINX_PROXY_READ_TIMEOUT_MINUTES | default(5)}}m;
+
+  server {
+    listen 3000 default deferred;
+    root /opt/frontend/public;
+
+    location ^~ /packages/ {
+      gzip_static on;
+      expires 1h;
+      add_header Cache-Control public;
+    }
+
+    location ^~ /javascripts/ {
+      gzip_static on;
+      expires 1h;
+      add_header Cache-Control public;
+    }
+
+    location ^~ /stylesheets/ {
+      gzip_static on;
+      expires 1h;
+      add_header Cache-Control public;
+    }
+
+    location ^~ /images/ {
+      gzip_static on;
+      expires 1h;
+      add_header Cache-Control public;
+    }
+
+    location ^~ /asset_pipeline/ {
+      gzip_static on;
+      expires 1h;
+      add_header Cache-Control public;
+    }
+
+    location / {
+      proxy_pass http://localhost:3333;
+
+      proxy_set_header X-Forwarded-For $http_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;
+      proxy_set_header Host $http_host;
+
+      proxy_http_version 1.1;
+    }
+
+    keepalive_timeout 10;
+  }
+}

@@ -1,0 +1,102 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-sdp-templates' %>
+  <title><%= t('screens.admin.sdp.listing.default_title') %> | <%= get_site_title %></title>
+<% end %>
+
+<% content_for :skip_links do %>
+  <%= link_to t('core.no_js'), '?no_js=true' %>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div class="contentBox withLeftNavigation">
+  <div class="adminHeader appearance">
+    <a href="#new" class="newTemplateButton button"><%= t('screens.admin.sdp.listing.create_new_template') %></a>
+    <span class="icon"></span>
+    <h1><%= t('screens.admin.sdp.listing.default_title') %></h1>
+  </div>
+
+  <%= display_standard_flashes %>
+
+  <div class="gridListWrapper">
+    <table class="gridList templatesList" cellspacing="0">
+      <colgroup>
+        <col class="name" />
+        <col class="preview" />
+        <col class="actions" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="name" scope="col"><div><%= t('screens.admin.sdp.listing.name') %></div><span class="icon"></span></th>
+          <th class="preview" scope="col"><div><%= t('screens.admin.sdp.listing.preview') %></div></th>
+          <th class="actions" scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <%- @templates.sort{ |a, b| a.name.downcase <=> b.name.downcase }.each do |template| -%>
+          <tr data-templateid="<%= template.uid %>">
+            <td class="name" scope="row"><span class="cellInner"><%= template.name %></span></td>
+            <td class="preview">
+              <div class="previewOuter">
+                <div class="loadingOverlay">
+                  <div class="loadingBackground"></div>
+                  <div class="loadingMessage"><span class="icon"></span><%= t('screens.admin.sdp.listing.loading') %></div>
+                </div>
+                <div class="previewLogo"></div>
+                <div class="previewSubheader"></div>
+                <div class="previewGrid">
+                  <div class="previewGridZebra"></div>
+                </div>
+                <div class="previewNotAvailable">
+                  <p><%= t('screens.admin.sdp.listing.errors.outdated_template') %></p>
+                </div>
+              </div>
+            </td>
+            <td class="actions<%= ' isDefault' if (template.uid == @default_template_id) %>">
+              <span class="defaultText"><%= t('screens.admin.sdp.listing.current_default') %></span>
+              <span class="loading"></span>
+              <%= form_button({ :action => 'sdp_set_default_template', :id => template.uid}, t('screens.admin.sdp.listing.make_default'),
+                   {:method => :put}, {:class => 'button makeDefaultButton'}) %>
+              <!-- The disabled class makes the button grey. The disabled attribute takes the button out of tab order. -->
+              <%= form_button({ :action => 'sdp_delete_template', :id => template.uid}, t('screens.admin.sdp.listing.delete'),
+                             {:method => :delete}, {:class => 'button deleteTemplateButton' +
+                                                    (template.uid == @default_template_id ? ' disabled' : '')}
+                                                   .merge(template.uid == @default_template_id ? {disabled: ''} : {})) %>
+              <a href="sdp_templates/<%= template.uid %>" class="button">
+                <span class="icon"></span><%= t('screens.admin.sdp.listing.edit') %>
+              </a>
+            </td>
+          </tr>
+        <%- end -%>
+      </tbody>
+    </table>
+  </div>
+
+  <%- if @templates.empty? -%>
+    <p class="noResultsMessage"><%= t('screens.admin.sdp.listing.errors.no_templates') %></p>
+  <%- end -%>
+</div>
+
+<%= render_admin_qualtrics %>
+
+<% content_for :modals do %>
+  <%= render :partial => 'widgets/new_sdp_template' %>
+<% end %>
+
+<% content_for :js_footer do %>
+  <%- unless params[:no_js].present? -%>
+    <script type="text/javascript">
+      blist.namespace.fetch('blist.sdpTemplates');
+
+      blist.sdpTemplates.templates = <%= raw json_escape(@templates.to_json) %>;
+    </script>
+
+    <%= include_webpack_bundle 'open-data/admin-sdp-templates.js' %>
+  <%- end -%>
+<% end %>
+
+<% content_for :translations do %>
+  <%= render_translations LocalePart.screens.ds %>
+  <%= render_translations LocalePart.screens.admin.sdp %>
+<% end %>

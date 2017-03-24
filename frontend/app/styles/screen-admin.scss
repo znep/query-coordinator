@@ -1,0 +1,147 @@
+.siteInnerWrapper {
+  max-width: 100%;
+}
+
+.adminNavBox {
+  .hideButtonBox {
+    display: none;
+    float: right;
+    .hideButton {
+      @include sprite-menu-icons;
+    }
+  }
+  .adminNav {
+    li {
+      @include admin-icons;
+    }
+  }
+  &.collapsed {
+    height: 1.3em;
+    padding: 0.5em;
+    width: 1.3em;
+    .adminNav {
+      display: none;
+    }
+  }
+}
+
+.contentBox {
+  .adminHeader {
+    border-bottom: 1px solid $color_chrome_box_border;
+    @include admin-header-icons;
+    padding: 1em 1em 0.9em 1em;
+    margin-bottom: 1em;
+    margin-right: -0.4em;
+    &.floating {
+      border-bottom: 0;
+      margin-bottom: 0;
+    }
+    .icon {
+      float: left;
+      margin-right: 1em;
+    }
+    h1 {
+      display: inline-block;
+      line-height: 32px;
+      &.floating {
+        float: left;
+      }
+    }
+    .asset_inventory_link_wrapper {
+      cursor: pointer;
+      position: relative;
+      display: inline-block;
+      float: right;
+
+      .asset_inventory_link_hover_window {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+      }
+    }
+  }
+  .gridList {
+    form {
+      display: inline;
+    }
+  }
+}
+
+#adminContent {
+  a.button {
+    font-size: 1em;
+  }
+}
+
+.layoutConfig {
+  border-top: 1px solid $color_chrome_box_border;
+  margin: {
+    bottom: 1em;
+    top: 2em;
+  };
+  .commonForm {
+    margin-top: 1em;
+    .line {
+      position: relative;
+      .mainLabel {
+        font-size: 1.3em;
+        font-weight: bold;
+        left: 0;
+        position: absolute;
+        top: 0.2em;
+      }
+      .valueBox {
+        display: block;
+        float: none;
+        margin-left: 18em;
+        label {
+          padding-left: 0;
+        }
+      }
+      .statusTextWrapper {
+        position: absolute;
+        top: 0.5rem;
+        left: 20rem;
+        display: none;
+        font: {
+          size: 1.1em;
+          weight: bold;
+        };
+
+        .saved {
+          color: #999999;
+        }
+        .saving, .saved {
+          display: none;
+        }
+        .saving .icon {
+          @include throbber-icon;
+          margin-right: 0.5rem;
+          display: inline-block;
+          float: left;
+        }
+      }
+    }
+    input[type='submit'] {
+      margin: {
+        left: 16.7em;
+        top: 0.5em;
+      };
+    }
+  }
+}
+
+.button:focus, input:focus.submit {
+  outline: 1px double;
+}
+
+.datasetsList {
+  .createDatasetBox {
+    height: 1.2em;
+    .buttonContainer {
+      margin-top: 0.8em;
+    }
+  }
+}

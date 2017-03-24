@@ -1,0 +1,222 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-home' %>
+  <title><%= t('screens.admin.home.title') %> | <%= get_site_title %></title>
+<% end %>
+
+<% content_for :skip_links do %>
+  <%= link_to t('core.no_js'), '?no_js=true' %>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div class="contentBox withLeftNavigation homeManagement">
+  <div class="adminHeader homemgmt">
+    <span class="icon"></span>
+    <h1><%= t('screens.admin.home.title') %></h1>
+  </div>
+</div>
+
+<%- if CurrentDomain.user_can?(current_user, UserRights::MANAGE_STORIES) -%>
+<div class="contentBox withLeftNavigation">
+  <a href="<%= url_for :action => :new_story %>" class="button newButton newStoryButton rightArrow"><%= t('screens.admin.home.create_new_story') %><span class="icon"></span></a>
+  <h2><%= t('screens.admin.home.manage_story_content') %></h2>
+
+  <%= display_standard_flashes %>
+
+  <div class="gridListWrapper">
+    <table class="gridList storiesList" cellspacing="0">
+      <colgroup>
+        <col class="image" />
+        <col class="contents" />
+        <col class="date" />
+        <col class="actions" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="image" scope="col"><div><%= t('screens.admin.home.image') %></div></th>
+          <th class="contents" scope="col"><div><%= t('screens.admin.home.contents') %></div><span class="icon"></span></th>
+          <th class="date" scope="col"><div><%= t('screens.admin.home.date_published') %></div><span class="icon"></span></th>
+          <th class="actions" scope="col"><div></div></th>
+        </tr>
+      </thead>
+      <tbody>
+        <%- @stories.each_with_index do |story, index| -%>
+          <tr>
+            <td class="image" scope="row">
+              <div class="imagePreview"><div class="imagePreviewWrapper">
+                <img src="/assets/<%= story.imageId %>" alt="<%= story.headline %>"/>
+              </div></div>
+            </td>
+            <td class="contents">
+              <div class="storyTitle"><span class="cellInner"><%= raw story.headline %></span></div>
+              <p class="storyBody"><%= raw story.story %></p>
+            </td>
+            <td class="date">
+              <span class="cellDisplay"><%= date_time_span(story.createdAt) %></span>
+              <span class="cellInner"><%= story.createdAt %></span>
+            </td>
+            <td class="actions">
+              <span class="loading"></span>
+              <a href="<%= url_for :action => :edit_story, :id => story.id %>" class="editStoryButton button">
+                <span class="icon"></span><%= t('screens.admin.home.edit') %>
+              </a>
+              <%- if index > 0 -%>
+                <%= form_button({:action => 'move_story', :id => story.id, :other => @stories[index-1].id},
+                               t('screens.admin.home.up'), {:method => :put}) %>
+              <%- end -%>
+              <%- if index < @stories.length-1 %>
+                <%= form_button({:action => 'move_story', :id => @stories[index+1].id, :other => story.id},
+                               t('screens.admin.home.down'), {:method => :put}) %>
+              <%- end -%>
+              <%= form_button({:action => 'delete_story', :id => story.id}, t('screens.admin.home.delete'),
+                             {:method => :delete}, {:class => 'deleteStoryButton button'}) %>
+            </td>
+          </tr>
+        <%- end -%>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="contentBox withLeftNavigation">
+  <a href="<%= url_for :action => :update_stories_appearance %>" class="button newButton storyAppearanceButton rightArrow"><%= t('screens.admin.home.customize_now') %><span class="icon"></span></a>
+  <h2><%= t('screens.admin.home.customize_story_appearance') %></h2>
+</div>
+<%- end -%>
+
+<%- if CurrentDomain.user_can?(current_user, UserRights::FEATURE_ITEMS) -%>
+  <div class="contentBox withLeftNavigation">
+    <a href="#saveFeatures" class="button newButton saveFeaturesButton rightArrow"><%= t('screens.admin.home.save_now') %><span class="icon"></span></a>
+    <a href="#newFeature" class="button newButton newFeatureButton add"><%= t('screens.admin.home.add_featured_dataset') %><span class="icon"></span></a>
+    <span class="newFeatureMessage"><%= t('screens.admin.home.dataset_display_limit') %></span>
+    <h2><%= t('screens.admin.home.manage_featured_dataset') %></h2>
+    <div class="featuresWorkspace clearfix"></div>
+  </div>
+
+  <%- content_for :js_footer do -%>
+    <script type="text/javascript">
+      blist.namespace.fetch('blist.home');
+      blist.home.features = <%= raw json_escape(@features.to_json) %>;
+    </script>
+  <%- end -%>
+
+<%- end -%>
+
+<%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
+  <%- view_type = @catalog_config.try(:properties).try(:view_type) || 'table' -%>
+  <%- # Disable these options for browse2 / new catalog, because they overwrite the view_type -%>
+  <%- unless using_cetera? -%>
+    <div class="contentBox withLeftNavigation layoutConfig">
+      <h2><%= t('screens.admin.home.catalog_layout_configuration') %></h2>
+      <%= form_tag({:action => 'modify_catalog_config'}, {:method => 'post', :class => 'commonForm'}) %>
+        <fieldset class="line">
+          <span class="mainLabel"><%= t('screens.admin.home.default_catalog_layout') %></span>
+          <div class="valueBox">
+            <input type="radio" id="catalogViewType_table"
+                                name="catalog[view_type]" value="table"
+                                <%= view_type == 'table' ? 'checked="checked"' : '' %> />
+            <label for="catalogViewType_table"><%= t('screens.admin.home.compact_list') %></label>
+          </div>
+          <div class="valueBox">
+            <input type="radio" id="catalogViewType_rich"
+                                name="catalog[view_type]" value="rich"
+                                <%= view_type == 'rich' ? 'checked="checked"' : '' %> />
+            <label for="catalogViewType_rich"><%= t('screens.admin.home.rich_list') %></label>
+          </div>
+          <div class="statusTextWrapper">
+            <span class="saving">
+              <span class="icon"></span>
+              <span class="statusText"><%= t('screens.admin.home.saving') %></span>
+            </span>
+            <span class="saved">
+              <span class="statusText"><%= t('screens.admin.home.saved') %></span>
+            </span>
+          </div>
+        </fieldset>
+        <input type="submit" value="<%= t('core.dialogs.save') %>" />
+      </form>
+    </div>
+  <%- end -%>
+<%- end -%>
+
+<%= render_admin_qualtrics %>
+
+<%- content_for :templates do -%>
+  <div class="feature">
+    <div class="featureWrapper">
+      <a href="#left" class="featureSwapButton leftArrow" title="<%= t('screens.admin.home.move_left') %>"><span class="icon"><%= t('screens.admin.home.left') %></span></a>
+      <a href="#right" class="featureSwapButton rightArrow" title="<%= t('screens.admin.home.move_right') %>"><span class="icon"><%= t('screens.admin.home.right') %></span></a>
+      <div class="featureBox">
+        <a href="#remove" class="featureRemoveButton close" title="<%= t('screens.admin.home.remove') %>"><span class="icon"><%= t('screens.admin.home.remove') %></span></a>
+        <div class="featureInnerWrapper">
+          <input type="text" class="featureHeadline"/>
+
+          <div class="featureContentSection">
+            <div class="line">
+              <input type="radio" name="featureContent"
+                     class="featureContentRadio" value="thumbnail" />
+              <label for="featureContentThumbnail"><%= t('screens.admin.home.thumbnail') %></label>
+            </div>
+            <div class="featureContentThumbnailSection featureContentType">
+              <div class="showIfThumbnail">
+                <img src="" alt="<%= t('screens.admin.home.feature_image') %>"/>
+                <div>
+                  <a class="editThumbnailButton editImageButton button disabled"><%= t('screens.admin.home.edit') %></a>
+                </div>
+              </div>
+              <div class="thumbnailDisabledMessage">
+                This feature is no longer available. We recommend that you <a target="_blank" href="http://www.take-a-screenshot.org/">take a screenshot</a> and use the Custom Image option below.
+              </div>
+            </div>
+
+            <div class="line">
+              <input type="radio" name="featureContent"
+                     class="featureContentRadio" value="custom" />
+              <label for="featureContentCustom"><%= t('screens.admin.home.custom_image') %></label>
+            </div>
+            <div class="featureContentCustomSection featureContentType">
+              <input type="hidden" class="featureContentImageSha" />
+              <div class="customImageContainer">
+                <div class="ajaxImage">
+                  <img src="" alt="<%= t('screens.admin.home.custom_image') %>" />
+                </div>
+                <a class="editCustomImageButton editImageButton" href="#editCustomImage" data-endpoint="/api/assets">Edit</a>
+              <span class="throbber"></span>
+              </div>
+              <div class="customImageError flash error"><%= t('screens.admin.home.filetype_error') %></div>
+            </div>
+
+            <div class="line">
+              <input type="radio" name="featureContent"
+                     class="featureContentRadio" value="text" />
+              <label for="featureContentText"><%= t('screens.admin.home.text') %></label>
+            </div>
+            <div class="featureContentTextSection featureContentType">
+              <input type="text" class="featureContentTextHeadline"/>
+              <input type="text" class="featureContentTextSubtitle"/>
+            </div>
+          </div>
+
+          <textarea class="featureDescription"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+<%- end -%>
+
+<%- content_for :modals do -%>
+  <%= render :partial => 'modals/select_dataset', :locals => { :title => t('screens.admin.home.choose_a_dataset') } %>
+
+  <%= modal :id => 'setThumbnail' do %>
+    <h2><%= t('screens.admin.home.set_a_thumbnail') %></h2>
+    <iframe frameBorder="0"></iframe>
+  <%- end -%>
+<%- end -%>
+
+<%- content_for :js_footer do -%>
+  <%- unless params[:no_js].present? -%>
+    <%= include_webpack_bundle 'open-data/admin-home.js' %>
+  <%- end -%>
+<%- end -%>
+<%= render_translations LocalePart.screens.admin.home %>

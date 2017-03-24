@@ -1,0 +1,9 @@
+<div class="profileSideBar content">
+  <div class="profileImageContainer clearfix innerItem">
+    <div class="profileImage">
+      <img src="<%= @user.profile_image_path('large') %>" alt="<%= @user.displayName %>" />
+    </div>
+    <%= edit_link(@user, 'editProfileImageLink profileImage', t('screens.profile.sidebar.edit_image_link'), 'image') %>
+  </div>
+  <%= render :partial => 'friends_list' %>
+</div>

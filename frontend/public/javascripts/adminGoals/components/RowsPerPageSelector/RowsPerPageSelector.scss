@@ -1,0 +1,37 @@
+.rows-per-page-container {
+  display: inline-block;
+  margin-left: 50px;
+
+  .Select {
+    vertical-align: middle;
+    display: inline-block;
+    min-width: 60px;
+
+    .Select-value-label {
+      color: #5e5e5e;
+    }
+
+    &.has-value.Select--single > .Select-control > .Select-value .Select-value-label{
+      color: #5e5e5e;
+    }
+
+    .Select-control {
+      border: none;
+    }
+
+    /* Open upwards */
+    .Select-menu-outer {
+      top: auto;
+      bottom: 100%;
+    }
+  }
+
+  .dropdown-container {
+    display: inline-flex;
+
+    .dropdown-placeholder {
+      border: none;
+    }
+  }
+
+}

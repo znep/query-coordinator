@@ -1,0 +1,22 @@
+<% content_for :head do %>
+  <title><%= CurrentDomain.site_title %></title>
+  <%= rendered_stylesheet_tag 'error-pages' %>
+<% end %>
+
+<div class="modalContentBox siteContent">
+  <div class="contentHeader">
+    <h1><%= t 'error.not_acceptable_406.page_not_found' %></h1>
+  </div>
+  <div class="contentBoxInner clearfix notFound">
+    <div class="icon errorIcon"></div>
+
+    <p class="subheadline"><%= t 'error.not_acceptable_406.were_sorry' %></p>
+
+    <div class="goSomewhere">
+      <a href="javascript:history.back(1)" class="button default"><%= t 'error.back' %></a>
+      <span class="labelText"><%= t 'error.to_whence_you_came' %></span>
+    </div>
+  </div>
+</div>
+
+<%= render_translations LocalePart.error.not_acceptable_406 %>

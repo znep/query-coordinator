@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="<%= I18n.locale %>">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <link rel="stylesheet" href="/stylesheets/socrata-components/css/styleguide.min.css"/>
+
+    <%= yield :head %>
+
+    <%= get_favicon_tag %>
+    <%= site_chrome_meta_viewport_tag %>
+    <%= site_chrome_stylesheet_tag %>
+  </head>
+
+  <%= content_tag :body, :class => @body_classes do %>
+    <%- if render_site_admin_chrome? -%>
+      <%== site_chrome_admin_header(request, response, @site_chrome_admin_header_options || {}) %>
+    <%- end -%>
+
+    <%- unless @suppress_site_chrome_header -%>
+      <%== site_chrome_header(request, response) %>
+    <%- end -%>
+
+    <div id="noticeContainer">
+      <%= display_styleguide_flashes %>
+    </div>
+
+    <%= yield %>
+
+    <%== site_chrome_footer(request, response) %>
+
+    <%# Ensure mixpanelConfig is defined before loading other scripts -%>
+    <%= render_mixpanel_config %>
+
+    <%# dotdotdot and velocity are finicky about jQuery. -%>
+    <%# We made jquery an external, load it here and then bind it to window to be loaded into our Webpack bundle. -%>
+    <%= jquery_include('2.2.4') %>
+    <script> window.jquery = window.jQuery </script>
+
+    <%= render_ga_tracking %>
+    <%= site_chrome_google_analytics_tag %>
+    <%= site_chrome_javascript_tag %>
+
+    <%= yield :scripts %>
+
+    <%- if FeatureFlags.derive(@view, request).browse_autocomplete -%>
+      <%#
+        Note that when this bundle is included it automatically replaces the header/footer search box
+      %>
+      <%= include_webpack_bundle 'autocomplete/main.js' %>
+    <%- end -%>
+  <% end # end of body %>
+</html>

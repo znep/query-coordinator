@@ -1,0 +1,56 @@
+<%-
+  expiry = FeatureFlags.value_for(:zealous_dataslate_cache_expiry) || Rails.application.config.cache_ttl_fragment
+  prerendered_cache @cache_key, @cached_fragment, :expires_in => expiry do -%>
+
+<%- if !@minimal_render -%>
+  <%- begin
+        context_result = @page.set_context(@vars)
+      rescue Canvas2::AccessingPrivateDatasetInDataContextError => e
+        # This strategy is deeply, deeply imperfect because it means we're not rendering
+        # anything else. Logged-out users manage to avoid throwing this error by virtue
+        # of sprinkled nil checks in the codebase bypassing the creation of this error.
+        #
+        # Logged-in users have no such luck and, without this, will see a 500 instead. This
+        # is an improvement over that specific scenario.
+        flash[:error] = e.error_message
+      end
+  -%>
+  <%- if context_result == false && !@edit_mode -%>
+  <%- raise Canvas2::NoContentError.new(Canvas2::DataContext::errors[0]) -%>
+  <%- end -%><%# if context_result %>
+<%- end -%><%# if minimal_render %>
+
+<% content_for :head do %>
+<title><%= @page.name %></title>
+<%= meta_tags @custom_meta.merge({:title => @page.name,
+                                 'og:title' => @page.name}) unless @custom_meta.blank?  %>
+<%= rendered_stylesheet_tag 'components' %>
+  <% end %>
+
+<%=
+  begin
+    raw @page.render(!@minimal_render)
+  rescue Canvas2::AccessingPrivateDatasetInComponentError => e
+    # This strategy is deeply, deeply imperfect because it means we're not rendering anything else.
+    # Logged-out users manage to avoid throwing this error by virtue of sprinkled nil checks in the
+    # codebase bypassing the creation of this error.
+    #
+    # Logged-in users have no such luck and, without this, will see a 500 instead. This is an
+    # improvement over that specific scenario.
+    flash[:error] = e.error_message
+    nil
+  end
+%>
+<%= display_standard_flashes if flash[:error] %>
+
+<%- if @debug -%>
+<%= render :partial => 'debug_content' %>
+<%- end -%>
+
+<%- content_for :js_footer do -%>
+  <%= render :partial => 'canvas_js', :locals => { :page => @page, :template => nil } %>
+<%- end -%>
+
+<%- end -%>
+<%# prerendered_cache %>
+

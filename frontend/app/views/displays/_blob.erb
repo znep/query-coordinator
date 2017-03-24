@@ -1,0 +1,108 @@
+<div class="externalLinkDisplay clearfix <%= @view.display.display_type %>">
+  <%- if @view.is_href? || @view.is_link? -%>
+    <h1 class="externalLinkTitle"><%= h(@view.name) %></h1>
+    <%- if @view.description -%>
+      <a class="expander expanded formHeader" href="#expand">
+        <span class="icon"></span>
+        <p class="externalLinkDescriptionLabel"><%= t('screens.about.description') %></p>
+      </a>
+      <p class="externalLinkDescription">
+        <%= h(@view.description) %>
+      </p>
+    <%- end -%>
+  <%- else -%>
+    <p class="info">
+      <%= t 'screens.ds.blob.limited_download' %>
+    </p>
+  <%- end -%>
+  <div class="downloadBox <%= 'multiAccessPoints' if @view.allAccessPoints.try(:length) > 1 %>">
+    <%- if @view.is_blobby? %>
+      <h5><%= t 'screens.ds.blob.download' %></h5>
+    <%- else -%>
+      <h5><%= t 'screens.ds.blob.external_link' %></h5>
+    <%- end -%>
+    <ul>
+      <%# Blobs and accessPoints are mutually exclusive, but they each populate the same list
+        # on their respective pages. %>
+      <%- @view.blobs.each do |blob| -%>
+        <li>
+          <a class="button" href="<%= metric_redirect_path(:type => blob['type'], :id => @view.id) %>" target="_blank">
+            <%- size = blob['size'].is_a?(Numeric) ?
+              number_to_human_size(blob['size'], :locale => :en) : blob['size'] -%>
+              <%- if !blob['name'].blank? -%>
+                <%= blob['name'] %> (<%= blob['type'] %> <%= size %>)
+              <%- else -%>
+                <%= blob['type'] %> <%= size %>
+              <%- end -%>
+          </a>
+        </li>
+      <%- end -%>
+      <%- @view.allAccessPoints.each do |accessPoint| -%>
+        <%- if accessPoint['title'].present? -%>
+          <li>
+            <div class="accessPointText">
+              <h2 class="accessPointTitle">
+                <%= accessPoint['title'] %>
+              </h2>
+              <%- if accessPoint['description'].present? -%>
+              <div class="accessPointDescription">
+                <%= accessPoint['description'] %>
+              </div>
+              <%- end -%>
+            </div>
+            <div class="accessPointButtons">
+              <%- accessPoint['urls'].each do |format, url| -%>
+                <a class="button" href="<%= url %>" target="_blank">
+                  <%- size = accessPoint['size'].is_a?(Numeric) ?
+                    number_to_human_size(accessPoint['size'], :locale => :en) : accessPoint['size'] -%>
+                  <%= format.upcase %> <%= size %>
+                </a>
+              <%- end -%>
+              <%- if accessPoint['describedBy'].present? -%>
+              <a class="button" href="<%= accessPoint['describedBy'] %>" target="_blank">
+                <%= t('screens.edit_metadata.described_by') %>
+              </a>
+              <%- end -%>
+            </div>
+          </li>
+        <%- else -%>
+          <%- accessPoint['urls'].each do |format, url| -%>
+            <li>
+              <span class="accessPointTitle">
+                <%= url %>
+              </span>
+              <div class="accessPointButtons">
+                <a class="button" href="<%= url %>" target="_blank">
+                  <%- size = accessPoint['size'].is_a?(Numeric) ?
+                    number_to_human_size(accessPoint['size'], :locale => :en) : accessPoint['size'] -%>
+                  <%= format.upcase %> <%= size %>
+                </a>
+              </div>
+            </li>
+          <%- end -%>
+        <%- end -%>
+      <%- end -%>
+    </ul>
+  </div>
+</div>
+
+<%- if @view.display.display_type == 'image' -%>
+<div class="displayArea image fullHeight">
+<img src="<%= @view.blobs[0]['href'] %>" alt="<%= @view.name %>" />
+</div>
+
+<%- elsif @view.display.display_type == 'google_viewer' -%>
+<%- blob_location = URI.escape(request.protocol + request.host_with_port +
+  @view.blobs[0]['href']) -%>
+<div class="displayArea fullHeight">
+<noscript>
+    <p><%= t('screens.ds.blob.js_required') %></p>
+    <p><%= t('screens.ds.blob.js_required_download.prompt_html', click_here: link_to(t('screens.ds.blob.js_required_download.click_here'), blob_location, :target => '_blank')).html_safe %></p>
+</noscript>
+</div>
+
+<%- else -%>
+<div id="aboutSection">
+  <%= render :partial => 'datasets/about_dataset', :locals => {:full_page => true} %>
+</div>
+<%- end -%>

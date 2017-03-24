@@ -1,0 +1,32 @@
+lens-type {
+  display: block;
+  width: 100%;
+  text-align: right;
+  span {
+    display: inline-block;
+    height: auto;
+    width: auto;
+    padding: 0 10px 8px 10px;
+    text-transform: uppercase;
+    &.community {
+      color: #176289;
+    }
+    &.official {
+      color: #9e5c23;
+    }
+  }
+  span[class*='icon-'] {
+    padding: 0;
+    font-size: 23px;
+    height: 23px;
+    position: relative;
+    top: 5px;
+    left: -4px
+  }
+  .icon-official2 {
+    color: #e48424;
+  }
+  .icon-community {
+    color: #288dc1;
+  }
+}

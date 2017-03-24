@@ -1,0 +1,201 @@
+<%- prefix = 'screens.import_common' -%>
+<ul class="layersListLine">
+  <li class="importLayer">
+    <div class="mainLine line">
+      <div class="layerHandleCell importHandleCell"></div>
+      <div class="layerNameCell">
+        <input type="text" class="layerName textPrompt required" title="<%= t("#{prefix}.name_this_column") %>"/>
+      </div>
+      <div class="layerReferenceSystemCell">
+      </div>
+      <div class="layerReplacingCell">
+        <select class="layerReplaceDropdown">
+          <option class="special" value=""><%= t("#{prefix}.new_layer") %></option>
+        </select>
+      </div>
+    </div>
+  </li>
+</ul>
+<ul class="sourceColumnsListLine">
+  <li class="clearfix">
+    <a class="remove removeSourceColumnLineButton" href="#remove"><span class="icon"><%= t("#{prefix}.remove") %></span></a>
+    <div class="compositeColumnSourcePlaceholder" data-class="compositeColumnSourceSelect"></div>
+    <input type="text" class="staticSourceText"/>
+  </li>
+</ul>
+<ul class="columnTransformsListLine">
+  <li class="clearfix">
+    <a class="remove removeTransformLineButton" href="#remove"><span class="icon"><%= t("#{prefix}.remove") %></span></a>
+    <span class="thenText"><%= t("#{prefix}.then") %></span>
+    <select class="columnTransformOperation">
+      <option value="title"><%= t("#{prefix}.make_title_case") %></option>
+      <option value="upper"><%= t("#{prefix}.make_upper_case") %></option>
+      <option value="lower"><%= t("#{prefix}.make_lower_case") %></option>
+      <option value="toStateCode"><%= t("#{prefix}.to_state_code") %></option>
+      <option value="findReplace"><%= t("#{prefix}.find_and_replace") %></option>
+    </select>
+    <div class="additionalTransformOptions">
+      <div class="findReplaceSection">
+        <label class="findTextLabel"><%= t("#{prefix}.find") %></label>
+        <input type="text" class="findText"/>
+        <label class="replaceTextLabel"><%= t("#{prefix}.replace") %></label>
+        <input type="text" class="replaceText"/>
+        <input type="checkbox" class="caseSensitive"/>
+        <label class="caseSensitiveLabel"><%= t("#{prefix}.case_sensitive") %></label>
+        <input type="checkbox" class="regex"/>
+        <label class="regexLabel"><%= t("#{prefix}.regular_expression") %></label>
+      </div>
+    </div>
+  </li>
+</ul>
+<div class="compositeDetails">
+  <h3><%= t("#{prefix}.combine_multiple_columns") %></h3>
+  <h4><%= t("#{prefix}.create_composite") %></h4>
+  <ul class="sourceColumnsList"></ul>
+  <a href="#newSourceColumn" class="button add newSourceColumnButton">
+    <span class="icon"></span><%= t("#{prefix}.new_source_col") %>
+  </a>
+</div>
+<div class="locationDetailsOriginal">
+  <h3><%= t("#{prefix}.location_source_col") %></h3>
+  <h4><%= t("#{prefix}.addresses_to_geocode") %></h4>
+  <div class="toggleSection">
+    <input type="radio" name="locationTypeToggle" class="locationTypeToggle multipleColumns"/>
+    <label class="locationTypeToggleLabel"><%= raw t("#{prefix}.import_from_multiple") %></label>
+  </div>
+  <div class="clearfix">
+    <fieldset class="left">
+      <legend><%= t("#{prefix}.existing_cols") %></legend>
+      <div class="line locationAddressLine clearfix">
+        <label class="locationAddressLabel" for="locationAddressColumn"><%= t("#{prefix}.street") %></label>
+        <div class="columnSourcePlaceholder" data-class="locationAddressColumn"></div>
+      </div>
+      <div class="line locationCityLine clearfix">
+        <label class="locationCityLabel" for="locationCityColumn"><%= t("#{prefix}.city") %></label>
+        <div class="optionGroup">
+          <input type="radio" name="locationCityToggle" class="locationSourceToggle" checked="checked"/>
+          <div class="columnSourcePlaceholder" data-class="locationCityColumn"></div>
+          <input type="radio" name="locationCityToggle" class="locationSourceToggle"/>
+          <input type="text" class="locationCityStatic textPrompt" title="<%= t("#{prefix}.enter_custom") %>"/>
+        </div>
+      </div>
+      <div class="line locationStateLine clearfix">
+        <label class="locationStateLabel" for="locationStateColumn"><%= t("#{prefix}.state") %></label>
+        <div class="optionGroup">
+          <input type="radio" name="locationStateToggle" class="locationSourceToggle" checked="checked"/>
+          <div class="columnSourcePlaceholder" data-class="locationStateColumn"></div>
+          <input type="radio" name="locationStateToggle" class="locationSourceToggle"/>
+          <input type="text" class="locationStateStatic textPrompt" title="<%= t("#{prefix}.enter_custom") %>"/>
+        </div>
+      </div>
+      <div class="line locationZipLine clearfix">
+        <label class="locationZipLabel" for="locationZipColumn"><%= t("#{prefix}.zip") %></label>
+        <div class="optionGroup">
+          <input type="radio" name="locationZipToggle" class="locationSourceToggle" checked="checked"/>
+          <div class="columnSourcePlaceholder" data-class="locationZipColumn"></div>
+          <input type="radio" name="locationZipToggle" class="locationSourceToggle"/>
+          <input type="text" class="locationZipStatic textPrompt" title="<%= t("#{prefix}.enter_custom") %>"/>
+        </div>
+      </div>
+    </fieldset>
+    <fieldset class="right">
+      <legend><%= t("#{prefix}.existing_latlng_cols") %></legend>
+      <div class="line locationLatitudeLine clearfix">
+        <label class="locationLatitudeLabel"><%= t("#{prefix}.latitude") %></label>
+        <div class="columnSourcePlaceholder" data-class="locationLatitudeColumn"></div>
+      </div>
+      <div class="line locationLongitudeLine clearfix">
+        <label class="locationLongitudeLabel"><%= t("#{prefix}.longitude") %></label>
+        <div class="columnSourcePlaceholder" data-class="locationLongitudeColumn"></div>
+      </div>
+    </fieldset>
+  </div>
+  <div class="toggleSection">
+    <input type="radio" name="locationTypeToggle" class="locationTypeToggle singleColumn"/>
+    <label class="locationTypeToggleLabel"><%= raw t("#{prefix}.import_from_single") %></label>
+  </div>
+  <div class="importSingleColumnSection">
+    <label class="locationSingleColumnLabel"><%= t("#{prefix}.column") %></label>
+    <div class="columnSourcePlaceholder" data-class="locationSingleColumn"></div>
+    <p><%= raw t("#{prefix}.properly_formatted", { :formatting_link => 'http://dev.socrata.com/docs/datatypes/' }) %></p>
+  </div>
+</div>
+<div class="pointDetailsOriginal">
+  <h3><%= t("#{prefix}.point_source_col") %></h3>
+  <h4><%= t("#{prefix}.addresses_to_geocode") %></h4>
+  <div class="toggleSection">
+    <input type="radio" name="pointTypeToggle" class="pointTypeToggle multipleColumns"/>
+    <label class="pointTypeToggleLabel"><%= raw t("#{prefix}.import_from_multiple") %></label>
+  </div>
+  <div class="clearfix">
+    <fieldset class="left">
+      <legend><%= t("#{prefix}.existing_cols") %></legend>
+      <div class="line pointAddressLine clearfix">
+        <label class="pointAddressLabel" for="pointAddressColumn"><%= t("#{prefix}.street") %></label>
+        <div class="columnSourcePlaceholder" data-class="pointAddressColumn"></div>
+      </div>
+      <div class="line pointCityLine clearfix">
+        <label class="pointCityLabel" for="pointCityColumn"><%= t("#{prefix}.city") %></label>
+        <div class="optionGroup">
+          <input type="radio" name="pointCityToggle" class="pointSourceToggle" checked="checked"/>
+          <div class="columnSourcePlaceholder" data-class="pointCityColumn"></div>
+          <input type="radio" name="pointCityToggle" class="pointSourceToggle"/>
+          <input type="text" class="pointCityStatic textPrompt" title="<%= t("#{prefix}.enter_custom") %>"/>
+        </div>
+      </div>
+      <div class="line pointStateLine clearfix">
+        <label class="pointStateLabel" for="pointStateColumn"><%= t("#{prefix}.state") %></label>
+        <div class="optionGroup">
+          <input type="radio" name="pointStateToggle" class="pointSourceToggle" checked="checked"/>
+          <div class="columnSourcePlaceholder" data-class="pointStateColumn"></div>
+          <input type="radio" name="pointStateToggle" class="pointSourceToggle"/>
+          <input type="text" class="pointStateStatic textPrompt" title="<%= t("#{prefix}.enter_custom") %>"/>
+        </div>
+      </div>
+      <div class="line pointZipLine clearfix">
+        <label class="pointZipLabel" for="pointZipColumn"><%= t("#{prefix}.zip") %></label>
+        <div class="optionGroup">
+          <input type="radio" name="pointZipToggle" class="pointSourceToggle" checked="checked"/>
+          <div class="columnSourcePlaceholder" data-class="pointZipColumn"></div>
+          <input type="radio" name="pointZipToggle" class="pointSourceToggle"/>
+          <input type="text" class="pointZipStatic textPrompt" title="<%= t("#{prefix}.enter_custom") %>"/>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+  <div class="toggleSection">
+    <input type="radio" name="pointTypeToggle" class="pointTypeToggle latlongColumns">
+    <label class="pointTypeToggleLabel"><%= raw t("#{prefix}.import_from_latlong") %></label>
+  </div>
+  <div class="importLatLongColumnSection clearfix">
+    <fieldset class="left">
+      <legend><%= t("#{prefix}.existing_latlng_cols") %></legend>
+      <div class="line pointLatitudeLine clearfix">
+        <label class="pointLatitudeLabel"><%= t("#{prefix}.latitude") %></label>
+        <div class="columnSourcePlaceholder" data-class="pointLatitudeColumn"></div>
+      </div>
+      <div class="line pointLongitudeLine clearfix">
+        <label class="pointLongitudeLabel"><%= t("#{prefix}.longitude") %></label>
+        <div class="columnSourcePlaceholder" data-class="pointLongitudeColumn"></div>
+      </div>
+    </fieldset>
+  </div>
+  <div class="toggleSection">
+    <input type="radio" name="pointTypeToggle" class="pointTypeToggle singleColumn"/>
+    <label class="pointTypeToggleLabel"><%= raw t("#{prefix}.import_from_single") %></label>
+  </div>
+  <div class="importSingleColumnSection">
+    <label class="pointSingleColumnLabel"><%= t("#{prefix}.column") %></label>
+    <div class="columnSourcePlaceholder" data-class="pointSingleColumn"></div>
+    <p><%= raw t("#{prefix}.properly_formatted", { :formatting_link => 'http://dev.socrata.com/docs/datatypes/' }) %></p>
+  </div>
+</div>
+<div class="generalDetails">
+  <h3><%= t("#{prefix}.options") %></h3>
+  <h4><%= t("#{prefix}.transforms") %></h4>
+  <ul class="columnTransformsList">
+  </ul>
+  <a href="#newTransform" class="button add newColumnTransformButton">
+    <span class="icon"></span><%= t("#{prefix}.new_transform") %>
+  </a>
+</div>

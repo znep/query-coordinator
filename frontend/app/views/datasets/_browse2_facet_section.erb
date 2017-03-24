@@ -1,0 +1,62 @@
+<div class="browse2-facet-section"
+  data-facet-display="show"<%== ' data-facet-has-modal="true"' if facet_section_has_modal %>
+  data-facet-option-type="<%= facet_param.to_s %>">
+  <h3 class="browse2-facet-section-title" title="<%= facet_title %>">
+    <%= facet_title %>
+    <span class="browse2-facet-section-expand-contract-icon icon-arrow-down"></span>
+  </h3>
+
+  <ul class="browse2-facet-section-options">
+    <%-
+      all_facet_options.each_with_index do |facet_option, index|
+        facet_li_classnames = [
+          index >= truncate_facet_section_at_index ? 'truncated' : nil,
+          facet_option_is_active?(opts, facet_param, facet_option) ? 'active' : nil
+        ].compact.join(' ')
+        has_child_options = facet_option[:children].respond_to?(:each)
+        facet_link_classnames = facet_option_classnames(opts, facet_param, facet_option, false, has_child_options)
+        facet_link_href = facet_option_url(opts, facet_param, facet_option, params)
+      -%>
+      <li class="<%= facet_li_classnames %>">
+        <a class="<%= facet_link_classnames %>" href="<%= facet_link_href %>"
+          data-facet-option-value="<%= facet_option[:value] %>"
+          title="<%= facet_option[:text] %>">
+          <span class="browse2-facet-option-clear-icon icon-close-2"></span>
+          <%= facet_option[:text] %>
+        </a>
+        <%- if has_child_options -%>
+          <a class="browse2-facet-section-child-option-toggle" href="#" title="<%= t('controls.browse.browse2.facets.expand.title') %>">
+            <span class="browse2-facet-section-expand-contract-icon icon-arrow-down" href="#"></span>
+          </a>
+
+          <ul class="browse2-facet-section-child-options">
+            <%-
+              facet_option[:children].each do |child_facet_option|
+                child_facet_link_classnames = facet_option_classnames(opts, facet_param, child_facet_option, true, false)
+                child_facet_link_href = facet_option_url(opts, facet_param, child_facet_option, params)
+            -%>
+              <li>
+                <a class="<%= child_facet_link_classnames %>" href="<%= child_facet_link_href %>"
+                  data-facet-option-value="<%= child_facet_option[:value] %>"
+                  title="<%= child_facet_option[:text] %>">
+                  <span class="browse2-facet-option-clear-icon icon-close-2"></span>
+                  <%= child_facet_option[:text] %>
+                </a>
+              </li>
+            <%- end -%>
+          </ul>
+        <%- end -%>
+      </li>
+    <%- end -%>
+  </ul>
+
+  <!-- "Show All" button at the bottom of facet sections to open the modal -->
+  <%- if facet_section_has_modal -%>
+    <a class="browse2-facet-section-modal-button"
+      data-modal-facet="<%= facet_title %>" href="#"
+      title="<%= t('controls.browse.browse2.facets.expand.title') %>">
+      <%= t('controls.browse.browse2.facets.expand.label') %>
+    </a>
+  <%- end -%>
+
+</div>

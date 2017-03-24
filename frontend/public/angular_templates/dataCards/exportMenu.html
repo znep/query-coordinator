@@ -1,0 +1,80 @@
+<div class="tool-panel down-right">
+  <button
+    type="button"
+    title="{{::'common.export' | I18n}}"
+    class="tool-panel-toggle-btn action-btn l-to-r"
+    ng-class="{active: panelActive, disabled: editMode}"
+    ng-click="panelActive = editMode ? false : !panelActive"
+    ng-show="!allowChooserModeCancel">
+    {{::'common.export' | I18n}}
+  </button>
+  <button
+    type="button"
+    data-action="quit-chooser"
+    title="{{::'common.cancel' | I18n}}"
+    class="tool-panel-toggle-btn action-btn active l-to-r"
+    ng-click="quitCardSelectionMode()"
+    ng-show="allowChooserModeCancel">
+    {{::'common.cancel' | I18n}}
+  </button>
+
+  <div ng-class="{active: panelActive}" class="tool-panel-main">
+    <div class="tool-panel-inner-container">
+      <div class="tool-panel-hint"></div>
+
+      <h2>{{::'exportMenu.csv.header' | I18n}}</h2>
+      <div class="tool-panel-input-group alt-group-padding">
+        <div class="row">
+          <span class="span6">
+            <label>
+              <input
+                ng-model="isFilteredCSVExport"
+                ng-value="false"
+                type="radio"
+                name="isFilteredCSVExport">
+              {{::'exportMenu.csv.allRows' | I18n}}
+              ({{rowCount}} {{'common.row' | I18n | pluralize:rowCount}})
+            </label>
+          </span>
+
+          <span class="span6">
+            <label>
+              <input
+                ng-model="isFilteredCSVExport"
+                ng-disabled="shouldDisableFilteredExport"
+                ng-value="true"
+                type="radio"
+                name="isFilteredCSVExport">
+              {{::'exportMenu.csv.currentFilter' | I18n}}
+              <span ng-show="shouldDisableFilteredExport">
+                ({{disabledFilteredExportMessage}})
+              </span>
+              <span ng-hide="shouldDisableFilteredExport">
+                ({{filteredRowCount}} {{'common.row' | I18n | pluralize:filteredRowCount}})
+              </span>
+            </label>
+          </span>
+        </div>
+        <a
+          href="{{csvDownloadURL}}"
+          class="tool-panel-btn action-btn l-to-r">
+          {{::'common.download' | I18n}}
+        </a>
+      </div>
+
+      <div ng-if="showPolaroidButton">
+        <h2>{{::'exportMenu.image.header' | I18n}}</h2>
+        <p>{{::'exportMenu.image.description' | I18n}}</p>
+        <div class="tool-panel-input-group alt-group-padding">
+          <button
+            ng-click="initiateCardSelectionMode('polaroid')"
+            type="button"
+            data-action="export-polaroid"
+            class="tool-panel-btn action-btn l-to-r">
+            {{::'exportMenu.chooseCard' | I18n}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

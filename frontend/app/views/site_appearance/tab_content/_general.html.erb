@@ -1,0 +1,39 @@
+<%= render 'site_appearance/tab_content/general/enable_site_chrome' %>
+
+<%= section_separator %>
+
+<%= site_appearance_dropdown_field(:general, :template, %w(Evergreen Rally), "#{locale_string}.template") %>
+
+<%= site_appearance_form_field(:general, [:styles, :max_width], "#{locale_string}.max_width") %>
+<%= site_appearance_form_field(:general, :window_title_display, "#{locale_string}.window_title_display") %>
+
+<%= render('site_appearance/tab_content/form_field_image',
+  :fields => [:general, :window_icon],
+  :locale_string => "#{locale_string}.window_icon") %>
+
+<%= site_appearance_dropdown_field(:general, [:styles, :font_family], valid_webfonts, "#{locale_string}.font_family") %>
+<%= site_appearance_form_field(:general, :google_analytics_token, "#{locale_string}.google_analytics_token") %>
+
+<%= section_separator %>
+
+<% if FeatureFlags.derive(nil, request)[:site_chrome_language_switcher] %>
+  <%= render('checkbox',
+    :fields => [:general, :languages, :display_language_switcher],
+    :locale_string => "#{locale_string}.display_language_switcher",
+    :default_checked => false) %>
+
+  <%= section_separator %>
+<% end %>
+
+<section class="settings-group">
+  <div class="settings-form full signin-signout">
+    <%- singin_signout_locale_key = "#{locale_string}.show_signin_signout" %>
+    <h3><%= t("#{singin_signout_locale_key}.title") %></h3>
+    <aside>
+      <p><%= t("#{singin_signout_locale_key}.description") %></p>
+    </aside>
+    <%= signin_signout_checkbox(:show_signin_signout, singin_signout_locale_key) %>
+    <%= signin_signout_checkbox(:show_signup, singin_signout_locale_key, indent: true) %>
+    <%= signin_signout_checkbox(:show_profile, singin_signout_locale_key, indent: true) %>
+  </div>
+</section>

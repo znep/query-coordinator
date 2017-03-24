@@ -1,0 +1,149 @@
+const angular = require('angular');
+const Rx = require('rx');
+
+describe('histogram', function() {
+  'use strict';
+
+  var testHelpers;
+  var $rootScope;
+
+  beforeEach(angular.mock.module('test'));
+  beforeEach(angular.mock.module('dataCards'));
+  require('app/styles/dataCards/histogram.scss');
+
+  beforeEach(angular.mock.module(function($controllerProvider) {
+    $controllerProvider.register('HistogramController', _.noop);
+  }));
+
+  beforeEach(inject(function($injector) {
+    testHelpers = $injector.get('testHelpers');
+    $rootScope = $injector.get('$rootScope');
+  }));
+
+  var template = [
+    '<div class="card-visualization" id="test-histogram-chart">',
+      '<histogram></histogram>',
+    '</div>'
+  ].join('');
+
+  var testData = {
+    unfiltered: [
+      {start: -100, end: -10, value: 4},
+      {start: -10, end: 0, value: 743},
+      {start: 0, end: 10, value: 13},
+      {start: 10, end: 100, value: 91}
+    ],
+    filtered: [
+      {start: -100, end: -10, value: 4},
+      {start: -10, end: 0, value: 743},
+      {start: 0, end: 10, value: 13},
+      {start: 10, end: 100, value: 91}
+    ]
+  };
+
+  function createHistogram(scopeData) {
+    scopeData = _.merge({
+      cardData: testData,
+      isFiltered: null,
+      rowDisplayUnit: 'cuttlefish',
+      expanded: true,
+      currentRangeFilterValues: null,
+      selectedExtent: null
+    }, scopeData);
+
+    var scope = $rootScope.$new();
+    _.assign(scope, scopeData);
+
+    var element = testHelpers.TestDom.compileAndAppend(template, scope);
+    var histogramScope = element.find('histogram').scope();
+
+    return {
+      element: element,
+      scope: scope,
+      histogramScope: histogramScope
+    };
+  }
+
+  function removeHistogram() {
+    $('#test-histogram-chart').remove();
+    $('#uber-flyout').hide();
+  }
+
+  describe('flyout', function() {
+
+    var histogram;
+
+    afterEach(function() {
+      removeHistogram();
+    });
+
+    it('should render on hover', function() {
+      histogram = createHistogram();
+      var hoverShield = histogram.element.find('.histogram-hover-shield')[0];
+
+      testHelpers.fireMouseEvent(hoverShield, 'mouseover');
+      testHelpers.fireMouseEvent(hoverShield, 'mousemove');
+
+      var $flyoutTitle = $('.flyout-title');
+      expect($flyoutTitle).to.have.length(1);
+    });
+
+    it('should trigger the nth flyout for the nth data bucket', function() {
+      histogram = createHistogram();
+      var element = histogram.element;
+      var hoverShield = element.find('.histogram-hover-shield')[0];
+      var svg = element.find('svg');
+      var chartWidth = svg.attr('width');
+      var chartHeight = svg.attr('height');
+      var bucketWidth = Math.ceil(chartWidth / testData.unfiltered.length);
+      for (var i = 0; i < testData.unfiltered.length; i++) {
+        var offsetX = (bucketWidth * i) + (bucketWidth / 2);
+        testHelpers.fireMouseEvent(hoverShield, 'mouseover');
+        testHelpers.fireMouseEvent(hoverShield, 'mousemove', {
+          clientX: offsetX,
+          clientY: chartHeight / 2
+        });
+        var $flyoutTitle = $('.flyout-title');
+        expect($flyoutTitle.text()).to.equal(testData.unfiltered[i].start + ' to ' + testData.unfiltered[i].end);
+      }
+    });
+
+    it('should show the total and filtered amounts when a filter is active', function() {
+      histogram = createHistogram({isFiltered: true});
+      var hoverShield = $('.histogram-hover-shield')[0];
+      testHelpers.fireMouseEvent(hoverShield, 'mouseover');
+      testHelpers.fireMouseEvent(hoverShield, 'mousemove');
+      var $flyoutTitle = $('#uber-flyout');
+      expect($flyoutTitle.text()).to.match(new RegExp('Total'));
+      expect($flyoutTitle.text()).to.match(new RegExp(testData.unfiltered[0].value));
+      expect($flyoutTitle.text()).to.match(new RegExp('Filtered amount'));
+      expect($flyoutTitle.text()).to.match(new RegExp(testData.filtered[0].value));
+    });
+
+    it('should emit render:start and render:complete events on rendering', function(done) {
+      var renderEvents = Rx.Observable.merge(
+        $rootScope.$eventToObservable('render:start').first(),
+        $rootScope.$eventToObservable('render:complete').first()
+      );
+
+      renderEvents.take(2).toArray().subscribe(
+        function(events) {
+
+          expect(events[0].additionalArguments[0].source).to.satisfy(_.isString);
+          expect(events[1].additionalArguments[0].source).to.equal(events[0].additionalArguments[0].source);
+
+          // Times are ints and are in order.
+          expect(events[0].additionalArguments[0].timestamp).to.satisfy(_.isFinite);
+          expect(events[1].additionalArguments[0].timestamp).to.satisfy(_.isFinite);
+
+          expect(events[0].additionalArguments[0].timestamp).to.be.below(events[1].additionalArguments[0].timestamp);
+          done();
+        }
+      );
+
+      createHistogram();
+      timeout.flush();
+    });
+
+  });
+});

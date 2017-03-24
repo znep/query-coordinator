@@ -1,0 +1,31 @@
+<% prerendered_cache cache_key('profile-friends-list', @current_state),
+    @friends_rendered, :expires_in => 5.minutes do %>
+
+  <%- [{:name => t('screens.profile.sidebar.followers'), :list => @followers},
+      {:name => t('screens.profile.sidebar.following'), :list => @friends}].each do |user_list| -%>
+    <%- unless user_list.blank? -%>
+      <div class="innerItem userList <%= user_list[:name].downcase %>List">
+        <h2><%= user_list[:name] %> (<%= user_list[:list].size %>)</h2>
+        <%- viewable = user_list[:list].slice(0..39)
+            hidden   = user_list[:list].slice(40..-1)
+            viewable.each do |user| -%>
+          <a href="<%= profile_path(user) %>">
+            <img src="<%= user.profile_image_path('small') %>" alt="<%= user.displayName %>" title="<%= user.displayName %>" />
+          </a>
+        <%- end -%>
+        <%- unless hidden.blank? -%>
+          <div class="hiddenContacts">
+            <%- hidden.each do |user| -%>
+              <a href="<%= profile_path(user) %>">
+                <img src="<%= user.profile_image_path('small') %>" alt="<%= user.displayName %>" title="<%= user.displayName %>" />
+              </a>
+            <%- end -%>
+          </div>
+          <p class="showMoreLinkContainer">
+            <a href="#More" class="showMoreContacts"><%= t('screens.profile.sidebar.all_contacts_link') %></a>
+          </p>
+        <%- end -%>
+      </div>
+    <%- end -%>
+  <%- end -%>
+<%- end -%>

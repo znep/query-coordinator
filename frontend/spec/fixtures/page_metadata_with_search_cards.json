@@ -1,0 +1,134 @@
+{
+  "cards": [
+    {
+      "aggregationField": null,
+      "aggregationFunction": null,
+      "cardSize": 1,
+      "cardType": "search",
+      "expanded": false,
+      "fieldName": "facadmin"
+    },
+    {
+      "aggregationField": null,
+      "aggregationFunction": null,
+      "cardOptions": {
+        "mapExtent": {
+          "northeast": [
+            44.08758502824518,
+            -84.462890625
+          ],
+          "southwest": [
+            31.05293398570514,
+            -122.34374999999999
+          ]
+        }
+      },
+      "cardSize": 1,
+      "cardType": "feature",
+      "expanded": false,
+      "fieldName": "location_1"
+    },
+    {
+      "aggregationField": null,
+      "aggregationFunction": null,
+      "cardOptions": {
+        "bucketSize": "logarithmic"
+      },
+      "cardSize": 1,
+      "cardType": "histogram",
+      "expanded": false,
+      "fieldName": "oshpd_number"
+    },
+    {
+      "aggregationField": null,
+      "aggregationFunction": null,
+      "cardSize": 1,
+      "cardType": "column",
+      "expanded": false,
+      "fieldName": "ltc"
+    },
+    {
+      "aggregationField": null,
+      "aggregationFunction": null,
+      "cardSize": 1,
+      "cardType": "search",
+      "expanded": false,
+      "fieldName": "initial_license_date"
+    },
+    {
+      "aggregationField": null,
+      "aggregationFunction": null,
+      "cardOptions": {
+        "bucketSize": 50
+      },
+      "cardSize": 1,
+      "cardType": "histogram",
+      "expanded": false,
+      "fieldName": "county_name"
+    },
+    {
+      "aggregationField": null,
+      "aggregationFunction": null,
+      "cardSize": 1,
+      "cardType": "column",
+      "expanded": true,
+      "fieldName": "fac_fdr"
+    },
+    {
+      "aggregationField": null,
+      "aggregationFunction": null,
+      "cardSize": 1,
+      "cardType": "search",
+      "expanded": false,
+      "fieldName": "county_code"
+    },
+    {
+      "aggregationField": null,
+      "aggregationFunction": null,
+      "cardOptions": {
+        "bucketSize": 5
+      },
+      "cardSize": 1,
+      "cardType": "histogram",
+      "expanded": false,
+      "fieldName": "district_number"
+    },
+    {
+      "aggregationField": null,
+      "aggregationFunction": null,
+      "cardSize": 1,
+      "cardType": "search",
+      "expanded": false,
+      "fieldName": "location"
+    },
+    {
+      "aggregationField": null,
+      "aggregationFunction": null,
+      "cardSize": 2,
+      "cardType": "table",
+      "expanded": false,
+      "fieldName": "*"
+    }
+  ],
+  "datasetId": "a83c-up9r",
+  "description": "",
+  "moderationStatus": true,
+  "name": "Expanded column chart",
+  "ownerDisplayName": "Randy Antler",
+  "ownerId": "3hpa-tfzy",
+  "pageId": "btev-gxyj",
+  "permissions": {
+    "isPublic": true,
+    "rights": [
+      "read"
+    ]
+  },
+  "primaryAggregation": null,
+  "primaryAmountField": null,
+  "provenance": "official",
+  "rights": [
+    "read"
+  ],
+  "shares": [],
+  "version": 4
+}

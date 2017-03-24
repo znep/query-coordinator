@@ -1,0 +1,45 @@
+<%- prefix = 'screens.admin.georegions' %>
+<%- no_js = params[:no_js].present? -%>
+
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-georegions' %>
+  <title><%= t("#{prefix}.title") %> | <%= @view_model.site_title %></title>
+<% end %>
+
+<% content_for :skip_links do %>
+  <%= link_to t('core.no_js'), '?no_js=true' %>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div class="contentBox withLeftNavigation georegionsScreen">
+  <div id="flash-container"><%= display_standard_flashes %></div>
+  <div class="adminHeader floating georegions">
+    <span class="icon"></span>
+    <h1><%= t("#{prefix}.configure_boundary.page_title") %></h1>
+  </div>
+</div>
+
+
+<div class="contentBox withLeftNavigation georegionsScreen">
+  <div class="georegions-configure-boundary">
+    <div class="clearfix">
+      <h1 class="georegions-title-custom"><%= t("#{prefix}.configure_boundary.configure_boundary") %></h1>
+
+      <div>
+        <%= form_tag({:action => 'edit_georegion', :id => @view_model.boundary.id}, :method => :put, :multipart => true, :class => 'commonForm') do -%>
+          <%= render :partial => 'configure_boundary_form',
+            :locals => {
+              :boundary => @view_model.boundary,
+              :is_name_missing => @view_model.is_name_missing,
+              :selected_shape_label => @view_model.selected_shape_label,
+              :prefix => "#{prefix}.configure_boundary",
+              :shape_label_options => @view_model.shape_label_options
+            } %>
+        <%- end -%>
+      </div>
+    </div>
+
+  </div>
+</div>

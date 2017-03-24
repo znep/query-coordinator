@@ -1,0 +1,21 @@
+@import "styleguide-colors";
+@import "common/breakpoints";
+@import "common/asset-selector/results-container";
+
+.asset-selector.modal {
+  overflow-y: hidden;
+
+  .modal-header {
+    z-index: 1;
+    display: flex;
+
+    .modal-header-title {
+      display: inline-flex;
+      align-self: center;
+    }
+  }
+
+  .modal-content {
+    margin-bottom: 0; // AssetSelector does not have a ModalFooter, remove the margin for it.
+  }
+}

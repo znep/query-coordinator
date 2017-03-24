@@ -1,0 +1,20 @@
+<ul id="<%= widget.elem_id %>" class="facetBreadcrumb clearfix">
+  <%- if widget.properties.breadcrumbRoot.is_a? Array -%>
+    <%- widget.properties.breadcrumbRoot.each_with_index do |link, i| -%>
+      <li class="root root_<%= i %>">
+        <%= link_from_theme link %>
+      </li>
+    <%- end -%>
+  <%- end -%>
+  <%- unless Canvas::Environment.facet_name.nil? -%>
+    <li class="facetListing">
+      <%= link_to @page_config.facet_friendly_name, "/facet/#{Canvas::Environment.facet_name}" %>
+    </li>
+  <%- end -%>
+  <%- unless Canvas::Environment.facet_value.nil? -%>
+    <li class="facetValue">
+      <%= link_to Canvas::Environment.facet_value,
+            "/facet/#{Canvas::Environment.facet_name}/#{CGI.escape Canvas::Environment.facet_value}" %>
+    </li>
+  <%- end -%>
+</ul>

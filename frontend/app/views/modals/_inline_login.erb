@@ -1,0 +1,25 @@
+<%- unless @suppress_chrome -%>
+<%= modal :id => 'login' do %>
+  <h2><%= t('account.common.inline_auth.sign_in_headline') %></h2>
+
+  <%= display_standard_flashes %>
+
+  <%= form_for (@user_session || UserSession.new), :html => { :class => "commonForm" } do |f| %>
+    <%= render :partial => "user_sessions/login_form_data_new", :locals => { :f => f } %>
+  <% end %>
+
+  <ul class="accountMaint">
+    <li><%= link_to t('account.common.form.forgot_password'), forgot_password_path, :class => 'noRedirPrompt' %></li>
+    <li><%= link_to t('account.common.form.no_account'), signup_path, { :class => "signupLink noRedirPrompt" } %></li>
+  </ul>
+<%- end -%>
+
+<%= modal :id => 'signup' do %>
+  <h2><%= t('account.common.inline_auth.sign_up_headline', site: CurrentDomain.strings.company) %></h2>
+
+  <%= form_for :signup, :url => account_path, :html => {:id => 'signupForm',
+              :class => 'commonForm', :multipart => true} do |f| %>
+   <%= render :partial => "accounts/signup_form_data_new", :locals => { :f => f, :is_modal => true } %>
+  <% end %>
+<%- end -%>
+<%- end -%>

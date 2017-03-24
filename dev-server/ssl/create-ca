@@ -1,0 +1,5 @@
+#!/bin/sh
+
+openssl genrsa -des3 -out ca.key -passout pass:socrata 4096
+openssl req -config $PWD/openssl-ca.cnf -new -x509 -days 3650 -key ca.key -out ca.crt -passin pass:socrata -batch
+

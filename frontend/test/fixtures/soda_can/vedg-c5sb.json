@@ -1,0 +1,407 @@
+{
+  "id" : "vedg-c5sb",
+  "name" : "2010 Report to Congress on White House Staff",
+  "averageRating" : 63,
+  "category" : "Government",
+  "createdAt" : 1278017457,
+  "displayType" : "table",
+  "downloadCount" : 8688,
+  "numberOfComments" : 12,
+  "oid" : 301551,
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1302998589,
+  "publicationGroup" : 218173,
+  "publicationStage" : "published",
+  "rowClass" : "",
+  "rowsUpdatedAt" : 1313892792,
+  "rowsUpdatedBy" : "bhnt-uir2",
+  "signed" : false,
+  "tableId" : 218173,
+  "totalTimesRated" : 11,
+  "viewCount" : 496692,
+  "viewLastModified" : 1339007640,
+  "viewType" : "tabular",
+  "columns" : [ {
+    "id" : 2519204,
+    "name" : "Employee Name",
+    "dataTypeName" : "text",
+    "fieldName" : "employee_name",
+    "position" : 1,
+    "renderTypeName" : "text",
+    "tableColumnId" : 1389398,
+    "width" : 117,
+    "cachedContents" : {
+      "non_null" : 469,
+      "smallest" : "Abrams, Adam W.",
+      "null" : 0,
+      "largest" : "Zichal, Heather R.",
+      "top" : [ {
+        "count" : 20,
+        "item" : "Barnes, Melody C."
+      }, {
+        "count" : 19,
+        "item" : "Baldassaro, Frederick J."
+      }, {
+        "count" : 18,
+        "item" : "Baggetto, Maude L."
+      }, {
+        "count" : 17,
+        "item" : "Ayling, Lindsay A."
+      }, {
+        "count" : 16,
+        "item" : "Axelrod, David M."
+      }, {
+        "count" : 15,
+        "item" : "Attili, Candice L."
+      }, {
+        "count" : 14,
+        "item" : "Asen, Jonathan D."
+      }, {
+        "count" : 13,
+        "item" : "Anello, Russell M."
+      }, {
+        "count" : 12,
+        "item" : "Andrias, Kate E."
+      }, {
+        "count" : 11,
+        "item" : "Anderson, Charles D."
+      }, {
+        "count" : 10,
+        "item" : "Anderson, Amanda D."
+      }, {
+        "count" : 9,
+        "item" : "Amorsingh, Lucius L."
+      }, {
+        "count" : 8,
+        "item" : "Alley, Hilary J."
+      }, {
+        "count" : 7,
+        "item" : "Aldy, Jr., Joseph E."
+      }, {
+        "count" : 6,
+        "item" : "Albino, James "
+      }, {
+        "count" : 5,
+        "item" : "Agnew, David P."
+      }, {
+        "count" : 4,
+        "item" : "Adams, Ian H."
+      }, {
+        "count" : 3,
+        "item" : "Abrams, Adam W."
+      } ]
+    },
+    "format" : {
+      "aggregate" : "count"
+    }
+  }, {
+    "id" : 2519205,
+    "name" : "Employee Status",
+    "dataTypeName" : "text",
+    "description" : "The type of the stated employee",
+    "fieldName" : "employee_status",
+    "position" : 2,
+    "renderTypeName" : "text",
+    "tableColumnId" : 1389399,
+    "width" : 142,
+    "cachedContents" : {
+      "non_null" : 469,
+      "smallest" : "Detailee",
+      "null" : 0,
+      "largest" : "Employee (part-time)",
+      "top" : [ {
+        "count" : 20,
+        "item" : "Employee"
+      }, {
+        "count" : 19,
+        "item" : "Detailee"
+      }, {
+        "count" : 18,
+        "item" : "Employee (part-time)"
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 2519209,
+    "name" : "Salary",
+    "dataTypeName" : "money",
+    "description" : "The salary paid per period",
+    "fieldName" : "salary",
+    "position" : 3,
+    "renderTypeName" : "money",
+    "tableColumnId" : 1389403,
+    "width" : 142,
+    "cachedContents" : {
+      "non_null" : 469,
+      "smallest" : "0.00",
+      "sum" : "38796307.00",
+      "null" : 0,
+      "average" : "82721.33688699360",
+      "largest" : "179700.00",
+      "top" : [ {
+        "count" : 20,
+        "item" : "50000.00"
+      }, {
+        "count" : 19,
+        "item" : "42000.00"
+      }, {
+        "count" : 18,
+        "item" : "66300.00"
+      }, {
+        "count" : 17,
+        "item" : "45000.00"
+      }, {
+        "count" : 16,
+        "item" : "130500.00"
+      }, {
+        "count" : 15,
+        "item" : "45900.00"
+      }, {
+        "count" : 14,
+        "item" : "158500.00"
+      }, {
+        "count" : 13,
+        "item" : "172200.00"
+      }, {
+        "count" : 12,
+        "item" : "71400.00"
+      }, {
+        "count" : 11,
+        "item" : "56100.00"
+      }, {
+        "count" : 10,
+        "item" : "80000.00"
+      }, {
+        "count" : 9,
+        "item" : "102000.00"
+      }, {
+        "count" : 8,
+        "item" : "60000.00"
+      }, {
+        "count" : 7,
+        "item" : "100000.00"
+      }, {
+        "count" : 6,
+        "item" : "113000.00"
+      }, {
+        "count" : 5,
+        "item" : "61200.00"
+      }, {
+        "count" : 4,
+        "item" : "120000.00"
+      }, {
+        "count" : 3,
+        "item" : "58511.00"
+      }, {
+        "count" : 2,
+        "item" : "78000.00"
+      }, {
+        "count" : 1,
+        "item" : "44402.00"
+      } ]
+    },
+    "format" : {
+      "aggregate" : "sum",
+      "humane" : "false",
+      "currency" : "USD"
+    }
+  }, {
+    "id" : 2519207,
+    "name" : "Pay Basis",
+    "dataTypeName" : "text",
+    "description" : "How often the salary is paid out",
+    "fieldName" : "pay_basis",
+    "position" : 4,
+    "renderTypeName" : "text",
+    "tableColumnId" : 1389401,
+    "width" : 128,
+    "cachedContents" : {
+      "non_null" : 469,
+      "smallest" : "Per Annum",
+      "null" : 0,
+      "largest" : "Per Annum",
+      "top" : [ {
+        "count" : 20,
+        "item" : "Per Annum"
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 2519208,
+    "name" : "Position Title",
+    "dataTypeName" : "text",
+    "description" : "The employee's title",
+    "fieldName" : "position_title",
+    "position" : 5,
+    "renderTypeName" : "text",
+    "tableColumnId" : 1389402,
+    "width" : 358,
+    "cachedContents" : {
+      "non_null" : 469,
+      "smallest" : "ADVANCE COORDINATOR",
+      "null" : 0,
+      "largest" : "WHITE HOUSE BUSINESS LIAISON",
+      "top" : [ {
+        "count" : 20,
+        "item" : "RECORDS MANAGEMENT ANALYST"
+      }, {
+        "count" : 19,
+        "item" : "STAFF ASSISTANT"
+      }, {
+        "count" : 18,
+        "item" : "SPECIAL ASSISTANT TO THE PRESIDENT AND ASSOCIATE COUNSEL TO THE PRESIDENT"
+      }, {
+        "count" : 17,
+        "item" : "SPECIAL ASSISTANT TO THE WHITE HOUSE COUNSEL"
+      }, {
+        "count" : 16,
+        "item" : "ASSISTANT SHIFT LEADER"
+      }, {
+        "count" : 15,
+        "item" : "ASSISTANT PRESS SECRETARY"
+      }, {
+        "count" : 14,
+        "item" : "ANALYST"
+      }, {
+        "count" : 13,
+        "item" : "EXECUTIVE ASSISTANT TO THE CHIEF OF STAFF TO THE FIRST LADY"
+      }, {
+        "count" : 12,
+        "item" : "DEPUTY DIRECTOR OF PUBLIC ENGAGEMENT"
+      }, {
+        "count" : 11,
+        "item" : "DEPUTY ASSOCIATE DIRECTOR OF INTERGOVERNMENTAL AFFAIRS"
+      }, {
+        "count" : 10,
+        "item" : "LEGISLATIVE ASSISTANT"
+      }, {
+        "count" : 9,
+        "item" : "RESEARCHER"
+      }, {
+        "count" : 8,
+        "item" : "SPECIAL ASSISTANT"
+      }, {
+        "count" : 7,
+        "item" : "DIRECTOR OF SPECIAL PROJECTS AND SPECIAL ASSISTANT TO THE OFFICE OF THE CHIEF OF STAFF"
+      }, {
+        "count" : 6,
+        "item" : "ASSOCIATE DIRECTOR OF URBAN AFFAIRS"
+      }, {
+        "count" : 5,
+        "item" : "DIRECTOR, ONLINE ENGAGEMENT"
+      }, {
+        "count" : 4,
+        "item" : "LEGISLATIVE ASSISTANT AND ASSISTANT FOR EVENTS"
+      }, {
+        "count" : 3,
+        "item" : "DEPUTY ASSISTANT TO THE PRESIDENT AND DIRECTOR OF ADVANCE AND OPERATIONS"
+      }, {
+        "count" : 2,
+        "item" : "DEPUTY DIRECTOR FOR MEDIA AFFAIRS"
+      }, {
+        "count" : 1,
+        "item" : "SPECIAL ASSISTANT AND ADVANCE LEAD"
+      } ]
+    },
+    "format" : {
+    }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "metadata" : {
+    "availableDisplayTypes" : [ "table", "fatrow", "page" ],
+    "rdfSubject" : "0",
+    "facets" : [ {
+      "multiSelect" : true,
+      "tableColumnId" : 1389399,
+      "type" : "discrete",
+      "top" : 3
+    }, {
+      "multiSelect" : true,
+      "ranges" : [ 0, 50000, 80000, 100000, 120000, 150000, 180000 ],
+      "tableColumnId" : 1389403,
+      "type" : "ranges"
+    }, {
+      "multiSelect" : true,
+      "tableColumnId" : 1389402,
+      "type" : "discrete",
+      "top" : 20
+    } ],
+    "filterCondition" : {
+      "value" : "AND",
+      "children" : [ {
+        "value" : "OR",
+        "type" : "operator",
+        "metadata" : {
+          "multiSelect" : false,
+          "includeAuto" : 5,
+          "tableColumnId" : 1389399,
+          "operator" : "EQUALS"
+        }
+      }, {
+        "value" : "OR",
+        "type" : "operator",
+        "metadata" : {
+          "customValues" : [ [ "0", "59999" ], [ "60000", "99999" ], [ "100000", "149999" ], [ "150000", "999999" ] ],
+          "tableColumnId" : 1389403,
+          "operator" : "BETWEEN"
+        }
+      }, {
+        "value" : "OR",
+        "type" : "operator",
+        "metadata" : {
+          "includeAuto" : 10,
+          "tableColumnId" : 1389402,
+          "operator" : "EQUALS"
+        }
+      } ],
+      "type" : "operator",
+      "metadata" : {
+        "unifiedVersion" : 1,
+        "advanced" : true
+      }
+    },
+    "rowIdentifier" : "0",
+    "rdfClass" : ""
+  },
+  "owner" : {
+    "id" : "bhnt-uir2",
+    "displayName" : "whitehouse",
+    "emailUnsubscribed" : false,
+    "privacyControl" : "login",
+    "profileLastModified" : 1361567417,
+    "screenName" : "whitehouse"
+  },
+  "query" : {
+    "orderBys" : [ {
+      "ascending" : false,
+      "expression" : {
+        "columnId" : 2519204,
+        "type" : "column"
+      }
+    } ]
+  },
+  "ratings" : {
+    "rating" : 64
+  },
+  "rights" : [ "read" ],
+  "sortBys" : [ {
+    "id" : 0,
+    "viewColumnId" : 2519204
+  } ],
+  "tableAuthor" : {
+    "id" : "bhnt-uir2",
+    "displayName" : "whitehouse",
+    "emailUnsubscribed" : false,
+    "privacyControl" : "login",
+    "profileLastModified" : 1361567417,
+    "screenName" : "whitehouse"
+  },
+  "tags" : [ "whitehouse", "salary", "government", "congress", "white house staff" ],
+  "flags" : [ "default" ]
+}

@@ -1,0 +1,32 @@
+  <h1 style="margin-top:1em;">Errors</h1>
+
+<%- if !Canvas2::DataContext::errors.empty? -%>
+  <h2>Data contexts</h2>
+  <pre style="font-size:1.2em;"><%= Canvas2::DataContext::errors.map(&:to_s) %></pre>
+<%- end -%>
+
+<%- if !Canvas2::Util::errors.empty? -%>
+  <h2>Components</h2>
+  <pre style="font-size:1.2em;"><%= Canvas2::Util::errors.map(&:to_s) %></pre>
+<%- end -%>
+
+  <h1 style="margin-top:1em;">Timings</h1>
+  <p style="font-size:1.2em;">Total page time: <%= (Time.now - @start_time) * 1000 %> ms</p>
+
+<%- if !Canvas2::DataContext::timings.empty? -%>
+  <h2>Data Context Timings</h2>
+  <div style="font-size:1.1em;"><p><%= Canvas2::DataContext::timings.join('</p><p>').html_safe %></p></div>
+<%- end -%>
+
+<%- if !Canvas2::DataContext::prefetch.empty? -%>
+  <h2>Prefetch Statistics</h2>
+  <div style="font-size:1.1em;"><p><%= Canvas2::DataContext::prefetch.join('</p><p>').html_safe %></p></div>
+<%- end -%>
+
+<%- if !@page.render_timings.empty? -%>
+  <h2>Render Timings</h2>
+  <div style="font-size:1.2em;"><pre><%= @page.render_timings.join("\n") %></pre></div>
+<%- end -%>
+
+<h2>Loaded Contexts</h2>
+<pre style="font-size:1.2em;"><%= JSON.pretty_generate(Canvas2::DataContext::available_contexts) %></pre>

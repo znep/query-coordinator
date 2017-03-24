@@ -1,0 +1,29 @@
+.dataset-preview {
+  .btn-grid, .btn-visualize {
+    margin-bottom: 8px;
+    align-self: center;
+
+    .icon-external {
+      padding-left: 7px;
+    }
+  }
+
+  .table-contents {
+    background: $white;
+    border: 1px $light-grey-4 solid;
+    border-bottom-width: 2px;
+    height: 539px;
+    position: relative;
+
+    .alert.error {
+      margin: 0;
+      text-align: left;
+    }
+
+    @media(max-width: $small) {
+      .socrata-pager {
+        justify-content: center;
+      }
+    }
+  }
+}

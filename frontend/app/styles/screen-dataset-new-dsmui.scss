@@ -1,0 +1,77 @@
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+div.container {
+  text-align: center;
+
+  .modal {
+    z-index: auto;
+  }
+
+  .modal-overlay {
+    position: static;
+    height: 100%;
+    flex-grow: 1;
+    align-items: stretch;
+  }
+
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+
+  .modal-container {
+    max-width: 600px;
+    padding: 50px;
+    margin: 100px auto;
+  }
+
+  .modal-header {
+    margin: 30px;
+  }
+
+  .modal-header-title {
+    font-size: xx-large;
+  }
+
+  .modal-header-subtitle {
+    color: gray;
+    font-size: small;
+  }
+
+  .modal-content {
+    margin: 30px;
+  }
+
+  #dataset-title-input {
+    width: 80%;
+    line-height: 1.75em;
+    margin: 3px 0 10px;
+  }
+
+  .modal-actions {
+    .btn {
+      width: 250px;
+      margin: 0;
+      height: 62px;
+    }
+
+    text-align: center;
+
+    #create-spinner {
+      display: none;
+      margin: 0 auto;
+    }
+
+    #create-text {
+      display: none;
+      margin: 0 auto;
+    }
+  }
+
+  .error {
+    display: none;
+  }
+}

@@ -1,0 +1,21 @@
+<h2><%= t('screens.edit_metadata.licensing_attr') %></h2>
+
+<div class="line clearfix">
+  <label for="view_licenseId"><%= t('screens.edit_metadata.licensing') %></label>
+  <%= select_tag('view[licenseId]', license_options(@view ? @view.licenseId : '')) %>
+</div>
+
+<div class="line clearfix">
+  <div class="additionalHelp"><%= t('screens.edit_metadata.license_help') %></div>
+</div>
+
+<div class="line clearfix">
+  <label for="view_attribution"><%= t('screens.edit_metadata.data_provided_by') %></label>
+  <%= text_field_tag('view[attribution]', @view ? @view.attribution : '', :title => t('screens.edit_metadata.data_provided_prompt'), :class => 'textPrompt') %>
+</div>
+
+<div class="line clearfix">
+  <label for="view_attributionLink"><%= t('screens.edit_metadata.source_link') %></label>
+  <%= text_field_tag('view[attributionLink]', @view ? @view.attributionLink : '', :title => t('screens.edit_metadata.source_link_prompt'), :class => 'textPrompt') %>
+</div>
+

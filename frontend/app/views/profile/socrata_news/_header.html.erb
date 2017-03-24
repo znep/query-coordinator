@@ -1,0 +1,56 @@
+<div class="profile-header content">
+
+  <div class="profile-header--image">
+    <img src="<%= @user.profile_image_path('large') %>" alt="<%= @user.displayName %>" />
+    <%= edit_link(@user, 'profile-header--image-edit-link', t('screens.profile.info.edit_link'), 'image', false) %>
+  </div>
+
+  <div class="profile-header--content">
+    <div class="profile-header--user-info">
+      <div class="profile-header--primary-user-info">
+        <h1 class="profile-header--user-name"><%= @user.displayName %></h1>
+        <div class="profile-header--user-actions">
+          <%- if @is_user_current -%>
+            <a href="<%= profile_account_path(@user) %>" class="editProfileLink iconLink accountSettings">
+              <span class="icon-settings"></span>
+              <span class="editLinkText"><%= t('screens.profile.bar.edit_settings_link') %></span>
+            </a>
+          <%- elsif current_user.present? -%>
+            <%- if @user.my_friend? -%>
+              <a href="<%= url_for(:action => 'delete_friend') %>" class="followButton button smallButton remove">
+                <span class="icon"></span>
+                <span class="linkText"><%= t('screens.profile.bar.unfollow_link') %></span>
+              </a>
+            <%- else -%>
+              <a href="<%= url_for(:action => 'create_friend') %>" class="followButton button smallButton add">
+                <span class="icon"></span>
+                <span class="linkText"><%= t('screens.profile.bar.follow_link') %></span>
+              </a>
+            <%- end -%>
+            <%- if CurrentDomain.user_can?(current_user, UserRights::MANAGE_USERS) -%>
+              <a href="#Message" class="button smallButton contactUserButton">
+                <span class="icon"></span>
+                <span class="linkText"><%= t('screens.profile.bar.message_link') %></span>
+              </a>
+            <%- end -%>
+          <%- end -%>
+        </div>
+      </div>
+
+      <div class="profile-header--secondary-user-info">
+        <%- if @user.displayTitleAndOrg.present? -%>
+          <h4 class="profile-header--user-title-org"><%= @user.displayTitleAndOrg %></h4>
+        <%- end -%>
+        <%- if @user.displayLocation.present? -%>
+          <h4 class="profile-header--user-location"><%= @user.displayLocation %></h4>
+        <%- end -%>
+      </div>
+    </div>
+
+    <div class="profile-header--stats">
+      <%= render :partial => 'summary_stats' %>
+    </div>
+
+  </div>
+
+</div>

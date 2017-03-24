@@ -1,0 +1,252 @@
+{
+  "testColumnDetailsAsTableWantsThem": [
+    {
+      "name": "Beat",
+      "fieldName": "beat",
+      "physicalDatatype": "text",
+      "fred": "text",
+      "importance": 3,
+      "sortable": true
+    },
+    {
+      "name": "Block",
+      "fieldName": "block",
+      "physicalDatatype": "text",
+      "fred": "text",
+      "importance": 3,
+      "sortable": true
+    },
+    {
+      "name": "Case Number",
+      "fieldName": "case_number",
+      "physicalDatatype": "text",
+      "fred": "text",
+      "importance": 3,
+      "sortable": true
+    },
+    {
+      "name": "Community Area",
+      "fieldName": "community_area",
+      "physicalDatatype": "text",
+      "fred": "identifier",
+      "importance": 3,
+      "sortable": true
+    },
+    {
+      "name": "Date",
+      "description": "the oblong edible fruit of a palm",
+      "fieldName": "date",
+      "physicalDatatype": "timestamp",
+      "fred": "time",
+      "importance": 1,
+      "sortable": true
+    },
+    {
+      "name": "Date with Custom Format",
+      "description": "the oblong edible fruit of a palm, pressed into a square",
+      "fieldName": "date_custom",
+      "physicalDatatype": "timestamp",
+      "fred": "time",
+      "importance": 1,
+      "sortable": true,
+      "format": {
+        "formatString": "MMM DD, YYYY hh:mm A"
+      }
+    },
+    {
+      "name": "Time",
+      "fieldName": "time",
+      "physicalDatatype": "floating_timestamp",
+      "logicalDatatpye": "time",
+      "importance": 1,
+      "sortable": true
+    },
+    {
+      "name": "Description",
+      "description": "describe enscribe proscribe prescribe",
+      "fieldName": "description",
+      "physicalDatatype": "text",
+      "fred": "text",
+      "importance": 3,
+      "cardinality": 1,
+      "sortable": true
+    },
+    {
+      "name": "District",
+      "fieldName": "district",
+      "physicalDatatype": "text",
+      "fred": "text",
+      "importance": 3,
+      "sortable": true
+    },
+    {
+      "name": "FBI Code",
+      "fieldName": "fbi_code",
+      "physicalDatatype": "text",
+      "fred": "category",
+      "importance": 3,
+      "sortable": true
+    },
+    {
+      "name": "Id",
+      "fieldName": "id",
+      "physicalDatatype": "number",
+      "fred": "identifier",
+      "importance": 3,
+      "sortable": true
+    },
+    {
+      "name": "Id (no commas)",
+      "fieldName": "id_nocommas",
+      "physicalDatatype": "number",
+      "fred": "identifier",
+      "importance": 3,
+      "sortable": true,
+      "format": {
+        "noCommas": true
+      }
+    },
+    {
+      "name": "IUCR",
+      "fieldName": "iucr",
+      "physicalDatatype": "text",
+      "fred": "category",
+      "importance": 3,
+      "sortable": true
+    },
+    {
+      "name": "Latitude",
+      "fieldName": "latitude",
+      "physicalDatatype": "number",
+      "fred": "amount",
+      "importance": 3,
+      "sortable": true
+    },
+    {
+      "name": "Location Description",
+      "fieldName": "location_description",
+      "physicalDatatype": "text",
+      "fred": "text",
+      "importance": 3,
+      "sortable": true
+    },
+    {
+      "name": "Longitude",
+      "fieldName": "longitude",
+      "physicalDatatype": "number",
+      "fred": "amount",
+      "importance": 3,
+      "sortable": true
+    },
+    {
+      "name": "Primary Type",
+      "fieldName": "primary_type",
+      "physicalDatatype": "text",
+      "fred": "category",
+      "importance": 3,
+      "sortable": true
+    },
+    {
+      "name": "Ward",
+      "fieldName": "ward",
+      "physicalDatatype": "text",
+      "fred": "location",
+      "importance": 3,
+      "sortable": true
+    },
+    {
+      "name": "Very Good Odds",
+      "fieldName": "very_good_odds",
+      "physicalDatatype": "number",
+      "fred": "amount",
+      "importance": 3,
+      "sortable": true,
+      "dataTypeName": "percent",
+      "renderTypeName": "percent",
+      "format": {
+        "noCommas": true
+      }
+    },
+    {
+      "name": "Likelihood of Being an Accident",
+      "fieldName": "accident_likelihood",
+      "physicalDatatype": "number",
+      "fred": "amount",
+      "importance": 3,
+      "sortable": true,
+      "dataTypeName": "percent",
+      "renderTypeName": "percent"
+    },
+    {
+      "name": "Year",
+      "fieldName": "year",
+      "physicalDatatype": "number",
+      "fred": "amount",
+      "importance": 2,
+      "sortable": true
+    },
+    {
+      "name": "Location",
+      "fieldName": "point",
+      "physicalDatatype": "point",
+      "fred": "location",
+      "importance": 3,
+      "sortable": true
+    },
+    {
+      "name": "Neighborhood",
+      "description": "",
+      "fieldName": ":Computed_i2inbshz_location",
+      "physicalDatatype": "text",
+      "fred": "location",
+      "importance": 1,
+      "shapefileFeatureHumanReadablePropertyName": "fieldName",
+      "sortable": true
+    },
+    {
+      "name": "Property Damage",
+      "description": "",
+      "fieldName": "property_damage",
+      "physicalDatatype": "money",
+      "fred": "money",
+      "importance": 1,
+      "sortable": true
+    },
+    {
+      "name": "Property Damage with Funky Format",
+      "description": "",
+      "fieldName": "property_damage_funky",
+      "physicalDatatype": "money",
+      "fred": "money",
+      "importance": 1,
+      "sortable": true,
+      "format": {
+        "precision": 1,
+        "groupSeparator": ".",
+        "decimalSeparator": ",",
+        "currency": "£"
+      }
+    },
+    {
+      "name": "Property Damage Humane",
+      "description": "",
+      "fieldName": "property_damage_humane",
+      "physicalDatatype": "money",
+      "fred": "money",
+      "importance": 1,
+      "sortable": true,
+      "format": {
+        "humane": true
+      }
+    },
+    {
+      "name": "Checkbox test",
+      "description": "For boolean datatype",
+      "fieldName": "checkbox_test",
+      "physicalDatatype": "boolean",
+      "fred": "category",
+      "importance": 3,
+      "sortable": true
+    }
+  ]
+}

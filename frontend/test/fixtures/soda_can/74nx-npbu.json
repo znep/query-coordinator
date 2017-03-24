@@ -1,0 +1,539 @@
+{
+  "id" : "74nx-npbu",
+  "name" : "TestPlan002.GOS",
+  "averageRating" : 0,
+  "createdAt" : 1360058786,
+  "displayType" : "table",
+  "downloadCount" : 2,
+  "numberOfComments" : 0,
+  "oid" : 2666642,
+  "publicationAppendEnabled" : true,
+  "publicationDate" : 1362112099,
+  "publicationGroup" : 658551,
+  "publicationStage" : "published",
+  "rowClass" : "",
+  "rowsUpdatedAt" : 1363213959,
+  "rowsUpdatedBy" : "x5jh-tg6w",
+  "signed" : false,
+  "state" : "normal",
+  "tableId" : 705557,
+  "totalTimesRated" : 0,
+  "viewCount" : 106,
+  "viewLastModified" : 1362759445,
+  "viewType" : "tabular",
+  "columns" : [ {
+    "id" : 47572481,
+    "name" : "Unique ID",
+    "dataTypeName" : "text",
+    "fieldName" : "unique_id",
+    "position" : 1,
+    "renderTypeName" : "text",
+    "tableColumnId" : 7583609,
+    "width" : 148,
+    "cachedContents" : {
+      "non_null" : 214,
+      "smallest" : "1",
+      "null" : 0,
+      "largest" : "9",
+      "top" : [ {
+        "count" : 20,
+        "item" : "14.4"
+      }, {
+        "count" : 19,
+        "item" : "14.4.1"
+      }, {
+        "count" : 18,
+        "item" : "14.4.2"
+      }, {
+        "count" : 17,
+        "item" : "14.3.1"
+      }, {
+        "count" : 16,
+        "item" : "1.1.4"
+      }, {
+        "count" : 15,
+        "item" : "15"
+      }, {
+        "count" : 14,
+        "item" : "1.8"
+      }, {
+        "count" : 13,
+        "item" : "5.7"
+      }, {
+        "count" : 12,
+        "item" : "4.2.10"
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 47572498,
+    "name" : "Sort Order",
+    "dataTypeName" : "number",
+    "fieldName" : "sort_order",
+    "position" : 2,
+    "renderTypeName" : "number",
+    "tableColumnId" : 7626108,
+    "width" : 100,
+    "cachedContents" : {
+      "non_null" : 214,
+      "smallest" : "1",
+      "sum" : "766",
+      "null" : 0,
+      "average" : "3.579439252336449",
+      "largest" : "14",
+      "top" : [ {
+        "count" : 20,
+        "item" : "1"
+      }, {
+        "count" : 19,
+        "item" : "5"
+      }, {
+        "count" : 18,
+        "item" : "4"
+      }, {
+        "count" : 17,
+        "item" : "2"
+      }, {
+        "count" : 16,
+        "item" : "3"
+      }, {
+        "count" : 15,
+        "item" : "6"
+      }, {
+        "count" : 14,
+        "item" : "7"
+      }, {
+        "count" : 13,
+        "item" : "8"
+      }, {
+        "count" : 12,
+        "item" : "9"
+      }, {
+        "count" : 11,
+        "item" : "10"
+      }, {
+        "count" : 10,
+        "item" : "11"
+      }, {
+        "count" : 9,
+        "item" : "12"
+      }, {
+        "count" : 8,
+        "item" : "13"
+      }, {
+        "count" : 7,
+        "item" : "14"
+      } ]
+    },
+    "format" : {
+      "align" : "right"
+    }
+  }, {
+    "id" : 47572502,
+    "name" : "Type",
+    "dataTypeName" : "text",
+    "fieldName" : "type",
+    "position" : 3,
+    "renderTypeName" : "text",
+    "tableColumnId" : 7583610,
+    "width" : 148,
+    "cachedContents" : {
+      "non_null" : 214,
+      "smallest" : "Goal",
+      "null" : 0,
+      "largest" : "Strategy",
+      "top" : [ {
+        "count" : 20,
+        "item" : "Goal"
+      }, {
+        "count" : 19,
+        "item" : "Objective"
+      }, {
+        "count" : 18,
+        "item" : "Strategy"
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 47572507,
+    "name" : "Goal ID",
+    "dataTypeName" : "number",
+    "fieldName" : "goal_id",
+    "position" : 4,
+    "renderTypeName" : "number",
+    "tableColumnId" : 7583611,
+    "width" : 184,
+    "cachedContents" : {
+      "non_null" : 214,
+      "smallest" : "1",
+      "sum" : "847",
+      "null" : 0,
+      "average" : "3.957943925233645",
+      "largest" : "15",
+      "top" : [ {
+        "count" : 20,
+        "item" : "1"
+      }, {
+        "count" : 19,
+        "item" : "2"
+      }, {
+        "count" : 18,
+        "item" : "3"
+      }, {
+        "count" : 17,
+        "item" : "4"
+      }, {
+        "count" : 16,
+        "item" : "5"
+      }, {
+        "count" : 15,
+        "item" : "6"
+      }, {
+        "count" : 14,
+        "item" : "7"
+      }, {
+        "count" : 13,
+        "item" : "8"
+      }, {
+        "count" : 12,
+        "item" : "9"
+      }, {
+        "count" : 11,
+        "item" : "10"
+      }, {
+        "count" : 10,
+        "item" : "11"
+      }, {
+        "count" : 9,
+        "item" : "12"
+      }, {
+        "count" : 8,
+        "item" : "13"
+      }, {
+        "count" : 7,
+        "item" : "14"
+      }, {
+        "count" : 6,
+        "item" : "15"
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 47572511,
+    "name" : "Objective ID",
+    "dataTypeName" : "number",
+    "fieldName" : "objective_id",
+    "position" : 5,
+    "renderTypeName" : "number",
+    "tableColumnId" : 7583612,
+    "width" : 244,
+    "cachedContents" : {
+      "non_null" : 199,
+      "smallest" : "1",
+      "sum" : "759",
+      "null" : 15,
+      "average" : "3.814070351758794",
+      "largest" : "9",
+      "top" : [ {
+        "count" : 20,
+        "item" : "1"
+      }, {
+        "count" : 19,
+        "item" : "2"
+      }, {
+        "count" : 18,
+        "item" : "3"
+      }, {
+        "count" : 17,
+        "item" : "4"
+      }, {
+        "count" : 16,
+        "item" : "5"
+      }, {
+        "count" : 15,
+        "item" : "6"
+      }, {
+        "count" : 14,
+        "item" : "7"
+      }, {
+        "count" : 13,
+        "item" : "8"
+      }, {
+        "count" : 12,
+        "item" : "9"
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 47572514,
+    "name" : "Strategy ID",
+    "dataTypeName" : "number",
+    "fieldName" : "strategy_id",
+    "position" : 6,
+    "renderTypeName" : "number",
+    "tableColumnId" : 7583613,
+    "width" : 232,
+    "cachedContents" : {
+      "non_null" : 154,
+      "smallest" : "1",
+      "sum" : "476",
+      "null" : 60,
+      "average" : "3.090909090909091",
+      "largest" : "10",
+      "top" : [ {
+        "count" : 20,
+        "item" : "1"
+      }, {
+        "count" : 19,
+        "item" : "2"
+      }, {
+        "count" : 18,
+        "item" : "3"
+      }, {
+        "count" : 17,
+        "item" : "4"
+      }, {
+        "count" : 16,
+        "item" : "5"
+      }, {
+        "count" : 15,
+        "item" : "6"
+      }, {
+        "count" : 14,
+        "item" : "7"
+      }, {
+        "count" : 13,
+        "item" : "8"
+      }, {
+        "count" : 12,
+        "item" : "9"
+      }, {
+        "count" : 11,
+        "item" : "10"
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 47572515,
+    "name" : "Name",
+    "dataTypeName" : "text",
+    "fieldName" : "name",
+    "position" : 7,
+    "renderTypeName" : "text",
+    "tableColumnId" : 7583614,
+    "width" : 148,
+    "cachedContents" : {
+      "non_null" : 211,
+      "smallest" : "1: Develop new and improved vaccines",
+      "null" : 3,
+      "largest" : "Testing, testing, 1,2,3!",
+      "top" : [ {
+        "count" : 20,
+        "item" : "3.2: indeed a test plan (yes indeedy)"
+      }, {
+        "count" : 19,
+        "item" : "3.2.1: collect information and test it on site"
+      }, {
+        "count" : 18,
+        "item" : "3.2.2: enter in new information to test!"
+      }, {
+        "count" : 17,
+        "item" : "3.1.1: test strategy"
+      }, {
+        "count" : 16,
+        "item" : "A new strategy for this objective"
+      }, {
+        "count" : 15,
+        "item" : "Test"
+      } ]
+    },
+    "format" : {
+    }
+  }, {
+    "id" : 47572516,
+    "name" : "Connection to Secretary's Strategic Initiative",
+    "dataTypeName" : "text",
+    "fieldName" : "connection_to_secretary_s_strategic_initiative",
+    "position" : 8,
+    "renderTypeName" : "text",
+    "tableColumnId" : 7583615,
+    "width" : 652,
+    "cachedContents" : {
+      "non_null" : 11,
+      "smallest" : "Emergency Preparedness and Response",
+      "null" : 203,
+      "largest" : "Prevention and Wellness",
+      "top" : [ {
+        "count" : 20,
+        "item" : "Food Safety"
+      }, {
+        "count" : 19,
+        "item" : "Healthy Weight"
+      }, {
+        "count" : 18,
+        "item" : "Emergency Preparedness and Response"
+      }, {
+        "count" : 17,
+        "item" : "Prevention and Wellness"
+      }, {
+        "count" : 16,
+        "item" : "Evidence-Based Strategies for Children and Youth"
+      }, {
+        "count" : 15,
+        "item" : "Health Insurance Coverage"
+      } ]
+    },
+    "format" : {
+      "align" : "left"
+    }
+  }, {
+    "id" : 47572517,
+    "name" : "Archive",
+    "dataTypeName" : "checkbox",
+    "fieldName" : "archive",
+    "position" : 9,
+    "renderTypeName" : "checkbox",
+    "tableColumnId" : 7583616,
+    "width" : 184,
+    "cachedContents" : {
+      "non_null" : 214,
+      "smallest" : false,
+      "null" : 0,
+      "largest" : false,
+      "top" : [ {
+        "count" : 20,
+        "item" : false
+      } ]
+    },
+    "format" : {
+    }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "contributor",
+    "userId" : "tvqj-qpm2"
+  }, {
+    "inherited" : false,
+    "type" : "owner",
+    "userId" : "east-g8b7"
+  }, {
+    "inherited" : false,
+    "type" : "contributor",
+    "userId" : "fhhv-u9jc"
+  }, {
+    "inherited" : false,
+    "type" : "viewer",
+    "userId" : "fpm2-48v2"
+  }, {
+    "inherited" : false,
+    "type" : "owner",
+    "userId" : "t979-fbrw"
+  }, {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  }, {
+    "inherited" : false,
+    "type" : "owner",
+    "userId" : "rqdg-xj2v"
+  }, {
+    "inherited" : false,
+    "type" : "owner",
+    "userId" : "x5jh-tg6w"
+  }, {
+    "inherited" : false,
+    "type" : "viewer",
+    "userId" : "nm8i-nkxg"
+  }, {
+    "inherited" : false,
+    "type" : "viewer",
+    "userEmail" : "clare.zimmerman_notaccountyet@socrata.com"
+  }, {
+    "inherited" : false,
+    "type" : "owner",
+    "userId" : "m3q3-94g8"
+  }, {
+    "inherited" : false,
+    "type" : "owner",
+    "userId" : "gyp5-rt2y"
+  }, {
+    "inherited" : false,
+    "type" : "owner",
+    "userId" : "c5wx-rz9n"
+  }, {
+    "inherited" : false,
+    "type" : "owner",
+    "userEmail" : "clare.zimmerman+noaccount@socrata.com"
+  } ],
+  "metadata" : {
+    "custom_fields" : {
+      "Configuration" : {
+        "Submission Form" : "",
+        "Plan Owner" : "HHS",
+        "Type" : "GOS",
+        "Plan ID" : "TestPlan002"
+      },
+      "Plan Details" : {
+        "Contact Email" : "",
+        "Archive" : "No",
+        "Outputs - Participation" : "",
+        "Purpose Statement" : "",
+        "External Factors" : "",
+        "Plan Name" : "A Test Plan That Looks Like the Vaccines Plan",
+        "Development" : "",
+        "Vision and Guiding Principles" : "",
+        "Situation" : "",
+        "Inputs" : "",
+        "Leadership Dashboard" : "No"
+      }
+    },
+    "renderTypeConfig" : {
+      "visible" : {
+        "table" : true
+      }
+    },
+    "availableDisplayTypes" : [ "table", "fatrow", "page" ],
+    "rdfSubject" : "0",
+    "rowIdentifier" : "0",
+    "rdfClass" : ""
+  },
+  "owner" : {
+    "id" : "rq65-nbxr",
+    "displayName" : "Strategic Planning",
+    "emailUnsubscribed" : false,
+    "privacyControl" : "login",
+    "profileImageUrlLarge" : "/images/profile/1013/0917/Strategic_Plan_Concept_Map_July_2012_large.JPG",
+    "profileImageUrlMedium" : "/images/profile/1013/0917/Strategic_Plan_Concept_Map_July_2012_thumb.JPG",
+    "profileImageUrlSmall" : "/images/profile/1013/0917/Strategic_Plan_Concept_Map_July_2012_tiny.JPG",
+    "profileLastModified" : 1354744013,
+    "roleName" : "administrator",
+    "screenName" : "Strategic Planning",
+    "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages" ]
+  },
+  "privateMetadata" : {
+    "contactEmail" : ""
+  },
+  "query" : {
+  },
+  "rights" : [ "read", "write", "add", "delete", "grant", "add_column", "remove_column", "update_column", "update_view", "delete_view" ],
+  "tableAuthor" : {
+    "id" : "rq65-nbxr",
+    "displayName" : "Strategic Planning",
+    "emailUnsubscribed" : false,
+    "privacyControl" : "login",
+    "profileImageUrlLarge" : "/images/profile/1013/0917/Strategic_Plan_Concept_Map_July_2012_large.JPG",
+    "profileImageUrlMedium" : "/images/profile/1013/0917/Strategic_Plan_Concept_Map_July_2012_thumb.JPG",
+    "profileImageUrlSmall" : "/images/profile/1013/0917/Strategic_Plan_Concept_Map_July_2012_tiny.JPG",
+    "profileLastModified" : 1354744013,
+    "roleName" : "administrator",
+    "screenName" : "Strategic Planning",
+    "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages" ]
+  },
+  "tags" : [ "plan-gos" ],
+  "flags" : [ "default" ]
+}

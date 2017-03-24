@@ -1,0 +1,52 @@
+<div class="choropleth-container" ng-class="{ 'card-size-1': cardSize === 1, 'card-size-2': cardSize === 2, 'card-size-3': cardSize === 3 }">
+  <div class="choropleth"></div>
+  <div class="choropleth-selection-box">
+    <span class="icon-filter"></span>
+    <span class="choropleth-selection-value"></span>
+    <span class="icon-close"></span>
+  </div>
+</div>
+
+<div class="visualization-render-error choro-map-render-error" ng-show="choroplethRenderError">
+  <div class="row">
+    <div class="span2"><span class="icon-warning"></span></div>
+    <div class="span10">{{::'common.errors.mapRenderError' | I18n}}</div>
+  </div>
+</div>
+
+<div class="visualization-render-error choro-no-boundaries-error" ng-show="noAvailableBoundaries">
+  <div class="row">
+    <div class="span2"><span class="icon-warning"></span></div>
+    <div class="span10">{{::'choropleth.noPreviewAvailable' | I18n}}</div>
+  </div>
+</div>
+
+<div class="visualization-render-error choro-pending-computation-error" ng-show="isPendingColumnAddition && !noAvailableBoundaries">
+  <div class="row">
+    <div class="span2"><span class="icon-info"></span></div>
+    <div class="span9" ng-bind-html="'choropleth.pendingComputation' | I18n"></div>
+  </div>
+</div>
+
+<div class="visualization-render-error choro-processing-computation-error" ng-show="isPendingComputation">
+  <div class="row">
+    <div class="span2"><load-spinner busy="true"></load-spinner></div>
+    <div class="span10" ng-bind-html="'choropleth.computationInProgress' | I18n"></div>
+  </div>
+</div>
+
+<div class="visualization-render-error choro-no-polygons-error" ng-show="hasNoPolygons">
+  <div class="row">
+    <div class="span2"><span class="icon-warning"></span></div>
+    <div class="span10">{{::'choropleth.hasNoPolygons' | I18n}}</div>
+  </div>
+</div>
+
+<div class="visualization-render-error choro-cardinality-error" ng-show="hasCardinalityError">
+  <div class="row">
+    <div class="span2"><span class="icon-warning"></span></div>
+    <div class="span10">{{::'choropleth.hasCardinalityError' | I18n}}</div>
+  </div>
+</div>
+
+<load-spinner busy="busy"></load-spinner>

@@ -1,0 +1,284 @@
+//color variables
+$waiting-grey: #646565;
+$failing-red: darkred;
+$success-green: green;
+$timestamp-grey: #888888;
+$pager-blue: #2f4589;
+
+#connector-content {
+
+  .connectors-header {
+
+    .connector-top-page-status {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .connector-status-label {
+      padding: 10px
+    }
+
+    .connector-status-last-synced {
+      font-size: 1.3em;
+      padding-top: 5px;
+      color: $timestamp-grey;
+    }
+
+  }
+
+  .asset-name {
+    padding-left: 5px;
+  }
+
+  .has-focus {
+    outline: 2px solid #00BF9B;
+  }
+
+  .select-icon {
+    margin: 5px 5px 5px 5px;
+    font-size: 1em;
+    position: absolute;
+  }
+
+  .icon-data {
+    color: #288DC1;
+  }
+
+  .icon-external-square {
+    color: #00A1AF;
+  }
+
+  .icon-plus3 {
+    color: #5E5E5E;
+  }
+
+  .socrata-icon-close-circle {
+    color: #8e98a1;
+  }
+
+  .is-disabled {
+    background-color: #F1F1F1;
+    color: #cacaca;
+  }
+
+  .select-style {
+    padding: 0;
+    display: inline-flex;
+    overflow: hidden;
+    width: 20px;
+    height: 20px;
+
+    border: 1px solid #E4E4E4;
+    border-radius: 1px;
+
+    select {
+      z-index: 2;
+      padding: 5px 50px;
+      width: 130%;
+      border: none;
+      border-radius: 3px;
+      box-shadow: none;
+      background-color: transparent;
+      background-image: none;
+      -webkit-appearance: none;
+         -moz-appearance: none;
+              appearance: none;
+    }
+
+  }
+
+  .flexbox-space-between {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .flexbox-right-section {
+    flex-direction: column;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .connector-list-go-back {
+    display: inline;
+    float: right;
+    font-size: 1.25em;
+    padding-top: 25px;
+  }
+
+  .connector-top-page-button-area {
+    float: right;
+  }
+
+  .connector-icon {
+    margin-right: .2em;
+  }
+
+  .connector-icon-not-yet:before {
+    color: $waiting-grey;
+  }
+
+  .connector-icon-failed:before {
+    color: $failing-red;
+  }
+
+  .connector-icon-success:before {
+    color: $success-green;
+  }
+
+  .result-time-stamp {
+    color: $timestamp-grey;
+    font-size: 1.2em;
+    padding-top: 8px;
+  }
+
+  .connector-status-label {
+    font-size: 1.5em;
+    font-weight: 900;
+  }
+
+  .connector-show-url {
+    font-size: 1.5em;
+  }
+
+}
+
+.selective-connection {
+
+  .inline-value-label {
+    padding-left: 0px;
+    padding-right: 10px;
+  }
+
+  .legend {
+    font-size: 1.2em;
+    margin: 5px;
+
+    .legend-icon {
+      margin-right: 3px;
+    }
+
+    .legend-info {
+    }
+
+    .legend-item {
+      margin: 7px;
+    }
+
+    .legend-key {
+      font-weight: 600;
+    }
+  }
+
+  .inline-value {
+    display: inline-block;
+    padding-top: 9px
+  }
+
+  .inline-button {
+    float: right;
+    display: inline-block;
+  }
+
+  .filter-assets {
+    margin-top: 1em;
+    margin-right: 6px;
+    input {
+      width: 100%;
+    }
+  }
+  .esri-tree {
+    border: 1px solid $color_chrome_box_border;
+    margin-top: 1em;
+    .item {
+      padding: .5em;
+    }
+    .folder {
+      .child {
+        // border-left: 1px solid $color_chrome_box_border;
+        margin-left: 1em;
+        padding-left: 1em;
+      }
+    }
+  }
+}
+
+.noResultsMessage {
+  font-size: 1.3em;
+  margin: 5em 0;
+  text-align: center;
+}
+
+
+div.line > div.input-group {
+  display: table;
+  border-collapse: separate;
+  font-size: 1.2em;
+  .input-group-prepend, .input-group-append {
+    display: table-cell;
+    white-space: nowrap;
+    background: $color_chrome_box_border;
+    line-height: 1.2em;
+    padding: 0.3em;
+    border: 1px solid $color_chrome_box_border;
+  }
+  .input-group-prepend {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-right: 0px;
+  }
+  .input-group-append {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-right: 0px;
+  }
+  input {
+    display: table-cell;
+    width: 20em;
+    &.input-prepended {
+      display: table-cell;
+      border-left: 0px;
+      border-top-left-radius: 0px;
+      border-bottom-left-radius: 0px;
+    }
+    &.input-appended {
+      display: table-cell;
+      border-right: 0px;
+      border-top-right-radius: 0px;
+      border-bottom-right-radius: 0px;
+    }
+  }
+}
+
+.pager {
+
+  margin-left: 19em;
+  overflow: hidden;
+
+  .pager-element {
+
+    margin-right: 5px;
+    display: block;
+    float: left;
+
+    &.page {
+      font-size: .8rem;
+      background-color: white;
+      color: $pager-blue;
+      padding: 5px 7px 5px 7px;
+      border: 1px solid lightgrey;
+      text-align: center;
+
+      &.pager-page-selected {
+        background-color: $pager-blue;
+        color: white;
+      }
+    }
+
+    &.ellipsis {
+      padding-top: 5px;
+      font-size: .9rem;
+    }
+  }
+}

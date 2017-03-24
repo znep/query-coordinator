@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<!--[if IE 8]><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%= I18n.locale %>" lang="<%= I18n.locale %>" class="ie ie8 noBorderRadius noLinearGradient noCss3"><![endif]-->
+<!--[if gte IE 9]><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%= I18n.locale %>" lang="<%= I18n.locale %>" class="ie"><![endif]-->
+<!--[if !IE]>--><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%= I18n.locale %>" lang="<%= I18n.locale %>"><!--<![endif]-->
+
+<!--
+Powered by the Socrata Open Data Platform
+http://www.socrata.com
+-->
+
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <%= csrf_meta_tags %>
+
+  <%= jquery_include %>
+
+  <%= yield :head %>
+
+  <%= rendered_stylesheet_tag 'base-sdp' %>
+  <link type="text/css" media="all" rel="stylesheet" href="/webfonts/socrata-icons/socrata-icons.css?<%= asset_revision_key %>"/>
+  <% unless !use_ga_tracking_code? || (params[:no_cookie] == 'true') %>
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', '<%= get_ga_tracking_code %>'],
+                ['_trackPageview'],
+                ['_trackPageLoadTime']);
+    </script>
+    <%= render_ga_tracking %>
+    <%- if enable_site_chrome? -%>
+      <%= site_chrome_google_analytics_tag %>
+    <%- end -%>
+  <% end %>
+
+  <%= render :partial => 'templates/mixpanel_tracking' %>
+
+</head>
+
+<body>
+  <div class="skip-links">
+    <%= yield :skip_links %>
+  </div>
+
+  <%= yield :layout %>
+
+  <%#
+  Better to load JS at the bottom:
+  http://developer.yahoo.com/performance/rules.html#js_bottom
+  %>
+
+  <script type="text/template" id="templates">
+    <%= render :partial => 'shared/control_templates' %>
+    <%= yield :templates %>
+  </script>
+  <div id="js-appended-templates" style="display: none" aria-hidden="true"></div>
+  <%= render_translations %>
+  <%= yield :translations %>
+
+  <%# Libraries for use with BeautyTip %>
+  <!--[if IE]>
+  <script type="text/javascript" src="/javascripts/plugins/excanvas.compiled.js"></script>
+  <![endif]-->
+
+  <%= include_webpack_bundle 'open-data/base.js' %>
+
+  <%= render_view_js %>
+
+  <%- if !Rails.env.end_with?('production') -%>
+      <%= include_webpack_bundle 'open-data/debug.js' %>
+  <%- else -%>
+    <script type="text/javascript">
+      $.debug = function() {};
+    </script>
+  <% end %>
+
+  <script type="text/javascript">
+    blist.namespace.fetch('blist.configuration');
+    blist.configuration.strings = <%= safe_json(CurrentDomain.strings) %>;
+    blist.configuration.googleMapsApiKey = '<%= GOOGLE_MAPS_SITE_KEY %>';
+    blist.configuration.webpackManifest = <%= raw Rails.configuration.webpack[:asset_manifest].to_json %>;
+    blist.configuration.assetRevisionKey = '<%= asset_revision_key %>';
+    blist.locale = "<%= I18n.locale %>";
+    blist.rights = { user: <%= raw UserRights.to_h.to_json %>, view: <%= raw ViewRights.to_h.to_json %> };
+  </script>
+
+  <%= render 'shared/current_user_blist_js' %>
+  <%= yield :js_footer %>
+
+  <%# we don't trust custom tracking code to be nonblocking like the async
+      GA, so put it down here. %>
+  <% unless CurrentDomain.custom_tracking_code.blank? || (params[:no_cookie] == 'true') %>
+    <!-- Custom Tracking Code -->
+    <%= raw CurrentDomain.custom_tracking_code %>
+  <% end %>
+</body>
+</html>

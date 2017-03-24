@@ -1,0 +1,27 @@
+<div class="leftNavBox editProfileNav">
+  <ul class="navigationList">
+    <li class="basicInfo">
+      <%= link_to \
+        raw('<span class="icon"></span>' + t('screens.profile.edit.info.title')),
+          edit_profile_path(current_user) %>
+    </li>
+    <li class="profileImage">
+      <%= link_to \
+        raw('<span class="icon"></span>' + t('screens.profile.edit.image.title')),
+        {:action => 'edit_image'} %>
+    </li>
+    <li class="accountSettings">
+      <%= link_to \
+        raw('<span class="icon"></span>' + t('screens.profile.edit.account.title')),
+        {:action => 'edit_account'} %>
+    </li>
+    <li class="appTokens">
+      <%= link_to \
+        raw('<span class="icon"></span>' + t('screens.profile.edit.app_tokens.title')),
+        {:action => 'edit_app_tokens'} %>
+    </li>
+  </ul>
+</div>
+
+<%= render_translations LocalePart.screens.profile %>
+

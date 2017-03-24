@@ -1,0 +1,96 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://localhost:8080/configurations/160/properties
+    body:
+      encoding: UTF-8
+      string: '{"name":"newProperty2016-10-04 16:19:54 -0700","value":{"some key":"some
+        value","some other key":"some other value"}}'
+    headers:
+      Content-Type:
+      - application/json
+      X-Socrata-Host:
+      - localhost
+      Cookie:
+      - logged_in=true;_socrata_session_id=BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJWYyNWQxZjg4OTE1NDMzYjQ5OWQwOThlMzU0MGY0NGM4BjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjFQK0s4VUwyQ0pLWGwxTGJ4N1pjWnJQa1JDU05LZk1aVXNwcm9ZdkZaYXR3PQY7AEZJIg5yZXR1cm5fdG8GOwBGMEkiCWluaXQGOwBUVA%3D%3D--699b5f9b224d3e5048e3fc67f21bbe5360c64bad;socrata-csrf-token=54gROK00FX2R282cbnkZH%2FnxXDNOx885dPhHlZbf%2FT7Yaq1oELYx2HQPe22D7gCzAOBVEAS7CW3GYq%2F3Z4aX4g%3D%3D;_core_session_id=dHVnZy1pa2NlIDE0NzU2NDE1NzMgZDQzOGJkNjNhZTc2IDc3NWVmMDc4MGM0NmE2NjZmZDU4ZWUzNzIyMTVjODA4MmYzYTM1Mzk%3D
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Socrata-Requestid:
+      - d3iomsjqelpm5kw3mff4nxsjw
+      Access-Control-Allow-Origin:
+      - "*"
+      Set-Cookie:
+      - _core_session_id=dHVnZy1pa2NlIDE0NzU2NDQ3OTQgZDQzOGJkNjNhZTc2IGU1MjFkZmRhZjdmZDQwZDc4OTFjZGJjMGM2ZWVlYTZmMzA1MzlkYmQ;Path=/
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(7.5.1.v20110908)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "name" : "newProperty2016-10-04 16:19:54 -0700",
+          "createdAt" : 1475623194,
+          "value" : {
+            "some key" : "some value",
+            "some other key" : "some other value"
+          }
+        }
+    http_version: 
+  recorded_at: Tue, 04 Oct 2016 23:19:54 GMT
+- request:
+    method: post
+    uri: http://localhost:8080/configurations/135/properties
+    body:
+      encoding: UTF-8
+      string: '{"name":"newProperty2016-10-04 16:20:53 -0700","value":{"some key":"some
+        value","some other key":"some other value"}}'
+    headers:
+      Content-Type:
+      - application/json
+      X-Socrata-Host:
+      - localhost
+      Cookie:
+      - logged_in=true;_socrata_session_id=BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJWYyNWQxZjg4OTE1NDMzYjQ5OWQwOThlMzU0MGY0NGM4BjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjFQK0s4VUwyQ0pLWGwxTGJ4N1pjWnJQa1JDU05LZk1aVXNwcm9ZdkZaYXR3PQY7AEZJIg5yZXR1cm5fdG8GOwBGMEkiCWluaXQGOwBUVA%3D%3D--699b5f9b224d3e5048e3fc67f21bbe5360c64bad;socrata-csrf-token=54gROK00FX2R282cbnkZH%2FnxXDNOx885dPhHlZbf%2FT7Yaq1oELYx2HQPe22D7gCzAOBVEAS7CW3GYq%2F3Z4aX4g%3D%3D;_core_session_id=dHVnZy1pa2NlIDE0NzU2NDE1NzMgZDQzOGJkNjNhZTc2IDc3NWVmMDc4MGM0NmE2NjZmZDU4ZWUzNzIyMTVjODA4MmYzYTM1Mzk%3D
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Socrata-Requestid:
+      - 95dqssi50kg79re6sqcobmmnn
+      Access-Control-Allow-Origin:
+      - "*"
+      Set-Cookie:
+      - _core_session_id=dHVnZy1pa2NlIDE0NzU2NDQ4NTMgZDQzOGJkNjNhZTc2IGUyNzYzYjllODAyMjc3MzhkNDlmMWRhZWZiYmNkMjZlMzEzOWNhOGM;Path=/
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      X-Error-Code:
+      - not_found
+      X-Error-Message:
+      - No such configuration
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(7.5.1.v20110908)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "code" : "not_found",
+          "error" : true,
+          "message" : "No such configuration"
+        }
+    http_version: 
+  recorded_at: Tue, 04 Oct 2016 23:20:53 GMT
+recorded_with: VCR 3.0.3

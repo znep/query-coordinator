@@ -1,0 +1,21 @@
+  <div class="adminHeader routingApproval">
+    <span class="icon"></span>
+    <h1><%= t('screens.admin.routing_approval.title') %> </h1>
+
+    <ul id="sectionOptions" class="pillButtons">
+      <li><a href="<%= routing_approval_administration_path %>"
+        class="dashboard <%= active == 'dashboard' ? "active" : '' %>">
+        <span class="icon"></span><%= t('screens.admin.routing_approval.dashboard') %>
+      </a></li>
+      <li><a href="<%= routing_approval_administration_path %>/queue"
+        class="queue <%= active == 'queue' ? "active" : '' %>">
+        <span class="icon"></span><%= t('screens.admin.routing_approval.approval_queue') %>
+      </a></li>
+      <%- if CurrentDomain.user_can?(current_user, UserRights::MANAGE_APPROVAL) -%>
+      <li><a href="<%= routing_approval_administration_path %>/manage"
+        class="manage <%= active == 'manage' ? "active" : '' %>">
+        <span class="icon"></span><%= t('screens.admin.routing_approval.approval_management') %>
+      </a></li>
+      <%- end -%>
+    </ul>
+  </div>

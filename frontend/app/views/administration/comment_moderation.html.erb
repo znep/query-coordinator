@@ -1,0 +1,77 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-moderation' %>
+  <title>Moderation | <%= get_site_title %></title>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div class="contentBox withLeftNavigation">
+  <div class="adminHeader comments">
+    <span class="icon"></span>
+    <h1>Moderate Comments</h1>
+    <div class="commentStatusContainer">
+      <label for="commentStatusDropdown">Show</label>
+      <select id="commentStatusDropdown">
+        <option value="all">All</option>
+        <option value="pending">Pending</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="tableContainer">
+    <div class="moderationsTable">
+      <div class="gridListWrapper">
+        <table class="gridList commentModerationList" cellspacing="0">
+          <colgroup>
+            <col class="author" />
+            <col class="comment" />
+            <col class="dataset" />
+            <col class="status" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="author" scope="col"><div>Author</div><span class="icon"></span></th>
+              <th class="comment" scope="col"><div>Comment</div><span class="icon"></span></th>
+              <th class="dataset" scope="col"><div>Dataset</div><span class="icon"></span></th>
+              <th class="status" scope="col"><div>Status</div><span class="icon"></span></th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <p class="noResultsMessage">No comments match your current filter.</p>
+</div>
+
+<%= render_admin_qualtrics %>
+
+<%- content_for :templates do -%>
+  <table class="moderationItem">
+    <tr class="item">
+      <td class="author" scope="row"><a href="#" class="profileLink" rel="external">
+        <img alt="author image"/><span class="cellInner"></span>
+      </a></td>
+      <td class="comment"><div class="cellInner"></div><p class="commentBody"></p></td>
+      <td class="dataset"><a class="cellInner" rel="external"></a></td>
+      <td class="status">
+        <div class="cellInner"></div>
+        <a href="#approve" class="approveComment button" data-action="approved">
+          <span class="icon"></span>Approve
+        </a>
+        <a href="#reject" class="rejectComment button" data-action="rejected">
+          <span class="icon"></span>Reject
+        </a>
+      </td>
+    </tr>
+  </table>
+<%- end -%>
+
+<%- content_for :js_footer do -%>
+  <%= include_webpack_bundle 'open-data/admin-moderation.js' %>
+<%- end -%>

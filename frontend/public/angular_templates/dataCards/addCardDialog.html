@@ -1,0 +1,22 @@
+<h2><span>+</span> {{::'addCardDialog.addCardTitle' | I18n}}</h2>
+
+  <!-- Inner column selection and preview split into its own template for use elsewhere -->
+  <column-and-visualization-selector
+    on-customize-card="customizeCard"
+    card-size="dialogState.cardSize"
+    add-card-selected-column-field-name="addCardSelectedColumnFieldName"
+    page="page">
+  </column-and-visualization-selector>
+
+<div class="controls">
+  <button type="button"
+    class="action-btn dark r-to-l"
+    ng-disabled="disableSave"
+    ng-click="addCard()">
+    {{::'addCardDialog.addCard' | I18n}}
+    <spinner ng-if="busy"></spinner>
+  </button>
+  <button type="button"
+    class="action-btn dark r-to-l"
+    ng-click="dialogState.show = false">{{::'common.cancel' | I18n}}</button>
+</div>

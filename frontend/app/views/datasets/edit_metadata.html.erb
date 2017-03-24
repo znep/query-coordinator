@@ -274,7 +274,7 @@
     <%- domain_flags = CurrentDomain.feature_flags
         dataset_flags = @view.metadata.try(:feature_flags) || {}
         FeatureFlags.derive(@view).each do |key, value|
-          flag_config = Hashie::Mash.new(ExternalConfig.for(:feature_flag)[key])
+          flag_config = Hashie::Mash.new(FeatureFlags.config_for(key))
           disabled = !dataset_flags.has_key?(key) -%>
       <div class="line clearfix<%= disabled ? ' disabled' : '' %>" title="<%= flag_config.description %>">
         <label><%= key %><br /><span>(From Domain: <%= domain_flags[key] %>)</span></label>

@@ -1,0 +1,451 @@
+@import "styleguide-colors";
+
+@import "common/feedback-panel";
+
+$admin-header-height: 32px;
+$edit-bar-height: 60px;
+$edit-bar-font-color: #dbdbdb;
+$edit-bar-name-width: 330px;
+$edit-bar-menu-width: 60px;
+$edit-bar-z-index: 8;
+$preview-bar-height: 34px;
+$preview-bar-color: #4a4747;
+$preview-bar-dismiss-hover: #333;
+
+body {
+  margin: 0;
+  padding: 0;
+  background: $light-grey-6;
+}
+
+.visualization-canvas {
+  min-height: 90vh;
+
+  .edit-menu {
+    .block-label {
+      color: $white;
+    }
+
+    .text-input {
+      width: 100%;
+    }
+
+    .text-area {
+      width: 100%;
+      height: 80px;
+      max-width: 100%;
+      max-height: 300px;
+    }
+  }
+
+  .share-modal {
+    .modal-container {
+      max-width: 80%;
+    }
+
+    .modal-content {
+      max-height: 70%;
+    }
+
+    .dropdown-container {
+      // This corrects for the dropdown border spilling outside the container
+      // bounds (looks bad visually).
+      margin-left: 2px;
+      width: 12rem;
+
+      .dropdown-options-list {
+        z-index: 1001; // Map zoom controls :(
+      }
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+    }
+
+    textarea {
+      height: 80px;
+      max-width: 100%;
+      font-family: monospace;
+      word-wrap: break-all;
+    }
+  }
+
+  .edit-bar {
+    z-index: $edit-bar-z-index;
+
+    .page-name {
+      width: 300px;
+    }
+
+    .edit-bar-child {
+      display: flex;
+      justify-content: flex-end;
+      width: calc(100% - #{$edit-bar-menu-width + $edit-bar-name-width});
+      padding: 0 16px;
+      font-weight: lighter;
+
+      .btn-save {
+        width: 110px;
+        margin-right: 5px;
+        background-color: transparent;
+        color: $edit-bar-font-color;
+
+        &:not([disabled]) {
+          &:hover, &:focus {
+            background-color: $dark-grey-2;
+            color: $white;
+          }
+        }
+
+        .spinner-default {
+          height: 20px;
+          width: 20px;
+        }
+      }
+
+      .save-notification {
+        .alert-overlay {
+          position: fixed;
+          top: $edit-bar-height;
+          bottom: 0;
+          right: 0;
+          left: 0;
+          background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        &.hidden {
+          display: none;
+        }
+
+        .alert {
+          position: fixed;
+          top: 70px;
+          right: 16px;
+
+          button {
+            cursor: pointer;
+            padding: 0;
+          }
+
+          .btn-dismiss {
+            float: right;
+            margin-top: 4px;
+            margin-left: 20px;
+
+            .socrata-icon svg {
+              width: 15px;
+              height: 15px;
+            }
+          }
+
+          &.success {
+            .btn-dismiss {
+              .socrata-icon svg g {
+                fill: $success-dark;
+              }
+
+              &:hover, &:focus {
+                .socrata-icon svg {
+                  g {
+                    fill: $success-base;
+                  }
+                }
+              }
+            }
+          }
+
+          &.error {
+            .btn-dismiss {
+              .socrata-icon svg g {
+                fill: $error-dark;
+              }
+
+              &:hover, &:focus {
+                .socrata-icon svg {
+                  g {
+                    fill: $error-base;
+                  }
+                }
+              }
+            }
+
+            .btn-retry {
+              color: $error-dark;
+              padding-left: 5px;
+              font-weight: bold;
+
+              &:hover, &:focus {
+                text-decoration: underline;
+              }
+            }
+          }
+        }
+      }
+
+      .btn-preview {
+        color: $edit-bar-font-color;
+        text-decoration: none;
+        text-align: right;
+        padding: 11px 18px;
+
+        &:hover, &:focus {
+          color: $white;
+        }
+
+        .socrata-icon-preview {
+          padding-left: 8px;
+          font-size: 16px;
+        }
+      }
+    }
+  }
+
+  .preview-bar {
+    width: 100%;
+    background: $preview-bar-color;
+    height: $preview-bar-height;
+    color: $white;
+    display: flex;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    z-index: 5;
+
+    span {
+      margin-top: 4px;
+    }
+
+    .btn-transparent {
+      color: $white;
+      padding: 0 20px;
+
+      &:hover,
+      &:focus,
+      &:active {
+        color: $light-grey-4;
+        background-color: $preview-bar-dismiss-hover;
+      }
+    }
+
+    .socrata-icon-close-2 {
+      font-size: 12px;
+      line-height: 15px;
+    }
+  }
+
+  .main-spinner {
+    display: flex;
+    height: 400px;
+    opacity: 0;
+    animation-name: fadeIn;
+    animation-duration: .5s;
+    animation-delay: 1s;
+    animation-fill-mode: forwards;
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .spinner-large {
+      margin: auto;
+    }
+  }
+
+  .visualization-canvas-body {
+    margin: 0 auto;
+
+    .info-pane {
+      padding-top: 15px;
+      margin-bottom: 0;
+      margin: 0 auto;
+
+      .container {
+        margin: 0 auto;
+      }
+    }
+
+    .add-visualization-button-container {
+      padding: 200px 0px;
+      display: flex;
+
+      .btn {
+        margin: auto;
+      }
+
+      .socrata-icon-add {
+        padding-right: 10px;
+      }
+    }
+
+    .visualizations {
+      min-height: 500px;
+      padding: 20px;
+      padding-bottom: 0;
+      display: flex;
+      justify-content: center;
+
+      .visualization-wrapper {
+        height: 600px;
+        width: 100%;
+        background: $white;
+        position: relative;
+        z-index: 4;
+
+        &:hover, &:focus {
+          .action-btns .btn {
+            opacity: 1;
+          }
+        }
+
+        .action-btns {
+          $btn-z-index: 5;
+
+          position: absolute;
+          top: 35px;
+          right: 35px;
+          z-index: $btn-z-index;
+          font-size: 12px;
+          padding: 6px 12px;
+
+          .btn {
+            vertical-align: top;
+            font-size: 12px;
+            height: 30px;
+            opacity: 0;
+
+            &:hover, &:focus {
+              opacity: 1;
+            }
+          }
+
+          .share-visualization-button {
+            $share-btn-width: 30px;
+
+            margin-left: -1px; // Make the margins fuse.
+            position: relative;
+            width: $share-btn-width;
+            padding: 0;
+
+            .socrata-icon svg {
+              position: absolute;
+              top: 1px;
+              left: -1px;
+              width: 16px;
+              height: 16px;
+            }
+          }
+
+          .edit-visualization-button {
+            padding: 6px 12px;
+          }
+        }
+
+        .socrata-visualization-renderer {
+          .alert.error {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+      }
+    }
+
+    .table-contents {
+      padding: 20px;
+      height: 574px;
+
+      .socrata-visualization {
+        background: $white;
+      }
+    }
+  }
+
+  .filter-bar-container {
+    background: $light-grey-5;
+    border-bottom: 1px solid $light-grey-4;
+
+    .column-container {
+      z-index: 7;
+    }
+
+    .collapsed-filters-container {
+      z-index: 5;
+      background: $light-grey-5;
+      border-bottom: 1px solid $light-grey-4;
+    }
+  }
+
+  // TODO (EN-13130) Fix these z-index issues upstream in AX
+  .authoring-workflow-modal {
+    .filter-bar-container {
+      .filter-controls, .filter-config {
+        z-index: 60;
+      }
+
+      .collapsed-filters-container {
+        z-index: 53;
+      }
+    }
+  }
+}
+
+footer#site-chrome-footer {
+  visibility: hidden;
+}
+
+.placeholder-wrapper {
+  margin-top: $edit-bar-height;
+}
+
+.preview-mode {
+  margin-top: $preview-bar-height;
+
+  #site-chrome-admin-header {
+    display: none;
+
+    & + #site-chrome-header {
+      margin-top: 0;
+    }
+
+    & + #site-chrome-header .mobile-menu {
+      top: 0;
+    }
+  }
+}
+
+.hide-site-chrome {
+  #site-chrome-header {
+    display: none;
+  }
+
+  .visualization-canvas-body {
+    margin-top: $edit-bar-height;
+  }
+
+  #site-chrome-admin-header {
+    z-index: $edit-bar-z-index + 1;
+
+    & ~ .visualization-canvas {
+      .edit-bar {
+        margin-top: $admin-header-height;
+      }
+
+      .visualization-canvas-body {
+        margin-top: $admin-header-height + $edit-bar-height;
+      }
+    }
+  }
+
+  footer#site-chrome-footer {
+    display: none;
+  }
+}

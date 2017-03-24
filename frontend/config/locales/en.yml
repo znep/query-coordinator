@@ -3254,6 +3254,7 @@ en:
         metadata_explain2: Fields can be configured in multiple ways. They can be <span class="code">required</span>, which will be enforced when publishers create new datasets and update existing metadata. They can also be <span class="code">private</span>, meaning that the values entered will not be visible to the public.
         metadata_explain3: Finally, you can choose to pre-define the options for your <span class="code">fields</span> if you wish to have values chosen from a list rather than entered as free-form text.
         metadata_field_table_description: Metadata Fields for '%{name}'
+        no: No
         no_data: No custom dataset fields have been defined for your domain yet. Enter a name below and click 'Create' to begin.
         no_fields_defined: This field set does not have any fields defined yet
         page_title: Manage Dataset Metadata
@@ -3263,6 +3264,7 @@ en:
         title: Manage Metadata
         'true': true
         up: Up
+        yes: Yes
       new_story:
         background_color: Background Color
         background_image: Background Image

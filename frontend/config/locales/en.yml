@@ -2199,9 +2199,7 @@ en:
           quadrillion: Quadrillion
           thousand: Thousand
           trillion: Trillion
-          unit: ''
       format:
-        delimiter: ''
         precision: 3
         significant: true
         strip_insignificant_zeros: true
@@ -2217,11 +2215,7 @@ en:
           tb: TB
     percentage:
       format:
-        delimiter: ''
         format: "%n%"
-    precision:
-      format:
-        delimiter: ''
   govstat:
     admin:
       bulk_edit:

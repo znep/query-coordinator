@@ -5445,7 +5445,7 @@ en:
       browse:
         owned_datasets: Owned By Me
         shared_datasets: Shared To Me
-        title: "%{user}'s Datasets"
+        title: "%{user}'s Assets"
       contact:
         message: Message
         message_prompt: Enter your message

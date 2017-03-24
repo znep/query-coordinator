@@ -408,11 +408,6 @@ describe View do
   describe '.new_backend?' do
     let(:view) { View.new }
 
-    xit 'defaults to nil, because why not' do
-      # this test has different results on Jenkins!
-      expect(view.newBackend?).to be(nil)
-    end
-
     it 'reflects the underlying model data' do
       view.data = {'newBackend' => false}
       expect(view.newBackend?).to be(false)

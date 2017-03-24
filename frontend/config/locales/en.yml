@@ -1999,14 +1999,14 @@ en:
       save: Save
       title: Page Settings
   date:
-    time_in_distance:
-      ago: "%{distance} ago"
-      from_now: "%{distance} from now"
-    formats:
-      short: '%d %b %Y'
-      long: '%B %d, %Y'
-      short_with_time: '%Y/%m/%d %I:%M%p'
-      long_with_time: '%d %b %Y at %H:%M:%S %Z'
+    abbr_day_names:
+    - Sun
+    - Mon
+    - Tue
+    - Wed
+    - Thu
+    - Fri
+    - Sat
     abbr_month_names:
     -
     - Jan
@@ -2021,6 +2021,20 @@ en:
     - Oct
     - Nov
     - Dec
+    day_names:
+    - Sunday
+    - Monday
+    - Tuesday
+    - Wednesday
+    - Thursday
+    - Friday
+    - Saturday
+    formats:
+      default: "%m-%d-%Y"
+      long: '%B %d, %Y'
+      long_with_time: '%d %b %Y at %H:%M:%S %Z'
+      short: '%d %b %Y'
+      short_with_time: '%Y/%m/%d %I:%M%p'
     month_names:
     -
     - January
@@ -2035,6 +2049,13 @@ en:
     - October
     - November
     - December
+    order:
+    - :month
+    - :day
+    - :year
+    time_in_distance:
+      ago: "%{distance} ago"
+      from_now: "%{distance} from now"
   datetime:
     distance_in_words:
       about_x_hours:
@@ -2081,9 +2102,6 @@ en:
       month: Month
       second: Seconds
       year: Year
-  time:
-    formats:
-      short: '%H:%M:%S'
   error:
     back: Back
     error_400:
@@ -2111,6 +2129,99 @@ en:
       no_permission: Error
       were_sorry: The current user doesn't have access to this resource.
     to_whence_you_came: to where you came from.
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      accepted: must be accepted
+      blank: can't be blank
+      present: must be blank
+      confirmation: doesn't match %{attribute}
+      empty: can't be empty
+      equal_to: must be equal to %{count}
+      even: must be even
+      exclusion: is reserved
+      greater_than: must be greater than %{count}
+      greater_than_or_equal_to: must be greater than or equal to %{count}
+      inclusion: is not included in the list
+      invalid: is invalid
+      less_than: must be less than %{count}
+      less_than_or_equal_to: must be less than or equal to %{count}
+      model_invalid: "Validation failed: %{errors}"
+      not_a_number: is not a number
+      not_an_integer: must be an integer
+      odd: must be odd
+      required: must exist
+      taken: has already been taken
+      too_long:
+        one: is too long (maximum is 1 character)
+        other: is too long (maximum is %{count} characters)
+      too_short:
+        one: is too short (minimum is 1 character)
+        other: is too short (minimum is %{count} characters)
+      wrong_length:
+        one: is the wrong length (should be 1 character)
+        other: is the wrong length (should be %{count} characters)
+      other_than: must be other than %{count}
+    template:
+      body: 'There were problems with the following fields:'
+      header:
+        one: 1 error prohibited this %{model} from being saved
+        other: "%{count} errors prohibited this %{model} from being saved"
+  helpers:
+    select:
+      prompt: Please select
+    submit:
+      create: Create %{model}
+      submit: Save %{model}
+      update: Update %{model}
+  number:
+    currency:
+      format:
+        delimiter: ","
+        format: "%u%n"
+        precision: 2
+        separator: "."
+        significant: false
+        strip_insignificant_zeros: false
+        unit: "$"
+    format:
+      delimiter: ","
+      precision: 3
+      separator: "."
+      significant: false
+      strip_insignificant_zeros: false
+    human:
+      decimal_units:
+        format: "%n %u"
+        units:
+          billion: Billion
+          million: Million
+          quadrillion: Quadrillion
+          thousand: Thousand
+          trillion: Trillion
+          unit: ''
+      format:
+        delimiter: ''
+        precision: 3
+        significant: true
+        strip_insignificant_zeros: true
+      storage_units:
+        format: "%n %u"
+        units:
+          byte:
+            one: Byte
+            other: Bytes
+          gb: GB
+          kb: KB
+          mb: MB
+          tb: TB
+    percentage:
+      format:
+        delimiter: ''
+        format: "%n%"
+    precision:
+      format:
+        delimiter: ''
   govstat:
     admin:
       bulk_edit:
@@ -5742,12 +5853,21 @@ en:
     array:
       last_word_connector: ", and "
       two_words_connector: " and "
+      words_connector: ", "
     array_or:
       last_word_connector: ", or "
       two_words_connector: " or "
+      words_connector: ", "
   table:
     no_summary_available: No Summary Available
     summary: This table of %{data_description} has %{column_heading_count} column heading(s) %{column_headings} for each of %{row_heading_count} description row headings %{row_headings}
+  time:
+    am: am
+    formats:
+      default: "%a, %d %b %Y %I:%M:%S %p %Z"
+      long: "%B %d, %Y %I:%M %p"
+      short: "%H:%M:%S"
+    pm: pm
   visualization_canvas:
     add_visualization: Add Visualization
     default_row_label: row

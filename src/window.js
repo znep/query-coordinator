@@ -8,7 +8,7 @@ import StatefulAutocomplete from './components/StatefulAutocomplete';
  * This throws the autocomplete function on window,
  * so that external consumers can create autocomplete components
  */
-window.autocomplete = function(container, defaultState, options) {
+window.autocomplete = function(container, options, defaultState) {
   _.noConflict();
 
   let rootNode;

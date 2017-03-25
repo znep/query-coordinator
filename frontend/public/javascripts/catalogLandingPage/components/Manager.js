@@ -160,20 +160,21 @@ class Manager extends React.Component {
 
     const renderCategoryStats = () => {
       const { categoryStats } = this.props;
+      // Yes, this code is copy and pasted from the CategoryStats component,
+      // except without the header.
+      const sortedStats = () => (_(categoryStats).toPairs().sortBy(0).fromPairs().value());
+      const filteredStats = () => (_(sortedStats()).toPairs().reject([1, 0]).fromPairs().value());
 
-      // Filters out zero-valued results, then sorts the remaining results by category name.
-      const outputStats = _(categoryStats).toPairs().reject([1, 0]).sortBy(0).fromPairs().value();
-
-      if (_.isEmpty(outputStats)) { return null; }
+      if (_.isEmpty(filteredStats())) { return null; }
 
       return (
         <div className="catalog-landing-page-stats">
           <div className="stat-counts">
-            {_.map(outputStats, (count, name) => {
-              const countKey = count === 1 ? 'singular' : 'plural';
-              const nameTranslation = _.get(I18n, `category_stats.${name}.${countKey}`);
-              return <CategoryStat key={name} name={nameTranslation} count={count} />;
-            })}
+            {_.map(filteredStats(), (count, name) =>
+              <CategoryStat
+                key={name}
+                name={_.get(I18n, `category_stats.${name}`, name)}
+                count={count} />)}
           </div>
         </div>
       );

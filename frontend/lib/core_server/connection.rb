@@ -209,9 +209,9 @@ module CoreServer
       # pass/spoof in the current domain cname
       request['X-Socrata-Host'] = CurrentDomain.cname
 
+      # proxy user agent
       if @@env.present?
         request['X-Socrata-RequestId'] = @@env['action_dispatch.request_id'].to_s.gsub('-', '')
-        request['X-Forwarded-For'] = @@env['HTTP_X_FORWARDED_FOR'] || @@env['REMOTE_ADDR'] || '-'
         request['X-User-Agent'] = @@env['HTTP_USER_AGENT']
       else
         Rails.logger.warn('Missing env in CoreServer::Connection')

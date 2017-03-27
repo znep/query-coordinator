@@ -105,9 +105,10 @@ class TransformStatus extends Component {
         <th
           key={transform.id}
           ref={(flyoutParentEl) => { this.flyoutParentEl = flyoutParentEl; }}
+          data-flyout={getFlyoutId(transform)}
           className={classNames('col-errors', { 'col-errors-selected': inErrorMode })}>
           {progressBar}
-          <Link to={linkPath} data-flyout={getFlyoutId(transform)}>
+          <Link to={linkPath}>
             <div className="column-status-text">
               <span className="err-info error">{commaify(transform.num_transform_errors)}</span>
               {msg}

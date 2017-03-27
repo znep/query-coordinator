@@ -219,6 +219,13 @@ function MetadataProvider(config) {
     return isSubcolumn;
   };
 
+  // EN-13453: Don't try to pass along hidden columns.
+  // If a logged in user has write access to a view, the request for metadata will return hidden
+  // columns decorated with a nice hidden flag, instead of omitting the hidden columns completely.
+  this.isHiddenColumn = function(flags) {
+    return flags ? _.includes(flags, 'hidden') : false;
+  };
+
   // Given a dataset metadata object (see .getDatasetMetadata()),
   // returns an array of the columns  which are suitable for
   // display to the user (all columns minus system and subcolumns).
@@ -229,7 +236,8 @@ function MetadataProvider(config) {
 
     return _.reject(datasetMetadata.columns, function(column) {
       return self.isSystemColumn(column.fieldName) ||
-        self.isSubcolumn(column.fieldName, datasetMetadata);
+        self.isSubcolumn(column.fieldName, datasetMetadata) ||
+        self.isHiddenColumn(column.flags);
     });
   };
 

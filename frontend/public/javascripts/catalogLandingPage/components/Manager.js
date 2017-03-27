@@ -9,7 +9,7 @@ import FeaturedContentManager from './FeaturedContentManager';
 import * as Actions from '../actions/header';
 import airbrake from '../../common/airbrake';
 
-class Manager extends React.Component {
+export class Manager extends React.Component {
   constructor(props) {
     super(props);
 
@@ -42,7 +42,13 @@ class Manager extends React.Component {
 
       if (featuredContentItem.contentType === 'external') {
         featuredContentPayload[key].contentType = 'external';
-        featuredContentPayload[key].previewImageBase64 = featuredContentItem.imageUrl;
+
+        const validBase64ImagePrefixRegex = new RegExp('^data:image/[jpe?g|png|gif];base64');
+        // EN-15002: If a new image has been uploaded, it will have a base64 encoding as its `imageUrl`,
+        // and we want to send it in the payload to core to turn it into a URL.
+        if (validBase64ImagePrefixRegex.test(featuredContentItem.imageUrl)) {
+          featuredContentPayload[key].previewImageBase64 = featuredContentItem.imageUrl;
+        }
       } else {
         featuredContentPayload[key].contentType = 'internal';
         featuredContentPayload[key].featuredLensUid = featuredContentItem.uid;
@@ -55,7 +61,7 @@ class Manager extends React.Component {
   handleSave() {
     this.setState({ isSaving: true });
 
-    const data = {
+    const payloadBody = {
       catalog_query: {
         category: this.props.category
       },
@@ -67,7 +73,7 @@ class Manager extends React.Component {
       method: 'PUT',
       credentials: 'same-origin',
       headers: defaultHeaders,
-      body: JSON.stringify(data)
+      body: JSON.stringify(payloadBody)
     };
 
     const redirectIfNeeded = function(response) {
@@ -233,11 +239,11 @@ class Manager extends React.Component {
 
         <footer>
           <div>
-            <button className="btn btn-default" onClick={this.onDismiss}>
+            <button className="btn btn-default cancel-button" onClick={this.onDismiss}>
               {isDismissing ? spinner : _.get(I18n, 'manager.cancel')}
             </button>
             &nbsp;
-            <button className="btn btn-primary" onClick={this.handleSave} disabled={!isDirty}>
+            <button className="btn btn-primary save-button" onClick={this.handleSave} disabled={!isDirty}>
               {isSaving ? spinner : _.get(I18n, 'manager.save')}
             </button>
           </div>

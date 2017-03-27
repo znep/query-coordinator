@@ -42,7 +42,7 @@ class CatalogLandingPageController < ApplicationController
       begin
         catalog_landing_page.update_featured_content(featured_content_item)
       rescue => e
-        if %w(permission_denied authentication_required).include?(e.error_code)
+        if %w(permission_denied authentication_required).include?(e.try(:error_code))
           raise CoreServer::Unauthorized.new
         end
         return render_500

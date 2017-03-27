@@ -54,6 +54,12 @@ module.exports = {
   module: {
     preLoaders: [
       {
+        // Prevent lodash from putting itself on window.
+        // See: https://github.com/lodash/lodash/issues/2671
+        test: /node_modules\/lodash/,
+        loader: "imports?define=>undefined"
+      },
+      {
         loader: 'raw-loader',
         test: /\.svg$/,
         include: `${root}/src/fonts/svg`

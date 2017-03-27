@@ -29,12 +29,12 @@ window.DSMAPI_PHOENIX_SOCKET.connect();
 const middleware = [thunk, routerMiddleware(browserHistory)];
 
 if (window.serverConfig.environment === 'development') {
-  // middleware.push(createLogger({
-  //   duration: true,
-  //   timestamp: false,
-  //   collapsed: true,
-  //   logErrors: false
-  // }));
+  middleware.push(createLogger({
+    duration: true,
+    timestamp: false,
+    collapsed: true,
+    logErrors: false
+  }));
   middleware.push(windowDBMiddleware);
   console.log(
     'for convenience, try e.g. `console.table(DB.uploads)` (only works when RAILS_ENV==development)'

@@ -77,10 +77,12 @@ export function uploadFile(uploadId, file) {
           id: uploadId,
           finished_at: new Date()
         }));
-        dispatch(updateFromServer('input_schemas', {
-          id: inputSchema.id,
-          total_rows: inputSchema.total_rows
-        }));
+        setTimeout(() => {
+          dispatch(updateFromServer('input_schemas', {
+            id: inputSchema.id,
+            total_rows: inputSchema.total_rows
+          }));
+        }, 500); // remove when EN-13948 is fixed
         dispatch(removeNotificationAfterTimeout(uploadNotification(uploadId)));
       } else {
         dispatch(updateFailed('uploads', uploadUpdate, xhr.status, percent));

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import immutable from 'immutable';
@@ -5,7 +6,15 @@ import { expect, assert } from 'chai';
 
 import serviceLocator from 'middlewares/serviceLocator';
 
-import * as actions from 'actions';
+import {
+  SET_ACTIVITIES,
+  SET_PAGINATION,
+  DISMISS_RESTORE_MODAL
+} from 'actionTypes';
+import {
+  loadActivities,
+  restoreDataset
+} from 'actions';
 import reducer from 'reducer';
 
 import mockActivities from './mockActivities';
@@ -44,11 +53,11 @@ describe('Activity Feed actions', () => {
   it('should be able to load activities', () => {
     mockHttpClient.respondWith('GET', /\/admin\/activity_feed\.json/, 200, mockActivities);
 
-    return store.dispatch(actions.loadActivities()).then(() => {
+    return store.dispatch(loadActivities()).then(() => {
       const dispatchedActions = store.getActions();
 
-      expect(dispatchedActions[0].type).to.eq(actions.types.setActivities);
-      expect(dispatchedActions[1].type).to.eq(actions.types.setPagination);
+      expect(dispatchedActions[0].type).to.eq(SET_ACTIVITIES);
+      expect(dispatchedActions[1].type).to.eq(SET_PAGINATION);
     });
   });
 
@@ -58,5 +67,22 @@ describe('Activity Feed actions', () => {
 
   xit('should be able to load previous page', () => {
 
+  });
+
+  it('should be able to restore dataset', () => {
+    mockHttpClient.respondWith('PATCH', /\/views\/xxxx\-xxxx\.json/, 200, {});
+    mockHttpClient.respondWith('GET', /\/admin\/activity_feed\.json/, 200, mockActivities);
+
+    store = mockStore(_.merge(initialState, immutable.fromJS({restoreModal: {id: 'xxxx-xxxx'}})));
+
+    const action = restoreDataset({});
+
+    return store.dispatch(action).then(() => {
+      const dispatchedActions = store.getActions();
+
+      expect(dispatchedActions[0].type).to.eq(DISMISS_RESTORE_MODAL);
+      expect(dispatchedActions[1].type).to.eq(SET_ACTIVITIES);
+      expect(dispatchedActions[2].type).to.eq(SET_PAGINATION);
+    });
   });
 });

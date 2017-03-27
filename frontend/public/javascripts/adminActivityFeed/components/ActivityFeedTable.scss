@@ -1,5 +1,7 @@
+@import 'app/styles/styleguide-colors';
+
 .activity-feed-table {
-  background: #fff;
+  background: $white;
   display: flex;
   flex-direction: column;
 

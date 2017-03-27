@@ -13,7 +13,11 @@ import serviceLocator from './middlewares/serviceLocator';
 import App from './App';
 
 import reducer from './reducer';
-import * as actions from './actions';
+import {
+  setActivities,
+  setPagination,
+  loadActivities
+} from './actions';
 
 const containerElement = document.querySelector('#app');
 
@@ -59,10 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
     containerElement,
     () => {
       if (window.initialData && window.initialData.activities && window.initialData.pager_info) {
-        store.dispatch(actions.setActivities(window.initialData.activities));
-        store.dispatch(actions.setPagination(window.initialData.pager_info));
+        store.dispatch(setActivities(window.initialData.activities));
+        store.dispatch(setPagination(window.initialData.pager_info));
       } else {
-        store.dispatch(actions.loadActivities());
+        store.dispatch(loadActivities());
       }
     }
   );

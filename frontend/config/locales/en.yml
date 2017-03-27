@@ -3006,6 +3006,9 @@ en:
           working_copy: Working Copy
         import_method: Import Method
         initiated_at: Initiated At
+        restore: Restore
+        restored: Restored
+        restore_confirmation: Are you sure you want to restore the dataset "%{dataset}"
         index_page:
           action: Type
           dataset: Dataset

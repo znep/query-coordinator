@@ -1,11 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../actions';
+import { dismissError } from '../actions';
 import LocalizedText from './Localization/LocalizedText';
 
 class Error extends React.Component {
 
   render() {
+
+    const { dispatchDismissError } = this.props;
 
     // We support only server error at the moment.
     // However there is room to support other error or alert types if necessary.
@@ -13,7 +15,7 @@ class Error extends React.Component {
       <div className="server-error">
         <div className="alert error">
           <LocalizedText localeKey='index_page.server_error'/>
-          <i className="socrata-icon-close" onClick={this.props.dismissError}/>
+          <i className="socrata-icon-close" onClick={dispatchDismissError}/>
         </div>
       </div>
     );
@@ -28,7 +30,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    dismissError: () => dispatch(actions.dismissError())
+    dispatchDismissError: () => dispatch(dismissError())
   };
 };
 

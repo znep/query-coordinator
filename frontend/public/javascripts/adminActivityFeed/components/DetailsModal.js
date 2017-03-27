@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
-import * as actions from '../actions';
+import {dismissDetailsModal} from '../actions';
 import {Modal, ModalHeader, ModalContent, ModalFooter} from 'socrata-components';
 
 import connectLocalization from './Localization/connectLocalization';
@@ -9,6 +9,10 @@ import LocalizedDate from './Localization/LocalizedDate';
 import LocalizedText from './Localization/LocalizedText';
 
 class DetailsModal extends React.Component {
+
+  shouldComponentUpdate(nextProps) {
+    return !_.isNull(nextProps.activity);
+  }
 
   renderDetails() {
     const {activity} = this.props;
@@ -20,29 +24,49 @@ class DetailsModal extends React.Component {
 
     return (
       <ul>
-        <li><span className="line-title">{activity.getIn(['data', 'activity_type'])}</span></li>
-        <li>{activity.getIn(['dataset', 'name'])}</li>
-        <li><LocalizedText localeKey={`${translationPrefix}.title`}/></li>
-        <li><LocalizedText localeKey={`${translationPrefix}.description`} data={activity.getIn(['data', 'latest_event', 'info']).toJS()}/></li>
-        <li><span className="line-title"><LocalizedText localeKey="initiated_at"/>:</span> {activity.getIn(['initiated_by', 'displayName'])}</li>
-        <li><span className="line-title"><LocalizedText localeKey="started_by"/>:</span> <LocalizedDate withTime={true} date={activity.getIn(['data', 'created_at'])}/></li>
-        <li><span className="line-title"><LocalizedText localeKey="import_method"/>:</span> {activity.getIn(['data', 'service'])}</li>
-        <li>{filename}</li>
+        <li id="line-activity-type">
+          <span className="line-title">{activity.getIn(['data', 'activity_type'])}</span>
+        </li>
+        <li id="line-activity-name">
+          {activity.getIn(['dataset', 'name'])}
+        </li>
+        <li id="line-activity-event-title">
+          <LocalizedText localeKey={`${translationPrefix}.title`}/>
+        </li>
+        <li id="line-activity-event-desc">
+          <LocalizedText
+            localeKey={`${translationPrefix}.description`}
+            data={activity.getIn(['data', 'latest_event', 'info']).toJS()}
+          />
+        </li>
+        <li id="line-activity-started-by">
+          <span className="line-title"><LocalizedText localeKey="started_by"/>: </span>
+          {activity.getIn(['initiated_by', 'displayName'])}
+        </li>
+        <li id="line-activity-initiated-at">
+          <span className="line-title"><LocalizedText localeKey="initiated_at"/>: </span>
+          <LocalizedDate withTime={true} date={activity.getIn(['data', 'created_at'])}/>
+        </li>
+        <li id="line-activity-import-method">
+          <span className="line-title"><LocalizedText localeKey="import_method"/>: </span>
+          {activity.getIn(['data', 'service'])}
+        </li>
+        <li id="line-activity-filename">{filename}</li>
       </ul>
     );
   }
 
   render() {
-    const {localization, dismissDetailsModal} = this.props;
+    const {localization, dispatchDismissDetailsModal} = this.props;
 
     const modalProps = {
       fullScreen: false,
-      onDismiss: dismissDetailsModal,
+      onDismiss: dispatchDismissDetailsModal,
       className: 'details-modal'
     };
     const headerProps = {
       title: localization.translate('details'),
-      onDismiss: dismissDetailsModal
+      onDismiss: dispatchDismissDetailsModal
     };
 
     return (
@@ -55,7 +79,7 @@ class DetailsModal extends React.Component {
 
         <ModalFooter>
           <div>
-            <button className="btn btn-default" onClick={dismissDetailsModal}>
+            <button className="btn btn-default" onClick={dispatchDismissDetailsModal}>
               <LocalizedText localeKey='close'/>
             </button>
           </div>
@@ -66,10 +90,10 @@ class DetailsModal extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  activity: state.get('detailsModal')
+  activity: state.get('detailsModal', null)
 });
 const mapDispatchToProps = (dispatch) => ({
-  dismissDetailsModal: () => dispatch(actions.dismissDetailsModal())
+  dispatchDismissDetailsModal: () => dispatch(dismissDetailsModal())
 });
 
 export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(DetailsModal));

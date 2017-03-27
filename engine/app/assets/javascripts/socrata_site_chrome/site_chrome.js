@@ -134,15 +134,28 @@ function checkMobileBreakpoint() {
     var headerContentWidth = $siteChromeHeader.find('.header-content').width();
     var headerPadding = 26; // px
     roomForNavLinks = headerContentWidth - logoWidth - navbarRightWidth - headerPadding;
+
+    if (navLinkFullWidth > roomForNavLinks) {
+      showMobileHeaderNav();
+    } else {
+      showDesktopHeaderNav();
+    }
   } else if (siteChromeTemplate === 'rally') {
     var rallyBottomWidth = $siteChromeHeader.find('.rally-bottom').width();
     roomForNavLinks = rallyBottomWidth - navbarRightWidth;
-  }
 
-  if (navLinkFullWidth > roomForNavLinks) {
-    showMobileHeaderNav();
-  } else {
-    showDesktopHeaderNav();
+    var $rallyTop = $siteChromeHeader.find('.rally-top');
+    var roomForRallyTopContent = $rallyTop.width();
+    var rallyTopContentWidth =
+      $rallyTop.find('a.logo').width() +
+      $rallyTop.find('div.searchbox').width() +
+      16; // padding
+
+    if (navLinkFullWidth > roomForNavLinks || rallyTopContentWidth > roomForRallyTopContent) {
+      showMobileHeaderNav();
+    } else {
+      showDesktopHeaderNav();
+    }
   }
 }
 

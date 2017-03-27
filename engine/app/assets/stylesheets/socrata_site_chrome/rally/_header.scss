@@ -167,7 +167,8 @@ header#site-chrome-header[template="rally"] {
         }
 
         &.mobile {
-          float: right;
+          position: absolute;
+          right: 0;
           .menu-toggle {
             font-size: 12px;
           }

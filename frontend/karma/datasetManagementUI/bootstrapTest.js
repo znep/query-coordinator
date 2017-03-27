@@ -125,7 +125,7 @@ describe('bootstrap', () => {
           }
         }
       },
-      '/api/update/hehe-hehe/0/schema/4/errors?limit=1&offset=0': {
+      '/api/publishing/v1/upload/5/schema/4/errors?limit=1&offset=0': {
         GET: {
           response: [
             {

@@ -18,7 +18,9 @@ export function mockXHR(status, body) {
     this.status = status;
     this.responseText = JSON.stringify(body);
 
-    this.onload();
+    setTimeout(() => {
+      this.onload();
+    }, 0);
   };
   window.XMLHttpRequest.prototype.setRequestHeader = function(header, value) {
     this.headers[header] = value;

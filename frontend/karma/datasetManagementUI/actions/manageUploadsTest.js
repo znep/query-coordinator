@@ -108,7 +108,7 @@ describe('actions/manageUploads', () => {
         }
       }
     },
-    '/api/update/hehe-hehe/0/schema/6/errors?limit=1&offset=0': {
+    '/api/publishing/v1/upload/6/schema/6/errors?limit=1&offset=0': {
       GET: {
         response: [
           {

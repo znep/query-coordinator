@@ -48,8 +48,6 @@ describe CatalogLandingPage do
       init_feature_flag_signaller(with: {
         catalog_landing_page_allows_multiple_params: max_param_overlap
       })
-      # TODO: Remove the ExternalConfig for feature flags entirely. Double caching sucks.
-      ExternalConfig.for(:feature_flag).update!
     end
 
     context 'when it is just /browse' do

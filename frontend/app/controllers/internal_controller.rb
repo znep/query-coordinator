@@ -476,7 +476,7 @@ class InternalController < ApplicationController
     @flags = Hashie::Mash.new
     domain_flags = @domain.feature_flags
     category = params[:category].try(:gsub, '+', ' ')
-    ExternalConfig.for(:feature_flag).each do |flag, fc|
+    FeatureFlags.each do |flag, fc|
       next unless category.nil? || category == fc['category']
       @flags[flag] = fc
       @flags[flag].value = domain_flags[flag]

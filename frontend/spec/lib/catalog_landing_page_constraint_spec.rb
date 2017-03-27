@@ -12,8 +12,6 @@ describe Constraints::CatalogLandingPageConstraint do
     before(:each) do
       init_current_domain
       init_feature_flag_signaller(with: { enable_catalog_landing_page: true })
-      # TODO: Remove the ExternalConfig for feature flags entirely. Double caching sucks.
-      ExternalConfig.for(:feature_flag).update!
       allow(CatalogLandingPage).to receive(:exists?).and_return(existence)
     end
     let(:request) { double(:request, query_parameters: {}) }

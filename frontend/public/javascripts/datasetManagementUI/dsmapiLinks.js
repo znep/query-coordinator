@@ -21,9 +21,12 @@ export const transformResults = (uploadId, transformId, limit, offset) => {
 
 export const applyUpdate = `${revisionBase}/apply`;
 
-export const errorTable = (uploadId, inputSchemaId, outputSchemaId, columnId, limit, offset) =>
+export const columnErrors = (uploadId, inputSchemaId, outputSchemaId, columnId, limit, offset) =>
   `${base}/upload/${uploadId}/schema/${inputSchemaId}/errors/${outputSchemaId}` +
     `?limit=${limit}&offset=${offset}&column_id=${columnId}`;
+
+export const rowErrors = (uploadId, inputSchemaId, offset, limit) =>
+  `${base}/upload/${uploadId}/schema/${inputSchemaId}/errors?limit=${limit}&offset=${offset}`
 
 export const errorExport = (uploadId, inputSchemaId, outputSchemaId) =>
   `${base}/upload/${uploadId}/schema/${inputSchemaId}/errors/${outputSchemaId}`;

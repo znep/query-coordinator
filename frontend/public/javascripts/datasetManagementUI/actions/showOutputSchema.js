@@ -96,34 +96,20 @@ export function getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType) 
   };
 }
 
-<<<<<<< HEAD:public/javascripts/datasetManagementUI/actions/showOutputSchema.js
-export function loadColumnErrors(nextRouterState) {
-  const {
-    inputSchemaId,
-    outputSchemaId,
-    errorsTransformId: errorsTransformIdStr
-  } = nextRouterState.params;
-=======
-export function loadErrorTable(nextState) {
+export function loadColumnErrors(nextState) {
   const {
     uploadId,
     inputSchemaId,
     outputSchemaId,
     errorsTransformId: errorsTransformIdStr
   } = nextState.params;
->>>>>>> master:frontend/public/javascripts/datasetManagementUI/actions/showOutputSchema.js
   const errorsTransformId = _.toNumber(errorsTransformIdStr);
   return (dispatch, getState) => {
     const limit = 50;
     const fetchOffset = 0;
     const errorsColumnId = _.find(getState().db.output_columns, { transform_id: errorsTransformId }).id;
-<<<<<<< HEAD:public/javascripts/datasetManagementUI/actions/showOutputSchema.js
     const path = dsmapiLinks.columnErrors(
-      inputSchemaId, outputSchemaId, errorsColumnId, limit, fetchOffset
-=======
-    const path = dsmapiLinks.errorTable(
       uploadId, inputSchemaId, outputSchemaId, errorsColumnId, limit, fetchOffset
->>>>>>> master:frontend/public/javascripts/datasetManagementUI/actions/showOutputSchema.js
     );
     socrataFetch(path).
       then(checkStatus).
@@ -177,8 +163,9 @@ export function loadErrorTable(nextState) {
 
 
 export function loadRowErrors(inputSchemaId, offset, limit) {
-  return (dispatch) => {
-    socrataFetch(dsmapiLinks.rowErrors(inputSchemaId, offset, limit)).
+  return (dispatch, getState) => {
+    const uploadId = getState().db.input_schemas[inputSchemaId].upload_id;
+    socrataFetch(dsmapiLinks.rowErrors(uploadId, inputSchemaId, offset, limit)).
       then(checkStatus).
       then(getJson).
       then((rowErrors) => {

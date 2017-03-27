@@ -164,9 +164,8 @@ function subscribeToUpload(dispatch, upload) {
   return _.flatten(outputSchemaIds);
 }
 
-<<<<<<< HEAD:public/javascripts/datasetManagementUI/actions/manageUploads.js
 function subscribeToRowErrors(inputSchemaId) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     const channelName = `row_errors:${inputSchemaId}`;
     let rowErrorsSoFar = 0;
     joinChannel(channelName, {
@@ -182,10 +181,7 @@ function subscribeToRowErrors(inputSchemaId) {
   };
 }
 
-function insertAndSubscribeToOutputSchema(dispatch, outputSchemaResponse) {
-=======
 function insertAndSubscribeToOutputSchema(dispatch, upload, outputSchemaResponse) {
->>>>>>> master:frontend/public/javascripts/datasetManagementUI/actions/manageUploads.js
   dispatch(insertFromServer('output_schemas', toOutputSchema(outputSchemaResponse)));
   insertChildrenAndSubscribeToOutputSchema(dispatch, upload, outputSchemaResponse);
   return outputSchemaResponse.id;
@@ -226,7 +222,6 @@ function createTableAndSubscribeToTransform(upload, transform) {
       }));
       dispatch(createTable(`transform_${transform.id}`));
       let initialRowsFetched = false;
-<<<<<<< HEAD:public/javascripts/datasetManagementUI/actions/manageUploads.js
       const channelName = `transform_progress:${transform.id}`;
       joinChannel(channelName, {
         max_ptr: (maxPtr) => {
@@ -238,7 +233,7 @@ function createTableAndSubscribeToTransform(upload, transform) {
             initialRowsFetched = true;
             const offset = 0;
             dispatch(
-              fetchAndInsertDataForTransform(transform, offset, INITIAL_FETCH_LIMIT_ROWS)
+              fetchAndInsertDataForTransform(upload, transform, offset, INITIAL_FETCH_LIMIT_ROWS)
             );
           }
         },
@@ -247,19 +242,6 @@ function createTableAndSubscribeToTransform(upload, transform) {
             id: transform.id,
             num_transform_errors: errorsMsg.count
           }));
-=======
-      channel.on('max_ptr', (maxPtr) => {
-        dispatch(updateFromServer('transforms', {
-          id: transform.id,
-          contiguous_rows_processed: maxPtr.end_row_offset
-        }));
-        if (!initialRowsFetched) {
-          initialRowsFetched = true;
-          const offset = 0;
-          dispatch(
-            fetchAndInsertDataForTransform(upload, transform, offset, INITIAL_FETCH_LIMIT_ROWS)
-          );
->>>>>>> master:frontend/public/javascripts/datasetManagementUI/actions/manageUploads.js
         }
       });
     }

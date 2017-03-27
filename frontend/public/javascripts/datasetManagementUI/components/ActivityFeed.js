@@ -4,11 +4,13 @@ import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import * as Links from '../links';
 import moment from 'moment';
+import SocrataIcon from '../../common/components/SocrataIcon';
 import * as ApplyUpdate from '../actions/applyUpdate';
+import styles from 'styles/ActivityFeed.scss';
 
 function ActivityFeedTimestamp({ date }) {
   return (
-    <span className="activity-timestamp small">
+    <span className={styles.timestamp}>
       {moment.utc(date).fromNow()}
     </span>
   );
@@ -27,13 +29,13 @@ function creator(item) {
 
 const updateActivity = (update, at) => {
   const key = `update-${update.id}`;
-  return (<div key={key} className="activity update">
-    <div className="timeline">
-      <i className="socrata-icon-plus2" />
+  return (<div key={key} className={styles.activity} data-activity-type="update">
+    <div className={styles.timeline}>
+      <SocrataIcon name="plus2" className={styles.icon} />
     </div>
-    <div className="activity-info">
+    <div>
       <p>
-        <span className="created-by">{creator(update)}</span>&nbsp;
+        <span className={styles.createdBy}>{creator(update)}</span>&nbsp;
         opened a revision
       </p>
       <ActivityFeedTimestamp date={at} />
@@ -43,13 +45,13 @@ const updateActivity = (update, at) => {
 
 const uploadActivity = (upload, at) => {
   const key = `upload-${upload.id}`;
-  return (<div key={key} className="activity upload">
-    <div className="timeline">
-      <i className="socrata-icon-data" />
+  return (<div key={key} className={styles.activity} data-activity-type="upload">
+    <div className={styles.timeline}>
+      <SocrataIcon name="data" className={styles.icon} />
     </div>
-    <div className="activity-info">
+    <div>
       <p>
-        <span className="created-by">{creator(upload)}</span>&nbsp;
+        <span className={styles.createdBy}>{creator(upload)}</span>&nbsp;
         uploaded a <Link to={Links.showUpload(upload.id)}>file</Link>
       </p>
       <ActivityFeedTimestamp date={at} />
@@ -60,13 +62,13 @@ const uploadActivity = (upload, at) => {
 
 const outputSchemaActivity = (item, at) => {
   const key = `os-${item.outputSchema.id}`;
-  return (<div key={key} className="activity output-schema">
-    <div className="timeline">
-      <i className="socrata-icon-edit" />
+  return (<div key={key} className={styles.activity} data-activity-type="outputschema">
+    <div className={styles.timeline}>
+      <SocrataIcon name="edit" className={styles.icon} />
     </div>
-    <div className="activity-info">
+    <div>
       <p>
-        <span className="created-by">{creator(item.outputSchema)}</span>&nbsp;
+        <span className={styles.createdBy}>{creator(item.outputSchema)}</span>&nbsp;
         changed the&nbsp;
         <Link to={Links.showOutputSchema(item.upload.id, item.inputSchema.id, item.outputSchema.id)}>
           schema
@@ -79,13 +81,13 @@ const outputSchemaActivity = (item, at) => {
 
 const upsertActivity = (upsert, at) => {
   const key = `upsert-${upsert.id}`;
-  return (<div key={key} className="activity upsert-in-progress">
-    <div className="timeline">
-      <i className="socrata-icon-dataset" />
+  return (<div key={key} className={styles.activity} data-activity-type="upsert">
+    <div className={styles.timeline}>
+      <SocrataIcon name="dataset" className={styles.icon} />
     </div>
-    <div className="activity-info">
+    <div>
       <p>
-        <span className="created-by">{creator(upsert)}</span>&nbsp;
+        <span className={styles.createdBy}>{creator(upsert)}</span>&nbsp;
         started data processing
       </p>
       <ActivityFeedTimestamp date={at} />
@@ -96,11 +98,11 @@ const upsertActivity = (upsert, at) => {
 
 const upsertCompletedActivity = (upsert, at) => {
   const key = `completed-upsert-${upsert.id}`;
-  return (<div key={key} className="activity upsert-complete">
-    <div className="timeline">
-      <i className="socrata-icon-checkmark3" />
+  return (<div key={key} className={styles.activity} data-activity-type="upsertcompleted">
+    <div className={styles.timeline}>
+      <SocrataIcon name="checkmark3" className={styles.icon} />
     </div>
-    <div className="activity-info">
+    <div>
       <p>
         Data processing successfully finished
       </p>
@@ -111,11 +113,11 @@ const upsertCompletedActivity = (upsert, at) => {
 
 const upsertFailedActivity = (upsert, at) => {
   const key = `failed-upsert-${upsert.id}`;
-  return (<div key={key} className="activity upsert-failed">
-    <div className="timeline">
-      <i className="socrata-icon-failed" />
+  return (<div key={key} className={styles.activity} data-activity-type="upsertfailed">
+    <div className={styles.timeline}>
+      <SocrataIcon name="failed" className={styles.icon} />
     </div>
-    <div className="activity-info">
+    <div>
       <p>
         Data processing failed
       </p>
@@ -205,7 +207,7 @@ function activitiesOf(db) {
 function ActivityFeed({ db }) {
   const items = activitiesOf(db);
   return (
-    <div className="activity-feed">
+    <div>
       {items}
     </div>
   );

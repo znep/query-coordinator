@@ -44,10 +44,10 @@ describe('components/NotificationList/UploadNotificationError', () => {
   it('show details when View Details toggle is clicked', () => {
     const container = document.createElement("div");
     const element = ReactDOM.render(<UploadNotificationError {...Props} />, container);
-    const detailsToggle = container.querySelector('.details-toggle');
+    const detailsToggle = container.querySelector('.detailsToggle');
     TestUtils.Simulate.click(detailsToggle);
-    const buttonContainer = container.querySelector('.btn-container');
-    const messageContainer = container.querySelector('.msg-container');
+    const buttonContainer = container.querySelector('.btnContainer');
+    const messageContainer = container.querySelector('.msgContainer');
     expect(buttonContainer).to.not.be.null;
     expect(messageContainer).to.not.be.null;
   });
@@ -56,7 +56,7 @@ describe('components/NotificationList/UploadNotificationError', () => {
     const container = document.createElement("div");
     const element = ReactDOM.render(<UploadNotificationError {...Props} />, container);
     element.toggleDetails();
-    const dismissBtn = container.querySelector('.btn-container button');
+    const dismissBtn = container.querySelector('.btnContainer button');
     TestUtils.Simulate.click(dismissBtn);
     const dispatched = Props.dispatch.firstCall.args[0]
     expect(dispatched).to.deep.equal({type: 'REMOVE_NOTIFICATION', notification: Props.notification})

@@ -11,6 +11,8 @@ import * as ShowActions from '../actions/showOutputSchema';
 import * as ApplyActions from '../actions/applyUpdate';
 import Table from './Table';
 import ReadyToImport from './ReadyToImport';
+import SocrataIcon from '../../common/components/SocrataIcon';
+import styles from 'styles/ShowOutputSchema.scss';
 
 function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
   const outputSchemaId = _.toNumber(outputSchemaIdStr);
@@ -56,16 +58,17 @@ export function ShowOutputSchema({
     fullScreen: true,
     onDismiss: goHome
   };
+  // TODO: a good candidate for a component since reused elsewhere
   const headerProps = {
     title: (
-      <ol>
+      <ol className={styles.list}>
         <li>
           <Link to={Links.uploads}>
             {I18n.home_pane.data}
           </Link>
-          <span className="socrata-icon-arrow-right"></span>
+          <SocrataIcon name="arrow-right" className={styles.icon} />
         </li>
-        <li className="active">
+        <li className={styles.active}>
           {I18n.home_pane.preview}
         </li>
       </ol>
@@ -76,29 +79,29 @@ export function ShowOutputSchema({
   const rowsTransformed = inputSchema.total_rows || Selectors.rowsTransformed(columns);
 
   return (
-    <div id="show-output-schema">
+    <div className={styles.outputSchemaContainer}>
       <Modal {...modalProps}>
         <ModalHeader {...headerProps} />
 
         <ModalContent>
           <div>
-            <div className="data-preview">
+            <div className={styles.dataPreview}>
               <div>
                 <h3>Data Preview</h3>
               </div>
-              <div className="dataset-attributes">
-                <div className="dataset-attribute">
-                  <p className="attribute-label small">Rows</p>
-                  <p className="attribute total-row-count">{commaify(rowsTransformed)}</p>
+              <div className={styles.datasetAttribute}>
+                <div className={styles.datasetAttribute}>
+                  <p>Rows</p>
+                  <p className={styles.attribute}>{commaify(rowsTransformed)}</p>
                 </div>
-                <div className="dataset-attribute">
-                  <p className="attribute-label small">Columns</p>
-                  <p className="attribute">{columns.length}</p>
+                <div className={styles.datasetAttribute}>
+                  <p>Columns</p>
+                  <p className={styles.attribute}>{columns.length}</p>
                 </div>
               </div>
             </div>
 
-            <div className="table-wrap">
+            <div className={styles.tableWrap}>
               <Table
                 db={db}
                 path={path}
@@ -120,10 +123,10 @@ export function ShowOutputSchema({
               outputSchema={outputSchema} /> :
             <div />}
 
-          <div className="output-schema-actions">
+          <div>
             <Link to={Links.home}>
               <button
-                className="btn btn-default">
+                className={styles.saveBtn}>
                 {I18n.home_pane.save_for_later}
               </button>
             </Link>
@@ -131,7 +134,7 @@ export function ShowOutputSchema({
             <button
               onClick={applyUpdate}
               disabled={!canApplyUpdate}
-              className="btn btn-primary apply-update">
+              className={styles.processBtn}>
               {I18n.home_pane.process_data}
             </button>
           </div>

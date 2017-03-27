@@ -1,0 +1,17 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.manageMetadata {
+  :global {
+    section.modal-content {
+      margin: 0;
+      padding: 0;
+    }
+  }
+}
+
+.button {
+  composes: btn from global;
+  composes: btn-default from global;
+}

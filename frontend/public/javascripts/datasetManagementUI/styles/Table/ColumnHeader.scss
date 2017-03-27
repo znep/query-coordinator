@@ -1,0 +1,43 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.columnHeader {
+  font-size: 13px;
+
+  a {
+    text-decoration: none;
+  }
+
+  .icon {
+    padding-left: 5px;
+    display: none;
+  }
+
+  select {
+    width: 92%;
+    margin-left: 5px;
+    font-size: 12px;
+    height: 23px;
+    font-weight: normal;
+    color: $dark-grey-2;
+    font-weight: 600;
+  }
+}
+
+.columnHeader:hover {
+  .icon {
+    display: inline;
+  }
+}
+
+.colName {
+  margin: 0 0 -17px;
+  color: $dark-grey-3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  width: auto;
+  text-align: left;
+  font-weight: 600;
+}

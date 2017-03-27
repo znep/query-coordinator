@@ -3,6 +3,8 @@ import { removeNotification } from '../../actions/notifications';
 import ProgressBar from '../ProgressBar';
 import _ from 'lodash';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import SocrataIcon from '../../../common/components/SocrataIcon';
+import styles from 'styles/NotificationList/UploadNotificationError.scss';
 
 export function InnerErrorMessage({ upload, children }) {
   const badConnectionBodyDescription = {
@@ -12,7 +14,7 @@ export function InnerErrorMessage({ upload, children }) {
 
   const badConnection = (
     <div key={I18n.progress_items.connection_error_title}>
-      <div className="msg-container">
+      <div className={styles.msgContainer}>
         <h6>{I18n.progress_items.connection_error_title}</h6>
         <p dangerouslySetInnerHTML={badConnectionBodyDescription}></p>
         <p>{I18n.progress_items.connection_error_body_advice}</p>
@@ -55,33 +57,41 @@ class UploadNotificationError extends Component { //  eslint-disable-line react/
     const { detailsOpen } = this.state;
 
     return (
-      <div className="dsmui-notification error">
-        <span className="message">{I18n.progress_items.upload_failed}</span>
-        <span className="error-details">
+      <div className={styles.notification}>
+        <span className={styles.message}>{I18n.progress_items.upload_failed}</span>
+        <span className={styles.errorDetails}>
           <a
             href="#"
-            className="details-toggle"
+            className={styles.detailsToggle}
             onClick={this.toggleDetails}>
               {detailsOpen ? I18n.progress_items.hide_details : I18n.progress_items.show_details}
           </a>
-          <span className="icon socrata-icon-warning"></span>
+          <SocrataIcon name="warning" className={styles.icon} />
         </span>
-        <div className="upload-progress-bar">
-          <ProgressBar percent={upload.__status__.percentCompleted || 0} />
+        <div className={styles.progressBarContainer}>
+          <ProgressBar
+            percent={upload.__status__.percentCompleted || 0}
+            type="error"
+            className={styles.progressBar} />
         </div>
         <ReactCSSTransitionGroup
-          transitionName="dsmui-error-notification-transition"
+          transitionName={{
+            enter: styles.enter,
+            enterActive: styles.enterActive,
+            leave: styles.leave,
+            leaveActive: styles.leaveActive
+          }}
           transitionEnterTimeout={500}
           transitionLeaveTimeout={500}>
           {detailsOpen &&
             <InnerErrorMessage upload={upload}>
-              <div className="btn-container">
+              <div className={styles.btnContainer}>
                 <button
-                  className="btn btn-default btn-xs"
+                  className={styles.button}
                   onClick={() => dispatch(removeNotification(notification))}>
                   Dismiss
                 </button>
-                <a className="btn btn-primary btn-xs" target="_blank" href="https://support.socrata.com">
+                <a target="_blank" href="https://support.socrata.com" className={styles.contactBtn}>
                   Contact Support
                 </a>
               </div>

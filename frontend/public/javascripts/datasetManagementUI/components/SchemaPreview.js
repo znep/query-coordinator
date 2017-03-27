@@ -5,6 +5,7 @@ import * as Links from '../links';
 import CommonSchemaPreview from '../../common/components/SchemaPreview';
 import { columnsForOutputSchema } from '../selectors';
 import _ from 'lodash';
+import styles from 'styles/SchemaPreview.scss';
 
 function soqlToCoreType(soqlType) {
   return {
@@ -48,9 +49,9 @@ function mapStateToProps({ db }) {
     return {
       columns,
       headerButton: (
-        <Link className="header-btn-wrapper" to={Links.columnMetadataEditor()}>
+        <Link className={styles.btnWrapper} to={Links.columnMetadataEditor()}>
           <button
-            className="btn btn-sm btn-alternate-2"
+            className={styles.schemaBtn}
             tabIndex="-1">
             {I18n.home_pane.column_metadata_manage_button}
           </button>

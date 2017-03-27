@@ -1,18 +1,13 @@
 import React, { PropTypes } from 'react';
-import classNames from 'classnames';
 import { soqlProperties as typeProperties } from '../lib/soqlTypes';
+import SocrataIcon from '../../common/components/SocrataIcon';
+import styles from 'styles/TypeIcon.scss';
 
-export default function TypeIcon({ type }) {
-  return (
-    <span
-      className={classNames(
-          'type-icon',
-          `socrata-icon-${typeProperties[type].icon}`,
-          `type-icon-${typeProperties[type].canonicalName}`
-        )} />
-  );
-}
+const TypeIcon = ({ type }) =>
+  <SocrataIcon name={typeProperties[type].icon} className={styles[typeProperties[type].canonicalName]} />;
 
 TypeIcon.propTypes = {
   type: PropTypes.string.isRequired
 };
+
+export default TypeIcon;

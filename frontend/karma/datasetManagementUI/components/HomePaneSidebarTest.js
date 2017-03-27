@@ -53,7 +53,7 @@ describe('components/HomePaneSidebar', () => {
     };
 
     const element = renderComponentWithStore(HomePaneSidebar, props, store);
-    expect(element.querySelectorAll('span.finished').length).to.equal(1);
+    expect(element.querySelectorAll('.socrata-icon-checkmark-alt').length).to.equal(1);
   });
 
   it('shows the activity feed when the url says to', () => {

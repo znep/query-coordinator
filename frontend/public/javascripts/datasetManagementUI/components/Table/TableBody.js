@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import TableCell from './TableCell';
+import styles from 'styles/Table/TableBody.scss';
 
 const RENDER_ROWS = 50;
 
@@ -53,7 +54,7 @@ class TableBody extends Component {
       </tr>
     ));
     return (
-      <tbody tabIndex="0">
+      <tbody className={styles.tableBody} tabIndex="0">
         {rows}
       </tbody>
     );

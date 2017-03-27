@@ -34,10 +34,29 @@ module.exports = function ( karma ) {
               path.resolve(root, 'karma/datasetManagementUI')
             ],
             loader: 'babel'
+          },
+          {
+            test: /\.global.scss$/,
+            include: [
+              path.resolve(root, 'public/javascripts/datasetManagementUI')
+            ],
+            loader: 'style?sourceMap!css!postcss!sass'
+          },
+          {
+            test: /^((?!\.global).)*(scss|css)$/,
+            include: [
+              path.resolve(root, 'public/javascripts/datasetManagementUI')
+            ],
+            loader: 'style?sourceMap!css?modules&localIdentName=[local]&importLoaders=1!postcss!sass'
           }
         ]
       },
       plugins: [ new WebpackFailurePlugin() ],
+      postcss: function() {
+        return [
+          require('autoprefixer')
+        ];
+      },
       resolve: {
         root: [
           path.resolve('.'),

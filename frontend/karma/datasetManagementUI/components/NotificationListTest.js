@@ -45,9 +45,9 @@ describe('components/NotificationList', () => {
     store.dispatch(addNotification(uploadNotification(57)));
     const element = renderComponentWithStore(NotificationList, {}, store);
     expect(element).to.not.be.null;
-    expect(element.querySelectorAll('.dsmui-notification').length).to.equal(1);
-    expect(element.querySelectorAll('.dsmui-notification.in-progress').length).to.equal(1);
-    expect(element.querySelector('.progress-bar').style.width).to.eql('0%');
+    expect(element.querySelectorAll('.notification').length).to.equal(1);
+    expect(element.querySelectorAll('.notification.inProgress').length).to.equal(1);
+    expect(element.querySelector('.progressBarInProgress.progressBar').style.width).to.eql('0%');
   });
 
   it('shows an upload in progress at 50% when it has gotten progress events', () => {
@@ -68,10 +68,10 @@ describe('components/NotificationList', () => {
     }, 50));
     const element = renderComponentWithStore(NotificationList, {}, store);
     expect(element).to.not.be.null;
-    expect(element.querySelectorAll('.dsmui-notification').length).to.equal(1);
-    expect(element.querySelectorAll('.dsmui-notification.in-progress').length).to.equal(1);
-    expect(element.querySelector('.progress-bar').style.width).to.eql('50%');
-    expect(element.querySelector('.percent-completed').innerText).to.eql('50%');
+    expect(element.querySelectorAll('.notification').length).to.equal(1);
+    expect(element.querySelectorAll('.notification.inProgress').length).to.equal(1);
+    expect(element.querySelector('.progressBarInProgress').style.width).to.eql('50%');
+    expect(element.querySelector('.percentCompleted').innerText).to.eql('50%');
   });
 
   it('shows a recently completed upload', () => {
@@ -96,9 +96,9 @@ describe('components/NotificationList', () => {
     }, 50));
     const element = renderComponentWithStore(NotificationList, {}, store);
     expect(element).to.not.be.null;
-    expect(element.querySelectorAll('.dsmui-notification').length).to.equal(1);
-    expect(element.querySelectorAll('.dsmui-notification.successful').length).to.equal(1);
-    expect(element.querySelector('.progress-bar').style.width).to.eql('100%');
+    expect(element.querySelectorAll('.notification').length).to.equal(1);
+    expect(element.querySelectorAll('.notification.successful').length).to.equal(1);
+    expect(element.querySelector('.progressBarSuccess').style.width).to.eql('100%');
   });
 
   it('shows a failed upload', () => {
@@ -119,8 +119,8 @@ describe('components/NotificationList', () => {
     }, 'some error', 50));
     const element = renderComponentWithStore(NotificationList, {}, store);
     expect(element).to.not.be.null;
-    expect(element.querySelectorAll('.dsmui-notification').length).to.equal(1);
-    expect(element.querySelectorAll('.dsmui-notification.error').length).to.equal(1);
+    expect(element.querySelectorAll('.notification').length).to.equal(1);
+    expect(element.querySelectorAll('.errorDetails').length).to.equal(1);
   });
 
   it('doesn\'t show an upsert job before it has an id', () => {
@@ -159,10 +159,10 @@ describe('components/NotificationList', () => {
     store.dispatch(addNotification(upsertJobNotification(52)));
     const element = renderComponentWithStore(NotificationList, {}, store);
     expect(element).to.not.be.null;
-    expect(element.querySelectorAll('.dsmui-notification').length).to.equal(1);
-    expect(element.querySelectorAll('.dsmui-notification.in-progress').length).to.equal(1);
-    expect(element.querySelector('.progress-bar').style.width).to.eql('0%');
-    expect(element.querySelector('.percent-completed').innerText).to.eql('0%');
+    expect(element.querySelectorAll('.notification').length).to.equal(1);
+    expect(element.querySelectorAll('.notification.inProgress').length).to.equal(1);
+    expect(element.querySelector('.progressBarInProgress.progressBar').style.width).to.eql('0%');
+    expect(element.querySelector('.percentCompleted').innerText).to.eql('0%');
   });
 
   it('shows an upsert job in progress which has some log entries', () => {
@@ -192,10 +192,10 @@ describe('components/NotificationList', () => {
     store.dispatch(addNotification(upsertJobNotification(52)));
     const element = renderComponentWithStore(NotificationList, {}, store);
     expect(element).to.not.be.null;
-    expect(element.querySelectorAll('.dsmui-notification').length).to.equal(1);
-    expect(element.querySelectorAll('.dsmui-notification.in-progress').length).to.equal(1);
-    expect(element.querySelector('.progress-bar').style.width).to.eql('50%');
-    expect(element.querySelector('.percent-completed').innerText).to.eql('50%');
+    expect(element.querySelectorAll('.notification').length).to.equal(1);
+    expect(element.querySelectorAll('.notification.inProgress').length).to.equal(1);
+    expect(element.querySelector('.progressBarInProgress.progressBar').style.width).to.eql('50%');
+    expect(element.querySelector('.percentCompleted').innerText).to.eql('50%');
   });
 
   it('shows a recently completed upsert job', () => {
@@ -222,8 +222,8 @@ describe('components/NotificationList', () => {
     }));
     const element = renderComponentWithStore(NotificationList, {}, store);
     expect(element).to.not.be.null;
-    expect(element.querySelectorAll('.dsmui-notification').length).to.equal(1);
-    expect(element.querySelectorAll('.dsmui-notification.successful').length).to.equal(1);
+    expect(element.querySelectorAll('.notification').length).to.equal(1);
+    expect(element.querySelectorAll('.notification.successful').length).to.equal(1);
   });
 
   it('shows a failed upsert job', () => {
@@ -250,8 +250,8 @@ describe('components/NotificationList', () => {
     }));
     const element = renderComponentWithStore(NotificationList, {}, store);
     expect(element).to.not.be.null;
-    expect(element.querySelectorAll('.dsmui-notification').length).to.equal(1);
-    expect(element.querySelectorAll('.dsmui-notification.error').length).to.equal(1);
+    expect(element.querySelectorAll('.notification').length).to.equal(1);
+    expect(element.querySelectorAll('.notification.error').length).to.equal(1);
   });
 
 });

@@ -3,17 +3,18 @@ import { Link } from 'react-router';
 import * as Links from '../../links';
 import DatasetMetadataEditor from '../ManageMetadata/DatasetMetadataEditor';
 import ColumnMetadataEditor from '../ManageMetadata/ColumnMetadataEditor';
-
+import styles from 'styles/ManageMetadata/MetadataContent.scss';
 
 export default function MetadataContent(props) {
   const { path } = props;
 
+  // TODO: abstact below into its own component
   switch (path) {
     case 'metadata/dataset':
       return (
         <div>
-          <ul id="metadata-sidebar">
-            <li className="selected">
+          <ul className={styles.sidebar}>
+            <li className={styles.selected}>
               <Link to={Links.datasetMetadataEditor}>{I18n.metadata_manage.dataset_metadata_label}</Link>
             </li>
             <li>
@@ -27,11 +28,11 @@ export default function MetadataContent(props) {
     case 'metadata/columns':
       return (
         <div>
-          <ul id="metadata-sidebar">
+          <ul className={styles.sidebar}>
             <li>
               <Link to={Links.datasetMetadataEditor}>{I18n.metadata_manage.dataset_metadata_label}</Link>
             </li>
-            <li className="selected">
+            <li className={styles.selected}>
               <Link to={Links.columnMetadataEditor()}>{I18n.metadata_manage.column_metadata_label}</Link>
             </li>
           </ul>

@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
 import Tag from 'components/MetadataFields/Tag';
+import styles from 'styles/MetadataFields/TagsInput.scss';
 
 class TagsInput extends Component {
   constructor() {
@@ -69,16 +70,16 @@ class TagsInput extends Component {
 
     return (
       <div>
-        <div className="tag-input-container">
+        <div className={styles.container}>
           <input
             onChange={this.handleChange}
             onKeyPress={this.handleKeyPress}
             value={this.state.tagName}
             placeholder={placeholder}
             type="text" />
-          <button onClick={this.addTag} className="btn btn-default">Add +</button>
+          <button onClick={this.addTag} className={styles.button}>Add +</button>
         </div>
-        <ul className="tag-list">
+        <ul className={styles.tagList}>
           {listItems}
         </ul>
       </div>

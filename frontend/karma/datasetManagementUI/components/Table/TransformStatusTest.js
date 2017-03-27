@@ -30,8 +30,8 @@ describe('components/Table/TransformStatus', () => {
           columnId={50}
           totalRows={5000} />
       );
-      expect(element.querySelector('.err-info.success')).to.not.be.null;
-      expect(element.querySelectorAll('.progress-bar-done')).to.not.be.null;
+      expect(element.querySelector('.success')).to.not.be.null;
+      expect(element.querySelectorAll('.progressBar')).to.not.be.null;
       expect(element.innerText).to.equal(I18n.show_output_schema.column_header.no_errors_exist);
     });
 
@@ -44,7 +44,7 @@ describe('components/Table/TransformStatus', () => {
           totalRows={5000} />
       );
       expect(element.innerText).to.equal(I18n.show_output_schema.column_header.scanning);
-      const progressBar = element.querySelector('.progress-bar');
+      const progressBar = element.querySelector('.progressBar');
       expect(progressBar.style.width).to.equal('50%');
     });
 
@@ -88,7 +88,7 @@ describe('components/Table/TransformStatus', () => {
           columnId={50}
           totalRows={5000} />
       );
-      expect(element.querySelector('.err-info.error')).to.not.be.null;
+      expect(element.querySelector('.error')).to.not.be.null;
       expect(element.querySelectorAll('.progress-bar-done')).to.not.be.null;
       expect(element.innerText).to.equal(`5${I18n.show_output_schema.column_header.errors_exist}`);
     });
@@ -102,7 +102,7 @@ describe('components/Table/TransformStatus', () => {
           totalRows={5000} />
       );
       expect(element.innerText).to.equal(`5${I18n.show_output_schema.column_header.errors_exist_scanning}`);
-      const progressBar = element.querySelector('.progress-bar');
+      const progressBar = element.querySelector('.progressBar');
       expect(progressBar.style.width).to.equal('50%');
     });
 

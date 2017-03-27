@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import ColumnHeader from './ColumnHeader';
 import TransformStatus from './TransformStatus';
 import TableBody from './TableBody';
+import styles from 'styles/Table/Table.scss';
 
 export default function Table({
   db,
@@ -14,7 +15,7 @@ export default function Table({
 
   const transforms = _.map(columns, 'transform');
   return (
-    <table className="table table-condensed">
+    <table className={styles.table}>
       <thead>
         <tr>
           {columns.map(column =>

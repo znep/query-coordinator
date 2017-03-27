@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import ProgressBar from '../ProgressBar';
 import { commaify } from '../../../common/formatNumber';
 import * as ApplyUpdate from '../../actions/applyUpdate';
+import SocrataIcon from '../../../common/components/SocrataIcon';
+import styles from 'styles/NotificationList/UpsertJobNotification.scss';
 
 export default function UpsertJobNotification({ upsertJob, totalRows, rowsUpserted }) {
   const commaifiedRowsUpserted = commaify(rowsUpserted);
@@ -11,38 +13,38 @@ export default function UpsertJobNotification({ upsertJob, totalRows, rowsUpsert
     case ApplyUpdate.UPSERT_JOB_IN_PROGRESS: {
       const percent = rowsUpserted / totalRows * 100;
       return (
-        <div className="dsmui-notification in-progress">
-          <span className="message">{I18n.progress_items.processing}</span>
-          <span className="sub-message">
+        <div className={`${styles.notification} ${styles.inProgress}`}>
+          <span className={styles.message}>{I18n.progress_items.processing}</span>
+          <span className={styles.subMessage}>
             ({commaifiedRowsUpserted} / {commaifiedTotalRows} {I18n.progress_items.rows})
           </span>
-          <span className="percent-completed">{Math.round(percent)}%</span>
-          <div className="upload-progress-bar">
-            <ProgressBar percent={percent} />
+          <span className={styles.percentCompleted}>{Math.round(percent)}%</span>
+          <div className={styles.progressBarContainer}>
+            <ProgressBar percent={percent} type="inProgress" className={styles.progressBar} />
           </div>
         </div>
       );
     }
     case ApplyUpdate.UPSERT_JOB_SUCCESSFUL:
       return (
-        <div className="dsmui-notification successful">
-          <span className="message">{I18n.progress_items.processing}</span>
-          <span className="sub-message">
+        <div className={`${styles.notification} ${styles.successful}`}>
+          <span className={styles.message}>{I18n.progress_items.processing}</span>
+          <span className={styles.subMessage}>
             ({commaifiedTotalRows} / {commaifiedTotalRows} {I18n.progress_items.rows})
           </span>
-          <span className="success-message">
+          <span className={styles.successMessage}>
             {I18n.progress_items.success}&nbsp;
-            <span className="socrata-icon-check" />
+            <SocrataIcon name="check" />
           </span>
-          <div className="upload-progress-bar">
-            <ProgressBar percent={100} />
+          <div className={styles.progressBarContainer}>
+            <ProgressBar percent={100} type="success" className={styles.progressBar} />
           </div>
         </div>
       );
 
     case ApplyUpdate.UPSERT_JOB_FAILURE:
       return (
-        <div className="dsmui-notification error">
+        <div className={`${styles.notification} ${styles.error}`}>
           {I18n.progress_items.import_failed}
         </div>
       );

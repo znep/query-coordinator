@@ -1,0 +1,30 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.tableBody {
+  display: block;
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
+  height: calc(100% - 88px);
+  border-bottom: 1px solid $light-grey-4;
+
+  tr {
+    height: 29px;
+    overflow: visible;
+  }
+
+  tr {
+    &:first-child {
+      border-top-width: 1px;
+      margin-top: -1px;
+    }
+
+    &:last-child {
+      td, div {
+        border-bottom-width: 0;
+      }
+    }
+  }
+}

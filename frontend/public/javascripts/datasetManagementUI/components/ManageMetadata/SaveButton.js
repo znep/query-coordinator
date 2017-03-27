@@ -7,6 +7,7 @@ import {
   STATUS_UPDATING,
   STATUS_UPDATING_IMMUTABLE
 } from '../../lib/database/statuses';
+import styles from 'styles/ManageMetadata/SaveButton.scss';
 
 export default function SaveButton({ onSave, view, outputSchema, outputColumns }) {
   const metadataRecords = [
@@ -34,7 +35,7 @@ export default function SaveButton({ onSave, view, outputSchema, outputColumns }
       return (
         <button
           id="save"
-          className="btn btn-primary btn-success"
+          className={styles.savedBtn}
           disabled="true">
           {I18n.common.save}
         </button>
@@ -44,8 +45,8 @@ export default function SaveButton({ onSave, view, outputSchema, outputColumns }
       return (
         <button
           id="save"
-          className="btn btn-primary btn-busy btn-sm">
-          <span className="spinner-default spinner-btn-primary" />
+          className={styles.updatingBtn}>
+          <span className={styles.spinner} />
         </button>
       );
 
@@ -53,7 +54,7 @@ export default function SaveButton({ onSave, view, outputSchema, outputColumns }
       return (
         <button
           id="save"
-          className="btn btn-primary"
+          className={styles.baseBtn}
           onClick={onSave}>
           {I18n.common.save}
         </button>

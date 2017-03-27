@@ -2,13 +2,14 @@ import React, { PropTypes, PureComponent } from 'react';
 import { components as SocrataVisualizations } from 'socrata-visualizations';
 import { connect } from 'react-redux';
 import { columnsForOutputSchema } from '../selectors';
+import styles from 'styles/DatasetPreview.scss';
 
 export class Table extends PureComponent {
   render() {
     const { vif } = this.props;
 
     return (
-      <div className="table-contents">
+      <div className={styles.tableContents}>
         <SocrataVisualizations.Visualization vif={vif} />
       </div>
     );

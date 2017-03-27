@@ -8,6 +8,8 @@ import styleguide from 'socrata-components';
 import ProgressBar from '../ProgressBar';
 import TypeIcon from '../TypeIcon';
 import { commaify } from '../../../common/formatNumber';
+import SocrataIcon from '../../../common/components/SocrataIcon';
+import styles from 'styles/Table/TransformStatus.scss';
 
 class TransformStatus extends Component {
   componentDidMount() {
@@ -47,14 +49,14 @@ class TransformStatus extends Component {
 
     const rowsProcessed = transform.contiguous_rows_processed || 0;
     const percentage = Math.round(rowsProcessed / totalRows * 100);
+    const progressBarType = (!uploadDone || thisColumnDone) ? 'done' : 'inProgress';
 
-    const progressBarClassName = classNames(
-      'column-progress-bar',
-      { 'column-progress-bar-done': !uploadDone || thisColumnDone }
-    );
     const progressBar = (
-      <div className={progressBarClassName}>
-        <ProgressBar percent={percentage} ariaLabeledBy={`column-display-name-${columnId}`} />
+      <div className={styles.columnProgressBar}>
+        <ProgressBar
+          type={progressBarType}
+          percent={percentage}
+          ariaLabeledBy={`column-display-name-${columnId}`} />
       </div>
     );
 
@@ -68,15 +70,15 @@ class TransformStatus extends Component {
         SubI18n.column_status_flyout.error_msg_plural
       );
       errorFlyout = (
-        <div id={flyoutId} className="transform-status-flyout flyout flyout-hidden">
-          <section className="flyout-content">
+        <div id={flyoutId} className={styles.transformStatusFlyout}>
+          <section className={styles.flyoutContent}>
             {msgTemplate.format({
               num_errors: commaify(transform.num_transform_errors),
               type: SubI18n.type_display_names[transform.output_soql_type]
             })}
             <TypeIcon type={transform.output_soql_type} />
             <br />
-            <span className="click-to-view">{SubI18n.column_status_flyout.click_to_view}</span>
+            <span className={styles.clickToView}>{SubI18n.column_status_flyout.click_to_view}</span>
           </section>
         </div>
       );
@@ -93,10 +95,10 @@ class TransformStatus extends Component {
       return (
         <th
           key={transform.id}
-          className={classNames('col-errors', { 'col-errors-selected': inErrorMode })}>
+          className={classNames(styles.colErrors, { [styles.colErrorsSelected]: inErrorMode })}>
           {progressBar}
-          <div className="column-status-text">
-            <span className="err-info error">{commaify(transform.num_transform_errors)}</span>
+          <div className={styles.statusText}>
+            <span className={styles.error}>{commaify(transform.num_transform_errors)}</span>
             <Link to={linkPath} data-flyout={flyoutId}>{msg}</Link>
           </div>
           {errorFlyout}
@@ -105,20 +107,20 @@ class TransformStatus extends Component {
     } else {
       if (thisColumnDone) {
         return (
-          <th key={transform.id} className="col-errors">
+          <th key={transform.id} className={styles.colErrors}>
             {progressBar}
-            <div className="column-status-text">
-              <span className="err-info success socrata-icon-checkmark3" />
+            <div className={styles.statusText}>
+              <SocrataIcon name="checkmark3" className={styles.successIcon} />
               {SubI18n.no_errors_exist}
             </div>
           </th>
         );
       } else {
         return (
-          <th key={transform.id} className="col-errors">
+          <th key={transform.id} className={styles.colErrors}>
             {progressBar}
-            <div className="column-status-text">
-              <span className="err-info spinner-default" />
+            <div className={styles.statusText}>
+              <span className={styles.spinner}></span>
               {SubI18n.scanning}
             </div>
           </th>

@@ -12,11 +12,11 @@ describe('components/MetadataFields/Fieldset', () => {
   const component = renderStatelessComponent(<Fieldset {...defaultProps} />);
 
   it('renders a title', () => {
-    expect(component.querySelector('#tab-title')).to.exist;
+    expect(component.querySelector('.tabTitle')).to.exist;
   });
 
   it('renders a subtitle', () => {
-    expect(component.querySelector('#tab-subtitle')).to.exist;
+    expect(component.querySelector('.tabSubtitle')).to.exist;
   });
 
   it('renders any elements it wraps (children)', () => {

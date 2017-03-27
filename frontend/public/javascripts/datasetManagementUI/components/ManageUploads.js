@@ -10,6 +10,8 @@ import {
   STATUS_INSERTING,
   STATUS_INSERT_FAILED
 } from '../lib/database/statuses';
+import SocrataIcon from '../../common/components/SocrataIcon';
+import styles from 'styles/ManageUploads.scss';
 
 
 function query(db) {
@@ -59,10 +61,10 @@ export function ManageUploads({ uploads, createUpload, goHome }) {
 
   const headerProps = {
     title: (
-      <ol>
-        <li className="active">
+      <ol className={styles.list}>
+        <li className={styles.active}>
           {I18n.home_pane.data}
-          <span className="socrata-icon-arrow-right"></span>
+          <SocrataIcon name="arrow-right" className={styles.icon} />
         </li>
         <li>
           {nextCrumb}
@@ -78,7 +80,7 @@ export function ManageUploads({ uploads, createUpload, goHome }) {
 
       <ModalContent>
         <form>
-          <h2 className="h6">{I18n.manage_uploads.previous}</h2>
+          <h2 className={styles.header}>{I18n.manage_uploads.previous}</h2>
           <ul>
             {uploads.map((upload, idxInTable) => (
               <li key={idxInTable}>

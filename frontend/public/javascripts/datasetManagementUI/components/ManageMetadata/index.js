@@ -9,6 +9,7 @@ import * as Links from '../../links';
 import SaveButton from './SaveButton';
 import MetadataContent from './MetadataContent';
 import * as Selectors from '../../selectors';
+import styles from 'styles/ManageMetadata/ManageMetadata.scss';
 
 export function ManageMetadata({ view,
                                  outputSchema,
@@ -32,7 +33,7 @@ export function ManageMetadata({ view,
   const saveProps = { onSave, view, outputSchema, outputColumns };
 
   return (
-    <div id="manage-metadata">
+    <div className={styles.manageMetadata}>
       <Modal {...modalProps} >
         <ModalHeader {...headerProps} />
 
@@ -41,7 +42,7 @@ export function ManageMetadata({ view,
         </ModalContent>
 
         <ModalFooter>
-          <button id="cancel" className="btn btn-default" onClick={onDismiss}>
+          <button id="cancel" className={styles.button} onClick={onDismiss}>
             {I18n.common.cancel}
           </button>
           <SaveButton {...saveProps} />

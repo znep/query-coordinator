@@ -1,12 +1,14 @@
 import React, { PropTypes } from 'react';
+import SocrataIcon from '../../../common/components/SocrataIcon';
+import styles from 'styles/MetadataFields/FieldSet.scss';
 
 const Fieldset = ({ children, title, subtitle, isPrivate }) =>
-  <fieldset className="fieldset">
-    <legend id="tab-title">
+  <fieldset className={styles.fieldset}>
+    <legend className={styles.tabTitle}>
       {title}
-      {isPrivate && <span className="socrata-icon-private"></span>}
+      {isPrivate && <SocrataIcon name="private" className={styles.icon} />}
     </legend>
-    <span id="tab-subtitle">{subtitle}</span>
+    <span className={styles.tabSubtitle}>{subtitle}</span>
     {children}
   </fieldset>;
 

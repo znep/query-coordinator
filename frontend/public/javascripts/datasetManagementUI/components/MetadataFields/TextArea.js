@@ -1,15 +1,13 @@
 import React, { PropTypes } from 'react';
-import classNames from 'classnames';
 import { FieldDescriptor } from '../../lib/sharedPropTypes';
+import styles from 'styles/MetadataFields/TextArea.scss';
 
 export default function TextArea({ descriptor, onChange, value, isValid }) {
-  const classes = classNames('text-input', 'text-area', { 'text-input-error': !isValid });
-
   return (
     <textarea
       rows={descriptor.rows}
       id={descriptor.key}
-      className={classes}
+      className={isValid ? styles.textArea : styles.textAreaError}
       value={value}
       aria-label={descriptor.label}
       aria-required={descriptor.required}

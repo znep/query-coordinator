@@ -1,0 +1,81 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+
+.statusText {
+  padding: 5px 5px;
+  border-bottom: 2px solid $light-grey-3;
+  display: relative;
+  z-index: 100;
+  text-align: left;
+}
+
+.colErrors {
+  font-weight: normal;
+  font-size: 10px;
+  color: $grey;
+
+  &.colErrorsSelected {
+    box-shadow: inset 0 0 10px -2px $black;
+  }
+
+  a {
+    color: $grey;
+    text-decoration: none;
+  }
+}
+
+.transformStatusFlyout {
+  composes: flyout from global;
+  composes: flyout-hidden from global;
+  font-size: 13px;
+  line-height: 20px;
+  white-space: normal;
+  color: $dark-grey-2;
+  max-width: 190px;
+  text-align: left;
+
+  .clickToView {
+    font-size: 10px;
+    color: $grey;
+  }
+
+  .type-icon {
+    padding-left: 4px;
+    font-size: 15px;
+    vertical-align: text-top;
+  }
+}
+
+.flyoutContent {
+  composes: flyout-content from global;
+  padding: 0.9rem;
+}
+
+.errorInfo {
+  color: $white;
+  border-radius: 1.1em;
+  padding: 0 0.5em 1px;
+  margin-right: 0.5em;
+}
+
+.spinner {
+  compsoes: errorInfo;
+  composes: spinner-default from global;
+}
+
+.successIcon {
+  composes: success from global;
+  composes: errorInfo;
+}
+
+.error {
+  composes: errorInfo;
+  composes: error from global;
+}
+
+.columnProgressBar {
+  height: 2px;
+  width: 100%;
+}

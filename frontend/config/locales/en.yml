@@ -2010,7 +2010,7 @@ en:
     - Fri
     - Sat
     abbr_month_names:
-    -
+    - 
     - Jan
     - Feb
     - Mar
@@ -2038,7 +2038,7 @@ en:
       short: '%d %b %Y'
       short_with_time: '%Y/%m/%d %I:%M%p'
     month_names:
-    -
+    - 
     - January
     - February
     - March

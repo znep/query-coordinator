@@ -4,8 +4,9 @@ import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import * as Links from '../links';
 import * as Selectors from '../selectors';
-import classNames from 'classnames';
 import ActivityFeed from './ActivityFeed';
+import SocrataIcon from '../../common/components/SocrataIcon';
+import styles from 'styles/HomePaneSidebar.scss';
 
 function query(db) {
   const currentOutputSchema = Selectors.latestOutputSchema(db);
@@ -23,7 +24,7 @@ function manageData(state) { // can't destructure in the function head because t
   const { db } = state;
   const { anyColumnHasDescription } = query(db);
 
-  const doneCheckmark = <span className="finished socrata-icon-checkmark-alt" />;
+  const doneCheckmark = <SocrataIcon name="checkmark-alt" className={styles.icon} />;
   const columnDescriptionCheckmark = anyColumnHasDescription ? doneCheckmark : null;
 
   // TODO: Handle features and visualizations.
@@ -31,16 +32,16 @@ function manageData(state) { // can't destructure in the function head because t
   const featuredDoneCheckmark = null;
 
   return (
-    <div id="home-pane-sidebar-data">
+    <div className={styles.sidebarData}>
       <div>
-        <span className="icon socrata-icon-column-info" />
+        <SocrataIcon name="column-info" className={styles.icon} />
         {columnDescriptionCheckmark}
 
         <h3>{I18n.home_pane.sidebar.column_descriptions}</h3>
         <p> {I18n.home_pane.sidebar.column_descriptions_blurb} </p>
         <Link to={Links.columnMetadataEditor()}>
           <button
-            className="btn btn-sm btn-default"
+            className={styles.sidebarBtn}
             tabIndex="-1">
             {I18n.home_pane.sidebar.column_descriptions_button}
           </button>
@@ -48,14 +49,14 @@ function manageData(state) { // can't destructure in the function head because t
       </div>
 
       <div>
-        <span className="icon socrata-icon-cards" />
+        <SocrataIcon name="cards" className={styles.icon} />
         {visualizationDoneCheckmark}
         <h3>{I18n.home_pane.sidebar.visualize}</h3>
         <p>
           {I18n.home_pane.sidebar.visualize_blurb}
         </p>
         <button
-          className="btn btn-sm btn-default btn-disabled-light"
+          className={styles.sidebarBtnDisabled}
           disabled
           tabIndex="-1">
           {I18n.home_pane.sidebar.visualize_button}
@@ -63,7 +64,7 @@ function manageData(state) { // can't destructure in the function head because t
       </div>
 
       <div>
-        <span className="icon socrata-icon-featured" />
+        <SocrataIcon name="featured" className={styles.icon} />
         {featuredDoneCheckmark}
         <h3>{I18n.home_pane.sidebar.feature}</h3>
         <p>
@@ -71,7 +72,7 @@ function manageData(state) { // can't destructure in the function head because t
         </p>
 
         <button
-          className="btn btn-sm btn-default btn-disabled-light"
+          className={styles.sidebarBtnDisabled}
           disabled
           tabIndex="-1">
           {I18n.home_pane.sidebar.feature_button}
@@ -86,17 +87,16 @@ function HomePaneSidebar(state) {
   const showLog = urlParams.sidebarSelection === 'log';
   const contents = showLog ? (<ActivityFeed />) : manageData(state);
 
-
   return (
-    <div id="home-pane-sidebar">
-      <div className="sidebar-chooser">
+    <div className={styles.sidebar}>
+      <div className={styles.nav}>
         <Link to={Links.home}>
-          <button className={classNames('btn', 'chooser-btn', { 'enabled': !showLog })}>
+          <button className={!showLog ? styles.navBtnEnabled : styles.navBtn}>
             Manage
           </button>
         </Link>
         <Link to={Links.activityLog}>
-          <button className={classNames('btn', 'chooser-btn', { 'enabled': showLog })}>
+          <button className={showLog ? styles.navBtnEnabled : styles.navBtn}>
             Recent Actions
           </button>
         </Link>

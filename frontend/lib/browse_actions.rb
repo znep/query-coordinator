@@ -280,7 +280,7 @@ module BrowseActions
     if options[:force_default]
       user_params = {}
     else
-      user_params = request.params.dup.to_hash.deep_symbolize_keys
+      user_params = request.params.except('custom_path').to_hash.deep_symbolize_keys
     end
 
     # grab configured params

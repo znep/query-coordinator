@@ -22,7 +22,8 @@ class CatalogLandingPageController < ApplicationController
   end
 
   def manage_write
-    catalog_landing_page = CatalogLandingPage.new(current_domain, params[:catalog_query].to_unsafe_h)
+    request_params = params[:catalog_query].to_unsafe_h.with_indifferent_access
+    catalog_landing_page = CatalogLandingPage.new(current_domain, request_params)
     metadata = params[:metadata]
     begin
       catalog_landing_page.update_metadata(
@@ -90,12 +91,12 @@ end
   end
 
   def fetch_catalog_landing_page
-    catalog_landing_page = CatalogLandingPage.new(current_domain, params)
+    @catalog_landing_page = CatalogLandingPage.new(current_domain, params)
 
     @category = params[:category]
-    @featured_content = catalog_landing_page.try(:featured_content)
-    @metadata = catalog_landing_page.try(:metadata).to_h
-    @category_stats = catalog_landing_page.try(:category_stats, @category, current_request_id, current_cookies).to_h
+    @featured_content = @catalog_landing_page.try(:featured_content)
+    @metadata = @catalog_landing_page.try(:metadata).to_h
+    @category_stats = @catalog_landing_page.try(:category_stats, @category, current_request_id, current_cookies).to_h
   end
 
 end

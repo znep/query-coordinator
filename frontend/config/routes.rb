@@ -227,7 +227,7 @@ Rails.application.routes.draw do
         get '/manage', :action => :manage
         put '/manage', :action => :manage_write
       end
-      get '*path', :action => 'show', :constraints => Constraints::CatalogLandingPageConstraint.new
+      get '*custom_path', :action => 'show', :constraints => Constraints::CatalogLandingPageConstraint.new
     end
 
     resource :browse, :controller => 'browse', :except => [ :create ] do

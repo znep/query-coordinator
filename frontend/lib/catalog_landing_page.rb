@@ -1,4 +1,7 @@
+require 'refinements/attemptable'
+
 class CatalogLandingPage
+  using FrontendRefinements::Attemptable
 
   CONFIGURATION_TYPE = 'catalog_landing_page'
   CONFIGURATION_NAME = 'Catalog Landing Page'
@@ -6,28 +9,72 @@ class CatalogLandingPage
   REQUIRED_METADATA_KEYS = %w(headline description)
 
   attr_reader :cname, :id
+  delegate *[:request_store, :catalog_query, :valid_params, :custom_path], to: self
 
-  # 'domain_or_cname' is either a Domain instance or the cname string.
-  # 'id_or_parms' is the identifier of the specific CLP (e.g. 'category=Government', 'salt-lake-city', etc.)
-  #   or it is the params hash from which the id will be derived
-  def initialize(domain_or_cname, id_or_params)
-    @cname = if domain_or_cname.respond_to?(:cname)
-      domain_or_cname.cname
-    else
-      domain_or_cname
+  def self.request_store
+    RequestStore[:catalog_landing_page] ||= {}
   end
 
-    @id = if id_or_params.is_a?(Hash)
-      Constraints::CatalogLandingPageConstraint.catalog_query(id_or_params)
-    else
-      id_or_params
-    end
+  PARAMS_WHITELIST = %w(category limitTo provenance)
+  def self.valid_params
+    request_store[:valid_params] ||= PARAMS_WHITELIST + CurrentDomain.custom_facets
+  end
 
-    raise ArgumentError.new('CatalogLandingPage id cannot be empty') unless @id.present?
+  def self.may_activate?(request)
+    max_params_to_accept = [
+      FeatureFlags.value_for(:catalog_landing_page_allows_multiple_params, request: request).to_i,
+      1
+    ].max
+
+    params = request.params.slice(*valid_params)
+    return true if params.size <= max_params_to_accept
+    return true if params.empty? && custom_path(request) == '/browse'
+
+    false
+  end
+
+  def self.exists?(request)
+    pages = CurrentDomain.configuration(:catalog_landing_page).tap do |config|
+      return false unless config.present?
+    end.properties.keys
+
+    params = request.params.slice(*valid_params)
+    return true if params.empty? && pages.include?(custom_path(request))
+
+    pages.include?(catalog_query(params))
+  end
+
+  def self.catalog_query(params)
+    CGI.escape!(params.map do |key, value|
+      case value
+        when Array then value.map { |v| "#{key}[]=#{v}" }
+        else "#{key}=#{value}"
+      end
+    end.flatten.sort.join('&'))
+  end
+
+  def self.custom_path(request_or_params)
+    request_or_params.attempt(:params)[:custom_path].tap do |path|
+      path.prepend('/') unless path.nil? || path.starts_with?('/')
+    end
+  end
+
+  # 'domain_or_cname' is either a Domain instance or the cname string.
+  # 'params' is the request params for a valid CLP to be rendered into an id
+  #   (e.g. 'category=Government', '/salt-lake-city', etc.)
+  def initialize(domain_or_cname, params)
+    @cname = domain_or_cname.attempt(:cname)
+    @id = catalog_query(@query = params.slice(*valid_params)).presence ||
+      custom_path(params)
+  end
+
+  def to_query
+    @query.presence || @id
   end
 
   def to_path
-    id.starts_with?('/') ? id : "/browse?#{CGI.unescape(id)}"
+    return id if id.starts_with?('/')
+    "/browse?#{CGI.unescape(id)}"
   end
 
   def to_uri
@@ -42,11 +89,9 @@ class CatalogLandingPage
   # See spec/fixtures/vcr_cassettes/clp/configuration.json
   # 'property' optional key to retrieve value for. If nil, then entire property hash is returned
   def metadata(property = nil)
-    begin
-      if configuration.has_property?(id)
-        @metadata = configuration.properties[id]
-        property.present? ? @metadata[property] : @metadata
-      end
+    if configuration.has_property?(id)
+      @metadata = configuration.properties[id]
+      property.present? ? @metadata[property] : @metadata
     end.to_h
   end
 

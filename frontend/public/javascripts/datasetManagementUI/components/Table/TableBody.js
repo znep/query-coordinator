@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
 import classNames from 'classnames';
 import TableCell from './TableCell';
-import * as DisplayState from './displayState';
+import * as DisplayState from '../../lib/displayState';
 
 const RENDER_ROWS = 50;
 

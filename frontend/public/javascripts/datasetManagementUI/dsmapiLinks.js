@@ -26,7 +26,7 @@ export const columnErrors = (uploadId, inputSchemaId, outputSchemaId, columnId, 
     `?limit=${limit}&offset=${offset}&column_id=${columnId}`;
 
 export const rowErrors = (uploadId, inputSchemaId, offset, limit) =>
-  `${base}/upload/${uploadId}/schema/${inputSchemaId}/errors?limit=${limit}&offset=${offset}`
+  `${base}/upload/${uploadId}/schema/${inputSchemaId}/errors?limit=${limit}&offset=${offset}`;
 
 export const errorExport = (uploadId, inputSchemaId, outputSchemaId) =>
   `${base}/upload/${uploadId}/schema/${inputSchemaId}/errors/${outputSchemaId}`;

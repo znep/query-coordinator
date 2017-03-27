@@ -1886,8 +1886,8 @@ en:
       row_errors:
         columns_found: columns, found
         expected: Expected
-        flyout_message_singular: "{numRowErrors} Row is malformed."
-        flyout_message_plural: "{numRowErrors} Rows are malformed."
+        flyout_message_singular: 1 row is malformed.
+        flyout_message_plural: "{numRowErrors} rows are malformed."
         flyout_message_explanation: They might have too many, or not enough columns.
         malformed_row: Malformed row
         malformed_rows: Malformed rows

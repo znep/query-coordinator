@@ -11,7 +11,7 @@ import * as ShowActions from '../actions/showOutputSchema';
 import * as ApplyActions from '../actions/applyUpdate';
 import Table from './Table';
 import ReadyToImport from './ReadyToImport';
-import * as DisplayState from './Table/displayState';
+import * as DisplayState from '../lib/displayState';
 
 function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
   const outputSchemaId = _.toNumber(outputSchemaIdStr);
@@ -163,17 +163,9 @@ function mapStateToProps(state, ownProps) {
     _.toNumber(params.inputSchemaId),
     _.toNumber(params.outputSchemaId)
   );
-  let displayState;
-  if (params.errorsTransformId) {
-    displayState = DisplayState.columnErrors(_.toNumber(params.errorsTransformId));
-  } else if (ownProps.route.path.indexOf('row_errors') > 0) {
-    displayState = DisplayState.rowErrors();
-  } else {
-    displayState = DisplayState.normal();
-  }
   return {
     ...queryResults,
-    displayState
+    displayState: DisplayState.fromUrl(_.pick(ownProps, ['params', 'route']))
   };
 }
 

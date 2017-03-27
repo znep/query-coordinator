@@ -2,13 +2,13 @@ import React, { PropTypes, Component } from 'react';
 import { commaify } from '../../../common/formatNumber';
 import { Link } from 'react-router';
 import * as Links from '../../links';
-import * as DisplayState from './displayState';
+import * as DisplayState from '../../lib/displayState';
 import { singularOrPlural } from '../../lib/util';
 import styleguide from 'socrata-components';
 
 const FLYOUT_ID = 'malformed-rows-flyout';
 
-export default class RowErrorsLink extends Component {
+class RowErrorsLink extends Component {
 
   componentDidMount() {
     this.attachFlyouts();
@@ -23,9 +23,8 @@ export default class RowErrorsLink extends Component {
   }
 
   attachFlyouts() {
-    const element = document.getElementById(FLYOUT_ID);
-    if (element) {
-      styleguide.attachTo(element.parentNode);
+    if (this.flyoutEl) {
+      styleguide.attachTo(this.flyoutEl.parentNode);
     }
   }
 
@@ -37,18 +36,18 @@ export default class RowErrorsLink extends Component {
       Links.showRowErrors(path.uploadId, path.inputSchemaId, path.outputSchemaId);
 
     const SubI18n = I18n.show_output_schema.row_errors;
-    const msgTemplate = singularOrPlural(
+    const message = singularOrPlural(
       numRowErrors,
       SubI18n.flyout_message_singular,
-      SubI18n.flyout_message_plural
+      SubI18n.flyout_message_plural.format({ numRowErrors: commaify(numRowErrors) })
     );
     const errorFlyout = (
-      <div id={FLYOUT_ID} className="malformed-rows-flyout flyout flyout-hidden">
+      <div
+        id={FLYOUT_ID}
+        ref={(flyoutEl) => { this.flyoutEl = flyoutEl; }}
+        className="malformed-rows-flyout flyout flyout-hidden">
         <section className="flyout-content">
-          {msgTemplate.format({
-            numRowErrors: commaify(numRowErrors)
-          })}&nbsp;
-          {SubI18n.flyout_message_explanation}
+          {message} {SubI18n.flyout_message_explanation}
           <br />
           <span className="click-to-view">{I18n.show_output_schema.click_to_view}</span>
         </section>
@@ -75,3 +74,5 @@ RowErrorsLink.propTypes = {
   displayState: PropTypes.object.isRequired,
   numRowErrors: PropTypes.number.isRequired
 };
+
+export default RowErrorsLink;

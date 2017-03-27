@@ -16,9 +16,9 @@ const headersForWrites = {
 export function socrataFetch(path, options = {}) {
   // only need to add in authenticityToken for non-GET requests
   const mergedBasic = _.merge(options, defaultFetchOptions);
-  const mergedForWrites = (!_.isUndefined(options.method) && options.method.toUpperCase() !== 'GET')
-    ? _.merge(mergedBasic, { headers: headersForWrites })
-    : mergedBasic;
+  const mergedForWrites = (!_.isUndefined(options.method) && options.method.toUpperCase() !== 'GET') ?
+    _.merge(mergedBasic, { headers: headersForWrites }) :
+    mergedBasic;
   return fetch(path, mergedForWrites);
 }
 

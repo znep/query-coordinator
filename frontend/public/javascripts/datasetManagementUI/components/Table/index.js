@@ -4,7 +4,7 @@ import TransformStatus from './TransformStatus';
 import TableBody from './TableBody';
 import RowErrorsLink from './RowErrorsLink';
 import classNames from 'classnames';
-import * as DisplayState from './displayState';
+import * as DisplayState from '../../lib/displayState';
 
 export default function Table({
   db,

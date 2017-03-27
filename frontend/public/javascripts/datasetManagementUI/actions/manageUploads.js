@@ -165,7 +165,7 @@ function subscribeToUpload(dispatch, upload) {
 }
 
 function subscribeToRowErrors(inputSchemaId) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     const channelName = `row_errors:${inputSchemaId}`;
     let rowErrorsSoFar = 0;
     joinChannel(channelName, {

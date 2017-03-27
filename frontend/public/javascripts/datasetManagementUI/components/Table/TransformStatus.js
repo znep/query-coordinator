@@ -3,7 +3,7 @@ import React, { PropTypes, Component } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router';
 import * as Links from '../../links';
-import * as DisplayState from './displayState';
+import * as DisplayState from '../../lib/displayState';
 import { singularOrPlural } from '../../lib/util';
 import styleguide from 'socrata-components';
 import ProgressBar from '../ProgressBar';
@@ -28,9 +28,8 @@ class TransformStatus extends Component {
   }
 
   attachFlyouts() {
-    const element = document.getElementById(this.getFlyoutId());
-    if (element) {
-      styleguide.attachTo(element.parentNode);
+    if (this.flyoutEl) {
+      styleguide.attachTo(this.flyoutEl.parentNode);
     }
   }
 
@@ -71,7 +70,10 @@ class TransformStatus extends Component {
         SubI18n.column_status_flyout.error_msg_plural
       );
       errorFlyout = (
-        <div id={flyoutId} className="transform-status-flyout flyout flyout-hidden">
+        <div
+          id={flyoutId}
+          ref={(flyoutEl) => { this.flyoutEl = flyoutEl; }}
+          className="transform-status-flyout flyout flyout-hidden">
           <section className="flyout-content">
             {msgTemplate.format({
               num_errors: commaify(transform.num_transform_errors),

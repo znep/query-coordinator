@@ -16,3 +16,13 @@ export const rowErrors = (pageNo = 0) => ({
   type: ROW_ERRORS,
   pageNo
 });
+
+export function fromUrl({ params, route }) {
+  if (params.errorsTransformId) {
+    return columnErrors(_.toNumber(params.errorsTransformId));
+  } else if (route.path.indexOf('row_errors') > 0) {
+    return rowErrors();
+  } else {
+    return normal();
+  }
+}

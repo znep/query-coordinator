@@ -36,8 +36,8 @@ const Header = (props) => {
 
 Header.propTypes = {
   headline: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  query: PropTypes.string.isRequired
+  description: PropTypes.string,
+  query: PropTypes.string
 };
 
 const mapStateToProps = (state) => {

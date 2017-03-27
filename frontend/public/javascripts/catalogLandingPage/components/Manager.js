@@ -4,8 +4,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { defaultHeaders } from '../../common/http';
 import format from 'stringformat';
-import CategoryStat from './CategoryStat';
 import FeaturedContentManager from './FeaturedContentManager';
+import StatCounts from './StatCounts';
 import * as Actions from '../actions/header';
 import airbrake from '../../common/airbrake';
 
@@ -164,22 +164,10 @@ export class Manager extends React.Component {
 
     const renderCategoryStats = () => {
       const { categoryStats } = this.props;
-      // Yes, this code is copy and pasted from the CategoryStats component,
-      // except without the header.
-      const sortedStats = () => (_(categoryStats).toPairs().sortBy(0).fromPairs().value());
-      const filteredStats = () => (_(sortedStats()).toPairs().reject([1, 0]).fromPairs().value());
-
-      if (_.isEmpty(filteredStats())) { return null; }
 
       return (
         <div className="catalog-landing-page-stats">
-          <div className="stat-counts">
-            {_.map(filteredStats(), (count, name) =>
-              <CategoryStat
-                key={name}
-                name={_.get(I18n, `category_stats.${name}`, name)}
-                count={count} />)}
-          </div>
+          <StatCounts categoryStats={categoryStats} />
         </div>
       );
     };
